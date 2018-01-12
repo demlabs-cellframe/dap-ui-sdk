@@ -92,8 +92,6 @@ public:
     }
 
 signals:
-    void sigMenuBarButtonClicked(const QString& a_name);
-
     void sigScreenChanged();
 protected:
     void onScreenOrientationChanged(Qt::ScreenOrientation a_orientation);

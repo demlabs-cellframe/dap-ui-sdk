@@ -12,3 +12,5 @@ HEADERS += \
     $$PWD/DapUiMainWindow.h \
     $$PWD/DapUiScreen.h
 
+FORMS +=
+
