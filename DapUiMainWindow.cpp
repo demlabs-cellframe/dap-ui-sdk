@@ -4,6 +4,8 @@
 #include <QScreen>
 #include <QLayout>
 #include "DapUiMainWindow.h"
+#include "DapUiMenuBar.h"
+#include "Manager.h"
 
 /**
  * @brief DapUiMainWindow::DapUiMainWindow
@@ -22,6 +24,7 @@ DapUiMainWindow::DapUiMainWindow(QWidget *parent)
 
     m_instance = this;
     m_currentScreen = nullptr;
+    m_menuBar = nullptr;
     QGuiApplication::primaryScreen()->setOrientationUpdateMask(
                 Qt::LandscapeOrientation | Qt::PortraitOrientation |
                 Qt::InvertedLandscapeOrientation | Qt::InvertedLandscapeOrientation);
@@ -40,6 +43,35 @@ DapUiMainWindow::~DapUiMainWindow()
    if(m_currentScreen)
        delete m_currentScreen;
 }
+
+void DapUiMainWindow::initMenuBarBackground()
+{
+    QWidget * l_w = new QWidget(this);
+    l_w->setStyleSheet("background: #20DCA3;");
+    double l_k = this->size().width()/360.0;
+    l_w->setMinimumHeight(58*l_k);
+    l_w->setMaximumHeight(58*l_k);
+    l_w->setVisible(false);
+    centralWidget()->layout()->addWidget(l_w);
+    connect(&Manager::me(), &Manager::sigMenuVisible, [=](bool f){l_w->setVisible(f);});
+}
+
+void DapUiMainWindow::initMenuBar( QBrush a_bgBrush, int a_barHeight)
+{
+    /*
+    if(m_menuBar){
+        qWarning() << "MenuBar is already created, delete that first";
+        delete m_menuBar;
+    }
+    */
+    auto m_menuBar = new DapUiMenuBar(this,a_bgBrush,a_barHeight);
+    centralWidget()->layout()->addWidget(m_menuBar);
+    centralWidget()->layout()->setSpacing(0);
+    //menuBar()->hide();
+
+    // Здесь должна инитаться подложка
+}
+
 
 
 /**

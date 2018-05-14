@@ -9,6 +9,7 @@
 #include <QSet>
 #include <QStackedWidget>
 
+//#include <qobject_impl.h>
 
 class QStackedWidget;
 
@@ -89,6 +90,7 @@ public:
      */
     template<class T,class TSmall, class TBig>
     inline void create(ScreenVariant a_variant = VariantDefault){
+        qDebug() << "[CORE] create";
         QWidget *p;
         if(m_page.contains(a_variant)){
             qWarning() << "Screen variant" << a_variant<< " is already present in map. Deleting the old one";

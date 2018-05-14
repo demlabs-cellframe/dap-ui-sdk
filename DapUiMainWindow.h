@@ -8,7 +8,7 @@
 class QStackedWidget;
 #include "DapUiScreen.h"
 
-
+class DapUiMenuBar;
 class DapUiMainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -90,8 +90,16 @@ public:
         else
             qWarning() << "[DapUiMainWindow] no current screen to connecto to";
     }
-
+    void initMenuBarBackground();
+    void initMenuBar(QBrush a_bgBrush, int a_barHeight);
+    /**
+     * @brief menuBar
+     * @return
+     */
+    inline DapUiMenuBar * menuBar() { return m_menuBar; }
 signals:
+    void sigMenuBarButtonClicked(const QString& a_name);
+
     void sigScreenChanged();
 protected:
     void onScreenOrientationChanged(Qt::ScreenOrientation a_orientation);
@@ -99,7 +107,7 @@ private:
     QStackedWidget * m_sw;
 
     DapUiScreen * m_currentScreen = nullptr;
-
+    DapUiMenuBar * m_menuBar = nullptr;
 
     static DapUiMainWindow * m_instance;
 private slots:

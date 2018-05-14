@@ -15,6 +15,7 @@ DapUiScreen::DapUiScreen(QObject *parent, QStackedWidget * a_sw)
     : QObject(parent),m_sw(a_sw)
 {
     Q_ASSERT(m_sw);
+    qDebug() << "[CORE] DapUiScreen";
     m_defaultVariant = VariantDefault;
 }
 
@@ -69,6 +70,7 @@ void DapUiScreen::show()
  */
 void DapUiScreen::setCurrentVariant(ScreenVariant a_newVariant)
 {
+    qDebug() << "[CORE] DapUiScreen::setCurrentVariant" ;
     if(variants().contains(a_newVariant)){
         m_currentVariant = a_newVariant;
         sw()->setCurrentWidget(page(a_newVariant));
@@ -95,3 +97,4 @@ void DapUiScreen::connectTo(const QString& a_objName,const char *a_signal, const
             connect(w,a_signal,a_recv,a_slot);
     }
 }
+
