@@ -41,9 +41,9 @@ void DapKeyAes::encode(QByteArray& dataIn, QByteArray& dataOut)
     memset(iv_enc, 0, sizeof(unsigned char) * AES_BLOCK_SIZE);
 
     AES_KEY enc_key;
-    AES_set_encrypt_key(m_keyStr, AES_KEY_LENGTH, &enc_key);
+ /*   AES_set_encrypt_key(m_keyStr, AES_KEY_LENGTH, &enc_key);
     AES_cbc_encrypt(in,data_out, inputsLength, &enc_key,
-                    iv_enc, AES_ENCRYPT);
+                    iv_enc, AES_ENCRYPT);*/ // IVAN
 
     dataOut.clear();
     dataOut.append((const char*)data_out, encLength);
@@ -64,9 +64,9 @@ void DapKeyAes::decode(QByteArray& dataIn, QByteArray& dataOut)
     memset(out, 0, sizeof(unsigned char) * inLength);
 
     AES_KEY dec_key;
-    AES_set_decrypt_key(m_keyStr, AES_KEY_LENGTH, &dec_key);
+  /*  AES_set_decrypt_key(m_keyStr, AES_KEY_LENGTH, &dec_key);
     AES_cbc_encrypt((unsigned char*)dataIn.constData(), out, dataIn.size(),
-                    &dec_key,iv_dec, AES_DECRYPT);
+                    &dec_key,iv_dec, AES_DECRYPT);*/ //IVAN
 
     dataOut.clear();
     dataOut.append((const char*)out, dataIn.size());

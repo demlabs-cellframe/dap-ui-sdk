@@ -32,7 +32,7 @@
 #include <QEventLoop>
 #include <QThread>
 
-const QString DapSession::URL_ENCRYPT("/1901248124123459");
+const QString DapSession::URL_ENCRYPT("/handshake");
 const QString DapSession::URL_STREAM("/874751843144");
 const QString DapSession::URL_DB("/01094787531354");
 const QString DapSession::URL_CTL("/091348758013553");
@@ -56,27 +56,9 @@ DapSession::DapSession()
         emit errorAuthorization(str);
     });
 
-    connect(this, &DapSession::pubKeyServerRecived, [&]{
-        if(baData)
-            free(baData);
-        baData=nullptr;
-
-
-        m_xmlStreamReader.clear();
-        arrData.clear();
-
-        QString reqDataRSA = DapCrypt::me()->createRSAKey();
-        QByteArray reqData = reqDataRSA.toLatin1();
-        qDebug() << "[DapSession] Public Client Key = " << reqDataRSA;
-        netReply = m_dapConnectBase->request(URL_ENCRYPT + "/hsd9jslagd92abgjalp9h" , &reqData);
-
-        connect(netReply, &QNetworkReply::readyRead, this, &DapSession::onDownloading);
-        connect(netReply, &QNetworkReply::readChannelFinished, this,  &DapSession::onEnc);
-        connect(netReply, SIGNAL(error(QNetworkReply::NetworkError)),
-                this, SLOT(errorSlt(QNetworkReply::NetworkError)));
-    });
 
 }
+
 
 /**
  * @brief DapSession::~DapSession
@@ -91,27 +73,20 @@ DapSession::~DapSession()
  */
 void DapSession::requestServerPublicKey()
 {
-    QNetworkReply *networkReply;
-    QString str;
-    baData = new QByteArray();
-    networkReply = m_dapConnectBase->request(URL_ENCRYPT + "/gd4y5yh78w42aaagh", str);
+    if(baData)
+        free(baData);
+    baData=nullptr;
 
-    connect(networkReply, &QNetworkReply::readyRead, [=] {
-        baData->append(networkReply->readAll());
-    });
 
-    connect(networkReply, &QNetworkReply::readChannelFinished, [=]{
-        if(networkReply->readBufferSize())
-            baData->append(networkReply->readAll());
-        if (baData->length() != 0) {
-            DapCrypt::me()->setRsaPubKeyServer(QString::fromLatin1(*baData));
-            emit pubKeyServerRecived();
-        } else {
-            emit errorOfPubKeyServerReciving();
-        }
-    });
+    m_xmlStreamReader.clear();
+    arrData.clear();
 
-    connect(networkReply, SIGNAL(error(QNetworkReply::NetworkError)),
+    QByteArray reqData = DapCrypt::me()->generateAliceMessage().toBase64();
+    netReply = m_dapConnectBase->request(URL_ENCRYPT + "/gd4y5yh78w42aaagh" , &reqData);
+
+    connect(netReply, &QNetworkReply::readyRead, this, &DapSession::onDownloading);
+    connect(netReply, &QNetworkReply::readChannelFinished, this,  &DapSession::onEnc);
+    connect(netReply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(errorSlt(QNetworkReply::NetworkError)));
 
 }
@@ -136,42 +111,33 @@ void DapSession::onEnc()
     if (buf.size()<=1) {
         return;
     }
-    
-    m_sessionKeyID = QByteArray::fromBase64(buf[0].toLatin1());
-    m_sessionServerPublicKey = QByteArray::fromBase64( buf[1].toLatin1() );
-    qDebug() << "Session key Id = " << m_sessionKeyID;
-    qDebug() << " Server PublicRsaKey = " << m_sessionServerPublicKey;
 
-    if ( m_sessionKeyID.isEmpty() || m_sessionServerPublicKey.isEmpty()) {
+    int pos = arrData.indexOf(' ') + 1;
+    QByteArray result = arrData.mid(pos,arrData.size() - pos);
+    m_sessionKeyID = arrData.mid(0,pos-1);
+    
+    qDebug() << "Session key Id = " << m_sessionKeyID;
+
+    if ( m_sessionKeyID.isEmpty() || result.isEmpty()) {
         qDebug() << "ERROR encryption not inited";
         emit errorEncryption();
         return;
-  }
-  
-    int sig_len = QByteArray::fromBase64(buf[3].toLatin1()).toInt();
+    }
 
-    unsigned char* sig = new unsigned char[1024];
-
-    DapCrypt::fromBase64(buf[2].toLatin1(), buf[2].toLatin1().size(), sig);
-
-
-    if (m_sessionServerPublicKey.length() < 10) {
-        qCritical() << "Length of RSA key is" << m_sessionServerPublicKey.length();
+    if (buf[1].size() < 2048) {
+        qCritical() << "Server Bob message is failed, length = " << m_sessionServerBobMessage.length();
         ::exit(0);
     }
 
-    if ( RSA_verify(NID_sha256, (unsigned char*) m_sessionServerPublicKey.toLatin1().data(),
-            200, sig, sig_len, DapCrypt::me()->getKeyServerPublic()->getPubKey()) != 1)
-    {
-        qCritical() << "Failed verifycation session key!";
-        ::exit(0);
-    }
-    qInfo() << "Verification Session key it's Ok";
-    if (!DapCrypt::me()->setRsaSessionServerKey(m_sessionServerPublicKey)) {
+    qInfo() << "Verification server message it's Ok";
+
+
+    QByteArray array = QByteArray::fromBase64(result);
+    if(!DapCrypt::me()->makePublicKey(array)){
         emit errorNetwork(tr("Server doesn't respond"));
         return;
     }
-    delete []sig;
+
     emit encryptInitialized();
 
     _badSevers.removeAll(BadServers(QString("NameNotNeed"), m_upstreamAddress, m_upstreamPort, m_user));
@@ -210,13 +176,13 @@ QNetworkReply* DapSession::encRequest2(DapConnectBase *dcb, const QString& reqDa
 
     qDebug() << "Request Data = " << BAreqData;
 
-    DapCrypt::me()->encode(BAreqData, BAreqDataEnc, KeyRoleSessionServer);
+    DapCrypt::me()->encode(BAreqData, BAreqDataEnc, KeyRoleSession);
 
 
     if(subUrl.length())
-        DapCrypt::me()->encodeB64(subUrl, BAsubUrlEncB64, KeyRoleSessionServer);
+        DapCrypt::me()->encodeB64(subUrl, BAsubUrlEncB64, KeyRoleSession);
     if(query.length())
-        DapCrypt::me()->encodeB64(query, BAqueryEncB64, KeyRoleSessionServer);
+        DapCrypt::me()->encodeB64(query, BAqueryEncB64, KeyRoleSession);
 
   //  qDebug() << "Query size = " << BAqueryEncB64.length();
   //  qDebug() << "Query Encode : " << BAqueryEncB64;
@@ -327,7 +293,7 @@ void DapSession::onAuthorize()
 /**
  * @brief DapSession::testRsaReplacementSlot
  */
-void DapSession::testRsaReplacementSlot()
+void DapSession::testMsrlnReplacementSlot()
 {
     arrData.append(netReply->readAll());
 

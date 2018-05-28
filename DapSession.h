@@ -123,7 +123,7 @@ protected:
     QString m_domain;
     QString m_upstreamIp;
 
-    QString m_sessionServerPublicKey;
+    QString m_sessionServerBobMessage;
 
     bool critError = false;
 
@@ -143,7 +143,7 @@ public:
     void requestTestKey()
     {
         encRequest("user2 pass2 domain.com",
-                   URL_DB, "TestRsaKey", "login", SLOT(testRsaReplacementSlot()));
+                   URL_DB, "TestRsaKey", "login", SLOT(testMsrlnReplacementSlot()));
     }
 
 private:
@@ -154,7 +154,7 @@ private slots:
     void errorSlt(QNetworkReply::NetworkError);
     void onAuthorize();
     void onLogout();
-    void testRsaReplacementSlot();
+    void testMsrlnReplacementSlot();
 signals:
     void pubKeyServerRecived();
     void encryptInitialized();
