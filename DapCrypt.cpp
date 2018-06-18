@@ -92,7 +92,7 @@ void DapCrypt::encodeB64(const QString& in, QByteArray& out, KeyRole kRole)
     QByteArray dataEnc;
     QByteArray dataIn = in.toLatin1();
     encode(dataIn, dataEnc, kRole);
-    out = dataEnc.toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals);
+    out = dataEnc.toBase64(QByteArray::Base64UrlEncoding);
 }
 
 void DapCrypt::decode(QByteArray& in, QByteArray& out, KeyRole kRole)

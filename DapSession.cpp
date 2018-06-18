@@ -23,6 +23,7 @@
 #define OP_CODE_NOT_FOUND_LOGIN_IN_DB "0xf3"
 #define OP_CODE_SUBSCRIBE_EXPIRIED    "0xf4"
 #define OP_CODE_CANT_CONNECTION_TO_DB "0xf5"
+#define OP_CODE_INCORRECT_SYM         "0xf6"
 
 #include "DapSession.h"
 #include "DapCrypt.h"
@@ -32,7 +33,7 @@
 #include <QEventLoop>
 #include <QThread>
 
-const QString DapSession::URL_ENCRYPT("/handshake");
+const QString DapSession::URL_ENCRYPT("/1901248124123459");
 const QString DapSession::URL_STREAM("/874751843144");
 const QString DapSession::URL_DB("/01094787531354");
 const QString DapSession::URL_CTL("/091348758013553");
@@ -114,7 +115,7 @@ void DapSession::onEnc()
 
     int pos = arrData.indexOf(' ') + 1;
     QByteArray result = arrData.mid(pos,arrData.size() - pos);
-    m_sessionKeyID = arrData.mid(0,pos-1);
+    m_sessionKeyID = QByteArray::fromBase64(arrData.mid(0,pos-1));
     
     qDebug() << "Session key Id = " << m_sessionKeyID;
 
@@ -124,15 +125,17 @@ void DapSession::onEnc()
         return;
     }
 
-    if (buf[1].size() < 2048) {
-        qCritical() << "Server Bob message is failed, length = " << m_sessionServerBobMessage.length();
+    QByteArray array = QByteArray::fromBase64(result);
+
+    if (array.size() < 2048) {
+        qCritical() << "Server Bob message is failed, length = " << array.length();
         ::exit(0);
     }
 
     qInfo() << "Verification server message it's Ok";
 
 
-    QByteArray array = QByteArray::fromBase64(result);
+
     if(!DapCrypt::me()->makePublicKey(array)){
         emit errorNetwork(tr("Server doesn't respond"));
         return;
@@ -179,10 +182,29 @@ QNetworkReply* DapSession::encRequest2(DapConnectBase *dcb, const QString& reqDa
     DapCrypt::me()->encode(BAreqData, BAreqDataEnc, KeyRoleSession);
 
 
-    if(subUrl.length())
-        DapCrypt::me()->encodeB64(subUrl, BAsubUrlEncB64, KeyRoleSession);
-    if(query.length())
-        DapCrypt::me()->encodeB64(query, BAqueryEncB64, KeyRoleSession);
+    if(subUrl.length()){
+        //DapCrypt::me()->encodeB64(subUrl, BAsubUrlEncB64, KeyRoleSession);
+
+    QByteArray BAsub;
+    QByteArray inStr = subUrl.toLatin1();
+    DapCrypt::me()->encode(inStr, BAsub, KeyRoleSession);
+    BAsubUrlEncB64 = BAsub.toBase64();
+    }
+
+
+    /*QByteArray sub_dec_arr;
+    QByteArray in = QByteArray::fromBase64(BAsubUrlEncB64);
+
+            DapCrypt::me()->decode(in,sub_dec_arr,KeyRoleSession);*/
+    if(query.length()){
+        QByteArray BAQsub;
+        QByteArray inStr = query.toLatin1();
+        DapCrypt::me()->encode(inStr, BAQsub, KeyRoleSession);
+        BAqueryEncB64 = BAQsub.toBase64();
+
+    }
+        //DapCrypt::me()->encodeB64(query, BAqueryEncB64, KeyRoleSession);
+
 
   //  qDebug() << "Query size = " << BAqueryEncB64.length();
   //  qDebug() << "Query Encode : " << BAqueryEncB64;
@@ -222,6 +244,12 @@ void DapSession::onAuthorize()
     }
 
     arrData.append(netReply->readAll());
+
+    if(arrData.size() <= 0)
+    {
+        emit errorAuthorization("Wrong answer from server");
+        return;
+    }
     
     QByteArray dByteArr;
     DapCrypt::me()->decode(arrData, dByteArr, KeyRoleSession);
@@ -244,6 +272,8 @@ void DapSession::onAuthorize()
     } else if (QString::fromLatin1(dByteArr) == OP_CODE_CANT_CONNECTION_TO_DB) {
         emit errorAuthorization ("cant_connect_to_db");
         return;
+    } else if (QString::fromLatin1(dByteArr) == OP_CODE_INCORRECT_SYM){
+        emit errorAuthorization("incorrect_symbols_in_request");
     }
 
 

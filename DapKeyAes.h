@@ -30,7 +30,7 @@
 typedef unsigned char byte;
 
 #define AES_BLOCKSIZE 16
-#define AES_KEY_LENGTH 256
+#define AES_KEY_LENGTH 16
 
 class DapKeyAes : public DapKey
 {
@@ -41,6 +41,7 @@ public:
     void encode(QByteArray& in, QByteArray& out);
     void decode(QByteArray& in, QByteArray& out);
     bool init(const QString& str_key);
+    bool initKeyChar(const char* str_key);
 };
 
 #endif // DAPKEYAES_H

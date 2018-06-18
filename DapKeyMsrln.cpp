@@ -35,7 +35,7 @@ bool DapKeyMsrln::makePublicKey(QByteArray& bobMessage)
 
 void DapKeyMsrln::convertToAes(){
     aes_key = new DapKeyAes();
-    aes_key->init((char*)public_key);
+    aes_key->initKeyChar((char*)public_key);
 }
 
 void DapKeyMsrln::prepare()
