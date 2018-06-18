@@ -38,14 +38,12 @@
  */
 DapCrypt::DapCrypt()
 {
-    keyClientSessionRsa = new DapKeyRsa;
-    keySesionServer = new DapKeyRsa;
-    keyServerPublic = new DapKeyRsa;
+    keySession = new DapKeyMsrln;
     keyStream = Q_NULLPTR;
 
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
-    ERR_load_crypto_strings();
-    OpenSSL_add_all_algorithms();
+   /* ERR_load_crypto_strings();
+    OpenSSL_add_all_algorithms();*/ //IVAN
 #else
     //SSL_library_init();
 #endif
@@ -56,30 +54,13 @@ DapKey* DapCrypt::roleToKey(KeyRole kRole)
 {
     switch(kRole)
     {
-        case KeyServerPublic: return keyServerPublic;
-        case KeyRoleSession: return keyClientSessionRsa;
+        case KeyRoleSession: return keySession;
         case KeyRoleStream:   return keyStream;
-        case KeyRoleSessionServer: return keySesionServer;
         default: return Q_NULLPTR;
     }
 }
 
 
-/**
- * @brief DapCrypt::readKeyFromBio
- * @param bio
- * @return
- */
-QString DapCrypt::readKeyFromBio(BIO *bio)
-{
-    size_t length = BIO_pending(bio);
-    char *buff = new char[length + 1];
-    BIO_read(bio, buff, length);
-    buff[length] = '\0';
-    QString ret(buff);
-    delete []buff;
-    return ret;
-}
 
 QString DapCrypt::getRandomString(int lengthStr)
 {
@@ -111,7 +92,7 @@ void DapCrypt::encodeB64(const QString& in, QByteArray& out, KeyRole kRole)
     QByteArray dataEnc;
     QByteArray dataIn = in.toLatin1();
     encode(dataIn, dataEnc, kRole);
-    out = dataEnc.toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals);
+    out = dataEnc.toBase64(QByteArray::Base64UrlEncoding);
 }
 
 void DapCrypt::decode(QByteArray& in, QByteArray& out, KeyRole kRole)
@@ -139,27 +120,17 @@ void DapCrypt::decodeB1k(QByteArray& in, QByteArray& out, int sizeBlock, KeyRole
     }
 }
 
-/**
- * @brief DapCrypt::createRSAKey
- * @details Creates RSA key pair
- * @param kRole Key role
- * @return
- */
-QString DapCrypt::createRSAKey()
+QByteArray DapCrypt::generateAliceMessage()
 {
-    keyClientSessionRsa->generateRsaLocalKeyPair();
-    return keyClientSessionRsa->getStringPubKey();
+    keySession->prepare();
+    QByteArray mess = keySession->generateAliceMessage();
+
+    return mess;
 }
 
-/**
- * @brief DapCrypt::addRSAKey
- * @details Add RSA key pair
- * @param kRole
- * @param a_keyStr
- */
-bool DapCrypt::setRsaSessionServerKey(const QString &a_keyStr)
+bool DapCrypt::makePublicKey(QByteArray &data)
 {
-    return keySesionServer->init(a_keyStr);
+    return keySession->makePublicKey(data);
 }
 
 void DapCrypt::initAesKey(QString &keyStr, KeyRole kRole)

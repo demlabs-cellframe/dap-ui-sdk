@@ -24,55 +24,39 @@
 #include <QDebug>
 #include <stdio.h>
 #include <stdlib.h>
+#include "liboqs/crypto/aes/aes.h"
+#include "dap_enc_key.h"
+#include "dap_enc_aes.h"
+
+uint8_t aes_tail_block[] =  {21,27,20,36,16,20,27,31,22,41,27,33,30,21,32,28};
 
 
 void DapKeyAes::encode(QByteArray& dataIn, QByteArray& dataOut)
 {
-    size_t inputsLength = dataIn.length() + 1;
-    const size_t encLength = ( (inputsLength + AES_BLOCK_SIZE)
-                                / AES_BLOCK_SIZE) * AES_BLOCK_SIZE;
-
-    byte* in = (byte*) calloc(1, encLength);
-    memcpy(in, dataIn.constData(), dataIn.size());
-
-    unsigned char * data_out = new unsigned char[encLength];
-    unsigned char *iv_enc = new unsigned char[sizeof(unsigned char) * AES_BLOCK_SIZE];
-
-    memset(iv_enc, 0, sizeof(unsigned char) * AES_BLOCK_SIZE);
-
-    AES_KEY enc_key;
-    AES_set_encrypt_key(m_keyStr, AES_KEY_LENGTH, &enc_key);
-    AES_cbc_encrypt(in,data_out, inputsLength, &enc_key,
-                    iv_enc, AES_ENCRYPT);
-
-    dataOut.clear();
-    dataOut.append((const char*)data_out, encLength);
-
-    free(in);
-    delete [] iv_enc;
-    delete [] data_out;
+    int tail = 0;
+    if(dataIn.size() < 16)
+        tail = 16 - dataIn.size();
+    else
+        tail = 16 - dataIn.size() % 16;
+    void * a_in_new = (void*)malloc(dataIn.size() + tail);
+    memcpy(a_in_new,dataIn.data(),dataIn.size());
+    uint8_t* pointer = (uint8_t*)&aes_tail_block;
+    memcpy(a_in_new+dataIn.size(),pointer+(16-tail),tail);
+    void* a_out = malloc(dataIn.size() + tail);
+    OQS_AES128_ECB_enc((uint8_t*)a_in_new,dataIn.size()+tail,m_keyStr,(uint8_t*)a_out);
+    dataOut = QByteArray::fromRawData((char*)a_out,dataIn.size()+tail);
 }
 
 
 void DapKeyAes::decode(QByteArray& dataIn, QByteArray& dataOut)
 {
-    size_t inLength = dataIn.length();
-    unsigned char *iv_dec = new unsigned char[sizeof(unsigned char) * AES_BLOCK_SIZE];
-    unsigned char *out = new unsigned char[inLength];
-
-    memset(iv_dec, 0, sizeof(unsigned char) * AES_BLOCK_SIZE);
-    memset(out, 0, sizeof(unsigned char) * inLength);
-
-    AES_KEY dec_key;
-    AES_set_decrypt_key(m_keyStr, AES_KEY_LENGTH, &dec_key);
-    AES_cbc_encrypt((unsigned char*)dataIn.constData(), out, dataIn.size(),
-                    &dec_key,iv_dec, AES_DECRYPT);
-
-    dataOut.clear();
-    dataOut.append((const char*)out, dataIn.size());
-
-    delete[] iv_dec;
-    delete[] out;
+    void* a_out = malloc(dataIn.size());
+    OQS_AES128_ECB_dec((uint8_t*)dataIn.data(),dataIn.size(),m_keyStr,(uint8_t*)a_out);
+    int tail = 0;
+    for(int i =dataIn.size()-1; i > dataIn.size()-15; i--)
+        if(*(char*)(a_out + i) == (char)aes_tail_block[i%16])
+            tail++;
+    dataOut = QByteArray::fromRawData((char*)a_out,dataIn.size()-tail);
 }
 
 
@@ -80,5 +64,13 @@ bool DapKeyAes::init(const QString& str_key)
 {
     m_keyStr = new unsigned char[AES_KEY_LENGTH];
     memcpy(m_keyStr, str_key.toStdString().c_str(), AES_KEY_LENGTH);
+    return true;
+}
+
+
+bool DapKeyAes::initKeyChar(const char* str_key)
+{
+    m_keyStr = new unsigned char[AES_KEY_LENGTH];
+    memcpy(m_keyStr, str_key, AES_KEY_LENGTH);
     return true;
 }
