@@ -23,9 +23,13 @@
 
 #include "DapConnectBase.h"
 #include "DapSession.h"
-#include <DapChannelPacket.h>
+#include "DapChannelPacket.h"
 #include <DapCrypt.h>
 #include <QAbstractSocket>
+
+#define DATA_PACKET 0x00
+#define SERVICE_PACKET 0xff
+#define KEEPALIVE_PACKET 0x11
 
 class DapConnectStream : public DapConnectBase
 {
@@ -77,7 +81,7 @@ public slots:
     void streamOpen(const QString& subUrl, const QString& query); //ok
     void streamClose(); //ok
 
-    void writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, char *dest_addr = NULL); //ok
+    void writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uint64_t *dest_addr = NULL); //ok
 
 signals:
     void recivedChannelPacket(DapChannelPacketHdr* pkt, void* data);

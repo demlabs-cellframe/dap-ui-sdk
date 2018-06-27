@@ -38,7 +38,7 @@ protected slots:
     void write_str(char, const QString&);
 
 signals:
-    void pktChOut(DapChannelPacketHdr* pkt, void* data, char* dest_addr = NULL);
+    void pktChOut(DapChannelPacketHdr* pkt, void* data, uint64_t* dest_addr = NULL);
 
 public slots:
     virtual void onPktIn(DapChannelPacket* pkt) = 0;

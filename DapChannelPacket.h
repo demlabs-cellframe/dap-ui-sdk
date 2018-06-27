@@ -41,9 +41,10 @@ struct DapPacketHdr
     //quint32 size;
     uint8_t sig[8];
     uint32_t size;
-    uint8_t TTL;
-    char s_addr[32] = {0} ; // Source address ( vasya@domain.net )
-    char d_addr[32] = {0} ; // Destination address ( general#domain.net )
+    uint64_t timestamp;
+    uint8_t type;
+    uint64_t s_addr; // Source address ( vasya@domain.net )
+    uint64_t d_addr; // Destination address ( general#domain.net )
 } __attribute__((packed));
 
 
