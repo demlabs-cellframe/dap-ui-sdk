@@ -182,28 +182,10 @@ QNetworkReply* DapSession::encRequest2(DapConnectBase *dcb, const QString& reqDa
     DapCrypt::me()->encode(BAreqData, BAreqDataEnc, KeyRoleSession);
 
 
-    if(subUrl.length()){
-        //DapCrypt::me()->encodeB64(subUrl, BAsubUrlEncB64, KeyRoleSession);
-
-    QByteArray BAsub;
-    QByteArray inStr = subUrl.toLatin1();
-    DapCrypt::me()->encode(inStr, BAsub, KeyRoleSession);
-    BAsubUrlEncB64 = BAsub.toBase64();
-    }
-
-
-    /*QByteArray sub_dec_arr;
-    QByteArray in = QByteArray::fromBase64(BAsubUrlEncB64);
-
-            DapCrypt::me()->decode(in,sub_dec_arr,KeyRoleSession);*/
-    if(query.length()){
-        QByteArray BAQsub;
-        QByteArray inStr = query.toLatin1();
-        DapCrypt::me()->encode(inStr, BAQsub, KeyRoleSession);
-        BAqueryEncB64 = BAQsub.toBase64();
-
-    }
-        //DapCrypt::me()->encodeB64(query, BAqueryEncB64, KeyRoleSession);
+    if(subUrl.length())
+        DapCrypt::me()->encodeB64(subUrl, BAsubUrlEncB64, KeyRoleSession);
+    if(query.length())
+        DapCrypt::me()->encodeB64(query, BAqueryEncB64, KeyRoleSession);
 
 
   //  qDebug() << "Query size = " << BAqueryEncB64.length();
