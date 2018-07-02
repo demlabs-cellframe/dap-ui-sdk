@@ -104,7 +104,6 @@ void DapSession::onEnc()
 {
     qDebug() << "On Enc()";
 
-    /// RSA for DAP
     if(netReply->readBufferSize())
         arrData.append(netReply->readAll());
 
@@ -174,18 +173,19 @@ QNetworkReply* DapSession::encRequest2(DapConnectBase *dcb, const QString& reqDa
     QNetworkReply * nr;
     QByteArray BAreqData = reqData.toLatin1();
     QByteArray BAreqDataEnc;
-    QByteArray BAsubUrlEncB64;
-    QByteArray BAqueryEncB64;
+    QByteArray BAsubUrlEncrypted;
+    QByteArray BAqueryEncrypted;
+    QByteArray subUrlByte = subUrl.toLatin1();
+    QByteArray queryByte = query.toLatin1();
 
     qDebug() << "Request Data = " << BAreqData;
 
     DapCrypt::me()->encode(BAreqData, BAreqDataEnc, KeyRoleSession);
 
-
     if(subUrl.length())
-        DapCrypt::me()->encodeB64(subUrl, BAsubUrlEncB64, KeyRoleSession);
+        DapCrypt::me()->encode(subUrlByte, BAsubUrlEncrypted, KeyRoleSession);
     if(query.length())
-        DapCrypt::me()->encodeB64(query, BAqueryEncB64, KeyRoleSession);
+        DapCrypt::me()->encode(queryByte, BAqueryEncrypted, KeyRoleSession);
 
 
   //  qDebug() << "Query size = " << BAqueryEncB64.length();
@@ -194,9 +194,10 @@ QNetworkReply* DapSession::encRequest2(DapConnectBase *dcb, const QString& reqDa
     if(subUrl.length())
     {
         if(query.length())
-            nr = dcb->request(url + "/" + BAsubUrlEncB64 + "?" + BAqueryEncB64, &BAreqDataEnc);
+            nr = dcb->request(url + "/" + BAsubUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding)
+                              + "?" + BAqueryEncrypted.toBase64(QByteArray::Base64UrlEncoding), &BAreqDataEnc);
         else
-            nr = dcb->request(url + "/" + BAsubUrlEncB64, &BAreqDataEnc);
+            nr = dcb->request(url + "/" + BAsubUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding), &BAreqDataEnc);
     }
     else {
         nr = dcb->request(url + "/", &BAreqDataEnc);
@@ -491,4 +492,3 @@ void DapSession::errorSlt(QNetworkReply::NetworkError error)
         }
     }
 }
-
