@@ -107,14 +107,19 @@ void DapConnectStream::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data
 
 void DapConnectStream::streamOpen(const QString& subUrl, const QString& query)
 {
-    QByteArray subUrlEncB64, queryEncB64;
     qDebug() << "[DapConnectStream] Stream open SubUrl = " << subUrl;
     qDebug() << "[DapConnectStream] Stream open query =" << query;
 
-    DapCrypt::me()->encodeB64(subUrl, subUrlEncB64, KeyRoleSession);
-    DapCrypt::me()->encodeB64(query, queryEncB64, KeyRoleSession);
+    QByteArray subUrlEncrypted, queryEncrypted;
 
-    QString str_url=QString( "%1/%2?%3").arg(DapSession::getInstance()->URL_CTL).arg(QString(subUrlEncB64) ).arg(QString(queryEncB64));
+    QByteArray subUrlByte = subUrl.toLatin1();
+    QByteArray queryByte = query.toLatin1();
+
+    DapCrypt::me()->encode(subUrlByte, subUrlEncrypted, KeyRoleSession);
+    DapCrypt::me()->encode(queryByte, queryEncrypted, KeyRoleSession);
+
+    QString str_url=QString( "%1/%2?%3").arg(DapSession::getInstance()->URL_CTL).arg(QString(subUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding)) )
+            .arg(QString(queryEncrypted.toBase64(QByteArray::Base64UrlEncoding)));
 
     m_streamCtlReply.clear();
     m_streamID.clear();
