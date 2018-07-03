@@ -37,7 +37,9 @@ public:
 signals:
     void sigNewPkt(DapChannelPacket*);
 public slots:
-    void sltProcPacket(DapChannelPacket *pkt) { emit sigNewPkt(pkt); }
+    void sltProcPacket(DapChannelPacket *pkt) {
+        emit sigNewPkt(pkt);
+    }
 };
 
 
@@ -70,7 +72,7 @@ public slots:
     void writeChPacket(
         DapChannelPacketHdr* pkt,
         void* data,
-        char *dest_addr = NULL)
+        uint64_t *dest_addr = NULL)
     {
         emit sendChPacket(pkt,data,dest_addr);
     }//ok
@@ -80,7 +82,9 @@ public slots:
             << "media item " << query;
         m_dapConStream->streamOpen(subUrl, query);
     }//ok
-    void openDefault(){ open("socket_forward","sf=1"); }
+    void openDefault(){
+        open("socket_forward","sf=1");
+    }
 
     void close();
 
@@ -96,7 +100,7 @@ signals:
     void streamReconnecting();
     void streamDisconnecting();
 
-    void sendChPacket(DapChannelPacketHdr* pkt, void* data, char *dest_addr = NULL);
+    void sendChPacket(DapChannelPacketHdr* pkt, void* data, uint64_t *dest_addr = NULL);
 };
 
 #endif // DAPSTREAMER_H

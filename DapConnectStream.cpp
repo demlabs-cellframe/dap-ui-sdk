@@ -56,7 +56,7 @@ DapConnectStream::~DapConnectStream()
 }
 
 
-void DapConnectStream::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, char* dest_addr)
+void DapConnectStream::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uint64_t *dest_addr)
 {
     size_t dOutSize = chPkt->size + sizeof(DapChannelPacketHdr) + 16;
     char * dOut = (char*) calloc(1, dOutSize);
@@ -72,15 +72,17 @@ void DapConnectStream::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data
     uint8_t* pktOutData = (uint8_t*) calloc(1, pktOutDataSize);
     DapPacketHdr* pktOut = (DapPacketHdr* ) pktOutData;
 
+    pktOut->type = DATA_PACKET;
+
     memcpy(pktOut->sig, daSig, sizeof(pktOut->sig));
-    if(DapSession::getInstance()->isAuthorized())
+  /*  if(DapSession::getInstance()->isAuthorized())
     {
         strcpy(pktOut->s_addr,
             (DapSession::getInstance()->user() + "@" +
             DapSession::getInstance()->domain()).toLatin1().data());
-    }
-    if(dest_addr)
-        strcpy(pktOut->d_addr, dest_addr);
+    }*/  // TODO:IVAN
+   /* if(dest_addr)
+        memcpy(pktOut->d_addr, dest_addr, sizeof(dest_addr));*/
     pktOut->size = dOutEnc.size();
 
 
@@ -105,14 +107,19 @@ void DapConnectStream::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data
 
 void DapConnectStream::streamOpen(const QString& subUrl, const QString& query)
 {
-    QByteArray subUrlEncB64, queryEncB64;
     qDebug() << "[DapConnectStream] Stream open SubUrl = " << subUrl;
     qDebug() << "[DapConnectStream] Stream open query =" << query;
 
-    DapCrypt::me()->encodeB64(subUrl, subUrlEncB64, KeyRoleSessionServer);
-    DapCrypt::me()->encodeB64(query, queryEncB64, KeyRoleSessionServer);
+    QByteArray subUrlEncrypted, queryEncrypted;
 
-    QString str_url=QString( "%1/%2?%3").arg(DapSession::getInstance()->URL_CTL).arg(QString(subUrlEncB64) ).arg(QString(queryEncB64));
+    QByteArray subUrlByte = subUrl.toLatin1();
+    QByteArray queryByte = query.toLatin1();
+
+    DapCrypt::me()->encode(subUrlByte, subUrlEncrypted, KeyRoleSession);
+    DapCrypt::me()->encode(queryByte, queryEncrypted, KeyRoleSession);
+
+    QString str_url=QString( "%1/%2?%3").arg(DapSession::getInstance()->URL_CTL).arg(QString(subUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding)) )
+            .arg(QString(queryEncrypted.toBase64(QByteArray::Base64UrlEncoding)));
 
     m_streamCtlReply.clear();
     m_streamID.clear();
@@ -213,6 +220,8 @@ void DapConnectStream::sltIdFinishedRead()
                     << streamServKey;
           DapCrypt::me()->initAesKey(streamServKey, KeyRoleStream);
           emit notify("Connecting...");
+          QString con = DapSession::getInstance()->upstreamAddress();
+          ushort port = DapSession::getInstance()->upstreamPort().toUShort();
           m_streamSocket->connectToHost(DapSession::getInstance()->upstreamAddress(),
                                         DapSession::getInstance()->upstreamPort().toUShort(),
                                         QIODevice::ReadWrite);
