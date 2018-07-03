@@ -35,16 +35,12 @@ struct DapChannelPacketHdr
 
 struct DapPacketHdr
 {
-    //quint8 sig[8];
-    ////quint32 padding; in new dap it using for seq_id;
-    //quint32 seq_id; //обратить внимание, переменная юзается для контроля последовательности доставки
-    //quint32 size;
     uint8_t sig[8];
     uint32_t size;
     uint64_t timestamp;
     uint8_t type;
-    uint64_t s_addr; // Source address ( vasya@domain.net )
-    uint64_t d_addr; // Destination address ( general#domain.net )
+    uint64_t s_addr; // Source address
+    uint64_t d_addr; // Destination address
 } __attribute__((packed));
 
 
