@@ -54,7 +54,6 @@ public:
     void setRsaPubKeyServer(const QString & a_keyStr){ keySession->init(a_keyStr); }
 
     void encode(QByteArray& in, QByteArray& out, KeyRole kRole);
-    void encodeB64(const QString& in, QByteArray& out, KeyRole kRole);
     void decode(QByteArray& in, QByteArray& out, KeyRole kRole);
     void decodeB1k(QByteArray& in, QByteArray& out, int sizeBlock, KeyRole kRole);
     QByteArray generateAliceMessage();

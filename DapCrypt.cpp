@@ -87,19 +87,6 @@ void DapCrypt::encode(QByteArray& in, QByteArray& out, KeyRole kRole)
     key->encode(in,out);
 }
 
-void DapCrypt::encodeB64(const QString& in, QByteArray& out, KeyRole kRole)
-{
-    QByteArray dataEnc;
-    QByteArray dataIn = in.toLatin1();
-    encode(dataIn, dataEnc, kRole);
-    out = dataEnc.toBase64();
-    //Handmade url-safe encoding
-    for(int i=0; i < out.size(); i++)
-        if(out[i] == '/')
-            out[i] = '_';
-    //out = dataEnc.toBase64(QByteArray::Base64UrlEncoding); Qt UrlSafe encoding changes '/' and '+' symbols, but backend change only '/'
-}
-
 void DapCrypt::decode(QByteArray& in, QByteArray& out, KeyRole kRole)
 {
     DapKey * key = roleToKey(kRole);
