@@ -159,7 +159,6 @@ void DapConnectStream::streamClose()
 
 qint64 DapConnectStream::writeStreamRaw(const void * data, size_t data_size)
 {
-    qDebug() << "[DapConnectStream::writeStreamRaw]";
     quint64 outWriteSize, wr, ret = 0;
     if(m_streamSocket->isWritable())
     {
@@ -345,7 +344,7 @@ void DapConnectStream::sltStreamConnected()
 /* NEED TESTING!!! */
 void DapConnectStream::sltStreamProcess()
 {
-    qDebug()<< "[DapConnectStream::sltStreamProcess]";
+   // qDebug()<< "[DapConnectStream::sltStreamProcess]";
     if( m_streamSocket->bytesAvailable() == 0 )
     {
         qWarning() << "[DapConnectStream] No data after wait!";
