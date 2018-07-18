@@ -28,7 +28,6 @@
 #include "dap_enc_key.h"
 #include "dap_enc_aes.h"
 
-uint8_t aes_tail_block[] =  {21,27,20,36,16,20,27,31,22,41,27,33,30,21,32,28};
 
 
 void DapKeyAes::encode(QByteArray& dataIn, QByteArray& dataOut)
@@ -40,8 +39,7 @@ void DapKeyAes::encode(QByteArray& dataIn, QByteArray& dataOut)
         tail = 16 - dataIn.size() % 16;
     void * a_in_new = (void*)malloc(dataIn.size() + tail);
     memcpy(a_in_new,dataIn.data(),dataIn.size());
-    uint8_t* pointer = (uint8_t*)&aes_tail_block;
-    memcpy(a_in_new+dataIn.size(),pointer+(16-tail),tail);
+    memset((char*)a_in_new+dataIn.size(),0,tail);
     void* a_out = malloc(dataIn.size() + tail);
     OQS_AES128_ECB_enc((uint8_t*)a_in_new,dataIn.size()+tail,m_keyStr,(uint8_t*)a_out);
     dataOut = QByteArray::fromRawData((char*)a_out,dataIn.size()+tail);
@@ -54,8 +52,12 @@ void DapKeyAes::decode(QByteArray& dataIn, QByteArray& dataOut)
     OQS_AES128_ECB_dec((uint8_t*)dataIn.data(),dataIn.size(),m_keyStr,(uint8_t*)a_out);
     int tail = 0;
     for(int i =dataIn.size()-1; i > dataIn.size()-15; i--)
-        if(*(char*)(a_out + i) == (char)aes_tail_block[i%16])
+    {
+        if(*((char*)a_out + i) == (char)0)
             tail++;
+        else
+            break;
+    }
     dataOut = QByteArray::fromRawData((char*)a_out,dataIn.size()-tail);
 }
 
