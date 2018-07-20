@@ -59,7 +59,7 @@ DapConnectStream::~DapConnectStream()
 void DapConnectStream::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uint64_t *dest_addr)
 {
     Q_UNUSED(dest_addr)
-    size_t dOutSize = chPkt->size + sizeof(DapChannelPacketHdr) + 16;
+    size_t dOutSize = chPkt->size + sizeof(DapChannelPacketHdr);
     char * dOut = (char*) calloc(1, dOutSize);
 
     memcpy(dOut, chPkt, sizeof(DapChannelPacketHdr));
