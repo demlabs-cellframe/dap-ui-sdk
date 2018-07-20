@@ -58,7 +58,8 @@ DapConnectStream::~DapConnectStream()
 
 void DapConnectStream::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uint64_t *dest_addr)
 {
-    size_t dOutSize = chPkt->size + sizeof(DapChannelPacketHdr) + 16;
+    Q_UNUSED(dest_addr)
+    size_t dOutSize = chPkt->size + sizeof(DapChannelPacketHdr);
     char * dOut = (char*) calloc(1, dOutSize);
 
     memcpy(dOut, chPkt, sizeof(DapChannelPacketHdr));
@@ -68,7 +69,7 @@ void DapConnectStream::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data
 
     DapCrypt::me()->encode(dOutRaw, dOutEnc, KeyRoleStream);
 
-    size_t pktOutDataSize = sizeof(DapPacketHdr) + sizeof(DapChannelPacketHdr) + dOutEnc.size();
+    size_t pktOutDataSize = sizeof(DapPacketHdr) + dOutEnc.size();
     uint8_t* pktOutData = (uint8_t*) calloc(1, pktOutDataSize);
     DapPacketHdr* pktOut = (DapPacketHdr* ) pktOutData;
 
@@ -219,8 +220,6 @@ void DapConnectStream::sltIdFinishedRead()
                     << streamServKey;
           DapCrypt::me()->initAesKey(streamServKey, KeyRoleStream);
           emit notify("Connecting...");
-          QString con = DapSession::getInstance()->upstreamAddress();
-          ushort port = DapSession::getInstance()->upstreamPort().toUShort();
           m_streamSocket->connectToHost(DapSession::getInstance()->upstreamAddress(),
                                         DapSession::getInstance()->upstreamPort().toUShort(),
                                         QIODevice::ReadWrite);
