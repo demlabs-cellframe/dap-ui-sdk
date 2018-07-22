@@ -35,17 +35,17 @@ void DapKeyAes::encode(QByteArray& dataIn, QByteArray& dataOut)
     int tail = 0;
     if(dataIn.size() < 16)
         tail = 16 - dataIn.size();
-    else if(dataIn.size()%16 > 0)
+    else if(dataIn.size() % 16 > 0)
         tail = 16 - dataIn.size() % 16;
     void * a_in_new = (void*)malloc(dataIn.size() + tail);
     memcpy(a_in_new,dataIn.data(),dataIn.size());
     memset((char*)a_in_new+dataIn.size(),0,tail);
     void* a_out = malloc(dataIn.size() + tail);
     OQS_AES128_ECB_enc((uint8_t*)a_in_new,dataIn.size()+tail,m_keyStr,(uint8_t*)a_out);
-    dataOut = QByteArray::fromRawData((char*)a_out,dataIn.size()+tail);
-
-
-
+    dataOut = QByteArray((char*)a_out,dataIn.size()+tail);
+    //QByteArray::fromRawData((char*)a_out,dataIn.size()+tail);
+    free(a_in_new);
+    free(a_out);
 }
 
 
@@ -54,14 +54,17 @@ void DapKeyAes::decode(QByteArray& dataIn, QByteArray& dataOut)
     void* a_out = malloc(dataIn.size());
     OQS_AES128_ECB_dec((uint8_t*)dataIn.data(),dataIn.size(),m_keyStr,(uint8_t*)a_out);
     int tail = 0;
-    for(int i =dataIn.size()-1; i >= dataIn.size()-16; i--)
+    int end = dataIn.size()-16 > 0 ? dataIn.size()-16 : 0;
+    for(int i =dataIn.size()-1; i >= end; i--)
     {
         if(*((char*)a_out + i) == (char)0)
             tail++;
         else
             break;
     }
-    dataOut = QByteArray::fromRawData((char*)a_out,dataIn.size()-tail);
+    dataOut = QByteArray((char*)a_out,dataIn.size()-tail);
+    free(a_out);
+    //dataOut = QByteArray::fromRawData((char*)a_out,dataIn.size()-tail);
 }
 
 
