@@ -12,11 +12,12 @@ before_install:
     - source /opt/qt510/bin/qt510-env.sh
 
 script:
+    - cd test
     - mkdir build
     - cd build
     - qmake "QMAKE_CC = gcc-5" ../
     - make
-
+    - ./libdap-qt-test
 addons:
   apt:
     sources:

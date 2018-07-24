@@ -3,9 +3,7 @@ QT -= gui
 CONFIG += c++11 stl
 
 TARGET = libdap-qt
-
 TEMPLATE = lib
-
 CONFIG +=  create_prl static
 
 QMAKE_CFLAGS_DEBUG = \
