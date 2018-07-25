@@ -3,11 +3,14 @@ QT -= gui
 CONFIG += c++11 stl
 
 TARGET = libdap-qt
-
 TEMPLATE = lib
-
 CONFIG +=  create_prl static
 
+QMAKE_CFLAGS_DEBUG = \
+    -std=gnu11
+
+QMAKE_CFLAGS_RELEASE = \
+    -std=gnu11
 
 DEFINES += DAP_BRAND=\\\"libdap-qt\\\"
 DEFINES += DAP_VERSION=\\\"123\\\"

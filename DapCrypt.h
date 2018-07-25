@@ -38,16 +38,11 @@ class DapCrypt : public BaseObject
     DapKeyMsrln * keySession;
 
     DapKey * roleToKey(KeyRole kRole);
-
-    static unsigned char b64_byte_decode(unsigned char b);
-    static size_t b64_get_decodet_size(size_t in_size);
-    static void Base64Decode(const char* source, size_t srcLen, unsigned char* out);
 public:
 
     DapKeyMsrln* getKeyServerPublic() { return keySession; }
     static DapCrypt * me() { static DapCrypt dapCrypt; return &dapCrypt; }
 
-    static size_t fromBase64(QByteArray in, size_t in_size, unsigned char* out);
     QString getRandomString(int length);
 
     void initAesKey(QString &keyStr, KeyRole kRole);
@@ -58,7 +53,6 @@ public:
     void decodeB1k(QByteArray& in, QByteArray& out, int sizeBlock, KeyRole kRole);
     QByteArray generateAliceMessage();
     bool makePublicKey(QByteArray& data);
-
 };
 
 #endif // DAPCRYPT_H

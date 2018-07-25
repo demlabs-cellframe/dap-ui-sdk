@@ -1,3 +1,6 @@
+include (libdap/libdap.pri)
+INCLUDEPATH += libdap/
+
 SOURCES += $$PWD/DapConnectBase.cpp \
     $$PWD/DapSession.cpp \
     $$PWD/BaseObject.cpp \
