@@ -43,7 +43,6 @@ void DapKeyAes::encode(QByteArray& dataIn, QByteArray& dataOut)
     void* a_out = malloc(dataIn.size() + tail);
     OQS_AES128_ECB_enc((uint8_t*)a_in_new,dataIn.size()+tail,m_keyStr,(uint8_t*)a_out);
     dataOut = QByteArray((char*)a_out,dataIn.size()+tail);
-    //QByteArray::fromRawData((char*)a_out,dataIn.size()+tail);
     free(a_in_new);
     free(a_out);
 }
