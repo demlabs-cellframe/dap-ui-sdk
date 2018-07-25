@@ -64,12 +64,15 @@ void DapKeyAes::decode(QByteArray& dataIn, QByteArray& dataOut)
     }
     dataOut = QByteArray((char*)a_out,dataIn.size()-tail);
     free(a_out);
-    //dataOut = QByteArray::fromRawData((char*)a_out,dataIn.size()-tail);
 }
 
 
 bool DapKeyAes::init(const QString& str_key)
 {
+    if(str_key.length() < AES_KEY_LENGTH) {
+        qWarning() << "[DapKeyAes::init] Key is too small";
+        return false;
+    }
     m_keyStr = new unsigned char[AES_KEY_LENGTH];
     memcpy(m_keyStr, str_key.toStdString().c_str(), AES_KEY_LENGTH);
     return true;
