@@ -334,8 +334,8 @@ void DapSession::logout()
 {
     qDebug() << "Request for logout";
     critError = false;
-    m_cookie.clear();
     encRequest("", DapSession::getInstance()->URL_DB, "auth", "logout", SLOT(onLogout()));
+    m_cookie.clear();
     emit logouted();
 }
 
@@ -353,7 +353,6 @@ void DapSession::encRequest(const QString& reqData, const QString& url, const QS
 {
     arrData.clear();
     netReply = encRequest2(m_dapConnectBase, reqData, url, subUrl, query);
-
 
     connect(netReply, SIGNAL(readyRead()), obj,SLOT(onDownloading()));
     connect(netReply, SIGNAL(readChannelFinished()), obj, slot);
