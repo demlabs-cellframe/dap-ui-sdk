@@ -241,7 +241,6 @@ void DapSession::onAuthorize()
     m_xmlStreamReader.addData(dByteArr);
     qDebug() << "[DapSession] Decoded data: " << QString::fromLatin1(dByteArr);
 
-    // Вывод сообщений о ошибке
 
     if (QString::fromLatin1(dByteArr) == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
         emit errorAuthorization ("not_found_login_in_db");
@@ -295,12 +294,6 @@ void DapSession::onAuthorize()
         m_cookie.clear();
         emit errorAuthorization("No authorization cookie in server's reply");
     }
-    //else
-    //    emit authorizationProblem("No Auth. cookie in server's reply");
-//    qDebug() << "SLEEP";
-//    QThread::sleep(3); // for test TTL Session key
-//    encRequest("user2 pass2 domain.com",
-//               dataBaseUrl, "TestRsaKey", "login", SLOT(testRsaReplacementSlot()));
 }
 
 /**
@@ -325,6 +318,7 @@ void DapSession::testMsrlnReplacementSlot()
 void DapSession::onLogout()
 {
     qInfo() << "Logouted on the remote server";
+    emit logouted();
 }
 
 /**
@@ -336,7 +330,6 @@ void DapSession::logout()
     critError = false;
     encRequest("", DapSession::getInstance()->URL_DB, "auth", "logout", SLOT(onLogout()));
     m_cookie.clear();
-    emit logouted();
 }
 
 /**
@@ -418,9 +411,6 @@ void DapSession::serverListRequester(bool first_run)
                 qCritical() << "Can't open ServerList file";
         }
 
-//        qDebug() << "SLEEP";
-//        QThread::sleep(3); // for test TTL Session key
-//        DapSession::getInstance()->requestTestKey();
     });
 
     connect(nReply, SIGNAL(error(QNetworkReply::NetworkError)),
@@ -451,6 +441,7 @@ void DapSession::authorize(const QString& user, const QString& password,const QS
  */
 void DapSession::errorSlt(QNetworkReply::NetworkError error)
 {
+
     critError = true;
     switch(error){
         case QNetworkReply::ConnectionRefusedError: {
