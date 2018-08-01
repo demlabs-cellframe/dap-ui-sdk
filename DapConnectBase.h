@@ -32,6 +32,8 @@
 class DapConnectBase : public QObject
 {
     Q_OBJECT
+private:
+    void rebuildNetworkManager();
 private Q_SLOTS:
     void slotNetworkError(QNetworkReply::NetworkError);
     void slotReadPacketFinished();
@@ -57,8 +59,6 @@ Q_SIGNALS:
     void errorNetwork(int);
     void errorAuth(int);
     void notify(const QString&);
-
-
 };
 
 #endif // DAPCONNECTBASE_H

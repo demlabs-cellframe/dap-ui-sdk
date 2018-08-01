@@ -46,19 +46,14 @@ const QString DapSession::URL_SERVER_LIST("/slist");
  */
 DapSession::DapSession()
 {
-    m_upstreamAddress = "any.divevpn.com";
-    m_upstreamPort = "80";
-    m_sessionKeyID = "sessionKeyID";
-
     m_dapConnectBase = new DapConnectBase(this);
     baData = nullptr;
     connect (m_dapConnectBase, &DapConnectBase::errorText, this, [=](const QString &str){
         _badSevers.append(BadServers(QString("NameNotNeed"), m_upstreamAddress, m_upstreamPort, m_user));
         emit errorAuthorization(str);
     });
-
-
 }
+
 
 
 /**
@@ -143,9 +138,6 @@ void DapSession::onEnc()
     emit encryptInitialized();
 
     _badSevers.removeAll(BadServers(QString("NameNotNeed"), m_upstreamAddress, m_upstreamPort, m_user));
-    //_badSevers.append(BadServers(QString("NameNotNeed"), QString("127.0.0.1"), QString("80"), QString("User1")));
-    //_badSevers.append(BadServers(QString("NameNotNeed"), QString("127.0.0.2"), QString("90"), QString("User2")));
-
 }
 
 /**
@@ -186,10 +178,6 @@ QNetworkReply* DapSession::encRequest2(DapConnectBase *dcb, const QString& reqDa
         DapCrypt::me()->encode(subUrlByte, BAsubUrlEncrypted, KeyRoleSession);
     if(query.length())
         DapCrypt::me()->encode(queryByte, BAqueryEncrypted, KeyRoleSession);
-
-
-  //  qDebug() << "Query size = " << BAqueryEncB64.length();
-  //  qDebug() << "Query Encode : " << BAqueryEncB64;
 
     if(subUrl.length())
     {
@@ -330,6 +318,9 @@ void DapSession::logout()
     critError = false;
     encRequest("", DapSession::getInstance()->URL_DB, "auth", "logout", SLOT(onLogout()));
     m_cookie.clear();
+    m_sessionKeyID.clear();
+    m_upstreamPort.clear();
+    m_upstreamAddress.clear();
 }
 
 /**

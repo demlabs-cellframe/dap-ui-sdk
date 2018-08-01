@@ -37,12 +37,20 @@ QString DapConnectBase::httpAddress()
             .arg(DapSession::getInstance()->upstreamPort()) ;
 }
 
+void DapConnectBase::rebuildNetworkManager() {
+    delete http_client;
+    http_client = new QNetworkAccessManager(this);
+}
+
 QNetworkReply* DapConnectBase::request(const QString & url, QByteArray * rData)
 {
+    if(http_client->networkAccessible() == QNetworkAccessManager::NotAccessible) {
+        rebuildNetworkManager();
+    }
+
     QNetworkReply * nReply;
     QNetworkRequest nRequest;
     nRequest.setUrl(QUrl(httpAddress().append(url)));
-
     qDebug()<< "[DapConnectBase] requests httpAddress + url " << httpAddress().append(url);
 
     if(!DapSession::getInstance()->cookie().isEmpty())
@@ -85,9 +93,6 @@ void DapConnectBase::slotReadPacketFinished()
 
 void DapConnectBase::slotNetworkError(QNetworkReply::NetworkError err)
 {
-
-
-    qDebug() << "[DapConnectBase] Network error++: " << err;
     switch(err){
         case QNetworkReply::ConnectionRefusedError:  Q_EMIT errorText("Network error: ConnectionRefusedError");break;
         case QNetworkReply::HostNotFoundError: Q_EMIT errorText("Network error: HostNotFoundError"); break;
