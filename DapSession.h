@@ -35,32 +35,6 @@
 
 #define SERVER_LIST_FILE "DiveVPNServers.xml"
 
-struct BadServers
-{
-    QString m_name;
-    QString m_port;
-    QString m_addr;
-    QString m_user;
-
-    BadServers(QString serverName = "", QString address = "", QString port = "", QString user = "")
-    {
-        m_name = serverName;
-        m_port = port;
-        m_addr = address;
-        m_user = user;
-    }
-
-    bool operator==(const BadServers &rhs) {
-        if (m_name == rhs.m_name &&
-                m_port == rhs.m_port &&
-                m_addr == rhs.m_addr &&
-                m_user == rhs.m_user) {
-            return true;
-        }
-        return false;
-    }
-};
-
 class DapSession : public BaseObject
 {
     Q_OBJECT
@@ -75,19 +49,17 @@ public:
     static DapSession * getInstance()    { static DapSession session; return &session; }
 
     const QString& upstreamAddress()     { return m_upstreamAddress;       }
-    const QString upstreamPort()         { return m_upstreamPort;          }
+    quint16 upstreamPort()               { return m_upstreamPort;          }
     const QString& cookie()              { return m_cookie;                }
     const QString& sessionKeyID()        { return m_sessionKeyID;          }
     const QString& user()                { return m_user;                  }
     const QString& domain()              { return m_domain;                }
-    const QString upstreamIp()           { return m_upstreamIp;            }
 
     QList<QString> usersNames()          { return m_userInform.keys();     }
     const QString userInfo
           (const QString & user_name)    { return m_userInform[user_name]; }
 
 
-    void setDapUri(const QString& a_str) { m_upstreamAddress = a_str.section(":",0,0); m_upstreamPort = a_str.section(":",1,1);}
     void setUser(const QString& a_str) {m_user = a_str;}
     void setIP(const QString& a_str) {m_upstreamIp = a_str;}
 
@@ -96,7 +68,7 @@ public:
 
     bool isAuthorized() { return cookie().length()>0; }
 
-    void setSaUri(const QString& saUri); //ok
+    void setDapUri(const QString& addr, const QString& port); //ok
 
 public slots:
     void encryptInit();
@@ -105,7 +77,8 @@ public slots:
 
 protected:
 
-    QString m_upstreamAddress, m_upstreamPort, m_cookie, m_sessionKeyID;
+    quint16 m_upstreamPort;
+    QString m_upstreamAddress, m_cookie, m_sessionKeyID;
     DapSession();
     ~DapSession();
     DapConnectBase * m_dapConnectBase;
@@ -138,16 +111,8 @@ protected:
     }
 public:
 
-    void serverListRequester(bool);
     void requestServerPublicKey();
-    void requestTestKey()
-    {
-        encRequest("user2 pass2 domain.com",
-                   URL_DB, "TestRsaKey", "login", SLOT(testMsrlnReplacementSlot()));
-    }
 
-private:
-    QList<BadServers> _badSevers;
 private slots:
     void onDownloading();
     void onEnc();

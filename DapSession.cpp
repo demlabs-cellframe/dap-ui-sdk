@@ -48,10 +48,6 @@ DapSession::DapSession()
 {
     m_dapConnectBase = new DapConnectBase(this);
     baData = nullptr;
-    connect (m_dapConnectBase, &DapConnectBase::errorText, this, [=](const QString &str){
-        _badSevers.append(BadServers(QString("NameNotNeed"), m_upstreamAddress, m_upstreamPort, m_user));
-        emit errorAuthorization(str);
-    });
 }
 
 
@@ -124,18 +120,12 @@ void DapSession::onEnc()
         ::exit(0);
     }
 
-    qInfo() << "Verification server message it's Ok";
-
-
-
     if(!DapCrypt::me()->makePublicKey(array)){
         emit errorNetwork(tr("Server doesn't respond"));
         return;
     }
 
     emit encryptInitialized();
-
-    _badSevers.removeAll(BadServers(QString("NameNotNeed"), m_upstreamAddress, m_upstreamPort, m_user));
 }
 
 /**
@@ -193,10 +183,10 @@ QNetworkReply* DapSession::encRequest2(DapConnectBase *dcb, const QString& reqDa
  * @brief DapSession::setSaUri
  * @param saUri
  */
-void DapSession::setSaUri(const QString &saUri)
+void DapSession::setDapUri(const QString& addr, const QString& port)
 {
-    m_upstreamAddress=saUri.section(":",0,0);
-    m_upstreamPort=saUri.section(":",1,1);
+    m_upstreamAddress = addr;
+    m_upstreamPort = port.toUShort();
 }
 
 /**
@@ -220,10 +210,8 @@ void DapSession::onAuthorize()
     QByteArray dByteArr;
     DapCrypt::me()->decode(arrData, dByteArr, KeyRoleSession);
 
-    qDebug() << "Decoded data size = " << dByteArr.size();
     m_xmlStreamReader.addData(dByteArr);
     qDebug() << "[DapSession] Decoded data: " << QString::fromLatin1(dByteArr);
-
 
     if (QString::fromLatin1(dByteArr) == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
         emit errorAuthorization ("not_found_login_in_db");
@@ -289,7 +277,6 @@ void DapSession::testMsrlnReplacementSlot()
     QByteArray dByteArr;
     DapCrypt::me()->decode(arrData, dByteArr, KeyRoleSession);
 
-    qDebug() << "[DapSession] Decoded data size = " << dByteArr.size();
     m_xmlStreamReader.addData(dByteArr);
     qDebug() << "[DapSession] Decoded data: " << QString::fromLatin1(dByteArr);
 }
@@ -314,8 +301,8 @@ void DapSession::logout()
     encRequest("", DapSession::getInstance()->URL_DB, "auth", "logout", SLOT(onLogout()));
     m_cookie.clear();
     m_sessionKeyID.clear();
-    m_upstreamPort.clear();
     m_upstreamAddress.clear();
+    m_upstreamPort = 0;
 }
 
 /**
@@ -337,70 +324,6 @@ void DapSession::encRequest(const QString& reqData, const QString& url, const QS
     connect(netReply, SIGNAL(readChannelFinished()), obj, slot);
     connect(netReply, SIGNAL(error(QNetworkReply::NetworkError)),
             this,SLOT(errorSlt(QNetworkReply::NetworkError)));
-
-}
-
-/**
- * @brief DapSession::requestServerList
- */
-void DapSession::serverListRequester(bool first_run)
-{
-    QNetworkReply *nReply;
-    static QByteArray ans;
-    int internal_state = 0;
-    ans.clear();
-
-    auto serverListSerialize = [](const QList<BadServers> &badlist) {
-        QString out("");
-        foreach (const BadServers &bs, badlist) {
-            out += QString("&N%1&%2&%3").arg(bs.m_addr).arg(bs.m_port).arg(bs.m_user);
-        }
-        out.append('&');
-        return out;
-    };
-
-    if(first_run) {
-        qInfo() << "DapSession request run in update ServerList mode";
-        nReply = encRequest2(m_dapConnectBase, "none",
-                             URL_SERVER_LIST, "update", "getall");
-        internal_state = 1;
-    }
-    else /*if (_badSevers.size())*/{
-        qInfo() << "DapSession run in send bad server list mode";
-        nReply = encRequest2(m_dapConnectBase, serverListSerialize(_badSevers),
-                             URL_SERVER_LIST, "report", "badreport");
-    } //else return;
-
-    connect(nReply, &QNetworkReply::readyRead, [/*&ans,*/ nReply]
-    {
-           ans.append(nReply->readAll());
-    });
-
-    connect(nReply, &QNetworkReply::readChannelFinished, [/*&ans,*/ nReply, internal_state]
-    {
-        if(nReply->readBufferSize())
-            ans.append(nReply->readAll());
-
-        QByteArray ar2;
-        DapCrypt::me()->decode(ans, ar2, KeyRoleSession);
-
-        if (internal_state) {
-            qDebug() <<"we in internal_state";
-#ifdef Q_OS_WIN
-            QFile file(QString(SERVER_LIST_FILE));
-#else
-            QFile file("/opt/divevpn/share/"+QString(SERVER_LIST_FILE));
-#endif
-            if (file.open(QIODevice::WriteOnly))
-                file.write(ar2.toStdString().c_str());
-            else
-                qCritical() << "Can't open ServerList file";
-        }
-
-    });
-
-    connect(nReply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SLOT(errorSlt(QNetworkReply::NetworkError)));
 
 }
 
@@ -427,13 +350,10 @@ void DapSession::authorize(const QString& user, const QString& password,const QS
  */
 void DapSession::errorSlt(QNetworkReply::NetworkError error)
 {
-
     critError = true;
     switch(error){
-        case QNetworkReply::ConnectionRefusedError: {
-                _badSevers.append(BadServers(QString("NameNotNeed"), m_upstreamAddress, m_upstreamPort, m_user));
-                emit errorNetwork("connection refused");
-            }
+        case QNetworkReply::ConnectionRefusedError:
+            emit errorNetwork("connection refused");
             break;
         case QNetworkReply::HostNotFoundError:
             emit errorNetwork("Network error: host not found");
