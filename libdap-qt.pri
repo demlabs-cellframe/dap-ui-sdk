@@ -7,7 +7,6 @@ SOURCES += $$PWD/DapConnectBase.cpp \
     $$PWD/DapCrypt.cpp \
     $$PWD/DapKeyAes.cpp \
     $$PWD/BaseForm.cpp \
-    $$PWD/DapConnSession.cpp \
     $$PWD/DapKeyMsrln.cpp
 
 
@@ -19,7 +18,6 @@ HEADERS += \
     $$PWD/InterfaceDapKey.h \
     $$PWD/DapKeyAes.h \
     $$PWD/BaseForm.h \
-    $$PWD/DapConnSession.h \
     $$PWD/DapKeyMsrln.h
 
 

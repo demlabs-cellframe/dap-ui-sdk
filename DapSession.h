@@ -31,7 +31,6 @@
 #include <QList>
 #include "BaseObject.h"
 #include "DapConnectBase.h"
-#include "DapConnSession.h"
 
 #define SERVER_LIST_FILE "DiveVPNServers.xml"
 
@@ -99,8 +98,6 @@ protected:
     QString m_sessionServerBobMessage;
 
     bool critError = false;
-
-    DapConnSession *sc;
 
     void encRequest(const QString& reqData, const QString& url, const QString& subUrl,
                                const QString& query, QObject* obj, const char* slot);
