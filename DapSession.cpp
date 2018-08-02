@@ -111,8 +111,6 @@ void DapSession::onEnc()
     QByteArray result = arrData.mid(pos,arrData.size() - pos);
     m_sessionKeyID = QByteArray::fromBase64(arrData.mid(0,pos-1));
     
-    qDebug() << "Session key Id = " << m_sessionKeyID;
-
     if ( m_sessionKeyID.isEmpty() || result.isEmpty()) {
         qDebug() << "ERROR encryption not inited";
         emit errorEncryption();
@@ -146,7 +144,6 @@ void DapSession::onEnc()
 void DapSession::onDownloading()
 {
     arrData.append(netReply->readAll());
-    qDebug() << " total: " << arrData.length() << " length";
 }
 
 
@@ -169,8 +166,6 @@ QNetworkReply* DapSession::encRequest2(DapConnectBase *dcb, const QString& reqDa
     QByteArray BAqueryEncrypted;
     QByteArray subUrlByte = subUrl.toLatin1();
     QByteArray queryByte = query.toLatin1();
-
-    qDebug() << "Request Data = " << BAreqData;
 
     DapCrypt::me()->encode(BAreqData, BAreqDataEnc, KeyRoleSession);
 
