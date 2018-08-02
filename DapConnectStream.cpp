@@ -221,7 +221,7 @@ void DapConnectStream::sltIdFinishedRead()
           DapCrypt::me()->initAesKey(streamServKey, KeyRoleStream);
           emit notify("Connecting...");
           m_streamSocket->connectToHost(DapSession::getInstance()->upstreamAddress(),
-                                        DapSession::getInstance()->upstreamPort().toUShort(),
+                                        DapSession::getInstance()->upstreamPort(),
                                         QIODevice::ReadWrite);
      }
      else
