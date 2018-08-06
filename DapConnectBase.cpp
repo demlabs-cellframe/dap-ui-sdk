@@ -40,6 +40,7 @@ QString DapConnectBase::httpAddress()
 void DapConnectBase::rebuildNetworkManager() {
     delete http_client;
     http_client = new QNetworkAccessManager(this);
+    http_client->setProxy(QNetworkProxy::NoProxy);
 }
 
 QNetworkReply* DapConnectBase::request(const QString & url, QByteArray * rData)
