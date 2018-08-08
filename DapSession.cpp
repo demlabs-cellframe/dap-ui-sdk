@@ -183,10 +183,10 @@ QNetworkReply* DapSession::encRequest2(DapConnectBase *dcb, const QString& reqDa
  * @brief DapSession::setSaUri
  * @param saUri
  */
-void DapSession::setDapUri(const QString& addr, const QString& port)
+void DapSession::setDapUri(const QString& addr, const uint16_t port)
 {
     m_upstreamAddress = addr;
-    m_upstreamPort = port.toUShort();
+    m_upstreamPort = port;
 }
 
 /**

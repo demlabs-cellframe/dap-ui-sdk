@@ -67,7 +67,7 @@ public:
 
     bool isAuthorized() { return cookie().length()>0; }
 
-    void setDapUri(const QString& addr, const QString& port); //ok
+    void setDapUri(const QString& addr, const uint16_t port); //ok
 
 public slots:
     void encryptInit();
