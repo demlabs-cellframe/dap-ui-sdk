@@ -1,7 +1,8 @@
 #include "DapLogger.h"
 
-DapLogger::DapLogger(QObject *parent)
+DapLogger::DapLogger(QObject *parent, size_t prefix_width)
     : QObject(parent) {
+    dap_set_log_tag_width(prefix_width);
     qInstallMessageHandler(messageHandler);
 }
 
