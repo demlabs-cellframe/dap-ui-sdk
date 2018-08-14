@@ -1,7 +1,8 @@
 #include "DapLogger.h"
 
 DapLogger::DapLogger(QObject *parent, size_t prefix_width)
-    : QObject(parent) {
+    : QObject(parent)
+{
     dap_set_log_tag_width(prefix_width);
     qInstallMessageHandler(messageHandler);
 }
@@ -19,6 +20,11 @@ inline log_level DapLogger::castQtMsgToDap(QtMsgType type) {
     case QtFatalMsg: // Qt FatalMsg as L'CRITICAL interrupt the program by abort() function
         return log_level::L_CRITICAL;
     }
+    std::runtime_error("Can't cast QtMsg");
+}
+
+void DapLogger::setLogLevel(log_level ll) {
+    set_log_level(ll);
 }
 
 bool DapLogger::setLogFile(const QString& filePath) {

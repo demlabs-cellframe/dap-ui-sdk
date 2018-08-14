@@ -10,8 +10,6 @@ class DapLogger : public QObject
 {
     Q_OBJECT
 private:
-
-    QFile *m_logFile = Q_NULLPTR;
     static void messageHandler(QtMsgType type, const QMessageLogContext &ctx,
                                const QString & msg);
     inline static log_level castQtMsgToDap(QtMsgType type);
@@ -20,6 +18,8 @@ public:
 
     // return false if not success
     bool setLogFile(const QString& filePath);
+
+    static void setLogLevel(log_level ll);
 };
 
 #endif // DAPLOGGER_H
