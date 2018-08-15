@@ -34,17 +34,14 @@ bool DapLogger::setLogFile(const QString& filePath) {
 void DapLogger::messageHandler(QtMsgType type,
                                const QMessageLogContext &ctx,
                                const QString & msg) {
-    static char tmpBuf[56];
+    char prefixBuffer[56];
 
-    const char* fileName = strrchr(ctx.file, '/');
-    if(fileName != nullptr) {
-        strcpy(tmpBuf, fileName + 1);
+    if(ctx.file) {
+        strcpy(prefixBuffer, strrchr(ctx.file, '/') + 1);
+        sprintf(strrchr(prefixBuffer, '.'), ":%d", ctx.line);
     } else {
-        strcpy(tmpBuf, ctx.file);
+        strcpy(prefixBuffer, "QtMessage");
     }
 
-    // delete file extension (.cpp)
-    *strrchr(tmpBuf, '.') = '\0';
-
-    _log_it(tmpBuf, castQtMsgToDap(type), msg.toLatin1().data());
+    _log_it(prefixBuffer, castQtMsgToDap(type), msg.toLatin1().data());
 }
