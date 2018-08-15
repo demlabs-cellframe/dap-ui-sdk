@@ -35,7 +35,13 @@ void DapLogger::messageHandler(QtMsgType type,
                                const QMessageLogContext &ctx,
                                const QString & msg) {
     static char tmpBuf[56];
-    strcpy(tmpBuf, strrchr(ctx.file, '/') + 1);
+
+    const char* fileName = strrchr(ctx.file, '/');
+    if(fileName != nullptr) {
+        strcpy(tmpBuf, fileName + 1);
+    } else {
+        strcpy(tmpBuf, ctx.file);
+    }
 
     // delete file extension (.cpp)
     *strrchr(tmpBuf, '.') = '\0';
