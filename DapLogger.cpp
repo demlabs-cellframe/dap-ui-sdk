@@ -21,6 +21,7 @@ inline log_level DapLogger::castQtMsgToDap(QtMsgType type) {
         return log_level::L_CRITICAL;
     }
     std::runtime_error("Can't cast QtMsg");
+    return log_level::L_CRITICAL; // fix compile warning
 }
 
 void DapLogger::setLogLevel(log_level ll) {
