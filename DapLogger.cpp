@@ -38,7 +38,9 @@ void DapLogger::messageHandler(QtMsgType type,
     char prefixBuffer[56];
 
     if(ctx.file) {
-        strcpy(prefixBuffer, strrchr(ctx.file, '/') + 1);
+        const char *fileName = strrchr(ctx.file, '/');
+        fileName = (fileName == Q_NULLPTR ? ctx.file : fileName + 1);
+        strcpy(prefixBuffer, fileName);
         sprintf(strrchr(prefixBuffer, '.'), ":%d", ctx.line);
     } else {
         strcpy(prefixBuffer, "QtMessage");
