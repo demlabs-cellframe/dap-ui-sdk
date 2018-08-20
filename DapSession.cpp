@@ -291,6 +291,14 @@ void DapSession::onLogout()
     emit logouted();
 }
 
+
+void DapSession::restoreNetworkConf() {
+    m_dapConnectBase->restoreDefaultNetConf();
+}
+
+void DapSession::saveNetworkConf() {
+    m_dapConnectBase->saveCurrentNetConf();
+}
 /**
  * @brief DapSession::logout
  */

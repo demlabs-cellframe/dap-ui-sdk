@@ -73,6 +73,8 @@ public slots:
     void encryptInit();
     void authorize(const QString& user, const QString& password, const QString& domain);
     void logout();
+    void restoreNetworkConf();
+    void saveNetworkConf();
 
 protected:
 

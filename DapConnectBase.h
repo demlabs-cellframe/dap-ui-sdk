@@ -39,7 +39,7 @@ private Q_SLOTS:
     void slotReadPacketFinished();
 
 public:
-    DapConnectBase(QObject *parent = NULL);
+    DapConnectBase(QObject *parent = Q_NULLPTR);
     virtual ~DapConnectBase();
 
     QNetworkReply * request(const QString & url, QByteArray * rData = Q_NULLPTR);
@@ -48,11 +48,18 @@ public:
 protected:
     QNetworkAccessManager * http_client;
     QNetworkReply * network_reply;
+    // Network setting before upping DAP network interface
+    const QNetworkConfiguration * defaultNetworkConfig = Q_NULLPTR;
 
     QByteArray byte_buffer;
 
     static QString httpAddress();
 
+public slots:
+    // Restore network configuration before upping DAP network interface
+    void restoreDefaultNetConf();
+    // Saving network configuration before upping DAP network interface
+    void saveCurrentNetConf();
 Q_SIGNALS:
     void finished();
     void errorText(const QString &e);

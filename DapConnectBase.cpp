@@ -22,6 +22,7 @@
 #include "DapConnectBase.h"
 #include "DapSession.h"
 #include <QNetworkProxy>
+#include <QNetworkConfiguration>
 
 DapConnectBase::DapConnectBase(QObject *parent) :
     QObject(parent)
@@ -29,6 +30,7 @@ DapConnectBase::DapConnectBase(QObject *parent) :
     http_client = new QNetworkAccessManager(this);
     http_client->setProxy(QNetworkProxy::NoProxy);
     network_reply = Q_NULLPTR;
+    defaultNetworkConfig = new QNetworkConfiguration(http_client->activeConfiguration());
 }
 
 QString DapConnectBase::httpAddress()
@@ -37,11 +39,24 @@ QString DapConnectBase::httpAddress()
             .arg(DapSession::getInstance()->upstreamPort()) ;
 }
 
+void DapConnectBase::saveCurrentNetConf() {
+    if(defaultNetworkConfig != Q_NULLPTR)
+        delete defaultNetworkConfig;
+    qDebug() << "Save default configuration name:" << http_client->configuration().name();
+    defaultNetworkConfig = new QNetworkConfiguration(http_client->configuration());
+}
+
+void DapConnectBase::restoreDefaultNetConf() {
+    qDebug() << "Restore default configuration name: " << defaultNetworkConfig->name();
+    http_client->setConfiguration(*defaultNetworkConfig);
+}
+
 void DapConnectBase::rebuildNetworkManager() {
     delete http_client;
     http_client = new QNetworkAccessManager(this);
     http_client->setProxy(QNetworkProxy::NoProxy);
 }
+
 
 QNetworkReply* DapConnectBase::request(const QString & url, QByteArray * rData)
 {
@@ -119,5 +134,7 @@ void DapConnectBase::slotNetworkError(QNetworkReply::NetworkError err)
 
 DapConnectBase::~DapConnectBase()
 {
+    if(defaultNetworkConfig != Q_NULLPTR)
+        delete defaultNetworkConfig;
     delete http_client;
 }
