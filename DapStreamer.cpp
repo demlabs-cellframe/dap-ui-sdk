@@ -35,11 +35,10 @@ DapStreamer::DapStreamer(QObject *obj) : BaseObject(obj)
    connect(m_dapConStream, &DapConnectStream::streamClosed, this, &DapStreamer::onStreamClosed);
 
    connect(m_dapConStream, &DapConnectStream::streamConnecting, this, &DapStreamer::streamConnecting);
-   connect(m_dapConStream, &DapConnectStream::errorText, this, &DapStreamer::error);
+   connect(m_dapConStream, &DapConnectStream::errorNetwork, this, &DapStreamer::error);
 
-   connect(m_dapConStream, &DapConnectStream::errorText,    this, &DapStreamer::errorText);
+   connect(m_dapConStream, &DapConnectStream::errorNetwork,    this, &DapStreamer::errorText);
    connect(m_dapConStream, &DapConnectStream::errorAuth,    this, &DapStreamer::errorAuth);
-   connect(m_dapConStream, &DapConnectStream::errorNetwork, this, &DapStreamer::errorNetwork);
 
    connect(m_dapConStream, &DapConnectStream::recivedChannelPacket, this, &DapStreamer::readChPacket);
    connect(this, &DapStreamer::sendChPacket, m_dapConStream, &DapConnectStream::writeChannelPacket);

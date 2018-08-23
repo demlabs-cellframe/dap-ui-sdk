@@ -138,7 +138,7 @@ void DapConnectStream::streamOpen(const QString& subUrl, const QString& query)
         connect(network_reply, &QNetworkReply::finished, this, &DapConnectStream::sltIdFinishedRead);
     }
     else
-        emit errorText("Can't init network connection");
+        emit errorNetwork("Can't init network connection");
 
 }
 
@@ -205,9 +205,9 @@ void DapConnectStream::sltIdFinishedRead()
          qWarning() << "[DapConnectStream] Wrong Reply Format!" << streamReplyStr;
          m_streamID.clear();
          if(m_isStreamOpened)
-            emit errorText("Wrong server reply");
+            emit errorNetwork("Wrong server reply");
          else
-             emit errorText("Wrong server reply in ConnectionID request");
+             emit errorNetwork("Wrong server reply in ConnectionID request");
          return;
      }
 
@@ -227,7 +227,7 @@ void DapConnectStream::sltIdFinishedRead()
      else
      {
          qDebug() << "[DapConnectStream] Can't open stream: " << m_streamID;
-         emit errorText("Can't open packet stream: " + m_streamID);
+         emit errorNetwork("Can't open packet stream: " + m_streamID);
          m_streamID.clear();
      }
 
@@ -244,36 +244,36 @@ void DapConnectStream::sltStreamError(QAbstractSocket::SocketError socketError)
     qDebug() <<"[DapConnStream] socket error: "<<m_streamSocket->errorString();
     switch (socketError) {
         case QAbstractSocket::NetworkError:
-            emit errorText( tr("Networking error, pls fix your network configuration"));
+            emit errorNetwork( tr("Networking error, pls fix your network configuration"));
         break;
         case QAbstractSocket::SocketAccessError:
             m_isStreamOpened=false;
-            emit errorText( tr("Socket access error, has no privileges for socket operations"));
+            emit errorNetwork( tr("Socket access error, has no privileges for socket operations"));
         break;
         case QAbstractSocket::DatagramTooLargeError:
-            emit errorText( tr("Too large datagram you're trying to send through the socket (more than 8192 bytes)"));
+            emit errorNetwork( tr("Too large datagram you're trying to send through the socket (more than 8192 bytes)"));
         break;
         case QAbstractSocket::UnsupportedSocketOperationError:
-            emit errorText( tr("The requested socket operation is not supported by the local operating system (e.g., lack of IPv6 support)"));
+            emit errorNetwork( tr("The requested socket operation is not supported by the local operating system (e.g., lack of IPv6 support)"));
         break;
         case QAbstractSocket::ProxyAuthenticationRequiredError:
             m_isStreamOpened=false;
-            emit errorText( tr("The socket is using a proxy, and the proxy requires authentication"));
+            emit errorNetwork( tr("The socket is using a proxy, and the proxy requires authentication"));
         break;
         case QAbstractSocket::UnfinishedSocketOperationError:
-            emit errorText( tr("The last operation attempted has not finished yet (still in progress in the background)"));
+            emit errorNetwork( tr("The last operation attempted has not finished yet (still in progress in the background)"));
         break;
         case QAbstractSocket::ProxyConnectionRefusedError:
-            emit errorText( tr("Could not contact the proxy server because the connection to that server was denied"));
+            emit errorNetwork( tr("Could not contact the proxy server because the connection to that server was denied"));
         break;
         case QAbstractSocket::HostNotFoundError:
-            emit errorText( tr("The host %1 was not found. Please check the "
+            emit errorNetwork( tr("The host %1 was not found. Please check the "
                            "host name and port %2 settings.")
                  .arg(DapSession::getInstance()->upstreamAddress())
                  .arg(DapSession::getInstance()->upstreamPort()));
         break;
         case QAbstractSocket::ConnectionRefusedError:
-            emit errorText( tr("The connection was refused by the peer. "
+            emit errorNetwork( tr("The connection was refused by the peer. "
                            "Make sure the %1 is running, "
                            "and check that the host name and port %2 "
                            "is open")
@@ -282,7 +282,7 @@ void DapConnectStream::sltStreamError(QAbstractSocket::SocketError socketError)
 
             break;
         default:{
-            emit errorText(tr("The following error occurred: %1")
+            emit errorNetwork(tr("The following error occurred: %1")
                        .arg(m_streamSocket->errorString()));
 
         }
