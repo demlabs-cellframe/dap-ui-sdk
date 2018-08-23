@@ -110,22 +110,19 @@ void DapConnectBase::slotReadPacketFinished()
 void DapConnectBase::slotNetworkError(QNetworkReply::NetworkError err)
 {
     switch(err){
-        case QNetworkReply::ConnectionRefusedError:  Q_EMIT errorText("Network error: ConnectionRefusedError");break;
-        case QNetworkReply::HostNotFoundError: Q_EMIT errorText("Network error: HostNotFoundError"); break;
-        case QNetworkReply::TimeoutError: Q_EMIT errorText("Network error: TimeoutError"); break;
-        case QNetworkReply::TemporaryNetworkFailureError: Q_EMIT errorText("Network error: TemporaryNetworkFailureError");break;
-        case QNetworkReply::NetworkSessionFailedError: Q_EMIT errorText("Network error: NetworkSessionFailedError"); break;
-        case QNetworkReply::BackgroundRequestNotAllowedError: Q_EMIT errorText("Network error: BackgroundRequestNotAllowedError"); break;
-        case QNetworkReply::ProxyConnectionRefusedError: Q_EMIT errorText("Network error: ProxyConnectionRefusedError"); break;
-        case QNetworkReply::ProxyNotFoundError: Q_EMIT errorText("Network error: ProxyNotFoundError");break;
-        case QNetworkReply::ProxyTimeoutError: Q_EMIT errorText("Network error: ProxyTimeoutError");break;
-        case QNetworkReply::InternalServerError: emit errorText("Network error: InternalServerError");break;
-        case QNetworkReply::ProxyAuthenticationRequiredError: Q_EMIT errorText("Network error: ProxyAuthenticationRequiredError");break;
-        default: emit errorText ("UnknownServerError"); break;
+        case QNetworkReply::ConnectionRefusedError:  Q_EMIT errorNetwork("Network error: ConnectionRefusedError");break;
+        case QNetworkReply::HostNotFoundError: Q_EMIT errorNetwork("Network error: HostNotFoundError"); break;
+        case QNetworkReply::TimeoutError: Q_EMIT errorNetwork("Network error: TimeoutError"); break;
+        case QNetworkReply::TemporaryNetworkFailureError: Q_EMIT errorNetwork("Network error: TemporaryNetworkFailureError");break;
+        case QNetworkReply::NetworkSessionFailedError: Q_EMIT errorNetwork("Network error: NetworkSessionFailedError"); break;
+        case QNetworkReply::BackgroundRequestNotAllowedError: Q_EMIT errorNetwork("Network error: BackgroundRequestNotAllowedError"); break;
+        case QNetworkReply::ProxyConnectionRefusedError: Q_EMIT errorNetwork("Network error: ProxyConnectionRefusedError"); break;
+        case QNetworkReply::ProxyNotFoundError: Q_EMIT errorNetwork("Network error: ProxyNotFoundError");break;
+        case QNetworkReply::ProxyTimeoutError: Q_EMIT errorNetwork("Network error: ProxyTimeoutError");break;
+        case QNetworkReply::InternalServerError: emit errorNetwork("Network error: InternalServerError");break;
+        case QNetworkReply::ProxyAuthenticationRequiredError: Q_EMIT errorNetwork("Network error: ProxyAuthenticationRequiredError");break;
+        default: emit errorNetwork ("UnknownServerError"); break;
     }
-
-    qWarning() << "Network error" << err;
-    emit errorNetwork(err);
 }
 
 DapConnectBase::~DapConnectBase()

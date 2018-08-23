@@ -62,8 +62,7 @@ public slots:
     void saveCurrentNetConf();
 Q_SIGNALS:
     void finished();
-    void errorText(const QString &e);
-    void errorNetwork(int);
+    void errorNetwork(const QString &e);
     void errorAuth(int);
     void notify(const QString&);
 };
