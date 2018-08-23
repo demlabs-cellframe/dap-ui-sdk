@@ -194,7 +194,7 @@ void DapSession::setDapUri(const QString& addr, const uint16_t port)
  */
 void DapSession::onAuthorize()
 {
-    if ( critError ) {
+    if (critError) {
         qDebug() << "Critical Error = True!";
         return;
     }
@@ -214,19 +214,19 @@ void DapSession::onAuthorize()
     qDebug() << "[DapSession] Decoded data: " << QString::fromLatin1(dByteArr);
 
     if (QString::fromLatin1(dByteArr) == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
-        emit errorAuthorization ("not_found_login_in_db");
+        emit errorAuthorization ("Login not found in database");
         return;
     } else if (QString::fromLatin1(dByteArr) == OP_CODE_LOGIN_INCORRECT_PSWD) {
-        emit errorAuthorization ("login_incorrect_pswd");
+        emit errorAuthorization ("Incorrect password");
         return;
     } else if (QString::fromLatin1(dByteArr) == OP_CODE_SUBSCRIBE_EXPIRIED) {
-        emit errorAuthorization ("subscribe_expired");
+        emit errorAuthorization ("Subscribe expired");
         return;
     } else if (QString::fromLatin1(dByteArr) == OP_CODE_CANT_CONNECTION_TO_DB) {
-        emit errorAuthorization ("cant_connect_to_db");
+        emit errorAuthorization ("Can't connect to database");
         return;
     } else if (QString::fromLatin1(dByteArr) == OP_CODE_INCORRECT_SYM){
-        emit errorAuthorization("incorrect_symbols_in_request");
+        emit errorAuthorization("Incorrect symbols in request");
     }
 
 

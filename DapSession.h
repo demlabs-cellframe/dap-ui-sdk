@@ -124,7 +124,7 @@ signals:
     void encryptInitialized();
 
     void errorEncryption();
-    void errorAuthorization(const QString &);// эта штука отработает и при недоступном сервере
+    void errorAuthorization(const QString &);
     void errorNetwork(const QString&);
     void errorConnection();
     void errorOfPubKeyServerReciving();

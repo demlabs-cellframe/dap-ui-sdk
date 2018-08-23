@@ -123,13 +123,9 @@ void DapConnectBase::slotNetworkError(QNetworkReply::NetworkError err)
         case QNetworkReply::ProxyAuthenticationRequiredError: Q_EMIT errorText("Network error: ProxyAuthenticationRequiredError");break;
         default: emit errorText ("UnknownServerError"); break;
     }
-    if (err == QNetworkReply::InternalServerError){
-        qWarning() << "Auth error";
-        emit errorAuth(0);
-    } else {
-        qWarning() << "Network error";
-        emit errorNetwork(err);
-    }
+
+    qWarning() << "Network error" << err;
+    emit errorNetwork(err);
 }
 
 DapConnectBase::~DapConnectBase()
