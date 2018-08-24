@@ -1,0 +1,3 @@
+[submodule "libdap-qt"]
+	path = libdap-qt
+	url = https://github.com/kelvinblockchain/libdap-qt

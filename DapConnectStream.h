@@ -37,9 +37,9 @@ class DapConnectStream : public DapConnectBase
 public:
     enum SafeartsStreamState { SSS_NONE, SSS_CONNECTING, SSS_HTTP_HEADER,
                                SSS_FRAME_SEARCH, SSS_FRAME_HEADER, SSS_FRAME_BODY};
-    DapConnectStream(QObject* parent = Q_NULLPTR); //ok
+    DapConnectStream(QObject* parent = Q_NULLPTR);
     ~DapConnectStream(); //ok
-    bool isConnected() { return m_streamSocket->isOpen(); } //ok
+    bool isConnected() { return m_streamSocket->isOpen(); }
     int upstreamSocket() { return m_streamSocket->isOpen()?m_streamSocket->socketDescriptor(): -1; }
 protected:
     quint32 pktOutLastSeqID;
@@ -61,34 +61,31 @@ protected:
 
     QString m_streamID;
 
-    //QString httpAddress(); //ok
+    void procPktIn(DapPacketHdr * pkt, void * data);
 
-    void procPktIn(DapPacketHdr * pkt, void * data);//ok
-
-    qint64 writeStreamRaw(const void * data, size_t data_size);//ok
+    qint64 writeStreamRaw(const void * data, size_t data_size);
 
 private slots:
-    void sltStreamHostFound() { emit notify("Host found"); } //ok
-    void sltStreamProcess();//ok
-    void sltStreamConnected();//ok
-    void sltStreamDisconnected();//ok
-    void sltStreamError(QAbstractSocket::SocketError socketError); //ok
-    void sltIdReadyRead() { m_streamCtlReply.append(network_reply->readAll()); }//ok
-    void sltIdFinishedRead();//ok
-    void sltStreamBytesWritten(qint64 bytes);//ok
+    void sltStreamHostFound() { emit notify("Host found"); }
+    void sltStreamProcess();
+    void sltStreamConnected();
+    void sltStreamDisconnected();
+    void sltStreamError(QAbstractSocket::SocketError socketError);
+    void sltIdReadyRead() { m_streamCtlReply.append(network_reply->readAll()); }
+    void sltIdFinishedRead();
+    void sltStreamBytesWritten(qint64 bytes);
 
 public slots:
-    void streamOpen(const QString& subUrl, const QString& query); //ok
-    void streamClose(); //ok
+    void streamOpen(const QString& subUrl, const QString& query);
+    void streamClose();
 
-    void writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uint64_t *dest_addr = NULL); //ok
+    void writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uint64_t *dest_addr = Q_NULLPTR);
 
 signals:
     void recivedChannelPacket(DapChannelPacketHdr* pkt, void* data);
     void streamOpened();
     void streamClosed();
 
-    //new 2017_06
     void streamConnecting();
 };
 

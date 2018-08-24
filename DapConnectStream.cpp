@@ -214,7 +214,7 @@ void DapConnectStream::sltIdFinishedRead()
      m_streamID = str_list.at(0);
      QString streamServKey = str_list.at(1);
 
-     if(m_streamID.length() < 13)
+     if(m_streamID.length() < 13) // why 13?
      {
           qDebug()  << "[DapConnectStream] Stream server key for client requests: "
                     << streamServKey;
@@ -314,6 +314,7 @@ void DapConnectStream::sltStreamConnected()
 
     qDebug() << "[DapConnectStream] Stream URL: " << str_url;
 
+    // Use QNetworkRequest or DapConnectBase::request
     QString str_request = QString(
                           "POST %2 HTTP/1.1\r\n"
                           "Connection: Keep-Alive\r\n"
@@ -323,7 +324,7 @@ void DapConnectStream::sltStreamConnected()
                           "\r\n")
                             .arg(DapSession::getInstance()->cookie())
                             .arg(str_url).arg(DapSession::getInstance()->upstreamAddress())
-                            .arg(DAP_VERSION);
+                            .arg(2); // Do something with versioning
 
     qDebug() << "[DapConnectStream] Request on out : " << str_request;
 
@@ -340,7 +341,6 @@ void DapConnectStream::sltStreamConnected()
 }
 
 
-/* NEED TESTING!!! */
 void DapConnectStream::sltStreamProcess()
 {
    // qDebug()<< "[DapConnectStream::sltStreamProcess]";

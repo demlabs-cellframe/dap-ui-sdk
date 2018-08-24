@@ -21,10 +21,6 @@
 #include "DapStreamer.h"
 #include <QDebug>
 
-// sc == m_dapConStream
-// chs == m_dsb
-// chThreads == m_dapChThead
-
 DapStreamer::DapStreamer(QObject *obj) : BaseObject(obj)
 {
    qDebug() <<"[SSB] init";
@@ -54,7 +50,7 @@ void DapStreamer::onStreamOpened()
 {
     qDebug() << "[DapStreamer] Stream Opened";
     emit streamOpened();
-}//ok
+}
 
 void DapStreamer::readChPacket(DapChannelPacketHdr *pkt, void *data)
 {
