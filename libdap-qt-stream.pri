@@ -6,3 +6,5 @@ HEADERS += $$PWD/DapConnectStream.h \
     $$PWD/DapChannelPacket.h \
     $$PWD/DapStreamer.h \
     $$PWD/DapChBase.h 
+
+INCLUDEPATH += $$PWD
