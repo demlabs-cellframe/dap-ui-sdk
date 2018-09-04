@@ -18,13 +18,6 @@
     along with any DAP based project.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-#include <openssl/evp.h>
-#include <openssl/pem.h>
-#include <openssl/aes.h>
-#include <openssl/err.h>
-#include <openssl/rand.h>
-
 #include "DapCrypt.h"
 #include "DapKeyAes.h"
 #include <QDebug>
