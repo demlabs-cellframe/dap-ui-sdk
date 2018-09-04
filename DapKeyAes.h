@@ -22,8 +22,6 @@
 #ifndef DAPKEYAES_H
 #define DAPKEYAES_H
 
-#include <openssl/aes.h>
-#include <openssl/hmac.h>
 #include <QByteArray>
 #include "InterfaceDapKey.h"
 
