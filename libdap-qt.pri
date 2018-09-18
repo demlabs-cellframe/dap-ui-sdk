@@ -1,5 +1,5 @@
 include (libdap/libdap.pri)
-INCLUDEPATH += libdap/
+INCLUDEPATH += libdap/ libdap/common
 
 SOURCES += $$PWD/DapConnectBase.cpp \
     $$PWD/DapSession.cpp \
