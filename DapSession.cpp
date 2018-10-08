@@ -79,6 +79,7 @@ void DapSession::requestServerPublicKey()
     connect(netReply, &QNetworkReply::readChannelFinished, this,  &DapSession::onEnc);
     connect(netReply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(errorSlt(QNetworkReply::NetworkError)));
+
     emit pubKeyRequested();
 }
 
@@ -310,6 +311,7 @@ void DapSession::logout()
     m_sessionKeyID.clear();
     m_upstreamAddress.clear();
     m_upstreamPort = 0;
+    emit logoutRequested();
 }
 
 /**

@@ -132,6 +132,8 @@ signals:
     void authorizing();
 
     void authorized(const QString &);
+
+    void logoutRequested();
     void logouted();
 };
 
