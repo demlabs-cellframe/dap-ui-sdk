@@ -120,6 +120,7 @@ private slots:
     void onLogout();
     void testMsrlnReplacementSlot();
 signals:
+    void pubKeyRequested();
     void pubKeyServerRecived();
     void encryptInitialized();
 

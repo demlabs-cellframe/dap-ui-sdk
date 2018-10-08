@@ -69,7 +69,6 @@ void DapSession::requestServerPublicKey()
         free(baData);
     baData=nullptr;
 
-
     m_xmlStreamReader.clear();
     arrData.clear();
 
@@ -80,7 +79,7 @@ void DapSession::requestServerPublicKey()
     connect(netReply, &QNetworkReply::readChannelFinished, this,  &DapSession::onEnc);
     connect(netReply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(errorSlt(QNetworkReply::NetworkError)));
-
+    emit pubKeyRequested();
 }
 
 void DapSession::encryptInit()
