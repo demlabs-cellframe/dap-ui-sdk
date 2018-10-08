@@ -134,12 +134,12 @@ void DapConnectStream::streamOpen(const QString& subUrl, const QString& query)
 
     if(network_reply)
     {
+        emit streamConnecting();
         connect(network_reply, &QNetworkReply::readyRead, this, &DapConnectStream::sltIdReadyRead);
         connect(network_reply, &QNetworkReply::finished, this, &DapConnectStream::sltIdFinishedRead);
     }
     else
         emit errorNetwork("Can't init network connection");
-
 }
 
 void DapConnectStream::streamClose()
