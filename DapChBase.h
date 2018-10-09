@@ -21,14 +21,13 @@
 #ifndef DAPSACHBASE_H
 #define DAPSACHBASE_H
 
-#include "BaseObject.h"
 #include "DapChannelPacket.h"
 
-class DapChBase : public BaseObject
+class DapChBase : public QObject
 {
     Q_OBJECT
 public:
-    DapChBase(QObject *obj, char id) : BaseObject(obj), m_id(id) { }
+    DapChBase(QObject *obj, char id) : QObject(obj), m_id(id) { }
     char get_id() { return m_id; }
 
 protected:
@@ -39,7 +38,7 @@ protected slots:
 
 signals:
     void pktChOut(DapChannelPacketHdr* pkt, void* data, uint64_t* dest_addr = NULL);
-
+    void error(const QString& msg);
 public slots:
     virtual void onPktIn(DapChannelPacket* pkt) = 0;
 };

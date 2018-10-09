@@ -23,7 +23,6 @@
 
 #include "DapConnectStream.h"
 #include "DapChannelPacket.h"
-#include "BaseObject.h"
 #include "DapChBase.h"
 #include <QThread>
 #include <QHash>
@@ -43,7 +42,7 @@ public slots:
 };
 
 
-class DapStreamer : public BaseObject
+class DapStreamer : public QObject
 {
     Q_OBJECT
 public:
@@ -64,7 +63,7 @@ protected slots:
     {
         qDebug() << "[DapStreamer] Stream closed";
         emit streamClosed();
-    }//ok
+    }
 
     void readChPacket(DapChannelPacketHdr* pkt, void* data); //ok
 
@@ -72,16 +71,16 @@ public slots:
     void writeChPacket(
         DapChannelPacketHdr* pkt,
         void* data,
-        uint64_t *dest_addr = NULL)
+        uint64_t *dest_addr = Q_NULLPTR)
     {
         emit sendChPacket(pkt,data,dest_addr);
-    }//ok
+    }
 
     void open(const QString& subUrl, const QString query) {
         qDebug() << "[DapStreamer] Open " << subUrl
             << "media item " << query;
         m_dapConStream->streamOpen(subUrl, query);
-    }//ok
+    }
     void openDefault(){
         open("socket_forward","sf=1");
     }
@@ -100,7 +99,7 @@ signals:
     void streamReconnecting();
     void streamDisconnecting();
 
-    void sendChPacket(DapChannelPacketHdr* pkt, void* data, uint64_t *dest_addr = NULL);
+    void sendChPacket(DapChannelPacketHdr* pkt, void* data, uint64_t *dest_addr = Q_NULLPTR);
 };
 
 #endif // DAPSTREAMER_H

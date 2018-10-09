@@ -21,7 +21,7 @@
 #include "DapStreamer.h"
 #include <QDebug>
 
-DapStreamer::DapStreamer(QObject *obj) : BaseObject(obj)
+DapStreamer::DapStreamer(QObject *obj) : QObject(obj)
 {
    qDebug() <<"[SSB] init";
    m_streamThread = new QThread;
@@ -31,7 +31,7 @@ DapStreamer::DapStreamer(QObject *obj) : BaseObject(obj)
    connect(m_dapConStream, &DapConnectStream::streamClosed, this, &DapStreamer::onStreamClosed);
 
    connect(m_dapConStream, &DapConnectStream::streamConnecting, this, &DapStreamer::streamConnecting);
-   connect(m_dapConStream, &DapConnectStream::errorNetwork, this, &DapStreamer::error);
+   // connect(m_dapConStream, &DapConnectStream::errorNetwork, this, &DapStreamer::error);
 
    connect(m_dapConStream, &DapConnectStream::errorNetwork,    this, &DapStreamer::errorText);
    connect(m_dapConStream, &DapConnectStream::errorAuth,    this, &DapStreamer::errorAuth);
