@@ -128,7 +128,7 @@ signals:
     void errorNetwork(const QString&);
     void errorConnection();
     void errorOfPubKeyServerReciving();
-    void authorizing();
+    void authRequested();
 
     void authorized(const QString &);
 

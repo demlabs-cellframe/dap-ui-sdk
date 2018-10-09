@@ -344,13 +344,13 @@ void DapSession::encRequest(const QString& reqData, const QString& url, const QS
  */
 void DapSession::authorize(const QString& user, const QString& password,const QString& domain)
 {
-    emit authorizing();
     critError = false;
     m_xmlStreamReader.clear();
     m_user = user;
     m_userInform.clear();
     m_domain = domain;
     encRequest(user + " " + password + " " + domain, URL_DB, "auth", "login", SLOT(onAuthorize()));
+    emit authRequested();
 }
 
 /**
