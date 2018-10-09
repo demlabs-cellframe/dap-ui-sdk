@@ -3,7 +3,6 @@ INCLUDEPATH += libdap/ libdap/common
 
 SOURCES += $$PWD/DapConnectBase.cpp \
     $$PWD/DapSession.cpp \
-    $$PWD/BaseObject.cpp \
     $$PWD/DapCrypt.cpp \
     $$PWD/DapKeyAes.cpp \
     $$PWD/DapKeyMsrln.cpp \
@@ -13,7 +12,6 @@ SOURCES += $$PWD/DapConnectBase.cpp \
 HEADERS += \
     $$PWD/DapConnectBase.h \
     $$PWD/DapSession.h \
-    $$PWD/BaseObject.h \
     $$PWD/DapCrypt.h \
     $$PWD/InterfaceDapKey.h \
     $$PWD/DapKeyAes.h \

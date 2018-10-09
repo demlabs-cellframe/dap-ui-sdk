@@ -23,14 +23,13 @@
 #define DAPCRYPT_H
 
 #include <QString>
-#include "BaseObject.h"
 #include "InterfaceDapKey.h"
 #include "DapKeyMsrln.h"
 
 enum KeyRole { KeyRoleSession = 1, KeyRoleStream = 2};
 
 
-class DapCrypt : public BaseObject
+class DapCrypt
 {
     DapCrypt();
     ~DapCrypt() { }

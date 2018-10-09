@@ -29,12 +29,11 @@
 #include <QXmlStreamReader>
 #include <QMap>
 #include <QList>
-#include "BaseObject.h"
 #include "DapConnectBase.h"
 
 #define SERVER_LIST_FILE "DiveVPNServers.xml"
 
-class DapSession : public BaseObject
+class DapSession : public QObject
 {
     Q_OBJECT
 public:
