@@ -58,7 +58,6 @@ protected:
     QThread* m_streamThread;
 
 protected slots:
-    void onStreamOpened();
     void onStreamClosed()
     {
         qDebug() << "[DapStreamer] Stream closed";
@@ -95,9 +94,12 @@ signals:
     void streamOpened();
     void streamClosed();
 
+    void streamSessionRequested();
     void streamConnecting();
     void streamReconnecting();
     void streamDisconnecting();
+
+    void streamServKeyRecieved();
 
     void sendChPacket(DapChannelPacketHdr* pkt, void* data, uint64_t *dest_addr = Q_NULLPTR);
 };

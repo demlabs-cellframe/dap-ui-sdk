@@ -27,11 +27,12 @@ DapStreamer::DapStreamer(QObject *obj) : QObject(obj)
    m_streamThread = new QThread;
    m_dapConStream = new DapConnectStream(nullptr);
 
-   connect(m_dapConStream, &DapConnectStream::streamOpened, this, &DapStreamer::onStreamOpened);
+   connect(m_dapConStream, &DapConnectStream::streamOpened, this, &DapStreamer::streamOpened);
    connect(m_dapConStream, &DapConnectStream::streamClosed, this, &DapStreamer::onStreamClosed);
 
-   connect(m_dapConStream, &DapConnectStream::streamConnecting, this, &DapStreamer::streamConnecting);
+   connect(m_dapConStream, &DapConnectStream::streamSessionRequested, this, &DapStreamer::streamSessionRequested);
 
+   connect(m_dapConStream, &DapConnectStream::streamServKeyRecieved, this, &DapStreamer::streamServKeyRecieved);
    connect(m_dapConStream, &DapConnectStream::errorNetwork,    this, &DapStreamer::errorText);
    connect(m_dapConStream, &DapConnectStream::errorAuth,    this, &DapStreamer::errorAuth);
 
@@ -43,12 +44,6 @@ void DapStreamer::close()
 {
     qDebug() << "[DapStreamer] Stream closed.";
     m_dapConStream->streamClose();
-}
-
-void DapStreamer::onStreamOpened()
-{
-    qDebug() << "[DapStreamer] Stream Opened";
-    emit streamOpened();
 }
 
 void DapStreamer::readChPacket(DapChannelPacketHdr *pkt, void *data)

@@ -134,7 +134,7 @@ void DapConnectStream::streamOpen(const QString& subUrl, const QString& query)
 
     if(network_reply)
     {
-        emit streamConnecting();
+        emit streamSessionRequested();
         connect(network_reply, &QNetworkReply::readyRead, this, &DapConnectStream::sltIdReadyRead);
         connect(network_reply, &QNetworkReply::finished, this, &DapConnectStream::sltIdFinishedRead);
     }
@@ -218,6 +218,7 @@ void DapConnectStream::sltIdFinishedRead()
      {
           qDebug()  << "[DapConnectStream] Stream server key for client requests: "
                     << streamServKey;
+          emit streamServKeyRecieved();
           DapCrypt::me()->initAesKey(streamServKey, KeyRoleStream);
           emit notify("Connecting...");
           m_streamSocket->connectToHost(DapSession::getInstance()->upstreamAddress(),

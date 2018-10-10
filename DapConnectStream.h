@@ -86,7 +86,8 @@ signals:
     void streamOpened();
     void streamClosed();
 
-    void streamConnecting();
+    void streamSessionRequested();
+    void streamServKeyRecieved();
 };
 
 #endif // DAPCONNECTSTREAM_H
