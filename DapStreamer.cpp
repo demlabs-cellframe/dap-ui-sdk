@@ -43,6 +43,7 @@ DapStreamer::DapStreamer(QObject *obj) : QObject(obj)
 void DapStreamer::close()
 {
     qDebug() << "[DapStreamer] Stream closed.";
+    emit streamDisconnecting();
     m_dapConStream->streamClose();
 }
 
