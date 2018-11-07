@@ -2,19 +2,23 @@
 #define DAPKEYMSRLN_H
 
 #include "InterfaceDapKey.h"
-#include "liboqs/crypto/rand/rand.h"
-#include "liboqs/kex/kex.h"
-#include "DapKeyAes.h"
+#include "rand/dap_rand.h"
+#include "dap_enc_key.h"
+// #include "liboqs/kex/kex.h"
+#include "DapKeyIaes.h"
 
 
 class DapKeyMsrln : public DapKey
 {
-    OQS_RAND* rand;
+    dap_enc_key *key;
+
+  //  OQS_RAND* rand;
     void* private_key;
+
     uint8_t* public_key;
     size_t public_length;
-    OQS_KEX* kex;
-    DapKeyAes* aes_key;
+//    OQS_KEX* kex;
+    DapKeyIaes* aes_key;
 
 public:
     DapKeyMsrln();
@@ -27,16 +31,9 @@ public:
 
     bool makePublicKey(QByteArray &bobMessage);
 
-    void prepare();
-
     void encode(QByteArray& in, QByteArray& out);
     void decode(QByteArray& in, QByteArray& out);
     bool init(const QString& key);
-
-
-
-
-
 };
 
 #endif // DAPKEYMSRLN_H

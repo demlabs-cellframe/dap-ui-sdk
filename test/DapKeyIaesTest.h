@@ -5,9 +5,9 @@
 #include <QDateTime>
 #include <QTest>
 
-#include "DapKeyAes.h"
+#include "DapKeyIaes.h"
 
-class DapKeyAesTest : public QObject {
+class DapKeyIaesTest : public QObject {
     Q_OBJECT
 private:
     QByteArray getRandomBytes(const int stringLength) const
@@ -31,13 +31,12 @@ private slots:
     }
 
     void encodeDecode() {
-        DapKeyAes dka;
-        const char aes_key[AES_KEY_LENGTH] = {
-            's','b','s','s','q','e',
-            's','b','s','s','q','e',
-            '2', 's'
-        };
-        dka.initKeyChar(aes_key);
+        DapKeyIaes dka;
+        QByteArray seed = getRandomBytes(256);
+        QByteArray kex_buf = getRandomBytes(256);
+        dka.init(seed, kex_buf);
+
+
         QByteArray encode, decode;
         for(int i = 0; i < 10; i++ ) {
             QByteArray source = getRandomBytes(1 + (qrand() % 255));

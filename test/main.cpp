@@ -14,7 +14,7 @@
 #include "TestHeaders.h"
 void run_all_tests() {
     RUN_TESTS(DapCryptTest);
-    RUN_TESTS(DapKeyAesTest);
+    RUN_TESTS(DapKeyIaesTest);
 }
 #endif
 

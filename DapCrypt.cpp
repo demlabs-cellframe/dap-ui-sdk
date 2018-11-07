@@ -19,7 +19,7 @@
 */
 
 #include "DapCrypt.h"
-#include "DapKeyAes.h"
+#include "DapKeyIaes.h"
 #include <QDebug>
 #include "DapSession.h"
 
@@ -107,7 +107,7 @@ void DapCrypt::decodeB1k(QByteArray& in, QByteArray& out, int sizeBlock, KeyRole
 
 QByteArray DapCrypt::generateAliceMessage()
 {
-    keySession->prepare();
+//    keySession->prepare();
     QByteArray mess = keySession->generateAliceMessage();
 
     return mess;
@@ -136,6 +136,6 @@ void DapCrypt::initAesKey(QString &keyStr, KeyRole kRole)
     if(*dapKey)
         delete *dapKey;
 
-    *dapKey = new DapKeyAes;
+    *dapKey = new DapKeyIaes;
     (*dapKey)->init(QString(keyStr));
 }

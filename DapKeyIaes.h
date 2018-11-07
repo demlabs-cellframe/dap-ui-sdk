@@ -24,21 +24,26 @@
 
 #include <QByteArray>
 #include "InterfaceDapKey.h"
+#include "dap_enc_key.h"
 
 typedef unsigned char byte;
 
 #define AES_BLOCKSIZE 16
 #define AES_KEY_LENGTH 16
 
-class DapKeyAes : public DapKey
+class DapKeyIaes : public DapKey
 {
-    unsigned char* m_keyStr;
+private:
+    dap_enc_key* _key;
 public:
-    DapKeyAes() { }
-
+    DapKeyIaes();
+    ~DapKeyIaes();
     void encode(QByteArray& in, QByteArray& out);
     void decode(QByteArray& in, QByteArray& out);
+
     bool init(const QString& str_key);
+    bool init(const QByteArray& seed, const QByteArray& kex_buf);
+
     bool initKeyChar(const char* str_key);
 };
 
