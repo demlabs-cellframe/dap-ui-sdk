@@ -13,4 +13,5 @@ SOURCES +=  main.cpp
 HEADERS += \
     TestHeaders.h \
     DapCryptTest.h \
-    DapKeyIaesTest.h
+    DapKeyIaesTest.h \
+    DapKeyMsrlnTest.h

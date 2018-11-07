@@ -10,26 +10,19 @@
 
 class DapKeyMsrln : public DapKey
 {
-    dap_enc_key *key;
-
-  //  OQS_RAND* rand;
-    void* private_key;
-
-    uint8_t* public_key;
-    size_t public_length;
-//    OQS_KEX* kex;
-    DapKeyIaes* aes_key;
-
+    dap_enc_key *_key = Q_NULLPTR;
+    friend class DapKeyMsrlnTest;
 public:
     DapKeyMsrln();
+    ~DapKeyMsrln();
 
     QByteArray generateAliceMessage();
 
+    // Generate shared key and bob message
     QByteArray generateBobMessage(QByteArray aliceMessage);
 
-    void convertToAes();
-
-    bool makePublicKey(QByteArray &bobMessage);
+    // Sets shared key
+    void generateAliceSharedKey(QByteArray &bobMessage);
 
     void encode(QByteArray& in, QByteArray& out);
     void decode(QByteArray& in, QByteArray& out);

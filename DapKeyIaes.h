@@ -43,8 +43,6 @@ public:
 
     bool init(const QString& str_key);
     bool init(const QByteArray& seed, const QByteArray& kex_buf);
-
-    bool initKeyChar(const char* str_key);
 };
 
 #endif // DAPKEYAES_H

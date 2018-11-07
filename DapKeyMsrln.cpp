@@ -1,7 +1,6 @@
 #include "DapKeyMsrln.h"
 #include "dap_enc_msrln.h"
 #include <QDebug>
-#include <QFile>
 
 
 DapKeyMsrln::DapKeyMsrln()
@@ -9,47 +8,59 @@ DapKeyMsrln::DapKeyMsrln()
 
 }
 
+DapKeyMsrln::~DapKeyMsrln()
+{
+ //   dap_enc_key_delete(_key);
+}
+
 QByteArray DapKeyMsrln::generateAliceMessage()
 {
-    uint8_t* out_msg = NULL;
-    size_t out_msg_size = 0;
- //   OQS_KEX_rlwe_msrln16_alice_0(kex,&private_key,&out_msg,&out_msg_size);
-    return QByteArray((char*)out_msg,out_msg_size);
+    if(_key != Q_NULLPTR) {
+        qWarning() << "DapKeyMsrln can't be generated twice";
+        return Q_NULLPTR;
+    }
+
+    _key = dap_enc_key_new_generate(DAP_ENC_KEY_TYPE_MSRLN, NULL, 0, NULL, 0, 0);
+
+    return QByteArray((char*)_key->pub_key_data, _key->pub_key_data_size);
 }
 
 QByteArray DapKeyMsrln::generateBobMessage(QByteArray aliceMessage)
 {
-    uint8_t* out_msg = NULL;
-    size_t out_msg_size = 0;
- //   OQS_KEX_rlwe_msrln16_bob(kex,(unsigned char*)aliceMessage.data(),1824,&out_msg,&out_msg_size,&public_key,&public_length);
-    return QByteArray((char*)out_msg,out_msg_size);
+    if(_key != Q_NULLPTR) {
+        qWarning() << "DapKeyMsrln can't be generated twice";
+        return Q_NULLPTR;
+    }
+
+    _key = dap_enc_key_new(DAP_ENC_KEY_TYPE_MSRLN);
+    _key->gen_bob_shared_key(_key, aliceMessage.data(), (size_t)aliceMessage.size(),
+                             (void**)&_key->pub_key_data);
+
+    return QByteArray((char*)_key->pub_key_data, _key->pub_key_data_size);
 }
 
-bool DapKeyMsrln::makePublicKey(QByteArray& bobMessage)
+void DapKeyMsrln::generateAliceSharedKey(QByteArray& bobMessage)
 {
-//    if(OQS_KEX_rlwe_msrln16_alice_1(kex, private_key,(unsigned char*)bobMessage.data(), 2048,&public_key,&public_length) == 0)
-//        return false;
-//    convertToAes();
-//    return true;
-}
-
-void DapKeyMsrln::convertToAes(){
-    aes_key = new DapKeyIaes();
-    aes_key->initKeyChar((char*)public_key);
+    if(_key == Q_NULLPTR) {
+        qWarning() << "Alice message must be generate firstly";
+        return;
+    }
+    _key->gen_alice_shared_key(_key, _key->priv_key_data, (size_t)bobMessage.size(),
+                               (unsigned char*) bobMessage.data());
 }
 
 void DapKeyMsrln::encode(QByteArray &in, QByteArray &out)
 {
-    aes_key->encode(in,out);
+    //aes_key->encode(in,out);
 }
 
 void DapKeyMsrln::decode(QByteArray &in, QByteArray &out)
 {
-    aes_key->decode(in,out);
+    //aes_key->decode(in,out);
 }
 
 bool DapKeyMsrln::init(const QString &key)
 {
-    aes_key = new DapKeyIaes();
-    return aes_key->init(key);
+    //aes_key = new DapKeyIaes();
+    //return aes_key->init(key);
 }

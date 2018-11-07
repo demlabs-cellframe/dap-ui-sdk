@@ -107,15 +107,13 @@ void DapCrypt::decodeB1k(QByteArray& in, QByteArray& out, int sizeBlock, KeyRole
 
 QByteArray DapCrypt::generateAliceMessage()
 {
-//    keySession->prepare();
     QByteArray mess = keySession->generateAliceMessage();
-
     return mess;
 }
 
 bool DapCrypt::makePublicKey(QByteArray &data)
 {
-    return keySession->makePublicKey(data);
+    // return keySession->generate_shared_key(data);
 }
 
 void DapCrypt::initAesKey(QString &keyStr, KeyRole kRole)

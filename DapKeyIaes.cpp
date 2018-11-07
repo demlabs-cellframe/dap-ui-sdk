@@ -70,15 +70,16 @@ bool DapKeyIaes::init(const QString& str_key)
         qWarning() << "[DapKeyAes::init] Key is too small";
         return false;
     }
+ //   init(str_key.toLatin1(), "");
  //   m_keyStr = new unsigned char[AES_KEY_LENGTH];
   //  memcpy(m_keyStr, str_key.toStdString().c_str(), AES_KEY_LENGTH);
     return true;
 }
 
 
-bool DapKeyIaes::initKeyChar(const char* str_key)
-{
-  //  m_keyStr = new unsigned char[AES_KEY_LENGTH];
- //   memcpy(m_keyStr, str_key, AES_KEY_LENGTH);
-    return true;
-}
+//bool DapKeyIaes::initKeyChar(const char* str_key)
+//{
+//  //  m_keyStr = new unsigned char[AES_KEY_LENGTH];
+// //   memcpy(m_keyStr, str_key, AES_KEY_LENGTH);
+//    return true;
+//}

@@ -15,6 +15,7 @@
 void run_all_tests() {
     RUN_TESTS(DapCryptTest);
     RUN_TESTS(DapKeyIaesTest);
+    RUN_TESTS(DapKeyMsrlnTest);
 }
 #endif
 
