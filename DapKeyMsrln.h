@@ -11,6 +11,8 @@
 class DapKeyMsrln : public DapKey
 {
     dap_enc_key *_key = Q_NULLPTR;
+    DapKeyIaes *_sharedSessionKey = Q_NULLPTR;
+
     friend class DapKeyMsrlnTest;
 public:
     DapKeyMsrln();
@@ -22,7 +24,8 @@ public:
     QByteArray generateBobMessage(QByteArray aliceMessage);
 
     // Sets shared key
-    void generateAliceSharedKey(QByteArray &bobMessage);
+    bool generateSessionKey(const QByteArray& bobMessage,
+                                          const QByteArray& seed);
 
     void encode(QByteArray& in, QByteArray& out);
     void decode(QByteArray& in, QByteArray& out);

@@ -35,7 +35,7 @@ DapCrypt::DapCrypt()
     keyStream = Q_NULLPTR;
 
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
-   /* ERR_load_crypto_strings();
+    /* ERR_load_crypto_strings();
     OpenSSL_add_all_algorithms();*/ //IVAN
 #else
     //SSL_library_init();
@@ -47,9 +47,9 @@ DapKey* DapCrypt::roleToKey(KeyRole kRole)
 {
     switch(kRole)
     {
-        case KeyRoleSession: return keySession;
-        case KeyRoleStream:   return keyStream;
-        default: return Q_NULLPTR;
+    case KeyRoleSession: return keySession;
+    case KeyRoleStream:   return keyStream;
+    default: return Q_NULLPTR;
     }
 }
 
@@ -57,16 +57,16 @@ DapKey* DapCrypt::roleToKey(KeyRole kRole)
 
 QString DapCrypt::getRandomString(int lengthStr)
 {
-   const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+    const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
 
-   QString randomString;
+    QString randomString;
 
-   for(int i = 0; i < lengthStr; ++i)
-   {
-       int index = qrand() % possibleCharacters.length();
-       randomString.append(possibleCharacters.at(index));
-   }
-   return randomString;
+    for(int i = 0; i < lengthStr; ++i)
+    {
+        int index = qrand() % possibleCharacters.length();
+        randomString.append(possibleCharacters.at(index));
+    }
+    return randomString;
 }
 
 void DapCrypt::encode(QByteArray& in, QByteArray& out, KeyRole kRole)
@@ -111,9 +111,10 @@ QByteArray DapCrypt::generateAliceMessage()
     return mess;
 }
 
-bool DapCrypt::makePublicKey(QByteArray &data)
+bool DapCrypt::generateSharedSessionKey(const QByteArray& bobMsg,
+                                        const QByteArray& sessionID)
 {
-    // return keySession->generate_shared_key(data);
+    return keySession->generateSessionKey(bobMsg, sessionID);
 }
 
 void DapCrypt::initAesKey(QString &keyStr, KeyRole kRole)

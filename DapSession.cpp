@@ -30,8 +30,8 @@
 #include <QDir>
 #include <QFile>
 
-#include <QEventLoop>
 #include <QThread>
+#include "msrln/msrln.h"
 
 const QString DapSession::URL_ENCRYPT("/1901248124123459");
 const QString DapSession::URL_STREAM("/874751843144");
@@ -40,7 +40,7 @@ const QString DapSession::URL_CTL("/091348758013553");
 const QString DapSession::URL_DB_FILE("/98971341937495431398");
 const QString DapSession::URL_SERVER_LIST("/slist");
 
-
+#define SESSION_KEY_ID_LEN 33
 /**
  * @brief DapSession::DapSession
  */
@@ -99,29 +99,35 @@ void DapSession::onEnc()
         arrData.append(netReply->readAll());
 
     QStringList buf = QString::fromLatin1(arrData).split(" ");
-    if (buf.size()<=1) {
+    if (buf.size()< 2) {
+        qWarning() << "Wrong response from server";
+        emit errorNetwork(tr("Wrong response from server"));
         return;
     }
 
     int pos = arrData.indexOf(' ') + 1;
     QByteArray result = arrData.mid(pos,arrData.size() - pos);
-    m_sessionKeyID = QByteArray::fromBase64(arrData.mid(0,pos-1));
+    qDebug() << "Pos :" << pos-1;
+    m_sessionKeyID = QByteArray::fromBase64(buf[0].toLatin1()).mid(0, SESSION_KEY_ID_LEN);
     
+    qDebug() << "m_sessionKeyID: " << m_sessionKeyID;
+
     if ( m_sessionKeyID.isEmpty() || result.isEmpty()) {
         qDebug() << "ERROR encryption not inited";
         emit errorEncryption();
         return;
     }
 
-    QByteArray array = QByteArray::fromBase64(result);
+    QByteArray bobMsg = QByteArray::fromBase64(result);
 
-    if (array.size() < 2048) {
-        qCritical() << "Server Bob message is failed, length = " << array.length();
-        ::exit(0);
+    if (bobMsg.size() != MSRLN_PKB_BYTES) {
+        qCritical() << "Server Bob message is failed, length = " << bobMsg.length();
+        emit errorNetwork(tr("Server Bob message is failed"));
+        return;
     }
 
-    if(!DapCrypt::me()->makePublicKey(array)){
-        emit errorNetwork(tr("Server doesn't respond"));
+    if(!DapCrypt::me()->generateSharedSessionKey(bobMsg, m_sessionKeyID.toLatin1())) {
+        emit errorNetwork(tr("Error ganarete shared session key"));
         return;
     }
 
@@ -135,7 +141,6 @@ void DapSession::onDownloading()
 {
     arrData.append(netReply->readAll());
 }
-
 
 /**
  * @brief DapSession::encRequest2
@@ -158,6 +163,7 @@ QNetworkReply* DapSession::encRequest2(DapConnectBase *dcb, const QString& reqDa
     QByteArray queryByte = query.toLatin1();
 
     DapCrypt::me()->encode(BAreqData, BAreqDataEnc, KeyRoleSession);
+
 
     if(subUrl.length())
         DapCrypt::me()->encode(subUrlByte, BAsubUrlEncrypted, KeyRoleSession);
@@ -206,7 +212,9 @@ void DapSession::onAuthorize()
         emit errorAuthorization("Wrong answer from server");
         return;
     }
-    
+
+    QByteArray arrData2 = QByteArray::fromBase64(arrData);
+
     QByteArray dByteArr;
     DapCrypt::me()->decode(arrData, dByteArr, KeyRoleSession);
 

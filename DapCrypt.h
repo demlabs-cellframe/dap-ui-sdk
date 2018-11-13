@@ -51,7 +51,8 @@ public:
     void decode(QByteArray& in, QByteArray& out, KeyRole kRole);
     void decodeB1k(QByteArray& in, QByteArray& out, int sizeBlock, KeyRole kRole);
     QByteArray generateAliceMessage();
-    bool makePublicKey(QByteArray& data);
+    bool generateSharedSessionKey(const QByteArray& bobMsg,
+                                  const QByteArray& sessionID);
 };
 
 #endif // DAPCRYPT_H

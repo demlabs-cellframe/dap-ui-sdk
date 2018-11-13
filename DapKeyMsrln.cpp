@@ -10,14 +10,13 @@ DapKeyMsrln::DapKeyMsrln()
 
 DapKeyMsrln::~DapKeyMsrln()
 {
- //   dap_enc_key_delete(_key);
+    dap_enc_key_delete(_key);
 }
 
 QByteArray DapKeyMsrln::generateAliceMessage()
 {
     if(_key != Q_NULLPTR) {
-        qWarning() << "DapKeyMsrln can't be generated twice";
-        return Q_NULLPTR;
+        dap_enc_key_delete(_key);
     }
 
     _key = dap_enc_key_new_generate(DAP_ENC_KEY_TYPE_MSRLN, NULL, 0, NULL, 0, 0);
@@ -28,8 +27,7 @@ QByteArray DapKeyMsrln::generateAliceMessage()
 QByteArray DapKeyMsrln::generateBobMessage(QByteArray aliceMessage)
 {
     if(_key != Q_NULLPTR) {
-        qWarning() << "DapKeyMsrln can't be generated twice";
-        return Q_NULLPTR;
+        dap_enc_key_delete(_key);
     }
 
     _key = dap_enc_key_new(DAP_ENC_KEY_TYPE_MSRLN);
@@ -39,24 +37,29 @@ QByteArray DapKeyMsrln::generateBobMessage(QByteArray aliceMessage)
     return QByteArray((char*)_key->pub_key_data, _key->pub_key_data_size);
 }
 
-void DapKeyMsrln::generateAliceSharedKey(QByteArray& bobMessage)
+bool DapKeyMsrln::generateSessionKey(const QByteArray& bobMessage,
+                                              const QByteArray& seed)
 {
-    if(_key == Q_NULLPTR) {
-        qWarning() << "Alice message must be generate firstly";
-        return;
-    }
     _key->gen_alice_shared_key(_key, _key->priv_key_data, (size_t)bobMessage.size(),
                                (unsigned char*) bobMessage.data());
+    if(_sharedSessionKey != Q_NULLPTR) {
+        delete _sharedSessionKey;
+    }
+    _sharedSessionKey = new DapKeyIaes();
+
+    _sharedSessionKey->init(seed, QByteArray((char*)_key->priv_key_data, _key->priv_key_data_size));
+
+    return true;
 }
 
 void DapKeyMsrln::encode(QByteArray &in, QByteArray &out)
 {
-    //aes_key->encode(in,out);
+    _sharedSessionKey->encode(in,out);
 }
 
 void DapKeyMsrln::decode(QByteArray &in, QByteArray &out)
 {
-    //aes_key->decode(in,out);
+    _sharedSessionKey->decode(in,out);
 }
 
 bool DapKeyMsrln::init(const QString &key)

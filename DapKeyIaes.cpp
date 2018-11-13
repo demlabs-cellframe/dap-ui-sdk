@@ -40,14 +40,21 @@ DapKeyIaes::~DapKeyIaes()
     dap_enc_key_delete(_key);
 }
 
+// seed == session id
+// kex_buf == shared key
 bool DapKeyIaes::init(const QByteArray& seed, const QByteArray& kex_buf)
 {
+    //
     _key = dap_enc_key_new_generate(DAP_ENC_KEY_TYPE_IAES, kex_buf.data(),
                                     size_t(kex_buf.size()), seed.data(), size_t(seed.size()), 0);
 }
 
 void DapKeyIaes::encode(QByteArray& dataIn, QByteArray& dataOut)
 {
+    if(_key == Q_NULLPTR) {
+        qWarning() << "Error encode. _key is null";
+        return;
+    }
     char* data_out;
     size_t enc_size = _key->enc(_key, dataIn, dataIn.size(), (void**)&data_out);
     dataOut = QByteArray(data_out, enc_size);
@@ -64,15 +71,11 @@ void DapKeyIaes::decode(QByteArray& dataIn, QByteArray& dataOut)
 }
 
 
-bool DapKeyIaes::init(const QString& str_key)
+bool DapKeyIaes::init(const QString& kex_buf)
 {
-    if(str_key.length() < AES_KEY_LENGTH) {
-        qWarning() << "[DapKeyAes::init] Key is too small";
-        return false;
-    }
- //   init(str_key.toLatin1(), "");
- //   m_keyStr = new unsigned char[AES_KEY_LENGTH];
-  //  memcpy(m_keyStr, str_key.toStdString().c_str(), AES_KEY_LENGTH);
+
+    _key = dap_enc_key_new_generate(DAP_ENC_KEY_TYPE_IAES, kex_buf.toLatin1().data(),
+                                    size_t(kex_buf.length()), NULL, 0, 0);
     return true;
 }
 

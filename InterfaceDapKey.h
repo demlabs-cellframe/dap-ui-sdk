@@ -33,7 +33,7 @@ public:
 
     virtual void encode(QByteArray& in, QByteArray& out) = 0;
     virtual void decode(QByteArray& in, QByteArray& out) = 0;
-    virtual bool init(const QString& key) {(void)key;}
+    virtual bool init(const QString& key) {(void)key; return false;}
 };
 
 #endif
