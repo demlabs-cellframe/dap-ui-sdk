@@ -27,6 +27,8 @@ public:
     bool generateSessionKey(const QByteArray& bobMessage,
                                           const QByteArray& seed);
 
+    bool generateAliceSharedKey(const QByteArray& bobMessage);
+
     void encode(QByteArray& in, QByteArray& out);
     void decode(QByteArray& in, QByteArray& out);
     bool init(const QString& key);

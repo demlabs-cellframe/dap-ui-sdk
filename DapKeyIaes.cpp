@@ -28,8 +28,6 @@
 #include "dap_enc_key.h"
 #include "dap_enc_iaes.h"
 
-
-
 DapKeyIaes::DapKeyIaes()
 {
 

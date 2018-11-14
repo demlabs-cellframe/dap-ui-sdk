@@ -24,6 +24,13 @@ QByteArray DapKeyMsrln::generateAliceMessage()
     return QByteArray((char*)_key->pub_key_data, _key->pub_key_data_size);
 }
 
+bool DapKeyMsrln::generateAliceSharedKey(const QByteArray& bobMessage)
+{
+    _key->gen_alice_shared_key(_key, _key->priv_key_data, (size_t)bobMessage.size(),
+                               (unsigned char*) bobMessage.data());
+    return true;
+}
+
 QByteArray DapKeyMsrln::generateBobMessage(QByteArray aliceMessage)
 {
     if(_key != Q_NULLPTR) {
