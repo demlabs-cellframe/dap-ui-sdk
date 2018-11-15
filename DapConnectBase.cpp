@@ -52,14 +52,9 @@ void DapConnectBase::restoreDefaultNetConf() {
 }
 
 void DapConnectBase::rebuildNetworkManager() {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 9, 1)
-    http_client->clearAccessCache();
-    http_client->clearConnectionCache();
-#else
     delete http_client;
     http_client = new QNetworkAccessManager(this);
     http_client->setProxy(QNetworkProxy::NoProxy);
-#endif
 }
 
 
