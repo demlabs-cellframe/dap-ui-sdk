@@ -71,6 +71,8 @@ void DapKeyMsrln::decode(QByteArray &in, QByteArray &out)
 
 bool DapKeyMsrln::init(const QString &key)
 {
+    (void)key;
     //aes_key = new DapKeyIaes();
     //return aes_key->init(key);
+    return false;
 }

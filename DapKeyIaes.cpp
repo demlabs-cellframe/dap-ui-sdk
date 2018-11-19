@@ -45,6 +45,7 @@ bool DapKeyIaes::init(const QByteArray& seed, const QByteArray& kex_buf)
     //
     _key = dap_enc_key_new_generate(DAP_ENC_KEY_TYPE_IAES, kex_buf.data(),
                                     size_t(kex_buf.size()), seed.data(), size_t(seed.size()), 0);
+    return _key;
 }
 
 void DapKeyIaes::encode(QByteArray& dataIn, QByteArray& dataOut)
