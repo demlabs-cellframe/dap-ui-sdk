@@ -107,7 +107,7 @@ void DapSession::onEnc()
 
     int pos = arrData.indexOf(' ') + 1;
     QByteArray result = arrData.mid(pos,arrData.size() - pos);
-    qDebug() << "Pos :" << pos-1;
+
     m_sessionKeyID = QByteArray::fromBase64(buf[0].toLatin1()).mid(0, SESSION_KEY_ID_LEN);
     
     qDebug() << "m_sessionKeyID: " << m_sessionKeyID;

@@ -64,8 +64,6 @@ public:
     QNetworkReply* encRequest2(DapConnectBase *dcb, const QString& reqData,const QString& url,
                               const QString& subUrl,const QString& query);
 
-    bool isAuthorized() { return cookie().length()>0; }
-
     void setDapUri(const QString& addr, const uint16_t port); //ok
 
 public slots:
