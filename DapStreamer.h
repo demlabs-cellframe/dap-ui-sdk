@@ -84,6 +84,8 @@ public slots:
         open("socket_forward","sf=1");
     }
 
+    void abortStreamOpenRequest() { m_dapConStream->abortStreamRequest(); }
+
     void close();
 
 signals:

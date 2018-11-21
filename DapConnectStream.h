@@ -76,6 +76,8 @@ private slots:
     void sltStreamBytesWritten(qint64 bytes);
 
 public slots:
+    void abortStreamRequest() { network_reply->abort(); }
+
     void streamOpen(const QString& subUrl, const QString& query);
     void streamClose();
 
