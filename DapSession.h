@@ -74,6 +74,7 @@ public slots:
     void logout();
     void restoreNetworkConf();
     void saveNetworkConf();
+    void abortRequest() { netReply->abort(); }
 
 protected:
 
