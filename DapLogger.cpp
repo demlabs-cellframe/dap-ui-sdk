@@ -35,10 +35,16 @@ bool DapLogger::setLogFile(const QString& filePath) {
 void DapLogger::messageHandler(QtMsgType type,
                                const QMessageLogContext &ctx,
                                const QString & msg) {
-    char prefixBuffer[56];
+    char prefixBuffer[128];
 
     if(ctx.file) {
+#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
         const char *fileName = strrchr(ctx.file, '/');
+#elif defined(Q_OS_WIN)
+        const char *fileName = strrchr(ctx.file, '\\');
+#else
+        #error "Not supported platform"
+#endif
         fileName = (fileName == Q_NULLPTR ? ctx.file : fileName + 1);
         strcpy(prefixBuffer, fileName);
         sprintf(strrchr(prefixBuffer, '.'), ":%d", ctx.line);
