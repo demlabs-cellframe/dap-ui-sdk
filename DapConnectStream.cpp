@@ -182,11 +182,11 @@ qint64 DapConnectStream::writeStreamRaw(const void * data, size_t data_size)
     }
     else
     {
-        qWarning() << "[DapConnectStream] Stream Socket is not writable";
-/*
-        streamClose();
-        emit streamClosed();
-*/
+        qWarning() << "Stream Socket is not writable";
+        if(!m_streamSocket->isOpen()) {
+            qWarning() << "Stream socket is closed";
+            emit streamClosed();
+        }
         return 0;
     }
 }
@@ -194,6 +194,12 @@ qint64 DapConnectStream::writeStreamRaw(const void * data, size_t data_size)
 void DapConnectStream::sltIdFinishedRead()
 {
      qDebug() << "[DapConnectStream] Connection ID read finished";
+     if(m_streamCtlReply.size() == 0) {
+         QString error_msg = "Wrong reply. Maybe problem with network";
+         qWarning() << error_msg;
+         emit errorNetwork(error_msg);
+         return;
+     }
      QByteArray streamReplyDec;
      DapCrypt::me()->decode(m_streamCtlReply, streamReplyDec, KeyRoleSession);
      QString streamReplyStr(streamReplyDec);
@@ -292,7 +298,7 @@ void DapConnectStream::sltStreamError(QAbstractSocket::SocketError socketError)
 
 void DapConnectStream::sltStreamDisconnected()
 {
-    qDebug() << "[DapConnectStream] Connection Stream read finished.";
+    qDebug() << "[DapConnectStream] sltStreamDisconnected.";
     emit finished();
     emit streamClosed();
 
