@@ -20,7 +20,7 @@
 
 
 #include <QString>
-#include "DapKeyIaes.h"
+#include "DapKeyAes.h"
 #include <QDebug>
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,53 +28,61 @@
 #include "dap_enc_key.h"
 #include "dap_enc_iaes.h"
 
-DapKeyIaes::DapKeyIaes()
+DapKeyAes::DapKeyAes()
 {
 
 }
 
-DapKeyIaes::~DapKeyIaes()
+DapKeyAes::~DapKeyAes()
 {
     dap_enc_key_delete(_key);
 }
 
 // seed == session id
 // kex_buf == shared key
-bool DapKeyIaes::init(const QByteArray& seed, const QByteArray& kex_buf)
+bool DapKeyAes::init(const QByteArray& seed, const QByteArray& kex_buf)
 {
     //
     _key = dap_enc_key_new_generate(DAP_ENC_KEY_TYPE_IAES, kex_buf.data(),
-                                    size_t(kex_buf.size()), seed.data(), size_t(seed.size()), 0);
+                                    size_t(kex_buf.size()), seed.data(), size_t(seed.size()), 32);
     return _key;
 }
 
-void DapKeyIaes::encode(QByteArray& dataIn, QByteArray& dataOut)
+void DapKeyAes::encode(QByteArray& dataIn, QByteArray& dataOut)
 {
     if(_key == Q_NULLPTR) {
         qWarning() << "Error encode. _key is null";
         return;
     }
-    char* data_out;
-    size_t enc_size = _key->enc(_key, dataIn, dataIn.size(), (void**)&data_out);
-    dataOut = QByteArray(data_out, enc_size);
-    delete data_out;
+    if(dataIn.size() > BUFF_ENC_OP_SIZE) {
+        qCritical() << "in size more than BUFF_ENC_OP_SIZE";
+        return;
+    }
+    size_t enc_size = _key->enc_na(_key, dataIn, dataIn.size(), encode_buff, BUFF_ENC_OP_SIZE);
+    dataOut = QByteArray(encode_buff, enc_size);
 }
 
 
-void DapKeyIaes::decode(QByteArray& dataIn, QByteArray& dataOut)
+void DapKeyAes::decode(QByteArray& dataIn, QByteArray& dataOut)
 {
-    char* data_out;
-    size_t dec_size = _key->dec(_key, dataIn, (size_t)dataIn.size(), (void**)&data_out);
-    dataOut = QByteArray(data_out, dec_size);
-    delete data_out;
+    if(_key == Q_NULLPTR) {
+        qWarning() << "Error encode. _key is null";
+        return;
+    }
+    if(dataIn.size() > BUFF_ENC_OP_SIZE) {
+        qCritical() << "in size more than BUFF_ENC_OP_SIZE";
+        return;
+    }
+    size_t dec_size =_key->dec_na(_key, dataIn, (size_t)dataIn.size(), decode_buff, BUFF_ENC_OP_SIZE);
+    dataOut = QByteArray(decode_buff, dec_size);
 }
 
 
-bool DapKeyIaes::init(const QString& kex_buf)
+bool DapKeyAes::init(const QString& kex_buf)
 {
 
-    _key = dap_enc_key_new_generate(DAP_ENC_KEY_TYPE_IAES, kex_buf.toLatin1().data(),
-                                    size_t(kex_buf.length()), NULL, 0, 0);
+    _key = dap_enc_key_new_generate(DAP_ENC_KEY_TYPE_OAES, kex_buf.toLatin1().data(),
+                                    size_t(kex_buf.length()), NULL, 0, 32);
     return true;
 }
 

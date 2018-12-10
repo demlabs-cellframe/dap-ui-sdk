@@ -6,7 +6,7 @@ SOURCES += $$PWD/DapConnectBase.cpp \
     $$PWD/DapCrypt.cpp \
     $$PWD/DapKeyMsrln.cpp \
     $$PWD/DapLogger.cpp \
-    $$PWD/DapKeyIaes.cpp
+    $$PWD/DapKeyAes.cpp
 
 
 HEADERS += \
@@ -16,7 +16,7 @@ HEADERS += \
     $$PWD/InterfaceDapKey.h \
     $$PWD/DapKeyMsrln.h \
     $$PWD/DapLogger.h \
-    $$PWD/DapKeyIaes.h
+    $$PWD/DapKeyAes.h
 
 
 INCLUDEPATH += $$PWD

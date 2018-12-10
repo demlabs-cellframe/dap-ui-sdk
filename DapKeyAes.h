@@ -28,16 +28,17 @@
 
 typedef unsigned char byte;
 
-#define AES_BLOCKSIZE 16
-#define AES_KEY_LENGTH 16
+#define BUFF_ENC_OP_SIZE 100000
 
-class DapKeyIaes : public DapKey
+class DapKeyAes : public DapKey
 {
 private:
     dap_enc_key* _key;
+    char decode_buff[BUFF_ENC_OP_SIZE];
+    char encode_buff[BUFF_ENC_OP_SIZE];
 public:
-    DapKeyIaes();
-    ~DapKeyIaes();
+    DapKeyAes();
+    ~DapKeyAes();
     void encode(QByteArray& in, QByteArray& out);
     void decode(QByteArray& in, QByteArray& out);
 

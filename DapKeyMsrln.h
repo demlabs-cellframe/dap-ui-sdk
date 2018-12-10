@@ -5,13 +5,13 @@
 #include "rand/dap_rand.h"
 #include "dap_enc_key.h"
 // #include "liboqs/kex/kex.h"
-#include "DapKeyIaes.h"
+#include "DapKeyAes.h"
 
 
 class DapKeyMsrln : public DapKey
 {
     dap_enc_key *_key = Q_NULLPTR;
-    DapKeyIaes *_sharedSessionKey = Q_NULLPTR;
+    DapKeyAes *_sharedSessionKey = Q_NULLPTR;
 
     friend class DapKeyMsrlnTest;
 public:

@@ -19,7 +19,7 @@
 */
 
 #include "DapCrypt.h"
-#include "DapKeyIaes.h"
+#include "DapKeyAes.h"
 #include <QDebug>
 #include "DapSession.h"
 
@@ -135,6 +135,6 @@ void DapCrypt::initAesKey(QString &keyStr, KeyRole kRole)
     if(*dapKey)
         delete *dapKey;
 
-    *dapKey = new DapKeyIaes;
+    *dapKey = new DapKeyAes;
     (*dapKey)->init(QString(keyStr));
 }
