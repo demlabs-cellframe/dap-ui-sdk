@@ -76,16 +76,8 @@ void DapConnectStream::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data
     pktOut->type = DATA_PACKET;
 
     memcpy(pktOut->sig, daSig, sizeof(pktOut->sig));
-  /*  if(DapSession::getInstance()->isAuthorized())
-    {
-        strcpy(pktOut->s_addr,
-            (DapSession::getInstance()->user() + "@" +
-            DapSession::getInstance()->domain()).toLatin1().data());
-    }*/  // TODO:IVAN
-   /* if(dest_addr)
-        memcpy(pktOut->d_addr, dest_addr, sizeof(dest_addr));*/
-    pktOut->size = dOutEnc.size();
 
+    pktOut->size = dOutEnc.size();
 
     pktOutLastSeqID++;
     if(pktOutLastSeqID == 0xffffffff)
@@ -485,11 +477,15 @@ void DapConnectStream::sltStreamProcess()
 
 void DapConnectStream::procPktIn(DapPacketHdr * pkt, void * data)
 {
-    //qDebug() << "[DapConnectStream::procPktIn]";
     QByteArray decData, inData;
     inData.append((const char*) data, pkt->size);
 
     DapCrypt::me()->decode(inData, decData, KeyRoleStream);
+
+    if(decData.size() == 0) {
+        qWarning() << "Error decode. Packet loosed";
+        return;
+    }
 
     DapChannelPacketHdr* channelPkt = (DapChannelPacketHdr*) calloc (1,sizeof(DapChannelPacketHdr));
     memcpy(channelPkt, decData.constData(), sizeof(DapChannelPacketHdr));
