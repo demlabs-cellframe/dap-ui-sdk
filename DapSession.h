@@ -64,7 +64,9 @@ public:
     QNetworkReply* encRequest2(DapConnectBase *dcb, const QString& reqData,const QString& url,
                               const QString& subUrl,const QString& query);
 
-    void setDapUri(const QString& addr, const uint16_t port); //ok
+    void setDapUri(const QString& addr, const uint16_t port);
+
+    void clearCredentials();
 
 public slots:
     void encryptInit();
@@ -96,8 +98,6 @@ protected:
     QString m_upstreamIp;
 
     QString m_sessionServerBobMessage;
-
-    bool critError = false;
 
     void encRequest(const QString& reqData, const QString& url, const QString& subUrl,
                                const QString& query, QObject* obj, const char* slot);

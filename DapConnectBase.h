@@ -64,6 +64,9 @@ Q_SIGNALS:
     void finished();
     void errorNetwork(const QString &e);
     void errorAuth(int);
+
+    void authenticationRequiredError();
+
     void notify(const QString&);
 };
 

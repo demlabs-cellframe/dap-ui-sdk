@@ -200,11 +200,6 @@ void DapSession::setDapUri(const QString& addr, const uint16_t port)
  */
 void DapSession::onAuthorize()
 {
-    if (critError) {
-        qDebug() << "Critical Error = True!";
-        return;
-    }
-
     arrData.append(netReply->readAll());
 
     if(arrData.size() <= 0)
@@ -269,7 +264,6 @@ void DapSession::onAuthorize()
     }
 
     if(!isCookie) {
-        critError = false;
         m_cookie.clear();
         emit errorAuthorization("No authorization cookie in server's reply");
     }
@@ -300,23 +294,31 @@ void DapSession::onLogout()
 }
 
 
-void DapSession::restoreNetworkConf() {
+void DapSession::restoreNetworkConf()
+{
     m_dapConnectBase->restoreDefaultNetConf();
 }
 
-void DapSession::saveNetworkConf() {
+void DapSession::saveNetworkConf()
+{
     m_dapConnectBase->saveCurrentNetConf();
 }
+
+void DapSession::clearCredentials()
+{
+    qDebug() << "clearCredentials()";
+    m_cookie.clear();
+    m_sessionKeyID.clear();
+}
+
 /**
  * @brief DapSession::logout
  */
 void DapSession::logout()
 {
     qDebug() << "Request for logout";
-    critError = false;
     encRequest("", DapSession::getInstance()->URL_DB, "auth", "logout", SLOT(onLogout()));
-    m_cookie.clear();
-    m_sessionKeyID.clear();
+    clearCredentials();
     m_upstreamAddress.clear();
     m_upstreamPort = 0;
     emit logoutRequested();
@@ -352,7 +354,6 @@ void DapSession::encRequest(const QString& reqData, const QString& url, const QS
  */
 void DapSession::authorize(const QString& user, const QString& password,const QString& domain)
 {
-    critError = false;
     m_xmlStreamReader.clear();
     m_user = user;
     m_userInform.clear();
@@ -367,7 +368,6 @@ void DapSession::authorize(const QString& user, const QString& password,const QS
  */
 void DapSession::errorSlt(QNetworkReply::NetworkError error)
 {
-    critError = true;
     switch(error){
         case QNetworkReply::ConnectionRefusedError:
             emit errorNetwork("connection refused");
@@ -401,7 +401,6 @@ void DapSession::errorSlt(QNetworkReply::NetworkError error)
             break;
         default:{
             emit errorNetwork(tr("Undefined network error"));
-            critError = false;
         }
     }
 }

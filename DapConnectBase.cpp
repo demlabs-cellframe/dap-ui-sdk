@@ -109,7 +109,10 @@ void DapConnectBase::slotReadPacketFinished()
 
 void DapConnectBase::slotNetworkError(QNetworkReply::NetworkError err)
 {
-    switch(err){
+    qWarning() << err;
+    switch(err) {
+        case QNetworkReply::AuthenticationRequiredError:
+            emit authenticationRequiredError();
         case QNetworkReply::ConnectionRefusedError:  Q_EMIT errorNetwork("Network error: ConnectionRefusedError");break;
         case QNetworkReply::HostNotFoundError: Q_EMIT errorNetwork("Network error: HostNotFoundError"); break;
         case QNetworkReply::TimeoutError: Q_EMIT errorNetwork("Network error: TimeoutError"); break;
