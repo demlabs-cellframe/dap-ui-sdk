@@ -111,7 +111,9 @@ void DapConnectStream::streamOpen(const QString& subUrl, const QString& query)
     DapCrypt::me()->encode(subUrlByte, subUrlEncrypted, KeyRoleSession);
     DapCrypt::me()->encode(queryByte, queryEncrypted, KeyRoleSession);
 
-    QString str_url=QString( "%1/%2?%3").arg(DapSession::getInstance()->URL_CTL).arg(QString(subUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding)) )
+    QString str_url=QString("%1/%2?%3")
+            .arg(DapSession::getInstance()->URL_CTL)
+            .arg(QString(subUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding)))
             .arg(QString(queryEncrypted.toBase64(QByteArray::Base64UrlEncoding)));
 
     m_streamCtlReply.clear();
@@ -186,12 +188,23 @@ qint64 DapConnectStream::writeStreamRaw(const void * data, size_t data_size)
 void DapConnectStream::sltIdFinishedRead()
 {
      qDebug() << "[DapConnectStream] Connection ID read finished";
+
+     QVariant statusCode = network_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+     if (!statusCode.isValid()) {
+         qWarning() << "Status code is not valid";
+     } else if (statusCode.toInt() == 401 ) {
+         qWarning() << "Server return unauthorized code. Need authorization";
+         emit authenticationRequiredError();
+         return;
+     }
+
      if(m_streamCtlReply.size() == 0) {
          QString error_msg = "Wrong reply. Maybe problem with network";
          qWarning() << error_msg;
          emit errorNetwork(error_msg);
          return;
      }
+
      QByteArray streamReplyDec;
      DapCrypt::me()->decode(m_streamCtlReply, streamReplyDec, KeyRoleSession);
      QString streamReplyStr(streamReplyDec);
@@ -240,7 +253,7 @@ void DapConnectStream::sltStreamBytesWritten(qint64 bytes)
 void DapConnectStream::sltStreamError(QAbstractSocket::SocketError socketError)
 {
 
-    qDebug() <<"[DapConnStream] socket error: "<<m_streamSocket->errorString();
+    qWarning() << "Socket error: " <<m_streamSocket->errorString();
     switch (socketError) {
         case QAbstractSocket::NetworkError:
             emit errorNetwork( tr("Networking error, pls fix your network configuration"));

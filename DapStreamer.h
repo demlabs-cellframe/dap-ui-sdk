@@ -80,7 +80,8 @@ public slots:
             << "media item " << query;
         m_dapConStream->streamOpen(subUrl, query);
     }
-    void openDefault(){
+
+    void openDefault() {
         open("socket_forward","sf=1");
     }
 
@@ -102,6 +103,8 @@ signals:
     void streamDisconnecting();
 
     void streamServKeyRecieved();
+
+    void sigUnauthorized();
 
     void sendChPacket(DapChannelPacketHdr* pkt, void* data, uint64_t *dest_addr = Q_NULLPTR);
 };
