@@ -5,7 +5,7 @@
 #include <QDateTime>
 #include <QTest>
 
-#include "DapKeyIaes.h"
+#include "DapKeyAes.h"
 
 class DapKeyIaesTest : public QObject {
     Q_OBJECT
@@ -31,7 +31,7 @@ private slots:
     }
 
     void encodeDecode() {
-        DapKeyIaes dka;
+        DapKeyAes dka;
         QByteArray seed = getRandomBytes(256);
         QByteArray kex_buf = getRandomBytes(256);
         dka.init(seed, kex_buf);
