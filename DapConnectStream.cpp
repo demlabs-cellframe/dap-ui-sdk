@@ -29,7 +29,7 @@ const size_t daPktSizeMaximum = 10241024;
 int daSigDetect(const QByteArray& b) { return b.indexOf(daSigQ); }
 
 
-DapConnectStream::DapConnectStream(QObject* parent) : DapConnectBase(parent),
+DapConnectStream::DapConnectStream(QObject* parent) : DapConnectClient(parent),
     pktOutLastSeqID(0), m_dapPktHdr(Q_NULLPTR), m_dapData(Q_NULLPTR), m_dataStream(Q_NULLPTR),
     m_streamState(SSS_NONE), m_isStreamOpened(false)
 {
@@ -124,7 +124,8 @@ void DapConnectStream::streamOpen(const QString& subUrl, const QString& query)
         disconnect(network_reply, &QNetworkReply::finished, this, &DapConnectStream::sltIdFinishedRead);
         delete network_reply;
     }
-    network_reply = request(str_url);
+
+    network_reply = request(DapSession::getInstance()->domain(), str_url);
 
     if(network_reply)
     {
@@ -326,7 +327,7 @@ void DapConnectStream::sltStreamConnected()
 
     qDebug() << "[DapConnectStream] Stream URL: " << str_url;
 
-    // Use QNetworkRequest or DapConnectBase::request
+    // Use QNetworkRequest or DapConnectClient::request
     QString str_request = QString(
                           "POST %2 HTTP/1.1\r\n"
                           "Connection: Keep-Alive\r\n"

@@ -21,7 +21,7 @@
 #ifndef DAPCONNECTSTREAM_H
 #define DAPCONNECTSTREAM_H
 
-#include "DapConnectBase.h"
+#include "DapConnectClient.h"
 #include "DapSession.h"
 #include "DapChannelPacket.h"
 #include <DapCrypt.h>
@@ -31,7 +31,7 @@
 #define SERVICE_PACKET 0xff
 #define KEEPALIVE_PACKET 0x11
 
-class DapConnectStream : public DapConnectBase
+class DapConnectStream : public DapConnectClient
 {
     Q_OBJECT
 public:
