@@ -46,7 +46,7 @@ const QString DapSession::URL_SERVER_LIST("/slist");
  */
 DapSession::DapSession()
 {
-    m_dapConnectBase = new DapConnectBase(this);
+    m_DapConnectClient = new DapConnectClient(this);
     baData = nullptr;
 }
 
@@ -57,7 +57,7 @@ DapSession::DapSession()
  */
 DapSession::~DapSession()
 {
-    delete m_dapConnectBase;
+    delete m_DapConnectClient;
 }
 
 /**
@@ -73,7 +73,7 @@ void DapSession::requestServerPublicKey()
     arrData.clear();
 
     QByteArray reqData = DapCrypt::me()->generateAliceMessage().toBase64();
-    netReply = m_dapConnectBase->request(URL_ENCRYPT + "/gd4y5yh78w42aaagh" , &reqData);
+    netReply = m_DapConnectClient->request(m_domain, URL_ENCRYPT + "/gd4y5yh78w42aaagh" , &reqData);
 
     connect(netReply, &QNetworkReply::readyRead, this, &DapSession::onDownloading);
     connect(netReply, &QNetworkReply::readChannelFinished, this,  &DapSession::onEnc);
@@ -151,7 +151,7 @@ void DapSession::onDownloading()
  * @param query
  * @return
  */
-QNetworkReply* DapSession::encRequest2(DapConnectBase *dcb, const QString& reqData, const QString& url,
+QNetworkReply* DapSession::encRequest2(DapConnectClient *dcb, const QString& reqData, const QString& url,
                           const QString& subUrl, const QString& query)
 {
     QNetworkReply * nr;
@@ -173,13 +173,13 @@ QNetworkReply* DapSession::encRequest2(DapConnectBase *dcb, const QString& reqDa
     if(subUrl.length())
     {
         if(query.length())
-            nr = dcb->request(url + "/" + BAsubUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding)
+            nr = dcb->request(m_domain, url + "/" + BAsubUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding)
                               + "?" + BAqueryEncrypted.toBase64(QByteArray::Base64UrlEncoding), &BAreqDataEnc);
         else
-            nr = dcb->request(url + "/" + BAsubUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding), &BAreqDataEnc);
+            nr = dcb->request(m_domain, url + "/" + BAsubUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding), &BAreqDataEnc);
     }
     else {
-        nr = dcb->request(url + "/", &BAreqDataEnc);
+        nr = dcb->request(m_domain, url + "/", &BAreqDataEnc);
     }
 
     return nr;
@@ -296,12 +296,12 @@ void DapSession::onLogout()
 
 void DapSession::restoreNetworkConf()
 {
-    m_dapConnectBase->restoreDefaultNetConf();
+    m_DapConnectClient->restoreDefaultNetConf();
 }
 
 void DapSession::saveNetworkConf()
 {
-    m_dapConnectBase->saveCurrentNetConf();
+    m_DapConnectClient->saveCurrentNetConf();
 }
 
 void DapSession::clearCredentials()
@@ -337,7 +337,7 @@ void DapSession::encRequest(const QString& reqData, const QString& url, const QS
                            const QString& query, QObject * obj, const char * slot)
 {
     arrData.clear();
-    netReply = encRequest2(m_dapConnectBase, reqData, url, subUrl, query);
+    netReply = encRequest2(m_DapConnectClient, reqData, url, subUrl, query);
 
     connect(netReply, SIGNAL(readyRead()), obj,SLOT(onDownloading()));
     connect(netReply, SIGNAL(readChannelFinished()), obj, slot);

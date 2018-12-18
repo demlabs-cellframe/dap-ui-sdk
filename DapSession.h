@@ -29,7 +29,7 @@
 #include <QXmlStreamReader>
 #include <QMap>
 #include <QList>
-#include "DapConnectBase.h"
+#include "DapConnectClient.h"
 
 #define SERVER_LIST_FILE "DiveVPNServers.xml"
 
@@ -61,7 +61,7 @@ public:
     void setUser(const QString& a_str) {m_user = a_str;}
     void setIP(const QString& a_str) {m_upstreamIp = a_str;}
 
-    QNetworkReply* encRequest2(DapConnectBase *dcb, const QString& reqData,const QString& url,
+    QNetworkReply* encRequest2(DapConnectClient *dcb, const QString& reqData,const QString& url,
                               const QString& subUrl,const QString& query);
 
     void setDapUri(const QString& addr, const uint16_t port);
@@ -82,7 +82,7 @@ protected:
     QString m_upstreamAddress, m_cookie, m_sessionKeyID;
     DapSession();
     ~DapSession();
-    DapConnectBase * m_dapConnectBase;
+    DapConnectClient * m_DapConnectClient;
 
 
     QXmlStreamReader m_xmlStreamReader;

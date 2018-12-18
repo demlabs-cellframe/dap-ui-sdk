@@ -19,12 +19,12 @@
 */
 
 
-#include "DapConnectBase.h"
+#include "DapConnectClient.h"
 #include "DapSession.h"
 #include <QNetworkProxy>
 #include <QNetworkConfiguration>
 
-DapConnectBase::DapConnectBase(QObject *parent) :
+DapConnectClient::DapConnectClient(QObject *parent) :
     QObject(parent)
 {
     http_client = new QNetworkAccessManager(this);
@@ -33,32 +33,35 @@ DapConnectBase::DapConnectBase(QObject *parent) :
     defaultNetworkConfig = new QNetworkConfiguration(http_client->activeConfiguration());
 }
 
-QString DapConnectBase::httpAddress()
+QString DapConnectClient::httpAddress()
 {
     return QString("http://%1:%2").arg(DapSession::getInstance()->upstreamAddress())
             .arg(DapSession::getInstance()->upstreamPort()) ;
 }
 
-void DapConnectBase::saveCurrentNetConf() {
+void DapConnectClient::saveCurrentNetConf()
+{
     if(defaultNetworkConfig != Q_NULLPTR)
         delete defaultNetworkConfig;
     qDebug() << "Save default configuration name:" << http_client->configuration().name();
     defaultNetworkConfig = new QNetworkConfiguration(http_client->configuration());
 }
 
-void DapConnectBase::restoreDefaultNetConf() {
+void DapConnectClient::restoreDefaultNetConf()
+{
     qDebug() << "Restore default configuration name: " << defaultNetworkConfig->name();
     http_client->setConfiguration(*defaultNetworkConfig);
 }
 
-void DapConnectBase::rebuildNetworkManager() {
+void DapConnectClient::rebuildNetworkManager()
+{
     delete http_client;
     http_client = new QNetworkAccessManager(this);
     http_client->setProxy(QNetworkProxy::NoProxy);
 }
 
 
-QNetworkReply* DapConnectBase::request(const QString & url, QByteArray * rData)
+QNetworkReply* DapConnectClient::request(const QString& domain, const QString & url, QByteArray * rData)
 {
     if(http_client->networkAccessible() == QNetworkAccessManager::NotAccessible) {
         rebuildNetworkManager();
@@ -67,7 +70,7 @@ QNetworkReply* DapConnectBase::request(const QString & url, QByteArray * rData)
     QNetworkReply * nReply;
     QNetworkRequest nRequest;
     nRequest.setUrl(QUrl(httpAddress().append(url)));
-    qDebug()<< "[DapConnectBase] requests httpAddress + url " << httpAddress().append(url);
+    qDebug()<< "[DapConnectClient] requests httpAddress + url " << httpAddress().append(url);
 
     if(!DapSession::getInstance()->cookie().isEmpty())
         nRequest.setRawHeader(QString("Cookie").toLatin1(), DapSession::getInstance()->cookie().toLatin1());
@@ -77,7 +80,7 @@ QNetworkReply* DapConnectBase::request(const QString & url, QByteArray * rData)
 
     if(rData)
     {
-        nRequest.setHeader(QNetworkRequest::ContentTypeHeader,"text/plain");
+        nRequest.setHeader(QNetworkRequest::ContentTypeHeader, "text/plain");
         nReply = http_client->post(nRequest,*rData);
     }
     else
@@ -90,24 +93,18 @@ QNetworkReply* DapConnectBase::request(const QString & url, QByteArray * rData)
         connect(nReply, SIGNAL (finished()),this, SLOT(slotReadPacketFinished()));
     }
     else
-        qDebug()<< "[DapConnectBase] Reply object is NULL";
+        qDebug()<< "[DapConnectClient] Reply object is NULL";
 
     return nReply;
 }
 
-QNetworkReply *DapConnectBase::request(const QString &url, QString &rData)
+void DapConnectClient::slotReadPacketFinished()
 {
-    auto tmp = QByteArray(rData.toStdString().c_str());
-    return request(url, &tmp);
-}
-
-void DapConnectBase::slotReadPacketFinished()
-{
-    qDebug() << "[DapConnectBase] Connection Read Packet finished " ;
+    qDebug() << "[DapConnectClient] Connection Read Packet finished " ;
     Q_EMIT finished();
 }
 
-void DapConnectBase::slotNetworkError(QNetworkReply::NetworkError err)
+void DapConnectClient::slotNetworkError(QNetworkReply::NetworkError err)
 {
     qWarning() << err;
     switch(err) {
@@ -128,7 +125,7 @@ void DapConnectBase::slotNetworkError(QNetworkReply::NetworkError err)
     }
 }
 
-DapConnectBase::~DapConnectBase()
+DapConnectClient::~DapConnectClient()
 {
     if(defaultNetworkConfig != Q_NULLPTR)
         delete defaultNetworkConfig;

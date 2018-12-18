@@ -19,8 +19,8 @@
 */
 
 
-#ifndef DAPCONNECTBASE_H
-#define DAPCONNECTBASE_H
+#ifndef DapConnectClient_H
+#define DapConnectClient_H
 
 #include <QObject>
 #include <QNetworkReply>
@@ -29,7 +29,12 @@
 #include <QList>
 #include <QBuffer>
 
-class DapConnectBase : public QObject
+// using HttpMethod = QNetworkAccessManager::Operation;
+
+using HttpRequestHeader = QPair<const QString&, const QString&>;
+
+// MAKE SINGELTON
+class DapConnectClient : public QObject
 {
     Q_OBJECT
 private:
@@ -39,11 +44,24 @@ private Q_SLOTS:
     void slotReadPacketFinished();
 
 public:
-    DapConnectBase(QObject *parent = Q_NULLPTR);
-    virtual ~DapConnectBase();
+    DapConnectClient(QObject *parent = Q_NULLPTR);
+    virtual ~DapConnectClient();
 
-    QNetworkReply * request(const QString & url, QByteArray * rData = Q_NULLPTR);
-    QNetworkReply * request(const QString & url, QString &rData);
+    /* Simple GET or POST request without custom headers.
+       If rData == Q_NULLPTR GET request is sents */
+    QNetworkReply* request(const QString& domain, const QString & url,
+                           QByteArray * rData = Q_NULLPTR);
+
+    /* Example call: request_GET("google.com", {
+     *                                           HTTP_REQUEST_HEADER("User-Agent", "Mozilla/5.0"),
+     *                                           HTTP_REQUEST_HEADER("Accept", "text/html")
+     *                                         }); */
+    QNetworkReply* request_GET(const QString& domain, const QString & url,
+                               std::initializer_list<HttpRequestHeader> headers);
+
+    // If Content Type Header not specified, sets: "text/plain"
+    QNetworkReply* request_POST(const QString& domain, const QString & url, const QByteArray& data,
+                                std::initializer_list<HttpRequestHeader> headers);
 
 protected:
     QNetworkAccessManager * http_client;
@@ -70,4 +88,4 @@ Q_SIGNALS:
     void notify(const QString&);
 };
 
-#endif // DAPCONNECTBASE_H
+#endif // DapConnectClient_H
