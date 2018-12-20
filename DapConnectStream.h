@@ -31,7 +31,7 @@
 #define SERVICE_PACKET 0xff
 #define KEEPALIVE_PACKET 0x11
 
-class DapConnectStream : public DapConnectClient
+class DapConnectStream : public QObject
 {
     Q_OBJECT
 public:
@@ -55,6 +55,8 @@ protected:
     QByteArray m_streamCtlReply;
 
     int m_dapDataPosition;
+
+    QNetworkReply * network_reply = Q_NULLPTR;
 
     SafeartsStreamState m_streamState;
     bool m_isStreamOpened;
@@ -84,6 +86,11 @@ public slots:
     void writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uint64_t *dest_addr = Q_NULLPTR);
 
 signals:
+    void finished();
+    void errorNetwork(const QString &e);
+    void authenticationRequiredError();
+    void notify(const QString&);
+
     void recivedChannelPacket(DapChannelPacketHdr* pkt, void* data);
     void streamOpened();
     void streamClosed();

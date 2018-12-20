@@ -29,7 +29,7 @@ const size_t daPktSizeMaximum = 10241024;
 int daSigDetect(const QByteArray& b) { return b.indexOf(daSigQ); }
 
 
-DapConnectStream::DapConnectStream(QObject* parent) : DapConnectClient(parent),
+DapConnectStream::DapConnectStream(QObject* parent) : QObject(parent),
     pktOutLastSeqID(0), m_dapPktHdr(Q_NULLPTR), m_dapData(Q_NULLPTR), m_dataStream(Q_NULLPTR),
     m_streamState(SSS_NONE), m_isStreamOpened(false)
 {
@@ -125,7 +125,7 @@ void DapConnectStream::streamOpen(const QString& subUrl, const QString& query)
         delete network_reply;
     }
 
-    network_reply = request(DapSession::getInstance()->domain(), str_url);
+    network_reply = DapSession::getInstance()->request(str_url);
 
     if(network_reply)
     {

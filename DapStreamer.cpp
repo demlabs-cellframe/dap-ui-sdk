@@ -34,7 +34,7 @@ DapStreamer::DapStreamer(QObject *obj) : QObject(obj)
 
    connect(m_dapConStream, &DapConnectStream::streamServKeyRecieved, this, &DapStreamer::streamServKeyRecieved);
    connect(m_dapConStream, &DapConnectStream::errorNetwork, this, &DapStreamer::errorText);
-   connect(m_dapConStream, &DapConnectStream::errorAuth, this, &DapStreamer::errorAuth);
+ //  connect(m_dapConStream, &DapConnectStream::errorAuth, this, &DapStreamer::errorAuth);
 
    connect(m_dapConStream, &DapConnectStream::authenticationRequiredError, this, &DapStreamer::sigUnauthorized);
 
