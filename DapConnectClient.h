@@ -32,8 +32,7 @@
 
 using HttpRequestHeader = QPair<const QString, const QString>;
 
-// MAKE SINGELTON
-class DapConnectClient : public QObject
+class DapConnectClient final : public QObject
 {
     Q_OBJECT
 private:
@@ -63,7 +62,7 @@ public:
     QNetworkReply* request_POST(const QString& host,  quint16 port,
                                 const QString & urlPath, const QByteArray& data);
 
-protected:
+private:
     QNetworkAccessManager * m_httpClient;
     // Network setting before upping DAP network interface
     const QNetworkConfiguration * m_defaultNetworkConfig = Q_NULLPTR;
