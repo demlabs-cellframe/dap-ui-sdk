@@ -51,7 +51,6 @@ public:
     const QString& cookie()              { return m_cookie;                }
     const QString& sessionKeyID()        { return m_sessionKeyID;          }
     const QString& user()                { return m_user;                  }
-    const QString& domain()              { return m_domain;                }
 
     QList<QString> usersNames()          { return m_userInform.keys();     }
     const QString userInfo
@@ -59,7 +58,6 @@ public:
 
 
     void setUser(const QString& a_str) {m_user = a_str;}
-    void setIP(const QString& a_str) {m_upstreamIp = a_str;}
 
     QNetworkReply* encRequest2(DapConnectClient *dcb, const QString& reqData,const QString& url,
                               const QString& subUrl,const QString& query);
@@ -69,14 +67,23 @@ public:
     void clearCredentials();
 
 public slots:
+    /* Requests */
     void encryptInit();
     void authorize(const QString& user, const QString& password, const QString& domain);
     void logout();
+
+    // QNetworkReply must be cleaned
+    QNetworkReply * request(const QString &url, const QString& queryString, const QByteArray *body = Q_NULLPTR);
+
+    // url can be with query params
+    QNetworkReply * request(const QString &url, const QByteArray *body = Q_NULLPTR);
+
     void restoreNetworkConf();
     void saveNetworkConf();
     void abortRequest() { netReply->abort(); }
 
 protected:
+    using HttpHeaders = QVector<HttpRequestHeader>;
 
     quint16 m_upstreamPort;
     QString m_upstreamAddress, m_cookie, m_sessionKeyID;
@@ -94,8 +101,6 @@ protected:
     QMap<QString,QString> m_userInform;
 
     QString m_user; 
-    QString m_domain;
-    QString m_upstreamIp;
 
     QString m_sessionServerBobMessage;
 
@@ -106,6 +111,8 @@ protected:
     {
         encRequest(reqData, url, subUrl, query, this,slot);
     }
+
+    void fillSessionHttpHeaders(HttpHeaders& headers);
 public:
 
     void requestServerPublicKey();
@@ -116,7 +123,6 @@ private slots:
     void errorSlt(QNetworkReply::NetworkError);
     void onAuthorize();
     void onLogout();
-    void testMsrlnReplacementSlot();
 signals:
     void pubKeyRequested();
     void pubKeyServerRecived();
@@ -127,6 +133,7 @@ signals:
     void errorNetwork(const QString&);
     void errorConnection();
     void errorOfPubKeyServerReciving();
+
     void authRequested();
 
     void authorized(const QString &);

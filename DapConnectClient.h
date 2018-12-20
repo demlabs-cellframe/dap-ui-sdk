@@ -27,65 +27,52 @@
 #include <QAbstractSocket>
 #include <QString>
 #include <QList>
+#include <QVector>
 #include <QBuffer>
 
-// using HttpMethod = QNetworkAccessManager::Operation;
-
-using HttpRequestHeader = QPair<const QString&, const QString&>;
+using HttpRequestHeader = QPair<const QString, const QString>;
 
 // MAKE SINGELTON
 class DapConnectClient : public QObject
 {
     Q_OBJECT
 private:
-    void rebuildNetworkManager();
-private Q_SLOTS:
-    void slotNetworkError(QNetworkReply::NetworkError);
-    void slotReadPacketFinished();
+    bool _buildRequest(QNetworkRequest& req, const QString& host,  quint16 port, const QString & urlPath,
+                       const QVector<HttpRequestHeader>& headers);
 
+    void _rebuildNetworkManager();
 public:
     DapConnectClient(QObject *parent = Q_NULLPTR);
     virtual ~DapConnectClient();
 
-    /* Simple GET or POST request without custom headers.
-       If rData == Q_NULLPTR GET request is sents */
-    QNetworkReply* request(const QString& domain, const QString & url,
-                           QByteArray * rData = Q_NULLPTR);
-
     /* Example call: request_GET("google.com", {
-     *                                           HTTP_REQUEST_HEADER("User-Agent", "Mozilla/5.0"),
-     *                                           HTTP_REQUEST_HEADER("Accept", "text/html")
+     *                                           HttpRequestHeader("User-Agent", "Mozilla/5.0"),
+     *                                           HttpRequestHeader("Accept", "text/html")
      *                                         }); */
-    QNetworkReply* request_GET(const QString& domain, const QString & url,
-                               std::initializer_list<HttpRequestHeader> headers);
+    QNetworkReply* request_GET(const QString& host,  quint16 port, const QString & urlPath,
+                               const QVector<HttpRequestHeader>& headers);
 
-    // If Content Type Header not specified, sets: "text/plain"
-    QNetworkReply* request_POST(const QString& domain, const QString & url, const QByteArray& data,
-                                std::initializer_list<HttpRequestHeader> headers);
+    // Sets Content-Type Header by default "text/plain"
+    QNetworkReply* request_GET(const QString& host,  quint16 port,const QString & urlPath);
+
+    QNetworkReply* request_POST(const QString& host,  quint16 port,
+                                const QString & urlPath, const QByteArray& data,
+                                const QVector<HttpRequestHeader>& headers);
+
+    // Sets Content-Type Header by default "text/plain"
+    QNetworkReply* request_POST(const QString& host,  quint16 port,
+                                const QString & urlPath, const QByteArray& data);
 
 protected:
-    QNetworkAccessManager * http_client;
-    QNetworkReply * network_reply;
+    QNetworkAccessManager * m_httpClient;
     // Network setting before upping DAP network interface
-    const QNetworkConfiguration * defaultNetworkConfig = Q_NULLPTR;
-
-    QByteArray byte_buffer;
-
-    static QString httpAddress();
+    const QNetworkConfiguration * m_defaultNetworkConfig = Q_NULLPTR;
 
 public slots:
     // Restore network configuration before upping DAP network interface
     void restoreDefaultNetConf();
     // Saving network configuration before upping DAP network interface
     void saveCurrentNetConf();
-Q_SIGNALS:
-    void finished();
-    void errorNetwork(const QString &e);
-    void errorAuth(int);
-
-    void authenticationRequiredError();
-
-    void notify(const QString&);
 };
 
 #endif // DapConnectClient_H

@@ -50,14 +50,39 @@ DapSession::DapSession()
     baData = nullptr;
 }
 
-
-
 /**
  * @brief DapSession::~DapSession
  */
 DapSession::~DapSession()
 {
     delete m_DapConnectClient;
+}
+
+QNetworkReply * DapSession::request(const QString &url, const QByteArray *body)
+{
+    if(m_sessionKeyID.isEmpty()) {
+        qCritical() << "Can't send request to server."
+                       "Session was not be initialized";
+        return Q_NULLPTR;
+    }
+
+    QVector<HttpRequestHeader> headers;
+    fillSessionHttpHeaders(headers);
+
+    if(body) {
+        return m_DapConnectClient->request_POST(m_upstreamAddress,
+                                                m_upstreamPort,
+                                                url, *body, headers);
+    }
+
+    return m_DapConnectClient->request_GET(m_upstreamAddress,
+                                           m_upstreamPort,
+                                           url, headers);
+}
+
+QNetworkReply * DapSession::request(const QString &url, const QString& queryString, const QByteArray *body)
+{
+    return request(url + "?" + queryString, body);
 }
 
 /**
@@ -67,13 +92,16 @@ void DapSession::requestServerPublicKey()
 {
     if(baData)
         free(baData);
-    baData=nullptr;
+    baData = nullptr;
 
     m_xmlStreamReader.clear();
     arrData.clear();
 
     QByteArray reqData = DapCrypt::me()->generateAliceMessage().toBase64();
-    netReply = m_DapConnectClient->request(m_domain, URL_ENCRYPT + "/gd4y5yh78w42aaagh" , &reqData);
+    netReply = m_DapConnectClient->request_POST(m_upstreamAddress,
+                                                m_upstreamPort,
+                                                URL_ENCRYPT + "/gd4y5yh78w42aaagh" ,
+                                                reqData);
 
     connect(netReply, &QNetworkReply::readyRead, this, &DapSession::onDownloading);
     connect(netReply, &QNetworkReply::readChannelFinished, this,  &DapSession::onEnc);
@@ -87,6 +115,7 @@ void DapSession::encryptInit()
 {
     requestServerPublicKey();
 }
+
 
 /**
  * @brief DapSession::onEnc
@@ -142,6 +171,17 @@ void DapSession::onDownloading()
     arrData.append(netReply->readAll());
 }
 
+void DapSession::fillSessionHttpHeaders(HttpHeaders& headers)
+{
+    headers.append({"Content-Type","text/plain"});
+
+    if(!m_cookie.isEmpty()) {
+        headers.append({"Cookie", m_cookie});
+    }
+    if(!m_sessionKeyID.isEmpty()) {
+        headers.append({"KeyID", m_sessionKeyID});
+    }
+}
 /**
  * @brief DapSession::encRequest2
  * @param dcb
@@ -154,7 +194,6 @@ void DapSession::onDownloading()
 QNetworkReply* DapSession::encRequest2(DapConnectClient *dcb, const QString& reqData, const QString& url,
                           const QString& subUrl, const QString& query)
 {
-    QNetworkReply * nr;
     QByteArray BAreqData = reqData.toLatin1();
     QByteArray BAreqDataEnc;
     QByteArray BAsubUrlEncrypted;
@@ -164,25 +203,21 @@ QNetworkReply* DapSession::encRequest2(DapConnectClient *dcb, const QString& req
 
     DapCrypt::me()->encode(BAreqData, BAreqDataEnc, KeyRoleSession);
 
-
-    if(subUrl.length())
+    QString urlPath = url;
+    if(subUrl.length()) {
         DapCrypt::me()->encode(subUrlByte, BAsubUrlEncrypted, KeyRoleSession);
-    if(query.length())
+        urlPath += "/" + BAsubUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding);
+    }
+    if(query.length()) {
         DapCrypt::me()->encode(queryByte, BAqueryEncrypted, KeyRoleSession);
-
-    if(subUrl.length())
-    {
-        if(query.length())
-            nr = dcb->request(m_domain, url + "/" + BAsubUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding)
-                              + "?" + BAqueryEncrypted.toBase64(QByteArray::Base64UrlEncoding), &BAreqDataEnc);
-        else
-            nr = dcb->request(m_domain, url + "/" + BAsubUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding), &BAreqDataEnc);
-    }
-    else {
-        nr = dcb->request(m_domain, url + "/", &BAreqDataEnc);
+        urlPath += "?" + BAqueryEncrypted.toBase64(QByteArray::Base64UrlEncoding);
     }
 
-    return nr;
+    HttpHeaders headers;
+    fillSessionHttpHeaders(headers);
+
+    return dcb->request_POST(m_upstreamAddress, m_upstreamPort,
+                        urlPath, BAreqDataEnc, headers);
 }
 
 /**
@@ -191,6 +226,7 @@ QNetworkReply* DapSession::encRequest2(DapConnectClient *dcb, const QString& req
  */
 void DapSession::setDapUri(const QString& addr, const uint16_t port)
 {
+    qDebug() << "DapSession set Uri" << addr << port;
     m_upstreamAddress = addr;
     m_upstreamPort = port;
 }
@@ -250,6 +286,7 @@ void DapSession::onAuthorize()
                 qDebug() << " auth_info = " << m_xmlStreamReader.name();
                 if (m_xmlStreamReader.name() == "cookie") {
                     m_cookie = m_xmlStreamReader.readElementText();
+                    qDebug() << "m_cookie: " << m_cookie;
                     isCookie = true;
                     //requestServerList();
                     emit authorized(m_cookie);
@@ -268,21 +305,6 @@ void DapSession::onAuthorize()
         emit errorAuthorization("No authorization cookie in server's reply");
     }
 }
-
-/**
- * @brief DapSession::testRsaReplacementSlot
- */
-void DapSession::testMsrlnReplacementSlot()
-{
-    arrData.append(netReply->readAll());
-
-    QByteArray dByteArr;
-    DapCrypt::me()->decode(arrData, dByteArr, KeyRoleSession);
-
-    m_xmlStreamReader.addData(dByteArr);
-    qDebug() << "[DapSession] Decoded data: " << QString::fromLatin1(dByteArr);
-}
-
 
 /**
  * @brief DapSession::onLogout
@@ -357,7 +379,6 @@ void DapSession::authorize(const QString& user, const QString& password,const QS
     m_xmlStreamReader.clear();
     m_user = user;
     m_userInform.clear();
-    m_domain = domain;
     encRequest(user + " " + password + " " + domain, URL_DB, "auth", "login", SLOT(onAuthorize()));
     emit authRequested();
 }

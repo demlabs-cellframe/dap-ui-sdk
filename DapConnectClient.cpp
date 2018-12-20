@@ -24,110 +24,123 @@
 #include <QNetworkProxy>
 #include <QNetworkConfiguration>
 
+
+#define HTTP_ADDRESS_URL_TEMPLATE(host, port, url) \
+    QString("http://%1:%2%3").arg(host).arg(port).arg(url)
+
 DapConnectClient::DapConnectClient(QObject *parent) :
     QObject(parent)
 {
-    http_client = new QNetworkAccessManager(this);
-    http_client->setProxy(QNetworkProxy::NoProxy);
-    network_reply = Q_NULLPTR;
-    defaultNetworkConfig = new QNetworkConfiguration(http_client->activeConfiguration());
-}
-
-QString DapConnectClient::httpAddress()
-{
-    return QString("http://%1:%2").arg(DapSession::getInstance()->upstreamAddress())
-            .arg(DapSession::getInstance()->upstreamPort()) ;
+    m_httpClient = new QNetworkAccessManager(this);
+    m_httpClient->setProxy(QNetworkProxy::NoProxy);
+    m_defaultNetworkConfig = new QNetworkConfiguration(m_httpClient->activeConfiguration());
 }
 
 void DapConnectClient::saveCurrentNetConf()
 {
-    if(defaultNetworkConfig != Q_NULLPTR)
-        delete defaultNetworkConfig;
-    qDebug() << "Save default configuration name:" << http_client->configuration().name();
-    defaultNetworkConfig = new QNetworkConfiguration(http_client->configuration());
+    if(m_defaultNetworkConfig != Q_NULLPTR)
+        delete m_defaultNetworkConfig;
+    qDebug() << "Save default configuration name:" << m_httpClient->configuration().name();
+    m_defaultNetworkConfig = new QNetworkConfiguration(m_httpClient->configuration());
 }
 
 void DapConnectClient::restoreDefaultNetConf()
 {
-    qDebug() << "Restore default configuration name: " << defaultNetworkConfig->name();
-    http_client->setConfiguration(*defaultNetworkConfig);
+    qDebug() << "Restore default configuration name: " << m_defaultNetworkConfig->name();
+    m_httpClient->setConfiguration(*m_defaultNetworkConfig);
 }
 
-void DapConnectClient::rebuildNetworkManager()
+void DapConnectClient::_rebuildNetworkManager()
 {
-    delete http_client;
-    http_client = new QNetworkAccessManager(this);
-    http_client->setProxy(QNetworkProxy::NoProxy);
+    delete m_httpClient;
+    m_httpClient = new QNetworkAccessManager(this);
+    m_httpClient->setProxy(QNetworkProxy::NoProxy);
 }
 
-
-QNetworkReply* DapConnectClient::request(const QString& domain, const QString & url, QByteArray * rData)
+bool DapConnectClient::_buildRequest(QNetworkRequest& req, const QString& host,
+                                     quint16 port, const QString & urlPath,
+                                     const QVector<HttpRequestHeader>& headers)
 {
-    if(http_client->networkAccessible() == QNetworkAccessManager::NotAccessible) {
-        rebuildNetworkManager();
+    if(m_httpClient->networkAccessible() == QNetworkAccessManager::NotAccessible) {
+        _rebuildNetworkManager();
     }
 
-    QNetworkReply * nReply;
-    QNetworkRequest nRequest;
-    nRequest.setUrl(QUrl(httpAddress().append(url)));
-    qDebug()<< "[DapConnectClient] requests httpAddress + url " << httpAddress().append(url);
+    QString httpAddress = HTTP_ADDRESS_URL_TEMPLATE(host, port, urlPath);
+    qDebug()<< "Requests httpAddress + url " << httpAddress;
 
-    if(!DapSession::getInstance()->cookie().isEmpty())
-        nRequest.setRawHeader(QString("Cookie").toLatin1(), DapSession::getInstance()->cookie().toLatin1());
-
-    if(!DapSession::getInstance()->sessionKeyID().isEmpty())
-        nRequest.setRawHeader(QString("KeyID").toLatin1(), DapSession::getInstance()->sessionKeyID().toLatin1());
-
-    if(rData)
-    {
-        nRequest.setHeader(QNetworkRequest::ContentTypeHeader, "text/plain");
-        nReply = http_client->post(nRequest,*rData);
+    req.setUrl(httpAddress);
+    if(!req.url().isValid()) {
+        qCritical() << "Bad URL";
+        return false;
     }
-    else
-        nReply = http_client->get(nRequest);
 
-    if(nReply)
-    {
-        connect(nReply, SIGNAL(error(QNetworkReply::NetworkError)),
-                this, SLOT(slotNetworkError(QNetworkReply::NetworkError)));
-        connect(nReply, SIGNAL (finished()),this, SLOT(slotReadPacketFinished()));
+    for(const auto& header : headers) {
+        req.setRawHeader(header.first.toLatin1(), header.second.toLatin1());
     }
-    else
-        qDebug()<< "[DapConnectClient] Reply object is NULL";
 
-    return nReply;
+    return true;
 }
 
-void DapConnectClient::slotReadPacketFinished()
+QNetworkReply* DapConnectClient::request_GET(const QString& host,  quint16 port, const QString & urlPath)
 {
-    qDebug() << "[DapConnectClient] Connection Read Packet finished " ;
-    Q_EMIT finished();
+    return request_GET(host, port, urlPath, {
+                            HttpRequestHeader("Content-Type","text/plain")
+                        });
 }
 
-void DapConnectClient::slotNetworkError(QNetworkReply::NetworkError err)
+QNetworkReply* DapConnectClient::request_GET(const QString& host,  quint16 port, const QString & urlPath,
+                           const QVector<HttpRequestHeader>& headers)
 {
-    qWarning() << err;
-    switch(err) {
-        case QNetworkReply::AuthenticationRequiredError:
-            emit authenticationRequiredError();
-        case QNetworkReply::ConnectionRefusedError:  Q_EMIT errorNetwork("Network error: ConnectionRefusedError");break;
-        case QNetworkReply::HostNotFoundError: Q_EMIT errorNetwork("Network error: HostNotFoundError"); break;
-        case QNetworkReply::TimeoutError: Q_EMIT errorNetwork("Network error: TimeoutError"); break;
-        case QNetworkReply::TemporaryNetworkFailureError: Q_EMIT errorNetwork("Network error: TemporaryNetworkFailureError");break;
-        case QNetworkReply::NetworkSessionFailedError: Q_EMIT errorNetwork("Network error: NetworkSessionFailedError"); break;
-        case QNetworkReply::BackgroundRequestNotAllowedError: Q_EMIT errorNetwork("Network error: BackgroundRequestNotAllowedError"); break;
-        case QNetworkReply::ProxyConnectionRefusedError: Q_EMIT errorNetwork("Network error: ProxyConnectionRefusedError"); break;
-        case QNetworkReply::ProxyNotFoundError: Q_EMIT errorNetwork("Network error: ProxyNotFoundError");break;
-        case QNetworkReply::ProxyTimeoutError: Q_EMIT errorNetwork("Network error: ProxyTimeoutError");break;
-        case QNetworkReply::InternalServerError: emit errorNetwork("Network error: InternalServerError");break;
-        case QNetworkReply::ProxyAuthenticationRequiredError: Q_EMIT errorNetwork("Network error: ProxyAuthenticationRequiredError");break;
-        default: emit errorNetwork ("UnknownServerError"); break;
+    QNetworkRequest req;
+    if(!_buildRequest(req, host, port, urlPath, headers)) {
+        return Q_NULLPTR;
     }
+    return m_httpClient->get(req);
 }
+
+QNetworkReply* DapConnectClient::request_POST(const QString& host,  quint16 port,
+                                              const QString & urlPath, const QByteArray& data)
+{
+    return request_POST(host, port, urlPath, data, {
+                            HttpRequestHeader("Content-Type","text/plain")
+                        });
+}
+
+QNetworkReply* DapConnectClient::request_POST(const QString& host,  quint16 port,
+                            const QString & urlPath, const QByteArray& data,
+                            const QVector<HttpRequestHeader>& headers)
+{
+    QNetworkRequest req;
+    if(!_buildRequest(req, host, port, urlPath, headers)) {
+        return Q_NULLPTR;
+    }
+    return m_httpClient->post(req, data);
+}
+
+//void DapConnectClient::slotNetworkError(QNetworkReply::NetworkError err)
+//{
+//    qWarning() << err;
+//    switch(err) {
+//        case QNetworkReply::AuthenticationRequiredError:
+//            emit authenticationRequiredError();
+//        case QNetworkReply::ConnectionRefusedError:  Q_EMIT errorNetwork("Network error: ConnectionRefusedError");break;
+//        case QNetworkReply::HostNotFoundError: Q_EMIT errorNetwork("Network error: HostNotFoundError"); break;
+//        case QNetworkReply::TimeoutError: Q_EMIT errorNetwork("Network error: TimeoutError"); break;
+//        case QNetworkReply::TemporaryNetworkFailureError: Q_EMIT errorNetwork("Network error: TemporaryNetworkFailureError");break;
+//        case QNetworkReply::NetworkSessionFailedError: Q_EMIT errorNetwork("Network error: NetworkSessionFailedError"); break;
+//        case QNetworkReply::BackgroundRequestNotAllowedError: Q_EMIT errorNetwork("Network error: BackgroundRequestNotAllowedError"); break;
+//        case QNetworkReply::ProxyConnectionRefusedError: Q_EMIT errorNetwork("Network error: ProxyConnectionRefusedError"); break;
+//        case QNetworkReply::ProxyNotFoundError: Q_EMIT errorNetwork("Network error: ProxyNotFoundError");break;
+//        case QNetworkReply::ProxyTimeoutError: Q_EMIT errorNetwork("Network error: ProxyTimeoutError");break;
+//        case QNetworkReply::InternalServerError: emit errorNetwork("Network error: InternalServerError");break;
+//        case QNetworkReply::ProxyAuthenticationRequiredError: Q_EMIT errorNetwork("Network error: ProxyAuthenticationRequiredError");break;
+//        default: emit errorNetwork ("UnknownServerError"); break;
+//    }
+//}
 
 DapConnectClient::~DapConnectClient()
 {
-    if(defaultNetworkConfig != Q_NULLPTR)
-        delete defaultNetworkConfig;
-    delete http_client;
+    if(m_defaultNetworkConfig != Q_NULLPTR)
+        delete m_defaultNetworkConfig;
+    delete m_httpClient;
 }
