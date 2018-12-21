@@ -31,8 +31,6 @@
 #include <QList>
 #include "DapConnectClient.h"
 
-#define SERVER_LIST_FILE "DiveVPNServers.xml"
-
 class DapSession : public QObject
 {
     Q_OBJECT
@@ -56,69 +54,55 @@ public:
     const QString userInfo
           (const QString & user_name)    { return m_userInform[user_name]; }
 
-
-    void setUser(const QString& a_str) {m_user = a_str;}
-
-    QNetworkReply* encRequest2(DapConnectClient *dcb, const QString& reqData,const QString& url,
-                              const QString& subUrl,const QString& query);
-
     void setDapUri(const QString& addr, const uint16_t port);
 
     void clearCredentials();
 
 public slots:
-    /* Requests */
-    void encryptInit();
-    void authorize(const QString& user, const QString& password, const QString& domain);
-    void logout();
+    /* Request to server */
+    /* QNetworkReply does not need to be cleared. It's do DapConnectClient */
+    QNetworkReply * encryptInitRequest();
+    QNetworkReply * authorizeRequest(const QString& user, const QString& password,
+                                     const QString& domain);
+    QNetworkReply * logoutRequest();
+    QNetworkReply * streamOpenRequest(const QString& subUrl, const QString& query);
 
-    // QNetworkReply must be cleaned
-    QNetworkReply * request(const QString &url, const QString& queryString, const QByteArray *body = Q_NULLPTR);
-
-    // url can be with query params
-    QNetworkReply * request(const QString &url, const QByteArray *body = Q_NULLPTR);
-
-    void restoreNetworkConf();
-    void saveNetworkConf();
-    void abortRequest() { netReply->abort(); }
+    void abortEncryptionInitRequest() { m_netEncryptReply->abort(); }
+    void abortAuthorizeRequest()      { m_netEncryptReply->abort(); }
+    void abortLogoutRequest()         { m_netLogoutReply->abort();  }
 
 protected:
     using HttpHeaders = QVector<HttpRequestHeader>;
 
     quint16 m_upstreamPort;
-    QString m_upstreamAddress, m_cookie, m_sessionKeyID;
+    QString m_upstreamAddress, m_cookie,
+            m_sessionKeyID, m_user;
+
     DapSession();
     ~DapSession();
-    DapConnectClient * m_DapConnectClient;
 
-
-    QXmlStreamReader m_xmlStreamReader;
-    QNetworkReply * netReply;
-
-    QByteArray arrData;
-    QByteArray *baData;
+    QNetworkReply * m_netEncryptReply;
+    QNetworkReply * m_netAuthorizeReply;
+    QNetworkReply * m_netLogoutReply;
 
     QMap<QString,QString> m_userInform;
 
-    QString m_user; 
+    QNetworkReply* encRequest(const QString& reqData,const QString& url,
+                              const QString& subUrl,const QString& query);
 
-    QString m_sessionServerBobMessage;
-
-    void encRequest(const QString& reqData, const QString& url, const QString& subUrl,
+    QNetworkReply* encRequest(const QString& reqData, const QString& url, const QString& subUrl,
                                const QString& query, QObject* obj, const char* slot);
-    void encRequest(const QString& reqData, const QString& url,
+
+    QNetworkReply* encRequest(const QString& reqData, const QString& url,
                     const QString& subUrl, const QString& query, const char* slot)
     {
-        encRequest(reqData, url, subUrl, query, this,slot);
+        return encRequest(reqData, url, subUrl, query, this, slot);
     }
 
     void fillSessionHttpHeaders(HttpHeaders& headers);
-public:
-
-    void requestServerPublicKey();
+    QNetworkReply * requestServerPublicKey();
 
 private slots:
-    void onDownloading();
     void onEnc();
     void errorSlt(QNetworkReply::NetworkError);
     void onAuthorize();
@@ -126,16 +110,14 @@ private slots:
 signals:
     void pubKeyRequested();
     void pubKeyServerRecived();
-    void encryptInitialized();
 
+    void encryptInitialized();
     void errorEncryption();
     void errorAuthorization(const QString &);
+
     void errorNetwork(const QString&);
-    void errorConnection();
-    void errorOfPubKeyServerReciving();
 
     void authRequested();
-
     void authorized(const QString &);
 
     void logoutRequested();

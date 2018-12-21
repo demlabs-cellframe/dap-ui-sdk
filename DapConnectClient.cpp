@@ -34,6 +34,8 @@ DapConnectClient::DapConnectClient(QObject *parent) :
     m_httpClient = new QNetworkAccessManager(this);
     m_httpClient->setProxy(QNetworkProxy::NoProxy);
     m_defaultNetworkConfig = new QNetworkConfiguration(m_httpClient->activeConfiguration());
+
+    connect(m_httpClient, &QNetworkAccessManager::finished, this, &DapConnectClient::finished);
 }
 
 void DapConnectClient::saveCurrentNetConf()
@@ -137,10 +139,3 @@ QNetworkReply* DapConnectClient::request_POST(const QString& host,  quint16 port
 //        default: emit errorNetwork ("UnknownServerError"); break;
 //    }
 //}
-
-DapConnectClient::~DapConnectClient()
-{
-    if(m_defaultNetworkConfig != Q_NULLPTR)
-        delete m_defaultNetworkConfig;
-    delete m_httpClient;
-}

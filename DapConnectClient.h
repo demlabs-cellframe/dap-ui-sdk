@@ -32,7 +32,7 @@
 
 using HttpRequestHeader = QPair<const QString, const QString>;
 
-class DapConnectClient final : public QObject
+class DapConnectClient : public QObject
 {
     Q_OBJECT
 private:
@@ -40,9 +40,14 @@ private:
                        const QVector<HttpRequestHeader>& headers);
 
     void _rebuildNetworkManager();
-public:
+
+private:
     DapConnectClient(QObject *parent = Q_NULLPTR);
-    virtual ~DapConnectClient();
+    ~DapConnectClient() = default;
+    DapConnectClient(const DapConnectClient&) = delete;
+    DapConnectClient& operator=(const DapConnectClient&) = delete;
+public:
+    static DapConnectClient* instance()  {static DapConnectClient client; return &client;}
 
     /* Example call: request_GET("google.com", {
      *                                           HttpRequestHeader("User-Agent", "Mozilla/5.0"),
@@ -66,6 +71,9 @@ private:
     QNetworkAccessManager * m_httpClient;
     // Network setting before upping DAP network interface
     const QNetworkConfiguration * m_defaultNetworkConfig = Q_NULLPTR;
+private slots:
+    // For clear all network reply objects
+    void finished(QNetworkReply *reply) { reply->deleteLater(); }
 
 public slots:
     // Restore network configuration before upping DAP network interface
