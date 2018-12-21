@@ -103,54 +103,29 @@ void DapConnectStream::streamOpen(const QString& subUrl, const QString& query)
     qDebug() << "[DapConnectStream] Stream open SubUrl = " << subUrl;
     qDebug() << "[DapConnectStream] Stream open query =" << query;
 
-    QByteArray subUrlEncrypted, queryEncrypted;
-
-    QByteArray subUrlByte = subUrl.toLatin1();
-    QByteArray queryByte = query.toLatin1();
-
-    DapCrypt::me()->encode(subUrlByte, subUrlEncrypted, KeyRoleSession);
-    DapCrypt::me()->encode(queryByte, queryEncrypted, KeyRoleSession);
-
-    QString str_url=QString("%1/%2?%3")
-            .arg(DapSession::getInstance()->URL_CTL)
-            .arg(QString(subUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding)))
-            .arg(QString(queryEncrypted.toBase64(QByteArray::Base64UrlEncoding)));
-
     m_streamCtlReply.clear();
     m_streamID.clear();
 
-    if(network_reply){
-        disconnect(network_reply, &QNetworkReply::readyRead, this, &DapConnectStream::sltIdReadyRead);
-        disconnect(network_reply, &QNetworkReply::finished, this, &DapConnectStream::sltIdFinishedRead);
-        delete network_reply;
-    }
-
-    network_reply = DapSession::getInstance()->request(str_url);
+    network_reply = DapSession::getInstance()->streamOpenRequest(subUrl, query);
 
     if(network_reply)
     {
         emit streamSessionRequested();
         connect(network_reply, &QNetworkReply::readyRead, this, &DapConnectStream::sltIdReadyRead);
         connect(network_reply, &QNetworkReply::finished, this, &DapConnectStream::sltIdFinishedRead);
-    }
-    else
+    } else {
+        qWarning() << "Network reply is NULL. Stream not will be open";
         emit errorNetwork("Can't init network connection");
+    }
 }
 
 void DapConnectStream::streamClose()
 {
     qDebug() <<"[SC] close the stream";
-    m_isStreamOpened=false;
-    if(network_reply)
-    {
-        disconnect(network_reply, &QNetworkReply::readyRead, this, &DapConnectStream::sltIdReadyRead);
-        disconnect(network_reply, &QNetworkReply::finished, this, &DapConnectStream::sltIdFinishedRead);
-        delete network_reply;
-        network_reply=nullptr;
-    }
     if(m_streamSocket->isOpen()){
         m_streamSocket->close();
     }
+    m_isStreamOpened=false;
 }
 
 qint64 DapConnectStream::writeStreamRaw(const void * data, size_t data_size)
