@@ -69,7 +69,7 @@ public slots:
     QNetworkReply * streamOpenRequest(const QString& subUrl, const QString& query);
 
     void abortEncryptionInitRequest() { m_netEncryptReply->abort(); }
-    void abortAuthorizeRequest()      { m_netEncryptReply->abort(); }
+    void abortAuthorizeRequest()      { m_netAuthorizeReply->abort(); }
     void abortLogoutRequest()         { m_netLogoutReply->abort();  }
 protected:
     using HttpHeaders = QVector<HttpRequestHeader>;
