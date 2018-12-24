@@ -42,7 +42,8 @@ public:
     static const QString URL_DB_FILE;
     static const QString URL_SERVER_LIST;
 
-    static DapSession * getInstance()    { static DapSession session; return &session; }
+    DapSession(QObject * obj = Q_NULLPTR): QObject(obj) {}
+    ~DapSession() {}
 
     const QString& upstreamAddress()     { return m_upstreamAddress;       }
     quint16 upstreamPort()               { return m_upstreamPort;          }
@@ -70,16 +71,12 @@ public slots:
     void abortEncryptionInitRequest() { m_netEncryptReply->abort(); }
     void abortAuthorizeRequest()      { m_netEncryptReply->abort(); }
     void abortLogoutRequest()         { m_netLogoutReply->abort();  }
-
 protected:
     using HttpHeaders = QVector<HttpRequestHeader>;
 
     quint16 m_upstreamPort;
     QString m_upstreamAddress, m_cookie,
             m_sessionKeyID, m_user;
-
-    DapSession();
-    ~DapSession();
 
     QNetworkReply * m_netEncryptReply;
     QNetworkReply * m_netAuthorizeReply;
