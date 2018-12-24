@@ -37,11 +37,12 @@ class DapConnectStream : public QObject
 public:
     enum SafeartsStreamState { SSS_NONE, SSS_CONNECTING, SSS_HTTP_HEADER,
                                SSS_FRAME_SEARCH, SSS_FRAME_HEADER, SSS_FRAME_BODY};
-    DapConnectStream(QObject* parent = Q_NULLPTR);
-    ~DapConnectStream(); //ok
+    DapConnectStream(DapSession * session, QObject* parent = Q_NULLPTR);
+    ~DapConnectStream();
     bool isConnected() { return m_streamSocket->isOpen(); }
     int upstreamSocket() { return m_streamSocket->isOpen()?m_streamSocket->socketDescriptor(): -1; }
 protected:
+    DapSession *m_session;
     quint32 pktOutLastSeqID;
 
     DapPacketHdr * m_dapPktHdr;

@@ -29,11 +29,13 @@ const size_t daPktSizeMaximum = 10241024;
 int daSigDetect(const QByteArray& b) { return b.indexOf(daSigQ); }
 
 
-DapConnectStream::DapConnectStream(QObject* parent) : QObject(parent),
+DapConnectStream::DapConnectStream(DapSession * session, QObject* parent) : QObject(parent),
     pktOutLastSeqID(0), m_dapPktHdr(Q_NULLPTR), m_dapData(Q_NULLPTR), m_dataStream(Q_NULLPTR),
     m_streamState(SSS_NONE), m_isStreamOpened(false)
 {
     qDebug() << "[DapConnectStream::DapConnectStream]";
+
+    m_session = session;
     m_streamSocket = new QTcpSocket(this);
     m_streamSocket->setReadBufferSize(1000024);
 
@@ -106,7 +108,7 @@ void DapConnectStream::streamOpen(const QString& subUrl, const QString& query)
     m_streamCtlReply.clear();
     m_streamID.clear();
 
-    network_reply = DapSession::getInstance()->streamOpenRequest(subUrl, query);
+    network_reply = m_session->streamOpenRequest(subUrl, query);
 
     if(network_reply)
     {
@@ -208,8 +210,8 @@ void DapConnectStream::sltIdFinishedRead()
           emit streamServKeyRecieved();
           DapCrypt::me()->initAesKey(streamServKey, KeyRoleStream);
           emit notify("Connecting...");
-          m_streamSocket->connectToHost(DapSession::getInstance()->upstreamAddress(),
-                                        DapSession::getInstance()->upstreamPort(),
+          m_streamSocket->connectToHost(m_session->upstreamAddress(),
+                                        m_session->upstreamPort(),
                                         QIODevice::ReadWrite);
      }
      else
@@ -257,16 +259,16 @@ void DapConnectStream::sltStreamError(QAbstractSocket::SocketError socketError)
         case QAbstractSocket::HostNotFoundError:
             emit errorNetwork( tr("The host %1 was not found. Please check the "
                            "host name and port %2 settings.")
-                 .arg(DapSession::getInstance()->upstreamAddress())
-                 .arg(DapSession::getInstance()->upstreamPort()));
+                 .arg(m_session->upstreamAddress())
+                 .arg(m_session->upstreamPort()));
         break;
         case QAbstractSocket::ConnectionRefusedError:
             emit errorNetwork( tr("The connection was refused by the peer. "
                            "Make sure the %1 is running, "
                            "and check that the host name and port %2 "
                            "is open")
-                 .arg(DapSession::getInstance()->upstreamAddress())
-                 .arg(DapSession::getInstance()->upstreamPort()));
+                 .arg(m_session->upstreamAddress())
+                 .arg(m_session->upstreamPort()));
 
             break;
         default:{
@@ -298,7 +300,7 @@ void DapConnectStream::sltStreamConnected()
 
     m_dataStream = new QDataStream(m_streamSocket);
     QString str_url = QString("%1/fjskd9234j?fj913htmdgaq-d9hf=%2")
-            .arg(DapSession::getInstance()->URL_STREAM).arg(m_streamID);
+            .arg(DapSession::URL_STREAM).arg(m_streamID);
 
     qDebug() << "[DapConnectStream] Stream URL: " << str_url;
 
@@ -310,8 +312,8 @@ void DapConnectStream::sltStreamConnected()
                           "User-Agent: DapClient %4 \r\n"
                           "Host: %3\r\n"
                           "\r\n")
-                            .arg(DapSession::getInstance()->cookie())
-                            .arg(str_url).arg(DapSession::getInstance()->upstreamAddress())
+                            .arg(m_session->cookie())
+                            .arg(str_url).arg(m_session->upstreamAddress())
                             .arg(2); // Do something with versioning
 
     qDebug() << "[DapConnectStream] Request on out : " << str_request;

@@ -27,7 +27,7 @@
 #include <QThread>
 #include <QHash>
 
-class DapChThread : public QThread //ok
+class DapChThread : public QThread
 {
     Q_OBJECT
 public:
@@ -46,10 +46,10 @@ class DapStreamer : public QObject
 {
     Q_OBJECT
 public:
-    DapStreamer(QObject *obj); //ok
-    virtual ~DapStreamer() { m_streamThread->quit(); m_streamThread->wait(); } //ok
-    DapChThread* addChProc(char chId, DapChBase* obj);//ok
-    bool isConnected(){ return m_dapConStream->isConnected();}//ok
+    DapStreamer(DapSession* mainSessionm, QObject *obj = Q_NULLPTR);
+    virtual ~DapStreamer() { m_streamThread->quit(); m_streamThread->wait(); }
+    DapChThread* addChProc(char chId, DapChBase* obj);
+    bool isConnected(){ return m_dapConStream->isConnected();}
     int upstreamSocket() { return m_dapConStream->upstreamSocket(); }
 protected:
     DapConnectStream* m_dapConStream;
