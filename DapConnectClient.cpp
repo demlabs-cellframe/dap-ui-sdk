@@ -47,6 +47,7 @@ void DapConnectClient::saveCurrentNetConf()
 
     if(m_httpClient->configuration().isValid()) {
         qDebug() << "Save default configuration name:" << m_httpClient->configuration().name();
+        m_defaultNetworkConfig = new QNetworkConfiguration(m_httpClient->configuration());
     } else {
         qWarning() << "Can't save default configuration. He doesn't valid.";
         return;
