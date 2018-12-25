@@ -41,21 +41,6 @@ const QString DapSession::URL_DB_FILE("/98971341937495431398");
 const QString DapSession::URL_SERVER_LIST("/slist");
 
 #define SESSION_KEY_ID_LEN 33
-/**
- * @brief DapSession::DapSession
- */
-DapSession::DapSession()
-{
-
-}
-
-/**
- * @brief DapSession::~DapSession
- */
-DapSession::~DapSession()
-{
-
-}
 
 QNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QString& query)
 {
@@ -322,7 +307,7 @@ void DapSession::clearCredentials()
 QNetworkReply * DapSession::logoutRequest()
 {
     qDebug() << "Request for logout";
-    QNetworkReply * netReply = encRequest("", DapSession::getInstance()->URL_DB, "auth", "logout", SLOT(onLogout()));
+    QNetworkReply * netReply = encRequest("", URL_DB, "auth", "logout", SLOT(onLogout()));
     clearCredentials();
     m_upstreamAddress.clear();
     m_upstreamPort = 0;
