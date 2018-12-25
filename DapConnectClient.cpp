@@ -40,16 +40,40 @@ DapConnectClient::DapConnectClient(QObject *parent) :
 
 void DapConnectClient::saveCurrentNetConf()
 {
-    if(m_defaultNetworkConfig != Q_NULLPTR)
+    if(m_defaultNetworkConfig != Q_NULLPTR) {
         delete m_defaultNetworkConfig;
-    qDebug() << "Save default configuration name:" << m_httpClient->configuration().name();
-    m_defaultNetworkConfig = new QNetworkConfiguration(m_httpClient->configuration());
+        m_defaultNetworkConfig = Q_NULLPTR;
+    }
+
+    if(m_httpClient->configuration().isValid()) {
+        qDebug() << "Save default configuration name:" << m_httpClient->configuration().name();
+    } else {
+        qWarning() << "Can't save default configuration. He doesn't valid.";
+        return;
+    }
 }
 
 void DapConnectClient::restoreDefaultNetConf()
 {
-    qDebug() << "Restore default configuration name: " << m_defaultNetworkConfig->name();
-    m_httpClient->setConfiguration(*m_defaultNetworkConfig);
+    if(m_defaultNetworkConfig) {
+        qDebug() << "Restore default configuration name: " << m_defaultNetworkConfig->name();
+
+        m_httpClient->setConfiguration(*m_defaultNetworkConfig);
+
+        if(m_httpClient->networkAccessible() == QNetworkAccessManager::NotAccessible ||
+                m_httpClient->networkAccessible() == QNetworkAccessManager::UnknownAccessibility) {
+            qWarning() << "Network not accessible or unknown accessibility. "
+                          "Rebuild network manager";
+            _rebuildNetworkManager();
+        }
+
+        delete m_defaultNetworkConfig;
+        m_defaultNetworkConfig = Q_NULLPTR;
+        return;
+    }
+
+    qWarning() << "Can't restore Default network configuration. Rebuild network manager";
+    _rebuildNetworkManager();
 }
 
 void DapConnectClient::_rebuildNetworkManager()

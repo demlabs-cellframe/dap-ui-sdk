@@ -377,6 +377,7 @@ QNetworkReply * DapSession::authorizeRequest(const QString& user, const QString&
  */
 void DapSession::errorSlt(QNetworkReply::NetworkError error)
 {
+    qWarning() << "Error: " << error;
     switch(error){
         case QNetworkReply::ConnectionRefusedError:
             emit errorNetwork("connection refused");
