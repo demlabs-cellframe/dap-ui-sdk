@@ -21,32 +21,12 @@
 #include "DapStreamer.h"
 #include <QDebug>
 
-DapStreamer::DapStreamer(DapSession* mainSession, QObject *obj) : QObject(obj)
+DapStreamer::DapStreamer(DapSession* mainSession, QObject *obj) : DapConnectStream(mainSession, obj)
 {
-   qDebug() <<"[SSB] init";
-   m_streamThread = new QThread;
-   m_dapConStream = new DapConnectStream(mainSession, this);
+    m_streamThread = new QThread;
 
-   connect(m_dapConStream, &DapConnectStream::streamOpened, this, &DapStreamer::streamOpened);
-   connect(m_dapConStream, &DapConnectStream::streamClosed, this, &DapStreamer::onStreamClosed);
-
-   connect(m_dapConStream, &DapConnectStream::streamSessionRequested, this, &DapStreamer::streamSessionRequested);
-
-   connect(m_dapConStream, &DapConnectStream::streamServKeyRecieved, this, &DapStreamer::streamServKeyRecieved);
-   connect(m_dapConStream, &DapConnectStream::errorNetwork, this, &DapStreamer::errorText);
- //  connect(m_dapConStream, &DapConnectStream::errorAuth, this, &DapStreamer::errorAuth);
-
-   connect(m_dapConStream, &DapConnectStream::authenticationRequiredError, this, &DapStreamer::sigUnauthorized);
-
-   connect(m_dapConStream, &DapConnectStream::recivedChannelPacket, this, &DapStreamer::readChPacket);
-   connect(this, &DapStreamer::sendChPacket, m_dapConStream, &DapConnectStream::writeChannelPacket);
-}
-
-void DapStreamer::close()
-{
-    qDebug() << "[DapStreamer] Stream closed.";
-    emit streamDisconnecting();
-    m_dapConStream->streamClose();
+    connect(this, &DapConnectStream::recivedChannelPacket, this, &DapStreamer::readChPacket);
+    connect(this, &DapStreamer::sendChPacket, this, &DapConnectStream::writeChannelPacket);
 }
 
 void DapStreamer::readChPacket(DapChannelPacketHdr *pkt, void *data)
@@ -61,6 +41,11 @@ void DapStreamer::readChPacket(DapChannelPacketHdr *pkt, void *data)
 
 DapChThread* DapStreamer::addChProc(char chId, DapChBase* obj)
 {
+    if(m_dsb.contains(chId)) {
+        qCritical() << "Proc with id" << chId << "already exists";
+        return Q_NULLPTR;
+    }
+
     DapChThread * dct = new DapChThread(obj);
     m_dsb.insert(chId, obj);
     m_dapChThead.insert(chId, dct);

@@ -37,7 +37,9 @@ class DapConnectStream : public QObject
 public:
     enum SafeartsStreamState { SSS_NONE, SSS_CONNECTING, SSS_HTTP_HEADER,
                                SSS_FRAME_SEARCH, SSS_FRAME_HEADER, SSS_FRAME_BODY};
+
     DapConnectStream(DapSession * session, QObject* parent = Q_NULLPTR);
+
     ~DapConnectStream();
     bool isConnected() { return m_streamSocket->isOpen(); }
     int upstreamSocket() { return m_streamSocket->isOpen()?m_streamSocket->socketDescriptor(): -1; }
@@ -53,7 +55,6 @@ protected:
     QDataStream * m_dataStream;
 
     QByteArray m_buf;
-    QByteArray m_streamCtlReply;
 
     int m_dapDataPosition;
 
@@ -69,13 +70,13 @@ protected:
     qint64 writeStreamRaw(const void * data, size_t data_size);
 
 private slots:
-    void sltStreamHostFound() { emit notify("Host found"); }
     void sltStreamProcess();
     void sltStreamConnected();
     void sltStreamDisconnected();
+
     void sltStreamError(QAbstractSocket::SocketError socketError);
-    void sltIdReadyRead() { m_streamCtlReply.append(network_reply->readAll()); }
-    void sltIdFinishedRead();
+    void sltStreamOpenCallback();
+
     void sltStreamBytesWritten(qint64 bytes);
 
 public slots:
@@ -93,8 +94,17 @@ signals:
     void notify(const QString&);
 
     void recivedChannelPacket(DapChannelPacketHdr* pkt, void* data);
+
+    void streamDisconnecting();
     void streamOpened();
     void streamClosed();
+
+    /* StreamOpen error signals */
+    void sigStreamOpenHttpError(int httpCode);
+    void sigStreamOpenNetworkError(QNetworkReply::NetworkError);
+    void sigStreamOpenBadResponseError();
+    // all another errors
+    void streamOpenError(int errorCode);
 
     void streamSessionRequested();
     void streamServKeyRecieved();

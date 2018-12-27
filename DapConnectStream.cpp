@@ -40,7 +40,7 @@ DapConnectStream::DapConnectStream(DapSession * session, QObject* parent) : QObj
     m_streamSocket->setReadBufferSize(1000024);
 
     connect(m_streamSocket,&QIODevice::readyRead, this,&DapConnectStream::sltStreamProcess);
-    connect(m_streamSocket,&QAbstractSocket::hostFound, this,&DapConnectStream::sltStreamHostFound);
+    //connect(m_streamSocket,&QAbstractSocket::hostFound, this,&DapConnectStream::sltStreamHostFound);
     connect(m_streamSocket,&QAbstractSocket::connected, this,&DapConnectStream::sltStreamConnected);
     connect(m_streamSocket,&QAbstractSocket::disconnected, this,&DapConnectStream::sltStreamDisconnected);
     connect(m_streamSocket,SIGNAL(bytesWritten(qint64)), this, SLOT(sltStreamBytesWritten(qint64)) );
@@ -54,7 +54,7 @@ DapConnectStream::DapConnectStream(DapSession * session, QObject* parent) : QObj
 
 DapConnectStream::~DapConnectStream()
 {
-    //delete m_streamSocket;
+
 }
 
 
@@ -105,7 +105,6 @@ void DapConnectStream::streamOpen(const QString& subUrl, const QString& query)
     qDebug() << "[DapConnectStream] Stream open SubUrl = " << subUrl;
     qDebug() << "[DapConnectStream] Stream open query =" << query;
 
-    m_streamCtlReply.clear();
     m_streamID.clear();
 
     network_reply = m_session->streamOpenRequest(subUrl, query);
@@ -113,8 +112,7 @@ void DapConnectStream::streamOpen(const QString& subUrl, const QString& query)
     if(network_reply)
     {
         emit streamSessionRequested();
-        connect(network_reply, &QNetworkReply::readyRead, this, &DapConnectStream::sltIdReadyRead);
-        connect(network_reply, &QNetworkReply::finished, this, &DapConnectStream::sltIdFinishedRead);
+        connect(network_reply, &QNetworkReply::finished, this, &DapConnectStream::sltStreamOpenCallback);
     } else {
         qWarning() << "Network reply is NULL. Stream not will be open";
         emit errorNetwork("Can't init network connection");
@@ -124,6 +122,7 @@ void DapConnectStream::streamOpen(const QString& subUrl, const QString& query)
 void DapConnectStream::streamClose()
 {
     qDebug() <<"[SC] close the stream";
+    emit streamDisconnecting();
     if(m_streamSocket->isOpen()){
         m_streamSocket->close();
     }
@@ -163,63 +162,70 @@ qint64 DapConnectStream::writeStreamRaw(const void * data, size_t data_size)
     }
 }
 
-void DapConnectStream::sltIdFinishedRead()
+void DapConnectStream::sltStreamOpenCallback()
 {
-     qDebug() << "[DapConnectStream] Connection ID read finished";
+    qDebug() << "Stream Open callback;";
 
-     QVariant statusCode = network_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-     if (!statusCode.isValid()) {
-         qWarning() << "Status code is not valid";
-     } else if (statusCode.toInt() == 401 ) {
-         qWarning() << "Server return unauthorized code. Need authorization";
-         emit authenticationRequiredError();
-         return;
-     }
+    if(network_reply->error() != QNetworkReply::NetworkError::NoError)
+        qWarning() << "Network Reply Error" << network_reply->error();
 
-     if(m_streamCtlReply.size() == 0) {
-         QString error_msg = "Wrong reply. Maybe problem with network";
-         qWarning() << error_msg;
-         emit errorNetwork(error_msg);
-         return;
-     }
+    if(network_reply->error() >= QNetworkReply::NetworkError::ConnectionRefusedError &&
+            network_reply->error() <= QNetworkReply::NetworkError::UnknownNetworkError ) {
+        qWarning() << "Can't open stream. Network error";
+        emit sigStreamOpenNetworkError(network_reply->error());
+        return;
+    }
 
-     QByteArray streamReplyDec;
-     DapCrypt::me()->decode(m_streamCtlReply, streamReplyDec, KeyRoleSession);
-     QString streamReplyStr(streamReplyDec);
+    QVariant statusCode = network_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    if (!statusCode.isValid()) {
+        qWarning() << "Status code is not valid";
+    } else if (statusCode.toInt() == 401 ) {
+        qWarning() << "Server return unauthorized code. Need authorization";
+        emit sigStreamOpenHttpError(statusCode.toInt());
+        return;
+    } else if (statusCode.toInt() == 400 ) {
+        qWarning() << "Bad Reqeust! Maybe without cookie or keyID.";
+        emit sigStreamOpenHttpError(statusCode.toInt());
+    } else if (statusCode.toInt() >= 402 && statusCode.toInt() < 600) {
+        emit sigStreamOpenHttpError(statusCode.toInt());
+    }
 
-     QStringList str_list = streamReplyStr.split(" ");
+    QByteArray baReply(network_reply->readAll());
+    if(baReply.size() == 0) {
+        qWarning() << "Reply is empty";
+        emit sigStreamOpenBadResponseError();
+        return;
+    }
 
-     if(str_list.length() != 2)
-     {
-         qWarning() << "[DapConnectStream] Wrong Reply Format!" << streamReplyStr;
-         m_streamID.clear();
-         if(m_isStreamOpened)
-            emit errorNetwork("Wrong server reply");
-         else
-             emit errorNetwork("Wrong server reply in ConnectionID request");
-         return;
-     }
+    QByteArray streamReplyDec;
+    DapCrypt::me()->decode(baReply, streamReplyDec, KeyRoleSession);
+    QString streamReplyStr(streamReplyDec);
 
-     m_streamID = str_list.at(0);
-     QString streamServKey = str_list.at(1);
+    QStringList str_list = streamReplyStr.split(" ");
 
-     if(m_streamID.length() < 13) // why 13?
-     {
-          qDebug()  << "[DapConnectStream] Stream server key for client requests: "
-                    << streamServKey;
-          emit streamServKeyRecieved();
-          DapCrypt::me()->initAesKey(streamServKey, KeyRoleStream);
-          emit notify("Connecting...");
-          m_streamSocket->connectToHost(m_session->upstreamAddress(),
-                                        m_session->upstreamPort(),
-                                        QIODevice::ReadWrite);
-     }
-     else
-     {
-         qDebug() << "[DapConnectStream] Can't open stream: " << m_streamID;
-         emit errorNetwork("Can't open packet stream: " + m_streamID);
-         m_streamID.clear();
-     }
+    if(str_list.length() != 2)
+    {
+        qWarning() << "Bad response. Wrong Reply Format!" << streamReplyStr;
+        emit sigStreamOpenBadResponseError();
+        return;
+    }
+
+    m_streamID = str_list.at(0);
+    QString streamServKey = str_list.at(1);
+
+    if(m_streamID.length() < 13) { // why 13?
+        qDebug()  << "[DapConnectStream] Stream server key for client requests: "
+                  << streamServKey;
+        emit streamServKeyRecieved();
+        DapCrypt::me()->initAesKey(streamServKey, KeyRoleStream);
+        m_streamSocket->connectToHost(m_session->upstreamAddress(),
+                                      m_session->upstreamPort(),
+                                      QIODevice::ReadWrite);
+    } else {
+        qWarning() << "Can't open stream." << m_streamID;
+        emit sigStreamOpenBadResponseError();
+        m_streamID.clear();
+    }
 
 }
 

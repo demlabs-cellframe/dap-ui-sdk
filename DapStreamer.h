@@ -42,29 +42,25 @@ public slots:
 };
 
 
-class DapStreamer : public QObject
+class DapStreamer : public DapConnectStream
 {
     Q_OBJECT
 public:
     DapStreamer(DapSession* mainSessionm, QObject *obj = Q_NULLPTR);
     virtual ~DapStreamer() { m_streamThread->quit(); m_streamThread->wait(); }
     DapChThread* addChProc(char chId, DapChBase* obj);
-    bool isConnected(){ return m_dapConStream->isConnected();}
-    int upstreamSocket() { return m_dapConStream->upstreamSocket(); }
 protected:
-    DapConnectStream* m_dapConStream;
     QHash<char, DapChBase*> m_dsb;
     QHash<char, DapChThread*> m_dapChThead;
     QThread* m_streamThread;
 
 protected slots:
-    void onStreamClosed()
-    {
+    void onStreamClosed() {
         qDebug() << "[DapStreamer] Stream closed";
         emit streamClosed();
     }
 
-    void readChPacket(DapChannelPacketHdr* pkt, void* data); //ok
+    void readChPacket(DapChannelPacketHdr* pkt, void* data);
 
 public slots:
     void writeChPacket(
@@ -75,37 +71,14 @@ public slots:
         emit sendChPacket(pkt,data,dest_addr);
     }
 
-    void open(const QString& subUrl, const QString query) {
-        qDebug() << "[DapStreamer] Open " << subUrl
-            << "media item " << query;
-        m_dapConStream->streamOpen(subUrl, query);
-    }
-
     void openDefault() {
-        open("socket_forward","sf=1");
+        qDebug() << "[DapStreamer] Open socket_forward media item sf=1";
+        streamOpen("socket_forward","sf=1");
     }
 
-    void abortStreamOpenRequest() { m_dapConStream->abortStreamRequest(); }
-
-    void close();
+    void abortStreamOpenRequest() { abortStreamRequest(); }
 
 signals:
-    void errorText(QString);
-    void errorNetwork(int);
-    void errorAuth(int);
-
-    void streamOpened();
-    void streamClosed();
-
-    void streamSessionRequested();
-    void streamConnecting();
-    void streamReconnecting();
-    void streamDisconnecting();
-
-    void streamServKeyRecieved();
-
-    void sigUnauthorized();
-
     void sendChPacket(DapChannelPacketHdr* pkt, void* data, uint64_t *dest_addr = Q_NULLPTR);
 };
 
