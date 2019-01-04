@@ -245,6 +245,7 @@ void DapSession::onAuthorize()
         return;
     } else if (QString::fromLatin1(dByteArr) == OP_CODE_INCORRECT_SYM){
         emit errorAuthorization("Incorrect symbols in request");
+        return;
     }
 
     bool isCookie = false;
