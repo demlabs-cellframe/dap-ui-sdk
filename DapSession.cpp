@@ -27,10 +27,7 @@
 
 #include "DapSession.h"
 #include "DapCrypt.h"
-#include <QDir>
-#include <QFile>
-
-#include <QThread>
+#include "DapReplyTimeout.h"
 #include "msrln/msrln.h"
 
 const QString DapSession::URL_ENCRYPT("/1901248124123459");
@@ -92,6 +89,9 @@ QNetworkReply* DapSession::requestServerPublicKey()
             this, SLOT(errorSlt(QNetworkReply::NetworkError)));
 
     emit pubKeyRequested();
+
+    DapReplyTimeout::set(m_netEncryptReply, m_requestTimeout);
+
     return m_netEncryptReply;
 }
 
@@ -147,7 +147,7 @@ void DapSession::onEnc()
     emit encryptInitialized();
 }
 
-void DapSession::fillSessionHttpHeaders(HttpHeaders& headers)
+void DapSession::fillSessionHttpHeaders(HttpHeaders& headers) const
 {
     headers.append({"Content-Type","text/plain"});
 
@@ -160,7 +160,7 @@ void DapSession::fillSessionHttpHeaders(HttpHeaders& headers)
 }
 
 /**
- * @brief DapSession::encRequest2
+ * @brief DapSession::encRequest
  * @param dcb
  * @param reqData
  * @param url
@@ -193,8 +193,10 @@ QNetworkReply* DapSession::encRequest(const QString& reqData, const QString& url
     HttpHeaders headers;
     fillSessionHttpHeaders(headers);
 
-    return DapConnectClient::instance()->request_POST(m_upstreamAddress, m_upstreamPort,
-                        urlPath, BAreqDataEnc, headers);
+    auto netReply = DapConnectClient::instance()->request_POST(m_upstreamAddress, m_upstreamPort,
+                                                               urlPath, BAreqDataEnc, headers);
+    DapReplyTimeout::set(netReply, m_requestTimeout);
+    return netReply;
 }
 
 /**

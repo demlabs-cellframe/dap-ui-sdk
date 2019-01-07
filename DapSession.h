@@ -34,6 +34,9 @@
 class DapSession : public QObject
 {
     Q_OBJECT
+private:
+    static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
+    const int m_requestTimeout;
 public:
     static const QString URL_ENCRYPT;
     static const QString URL_STREAM;
@@ -42,7 +45,11 @@ public:
     static const QString URL_DB_FILE;
     static const QString URL_SERVER_LIST;
 
-    DapSession(QObject * obj = Q_NULLPTR): QObject(obj) {}
+    DapSession(QObject * obj = Q_NULLPTR): QObject(obj), m_requestTimeout(DEFAULT_REQUEST_TIMEOUT) {}
+    DapSession(int requestTimeout): QObject(Q_NULLPTR), m_requestTimeout(requestTimeout) {}
+    DapSession(QObject * obj, int requestTimeout):
+        QObject(obj), m_requestTimeout(requestTimeout) {}
+
     ~DapSession() {}
 
     const QString& upstreamAddress()     { return m_upstreamAddress;       }
@@ -96,7 +103,7 @@ protected:
         return encRequest(reqData, url, subUrl, query, this, slot);
     }
 
-    void fillSessionHttpHeaders(HttpHeaders& headers);
+    void fillSessionHttpHeaders(HttpHeaders& headers) const;
     QNetworkReply * requestServerPublicKey();
 
 private slots:

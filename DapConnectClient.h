@@ -36,7 +36,6 @@ private:
 
     void _rebuildNetworkManager();
 
-private:
     DapConnectClient(QObject *parent = Q_NULLPTR);
     ~DapConnectClient() = default;
     DapConnectClient(const DapConnectClient&) = delete;

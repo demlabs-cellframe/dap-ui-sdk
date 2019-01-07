@@ -17,7 +17,8 @@ HEADERS += \
     $$PWD/DapKeyMsrln.h \
     $$PWD/DapLogger.h \
     $$PWD/DapKeyAes.h \
-    $$PWD/DapConnectClient.h
+    $$PWD/DapConnectClient.h \
+    $$PWD/DapReplyTimeout.h
 
 
 INCLUDEPATH += $$PWD
