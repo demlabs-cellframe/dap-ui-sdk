@@ -22,13 +22,8 @@
 #ifndef DapConnectClient_H
 #define DapConnectClient_H
 
-#include <QObject>
+#include <QNetworkConfigurationManager>
 #include <QNetworkReply>
-#include <QAbstractSocket>
-#include <QString>
-#include <QList>
-#include <QVector>
-#include <QBuffer>
 
 using HttpRequestHeader = QPair<const QString, const QString>;
 
@@ -69,17 +64,10 @@ public:
 
 private:
     QNetworkAccessManager * m_httpClient;
-    // Network setting before upping DAP network interface
-    const QNetworkConfiguration * m_defaultNetworkConfig = Q_NULLPTR;
+    QNetworkConfigurationManager* m_netConfManager;
 private slots:
     // For clear all network reply objects
     void finished(QNetworkReply *reply) { reply->deleteLater(); }
-
-public slots:
-    // Restore network configuration before upping DAP network interface
-    void restoreDefaultNetConf();
-    // Saving network configuration before upping DAP network interface
-    void saveCurrentNetConf();
 };
 
 #endif // DapConnectClient_H
