@@ -8,10 +8,6 @@ TEMPLATE = lib
 
 CONFIG +=  create_prl static
 
-
-DEFINES += DAP_BRAND=\\\"libdap-qt\\\"
-DEFINES += DAP_VERSION=\\\"123\\\"
-
 include (libdap-qt.pri)
 
 # The following define makes your compiler emit warnings if you use
