@@ -62,9 +62,11 @@ QNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QStri
     QVector<HttpRequestHeader> headers;
     fillSessionHttpHeaders(headers);
 
-    return DapConnectClient::instance()->request_GET(m_upstreamAddress,
-                                                     m_upstreamPort,
-                                                     str_url, headers);
+    auto netReply = DapConnectClient::instance()->request_GET(m_upstreamAddress,
+                                                              m_upstreamPort,
+                                                              str_url, headers);
+    DapReplyTimeout::set(netReply, m_requestTimeout);
+    return netReply;
 }
 
 /**
