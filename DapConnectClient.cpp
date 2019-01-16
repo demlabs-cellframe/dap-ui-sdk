@@ -53,6 +53,7 @@ DapConnectClient::DapConnectClient(QObject *parent) :
 void DapConnectClient::_rebuildNetworkManager()
 {
     qDebug() << "rebuildNetworkManager";
+    emit sigNetworkManagerRebuild();
     delete m_httpClient;
     m_httpClient = new QNetworkAccessManager(this);
     m_httpClient->setProxy(QNetworkProxy::NoProxy);
@@ -96,7 +97,9 @@ QNetworkReply* DapConnectClient::request_GET(const QString& host,  quint16 port,
     if(!_buildRequest(req, host, port, urlPath, headers)) {
         return Q_NULLPTR;
     }
-    return m_httpClient->get(req);
+    auto netReply = m_httpClient->get(req);
+    connect(this, &DapConnectClient::sigNetworkManagerRebuild, netReply, &QNetworkReply::abort);
+    return netReply;
 }
 
 QNetworkReply* DapConnectClient::request_POST(const QString& host,  quint16 port,
@@ -115,7 +118,9 @@ QNetworkReply* DapConnectClient::request_POST(const QString& host,  quint16 port
     if(!_buildRequest(req, host, port, urlPath, headers)) {
         return Q_NULLPTR;
     }
-    return m_httpClient->post(req, data);
+    auto netReply = m_httpClient->post(req, data);
+    connect(this, &DapConnectClient::sigNetworkManagerRebuild, netReply, &QNetworkReply::abort);
+    return netReply;
 }
 
 //void DapConnectClient::slotNetworkError(QNetworkReply::NetworkError err)

@@ -67,6 +67,8 @@ private:
 private slots:
     // For clear all network reply objects
     void finished(QNetworkReply *reply) { reply->deleteLater(); }
+signals:
+    void sigNetworkManagerRebuild();
 };
 
 #endif // DapConnectClient_H
