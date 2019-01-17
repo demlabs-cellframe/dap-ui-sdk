@@ -102,6 +102,12 @@ void DapConnectStream::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data
 
 void DapConnectStream::streamOpen(const QString& subUrl, const QString& query)
 {
+    if(m_streamSocket->isOpen()) {
+        qWarning() << "Stream socket already open. "
+                      "Closing current open socket";
+        m_streamSocket->close();
+    }
+
     qDebug() << "[DapConnectStream] Stream open SubUrl = " << subUrl;
     qDebug() << "[DapConnectStream] Stream open query =" << query;
 
@@ -213,14 +219,21 @@ void DapConnectStream::sltStreamOpenCallback()
     m_streamID = str_list.at(0);
     QString streamServKey = str_list.at(1);
 
-    if(m_streamID.length() < 13) { // why 13?
+    if(!m_streamID.isEmpty()) {
+        qDebug() << "Stream id:" << m_streamID;
         qDebug()  << "[DapConnectStream] Stream server key for client requests: "
                   << streamServKey;
         emit streamServKeyRecieved();
         DapCrypt::me()->initAesKey(streamServKey, KeyRoleStream);
-        m_streamSocket->connectToHost(m_session->upstreamAddress(),
-                                      m_session->upstreamPort(),
-                                      QIODevice::ReadWrite);
+
+        if(!m_streamSocket->isOpen()) {
+            m_streamSocket->connectToHost(m_session->upstreamAddress(),
+                                          m_session->upstreamPort(),
+                                          QIODevice::ReadWrite);
+        } else {
+            qCritical() << "Stream already open";
+        }
+
     } else {
         qWarning() << "Can't open stream." << m_streamID;
         emit sigStreamOpenBadResponseError();
