@@ -122,24 +122,3 @@ QNetworkReply* DapConnectClient::request_POST(const QString& host,  quint16 port
     connect(this, &DapConnectClient::sigNetworkManagerRebuild, netReply, &QNetworkReply::abort);
     return netReply;
 }
-
-//void DapConnectClient::slotNetworkError(QNetworkReply::NetworkError err)
-//{
-//    qWarning() << err;
-//    switch(err) {
-//        case QNetworkReply::AuthenticationRequiredError:
-//            emit authenticationRequiredError();
-//        case QNetworkReply::ConnectionRefusedError:  Q_EMIT errorNetwork("Network error: ConnectionRefusedError");break;
-//        case QNetworkReply::HostNotFoundError: Q_EMIT errorNetwork("Network error: HostNotFoundError"); break;
-//        case QNetworkReply::TimeoutError: Q_EMIT errorNetwork("Network error: TimeoutError"); break;
-//        case QNetworkReply::TemporaryNetworkFailureError: Q_EMIT errorNetwork("Network error: TemporaryNetworkFailureError");break;
-//        case QNetworkReply::NetworkSessionFailedError: Q_EMIT errorNetwork("Network error: NetworkSessionFailedError"); break;
-//        case QNetworkReply::BackgroundRequestNotAllowedError: Q_EMIT errorNetwork("Network error: BackgroundRequestNotAllowedError"); break;
-//        case QNetworkReply::ProxyConnectionRefusedError: Q_EMIT errorNetwork("Network error: ProxyConnectionRefusedError"); break;
-//        case QNetworkReply::ProxyNotFoundError: Q_EMIT errorNetwork("Network error: ProxyNotFoundError");break;
-//        case QNetworkReply::ProxyTimeoutError: Q_EMIT errorNetwork("Network error: ProxyTimeoutError");break;
-//        case QNetworkReply::InternalServerError: emit errorNetwork("Network error: InternalServerError");break;
-//        case QNetworkReply::ProxyAuthenticationRequiredError: Q_EMIT errorNetwork("Network error: ProxyAuthenticationRequiredError");break;
-//        default: emit errorNetwork ("UnknownServerError"); break;
-//    }
-//}
