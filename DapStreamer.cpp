@@ -25,8 +25,8 @@ DapStreamer::DapStreamer(DapSession* mainSession, QObject *obj) : DapConnectStre
 {
     m_streamThread = new QThread;
 
-    connect(this, &DapConnectStream::recivedChannelPacket, this, &DapStreamer::readChPacket);
-    connect(this, &DapStreamer::sendChPacket, this, &DapConnectStream::writeChannelPacket);
+    // connect(this, &DapConnectStream::recivedChannelPacket, this, &DapStreamer::readChPacket);
+    // connect(this, &DapStreamer::sendChPacket, this, &DapConnectStream::writeChannelPacket);
 }
 
 void DapStreamer::readChPacket(DapChannelPacketHdr *pkt, void *data)

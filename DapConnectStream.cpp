@@ -504,7 +504,7 @@ void DapConnectStream::procPktIn(DapPacketHdr * pkt, void * data)
     memcpy(channelData, decData.constData() + sizeof(DapChannelPacketHdr),
            decData.size() - sizeof(DapChannelPacketHdr));
 
-    emit recivedChannelPacket(channelPkt, channelData);
+    readChPacket(channelPkt, channelData);
     if(pkt)
         free(pkt);
     else

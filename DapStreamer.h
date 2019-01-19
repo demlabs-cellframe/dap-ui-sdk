@@ -68,7 +68,7 @@ public slots:
         void* data,
         uint64_t *dest_addr = Q_NULLPTR)
     {
-        emit sendChPacket(pkt,data,dest_addr);
+        writeChannelPacket(pkt,data,dest_addr);
     }
 
     void openDefault() {

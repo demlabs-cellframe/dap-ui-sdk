@@ -87,6 +87,7 @@ public slots:
 
     void writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uint64_t *dest_addr = Q_NULLPTR);
 
+    virtual void readChPacket(DapChannelPacketHdr *pkt, void *data) = 0;
 signals:
     void finished();
     void errorNetwork(const QString &e);
