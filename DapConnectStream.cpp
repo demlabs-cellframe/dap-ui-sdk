@@ -494,6 +494,8 @@ void DapConnectStream::procPktIn(DapPacketHdr * pkt, void * data)
 
     if(decData.size() == 0) {
         qWarning() << "Error decode. Packet loosed";
+        free(pkt);
+        free(data);
         return;
     }
 
@@ -505,15 +507,9 @@ void DapConnectStream::procPktIn(DapPacketHdr * pkt, void * data)
            decData.size() - sizeof(DapChannelPacketHdr));
 
     readChPacket(channelPkt, channelData);
-    if(pkt)
-        free(pkt);
-    else
-        qCritical() << "[DapConnectStream] DapPacketHdr is NULL in procPktIn!";
 
-    if(data)
-        free(data);
-    else
-        qCritical() << "[DapConnectStream] (void * data) is NULL in procPktIn!";
+    free(pkt);
+    free(data);
 }
 
 
