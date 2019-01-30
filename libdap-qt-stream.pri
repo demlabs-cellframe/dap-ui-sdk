@@ -1,10 +1,9 @@
-SOURCES += $$PWD/DapConnectStream.cpp \
-    $$PWD/DapStreamer.cpp \
-    $$PWD/DapChBase.cpp 
+SOURCES +=  $$PWD/DapStreamer.cpp \
+    $$PWD/DapChBase.cpp
 
-HEADERS += $$PWD/DapConnectStream.h \
+HEADERS += $$PWD/DapStreamer.h \
     $$PWD/DapChannelPacket.h \
-    $$PWD/DapStreamer.h \
-    $$PWD/DapChBase.h 
+    $$PWD/DapChBase.h \
+    $$PWD/DapChThread.h
 
 INCLUDEPATH += $$PWD
