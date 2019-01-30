@@ -59,7 +59,6 @@ protected:
     quint8 m_dapData[DAP_PKT_SIZE_MAX] = {0};
 
     QAbstractSocket * m_streamSocket;
-    QDataStream * m_dataStream;
 
     QByteArray m_buf;
 

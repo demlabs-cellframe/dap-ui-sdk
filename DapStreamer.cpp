@@ -30,9 +30,8 @@ inline static int daSigDetect(const QByteArray& b) { return b.indexOf(daSigQ); }
 
 QHash<char, DapChBase*> DapStreamer::m_dsb;
 
-DapStreamer::DapStreamer(DapSession * session, QObject* parent) : QObject(parent),
-    pktOutLastSeqID(0), m_dataStream(Q_NULLPTR),
-    m_streamState(SSS_NONE), m_isStreamOpened(false)
+DapStreamer::DapStreamer(DapSession * session, QObject* parent) :
+    QObject(parent),pktOutLastSeqID(0), m_streamState(SSS_NONE), m_isStreamOpened(false)
 {
     qDebug() << "[DapConnectStream::DapConnectStream]";
 
@@ -306,10 +305,6 @@ void DapStreamer::sltStreamDisconnected()
     qDebug() << "[DapConnectStream] sltStreamDisconnected.";
     emit finished();
     emit streamClosed();
-
-    if(m_dataStream)
-        delete m_dataStream;
-    m_dataStream = Q_NULLPTR;
 }
 
 void DapStreamer::sltStreamConnected()
@@ -317,10 +312,7 @@ void DapStreamer::sltStreamConnected()
     qDebug() << "[DapConnectStream] Connected to the server";
     m_isStreamOpened=true;
     m_buf.clear();
-    if(m_dataStream)
-        delete m_dataStream;
 
-    m_dataStream = new QDataStream(m_streamSocket);
     QString str_url = QString("%1/fjskd9234j?fj913htmdgaq-d9hf=%2")
             .arg(DapSession::URL_STREAM).arg(m_streamID);
 
