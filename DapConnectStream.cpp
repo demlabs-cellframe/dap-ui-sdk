@@ -89,12 +89,9 @@ void DapConnectStream::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data
 
     writeStreamRaw(pktOutData, pktOutDataSize);
 
-    if(pktOutData)
-        free(pktOutData);
 
-    if(dOut)
-        free(dOut);
-
+    free (pktOutData);
+    free (dOut);
     free (data);
     free (chPkt);
 }

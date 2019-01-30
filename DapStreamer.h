@@ -54,28 +54,7 @@ protected:
     QHash<char, DapChThread*> m_dapChThead;
 
 protected slots:
-    void onStreamClosed() {
-        qDebug() << "[DapStreamer] Stream closed";
-        emit streamClosed();
-    }
-
     void readChPacket(DapChannelPacketHdr* pkt, void* data);
-
-public slots:
-    void writeChPacket(
-        DapChannelPacketHdr* pkt,
-        void* data,
-        uint64_t *dest_addr = Q_NULLPTR)
-    {
-        writeChannelPacket(pkt,data,dest_addr);
-    }
-
-    void openDefault() {
-        qDebug() << "[DapStreamer] Open socket_forward media item sf=1";
-        streamOpen("socket_forward","sf=1");
-    }
-
-    void abortStreamOpenRequest() { abortStreamRequest(); }
 };
 
 #endif // DAPSTREAMER_H

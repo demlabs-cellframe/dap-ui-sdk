@@ -80,6 +80,11 @@ private slots:
     void sltStreamBytesWritten(qint64 bytes);
 
 public slots:
+    void openDefault() {
+        qDebug() << "[DapStreamer] Open socket_forward media item sf=1";
+        streamOpen("socket_forward","sf=1");
+    }
+
     void abortStreamRequest() { network_reply->abort(); }
 
     void streamOpen(const QString& subUrl, const QString& query);

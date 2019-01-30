@@ -47,7 +47,7 @@ DapChThread* DapStreamer::addChProc(char chId, DapChBase* obj)
     m_dsb.insert(chId, obj);
     m_dapChThead.insert(chId, dct);
 //    obj->passSignals(this);
-    connect(obj, &DapChBase::pktChOut, this, &DapStreamer::writeChPacket);
+    connect(obj, &DapChBase::pktChOut, this, &DapStreamer::writeChannelPacket);
     connect (dct, &DapChThread::sigNewPkt, obj, &DapChBase::onPktIn);
     dct->start();
     return dct;
