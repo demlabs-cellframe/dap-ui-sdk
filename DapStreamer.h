@@ -54,10 +54,9 @@ protected:
     DapChThread* m_dapChThead = Q_NULLPTR;
     DapSession *m_session;
     quint32 pktOutLastSeqID;
-
     DapPacketHdr m_dapPktHdr;
 
-    quint8 * m_dapData;
+    quint8 m_dapData[DAP_PKT_SIZE_MAX] = {0};
 
     QAbstractSocket * m_streamSocket;
     QDataStream * m_dataStream;

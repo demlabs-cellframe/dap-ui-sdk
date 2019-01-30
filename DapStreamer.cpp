@@ -24,7 +24,6 @@
 
 constexpr quint8 daSig[] = {0xa0,0x95,0x96,0xa9,0x9e,0x5c,0xfb,0xfa};
 QByteArray daSigQ((const char*) daSig, sizeof(daSig));
-constexpr size_t daPktSizeMaximum = 10241024;
 
 inline static int daSigDetect(const QByteArray& b) { return b.indexOf(daSigQ); }
 
@@ -32,7 +31,7 @@ inline static int daSigDetect(const QByteArray& b) { return b.indexOf(daSigQ); }
 QHash<char, DapChBase*> DapStreamer::m_dsb;
 
 DapStreamer::DapStreamer(DapSession * session, QObject* parent) : QObject(parent),
-    pktOutLastSeqID(0), m_dapData(Q_NULLPTR), m_dataStream(Q_NULLPTR),
+    pktOutLastSeqID(0), m_dataStream(Q_NULLPTR),
     m_streamState(SSS_NONE), m_isStreamOpened(false)
 {
     qDebug() << "[DapConnectStream::DapConnectStream]";
@@ -414,7 +413,7 @@ void DapStreamer::sltStreamProcess()
                 const DapPacketHdr* dapPktConstHdr = (DapPacketHdr* ) m_buf.constData();
                 size_t dapPktSize = dapPktConstHdr->size;
 
-                if(dapPktSize > daPktSizeMaximum)
+                if(dapPktSize > DAP_PKT_SIZE_MAX)
                 {
                     qWarning() << "[DapConnectStream] Package size too big = " << dapPktSize;
                     m_buf.clear();
@@ -422,14 +421,6 @@ void DapStreamer::sltStreamProcess()
                     m_dapDataPosition = 0;
                     return;
                 }
-
-             /*   if(m_dapPktHdr)
-                    free(m_dapPktHdr);      ???????
-                if(m_dapData)
-                    free(m_dapData); */
-
-                m_dapData = (quint8*) calloc(1,dapPktSize + 16); // +16 это попытка вылечить sig segf.
-
 
                 memcpy(&m_dapPktHdr, m_buf.constData(), sizeof(DapPacketHdr));
 
@@ -494,7 +485,6 @@ void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
 
     if(decData.size() == 0) {
         qWarning() << "Error decode. Packet loosed";
-        free(data);
         return;
     }
 
@@ -507,8 +497,6 @@ void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
 
     readChPacket(channelPkt, channelData);
 
-   // free(pkt);
-    free(data);
 }
 
 DapChThread* DapStreamer::addChProc(char chId, DapChBase* obj) {

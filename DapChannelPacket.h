@@ -23,6 +23,8 @@
 
 #include <QDataStream>
 
+constexpr size_t DAP_PKT_SIZE_MAX = 1048576;
+
 struct DapChannelPacketHdr
 {
     quint8 id; // channel_id
