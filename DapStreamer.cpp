@@ -22,14 +22,17 @@
 #include "DapStreamer.h"
 
 
-const quint8 daSig[] = {0xa0,0x95,0x96,0xa9,0x9e,0x5c,0xfb,0xfa};
+constexpr quint8 daSig[] = {0xa0,0x95,0x96,0xa9,0x9e,0x5c,0xfb,0xfa};
 QByteArray daSigQ((const char*) daSig, sizeof(daSig));
-const size_t daPktSizeMaximum = 10241024;
+constexpr size_t daPktSizeMaximum = 10241024;
 
 inline static int daSigDetect(const QByteArray& b) { return b.indexOf(daSigQ); }
 
+
+QHash<char, DapChBase*> DapStreamer::m_dsb;
+
 DapStreamer::DapStreamer(DapSession * session, QObject* parent) : QObject(parent),
-    pktOutLastSeqID(0), m_dapPktHdr(Q_NULLPTR), m_dapData(Q_NULLPTR), m_dataStream(Q_NULLPTR),
+    pktOutLastSeqID(0), m_dapData(Q_NULLPTR), m_dataStream(Q_NULLPTR),
     m_streamState(SSS_NONE), m_isStreamOpened(false)
 {
     qDebug() << "[DapConnectStream::DapConnectStream]";
@@ -425,18 +428,17 @@ void DapStreamer::sltStreamProcess()
                 if(m_dapData)
                     free(m_dapData); */
 
-                m_dapPktHdr = (DapPacketHdr*) calloc(1,sizeof(DapPacketHdr));
                 m_dapData = (quint8*) calloc(1,dapPktSize + 16); // +16 это попытка вылечить sig segf.
 
 
-                memcpy(m_dapPktHdr, m_buf.constData(), sizeof(DapPacketHdr));
+                memcpy(&m_dapPktHdr, m_buf.constData(), sizeof(DapPacketHdr));
 
                 m_buf = m_buf.mid(sizeof(DapPacketHdr));
 
                 if( (int)dapPktSize <= m_buf.length() )
                 {
                     memcpy(m_dapData, m_buf.constData(), dapPktSize);
-                    procPktIn(m_dapPktHdr, m_dapData);
+                    procPktIn(&m_dapPktHdr, m_dapData);
                     m_streamState = SSS_FRAME_SEARCH;
                     m_buf = m_buf.mid(dapPktSize);
                     m_dapDataPosition = 0;
@@ -458,7 +460,7 @@ void DapStreamer::sltStreamProcess()
         case SSS_FRAME_BODY:
         {
 
-          if(m_buf.length() < ( (int)m_dapPktHdr->size) - m_dapDataPosition)
+          if(m_buf.length() < ( (int)m_dapPktHdr.size) - m_dapDataPosition)
           {
               memcpy(m_dapData + m_dapDataPosition, m_buf.constData(), (size_t) m_buf.length());
               m_dapDataPosition += m_buf.length();
@@ -467,10 +469,10 @@ void DapStreamer::sltStreamProcess()
           }
           else
           {
-              size_t bytesLeft = m_dapPktHdr->size - ( (size_t)m_dapDataPosition );
+              size_t bytesLeft = m_dapPktHdr.size - ( (size_t)m_dapDataPosition );
               memcpy(m_dapData + m_dapDataPosition, m_buf.constData(), bytesLeft);
 
-              procPktIn(m_dapPktHdr, m_dapData);
+              procPktIn(&m_dapPktHdr, m_dapData);
               m_streamState = SSS_FRAME_SEARCH;
               m_buf = m_buf.mid(bytesLeft);
           }
@@ -492,7 +494,6 @@ void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
 
     if(decData.size() == 0) {
         qWarning() << "Error decode. Packet loosed";
-        free(pkt);
         free(data);
         return;
     }
@@ -506,9 +507,26 @@ void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
 
     readChPacket(channelPkt, channelData);
 
-    free(pkt);
+   // free(pkt);
     free(data);
 }
 
+DapChThread* DapStreamer::addChProc(char chId, DapChBase* obj) {
+    if(m_dsb.contains(chId)) {
+        qCritical() << "Proc with id" << chId << "already exists";
+        return Q_NULLPTR;
+    }
+    m_dsb.insert(chId, obj);
 
+    if(m_dapChThead != Q_NULLPTR) {
+        qCritical() << "Can't add ChProc m_dapChThead already initialized";
+        return Q_NULLPTR;
+    }
+
+    m_dapChThead = new DapChThread(obj);
+    connect(obj, &DapChBase::pktChOut, this, &DapStreamer::writeChannelPacket);
+    connect (m_dapChThead, &DapChThread::sigNewPkt, obj, &DapChBase::onPktIn);
+    m_dapChThead->start();
+    return m_dapChThead;
+}
 

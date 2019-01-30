@@ -47,30 +47,15 @@ public:
     bool isConnected() { return m_streamSocket->isOpen(); }
     int upstreamSocket() { return m_streamSocket->isOpen()?m_streamSocket->socketDescriptor(): -1; }
 
-    DapChThread* addChProc(char chId, DapChBase* obj){
-        if(m_dsb.contains(chId)) {
-            qCritical() << "Proc with id" << chId << "already exists";
-            return Q_NULLPTR;
-        }
-
-        DapChThread * dct = new DapChThread(obj);
-        m_dsb.insert(chId, obj);
-        m_dapChThead.insert(chId, dct);
-    //    obj->passSignals(this);
-        connect(obj, &DapChBase::pktChOut, this, &DapStreamer::writeChannelPacket);
-        connect (dct, &DapChThread::sigNewPkt, obj, &DapChBase::onPktIn);
-        dct->start();
-        return dct;
-    }
+    DapChThread* addChProc(char chId, DapChBase* obj);
 
 protected:
-    QHash<char, DapChBase*> m_dsb;
-    QHash<char, DapChThread*> m_dapChThead;
-
+    static QHash<char, DapChBase*> m_dsb;
+    DapChThread* m_dapChThead = Q_NULLPTR;
     DapSession *m_session;
     quint32 pktOutLastSeqID;
 
-    DapPacketHdr * m_dapPktHdr;
+    DapPacketHdr m_dapPktHdr;
 
     quint8 * m_dapData;
 
@@ -104,12 +89,7 @@ private slots:
 
 protected slots:
     void readChPacket(DapChannelPacketHdr* pkt, void* data) {
-        DapChThread *dct = m_dapChThead[pkt->id];
-        if (dct) {
-            dct->sltProcPacket(new DapChannelPacket(pkt, data));
-        } else {
-            qDebug() << "[DapStreamer] Unknow channel id " << (char) pkt->id;
-        }
+        m_dapChThead->sltProcPacket(new DapChannelPacket(pkt, data));
     }
 
 public slots:
