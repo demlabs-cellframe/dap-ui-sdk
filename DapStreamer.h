@@ -53,7 +53,7 @@ protected:
     static QHash<char, DapChBase*> m_dsb;
     DapChThread* m_dapChThead = Q_NULLPTR;
     DapSession *m_session;
-    quint32 pktOutLastSeqID;
+    quint32 m_pktOutLastSeqID;
     DapPacketHdr m_dapPktHdr;
 
     quint8 m_dapData[DAP_PKT_SIZE_MAX] = {0};
@@ -64,14 +64,14 @@ protected:
 
     int m_dapDataPosition;
 
-    QNetworkReply * network_reply = Q_NULLPTR;
+    QNetworkReply * m_network_reply = Q_NULLPTR;
 
     SafeartsStreamState m_streamState;
     bool m_isStreamOpened;
 
     QString m_streamID;
 
-    QByteArray procPktInDecData, procPktInData;
+    QByteArray m_procPktInDecData, m_procPktInData;
     void procPktIn(DapPacketHdr * pkt, void * data);
 
     qint64 writeStreamRaw(const void * data, size_t data_size);
@@ -97,7 +97,7 @@ public slots:
         streamOpen("socket_forward","sf=1");
     }
 
-    void abortStreamRequest() { network_reply->abort(); }
+    void abortStreamRequest() { m_network_reply->abort(); }
 
     void streamOpen(const QString& subUrl, const QString& query);
     void streamClose();

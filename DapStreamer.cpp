@@ -31,12 +31,12 @@ inline static int daSigDetect(const QByteArray& b) { return b.indexOf(daSigQ); }
 QHash<char, DapChBase*> DapStreamer::m_dsb;
 
 DapStreamer::DapStreamer(DapSession * session, QObject* parent) :
-    QObject(parent),pktOutLastSeqID(0), m_streamState(SSS_NONE), m_isStreamOpened(false)
+    QObject(parent),m_pktOutLastSeqID(0), m_streamState(SSS_NONE), m_isStreamOpened(false)
 {
     qDebug() << "[DapConnectStream::DapConnectStream]";
 
-    procPktInData.reserve(DAP_PKT_SIZE_MAX);
-    procPktInDecData.reserve(DAP_PKT_SIZE_MAX);
+    m_procPktInData.reserve(DAP_PKT_SIZE_MAX);
+    m_procPktInDecData.reserve(DAP_PKT_SIZE_MAX);
 
     m_session = session;
     m_streamSocket = new QTcpSocket(this);
@@ -84,9 +84,9 @@ void DapStreamer::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uin
 
     pktOut->size = dOutEnc.size();
 
-    pktOutLastSeqID++;
-    if(pktOutLastSeqID == 0xffffffff)
-        pktOutLastSeqID=0;
+    m_pktOutLastSeqID++;
+    if(m_pktOutLastSeqID == 0xffffffff)
+        m_pktOutLastSeqID=0;
 
     memcpy(pktOutData + sizeof(DapPacketHdr), dOutEnc, dOutEnc.size());
 
@@ -113,12 +113,12 @@ void DapStreamer::streamOpen(const QString& subUrl, const QString& query)
 
     m_streamID.clear();
 
-    network_reply = m_session->streamOpenRequest(subUrl, query);
+    m_network_reply = m_session->streamOpenRequest(subUrl, query);
 
-    if(network_reply)
+    if(m_network_reply)
     {
         emit streamSessionRequested();
-        connect(network_reply, &QNetworkReply::finished, this, &DapStreamer::sltStreamOpenCallback);
+        connect(m_network_reply, &QNetworkReply::finished, this, &DapStreamer::sltStreamOpenCallback);
     } else {
         qWarning() << "Network reply is NULL. Stream not will be open";
         emit errorNetwork("Can't init network connection");
@@ -174,17 +174,17 @@ void DapStreamer::sltStreamOpenCallback()
 {
     qDebug() << "Stream Open callback;";
 
-    if(network_reply->error() != QNetworkReply::NetworkError::NoError)
-        qWarning() << "Network Reply Error" << network_reply->error();
+    if(m_network_reply->error() != QNetworkReply::NetworkError::NoError)
+        qWarning() << "Network Reply Error" << m_network_reply->error();
 
-    if(network_reply->error() >= QNetworkReply::NetworkError::ConnectionRefusedError &&
-            network_reply->error() <= QNetworkReply::NetworkError::UnknownNetworkError ) {
+    if(m_network_reply->error() >= QNetworkReply::NetworkError::ConnectionRefusedError &&
+            m_network_reply->error() <= QNetworkReply::NetworkError::UnknownNetworkError ) {
         qWarning() << "Can't open stream. Network error";
-        emit sigStreamOpenNetworkError(network_reply->error());
+        emit sigStreamOpenNetworkError(m_network_reply->error());
         return;
     }
 
-    QVariant statusCode = network_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    QVariant statusCode = m_network_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
     if (!statusCode.isValid()) {
         qWarning() << "Status code is not valid";
     } else if (statusCode.toInt() == 401 ) {
@@ -198,7 +198,7 @@ void DapStreamer::sltStreamOpenCallback()
         emit sigStreamOpenHttpError(statusCode.toInt());
     }
 
-    QByteArray baReply(network_reply->readAll());
+    QByteArray baReply(m_network_reply->readAll());
     if(baReply.size() == 0) {
         qWarning() << "Reply is empty";
         emit sigStreamOpenBadResponseError();
@@ -473,27 +473,26 @@ void DapStreamer::sltStreamProcess()
 
 void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
 {
-    // QByteArray decData;
-    procPktInData.append((const char*) data, pkt->size);
+    m_procPktInData.append((const char*) data, pkt->size);
 
-    DapCrypt::me()->decode(procPktInData, procPktInDecData, KeyRoleStream);
+    DapCrypt::me()->decode(m_procPktInData, m_procPktInDecData, KeyRoleStream);
 
-    if(procPktInDecData.size() == 0) {
+    if(m_procPktInDecData.size() == 0) {
         qWarning() << "Error decode. Packet loosed";
         return;
     }
 
     DapChannelPacketHdr* channelPkt = (DapChannelPacketHdr*) calloc (1,sizeof(DapChannelPacketHdr));
-    memcpy(channelPkt, procPktInDecData.constData(), sizeof(DapChannelPacketHdr));
+    memcpy(channelPkt, m_procPktInDecData.constData(), sizeof(DapChannelPacketHdr));
 
-    void* channelData = calloc(1, procPktInDecData.size() - sizeof(DapChannelPacketHdr));
-    memcpy(channelData, procPktInDecData.constData() + sizeof(DapChannelPacketHdr),
-           procPktInDecData.size() - sizeof(DapChannelPacketHdr));
+    void* channelData = calloc(1, m_procPktInDecData.size() - sizeof(DapChannelPacketHdr));
+    memcpy(channelData, m_procPktInDecData.constData() + sizeof(DapChannelPacketHdr),
+           m_procPktInDecData.size() - sizeof(DapChannelPacketHdr));
 
     readChPacket(channelPkt, channelData);
 
-    procPktInData.clear();
-    procPktInDecData.clear();
+    m_procPktInData.clear();
+    m_procPktInDecData.clear();
 }
 
 DapChThread* DapStreamer::addChProc(char chId, DapChBase* obj) {
