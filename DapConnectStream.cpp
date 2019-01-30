@@ -131,6 +131,8 @@ void DapConnectStream::streamClose()
     emit streamDisconnecting();
     if(m_streamSocket->isOpen()){
         m_streamSocket->close();
+    } else {
+        emit streamClosed();
     }
     m_isStreamOpened=false;
 }
