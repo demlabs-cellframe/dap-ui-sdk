@@ -47,12 +47,11 @@ class DapStreamer : public DapConnectStream
     Q_OBJECT
 public:
     DapStreamer(DapSession* mainSessionm, QObject *obj = Q_NULLPTR);
-    virtual ~DapStreamer() { m_streamThread->quit(); m_streamThread->wait(); }
+    virtual ~DapStreamer() { }
     DapChThread* addChProc(char chId, DapChBase* obj);
 protected:
     QHash<char, DapChBase*> m_dsb;
     QHash<char, DapChThread*> m_dapChThead;
-    QThread* m_streamThread;
 
 protected slots:
     void onStreamClosed() {
@@ -77,9 +76,6 @@ public slots:
     }
 
     void abortStreamOpenRequest() { abortStreamRequest(); }
-
-signals:
-    void sendChPacket(DapChannelPacketHdr* pkt, void* data, uint64_t *dest_addr = Q_NULLPTR);
 };
 
 #endif // DAPSTREAMER_H
