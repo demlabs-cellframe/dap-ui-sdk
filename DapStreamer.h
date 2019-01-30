@@ -72,6 +72,7 @@ protected:
 
     QString m_streamID;
 
+    QByteArray procPktInDecData, procPktInData;
     void procPktIn(DapPacketHdr * pkt, void * data);
 
     qint64 writeStreamRaw(const void * data, size_t data_size);

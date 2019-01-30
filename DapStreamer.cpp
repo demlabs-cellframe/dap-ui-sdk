@@ -36,6 +36,9 @@ DapStreamer::DapStreamer(DapSession * session, QObject* parent) : QObject(parent
 {
     qDebug() << "[DapConnectStream::DapConnectStream]";
 
+    procPktInData.reserve(DAP_PKT_SIZE_MAX);
+    procPktInDecData.reserve(DAP_PKT_SIZE_MAX);
+
     m_session = session;
     m_streamSocket = new QTcpSocket(this);
     m_streamSocket->setReadBufferSize(1000024);
@@ -478,25 +481,27 @@ void DapStreamer::sltStreamProcess()
 
 void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
 {
-    QByteArray decData, inData;
-    inData.append((const char*) data, pkt->size);
+    // QByteArray decData;
+    procPktInData.append((const char*) data, pkt->size);
 
-    DapCrypt::me()->decode(inData, decData, KeyRoleStream);
+    DapCrypt::me()->decode(procPktInData, procPktInDecData, KeyRoleStream);
 
-    if(decData.size() == 0) {
+    if(procPktInDecData.size() == 0) {
         qWarning() << "Error decode. Packet loosed";
         return;
     }
 
     DapChannelPacketHdr* channelPkt = (DapChannelPacketHdr*) calloc (1,sizeof(DapChannelPacketHdr));
-    memcpy(channelPkt, decData.constData(), sizeof(DapChannelPacketHdr));
+    memcpy(channelPkt, procPktInDecData.constData(), sizeof(DapChannelPacketHdr));
 
-    void* channelData = calloc(1, decData.size() - sizeof(DapChannelPacketHdr));
-    memcpy(channelData, decData.constData() + sizeof(DapChannelPacketHdr),
-           decData.size() - sizeof(DapChannelPacketHdr));
+    void* channelData = calloc(1, procPktInDecData.size() - sizeof(DapChannelPacketHdr));
+    memcpy(channelData, procPktInDecData.constData() + sizeof(DapChannelPacketHdr),
+           procPktInDecData.size() - sizeof(DapChannelPacketHdr));
 
     readChPacket(channelPkt, channelData);
 
+    procPktInData.clear();
+    procPktInDecData.clear();
 }
 
 DapChThread* DapStreamer::addChProc(char chId, DapChBase* obj) {
