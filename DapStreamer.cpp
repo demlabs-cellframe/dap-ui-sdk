@@ -63,20 +63,22 @@ DapStreamer::~DapStreamer()
 
 void DapStreamer::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uint64_t *dest_addr)
 {
+    if(chPkt->size + sizeof (DapChannelPacketHdr) > DAP_PKT_SIZE_MAX) {
+        qWarning() << "Too large package";
+        return;
+    }
     Q_UNUSED(dest_addr)
     size_t dOutSize = chPkt->size + sizeof(DapChannelPacketHdr);
-    char * dOut = (char*) calloc(1, dOutSize);
 
-    memcpy(dOut, chPkt, sizeof(DapChannelPacketHdr));
-    memcpy(dOut + sizeof(DapChannelPacketHdr), data, chPkt->size);
+    memcpy(m_writeDataOut, chPkt, sizeof(DapChannelPacketHdr));
+    memcpy(m_writeDataOut + sizeof(DapChannelPacketHdr), data, chPkt->size);
 
-    QByteArray dOutEnc, dOutRaw(dOut, dOutSize);
+    QByteArray dOutEnc, dOutRaw(m_writeDataOut, dOutSize);
 
     DapCrypt::me()->encode(dOutRaw, dOutEnc, KeyRoleStream);
 
     size_t pktOutDataSize = sizeof(DapPacketHdr) + dOutEnc.size();
-    uint8_t* pktOutData = (uint8_t*) calloc(1, pktOutDataSize);
-    DapPacketHdr* pktOut = (DapPacketHdr* ) pktOutData;
+    DapPacketHdr* pktOut = (DapPacketHdr* ) m_writeEncDataOut;
 
     pktOut->type = DATA_PACKET;
 
@@ -88,13 +90,10 @@ void DapStreamer::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uin
     if(m_pktOutLastSeqID == 0xffffffff)
         m_pktOutLastSeqID=0;
 
-    memcpy(pktOutData + sizeof(DapPacketHdr), dOutEnc, dOutEnc.size());
+    memcpy(m_writeEncDataOut + sizeof(DapPacketHdr), dOutEnc, dOutEnc.size());
 
-    writeStreamRaw(pktOutData, pktOutDataSize);
+    writeStreamRaw(m_writeEncDataOut, pktOutDataSize);
 
-
-    free (pktOutData);
-    free (dOut);
     free (data);
     free (chPkt);
 }

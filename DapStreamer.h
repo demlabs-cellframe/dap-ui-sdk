@@ -74,6 +74,9 @@ protected:
     QByteArray m_procPktInDecData, m_procPktInData;
     void procPktIn(DapPacketHdr * pkt, void * data);
 
+    // variables for DapStreamer::writeChannelPacket
+    char m_writeDataOut[DAP_PKT_SIZE_MAX] = {0};
+    char m_writeEncDataOut[DAP_PKT_SIZE_MAX] = {0};
     qint64 writeStreamRaw(const void * data, size_t data_size);
 
 private slots:
