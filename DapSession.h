@@ -52,6 +52,8 @@ public:
 
     ~DapSession() {}
 
+    void setUserAgent(const QString& userAgent);
+
     const QString& upstreamAddress()     { return m_upstreamAddress;       }
     quint16 upstreamPort()               { return m_upstreamPort;          }
     const QString& cookie()              { return m_cookie;                }
@@ -82,8 +84,10 @@ protected:
     using HttpHeaders = QVector<HttpRequestHeader>;
 
     quint16 m_upstreamPort;
-    QString m_upstreamAddress, m_cookie,
-            m_sessionKeyID, m_user;
+    QString m_upstreamAddress, m_user;
+
+    // HTTP header fields
+    QString m_cookie, m_sessionKeyID, m_userAgent;
 
     QNetworkReply * m_netEncryptReply;
     QNetworkReply * m_netAuthorizeReply;

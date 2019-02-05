@@ -151,14 +151,21 @@ void DapSession::onEnc()
 
 void DapSession::fillSessionHttpHeaders(HttpHeaders& headers) const
 {
-    headers.append({"Content-Type","text/plain"});
+    auto setHeader = [&](const QString& field, const QString& value) {
+        if(!value.isEmpty()) {
+            headers.append({field, value});
+        }
+    };
 
-    if(!m_cookie.isEmpty()) {
-        headers.append({"Cookie", m_cookie});
-    }
-    if(!m_sessionKeyID.isEmpty()) {
-        headers.append({"KeyID", m_sessionKeyID});
-    }
+    setHeader("Content-Type","text/plain");
+    setHeader("Cookie", m_cookie);
+    setHeader("KeyID", m_sessionKeyID);
+    setHeader("User-Agent", m_userAgent);
+}
+
+void DapSession::setUserAgent(const QString& userAgent)
+{
+    m_userAgent = userAgent;
 }
 
 /**
