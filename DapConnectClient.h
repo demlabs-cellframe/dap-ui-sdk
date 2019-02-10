@@ -32,7 +32,7 @@ class DapConnectClient : public QObject
     Q_OBJECT
 private:
     bool _buildRequest(QNetworkRequest& req, const QString& host,  quint16 port, const QString & urlPath,
-                       const QVector<HttpRequestHeader>& headers);
+                       const QVector<HttpRequestHeader>* headers);
 
     void _rebuildNetworkManager();
 
@@ -43,23 +43,18 @@ private:
 public:
     static DapConnectClient* instance()  {static DapConnectClient client; return &client;}
 
-    /* Example call: request_GET("google.com", {
+    /* Example call: request_GET("google.com", &{
      *                                           HttpRequestHeader("User-Agent", "Mozilla/5.0"),
      *                                           HttpRequestHeader("Accept", "text/html")
      *                                         }); */
-    QNetworkReply* request_GET(const QString& host,  quint16 port, const QString & urlPath,
-                               const QVector<HttpRequestHeader>& headers);
 
-    // Sets Content-Type Header by default "text/plain"
-    QNetworkReply* request_GET(const QString& host,  quint16 port,const QString & urlPath);
+    // if headers nullptr sets Content-Type Header by default "text/plain"
+    QNetworkReply* request_GET(const QString& host,  quint16 port,const QString & urlPath,
+                               const QVector<HttpRequestHeader>* headers = Q_NULLPTR);
 
     QNetworkReply* request_POST(const QString& host,  quint16 port,
                                 const QString & urlPath, const QByteArray& data,
-                                const QVector<HttpRequestHeader>& headers);
-
-    // Sets Content-Type Header by default "text/plain"
-    QNetworkReply* request_POST(const QString& host,  quint16 port,
-                                const QString & urlPath, const QByteArray& data);
+                                const QVector<HttpRequestHeader>* headers = Q_NULLPTR);
 
 private:
     QNetworkAccessManager * m_httpClient;

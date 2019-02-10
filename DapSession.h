@@ -109,7 +109,9 @@ protected:
 
     void fillSessionHttpHeaders(HttpHeaders& headers) const;
     QNetworkReply * requestServerPublicKey();
-
+private:
+    QNetworkReply* _buildNetworkReplyReq(const QString& urlPath,
+                                         const QByteArray* data = Q_NULLPTR);
 private slots:
     void onEnc();
     void errorSlt(QNetworkReply::NetworkError);

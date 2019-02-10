@@ -61,7 +61,7 @@ void DapConnectClient::_rebuildNetworkManager()
 
 bool DapConnectClient::_buildRequest(QNetworkRequest& req, const QString& host,
                                      quint16 port, const QString & urlPath,
-                                     const QVector<HttpRequestHeader>& headers)
+                                     const QVector<HttpRequestHeader>* headers)
 {
     if(m_httpClient->networkAccessible() == QNetworkAccessManager::NotAccessible) {
         _rebuildNetworkManager();
@@ -76,22 +76,19 @@ bool DapConnectClient::_buildRequest(QNetworkRequest& req, const QString& host,
         return false;
     }
 
-    for(const auto& header : headers) {
-        req.setRawHeader(header.first.toLatin1(), header.second.toLatin1());
+    if(headers != Q_NULLPTR) {
+        for(const auto& header : *headers) {
+            req.setRawHeader(header.first.toLatin1(), header.second.toLatin1());
+        }
+    } else {
+        req.setRawHeader("Content-Type","text/plain");
     }
 
     return true;
 }
 
-QNetworkReply* DapConnectClient::request_GET(const QString& host,  quint16 port, const QString & urlPath)
-{
-    return request_GET(host, port, urlPath, {
-                            HttpRequestHeader("Content-Type","text/plain")
-                        });
-}
-
 QNetworkReply* DapConnectClient::request_GET(const QString& host,  quint16 port, const QString & urlPath,
-                           const QVector<HttpRequestHeader>& headers)
+                           const QVector<HttpRequestHeader>* headers)
 {
     QNetworkRequest req;
     if(!_buildRequest(req, host, port, urlPath, headers)) {
@@ -103,16 +100,8 @@ QNetworkReply* DapConnectClient::request_GET(const QString& host,  quint16 port,
 }
 
 QNetworkReply* DapConnectClient::request_POST(const QString& host,  quint16 port,
-                                              const QString & urlPath, const QByteArray& data)
-{
-    return request_POST(host, port, urlPath, data, {
-                            HttpRequestHeader("Content-Type","text/plain")
-                        });
-}
-
-QNetworkReply* DapConnectClient::request_POST(const QString& host,  quint16 port,
                             const QString & urlPath, const QByteArray& data,
-                            const QVector<HttpRequestHeader>& headers)
+                            const QVector<HttpRequestHeader>* headers)
 {
     QNetworkRequest req;
     if(!_buildRequest(req, host, port, urlPath, headers)) {

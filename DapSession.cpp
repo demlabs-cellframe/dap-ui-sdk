@@ -59,14 +59,28 @@ QNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QStri
             .arg(QString(subUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding)))
             .arg(QString(queryEncrypted.toBase64(QByteArray::Base64UrlEncoding)));
 
+    return _buildNetworkReplyReq(str_url, Q_NULLPTR);
+}
+
+QNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath,
+                                                 const QByteArray* data)
+{
     QVector<HttpRequestHeader> headers;
     fillSessionHttpHeaders(headers);
+    QNetworkReply* result;
+    if(data) {
+        result =  DapConnectClient::instance()->request_POST(m_upstreamAddress,
+                                                             m_upstreamPort,
+                                                             urlPath,
+                                                             *data, &headers);
+    } else {
+        result =  DapConnectClient::instance()->request_GET(m_upstreamAddress,
+                                                            m_upstreamPort,
+                                                            urlPath, &headers);
+    }
 
-    auto netReply = DapConnectClient::instance()->request_GET(m_upstreamAddress,
-                                                              m_upstreamPort,
-                                                              str_url, headers);
-    DapReplyTimeout::set(netReply, m_requestTimeout);
-    return netReply;
+    DapReplyTimeout::set(result, m_requestTimeout);
+    return result;
 }
 
 /**
@@ -76,10 +90,8 @@ QNetworkReply* DapSession::requestServerPublicKey()
 {
     QByteArray reqData = DapCrypt::me()->generateAliceMessage().toBase64();
 
-    m_netEncryptReply = DapConnectClient::instance()->request_POST(m_upstreamAddress,
-                                                m_upstreamPort,
-                                                URL_ENCRYPT + "/gd4y5yh78w42aaagh" ,
-                                                reqData);
+    m_netEncryptReply = _buildNetworkReplyReq(URL_ENCRYPT + "/gd4y5yh78w42aaagh",
+                                              &reqData);
 
     if(!m_netEncryptReply){
         qWarning() << "Can't send post request";
@@ -91,8 +103,6 @@ QNetworkReply* DapSession::requestServerPublicKey()
             this, SLOT(errorSlt(QNetworkReply::NetworkError)));
 
     emit pubKeyRequested();
-
-    DapReplyTimeout::set(m_netEncryptReply, m_requestTimeout);
 
     return m_netEncryptReply;
 }
@@ -199,13 +209,7 @@ QNetworkReply* DapSession::encRequest(const QString& reqData, const QString& url
         urlPath += "?" + BAqueryEncrypted.toBase64(QByteArray::Base64UrlEncoding);
     }
 
-    HttpHeaders headers;
-    fillSessionHttpHeaders(headers);
-
-    auto netReply = DapConnectClient::instance()->request_POST(m_upstreamAddress, m_upstreamPort,
-                                                               urlPath, BAreqDataEnc, headers);
-    DapReplyTimeout::set(netReply, m_requestTimeout);
-    return netReply;
+    return _buildNetworkReplyReq(urlPath, &BAreqDataEnc);
 }
 
 /**
