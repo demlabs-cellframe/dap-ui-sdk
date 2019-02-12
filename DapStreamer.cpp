@@ -153,6 +153,7 @@ qint64 DapStreamer::writeStreamRaw(const void * data, size_t data_size)
                 if(m_isStreamOpened)
                     return 0;
                 qDebug() << "[DapConnectStream] Wr = " << wr << " stream closed!";
+                break;
                 //emit streamClosed(); ///todo in pervois version DAP this string be uncommented
             }
         }
