@@ -29,6 +29,7 @@
 #include "DapCrypt.h"
 #include "DapReplyTimeout.h"
 #include "msrln/msrln.h"
+#include <QJsonDocument>
 
 const QString DapSession::URL_ENCRYPT("/1901248124123459");
 const QString DapSession::URL_STREAM("/874751843144");
@@ -38,6 +39,17 @@ const QString DapSession::URL_DB_FILE("/98971341937495431398");
 const QString DapSession::URL_SERVER_LIST("/slist");
 
 #define SESSION_KEY_ID_LEN 33
+
+DapSession::DapSession(QObject * obj, int requestTimeout) :
+    QObject(obj), m_requestTimeout(requestTimeout)
+{
+    m_dapCrypt = new DapCrypt;
+}
+
+DapSession::~DapSession()
+{
+    delete m_dapCrypt;
+}
 
 QNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QString& query)
 {
@@ -52,8 +64,8 @@ QNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QStri
     QByteArray subUrlByte = subUrl.toLatin1();
     QByteArray queryByte = query.toLatin1();
 
-    DapCrypt::me()->encode(subUrlByte, subUrlEncrypted, KeyRoleSession);
-    DapCrypt::me()->encode(queryByte, queryEncrypted, KeyRoleSession);
+    m_dapCrypt->encode(subUrlByte, subUrlEncrypted, KeyRoleSession);
+    m_dapCrypt->encode(queryByte, queryEncrypted, KeyRoleSession);
 
     QString str_url = QString("%1/%2?%3").arg(URL_CTL)
             .arg(QString(subUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding)))
@@ -88,7 +100,7 @@ QNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath,
  */
 QNetworkReply* DapSession::requestServerPublicKey()
 {
-    QByteArray reqData = DapCrypt::me()->generateAliceMessage().toBase64();
+    QByteArray reqData = m_dapCrypt->generateAliceMessage().toBase64();
 
     m_netEncryptReply = _buildNetworkReplyReq(URL_ENCRYPT + "/gd4y5yh78w42aaagh",
                                               &reqData);
@@ -98,9 +110,7 @@ QNetworkReply* DapSession::requestServerPublicKey()
         return Q_NULLPTR;
     }
 
-    connect(m_netEncryptReply, &QNetworkReply::finished, this,  &DapSession::onEnc);
-    connect(m_netEncryptReply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SLOT(errorSlt(QNetworkReply::NetworkError)));
+    connect(m_netEncryptReply, &QNetworkReply::finished, this, &DapSession::onEnc);
 
     emit pubKeyRequested();
 
@@ -122,37 +132,53 @@ void DapSession::onEnc()
 
     QByteArray arrData;
     arrData.append(m_netEncryptReply->readAll());
-
-    QStringList buf = QString::fromLatin1(arrData).split(" ");
-    if (buf.size()< 2) {
-        qWarning() << "Wrong response from server";
-        emit errorNetwork(tr("Wrong response from server"));
+    if(arrData.isEmpty()) {
+        qWarning() << "Empty buffer in onEnc";
+        if(m_netEncryptReply->error() == QNetworkReply::NoError) {
+            qCritical() << "No error and empty buffer!";
+        } else {
+            errorSlt(m_netEncryptReply->error());
+        }
         return;
     }
 
-    int pos = arrData.indexOf(' ') + 1;
-    QByteArray result = arrData.mid(pos,arrData.size() - pos);
-
-    m_sessionKeyID = QByteArray::fromBase64(buf[0].toLatin1()).mid(0, SESSION_KEY_ID_LEN);
-    
-    qDebug() << "m_sessionKeyID: " << m_sessionKeyID;
-
-    if ( m_sessionKeyID.isEmpty() || result.isEmpty()) {
-        qDebug() << "ERROR encryption not inited";
-        emit errorEncryption();
+    QJsonParseError json_err;
+    auto json_resp = QJsonDocument::fromJson(arrData, &json_err);
+    if(json_err.error != QJsonParseError::NoError) {
+        QString errorMessage = "Can't parse response from server";
+        qCritical() << errorMessage << json_err.errorString();
+        emit errorEncryptInitialization(errorMessage);
         return;
     }
 
-    QByteArray bobMsg = QByteArray::fromBase64(result);
+    if(json_resp["error"] != QJsonValue::Undefined) {
+        QString serverErrorMsg = json_resp["error"].toString();
+        qCritical() << "Got error message from server:"
+                    << json_resp["error"].toString();
+        emit errorEncryptInitialization(serverErrorMsg);
+        return;
+    }
+
+    if(json_resp["encrypt_id"] == QJsonValue::Undefined ||
+            json_resp["encrypt_msg"] == QJsonValue::Undefined) {
+        QString errorMessage = "Bad response from server";
+        emit errorEncryptInitialization(errorMessage);
+        return;
+    }
+
+    m_sessionKeyID = QByteArray::fromBase64(json_resp["encrypt_id"].toString().toLatin1());
+    QByteArray bobMsg = QByteArray::fromBase64(json_resp["encrypt_msg"].toString().toLatin1());
 
     if (bobMsg.size() != MSRLN_PKB_BYTES) {
+        QString errorMessage = "Bad length encrypt message from server";
         qCritical() << "Server Bob message is failed, length = " << bobMsg.length();
-        emit errorNetwork(tr("Server Bob message is failed"));
+        emit errorEncryptInitialization(errorMessage);
         return;
     }
 
-    if(!DapCrypt::me()->generateSharedSessionKey(bobMsg, m_sessionKeyID.toLatin1())) {
-        emit errorNetwork(tr("Error ganarete shared session key"));
+    if(!m_dapCrypt->generateSharedSessionKey(bobMsg, m_sessionKeyID.toLatin1())) {
+        QString errorMessage = "Failed generate session key";
+        emit errorEncryptInitialization("Failed generate session key");
         return;
     }
 
@@ -197,15 +223,15 @@ QNetworkReply* DapSession::encRequest(const QString& reqData, const QString& url
     QByteArray subUrlByte = subUrl.toLatin1();
     QByteArray queryByte = query.toLatin1();
 
-    DapCrypt::me()->encode(BAreqData, BAreqDataEnc, KeyRoleSession);
+    m_dapCrypt->encode(BAreqData, BAreqDataEnc, KeyRoleSession);
 
     QString urlPath = url;
     if(subUrl.length()) {
-        DapCrypt::me()->encode(subUrlByte, BAsubUrlEncrypted, KeyRoleSession);
+        m_dapCrypt->encode(subUrlByte, BAsubUrlEncrypted, KeyRoleSession);
         urlPath += "/" + BAsubUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding);
     }
     if(query.length()) {
-        DapCrypt::me()->encode(queryByte, BAqueryEncrypted, KeyRoleSession);
+        m_dapCrypt->encode(queryByte, BAqueryEncrypted, KeyRoleSession);
         urlPath += "?" + BAqueryEncrypted.toBase64(QByteArray::Base64UrlEncoding);
     }
 
@@ -240,7 +266,7 @@ void DapSession::onAuthorize()
     QByteArray arrData2 = QByteArray::fromBase64(arrData);
 
     QByteArray dByteArr;
-    DapCrypt::me()->decode(arrData, dByteArr, KeyRoleSession);
+    m_dapCrypt->decode(arrData, dByteArr, KeyRoleSession);
 
     QXmlStreamReader m_xmlStreamReader;
     m_xmlStreamReader.addData(dByteArr);
@@ -379,7 +405,9 @@ QNetworkReply * DapSession::authorizeRequest(const QString& user, const QString&
 void DapSession::errorSlt(QNetworkReply::NetworkError error)
 {
     qWarning() << "Error: " << error;
-    switch(error){
+    switch(error) {
+        case QNetworkReply::NoError: // Do nothing. No error
+        break;
         case QNetworkReply::ConnectionRefusedError:
             emit errorNetwork("connection refused");
             break;

@@ -31,25 +31,21 @@ enum KeyRole { KeyRoleSession = 1, KeyRoleStream = 2};
 
 class DapCrypt
 {
-    DapCrypt();
-    ~DapCrypt() { }
     DapKey * keyStream;
     DapKeyMsrln * keySession;
 
-    DapKey * roleToKey(KeyRole kRole);
+    DapKey * roleToKey(KeyRole kRole) const;
 public:
-
-    DapKeyMsrln* getKeyServerPublic() { return keySession; }
-    static DapCrypt * me() { static DapCrypt dapCrypt; return &dapCrypt; }
+    DapCrypt();
+    ~DapCrypt();
 
     QString getRandomString(int length);
 
     void initAesKey(QString &keyStr, KeyRole kRole);
     void setRsaPubKeyServer(const QString & a_keyStr){ keySession->init(a_keyStr); }
 
-    void encode(QByteArray& in, QByteArray& out, KeyRole kRole);
-    void decode(QByteArray& in, QByteArray& out, KeyRole kRole);
-    void decodeB1k(QByteArray& in, QByteArray& out, int sizeBlock, KeyRole kRole);
+    void encode(QByteArray& in, QByteArray& out, KeyRole kRole) const;
+    void decode(QByteArray& in, QByteArray& out, KeyRole kRole) const;
     QByteArray generateAliceMessage();
     bool generateSharedSessionKey(const QByteArray& bobMsg,
                                   const QByteArray& sessionID);

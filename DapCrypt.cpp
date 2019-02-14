@@ -25,25 +25,20 @@
 
 /**
  * @brief DapCrypt::DapCrypt
- * @details keySessionRsa - local RSA key
- * keySessionServer - public Server Key
- * keyStream - AES key getting from server
+ * keyStream - AES key generated after handshake
  */
 DapCrypt::DapCrypt()
 {
     keySession = new DapKeyMsrln;
     keyStream = Q_NULLPTR;
-
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-    /* ERR_load_crypto_strings();
-    OpenSSL_add_all_algorithms();*/ //IVAN
-#else
-    //SSL_library_init();
-#endif
-
 }
 
-DapKey* DapCrypt::roleToKey(KeyRole kRole)
+DapCrypt::~DapCrypt()
+{
+    delete keySession;
+}
+
+DapKey* DapCrypt::roleToKey(KeyRole kRole) const
 {
     switch(kRole)
     {
@@ -69,7 +64,7 @@ QString DapCrypt::getRandomString(int lengthStr)
     return randomString;
 }
 
-void DapCrypt::encode(QByteArray& in, QByteArray& out, KeyRole kRole)
+void DapCrypt::encode(QByteArray& in, QByteArray& out, KeyRole kRole) const
 {
     DapKey * key = roleToKey(kRole);
     if( key == Q_NULLPTR )
@@ -80,7 +75,7 @@ void DapCrypt::encode(QByteArray& in, QByteArray& out, KeyRole kRole)
     key->encode(in,out);
 }
 
-void DapCrypt::decode(QByteArray& in, QByteArray& out, KeyRole kRole)
+void DapCrypt::decode(QByteArray& in, QByteArray& out, KeyRole kRole) const
 {
     DapKey * key = roleToKey(kRole);
     if( key == Q_NULLPTR )
@@ -91,24 +86,9 @@ void DapCrypt::decode(QByteArray& in, QByteArray& out, KeyRole kRole)
     key->decode(in,out);
 }
 
-void DapCrypt::decodeB1k(QByteArray& in, QByteArray& out, int sizeBlock, KeyRole kRole)
-{
-    out.clear();
-    QByteArray b1k, b1kDec;
-    int b1kLength;
-    for(int i = 0; i < in.length(); i += sizeBlock)
-    {
-        b1kLength = in.length() - i < sizeBlock ? in.length() - i : sizeBlock;
-        b1k = in.mid(i, b1kLength);
-        decode(b1k, b1kDec, kRole);
-        out.append(b1kDec);
-    }
-}
-
 QByteArray DapCrypt::generateAliceMessage()
 {
-    QByteArray mess = keySession->generateAliceMessage();
-    return mess;
+    return keySession->generateAliceMessage();
 }
 
 bool DapCrypt::generateSharedSessionKey(const QByteArray& bobMsg,

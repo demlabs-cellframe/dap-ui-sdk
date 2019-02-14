@@ -10,7 +10,8 @@ DapKeyMsrln::DapKeyMsrln()
 
 DapKeyMsrln::~DapKeyMsrln()
 {
-    dap_enc_key_delete(_key);
+    if(_key != Q_NULLPTR)
+        dap_enc_key_delete(_key);
 }
 
 QByteArray DapKeyMsrln::generateAliceMessage()

@@ -11,8 +11,9 @@ private:
 private slots:
     void randomString() {
         const int exptectedStringLength = 22;
+        DapCrypt dc;
         QString resultString =
-                DapCrypt::me()->getRandomString(exptectedStringLength);
+                dc.getRandomString(exptectedStringLength);
 
         QCOMPARE(exptectedStringLength, resultString.length());
     }

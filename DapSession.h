@@ -30,6 +30,7 @@
 #include <QMap>
 #include <QList>
 #include "DapConnectClient.h"
+#include <DapCrypt.h>
 
 class DapSession : public QObject
 {
@@ -45,12 +46,8 @@ public:
     static const QString URL_DB_FILE;
     static const QString URL_SERVER_LIST;
 
-    DapSession(QObject * obj = Q_NULLPTR): QObject(obj), m_requestTimeout(DEFAULT_REQUEST_TIMEOUT) {}
-    DapSession(int requestTimeout): QObject(Q_NULLPTR), m_requestTimeout(requestTimeout) {}
-    DapSession(QObject * obj, int requestTimeout):
-        QObject(obj), m_requestTimeout(requestTimeout) {}
-
-    ~DapSession() {}
+    DapSession(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
+    ~DapSession();
 
     void setUserAgent(const QString& userAgent);
 
@@ -65,9 +62,9 @@ public:
           (const QString & user_name)    { return m_userInform[user_name]; }
 
     void setDapUri(const QString& addr, const uint16_t port);
-
     void clearCredentials();
 
+    DapCrypt* getDapCrypt() { return m_dapCrypt; }
 public slots:
     /* Request to server */
     /* QNetworkReply does not need to be cleared. It's do DapConnectClient */
@@ -110,6 +107,7 @@ protected:
     void fillSessionHttpHeaders(HttpHeaders& headers) const;
     QNetworkReply * requestServerPublicKey();
 private:
+    DapCrypt* m_dapCrypt;
     QNetworkReply* _buildNetworkReplyReq(const QString& urlPath,
                                          const QByteArray* data = Q_NULLPTR);
 private slots:
@@ -122,7 +120,10 @@ signals:
     void pubKeyServerRecived();
 
     void encryptInitialized();
-    void errorEncryption();
+    void errorEncryptInitialization(const QString& msg);
+
+    void serverResponseError(const QString& msg);
+
     void errorAuthorization(const QString &);
 
     void errorNetwork(const QString&);
