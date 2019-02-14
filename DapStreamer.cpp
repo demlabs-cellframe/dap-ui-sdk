@@ -75,7 +75,7 @@ void DapStreamer::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uin
 
     QByteArray dOutEnc, dOutRaw(m_writeDataOut, dOutSize);
 
-    DapCrypt::me()->encode(dOutRaw, dOutEnc, KeyRoleStream);
+    m_session->getDapCrypt()->encode(dOutRaw, dOutEnc, KeyRoleStream);
 
     size_t pktOutDataSize = sizeof(DapPacketHdr) + dOutEnc.size();
     DapPacketHdr* pktOut = (DapPacketHdr* ) m_writeEncDataOut;
@@ -206,7 +206,7 @@ void DapStreamer::sltStreamOpenCallback()
     }
 
     QByteArray streamReplyDec;
-    DapCrypt::me()->decode(baReply, streamReplyDec, KeyRoleSession);
+    m_session->getDapCrypt()->decode(baReply, streamReplyDec, KeyRoleSession);
     QString streamReplyStr(streamReplyDec);
 
     QStringList str_list = streamReplyStr.split(" ");
@@ -226,7 +226,7 @@ void DapStreamer::sltStreamOpenCallback()
         qDebug()  << "[DapConnectStream] Stream server key for client requests: "
                   << streamServKey;
         emit streamServKeyRecieved();
-        DapCrypt::me()->initAesKey(streamServKey, KeyRoleStream);
+        m_session->getDapCrypt()->initAesKey(streamServKey, KeyRoleStream);
 
         if(!m_streamSocket->isOpen()) {
             m_streamSocket->connectToHost(m_session->upstreamAddress(),
@@ -475,7 +475,7 @@ void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
 {
     m_procPktInData.append((const char*) data, pkt->size);
 
-    DapCrypt::me()->decode(m_procPktInData, m_procPktInDecData, KeyRoleStream);
+    m_session->getDapCrypt()->decode(m_procPktInData, m_procPktInDecData, KeyRoleStream);
 
     if(m_procPktInDecData.size() == 0) {
         qWarning() << "Error decode. Packet loosed";
