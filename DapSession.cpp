@@ -30,6 +30,7 @@
 #include "DapReplyTimeout.h"
 #include "msrln/msrln.h"
 #include <QJsonDocument>
+#include <QJsonObject>
 
 const QString DapSession::URL_ENCRYPT("/1901248124123459");
 const QString DapSession::URL_STREAM("/874751843144");
@@ -151,23 +152,26 @@ void DapSession::onEnc()
         return;
     }
 
-    if(json_resp["error"] != QJsonValue::Undefined) {
-        QString serverErrorMsg = json_resp["error"].toString();
+    auto json_err_resp = json_resp.object().value("error");
+    if(json_err_resp != QJsonValue::Undefined) {
+        QString serverErrorMsg = json_err_resp.toString();
         qCritical() << "Got error message from server:"
-                    << json_resp["error"].toString();
+                    << json_err_resp.toString();
         emit errorEncryptInitialization(serverErrorMsg);
         return;
     }
 
-    if(json_resp["encrypt_id"] == QJsonValue::Undefined ||
-            json_resp["encrypt_msg"] == QJsonValue::Undefined) {
+    auto json_encrypt_id = json_resp.object().value("encrypt_id");
+    auto json_encrypt_msg = json_resp.object().value("encrypt_msg");
+    if(json_encrypt_id == QJsonValue::Undefined ||
+            json_encrypt_msg == QJsonValue::Undefined) {
         QString errorMessage = "Bad response from server";
         emit errorEncryptInitialization(errorMessage);
         return;
     }
 
-    m_sessionKeyID = QByteArray::fromBase64(json_resp["encrypt_id"].toString().toLatin1());
-    QByteArray bobMsg = QByteArray::fromBase64(json_resp["encrypt_msg"].toString().toLatin1());
+    m_sessionKeyID = QByteArray::fromBase64(json_encrypt_id.toString().toLatin1());
+    QByteArray bobMsg = QByteArray::fromBase64(json_encrypt_msg.toString().toLatin1());
 
     if (bobMsg.size() != MSRLN_PKB_BYTES) {
         QString errorMessage = "Bad length encrypt message from server";
