@@ -34,10 +34,10 @@ bool DapLogger::setLogFile(const QString& filePath) {
 
 void DapLogger::messageHandler(QtMsgType type,
                                const QMessageLogContext &ctx,
-                               const QString & msg) {
-    char prefixBuffer[128];
-
+                               const QString & msg)
+{
     if(ctx.file) {
+        char prefixBuffer[128];
 #if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
         const char *fileName = strrchr(ctx.file, '/');
 #elif defined(Q_OS_WIN)
@@ -48,9 +48,8 @@ void DapLogger::messageHandler(QtMsgType type,
         fileName = (fileName == Q_NULLPTR ? ctx.file : fileName + 1);
         strcpy(prefixBuffer, fileName);
         sprintf(strrchr(prefixBuffer, '.'), ":%d", ctx.line);
+        _log_it(prefixBuffer, castQtMsgToDap(type), msg.toLatin1().data());
     } else {
-        strcpy(prefixBuffer, "QtMessage");
+        _log_it(NULL, castQtMsgToDap(type), msg.toLatin1().data());
     }
-
-    _log_it(prefixBuffer, castQtMsgToDap(type), msg.toLatin1().data());
 }
