@@ -477,19 +477,18 @@ void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
 
     m_session->getDapCrypt()->decode(m_procPktInData, m_procPktInDecData, KeyRoleStream);
 
-    if(m_procPktInDecData.size() == 0) {
+    if(m_procPktInDecData.size() != 0) {
+        DapChannelPacketHdr* channelPkt = (DapChannelPacketHdr*) calloc (1,sizeof(DapChannelPacketHdr));
+        memcpy(channelPkt, m_procPktInDecData.constData(), sizeof(DapChannelPacketHdr));
+
+        void* channelData = calloc(1, m_procPktInDecData.size() - sizeof(DapChannelPacketHdr));
+        memcpy(channelData, m_procPktInDecData.constData() + sizeof(DapChannelPacketHdr),
+               m_procPktInDecData.size() - sizeof(DapChannelPacketHdr));
+
+        readChPacket(channelPkt, channelData);
+    } else {
         qWarning() << "Error decode. Packet loosed";
-        return;
     }
-
-    DapChannelPacketHdr* channelPkt = (DapChannelPacketHdr*) calloc (1,sizeof(DapChannelPacketHdr));
-    memcpy(channelPkt, m_procPktInDecData.constData(), sizeof(DapChannelPacketHdr));
-
-    void* channelData = calloc(1, m_procPktInDecData.size() - sizeof(DapChannelPacketHdr));
-    memcpy(channelData, m_procPktInDecData.constData() + sizeof(DapChannelPacketHdr),
-           m_procPktInDecData.size() - sizeof(DapChannelPacketHdr));
-
-    readChPacket(channelPkt, channelData);
 
     m_procPktInData.clear();
     m_procPktInDecData.clear();
