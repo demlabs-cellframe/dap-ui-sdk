@@ -60,14 +60,17 @@ DapStreamer::~DapStreamer()
 
 }
 
-
 void DapStreamer::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uint64_t *dest_addr)
 {
+
     if(chPkt->size + sizeof (DapChannelPacketHdr) > DAP_PKT_SIZE_MAX) {
         qWarning() << "Too large package";
         return;
     }
     Q_UNUSED(dest_addr)
+
+    chPkt->seq_id = m_pktOutLastSeqID++;
+
     size_t dOutSize = chPkt->size + sizeof(DapChannelPacketHdr);
 
     memcpy(m_writeDataOut, chPkt, sizeof(DapChannelPacketHdr));
@@ -86,10 +89,6 @@ void DapStreamer::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uin
 
     pktOut->size = dOutEnc.size();
 
-    m_pktOutLastSeqID++;
-    if(m_pktOutLastSeqID == 0xffffffff)
-        m_pktOutLastSeqID=0;
-
     memcpy(m_writeEncDataOut + sizeof(DapPacketHdr), dOutEnc, dOutEnc.size());
 
     writeStreamRaw(m_writeEncDataOut, pktOutDataSize);
@@ -104,7 +103,7 @@ void DapStreamer::streamOpen(const QString& subUrl, const QString& query)
     if(m_streamSocket->isOpen()) {
         qWarning() << "Stream socket already open. "
                       "Closing current open socket";
-        m_streamSocket->close();
+        streamClose();
     }
 
     qDebug() << "[DapConnectStream] Stream open SubUrl = " << subUrl;
@@ -133,6 +132,7 @@ void DapStreamer::streamClose()
     } else {
         emit streamClosed();
     }
+    m_pktOutLastSeqID = 0;
     m_isStreamOpened=false;
 }
 
