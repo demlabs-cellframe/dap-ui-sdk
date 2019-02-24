@@ -471,6 +471,20 @@ void DapStreamer::sltStreamProcess()
    }
 }
 
+void DapStreamer::_detectPacketLoose(quint64 currentSeqId)
+{
+    int countLoosedPackets = currentSeqId - (m_lastSeqId + 1);
+    if (countLoosedPackets > 0) {
+        qWarning() << "Packet Loosed count:" << countLoosedPackets;
+        emit sigStreamPacketLoosed(countLoosedPackets);
+    } else if(countLoosedPackets < 0) {
+        qWarning() << "Something wrong. countLoosedPackets is " << countLoosedPackets
+                   << "can't be less than zero. Current seq id:" << currentSeqId
+                   << "last seq id: " << m_lastSeqId;
+    }
+    m_lastSeqId = currentSeqId;
+}
+
 void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
 {
     m_procPktInData.append((const char*) data, pkt->size);
@@ -480,7 +494,7 @@ void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
     if(m_procPktInDecData.size() != 0) {
         DapChannelPacketHdr* channelPkt = (DapChannelPacketHdr*) calloc (1,sizeof(DapChannelPacketHdr));
         memcpy(channelPkt, m_procPktInDecData.constData(), sizeof(DapChannelPacketHdr));
-
+        _detectPacketLoose(channelPkt->seq_id);
         void* channelData = calloc(1, m_procPktInDecData.size() - sizeof(DapChannelPacketHdr));
         memcpy(channelData, m_procPktInDecData.constData() + sizeof(DapChannelPacketHdr),
                m_procPktInDecData.size() - sizeof(DapChannelPacketHdr));

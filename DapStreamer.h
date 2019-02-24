@@ -78,7 +78,10 @@ protected:
     char m_writeDataOut[DAP_PKT_SIZE_MAX] = {0};
     char m_writeEncDataOut[DAP_PKT_SIZE_MAX] = {0};
     qint64 writeStreamRaw(const void * data, size_t data_size);
-
+private:
+    quint64 m_lastSeqId = quint64(-1);
+    // emit sigStreamPacketLoosed if packet loose detected
+    void _detectPacketLoose(quint64 currentSeqId);
 private slots:
     void sltStreamProcess();
     void sltStreamConnected();
@@ -129,6 +132,8 @@ signals:
 
     void streamSessionRequested();
     void streamServKeyRecieved();
+
+    void sigStreamPacketLoosed(quint64 countLoosedPackets);
 };
 
 #endif // DAPCONNECTSTREAM_H
