@@ -20,7 +20,6 @@
 
 
 #include "DapConnectClient.h"
-#include "DapSession.h"
 #include <QNetworkProxy>
 
 #define HTTP_ADDRESS_URL_TEMPLATE(host, port, url) \
