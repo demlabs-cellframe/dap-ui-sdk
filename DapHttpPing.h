@@ -18,7 +18,6 @@ public:
 
         connect(networkReply, &QNetworkReply::finished, this, [=] {
             if(networkReply->error() == QNetworkReply::NetworkError::NoError) {
-                qDebug() << timer->elapsed() << networkReply->readAll();
                 emit sigResponse(timer->elapsed());
             } else {
                 emit sigNetworkError(networkReply->error());
