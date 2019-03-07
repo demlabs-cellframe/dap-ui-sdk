@@ -11,8 +11,13 @@ class DapHttpPingNetworkReply : public QObject
     Q_OBJECT
 private:
     QNetworkReply* m_reply;
+    QString m_host;
+    quint16 m_port;
 public:
-    explicit DapHttpPingNetworkReply(QNetworkReply *networkReply) : QObject(networkReply) {
+    explicit DapHttpPingNetworkReply(QNetworkReply *networkReply, const QString& a_host,
+                                     const quint16 a_port) :
+        QObject(networkReply), m_host(a_host), m_port(a_port) {
+
         QElapsedTimer *timer = new QElapsedTimer;
         timer->start();
 
@@ -25,6 +30,9 @@ public:
             delete timer;
         });
     }
+
+    QString getHost() { return m_host; }
+    quint16 getPort() { return m_port; }
 signals:
     void sigResponse(qint64 requestTime);
     void sigNetworkError(QNetworkReply::NetworkError);
