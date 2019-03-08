@@ -18,9 +18,9 @@
     along with any DAP based project.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QSysInfo>
 #include "DapStreamer.h"
-
+#include <QTcpSocket>
+#include <QSysInfo>
 
 constexpr quint8 daSig[] = {0xa0,0x95,0x96,0xa9,0x9e,0x5c,0xfb,0xfa};
 QByteArray daSigQ((const char*) daSig, sizeof(daSig));
