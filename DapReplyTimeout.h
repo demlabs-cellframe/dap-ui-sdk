@@ -4,6 +4,7 @@
 #include <QNetworkReply>
 #include <QBasicTimer>
 #include <QTimerEvent>
+#include <QDebug>
 
 /*
 Source: https://stackoverflow.com/questions/37444539/how-to-set-qnetworkreply-timeout-without-external-timer
