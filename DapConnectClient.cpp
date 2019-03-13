@@ -22,8 +22,8 @@
 #include "DapConnectClient.h"
 #include <QNetworkProxy>
 
-#define HTTP_ADDRESS_URL_TEMPLATE(host, port, url) \
-    QString("http://%1:%2%3").arg(host).arg(port).arg(url)
+#define HTTP_ADDRESS_URL_TEMPLATE(ssl, host, port, url) \
+    QString("https://%1:%2%3").arg(host).arg(port).arg(url)
 
 DapConnectClient::DapConnectClient(QObject *parent) :
     QObject(parent)
@@ -59,14 +59,16 @@ void DapConnectClient::_rebuildNetworkManager()
 }
 
 bool DapConnectClient::_buildRequest(QNetworkRequest& req, const QString& host,
-                                     quint16 port, const QString & urlPath,
+                                     quint16 port, const QString & urlPath, bool ssl,
                                      const QVector<HttpRequestHeader>* headers)
 {
     if(m_httpClient->networkAccessible() == QNetworkAccessManager::NotAccessible) {
         _rebuildNetworkManager();
     }
 
-    QString httpAddress = HTTP_ADDRESS_URL_TEMPLATE(host, port, urlPath);
+    QString httpAddress = QString("%1://%2:%3%4").arg(ssl ? "https" : "http")
+            .arg(host).arg(port).arg(urlPath);
+
     qDebug()<< "Requests httpAddress + url " << httpAddress;
 
     req.setUrl(httpAddress);
@@ -87,10 +89,10 @@ bool DapConnectClient::_buildRequest(QNetworkRequest& req, const QString& host,
 }
 
 QNetworkReply* DapConnectClient::request_GET(const QString& host,  quint16 port, const QString & urlPath,
-                           const QVector<HttpRequestHeader>* headers)
+                           bool ssl, const QVector<HttpRequestHeader>* headers)
 {
     QNetworkRequest req;
-    if(!_buildRequest(req, host, port, urlPath, headers)) {
+    if(!_buildRequest(req, host, port, urlPath, ssl, headers)) {
         return Q_NULLPTR;
     }
     auto netReply = m_httpClient->get(req);
@@ -99,11 +101,11 @@ QNetworkReply* DapConnectClient::request_GET(const QString& host,  quint16 port,
 }
 
 QNetworkReply* DapConnectClient::request_POST(const QString& host,  quint16 port,
-                            const QString & urlPath, const QByteArray& data,
+                            const QString & urlPath, const QByteArray& data, bool ssl,
                             const QVector<HttpRequestHeader>* headers)
 {
     QNetworkRequest req;
-    if(!_buildRequest(req, host, port, urlPath, headers)) {
+    if(!_buildRequest(req, host, port, urlPath, ssl, headers)) {
         return Q_NULLPTR;
     }
     auto netReply = m_httpClient->post(req, data);

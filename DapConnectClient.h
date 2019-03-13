@@ -31,7 +31,8 @@ class DapConnectClient : public QObject
 {
     Q_OBJECT
 private:
-    bool _buildRequest(QNetworkRequest& req, const QString& host,  quint16 port, const QString & urlPath,
+    bool _buildRequest(QNetworkRequest& req, const QString& host,
+                       quint16 port, const QString & urlPath, bool ssl,
                        const QVector<HttpRequestHeader>* headers);
 
     void _rebuildNetworkManager();
@@ -49,11 +50,12 @@ public:
      *                                         }); */
 
     // if headers nullptr sets Content-Type Header by default "text/plain"
-    QNetworkReply* request_GET(const QString& host,  quint16 port,const QString & urlPath,
+    QNetworkReply* request_GET(const QString& host,  quint16 port,
+                               const QString & urlPath, bool ssl = false,
                                const QVector<HttpRequestHeader>* headers = Q_NULLPTR);
 
     QNetworkReply* request_POST(const QString& host,  quint16 port,
-                                const QString & urlPath, const QByteArray& data,
+                                const QString & urlPath, const QByteArray& data, bool ssl = false,
                                 const QVector<HttpRequestHeader>* headers = Q_NULLPTR);
 
 private:
