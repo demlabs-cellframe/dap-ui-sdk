@@ -3,4 +3,5 @@
 #include "DapCryptTest.h"
 #include "DapKeyIaesTest.h"
 #include "DapKeyMsrlnTest.h"
+#include "DapServerInfoTest.h"
 #endif // TESTHEADERS_H

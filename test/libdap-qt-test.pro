@@ -15,4 +15,4 @@ HEADERS += \
     DapCryptTest.h \
     DapKeyIaesTest.h \
     DapKeyMsrlnTest.h \
-    dapserverinfotest.h
+    DapServerInfoTest.h
