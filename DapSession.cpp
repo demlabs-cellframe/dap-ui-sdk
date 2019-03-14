@@ -84,12 +84,12 @@ QNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath,
     if(data) {
         result =  DapConnectClient::instance()->request_POST(m_upstreamAddress,
                                                              m_upstreamPort,
-                                                             urlPath,
-                                                             *data, &headers);
+                                                             urlPath, *data,
+                                                             false, &headers);
     } else {
         result =  DapConnectClient::instance()->request_GET(m_upstreamAddress,
                                                             m_upstreamPort,
-                                                            urlPath, &headers);
+                                                            urlPath, false, &headers);
     }
 
     DapReplyTimeout::set(result, m_requestTimeout);

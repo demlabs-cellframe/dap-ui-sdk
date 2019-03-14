@@ -4,6 +4,8 @@
 #include <QString>
 #include <QMap>
 #include <QDebug>
+#include <QJsonArray>
+#include <QJsonObject>
 
 enum class DapServerLocation {
     ENGLAND = 1,
@@ -15,6 +17,9 @@ enum class DapServerLocation {
     UKRAINE,
     UNKNOWN
 };
+
+class DapServerInfo;
+using DapServerInfoList = QVector<DapServerInfo>;
 
 class DapServerInfo
 {
@@ -33,9 +38,13 @@ public:
     QString name;
     DapServerLocation location;
 
+    static bool parseJSON(QJsonArray jsonArr, DapServerInfoList& out);
+    static bool parseJSON(QJsonObject jsonObj, DapServerInfo& out);
+
     static DapServerLocation stringToLaction(const QString& location);
     friend bool operator==(const DapServerInfo& lhs, const DapServerInfo& rhs);
 private:
+    static bool _isJsonValid(const QJsonObject& obj);
     static countryMap m_countries;
 };
 

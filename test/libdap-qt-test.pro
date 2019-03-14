@@ -14,4 +14,5 @@ HEADERS += \
     TestHeaders.h \
     DapCryptTest.h \
     DapKeyIaesTest.h \
-    DapKeyMsrlnTest.h
+    DapKeyMsrlnTest.h \
+    dapserverinfotest.h
