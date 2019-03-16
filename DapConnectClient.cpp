@@ -62,9 +62,11 @@ bool DapConnectClient::_buildRequest(QNetworkRequest& req, const QString& host,
                                      quint16 port, const QString & urlPath, bool ssl,
                                      const QVector<HttpRequestHeader>* headers)
 {
+#ifndef Q_OS_WIN // In Windows OS QNetworkAccessManager always NotAccessible
     if(m_httpClient->networkAccessible() == QNetworkAccessManager::NotAccessible) {
         _rebuildNetworkManager();
     }
+#endif
 
     QString httpAddress = QString("%1://%2:%3%4").arg(ssl ? "https" : "http")
             .arg(host).arg(port).arg(urlPath);
