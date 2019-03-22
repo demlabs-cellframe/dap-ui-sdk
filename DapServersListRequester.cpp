@@ -21,16 +21,7 @@ DapServersListNetworkReply::DapServersListNetworkReply(QNetworkReply *networkRep
                     emit sigParseResponseError();
                     return;
                 }
-
-                DapServerInfoList result;
-                if (DapServerInfo::parseJSON(jsonDoc.array(), result)) {
-                    emit sigResponse(result);
-                } else {
-                    qCritical() << "Error parse response";
-                    emit sigParseResponseError();
-                    return;
-                }
-
+                emit sigResponse(jsonDoc);
             } else {
                 qWarning() << "Server response:" << ba;
                 qCritical() << "Can't parse server response to JSON";

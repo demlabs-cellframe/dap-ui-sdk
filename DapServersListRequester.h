@@ -5,14 +5,23 @@
 #include <QNetworkReply>
 #include <DapConnectClient.h>
 #include "DapServerInfo.h"
+#include "DapReplyTimeout.h"
 
 class DapServersListNetworkReply : public QObject {
     Q_OBJECT
 private:
 public:
     explicit DapServersListNetworkReply(QNetworkReply *networkReply);
+    QString errorString() const {
+        QNetworkReply * reply = qobject_cast<QNetworkReply *>(parent());
+        if(reply == Q_NULLPTR) {
+            qCritical() << "Error cast";
+            return "";
+        }
+        return reply->errorString();
+    }
 signals:
-    void sigResponse(DapServerInfoList& servers);
+    void sigResponse(const QJsonDocument& doc);
     void sigNetworkError(QNetworkReply::NetworkError);
     void sigParseResponseError();
 };
@@ -42,6 +51,7 @@ public:
                                                                       port,
                                                                       "/api/servers/list",
                                                                       true);
+        DapReplyTimeout::set(networkReply, 10000); // 10 sec
         return new DapServersListNetworkReply(networkReply);
     }
 };
