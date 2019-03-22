@@ -22,8 +22,7 @@ DapServerLocation DapServerInfo::stringToLaction(const QString& location) {
 
 bool operator==(const DapServerInfo& lhs, const DapServerInfo& rhs)
 {
-    if(lhs.address == rhs.address && lhs.port == rhs.port
-            && lhs.name == rhs.name) {
+    if(lhs.address == rhs.address && lhs.port == rhs.port) {
         return true;
     }
     return false;
