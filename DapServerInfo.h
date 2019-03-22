@@ -43,6 +43,12 @@ public:
 
     static DapServerLocation stringToLaction(const QString& location);
     friend bool operator==(const DapServerInfo& lhs, const DapServerInfo& rhs);
+    friend QDebug operator<< (QDebug out, const DapServerInfo &dsi) {
+        out << "DapServer address:" << dsi.address << "port:" << dsi.port
+            << "name:"    << dsi.name    << "location:"
+            << m_countries.key(dsi.location);
+        return out;
+    }
 private:
     static bool _isJsonValid(const QJsonObject& obj);
     static countryMap m_countries;
