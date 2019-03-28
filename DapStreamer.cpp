@@ -174,11 +174,7 @@ void DapStreamer::sltStreamOpenCallback()
 {
     qDebug() << "Stream Open callback;";
 
-    if(m_network_reply->error() != QNetworkReply::NetworkError::NoError)
-        qWarning() << "Network Reply Error" << m_network_reply->error();
-
-    if(m_network_reply->error() >= QNetworkReply::NetworkError::ConnectionRefusedError &&
-            m_network_reply->error() <= QNetworkReply::NetworkError::UnknownNetworkError ) {
+    if(m_network_reply->error() != QNetworkReply::NetworkError::NoError) {
         qWarning() << "Can't open stream. Network error";
         emit sigStreamOpenNetworkError(m_network_reply->error());
         return;
