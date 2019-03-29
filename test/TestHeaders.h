@@ -4,4 +4,5 @@
 #include "DapKeyIaesTest.h"
 #include "DapKeyMsrlnTest.h"
 #include "DapServerInfoTest.h"
+#include "DapServersLocalStorageTest.h"
 #endif // TESTHEADERS_H
