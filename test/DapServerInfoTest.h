@@ -8,7 +8,12 @@
 class DapServerInfoTest : public QObject {
     Q_OBJECT
 private:
-
+    void compareExpResultServs(const DapServerInfo& lhs, const DapServerInfo& rhs) {
+        QVERIFY(lhs.address == rhs.address);
+        QVERIFY(lhs.location == rhs.location);
+        QVERIFY(lhs.name == rhs.name);
+        QVERIFY(lhs.port == rhs.port);
+    }
 private slots:
     void parseDapServerInfoArray() {
         QByteArray ba = "[{\"Address\":\"89.163.225.221\",\"Country\":{\"Name\":\"Germany\"},"
@@ -27,7 +32,7 @@ private slots:
 
         QJsonDocument jsonDoc = QJsonDocument::fromJson(ba);
         DapServerInfoList result;
-        DapServerInfo::parseJSON(jsonDoc.array(), result);
+        DapServerInfo::fromJSON(jsonDoc.array(), result);
 
         QVERIFY(result.contains(expected1));
         QVERIFY(result.contains(expected2));
@@ -46,12 +51,25 @@ private slots:
 
 
         DapServerInfo result;
-        DapServerInfo::parseJSON(jsonDoc.object(), result);
+        DapServerInfo::fromJSON(jsonDoc.object(), result);
 
-        QVERIFY(expected.address == result.address);
-        QVERIFY(expected.location == result.location);
-        QVERIFY(expected.name == result.name);
-        QVERIFY(expected.port == result.port);
+        compareExpResultServs(expected, result);
+    }
+
+    void testFromToJson() {
+        DapServerInfo expected;
+        expected.address = "89.163.225.221";
+        expected.location = DapServerLocation::GERMANY;
+        expected.name = "ap-de-0";
+        expected.port = 8001;
+
+        auto s = DapServerInfo::toJSON(expected);
+        DapServerInfo result;
+        DapServerInfo::fromJSON(s, result);
+
+        QVERIFY(result == expected);
+
+        compareExpResultServs(expected, result);
     }
 };
 

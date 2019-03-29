@@ -38,7 +38,7 @@ bool DapServerInfo::_isJsonValid(const QJsonObject& obj)
             && obj["Port"].isDouble();
 }
 
-bool DapServerInfo::parseJSON(QJsonArray jsonArr, DapServerInfoList& out)
+bool DapServerInfo::fromJSON(const QJsonArray& jsonArr, DapServerInfoList& out)
 {
     for (auto it = jsonArr.constBegin(); it != jsonArr.constEnd(); ++it)
     {
@@ -50,7 +50,7 @@ bool DapServerInfo::parseJSON(QJsonArray jsonArr, DapServerInfoList& out)
         }
 
         DapServerInfo dsi;
-        if(parseJSON(val.toObject(), dsi) == false) {
+        if(fromJSON(val.toObject(), dsi) == false) {
             return false;
         }
 
@@ -59,7 +59,17 @@ bool DapServerInfo::parseJSON(QJsonArray jsonArr, DapServerInfoList& out)
     return true;
 }
 
-bool DapServerInfo::parseJSON(QJsonObject jsonObj, DapServerInfo& out)
+QJsonObject DapServerInfo::toJSON(const DapServerInfo& dsi)
+{
+    QJsonObject obj;
+    obj["Adress"] = dsi.address;
+    obj["Port"] = dsi.port;
+    obj["Name"] = dsi.name;
+    obj["Location"] = static_cast<int>(dsi.location);
+    return obj;
+}
+
+bool DapServerInfo::fromJSON(const QJsonObject& jsonObj, DapServerInfo& out)
 {
     if(_isJsonValid(jsonObj) == false) {
         qWarning() << "Invalid json object";
@@ -71,6 +81,12 @@ bool DapServerInfo::parseJSON(QJsonObject jsonObj, DapServerInfo& out)
     out.name = jsonObj["Name"].toString();
 
     QString countryName = jsonObj["Country"].toObject()["Name"].toString();
-    out.location = stringToLaction(countryName);
+    if(countryName.isEmpty()) {
+        int defaultValue = static_cast<int>(DapServerLocation::UNKNOWN);
+        out.location = static_cast<DapServerLocation>(jsonObj["Location"].toInt(defaultValue));
+    } else {
+        out.location = stringToLaction(countryName);
+    }
+
     return true;
 }

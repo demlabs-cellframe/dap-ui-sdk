@@ -7,15 +7,15 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
-enum class DapServerLocation {
-    ENGLAND = 1,
+enum class DapServerLocation : int {
+    UNKNOWN = 0,
+    ENGLAND,
     FRANCE,
     GERMANY,
     USA,
     NETHERLANDS,
     RUSSIA,
     UKRAINE,
-    UNKNOWN
 };
 
 class DapServerInfo;
@@ -38,8 +38,10 @@ public:
     QString name;
     DapServerLocation location;
 
-    static bool parseJSON(QJsonArray jsonArr, DapServerInfoList& out);
-    static bool parseJSON(QJsonObject jsonObj, DapServerInfo& out);
+    static bool fromJSON(const QJsonArray& jsonArr, DapServerInfoList& out);
+    static bool fromJSON(const QJsonObject& jsonObj, DapServerInfo& out);
+
+    static QJsonObject toJSON(const DapServerInfo& dsi);
 
     static DapServerLocation stringToLaction(const QString& location);
     friend bool operator==(const DapServerInfo& lhs, const DapServerInfo& rhs);
