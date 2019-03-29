@@ -62,7 +62,7 @@ bool DapServerInfo::fromJSON(const QJsonArray& jsonArr, DapServerInfoList& out)
 QJsonObject DapServerInfo::toJSON(const DapServerInfo& dsi)
 {
     QJsonObject obj;
-    obj["Adress"] = dsi.address;
+    obj["Address"] = dsi.address;
     obj["Port"] = dsi.port;
     obj["Name"] = dsi.name;
     obj["Location"] = static_cast<int>(dsi.location);
