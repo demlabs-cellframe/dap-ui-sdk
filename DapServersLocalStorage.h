@@ -32,7 +32,7 @@ public:
 
     const DapServerInfoList& getServersList() { return _serversList; }
 signals:
-    void listChanged();
+    void changed();
 public slots:
 };
 

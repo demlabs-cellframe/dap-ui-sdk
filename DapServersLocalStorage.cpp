@@ -48,7 +48,9 @@ int DapServersLocalStorage::removeServer(const QString& address, const quint16 p
 {
     DapServerInfo s;
     s.address = address; s.port = port;
-    return removeServer(s);
+    int rc = removeServer(s);
+    if(rc == 0) emit changed();
+    return rc;
 }
 
 int DapServersLocalStorage::editServer(const DapServerInfo& oldServer, const DapServerInfo& newServer)
@@ -61,7 +63,9 @@ int DapServersLocalStorage::editServer(const DapServerInfo& oldServer, const Dap
         return rc;
     }
 
-    return addServer(newServer);
+    rc = addServer(newServer);
+    if(rc == 0) emit changed();
+    return rc;
 }
 
 int DapServersLocalStorage::removeServer(const DapServerInfo& server)
@@ -95,6 +99,7 @@ int DapServersLocalStorage::removeServer(const DapServerInfo& server)
         return 13;
     }
 
+    emit changed();
     return _rewriteJsonFile();
 }
 
@@ -151,5 +156,6 @@ int DapServersLocalStorage::addServer(const DapServerInfo& server)
     _jsonServersListArr.append(jsonObj);
     _serversList.append(server);
 
+    emit changed();
     return _rewriteJsonFile();
 }
