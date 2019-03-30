@@ -65,7 +65,7 @@ QJsonObject DapServerInfo::toJSON(const DapServerInfo& dsi)
     obj["Address"] = dsi.address;
     obj["Port"] = dsi.port;
     obj["Name"] = dsi.name;
-    obj["Location"] = static_cast<int>(dsi.location);
+    obj["Location"] = m_countries.key(dsi.location);
     return obj;
 }
 
@@ -82,8 +82,13 @@ bool DapServerInfo::fromJSON(const QJsonObject& jsonObj, DapServerInfo& out)
 
     QString countryName = jsonObj["Country"].toObject()["Name"].toString();
     if(countryName.isEmpty()) {
-        int defaultValue = static_cast<int>(DapServerLocation::UNKNOWN);
-        out.location = static_cast<DapServerLocation>(jsonObj["Location"].toInt(defaultValue));
+        auto location = jsonObj["Location"];
+        if(location.isString()) {
+            out.location = stringToLaction(location.toString());
+        } else {
+            int defaultValue = static_cast<int>(DapServerLocation::UNKNOWN);
+            out.location = static_cast<DapServerLocation>(jsonObj["Location"].toInt(defaultValue));
+        }
     } else {
         out.location = stringToLaction(countryName);
     }
