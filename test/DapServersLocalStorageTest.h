@@ -55,10 +55,38 @@ private slots:
         QCOMPARE(t2.getServersList()[0].location, s.location);
 
         // this server already exists
-        QCOMPARE(t2.addServer(s), 1);
+        QCOMPARE(t2.addServer(s), 21);
 
         t2.removeServer(s);
         QCOMPARE(t2.getServersList().size(), 0);
+    }
+
+    void editServer() {
+        QString testFileName = "testServers3";
+        DapServersLocalStorage t(this, testFileName);
+
+        DapServerInfo s;
+        s.address = "127.0.0.1";
+        s.port = 8080;
+        s.name = "localhost";
+        s.location = DapServerLocation::UNKNOWN;
+
+        t.addServer(s);
+
+        DapServerInfo s2(s);
+        s2.port = 8081;
+        s2.name = "newName";
+        t.editServer(s, s2);
+
+        QCOMPARE(t.getServersList().size(), 1);
+
+        QCOMPARE(t.getServersList()[0].address, s2.address);
+        QCOMPARE(t.getServersList()[0].port, s2.port);
+        QCOMPARE(t.getServersList()[0].name, s2.name);
+        QCOMPARE(t.getServersList()[0].location, s2.location);
+
+        t.removeServer(s2);
+        QCOMPARE(t.getServersList().size(), 0);
     }
 };
 

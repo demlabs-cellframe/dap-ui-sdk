@@ -51,6 +51,19 @@ int DapServersLocalStorage::removeServer(const QString& address, const quint16 p
     return removeServer(s);
 }
 
+int DapServersLocalStorage::editServer(const DapServerInfo& oldServer, const DapServerInfo& newServer)
+{
+    int rc = removeServer(oldServer);
+    if(rc == 11) {
+        qCritical() << "Server for edit not found";
+        return 31;
+    } else if(rc != 0) {
+        return rc;
+    }
+
+    return addServer(newServer);
+}
+
 int DapServersLocalStorage::removeServer(const DapServerInfo& server)
 {
     int idx;
@@ -131,7 +144,7 @@ int DapServersLocalStorage::addServer(const DapServerInfo& server)
 {
     if(isServerExists(server) == true) {
         qDebug() << server << "already exists";
-        return 1;
+        return 21;
     }
 
     auto jsonObj = DapServerInfo::toJSON(server);

@@ -27,6 +27,9 @@ public:
     int addServer(const DapServerInfo& server);
     int removeServer(const QString& address, const quint16 port);
     int removeServer(const DapServerInfo& server);
+
+    int editServer(const DapServerInfo& oldServer, const DapServerInfo& newServer);
+
     const DapServerInfoList& getServersList() { return _serversList; }
 signals:
     void listChanged();
