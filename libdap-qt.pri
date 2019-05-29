@@ -1,5 +1,7 @@
-include (libdap/libdap.pri)
-INCLUDEPATH += libdap/ libdap/common
+include ( libdap/libdap.pri )
+include ( libdap/libdap-crypto.pri )
+INCLUDEPATH += libdap/libdap/include
+INCLUDEPATH += libdap/libdap-crypto/include
 
 SOURCES += \
     $$PWD/DapSession.cpp \
@@ -27,6 +29,7 @@ HEADERS += \
     $$PWD/DapServersListRequester.h \
     $$PWD/DapServersLocalStorage.h
 
-INCLUDEPATH += $$PWD
+INCLUDEPATH += $$PWD $$PWD/../
+
 
 
