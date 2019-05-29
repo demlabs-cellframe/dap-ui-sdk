@@ -1,5 +1,3 @@
-include ( libdap/libdap.pri )
-include ( libdap/libdap-crypto.pri )
 INCLUDEPATH += libdap/libdap/include
 INCLUDEPATH += libdap/libdap-crypto/include
 
