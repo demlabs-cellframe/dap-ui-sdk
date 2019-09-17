@@ -29,7 +29,7 @@ void DapLogger::setLogLevel(dap_log_level ll) {
 }
 
 bool DapLogger::setLogFile(const QString& filePath) {
-    return dap_common_init(filePath.toLatin1().data()) == 0;
+    return dap_common_init(DAP_BRAND,filePath.toLatin1().data()) == 0;
 }
 
 void DapLogger::messageHandler(QtMsgType type,
