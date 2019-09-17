@@ -7,29 +7,29 @@ DapLogger::DapLogger(QObject *parent, size_t prefix_width)
     qInstallMessageHandler(messageHandler);
 }
 
-inline log_level DapLogger::castQtMsgToDap(QtMsgType type) {
+inline dap_log_level DapLogger::castQtMsgToDap(QtMsgType type) {
     switch (type) {
     case QtDebugMsg:
-        return log_level::L_DEBUG;
+        return dap_log_level::L_DEBUG;
     case QtInfoMsg:
-        return log_level::L_INFO;
+        return dap_log_level::L_INFO;
     case QtWarningMsg:
-        return log_level::L_WARNING;
+        return dap_log_level::L_WARNING;
     case QtCriticalMsg:
-        return log_level::L_ERROR;
+        return dap_log_level::L_ERROR;
     case QtFatalMsg: // Qt FatalMsg as L'CRITICAL interrupt the program by abort() function
-        return log_level::L_CRITICAL;
+        return dap_log_level::L_CRITICAL;
     }
     std::runtime_error("Can't cast QtMsg");
-    return log_level::L_CRITICAL; // fix compile warning
+    return dap_log_level::L_CRITICAL; // fix compile warning
 }
 
-void DapLogger::setLogLevel(log_level ll) {
-    set_log_level(ll);
+void DapLogger::setLogLevel(dap_log_level ll) {
+    dap_log_level_set(ll);
 }
 
 bool DapLogger::setLogFile(const QString& filePath) {
-    return dap_common_init(filePath.toLatin1().data()) == 0;
+    return dap_common_init(DAP_BRAND, filePath.toLatin1().data()) == 0;
 }
 
 void DapLogger::messageHandler(QtMsgType type,
@@ -48,8 +48,8 @@ void DapLogger::messageHandler(QtMsgType type,
         fileName = (fileName == Q_NULLPTR ? ctx.file : fileName + 1);
         strcpy(prefixBuffer, fileName);
         sprintf(strrchr(prefixBuffer, '.'), ":%d", ctx.line);
-        _log_it(prefixBuffer, castQtMsgToDap(type), msg.toLatin1().data());
+        _log_it(prefixBuffer, strlen(prefixBuffer)+1, castQtMsgToDap(type), msg.toLatin1().data());
     } else {
-        _log_it(NULL, castQtMsgToDap(type), msg.toLatin1().data());
+        _log_it("\0", 1, castQtMsgToDap(type), msg.toLatin1().data());
     }
 }
