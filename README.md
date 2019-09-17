@@ -1,2 +1,2 @@
 # libdap-qt-ui-qml
-GUI of the KELVIN project client
+GUI of the CellFrame project client
