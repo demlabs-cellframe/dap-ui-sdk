@@ -1,4 +1,8 @@
 [submodule "libdap"]
-	branch = master
 	path = libdap
-	url = https://github.com/demlabsinc/libdap.git
+	url = https://gitlab.demlabs.net/cellframe/libdap.git
+	branch = master
+[submodule "libdap-crypto"]
+	path = libdap-crypto
+	url = https://gitlab.demlabs.net/cellframe/libdap-crypto.git
+	branch = master
