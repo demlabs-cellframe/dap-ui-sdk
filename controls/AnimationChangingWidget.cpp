@@ -106,7 +106,7 @@ void AnimationChangingWidget::setCurrentWidget(QWidget *a_widget)
  */
 void AnimationChangingWidget::setCurrentIndex(int a_index)
 {
-    Q_ASSERT_X((a_index <= (count()-1)), "setCurrentIndex", "Index doesn't exist");
+    //Q_ASSERT_X((a_index <= (count()-1)), "setCurrentIndex", "Index doesn't exist");
 
     m_currentIndex = a_index;
 

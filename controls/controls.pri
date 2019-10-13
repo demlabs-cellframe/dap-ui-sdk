@@ -6,7 +6,8 @@ SOURCES += \
     $$PWD/StyleSubcontrol.cpp \
     $$PWD/DapStyleHolder.cpp \
     $$PWD/AnimatedLineEdit.cpp \
-    $$PWD/ScreenOverlaying.cpp
+    $$PWD/ScreenOverlaying.cpp \
+    $$PWD/StyledDropShadowEffect.cpp
 
 HEADERS += \
     $$PWD/AnimationChangingWidget.h \
@@ -16,7 +17,8 @@ HEADERS += \
     $$PWD/StyleSubcontrol.h \
     $$PWD/DapStyleHolder.h \
     $$PWD/AnimatedLineEdit.h \
-    $$PWD/ScreenOverlaying.h
+    $$PWD/ScreenOverlaying.h \
+    $$PWD/StyledDropShadowEffect.h
 
 INCLUDEPATH += $$PWD
 

@@ -32,6 +32,13 @@
 #include <QFile>
 #include <QRegExp>
 
+struct StyleSheatSearchPar{
+     QString widgetName;
+     QString dinamicProperty  = "";
+     QString subcontrol       = "";
+     QString pseudoClass      = "";
+};
+
 class DapStyleHolder : public QObject
 {
     Q_OBJECT
@@ -61,6 +68,7 @@ public:
 
     QString getWidgetStyleSheet(const QString& a_widgetName, QString a_dinamicProperty = "",
                                 QString a_subcontrol = "", QString a_pseudoClass = "") const;
+    QString getWidgetStyleSheet(StyleSheatSearchPar a_searchPar) const;
 
     static QString getValueFromStylesheet(const QString a_styleSheet, const QString &a_property);
 

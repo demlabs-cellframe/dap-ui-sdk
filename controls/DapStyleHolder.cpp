@@ -53,32 +53,43 @@ QString DapStyleHolder::getWidgetStyleSheet(const QString& a_widgetName,
                                             QString a_subcontrol /*= ""*/,
                                             QString a_pseudoClass /*= ""*/) const
 {
+    StyleSheatSearchPar searchPar;
+    searchPar.widgetName        = a_widgetName;
+    searchPar.dinamicProperty   = a_dinamicProperty;
+    searchPar.subcontrol        = a_subcontrol;
+    searchPar.pseudoClass       = a_pseudoClass;
+    return getWidgetStyleSheet(searchPar);
+}
+
+QString DapStyleHolder::getWidgetStyleSheet(StyleSheatSearchPar a_searchPar) const
+{
     // format subcontrol if exist:
-    if (!a_subcontrol.isEmpty())
-        a_subcontrol = "\\s*::\\s*" + a_subcontrol;
+    if (!a_searchPar.subcontrol.isEmpty())
+        a_searchPar.subcontrol = "\\s*::\\s*" + a_searchPar.subcontrol;
 
     // format property if exist:
-    if (!a_dinamicProperty.isEmpty())
-        a_dinamicProperty = "\\s*\\[" + a_dinamicProperty + "\\]";
+    if (!a_searchPar.dinamicProperty.isEmpty())
+        a_searchPar.dinamicProperty = "\\s*\\[" + a_searchPar.dinamicProperty + "\\]";
 
     // format pseudoClass if exist:
-    if (!a_pseudoClass.isEmpty())
-        a_pseudoClass = ":" + a_pseudoClass;
+    if (!a_searchPar.pseudoClass.isEmpty())
+        a_searchPar.pseudoClass = ":" + a_searchPar.pseudoClass;
 
     QRegExp regExp(QString("%1%2%3%4\\s*"
                            "\\{"
                                 "([^\\}]*)"
                            "\\}")
-                   .arg(a_widgetName).arg(a_subcontrol).arg(a_dinamicProperty).arg(a_pseudoClass));
-    
+                   .arg(a_searchPar.widgetName).arg(a_searchPar.subcontrol).arg(a_searchPar.dinamicProperty).arg(a_searchPar.pseudoClass));
+
     // If not found output and return empty
     if (regExp.lastIndexIn(m_appStyleSheet) == -1) {
         qWarning() << "styleSheet not found: " << regExp;
         return "";
-    } 
+    }
 
     //If found return found capture 1 without spaces and new line symbols
     return regExp.cap(1).remove(QRegExp("(\\s|\\n)"));
+
 }
 
 /// Get property value from a_stylesheet.
