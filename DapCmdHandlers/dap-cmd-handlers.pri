@@ -6,7 +6,8 @@ SOURCES += \
     $$PWD/DapCmdConnect.cpp \
     $$PWD/DapCmdStates.cpp \
     $$PWD/DapCmdStats.cpp \
-    $$PWD/DapCmdServersList.cpp
+    $$PWD/DapCmdServersList.cpp \
+    $$PWD/DapCmdAndroidTunnel.cpp
 
 HEADERS += \
     $$PWD/DapCmdLastConnectionData.h \
@@ -16,7 +17,8 @@ HEADERS += \
     $$PWD/DapCmdConnect.h \
     $$PWD/DapCmdStates.h \
     $$PWD/DapCmdStats.h \
-    $$PWD/DapCmdServersList.h
+    $$PWD/DapCmdServersList.h \
+    $$PWD/DapCmdAndroidTunnel.h
 
 INCLUDEPATH += $$PWD
 

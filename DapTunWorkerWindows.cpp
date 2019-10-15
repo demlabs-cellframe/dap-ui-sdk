@@ -44,6 +44,7 @@ void DapTunWorkerWindows::loop() {
         if(tmpBufSize > (int)sizeof(struct ip)) {
             emit bytesWrite((int)tmpBufSize);
             procDataFromTun(tmpBuf, tmpBufSize);
+            memset(tmpBuf, '\0', mtu);
             tmpBufSize = 0;
         }
     } while (1);

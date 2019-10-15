@@ -9,7 +9,9 @@
 
 #include "DapTunAbstract.h"
 #include "DapSockForwPacket.h"
+#ifndef Q_OS_ANDROID
 #include "DapNetworkMonitor.h"
+#endif
 
 #define STREAM_SF_PACKET_OP_CODE_RAW_SEND 0xbc
 
@@ -40,7 +42,7 @@ bool DapTunAbstract::isCreated()
 void DapTunAbstract::initWorker()
 {
     qDebug() << "[DapTunAbstract] Tun worker init";
-
+#ifndef Q_OS_ANDROID
     DapNetworkMonitor::instance(); // To call a contructor in main thread.
 
     connect(tunThread,&QThread::started, [=] {
@@ -54,6 +56,7 @@ void DapTunAbstract::initWorker()
         qDebug() << "Tun worker is finished!";
         DapNetworkMonitor::instance()->monitoringStop();
     });
+#endif
 
     if (tunWorker == nullptr) {
         qWarning() << "[DapTunAbstract::initWorker] tunWorker is nullptr";
@@ -99,7 +102,7 @@ void DapTunAbstract::create(const QString &a_addr, const QString &a_gw,
 
 void DapTunAbstract::workerStart()
 {
-    qInfo() <<"Tun device created";
+    qInfo() <<"Tun device created" << m_tunSocket;
     if(m_tunSocket>0){
         tunWorker->setTunSocket(m_tunSocket);
         tunWorker->moveToThread(tunThread);

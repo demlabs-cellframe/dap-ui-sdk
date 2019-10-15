@@ -28,20 +28,22 @@ void DapTunWindows::tunDeviceCreate()
 
 void DapTunWindows::tunDeviceDestroy()
 {
-    qDebug() << "Closing tunnel";
+    qInfo() << "Closing tunnel";
     TunTap::getInstance().setDNS(m_tunDeviceReg, "");
-    TunTap::getInstance().closeTun();
-    QString _gw(m_gw);
-    _gw.chop(1);
-    _gw.append('0');
-    qDebug() << "Restore ROUTE ... ";
-
+    m_gw.chop(1);
+    m_gw.append('0');
+    qInfo() << "Restore ROUTE ... ";
+    TunTap::getInstance().deleteRoutesByGw(qPrintable(m_gw));
     //QString run = QString("ROUTE DELETE 0.0.0.0 & ROUTE DELETE 128.0.0.0 & ROUTE DELETE %6 & ROUTE DELETE %1 & ROUTE DELETE %4 & ROUTE DELETE %5 & ROUTE ADD 0.0.0.0 MASK 0.0.0.0 %2 IF %3").arg(upstreamResolved).arg(m_defaultGwOld).arg(TunTap::getInstance().getDefaultAdapterIndex()).arg(_gw).arg(m_gw).arg(m_addr);
     //exec_silent(qPrintable(run));
-    dwDests.append(_gw);
-    TunTap::getInstance().deleteRoutes(dwDests);
-    dwDests.clear();
-    TunTap::getInstance().makeRoute(TunTap::ETH, "0.0.0.0", m_defaultGwOld, metric_eth, "0.0.0.0");
+    //TunTap::getInstance().deleteCustomRoutes();
+    DeleteIpForwardEntry(&TunTap::getInstance().customRoutes[0]);
+    DeleteIpForwardEntry(&TunTap::getInstance().customRoutes[1]);
+    DeleteIpForwardEntry(&TunTap::getInstance().customRoutes[2]);
+    DeleteIpForwardEntry(&TunTap::getInstance().customRoutes[3]);
+    TunTap::getInstance().customRoutes.clear();
+    TunTap::getInstance().makeRoute(TunTap::ETH, "0.0.0.0", m_defaultGwOld, metric_eth, "0.0.0.0", false);
+    TunTap::getInstance().closeTun();
     if (!dhcpEnabled) {
         /*run = m_defaultDNSRecord.join(',');
         TunTap::getInstance().setDNS(m_ethDeviceName, run); */ // pconst: not yet sure whether it's totally useless
@@ -51,24 +53,24 @@ void DapTunWindows::tunDeviceDestroy()
         TunTap::getInstance().setDNS(m_ethDeviceName, run); */
 
         if (TunTap::getInstance().ipReleaseAddr(TunTap::getInstance().getDefaultAdapterIndex()) == 0) {
-            qDebug() << "[TunTap] ip config released";
+            qInfo() << "[TunTap] ip config released";
         } else {
             qCritical() << "[TunTap] ip config couldn't be released";
         }
 
         if (TunTap::getInstance().ipRenewAddr(TunTap::getInstance().getDefaultAdapterIndex()) == 0) {
-            qDebug() << "[TunTap] ip address renewed";
+            qInfo() << "[TunTap] ip address renewed";
         } else {
             qCritical() << "[TunTap] ip config couldn't be renewed";
         }
 
         if (!TunTap::getInstance().notifyIPChange(m_ethDeviceName)) {
-            qDebug() << "Re-registering DNS...";
+            qInfo() << "Re-registering DNS...";
             exec_silent("ipconfig /registerdns");
         }
     }
 
-    qDebug() << "Flushing DNS cache...";
+    qInfo() << "Flushing DNS cache...";
     if(!TunTap::getInstance().flushDNS()) {
         qDebug() << "Re-flushing DNS...";
         exec_silent("ipconfig /flushdns");
@@ -80,31 +82,29 @@ void DapTunWindows::tunDeviceDestroy()
 void DapTunWindows::onWorkerStarted() {
     DapTunAbstract::onWorkerStarted();
     dhcpEnabled = false;
-
     m_defaultGwOld = TunTap::getInstance().getDefaultGateWay();
-    QString m_defaultGwOld_test = TunTap::getInstance()._getDefaultGateWay(dhcpEnabled);
-    qDebug() << "default GW as to route: " << m_defaultGwOld;
-    qDebug() << "default GW as to IpString: " << m_defaultGwOld_test;
+    qInfo() << "default GW as to route: " << m_defaultGwOld;
     QStringList dDevice = TunTap::getInstance().getFriendlyNameAndDefaultDNS(TunTap::getInstance().getDefaultAdapterIndex());
     m_ethDevice = dDevice.at(0);
     m_ethDeviceName = dDevice.at(1);
     dDevice.removeFirst();
     dDevice.removeFirst();
     m_defaultDNSRecord = dDevice; // pconst: not yet sure whether it's totally useless.
-    qDebug() << "default dns records:" << m_defaultDNSRecord;
+    qInfo() << "default dns records:" << m_defaultDNSRecord;
 
     QStringList tunDevice = TunTap::getInstance().getFriendlyNameAndDefaultDNS(TunTap::getInstance().getTunTapAdapterIndex());
     m_tunDeviceHuman = tunDevice.at(0);
     m_tunDeviceReg = tunDevice.at(1);
-    qDebug() << "tun device reg name: " << qPrintable(m_tunDeviceReg);
+    qInfo() << "tun device reg name: " << qPrintable(m_tunDeviceReg);
     if (m_defaultGwOld.isEmpty()) {
         qWarning() << "[DapChSockForw] Not found old gateway, looks like its better to restart the network";
         return;
     }
 
-    qDebug() << "Attempt to resolve domain name address...";
+    qInfo() << "Attempt to resolve domain name address...";
     upstreamResolved = TunTap::getInstance().lookupHost(m_sUpstreamAddress, QString::number(m_iUpstreamPort));
-    qDebug() << "upstream address is " << upstreamResolved;
+    qInfo() << "upstream address is " << upstreamResolved;
+
 
     if (!TunTap::getInstance().determineValidArgs(metric_eth, metric_tun)) {
         metric_eth = 35;
@@ -116,7 +116,7 @@ void DapTunWindows::onWorkerStarted() {
 
     if (dhcpEnabled) {
         if (!TunTap::getInstance().notifyIPChange(m_ethDeviceName)) {
-            qDebug() << "Re-registering DNS...";
+            qInfo() << "Re-registering DNS...";
             exec_silent("ipconfig /registerdns");
         }
     }
@@ -133,12 +133,6 @@ void DapTunWindows::onWorkerStarted() {
     }
 
     emit created();
-
-    dwDests.append("0.0.0.0");
-    dwDests.append("128.0.0.0");
-    dwDests.append(m_addr);
-    dwDests.append(upstreamResolved);
-    dwDests.append(m_gw);
 }
 
 void DapTunWindows::workerPrepare() {

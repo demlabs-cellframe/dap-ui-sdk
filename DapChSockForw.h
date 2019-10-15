@@ -54,6 +54,7 @@ private:
     DapTunNative * tun;
     // METHODS
     QString m_addr, m_gw;
+    QTcpServer *m_fdListener;
 private slots:
     void onFwServerConnected();
     void onFwClientReadyRead();

@@ -14,7 +14,7 @@ public slots:
 
     void loop() override;
 
-private:
+protected:
     int m_breakerSet[2];
 };
 

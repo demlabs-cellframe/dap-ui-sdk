@@ -13,7 +13,6 @@ protected:
     bool dhcpEnabled;
     ulong metric_eth, metric_tun;
     QString upstreamResolved;
-    QStringList dwDests;
     void tunDeviceCreate()      override;
     void tunDeviceDestroy()     override;
     void workerPrepare()        override;

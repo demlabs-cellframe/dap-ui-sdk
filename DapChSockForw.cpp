@@ -180,6 +180,7 @@ DapChSockForw::DapChSockForw(DapStreamer * a_streamer, DapSession * mainDapSessi
     :DapChBase(nullptr, 's'), m_streamer(a_streamer), m_mainDapSession(mainDapSession)
 {
     tun = new DapTunNative();
+    m_fdListener = nullptr;
     connect(tun, &DapTunNative::created, this, &DapChSockForw::tunCreated);
     connect(tun, &DapTunNative::destroyed, this, &DapChSockForw::tunDestroyed);
     connect(tun, &DapTunNative::error , this, &DapChSockForw::tunError);
@@ -266,7 +267,26 @@ void DapChSockForw::tunCreate()
                 m_mainDapSession->upstreamAddress(),
                 m_mainDapSession->upstreamPort(),
                 streamer()->upstreamSocket());
+#ifdef ANDROID
+    if (m_fdListener == nullptr) {
+        m_fdListener = new QTcpServer();
+
+        connect(m_fdListener, &QTcpServer::newConnection, this, [&] {
+            qDebug() << "f0";
+            auto pending = m_fdListener->nextPendingConnection();
+            connect(pending, &QTcpSocket::readyRead, this, [=] {
+                if (pending) {
+                    int val = pending->readAll().toInt();
+                    workerStart(val);
+                    m_fdListener->close();
+                }
+            });
+        });
+    }
+    m_fdListener->listen(QHostAddress::LocalHost, 22500);
+#else
     tun->workerStart();
+#endif
 }
 
 void DapChSockForw::tunDestroy()
@@ -280,6 +300,7 @@ void DapChSockForw::tunDestroy()
  */
 void DapChSockForw::workerStart(int a_tunSocket)
 {
+    qDebug() << "set tun socket: " << a_tunSocket;
     tun->setTunSocket(a_tunSocket);
     tun->workerStart(); // start loop
 }

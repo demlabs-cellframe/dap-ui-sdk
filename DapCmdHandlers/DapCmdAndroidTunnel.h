@@ -1,19 +1,18 @@
 #ifndef DAPCMDANDROIDTUNNEL_H
 #define DAPCMDANDROIDTUNNEL_H
 
-#include "DapCmdClientAbstract.h"
+#include "DapCmdServiceAbstract.h"
+#include <QJsonObject>
 
-class DapCmdAndroidTunnel : public DapCmdClientAbstract
+class DapCmdAndroidTunnel : public DapCmdServiceAbstract
 {
     Q_OBJECT
 public:
-    explicit DapCmdAndroidTunnel(QObject *parent = nullptr);
-protected:
-    void handleResult(const QJsonObject& result) override;
-    void handleError(int code, const QString& message) override;
+    DapCmdAndroidTunnel(QObject *parent = nullptr);
+    ~DapCmdAndroidTunnel() override;
 
-signals:
-    void asked(const QString&, const QString&, const int);
+    void handle(const QJsonObject *params) override;
+    void openTunnel(const QString &address, const QString &gateway, int socket);
 };
 
 #endif // DAPCMDANDROIDTUNNEL_H

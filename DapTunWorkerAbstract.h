@@ -48,7 +48,7 @@ protected:
         return ret;
     }
 private:
-    int m_tunSocket;
+    volatile int m_tunSocket;
     DapTunAbstract * m_tun;
     QQueue<DapSockForwPacket *>* m_writeQueue;
     QWaitCondition * m_writeQueueCond;

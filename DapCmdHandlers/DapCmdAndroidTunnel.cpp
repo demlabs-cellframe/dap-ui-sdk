@@ -1,21 +1,27 @@
 #include "DapCmdAndroidTunnel.h"
 
+
 DapCmdAndroidTunnel::DapCmdAndroidTunnel(QObject *parent)
-    : DapCmdClientAbstract (DapJsonCmdType::CREATE_ANDROID_TUNNEL, parent)
+    : DapCmdServiceAbstract (DapJsonCmdType::CREATE_ANDROID_TUNNEL, parent)
 {
-
+    
 }
 
-void DapCmdAndroidTunnel::handleResult(const QJsonObject &result)
+DapCmdAndroidTunnel::~DapCmdAndroidTunnel()
 {
-    auto addr = result["address"].toString();
-    auto gw = result["gateway"].toString();
-    auto socket = result["socket"].toInt();
-
-    emit asked(addr, gw, socket);
+    
 }
 
-void DapCmdAndroidTunnel::handleError(int code, const QString &message)
+void DapCmdAndroidTunnel::handle(const QJsonObject *params)
 {
-    qInfo() << message;
+    Q_UNUSED(params)
+}
+
+void DapCmdAndroidTunnel::openTunnel(const QString &address, const QString &gateway, int socket)
+{
+    QJsonObject tunnelData;
+    tunnelData["address"] = address;
+    tunnelData["gateway"] = gateway;
+    tunnelData["socket"] = socket;
+    sendCmd(&tunnelData);
 }
