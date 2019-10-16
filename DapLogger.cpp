@@ -29,7 +29,7 @@ void DapLogger::setLogLevel(dap_log_level ll) {
 }
 
 bool DapLogger::setLogFile(const QString& filePath) {
-    return dap_common_init( filePath.toLatin1().data()) == 0;
+    return dap_common_init( DAP_BRAND,filePath.toLatin1().data()) == 0;
 }
 
 void DapLogger::messageHandler(QtMsgType type,
@@ -48,8 +48,8 @@ void DapLogger::messageHandler(QtMsgType type,
         fileName = (fileName == Q_NULLPTR ? ctx.file : fileName + 1);
         strcpy(prefixBuffer, fileName);
         sprintf(strrchr(prefixBuffer, '.'), ":%d", ctx.line);
-        _log_it(prefixBuffer, castQtMsgToDap(type), msg.toLatin1().data());
+        _log_it(prefixBuffer, strlen(prefixBuffer)-1, castQtMsgToDap(type), msg.toLatin1().data());
     } else {
-        _log_it("\0",  castQtMsgToDap(type), msg.toLatin1().data());
+        _log_it("\0",1,  castQtMsgToDap(type), msg.toLatin1().data());
     }
 }
