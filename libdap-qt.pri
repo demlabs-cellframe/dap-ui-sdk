@@ -1,5 +1,5 @@
-INCLUDEPATH += libdap/libdap/include
-INCLUDEPATH += libdap/libdap-crypto/include
+INCLUDEPATH += ../libdap/include ../libdap/src
+INCLUDEPATH += ../libdap-crypto/include  ../libdap-crypto/src
 
 SOURCES += \
     $$PWD/DapSession.cpp \
