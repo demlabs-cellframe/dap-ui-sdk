@@ -41,6 +41,8 @@ void DapJsonCmdController::handleCmd(const QByteArray &a_cmd)
 
 void DapJsonCmdController::addNewHandler(DapCmdAbstract* handler)
 {
+    Q_ASSERT(handler);
+    qDebug() << __func__;
     if(_findHandler(handler->cmd()) != Q_NULLPTR) {
         qCritical() << "Handler for command" << DapCmdAbstract::commandToString(handler->cmd())
                     << "already exists";
@@ -51,4 +53,5 @@ void DapJsonCmdController::addNewHandler(DapCmdAbstract* handler)
             this, &DapJsonCmdController::sendDapCmd);
 
     m_handlers.append(handler);
+    qDebug() << __func__<< "end";
 }
