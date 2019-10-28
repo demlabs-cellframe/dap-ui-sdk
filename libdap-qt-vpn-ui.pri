@@ -1,3 +1,6 @@
+
+include( controls/controls.pri)
+
 SOURCES += \
     $$PWD/DapServiceClient.cpp\
     $$PWD/DapServiceNativeAbstract.cpp\
@@ -30,6 +33,8 @@ HEADERS  += \
     $$PWD/SideBar.h\
     $$PWD/usrmsg.h\
     $$PWD/Utils.h
+
+INCLUDEPATH += $$PWD
 
 android{
     DEFINES += DAP_PLATFORM_MOBILE DAP_SERVICE_CONNECT_TCP
