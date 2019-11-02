@@ -11,8 +11,12 @@ public:
     explicit DapCmdServersList(QObject *parent = nullptr);
     void handle(const QJsonObject* params) override;
     ~DapCmdServersList() override {}
+    const QString& serversList() { return  m_serversList; }
 signals:
 public slots:
+    void setServersList(const QString& a_serversList) { m_serversList = a_serversList ; }
+private:
+    QString m_serversList;
 };
 
 #endif // DAPCMDSERVERSLIST_H
