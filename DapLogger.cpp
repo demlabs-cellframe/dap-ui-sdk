@@ -49,9 +49,9 @@ void DapLogger::messageHandler(QtMsgType type,
         strcpy(prefixBuffer, fileName);
         sprintf(strrchr(prefixBuffer, '.'), ":%d", ctx.line);
 #ifdef DAP_LOG_MT
-        _log_it(prefixBuffer, strlen(prefixBuffer)-1, castQtMsgToDap(type), msg.toLatin1().data());
+        _log_it(prefixBuffer, castQtMsgToDap(type), msg.toLatin1().data());
     } else {
-        _log_it("\0",1,  castQtMsgToDap(type), msg.toLatin1().data());
+        _log_it("\0", castQtMsgToDap(type), msg.toLatin1().data());
     }
 #else
         _log_it2(prefixBuffer, castQtMsgToDap(type), msg.toLatin1().data());
