@@ -32,12 +32,13 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-const QString DapSession::URL_ENCRYPT("/1901248124123459");
-const QString DapSession::URL_STREAM("/874751843144");
-const QString DapSession::URL_DB("/01094787531354");
-const QString DapSession::URL_CTL("/091348758013553");
-const QString DapSession::URL_DB_FILE("/98971341937495431398");
-const QString DapSession::URL_SERVER_LIST("/slist");
+
+const QString DapSession::URL_ENCRYPT("/enc_init");
+const QString DapSession::URL_STREAM("/stream");
+const QString DapSession::URL_DB("/db");
+const QString DapSession::URL_CTL("/stream_ctl");
+const QString DapSession::URL_DB_FILE("/db_file");
+const QString DapSession::URL_SERVER_LIST("/nodelist");
 
 #define SESSION_KEY_ID_LEN 33
 

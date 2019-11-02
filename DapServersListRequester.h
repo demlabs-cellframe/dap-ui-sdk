@@ -31,7 +31,7 @@ signals:
  * @details Response example:
  * [
         {
-          "Name" : "ap-de-0-divevpn",
+          "Name" : "ap-de-0",
           "Port" : 8002,
           "Address" : "89.163.221.220",
           "Description" : "",
@@ -46,10 +46,10 @@ class DapServersListRequester
 private:
     explicit DapServersListRequester() {}
 public:
-    static DapServersListNetworkReply* sendRequest(const QString& host, quint16 port = 443) {
+    static DapServersListNetworkReply* sendRequest(const QString& host, quint16 port = 80) {
         auto networkReply = DapConnectClient::instance()->request_GET(host,
                                                                       port,
-                                                                      "/api/servers/list",
+                                                                      "/nodelist",
                                                                       true);
         DapReplyTimeout::set(networkReply, 10000); // 10 sec
         return new DapServersListNetworkReply(networkReply);

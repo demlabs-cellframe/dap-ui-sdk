@@ -1,7 +1,9 @@
+QT += core network xml
 INCLUDEPATH += ../libdap/include ../libdap/src
 INCLUDEPATH += ../libdap-crypto/include  ../libdap-crypto/src
 
 SOURCES += \
+    $$PWD/DapDataLocal.cpp \
     $$PWD/DapSession.cpp \
     $$PWD/DapCrypt.cpp \
     $$PWD/DapKeyMsrln.cpp \
@@ -14,6 +16,7 @@ SOURCES += \
     $$PWD/DapServersLocalStorage.cpp
 
 HEADERS += \
+    $$PWD/DapDataLocal.h \
     $$PWD/DapSession.h \
     $$PWD/DapCrypt.h \
     $$PWD/InterfaceDapKey.h \
