@@ -21,9 +21,9 @@ void DapCmdServersList::handleResult(const QJsonObject& result)
     } else {
         qCritical() << "Bad response from service";
     }
-
-
 }
+
+
 void DapCmdServersList::handleError(int code, const QString& message)
 {
     Q_UNUSED(code); Q_UNUSED(message);
