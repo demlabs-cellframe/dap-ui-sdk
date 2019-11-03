@@ -46,11 +46,14 @@ class DapServersListRequester
 private:
     explicit DapServersListRequester() {}
 public:
-    static DapServersListNetworkReply* sendRequest(const QString& host, quint16 port = 80) {
+    static DapServersListNetworkReply* sendRequest(const QString& host, quint16 port = 80)
+
+
+    {
         auto networkReply = DapConnectClient::instance()->request_GET(host,
                                                                       port,
                                                                       "/nodelist",
-                                                                      true);
+                                                                      false);
         DapReplyTimeout::set(networkReply, 10000); // 10 sec
         return new DapServersListNetworkReply(networkReply);
     }

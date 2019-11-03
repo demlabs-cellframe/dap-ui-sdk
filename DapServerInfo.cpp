@@ -11,7 +11,18 @@ DapServerInfo::countryMap DapServerInfo::m_countries = {
     {"UNKNOWN", DapServerLocation::UNKNOWN}
 };
 
-DapServerLocation DapServerInfo::stringToLaction(const QString& location) {
+DapServerInfo::countryMap2 DapServerInfo::m_countries2 = {
+    {DapServerLocation::ENGLAND, "ENGLAND", },
+    {DapServerLocation::FRANCE,"FRANCE" },
+    {DapServerLocation::GERMANY,"GERMANY" },
+    {DapServerLocation::USA,"USA" },
+    {DapServerLocation::NETHERLANDS,"NETHERLANDS" },
+    {DapServerLocation::RUSSIA,"RUSSIA" },
+    {DapServerLocation::UKRAINE,"UKRAINE" },
+    {DapServerLocation::UNKNOWN,"UNKNOWN"}
+};
+
+DapServerLocation DapServerInfo::stringToLocation(const QString& location) {
     DapServerLocation v = m_countries.value(location.toUpper());
     if (int(v) == 0) {
         qWarning() << "Unknown location" << location;
@@ -22,7 +33,7 @@ DapServerLocation DapServerInfo::stringToLaction(const QString& location) {
 
 bool operator==(const DapServerInfo& lhs, const DapServerInfo& rhs)
 {
-    if(lhs.address == rhs.address && lhs.port == rhs.port) {
+    if( lhs.address == rhs.address && lhs.address6 == rhs.address6 && lhs.port == rhs.port) {
         return true;
     }
     return false;
@@ -34,7 +45,7 @@ bool DapServerInfo::_isJsonValid(const QJsonObject& obj)
         return obj.contains(key);
     };
 
-    return contains("Address") && contains("Name") && contains("Port")
+    return (contains("Address") || contains("Address6") ) && contains("Name") && contains("Port")
             && obj["Port"].isDouble();
 }
 
@@ -63,9 +74,10 @@ QJsonObject DapServerInfo::toJSON(const DapServerInfo& dsi)
 {
     QJsonObject obj;
     obj["Address"] = dsi.address;
+    obj["Address6"] = dsi.address6;
     obj["Port"] = dsi.port;
     obj["Name"] = dsi.name;
-    obj["Location"] = m_countries.key(dsi.location);
+    obj["Location"] =  DapServerInfo::m_countries2[ dsi.location];
     return obj;
 }
 
@@ -77,21 +89,10 @@ bool DapServerInfo::fromJSON(const QJsonObject& jsonObj, DapServerInfo& out)
     }
 
     out.address = jsonObj["Address"].toString();
+    out.address6 = jsonObj["Address6"].toString();
     out.port = quint16(jsonObj["Port"].toInt());
     out.name = jsonObj["Name"].toString();
-
-    QString countryName = jsonObj["Country"].toObject()["Name"].toString();
-    if(countryName.isEmpty()) {
-        auto location = jsonObj["Location"];
-        if(location.isString()) {
-            out.location = stringToLaction(location.toString());
-        } else {
-            int defaultValue = static_cast<int>(DapServerLocation::UNKNOWN);
-            out.location = static_cast<DapServerLocation>(jsonObj["Location"].toInt(defaultValue));
-        }
-    } else {
-        out.location = stringToLaction(countryName);
-    }
+    out.location = m_countries[ jsonObj["Location"].toString() ];
 
     return true;
 }
