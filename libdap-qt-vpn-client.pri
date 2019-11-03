@@ -54,18 +54,17 @@ macos {
 win32{
     QMAKE_CXXFLAGS +=  -mno-ms-bitfields
     INCLUDEPATH += $$_PRO_FILE_PWD_/../windows/windows
-    INCLUDEPATH += $$_PRO_FILE_PWD_/../windows/registry
     INCLUDEPATH += $$_PRO_FILE_PWD_/../windows/tuntap
     HEADERS+= $$PWD/../windows/windows/ip.h
-    HEADERS+= $$PWD/../windows/registry/registry.h
     HEADERS+= $$PWD/../windows/tuntap/tuntap.h
-
-    SOURCES+= $$PWD/../windows/registry/registry.cpp
     SOURCES+= $$PWD/../windows/tuntap/tuntap.cpp
 
     LIBS += -lWS2_32
     LIBS += -lAdvapi32
     LIBS += -lIphlpapi
+    LIBS += -lUser32
+    LIBS += -lole32
+    LIBS += -luuid
 
     DEFINES += NTDDI_VERSION=0x06000000
     DEFINES += _WIN32_WINNT=0x0600
