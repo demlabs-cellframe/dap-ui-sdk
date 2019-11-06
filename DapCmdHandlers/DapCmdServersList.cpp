@@ -11,7 +11,7 @@ void DapCmdServersList::handleResult(const QJsonObject& result)
     if(result.value("servers").isArray()) {
         DapServerInfoList servers;
         if (DapServerInfo::fromJSON(result.value("servers").toArray(), servers)) {
-            sigServersList(servers);
+            emit sigServersList(servers);
             for(auto server : servers) {
                 qDebug() << server;
             }

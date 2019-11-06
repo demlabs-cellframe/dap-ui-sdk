@@ -14,7 +14,7 @@ public:
     explicit DapCmdServersList(QObject *parent = nullptr);
     void sendCmdGetServersList() { sendCmd(); }
 signals:
-    void sigServersList(DapServerInfoList& servers);
+    void sigServersList(const DapServerInfoList& servers);
 };
 
 #endif // DAPCMDSERVERSLIST_H
