@@ -12,9 +12,12 @@ void DapCmdConnect::sendCmdConnect(const QString& addr, quint16 port,
     QJsonObject obj;
     obj["action"] = "Connect";
     obj["address"] = addr;
-    obj["password"] = pswd;
+
+    if ( !user.isEmpty() )
+        obj["user"] = user;
+    if ( !pswd.isEmpty())
+        obj["password"] = pswd;
     obj["port"] = port;
-    obj["user"] = user;
     sendCmd(&obj);
 }
 

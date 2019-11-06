@@ -1,5 +1,4 @@
-#ifndef DAPCMDAUTHERRORHANDLERR_H
-#define DAPCMDAUTHERRORHANDLERR_H
+#pragma once
 
 #include <QObject>
 #include <QDebug>
@@ -10,8 +9,10 @@ class DapCmdConnect : public DapCmdClientAbstract
     Q_OBJECT
 public:
     explicit DapCmdConnect(QObject *parent = nullptr);
+
+public slots:
     void sendCmdConnect(const QString& addr, quint16 port,
-                        const QString& user, const QString& pswd);
+                        const QString& user= QString(), const QString& pswd = QString() );
     void sendCmdDisconnect();
 protected:
     void handleResult(const QJsonObject& result) override;
@@ -20,4 +21,3 @@ signals:
     void errorMessage(const QString& message);
 };
 
-#endif // DAPCMDAUTHERRORHANDLERR_H
