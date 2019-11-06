@@ -45,16 +45,20 @@ void DapCmdConnect::handle(const QJsonObject* params) {
 
     for(auto &k: mandatoryConnParams.keys()) {
         QJsonValue val = params->value(k);
-        if (val == QJsonValue::Undefined) {
-            qWarning() << "Not found mandatory key"
-                       << k << " for establish a connection";
-            return;
+        if (val != QJsonValue::Undefined) {
+            mandatoryConnParams[k] = val;
         }
-        mandatoryConnParams[k] = val;
     }
     
-    emit sigConnect(mandatoryConnParams["user"].toString(),
-            mandatoryConnParams["password"].toString(),
-            mandatoryConnParams["address"].toString(),
-            uint16_t(mandatoryConnParams["port"].toInt()));
+    if ( mandatoryConnParams["port"] != QJsonValue::Undefined  && mandatoryConnParams["address"] != QJsonValue::Undefined ){
+        if ( mandatoryConnParams["address"] != QJsonValue::Undefined  && mandatoryConnParams["password"] != QJsonValue::Undefined )
+            emit sigConnect(mandatoryConnParams["user"].toString(),
+                            mandatoryConnParams["password"].toString(),
+                            mandatoryConnParams["address"].toString(),
+                            uint16_t(mandatoryConnParams["port"].toInt()));
+        else
+            emit sigConnectNoAuth( mandatoryConnParams["address"].toString(),
+                             uint16_t(mandatoryConnParams["port"].toInt()));
+
+    }
 }

@@ -18,6 +18,7 @@ public:
     void sendCmdErrorAuth(const QString errorMsg); // TODO ENUM with errors and code in response
 signals:
     void sigConnect(const QString& user, const QString& password, const QString& address, uint16_t port);
+    void sigConnectNoAuth(const QString& address, uint16_t port);
     void sigDisconnect();
 };
 
