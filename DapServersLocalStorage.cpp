@@ -23,7 +23,7 @@ DapServersLocalStorage::DapServersLocalStorage(QObject *parent,
     _serversListFilePath = QDir(dataLocation).filePath(fileName);
     qDebug() << "Servers list file path:" << _serversListFilePath;
 
-    if(QFileInfo::exists(_serversListFilePath))
+    if( QFileInfo::exists(_serversListFilePath) )
         _loadServers();
 }
 

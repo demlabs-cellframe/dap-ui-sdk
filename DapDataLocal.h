@@ -48,6 +48,8 @@ public:
 
     void connectComboBox(QObject *a_comboBox);
 
+    void clearServerList();
+
 public slots:
     void setServerName(const QString &serverName);
 

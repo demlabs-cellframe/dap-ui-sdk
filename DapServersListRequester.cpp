@@ -11,10 +11,12 @@ DapServersListNetworkReply::DapServersListNetworkReply(QNetworkReply *networkRep
         if(networkReply->error() == QNetworkReply::NetworkError::NoError) {
 
             QByteArray ba(networkReply->readAll());
-            QJsonDocument jsonDoc = QJsonDocument::fromJson(ba);
+            QJsonParseError jsonErr;
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(ba, &jsonErr);
 
             if(!jsonDoc.isNull()) {
                 qDebug() << "Servers list response" << jsonDoc;
+
 
                 if(!jsonDoc.isArray()) {
                     qCritical() << "Error parse response. Must be array";
@@ -24,7 +26,7 @@ DapServersListNetworkReply::DapServersListNetworkReply(QNetworkReply *networkRep
                 emit sigResponse(jsonDoc);
             } else {
                 qWarning() << "Server response:" << ba;
-                qCritical() << "Can't parse server response to JSON";
+                qCritical() << "Can't parse server response to JSON: "<<jsonErr.errorString()<< " on position "<< jsonErr.offset ;
                 emit sigParseResponseError();
                 return;
             }

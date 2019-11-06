@@ -101,6 +101,16 @@ void DapDataLocal::addServer(const DapServerInfo& dsi) {
     m_servers.push_back(dsi);
 }
 
+/**
+ * @brief DapDataLocal::clearServerList
+ */
+void DapDataLocal::clearServerList()
+{
+    m_servers.clear();
+}
+
+
+
 void DapDataLocal::setServerTheBest(const DapServerInfo &server){
     int index = m_servers.indexOf(server);
     if (index == -1) {
