@@ -6,6 +6,7 @@ SOURCES += \
     $$PWD/DapCmdUserData.cpp \
     $$PWD/DapCmdStates.cpp \
     $$PWD/DapCmdConnect.cpp \
+    $$PWD/DapCmdAuth.cpp \
     $$PWD/DapCmdServersList.cpp \
     $$PWD/DapCmdAndroidTunnel.cpp
 
@@ -17,6 +18,7 @@ HEADERS += \
     $$PWD/DapCmdUserData.h \
     $$PWD/DapCmdStates.h \
     $$PWD/DapCmdConnect.h \
+    $$PWD/DapCmdAuth.h \
     $$PWD/DapCmdServersList.h \
     $$PWD/DapCmdAndroidTunnel.h
 
