@@ -14,7 +14,7 @@ private:
                                const QString & msg);
     inline static dap_log_level castQtMsgToDap(QtMsgType type);
 public:
-    explicit DapLogger(QObject *parent = nullptr, size_t prefix_width = 18);
+    explicit DapLogger(QObject *parent = nullptr, size_t prefix_width = 10);
 
     // return false if not success
     bool setLogFile(const QString& filePath);
