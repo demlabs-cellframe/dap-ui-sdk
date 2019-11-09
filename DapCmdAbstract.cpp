@@ -2,6 +2,7 @@
 
 QMap<DapJsonCmdType, QString> DapCmdAbstract::cmdString = {
     {DapJsonCmdType::CONNECTION, "connection"},
+    {DapJsonCmdType::AUTHORIZE, "authorize"},
     {DapJsonCmdType::STATS, "stats"},
     {DapJsonCmdType::GET_STATES, "get states"},
     {DapJsonCmdType::GET_USER_DATA, "get user data"}, // Get user data (username, password, server address)

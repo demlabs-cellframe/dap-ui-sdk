@@ -8,6 +8,7 @@
 
 enum class DapJsonCmdType
 {
+    AUTHORIZE,
     CONNECTION,
     STATS,
     GET_STATES,

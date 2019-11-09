@@ -5,7 +5,11 @@ using Params = DapJsonParams::Params;
 
 QMap<DapJsonCmdType, QVector<Params>> DapJsonParams::availableParams {
     {DapJsonCmdType::CONNECTION, {Params::ADDRESS, Params::PORT,
-                    Params::USER, Params::PASSWORD, Params::DISCONNECT}},
+                    Params::USER, Params::PASSWORD, Params::DISCONNECT},
+    },
+    {DapJsonCmdType::AUTHORIZE, {Params::ADDRESS, Params::PORT,
+                    Params::USER, Params::PASSWORD, Params::DISCONNECT},
+    },
 
     // TODO commands for on and off stats stream
  //   {DapJsonCommands::STATS, {Params::READ_BYTES, Params::WRITE_BYTES, Params::READ_PACKAGE, Params::WRITE_PACKAGE}},
