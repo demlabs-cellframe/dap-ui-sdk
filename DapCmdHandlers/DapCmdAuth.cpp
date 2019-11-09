@@ -1,7 +1,7 @@
 #include "DapCmdAuth.h"
 
 DapCmdAuth::DapCmdAuth(QObject *parent)
-    : DapCmdClientAbstract(DapJsonCmdType::CONNECTION, parent)
+    : DapCmdClientAbstract(DapJsonCmdType::AUTHORIZE, parent)
 {
 
 }

@@ -11,8 +11,8 @@ public:
     explicit DapCmdConnect(QObject *parent = nullptr);
 
 public slots:
-    void sendCmdConnect(const QString& addr, quint16 port,
-                        const QString& user= QString(), const QString& pswd = QString() );
+    void sendCmdConnect(const QString& a_addr, quint16 a_port,
+                        const QString& a_user= QString(), const QString& a_pswd = QString() );
     void sendCmdDisconnect();
 protected:
     void handleResult(const QJsonObject& result) override;
