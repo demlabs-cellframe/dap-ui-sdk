@@ -69,7 +69,9 @@ void DapIndicatorSession::initAllowedSubstatesTransitions()
     // HandshakeResponse =>
     addAllowedSubstatesTransitions(handshakeResponse, authRequested);
     addAllowedSubstatesTransitions(handshakeResponse, handshakeRequestCanceling);
-    addAllowedSubstatesTransitions(handshakeRequested, handshakeError);
+    addAllowedSubstatesTransitions(handshakeResponse, streamCtlRequested);
+    addAllowedSubstatesTransitions(handshakeResponse, streamCtlError);
+    addAllowedSubstatesTransitions(handshakeResponse, handshakeError);
 
     // _authRequested =>
     addAllowedSubstatesTransitions(authRequested, authorized);
@@ -77,9 +79,8 @@ void DapIndicatorSession::initAllowedSubstatesTransitions()
     addAllowedSubstatesTransitions(authRequested, authRequestError);
 
     // _authorized =>
-    addAllowedSubstatesTransitions(authorized, streamCtlRequested);
-    addAllowedSubstatesTransitions(authorized, streamCtlError);
     addAllowedSubstatesTransitions(authorized, authCanceling);
+    addAllowedSubstatesTransitions(authorized, handshakeRequested);
 
     addAllowedSubstatesTransitions(authCanceling, logouted);
     addAllowedSubstatesTransitions(authCanceling, logoutError);

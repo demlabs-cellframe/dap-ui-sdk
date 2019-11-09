@@ -29,8 +29,10 @@ void DapIndicatorStateAbstract::addAllowedSubstatesTransitions(DapState *from, D
 
 void DapIndicatorStateAbstract::addTransition(DapState *from, DapState *to, const QObject *sender, const char *signal)
 {
-    if (!isAllowedSubstateTransitions(from, to))
+    if (!isAllowedSubstateTransitions(from, to)){
+        qWarning() << "Transition not allowed";
         return;
+    }
     from->addTransition(sender, signal, to);
     qDebug() << "Added transition from:" << from->name() <<
                 "to:" << to->name();
