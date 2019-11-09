@@ -25,7 +25,7 @@ DapDataLocal *DapDataLocal::_me = Q_NULLPTR;
 
 DapDataLocal::DapDataLocal()
 {
-    qDebug() << "[DL] Constructor";
+    qDebug() << "[DL] DapDataLocal Constructor";
     parseXML(":/data.xml");
     setServerName(serverTheBest().name);
 }
@@ -34,9 +34,10 @@ void DapDataLocal::parseXML(const QString& a_fname)
 {
     QFile file(a_fname);
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text)){
-        qWarning() << "[DL] Can't open data.xml from built in resource";
+        qWarning() << "Can't open data.xml from built in resource";
         return;
     }
+    qDebug() << "data.xml opened, size "<< file.size();
 
     QXmlStreamReader *sr = new QXmlStreamReader(&file);
     if(sr->readNextStartElement()){
@@ -62,7 +63,7 @@ void DapDataLocal::parseXML(const QString& a_fname)
                                 } else if(sr->name() == "location") {
                                     item.location = DapServerInfo::stringToLocation(sr->readElementText());
                                 } else {
-                                    qDebug() << "[DL] Inside tag 'server': Unknown tag "<<sr->name();
+                                    qWarning() << "[DL] Inside tag 'server': Unknown tag "<<sr->name();
                                     sr->skipCurrentElement();
                                 }
                             }
@@ -75,9 +76,10 @@ void DapDataLocal::parseXML(const QString& a_fname)
                     }
                 }else if( sr->name() == "cdb"){
                     m_cdbServersList = sr->readElementText();
+                    qInfo() << "Setup CDB address: " << m_cdbServersList;
                 }else{
                     qDebug() << "[DL] Inside tag 'data' unknown tag "<<sr->name();
-                    //sr->skipCurrentElement();
+                    sr->skipCurrentElement();
                 }
             }
         }
