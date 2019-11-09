@@ -114,6 +114,7 @@ QNetworkReply* DapSession::requestServerPublicKey()
 
     connect(m_netEncryptReply, &QNetworkReply::finished, this, &DapSession::onEnc);
 
+    qDebug() << "Public key requested";
     emit pubKeyRequested();
 
     return m_netEncryptReply;
@@ -183,10 +184,11 @@ void DapSession::onEnc()
 
     if(!m_dapCrypt->generateSharedSessionKey(bobMsg, m_sessionKeyID.toLatin1())) {
         QString errorMessage = "Failed generate session key";
+        qCritical() << errorMessage;
         emit errorEncryptInitialization("Failed generate session key");
         return;
     }
-
+    qDebug() << "Encryption initialized";
     emit encryptInitialized();
 }
 
