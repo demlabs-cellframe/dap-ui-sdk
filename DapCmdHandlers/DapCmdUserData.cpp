@@ -9,7 +9,8 @@ void DapCmdUserData::handle(const QJsonObject *params)
     QJsonObject response;
     response["user"] = mUser;
     response["password"] = mPassword;
-    response["address"] = mAddress;
+    response["address"] = m_address;
+    response["port"] = m_port;
     sendCmd(&response);
 }
 
@@ -17,9 +18,10 @@ void DapCmdUserData::handle(const QJsonObject *params)
 /// @param user User login.
 /// @param password User password.
 /// @param address Server address.
-void DapCmdUserData::setUserData(const QString &user, const QString &password, const QString &address)
+void DapCmdUserData::setUserData(const QString &user, const QString &password, const QString &address, quint16 a_port)
 {
     mUser = user;
     mPassword = password;
-    mAddress = address;
+    m_address = address;
+    m_port = a_port;
 }

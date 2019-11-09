@@ -24,9 +24,12 @@ class DapCmdUserData: public DapCmdServiceAbstract
     /// User password.
     QString     mPassword;
     /// Server address.
-    QString     mAddress;
+    QString     m_address;
     
+    quint16 m_port;
 public:
+    const QString address() { return  m_address; }
+    const quint16 port() {return m_port; }
     /// Standart constructor.
     /// @param parent Parent.
     DapCmdUserData(QObject *parent = nullptr) :
@@ -40,7 +43,7 @@ public:
     /// @param user User login.
     /// @param password User password.
     /// @param address Server address.
-    void setUserData(const QString &user, const QString &password, const QString &address);
+    void setUserData(const QString &user, const QString &password, const QString &address, quint16 a_port);
 };
 
 #endif // DAPCMDUSERDATAHANDLER_H
