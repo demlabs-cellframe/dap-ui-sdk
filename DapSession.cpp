@@ -134,7 +134,8 @@ void DapSession::onEnc()
     qDebug() << "On Enc()";
 
     QByteArray arrData;
-    arrData.append(m_netEncryptReply->readAll());
+    if (m_netEncryptReply)
+        arrData.append(m_netEncryptReply->readAll());
     if(arrData.isEmpty()) {
         qWarning() << "Empty buffer in onEnc";
         if(m_netEncryptReply->error() == QNetworkReply::NoError) {
