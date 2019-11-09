@@ -57,12 +57,11 @@ void DapStateMachine::_initUserRequestStates()
 {
     userRequestStates = new DapState("statesRequest", &sm);
     userRequestStateDisconnect = new DapState(userRequestStates->name() + "Disconnect", userRequestStates);
+
     userRequestStateConnect = new DapState(userRequestStates->name() + "Connect", userRequestStates);
     userRequestStates->setInitialState(userRequestStateDisconnect);
 
-    userRequestStateConnect->addTransition(sessionStates.authRequestError,
-                                         SIGNAL(entered()),
-                                         userRequestStateDisconnect);
+    userRequestStateConnect->addTransition(sessionStates.authRequestError, SIGNAL( entered() ), userRequestStateDisconnect );
 
     userRequestStateConnect->addTransition(sessionStates.networkError,
                                          SIGNAL(entered()),

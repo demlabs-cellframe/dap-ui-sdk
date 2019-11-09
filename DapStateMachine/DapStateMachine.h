@@ -1,6 +1,4 @@
-#ifndef DAPSTATEMACHINE_H
-#define DAPSTATEMACHINE_H
-
+#pragma once
 #include <QObject>
 #include <QDebug>
 #include <QState>
@@ -33,6 +31,8 @@ public:
     // state mirrored what want user (connect or disconnect)
     void addUserRequestDisconnectSignal(const QObject *sender, const char *signal);
     void addUserRequestConnect(const QObject *sender, const char *signal);
+
+    //
     DapState *userRequestStates;
     DapState *userRequestStateConnect;
     DapState *userRequestStateDisconnect;
@@ -52,5 +52,3 @@ private:
     void _initUserRequestStates();
     void _emitStateChanged(DapIndicator::Type t, DapIndicator::State s);
 };
-
-#endif // DAPSTATEMACHINE_H

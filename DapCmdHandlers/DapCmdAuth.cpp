@@ -10,7 +10,7 @@ const QString DapCmdAuth::actionParam = "action";
  * @param parent
  */
 DapCmdAuth::DapCmdAuth(QObject *parent)
-    : DapCmdServiceAbstract(DapJsonCmdType::CONNECTION, parent) {
+    : DapCmdServiceAbstract(DapJsonCmdType::AUTHORIZE, parent) {
 
 }
 
