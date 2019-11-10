@@ -100,7 +100,7 @@ protected slots:
 public slots:
     void openDefault() {
         qDebug() << "[DapStreamer] Open socket_forward media item sf=1";
-        streamOpen("socket_forward","sf=1");
+        streamOpen("stream_ctl","channels=s");
     }
 
     void abortStreamRequest() { m_network_reply->abort(); }
