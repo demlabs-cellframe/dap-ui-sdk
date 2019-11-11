@@ -27,7 +27,7 @@ DapDataLocal::DapDataLocal()
 {
     qDebug() << "[DL] DapDataLocal Constructor";
     parseXML(":/data.xml");
-    setServerName(serverTheBest().name);
+    setServerName(m_servers.length() > 0 ? serverTheBest().name : "");
 }
 
 void DapDataLocal::parseXML(const QString& a_fname)
