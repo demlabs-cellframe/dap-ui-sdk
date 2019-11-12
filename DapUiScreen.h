@@ -1,13 +1,14 @@
 #ifndef DAPUISCREEN_H
 #define DAPUISCREEN_H
 
-#include <QtDebug>
 #include <QObject>
 #include <QWidget>
 #include <QHash>
 #include <QMap>
 #include <QSet>
 #include <QStackedWidget>
+#include <QDebug>
+
 
 //#include <qobject_impl.h>
 
@@ -17,47 +18,41 @@ class DapUiScreen : public QObject
 {
     Q_OBJECT
 public:
-    enum ScreenVariant{VariantDefault=0,VariantNone=-1,VariantHor,VariantVer,VariantHorInput, VariantVerInput};
+    DapUiScreen(QObject *parent, QStackedWidget * a_sw);
+    virtual ~DapUiScreen();
+
+    enum ScreenRotation{Hor,Ver,HorInv,VerInv};
     enum ScreenSize{Small=0,Medium=10,Big=20};
-    Q_ENUM(ScreenVariant);
-    Q_ENUM(ScreenSize);
+
+    static QSize getScreenResolution(ScreenSize screenSize);
+
+
+    Q_ENUM(ScreenRotation)
+    Q_ENUM(ScreenSize)
 private:
     QStackedWidget* m_sw;
-    QSet<ScreenVariant> m_variants;
-    ScreenVariant m_currentVariant;
-    ScreenVariant m_defaultVariant;
+    QSet<ScreenRotation> m_rotations;
+    ScreenRotation m_rotation;
+
+    static const char *PROP_SCREEN_SIZE; ///< Name of dinamic property
+
 protected:
 
-    /**
-     * @brief variants
-     * @return
-     */
-    const QSet<ScreenVariant>& variants(){ return  m_variants;}
-
-    /**
-     * @brief page
-     * @param a_variant
-     * @return
-     */
-    QWidget * page(ScreenVariant a_variant){ return m_page[a_variant];}
-
-    QMap<ScreenVariant,QWidget*> m_page;
+    const QSet<ScreenRotation>& rotations(){ return  m_rotations;}
+    QWidget * page(ScreenRotation a_rotation){ return m_page[a_rotation]; }
+    QMap<ScreenRotation,QWidget*> m_page;
 
 
-    /**
-     * @brief initUiForm
-     * @param a_w
-     */
     template<class T,class TSmall, class TBig>
     void initUiForm(QWidget * a_w)
     {
         switch(getScreenSize()){
             case Big: {
                 static TBig * l_ui = nullptr;
-                if( l_ui) delete l_ui;
+                if( l_ui)
+                    delete l_ui;
                 l_ui = new TBig;
                 l_ui->setupUi(a_w);
-
             } break;
             case Small: {
                 static TSmall * l_ui = nullptr;
@@ -75,101 +70,68 @@ protected:
         }
     }
 
-    virtual void initUi(QWidget * a_w,ScreenVariant a_variant)=0;
+    virtual void initUi(QWidget * a_w,ScreenRotation a_rotation)=0;
 
-    QStackedWidget * sw(){ return m_sw;};
 
 public:
-    DapUiScreen(QObject *parent, QStackedWidget * a_sw);
-    virtual ~DapUiScreen();
+    QStackedWidget * sw(){ return m_sw;}
 
-    /**
-     * @brief create
-     * @param a_variant
-     * @param a_isDefault
-     */
+
+#ifdef DAP_PLATFORM_DESKTOP
     template<class T,class TSmall, class TBig>
-    inline void create(ScreenVariant a_variant = VariantDefault){
-        qDebug() << "[CORE] create";
-        QWidget *p;
-        if(m_page.contains(a_variant)){
-            qWarning() << "Screen variant" << a_variant<< " is already present in map. Deleting the old one";
-            delete m_page[a_variant];
-            m_page.remove(a_variant);
-        }
-        m_page.insert(a_variant, p = new QWidget() );
-        sw()->addWidget(p);
-        initUiForm<T,TSmall,TBig>(p);
-        initUi(p,a_variant);
-
-        m_defaultVariant = a_variant;
-        m_variants.insert(a_variant);
-        setCurrentVariant(a_variant);
+#else
+    template<class THor,class THorSmall, class THorBig, class TVer,class TVerSmall, class TVerBig>
+#endif
+    inline void create(){
+            for (auto rot: rotations() ){
+                QWidget *p;
+                m_page.insert(rot,p=new QWidget(sw()) );
+                sw()->addWidget(p );
+#ifdef DAP_PLATFORM_DESKTOP
+                initUiForm<T,TSmall,TBig>(p);
+#else
+                switch(rot){
+                    case Ver: initUiForm<TVer,TVerSmall,TVerBig>(p); break;
+                    default: initUiForm<THor,THorSmall,THorBig>(p); break;
+                }
+#endif
+                initUi(p,rot);
+            }
+            rotate(Hor);
     }
-
-    /**
-     * @brief create
-     */
-    template<class T> inline void create(){ create<T,T,T>(); }
-
+#ifdef  DAP_PLATFORM_MOBILE
+    template<class THor,class THorSmall, class THorBig, class TVer,class TVerSmall, class TVerBig,
+     class THorInv,class THorInvSmall, class THorInvBig, class TVerInv,class TVerInvSmall, class TVerInvBig>
+    inline void createAll(){
+            for (auto rot: rotations() ){
+                QWidget *p;
+                sw()->addWidget( m_page.insert(rot,p=new QWidget(sw()) ) );
+                switch(rot){
+                    case Ver: initUiForm<TVer,TVerSmall,TVerBig>(p); break;
+                    case VerInv: initUiForm<TVerInv,TVerInvSmall,TVerInvBig>(p); break;
+                    case HorInv: initUiForm<THorInv,THorInvSmall,THorInvBig>(p); break;
+                    default: initUiForm<THor,THorSmall,THorBig>(p); break;
+                }
+                initUi(p,rot);
+            }
+            sw()->setCurrentIndex(0);
+    }
+#endif
     virtual void show();
-    void setCurrentVariant(ScreenVariant a_newVariant);
-
-    /**
-     * @brief setCurrentVariantDefault
-     */
-    inline void setCurrentVariantDefault(){ setCurrentVariant(defaultVariant());};
-
-    /**
-     * @brief currentVariant
-     * @return
-     */
-    inline ScreenVariant currentVariant(){ return m_currentVariant; };
-
-    /**
-     * @brief defaultVariant
-     * @return
-     */
-    inline ScreenVariant defaultVariant(){ return m_defaultVariant; };
-
+    virtual void update();
+    void rotate(ScreenRotation a_rot);
+    ScreenRotation rotation(){ return m_rotation; }
     static ScreenSize getScreenSize();
-
-    /**
-     * @brief currentPage
-     * @return
-     */
     QWidget * currentPage(){ return sw()->currentWidget(); }
-
-    /**
-     * @brief setVars
-     * @param a_objName
-     * @param a_varName
-     * @param a_varValue
-     */
     void setVars(const QString& a_objName, const QString& a_varName, const QVariant& a_varValue)
     {
-        foreach (auto l_variant, variants()) {
-            QWidget *w = getWidget(a_objName,l_variant);
+        for (auto rotation : rotations()) {
+            QWidget *w = getWidget(a_objName,rotation);
             if(w)
                 w->setProperty(a_varName.toLatin1().constData(),a_varValue);
         }
     }
 
-    /**
-     * @brief invokeMethods
-     * @param a_objName
-     * @param a_methodName
-     * @param a_val0
-     * @param a_val1
-     * @param a_val2
-     * @param a_val3
-     * @param a_val4
-     * @param a_val5
-     * @param a_val6
-     * @param a_val7
-     * @param a_val8
-     * @param a_val9
-     */
     void invokeMethods(const QString& a_objName, const QString& a_methodName
                        , QGenericArgument a_val0=QGenericArgument(nullptr)
                        , QGenericArgument a_val1=QGenericArgument()
@@ -183,8 +145,8 @@ public:
                        , QGenericArgument a_val9=QGenericArgument()
             )
     {
-        foreach (auto variant, variants()) {
-            QWidget *w = getWidget(a_objName,variant);
+        foreach (auto rotation, rotations()) {
+            QWidget *w = getWidget(a_objName,rotation);
             QGenericReturnArgument ret;
             if(w){
                QMetaObject::invokeMethod(w, a_methodName.toLatin1().constData(),ret,a_val0,
@@ -193,46 +155,29 @@ public:
         }
     }
 
-    /**
-     * @brief connectTo
-     * @param a_objName
-     * @param a_signal
-     * @param a_func
-     */
     template <class T, typename Func1,typename Func2>
     inline void
     connectTo(const QString& a_objName, Func1 a_signal, Func2 a_func  ){
-        foreach (auto l_variant, variants()) {
-            T * w=page(l_variant)->findChild<T*>(a_objName);
+        foreach (auto rotation, rotations()) {
+            T * w=page(rotation)->findChild<T*>(a_objName);
             if(w)
                 connect(qobject_cast<T*>(w),a_signal,a_func);
         }
     }
-
     void connectTo(const QString& a_objName,const char *a_signal, const QObject *a_recv, const char *a_slot );
 
-    //void connectTo(const QString& a_objName, PointerToMemberFunction a_signal,const QObject *a_recv,PointerToMemberFunction a_slot );
+//    void connectTo(const QString& a_objName, PointerToMemberFunction a_signal,const QObject *a_recv,PointerToMemberFunction a_slot );
 //    void connectTo(const QString& a_objName,const char *a_signal, const QObject *a_recv, const char *a_slot );
 
-    /**
-     * @brief getWidget
-     * @param a_objName
-     * @param a_variant
-     * @return
-     */
-    QWidget* getWidget(const QString& a_objName,ScreenVariant a_variant) {  return page(a_variant)->findChild<QWidget*>(a_objName); }
-
-    /**
-     * @brief getWidgetCustom
-     * @param a_objName
-     * @param a_variant
-     * @return
-     */
+    QWidget* getWidget(const QString& a_objName,ScreenRotation a_rot) {  return page(a_rot)->findChild<QWidget*>(a_objName); }
     template <class T>
-    T* getWidgetCustom(const QString& a_objName,ScreenVariant a_variant) {  return page(a_variant)->findChild<T*>(a_objName); }
+    T* getWidgetCustom(const QString& a_objName,ScreenRotation a_rot) {  return page(a_rot)->findChild<T*>(a_objName); }
 signals:
 public slots:
 
 };
+
+
+Q_DECLARE_METATYPE(DapUiScreen::ScreenSize);
 
 #endif // DAPUISCREEN_H
