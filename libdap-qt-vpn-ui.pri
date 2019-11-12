@@ -1,38 +1,51 @@
 
-include( controls/controls.pri)
+include ( dialogs/dialogs.pri)
+
 
 SOURCES += \
     $$PWD/DapServiceClient.cpp\
     $$PWD/DapServiceNativeAbstract.cpp\
-    $$PWD/DapUIAnimationScreenAbstract.cpp\
-    $$PWD/DapUIAnimationScreen.cpp\
-    $$PWD/DapUiDialog.cpp\
-    $$PWD/DapUiMainWindow.cpp\
-    $$PWD/DapUiScreen.cpp\
     $$PWD/DapUiVpnStateIndicator.cpp\
-    $$PWD/schedule.cpp\
-    $$PWD/schedules.cpp\
     $$PWD/ServiceCtl.cpp\
-    $$PWD/SideBar.cpp\
     $$PWD/usrmsg.cpp\
-    $$PWD/Utils.cpp
 
 
 HEADERS  += \
     $$PWD/DapServiceClient.h\
     $$PWD/DapServiceNativeAbstract.h\
-    $$PWD/DapUIAnimationScreenAbstract.h\
-    $$PWD/DapUIAnimationScreen.h\
-    $$PWD/DapUiDialog.h\
-    $$PWD/DapUiMainWindow.h\
-    $$PWD/DapUiScreen.h\
     $$PWD/DapUiVpnStateIndicator.h\
-    $$PWD/schedule.h\
-    $$PWD/schedules.h\
     $$PWD/ServiceCtl.h\
-    $$PWD/SideBar.h\
-    $$PWD/usrmsg.h\
-    $$PWD/Utils.h
+    $$PWD/usrmsg.h
+
+FORMS    +=  \
+    $$PWD/ui/dashboard_desktop_big.ui \
+    $$PWD/ui/dashboard_desktop_small.ui \
+    $$PWD/ui/dashboard_desktop.ui \
+    $$PWD/ui/dashboard_mobile_hor_big.ui \
+    $$PWD/ui/dashboard_mobile_hor_small.ui \
+    $$PWD/ui/dashboard_mobile_hor.ui \
+    $$PWD/ui/dashboard_mobile_ver_big.ui \
+    $$PWD/ui/dashboard_mobile_ver_small.ui \
+    $$PWD/ui/dashboard_mobile_ver.ui \
+    $$PWD/ui/login_mobile_hor_big.ui \
+    $$PWD/ui/login_mobile_hor_small.ui \
+    $$PWD/ui/login_mobile_hor.ui \
+    $$PWD/ui/login_mobile_ver_big.ui \
+    $$PWD/ui/login_mobile_ver_small.ui \
+    $$PWD/ui/login_mobile_ver.ui \
+    $$PWD/ui/dlg_settings.ui \
+    $$PWD/ui/dlg_about.ui \
+    $$PWD/ui/forgot_password_desktop.ui \
+    $$PWD/ui/sign_up_desktop.ui \
+    $$PWD/ui/sign_up_desktop_small.ui \
+    $$PWD/ui/sign_up_desktop_big.ui \
+    $$PWD/ui/forgot_password_desktop_big.ui \
+    $$PWD/ui/forgot_password_desktop_small.ui \
+    $$PWD/ui/settings.ui \
+    $$PWD/ui/settings_more_menu.ui \
+    $$PWD/ui/sidebar_desktop.ui \
+    $$PWD/ui/dlg_edit_server.ui
+
 
 INCLUDEPATH += $$PWD
 
@@ -86,9 +99,9 @@ android {
         $$PWD/android/res/values/libs.xml \
         $$PWD/android/build.gradle \
         $$PWD/android/gradle/wrapper/gradle-wrapper.properties \
-        $$PWD/android/src/com/demlabs/dap/DapChainVpnMainActivity.java \
-        $$PWD/android/src/com/demlabs/dap/DapChainVpnService.java \
-        $$PWD/android/src/com/demlabs/dap/DapChainVpnServiceNative.java
+        $$PWD/android/src/com/demlabs/dap/DapVpnMainActivity.java \
+        $$PWD/android/src/com/demlabs/dap/DapVpnService.java \
+        $$PWD/android/src/com/demlabs/dap/DapVpnServiceNative.java
         $$PWD/android/gradlew.bat
 
         ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
