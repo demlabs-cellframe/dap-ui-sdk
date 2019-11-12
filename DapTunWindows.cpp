@@ -32,16 +32,12 @@ void DapTunWindows::tunDeviceDestroy()
     TunTap::getInstance().setDNS(m_tunDeviceReg, "");
     m_gw.chop(1);
     m_gw.append('0');
-    qInfo() << "Restore ROUTE ... ";
     TunTap::getInstance().deleteRoutesByGw(qPrintable(m_gw));
     //QString run = QString("ROUTE DELETE 0.0.0.0 & ROUTE DELETE 128.0.0.0 & ROUTE DELETE %6 & ROUTE DELETE %1 & ROUTE DELETE %4 & ROUTE DELETE %5 & ROUTE ADD 0.0.0.0 MASK 0.0.0.0 %2 IF %3").arg(upstreamResolved).arg(m_defaultGwOld).arg(TunTap::getInstance().getDefaultAdapterIndex()).arg(_gw).arg(m_gw).arg(m_addr);
     //exec_silent(qPrintable(run));
-    //TunTap::getInstance().deleteCustomRoutes();
-    DeleteIpForwardEntry(&TunTap::getInstance().customRoutes[0]);
-    DeleteIpForwardEntry(&TunTap::getInstance().customRoutes[1]);
-    DeleteIpForwardEntry(&TunTap::getInstance().customRoutes[2]);
-    DeleteIpForwardEntry(&TunTap::getInstance().customRoutes[3]);
+    TunTap::getInstance().deleteCustomRoutes();
     TunTap::getInstance().customRoutes.clear();
+    TunTap::getInstance().determineValidArgs(metric_eth, metric_tun);
     TunTap::getInstance().makeRoute(TunTap::ETH, "0.0.0.0", m_defaultGwOld, metric_eth, "0.0.0.0", false);
     TunTap::getInstance().closeTun();
     if (!dhcpEnabled) {
