@@ -101,7 +101,7 @@ void ScreenLogin::initUi(QWidget * a_w,ScreenRotation a_rotation)
         {
             emit sigFieldError("Incorrect login or password");
         }
-        else if (checkSrv()) {
+        else if (!checkSrv()) {
             emit sigFieldError("No uplink nodes available");
         }
         else
