@@ -101,6 +101,9 @@ void ScreenLogin::initUi(QWidget * a_w,ScreenRotation a_rotation)
         {
             emit sigFieldError("Incorrect login or password");
         }
+        else if (checkSrv()) {
+            emit sigFieldError("No uplink nodes available");
+        }
         else
         {
             DapServerInfo dsi = cbUpstream->currentData().value<DapServerInfo>();
@@ -147,4 +150,9 @@ bool ScreenLogin::checkField() const
 bool ScreenLogin::checkUserData() const
 {
     return edMail->text().contains(' ') || edPassword->text().contains(' ');
+}
+
+bool ScreenLogin::checkSrv() const {
+    return cbUpstream->currentText().isEmpty() ||
+            cbUpstream->currentText().isNull() ? false : true;
 }
