@@ -62,6 +62,7 @@ protected:
     /// Check login and password for correct input.
     /// @return Returns true if the login or password is entered correctly, otherwise - false.
     inline bool checkUserData() const;
+    inline bool checkSrv() const;
 
 public slots:
     void reloadServers(void);
