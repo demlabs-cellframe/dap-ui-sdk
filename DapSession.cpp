@@ -392,11 +392,12 @@ QNetworkReply * DapSession::encRequest(const QString& reqData, const QString& ur
  * @param password
  * @param domain
  */
-QNetworkReply * DapSession::authorizeRequest(const QString& user, const QString& password,const QString& domain)
+QNetworkReply * DapSession::authorizeRequest(const QString& a_user, const QString& a_password, const QString& a_domain, const QString& a_pkey)
 {
-    m_user = user;
+    m_user = a_user;
     m_userInform.clear();
-    m_netAuthorizeReply = encRequest(user + " " + password + " " + domain,
+    m_netAuthorizeReply =  encRequest( a_pkey.isNull() ? a_user + " " + a_password + " " + a_domain :
+                                                             a_user + " " + a_password + " " + a_domain+ " " + a_pkey,
                                      URL_DB, "auth", "login", SLOT(onAuthorize()));
     if(m_netAuthorizeReply == Q_NULLPTR) {
         qCritical() << "Can't send authorize request";
