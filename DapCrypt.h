@@ -31,10 +31,10 @@ enum KeyRole { KeyRoleSession = 1, KeyRoleStream = 2};
 
 class DapCrypt
 {
-    DapKey * keyStream;
+    DapKeyAbstract * keyStream;
     DapKeyMsrln * keySession;
 
-    DapKey * roleToKey(KeyRole kRole) const;
+    DapKeyAbstract * roleToKey(KeyRole kRole) const;
 public:
     DapCrypt();
     ~DapCrypt();

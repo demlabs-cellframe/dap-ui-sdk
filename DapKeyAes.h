@@ -30,7 +30,7 @@ typedef unsigned char byte;
 
 #define BUFF_ENC_OP_SIZE 100000
 
-class DapKeyAes : public DapKey
+class DapKeyAes : public DapKeyAbstract
 {
 private:
     dap_enc_key* _key;

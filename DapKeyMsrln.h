@@ -8,7 +8,7 @@
 #include "DapKeyAes.h"
 
 
-class DapKeyMsrln : public DapKey
+class DapKeyMsrln : public DapKeyAbstract
 {
     dap_enc_key *_key = Q_NULLPTR;
     DapKeyAes *_sharedSessionKey = Q_NULLPTR;

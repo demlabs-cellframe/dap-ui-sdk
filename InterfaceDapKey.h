@@ -25,11 +25,11 @@
 #include <QByteArray>
 
 
-class DapKey
+class DapKeyAbstract
 {
 public:
-    DapKey() { }
-    virtual ~DapKey() { }
+    DapKeyAbstract() { }
+    virtual ~DapKeyAbstract() { }
 
     virtual void encode(QByteArray& in, QByteArray& out) = 0;
     virtual void decode(QByteArray& in, QByteArray& out) = 0;

@@ -38,7 +38,7 @@ DapCrypt::~DapCrypt()
     delete keySession;
 }
 
-DapKey* DapCrypt::roleToKey(KeyRole kRole) const
+DapKeyAbstract* DapCrypt::roleToKey(KeyRole kRole) const
 {
     switch(kRole)
     {
@@ -66,7 +66,7 @@ QString DapCrypt::getRandomString(int lengthStr)
 
 void DapCrypt::encode(QByteArray& in, QByteArray& out, KeyRole kRole) const
 {
-    DapKey * key = roleToKey(kRole);
+    DapKeyAbstract * key = roleToKey(kRole);
     if( key == Q_NULLPTR )
     {
         qCritical() << "[DapCrypt] Error! No key for role! [" << kRole << "]";
@@ -77,7 +77,7 @@ void DapCrypt::encode(QByteArray& in, QByteArray& out, KeyRole kRole) const
 
 void DapCrypt::decode(QByteArray& in, QByteArray& out, KeyRole kRole) const
 {
-    DapKey * key = roleToKey(kRole);
+    DapKeyAbstract * key = roleToKey(kRole);
     if( key == Q_NULLPTR )
     {
         qCritical() << "[DapCrypt] Error! No key for role! [" << kRole << "]";
@@ -100,7 +100,7 @@ bool DapCrypt::generateSharedSessionKey(const QByteArray& bobMsg,
 void DapCrypt::initAesKey(QString &keyStr, KeyRole kRole)
 {
     QString keyEnd;
-    DapKey ** dapKey;
+    DapKeyAbstract ** dapKey;
     switch(kRole)
     {
     case KeyRoleStream:
