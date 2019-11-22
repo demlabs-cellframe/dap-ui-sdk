@@ -37,12 +37,15 @@ namespace Dap {
             Cert(){}
         public:
             static Cert * generate(const QString& a_name, KeySignType a_type);
-            Cert(const QByteArray& a_certData);
-            Cert(const QString& a_filePath);
+            static Cert * load(const QByteArray& a_certData);
+            static Cert * load(const QString& a_filePath);
             ~Cert();
 
             void sign(const QByteArray & a_data, QByteArray & a_output);
             bool compareWithSign(const QByteArray & a_data);
+
+            bool save(const QString & a_filePath);
+            QString exportPKeyBase64();
         };
     }
 }
