@@ -29,7 +29,7 @@ class DapCmdUserData: public DapCmdServiceAbstract
     quint16 m_port;
 public:
     const QString address() { return  m_address; }
-    const quint16 port() {return m_port; }
+    quint16 port() {return m_port; }
     /// Standart constructor.
     /// @param parent Parent.
     DapCmdUserData(QObject *parent = nullptr) :
