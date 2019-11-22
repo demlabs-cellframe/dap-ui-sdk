@@ -1,4 +1,5 @@
 #include "DapKeyMsrln.h"
+#include "dap_enc_key.h"
 #include "dap_enc_msrln.h"
 #include <QDebug>
 

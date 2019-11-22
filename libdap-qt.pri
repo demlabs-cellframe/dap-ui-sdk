@@ -1,6 +1,6 @@
 QT += core network xml
-INCLUDEPATH += ../libdap/include ../libdap/src
-INCLUDEPATH += ../libdap-crypto/include  ../libdap-crypto/src
+#INCLUDEPATH += ../libdap/include ../libdap/src
+#INCLUDEPATH += ../libdap-crypto/include  ../libdap-crypto/src
 
 SOURCES += \
     $$PWD/DapDataLocal.cpp \
@@ -30,7 +30,7 @@ HEADERS += \
     $$PWD/DapServersListRequester.h \
     $$PWD/DapServersLocalStorage.h
 
-INCLUDEPATH += $$PWD $$PWD/../
+INCLUDEPATH += $$PWD
 
 win32{
     QMAKE_CXXFLAGS +=  -mno-ms-bitfields
