@@ -33,6 +33,7 @@ namespace Dap {
         private:
             dap_chain_hash_fast_t m_value;
         public:
+            HashFast(){ ::memset(m_value.raw,0,sizeof (m_value)); }
             HashFast(const dap_chain_hash_fast_t& a_value) { memcpy(&m_value, &a_value, sizeof (a_value)); }
             HashFast(const QString& a_value) {
                 dap_chain_str_to_hash_fast(a_value.toLatin1().constData(),&m_value);
