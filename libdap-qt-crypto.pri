@@ -9,7 +9,7 @@ SOURCES += \
     $$PWD/src/DapCrypto.cpp
 
 HEADERS += \
-    $$PWD/inclide/DapHash.h \
+    $$PWD/include/DapHash.h \
     $$PWD/include/DapKey.h \
     $$PWD/include/DapKeySign.h \
     $$PWD/include/DapPKey.h \

@@ -34,8 +34,10 @@ namespace Dap {
         public:
             Key( dap_enc_key_t * a_key): m_key(a_key) {}
             Key(const QByteArray& a_keyPrivate);
+            operator dap_enc_key_t * () { return  m_key; }
 
             ~Key();
         };
+
     }
 }

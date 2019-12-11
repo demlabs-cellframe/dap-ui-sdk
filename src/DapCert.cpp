@@ -42,6 +42,7 @@ Cert * Cert::generate(const QString& a_name, KeySignType a_type)
     Cert * ret = new Cert();
     ret->m_cert = dap_cert_generate_mem(a_name.toLatin1().constData() ,
                                                    KeySign::typeToEncType(a_type) );
+    ret->m_key = new Key(ret->m_cert->enc_key);
     return ret;
 }
 
@@ -59,6 +60,7 @@ Cert* Cert::load(const QString& a_filePath )
         }else {
             Cert * ret = new Cert();
             ret->m_cert = l_cert;
+            ret->m_key = new Key(ret->m_cert->enc_key);
             return ret;
         }
     }else
@@ -93,6 +95,7 @@ Cert* Cert::load(const QByteArray& a_certData)
         }else{
             Cert * ret = new Cert();
             ret->m_cert = l_cert;
+            ret->m_key = new Key(ret->m_cert->enc_key);
             return ret;
         }
     }else
@@ -139,7 +142,7 @@ QString Cert::exportPKeyBase64()
 {
     if( m_cert && m_cert->enc_key  ){
         size_t buflen = 0;
-        uint8_t * buf = dap_enc_key_serealize_pub_key( m_cert->enc_key,&buflen);
+        uint8_t * buf = dap_enc_key_serealize_pub_key( *m_key,&buflen);
         if ( buf ){
             char * buf64 = DAP_NEW_Z_SIZE(char, buflen*2+6);
             size_t buf64len = dap_enc_base64_encode(buf,buflen, buf64,DAP_ENC_DATA_TYPE_B64_URLSAFE );
