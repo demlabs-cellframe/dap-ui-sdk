@@ -21,6 +21,7 @@
 #include "DapStreamer.h"
 #include <QTcpSocket>
 #include <QSysInfo>
+#include <stdlib.h>
 
 constexpr quint8 daSig[] = {0xa0,0x95,0x96,0xa9,0x9e,0x5c,0xfb,0xfa};
 QByteArray daSigQ((const char*) daSig, sizeof(daSig));
@@ -60,21 +61,21 @@ DapStreamer::~DapStreamer()
 
 }
 
-void DapStreamer::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uint64_t *dest_addr)
+void DapStreamer::writeChannelPacket(DapChannelPacketHdr *a_pktHdr, void *data, uint64_t *dest_addr)
 {
 
-    if(chPkt->size + sizeof (DapChannelPacketHdr) > DAP_PKT_SIZE_MAX) {
+    if(a_pktHdr->size + sizeof (DapChannelPacketHdr) > DAP_PKT_SIZE_MAX) {
         qWarning() << "Too large package";
         return;
     }
     Q_UNUSED(dest_addr)
 
-    chPkt->seq_id = m_pktOutLastSeqID++;
+    a_pktHdr->seq_id = m_pktOutLastSeqID++;
 
-    size_t dOutSize = chPkt->size + sizeof(DapChannelPacketHdr);
+    size_t dOutSize = a_pktHdr->size + sizeof(DapChannelPacketHdr);
 
-    memcpy(m_writeDataOut, chPkt, sizeof(DapChannelPacketHdr));
-    memcpy(m_writeDataOut + sizeof(DapChannelPacketHdr), data, chPkt->size);
+    memcpy(m_writeDataOut, a_pktHdr, sizeof(DapChannelPacketHdr));
+    memcpy(m_writeDataOut + sizeof(DapChannelPacketHdr), data, a_pktHdr->size);
 
     QByteArray dOutEnc, dOutRaw(m_writeDataOut, dOutSize);
 
@@ -93,8 +94,8 @@ void DapStreamer::writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uin
 
     writeStreamRaw(m_writeEncDataOut, pktOutDataSize);
 
-    free (data);
-    free (chPkt);
+    ::free (data);
+    delete a_pktHdr;
 }
 
 

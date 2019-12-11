@@ -28,7 +28,7 @@ class DapChBase : public QObject
     Q_OBJECT
 public:
     DapChBase(QObject *obj, char id) : QObject(obj), m_id(id) { }
-    char get_id() { return m_id; }
+    quint8 get_id() { return static_cast<quint8>(m_id); }
 
 protected:
     char m_id;
@@ -36,6 +36,14 @@ protected:
 protected slots:
     void write_str(char, const QString&);
 
+    void sendPacket(quint8 a_id, quint8 a_type, void * a_data, quint32 a_dataSize)
+    {
+        DapChannelPacketHdr* hdr= new DapChannelPacketHdr;
+        hdr->id=a_id;
+        hdr->type=a_type;
+        hdr->size=a_dataSize;
+        emit pktChOut(hdr,a_data ) ;
+    }
 signals:
     void pktChOut(DapChannelPacketHdr* pkt, void* data, uint64_t* dest_addr = NULL);
     void error(const QString& msg);
