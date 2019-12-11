@@ -15,7 +15,29 @@ DapCmdConnect::~DapCmdConnect()
 
 }
 
-void DapCmdConnect::sendCmdErrorAuth(const QString errorMsg)
+/**
+ * @brief DapCmdConnect::sendCmdError
+ * @param a_errorCode
+ * @param a_errorMsg
+ */
+void DapCmdConnect::sendCmdError(int a_errorCode, const QString a_errorMsg)
+{
+    qWarning() <<"Error message: "<< a_errorMsg;
+    QJsonObject response;
+    QJsonObject errorObj;
+
+    errorObj["code"] = a_errorCode;
+    errorObj["message"] = a_errorMsg;
+    response["error"] = errorObj;
+
+    sendCmd(&response);
+}
+
+/**
+ * @brief DapCmdConnect::sendCmdError
+ * @param errorMsg
+ */
+void DapCmdConnect::sendCmdError(const QString errorMsg)
 {
     qWarning() << errorMsg;
     QJsonObject response;

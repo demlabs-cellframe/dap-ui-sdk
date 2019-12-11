@@ -17,8 +17,14 @@ public:
     // Substates False
     DapState* disconnectedNormal;
     DapState* disconnectedError;
-    DapState* ipRequestError;
 
+    // Substates for chain net services
+    DapState* serviceRequested;
+    DapState* serviceError;
+    DapState* serviceSuccess;
+
+
+    DapState* ipRequestError;
     // Substates falseToTrue
     DapState* ipRequested;
     DapState* connected;
