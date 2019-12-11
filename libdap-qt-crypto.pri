@@ -1,6 +1,7 @@
 QT += core
 
 SOURCES += \
+    $$PWD/src/DapHash.cpp \
     $$PWD/src/DapKey.cpp \
     $$PWD/src/DapKeySign.cpp \
     $$PWD/src/DapPKey.cpp \
@@ -8,6 +9,7 @@ SOURCES += \
     $$PWD/src/DapCrypto.cpp
 
 HEADERS += \
+    $$PWD/inclide/DapHash.h \
     $$PWD/include/DapKey.h \
     $$PWD/include/DapKeySign.h \
     $$PWD/include/DapPKey.h \

@@ -21,16 +21,5 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/licenses/>.
 */
-#pragma once
 
-#include "DapKey.h"
-#include "DapPKey.h"
-#include "DapKeySign.h"
-#include "DapCert.h"
 #include "DapHash.h"
-
-namespace Dap {
-    namespace  Crypto{
-        extern void init();
-    }
-}
