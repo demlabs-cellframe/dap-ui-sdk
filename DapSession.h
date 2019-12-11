@@ -57,6 +57,12 @@ public:
     const QString& sessionKeyID()        { return m_sessionKeyID;          }
     const QString& user()                { return m_user;                  }
 
+
+    const QString& cdbAuthTxCond(){ return  m_cdbAuthTxCond; }
+    const QString& cdbAuthNet(){ return  m_cdbAuthNet; }
+    const QString& cdbAuthToken(){ return  m_cdbAuthToken; }
+
+
     QList<QString> usersNames()          { return m_userInform.keys();     }
     const QString userInfo
           (const QString & user_name)    { return m_userInform[user_name]; }
@@ -85,6 +91,10 @@ protected:
 
     // HTTP header fields
     QString m_cookie, m_sessionKeyID, m_userAgent;
+
+    // Net service fields
+
+    QString m_cdbAuthTxCond, m_cdbAuthNet, m_cdbAuthToken;
 
     QNetworkReply * m_netEncryptReply;
     QNetworkReply * m_netAuthorizeReply;

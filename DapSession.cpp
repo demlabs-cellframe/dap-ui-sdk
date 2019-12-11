@@ -324,6 +324,23 @@ void DapSession::onAuthorize()
                              << m_userInform[m_xmlStreamReader.name().toString()];
                 }
             }
+        }else if (m_xmlStreamReader.name() == "tx_cond_tpl") {
+            while(m_xmlStreamReader.readNextStartElement()) {
+                qDebug() << " tx_cond_tpl: " << m_xmlStreamReader.name();
+
+                if (m_xmlStreamReader.name() == "net") {
+                    m_cdbAuthNet = m_xmlStreamReader.readElementText();
+                    qDebug() << "m_srvNet: " << m_cdbAuthNet;
+                }else if (m_xmlStreamReader.name() == "token") {
+                     m_cdbAuthToken = m_xmlStreamReader.readElementText();
+                     qDebug() << "m_srvToken: " << m_cdbAuthToken;
+                }else if (m_xmlStreamReader.name() == "tx_cond") {
+                     m_cdbAuthTxCond = m_xmlStreamReader.readElementText();
+                     qDebug() << "m_srvTxCond: " << m_cdbAuthTxCond;
+                } else {
+                    qWarning() <<"Unknown element" << m_xmlStreamReader.readElementText();
+                }
+            }
         } else {
             m_xmlStreamReader.skipCurrentElement();
         }
