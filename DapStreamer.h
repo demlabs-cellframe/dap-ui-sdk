@@ -98,7 +98,7 @@ protected slots:
     }
 
 public slots:
-    void openDefault() {
+    void openDefault(   ) {
         qDebug() << "[DapStreamer] Open socket_forward media item sf=1";
         streamOpen("stream_ctl","channels=s");
 
