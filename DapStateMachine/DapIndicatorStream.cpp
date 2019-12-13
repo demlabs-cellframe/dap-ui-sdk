@@ -8,6 +8,8 @@ void DapIndicatorStream::init(QStateMachine &sm, const QString& stateName)
     disconnectedNormal = new DapState(_false->name() + "DisconnectedNormal", _false);
     disconnectedError  = new DapState(_false->name() + "DisconnectedError", _false, true);
     ipRequestError     = new DapState(_false->name() + "RequestError", _false, true);
+    serviceError       = new DapState(_false->name() + "ServiceError", _false, true);
+
     _false->setInitialState(disconnectedNormal);
 
     // Init substates falseToTrue
@@ -21,7 +23,10 @@ void DapIndicatorStream::init(QStateMachine &sm, const QString& stateName)
                                        _falseToTrue);
     reconnectingError  = new DapState(_falseToTrue->name() + "ReconnectingError",
                                        _falseToTrue, true);
-
+    serviceRequested   = new DapState(_falseToTrue->name() + "ServiceRequested",
+                                      _falseToTrue);
+    serviceSuccess     = new DapState(_falseToTrue->name() + "ServiceSuccess",
+                                      _falseToTrue);
     // Init substates True
     addressReceived = new DapState(_true->name() + "AddressReceived",
                                          _true);
@@ -40,7 +45,11 @@ void DapIndicatorStream::initAllowedSubstatesTransitions()
     addAllowedSubstatesTransitions(ipRequestError, connected);
 
     // FalseToTrue => *
-    addAllowedSubstatesTransitions(connected, ipRequested);
+    //addAllowedSubstatesTransitions(connected, ipRequested);
+    addAllowedSubstatesTransitions(connected, serviceRequested);
+    addAllowedSubstatesTransitions(serviceRequested, serviceSuccess);
+    addAllowedSubstatesTransitions(serviceRequested, serviceError);
+    addAllowedSubstatesTransitions(serviceSuccess, ipRequested);
     addAllowedSubstatesTransitions(ipRequested, addressReceived);
     addAllowedSubstatesTransitions(ipRequested, ipRequestError);
     addAllowedSubstatesTransitions(reconnecting, connected);
