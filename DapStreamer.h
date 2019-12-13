@@ -105,7 +105,7 @@ public slots:
     }
     void openChannels(const QString & a_channels) {
         qDebug() << "[DapStreamer] Open socket_forward media item sf=1";
-        streamOpen("stream_ctl",QString("channels=%1").arg(a_channels));
+        streamOpen(QString("stream_ctl,channels=%1").arg(a_channels),"");
 
     }
 
