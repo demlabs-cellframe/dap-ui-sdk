@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/">
+        <file>DapButton.qml</file>
+        <file>DapButtonForm.ui.qml</file>
         <file>DapComboBox.qml</file>
+        <file>DapComboBoxForm.ui.qml</file>
     </qresource>
 </RCC>
