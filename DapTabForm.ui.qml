@@ -11,7 +11,7 @@ Page {
     header: DapTopPanelForm {
         id: dapTopPanelForm
         width: parent.width
-        height: 64 * pt
+        height: 60 * pt
     }
 
     contentItem: Item {
@@ -46,7 +46,7 @@ Page {
                 id: dapRightPanelForm
                 visible: false
                 height: parent.height
-                width: 150 * pt
+                width: 400 * pt
                 anchors.right: parent.right
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
@@ -54,3 +54,8 @@ Page {
         }
     }
 }
+
+/*##^## Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+ ##^##*/
