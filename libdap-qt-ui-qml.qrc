@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
+        <file>DapButton.qml</file>
+        <file>DapButtonForm.ui.qml</file>
         <file>DapComboBox.qml</file>
         <file>DapScreen.qml</file>
         <file>DapScreenForm.ui.qml</file>
@@ -9,5 +11,6 @@
         <file>DapRightPanelForm.ui.qml</file>
         <file>DapTab.qml</file>
         <file>DapTabForm.ui.qml</file>
+        <file>DapComboBoxForm.ui.qml</file>
     </qresource>
 </RCC>
