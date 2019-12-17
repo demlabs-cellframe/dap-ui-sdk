@@ -77,6 +77,9 @@ void DapDataLocal::parseXML(const QString& a_fname)
                 }else if( sr->name() == "cdb"){
                     m_cdbServersList = sr->readElementText();
                     qInfo() << "Setup CDB address: " << m_cdbServersList;
+                }else if( sr->name() == "network-default"){
+                    m_networkDefault = sr->readElementText();
+                    qInfo() << "Network defaut: " << m_networkDefault;
                 }else{
                     qDebug() << "[DL] Inside tag 'data' unknown tag "<<sr->name();
                     sr->skipCurrentElement();

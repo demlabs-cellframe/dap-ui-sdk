@@ -21,6 +21,7 @@ protected:
     QString     mServerName; ///< Server name.
 
     QString     m_cdbServersList;
+    QString     m_networkDefault;
 
 public:
     using picturesMap = QMap<DapServerLocation, QString>;
@@ -45,6 +46,7 @@ public:
     QString getServerNameByAddress(const QString& address);
 
     const QString & cdbServersList() { return  m_cdbServersList; }
+    const QString & networkDefault() { return  m_networkDefault; }
 
     void connectComboBox(QObject *a_comboBox);
 
