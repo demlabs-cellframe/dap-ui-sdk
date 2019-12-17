@@ -12,5 +12,9 @@
         <file>DapTab.qml</file>
         <file>DapTabForm.ui.qml</file>
         <file>DapComboBoxForm.ui.qml</file>
+        <file>DapMainWindow.qml</file>
+        <file>DapMainWindowForm.ui.qml</file>
+        <file>DapMenuTabWidget.qml</file>
+        <file>DapMenuTabWidgetForm.ui.qml</file>
     </qresource>
 </RCC>
