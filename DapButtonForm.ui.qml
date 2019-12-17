@@ -34,6 +34,14 @@ Button {
     property bool existenceImage:true
     ///@detalis horizontalAligmentText Horizontal alignment.
     property alias horizontalAligmentText:templateText.horizontalAlignment
+    ///@detalis colorBackgroundButton This property overrides the background color.
+    property alias colorBackgroundButton: dapBackgroundButton.color
+    ///@detalis colorTextButton This property overrides the color of the text.
+    property alias colorTextButton: templateText.color
+    ///@detalis borderColorButton Sets the color of the border.
+    property string borderColorButton: "#000000"
+    ///@detalis borderWidthButton Sets the width of the border.
+    property int borderWidthButton: 0
 
     id: dapButton
 
@@ -43,7 +51,8 @@ Button {
         color: dapButton.hovered ? colorBackgroundHover : colorBackgroundNormal
         implicitWidth: widthButton
         implicitHeight: heightButton
-
+        border.color: borderColorButton
+        border.width: borderWidthButton
         ///button text
         Text {
             id: templateText
