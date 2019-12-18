@@ -4,6 +4,7 @@ import QtQuick.Controls 2.0
 Rectangle {
     property alias frameMenuTab: dapFrameMenuTab
     property alias viewMenuTab: dapListViewMenuTab
+    property string puthScreen: ""
 
 
     id: dapFrameMenuTab

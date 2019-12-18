@@ -9,8 +9,7 @@ DapMenuTabWidgetForm
     property int heightIconItemMenu: 18 * pt
     property string normalColorItemMenu: "transparent"
     property string selectColorItemMenu: "#D51F5D"
-    property string puthScreen: ""
-    
+
     Component
     {
     id: itemMenuTabDelegate
