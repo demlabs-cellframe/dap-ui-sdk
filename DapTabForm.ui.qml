@@ -2,17 +2,13 @@ import QtQuick 2.4
 import QtQuick.Controls 2.0
 
 Page {
-    property alias topPanelForm: dapTopPanelForm
+    property DapTopPanelForm topPanelForm: undefined
     property alias separator: separator
     property alias rghtPanelForm: dapRightPanelForm
 
     anchors.fill: parent
 
-    header: DapTopPanelForm {
-        id: dapTopPanelForm
-        width: parent.width
-        height: 60 * pt
-    }
+    header: topPanelForm
 
     contentItem: Item {
         anchors.fill: parent
@@ -54,6 +50,12 @@ Page {
         }
     }
 }
+
+
+
+
+
+
 
 /*##^## Designer {
     D{i:0;autoSize:true;height:480;width:640}
