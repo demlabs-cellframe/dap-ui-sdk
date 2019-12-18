@@ -33,11 +33,13 @@ namespace Dap {
         private:
             dap_chain_hash_fast_t m_value;
         public:
+            const dap_chain_hash_fast_t& value() const { return m_value; }
             HashFast(){ ::memset(m_value.raw,0,sizeof (m_value)); }
             HashFast(const dap_chain_hash_fast_t& a_value) { memcpy(&m_value, &a_value, sizeof (a_value)); }
             HashFast(const QString& a_value) {
                 dap_chain_str_to_hash_fast(a_value.toLatin1().constData(),&m_value);
             }
+
             operator dap_chain_hash_fast_t& (){ return  m_value; }
             bool operator==(const HashFast& a_hashFast) { return memcmp(&m_value, &a_hashFast.m_value, sizeof (m_value))==0; }
             bool operator==(const dap_chain_hash_fast_t& a_value) { return memcmp(&m_value, &a_value, sizeof (m_value))==0; }
