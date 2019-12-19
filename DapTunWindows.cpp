@@ -141,7 +141,7 @@ void DapTunWindows::workerStop() {
 }
 
 void DapTunWindows::signalWriteQueueProc() {
-    DapSockForwPacket *ret;
+    Dap::Stream::Packet *ret;
     if ((ret = writeDequeuePacket()) != nullptr) {
         emit bytesRead(TunTap::getInstance().write_tun(m_tunSocket, ret->data, ret->header.op_data.data_size));
         delete ret;

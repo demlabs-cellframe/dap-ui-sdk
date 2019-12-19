@@ -7,9 +7,15 @@
 #include <QQueue>
 #include <QReadWriteLock>
 #include <QWaitCondition>
-#include "DapSockForwPacket.h"
+//#include "DapSockForwPacket.h"
+//#include "DapStreamChChainNetSrvVpn.h"
+#include "DapStreamChChainVpnPacket.h"
 
-
+namespace Dap {
+    namespace Stream {
+        struct Packet;
+    }
+}
 class DapTunAbstract;
 
 class DapTunWorkerAbstract : public QObject
@@ -18,7 +24,7 @@ class DapTunWorkerAbstract : public QObject
 public:
     DapTunWorkerAbstract( DapTunAbstract * a_tun );
 signals:
-    void packetOut( DapSockForwPacket * );
+    void packetOut( Dap::Stream::Packet* );
 
     void bytesWrite(quint64);
     void bytesRead(quint64);
@@ -36,8 +42,8 @@ protected:
     virtual void procDataFromTun(void * a_buf, size_t a_bufSize);
     int tunSocket(){ return m_tunSocket;}
     DapTunAbstract * tun(){ return m_tun; }
-    DapSockForwPacket * writeDequeue() {
-        DapSockForwPacket * ret;
+    Dap::Stream::Packet* writeDequeue() {
+        Dap::Stream::Packet* ret;
         m_writeQueueLock->lockForRead();
         if (m_writeQueue->length() > 0) {
             ret = m_writeQueue->dequeue();
@@ -50,7 +56,7 @@ protected:
 private:
     volatile int m_tunSocket;
     DapTunAbstract * m_tun;
-    QQueue<DapSockForwPacket *>* m_writeQueue;
+    QQueue<Dap::Stream::Packet*>* m_writeQueue;
     QWaitCondition * m_writeQueueCond;
     QReadWriteLock* m_writeQueueLock;
 };

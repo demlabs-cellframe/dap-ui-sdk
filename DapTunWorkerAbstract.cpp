@@ -20,8 +20,8 @@ void DapTunWorkerAbstract::procDataFromTun(void * a_buf,size_t a_bufSize)
 {
     // struct ip *iph = (struct ip* ) tmpBuf;
     // qDebug() << "[DapChSockForw] saddr = " << ::inet_ntoa(iph->ip_src)<< " dadrr = " << inet_ntoa( iph->ip_dst) << " size = "<<tmpBufSize  ;
-    DapSockForwPacket * pktOut =
-        (DapSockForwPacket *)::calloc(1,sizeof(pktOut->header)+a_bufSize );
+    Dap::Stream::Packet* pktOut =
+        (Dap::Stream::Packet*)::calloc(1,sizeof(pktOut->header)+a_bufSize );
     pktOut->header.op_code = STREAM_SF_PACKET_OP_CODE_RAW_SEND;
     pktOut->header.socket_id = m_tunSocket;
     pktOut->header.op_data.data_size = a_bufSize;
