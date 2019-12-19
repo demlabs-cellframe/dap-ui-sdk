@@ -2,11 +2,10 @@ import QtQuick 2.4
 import QtQuick.Controls 2.0
 
 Page {
-    property DapTopPanelForm topPanelForm: undefined
-    property DapScreenForm screenForm: undefined
+    property DapTopPanelForm topPanelForm: DapTopPanelForm { }
+    property DapScreenForm screenForm: DapScreenForm { }
     property alias separator: dapSeparator
     property DapRightPanelForm rightPanelForm: DapRightPanelForm { }
-//    property alias childRightPanels: dapChildRightPanels
 
     anchors.fill: parent
 
@@ -14,7 +13,6 @@ Page {
 
     contentItem:
         Rectangle {
-        anchors.fill: parent
 
         Item
         {
