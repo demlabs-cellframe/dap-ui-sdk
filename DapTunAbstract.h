@@ -9,7 +9,8 @@
 
 #include "DapSession.h"
 #include "DapTunWorkerAbstract.h"
-#include "DapSockForwPacket.h"
+//#include "DapSockForwPacket.h"
+#include "DapStreamChChainVpnPacket.h"
 
 class DapTunAbstract : public QObject
 {
@@ -31,24 +32,29 @@ public:
     int mtu() { return m_MTU; }
 
 
-    void tunWriteData(DapSockForwPacket * a_pkt){
+    /*void tunWriteData(DapSockForwPacket * a_pkt){
+        addWriteData(a_pkt);
+        signalWriteQueueProc();
+    }*/
+
+    void tunWriteData(Dap::Stream::Packet *a_pkt) {
         addWriteData(a_pkt);
         signalWriteQueueProc();
     }
 
     virtual void workerStart(); // В основном для мобильных платформ, где тун девайс открывается через задницу
 
-    QQueue<DapSockForwPacket*>* writeQueue(){ return &m_writeQueue; }
+    QQueue<Dap::Stream::Packet*>* writeQueue(){ return &_m_writeQueue; }
     QReadWriteLock* writeQueueLock(){ return &m_writeQueueLock; }
     QWaitCondition * writeQueueCond() { return &m_writeQueueCond; }
 
     volatile int m_tunSocket;
 
-    DapSockForwPacket * writeDequeuePacket() {
-        DapSockForwPacket * ret;
+    Dap::Stream::Packet* writeDequeuePacket() {
+        Dap::Stream::Packet* ret;
         m_writeQueueLock.lockForRead();
-        if (m_writeQueue.length() > 0) {
-            ret = m_writeQueue.dequeue();
+        if (_m_writeQueue.length() > 0) {
+            ret = _m_writeQueue.dequeue();
         } else {
             ret = nullptr;
         }
@@ -66,7 +72,7 @@ signals:
 
     void sendCmd(QString);
 
-    void packetOut(DapSockForwPacket *);
+    void packetOut(Dap::Stream::Packet *);
 
     void bytesRead(quint64);
     void bytesWrite(quint64);
@@ -105,8 +111,8 @@ private:
     int m_MTU;
     pthread_t pidTun;
 
-
-    QQueue<DapSockForwPacket*> m_writeQueue;
+    QQueue<Dap::Stream::Packet*> _m_writeQueue;
+    //QQueue<DapSockForwPacket*> m_writeQueue;
     QReadWriteLock m_writeQueueLock;
     QWaitCondition m_writeQueueCond;
 
@@ -119,9 +125,15 @@ protected:
     qint16  m_iUpstreamPort {0};
 
 protected slots:
-    void addWriteData(DapSockForwPacket* a_pkt){
+    /*void addWriteData(DapSockForwPacket* a_pkt){
         m_writeQueueLock.lockForWrite();
         m_writeQueue.enqueue(a_pkt);
+        m_writeQueueLock.unlock();
+    }*/
+
+    void addWriteData(Dap::Stream::Packet* a_pkt){
+        m_writeQueueLock.lockForWrite();
+        _m_writeQueue.enqueue(a_pkt);
         m_writeQueueLock.unlock();
     }
 

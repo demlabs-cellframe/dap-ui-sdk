@@ -184,7 +184,7 @@ DapChSockForw::DapChSockForw(DapStreamer * a_streamer, DapSession * mainDapSessi
     connect(tun, &DapTunNative::created, this, &DapChSockForw::tunCreated);
     connect(tun, &DapTunNative::destroyed, this, &DapChSockForw::tunDestroyed);
     connect(tun, &DapTunNative::error , this, &DapChSockForw::tunError);
-    connect(tun, &DapTunNative::packetOut, this, &DapChSockForw::packetOut);
+    //connect(tun, &DapTunNative::packetOut, this, &DapChSockForw::packetOut);
     connect(tun, &DapTunNative::sendCmd, this, &DapChSockForw::sendCmdAll);
     connect(tun, &DapTunNative::bytesRead, this, &DapChSockForw::bytesRead);
     connect(tun, &DapTunNative::bytesWrite, this, &DapChSockForw::bytesWrite);
@@ -345,7 +345,7 @@ void DapChSockForw::onPktIn(DapChannelPacket* pkt)
         }break;
         case STREAM_SF_PACKET_OP_CODE_RAW_RECV:{
             pkt->unleashData(); // Uleash *data section from pkt object
-            tun->tunWriteData(pktSF);
+            //tun->tunWriteData(pktSF);
         }break;
         /*case STREAM_SF_PACKET_OP_CODE_CONNECTED:
             qDebug() << "[DapChSockForw] Get connected packet."; // Repsonse to the connect Packet
