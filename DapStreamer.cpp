@@ -511,17 +511,15 @@ DapChThread* DapStreamer::addChProc(char chId, DapChBase* obj) {
         return m_dapChThead;
     }
     m_dsb.insert(chId, obj);
-
-    if(m_dapChThead != Q_NULLPTR) {
-        connect(obj, &DapChBase::pktChOut, this, &DapStreamer::writeChannelPacket);
-        connect (m_dapChThead, &DapChThread::sigNewPkt, obj, &DapChBase::onPktIn);
-        return m_dapChThead;
+    if (!m_dapChThead) {
+        m_dapChThead = new DapChThread(obj);
     }
-
-    m_dapChThead = new DapChThread(obj);
     connect(obj, &DapChBase::pktChOut, this, &DapStreamer::writeChannelPacket);
     connect (m_dapChThead, &DapChThread::sigNewPkt, obj, &DapChBase::onPktIn);
-    m_dapChThead->start();
+    if (!m_dapChThead->isRunning()) {
+        m_dapChThead->start();
+    }
     return m_dapChThead;
+
 }
 
