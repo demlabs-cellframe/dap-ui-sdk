@@ -508,13 +508,14 @@ void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
 DapChThread* DapStreamer::addChProc(char chId, DapChBase* obj) {
     if(m_dsb.contains(chId)) {
         qCritical() << "Proc with id" << chId << "already exists";
-        return Q_NULLPTR;
+        return m_dapChThead;
     }
     m_dsb.insert(chId, obj);
 
     if(m_dapChThead != Q_NULLPTR) {
-        qCritical() << "Can't add ChProc m_dapChThead already initialized";
-        return Q_NULLPTR;
+        connect(obj, &DapChBase::pktChOut, this, &DapStreamer::writeChannelPacket);
+        connect (m_dapChThead, &DapChThread::sigNewPkt, obj, &DapChBase::onPktIn);
+        return m_dapChThead;
     }
 
     m_dapChThead = new DapChThread(obj);
