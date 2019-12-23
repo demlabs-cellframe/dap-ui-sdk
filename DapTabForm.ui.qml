@@ -2,10 +2,10 @@ import QtQuick 2.4
 import QtQuick.Controls 2.0
 
 Page {
-    property DapTopPanelForm topPanelForm: DapTopPanelForm { }
-    property DapScreenForm screenForm: DapScreenForm { }
+    property DapTopPanelForm topPanelForm
+    property DapScreenForm screenForm
     property alias separator: dapSeparator
-    property DapRightPanelForm rightPanelForm: DapRightPanelForm { }
+    property DapRightPanelForm rightPanelForm
 
     anchors.fill: parent
 
