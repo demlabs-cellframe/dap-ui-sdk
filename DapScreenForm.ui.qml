@@ -10,7 +10,7 @@ Rectangle {
     anchors.fill: parent
 
     Item {
-        id: contenetItemScreen
+        id: dapContenetItemScreen
         data: contenetItemScreen
     }
 }
