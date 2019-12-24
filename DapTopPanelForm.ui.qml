@@ -1,19 +1,13 @@
+//**************************************************************************** 
+//              Implements a general view of the top tab bar.
+//****************************************************************************
+
 import QtQuick 2.4
 import QtQuick.Controls 2.0
 
-Rectangle {
-    id: dapFrame
+Rectangle 
+{
+    id: frame
     
-    property alias frame: dapFrame
+    property alias dapFrame: frame
 }
-
-
-
-
-
-
-
-/*##^## Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
- ##^##*/

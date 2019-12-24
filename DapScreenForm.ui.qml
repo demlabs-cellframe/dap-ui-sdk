@@ -1,22 +1,25 @@
+//****************************************************************************
+//                      Implements a screen widget.
+//****************************************************************************
+
 import QtQuick 2.4
 import QtQuick.Controls 2.0
 
-Rectangle {
-    id: dapFrame
+Rectangle 
+{
+    id: frame
 
-    property alias frame: dapFrame
-    property Item contenetItemScreen
+    // Frame widget
+    property alias dapFrame: frame
+    // Screen components
+    property Item dapContenetItemScreen
 
     anchors.fill: parent
 
-    Item {
-        id: dapContenetItemScreen
-        data: contenetItemScreen
+    // Install screen components
+    Item 
+    {
+        id: contenetItemScreen
+        data: dapContenetItemScreen
     }
 }
-
-/*##^##
-Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
-##^##*/

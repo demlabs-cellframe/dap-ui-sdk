@@ -1,23 +1,33 @@
+//****************************************************************************
+//                     Implements the right panel widget.
+//****************************************************************************
+
 import QtQuick 2.4
 import QtQuick.Controls 2.0
 
-Rectangle {
-    id: dapRightPanel
+Rectangle 
+{
+    id: rightPanel
     
-    property alias rightPanel: dapRightPanel
-    property alias header: dapHeader
-    property Item headerData: Item { }
-    property alias childRightPanels: dapChildRightPanels
-    property  Item contentItemPanel: Item { }
+    // Right panel widget
+    property alias dapRightPanel: rightPanel
+    // Right pane title widget
+    property alias dapHeader: header
+    // Right pane header data
+    property Item dapHeaderData: Item { }
+    // 
+    property alias dapChildRightPanels: childRightPanels
+    // 
+    property  Item dapContentItemPanel: Item { }
     
-    rightPanel.anchors.top: parent.top
-    rightPanel.anchors.bottom: parent.bottom
-    rightPanel.anchors.right: parent.right
+    dapRightPanel.anchors.top: parent.top
+    dapRightPanel.anchors.bottom: parent.bottom
+    dapRightPanel.anchors.right: parent.right
 
     Item
     {
-        id: dapHeader
-        data: headerData
+        id: header
+        data: dapHeaderData
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
@@ -25,8 +35,8 @@ Rectangle {
 
     StackView
     {
-        id: dapChildRightPanels
-        initialItem: contentItemPanel
+        id: childRightPanels
+        initialItem: dapContentItemPanel
         anchors.top: dapHeader.bottom
         anchors.left: parent.left
         anchors.right: parent.right
