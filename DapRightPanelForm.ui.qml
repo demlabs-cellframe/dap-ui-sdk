@@ -9,21 +9,22 @@ Rectangle
 {
     id: rightPanel
     
-    // Right panel widget
+    ///@detalis Right panel widget.
     property alias dapRightPanel: rightPanel
-    // Right pane title widget
+    ///@detalis Right pane title widget.
     property alias dapHeader: header
-    // Right pane header data
+    ///@detalis Right pane header data.
     property Item dapHeaderData: Item { }
-    // 
+    ///@detalis Stack of right panels owned by current.
     property alias dapChildRightPanels: childRightPanels
-    // 
+    ///@detalis Content of the current right panel.
     property  Item dapContentItemPanel: Item { }
     
     dapRightPanel.anchors.top: parent.top
     dapRightPanel.anchors.bottom: parent.bottom
     dapRightPanel.anchors.right: parent.right
 
+    // Install right panel title
     Item
     {
         id: header
@@ -32,7 +33,7 @@ Rectangle
         anchors.left: parent.left
         anchors.right: parent.right
     }
-
+    // Install right panel content
     StackView
     {
         id: childRightPanels

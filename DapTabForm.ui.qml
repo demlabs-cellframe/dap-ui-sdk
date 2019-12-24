@@ -7,18 +7,18 @@ import QtQuick.Controls 2.0
 
 Page 
 {
-    // Top panel widget
-    property DapTopPanelForm dapTopPanelForm
-    // Screen widget
-    property DapScreenForm dapScreenForm
-    // Separator widget
+    ///@detalis Top panel widget.
+    property DapTopPanel dapTopPanel
+    ///@detalis Screen widget.
+    property DapScreen dapScreen
+    ///@detalis Separator widget.
     property alias dapSeparator: separator
-    // Right pane widget
-    property DapRightPanelForm dapRightPanelForm
+    ///@detalis Right pane widget.
+    property DapRightPanel dapRightPanel
 
     anchors.fill: parent
     // Install the top panel widget
-    header: dapTopPanelForm
+    header: dapTopPanel
     // Install the screen widget and the right panel
     contentItem:
         Rectangle 
@@ -26,8 +26,8 @@ Page
             // Screen widget
             Item
             {
-                id: screenForm
-                data: dapScreenForm
+                id: screen
+                data: dapScreen
                 height: parent.height
                 anchors.left: parent.left
                 anchors.right: separator.left
@@ -39,13 +39,13 @@ Page
                 height: parent.height
                 width: 3 * pt
                 color: "green"
-                anchors.right: rightPanelForm.left
+                anchors.right: rightPanel.left
             }
             // Right pane widget
             Item
             {
-                id: rightPanelForm
-                data: dapRightPanelForm
+                id: rightPanel
+                data: dapRightPanel
                 height: parent.height
                 anchors.right: parent.right
             }

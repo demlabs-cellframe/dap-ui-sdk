@@ -9,9 +9,9 @@ Rectangle
 {
     id: frame
 
-    // Frame widget
+    ///@detalis Frame widget.
     property alias dapFrame: frame
-    // Screen components
+    ///@detalis Screen components.
     property Item dapContenetItemScreen
 
     anchors.fill: parent

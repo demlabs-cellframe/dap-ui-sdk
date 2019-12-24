@@ -3,23 +3,29 @@ import QtQuick.Controls 1.4
 
 DapMenuTabWidgetForm
 {
-    property int widthItemMenu: viewMenuTab.width
+    ///@detalis Width of the main menu bar item.
+    property int widthItemMenu: dapMenuTab.width
+    ///@detalis Height of the main menu bar item.
     property int heightItemMenu: 60 * pt
+    ///@detalis Width of the main menu bar item icon.
     property int widthIconItemMenu: 18 * pt
+    ///@detalis Height of the main menu bar item icon.
     property int heightIconItemMenu: 18 * pt
+    ///@detalis Сolor of the main menu bar item in normal condition.
     property string normalColorItemMenu: "transparent"
+    ///@detalis Сolor of the main menu bar item in the selected state.
     property string selectColorItemMenu: "#D51F5D"
 
+    // Widget of the main menu bar item
     Component
     {
-    id: itemMenuTabDelegate
-
+        id: itemMenuTabDelegate
     
         Rectangle
         {
             id: frameItemMenu
 
-            property bool isPushed: viewMenuTab.currentIndex === index
+            property bool isPushed: dapMenuTab.currentIndex === index
 
             width: widthItemMenu
             height: heightItemMenu
@@ -36,7 +42,8 @@ DapMenuTabWidgetForm
                 source: normalIcon
             }
 
-            Text {
+            Text
+            {
                 id: textItem
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: iconItem.right
@@ -49,7 +56,7 @@ DapMenuTabWidgetForm
 
             MouseArea
             {
-                id: dapHandler
+                id: handler
                 anchors.fill: parent
                 hoverEnabled: true
 
@@ -73,7 +80,7 @@ DapMenuTabWidgetForm
 
                 onClicked:
                 {
-                    viewMenuTab.currentIndex = index;
+                    dapMenuTab.currentIndex = index;
                     puthScreen = page;
                 }
             }

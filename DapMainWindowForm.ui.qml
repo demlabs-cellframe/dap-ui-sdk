@@ -3,21 +3,26 @@ import QtQuick.Controls 2.0
 
 Rectangle 
 {
-    /// ----------- Load fonts -----------
-    /// using example: font.family: fontRobotoLight.name
-    readonly property FontLoader fontRobotoLight: FontLoader {
-        source: "qrc:/res/fonts/roboto_light.ttf"
-    }
-    readonly property FontLoader fontRobotoRegular: FontLoader {
-        source: "qrc:/res/fonts/roboto_regular.ttf"
-    }
-
-    readonly property FontLoader fontRobotoMedium: FontLoader {
-        source: "qrc:/res/fonts/roboto_medium.ttf"
-    }
-    /// -----------
-
     id: mainWindow
+
+    readonly property FontLoader fontRobotoLight:
+        FontLoader
+        {
+            source: "qrc:/res/fonts/roboto_light.ttf"
+        }
+    readonly property FontLoader fontRobotoRegular:
+        FontLoader
+        {
+            source: "qrc:/res/fonts/roboto_regular.ttf"
+        }
+
+    readonly property FontLoader fontRobotoMedium:
+        FontLoader
+        {
+            source: "qrc:/res/fonts/roboto_medium.ttf"
+        }
+
+
     
     property alias iconLogotype: iconLogotype
     property alias frameLogotype: frameLogotype

@@ -9,5 +9,6 @@ Rectangle
 {
     id: frame
     
+    ///@detalis Top panel frame.
     property alias dapFrame: frame
 }
