@@ -41,8 +41,7 @@ struct DapPacketHdr
     uint32_t size;
     uint64_t timestamp;
     uint8_t type;
-    uint64_t s_addr; // Source address
-    uint64_t d_addr; // Destination address
+    uint64_t src_addr, dst_addr;
 } __attribute__((packed));
 
 
