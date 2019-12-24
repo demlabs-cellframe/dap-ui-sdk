@@ -39,7 +39,7 @@ void DapTunWorkerMac::loop()
     fd_set fds_read, fds_read_active;
     fd_set fds_write, fds_write_active;
     size_t pktOutPos=0;
-    DapSockForwPacket * pktOut = nullptr;
+    Dap::Stream::Packet * pktOut = nullptr;
     FD_ZERO (&fds_read);
     FD_ZERO (&fds_write);
     FD_SET (tunSocket(), &fds_read);
