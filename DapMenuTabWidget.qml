@@ -81,7 +81,7 @@ DapMenuTabWidgetForm
                 onClicked:
                 {
                     dapMenuTab.currentIndex = index;
-                    puthScreen = page;
+                    pathScreen = page;
                 }
             }
 

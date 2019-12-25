@@ -1,3 +1,7 @@
+//****************************************************************************
+//                  Implements the main application window.
+//****************************************************************************
+
 import QtQuick 2.4
 import QtQuick.Controls 2.0
 
@@ -5,44 +9,53 @@ Rectangle
 {
     id: mainWindow
 
-    readonly property FontLoader fontRobotoLight:
+    ///@detalis Roboto light font downloader.
+    readonly property FontLoader dapFontRobotoLight:
         FontLoader
         {
             source: "qrc:/res/fonts/roboto_light.ttf"
         }
-    readonly property FontLoader fontRobotoRegular:
+    ///@detalis Roboto regular font downloader.
+    readonly property FontLoader dapFontRobotoRegular:
         FontLoader
         {
             source: "qrc:/res/fonts/roboto_regular.ttf"
         }
-
-    readonly property FontLoader fontRobotoMedium:
+    ///@detalis Roboto medium font downloader.
+    readonly property FontLoader dapFontRobotoMedium:
         FontLoader
         {
             source: "qrc:/res/fonts/roboto_medium.ttf"
         }
 
-
-    
-    property alias iconLogotype: iconLogotype
-    property alias frameLogotype: frameLogotype
-    property alias menuWidth: columnMenuTab.width
-    property alias menuTabWidget: menuTabWidget
-    property alias screens: stackViewScreen
+    ///@detalis Logo icon.
+    property alias dapIconLogotype: iconLogotype
+    ///@detalis Logo frame.
+    property alias dapFrameLogotype: frameLogotype
+    ///@detalis Menu bar width.
+    property alias dapMenuWidth: columnMenuTab.width
+    ///@detalis Menu bar widget.
+    property alias dapMenuTabWidget: menuTabWidget
+    ///@detalis Screen tab loader.
+    property alias dabScreens: stackViewTabs
     
     anchors.fill: parent
 
+    // The horizontal location of the virtual menu column and tab view loader
     Row
     {
         id: rowMainWindow
+
         anchors.fill: parent
 
+        // Virtual logo column frame and menu bar
         Column
         {
             id: columnMenuTab
             width: 180 * pt
             height: rowMainWindow.height
             
+            // Logotype
             Rectangle
             {
                 id: frameLogotype
@@ -58,7 +71,8 @@ Rectangle
                     anchors.leftMargin: 24 * pt
                 }
             }
-        
+
+            // Menu bar
             DapMenuTabWidget
             {
                 id: menuTabWidget
@@ -67,9 +81,10 @@ Rectangle
             }
         }
         
+        // Screen tab loader
         Loader 
         {
-            id: stackViewScreen
+            id: stackViewTabs
             clip: true
             height: rowMainWindow.height
             width: rowMainWindow.width - columnMenuTab.width

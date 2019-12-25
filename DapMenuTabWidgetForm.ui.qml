@@ -13,6 +13,8 @@ Rectangle
     property alias dapFrameMenuTab: frameMenuTab
     ///@detalis Main menu bar widget.
     property alias dapMenuTab: menuTab
+    ///@detalis Path to the selected tab.
+    property string pathScreen
 
     color: "#070023"
     focus: true
