@@ -9,35 +9,15 @@ Rectangle
 {
     id: mainWindow
 
-    ///@detalis Roboto light font downloader.
-    readonly property FontLoader dapFontRobotoLight:
-        FontLoader
-        {
-            source: "qrc:/res/fonts/roboto_light.ttf"
-        }
-    ///@detalis Roboto regular font downloader.
-    readonly property FontLoader dapFontRobotoRegular:
-        FontLoader
-        {
-            source: "qrc:/res/fonts/roboto_regular.ttf"
-        }
-    ///@detalis Roboto medium font downloader.
-    readonly property FontLoader dapFontRobotoMedium:
-        FontLoader
-        {
-            source: "qrc:/res/fonts/roboto_medium.ttf"
-        }
-
-    ///@detalis Logo icon.
-    property alias dapIconLogotype: iconLogotype
-    ///@detalis Logo frame.
-    property alias dapFrameLogotype: frameLogotype
+    ///@detalis Logotype.
+    property Item dapLogotype
     ///@detalis Menu bar width.
     property alias dapMenuWidth: columnMenuTab.width
+    property alias dapLogotypeHeight: logotype.height
     ///@detalis Menu bar widget.
-    property alias dapMenuTabWidget: menuTabWidget
-    ///@detalis Screen tab loader.
-    property alias dabScreens: stackViewTabs
+    property Item dapMenuWidget
+    ///@detalis screen downloader widget.
+    property Item dabScreensWidget
     
     anchors.fill: parent
 
@@ -52,40 +32,29 @@ Rectangle
         Column
         {
             id: columnMenuTab
-            width: 180 * pt
             height: rowMainWindow.height
-            
-            // Logotype
-            Rectangle
+            // Logotype widget
+            Item
             {
-                id: frameLogotype
+                id: logotype
+                data: dapLogotype
                 width: columnMenuTab.width
-                height: 60 * pt
-                color: "#070023"
-                Image {
-                    id: iconLogotype
-                    anchors.left: parent.left
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: 111 * pt 
-                    height: 24 * pt
-                    anchors.leftMargin: 24 * pt
-                }
             }
-
-            // Menu bar
-            DapMenuTabWidget
+            // Menu bar widget
+            Item
             {
-                id: menuTabWidget
+                id: menuWidget
+                data: dapMenuWidget
                 width: columnMenuTab.width
-                height: columnMenuTab.height - frameLogotype.height
+                height: columnMenuTab.height - logotype.height
             }
         }
         
-        // Screen tab loader
-        Loader 
+        // Screen downloader widget
+        Item
         {
-            id: stackViewTabs
-            clip: true
+            id: screens
+            data: dabScreensWidget
             height: rowMainWindow.height
             width: rowMainWindow.width - columnMenuTab.width
         }

@@ -5,41 +5,55 @@
 import QtQuick 2.4
 import QtQuick.Controls 2.0
 
-Page 
+Rectangle
 {
+    id: frameTab
+
     ///@detalis Top panel widget.
-    property DapTopPanel dapTopPanel
+    property Item dapTopPanel
     ///@detalis Screen widget.
-    property DapScreen dapScreen
+    property Item dapScreen
     ///@detalis Separator widget.
     property alias dapSeparator: separator
     ///@detalis Right pane widget.
-    property DapRightPanel dapRightPanel
+    property Item dapRightPanel
+    ///@detalis Tab frame.
+    property alias dapFrame: frameTab
 
     anchors.fill: parent
+
     // Install the top panel widget
-    header: dapTopPanel
+    Item
+    {
+        id: topPanel
+        data: dapTopPanel
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+    }
     // Install the screen widget and the right panel
-    contentItem:
-        Rectangle 
+    Rectangle
+    {
+        anchors.top: topPanel.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        Row
         {
+            anchors.fill: parent
+
             // Screen widget
             Item
             {
                 id: screen
                 data: dapScreen
                 height: parent.height
-                anchors.left: parent.left
-                anchors.right: separator.left
             }
             // Separator widget
-            Rectangle 
+            Rectangle
             {
                 id: separator
                 height: parent.height
-                width: 3 * pt
-                color: "green"
-                anchors.right: rightPanel.left
             }
             // Right pane widget
             Item
@@ -47,7 +61,7 @@ Page
                 id: rightPanel
                 data: dapRightPanel
                 height: parent.height
-                anchors.right: parent.right
             }
         }
+    }
 }

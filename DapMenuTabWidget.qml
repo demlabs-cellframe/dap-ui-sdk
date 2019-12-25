@@ -48,7 +48,7 @@ DapMenuTabWidgetForm
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: iconItem.right
                 anchors.leftMargin: 18 * pt
-                font.family: fontRobotoLight.name
+                font.family: dapFontRobotoLight.name
                 font.pixelSize: 16 * pt
                 color: "#FFFFFF"
                 text: name
@@ -65,7 +65,7 @@ DapMenuTabWidgetForm
                     if(!frameItemMenu.isPushed)
                     {
                         iconItem.source = hoverIcon;
-                        textItem.font.family = fontRobotoRegular.name;
+                        textItem.font.family = dapFontRobotoRegular.name;
                     }
                 }
 
@@ -74,7 +74,7 @@ DapMenuTabWidgetForm
                     if(!frameItemMenu.isPushed)
                     {
                         iconItem.source = normalIcon
-                        textItem.font.family = fontRobotoLight.name;
+                        textItem.font.family = dapFontRobotoLight.name;
                     }
                 }
 
@@ -89,7 +89,7 @@ DapMenuTabWidgetForm
             {
                 frameItemMenu.color = (isPushed ?  selectColorItemMenu : normalColorItemMenu);
                 iconItem.source = isPushed ? model.hoverIcon : model.normalIcon;
-                textItem.font.family = (isPushed ? fontRobotoRegular.name : fontRobotoLight.name);
+                textItem.font.family = (isPushed ? dapFontRobotoRegular.name : dapFontRobotoLight.name);
             }
         }
     }

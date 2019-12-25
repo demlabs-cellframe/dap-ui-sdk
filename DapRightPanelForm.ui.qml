@@ -7,22 +7,17 @@ import QtQuick.Controls 2.0
 
 Rectangle 
 {
-    id: rightPanel
-    
+    id: frameRightPanel
     ///@detalis Right panel widget.
-    property alias dapRightPanel: rightPanel
+    property alias dapFrame: frameRightPanel
     ///@detalis Right pane title widget.
     property alias dapHeader: header
     ///@detalis Right pane header data.
-    property Item dapHeaderData: Item { }
+    property Item dapHeaderData
     ///@detalis Stack of right panels owned by current.
-    property alias dapChildRightPanels: childRightPanels
+    property alias dapContentItemPanel: contentItemPanel
     ///@detalis Content of the current right panel.
-    property  Item dapContentItemPanel: Item { }
-    
-    dapRightPanel.anchors.top: parent.top
-    dapRightPanel.anchors.bottom: parent.bottom
-    dapRightPanel.anchors.right: parent.right
+    property  Item dapContentItemData
 
     // Install right panel title
     Item
@@ -34,11 +29,11 @@ Rectangle
         anchors.right: parent.right
     }
     // Install right panel content
-    StackView
+    Item
     {
-        id: childRightPanels
-        initialItem: dapContentItemPanel
-        anchors.top: dapHeader.bottom
+        id: contentItemPanel
+        data: dapContentItemData
+        anchors.top: header.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
