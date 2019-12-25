@@ -23,7 +23,12 @@ DapTunWorkerWindows::DapTunWorkerWindows(DapTunAbstract *a_tun)
  * @brief DapTunWorkerWindows::loop
  */
 void DapTunWorkerWindows::loop() {
-    TunTap::getInstance().setAdress(tun()->addr(), tun()->gw(), QString("255.255.255.0"));
+    if (TunTap::getInstance().setAdress(tun()->addr(), tun()->gw(), QString("255.255.255.0"))) {
+        qCritical() << "Tunnel cannot be setup with provided settings";
+        emit loopError("Error TUN setup");
+        //emit loopStopped();
+        return;
+    }
     const int mtu = 6000; // x4 relative to max protocol data unit, aswell as max PPP frame.
     quint8 tmpBuf[mtu] = {'\0'};
     size_t tmpBufSize = 0;
