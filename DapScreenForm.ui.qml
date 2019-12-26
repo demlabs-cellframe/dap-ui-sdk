@@ -7,10 +7,10 @@ import QtQuick.Controls 2.0
 
 Rectangle 
 {
-    id: frame
+    id: frameScreen
 
     ///@detalis Frame widget.
-    property alias dapFrame: frame
+    property alias dapFrame: frameScreen
     ///@detalis Screen components.
     property Item dapContenetItemScreen
 
@@ -21,5 +21,6 @@ Rectangle
     {
         id: contenetItemScreen
         data: dapContenetItemScreen
+        anchors.fill: parent
     }
 }

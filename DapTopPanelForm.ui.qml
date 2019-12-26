@@ -7,8 +7,8 @@ import QtQuick.Controls 2.0
 
 Rectangle 
 {
-    id: frame
+    id: frameTopPanel
     
     ///@detalis Top panel frame.
-    property alias dapFrame: frame
+    property alias dapFrame: frameTopPanel
 }

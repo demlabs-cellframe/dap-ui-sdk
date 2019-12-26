@@ -11,18 +11,20 @@ Rectangle
     ///@detalis Right panel widget.
     property alias dapFrame: frameRightPanel
     ///@detalis Right pane title widget.
-    property alias dapHeader: header
+    property alias dapHeader: headerRightPanel
     ///@detalis Right pane header data.
     property Item dapHeaderData
     ///@detalis Stack of right panels owned by current.
-    property alias dapContentItemPanel: contentItemPanel
+    property alias dapContentPanel: contentItemRightPanel
     ///@detalis Content of the current right panel.
     property  Item dapContentItemData
+    
+    anchors.fill: parent
 
     // Install right panel title
     Item
     {
-        id: header
+        id: headerRightPanel
         data: dapHeaderData
         anchors.top: parent.top
         anchors.left: parent.left
@@ -31,9 +33,9 @@ Rectangle
     // Install right panel content
     Item
     {
-        id: contentItemPanel
+        id: contentItemRightPanel
         data: dapContentItemData
-        anchors.top: header.bottom
+        anchors.top: headerRightPanel.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom

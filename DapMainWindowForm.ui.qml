@@ -11,9 +11,6 @@ Rectangle
 
     ///@detalis Logotype.
     property Item dapLogotype
-    ///@detalis Menu bar width.
-    property alias dapMenuWidth: columnMenuTab.width
-    property alias dapLogotypeHeight: logotype.height
     ///@detalis Menu bar widget.
     property Item dapMenuWidget
     ///@detalis screen downloader widget.
@@ -39,13 +36,14 @@ Rectangle
                 id: logotype
                 data: dapLogotype
                 width: columnMenuTab.width
+                height: dapLogotype.height
             }
             // Menu bar widget
             Item
             {
                 id: menuWidget
                 data: dapMenuWidget
-                width: columnMenuTab.width
+                width: dapMenuWidget.width
                 height: columnMenuTab.height - logotype.height
             }
         }

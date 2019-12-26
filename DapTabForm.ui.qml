@@ -27,41 +27,41 @@ Rectangle
     {
         id: topPanel
         data: dapTopPanel
+        height: dapTopPanel.height
+        width: parent.width
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
     }
     // Install the screen widget and the right panel
-    Rectangle
+    Row
     {
         anchors.top: topPanel.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        Row
-        {
-            anchors.fill: parent
 
-            // Screen widget
-            Item
-            {
-                id: screen
-                data: dapScreen
-                height: parent.height
-            }
-            // Separator widget
-            Rectangle
-            {
-                id: separator
-                height: parent.height
-            }
-            // Right pane widget
-            Item
-            {
-                id: rightPanel
-                data: dapRightPanel
-                height: parent.height
-            }
+        // Screen widget
+        Item
+        {
+            id: screen
+            data: dapScreen
+            height: parent.height
+            width: parent.width - separator.width - rightPanel.width
+        }
+        // Separator widget
+        Rectangle
+        {
+            id: separator
+            height: parent.height
+        }
+        // Right pane widget
+        Item
+        {
+            id: rightPanel
+            data: dapRightPanel
+            height: parent.height
+            width: dapRightPanel.width
         }
     }
 }
