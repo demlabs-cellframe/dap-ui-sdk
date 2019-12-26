@@ -12,7 +12,7 @@ Rectangle
     ///@detalis Main menu panel widget frame.
     property alias dapFrameMenuTab: frameMenuTab
     ///@detalis Main menu bar widget.
-    property alias dapMenuTab: menuTab
+    property ListView dapMenuWidget
     ///@detalis Path to the selected tab.
     property string pathScreen
 
@@ -20,13 +20,10 @@ Rectangle
     focus: true
 
     // Install the widget of the main menu panel
-    ListView
+    Item
     {
         id: menuTab
+        data: dapMenuWidget
         anchors.fill: parent
-        delegate: itemMenuTabDelegate
-        spacing: 3 * pt
-        clip: true
-        interactive: false
     }
 }
