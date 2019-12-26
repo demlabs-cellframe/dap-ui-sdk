@@ -111,6 +111,7 @@ void DapTunAbstract::workerStart()
         qInfo() << "tunThread started, tun socket: " << m_tunSocket;
     }else{
         emit error(tr("Can't open tun socket"));
+        return;
     }
     onWorkerStarted();
 }

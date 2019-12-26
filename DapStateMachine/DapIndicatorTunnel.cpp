@@ -34,7 +34,6 @@ void DapIndicatorTunnel::initAllowedSubstatesTransitions()
     addAllowedSubstatesTransitions(noTunnelConfigError, tunnelConfiguring);
     addAllowedSubstatesTransitions(oldConfigRestoreError, tunnelConfiguring);
     addAllowedSubstatesTransitions(tunnelCloseError, tunnelConfiguring);
-
     // FalseToTrue =>
     addAllowedSubstatesTransitions(tunnelConfiguring, tunnelConfigured);
     addAllowedSubstatesTransitions(tunnelConfiguring, noTunnelConfigError);
