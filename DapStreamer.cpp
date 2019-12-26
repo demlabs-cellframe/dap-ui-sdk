@@ -130,9 +130,8 @@ void DapStreamer::streamClose()
     emit streamDisconnecting();
     if(m_streamSocket->isOpen()){
         m_streamSocket->close();
-    } else {
-        emit streamClosed();
     }
+    emit streamClosed();
     m_pktOutLastSeqID = 0;
     m_isStreamOpened=false;
 }
