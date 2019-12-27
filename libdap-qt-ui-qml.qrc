@@ -1,20 +1,22 @@
 <RCC>
     <qresource prefix="/">
-        <file>DapButton.qml</file>
-        <file>DapButtonForm.ui.qml</file>
-        <file>DapComboBox.qml</file>
-        <file>DapScreen.qml</file>
-        <file>DapScreenForm.ui.qml</file>
-        <file>DapTopPanel.qml</file>
-        <file>DapTopPanelForm.ui.qml</file>
-        <file>DapRightPanel.qml</file>
-        <file>DapRightPanelForm.ui.qml</file>
-        <file>DapTab.qml</file>
-        <file>DapTabForm.ui.qml</file>
-        <file>DapComboBoxForm.ui.qml</file>
-        <file>DapMainWindow.qml</file>
-        <file>DapMainWindowForm.ui.qml</file>
-        <file>DapMenuTabWidget.qml</file>
-        <file>DapMenuTabWidgetForm.ui.qml</file>
+        <file>widgets/DapButton.qml</file>
+        <file>widgets/DapButtonForm.ui.qml</file>
+        <file>widgets/DapComboBox.qml</file>
+        <file>widgets/DapComboBoxForm.ui.qml</file>
+        <file>widgets/DapMainWindow.qml</file>
+        <file>widgets/DapMainWindowForm.ui.qml</file>
+        <file>widgets/DapMenuTabWidget.qml</file>
+        <file>widgets/DapMenuTabWidgetForm.ui.qml</file>
+        <file>widgets/DapPanelForm.ui.qml</file>
+        <file>widgets/DapRightPanel.qml</file>
+        <file>widgets/DapRightPanelForm.ui.qml</file>
+        <file>widgets/DapScreen.qml</file>
+        <file>widgets/DapScreenForm.ui.qml</file>
+        <file>widgets/DapTab.qml</file>
+        <file>widgets/DapTabForm.ui.qml</file>
+        <file>widgets/DapTopPanel.qml</file>
+        <file>widgets/DapTopPanelForm.ui.qml</file>
+        <file>Device.qml</file>
     </qresource>
 </RCC>
