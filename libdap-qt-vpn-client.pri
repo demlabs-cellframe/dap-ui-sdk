@@ -54,11 +54,11 @@ macos {
 
 win32{
     QMAKE_CXXFLAGS +=  -mno-ms-bitfields
-    INCLUDEPATH += $$_PRO_FILE_PWD_/../windows/windows
-    INCLUDEPATH += $$_PRO_FILE_PWD_/../windows/tuntap
-    HEADERS+= $$PWD/../windows/windows/ip.h
-    HEADERS+= $$PWD/../windows/tuntap/tuntap.h
-    SOURCES+= $$PWD/../windows/tuntap/tuntap.cpp
+    INCLUDEPATH += $$_PRO_FILE_PWD_/../os/windows/windows
+    INCLUDEPATH += $$_PRO_FILE_PWD_/../os/windows/tuntap
+    HEADERS+= $$PWD/../os/windows/windows/ip.h
+    HEADERS+= $$PWD/../os/windows/tuntap/tuntap.h
+    SOURCES+= $$PWD/../os/windows/tuntap/tuntap.cpp
 
     LIBS += -lWS2_32
     LIBS += -lAdvapi32
