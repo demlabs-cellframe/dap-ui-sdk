@@ -217,7 +217,9 @@ QString ScreenDashboard::getUptime(quint64 seconds)
     const qint64 DAY = 86400;
     qint64 days = seconds / DAY;
     QTime t = QTime(0,0).addSecs(seconds % DAY);
-    return QString("%1:%2:%3:%4").arg(days).arg(t.hour()).arg(t.minute()).arg(t.second());
+    QString res;
+    res.sprintf("%d d %02d:%02d:%02d", days, t.hour(), t.minute(), t.second());
+    return res;
 }
 
 /// Calculate data transmission/reception speed in Mbps.
