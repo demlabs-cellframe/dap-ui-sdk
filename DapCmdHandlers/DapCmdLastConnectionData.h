@@ -20,7 +20,7 @@ class DapCmdLastConnectionData: public DapCmdServiceAbstract
 
     /// Connection start time.
     QString mStartTime; 
-    
+    bool mNoReset = false;
 public:
     /// Standart constructor.
     /// @param parent Parent.    
@@ -31,6 +31,7 @@ public:
     /// Process command.
     /// @param params Command parameters.
     void handle(const QJsonObject* params) override;
+    void dontReset(bool);
 public slots:
     void saveConnectionStartTime();
 };
