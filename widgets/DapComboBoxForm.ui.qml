@@ -115,10 +115,12 @@ ComboBox {
             ScrollIndicator.vertical: ScrollIndicator {}
         }
 
-        background: Rectangle {
+        background: Rectangle
+        {
             width: customComboBox.background.width
             color: parent.color
-            Rectangle {
+            Rectangle
+            {
                 id: contentCorner
                 anchors.fill: parent
             }

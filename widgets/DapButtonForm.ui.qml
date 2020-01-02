@@ -3,35 +3,35 @@ import QtQuick.Controls 2.0
 
 Button {
     ///@detalis heightButton Button height.
-    property int heightButton: 36 * pt
+    property int heightButton
     ///@detalis widthButton Button width.
-    property int widthButton: 120 * pt
+    property int widthButton
     ///@detalis normalImageButton The picture on the Button is in normal state.
-    property string normalImageButton: "qrc:/res/icons/new-wallet_icon_dark.png"
+    property string normalImageButton
     ///@detalis hoverImageButton The image on the Button is in the mouseover state.
-    property string hoverImageButton: "qrc:/res/icons/new-wallet_icon_dark_hover.png"
+    property string hoverImageButton
     ///@detalis widthImageButton Image width.
-    property int widthImageButton: 28 * pt
+    property int widthImageButton
     ///@detalis heightImageButton Image height.
-    property int heightImageButton: 28 * pt
+    property int heightImageButton
     ///@detalis indentImageLeftButton: Indentation of the image from the left edge.
-    property int indentImageLeftButton: 10 * pt
+    property int indentImageLeftButton
     ///@detalis colorBackgroundNormal Button background color in normal state.
-    property string colorBackgroundNormal:"#070023"
+    property string colorBackgroundNormal
     ///@detalis colorBackgroundHover Button background color in hover state.
-    property string colorBackgroundHover: "#D51F5D"
+    property string colorBackgroundHover
     ///@detalis textButton Text button.
-    property string textButton: "New Wallet"
+    property string textButton
     ///@detalis colorButtonTextNormal Button text color in normal state.
-    property string colorButtonTextNormal: "#FFFFFF"
+    property string colorButtonTextNormal
     ///@detalis colorButtonTextHover Button text color in hover state.
-    property string colorButtonTextHover: "#FFFFFF"
+    property string colorButtonTextHover
     ///@detalis indentTextRight: Indentation of the text from the right edge.
-    property int indentTextRight: 20 * pt
+    property int indentTextRight
     ///@detalis fontSizeButton Font size.
-    property int fontSizeButton: 14 * pt
+    property int fontSizeButton
     ///@detalis existenceImage Indicates the presence of an image.
-    property bool existenceImage:true
+    property bool existenceImage: true
     ///@detalis horizontalAligmentText Horizontal alignment.
     property alias horizontalAligmentText:templateText.horizontalAlignment
     ///@detalis colorBackgroundButton This property overrides the background color.
@@ -39,43 +39,47 @@ Button {
     ///@detalis colorTextButton This property overrides the color of the text.
     property alias colorTextButton: templateText.color
     ///@detalis borderColorButton Sets the color of the border.
-    property string borderColorButton: "#000000"
+    property string borderColorButton
     ///@detalis borderWidthButton Sets the width of the border.
-    property int borderWidthButton: 0
+    property int borderWidthButton
 
     id: dapButton
 
-    contentItem: Rectangle {
-        id: dapBackgroundButton
-        anchors.fill: parent
-        color: dapButton.hovered ? colorBackgroundHover : colorBackgroundNormal
-        implicitWidth: widthButton
-        implicitHeight: heightButton
-        border.color: borderColorButton
-        border.width: borderWidthButton
-        ///button text
-        Text {
-            id: templateText
+    contentItem:
+        Rectangle
+        {
+            id: dapBackgroundButton
             anchors.fill: parent
-            verticalAlignment: Qt.AlignVCenter
-            horizontalAlignment: Qt.AlignRight
-            anchors.rightMargin: indentTextRight
-            font.pixelSize: fontSizeButton
-            font.family: "Roboto"
-            font.weight: Font.Normal
-            color: dapButton.hovered ? colorButtonTextHover : colorButtonTextNormal
-            text: qsTr(textButton)
-        }
+            color: dapButton.hovered ? colorBackgroundHover : colorBackgroundNormal
+            implicitWidth: widthButton
+            implicitHeight: heightButton
+            border.color: borderColorButton
+            border.width: borderWidthButton
+            ///button text
+            Text
+            {
+                id: templateText
+                anchors.fill: parent
+                verticalAlignment: Qt.AlignVCenter
+                horizontalAlignment: Qt.AlignRight
+                anchors.rightMargin: indentTextRight
+                font.pixelSize: fontSizeButton
+                font.family: "Roboto"
+                font.weight: Font.Normal
+                color: dapButton.hovered ? colorButtonTextHover : colorButtonTextNormal
+                text: qsTr(textButton)
+            }
 
-        ///button picture
-        Image {
-            id: iconNewWallet
-            anchors.verticalCenter: if(existenceImage)parent.verticalCenter
-            anchors.left: if(existenceImage)parent.left
-            anchors.leftMargin:if(existenceImage) indentImageLeftButton
-            source: if(existenceImage) dapButton.hovered ? hoverImageButton : normalImageButton
-            width: if(existenceImage)widthImageButton
-            height:if(existenceImage) heightImageButton
+            ///button picture
+            Image
+            {
+                id: iconNewWallet
+                anchors.verticalCenter: if(existenceImage)parent.verticalCenter
+                anchors.left: if(existenceImage)parent.left
+                anchors.leftMargin:if(existenceImage) indentImageLeftButton
+                source: if(existenceImage) dapButton.hovered ? hoverImageButton : normalImageButton
+                width: if(existenceImage)widthImageButton
+                height:if(existenceImage) heightImageButton
+            }
         }
-    }
 }
