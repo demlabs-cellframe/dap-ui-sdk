@@ -1,7 +1,8 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 
-Button {
+Button
+{
     ///@detalis heightButton Button height.
     property int heightButton
     ///@detalis widthButton Button width.
