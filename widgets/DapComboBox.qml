@@ -3,20 +3,23 @@ import QtQuick.Controls 2.0
 
 DapComboBoxForm
 {
+    id:dapComboBox
+
     delegate:ItemDelegate
     {
+
         width: parent.width
 
         //Adjusting the height of the line, taking into account that the second element from the end may be the last
         height:{
             if(index != currentIndex)
             {
-                if(index == customComboBox.count - 2)
+                if(index == (count - 2))
                 {
                     if(index+1 == currentIndex) return heightListElement + bottomIntervalListElement
                     else return heightListElement + intervalListElement
                 }
-                if (index == customComboBox.count - 1) return heightListElement + bottomIntervalListElement
+                if (index == count - 1) return heightListElement + bottomIntervalListElement
                 return heightListElement + intervalListElement
             }
             else return 0
@@ -27,9 +30,10 @@ DapComboBoxForm
             anchors.fill: parent
             anchors.topMargin: paddingTopItemDelegate
             anchors.leftMargin: popup.visible ? sidePaddingActive : sidePaddingNormal
-            font.family: fontRobotoRegular.name
-            font.pixelSize: fontSizeComboBox
-            text: {if(index != currentIndex) return modelData;}
+            font:dapComboBox.font
+            text: if(index != currentIndex)
+                      return modelData;
+                  else return ""
             color: hovered ? hilightColorText : normalColorText
         }
 
@@ -38,12 +42,12 @@ DapComboBoxForm
         background: Rectangle {
             anchors.fill: parent
             anchors.bottomMargin: {
-                if(index == countComboBox - 2)
+                if(index == count - 2)
                 {
                     if(index+1 == currentIndex) return bottomIntervalListElement
                     else return intervalListElement
                 }
-                if (index == countComboBox - 1) return bottomIntervalListElement
+                if (index == count - 1) return bottomIntervalListElement
                 return intervalListElement
             }
             color: hovered ? hilightColor : normalColor

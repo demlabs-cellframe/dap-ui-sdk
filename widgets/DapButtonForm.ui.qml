@@ -28,16 +28,16 @@ Button {
     property string colorButtonTextHover
     ///@detalis indentTextRight: Indentation of the text from the right edge.
     property int indentTextRight
-    ///@detalis fontSizeButton Font size.
-    property int fontSizeButton
+    ///@detalis fontButton Font setting.
+    property alias fontButton:buttonText.font
     ///@detalis existenceImage Indicates the presence of an image.
     property bool existenceImage: true
     ///@detalis horizontalAligmentText Horizontal alignment.
-    property alias horizontalAligmentText:templateText.horizontalAlignment
+    property alias horizontalAligmentText:buttonText.horizontalAlignment
     ///@detalis colorBackgroundButton This property overrides the background color.
     property alias colorBackgroundButton: dapBackgroundButton.color
     ///@detalis colorTextButton This property overrides the color of the text.
-    property alias colorTextButton: templateText.color
+    property alias colorTextButton: buttonText.color
     ///@detalis borderColorButton Sets the color of the border.
     property string borderColorButton
     ///@detalis borderWidthButton Sets the width of the border.
@@ -45,8 +45,8 @@ Button {
 
     id: dapButton
 
-    contentItem:
-        Rectangle
+    contentItem: 
+        Rectangle 
         {
             id: dapBackgroundButton
             anchors.fill: parent
@@ -56,20 +56,17 @@ Button {
             border.color: borderColorButton
             border.width: borderWidthButton
             ///button text
-            Text
+            Text 
             {
-                id: templateText
+                id: buttonText
                 anchors.fill: parent
                 verticalAlignment: Qt.AlignVCenter
                 horizontalAlignment: Qt.AlignRight
                 anchors.rightMargin: indentTextRight
-                font.pixelSize: fontSizeButton
-                font.family: "Roboto"
-                font.weight: Font.Normal
                 color: dapButton.hovered ? colorButtonTextHover : colorButtonTextNormal
                 text: qsTr(textButton)
             }
-
+    
             ///button picture
             Image
             {
