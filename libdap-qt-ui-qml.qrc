@@ -18,5 +18,7 @@
         <file>widgets/DapTopPanel.qml</file>
         <file>widgets/DapTopPanelForm.ui.qml</file>
         <file>Device.qml</file>
+        <file>widgets/DapRadioButton.qml</file>
+        <file>widgets/DapRadioButtonForm.ui.qml</file>
     </qresource>
 </RCC>
