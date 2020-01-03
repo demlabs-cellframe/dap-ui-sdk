@@ -17,6 +17,8 @@ RadioButton
     property alias backgroundColor:backgroundColor.color
     ///@detalis spaceIndicatorText The gap between the indicator and the text.
     property int spaceIndicatorText
+    ///@detalis indicatorBorder Border indicator.
+    property alias indicatorBorder: indicatorRadioButton.border
     ///@detalis indicatorBorderColor Border color indicator.
     property string indicatorBorderColor
     ///@detalis indicatorBackgroundColor Background color indicator.
@@ -34,19 +36,23 @@ RadioButton
     id: customRadioButton
 
     ///Text Options.
-    contentItem: Text {
-        id: nameButton
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.leftMargin: customRadioButton.indicator.width + spaceIndicatorText
-        verticalAlignment: Text.AlignVCenter
-        anchors.verticalCenter: parent.verticalCenter
-        color: "#3E3853"
-        horizontalAlignment: Text.AlignLeft
-        text: qsTr("template")
-    }
-        ///Indicator Options.
-        indicator: Rectangle {
+    contentItem:
+        Text
+        {
+            id: nameButton
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: customRadioButton.indicator.width + spaceIndicatorText
+            verticalAlignment: Text.AlignVCenter
+            anchors.verticalCenter: parent.verticalCenter
+            color: "#3E3853"
+            horizontalAlignment: Text.AlignLeft
+            text: qsTr("template")
+        }
+    ///Indicator Options.
+    indicator:
+        Rectangle
+        {
             id: indicatorRadioButton
             implicitWidth: indicatorSize
             implicitHeight: indicatorSize
@@ -54,16 +60,17 @@ RadioButton
             y: parent.height / 2 - height / 2
             radius: indicatorSize/2
             color: indicatorBackgroundColor
-            border.color: indicatorBorderColor
 
             ///Indicator inner options.
-            Rectangle {
+            Rectangle
+            {
                 width: indicatorInnerSize
                 height: indicatorInnerSize
                 x: (indicatorRadioButton.width/2)-(width/2)
                 y: (indicatorRadioButton.height/2)-(height/2)
                 radius: indicatorInnerSize/2
                 color: customRadioButton.checked ? indicatorInnerColorActiv : indicatorInnerColorNormal
+                visible: customRadioButton.checked
             }
         }
     ///Background options.
