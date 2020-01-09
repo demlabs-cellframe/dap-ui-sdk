@@ -56,9 +56,12 @@ win32{
     QMAKE_CXXFLAGS +=  -mno-ms-bitfields
     INCLUDEPATH += $$_PRO_FILE_PWD_/../os/windows/windows
     INCLUDEPATH += $$_PRO_FILE_PWD_/../os/windows/tuntap
+    INCLUDEPATH += $$_PRO_FILE_PWD_/../os/windows/service
     HEADERS+= $$PWD/../os/windows/windows/ip.h
     HEADERS+= $$PWD/../os/windows/tuntap/tuntap.h
+    HEADERS+= $$PWD/../os/windows/service/Service.h
     SOURCES+= $$PWD/../os/windows/tuntap/tuntap.cpp
+    SOURCES+= $$PWD/../os/windows/service/Service.cpp
 
     LIBS += -lWS2_32
     LIBS += -lAdvapi32
