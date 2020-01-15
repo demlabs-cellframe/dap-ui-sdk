@@ -12,9 +12,9 @@ Button
     ///@detalis hoverImageButton The image on the Button is in the mouseover state.
     property string hoverImageButton
     ///@detalis widthImageButton Image width.
-    property int widthImageButton
+    property int widthImageButton: 0 * pt
     ///@detalis heightImageButton Image height.
-    property int heightImageButton
+    property int heightImageButton: 0 * pt
     ///@detalis indentImageLeftButton: Indentation of the image from the left edge.
     property int indentImageLeftButton
     ///@detalis colorBackgroundNormal Button background color in normal state.
@@ -31,8 +31,6 @@ Button
     property int indentTextRight
     ///@detalis fontButton Font setting.
     property alias fontButton:buttonText.font
-    ///@detalis existenceImage Indicates the presence of an image.
-    property bool existenceImage: true
     ///@detalis horizontalAligmentText Horizontal alignment.
     property alias horizontalAligmentText:buttonText.horizontalAlignment
     ///@detalis colorBackgroundButton This property overrides the background color.
@@ -72,12 +70,12 @@ Button
             Image
             {
                 id: iconNewWallet
-                anchors.verticalCenter: if(existenceImage)parent.verticalCenter
-                anchors.left: if(existenceImage)parent.left
-                anchors.leftMargin:if(existenceImage) indentImageLeftButton
-                source: if(existenceImage) dapButton.hovered ? hoverImageButton : normalImageButton
-                width: if(existenceImage)widthImageButton
-                height:if(existenceImage) heightImageButton
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: indentImageLeftButton
+                source: dapButton.hovered ? hoverImageButton : normalImageButton
+                width: widthImageButton
+                height: heightImageButton
             }
         }
 }
