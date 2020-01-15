@@ -5,6 +5,8 @@ import QtGraphicalEffects 1.0
 
 ComboBox 
 {
+    id: dapComboBox
+
     ///@detalis normalColorText Text color in normal state.
     property string normalColorText
     ///@detalis hilightColorText Text color in selected state.
@@ -33,18 +35,8 @@ ComboBox
     property int sidePaddingNormal
     ///@detalis sidePaddingActive Sets the indent from the edge of the right and left edges of the parent in the active state.
     property int sidePaddingActive
-    ///@detalis topIndentNormal Sets the indent from the edge of the upper of the parent in the normal state.
-    property int topIndentNormal
-    ///@detalis topIndentActive Sets the indent from the edge of the upper of the parent in the active state.
-    property int topIndentActive
-    ///@detalis bottomIndentNormal Sets the indent from the edge of the lower of the parent in the normal state.
-    property int bottomIndentNormal
-    ///@detalis bottomIndentActive Sets the indent from the edge of the lower of the parent in the active state.
-    property int bottomIndentActive
     ///@detalis paddingTopItemDelegate Indent above from item delegate.
     property int paddingTopItemDelegate
-    ///@detalis paddingBottomItemDelegate Indent below from item delegate.
-    property int paddingBottomItemDelegate
     ///@detalis heightListElement List item height.
     property int heightListElement
     ///@detalis intervalListElement Spacing between items in a list.
@@ -61,14 +53,17 @@ ComboBox
     property int indicatorWidth
     ///@detalis indicatorHeight Indicator height.
     property int indicatorHeight
+    ///@detalis indicatorLeftInterval Space between indicator border and text border.
+    property int indicatorLeftInterval
     /// colorTopNormalDropShadow Color of the shadow effect of the combo box when minimized.
     property string colorTopNormalDropShadow
     ///@detalis colorDropShadow Unboxed shadow color in expanded state.
     property string colorDropShadow
     ///@detalis fontComboBox Font setting combobox.
-    property alias fontComboBox:customComboBox.font
+    property alias fontComboBox: dapComboBox.font
+    ///@detalis mainLineText Text without unneccesary part.
+    property string mainLineText
 
-    id: customComboBox
     width: popup.visible ? widthPopupComboBoxActive : widthPopupComboBoxNormal
     height: popup.visible ? heightComboBoxActive : heightComboBoxNormal
     anchors.verticalCenter: parent.verticalCenter
@@ -94,6 +89,7 @@ ComboBox
             radius: 2 * pt
             height: parent.height
         }
+
     //Main line text settings
     contentItem: 
         Text 
@@ -101,7 +97,7 @@ ComboBox
             id:textTopComboBox
             anchors.fill: parent
             anchors.leftMargin: popup.visible ? sidePaddingActive : sidePaddingNormal
-            text: parent.displayText
+            text: mainLineText
             font: parent.font
             color: popup.visible ? hilightColorTopText : normalColorTopText
             verticalAlignment: Text.AlignVCenter
@@ -112,21 +108,21 @@ ComboBox
         Popup 
         {
             y: parent.height - 1
-            width: parent.width + 1
-            padding: 1
+            width: parent.width
+            padding: 0
             contentItem:
                 ListView 
                 {
                     clip: true
                     implicitHeight: contentHeight
-                    model: customComboBox.popup.visible ? customComboBox.delegateModel : null
+                    model: dapComboBox.popup.visible ? dapComboBox.delegateModel : null
                     ScrollIndicator.vertical: ScrollIndicator {}
                 }
     
             background: 
                 Rectangle
                 {
-                    width: customComboBox.background.width
+                    width: dapComboBox.background.width
                     color: normalColor
                     Rectangle 
                     {
@@ -159,7 +155,7 @@ ComboBox
                          13 * pt
                         else 0
             color: if (topEffect)
-                       customComboBox.popup.visible ? colorDropShadow : colorTopNormalDropShadow
-                    else "#00000000"
+                       dapComboBox.popup.visible ? colorDropShadow : colorTopNormalDropShadow
+                    else "#000000"
         }
     }
