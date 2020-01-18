@@ -18,8 +18,11 @@ Rectangle
     property alias dapContentPanel: contentItemRightPanel
     ///@detalis Content of the current right panel.
     property  Item dapContentItemData
+    ///@detalis dapRightPanelWidth External property for possibility to hiding RightPanel
+    property int dapRightPanelWidth
     
     anchors.fill: parent
+    width: dapRightPanelWidth
 
     // Install right panel title
     Item
