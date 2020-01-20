@@ -86,7 +86,6 @@ ComboBox
         {
             anchors.fill: parent
             color: parent.popup.visible ? hilightTopColor : normalTopColor
-            radius: 2 * pt
             height: parent.height
         }
 
@@ -130,7 +129,7 @@ ComboBox
                         anchors.fill: parent
                     }
         
-                    DropShadow 
+                    DropShadow
                     {
                         anchors.fill: parent
                         source: contentCorner
@@ -144,18 +143,10 @@ ComboBox
         //Shadow effect for the top element.
         DropShadow 
         {
-            anchors.fill: if (topEffect)
-                              parent
-            source: if (topEffect)
-                        background
-            verticalOffset: if (topEffect)
-                                9 * pt
-                            else 0
-            samples: if (topEffect)
-                         13 * pt
-                        else 0
-            color: if (topEffect)
-                       dapComboBox.popup.visible ? colorDropShadow : colorTopNormalDropShadow
-                    else "#000000"
+            anchors.fill: topEffect ? parent : null
+            source: topEffect ? background : null
+            verticalOffset: topEffect ? 9 * pt : 0
+            samples: topEffect ? 13 * pt : 0
+            color: topEffect ? (dapComboBox.popup.visible ? colorDropShadow : colorTopNormalDropShadow) : "#000000"
         }
     }
