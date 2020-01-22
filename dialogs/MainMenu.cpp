@@ -6,7 +6,7 @@ MainMenu::MainMenu(QWidget *parent):
     m_pages(new QStackedWidget(parent)),
     m_scrSettings(new ScreenSettings(m_pages))
 {
-
+    qDebug() << "MainMenu constructor";
     //if menuIcon = menu, on click - hide
     QPushButton* btMenu = sideBar()->getWidgetCustom<QPushButton>("btMenu", sideBar()->rotation());
     
