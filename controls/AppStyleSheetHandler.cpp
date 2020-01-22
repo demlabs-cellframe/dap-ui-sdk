@@ -1,0 +1,153 @@
+#include "AppStyleSheetHandler.h"
+#include <qdebug.h>
+#include <QApplication>
+#include <QFileInfo>
+#include <QWidget>
+
+/// Read stylesheet from file
+/// @details Check for existing and available to open
+/// @param a_filePath file path
+/// @return The read stylesheet
+QString AppStyleSheetHandler::readStyleSheetFromFile(const QString &a_filePath)
+{
+    if (!QFileInfo::exists(a_filePath)) {
+        QString errorMsg("File " + a_filePath + " not exists");
+        qCritical() << errorMsg;
+        throw errorMsg;
+    }
+    QFile styleSheetFile(a_filePath);
+
+    if (!styleSheetFile.open(QFile::ReadOnly))
+    {
+        QString errorMsg("Can't load style sheet. " + styleSheetFile.errorString());
+        qCritical() << errorMsg;
+        throw errorMsg;
+    }
+
+    QString styleSheet(styleSheetFile.readAll());
+    styleSheetFile.close();
+    return styleSheet;
+}
+
+/// Get widget stylesheet by searching parameters
+/// @param a_searchPar Searching parameters.
+/// @return css-stylesheet of widget in a string representation.
+QString AppStyleSheetHandler::getWidgetStyleSheet(StyleSheatSearchPar a_searchPar)
+{
+    // format subcontrol if exist:
+    if (!a_searchPar.subcontrol.isEmpty())
+        a_searchPar.subcontrol = "\\s*::\\s*" + a_searchPar.subcontrol;
+
+    // format property if exist:
+    if (!a_searchPar.dinamicProperty.isEmpty())
+        a_searchPar.dinamicProperty = "\\s*\\[" + a_searchPar.dinamicProperty + "\\]";
+
+    // format pseudoClass if exist:
+    if (!a_searchPar.pseudoClass.isEmpty())
+        a_searchPar.pseudoClass = ":" + a_searchPar.pseudoClass;
+
+    QRegExp regExp(QString("%1%2%3%4\\s*"
+                           "\\{"
+                                "([^\\}]*)"
+                           "\\}")
+                   .arg(a_searchPar.widgetName).arg(a_searchPar.subcontrol).arg(a_searchPar.dinamicProperty).arg(a_searchPar.pseudoClass));
+
+    // If not found output and return empty
+    if (regExp.lastIndexIn(appStyleSheet()) == -1) {
+        qWarning() << "styleSheet not found: " << regExp;
+        return "";
+    }
+
+    //If found return found capture 1 without spaces and new line symbols
+    return regExp.cap(1).remove(QRegExp("(\\s|\\n)"));
+
+}
+
+/// Get widget style by name, property, subcontrol(optional), pseudoClass.
+/// @param a_widgetName Widget name.
+/// @param a_dinamicProperty Dinamic property.
+/// @param a_subcontrol Subcontrol for e.g.: "text","image:hover", etc...
+/// @param a_pseudoClass Pseudoclass for e.g.: "hover","clicked", etc...
+/// @return css-stylesheet of widget in a string representation.
+QString AppStyleSheetHandler::getWidgetStyleSheet(const QString& a_widgetName,
+                                            QString a_dinamicProperty /*= ""*/,
+                                            QString a_subcontrol /*= ""*/,
+                                            QString a_pseudoClass /*= ""*/)
+{
+    StyleSheatSearchPar searchPar;
+    searchPar.widgetName        = a_widgetName;
+    searchPar.dinamicProperty   = a_dinamicProperty;
+    searchPar.subcontrol        = a_subcontrol;
+    searchPar.pseudoClass       = a_pseudoClass;
+    return getWidgetStyleSheet(searchPar);
+}
+
+/// set stylesheet for widget obtained from App stylesheet by Widget name, dinamic property, subcontrol, pseudoclass
+/// @param a_widget Pointer to widget for wich will be setted stylesheet or wich name will be used for searching.
+/// @param a_dinamicProperty Dinamic property.
+/// @param a_subcontrol Subcontrol for e.g.: "text","image:hover", etc...
+/// @param a_pseudoClass Pseudoclass for e.g.: "hover","clicked", etc...
+/// @return true - if stilesheet was found, otherwise - false
+bool AppStyleSheetHandler::setStyleSheetForWidget(QWidget *a_widget, QString a_dinamicProperty, QString a_subcontrol, QString a_pseudoClass)
+{
+    if (!a_widget)
+        return false;
+
+    StyleSheatSearchPar searchPar;
+    searchPar.widgetName        = a_widget->objectName();
+    searchPar.dinamicProperty   = a_dinamicProperty;
+    searchPar.subcontrol        = a_subcontrol;
+    searchPar.pseudoClass       = a_pseudoClass;
+    QString widgetStyleSheet = getWidgetStyleSheet(searchPar);
+
+    if (widgetStyleSheet.isEmpty())
+        return false;
+
+    a_widget->setStyleSheet(widgetStyleSheet);
+    return true;
+}
+
+/// Get property value from a_stylesheet.
+/// @param a_stylesheet Widget stylesheet without '{}'.
+/// @param a_property Property name.
+/// @return string value of a_property
+QString AppStyleSheetHandler::getValueFromStylesheet(const QString a_styleSheet, const QString &a_property)
+{
+    QStringList strParametrs = a_styleSheet.split(";");
+    strParametrs.removeAll("");
+
+    QStringList tempParam;
+    for(QString str : strParametrs)
+    {
+        tempParam = str.split(":");
+
+        if (tempParam.at(0).simplified() == a_property){
+            return tempParam.at(1).simplified();
+        }
+    }
+
+    qWarning() << "styleSheet property not found: " << a_property;
+    return "";
+}
+
+/// Stylesheet of current application
+/// @return Stylesheet of current application
+QString AppStyleSheetHandler::appStyleSheet()
+{
+    QApplication *app = appInstance();
+
+    if (app)
+        return app->styleSheet();
+
+    else {
+        qWarning() << "Can't get application styleSheet (Error while getting QApplication instance)";
+        return QString();
+    }
+}
+
+/// QCoreApplication::instance()
+/// @return current QApplication
+QApplication *AppStyleSheetHandler::appInstance()
+{
+    return qobject_cast<QApplication*>(QCoreApplication::instance());
+}

@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QLabel>
-#include "DapStyleHolder.h"
+#include "AppStyleSheetHandler.h"
 #include <QDebug>
 
 /** @brief Class that consist stylesheets for all object states
@@ -11,13 +11,13 @@
  * @details
  * @todo Search style in comments also!
 */
-class StyleSubcontrol: public QObject {
+class StyledSubcontrol: public QObject {
     Q_OBJECT
 
 public:
     enum SubcontrolTypes {Image, Text};
 
-    StyleSubcontrol(QString a_id, DapStyleHolder* holder, QWidget *a_parent);
+    StyledSubcontrol(QString a_id, QWidget *a_parent);
 
     QString id();
     QLabel *widget();
@@ -33,7 +33,6 @@ private:
     QString m_checkedStylesheet;        ///< Subcontrol StyleSheet in checked state of CustomPlacementButton
     QString m_checkedHoverStylesheet;   ///< Subcontrol StyleSheet in checked and hover state of CustomPlacementButton
 
-    DapStyleHolder *m_styleHolder;
     QLabel  *m_widget;
 };
 

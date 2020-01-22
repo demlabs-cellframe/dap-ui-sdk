@@ -5,7 +5,7 @@
 #include <QScreen>
 #include <QVariant>
 #include <QtDebug>
-#include <DapStyleHolder.h>
+#include <AppStyleSheetHandler.h>
 #include "DapUiScreen.h"
 
 class QStackedWidget;

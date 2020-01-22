@@ -12,7 +12,7 @@
 #include <QParallelAnimationGroup>
 #include <QSignalTransition>
 
-#include "DapStyleHolder.h"
+#include "AppStyleSheetHandler.h"
 
 /** @brief QLineEdit with animated QLabel subControls (placeholder text)
  *

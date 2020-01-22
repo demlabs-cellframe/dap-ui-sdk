@@ -202,15 +202,18 @@ void AnimatedLineEdit::updateLabelProperties()
 
     //  Not focus properties ======================
 
-    QString labelStyleSheet = DapStyleHolder::qAppCssStyleHolder()->getWidgetStyleSheet(objName, "", "label");
-    QString strColor = DapStyleHolder::getValueFromStylesheet(labelStyleSheet, "color");
-
+    StyleSheatSearchPar labelSearchPar;
+    labelSearchPar.widgetName = objName;
+    labelSearchPar.subcontrol = "label";
+    QString labelStyleSheet = AppStyleSheetHandler::getWidgetStyleSheet(labelSearchPar);
+    QString strColor = AppStyleSheetHandler::getValueFromStylesheet(labelStyleSheet, "color");
     m_st_state_notFocus->assignProperty(this, "labelColor", QColor(strColor));
 
     //  Focus properties ======================
 
-    QString labelFocusStyleSheet = DapStyleHolder::qAppCssStyleHolder()->getWidgetStyleSheet(objName, "", "label", "focus");
-    strColor = DapStyleHolder::getValueFromStylesheet(labelFocusStyleSheet, "color");
+    labelSearchPar.pseudoClass = "focus";
+    QString labelFocusStyleSheet = AppStyleSheetHandler::getWidgetStyleSheet(labelSearchPar);
+    strColor = AppStyleSheetHandler::getValueFromStylesheet(labelFocusStyleSheet, "color");
 
     m_st_state_focus->assignProperty(this, "labelColor", QColor(strColor));
 
@@ -220,7 +223,7 @@ void AnimatedLineEdit::updateLabelProperties()
 
     // Empty properties ======================
 
-    QString lineEditStyleSheet = DapStyleHolder::qAppCssStyleHolder()->getWidgetStyleSheet(objName);
+    QString lineEditStyleSheet = AppStyleSheetHandler::getWidgetStyleSheet(objName);
     assignFontSizeFromStylesheet(lineEditStyleSheet, m_st_content_empty);
 }
 
@@ -230,7 +233,7 @@ void AnimatedLineEdit::updateLabelProperties()
  */
 void AnimatedLineEdit::assignFontSizeFromStylesheet(const QString &a_stylesheet, QState *a_state)
 {
-    QString strFontSize = DapStyleHolder::getValueFromStylesheet(a_stylesheet, "font-size");
+    QString strFontSize = AppStyleSheetHandler::getValueFromStylesheet(a_stylesheet, "font-size");
 
     int fontSize = 0;
 

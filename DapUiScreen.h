@@ -86,7 +86,7 @@ public:
             for (auto rot: rotations() ){
                 QWidget *p;
                 m_page.insert(rot,p=new QWidget(sw()) );
-                sw()->addWidget(p );
+                sw()->addWidget(p);
 #ifdef DAP_PLATFORM_DESKTOP
                 initUiForm<T,TSmall,TBig>(p);
 #else
@@ -99,13 +99,23 @@ public:
             }
             rotate(Hor);
     }
+
+    template<class T>
+    inline void create() {
+#ifdef DAP_PLATFORM_DESKTOP
+        create<T,T,T>();
+#else
+        create<T,T,T,T,T,T>();
+#endif
+    }
+
 #ifdef  DAP_PLATFORM_MOBILE
     template<class THor,class THorSmall, class THorBig, class TVer,class TVerSmall, class TVerBig,
      class THorInv,class THorInvSmall, class THorInvBig, class TVerInv,class TVerInvSmall, class TVerInvBig>
     inline void createAll(){
             for (auto rot: rotations() ){
                 QWidget *p;
-                sw()->addWidget( m_page.insert(rot,p=new QWidget(sw()) ) );
+                sw()->addWidget( *m_page.insert(rot,p=new QWidget(sw()) ) );
                 switch(rot){
                     case Ver: initUiForm<TVer,TVerSmall,TVerBig>(p); break;
                     case VerInv: initUiForm<TVerInv,TVerInvSmall,TVerInvBig>(p); break;

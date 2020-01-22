@@ -6,7 +6,7 @@
 #include <QStyle>
 #include <QDebug>
 #include <QEvent>
-#include "StyleSubcontrol.h"
+#include "StyledSubcontrol.h"
 
 
 /** @brief QPushButton with subControls "text" and "image"
@@ -68,9 +68,9 @@ protected:
 
     QHBoxLayout *m_layout;
     QLabel m_lbLeftSpacing;         ///<label for left spacing
-    QList<StyleSubcontrol*> m_subcontrols;
-    StyleSubcontrol *m_lbImage;    ///<label with image
-    StyleSubcontrol *m_lbText;     ///<label with text
+    QList<StyledSubcontrol*> m_subcontrols;
+    StyledSubcontrol *m_lbImage;    ///<label with image
+    StyledSubcontrol *m_lbText;     ///<label with text
     QLabel m_lbRightSpacing;        ///<label for right spacing
 };
 
