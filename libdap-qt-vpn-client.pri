@@ -31,8 +31,6 @@ win32 {
 }
 
 android{
-    HEADERS += $$PWD/DapTunAndroid.h
-    SOURCES += $$PWD/DapTunAndroid.cpp
     HEADERS += $$PWD/DapTunWorkerAndroid.h $$PWD/DapTunAndroid.h
     SOURCES += $$PWD/DapTunWorkerAndroid.cpp $$PWD/DapTunAndroid.cpp
 }
