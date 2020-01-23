@@ -41,7 +41,7 @@ void ServersComboBox::updateStyleSheets()
     QString tempStyleSheet ("#%1:hover{%2%3}");
     tempStyleSheet = tempStyleSheet
             .arg(objectName())
-            .arg(DapStyleHolder::qAppCssStyleHolder()->getWidgetStyleSheet(objectName()))
+            .arg(AppStyleSheetHandler::getWidgetStyleSheet(objectName()))
             .arg("background-color: transparent;");
     //***********************
     //disable drop-doun style.  Change it if drop-down is needed!!!

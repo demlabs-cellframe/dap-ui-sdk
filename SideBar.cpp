@@ -11,9 +11,9 @@ SideBar::SideBar(QWidget *parent) :
     m_screenOverlaying(new ScreenOverlaying(parent)),
     m_resizeFilter(new ResizeFilter(this))
 {
-    qDebug() << "SideBar Created";
-    create<Ui::SideBar, Ui::SideBar, Ui::SideBar>();
-
+    qDebug() << "SideBar constructor";
+    create<Ui::SideBar>();
+    
     //currentPage()->show();
     sw()->resize(currentPage()->size());
     sw()->raise();

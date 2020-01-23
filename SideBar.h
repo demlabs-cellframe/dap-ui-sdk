@@ -22,6 +22,7 @@
     #include "ui_sidebar_desktop.h"
 #else
     // TODO: include header files for mobile version forms.
+    #include "ui_sidebar_desktop.h"
 #endif
 
 
