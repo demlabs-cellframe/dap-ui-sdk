@@ -1,5 +1,5 @@
 #include "CustomPlacementButton.h"
-#include "DapStyleHolder.h"
+#include "AppStyleSheetHandler.h"
 /** @brief constructor
  *  @param a_parent object parent
  */
@@ -7,8 +7,8 @@ CustomPlacementButton::CustomPlacementButton(QWidget *a_parent)
     :QPushButton (a_parent),
     m_layout        (new QHBoxLayout(this)),
     m_lbLeftSpacing (this),
-    m_lbImage       (new StyleSubcontrol("image", DapStyleHolder::qAppCssStyleHolder(), this)),
-    m_lbText        (new StyleSubcontrol("text",  DapStyleHolder::qAppCssStyleHolder(), this)),
+    m_lbImage       (new StyledSubcontrol("image", this)),
+    m_lbText        (new StyledSubcontrol("text", this)),
     m_lbRightSpacing(this)
 {
     m_subcontrols.append(m_lbImage);
@@ -28,7 +28,7 @@ CustomPlacementButton::CustomPlacementButton(QWidget *a_parent)
 
     //Adding subcontrols to layout
     m_layout->addWidget(&m_lbLeftSpacing);
-    for (StyleSubcontrol *subcontrol: m_subcontrols){
+    for (StyledSubcontrol *subcontrol: m_subcontrols){
         // Set up subcontroll ScaledContents:
         subcontrol->widget()->setScaledContents(true);
         m_layout->addWidget(subcontrol->widget());
@@ -75,7 +75,7 @@ void CustomPlacementButton::setCheckable(bool checkable)
  */
 void CustomPlacementButton::updateStyleSheets()
 {
-    for (StyleSubcontrol *subcontrol: m_subcontrols){
+    for (StyledSubcontrol *subcontrol: m_subcontrols){
         subcontrol->updateStylesheets();
     }
     updateAppearance();
@@ -85,7 +85,7 @@ void CustomPlacementButton::updateStyleSheets()
  */
 void CustomPlacementButton::updateAppearance()
 {
-    for (StyleSubcontrol *subcontrol: m_subcontrols){
+    for (StyledSubcontrol *subcontrol: m_subcontrols){
         bool isHover = isEnabled() ? underMouse() : false;
         subcontrol->setStylesheet(isHover, isChecked());
     }
@@ -98,9 +98,7 @@ void CustomPlacementButton::updateAppearance()
  */
 void CustomPlacementButton::addSubcontrol(QString a_id)
 {
-    StyleSubcontrol *newSubcontrol = new StyleSubcontrol(a_id,
-                                                         DapStyleHolder::qAppCssStyleHolder(),
-                                                         this);
+    StyledSubcontrol *newSubcontrol = new StyledSubcontrol(a_id, this);
     newSubcontrol->widget()->setScaledContents(true);
 
     //add to list and layout

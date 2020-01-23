@@ -8,7 +8,7 @@
 #include <QStylePainter>
 #include <QDebug>
 #include "ComboBoxDelegate.h"
-#include "DapStyleHolder.h"
+#include "AppStyleSheetHandler.h"
 
 /** @brief QComboBox with changing downArrow when hover on control.
  *

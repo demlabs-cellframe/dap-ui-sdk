@@ -32,11 +32,7 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 DapUIAnimationScreen::DapUIAnimationScreen(QObject *parent, QStackedWidget *a_sw)
     :DapUIAnimationScreenAbstract(parent, a_sw)
 {
-    #ifdef DAP_PLATFORM_DESKTOP
-        create<Ui_AnimationChangingScreen, Ui_AnimationChangingScreen, Ui_AnimationChangingScreen>();
-    #else
-        create<Ui_AnimationChangingScreen, Ui_AnimationChangingScreen, Ui_AnimationChangingScreen, Ui_AnimationChangingScreen, Ui_AnimationChangingScreen, Ui_AnimationChangingScreen>();
-    #endif
+    create<Ui_AnimationChangingScreen>();
 }
 
 /**

@@ -98,9 +98,9 @@ DapUiScreen::ScreenSize DapUiScreen::getScreenSize()
             avHeight = avSize.width();
         }
 
-        if(availableHeight < 700)
+        if(avHeight < 700)
             screenSize = Small;
-        if(availableHeight > 1400)
+        if(avHeight > 1400)
             screenSize = Big;
         else
             screenSize = Medium;
