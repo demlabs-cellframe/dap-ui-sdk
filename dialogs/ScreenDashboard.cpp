@@ -18,7 +18,7 @@
 #include <QDateTime>
 #include "ScreenDashboard.h"
 #include "DapDataLocal.h"
-#include "DapStyleHolder.h"
+#include "AppStyleSheetHandler.h"
 #include "StyledDropShadowEffect.h"
 
 Q_DECLARE_METATYPE(DapServerInfo);
@@ -55,12 +55,19 @@ void ScreenDashboard::initUi(QWidget * a_w,ScreenRotation a_rotation)
     Q_ASSERT(cbUpstream);
 #endif
 
-    auto styleHolder = DapStyleHolder::qAppCssStyleHolder();
+    StyleSheatSearchPar searchPar;
+    searchPar.widgetName =  "#" + cbUpstream->objectName();
+    searchPar.subcontrol = "down-arrow";
 
-    QString objectName = "#" + cbUpstream->objectName();
-    cbUpstream->setArrowStyles(styleHolder->getWidgetStyleSheet(objectName,  "", "down-arrow"),
-                               styleHolder->getWidgetStyleSheet(objectName,  "", "down-arrow", "on"),
-                               styleHolder->getWidgetStyleSheet(objectName,  "", "down-arrow", "hover"));
+    QString arrowStyleSheet = AppStyleSheetHandler::getWidgetStyleSheet(searchPar);
+
+    searchPar.pseudoClass = "on";
+    QString arrowStyleSheetOn = AppStyleSheetHandler::getWidgetStyleSheet(searchPar);
+
+    searchPar.pseudoClass = "hover";
+    QString arrowStyleSheetHover = AppStyleSheetHandler::getWidgetStyleSheet(searchPar);
+
+    cbUpstream->setArrowStyles(arrowStyleSheet, arrowStyleSheetOn, arrowStyleSheetHover);
 
     int sepIndex = 0;
     for(const DapServerInfo& i: DapDataLocal::me()->servers()) {
@@ -76,10 +83,12 @@ void ScreenDashboard::initUi(QWidget * a_w,ScreenRotation a_rotation)
 
     connect(cbUpstream, SIGNAL(currentTextChanged(QString)), this, SIGNAL(currentUpstreamNameChanged(QString)));
 
+#ifndef Q_OS_ANDROID
+
     QWidget *btDisconnect = a_w->findChild<CustomPlacementButton*>("btDisconnect");
     if (btDisconnect)
         btDisconnect->setGraphicsEffect(new StyledDropShadowEffect(wtMultirouting));
-
+#endif
 
 
     QRect rect = graphicsView->geometry();

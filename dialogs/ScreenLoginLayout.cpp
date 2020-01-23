@@ -8,7 +8,7 @@
 ScreenLoginLayout::ScreenLoginLayout(QObject *a_parent, QStackedWidget *a_sw)
         :DapUIAnimationScreenAbstract(a_parent, a_sw)
 {
-    create<Ui::LoginLayout, Ui::LoginLayout, Ui::LoginLayout>();
+    create<Ui::LoginLayout>();
 }
 
 /**

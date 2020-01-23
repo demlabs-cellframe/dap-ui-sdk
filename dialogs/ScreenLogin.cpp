@@ -16,9 +16,11 @@ ScreenLogin::ScreenLogin(QObject * a_parent, QStackedWidget * a_sw)
 {
     
     // Инициализация формы ( в зависимости от размера экрана)
-#ifdef DAP_PLATFORM_MOBILE
-    create<Ui::LoginHor,Ui::LoginHorSmall,Ui::LoginHorBig,
-            Ui::LoginVer,Ui::LoginVerSmall,Ui::LoginVerBig>();
+#ifdef Q_OS_ANDROID
+    create<Ui::Login>();
+#else
+    create<Ui::Login, Ui::LoginSmall, Ui::LoginBig>();
+#endif
 /*
     QWidget * cbUpstreamHor=getWidget("cbUpstream",Hor);
     QWidget * cbUpstreamVer=getWidget("cbUpstream",Ver);
@@ -42,10 +44,6 @@ ScreenLogin::ScreenLogin(QObject * a_parent, QStackedWidget * a_sw)
     connect(edPasswordVer ,&QLineEdit::textChanged
             ,edPasswordHor,&QLineEdit::setText );
 */
-#else
-    create<Ui::Login,Ui::LoginSmall,Ui::LoginBig>();
-#endif
-
 }
 
 

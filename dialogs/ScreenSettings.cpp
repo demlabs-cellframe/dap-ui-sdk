@@ -6,6 +6,7 @@ ScreenSettings::ScreenSettings(QWidget *parent) :
     ui(new Ui::ScreenSettings),
     m_mnuMore(new SettingsMoreMenu(this))
 {
+    qDebug() << "ScreenSettings constructor.";
     ui->setupUi(this);
 
     QTableWidget* tblServers = this->findChild<QTableWidget*>("tblServers");
