@@ -26,4 +26,6 @@ void DapServiceNativeAndroid::restartService()
 void DapServiceNativeAndroid::checkInstallation()
 {
     qWarning() << "[DapServiceNativeAndroid] checkInstallation() not implemented";
+    QtAndroid::androidActivity().callMethod<void>( "startDapVpnService"
+                                           ,"()V" );
 }

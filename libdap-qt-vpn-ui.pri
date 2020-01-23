@@ -94,20 +94,23 @@ macos {
 
 android {
     DISTFILES += \
-        $$PWD/android/gradle/wrapper/gradle-wrapper.jar \
-        $$PWD/android/gradlew \
-        $$PWD/android/res/values/libs.xml \
-        $$PWD/android/build.gradle \
-        $$PWD/android/gradle/wrapper/gradle-wrapper.properties \
-        $$PWD/android/src/com/demlabs/dap/DapVpnMainActivity.java \
-        $$PWD/android/src/com/demlabs/dap/DapVpnService.java \
-        $$PWD/android/src/com/demlabs/dap/DapVpnServiceNative.java
-        $$PWD/android/gradlew.bat
+        $$PWD/../os/android/gradle/wrapper/gradle-wrapper.jar \
+        $$PWD/../os/android/gradlew \
+        $$PWD/../os/android/res/values/libs.xml \
+        $$PWD/../os/android/build.gradle \
+        $$PWD/../os/android/gradle/wrapper/gradle-wrapper.properties \
+        $$PWD/../os/android/src/com/demlabs/dap/DapVpnMainActivity.java \
+        $$PWD/../os/android/src/com/demlabs/dap/DapVpnService.java \
+        $$PWD/../os/android/src/com/demlabs/dap/DapVpnServiceNative.java \
+        $$PWD/../os/android/gradlew.bat \
+        $$PWD/../os/android/AndroidManifest.xml
 
-        ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+
+        ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../os/android
         QT += androidextras
         #ANDROID_ETRA_LIBS+= $$PWD/../../libDapClient/android/arm/lib/libssl.so
 
      #   CONFIG += link_prl
     #    ANDROID_EXTRA_LIBS = $$PWD/../../libDapClient/android/arm/lib/libssl.so $$PWD/../libDapClient/android/arm/lib/libcrypto.so
 }
+

@@ -17,7 +17,7 @@
     #include "ui_sign_up_desktop_big.h"
     #include "ui_sign_up_desktop_small.h"
 #else
-    // TODO: include header files for mobile version forms.
+    #include "ui_sign_up_desktop.h"
 #endif
 
 #include <QGraphicsDropShadowEffect>
