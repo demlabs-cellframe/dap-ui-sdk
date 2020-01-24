@@ -11,12 +11,13 @@ public:
     explicit DapCmdServersList(QObject *parent = nullptr);
     void handle(const QJsonObject* params) override;
     ~DapCmdServersList() override {}
-    const QString& serversList() { return  m_serversList; }
+    const QList<QString> &serversList() { return  m_serversList; }
+    void rotateList() { if (m_serversList.size() > 1) { auto tmp = m_serversList.takeFirst(); m_serversList.push_back(tmp); } }
 signals:
 public slots:
-    void setServersList(const QString& a_serversList) { m_serversList = a_serversList ; }
+    void setServersList(const QList<QString>& a_serversList) { m_serversList = a_serversList ; }
 private:
-    QString m_serversList;
+    QList<QString> m_serversList;
 };
 
 #endif // DAPCMDSERVERSLIST_H
