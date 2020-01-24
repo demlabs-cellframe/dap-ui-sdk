@@ -1,4 +1,5 @@
 SOURCES += \
+    $$PWD/AccountScreen.cpp \
     $$PWD/ScreenLogin.cpp \
     $$PWD/ScreenDashboard.cpp \
     $$PWD/ScreenForgotPassword.cpp \
@@ -11,6 +12,7 @@ SOURCES += \
     $$PWD/StartScreen.cpp
 
 HEADERS  += \
+    $$PWD/AccountScreen.h \
     $$PWD/ScreenLogin.h \
     $$PWD/ScreenDashboard.h \
     $$PWD/ScreenForgotPassword.h \
