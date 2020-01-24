@@ -75,8 +75,8 @@ void DapDataLocal::parseXML(const QString& a_fname)
                         }
                     }
                 }else if( sr->name() == "cdb"){
-                    m_cdbServersList = sr->readElementText();
-                    qInfo() << "Setup CDB address: " << m_cdbServersList;
+                    m_cdbServersList.push_back(sr->readElementText());
+                    qInfo() << "Add CDB address: " << m_cdbServersList.back();
                 }else if( sr->name() == "network-default"){
                     m_networkDefault = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
