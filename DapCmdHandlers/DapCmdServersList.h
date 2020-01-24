@@ -12,9 +12,12 @@ protected:
     void handleError(int code, const QString& message) override;
 public:
     explicit DapCmdServersList(QObject *parent = nullptr);
-    void sendCmdGetServersList() { sendCmd(); }
 signals:
     void sigServersList(const DapServerInfoList& servers);
+    void sigEmptyList(const QString &msg);
+    void sigErrorNetwork(const QString &msg);
+public slots:
+    void sendCmdGetServersList() { sendCmd(); }
 };
 
 #endif // DAPCMDSERVERSLIST_H
