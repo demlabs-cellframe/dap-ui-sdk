@@ -5,6 +5,7 @@
 #include "DapUiScreen.h"
 #include "DapUIAnimationScreenAbstract.h"
 #include "ScreenLogin.h"
+#include "StartScreen.h"
 #include <type_traits>
 
 
@@ -24,13 +25,13 @@ class ScreenLoginLayout : public DapUIAnimationScreenAbstract
 public:
     explicit ScreenLoginLayout(QObject *a_parent, QStackedWidget *a_sw);
 
-    ScreenLogin *screenLogin() const;
+    StartScreen *screenLogin() const;
 
 protected:
     void initUi(QWidget *a_w, ScreenRotation a_rotation);
 
 private:
-    ScreenLogin *m_screenLogin; ///<Login screen pointer
+    StartScreen *m_screenLogin; ///<Login screen pointer
 };
 
 

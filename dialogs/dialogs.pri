@@ -7,7 +7,8 @@ SOURCES += \
     $$PWD/MainMenu.cpp \
     $$PWD/SettingsMoreMenu.cpp \
     $$PWD/ScreenLoginLayout.cpp \
-    $$PWD/DialogEditServer.cpp
+    $$PWD/DialogEditServer.cpp \
+    $$PWD/StartScreen.cpp
 
 HEADERS  += \
     $$PWD/ScreenLogin.h \
@@ -18,6 +19,7 @@ HEADERS  += \
     $$PWD/MainMenu.h \
     $$PWD/SettingsMoreMenu.h \
     $$PWD/ScreenLoginLayout.h \
-    $$PWD/DialogEditServer.h
+    $$PWD/DialogEditServer.h \
+    $$PWD/StartScreen.h
 
 INCLUDEPATH += $$PWD
