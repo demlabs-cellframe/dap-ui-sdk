@@ -4,7 +4,9 @@
 #include <QFileInfo>
 #include <QWidget>
 
-/// Read stylesheet from file
+#include "UiScaling.h"
+
+/// Read stylesheet from file and convert points to pixels
 /// @details Check for existing and available to open
 /// @param a_filePath file path
 /// @return The read stylesheet
@@ -26,7 +28,8 @@ QString AppStyleSheetHandler::readStyleSheetFromFile(const QString &a_filePath)
 
     QString styleSheet(styleSheetFile.readAll());
     styleSheetFile.close();
-    return styleSheet;
+
+    return convertPointsToPixels(styleSheet);
 }
 
 /// Get widget stylesheet by searching parameters
@@ -150,4 +153,25 @@ QString AppStyleSheetHandler::appStyleSheet()
 QApplication *AppStyleSheetHandler::appInstance()
 {
     return qobject_cast<QApplication*>(QCoreApplication::instance());
+}
+
+QString AppStyleSheetHandler::convertPointsToPixels(const QString a_stylesheet)
+{
+    const QRegExp regExp("([\\d.])+pt");
+    QStringList matches;
+    auto data = a_stylesheet;
+    auto pos = 0;
+
+    while ((pos = regExp.indexIn(data, pos)) != -1) {
+        matches << regExp.cap(0);
+        pos += regExp.matchedLength();
+    }
+
+    for (auto match : matches) {
+        float value = match.replace("pt", "").toDouble();
+        int pixelValue = UiScaling::pointsToPixels(value);
+        data.replace(match + "pt", QString::number(pixelValue) + "px");
+    }
+
+    return data;
 }
