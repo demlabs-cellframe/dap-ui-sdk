@@ -346,9 +346,10 @@ void DapSession::onAuthorize()
         }
     }
 
+    emit authorized(m_cookie);
     if(!isCookie) {
-        m_cookie.clear();
-        emit errorAuthorization("No authorization cookie in server's reply");
+        //m_cookie.clear();
+        //emit errorAuthorization("No authorization cookie in server's reply");
     }
 }
 
