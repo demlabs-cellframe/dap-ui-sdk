@@ -1,6 +1,5 @@
 SOURCES += \
     $$PWD/AnimationChangingWidget.cpp \
-    $$PWD/AppStyleSheetHandler.cpp \
     $$PWD/ComboBoxDelegate.cpp \
     $$PWD/CustomPlacementButton.cpp \
     $$PWD/ServersComboBox.cpp \
