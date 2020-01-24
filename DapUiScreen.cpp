@@ -19,7 +19,7 @@ DapUiScreen::DapUiScreen(QObject *parent, QStackedWidget * a_sw)
 
 // Set up default rotations, childs could change that by their own
     m_rotations.insert(Hor);
-#ifdef DAP_UI_TYPE_MOBILE
+#ifdef DAP_PLATFORM_MOBILE
     m_rotations.insert(Ver);
 #endif
 
@@ -31,13 +31,13 @@ DapUiScreen::~DapUiScreen()
 //        delete l_page;
 }
 
-QSize DapUiScreen::getScreenResolution(ScreenSize screenSize)
+QSize DapUiScreen::getWindowSizeInPoints(ScreenSize screenSize = DapUiScreen::ScreenSize::Medium)
 {
     switch (screenSize) {
     case DapUiScreen::ScreenSize::Small:
         return QSize(640, 400);
     case DapUiScreen::ScreenSize::Medium:
-        return QSize(1280, 800);
+        return QSize(1024, 768);
     case DapUiScreen::ScreenSize::Big:
         return QSize(1664, 1040);
     default:
@@ -83,7 +83,7 @@ DapUiScreen::ScreenSize DapUiScreen::getScreenSize()
 
         screenSize = Small;
         for (auto curSize: {Big, Medium}) {
-            QSize screenResolution (getScreenResolution(curSize) += WINDOW_BORDER_MAX_SIZE_PX);
+            QSize screenResolution (getWindowSizeInPoints(curSize) += WINDOW_BORDER_MAX_SIZE_PX);
 
             if (avHeight >= screenResolution.height()
                     && avWidth >= screenResolution.width()) {
