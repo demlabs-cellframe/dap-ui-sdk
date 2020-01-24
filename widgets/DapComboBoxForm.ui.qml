@@ -81,8 +81,8 @@ ComboBox
         }
 
     //Defining the background for the main line
-    background: 
-        Rectangle 
+    background:
+        Rectangle
         {
             anchors.fill: parent
             color: parent.popup.visible ? hilightTopColor : normalTopColor
@@ -90,10 +90,9 @@ ComboBox
         }
 
     //Main line text settings
-    contentItem: 
-        Text 
+    contentItem:
+        Text
         {
-            id:textTopComboBox
             anchors.fill: parent
             anchors.leftMargin: popup.visible ? sidePaddingActive : sidePaddingNormal
             text: mainLineText
@@ -141,7 +140,7 @@ ComboBox
         }
 
         //Shadow effect for the top element.
-        DropShadow 
+        DropShadow
         {
             anchors.fill: topEffect ? parent : null
             source: topEffect ? background : null
