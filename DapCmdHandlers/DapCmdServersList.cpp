@@ -11,22 +11,29 @@ DapCmdServersList::DapCmdServersList(QObject *parent)
 
 void DapCmdServersList::handle(const QJsonObject* params)
 {
-    Q_UNUSED(params);
-    auto reply = DapServersListRequester::sendRequest(serversList() );
+    Q_UNUSED(params)
+    auto reply = DapServersListRequester::sendRequest(serversList().front());
     connect(reply, &DapServersListNetworkReply::sigResponse, [=](const QJsonDocument& servers) {
         auto arr = servers.array();
-        QJsonObject obj;
-        obj["servers"] = arr;
-        sendCmd(&obj);
+        if (arr.isEmpty()) {
+            rotateList();
+            sendSimpleError(-666, "Empty nodelist, try another CDB...");
+        } else {
+            QJsonObject obj;
+            obj["servers"] = arr;
+            sendCmd(&obj);
+        }
     });
 
     connect(reply, &DapServersListNetworkReply::sigParseResponseError, [=]{
         qWarning()<< "Bad response from server. Parse error";
+        rotateList();
         sendSimpleError(-32001, "Bad response from server. Parse error");
     });
 
     connect(reply, &DapServersListNetworkReply::sigNetworkError, [=]{
         qWarning()<< "Network error: " << reply->errorString();
+        rotateList();
         sendSimpleError(-32002, reply->errorString());
     });
 }
