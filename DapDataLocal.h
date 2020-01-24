@@ -20,7 +20,7 @@ protected:
     QString     mPassword;   ///< Password.
     QString     mServerName; ///< Server name.
 
-    QString     m_cdbServersList;
+    QList<QString> m_cdbServersList;
     QString     m_networkDefault;
 
 public:
@@ -45,7 +45,7 @@ public:
     QString serverName() const;
     QString getServerNameByAddress(const QString& address);
 
-    const QString & cdbServersList() { return  m_cdbServersList; }
+    const QList<QString> &cdbServersList() { return  m_cdbServersList; }
     const QString & networkDefault() { return  m_networkDefault; }
 
     void connectComboBox(QObject *a_comboBox);
