@@ -14,14 +14,23 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
    <property name="topMargin">
-    <number>50</number>
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>50</number>
+    <number>0</number>
    </property>
    <item alignment="Qt::AlignHCenter">
-    <widget class="QLabel" name="lbLogo">
+    <widget class="QLabel" name="lblLogo">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -31,7 +40,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="lbMessage">
+    <widget class="QLabel" name="lblMessage">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -48,7 +57,7 @@ a safer Internet</string>
     </widget>
    </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="QPushButton" name="btSigIn">
+    <widget class="QPushButton" name="btnSignIn">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -61,7 +70,7 @@ a safer Internet</string>
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="wtSignUpSpacing" native="true">
+    <widget class="QWidget" name="wgtSignUpSpacing" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -71,7 +80,7 @@ a safer Internet</string>
     </widget>
    </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="btnSignUp">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -84,7 +93,17 @@ a safer Internet</string>
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="wtBottomSpacing" native="true"/>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
