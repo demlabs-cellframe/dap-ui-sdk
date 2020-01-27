@@ -37,7 +37,7 @@ QSize DapUiScreen::getWindowSizeInPoints(ScreenSize screenSize = DapUiScreen::Sc
     case DapUiScreen::ScreenSize::Small:
         return QSize(640, 400);
     case DapUiScreen::ScreenSize::Medium:
-        return QSize(1024, 768);
+        return QSize(1024, 744);
     case DapUiScreen::ScreenSize::Big:
         return QSize(1664, 1040);
     default:

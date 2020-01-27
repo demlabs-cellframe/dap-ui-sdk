@@ -1,6 +1,5 @@
 SOURCES += \
     $$PWD/AnimationChangingWidget.cpp \
-    $$PWD/AppStyleSheetHandler.cpp \
     $$PWD/ComboBoxDelegate.cpp \
     $$PWD/CustomPlacementButton.cpp \
     $$PWD/ServersComboBox.cpp \
@@ -11,7 +10,6 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/AnimationChangingWidget.h \
-    $$PWD/AppStyleSheetHandler.h \
     $$PWD/ComboBoxDelegate.h \
     $$PWD/CustomPlacementButton.h \
     $$PWD/ServersComboBox.h \
