@@ -9,6 +9,8 @@
 #include "StyledSubcontrol.h"
 
 
+enum class ImagePos {Left, Right};
+
 /** @brief QPushButton with subControls "text" and "image"
  * 
  *  @details Places image and text from left to right in QHBoxLayout.
@@ -49,6 +51,7 @@ class CustomPlacementButton : public QPushButton
 {
     Q_OBJECT
 public:
+
     explicit CustomPlacementButton(QWidget *a_parent = Q_NULLPTR);
 
     void setText(const QString &text);
@@ -59,6 +62,7 @@ public:
     void updateAppearance();
 
     void addSubcontrol(QString a_id);
+    void setImagePosition(ImagePos a_position = ImagePos::Left);
 
 private:
 protected:

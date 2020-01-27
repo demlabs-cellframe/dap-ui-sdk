@@ -10,7 +10,6 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/AnimationChangingWidget.h \
-    $$PWD/AppStyleSheetHandler.h \
     $$PWD/ComboBoxDelegate.h \
     $$PWD/CustomPlacementButton.h \
     $$PWD/ServersComboBox.h \
