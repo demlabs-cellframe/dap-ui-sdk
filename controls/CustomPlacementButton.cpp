@@ -108,6 +108,24 @@ void CustomPlacementButton::addSubcontrol(QString a_id)
     updateStyleSheets();
 }
 
+/** @brief Set image position relative to text (left or right)
+ *  @param a_position image position relatife to text (Left/Right)
+ */
+void CustomPlacementButton::setImagePosition(ImagePos a_position /*= ImagePos::Left*/)
+{
+    int imageIndex = m_layout->indexOf(m_lbImage->widget());
+    if (a_position == ImagePos::Left && imageIndex == 2)
+    {
+        m_layout->removeWidget(m_lbImage->widget());
+        m_layout->insertWidget(1, m_lbImage->widget());
+    }
+    else if (a_position == ImagePos::Right && imageIndex == 1)
+    {
+        m_layout->removeWidget(m_lbImage->widget());
+        m_layout->insertWidget(2, m_lbImage->widget());
+    }
+}
+
 
 /** @brief event is sent to the widget when the mouse cursor enters the widget.
  *  @param event
