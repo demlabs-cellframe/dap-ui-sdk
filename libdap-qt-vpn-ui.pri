@@ -19,6 +19,7 @@ HEADERS  += \
 
 FORMS    +=  \
     $$PWD/ui/AccountScreen.ui \
+    $$PWD/ui/SignInScreen.ui \
     $$PWD/ui/StartScreen.ui \
     $$PWD/ui/dashboard_desktop_big.ui \
     $$PWD/ui/dashboard_desktop_small.ui \
