@@ -4,7 +4,7 @@
 #include <QScreen>
 
 
-inline int UiScaling::pointsToPixels(float a_points)
+int UiScaling::pointsToPixels(float a_points)
 {
     static auto dpi(QGuiApplication::primaryScreen()->physicalDotsPerInch());
     static auto pixelsInPoint(devicePointSize() * dpi);

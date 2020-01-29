@@ -9,7 +9,7 @@ class UiScaling
 
 public:
 
-    inline static int pointsToPixels(float a_points);
+    static int pointsToPixels(float a_points);
     static QSize pointsToPixels(const QSize& a_pointsSize);
 
     inline static float devicePointSize();
