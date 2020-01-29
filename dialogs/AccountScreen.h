@@ -1,10 +1,14 @@
 #ifndef ACCOUNTSCREEN_H
 #define ACCOUNTSCREEN_H
 
+#include <QLabel>
+#include <QPushButton>
+#include "StyledDropShadowEffect.h"
+
 #include "DapUiScreen.h"
 
 #include "ui_AccountScreen.h"
-
+#include "CustomPlacementButton.h"
 
 class AccountScreen : public DapUiScreen
 {
