@@ -8,6 +8,15 @@ import QtQuick.Controls 2.0
 Rectangle 
 {
     id: frameRightPanel
+
+    ///@detalis Signal initiating switching to the previous displayed form.
+    signal nextActivated (var parametrsRightPanel)
+    ///@detalis Signal initiating switching to the previous displayed form.
+    signal previousActivated (var parametrsRightPanel)
+    ///@detalis Next display right panel.
+    property string dapNextRightPanel
+    ///@detalis Previous display right panel.
+    property string dapPreviousRightPanel
     ///@detalis Right panel widget.
     property alias dapFrame: frameRightPanel
     ///@detalis Right pane title widget.
@@ -20,8 +29,7 @@ Rectangle
     property  Item dapContentItemData
     ///@detalis dapRightPanelWidth External property for possibility to hiding RightPanel
     property int dapRightPanelWidth
-    
-    anchors.fill: parent
+
     width: dapRightPanelWidth
 
     // Install right panel title
