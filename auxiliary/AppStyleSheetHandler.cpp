@@ -158,20 +158,35 @@ QApplication *AppStyleSheetHandler::appInstance()
 QString AppStyleSheetHandler::convertPointsToPixels(const QString a_stylesheet)
 {
     const QRegExp regExp("([\\d.])+pt");
-    QStringList matches;
+    QMap<int, QString> matches;
     auto data = a_stylesheet;
     auto pos = 0;
 
     while ((pos = regExp.indexIn(data, pos)) != -1) {
-        matches << regExp.cap(0);
+        matches[pos] = regExp.cap(0);
         pos += regExp.matchedLength();
     }
 
-    for (auto match : matches) {
-        float value = match.replace("pt", "").toDouble();
+    int displacement = 0; // diference between the begin strings length and the end strings length
+    for (auto index: matches.keys()) {
+        QString strInPoints = matches[index];
+        float value = matches[index].replace("pt", "").toDouble();
         int pixelValue = UiScaling::pointsToPixels(value);
-        data.replace(match + "pt", QString::number(pixelValue) + "px");
+        QString strInPixels = QString::number(pixelValue) + "px";
+
+        data.replace(index + displacement, strInPoints.length(), strInPixels);
+
+        displacement = displacement + strInPixels.length() - strInPoints.length();
     }
+
+#ifdef QT_DEBUG
+//Saving output css to build foller
+    QFile file("./../outCSS.txt");
+    auto a = file.open(QIODevice::WriteOnly | QIODevice::Text);
+
+    QTextStream out(&file);
+    out << data;
+#endif
 
     return data;
 }
