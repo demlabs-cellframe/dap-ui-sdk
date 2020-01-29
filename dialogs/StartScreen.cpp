@@ -14,4 +14,8 @@ void StartScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
     Q_ASSERT(btnSignIn);
 
     btnSignIn->setGraphicsEffect(new StyledDropShadowEffect(btnSignIn));
+
+    connect(btnSignIn, &QPushButton::clicked, [this]{
+        emit this->loginScreenTransition();
+    });
 }
