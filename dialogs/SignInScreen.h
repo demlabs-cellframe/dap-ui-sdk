@@ -1,6 +1,7 @@
 #ifndef SIGNINSCREEN_H
 #define SIGNINSCREEN_H
 
+#include <QLineEdit>
 #include "DapUiScreen.h"
 
 
