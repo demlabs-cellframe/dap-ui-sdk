@@ -8,7 +8,8 @@ int UiScaling::pointsToPixels(float a_pointsValue)
 {
     static auto dpi(QGuiApplication::primaryScreen()->physicalDotsPerInch());
 
-    return /*qRound*/static_cast<int>((dpi * pointsToInches(a_pointsValue)));
+    int valueInPixels = static_cast<int>((dpi * pointsToInches(a_pointsValue)));
+    return (valueInPixels == 0) ? 1 : valueInPixels;
 }
 
 QSize UiScaling::pointsToPixels(const QSize &a_pointsSize)
