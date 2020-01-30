@@ -31,7 +31,7 @@ DapUiScreen::~DapUiScreen()
 //        delete l_page;
 }
 
-QSize DapUiScreen::getWindowSizeInPoints(ScreenSize screenSize = DapUiScreen::ScreenSize::Medium)
+QSize DapUiScreen::getWindowSizeInPoints(ScreenSize screenSize/* = DapUiScreen::ScreenSize::Medium*/)
 {
     switch (screenSize) {
     case DapUiScreen::ScreenSize::Small:

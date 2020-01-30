@@ -4,11 +4,11 @@
 #include <QScreen>
 
 
-int UiScaling::pointsToPixels(float a_points)
+int UiScaling::pointsToPixels(float a_pointsValue)
 {
     static auto dpi(QGuiApplication::primaryScreen()->physicalDotsPerInch());
-    static auto pixelsInPoint(devicePointSize() * dpi);
-    return /*qRound*/(a_points * pixelsInPoint);
+
+    return /*qRound*/static_cast<int>((dpi * pointsToInches(a_pointsValue)));
 }
 
 QSize UiScaling::pointsToPixels(const QSize &a_pointsSize)
@@ -17,7 +17,7 @@ QSize UiScaling::pointsToPixels(const QSize &a_pointsSize)
                  UiScaling::pointsToPixels(a_pointsSize.height()));
 }
 
-inline float UiScaling::devicePointSize()
+inline double UiScaling::pointsToInches(float a_pointsValue)
 {
-    return 1/160.f;
+    return a_pointsValue / 163.f;
 }

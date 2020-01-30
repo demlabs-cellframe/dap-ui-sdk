@@ -24,7 +24,7 @@ public:
     enum ScreenRotation{Hor,Ver,HorInv,VerInv};
     enum ScreenSize{Small=0,Medium=10,Big=20};
 
-    static QSize getWindowSizeInPoints(ScreenSize screenSize);
+    static QSize getWindowSizeInPoints(ScreenSize screenSize = DapUiScreen::ScreenSize::Medium);
 
     Q_ENUM(ScreenRotation)
     Q_ENUM(ScreenSize)
