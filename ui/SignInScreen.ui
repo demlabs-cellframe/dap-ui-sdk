@@ -64,6 +64,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="text">
+      <string>Input a valid email</string>
+     </property>
     </widget>
    </item>
    <item alignment="Qt::AlignHCenter">
@@ -80,6 +83,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Choose on unique password</string>
      </property>
     </widget>
    </item>

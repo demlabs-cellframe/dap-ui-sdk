@@ -14,14 +14,22 @@ void SignInScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
     QPushButton *btnSignIn = a_w->findChild<QPushButton*>("btnSignIn");
     QLineEdit *edtEmail = a_w->findChild<QLineEdit*>("edtEmail");
     QLineEdit *edtPassword = a_w->findChild<QLineEdit*>("edtPassword");
+    QLabel *lblEmailError = a_w->findChild<QLabel*>("lblEmailError");
+    QLabel *lblPasswordError = a_w->findChild<QLabel*>("lblPasswordError");
+
 
     Q_ASSERT(btnSignIn);
     Q_ASSERT(edtEmail);
     Q_ASSERT(edtPassword);
+    Q_ASSERT(lblEmailError);
+    Q_ASSERT(lblPasswordError);
 
     btnSignIn->setGraphicsEffect(new StyledDropShadowEffect(btnSignIn));
 
     edtEmail->setPlaceholderText("Email");
     edtPassword->setPlaceholderText("Password");
+    edtPassword->setEchoMode(QLineEdit::Password);
+
+
     Q_UNUSED(a_rotation)
 }

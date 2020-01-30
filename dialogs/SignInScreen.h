@@ -2,6 +2,7 @@
 #define SIGNINSCREEN_H
 
 #include <QLineEdit>
+#include <QLabel>
 #include "DapUiScreen.h"
 
 
