@@ -22,5 +22,6 @@
         <file>widgets/DapRadioButtonForm.ui.qml</file>
         <file>widgets/DapScrollView.qml</file>
         <file>widgets/DapScrollViewForm.ui.qml</file>
+        <file>widgets/DapScrollViewHandling.qml</file>
     </qresource>
 </RCC>
