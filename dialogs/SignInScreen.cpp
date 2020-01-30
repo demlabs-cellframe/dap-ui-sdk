@@ -30,6 +30,10 @@ void SignInScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
     edtPassword->setPlaceholderText("Password");
     edtPassword->setEchoMode(QLineEdit::Password);
 
+    connect(btnSignIn,&QPushButton::clicked,[=]{
+        lblEmailError->setMaximumHeight(1000);
+        lblPasswordError->setMaximumHeight(1000);
+    });
 
     Q_UNUSED(a_rotation)
 }
