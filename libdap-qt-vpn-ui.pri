@@ -1,5 +1,6 @@
 
 include ( dialogs/dialogs.pri)
+include ( controls/controls.pri)
 
 
 SOURCES += \
@@ -21,6 +22,7 @@ FORMS    +=  \
     $$PWD/ui/AccountScreen.ui \
     $$PWD/ui/ForgetPasswordScreen.ui \
     $$PWD/ui/MainScreenLayout.ui \
+    $$PWD/ui/NavigationPanel.ui \
     $$PWD/ui/SignInScreen.ui \
     $$PWD/ui/SignUpScreen.ui \
     $$PWD/ui/StartScreen.ui \
