@@ -17,12 +17,6 @@
     #include "ui_login_desktop_small.h"
 #else
     #include "ui_login_mobile.h"
-    #include "ui_login_mobile_hor.h"
-    #include "ui_login_mobile_hor_big.h"
-    #include "ui_login_mobile_hor_small.h"
-    #include "ui_login_mobile_ver.h"
-    #include "ui_login_mobile_ver_big.h"
-    #include "ui_login_mobile_ver_small.h"
 #endif
 
 class ScreenLogin : public DapUiScreen

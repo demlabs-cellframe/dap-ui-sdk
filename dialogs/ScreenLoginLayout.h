@@ -5,6 +5,7 @@
 #include "DapUiScreen.h"
 #include "DapUIAnimationScreenAbstract.h"
 #include "ScreenLogin.h"
+#include "StartScreen.h"
 #include <type_traits>
 
 
