@@ -23,14 +23,14 @@ void ScreenLoginLayout::initUi(QWidget *a_w, ScreenRotation a_rotation)
     initChangedScreen(a_w);
 
     //create and activate ScreenLogin
-    m_screenLogin = activateScreen<StartScreen>();
+    m_screenLogin = activateScreen<ScreenLogin>();
 }
 
 /**
  * @brief Getter for m_screenLogin
  * @return Login screen
  */
-StartScreen *ScreenLoginLayout::screenLogin() const
+ScreenLogin *ScreenLoginLayout::screenLogin() const
 {
     return m_screenLogin;
 }

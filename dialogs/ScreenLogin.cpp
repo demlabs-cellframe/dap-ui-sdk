@@ -18,7 +18,7 @@ ScreenLogin::ScreenLogin(QObject * a_parent, QStackedWidget * a_sw)
 #ifdef Q_OS_ANDROID
     create<Ui::LoginMobile>();
 #else
-    create<Ui::Login, Ui::LoginSmall, Ui::LoginBig>();
+    create<Ui::Login>();
 #endif
 /*
     QWidget * cbUpstreamHor=getWidget("cbUpstream",Hor);
