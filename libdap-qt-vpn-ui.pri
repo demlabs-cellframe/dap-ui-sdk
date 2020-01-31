@@ -18,6 +18,11 @@ HEADERS  += \
     $$PWD/usrmsg.h
 
 FORMS    +=  \
+    $$PWD/ui/AccountScreen.ui \
+    $$PWD/ui/ForgetPasswordScreen.ui \
+    $$PWD/ui/SignInScreen.ui \
+    $$PWD/ui/SignUpScreen.ui \
+    $$PWD/ui/StartScreen.ui \
     $$PWD/ui/dashboard_desktop_big.ui \
     $$PWD/ui/dashboard_desktop_small.ui \
     $$PWD/ui/dashboard_desktop.ui \
@@ -27,12 +32,6 @@ FORMS    +=  \
     $$PWD/ui/dashboard_mobile_ver_big.ui \
     $$PWD/ui/dashboard_mobile_ver_small.ui \
     $$PWD/ui/dashboard_mobile_ver.ui \
-    $$PWD/ui/login_mobile_hor_big.ui \
-    $$PWD/ui/login_mobile_hor_small.ui \
-    $$PWD/ui/login_mobile_hor.ui \
-    $$PWD/ui/login_mobile_ver_big.ui \
-    $$PWD/ui/login_mobile_ver_small.ui \
-    $$PWD/ui/login_mobile_ver.ui \
     $$PWD/ui/dlg_settings.ui \
     $$PWD/ui/dlg_about.ui \
     $$PWD/ui/forgot_password_desktop.ui \

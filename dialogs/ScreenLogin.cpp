@@ -14,10 +14,9 @@ Q_DECLARE_METATYPE(DapServerInfo)
 ScreenLogin::ScreenLogin(QObject * a_parent, QStackedWidget * a_sw)
     :DapUiScreen(a_parent,a_sw)
 {
-    
     // Инициализация формы ( в зависимости от размера экрана)
 #ifdef Q_OS_ANDROID
-    create<Ui::Login>();
+    create<Ui::LoginMobile>();
 #else
     create<Ui::Login, Ui::LoginSmall, Ui::LoginBig>();
 #endif
