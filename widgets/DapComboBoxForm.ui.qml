@@ -7,6 +7,7 @@ ComboBox
 {
     id: dapComboBox
 
+    property string comboBoxTextRole
     ///@detalis normalColorText Text color in normal state.
     property string normalColorText
     ///@detalis hilightColorText Text color in selected state.
@@ -64,6 +65,7 @@ ComboBox
     ///@detalis mainLineText Text without unneccesary part.
     property string mainLineText
 
+    textRole: comboBoxTextRole
     width: popup.visible ? widthPopupComboBoxActive : widthPopupComboBoxNormal
     height: popup.visible ? heightComboBoxActive : heightComboBoxNormal
     anchors.verticalCenter: parent.verticalCenter

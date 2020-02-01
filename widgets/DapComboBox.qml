@@ -44,7 +44,7 @@ DapComboBoxForm
                         id: tm
                         font: fontComboBox
                         elide: Text.ElideRight
-                        text: currentText
+                        text: model[comboBoxTextRole]
                         elideWidth:
                             {
                                 if(index != currentIndex)
