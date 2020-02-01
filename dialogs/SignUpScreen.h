@@ -1,8 +1,9 @@
 #ifndef SIGNUPSCREEN_H
 #define SIGNUPSCREEN_H
 
+#include <QCheckBox>
 #include "DapUiScreen.h"
-
+#include "StyledDropShadowEffect.h"
 
 class SignUpScreen : public DapUiScreen
 {
