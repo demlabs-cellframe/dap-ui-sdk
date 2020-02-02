@@ -2,6 +2,7 @@
 #define NAVIGATIONPANEL_H
 
 #include <QWidget>
+#include "CustomPlacementButton.h"
 
 class NavigationPanel : public QWidget
 {
