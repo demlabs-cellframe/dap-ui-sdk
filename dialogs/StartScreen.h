@@ -23,7 +23,8 @@ protected:
     virtual void initUi(QWidget * a_w, ScreenRotation a_rotation) override;
 
 signals:
-    void loginScreenTransition();
+    void transitionTo_Login();
+
 };
 
 #endif // STARTSCREEN_H
