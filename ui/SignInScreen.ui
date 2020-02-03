@@ -56,7 +56,7 @@
    <item alignment="Qt::AlignHCenter">
     <widget class="QLabel" name="lblEmailError">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -149,7 +149,7 @@
       <item>
        <widget class="QLabel" name="lblSignUp">
         <property name="text">
-         <string>Sign up now</string>
+         <string> Sign up now</string>
         </property>
        </widget>
       </item>
