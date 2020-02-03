@@ -11,7 +11,7 @@ ScreenSignUp::ScreenSignUp(QObject * a_parent, QStackedWidget * a_sw)
     // TODO: creating mobile version forms.
 #else
     // Creating a window.
-    create<Ui::SignUp,Ui::SignUpSmall,Ui::SignUpBig>();
+    create<Ui::SignUp>();
 #endif
     
 }
