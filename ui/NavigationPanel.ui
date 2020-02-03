@@ -63,6 +63,9 @@
        <number>0</number>
       </property>
       <item>
+       <widget class="QWidget" name="wgtLeftMarginBack" native="true"/>
+      </item>
+      <item>
        <widget class="QPushButton" name="btnBack">
         <property name="text">
          <string/>
@@ -115,8 +118,14 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
+      <item>
+       <widget class="QWidget" name="wgtLeftMarginTopFrame" native="true"/>
+      </item>
       <item alignment="Qt::AlignBottom">
        <widget class="QPushButton" name="btnAccount"/>
+      </item>
+      <item>
+       <widget class="QWidget" name="wgtLeftMarginSettins" native="true"/>
       </item>
       <item alignment="Qt::AlignBottom">
        <widget class="QPushButton" name="btnSetting">
@@ -124,6 +133,9 @@
          <string/>
         </property>
        </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="wgtLeftMarginLogout" native="true"/>
       </item>
       <item alignment="Qt::AlignBottom">
        <widget class="CustomPlacementButton" name="btnLogOut">
@@ -164,12 +176,18 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QWidget" name="wgtLeftMarginHelp" native="true"/>
+      </item>
       <item alignment="Qt::AlignBottom">
        <widget class="QPushButton" name="btnHelp">
         <property name="text">
          <string/>
         </property>
        </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="wgtRightMarginTopFrame" native="true"/>
       </item>
      </layout>
     </widget>
