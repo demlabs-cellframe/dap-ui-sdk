@@ -168,12 +168,14 @@ QString AppStyleSheetHandler::convertPointsToPixels(const QString a_stylesheet)
     }
 
     int displacement = 0; // diference between the begin strings length and the end strings length
-    for (auto index: matches.keys()) {
+    for (auto index: matches.keys())
+    {
         QString strInPoints = matches[index];
-        float value = matches[index].replace("pt", "").toDouble();
-        int pixelValue = UiScaling::pointsToPixels(value);
-        QString strInPixels = QString::number(pixelValue) + "px";
+        float pointsvalue = matches[index].replace("pt", "").toDouble();
+        int pixelsValue = qRound(UiScaling::pointsToPixels(pointsvalue));
+        pixelsValue = (pixelsValue < 1 && pointsvalue > 0.f) ? 1 : pixelsValue;
 
+        QString strInPixels = QString::number(pixelsValue) + "px";
         data.replace(index + displacement, strInPoints.length(), strInPixels);
 
         displacement = displacement + strInPixels.length() - strInPoints.length();
@@ -182,7 +184,7 @@ QString AppStyleSheetHandler::convertPointsToPixels(const QString a_stylesheet)
 #ifdef QT_DEBUG
 //Saving output css to build foller
     QFile file("./../outCSS.txt");
-    auto a = file.open(QIODevice::WriteOnly | QIODevice::Text);
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
 
     QTextStream out(&file);
     out << data;
