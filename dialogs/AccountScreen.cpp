@@ -19,7 +19,7 @@ AccountScreen::AccountScreen(QObject * a_parent, QStackedWidget * a_sw)
 
     btnLogOut->setObjectName("btnLogOut");
     btnLogOut->setText("Logout");
-    btnLogOut->setImagePosition(ImagePos::Right);
+    //btnLogOut->setImagePosition(ImagePos::Right);
 
     btnChangePlan->setGraphicsEffect(new StyledDropShadowEffect(btnChangePlan));
 
