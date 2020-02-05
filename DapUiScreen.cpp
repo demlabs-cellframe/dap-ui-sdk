@@ -13,7 +13,7 @@
  * @param a_sw
  */
 DapUiScreen::DapUiScreen(QObject *parent, QStackedWidget * a_sw)
-    : QObject(parent),m_sw(a_sw)
+    : QObject(parent), m_sw(a_sw)
 {
     Q_ASSERT(m_sw);
 
