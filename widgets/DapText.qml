@@ -2,60 +2,69 @@ import QtQuick 2.4
 
 DapTextForm 
 {
-    onTextChanged:
-    {
-        elidedText = (width > 2) ? elideByWidth(width) : (maxSymbolCapacity > 2) ? elideByCapacity(maxSymbolCapacity) : text
-        width = _metrics.boundingRect(elidedText).width
-        height = _metrics.boundingRect(elidedText).height
-    }
+    width: parent.width
 
-    // "Copy Button" handler
-    function copy()
+    //Text eliding is available only after full item boot
+    //with all metrics - to delete binding loop
+    Component.onCompleted:
     {
-        _fullText.selectAll()
-        _fullText.copy()
+        checkTextElide();
     }
+    //If it needed the dynamic width change
+    onWidthChanged: checkTextElide()
 
-    // Elides text by number of symbols
-    function elideByCapacity(maxSymbols)
+    //Function to elide text and check result
+    function checkTextElide()
     {
-        var res = ""
-        if (text.length > maxSymbols)
+        if(textMetric.elideWidth < fontMetric.tightBoundingRect(textMetric.text).width)
         {
-            switch (elide)
+            switch(textElide)
             {
-            case Qt.ElideLeft:
-                res = ".." + text.slice(-maxSymbols, text.length-1)
-                break
-            case Qt.ElideMiddle:
-                res = text.slice(0, Math.floor(maxSymbols/2)) + ".." + text.slice(Math.floor(maxSymbols/2) + 1, text.length-1)
-                break
-            case Qt.ElideRight:
-                res = text.slice(0, maxSymbols) + ".."
-                break
-            default:
-                res = text
-                break
+                case Text.ElideRight:
+                    elText = textMetric.elidedText.substring(0, textMetric.elidedText.length - 1) +
+                                ((fontMetric.tightBoundingRect(textMetric.elidedText.substring(0, textMetric.elidedText.length - 1)).width +
+                                  fontMetric.tightBoundingRect(textMetric.text.charAt(textMetric.elidedText.length - 1) + '..').width) < textMetric.elideWidth ?
+                                     (textMetric.text.charAt(textMetric.elidedText.length - 1) + '..'):
+                                   '..');
+                    break;
+
+                case Text.ElideLeft:
+                    elText = '..' + ((fontMetric.tightBoundingRect(textMetric.elidedText.substring(1, textMetric.elidedText.length - 1)).width +
+                              fontMetric.tightBoundingRect('..' + textMetric.text.charAt(textMetric.text.length - textMetric.elidedText.length)).width) < textMetric.elideWidth ?
+                                 (textMetric.text.charAt(textMetric.text.length - textMetric.elidedText.length)):
+                                 '') + textMetric.elidedText.substring(1, textMetric.elidedText.length - 1);
+
+                    break;
+
+                case Text.ElideMiddle:
+                    elText = textMetric.elidedText.substring(0, textMetric.elidedText.indexOf('…')) +
+                            ((fontMetric.tightBoundingRect(textMetric.elidedText.substring(0, textMetric.elidedText.indexOf('…'))).width +
+                              fontMetric.tightBoundingRect(textMetric.text.charAt(textMetric.elidedText.indexOf('…')) + '..').width +
+                              fontMetric.tightBoundingRect(textMetric.elidedText.substring(textMetric.elidedText.indexOf('…') + 1, textMetric.elidedText.length)).width) < textMetric.elideWidth ?
+                                 (textMetric.text.charAt(textMetric.elidedText.indexOf('…')) + '..'):
+                                 '..') +
+                            textMetric.elidedText.substring(textMetric.elidedText.indexOf('…') + 1, textMetric.elidedText.length);
+                    break;
+
+                case Text.ElideNone:
+                    elText = fullText;
             }
+
         }
         else
-        {
-            res = text
-        }
-        return res
+            elText = textMetric.elidedText.replace('…', '..');
     }
 
-    // Elides text by width
-    function elideByWidth(maxWidth)
+    //Function to copy full text to the clipboard
+    function copyFullText()
     {
-        if (_metrics.advanceWidth(text) > maxWidth)
-        {
-            var symbolsNum = (maxWidth / _metrics.averageCharacterWidth)
-            return elideByCapacity(Math.floor(symbolsNum))
-        }
-        else
-        {
-            return text
-        }
+        //Replace elide text by full text and select it
+        text = fullText;
+        selectAll();
+        //Because this method can copy only selected text
+        copy();
+        // User should not see it!
+        deselect();
+        text = elText;
     }
 }
