@@ -6,9 +6,20 @@
 //const QString StartScreen::SCREEN_NAME = "StartScreen";
 
 StartScreen::StartScreen(QWidget *a_parent)
-    : Screen(a_parent)
+    : AdaptiveScreen(a_parent)
 {
     create<Ui::StartScreen>();
+}
+
+void StartScreen::setupStateMachine()
+{
+    Q_ASSERT(stateMachine().check());
+
+    assignWidgetPropertyForState<QWidget>(stateMachine().ctlConnecting, BTN_SIGN_IN_NAME, "text", "Service connecting..." );
+
+    stateMachine().ctlConnecting->assignProperty(this, "enabled", false);
+    stateMachine().ctlConnecting->assignProperty(this, "enabled", true);
+
 }
 
 //void StartScreen::activateScreen()
@@ -21,22 +32,16 @@ StartScreen::StartScreen(QWidget *a_parent)
 //    return SCREEN_NAME;
 //}
 
-void StartScreen::initUi(QWidget *a_w, ScreenInfo::Rotation a_rotation)
+void StartScreen::initVariantUi(QWidget *a_widget)
 {
-    btnSignIn = a_w->findChild<QPushButton*>("btnSignIn"); Q_ASSERT(btnSignIn);
-    btnSignUp = a_w->findChild<QPushButton*>("btnSignUp"); Q_ASSERT(btnSignUp);
+    m_btnSignIn = a_widget->findChild<QPushButton*>(BTN_SIGN_IN_NAME); Q_ASSERT(m_btnSignIn);
+    m_btnSignUp = a_widget->findChild<QPushButton*>(BTN_SIGN_UP_NAME); Q_ASSERT(m_btnSignUp);
 
-    btnSignIn->setGraphicsEffect(new StyledDropShadowEffect(btnSignIn));
+    m_btnSignIn->setGraphicsEffect(new StyledDropShadowEffect(m_btnSignIn));
 
-    connect(btnSignIn, &QPushButton::clicked, [this]{
+    connect(m_btnSignIn, &QPushButton::clicked, [this]{
         emit this->transitionTo_SignIn();
+        Q_ASSERT(false);
+
     });
-}
-
-void StartScreen::setupStateMachine()
-{
-//    QList<QWidget*> widgets {btnSignIn, btnSignUp};
-//    QStringList widgetNames {"edtEmail", "edtPassword", "btnSignIn", "lblSignUp", "lblForgetPass"}
-//    assignWidgetPropertyForState<QWidget>(AppController::stateMachine()->start, )
-
 }

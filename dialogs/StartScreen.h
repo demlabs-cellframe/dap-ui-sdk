@@ -1,19 +1,20 @@
 #ifndef STARTSCREEN_H
 #define STARTSCREEN_H
 
+#include <QStateMachine>
+
 #include "DapUiScreen.h"
-#include "Screen.h"
+#include "AdaptiveScreen.h"
 
 #include "ui_StartScreen.h"
 
-class StartScreen : public Screen
+class StartScreen : public AdaptiveScreen
 {
     Q_OBJECT
 
 public:
     /// Overloaded constructor.
     /// @param a_parent Parent.
-    /// @param a_sw Application window stack.
     StartScreen(QWidget * a_parent);
 
 //    virtual void activateScreen() override;
@@ -21,20 +22,33 @@ public:
 //    virtual QString screenName() override;
 //    static const QString SCREEN_NAME;
 
-protected:
-    /// Form initialization.
-    /// @param a_w Window GUI widget.
-    /// @param a_rotation Device display orientation.
-    virtual void initUi(QWidget * a_w, ScreenInfo::Rotation a_rotation) override;
 
-    QPushButton *btnSignIn;
-    QPushButton *btnSignUp;
+
+    auto stateMachine(){ return m_stateMachine; };
+    void setupStateMachine();
+
+protected:
+
+    void setupControlsPtrs();
+
+    QPushButton *m_btnSignIn {}; const QString BTN_SIGN_IN_NAME = "btnSignIn";
+    QPushButton *m_btnSignUp {}; const QString BTN_SIGN_UP_NAME = "btnSignUp";
+
+    virtual void initVariantUi(QWidget *a_widget);
 
 signals:
+
     void transitionTo_SignIn();
 
+
 private:
-    void setupStateMachine();
+
+    struct {
+        QState* rootState     {};
+        QState* ctlConnecting {};
+        QState* ctlConnected  {};
+        bool check() { return rootState && ctlConnecting && ctlConnected; };
+    } m_stateMachine;
 };
 
 #endif // STARTSCREEN_H
