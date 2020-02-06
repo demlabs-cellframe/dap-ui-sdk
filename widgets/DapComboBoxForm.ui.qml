@@ -61,8 +61,22 @@ ComboBox
     property string colorDropShadow
     ///@detalis fontComboBox Font setting combobox.
     property alias fontComboBox: dapComboBox.font
-    ///@detalis mainLineText Text without unneccesary part.
-    property string mainLineText
+    //@detalis mainLineText Text without unneccesary part.
+    property var mainLineText: [""]
+
+    ///@detalis comboBoxTextRole The model roles used for the ComboBox.
+    property var comboBoxTextRole: ["name"]
+    ///@detalis comboBoxTextRoleWidth The model roles width used for the ComboBox.
+    property var comboBoxTextRoleWidth: [100]
+    ///@detalis roleInterval The width between text of model roles used for the ComboBox.
+    property int roleInterval: 5
+    ///@detalis endRowPadding The width of padding at the end of one row at ComboBox where it is need.
+    property int endRowPadding: 0
+
+    ///@detalis mainLineRole The model role for the main line of cloded ComboBox.
+    property string mainLineRole: "name"
+
+
 
     width: popup.visible ? widthPopupComboBoxActive : widthPopupComboBoxNormal
     height: popup.visible ? heightComboBoxActive : heightComboBoxNormal
@@ -91,15 +105,37 @@ ComboBox
 
     //Main line text settings
     contentItem:
-        Text
+        Rectangle
         {
             anchors.fill: parent
+            anchors.verticalCenter: parent.verticalCenter
             anchors.leftMargin: popup.visible ? sidePaddingActive : sidePaddingNormal
-            text: mainLineText
-            font: parent.font
-            color: popup.visible ? hilightColorTopText : normalColorTopText
-            verticalAlignment: Text.AlignVCenter
+            width: widthPopupComboBoxNormal - indicatorWidth - indicatorLeftInterval
+            color: "transparent"
+            Row
+            {
+                spacing: roleInterval
+                Repeater
+                {
+                    id: mainLineRepeater
+                    model: popup.visible ? comboBoxTextRole.length : 1
+                    Text
+                    {
+                        id: mainLineComboBoxText
+                        height: dapComboBox.height
+                        text: index >= mainLineText.length ? "" : mainLineText[index]
+                        horizontalAlignment: (index === 0) ?
+                                                 Text.AlignLeft :
+                                                 ((index === comboBoxTextRole.length - 1) ? Text.AlignRight : Text.AlignHCenter)
+
+                        font: fontComboBox
+                        color: popup.visible ? hilightColorTopText : normalColorTopText
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
+            }
         }
+
 
     //Customize drop-down list with shadow effect
     popup: 
