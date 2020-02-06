@@ -30,7 +30,7 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
  * @param a_sw Application window stack.
  */
 MultiScreenAbstract::MultiScreenAbstract(QWidget *parent)
-    :Screen (parent),
+    :AdaptiveScreen(parent),
     m_wgChangedScreen(nullptr)
 {
 }
@@ -40,7 +40,7 @@ MultiScreenAbstract::MultiScreenAbstract(QWidget *parent)
  * @param a_screen pointer to child screen
  * @return pointer to this screen (parent)
  */
-MultiScreenAbstract *MultiScreenAbstract::activateChildScreen(Screen *a_screen)
+MultiScreenAbstract *MultiScreenAbstract::activateChildScreen(AdaptiveScreen *a_screen)
 {
     Q_ASSERT_X(qobject_cast<MultiScreenAbstract*>(a_screen->parent()) == this, "activateDescendantScreen", "screen is not a child of this screen");
 

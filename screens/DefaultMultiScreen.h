@@ -35,7 +35,7 @@ public:
     DefaultMultiScreen(QWidget *a_parent = nullptr);
 
 protected:
-    virtual void initUi(QWidget * a_widget, ScreenInfo::Rotation a_rotation) override;
+    virtual void initVariantUi(QWidget * a_widget) override;
 
 };
 

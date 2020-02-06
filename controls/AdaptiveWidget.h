@@ -23,7 +23,7 @@ protected:
         l_uiForm->setupUi(a_widget);
     }
 
-    virtual void initUi(QWidget * a_widget, ScreenInfo::Rotation a_rotation = ScreenInfo::Rotation::Horizontal) = 0;
+    virtual void initVariantUi(QWidget * a_widget) = 0;
 
     template<class T>
     inline void create()
@@ -34,7 +34,7 @@ protected:
         this->addWidget(currentWidget);
         this->setupWidgetForm<T>(currentWidget);
 
-        initUi(currentWidget);
+        initVariantUi(currentWidget);
     }
 
     void setChildProperties(const QString& a_objName, const QString& a_property, const QVariant& a_value)
@@ -75,7 +75,7 @@ template<class T>
 void AdaptiveWidget::assignWidgetPropertyForState(QState *a_state, const QString &a_objName, const QString &a_property, const QVariant &a_value)
 {
     for (auto obj: getTheSameWidgets<T>(a_objName)) {
-        a_state->assignProperty(obj, a_property, a_value);
+        a_state->assignProperty(obj, qPrintable(a_property), a_value);
     }
 }
 

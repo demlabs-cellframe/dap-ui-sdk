@@ -40,9 +40,8 @@ DefaultMultiScreen::DefaultMultiScreen(QWidget *a_parent)
  * @param a_w Window GUI widget.
  * @param a_rotation Device display orientation.
  */
-void DefaultMultiScreen::initUi(QWidget * a_widget, ScreenInfo::Rotation a_rotation) {
-    Q_UNUSED(a_rotation);
-
+void DefaultMultiScreen::initVariantUi(QWidget * a_widget)
+{
     // Initializing pointers to window widgets
     initChangedScreen(a_widget);
 }

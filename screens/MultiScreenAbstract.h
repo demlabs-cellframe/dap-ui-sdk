@@ -27,7 +27,7 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 #include <typeinfo>
 
 #include "DapUiScreen.h"
-#include "Screen.h"
+#include "AdaptiveScreen.h"
 #include "controls/AnimationChangingWidget.h"
 
 
@@ -39,7 +39,7 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
  * @brief Abstract class wich hold AnimationChangingWidget and can hold forms and child screens for all screen sizes and rotations.
  * @todo If stylesheet of AnimationChangingWidget is empty on the form, sizes will be wrong. Set wtylesheet to "*{}".
  */
-class MultiScreenAbstract : public Screen
+class MultiScreenAbstract : public AdaptiveScreen
 {
     Q_OBJECT
 
@@ -62,7 +62,7 @@ public:
     template<class T>
     T *activateScreen();
 
-    MultiScreenAbstract *activateChildScreen(Screen *a_screen);
+    MultiScreenAbstract *activateChildScreen(AdaptiveScreen *a_screen);
 
     AnimationChangingWidget *wgChangedScreen();
 
@@ -71,7 +71,7 @@ signals:
 
 protected:
     virtual void initChangedScreen(QWidget * a_w);  ///< Find changingWidget and assign to m_wgChangedScreen
-    virtual void initUi(QWidget * a_widget, ScreenInfo::Rotation a_rotation) = 0; ///<pure virtual method. Must de reimplement it inherited classes
+    virtual void initVariantUi(QWidget * a_widget) = 0; ///<pure virtual method. Must de reimplement it inherited classes
 
     AnimationChangingWidget *m_wgChangedScreen;     ///< Pointer to ChangingWidget controll
 
@@ -202,7 +202,7 @@ T *MultiScreenAbstract::activateScreen()
 
     // Activate all parent screens in line from found screen to this
     MultiScreenAbstract *parent = qobject_cast<MultiScreenAbstract*>(screen->parent());
-    Screen *nextScreen = screen;
+    AdaptiveScreen *nextScreen = screen;
     //do while parent is not this screen
     while (nextScreen != this) {
         nextScreen = parent->activateChildScreen(nextScreen);
