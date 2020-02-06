@@ -74,6 +74,9 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QWidget" name="wgtEmailBottom" native="true"/>
+   </item>
    <item alignment="Qt::AlignHCenter">
     <widget class="QLabel" name="lblEmailError">
      <property name="sizePolicy">
@@ -89,6 +92,9 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="wgtFirstPasswordTop" native="true"/>
    </item>
    <item alignment="Qt::AlignHCenter">
     <widget class="QLineEdit" name="edtPassword">
@@ -109,6 +115,9 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QWidget" name="wgtFirsPasswordBottom" native="true"/>
+   </item>
    <item alignment="Qt::AlignHCenter">
     <widget class="QLabel" name="lblPasswordError">
      <property name="sizePolicy">
@@ -124,6 +133,9 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="wgtSecondPasswordTop" native="true"/>
    </item>
    <item alignment="Qt::AlignHCenter">
     <widget class="QLineEdit" name="edtRptPassword">
@@ -143,6 +155,9 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="wgtSecondPasswordBottom" native="true"/>
    </item>
    <item alignment="Qt::AlignHCenter">
     <widget class="QLabel" name="lblRptPasswordError">
@@ -225,6 +240,9 @@
      </layout>
     </widget>
    </item>
+   <item>
+    <widget class="QWidget" name="wgtButtonTop" native="true"/>
+   </item>
    <item alignment="Qt::AlignHCenter">
     <widget class="QPushButton" name="btnSignUp">
      <property name="sizePolicy">
@@ -243,6 +261,9 @@
       <string>Sign up</string>
      </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="wgtButtonBottom" native="true"/>
    </item>
    <item alignment="Qt::AlignHCenter">
     <widget class="QWidget" name="wgtHAccount" native="true">
@@ -342,33 +363,6 @@
       </size>
      </property>
     </spacer>
-   </item>
-   <item>
-    <widget class="QWidget" name="horizontalWidget" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-     </layout>
-    </widget>
    </item>
   </layout>
  </widget>

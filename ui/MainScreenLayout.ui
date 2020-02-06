@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="wgtNavigationPanel" native="true">
+    <widget class="NavigationPanel" name="wgtNavigationPanel" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -56,6 +56,12 @@
    <class>AnimationChangingWidget</class>
    <extends>QWidget</extends>
    <header location="global">AnimationChangingWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>NavigationPanel</class>
+   <extends>QWidget</extends>
+   <header location="global">NavigationPanel.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
