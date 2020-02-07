@@ -3,7 +3,8 @@
 #include "StyledDropShadowEffect.h"
 #include "AppController.h"
 
-//const QString StartScreen::SCREEN_NAME = "StartScreen";
+const QString StartScreen::SCREEN_NAME = "StartScreen";
+StartScreen::InitializerFunc StartScreen::s_initializerFunc = nullptr;
 
 StartScreen::StartScreen(QWidget *a_parent)
     : AdaptiveScreen(a_parent)
@@ -11,14 +12,19 @@ StartScreen::StartScreen(QWidget *a_parent)
     create<Ui::StartScreen>();
 }
 
+QString StartScreen::screenName()
+{
+    return SCREEN_NAME;
+}
+
 void StartScreen::setupStateMachine()
 {
-    Q_ASSERT(stateMachine().check());
+    Q_ASSERT(stateMachine()->check());
 
-    assignWidgetPropertyForState<QWidget>(stateMachine().ctlConnecting, BTN_SIGN_IN_NAME, "text", "Service connecting..." );
+    assignWidgetPropertyForState<QPushButton>(stateMachine()->ctlConnecting, BTN_SIGN_IN_NAME, "text", "Service connecting..." );
 
-    stateMachine().ctlConnecting->assignProperty(this, "enabled", false);
-    stateMachine().ctlConnecting->assignProperty(this, "enabled", true);
+    stateMachine()->ctlConnecting->assignProperty(this, "enabled", false);
+    stateMachine()->ctlConnected->assignProperty(this, "enabled", true);
 
 }
 

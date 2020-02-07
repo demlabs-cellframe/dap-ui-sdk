@@ -19,12 +19,12 @@ public:
 
 //    virtual void activateScreen() override;
 
-//    virtual QString screenName() override;
-//    static const QString SCREEN_NAME;
+    virtual QString screenName() override;
+    static const QString SCREEN_NAME;
 
 
 
-    auto stateMachine(){ return m_stateMachine; };
+    auto stateMachine(){ return &m_stateMachine; };
     void setupStateMachine();
 
 protected:
@@ -34,11 +34,12 @@ protected:
     QPushButton *m_btnSignIn {}; const QString BTN_SIGN_IN_NAME = "btnSignIn";
     QPushButton *m_btnSignUp {}; const QString BTN_SIGN_UP_NAME = "btnSignUp";
 
-    virtual void initVariantUi(QWidget *a_widget);
+    virtual void initVariantUi(QWidget *a_widget) override;
 
 signals:
 
     void transitionTo_SignIn();
+
 
 
 private:
@@ -49,6 +50,11 @@ private:
         QState* ctlConnected  {};
         bool check() { return rootState && ctlConnecting && ctlConnected; };
     } m_stateMachine;
+
+
+    typedef void (*InitializerFunc)(StartScreen*);
+    static InitializerFunc s_initializerFunc;
+
 };
 
 #endif // STARTSCREEN_H
