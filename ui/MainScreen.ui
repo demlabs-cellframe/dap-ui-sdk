@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainScreen</class>
+ <widget class="QWidget" name="MainScreen">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>517</width>
+    <height>469</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="lblLogo">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="lblStatusMessage">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+     <property name="stateLbl" stdset="0">
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="wgtMarginTopSwitch" native="true"/>
+   </item>
+   <item alignment="Qt::AlignHCenter">
+    <widget class="QPushButton" name="btnSwitch">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777213</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="stateBtn" stdset="0">
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="wgtMarginTopCountry" native="true"/>
+   </item>
+   <item alignment="Qt::AlignHCenter">
+    <widget class="QComboBox" name="cbCountry">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="editable">
+      <bool>false</bool>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+     <property name="isCbHover" stdset="0">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

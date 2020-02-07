@@ -1,13 +1,12 @@
-#ifndef MAINSCREEN_H
-#define MAINSCREEN_H
+#ifndef MAINSCREENLAYOUT_H
+#define MAINSCREENLAYOUT_H
 
-#include <QComboBox>
+#include "DapUIAnimationScreenAbstract.h"
 
-#include "DapUiScreen.h"
+#include "ui_MainScreenLayout.h"
 
-#include "ui_MainScreen.h"
 
-class MainScreen : public DapUiScreen
+class MainScreenLayout : public DapUIAnimationScreenAbstract
 {
     Q_OBJECT
 
@@ -15,13 +14,16 @@ public:
     /// Overloaded constructor.
     /// @param a_parent Parent.
     /// @param a_sw Application window stack.
-    MainScreen(QObject * a_parent, QStackedWidget * a_sw);
+    MainScreenLayout(QObject * a_parent, QStackedWidget * a_sw);
 
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
     /// @param a_rotation Device display orientation.
     virtual void initUi(QWidget * a_w, ScreenRotation a_rotation) override;
+
+signals:
+    void loginScreenTransition();
 };
 
-#endif // MAINSCREEN_H
+#endif // MAINSCREENLAYOUT_H

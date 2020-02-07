@@ -20,6 +20,7 @@ HEADERS  += \
 
 FORMS    +=  \
     $$PWD/ui/AccountScreen.ui \
+    $$PWD/ui/MainScreen.ui \
     $$PWD/ui/PasswordRecoveryScreen.ui \
     $$PWD/ui/MainScreenLayout.ui \
     $$PWD/ui/NavigationPanel.ui \
