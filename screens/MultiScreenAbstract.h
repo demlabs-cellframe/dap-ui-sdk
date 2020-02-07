@@ -72,11 +72,12 @@ signals:
 protected:
     virtual void initChangedScreen(QWidget * a_w);  ///< Find changingWidget and assign to m_wgChangedScreen
     virtual void initVariantUi(QWidget * a_widget) = 0; ///<pure virtual method. Must de reimplement it inherited classes
+    virtual QString screenName() = 0;
 
     AnimationChangingWidget *m_wgChangedScreen;     ///< Pointer to ChangingWidget controll
 
 private:
-    QMap<QString, DapUiScreen*> m_screens;          ///< Map with all screens that can be activated
+    QMap<QString, AdaptiveScreen*> m_screens;          ///< Map with all screens that can be activated
 };
 
 
@@ -103,12 +104,11 @@ T *MultiScreenAbstract::createSubScreen(int a_index /*= -1*/)
     if (subScreen<T>())
         return newScreen;
 
-    QStackedWidget *newSW = new QStackedWidget(m_wgChangedScreen);  // Create QStackedWidget for new screen and screen;
-    newScreen = new T(this, newSW);                              // Create new screen
+    newScreen = new T(this);                              // Create new screen
 
     //insert screen to m_screens and changing sreen widget
     m_screens.insert(typeid(T).name(), newScreen);
-    m_wgChangedScreen->insertWidget(a_index, newScreen->sw());
+    m_wgChangedScreen->insertWidget(a_index, newScreen);
 
     return newScreen;
 }

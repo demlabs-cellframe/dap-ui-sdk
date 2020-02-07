@@ -34,6 +34,10 @@ class DefaultMultiScreen : public MultiScreenAbstract
 public:
     DefaultMultiScreen(QWidget *a_parent = nullptr);
 
+    virtual QString screenName() override;
+    static const QString SCREEN_NAME;
+
+
 protected:
     virtual void initVariantUi(QWidget * a_widget) override;
 

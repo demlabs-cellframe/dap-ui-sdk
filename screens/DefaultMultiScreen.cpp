@@ -24,6 +24,8 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 
 #include "DefaultMultiScreen.h"
 
+const QString DefaultMultiScreen::SCREEN_NAME("FullScreen");
+
 /**
  * @brief Overloaded constructor.
  * @param a_parent Parent.
@@ -33,6 +35,11 @@ DefaultMultiScreen::DefaultMultiScreen(QWidget *a_parent)
     : MultiScreenAbstract(a_parent)
 {
     create<Ui_DefaultMultiScreen>();
+}
+
+QString DefaultMultiScreen::screenName()
+{
+    return DefaultMultiScreen::SCREEN_NAME;
 }
 
 /**
