@@ -8,10 +8,8 @@ CustomLineHeightLabel::CustomLineHeightLabel(QWidget *a_parent)
 
 void CustomLineHeightLabel::setText(const QString &text)
 {
-    if(m_HightLine.isEmpty())m_HightLine = "100";
-    QString textToHtml = QString("<p style = 'line-height:%1;'>").arg(m_HightLine);
-    textToHtml += text;
-    textToHtml += "</p>";
+    if(m_lineHeight.isEmpty())m_lineHeight = "100";
+    QString textToHtml = QString("<p style = 'line-height:%1;'> %2 </p>").arg(m_lineHeight).arg(text);
 
     QLabel::setText(textToHtml);
 
@@ -32,6 +30,6 @@ void CustomLineHeightLabel::updateStyleSheets()
 
     QString stylesheet = AppStyleSheetHandler::getWidgetStyleSheet(searchPar);
     //line-height:
-    m_HightLine = AppStyleSheetHandler::getValueFromStylesheet(stylesheet, "line-height");
+    m_lineHeight = AppStyleSheetHandler::getValueFromStylesheet(stylesheet, "line-height");
 
 }

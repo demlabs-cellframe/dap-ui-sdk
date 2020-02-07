@@ -14,7 +14,7 @@ public:
     void updateStyleSheets();
 
 private:
-    QString m_HightLine;
+    QString m_lineHeight;
 };
 
 #endif // CUSTOMLINEHEIGHTLABEL_H
