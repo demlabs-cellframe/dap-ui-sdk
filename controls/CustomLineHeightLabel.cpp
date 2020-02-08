@@ -26,7 +26,7 @@ void CustomLineHeightLabel::updateStyleSheets()
 {
 
     StyleSheatSearchPar searchPar;
-    searchPar.widgetName = "#"+ parent()->objectName() + " #" + this->objectName();
+    searchPar.widgetName = "#" + this->objectName();
 
     QString stylesheet = AppStyleSheetHandler::getWidgetStyleSheet(searchPar);
     //line-height:
