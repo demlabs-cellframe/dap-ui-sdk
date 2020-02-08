@@ -27,24 +27,24 @@ void MainScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
     lblStatusMessage->setText("Not connected");
 
     connect(btnSwitch,&QPushButton::clicked,[=]{
-        lblStatusMessage->setProperty("stateLbl",1);
+        lblStatusMessage->setProperty("state",1);
         lblStatusMessage->style()->unpolish(lblStatusMessage);
         lblStatusMessage->style()->polish(lblStatusMessage);
 
         lblStatusMessage->setText("Connecting...");
-        btnSwitch->setProperty("stateBtn",1);
+        btnSwitch->setProperty("state",1);
         btnSwitch->style()->unpolish(btnSwitch);
         btnSwitch->style()->polish(btnSwitch);
-
+        btnSwitch->update();
         timeButton.start(1500);
 
     });
     connect(&timeButton,&QTimer::timeout,[=]{
-        btnSwitch->setProperty("stateBtn",2);
+        btnSwitch->setProperty("state",2);
         btnSwitch->style()->unpolish(btnSwitch);
         btnSwitch->style()->polish(btnSwitch);
-
-        lblStatusMessage->setProperty("stateLbl",2);
+        btnSwitch->update();
+        lblStatusMessage->setProperty("state",2);
         lblStatusMessage->style()->unpolish(lblStatusMessage);
         lblStatusMessage->style()->polish(lblStatusMessage);
         lblStatusMessage->setText("Connected");

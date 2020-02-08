@@ -40,7 +40,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="lblMessage">
+    <widget class="CustomLineHeightLabel" name="lblMessage">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -48,8 +48,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>You're seconds away from
-a safer Internet</string>
+      <string>You're seconds away from&lt;br&gt;a safer Internet</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -113,6 +112,13 @@ a safer Internet</string>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CustomLineHeightLabel</class>
+   <extends>QLabel</extends>
+   <header>CustomLineHeightLabel.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

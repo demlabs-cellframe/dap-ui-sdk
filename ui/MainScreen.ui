@@ -50,7 +50,7 @@
      <property name="text">
       <string>TextLabel</string>
      </property>
-     <property name="stateLbl" stdset="0">
+     <property name="state" stdset="0">
       <number>0</number>
      </property>
     </widget>
@@ -75,7 +75,7 @@
      <property name="text">
       <string/>
      </property>
-     <property name="stateBtn" stdset="0">
+     <property name="state" stdset="0">
       <number>0</number>
      </property>
     </widget>
@@ -99,9 +99,6 @@
        <width>24</width>
        <height>24</height>
       </size>
-     </property>
-     <property name="isCbHover" stdset="0">
-      <bool>false</bool>
      </property>
     </widget>
    </item>

@@ -4,7 +4,7 @@
 #include "DapUiScreen.h"
 
 #include "ui_StartScreen.h"
-
+#include "CustomLineHeightLabel.h"
 
 class StartScreen : public DapUiScreen
 {

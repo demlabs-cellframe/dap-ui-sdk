@@ -4,6 +4,7 @@
 #include "QTextEdit"
 #include "DapUiScreen.h"
 #include "StyledDropShadowEffect.h"
+#include "CustomLineHeightLabel.h"
 
 class PasswordRecoveryScreen : public DapUiScreen
 {
