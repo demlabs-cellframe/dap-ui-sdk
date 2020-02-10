@@ -34,5 +34,6 @@ void StyledDropShadowEffect::updateStyle()
     //Offset:
     int x = Utils::toIntValue(AppStyleSheetHandler::getValueFromStylesheet(stylesheet, "x"));
     int y = Utils::toIntValue(AppStyleSheetHandler::getValueFromStylesheet(stylesheet, "y"));
+
     this->setOffset(x, y);
 }
