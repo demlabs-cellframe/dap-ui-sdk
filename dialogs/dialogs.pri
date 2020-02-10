@@ -12,6 +12,7 @@ SOURCES += \
     $$PWD/SettingsMoreMenu.cpp \
     $$PWD/ScreenLoginLayout.cpp \
     $$PWD/DialogEditServer.cpp \
+    $$PWD/SettingsScreen.cpp \
     $$PWD/SignInScreen.cpp \
     $$PWD/SignUpScreen.cpp \
     $$PWD/StartScreen.cpp
@@ -30,6 +31,7 @@ HEADERS  += \
     $$PWD/SettingsMoreMenu.h \
     $$PWD/ScreenLoginLayout.h \
     $$PWD/DialogEditServer.h \
+    $$PWD/SettingsScreen.h \
     $$PWD/SignInScreen.h \
     $$PWD/SignUpScreen.h \
     $$PWD/StartScreen.h

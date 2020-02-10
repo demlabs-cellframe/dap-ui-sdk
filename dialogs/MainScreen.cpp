@@ -13,16 +13,19 @@ void MainScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
 {
     Q_UNUSED(a_rotation)
 
-    QComboBox *cbCountry = a_w->findChild<QComboBox*>("cbCountry");
+    CustomComboBox *cbbCountry = a_w->findChild<CustomComboBox*>("cbbCountry");
     QLabel *lblStatusMessage = a_w->findChild<QLabel*>("lblStatusMessage");
     QPushButton *btnSwitch = a_w->findChild<QPushButton*>("btnSwitch");
 
-    Q_ASSERT(cbCountry);
+    Q_ASSERT(cbbCountry);
     Q_ASSERT(lblStatusMessage);
     Q_ASSERT(btnSwitch);
 
 
-    cbCountry->setGraphicsEffect(new StyledDropShadowEffect(cbCountry));
+    cbbCountry->setGraphicsEffect(new StyledDropShadowEffect(cbbCountry));
+    cbbCountry->addItem("Natherlans");
+    QIcon icon(":/pics/flag.svg");
+    cbbCountry->setItemIcon(0,icon);
     static QTimer timeButton;
     lblStatusMessage->setText("Not connected");
 
