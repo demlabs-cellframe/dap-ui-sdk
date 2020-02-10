@@ -1,6 +1,7 @@
 SOURCES += \
     $$PWD/AnimationChangingWidget.cpp \
     $$PWD/ComboBoxDelegate.cpp \
+    $$PWD/CustomComboBox.cpp \
     $$PWD/CustomLineHeightLabel.cpp \
     $$PWD/CustomPlacementButton.cpp \
     $$PWD/ServersComboBox.cpp \
@@ -12,6 +13,7 @@ SOURCES += \
 HEADERS += \
     $$PWD/AnimationChangingWidget.h \
     $$PWD/ComboBoxDelegate.h \
+    $$PWD/CustomComboBox.h \
     $$PWD/CustomLineHeightLabel.h \
     $$PWD/CustomPlacementButton.h \
     $$PWD/ServersComboBox.h \
