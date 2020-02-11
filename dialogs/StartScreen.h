@@ -8,9 +8,11 @@
 
 #include "ui_StartScreen.h"
 
+
 class StartScreen : public AdaptiveScreen
 {
     Q_OBJECT
+    struct StateLinks;
 
 public:
     /// Overloaded constructor.
@@ -24,7 +26,7 @@ public:
 
 
 
-    auto stateMachine(){ return &m_stateMachine; };
+    static StateLinks* statesLinks();
     void setupStateMachine();
 
 protected:
@@ -44,12 +46,12 @@ signals:
 
 private:
 
-    struct {
+    struct StateLinks {
         QState* rootState     {};
         QState* ctlConnecting {};
         QState* ctlConnected  {};
         bool check() { return rootState && ctlConnecting && ctlConnected; };
-    } m_stateMachine;
+    };
 
 
     typedef void (*InitializerFunc)(StartScreen*);

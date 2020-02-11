@@ -10,6 +10,8 @@ StartScreen::StartScreen(QWidget *a_parent)
     : AdaptiveScreen(a_parent)
 {
     create<Ui::StartScreen>();
+
+    this->setupStateMachine();
 }
 
 QString StartScreen::screenName()
@@ -17,14 +19,20 @@ QString StartScreen::screenName()
     return SCREEN_NAME;
 }
 
+StartScreen::StateLinks* StartScreen::statesLinks()
+{
+    static StateLinks s_statesLinks;
+    return &s_statesLinks;
+}
+
 void StartScreen::setupStateMachine()
 {
-    Q_ASSERT(stateMachine()->check());
+    Q_ASSERT(statesLinks()->check());
 
-    assignWidgetPropertyForState<QPushButton>(stateMachine()->ctlConnecting, BTN_SIGN_IN_NAME, "text", "Service connecting..." );
+    assignWidgetPropertyForState<QPushButton>(statesLinks()->ctlConnecting, BTN_SIGN_IN_NAME, "text", "Service connecting..." );
 
-    stateMachine()->ctlConnecting->assignProperty(this, "enabled", false);
-    stateMachine()->ctlConnected->assignProperty(this, "enabled", true);
+    statesLinks()->ctlConnecting->assignProperty(this, "enabled", false);
+    statesLinks()->ctlConnected->assignProperty(this, "enabled", true);
 
 }
 

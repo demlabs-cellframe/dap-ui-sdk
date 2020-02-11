@@ -3,23 +3,25 @@
 
 #include <QLineEdit>
 #include <QLabel>
-#include "DapUiScreen.h"
+
+#include "AdaptiveScreen.h"
+#include "ScreenInfo.h"
 
 
-class SignInScreen : public DapUiScreen
+class SignInScreen : public AdaptiveScreen
 {
     Q_OBJECT
 public:
     /// Overloaded constructor.
     /// @param a_parent Parent.
-    /// @param a_sw Application window stack.
-    SignInScreen(QObject * a_parent, QStackedWidget * a_sw);
+    SignInScreen(QWidget * a_parent);
+
+    virtual QString screenName() override;
+    static const QString SCREEN_NAME;
 
 protected:
-    /// Form initialization.
-    /// @param a_w Window GUI widget.
-    /// @param a_rotation Device display orientation.
-    virtual void initUi(QWidget * a_w, ScreenRotation a_rotation) override;
+
+    virtual void initVariantUi(QWidget *a_widget) override;
 };
 
 

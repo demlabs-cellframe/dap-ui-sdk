@@ -3,19 +3,26 @@
 #include "ui_SignInScreen.h"
 #include "StyledDropShadowEffect.h"
 
-SignInScreen::SignInScreen(QObject * a_parent, QStackedWidget * a_sw)
-    : DapUiScreen(a_parent, a_sw)
+const QString SignInScreen::SCREEN_NAME = "StartScreen";
+
+SignInScreen::SignInScreen(QWidget *a_parent)
+    : AdaptiveScreen(a_parent)
 {
     create<Ui::SignInScreen>();
 }
 
-void SignInScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
+QString SignInScreen::screenName()
 {
-    QPushButton *btnSignIn = a_w->findChild<QPushButton*>("btnSignIn");
-    QLineEdit *edtEmail = a_w->findChild<QLineEdit*>("edtEmail");
-    QLineEdit *edtPassword = a_w->findChild<QLineEdit*>("edtPassword");
-    QLabel *lblEmailError = a_w->findChild<QLabel*>("lblEmailError");
-    QLabel *lblPasswordError = a_w->findChild<QLabel*>("lblPasswordError");
+    return SCREEN_NAME;
+}
+
+void SignInScreen::initVariantUi(QWidget *a_widget)
+{
+    QPushButton *btnSignIn = a_widget->findChild<QPushButton*>("btnSignIn");
+    QLineEdit *edtEmail = a_widget->findChild<QLineEdit*>("edtEmail");
+    QLineEdit *edtPassword = a_widget->findChild<QLineEdit*>("edtPassword");
+    QLabel *lblEmailError = a_widget->findChild<QLabel*>("lblEmailError");
+    QLabel *lblPasswordError = a_widget->findChild<QLabel*>("lblPasswordError");
 
 
     Q_ASSERT(btnSignIn);
@@ -36,6 +43,5 @@ void SignInScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
         lblEmailError->setVisible(true);
         lblPasswordError->setVisible(true);
     });
-
-    Q_UNUSED(a_rotation)
 }
+
