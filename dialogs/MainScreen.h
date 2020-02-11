@@ -1,12 +1,14 @@
 #ifndef MAINSCREEN_H
 #define MAINSCREEN_H
 
-#include "DapUIAnimationScreenAbstract.h"
+#include <QComboBox>
 
-#include "ui_MainScreenLayout.h"
+#include "DapUiScreen.h"
 
+#include "ui_MainScreen.h"
+#include "CustomComboBox.h"
 
-class MainScreen : public DapUIAnimationScreenAbstract
+class MainScreen : public DapUiScreen
 {
     Q_OBJECT
 
@@ -21,9 +23,6 @@ protected:
     /// @param a_w Window GUI widget.
     /// @param a_rotation Device display orientation.
     virtual void initUi(QWidget * a_w, ScreenRotation a_rotation) override;
-
-signals:
-    void loginScreenTransition();
 };
 
 #endif // MAINSCREEN_H

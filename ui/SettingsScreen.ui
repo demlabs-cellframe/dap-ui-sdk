@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>StartScreen</class>
- <widget class="QWidget" name="StartScreen">
-  <property name="enabled">
-   <bool>true</bool>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
+ <class>SettingsScreen</class>
+ <widget class="QWidget" name="SettingsScreen">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>525</width>
+    <height>430</height>
+   </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -31,25 +30,15 @@
     <number>0</number>
    </property>
    <item alignment="Qt::AlignHCenter">
-    <widget class="QLabel" name="lblLogo">
+    <widget class="QLabel" name="lbCaption">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="CustomLineHeightLabel" name="lblMessage">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="text">
-      <string>You're seconds away from&lt;br&gt;a safer Internet</string>
+      <string>VPN settings</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -57,44 +46,64 @@
     </widget>
    </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="QPushButton" name="btnSignIn">
+    <widget class="CustomComboBox" name="cbbBandwidth">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string>Sign in</string>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="wgtMarin_1" native="true"/>
+   </item>
+   <item alignment="Qt::AlignHCenter">
+    <widget class="CustomComboBox" name="cbbUptime">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="wgtSignUpSpacing" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
+    <widget class="QWidget" name="wgtMarin_4" native="true"/>
    </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="QPushButton" name="btnSignUp">
+    <widget class="CustomComboBox" name="cbbEncryption">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="wgtMarin_3" native="true"/>
+   </item>
+   <item alignment="Qt::AlignHCenter">
+    <widget class="CustomComboBox" name="cbbBalance">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="text">
-      <string>Click here to sign up</string>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="wgtMarin_2" native="true"/>
+   </item>
+   <item alignment="Qt::AlignHCenter">
+    <widget class="CustomComboBox" name="cbbLanguage">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
     </widget>
    </item>
@@ -115,9 +124,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CustomLineHeightLabel</class>
-   <extends>QLabel</extends>
-   <header>CustomLineHeightLabel.h</header>
+   <class>CustomComboBox</class>
+   <extends>QComboBox</extends>
+   <header>CustomComboBox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

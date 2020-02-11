@@ -1,24 +1,29 @@
-#ifndef FORGETPASSWORDSCREEN_H
-#define FORGETPASSWORDSCREEN_H
+#ifndef MAINSCREENLAYOUT_H
+#define MAINSCREENLAYOUT_H
 
-#include "QTextEdit"
-#include "DapUiScreen.h"
-#include "StyledDropShadowEffect.h"
-#include "CustomLineHeightLabel.h"
+#include "DapUIAnimationScreenAbstract.h"
 
-class PasswordRecoveryScreen : public DapUiScreen
+#include "ui_MainScreenLayout.h"
+
+
+class MainScreenLayout : public DapUIAnimationScreenAbstract
 {
     Q_OBJECT
+
 public:
     /// Overloaded constructor.
     /// @param a_parent Parent.
     /// @param a_sw Application window stack.
-    PasswordRecoveryScreen(QObject * a_parent, QStackedWidget * a_sw);
+    MainScreenLayout(QObject * a_parent, QStackedWidget * a_sw);
 
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
     /// @param a_rotation Device display orientation.
     virtual void initUi(QWidget * a_w, ScreenRotation a_rotation) override;
+
+signals:
+    void loginScreenTransition();
 };
-#endif // FORGETPASSWORDSCREEN_H
+
+#endif // MAINSCREENLAYOUT_H

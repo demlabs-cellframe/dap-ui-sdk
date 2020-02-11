@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>StartScreen</class>
- <widget class="QWidget" name="StartScreen">
-  <property name="enabled">
-   <bool>true</bool>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
+ <class>MainScreen</class>
+ <widget class="QWidget" name="MainScreen">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>517</width>
+    <height>469</height>
+   </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -40,61 +39,66 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="CustomLineHeightLabel" name="lblMessage">
+   <item alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="lblStatusMessage">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="text">
-      <string>You're seconds away from&lt;br&gt;a safer Internet</string>
+      <string>TextLabel</string>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
+     <property name="state" stdset="0">
+      <number>0</number>
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QWidget" name="wgtMarginTopSwitch" native="true"/>
+   </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="QPushButton" name="btnSignIn">
+    <widget class="QPushButton" name="btnSwitch">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777213</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="state" stdset="0">
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="wgtMarginTopCountry" native="true"/>
+   </item>
+   <item alignment="Qt::AlignHCenter">
+    <widget class="CustomComboBox" name="cbbCountry">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
+     <property name="editable">
+      <bool>false</bool>
      </property>
-     <property name="text">
-      <string>Sign in</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="wgtSignUpSpacing" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item alignment="Qt::AlignHCenter">
-    <widget class="QPushButton" name="btnSignUp">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string>Click here to sign up</string>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
      </property>
     </widget>
    </item>
@@ -115,9 +119,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CustomLineHeightLabel</class>
-   <extends>QLabel</extends>
-   <header>CustomLineHeightLabel.h</header>
+   <class>CustomComboBox</class>
+   <extends>QComboBox</extends>
+   <header>CustomComboBox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
