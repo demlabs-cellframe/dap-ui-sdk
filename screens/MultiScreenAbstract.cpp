@@ -31,8 +31,24 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
  */
 MultiScreenAbstract::MultiScreenAbstract(QWidget *parent)
     :AdaptiveScreen(parent),
-    m_wgChangedScreen(nullptr)
+    m_wgtChangingScreen(nullptr)
 {
+}
+
+AdaptiveScreen *MultiScreenAbstract::activeScreen()
+{
+    QWidget* l_activeWidget = this->wgtChangingScreen()->currentWidget();
+    return qobject_cast<AdaptiveScreen*>(l_activeWidget);
+}
+
+QString MultiScreenAbstract::activeScreenName()
+{
+    AdaptiveScreen* activeScreen = this->activeScreen();
+
+    if (!activeScreen)
+        return QString();
+
+    return this->activeScreen()->screenName();
 }
 
 /**
@@ -42,20 +58,33 @@ MultiScreenAbstract::MultiScreenAbstract(QWidget *parent)
  */
 MultiScreenAbstract *MultiScreenAbstract::activateChildScreen(AdaptiveScreen *a_screen)
 {
-    Q_ASSERT_X(qobject_cast<MultiScreenAbstract*>(a_screen->parent()) == this, "activateDescendantScreen", "screen is not a child of this screen");
+    Q_ASSERT_X(MultiScreenAbstract::parentMultiscreen(a_screen) == this, "activateDescendantScreen", "screen is not a child of this screen");
 
-    m_wgChangedScreen->setCurrentWidget(a_screen);
+    m_wgtChangingScreen->setCurrentWidget(a_screen);
 
     return (this);
 }
 
+MultiScreenAbstract *MultiScreenAbstract::parentMultiscreen(AdaptiveScreen *a_screen)
+{
+    MultiScreenAbstract *l_parentMultiscr;
+
+    for (QObject *parentObj = a_screen->parent(); parentObj; parentObj = parentObj->parent())
+    {
+        l_parentMultiscr = qobject_cast<MultiScreenAbstract*>(parentObj);
+        if (l_parentMultiscr)
+            return l_parentMultiscr;
+    }
+    return nullptr;
+}
+
 /**
- * @brief Getter for m_wgChangedScreen
+ * @brief Getter for m_wgChangingScreen
  * @return pointer to AnimationChangingWidget
  */
-AnimationChangingWidget *MultiScreenAbstract::wgChangedScreen()
+AnimationChangingWidget *MultiScreenAbstract::wgtChangingScreen()
 {
-    return m_wgChangedScreen;
+    return m_wgtChangingScreen;
 }
 
 
@@ -70,10 +99,10 @@ void MultiScreenAbstract::initChangedScreen(QWidget *a_widget)
         a_widget = variant(ScreenInfo::currentRotation());
 
     // Initializing pointers to window widgets
-    m_wgChangedScreen = a_widget->findChild<AnimationChangingWidget*>();
-    Q_ASSERT(m_wgChangedScreen);
+    m_wgtChangingScreen = a_widget->findChild<AnimationChangingWidget*>();
+    Q_ASSERT(m_wgtChangingScreen);
 
-    connect(m_wgChangedScreen, &AnimationChangingWidget::animationFinished, [=]{
+    connect(m_wgtChangingScreen, &AnimationChangingWidget::animationFinished, [=]{
         emit animationFinished();
     });
 

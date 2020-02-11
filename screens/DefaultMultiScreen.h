@@ -59,7 +59,6 @@ public:
     {
         if (a_wgScreen->objectName().isEmpty())
             a_wgScreen->setObjectName(QStringLiteral("FullScreenMultiScreen"));
- //       a_wgScreen->resize(1280, 804);
         horizontalLayout = new QHBoxLayout(a_wgScreen);
         horizontalLayout->setSpacing(0);
         horizontalLayout->setObjectName(QStringLiteral("centralLayout"));
@@ -68,8 +67,7 @@ public:
 
         changingScreen = new AnimationChangingWidget(a_wgScreen);
         changingScreen->setObjectName(QStringLiteral("changingScreen"));
-        changingScreen->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-        changingScreen->setStyleSheet("#changingScreen{}");
+        changingScreen->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         horizontalLayout->addWidget(changingScreen);
     } // setupUi
 

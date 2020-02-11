@@ -1,6 +1,7 @@
 #include "AdaptiveWidget.h"
 
-AdaptiveWidget::AdaptiveWidget(QWidget *parent /*= nullptr*/)
+AdaptiveWidget::AdaptiveWidget(QWidget *a_parent /*= nullptr*/)
+    :QStackedWidget(a_parent)
 {
 
 }

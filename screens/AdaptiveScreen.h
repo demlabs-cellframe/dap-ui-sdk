@@ -5,6 +5,7 @@
 
 class AdaptiveScreen : public AdaptiveWidget
 {
+    Q_OBJECT
 public:
 
     AdaptiveScreen(QWidget *a_parent = nullptr);

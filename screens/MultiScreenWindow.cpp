@@ -12,19 +12,9 @@ MultiScreenWindow::MultiScreenWindow(MultiScreenAbstract* a_centralScreen /*= nu
     setCentralWidget(a_centralScreen);
 }
 
-void MultiScreenWindow::activateScreen(const QString &a_screenName)
+QString MultiScreenWindow::activeScreenName()
 {
-    if (a_screenName == StartScreen::SCREEN_NAME)
-        m_centralScreen->activateScreen<StartScreen>();
-    else
-        return;
-
-    m_activeScreen = a_screenName;
-}
-
-QString MultiScreenWindow::activeScreen()
-{
-
+    return centralScreen()->activeScreenName();
 }
 
 MultiScreenAbstract *MultiScreenWindow::centralScreen()

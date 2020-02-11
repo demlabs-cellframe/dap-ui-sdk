@@ -8,7 +8,7 @@
 class AdaptiveWidget : public QStackedWidget
 {
 public:
-    AdaptiveWidget(QWidget *parent = nullptr);
+    AdaptiveWidget(QWidget *a_parent = nullptr);
 
     QWidget* variant(ScreenInfo::Rotation a_rotation = ScreenInfo::Rotation::Horizontal);
 

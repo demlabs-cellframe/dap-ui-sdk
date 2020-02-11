@@ -24,8 +24,6 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 #pragma once
 
 #include <QWidget>
-#include <typeinfo>
-
 #include "DapUiScreen.h"
 #include "AdaptiveScreen.h"
 #include "controls/AnimationChangingWidget.h"
@@ -62,9 +60,13 @@ public:
     template<class T>
     T *activateScreen();
 
-    MultiScreenAbstract *activateChildScreen(AdaptiveScreen *a_screen);
+    AdaptiveScreen* activeScreen();
+    QString activeScreenName();
 
-    AnimationChangingWidget *wgChangedScreen();
+    MultiScreenAbstract *activateChildScreen(AdaptiveScreen *a_screen);
+    static MultiScreenAbstract *parentMultiscreen(AdaptiveScreen *a_screen);
+
+    AnimationChangingWidget *wgtChangingScreen();
 
 signals:
     void animationFinished();                       ///< Emits this signal after the animation transition has reached the end.
@@ -74,7 +76,7 @@ protected:
     virtual void initVariantUi(QWidget * a_widget) = 0; ///<pure virtual method. Must de reimplement it inherited classes
     virtual QString screenName() = 0;
 
-    AnimationChangingWidget *m_wgChangedScreen;     ///< Pointer to ChangingWidget controll
+    AnimationChangingWidget *m_wgtChangingScreen;     ///< Pointer to ChangingWidget controll
 
 private:
     QMap<QString, AdaptiveScreen*> m_screens;          ///< Map with all screens that can be activated
@@ -107,8 +109,8 @@ T *MultiScreenAbstract::createSubScreen(int a_index /*= -1*/)
     newScreen = new T(this);                              // Create new screen
 
     //insert screen to m_screens and changing sreen widget
-    m_screens.insert(typeid(T).name(), newScreen);
-    m_wgChangedScreen->insertWidget(a_index, newScreen);
+    m_screens.insert(newScreen->screenName(), newScreen);
+    wgtChangingScreen()->insertWidget(a_index, newScreen);
 
     return newScreen;
 }
@@ -121,17 +123,16 @@ T *MultiScreenAbstract::createSubScreen(int a_index /*= -1*/)
 template<class T>
 void MultiScreenAbstract::removeSubscreen()
 {
-    DapUiScreen *screen = subScreen<T>(); // Find subscrin
+    AdaptiveScreen *screen = subScreen<T>(); // Find subscreen
 
     if (screen) { // If found ...
         // 1. remove from parent ChangingWidget, ...
         MultiScreenAbstract *parentScreen = qobject_cast<MultiScreenAbstract*> (screen->parent());
-        parentScreen->wgChangedScreen()->removeWidget(screen->sw());
+        parentScreen->wgtChangingScreen()->removeWidget(screen);
         // 2. delete stackedWidget and screen
-        delete screen->sw();
-        delete screen;
+        m_screens.remove(screen->screenName());
         // 3. delete from Map with screens pointers
-        m_screens.remove(typeid(T).name());
+        delete screen;
     }
     // if isn't found do nothing
 }
@@ -150,7 +151,7 @@ NewT *MultiScreenAbstract::replaceSubscreen()
     if (oldScreen) {// If found ...
         //1. get index of oldScreen stacked widget
         MultiScreenAbstract *parentScreen = qobject_cast<MultiScreenAbstract*>(oldScreen->parent());
-        int index = parentScreen->wgChangedScreen()->indexOf(oldScreen->sw());
+        int index = parentScreen->wgtChangingScreen()->indexOf(oldScreen->sw());
         //2. remove oldScreen, ...
         parentScreen->removeSubscreen<OldT>();
         //3. create new subscreen in the place of deleted
@@ -169,13 +170,17 @@ NewT *MultiScreenAbstract::replaceSubscreen()
 template<class T>
 T *MultiScreenAbstract::subScreen()
 {
-    QString screenTypeName =  typeid(T).name();
-
-    T *foundScreen = qobject_cast<T*>(m_screens.value(screenTypeName, nullptr)); // Searh in m_screens
+    T *foundScreen = nullptr;
 
     //  If isn't found search in all subScreens recursively
     auto i = m_screens.constBegin();
-    while (i != m_screens.constEnd() and !foundScreen) {
+    while (i != m_screens.constEnd() and !foundScreen)
+    {
+        //if this screen is searched return it
+        foundScreen = qobject_cast<T*>(i.value());
+        if (foundScreen)
+            return foundScreen;
+
         MultiScreenAbstract *curScreen = qobject_cast<MultiScreenAbstract*>(i.value());
         //if i.value() is DapUIAnimationScreenAbstract object search in all subScreens
         if (curScreen)
@@ -201,7 +206,7 @@ T *MultiScreenAbstract::activateScreen()
         screen = createSubScreen<T>();
 
     // Activate all parent screens in line from found screen to this
-    MultiScreenAbstract *parent = qobject_cast<MultiScreenAbstract*>(screen->parent());
+    MultiScreenAbstract *parent = MultiScreenAbstract::parentMultiscreen(screen);
     AdaptiveScreen *nextScreen = screen;
     //do while parent is not this screen
     while (nextScreen != this) {
