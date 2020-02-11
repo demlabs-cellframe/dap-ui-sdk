@@ -24,4 +24,11 @@ namespace Utils
         }
         return (result.size() == 4) ? QColor(result.at(0), result.at(1), result.at(2), result.at(3)) : QColor();
     }
+
+    int toIntValue(const QString &a_text)
+    {
+        QRegExp regString("(\\d+)");
+        regString.indexIn(a_text);
+        return regString.cap(0).toInt();
+    }
 }

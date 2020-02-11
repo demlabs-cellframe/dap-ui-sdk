@@ -28,11 +28,12 @@ void StyledDropShadowEffect::updateStyle()
     else
         this->setColor(Utils::toColor(colorStr));
 
-    int blur = AppStyleSheetHandler::getValueFromStylesheet(stylesheet, "blur").toInt();
+    int blur = Utils::toIntValue(AppStyleSheetHandler::getValueFromStylesheet(stylesheet, "blur"));
     this->setBlurRadius(blur);
 
     //Offset:
-    int x = AppStyleSheetHandler::getValueFromStylesheet(stylesheet, "x").toInt();
-    int y = AppStyleSheetHandler::getValueFromStylesheet(stylesheet, "y").toInt();
+    int x = Utils::toIntValue(AppStyleSheetHandler::getValueFromStylesheet(stylesheet, "x"));
+    int y = Utils::toIntValue(AppStyleSheetHandler::getValueFromStylesheet(stylesheet, "y"));
+
     this->setOffset(x, y);
 }
