@@ -21,8 +21,6 @@ void MainScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
     Q_ASSERT(lblStatusMessage);
     Q_ASSERT(btnSwitch);
 
-
-    cbbCountry->setGraphicsEffect(new StyledDropShadowEffect(cbbCountry));
     cbbCountry->addItem("Natherlans");
     QIcon icon(":/pics/flag.svg");
     cbbCountry->setItemIcon(0,icon);

@@ -23,12 +23,6 @@ void SettingsScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation
     Q_ASSERT(cbbLanguage);
     Q_ASSERT(cbbUptime);
 
-    cbbBalance->setGraphicsEffect(new StyledDropShadowEffect(cbbBalance));
-    cbbBandwidth->setGraphicsEffect(new StyledDropShadowEffect(cbbBandwidth));
-    cbbEncryption->setGraphicsEffect(new StyledDropShadowEffect(cbbEncryption));
-    cbbLanguage->setGraphicsEffect(new StyledDropShadowEffect(cbbLanguage));
-    cbbUptime->setGraphicsEffect(new StyledDropShadowEffect(cbbUptime));
-
     cbbBandwidth->addItem("Bandwidth");
     cbbUptime->addItem("Uptime");
     cbbEncryption->addItem("Encryption");
