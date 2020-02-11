@@ -6,7 +6,17 @@
 CustomComboBox::CustomComboBox(QWidget *parent):
     QComboBox (parent)
 {
+    m_styledshadow = new StyledDropShadowEffect(this);
+}
 
+/** @brief Reimplemented QComboBox::setObjectName method. Updates stylesheets.
+ *  @param text Text
+ */
+void CustomComboBox::setObjectName(const QString &name)
+{
+    QComboBox::setObjectName(name);
+    m_styledshadow->updateStyleProperties();
+    setGraphicsEffect(m_styledshadow);
 }
 
 /** @brief Reimplemented QComboBox::enterEvent is sent to the widget when the mouse cursor enters the widget.
@@ -15,6 +25,8 @@ CustomComboBox::CustomComboBox(QWidget *parent):
 void CustomComboBox:: enterEvent(QEvent *event)
 {
     Q_UNUSED(event);
+    m_styledshadow->updateStyle(HOVER_SHADOW);
+    setGraphicsEffect(m_styledshadow);
 
     setProperty("hoverState",1);
     style()->unpolish(this);
@@ -28,6 +40,9 @@ void CustomComboBox:: enterEvent(QEvent *event)
 void CustomComboBox::leaveEvent(QEvent *event)
 {
     Q_UNUSED(event);
+
+    m_styledshadow->updateStyle(DEFAULT_SHADOW);
+    setGraphicsEffect(m_styledshadow);
 
     setProperty("hoverState",0);
     style()->unpolish(this);

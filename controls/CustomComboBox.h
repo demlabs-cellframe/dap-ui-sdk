@@ -3,6 +3,7 @@
 
 
 #include <QComboBox>
+#include "StyledDropShadowEffect.h"
 
 /** @brief QComboBox with changing downArrow when hover on control.
 
@@ -20,9 +21,12 @@ class CustomComboBox : public QComboBox
     Q_OBJECT
 public:
     CustomComboBox(QWidget *parent = Q_NULLPTR);
-
+    void setObjectName(const QString &name);
 protected:
     void enterEvent(QEvent *event);
     void leaveEvent(QEvent *event);
+private:
+    StyledDropShadowEffect *m_styledshadow;
+
 };
 #endif // CUSTOMCOMBOBOX_H
