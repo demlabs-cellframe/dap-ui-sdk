@@ -21,14 +21,17 @@ MouseArea
     //If mouse pointer go to parent area
     onEntered:
     {
-        //ScrollButton is needed to be visible only if list lenght more than its height
-        scrollVisible = viewData.contentHeight > viewData.height;
-        //If user see the first element
-        if(viewData.atYBeginning)
-            scrollDirectionUp = false;
-        //If user see the last element
-        if(viewData.atYEnd)
-            scrollDirectionUp = true;
+        if(containsMouse)
+        {
+            //ScrollButton is needed to be visible only if list lenght more than its height
+            scrollVisible = viewData.contentHeight > viewData.height;
+            //If user see the first element
+            if(viewData.atYBeginning)
+                scrollDirectionUp = false;
+            //If user see the last element
+            if(viewData.atYEnd)
+                scrollDirectionUp = true;
+        }
     }
 
     //If mouse pointer go out the parent area
