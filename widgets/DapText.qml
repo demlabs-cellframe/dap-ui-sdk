@@ -2,7 +2,7 @@ import QtQuick 2.4
 
 DapTextForm 
 {
-    width: parent.width
+    textMetric.elideWidth: width
 
     //Text eliding is available only after full item boot
     //with all metrics - to delete binding loop

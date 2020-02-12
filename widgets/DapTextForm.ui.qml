@@ -28,7 +28,6 @@ TextInput
         id: dapTextInputTextMetric
         font: parent.font
         elide: textElide
-        elideWidth: parent.width
         text: fullText
     }
 
