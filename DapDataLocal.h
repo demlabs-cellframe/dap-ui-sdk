@@ -37,10 +37,14 @@ public:
     QString locationToIconPath(DapServerLocation loc);
     
     QString login() const;
+public slots:
     void setLogin(const QString &login);
+public:
 
     QString password() const;
+public slots:
     void setPassword(const QString &password);
+public:
 
     QString serverName() const;
     QString getServerNameByAddress(const QString& address);
