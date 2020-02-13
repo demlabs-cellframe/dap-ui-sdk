@@ -3,13 +3,14 @@
 #include "StyledDropShadowEffect.h"
 #include "AppController.h"
 
-const QString StartScreen::SCREEN_NAME = "StartScreen";
-StartScreen::InitializerFunc StartScreen::s_initializerFunc = nullptr;
+const QString StartScreen::SCREEN_NAME = "Start";
 
 StartScreen::StartScreen(QWidget *a_parent)
     : AdaptiveScreen(a_parent)
 {
     create<Ui::StartScreen>();
+
+    initScreen(this);
 
     this->setupStateMachine();
 }
@@ -21,19 +22,18 @@ QString StartScreen::screenName()
 
 StartScreen::StateLinks* StartScreen::statesLinks()
 {
-    static StateLinks s_statesLinks;
-    return &s_statesLinks;
+    return &this->m_statesLinks;
 }
 
 void StartScreen::setupStateMachine()
 {
     Q_ASSERT(statesLinks()->check());
 
+
     assignWidgetPropertyForState<QPushButton>(statesLinks()->ctlConnecting, BTN_SIGN_IN_NAME, "text", "Service connecting..." );
 
     statesLinks()->ctlConnecting->assignProperty(this, "enabled", false);
     statesLinks()->ctlConnected->assignProperty(this, "enabled", true);
-
 }
 
 //void StartScreen::activateScreen()
@@ -48,14 +48,21 @@ void StartScreen::setupStateMachine()
 
 void StartScreen::initVariantUi(QWidget *a_widget)
 {
-    m_btnSignIn = a_widget->findChild<QPushButton*>(BTN_SIGN_IN_NAME); Q_ASSERT(m_btnSignIn);
-    m_btnSignUp = a_widget->findChild<QPushButton*>(BTN_SIGN_UP_NAME); Q_ASSERT(m_btnSignUp);
+    QPushButton* l_btnSignIn = a_widget->findChild<QPushButton*>(BTN_SIGN_IN_NAME); Q_ASSERT(l_btnSignIn);
+    QPushButton* l_btnSignUp = a_widget->findChild<QPushButton*>(BTN_SIGN_UP_NAME); Q_ASSERT(l_btnSignUp);
 
-    m_btnSignIn->setGraphicsEffect(new StyledDropShadowEffect(m_btnSignIn));
+    l_btnSignIn->setGraphicsEffect(new StyledDropShadowEffect(l_btnSignIn));
 
-    connect(m_btnSignIn, &QPushButton::clicked, [this]{
+    connect(l_btnSignIn, &QPushButton::clicked, [this]
+    {
+        qDebug()<<"clicked";
         emit this->transitionTo_SignIn();
-        Q_ASSERT(false);
-
     });
+
+    connect(l_btnSignUp, &QPushButton::clicked, [this]
+    {
+        qDebug()<<"go to signUp clicked";
+        emit this->transitionTo_SignUp();
+    });
+
 }
