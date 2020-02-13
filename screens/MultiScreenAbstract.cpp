@@ -30,8 +30,7 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
  * @param a_sw Application window stack.
  */
 MultiScreenAbstract::MultiScreenAbstract(QWidget *parent)
-    :AdaptiveScreen(parent),
-    m_wgtChangingScreen(nullptr)
+    :AdaptiveScreen(parent)
 {
 }
 

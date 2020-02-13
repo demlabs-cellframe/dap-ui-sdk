@@ -1,9 +1,9 @@
 #include "AdaptiveScreen.h"
 
-AdaptiveScreen::InitializerFunc AdaptiveScreen::s_initializerFunc = nullptr;
+QMap<QString, void*> AdaptiveScreen::s_initFuncMap;
 
 AdaptiveScreen::AdaptiveScreen(QWidget *a_parent /*= nullptr*/)
     : AdaptiveWidget(a_parent)
 {
-    AdaptiveScreen::initScreen(this);
+//    AdaptiveScreen::initScreen(this);
 }

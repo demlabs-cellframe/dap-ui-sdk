@@ -76,7 +76,7 @@ protected:
     virtual void initVariantUi(QWidget * a_widget) = 0; ///<pure virtual method. Must de reimplement it inherited classes
     virtual QString screenName() = 0;
 
-    AnimationChangingWidget *m_wgtChangingScreen;     ///< Pointer to ChangingWidget controll
+    AnimationChangingWidget *m_wgtChangingScreen = nullptr;     ///< Pointer to ChangingWidget controll
 
 private:
     QMap<QString, AdaptiveScreen*> m_screens;          ///< Map with all screens that can be activated
