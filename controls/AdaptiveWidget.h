@@ -47,10 +47,10 @@ protected:
     template <class T /*= QWidget*/>
     inline QList<T*> getTheSameWidgets(const QString& a_objName)
     {
-        QList<T*> widgets;
+        QList<T*> widgetsList;
         T* foundWidget = currentWidget()->findChild<T*>(a_objName);
         if (foundWidget)
-            widgets.append(foundWidget);
+            widgetsList.append(foundWidget);
 
         ///TODO: add horisontal rotation for mobile.
 
@@ -60,7 +60,7 @@ protected:
 //            if (foundWidget)
 //                widgets.append(foundWidget);
 //        }     
-        return widgets;
+        return widgetsList;
     }
 
     template <class T /*= QWidget*/>

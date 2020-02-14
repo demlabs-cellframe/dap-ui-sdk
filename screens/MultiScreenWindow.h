@@ -15,8 +15,28 @@ public:
     MultiScreenAbstract* m_centralScreen;
 
     QString activeScreenName();
+
+    template <typename T>
+    T* screen();
+
+    template <typename T>
+    T* activateScreen();
+
 private:
     QString m_activeScreen;
 };
+
+
+template <typename T>
+T* MultiScreenWindow::screen(){
+    return this->centralScreen()->subScreen<T>();
+}
+
+template <typename T>
+T* MultiScreenWindow::activateScreen()
+{
+    return this->centralScreen()->activateScreen<T>();
+}
+
 
 #endif // MULTISCREENWINDOW_H
