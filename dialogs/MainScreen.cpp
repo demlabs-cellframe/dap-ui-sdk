@@ -3,19 +3,24 @@
 #include "StyledDropShadowEffect.h"
 #include <QTimer>
 
-MainScreen::MainScreen(QObject * a_parent, QStackedWidget * a_sw)
-    : DapUiScreen(a_parent, a_sw)
+const QString MainScreen::SCREEN_NAME = "Main";
+
+MainScreen::MainScreen(QWidget *a_parent)
+    : AdaptiveScreen(a_parent)
 {
     create<Ui::MainScreen>();
 }
 
-void MainScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
+QString MainScreen::screenName()
 {
-    Q_UNUSED(a_rotation)
+    return MainScreen::SCREEN_NAME;
+}
 
-    CustomComboBox *cbbCountry = a_w->findChild<CustomComboBox*>("cbbCountry");
-    QLabel *lblStatusMessage = a_w->findChild<QLabel*>("lblStatusMessage");
-    QPushButton *btnSwitch = a_w->findChild<QPushButton*>("btnSwitch");
+void MainScreen::initVariantUi(QWidget *a_widget)
+{
+    CustomComboBox *cbbCountry = a_widget->findChild<CustomComboBox*>("cbbCountry");
+    QLabel *lblStatusMessage = a_widget->findChild<QLabel*>("lblStatusMessage");
+    QPushButton *btnSwitch = a_widget->findChild<QPushButton*>("btnSwitch");
 
     Q_ASSERT(cbbCountry);
     Q_ASSERT(lblStatusMessage);

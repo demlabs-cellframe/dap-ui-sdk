@@ -13,19 +13,18 @@ class StartScreen : public AdaptiveScreen
 {
     Q_OBJECT
 
-    struct StateLinks;
 public:
+    struct StateLinks;
     /// Overloaded constructor.
     /// @param a_parent Parent.
     StartScreen(QWidget * a_parent);
 
-//    virtual void activateScreen() override;
-
     static const QString SCREEN_NAME;
     virtual QString screenName() override;
 
-    StateLinks* statesLinks();
-    void setupStateMachine();
+public slots:
+    void setupConnectingState();
+    void setupConnectedState();
 
 protected:
 
@@ -39,14 +38,6 @@ signals:
     void transitionTo_SignIn();
     void transitionTo_SignUp();
 
-private:
-
-    struct StateLinks {
-        QState* rootState     {};
-        QState* ctlConnecting {};
-        QState* ctlConnected  {};
-        bool check() { return rootState && ctlConnecting && ctlConnected; };
-    } m_statesLinks;
 };
 
 #endif // STARTSCREEN_H

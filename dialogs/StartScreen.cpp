@@ -11,40 +11,25 @@ StartScreen::StartScreen(QWidget *a_parent)
     create<Ui::StartScreen>();
 
     initScreen(this);
-
-    this->setupStateMachine();
 }
 
 QString StartScreen::screenName()
 {
-    return SCREEN_NAME;
+    return StartScreen::SCREEN_NAME;
 }
 
-StartScreen::StateLinks* StartScreen::statesLinks()
+
+void StartScreen::setupConnectingState()
 {
-    return &this->m_statesLinks;
+    setChildProperties(BTN_SIGN_IN_NAME, "text", "Service connecting...");
+    setEnabled(false);
 }
 
-void StartScreen::setupStateMachine()
+void StartScreen::setupConnectedState()
 {
-    Q_ASSERT(statesLinks()->check());
-
-
-    assignWidgetPropertyForState<QPushButton>(statesLinks()->ctlConnecting, BTN_SIGN_IN_NAME, "text", "Service connecting..." );
-
-    statesLinks()->ctlConnecting->assignProperty(this, "enabled", false);
-    statesLinks()->ctlConnected->assignProperty(this, "enabled", true);
+    setChildProperties(BTN_SIGN_IN_NAME, "text", "Sign in");
+    setEnabled(true);
 }
-
-//void StartScreen::activateScreen()
-//{
-//    AppController::mainWindow()->
-//}
-
-//QString StartScreen::screenName()
-//{
-//    return SCREEN_NAME;
-//}
 
 void StartScreen::initVariantUi(QWidget *a_widget)
 {
@@ -59,7 +44,7 @@ void StartScreen::initVariantUi(QWidget *a_widget)
         emit this->transitionTo_SignIn();
     });
 
-    connect(l_btnSignUp, &QPushButton::clicked, [this]
+    connect(l_btnSignUp, &QPushButton::clicked, [l_btnSignUp, this]
     {
         qDebug()<<"go to signUp clicked";
         emit this->transitionTo_SignUp();

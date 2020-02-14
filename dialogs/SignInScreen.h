@@ -21,6 +21,9 @@ public:
 
 public slots:
 
+    void setupInputState();
+    void setupConnectingState();
+
     void setEmail   (const QString &a_email   );
     void setPassword(const QString &a_password);
 
@@ -36,7 +39,7 @@ protected:
 private:
     const QString EDT_EMAIL_NAME    = "edtEmail";
     const QString EDT_PASSWORD_NAME = "edtPassword";
-    const QString BTN_SIGN_IN       = "btnSignIn";
+    const QString BTN_SIGN_IN_NAME  = "btnSignIn";
 };
 
 

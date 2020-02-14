@@ -19,6 +19,16 @@ QString SignInScreen::screenName()
     return SCREEN_NAME;
 }
 
+void SignInScreen::setupInputState()
+{
+    setChildProperties(BTN_SIGN_IN_NAME, "text", "Sign in");
+}
+
+void SignInScreen::setupConnectingState()
+{
+    setChildProperties(BTN_SIGN_IN_NAME, "text", "Service connecting...");
+}
+
 void SignInScreen::setEmail(const QString &a_email)
 {
     setChildProperties(EDT_EMAIL_NAME, "text", a_email);
@@ -31,18 +41,11 @@ void SignInScreen::setPassword(const QString &a_password)
 
 void SignInScreen::initVariantUi(QWidget *a_widget)
 {
-    QPushButton *btnSignIn   = a_widget->findChild<QPushButton*>(BTN_SIGN_IN      );
-    QLineEdit   *edtEmail    = a_widget->findChild<QLineEdit*>  (EDT_EMAIL_NAME   );
-    QLineEdit   *edtPassword = a_widget->findChild<QLineEdit*>  (EDT_PASSWORD_NAME);
-    QLabel *lblEmailError    = a_widget->findChild<QLabel*>("lblEmailError");
-    QLabel *lblPasswordError = a_widget->findChild<QLabel*>("lblPasswordError");
-
-
-    Q_ASSERT(btnSignIn);
-    Q_ASSERT(edtEmail);
-    Q_ASSERT(edtPassword);
-    Q_ASSERT(lblEmailError);
-    Q_ASSERT(lblPasswordError);
+    QPushButton *btnSignIn   = a_widget->findChild<QPushButton*>(BTN_SIGN_IN_NAME ); Q_ASSERT(btnSignIn);
+    QLineEdit   *edtEmail    = a_widget->findChild<QLineEdit  *>(EDT_EMAIL_NAME   ); Q_ASSERT(edtEmail);
+    QLineEdit   *edtPassword = a_widget->findChild<QLineEdit  *>(EDT_PASSWORD_NAME); Q_ASSERT(edtPassword);
+    QLabel *lblEmailError    = a_widget->findChild<QLabel     *>("lblEmailError")  ; Q_ASSERT(lblEmailError);
+    QLabel *lblPasswordError = a_widget->findChild<QLabel     *>("lblPasswordError");Q_ASSERT(lblPasswordError);
 
     btnSignIn->setGraphicsEffect(new StyledDropShadowEffect(btnSignIn));
 
@@ -60,6 +63,5 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     connect(edtEmail   , SIGNAL(textEdited(const QString&)), this, SIGNAL(emailEdited   (const QString&)));
     connect(edtPassword, SIGNAL(textEdited(const QString&)), this, SIGNAL(passwordEdited(const QString&)));
     connect(btnSignIn  , SIGNAL(clicked()), this, SIGNAL(signInRequest()));
-
 }
 

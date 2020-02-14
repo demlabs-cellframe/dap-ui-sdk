@@ -2,10 +2,19 @@
 
 #include "StyledDropShadowEffect.h"
 
-MainScreenLayout::MainScreenLayout(QObject * a_parent, QStackedWidget * a_sw)
-    :DapUIAnimationScreenAbstract(a_parent, a_sw)
+const QString MainScreenLayout::SCREEN_NAME = "MainLayout";
+
+MainScreenLayout::MainScreenLayout(QWidget *a_parent)
+    :MultiScreenAbstract(a_parent)
 {
     create<Ui::MainScreenLayout>();
+
+    initScreen(this);
+}
+
+QString MainScreenLayout::screenName()
+{
+    return MainScreenLayout::SCREEN_NAME;
 }
 
 /**
@@ -13,11 +22,9 @@ MainScreenLayout::MainScreenLayout(QObject * a_parent, QStackedWidget * a_sw)
 * @param a_w Window GUI widget.
 * @param a_rotation Device display orientation.
 */
-void MainScreenLayout::initUi(QWidget *a_w, ScreenRotation a_rotation)
+void MainScreenLayout::initVariantUi(QWidget *a_widget)
 {
-   Q_UNUSED(a_rotation);
-
-   initChangedScreen(a_w);
+   initChangedScreen(a_widget);
 
    //create and activate ScreenLogin
 //   m_screenLogin = activateScreen<ScreenLogin>();

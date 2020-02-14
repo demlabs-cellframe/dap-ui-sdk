@@ -3,12 +3,12 @@
 
 #include <QComboBox>
 
-#include "DapUiScreen.h"
+#include "AdaptiveScreen.h"
 
 #include "ui_MainScreen.h"
 #include "CustomComboBox.h"
 
-class MainScreen : public DapUiScreen
+class MainScreen : public AdaptiveScreen
 {
     Q_OBJECT
 
@@ -16,13 +16,16 @@ public:
     /// Overloaded constructor.
     /// @param a_parent Parent.
     /// @param a_sw Application window stack.
-    MainScreen(QObject * a_parent, QStackedWidget * a_sw);
+    MainScreen(QWidget *a_parent);
+
+    static const QString SCREEN_NAME;
+    virtual QString screenName() override;
 
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
     /// @param a_rotation Device display orientation.
-    virtual void initUi(QWidget * a_w, ScreenRotation a_rotation) override;
+    virtual void initVariantUi(QWidget *a_widget) override;
 };
 
 #endif // MAINSCREEN_H
