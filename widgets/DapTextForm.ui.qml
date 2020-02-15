@@ -10,7 +10,7 @@ TextInput
     ///@detalis elText Elided text string
     property string elText
     ////@detalis fontDapText Font setting combobox.
-    property alias fontDapText: dapText.font
+    property font fontDapText
     ///@details elide Elide style.
     property int textElide: Text.ElideRight
     ///@detalis textMetric Text Metric to elide text
@@ -26,7 +26,7 @@ TextInput
     TextMetrics
     {
         id: dapTextInputTextMetric
-        font: parent.font
+        font: fontDapText
         elide: textElide
         text: fullText
     }
@@ -35,7 +35,7 @@ TextInput
     FontMetrics
     {
         id: dapTextInputFontMetric
-        font: parent.font
+        font: fontDapText
     }
     text: elText
 }
