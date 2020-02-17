@@ -22,6 +22,9 @@ class CustomComboBox : public QComboBox
 public:
     CustomComboBox(QWidget *parent = Q_NULLPTR);
     void setObjectName(const QString &name);
+    void showPopup();
+signals:
+    void showCustomWindow();
 protected:
     void enterEvent(QEvent *event);
     void leaveEvent(QEvent *event);

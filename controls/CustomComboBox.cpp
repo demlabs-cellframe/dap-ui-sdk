@@ -1,5 +1,5 @@
 #include "CustomComboBox.h"
-
+#include <QDebug>
 /** @brief constructor
  *  @param a_parent object parent
  */
@@ -19,6 +19,10 @@ void CustomComboBox::setObjectName(const QString &name)
     setGraphicsEffect(m_styledshadow);
 }
 
+void CustomComboBox::showPopup()
+{
+    emit showCustomWindow();
+}
 /** @brief Reimplemented QComboBox::enterEvent is sent to the widget when the mouse cursor enters the widget.
  *  @param event
  */
