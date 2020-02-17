@@ -28,6 +28,7 @@ HEADERS  += \
 
 include(auxiliary/auxiliary.pri)
 include(controls/controls.pri)
+include(screens/screens.pri)
 
 INCLUDEPATH += $$PWD
 

@@ -1,4 +1,5 @@
 SOURCES += \
+    $$PWD/AdaptiveWidget.cpp \
     $$PWD/AnimationChangingWidget.cpp \
     $$PWD/ComboBoxDelegate.cpp \
     $$PWD/CustomComboBox.cpp \
@@ -14,6 +15,7 @@ SOURCES += \
     $$PWD/StyledSubcontrol.cpp
 
 HEADERS += \
+    $$PWD/AdaptiveWidget.h \
     $$PWD/AnimationChangingWidget.h \
     $$PWD/ComboBoxDelegate.h \
     $$PWD/CustomComboBox.h \
