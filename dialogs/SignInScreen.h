@@ -3,23 +3,43 @@
 
 #include <QLineEdit>
 #include <QLabel>
-#include "DapUiScreen.h"
+
+#include "AdaptiveScreen.h"
+#include "ScreenInfo.h"
 
 
-class SignInScreen : public DapUiScreen
+class SignInScreen : public AdaptiveScreen
 {
     Q_OBJECT
 public:
     /// Overloaded constructor.
     /// @param a_parent Parent.
-    /// @param a_sw Application window stack.
-    SignInScreen(QObject * a_parent, QStackedWidget * a_sw);
+    SignInScreen(QWidget * a_parent);
+
+    virtual QString screenName() override;
+    static const QString SCREEN_NAME;
+
+public slots:
+
+    void setupInputState();
+    void setupConnectingState();
+
+    void setEmail   (const QString &a_email   );
+    void setPassword(const QString &a_password);
+
+signals:
+    void emailEdited   (const QString &email   );
+    void passwordEdited(const QString &password);
+    void signInRequest();
 
 protected:
-    /// Form initialization.
-    /// @param a_w Window GUI widget.
-    /// @param a_rotation Device display orientation.
-    virtual void initUi(QWidget * a_w, ScreenRotation a_rotation) override;
+
+    virtual void initVariantUi(QWidget *a_widget) override;
+
+private:
+    const QString EDT_EMAIL_NAME    = "edtEmail";
+    const QString EDT_PASSWORD_NAME = "edtPassword";
+    const QString BTN_SIGN_IN_NAME  = "btnSignIn";
 };
 
 

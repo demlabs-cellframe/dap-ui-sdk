@@ -2,26 +2,33 @@
 
 #include "ui_SignUpScreen.h"
 
+const QString SignUpScreen::SCREEN_NAME = "SignUp";
 
-SignUpScreen::SignUpScreen(QObject * a_parent, QStackedWidget * a_sw)
-    : DapUiScreen(a_parent, a_sw)
+SignUpScreen::SignUpScreen(QWidget *a_parent)
+    : AdaptiveScreen(a_parent)
 {
     create<Ui::SignUpScreen>();
+
+    initScreen(this);
 }
 
-void SignUpScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
+QString SignUpScreen::screenName()
 {
-    Q_UNUSED(a_rotation)
+    return SignUpScreen::SCREEN_NAME;
+}
 
-    QPushButton *btnSignUp = a_w->findChild<QPushButton*>("btnSignUp");
-    QLineEdit *edtEmail = a_w->findChild<QLineEdit*>("edtEmail");
-    QLineEdit *edtPassword = a_w->findChild<QLineEdit*>("edtPassword");
-    QLineEdit *edtRptPassword = a_w->findChild<QLineEdit*>("edtRptPassword");
-    QCheckBox *cbInfo= a_w->findChild<QCheckBox*>("cbInfo");
-    QLabel *lblInfo= a_w->findChild<QLabel*>("lblInfo");
-    QLabel *lblRptPasswordError= a_w->findChild<QLabel*>("lblRptPasswordError");
-    QLabel *lblPasswordError= a_w->findChild<QLabel*>("lblPasswordError");
-    QLabel *lblEmailError= a_w->findChild<QLabel*>("lblEmailError");
+void SignUpScreen::initVariantUi(QWidget *a_widget)
+{
+    QPushButton *btnSignUp           = a_widget->findChild<QPushButton*>(BTN_SIGN_UP_NAME);
+    QLabel      *lblSignIn           = a_widget->findChild<QLabel     *>(LBL_SIGN_IN_NAME);
+    QLineEdit   *edtEmail            = a_widget->findChild<QLineEdit*>("edtEmail");
+    QLineEdit   *edtPassword         = a_widget->findChild<QLineEdit*>("edtPassword");
+    QLineEdit   *edtRptPassword      = a_widget->findChild<QLineEdit*>("edtRptPassword");
+    QCheckBox   *cbInfo              = a_widget->findChild<QCheckBox*>("cbInfo");
+    QLabel      *lblInfo             = a_widget->findChild<QLabel*>("lblInfo");
+    QLabel      *lblRptPasswordError = a_widget->findChild<QLabel*>("lblRptPasswordError");
+    QLabel      *lblPasswordError    = a_widget->findChild<QLabel*>("lblPasswordError");
+    QLabel      *lblEmailError       = a_widget->findChild<QLabel*>("lblEmailError");
 
     Q_ASSERT(btnSignUp);
     Q_ASSERT(edtEmail);
@@ -44,9 +51,15 @@ void SignUpScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
 
     lblInfo->setText("<p>I argee to the <span style='color:#D61F5D;'>terms</span> and <span style='color:#D61F5D;'>privacy policy</span></p>");
 
-    connect(btnSignUp,&QPushButton::clicked,[=]{
+    QObject::connect(btnSignUp,&QPushButton::clicked,[=]{
         lblEmailError->setMaximumWidth(1000);
         lblPasswordError->setMaximumWidth(1000);
         lblRptPasswordError->setMaximumWidth(1000);
     });
+
+//    QObject::connect(lblSignIn, &QLabel::clicked, [this]
+//    {
+//        qDebug()<<"clicked";
+//        emit this->transitionTo_SignIn();
+//    });
 }

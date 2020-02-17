@@ -1,23 +1,37 @@
-﻿#include "MainScreen.h"
-
+#include "MainScreen.h"
 #include "StyledDropShadowEffect.h"
 #include <QTimer>
 #include "CustomComboBoxPopup.h"
 #include "ListModel.h"
 
-MainScreen::MainScreen(QObject * a_parent, QStackedWidget * a_sw)
-    : DapUiScreen(a_parent, a_sw)
+const QString MainScreen::SCREEN_NAME = "Main";
+
+MainScreen::MainScreen(QWidget *a_parent)
+    : AdaptiveScreen(a_parent)
 {
     create<Ui::MainScreen>();
 }
 
-void MainScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
+QString MainScreen::screenName()
 {
-    Q_UNUSED(a_rotation)
+    return MainScreen::SCREEN_NAME;
+}
 
-    CustomComboBox *cbbCountry = a_w->findChild<CustomComboBox*>("cbbCountry");
-    QLabel *lblStatusMessage = a_w->findChild<QLabel*>("lblStatusMessage");
-    QPushButton *btnSwitch = a_w->findChild<QPushButton*>("btnSwitch");
+void MainScreen::setState(ConnectionStates a_state)
+{
+    this->setChildProperties(LBL_STATUS_MESSAGE, Properties::TEXT , statusText(a_state));
+    this->setChildProperties(LBL_STATUS_MESSAGE, Properties::STATE, a_state);
+    this->updateChildStyle  (LBL_STATUS_MESSAGE);
+
+    this->setChildProperties(BTN_SWITCH, Properties::STATE, a_state);
+    this->updateChildStyle  (BTN_SWITCH);
+}
+
+void MainScreen::initVariantUi(QWidget *a_widget)
+{
+    CustomComboBox *cbbCountry = a_widget->findChild<CustomComboBox*>("cbbCountry");
+    QLabel *lblStatusMessage = a_widget->findChild<QLabel*>(LBL_STATUS_MESSAGE);
+    QPushButton *btnSwitch = a_widget->findChild<QPushButton*>(BTN_SWITCH);
 
     Q_ASSERT(cbbCountry);
     Q_ASSERT(lblStatusMessage);
@@ -26,46 +40,18 @@ void MainScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
     cbbCountry->addItem("Natherlans");
     QIcon icon(":/pics/flag.svg");
     cbbCountry->setItemIcon(0,icon);
-    static QTimer timeButton;
-    lblStatusMessage->setText("Not connected");
+}
 
+QString MainScreen::statusText(ConnectionStates a_state)
+{
+    switch (a_state)
+    {
+        case ConnectionStates::Disconnected:
+            return  "Not connected";
+        case ConnectionStates::Connecting:
+            return "Connecting...";
+        case ConnectionStates::Connected:
+            return  "Connected";
+    }
 
-    connect(cbbCountry,&CustomComboBox::showCustomWindow,[=]{
-        QList<DataModel> dataList;
-        DataModel tmpModel;
-        for(int i = 0; i < 6;i++)
-        {
-            tmpModel.text = "kelvin-testnet.Cellframe";
-            tmpModel.iconPath =":/pics/flag.svg";
-            dataList.append(tmpModel);
-        }
-        static ListModel *model = new ListModel(&dataList,this);
-        static CustomComboBoxPopup *s_comboBoxPopup = new CustomComboBoxPopup("Choose server",model,a_w);
-
-        s_comboBoxPopup->show();
-    });
-
-    connect(btnSwitch,&QPushButton::clicked,[=]{
-        lblStatusMessage->setProperty("state",1);
-        lblStatusMessage->style()->unpolish(lblStatusMessage);
-        lblStatusMessage->style()->polish(lblStatusMessage);
-
-        lblStatusMessage->setText("Connecting...");
-        btnSwitch->setProperty("state",1);
-        btnSwitch->style()->unpolish(btnSwitch);
-        btnSwitch->style()->polish(btnSwitch);
-        btnSwitch->update();
-        timeButton.start(1500);
-
-    });
-    connect(&timeButton,&QTimer::timeout,[=]{
-        btnSwitch->setProperty("state",2);
-        btnSwitch->style()->unpolish(btnSwitch);
-        btnSwitch->style()->polish(btnSwitch);
-        btnSwitch->update();
-        lblStatusMessage->setProperty("state",2);
-        lblStatusMessage->style()->unpolish(lblStatusMessage);
-        lblStatusMessage->style()->polish(lblStatusMessage);
-        lblStatusMessage->setText("Connected");
-    });
 }

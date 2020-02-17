@@ -1,26 +1,53 @@
 #include "StartScreen.h"
 
 #include "StyledDropShadowEffect.h"
+#include "AppController.h"
 
-StartScreen::StartScreen(QObject * a_parent, QStackedWidget * a_sw)
-    : DapUiScreen(a_parent, a_sw)
+const QString StartScreen::SCREEN_NAME = "Start";
+
+StartScreen::StartScreen(QWidget *a_parent)
+    : AdaptiveScreen(a_parent)
 {
     create<Ui::StartScreen>();
+
+    initScreen(this);
 }
 
-void StartScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
+QString StartScreen::screenName()
 {
-    Q_UNUSED(a_rotation)
+    return StartScreen::SCREEN_NAME;
+}
 
-    QPushButton *btnSignIn = a_w->findChild<QPushButton*>("btnSignIn");
-    CustomLineHeightLabel *lblMessage = a_w->findChild<CustomLineHeightLabel*>("lblMessage");
 
-    Q_ASSERT(btnSignIn);
-    Q_ASSERT(lblMessage);
+void StartScreen::setupConnectingState()
+{
+    setChildProperties(BTN_SIGN_IN_NAME, "text", "Service connecting...");
+    setEnabled(false);
+}
 
-    btnSignIn->setGraphicsEffect(new StyledDropShadowEffect(btnSignIn));
+void StartScreen::setupConnectedState()
+{
+    setChildProperties(BTN_SIGN_IN_NAME, "text", "Sign in");
+    setEnabled(true);
+}
 
-    connect(btnSignIn, &QPushButton::clicked, [this]{
-        emit this->loginScreenTransition();
+void StartScreen::initVariantUi(QWidget *a_widget)
+{
+    QPushButton* l_btnSignIn = a_widget->findChild<QPushButton*>(BTN_SIGN_IN_NAME); Q_ASSERT(l_btnSignIn);
+    QPushButton* l_btnSignUp = a_widget->findChild<QPushButton*>(BTN_SIGN_UP_NAME); Q_ASSERT(l_btnSignUp);
+
+    l_btnSignIn->setGraphicsEffect(new StyledDropShadowEffect(l_btnSignIn));
+
+    connect(l_btnSignIn, &QPushButton::clicked, [this]
+    {
+        qDebug()<<"clicked";
+        emit this->transitionTo_SignIn();
     });
+
+    connect(l_btnSignUp, &QPushButton::clicked, [l_btnSignUp, this]
+    {
+        qDebug()<<"go to signUp clicked";
+        emit this->transitionTo_SignUp();
+    });
+
 }

@@ -2,27 +2,45 @@
 #define MAINSCREEN_H
 
 #include <QComboBox>
+#include <QStateMachine>
 
-#include "DapUiScreen.h"
+#include "AdaptiveScreen.h"
+#include "CustomComboBox.h"
+#include "vpnDefine.h"
 
 #include "ui_MainScreen.h"
-#include "CustomComboBox.h"
 
-class MainScreen : public DapUiScreen
+
+class MainScreen : public AdaptiveScreen
 {
     Q_OBJECT
 
 public:
+
     /// Overloaded constructor.
     /// @param a_parent Parent.
     /// @param a_sw Application window stack.
-    MainScreen(QObject * a_parent, QStackedWidget * a_sw);
+    MainScreen(QWidget *a_parent);
+
+    static const QString SCREEN_NAME;
+    virtual QString screenName() override;
+
+public:
+
+    void setState(ConnectionStates a_state);
 
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
     /// @param a_rotation Device display orientation.
-    virtual void initUi(QWidget * a_w, ScreenRotation a_rotation) override;
+    virtual void initVariantUi(QWidget *a_widget) override;
+
+
+    const QString LBL_STATUS_MESSAGE = "lblStatusMessage";
+    const QString BTN_SWITCH = "btnSwitch";
+
+private:
+    static QString statusText(ConnectionStates a_state);
 };
 
 #endif // MAINSCREEN_H
