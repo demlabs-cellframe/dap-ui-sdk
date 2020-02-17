@@ -1,7 +1,8 @@
-#include "MainScreen.h"
-
-#include "StyledDropShadowEffect.h"
 #include <QTimer>
+
+#include "MainScreen.h"
+#include "StyledDropShadowEffect.h"
+#include "defines.h"
 
 const QString MainScreen::SCREEN_NAME = "Main";
 
@@ -16,11 +17,21 @@ QString MainScreen::screenName()
     return MainScreen::SCREEN_NAME;
 }
 
+void MainScreen::setState(ConnectionStates a_state)
+{
+    this->setChildProperties(LBL_STATUS_MESSAGE, Properties::TEXT , statusText(a_state));
+    this->setChildProperties(LBL_STATUS_MESSAGE, Properties::STATE, a_state);
+    this->updateChildStyle  (LBL_STATUS_MESSAGE);
+
+    this->setChildProperties(BTN_SWITCH, Properties::STATE, a_state);
+    this->updateChildStyle  (BTN_SWITCH);
+}
+
 void MainScreen::initVariantUi(QWidget *a_widget)
 {
     CustomComboBox *cbbCountry = a_widget->findChild<CustomComboBox*>("cbbCountry");
-    QLabel *lblStatusMessage = a_widget->findChild<QLabel*>("lblStatusMessage");
-    QPushButton *btnSwitch = a_widget->findChild<QPushButton*>("btnSwitch");
+    QLabel *lblStatusMessage = a_widget->findChild<QLabel*>(LBL_STATUS_MESSAGE);
+    QPushButton *btnSwitch = a_widget->findChild<QPushButton*>(BTN_SWITCH);
 
     Q_ASSERT(cbbCountry);
     Q_ASSERT(lblStatusMessage);
@@ -31,30 +42,18 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     cbbCountry->addItem("Natherlans");
     QIcon icon(":/pics/flag.svg");
     cbbCountry->setItemIcon(0,icon);
-    static QTimer timeButton;
-    lblStatusMessage->setText("Not connected");
+}
 
-    connect(btnSwitch,&QPushButton::clicked,[=]{
-        lblStatusMessage->setProperty("state",1);
-        lblStatusMessage->style()->unpolish(lblStatusMessage);
-        lblStatusMessage->style()->polish(lblStatusMessage);
+QString MainScreen::statusText(ConnectionStates a_state)
+{
+    switch (a_state)
+    {
+        case ConnectionStates::Disconnected:
+            return  "Not connected";
+        case ConnectionStates::Connecting:
+            return "Connecting...";
+        case ConnectionStates::Connected:
+            return  "Connected";
+    }
 
-        lblStatusMessage->setText("Connecting...");
-        btnSwitch->setProperty("state",1);
-        btnSwitch->style()->unpolish(btnSwitch);
-        btnSwitch->style()->polish(btnSwitch);
-        btnSwitch->update();
-        timeButton.start(1500);
-
-    });
-    connect(&timeButton,&QTimer::timeout,[=]{
-        btnSwitch->setProperty("state",2);
-        btnSwitch->style()->unpolish(btnSwitch);
-        btnSwitch->style()->polish(btnSwitch);
-        btnSwitch->update();
-        lblStatusMessage->setProperty("state",2);
-        lblStatusMessage->style()->unpolish(lblStatusMessage);
-        lblStatusMessage->style()->polish(lblStatusMessage);
-        lblStatusMessage->setText("Connected");
-    });
 }

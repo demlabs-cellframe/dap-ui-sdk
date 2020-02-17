@@ -29,7 +29,7 @@ signals:
 
 
 private:
-    const QString BTN_SIGN_UP_NAME = "lblSignUp";
+    const QString BTN_SIGN_UP_NAME = "btnSignUp";
     const QString LBL_SIGN_IN_NAME = "lblSignIn";
 
 };

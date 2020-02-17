@@ -1,6 +1,7 @@
 
 include ( dialogs/dialogs.pri)
 include ( controls/controls.pri)
+include ( auxiliary/auxiliary.pri)
 
 
 SOURCES += \
