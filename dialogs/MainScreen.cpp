@@ -1,7 +1,9 @@
-#include "MainScreen.h"
+﻿#include "MainScreen.h"
 
 #include "StyledDropShadowEffect.h"
 #include <QTimer>
+#include "CustomComboBoxPopup.h"
+#include "ListModel.h"
 
 MainScreen::MainScreen(QObject * a_parent, QStackedWidget * a_sw)
     : DapUiScreen(a_parent, a_sw)
@@ -26,6 +28,22 @@ void MainScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
     cbbCountry->setItemIcon(0,icon);
     static QTimer timeButton;
     lblStatusMessage->setText("Not connected");
+
+
+    connect(cbbCountry,&CustomComboBox::showCustomWindow,[=]{
+        QList<DataModel> dataList;
+        DataModel tmpModel;
+        for(int i = 0; i < 6;i++)
+        {
+            tmpModel.text = "kelvin-testnet.Cellframe";
+            tmpModel.iconPath =":/pics/flag.svg";
+            dataList.append(tmpModel);
+        }
+        static ListModel *model = new ListModel(&dataList,this);
+        static CustomComboBoxPopup *s_comboBoxPopup = new CustomComboBoxPopup("Choose server",model,a_w);
+
+        s_comboBoxPopup->show();
+    });
 
     connect(btnSwitch,&QPushButton::clicked,[=]{
         lblStatusMessage->setProperty("state",1);
