@@ -3,6 +3,7 @@
 #include <QTimer>
 #include "CustomComboBoxPopup.h"
 #include "ListModel.h"
+#include "defines.h"
 
 const QString MainScreen::SCREEN_NAME = "Main";
 
