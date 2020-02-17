@@ -2,7 +2,8 @@ HEADERS += \
     $$PWD/AppStyleSheetHandler.h \
     $$PWD/ScreenInfo.h \
     $$PWD/UiScaling.h \
-    $$PWD/Utils.h
+    $$PWD/Utils.h \
+    $$PWD/defines.h
 
 SOURCES += \
     $$PWD/AppStyleSheetHandler.cpp \

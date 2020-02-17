@@ -1,9 +1,10 @@
 #ifndef ADAPTIVEWIDGET_H
 #define ADAPTIVEWIDGET_H
 
-#include "QStackedWidget"
+#include <QStackedWidget>
 #include <ScreenInfo.h>
 #include <QState>
+#include <QStyle>
 
 class AdaptiveWidget : public QStackedWidget
 {
@@ -41,6 +42,14 @@ protected:
     {
         for (auto widget : getTheSameWidgets<QWidget>(a_objName)) {
             widget->setProperty(a_property.toLatin1().constData(), a_value);
+        }
+    }
+
+    void updateChildStyle(const QString& a_objName)
+    {
+        for (auto widget : getTheSameWidgets<QWidget>(a_objName)) {
+            widget->style()->unpolish(widget);
+            widget->style()->polish(widget);
         }
     }
 
