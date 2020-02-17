@@ -1,5 +1,5 @@
 ﻿import QtQuick 2.0
-import QtQuick.Controls 2.2
+import QtQuick.Controls 2.0
 import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.0
 
@@ -135,10 +135,13 @@ ComboBox
                     {
                         anchors.verticalCenter: parent.verticalCenter
                         text: (popup.visible) ?
-                                  mainRow[index] :
+                                  (index < mainRow.length ? mainRow[index] : ""):
                                   mainLineText
-                        font: (fontComboBox.length > index) ?
+                        font: popup.visible ?
+                            ((fontComboBox.length > index) ?
                                   fontComboBox[index] :
+                                  fontComboBox[0]
+                             ) :
                                   fontComboBox[0];
                         width: popup.visible ?
                                  (topComboBoxRow.width - roleInterval * (comboBoxTextRole.length - 1)) / comboBoxTextRole.length :
@@ -165,6 +168,7 @@ ComboBox
             contentItem:
                 ListView 
                 {
+                    id: popupList
                     clip: true
                     implicitHeight: contentHeight
                     model: dapComboBox.popup.visible ? dapComboBox.delegateModel : null
