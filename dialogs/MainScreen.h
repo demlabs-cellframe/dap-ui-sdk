@@ -37,7 +37,11 @@ protected:
 
 
     const QString LBL_STATUS_MESSAGE = "lblStatusMessage";
-    const QString BTN_SWITCH = "btnSwitch";
+    const QString BTN_SWITCH         = "btnSwitch";
+    const QString CBB_SERVER         = "cbbServer";
+
+signals:
+    void connectionSwitched();
 
 private:
     static QString statusText(ConnectionStates a_state);

@@ -84,7 +84,7 @@
     <widget class="QWidget" name="wgtMarginTopCountry" native="true"/>
    </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="CustomComboBox" name="cbbCountry">
+    <widget class="CustomComboBox" name="cbbServer">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>

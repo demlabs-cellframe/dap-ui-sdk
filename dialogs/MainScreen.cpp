@@ -26,21 +26,23 @@ void MainScreen::setState(ConnectionStates a_state)
 
     this->setChildProperties(BTN_SWITCH, Properties::STATE, a_state);
     this->updateChildStyle  (BTN_SWITCH);
+
+    this->setChildProperties(CBB_SERVER, Properties::ENABLED, a_state == ConnectionStates::Disconnected);
 }
 
 void MainScreen::initVariantUi(QWidget *a_widget)
 {
-    CustomComboBox *cbbCountry = a_widget->findChild<CustomComboBox*>("cbbCountry");
-    QLabel *lblStatusMessage = a_widget->findChild<QLabel*>(LBL_STATUS_MESSAGE);
-    QPushButton *btnSwitch = a_widget->findChild<QPushButton*>(BTN_SWITCH);
+    CustomComboBox *cbbServer        = a_widget->findChild<CustomComboBox*>(CBB_SERVER)        ; Q_ASSERT(cbbServer       );
+    QLabel         *lblStatusMessage = a_widget->findChild<QLabel        *>(LBL_STATUS_MESSAGE); Q_ASSERT(lblStatusMessage);
+    QPushButton    *btnSwitch        = a_widget->findChild<QPushButton   *>(BTN_SWITCH)        ; Q_ASSERT(btnSwitch       );
 
-    Q_ASSERT(cbbCountry);
-    Q_ASSERT(lblStatusMessage);
-    Q_ASSERT(btnSwitch);
+    connect(btnSwitch, &QPushButton::clicked, [this]{
+        emit connectionSwitched();
+    });
 
-    cbbCountry->addItem("Natherlans");
+    cbbServer->addItem("Natherlans");
     QIcon icon(":/pics/flag.svg");
-    cbbCountry->setItemIcon(0,icon);
+    cbbServer->setItemIcon(0,icon);
 }
 
 QString MainScreen::statusText(ConnectionStates a_state)
@@ -53,6 +55,8 @@ QString MainScreen::statusText(ConnectionStates a_state)
             return "Connecting...";
         case ConnectionStates::Connected:
             return  "Connected";
+        case ConnectionStates::Disconnecting:
+            return  "Server down";
     }
-
+    return QString();
 }
