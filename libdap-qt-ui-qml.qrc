@@ -25,5 +25,7 @@
         <file>widgets/DapText.qml</file>
         <file>widgets/DapTextForm.ui.qml</file>
         <file>widgets/DapScrollViewHandling.qml</file>
+        <file>widgets/DapMessageBox.qml</file>
+        <file>widgets/DapMessageBoxForm.ui.qml</file>
     </qresource>
 </RCC>
