@@ -21,6 +21,7 @@ HEADERS  += \
 
 FORMS    +=  \
     $$PWD/ui/AccountScreen.ui \
+    $$PWD/ui/BugReportScreen.ui \
     $$PWD/ui/MainScreen.ui \
     $$PWD/ui/PasswordRecoveryScreen.ui \
     $$PWD/ui/MainScreenLayout.ui \
