@@ -5,6 +5,7 @@ SOURCES += \
     $$PWD/CustomComboBox.cpp \
     $$PWD/CustomComboBoxPopup.cpp \
     $$PWD/CustomLineHeightLabel.cpp \
+    $$PWD/CustomLineHeightTextEdit.cpp \
     $$PWD/CustomPlacementButton.cpp \
     $$PWD/CustomWidget.cpp \
     $$PWD/ListModel.cpp \
@@ -21,6 +22,7 @@ HEADERS += \
     $$PWD/CustomComboBox.h \
     $$PWD/CustomComboBoxPopup.h \
     $$PWD/CustomLineHeightLabel.h \
+    $$PWD/CustomLineHeightTextEdit.h \
     $$PWD/CustomPlacementButton.h \
     $$PWD/CustomWidget.h \
     $$PWD/ListModel.h \
