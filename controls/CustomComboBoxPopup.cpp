@@ -27,7 +27,7 @@ CustomComboBoxPopup::CustomComboBoxPopup(const QString &a_caption,ListModel *mod
 
     for(int i = 0; i < m_model->getData().size();i++)
     {
-        m_lvwList->setIndexWidget(m_model->index(i),new CustomWidget(i,m_model->getData().at(i),m_lvwList));
+        m_lvwList->setIndexWidget(m_model->index(i),new CustomWidget("", "", m_lvwList));
     }
 
     m_layout = new QVBoxLayout;

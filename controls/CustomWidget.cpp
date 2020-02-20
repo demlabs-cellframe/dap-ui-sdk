@@ -10,12 +10,12 @@ CustomWidget::CustomWidget(QWidget *parent)
 
 }
 
-CustomWidget::CustomWidget(int index,DataModel model,QListView *listView, QWidget *parent)
+CustomWidget::CustomWidget(QString iconPath/* = ""*/, QString text/* = ""*/, QWidget *parent/* = nullptr*/)
     : QWidget (parent)
 {
-    m_index = index;
-    m_data = &model;
-    m_listView = listView;
+//    m_index = index;
+//    m_data = &model;
+//    m_listView = listView;
 
     setObjectName("wgtDelegate");
     setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Fixed);
@@ -97,4 +97,14 @@ void CustomWidget::setStyle(int state)
         m_styledshadow->updateStyle(HOVER_SHADOW);
         setGraphicsEffect(m_styledshadow);
     }
+}
+
+bool CustomWidget::selected() const
+{
+    return m_selected;
+}
+
+void CustomWidget::setSelected(bool selected)
+{
+    m_selected = selected;
 }
