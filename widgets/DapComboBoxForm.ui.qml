@@ -85,7 +85,6 @@ ComboBox
     //@detalis mainLineText Text without unneccesary part.
     property string mainLineText
 
-
     width: popup.visible ? widthPopupComboBoxActive : widthPopupComboBoxNormal
     height: popup.visible ? heightComboBoxActive : heightComboBoxNormal
     anchors.verticalCenter: parent.verticalCenter
