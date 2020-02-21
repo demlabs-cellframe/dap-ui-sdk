@@ -1,4 +1,4 @@
-//**************************************************************************** 
+//****************************************************************************
 //                  Implements a general view of the tab.
 //****************************************************************************
 
@@ -19,6 +19,8 @@ Rectangle
     property Item dapRightPanel
     ///@detalis Tab frame.
     property alias dapFrame: frameTab
+
+    property alias rightPanel: rightPanel
 
     anchors.fill: parent
 

@@ -1,5 +1,5 @@
 ﻿import QtQuick 2.0
-import QtQuick.Controls 2.2
+import QtQuick.Controls 2.0
 import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.0
 
@@ -7,7 +7,6 @@ ComboBox
 {
     id: dapComboBox
 
-    property string comboBoxTextRole
     ///@detalis normalColorText Text color in normal state.
     property string normalColorText
     ///@detalis hilightColorText Text color in selected state.
@@ -60,12 +59,32 @@ ComboBox
     property string colorTopNormalDropShadow
     ///@detalis colorDropShadow Unboxed shadow color in expanded state.
     property string colorDropShadow
+
     ///@detalis fontComboBox Font setting combobox.
-    property alias fontComboBox: dapComboBox.font
-    ///@detalis mainLineText Text without unneccesary part.
+    property var fontComboBox: []
+    ///@detalis colorTextComboBox Color text setting combobox: array [normalColorText, hilightColorText] for every role
+    property var colorTextComboBox: []
+    ///@detalis colorMainTextComboBox Color mainline text setting combobox: array [normalTopColorText, hilightTopColorText] for every role
+    property var colorMainTextComboBox: []
+    ///@detalis elideTextComboBox Elide setting combobox.
+    property var elideTextComboBox: [Text.ElideRight]
+    ///@detalis alignTextComboBox Align setting combobox.
+    property var alignTextComboBox: [Text.AlignLeft]
+
+    ///@detalis comboBoxTextRole The model roles used for the ComboBox.
+    property var comboBoxTextRole: ["text"]
+    ///@detalis comboBoxTextRoleWidth The model roles width used for the ComboBox.
+    property var comboBoxTextRoleWidth: [100]
+    ///@detalis roleInterval The width between text of model roles used for the ComboBox.
+    property int roleInterval: 10
+    ///@detalis endRowPadding The width of padding at the end of one row at ComboBox where it is need.
+    property int endRowPadding: 10
+
+    ///@detalis mainRow The model role for the main line of cloded ComboBox.
+    property var mainRow: [""]
+    //@detalis mainLineText Text without unneccesary part.
     property string mainLineText
 
-    textRole: comboBoxTextRole
     width: popup.visible ? widthPopupComboBoxActive : widthPopupComboBoxNormal
     height: popup.visible ? heightComboBoxActive : heightComboBoxNormal
     anchors.verticalCenter: parent.verticalCenter
@@ -93,15 +112,50 @@ ComboBox
 
     //Main line text settings
     contentItem:
-        Text
+        Rectangle
         {
+            id: mainRectangle
             anchors.fill: parent
+            anchors.verticalCenter: parent.verticalCenter
             anchors.leftMargin: popup.visible ? sidePaddingActive : sidePaddingNormal
-            text: mainLineText
-            font: parent.font
-            color: popup.visible ? hilightColorTopText : normalColorTopText
-            verticalAlignment: Text.AlignVCenter
+             color: "transparent"
+
+             Row
+            {
+                id: topComboBoxRow
+                width: widthPopupComboBoxNormal - indicatorWidth - indicatorLeftInterval
+                height: mainRectangle.height
+                spacing: roleInterval
+                Repeater
+                {
+                    id: textCurrentRepeater
+                    model: (popup.visible) ? comboBoxTextRole.length : 1
+                    Text
+                    {
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: (popup.visible) ?
+                                  (index < mainRow.length ? mainRow[index] : ""):
+                                  mainLineText
+                        font: popup.visible ?
+                            ((fontComboBox.length > index) ?
+                                  fontComboBox[index] :
+                                  fontComboBox[0]
+                             ) :
+                                  fontComboBox[0];
+                        width: popup.visible ?
+                                 (topComboBoxRow.width - roleInterval * (comboBoxTextRole.length - 1)) / comboBoxTextRole.length :
+                                   contentWidth
+                        color: popup.visible ?
+                                   colorMainTextComboBox[index][1] :
+                                   colorMainTextComboBox[index][0]
+                        horizontalAlignment: popup.visible ?
+                                                 alignTextComboBox[index] :
+                                                 Text.AlignLeft
+                    }
+                }
+            }
         }
+
 
     //Customize drop-down list with shadow effect
     popup: 
@@ -113,6 +167,7 @@ ComboBox
             contentItem:
                 ListView 
                 {
+                    id: popupList
                     clip: true
                     implicitHeight: contentHeight
                     model: dapComboBox.popup.visible ? dapComboBox.delegateModel : null
@@ -149,5 +204,6 @@ ComboBox
             verticalOffset: topEffect ? 9 * pt : 0
             samples: topEffect ? 13 * pt : 0
             color: topEffect ? (dapComboBox.popup.visible ? colorDropShadow : colorTopNormalDropShadow) : "#000000"
+            z: -1
         }
     }
