@@ -4,6 +4,7 @@
 #include "CustomComboBoxPopup.h"
 #include "ListModel.h"
 #include "defines.h"
+#include "DapDataLocal.h"
 
 const QString MainScreen::SCREEN_NAME = "Main";
 
@@ -40,9 +41,15 @@ void MainScreen::initVariantUi(QWidget *a_widget)
         emit connectionSwitched();
     });
 
-    cbbServer->addItem("Natherlans");
-    QIcon icon(":/pics/flag.svg");
-    cbbServer->setItemIcon(0,icon);
+    for (DapServerInfo& server :DapDataLocal::me()->servers())
+    {
+        cbbServer->addItem(server.name);
+    }
+
+    cbbServer->QComboBox::setCurrentText(DapDataLocal::me()->serverName());
+
+//    QIcon icon(":/pics/flag.svg");
+//    cbbServer->setItemIcon(0,icon);
 }
 
 QString MainScreen::statusText(ConnectionStates a_state)

@@ -9,8 +9,6 @@ SignInScreen::SignInScreen(QWidget *a_parent)
     : AdaptiveScreen(a_parent)
 {
     create<Ui::SignInScreen>();
-
-    initScreen(this);
 }
 
 
