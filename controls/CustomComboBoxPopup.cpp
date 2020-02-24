@@ -1,45 +1,67 @@
 #include "CustomComboBoxPopup.h"
 
-CustomComboBoxPopup::CustomComboBoxPopup(const QString &a_caption,ListModel *model, QWidget *parent)
-    : QWidget (parent)
+
+CustomComboBoxPopup::CustomComboBoxPopup(QWidget *parent)
+    : QWidget (parent),
+      m_layout(new QVBoxLayout(this)),
+      m_layoutScroll(new QVBoxLayout(this)),
+      m_lblCaption(new QLabel(this)),
+      m_scaList(new QScrollArea(this)),
+      m_listButton(new QList<CustomPlacementButton_New*>())
 {
     setFixedSize(parent->width(),parent->height());
     setObjectName("wgtComboBoxPopup");
+    m_scaList->setObjectName("scaList");
 
-    if(model != nullptr)
-    {
-        m_model = model;
-    }
-    else
-    {
-        m_model = new ListModel(this);
-    }
+    m_scaList->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_scaList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    m_lblCaption = new QLabel(this);
     m_lblCaption->setObjectName("lblCaption");
-    m_lblCaption->setText(a_caption);
+
     m_lblCaption->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Fixed);
 
-    m_lvwList = new QListView(this);
-    m_lvwList->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
-    m_lvwList->setObjectName("lvwList");
-    m_lvwList->setModel(m_model);
-
-    for(int i = 0; i < m_model->getData().size();i++)
-    {
-        m_lvwList->setIndexWidget(m_model->index(i),new CustomWidget("", "", m_lvwList));
-    }
-
-    m_layout = new QVBoxLayout;
     m_layout->setSpacing(0);
     m_layout->setMargin(0);
     m_layout->addWidget(m_lblCaption);
-    m_layout->addWidget(m_lvwList);
+    m_layout->addWidget(m_scaList);
     m_layout->setAlignment(m_lblCaption,Qt::AlignHCenter);
-    m_layout->setAlignment(m_lvwList,Qt::AlignHCenter);
-    this->setLayout(m_layout);
-    connect(m_lvwList,&QListView::clicked,[=]{
-        setVisible(false);
-    });
+    m_layout->setAlignment(m_scaList,Qt::AlignHCenter);
 
+    this->setLayout(m_layout);
+
+    m_layoutScroll->setSpacing(0);
+    m_layoutScroll->setMargin(0);
+
+    m_scaList->setLayout(m_layoutScroll);
+
+}
+
+void CustomComboBoxPopup::setModel(QList<DataModel> *model)
+{
+    for(int i=0; i<model->size();i++)
+    {
+       // CustomPlacementButton_New tmp;
+        m_listButton->append(new CustomPlacementButton_New());
+        m_listButton->last()->setIcon(model->at(i).iconPath);
+        m_listButton->last()->setText(model->at(i).text);
+        m_listButton->last()->setObjectName("btnServer");
+        m_listButton->last()->addSubcontrol("arrow");
+
+        m_layoutScroll->addWidget(m_listButton->last());
+        m_layoutScroll->setAlignment(m_listButton->last(),Qt::AlignHCenter);
+        QWidget *tmpWidget = new QWidget();
+        if(i<model->size()-1)
+        {
+            tmpWidget->setProperty("state","sizeFixed"); //This setting is for fixing gaps between widgets other than the last.
+        }
+
+        m_layoutScroll->addWidget(tmpWidget);
+
+    }
+}
+
+
+void CustomComboBoxPopup::setTextCapture(const QString &text)
+{
+    m_lblCaption->setText(text);
 }

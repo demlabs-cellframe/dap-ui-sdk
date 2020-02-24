@@ -6,7 +6,7 @@
 namespace Properties {
     static const QString TEXT    = "text"   ;
     static const QString STATE   = "state"  ;
-    static const QString HOVER   = "hover"  ;
+    static const char* HOVER   = "hover"  ;
     static const QString CHECKED = "checked";
 }
 

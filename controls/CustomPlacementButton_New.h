@@ -7,6 +7,8 @@
 #include <QDebug>
 #include <QEvent>
 #include <QLabel>
+#include "StyledDropShadowEffect.h"
+#include <QFontMetrics>
 
 enum class ImagePos {Left, Right};
 
@@ -20,10 +22,10 @@ enum class ImagePos {Left, Right};
  *> #buttonName::text {
  *>     ...
  *> }
- *> #buttonName::text:hover {
+ *> #buttonName::text[hover="true"] {
  *>     ...
  *> }
- *> #buttonName::text:checked {
+ *> #buttonName::text[checked = "true"] {
  *>     ...
  *> }
  *> #buttonName::text:checked:hover {
@@ -32,10 +34,10 @@ enum class ImagePos {Left, Right};
  *> #buttonName::image {
  *>     ...
  *> }
- *> #buttonName::image:hover {
+ *> #buttonName::image[hover="true"]{
  *>     ...
  *> }
- *> #buttonName::image:checked {
+ *> #buttonName::image[checked = "true"]{
  *>     ...
  *> }
  *> #buttonName::image:checked:hover {
@@ -52,21 +54,37 @@ class CustomPlacementButton_New : public QPushButton
 public:
 
     explicit CustomPlacementButton_New(QWidget *a_parent = Q_NULLPTR);
-
+    /// Set text button.
+    /// @param text Set text.
     void setText(const QString &text);
-//    void setObjectName(const QString &name);
-//    void setCheckable(bool checkable);
-
+    /// Form initialization.
+    /// @param path Path to Image.
+    void setIcon(const QString &path);
+    /// Set object name..
+    /// @param name Object name.
+    void setObjectName(const QString &name);
+    /// Sets the state of the button.
+    /// @param isHover
+    /// @param isChecked
     void setState(bool isHover, bool isChecked);
-
+    /// .
+    /// @param a_id Window GUI widget.
     void addSubcontrol(QString a_id);
+    /// Image Position on button.
+    /// @param a_position Enum ImagePos Right or Left.
     void setImagePosition(ImagePos a_position = ImagePos::Left);
 
+
 private:
+    ///For effect.
+    StyledDropShadowEffect *m_styledshadow;
 protected:
+    /// Cursor in.
+    /// @param event Signal source.
     void enterEvent(QEvent *event);
+    /// Cursor out.
+    /// @param event Signal source.
     void leaveEvent(QEvent *event);
-//    void changeEvent(QEvent * event);
 
     QHBoxLayout *m_layout;
     QLabel m_lbLeftSpacing;         ///<label for left spacing
