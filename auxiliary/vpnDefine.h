@@ -5,7 +5,8 @@
 enum ConnectionStates {
     Disconnected = 0,
     Connecting   = 1,
-    Connected    = 2
+    Connected    = 2,
+    Disconnecting = 3
 };
 
 
