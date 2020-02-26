@@ -51,7 +51,7 @@ INCLUDEPATH += $$PWD
 android{
     DEFINES += DAP_PLATFORM_MOBILE DAP_SERVICE_CONNECT_TCP
     DEFINES += DAP_PLATFORM=\\\"mobile\\\"
-    QT +=  androidextras
+    #QT +=  androidextras
     SOURCES += $$PWD/DapServiceNativeAndroid.cpp
     HEADERS += $$PWD/DapServiceNativeAndroid.h
 }
@@ -106,7 +106,7 @@ android {
 
 
         ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../os/android
-        QT += androidextras
+        #QT += androidextras
         #ANDROID_ETRA_LIBS+= $$PWD/../../libDapClient/android/arm/lib/libssl.so
 
      #   CONFIG += link_prl
