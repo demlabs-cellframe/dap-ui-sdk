@@ -149,6 +149,7 @@ DapComboBoxForm
         return model.get(rowIndex)[modelRole];
     }
 
+
     function updateMainRow(fm, cbIndex, cbCurrentIndex, elTextArray, width)
     {
         if(cbIndex === cbCurrentIndex)
