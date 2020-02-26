@@ -30,7 +30,7 @@ Button
     ///@detalis indentTextRight: Indentation of the text from the right edge.
     property int indentTextRight
     ///@detalis fontButton Font setting.
-    property alias fontButton:buttonText.font
+    property alias fontButton: buttonText.font
     ///@detalis horizontalAligmentText Horizontal alignment.
     property alias horizontalAligmentText:buttonText.horizontalAlignment
     ///@detalis colorBackgroundButton This property overrides the background color.

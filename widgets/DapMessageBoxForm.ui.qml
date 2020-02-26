@@ -10,6 +10,11 @@ Rectangle
     property alias dapContentText: contentText
     property alias dapButtonOk: buttonOk
 
+    ///@details fontMessage Font setting.
+    property font fontMessage
+    ///@details fontButtonText Font setting.
+    property font fontButtonText
+
     layer.enabled: true
     layer.effect:
         DropShadow
@@ -38,10 +43,7 @@ Rectangle
             anchors.right: parent.right
             anchors.leftMargin: 30 * pt
             anchors.rightMargin: 30 * pt
-            font.pixelSize: 16 * pt
-            font.family: "Roboto"
-            font.styleName: "Normal"
-            font.weight: Font.Normal
+            font: fontMessage
             color: "#FFFFFF"
         }
     }
@@ -67,10 +69,7 @@ Rectangle
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.bottom: buttonOk.top
-            font.pixelSize: 16 * pt
-            font.family: "Roboto"
-            font.styleName: "Normal"
-            font.weight: Font.Normal
+            font: fontMessage
             color: "#070023"
             wrapMode: Text.WordWrap
         }
@@ -87,11 +86,9 @@ Rectangle
             colorBackgroundHover: "#D51F5D"
             colorButtonTextNormal: "#FFFFFF"
             colorButtonTextHover: "#FFFFFF"
-            fontButton.pixelSize: 14 * pt
+            fontButton: fontButtonText
             borderColorButton: "#FFFFFF"
             borderWidthButton: 0
-            fontButton.family: "Roboto"
-            fontButton.weight: Font.Normal
             horizontalAligmentText:Qt.AlignCenter
             colorTextButton: "#FFFFFF"
         }

@@ -27,5 +27,6 @@
         <file>widgets/DapScrollViewHandling.qml</file>
         <file>widgets/DapMessageBox.qml</file>
         <file>widgets/DapMessageBoxForm.ui.qml</file>
+        <file>DapFont.qml</file>
     </qresource>
 </RCC>
