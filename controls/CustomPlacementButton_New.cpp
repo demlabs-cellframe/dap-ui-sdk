@@ -171,5 +171,7 @@ void CustomPlacementButton_New::setWidgetState(QWidget *a_widget, bool a_isHover
 void CustomPlacementButton_New::setObjectName(const QString &name)
 {
     QPushButton::setObjectName(name);
-    m_styledShadow->updateStyleProperties();
+
+    if (m_styledShadow)
+        m_styledShadow->updateStyleProperties();
 }
