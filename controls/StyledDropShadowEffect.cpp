@@ -32,6 +32,9 @@ void StyledDropShadowEffect::updateStyle(StyleShedow a_style)
     case HOVER_SHADOW:setShadowProperties(hoverShadow);break;
     default:break;
     }
+
+    this->update();
+//    qobject_cast<QWidget*>(this->parent())->setGraphicsEffect(this);
 }
 
 ///@details Saving data to a shadow structure

@@ -21,6 +21,7 @@ void CustomComboBox::setObjectName(const QString &name)
 
 void CustomComboBox::showPopup()
 {
+    qDebug() << "show Popup";
     emit showCustomWindow();
 }
 /** @brief Reimplemented QComboBox::enterEvent is sent to the widget when the mouse cursor enters the widget.

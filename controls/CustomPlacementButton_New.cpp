@@ -36,12 +36,13 @@ CustomPlacementButton_New::CustomPlacementButton_New(QWidget *a_parent)
 
     //Adding subcontrols to layout
     m_layout->addWidget(&m_lbLeftSpacing);
-    for (QLabel *subcontrol: m_subcontrols){
+    for (QLabel *subcontrol: m_subcontrols)
+    {
         // Set up subcontroll ScaledContents:
         subcontrol->setScaledContents(true);
         m_layout->addWidget(subcontrol);
-        subcontrol->setProperty("hover", false  );
-        subcontrol->setProperty(qPrintable(Properties::CHECKED), false);
+
+        CustomPlacementButton_New::setWidgetState(subcontrol);
     }
     m_layout->addWidget(&m_lbRightSpacing);
 
@@ -51,9 +52,6 @@ CustomPlacementButton_New::CustomPlacementButton_New(QWidget *a_parent)
     connect(this, &QAbstractButton::toggled, [=](bool a_checked) {
         this->setState(this->underMouse(), a_checked);
     });
-
-    m_styledshadow = new StyledDropShadowEffect(this);
-
 }
 
 /** @brief Reimplemented QPushButton::setText method. Sets text property of text subcontrol.
@@ -77,19 +75,13 @@ void CustomPlacementButton_New::setState(bool isHover, bool isChecked)
     const char* hoverProperty   = qPrintable(Properties::HOVER);
     const char* checkedProperty = qPrintable(Properties::CHECKED);
 
-        m_lbText.setProperty(hoverProperty  , isHover  );
-        m_lbText.setProperty(checkedProperty, isChecked);
-        m_lbText.style()->unpolish(&m_lbText);
-        m_lbText.style()->polish(&m_lbText);
-
+    if (isHover != this->property(hoverProperty) && isChecked != this->property(checkedProperty))
+    {
         for (QLabel *subcontrol: m_subcontrols)
-        {
-            subcontrol->setProperty(hoverProperty  , isHover  );
-            subcontrol->setProperty(checkedProperty, isChecked);
+            setWidgetState(subcontrol, isHover, isChecked);
 
-            subcontrol->style()->unpolish(subcontrol);
-            subcontrol->style()->polish(subcontrol);
-        }
+        setWidgetState(this, isHover, isChecked);
+    }
 }
 
 /** @brief add new subcontrol and place it in layout
@@ -101,9 +93,8 @@ void CustomPlacementButton_New::addSubcontrol(QString a_id)
     QLabel *newSubcontrol = new QLabel((QPushButton*)this);
     newSubcontrol->setObjectName(a_id);
 
-//    newSubcontrol->widget()->setScaledContents(true);
-    newSubcontrol->setProperty("hover", false  );
-//    newSubcontrol->setProperty(qPrintable(Properties::CHECKED), false);
+    CustomPlacementButton_New::setWidgetState(newSubcontrol, this->underMouse(), isChecked());
+
     //add to list and layout
     m_subcontrols.append(newSubcontrol);
     m_layout->insertWidget(m_layout->count() - 1, newSubcontrol);
@@ -127,6 +118,12 @@ void CustomPlacementButton_New::setImagePosition(ImagePos a_position /*= ImagePo
     }
 }
 
+void CustomPlacementButton_New::setGraphicsEffect(StyledDropShadowEffect *a_effect)
+{
+    m_styledShadow = a_effect;
+    QPushButton::setGraphicsEffect(a_effect);
+}
+
 
 /** @brief event is sent to the widget when the mouse cursor enters the widget.
  *  @param event
@@ -138,8 +135,8 @@ void CustomPlacementButton_New::enterEvent(QEvent *event)
     if (isEnabled())
         setState(true, isChecked());
 
-    m_styledshadow->updateStyle(HOVER_SHADOW);
-    setGraphicsEffect(m_styledshadow);
+    if (m_styledShadow)
+        m_styledShadow->updateStyle(HOVER_SHADOW);
 }
 
 /** @brief A leave event is sent to the widget when the mouse cursor leaves the widget.
@@ -152,8 +149,20 @@ void CustomPlacementButton_New::leaveEvent(QEvent *event)
     if (isEnabled())
         setState(false, isChecked());
 
-    m_styledshadow->updateStyle(DEFAULT_SHADOW);
-    setGraphicsEffect(m_styledshadow);
+    if (m_styledShadow)
+        m_styledShadow->updateStyle(DEFAULT_SHADOW);
+}
+
+void CustomPlacementButton_New::setWidgetState(QWidget *a_widget, bool a_isHover, bool a_isChecked)
+{
+    const char* hoverProperty   = qPrintable(Properties::HOVER);
+    const char* checkedProperty = qPrintable(Properties::CHECKED);
+
+    a_widget->setProperty(hoverProperty  , a_isHover  );
+    a_widget->setProperty(checkedProperty, a_isChecked);
+
+    a_widget->style()->unpolish(a_widget);
+    a_widget->style()->polish  (a_widget);
 }
 
 /** @brief Reimplemented QPushButton::setObjectName method. Updates stylesheets.
@@ -162,7 +171,5 @@ void CustomPlacementButton_New::leaveEvent(QEvent *event)
 void CustomPlacementButton_New::setObjectName(const QString &name)
 {
     QPushButton::setObjectName(name);
-    m_styledshadow->updateStyleProperties();
-    setGraphicsEffect(m_styledshadow);
-
+    m_styledShadow->updateStyleProperties();
 }

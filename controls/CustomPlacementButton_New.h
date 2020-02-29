@@ -74,10 +74,11 @@ public:
     /// @param a_position Enum ImagePos Right or Left.
     void setImagePosition(ImagePos a_position = ImagePos::Left);
 
+    void setGraphicsEffect(StyledDropShadowEffect *a_effect);
 
 private:
     ///For effect.
-    StyledDropShadowEffect *m_styledshadow;
+    StyledDropShadowEffect *m_styledShadow = nullptr;
 protected:
     /// Cursor in.
     /// @param event Signal source.
@@ -92,6 +93,9 @@ protected:
     QLabel m_lbImage;    ///<label with image
     QLabel m_lbText;     ///<label with text
     QLabel m_lbRightSpacing;        ///<label for right spacing
+
+private:
+    static void setWidgetState(QWidget* a_widget, bool a_isHover=false, bool a_isChecked = false);
 };
 
 #endif // CUSTOMPLACEMENTBUTTON_NEW_H
