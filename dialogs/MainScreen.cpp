@@ -51,15 +51,18 @@ void MainScreen::initVariantUi(QWidget *a_widget)
 //    QIcon icon(":/pics/flag.svg");
 //    cbbServer->setItemIcon(0,icon);
 
-    Q_ASSERT(cbbCountry);
+    Q_ASSERT(cbbServer);
     Q_ASSERT(lblStatusMessage);
     Q_ASSERT(btnSwitch);
 
-    cbbCountry->addItem("Natherlans");
+    cbbServer->addItem("Natherlans");
     QIcon icon(":/pics/flag.svg");
-    cbbCountry->setItemIcon(0,icon);
+    cbbServer->setItemIcon(0,icon);
 
-    connect(cbbCountry,&CustomComboBox::showCustomWindow,[=]{
+    connect(cbbServer,&CustomComboBox::showCustomWindow,[=]
+    {
+        qDebug() << "server clicked";
+
         QList<DataModel> *dataList = new QList<DataModel>;
         DataModel tmpModel;
         for(int i = 0; i < 5;i++)
