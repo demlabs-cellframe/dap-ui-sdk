@@ -9,6 +9,7 @@ SOURCES += \
     $$PWD/CustomPlacementButton.cpp \
     $$PWD/CustomPlacementButton_New.cpp \
     $$PWD/CustomWidget.cpp \
+    $$PWD/FAQWidget.cpp \
     $$PWD/ListModel.cpp \
     $$PWD/ServersComboBox.cpp \
     $$PWD/AnimatedLineEdit.cpp \
@@ -27,6 +28,7 @@ HEADERS += \
     $$PWD/CustomPlacementButton.h \
     $$PWD/CustomPlacementButton_New.h \
     $$PWD/CustomWidget.h \
+    $$PWD/FAQWidget.h \
     $$PWD/ListModel.h \
     $$PWD/ServersComboBox.h \
     $$PWD/AnimatedLineEdit.h \

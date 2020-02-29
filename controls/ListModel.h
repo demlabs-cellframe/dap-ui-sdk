@@ -4,17 +4,12 @@
 #include <QAbstractListModel>
 #include <QDebug>
 #include <QString>
-#include <QStringList>
-//class ListModel
-//{
-//public:
-//    ListModel();
-//};
 
 struct DataModel
 {
     QString iconPath;
     QString text;
+    QString aboutText;
 };
 
 
