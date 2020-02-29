@@ -2,7 +2,7 @@
 #include "StyledDropShadowEffect.h"
 #include <QTimer>
 #include "CustomComboBoxPopup.h"
-#include "ListModel.h"
+
 #include "defines.h"
 #include "DapDataLocal.h"
 
@@ -50,6 +50,30 @@ void MainScreen::initVariantUi(QWidget *a_widget)
 
 //    QIcon icon(":/pics/flag.svg");
 //    cbbServer->setItemIcon(0,icon);
+
+    Q_ASSERT(cbbCountry);
+    Q_ASSERT(lblStatusMessage);
+    Q_ASSERT(btnSwitch);
+
+    cbbCountry->addItem("Natherlans");
+    QIcon icon(":/pics/flag.svg");
+    cbbCountry->setItemIcon(0,icon);
+
+    connect(cbbCountry,&CustomComboBox::showCustomWindow,[=]{
+        QList<DataModel> *dataList = new QList<DataModel>;
+        DataModel tmpModel;
+        for(int i = 0; i < 5;i++)
+        {
+            tmpModel.text = "kelvin-testnet.Cellframe";
+            tmpModel.iconPath =":/pics/flag.svg";
+            dataList->append(tmpModel);
+        }
+
+        CustomComboBoxPopup *s_comboBoxPopup = new CustomComboBoxPopup(a_widget);
+        s_comboBoxPopup->setModel(dataList);
+        s_comboBoxPopup->setTextCapture("Choose server");
+        s_comboBoxPopup->show();
+    });
 }
 
 QString MainScreen::statusText(ConnectionStates a_state)
