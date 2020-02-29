@@ -28,7 +28,7 @@ void MainScreen::setState(ConnectionStates a_state)
     this->setChildProperties(BTN_SWITCH, Properties::STATE, a_state);
     this->updateChildStyle  (BTN_SWITCH);
 
-    this->setChildProperties(CBB_SERVER, Properties::ENABLED, a_state == ConnectionStates::Disconnected);
+    //this->setChildProperties(CBB_SERVER, Properties::ENABLED, a_state == ConnectionStates::Disconnected);
 }
 
 void MainScreen::initVariantUi(QWidget *a_widget)
