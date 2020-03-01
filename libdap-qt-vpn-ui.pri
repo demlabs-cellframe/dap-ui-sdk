@@ -98,9 +98,9 @@ android {
         $$PWD/../os/android/res/values/libs.xml \
         $$PWD/../os/android/build.gradle \
         $$PWD/../os/android/gradle/wrapper/gradle-wrapper.properties \
-        $$PWD/../os/android/src/com/demlabs/dap/DapVpnMainActivity.java \
-        $$PWD/../os/android/src/com/demlabs/dap/DapVpnService.java \
-        $$PWD/../os/android/src/com/demlabs/dap/DapVpnServiceNative.java \
+        $$PWD/../os/android/src/com/demlabs/dapchain/MainActivity.java \
+        $$PWD/../os/android/src/com/demlabs/dapchain/DapChainVpnService.java \
+        $$PWD/../os/android/src/com/demlabs/dapchain/DapChainVpnServiceNative.java \
         $$PWD/../os/android/gradlew.bat \
         $$PWD/../os/android/AndroidManifest.xml
 
