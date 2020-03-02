@@ -93,6 +93,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="btnBack">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -148,13 +151,20 @@
           <widget class="QWidget" name="wgtLeftMarginTopFrame" native="true"/>
          </item>
          <item alignment="Qt::AlignBottom">
-          <widget class="QPushButton" name="btnAccount"/>
+          <widget class="QPushButton" name="btnAccount">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QWidget" name="wgtLeftMarginSettins" native="true"/>
          </item>
          <item alignment="Qt::AlignBottom">
           <widget class="QPushButton" name="btnSetting">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -165,6 +175,9 @@
          </item>
          <item alignment="Qt::AlignBottom">
           <widget class="CustomPlacementButton" name="btnLogOut">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
              <horstretch>0</horstretch>
@@ -197,6 +210,9 @@
          </item>
          <item alignment="Qt::AlignBottom">
           <widget class="QPushButton" name="btnBug">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -207,6 +223,9 @@
          </item>
          <item alignment="Qt::AlignBottom">
           <widget class="QPushButton" name="btnHelp">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string/>
            </property>

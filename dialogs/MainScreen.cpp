@@ -28,7 +28,7 @@ void MainScreen::setState(ConnectionStates a_state)
     this->setChildProperties(BTN_SWITCH, Properties::STATE, a_state);
     this->updateChildStyle  (BTN_SWITCH);
 
-    //this->setChildProperties(CBB_SERVER, Properties::ENABLED, a_state == ConnectionStates::Disconnected);
+    this->setChildProperties(CBB_SERVER, Properties::ENABLED, a_state == ConnectionStates::Disconnected);
 }
 
 void MainScreen::initVariantUi(QWidget *a_widget)
@@ -41,9 +41,21 @@ void MainScreen::initVariantUi(QWidget *a_widget)
         emit connectionSwitched();
     });
 
-    for (DapServerInfo& server :DapDataLocal::me()->servers())
+
+    if (m_serversModel)
+        cbbServer->setModel(m_serversModel);
+    else
     {
-        cbbServer->addItem(server.name);
+        m_serversModel = cbbServer->model();
+
+        for (DapServerInfo& server :DapDataLocal::me()->servers())
+            cbbServer->addItem(server.name);
+
+        connect(DapDataLocal::me(), &DapDataLocal::serverAdded, [cbbServer](const DapServerInfo& a_serverInfo){
+            cbbServer->addItem(a_serverInfo.name);
+        });
+
+        connect(DapDataLocal::me(), SIGNAL(serversCleared()), cbbServer, SLOT(clear()));
     }
 
     cbbServer->QComboBox::setCurrentText(DapDataLocal::me()->serverName());
@@ -51,31 +63,34 @@ void MainScreen::initVariantUi(QWidget *a_widget)
 //    QIcon icon(":/pics/flag.svg");
 //    cbbServer->setItemIcon(0,icon);
 
-    Q_ASSERT(cbbServer);
-    Q_ASSERT(lblStatusMessage);
-    Q_ASSERT(btnSwitch);
-
-    cbbServer->addItem("Natherlans");
-    QIcon icon(":/pics/flag.svg");
-    cbbServer->setItemIcon(0,icon);
+//    cbbServer->addItem("Natherlans");
+//    QIcon icon(":/pics/flag.svg");
+//    cbbServer->setItemIcon(0,icon);
 
     connect(cbbServer,&CustomComboBox::showCustomWindow,[=]
     {
         qDebug() << "server clicked";
 
-        QList<DataModel> *dataList = new QList<DataModel>;
-        DataModel tmpModel;
-        for(int i = 0; i < 5;i++)
-        {
-            tmpModel.text = "kelvin-testnet.Cellframe";
-            tmpModel.iconPath =":/pics/flag.svg";
-            dataList->append(tmpModel);
-        }
+//        QList<DataModel> *dataList = new QList<DataModel>;
+//        DataModel tmpModel;
+//        for(int i = 0; i < 5;i++)
+//        {
+//            tmpModel.text = "kelvin-testnet.Cellframe";
+//            tmpModel.iconPath =":/pics/flag.svg";
+//            dataList->append(tmpModel);
+//        }
 
         CustomComboBoxPopup *s_comboBoxPopup = new CustomComboBoxPopup(a_widget);
-        s_comboBoxPopup->setModel(dataList);
-        s_comboBoxPopup->setTextCapture("Choose server");
+        s_comboBoxPopup->setModel(cbbServer->model());
+        s_comboBoxPopup->setCaption("Choose server");
         s_comboBoxPopup->show();
+
+        connect(s_comboBoxPopup, &CustomComboBoxPopup::itemSelected, [this, cbbServer](int a_index){
+            QString serverName = cbbServer->itemText(a_index);
+            cbbServer->setCurrentText(serverName);
+            emit this->serverChanged(serverName);
+        });
+
     });
 }
 

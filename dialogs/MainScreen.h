@@ -42,9 +42,12 @@ protected:
 
 signals:
     void connectionSwitched();
+    void serverChanged(const QString& serverName);
 
 private:
     static QString statusText(ConnectionStates a_state);
+
+    QAbstractItemModel *m_serversModel = nullptr;
 };
 
 #endif // MAINSCREEN_H
