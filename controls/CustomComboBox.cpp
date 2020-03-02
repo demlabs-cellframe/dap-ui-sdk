@@ -30,6 +30,10 @@ void CustomComboBox::showPopup()
 void CustomComboBox:: enterEvent(QEvent *event)
 {
     Q_UNUSED(event);
+
+    if (!this->isEnabled())
+        return;
+
     m_styledshadow->updateStyle(HOVER_SHADOW);
     setGraphicsEffect(m_styledshadow);
 

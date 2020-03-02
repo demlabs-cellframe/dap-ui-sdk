@@ -10,6 +10,8 @@ namespace Properties
     static const QString ENABLED = "enabled";
     static const QString HOVER   = "hover"  ;
     static const QString CHECKED = "checked";
+    static const QString VISIBLE = "visible";
+    static const QString VALID = "valid";
 }
 
 
