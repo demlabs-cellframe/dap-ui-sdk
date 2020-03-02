@@ -34,6 +34,9 @@ public:
     const DapServerInfo& serverTheBest(){ return m_servers.at(0) ;  }
     void setServerTheBest(const DapServerInfo& server);
 
+    DapServerInfo* currentServer();
+    void setCurrentServer(int a_serverIndex);
+
     QString locationToIconPath(DapServerLocation loc);
     
     QString login() const;
@@ -77,4 +80,12 @@ signals:
     /// Signal emitted if server name has changed.
     /// @param serverName Server name.
     void serverNameChanged(const QString& serverName);
+
+    void serverAdded(const DapServerInfo& dsi);
+
+    void serversCleared();
+
+private:
+
+    DapServerInfo* m_currentServer = nullptr;
 };
