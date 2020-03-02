@@ -7,6 +7,7 @@
 
 #include "AdaptiveScreen.h"
 #include "ScreenInfo.h"
+#include "vpnDefine.h"
 
 
 class SignInScreen : public AdaptiveScreen
@@ -20,10 +21,9 @@ public:
     virtual QString screenName() override;
     static const QString SCREEN_NAME;
 
-public slots:
+    void setState(ConnectionStates a_state);
 
-    void setupInputState();
-    void setupConnectingState();
+public slots:
 
     void setEmail   (const QString &a_email   );
     void setPassword(const QString &a_password);
@@ -50,7 +50,7 @@ private:
     bool checkEmail();
 
     void setValidationStateForEdit(const QString& a_editName, const QString& a_errorLabelName, bool a_valid = true);
-
+    QString buttonText(ConnectionStates a_connectionState);
 
     const QString EDT_EMAIL_NAME     = "edtEmail";
     const QString EDT_PASSWORD_NAME  = "edtPassword";
@@ -69,7 +69,6 @@ private:
 
     QString m_email;
     QString m_password;
-
 };
 
 

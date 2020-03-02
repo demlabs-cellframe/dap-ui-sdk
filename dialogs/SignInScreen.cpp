@@ -53,14 +53,10 @@ QString SignInScreen::screenName()
     return SCREEN_NAME;
 }
 
-void SignInScreen::setupInputState()
+void SignInScreen::setState(ConnectionStates a_state)
 {
-    setChildProperties(BTN_SIGN_IN_NAME, "text", "Sign in");
-}
-
-void SignInScreen::setupConnectingState()
-{
-    setChildProperties(BTN_SIGN_IN_NAME, "text", "Service connecting...");
+    setChildProperties(BTN_SIGN_IN_NAME, Properties::TEXT   , buttonText(a_state));
+    this->setProperty(qPrintable(Properties::ENABLED), a_state == ConnectionStates::Disconnected);
 }
 
 void SignInScreen::setEmail(const QString &a_email)
@@ -166,5 +162,16 @@ void SignInScreen::setValidationStateForEdit(const QString &a_editName, const QS
     this->setChildProperties(a_errorLabelName, qPrintable(Properties::VISIBLE), !a_valid);
 
     updateChildStyle(a_editName);
+}
+
+QString SignInScreen::buttonText(ConnectionStates a_connectionState)
+{
+    switch (a_connectionState)
+    {
+        case ConnectionStates::Connecting:
+            return "Server connecting...";
+        default:
+            return "Sign in";
+    }
 }
 

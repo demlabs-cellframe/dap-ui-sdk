@@ -11,6 +11,7 @@ DapCmdPingServer::DapCmdPingServer(QObject *parent)
 
 void DapCmdPingServer::sendPingCmd(const QString& host, quint16 port)
 {
+    qDebug() << "sendPingCmd" << host << " " << port;
     QJsonObject obj;
     obj["host"] = host;
     obj["port"] = port;
