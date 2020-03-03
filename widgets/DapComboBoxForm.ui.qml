@@ -84,6 +84,8 @@ ComboBox
     property var mainRow: [""]
     //@detalis mainLineText Text without unneccesary part.
     property string mainLineText
+    ///@details isDefaultNeedToAppend Sign to add default data to the beginning of model
+    property bool isDefaultNeedToAppend: false
 
 
     width: popup.visible ? widthPopupComboBoxActive : widthPopupComboBoxNormal
@@ -134,8 +136,9 @@ ComboBox
                     Text
                     {
                         anchors.verticalCenter: parent.verticalCenter
+
                         text: (popup.visible) ?
-                                  (index < mainRow.length ? mainRow[index] : ""):
+                                  (dapComboBox.currentIndex === -1 ? mainLineText : (index < mainRow.length ? mainRow[index] : "") ) :
                                   mainLineText
                         font: popup.visible ?
                             ((fontComboBox.length > index) ?
