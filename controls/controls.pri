@@ -13,7 +13,11 @@ SOURCES += \
     $$PWD/AnimatedLineEdit.cpp \
     $$PWD/ScreenOverlaying.cpp \
     $$PWD/StyledDropShadowEffect.cpp \
-    $$PWD/StyledSubcontrol.cpp
+    $$PWD/StyledSubcontrol.cpp \
+    $$PWD/WidgetDelegateListView/CustomPlacementButtonDelegate.cpp \
+    $$PWD/WidgetDelegateListView/WidgetDelegateBase.cpp \
+    $$PWD/WidgetDelegateListView/WidgetDelegateFactoryBase.cpp \
+    $$PWD/WidgetDelegateListView/WidgetDelegateListView.cpp
 
 HEADERS += \
     $$PWD/AdaptiveWidget.h \
@@ -30,7 +34,11 @@ HEADERS += \
     $$PWD/AnimatedLineEdit.h \
     $$PWD/ScreenOverlaying.h \
     $$PWD/StyledDropShadowEffect.h \
-    $$PWD/StyledSubcontrol.h
+    $$PWD/StyledSubcontrol.h \
+    $$PWD/WidgetDelegateListView/CustomPlacementButtonDelegate.h \
+    $$PWD/WidgetDelegateListView/WidgetDelegateBase.h \
+    $$PWD/WidgetDelegateListView/WidgetDelegateFactoryBase.h \
+    $$PWD/WidgetDelegateListView/WidgetDelegateListView.h
 
 INCLUDEPATH += $$PWD
 
