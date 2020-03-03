@@ -7,7 +7,6 @@ SOURCES += \
     $$PWD/CustomLineHeightLabel.cpp \
     $$PWD/CustomLineHeightTextEdit.cpp \
     $$PWD/CustomPlacementButton.cpp \
-    $$PWD/CustomPlacementButton_New.cpp \
     $$PWD/FAQWidget.cpp \
     $$PWD/ServersComboBox.cpp \
     $$PWD/AnimatedLineEdit.cpp \
@@ -28,7 +27,6 @@ HEADERS += \
     $$PWD/CustomLineHeightLabel.h \
     $$PWD/CustomLineHeightTextEdit.h \
     $$PWD/CustomPlacementButton.h \
-    $$PWD/CustomPlacementButton_New.h \
     $$PWD/FAQWidget.h \
     $$PWD/ServersComboBox.h \
     $$PWD/AnimatedLineEdit.h \

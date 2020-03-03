@@ -7,7 +7,7 @@
 #include <QStandardItemModel>
 #include <QStandardItem>
 #include <QScrollArea>
-#include "CustomPlacementButton_New.h"
+#include "CustomPlacementButton.h"
 
 
 struct DataModel
@@ -39,7 +39,7 @@ private:
     QVBoxLayout *m_layoutScroll;
     QLabel *m_lblCaption;
     QScrollArea *m_scaList;
-    QList<CustomPlacementButton_New*> m_listButton;
+    QList<CustomPlacementButton*> m_listButton;
 };
 
 #endif // CUSTOMCOMBOBOXPOPUP_H

@@ -40,7 +40,7 @@ void CustomComboBoxPopup::setModel(QList<DataModel> *model)
     for(int i=0; i<model->size();i++)
     {
        // CustomPlacementButton_New tmp;
-        m_listButton.append(new CustomPlacementButton_New());
+        m_listButton.append(new CustomPlacementButton());
         m_listButton.last()->setIcon(model->at(i).iconPath);
         m_listButton.last()->setText(model->at(i).text);
         m_listButton.last()->setObjectName("btnServer");
@@ -64,7 +64,7 @@ void CustomComboBoxPopup::setModel(QAbstractItemModel *a_model)
     for(int i=0; i<a_model->rowCount(); i++)
     {
        // CustomPlacementButton_New tmp;
-        CustomPlacementButton_New *newButton = new CustomPlacementButton_New;
+        CustomPlacementButton *newButton = new CustomPlacementButton;
         m_listButton.append(newButton);
 //        newButton->setIcon(a_model->at(i).iconPath);
         newButton->setText(a_model->data(a_model->index(i, 0)).toString());
