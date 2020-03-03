@@ -7,13 +7,11 @@ SOURCES += \
     $$PWD/CustomLineHeightLabel.cpp \
     $$PWD/CustomLineHeightTextEdit.cpp \
     $$PWD/CustomPlacementButton.cpp \
-    $$PWD/CustomPlacementButton_New.cpp \
     $$PWD/FAQWidget.cpp \
     $$PWD/ServersComboBox.cpp \
     $$PWD/AnimatedLineEdit.cpp \
     $$PWD/ScreenOverlaying.cpp \
-    $$PWD/StyledDropShadowEffect.cpp \
-    $$PWD/StyledSubcontrol.cpp
+    $$PWD/StyledDropShadowEffect.cpp
 
 HEADERS += \
     $$PWD/AdaptiveWidget.h \
@@ -24,13 +22,11 @@ HEADERS += \
     $$PWD/CustomLineHeightLabel.h \
     $$PWD/CustomLineHeightTextEdit.h \
     $$PWD/CustomPlacementButton.h \
-    $$PWD/CustomPlacementButton_New.h \
     $$PWD/FAQWidget.h \
     $$PWD/ServersComboBox.h \
     $$PWD/AnimatedLineEdit.h \
     $$PWD/ScreenOverlaying.h \
-    $$PWD/StyledDropShadowEffect.h \
-    $$PWD/StyledSubcontrol.h
+    $$PWD/StyledDropShadowEffect.h
 
 INCLUDEPATH += $$PWD
 
