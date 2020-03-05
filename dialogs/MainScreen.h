@@ -36,9 +36,11 @@ protected:
     virtual void initVariantUi(QWidget *a_widget) override;
 
 
-    const QString LBL_STATUS_MESSAGE = "lblStatusMessage";
-    const QString BTN_SWITCH         = "btnSwitch";
-    const QString CBB_SERVER         = "cbbServer";
+    const QString LBL_STATUS_MESSAGE_NAME = "lblStatusMessage";
+    const QString BTN_SWITCH_NAME         = "btnSwitch";
+    const QString CBB_SERVER_NAME         = "cbbServer";
+
+    const QString CHOOSE_SERVER_CAPTION   = "Choose server";
 
 signals:
     void connectionSwitched();
