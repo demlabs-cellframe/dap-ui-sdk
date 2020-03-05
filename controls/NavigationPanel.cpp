@@ -3,16 +3,14 @@
 #include "ui_NavigationPanel.h"
 
 NavigationPanel::NavigationPanel(QWidget *parent)
-    : QWidget(parent)
+    : AdaptiveWidget(parent)
 {
-    Ui::NavigationPanel* panelUI = new Ui::NavigationPanel();
-    panelUI->setupUi(this);
+    this->create<Ui::NavigationPanel>();
+}
 
-        CustomPlacementButton *btnLogOut = parent->findChild<CustomPlacementButton*>("btnLogOut");
+void NavigationPanel::initVariantUi(QWidget *a_widget)
+{
+    CustomPlacementButton *btnLogOut = a_widget->findChild<CustomPlacementButton*>(BTN_LOGOUT_NAME); Q_ASSERT(btnLogOut);
 
-        Q_ASSERT(btnLogOut);
-
-        btnLogOut->setObjectName("btnLogOut");
-        btnLogOut->setText("Logout");
-        btnLogOut->setImagePosition(ImagePos::Right);
+    btnLogOut->setImagePosition(ImagePos::Right);
 }
