@@ -1,60 +1,34 @@
 #include "CustomComboBox.h"
 #include <QDebug>
+#include "CustomComboBoxPopup.h"
+
 /** @brief constructor
  *  @param a_parent object parent
  */
-CustomComboBox::CustomComboBox(QWidget *parent):
-    QComboBox (parent)
+CustomComboBox::CustomComboBox(QWidget *parent)
+    : QComboBox (parent)
 {
-    m_styledshadow = new StyledDropShadowEffect(this);
-}
-
-/** @brief Reimplemented QComboBox::setObjectName method. Updates stylesheets.
- *  @param text Text
- */
-void CustomComboBox::setObjectName(const QString &name)
-{
-    QComboBox::setObjectName(name);
-    m_styledshadow->updateStyleProperties();
-    setGraphicsEffect(m_styledshadow);
 }
 
 void CustomComboBox::showPopup()
 {
-    qDebug() << "show Popup";
-    emit showCustomWindow();
-}
-/** @brief Reimplemented QComboBox::enterEvent is sent to the widget when the mouse cursor enters the widget.
- *  @param event
- */
-void CustomComboBox:: enterEvent(QEvent *event)
-{
-    Q_UNUSED(event);
+    if (m_popup)
+        m_popup->show();
 
-    if (!this->isEnabled())
-        return;
-
-    m_styledshadow->updateStyle(HOVER_SHADOW);
-    setGraphicsEffect(m_styledshadow);
-
-    setProperty("hoverState",1);
-    style()->unpolish(this);
-    style()->polish(this);
-    update();
+    else
+        this->QComboBox::showPopup();
 }
 
-/** @brief Reimplemented QComboBox::leaveEvent is sent to the widget when the mouse cursor leaves the widget.
- *  @param event
- */
-void CustomComboBox::leaveEvent(QEvent *event)
+CustomComboBoxPopup *CustomComboBox::popup() const
 {
-    Q_UNUSED(event);
+    return m_popup;
+}
 
-    m_styledshadow->updateStyle(DEFAULT_SHADOW);
-    setGraphicsEffect(m_styledshadow);
-
-    setProperty("hoverState",0);
-    style()->unpolish(this);
-    style()->polish(this);
-    update();
+void CustomComboBox::setPopup(CustomComboBoxPopup *popup)
+{
+    m_popup = popup;
+    popup->setModel(this->model());
+    popup->setCurrentIndex(this->currentIndex());
+    connect(this, SIGNAL(currentIndexChanged(int)), popup, SLOT(setCurrentIndex(int)));
+    connect(popup, SIGNAL(itemSelected(int)), this, SLOT(setCurrentIndex(int)));
 }

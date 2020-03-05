@@ -12,6 +12,7 @@ namespace Properties
     static const QString CHECKED = "checked";
     static const QString VISIBLE = "visible";
     static const QString VALID = "valid";
+    static const QString SELECTED = "selected";
 }
 
 

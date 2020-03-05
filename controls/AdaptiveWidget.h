@@ -14,63 +14,20 @@ public:
     QWidget* variant(ScreenInfo::Rotation a_rotation = ScreenInfo::Rotation::Horizontal);
 
 protected:
+    template<class T>
+    inline void create();
 
     template<class T>
-    void setupWidgetForm(QWidget * a_widget)
-    {
-        static T * l_uiForm = nullptr;
-        delete l_uiForm;
-        l_uiForm = new T;
-        l_uiForm->setupUi(a_widget);
-    }
+    void setupWidgetForm(QWidget * a_widget);
 
     virtual void initVariantUi(QWidget * a_widget) = 0;
 
-    template<class T>
-    inline void create()
-    {
-        ///TODO: add horisontal rotation for mobile.
-        QWidget *currentWidget (new QWidget(this));
 
-        this->addWidget(currentWidget);
-        this->setupWidgetForm<T>(currentWidget);
-
-        initVariantUi(currentWidget);
-    }
-
-    void setChildProperties(const QString& a_objName, const QString& a_property, const QVariant& a_value)
-    {
-        for (auto widget : getTheSameWidgets<QWidget>(a_objName)) {
-            widget->setProperty(a_property.toLatin1().constData(), a_value);
-        }
-    }
-
-    void updateChildStyle(const QString& a_objName)
-    {
-        for (auto widget : getTheSameWidgets<QWidget>(a_objName)) {
-            widget->style()->unpolish(widget);
-            widget->style()->polish(widget);
-        }
-    }
+    void setChildProperties(const QString& a_objName, const QString& a_property, const QVariant& a_value);
+    void updateChildStyle(const QString& a_objName);
 
     template <class T /*= QWidget*/>
-    inline QList<T*> getTheSameWidgets(const QString& a_objName)
-    {
-        QList<T*> widgetsList;
-        T* foundWidget = currentWidget()->findChild<T*>(a_objName);
-        if (foundWidget)
-            widgetsList.append(foundWidget);
-
-        ///TODO: add horisontal rotation for mobile.
-
-//        for (auto l_rotation: ScreenInfo::allRotations())
-//        {
-//            T* foundWidget = page(l_rotation)->findChild<T*>(a_objName);
-//            if (foundWidget)
-//                widgets.append(foundWidget);
-//        }     
-        return widgetsList;
-    }
+    inline QList<T*> getTheSameWidgets(const QString& a_objName);
 
     template <class T /*= QWidget*/>
     void assignWidgetPropertyForState(QState *a_state, const QString& a_objName, const QString& a_property,  const QVariant& a_value);
@@ -79,6 +36,53 @@ private:
     QMap<ScreenInfo::Rotation, QWidget*> m_variants;
 
 };
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+template<class T>
+inline void AdaptiveWidget::create()
+{
+    ///TODO: add horisontal rotation for mobile.
+    QWidget *currentWidget (new QWidget(this));
+
+    this->addWidget(currentWidget);
+    this->setupWidgetForm<T>(currentWidget);
+
+    initVariantUi(currentWidget);
+}
+
+template<class T>
+void AdaptiveWidget::setupWidgetForm(QWidget * a_widget)
+{
+    static T * l_uiForm = nullptr;
+    delete l_uiForm;
+    l_uiForm = new T;
+    l_uiForm->setupUi(a_widget);
+
+    //TODO: delete l_uiForm after use
+}
+
+
+
+template <class T /*= QWidget*/>
+inline QList<T*> AdaptiveWidget::getTheSameWidgets(const QString& a_objName)
+{
+    QList<T*> widgetsList;
+    T* foundWidget = currentWidget()->findChild<T*>(a_objName);
+    if (foundWidget)
+        widgetsList.append(foundWidget);
+
+    ///TODO: add horisontal rotation for mobile.
+
+//        for (auto l_rotation: ScreenInfo::allRotations())
+//        {
+//            T* foundWidget = page(l_rotation)->findChild<T*>(a_objName);
+//            if (foundWidget)
+//                widgets.append(foundWidget);
+//        }
+    return widgetsList;
+}
 
 template<class T>
 void AdaptiveWidget::assignWidgetPropertyForState(QState *a_state, const QString &a_objName, const QString &a_property, const QVariant &a_value)

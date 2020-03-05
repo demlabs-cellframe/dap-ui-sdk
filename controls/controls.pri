@@ -2,6 +2,7 @@ SOURCES += \
     $$PWD/AdaptiveWidget.cpp \
     $$PWD/AnimationChangingWidget.cpp \
     $$PWD/ComboBoxDelegate.cpp \
+    $$PWD/CustomButtonComboBox.cpp \
     $$PWD/CustomComboBox.cpp \
     $$PWD/CustomComboBoxPopup.cpp \
     $$PWD/CustomLineHeightLabel.cpp \
@@ -12,16 +13,15 @@ SOURCES += \
     $$PWD/AnimatedLineEdit.cpp \
     $$PWD/ScreenOverlaying.cpp \
     $$PWD/StyledDropShadowEffect.cpp \
-    $$PWD/StyledSubcontrol.cpp \
-    $$PWD/WidgetDelegateListView/CustomPlacementButtonDelegate.cpp \
+    $$PWD/WidgetDelegateListView/CustomButtonDelegate.cpp \
     $$PWD/WidgetDelegateListView/WidgetDelegateBase.cpp \
-    $$PWD/WidgetDelegateListView/WidgetDelegateFactoryBase.cpp \
     $$PWD/WidgetDelegateListView/WidgetDelegateListView.cpp
 
 HEADERS += \
     $$PWD/AdaptiveWidget.h \
     $$PWD/AnimationChangingWidget.h \
     $$PWD/ComboBoxDelegate.h \
+    $$PWD/CustomButtonComboBox.h \
     $$PWD/CustomComboBox.h \
     $$PWD/CustomComboBoxPopup.h \
     $$PWD/CustomLineHeightLabel.h \
@@ -32,11 +32,12 @@ HEADERS += \
     $$PWD/AnimatedLineEdit.h \
     $$PWD/ScreenOverlaying.h \
     $$PWD/StyledDropShadowEffect.h \
-    $$PWD/StyledSubcontrol.h \
-    $$PWD/WidgetDelegateListView/CustomPlacementButtonDelegate.h \
+    $$PWD/WidgetDelegateListView/CustomButtonDelegate.h \
+    $$PWD/WidgetDelegateListView/CustomButtonDelegateFactory.h \
     $$PWD/WidgetDelegateListView/WidgetDelegateBase.h \
     $$PWD/WidgetDelegateListView/WidgetDelegateFactoryBase.h \
     $$PWD/WidgetDelegateListView/WidgetDelegateListView.h
 
 INCLUDEPATH += $$PWD
+INCLUDEPATH += $$PWD/WidgetDelegateListView
 

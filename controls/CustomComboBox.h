@@ -4,32 +4,23 @@
 
 #include <QComboBox>
 #include "StyledDropShadowEffect.h"
+class CustomComboBoxPopup;
 
-/** @brief QComboBox with changing downArrow when hover on control.
 
-*To indicate the selection of an object in css
-*
-*#ComboBoxName[hoverState = "1"]::drop-down,
-*{
-*    image: url(path to icon);
-*}
-*
-* Everything else unchanged
-*/
 class CustomComboBox : public QComboBox
 {
     Q_OBJECT
 public:
     CustomComboBox(QWidget *parent = Q_NULLPTR);
-    void setObjectName(const QString &name);
-    void showPopup();
-signals:
-    void showCustomWindow();
-protected:
-    void enterEvent(QEvent *event);
-    void leaveEvent(QEvent *event);
+
+    virtual void showPopup() override;
+
+    CustomComboBoxPopup *popup() const;
+    void setPopup(CustomComboBoxPopup *popup);
+
 private:
-    StyledDropShadowEffect *m_styledshadow;
+
+    CustomComboBoxPopup *m_popup = nullptr;
 
 };
 #endif // CUSTOMCOMBOBOX_H

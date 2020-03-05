@@ -66,7 +66,8 @@ public:
     /// Sets the state of the button.
     /// @param isHover
     /// @param isChecked
-    void setState(bool isHover, bool isChecked);
+    void setState(bool a_isHover, bool a_isChecked);
+    void setProperty(const QString& a_property, const QVariant& a_value);
     /// .
     /// @param a_id Window GUI widget.
     void addSubcontrol(QString a_id);

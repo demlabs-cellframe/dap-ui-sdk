@@ -1,6 +1,8 @@
 #include "CustomPlacementButton.h"
+
 #include "AppStyleSheetHandler.h"
 #include "defines.h"
+#include "Utils.h"
 
 /** @brief constructor
  *  @param a_parent object parent
@@ -70,18 +72,27 @@ void CustomPlacementButton::setIcon(const QString &path)
 
 /** @brief Updates appearance of image and text
  */
-void CustomPlacementButton::setState(bool isHover, bool isChecked)
+void CustomPlacementButton::setState(bool a_isHover, bool a_isChecked)
 {
-    const char* hoverProperty   = qPrintable(Properties::HOVER);
-    const char* checkedProperty = qPrintable(Properties::CHECKED);
+    setProperty(Properties::HOVER  , a_isHover  );
+    setProperty(Properties::CHECKED, a_isChecked);
+}
 
-    if (isHover != this->property(hoverProperty) && isChecked != this->property(checkedProperty))
+void CustomPlacementButton::setProperty(const QString &a_property, const QVariant &a_value)
+{
+    const char* property = a_property.toStdString().c_str();
+
+    if (this->property(property) == a_value)
+        return;
+
+    Utils::setPropertyAndUpdateStyle(&m_lbLeftSpacing, property, a_value);
+
+    for (QWidget* subcontrol: m_subcontrols)
     {
-        for (QLabel *subcontrol: m_subcontrols)
-            setWidgetState(subcontrol, isHover, isChecked);
-
-        setWidgetState(this, isHover, isChecked);
+        Utils::setPropertyAndUpdateStyle(subcontrol, property, a_value);
     }
+
+    Utils::setPropertyAndUpdateStyle(&m_lbRightSpacing, property, a_value);
 }
 
 /** @brief add new subcontrol and place it in layout
@@ -154,14 +165,8 @@ void CustomPlacementButton::leaveEvent(QEvent *event)
 
 void CustomPlacementButton::setWidgetState(QWidget *a_widget, bool a_isHover, bool a_isChecked)
 {
-    const char* hoverProperty   = qPrintable(Properties::HOVER);
-    const char* checkedProperty = qPrintable(Properties::CHECKED);
-
-    a_widget->setProperty(hoverProperty  , a_isHover  );
-    a_widget->setProperty(checkedProperty, a_isChecked);
-
-    a_widget->style()->unpolish(a_widget);
-    a_widget->style()->polish  (a_widget);
+    Utils::setPropertyAndUpdateStyle(a_widget, Properties::HOVER  , a_isHover  );
+    Utils::setPropertyAndUpdateStyle(a_widget, Properties::CHECKED, a_isChecked);
 }
 
 /** @brief Reimplemented QPushButton::setObjectName method. Updates stylesheets.

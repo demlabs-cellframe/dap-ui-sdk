@@ -7,39 +7,30 @@
 #include <QStandardItemModel>
 #include <QStandardItem>
 #include <QScrollArea>
-#include "CustomPlacementButton.h"
+#include "CustomComboBox.h"
+#include "AdaptiveWidget.h"
 
-
-struct DataModel
-{
-    QString iconPath;
-    QString text;
-};
-
-class CustomComboBoxPopup: public QWidget
+class CustomComboBoxPopup: public AdaptiveWidget
 {
     Q_OBJECT
 public:
-    CustomComboBoxPopup( QWidget *parent = nullptr);
-    /// Set model.
-    /// @param model Model date for button.
-    void setModel(QList<DataModel> *model);
+    CustomComboBoxPopup(QWidget *parent = nullptr);
 
-    void setModel(QAbstractItemModel *a_model);
-    /// Set caption.
-    /// @param text Name.
-    void setCaption(const QString &text);
+    virtual void setModel(QAbstractItemModel *a_model);
+
+public slots:
+    void setCurrentIndex(int a_index);
+
+protected:
+    virtual void initVariantUi(QWidget * a_widget) override;
+    virtual QString listViewName() = 0;
+//    virtual void showEvent(QShowEvent *event) override;
 
 signals:
     void itemSelected(int index);
 
 private:
-
-    QVBoxLayout *m_layout;
-    QVBoxLayout *m_layoutScroll;
-    QLabel *m_lblCaption;
-    QScrollArea *m_scaList;
-    QList<CustomPlacementButton*> m_listButton;
+    QList<QListView*> allListViews();
 };
 
 #endif // CUSTOMCOMBOBOXPOPUP_H

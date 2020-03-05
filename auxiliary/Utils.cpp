@@ -1,6 +1,9 @@
 #include "Utils.h"
 
 #include <QVector>
+#include <QStyle>
+#include <QVariant>
+#include <QDebug>
 
 namespace Utils
 {
@@ -31,4 +34,29 @@ namespace Utils
         regString.indexIn(a_text);
         return regString.cap(0).toInt();
     }
+
+    void setPropertyAndUpdateStyle(QWidget *a_widget, const QString &a_property, const QVariant &a_value /*= true*/)
+    {
+        const char* property = a_property.toStdString().c_str();
+
+        Utils::setPropertyAndUpdateStyle(a_widget, property, a_value);
+    }
+
+    void setPropertyAndUpdateStyle(QWidget *a_widget, const char* a_property, const QVariant &a_value /*= true*/)
+    {
+        if (a_widget->property(a_property) == a_value)
+            return;
+
+        a_widget->setProperty(a_property, a_value);
+
+        Utils::updateStyle(a_widget);
+    }
+
+    void updateStyle(QWidget *a_widget)
+    {
+        a_widget->style()->unpolish(a_widget);
+        a_widget->style()->polish(a_widget);
+    }
+
+
 }
