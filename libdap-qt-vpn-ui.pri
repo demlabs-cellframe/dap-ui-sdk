@@ -52,7 +52,8 @@ FORMS    +=  \
     $$PWD/ui/settings.ui \
     $$PWD/ui/settings_more_menu.ui \
     $$PWD/ui/sidebar_desktop.ui \
-    $$PWD/ui/dlg_edit_server.ui
+    $$PWD/ui/dlg_edit_server.ui \
+    $$PWD/ui/mobile/StartScreenMobile.ui
 
 
 INCLUDEPATH += $$PWD
@@ -121,4 +122,6 @@ android {
      #   CONFIG += link_prl
     #    ANDROID_EXTRA_LIBS = $$PWD/../../libDapClient/android/arm/lib/libssl.so $$PWD/../libDapClient/android/arm/lib/libcrypto.so
 }
+
+DISTFILES +=
 
