@@ -9,13 +9,14 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/DapCmdParser.h \
-    $$PWD/DapClientDefinitions.h \
     $$PWD/DapJsonParams.h \
     $$PWD/DapIndicator.h \
     $$PWD/DapState.h \
     $$PWD/DapJsonCmdController.h \
     $$PWD/DapCmdAbstract.h \
     $$PWD/DapCmdClientAbstract.h \
-    $$PWD/DapCmdServiceAbstract.h
+    $$PWD/DapCmdServiceAbstract.h \
+    $$PWD/../brand/$$BRAND/DapChainVpnService/DapClientDefinitions.h
 
-INCLUDEPATH += $$PWD
+INCLUDEPATH += $$PWD  \
+    $$PWD/../brand/$$BRAND/DapChainVpnService
