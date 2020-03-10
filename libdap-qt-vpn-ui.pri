@@ -15,7 +15,7 @@ HEADERS  += \
     $$PWD/DapServiceNativeAbstract.h\
     $$PWD/DapUiVpnStateIndicator.h\
     $$PWD/ServiceCtl.h\
-    $$PWD/usrmsg.h\
+    $$PWD/usrmsg.h
 
 FORMS    +=  \
     $$PWD/ui/AccountScreen.ui \
