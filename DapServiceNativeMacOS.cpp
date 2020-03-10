@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QApplication>
 #include "DapServiceNativeMacOS.h"
+#include "DapClientDefinitions.h"
 
 DapServiceNativeMacOS::DapServiceNativeMacOS()
 {
@@ -15,8 +16,8 @@ DapServiceNativeMacOS::DapServiceNativeMacOS()
 void DapServiceNativeMacOS::checkInstallation()
 {
     qInfo() << "checkInstallation()";
-    if( ::system(QString("netstat -anv | grep LISTEN | grep '127.0.0.1.22143' >/dev/null").toLatin1().constData() ) == 0 ){
-        qInfo() << "22143 port is open on 127.0.0.1";
+    if( ::system(QString("netstat -anv | grep LISTEN | grep '127.0.0.1." S(SERVICE_LOCAL_PORT) "' >/dev/null").toLatin1().constData() ) == 0 ){
+        qInfo() << SERVICE_LOCAL_PORT << " port is open on 127.0.0.1";
         isNeedInstallOnlyService = false;
     }else{
         qWarning() << "Service is not running";
