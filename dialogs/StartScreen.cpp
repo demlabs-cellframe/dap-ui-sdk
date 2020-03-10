@@ -10,7 +10,6 @@ StartScreen::StartScreen(QWidget *a_parent)
 {
 
     create<Ui::StartScreen>();
-    initScreen(this);
 }
 
 QString StartScreen::screenName()
