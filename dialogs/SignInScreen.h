@@ -8,6 +8,15 @@
 #include "AdaptiveScreen.h"
 #include "ScreenInfo.h"
 #include "vpnDefine.h"
+#include "defines.h"
+
+#ifdef Q_OS_ANDROID
+#include "ui_SignInScreenMobile.h"
+#else
+#include "ui_SignInScreen.h"
+#include "StyledDropShadowEffect.h"
+#endif
+
 
 
 class SignInScreen : public AdaptiveScreen
@@ -57,7 +66,10 @@ private:
     const QString BTN_SIGN_IN_NAME   = "btnSignIn";
     const QString LBL_EMAIL_ERROR    = "lblEmailError";
     const QString LBL_PASSWORD_ERROR = "lblPasswordError";
-
+    const QString BTN_SHOW_PASSWORD  = "btnShowPassword";
+    const QString BTN_CLEAR_EMAIL    =  "btnClearEmail";
+    const QString WGT_LOGIN_BOTTOM_SPACER = "wgtLoginBottomSpacer";
+    const QString CBB_SERVER         =  "cbbServer";
 
     QStateMachine *m_inputStates;
     QState *m_stt_email;
