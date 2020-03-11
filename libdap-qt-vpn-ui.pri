@@ -53,7 +53,9 @@ FORMS    +=  \
     $$PWD/ui/settings_more_menu.ui \
     $$PWD/ui/sidebar_desktop.ui \
     $$PWD/ui/dlg_edit_server.ui \
-    $$PWD/ui/mobile/StartScreenMobile.ui
+    $$PWD/ui/mobile/StartScreenMobile.ui \
+    $$PWD/ui/mobile/SignInScreenMobile.ui \
+    $$PWD/ui/mobile/MainScreenMobile.ui
 
 
 INCLUDEPATH += $$PWD
