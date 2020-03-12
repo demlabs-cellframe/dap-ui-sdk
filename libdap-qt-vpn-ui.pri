@@ -56,9 +56,6 @@ FORMS    +=  \
 
 
 
-
-
-
 INCLUDEPATH += $$PWD
 
 android{
