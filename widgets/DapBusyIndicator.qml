@@ -58,16 +58,10 @@ DapBusyIndicatorForm
                         interval: busyIndicatorDelay * (index)
                         onTriggered:
                         {
-                            console.log("reset triggered, index: ", index)
                             parent.opacity = 1
                             parent.color = busyIndicatorDarkColor
                             parent.scale = busyPointMaxScale
                             reset2.start()
-                        }
-                        onRunningChanged:
-                        {
-                            if(running) console.log("reset start, index: ", index)
-                            else console.log("reset stop, index: ", index)
                         }
                     }
                     //Timer of point transformation at one position
@@ -77,15 +71,9 @@ DapBusyIndicatorForm
                         interval: busyIndicatorDelay
                         onTriggered:
                         {
-                            console.log("reset2 triggered, index: ", index)
                             parent.opacity = 1
                             parent.color = busyIndicatorLightColor
                             parent.scale = busyPointMinScale
-                        }
-                        onRunningChanged:
-                        {
-                            if(running) console.log("reset2 start, index: ", index)
-                            else console.log("reset2 stop, index: ", index)
                         }
                     }
                     //Timer of all busy indicator transformation
@@ -95,7 +83,6 @@ DapBusyIndicatorForm
                         interval: busyIndicatorDelay * busyPointNum
                         onTriggered:
                         {
-                            console.log("globalTimer triggered, index: ", index)
                             reset.start()
                         }
                         triggeredOnStart: true
@@ -118,13 +105,5 @@ DapBusyIndicatorForm
                 }
             }
         }
-    onRunningChanged:
-    {
-        if(running)
-        {
-            console.log("running all")
-        }
-        else console.log("stop all")
-    }
 
 }
