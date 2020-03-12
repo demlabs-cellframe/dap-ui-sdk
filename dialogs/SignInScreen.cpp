@@ -70,26 +70,26 @@ void SignInScreen::setPassword(const QString &a_password)
 
 void SignInScreen::setErrorMessage(const QString &a_errorMsg)
 {
-#ifdef Q_OS_ANDROID
-    Q_UNUSED(a_errorMsg)
-#else
+
     if (a_errorMsg == "Incorrect password")
     {
+#ifdef Q_OS_ANDROID
+
+#else
         setChildProperties(LBL_PASSWORD_ERROR, Properties::TEXT, a_errorMsg);
         setValidationStateForEdit(EDT_PASSWORD_NAME, LBL_PASSWORD_ERROR, false);
 
         emit wrongPassword();
+        #endif
     }
     else
     {
+
         setChildProperties(LBL_EMAIL_ERROR, Properties::TEXT, a_errorMsg);
         setValidationStateForEdit(EDT_EMAIL_NAME, LBL_EMAIL_ERROR, false);
 
         emit wrongEmail();
     }
-#endif
-
-
 
 }
 
@@ -117,10 +117,10 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     edtPassword->setPlaceholderText("password");
     edtPassword->setEchoMode(QLineEdit::Password);
 
-    QPushButton *btnShowPassword        = a_widget->findChild<QPushButton        *>(BTN_SHOW_PASSWORD ); Q_ASSERT(btnShowPassword);
-    QPushButton *btnClearEmail        = a_widget->findChild<QPushButton *>(BTN_CLEAR_EMAIL  ); Q_ASSERT(btnClearEmail);
-    QWidget      *wgtLoginBottomSpacer = a_widget->findChild<QWidget    *>(WGT_LOGIN_BOTTOM_SPACER   ); Q_ASSERT(wgtLoginBottomSpacer);
-    QComboBox      *cbbServer = a_widget->findChild<QComboBox           *>(CBB_SERVER   ); Q_ASSERT(cbbServer);
+    QPushButton *btnShowPassword        = a_widget->findChild<QPushButton   *>(BTN_SHOW_PASSWORD ); Q_ASSERT(btnShowPassword);
+    QPushButton *btnClearEmail          = a_widget->findChild<QPushButton   *>(BTN_CLEAR_EMAIL  ); Q_ASSERT(btnClearEmail);
+    QWidget     *wgtLoginBottomSpacer   = a_widget->findChild<QWidget       *>(WGT_LOGIN_BOTTOM_SPACER   ); Q_ASSERT(wgtLoginBottomSpacer);
+    QComboBox   *cbbServer              = a_widget->findChild<QComboBox     *>(CBB_SERVER   ); Q_ASSERT(cbbServer);
 
     btnClearEmail->setVisible(false);
 
@@ -142,31 +142,37 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
 
     cbbServer->addItem("Auto select");
     btnShowPassword->setCheckable(true);
-    connect(btnSignIn,&QPushButton::clicked,[=]{
-        lblEmailError->setVisible(true);
 
-        wgtLoginBottomSpacer->setProperty("error",true);
-        wgtLoginBottomSpacer->style()->unpolish(wgtLoginBottomSpacer);
-        wgtLoginBottomSpacer->style()->polish(wgtLoginBottomSpacer);
-        wgtLoginBottomSpacer->update();
+
+    connect(btnSignIn,&QPushButton::clicked,[=]{
+
+        // It is necessary to call in case of an error to display it (The text appears, the indents are changed)
+
+//        lblEmailError->setVisible(true);
+
+//        wgtLoginBottomSpacer->setProperty("error",true);
+//        wgtLoginBottomSpacer->style()->unpolish(wgtLoginBottomSpacer);
+//        wgtLoginBottomSpacer->style()->polish(wgtLoginBottomSpacer);
+//        wgtLoginBottomSpacer->update();
 
         //If the mail input error
-        edtEmail->setProperty("error",true);
-        edtEmail->style()->unpolish(edtEmail);
-        edtEmail->style()->polish(edtEmail);
-        edtEmail->update();
+//        edtEmail->setProperty("error",true);
+//        edtEmail->style()->unpolish(edtEmail);
+//        edtEmail->style()->polish(edtEmail);
+//        edtEmail->update();
 
         //If the password input error
-        edtPassword->setProperty("error",true);
-        edtPassword->style()->unpolish(edtPassword);
-        edtPassword->style()->polish(edtPassword);
-        edtPassword->update();
+//        edtPassword->setProperty("error",true);
+//        edtPassword->style()->unpolish(edtPassword);
+//        edtPassword->style()->polish(edtPassword);
+//        edtPassword->update();
 
-        btnClearEmail->setProperty("error",true);
-        btnClearEmail->style()->unpolish(btnClearEmail);
-        btnClearEmail->style()->polish(btnClearEmail);
-        btnClearEmail->update();
+//        btnClearEmail->setProperty("error",true);
+//        btnClearEmail->style()->unpolish(btnClearEmail);
+//        btnClearEmail->style()->polish(btnClearEmail);
+//        btnClearEmail->update();
     });
+
 
     connect(btnShowPassword,&QPushButton::clicked,[=]{
         if(btnShowPassword->isChecked())
@@ -202,7 +208,7 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
 
     connect(edtEmail   , SIGNAL(textEdited(const QString&)), this, SIGNAL(emailEdited   (const QString&)));
     connect(edtPassword, SIGNAL(textEdited(const QString&)), this, SIGNAL(passwordEdited(const QString&)));
-    //connect(btnSignIn  , SIGNAL(clicked())                 , this, SLOT(checkFieldsAndSignIn()));
+    connect(btnSignIn  , SIGNAL(clicked())                 , this, SLOT(checkFieldsAndSignIn()));
 
 
 //    edtEmail->setProperty(qPrintable(Properties::VALID), true);

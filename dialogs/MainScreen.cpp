@@ -23,9 +23,6 @@ void MainScreen::setState(ConnectionStates a_state)
     this->setChildProperties(LBL_STATUS_MESSAGE, Properties::TEXT , statusText(a_state));
     this->setChildProperties(LBL_STATUS_MESSAGE, Properties::STATE, a_state);
 
-    this->setChildProperties(BTN_SWITCH_NAME, Properties::STATE, a_state);
-    this->updateChildStyle  (BTN_SWITCH_NAME);
-
     this->updateChildStyle  (LBL_STATUS_MESSAGE);
 
     this->setChildProperties(BTN_SWITCH, Properties::STATE, a_state);
@@ -112,7 +109,7 @@ void MainScreen::initVariantUi(QWidget *a_widget)
 
     connect(cbbServer,&CustomComboBox::showCustomWindow,[=]
     {
-        qDebug() << "server clicked";
+//        qDebug() << "server clicked";
 
 //        QList<DataModel> *dataList = new QList<DataModel>;
 //        DataModel tmpModel;
