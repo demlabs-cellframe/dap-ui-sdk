@@ -28,5 +28,7 @@
         <file>widgets/DapMessageBox.qml</file>
         <file>widgets/DapMessageBoxForm.ui.qml</file>
         <file>DapFont.qml</file>
+        <file>widgets/DapBusyIndicator.qml</file>
+        <file>widgets/DapBusyIndicatorForm.ui.qml</file>
     </qresource>
 </RCC>
