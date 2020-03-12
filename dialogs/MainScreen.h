@@ -1,15 +1,31 @@
 #ifndef MAINSCREEN_H
 #define MAINSCREEN_H
 
-#include <QComboBox>
+
 #include <QStateMachine>
 
 #include "AdaptiveScreen.h"
-#include "CustomComboBox.h"
+
 #include "vpnDefine.h"
 
+
+#include "defines.h"
+#include "DapDataLocal.h"
+#include "StyledDropShadowEffect.h"
+
+#ifdef Q_OS_ANDROID
+#include "ui_MainScreenMobile.h"
+#include <QFrame>
+
+#else
 #include "ui_MainScreen.h"
 
+#include <QTimer>
+#include "CustomComboBoxPopup.h"
+#include "CustomComboBox.h"
+
+#include <QComboBox>
+#endif
 
 class MainScreen : public AdaptiveScreen
 {
@@ -35,12 +51,26 @@ protected:
     /// @param a_rotation Device display orientation.
     virtual void initVariantUi(QWidget *a_widget) override;
 
+#ifdef Q_OS_ANDROID
+    const QString FRM_CONNECT       = "frmConnect";
+    const QString FRM_INFO          = "frmInfo";
+    const QString FRM_STATUS        = "frmStatus";
+    const QString BTN_CHANGE_SERVER = "btnChangeServer";
+    const QString LBL_ACTUAL_SERVER = "lblActualServer";
+    const QString BTN_CONNECT       = "btnConnect";
+    const QString LBL_LOGIN_TIME    = "lblLoginTime";
+    const QString LBL_TIME_CONNECT  = "lblTimeConnect";
+    const QString LBL_PACKETS_REC   = "lblPacketsRec";
+    const QString LBL_PACKETS_SENT  = "lblPacetsSent";
+    const QString CBB_AUTH          = "cbbAuth";
+    const QString CBB_STREAM        = "cbbStream";
+    const QString CBB_NETWORK       = "cbbNetwork";
+#else
+    const QString LBL_STATUS_MESSAGE = "lblStatusMessage";
+    const QString BTN_SWITCH         = "btnSwitch";
+    const QString CBB_SERVER         = "cbbServer";
+#endif
 
-    const QString LBL_STATUS_MESSAGE_NAME = "lblStatusMessage";
-    const QString BTN_SWITCH_NAME         = "btnSwitch";
-    const QString CBB_SERVER_NAME         = "cbbServer";
-
-    const QString CHOOSE_SERVER_CAPTION   = "Choose server";
 
 signals:
     void connectionSwitched();
@@ -48,8 +78,11 @@ signals:
 
 private:
     static QString statusText(ConnectionStates a_state);
+#ifdef Q_OS_ANDROID
 
+#else
     QAbstractItemModel *m_serversModel = nullptr;
+#endif
 };
 
 #endif // MAINSCREEN_H

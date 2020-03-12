@@ -1,11 +1,5 @@
 #include "MainScreen.h"
-#include "StyledDropShadowEffect.h"
-#include <QTimer>
-#include "ComboBoxPopup.h"
-#include "CustomButtonDelegateFactory.h"
 
-#include "defines.h"
-#include "DapDataLocal.h"
 
 const QString MainScreen::SCREEN_NAME = "Main";
 
@@ -23,22 +17,68 @@ QString MainScreen::screenName()
 
 void MainScreen::setState(ConnectionStates a_state)
 {
-    this->setChildProperties(LBL_STATUS_MESSAGE_NAME, Properties::TEXT , statusText(a_state));
-    this->setChildProperties(LBL_STATUS_MESSAGE_NAME, Properties::STATE, a_state);
-    this->updateChildStyle  (LBL_STATUS_MESSAGE_NAME);
+    #ifdef Q_OS_ANDROID
+    Q_UNUSED(a_state)
+#else
+    this->setChildProperties(LBL_STATUS_MESSAGE, Properties::TEXT , statusText(a_state));
+    this->setChildProperties(LBL_STATUS_MESSAGE, Properties::STATE, a_state);
 
     this->setChildProperties(BTN_SWITCH_NAME, Properties::STATE, a_state);
     this->updateChildStyle  (BTN_SWITCH_NAME);
 
-    this->setChildProperties(CBB_SERVER_NAME, Properties::ENABLED, a_state == ConnectionStates::Disconnected);
-    this->setChildProperties(BTN_SWITCH_NAME, Properties::ENABLED, (a_state == ConnectionStates::Disconnected || a_state == ConnectionStates::Connected));
+    this->updateChildStyle  (LBL_STATUS_MESSAGE);
+
+    this->setChildProperties(BTN_SWITCH, Properties::STATE, a_state);
+    this->updateChildStyle  (BTN_SWITCH);
+
+    this->setChildProperties(CBB_SERVER, Properties::ENABLED, a_state == ConnectionStates::Disconnected);
+    this->setChildProperties(BTN_SWITCH, Properties::ENABLED, (a_state == ConnectionStates::Disconnected || a_state == ConnectionStates::Connected));
+#endif
 }
 
 void MainScreen::initVariantUi(QWidget *a_widget)
 {
-    ComboBox       *cbbServer        = a_widget->findChild<ComboBox   *>(CBB_SERVER_NAME)        ; Q_ASSERT(cbbServer       );
-    QLabel         *lblStatusMessage = a_widget->findChild<QLabel     *>(LBL_STATUS_MESSAGE_NAME); Q_ASSERT(lblStatusMessage);
-    QPushButton    *btnSwitch        = a_widget->findChild<QPushButton*>(BTN_SWITCH_NAME)        ; Q_ASSERT(btnSwitch       );
+
+#ifdef Q_OS_ANDROID
+
+    QFrame *frmConnect          = a_widget->findChild<QFrame        *>(FRM_CONNECT);        Q_ASSERT(frmConnect);
+    QFrame *frmInfo             = a_widget->findChild<QFrame        *>(FRM_INFO);           Q_ASSERT(frmInfo);
+    QFrame *frmStatus           = a_widget->findChild<QFrame        *>(FRM_STATUS);         Q_ASSERT(frmStatus);
+    QPushButton *btnChangeServer = a_widget->findChild<QPushButton  *>(BTN_CHANGE_SERVER);  Q_ASSERT(btnChangeServer);
+    QLabel *lblActualServer     = a_widget->findChild<QLabel        *>(LBL_ACTUAL_SERVER);  Q_ASSERT(lblActualServer);
+    QPushButton *btnConnect     = a_widget->findChild<QPushButton   *>(BTN_CONNECT);        Q_ASSERT(btnConnect);
+
+    QLabel *lblLoginTime        = a_widget->findChild<QLabel        *>(LBL_LOGIN_TIME);     Q_ASSERT(lblLoginTime);
+    QLabel *lblTimeConnect      = a_widget->findChild<QLabel        *>(LBL_TIME_CONNECT);   Q_ASSERT(lblTimeConnect);
+    QLabel *lblPacketsRec       = a_widget->findChild<QLabel        *>(LBL_PACKETS_REC);    Q_ASSERT(lblPacketsRec);
+    QLabel *lblPacetsSent       = a_widget->findChild<QLabel        *>(LBL_PACKETS_SENT);   Q_ASSERT(lblPacetsSent);
+
+    QCheckBox *cbbAuth          = a_widget->findChild<QCheckBox     *>(CBB_AUTH);           Q_ASSERT(cbbAuth);
+    QCheckBox *cbbStream        = a_widget->findChild<QCheckBox     *>(CBB_STREAM);         Q_ASSERT(cbbStream);
+    QCheckBox *cbbNetwork       = a_widget->findChild<QCheckBox     *>(CBB_NETWORK);        Q_ASSERT(cbbNetwork);
+
+
+    //To test appearance
+    cbbAuth->setChecked(true);
+    //This is done in order to remove the reaction to a click on the checkbox
+    connect(cbbAuth,&QCheckBox::clicked,[=]{
+        cbbAuth->setChecked(!cbbAuth->isChecked());
+    });
+    connect(cbbStream,&QCheckBox::clicked,[=]{
+        cbbStream->setChecked(!cbbStream->isChecked());
+    });
+    connect(cbbNetwork,&QCheckBox::clicked,[=]{
+        cbbNetwork->setChecked(!cbbNetwork->isChecked());
+    });
+    //========================================================================
+    btnChangeServer->setGraphicsEffect(new StyledDropShadowEffect(btnChangeServer));
+    frmConnect->setGraphicsEffect(new StyledDropShadowEffect(frmConnect));
+    frmInfo->setGraphicsEffect(new StyledDropShadowEffect(frmInfo));
+    frmStatus->setGraphicsEffect(new StyledDropShadowEffect(frmStatus));
+#else
+    CustomComboBox *cbbServer        = a_widget->findChild<CustomComboBox*>(CBB_SERVER)        ; Q_ASSERT(cbbServer       );
+    QLabel         *lblStatusMessage = a_widget->findChild<QLabel        *>(LBL_STATUS_MESSAGE); Q_ASSERT(lblStatusMessage);
+    QPushButton    *btnSwitch        = a_widget->findChild<QPushButton   *>(BTN_SWITCH)        ; Q_ASSERT(btnSwitch       );
 
     connect(btnSwitch, &QPushButton::clicked, [this]{
         emit connectionSwitched();
@@ -63,10 +103,40 @@ void MainScreen::initVariantUi(QWidget *a_widget)
 
     cbbServer->QComboBox::setCurrentText(DapDataLocal::me()->serverName());
 
-    ComboBoxPopup* cbPopup = new ComboBoxPopup(a_widget);
-    cbPopup->setDelegateFactory<CustomButtonDelegateFactory>();
-    cbPopup->setCaption("Choose server");
-    cbbServer->setPopup(cbPopup);
+//    QIcon icon(":/pics/flag.svg");
+//    cbbServer->setItemIcon(0,icon);
+
+//    cbbServer->addItem("Natherlans");
+//    QIcon icon(":/pics/flag.svg");
+//    cbbServer->setItemIcon(0,icon);
+
+    connect(cbbServer,&CustomComboBox::showCustomWindow,[=]
+    {
+        qDebug() << "server clicked";
+
+//        QList<DataModel> *dataList = new QList<DataModel>;
+//        DataModel tmpModel;
+//        for(int i = 0; i < 5;i++)
+//        {
+//            tmpModel.text = "kelvin-testnet.Cellframe";
+//            tmpModel.iconPath =":/pics/flag.svg";
+//            dataList->append(tmpModel);
+//        }
+
+        CustomComboBoxPopup *s_comboBoxPopup = new CustomComboBoxPopup(a_widget);
+        s_comboBoxPopup->setModel(cbbServer->model());
+        s_comboBoxPopup->setCaption("Choose server");
+        s_comboBoxPopup->show();
+
+        connect(s_comboBoxPopup, &CustomComboBoxPopup::itemSelected, [this, cbbServer](int a_index){
+            QString serverName = cbbServer->itemText(a_index);
+            cbbServer->setCurrentText(serverName);
+            emit this->serverChanged(serverName);
+        });
+
+    });
+#endif
+
 }
 
 QString MainScreen::statusText(ConnectionStates a_state)
