@@ -143,7 +143,20 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     cbbServer->addItem("Auto select");
     btnShowPassword->setCheckable(true);
 
-
+    //Change color after editing
+    connect(edtEmail,&QLineEdit::editingFinished,[=]{
+       edtEmail->setProperty("state","endEdit");
+       edtEmail->style()->unpolish(edtEmail);
+       edtEmail->style()->polish(edtEmail);
+       edtEmail->update();
+    });
+    //Change color after editing
+    connect(edtPassword,&QLineEdit::editingFinished,[=]{
+       edtPassword->setProperty("state","endEdit");
+       edtPassword->style()->unpolish(edtPassword);
+       edtPassword->style()->polish(edtPassword);
+       edtPassword->update();
+    });
     connect(btnSignIn,&QPushButton::clicked,[=]{
 
         // It is necessary to call in case of an error to display it (The text appears, the indents are changed)

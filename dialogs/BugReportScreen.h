@@ -10,10 +10,14 @@
 #include "vpnDefine.h"
 #include "ui_BugReportScreen.h"
 #include "CustomLineHeightLabel.h"
-#include "StyledDropShadowEffect.h"
 #include "CustomLineHeightTextEdit.h"
 #include "defines.h"
 
+#ifdef Q_OS_ANDROID
+
+#else
+#include "StyledDropShadowEffect.h"
+#endif
 class BugReportScreen : public AdaptiveScreen
 {
     Q_OBJECT
@@ -38,7 +42,12 @@ protected:
     /// @param a_rotation Device display orientation.
     virtual void initVariantUi(QWidget *a_widget) override;
 
-
+    const QString LBL_STATUS_MESSAGE = "lblStatusMessage";
+    const QString BTN_SEND = "btnSend";
+    const QString EDT_EMAIL = "edtEmail";
+    const QString EDT_MESSAGE = "edtMessage";
+    const QString LBL_CAPTURE = "lblCapture";
+    const QString VLT_BUG_REPORT = "vltBugReport";
 };
 
 #endif // BUGREPORTSCREEN_H
