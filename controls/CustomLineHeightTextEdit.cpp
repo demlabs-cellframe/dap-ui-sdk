@@ -46,6 +46,13 @@ void CustomLineHeightTextEdit::focusOutEvent(QFocusEvent *e)
         update();
         QTextEdit::setText(textToHtml(m_placeholderText));
     }
+    else
+    {
+        setProperty("state",STATE_END_EDIT);
+        style()->unpolish(this);
+        style()->polish(this);
+        update();
+    }
     QTextEdit::focusOutEvent(e);
 }
 
