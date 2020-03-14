@@ -179,3 +179,21 @@ void CustomPlacementButton::setObjectName(const QString &name)
     if (m_styledShadow)
         m_styledShadow->updateStyleProperties();
 }
+
+void CustomPlacementButton::spacerActivate(ButtonSpaicer a_spacer)
+{
+    switch(a_spacer)
+    {
+        case ButtonSpaicer::Left:
+            m_lbLeftSpacing.setVisible(true);
+        break;
+        case ButtonSpaicer::Right:
+            m_lbRightSpacing.setVisible(true);
+        break;
+        case ButtonSpaicer::Both:
+            m_lbRightSpacing.setVisible(true);
+            m_lbLeftSpacing.setVisible(true);
+            break;
+    }
+
+}

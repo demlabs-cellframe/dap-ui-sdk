@@ -11,6 +11,7 @@
 #include <QFontMetrics>
 
 enum class ImagePos {Left, Right};
+enum class ButtonSpaicer {Left,Right,Both};
 
 /** @brief QPushButton with subControls "text" and "image"
  *
@@ -76,6 +77,9 @@ public:
     void setImagePosition(ImagePos a_position = ImagePos::Left);
 
     void setGraphicsEffect(StyledDropShadowEffect *a_effect);
+    ///Makes widgets visible on the sides
+    /// @param a_spacer
+    void spacerActivate(ButtonSpaicer a_spacer);
 
 private:
     ///For effect.
