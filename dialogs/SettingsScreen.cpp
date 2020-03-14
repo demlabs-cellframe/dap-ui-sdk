@@ -1,31 +1,42 @@
 #include "SettingsScreen.h"
 
-SettingsScreen::SettingsScreen(QObject * a_parent, QStackedWidget * a_sw)
-    : DapUiScreen(a_parent, a_sw)
+const QString SettingsScreen::SCREEN_NAME = "SettingsScreen";
+
+SettingsScreen::SettingsScreen(QWidget *a_parent)
+    : AdaptiveScreen(a_parent)
 {
     create<Ui::SettingsScreen>();
 }
 
-void SettingsScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
+void SettingsScreen::initVariantUi(QWidget *a_widget)
 {
-    Q_UNUSED(a_w)
-    Q_UNUSED(a_rotation)
+    CustomComboBox          *cbbLanguage    = a_widget->findChild<CustomComboBox*>(CBB_LANGUAGE);          Q_ASSERT(cbbLanguage);
 
-    CustomComboBox *cbbBalance = a_w->findChild<CustomComboBox*>("cbbBalance");
-    CustomComboBox *cbbBandwidth = a_w->findChild<CustomComboBox*>("cbbBandwidth");
-    CustomComboBox *cbbEncryption = a_w->findChild<CustomComboBox*>("cbbEncryption");
-    CustomComboBox *cbbLanguage = a_w->findChild<CustomComboBox*>("cbbLanguage");
-    CustomComboBox *cbbUptime = a_w->findChild<CustomComboBox*>("cbbUptime");
+#ifdef Q_OS_ANDROID
 
-    Q_ASSERT(cbbBalance);
-    Q_ASSERT(cbbBandwidth);
-    Q_ASSERT(cbbEncryption);
-    Q_ASSERT(cbbLanguage);
-    Q_ASSERT(cbbUptime);
+    CustomPlacementButton   *btnLogOut      = a_widget->findChild<CustomPlacementButton*>(BTN_LOG_OUT);     Q_ASSERT(btnLogOut);
+    CustomPlacementButton   *btnRenew       = a_widget->findChild<CustomPlacementButton*>(BTN_RENEW);      Q_ASSERT(btnRenew);
+
+    btnRenew->spacerActivate(ButtonSpaicer::Left);
+    btnLogOut->spacerActivate(ButtonSpaicer::Left);
+
+    cbbLanguage->addItem("Language");
+#else
+    CustomComboBox *cbbBalance      = a_widget->findChild<CustomComboBox*>(CBB_BALABCE);       Q_ASSERT(cbbBalance);
+    CustomComboBox *cbbBandwidth    = a_widget->findChild<CustomComboBox*>(CBB_BANDWIDTH);     Q_ASSERT(cbbBandwidth);
+    CustomComboBox *cbbEncryption   = a_widget->findChild<CustomComboBox*>(CBB_ENCRYPTION);    Q_ASSERT(cbbEncryption);
+    CustomComboBox *cbbUptime       = a_widget->findChild<CustomComboBox*>(CBB_UPTIME);        Q_ASSERT(cbbUptime);
+
+
 
     cbbBandwidth->addItem("Bandwidth");
     cbbUptime->addItem("Uptime");
     cbbEncryption->addItem("Encryption");
     cbbBalance->addItem("Balance");
     cbbLanguage->addItem("Language");
+#endif
+}
+QString SettingsScreen::screenName()
+{
+    return SettingsScreen::SCREEN_NAME;
 }

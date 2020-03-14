@@ -6,7 +6,7 @@
 #include "AdaptiveScreen.h"
 
 #ifdef Q_OS_ANDROID
-#include "ui_StartScreenMobile.h"
+#include "ui_StartScreen.h"
 #else
 #include "ui_StartScreen.h"
 #include "StyledDropShadowEffect.h"
