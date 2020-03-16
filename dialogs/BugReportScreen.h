@@ -12,12 +12,8 @@
 #include "CustomLineHeightLabel.h"
 #include "CustomLineHeightTextEdit.h"
 #include "defines.h"
-
-#ifdef Q_OS_ANDROID
-
-#else
 #include "StyledDropShadowEffect.h"
-#endif
+
 class BugReportScreen : public AdaptiveScreen
 {
     Q_OBJECT
