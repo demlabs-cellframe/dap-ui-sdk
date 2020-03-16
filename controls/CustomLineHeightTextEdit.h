@@ -4,6 +4,8 @@
 #include <QTextEdit>
 #include "AppStyleSheetHandler.h"
 #include <QStyle>
+#include "defines.h"
+#include "Utils.h"
 
 /** @brief QGraphicsDropShadowEffect that can be adjusted from css
  *

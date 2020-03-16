@@ -8,10 +8,8 @@ CustomLineHeightTextEdit::CustomLineHeightTextEdit(QWidget *a_parent)
 
 void CustomLineHeightTextEdit::setPlaceholderText(const QString &placeholderText)
 {
-    setProperty("state",STATE_DEFAULT);
-    style()->unpolish(this);
-    style()->polish(this);
-    update();
+    Utils::setPropertyAndUpdateStyle(this,Properties::STATE,STATE_DEFAULT);
+
     m_placeholderText = placeholderText;
     QTextEdit::setText(textToHtml(placeholderText));
     //setReadOnly(true);
@@ -21,10 +19,8 @@ void CustomLineHeightTextEdit::mousePressEvent(QMouseEvent *e)
 {
     if(property("state").toString()==STATE_DEFAULT)
     {
-        setProperty("state",STATE_HOVER);
-        style()->unpolish(this);
-        style()->polish(this);
-        update();
+        Utils::setPropertyAndUpdateStyle(this,Properties::STATE,STATE_HOVER);
+
         QString htmlText = QString("<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'>"
                                    "<html><head><meta name='qrichtext' content='1' /><style type='text/css'>"
                                    "p, li { white-space: pre-wrap; }"
@@ -40,18 +36,14 @@ void CustomLineHeightTextEdit::focusOutEvent(QFocusEvent *e)
 {
     if(toPlainText().isEmpty())
     {
-        setProperty("state",STATE_DEFAULT);
-        style()->unpolish(this);
-        style()->polish(this);
-        update();
+        Utils::setPropertyAndUpdateStyle(this,Properties::STATE,STATE_DEFAULT);
+
         QTextEdit::setText(textToHtml(m_placeholderText));
     }
     else
     {
-        setProperty("state",STATE_END_EDIT);
-        style()->unpolish(this);
-        style()->polish(this);
-        update();
+        Utils::setPropertyAndUpdateStyle(this,Properties::STATE,STATE_END_EDIT);
+
     }
     QTextEdit::focusOutEvent(e);
 }
