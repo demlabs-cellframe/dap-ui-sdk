@@ -28,10 +28,6 @@ public:
     static const QString SCREEN_NAME;
     virtual QString screenName() override;
 
-public:
-
-    void setState(ConnectionStates a_state);
-
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
@@ -42,7 +38,7 @@ protected:
     const QString BTN_SEND = "btnSend";
     const QString EDT_EMAIL = "edtEmail";
     const QString EDT_MESSAGE = "edtMessage";
-    const QString LBL_CAPTURE = "lblCapture";
+    const QString LBL_CAPTION = "lblCaption";
     const QString VLT_BUG_REPORT = "vltBugReport";
 };
 

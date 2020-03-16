@@ -53,7 +53,7 @@
     </widget>
    </item>
    <item alignment="Qt::AlignLeft">
-    <widget class="QLabel" name="lblCapture">
+    <widget class="QLabel" name="lblCaption">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -123,7 +123,7 @@
        <number>0</number>
       </property>
       <item alignment="Qt::AlignVCenter">
-       <widget class="QLabel" name="lblCaptureComboBox">
+       <widget class="QLabel" name="lblCaptionComboBox">
         <property name="text">
          <string/>
         </property>
@@ -131,6 +131,9 @@
       </item>
       <item alignment="Qt::AlignVCenter">
        <widget class="QComboBox" name="cbbServer">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
@@ -195,7 +198,7 @@
        <number>0</number>
       </property>
       <item alignment="Qt::AlignVCenter">
-       <widget class="QLabel" name="lblCaptureEmail">
+       <widget class="QLabel" name="lblCaptionEmail">
         <property name="text">
          <string/>
         </property>
@@ -265,7 +268,7 @@
        <number>0</number>
       </property>
       <item alignment="Qt::AlignVCenter">
-       <widget class="QLabel" name="lblCapturePassword">
+       <widget class="QLabel" name="lblCaptionPassword">
         <property name="text">
          <string/>
         </property>

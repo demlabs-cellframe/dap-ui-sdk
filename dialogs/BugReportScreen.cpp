@@ -13,11 +13,6 @@ QString BugReportScreen::screenName()
     return BugReportScreen::SCREEN_NAME;
 }
 
-void BugReportScreen::setState(ConnectionStates a_state)
-{
-    Q_UNUSED(a_state)
-}
-
 void BugReportScreen::initVariantUi(QWidget *a_widget)
 {
     CustomLineHeightLabel   *lblStatusMessage   = a_widget->findChild<CustomLineHeightLabel*>(LBL_STATUS_MESSAGE);  Q_ASSERT(lblStatusMessage);
@@ -27,15 +22,13 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
 
 #ifdef Q_OS_ANDROID
 
-    QLabel                  *lblCapture         = a_widget->findChild<QLabel*>(LBL_CAPTURE);                        Q_ASSERT(lblCapture);
-    lblCapture->setAlignment(Qt::AlignJustify);
+    QLabel                  *lblCaption         = a_widget->findChild<QLabel*>(LBL_CAPTION);                        Q_ASSERT(lblCaption);
+    lblCaption->setAlignment(Qt::AlignJustify);
 
     //Change color after editing
     connect(edtEmail,&QLineEdit::editingFinished,[=]{
-       edtEmail->setProperty("state","endEdit");
-       edtEmail->style()->unpolish(edtEmail);
-       edtEmail->style()->polish(edtEmail);
-       edtEmail->update();
+        setChildProperties("edtEmail","state","endEdit");
+        updateChildStyle("edtEmail");
     });
 
     edtEmail->setPlaceholderText("e-mail");
