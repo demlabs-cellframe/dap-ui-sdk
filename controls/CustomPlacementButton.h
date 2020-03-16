@@ -11,7 +11,6 @@
 #include <QFontMetrics>
 
 enum class ImagePos {Left, Right};
-enum class AlignButton {AlignmentLeft,AlignmentRight,AlignmentHCenter,AlignmentNone};
 
 /** @brief QPushButton with subControls "text" and "image"
  *
