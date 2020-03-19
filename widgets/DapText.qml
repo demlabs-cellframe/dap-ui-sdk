@@ -23,8 +23,8 @@ DapTextForm
                 case Text.ElideRight:
                     elText = textMetric.elidedText.substring(0, textMetric.elidedText.length - 1) +
                                 ((fontMetric.tightBoundingRect(textMetric.elidedText.substring(0, textMetric.elidedText.length - 1)).width +
-                                  fontMetric.tightBoundingRect(textMetric.text.charAt(textMetric.elidedText.length - 1) + '..').width) < textMetric.elideWidth ?
-                                     (textMetric.text.charAt(textMetric.elidedText.length - 1) + '..'):
+                                  fontMetric.tightBoundingRect(textMetric.text.charAt(textMetric.elidedText.length - 1) + '..').width) < elText.elideWidth ?
+                                     (textMetric.text.charAt(textMetric.elidedText.length - 3) + '..'):
                                    '..');
                     break;
 

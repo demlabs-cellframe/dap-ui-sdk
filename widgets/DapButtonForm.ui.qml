@@ -41,6 +41,8 @@ Button
     property string borderColorButton
     ///@detalis borderWidthButton Sets the width of the border.
     property int borderWidthButton
+    ///@detalis dapHorizontalAlignment Horizontal text alignment.
+    property alias dapHorizontalAlignment: buttonText.horizontalAlignment
 
     id: dapButton
 
