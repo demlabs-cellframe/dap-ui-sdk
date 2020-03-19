@@ -15,7 +15,8 @@ SOURCES += \
     $$PWD/StyledDropShadowEffect.cpp \
     $$PWD/WidgetDelegateListView/CustomButtonDelegate.cpp \
     $$PWD/WidgetDelegateListView/WidgetDelegateBase.cpp \
-    $$PWD/WidgetDelegateListView/WidgetDelegateListView.cpp
+    $$PWD/WidgetDelegateListView/WidgetDelegateListView.cpp \
+    $$PWD/CustomLineEditBase.cpp
 
 HEADERS += \
     $$PWD/AdaptiveWidget.h \
@@ -36,7 +37,8 @@ HEADERS += \
     $$PWD/WidgetDelegateListView/CustomButtonDelegateFactory.h \
     $$PWD/WidgetDelegateListView/WidgetDelegateBase.h \
     $$PWD/WidgetDelegateListView/WidgetDelegateFactoryBase.h \
-    $$PWD/WidgetDelegateListView/WidgetDelegateListView.h
+    $$PWD/WidgetDelegateListView/WidgetDelegateListView.h \
+    $$PWD/CustomLineEditBase.h
 
 INCLUDEPATH += $$PWD
 INCLUDEPATH += $$PWD/WidgetDelegateListView
