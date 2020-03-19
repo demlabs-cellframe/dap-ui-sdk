@@ -38,4 +38,5 @@ TextInput
         font: fontDapText
     }
     text: elText
+    enabled: false
 }
