@@ -59,6 +59,17 @@ public:
                                 const QString & urlPath, const QByteArray& data, bool ssl = false,
                                 const QVector<HttpRequestHeader>* headers = Q_NULLPTR);
 
+    void abortRequests() {
+        for (auto &l_rpl : m_httpClient->findChildren<QNetworkReply*>()) {
+            if (l_rpl->isOpen()) {
+                qDebug() << "Abort request " << l_rpl->url().toString();
+                l_rpl->abort();
+            }
+        }
+    }
+
+    QNetworkAccessManager *getNAM() { return m_httpClient; }
+
 private:
     QNetworkAccessManager * m_httpClient;
     QNetworkConfigurationManager* m_netConfManager;
