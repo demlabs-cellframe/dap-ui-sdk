@@ -2,47 +2,47 @@
 #define DAPREPLYTIMEOUT_H
 
 #include <QNetworkReply>
-#include <QBasicTimer>
+#include <QTimer>
 #include <QTimerEvent>
 #include <QDebug>
-
-/*
-Source: https://stackoverflow.com/questions/37444539/how-to-set-qnetworkreply-timeout-without-external-timer
-Use:
-    QNetworkAccessManager networkAccessManger;
-    QNetworkReply* reply =
-        networkAccessManger.get(QNetworkRequest(QUrl("https://www.google.com")));
-    ReplyTimeout::set(reply, 100);
-*/
+#include <QtCore>
+#include <QAbstractEventDispatcher>
 
 class DapReplyTimeout : public QObject {
     Q_OBJECT
 private:
-    QBasicTimer m_timer;
-
+    QNetworkReply *repl;
     DapReplyTimeout(QNetworkReply* reply, const int timeout)
         : QObject(reply) {
         Q_ASSERT(reply);
-        if (reply && reply->isRunning()) {
-            m_timer.start(timeout, this);
+        if (reply) {
+            repl = reply;
+        }
+        if (repl->isOpen()) {
+            QTimer::singleShot(timeout, this, SLOT(timeout()));
+            connect(repl, SIGNAL(finished()), this, SLOT(interrupt()));
         } else {
-            qWarning() << "QNetworkReply is not running. Can't set request timeout";
+            qWarning() << "This network request is not running. Can't set request timeout";
         }
     }
 public:
     static void set(QNetworkReply* reply, const int timeout) {
         new DapReplyTimeout(reply, timeout);
     }
-protected:
-    void timerEvent(QTimerEvent * ev) {
-        if (!m_timer.isActive() || ev->timerId() != m_timer.timerId())
+protected slots:
+    void timeout() {
+        if (!repl) {
             return;
-        auto reply = static_cast<QNetworkReply*>(parent());
-        if (reply->isRunning()) {
-            qWarning() << "Close request by timeout";
-            reply->abort();
         }
-        m_timer.stop();
+        disconnect(repl, SIGNAL(finished()), this, SLOT(interrupt()));
+        if (!repl->isFinished()) {
+            qWarning() << "Request timeout, aborting";
+            repl->abort();
+        }
+    }
+    void interrupt() {
+        qInfo() << "Request replied";
+        QAbstractEventDispatcher::instance()->unregisterTimers(this);
     }
 };
 
