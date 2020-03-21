@@ -13,7 +13,6 @@ public:
     ~DapCmdServersList() override {}
     const QList<QString> &serversList() { return  m_serversList; }
     void rotateList() { if (m_serversList.size() > 1) { auto tmp = m_serversList.takeFirst(); m_serversList.push_back(tmp); } }
-signals:
 public slots:
     void setServersList(const QList<QString>& a_serversList) { m_serversList = a_serversList ; }
 private:
