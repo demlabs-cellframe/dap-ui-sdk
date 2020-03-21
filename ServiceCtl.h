@@ -13,7 +13,7 @@ class ServiceCtl : public DapServiceClient
     Q_OBJECT
 public:
     ServiceCtl(DapJsonCmdController* controller, QObject *parent = Q_NULLPTR);
-    bool tapStatus;
+    bool tapStatus = false;
 protected:
     void procCmdController(const QByteArray &a_cmd) override;
 private:
