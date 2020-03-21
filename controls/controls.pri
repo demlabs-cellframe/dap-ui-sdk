@@ -16,7 +16,8 @@ SOURCES += \
     $$PWD/WidgetDelegateListView/CustomButtonDelegate.cpp \
     $$PWD/WidgetDelegateListView/WidgetDelegateBase.cpp \
     $$PWD/WidgetDelegateListView/WidgetDelegateListView.cpp \
-    $$PWD/CustomLineEditBase.cpp
+    $$PWD/CustomLineEditBase.cpp \
+    $$PWD/CustomLineEdit.cpp
 
 HEADERS += \
     $$PWD/AdaptiveWidget.h \
@@ -38,7 +39,8 @@ HEADERS += \
     $$PWD/WidgetDelegateListView/WidgetDelegateBase.h \
     $$PWD/WidgetDelegateListView/WidgetDelegateFactoryBase.h \
     $$PWD/WidgetDelegateListView/WidgetDelegateListView.h \
-    $$PWD/CustomLineEditBase.h
+    $$PWD/CustomLineEditBase.h \
+    $$PWD/CustomLineEdit.h
 
 INCLUDEPATH += $$PWD
 INCLUDEPATH += $$PWD/WidgetDelegateListView

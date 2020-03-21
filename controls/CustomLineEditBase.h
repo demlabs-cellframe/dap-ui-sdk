@@ -12,6 +12,7 @@
 *{
 *    qproperty-visibleIcon: true;       for visible left icon
 *    qproperty-visibleButton: true;     for visible right button
+*
 *   If you do not specify these 2 lines, the widget will be exactly the same as its parent,
 *                                               and the settings blocks below will not be needed.
 *
@@ -58,13 +59,13 @@ protected:
     /// Sets the visibility of the button.
     /// @param a_visible This parameter is taken from css settings.
     void setVisibleButton(bool a_visible);
-
-private:
     ///Widget for icon
     QLabel *m_lblIcon;
     ///Widget for button
     QPushButton *m_btnControl;
     QHBoxLayout* m_hblLineEdit;
+private:
+
 
 };
 
