@@ -118,27 +118,27 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     edtPassword->setEchoMode(QLineEdit::Password);
 
     QPushButton *btnShowPassword        = a_widget->findChild<QPushButton   *>(BTN_SHOW_PASSWORD ); Q_ASSERT(btnShowPassword);
-    QPushButton *btnClearEmail          = a_widget->findChild<QPushButton   *>(BTN_CLEAR_EMAIL  ); Q_ASSERT(btnClearEmail);
+    //QPushButton *btnClearEmail          = a_widget->findChild<QPushButton   *>(BTN_CLEAR_EMAIL  ); Q_ASSERT(btnClearEmail);
     QWidget     *wgtLoginBottomSpacer   = a_widget->findChild<QWidget       *>(WGT_LOGIN_BOTTOM_SPACER   ); Q_ASSERT(wgtLoginBottomSpacer);
     QComboBox   *cbbServer              = a_widget->findChild<QComboBox     *>(CBB_SERVER   ); Q_ASSERT(cbbServer);
 
-    btnClearEmail->setVisible(false);
+    //btnClearEmail->setVisible(false);
 
-    connect(edtEmail,&QLineEdit::textChanged,[=]{
-        if(!edtEmail->text().isEmpty())
-        {
-            btnClearEmail->setVisible(true);
-        }
-        else
-        {
-            btnClearEmail->setVisible(false);
-        }
-    });
+//    connect(edtEmail,&QLineEdit::textChanged,[=]{
+//        if(!edtEmail->text().isEmpty())
+//        {
+//            btnClearEmail->setVisible(true);
+//        }
+//        else
+//        {
+//            btnClearEmail->setVisible(false);
+//        }
+//    });
 
-    connect(btnClearEmail,&QPushButton::clicked,[=]{
-       edtEmail->clear();
-       btnClearEmail->setVisible(false);
-    });
+//    connect(btnClearEmail,&QPushButton::clicked,[=]{
+//       edtEmail->clear();
+//       btnClearEmail->setVisible(false);
+//    });
 
     cbbServer->addItem("Auto select");
     btnShowPassword->setCheckable(true);
