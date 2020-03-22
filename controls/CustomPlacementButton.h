@@ -18,6 +18,9 @@ enum class ImagePos {Left, Right};
  * Set style in .css file in format
  *> #buttonName #leftSpacing {
  *>     ...; //if max-width==0, left alinment
+ *  qproperty-alignment: AlignmentLeft;//AlignmentRight, AlignmentHCenter, AlignmentNone (left or right spacers)
+ *
+ *
  *> }
  *> #buttonName::text {
  *>     ...
@@ -51,6 +54,9 @@ enum class ImagePos {Left, Right};
 class CustomPlacementButton : public QPushButton
 {
     Q_OBJECT
+
+    Q_PROPERTY(QString alignment WRITE setAlignment DESIGNABLE true)
+
 public:
 
     explicit CustomPlacementButton(QWidget *a_parent = Q_NULLPTR);
@@ -76,10 +82,11 @@ public:
     void setImagePosition(ImagePos a_position = ImagePos::Left);
 
     void setGraphicsEffect(StyledDropShadowEffect *a_effect);
+    ///Makes widgets visible on the sides
+    /// @param a_spacer If there is ALIGNMENT_NONE or some erroneous value, the widgets will be invisible.
+    void setAlignment(const QString &a_spacer);
 
-private:
-    ///For effect.
-    StyledDropShadowEffect *m_styledShadow = nullptr;
+
 protected:
     /// Cursor in.
     /// @param event Signal source.
@@ -95,8 +102,17 @@ protected:
     QLabel m_lbText;     ///<label with text
     QLabel m_lbRightSpacing;        ///<label for right spacing
 
+    const QString ALIGNMENT_LEFT        = "AlignmentLeft";
+    const QString ALIGNMENT_RIGHT       = "AlignmentRight";
+    const QString ALIGNMENT_H_CENTER    = "AlignmentHCenter";
+    const QString ALIGNMENT_NONE        = "AlignmentNone";
+
 private:
+    ///For effect.
+    StyledDropShadowEffect *m_styledShadow = nullptr;
+
     static void setWidgetState(QWidget* a_widget, bool a_isHover=false, bool a_isChecked = false);
+
 };
 
 #endif // CUSTOMPLACEMENTBUTTON_NEW_H

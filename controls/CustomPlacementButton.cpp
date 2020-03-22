@@ -54,6 +54,8 @@ CustomPlacementButton::CustomPlacementButton(QWidget *a_parent)
     connect(this, &QAbstractButton::toggled, [=](bool a_checked) {
         this->setState(this->underMouse(), a_checked);
     });
+
+
 }
 
 /** @brief Reimplemented QPushButton::setText method. Sets text property of text subcontrol.
@@ -179,3 +181,32 @@ void CustomPlacementButton::setObjectName(const QString &name)
     if (m_styledShadow)
         m_styledShadow->updateStyleProperties();
 }
+
+
+//If there is ALIGNMENT_NONE or some erroneous value, the widgets will be invisible.
+void CustomPlacementButton::setAlignment(const QString &a_spacer)
+{
+    if(a_spacer == ALIGNMENT_LEFT)
+    {
+        m_lbLeftSpacing.setVisible(true);
+        m_lbRightSpacing.setVisible(false);
+        return;
+    }
+    if(a_spacer == ALIGNMENT_RIGHT)
+    {
+        m_lbLeftSpacing.setVisible(false);
+        m_lbRightSpacing.setVisible(true);
+        return;
+    }
+    if(a_spacer == ALIGNMENT_H_CENTER)
+    {
+        m_lbLeftSpacing.setVisible(true);
+        m_lbRightSpacing.setVisible(true);
+        return;
+    }
+
+    m_lbLeftSpacing.setVisible(false);
+    m_lbRightSpacing.setVisible(false);
+
+}
+
