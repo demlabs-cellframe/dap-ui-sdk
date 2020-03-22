@@ -27,7 +27,6 @@ FORMS    +=  \
     $$PWD/ui/PasswordRecoveryScreen.ui \
     $$PWD/ui/MainScreenLayout.ui \
     $$PWD/ui/NavigationPanel.ui \
-    $$PWD/ui/SettingsScreen.ui \
     $$PWD/ui/SignUpScreen.ui \
     $$PWD/ui/dashboard_desktop_big.ui \
     $$PWD/ui/dashboard_desktop_small.ui \
@@ -53,6 +52,8 @@ FORMS    +=  \
     $$PWD/ui/settings_more_menu.ui \
     $$PWD/ui/sidebar_desktop.ui \
     $$PWD/ui/dlg_edit_server.ui \
+    $$PWD/ui/desktop/SettingsScreen.ui \
+    $$PWD/ui/mobile/SettingsScreen.ui
 
 
 
@@ -131,7 +132,8 @@ else {
     FORMS    +=  \
         $$PWD/ui/desktop/StartScreen.ui \
         $$PWD/ui/desktop/SignInScreen.ui \
-        $$PWD/ui/desktop/MainScreen.ui
+        $$PWD/ui/desktop/MainScreen.ui\
+        $$PWD/ui/desktop/SettingsScreen.ui
 }
 
 DISTFILES +=
