@@ -133,6 +133,14 @@ public:
     ScreenRotation rotation(){ return m_rotation; }
     static ScreenSize getScreenSize();
     QWidget * currentPage(){ return sw()->currentWidget(); }
+    QVariant getVar(const QString& a_objName, const QString& a_varName) {
+        for (auto rotation : rotations()) {
+            QWidget *w = getWidget(a_objName,rotation);
+            if(w)
+                return w->property(a_varName.toLatin1().constData());
+        }
+        return "default";
+    }
     void setVars(const QString& a_objName, const QString& a_varName, const QVariant& a_varValue)
     {
         for (auto rotation : rotations()) {
