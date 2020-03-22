@@ -12,6 +12,7 @@
 #include "ui_SignInScreen.h"
 #include "StyledDropShadowEffect.h"
 #include "CustomLineEdit.h"
+#include "CustomPasswordLineEdit.h"
 
 class SignInScreen : public AdaptiveScreen
 {
