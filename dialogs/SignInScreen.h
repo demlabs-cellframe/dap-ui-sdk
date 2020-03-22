@@ -9,14 +9,8 @@
 #include "ScreenInfo.h"
 #include "vpnDefine.h"
 #include "defines.h"
-
-#ifdef Q_OS_ANDROID
-#include "ui_SignInScreenMobile.h"
-#else
 #include "ui_SignInScreen.h"
 #include "StyledDropShadowEffect.h"
-#endif
-
 
 
 class SignInScreen : public AdaptiveScreen

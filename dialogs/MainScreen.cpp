@@ -107,31 +107,6 @@ void MainScreen::initVariantUi(QWidget *a_widget)
 //    QIcon icon(":/pics/flag.svg");
 //    cbbServer->setItemIcon(0,icon);
 
-    connect(cbbServer,&CustomComboBox::showCustomWindow,[=]
-    {
-//        qDebug() << "server clicked";
-
-//        QList<DataModel> *dataList = new QList<DataModel>;
-//        DataModel tmpModel;
-//        for(int i = 0; i < 5;i++)
-//        {
-//            tmpModel.text = "kelvin-testnet.Cellframe";
-//            tmpModel.iconPath =":/pics/flag.svg";
-//            dataList->append(tmpModel);
-//        }
-
-        CustomComboBoxPopup *s_comboBoxPopup = new CustomComboBoxPopup(a_widget);
-        s_comboBoxPopup->setModel(cbbServer->model());
-        s_comboBoxPopup->setCaption("Choose server");
-        s_comboBoxPopup->show();
-
-        connect(s_comboBoxPopup, &CustomComboBoxPopup::itemSelected, [this, cbbServer](int a_index){
-            QString serverName = cbbServer->itemText(a_index);
-            cbbServer->setCurrentText(serverName);
-            emit this->serverChanged(serverName);
-        });
-
-    });
 #endif
 
 }

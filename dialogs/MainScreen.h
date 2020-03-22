@@ -14,7 +14,7 @@
 #include "StyledDropShadowEffect.h"
 
 #ifdef Q_OS_ANDROID
-#include "ui_MainScreenMobile.h"
+#include "ui_MainScreen.h"
 #include <QFrame>
 
 #else
