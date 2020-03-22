@@ -50,6 +50,7 @@ void DapIndicatorStream::initAllowedSubstatesTransitions()
     addAllowedSubstatesTransitions(serviceRequested, serviceSuccess);
     addAllowedSubstatesTransitions(serviceRequested, serviceError);
     addAllowedSubstatesTransitions(serviceRequested, reconnecting);
+    addAllowedSubstatesTransitions(serviceRequested, disconnecting);
     addAllowedSubstatesTransitions(serviceSuccess, ipRequested);
     addAllowedSubstatesTransitions(ipRequested, addressReceived);
     addAllowedSubstatesTransitions(ipRequested, ipRequestError);
