@@ -44,9 +44,10 @@ namespace Utils
 
     void setPropertyAndUpdateStyle(QWidget *a_widget, const char* a_property, const QVariant &a_value /*= true*/)
     {
+
         if (a_widget->property(a_property) == a_value)
             return;
-
+qWarning()<<"a_widget "<<a_widget<<"a_property "<<a_property<<"a_value "<< a_value;
         a_widget->setProperty(a_property, a_value);
 
         Utils::updateStyle(a_widget);
@@ -54,8 +55,9 @@ namespace Utils
 
     void updateStyle(QWidget *a_widget)
     {
-        a_widget->style()->unpolish(a_widget);
         a_widget->style()->polish(a_widget);
+        a_widget->style()->unpolish(a_widget);
+        a_widget->update();
     }
 
 

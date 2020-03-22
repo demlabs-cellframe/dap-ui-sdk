@@ -51,7 +51,6 @@ class CustomLineEditBase : public QLineEdit
 public:
     CustomLineEditBase(QWidget* parent = nullptr);
 
-
 protected:
     /// Sets the visibility of the icon.
     /// @param a_visible This parameter is taken from css settings.
