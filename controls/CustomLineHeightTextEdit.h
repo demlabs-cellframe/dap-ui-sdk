@@ -4,6 +4,8 @@
 #include <QTextEdit>
 #include "AppStyleSheetHandler.h"
 #include <QStyle>
+#include "defines.h"
+#include "Utils.h"
 
 /** @brief QGraphicsDropShadowEffect that can be adjusted from css
  *
@@ -59,6 +61,7 @@ protected:
 
     const QString STATE_HOVER = "hover";
     const QString STATE_DEFAULT = "default";
+    const QString STATE_END_EDIT = "endEdit";
 
 private:
     /** @brief Adds a style to the text from the html line height.
