@@ -116,6 +116,16 @@ void AnimationChangingWidget::setCurrentIndex(int a_index)
     m_animation.start();
 }
 
+QWidget *AnimationChangingWidget::currentWidget()
+{
+    QLayoutItem* currentItem = m_ltWidgetPlacement.itemAt(this->currentIndex());
+
+    if (!currentItem)
+        return nullptr;
+
+    return currentItem->widget();
+}
+
 /**
  * @brief Getter for currentIndex
  * @return Current index

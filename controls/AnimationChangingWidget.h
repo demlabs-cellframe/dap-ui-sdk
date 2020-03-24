@@ -26,7 +26,8 @@ public:
     void setCurrentWidget(QWidget *a_widget);
     void setCurrentIndex (int a_index);
 
-    int  currentIndex ();
+    QWidget *currentWidget();
+    int      currentIndex ();
 
     int  count() const;
 

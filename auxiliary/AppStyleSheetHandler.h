@@ -59,6 +59,7 @@ public:
 
 private:
     static QApplication* appInstance();
+    static QString convertPointsToPixels(const QString a_stylesheet);
 
 };
 
