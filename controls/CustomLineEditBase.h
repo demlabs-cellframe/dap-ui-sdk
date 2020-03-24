@@ -6,6 +6,8 @@
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QStyle>
+#include <QSpacerItem>
+
 /*
 *
 *thisWidget
@@ -47,7 +49,8 @@ class CustomLineEditBase : public QLineEdit
 
     Q_PROPERTY(bool visibleIcon WRITE setVisibleIcon DESIGNABLE true)
     Q_PROPERTY(bool visibleButton WRITE setVisibleButton DESIGNABLE true)
-
+    Q_PROPERTY(bool marginLeft WRITE setMarginLeft DESIGNABLE true)
+    Q_PROPERTY(bool marginRight WRITE setMarginRight DESIGNABLE true)
 public:
     CustomLineEditBase(QWidget* parent = nullptr);
 
@@ -58,11 +61,20 @@ protected:
     /// Sets the visibility of the button.
     /// @param a_visible This parameter is taken from css settings.
     void setVisibleButton(bool a_visible);
+    /// Sets the widget's relevance.
+    /// @param a_visible This parameter is taken from css settings.
+    void setMarginLeft(bool a_visible);
+    /// Sets the widget's relevance.
+    /// @param a_visible This parameter is taken from css settings.
+    void setMarginRight(bool a_visible);
     ///Widget for icon
-    QLabel *m_lblIcon;
+    QLabel *lblIcon;
     ///Widget for button
-    QPushButton *m_btnControl;
-    QHBoxLayout* m_hblLineEdit;
+    QPushButton *btnControl;
+    QHBoxLayout *hblLineEdit;
+    QWidget *wgtMarginLeft;
+    QWidget *wgtMarginRight;
+    QSpacerItem *spacer;
 private:
 
 

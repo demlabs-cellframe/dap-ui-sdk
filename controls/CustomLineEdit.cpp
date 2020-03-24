@@ -3,7 +3,7 @@
 CustomLineEdit::CustomLineEdit(QWidget *parent):CustomLineEditBase (parent)
 {
 
-    connect(m_btnControl,&QPushButton::clicked,[=]{
+    connect(btnControl,&QPushButton::clicked,[=]{
         this->clear();
         setVisibleButton(false);
         Utils::setPropertyAndUpdateStyle(this, Properties::STATE,"");
@@ -15,7 +15,7 @@ CustomLineEdit::CustomLineEdit(QWidget *parent):CustomLineEditBase (parent)
         if(a_error)
         {
             Utils::setPropertyAndUpdateStyle(this, Properties::STATE,"error");
-            Utils::setPropertyAndUpdateStyle(m_btnControl, Properties::STATE,"error");
+            Utils::setPropertyAndUpdateStyle(btnControl, Properties::STATE,"error");
         }
         else
         {
@@ -28,7 +28,7 @@ CustomLineEdit::CustomLineEdit(QWidget *parent):CustomLineEditBase (parent)
                 Utils::setPropertyAndUpdateStyle(this, Properties::STATE,"");
             }
 
-            Utils::setPropertyAndUpdateStyle(m_btnControl, Properties::STATE,"");
+            Utils::setPropertyAndUpdateStyle(btnControl, Properties::STATE,"");
 
         }
     }
@@ -55,4 +55,3 @@ bool CustomLineEdit::event(QEvent * event)
     }
     return QLineEdit::event(event);
 }
-

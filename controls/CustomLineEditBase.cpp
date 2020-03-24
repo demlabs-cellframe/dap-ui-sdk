@@ -1,45 +1,80 @@
 #include "CustomLineEditBase.h"
-#include <QDebug>
+
 CustomLineEditBase::CustomLineEditBase(QWidget* parent):QLineEdit (parent)
 {
-    m_btnControl = new QPushButton(this);
-    m_lblIcon = new QLabel(this);
+    wgtMarginLeft = new QWidget(this);
+    wgtMarginLeft->setObjectName("wgtMarginLeft");
+    wgtMarginLeft->setVisible(false);
 
-    m_btnControl->setObjectName("control");
-    m_lblIcon->setObjectName("image");
+    wgtMarginRight = new QWidget(this);
+    wgtMarginRight->setObjectName("wgtMarginRight");
+    wgtMarginRight->setVisible(false);
 
-    m_btnControl->setVisible(false);
-    m_lblIcon->setVisible(false);
+    spacer = new QSpacerItem(16000,10);
 
-    m_hblLineEdit = new QHBoxLayout(this);
-    m_hblLineEdit->addWidget(m_lblIcon,0,Qt::AlignLeft);
-    m_hblLineEdit->addWidget(m_btnControl,1,Qt::AlignRight);
+    btnControl = new QPushButton(this);
+    lblIcon = new QLabel(this);
 
-    m_hblLineEdit->setSpacing(0);
-    m_hblLineEdit->setMargin(0);
+    btnControl->setObjectName("control");
+    lblIcon->setObjectName("image");
 
-    this->setLayout(m_hblLineEdit);
+    btnControl->setVisible(false);
+    lblIcon->setVisible(false);
+
+    hblLineEdit = new QHBoxLayout(this);
+    hblLineEdit->addWidget(wgtMarginLeft,0,Qt::AlignLeft);
+    hblLineEdit->addWidget(lblIcon,1,Qt::AlignLeft);
+    hblLineEdit->addItem(spacer);
+    hblLineEdit->addWidget(btnControl,2,Qt::AlignRight);
+    hblLineEdit->addWidget(wgtMarginRight,3,Qt::AlignRight);
+
+    hblLineEdit->setSpacing(0);
+    hblLineEdit->setMargin(0);
+
+    this->setLayout(hblLineEdit);
 
 }
 
 void CustomLineEditBase::setVisibleIcon(bool &a_visible)
 {
-    m_lblIcon->setVisible(a_visible);
+    lblIcon->setVisible(a_visible);
+
+    int wgtWidht = 0;
+    if(wgtMarginLeft->isVisible())
+    {
+        wgtWidht = wgtMarginLeft->geometry().width();
+    }
 
     int a_left,a_top,a_right,a_bottom;
     this->getTextMargins(&a_left,&a_top,&a_right,&a_bottom);
 
-    this->setTextMargins(m_lblIcon->geometry().width(),a_top,a_right,a_bottom);
+    this->setTextMargins(lblIcon->geometry().width() + wgtWidht,a_top,a_right,a_bottom);
 }
 
 void CustomLineEditBase::setVisibleButton(bool a_visible)
 {
-    m_btnControl->setVisible(a_visible);
+    btnControl->setVisible(a_visible);
+
+    int wgtWidht = 0;
+    if(wgtMarginRight->isVisible())
+    {
+        wgtWidht = wgtMarginRight->geometry().width();
+    }
 
     int a_left,a_top,a_right,a_bottom;
     this->getTextMargins(&a_left,&a_top,&a_right,&a_bottom);
 
-    this->setTextMargins(a_left,a_top,m_btnControl->geometry().width(),a_bottom);
+    this->setTextMargins(a_left,a_top,btnControl->geometry().width() + wgtWidht,a_bottom);
+}
+
+void CustomLineEditBase::setMarginLeft(bool a_visible)
+{
+    wgtMarginLeft->setVisible(a_visible);
+}
+
+void CustomLineEditBase::setMarginRight(bool a_visible)
+{
+    wgtMarginRight->setVisible(a_visible);
 }
 
 
