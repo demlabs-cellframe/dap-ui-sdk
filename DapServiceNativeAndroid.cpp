@@ -14,18 +14,22 @@ DapServiceNativeAndroid::DapServiceNativeAndroid()
 void DapServiceNativeAndroid::restartService()
 {
 
-    qWarning() << "[DapServiceNativeAndroid] restartService()";
+    /*qWarning() << "[DapServiceNativeAndroid] restartService()";
     // Calling Service
     QAndroidJniObject::callStaticMethod<void>("com/demlabs/dap/DapVpnService",
-                                              "restartService",
+                                              "startService",
                                               "(Landroid/content/Context;)V",
-                                              QtAndroid::androidActivity().object());
+                                              QtAndroid::androidActivity().object());*/
 
 }
 
 void DapServiceNativeAndroid::checkInstallation()
 {
     qWarning() << "[DapServiceNativeAndroid] checkInstallation() not implemented";
-    QtAndroid::androidActivity().callMethod<void>( "startDapVpnService"
-                                           ,"()V" );
+    //QtAndroid::androidActivity().callMethod<void>( "startService"
+    //                                       ,"()V" );
+    QAndroidJniObject::callStaticMethod<void>("com/demlabs/dapchain/DapChainVpnService",
+                                              "startDapService",
+                                              "(Landroid/content/Context;)V",
+                                              QtAndroid::androidActivity().object());
 }

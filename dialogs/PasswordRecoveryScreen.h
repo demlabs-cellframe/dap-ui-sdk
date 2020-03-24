@@ -1,16 +1,19 @@
 #ifndef FORGETPASSWORDSCREEN_H
 #define FORGETPASSWORDSCREEN_H
 
+#include "QTextEdit"
 #include "DapUiScreen.h"
+#include "StyledDropShadowEffect.h"
+#include "CustomLineHeightLabel.h"
 
-class ForgetPasswordScreen : public DapUiScreen
+class PasswordRecoveryScreen : public DapUiScreen
 {
     Q_OBJECT
 public:
     /// Overloaded constructor.
     /// @param a_parent Parent.
     /// @param a_sw Application window stack.
-    ForgetPasswordScreen(QObject * a_parent, QStackedWidget * a_sw);
+    PasswordRecoveryScreen(QObject * a_parent, QStackedWidget * a_sw);
 
 protected:
     /// Form initialization.

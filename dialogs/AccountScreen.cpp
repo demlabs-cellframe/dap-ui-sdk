@@ -8,18 +8,12 @@ AccountScreen::AccountScreen(QObject * a_parent, QStackedWidget * a_sw)
     QLabel *lblSwitchLeftText = a_sw->findChild<QLabel*>("lblSwitchLeftText");
     QLabel *lblSwitchRightText = a_sw->findChild<QLabel*>("lblSwitchRightText");
     QPushButton *btnSwitch = a_sw->findChild<QPushButton*>("btnSwitchButton");
-    CustomPlacementButton *btnLogOut = a_sw->findChild<CustomPlacementButton*>("btnLogOut");
     QPushButton *btnChangePlan  = a_sw->findChild<QPushButton*>("btnChangePlan");
 
     Q_ASSERT(lblSwitchLeftText);
     Q_ASSERT(lblSwitchRightText);
     Q_ASSERT(btnSwitch);
-    Q_ASSERT(btnLogOut);
     Q_ASSERT(btnChangePlan);
-
-    btnLogOut->setObjectName("btnLogOut");
-    btnLogOut->setText("Logout");
-    //btnLogOut->setImagePosition(ImagePos::Right);
 
     btnChangePlan->setGraphicsEffect(new StyledDropShadowEffect(btnChangePlan));
 
