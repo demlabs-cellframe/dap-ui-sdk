@@ -108,12 +108,13 @@ void SignInScreen::checkFieldsAndSignIn()
 void SignInScreen::initVariantUi(QWidget *a_widget)
 {
 
-    QPushButton             *btnSignIn        = a_widget->findChild<QPushButton*>(BTN_SIGN_IN_NAME  ); Q_ASSERT(btnSignIn);
-    CustomLineEdit          *edtEmail         = a_widget->findChild<CustomLineEdit  *>(EDT_EMAIL_NAME    ); Q_ASSERT(edtEmail);
-    CustomPasswordLineEdit  *edtPassword      = a_widget->findChild<CustomPasswordLineEdit  *>(EDT_PASSWORD_NAME ); Q_ASSERT(edtPassword);
+    QPushButton             *btnSignIn        = a_widget->findChild<QPushButton*>(BTN_SIGN_IN_NAME  );      Q_ASSERT(btnSignIn);
     QLabel                  *lblEmailError    = a_widget->findChild<QLabel     *>(LBL_EMAIL_ERROR   ); Q_ASSERT(lblEmailError);
 
 #ifdef Q_OS_ANDROID
+    CustomLineEdit          *edtEmail         = a_widget->findChild<CustomLineEdit  *>("edtEmail"   ); Q_ASSERT(edtEmail);
+    CustomPasswordLineEdit  *edtPassword      = a_widget->findChild<CustomPasswordLineEdit  *>(EDT_PASSWORD_NAME ); Q_ASSERT(edtPassword);
+
     edtEmail->setPlaceholderText("e-mail");
     edtPassword->setPlaceholderText("password");
     edtPassword->setEchoMode(QLineEdit::Password);
@@ -126,6 +127,8 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
 
 
 #else
+    QLineEdit           *edtEmail         = a_widget->findChild<QLineEdit  *>("edtEmail"   ); Q_ASSERT(edtEmail);
+    QLineEdit           *edtPassword      = a_widget->findChild<QLineEdit  *>(EDT_PASSWORD_NAME ); Q_ASSERT(edtPassword);
     edtEmail->setPlaceholderText("Email");
     edtPassword->setPlaceholderText("Password");
     edtPassword->setEchoMode(QLineEdit::Password);
