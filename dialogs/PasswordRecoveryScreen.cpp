@@ -1,35 +1,61 @@
 #include "PasswordRecoveryScreen.h"
 
-#include "ui_PasswordRecoveryScreen.h"
-#include <QStyle>
 
-PasswordRecoveryScreen::PasswordRecoveryScreen(QObject * a_parent, QStackedWidget * a_sw)
-    : DapUiScreen(a_parent, a_sw)
+const QString PasswordRecoveryScreen::SCREEN_NAME = "PasswordRecoveryScreen";
+
+PasswordRecoveryScreen::PasswordRecoveryScreen(QWidget *a_parent)
+    : AdaptiveScreen(a_parent)
 {
     create<Ui::PasswordRecoveryScreen>();
 }
 
-void PasswordRecoveryScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
+QString PasswordRecoveryScreen::screenName()
 {
-    Q_UNUSED(a_w)
-    Q_UNUSED(a_rotation)
+    return SCREEN_NAME;
+}
 
-        QPushButton *btnSendMail = a_w->findChild<QPushButton*>("btnSendMail");
-        CustomLineHeightLabel *lblStatusMessage = a_w->findChild<CustomLineHeightLabel*>("lblStatusMessage");
-        QLineEdit *edtEmail = a_w->findChild<QLineEdit*>("edtEmail");
-        QLabel *lblEmailError = a_w->findChild<QLabel*>("lblEmailError");
+void PasswordRecoveryScreen::initVariantUi(QWidget *a_widget)
+{
+    Q_UNUSED(a_widget)
 
-        Q_ASSERT(btnSendMail);
-        Q_ASSERT(lblStatusMessage);
-        Q_ASSERT(edtEmail);
-        Q_ASSERT(lblEmailError);
+        QLabel                  *lblLogo = a_widget->findChild<QLabel*>(LBL_LOGO);                                             Q_ASSERT(lblLogo);
+        QPushButton             *btnSendMail = a_widget->findChild<QPushButton*>(BTN_SEND_MAIL);                               Q_ASSERT(btnSendMail);
+        CustomLineHeightLabel   *lblStatusMessage = a_widget->findChild<CustomLineHeightLabel*>(LBL_STATUS_MESSAGE);           Q_ASSERT(lblStatusMessage);
+        QLineEdit               *edtEmail = a_widget->findChild<QLineEdit*>(EDT_EMAIL);                                        Q_ASSERT(edtEmail);
+        QLabel                  *lblEmailError = a_widget->findChild<QLabel*>(LBL_EMAIL_ERROR);                                Q_ASSERT(lblEmailError);
+        QVBoxLayout             *vltMainLayout = a_widget->findChild<QVBoxLayout*>(VLT_MAIN_LAYOUT);                           Q_ASSERT(vltMainLayout);
+
+#ifdef Q_OS_ANDROID
+        QWidget                 *wgtMarginBottomMessage = a_widget->findChild<QWidget*>(WGT_MARGIN_BOTTOM_MESSAGE);            Q_ASSERT(wgtMarginBottomMessage);
+        QLabel                  *lblCaption = a_widget->findChild<QLabel*>(LBL_CAPTION);                                       Q_ASSERT(lblCaption);
+        vltMainLayout->insertWidget(5,lblEmailError);
+        vltMainLayout->insertWidget(7,edtEmail);
+        lblEmailError->setAlignment(Qt::AlignLeft);
+        lblCaption->setText("Forget password");
+        lblCaption->setAlignment(Qt::AlignJustify);
+        lblStatusMessage->setAlignment(Qt::AlignJustify);
+        edtEmail->setAlignment(Qt::AlignLeft);
+
+#else
+
+        vltMainLayout->setAlignment(lblLogo,Qt::AlignHCenter);
+        vltMainLayout->setAlignment(btnSendMail,Qt::AlignHCenter);
+
+        vltMainLayout->setAlignment(lblStatusMessage,Qt::AlignHCenter);
+        vltMainLayout->setAlignment(edtEmail,Qt::AlignHCenter);
+        vltMainLayout->setAlignment(lblEmailError,Qt::AlignHCenter);
+#endif
 
         static int presBtn = 0;
 
         edtEmail->setPlaceholderText("Your email");
         btnSendMail->setGraphicsEffect(new StyledDropShadowEffect(btnSendMail));
         lblEmailError->setVisible(false);
+#ifdef Q_OS_ANDROID
+        lblStatusMessage->setText("Please enter your email address.<br>We will send you an email to reset your password.");
+#else
         lblStatusMessage->setText("Please enter your email address.<br>We will send you an email to<br>reset your password.");
+#endif
 
         connect(btnSendMail,&QPushButton::clicked,[=]{
             switch (presBtn%3)
@@ -37,16 +63,19 @@ void PasswordRecoveryScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_
             case 0:
                 presBtn++;
                 lblEmailError->setVisible(true);
-
-                edtEmail->setProperty("state",1);
-                edtEmail->style()->unpolish(edtEmail);
-                edtEmail->style()->polish(edtEmail);
+#ifdef Q_OS_ANDROID
+                Utils::setPropertyAndUpdateStyle(wgtMarginBottomMessage,Properties::STATE,"1");
+#else
+                Utils::setPropertyAndUpdateStyle(edtEmail,Properties::STATE,"1");
+#endif
                 break;
             case 1:
-                lblStatusMessage->setProperty("state",1);
-                lblStatusMessage->style()->unpolish(lblStatusMessage);
-                lblStatusMessage->style()->polish(lblStatusMessage);
-                lblStatusMessage->setText("Email sent. And other information<br>in this paragraph.");
+#ifdef Q_OS_ANDROID
+                Utils::setPropertyAndUpdateStyle(wgtMarginBottomMessage,Properties::STATE,"2");
+#else
+                Utils::setPropertyAndUpdateStyle(lblStatusMessage,Properties::STATE,"1");
+#endif
+                lblStatusMessage->setText("Email sent. And other information in this paragraph.");
 
                 edtEmail->setVisible(false);
                 lblEmailError->setVisible(false);
@@ -54,14 +83,14 @@ void PasswordRecoveryScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_
                 presBtn++;
                 break;
             case 2:
-                lblStatusMessage->setProperty("state",0);
-                lblStatusMessage->style()->unpolish(lblStatusMessage);
-                lblStatusMessage->style()->polish(lblStatusMessage);
-                lblStatusMessage->setText("Please enter your email address.<br>We will send you an email to<br>reset your password.");
+                Utils::setPropertyAndUpdateStyle(lblStatusMessage,Properties::STATE,"0");
+#ifdef Q_OS_ANDROID
+                Utils::setPropertyAndUpdateStyle(wgtMarginBottomMessage,Properties::STATE,"0");
+#else
+                Utils::setPropertyAndUpdateStyle(edtEmail,Properties::STATE,"0");
+#endif
 
-                edtEmail->setProperty("state",0);
-                edtEmail->style()->unpolish(edtEmail);
-                edtEmail->style()->polish(edtEmail);
+                lblStatusMessage->setText("Please enter your email address.<br>We will send you an email to reset your password.");
 
                 edtEmail->setVisible(true);
                 btnSendMail->setText("Send email");

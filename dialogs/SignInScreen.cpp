@@ -70,7 +70,8 @@ void SignInScreen::setPassword(const QString &a_password)
 
 void SignInScreen::setErrorMessage(const QString &a_errorMsg)
 {
-
+                                                                ///Alexandr: For Android you need to consider this- #SignInScreen #wgtLoginBottomSpacer[error = "true"]
+                                                                ///
     if (a_errorMsg == "Incorrect password")
     {
 #ifdef Q_OS_ANDROID
