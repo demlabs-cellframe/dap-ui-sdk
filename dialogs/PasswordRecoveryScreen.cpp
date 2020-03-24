@@ -35,7 +35,7 @@ void PasswordRecoveryScreen::initVariantUi(QWidget *a_widget)
         lblCaption->setAlignment(Qt::AlignJustify);
         lblStatusMessage->setAlignment(Qt::AlignJustify);
         edtEmail->setAlignment(Qt::AlignLeft);
-
+        edtEmail->setPlaceholderText("e-mail");
 #else
 
         vltMainLayout->setAlignment(lblLogo,Qt::AlignHCenter);
@@ -44,12 +44,14 @@ void PasswordRecoveryScreen::initVariantUi(QWidget *a_widget)
         vltMainLayout->setAlignment(lblStatusMessage,Qt::AlignHCenter);
         vltMainLayout->setAlignment(edtEmail,Qt::AlignHCenter);
         vltMainLayout->setAlignment(lblEmailError,Qt::AlignHCenter);
+        edtEmail->setPlaceholderText("Your email");
+        btnSendMail->setGraphicsEffect(new StyledDropShadowEffect(btnSendMail));
+
 #endif
 
         static int presBtn = 0;
 
-        edtEmail->setPlaceholderText("Your email");
-        btnSendMail->setGraphicsEffect(new StyledDropShadowEffect(btnSendMail));
+
         lblEmailError->setVisible(false);
 #ifdef Q_OS_ANDROID
         lblStatusMessage->setText("Please enter your email address.<br>We will send you an email to reset your password.");
