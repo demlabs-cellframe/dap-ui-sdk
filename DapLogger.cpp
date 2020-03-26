@@ -29,13 +29,22 @@ void DapLogger::setLogLevel(dap_log_level ll) {
 }
 
 bool DapLogger::setLogFile(const QString& filePath) {
-    return dap_common_init( DAP_BRAND,filePath.toLatin1().data()) == 0;
+
+
+    qDebug() << "setLogFile ========" << filePath;
+    int i = dap_common_init( DAP_BRAND, filePath.toLatin1().data()) ;
+    qDebug() << "setLogFile ========" <<filePath<< "======================" <<i;
+    return i == 0;
 }
+
+//#include <android/log.h>
 
 void DapLogger::messageHandler(QtMsgType type,
                                const QMessageLogContext &ctx,
                                const QString & msg)
 {
+//    __android_log_print(4, "MyTag", "%s", msg.toLatin1().data());
+
     if(ctx.file) {
         char prefixBuffer[128];
 #if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
