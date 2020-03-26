@@ -11,7 +11,7 @@
 #include "defines.h"
 
 #ifdef Q_OS_ANDROID
-#include "ui_SignInScreenMobile.h"
+#include "ui_SignInScreen.h"
 #else
 #include "ui_SignInScreen.h"
 #include "StyledDropShadowEffect.h"
