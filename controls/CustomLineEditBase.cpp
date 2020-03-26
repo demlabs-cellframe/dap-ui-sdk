@@ -1,5 +1,5 @@
 #include "CustomLineEditBase.h"
-
+#include <QDebug>
 CustomLineEditBase::CustomLineEditBase(QWidget* parent):QLineEdit (parent)
 {
     wgtMarginLeft = new QWidget(this);
@@ -32,44 +32,24 @@ CustomLineEditBase::CustomLineEditBase(QWidget* parent):QLineEdit (parent)
     hblLineEdit->setMargin(0);
 
     this->setLayout(hblLineEdit);
-
 }
 
 void CustomLineEditBase::setVisibleIcon(bool &a_visible)
 {
     lblIcon->setVisible(a_visible);
 
-    int wgtWidht = 0;
-    if(wgtMarginLeft->isVisible())
-    {
-        wgtWidht = wgtMarginLeft->geometry().width();
-    }
-
-    int a_left,a_top,a_right,a_bottom;
-    this->getTextMargins(&a_left,&a_top,&a_right,&a_bottom);
-
-    this->setTextMargins(lblIcon->geometry().width() + wgtWidht,a_top,a_right,a_bottom);
 }
 
 void CustomLineEditBase::setVisibleButton(bool a_visible)
 {
     btnControl->setVisible(a_visible);
 
-    int wgtWidht = 0;
-    if(wgtMarginRight->isVisible())
-    {
-        wgtWidht = wgtMarginRight->geometry().width();
-    }
-
-    int a_left,a_top,a_right,a_bottom;
-    this->getTextMargins(&a_left,&a_top,&a_right,&a_bottom);
-
-    this->setTextMargins(a_left,a_top,btnControl->geometry().width() + wgtWidht,a_bottom);
 }
 
 void CustomLineEditBase::setMarginLeft(bool a_visible)
 {
     wgtMarginLeft->setVisible(a_visible);
+
 }
 
 void CustomLineEditBase::setMarginRight(bool a_visible)
