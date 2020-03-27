@@ -81,12 +81,6 @@ class CustomLineEdit : public CustomLineEditBase
 public:
     CustomLineEdit(QWidget *parent = nullptr);
 
-    /// Setting the error signal.
-    /// @param a_error
-    void setErrorLine(bool a_error);
-protected:
-    bool event(QEvent * event);
-
 };
 
 #endif // CUSTOMLINEEDIT_H

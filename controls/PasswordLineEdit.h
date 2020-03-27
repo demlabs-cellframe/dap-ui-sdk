@@ -1,5 +1,5 @@
-#ifndef CUSTOMPASSWORDLINEEDIT_H
-#define CUSTOMPASSWORDLINEEDIT_H
+#ifndef PASSWORDLINEEDIT_H
+#define PASSWORDLINEEDIT_H
 
 #include "CustomLineEditBase.h"
 #include <QStyle>
@@ -70,18 +70,13 @@
 *}
 */
 
-class CustomPasswordLineEdit : public CustomLineEditBase
+class PasswordLineEdit : public CustomLineEditBase
 {
     Q_OBJECT
 
 public:
-    CustomPasswordLineEdit(QWidget *parent = nullptr);
+    PasswordLineEdit(QWidget *parent = nullptr);
 
-    /// Setting the error signal.
-    /// @param a_error
-    void setErrorLine(bool a_error);
-protected:
-    bool event(QEvent * event);
 };
 
-#endif // CUSTOMPASSWORDLINEEDIT_H
+#endif // PASSWORDLINEEDIT_H

@@ -7,6 +7,9 @@
 #include <QHBoxLayout>
 #include <QStyle>
 #include <QSpacerItem>
+#include "Utils.h"
+#include "defines.h"
+#include <QEvent>
 
 /*
 *
@@ -53,8 +56,13 @@ class CustomLineEditBase : public QLineEdit
     Q_PROPERTY(bool marginRight WRITE setMarginRight DESIGNABLE true)
 public:
     CustomLineEditBase(QWidget* parent = nullptr);
+    /// Setting the error signal.
+    /// @param a_wrong
+    void setWrongState(bool a_wrong);
 
+    void setActiveState(bool a_active);
 protected:
+    bool event(QEvent * event);
     /// Sets the visibility of the icon.
     /// @param a_visible This parameter is taken from css settings.
     void setVisibleIcon(bool &a_visible);

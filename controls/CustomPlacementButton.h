@@ -18,7 +18,7 @@ enum class ImagePos {Left, Right};
  * Set style in .css file in format
  *> #buttonName #leftSpacing {
  *>     ...; //if max-width==0, left alinment
- *  qproperty-alignment: AlignmentLeft;//AlignmentRight, AlignmentHCenter, AlignmentNone (left or right spacers)
+ *  qproperty-stateEdge: LeftActive;//RightActive, BothActive, None (left or right spacers)
  *
  *
  *> }
@@ -55,7 +55,7 @@ class CustomPlacementButton : public QPushButton
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString alignment WRITE setAlignment DESIGNABLE true)
+    Q_PROPERTY(QString stateEdge WRITE setStateEdge DESIGNABLE true)
 
 public:
 
@@ -84,7 +84,7 @@ public:
     void setGraphicsEffect(StyledDropShadowEffect *a_effect);
     ///Makes widgets visible on the sides
     /// @param a_spacer If there is ALIGNMENT_NONE or some erroneous value, the widgets will be invisible.
-    void setAlignment(const QString &a_spacer);
+    void setStateEdge(const QString &a_spacer);
 
 
 protected:
@@ -102,10 +102,10 @@ protected:
     QLabel m_lbText;     ///<label with text
     QLabel m_lbRightSpacing;        ///<label for right spacing
 
-    const QString ALIGNMENT_LEFT        = "AlignmentLeft";
-    const QString ALIGNMENT_RIGHT       = "AlignmentRight";
-    const QString ALIGNMENT_H_CENTER    = "AlignmentHCenter";
-    const QString ALIGNMENT_NONE        = "AlignmentNone";
+    const QString STATE_LEFT_EDGE        = "LeftActive";
+    const QString STATE_RIGHT_EDGE       = "RightActive";
+    const QString STATE_BOTH_EDGE        = "BothActive";
+    const QString STATE_NONE_EDGE        = "None";
 
 private:
     ///For effect.

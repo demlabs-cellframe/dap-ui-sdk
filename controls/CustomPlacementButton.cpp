@@ -182,23 +182,22 @@ void CustomPlacementButton::setObjectName(const QString &name)
         m_styledShadow->updateStyleProperties();
 }
 
-
 //If there is ALIGNMENT_NONE or some erroneous value, the widgets will be invisible.
-void CustomPlacementButton::setAlignment(const QString &a_spacer)
+void CustomPlacementButton::setStateEdge(const QString &a_spacer)
 {
-    if(a_spacer == ALIGNMENT_LEFT)
+    if(a_spacer == STATE_LEFT_EDGE)
     {
         m_lbLeftSpacing.setVisible(true);
         m_lbRightSpacing.setVisible(false);
         return;
     }
-    if(a_spacer == ALIGNMENT_RIGHT)
+    if(a_spacer == STATE_RIGHT_EDGE)
     {
         m_lbLeftSpacing.setVisible(false);
         m_lbRightSpacing.setVisible(true);
         return;
     }
-    if(a_spacer == ALIGNMENT_H_CENTER)
+    if(a_spacer == STATE_BOTH_EDGE)
     {
         m_lbLeftSpacing.setVisible(true);
         m_lbRightSpacing.setVisible(true);
