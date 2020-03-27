@@ -109,11 +109,11 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
 {
 
     QPushButton             *btnSignIn        = a_widget->findChild<QPushButton*>(BTN_SIGN_IN_NAME  );      Q_ASSERT(btnSignIn);
-    QLabel                  *lblEmailError    = a_widget->findChild<QLabel     *>(LBL_EMAIL_ERROR   ); Q_ASSERT(lblEmailError);
+    QLabel                  *lblEmailError    = a_widget->findChild<QLabel     *>(LBL_EMAIL_ERROR   );      Q_ASSERT(lblEmailError);
 
 #ifdef Q_OS_ANDROID
-    CustomLineEdit          *edtEmail         = a_widget->findChild<CustomLineEdit  *>("edtEmail"   ); Q_ASSERT(edtEmail);
-    CustomPasswordLineEdit  *edtPassword      = a_widget->findChild<CustomPasswordLineEdit  *>(EDT_PASSWORD_NAME ); Q_ASSERT(edtPassword);
+    CustomLineEdit          *edtEmail         = a_widget->findChild<CustomLineEdit  *>("edtEmail"   );      Q_ASSERT(edtEmail);
+    PasswordLineEdit        *edtPassword      = a_widget->findChild<PasswordLineEdit  *>(EDT_PASSWORD_NAME ); Q_ASSERT(edtPassword);
 
     edtEmail->setPlaceholderText("e-mail");
     edtPassword->setPlaceholderText("password");

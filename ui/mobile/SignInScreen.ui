@@ -177,7 +177,7 @@
     <widget class="QWidget" name="wgtUnderEmail" native="true"/>
    </item>
    <item>
-    <widget class="CustomPasswordLineEdit" name="edtPassword">
+    <widget class="PasswordLineEdit" name="edtPassword">
      <property name="inputMethodHints">
       <set>Qt::ImhNone</set>
      </property>
@@ -250,9 +250,9 @@
    <header location="global">CustomLineEdit.h</header>
   </customwidget>
   <customwidget>
-   <class>CustomPasswordLineEdit</class>
+   <class>PasswordLineEdit</class>
    <extends>QLineEdit</extends>
-   <header location="global">CustomPasswordLineEdit.h</header>
+   <header location="global">PasswordLineEdit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

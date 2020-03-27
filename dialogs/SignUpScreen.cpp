@@ -26,8 +26,8 @@ void SignUpScreen::initVariantUi(QWidget *a_widget)
     QPushButton             *btnPrivacyPolisy       = a_widget->findChild<QPushButton*>(BTN_PRIVACY_POLISY);            Q_ASSERT(btnPrivacyPolisy);
     QPushButton             *btnSignIn              = a_widget->findChild<QPushButton*>(BTN_SIGN_IN);                   Q_ASSERT(btnSignIn);
     CustomLineEdit          *edtEmail               = a_widget->findChild<CustomLineEdit*>(EDT_EMAIL);                  Q_ASSERT(edtEmail);
-    CustomPasswordLineEdit  *edtPassword            = a_widget->findChild<CustomPasswordLineEdit*>(EDT_PASSWORD);       Q_ASSERT(edtPassword);
-    CustomPasswordLineEdit  *edtRptPassword         = a_widget->findChild<CustomPasswordLineEdit*>(EDT_RPT_PASSWORD);   Q_ASSERT(edtRptPassword);
+    PasswordLineEdit        *edtPassword            = a_widget->findChild<PasswordLineEdit*>(EDT_PASSWORD);             Q_ASSERT(edtPassword);
+    PasswordLineEdit        *edtRptPassword         = a_widget->findChild<PasswordLineEdit*>(EDT_RPT_PASSWORD);         Q_ASSERT(edtRptPassword);
     QCheckBox               *chbInfo                = a_widget->findChild<QCheckBox*>(CHB_INFO);                        Q_ASSERT(chbInfo);
     QLabel                  *lblInfo                = a_widget->findChild<QLabel*>(LBL_INFO);                           Q_ASSERT(lblInfo);
     QLabel                  *lblRptPasswordError    = a_widget->findChild<QLabel*>(LBL_RPT_PASSWORD_ERROR);             Q_ASSERT(lblRptPasswordError);

@@ -6,7 +6,7 @@
 #include "StyledDropShadowEffect.h"
 #include "ui_SignUpScreen.h"
 #include "CustomLineEdit.h"
-#include "CustomPasswordLineEdit.h"
+#include "PasswordLineEdit.h"
 #include "Utils.h"
 
 class SignUpScreen : public AdaptiveScreen
