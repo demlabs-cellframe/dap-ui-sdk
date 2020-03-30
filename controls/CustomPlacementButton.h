@@ -9,6 +9,7 @@
 #include <QLabel>
 #include "StyledDropShadowEffect.h"
 #include <QFontMetrics>
+#include "CustomButtonAbstract.h"
 
 enum class ImagePos {Left, Right};
 
@@ -51,18 +52,23 @@ enum class ImagePos {Left, Right};
  *> }
  * @todo Is searching style in comments also!
 */
-class CustomPlacementButton : public QPushButton
+class CustomPlacementButton : public CustomButtonAbstract
 {
     Q_OBJECT
 
     Q_PROPERTY(QString stateEdge WRITE setStateEdge DESIGNABLE true)
 
+    void initButton();
 public:
 
     explicit CustomPlacementButton(QWidget *a_parent = Q_NULLPTR);
+
+    CustomPlacementButton(ImagePos a_pos, QWidget *a_parent = Q_NULLPTR);
+
+    QString text();
     /// Set text button.
     /// @param text Set text.
-    void setText(const QString &text);
+    virtual void setText(const QString &text);
     /// Form initialization.
     /// @param path Path to Image.
     void setIcon(const QString &path);

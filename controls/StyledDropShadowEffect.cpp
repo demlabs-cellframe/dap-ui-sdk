@@ -7,6 +7,7 @@ StyledDropShadowEffect::StyledDropShadowEffect(QObject *a_parent /*= Q_NULLPTR*/
     :QGraphicsDropShadowEffect(a_parent)
 {
     updateStyleProperties();
+    installEventFilter(this);
 }
 
 ///@details Collecting data from css
@@ -61,4 +62,20 @@ void StyledDropShadowEffect::setShadowProperties(ShadowProperties &data)
     this->setColor(data.color);
     this->setBlurRadius(data.blur);
     this->setOffset(data.x, data.y);
+}
+
+bool StyledDropShadowEffect::eventFilter(QObject *watched, QEvent *event)
+{
+    //if (event->type() == QEvent::KeyPress) {
+        qDebug()<<"Opa opa!!!!!!!!!!!!!!!!!!";
+    //}
+        return QObject::eventFilter(watched,event);
+}
+
+void StyledDropShadowEffect::customEvent(QEvent *event)
+{
+    //if (event->type() == QEvent::KeyPress) {
+        qDebug()<<"Opa opa!!!!!!!!!!!!!!!!!!";
+    //}
+        return QObject::customEvent(event);
 }

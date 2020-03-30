@@ -36,6 +36,10 @@ public:
     void updateStyle(StyleShedow a_style);
     ///@details Collecting data from css
     void updateStyleProperties();
+protected:
+    bool eventFilter(QObject *watched, QEvent *event);
+
+    void customEvent(QEvent *event);
 private:
     ///@details Saving data to a shadow structure
     /// @param  a_property String with settings from css.

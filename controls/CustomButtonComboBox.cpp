@@ -3,17 +3,16 @@
 #include <QVBoxLayout>
 #include <QDebug>
 
-const QString CustomButtonComboBox::BUTTON_NAME_SUFFIX = "";
+const QString CustomButtonComboBox::BUTTON_NAME_SUFFIX = "_control";
 
 CustomButtonComboBox::CustomButtonComboBox(QWidget *a_parent)
     : CustomComboBox(a_parent)
 {
     this->setLayout(new QVBoxLayout(this));
-//    this->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     this->layout()->setContentsMargins(0, 0 ,0, 0);
 }
 
-void CustomButtonComboBox::setButtonControll(QPushButton *a_button)
+void CustomButtonComboBox::setButtonControll(CustomButtonAbstract *a_button)
 {
     if (m_button)
         delete m_button;
@@ -26,12 +25,14 @@ void CustomButtonComboBox::setButtonControll(QPushButton *a_button)
 
     this->m_button = a_button;
 
-    connect(a_button, &QPushButton::clicked, [this]{
+    connect(a_button, &CustomButtonAbstract::clicked, [this]{
         this->showPopup();
     });
 
     connect(this, &QComboBox::currentTextChanged, [this](const QString& a_text){
-        m_button->setText(a_text);
+
+        if(m_showTextPolicy == TextPolicy::showAlways)
+            m_button->setText(a_text);
     });
 }
 
@@ -41,7 +42,9 @@ void CustomButtonComboBox::setObjectName(const QString &a_name)
         return;
 
     this->CustomComboBox::setObjectName(a_name);
-    m_button->setObjectName(a_name + BUTTON_NAME_SUFFIX);
+    if(m_button)
+        m_button->setObjectName(a_name + BUTTON_NAME_SUFFIX);
+   // QComboBox::setObjectName(a_name);
 }
 
 void CustomButtonComboBox::paintEvent(QPaintEvent *e)
@@ -50,7 +53,7 @@ void CustomButtonComboBox::paintEvent(QPaintEvent *e)
         this->CustomComboBox::paintEvent(e);
 }
 
-QPushButton *CustomButtonComboBox::buttonControll() const
+CustomButtonAbstract *CustomButtonComboBox::buttonControll() const
 {
     return m_button;
 }
@@ -59,4 +62,15 @@ void CustomButtonComboBox::setCurrentText(const QString &text)
 {
     if (m_button)
         m_button->setText(text);
+}
+
+void CustomButtonComboBox::setCaption(const QString &a_text)
+{
+        if (m_button)
+            m_button->setText(a_text);
+}
+
+void CustomButtonComboBox::setCaptionPolicy(TextPolicy a_show)
+{
+    m_showTextPolicy = a_show;
 }
