@@ -7,7 +7,17 @@ StyledDropShadowEffect::StyledDropShadowEffect(QObject *a_parent /*= Q_NULLPTR*/
     :QGraphicsDropShadowEffect(a_parent)
 {
     updateStyleProperties();
-    installEventFilter(this);
+    a_parent->installEventFilter(this);
+
+    connect(this,&StyledDropShadowEffect::mouseEnter,[=]{
+       qDebug()<<"mouse Enter";
+    });
+    connect(this,&StyledDropShadowEffect::mouseLaeve,[=]{
+       qDebug()<<"mouse Buy Buy";
+    });
+    connect(a_parent,&QObject::objectNameChanged,[=]{
+        qDebug()<<"new Object name";
+    });
 }
 
 ///@details Collecting data from css
@@ -31,7 +41,7 @@ void StyledDropShadowEffect::updateStyle(StyleShedow a_style)
     {
     case DEFAULT_SHADOW:setShadowProperties(defaultShadow);break;
     case HOVER_SHADOW:setShadowProperties(hoverShadow);break;
-    default:break;
+    default: break;
     }
 
     this->update();
@@ -66,16 +76,13 @@ void StyledDropShadowEffect::setShadowProperties(ShadowProperties &data)
 
 bool StyledDropShadowEffect::eventFilter(QObject *watched, QEvent *event)
 {
-    //if (event->type() == QEvent::KeyPress) {
-        qDebug()<<"Opa opa!!!!!!!!!!!!!!!!!!";
-    //}
-        return QObject::eventFilter(watched,event);
-}
-
-void StyledDropShadowEffect::customEvent(QEvent *event)
-{
-    //if (event->type() == QEvent::KeyPress) {
-        qDebug()<<"Opa opa!!!!!!!!!!!!!!!!!!";
-    //}
-        return QObject::customEvent(event);
+    switch (event->type())
+    {
+        case QEvent::Enter:
+            emit mouseEnter(); break;
+        case QEvent::Leave:
+            emit mouseLaeve(); break;
+        default: break;
+    }
+    return QObject::eventFilter(watched,event);
 }

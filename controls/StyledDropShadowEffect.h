@@ -3,6 +3,7 @@
 
 #include <QGraphicsDropShadowEffect>
 
+
 /** @brief QGraphicsDropShadowEffect that can be adjusted from css
  *
  *  @details Set style in .css file in format
@@ -30,6 +31,7 @@ enum StyleShedow{DEFAULT_SHADOW,HOVER_SHADOW};
 
 class StyledDropShadowEffect : public QGraphicsDropShadowEffect
 {
+    Q_OBJECT
 public:
     StyledDropShadowEffect(QObject *a_parent = Q_NULLPTR);
     ///@details Setting the shadow
@@ -38,8 +40,9 @@ public:
     void updateStyleProperties();
 protected:
     bool eventFilter(QObject *watched, QEvent *event);
-
-    void customEvent(QEvent *event);
+signals:
+    void mouseEnter();
+    void mouseLaeve();
 private:
     ///@details Saving data to a shadow structure
     /// @param  a_property String with settings from css.
