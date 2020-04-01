@@ -34,7 +34,6 @@ signals:
 
 private:
 
-    const QString VLT_MAIN_SIGN_UP              = "vltMainSignUp";
     const QString BTN_SIGN_UP                   = "btnSignUp";
     const QString BTN_TERMS                     = "btnTerms";
     const QString BTN_PRIVACY_POLISY            = "btnPrivacyPolisy";
@@ -56,7 +55,5 @@ private:
     const QString WGT_FIRST_PASSWORD_BOTTOM     = "wgtFirstPasswordBottom";
     const QString WGT_SECOND_PASSWORD_BOTTOM    = "wgtSecondPasswordBottom";
     const QString WGT_LEFT_MARGIN               = "wgtLeftMargin";
-
-
 };
 #endif // SIGNUPSCREEN_H
