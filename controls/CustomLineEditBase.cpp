@@ -22,11 +22,11 @@ CustomLineEditBase::CustomLineEditBase(QWidget* parent):QLineEdit (parent)
     lblIcon->setVisible(false);
 
     hblLineEdit = new QHBoxLayout(this);
-    hblLineEdit->addWidget(wgtMarginLeft,0);
-    hblLineEdit->addWidget(lblIcon,1);
+    hblLineEdit->addWidget(wgtMarginLeft);
+    hblLineEdit->addWidget(lblIcon);
     hblLineEdit->addItem(spacer);
-    hblLineEdit->addWidget(btnControl,2);
-    hblLineEdit->addWidget(wgtMarginRight,3);
+    hblLineEdit->addWidget(btnControl);
+    hblLineEdit->addWidget(wgtMarginRight);
 
     hblLineEdit->setSpacing(0);
     hblLineEdit->setMargin(0);
@@ -43,13 +43,11 @@ void CustomLineEditBase::setVisibleIcon(bool &a_visible)
 void CustomLineEditBase::setVisibleButton(bool a_visible)
 {
     btnControl->setVisible(a_visible);
-
 }
 
 void CustomLineEditBase::setMarginLeft(bool a_visible)
 {
     wgtMarginLeft->setVisible(a_visible);
-
 }
 
 void CustomLineEditBase::setMarginRight(bool a_visible)
@@ -57,38 +55,31 @@ void CustomLineEditBase::setMarginRight(bool a_visible)
     wgtMarginRight->setVisible(a_visible);
 }
 
-bool CustomLineEditBase::event(QEvent * event)
-{
-    ///When you start typing , a button appears .
-    if(event->type() == QEvent::InputMethod)
-    {
-        setVisibleButton(true);
-        Utils::setPropertyAndUpdateStyle(this, Properties::NORMAL,false);
-        Utils::setPropertyAndUpdateStyle(this, Properties::ACTIVE,true);
-        //Utils::setPropertyAndUpdateStyle(this, Properties::STATE,"");
-    }
-
-    ///If you lose focus if the text is there then the color changes to endEdit if empty then by default.
-    if(event->type() == QEvent::FocusOut)
-    {
-        Utils::setPropertyAndUpdateStyle(this, Properties::ACTIVE,false);
-
-        if(!text().isEmpty())
-        {
-            Utils::setPropertyAndUpdateStyle(this, Properties::NORMAL,true);
-            //Utils::setPropertyAndUpdateStyle(this, Properties::STATE,"endEdit");
-        }
-        else
-        {
-            //Utils::setPropertyAndUpdateStyle(this, Properties::STATE,"");
-            Utils::setPropertyAndUpdateStyle(this, Properties::NORMAL,false);
-        }
-    }
-
-    return QLineEdit::event(event);
-}
-
 void CustomLineEditBase::setWrongState(bool a_wrong)
 {
         Utils::setPropertyAndUpdateStyle(this, Properties::WRONG,a_wrong);
+}
+
+void CustomLineEditBase::focusOutEvent(QFocusEvent *e)
+{
+    Utils::setPropertyAndUpdateStyle(this, Properties::ACTIVE,false);
+
+    if(!text().isEmpty())
+    {
+        Utils::setPropertyAndUpdateStyle(this, Properties::FILLED,true);
+    }
+    else
+    {
+        Utils::setPropertyAndUpdateStyle(this, Properties::FILLED,false);
+    }
+
+    QLineEdit::focusInEvent(e);
+}
+
+void CustomLineEditBase::inputMethodEvent(QInputMethodEvent *event)
+{
+    setVisibleButton(true);
+    Utils::setPropertyAndUpdateStyle(this, Properties::FILLED,false);
+    Utils::setPropertyAndUpdateStyle(this, Properties::ACTIVE,true);
+    QLineEdit::inputMethodEvent(event);
 }
