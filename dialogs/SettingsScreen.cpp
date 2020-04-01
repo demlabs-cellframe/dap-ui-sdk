@@ -39,6 +39,13 @@ void SettingsScreen::initVariantUi(QWidget *a_widget)
     cbbEncryption->setCaption("Encryption");
     cbbBalance->setCaption("Balance");
     cbbLanguage->setCaption("Language");
+
+    cbbBandwidth->setGraphicsEffect(new StyledDropShadowEffect(cbbBandwidth));
+    cbbUptime->setGraphicsEffect(new StyledDropShadowEffect(cbbUptime));
+    cbbEncryption->setGraphicsEffect(new StyledDropShadowEffect(cbbEncryption));
+    cbbBalance->setGraphicsEffect(new StyledDropShadowEffect(cbbBalance));
+    cbbLanguage->setGraphicsEffect(new StyledDropShadowEffect(cbbLanguage));
+
 #endif
 }
 QString SettingsScreen::screenName()
