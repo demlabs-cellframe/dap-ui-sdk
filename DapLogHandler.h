@@ -1,19 +1,19 @@
-#ifndef DAPCHAINLOGHANDLER_H
-#define DAPCHAINLOGHANDLER_H
+#ifndef DAPLOGHANDLER_H
+#define DAPLOGHANDLER_H
 
 #include <QObject>
 #include <QFileSystemWatcher>
 
-class DapChainLogHandler : public QObject
+class DapLogHandler : public QObject
 {
     Q_OBJECT
 public:
 
-    explicit DapChainLogHandler(QString logPath, QObject *parent = nullptr);
+    explicit DapLogHandler(QString logPath, QObject *parent = nullptr);
 
 
 signals:
-    void onChangedLog();                        ///< The signal is emitted when system logs file was changed
+    void logChanged();                        ///< The signal is emitted when system logs file was changed
 
 public slots:
     QStringList request();                      ///< get

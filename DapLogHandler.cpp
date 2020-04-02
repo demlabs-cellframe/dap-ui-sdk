@@ -1,4 +1,4 @@
-#include "DapChainLogHandler.h"
+#include "DapLogHandler.h"
 
 #include <QtGlobal>
 #include <QFile>
@@ -8,7 +8,7 @@
 
 /// Standard constructor
 /// Add path to system logs file
-DapChainLogHandler::DapChainLogHandler(QString logPath, QObject *parent)
+DapLogHandler::DapLogHandler(QString logPath, QObject *parent)
     : QObject(parent)
     , m_logFilePath(logPath)
 {
@@ -18,17 +18,19 @@ DapChainLogHandler::DapChainLogHandler(QString logPath, QObject *parent)
 
     moveCaretToEnd();
 
-    connect(&m_fileSystemWatcher, &QFileSystemWatcher::fileChanged, this, [this, logPath] (const QString& asFile) {
+    connect(&m_fileSystemWatcher, &QFileSystemWatcher::fileChanged, this, [this, logPath] (const QString& asFile)
+    {
         Q_UNUSED(asFile)
+
         m_fileSystemWatcher.addPath(logPath);
 
-        emit onChangedLog();
+        emit logChanged();
     });
 }
 
 /// Request new logs from system logs file
 /// @return list of new logs
-QStringList DapChainLogHandler::request()
+QStringList DapLogHandler::request()
 {
     QFile file(m_logFilePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -39,8 +41,9 @@ QStringList DapChainLogHandler::request()
     else
     {
         QTextStream in(&file);
+
         in.seek(m_currentCaretPosition);
-        const QRegularExpression re("(\\[\\d\\d\\/\\d\\d\\/\\d\\d\\-\\d\\d\\:\\d\\d\\:\\d\\d])\\s(\\[\\w+\\])\\s(\\[\\w+\\])(.+)");
+        const QRegularExpression re("(\\[\\d\\d\\/\\d\\d\\/\\d\\d\\-\\d\\d\\:\\d\\d\\:\\d\\d])\\s(\\[\\w*\\])\\s(\\[\\w*:?\\w*\\])(.+)");
 
         QStringList listLogs;
         while (!in.atEnd()) {
@@ -58,7 +61,7 @@ QStringList DapChainLogHandler::request()
     }
 }
 
-int DapChainLogHandler::moveCaretToEnd()
+int DapLogHandler::moveCaretToEnd()
 {
     QFile file(m_logFilePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
