@@ -40,6 +40,12 @@ void SettingsScreen::initVariantUi(QWidget *a_widget)
     cbbBalance->setCaption("Balance");
     cbbLanguage->setCaption("Language");
 
+    cbbBandwidth->setCaptionPolicy(CaptionPolicy::showAlways);
+    cbbUptime->setCaptionPolicy(CaptionPolicy::showAlways);
+    cbbEncryption->setCaptionPolicy(CaptionPolicy::showAlways);
+    cbbBalance->setCaptionPolicy(CaptionPolicy::showAlways);
+    cbbLanguage->setCaptionPolicy(CaptionPolicy::showAlways);
+
     cbbBandwidth->setGraphicsEffect(new StyledDropShadowEffect(cbbBandwidth));
     cbbUptime->setGraphicsEffect(new StyledDropShadowEffect(cbbUptime));
     cbbEncryption->setGraphicsEffect(new StyledDropShadowEffect(cbbEncryption));
