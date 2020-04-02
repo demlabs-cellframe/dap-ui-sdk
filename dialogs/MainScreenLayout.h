@@ -20,6 +20,8 @@ public:
     static const QString SCREEN_NAME;
     virtual QString screenName() override;
 
+    NavigationPanel* findNavigationPanel(QWidget* a_widget = nullptr);
+
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
