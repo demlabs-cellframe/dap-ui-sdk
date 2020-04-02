@@ -27,15 +27,16 @@ struct ShadowProperties
     QColor color;
 };
 
-enum StyleShedow{DEFAULT_SHADOW,HOVER_SHADOW};
+enum ShadowState{DEFAULT_SHADOW,HOVER_SHADOW};
 
 class StyledDropShadowEffect : public QGraphicsDropShadowEffect
 {
     Q_OBJECT
 public:
     StyledDropShadowEffect(QObject *a_parent);
+    ~StyledDropShadowEffect();
     ///@details Setting the shadow
-    void updateStyle(StyleShedow a_style);
+    void updateStyle(ShadowState a_style);
     ///@details Collecting data from css
     void updateStyleProperties();
 protected:

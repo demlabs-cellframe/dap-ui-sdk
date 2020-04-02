@@ -3,7 +3,7 @@
 #include "Utils.h"
 #include <QWidget>
 
-StyledDropShadowEffect::StyledDropShadowEffect(QObject *a_parent /*= Q_NULLPTR*/)
+StyledDropShadowEffect::StyledDropShadowEffect(QObject *a_parent)
     :QGraphicsDropShadowEffect(a_parent)
 {
     defaultShadow = nullptr;
@@ -15,16 +15,21 @@ StyledDropShadowEffect::StyledDropShadowEffect(QObject *a_parent /*= Q_NULLPTR*/
     connectToParentEvents();
 
 }
+StyledDropShadowEffect::~StyledDropShadowEffect()
+{
+    delete defaultShadow;
+    delete hoverShadow;
+}
 
 ///@details Connects connections
 void StyledDropShadowEffect::connectToParentEvents()
 {
     connect(this,&StyledDropShadowEffect::mouseEnter,[=]{
-        this->updateStyle(StyleShedow::HOVER_SHADOW);
+        this->updateStyle(ShadowState::HOVER_SHADOW);
     });
 
     connect(this,&StyledDropShadowEffect::mouseLaeve,[=]{
-        this->updateStyle(StyleShedow::DEFAULT_SHADOW);
+        this->updateStyle(ShadowState::DEFAULT_SHADOW);
     });
 
     connect(this->parent(),&QObject::objectNameChanged,[=]{
@@ -56,7 +61,7 @@ void StyledDropShadowEffect::updateStyleProperties()
 }
 
 ///@details Setting and setting the default shadow
-void StyledDropShadowEffect::updateStyle(StyleShedow a_style)
+void StyledDropShadowEffect::updateStyle(ShadowState a_style)
 {
     switch (a_style)
     {
