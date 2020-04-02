@@ -44,6 +44,8 @@ signals:
 
     void signInRequest();
 
+    void transitionTo_SignUp();
+
 protected:
 
     virtual void initVariantUi(QWidget *a_widget) override;
@@ -64,6 +66,7 @@ private:
     const QString BTN_CLEAR_EMAIL    =  "btnClearEmail";
     const QString WGT_LOGIN_BOTTOM_SPACER = "wgtLoginBottomSpacer";
     const QString CBB_SERVER         =  "cbbServer";
+    const QString BTN_SIGN_UP        =  "btnSignUp";
 
     QStateMachine *m_inputStates;
     QState *m_stt_email;

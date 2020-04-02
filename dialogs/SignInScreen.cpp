@@ -223,6 +223,11 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     connect(edtPassword, SIGNAL(textEdited(const QString&)), this, SIGNAL(passwordEdited(const QString&)));
     connect(btnSignIn  , SIGNAL(clicked())                 , this, SLOT(checkFieldsAndSignIn()));
 
+#ifdef Q_OS_ANDROID
+    QPushButton *btnSignUp = a_widget->findChild<QPushButton*>(BTN_SIGN_UP  ); Q_ASSERT(btnSignUp);
+    connect(btnSignUp, &QPushButton::clicked, this, &SignInScreen::transitionTo_SignUp);
+#endif
+
 
 //    edtEmail->setProperty(qPrintable(Properties::VALID), true);
 //    edtEmail->style()->unpolish(lblEmailError);
