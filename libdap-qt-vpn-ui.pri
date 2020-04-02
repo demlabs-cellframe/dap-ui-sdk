@@ -126,7 +126,6 @@ android {
 
 
 contains(DEFINES, DAP_PLATFORM_MOBILE) {
-    FORMS    +=
 }
 else {
     FORMS    +=  \
@@ -135,6 +134,4 @@ else {
         $$PWD/ui/desktop/MainScreen.ui\
         $$PWD/ui/desktop/SettingsScreen.ui
 }
-
-DISTFILES +=
 
