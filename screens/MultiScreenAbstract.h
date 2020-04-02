@@ -66,17 +66,18 @@ public:
     MultiScreenAbstract *activateChildScreen(AdaptiveScreen *a_screen);
     static MultiScreenAbstract *parentMultiscreen(AdaptiveScreen *a_screen);
 
-    AnimationChangingWidget *wgtChangingScreen();
+    AnimationChangingWidget *changingWidget();
 
 signals:
     void animationFinished();                       ///< Emits this signal after the animation transition has reached the end.
 
 protected:
-    virtual void initChangedScreen(QWidget * a_w);  ///< Find changingWidget and assign to m_wgChangedScreen
+    virtual AnimationChangingWidget* findChangingWidget(QWidget *a_widget = nullptr);
+    virtual void initChangingWidget(QWidget *a_widget = nullptr);  ///< Find changingWidget and assign to m_wgChangedScreen
     virtual void initVariantUi(QWidget * a_widget) = 0; ///<pure virtual method. Must de reimplement it inherited classes
     virtual QString screenName() = 0;
 
-    AnimationChangingWidget *m_wgtChangingScreen = nullptr;     ///< Pointer to ChangingWidget controll
+    AnimationChangingWidget *m_wgtChangingWidget = nullptr;     ///< Pointer to ChangingWidget controll
 
 private:
     QMap<QString, AdaptiveScreen*> m_screens;          ///< Map with all screens that can be activated
@@ -110,7 +111,7 @@ T *MultiScreenAbstract::createSubScreen(int a_index /*= -1*/)
 
     //insert screen to m_screens and changing sreen widget
     m_screens.insert(newScreen->screenName(), newScreen);
-    wgtChangingScreen()->insertWidget(a_index, newScreen);
+    this->changingWidget()->insertWidget(a_index, newScreen);
 
     return newScreen;
 }
@@ -128,7 +129,7 @@ void MultiScreenAbstract::removeSubscreen()
     if (screen) { // If found ...
         // 1. remove from parent ChangingWidget, ...
         MultiScreenAbstract *parentScreen = qobject_cast<MultiScreenAbstract*> (screen->parent());
-        parentScreen->wgtChangingScreen()->removeWidget(screen);
+        parentScreen->changingWidget()->removeWidget(screen);
         // 2. delete stackedWidget and screen
         m_screens.remove(screen->screenName());
         // 3. delete from Map with screens pointers
@@ -151,7 +152,7 @@ NewT *MultiScreenAbstract::replaceSubscreen()
     if (oldScreen) {// If found ...
         //1. get index of oldScreen stacked widget
         MultiScreenAbstract *parentScreen = qobject_cast<MultiScreenAbstract*>(oldScreen->parent());
-        int index = parentScreen->wgtChangingScreen()->indexOf(oldScreen->sw());
+        int index = parentScreen->changingWidget()->indexOf(oldScreen->sw());
         //2. remove oldScreen, ...
         parentScreen->removeSubscreen<OldT>();
         //3. create new subscreen in the place of deleted
