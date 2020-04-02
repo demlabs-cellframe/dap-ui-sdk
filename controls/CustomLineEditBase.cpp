@@ -73,7 +73,7 @@ void CustomLineEditBase::focusOutEvent(QFocusEvent *e)
         Utils::setPropertyAndUpdateStyle(this, Properties::FILLED,false);
     }
 
-    QLineEdit::focusInEvent(e);
+    QLineEdit::focusOutEvent(e);
 }
 
 void CustomLineEditBase::inputMethodEvent(QInputMethodEvent *event)

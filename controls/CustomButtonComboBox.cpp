@@ -64,7 +64,7 @@ void CustomButtonComboBox::setCurrentText(const QString &text)
         if(m_showTextPolicy == CaptionPolicy::showWhenUnselected)
             m_button->setText(text);
         if(text == "")
-            this->setCaption(m_caption);
+            m_button->setText(m_caption);
     }
 }
 
