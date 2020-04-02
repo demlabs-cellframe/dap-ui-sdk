@@ -17,9 +17,6 @@ void SettingsScreen::initVariantUi(QWidget *a_widget)
     CustomPlacementButton   *btnLogOut      = a_widget->findChild<CustomPlacementButton*>(BTN_LOG_OUT);     Q_ASSERT(btnLogOut);
     CustomPlacementButton   *btnRenew       = a_widget->findChild<CustomPlacementButton*>(BTN_RENEW);       Q_ASSERT(btnRenew);
 
-    //btnRenew->spacerActivate(ButtonSpaicer::Left);
-    //btnLogOut->spacerActivate(ButtonSpaicer::Left);
-
     cbbLanguage->addItem("Language");
 #else
     CustomButtonComboBox *cbbBalance      = a_widget->findChild<CustomButtonComboBox*>(CBB_BALABCE);       Q_ASSERT(cbbBalance);

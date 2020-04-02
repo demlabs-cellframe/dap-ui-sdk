@@ -130,7 +130,7 @@
        </widget>
       </item>
       <item alignment="Qt::AlignVCenter">
-       <widget class="QComboBox" name="cbbServer">
+       <widget class="CustomButtonComboBox" name="cbbServer">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -253,6 +253,11 @@
    <class>PasswordLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">PasswordLineEdit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CustomButtonComboBox</class>
+   <extends>QComboBox</extends>
+   <header>CustomButtonComboBox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
