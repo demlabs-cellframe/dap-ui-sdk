@@ -4,6 +4,10 @@
 #include <QPushButton>
 
 #include "CustomComboBox.h"
+#include "CustomPlacementButton.h"
+#include "CustomButtonAbstract.h"
+
+enum class CaptionPolicy{ShowWhenUnselected,ShowAlways};
 
 class CustomButtonComboBox : public CustomComboBox
 {
@@ -12,17 +16,26 @@ public:
 
     void setObjectName(const QString &a_name);
 
-    void setButtonControll(QPushButton* a_button);
-    QPushButton *buttonControll() const;
+    void setButtonControll(CustomButtonAbstract* a_button);
 
+    virtual CustomButtonAbstract *buttonControll() const;
+
+    void setCaption(const QString &a_text);
+
+    void setCaptionPolicy(CaptionPolicy a_policy = CaptionPolicy::ShowWhenUnselected);
 public slots:
+
     void setCurrentText(const QString &text);
 
 protected:
+
     virtual void paintEvent(QPaintEvent *e) override;
 
 private:
-    QPushButton* m_button = nullptr;
+
+    CaptionPolicy m_captionPolicy;
+    QString m_caption;
+    CustomButtonAbstract* m_button = nullptr;
 
     static const QString BUTTON_NAME_SUFFIX;
 };
