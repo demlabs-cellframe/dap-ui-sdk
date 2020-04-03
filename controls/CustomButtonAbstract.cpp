@@ -7,4 +7,3 @@ CustomButtonAbstract::CustomButtonAbstract(QWidget *a_parent):
 {
 
 }
-

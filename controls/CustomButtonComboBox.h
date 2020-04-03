@@ -7,7 +7,7 @@
 #include "CustomPlacementButton.h"
 #include "CustomButtonAbstract.h"
 
-enum class CaptionPolicy{showWhenUnselected,showAlways};
+enum class CaptionPolicy{ShowWhenUnselected,ShowAlways};
 
 class CustomButtonComboBox : public CustomComboBox
 {
@@ -18,11 +18,11 @@ public:
 
     void setButtonControll(CustomButtonAbstract* a_button);
 
-    CustomButtonAbstract *buttonControll() const;
+    virtual CustomButtonAbstract *buttonControll() const;
 
     void setCaption(const QString &a_text);
 
-    void setCaptionPolicy(CaptionPolicy a_policy = CaptionPolicy::showWhenUnselected);
+    void setCaptionPolicy(CaptionPolicy a_policy = CaptionPolicy::ShowWhenUnselected);
 public slots:
 
     void setCurrentText(const QString &text);
@@ -33,7 +33,7 @@ protected:
 
 private:
 
-    CaptionPolicy m_showTextPolicy;
+    CaptionPolicy m_captionPolicy;
     QString m_caption;
     CustomButtonAbstract* m_button = nullptr;
 

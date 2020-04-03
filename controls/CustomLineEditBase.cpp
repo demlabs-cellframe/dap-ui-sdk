@@ -78,7 +78,8 @@ void CustomLineEditBase::focusOutEvent(QFocusEvent *e)
 
 void CustomLineEditBase::inputMethodEvent(QInputMethodEvent *event)
 {
-    setVisibleButton(true);
+    if(text().isEmpty())
+        setVisibleButton(true);
     Utils::setPropertyAndUpdateStyle(this, Properties::FILLED,false);
     Utils::setPropertyAndUpdateStyle(this, Properties::ACTIVE,true);
     QLineEdit::inputMethodEvent(event);

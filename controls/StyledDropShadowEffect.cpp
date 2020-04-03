@@ -61,9 +61,9 @@ void StyledDropShadowEffect::updateStyleProperties()
 }
 
 ///@details Setting and setting the default shadow
-void StyledDropShadowEffect::updateStyle(ShadowState a_style)
+void StyledDropShadowEffect::updateStyle(ShadowState a_state)
 {
-    switch (a_style)
+    switch (a_state)
     {
     case DEFAULT_SHADOW:
         if(defaultShadow)

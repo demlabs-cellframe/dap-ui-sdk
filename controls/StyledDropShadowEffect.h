@@ -36,7 +36,7 @@ public:
     StyledDropShadowEffect(QObject *a_parent);
     ~StyledDropShadowEffect();
     ///@details Setting the shadow
-    void updateStyle(ShadowState a_style);
+    void updateStyle(ShadowState a_state);
     ///@details Collecting data from css
     void updateStyleProperties();
 protected:

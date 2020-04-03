@@ -11,7 +11,7 @@
 #include <QFontMetrics>
 #include "CustomButtonAbstract.h"
 
-enum class ImagePos {Left, Right};
+
 
 /** @brief QPushButton with subControls "text" and "image"
  *
