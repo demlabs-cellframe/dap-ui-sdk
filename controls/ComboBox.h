@@ -11,7 +11,7 @@ public:
     void setObjectName(const QString &a_name);
 
     void setGraphicsEffect(StyledDropShadowEffect *a_effect);
-
+    CustomPlacementButton *buttonControll() const;
 private:
     ///For effect.
     StyledDropShadowEffect *m_styledShadow = nullptr;

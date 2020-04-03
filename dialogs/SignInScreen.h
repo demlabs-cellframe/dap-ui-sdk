@@ -63,7 +63,6 @@ private:
     const QString LBL_PASSWORD_ERROR = "lblPasswordError";
     const QString BTN_SHOW_PASSWORD  = "btnShowPassword";
     const QString BTN_CLEAR_EMAIL    =  "btnClearEmail";
-    const QString WGT_LOGIN_BOTTOM_SPACER = "wgtLoginBottomSpacer";
     const QString CBB_SERVER         =  "cbbServer";
 
     QStateMachine *m_inputStates;

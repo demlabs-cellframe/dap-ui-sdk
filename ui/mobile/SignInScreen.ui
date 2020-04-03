@@ -171,7 +171,11 @@
     <widget class="QWidget" name="wgtUnderComboBox" native="true"/>
    </item>
    <item>
-    <widget class="CustomLineEdit" name="edtEmail"/>
+    <widget class="CustomLineEdit" name="edtEmail">
+     <property name="placeholderText">
+      <string>e-mail</string>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QWidget" name="wgtUnderEmail" native="true"/>
@@ -179,7 +183,13 @@
    <item>
     <widget class="PasswordLineEdit" name="edtPassword">
      <property name="inputMethodHints">
-      <set>Qt::ImhNone</set>
+      <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText|Qt::ImhSensitiveData</set>
+     </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+     <property name="placeholderText">
+      <string>password</string>
      </property>
     </widget>
    </item>
@@ -245,6 +255,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>CustomButtonComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">CustomButtonComboBox.h</header>
+  </customwidget>
+  <customwidget>
    <class>CustomLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">CustomLineEdit.h</header>
@@ -253,11 +268,6 @@
    <class>PasswordLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">PasswordLineEdit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>CustomButtonComboBox</class>
-   <extends>QComboBox</extends>
-   <header>CustomButtonComboBox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

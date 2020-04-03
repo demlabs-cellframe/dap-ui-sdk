@@ -46,7 +46,7 @@
     </widget>
    </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="CustomButtonComboBox" name="cbbBandwidth">
+    <widget class="ComboBox" name="cbbBandwidth">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -59,7 +59,7 @@
     <widget class="QWidget" name="wgtMarin_1" native="true"/>
    </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="CustomButtonComboBox" name="cbbUptime">
+    <widget class="ComboBox" name="cbbUptime">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -72,7 +72,7 @@
     <widget class="QWidget" name="wgtMarin_4" native="true"/>
    </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="CustomButtonComboBox" name="cbbEncryption">
+    <widget class="ComboBox" name="cbbEncryption">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -85,7 +85,7 @@
     <widget class="QWidget" name="wgtMarin_3" native="true"/>
    </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="CustomButtonComboBox" name="cbbBalance">
+    <widget class="ComboBox" name="cbbBalance">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -98,7 +98,7 @@
     <widget class="QWidget" name="wgtMarin_2" native="true"/>
    </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="CustomButtonComboBox" name="cbbLanguage">
+    <widget class="ComboBox" name="cbbLanguage">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -124,9 +124,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CustomButtonComboBox</class>
+   <class>ComboBox</class>
    <extends>QComboBox</extends>
-   <header location="global">CustomButtonComboBox.h</header>
+   <header>ComboBox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

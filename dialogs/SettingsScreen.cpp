@@ -19,17 +19,17 @@ void SettingsScreen::initVariantUi(QWidget *a_widget)
 
     cbbLanguage->addItem("Language");
 #else
-    CustomButtonComboBox *cbbBalance      = a_widget->findChild<CustomButtonComboBox*>(CBB_BALABCE);       Q_ASSERT(cbbBalance);
-    CustomButtonComboBox *cbbBandwidth    = a_widget->findChild<CustomButtonComboBox*>(CBB_BANDWIDTH);     Q_ASSERT(cbbBandwidth);
-    CustomButtonComboBox *cbbEncryption   = a_widget->findChild<CustomButtonComboBox*>(CBB_ENCRYPTION);    Q_ASSERT(cbbEncryption);
-    CustomButtonComboBox *cbbUptime       = a_widget->findChild<CustomButtonComboBox*>(CBB_UPTIME);        Q_ASSERT(cbbUptime);
-    CustomButtonComboBox *cbbLanguage    = a_widget->findChild<CustomButtonComboBox*>(CBB_LANGUAGE);       Q_ASSERT(cbbLanguage);
+    ComboBox *cbbBalance      = a_widget->findChild<ComboBox*>(CBB_BALABCE);       Q_ASSERT(cbbBalance);
+    ComboBox *cbbBandwidth    = a_widget->findChild<ComboBox*>(CBB_BANDWIDTH);     Q_ASSERT(cbbBandwidth);
+    ComboBox *cbbEncryption   = a_widget->findChild<ComboBox*>(CBB_ENCRYPTION);    Q_ASSERT(cbbEncryption);
+    ComboBox *cbbUptime       = a_widget->findChild<ComboBox*>(CBB_UPTIME);        Q_ASSERT(cbbUptime);
+    ComboBox *cbbLanguage    = a_widget->findChild<ComboBox*>(CBB_LANGUAGE);       Q_ASSERT(cbbLanguage);
 
-    cbbBandwidth->setButtonControll(new CustomPlacementButton(ImagePos::Right));
-    cbbUptime->setButtonControll(new CustomPlacementButton(ImagePos::Right));
-    cbbEncryption->setButtonControll(new CustomPlacementButton(ImagePos::Right));
-    cbbBalance->setButtonControll(new CustomPlacementButton(ImagePos::Right));
-    cbbLanguage->setButtonControll(new CustomPlacementButton(ImagePos::Right));
+    cbbBandwidth->buttonControll()->setImagePosition(ImagePos::Right);
+    cbbUptime->buttonControll()->setImagePosition(ImagePos::Right);
+    cbbEncryption->buttonControll()->setImagePosition(ImagePos::Right);
+    cbbBalance->buttonControll()->setImagePosition(ImagePos::Right);
+    cbbLanguage->buttonControll()->setImagePosition(ImagePos::Right);
 
     cbbBandwidth->setCaption("Bandwidth");
     cbbUptime->setCaption("Uptime");
@@ -37,17 +37,11 @@ void SettingsScreen::initVariantUi(QWidget *a_widget)
     cbbBalance->setCaption("Balance");
     cbbLanguage->setCaption("Language");
 
-    cbbBandwidth->setCaptionPolicy(CaptionPolicy::showAlways);
-    cbbUptime->setCaptionPolicy(CaptionPolicy::showAlways);
-    cbbEncryption->setCaptionPolicy(CaptionPolicy::showAlways);
-    cbbBalance->setCaptionPolicy(CaptionPolicy::showAlways);
-    cbbLanguage->setCaptionPolicy(CaptionPolicy::showAlways);
-
-    cbbBandwidth->setGraphicsEffect(new StyledDropShadowEffect(cbbBandwidth));
-    cbbUptime->setGraphicsEffect(new StyledDropShadowEffect(cbbUptime));
-    cbbEncryption->setGraphicsEffect(new StyledDropShadowEffect(cbbEncryption));
-    cbbBalance->setGraphicsEffect(new StyledDropShadowEffect(cbbBalance));
-    cbbLanguage->setGraphicsEffect(new StyledDropShadowEffect(cbbLanguage));
+    cbbBandwidth->setCaptionPolicy(CaptionPolicy::ShowAlways);
+    cbbUptime->setCaptionPolicy(CaptionPolicy::ShowAlways);
+    cbbEncryption->setCaptionPolicy(CaptionPolicy::ShowAlways);
+    cbbBalance->setCaptionPolicy(CaptionPolicy::ShowAlways);
+    cbbLanguage->setCaptionPolicy(CaptionPolicy::ShowAlways);
 
 #endif
 }

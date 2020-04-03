@@ -115,23 +115,14 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     CustomLineEdit          *edtEmail         = a_widget->findChild<CustomLineEdit  *>("edtEmail"   );      Q_ASSERT(edtEmail);
     PasswordLineEdit        *edtPassword      = a_widget->findChild<PasswordLineEdit  *>(EDT_PASSWORD_NAME ); Q_ASSERT(edtPassword);
 
-    edtEmail->setPlaceholderText("e-mail");
-    edtPassword->setPlaceholderText("password");
-    edtPassword->setEchoMode(QLineEdit::Password);
-
-    QWidget     *wgtLoginBottomSpacer   = a_widget->findChild<QWidget       *>(WGT_LOGIN_BOTTOM_SPACER   ); Q_ASSERT(wgtLoginBottomSpacer);
     QComboBox   *cbbServer              = a_widget->findChild<QComboBox     *>(CBB_SERVER   ); Q_ASSERT(cbbServer);
 
-
     cbbServer->addItem("Auto select");
-
 
 #else
     QLineEdit           *edtEmail         = a_widget->findChild<QLineEdit  *>("edtEmail"   ); Q_ASSERT(edtEmail);
     QLineEdit           *edtPassword      = a_widget->findChild<QLineEdit  *>(EDT_PASSWORD_NAME ); Q_ASSERT(edtPassword);
-    edtEmail->setPlaceholderText("Email");
-    edtPassword->setPlaceholderText("Password");
-    edtPassword->setEchoMode(QLineEdit::Password);
+
 
     QLabel      *lblPasswordError = a_widget->findChild<QLabel     *>(LBL_PASSWORD_ERROR); Q_ASSERT(lblPasswordError);
     btnSignIn->setGraphicsEffect(new StyledDropShadowEffect(btnSignIn));

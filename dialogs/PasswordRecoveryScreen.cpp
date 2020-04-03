@@ -23,13 +23,13 @@ void PasswordRecoveryScreen::initVariantUi(QWidget *a_widget)
         CustomLineHeightLabel   *lblStatusMessage = a_widget->findChild<CustomLineHeightLabel*>(LBL_STATUS_MESSAGE);           Q_ASSERT(lblStatusMessage);
         QLineEdit               *edtEmail = a_widget->findChild<QLineEdit*>(EDT_EMAIL);                                        Q_ASSERT(edtEmail);
         QLabel                  *lblEmailError = a_widget->findChild<QLabel*>(LBL_EMAIL_ERROR);                                Q_ASSERT(lblEmailError);
-
+        QLabel                  *lblCaption = a_widget->findChild<QLabel*>(LBL_CAPTION);                                       Q_ASSERT(lblCaption);
 
 #ifdef Q_OS_ANDROID
         QVBoxLayout             *vltMainLayout = a_widget->findChild<QVBoxLayout*>(VLT_MAIN_LAYOUT);                           Q_ASSERT(vltMainLayout);
         QLabel                  *lblLogo = a_widget->findChild<QLabel*>(LBL_LOGO);                                             Q_ASSERT(lblLogo);
         QWidget                 *wgtMarginBottomMessage = a_widget->findChild<QWidget*>(WGT_MARGIN_BOTTOM_MESSAGE);            Q_ASSERT(wgtMarginBottomMessage);
-        QLabel                  *lblCaption = a_widget->findChild<QLabel*>(LBL_CAPTION);                                       Q_ASSERT(lblCaption);
+
         vltMainLayout->setAlignment(lblLogo,Qt::AlignBaseline);
         vltMainLayout->setAlignment(btnSendMail,Qt::AlignBaseline);
         vltMainLayout->setAlignment(lblCaption,Qt::AlignBaseline);
