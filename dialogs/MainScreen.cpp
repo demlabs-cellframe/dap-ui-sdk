@@ -77,8 +77,6 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     QLabel         *lblStatusMessage = a_widget->findChild<QLabel        *>(LBL_STATUS_MESSAGE); Q_ASSERT(lblStatusMessage);
     QPushButton    *btnSwitch        = a_widget->findChild<QPushButton   *>(BTN_SWITCH)        ; Q_ASSERT(btnSwitch       );
 
-    cbbServer->setGraphicsEffect(new StyledDropShadowEffect(cbbServer));//Installed because the shadow didn't work correctly. I didn't track where it was still installed.
-
     connect(btnSwitch, &QPushButton::clicked, [this]{
         emit connectionSwitched();
     });
