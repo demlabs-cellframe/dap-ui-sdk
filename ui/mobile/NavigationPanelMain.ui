@@ -35,10 +35,25 @@
     <widget class="QWidget" name="wgtMarginTop" native="true"/>
    </item>
    <item>
-    <widget class="QWidget" name="widget_2" native="true">
+    <widget class="QWidget" name="wgtTopMainFrame" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
-       <widget class="QWidget" name="wgtLeftMarginBtnSetting" native="true"/>
+       <widget class="QWidget" name="wgtMarginLeft" native="true"/>
       </item>
       <item>
        <widget class="QPushButton" name="btnSetting">
@@ -51,7 +66,7 @@
        <widget class="QWidget" name="wgtRightMarginBtnSetting" native="true"/>
       </item>
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="lblLicense">
         <property name="text">
          <string>265 days left</string>
         </property>
@@ -78,7 +93,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="widget_6" native="true"/>
+       <widget class="QWidget" name="wgtRightMarginBag" native="true"/>
       </item>
       <item>
        <widget class="QPushButton" name="btnHelp">
@@ -88,7 +103,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="widget_7" native="true"/>
+       <widget class="QWidget" name="wgtMarginRight" native="true"/>
       </item>
      </layout>
     </widget>
