@@ -11,7 +11,8 @@
 #include "defines.h"
 #include "ui_SignInScreen.h"
 #include "StyledDropShadowEffect.h"
-
+#include "CustomLineEdit.h"
+#include "PasswordLineEdit.h"
 
 class SignInScreen : public AdaptiveScreen
 {
@@ -64,7 +65,6 @@ private:
     const QString LBL_PASSWORD_ERROR = "lblPasswordError";
     const QString BTN_SHOW_PASSWORD  = "btnShowPassword";
     const QString BTN_CLEAR_EMAIL    =  "btnClearEmail";
-    const QString WGT_LOGIN_BOTTOM_SPACER = "wgtLoginBottomSpacer";
     const QString CBB_SERVER         =  "cbbServer";
     const QString BTN_SIGN_UP        =  "btnSignUp";
 

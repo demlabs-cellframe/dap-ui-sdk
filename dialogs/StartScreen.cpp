@@ -48,7 +48,9 @@ void StartScreen::initVariantUi(QWidget *a_widget)
 
     l_btnSignIn->setGraphicsEffect(new StyledDropShadowEffect(l_btnSignIn));
 
-    connect(l_btnSignIn, &QPushButton::clicked, [this]
+//l_btnSignIn->installEventFilter(new CustomEventFilter);
+
+connect(l_btnSignIn, &QPushButton::clicked, [this]
     {
         qDebug()<<"clicked";
         emit this->transitionTo_SignIn();

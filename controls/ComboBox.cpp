@@ -31,4 +31,7 @@ void ComboBox::setGraphicsEffect(StyledDropShadowEffect *a_effect)
     CustomButtonComboBox::setGraphicsEffect(a_effect);
 }
 
-
+CustomPlacementButton *ComboBox::buttonControll() const
+{
+    return static_cast<CustomPlacementButton*>(CustomButtonComboBox::buttonControll());
+}
