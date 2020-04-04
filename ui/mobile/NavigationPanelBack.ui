@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>332</width>
-    <height>62</height>
+    <width>416</width>
+    <height>70</height>
    </rect>
   </property>
   <property name="styleSheet">
@@ -32,19 +32,28 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="wgtNavigationPanelWrapper" native="true">
+    <widget class="QWidget" name="wgtMarginTop" native="true"/>
+   </item>
+   <item>
+    <widget class="QWidget" name="wgtTopMainFrame" native="true">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <layout class="QVBoxLayout" name="wgtNavigationPanelWraper">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="spacing">
        <number>0</number>
       </property>
       <property name="leftMargin">
-       <number>7</number>
+       <number>0</number>
       </property>
       <property name="topMargin">
        <number>0</number>
@@ -56,69 +65,36 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QWidget" name="topMarginBtnBack" native="true"/>
+       <widget class="QWidget" name="wgtMarginLeft" native="true"/>
       </item>
       <item>
-       <widget class="QWidget" name="wgtBackPanel" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <widget class="QPushButton" name="btnBack">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
-        <property name="maximumSize">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
          <size>
-          <width>16777215</width>
-          <height>16777215</height>
+          <width>40</width>
+          <height>20</height>
          </size>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QWidget" name="wgtLeftMarginBack" native="true"/>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnBack">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
+       </spacer>
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="wgtMarginBottom" native="true"/>
    </item>
   </layout>
  </widget>
