@@ -26,7 +26,6 @@ FORMS    +=  \
     $$PWD/ui/FAQScreen.ui \
     $$PWD/ui/PasswordRecoveryScreen.ui \
     $$PWD/ui/MainScreenLayout.ui \
-    $$PWD/ui/SignUpScreen.ui \
     $$PWD/ui/dashboard_desktop_big.ui \
     $$PWD/ui/dashboard_desktop_small.ui \
     $$PWD/ui/dashboard_desktop.ui \
@@ -48,6 +47,10 @@ FORMS    +=  \
     $$PWD/ui/settings_more_menu.ui \
     $$PWD/ui/sidebar_desktop.ui \
     $$PWD/ui/dlg_edit_server.ui \
+    $$PWD/ui/desktop/SettingsScreen.ui \
+    $$PWD/ui/mobile/SettingsScreen.ui \
+    $$PWD/ui/mobile/SignUpScreen.ui \
+    $$PWD/ui/desktop/SignUpScreen.ui
 
 
 
@@ -126,7 +129,8 @@ contains(DEFINES, DAP_PLATFORM_MOBILE) {
         $$PWD/ui/mobile/NavigationPanelMain.ui \
         $$PWD/ui/mobile/SignInScreen.ui \
         $$PWD/ui/mobile/StartScreen.ui \
-        $$PWD/ui/mobile/SettingsScreen.ui
+        $$PWD/ui/mobile/SettingsScreen.ui\
+        $$PWD/ui/mobile/SignUpScreen.ui
 }
 else {
     FORMS +=  \
@@ -134,7 +138,9 @@ else {
         $$PWD/ui/desktop/SignInScreen.ui \
         $$PWD/ui/desktop/MainScreen.ui \
         $$PWD/ui/desktop/SettingsScreen.ui \
-        $$PWD/ui/desktop/NavigationPanel.ui
+        $$PWD/ui/desktop/NavigationPanel.ui\
+        $$PWD/ui/desktop/SignUpScreen.ui\
+        $$PWD/ui/desktop/MainScreen.ui
 }
 
 DISTFILES +=

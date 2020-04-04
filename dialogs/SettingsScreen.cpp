@@ -10,30 +10,39 @@ SettingsScreen::SettingsScreen(QWidget *a_parent)
 
 void SettingsScreen::initVariantUi(QWidget *a_widget)
 {
-    CustomComboBox          *cbbLanguage    = a_widget->findChild<CustomComboBox*>(CBB_LANGUAGE);          Q_ASSERT(cbbLanguage);
+
 
 #ifdef Q_OS_ANDROID
-
+    CustomComboBox          *cbbLanguage    = a_widget->findChild<CustomComboBox*>(CBB_LANGUAGE);           Q_ASSERT(cbbLanguage);
     CustomPlacementButton   *btnLogOut      = a_widget->findChild<CustomPlacementButton*>(BTN_LOG_OUT);     Q_ASSERT(btnLogOut);
-    CustomPlacementButton   *btnRenew       = a_widget->findChild<CustomPlacementButton*>(BTN_RENEW);      Q_ASSERT(btnRenew);
-
-    //btnRenew->spacerActivate(ButtonSpaicer::Left);
-    //btnLogOut->spacerActivate(ButtonSpaicer::Left);
+    CustomPlacementButton   *btnRenew       = a_widget->findChild<CustomPlacementButton*>(BTN_RENEW);       Q_ASSERT(btnRenew);
 
     cbbLanguage->addItem("Language");
 #else
-    CustomComboBox *cbbBalance      = a_widget->findChild<CustomComboBox*>(CBB_BALABCE);       Q_ASSERT(cbbBalance);
-    CustomComboBox *cbbBandwidth    = a_widget->findChild<CustomComboBox*>(CBB_BANDWIDTH);     Q_ASSERT(cbbBandwidth);
-    CustomComboBox *cbbEncryption   = a_widget->findChild<CustomComboBox*>(CBB_ENCRYPTION);    Q_ASSERT(cbbEncryption);
-    CustomComboBox *cbbUptime       = a_widget->findChild<CustomComboBox*>(CBB_UPTIME);        Q_ASSERT(cbbUptime);
+    ComboBox *cbbBalance      = a_widget->findChild<ComboBox*>(CBB_BALABCE);       Q_ASSERT(cbbBalance);
+    ComboBox *cbbBandwidth    = a_widget->findChild<ComboBox*>(CBB_BANDWIDTH);     Q_ASSERT(cbbBandwidth);
+    ComboBox *cbbEncryption   = a_widget->findChild<ComboBox*>(CBB_ENCRYPTION);    Q_ASSERT(cbbEncryption);
+    ComboBox *cbbUptime       = a_widget->findChild<ComboBox*>(CBB_UPTIME);        Q_ASSERT(cbbUptime);
+    ComboBox *cbbLanguage    = a_widget->findChild<ComboBox*>(CBB_LANGUAGE);       Q_ASSERT(cbbLanguage);
 
+    cbbBandwidth->buttonControll()->setImagePosition(ImagePos::Right);
+    cbbUptime->buttonControll()->setImagePosition(ImagePos::Right);
+    cbbEncryption->buttonControll()->setImagePosition(ImagePos::Right);
+    cbbBalance->buttonControll()->setImagePosition(ImagePos::Right);
+    cbbLanguage->buttonControll()->setImagePosition(ImagePos::Right);
 
+    cbbBandwidth->setCaption("Bandwidth");
+    cbbUptime->setCaption("Uptime");
+    cbbEncryption->setCaption("Encryption");
+    cbbBalance->setCaption("Balance");
+    cbbLanguage->setCaption("Language");
 
-    cbbBandwidth->addItem("Bandwidth");
-    cbbUptime->addItem("Uptime");
-    cbbEncryption->addItem("Encryption");
-    cbbBalance->addItem("Balance");
-    cbbLanguage->addItem("Language");
+    cbbBandwidth->setCaptionPolicy(CaptionPolicy::ShowAlways);
+    cbbUptime->setCaptionPolicy(CaptionPolicy::ShowAlways);
+    cbbEncryption->setCaptionPolicy(CaptionPolicy::ShowAlways);
+    cbbBalance->setCaptionPolicy(CaptionPolicy::ShowAlways);
+    cbbLanguage->setCaptionPolicy(CaptionPolicy::ShowAlways);
+
 #endif
 }
 QString SettingsScreen::screenName()
