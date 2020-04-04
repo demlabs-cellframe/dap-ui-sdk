@@ -145,7 +145,6 @@ else {
         $$PWD/ui/desktop/NavigationPanel.ui\
         $$PWD/ui/desktop/SignUpScreen.ui\
         $$PWD/ui/desktop/MainScreen.ui
-
 }
 
 DISTFILES +=
