@@ -3,6 +3,7 @@
 
 #include <QGraphicsDropShadowEffect>
 
+
 /** @brief QGraphicsDropShadowEffect that can be adjusted from css
  *
  *  @details Set style in .css file in format
@@ -26,28 +27,37 @@ struct ShadowProperties
     QColor color;
 };
 
-enum StyleShedow{DEFAULT_SHADOW,HOVER_SHADOW};
+enum ShadowState{DEFAULT_SHADOW,HOVER_SHADOW};
 
 class StyledDropShadowEffect : public QGraphicsDropShadowEffect
 {
+    Q_OBJECT
 public:
-    StyledDropShadowEffect(QObject *a_parent = Q_NULLPTR);
+    StyledDropShadowEffect(QObject *a_parent);
+    ~StyledDropShadowEffect();
     ///@details Setting the shadow
-    void updateStyle(StyleShedow a_style);
+    void updateStyle(ShadowState a_state);
     ///@details Collecting data from css
     void updateStyleProperties();
+protected:
+    bool eventFilter(QObject *watched, QEvent *event);
+    ///@details Connects connections
+    void connectToParentEvents();
+signals:
+    void mouseEnter();
+    void mouseLaeve();
 private:
     ///@details Saving data to a shadow structure
     /// @param  a_property String with settings from css.
     /// @param data Data structure with shadow settings.
-    void setDataShadowProperties(const QString &a_property, ShadowProperties &data);
+    void setDataShadowProperties(const QString &a_property, ShadowProperties *data);
     ///@details Set shadow options
     /// @param data Data structure with shadow settings.
-    void setShadowProperties(ShadowProperties &data);
+    void setShadowProperties(ShadowProperties *data);
     ///@details Default Shadow Data
-    ShadowProperties defaultShadow;
+    ShadowProperties *defaultShadow;
     ///@details Hover Shadow Data
-    ShadowProperties hoverShadow;
+    ShadowProperties *hoverShadow;
 };
 
 #endif // STYLEDDROPSHADOWEFFECT_H

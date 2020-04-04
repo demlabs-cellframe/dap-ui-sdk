@@ -8,56 +8,70 @@
  *  @param a_parent object parent
  */
 CustomPlacementButton::CustomPlacementButton(QWidget *a_parent)
-    :QPushButton (a_parent),
+    :CustomButtonAbstract (a_parent),
     m_layout        (new QHBoxLayout(this)),
     m_lbLeftSpacing (this),
     m_lbImage       (this),
     m_lbText        (this),
     m_lbRightSpacing(this)
 {
-    m_lbLeftSpacing .setObjectName("leftSpacing");
-    m_lbImage       .setObjectName("image");
-    m_lbText        .setObjectName("text");
-    m_lbRightSpacing.setObjectName("rightSpacing");
-
-    m_lbRightSpacing.setVisible(false);
-    m_lbLeftSpacing.setVisible(false);
-
-    m_subcontrols.append(&m_lbImage);
-    m_subcontrols.append(&m_lbText);
-
-    // Set up subcontroll object names:
-
-    //Setup layout
-    m_layout->setMargin(0);
-    m_layout->setSpacing(0);
-
-    //Setup spacing setSizePolicy
-    m_lbLeftSpacing .setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    m_lbRightSpacing.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
-    //Adding subcontrols to layout
-    m_layout->addWidget(&m_lbLeftSpacing);
-    for (QLabel *subcontrol: m_subcontrols)
-    {
-        // Set up subcontroll ScaledContents:
-        subcontrol->setScaledContents(true);
-        m_layout->addWidget(subcontrol);
-
-        CustomPlacementButton::setWidgetState(subcontrol);
-    }
-    m_layout->addWidget(&m_lbRightSpacing);
-
-    setLayout(m_layout);
-
-    // on toggled update Appearance
-    connect(this, &QAbstractButton::toggled, [=](bool a_checked) {
-        this->setState(this->underMouse(), a_checked);
-    });
-
-
+initButton();
 }
 
+    CustomPlacementButton::CustomPlacementButton(ImagePos a_pos, QWidget *a_parent)
+        :CustomButtonAbstract (a_parent),
+        m_layout        (new QHBoxLayout(this)),
+        m_lbLeftSpacing (this),
+        m_lbImage       (this),
+        m_lbText        (this),
+        m_lbRightSpacing(this)
+    {
+        initButton();
+        setImagePosition( a_pos);
+    }
+
+    void CustomPlacementButton::initButton()
+    {
+        m_lbLeftSpacing .setObjectName("leftSpacing");
+        m_lbImage       .setObjectName("image");
+        m_lbText        .setObjectName("text");
+        m_lbRightSpacing.setObjectName("rightSpacing");
+
+        m_lbRightSpacing.setVisible(false);
+        m_lbLeftSpacing.setVisible(false);
+
+        m_subcontrols.append(&m_lbImage);
+        m_subcontrols.append(&m_lbText);
+
+        // Set up subcontroll object names:
+
+        //Setup layout
+        m_layout->setMargin(0);
+        m_layout->setSpacing(0);
+
+        //Setup spacing setSizePolicy
+        m_lbLeftSpacing .setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        m_lbRightSpacing.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+        //Adding subcontrols to layout
+        m_layout->addWidget(&m_lbLeftSpacing);
+        for (QLabel *subcontrol: m_subcontrols)
+        {
+            // Set up subcontroll ScaledContents:
+            subcontrol->setScaledContents(true);
+            m_layout->addWidget(subcontrol);
+
+            CustomPlacementButton::setWidgetState(subcontrol);
+        }
+        m_layout->addWidget(&m_lbRightSpacing);
+
+        setLayout(m_layout);
+
+        // on toggled update Appearance
+        connect(this, &QAbstractButton::toggled, [=](bool a_checked) {
+            this->setState(this->underMouse(), a_checked);
+        });
+    }
 /** @brief Reimplemented QPushButton::setText method. Sets text property of text subcontrol.
  *  @param text Text
  */
@@ -182,23 +196,22 @@ void CustomPlacementButton::setObjectName(const QString &name)
         m_styledShadow->updateStyleProperties();
 }
 
-
 //If there is ALIGNMENT_NONE or some erroneous value, the widgets will be invisible.
-void CustomPlacementButton::setAlignment(const QString &a_spacer)
+void CustomPlacementButton::setStateEdge(const QString &a_spacer)
 {
-    if(a_spacer == ALIGNMENT_LEFT)
+    if(a_spacer == STATE_LEFT_EDGE)
     {
         m_lbLeftSpacing.setVisible(true);
         m_lbRightSpacing.setVisible(false);
         return;
     }
-    if(a_spacer == ALIGNMENT_RIGHT)
+    if(a_spacer == STATE_RIGHT_EDGE)
     {
         m_lbLeftSpacing.setVisible(false);
         m_lbRightSpacing.setVisible(true);
         return;
     }
-    if(a_spacer == ALIGNMENT_H_CENTER)
+    if(a_spacer == STATE_BOTH_EDGE)
     {
         m_lbLeftSpacing.setVisible(true);
         m_lbRightSpacing.setVisible(true);
@@ -210,3 +223,7 @@ void CustomPlacementButton::setAlignment(const QString &a_spacer)
 
 }
 
+QString CustomPlacementButton::text()
+{
+    return m_lbText.text();
+}
