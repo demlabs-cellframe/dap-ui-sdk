@@ -216,13 +216,7 @@
     </widget>
    </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="QPushButton" name="btnSignUp">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+    <widget class="ClickableLabel" name="lblSignUp">
      <property name="text">
       <string>Tap here to sign up</string>
      </property>
@@ -245,11 +239,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CustomButtonComboBox</class>
-   <extends>QComboBox</extends>
-   <header location="global">CustomButtonComboBox.h</header>
-  </customwidget>
-  <customwidget>
    <class>CustomLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">CustomLineEdit.h</header>
@@ -258,6 +247,16 @@
    <class>PasswordLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">PasswordLineEdit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">ClickableLabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CustomButtonComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">CustomButtonComboBox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
