@@ -119,10 +119,10 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     cbbServer->addItem("Auto select");
 
 #else
-    QLineEdit           *edtEmail         = a_widget->findChild<QLineEdit  *>("edtEmail"   ); Q_ASSERT(edtEmail);
+    QLineEdit           *edtEmail         = a_widget->findChild<QLineEdit  *>(EDT_EMAIL_NAME   ); Q_ASSERT(edtEmail);
     QLineEdit           *edtPassword      = a_widget->findChild<QLineEdit  *>(EDT_PASSWORD_NAME ); Q_ASSERT(edtPassword);
 
-
+    ClickableLabel      *lblSignUp = a_widget->findChild<ClickableLabel     *>(LBL_SIGN_UP ); Q_ASSERT(lblSignUp);
     QLabel      *lblPasswordError = a_widget->findChild<QLabel     *>(LBL_PASSWORD_ERROR); Q_ASSERT(lblPasswordError);
     btnSignIn->setGraphicsEffect(new StyledDropShadowEffect(btnSignIn));
 

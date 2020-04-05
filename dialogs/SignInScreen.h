@@ -13,6 +13,7 @@
 #include "StyledDropShadowEffect.h"
 #include "CustomLineEdit.h"
 #include "PasswordLineEdit.h"
+#include "ClickableLabel.h"
 
 class SignInScreen : public AdaptiveScreen
 {
@@ -58,15 +59,16 @@ private:
     void setValidationStateForEdit(const QString& a_editName, const QString& a_errorLabelName, bool a_valid = true);
     QString buttonText(ConnectionStates a_connectionState);
 
-    const QString EDT_EMAIL_NAME     = "edtEmail";
-    const QString EDT_PASSWORD_NAME  = "edtPassword";
-    const QString BTN_SIGN_IN_NAME   = "btnSignIn";
-    const QString LBL_EMAIL_ERROR    = "lblEmailError";
-    const QString LBL_PASSWORD_ERROR = "lblPasswordError";
-    const QString BTN_SHOW_PASSWORD  = "btnShowPassword";
+    const QString EDT_EMAIL_NAME     =  "edtEmail";
+    const QString EDT_PASSWORD_NAME  =  "edtPassword";
+    const QString BTN_SIGN_IN_NAME   =  "btnSignIn";
+    const QString LBL_EMAIL_ERROR    =  "lblEmailError";
+    const QString LBL_PASSWORD_ERROR =  "lblPasswordError";
+    const QString BTN_SHOW_PASSWORD  =  "btnShowPassword";
     const QString BTN_CLEAR_EMAIL    =  "btnClearEmail";
     const QString CBB_SERVER         =  "cbbServer";
     const QString BTN_SIGN_UP        =  "btnSignUp";
+    const QString LBL_SIGN_UP        =  "lblSignUp";
 
     QStateMachine *m_inputStates;
     QState *m_stt_email;

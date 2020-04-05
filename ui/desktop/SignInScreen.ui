@@ -174,7 +174,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="lblSignUp">
+       <widget class="ClickableLabel" name="lblSignUp">
         <property name="text">
          <string> Sign up now</string>
         </property>
@@ -198,6 +198,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header>ClickableLabel.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

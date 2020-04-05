@@ -13,6 +13,7 @@ NavigationPanel::NavigationPanel(QWidget *parent)
 }
 
 #else
+#include "ui_NavigationPanel.h"
 
 NavigationPanel::NavigationPanel(QWidget *parent)
     : AdaptiveWidget(parent)

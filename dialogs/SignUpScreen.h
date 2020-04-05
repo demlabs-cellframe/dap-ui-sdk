@@ -8,6 +8,7 @@
 #include "CustomLineEdit.h"
 #include "PasswordLineEdit.h"
 #include "Utils.h"
+#include "ClickableLabel.h"
 
 class SignUpScreen : public AdaptiveScreen
 {
@@ -35,9 +36,9 @@ signals:
 private:
 
     const QString BTN_SIGN_UP                   = "btnSignUp";
-    const QString BTN_TERMS                     = "btnTerms";
-    const QString BTN_PRIVACY_POLISY            = "btnPrivacyPolisy";
-    const QString BTN_SIGN_IN                   = "btnSignIn";
+    const QString LBL_TERMS                     = "lblTerms";
+    const QString LBL_PRIVACY_POLISY            = "lblPrivacyPolisy";
+    const QString LBL_SIGN_IN                   = "lblSignIn";
     const QString EDT_EMAIL                     = "edtEmail";
     const QString EDT_PASSWORD                  = "edtPassword";
     const QString EDT_RPT_PASSWORD              = "edtRptPassword";

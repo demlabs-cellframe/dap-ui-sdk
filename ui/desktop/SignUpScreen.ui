@@ -229,15 +229,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnTerms">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+       <widget class="ClickableLabel" name="lblTerms">
         <property name="text">
-         <string>terms</string>
+         <string> terms </string>
         </property>
        </widget>
       </item>
@@ -255,13 +249,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnPrivacyPolisy">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+       <widget class="ClickableLabel" name="lblPrivacyPolisy">
         <property name="text">
          <string>privacy policy</string>
         </property>
@@ -364,13 +352,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnSignIn">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+       <widget class="ClickableLabel" name="lblSignIn">
         <property name="text">
          <string>Sign in</string>
         </property>
@@ -423,6 +405,11 @@
    <class>PasswordLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">PasswordLineEdit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">ClickableLabel.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

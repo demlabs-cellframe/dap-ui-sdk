@@ -20,9 +20,10 @@ QString SignUpScreen::screenName()
 void SignUpScreen::initVariantUi(QWidget *a_widget)
 {
     QPushButton             *btnSignUp              = a_widget->findChild<QPushButton*>(BTN_SIGN_UP);                   Q_ASSERT(btnSignUp);
-    QPushButton             *btnTerms               = a_widget->findChild<QPushButton*>(BTN_TERMS);                     Q_ASSERT(btnTerms);
-    QPushButton             *btnPrivacyPolisy       = a_widget->findChild<QPushButton*>(BTN_PRIVACY_POLISY);            Q_ASSERT(btnPrivacyPolisy);
-    QPushButton             *btnSignIn              = a_widget->findChild<QPushButton*>(BTN_SIGN_IN);                   Q_ASSERT(btnSignIn);
+    ClickableLabel             *lblTerms               = a_widget->findChild<ClickableLabel*>(LBL_TERMS);                     Q_ASSERT(lblTerms);
+
+    ClickableLabel             *lblPrivacyPolisy       = a_widget->findChild<ClickableLabel*>(LBL_PRIVACY_POLISY);            Q_ASSERT(lblPrivacyPolisy);
+    ClickableLabel             *lblSignIn              = a_widget->findChild<ClickableLabel*>(LBL_SIGN_IN);                   Q_ASSERT(lblSignIn);
     CustomLineEdit          *edtEmail               = a_widget->findChild<CustomLineEdit*>(EDT_EMAIL);                  Q_ASSERT(edtEmail);
     PasswordLineEdit        *edtPassword            = a_widget->findChild<PasswordLineEdit*>(EDT_PASSWORD);             Q_ASSERT(edtPassword);
     PasswordLineEdit        *edtRptPassword         = a_widget->findChild<PasswordLineEdit*>(EDT_RPT_PASSWORD);         Q_ASSERT(edtRptPassword);
