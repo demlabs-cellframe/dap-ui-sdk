@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>463</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -46,7 +46,7 @@
     </widget>
    </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="QLabel" name="lbCaption">
+    <widget class="QLabel" name="lblCaption">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -62,9 +62,9 @@
     </widget>
    </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="QLineEdit" name="edtEmail">
+    <widget class="CustomLineEdit" name="edtEmail">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -76,9 +76,6 @@
       <number>0</number>
      </property>
     </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="wgtEmailBottom" native="true"/>
    </item>
    <item alignment="Qt::AlignHCenter">
     <widget class="QLabel" name="lblEmailError">
@@ -97,12 +94,12 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="wgtFirstPasswordTop" native="true"/>
+    <widget class="QWidget" name="wgtEmailBottom" native="true"/>
    </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="QLineEdit" name="edtPassword">
+    <widget class="PasswordLineEdit" name="edtPassword">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -119,7 +116,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="wgtFirsPasswordBottom" native="true"/>
+    <widget class="QWidget" name="wgtFirstPasswordBottom" native="true"/>
    </item>
    <item alignment="Qt::AlignHCenter">
     <widget class="QLabel" name="lblPasswordError">
@@ -137,13 +134,10 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QWidget" name="wgtSecondPasswordTop" native="true"/>
-   </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="QLineEdit" name="edtRptPassword">
+    <widget class="PasswordLineEdit" name="edtRptPassword">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -158,9 +152,6 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="wgtSecondPasswordBottom" native="true"/>
    </item>
    <item alignment="Qt::AlignHCenter">
     <widget class="QLabel" name="lblRptPasswordError">
@@ -178,15 +169,18 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QWidget" name="wgtSecondPasswordBottom" native="true"/>
+   </item>
    <item alignment="Qt::AlignHCenter">
     <widget class="QWidget" name="wgtInfo" native="true">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
       <property name="spacing">
        <number>0</number>
       </property>
@@ -202,8 +196,8 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item alignment="Qt::AlignRight">
-       <widget class="QCheckBox" name="cbInfo">
+      <item alignment="Qt::AlignLeft">
+       <widget class="QCheckBox" name="chbInfo">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -224,19 +218,40 @@
       <item>
        <widget class="QLabel" name="lblInfo">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="minimumSize">
-         <size>
-          <width>261</width>
-          <height>0</height>
-         </size>
+        <property name="text">
+         <string>I argee to the </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="ClickableLabel" name="lblTerms">
+        <property name="text">
+         <string> terms </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lblInfo_1">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
         <property name="text">
-         <string>I argee to the terms and privacy policy</string>
+         <string> and </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="ClickableLabel" name="lblPrivacyPolisy">
+        <property name="text">
+         <string>privacy policy</string>
         </property>
        </widget>
       </item>
@@ -249,7 +264,7 @@
    <item alignment="Qt::AlignHCenter">
     <widget class="QPushButton" name="btnSignUp">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -271,14 +286,14 @@
    <item alignment="Qt::AlignHCenter">
     <widget class="QWidget" name="wgtHAccount" native="true">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="minimumSize">
       <size>
-       <width>168</width>
+       <width>181</width>
        <height>0</height>
       </size>
      </property>
@@ -288,7 +303,7 @@
        <height>16777215</height>
       </size>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
       <property name="spacing">
        <number>0</number>
       </property>
@@ -304,10 +319,20 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item alignment="Qt::AlignRight">
+      <item>
+       <widget class="QWidget" name="widget" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="label">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -319,29 +344,27 @@
          </size>
         </property>
         <property name="text">
-         <string>Have account?</string>
+         <string>Have account? </string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item alignment="Qt::AlignLeft">
-       <widget class="QLabel" name="lblSignIn">
+      <item>
+       <widget class="ClickableLabel" name="lblSignIn">
+        <property name="text">
+         <string>Sign in</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget_2" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>46</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Sign in</string>
         </property>
        </widget>
       </item>
@@ -351,7 +374,7 @@
    <item>
     <spacer name="verticalSpacer">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+      <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -359,16 +382,36 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>33</height>
+       <height>175</height>
       </size>
      </property>
     </spacer>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CustomLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">CustomLineEdit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>PasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">PasswordLineEdit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">ClickableLabel.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

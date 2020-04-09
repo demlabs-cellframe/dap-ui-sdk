@@ -8,13 +8,22 @@ MainScreenLayout::MainScreenLayout(QWidget *a_parent)
     :MultiScreenAbstract(a_parent)
 {
     create<Ui::MainScreenLayout>();
-
-    initScreen(this);
 }
 
 QString MainScreenLayout::screenName()
 {
     return MainScreenLayout::SCREEN_NAME;
+}
+
+NavigationPanel *MainScreenLayout::findNavigationPanel(QWidget* a_widget /*= nullptr*/)
+{
+    if (!a_widget)
+        a_widget = this->variant();
+
+    NavigationPanel *panel = a_widget->findChild<NavigationPanel*>();
+    Q_ASSERT(panel);
+
+    return panel;
 }
 
 /**
@@ -24,7 +33,7 @@ QString MainScreenLayout::screenName()
 */
 void MainScreenLayout::initVariantUi(QWidget *a_widget)
 {
-   initChangedScreen(a_widget);
+   this->initChangingWidget(a_widget);
 
    //create and activate ScreenLogin
 //   m_screenLogin = activateScreen<ScreenLogin>();
