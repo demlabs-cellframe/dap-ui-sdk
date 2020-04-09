@@ -1,6 +1,5 @@
 #include "PasswordRecoveryScreen.h"
 
-
 const QString PasswordRecoveryScreen::SCREEN_NAME = "PasswordRecovery";
 
 PasswordRecoveryScreen::PasswordRecoveryScreen(QWidget *a_parent)

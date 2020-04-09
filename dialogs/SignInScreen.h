@@ -67,7 +67,6 @@ private:
     const QString BTN_SHOW_PASSWORD  =  "btnShowPassword";
     const QString BTN_CLEAR_EMAIL    =  "btnClearEmail";
     const QString CBB_SERVER         =  "cbbServer";
-    const QString BTN_SIGN_UP        =  "btnSignUp";
     const QString LBL_SIGN_UP        =  "lblSignUp";
 
     QStateMachine *m_inputStates;
