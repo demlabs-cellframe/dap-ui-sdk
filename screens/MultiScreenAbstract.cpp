@@ -36,7 +36,7 @@ MultiScreenAbstract::MultiScreenAbstract(QWidget *parent)
 
 AdaptiveScreen *MultiScreenAbstract::activeScreen()
 {
-    QWidget* l_activeWidget = this->wgtChangingScreen()->currentWidget();
+    QWidget* l_activeWidget = this->changingWidget()->currentWidget();
     return qobject_cast<AdaptiveScreen*>(l_activeWidget);
 }
 
@@ -59,7 +59,7 @@ MultiScreenAbstract *MultiScreenAbstract::activateChildScreen(AdaptiveScreen *a_
 {
     Q_ASSERT_X(MultiScreenAbstract::parentMultiscreen(a_screen) == this, "activateDescendantScreen", "screen is not a child of this screen");
 
-    m_wgtChangingScreen->setCurrentWidget(a_screen);
+    m_wgtChangingWidget->setCurrentWidget(a_screen);
 
     return (this);
 }
@@ -81,29 +81,40 @@ MultiScreenAbstract *MultiScreenAbstract::parentMultiscreen(AdaptiveScreen *a_sc
  * @brief Getter for m_wgChangingScreen
  * @return pointer to AnimationChangingWidget
  */
-AnimationChangingWidget *MultiScreenAbstract::wgtChangingScreen()
+AnimationChangingWidget *MultiScreenAbstract::changingWidget()
 {
-    return m_wgtChangingScreen;
+    return m_wgtChangingWidget;
 }
 
+/**
+ * @brief Find and Return AnimationChangingWidget
+ * @param a_widget pointer widget in which will be founded ChangedWidget
+ */
+AnimationChangingWidget *MultiScreenAbstract::findChangingWidget(QWidget *a_widget /*= nullptr*/)
+{
+    // initialize default a_widget
+    if (!a_widget)
+        a_widget = variant(ScreenInfo::currentRotation());
+
+    return a_widget->findChild<AnimationChangingWidget*>();
+}
 
 /**
  * @brief Initialize m_wgChangedScreen. Must be called by initUi of inheritor class
  * @param a_widget pointer widget in which will be founded ChangedWidget
  */
-void MultiScreenAbstract::initChangedScreen(QWidget *a_widget)
+void MultiScreenAbstract::initChangingWidget(QWidget *a_widget /*= nullptr*/)
 {
     // initialize default a_widget
     if (!a_widget)
         a_widget = variant(ScreenInfo::currentRotation());
 
     // Initializing pointers to window widgets
-    m_wgtChangingScreen = a_widget->findChild<AnimationChangingWidget*>();
-    Q_ASSERT(m_wgtChangingScreen);
+    m_wgtChangingWidget = this->findChangingWidget(a_widget);
+    Q_ASSERT(m_wgtChangingWidget);
 
-    connect(m_wgtChangingScreen, &AnimationChangingWidget::animationFinished, [=]{
+    connect(m_wgtChangingWidget, &AnimationChangingWidget::animationFinished, [=]{
         emit animationFinished();
     });
-
 }
 
