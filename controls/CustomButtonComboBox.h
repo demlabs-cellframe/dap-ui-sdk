@@ -7,11 +7,12 @@
 #include "CustomPlacementButton.h"
 #include "CustomButtonAbstract.h"
 
-enum class CaptionPolicy{ShowWhenUnselected,ShowAlways};
 
 class CustomButtonComboBox : public CustomComboBox
 {
 public:
+    enum class CaptionPolicy{ShowWhenUnselected, ShowAlways};
+
     CustomButtonComboBox(QWidget *a_parent = Q_NULLPTR);
 
     void setObjectName(const QString &a_name);
@@ -33,7 +34,7 @@ protected:
 
 private:
 
-    CaptionPolicy m_captionPolicy;
+    CaptionPolicy m_captionPolicy = CaptionPolicy::ShowWhenUnselected;
     QString m_caption;
     CustomButtonAbstract* m_button = nullptr;
 
