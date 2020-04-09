@@ -47,6 +47,7 @@ inline void AdaptiveWidget::create()
     QWidget *currentWidget (new QWidget(this));
 
     this->addWidget(currentWidget);
+    this->m_variants.insert(ScreenInfo::Rotation::Horizontal, currentWidget);
     this->setupWidgetForm<T>(currentWidget);
 
     initVariantUi(currentWidget);

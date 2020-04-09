@@ -50,5 +50,5 @@ QString DefaultMultiScreen::screenName()
 void DefaultMultiScreen::initVariantUi(QWidget * a_widget)
 {
     // Initializing pointers to window widgets
-    initChangedScreen(a_widget);
+    this->initChangingWidget(a_widget);
 }
