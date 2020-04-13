@@ -54,6 +54,9 @@
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
+     <property name="placeholderText">
+      <string>Email</string>
+     </property>
     </widget>
    </item>
    <item>
@@ -77,8 +80,17 @@
    </item>
    <item alignment="Qt::AlignHCenter">
     <widget class="QLineEdit" name="edtPassword">
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+     <property name="placeholderText">
+      <string>Password</string>
      </property>
     </widget>
    </item>
@@ -162,7 +174,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="lblSignUp">
+       <widget class="ClickableLabel" name="lblSignUp">
         <property name="text">
          <string> Sign up now</string>
         </property>
@@ -186,6 +198,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header>ClickableLabel.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

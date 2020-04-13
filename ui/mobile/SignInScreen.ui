@@ -30,16 +30,6 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="wgtNavigationPanel" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QLabel" name="lblLogo">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -52,8 +42,8 @@
      </property>
     </widget>
    </item>
-   <item alignment="Qt::AlignLeft">
-    <widget class="QLabel" name="lblCapture">
+   <item>
+    <widget class="QLabel" name="lblCaption">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -123,14 +113,17 @@
        <number>0</number>
       </property>
       <item alignment="Qt::AlignVCenter">
-       <widget class="QLabel" name="lblCaptureComboBox">
+       <widget class="QLabel" name="lblCaptionComboBox">
         <property name="text">
          <string/>
         </property>
        </widget>
       </item>
       <item alignment="Qt::AlignVCenter">
-       <widget class="QComboBox" name="cbbServer">
+       <widget class="CustomButtonComboBox" name="cbbServer">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
@@ -145,14 +138,20 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QWidget" name="wgtRightSpacerCombobox" native="true"/>
-      </item>
      </layout>
     </widget>
    </item>
    <item>
+    <widget class="QWidget" name="wgtTopLine" native="true"/>
+   </item>
+   <item>
     <widget class="Line" name="line_1">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -162,72 +161,9 @@
     <widget class="QWidget" name="wgtUnderComboBox" native="true"/>
    </item>
    <item>
-    <widget class="QWidget" name="wgtEmailFrame" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>51</height>
-      </size>
-     </property>
-     <property name="inputMethodHints">
-      <set>Qt::ImhLatinOnly</set>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item alignment="Qt::AlignVCenter">
-       <widget class="QLabel" name="lblCaptureEmail">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item alignment="Qt::AlignVCenter">
-       <widget class="QLineEdit" name="edtEmail">
-        <property name="inputMethodHints">
-         <set>Qt::ImhEmailCharactersOnly|Qt::ImhLatinOnly</set>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QWidget" name="wgtSpacerButtonEmail" native="true"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnClearEmail">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QWidget" name="wgtRightSpacerEmail" native="true"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="Line" name="line_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+    <widget class="CustomLineEdit" name="edtEmail">
+     <property name="placeholderText">
+      <string>e-mail</string>
      </property>
     </widget>
    </item>
@@ -235,69 +171,15 @@
     <widget class="QWidget" name="wgtUnderEmail" native="true"/>
    </item>
    <item>
-    <widget class="QWidget" name="wgtPasswordFrame" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+    <widget class="PasswordLineEdit" name="edtPassword">
+     <property name="inputMethodHints">
+      <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText|Qt::ImhSensitiveData</set>
      </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>52</height>
-      </size>
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item alignment="Qt::AlignVCenter">
-       <widget class="QLabel" name="lblCapturePassword">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item alignment="Qt::AlignVCenter">
-       <widget class="QLineEdit" name="edtPassword">
-        <property name="inputMethodHints">
-         <set>Qt::ImhNone</set>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QWidget" name="wgtSpacerButtonPassword" native="true"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnShowPassword">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QWidget" name="wgtRightSpacerPassword" native="true"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="Line" name="line_3">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+     <property name="placeholderText">
+      <string>password</string>
      </property>
     </widget>
    </item>
@@ -334,13 +216,7 @@
     </widget>
    </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="QPushButton" name="btnSignUp">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+    <widget class="ClickableLabel" name="lblSignUp">
      <property name="text">
       <string>Tap here to sign up</string>
      </property>
@@ -354,13 +230,35 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>236</height>
       </size>
      </property>
     </spacer>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CustomLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">CustomLineEdit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>PasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">PasswordLineEdit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">ClickableLabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CustomButtonComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">CustomButtonComboBox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

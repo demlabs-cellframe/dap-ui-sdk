@@ -4,14 +4,11 @@
 #include <QStateMachine>
 #include "DapUiScreen.h"
 #include "AdaptiveScreen.h"
+#include "ui_StartScreen.h"
 
-#ifdef Q_OS_ANDROID
-#include "ui_StartScreen.h"
-#else
-#include "ui_StartScreen.h"
 #include "StyledDropShadowEffect.h"
 #include "CustomLineHeightLabel.h"
-#endif
+
 
 class StartScreen : public AdaptiveScreen
 {

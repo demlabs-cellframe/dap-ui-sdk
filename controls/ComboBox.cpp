@@ -16,7 +16,7 @@ void ComboBox::setObjectName(const QString &a_name)
 {
     this->CustomButtonComboBox::setObjectName(a_name);
 
-    CustomPlacementButton *button = qobject_cast<CustomPlacementButton*>(this->buttonControll());
+    CustomPlacementButton *button = this->buttonControll();
 
     if (button)
         button->setObjectName(button->objectName()); //Needed for shadow updating
@@ -31,4 +31,7 @@ void ComboBox::setGraphicsEffect(StyledDropShadowEffect *a_effect)
     CustomButtonComboBox::setGraphicsEffect(a_effect);
 }
 
-
+CustomPlacementButton *ComboBox::buttonControll() const
+{
+    return qobject_cast<CustomPlacementButton*>(CustomButtonComboBox::buttonControll());
+}

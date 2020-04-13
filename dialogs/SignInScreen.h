@@ -9,15 +9,11 @@
 #include "ScreenInfo.h"
 #include "vpnDefine.h"
 #include "defines.h"
-
-#ifdef Q_OS_ANDROID
-#include "ui_SignInScreen.h"
-#else
 #include "ui_SignInScreen.h"
 #include "StyledDropShadowEffect.h"
-#endif
-
-
+#include "CustomLineEdit.h"
+#include "PasswordLineEdit.h"
+#include "ClickableLabel.h"
 
 class SignInScreen : public AdaptiveScreen
 {
@@ -50,6 +46,8 @@ signals:
 
     void signInRequest();
 
+    void transitionTo_SignUp();
+
 protected:
 
     virtual void initVariantUi(QWidget *a_widget) override;
@@ -61,15 +59,15 @@ private:
     void setValidationStateForEdit(const QString& a_editName, const QString& a_errorLabelName, bool a_valid = true);
     QString buttonText(ConnectionStates a_connectionState);
 
-    const QString EDT_EMAIL_NAME     = "edtEmail";
-    const QString EDT_PASSWORD_NAME  = "edtPassword";
-    const QString BTN_SIGN_IN_NAME   = "btnSignIn";
-    const QString LBL_EMAIL_ERROR    = "lblEmailError";
-    const QString LBL_PASSWORD_ERROR = "lblPasswordError";
-    const QString BTN_SHOW_PASSWORD  = "btnShowPassword";
+    const QString EDT_EMAIL_NAME     =  "edtEmail";
+    const QString EDT_PASSWORD_NAME  =  "edtPassword";
+    const QString BTN_SIGN_IN_NAME   =  "btnSignIn";
+    const QString LBL_EMAIL_ERROR    =  "lblEmailError";
+    const QString LBL_PASSWORD_ERROR =  "lblPasswordError";
+    const QString BTN_SHOW_PASSWORD  =  "btnShowPassword";
     const QString BTN_CLEAR_EMAIL    =  "btnClearEmail";
-    const QString WGT_LOGIN_BOTTOM_SPACER = "wgtLoginBottomSpacer";
     const QString CBB_SERVER         =  "cbbServer";
+    const QString LBL_SIGN_UP        =  "lblSignUp";
 
     QStateMachine *m_inputStates;
     QState *m_stt_email;
