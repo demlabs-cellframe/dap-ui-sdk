@@ -135,8 +135,12 @@ void ScreenLogin::reloadServers(void)
 /// Check field filling.
 /// @return Returns true - if the fields are correct, 
 /// false - if the fields are incorrect.
-bool ScreenLogin::checkField() const
+bool ScreenLogin::checkField()
 {
+    edMail = getWidgetCustom<QLineEdit>("edMail", rotation());
+    edPassword = getWidgetCustom<QLineEdit>("edPassword", rotation());
+
+    qDebug()<<"checkFields" << edMail->text() << "; " << edMail->text();
     return edMail->text().isEmpty() || edMail->text().isNull() || 
             edPassword->text().isEmpty() || edPassword->text().isNull()
              ? false : true;
