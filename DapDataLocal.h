@@ -36,6 +36,7 @@ public:
 
     DapServerInfo* currentServer();
     void setCurrentServer(int a_serverIndex);
+    void setRandomServerIfIsEmpty();
 
     QString locationToIconPath(DapServerLocation loc);
     

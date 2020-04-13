@@ -7,6 +7,7 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <algorithm>
+#include <QTime>
 
 #include "DapDataLocal.h"
 
@@ -140,6 +141,18 @@ void DapDataLocal::setCurrentServer(int a_serverIndex)
 
     m_currentServer = &m_servers[a_serverIndex];
 }
+
+void DapDataLocal::setRandomServerIfIsEmpty()
+{
+    if (!currentServer())
+    {
+        qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+        int randIndex = qrand()%(this->servers().count());
+        this->setCurrentServer(randIndex);
+        qDebug()<<"Random server chosed:" << this->serverName();
+    }
+}
+
 
 /// Get login.
 /// @return Login.
