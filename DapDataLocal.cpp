@@ -96,13 +96,7 @@ void DapDataLocal::parseXML(const QString& a_fname)
 }
 
 void DapDataLocal::addServer(const DapServerInfo& dsi) {
-    for(auto& s: servers()) {
-        if(s == dsi) {
-            qWarning() << "[DataLocal::addServer] Server "
-                          "already exists in list";
-            return;
-        }
-    }
+
     m_servers.push_back(dsi);
 
     emit this->serverAdded(dsi);
