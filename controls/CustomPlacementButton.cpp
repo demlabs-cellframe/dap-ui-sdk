@@ -41,6 +41,22 @@ CustomPlacementButton::CustomPlacementButton(QWidget *a_parent)
     connect(this, &QAbstractButton::toggled, [=]() {
         this->updateAppearance();
     });
+
+    connect(this, &CustomPlacementButton::tabFocusIn, [=]() {
+
+        this->updateAppearanceForFocus(true);
+
+    });
+    connect(this, &CustomPlacementButton::tabFocusOut, [=]() {
+
+        this->updateAppearanceForFocus(false);
+
+    });
+}
+
+void CustomPlacementButton::emitTabFocus(bool isActiv)
+{
+    isActiv ? emit tabFocusIn() : emit tabFocusOut();
 }
 
 /** @brief Reimplemented QPushButton::setText method. Sets text property of text subcontrol.
@@ -88,6 +104,17 @@ void CustomPlacementButton::updateAppearance()
     for (StyledSubcontrol *subcontrol: m_subcontrols){
         bool isHover = isEnabled() ? underMouse() : false;
         subcontrol->setStylesheet(isHover, isChecked());
+    }
+
+    update();//for appliyng hover/normal stylesheet of button
+}
+
+/** @brief Updates appearance of image and text
+ */
+void CustomPlacementButton::updateAppearanceForFocus(bool target)
+{
+    for (StyledSubcontrol *subcontrol: m_subcontrols){
+        subcontrol->setStylesheet(target, true);
     }
 
     update();//for appliyng hover/normal stylesheet of button

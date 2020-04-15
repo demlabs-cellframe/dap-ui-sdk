@@ -57,8 +57,14 @@ public:
 
     void updateStyleSheets();
     void updateAppearance();
+    void updateAppearanceForFocus(bool);
 
     void addSubcontrol(QString a_id);
+    void emitTabFocus(bool isActiv);
+
+signals:
+    void tabFocusIn();
+    void tabFocusOut();
 
 private:
 protected:
