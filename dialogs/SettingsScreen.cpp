@@ -25,23 +25,23 @@ void SettingsScreen::initVariantUi(QWidget *a_widget)
     ComboBox *cbbUptime       = a_widget->findChild<ComboBox*>(CBB_UPTIME);        Q_ASSERT(cbbUptime);
     ComboBox *cbbLanguage    = a_widget->findChild<ComboBox*>(CBB_LANGUAGE);       Q_ASSERT(cbbLanguage);
 
-    cbbBandwidth->buttonControll()->setImagePosition(ImagePos::Right);
-    cbbUptime->buttonControll()->setImagePosition(ImagePos::Right);
+    cbbBandwidth ->buttonControll()->setImagePosition(ImagePos::Right);
+    cbbUptime    ->buttonControll()->setImagePosition(ImagePos::Right);
     cbbEncryption->buttonControll()->setImagePosition(ImagePos::Right);
-    cbbBalance->buttonControll()->setImagePosition(ImagePos::Right);
-    cbbLanguage->buttonControll()->setImagePosition(ImagePos::Right);
+    cbbBalance   ->buttonControll()->setImagePosition(ImagePos::Right);
+    cbbLanguage  ->buttonControll()->setImagePosition(ImagePos::Right);
 
-    cbbBandwidth->setCaption("Bandwidth");
-    cbbUptime->setCaption("Uptime");
+    cbbBandwidth ->setCaption("Bandwidth");
+    cbbUptime    ->setCaption("Uptime");
     cbbEncryption->setCaption("Encryption");
-    cbbBalance->setCaption("Balance");
-    cbbLanguage->setCaption("Language");
+    cbbBalance   ->setCaption("Balance");
+    cbbLanguage  ->setCaption("Language");
 
-    cbbBandwidth->setCaptionPolicy(CaptionPolicy::ShowAlways);
-    cbbUptime->setCaptionPolicy(CaptionPolicy::ShowAlways);
-    cbbEncryption->setCaptionPolicy(CaptionPolicy::ShowAlways);
-    cbbBalance->setCaptionPolicy(CaptionPolicy::ShowAlways);
-    cbbLanguage->setCaptionPolicy(CaptionPolicy::ShowAlways);
+    cbbBandwidth ->setCaptionPolicy(ComboBox::CaptionPolicy::ShowAlways);
+    cbbUptime    ->setCaptionPolicy(ComboBox::CaptionPolicy::ShowAlways);
+    cbbEncryption->setCaptionPolicy(ComboBox::CaptionPolicy::ShowAlways);
+    cbbBalance   ->setCaptionPolicy(ComboBox::CaptionPolicy::ShowAlways);
+    cbbLanguage  ->setCaptionPolicy(ComboBox::CaptionPolicy::ShowAlways);
 
 #endif
 }
