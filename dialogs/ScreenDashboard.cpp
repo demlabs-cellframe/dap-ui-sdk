@@ -97,6 +97,8 @@ void ScreenDashboard::initUi(QWidget * a_w,ScreenRotation a_rotation)
 
     graphicsView->setSceneRect(0,0,m_sceneWidth-3, m_sceneHeight-3);
 
+    a_w->setFocus();
+
     //***********************
     // Hide btMultirouting and Line under it. Remove this code for show btMultirouting
 #ifndef DAP_PLATFORM_MOBILE
