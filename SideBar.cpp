@@ -8,7 +8,7 @@ SideBar::SideBar(QWidget *parent) :
     m_stateShowed (new QState(m_sm)),
     m_stateHidden (new QState(m_sm)),
     m_ui(new Ui::SideBar),
-    m_screenOverlaying(new ScreenOverlaying(parent)),
+    m_screenOverlaying(/*new ScreenOverlaying(parent)*/),
     m_resizeFilter(new ResizeFilter(this))
 {
     qDebug() << "SideBar constructor";

@@ -1,12 +1,16 @@
 #include "ScreenOverlaying.h"
-#include <QDebug>
 
-ScreenOverlaying::ScreenOverlaying(QWidget *a_parent)
+
+ScreenOverlaying::ScreenOverlaying(QMainWindow *a_parent)
     :QWidget(a_parent),
     blurRadius(0),
     opacity(0)
 {
+    setObjectName("ScreenBlureOpocityEffect");
+    m_blurParent = a_parent->centralWidget();
+    m_opacityParent = a_parent;
 
+    this->setVisible(false);
 }
 
 ScreenOverlaying::ScreenOverlaying(QWidget *blure_parent, QWidget *opacity_parent)

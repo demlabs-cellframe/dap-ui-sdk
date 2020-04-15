@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QGraphicsOpacityEffect>
 #include <QGraphicsBlurEffect>
+#include <QDebug>
+#include <QMainWindow>
 
 /* css style
  #ScreenBlureOpocityEffect
@@ -20,7 +22,7 @@ class ScreenOverlaying: public QWidget
     Q_PROPERTY(int blurRadius WRITE setBlurRadius DESIGNABLE true)
     Q_PROPERTY(qreal opacity WRITE setOpacity DESIGNABLE true)
 public:
-    ScreenOverlaying(QWidget *a_parent);
+    ScreenOverlaying(QMainWindow *a_parent = nullptr);
 
     /// Constructor with two widgets specified. 1st widget for creating blurring.
     ///  The second widget must be the parent of the first and the parent
