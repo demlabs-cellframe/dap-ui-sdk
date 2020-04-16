@@ -85,7 +85,7 @@ void ScreenDashboard::initUi(QWidget * a_w,ScreenRotation a_rotation)
 
 #ifndef Q_OS_ANDROID
 
-    QWidget *btDisconnect = a_w->findChild<CustomPlacementButton*>("btDisconnect");
+     btDisconnect = a_w->findChild<CustomPlacementButton*>("btDisconnect");
     if (btDisconnect)
         btDisconnect->setGraphicsEffect(new StyledDropShadowEffect(wtMultirouting));
 #endif
@@ -96,6 +96,8 @@ void ScreenDashboard::initUi(QWidget * a_w,ScreenRotation a_rotation)
     m_sceneWidth  = rect.width();
 
     graphicsView->setSceneRect(0,0,m_sceneWidth-3, m_sceneHeight-3);
+
+    a_w->setFocus();
 
     //***********************
     // Hide btMultirouting and Line under it. Remove this code for show btMultirouting

@@ -174,6 +174,11 @@
    <header location="global">controls/CustomPlacementButton.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>btMenu</tabstop>
+  <tabstop>btProfile</tabstop>
+  <tabstop>btSettings</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
  <buttongroups>

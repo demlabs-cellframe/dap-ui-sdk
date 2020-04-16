@@ -79,6 +79,8 @@ public:
     void removeItemGraphicSceneStyle(const QString &widget);
 
     ScreenDashboard(QObject * a_parent, QStackedWidget * a_sw);
+
+    QWidget *btDisconnect;
 public slots:
     void drawShedules(int readBytes, int writeBytes, int readPackage, int writePackage);
     /// Multirouout state.
