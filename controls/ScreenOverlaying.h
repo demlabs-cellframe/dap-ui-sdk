@@ -4,7 +4,6 @@
 #include <QWidget>
 #include <QGraphicsOpacityEffect>
 #include <QGraphicsBlurEffect>
-#include <QDebug>
 #include <QMainWindow>
 
 /* css style
@@ -24,13 +23,6 @@ class ScreenOverlaying: public QWidget
 public:
     ScreenOverlaying(QMainWindow *a_parent = nullptr);
 
-    /// Constructor with two widgets specified. 1st widget for creating blurring.
-    ///  The second widget must be the parent of the first and the parent
-    /// of this class to create a transparent background.
-    /// @param blure_parent.
-    /// @param opocity_parent
-    ScreenOverlaying(QWidget *blur_parent, QWidget *opacity_parent);
-
 protected:
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
@@ -42,11 +34,9 @@ protected:
     void setOpacity(qreal &a_opacity);
 
 private:
+    QWidget* m_blureEffect;
 
-   QWidget* m_blurParent;
-   QWidget* m_opacityParent;
-
-   int blurRadius;
-   qreal opacity;
+    int m_blurRadius = 0;
+    qreal m_opacity = 0;
 };
 #endif // SCREENOVERLAYING_H

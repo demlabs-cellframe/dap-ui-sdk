@@ -1,58 +1,40 @@
 #include "ScreenOverlaying.h"
 
-
 ScreenOverlaying::ScreenOverlaying(QMainWindow *a_parent)
-    :QWidget(a_parent),
-    blurRadius(0),
-    opacity(0)
+    :QWidget(a_parent)
 {
-    setObjectName("ScreenBlureOpocityEffect");
-    m_blurParent = a_parent->centralWidget();
-    m_opacityParent = a_parent;
-
-    this->setVisible(false);
-}
-
-ScreenOverlaying::ScreenOverlaying(QWidget *blure_parent, QWidget *opacity_parent)
-    :QWidget(opacity_parent),
-    blurRadius(0),
-    opacity(0)
-{
-    setObjectName("ScreenBlureOpocityEffect");
-    m_blurParent = blure_parent;
-    m_opacityParent = opacity_parent;
+    setObjectName("ScreenOverlaying");
+    m_blureEffect = a_parent->centralWidget();
 
     this->setVisible(false);
 }
 
 void ScreenOverlaying::showEvent(QShowEvent *event)
 {
-    QGraphicsBlurEffect *blurEffect = new QGraphicsBlurEffect(m_blurParent);
-    blurEffect->setBlurRadius(blurRadius);
-    m_blurParent->setGraphicsEffect(blurEffect);
+    QGraphicsBlurEffect *blurEffect = new QGraphicsBlurEffect(m_blureEffect);
+    blurEffect->setBlurRadius(m_blurRadius);
+    m_blureEffect->setGraphicsEffect(blurEffect);
 
-    setGeometry(0,0,m_opacityParent->width(),m_opacityParent->height());
-    QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect(this);
-    opacityEffect->setOpacity(opacity);
-
-    setGraphicsEffect(opacityEffect);
-
-
+    setGeometry(0,0,m_blureEffect->width(),m_blureEffect->height());
     QWidget::showEvent(event);
 }
 
 void ScreenOverlaying::hideEvent(QHideEvent *event)
 {
-    delete m_blurParent->graphicsEffect();
-    delete graphicsEffect();
+    delete m_blureEffect->graphicsEffect();
     QWidget::hideEvent(event);
 }
 void ScreenOverlaying::setBlurRadius(int &a_blurRadius)
 {
-    blurRadius = a_blurRadius;
+    m_blurRadius = a_blurRadius;
 }
 
 void ScreenOverlaying::setOpacity(qreal &a_opacity)
 {
-    opacity = a_opacity;
+    m_opacity = a_opacity;
+
+    QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect(this);
+    opacityEffect->setOpacity(m_opacity);
+
+    setGraphicsEffect(opacityEffect);
 }
