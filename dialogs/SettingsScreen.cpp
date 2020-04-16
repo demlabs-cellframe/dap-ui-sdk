@@ -37,11 +37,11 @@ void SettingsScreen::initVariantUi(QWidget *a_widget)
     cbbBalance->setCaption("Balance");
     cbbLanguage->setCaption("Language");
 
-    cbbBandwidth->setCaptionPolicy(CaptionPolicy::ShowAlways);
-    cbbUptime->setCaptionPolicy(CaptionPolicy::ShowAlways);
-    cbbEncryption->setCaptionPolicy(CaptionPolicy::ShowAlways);
-    cbbBalance->setCaptionPolicy(CaptionPolicy::ShowAlways);
-    cbbLanguage->setCaptionPolicy(CaptionPolicy::ShowAlways);
+    cbbBandwidth->setCaptionPolicy(ComboBox::CaptionPolicy::ShowAlways);
+    cbbUptime->setCaptionPolicy(ComboBox::CaptionPolicy::ShowAlways);
+    cbbEncryption->setCaptionPolicy(ComboBox::CaptionPolicy::ShowAlways);
+    cbbBalance->setCaptionPolicy(ComboBox::CaptionPolicy::ShowAlways);
+    cbbLanguage->setCaptionPolicy(ComboBox::CaptionPolicy::ShowAlways);
 
 #endif
 }
