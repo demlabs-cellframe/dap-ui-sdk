@@ -24,6 +24,7 @@ public:
     ScreenOverlaying(QMainWindow *a_parent = nullptr);
 
 protected:
+
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
     /// Setting a parameter for the BlurEffect.
@@ -34,9 +35,7 @@ protected:
     void setOpacity(qreal &a_opacity);
 
 private:
-    QWidget* m_blureEffect;
+    QGraphicsBlurEffect* m_blureEffect;
 
-    int m_blurRadius = 0;
-    qreal m_opacity = 0;
 };
 #endif // SCREENOVERLAYING_H
