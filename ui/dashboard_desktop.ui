@@ -44,6 +44,12 @@
        </property>
        <item>
         <widget class="QToolButton" name="btMenu">
+         <property name="focusPolicy">
+          <enum>Qt::WheelFocus</enum>
+         </property>
+         <property name="shortcut">
+          <string>Esc</string>
+         </property>
          <property name="autoRaise">
           <bool>true</bool>
          </property>
@@ -210,6 +216,9 @@
             </property>
             <item>
              <widget class="CustomPlacementButton" name="btMultirouting">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -235,11 +244,20 @@
           </item>
           <item>
            <widget class="ServersComboBox" name="cbUpstream">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="contextMenuPolicy">
+             <enum>Qt::NoContextMenu</enum>
             </property>
             <property name="maxVisibleItems">
              <number>6</number>
