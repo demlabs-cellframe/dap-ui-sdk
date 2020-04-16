@@ -8,7 +8,10 @@ DapServerInfo::countryMap DapServerInfo::m_countries = {
     {"NETHERLANDS", DapServerLocation::NETHERLANDS},
     {"RUSSIA", DapServerLocation::RUSSIA},
     {"UKRAINE", DapServerLocation::UKRAINE},
-    {"UNKNOWN", DapServerLocation::UNKNOWN}
+    {"UNKNOWN", DapServerLocation::UNKNOWN},
+    {"Netherlands", DapServerLocation::Netherlands},
+    {"Singapore", DapServerLocation::Singapore},
+    {"Germany", DapServerLocation::Germany}
 };
 
 DapServerInfo::countryMap2 DapServerInfo::m_countries2 = {
@@ -19,7 +22,10 @@ DapServerInfo::countryMap2 DapServerInfo::m_countries2 = {
     {DapServerLocation::NETHERLANDS,"NETHERLANDS" },
     {DapServerLocation::RUSSIA,"RUSSIA" },
     {DapServerLocation::UKRAINE,"UKRAINE" },
-    {DapServerLocation::UNKNOWN,"UNKNOWN"}
+    {DapServerLocation::UNKNOWN,"UNKNOWN"},
+    {DapServerLocation::Netherlands,"Netherlands" },
+    {DapServerLocation::Singapore,"Singapore" },
+    {DapServerLocation::Germany,"Germany"}
 };
 
 DapServerLocation DapServerInfo::stringToLocation(const QString& location) {
@@ -92,6 +98,10 @@ bool DapServerInfo::fromJSON(const QJsonObject& jsonObj, DapServerInfo& out)
     out.address6 = jsonObj["Address6"].toString();
     out.port = quint16(jsonObj["Port"].toInt());
     out.name = jsonObj["Name"].toString();
+    if (out.name == "Auto"){
+     out.location = m_countries[ "UNKNOWN" ];
+        return true;
+    }
     out.location = m_countries[ jsonObj["Location"].toString() ];
 
     return true;
