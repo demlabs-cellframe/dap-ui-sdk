@@ -85,7 +85,7 @@ void ScreenDashboard::initUi(QWidget * a_w,ScreenRotation a_rotation)
 
 #ifndef Q_OS_ANDROID
 
-    QWidget *btDisconnect = a_w->findChild<CustomPlacementButton*>("btDisconnect");
+     btDisconnect = a_w->findChild<CustomPlacementButton*>("btDisconnect");
     if (btDisconnect)
         btDisconnect->setGraphicsEffect(new StyledDropShadowEffect(wtMultirouting));
 #endif
