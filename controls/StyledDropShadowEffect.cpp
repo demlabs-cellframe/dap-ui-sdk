@@ -48,7 +48,10 @@ void StyledDropShadowEffect::updateStyleProperties()
         if(!defaultShadow)
             defaultShadow = new ShadowProperties();
         setDataShadowProperties(AppStyleSheetHandler::getWidgetStyleSheet(searchPar),defaultShadow);
+        this->setEnabled(true);
     }
+    else this->setEnabled(false);
+
     updateStyle(DEFAULT_SHADOW);
 
     searchPar.pseudoClass = "hover";
