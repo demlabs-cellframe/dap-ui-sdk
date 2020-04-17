@@ -14,6 +14,12 @@ public:
 
     virtual void initVariantUi(QWidget *a_widget) override;
 
+signals:
+    void goBack();
+
+private:
+
+    const QString BTN_BACK = "btnBack";
 };
 
 #endif // NAVIGATIONPANELBACK_H

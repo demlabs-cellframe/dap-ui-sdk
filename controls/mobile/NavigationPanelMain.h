@@ -15,6 +15,10 @@ public:
 
     virtual void initVariantUi(QWidget *a_widget) override;
 
+signals:
+    void goToSettings();
+    void goToBugReport();
+    void goToFAQ();
 };
 
 #endif // NAVIGATIONPANELMAIN_H
