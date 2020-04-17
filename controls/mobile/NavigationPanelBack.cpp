@@ -20,7 +20,7 @@ QString NavigationPanelBack::screenName()
 void NavigationPanelBack::initVariantUi(QWidget *a_widget)
 {
     QPushButton* btnBack = nullptr;
-    Utils::findObjectChild(a_widget, BTN_BACK, btnBack);
+    Utils::findChild(a_widget, BTN_BACK, btnBack);
 
 
 
