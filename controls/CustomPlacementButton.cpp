@@ -37,6 +37,7 @@ initButton();
         m_lbText        .setObjectName("text");
         m_lbRightSpacing.setObjectName("rightSpacing");
 
+
         m_lbRightSpacing.setVisible(false);
         m_lbLeftSpacing.setVisible(false);
 
@@ -44,7 +45,6 @@ initButton();
         m_subcontrols.append(&m_lbText);
 
         // Set up subcontroll object names:
-
         //Setup layout
         m_layout->setMargin(0);
         m_layout->setSpacing(0);
@@ -71,7 +71,25 @@ initButton();
         connect(this, &QAbstractButton::toggled, [=](bool a_checked) {
             this->setState(this->underMouse(), a_checked);
         });
-    }
+
+    connect(this, &CustomPlacementButton::tabFocusIn, [=]() {
+
+     //   this->updateAppearanceForFocus(true);
+
+    });
+    connect(this, &CustomPlacementButton::tabFocusOut, [=]() {
+
+     //   this->updateAppearanceForFocus(false);
+
+    });
+}
+
+void CustomPlacementButton::emitTabFocus(bool isActiv)
+{
+    isActiv ? emit tabFocusIn() : emit tabFocusOut();
+}
+
+
 /** @brief Reimplemented QPushButton::setText method. Sets text property of text subcontrol.
  *  @param text Text
  */
@@ -109,6 +127,17 @@ void CustomPlacementButton::setProperty(const QString &a_property, const QVarian
     }
 
     Utils::setPropertyAndUpdateStyle(&m_lbRightSpacing, property, a_value);
+}
+
+/** @brief Updates appearance of image and text
+ */
+void CustomPlacementButton::updateAppearanceForFocus(bool target)
+{
+//    for (StyledSubcontrol *subcontrol: m_subcontrols){
+//        subcontrol->setStylesheet(target, true);
+//    }
+
+    update();//for appliyng hover/normal stylesheet of button
 }
 
 /** @brief add new subcontrol and place it in layout
