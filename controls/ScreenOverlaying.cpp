@@ -20,8 +20,11 @@ void ScreenOverlaying::showEvent(QShowEvent *event)
 }
 
 void ScreenOverlaying::hideEvent(QHideEvent *event)
-{    
-    delete  qobject_cast <QMainWindow*> (this->parent())->centralWidget()->graphicsEffect();
+{
+    if(parent())
+    {
+        delete  m_blurEffect;
+    }
     QWidget::hideEvent(event);
 }
 void ScreenOverlaying::setBlurRadius(int &a_blurRadius)
@@ -33,16 +36,11 @@ void ScreenOverlaying::setBlurRadius(int &a_blurRadius)
 
 void ScreenOverlaying::setOpacity(qreal &a_opacity)
 {
-    if(a_opacity < 0 || a_opacity > 1)
+    if(a_opacity >= 1)
         return;
 
     QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect(this);
     opacityEffect->setOpacity(a_opacity);
-
-    if(graphicsEffect())
-    {
-        delete graphicsEffect();
-    }
     setGraphicsEffect(opacityEffect);
 }
 
