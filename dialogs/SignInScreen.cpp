@@ -106,7 +106,6 @@ void SignInScreen::checkFieldsAndSignIn()
 
 void SignInScreen::initVariantUi(QWidget *a_widget)
 {
-
     QPushButton             *btnSignIn      = a_widget->findChild<QPushButton*>(BTN_SIGN_IN_NAME  );      Q_ASSERT(btnSignIn);
     QLabel                  *lblEmailError  = a_widget->findChild<QLabel     *>(LBL_EMAIL_ERROR   );      Q_ASSERT(lblEmailError);
     ClickableLabel          *lblSignUp      = a_widget->findChild<ClickableLabel*>(LBL_SIGN_UP );           Q_ASSERT(lblSignUp);
