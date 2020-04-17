@@ -92,6 +92,14 @@ public:
     /// @param a_spacer If there is ALIGNMENT_NONE or some erroneous value, the widgets will be invisible.
     void setStateEdge(const QString &a_spacer);
 
+    void updateAppearanceForFocus(bool);
+
+    void emitTabFocus(bool isActiv);
+
+signals:
+    void tabFocusIn();
+    void tabFocusOut();
+
 
 protected:
     /// Cursor in.
