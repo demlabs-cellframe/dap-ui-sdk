@@ -3,7 +3,7 @@
 
 
 #include <QComboBox>
-#include "StyledDropShadowEffect.h"
+
 class CustomComboBoxPopup;
 
 
