@@ -13,7 +13,7 @@ namespace Utils
     int toIntValue(const QString &a_text);
 
     template <class T>
-    inline T* findObjectChild(QObject* a_object, const QString& a_objectName, T* a_foundWidget = nullptr);
+    inline T* findChild(QObject* a_object, const QString& a_objectName, T* a_foundWidget = nullptr);
 
     void setPropertyAndUpdateStyle(QWidget* a_widget, const QString& a_property, const QVariant& a_value = true);
     void setPropertyAndUpdateStyle(QWidget* a_widget, const char*    a_property, const QVariant& a_value = true);
@@ -21,7 +21,7 @@ namespace Utils
 };
 
 template <class T>
-inline T* Utils::findObjectChild(QObject* a_parentObj, const QString &a_objectName, T* a_outFoundObject /*= nullptr*/)
+inline T* Utils::findChild(QObject* a_parentObj, const QString &a_objectName, T* a_outFoundObject /*= nullptr*/)
 {
     Q_ASSERT_X(a_parentObj,  "Utils::findObjectChild", "parentObj can't be nullptr");
 
