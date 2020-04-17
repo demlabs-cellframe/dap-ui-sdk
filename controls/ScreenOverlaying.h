@@ -11,7 +11,7 @@
 {
     background-color: color
     qproperty-blureRadius: integer property
-    qproperty-opocity: double property 0...1
+    qproperty-opacity: double property 0...1
 }
 
  */
@@ -30,12 +30,12 @@ protected:
     /// Setting a parameter for the BlurEffect.
     /// @param a_blureRadius.
     void setBlurRadius(int &a_blurRadius);
-    /// Setting a parameter for the OpacityEffect.
+    /// Setting a parameter for the OpacityEffect. The value must be between 0 and 1.
     /// @param a_opocity.
     void setOpacity(qreal &a_opacity);
 
 private:
-    QGraphicsBlurEffect* m_blureEffect;
+    QGraphicsBlurEffect* m_blurEffect = nullptr;
 
 };
 #endif // SCREENOVERLAYING_H
