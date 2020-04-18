@@ -1,5 +1,5 @@
 #include "NavigationPanel.h"
-
+#include "Utils.h"
 
 
 #ifdef Q_OS_ANDROID
@@ -29,6 +29,11 @@ void NavigationPanel::initVariantUi(QWidget *a_widget)
     DefaultMultiScreen::initVariantUi(a_widget);
 #else
 
+    QPushButton *btnBug = Utils::findChild<QPushButton*>(a_widget, BTN_BUG );
+    QPushButton *btnHelp= Utils::findChild<QPushButton*>(a_widget, BTN_HELP);
+
+    this->connect(btnBug , &QPushButton::clicked, this, &NavigationPanel::goToBugReport);
+    this->connect(btnHelp, &QPushButton::clicked, this, &NavigationPanel::goToFAQ      );
 
 #endif
     setState(States::Main);

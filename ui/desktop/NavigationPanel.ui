@@ -189,9 +189,6 @@
          </item>
          <item alignment="Qt::AlignBottom">
           <widget class="QPushButton" name="btnBug">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
            <property name="text">
             <string/>
            </property>
@@ -202,9 +199,6 @@
          </item>
          <item alignment="Qt::AlignBottom">
           <widget class="QPushButton" name="btnHelp">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
            <property name="text">
             <string/>
            </property>
