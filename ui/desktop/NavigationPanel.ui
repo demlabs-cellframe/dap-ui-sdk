@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>332</width>
-    <height>62</height>
+    <width>480</width>
+    <height>63</height>
    </rect>
   </property>
   <property name="styleSheet">
@@ -44,7 +44,7 @@
        <number>0</number>
       </property>
       <property name="leftMargin">
-       <number>7</number>
+       <number>0</number>
       </property>
       <property name="topMargin">
        <number>0</number>
@@ -57,65 +57,6 @@
       </property>
       <item>
        <widget class="QWidget" name="topMarginBtnBack" native="true"/>
-      </item>
-      <item>
-       <widget class="QWidget" name="wgtBackPanel" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QWidget" name="wgtLeftMarginBack" native="true"/>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnBack">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
       </item>
       <item>
        <widget class="QWidget" name="wgtTopPanel" native="true">
@@ -150,15 +91,75 @@
          <item>
           <widget class="QWidget" name="wgtLeftMarginTopFrame" native="true"/>
          </item>
+         <item alignment="Qt::AlignVCenter">
+          <widget class="QLabel" name="lblLeftLicense">
+           <property name="text">
+            <string>265 days left</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
          <item alignment="Qt::AlignBottom">
           <widget class="QPushButton" name="btnAccount">
            <property name="enabled">
             <bool>false</bool>
            </property>
+           <property name="text">
+            <string>Account</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>
-          <widget class="QWidget" name="wgtLeftMarginSettins" native="true"/>
+          <widget class="QWidget" name="wgtLeftMarginConnection" native="true"/>
+         </item>
+         <item alignment="Qt::AlignBottom">
+          <widget class="QPushButton" name="btnConnection">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Connection</string>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>28</width>
+             <height>28</height>
+            </size>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" name="wgtLeftMarginSetting" native="true"/>
          </item>
          <item alignment="Qt::AlignBottom">
           <widget class="QPushButton" name="btnSetting">
@@ -166,32 +167,10 @@
             <bool>false</bool>
            </property>
            <property name="text">
-            <string/>
+            <string>Settings</string>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QWidget" name="wgtLeftMarginLogout" native="true"/>
-         </item>
-         <item alignment="Qt::AlignBottom">
-          <widget class="CustomPlacementButton" name="btnLogOut">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>28</width>
-             <height>28</height>
-            </size>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -242,13 +221,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>CustomPlacementButton</class>
-   <extends>QPushButton</extends>
-   <header location="global">../libdap-qt-ui/controls/CustomPlacementButton.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

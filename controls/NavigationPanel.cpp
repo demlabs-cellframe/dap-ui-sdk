@@ -28,9 +28,7 @@ void NavigationPanel::initVariantUi(QWidget *a_widget)
 #ifdef Q_OS_ANDROID
     DefaultMultiScreen::initVariantUi(a_widget);
 #else
-    CustomPlacementButton *btnLogOut = a_widget->findChild<CustomPlacementButton*>(BTN_LOGOUT_NAME); Q_ASSERT(btnLogOut);
 
-    btnLogOut->setImagePosition(ImagePos::Right);
 
 #endif
     setState(States::Main);
