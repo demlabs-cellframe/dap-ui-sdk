@@ -82,13 +82,23 @@ initButton();
      //   this->updateAppearanceForFocus(false);
 
     });
+
+    connect(this, &CustomPlacementButton::tabFocusIn, [=]() {
+
+        this->updateAppearanceForFocus(true);
+
+    });
+    connect(this, &CustomPlacementButton::tabFocusOut, [=]() {
+
+        this->updateAppearanceForFocus(false);
+
+    });
 }
 
 void CustomPlacementButton::emitTabFocus(bool isActiv)
 {
     isActiv ? emit tabFocusIn() : emit tabFocusOut();
 }
-
 
 /** @brief Reimplemented QPushButton::setText method. Sets text property of text subcontrol.
  *  @param text Text
@@ -133,6 +143,7 @@ void CustomPlacementButton::setProperty(const QString &a_property, const QVarian
  */
 void CustomPlacementButton::updateAppearanceForFocus(bool target)
 {
+    Q_UNUSED(target);
 //    for (StyledSubcontrol *subcontrol: m_subcontrols){
 //        subcontrol->setStylesheet(target, true);
 //    }
