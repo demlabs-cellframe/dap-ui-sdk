@@ -2,14 +2,6 @@
 #include <QDebug>
 CustomLineEditBase::CustomLineEditBase(QWidget* parent):QLineEdit (parent)
 {
-    wgtMarginLeft = new QWidget(this);
-    wgtMarginLeft->setObjectName("wgtMarginLeft");
-    wgtMarginLeft->setVisible(false);
-
-    wgtMarginRight = new QWidget(this);
-    wgtMarginRight->setObjectName("wgtMarginRight");
-    wgtMarginRight->setVisible(false);
-
     spacer = new QSpacerItem(16000,10);
 
     btnControl = new QPushButton(this);
@@ -22,11 +14,9 @@ CustomLineEditBase::CustomLineEditBase(QWidget* parent):QLineEdit (parent)
     lblIcon->setVisible(false);
 
     hblLineEdit = new QHBoxLayout(this);
-    hblLineEdit->addWidget(wgtMarginLeft);
     hblLineEdit->addWidget(lblIcon);
     hblLineEdit->addItem(spacer);
     hblLineEdit->addWidget(btnControl);
-    hblLineEdit->addWidget(wgtMarginRight);
 
     hblLineEdit->setSpacing(0);
     hblLineEdit->setMargin(0);
@@ -43,16 +33,6 @@ void CustomLineEditBase::setVisibleIcon(bool &a_visible)
 void CustomLineEditBase::setVisibleButton(bool a_visible)
 {
     btnControl->setVisible(a_visible);
-}
-
-void CustomLineEditBase::setMarginLeft(bool a_visible)
-{
-    wgtMarginLeft->setVisible(a_visible);
-}
-
-void CustomLineEditBase::setMarginRight(bool a_visible)
-{
-    wgtMarginRight->setVisible(a_visible);
 }
 
 void CustomLineEditBase::setWrongState(bool a_wrong)

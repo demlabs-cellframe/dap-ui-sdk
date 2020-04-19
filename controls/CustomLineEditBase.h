@@ -20,7 +20,9 @@
 *
 *   If you do not specify these 2 lines, the widget will be exactly the same as its parent,
 *                                               and the settings blocks below will not be needed.
-*
+*   To offset the text field, use
+*                   padding-left: (width image) + margin to text field
+*                   padding-right: (width image) + margin to text field
 *   .......... Other settings as usual
 *}
 *
@@ -52,8 +54,7 @@ class CustomLineEditBase : public QLineEdit
 
     Q_PROPERTY(bool visibleIcon WRITE setVisibleIcon DESIGNABLE true)
     Q_PROPERTY(bool visibleButton WRITE setVisibleButton DESIGNABLE true)
-    Q_PROPERTY(bool marginLeft WRITE setMarginLeft DESIGNABLE true)
-    Q_PROPERTY(bool marginRight WRITE setMarginRight DESIGNABLE true)
+
 public:
     CustomLineEditBase(QWidget* parent = nullptr);
     /// Setting the error signal.
@@ -71,19 +72,12 @@ protected:
     /// Sets the visibility of the button.
     /// @param a_visible This parameter is taken from css settings.
     void setVisibleButton(bool a_visible);
-    /// Sets the widget's relevance.
-    /// @param a_visible This parameter is taken from css settings.
-    void setMarginLeft(bool a_visible);
-    /// Sets the widget's relevance.
-    /// @param a_visible This parameter is taken from css settings.
-    void setMarginRight(bool a_visible);
     ///Widget for icon
     QLabel *lblIcon;
     ///Widget for button
     QPushButton *btnControl;
     QHBoxLayout *hblLineEdit;
-    QWidget *wgtMarginLeft;
-    QWidget *wgtMarginRight;
+
     QSpacerItem *spacer;
 private:
 
