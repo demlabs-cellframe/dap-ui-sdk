@@ -17,10 +17,10 @@ public:
     void sendCmd(const QJsonObject * obj = Q_NULLPTR) override {
 
         if(obj == Q_NULLPTR) {
-            qDebug() << "Send command" << commandToString(cmd());
+            //qDebug() << "Send command" << commandToString(cmd());
         } else {
-            qDebug() << "Send command" << commandToString(cmd())
-                     << "params:"      << *obj;
+            //qDebug() << "Send command" << commandToString(cmd())
+            //         << "params:"      << *obj;
         }
         DapCmdAbstract::sendCmd(obj);
     }
