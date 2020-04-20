@@ -23,7 +23,7 @@
 #include <QTimer>
 #include "CustomComboBoxPopup.h"
 #include "CustomComboBox.h"
-
+#include <QComboBox>
 #include <QComboBox>
 #endif
 
@@ -66,9 +66,18 @@ protected:
     const QString CBB_STREAM        = "cbbStream";
     const QString CBB_NETWORK       = "cbbNetwork";
 #else
-    const QString LBL_STATUS_MESSAGE = "lblStatusMessage";
-    const QString BTN_SWITCH         = "btnSwitch";
-    const QString CBB_SERVER         = "cbbServer";
+    const QString LBL_STATUS_MESSAGE        = "lblStatusMessage";
+    const QString CBB_SERVER                = "cbbServer";
+    const QString CHB_CONNECTION            = "chbConnection";
+    const QString CHB_IP_PREQUESTED         = "chbIPrequsted";
+    const QString CHB_VIRTUAL_NETWORK       = "chbVirtualNetwork";
+    const QString BTN_BYTES                 = "btnBytes";
+    const QString BTN_PACKETS               = "btnPackets";
+    const QString LBL_BYTES_PACKETS_CAPTION = "lblBytesPacketsCaption";
+    const QString LBL_DOWNLOAD_SPEED        = "lblDownloadSpeed";
+    const QString LBL_TIME_CONNECTED        = "lblTimeConnected";
+    const QString LBL_DOWNLOAD              = "lblDownload";
+    const QString LBL_PATES_PACKETS         = "lblBytesPackets";
 #endif
 
 

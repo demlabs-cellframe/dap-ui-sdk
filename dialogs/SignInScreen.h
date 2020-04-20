@@ -48,6 +48,7 @@ signals:
 
     void transitionTo_SignUp();
 
+    void onScreenServers();
 protected:
 
     virtual void initVariantUi(QWidget *a_widget) override;

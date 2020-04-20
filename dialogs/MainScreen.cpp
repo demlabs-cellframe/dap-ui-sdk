@@ -25,11 +25,6 @@ void MainScreen::setState(ConnectionStates a_state)
 
     this->updateChildStyle  (LBL_STATUS_MESSAGE);
 
-    this->setChildProperties(BTN_SWITCH, Properties::STATE, a_state);
-    this->updateChildStyle  (BTN_SWITCH);
-
-    this->setChildProperties(CBB_SERVER, Properties::ENABLED, a_state == ConnectionStates::Disconnected);
-    this->setChildProperties(BTN_SWITCH, Properties::ENABLED, (a_state == ConnectionStates::Disconnected || a_state == ConnectionStates::Connected));
 #endif
 }
 
@@ -73,39 +68,34 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     frmInfo->setGraphicsEffect(new StyledDropShadowEffect(frmInfo));
     frmStatus->setGraphicsEffect(new StyledDropShadowEffect(frmStatus));
 #else
-    CustomComboBox *cbbServer        = a_widget->findChild<CustomComboBox*>(CBB_SERVER)        ; Q_ASSERT(cbbServer       );
-    QLabel         *lblStatusMessage = a_widget->findChild<QLabel        *>(LBL_STATUS_MESSAGE); Q_ASSERT(lblStatusMessage);
-    QPushButton    *btnSwitch        = a_widget->findChild<QPushButton   *>(BTN_SWITCH)        ; Q_ASSERT(btnSwitch       );
+    QComboBox *cbbServer            = a_widget->findChild<QComboBox*>(CBB_SERVER);          Q_ASSERT(cbbServer  );
+    QCheckBox *chbConnection        = a_widget->findChild<QCheckBox*>(CHB_CONNECTION );     Q_ASSERT(chbConnection  );
+    QCheckBox *chbIPrequsted        = a_widget->findChild<QCheckBox*>(CHB_IP_PREQUESTED);   Q_ASSERT(chbIPrequsted  );
+    QCheckBox *chbVirtualNetwork    = a_widget->findChild<QCheckBox*>(CHB_VIRTUAL_NETWORK); Q_ASSERT(chbVirtualNetwork  );
+    QPushButton *btnBytes           = a_widget->findChild<QPushButton*>(BTN_BYTES);         Q_ASSERT(btnBytes  );
+    QPushButton *btnPackets         = a_widget->findChild<QPushButton*>(BTN_PACKETS);       Q_ASSERT(btnPackets  );
+    QLabel *lblBytesPacketsCaption  = a_widget->findChild<QLabel*>(LBL_BYTES_PACKETS_CAPTION); Q_ASSERT(lblBytesPacketsCaption  );
+    QLabel *lblDownloadSpeed        = a_widget->findChild<QLabel*>(LBL_DOWNLOAD_SPEED);     Q_ASSERT(lblDownloadSpeed  );
+    QLabel *lblTimeConnected        = a_widget->findChild<QLabel*>(LBL_TIME_CONNECTED);     Q_ASSERT(lblTimeConnected  );
+    QLabel *lblDownload             = a_widget->findChild<QLabel*>(LBL_DOWNLOAD);           Q_ASSERT(lblDownload  );
+    QLabel *lblBytesPackets         = a_widget->findChild<QLabel*>(LBL_PATES_PACKETS);      Q_ASSERT(lblBytesPackets  );
+    QLabel *lblStatusMessage        = a_widget->findChild<QLabel*>(LBL_STATUS_MESSAGE);     Q_ASSERT(lblStatusMessage  );
 
-    connect(btnSwitch, &QPushButton::clicked, [this]{
-        emit connectionSwitched();
-    });
-
-
-    if (m_serversModel)
-        cbbServer->setModel(m_serversModel);
-    else
+    for(int i = 0; i<5;i++)
     {
-        m_serversModel = cbbServer->model();
-
-        for (DapServerInfo& server :DapDataLocal::me()->servers())
-            cbbServer->addItem(server.name);
-
-        connect(DapDataLocal::me(), &DapDataLocal::serverAdded, [cbbServer](const DapServerInfo& a_serverInfo){
-            cbbServer->addItem(a_serverInfo.name);
-        });
-
-        connect(DapDataLocal::me(), SIGNAL(serversCleared()), cbbServer, SLOT(clear()));
+        cbbServer->addItem(QString("Server name%1").arg(i));
     }
 
-    cbbServer->QComboBox::setCurrentText(DapDataLocal::me()->serverName());
-
-//    QIcon icon(":/pics/flag.svg");
-//    cbbServer->setItemIcon(0,icon);
-
-//    cbbServer->addItem("Natherlans");
-//    QIcon icon(":/pics/flag.svg");
-//    cbbServer->setItemIcon(0,icon);
+    connect(btnBytes,&QPushButton::clicked,[=]{
+        btnBytes->setChecked(true);
+        btnPackets->setChecked(false);
+        lblBytesPacketsCaption->setText("Bytes Received");
+    });
+    connect(btnPackets,&QPushButton::clicked,[=]{
+        btnBytes->setChecked(false);
+        btnPackets->setChecked(true);
+        lblBytesPacketsCaption->setText("Packets Received");
+    });
 
 #endif
 

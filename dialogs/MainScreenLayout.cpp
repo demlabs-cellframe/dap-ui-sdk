@@ -38,3 +38,4 @@ void MainScreenLayout::initVariantUi(QWidget *a_widget)
    //create and activate ScreenLogin
 //   m_screenLogin = activateScreen<ScreenLogin>();
 }
+
