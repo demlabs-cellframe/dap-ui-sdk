@@ -28,18 +28,43 @@ public:
     static const QString SCREEN_NAME;
     virtual QString screenName() override;
 
+public slots:
+
+    void setEmail   (const QString &a_email   );
+    void setReport(const QString &a_report);
+    void checkFieldsAndSendReport();
+
+signals:
+    void sendReportRequest();
+    void goBack();
+
+    void wrongEmail();
+    void wrongReport();
+
+    void emailEdited    (const QString &email   );
+    void reportEdited   (const QString &report);
+
+
+
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
     /// @param a_rotation Device display orientation.
     virtual void initVariantUi(QWidget *a_widget) override;
 
-    const QString LBL_STATUS_MESSAGE = "lblStatusMessage";
-    const QString BTN_SEND = "btnSend";
-    const QString EDT_EMAIL = "edtEmail";
-    const QString EDT_MESSAGE = "edtMessage";
-    const QString LBL_CAPTION = "lblCaption";
-    const QString VLT_BUG_REPORT = "vltBugReport";
+    const QString LBL_STATUS_MESSAGE    = "lblStatusMessage";
+    const QString BTN_SEND              = "btnSend";
+    const QString EDT_EMAIL             = "edtEmail";
+    const QString EDT_MESSAGE           = "edtMessage";
+    const QString LBL_CAPTION           = "lblCaption";
+    const QString VLT_BUG_REPORT        = "vltBugReport";
+
+private:
+    QString m_email;
+    QString m_report_message;
+
+    bool checkEmail();
+    bool checkReport();
 };
 
 #endif // BUGREPORTSCREEN_H
