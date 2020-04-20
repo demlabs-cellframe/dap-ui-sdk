@@ -27,9 +27,9 @@ protected:
     /// @param a_w Window GUI widget.
     /// @param a_rotation Device display orientation.
     virtual void initVariantUi(QWidget *a_widget) override;
-
 signals:
     void loginScreenTransition();
+
 };
 
 #endif // MAINSCREENLAYOUT_H

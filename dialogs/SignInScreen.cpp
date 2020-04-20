@@ -116,7 +116,8 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     QComboBox   *cbbServer              = a_widget->findChild<QComboBox     *>(CBB_SERVER   ); Q_ASSERT(cbbServer);
 
     cbbServer->addItem("Auto select");
-
+    //for test blur effect
+//    connect(btnSignIn,&QPushButton::clicked,this,&SignInScreen::onScreenServers);
 #else
     QLineEdit           *edtEmail         = a_widget->findChild<QLineEdit  *>(EDT_EMAIL_NAME   ); Q_ASSERT(edtEmail);
     QLineEdit           *edtPassword      = a_widget->findChild<QLineEdit  *>(EDT_PASSWORD_NAME ); Q_ASSERT(edtPassword);
@@ -126,6 +127,7 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     btnSignIn->setGraphicsEffect(new StyledDropShadowEffect(btnSignIn));
 
 #endif
+
 
     connect(edtEmail   , SIGNAL(textEdited(const QString&)), this, SIGNAL(emailEdited   (const QString&)));
     connect(edtPassword, SIGNAL(textEdited(const QString&)), this, SIGNAL(passwordEdited(const QString&)));
