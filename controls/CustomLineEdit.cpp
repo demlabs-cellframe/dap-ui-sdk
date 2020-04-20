@@ -7,8 +7,19 @@ CustomLineEdit::CustomLineEdit(QWidget *parent):CustomLineEditBase (parent)
         this->clear();
         setVisibleButton(false);
         Utils::setPropertyAndUpdateStyle(this, Properties::FILLED,false);
-        Utils::setPropertyAndUpdateStyle(this, Properties::ACTIVE,false);
         this->setFocus();
     });
 }
 
+void CustomLineEdit::focusOutEvent(QFocusEvent *e)
+{
+           setVisibleButton(false);
+
+    CustomLineEditBase::focusOutEvent(e);
+}
+
+void CustomLineEdit::focusInEvent(QFocusEvent *e)
+{
+    setVisibleButton(true);
+    CustomLineEditBase::focusInEvent(e);
+}
