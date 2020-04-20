@@ -80,7 +80,9 @@ class CustomLineEdit : public CustomLineEditBase
 
 public:
     CustomLineEdit(QWidget *parent = nullptr);
-
+protected:
+    void focusOutEvent(QFocusEvent *e);
+    void focusInEvent(QFocusEvent *e);
 };
 
 #endif // CUSTOMLINEEDIT_H
