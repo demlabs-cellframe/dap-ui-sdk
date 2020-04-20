@@ -14,7 +14,10 @@ namespace Utils
     int toIntValue(const QString &a_text);
 
     template <class T>
-    inline T findChild(QObject* a_object, const QString& a_objectName, T a_foundWidget = nullptr);
+    inline T findChild(QObject* a_object, const QString& a_objectName, T &a_foundObjectOUT);
+
+    template <class T>
+    inline T findChild(QObject* a_object, const QString& a_objectName);
 
     void setPropertyAndUpdateStyle(QWidget* a_widget, const QString& a_property, const QVariant& a_value = true);
     void setPropertyAndUpdateStyle(QWidget* a_widget, const char*    a_property, const QVariant& a_value = true);
@@ -22,22 +25,30 @@ namespace Utils
 };
 
 template <class T>
-inline T Utils::findChild(QObject* a_parentObj, const QString &a_objectName, T a_outFoundObject /*= nullptr*/)
+inline T Utils::findChild(QObject* a_parentObj, const QString &a_objectName)
 {
     Q_ASSERT_X(a_parentObj,  "Utils::findObjectChild", "parentObj can't be nullptr");
 
-    a_outFoundObject = a_parentObj->findChild<T>(a_objectName);
+    T l_foundObject = a_parentObj->findChild<T>(a_objectName);
 
-    if (!a_outFoundObject)
+    if (!l_foundObject)
     {
         QString errorMsg = QString("Can't find \"%1\" object in \"%2\"")
                 .arg(a_objectName)
                 .arg(a_parentObj->objectName());
+        qDebug() << errorMsg;
         qFatal(errorMsg.toLatin1().data());
     }
 
-    return a_outFoundObject;
+    return l_foundObject;
 }
+
+template <class T>
+inline T Utils::findChild(QObject* a_parentObj, const QString &a_objectName, T &a_foundObjectOUT)
+{
+    return a_foundObjectOUT = findChild<T>(a_parentObj, a_objectName);
+}
+
 
 #endif // UTILS_H
 
