@@ -197,7 +197,7 @@
        <number>0</number>
       </property>
       <item alignment="Qt::AlignLeft">
-       <widget class="QCheckBox" name="chbInfo">
+       <widget class="QCheckBox" name="chbAgree">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
