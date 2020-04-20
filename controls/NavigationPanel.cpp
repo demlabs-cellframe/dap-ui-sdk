@@ -42,15 +42,13 @@ void NavigationPanel::initVariantUi(QWidget *a_widget)
 void NavigationPanel::setState(NavigationPanel::States a_state)
 {
 #ifdef Q_OS_ANDROID
-    switch (a_state)
-    {
-        case States::Main:
-            this->activateScreen<NavigationPanelMain>();
-            break;
-        case States::Back:
-            this->activateScreen<NavigationPanelBack>();
-            break;
-    }
+
+    if (a_state == States::Main)
+        this->activateScreen<NavigationPanelMain>();
+
+    else if (a_state == States::Back)
+        this->activateScreen<NavigationPanelBack>();
+
 #else
 #endif
 }

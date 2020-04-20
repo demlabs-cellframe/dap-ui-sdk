@@ -19,6 +19,11 @@ signals:
     void goToSettings();
     void goToBugReport();
     void goToFAQ();
+
+private:
+    const QString BTN_SETTINGS = "btnSetting";
+    const QString BTN_HELP = "btnHelp";
+    const QString BTN_BUG  = "btnBug";
 };
 
 #endif // NAVIGATIONPANELMAIN_H

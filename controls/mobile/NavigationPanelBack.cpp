@@ -4,12 +4,15 @@
 #include "Utils.h"
 
 
-const QString NavigationPanelBack::SCREEN_NAME = "NavigationPanelMain";
+
+const QString NavigationPanelBack::SCREEN_NAME = "NavigationPanelBack";
 
 NavigationPanelBack::NavigationPanelBack(QWidget *parent)
     : AdaptiveScreen(parent)
 {
     this->create<Ui::NavigationPanelBack>();
+
+    AdaptiveScreen::initScreen(this);
 }
 
 QString NavigationPanelBack::screenName()
@@ -19,9 +22,7 @@ QString NavigationPanelBack::screenName()
 
 void NavigationPanelBack::initVariantUi(QWidget *a_widget)
 {
-    QPushButton* btnBack = nullptr;
-    Utils::findChild(a_widget, BTN_BACK, btnBack);
+    QPushButton* btnBack; Utils::findChild<QPushButton*>(a_widget, BTN_BACK, btnBack);
 
-
-
+    connect(btnBack, &QPushButton::clicked, this, &NavigationPanelBack::goBack);
 }
