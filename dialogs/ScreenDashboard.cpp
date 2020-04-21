@@ -79,7 +79,9 @@ void ScreenDashboard::initUi(QWidget * a_w,ScreenRotation a_rotation)
     }
 
     DapDataLocal::me()->connectComboBox(cbUpstream);
-    cbUpstream->setCurrentText( DapDataLocal::me()->serverName() );
+
+    QSettings settings;
+    cbUpstream->setCurrentText( settings.value("dsi.name").toString() );
 
     connect(cbUpstream, SIGNAL(currentTextChanged(QString)), this, SIGNAL(currentUpstreamNameChanged(QString)));
 
@@ -105,6 +107,19 @@ void ScreenDashboard::initUi(QWidget * a_w,ScreenRotation a_rotation)
     btMultirouting->hide();
     a_w->findChild<QFrame*>("lineMultirouting")->hide();
 #endif
+}
+
+void ScreenDashboard::reloadServers()
+{
+    int sepIndex = 0;
+    cbUpstream->clear();
+    for(const DapServerInfo& i: DapDataLocal::me()->servers()) {
+        cbUpstream->addItem(QIcon(DapDataLocal::me()->locationToIconPath(i.location)),
+                            i.name , QVariant::fromValue(i));
+        if (sepIndex != 0)
+            cbUpstream->insertSeparator(sepIndex*2-1);
+        sepIndex++;
+    }
 }
 
 void ScreenDashboard::authorzeIndicator(bool on)
