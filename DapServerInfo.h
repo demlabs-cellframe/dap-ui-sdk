@@ -16,6 +16,9 @@ enum class DapServerLocation : int {
     NETHERLANDS,
     RUSSIA,
     UKRAINE,
+    Netherlands,
+    Singapore,
+    Germany,
 };
 
 class DapServerInfo;
