@@ -51,13 +51,13 @@ protected:
     /// @param a_rotation Device display orientation.
     virtual void initVariantUi(QWidget *a_widget) override;
 
+    const QString BTN_CONNECTION    = "btnConnection";
 #ifdef Q_OS_ANDROID
     const QString FRM_CONNECT       = "frmConnect";
     const QString FRM_INFO          = "frmInfo";
     const QString FRM_STATUS        = "frmStatus";
     const QString BTN_CHANGE_SERVER = "btnChangeServer";
     const QString LBL_ACTUAL_SERVER = "lblActualServer";
-    const QString BTN_CONNECTION    = "btnConnection";
     const QString LBL_LOGIN_TIME    = "lblLoginTime";
     const QString LBL_TIME_CONNECT  = "lblTimeConnect";
     const QString LBL_PACKETS_REC   = "lblPacketsRec";
@@ -79,10 +79,8 @@ protected:
     const QString LBL_DOWNLOAD              = "lblDownload";
     const QString LBL_PATES_PACKETS         = "lblBytesPackets";
 #endif
-
-
 signals:
-    void connectionSwitched();
+    void disconnect();
     void serverChanged(const QString& serverName);
 
 private:

@@ -1,4 +1,5 @@
 #include "MainScreen.h"
+#include "Utils.h"
 
 
 const QString MainScreen::SCREEN_NAME = "Main";
@@ -30,6 +31,10 @@ void MainScreen::setState(ConnectionStates a_state)
 
 void MainScreen::initVariantUi(QWidget *a_widget)
 {
+    QPushButton *btnConnection; Utils::findChild(a_widget, BTN_CONNECTION, btnConnection);
+    connect(btnConnection, &QCheckBox::clicked, this, &MainScreen::disconnect);
+
+
 
 #ifdef Q_OS_ANDROID
 
@@ -38,7 +43,6 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     QFrame *frmStatus           = a_widget->findChild<QFrame        *>(FRM_STATUS);         Q_ASSERT(frmStatus);
     QPushButton *btnChangeServer = a_widget->findChild<QPushButton  *>(BTN_CHANGE_SERVER);  Q_ASSERT(btnChangeServer);
     QLabel *lblActualServer     = a_widget->findChild<QLabel        *>(LBL_ACTUAL_SERVER);  Q_ASSERT(lblActualServer);
-    QPushButton *btnConnection     = a_widget->findChild<QPushButton   *>(BTN_CONNECTION);        Q_ASSERT(btnConnection);
 
     QLabel *lblLoginTime        = a_widget->findChild<QLabel        *>(LBL_LOGIN_TIME);     Q_ASSERT(lblLoginTime);
     QLabel *lblTimeConnect      = a_widget->findChild<QLabel        *>(LBL_TIME_CONNECT);   Q_ASSERT(lblTimeConnect);
@@ -52,6 +56,9 @@ void MainScreen::initVariantUi(QWidget *a_widget)
 
     //To test appearance
     cbbAuth->setChecked(true);
+    cbbStream->setChecked(true);
+    cbbNetwork->setChecked(true);
+
     //This is done in order to remove the reaction to a click on the checkbox
     connect(cbbAuth,&QCheckBox::clicked,[=]{
         cbbAuth->setChecked(!cbbAuth->isChecked());
@@ -63,7 +70,6 @@ void MainScreen::initVariantUi(QWidget *a_widget)
         cbbNetwork->setChecked(!cbbNetwork->isChecked());
     });
 
-    connect(btnConnection, &QCheckBox::clicked, this, &MainScreen::connectionSwitched);
 
 
     //========================================================================
