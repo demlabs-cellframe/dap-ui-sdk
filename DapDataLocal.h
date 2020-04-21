@@ -35,13 +35,13 @@ public:
     void setServerTheBest(const DapServerInfo& server);
 
     DapServerInfo* currentServer();
-    void setCurrentServer(int a_serverIndex);
     void setRandomServerIfIsEmpty();
 
     QString locationToIconPath(DapServerLocation loc);
     
     QString login() const;
 public slots:
+    void setCurrentServer(int a_serverIndex);
     void setLogin(const QString &login);
 public:
 
