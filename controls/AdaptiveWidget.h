@@ -5,6 +5,8 @@
 #include <ScreenInfo.h>
 #include <QState>
 #include <QStyle>
+#include <QPushButton>
+#include "Utils.h"
 
 class AdaptiveWidget : public QStackedWidget
 {
@@ -22,6 +24,8 @@ protected:
 
     virtual void initVariantUi(QWidget * a_widget) = 0;
 
+    template<class T>
+    QPushButton* connectBtnToSignall(const QString& a_buttonName, void (T::*signal)(), QWidget* a_widget = nullptr);
 
     void setChildProperties(const QString& a_objName, const QString& a_property, const QVariant& a_value);
     void updateChildStyle(const QString& a_objName);
@@ -64,7 +68,20 @@ void AdaptiveWidget::setupWidgetForm(QWidget * a_widget)
     //TODO: delete l_uiForm after use
 }
 
+template<class T>
+QPushButton* AdaptiveWidget::connectBtnToSignall(const QString& a_buttonName, void (T::*signal)(), QWidget* a_widget /*= nullptr*/)
+{
+    if (!a_widget)
+        a_widget = this->variant();
 
+    QPushButton* button; Utils::findChild(a_widget, a_buttonName, button);
+
+    T* reciever = qobject_cast<T*>(this);
+    Q_ASSERT(reciever);
+
+    connect(button, &QPushButton::clicked, reciever, signal);
+    return button;
+}
 
 template <class T /*= QWidget*/>
 inline QList<T*> AdaptiveWidget::getTheSameWidgets(const QString& a_objName)
