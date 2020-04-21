@@ -32,6 +32,7 @@ public:
 protected:
     void enterEvent(QEvent *event);
     void leaveEvent(QEvent *event);
+    void wheelEvent(QWheelEvent *e);
 
     void hidePopup();
 
