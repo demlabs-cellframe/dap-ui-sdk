@@ -237,21 +237,21 @@ void CustomPlacementButton::setObjectName(const QString &name)
 }
 
 //If there is ALIGNMENT_NONE or some erroneous value, the widgets will be invisible.
-void CustomPlacementButton::setAlignment(QString a_alignment)
+void CustomPlacementButton::setAlignment(Qt::Alignment a_alignment)
 {
-    if(a_alignment == "AlignLeft")
+    if(a_alignment == Qt::AlignLeft)
     {
         m_wgtLeftSpacing.setVisible(false);
         m_wgtRightSpacing.setVisible(true);
         return;
     }
-    if(a_alignment == "AlignRight")
+    if(a_alignment == Qt::AlignRight)
     {
         m_wgtLeftSpacing.setVisible(true);
         m_wgtRightSpacing.setVisible(false);
         return;
     }
-    if(a_alignment == "AlignCenter")
+    if(a_alignment == Qt::AlignHCenter)
     {
         m_wgtLeftSpacing.setVisible(true);
         m_wgtRightSpacing.setVisible(true);

@@ -59,7 +59,7 @@ class CustomPlacementButton : public CustomButtonAbstract
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString alignment WRITE setAlignment DESIGNABLE true)
+    Q_PROPERTY(Qt::Alignment alignment WRITE setAlignment DESIGNABLE true)
 
     void initButton();
 public:
@@ -93,7 +93,7 @@ public:
     void setGraphicsEffect(StyledDropShadowEffect *a_effect);
     ///Makes widgets visible on the sides
     /// @param a_spacer If there is ALIGNMENT_NONE or some erroneous value, the widgets will be invisible.
-    void setAlignment(QString a_alignment);
+    void setAlignment(Qt::Alignment a_alignment);
 
     void updateAppearanceForFocus(bool);
 
