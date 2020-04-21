@@ -5,6 +5,11 @@
 #include "CustomPlacementButton.h"
 #include "DefaultMultiScreen.h"
 
+#ifdef Q_OS_ANDROID
+    #include "NavigationPanelBack.h"
+    #include "NavigationPanelMain.h"
+#endif
+
 class NavigationPanel
 #ifdef Q_OS_ANDROID
         : public DefaultMultiScreen
@@ -23,10 +28,12 @@ public:
 signals:
     void logout();
 
+#ifndef Q_OS_ANDROID
     void goToBugReport();
     void goToFAQ();
-    void goBack();
     void goToSettings();
+    void goBack();
+#endif
 
 public slots:
     void setState(States a_state);
