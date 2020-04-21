@@ -12,14 +12,17 @@
 #include "DapDataLocal.h"
 
 DapDataLocal::picturesMap DapDataLocal::m_pictruePath = {
-    {DapServerLocation::ENGLAND, ":/country/Flag_uk.png"},
-    {DapServerLocation::FRANCE, ":/country/Flag_fr.png"},
-    {DapServerLocation::GERMANY, ":/country/Flag_de.png"},
-    {DapServerLocation::USA, ":/country/Flag_us.png"},
-    {DapServerLocation::NETHERLANDS, ":/country/Flag_nl.png"},
-    {DapServerLocation::RUSSIA, ":/country/Flag_ru.png"},
-    {DapServerLocation::UKRAINE, ":/country/Flag_ua.png"},
-    {DapServerLocation::UNKNOWN, ":/country/ussr.png"},
+    {DapServerLocation::ENGLAND, ":/country/GB.png"},
+    {DapServerLocation::FRANCE, ":/country/FR.png"},
+    {DapServerLocation::GERMANY, ":/country/DE.png"},
+    {DapServerLocation::USA, ":/country/US.png"},
+    {DapServerLocation::NETHERLANDS, ":/country/NL.png"},
+    {DapServerLocation::RUSSIA, ":/country/RU.png"},
+    {DapServerLocation::UKRAINE, ":/country/UA.png"},
+    {DapServerLocation::UNKNOWN, ":/country/Flag_gf.png"},
+    {DapServerLocation::Netherlands, ":/country/NL.png"},
+    {DapServerLocation::Singapore, ":/country/SG.png"},
+    {DapServerLocation::Germany, ":/country/DE.png"},
 };
 
 DapDataLocal *DapDataLocal::_me = Q_NULLPTR;
