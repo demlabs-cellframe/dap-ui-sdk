@@ -87,6 +87,11 @@ void ServersComboBox::leaveEvent(QEvent *event)
         setStyleSheet(m_downArrowStyleSheet.normal);
 }
 
+void ServersComboBox::wheelEvent(QWheelEvent *e)
+{
+
+}
+
 /** @brief Reimplemented QComboBox::hidePopup is sent to the widget when the popup is closing.
  *  @param event
  */
