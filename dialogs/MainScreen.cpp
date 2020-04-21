@@ -38,7 +38,7 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     QFrame *frmStatus           = a_widget->findChild<QFrame        *>(FRM_STATUS);         Q_ASSERT(frmStatus);
     QPushButton *btnChangeServer = a_widget->findChild<QPushButton  *>(BTN_CHANGE_SERVER);  Q_ASSERT(btnChangeServer);
     QLabel *lblActualServer     = a_widget->findChild<QLabel        *>(LBL_ACTUAL_SERVER);  Q_ASSERT(lblActualServer);
-    QPushButton *btnConnect     = a_widget->findChild<QPushButton   *>(BTN_CONNECT);        Q_ASSERT(btnConnect);
+    QPushButton *btnConnection     = a_widget->findChild<QPushButton   *>(BTN_CONNECTION);        Q_ASSERT(btnConnection);
 
     QLabel *lblLoginTime        = a_widget->findChild<QLabel        *>(LBL_LOGIN_TIME);     Q_ASSERT(lblLoginTime);
     QLabel *lblTimeConnect      = a_widget->findChild<QLabel        *>(LBL_TIME_CONNECT);   Q_ASSERT(lblTimeConnect);
@@ -62,6 +62,10 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     connect(cbbNetwork,&QCheckBox::clicked,[=]{
         cbbNetwork->setChecked(!cbbNetwork->isChecked());
     });
+
+    connect(btnConnection, &QCheckBox::clicked, this, &MainScreen::connectionSwitched);
+
+
     //========================================================================
     btnChangeServer->setGraphicsEffect(new StyledDropShadowEffect(btnChangeServer));
     frmConnect->setGraphicsEffect(new StyledDropShadowEffect(frmConnect));

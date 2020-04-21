@@ -38,9 +38,6 @@ FORMS    +=  \
     $$PWD/ui/dlg_settings.ui \
     $$PWD/ui/dlg_about.ui \
     $$PWD/ui/forgot_password_desktop.ui \
-    $$PWD/ui/mobile/MainScreen.ui \
-    $$PWD/ui/mobile/SignInScreen.ui \
-    $$PWD/ui/mobile/StartScreen.ui \
     $$PWD/ui/sign_up_desktop.ui \
     $$PWD/ui/sign_up_desktop_small.ui \
     $$PWD/ui/sign_up_desktop_big.ui \

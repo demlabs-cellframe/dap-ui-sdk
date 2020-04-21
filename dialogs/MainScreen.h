@@ -57,7 +57,7 @@ protected:
     const QString FRM_STATUS        = "frmStatus";
     const QString BTN_CHANGE_SERVER = "btnChangeServer";
     const QString LBL_ACTUAL_SERVER = "lblActualServer";
-    const QString BTN_CONNECT       = "btnConnect";
+    const QString BTN_CONNECTION    = "btnConnection";
     const QString LBL_LOGIN_TIME    = "lblLoginTime";
     const QString LBL_TIME_CONNECT  = "lblTimeConnect";
     const QString LBL_PACKETS_REC   = "lblPacketsRec";

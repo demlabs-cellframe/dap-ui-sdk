@@ -82,7 +82,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnConnect">
+       <widget class="QPushButton" name="btnConnection">
         <property name="text">
          <string>DISCONNECT</string>
         </property>
