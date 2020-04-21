@@ -344,6 +344,9 @@
       </property>
       <item>
        <widget class="QComboBox" name="cbbServer">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="currentText">
          <string/>
         </property>

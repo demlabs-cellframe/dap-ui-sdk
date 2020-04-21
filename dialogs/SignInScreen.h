@@ -38,6 +38,8 @@ public slots:
     void checkFieldsAndSignIn();
 
 signals:
+    void serverChanged(int serverName);
+
     void emailEdited   (const QString &email   );
     void wrongEmail();
 
@@ -56,6 +58,9 @@ protected:
 private:
     bool checkPassword();
     bool checkEmail();
+
+    QAbstractItemModel *m_serversModel = nullptr;
+
 
     void setValidationStateForEdit(const QString& a_editName, const QString& a_errorLabelName, bool a_valid = true);
     QString buttonText(ConnectionStates a_connectionState);

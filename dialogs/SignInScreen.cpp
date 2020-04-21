@@ -1,5 +1,7 @@
 #include "SignInScreen.h"
 
+#include "DapDataLocal.h"
+
 
 const QString SignInScreen::SCREEN_NAME = "SignIn";
 
@@ -95,40 +97,47 @@ void SignInScreen::setErrorMessage(const QString &a_errorMsg)
 
 void SignInScreen::checkFieldsAndSignIn()
 {
-    qDebug() << "checkFieldsAndSignIn";
-
-    bool emailIsValid    = checkEmail();
-    bool passwordIsValid = checkPassword();
-
-    if (emailIsValid && passwordIsValid)
+    if (checkEmail() && checkPassword())
         emit this->signInRequest();
 }
 
 void SignInScreen::initVariantUi(QWidget *a_widget)
 {
-    QPushButton             *btnSignIn      = a_widget->findChild<QPushButton*>(BTN_SIGN_IN_NAME  );      Q_ASSERT(btnSignIn);
-    QLabel                  *lblEmailError  = a_widget->findChild<QLabel     *>(LBL_EMAIL_ERROR   );      Q_ASSERT(lblEmailError);
-    ClickableLabel          *lblSignUp      = a_widget->findChild<ClickableLabel*>(LBL_SIGN_UP );           Q_ASSERT(lblSignUp);
+    QPushButton         *btnSignIn      = a_widget->findChild<QPushButton*>(BTN_SIGN_IN_NAME  );      Q_ASSERT(btnSignIn);
+    QLabel              *lblEmailError  = a_widget->findChild<QLabel     *>(LBL_EMAIL_ERROR   );      Q_ASSERT(lblEmailError);
+    ClickableLabel      *lblSignUp      = a_widget->findChild<ClickableLabel*>(LBL_SIGN_UP );         Q_ASSERT(lblSignUp);
+    CustomButtonComboBox *cbbServer  ; Utils::findChild(a_widget, CBB_SERVER       , cbbServer  );
+    QLineEdit            *edtEmail   ; Utils::findChild(a_widget, EDT_EMAIL_NAME   , edtEmail   );
+    QLineEdit            *edtPassword; Utils::findChild(a_widget, EDT_PASSWORD_NAME, edtPassword);
+
+    if (!m_serversModel)
+    {
+        m_serversModel = cbbServer->model();
+
+        for (DapServerInfo& server :DapDataLocal::me()->servers())
+            cbbServer->addItem(server.name);
+
+        connect(DapDataLocal::me(), &DapDataLocal::serverAdded, [cbbServer](const DapServerInfo& a_serverInfo){
+            cbbServer->addItem(a_serverInfo.name);
+        });
+
+        connect(DapDataLocal::me(), SIGNAL(serversCleared()), cbbServer, SLOT(clear()));
+    }
+    else
+        cbbServer->setModel(m_serversModel);
+
+
+    cbbServer->QComboBox::setCurrentText(DapDataLocal::me()->serverName());
+
 #ifdef Q_OS_ANDROID
-    CustomLineEdit          *edtEmail       = a_widget->findChild<CustomLineEdit*>("edtEmail"   );      Q_ASSERT(edtEmail);
-    PasswordLineEdit        *edtPassword    = a_widget->findChild<PasswordLineEdit*>(EDT_PASSWORD_NAME ); Q_ASSERT(edtPassword);
-
-    QComboBox   *cbbServer              = a_widget->findChild<QComboBox     *>(CBB_SERVER   ); Q_ASSERT(cbbServer);
-
-    cbbServer->addItem("Auto select");
     //for test blur effect
 //    connect(btnSignIn,&QPushButton::clicked,this,&SignInScreen::onScreenServers);
 #else
-    QLineEdit           *edtEmail         = a_widget->findChild<QLineEdit  *>(EDT_EMAIL_NAME   ); Q_ASSERT(edtEmail);
-    QLineEdit           *edtPassword      = a_widget->findChild<QLineEdit  *>(EDT_PASSWORD_NAME ); Q_ASSERT(edtPassword);
-
-
     QLabel      *lblPasswordError = a_widget->findChild<QLabel     *>(LBL_PASSWORD_ERROR); Q_ASSERT(lblPasswordError);
     btnSignIn->setGraphicsEffect(new StyledDropShadowEffect(btnSignIn));
-
 #endif
 
-
+    connect(cbbServer  , SIGNAL(activated(int))            , this, SIGNAL(serverChanged(int)));
     connect(edtEmail   , SIGNAL(textEdited(const QString&)), this, SIGNAL(emailEdited   (const QString&)));
     connect(edtPassword, SIGNAL(textEdited(const QString&)), this, SIGNAL(passwordEdited(const QString&)));
     connect(btnSignIn  , SIGNAL(clicked())                 , this, SLOT  (checkFieldsAndSignIn()));
