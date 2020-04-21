@@ -254,7 +254,7 @@
              </sizepolicy>
             </property>
             <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
+             <enum>Qt::NoFocus</enum>
             </property>
             <property name="contextMenuPolicy">
              <enum>Qt::NoContextMenu</enum>
