@@ -235,7 +235,7 @@
          <item row="1" column="1">
           <widget class="QLabel" name="lblDownloadSpeed">
            <property name="text">
-            <string>10205 Mbps</string>
+            <string>... Mbps</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -252,7 +252,7 @@
          <item row="2" column="1">
           <widget class="QLabel" name="lblDownload">
            <property name="text">
-            <string>20 896 Mb</string>
+            <string>... Mb</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -269,7 +269,7 @@
          <item row="3" column="1">
           <widget class="QLabel" name="lblBytesPackets">
            <property name="text">
-            <string>4 086</string>
+            <string>...</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -286,7 +286,7 @@
          <item row="4" column="1">
           <widget class="QLabel" name="lblTimeConnected">
            <property name="text">
-            <string>146:7:27</string>
+            <string>...</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

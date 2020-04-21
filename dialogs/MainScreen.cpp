@@ -91,6 +91,10 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     QLabel *lblBytesPackets         = a_widget->findChild<QLabel*>(LBL_PATES_PACKETS);      Q_ASSERT(lblBytesPackets  );
     QLabel *lblStatusMessage        = a_widget->findChild<QLabel*>(LBL_STATUS_MESSAGE);     Q_ASSERT(lblStatusMessage  );
 
+    chbConnection->setChecked(true);
+    chbIPrequsted->setChecked(true);
+    chbVirtualNetwork->setChecked(true);
+
     for(int i = 0; i<5;i++)
     {
         cbbServer->addItem(QString("Server name%1").arg(i));

@@ -30,6 +30,10 @@ protected:
 signals:
     void loginScreenTransition();
 
+    void goToSettings();
+    void goToBugReport();
+    void goToFAQ();
+
 };
 
 #endif // MAINSCREENLAYOUT_H

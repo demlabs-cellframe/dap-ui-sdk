@@ -132,9 +132,6 @@
          </item>
          <item alignment="Qt::AlignBottom">
           <widget class="QPushButton" name="btnConnection">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -162,10 +159,7 @@
           <widget class="QWidget" name="wgtLeftMarginSetting" native="true"/>
          </item>
          <item alignment="Qt::AlignBottom">
-          <widget class="QPushButton" name="btnSetting">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
+          <widget class="QPushButton" name="btnSettings">
            <property name="text">
             <string>Settings</string>
            </property>

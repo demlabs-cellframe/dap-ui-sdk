@@ -43,6 +43,7 @@ private:
 #ifndef Q_OS_ANDROID
     const QString BTN_LOGOUT_NAME = "btnLogOut";
     const QString BTN_BUG  = "btnBug";
+    const QString BTN_SETTINGS = "btnSettings";
     const QString BTN_HELP = "btnHelp";
 #endif
 

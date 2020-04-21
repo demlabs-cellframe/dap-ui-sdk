@@ -56,14 +56,14 @@
        <widget class="QWidget" name="wgtMarginLeft" native="true"/>
       </item>
       <item>
-       <widget class="QPushButton" name="btnSetting">
+       <widget class="QPushButton" name="btnSettings">
         <property name="text">
          <string/>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="wgtRightMarginBtnSetting" native="true"/>
+       <widget class="QWidget" name="wgtRightMarginbtnSettings" native="true"/>
       </item>
       <item>
        <widget class="QLabel" name="lblLicense">

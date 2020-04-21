@@ -19,29 +19,25 @@ NavigationPanel::NavigationPanel(QWidget *parent)
     : AdaptiveWidget(parent)
 {
     this->create<Ui::NavigationPanel>();
+    setState(States::Main);
 }
 
 #endif
 
 void NavigationPanel::initVariantUi(QWidget *a_widget)
 {
-#ifdef Q_OS_ANDROID
+#ifdef ANDROID
     DefaultMultiScreen::initVariantUi(a_widget);
 #else
-
-    QPushButton *btnBug = Utils::findChild<QPushButton*>(a_widget, BTN_BUG );
-    QPushButton *btnHelp= Utils::findChild<QPushButton*>(a_widget, BTN_HELP);
-
-    this->connect(btnBug , &QPushButton::clicked, this, &NavigationPanel::goToBugReport);
-    this->connect(btnHelp, &QPushButton::clicked, this, &NavigationPanel::goToFAQ      );
-
+    this->connectBtnToSignall(BTN_BUG     , &NavigationPanel::goToBugReport, a_widget);
+    this->connectBtnToSignall(BTN_HELP    , &NavigationPanel::goToFAQ      , a_widget);
+    this->connectBtnToSignall(BTN_SETTINGS, &NavigationPanel::goToSettings , a_widget);
 #endif
-    setState(States::Main);
 }
 
 void NavigationPanel::setState(NavigationPanel::States a_state)
 {
-#ifdef Q_OS_ANDROID
+#ifdef ANDROID
 
     if (a_state == States::Main)
         this->activateScreen<NavigationPanelMain>();

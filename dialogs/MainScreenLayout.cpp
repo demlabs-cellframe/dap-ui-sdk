@@ -35,6 +35,14 @@ NavigationPanel *MainScreenLayout::findNavigationPanel(QWidget* a_widget /*= nul
 */
 void MainScreenLayout::initVariantUi(QWidget *a_widget)
 {
-   this->initChangingWidget(a_widget);
+    this->initChangingWidget(a_widget);
+
+    NavigationPanel* panel = findNavigationPanel(a_widget);
+
+#ifndef ANDROID
+    connect(panel, &NavigationPanel::goToSettings , this, &MainScreenLayout::goToSettings);
+    connect(panel, &NavigationPanel::goToBugReport, this, &MainScreenLayout::goToBugReport);
+    connect(panel, &NavigationPanel::goToFAQ      , this, &MainScreenLayout::goToFAQ);
+#endif
 }
 
