@@ -9,6 +9,8 @@ BugReportScreen::BugReportScreen(QWidget *a_parent)
 
     connect(this, SIGNAL(emailEdited    (const QString &)), SLOT(setEmail   (const QString &)));
     connect(this, SIGNAL(reportEdited   (const QString &)), SLOT(setReport  (const QString &)));
+
+    AdaptiveScreen::initScreen(this);
 }
 
 QString BugReportScreen::screenName()

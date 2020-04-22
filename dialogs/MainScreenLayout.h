@@ -34,6 +34,7 @@ signals:
     void goToBugReport();
     void goToFAQ();
 
+    void goBack();
 };
 
 #endif // MAINSCREENLAYOUT_H
