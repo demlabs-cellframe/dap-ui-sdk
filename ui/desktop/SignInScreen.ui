@@ -145,7 +145,7 @@
    <item>
     <widget class="QLabel" name="lblForgetPass">
      <property name="text">
-      <string>Forget password?</string>
+      <string>Forgot password?</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -210,14 +210,14 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>ComboBox</class>
+   <extends>QComboBox</extends>
+   <header>ComboBox.h</header>
+  </customwidget>
+  <customwidget>
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
    <header>ClickableLabel.h</header>
-  </customwidget>
-  <customwidget>
-   <class>ComboBox</class>
-   <extends>QComboBox</extends>
-   <header location="global">ComboBox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
