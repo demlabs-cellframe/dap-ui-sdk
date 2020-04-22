@@ -83,6 +83,9 @@ void DapDataLocal::parseXML(const QString& a_fname)
                 }else if( sr->name() == "network-default"){
                     m_networkDefault = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
+                }else if( sr->name() == "sign_up"){
+                    urlSignUp = sr->readElementText();
+                    qInfo() << "url for sign up: " << urlSignUp;
                 }else{
                     qDebug() << "[DL] Inside tag 'data' unknown tag "<<sr->name();
                     sr->skipCurrentElement();
