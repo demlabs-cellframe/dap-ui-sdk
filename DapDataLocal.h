@@ -22,6 +22,7 @@ protected:
 
     QList<QString> m_cdbServersList;
     QString     m_networkDefault;
+    QString urlSignUp;
 
 public:
     using picturesMap = QMap<DapServerLocation, QString>;
@@ -47,6 +48,7 @@ public:
 
     const QList<QString> &cdbServersList() { return  m_cdbServersList; }
     const QString & networkDefault() { return  m_networkDefault; }
+    const QString & getUrlForSignUp() { return  urlSignUp; }
 
     void connectComboBox(QObject *a_comboBox);
 
