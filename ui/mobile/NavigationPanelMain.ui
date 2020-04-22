@@ -68,7 +68,7 @@
       <item>
        <widget class="QLabel" name="lblLicense">
         <property name="text">
-         <string>265 days left</string>
+         <string/>
         </property>
        </widget>
       </item>

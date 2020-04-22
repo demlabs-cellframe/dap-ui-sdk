@@ -94,7 +94,7 @@
          <item alignment="Qt::AlignVCenter">
           <widget class="QLabel" name="lblLeftLicense">
            <property name="text">
-            <string>265 days left</string>
+            <string> </string>
            </property>
            <property name="alignment">
             <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>

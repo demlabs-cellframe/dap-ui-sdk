@@ -107,10 +107,9 @@ android {
         $$PWD/../os/android/src/com/demlabs/dapchain/DapChainVpnService.java \
         $$PWD/../os/android/src/com/demlabs/dapchain/DapChainVpnServiceNative.java \
         $$PWD/../os/android/gradlew.bat \
-        $$PWD/../os/android/AndroidManifest.xml
 
 
-        ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../os/android
+#        ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../os/android
         #QT += androidextras
         #ANDROID_ETRA_LIBS+= $$PWD/../../libDapClient/android/arm/lib/libssl.so
 

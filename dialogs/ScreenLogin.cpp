@@ -103,7 +103,9 @@ void ScreenLogin::initUi(QWidget * a_w,ScreenRotation a_rotation)
         }
         else
         {
+            QSettings settings;
             DapServerInfo dsi = cbUpstream->currentData().value<DapServerInfo>();
+            settings.setValue("dsi.name", dsi.name);
             emit reqConnect(dsi, edMail->text(), edPassword->text());
         }
     });
