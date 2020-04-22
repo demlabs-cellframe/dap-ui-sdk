@@ -25,8 +25,11 @@ public:
 
 protected:
 
-    void showEvent(QShowEvent *event) override;
-    void hideEvent(QHideEvent *event) override;
+    virtual void showEvent(QShowEvent *event) override;
+    virtual void hideEvent(QHideEvent *event) override;
+
+    virtual void mousePressEvent(QMouseEvent *event);
+
     /// Setting a parameter for the BlurEffect.
     /// @param a_blureRadius.
     void setBlurRadius(int &a_blurRadius);
@@ -34,7 +37,13 @@ protected:
     /// @param a_opocity.
     void setOpacity(qreal &a_opacity);
 
+signals:
+    void clicked();
+
 private:
+    bool acceptBlurEffect();
+
+    float m_blurRadius = 0.0;
     QGraphicsBlurEffect* m_blurEffect = nullptr;
 
 };
