@@ -29,7 +29,7 @@ class ScreenDashboard : public DapUiScreen
     int m_sceneHeight;
     Schedules schedules;
     /// Pointer to the drop-down list of available servers "Servers".
-    ServersComboBox *cbUpstream {nullptr};
+
     /// Flag multirounted state.
     bool        m_multiroutingState{false};
     /// Graphics styles.
@@ -69,6 +69,8 @@ public:
     QGraphicsScene* getScene() {return m_scene;}
     int getSceneWidth() {return m_sceneWidth;}
     int getSceneHeight() {return m_sceneHeight;}
+
+    ServersComboBox *cbUpstream {nullptr};
     
     /// Add styles to the graphic element.
     /// @param widget Graphic element.
@@ -89,6 +91,8 @@ public slots:
     /// Stop calculators for calculating the speed of sent/received
     /// data and calculating the total connection time.
     void stopCalculationTimers();
+
+    void reloadServers();
     
 private slots:
     /// Start calculation of connection data.
