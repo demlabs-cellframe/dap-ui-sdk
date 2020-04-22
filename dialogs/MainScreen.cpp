@@ -112,27 +112,21 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     });
 
     connect(this, &MainScreen::setChbConnection, [=]{
-        qDebug() << "444444444444 setChbConnection";
         chbConnection->setChecked(true);
     });
     connect(this, &MainScreen::setChbNotConnection, [=]{
-        qDebug() << "444444444444 setChbConnection - not";
         chbConnection->setChecked(false);
     });
     connect(this, &MainScreen::setChbIpRequest, [=]{
-        qDebug() << "444444444444 setChbIpRequest";
         chbIPrequsted->setChecked(true);
     });
     connect(this, &MainScreen::setChbNotIpRequest, [=]{
-        qDebug() << "444444444444 setChbIpRequest - not";
         chbIPrequsted->setChecked(false);
     });
     connect(this, &MainScreen::setChbVirtualNetwork, [=]{
-        qDebug() << "444444444444 setChbVirtualNetwork";
         chbVirtualNetwork->setChecked(true);
     });
     connect(this, &MainScreen::setChbNotVirtualNetwork, [=]{
-        qDebug() << "444444444444 setChbVirtualNetwork - not";
         chbVirtualNetwork->setChecked(false);
     });
 
