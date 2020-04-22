@@ -6,12 +6,28 @@ BugReportScreen::BugReportScreen(QWidget *a_parent)
     : AdaptiveScreen(a_parent)
 {
     create<Ui::BugReportScreen>();
+
+    connect(this, SIGNAL(emailEdited    (const QString &)), SLOT(setEmail   (const QString &)));
+    connect(this, SIGNAL(reportEdited   (const QString &)), SLOT(setReport  (const QString &)));
 }
 
 QString BugReportScreen::screenName()
 {
     return BugReportScreen::SCREEN_NAME;
 }
+
+void BugReportScreen::setEmail(const QString &a_email)
+{
+    setChildProperties(EDT_EMAIL, "text", a_email);
+    m_email = a_email;
+}
+
+void BugReportScreen::setReport(const QString &a_report)
+{
+    setChildProperties(EDT_MESSAGE, "text", a_report);
+    m_report_message = a_report;
+}
+
 
 void BugReportScreen::initVariantUi(QWidget *a_widget)
 {
@@ -44,10 +60,80 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
 
     edtMessage->setPlaceholderText("Please describe the details of problem you faced. What actions did you take and what happened");
 
-    connect(btnSend,&QPushButton::clicked,[=]{
+    connect(this, &BugReportScreen::wrongEmail, [=](){
+            Utils::setPropertyAndUpdateStyle(edtEmail, Properties::ERROR, true);
+        });
+    connect(this, &BugReportScreen::wrongReport, [=](){
+            Utils::setPropertyAndUpdateStyle(edtMessage, Properties::ERROR, true);
+        });
+
+    connect(edtEmail, &QLineEdit::textChanged, [=](){
+            Utils::setPropertyAndUpdateStyle(edtEmail, Properties::ERROR, false);
+        });
+    connect(edtMessage, &CustomLineHeightTextEdit::textChanged, [=](){
+            emit this->reportEdited(edtMessage->toPlainText());
+            Utils::setPropertyAndUpdateStyle(edtMessage, Properties::ERROR, false);
+        });
+    connect(this, &BugReportScreen::sendReportRequest, [=](){
         edtEmail->setVisible(false);
         edtMessage->setVisible(false);
         lblStatusMessage->setVisible(true);
         btnSend->setText("Back");
     });
+    connect(this, &BugReportScreen::goBack, [=](){
+        edtEmail->clear();
+        setEmail("");
+        edtEmail->setVisible(true);
+        edtMessage->clear();
+        edtMessage->setPlaceholderText("Please describe the details of problem you faced. What actions did you take and what happened");
+        edtMessage->setVisible(true);
+        lblStatusMessage->setVisible(false);
+        btnSend->setText("Send");
+    });
+
+
+    connect(btnSend, &QPushButton::clicked,[=](){
+        if (btnSend->text() == "Send")
+            checkFieldsAndSendReport();
+        else if (btnSend->text() == "Back")
+            emit this->goBack();
+    });
+
+    connect(edtEmail,   SIGNAL(textEdited(QString)),    this, SIGNAL(emailEdited(QString))  );
+
 }
+
+bool BugReportScreen::checkEmail()
+{
+    qDebug() << m_email;
+    if (m_email.isEmpty() || m_email.contains(' ') || !m_email.contains('@'))
+    {
+        emit this->wrongEmail();
+        return false;
+    }
+    else
+        return true;
+}
+
+bool BugReportScreen::checkReport()
+{
+    if (m_report_message.isEmpty())
+    {
+        emit this->wrongReport();
+        return false;
+    }
+    else
+        return true;
+}
+
+void BugReportScreen::checkFieldsAndSendReport()
+{
+
+    bool emailIsValid   = checkEmail();
+    bool reportIsValid  = checkReport();
+
+    qDebug() << "checkFieldsAndSendReport" << emailIsValid << reportIsValid;
+    if (emailIsValid && reportIsValid)
+        emit this->sendReportRequest();
+}
+
