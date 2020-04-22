@@ -25,7 +25,7 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 #pragma once
 #include <QNetworkConfigurationManager>
 #include <QNetworkReply>
-
+#include <QDebug>
 using HttpRequestHeader = QPair<const QString, const QString>;
 
 class DapConnectClient : public QObject
