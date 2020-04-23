@@ -10,10 +10,10 @@
 CustomPlacementButton::CustomPlacementButton(QWidget *a_parent)
     :CustomButtonAbstract (a_parent),
     m_layout        (new QHBoxLayout(this)),
-    m_lbLeftSpacing (this),
+    m_wgtLeftSpacing (this),
     m_lbImage       (this),
     m_lbText        (this),
-    m_lbRightSpacing(this)
+    m_wgtRightSpacing(this)
 {
 initButton();
 }
@@ -21,10 +21,10 @@ initButton();
     CustomPlacementButton::CustomPlacementButton(ImagePos a_pos, QWidget *a_parent)
         :CustomButtonAbstract (a_parent),
         m_layout        (new QHBoxLayout(this)),
-        m_lbLeftSpacing (this),
+        m_wgtLeftSpacing (this),
         m_lbImage       (this),
         m_lbText        (this),
-        m_lbRightSpacing(this)
+        m_wgtRightSpacing(this)
     {
         initButton();
         setImagePosition( a_pos);
@@ -32,14 +32,14 @@ initButton();
 
     void CustomPlacementButton::initButton()
     {
-        m_lbLeftSpacing .setObjectName("leftSpacing");
+        m_wgtLeftSpacing .setObjectName("leftSpacing");
         m_lbImage       .setObjectName("image");
         m_lbText        .setObjectName("text");
-        m_lbRightSpacing.setObjectName("rightSpacing");
+        m_wgtRightSpacing.setObjectName("rightSpacing");
 
 
-        m_lbRightSpacing.setVisible(false);
-        m_lbLeftSpacing.setVisible(false);
+        m_wgtLeftSpacing.setVisible(false);
+        m_wgtRightSpacing.setVisible(false);
 
         m_subcontrols.append(&m_lbImage);
         m_subcontrols.append(&m_lbText);
@@ -50,11 +50,11 @@ initButton();
         m_layout->setSpacing(0);
 
         //Setup spacing setSizePolicy
-        m_lbLeftSpacing .setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        m_lbRightSpacing.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        m_wgtLeftSpacing .setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        m_wgtRightSpacing.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
         //Adding subcontrols to layout
-        m_layout->addWidget(&m_lbLeftSpacing);
+        m_layout->addWidget(&m_wgtLeftSpacing);
         for (QLabel *subcontrol: m_subcontrols)
         {
             // Set up subcontroll ScaledContents:
@@ -63,7 +63,7 @@ initButton();
 
             CustomPlacementButton::setWidgetState(subcontrol);
         }
-        m_layout->addWidget(&m_lbRightSpacing);
+        m_layout->addWidget(&m_wgtRightSpacing);
 
         setLayout(m_layout);
 
@@ -129,14 +129,14 @@ void CustomPlacementButton::setProperty(const QString &a_property, const QVarian
     if (this->property(property) == a_value)
         return;
 
-    Utils::setPropertyAndUpdateStyle(&m_lbLeftSpacing, property, a_value);
+    Utils::setPropertyAndUpdateStyle(&m_wgtRightSpacing, property, a_value);
 
     for (QWidget* subcontrol: m_subcontrols)
     {
         Utils::setPropertyAndUpdateStyle(subcontrol, property, a_value);
     }
 
-    Utils::setPropertyAndUpdateStyle(&m_lbRightSpacing, property, a_value);
+    Utils::setPropertyAndUpdateStyle(&m_wgtRightSpacing, property, a_value);
 }
 
 /** @brief Updates appearance of image and text
@@ -237,29 +237,29 @@ void CustomPlacementButton::setObjectName(const QString &name)
 }
 
 //If there is ALIGNMENT_NONE or some erroneous value, the widgets will be invisible.
-void CustomPlacementButton::setStateEdge(const QString &a_spacer)
+void CustomPlacementButton::setAlignment(Qt::Alignment a_alignment)
 {
-    if(a_spacer == STATE_LEFT_EDGE)
+    if(a_alignment == Qt::AlignLeft)
     {
-        m_lbLeftSpacing.setVisible(true);
-        m_lbRightSpacing.setVisible(false);
+        m_wgtLeftSpacing.setVisible(false);
+        m_wgtRightSpacing.setVisible(true);
         return;
     }
-    if(a_spacer == STATE_RIGHT_EDGE)
+    if(a_alignment == Qt::AlignRight)
     {
-        m_lbLeftSpacing.setVisible(false);
-        m_lbRightSpacing.setVisible(true);
+        m_wgtLeftSpacing.setVisible(true);
+        m_wgtRightSpacing.setVisible(false);
         return;
     }
-    if(a_spacer == STATE_BOTH_EDGE)
+    if(a_alignment == Qt::AlignHCenter)
     {
-        m_lbLeftSpacing.setVisible(true);
-        m_lbRightSpacing.setVisible(true);
+        m_wgtLeftSpacing.setVisible(true);
+        m_wgtRightSpacing.setVisible(true);
         return;
     }
 
-    m_lbLeftSpacing.setVisible(false);
-    m_lbRightSpacing.setVisible(false);
+    m_wgtLeftSpacing.setVisible(false);
+    m_wgtRightSpacing.setVisible(false);
 
 }
 

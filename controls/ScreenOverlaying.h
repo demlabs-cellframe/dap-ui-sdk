@@ -47,4 +47,6 @@ private:
     QGraphicsBlurEffect* m_blurEffect = nullptr;
 
 };
+
+
 #endif // SCREENOVERLAYING_H

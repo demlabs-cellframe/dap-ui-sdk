@@ -15,14 +15,17 @@
 
 /** @brief QPushButton with subControls "text" and "image"
  *
+
+ * your button{
+ * This method is sometimes used to align text and images, or to create an indent. It activates the widgets on the sides (leftSpacing, rightSpacing)
+ *  qproperty-alignment: AlignRight;//AlignLeft, AlignCenter (left or right spacers)
+ *
+ * }
  *  @details Places image and text from left to right in QHBoxLayout.
  * Set style in .css file in format
  *> #buttonName #leftSpacing {
  *>     ...; //if max-width==0, left alinment
- *  qproperty-stateEdge: LeftActive;//RightActive, BothActive, None (left or right spacers)
- *
- *
- *> }
+ * }
  *> #buttonName::text {
  *>     ...
  *> }
@@ -56,7 +59,7 @@ class CustomPlacementButton : public CustomButtonAbstract
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString stateEdge WRITE setStateEdge DESIGNABLE true)
+    Q_PROPERTY(Qt::Alignment alignment WRITE setAlignment DESIGNABLE true)
 
     void initButton();
 public:
@@ -90,7 +93,7 @@ public:
     void setGraphicsEffect(StyledDropShadowEffect *a_effect);
     ///Makes widgets visible on the sides
     /// @param a_spacer If there is ALIGNMENT_NONE or some erroneous value, the widgets will be invisible.
-    void setStateEdge(const QString &a_spacer);
+    void setAlignment(Qt::Alignment a_alignment);
 
     void updateAppearanceForFocus(bool);
 
@@ -110,16 +113,11 @@ protected:
     void leaveEvent(QEvent *event);
 
     QHBoxLayout *m_layout;
-    QLabel m_lbLeftSpacing;         ///<label for left spacing
+    QWidget m_wgtLeftSpacing;         ///<label for left spacing
     QList<QLabel*> m_subcontrols;
     QLabel m_lbImage;    ///<label with image
     QLabel m_lbText;     ///<label with text
-    QLabel m_lbRightSpacing;        ///<label for right spacing
-
-    const QString STATE_LEFT_EDGE        = "LeftActive";
-    const QString STATE_RIGHT_EDGE       = "RightActive";
-    const QString STATE_BOTH_EDGE        = "BothActive";
-    const QString STATE_NONE_EDGE        = "None";
+    QWidget m_wgtRightSpacing;        ///<label for right spacing
 
 private:
     ///For effect.
