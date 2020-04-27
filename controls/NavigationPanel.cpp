@@ -30,7 +30,7 @@ void NavigationPanel::initVariantUi(QWidget *a_widget)
     DefaultMultiScreen::initVariantUi(a_widget);
 #else
     this->connectBtnToSignall(BTN_BUG     , &NavigationPanel::goToBugReport, a_widget);
-    this->connectBtnToSignall(BTN_HELP    , &NavigationPanel::goToFAQ      , a_widget);
+    this->connectBtnToSignall(BTN_HELP    , &NavigationPanel::goToFAQ      , a_widget)->hide();
     this->connectBtnToSignall(BTN_SETTINGS, &NavigationPanel::goToSettings , a_widget);
 #endif
 }
