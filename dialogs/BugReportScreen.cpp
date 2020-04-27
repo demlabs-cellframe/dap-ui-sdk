@@ -63,18 +63,18 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
     edtMessage->setPlaceholderText("Please describe the details of problem you faced. What actions did you take and what happened");
 
     connect(this, &BugReportScreen::wrongEmail, [=](){
-            Utils::setPropertyAndUpdateStyle(edtEmail, Properties::ERROR, true);
+            Utils::setPropertyAndUpdateStyle(edtEmail, Properties::WRONG, true);
         });
     connect(this, &BugReportScreen::wrongReport, [=](){
-            Utils::setPropertyAndUpdateStyle(edtMessage, Properties::ERROR, true);
+            Utils::setPropertyAndUpdateStyle(edtMessage, Properties::WRONG, true);
         });
 
     connect(edtEmail, &QLineEdit::textChanged, [=](){
-            Utils::setPropertyAndUpdateStyle(edtEmail, Properties::ERROR, false);
+            Utils::setPropertyAndUpdateStyle(edtEmail, Properties::WRONG, false);
         });
     connect(edtMessage, &CustomLineHeightTextEdit::textChanged, [=](){
             emit this->reportEdited(edtMessage->toPlainText());
-            Utils::setPropertyAndUpdateStyle(edtMessage, Properties::ERROR, false);
+            Utils::setPropertyAndUpdateStyle(edtMessage, Properties::WRONG, false);
         });
     connect(this, &BugReportScreen::sendReportRequest, [=](){
         edtEmail->setVisible(false);

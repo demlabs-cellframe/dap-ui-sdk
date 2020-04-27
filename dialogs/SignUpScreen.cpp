@@ -77,7 +77,7 @@ void SignUpScreen::initVariantUi(QWidget *a_widget)
 
     connect(btnSignUp,&QPushButton::clicked,[=]{
         lblAndroidError->setVisible(true);
-        Utils::setPropertyAndUpdateStyle(wgtAndroidError,Properties::STATE,Properties::ERROR);
+        Utils::setPropertyAndUpdateStyle(wgtAndroidError,Properties::STATE,Properties::WRONG);
 
     });
 
@@ -114,18 +114,18 @@ void SignUpScreen::initVariantUi(QWidget *a_widget)
 
     connect(this, &SignUpScreen::wrongEmail, [=](){
         lblEmailError->setVisible(true);
-        Utils::setPropertyAndUpdateStyle(edtEmail, Properties::ERROR, true);
-        Utils::setPropertyAndUpdateStyle(wgtEmailBottom, Properties::ERROR, true);
+        Utils::setPropertyAndUpdateStyle(edtEmail, Properties::WRONG, true);
+        Utils::setPropertyAndUpdateStyle(wgtEmailBottom, Properties::WRONG, true);
     });
     connect(this, &SignUpScreen::wrongPassword, [=](){
         lblPasswordError->setVisible(true);
-        Utils::setPropertyAndUpdateStyle(edtPassword, Properties::ERROR, true);
-        Utils::setPropertyAndUpdateStyle(wgtFirstPasswordBottom, Properties::ERROR, true);
+        Utils::setPropertyAndUpdateStyle(edtPassword, Properties::WRONG, true);
+        Utils::setPropertyAndUpdateStyle(wgtFirstPasswordBottom, Properties::WRONG, true);
     });
     connect(this, &SignUpScreen::wrongRepeatPassword, [=](){
         lblRptPasswordError->setVisible(true);
-        Utils::setPropertyAndUpdateStyle(edtRptPassword, Properties::ERROR, true);
-        Utils::setPropertyAndUpdateStyle(wgtSecondPasswordBottom, Properties::ERROR, true);
+        Utils::setPropertyAndUpdateStyle(edtRptPassword, Properties::WRONG, true);
+        Utils::setPropertyAndUpdateStyle(wgtSecondPasswordBottom, Properties::WRONG, true);
     });
 
     connect(this, &SignUpScreen::agreeChanged, [=](){
@@ -137,24 +137,24 @@ void SignUpScreen::initVariantUi(QWidget *a_widget)
 
     connect(edtEmail, &CustomLineEdit::textChanged, [=](){
         lblEmailError->setVisible(false);
-        Utils::setPropertyAndUpdateStyle(edtEmail, Properties::ERROR, false);
-        Utils::setPropertyAndUpdateStyle(wgtEmailBottom, Properties::ERROR, false);
+        Utils::setPropertyAndUpdateStyle(edtEmail, Properties::WRONG, false);
+        Utils::setPropertyAndUpdateStyle(wgtEmailBottom, Properties::WRONG, false);
     });
     connect(edtPassword, &CustomLineEdit::textChanged, [=](){
         lblPasswordError->setVisible(false);
-        Utils::setPropertyAndUpdateStyle(edtPassword, Properties::ERROR, false);
-        Utils::setPropertyAndUpdateStyle(wgtFirstPasswordBottom, Properties::ERROR, false);
+        Utils::setPropertyAndUpdateStyle(edtPassword, Properties::WRONG, false);
+        Utils::setPropertyAndUpdateStyle(wgtFirstPasswordBottom, Properties::WRONG, false);
         lblRptPasswordError->setVisible(false);
-        Utils::setPropertyAndUpdateStyle(edtRptPassword, Properties::ERROR, false);
-        Utils::setPropertyAndUpdateStyle(wgtSecondPasswordBottom, Properties::ERROR, false);
+        Utils::setPropertyAndUpdateStyle(edtRptPassword, Properties::WRONG, false);
+        Utils::setPropertyAndUpdateStyle(wgtSecondPasswordBottom, Properties::WRONG, false);
     });
     connect(edtRptPassword, &CustomLineEdit::textChanged, [=](){
         lblPasswordError->setVisible(false);
-        Utils::setPropertyAndUpdateStyle(edtPassword, Properties::ERROR, false);
-        Utils::setPropertyAndUpdateStyle(wgtFirstPasswordBottom, Properties::ERROR, false);
+        Utils::setPropertyAndUpdateStyle(edtPassword, Properties::WRONG, false);
+        Utils::setPropertyAndUpdateStyle(wgtFirstPasswordBottom, Properties::WRONG, false);
         lblRptPasswordError->setVisible(false);
-        Utils::setPropertyAndUpdateStyle(edtRptPassword, Properties::ERROR, false);
-        Utils::setPropertyAndUpdateStyle(wgtSecondPasswordBottom, Properties::ERROR, false);
+        Utils::setPropertyAndUpdateStyle(edtRptPassword, Properties::WRONG, false);
+        Utils::setPropertyAndUpdateStyle(wgtSecondPasswordBottom, Properties::WRONG, false);
     });
 
 
