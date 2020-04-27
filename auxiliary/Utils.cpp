@@ -4,6 +4,8 @@
 #include <QStyle>
 #include <QVariant>
 #include <QDebug>
+#include <QMainWindow>
+
 
 namespace Utils
 {
@@ -58,5 +60,28 @@ namespace Utils
         a_widget->style()->polish(a_widget);
     }
 
+    Qt::LayoutDirection toQtLayoutDirection(QBoxLayout::Direction a_direction)
+    {
+        switch (a_direction) {
+            case QBoxLayout::Direction::LeftToRight:
+                return Qt::LeftToRight;
+            case QBoxLayout::Direction::RightToLeft:
+                return Qt::RightToLeft;
+            default:
+                return Qt::LayoutDirectionAuto;
+        }
+    }
+
+    QBoxLayout::Direction toQBoxLayoutDirection(Qt::LayoutDirection a_direction)
+    {
+        switch (a_direction) {
+            case Qt::LeftToRight:
+                return QBoxLayout::Direction::LeftToRight;
+            case Qt::RightToLeft:
+                return QBoxLayout::Direction::RightToLeft;
+            default:
+                return QBoxLayout::Direction::LeftToRight;
+        }
+    }
 
 }

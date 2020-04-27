@@ -4,10 +4,6 @@ ScreenOverlaying::ScreenOverlaying(QMainWindow *a_parent)
     :QWidget(a_parent)
 {
     setObjectName("ScreenOverlaying");
-
-    this->hide();
-
-    connect(this, SIGNAL(clicked()), SLOT(hide()));
 }
 
 void ScreenOverlaying::showEvent(QShowEvent *event)
@@ -15,7 +11,9 @@ void ScreenOverlaying::showEvent(QShowEvent *event)
     this->acceptBlurEffect();
 
     QWidget *window = qobject_cast <QWidget*> (this->parent());
-    this->resize(window->width(), window->height());
+
+    if (window)
+        this->resize(window->width(), window->height());
 
     QWidget::showEvent(event);
 }
@@ -35,7 +33,7 @@ void ScreenOverlaying::mousePressEvent(QMouseEvent *event)
     this->QWidget::mousePressEvent(event);
 }
 
-void ScreenOverlaying::setBlurRadius(int &a_blurRadius)
+void ScreenOverlaying::setBlurRadius(qreal a_blurRadius)
 {  
     if (!m_blurEffect && a_blurRadius <= 0.0)
        return;
@@ -46,7 +44,7 @@ void ScreenOverlaying::setBlurRadius(int &a_blurRadius)
         this->acceptBlurEffect();
 }
 
-void ScreenOverlaying::setOpacity(qreal &a_opacity)
+void ScreenOverlaying::setOpacity(qreal a_opacity)
 {
     QGraphicsOpacityEffect *opacityEffect = qobject_cast<QGraphicsOpacityEffect*>(this->graphicsEffect());
 

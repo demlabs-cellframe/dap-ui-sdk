@@ -3,10 +3,12 @@
 #include <QVBoxLayout>
 #include <QDebug>
 
+#include "CustomComboBoxPopup.h"
+
 const QString CustomButtonComboBox::BUTTON_NAME_SUFFIX = "_control";
 
 CustomButtonComboBox::CustomButtonComboBox(QWidget *a_parent)
-    : CustomComboBox(a_parent)
+    : CustomPopupComboBox(a_parent)
 {
     this->setLayout(new QVBoxLayout(this));
     this->layout()->setContentsMargins(0, 0 ,0, 0);
@@ -38,7 +40,7 @@ void CustomButtonComboBox::setObjectName(const QString &a_name)
     if (a_name.isEmpty())
         return;
 
-    CustomComboBox::setObjectName(a_name);
+    CustomPopupComboBox::setObjectName(a_name);
     if(m_button)
         m_button->setObjectName(a_name + BUTTON_NAME_SUFFIX);
 }
@@ -46,7 +48,7 @@ void CustomButtonComboBox::setObjectName(const QString &a_name)
 void CustomButtonComboBox::paintEvent(QPaintEvent *e)
 {
     if (!m_button)
-        this->CustomComboBox::paintEvent(e);
+        this->CustomPopupComboBox::paintEvent(e);
 }
 
 CustomButtonAbstract *CustomButtonComboBox::buttonControll() const
@@ -61,7 +63,7 @@ void CustomButtonComboBox::setCurrentText(const QString &text)
         if (m_captionPolicy == CaptionPolicy::ShowWhenUnselected)
             m_button->setText(text);
         if (text == "")
-            m_button->setText(m_caption);
+            m_button->setText(this->caption());
     }
 }
 
@@ -70,12 +72,12 @@ void CustomButtonComboBox::setCaption(const QString &a_text)
     if (m_button &&  ((m_captionPolicy == CaptionPolicy::ShowWhenUnselected  && currentText()=="") ||  m_captionPolicy == CaptionPolicy::ShowAlways))
         m_button->setText(a_text);
 
-    m_caption = a_text;
+    this->CustomPopupComboBox::setCaption(a_text);
 }
 
 void CustomButtonComboBox::setCaptionPolicy(CaptionPolicy a_policy)
 {
     m_captionPolicy = a_policy;
 
-    setCaption(m_caption);
+    this->setCaption(this->caption());
 }

@@ -48,7 +48,7 @@ template<class T>
 inline void AdaptiveWidget::create()
 {
     ///TODO: add horisontal rotation for mobile.
-    QWidget *currentWidget (new QWidget(this));
+    QWidget *currentWidget = new QWidget(this);
 
     this->addWidget(currentWidget);
     this->m_variants.insert(ScreenInfo::Rotation::Horizontal, currentWidget);

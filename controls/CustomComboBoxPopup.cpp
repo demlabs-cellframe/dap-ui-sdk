@@ -1,26 +1,56 @@
 #include "CustomComboBoxPopup.h"
 
-#include <QListView>
-#include <QDebug>
-#include "CustomComboBox.h"
-#include "WidgetDelegateListView.h"
+#include "CustomComboBoxListView.h"
+#include "defines.h"
 
-CustomComboBoxPopup::CustomComboBoxPopup(QWidget *parent)
-    : AdaptiveWidget(parent)
+
+CustomComboBoxPopup::CustomComboBoxPopup(QMainWindow *parent)
+    : CustomPopup(parent)
 {
     this->setObjectName("stwCustomComboBoxPopup");
-
-    this->hide();
+    this->setWindowType(Qt::Popup);
 
     connect(this, &CustomComboBoxPopup::itemSelected, [this] (int index){
+        Q_UNUSED(index)
+
         this->hide();
     });
+
+
+}
+
+QAbstractItemModel *CustomComboBoxPopup::model()
+{
+    return m_model;
 }
 
 void CustomComboBoxPopup::setModel(QAbstractItemModel *a_model)
 {
     for(QListView* curView : this->allListViews())
         curView->setModel(a_model);
+}
+
+void CustomComboBoxPopup::addItem(const QString &a_text, const QVariant &a_userData /*= QVariant()*/)
+{
+    QAbstractItemModel* model = this->model();
+    int row = model->rowCount();
+
+    if (!model->insertRow(row))
+        return;
+
+    QModelIndex index = model->index(row, 0);
+
+    model->setData(index, a_text, Qt::DisplayRole);
+    if (a_userData.isValid())
+        model->setData(index, a_userData, Qt::UserRole);
+}
+
+void CustomComboBoxPopup::setCaption(const QString &a_caption)
+{
+    QString lblCaptionName = this->captionLabelName();
+
+    if (!lblCaptionName.isEmpty())
+        this->setChildProperties(this->captionLabelName(), Properties::TEXT, a_caption);
 }
 
 void CustomComboBoxPopup::setCurrentIndex(int a_index)
@@ -31,34 +61,22 @@ void CustomComboBoxPopup::setCurrentIndex(int a_index)
 
 void CustomComboBoxPopup::initVariantUi(QWidget *a_widget)
 {
-    WidgetDelegateListView *lvwList = a_widget->findChild<WidgetDelegateListView*>(this->listViewName()); Q_ASSERT(lvwList);
+    CustomComboBoxListView *lvwList; Utils::findChild(a_widget, this->listViewName(), lvwList);
 
-//    connect(lvwList, &QAbstractItemView::activated, [this](const QModelIndex &index)
-//    {
-//        qDebug() << "activated";
-//        emit this->itemSelected(index.row());
-//    });
-//    connect(lvwList, &QAbstractItemView::pressed, [this](const QModelIndex &index)
-//    {
-//        qDebug() << "pressed";
-//        emit this->itemSelected(index.row());
-//    });
-    connect(lvwList, &WidgetDelegateListView::itemSelected, [this](int a_index){
+    if (m_model)
+        lvwList->setModel(m_model);
+    else
+        m_model=lvwList->model();
+
+    connect(lvwList, &CustomComboBoxListView::itemSelected, [this](int a_index){
         emit itemSelected(a_index);
     });
-
-  //  a_widget->setStyleSheet("min-width:300; min-height:300");
-    //this->setStyleSheet("QStackedWidget{min-width:300; min-height:300;}");
 }
 
-//void CustomComboBoxPopup::showEvent(QShowEvent *event)
-//{
-//    this->AdaptiveWidget::showEvent(event);
-//    for (QListView* curList: allListViews())
-//    {
-//        curList->setFocus(setFocus();
-//    }
-//}
+QString CustomComboBoxPopup::captionLabelName()
+{
+    return "";
+}
 
 QList<QListView *> CustomComboBoxPopup::allListViews()
 {

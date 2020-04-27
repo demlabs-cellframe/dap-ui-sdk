@@ -5,5 +5,4 @@
 CustomButtonAbstract::CustomButtonAbstract(QWidget *a_parent):
     QPushButton (a_parent)
 {
-
 }
