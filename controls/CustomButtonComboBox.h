@@ -3,14 +3,15 @@
 
 #include <QPushButton>
 
-#include "CustomComboBox.h"
+#include "CustomPopupComboBox.h"
 #include "CustomPlacementButton.h"
 #include "CustomButtonAbstract.h"
 
 
-class CustomButtonComboBox : public CustomComboBox
+class CustomButtonComboBox : public CustomPopupComboBox
 {
 public:
+
     enum class CaptionPolicy{ShowWhenUnselected, ShowAlways};
 
     CustomButtonComboBox(QWidget *a_parent = Q_NULLPTR);
@@ -21,9 +22,10 @@ public:
 
     virtual CustomButtonAbstract *buttonControll() const;
 
-    void setCaption(const QString &a_text);
+    virtual void setCaption(const QString &a_text) override;
 
     void setCaptionPolicy(CaptionPolicy a_policy = CaptionPolicy::ShowWhenUnselected);
+
 public slots:
 
     void setCurrentText(const QString &text);
@@ -35,7 +37,6 @@ protected:
 private:
 
     CaptionPolicy m_captionPolicy = CaptionPolicy::ShowWhenUnselected;
-    QString m_caption;
     CustomButtonAbstract* m_button = nullptr;
 
     static const QString BUTTON_NAME_SUFFIX;

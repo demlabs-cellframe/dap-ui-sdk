@@ -12,6 +12,8 @@ public:
 
     virtual void setData(const QVariant &value, int role = Qt::DisplayRole) override;
 
+    CustomPlacementButton* button();
+
 //    bool selected() const;
     virtual void setSelected(bool a_selected) override;
 

@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <QVariant>
 #include <QDebug>
+#include <QBoxLayout>
+class QMainWindow;
 
 namespace Utils
 {
@@ -13,11 +15,18 @@ namespace Utils
     /// 100%=>100 100px=>100 100**=>100 100=>100
     int toIntValue(const QString &a_text);
 
+    QBoxLayout::Direction toQBoxLayoutDirection(Qt::LayoutDirection a_direction);
+    Qt::LayoutDirection toQtLayoutDirection(QBoxLayout::Direction a_direction);
+
     template <class T>
     inline T findChild(QObject* a_object, const QString& a_objectName, T &a_foundObjectOUT);
 
     template <class T>
     inline T findChild(QObject* a_object, const QString& a_objectName);
+
+    template <class T>
+    T findParent(QObject* a_object);
+
 
     void setPropertyAndUpdateStyle(QWidget* a_widget, const QString& a_property, const QVariant& a_value = true);
     void setPropertyAndUpdateStyle(QWidget* a_widget, const char*    a_property, const QVariant& a_value = true);
@@ -49,6 +58,18 @@ inline T Utils::findChild(QObject* a_parentObj, const QString &a_objectName, T &
     return a_foundObjectOUT = findChild<T>(a_parentObj, a_objectName);
 }
 
+template <class T>
+T Utils::findParent(QObject* a_object)
+{
+    if (!a_object)
+            return nullptr;
+
+    QMainWindow *mainWindow = qobject_cast<T>(a_object);
+    if (mainWindow)
+        return mainWindow;
+
+    return Utils::findParent<T>(a_object->parent());
+}
 
 #endif // UTILS_H
 

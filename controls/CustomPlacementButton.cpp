@@ -15,62 +15,52 @@ CustomPlacementButton::CustomPlacementButton(QWidget *a_parent)
     m_lbText        (this),
     m_wgtRightSpacing(this)
 {
-initButton();
+    initButton();
 }
 
-    CustomPlacementButton::CustomPlacementButton(ImagePos a_pos, QWidget *a_parent)
-        :CustomButtonAbstract (a_parent),
-        m_layout        (new QHBoxLayout(this)),
-        m_wgtLeftSpacing (this),
-        m_lbImage       (this),
-        m_lbText        (this),
-        m_wgtRightSpacing(this)
+
+void CustomPlacementButton::initButton()
+{
+    m_wgtLeftSpacing .setObjectName("leftSpacing");
+    m_lbImage       .setObjectName("image");
+    m_lbText        .setObjectName("text");
+    m_wgtRightSpacing.setObjectName("rightSpacing");
+
+
+    m_wgtLeftSpacing.setVisible(false);
+    m_wgtRightSpacing.setVisible(false);
+
+    m_subcontrols.append(&m_lbImage);
+    m_subcontrols.append(&m_lbText);
+
+    // Set up subcontroll object names:
+    //Setup layout
+    m_layout->setMargin(0);
+    m_layout->setSpacing(0);
+
+    //Setup spacing setSizePolicy
+    m_wgtLeftSpacing .setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    m_wgtRightSpacing.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    //Adding subcontrols to layout
+    m_layout->addWidget(&m_wgtLeftSpacing);
+    for (QLabel *subcontrol: m_subcontrols)
     {
-        initButton();
-        setImagePosition( a_pos);
+        // Set up subcontroll ScaledContents:
+        subcontrol->setScaledContents(true);
+        m_layout->addWidget(subcontrol);
+
+        CustomPlacementButton::setWidgetState(subcontrol);
     }
+    m_layout->addWidget(&m_wgtRightSpacing);
 
-    void CustomPlacementButton::initButton()
-    {
-        m_wgtLeftSpacing .setObjectName("leftSpacing");
-        m_lbImage       .setObjectName("image");
-        m_lbText        .setObjectName("text");
-        m_wgtRightSpacing.setObjectName("rightSpacing");
+//        m_layout->setDirection(QBoxLayout::LeftToRight);
+    setLayout(m_layout);
 
-
-        m_wgtLeftSpacing.setVisible(false);
-        m_wgtRightSpacing.setVisible(false);
-
-        m_subcontrols.append(&m_lbImage);
-        m_subcontrols.append(&m_lbText);
-
-        // Set up subcontroll object names:
-        //Setup layout
-        m_layout->setMargin(0);
-        m_layout->setSpacing(0);
-
-        //Setup spacing setSizePolicy
-        m_wgtLeftSpacing .setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        m_wgtRightSpacing.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
-        //Adding subcontrols to layout
-        m_layout->addWidget(&m_wgtLeftSpacing);
-        for (QLabel *subcontrol: m_subcontrols)
-        {
-            // Set up subcontroll ScaledContents:
-            subcontrol->setScaledContents(true);
-            m_layout->addWidget(subcontrol);
-
-            CustomPlacementButton::setWidgetState(subcontrol);
-        }
-        m_layout->addWidget(&m_wgtRightSpacing);
-
-        setLayout(m_layout);
-
-        // on toggled update Appearance
-        connect(this, &QAbstractButton::toggled, [=](bool a_checked) {
-            this->setState(this->underMouse(), a_checked);
-        });
+    // on toggled update Appearance
+    connect(this, &QAbstractButton::toggled, [=](bool a_checked) {
+        this->setState(this->underMouse(), a_checked);
+    });
 
     connect(this, &CustomPlacementButton::tabFocusIn, [=]() {
 
@@ -166,22 +156,14 @@ void CustomPlacementButton::addSubcontrol(QString a_id)
     m_layout->insertWidget(m_layout->count() - 1, newSubcontrol);
 }
 
-/** @brief Set image position relative to text (left or right)
- *  @param a_position image position relatife to text (Left/Right)
- */
-void CustomPlacementButton::setImagePosition(ImagePos a_position /*= ImagePos::Left*/)
+Qt::LayoutDirection CustomPlacementButton::layoutDirection() const
 {
-    int imageIndex = m_layout->indexOf(&m_lbImage);
-    if (a_position == ImagePos::Left && imageIndex == 2)
-    {
-        m_layout->removeWidget(&m_lbImage);
-        m_layout->insertWidget(1, &m_lbImage);
-    }
-    else if (a_position == ImagePos::Right && imageIndex == 1)
-    {
-        m_layout->removeWidget(&m_lbImage);
-        m_layout->insertWidget(2, &m_lbImage);
-    }
+    return Utils::toQtLayoutDirection(m_layout->direction());
+}
+
+void CustomPlacementButton::setLayoutDirection(Qt::LayoutDirection a_direction)
+{
+    m_layout->setDirection(Utils::toQBoxLayoutDirection(a_direction));
 }
 
 void CustomPlacementButton::setGraphicsEffect(StyledDropShadowEffect *a_effect)

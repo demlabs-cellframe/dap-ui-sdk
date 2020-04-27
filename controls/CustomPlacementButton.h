@@ -60,13 +60,12 @@ class CustomPlacementButton : public CustomButtonAbstract
     Q_OBJECT
 
     Q_PROPERTY(Qt::Alignment alignment WRITE setAlignment DESIGNABLE true)
+    Q_PROPERTY(Qt::LayoutDirection layoutDirection WRITE setLayoutDirection READ layoutDirection DESIGNABLE true)
 
     void initButton();
 public:
 
     explicit CustomPlacementButton(QWidget *a_parent = Q_NULLPTR);
-
-    CustomPlacementButton(ImagePos a_pos, QWidget *a_parent = Q_NULLPTR);
 
     QString text();
     /// Set text button.
@@ -86,9 +85,9 @@ public:
     /// .
     /// @param a_id Window GUI widget.
     void addSubcontrol(QString a_id);
-    /// Image Position on button.
-    /// @param a_position Enum ImagePos Right or Left.
-    void setImagePosition(ImagePos a_position = ImagePos::Left);
+
+    Qt::LayoutDirection layoutDirection() const;
+    void setLayoutDirection(Qt::LayoutDirection a_direction);
 
     void setGraphicsEffect(StyledDropShadowEffect *a_effect);
     ///Makes widgets visible on the sides

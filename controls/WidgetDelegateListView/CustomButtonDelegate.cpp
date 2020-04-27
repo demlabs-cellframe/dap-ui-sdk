@@ -9,20 +9,16 @@ CustomButtonDelegate::CustomButtonDelegate(QWidget* a_parent)
     , m_button(new CustomPlacementButton(this))
     , m_bottomMargin(new QWidget(this))
 {
- //   m_button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
     this          ->setObjectName("wgtCustomButtonDelegate");
     m_topMargin   ->setObjectName("wgtTopMargin");
     m_button      ->setObjectName("btnCustomButton");
     m_bottomMargin->setObjectName("wgtBottomMargin");
 
-    m_button->setGraphicsEffect(new StyledDropShadowEffect(m_button));
-
     this->layout()->addWidget(m_topMargin);
     this->layout()->addWidget(m_button);
     this->layout()->addWidget(m_bottomMargin);
-
-    this->layout()->setAlignment(m_button, Qt::AlignHCenter);
+    layout()->setMargin(0);
+    layout()->setSpacing(0);
 
     connect(m_button, &QPushButton::clicked, [this]{
         emit this->selected();
@@ -42,6 +38,11 @@ void CustomButtonDelegate::setData(const QVariant &value, int role)
         qDebug() << "Wrong role";
         break;
     }
+}
+
+CustomPlacementButton *CustomButtonDelegate::button()
+{
+    return m_button;
 }
 
 //bool CustomPlacementButtonDelegate::selected() const
