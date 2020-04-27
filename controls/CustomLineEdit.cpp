@@ -13,7 +13,7 @@ CustomLineEdit::CustomLineEdit(QWidget *parent):CustomLineEditBase (parent)
 
 void CustomLineEdit::focusOutEvent(QFocusEvent *e)
 {
-           setVisibleButton(false);
+    setVisibleButton(false);
 
     CustomLineEditBase::focusOutEvent(e);
 }
