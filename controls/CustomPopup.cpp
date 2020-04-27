@@ -62,6 +62,7 @@ void CustomPopup::createScreenOverlaying()
 
 Qt::WindowType CustomPopup::windowType() const
 {
+    return m_windowType;
 }
 
 void CustomPopup::setWindowType(Qt::WindowType a_windowType)
