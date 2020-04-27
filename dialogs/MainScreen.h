@@ -43,6 +43,7 @@ public:
 
     void setState(ConnectionStates a_state);
 
+
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
@@ -80,6 +81,13 @@ protected:
 signals:
     void disconnect();
     void serverChanged(const QString& serverName);
+    void setChbConnection();
+    void setChbIpRequest();
+    void setChbVirtualNetwork();
+
+    void setChbNotConnection();
+    void setChbNotIpRequest();
+    void setChbNotVirtualNetwork();
 
 private:
     static QString statusText(ConnectionStates a_state);
