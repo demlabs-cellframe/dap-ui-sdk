@@ -7,7 +7,7 @@
 
 #include "ui_SettingsScreen.h"
 #include "StyledDropShadowEffect.h"
-#include "CustomComboBox.h"
+#include "CustomPopupComboBox.h"
 #include "CustomPlacementButton.h"
 #include "ComboBox.h"
 

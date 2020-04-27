@@ -22,8 +22,6 @@
 
 #include <QTimer>
 #include "CustomComboBoxPopup.h"
-#include "CustomComboBox.h"
-#include <QComboBox>
 #include <QComboBox>
 #endif
 

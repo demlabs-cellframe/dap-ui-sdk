@@ -126,12 +126,17 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     else
         cbbServer->setModel(m_serversModel);
 
+#ifdef Q_OS_ANDROID
+//    CustomLineEdit          *edtEmail       = a_widget->findChild<CustomLineEdit*>("edtEmail"   );      Q_ASSERT(edtEmail);
+//    PasswordLineEdit        *edtPassword    = a_widget->findChild<PasswordLineEdit*>(EDT_PASSWORD_NAME ); Q_ASSERT(edtPassword);
+
+//    CustomButtonComboBox   *cbbServer              = a_widget->findChild<CustomButtonComboBox     *>(CBB_SERVER   ); Q_ASSERT(cbbServer);
+
+
+    cbbServer->setButtonControll(new CustomPlacementButton(cbbServer));
 
     cbbServer->QComboBox::setCurrentText(DapDataLocal::me()->serverName());
 
-#ifdef Q_OS_ANDROID
-    //for test blur effect
-//    connect(btnSignIn,&QPushButton::clicked,this,&SignInScreen::onScreenServers);
 #else
     QLabel      *lblPasswordError = a_widget->findChild<QLabel     *>(LBL_PASSWORD_ERROR); Q_ASSERT(lblPasswordError);
     btnSignIn->setGraphicsEffect(new StyledDropShadowEffect(btnSignIn));
