@@ -120,7 +120,10 @@
        </widget>
       </item>
       <item alignment="Qt::AlignVCenter">
-       <widget class="CustomButtonComboBox" name="cbbServer">
+       <widget class="ComboBox" name="cbbServer">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
@@ -132,6 +135,9 @@
         </property>
         <property name="frame">
          <bool>false</bool>
+        </property>
+        <property name="caption" stdset="0">
+         <string>Chose server</string>
         </property>
        </widget>
       </item>
@@ -236,6 +242,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>ComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">ComboBox.h</header>
+  </customwidget>
+  <customwidget>
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
    <header>ClickableLabel.h</header>
@@ -249,11 +260,6 @@
    <class>PasswordLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">PasswordLineEdit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>CustomButtonComboBox</class>
-   <extends>QComboBox</extends>
-   <header location="global">CustomButtonComboBox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

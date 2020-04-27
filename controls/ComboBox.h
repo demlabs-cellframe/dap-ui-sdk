@@ -5,17 +5,15 @@
 
 class ComboBox : public CustomButtonComboBox
 {
+    Q_OBJECT
 public:
     ComboBox(QWidget* a_parent = nullptr);
 
     void setObjectName(const QString &a_name);
 
-    void setGraphicsEffect(StyledDropShadowEffect *a_effect);
     CustomPlacementButton *buttonControll() const;
-private:
-    ///For effect.
-    StyledDropShadowEffect *m_styledShadow = nullptr;
 
+private:
 
 };
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>256</width>
-    <height>209</height>
+    <width>258</width>
+    <height>211</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -15,9 +15,6 @@
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
-  </property>
-  <property name="windowTitle">
-   <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -35,7 +32,7 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item alignment="Qt::AlignHCenter">
+   <item>
     <widget class="QLabel" name="lblCaption">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -44,17 +41,35 @@
       </sizepolicy>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignJustify|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
-   <item alignment="Qt::AlignHCenter">
-    <widget class="WidgetDelegateListView" name="lvwList">
+   <item>
+    <widget class="ComboBoxListView" name="lvwList">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="showDropIndicator" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="defaultDropAction">
+      <enum>Qt::IgnoreAction</enum>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
      </property>
     </widget>
    </item>
@@ -62,14 +77,11 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>WidgetDelegateListView</class>
+   <class>ComboBoxListView</class>
    <extends>QListView</extends>
-   <header location="global">WidgetDelegateListView.h</header>
+   <header location="global">ComboBoxListView.h</header>
   </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>lvwList</tabstop>
- </tabstops>
  <resources/>
  <connections/>
 </ui>

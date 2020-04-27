@@ -64,7 +64,7 @@
     </widget>
    </item>
    <item>
-    <widget class="CustomComboBox" name="cbbLanguage">
+    <widget class="ComboBox" name="cbbLanguage">
      <property name="enabled">
       <bool>false</bool>
      </property>
@@ -87,9 +87,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CustomComboBox</class>
+   <class>ComboBox</class>
    <extends>QComboBox</extends>
-   <header>CustomComboBox.h</header>
+   <header>ComboBox.h</header>
   </customwidget>
   <customwidget>
    <class>CustomPlacementButton</class>

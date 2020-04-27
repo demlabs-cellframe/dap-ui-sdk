@@ -14,6 +14,9 @@
 #include "CustomLineEdit.h"
 #include "PasswordLineEdit.h"
 #include "ClickableLabel.h"
+#include <QMainWindow>
+#include "ComboBoxPopup.h"
+#include <QStandardItemModel>
 
 class SignInScreen : public AdaptiveScreen
 {
@@ -49,8 +52,6 @@ signals:
     void signInRequest();
 
     void transitionTo_SignUp();
-
-    void onScreenServers();
 protected:
 
     virtual void initVariantUi(QWidget *a_widget) override;

@@ -13,7 +13,7 @@ void SettingsScreen::initVariantUi(QWidget *a_widget)
 
 
 #ifdef Q_OS_ANDROID
-    CustomComboBox          *cbbLanguage    = a_widget->findChild<CustomComboBox*>(CBB_LANGUAGE);           Q_ASSERT(cbbLanguage);
+    CustomPopupComboBox     *cbbLanguage    = a_widget->findChild<CustomPopupComboBox*>(CBB_LANGUAGE);           Q_ASSERT(cbbLanguage);
     CustomPlacementButton   *btnLogOut      = a_widget->findChild<CustomPlacementButton*>(BTN_LOG_OUT);     Q_ASSERT(btnLogOut);
     CustomPlacementButton   *btnRenew       = a_widget->findChild<CustomPlacementButton*>(BTN_RENEW);       Q_ASSERT(btnRenew);
 
@@ -25,11 +25,11 @@ void SettingsScreen::initVariantUi(QWidget *a_widget)
     ComboBox *cbbUptime       = a_widget->findChild<ComboBox*>(CBB_UPTIME);        Q_ASSERT(cbbUptime);
     ComboBox *cbbLanguage    = a_widget->findChild<ComboBox*>(CBB_LANGUAGE);       Q_ASSERT(cbbLanguage);
 
-    cbbBandwidth ->buttonControll()->setImagePosition(ImagePos::Right);
-    cbbUptime    ->buttonControll()->setImagePosition(ImagePos::Right);
-    cbbEncryption->buttonControll()->setImagePosition(ImagePos::Right);
-    cbbBalance   ->buttonControll()->setImagePosition(ImagePos::Right);
-    cbbLanguage  ->buttonControll()->setImagePosition(ImagePos::Right);
+    cbbBandwidth ->buttonControll()->setLayoutDirection(Qt::LeftToRight);
+    cbbUptime    ->buttonControll()->setLayoutDirection(Qt::LeftToRight);
+    cbbEncryption->buttonControll()->setLayoutDirection(Qt::LeftToRight);
+    cbbBalance   ->buttonControll()->setLayoutDirection(Qt::LeftToRight);
+    cbbLanguage  ->buttonControll()->setLayoutDirection(Qt::LeftToRight);
 
     cbbBandwidth ->setCaption("Bandwidth");
     cbbUptime    ->setCaption("Uptime");
