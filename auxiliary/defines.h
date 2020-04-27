@@ -7,11 +7,10 @@
 namespace Properties
 {
     static const QString TEXT    = "text";
-    static const char*   STATE   = "state";
-    static const char*   ERROR   = "error";
-    static const char*   ACTIVE  = "active";
-    static const char*   FILLED  = "filled";
-    static const char*   WRONG   = "wrong";
+    static const QString STATE   = "state";
+    static const QString ACTIVE  = "active";
+    static const QString FILLED  = "filled";
+    static const QString WRONG   = "wrong";
     static const QString ENABLED = "enabled";
     static const QString HOVER   = "hover"  ;
     static const QString CHECKED = "checked";
