@@ -27,4 +27,6 @@ void NavigationPanelMain::initVariantUi(QWidget *a_widget)
     connect(btSettings, &QPushButton::clicked, this, &NavigationPanelMain::goToSettings);
     connect(btBug     , &QPushButton::clicked, this, &NavigationPanelMain::goToBugReport);
     connect(btHelp    , &QPushButton::clicked, this, &NavigationPanelMain::goToFAQ);
+
+    btHelp->setVisible(false);
 }
