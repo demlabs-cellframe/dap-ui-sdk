@@ -9,6 +9,8 @@ MainScreen::MainScreen(QWidget *a_parent)
 {
     this->setObjectName(this->screenName());
     create<Ui::MainScreen>();
+
+    AdaptiveScreen::initScreen(this);
 }
 
 QString MainScreen::screenName()
@@ -18,22 +20,23 @@ QString MainScreen::screenName()
 
 void MainScreen::setState(ConnectionStates a_state)
 {
-    #ifdef Q_OS_ANDROID
+#ifdef Q_OS_ANDROID
     Q_UNUSED(a_state)
 #else
     this->setChildProperties(LBL_STATUS_MESSAGE, Properties::TEXT , statusText(a_state));
     this->setChildProperties(LBL_STATUS_MESSAGE, Properties::STATE, a_state);
 
     this->updateChildStyle  (LBL_STATUS_MESSAGE);
-
 #endif
 }
 
 void MainScreen::initVariantUi(QWidget *a_widget)
 {
-    QPushButton *btnConnection; Utils::findChild(a_widget, BTN_CONNECTION, btnConnection);
-    connect(btnConnection, &QCheckBox::clicked, this, &MainScreen::disconnect);
+    this->connectBtnToSignall(BTN_CONNECTION, &MainScreen::disconnect, a_widget);
 
+    QCheckBox *chbAuthorized    ; Utils::findChild(a_widget, CHB_AUTHORIZED     , chbAuthorized);
+    QCheckBox *chbStreamOpened  ; Utils::findChild(a_widget, CHB_STREAM_OPENED  , chbStreamOpened);
+    QCheckBox *chbVirtualNetwork; Utils::findChild(a_widget, CHB_VIRTUAL_NETWORK, chbVirtualNetwork);
 
 
 #ifdef Q_OS_ANDROID
@@ -49,27 +52,12 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     QLabel *lblPacketsRec       = a_widget->findChild<QLabel        *>(LBL_PACKETS_REC);    Q_ASSERT(lblPacketsRec);
     QLabel *lblPacetsSent       = a_widget->findChild<QLabel        *>(LBL_PACKETS_SENT);   Q_ASSERT(lblPacetsSent);
 
-    QCheckBox *cbbAuth          = a_widget->findChild<QCheckBox     *>(CBB_AUTH);           Q_ASSERT(cbbAuth);
-    QCheckBox *cbbStream        = a_widget->findChild<QCheckBox     *>(CBB_STREAM);         Q_ASSERT(cbbStream);
-    QCheckBox *cbbNetwork       = a_widget->findChild<QCheckBox     *>(CBB_NETWORK);        Q_ASSERT(cbbNetwork);
 
 
     //To test appearance
-    cbbAuth->setChecked(true);
-    cbbStream->setChecked(true);
-    cbbNetwork->setChecked(true);
-
-    //This is done in order to remove the reaction to a click on the checkbox
-    connect(cbbAuth,&QCheckBox::clicked,[=]{
-        cbbAuth->setChecked(!cbbAuth->isChecked());
-    });
-    connect(cbbStream,&QCheckBox::clicked,[=]{
-        cbbStream->setChecked(!cbbStream->isChecked());
-    });
-    connect(cbbNetwork,&QCheckBox::clicked,[=]{
-        cbbNetwork->setChecked(!cbbNetwork->isChecked());
-    });
-
+    chbAuthorized->setChecked(true);
+    chbStreamOpened->setChecked(true);
+    chbVirtualNetwork->setChecked(true);
 
 
     //========================================================================
@@ -79,9 +67,6 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     frmStatus->setGraphicsEffect(new StyledDropShadowEffect(frmStatus));
 #else
     QComboBox *cbbServer            = a_widget->findChild<QComboBox*>(CBB_SERVER);          Q_ASSERT(cbbServer  );
-    QCheckBox *chbConnection        = a_widget->findChild<QCheckBox*>(CHB_CONNECTION );     Q_ASSERT(chbConnection  );
-    QCheckBox *chbIPrequsted        = a_widget->findChild<QCheckBox*>(CHB_IP_PREQUESTED);   Q_ASSERT(chbIPrequsted  );
-    QCheckBox *chbVirtualNetwork    = a_widget->findChild<QCheckBox*>(CHB_VIRTUAL_NETWORK); Q_ASSERT(chbVirtualNetwork  );
     QPushButton *btnBytes           = a_widget->findChild<QPushButton*>(BTN_BYTES);         Q_ASSERT(btnBytes  );
     QPushButton *btnPackets         = a_widget->findChild<QPushButton*>(BTN_PACKETS);       Q_ASSERT(btnPackets  );
     QLabel *lblBytesPacketsCaption  = a_widget->findChild<QLabel*>(LBL_BYTES_PACKETS_CAPTION); Q_ASSERT(lblBytesPacketsCaption  );
@@ -91,14 +76,6 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     QLabel *lblBytesPackets         = a_widget->findChild<QLabel*>(LBL_PATES_PACKETS);      Q_ASSERT(lblBytesPackets  );
     QLabel *lblStatusMessage        = a_widget->findChild<QLabel*>(LBL_STATUS_MESSAGE);     Q_ASSERT(lblStatusMessage  );
 
-    /*chbConnection->setChecked(true);
-    chbIPrequsted->setChecked(true);
-    chbVirtualNetwork->setChecked(true);*/
-
-    for(int i = 0; i<5;i++)
-    {
-        cbbServer->addItem(QString("Server name%1").arg(i));
-    }
 
     connect(btnBytes,&QPushButton::clicked,[=]{
         btnBytes->setChecked(true);
@@ -110,28 +87,23 @@ void MainScreen::initVariantUi(QWidget *a_widget)
         btnPackets->setChecked(true);
         lblBytesPacketsCaption->setText("Packets Received");
     });
-
-    connect(this, &MainScreen::setChbConnection, [=]{
-        chbConnection->setChecked(true);
-    });
-    connect(this, &MainScreen::setChbNotConnection, [=]{
-        chbConnection->setChecked(false);
-    });
-    connect(this, &MainScreen::setChbIpRequest, [=]{
-        chbIPrequsted->setChecked(true);
-    });
-    connect(this, &MainScreen::setChbNotIpRequest, [=]{
-        chbIPrequsted->setChecked(false);
-    });
-    connect(this, &MainScreen::setChbVirtualNetwork, [=]{
-        chbVirtualNetwork->setChecked(true);
-    });
-    connect(this, &MainScreen::setChbNotVirtualNetwork, [=]{
-        chbVirtualNetwork->setChecked(false);
-    });
-
 #endif
 
+}
+
+void MainScreen::setAuthorized(bool a_authorized /*= true*/)
+{
+    this->setChildProperties(CHB_AUTHORIZED, Properties::CHECKED, a_authorized);
+}
+
+void MainScreen::setStreamOpened(bool a_streamOpened /*= true*/)
+{
+    this->setChildProperties(CHB_STREAM_OPENED, Properties::CHECKED, a_streamOpened);
+}
+
+void MainScreen::setVirtualNetwork(bool a_virtualNetwork /*= true*/)
+{
+    this->setChildProperties(CHB_VIRTUAL_NETWORK, Properties::CHECKED, a_virtualNetwork);
 }
 
 QString MainScreen::statusText(ConnectionStates a_state)

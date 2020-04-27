@@ -9,12 +9,7 @@ class ComboBox : public CustomButtonComboBox
 public:
     ComboBox(QWidget* a_parent = nullptr);
 
-    void setObjectName(const QString &a_name);
-
     CustomPlacementButton *buttonControll() const;
-
-private:
-
 };
 
 #endif // COMBOBOX_H

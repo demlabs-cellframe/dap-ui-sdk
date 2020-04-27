@@ -51,6 +51,11 @@ protected:
     virtual void initVariantUi(QWidget *a_widget) override;
 
     const QString BTN_CONNECTION    = "btnConnection";
+
+    const QString CHB_AUTHORIZED      = "chbAuthorized";
+    const QString CHB_STREAM_OPENED   = "chbStreamOpened";
+    const QString CHB_VIRTUAL_NETWORK = "chbVirtualNetwork";
+
 #ifdef Q_OS_ANDROID
     const QString FRM_CONNECT       = "frmConnect";
     const QString FRM_INFO          = "frmInfo";
@@ -61,15 +66,9 @@ protected:
     const QString LBL_TIME_CONNECT  = "lblTimeConnect";
     const QString LBL_PACKETS_REC   = "lblPacketsRec";
     const QString LBL_PACKETS_SENT  = "lblPacetsSent";
-    const QString CBB_AUTH          = "cbbAuth";
-    const QString CBB_STREAM        = "cbbStream";
-    const QString CBB_NETWORK       = "cbbNetwork";
 #else
     const QString LBL_STATUS_MESSAGE        = "lblStatusMessage";
     const QString CBB_SERVER                = "cbbServer";
-    const QString CHB_CONNECTION            = "chbConnection";
-    const QString CHB_IP_PREQUESTED         = "chbIPrequsted";
-    const QString CHB_VIRTUAL_NETWORK       = "chbVirtualNetwork";
     const QString BTN_BYTES                 = "btnBytes";
     const QString BTN_PACKETS               = "btnPackets";
     const QString LBL_BYTES_PACKETS_CAPTION = "lblBytesPacketsCaption";
@@ -78,24 +77,20 @@ protected:
     const QString LBL_DOWNLOAD              = "lblDownload";
     const QString LBL_PATES_PACKETS         = "lblBytesPackets";
 #endif
+
 signals:
     void disconnect();
     void serverChanged(const QString& serverName);
-    void setChbConnection();
-    void setChbIpRequest();
-    void setChbVirtualNetwork();
 
-    void setChbNotConnection();
-    void setChbNotIpRequest();
-    void setChbNotVirtualNetwork();
+public slots:
+
+    void setAuthorized(bool a_authorized = true);
+    void setStreamOpened(bool a_streamOpened = true);
+    void setVirtualNetwork(bool a_virtualNetwork = true);
 
 private:
     static QString statusText(ConnectionStates a_state);
-#ifdef Q_OS_ANDROID
 
-#else
-    QAbstractItemModel *m_serversModel = nullptr;
-#endif
 };
 
 #endif // MAINSCREEN_H

@@ -400,7 +400,7 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QCheckBox" name="chbConnection">
+          <widget class="QCheckBox" name="chbAuthorized">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -419,7 +419,7 @@
           </widget>
          </item>
          <item row="4" column="1">
-          <widget class="QCheckBox" name="chbIPrequsted">
+          <widget class="QCheckBox" name="chbStreamOpened">
            <property name="enabled">
             <bool>false</bool>
            </property>

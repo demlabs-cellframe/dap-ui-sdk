@@ -14,13 +14,6 @@ ComboBox::ComboBox(QWidget *a_parent)
     this->setPopup(new ComboBoxPopup(mainWindow));
 }
 
-void ComboBox::setObjectName(const QString &a_name)
-{
-    this->CustomButtonComboBox::setObjectName(a_name);
-
-    CustomPlacementButton *button = this->buttonControll();
-}
-
 CustomPlacementButton *ComboBox::buttonControll() const
 {
     return qobject_cast<CustomPlacementButton*>(CustomButtonComboBox::buttonControll());
