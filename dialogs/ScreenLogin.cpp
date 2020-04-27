@@ -103,9 +103,13 @@ void ScreenLogin::initUi(QWidget * a_w,ScreenRotation a_rotation)
         }
         else
         {
-            QSettings settings;
             DapServerInfo dsi = cbUpstream->currentData().value<DapServerInfo>();
+
+            QSettings settings;
             settings.setValue("dsi.name", dsi.name);
+            DapDataLocal::me()->saveEncryptedString("username", edMail->text());
+            DapDataLocal::me()->saveEncryptedString("password", edPassword->text());
+            settings.setValue("saveduserdata", "true");
             emit reqConnect(dsi, edMail->text(), edPassword->text());
         }
     });
@@ -114,9 +118,10 @@ void ScreenLogin::initUi(QWidget * a_w,ScreenRotation a_rotation)
     cbUpstream->setItemDelegate(new ComboBoxDelegate(cbUpstream, cbUpstream));
 
     QSettings settings;
-    edMail->setText(settings.value("username").toString());
-    edPassword->setText(settings.value("password").toString());
-
+    if (settings.value("saveduserdata").toString() == "true"){
+        edMail->setText(DapDataLocal::me()->getDecryptedString("username"));
+        edPassword->setText(DapDataLocal::me()->getDecryptedString("password"));
+    }
 }
 
 /**
