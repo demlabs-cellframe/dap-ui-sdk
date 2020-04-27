@@ -173,6 +173,51 @@ void DapDataLocal::setServerName(const QString &serverName)
     }
 }
 
+void DapDataLocal::saveEncryptedString(QString key, QString string){
+
+    QSettings settings;
+    initDapKey();
+    QByteArray tempStringIn = string.toUtf8(), tempStringOut;
+    dapKey->encode(tempStringIn, tempStringOut);
+    settings.setValue(key, tempStringOut);
+}
+
+QString DapDataLocal::getDecryptedString(QString key){
+    QSettings settings;
+    initDapKey();
+    QByteArray stringIn = settings.value(key).toByteArray(), stringOut;
+    if (stringIn.isEmpty())
+        return "";
+    dapKey->decode(stringIn, stringOut);
+    return QString(stringOut);
+}
+
+bool DapDataLocal::initDapKey(){
+
+    QSettings settings;
+    if (settings.value("key").toString().isEmpty()){
+        settings.setValue("key", GetRandomString(40));
+    }
+
+    dapKey = new DapKeyAes();
+    QString kexString = settings.value("key").toString() + "SLKJGN234njg6vlkkNS3s5dfzkK5O54jhug3KUifw23";
+    dapKey->init(QString(kexString));
+}
+
+QString DapDataLocal::GetRandomString(int size)
+{
+   const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+   const int randomStringLength = size;
+
+   QString randomString;
+   for(int i=0; i < randomStringLength; ++i){
+       int index = qrand() % possibleCharacters.length();
+       QChar nextChar = possibleCharacters.at(index);
+       randomString.append(nextChar);
+   }
+   return randomString;
+}
+
 /// Get server name by its address.
 /// @param address Server address.
 /// @return Server name.

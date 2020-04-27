@@ -7,6 +7,7 @@
 #include <QPair>
 #include <QSettings>
 #include "DapServerInfo.h"
+#include "DapKeyAes.h"
 
 #define SERVER_LIST_FILE "vpn-servers.xml"
 
@@ -54,6 +55,10 @@ public:
 
     void clearServerList();
 
+    void saveEncryptedString(QString, QString);
+    QString getDecryptedString(QString);
+
+
 public slots:
     void setServerName(const QString &serverName);
 
@@ -64,6 +69,10 @@ private:
     QList<DapServerInfo> m_servers;
 
     void parseXML(const QString& a_fname);
+
+    DapKeyAes *dapKey = Q_NULLPTR;
+    bool initDapKey();
+    QString GetRandomString(int);
     
 signals:
     /// Signal emitted if login has changed.
