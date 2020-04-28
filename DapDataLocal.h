@@ -70,7 +70,7 @@ private:
 
     void parseXML(const QString& a_fname);
 
-    DapKeyAes *dapKey = Q_NULLPTR;
+    DapKeyAes *secretKey = Q_NULLPTR;
     bool initSecretKey();
     QString getRandomString(int);
     
