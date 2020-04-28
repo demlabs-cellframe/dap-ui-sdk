@@ -5,18 +5,12 @@
 
 CustomButtonDelegate::CustomButtonDelegate(QWidget* a_parent)
     : WidgetDelegateBase(a_parent)
-    , m_topMargin(new QWidget(this))
     , m_button(new CustomPlacementButton(this))
-    , m_bottomMargin(new QWidget(this))
 {
-    this          ->setObjectName("wgtCustomButtonDelegate");
-    m_topMargin   ->setObjectName("wgtTopMargin");
+    this          ->setObjectName("frmCustomButtonDelegate");
     m_button      ->setObjectName("btnCustomButton");
-    m_bottomMargin->setObjectName("wgtBottomMargin");
 
-    this->layout()->addWidget(m_topMargin);
     this->layout()->addWidget(m_button);
-    this->layout()->addWidget(m_bottomMargin);
     layout()->setMargin(0);
     layout()->setSpacing(0);
 
@@ -44,11 +38,6 @@ CustomPlacementButton *CustomButtonDelegate::button()
 {
     return m_button;
 }
-
-//bool CustomPlacementButtonDelegate::selected() const
-//{
-//    return m_selected;
-//}
 
 void CustomButtonDelegate::setSelected(bool a_selected)
 {

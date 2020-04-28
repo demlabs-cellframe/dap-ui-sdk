@@ -14,15 +14,10 @@ public:
 
     CustomPlacementButton* button();
 
-//    bool selected() const;
     virtual void setSelected(bool a_selected) override;
 
 private:
-    QWidget *m_topMargin;
     CustomPlacementButton* m_button;
-    QWidget *m_bottomMargin;
-//    bool m_selected;
-
 };
 
 #endif // CUSTOMBUTTONDELEGATE_H

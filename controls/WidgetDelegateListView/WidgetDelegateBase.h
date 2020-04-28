@@ -1,10 +1,10 @@
 #ifndef WIDGETDELEGATEBASE_H
 #define WIDGETDELEGATEBASE_H
 
-#include <QWidget>
+#include <QFrame>
 #include <QBoxLayout>
 
-class WidgetDelegateBase : public QWidget
+class WidgetDelegateBase : public QFrame
 {
     Q_OBJECT
 public:
