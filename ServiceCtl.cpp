@@ -36,17 +36,17 @@ bool ServiceCtl::startService(){
     qDebug() << "[ServiceCtl] startService()";
     for (int i; i < 2; i++){
 #ifdef Q_OS_WIN
-        int ret = exec_silent("sc start KelvinVPNService");
+        int ret = exec_silent("sc start " DAP_BRAND "Service");
 #else
-        int ret = ::system("systemctl start KelvinVPNService");
+        int ret = ::system("systemctl start " DAP_BRAND "Service");
 #endif
         if (!ret) {
-            qDebug() << "[ServiceCtl] Start KelvinVPNService";
+            qDebug() << "[ServiceCtl] Start " DAP_BRAND "Service";
             bServiceIsOn = true;
             serviceRestartCounter++;
             return true;
         } else {
-            qCritical() << "[ServiceCtl] KelvinVPNService not starting";
+            qCritical() << "[ServiceCtl] " DAP_BRAND "Service not starting";
         }
     }
     return false;
