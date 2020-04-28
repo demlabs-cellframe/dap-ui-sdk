@@ -2,7 +2,6 @@
 
 CustomLineEdit::CustomLineEdit(QWidget *parent):CustomLineEditBase (parent)
 {
-
     connect(btnControl,&QPushButton::clicked,[=]{
         this->clear();
         setVisibleButton(false);

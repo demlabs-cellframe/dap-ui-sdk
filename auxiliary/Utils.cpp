@@ -39,9 +39,9 @@ namespace Utils
 
     void setPropertyAndUpdateStyle(QWidget *a_widget, const QString &a_property, const QVariant &a_value /*= true*/)
     {
-        const char* property = a_property.toStdString().c_str();
-
-        Utils::setPropertyAndUpdateStyle(a_widget, property, a_value);
+        QByteArray l_tempStr = a_property.toLatin1();
+        const char* l_property = l_tempStr.constData();
+        Utils::setPropertyAndUpdateStyle(a_widget, l_property, a_value);
     }
 
     void setPropertyAndUpdateStyle(QWidget *a_widget, const char* a_property, const QVariant &a_value /*= true*/)
