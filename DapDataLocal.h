@@ -55,8 +55,8 @@ public:
 
     void clearServerList();
 
-    void saveEncryptedString(QString, QString);
-    QString getDecryptedString(QString);
+    void saveSecretString(QString, QString);
+    QString getSecretString(QString);
 
 
 public slots:
@@ -71,8 +71,8 @@ private:
     void parseXML(const QString& a_fname);
 
     DapKeyAes *dapKey = Q_NULLPTR;
-    bool initDapKey();
-    QString GetRandomString(int);
+    bool initSecretKey();
+    QString getRandomString(int);
     
 signals:
     /// Signal emitted if login has changed.
