@@ -144,9 +144,17 @@ void ScreenLogin::reloadServers(void)
 /// false - if the fields are incorrect.
 bool ScreenLogin::checkField() const
 {
-    return edMail->text().isEmpty() || edMail->text().isNull() || 
-            edPassword->text().isEmpty() || edPassword->text().isNull()
-             ? false : true;
+    if (edMail->text().isNull() || edPassword->text().isNull())
+        return false;
+
+    if (edMail->text().isEmpty()){
+        edMail->setFocus();
+        return false;
+    }else if (edPassword->text().isEmpty()){
+        edPassword->setFocus();
+        return false;
+    }
+    return true;
 }
 
 /// Check login and password for correct input.
