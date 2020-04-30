@@ -35,22 +35,18 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
 {
     CustomLineHeightLabel   *lblStatusMessage   = a_widget->findChild<CustomLineHeightLabel*>(LBL_STATUS_MESSAGE);  Q_ASSERT(lblStatusMessage);
     QPushButton             *btnSend            = a_widget->findChild<QPushButton*>(BTN_SEND);                      Q_ASSERT(btnSend);
-    QLineEdit               *edtEmail           = a_widget->findChild<QLineEdit*>(EDT_EMAIL);                       Q_ASSERT(edtEmail);
-    CustomLineHeightTextEdit *edtMessage        = a_widget->findChild<CustomLineHeightTextEdit*>(EDT_MESSAGE);      Q_ASSERT(edtMessage);
+    CustomTextEdit          *edtMessage         = a_widget->findChild<CustomTextEdit*>(EDT_MESSAGE);                Q_ASSERT(edtMessage);
 
 #ifdef Q_OS_ANDROID
 
     QLabel                  *lblCaption         = a_widget->findChild<QLabel*>(LBL_CAPTION);                        Q_ASSERT(lblCaption);
-    lblCaption->setAlignment(Qt::AlignJustify);
+    CustomLineEdit          *edtEmail           = a_widget->findChild<CustomLineEdit*>(EDT_EMAIL );                 Q_ASSERT(edtEmail);
 
-    //Change color after editing
-    connect(edtEmail,&QLineEdit::editingFinished,[=]{
-        setChildProperties("edtEmail","state","endEdit");
-        updateChildStyle("edtEmail");
-    });
+    lblCaption->setAlignment(Qt::AlignJustify);
 
     edtEmail->setPlaceholderText("e-mail");
 #else
+    QLineEdit               *edtEmail           = a_widget->findChild<QLineEdit*>(EDT_EMAIL);                       Q_ASSERT(edtEmail);
     QLayout                 *vltBugReport = a_widget->findChild<QLayout*>(VLT_BUG_REPORT);                          Q_ASSERT(vltBugReport);
     btnSend->setGraphicsEffect(new StyledDropShadowEffect(btnSend));
     edtEmail->setPlaceholderText("Your email");
@@ -72,7 +68,7 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
     connect(edtEmail, &QLineEdit::textChanged, [=](){
             Utils::setPropertyAndUpdateStyle(edtEmail, Properties::WRONG, false);
         });
-    connect(edtMessage, &CustomLineHeightTextEdit::textChanged, [=](){
+    connect(edtMessage, &CustomTextEdit::textChanged, [=](){
             emit this->reportEdited(edtMessage->toPlainText());
             Utils::setPropertyAndUpdateStyle(edtMessage, Properties::WRONG, false);
         });

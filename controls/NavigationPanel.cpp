@@ -32,6 +32,8 @@ void NavigationPanel::initVariantUi(QWidget *a_widget)
     this->connectBtnToSignall(BTN_BUG     , &NavigationPanel::goToBugReport, a_widget);
     this->connectBtnToSignall(BTN_HELP    , &NavigationPanel::goToFAQ      , a_widget)->hide();
     this->connectBtnToSignall(BTN_SETTINGS, &NavigationPanel::goToSettings , a_widget);
+    QPushButton* btBug     ; Utils::findChild(a_widget, BTN_BUG     , btBug);
+    btBug->setVisible(false);
 #endif
 }
 
