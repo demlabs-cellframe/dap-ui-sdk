@@ -135,7 +135,6 @@ else {
         $$PWD/ui/desktop/MainScreen.ui \
         $$PWD/ui/desktop/SettingsScreen.ui \
         $$PWD/ui/desktop/NavigationPanel.ui\
-        $$PWD/ui/desktop/SignUpScreen.ui\
-        $$PWD/ui/desktop/MainScreen.ui
+        $$PWD/ui/desktop/SignUpScreen.ui
 }
 

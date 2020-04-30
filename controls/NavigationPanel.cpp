@@ -46,5 +46,6 @@ void NavigationPanel::setState(NavigationPanel::States a_state)
         this->activateScreen<NavigationPanelBack>();
 
 #else
+    Q_UNUSED(a_state)
 #endif
 }
