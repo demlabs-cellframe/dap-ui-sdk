@@ -5,7 +5,6 @@ SOURCES += \
     $$PWD/CustomButtonComboBox.cpp \
     $$PWD/CustomComboBoxPopup.cpp \
     $$PWD/CustomLineHeightLabel.cpp \
-    $$PWD/CustomLineHeightTextEdit.cpp \
     $$PWD/CustomPlacementButton.cpp \
     $$PWD/CustomPopup.cpp \
     $$PWD/CustomPopupComboBox.cpp \
@@ -22,7 +21,8 @@ SOURCES += \
     $$PWD/CustomLineEdit.cpp \
     $$PWD/PasswordLineEdit.cpp \
     $$PWD/CustomButtonAbstract.cpp \
-    $$PWD/ClickableLabel.cpp
+    $$PWD/ClickableLabel.cpp \
+    $$PWD/CustomTextEdit.cpp
 
 HEADERS += \
     $$PWD/AdaptiveWidget.h \
@@ -31,7 +31,6 @@ HEADERS += \
     $$PWD/CustomButtonComboBox.h \
     $$PWD/CustomComboBoxPopup.h \
     $$PWD/CustomLineHeightLabel.h \
-    $$PWD/CustomLineHeightTextEdit.h \
     $$PWD/CustomPlacementButton.h \
     $$PWD/CustomPopup.h \
     $$PWD/CustomPopupComboBox.h \
@@ -48,7 +47,8 @@ HEADERS += \
     $$PWD/CustomLineEdit.h \
     $$PWD/PasswordLineEdit.h \
     $$PWD/CustomButtonAbstract.h \
-    $$PWD/ClickableLabel.h
+    $$PWD/ClickableLabel.h \
+    $$PWD/CustomTextEdit.h
 
 INCLUDEPATH += $$PWD
 INCLUDEPATH += $$PWD/WidgetDelegateListView
