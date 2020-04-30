@@ -174,10 +174,11 @@ bool SignInScreen::checkEmail()
 void SignInScreen::setValidationStateForEdit(const QString &a_editName, const QString &a_errorLabelName, bool a_valid /*= true*/)
 {
     qDebug() << Properties::VALID << " = " << a_valid;
-    this->setChildProperties(a_editName, Properties::VALID, a_valid);
-    this->setChildProperties(a_errorLabelName, qPrintable(Properties::VISIBLE), !a_valid);
+    this->setChildProperties(a_editName, qPrintable(Properties::WRONG), !a_valid);
+    this->setChildProperties(a_errorLabelName, qPrintable(Properties::WRONG), !a_valid);
 
     updateChildStyle(a_editName);
+    updateChildStyle(a_errorLabelName);
 }
 
 QString SignInScreen::buttonText(ConnectionStates a_connectionState)

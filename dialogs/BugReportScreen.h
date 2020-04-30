@@ -10,9 +10,10 @@
 #include "vpnDefine.h"
 #include "ui_BugReportScreen.h"
 #include "CustomLineHeightLabel.h"
-#include "CustomLineHeightTextEdit.h"
 #include "defines.h"
 #include "StyledDropShadowEffect.h"
+#include "CustomLineEdit.h"
+#include "CustomTextEdit.h"
 
 class BugReportScreen : public AdaptiveScreen
 {
