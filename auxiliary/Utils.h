@@ -46,7 +46,8 @@ inline T Utils::findChild(QObject* a_parentObj, const QString &a_objectName)
                 .arg(a_objectName)
                 .arg(a_parentObj->objectName());
         qDebug() << errorMsg;
-        qFatal(errorMsg.toLatin1().data());
+        QByteArray tmpString = errorMsg.toLatin1();
+        qFatal("%s", tmpString.data());
     }
 
     return l_foundObject;
