@@ -139,7 +139,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="lblForgetPass">
+    <widget class="QLabel" name="lblForgotPass">
      <property name="text">
       <string>Forgot password?</string>
      </property>

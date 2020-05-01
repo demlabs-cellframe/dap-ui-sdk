@@ -36,8 +36,8 @@ protected:
 
 signals:
 
-    void transitionTo_SignIn();
-    void transitionTo_SignUp();
+    void goToSignIn();
+    void goToSignUp();
 
 };
 

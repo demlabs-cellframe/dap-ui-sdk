@@ -53,13 +53,13 @@ void StartScreen::initVariantUi(QWidget *a_widget)
 connect(l_btnSignIn, &QPushButton::clicked, [this]
     {
         qDebug()<<"clicked";
-        emit this->transitionTo_SignIn();
+        emit this->goToSignIn();
     });
 
-    connect(l_btnSignUp, &QPushButton::clicked, [l_btnSignUp, this]
+    connect(l_btnSignUp, &QPushButton::clicked, [this]
     {
         qDebug()<<"go to signUp clicked";
-        emit this->transitionTo_SignUp();
+        emit this->goToSignUp();
     });
 #endif
 }

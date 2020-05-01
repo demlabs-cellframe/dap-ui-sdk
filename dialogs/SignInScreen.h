@@ -51,7 +51,7 @@ signals:
 
     void signInRequest();
 
-    void transitionTo_SignUp();
+    void goToSignUp();
 protected:
 
     virtual void initVariantUi(QWidget *a_widget) override;
@@ -66,15 +66,17 @@ private:
     void setValidationStateForEdit(const QString& a_editName, const QString& a_errorLabelName, bool a_valid = true);
     QString buttonText(ConnectionStates a_connectionState);
 
-    const QString EDT_EMAIL_NAME     =  "edtEmail";
-    const QString EDT_PASSWORD_NAME  =  "edtPassword";
-    const QString BTN_SIGN_IN_NAME   =  "btnSignIn";
-    const QString LBL_EMAIL_ERROR    =  "lblEmailError";
-    const QString LBL_PASSWORD_ERROR =  "lblPasswordError";
-    const QString BTN_SHOW_PASSWORD  =  "btnShowPassword";
-    const QString BTN_CLEAR_EMAIL    =  "btnClearEmail";
-    const QString CBB_SERVER         =  "cbbServer";
-    const QString LBL_SIGN_UP        =  "lblSignUp";
+    const QString EDT_EMAIL_NAME     = "edtEmail";
+    const QString EDT_PASSWORD_NAME  = "edtPassword";
+    const QString BTN_SIGN_IN_NAME   = "btnSignIn";
+    const QString LBL_EMAIL_ERROR    = "lblEmailError";
+    const QString LBL_PASSWORD_ERROR = "lblPasswordError";
+    const QString BTN_SHOW_PASSWORD  = "btnShowPassword";
+    const QString BTN_CLEAR_EMAIL    = "btnClearEmail";
+    const QString CBB_SERVER         = "cbbServer";
+    const QString LBL_SIGN_UP        = "lblSignUp";
+    const QString LBL_FORGOT_PASS    = "lblForgotPass";
+
 
     QStateMachine *m_inputStates;
     QState *m_stt_email;

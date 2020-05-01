@@ -75,14 +75,12 @@ void SignInScreen::setErrorMessage(const QString &a_errorMsg)
 
     if (a_errorMsg == "Incorrect password")
     {
-#ifdef Q_OS_ANDROID
-
-#else
+#ifndef Q_OS_ANDROID
         setChildProperties(LBL_PASSWORD_ERROR, Properties::TEXT, a_errorMsg);
         setValidationStateForEdit(EDT_PASSWORD_NAME, LBL_PASSWORD_ERROR, false);
 
         emit wrongPassword();
-        #endif
+#endif
     }
     else
     {
@@ -103,12 +101,16 @@ void SignInScreen::checkFieldsAndSignIn()
 
 void SignInScreen::initVariantUi(QWidget *a_widget)
 {
-    QPushButton         *btnSignIn      = a_widget->findChild<QPushButton*>(BTN_SIGN_IN_NAME  );      Q_ASSERT(btnSignIn);
-    QLabel              *lblEmailError  = a_widget->findChild<QLabel     *>(LBL_EMAIL_ERROR   );      Q_ASSERT(lblEmailError);
-    ClickableLabel      *lblSignUp      = a_widget->findChild<ClickableLabel*>(LBL_SIGN_UP );         Q_ASSERT(lblSignUp);
-    CustomButtonComboBox *cbbServer  ; Utils::findChild(a_widget, CBB_SERVER       , cbbServer  );
-    QLineEdit            *edtEmail   ; Utils::findChild(a_widget, EDT_EMAIL_NAME   , edtEmail   );
-    QLineEdit            *edtPassword; Utils::findChild(a_widget, EDT_PASSWORD_NAME, edtPassword);
+    QPushButton    *btnSignIn      = a_widget->findChild<QPushButton*>(BTN_SIGN_IN_NAME  );      Q_ASSERT(btnSignIn);
+    QLabel         *lblEmailError  = a_widget->findChild<QLabel     *>(LBL_EMAIL_ERROR   );      Q_ASSERT(lblEmailError);
+    ClickableLabel *lblSignUp      = a_widget->findChild<ClickableLabel*>(LBL_SIGN_UP );         Q_ASSERT(lblSignUp);
+    ComboBox       *cbbServer    ; Utils::findChild(a_widget, CBB_SERVER       , cbbServer  );
+    QLineEdit      *edtEmail     ; Utils::findChild(a_widget, EDT_EMAIL_NAME   , edtEmail   );
+    QLineEdit      *edtPassword  ; Utils::findChild(a_widget, EDT_PASSWORD_NAME, edtPassword);
+
+    QLabel         *lblForgotPass; Utils::findChild(a_widget, LBL_FORGOT_PASS  , lblForgotPass);
+    lblForgotPass->setText("");
+
 
     if (!m_serversModel)
     {
@@ -125,28 +127,13 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     }
     else
         cbbServer->setModel(m_serversModel);
-
-#ifdef Q_OS_ANDROID
-//    CustomLineEdit          *edtEmail       = a_widget->findChild<CustomLineEdit*>("edtEmail"   );      Q_ASSERT(edtEmail);
-//    PasswordLineEdit        *edtPassword    = a_widget->findChild<PasswordLineEdit*>(EDT_PASSWORD_NAME ); Q_ASSERT(edtPassword);
-
-//    CustomButtonComboBox   *cbbServer              = a_widget->findChild<CustomButtonComboBox     *>(CBB_SERVER   ); Q_ASSERT(cbbServer);
-
-
-    cbbServer->setButtonControll(new CustomPlacementButton(cbbServer));
-
     cbbServer->QComboBox::setCurrentText(DapDataLocal::me()->serverName());
-
-#else
-    QLabel      *lblPasswordError = a_widget->findChild<QLabel     *>(LBL_PASSWORD_ERROR); Q_ASSERT(lblPasswordError);
-    btnSignIn->setGraphicsEffect(new StyledDropShadowEffect(btnSignIn));
-#endif
 
     connect(cbbServer  , SIGNAL(activated(int))            , this, SIGNAL(serverChanged(int)));
     connect(edtEmail   , SIGNAL(textEdited(const QString&)), this, SIGNAL(emailEdited   (const QString&)));
     connect(edtPassword, SIGNAL(textEdited(const QString&)), this, SIGNAL(passwordEdited(const QString&)));
     connect(btnSignIn  , SIGNAL(clicked())                 , this, SLOT  (checkFieldsAndSignIn()));
-    connect(lblSignUp  , SIGNAL(clicked())                 , this, SIGNAL(transitionTo_SignUp()) );
+    connect(lblSignUp  , SIGNAL(clicked())                 , this, SIGNAL(goToSignUp()) );
 }
 
 bool SignInScreen::checkPassword()
