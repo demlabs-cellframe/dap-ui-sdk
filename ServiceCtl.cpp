@@ -7,7 +7,9 @@
 #endif
 #include "ServiceCtl.h"
 #include "dap_common.h"
+#ifdef Q_OS_WIN
 #include "registry.h"
+#endif
 
 
 ServiceCtl::ServiceCtl(DapJsonCmdController* controller, QObject *parent)
