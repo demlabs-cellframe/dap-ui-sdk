@@ -107,8 +107,8 @@ void ScreenLogin::initUi(QWidget * a_w,ScreenRotation a_rotation)
 
             QSettings settings;
             settings.setValue("dsi.name", dsi.name);
-            DapDataLocal::me()->saveEncryptedString("username", edMail->text());
-            DapDataLocal::me()->saveEncryptedString("password", edPassword->text());
+            DapDataLocal::me()->saveSecretString("username", edMail->text());
+            DapDataLocal::me()->saveSecretString("password", edPassword->text());
             settings.setValue("saveduserdata", "true");
             emit reqConnect(dsi, edMail->text(), edPassword->text());
         }
@@ -119,8 +119,8 @@ void ScreenLogin::initUi(QWidget * a_w,ScreenRotation a_rotation)
 
     QSettings settings;
     if (settings.value("saveduserdata").toString() == "true"){
-        edMail->setText(DapDataLocal::me()->getDecryptedString("username"));
-        edPassword->setText(DapDataLocal::me()->getDecryptedString("password"));
+        edMail->setText(DapDataLocal::me()->getSecretString("username"));
+        edPassword->setText(DapDataLocal::me()->getSecretString("password"));
     }
 }
 
