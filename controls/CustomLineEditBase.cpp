@@ -43,6 +43,15 @@ void CustomLineEditBase::setWrongState(bool a_wrong)
 void CustomLineEditBase::focusOutEvent(QFocusEvent *e)
 {
     Utils::setPropertyAndUpdateStyle(this, Properties::ACTIVE,false);
+
+    if(text().isEmpty())
+    {
+        Utils::setPropertyAndUpdateStyle(this, Properties::FILLED,false);
+    }
+    else
+    {
+        Utils::setPropertyAndUpdateStyle(this, Properties::FILLED,true);
+    }
     QLineEdit::focusOutEvent(e);
 }
 
@@ -52,15 +61,3 @@ void CustomLineEditBase::focusInEvent(QFocusEvent *e)
     QLineEdit::focusInEvent(e);
 }
 
-void CustomLineEditBase::inputMethodEvent(QInputMethodEvent *event)
-{
-    if(text().isEmpty())
-    {
-        Utils::setPropertyAndUpdateStyle(this, Properties::FILLED,false);
-    }
-    else
-    {
-        Utils::setPropertyAndUpdateStyle(this, Properties::FILLED,true);
-    }
-    QLineEdit::inputMethodEvent(event);
-}
