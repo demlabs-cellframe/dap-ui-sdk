@@ -14,7 +14,9 @@ QWidget *AdaptiveWidget::variant(ScreenInfo::Rotation a_rotation /*= ScreenInfo:
 void AdaptiveWidget::setChildProperties(const QString &a_objName, const QString &a_property, const QVariant &a_value)
 {
     for (auto widget : getTheSameWidgets<QWidget>(a_objName)) {
-        widget->setProperty(a_property.toLatin1().constData(), a_value);
+        QByteArray l_property = a_property.toLatin1().constData();
+        if(widget->property(l_property) != a_value)
+            widget->setProperty(l_property, a_value);
     }
 }
 

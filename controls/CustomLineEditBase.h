@@ -64,7 +64,7 @@ public:
 protected:
     void focusOutEvent(QFocusEvent *e);
     void focusInEvent(QFocusEvent *e);
-    void inputMethodEvent(QInputMethodEvent *event);
+
 
     /// Sets the visibility of the icon.
     /// @param a_visible This parameter is taken from css settings.
