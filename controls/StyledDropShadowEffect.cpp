@@ -1,6 +1,6 @@
 #include "StyledDropShadowEffect.h"
 #include "AppStyleSheetHandler.h"
-#include "Utils.h"
+#include "../Utils.h"
 
 StyledDropShadowEffect::StyledDropShadowEffect(QObject *a_parent /*= Q_NULLPTR*/)
     :QGraphicsDropShadowEffect(a_parent)
