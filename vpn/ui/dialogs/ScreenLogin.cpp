@@ -18,7 +18,7 @@ ScreenLogin::ScreenLogin(QObject * a_parent, QStackedWidget * a_sw)
 #ifdef Q_OS_ANDROID
     create<Ui::LoginMobile>();
 #else
-    create<Ui::Login, Ui::LoginSmall, Ui::LoginBig>();
+    create<Ui::Login>();
 #endif
 /*
     QWidget * cbUpstreamHor=getWidget("cbUpstream",Hor);
@@ -103,13 +103,9 @@ void ScreenLogin::initUi(QWidget * a_w,ScreenRotation a_rotation)
         }
         else
         {
-            DapServerInfo dsi = cbUpstream->currentData().value<DapServerInfo>();
-
             QSettings settings;
+            DapServerInfo dsi = cbUpstream->currentData().value<DapServerInfo>();
             settings.setValue("dsi.name", dsi.name);
-            DapDataLocal::me()->saveSecretString("username", edMail->text());
-            DapDataLocal::me()->saveSecretString("password", edPassword->text());
-            settings.setValue("saveduserdata", "true");
             emit reqConnect(dsi, edMail->text(), edPassword->text());
         }
     });
@@ -118,10 +114,9 @@ void ScreenLogin::initUi(QWidget * a_w,ScreenRotation a_rotation)
     cbUpstream->setItemDelegate(new ComboBoxDelegate(cbUpstream, cbUpstream));
 
     QSettings settings;
-    if (settings.value("saveduserdata").toString() == "true"){
-        edMail->setText(DapDataLocal::me()->getSecretString("username"));
-        edPassword->setText(DapDataLocal::me()->getSecretString("password"));
-    }
+    edMail->setText(settings.value("username").toString());
+    edPassword->setText(settings.value("password").toString());
+
 }
 
 /**
@@ -142,19 +137,15 @@ void ScreenLogin::reloadServers(void)
 /// Check field filling.
 /// @return Returns true - if the fields are correct, 
 /// false - if the fields are incorrect.
-bool ScreenLogin::checkField() const
+bool ScreenLogin::checkField()
 {
-    if (edMail->text().isNull() || edPassword->text().isNull())
-        return false;
+    edMail = getWidgetCustom<QLineEdit>("edMail", rotation());
+    edPassword = getWidgetCustom<QLineEdit>("edPassword", rotation());
 
-    if (edMail->text().isEmpty()){
-        edMail->setFocus();
-        return false;
-    }else if (edPassword->text().isEmpty()){
-        edPassword->setFocus();
-        return false;
-    }
-    return true;
+    qDebug()<<"checkFields" << edMail->text() << "; " << edMail->text();
+    return edMail->text().isEmpty() || edMail->text().isNull() || 
+            edPassword->text().isEmpty() || edPassword->text().isNull()
+             ? false : true;
 }
 
 /// Check login and password for correct input.

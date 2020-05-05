@@ -21,6 +21,21 @@ void DapCmdStates::sendCmd()
     DapCmdClientAbstract::sendCmd();
 }
 
+DapIndicator *DapCmdStates::sessionIndicator() const
+{
+    return m_session;
+}
+
+DapIndicator *DapCmdStates::streamIndicator() const
+{
+    return m_stream;
+}
+
+DapIndicator *DapCmdStates::tunnelIndicator() const
+{
+    return m_tunnel;
+}
+
 DapCmdStates::~DapCmdStates()
 {
 

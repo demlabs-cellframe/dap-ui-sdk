@@ -2,13 +2,14 @@
 <ui version="4.0">
  <class>StartScreen</class>
  <widget class="QWidget" name="StartScreen">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>195</width>
-    <height>251</height>
-   </rect>
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -40,7 +41,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="lblMessage">
+    <widget class="CustomLineHeightLabel" name="lblMessage">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -48,8 +49,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>You're seconds away from
-a safer Internet</string>
+      <string>You're seconds away from&lt;br&gt;a safer Internet</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -113,6 +113,13 @@ a safer Internet</string>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CustomLineHeightLabel</class>
+   <extends>QLabel</extends>
+   <header>CustomLineHeightLabel.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

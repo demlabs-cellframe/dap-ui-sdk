@@ -53,7 +53,7 @@ protected:
     /// Check field filling.
     /// @return Returns true - if the fields are correct, 
     /// false - if the fields are incorrect.
-    inline bool checkField() const;
+    inline bool checkField();
     /// Check login and password for correct input.
     /// @return Returns true if the login or password is entered correctly, otherwise - false.
     inline bool checkUserData() const;

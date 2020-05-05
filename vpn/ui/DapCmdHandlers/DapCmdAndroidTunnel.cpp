@@ -11,7 +11,7 @@ void DapCmdAndroidTunnel::handleResult(const QJsonObject &result)
     auto addr = result["address"].toString();
     auto gw = result["gateway"].toString();
     auto socket = result["socket"].toInt();
-
+    qDebug() << "Command to connect";
     emit asked(addr, gw, socket);
 }
 

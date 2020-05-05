@@ -13,7 +13,7 @@ ScreenForgotPassword::ScreenForgotPassword(QObject * a_parent, QStackedWidget * 
     // TODO: creating mobile version forms.
 #else
     // Creating a window.
-    create<Ui::ForgotPassword,Ui::ForgotPasswordSmall,Ui::ForgotPasswordBig>();
+    create<Ui::ForgotPassword>();
 #endif
     
 }

@@ -1,6 +1,10 @@
 SOURCES += \
     $$PWD/AccountScreen.cpp \
-    $$PWD/ForgetPasswordScreen.cpp \
+    $$PWD/BugReportScreen.cpp \
+    $$PWD/FAQScreen.cpp \
+    $$PWD/MainScreen.cpp \
+    $$PWD/MainScreenLayout.cpp \
+    $$PWD/PasswordRecoveryScreen.cpp \
     $$PWD/ScreenLogin.cpp \
     $$PWD/ScreenDashboard.cpp \
     $$PWD/ScreenForgotPassword.cpp \
@@ -10,13 +14,18 @@ SOURCES += \
     $$PWD/SettingsMoreMenu.cpp \
     $$PWD/ScreenLoginLayout.cpp \
     $$PWD/DialogEditServer.cpp \
+    $$PWD/SettingsScreen.cpp \
     $$PWD/SignInScreen.cpp \
     $$PWD/SignUpScreen.cpp \
     $$PWD/StartScreen.cpp
 
 HEADERS  += \
     $$PWD/AccountScreen.h \
-    $$PWD/ForgetPasswordScreen.h \
+    $$PWD/BugReportScreen.h \
+    $$PWD/FAQScreen.h \
+    $$PWD/MainScreen.h \
+    $$PWD/MainScreenLayout.h \
+    $$PWD/PasswordRecoveryScreen.h \
     $$PWD/ScreenLogin.h \
     $$PWD/ScreenDashboard.h \
     $$PWD/ScreenForgotPassword.h \
@@ -26,6 +35,7 @@ HEADERS  += \
     $$PWD/SettingsMoreMenu.h \
     $$PWD/ScreenLoginLayout.h \
     $$PWD/DialogEditServer.h \
+    $$PWD/SettingsScreen.h \
     $$PWD/SignInScreen.h \
     $$PWD/SignUpScreen.h \
     $$PWD/StartScreen.h

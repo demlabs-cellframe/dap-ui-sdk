@@ -6,48 +6,29 @@
 #include <QtAndroidExtras/QAndroidJniObject>
 #endif
 #include "ServiceCtl.h"
-#include "dap_common.h"
+
 
 ServiceCtl::ServiceCtl(DapJsonCmdController* controller, QObject *parent)
     : DapServiceClient("DAP_SERVICE_NAME", parent), m_controller(controller)
 {
     Q_ASSERT(controller);
+    tmRestart = new QTimer(this);
 
     connect(m_controller, &DapJsonCmdController::sendDapCmd,
             this, &DapServiceClient::sendCmd);
 
     connect(this,&ServiceCtl::ctlConnected, [=]{
         qInfo() << "[ServiceCtl] Connected to ctl socket,request for status";
-        bServiceIsOn = true;
+        tmRestart->stop();
     });
     
     connect(this,&ServiceCtl::ctlDisconnected, [=]{
-
         qInfo() << "[ServiceCtl] Disconnected from backend";
-        bServiceIsOn = false;
+        tmRestart->start(2000);
         startReconnectingToService();
-        startService();
     });
-}
 
-bool ServiceCtl::startService(){
-    qDebug() << "[ServiceCtl] startService()";
-    for (int i; i < 2; i++){
-#ifdef Q_OS_WIN
-        int ret = exec_silent("sc start " DAP_BRAND "Service");
-#else
-        int ret = ::system("systemctl start " DAP_BRAND "Service");
-#endif
-        if (!ret) {
-            qDebug() << "[ServiceCtl] Start " DAP_BRAND "Service";
-            bServiceIsOn = true;
-            serviceRestartCounter++;
-            return true;
-        } else {
-            qCritical() << "[ServiceCtl] " DAP_BRAND "Service not starting";
-        }
-    }
-    return false;
+    connect(tmRestart, &QTimer::timeout, [=]{ restartService(); });
 }
 
 void ServiceCtl::procCmdController(const QByteArray &a_cmd)
