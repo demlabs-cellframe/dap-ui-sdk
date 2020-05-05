@@ -12,8 +12,7 @@ SOURCES += \
     $$PWD/DapUiScreen.cpp\
     $$PWD/schedule.cpp\
     $$PWD/schedules.cpp\
-    $$PWD/SideBar.cpp\
-    $$PWD/Utils.cpp
+    $$PWD/SideBar.cpp
 
 
 HEADERS  += \
@@ -22,11 +21,15 @@ HEADERS  += \
     $$PWD/DapUiDialog.h\
     $$PWD/DapUiMainWindow.h\
     $$PWD/DapUiScreen.h\
+    $$PWD/UiScaling.h \
     $$PWD/schedule.h\
     $$PWD/schedules.h\
-    $$PWD/SideBar.h\
-    $$PWD/Utils.h
+    $$PWD/SideBar.h
 
-include( controls/controls.pri)
+include(auxiliary/auxiliary.pri)
+include(controls/controls.pri)
+include(screens/screens.pri)
 
 INCLUDEPATH += $$PWD
+
+DISTFILES +=
