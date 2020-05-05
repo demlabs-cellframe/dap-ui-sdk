@@ -1,0 +1,34 @@
+<RCC>
+    <qresource prefix="/">
+        <file>widgets/DapButton.qml</file>
+        <file>widgets/DapButtonForm.ui.qml</file>
+        <file>widgets/DapComboBox.qml</file>
+        <file>widgets/DapComboBoxForm.ui.qml</file>
+        <file>widgets/DapMainWindow.qml</file>
+        <file>widgets/DapMainWindowForm.ui.qml</file>
+        <file>widgets/DapMenuTabWidget.qml</file>
+        <file>widgets/DapMenuTabWidgetForm.ui.qml</file>
+        <file>widgets/DapPanelForm.ui.qml</file>
+        <file>widgets/DapRightPanel.qml</file>
+        <file>widgets/DapRightPanelForm.ui.qml</file>
+        <file>widgets/DapScreen.qml</file>
+        <file>widgets/DapScreenForm.ui.qml</file>
+        <file>widgets/DapTab.qml</file>
+        <file>widgets/DapTabForm.ui.qml</file>
+        <file>widgets/DapTopPanel.qml</file>
+        <file>widgets/DapTopPanelForm.ui.qml</file>
+        <file>Device.qml</file>
+        <file>widgets/DapRadioButton.qml</file>
+        <file>widgets/DapRadioButtonForm.ui.qml</file>
+        <file>widgets/DapScrollView.qml</file>
+        <file>widgets/DapScrollViewForm.ui.qml</file>
+        <file>widgets/DapText.qml</file>
+        <file>widgets/DapTextForm.ui.qml</file>
+        <file>widgets/DapScrollViewHandling.qml</file>
+        <file>widgets/DapMessageBox.qml</file>
+        <file>widgets/DapMessageBoxForm.ui.qml</file>
+        <file>DapFont.qml</file>
+        <file>widgets/DapBusyIndicator.qml</file>
+        <file>widgets/DapBusyIndicatorForm.ui.qml</file>
+    </qresource>
+</RCC>
