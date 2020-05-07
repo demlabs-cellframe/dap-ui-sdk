@@ -1,7 +1,7 @@
 #include "NavigationPanelMain.h"
 
 #include "ui_NavigationPanelMain.h"
-#include "Utils.h"
+#include "Utilz.h"
 
 const QString NavigationPanelMain::SCREEN_NAME = "NavigationPanelMain";
 

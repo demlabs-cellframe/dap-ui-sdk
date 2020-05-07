@@ -11,7 +11,7 @@
 #include "ui_SignUpScreen.h"
 #include "CustomLineEdit.h"
 #include "PasswordLineEdit.h"
-#include "Utils.h"
+#include "Utilz.h"
 #include "ClickableLabel.h"
 
 class SignUpScreen : public AdaptiveScreen

@@ -1,5 +1,5 @@
 #include "NavigationPanel.h"
-#include "Utils.h"
+#include "Utilz.h"
 
 
 #ifdef Q_OS_ANDROID

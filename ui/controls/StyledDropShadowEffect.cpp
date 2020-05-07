@@ -1,6 +1,6 @@
 #include "StyledDropShadowEffect.h"
 #include "AppStyleSheetHandler.h"
-#include "Utils.h"
+#include "Utilz.h"
 #include <QWidget>
 
 StyledDropShadowEffect::StyledDropShadowEffect(QObject *a_parent)

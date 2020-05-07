@@ -1,5 +1,5 @@
 #include "MainScreen.h"
-#include "Utils.h"
+#include "Utilz.h"
 
 
 const QString MainScreen::SCREEN_NAME = "Main";
