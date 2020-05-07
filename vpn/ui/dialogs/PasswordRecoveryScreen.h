@@ -11,7 +11,7 @@
 
 #include "ui_PasswordRecoveryScreen.h"
 #include <QStyle>
-#include "Utils.h"
+#include "Utilz.h"
 
 class PasswordRecoveryScreen : public AdaptiveScreen
 {

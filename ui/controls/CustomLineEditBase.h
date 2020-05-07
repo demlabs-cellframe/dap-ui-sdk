@@ -7,7 +7,7 @@
 #include <QHBoxLayout>
 #include <QStyle>
 #include <QSpacerItem>
-#include "Utils.h"
+#include "Utilz.h"
 #include "defines.h"
 #include <QEvent>
 

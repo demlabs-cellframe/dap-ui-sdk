@@ -3,7 +3,7 @@
 #include<QVariant>
 
 #include "defines.h"
-#include "Utils.h"
+#include "Utilz.h"
 #include <QResizeEvent>
 
 WidgetDelegateBase::WidgetDelegateBase(QWidget *parent)

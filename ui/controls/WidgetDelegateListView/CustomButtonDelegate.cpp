@@ -1,7 +1,7 @@
 #include "CustomButtonDelegate.h"
 
 #include "defines.h"
-#include "Utils.h"
+#include "Utilz.h"
 
 CustomButtonDelegate::CustomButtonDelegate(QWidget* a_parent)
     : WidgetDelegateBase(a_parent)

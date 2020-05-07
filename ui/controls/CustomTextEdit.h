@@ -5,7 +5,7 @@
 #include "AppStyleSheetHandler.h"
 #include <QStyle>
 #include "defines.h"
-#include "Utils.h"
+#include "Utilz.h"
 #include <QScroller>
 
 /** @brief QGraphicsDropShadowEffect that can be adjusted from css

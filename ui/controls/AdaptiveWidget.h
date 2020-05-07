@@ -6,7 +6,7 @@
 #include <QState>
 #include <QStyle>
 #include <QPushButton>
-#include "Utils.h"
+#include "Utilz.h"
 
 class AdaptiveWidget : public QStackedWidget
 {
