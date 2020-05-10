@@ -21,7 +21,6 @@ HEADERS  += \
     $$PWD/DapUiDialog.h\
     $$PWD/DapUiMainWindow.h\
     $$PWD/DapUiScreen.h\
-    $$PWD/UiScaling.h \
     $$PWD/schedule.h\
     $$PWD/schedules.h\
     $$PWD/SideBar.h

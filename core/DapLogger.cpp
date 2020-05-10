@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include "dap_common.h"
 #include "DapLogger.h"
 
 DapLogger::DapLogger(QObject *parent, size_t prefix_width)
@@ -53,15 +55,8 @@ void DapLogger::messageHandler(QtMsgType type,
         fileName = (fileName == Q_NULLPTR ? ctx.file : fileName + 1);
         strcpy(prefixBuffer, fileName);
         sprintf(strrchr(prefixBuffer, '.'), ":%d", ctx.line);
-#ifdef DAP_LOG_MT
         _log_it(prefixBuffer, castQtMsgToDap(type), msg.toLatin1().data());
     } else {
         _log_it("\0", castQtMsgToDap(type), msg.toLatin1().data());
     }
-#else
-        _log_it2(prefixBuffer, castQtMsgToDap(type), msg.toLatin1().data());
-    } else {
-        _log_it2("\0", castQtMsgToDap(type), msg.toLatin1().data());
-    }
-#endif
 }
