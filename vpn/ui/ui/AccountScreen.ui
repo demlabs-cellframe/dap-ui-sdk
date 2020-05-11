@@ -355,7 +355,7 @@
   <customwidget>
    <class>CustomPlacementButton</class>
    <extends>QPushButton</extends>
-   <header location="global">../libdap-qt-ui/controls/CustomPlacementButton.h</header>
+   <header location="global">controls/CustomPlacementButton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
