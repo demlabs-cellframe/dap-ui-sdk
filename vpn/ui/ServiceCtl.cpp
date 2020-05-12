@@ -32,12 +32,11 @@ ServiceCtl::ServiceCtl(DapJsonCmdController* controller, QObject *parent)
 
 bool ServiceCtl::startService(){
     qDebug() << "[ServiceCtl] startService()";
-    for (int i=0; i < 2; i++){
+    for (int i = 0; i < 2; i++){
 #ifdef Q_OS_WIN
         int ret = exec_silent("sc start " DAP_BRAND "Service");
 #else
 	int ret = ::system("systemctl is-active " DAP_BRAND "Service"); // To keep service from restarting twice.
-//	qDebug() << ret;
 	if (ret != 0) {
 	    ret = ::system("systemctl start " DAP_BRAND "Service");
 	}
