@@ -187,14 +187,14 @@ ScreenDashboard::ScreenDashboard(QObject * a_parent, QStackedWidget * a_sw)
     connect(&m_timeConnectedTimer, &QTimer::timeout, [=]
     {
         ++m_timeConnected;
-        setVars("lblTimeConnected","text",tr("%1").arg(getUptime(m_timeConnected)));
+        setVars("lblConnectedTime","text",tr("%1").arg(getUptime(m_timeConnected)));
     });
     // Signal-slot connection, running a calculator for calculating the speed 
     // of receiving / transmitting data on a timeout of 2 seconds.
     connect(&m_speedCalculationTimer, &QTimer::timeout, [=]
     {
         TrafficSpeed speed = calculateSpeedMbps();
-        setVars("lblDownloadSpeed","text",tr("%1Mbps").arg(QString().number(speed.first, 'f', 3)));
+        setVars("lblDownloadingSpeed","text",tr("%1Mbps").arg(QString().number(speed.first, 'f', 3)));
         setVars("lblUploadSpeed","text",tr("%1Mbps").arg(QString().number(speed.second, 'f', 3)));
     });
 
@@ -270,7 +270,7 @@ void ScreenDashboard::startCalculateConnectionData(const QDateTime &startTime)
 {
     setVars("lblLastConnection","text",tr("%1").arg(startTime.toString("MM-dd-yy hh:mm")));
     m_timeConnected = startTime.secsTo(QDateTime::currentDateTime());
-    setVars("lblTimeConnected","text",tr("%1").arg(getUptime(m_timeConnected)));
+    setVars("lblConnectedTime","text",tr("%1").arg(getUptime(m_timeConnected)));
     m_speedCalculationTimer.start();
     m_timeConnectedTimer.start();
 }
