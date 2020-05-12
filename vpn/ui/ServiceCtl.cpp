@@ -33,7 +33,7 @@ ServiceCtl::ServiceCtl(DapJsonCmdController* controller, QObject *parent)
 bool ServiceCtl::startService(){
     qDebug() << "[ServiceCtl] startService()";
     
-    int ret=-1; //Bad result on default
+    int ret = -1; //Bad result on default
     
     for (int i = 0; i < 2; i++){ // Why should we try to start service twice?
 #ifdef Q_OS_WIN
