@@ -43,8 +43,9 @@ bool ServiceCtl::startService(){
 	    if (ret != 0) {
 	        ret = ::system("systemctl start " DAP_BRAND "Service");
 	    } 
-	else
-	    return false;
+	    else {
+	        return false;
+	    }
 #endif
         if (ret != 0) {
             qDebug() << "[ServiceCtl] Start " DAP_BRAND "Service";
