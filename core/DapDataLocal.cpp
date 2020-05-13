@@ -184,10 +184,10 @@ void DapDataLocal::saveSecretString(QString key, QString string){
 
 QString DapDataLocal::getSecretString(QString key){
     QSettings settings;
-    initSecretKey();
     QByteArray stringIn = settings.value(key).toByteArray(), stringOut;
     if (stringIn.isEmpty())
         return "";
+    initSecretKey();
     secretKey->decode(stringIn, stringOut);
     return QString(stringOut);
 }
@@ -198,10 +198,12 @@ bool DapDataLocal::initSecretKey(){
     if (settings.value("key").toString().isEmpty()){
         settings.setValue("key", getRandomString(40));
     }
-
+    if (secretKey != nullptr) {
+        delete secretKey;
+    }
     secretKey = new DapKeyAes();
     QString kexString = settings.value("key").toString() + "SLKJGN234njg6vlkkNS3s5dfzkK5O54jhug3KUifw23";
-    secretKey->init(QString(kexString));
+    return secretKey->init(QString(kexString));
 }
 
 QString DapDataLocal::getRandomString(int size)
