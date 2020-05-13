@@ -7,6 +7,7 @@
 #include <QPair>
 #include <QSettings>
 #include "DapServerInfo.h"
+#include "DapKeyAes.h"
 
 #define SERVER_LIST_FILE "vpn-servers.xml"
 
@@ -22,6 +23,7 @@ protected:
 
     QList<QString> m_cdbServersList;
     QString     m_networkDefault;
+    QString urlSignUp;
 
 public:
     using picturesMap = QMap<DapServerLocation, QString>;
@@ -38,7 +40,7 @@ public:
     void setRandomServerIfIsEmpty();
 
     QString locationToIconPath(DapServerLocation loc);
-    
+
     QString login() const;
 public slots:
     void setCurrentServer(int a_serverIndex);
@@ -55,10 +57,15 @@ public:
 
     const QList<QString> &cdbServersList() { return  m_cdbServersList; }
     const QString & networkDefault() { return  m_networkDefault; }
+    const QString & getUrlForSignUp() { return  urlSignUp; }
 
     void connectComboBox(QObject *a_comboBox);
 
     void clearServerList();
+
+    void saveSecretString(QString, QString);
+    QString getSecretString(QString);
+
 
 public slots:
     void setServerName(const QString &serverName);
@@ -70,7 +77,11 @@ private:
     QList<DapServerInfo> m_servers;
 
     void parseXML(const QString& a_fname);
-    
+
+    DapKeyAes *secretKey = Q_NULLPTR;
+    bool initSecretKey();
+    QString getRandomString(int);
+
 signals:
     /// Signal emitted if login has changed.
     /// @param login Login.

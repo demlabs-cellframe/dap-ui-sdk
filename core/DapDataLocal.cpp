@@ -185,8 +185,6 @@ void DapDataLocal::setPassword(const QString &password)
 /// @return Server name.
 QString DapDataLocal::serverName() const
 {
-    if (m_currentServer)
-    qDebug() << m_currentServer->name;
     return m_currentServer ? m_currentServer->name : "";
 }
 
@@ -206,8 +204,55 @@ void DapDataLocal::setServerName(const QString &a_serverName)
             return;
         }
     }
-
+    
     qFatal("There is no server with name %s", qPrintable(a_serverName));
+}
+
+void DapDataLocal::saveSecretString(QString key, QString string){
+
+    QSettings settings;
+    initSecretKey();
+    QByteArray tempStringIn = string.toUtf8(), tempStringOut;
+    secretKey->encode(tempStringIn, tempStringOut);
+    settings.setValue(key, tempStringOut);
+}
+
+QString DapDataLocal::getSecretString(QString key){
+    QSettings settings;
+    QByteArray stringIn = settings.value(key).toByteArray(), stringOut;
+    if (stringIn.isEmpty())
+        return "";
+    initSecretKey();
+    secretKey->decode(stringIn, stringOut);
+    return QString(stringOut);
+}
+
+bool DapDataLocal::initSecretKey(){
+
+    QSettings settings;
+    if (settings.value("key").toString().isEmpty()){
+        settings.setValue("key", getRandomString(40));
+    }
+    if (secretKey != nullptr) {
+        delete secretKey;
+    }
+    secretKey = new DapKeyAes();
+    QString kexString = settings.value("key").toString() + "SLKJGN234njg6vlkkNS3s5dfzkK5O54jhug3KUifw23";
+    return secretKey->init(QString(kexString));
+}
+
+QString DapDataLocal::getRandomString(int size)
+{
+   const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+   const int randomStringLength = size;
+
+   QString randomString;
+   for(int i=0; i < randomStringLength; ++i){
+       int index = qrand() % possibleCharacters.length();
+       QChar nextChar = possibleCharacters.at(index);
+       randomString.append(nextChar);
+   }
+   return randomString;
 }
 
 /// Get server name by its address.
