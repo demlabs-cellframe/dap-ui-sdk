@@ -22,6 +22,8 @@ public:
     int serviceRestartCounter = 0;
 protected:
     void procCmdController(const QByteArray &a_cmd) override;
+signals:
+    void started();
 private:
     DapJsonCmdController* m_controller;
     bool bServiceIsOn = false;
