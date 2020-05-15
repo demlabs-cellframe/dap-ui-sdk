@@ -18,13 +18,11 @@ ServiceCtl::ServiceCtl(DapJsonCmdController* controller, QObject *parent)
 
     connect(this,&ServiceCtl::ctlConnected, [=]{
         qInfo() << "[ServiceCtl] Connected to ctl socket,request for status";
-        bServiceIsOn = true;
     });
     
     connect(this,&ServiceCtl::ctlDisconnected, [=]{
 
         qInfo() << "[ServiceCtl] Disconnected from backend";
-        bServiceIsOn = false;
         bInsurerConnect = true;
         startReconnectingToService();
         startService();
@@ -50,7 +48,6 @@ bool ServiceCtl::startService(){
 #endif
     if (ret == 0) {
         qDebug() << "[ServiceCtl] Start " DAP_BRAND "Service";
-        bServiceIsOn = true;
         serviceRestartCounter++;
         return true;
     } else {
