@@ -2,6 +2,7 @@
 
 #include "ui_NavigationPanelMain.h"
 #include "Utilz.h"
+#include "defines.h"
 
 const QString NavigationPanelMain::SCREEN_NAME = "NavigationPanelMain";
 
@@ -30,4 +31,26 @@ void NavigationPanelMain::initVariantUi(QWidget *a_widget)
 
     btHelp->setVisible(false);
     btBug->setVisible(false);
+
+#ifndef ANDROID
+    QPushButton* btnAccount   ; Utils::findChild(a_widget, BTN_ACCOUNT   , btnAccount)->hide();
+    QPushButton* btnConnection; Utils::findChild(a_widget, BTN_CONNECTION, btnConnection)->hide();
+#endif
+    btSettings->hide();
 }
+
+#ifndef ANDROID
+void NavigationPanelMain::setBackState(bool a_backState)
+{
+    if (a_backState == m_backState)
+        return;
+
+    this->setChildProperties(BTN_BACK, Properties::VISIBLE, a_backState);
+    m_backState = a_backState;
+}
+
+bool NavigationPanelMain::backState()
+{
+    return m_backState;
+}
+#endif

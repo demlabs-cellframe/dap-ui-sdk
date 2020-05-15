@@ -17,9 +17,19 @@ public:
 signals:
     void goBack();
 
+#ifndef ANDROID
+public slots:
+    void setBackState(bool a_backState);
+    bool backState();
+#endif
+
 private:
 
     const QString BTN_BACK = "btnBack";
+
+#ifndef ANDROID
+    bool m_backState = true;
+#endif
 };
 
 #endif // NAVIGATIONPANELBACK_H

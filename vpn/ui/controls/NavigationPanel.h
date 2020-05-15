@@ -1,52 +1,24 @@
 #ifndef NAVIGATIONPANEL_H
 #define NAVIGATIONPANEL_H
 
-#include "AdaptiveWidget.h"
-#include "CustomPlacementButton.h"
-#include "DefaultMultiScreen.h"
-
-#ifdef Q_OS_ANDROID
-    #include "NavigationPanelBack.h"
-    #include "NavigationPanelMain.h"
-#endif
-
-class NavigationPanel
-#ifdef Q_OS_ANDROID
-        : public DefaultMultiScreen
+#ifdef ANDROID
+    #include "DefaultMultiScreen.h"
+    typedef DefaultMultiScreen PanelParentClass;
 #else
-        : public AdaptiveWidget
+    #include "NavigationPanelMain.h"
+    typedef NavigationPanelMain PanelParentClass;
 #endif
+
+class NavigationPanel : public PanelParentClass
 {
-    Q_OBJECT
 public:
-    enum class States {Main, Back};
-
-    explicit NavigationPanel(QWidget *parent = nullptr);
-
-    virtual void initVariantUi(QWidget *a_widget) override;
-
-signals:
-    void logout();
-
-#ifndef Q_OS_ANDROID
-    void goToBugReport();
-    void goToFAQ();
-    void goToSettings();
-    void goBack();
-#endif
+    NavigationPanel(QWidget *a_parent);
 
 public slots:
-    void setState(States a_state);
+    void setBackState(bool a_backState);
+    bool backState();
 
-private:
-
-#ifndef Q_OS_ANDROID
-    const QString BTN_LOGOUT_NAME = "btnLogOut";
-    const QString BTN_BUG  = "btnBug";
-    const QString BTN_SETTINGS = "btnSettings";
-    const QString BTN_HELP = "btnHelp";
-#endif
-
+    bool m_backState = true;
 };
 
 #endif // NAVIGATIONPANEL_H

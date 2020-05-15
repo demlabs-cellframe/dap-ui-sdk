@@ -22,6 +22,9 @@ public:
     template <typename T>
     T* activateScreen();
 
+signals:
+    void screenChangingFinished();
+
 private:
     QString m_activeScreen;
 };

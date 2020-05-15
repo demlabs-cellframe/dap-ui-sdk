@@ -171,17 +171,13 @@ NewT *MultiScreenAbstract::replaceSubscreen()
 template<class T>
 T *MultiScreenAbstract::subScreen()
 {
-    T *foundScreen = nullptr;
+    T *foundScreen = qobject_cast<T*>(m_screens.value(T::SCREEN_NAME, nullptr));
+    if (foundScreen)
+        return foundScreen;
 
-    //  If isn't found search in all subScreens recursively
     auto i = m_screens.constBegin();
     while (i != m_screens.constEnd() and !foundScreen)
     {
-        //if this screen is searched return it
-        foundScreen = qobject_cast<T*>(i.value());
-        if (foundScreen)
-            return foundScreen;
-
         MultiScreenAbstract *curScreen = qobject_cast<MultiScreenAbstract*>(i.value());
         //if i.value() is DapUIAnimationScreenAbstract object search in all subScreens
         if (curScreen)

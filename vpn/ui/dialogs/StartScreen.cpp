@@ -8,7 +8,6 @@ const QString StartScreen::SCREEN_NAME = "Start";
 StartScreen::StartScreen(QWidget *a_parent)
     : AdaptiveScreen(a_parent)
 {
-
     create<Ui::StartScreen>();
 }
 
@@ -45,10 +44,6 @@ void StartScreen::initVariantUi(QWidget *a_widget)
 #else
     QPushButton* l_btnSignIn = a_widget->findChild<QPushButton*>(BTN_SIGN_IN_NAME); Q_ASSERT(l_btnSignIn);
     QPushButton* l_btnSignUp = a_widget->findChild<QPushButton*>(BTN_SIGN_UP_NAME); Q_ASSERT(l_btnSignUp);
-
-    l_btnSignIn->setGraphicsEffect(new StyledDropShadowEffect(l_btnSignIn));
-
-//l_btnSignIn->installEventFilter(new CustomEventFilter);
 
 connect(l_btnSignIn, &QPushButton::clicked, [this]
     {

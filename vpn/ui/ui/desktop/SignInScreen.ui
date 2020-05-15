@@ -29,9 +29,6 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item>
-    <widget class="QWidget" name="wgtTopPanel" native="true"/>
-   </item>
    <item alignment="Qt::AlignHCenter">
     <widget class="QLabel" name="lblLogo">
      <property name="sizePolicy">

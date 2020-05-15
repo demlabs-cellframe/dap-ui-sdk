@@ -27,6 +27,19 @@ protected:
     virtual QString captionLabelName() override;
     virtual QString listViewName() override;
 
+#ifndef ANDROID
+    virtual void showEvent(QShowEvent *event) override;
+    virtual void setVisible(bool a_visible);
+
+    bool m_canBeHidden;
+public slots:
+    void allowClosingAndHide();
+
+signals:
+    void closingStarted();
+
+#endif
+
 private:
     const QString LVW_LIST_NAME    = "lvwList";
     const QString LBL_CAPTION_NAME = "lblCaption";

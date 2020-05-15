@@ -17,7 +17,6 @@ ComboBoxListView::ComboBoxListView(QWidget *a_parent /*= nullptr*/)
 
 WidgetDelegateBase *ComboBoxListView::createWidgetDelegate()
 {
-    qDebug()<<"ComboBoxListView::createWidgetDelegat";
     return new CustomButtonDelegate;
 }
 #endif

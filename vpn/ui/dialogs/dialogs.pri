@@ -40,4 +40,20 @@ HEADERS  += \
     $$PWD/SignUpScreen.h \
     $$PWD/StartScreen.h
 
+!android {
+    HEADERS  += \
+        $$PWD/desktop/ScreenWithComboBoxesAbstract.h \
+        $$PWD/desktop/ComboBoxPopupScreen.h \
+        $$PWD/desktop/LoginScreenLayout.h
+
+    SOURCES += \
+        $$PWD/desktop/ScreenWithComboBoxesAbstract.cpp \
+        $$PWD/desktop/ComboBoxPopupScreen.cpp \
+        $$PWD/desktop/LoginScreenLayout.cpp
+
+
+    INCLUDEPATH += $$PWD/desktop
+}
+
+
 INCLUDEPATH += $$PWD

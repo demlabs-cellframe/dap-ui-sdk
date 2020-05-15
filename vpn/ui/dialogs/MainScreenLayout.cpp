@@ -9,7 +9,7 @@ MainScreenLayout::MainScreenLayout(QWidget *a_parent)
 {
     create<Ui::MainScreenLayout>();
 
-    initScreen(this);
+    AdaptiveScreen::initScreen(this);
 }
 
 QString MainScreenLayout::screenName()

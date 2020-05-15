@@ -1,53 +1,34 @@
 #include "NavigationPanel.h"
-#include "Utilz.h"
 
-
-#ifdef Q_OS_ANDROID
-#include "DefaultMultiScreen.h"
+#include "defines.h"
 #include "NavigationPanelBack.h"
 #include "NavigationPanelMain.h"
 
-NavigationPanel::NavigationPanel(QWidget *parent)
-    : DefaultMultiScreen(parent)
+NavigationPanel::NavigationPanel(QWidget *a_parent)
+    :PanelParentClass(a_parent)
 {
+
 }
 
-#else
-#include "ui_NavigationPanel.h"
-
-NavigationPanel::NavigationPanel(QWidget *parent)
-    : AdaptiveWidget(parent)
+void NavigationPanel::setBackState(bool a_backState)
 {
-    this->create<Ui::NavigationPanel>();
-    setState(States::Main);
-}
+    if (a_backState == m_backState)
+        return;
+    m_backState = a_backState;
 
-#endif
-
-void NavigationPanel::initVariantUi(QWidget *a_widget)
-{
 #ifdef ANDROID
-    DefaultMultiScreen::initVariantUi(a_widget);
-#else
-    this->connectBtnToSignall(BTN_BUG     , &NavigationPanel::goToBugReport, a_widget);
-    this->connectBtnToSignall(BTN_HELP    , &NavigationPanel::goToFAQ      , a_widget)->hide();
-    this->connectBtnToSignall(BTN_SETTINGS, &NavigationPanel::goToSettings , a_widget);
-    QPushButton* btBug     ; Utils::findChild(a_widget, BTN_BUG     , btBug);
-    btBug->setVisible(false);
-#endif
-}
-
-void NavigationPanel::setState(NavigationPanel::States a_state)
-{
-#ifdef ANDROID
-
-    if (a_state == States::Main)
+    if (a_backState)
+        this->activateScreen<NavigationPanelBack>();
+    else
         this->activateScreen<NavigationPanelMain>();
 
-    else if (a_state == States::Back)
-        this->activateScreen<NavigationPanelBack>();
-
 #else
-    Q_UNUSED(a_state)
+    this->setChildProperties(BTN_BACK, Properties::VISIBLE, a_backState);
 #endif
+
+}
+
+bool NavigationPanel::backState()
+{
+    return m_backState;
 }

@@ -108,6 +108,8 @@ void AnimationChangingWidget::setCurrentIndex(int a_index)
 {
     //Q_ASSERT_X((a_index <= (count()-1)), "setCurrentIndex", "Index doesn't exist");
 
+    if (m_currentIndex == a_index)
+        return;
     m_currentIndex = a_index;
 
     // Animation setup and start:

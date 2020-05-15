@@ -13,7 +13,7 @@ public:
 
     virtual QString screenName() = 0;
 
-    virtual void initVariantUi(QWidget * a_widget) = 0;
+    virtual void initVariantUi(QWidget * a_widget) override = 0;
 
 
     template<typename T>

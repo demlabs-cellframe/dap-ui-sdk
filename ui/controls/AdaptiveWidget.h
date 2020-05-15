@@ -8,16 +8,26 @@
 #include <QPushButton>
 #include "Utilz.h"
 
+#ifdef ANDROID
+    #define DEFAULT_VARIANT ScreenInfo::Rotation::Vertical
+#else
+    #define DEFAULT_VARIANT ScreenInfo::Rotation::Horizontal
+#endif
+
 class AdaptiveWidget : public QStackedWidget
 {
 public:
     AdaptiveWidget(QWidget *a_parent = nullptr);
 
-    QWidget* variant(ScreenInfo::Rotation a_rotation = ScreenInfo::Rotation::Horizontal);
+    QWidget* variant(ScreenInfo::Rotation a_rotation = DEFAULT_VARIANT);
+
 
 protected:
     template<class T>
     inline void create();
+
+    inline QWidget *createEmpty();
+
 
     template<class T>
     void setupWidgetForm(QWidget * a_widget);
@@ -31,7 +41,7 @@ protected:
     void updateChildStyle(const QString& a_objName);
 
     template <class T /*= QWidget*/>
-    inline QList<T*> getTheSameWidgets(const QString& a_objName);
+    inline QList<T*> getTheSameWidgets(const QString& a_objName = QString());
 
     template <class T /*= QWidget*/>
     void assignWidgetPropertyForState(QState *a_state, const QString& a_objName, const QString& a_property,  const QVariant& a_value);
@@ -44,17 +54,24 @@ private:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+QWidget *AdaptiveWidget::createEmpty()
+{
+    QWidget *currentWidget = new QWidget(this);
+
+    this->addWidget(currentWidget);
+    this->m_variants.insert(DEFAULT_VARIANT, currentWidget);
+
+    return currentWidget;
+}
+
 template<class T>
 inline void AdaptiveWidget::create()
 {
     ///TODO: add horisontal rotation for mobile.
-    QWidget *currentWidget = new QWidget(this);
+    QWidget *currentWidget = createEmpty();
 
-    this->addWidget(currentWidget);
-    this->m_variants.insert(ScreenInfo::Rotation::Horizontal, currentWidget);
     this->setupWidgetForm<T>(currentWidget);
-
-    initVariantUi(currentWidget);
+    this->initVariantUi(currentWidget);
 }
 
 template<class T>
@@ -87,7 +104,7 @@ template <class T /*= QWidget*/>
 inline QList<T*> AdaptiveWidget::getTheSameWidgets(const QString& a_objName)
 {
     QList<T*> widgetsList;
-    T* foundWidget = currentWidget()->findChild<T*>(a_objName);
+    T* foundWidget = this->currentWidget()->findChild<T*>(a_objName);
     if (foundWidget)
         widgetsList.append(foundWidget);
 

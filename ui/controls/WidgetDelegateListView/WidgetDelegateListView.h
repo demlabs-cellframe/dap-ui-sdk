@@ -1,6 +1,7 @@
 #ifndef WIDGETDELEGATELISTVIEW_H
 #define WIDGETDELEGATELISTVIEW_H
 
+#include <QItemDelegate>
 #include <QListView>
 #include <QAbstractItemModel>
 #include <QItemSelectionModel>
@@ -8,6 +9,8 @@
 #include <QGestureEvent>
 #include "WidgetDelegateBase.h"
 #include "CustomComboBoxListView.h"
+
+class WidgetListViewItemDelegate;
 
 class WidgetDelegateListView : public CustomComboBoxListView
 {
@@ -26,7 +29,17 @@ protected slots:
 
 private:
     void createIndexDelegates(int a_start = 0, int a_end = -1);
+
+    WidgetListViewItemDelegate *m_itemDelegate{};
 };
 
+class WidgetListViewItemDelegate: public QItemDelegate
+{
+public:
+    explicit WidgetListViewItemDelegate(QObject *parent = Q_NULLPTR);;
+
+    virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;;
+
+};
 
 #endif // WIDGETDELEGATELISTVIEW_H

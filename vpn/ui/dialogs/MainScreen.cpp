@@ -65,6 +65,9 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     frmConnect->setGraphicsEffect(new StyledDropShadowEffect(frmConnect));
     frmInfo->setGraphicsEffect(new StyledDropShadowEffect(frmInfo));
     frmStatus->setGraphicsEffect(new StyledDropShadowEffect(frmStatus));
+
+    btnChangeServer->hide();
+
 #else
     QComboBox *cbbServer            = a_widget->findChild<QComboBox*>(CBB_SERVER);          Q_ASSERT(cbbServer  );
     QPushButton *btnBytes           = a_widget->findChild<QPushButton*>(BTN_BYTES);         Q_ASSERT(btnBytes  );

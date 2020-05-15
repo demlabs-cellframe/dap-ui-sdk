@@ -6,6 +6,15 @@ ScreenOverlaying::ScreenOverlaying(QMainWindow *a_parent)
     setObjectName("ScreenOverlaying");
 }
 
+void ScreenOverlaying::setParent(QMainWindow *a_parent)
+{
+    QWidget::setParent(a_parent);
+
+    if (this->isVisible() && m_blurEffect)
+        acceptBlurEffect();
+}
+
+
 void ScreenOverlaying::showEvent(QShowEvent *event)
 {
     this->acceptBlurEffect();
@@ -33,8 +42,14 @@ void ScreenOverlaying::mousePressEvent(QMouseEvent *event)
     this->QWidget::mousePressEvent(event);
 }
 
+qreal ScreenOverlaying::blurRadius() const
+{
+    return m_blurRadius;
+}
+/// Setting a parameter for the BlurEffect.
+/// @param a_blureRadius.
 void ScreenOverlaying::setBlurRadius(qreal a_blurRadius)
-{  
+{
     if (!m_blurEffect && a_blurRadius <= 0.0)
        return;
 
@@ -44,6 +59,18 @@ void ScreenOverlaying::setBlurRadius(qreal a_blurRadius)
         this->acceptBlurEffect();
 }
 
+qreal ScreenOverlaying::opacity() const
+{
+    QGraphicsOpacityEffect *opacityEffect = qobject_cast<QGraphicsOpacityEffect*>(this->graphicsEffect());
+
+    if (!opacityEffect)
+        return 1.0;
+
+    return opacityEffect->opacity();
+}
+
+/// Setting a parameter for the OpacityEffect. The value must be between 0 and 1.
+/// @param a_opocity.
 void ScreenOverlaying::setOpacity(qreal a_opacity)
 {
     QGraphicsOpacityEffect *opacityEffect = qobject_cast<QGraphicsOpacityEffect*>(this->graphicsEffect());

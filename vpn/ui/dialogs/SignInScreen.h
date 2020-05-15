@@ -5,7 +5,6 @@
 #include <QLabel>
 #include <QStateMachine>
 
-#include "AdaptiveScreen.h"
 #include "ScreenInfo.h"
 #include "vpnDefine.h"
 #include "defines.h"
@@ -18,7 +17,15 @@
 #include "ComboBoxPopup.h"
 #include <QStandardItemModel>
 
-class SignInScreen : public AdaptiveScreen
+#ifdef ANDROID
+    #include "AdaptiveScreen.h"
+    typedef AdaptiveScreen ParentClass;
+#else
+    #include "ScreenWithComboBoxesAbstract.h"
+    typedef ScreenWithComboBoxesAbstract ParentClass;
+#endif
+
+class SignInScreen : public ParentClass
 {
     Q_OBJECT
 public:
@@ -56,6 +63,9 @@ protected:
 
     virtual void initVariantUi(QWidget *a_widget) override;
 
+#ifndef ANDROID
+    virtual QStringList comboBoxesNames() const override;
+#endif
 private:
     bool checkPassword();
     bool checkEmail();

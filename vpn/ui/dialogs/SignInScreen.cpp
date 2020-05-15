@@ -6,7 +6,7 @@
 const QString SignInScreen::SCREEN_NAME = "SignIn";
 
 SignInScreen::SignInScreen(QWidget *a_parent)
-    : AdaptiveScreen(a_parent)
+    : ParentClass(a_parent)
     , m_inputStates       (new QStateMachine(this))
     , m_stt_email         (new QState(m_inputStates))
     , m_stt_email_wrong   (new QState(m_stt_email))
@@ -44,6 +44,8 @@ SignInScreen::SignInScreen(QWidget *a_parent)
     connect(this, SIGNAL(passwordEdited(const QString &)), SLOT(setPassword(const QString &)));
 
     m_inputStates->start();
+
+    AdaptiveScreen::initScreen(this);
 }
 
 
@@ -84,13 +86,11 @@ void SignInScreen::setErrorMessage(const QString &a_errorMsg)
     }
     else
     {
-
         setChildProperties(LBL_EMAIL_ERROR, Properties::TEXT, a_errorMsg);
         setValidationStateForEdit(EDT_EMAIL_NAME, LBL_EMAIL_ERROR, false);
 
         emit wrongEmail();
     }
-
 }
 
 void SignInScreen::checkFieldsAndSignIn()
@@ -134,6 +134,15 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     connect(edtPassword, SIGNAL(textEdited(const QString&)), this, SIGNAL(passwordEdited(const QString&)));
     connect(btnSignIn  , SIGNAL(clicked())                 , this, SLOT  (checkFieldsAndSignIn()));
     connect(lblSignUp  , SIGNAL(clicked())                 , this, SIGNAL(goToSignUp()) );
+
+#ifndef ANDROID
+    ScreenWithComboBoxesAbstract::initVariantUi(a_widget);
+}
+
+QStringList SignInScreen::comboBoxesNames() const
+{
+    return {CBB_SERVER};
+#endif
 }
 
 bool SignInScreen::checkPassword()

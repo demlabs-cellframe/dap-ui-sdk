@@ -8,6 +8,9 @@ WidgetDelegateListView::WidgetDelegateListView(QWidget *a_parent /*= nullptr*/)
 //TODO
 
     qDebug() << "WidgetDelegateListView created";
+
+    m_itemDelegate = new WidgetListViewItemDelegate(this);
+    this->setItemDelegate(m_itemDelegate);
 }
 
 
@@ -69,7 +72,8 @@ void WidgetDelegateListView::createIndexDelegates(int a_start /*= 0*/, int a_end
             return;
 
         connect(widget, &WidgetDelegateBase::sizeChanged, [this, index](const QSize& a_size){
-             this->model()->setData(index, a_size, Qt::SizeHintRole);
+            Q_UNUSED(a_size)
+            emit m_itemDelegate->sizeHintChanged(index);
         });
 
         connect(widget, &WidgetDelegateBase::selected, [this, row]{
@@ -86,4 +90,24 @@ void WidgetDelegateListView::createIndexDelegates(int a_start /*= 0*/, int a_end
 WidgetDelegateBase *WidgetDelegateListView::createWidgetDelegate()
 {
     return nullptr;
+}
+
+
+// *************************** WidgetListViewItemDelegate ***************************
+
+WidgetListViewItemDelegate::WidgetListViewItemDelegate(QObject *parent)
+    :QItemDelegate(parent)
+{}
+
+QSize WidgetListViewItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    auto listView = qobject_cast<const QListView*>(option.widget);
+    if (!listView)
+        return QItemDelegate::sizeHint(option, index);
+
+    auto itemWgt = listView->indexWidget(index);
+    if (!itemWgt)
+        return QItemDelegate::sizeHint(option, index);
+
+    return itemWgt->size();
 }
