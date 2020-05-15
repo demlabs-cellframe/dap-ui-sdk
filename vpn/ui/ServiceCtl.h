@@ -16,15 +16,20 @@ public:
     bool tapStatus = false;
 
     bool startService();
+
     void setServiceIsOn(bool flag){bServiceIsOn = flag;}
     bool getServiceIsOn(){return bServiceIsOn;}
+    void setInsurerConnect(bool flag){bInsurerConnect = flag;}
+    bool getInsurerConnect(){return bInsurerConnect;}
     void clearServiceRestartCounter(){serviceRestartCounter = 0;}
     int serviceRestartCounter = 0;
+
 protected:
     void procCmdController(const QByteArray &a_cmd) override;
 private:
     DapJsonCmdController* m_controller;
     bool bServiceIsOn = false;
+    bool bInsurerConnect = false;
 };
 
 #endif // SERVICECTL_H
