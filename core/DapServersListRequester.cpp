@@ -17,7 +17,6 @@ DapServersListNetworkReply::DapServersListNetworkReply(QNetworkReply *networkRep
             if(!jsonDoc.isNull()) {
                 qDebug() << "Servers list response" << jsonDoc;
 
-
                 if(!jsonDoc.isArray()) {
                     qCritical() << "Error parse response. Must be array";
                     emit sigParseResponseError();

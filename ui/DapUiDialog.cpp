@@ -30,7 +30,7 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
  */
 DapUiDialog::DapUiDialog(QWidget *a_parent):
     QFrame(a_parent),
-    m_screenOverlaying(a_parent)
+    m_screenOverlaying()
 {
     qDebug() << "DapUiDialog created";
 

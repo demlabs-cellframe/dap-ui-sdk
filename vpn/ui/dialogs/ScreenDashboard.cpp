@@ -203,7 +203,7 @@ ScreenDashboard::ScreenDashboard(QObject * a_parent, QStackedWidget * a_sw)
 //            Ui::DashboardVer,Ui::DashboardVerSmall,Ui::DashboardVerBig>();
     create<Ui::DashboardHorSmall,Ui::DashboardHorSmall,Ui::DashboardHorSmall,Ui::DashboardHorSmall,Ui::DashboardHorSmall,Ui::DashboardHorSmall>();																   
 #else
-    create<Ui::Dashboard,Ui::DashboardSmall,Ui::DashboardBig>();
+    create<Ui::Dashboard>();
 #endif
 }
 

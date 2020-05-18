@@ -20,6 +20,11 @@ public:
     ~DapCmdStates() override;
 
     void sendCmd();
+
+    DapIndicator *sessionIndicator() const;
+    DapIndicator *streamIndicator() const;
+    DapIndicator *tunnelIndicator() const;
+
 private:
     using IndicatorType = DapIndicator::Type;
 
