@@ -18,7 +18,7 @@
     along with any DAP based project.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define OP_CODE_GENERAL_ERR           "0xf0"
+
 #define OP_CODE_LOGIN_INCORRECT_PSWD  "0xf2"
 #define OP_CODE_NOT_FOUND_LOGIN_IN_DB "0xf3"
 #define OP_CODE_SUBSCRIBE_EXPIRIED    "0xf4"
@@ -271,38 +271,33 @@ void DapSession::onAuthorize()
         return;
     }
 
+    QByteArray arrData2 = QByteArray::fromBase64(arrData);
+
     QByteArray dByteArr;
     m_dapCrypt->decode(arrData, dByteArr, KeyRoleSession);
 
+    QXmlStreamReader m_xmlStreamReader;
+    m_xmlStreamReader.addData(dByteArr);
     qDebug() << "[DapSession] Decoded data: " << QString::fromLatin1(dByteArr);
 
-    QString op_code = QString::fromLatin1(dByteArr).left(4);
-
-    if (op_code == OP_CODE_GENERAL_ERR) {
-        emit errorAuthorization ("Unknown authorization error");
-        return;
-    } else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
+    if (QString::fromLatin1(dByteArr) == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
         emit errorAuthorization ("Login not found in database");
         return;
-    } else if (op_code == OP_CODE_LOGIN_INCORRECT_PSWD) {
+    } else if (QString::fromLatin1(dByteArr) == OP_CODE_LOGIN_INCORRECT_PSWD) {
         emit errorAuthorization ("Incorrect password");
         return;
-    } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRIED) {
+    } else if (QString::fromLatin1(dByteArr) == OP_CODE_SUBSCRIBE_EXPIRIED) {
         emit errorAuthorization ("Subscribe expired");
         return;
-    } else if (op_code == OP_CODE_CANT_CONNECTION_TO_DB) {
+    } else if (QString::fromLatin1(dByteArr) == OP_CODE_CANT_CONNECTION_TO_DB) {
         emit errorAuthorization ("Can't connect to database");
         return;
-    } else if (op_code == OP_CODE_INCORRECT_SYM) {
+    } else if (QString::fromLatin1(dByteArr) == OP_CODE_INCORRECT_SYM){
         emit errorAuthorization("Incorrect symbols in request");
         return;
     }
 
-    QXmlStreamReader m_xmlStreamReader;
-    m_xmlStreamReader.addData(dByteArr);
-
     bool isCookie = false;
-    bool isAuth = false;
     QString SRname;
     while(m_xmlStreamReader.readNextStartElement())
     {
@@ -347,8 +342,6 @@ void DapSession::onAuthorize()
                              << m_userInform[m_xmlStreamReader.name().toString()];
                 }
             }
-            isAuth = true;
-            emit authorized(m_cookie);
         }/*else if (m_xmlStreamReader.name() == "tx_cond_tpl") {
             while(m_xmlStreamReader.readNextStartElement()) {
                 qDebug() << " tx_cond_tpl: " << m_xmlStreamReader.name();
@@ -371,14 +364,11 @@ void DapSession::onAuthorize()
         }
     }
 
-    if (!isAuth) {
-        emit errorAuthorization("Authorization error");
+    emit authorized(m_cookie);
+    if(!isCookie) {
+        //m_cookie.clear();
+        //emit errorAuthorization("No authorization cookie in server's reply");
     }
-
-    /*if(!isCookie) {
-        m_cookie.clear();
-        emit errorAuthorization("No authorization cookie in server's reply");
-    }*/
 }
 
 /**

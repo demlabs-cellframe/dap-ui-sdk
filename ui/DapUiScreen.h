@@ -24,8 +24,7 @@ public:
     enum ScreenRotation{Hor,Ver,HorInv,VerInv};
     enum ScreenSize{Small=0,Medium=10,Big=20};
 
-    static QSize getScreenResolution(ScreenSize screenSize);
-
+    static QSize getWindowSizeInPoints(ScreenSize screenSize = DapUiScreen::ScreenSize::Medium);
 
     Q_ENUM(ScreenRotation)
     Q_ENUM(ScreenSize)
@@ -127,8 +126,8 @@ public:
             sw()->setCurrentIndex(0);
     }
 #endif
-    virtual void show();
-    virtual void update();
+    void show();
+    void update();
     void rotate(ScreenRotation a_rot);
     ScreenRotation rotation(){ return m_rotation; }
     static ScreenSize getScreenSize();

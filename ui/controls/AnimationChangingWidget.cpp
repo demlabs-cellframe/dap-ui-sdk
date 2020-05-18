@@ -108,12 +108,24 @@ void AnimationChangingWidget::setCurrentIndex(int a_index)
 {
     //Q_ASSERT_X((a_index <= (count()-1)), "setCurrentIndex", "Index doesn't exist");
 
+    if (m_currentIndex == a_index)
+        return;
     m_currentIndex = a_index;
 
     // Animation setup and start:
     m_animation.setStartValue(m_widget.pos());
     m_animation.setEndValue(QPoint(-(width() * a_index), 0));
     m_animation.start();
+}
+
+QWidget *AnimationChangingWidget::currentWidget()
+{
+    QLayoutItem* currentItem = m_ltWidgetPlacement.itemAt(this->currentIndex());
+
+    if (!currentItem)
+        return nullptr;
+
+    return currentItem->widget();
 }
 
 /**

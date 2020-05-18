@@ -20,8 +20,8 @@ ServiceCtl::ServiceCtl(DapJsonCmdController* controller, QObject *parent)
         qInfo() << "[ServiceCtl] Connected to ctl socket,request for status";
     });
     
-    connect(this,&ServiceCtl::ctlDisconnected, [=]{
-
+    connect(this,&ServiceCtl::ctlDisconnected, [=]
+    {
         qInfo() << "[ServiceCtl] Disconnected from backend";
         bInsurerConnect = true;
         startReconnectingToService();

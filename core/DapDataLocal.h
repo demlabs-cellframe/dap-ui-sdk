@@ -36,13 +36,21 @@ public:
     const DapServerInfo& serverTheBest(){ return m_servers.at(0) ;  }
     void setServerTheBest(const DapServerInfo& server);
 
+    DapServerInfo* currentServer();
+    void setRandomServerIfIsEmpty();
+
     QString locationToIconPath(DapServerLocation loc);
-    
+
     QString login() const;
+public slots:
+    void setCurrentServer(int a_serverIndex);
     void setLogin(const QString &login);
+public:
 
     QString password() const;
+public slots:
     void setPassword(const QString &password);
+public:
 
     QString serverName() const;
     QString getServerNameByAddress(const QString& address);
@@ -73,7 +81,7 @@ private:
     DapKeyAes *secretKey = Q_NULLPTR;
     bool initSecretKey();
     QString getRandomString(int);
-    
+
 signals:
     /// Signal emitted if login has changed.
     /// @param login Login.
@@ -84,4 +92,12 @@ signals:
     /// Signal emitted if server name has changed.
     /// @param serverName Server name.
     void serverNameChanged(const QString& serverName);
+
+    void serverAdded(const DapServerInfo& dsi);
+
+    void serversCleared();
+
+private:
+
+    DapServerInfo* m_currentServer = nullptr;
 };

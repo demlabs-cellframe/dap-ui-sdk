@@ -7,6 +7,7 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <algorithm>
+#include <QTime>
 
 #include "DapDataLocal.h"
 
@@ -30,7 +31,6 @@ DapDataLocal::DapDataLocal()
 {
     qDebug() << "[DL] DapDataLocal Constructor";
     parseXML(":/data.xml");
-    setServerName(m_servers.length() > 0 ? serverTheBest().name : "");
 }
 
 void DapDataLocal::parseXML(const QString& a_fname)
@@ -83,9 +83,6 @@ void DapDataLocal::parseXML(const QString& a_fname)
                 }else if( sr->name() == "network-default"){
                     m_networkDefault = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
-                }else if( sr->name() == "sign_up"){
-                    urlSignUp = sr->readElementText();
-                    qInfo() << "url for sign up: " << urlSignUp;
                 }else{
                     qDebug() << "[DL] Inside tag 'data' unknown tag "<<sr->name();
                     sr->skipCurrentElement();
@@ -104,6 +101,8 @@ void DapDataLocal::parseXML(const QString& a_fname)
 void DapDataLocal::addServer(const DapServerInfo& dsi) {
 
     m_servers.push_back(dsi);
+
+    emit this->serverAdded(dsi);
 }
 
 /**
@@ -112,6 +111,8 @@ void DapDataLocal::addServer(const DapServerInfo& dsi) {
 void DapDataLocal::clearServerList()
 {
     m_servers.clear();
+    m_currentServer = nullptr;
+    emit serversCleared();
 }
 
 
@@ -125,6 +126,30 @@ void DapDataLocal::setServerTheBest(const DapServerInfo &server){
         m_servers.move(index, 0);
     }
 }
+
+DapServerInfo *DapDataLocal::currentServer()
+{
+    return m_currentServer;
+}
+
+void DapDataLocal::setCurrentServer(int a_serverIndex)
+{
+    Q_ASSERT(a_serverIndex>=0 && a_serverIndex < m_servers.count());
+
+    m_currentServer = &m_servers[a_serverIndex];
+}
+
+void DapDataLocal::setRandomServerIfIsEmpty()
+{
+    if (!currentServer())
+    {
+        qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+        int randIndex = qrand()%(this->servers().count());
+        this->setCurrentServer(randIndex);
+        qDebug()<<"Random server chosed:" << this->serverName();
+    }
+}
+
 
 /// Get login.
 /// @return Login.
@@ -160,17 +185,27 @@ void DapDataLocal::setPassword(const QString &password)
 /// @return Server name.
 QString DapDataLocal::serverName() const
 {
-    return mServerName;
+    return m_currentServer ? m_currentServer->name : "";
 }
 
 /// Set server name.
 /// @param server Server name.
-void DapDataLocal::setServerName(const QString &serverName)
+void DapDataLocal::setServerName(const QString &a_serverName)
 {
-    if (serverName != mServerName) {
-        mServerName = serverName;
-        emit serverNameChanged(mServerName);
+    if (serverName() == a_serverName)
+        return;
+
+    for (DapServerInfo& l_currentServer: servers())
+    {
+        if (a_serverName == l_currentServer.name)
+        {
+            m_currentServer = &l_currentServer;
+            emit serverNameChanged(a_serverName);
+            return;
+        }
     }
+    
+    qFatal("There is no server with name %s", qPrintable(a_serverName));
 }
 
 void DapDataLocal::saveSecretString(QString key, QString string){
