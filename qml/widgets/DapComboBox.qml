@@ -11,10 +11,6 @@ DapComboBoxForm
             {
                 model.insert(0, {});
                 model.setProperty(0, comboBoxTextRole[0], mainLineText);
-                /*if(comboBoxTextRole[0] === "name")
-                    model.insert(0, {name: mainLineText});
-                else if(comboBoxTextRole[0] === "text")
-                    model.insert(0, {text: mainLineText});*/
                 currentIndex = 0;
             }
         }
