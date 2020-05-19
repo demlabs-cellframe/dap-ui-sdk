@@ -54,6 +54,12 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
     vltBugReport->setAlignment(edtMessage,Qt::AlignHCenter);
     vltBugReport->setAlignment(btnSend,Qt::AlignHCenter);
 #endif
+
+#ifdef Q_OS_MAC
+    edtEmail->setAttribute(Qt::WA_MacShowFocusRect,false);
+    edtMessage->setAttribute(Qt::WA_MacShowFocusRect,false);
+#endif
+
     lblStatusMessage->setVisible(false); 
 
     edtMessage->setPlaceholderText("Please describe the details of problem you faced. What actions did you take and what happened");
