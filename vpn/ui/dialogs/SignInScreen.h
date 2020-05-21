@@ -45,8 +45,6 @@ public slots:
 
     void setErrorMessage(const QString &a_errorMsg);
 
-    void checkFieldsAndSignIn();
-
 signals:
     void serverChanged(int serverName);
 
@@ -67,8 +65,6 @@ protected:
     virtual QStringList comboBoxesNames() const override;
 #endif
 private:
-    bool checkPassword();
-    bool checkEmail();
 
     QAbstractItemModel *m_serversModel = nullptr;
 

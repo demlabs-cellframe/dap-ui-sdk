@@ -61,6 +61,7 @@ class CustomPlacementButton : public CustomButtonAbstract
 
     Q_PROPERTY(Qt::Alignment alignment WRITE setAlignment DESIGNABLE true)
     Q_PROPERTY(Qt::LayoutDirection layoutDirection WRITE setLayoutDirection READ layoutDirection DESIGNABLE true)
+    Q_PROPERTY(bool additionalImage WRITE setAdditionalImage DESIGNABLE true)
 
     void initButton();
 public:
@@ -89,6 +90,8 @@ public:
     Qt::LayoutDirection layoutDirection() const;
     void setLayoutDirection(Qt::LayoutDirection a_direction);
 
+    void setAdditionalImage(bool a_visible);
+
     void setGraphicsEffect(StyledDropShadowEffect *a_effect);
     ///Makes widgets visible on the sides
     /// @param a_spacer If there is ALIGNMENT_NONE or some erroneous value, the widgets will be invisible.
@@ -116,6 +119,7 @@ protected:
     QList<QLabel*> m_subcontrols;
     QLabel m_lbImage;    ///<label with image
     QLabel m_lbText;     ///<label with text
+    QLabel m_lbAdditionalImage;
     QWidget m_wgtRightSpacing;        ///<label for right spacing
 
 private:
