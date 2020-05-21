@@ -1,8 +1,6 @@
 #include "MainScreen.h"
 #include "Utilz.h"
 
-#include <QTime>
-
 const QString MainScreen::SCREEN_NAME = "Main";
 
 MainScreen::MainScreen(QWidget *a_parent)
@@ -13,25 +11,13 @@ MainScreen::MainScreen(QWidget *a_parent)
 
     AdaptiveScreen::initScreen(this);
 
-    m_speedCalculationTimer.setInterval(TIMEOUT_SPEED_CALCULATION);
-    m_timeConnectedTimer.setInterval(TIMEOUT_CONNECT_CALCULATION);
+    m_connectedTimer.setInterval(CONNECTED_TIME_INTERVAL);
 
     // Signal-slot connection that updates the total connection time with a timeout of 1 second
-    connect(&m_timeConnectedTimer, &QTimer::timeout, [=]
+    connect(&m_connectedTimer, &QTimer::timeout, [this]
     {
-        ++m_timeConnected;
-        setTimeConnected(m_timeConnected);
+        this->updateTimeIndicators();
     });
-
-#ifndef Q_OS_ANDROID
-    // Signal-slot connection, running a calculator for calculating the speed
-    // of receiving / transmitting data on a timeout of 2 seconds.
-    connect(&m_speedCalculationTimer, &QTimer::timeout, [=]
-    {
-        setDownloadSpeed(calculateSpeedMbps());
-    });
-#endif
-
 }
 
 QString MainScreen::screenName()
@@ -48,8 +34,9 @@ void MainScreen::setState(ConnectionStates a_state)
     this->setChildProperties(LBL_STATUS_MESSAGE, Properties::STATE, a_state);
 
     this->updateChildStyle  (LBL_STATUS_MESSAGE);
+
     if(a_state == ConnectionStates::Disconnected)
-        this->stopCalculationTimers();
+        this->stopConnectionTimer();
 #endif
 }
 
@@ -61,61 +48,30 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     QCheckBox *chbStreamOpened  ; Utils::findChild(a_widget, CHB_STREAM_OPENED  , chbStreamOpened);
     QCheckBox *chbVirtualNetwork; Utils::findChild(a_widget, CHB_VIRTUAL_NETWORK, chbVirtualNetwork);
 
-
 #ifdef Q_OS_ANDROID
 
-    QFrame *frmConnect          = a_widget->findChild<QFrame        *>(FRM_CONNECT);        Q_ASSERT(frmConnect);
-    QFrame *frmInfo             = a_widget->findChild<QFrame        *>(FRM_INFO);           Q_ASSERT(frmInfo);
-    QFrame *frmStatus           = a_widget->findChild<QFrame        *>(FRM_STATUS);         Q_ASSERT(frmStatus);
-    QPushButton *btnChangeServer = a_widget->findChild<QPushButton  *>(BTN_CHANGE_SERVER);  Q_ASSERT(btnChangeServer);
-    QLabel *lblActualServer     = a_widget->findChild<QLabel        *>(LBL_ACTUAL_SERVER);  Q_ASSERT(lblActualServer);
-
-    QLabel *lblLoginTime        = a_widget->findChild<QLabel        *>(LBL_LOGINED_TIME);     Q_ASSERT(lblLoginTime);
-    QLabel *lblTimeConnect      = a_widget->findChild<QLabel        *>(LBL_CONNECTED_TIME);   Q_ASSERT(lblTimeConnect);
-    QLabel *lblPacketsRec       = a_widget->findChild<QLabel        *>(LBL_RECEIVED);    Q_ASSERT(lblPacketsRec);
-    QLabel *lblSent             = a_widget->findChild<QLabel        *>(LBL_SENT);   Q_ASSERT(lblSent);
-
-
-
-    //To test appearance
-    chbAuthorized->setChecked(true);
-    chbStreamOpened->setChecked(true);
-    chbVirtualNetwork->setChecked(true);
-
+    QFrame      *frmConnect     ; Utils::findChild(a_widget, FRM_CONNECT        , frmConnect);
+    QFrame      *frmInfo        ; Utils::findChild(a_widget, FRM_INFO           , frmInfo);
+    QFrame      *frmStatus      ; Utils::findChild(a_widget, FRM_STATUS         , frmStatus);
+    QPushButton *btnChangeServer; Utils::findChild(a_widget, BTN_CHANGE_SERVER  , btnChangeServer);
 
     //========================================================================
-    btnChangeServer->setGraphicsEffect(new StyledDropShadowEffect(btnChangeServer));
-    frmConnect->setGraphicsEffect(new StyledDropShadowEffect(frmConnect));
-    frmInfo->setGraphicsEffect(new StyledDropShadowEffect(frmInfo));
-    frmStatus->setGraphicsEffect(new StyledDropShadowEffect(frmStatus));
+    btnChangeServer ->setGraphicsEffect(new StyledDropShadowEffect(btnChangeServer));
+    frmConnect      ->setGraphicsEffect(new StyledDropShadowEffect(frmConnect)     );
+    frmInfo         ->setGraphicsEffect(new StyledDropShadowEffect(frmInfo)        );
+    frmStatus       ->setGraphicsEffect(new StyledDropShadowEffect(frmStatus)      );
 
     btnChangeServer->hide();
 
 #else
-//    QComboBox *cbbServer            = a_widget->findChild<QComboBox*>(CBB_SERVER);          Q_ASSERT(cbbServer  );
-    QPushButton *btnBytes           = a_widget->findChild<QPushButton*>(BTN_BYTES);         Q_ASSERT(btnBytes  );
-    QPushButton *btnPackets         = a_widget->findChild<QPushButton*>(BTN_PACKETS);       Q_ASSERT(btnPackets  );
-
-    QLabel *lblReceivedTitle   ; Utils::findChild(a_widget, LBL_RECREIVED_TITLE  , lblReceivedTitle   );
-//    QLabel *lblDownloadingSpeed; Utils::findChild(a_widget, LBL_DOWNLOADING_SPEED, lblDownloadingSpeed);
-//    QLabel *lblConnectedTime   ; Utils::findChild(a_widget, LBL_DOWNLOADING_SPEED, lblConnectedTime);
-
-//    QLabel *lblDownload             = a_widget->findChild<QLabel*>(LBL_DOWNLOADED)    ;     Q_ASSERT(lblDownloaded  );
-//    QLabel *lblBytesPackets         = a_widget->findChild<QLabel*>(LBL_PATES_PACKETS) ;     Q_ASSERT(lblBytesPackets  );
-//    QLabel *lblStatusMessage        = a_widget->findChild<QLabel*>(LBL_STATUS_MESSAGE);     Q_ASSERT(lblStatusMessage  );
-
+    QPushButton *btnBytes   ; Utils::findChild(a_widget, BTN_BYTES  , btnBytes  );
+    QPushButton *btnPackets ; Utils::findChild(a_widget, BTN_PACKETS, btnPackets);
 
     connect(btnBytes,&QPushButton::clicked,[=]{
-        btnBytes->setChecked(true);
-        btnPackets->setChecked(false);
-        lblReceivedTitle->setText("Bytes Received");
-        m_bytes_not_packets = true;
+        setIndicatorUnits(IndicatorsUnits::Bytes);
     });
     connect(btnPackets,&QPushButton::clicked,[=]{
-        btnBytes->setChecked(false);
-        btnPackets->setChecked(true);
-        lblReceivedTitle->setText("Packets Received");
-        m_bytes_not_packets = false;
+        setIndicatorUnits(IndicatorsUnits::Packets);
     });
 
 #endif
@@ -137,39 +93,47 @@ void MainScreen::setVirtualNetwork(bool a_virtualNetwork /*= true*/)
     this->setChildProperties(CHB_VIRTUAL_NETWORK, Properties::CHECKED, a_virtualNetwork);
 }
 
-#ifndef ANDROID
-void MainScreen::setDownloadSpeed(double a_downloadSpeed)
+void MainScreen::setSentReceivedIndicators(int a_bytesReceived, int a_bytesSent, int a_packetsReceived, int a_packetsSent)
 {
-    this->setChildProperties(LBL_DOWNLOADING_SPEED, Properties::TEXT, tr("%1 Mbps").arg(QString().number(a_downloadSpeed, 'f', 3)));
+    m_bytesReceived   = a_bytesReceived;
+    m_bytesSent       = a_bytesSent;
+    m_packetsReceived = a_packetsReceived;
+    m_packetsSent     = a_packetsSent;
+
+    this->updateSentRecievedIndicators();
 }
 
-void MainScreen::setDownload(double a_download)
+uint64_t MainScreen::connectedTime()
 {
-    this->setChildProperties(LBL_DOWNLOADED, Properties::TEXT, tr("%1 Mb").arg(QString().number(a_download, 'f', 3)));
+    return m_loginTime.secsTo(QDateTime::currentDateTime());
 }
-#endif
 
-void MainScreen::setBytesPackets(int a_bytesRead, int a_bytesWrite, int a_packetsRead, int a_packetsWrite)
+void MainScreen::updateSentRecievedIndicators()
 {
-    m_dataNew = {a_bytesRead, a_bytesWrite};
+    this->setChildProperties(LBL_RECEIVED, Properties::TEXT, this->indicatorUnitsIsBytes() ? m_bytesReceived : m_packetsReceived);
+    this->setChildProperties(LBL_SENT    , Properties::TEXT, this->indicatorUnitsIsBytes() ? m_bytesSent     : m_packetsSent    );
+}
 
-    QString readWrite;
-    if(m_bytes_not_packets)
-        readWrite = QString().number(a_bytesRead + a_bytesWrite);
+void MainScreen::updateTimeIndicators()
+{
+    QString loginTime;
+    if (m_loginTime == QDateTime())
+        loginTime = EMPTY_TYME;
+    else if (m_loginTime.date() == QDate::currentDate())
+        loginTime = m_loginTime.toString("hh:mm");
     else
-        readWrite = QString().number(a_packetsRead + a_packetsWrite);
+        loginTime = m_loginTime.toString("MM-dd-yy hh:mm");
 
-    this->setChildProperties(LBL_RECEIVED, Properties::TEXT, readWrite);
+    this->setChildProperties(LBL_LOGIN_TIME, Properties::TEXT, loginTime);
 
-#ifndef ANDROID
-    setDownload(a_bytesRead);
-#endif
 
-}
+    QString connectedTime;
+    if (this->connectedTime() == 0)
+        connectedTime = EMPTY_TYME;
+    else
+        connectedTime = MainScreen::toTimeString(this->connectedTime());
 
-void MainScreen::setTimeConnected(uint64_t a_timeConnected)
-{
-    this->setChildProperties(LBL_CONNECTED_TIME, Properties::TEXT, getUptime(a_timeConnected));
+    this->setChildProperties(LBL_CONNECTED_TIME, Properties::TEXT, connectedTime);
 }
 
 QString MainScreen::statusText(ConnectionStates a_state)
@@ -188,36 +152,85 @@ QString MainScreen::statusText(ConnectionStates a_state)
     return QString();
 }
 
-QString MainScreen::getUptime(quint64 seconds)
+
+bool MainScreen::indicatorUnitsIsBytes() const
+{
+#ifdef ANDROID
+    return true;
+}
+#else
+    return (this->indicatorUnits() == IndicatorsUnits::Bytes);
+}
+
+void MainScreen::setIndicatorUnits(const IndicatorsUnits &a_indicatorUnits)
+{
+    if (m_indicatorUnits == a_indicatorUnits)
+        return;
+    m_indicatorUnits = a_indicatorUnits;
+
+    this->setChildProperties(BTN_BYTES  , Properties::CHECKED, a_indicatorUnits == IndicatorsUnits::Bytes);
+    this->setChildProperties(BTN_PACKETS, Properties::CHECKED, a_indicatorUnits == IndicatorsUnits::Packets);
+
+    this->setChildProperties(LBL_RECREIVED_TITLE, Properties::TEXT, this->receivedIndicatorTitle());
+    this->setChildProperties(LBL_SENT_TITLE     , Properties::TEXT, this->sendIndicatorTitle());
+
+    this->updateSentRecievedIndicators();
+}
+
+QString MainScreen::receivedIndicatorTitle() const
+{
+    return (this->indicatorUnitsIsBytes() ? BYTES : PACKETS) + " received";
+}
+
+QString MainScreen::sendIndicatorTitle() const
+{
+    return (this->indicatorUnitsIsBytes() ? BYTES : PACKETS) + " send";
+}
+#endif
+
+QDateTime MainScreen::loginTime() const
+{
+    return m_loginTime;
+}
+
+void MainScreen::setLoginTime(const QDateTime &loginTime)
+{
+    m_loginTime = loginTime;
+
+    this->updateTimeIndicators();
+}
+
+MainScreen::IndicatorsUnits MainScreen::indicatorUnits() const
+{
+    return m_indicatorUnits;
+}
+
+
+QString MainScreen::toTimeString(quint64 seconds)
 {
     const qint64 DAY = 86400;
     qint64 days = seconds / DAY;
     QTime t = QTime(0,0).addSecs(seconds % DAY);
-    QString res;
-    res.sprintf("%d %02d:%02d:%02d", static_cast<int>(days), t.hour(), t.minute(), t.second());
+
+    QString res = QString();
+    if (days > 0)
+        res.sprintf("%d %02d:%02d:%02d", static_cast<int>(days), t.hour(), t.minute(), t.second());
+    else
+        res.sprintf("%02d:%02d:%02d", t.hour(), t.minute(), t.second());
+
     return res;
 }
 
-double MainScreen::calculateSpeedMbps()
-{
-    // Translation milliseconds to seconds
-    ushort timeout = TIMEOUT_SPEED_CALCULATION/1000;
-    double speedNew = 0.008*(m_dataNew.first - m_dataOld.first)/timeout;
-    m_dataOld = m_dataNew;
-    return speedNew;
+void MainScreen::startConnectionTimer(const QDateTime &a_startTime)
+{   
+    this->setLoginTime(a_startTime);
+
+    m_connectedTimer.start();
 }
 
-void MainScreen::startCalculateConnectionData(const QDateTime &startTime)
+void MainScreen::stopConnectionTimer()
 {
-    m_timeConnected = startTime.secsTo(QDateTime::currentDateTime());
-    setTimeConnected(m_timeConnected);
-    m_speedCalculationTimer.start();
-    m_timeConnectedTimer.start();
-}
+    this->setLoginTime(QDateTime());
 
-void MainScreen::stopCalculationTimers()
-{
-    m_timeConnectedTimer.stop();
-    m_speedCalculationTimer.stop();
-    m_dataNew = m_dataOld = {0, 0};
+    m_connectedTimer.stop();
 }

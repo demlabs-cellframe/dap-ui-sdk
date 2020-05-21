@@ -24,7 +24,6 @@ FORMS    +=  \
     $$PWD/ui/FAQScreen.ui \
     $$PWD/ui/MainScreenLayout.ui \
     $$PWD/ui/NavigationPanelBack.ui \
-    $$PWD/ui/NavigationPanelBack.ui \
     $$PWD/ui/PasswordRecoveryScreen.ui \
     $$PWD/ui/dashboard_desktop_big.ui \
     $$PWD/ui/dashboard_desktop_small.ui \

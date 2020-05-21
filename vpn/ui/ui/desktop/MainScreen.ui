@@ -226,14 +226,14 @@
           <number>0</number>
          </property>
          <item row="1" column="0">
-          <widget class="QLabel" name="lblDownloadingSpeedTitle">
+          <widget class="QLabel" name="lblLoginTimeTitle">
            <property name="text">
-            <string>Download speed</string>
+            <string>Login time:</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QLabel" name="lblDownloadingSpeed">
+          <widget class="QLabel" name="lblLoginTime">
            <property name="text">
             <string>... Mbps</string>
            </property>
@@ -243,14 +243,14 @@
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QLabel" name="lblDownloadedTitle">
+          <widget class="QLabel" name="lblConnectedTimeTitle">
            <property name="text">
-            <string>Download</string>
+            <string>Time connected:</string>
            </property>
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QLabel" name="lblDownloaded">
+          <widget class="QLabel" name="lblConnectedTime">
            <property name="text">
             <string>... Mb</string>
            </property>
@@ -262,7 +262,7 @@
          <item row="3" column="0">
           <widget class="QLabel" name="lblReceivedTitle">
            <property name="text">
-            <string>Bytes Received</string>
+            <string>Bytes received</string>
            </property>
           </widget>
          </item>
@@ -277,14 +277,14 @@
           </widget>
          </item>
          <item row="4" column="0">
-          <widget class="QLabel" name="lblConnectedTimeTitle">
+          <widget class="QLabel" name="lblSentTitle">
            <property name="text">
-            <string>Time Connected</string>
+            <string>Bytes sent:</string>
            </property>
           </widget>
          </item>
          <item row="4" column="1">
-          <widget class="QLabel" name="lblConnectedTime">
+          <widget class="QLabel" name="lblSent">
            <property name="text">
             <string>...</string>
            </property>
