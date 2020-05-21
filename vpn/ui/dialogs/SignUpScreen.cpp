@@ -99,6 +99,12 @@ void SignUpScreen::initVariantUi(QWidget *a_widget)
     QLabel                  *lblPasswordError       = a_widget->findChild<QLabel*>(LBL_PASSWORD_ERROR);                 Q_ASSERT(lblPasswordError);
     QLabel                  *lblEmailError          = a_widget->findChild<QLabel*>(LBL_EMAIL_ERROR);                    Q_ASSERT(lblEmailError);
 
+#ifdef Q_OS_MAC
+    edtEmail->setAttribute(Qt::WA_MacShowFocusRect,false);
+    edtPassword->setAttribute(Qt::WA_MacShowFocusRect,false);
+    edtRptPassword->setAttribute(Qt::WA_MacShowFocusRect,false);
+#endif
+
     lblEmailError->setVisible(false);
     lblPasswordError->setVisible(false);
     lblRptPasswordError->setVisible(false);
