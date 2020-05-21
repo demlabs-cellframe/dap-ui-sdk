@@ -5,13 +5,14 @@ DapComboBoxForm
 {
     Component.onCompleted:
     {
-        if(isDefaultNeedToAppend && model.get(0, comboBoxTextRole[0]) !== mainLineText)
+        if(model.count > 0)
         {
-            if(comboBoxTextRole[0] === "name")
-                model.insert(0, {name: mainLineText});
-            else if(comboBoxTextRole[0] === "text")
-                model.insert(0, {text: mainLineText});
-            currentIndex = 0;
+            if(isDefaultNeedToAppend && getModelData(0, comboBoxTextRole[0]) !== mainLineText)
+            {
+                model.insert(0, {});
+                model.setProperty(0, comboBoxTextRole[0], mainLineText);
+                currentIndex = 0;
+            }
         }
     }
 

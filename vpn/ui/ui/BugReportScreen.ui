@@ -103,18 +103,6 @@
         </item>
         <item>
          <widget class="CustomTextEdit" name="edtMessage">
-          <property name="verticalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="horizontalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="lineWrapMode">
-           <enum>QTextEdit::FixedPixelWidth</enum>
-          </property>
-          <property name="textInteractionFlags">
-           <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextEditable|Qt::TextEditorInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-          </property>
           <property name="placeholderText">
            <string>Please describe the details of problem you faced. What actions did you take and what happened.</string>
           </property>

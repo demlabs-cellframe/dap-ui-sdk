@@ -13,6 +13,7 @@ CustomPlacementButton::CustomPlacementButton(QWidget *a_parent)
     m_wgtLeftSpacing (this),
     m_lbImage       (this),
     m_lbText        (this),
+    m_lbAdditionalImage(this),
     m_wgtRightSpacing(this)
 {
     initButton();
@@ -24,14 +25,17 @@ void CustomPlacementButton::initButton()
     m_wgtLeftSpacing .setObjectName("leftSpacing");
     m_lbImage       .setObjectName("image");
     m_lbText        .setObjectName("text");
+    m_lbAdditionalImage .setObjectName("additionalImage");
     m_wgtRightSpacing.setObjectName("rightSpacing");
 
 
     m_wgtLeftSpacing.setVisible(false);
     m_wgtRightSpacing.setVisible(false);
+    m_lbAdditionalImage.setVisible(false);
 
     m_subcontrols.append(&m_lbImage);
     m_subcontrols.append(&m_lbText);
+    m_subcontrols.append(&m_lbAdditionalImage);
 
     // Set up subcontroll object names:
     //Setup layout
@@ -248,4 +252,9 @@ void CustomPlacementButton::setAlignment(Qt::Alignment a_alignment)
 QString CustomPlacementButton::text()
 {
     return m_lbText.text();
+}
+
+void CustomPlacementButton::setAdditionalImage(bool a_visible)
+{
+    m_lbAdditionalImage.setVisible(a_visible);
 }

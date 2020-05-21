@@ -18,13 +18,12 @@ ServiceCtl::ServiceCtl(DapJsonCmdController* controller, QObject *parent)
 
     connect(this,&ServiceCtl::ctlConnected, [=]{
         qInfo() << "[ServiceCtl] Connected to ctl socket,request for status";
-        bServiceIsOn = true;
     });
     
     connect(this,&ServiceCtl::ctlDisconnected, [=]
     {
         qInfo() << "[ServiceCtl] Disconnected from backend";
-        bServiceIsOn = false;
+        bInsurerConnect = true;
         startReconnectingToService();
         startService();
     });
@@ -35,29 +34,26 @@ bool ServiceCtl::startService(){
     
     int ret = -1; //Bad result on default
     
-    for (int i = 0; i < 2; i++){ // Why should we try to start service twice?
+    //for (int i = 0; i < 2; i++){ // Why should we try to start service twice?
 #ifdef Q_OS_WIN
-        ret = exec_silent("sc start " DAP_BRAND "Service"); // Should also check there if service is running.
+    ret = exec_silent("sc start " DAP_BRAND "Service"); // Should also check there if service is running.
 #else
-	    ret = ::system("systemctl is-active " DAP_BRAND "Service"); // To keep service from restarting twice.
-	    if (ret != 0) {
-	        ret = ::system("systemctl start " DAP_BRAND "Service");
-	    } 
-	    else {
-	        return false;
-	    }
-#endif
-        if (ret != 0) {
-            qDebug() << "[ServiceCtl] Start " DAP_BRAND "Service";
-            bServiceIsOn = true;
-            serviceRestartCounter++;
-
-            emit this->started();
-            return true;
-        } else {
-            qCritical() << "[ServiceCtl] " DAP_BRAND "Service not starting";
-        }
+    ret = ::system("systemctl is-active " DAP_BRAND "Service"); // To keep service from restarting twice.
+    if (ret != 0) {
+        ret = ::system("systemctl start " DAP_BRAND "Service");
     }
+    else {
+        return false;
+    }
+#endif
+    if (ret == 0) {
+        qDebug() << "[ServiceCtl] Start " DAP_BRAND "Service";
+        serviceRestartCounter++;
+        return true;
+    } else {
+        qCritical() << "[ServiceCtl] " DAP_BRAND "Service not starting";
+    }
+   // }
     return false;
 }
 
