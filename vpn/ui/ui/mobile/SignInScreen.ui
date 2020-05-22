@@ -78,7 +78,7 @@
    <item>
     <widget class="QLabel" name="lblEmailError">
      <property name="text">
-      <string>Input a valid email</string>
+      <string/>
      </property>
     </widget>
    </item>

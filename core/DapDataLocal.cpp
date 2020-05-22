@@ -140,7 +140,7 @@ void DapDataLocal::setCurrentServer(int a_serverIndex)
         return;
     }
 
-    Q_ASSERT(a_serverIndex>=0 && a_serverIndex < m_servers.count());
+    Q_ASSERT(a_serverIndex >= 0 && a_serverIndex < m_servers.count());
 
     m_currentServer = &m_servers[a_serverIndex];
 }

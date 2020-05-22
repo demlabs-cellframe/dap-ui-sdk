@@ -75,14 +75,19 @@ void SignInScreen::setPassword(const QString &a_password)
 void SignInScreen::setErrorMessage(const QString &a_errorMsg)
 {
 
+#ifdef Q_OS_ANDROID
+    setChildProperties(LBL_EMAIL_ERROR, Properties::TEXT, a_errorMsg);
+    setValidationStateForEdit(EDT_EMAIL_NAME, LBL_EMAIL_ERROR, false);
+
+    emit wrongEmail();
+
+#else
     if (a_errorMsg == "Incorrect password")
     {
-#ifndef Q_OS_ANDROID
         setChildProperties(LBL_PASSWORD_ERROR, Properties::TEXT, a_errorMsg);
         setValidationStateForEdit(EDT_PASSWORD_NAME, LBL_PASSWORD_ERROR, false);
 
         emit wrongPassword();
-#endif
     }
     else
     {
@@ -91,12 +96,7 @@ void SignInScreen::setErrorMessage(const QString &a_errorMsg)
 
         emit wrongEmail();
     }
-}
-
-void SignInScreen::checkFieldsAndSignIn()
-{
-    if (checkEmail() && checkPassword())
-        emit this->signInRequest();
+#endif
 }
 
 void SignInScreen::initVariantUi(QWidget *a_widget)
@@ -136,7 +136,7 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     connect(cbbServer  , SIGNAL(currentIndexChanged(int))  , this, SIGNAL(serverChanged(int)));
     connect(edtEmail   , SIGNAL(textEdited(const QString&)), this, SIGNAL(emailEdited   (const QString&)));
     connect(edtPassword, SIGNAL(textEdited(const QString&)), this, SIGNAL(passwordEdited(const QString&)));
-    connect(btnSignIn  , SIGNAL(clicked())                 , this, SLOT  (checkFieldsAndSignIn()));
+    connect(btnSignIn  , SIGNAL(clicked())                 , this, SIGNAL(signInRequest()));
     connect(lblSignUp  , SIGNAL(clicked())                 , this, SIGNAL(goToSignUp()) );
 
 #ifndef ANDROID
@@ -147,28 +147,6 @@ QStringList SignInScreen::comboBoxesNames() const
 {
     return {CBB_SERVER};
 #endif
-}
-
-bool SignInScreen::checkPassword()
-{
-    if (m_password.isEmpty() || m_password.contains(' '))
-    {
-        emit this->wrongPassword();
-        return false;
-    }
-    else
-        return true;
-}
-
-bool SignInScreen::checkEmail()
-{
-    if (m_email.isEmpty() || m_email.contains(' '))
-    {
-        emit this->wrongEmail();
-        return false;
-    }
-    else
-        return true;
 }
 
 void SignInScreen::setValidationStateForEdit(const QString &a_editName, const QString &a_errorLabelName, bool a_valid /*= true*/)
