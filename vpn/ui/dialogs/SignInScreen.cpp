@@ -133,7 +133,7 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
         cbbServer->setModel(m_serversModel);
     cbbServer->QComboBox::setCurrentText(DapDataLocal::me()->serverName());
 
-    connect(cbbServer  , SIGNAL(activated(int))            , this, SIGNAL(serverChanged(int)));
+    connect(cbbServer  , SIGNAL(currentIndexChanged(int))  , this, SIGNAL(serverChanged(int)));
     connect(edtEmail   , SIGNAL(textEdited(const QString&)), this, SIGNAL(emailEdited   (const QString&)));
     connect(edtPassword, SIGNAL(textEdited(const QString&)), this, SIGNAL(passwordEdited(const QString&)));
     connect(btnSignIn  , SIGNAL(clicked())                 , this, SIGNAL(signInRequest()));

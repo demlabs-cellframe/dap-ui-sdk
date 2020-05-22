@@ -134,7 +134,13 @@ DapServerInfo *DapDataLocal::currentServer()
 
 void DapDataLocal::setCurrentServer(int a_serverIndex)
 {
-    Q_ASSERT(a_serverIndex>=0 && a_serverIndex < m_servers.count());
+    if (a_serverIndex == -1)
+    {
+        m_currentServer = nullptr;
+        return;
+    }
+
+    Q_ASSERT(a_serverIndex >= 0 && a_serverIndex < m_servers.count());
 
     m_currentServer = &m_servers[a_serverIndex];
 }
