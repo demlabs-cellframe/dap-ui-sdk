@@ -12,7 +12,6 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
-#include <stropts.h>
 #include "DapTunLinux.h"
 #include "DapTunWorkerUnix.h"
 #include "DapNetworkMonitor.h"
