@@ -59,13 +59,6 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item alignment="Qt::AlignHCenter">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Chart</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>

@@ -86,14 +86,13 @@ macos {
         SOURCES += $$PWD/DapServiceNativeMacOS.cpp
         HEADERS += $$PWD/DapServiceNativeMacOS.h
         ICON = resources/$$BRAND/pics/$${BRAND}.icns
-
 }
 
 
 
 
 android {
-    ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../brand/$$BRAND/os/android
+    ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../../../brand/$$BRAND/os/android
 
     DISTFILES += \
         $$PWD/../../../os/android/gradle/wrapper/gradle-wrapper.jar \
