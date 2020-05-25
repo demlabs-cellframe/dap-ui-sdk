@@ -59,13 +59,6 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item alignment="Qt::AlignHCenter">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Chart</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
@@ -226,14 +219,14 @@
           <number>0</number>
          </property>
          <item row="1" column="0">
-          <widget class="QLabel" name="lblDownloadSpeedCaption">
+          <widget class="QLabel" name="lblLoginTimeTitle">
            <property name="text">
-            <string>Download speed</string>
+            <string>Login time:</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QLabel" name="lblDownloadSpeed">
+          <widget class="QLabel" name="lblLoginTime">
            <property name="text">
             <string>... Mbps</string>
            </property>
@@ -243,14 +236,14 @@
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QLabel" name="lblDownloadCaption">
+          <widget class="QLabel" name="lblConnectedTimeTitle">
            <property name="text">
-            <string>Download</string>
+            <string>Time connected:</string>
            </property>
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QLabel" name="lblDownload">
+          <widget class="QLabel" name="lblConnectedTime">
            <property name="text">
             <string>... Mb</string>
            </property>
@@ -260,14 +253,14 @@
           </widget>
          </item>
          <item row="3" column="0">
-          <widget class="QLabel" name="lblBytesPacketsCaption">
+          <widget class="QLabel" name="lblReceivedTitle">
            <property name="text">
-            <string>Bytes Received</string>
+            <string>Bytes received</string>
            </property>
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QLabel" name="lblBytesPackets">
+          <widget class="QLabel" name="lblReceived">
            <property name="text">
             <string>...</string>
            </property>
@@ -277,14 +270,14 @@
           </widget>
          </item>
          <item row="4" column="0">
-          <widget class="QLabel" name="lblTimeConnectedCaption">
+          <widget class="QLabel" name="lblSentTitle">
            <property name="text">
-            <string>Time Connected</string>
+            <string>Bytes sent:</string>
            </property>
           </widget>
          </item>
          <item row="4" column="1">
-          <widget class="QLabel" name="lblTimeConnected">
+          <widget class="QLabel" name="lblSent">
            <property name="text">
             <string>...</string>
            </property>

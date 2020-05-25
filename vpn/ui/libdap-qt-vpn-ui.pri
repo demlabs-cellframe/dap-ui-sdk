@@ -24,7 +24,6 @@ FORMS    +=  \
     $$PWD/ui/FAQScreen.ui \
     $$PWD/ui/MainScreenLayout.ui \
     $$PWD/ui/NavigationPanelBack.ui \
-    $$PWD/ui/NavigationPanelBack.ui \
     $$PWD/ui/PasswordRecoveryScreen.ui \
     $$PWD/ui/dashboard_desktop_big.ui \
     $$PWD/ui/dashboard_desktop_small.ui \
@@ -87,23 +86,24 @@ macos {
         SOURCES += $$PWD/DapServiceNativeMacOS.cpp
         HEADERS += $$PWD/DapServiceNativeMacOS.h
         ICON = resources/$$BRAND/pics/$${BRAND}.icns
-
 }
 
 
 
 
 android {
+    ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../../../brand/$$BRAND/os/android
+
     DISTFILES += \
-        $$PWD/../os/android/gradle/wrapper/gradle-wrapper.jar \
-        $$PWD/../os/android/gradlew \
-        $$PWD/../os/android/res/values/libs.xml \
-        $$PWD/../os/android/build.gradle \
-        $$PWD/../os/android/gradle/wrapper/gradle-wrapper.properties \
-        $$PWD/../os/android/src/com/demlabs/dapchain/MainActivity.java \
-        $$PWD/../os/android/src/com/demlabs/dapchain/DapChainVpnService.java \
-        $$PWD/../os/android/src/com/demlabs/dapchain/DapChainVpnServiceNative.java \
-        $$PWD/../os/android/gradlew.bat
+        $$PWD/../../../os/android/gradle/wrapper/gradle-wrapper.jar \
+        $$PWD/../../../os/android/gradlew \
+        $$PWD/../../../os/android/res/values/libs.xml \
+        $$PWD/../../../os/android/build.gradle \
+        $$PWD/../../../os/android/gradle/wrapper/gradle-wrapper.properties \
+        $$PWD/../../../os/android/src/com/demlabs/dapchain/MainActivity.java \
+        $$PWD/../../../os/android/src/com/demlabs/dapchain/DapChainVpnService.java \
+        $$PWD/../../../os/android/src/com/demlabs/dapchain/DapChainVpnServiceNative.java \
+        $$PWD/../../../os/android/gradlew.bat
 }
 
 

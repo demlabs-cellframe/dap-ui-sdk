@@ -47,6 +47,7 @@ class DapServiceClient : public QObject, public DapServiceNative
     Q_OBJECT
 public:
     const QString& serviceName(){ return m_serviceName; }
+    bool getIsSockConnected(){ return sockCtl->state() == QTcpSocket::ConnectedState; }
 signals:
     void ctlConnected();
     void ctlDisconnected();

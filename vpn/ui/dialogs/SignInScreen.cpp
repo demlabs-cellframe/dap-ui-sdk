@@ -64,7 +64,7 @@ QString SignInScreen::screenName()
 
 void SignInScreen::setState(ConnectionStates a_state)
 {
-    setChildProperties(BTN_SIGN_IN_NAME, Properties::TEXT   , buttonText(a_state));
+    this->setChildProperties(BTN_SIGN_IN_NAME, Properties::TEXT, buttonText(a_state));
     this->setProperty(qPrintable(Properties::ENABLED), a_state == ConnectionStates::Disconnected);
 }
 
@@ -114,12 +114,12 @@ void SignInScreen::setErrorMessage(const QString &a_errorMsg)
 
 void SignInScreen::initVariantUi(QWidget *a_widget)
 {
-    QPushButton    *btnSignIn      = a_widget->findChild<QPushButton*>(BTN_SIGN_IN_NAME  );      Q_ASSERT(btnSignIn);
-    QLabel         *lblEmailError  = a_widget->findChild<QLabel     *>(LBL_EMAIL_ERROR   );      Q_ASSERT(lblEmailError);
-    ClickableLabel *lblSignUp      = a_widget->findChild<ClickableLabel*>(LBL_SIGN_UP );         Q_ASSERT(lblSignUp);
-    ComboBox       *cbbServer    ; Utils::findChild(a_widget, CBB_SERVER       , cbbServer  );
-    QLineEdit      *edtEmail     ; Utils::findChild(a_widget, EDT_EMAIL_NAME   , edtEmail   );
-    QLineEdit      *edtPassword  ; Utils::findChild(a_widget, EDT_PASSWORD_NAME, edtPassword);
+    QPushButton    *btnSignIn    ; Utils::findChild(a_widget, BTN_SIGN_IN_NAME , btnSignIn    );
+    QLabel         *lblEmailError; Utils::findChild(a_widget, LBL_EMAIL_ERROR  , lblEmailError);
+    ClickableLabel *lblSignUp    ; Utils::findChild(a_widget, LBL_SIGN_UP      , lblSignUp    );
+    ComboBox       *cbbServer    ; Utils::findChild(a_widget, CBB_SERVER       , cbbServer    );
+    QLineEdit      *edtEmail     ; Utils::findChild(a_widget, EDT_EMAIL_NAME   , edtEmail     );
+    QLineEdit      *edtPassword  ; Utils::findChild(a_widget, EDT_PASSWORD_NAME, edtPassword  );
 
     QLabel         *lblForgotPass; Utils::findChild(a_widget, LBL_FORGOT_PASS  , lblForgotPass);
     lblForgotPass->setText("");
