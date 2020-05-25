@@ -10,15 +10,16 @@ CustomLineEdit::CustomLineEdit(QWidget *parent):CustomLineEditBase (parent)
     });
 }
 
-void CustomLineEdit::focusOutEvent(QFocusEvent *e)
-{
-    setVisibleButton(false);
-
-    CustomLineEditBase::focusOutEvent(e);
-}
-
 void CustomLineEdit::focusInEvent(QFocusEvent *e)
 {
     setVisibleButton(true);
     CustomLineEditBase::focusInEvent(e);
+}
+
+void CustomLineEdit::focusOutEvent(QFocusEvent *e)
+{
+    if(!btnControl->hasFocus())
+        setVisibleButton(false);
+
+    CustomLineEditBase::focusOutEvent(e);
 }

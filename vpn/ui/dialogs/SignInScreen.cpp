@@ -33,13 +33,21 @@ SignInScreen::SignInScreen(QWidget *a_parent)
     connect(m_stt_email_wrong, &QState::entered, [this]{
         setValidationStateForEdit(this->EDT_EMAIL_NAME, this->LBL_EMAIL_ERROR, false);
     });
+#ifndef Q_OS_ANDROID
     connect(m_stt_password_right, &QState::entered, [this]{
         setValidationStateForEdit(this->EDT_PASSWORD_NAME, this->LBL_PASSWORD_ERROR);
     });
     connect(m_stt_password_wrong, &QState::entered, [this]{
         setValidationStateForEdit(this->EDT_PASSWORD_NAME, this->LBL_PASSWORD_ERROR, false);
     });
-
+#else
+    connect(m_stt_password_right, &QState::entered, [this]{
+        setValidationStateForEdit(this->EDT_PASSWORD_NAME, this->LBL_EMAIL_ERROR);
+    });
+    connect(m_stt_password_wrong, &QState::entered, [this]{
+        setValidationStateForEdit(this->EDT_PASSWORD_NAME, this->LBL_EMAIL_ERROR, false);
+    });
+#endif
     connect(this, SIGNAL(emailEdited   (const QString &)), SLOT(setEmail   (const QString &)));
     connect(this, SIGNAL(passwordEdited(const QString &)), SLOT(setPassword(const QString &)));
 
@@ -77,9 +85,14 @@ void SignInScreen::setErrorMessage(const QString &a_errorMsg)
 
 #ifdef Q_OS_ANDROID
     setChildProperties(LBL_EMAIL_ERROR, Properties::TEXT, a_errorMsg);
-    setValidationStateForEdit(EDT_EMAIL_NAME, LBL_EMAIL_ERROR, false);
-
-    emit wrongEmail();
+    if (a_errorMsg != "Incorrect password")
+    {
+        emit wrongEmail();
+    }
+    else
+    {
+        emit wrongPassword();
+    }
 
 #else
     if (a_errorMsg == "Incorrect password")
@@ -138,6 +151,7 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     connect(edtPassword, SIGNAL(textEdited(const QString&)), this, SIGNAL(passwordEdited(const QString&)));
     connect(btnSignIn  , SIGNAL(clicked())                 , this, SIGNAL(signInRequest()));
     connect(lblSignUp  , SIGNAL(clicked())                 , this, SIGNAL(goToSignUp()) );
+
 
 #ifndef ANDROID
     ScreenWithComboBoxesAbstract::initVariantUi(a_widget);
