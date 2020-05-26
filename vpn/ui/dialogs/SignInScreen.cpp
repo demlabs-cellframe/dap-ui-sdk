@@ -122,7 +122,7 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     QLineEdit      *edtPassword  ; Utils::findChild(a_widget, EDT_PASSWORD_NAME, edtPassword  );
 
     QLabel         *lblForgotPass; Utils::findChild(a_widget, LBL_FORGOT_PASS  , lblForgotPass);
-    lblForgotPass->setText("");
+//    lblForgotPass->setText("");
 
 #ifdef Q_OS_MAC
     edtEmail->setAttribute(Qt::WA_MacShowFocusRect,false);

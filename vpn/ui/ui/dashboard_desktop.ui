@@ -1150,7 +1150,7 @@
   <customwidget>
    <class>CustomPlacementButton</class>
    <extends>QPushButton</extends>
-   <header location="global">controls/CustomPlacementButton.h</header>
+   <header location="global">CustomPlacementButton.h</header>
   </customwidget>
   <customwidget>
    <class>ServersComboBox</class>
