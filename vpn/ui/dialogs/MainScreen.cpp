@@ -110,8 +110,10 @@ uint64_t MainScreen::connectedTime()
 
 void MainScreen::updateSentRecievedIndicators()
 {
-    this->setChildProperties(LBL_RECEIVED, Properties::TEXT, this->indicatorUnitsIsBytes() ? m_bytesReceived : m_packetsReceived);
-    this->setChildProperties(LBL_SENT    , Properties::TEXT, this->indicatorUnitsIsBytes() ? m_bytesSent     : m_packetsSent    );
+//TODO:
+    // Check why sigReadWriteBytesStat signal send wrong datas (recieved/sent are contrarily)
+    this->setChildProperties(LBL_SENT    , Properties::TEXT, this->indicatorUnitsIsBytes() ? m_bytesReceived : m_packetsReceived);
+    this->setChildProperties(LBL_RECEIVED, Properties::TEXT, this->indicatorUnitsIsBytes() ? m_bytesSent     : m_packetsSent    );
 }
 
 void MainScreen::updateTimeIndicators()
