@@ -6,14 +6,12 @@ include ( auxiliary/auxiliary.pri)
 SOURCES += \
     $$PWD/DapServiceClient.cpp\
     $$PWD/DapServiceNativeAbstract.cpp\
-    $$PWD/DapUiVpnStateIndicator.cpp\
     $$PWD/ServiceCtl.cpp\
     $$PWD/usrmsg.cpp
 
 HEADERS  += \
     $$PWD/DapServiceClient.h\
     $$PWD/DapServiceNativeAbstract.h\
-    $$PWD/DapUiVpnStateIndicator.h\
     $$PWD/ServiceCtl.h\
     $$PWD/usrmsg.h
 
@@ -24,28 +22,7 @@ FORMS    +=  \
     $$PWD/ui/FAQScreen.ui \
     $$PWD/ui/MainScreenLayout.ui \
     $$PWD/ui/NavigationPanelBack.ui \
-    $$PWD/ui/PasswordRecoveryScreen.ui \
-    $$PWD/ui/dashboard_desktop_big.ui \
-    $$PWD/ui/dashboard_desktop_small.ui \
-    $$PWD/ui/dashboard_desktop.ui \
-    $$PWD/ui/dashboard_mobile_hor_big.ui \
-    $$PWD/ui/dashboard_mobile_hor_small.ui \
-    $$PWD/ui/dashboard_mobile_hor.ui \
-    $$PWD/ui/dashboard_mobile_ver_big.ui \
-    $$PWD/ui/dashboard_mobile_ver_small.ui \
-    $$PWD/ui/dashboard_mobile_ver.ui \
-    $$PWD/ui/dlg_settings.ui \
-    $$PWD/ui/dlg_about.ui \
-    $$PWD/ui/forgot_password_desktop.ui \
-    $$PWD/ui/sign_up_desktop.ui \
-    $$PWD/ui/sign_up_desktop_small.ui \
-    $$PWD/ui/sign_up_desktop_big.ui \
-    $$PWD/ui/forgot_password_desktop_big.ui \
-    $$PWD/ui/forgot_password_desktop_small.ui \
-    $$PWD/ui/settings.ui \
-    $$PWD/ui/settings_more_menu.ui \
-    $$PWD/ui/sidebar_desktop.ui \
-    $$PWD/ui/dlg_edit_server.ui
+    $$PWD/ui/PasswordRecoveryScreen.ui
 
 INCLUDEPATH += $$PWD
 

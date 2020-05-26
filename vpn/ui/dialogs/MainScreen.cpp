@@ -128,7 +128,6 @@ void MainScreen::updateTimeIndicators()
 
     this->setChildProperties(LBL_LOGIN_TIME, Properties::TEXT, loginTime);
 
-
     QString connectedTime;
     if (this->connectedTime() == 0)
         connectedTime = EMPTY_TYME;
@@ -170,8 +169,10 @@ void MainScreen::setIndicatorUnits(const IndicatorsUnits &a_indicatorUnits)
         return;
     m_indicatorUnits = a_indicatorUnits;
 
-    this->setChildProperties(BTN_BYTES  , Properties::CHECKED, a_indicatorUnits == IndicatorsUnits::Bytes);
-    this->setChildProperties(BTN_PACKETS, Properties::CHECKED, a_indicatorUnits == IndicatorsUnits::Packets);
+    this->setChildProperties(BTN_BYTES  , Properties::CHECKED,  this->indicatorUnitsIsBytes());
+    this->setChildProperties(BTN_BYTES  , Properties::ENABLED, !this->indicatorUnitsIsBytes());
+    this->setChildProperties(BTN_PACKETS, Properties::CHECKED, !this->indicatorUnitsIsBytes());
+    this->setChildProperties(BTN_PACKETS, Properties::ENABLED,  this->indicatorUnitsIsBytes());
 
     this->setChildProperties(LBL_RECREIVED_TITLE, Properties::TEXT, this->receivedIndicatorTitle());
     this->setChildProperties(LBL_SENT_TITLE     , Properties::TEXT, this->sendIndicatorTitle());

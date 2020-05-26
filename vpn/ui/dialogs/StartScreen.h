@@ -2,7 +2,6 @@
 #define STARTSCREEN_H
 
 #include <QStateMachine>
-#include "DapUiScreen.h"
 #include "AdaptiveScreen.h"
 #include "ui_StartScreen.h"
 

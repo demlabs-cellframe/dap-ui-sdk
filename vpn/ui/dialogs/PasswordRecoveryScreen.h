@@ -3,7 +3,6 @@
 
 #include "AdaptiveScreen.h"
 #include "QTextEdit"
-#include "DapUiScreen.h"
 #include "StyledDropShadowEffect.h"
 #include "CustomLineHeightLabel.h"
 #include <QVBoxLayout>
