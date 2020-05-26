@@ -29,14 +29,12 @@ void NavigationPanelMain::initVariantUi(QWidget *a_widget)
     connect(btBug     , &QPushButton::clicked, this, &NavigationPanelMain::goToBugReport);
     connect(btHelp    , &QPushButton::clicked, this, &NavigationPanelMain::goToFAQ);
 
-    btHelp->setVisible(false);
-    btBug->setVisible(false);
 
 #ifndef ANDROID
-    QPushButton* btnAccount   ; Utils::findChild(a_widget, BTN_ACCOUNT   , btnAccount)->hide();
-    QPushButton* btnConnection; Utils::findChild(a_widget, BTN_CONNECTION, btnConnection)->hide();
+    QPushButton* btnAccount   ; Utils::findChild(a_widget, BTN_ACCOUNT   , btnAccount);
+    QPushButton* btnConnection; Utils::findChild(a_widget, BTN_CONNECTION, btnConnection);
 #endif
-    btSettings->hide();
+
 }
 
 #ifndef ANDROID

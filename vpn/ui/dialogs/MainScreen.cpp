@@ -1,5 +1,8 @@
 #include "MainScreen.h"
 #include "Utilz.h"
+#include "AppStyleSheetHandler.h"
+#include "UiScaling.h"
+#include <QDebug>
 
 const QString MainScreen::SCREEN_NAME = "Main";
 
@@ -67,12 +70,26 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     QPushButton *btnBytes   ; Utils::findChild(a_widget, BTN_BYTES  , btnBytes  );
     QPushButton *btnPackets ; Utils::findChild(a_widget, BTN_PACKETS, btnPackets);
 
+    // создаём сцену
+    m_scene = new QGraphicsScene();
+    QGraphicsView *graphicsView = a_widget->findChild<QGraphicsView*>("graphicsView"); Q_ASSERT(graphicsView);
+    graphicsView->setScene(m_scene);
+
+    m_sceneHeight = UiScaling::pointsToPixels(218);
+    m_sceneWidth  = UiScaling::pointsToPixels(428);
+
+    graphicsView->setSceneRect(0,0,m_sceneWidth-3, m_sceneHeight-3);
+
     connect(btnBytes,&QPushButton::clicked,[=]{
         setIndicatorUnits(IndicatorsUnits::Bytes);
     });
     connect(btnPackets,&QPushButton::clicked,[=]{
         setIndicatorUnits(IndicatorsUnits::Packets);
     });
+    // Set styles for graphics.
+    addItemGraphicSceneStyle("shChartDownload",   AppStyleSheetHandler::getWidgetStyleSheet("#shChartDownload", "active"));
+    addItemGraphicSceneStyle("shChartUpload",     AppStyleSheetHandler::getWidgetStyleSheet("#shChartUpload"  , "active"));
+    addItemGraphicSceneStyle("shGrid",            AppStyleSheetHandler::getWidgetStyleSheet("#shGrid"         , "active"));
 
 #endif
 
@@ -101,6 +118,16 @@ void MainScreen::setSentReceivedIndicators(int a_bytesReceived, int a_bytesSent,
     m_packetsSent     = a_packetsSent;
 
     this->updateSentRecievedIndicators();
+#ifndef Q_OS_ANDROID
+    schedules.addInp(m_bytesReceived);
+    schedules.addOut(m_bytesSent);
+
+    schedules.draw_chart(getScene(),
+                         getSceneWidth() - 3,
+                         getSceneHeight() - 3);
+    getScene()->update();
+#endif
+
 }
 
 uint64_t MainScreen::connectedTime()
@@ -236,3 +263,31 @@ void MainScreen::stopConnectionTimer()
 
     m_connectedTimer.stop();
 }
+
+#ifndef Q_OS_ANDROID
+/// Add styles to the graphic element.
+/// @param widget Graphic element.
+/// @param styleWidget Graphic styles.
+void MainScreen::addItemGraphicSceneStyle(const QString &widget, const QString &styleWidget)
+{
+    QStringList strParametrs = styleWidget.split(";");
+    strParametrs.removeAll("");
+    QMap<QString, QVariant> param;
+    for(QString str : strParametrs)
+    {
+        QStringList tempParam = str.split(":");
+        param.insert(tempParam.at(0), tempParam.at(1));
+    }
+    mGraphicSceneStyle.insert(widget, param);
+
+    schedules.setStyle(mGraphicSceneStyle);
+}
+
+/// Delete styles for the graphic element.
+/// @param widget Graphic element.
+void MainScreen::removeItemGraphicSceneStyle(const QString &widget)
+{
+    mGraphicSceneStyle.remove(widget);
+    schedules.setStyle(mGraphicSceneStyle);
+}
+#endif

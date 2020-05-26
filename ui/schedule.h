@@ -14,9 +14,10 @@
 class Schedule
 {
     std::list<SheduleElement> elems;
-    int s_time     = time(NULL);
+    int s_time     = time(nullptr);
     int s_quantity = 0;
     int diff       = 0;
+
 
 public:
     Schedule();

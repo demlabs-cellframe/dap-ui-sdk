@@ -8,8 +8,9 @@
 
 #include "vpnDefine.h"
 
-
+#include <QGraphicsScene>
 #include "defines.h"
+#include "schedules.h"
 #include "DapDataLocal.h"
 #include "StyledDropShadowEffect.h"
 
@@ -30,6 +31,18 @@ class MainScreen : public AdaptiveScreen
     /// Timeout for total connection time calculator in milliseconds.
     const ushort CONNECTED_TIME_INTERVAL{1000};
 
+#ifndef Q_OS_ANDROID
+    QGraphicsScene *m_scene;
+    int m_sceneWidth;
+    int m_sceneHeight;
+    Schedules schedules;
+
+    /// Graphics styles.
+    DapGraphicSceneStyle    mGraphicSceneStyle;
+    QGraphicsScene* getScene() {return m_scene;}
+    int getSceneWidth() {return m_sceneWidth;}
+    int getSceneHeight() {return m_sceneHeight;}
+#endif
     enum class IndicatorsUnits {Bytes, Packets};
 
 public:
@@ -48,6 +61,15 @@ public:
     IndicatorsUnits indicatorUnits() const;
 
 
+#ifndef Q_OS_ANDROID
+    /// Add styles to the graphic element.
+    /// @param widget Graphic element.
+    /// @param styleWidget Graphic styles.
+    void addItemGraphicSceneStyle(const QString &widget, const QString &styleWidget);
+    /// Delete styles for the graphic element.
+    /// @param widget Graphic element.
+    void removeItemGraphicSceneStyle(const QString &widget);
+#endif
 
 public slots:
 
@@ -82,6 +104,8 @@ protected:
     QDateTime loginTime() const;
     void setLoginTime(const QDateTime &loginTime);
 
+    void setGraphicsHeight(int a_height);
+    void setGraphicsWidth(int a_width);
 
     const QString BTN_CONNECTION    = "btnConnection";
 
