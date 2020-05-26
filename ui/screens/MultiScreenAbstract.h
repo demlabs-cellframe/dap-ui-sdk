@@ -24,7 +24,6 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 #pragma once
 
 #include <QWidget>
-#include "DapUiScreen.h"
 #include "AdaptiveScreen.h"
 #include "controls/AnimationChangingWidget.h"
 
