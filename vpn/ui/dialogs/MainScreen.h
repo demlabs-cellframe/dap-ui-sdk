@@ -115,7 +115,7 @@ protected:
 
     const QString LBL_LOGIN_TIME      = "lblLoginTime";
     const QString LBL_CONNECTED_TIME  = "lblConnectedTime";
-    const QString LBL_RECREIVED_TITLE = "lblReceivedTitle";
+    const QString LBL_RECEIVED_TITLE = "lblReceivedTitle";
     const QString LBL_RECEIVED        = "lblReceived";
     const QString LBL_SENT_TITLE      = "lblSentTitle";
     const QString LBL_SENT            = "lblSent";
