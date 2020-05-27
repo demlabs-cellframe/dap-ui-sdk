@@ -2,7 +2,6 @@
 #define STARTSCREEN_H
 
 #include <QStateMachine>
-#include "DapUiScreen.h"
 #include "AdaptiveScreen.h"
 #include "ui_StartScreen.h"
 
@@ -23,22 +22,9 @@ public:
     static const QString SCREEN_NAME;
     virtual QString screenName() override;
 
-public slots:
-    void setupConnectingState();
-    void setupConnectedState();
-
 protected:
 
-    const QString BTN_SIGN_IN_NAME = "btnSignIn";
-    const QString BTN_SIGN_UP_NAME = "btnSignUp";
-
     virtual void initVariantUi(QWidget *a_widget) override;
-
-signals:
-
-    void goToSignIn();
-    void goToSignUp();
-
 };
 
 #endif // STARTSCREEN_H

@@ -9,7 +9,6 @@ SOURCES += \
     $$PWD/CustomPopup.cpp \
     $$PWD/CustomPopupComboBox.cpp \
     $$PWD/FAQWidget.cpp \
-    $$PWD/ServersComboBox.cpp \
     $$PWD/AnimatedLineEdit.cpp \
     $$PWD/ScreenOverlaying.cpp \
     $$PWD/StyledDropShadowEffect.cpp \
@@ -35,7 +34,6 @@ HEADERS += \
     $$PWD/CustomPopup.h \
     $$PWD/CustomPopupComboBox.h \
     $$PWD/FAQWidget.h \
-    $$PWD/ServersComboBox.h \
     $$PWD/AnimatedLineEdit.h \
     $$PWD/ScreenOverlaying.h \
     $$PWD/StyledDropShadowEffect.h \

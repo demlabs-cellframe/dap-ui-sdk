@@ -144,7 +144,7 @@
        <widget class="QWidget" name="wgtTopInfoFrame" native="true"/>
       </item>
       <item>
-       <widget class="QWidget" name="wgtLiginTime" native="true">
+       <widget class="QWidget" name="wgtLiginedTime" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <property name="spacing">
           <number>0</number>
@@ -162,7 +162,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QLabel" name="lblTitleLoginTime">
+          <widget class="QLabel" name="lblLoginTimeTitle">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -215,7 +215,7 @@
           <number>0</number>
          </property>
          <item alignment="Qt::AlignLeft">
-          <widget class="QLabel" name="lblTitleTimeConnect">
+          <widget class="QLabel" name="lblConnectedTimeTitle">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -231,7 +231,7 @@
           </widget>
          </item>
          <item alignment="Qt::AlignRight">
-          <widget class="QLabel" name="lblTimeConnect">
+          <widget class="QLabel" name="lblConnectedTime">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -253,7 +253,7 @@
        <widget class="QWidget" name="widget_2" native="true"/>
       </item>
       <item>
-       <widget class="QWidget" name="wgtPacketsRec" native="true">
+       <widget class="QWidget" name="wgtReceived" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -274,7 +274,7 @@
           <number>0</number>
          </property>
          <item alignment="Qt::AlignLeft">
-          <widget class="QLabel" name="lblTitlePacketsRec">
+          <widget class="QLabel" name="lblReceivedTitle">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -290,7 +290,7 @@
           </widget>
          </item>
          <item alignment="Qt::AlignRight">
-          <widget class="QLabel" name="lblPacketsRec">
+          <widget class="QLabel" name="lblReceived">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -312,7 +312,7 @@
        <widget class="QWidget" name="widget_3" native="true"/>
       </item>
       <item>
-       <widget class="QWidget" name="wgtPacetsSent" native="true">
+       <widget class="QWidget" name="wgtSent" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -333,7 +333,7 @@
           <number>0</number>
          </property>
          <item alignment="Qt::AlignLeft">
-          <widget class="QLabel" name="lblTitlePacetsSent">
+          <widget class="QLabel" name="lblSentTitle">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -349,7 +349,7 @@
           </widget>
          </item>
          <item alignment="Qt::AlignRight">
-          <widget class="QLabel" name="lblPacetsSent">
+          <widget class="QLabel" name="lblSent">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
              <horstretch>0</horstretch>

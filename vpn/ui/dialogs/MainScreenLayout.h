@@ -26,12 +26,6 @@ protected:
     virtual void initVariantUi(QWidget *a_widget) override;
 signals:
     void loginScreenTransition();
-
-    void goToSettings();
-    void goToBugReport();
-    void goToFAQ();
-
-    void goBack();
 };
 
 #endif // MAINSCREENLAYOUT_H

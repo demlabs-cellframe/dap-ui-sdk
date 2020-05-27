@@ -63,6 +63,10 @@ void CustomComboBoxPopup::initVariantUi(QWidget *a_widget)
 {
     CustomComboBoxListView *lvwList; Utils::findChild(a_widget, this->listViewName(), lvwList);
 
+#ifdef Q_OS_MAC
+    lvwList->setAttribute(Qt::WA_MacShowFocusRect,false);
+#endif
+
     if (m_model)
         lvwList->setModel(m_model);
     else
