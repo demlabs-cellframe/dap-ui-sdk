@@ -201,7 +201,7 @@ void MainScreen::setIndicatorUnits(const IndicatorsUnits &a_indicatorUnits)
     this->setChildProperties(BTN_PACKETS, Properties::CHECKED, !this->indicatorUnitsIsBytes());
     this->setChildProperties(BTN_PACKETS, Properties::ENABLED,  this->indicatorUnitsIsBytes());
 
-    this->setChildProperties(LBL_RECREIVED_TITLE, Properties::TEXT, this->receivedIndicatorTitle());
+    this->setChildProperties(LBL_RECEIVED_TITLE, Properties::TEXT, this->receivedIndicatorTitle());
     this->setChildProperties(LBL_SENT_TITLE     , Properties::TEXT, this->sendIndicatorTitle());
 
     this->updateSentRecievedIndicators();
@@ -214,7 +214,7 @@ QString MainScreen::receivedIndicatorTitle() const
 
 QString MainScreen::sendIndicatorTitle() const
 {
-    return (this->indicatorUnitsIsBytes() ? BYTES : PACKETS) + " send";
+    return (this->indicatorUnitsIsBytes() ? BYTES : PACKETS) + " sent";
 }
 #endif
 
