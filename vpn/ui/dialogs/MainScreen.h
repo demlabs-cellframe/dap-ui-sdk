@@ -8,26 +8,42 @@
 
 #include "vpnDefine.h"
 
-
+#include <QGraphicsScene>
 #include "defines.h"
+#include "schedules.h"
 #include "DapDataLocal.h"
 #include "StyledDropShadowEffect.h"
 
-#ifdef Q_OS_ANDROID
-#include "ui_MainScreen.h"
-#include <QFrame>
-
-#else
-#include "ui_MainScreen.h"
-
+#include <QDateTime>
 #include <QTimer>
-#include "CustomComboBoxPopup.h"
-#include <QComboBox>
+#include "ui_MainScreen.h"
+#ifdef ANDROID
+    #include <QFrame>
+#else
+    #include "CustomComboBoxPopup.h"
+    #include <QComboBox>
 #endif
 
 class MainScreen : public AdaptiveScreen
 {
     Q_OBJECT
+
+    /// Timeout for total connection time calculator in milliseconds.
+    const ushort CONNECTED_TIME_INTERVAL{1000};
+
+#ifndef Q_OS_ANDROID
+    QGraphicsScene *m_scene;
+    int m_sceneWidth;
+    int m_sceneHeight;
+    Schedules schedules;
+
+    /// Graphics styles.
+    DapGraphicSceneStyle    mGraphicSceneStyle;
+    QGraphicsScene* getScene() {return m_scene;}
+    int getSceneWidth() {return m_sceneWidth;}
+    int getSceneHeight() {return m_sceneHeight;}
+#endif
+    enum class IndicatorsUnits {Bytes, Packets};
 
 public:
 
@@ -39,48 +55,21 @@ public:
     static const QString SCREEN_NAME;
     virtual QString screenName() override;
 
-public:
 
     void setState(ConnectionStates a_state);
 
+    IndicatorsUnits indicatorUnits() const;
 
-protected:
-    /// Form initialization.
-    /// @param a_w Window GUI widget.
-    /// @param a_rotation Device display orientation.
-    virtual void initVariantUi(QWidget *a_widget) override;
 
-    const QString BTN_CONNECTION    = "btnConnection";
-
-    const QString CHB_AUTHORIZED      = "chbAuthorized";
-    const QString CHB_STREAM_OPENED   = "chbStreamOpened";
-    const QString CHB_VIRTUAL_NETWORK = "chbVirtualNetwork";
-
-#ifdef Q_OS_ANDROID
-    const QString FRM_CONNECT       = "frmConnect";
-    const QString FRM_INFO          = "frmInfo";
-    const QString FRM_STATUS        = "frmStatus";
-    const QString BTN_CHANGE_SERVER = "btnChangeServer";
-    const QString LBL_ACTUAL_SERVER = "lblActualServer";
-    const QString LBL_LOGIN_TIME    = "lblLoginTime";
-    const QString LBL_TIME_CONNECT  = "lblTimeConnect";
-    const QString LBL_PACKETS_REC   = "lblPacketsRec";
-    const QString LBL_PACKETS_SENT  = "lblPacetsSent";
-#else
-    const QString LBL_STATUS_MESSAGE        = "lblStatusMessage";
-    const QString CBB_SERVER                = "cbbServer";
-    const QString BTN_BYTES                 = "btnBytes";
-    const QString BTN_PACKETS               = "btnPackets";
-    const QString LBL_BYTES_PACKETS_CAPTION = "lblBytesPacketsCaption";
-    const QString LBL_DOWNLOAD_SPEED        = "lblDownloadSpeed";
-    const QString LBL_TIME_CONNECTED        = "lblTimeConnected";
-    const QString LBL_DOWNLOAD              = "lblDownload";
-    const QString LBL_PATES_PACKETS         = "lblBytesPackets";
+#ifndef Q_OS_ANDROID
+    /// Add styles to the graphic element.
+    /// @param widget Graphic element.
+    /// @param styleWidget Graphic styles.
+    void addItemGraphicSceneStyle(const QString &widget, const QString &styleWidget);
+    /// Delete styles for the graphic element.
+    /// @param widget Graphic element.
+    void removeItemGraphicSceneStyle(const QString &widget);
 #endif
-
-signals:
-    void disconnect();
-    void serverChanged(const QString& serverName);
 
 public slots:
 
@@ -88,9 +77,88 @@ public slots:
     void setStreamOpened(bool a_streamOpened = true);
     void setVirtualNetwork(bool a_virtualNetwork = true);
 
+    void setSentReceivedIndicators(int a_bytesReceived, int a_bytesSent, int a_packetsReceived, int a_packetsSent);
+
+    void startConnectionTimer(const QDateTime &a_startTime);
+    void stopConnectionTimer();
+
+signals:
+    void disconnect();
+    void serverChanged(const QString& serverName);
+
+    void changeBytesPackets(int a_bytesRead, int a_bytesWrite, int a_packetsRead, int a_packetsWrite);
+    void setIndicatorsUnit(bool a_bytes_not_packets);
+
+protected:
+    /// Form initialization.
+    /// @param a_w Window GUI widget.
+    /// @param a_rotation Device display orientation.
+    virtual void initVariantUi(QWidget *a_widget) override;
+
+
+    void updateSentRecievedIndicators();
+    void updateTimeIndicators();
+
+    uint64_t connectedTime();
+
+    QDateTime loginTime() const;
+    void setLoginTime(const QDateTime &loginTime);
+
+    void setGraphicsHeight(int a_height);
+    void setGraphicsWidth(int a_width);
+
+    const QString BTN_CONNECTION    = "btnConnection";
+
+    const QString CHB_AUTHORIZED      = "chbAuthorized";
+    const QString CHB_STREAM_OPENED   = "chbStreamOpened";
+    const QString CHB_VIRTUAL_NETWORK = "chbVirtualNetwork";
+
+    const QString LBL_LOGIN_TIME      = "lblLoginTime";
+    const QString LBL_CONNECTED_TIME  = "lblConnectedTime";
+    const QString LBL_RECREIVED_TITLE = "lblReceivedTitle";
+    const QString LBL_RECEIVED        = "lblReceived";
+    const QString LBL_SENT_TITLE      = "lblSentTitle";
+    const QString LBL_SENT            = "lblSent";
+
+    const QString EMPTY_TYME = "...";
+
+#ifdef ANDROID
+    const QString FRM_CONNECT       = "frmConnect";
+    const QString FRM_INFO          = "frmInfo";
+    const QString FRM_STATUS        = "frmStatus";
+    const QString BTN_CHANGE_SERVER = "btnChangeServer";
+
+#else
+    const QString LBL_STATUS_MESSAGE        = "lblStatusMessage";
+    const QString BTN_BYTES                 = "btnBytes";
+    const QString BTN_PACKETS               = "btnPackets";
+
+    const QString BYTES = "Bytes";
+    const QString PACKETS = "Packets";
+#endif
+
 private:
+    static QString toTimeString(quint64 seconds);
     static QString statusText(ConnectionStates a_state);
 
+    bool indicatorUnitsIsBytes() const;
+#ifndef ANDROID
+    void setIndicatorUnits(const IndicatorsUnits &a_indicatorUnits);
+
+    QString receivedIndicatorTitle() const;
+    QString sendIndicatorTitle() const;
+#endif
+
+    IndicatorsUnits m_indicatorUnits;
+    int m_bytesSent       = 0;
+    int m_bytesReceived   = 0;
+    int m_packetsSent     = 0;
+    int m_packetsReceived = 0;
+
+    /// Connection time calculator timer.
+    QTimer  m_connectedTimer;
+    /// Total connection time in seconds.
+    QDateTime m_loginTime {};
 };
 
 #endif // MAINSCREEN_H

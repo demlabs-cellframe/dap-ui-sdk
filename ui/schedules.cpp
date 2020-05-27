@@ -29,14 +29,14 @@ void Schedules::draw_backgraund(QGraphicsScene *scene, int width, int height)
 {
     QPainterPath path;
 
-    int num_of_lines = 14;
+    int num_of_lines = 19;
 
     for (int i = 1; i < num_of_lines; i++){
         path.moveTo(i*width/num_of_lines, 0);
         path.lineTo(i*width/num_of_lines, height);
     }
 
-    num_of_lines = 18;
+    num_of_lines = 8;
     for (int i = 1; i < num_of_lines; i++){
         path.moveTo(0, i*height/num_of_lines);
         path.lineTo(width, i*height/num_of_lines);

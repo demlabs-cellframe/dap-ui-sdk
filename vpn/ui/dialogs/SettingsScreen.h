@@ -3,7 +3,6 @@
 
 #include <QComboBox>
 #include "AdaptiveScreen.h"
-#include "DapUiScreen.h"
 
 #include "ui_SettingsScreen.h"
 #include "StyledDropShadowEffect.h"
