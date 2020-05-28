@@ -1,5 +1,31 @@
-//#include "AccountScreen.h"
+#include "AccountScreen.h"
 
+const QString AccountScreen::SCREEN_NAME = "Account";
+
+AccountScreen::AccountScreen(QWidget *a_parent)
+    : AdaptiveScreen(a_parent)
+{
+    create<Ui::AccountScreen>();
+
+}
+
+QString AccountScreen::screenName()
+{
+    return AccountScreen::SCREEN_NAME;
+}
+
+void AccountScreen::setState(ConnectionStates a_state)
+{
+    Q_UNUSED(a_state)
+
+
+}
+
+void AccountScreen::initVariantUi(QWidget *a_widget)
+{
+    Q_UNUSED(a_widget)
+
+}
 //AccountScreen::AccountScreen(QObject * a_parent, QStackedWidget * a_sw)
 //    : DapUiScreen(a_parent, a_sw)
 //{
@@ -27,8 +53,3 @@
 //    });
 //}
 
-//void AccountScreen::initUi(QWidget *a_w, DapUiScreen::ScreenRotation a_rotation)
-//{
-//    Q_UNUSED(a_w)
-//    Q_UNUSED(a_rotation)
-//}

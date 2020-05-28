@@ -119,9 +119,9 @@ void CustomPlacementButton::setState(bool a_isHover, bool a_isChecked)
 void CustomPlacementButton::setProperty(const QString &a_property, const QVariant &a_value)
 {
     const char* property = a_property.toStdString().c_str();
-
-    if (this->property(property) == a_value)
-        return;
+//qWarning()<< "==================================="<<a_property<<"-------"<<a_value;
+//    if (this->property(property) == a_value)
+//        return;
 
     Utils::setPropertyAndUpdateStyle(&m_wgtRightSpacing, property, a_value);
 
@@ -257,4 +257,9 @@ QString CustomPlacementButton::text()
 void CustomPlacementButton::setAdditionalImage(bool a_visible)
 {
     m_lbAdditionalImage.setVisible(a_visible);
+}
+void CustomPlacementButton::checkStateSet()
+{
+    setProperty(Properties::CHECKED, isChecked());
+    QPushButton::checkStateSet();
 }

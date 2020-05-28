@@ -1,29 +1,41 @@
-//#ifndef ACCOUNTSCREEN_H
-//#define ACCOUNTSCREEN_H
+#ifndef ACCOUNTSCREEN_H
+#define ACCOUNTSCREEN_H
 
-//#include <QLabel>
-//#include <QPushButton>
-//#include "StyledDropShadowEffect.h"
+#include <QLabel>
 
+#include "StyledDropShadowEffect.h"
 
-//#include "ui_AccountScreen.h"
-//#include "controls/CustomPlacementButton.h"
+#include <QStateMachine>
+#include <QListView>
 
-//class AccountScreen : public DapUiScreen
-//{
-//    Q_OBJECT
+#include "AdaptiveScreen.h"
+#include "vpnDefine.h"
 
-//public:
-//    /// Overloaded constructor.
-//    /// @param a_parent Parent.
-//    /// @param a_sw Application window stack.
-//    AccountScreen(QObject * a_parent, QStackedWidget * a_sw);
+#include "defines.h"
+#include <QStyle>
+#include <QList>
+#include "ui_AccountScreen.h"
+#include "CustomPlacementButton.h"
 
-//protected:
-//    /// Form initialization.
-//    /// @param a_w Window GUI widget.
-//    /// @param a_rotation Device display orientation.
-//    virtual void initUi(QWidget * a_w, ScreenRotation a_rotation) override;
-//};
+class AccountScreen : public AdaptiveScreen
+{
+    Q_OBJECT
 
-//#endif // STARTSCREEN_H
+public:
+
+    /// Overloaded constructor.
+    /// @param a_parent Parent.
+    AccountScreen(QWidget *a_parent);
+
+    static const QString SCREEN_NAME;
+    virtual QString screenName() override;
+
+    void setState(ConnectionStates a_state);
+protected:
+    /// Form initialization.
+    /// @param a_w Window GUI widget.
+    virtual void initVariantUi(QWidget *a_widget) override;
+
+};
+
+#endif // ACCOUNTSCREEN_H
