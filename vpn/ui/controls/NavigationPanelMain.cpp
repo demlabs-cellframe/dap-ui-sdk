@@ -37,6 +37,8 @@ void NavigationPanelMain::initVariantUi(QWidget *a_widget)
 
     connect(m_btnConnections   , &QPushButton::clicked,this,&NavigationPanelMain::goToConnections);
   //  connect(m_btnAccount     , &QPushButton::clicked,this,&NavigationPanelMain::goToAccount);
+#else
+    connect(m_btnSettings, &QPushButton::clicked,this,&NavigationPanelMain::goToSettings);
 #endif
  //   connect(m_btnSettings, &QPushButton::clicked,this,&NavigationPanelMain::goToSettings);
     connect(m_btnBug     , &QPushButton::clicked,this,&NavigationPanelMain::goToBugReport);
