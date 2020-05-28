@@ -113,7 +113,7 @@ protected:
     /// Cursor out.
     /// @param event Signal source.
     void leaveEvent(QEvent *event);
-
+    void checkStateSet();
     QHBoxLayout *m_layout;
     QWidget m_wgtLeftSpacing;         ///<label for left spacing
     QList<QLabel*> m_subcontrols;
