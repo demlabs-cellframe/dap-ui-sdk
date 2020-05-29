@@ -163,14 +163,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CustomLineHeightLabel</class>
-   <extends>QLabel</extends>
-   <header>CustomLineHeightLabel.h</header>
-  </customwidget>
-  <customwidget>
    <class>CustomLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">CustomLineEdit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CustomLineHeightLabel</class>
+   <extends>QLabel</extends>
+   <header>CustomLineHeightLabel.h</header>
   </customwidget>
   <customwidget>
    <class>CustomTextEdit</class>
