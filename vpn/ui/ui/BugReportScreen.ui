@@ -103,6 +103,12 @@
         </item>
         <item>
          <widget class="CustomTextEdit" name="edtMessage">
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
           <property name="placeholderText">
            <string>Please describe the details of problem you faced. What actions did you take and what happened.</string>
           </property>

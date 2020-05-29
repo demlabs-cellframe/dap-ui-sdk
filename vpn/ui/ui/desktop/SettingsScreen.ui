@@ -46,7 +46,7 @@
     </widget>
    </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="ComboBox" name="cbbBandwidth">
+    <widget class="ComboBox" name="cbbLanguage">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -73,32 +73,6 @@
    </item>
    <item alignment="Qt::AlignHCenter">
     <widget class="ComboBox" name="cbbEncryption">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="wgtMarin_3" native="true"/>
-   </item>
-   <item alignment="Qt::AlignHCenter">
-    <widget class="ComboBox" name="cbbBalance">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="wgtMarin_2" native="true"/>
-   </item>
-   <item alignment="Qt::AlignHCenter">
-    <widget class="ComboBox" name="cbbLanguage">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
