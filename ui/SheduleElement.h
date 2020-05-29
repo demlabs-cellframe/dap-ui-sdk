@@ -6,7 +6,7 @@ class SheduleElement
 public:
     int time;
     int velocity;
-    SheduleElement(int t_time, int t_velocity) :
+    SheduleElement(time_t t_time, int t_velocity) :
         time(t_time), velocity(t_velocity) { }
 };
 

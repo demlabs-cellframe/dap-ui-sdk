@@ -1,34 +1,28 @@
-#include <stdlib.h>
-#include <list>
-#include <iterator>
-#include <QDebug>
-#include <QGraphicsPathItem>
-
 #include "schedule.h"
 
 Schedule::Schedule() {
-    elems.push_front(SheduleElement(time(NULL),0));
+    m_elems.push_front(SheduleElement(time(nullptr),0));
 }
 
 void Schedule::addElem(int newQuantity)
 {
-    int newTime = time(NULL);
+    time_t newTime = time(nullptr);
     int velocity;
 
     if (newTime == s_time) {
         velocity = diff = diff + newQuantity - s_quantity;
         // убираем ненужный элемент.
-        elems.pop_front();
+        m_elems.pop_front();
     } else {
         diff     = newQuantity - s_quantity;
         velocity = diff/(newTime - s_time);
         s_time   = newTime;
     }
-    elems.push_front(SheduleElement(newTime, velocity));
+    m_elems.push_front(SheduleElement(newTime, velocity));
     s_quantity = newQuantity;
 
-    if (elems.size() > 40) {
-        elems.pop_back();
+    if (m_elems.size() > 40) {
+        m_elems.pop_back();
     }
 }
 
@@ -38,10 +32,10 @@ int Schedule::maxValue()
         return 0;
     }
 
-    int maxVal = elems.begin()->velocity;
-    std::list<SheduleElement>::iterator ptr;
+    int maxVal = m_elems.begin()->velocity;
+    QList<SheduleElement>::iterator ptr;
 
-    for (ptr = elems.begin(); ptr != elems.end(); ptr++) {
+    for (ptr = m_elems.begin(); ptr != m_elems.end(); ptr++) {
         if (ptr->velocity > maxVal) maxVal = ptr->velocity;
     }
     return maxVal;
@@ -71,33 +65,45 @@ void Schedule::showChart(
     QGraphicsScene *scene, QPen pen, QColor color, int width, int height, int maxVal)
 {
     int size_of_chart = size();
-    std::list<SheduleElement>::iterator ptr;
+
     QPainterPath path = QPainterPath();
 
     // выставляем на начальные позиции
     path.moveTo(
         width,
-        y_shift(elems.begin()->velocity, height, maxVal)
+        y_shift(m_elems.begin()->velocity, height, maxVal)
     );
 
-    int time_pos = size_of_chart - 1;
+    int time_pos = size_of_chart - 2;
     // отрисовываем путь
-    for (ptr = elems.begin(); ptr != elems.end(); ptr++) {
+
+     for(int i = 1;i<m_elems.size();i++)
+    {
         int y = 0;
-        if (ptr->velocity > y) y = ptr->velocity;
+        if (m_elems[i].velocity > y) y = m_elems[i].velocity;
 
         path.lineTo(
             x_shift(time_pos, width, size_of_chart),
             y_shift(y, height, maxVal));
         time_pos--;
     }
+time_pos = 1;
 
-    // замкнуть график по низу
-    path.lineTo(0,     height);
-    path.lineTo(width, height);
+    for(int i = m_elems.size()-2;i>0;i--)
+    {
+        int y = m_elems[i].velocity;
+        if (m_elems[i].velocity < y) y = m_elems[i].velocity;
+
+        path.lineTo(
+            x_shift(time_pos, width, size_of_chart),
+            y_shift(y, height, maxVal));
+        time_pos++;
+    }
+
     path.closeSubpath();
 
     // отрисовка графика
+
     scene->addPath(path, pen, color);
 }
 
