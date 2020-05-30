@@ -9,8 +9,9 @@ class UiScaling
 
 public:
 
-    static float pointsToPixels(float a_pointsValue);
+    static float pointsToPixels(float a_pointsValue, float dpi = 0);
     static QSize pointsToPixels(const QSize& a_pointsSize);
+    static float getNativDPI();
 
     inline static double pointsToInches(float a_pointsValue);
 };
