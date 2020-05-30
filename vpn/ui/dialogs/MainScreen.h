@@ -119,13 +119,14 @@ protected:
     const QString LBL_RECEIVED        = "lblReceived";
     const QString LBL_SENT_TITLE      = "lblSentTitle";
     const QString LBL_SENT            = "lblSent";
+    const QString CBB_SERVER          = "cbbServer";
 
     const QString EMPTY_TYME = "...";
-
+    const QString FRM_STATUS        = "frmStatus";
 #ifdef ANDROID
     const QString FRM_CONNECT       = "frmConnect";
     const QString FRM_INFO          = "frmInfo";
-    const QString FRM_STATUS        = "frmStatus";
+
     const QString BTN_CHANGE_SERVER = "btnChangeServer";
 
 #else
@@ -154,6 +155,8 @@ private:
     int m_bytesReceived   = 0;
     int m_packetsSent     = 0;
     int m_packetsReceived = 0;
+
+    QAbstractItemModel *m_serversModel = nullptr;
 
     /// Connection time calculator timer.
     QTimer  m_connectedTimer;

@@ -107,7 +107,10 @@ void CustomPopup::updatePosition()
         this->move(0,0);
         this->resize(wgtParent->size());
     }
-
+    else if (windowType() == Qt::ToolTip)
+    {
+        return; //decide, otherwise it will redirect below
+    }
     else if (windowType() & (Qt::Dialog | Qt::Popup))
     {
         int posX = (wgtParent->width() - width()) / 2;
@@ -149,7 +152,7 @@ void CustomPopup::setWindowType(Qt::WindowType a_windowType)
 
         if (a_windowType == Qt::Dialog)
             m_screenOverlaying->disconnect();
-        else if (a_windowType == Qt::Popup)
+        else if (a_windowType == Qt::Popup || a_windowType == Qt::ToolTip)
             connect(m_screenOverlaying, SIGNAL(clicked()), SLOT(hide()));
     }
 

@@ -339,9 +339,9 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QComboBox" name="cbbServer">
+       <widget class="ServersComboBox" name="cbbServer">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="currentText">
          <string/>
@@ -531,6 +531,11 @@
    <class>CustomPlacementButton</class>
    <extends>QPushButton</extends>
    <header location="global">CustomPlacementButton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ServersComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">ServersComboBox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

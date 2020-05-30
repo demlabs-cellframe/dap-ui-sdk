@@ -50,12 +50,14 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     QCheckBox *chbAuthorized    ; Utils::findChild(a_widget, CHB_AUTHORIZED     , chbAuthorized);
     QCheckBox *chbStreamOpened  ; Utils::findChild(a_widget, CHB_STREAM_OPENED  , chbStreamOpened);
     QCheckBox *chbVirtualNetwork; Utils::findChild(a_widget, CHB_VIRTUAL_NETWORK, chbVirtualNetwork);
+    ServersComboBox  *cbbServer ; Utils::findChild(a_widget, CBB_SERVER         , cbbServer    );
+    QFrame      *frmStatus      ; Utils::findChild(a_widget, FRM_STATUS         , frmStatus);
 
 #ifdef Q_OS_ANDROID
 
     QFrame      *frmConnect     ; Utils::findChild(a_widget, FRM_CONNECT        , frmConnect);
     QFrame      *frmInfo        ; Utils::findChild(a_widget, FRM_INFO           , frmInfo);
-    QFrame      *frmStatus      ; Utils::findChild(a_widget, FRM_STATUS         , frmStatus);
+
     QPushButton *btnChangeServer; Utils::findChild(a_widget, BTN_CHANGE_SERVER  , btnChangeServer);
 
     //========================================================================
@@ -69,6 +71,24 @@ void MainScreen::initVariantUi(QWidget *a_widget)
 #else
     QPushButton *btnBytes   ; Utils::findChild(a_widget, BTN_BYTES  , btnBytes  );
     QPushButton *btnPackets ; Utils::findChild(a_widget, BTN_PACKETS, btnPackets);
+
+    cbbServer->popup()->setObjectName("cbbServer_popup");
+    if (!m_serversModel)
+        {
+            m_serversModel = cbbServer->model();
+
+            for (DapServerInfo& server :DapDataLocal::me()->servers())
+                cbbServer->addItem(server.name);
+
+            connect(DapDataLocal::me(), &DapDataLocal::serverAdded, [=](const DapServerInfo& a_serverInfo){
+                cbbServer->addItem(a_serverInfo.name);
+            });
+
+            connect(DapDataLocal::me(), SIGNAL(serversCleared()), cbbServer, SLOT(clear()));
+        }
+        else
+            cbbServer->setModel(m_serversModel);
+
 
     // создаём сцену
     m_scene = new QGraphicsScene();
