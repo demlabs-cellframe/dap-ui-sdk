@@ -18,9 +18,10 @@ const GUID GUID_CLASS_MONITOR = { 0x4d36e96e, 0xe325, 0x11ce, 0xbf, 0xc1, 0x08, 
 
 float UiScaling::pointsToPixels(float a_pointsValue, float dpi /*default = 0*/)
 {
+
     if (!dpi)
         dpi = getNativDPI();
-    float valueInPixels = dpi * pointsToInches(a_pointsValue);
+    float valueInPixels = dpi * pointsToInches(aptToPt(a_pointsValue));
 
     return valueInPixels;
 }
@@ -67,4 +68,10 @@ float UiScaling::getNativDPI(){
     static qreal dpi(QGuiApplication::primaryScreen()->physicalDotsPerInch());
 #endif
     return dpi;
+}
+
+float UiScaling::aptToPt(float apt){
+    /*CSS has its own pt unit, which is 1.333 (96/72).
+     times bigger than px however it is different from iOS p.*/
+    return apt * 1.333;
 }

@@ -13,6 +13,9 @@ public:
     static QSize pointsToPixels(const QSize& a_pointsSize);
     static float getNativDPI();
 
+
+private:
+    inline static float aptToPt(float apt);
     inline static double pointsToInches(float a_pointsValue);
 };
 
