@@ -9,10 +9,11 @@ class ComboBox : public CustomButtonComboBox
     Q_OBJECT
 public:
     ComboBox(QWidget* a_parent = nullptr);
+    ComboBox(CustomComboBoxPopup* a_popup, QWidget* a_parent = nullptr);
 
     ComboBoxPopup* popup();
 
     CustomPlacementButton *buttonControll() const;
 };
 
-#endif // COMBOBOX_H
+#endif // SERVERSCOMBOBOX_H

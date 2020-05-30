@@ -8,15 +8,12 @@ CustomComboBoxPopup::CustomComboBoxPopup(QMainWindow *parent)
     : CustomPopup(parent)
 {
     this->setObjectName("stwCustomComboBoxPopup");
-    this->setWindowType(Qt::Popup);
 
     connect(this, &CustomComboBoxPopup::itemSelected, [this] (int index){
         Q_UNUSED(index)
 
         this->hide();
     });
-
-
 }
 
 QAbstractItemModel *CustomComboBoxPopup::model()

@@ -14,7 +14,7 @@
 #include "PasswordLineEdit.h"
 #include "ClickableLabel.h"
 #include <QMainWindow>
-#include "ComboBoxPopup.h"
+#include "ScreenComboBoxPopup.h"
 #include <QStandardItemModel>
 
 #ifdef ANDROID

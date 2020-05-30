@@ -13,7 +13,16 @@ CustomPopupComboBox::CustomPopupComboBox(QWidget *parent)
 void CustomPopupComboBox::showPopup()
 {
     if (m_popup)
+    {
+        if (m_popup->windowType() == Qt::ToolTip)
+        {
+            QMainWindow* mainWindow = Utils::findParent<QMainWindow*>(this);
+            QPoint popupPosition = this->mapTo(mainWindow, QPoint(0, this->height()));
+
+            popup()->move(popupPosition);
+        }
         m_popup->show();
+    }
 
     else
         this->QComboBox::showPopup();
@@ -48,6 +57,10 @@ void CustomPopupComboBox::setModel(QAbstractItemModel *a_model)
 
 void CustomPopupComboBox::setCaption(const QString &a_text)
 {
+    if (m_caption == a_text)
+        return;
+    m_caption = a_text;
+
     if (this->popup())
         this->popup()->setCaption(a_text);
 }

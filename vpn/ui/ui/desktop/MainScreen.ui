@@ -339,12 +339,15 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="ServersComboBox" name="cbbServer">
+       <widget class="ComboBox" name="cbbServer">
         <property name="enabled">
          <bool>true</bool>
         </property>
         <property name="currentText">
          <string/>
+        </property>
+        <property name="caption" stdset="0">
+         <string>Change server</string>
         </property>
        </widget>
       </item>
@@ -533,9 +536,9 @@
    <header location="global">CustomPlacementButton.h</header>
   </customwidget>
   <customwidget>
-   <class>ServersComboBox</class>
+   <class>ComboBox</class>
    <extends>QComboBox</extends>
-   <header location="global">ServersComboBox.h</header>
+   <header location="global">ComboBox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

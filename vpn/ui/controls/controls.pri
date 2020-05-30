@@ -5,8 +5,6 @@ SOURCES += \
     $$PWD/NavigationPanel.cpp \
     $$PWD/NavigationPanelBack.cpp \
     $$PWD/NavigationPanelMain.cpp \
-    $$PWD/ServersComboBox.cpp \
-    $$PWD/ServersComboBoxPopup.cpp
 
 HEADERS  += \
     $$PWD/ComboBox.h \
@@ -15,7 +13,17 @@ HEADERS  += \
     $$PWD/NavigationPanel.h \
     $$PWD/NavigationPanelBack.h \
     $$PWD/NavigationPanelMain.h \
-    $$PWD/ServersComboBox.h \
-    $$PWD/ServersComboBoxPopup.h
+
+!android {
+    SOURCES += \
+        $$PWD/desktop/ScreenComboBox.cpp \
+        $$PWD/desktop/ScreenComboBoxPopup.cpp
+
+    HEADERS  += \
+        $$PWD/desktop/ScreenComboBox.h \
+        $$PWD/desktop/ScreenComboBoxPopup.h
+}
+
 
 INCLUDEPATH += $$PWD
+INCLUDEPATH += $$PWD/desktop

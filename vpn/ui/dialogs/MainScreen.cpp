@@ -2,7 +2,12 @@
 #include "Utilz.h"
 #include "AppStyleSheetHandler.h"
 #include "UiScaling.h"
+#include "ComboBox.h"
 #include <QDebug>
+
+#ifndef ANDROID
+    #include "ScreenComboBox.h"
+#endif
 
 const QString MainScreen::SCREEN_NAME = "Main";
 
@@ -50,11 +55,9 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     QCheckBox *chbAuthorized    ; Utils::findChild(a_widget, CHB_AUTHORIZED     , chbAuthorized);
     QCheckBox *chbStreamOpened  ; Utils::findChild(a_widget, CHB_STREAM_OPENED  , chbStreamOpened);
     QCheckBox *chbVirtualNetwork; Utils::findChild(a_widget, CHB_VIRTUAL_NETWORK, chbVirtualNetwork);
-    ServersComboBox  *cbbServer ; Utils::findChild(a_widget, CBB_SERVER         , cbbServer    );
     QFrame      *frmStatus      ; Utils::findChild(a_widget, FRM_STATUS         , frmStatus);
 
 #ifdef Q_OS_ANDROID
-
     QFrame      *frmConnect     ; Utils::findChild(a_widget, FRM_CONNECT        , frmConnect);
     QFrame      *frmInfo        ; Utils::findChild(a_widget, FRM_INFO           , frmInfo);
 
@@ -69,10 +72,13 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     btnChangeServer->hide();
 
 #else
-    QPushButton *btnBytes   ; Utils::findChild(a_widget, BTN_BYTES  , btnBytes  );
-    QPushButton *btnPackets ; Utils::findChild(a_widget, BTN_PACKETS, btnPackets);
+    ComboBox    *cbbServer ; Utils::findChild(a_widget, CBB_SERVER , cbbServer );
+    QPushButton *btnBytes  ; Utils::findChild(a_widget, BTN_BYTES  , btnBytes  );
+    QPushButton *btnPackets; Utils::findChild(a_widget, BTN_PACKETS, btnPackets);
 
     cbbServer->popup()->setObjectName("cbbServer_popup");
+    cbbServer->setCaptionPolicy(CustomButtonComboBox::CaptionPolicy::ShowAlways);
+
     if (!m_serversModel)
         {
             m_serversModel = cbbServer->model();

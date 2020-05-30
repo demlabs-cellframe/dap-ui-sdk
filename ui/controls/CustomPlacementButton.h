@@ -35,9 +35,6 @@
  *> #buttonName::text[checked = "true"] {
  *>     ...
  *> }
- *> #buttonName::text:checked:hover {
- *>     ...
- *> }
  *> #buttonName::image {
  *>     ...
  *> }
@@ -47,13 +44,9 @@
  *> #buttonName::image[checked = "true"]{
  *>     ...
  *> }
- *> #buttonName::image:checked:hover {
- *>     ...
- *> }
  *> #buttonName #rightSpacing {
  *>     ...//if max-width==0, right alignment
  *> }
- * @todo Is searching style in comments also!
 */
 class CustomPlacementButton : public CustomButtonAbstract
 {

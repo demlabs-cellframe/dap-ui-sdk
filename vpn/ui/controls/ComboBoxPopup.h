@@ -22,23 +22,13 @@ class ComboBoxPopup : public CustomComboBoxPopup
 
 public:
     explicit ComboBoxPopup(QMainWindow *a_parent = nullptr);
+    explicit ComboBoxPopup(QWidget *a_parent = nullptr);
 
 protected:
     virtual QString captionLabelName() override;
     virtual QString listViewName() override;
 
-#ifndef ANDROID
-    virtual void showEvent(QShowEvent *event) override;
-    virtual void setVisible(bool a_visible);
-
-    bool m_canBeHidden;
-public slots:
-    void allowClosingAndHide();
-
-signals:
-    void closingStarted();
-
-#endif
+    virtual void initVariantUi(QWidget * a_widget) override;
 
 private:
     const QString LVW_LIST_NAME    = "lvwList";
@@ -46,3 +36,4 @@ private:
 };
 
 #endif // COMBOBOXPOPUP_H
+

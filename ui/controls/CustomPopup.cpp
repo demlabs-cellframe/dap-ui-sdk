@@ -102,20 +102,23 @@ void CustomPopup::updatePosition()
     if (!wgtParent)
         return;
 
-    if (windowType() == Qt::Desktop)
-    {
-        this->move(0,0);
-        this->resize(wgtParent->size());
-    }
-    else if (windowType() == Qt::ToolTip)
-    {
-        return; //decide, otherwise it will redirect below
-    }
-    else if (windowType() & (Qt::Dialog | Qt::Popup))
-    {
-        int posX = (wgtParent->width() - width()) / 2;
-        int posY = (wgtParent->height() - height()) / 2;
-        move(posX, posY);
+    switch (windowType()) {
+        case Qt::Desktop:
+        {
+            this->move(0,0);
+            this->resize(wgtParent->size());
+            break;
+        }
+        case Qt::Dialog:
+        case Qt::Popup:
+        {
+            int posX = (wgtParent->width() - width()) / 2;
+            int posY = (wgtParent->height() - height()) / 2;
+            move(posX, posY);
+            break;
+        }
+        case Qt::ToolTip:
+        default: return;
     }
 }
 
