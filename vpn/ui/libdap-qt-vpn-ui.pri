@@ -22,7 +22,9 @@ FORMS    +=  \
     $$PWD/ui/FAQScreen.ui \
     $$PWD/ui/MainScreenLayout.ui \
     $$PWD/ui/NavigationPanelBack.ui \
-    $$PWD/ui/PasswordRecoveryScreen.ui
+    $$PWD/ui/PasswordRecoveryScreen.ui \
+    $$PWD/ui/$$BRAND/desktop/NavigationPanelMain.ui \
+    $$PWD/ui/mobile/NavigationPanelMain.ui
 
 INCLUDEPATH += $$PWD
 
@@ -87,7 +89,6 @@ android {
 contains(DEFINES, DAP_PLATFORM_MOBILE) {
     FORMS += \
         $$PWD/ui/mobile/MainScreen.ui \
-        $$PWD/ui/mobile/NavigationPanelMain.ui \
         $$PWD/ui/mobile/SignInScreen.ui \
         $$PWD/ui/mobile/StartScreen.ui \
         $$PWD/ui/mobile/SettingsScreen.ui\
@@ -101,6 +102,6 @@ else {
         $$PWD/ui/desktop/SignUpScreen.ui\
         $$PWD/ui/desktop/MainScreen.ui\
         $$PWD/ui/desktop/LoginScreenLayout.ui \
-        $$PWD/ui/desktop/NavigationPanelMain.ui
+        $$PWD/ui/$$BRAND/desktop/NavigationPanelMain.ui
 }
 

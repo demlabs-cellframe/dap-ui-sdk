@@ -4,7 +4,7 @@ SOURCES += \
     $$PWD/ComboBoxPopup.cpp \
     $$PWD/NavigationPanel.cpp \
     $$PWD/NavigationPanelBack.cpp \
-    $$PWD/NavigationPanelMain.cpp
+    $$PWD/$$BRAND/NavigationPanelMain.cpp
 
 HEADERS  += \
     $$PWD/ComboBox.h \
@@ -12,6 +12,7 @@ HEADERS  += \
     $$PWD/ComboBoxPopup.h \
     $$PWD/NavigationPanel.h \
     $$PWD/NavigationPanelBack.h \
-    $$PWD/NavigationPanelMain.h
+    $$PWD/$$BRAND/NavigationPanelMain.h
 
-INCLUDEPATH += $$PWD
+INCLUDEPATH += $$PWD \
+               $$PWD/$$BRAND
