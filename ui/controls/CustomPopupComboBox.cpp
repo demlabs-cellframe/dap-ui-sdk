@@ -17,7 +17,7 @@ void CustomPopupComboBox::showPopup()
         if (m_popup->windowType() == Qt::ToolTip)
         {
             QMainWindow* mainWindow = Utils::findParent<QMainWindow*>(this);
-            QPoint popupPosition = this->mapTo(mainWindow, QPoint(0, this->height()));
+            QPoint popupPosition = this->mapTo(mainWindow, QPoint(-1, this->height()));
 
             popup()->move(popupPosition);
         }
