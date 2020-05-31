@@ -16,6 +16,8 @@ public:
 
 signals:
     void goBack();
+    void goToSettings();
+    void goToBugReport();
 
 #ifndef ANDROID
 public slots:

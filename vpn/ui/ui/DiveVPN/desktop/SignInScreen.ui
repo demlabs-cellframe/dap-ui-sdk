@@ -107,6 +107,9 @@
     </widget>
    </item>
    <item>
+    <widget class="QWidget" name="wgtUnderButton" native="true"/>
+   </item>
+   <item>
     <widget class="QLabel" name="lblForgotPass">
      <property name="text">
       <string>Forgot password?</string>
@@ -115,6 +118,9 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="wgtSpaseClickLabel" native="true"/>
    </item>
    <item alignment="Qt::AlignHCenter">
     <widget class="QWidget" name="wgtFrameBottom" native="true">

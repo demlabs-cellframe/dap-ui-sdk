@@ -8,7 +8,7 @@ SOURCES += \
     $$PWD/SettingsScreen.cpp \
     $$PWD/$$BRAND/SignInScreen.cpp \
     $$PWD/SignUpScreen.cpp \
-    $$PWD/StartScreen.cpp
+    $$PWD/$$BRAND/StartScreen.cpp
 
 HEADERS  += \
     $$PWD/AccountScreen.h \
@@ -20,7 +20,7 @@ HEADERS  += \
     $$PWD/SettingsScreen.h \
     $$PWD/$$BRAND/SignInScreen.h \
     $$PWD/SignUpScreen.h \
-    $$PWD/StartScreen.h
+    $$PWD/$$BRAND/StartScreen.h
 
 !android {
     HEADERS  += \

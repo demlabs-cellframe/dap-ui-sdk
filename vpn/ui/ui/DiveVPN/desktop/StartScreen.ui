@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>177</width>
-    <height>151</height>
+    <width>379</width>
+    <height>370</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -61,6 +61,13 @@
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="lblVersion">
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </item>
