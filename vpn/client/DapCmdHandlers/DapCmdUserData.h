@@ -44,6 +44,8 @@ public:
     /// @param password User password.
     /// @param address Server address.
     void setUserData(const QString &user, const QString &password, const QString &address, quint16 a_port);
+signals:
+    void usrDataChanged(const QString &address, quint16 a_port);
 };
 
 #endif // DAPCMDUSERDATAHANDLER_H
