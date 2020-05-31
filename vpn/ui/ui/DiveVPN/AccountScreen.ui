@@ -36,7 +36,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QLabel" name="mainText">
+    <widget class="QLabel" name="lblCaption">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -44,7 +44,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Account</string>
+      <string>Change plan</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -52,113 +52,32 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="mainInfoText">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>265 day left</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="widgetSwitch" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="lblSwitchLeftText">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Fiat</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="activVisible" stdset="0">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnSwitchButton">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="lblSwitchRightText">
-        <property name="text">
-         <string>Crypto</string>
-        </property>
-        <property name="activVisibl" stdset="0">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="lblStatusText">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>3 year plan / unlimited</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
+    <widget class="QWidget" name="wgtFirstMargin" native="true"/>
    </item>
    <item alignment="Qt::AlignHCenter">
-    <widget class="QPushButton" name="btnChangePlan">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+    <widget class="QPushButton" name="btnPriceHigh">
      <property name="text">
-      <string>Change plan</string>
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="wgtSecondMargin" native="true"/>
+   </item>
+   <item alignment="Qt::AlignHCenter">
+    <widget class="QPushButton" name="btnPriceAverage">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="wgtThirdMargin" native="true"/>
+   </item>
+   <item alignment="Qt::AlignHCenter">
+    <widget class="QPushButton" name="btnPriceLow">
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </item>
