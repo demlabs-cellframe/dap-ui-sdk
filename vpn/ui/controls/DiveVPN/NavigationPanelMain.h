@@ -17,9 +17,8 @@ class NavigationPanelMain : public AdaptiveScreen
     QPushButton *m_btnBug= nullptr;
     QLabel *m_lblLeftLicense = nullptr;
     QLabel *m_lblLastScreen = nullptr;
+    QLabel *m_lblCaption = nullptr;
 
-    void setVisibleButton(QPushButton *a_button,bool a_visible = true);
-    void setCheckeButton(QPushButton *a_button);
 public:
     NavigationPanelMain(QWidget *parent);
 
@@ -58,6 +57,7 @@ private:
     const QString LBL_NAME_LAST_SCREEN     = "lblLastScreen";
     const QString BTN_BUG      = "btnBug";
     const QString LBL_LEFTLICENSE = "lblLeftLicense";
+    const QString LBL_CAPTION = "lblCaption";
 
     bool m_backState = true;
 

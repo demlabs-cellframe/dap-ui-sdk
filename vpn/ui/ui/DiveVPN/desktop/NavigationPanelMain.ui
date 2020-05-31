@@ -60,6 +60,12 @@
       </item>
       <item>
        <widget class="QWidget" name="wgtTopPanel" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -84,6 +90,12 @@
          </property>
          <item>
           <widget class="QWidget" name="widget_3" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <property name="spacing">
              <number>0</number>
@@ -104,21 +116,12 @@
              <widget class="QWidget" name="wgtMarginLeft" native="true"/>
             </item>
             <item>
-             <widget class="CustomPlacementButton" name="btnSettings">
+             <widget class="QPushButton" name="btnSettings">
               <property name="enabled">
                <bool>true</bool>
               </property>
               <property name="text">
                <string/>
-              </property>
-              <property name="checkable">
-               <bool>true</bool>
-              </property>
-              <property name="autoRepeat">
-               <bool>false</bool>
-              </property>
-              <property name="autoDefault">
-               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -164,6 +167,12 @@
          </item>
          <item>
           <widget class="QWidget" name="widget_4" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <property name="spacing">
              <number>0</number>
@@ -181,13 +190,13 @@
              <number>0</number>
             </property>
             <item>
-             <spacer name="horizontalSpacer_4">
+             <spacer name="horizontalSpacer_2">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>231</width>
+                <width>40</width>
                 <height>20</height>
                </size>
               </property>
@@ -196,10 +205,10 @@
             <item>
              <widget class="QLabel" name="lblLeftLicense">
               <property name="text">
-               <string/>
+               <string>Licence</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>
@@ -211,7 +220,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QWidget" name="wgtRightMarginTopFrame" native="true"/>
+             <widget class="QWidget" name="wgtMarginRight" native="true"/>
             </item>
            </layout>
           </widget>
@@ -224,13 +233,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>CustomPlacementButton</class>
-   <extends>QPushButton</extends>
-   <header location="global">CustomPlacementButton.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

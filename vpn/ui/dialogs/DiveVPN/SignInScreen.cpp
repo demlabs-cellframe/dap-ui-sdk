@@ -27,27 +27,27 @@ SignInScreen::SignInScreen(QWidget *a_parent)
     m_stt_password_wrong->addTransition(this, SIGNAL(passwordEdited(const QString &)), m_stt_password_right);
 
 
-    connect(m_stt_email_right, &QState::entered, [this]{
-        setValidationStateForEdit(this->EDT_EMAIL_NAME, this->LBL_EMAIL_ERROR);
-    });
-    connect(m_stt_email_wrong, &QState::entered, [this]{
-        setValidationStateForEdit(this->EDT_EMAIL_NAME, this->LBL_EMAIL_ERROR, false);
-    });
-#ifndef Q_OS_ANDROID
-    connect(m_stt_password_right, &QState::entered, [this]{
-        setValidationStateForEdit(this->EDT_PASSWORD_NAME, this->LBL_PASSWORD_ERROR);
-    });
-    connect(m_stt_password_wrong, &QState::entered, [this]{
-        setValidationStateForEdit(this->EDT_PASSWORD_NAME, this->LBL_PASSWORD_ERROR, false);
-    });
-#else
-    connect(m_stt_password_right, &QState::entered, [this]{
-        setValidationStateForEdit(this->EDT_PASSWORD_NAME, this->LBL_EMAIL_ERROR);
-    });
-    connect(m_stt_password_wrong, &QState::entered, [this]{
-        setValidationStateForEdit(this->EDT_PASSWORD_NAME, this->LBL_EMAIL_ERROR, false);
-    });
-#endif
+//    connect(m_stt_email_right, &QState::entered, [this]{
+//        setValidationStateForEdit(this->EDT_EMAIL_NAME, this->LBL_EMAIL_ERROR);
+//    });
+//    connect(m_stt_email_wrong, &QState::entered, [this]{
+//        setValidationStateForEdit(this->EDT_EMAIL_NAME, this->LBL_EMAIL_ERROR, false);
+//    });
+//#ifndef Q_OS_ANDROID
+////    connect(m_stt_password_right, &QState::entered, [this]{
+////        setValidationStateForEdit(this->EDT_PASSWORD_NAME, this->LBL_PASSWORD_ERROR);
+////    });
+////    connect(m_stt_password_wrong, &QState::entered, [this]{
+////        setValidationStateForEdit(this->EDT_PASSWORD_NAME, this->LBL_PASSWORD_ERROR, false);
+////    });
+//#else
+//    connect(m_stt_password_right, &QState::entered, [this]{
+//        setValidationStateForEdit(this->EDT_PASSWORD_NAME, this->LBL_EMAIL_ERROR);
+//    });
+//    connect(m_stt_password_wrong, &QState::entered, [this]{
+//        setValidationStateForEdit(this->EDT_PASSWORD_NAME, this->LBL_EMAIL_ERROR, false);
+//    });
+//#endif
     connect(this, SIGNAL(emailEdited   (const QString &)), SLOT(setEmail   (const QString &)));
     connect(this, SIGNAL(passwordEdited(const QString &)), SLOT(setPassword(const QString &)));
 
@@ -115,7 +115,7 @@ void SignInScreen::setErrorMessage(const QString &a_errorMsg)
 void SignInScreen::initVariantUi(QWidget *a_widget)
 {
     QPushButton    *btnSignIn    ; Utils::findChild(a_widget, BTN_SIGN_IN_NAME , btnSignIn    );
-    QLabel         *lblEmailError; Utils::findChild(a_widget, LBL_EMAIL_ERROR  , lblEmailError);
+ //   QLabel         *lblEmailError; Utils::findChild(a_widget, LBL_EMAIL_ERROR  , lblEmailError);
     ClickableLabel *lblSignUp    ; Utils::findChild(a_widget, LBL_SIGN_UP      , lblSignUp    );
     ComboBox       *cbbServer    ; Utils::findChild(a_widget, CBB_SERVER       , cbbServer    );
     QLineEdit      *edtEmail     ; Utils::findChild(a_widget, EDT_EMAIL_NAME   , edtEmail     );

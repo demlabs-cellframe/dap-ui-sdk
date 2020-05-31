@@ -6,7 +6,7 @@ SOURCES += \
     $$PWD/MainScreenLayout.cpp \
     $$PWD/PasswordRecoveryScreen.cpp \
     $$PWD/SettingsScreen.cpp \
-    $$PWD/SignInScreen.cpp \
+    $$PWD/$$BRAND/SignInScreen.cpp \
     $$PWD/SignUpScreen.cpp \
     $$PWD/StartScreen.cpp
 
@@ -18,7 +18,7 @@ HEADERS  += \
     $$PWD/MainScreenLayout.h \
     $$PWD/PasswordRecoveryScreen.h \
     $$PWD/SettingsScreen.h \
-    $$PWD/SignInScreen.h \
+    $$PWD/$$BRAND/SignInScreen.h \
     $$PWD/SignUpScreen.h \
     $$PWD/StartScreen.h
 
@@ -38,4 +38,4 @@ HEADERS  += \
 }
 
 
-INCLUDEPATH += $$PWD
+INCLUDEPATH += $$PWD $$PWD/$$BRAND

@@ -6,6 +6,7 @@ SettingsScreen::SettingsScreen(QWidget *a_parent)
     : AdaptiveScreen(a_parent)
 {
     create<Ui::SettingsScreen>();
+    AdaptiveScreen::initScreen(this);
 }
 
 void SettingsScreen::initVariantUi(QWidget *a_widget)

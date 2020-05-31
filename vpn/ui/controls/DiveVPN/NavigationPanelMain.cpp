@@ -21,7 +21,7 @@ void NavigationPanelMain::initVariantUi(QWidget *a_widget)
     m_lblLastScreen     = a_widget->findChild<QLabel*>(LBL_NAME_LAST_SCREEN);       Q_ASSERT(m_lblLastScreen);
     m_lblLeftLicense    = a_widget->findChild<QLabel*>(LBL_LEFTLICENSE);            Q_ASSERT(m_lblLeftLicense);
     m_btnBug            = a_widget->findChild<QPushButton*>(BTN_BUG);               Q_ASSERT(m_btnBug);
-
+    m_lblCaption        = a_widget->findChild<QLabel*>(LBL_CAPTION);                Q_ASSERT(m_lblCaption);
     m_btnBack           = a_widget->findChild<QPushButton*>(BTN_BACK);              Q_ASSERT(m_btnBack);
     m_btnSettings       = a_widget->findChild<QPushButton*>(BTN_SETTINGS);          Q_ASSERT(m_btnSettings);
 
@@ -46,6 +46,7 @@ bool NavigationPanelMain::backState()
 {
     return m_backState;
 }
+
 //*****************************************************************************
 //Configuring buttons on the panel
 //*****************************************************************************
@@ -53,89 +54,46 @@ void NavigationPanelMain::setActiveScreen(const QString &a_nameScreen)
 {
     if(a_nameScreen=="SettingsScreen")
     {
-        m_btnBack->setVisible(false);
-
-
-        setCheckeButton(m_btnSettings);
-
-
-        setVisibleButton(m_btnBug);
-
-
+        m_lblCaption->setText("Settings");
+        m_btnBack->setVisible(true);
+        m_btnSettings->setVisible(false);
+        m_btnBug->setVisible(false);
         m_lblLeftLicense->setVisible(true);
+        m_lblLastScreen->setVisible(false);
         return;
     }
 
     if(a_nameScreen=="Main")
     {
+        m_lblCaption->setText("DiveVPN");
         m_btnBack->setVisible(false);
-
-
-
-        setVisibleButton(m_btnSettings);
-
-        setVisibleButton(m_btnBug);
-
-
-        m_lblLeftLicense->setVisible(true);
-
+        m_btnSettings->setVisible(true);
+        m_btnBug->setVisible(true);
+        m_lblLeftLicense->setVisible(false);
+        m_lblLastScreen->setVisible(false);
         return;
     }
 
     if(a_nameScreen=="Account")
     {
-        m_btnBack->setVisible(false);
-
-        setVisibleButton(m_btnSettings);
-
-        setVisibleButton(m_btnBug);
-
-        m_lblLeftLicense->setVisible(false);
-
+        m_lblCaption->setText("Choose plan");
+        m_btnBack->setVisible(true);
+        m_btnSettings->setVisible(false);
+        m_btnBug->setVisible(false);
+        m_lblLeftLicense->setVisible(true);
+        m_lblLastScreen->setVisible(true);
         return;
     }
 
     if(a_nameScreen=="BugReport")
     {
+        m_lblCaption->setText("Bug report");
         m_btnBack->setVisible(true);
-
-        setVisibleButton(m_btnSettings,false);
-
-        setVisibleButton(m_btnBug,false);
-
-        m_lblLeftLicense->setVisible(true);
-
-        return;
-    }
-
-    if(a_nameScreen=="FAQ")
-    {
-        m_btnBack->setVisible(true);
-
-
-        setVisibleButton(m_btnSettings,false);
-
-        setVisibleButton(m_btnBug,false);
-
-        m_lblLeftLicense->setVisible(true);
-
+        m_btnSettings->setVisible(false);
+        m_btnBug->setVisible(true);
+        m_lblLeftLicense->setVisible(false);
+        m_lblLastScreen->setVisible(false);
         return;
     }
 }
 
-
-void NavigationPanelMain::setVisibleButton(QPushButton *a_button, bool a_visible)
-{
-    a_button->setVisible(a_visible);
-    a_button->setCheckable(false);
-    a_button->setChecked(false);
-    a_button->setEnabled(true);
-}
-
-void NavigationPanelMain::setCheckeButton(QPushButton *a_button)
-{
-    a_button->setVisible(true);
-    a_button->setCheckable(true);
-    a_button->setChecked(true);
-    a_button->setEnabled(false);
-}

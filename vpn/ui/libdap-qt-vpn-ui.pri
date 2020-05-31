@@ -16,15 +16,14 @@ HEADERS  += \
     $$PWD/usrmsg.h
 
 FORMS    +=  \
-    $$PWD/ui/AccountScreen.ui \
-    $$PWD/ui/BugReportScreen.ui \
+    $$PWD/ui/$$BRAND/AccountScreen.ui \
+    $$PWD/ui/$$BRAND/BugReportScreen.ui \
     $$PWD/ui/ComboBoxPopup.ui \
     $$PWD/ui/FAQScreen.ui \
     $$PWD/ui/MainScreenLayout.ui \
-    $$PWD/ui/NavigationPanelBack.ui \
-    $$PWD/ui/PasswordRecoveryScreen.ui \
-    $$PWD/ui/$$BRAND/desktop/NavigationPanelMain.ui \
-    $$PWD/ui/mobile/NavigationPanelMain.ui
+    $$PWD/ui/$$BRAND/NavigationPanelBack.ui \
+    $$PWD/ui/PasswordRecoveryScreen.ui
+
 
 INCLUDEPATH += $$PWD
 
@@ -93,14 +92,15 @@ contains(DEFINES, DAP_PLATFORM_MOBILE) {
         $$PWD/ui/mobile/StartScreen.ui \
         $$PWD/ui/mobile/SettingsScreen.ui\
         $$PWD/ui/mobile/SignUpScreen.ui \
+        $$PWD/ui/mobile/NavigationPanelMain.ui
 }
 else {
     FORMS +=  \
-        $$PWD/ui/desktop/StartScreen.ui \
-        $$PWD/ui/desktop/SignInScreen.ui \
-        $$PWD/ui/desktop/SettingsScreen.ui \
-        $$PWD/ui/desktop/SignUpScreen.ui\
-        $$PWD/ui/desktop/MainScreen.ui\
+        $$PWD/ui/$$BRAND/desktop/StartScreen.ui \
+        $$PWD/ui/$$BRAND/desktop/SignInScreen.ui \
+        $$PWD/ui/$$BRAND/desktop/SettingsScreen.ui \
+        $$PWD/ui/$$BRAND/desktop/SignUpScreen.ui\
+        $$PWD/ui/$$BRAND/desktop/MainScreen.ui\
         $$PWD/ui/desktop/LoginScreenLayout.ui \
         $$PWD/ui/$$BRAND/desktop/NavigationPanelMain.ui
 }
