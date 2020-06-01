@@ -1,6 +1,4 @@
 
-include ( dialogs/dialogs.pri)
-include ( controls/controls.pri)
 include ( auxiliary/auxiliary.pri)
 
 SOURCES += \
@@ -15,14 +13,7 @@ HEADERS  += \
     $$PWD/ServiceCtl.h\
     $$PWD/usrmsg.h
 
-FORMS    +=  \
-    $$PWD/ui/$$BRAND/AccountScreen.ui \
-    $$PWD/ui/$$BRAND/BugReportScreen.ui \
-    $$PWD/ui/ComboBoxPopup.ui \
-    $$PWD/ui/FAQScreen.ui \
-    $$PWD/ui/MainScreenLayout.ui \
-    $$PWD/ui/$$BRAND/NavigationPanelBack.ui \
-    $$PWD/ui/PasswordRecoveryScreen.ui
+
 
 
 INCLUDEPATH += $$PWD
@@ -85,23 +76,4 @@ android {
 }
 
 
-contains(DEFINES, DAP_PLATFORM_MOBILE) {
-    FORMS += \
-        $$PWD/ui/mobile/MainScreen.ui \
-        $$PWD/ui/mobile/SignInScreen.ui \
-        $$PWD/ui/mobile/StartScreen.ui \
-        $$PWD/ui/mobile/SettingsScreen.ui\
-        $$PWD/ui/mobile/SignUpScreen.ui \
-        $$PWD/ui/mobile/NavigationPanelMain.ui
-}
-else {
-    FORMS +=  \
-        $$PWD/ui/$$BRAND/desktop/StartScreen.ui \
-        $$PWD/ui/$$BRAND/desktop/SignInScreen.ui \
-        $$PWD/ui/$$BRAND/desktop/SettingsScreen.ui \
-        $$PWD/ui/$$BRAND/desktop/SignUpScreen.ui\
-        $$PWD/ui/$$BRAND/desktop/MainScreen.ui\
-        $$PWD/ui/desktop/LoginScreenLayout.ui \
-        $$PWD/ui/$$BRAND/desktop/NavigationPanelMain.ui
-}
 
