@@ -12,6 +12,7 @@
 #include "FAQWidget.h"
 #include <QStyle>
 #include <QList>
+#include <QScroller>
 
 #include <QScrollArea>
 

@@ -74,10 +74,11 @@ void CustomButtonComboBox::setCaption(const QString &a_text)
 
     this->CustomPopupComboBox::setCaption(a_text);
 }
-
+//Why is that?
 void CustomButtonComboBox::setCaptionPolicy(CaptionPolicy a_policy)
 {
     m_captionPolicy = a_policy;
 
-    this->setCaption(this->caption());
+//especially why is that?
+   // this->setCaption(this->caption());
 }

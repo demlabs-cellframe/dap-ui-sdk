@@ -22,10 +22,7 @@ FAQWidget::FAQWidget(const FAQDataModel &model, QWidget *parent): QWidget (paren
     m_lblHeader->setWordWrap(true);
     m_lblText->setText(model.aboutText);
     m_lblText->setWordWrap(true);
-    setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
-    m_lblIcon->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
-    m_lblHeader->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred);
-    m_lblText->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred);
+
 
     m_topLayout->addWidget(m_lblHeader);
     m_topLayout->addWidget(m_lblIcon);
@@ -33,6 +30,20 @@ FAQWidget::FAQWidget(const FAQDataModel &model, QWidget *parent): QWidget (paren
     m_mainLayout->addWidget(m_lblText);
     m_mainLayout->addWidget(m_lblBottomLine);
     setLayout(m_mainLayout);
+#ifdef Q_OS_ANDROID
+    setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
+    m_lblIcon->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
+    m_lblHeader->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
+    m_lblText->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
+
+#else
+    setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
+    m_lblIcon->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
+    m_lblHeader->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred);
+    m_lblText->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred);
+    m_mainLayout->setAlignment(m_lblText,Qt::AlignLeft);
+#endif
+
 
     m_topLayout->setSpacing(0);
     m_topLayout->setMargin(0);
@@ -41,7 +52,7 @@ FAQWidget::FAQWidget(const FAQDataModel &model, QWidget *parent): QWidget (paren
 
     m_topLayout->setAlignment(m_lblHeader,Qt::AlignTop);
     m_topLayout->setAlignment(m_lblIcon,Qt::AlignTop);
-    m_mainLayout->setAlignment(m_lblText,Qt::AlignLeft);
+
 
     m_lblText->setVisible(false);
     show();

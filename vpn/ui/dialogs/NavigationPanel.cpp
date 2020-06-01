@@ -32,3 +32,4 @@ bool NavigationPanel::backState()
 {
     return m_backState;
 }
+
