@@ -9,7 +9,7 @@ CustomComboBoxPopup::CustomComboBoxPopup(QMainWindow *parent)
 {
     this->setObjectName("stwCustomComboBoxPopup");
 
-    connect(this, &CustomComboBoxPopup::itemSelected, [this] (int index){
+    connect(this, static_cast<void(CustomComboBoxPopup::*)(int)>(&CustomComboBoxPopup::activated), [this] (int index){
         Q_UNUSED(index)
 
         this->hide();
@@ -70,7 +70,7 @@ void CustomComboBoxPopup::initVariantUi(QWidget *a_widget)
         m_model=lvwList->model();
 
     connect(lvwList, &CustomComboBoxListView::itemSelected, [this](int a_index){
-        emit itemSelected(a_index);
+        emit activated(a_index);
     });
 }
 

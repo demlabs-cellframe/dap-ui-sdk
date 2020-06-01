@@ -37,7 +37,8 @@ protected:
     virtual QString captionLabelName();
 
 signals:
-    void itemSelected(int index);
+    void activated(int index);
+    void activated(const QString &text);
 
 private:
     QList<QListView*> allListViews();

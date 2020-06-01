@@ -39,7 +39,10 @@ void CustomPopupComboBox::setPopup(CustomComboBoxPopup *popup)
     popup->setModel(this->model());
     popup->setCurrentIndex(this->currentIndex());
     connect(this, SIGNAL(currentIndexChanged(int)), popup, SLOT(setCurrentIndex(int)));
-    connect(popup, SIGNAL(itemSelected(int)), this, SLOT(setCurrentIndex(int)));
+
+    connect(popup, SIGNAL(activated(int))           , this, SIGNAL(activated(int))           );
+    connect(popup, SIGNAL(activated(const QString&)), this, SIGNAL(activated(const QString&)));
+    connect(popup, SIGNAL(activated(int))           , this, SLOT  (setCurrentIndex(int))     );
 }
 
 QAbstractItemModel *CustomPopupComboBox::model() const
