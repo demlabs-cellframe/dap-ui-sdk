@@ -84,7 +84,7 @@ public slots:
 
 signals:
     void disconnect();
-    void serverChanged(const QString& serverName);
+    void serverChangingRequest(const QString& serverName);
 
     void changeBytesPackets(int a_bytesRead, int a_bytesWrite, int a_packetsRead, int a_packetsWrite);
     void setIndicatorsUnit(bool a_bytes_not_packets);

@@ -14,9 +14,6 @@ public:
     ComboBoxPopup* popup();
 
     CustomPlacementButton *buttonControll() const;
-
-signals:
-    void currentIndexChanged(const QString &); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 };
 
 #endif // SERVERSCOMBOBOX_H

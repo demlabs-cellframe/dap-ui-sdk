@@ -34,6 +34,7 @@ private:
     void streamHandler(IndicatorState state);
 
     void userHandler(const QString& state);
+    void serverChangedHandler(const QString& state);
 
     DapIndicator *m_stream;
     DapIndicator *m_session;
@@ -65,6 +66,10 @@ signals:
 
     void sigUserStateConnect();
     void sigUserStateDisconnect();
+
+    /*Changing server for mainScreen*/
+    void sigServerChanged();
+    void sigServerNotChanged();
 public slots:
 };
 

@@ -106,9 +106,7 @@ void MainScreen::initVariantUi(QWidget *a_widget)
 
     graphicsView->setSceneRect(0,0,m_sceneWidth-3, m_sceneHeight-3);
 
-    connect(cbbServer  , &ComboBox::currentIndexChanged, [=]{ //force to work comboBox signal!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                emit serverChanged(cbbServer->currentText());
-            });
+    connect(cbbServer, SIGNAL(currentIndexChanged(const QString &))  , this, SIGNAL(serverChangingRequest(const QString &)));
 
     connect(btnBytes,&QPushButton::clicked,[=]{
         setIndicatorUnits(IndicatorsUnits::Bytes);
@@ -206,6 +204,12 @@ QString MainScreen::statusText(ConnectionStates a_state)
             return  "Connected";
         case ConnectionStates::Disconnecting:
             return  "Server down";
+        case ConnectionStates::ServerChanging:
+            return  "Changing server...";
+        case ConnectionStates::ServerChanged:
+            return  "Server changed";
+        case ConnectionStates::ServerNotChanged:
+            return  "Server not changed";
     }
     return QString();
 }
