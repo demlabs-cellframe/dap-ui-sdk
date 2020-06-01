@@ -106,6 +106,10 @@ void MainScreen::initVariantUi(QWidget *a_widget)
 
     graphicsView->setSceneRect(0,0,m_sceneWidth-3, m_sceneHeight-3);
 
+    connect(cbbServer  , &ComboBox::currentIndexChanged, [=]{ //force to work comboBox signal!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                emit serverChanged(cbbServer->currentText());
+            });
+
     connect(btnBytes,&QPushButton::clicked,[=]{
         setIndicatorUnits(IndicatorsUnits::Bytes);
     });

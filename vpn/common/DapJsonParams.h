@@ -19,6 +19,7 @@ enum class DapJsonCmdType
     GET_SERVERS_LIST,
     TAP_DRIVER,
     PING_SERVER,
+    SEND_SERVER_DATA,
     UNKNOWN
 };
 
