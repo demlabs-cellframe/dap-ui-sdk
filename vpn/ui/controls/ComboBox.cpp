@@ -4,14 +4,17 @@
 #include "ComboBoxPopup.h"
 
 ComboBox::ComboBox(QWidget *a_parent)
+    :ComboBox(new ComboBoxPopup(a_parent), a_parent)
+{
+}
+
+ComboBox::ComboBox(CustomComboBoxPopup *a_popup, QWidget *a_parent /*= nullptr*/)
     : CustomButtonComboBox(a_parent)
 {
     CustomPlacementButton *button = new CustomPlacementButton(this);
 
     this->setButtonControll(button);
-
-    QMainWindow* mainWindow = Utils::findParent<QMainWindow*>(a_parent);
-    this->setPopup(new ComboBoxPopup(mainWindow));
+    this->setPopup(a_popup);
 }
 
 ComboBoxPopup *ComboBox::popup()

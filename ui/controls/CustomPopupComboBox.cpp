@@ -13,7 +13,16 @@ CustomPopupComboBox::CustomPopupComboBox(QWidget *parent)
 void CustomPopupComboBox::showPopup()
 {
     if (m_popup)
+    {
+        if (m_popup->windowType() == Qt::ToolTip)
+        {
+            QMainWindow* mainWindow = Utils::findParent<QMainWindow*>(this);
+            QPoint popupPosition = this->mapTo(mainWindow, QPoint(-1, this->height()));
+
+            popup()->move(popupPosition);
+        }
         m_popup->show();
+    }
 
     else
         this->QComboBox::showPopup();
@@ -30,7 +39,10 @@ void CustomPopupComboBox::setPopup(CustomComboBoxPopup *popup)
     popup->setModel(this->model());
     popup->setCurrentIndex(this->currentIndex());
     connect(this, SIGNAL(currentIndexChanged(int)), popup, SLOT(setCurrentIndex(int)));
-    connect(popup, SIGNAL(itemSelected(int)), this, SLOT(setCurrentIndex(int)));
+
+    connect(popup, SIGNAL(activated(int))           , this, SIGNAL(activated(int))           );
+    connect(popup, SIGNAL(activated(const QString&)), this, SIGNAL(activated(const QString&)));
+    connect(popup, SIGNAL(activated(int))           , this, SLOT  (setCurrentIndex(int))     );
 }
 
 QAbstractItemModel *CustomPopupComboBox::model() const
@@ -48,6 +60,10 @@ void CustomPopupComboBox::setModel(QAbstractItemModel *a_model)
 
 void CustomPopupComboBox::setCaption(const QString &a_text)
 {
+    if (m_caption == a_text)
+        return;
+    m_caption = a_text;
+
     if (this->popup())
         this->popup()->setCaption(a_text);
 }

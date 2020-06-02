@@ -17,6 +17,8 @@ QMap<DapJsonCmdType, QVector<Params>> DapJsonParams::availableParams {
     {DapJsonCmdType::GET_STATES, {}}, // GET_STATES Without params
     // Get user data (username, password, server address)
     {DapJsonCmdType::GET_USER_DATA, {}},
+    // Send sserver data (server address, port)
+    {DapJsonCmdType::SEND_SERVER_DATA, {}},
     // Get data about the last connection 
     {DapJsonCmdType::GET_LAST_CONNECTION_DATA, {}},
     // Getting last connection data (connection start time)

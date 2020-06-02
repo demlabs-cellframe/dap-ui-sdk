@@ -11,6 +11,7 @@ QMap<DapJsonCmdType, QString> DapCmdAbstract::cmdString = {
     // Getting last connection data (connection start time)
     {DapJsonCmdType::TAP_DRIVER, "tap driver"},
     {DapJsonCmdType::PING_SERVER, "ping server"},
+    {DapJsonCmdType::SEND_SERVER_DATA, "send server data"},
     {DapJsonCmdType::GET_SERVERS_LIST, "get servers list"},
     {DapJsonCmdType::CREATE_ANDROID_TUNNEL, "create android tunnel"}
 };

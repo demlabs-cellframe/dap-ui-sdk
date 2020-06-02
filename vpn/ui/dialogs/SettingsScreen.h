@@ -8,7 +8,7 @@
 #include "StyledDropShadowEffect.h"
 #include "CustomPopupComboBox.h"
 #include "CustomPlacementButton.h"
-#include "ComboBox.h"
+#include "ScreenComboBox.h"
 
 class SettingsScreen : public AdaptiveScreen
 {

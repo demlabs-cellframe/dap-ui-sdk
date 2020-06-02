@@ -2,7 +2,12 @@
 #include "Utilz.h"
 #include "AppStyleSheetHandler.h"
 #include "UiScaling.h"
+#include "ComboBox.h"
 #include <QDebug>
+
+#ifndef ANDROID
+    #include "ScreenComboBox.h"
+#endif
 
 const QString MainScreen::SCREEN_NAME = "Main";
 
@@ -50,12 +55,12 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     QCheckBox *chbAuthorized    ; Utils::findChild(a_widget, CHB_AUTHORIZED     , chbAuthorized);
     QCheckBox *chbStreamOpened  ; Utils::findChild(a_widget, CHB_STREAM_OPENED  , chbStreamOpened);
     QCheckBox *chbVirtualNetwork; Utils::findChild(a_widget, CHB_VIRTUAL_NETWORK, chbVirtualNetwork);
+    QFrame      *frmStatus      ; Utils::findChild(a_widget, FRM_STATUS         , frmStatus);
 
 #ifdef Q_OS_ANDROID
-
     QFrame      *frmConnect     ; Utils::findChild(a_widget, FRM_CONNECT        , frmConnect);
     QFrame      *frmInfo        ; Utils::findChild(a_widget, FRM_INFO           , frmInfo);
-    QFrame      *frmStatus      ; Utils::findChild(a_widget, FRM_STATUS         , frmStatus);
+
     QPushButton *btnChangeServer; Utils::findChild(a_widget, BTN_CHANGE_SERVER  , btnChangeServer);
 
     //========================================================================
@@ -67,8 +72,29 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     btnChangeServer->hide();
 
 #else
-    QPushButton *btnBytes   ; Utils::findChild(a_widget, BTN_BYTES  , btnBytes  );
-    QPushButton *btnPackets ; Utils::findChild(a_widget, BTN_PACKETS, btnPackets);
+    ComboBox    *cbbServer ; Utils::findChild(a_widget, CBB_SERVER , cbbServer );
+    QPushButton *btnBytes  ; Utils::findChild(a_widget, BTN_BYTES  , btnBytes  );
+    QPushButton *btnPackets; Utils::findChild(a_widget, BTN_PACKETS, btnPackets);
+
+    cbbServer->popup()->setObjectName("cbbServer_popup");
+    cbbServer->setCaptionPolicy(CustomButtonComboBox::CaptionPolicy::ShowAlways);
+
+    if (!m_serversModel)
+        {
+            m_serversModel = cbbServer->model();
+
+            for (DapServerInfo& server :DapDataLocal::me()->servers())
+                cbbServer->addItem(server.name);
+
+            connect(DapDataLocal::me(), &DapDataLocal::serverAdded, [=](const DapServerInfo& a_serverInfo){
+                cbbServer->addItem(a_serverInfo.name);
+            });
+
+            connect(DapDataLocal::me(), SIGNAL(serversCleared()), cbbServer, SLOT(clear()));
+        }
+        else
+            cbbServer->setModel(m_serversModel);
+
 
     // создаём сцену
     m_scene = new QGraphicsScene();
@@ -79,6 +105,8 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     m_sceneWidth  = UiScaling::pointsToPixels(428);
 
     graphicsView->setSceneRect(0,0,m_sceneWidth-3, m_sceneHeight-3);
+
+    connect(cbbServer, SIGNAL(currentIndexChanged(const QString &))  , this, SIGNAL(serverChangingRequest(const QString &)));
 
     connect(btnBytes,&QPushButton::clicked,[=]{
         setIndicatorUnits(IndicatorsUnits::Bytes);
@@ -176,6 +204,12 @@ QString MainScreen::statusText(ConnectionStates a_state)
             return  "Connected";
         case ConnectionStates::Disconnecting:
             return  "Server down";
+        case ConnectionStates::ServerChanging:
+            return  "Changing server...";
+        case ConnectionStates::ServerChanged:
+            return  "Server changed";
+        case ConnectionStates::ServerNotChanged:
+            return  "Server not changed";
     }
     return QString();
 }

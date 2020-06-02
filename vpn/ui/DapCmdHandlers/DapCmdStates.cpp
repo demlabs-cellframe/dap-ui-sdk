@@ -72,6 +72,17 @@ void DapCmdStates::userHandler(const QString& state)
     }
 }
 
+void DapCmdStates::serverChangedHandler(const QString& state)
+{
+    if(state == "ServerNotChanged") {
+        emit sigServerChanged();
+    } else if(state == "ServerChanged") {
+        emit sigServerNotChanged();
+    } else {
+        qCritical() << "Unknown server changed state";
+    }
+}
+
 void DapCmdStates::handleResult(const QJsonObject& result) {
     static QMap<QString, void(DapCmdStates::*)(IndicatorState)> stateCallbacks = {
     {"session", &DapCmdStates::sessionHandler},
@@ -89,6 +100,11 @@ void DapCmdStates::handleResult(const QJsonObject& result) {
     const IndicatorState state = DapIndicator::fromString(result.value("state").toString());
 
     if(stateName == "user_request_state") {
+        userHandler(result.value("state").toString());
+        return;
+    }
+
+    if(stateName == "server_change_state") {
         userHandler(result.value("state").toString());
         return;
     }

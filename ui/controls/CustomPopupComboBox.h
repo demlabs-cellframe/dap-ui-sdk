@@ -31,7 +31,5 @@ private:
 
     CustomComboBoxPopup *m_popup = nullptr;
     QString m_caption;
-
-
 };
 #endif // CUSTOMCOMBOBOX_H
