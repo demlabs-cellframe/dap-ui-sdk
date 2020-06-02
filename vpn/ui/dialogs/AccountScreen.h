@@ -1,4 +1,4 @@
-#ifndef ACCOUNTSCREEN_H
+﻿#ifndef ACCOUNTSCREEN_H
 #define ACCOUNTSCREEN_H
 
 #include <QLabel>
@@ -31,11 +31,18 @@ public:
     virtual QString screenName() override;
 
     void setState(ConnectionStates a_state);
+
+signals:
+    void goToMonthPrice();
+    void goToSixMonthPrice();
+    void goToYearPrice();
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
     virtual void initVariantUi(QWidget *a_widget) override;
-
+    const QString BTN_MONTH_PRICE      = "btnMonthPrice";
+    const QString BTN_SIX_MONTH_PRICE  = "btnSixMonthPrice";
+    const QString BTN_YEAR_PRICE       = "btnYearPrice";
 };
 
 #endif // ACCOUNTSCREEN_H
