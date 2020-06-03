@@ -24,7 +24,7 @@ void FAQScreen::setState(ConnectionStates a_state)
 void FAQScreen::initVariantUi(QWidget *a_widget)
 {
     QVBoxLayout *vltFAQMain = a_widget->findChild<QVBoxLayout*>("vltFAQMain");  Q_ASSERT(vltFAQMain);
-    QScrollArea *scaFAQ = a_widget->findChild<QScrollArea*>(SCA_FAQ); Q_ASSERT(scaFAQ);
+    QScrollArea *scaFAQ = a_widget->findChild<QScrollArea*>(SCA_FAQ);           Q_ASSERT(scaFAQ);
 #ifndef Q_OS_ANDROID
     QLabel *lblCaption = a_widget->findChild<QLabel*>("lblCaption");            Q_ASSERT(lblCaption);
     vltFAQMain->setAlignment(lblCaption,Qt::AlignCenter);
