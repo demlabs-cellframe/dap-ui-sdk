@@ -45,6 +45,8 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
     lblCaption->setAlignment(Qt::AlignJustify);
 
     edtEmail->setPlaceholderText("e-mail");
+
+    QScroller::grabGesture(edtMessage->viewport(), QScroller::LeftMouseButtonGesture);
 #else
     QLineEdit               *edtEmail           = a_widget->findChild<QLineEdit*>(EDT_EMAIL);                       Q_ASSERT(edtEmail);
     QLayout                 *vltBugReport = a_widget->findChild<QLayout*>(VLT_BUG_REPORT);                          Q_ASSERT(vltBugReport);

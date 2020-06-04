@@ -6,9 +6,8 @@ SOURCES += \
     $$PWD/MainScreenLayout.cpp \
     $$PWD/PasswordRecoveryScreen.cpp \
     $$PWD/SettingsScreen.cpp \
-    $$PWD/SignInScreen.cpp \
     $$PWD/SignUpScreen.cpp \
-    $$PWD/StartScreen.cpp
+    $$PWD/NavigationPanel.cpp
 
 HEADERS  += \
     $$PWD/AccountScreen.h \
@@ -18,9 +17,8 @@ HEADERS  += \
     $$PWD/MainScreenLayout.h \
     $$PWD/PasswordRecoveryScreen.h \
     $$PWD/SettingsScreen.h \
-    $$PWD/SignInScreen.h \
     $$PWD/SignUpScreen.h \
-    $$PWD/StartScreen.h
+    $$PWD/NavigationPanel.h
 
 !android {
     HEADERS  += \
@@ -38,4 +36,4 @@ HEADERS  += \
 }
 
 
-INCLUDEPATH += $$PWD
+INCLUDEPATH += $$PWD $$PWD/$$BRAND

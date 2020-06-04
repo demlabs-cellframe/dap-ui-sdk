@@ -6,7 +6,7 @@ AccountScreen::AccountScreen(QWidget *a_parent)
     : AdaptiveScreen(a_parent)
 {
     create<Ui::AccountScreen>();
-
+    AdaptiveScreen::initScreen(this);
 }
 
 QString AccountScreen::screenName()
@@ -17,39 +17,15 @@ QString AccountScreen::screenName()
 void AccountScreen::setState(ConnectionStates a_state)
 {
     Q_UNUSED(a_state)
-
-
 }
 
 void AccountScreen::initVariantUi(QWidget *a_widget)
 {
-    Q_UNUSED(a_widget)
+    QPushButton   *btnMonthPrice     = a_widget->findChild<QPushButton*>(BTN_MONTH_PRICE);      Q_ASSERT(btnMonthPrice);
+    QPushButton   *btnSixMonthPrice  = a_widget->findChild<QPushButton*>(BTN_SIX_MONTH_PRICE);  Q_ASSERT(btnSixMonthPrice);
+    QPushButton   *btnYearPrice      = a_widget->findChild<QPushButton*>(BTN_YEAR_PRICE);       Q_ASSERT(btnYearPrice);
 
+    connect(btnMonthPrice,&QPushButton::clicked, this,&AccountScreen::goToMonthPrice);
+    connect(btnSixMonthPrice,&QPushButton::clicked, this,&AccountScreen::goToSixMonthPrice);
+    connect(btnYearPrice,&QPushButton::clicked, this,&AccountScreen::goToYearPrice);
 }
-//AccountScreen::AccountScreen(QObject * a_parent, QStackedWidget * a_sw)
-//    : DapUiScreen(a_parent, a_sw)
-//{
-//    create<Ui::AccountScreen>();
-
-//    QLabel *lblSwitchLeftText = a_sw->findChild<QLabel*>("lblSwitchLeftText");
-//    QLabel *lblSwitchRightText = a_sw->findChild<QLabel*>("lblSwitchRightText");
-//    QPushButton *btnSwitch = a_sw->findChild<QPushButton*>("btnSwitchButton");
-//    QPushButton *btnChangePlan  = a_sw->findChild<QPushButton*>("btnChangePlan");
-
-//    Q_ASSERT(lblSwitchLeftText);
-//    Q_ASSERT(lblSwitchRightText);
-//    Q_ASSERT(btnSwitch);
-//    Q_ASSERT(btnChangePlan);
-
-//    btnChangePlan->setGraphicsEffect(new StyledDropShadowEffect(btnChangePlan));
-
-//    ///The default Radiobutton value for checking the operation
-//    btnSwitch->setChecked(false);
-//    lblSwitchLeftText->setEnabled(false);
-
-//    connect(btnSwitch,&QPushButton::clicked,[=]{
-//        lblSwitchLeftText->setEnabled(btnSwitch->isChecked());
-//        lblSwitchRightText->setEnabled(!btnSwitch->isChecked());
-//    });
-//}
-
