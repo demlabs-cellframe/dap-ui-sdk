@@ -10,19 +10,27 @@
 #include "windows.h"
 const GUID GUID_CLASS_MONITOR = { 0x4d36e96e, 0xe325, 0x11ce, 0xbf, 0xc1, 0x08, 0x00, 0x2b, 0xe1, 0x03, 0x18 };
 #elif defined(Q_OS_LINUX)
+#ifndef Q_OS_ANDROID
 #include <X11/Xlib.h>
 #include <X11/extensions/Xrandr.h>
+#endif
 #elif defined(Q_OS_MACOS)
 #include <CoreGraphics/CoreGraphics.h>
 #endif
 
 float UiScaling::pointsToPixels(float a_pointsValue, float dpi /*default = 0*/)
 {
-
+#ifndef Q_OS_ANDROID
     if (!dpi)
         dpi = getNativDPI();
     float valueInPixels = dpi * pointsToInches(aptToPt(a_pointsValue));
+#else
+    Q_UNUSED(dpi)
+    static qreal dpi_Android(QGuiApplication::primaryScreen()->physicalDotsPerInch());
 
+    float valueInPixels = dpi_Android * pointsToInches(a_pointsValue);
+
+#endif
     return valueInPixels;
 }
 
@@ -46,7 +54,7 @@ float UiScaling::getNativDPI(){
     float PixelsPerMM = (float)hRes / hSize; // pixels per millimeter
     float dpi = PixelsPerMM * 25.4f;
 #elif defined(Q_OS_LINUX)
-
+#ifndef Q_OS_ANDROID
     Display *dpy;
     XRRScreenResources *screen;
     XRROutputInfo * outInfo;
@@ -59,7 +67,7 @@ float UiScaling::getNativDPI(){
 
     float PixelsPerMM = (float)crtc_info->height / outInfo->mm_height;
     float dpi = PixelsPerMM * 25.4f;
-
+#endif
 #elif defined(Q_OS_MACOS)
     auto mainDisplayId = CGMainDisplayID();
     CGSize screenSize = CGDisplayScreenSize(mainDisplayId);
@@ -67,7 +75,11 @@ float UiScaling::getNativDPI(){
 #else
     static qreal dpi(QGuiApplication::primaryScreen()->physicalDotsPerInch());
 #endif
+#ifndef Q_OS_ANDROID
     return dpi;
+#else
+    return 1;
+#endif
 }
 
 float UiScaling::aptToPt(float apt){
