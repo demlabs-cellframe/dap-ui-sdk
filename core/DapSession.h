@@ -45,6 +45,7 @@ public:
     static const QString URL_CTL;
     static const QString URL_DB_FILE;
     static const QString URL_SERVER_LIST;
+    static const QString URL_TX;
 
     DapSession(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
     ~DapSession();
@@ -69,7 +70,7 @@ public:
 
     void setDapUri(const QString& addr, const uint16_t port);
     void clearCredentials();
-
+    void preserveCDBSession();
     DapCrypt* getDapCrypt() { return m_dapCrypt; }
 public slots:
     /* Request to server */
@@ -83,14 +84,15 @@ public slots:
     void abortEncryptionInitRequest() { m_netEncryptReply->abort(); }
     void abortAuthorizeRequest()      { m_netAuthorizeReply->abort(); }
     void abortLogoutRequest()         { m_netLogoutReply->abort();  }
+    void sendTxBackRequest(const QString &tx);
 protected:
     using HttpHeaders = QVector<HttpRequestHeader>;
 
-    quint16 m_upstreamPort;
-    QString m_upstreamAddress, m_user;
+    quint16 m_upstreamPort, m_CDBport;
+    QString m_upstreamAddress, m_CDBaddress, m_user;
 
     // HTTP header fields
-    QString m_cookie, m_sessionKeyID, m_userAgent;
+    QString m_cookie, m_sessionKeyID, m_userAgent, m_sessionKeyID_CDB;
 
     // Net service fields
 
@@ -103,23 +105,23 @@ protected:
     QMap<QString,QString> m_userInform;
 
     QNetworkReply* encRequest(const QString& reqData,const QString& url,
-                              const QString& subUrl,const QString& query);
+                              const QString& subUrl,const QString& query, bool isCDB);
 
     QNetworkReply* encRequest(const QString& reqData, const QString& url, const QString& subUrl,
-                               const QString& query, QObject* obj, const char* slot);
+                               const QString& query, QObject* obj, const char* slot, bool isCDB);
 
     QNetworkReply* encRequest(const QString& reqData, const QString& url,
-                    const QString& subUrl, const QString& query, const char* slot)
+                    const QString& subUrl, const QString& query, const char* slot, bool isCDB = false)
     {
-        return encRequest(reqData, url, subUrl, query, this, slot);
+        return encRequest(reqData, url, subUrl, query, this, slot, isCDB);
     }
 
-    void fillSessionHttpHeaders(HttpHeaders& headers) const;
+    void fillSessionHttpHeaders(HttpHeaders& headers, bool isCDBSession = false) const;
     QNetworkReply * requestServerPublicKey();
 private:
-    DapCrypt* m_dapCrypt;
+    DapCrypt* m_dapCrypt, *m_dapCryptCDB;
     QNetworkReply* _buildNetworkReplyReq(const QString& urlPath,
-                                         const QByteArray* data = Q_NULLPTR);
+                                         const QByteArray* data = Q_NULLPTR, bool isCDB = false);
 private slots:
     void onEnc();
     void errorSlt(QNetworkReply::NetworkError);
@@ -141,7 +143,7 @@ signals:
     void authRequested();
     void authorized(const QString &);
     void onAuthorized();
-
+    //void usrDataChanged(const QString &addr, ushort port);
     void logoutRequested();
     void logouted();
 };

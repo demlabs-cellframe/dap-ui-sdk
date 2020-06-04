@@ -8,7 +8,7 @@ class CustomPopup : public AdaptiveWidget
 {
     Q_OBJECT
 
-    Q_PROPERTY(Qt::WindowType windowType WRITE setWindowType READ windowType DESIGNABLE true) // Popup/Widget/Dialog/Desktop
+    Q_PROPERTY(Qt::WindowType windowType WRITE setWindowType READ windowType DESIGNABLE true) // Popup/Widget/Dialog/Desktop/ToolTip
 
     Q_PROPERTY(qreal screenOverlayingOpacity    WRITE setScreenOverlayingOpacity    READ screenOverlayingOpacity    DESIGNABLE true)
     Q_PROPERTY(qreal screenOverlayingBlurRadius WRITE setScreenOverlayingBlurRadius READ screenOverlayingBlurRadius DESIGNABLE true)

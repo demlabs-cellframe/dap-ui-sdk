@@ -1,7 +1,7 @@
 #include "ScreenWithComboBoxesAbstract.h"
 
-#include "ComboBox.h"
-#include "ComboBoxPopup.h"
+#include "ScreenComboBox.h"
+#include "ScreenComboBoxPopup.h"
 
 const QString ScreenWithComboBoxesAbstract::SCREEN_NAME = "ScreenWithComboBoxesAbstract";
 
@@ -15,10 +15,10 @@ void ScreenWithComboBoxesAbstract::initVariantUi(QWidget *a_widget)
 {
     for (QString comboBoxName: this->comboBoxesNames())
     {
-        ComboBox* combo; Utils::findChild(a_widget, comboBoxName, combo);
-        ComboBoxPopup* popup = combo->popup();
-        connect(popup, &ComboBoxPopup::opened, this, &ScreenWithComboBoxesAbstract::comboBoxPopupOpened);
-        connect(popup, &ComboBoxPopup::closingStarted, this, &ScreenWithComboBoxesAbstract::hideComboBoxPopup);
+        ScreenComboBox* combo; Utils::findChild(a_widget, comboBoxName, combo);
+        ScreenComboBoxPopup* popup = combo->popup();
+        connect(popup, &ScreenComboBoxPopup::opened, this, &ScreenWithComboBoxesAbstract::comboBoxPopupOpened);
+        connect(popup, &ScreenComboBoxPopup::closingStarted, this, &ScreenWithComboBoxesAbstract::hideComboBoxPopup);
     }
 }
 

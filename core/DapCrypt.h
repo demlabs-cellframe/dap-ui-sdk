@@ -26,7 +26,7 @@
 #include "InterfaceDapKey.h"
 #include "DapKeyMsrln.h"
 
-enum KeyRole { KeyRoleSession = 1, KeyRoleStream = 2};
+enum KeyRole { KeyRoleSession = 1, KeyRoleStream = 2 };
 
 
 class DapCrypt
@@ -37,6 +37,7 @@ class DapCrypt
     DapKeyAbstract * roleToKey(KeyRole kRole) const;
 public:
     DapCrypt();
+    DapCrypt(const DapCrypt &rhs) : keyStream(Q_NULLPTR), keySession(rhs.keySession) { }
     ~DapCrypt();
 
     QString getRandomString(int length);

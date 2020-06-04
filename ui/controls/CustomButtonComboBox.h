@@ -22,13 +22,13 @@ public:
 
     virtual CustomButtonAbstract *buttonControll() const;
 
-    virtual void setCaption(const QString &a_text) override;
+    virtual void setCaption(const QString &a_caption) override;
 
     void setCaptionPolicy(CaptionPolicy a_policy = CaptionPolicy::ShowWhenUnselected);
 
 public slots:
 
-    void setCurrentText(const QString &text);
+    void setCurrentText(const QString &a_text);
 
 protected:
 

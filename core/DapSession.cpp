@@ -39,6 +39,7 @@ const QString DapSession::URL_DB("/db");
 const QString DapSession::URL_CTL("/stream_ctl");
 const QString DapSession::URL_DB_FILE("/db_file");
 const QString DapSession::URL_SERVER_LIST("/nodelist");
+const QString DapSession::URL_TX("/tx");
 
 #define SESSION_KEY_ID_LEN 33
 
@@ -77,19 +78,19 @@ QNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QStri
 }
 
 QNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath,
-                                                 const QByteArray* data)
+                                                 const QByteArray* data, bool isCDB)
 {
     QVector<HttpRequestHeader> headers;
-    fillSessionHttpHeaders(headers);
+    fillSessionHttpHeaders(headers, isCDB);
     QNetworkReply* result;
     if(data) {
-        result =  DapConnectClient::instance()->request_POST(m_upstreamAddress,
-                                                             m_upstreamPort,
+        result =  DapConnectClient::instance()->request_POST(isCDB ? m_CDBaddress : m_upstreamAddress,
+                                                             isCDB ? m_CDBport : m_upstreamPort,
                                                              urlPath, *data,
                                                              false, &headers);
     } else {
-        result =  DapConnectClient::instance()->request_GET(m_upstreamAddress,
-                                                            m_upstreamPort,
+        result =  DapConnectClient::instance()->request_GET(isCDB ? m_CDBaddress : m_upstreamAddress,
+                                                            isCDB ? m_CDBport : m_upstreamPort,
                                                             urlPath, false, &headers);
     }
 
@@ -193,7 +194,7 @@ void DapSession::onEnc()
     emit encryptInitialized();
 }
 
-void DapSession::fillSessionHttpHeaders(HttpHeaders& headers) const
+void DapSession::fillSessionHttpHeaders(HttpHeaders& headers, bool isCDBSession) const
 {
     auto setHeader = [&](const QString& field, const QString& value) {
         if(!value.isEmpty()) {
@@ -203,7 +204,7 @@ void DapSession::fillSessionHttpHeaders(HttpHeaders& headers) const
 
     setHeader("Content-Type","text/plain");
     setHeader("Cookie", m_cookie);
-    setHeader("KeyID", m_sessionKeyID);
+    setHeader("KeyID", isCDBSession ? m_sessionKeyID_CDB : m_sessionKeyID);
     setHeader("User-Agent", m_userAgent);
 }
 
@@ -222,7 +223,7 @@ void DapSession::setUserAgent(const QString& userAgent)
  * @return
  */
 QNetworkReply* DapSession::encRequest(const QString& reqData, const QString& url,
-                          const QString& subUrl, const QString& query)
+                          const QString& subUrl, const QString& query, bool isCDB)
 {
     QByteArray BAreqData = reqData.toLatin1();
     QByteArray BAreqDataEnc;
@@ -230,20 +231,21 @@ QNetworkReply* DapSession::encRequest(const QString& reqData, const QString& url
     QByteArray BAqueryEncrypted;
     QByteArray subUrlByte = subUrl.toLatin1();
     QByteArray queryByte = query.toLatin1();
+    DapCrypt *l_dapCrypt = isCDB ? m_dapCryptCDB : m_dapCrypt;
 
-    m_dapCrypt->encode(BAreqData, BAreqDataEnc, KeyRoleSession);
+    l_dapCrypt->encode(BAreqData, BAreqDataEnc, KeyRoleSession);
 
     QString urlPath = url;
     if(subUrl.length()) {
-        m_dapCrypt->encode(subUrlByte, BAsubUrlEncrypted, KeyRoleSession);
+        l_dapCrypt->encode(subUrlByte, BAsubUrlEncrypted, KeyRoleSession);
         urlPath += "/" + BAsubUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding);
     }
     if(query.length()) {
-        m_dapCrypt->encode(queryByte, BAqueryEncrypted, KeyRoleSession);
+        l_dapCrypt->encode(queryByte, BAqueryEncrypted, KeyRoleSession);
         urlPath += "?" + BAqueryEncrypted.toBase64(QByteArray::Base64UrlEncoding);
     }
 
-    return _buildNetworkReplyReq(urlPath, &BAreqDataEnc);
+    return _buildNetworkReplyReq(urlPath, &BAreqDataEnc, isCDB);
 }
 
 /**
@@ -270,9 +272,6 @@ void DapSession::onAuthorize()
         emit errorAuthorization("Wrong answer from server");
         return;
     }
-
-    QByteArray arrData2 = QByteArray::fromBase64(arrData);
-
     QByteArray dByteArr;
     m_dapCrypt->decode(arrData, dByteArr, KeyRoleSession);
 
@@ -371,6 +370,15 @@ void DapSession::onAuthorize()
     }
 }
 
+void DapSession::preserveCDBSession() {
+    qInfo() << "Saving CDB session data";
+    m_dapCryptCDB = new DapCrypt(*m_dapCrypt);
+    m_sessionKeyID_CDB = m_sessionKeyID;
+    m_CDBaddress = m_upstreamAddress;
+    m_CDBport = m_upstreamPort;
+    //todo: save cookie too
+}
+
 /**
  * @brief DapSession::onLogout
  */
@@ -411,15 +419,20 @@ QNetworkReply * DapSession::logoutRequest()
  * @param slot
  */
 QNetworkReply * DapSession::encRequest(const QString& reqData, const QString& url, const QString& subUrl,
-                           const QString& query, QObject * obj, const char * slot)
+                           const QString& query, QObject * obj, const char * slot, bool isCDB)
 {
-    QNetworkReply * netReply = encRequest(reqData, url, subUrl, query);
+    QNetworkReply * netReply = encRequest(reqData, url, subUrl, query, isCDB);
 
     connect(netReply, SIGNAL(finished()), obj, slot);
     connect(netReply, SIGNAL(error(QNetworkReply::NetworkError)),
             this,SLOT(errorSlt(QNetworkReply::NetworkError)));
 
     return netReply;
+}
+
+void DapSession::sendTxBackRequest(const QString &tx) {
+    qDebug() << "Send tx back to cdb" << tx;
+    encRequest(tx, URL_TX, "tx_out", "", true);
 }
 
 /**
