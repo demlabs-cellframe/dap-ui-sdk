@@ -205,7 +205,7 @@
   <customwidget>
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
-   <header>ClickableLabel.h</header>
+   <header location="global">ClickableLabel.h</header>
   </customwidget>
   <customwidget>
    <class>ComboBox</class>
