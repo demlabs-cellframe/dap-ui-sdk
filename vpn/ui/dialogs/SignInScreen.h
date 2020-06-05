@@ -57,6 +57,7 @@ signals:
     void signInRequest();
 
     void goToSignUp();
+
 protected:
 
     virtual void initVariantUi(QWidget *a_widget) override;
@@ -84,6 +85,7 @@ private:
     const QString LBL_FORGOT_PASS    = "lblForgotPass";
 
 
+
     QStateMachine *m_inputStates;
     QState *m_stt_email;
     QState *m_stt_email_wrong;
@@ -94,6 +96,8 @@ private:
 
     QString m_email;
     QString m_password;
+
+
 };
 
 

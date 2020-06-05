@@ -184,3 +184,4 @@ QString SignInScreen::buttonText(ConnectionStates a_connectionState)
     }
 }
 
+
