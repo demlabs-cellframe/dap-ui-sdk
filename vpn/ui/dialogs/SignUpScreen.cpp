@@ -236,6 +236,7 @@ void SignUpScreen::replyFinished(QNetworkReply *reply){
         QVariantMap mainMap = itemObj.toVariantMap();
         QVariantMap map = mainMap["result"].toMap();
         QString mes = map["message"].toString();
+        //here you can place the response processing from the site
         if(mes == "Sorry, that username already exists!")
         {
             qDebug() << "Sorry, that username already exists!";
