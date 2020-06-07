@@ -1,7 +1,6 @@
 SOURCES += \
     $$PWD/AccountScreen.cpp \
     $$PWD/BugReportScreen.cpp \
-    $$PWD/FAQScreen.cpp \
     $$PWD/MainScreen.cpp \
     $$PWD/MainScreenLayout.cpp \
     $$PWD/PasswordRecoveryScreen.cpp \
@@ -12,7 +11,6 @@ SOURCES += \
 HEADERS  += \
     $$PWD/AccountScreen.h \
     $$PWD/BugReportScreen.h \
-    $$PWD/FAQScreen.h \
     $$PWD/MainScreen.h \
     $$PWD/MainScreenLayout.h \
     $$PWD/PasswordRecoveryScreen.h \

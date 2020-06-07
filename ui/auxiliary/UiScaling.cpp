@@ -42,7 +42,7 @@ QSize UiScaling::pointsToPixels(const QSize &a_pointsSize)
 
 inline double UiScaling::pointsToInches(float a_pointsValue)
 {
-    return a_pointsValue / 163.f;
+    return a_pointsValue / 160.f;
 }
 
 float UiScaling::getNativDPI(){
