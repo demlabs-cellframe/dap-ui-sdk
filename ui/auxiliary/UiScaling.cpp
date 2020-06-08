@@ -26,7 +26,7 @@ float UiScaling::pointsToPixels(float a_pointsValue, float dpi /*default = 0*/)
     float valueInPixels = dpi * pointsToInches(aptToPt(a_pointsValue));
 #else
     Q_UNUSED(dpi)
-    static qreal dpi_Android(QGuiApplication::primaryScreen()->physicalDotsPerInch());
+    static qreal dpi_Android(QGuiApplication::primaryScreen()->geometry().width());
 
     float valueInPixels = dpi_Android * pointsToInches(a_pointsValue);
 
@@ -42,7 +42,7 @@ QSize UiScaling::pointsToPixels(const QSize &a_pointsSize)
 
 inline double UiScaling::pointsToInches(float a_pointsValue)
 {
-    return a_pointsValue / 160.f;
+    return a_pointsValue / 360.f;
 }
 
 float UiScaling::getNativDPI(){
