@@ -31,6 +31,7 @@ public:
 
     static const QString SCREEN_NAME;
     virtual QString screenName() override;
+    QNetworkAccessManager *mgr = new QNetworkAccessManager(this);
 
 
 public slots:

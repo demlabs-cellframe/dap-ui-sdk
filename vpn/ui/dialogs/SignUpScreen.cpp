@@ -267,7 +267,6 @@ void SignUpScreen::checkFieldsAndSignUp()
     request.setUrl(QUrl("https://kelvpn.com/wp-json/dapvpn/v1/register/"));
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     QString body = QString("email=%1&password=%2").arg(m_email).arg(m_password);
-    QNetworkAccessManager *mgr = new QNetworkAccessManager(this);
     mgr->post(request, body.toUtf8());
     connect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
     qDebug() << "checkFieldsAndSignUp";
