@@ -69,8 +69,9 @@ void CustomComboBoxPopup::initVariantUi(QWidget *a_widget)
     else
         m_model=lvwList->model();
 
-    connect(lvwList, &CustomComboBoxListView::itemSelected, [this](int a_index){
-        emit activated(a_index);
+    connect(lvwList, &CustomComboBoxListView::itemSelected, [this, lvwList](int a_index){
+        emit this->activated(a_index);
+        emit this->activated(lvwList->model()->index(a_index, 0).data().toString());
     });
 }
 
