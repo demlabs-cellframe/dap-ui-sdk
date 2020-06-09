@@ -176,6 +176,7 @@ void SignUpScreen::initVariantUi(QWidget *a_widget)
     connect(chbAgree,           SIGNAL(clicked(bool)),          this, SIGNAL(agreeChanged(bool))            );
 
     connect(btnSignUp,          SIGNAL(clicked(bool)),          this, SLOT(checkFieldsAndSignUp())          );
+    connect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
 
 
 
@@ -268,7 +269,6 @@ void SignUpScreen::checkFieldsAndSignUp()
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     QString body = QString("email=%1&password=%2").arg(m_email).arg(m_password);
     mgr->post(request, body.toUtf8());
-    connect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
     qDebug() << "checkFieldsAndSignUp";
     if (emailIsValid && passwordIsValid && repeatPasswordIsValid && agreeIsValid)
         emit this->signUpRequest();
