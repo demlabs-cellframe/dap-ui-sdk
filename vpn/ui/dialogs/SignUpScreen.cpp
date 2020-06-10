@@ -1,6 +1,7 @@
 #include "SignUpScreen.h"
 
-
+#include <QSslConfiguration>
+#include <QSsl>
 
 const QString SignUpScreen::SCREEN_NAME = "SignUp";
 
@@ -15,8 +16,6 @@ SignUpScreen::SignUpScreen(QWidget *a_parent)
     connect(this, SIGNAL(passwordEdited     (const QString &)), SLOT(setPassword    (const QString &)));
     connect(this, SIGNAL(repeatPasswordEdited(const QString &)), SLOT(setRptPassword(const QString &)));
     connect(this, SIGNAL(agreeChanged       (const bool &)),    SLOT(setAgree       (const bool &))    );
-
-
 }
 
 QString SignUpScreen::screenName()
