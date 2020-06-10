@@ -4,6 +4,12 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QStateMachine>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QHttpMultiPart>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 #include <QCheckBox>
 #include "AdaptiveScreen.h"
@@ -25,6 +31,7 @@ public:
 
     static const QString SCREEN_NAME;
     virtual QString screenName() override;
+    QNetworkAccessManager *mgr = new QNetworkAccessManager(this);
 
 
 public slots:
@@ -35,6 +42,8 @@ public slots:
     void setAgree(const bool &a_agree);
 
     void checkFieldsAndSignUp();
+
+    void replyFinished(QNetworkReply *reply);
 
 protected:
 
@@ -60,7 +69,6 @@ signals:
     void agreeChanged(const bool &agree);
 
     void signUpRequest();
-
 
 private:
 

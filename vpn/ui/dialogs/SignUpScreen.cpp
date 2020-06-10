@@ -176,6 +176,7 @@ void SignUpScreen::initVariantUi(QWidget *a_widget)
     connect(chbAgree,           SIGNAL(clicked(bool)),          this, SIGNAL(agreeChanged(bool))            );
 
     connect(btnSignUp,          SIGNAL(clicked(bool)),          this, SLOT(checkFieldsAndSignUp())          );
+    connect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
 
 
 
@@ -225,15 +226,51 @@ bool SignUpScreen::checkAgree()
         return true;
 }
 
+void SignUpScreen::replyFinished(QNetworkReply *reply){
+
+    if(reply->error() == QNetworkReply::NoError)
+    {
+        QByteArray content = reply->readAll();
+        qDebug() << content;
+        QJsonDocument itemDoc = QJsonDocument::fromJson(content);
+        QJsonObject itemObj = itemDoc.object();
+        QVariantMap mainMap = itemObj.toVariantMap();
+        QVariantMap map = mainMap["result"].toMap();
+        QString mes = map["message"].toString();
+        //here you can place the response processing from the site
+        if(mes == "Sorry, that username already exists!")
+        {
+            qDebug() << "Sorry, that username already exists!";
+        } else if(mes == "Cannot create a user with an empty login name."){
+            qDebug() << "Cannot create a user with an empty login name.";
+        } else if(mes == "User created"){
+            qDebug() << "User created";
+            goToSignIn();
+        }
+    }
+    else {
+        qDebug() << "ERROR in POST: " + reply->errorString();
+    }
+        reply->deleteLater();
+}
+
 void SignUpScreen::checkFieldsAndSignUp()
 {
-    qDebug() << "checkFieldsAndSignUp";
 
     bool emailIsValid    = checkEmail();
     bool passwordIsValid = checkPassword();
     bool repeatPasswordIsValid = checkRepeatPassword();
     bool agreeIsValid = checkAgree();
-
+    QNetworkRequest request;
+    QSslConfiguration config = QSslConfiguration::defaultConfiguration();
+    config.setProtocol(QSsl::AnyProtocol);
+    request.setSslConfiguration(config);
+    request.setUrl(QUrl("https://kelvpn.com/wp-json/dapvpn/v1/register/"));
+    request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    QString body = QString("email=%1&password=%2").arg(m_email).arg(m_password);
+    mgr->post(request, body.toUtf8());
+    qDebug() << "checkFieldsAndSignUp";
     if (emailIsValid && passwordIsValid && repeatPasswordIsValid && agreeIsValid)
         emit this->signUpRequest();
 }
+
