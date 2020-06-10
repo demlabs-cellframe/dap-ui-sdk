@@ -21,7 +21,8 @@ SOURCES += \
     $$PWD/PasswordLineEdit.cpp \
     $$PWD/CustomButtonAbstract.cpp \
     $$PWD/ClickableLabel.cpp \
-    $$PWD/CustomTextEdit.cpp
+    $$PWD/CustomTextEdit.cpp \
+    $$PWD/VersionLabel.cpp
 
 HEADERS += \
     $$PWD/AdaptiveWidget.h \
@@ -46,7 +47,8 @@ HEADERS += \
     $$PWD/PasswordLineEdit.h \
     $$PWD/CustomButtonAbstract.h \
     $$PWD/ClickableLabel.h \
-    $$PWD/CustomTextEdit.h
+    $$PWD/CustomTextEdit.h \
+    $$PWD/VersionLabel.h
 
 INCLUDEPATH += $$PWD
 INCLUDEPATH += $$PWD/WidgetDelegateListView

@@ -36,6 +36,7 @@ protected:
     virtual void initVariantUi(QWidget *a_widget) override;
 
     const QString SCA_FAQ = "scaFAQ";
+
 private:
     //Reference List
     QList<FAQDataModel> *m_dataModel;

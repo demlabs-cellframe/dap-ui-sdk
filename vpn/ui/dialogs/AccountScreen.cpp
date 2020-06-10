@@ -28,4 +28,5 @@ void AccountScreen::initVariantUi(QWidget *a_widget)
     connect(btnMonthPrice,&QPushButton::clicked, this,&AccountScreen::goToMonthPrice);
     connect(btnSixMonthPrice,&QPushButton::clicked, this,&AccountScreen::goToSixMonthPrice);
     connect(btnYearPrice,&QPushButton::clicked, this,&AccountScreen::goToYearPrice);
+
 }
