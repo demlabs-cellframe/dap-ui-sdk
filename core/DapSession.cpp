@@ -476,7 +476,7 @@ void DapSession::errorSlt(QNetworkReply::NetworkError error)
             emit errorNetwork("Network error: timeout, may be host is down?");
             break;
         case QNetworkReply::TemporaryNetworkFailureError:
-            emit errorNetwork("Network error: Temprorary network problems, reply request as soon as the network connection is re-established");
+            emit errorNetwork("Network error: Tempororary network problems, reply request as soon as the network connection is re-established");
             break;
         case QNetworkReply::NetworkSessionFailedError:
             emit errorNetwork("Network error: No network connection");
@@ -491,7 +491,7 @@ void DapSession::errorSlt(QNetworkReply::NetworkError error)
             emit errorNetwork(tr("Proxy server is not found"));
             break;
         case QNetworkReply::ProxyTimeoutError:
-            emit errorNetwork(tr("Proxy server timout, is it up?"));
+            emit errorNetwork(tr("Proxy server timeout, is it up?"));
             break;
         case QNetworkReply::ProxyAuthenticationRequiredError:
             emit errorNetwork(tr("Authorization problem"));

@@ -47,9 +47,13 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
     edtEmail->setPlaceholderText("e-mail");
 
     QScroller::grabGesture(edtMessage->viewport(), QScroller::LeftMouseButtonGesture);
+
+    btnSend->setText("SEND");
 #else
     QLineEdit               *edtEmail           = a_widget->findChild<QLineEdit*>(EDT_EMAIL);                       Q_ASSERT(edtEmail);
     QLayout                 *vltBugReport = a_widget->findChild<QLayout*>(VLT_BUG_REPORT);                          Q_ASSERT(vltBugReport);
+
+
     btnSend->setGraphicsEffect(new StyledDropShadowEffect(btnSend));
     edtEmail->setPlaceholderText("Your email");
     vltBugReport->setAlignment(edtEmail,Qt::AlignHCenter);
@@ -84,7 +88,11 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
         edtEmail->setVisible(false);
         edtMessage->setVisible(false);
         lblStatusMessage->setVisible(true);
+#ifndef Q_OS_ANDROID
         btnSend->setText("Back");
+#else
+        btnSend->setText("BACK");
+#endif
     });
     connect(this, &BugReportScreen::goBack, [=](){
         edtEmail->clear();
@@ -94,7 +102,11 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
         edtMessage->setPlaceholderText("Please describe the details of problem you faced. What actions did you take and what happened");
         edtMessage->setVisible(true);
         lblStatusMessage->setVisible(false);
+#ifndef Q_OS_ANDROID
         btnSend->setText("Send");
+#else
+        btnSend->setText("SEND");
+#endif
     });
 
 

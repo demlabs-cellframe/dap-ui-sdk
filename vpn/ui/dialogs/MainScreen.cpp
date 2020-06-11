@@ -50,7 +50,7 @@ void MainScreen::setState(ConnectionStates a_state)
 
 void MainScreen::initVariantUi(QWidget *a_widget)
 {
-    this->connectBtnToSignall(BTN_CONNECTION, &MainScreen::disconnect, a_widget);
+    this->connectBtnToSignall(BTN_CONNECTION, &MainScreen::disconnectionRequested, a_widget);
 
     QCheckBox *chbAuthorized    ; Utils::findChild(a_widget, CHB_AUTHORIZED     , chbAuthorized);
     QCheckBox *chbStreamOpened  ; Utils::findChild(a_widget, CHB_STREAM_OPENED  , chbStreamOpened);
@@ -106,7 +106,7 @@ void MainScreen::initVariantUi(QWidget *a_widget)
 
     graphicsView->setSceneRect(0,0,m_sceneWidth-3, m_sceneHeight-3);
 
-    connect(cbbServer, SIGNAL(currentIndexChanged(const QString &))  , this, SIGNAL(serverChangingRequest(const QString &)));
+    connect(cbbServer, SIGNAL(activated(const QString &))  , this, SIGNAL(serverChangingRequested(const QString &)));
 
     connect(btnBytes,&QPushButton::clicked,[=]{
         setIndicatorUnits(IndicatorsUnits::Bytes);

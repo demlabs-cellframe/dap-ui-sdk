@@ -83,8 +83,8 @@ public slots:
     void stopConnectionTimer();
 
 signals:
-    void disconnect();
-    void serverChangingRequest(const QString& serverName);
+    void disconnectionRequested();
+    void serverChangingRequested(const QString& serverName);
 
     void changeBytesPackets(int a_bytesRead, int a_bytesWrite, int a_packetsRead, int a_packetsWrite);
     void setIndicatorsUnit(bool a_bytes_not_packets);
@@ -128,7 +128,6 @@ protected:
     const QString FRM_INFO          = "frmInfo";
 
     const QString BTN_CHANGE_SERVER = "btnChangeServer";
-
 #else
     const QString LBL_STATUS_MESSAGE        = "lblStatusMessage";
     const QString BTN_BYTES                 = "btnBytes";
