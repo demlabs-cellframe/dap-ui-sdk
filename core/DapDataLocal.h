@@ -54,7 +54,7 @@ public slots:
     void setPassword(const QString &password);
 public:
 
-    QString serverName() const;
+    QString currentServerName() const;
     QString getServerNameByAddress(const QString& address);
 public slots:
     void setServerName(const QString &serverName);

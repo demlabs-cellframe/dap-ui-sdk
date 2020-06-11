@@ -160,7 +160,7 @@ void DapDataLocal::setRandomServerIfIsEmpty()
         qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
         int randIndex = qrand()%(this->servers().count());
         this->setCurrentServer(randIndex);
-        qDebug()<<"Random server chosed:" << this->serverName();
+        qDebug()<<"Random server chosed:" << this->currentServerName();
     }
 }
 
@@ -197,7 +197,7 @@ void DapDataLocal::setPassword(const QString &password)
 
 /// Get server name.
 /// @return Server name.
-QString DapDataLocal::serverName() const
+QString DapDataLocal::currentServerName() const
 {
     return m_currentServer ? m_currentServer->name : "";
 }
@@ -206,7 +206,7 @@ QString DapDataLocal::serverName() const
 /// @param server Server name.
 void DapDataLocal::setServerName(const QString &a_serverName)
 {
-    if (serverName() == a_serverName)
+    if (currentServerName() == a_serverName)
         return;
 
     for (DapServerInfo& l_currentServer: servers())
