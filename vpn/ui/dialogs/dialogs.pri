@@ -4,7 +4,6 @@ SOURCES += \
     $$PWD/MainScreen.cpp \
     $$PWD/MainScreenLayout.cpp \
     $$PWD/PasswordRecoveryScreen.cpp \
-    $$PWD/SettingsScreen.cpp \
     $$PWD/SignUpScreen.cpp \
     $$PWD/NavigationPanel.cpp
 
@@ -14,7 +13,6 @@ HEADERS  += \
     $$PWD/MainScreen.h \
     $$PWD/MainScreenLayout.h \
     $$PWD/PasswordRecoveryScreen.h \
-    $$PWD/SettingsScreen.h \
     $$PWD/SignUpScreen.h \
     $$PWD/NavigationPanel.h
 
