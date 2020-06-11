@@ -44,6 +44,8 @@ public:
     QString login() const;
 public slots:
     void setCurrentServer(int a_serverIndex);
+    void setCurrentServer(DapServerInfo* a_server);
+
     void setLogin(const QString &login);
 public:
 
@@ -54,6 +56,9 @@ public:
 
     QString serverName() const;
     QString getServerNameByAddress(const QString& address);
+public slots:
+    void setServerName(const QString &serverName);
+public:
 
     const QList<QString> &cdbServersList() { return  m_cdbServersList; }
     const QString & networkDefault() { return  m_networkDefault; }
@@ -67,8 +72,6 @@ public:
     QString getSecretString(QString);
 
 
-public slots:
-    void setServerName(const QString &serverName);
 
 private:
     static DapDataLocal *_me;

@@ -73,6 +73,8 @@ public:
 
 public slots:
 
+    void setCurrentServer(const QString& a_currentServer);
+
     void setAuthorized(bool a_authorized = true);
     void setStreamOpened(bool a_streamOpened = true);
     void setVirtualNetwork(bool a_virtualNetwork = true);
@@ -107,7 +109,7 @@ protected:
     void setGraphicsHeight(int a_height);
     void setGraphicsWidth(int a_width);
 
-    const QString BTN_CONNECTION    = "btnConnection";
+    const QString BTN_CONNECTION      = "btnConnection";
 
     const QString CHB_AUTHORIZED      = "chbAuthorized";
     const QString CHB_STREAM_OPENED   = "chbStreamOpened";
@@ -115,21 +117,22 @@ protected:
 
     const QString LBL_LOGIN_TIME      = "lblLoginTime";
     const QString LBL_CONNECTED_TIME  = "lblConnectedTime";
-    const QString LBL_RECEIVED_TITLE = "lblReceivedTitle";
+    const QString LBL_RECEIVED_TITLE  = "lblReceivedTitle";
     const QString LBL_RECEIVED        = "lblReceived";
     const QString LBL_SENT_TITLE      = "lblSentTitle";
     const QString LBL_SENT            = "lblSent";
     const QString CBB_SERVER          = "cbbServer";
 
-    const QString EMPTY_TYME = "...";
-    const QString FRM_STATUS        = "frmStatus";
+    const QString EMPTY_TYME          = "...";
+    const QString FRM_STATUS          = "frmStatus";
+    const QString LBL_STATUS_MESSAGE  = "lblStatusMessage";
+
 #ifdef ANDROID
     const QString FRM_CONNECT       = "frmConnect";
     const QString FRM_INFO          = "frmInfo";
 
     const QString BTN_CHANGE_SERVER = "btnChangeServer";
 #else
-    const QString LBL_STATUS_MESSAGE        = "lblStatusMessage";
     const QString BTN_BYTES                 = "btnBytes";
     const QString BTN_PACKETS               = "btnPackets";
 
@@ -139,7 +142,7 @@ protected:
 
 private:
     static QString toTimeString(quint64 seconds);
-    static QString statusText(ConnectionStates a_state);
+    QString statusText();
 
     bool indicatorUnitsIsBytes() const;
 #ifndef ANDROID
@@ -161,6 +164,9 @@ private:
     QTimer  m_connectedTimer;
     /// Total connection time in seconds.
     QDateTime m_loginTime {};
+
+    ConnectionStates m_state {ConnectionStates::Disconnected};
+    QString m_currentServer {};
 };
 
 #endif // MAINSCREEN_H

@@ -35,16 +35,18 @@ QString MainScreen::screenName()
 
 void MainScreen::setState(ConnectionStates a_state)
 {
-#ifdef Q_OS_ANDROID
-    Q_UNUSED(a_state)
-#else
-    this->setChildProperties(LBL_STATUS_MESSAGE, Properties::TEXT , statusText(a_state));
-    this->setChildProperties(LBL_STATUS_MESSAGE, Properties::STATE, a_state);
+    if (a_state == m_state)
+        return;
+    m_state = a_state;
 
-    this->updateChildStyle  (LBL_STATUS_MESSAGE);
+    this->setChildProperties(LBL_STATUS_MESSAGE, Properties::TEXT , this->statusText());
 
     if(a_state == ConnectionStates::Disconnected)
         this->stopConnectionTimer();
+#ifndef ANDROID
+    this->setChildProperties(LBL_STATUS_MESSAGE, Properties::STATE, a_state);
+
+    this->updateChildStyle  (LBL_STATUS_MESSAGE);
 #endif
 }
 
@@ -193,26 +195,27 @@ void MainScreen::updateTimeIndicators()
     this->setChildProperties(LBL_CONNECTED_TIME, Properties::TEXT, connectedTime);
 }
 
-QString MainScreen::statusText(ConnectionStates a_state)
+QString MainScreen::statusText()
 {
-    switch (a_state)
+    switch (m_state)
     {
         case ConnectionStates::Disconnected:
-            return  "Not connected";
+            return tr("Not connected");
         case ConnectionStates::Connecting:
-            return "Connecting...";
+            return tr("Connecting...");
         case ConnectionStates::Connected:
-            return  "Connected";
+            return tr("Connected to %1").arg(m_currentServer);
         case ConnectionStates::Disconnecting:
-            return  "Server down";
+            return tr("Server down");
         case ConnectionStates::ServerChanging:
-            return  "Changing server...";
+            return tr("Changing server...");
         case ConnectionStates::ServerChanged:
-            return  "Server changed";
+            return "Server changed";
         case ConnectionStates::ServerNotChanged:
-            return  "Server not changed";
+            return "Server not changed";
+        default:
+            return QString();
     }
-    return QString();
 }
 
 
@@ -268,6 +271,16 @@ void MainScreen::setLoginTime(const QDateTime &loginTime)
 MainScreen::IndicatorsUnits MainScreen::indicatorUnits() const
 {
     return m_indicatorUnits;
+}
+
+void MainScreen::setCurrentServer(const QString &a_currentServer)
+{
+    qDebug() << "MainScreen::setCurrentServer:" << a_currentServer;
+    if (m_currentServer == a_currentServer)
+        return;
+    m_currentServer = a_currentServer;
+
+    this->setChildProperties(LBL_STATUS_MESSAGE, Properties::TEXT,  this->statusText());
 }
 
 

@@ -111,7 +111,8 @@ void DapDataLocal::addServer(const DapServerInfo& dsi) {
 void DapDataLocal::clearServerList()
 {
     m_servers.clear();
-    m_currentServer = nullptr;
+    this->setCurrentServer(nullptr);
+
     emit serversCleared();
 }
 
@@ -135,14 +136,21 @@ DapServerInfo *DapDataLocal::currentServer()
 void DapDataLocal::setCurrentServer(int a_serverIndex)
 {
     if (a_serverIndex == -1)
-    {
-        m_currentServer = nullptr;
-        return;
-    }
+        return this->setCurrentServer(nullptr);
 
     Q_ASSERT(a_serverIndex >= 0 && a_serverIndex < m_servers.count());
 
-    m_currentServer = &m_servers[a_serverIndex];
+    this->setCurrentServer(&m_servers[a_serverIndex]);
+}
+
+void DapDataLocal::setCurrentServer(DapServerInfo *a_server)
+{
+    qDebug() << "DapDataLocal::setCurrentServer(" << (a_server ? a_server->name : "") << ")";
+    if (m_currentServer == a_server)
+        return;
+    m_currentServer = a_server;
+
+    emit this->serverNameChanged(a_server ? a_server->name : "");
 }
 
 void DapDataLocal::setRandomServerIfIsEmpty()
@@ -204,11 +212,7 @@ void DapDataLocal::setServerName(const QString &a_serverName)
     for (DapServerInfo& l_currentServer: servers())
     {
         if (a_serverName == l_currentServer.name)
-        {
-            m_currentServer = &l_currentServer;
-            emit serverNameChanged(a_serverName);
-            return;
-        }
+            return this->setCurrentServer(&l_currentServer);
     }
     
     qFatal("There is no server with name %s", qPrintable(a_serverName));
