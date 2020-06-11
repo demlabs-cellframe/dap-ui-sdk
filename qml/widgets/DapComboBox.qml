@@ -167,15 +167,12 @@ DapComboBoxForm
     {
         if(cbIndex === cbCurrentIndex)
         {
+            mainRow = elTextArray;
             for(var i = 0; i < comboBoxTextRole.length; i++)
             {
                 fm.font = (fontComboBox.length > i) ?
                             fontComboBox[i] :
                             fontComboBox[0];
-
-                var tmp = mainRow;
-                tmp[i] = elTextArray[i];
-                mainRow = tmp;
 
                 if(i == 0)
                     mainLineText = fm.elidedText(getModelData(cbCurrentIndex, comboBoxTextRole[0]), Text.ElideRight, width, Qt.TextShowMnemonic);
