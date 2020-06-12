@@ -46,7 +46,7 @@ private:
     ScreenOverlaying *m_screenOverlaying{};
     bool m_clouseOnClickOutside;
 
-    Qt::WindowType m_windowType;
+    Qt::WindowType m_windowType {Qt::Widget};
 
 };
 

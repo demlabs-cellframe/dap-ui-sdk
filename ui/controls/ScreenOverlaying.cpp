@@ -4,6 +4,7 @@ ScreenOverlaying::ScreenOverlaying(QMainWindow *a_parent)
     :QWidget(a_parent)
 {
     setObjectName("ScreenOverlaying");
+    this->setOpacity(0.0);
 }
 
 void ScreenOverlaying::setParent(QMainWindow *a_parent)
@@ -81,7 +82,7 @@ void ScreenOverlaying::setOpacity(qreal a_opacity)
             return;
 
         opacityEffect = new QGraphicsOpacityEffect(this);
-        this->setGraphicsEffect(new QGraphicsOpacityEffect(this));
+        this->setGraphicsEffect(opacityEffect);
     }
 
     opacityEffect->setOpacity(a_opacity);

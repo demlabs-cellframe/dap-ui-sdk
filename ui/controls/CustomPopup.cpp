@@ -153,9 +153,9 @@ void CustomPopup::setWindowType(Qt::WindowType a_windowType)
         if (!m_screenOverlaying)
             createScreenOverlaying();
 
-        if (a_windowType == Qt::Dialog)
-            m_screenOverlaying->disconnect();
-        else if (a_windowType == Qt::Popup || a_windowType == Qt::ToolTip)
+         m_screenOverlaying->disconnect();
+
+        if (a_windowType == Qt::Popup || a_windowType == Qt::ToolTip)
             connect(m_screenOverlaying, SIGNAL(clicked()), SLOT(hide()));
     }
 

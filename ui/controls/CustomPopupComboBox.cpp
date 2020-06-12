@@ -20,6 +20,16 @@ void CustomPopupComboBox::showPopup()
             QPoint popupPosition = this->mapTo(mainWindow, QPoint(-1, this->height()));
 
             popup()->move(popupPosition);
+
+            qDebug() << "CustomPopupComboBox::showPopup" << this->width() << " " << this->popup()->maximumWidth() << this->popup()->width();
+            if (this->popup()->sizePolicy().horizontalPolicy() != QSizePolicy::Fixed)
+            {
+                this->popup()->setMaximumWidth(this->width());
+                this->popup()->resize(this->width(), popup()->height());
+            }
+
+            qDebug() << "CustomPopupComboBox::showPopup" << this->width() << " " << this->popup()->maximumWidth() << this->popup()->width();
+
         }
         m_popup->show();
     }

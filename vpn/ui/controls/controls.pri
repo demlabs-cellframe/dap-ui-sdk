@@ -12,6 +12,13 @@ HEADERS  += \
     $$PWD/CustomLicenseLineEdit.h
 
 
+android {
+    SOURCES += \
+        $$PWD/mobile/ScreenComboBox.cpp
+
+    HEADERS  += \
+        $$PWD/mobile/ScreenComboBox.h
+}
 !android {
     SOURCES += \
         $$PWD/desktop/ScreenComboBox.cpp \
