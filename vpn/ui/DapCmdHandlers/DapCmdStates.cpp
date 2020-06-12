@@ -105,7 +105,7 @@ void DapCmdStates::handleResult(const QJsonObject& result) {
     }
 
     if(stateName == "server_change_state") {
-        userHandler(result.value("state").toString());
+        serverChangedHandler(result.value("state").toString());
         return;
     }
 
