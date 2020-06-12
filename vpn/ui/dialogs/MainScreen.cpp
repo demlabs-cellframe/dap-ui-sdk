@@ -209,10 +209,6 @@ QString MainScreen::statusText()
             return tr("Server down");
         case ConnectionStates::ServerChanging:
             return tr("Changing server...");
-        case ConnectionStates::ServerChanged:
-            return "Server changed";
-        case ConnectionStates::ServerNotChanged:
-            return "Server not changed";
         default:
             return QString();
     }
