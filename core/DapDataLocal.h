@@ -38,15 +38,19 @@ public:
 
     DapServerInfo* currentServer();
     void setRandomServerIfIsEmpty();
+    bool newServerAfterNetworkError();
+    void clearCurrentServer();
 
     QString locationToIconPath(DapServerLocation loc);
 
     QString login() const;
 public slots:
     void setCurrentServer(int a_serverIndex);
-    void setCurrentServer(DapServerInfo* a_server);
+    //void setCurrentServer(DapServerInfo* a_server);
 
     void setLogin(const QString &login);
+
+    void setCurrentServer(DapServerInfo *a_server);
 public:
 
     QString password() const;
@@ -84,6 +88,9 @@ private:
     DapKeyAes *secretKey = Q_NULLPTR;
     bool initSecretKey();
     QString getRandomString(int);
+
+    bool bBeforeAutoServer = false;
+    QVector<DapServerInfo> m_serversForCheck;
 
 signals:
     /// Signal emitted if login has changed.

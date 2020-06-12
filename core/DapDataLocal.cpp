@@ -273,7 +273,8 @@ QString DapDataLocal::getServerNameByAddress(const QString &address)
     QList<DapServerInfo>::const_iterator it = std::find_if(m_servers.cbegin(), m_servers.cend(), 
         [=] (const DapServerInfo& server) 
         { 
-            return server.address == address; 
+        if (server.name != "Auto")
+            return server.address == address;
         });
     
     if(it != m_servers.cend())
@@ -321,4 +322,73 @@ QString DapDataLocal::locationToIconPath(DapServerLocation loc)
         return m_pictruePath.value(DapServerLocation::UNKNOWN);
     }
     return locPath;
+}
+
+/*void DapDataLocal::setCurrentServer(DapServerInfo *a_server)
+{
+    int index = 0;
+    for (auto server : m_servers){
+        if (server.address == a_server->address && server.name != "Auto"){
+            this->setCurrentServer(index);
+            emit this->serverNameChanged(server.name);
+            return;
+        }
+        index++;
+    }
+    this->setCurrentServer(0);
+}
+*/
+
+void DapDataLocal::clearCurrentServer()
+{
+    m_currentServer = nullptr;
+}
+
+bool DapDataLocal::newServerAfterNetworkError()
+{
+    if (m_serversForCheck.isEmpty())
+        for (auto server : m_servers)
+            m_serversForCheck.push_back(server);
+
+    DapServerInfo *currentServer = this->currentServer();
+
+    QMutableVectorIterator<DapServerInfo> i(m_serversForCheck);
+    while(i.hasNext()) {
+        DapServerInfo temp = i.next();
+        if (temp.address == currentServer->address)
+            i.remove();
+    }
+
+    if (m_serversForCheck.isEmpty())
+        return false;
+
+    DapServerLocation alocation = currentServer->location;
+
+    if (currentServer->name == "Auto" || bBeforeAutoServer) {
+        bBeforeAutoServer = true;
+        for (DapServerInfo& server : m_serversForCheck){
+            if (currentServer->address != server.address){
+                this->setCurrentServer(&server);
+                return true;
+            }
+        }
+    }
+    else {
+        //сейчас спросить о том что не получилось и можно ли установить любой сервер из того же региона.
+        for (DapServerInfo& server : m_serversForCheck){
+            if (server.location == alocation && currentServer->address != server.address){
+                this->setCurrentServer(&server);
+                return true;
+            }
+        }
+        //серверов в регионе больше нет. спросить о том что сейчас люой вообще сервер будет выбран
+        for (DapServerInfo& server : m_serversForCheck){
+            if (currentServer->address != server.address){
+                this->setCurrentServer(&server);
+                return true;
+            }
+        }
+    }
+    return false;
+    //обработать случай когда  остаётся 0 серверов, выйти на экран и вызвать стандартуную обработку это йошибки
 }
