@@ -200,7 +200,7 @@ QString MainScreen::statusText()
     switch (m_state)
     {
         case ConnectionStates::Disconnected:
-            return tr("Not connected");
+            return tr("Disconnected");
         case ConnectionStates::Connecting:
             return tr("Connecting...");
         case ConnectionStates::Connected:
