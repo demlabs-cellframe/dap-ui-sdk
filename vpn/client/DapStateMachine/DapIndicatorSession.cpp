@@ -100,6 +100,7 @@ void DapIndicatorSession::initAllowedSubstatesTransitions()
     // _streamSessionOpened =>
     addAllowedSubstatesTransitions(streamSessionOpened, logoutRequested);
     addAllowedSubstatesTransitions(streamSessionOpened, unAuthorized);
+    addAllowedSubstatesTransitions(streamSessionOpened, handshakeRequested);
 
     //addAllowedSubstatesTransitions(streamSessionOpened, switchRequested);
     //addAllowedSubstatesTransitions(switchRequested, handshakeRequested);
