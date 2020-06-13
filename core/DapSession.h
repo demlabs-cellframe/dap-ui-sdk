@@ -143,7 +143,7 @@ signals:
     void authRequested();
     void authorized(const QString &);
     void onAuthorized();
-    //void usrDataChanged(const QString &addr, ushort port);
+    void usrDataChanged(const QString &addr, ushort port);
     void logoutRequested();
     void logouted();
 };

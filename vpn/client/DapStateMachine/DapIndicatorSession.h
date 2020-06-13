@@ -39,7 +39,7 @@ public:
     // Substates TrueToFalse
     DapState * logoutRequested;
     DapState * unAuthorized;
-    DapState * switchRequested;
+    //DapState * switchRequested;
 };
 
 #endif // DAPINDICATORSESSION_H
