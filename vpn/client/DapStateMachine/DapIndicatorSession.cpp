@@ -38,7 +38,7 @@ void DapIndicatorSession::init(QStateMachine &sm, const QString& stateName)
     logoutRequested = new DapState(_trueToFalse->name() + "LogoutRequsted",   _trueToFalse);
     unAuthorized = new DapState(_trueToFalse->name() + "UnAuthorized", _trueToFalse, true);
 
-    switchRequested = new DapState(_trueToFalse->name() + "switchRequested", _trueToFalse);
+    //switchRequested = new DapState(_trueToFalse->name() + "switchRequested", _trueToFalse);
 
     initAllowedSubstatesTransitions();
 }
@@ -101,8 +101,8 @@ void DapIndicatorSession::initAllowedSubstatesTransitions()
     addAllowedSubstatesTransitions(streamSessionOpened, logoutRequested);
     addAllowedSubstatesTransitions(streamSessionOpened, unAuthorized);
 
-    addAllowedSubstatesTransitions(streamSessionOpened, switchRequested);
-    addAllowedSubstatesTransitions(switchRequested, handshakeRequested);
+    //addAllowedSubstatesTransitions(streamSessionOpened, switchRequested);
+    //addAllowedSubstatesTransitions(switchRequested, handshakeRequested);
 
     // TrueToFalse =>
     addAllowedSubstatesTransitions(logoutRequested, logoutError);
