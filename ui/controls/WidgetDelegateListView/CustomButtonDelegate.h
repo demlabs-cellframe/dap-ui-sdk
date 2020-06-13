@@ -16,6 +16,8 @@ public:
 
     virtual void setSelected(bool a_selected) override;
 
+    static WidgetDelegateBase* create();
+
 private:
     CustomPlacementButton* m_button;
 };
