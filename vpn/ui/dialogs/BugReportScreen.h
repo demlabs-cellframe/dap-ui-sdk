@@ -36,7 +36,7 @@ public slots:
     void checkFieldsAndSendReport();
 
 signals:
-    void sendReportRequest();
+    void sendReportRequest(const QString &a_email, const QString &a_message);
     void goBack();
 
     void wrongEmail();
@@ -45,7 +45,8 @@ signals:
     void emailEdited    (const QString &email   );
     void reportEdited   (const QString &report);
 
-
+    void bugReportSent();
+    void bugReportSendingError();
 
 protected:
     /// Form initialization.

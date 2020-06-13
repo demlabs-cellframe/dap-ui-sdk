@@ -23,7 +23,8 @@ protected:
 
     QList<QString> m_cdbServersList;
     QString     m_networkDefault;
-    QString urlSignUp;
+    QString     m_brandName;
+    QString     urlSignUp;
 
 public:
     using picturesMap = QMap<DapServerLocation, QString>;
@@ -60,9 +61,10 @@ public slots:
     void setServerName(const QString &serverName);
 public:
 
-    const QList<QString> &cdbServersList() { return  m_cdbServersList; }
-    const QString & networkDefault() { return  m_networkDefault; }
-    const QString & getUrlForSignUp() { return  urlSignUp; }
+    const QList<QString> &cdbServersList() { return m_cdbServersList; }
+    const QString & networkDefault()       { return m_networkDefault; }
+    const QString & getUrlForSignUp()      { return urlSignUp;        }
+    const QString & getBrandName()         { return m_brandName;      }
 
     void connectComboBox(QObject *a_comboBox);
 

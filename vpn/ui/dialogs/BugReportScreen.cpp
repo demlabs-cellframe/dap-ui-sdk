@@ -88,12 +88,24 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
         edtEmail->setVisible(false);
         edtMessage->setVisible(false);
         lblStatusMessage->setVisible(true);
+        lblStatusMessage->setText("Bug report sending...");
+        //btnSend->setText("Cancel");
 #ifndef Q_OS_ANDROID
-        btnSend->setText("Back");
+        btnSend->setText("Cancel");
 #else
         btnSend->setText("BACK");
 #endif
     });
+
+    connect(this, &BugReportScreen::bugReportSent, [=](){
+        lblStatusMessage->setText("Bug report sent<br>successfully");
+        btnSend->setText("Cancel");
+    });
+    connect(this, &BugReportScreen::bugReportSendingError, [=](){
+        lblStatusMessage->setText("Bug report sending error :(");
+        btnSend->setText("Cancel");
+    });
+
     connect(this, &BugReportScreen::goBack, [=](){
         edtEmail->clear();
         setEmail("");
@@ -113,7 +125,7 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
     connect(btnSend, &QPushButton::clicked,[=](){
         if (btnSend->text() == "Send")
             checkFieldsAndSendReport();
-        else if (btnSend->text() == "Back")
+        else if (btnSend->text() == "Back" || btnSend->text() == "Cancel")
             emit this->goBack();
     });
 
@@ -152,6 +164,6 @@ void BugReportScreen::checkFieldsAndSendReport()
 
     qDebug() << "checkFieldsAndSendReport" << emailIsValid << reportIsValid;
     if (emailIsValid && reportIsValid)
-        emit this->sendReportRequest();
+        emit this->sendReportRequest(m_email, m_report_message);
 }
 
