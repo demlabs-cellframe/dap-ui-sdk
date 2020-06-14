@@ -36,9 +36,9 @@ private:
 class WidgetListViewItemDelegate: public QItemDelegate
 {
 public:
-    explicit WidgetListViewItemDelegate(QObject *parent = Q_NULLPTR);;
+    explicit WidgetListViewItemDelegate(QObject *parent = Q_NULLPTR);
 
-    virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;;
+    virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 };
 

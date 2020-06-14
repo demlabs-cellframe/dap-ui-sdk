@@ -10,9 +10,7 @@
 #include "CustomPopupComboBox.h"
 #include "CustomPopup.h"
 
-#include <QListView>
 #include <QDebug>
-#include "CustomPopupComboBox.h"
 #include "WidgetDelegateListView.h"
 
 class CustomComboBoxPopup: public CustomPopup
