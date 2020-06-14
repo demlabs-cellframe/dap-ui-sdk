@@ -8,15 +8,17 @@ create<Ui::ScreenMessage>();
 this->hide();
 }
 
-void ScreenMessage::setCaption(const QString& a_caption)
+void ScreenMessage::setTextMessage(const QString& a_message)
 {
-
+    m_lblMessage->setText(a_message);
 }
 
 void ScreenMessage::initVariantUi(QWidget * a_widget)
 {
-    QPushButton     *btnCencel    = a_widget->findChild<QPushButton*>("btnCencel");           Q_ASSERT(btnCencel);
-    QPushButton     *btnDelete    = a_widget->findChild<QPushButton*>("btnDelete");           Q_ASSERT(btnDelete);
+                    m_lblMessage    = a_widget->findChild<QLabel*>(LBL_MESSAGE);               Q_ASSERT(m_lblMessage);
+
+    QPushButton     *btnCencel      = a_widget->findChild<QPushButton*>(BTN_CENCEL);           Q_ASSERT(btnCencel);
+    QPushButton     *btnDelete      = a_widget->findChild<QPushButton*>(BTN_DELETE);           Q_ASSERT(btnDelete);
 
     connect(btnCencel,&QPushButton::clicked,this,&ScreenMessage::hide);
 
@@ -26,26 +28,3 @@ void ScreenMessage::initVariantUi(QWidget * a_widget)
     });
 }
 
-void ScreenMessage::showPopup()
-{
-
-//        if (m_popup->windowType() == Qt::ToolTip)
-//        {
-//            QMainWindow* mainWindow = Utils::findParent<QMainWindow*>(this);
-//            QPoint popupPosition = this->mapTo(mainWindow, QPoint(-1, this->height()));
-
-//            move(popupPosition);
-
-//            qDebug() << "CustomPopupComboBox::showPopup" << this->width() << " " << this->maximumWidth() << this->width();
-//            if (this->sizePolicy().horizontalPolicy() != QSizePolicy::Fixed)
-//            {
-//                this->setMaximumWidth(this->width());
-//                this->resize(this->width(), height());
-//            }
-
-//            qDebug() << "CustomPopupComboBox::showPopup" << this->width() << " " << this->maximumWidth() << this->width();
-
-//        }
-        m_popup->show();
-
-}

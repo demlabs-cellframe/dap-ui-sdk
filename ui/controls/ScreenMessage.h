@@ -8,18 +8,22 @@
 class ScreenMessage: public CustomPopup
 {
     Q_OBJECT
+
+    QLabel *m_lblMessage = nullptr;
 public:
     ScreenMessage(QWidget *parent = nullptr);
 
-    void showPopup();
-
-    virtual void setCaption(const QString& a_caption);
+    virtual void setTextMessage(const QString& a_message);
 
 signals:
     void deleteSerialKey();
 protected:
-    CustomPopup *m_popup = nullptr;
+
     virtual void initVariantUi(QWidget * a_widget) override;
+
+    const QString LBL_MESSAGE       = "lblMessage";
+    const QString BTN_CENCEL         = "btnCencel";
+    const QString BTN_DELETE         = "btnDelete";
 };
 
 #endif // SCREENMESSAGEWIDGET_H
