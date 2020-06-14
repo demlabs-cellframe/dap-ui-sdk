@@ -10,7 +10,7 @@ CustomComboBoxPopup::CustomComboBoxPopup(QMainWindow *parent)
     this->setObjectName("stwCustomComboBoxPopup");
 
     this->setWindowType(Qt::ToolTip);
-    this->setSizePolicy(QSizePolicy::Preferred, this->sizePolicy().horizontalPolicy());
+//    this->setSizePolicy(QSizePolicy::Preferred, this->sizePolicy().horizontalPolicy());
 
     connect(this, static_cast<void(CustomComboBoxPopup::*)(int)>(&CustomComboBoxPopup::activated), [this] (int index){
         Q_UNUSED(index)

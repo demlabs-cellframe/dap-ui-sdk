@@ -200,7 +200,7 @@ QString MainScreen::statusText()
     switch (m_state)
     {
         case ConnectionStates::Disconnected:
-            return tr("Not connected");
+            return tr("Disconnected");
         case ConnectionStates::Connecting:
             return tr("Connecting...");
         case ConnectionStates::Connected:
@@ -209,10 +209,6 @@ QString MainScreen::statusText()
             return tr("Server down");
         case ConnectionStates::ServerChanging:
             return tr("Changing server...");
-        case ConnectionStates::ServerChanged:
-            return "Server changed";
-        case ConnectionStates::ServerNotChanged:
-            return "Server not changed";
         default:
             return QString();
     }

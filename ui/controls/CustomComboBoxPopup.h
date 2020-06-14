@@ -30,7 +30,8 @@ public slots:
 
 protected:
     virtual void initVariantUi(QWidget * a_widget) override;
-    virtual QString listViewName() = 0;
+    virtual QString listViewName() = 0;             // Needed to be overrided!
+    QList<QListView*> allListViews();
 
     virtual QString captionLabelName();
 
@@ -39,7 +40,6 @@ signals:
     void activated(const QString &text);
 
 private:
-    QList<QListView*> allListViews();
 
     QAbstractItemModel* m_model{};
 };

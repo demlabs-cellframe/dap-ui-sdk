@@ -86,6 +86,8 @@ public:
     void setAdditionalImage(bool a_visible);
 
     void setGraphicsEffect(StyledDropShadowEffect *a_effect);
+
+    Qt::Alignment alignment() const;
     ///Makes widgets visible on the sides
     /// @param a_spacer If there is ALIGNMENT_NONE or some erroneous value, the widgets will be invisible.
     void setAlignment(Qt::Alignment a_alignment);
@@ -118,6 +120,7 @@ protected:
 private:
     ///For effect.
     StyledDropShadowEffect *m_styledShadow = nullptr;
+    Qt::Alignment m_alignment = Qt::AlignJustify;
 
     static void setWidgetState(QWidget* a_widget, bool a_isHover=false, bool a_isChecked = false);
 

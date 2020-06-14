@@ -4,21 +4,12 @@
 
 
 ComboBoxListView::ComboBoxListView(QWidget *a_parent /*= nullptr*/)
-    :ParentClass(a_parent)
+    :WidgetDelegateListView(a_parent)
 {
 #ifdef ANDROID
     this->setFocusPolicy(Qt::NoFocus);
     QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
-    this->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-}
-
-#else
-}
-
-WidgetDelegateBase *ComboBoxListView::createWidgetDelegate()
-{
-    return new CustomButtonDelegate;
-}
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 #endif
-
-
+    this->setWidgetDelegateFactory(&CustomButtonDelegate::create); // Add creating item widgets
+}

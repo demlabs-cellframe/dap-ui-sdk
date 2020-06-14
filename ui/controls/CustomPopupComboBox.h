@@ -8,9 +8,6 @@ class CustomComboBoxPopup;
 
 ///
 /// \brief The CustomPopupComboBox class
-///
-/// \details set this->popup()->sizePolicy().horizontalPolicy() to QSizePolicy::Fixed if you want set up concreate popup width
-/// otherwise it will be seted up the same width as comboBox
 class CustomPopupComboBox : public QComboBox
 {
     Q_OBJECT
