@@ -46,6 +46,7 @@ public:
     static const QString URL_DB_FILE;
     static const QString URL_SERVER_LIST;
     static const QString URL_TX;
+    static const QString URL_BUG_REPORT;
 
     DapSession(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
     ~DapSession();
@@ -76,6 +77,7 @@ public slots:
     /* Request to server */
     /* QNetworkReply does not need to be cleared. It's do DapConnectClient */
     QNetworkReply * encryptInitRequest();
+    QNetworkReply * sendBugReport(QString pathToFile);
     QNetworkReply * authorizeRequest(const QString& a_user, const QString& a_password,
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
     QNetworkReply * logoutRequest();
@@ -101,6 +103,7 @@ protected:
     QNetworkReply * m_netEncryptReply;
     QNetworkReply * m_netAuthorizeReply;
     QNetworkReply * m_netLogoutReply;
+    QNetworkReply * m_netSendBugReportReply;
 
     QMap<QString,QString> m_userInform;
 

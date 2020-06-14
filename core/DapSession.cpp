@@ -40,6 +40,7 @@ const QString DapSession::URL_CTL("/stream_ctl");
 const QString DapSession::URL_DB_FILE("/db_file");
 const QString DapSession::URL_SERVER_LIST("/nodelist");
 const QString DapSession::URL_TX("/tx");
+const QString DapSession::URL_BUG_REPORT("/bugreport");
 
 #define SESSION_KEY_ID_LEN 33
 
@@ -125,6 +126,18 @@ QNetworkReply* DapSession::encryptInitRequest()
 {
     return requestServerPublicKey();
 }
+
+QNetworkReply* DapSession::sendBugReport(QString pathToFile){
+
+    QFile bugReportFile(pathToFile);
+    if(!bugReportFile.open(QIODevice::ReadOnly)) return m_netSendBugReportReply;
+    QByteArray DataFile = bugReportFile.readAll();
+
+    m_netSendBugReportReply = _buildNetworkReplyReq(URL_BUG_REPORT,
+                          &DataFile, true);
+
+}
+
 
 
 /**
