@@ -9,11 +9,14 @@ class ScreenMessage: public CustomPopup
 {
     Q_OBJECT
 public:
-    ScreenMessage(QMainWindow *parent = nullptr);
+    ScreenMessage(QWidget *parent = nullptr);
 
     void showPopup();
 
     virtual void setCaption(const QString& a_caption);
+
+signals:
+    void deleteSerialKey();
 protected:
     CustomPopup *m_popup = nullptr;
     virtual void initVariantUi(QWidget * a_widget) override;
