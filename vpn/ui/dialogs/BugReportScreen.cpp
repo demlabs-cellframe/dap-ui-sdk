@@ -68,7 +68,7 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
 
     lblStatusMessage->setVisible(false); 
 
-    edtMessage->setPlaceholderText("Please describe the details of problem you faced. What actions did you take and what happened");
+    edtMessage->setPlaceholderText(tr("Please describe the problem you've encountered. What you have done and what happened"));
 
     connect(this, &BugReportScreen::wrongEmail, [=](){
             Utils::setPropertyAndUpdateStyle(edtEmail, Properties::WRONG, true);
@@ -99,7 +99,7 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
         setEmail("");
         edtEmail->setVisible(true);
         edtMessage->clear();
-        edtMessage->setPlaceholderText("Please describe the details of problem you faced. What actions did you take and what happened");
+        edtMessage->setPlaceholderText(tr("Please describe the problem you've encountered. What you have done and what happened"));
         edtMessage->setVisible(true);
         lblStatusMessage->setVisible(false);
 #ifndef Q_OS_ANDROID
