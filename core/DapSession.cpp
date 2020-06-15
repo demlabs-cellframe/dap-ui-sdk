@@ -24,6 +24,8 @@
 #define OP_CODE_SUBSCRIBE_EXPIRIED    "0xf4"
 #define OP_CODE_CANT_CONNECTION_TO_DB "0xf5"
 #define OP_CODE_INCORRECT_SYM         "0xf6"
+#define OP_CODE_LOGIN_INACTIVE        "0xf7"
+#define OP_CODE_SERIAL_ACTIVATED      "0xf8"
 
 #include "DapSession.h"
 #include "DapCrypt.h"
@@ -259,6 +261,28 @@ void DapSession::setDapUri(const QString& addr, const uint16_t port)
     m_upstreamPort = port;
 }
 
+void DapSession::onKeyActivated() {
+    QByteArray arrData;
+    arrData.append(m_netAuthorizeReply->readAll());
+
+    if(arrData.size() <= 0)
+    {
+        emit errorAuthorization("Wrong answer from server");
+        return;
+    }
+    QByteArray dByteArr;
+    m_dapCrypt->decode(arrData, dByteArr, KeyRoleSession);
+    if (QString::fromLatin1(dByteArr) == OP_CODE_LOGIN_INACTIVE) {
+        emit errorAuthorization("Serial key was not activated");
+        return;
+    } else if (QString::fromLatin1(dByteArr) == OP_CODE_SERIAL_ACTIVATED) {
+        qInfo() << "Serial key activated, try to authorize";
+        // request auth again
+        emit repeatAuth();
+        return;
+    }
+}
+
 /**
  * @brief DapSession::onAuthorize
  */
@@ -293,6 +317,9 @@ void DapSession::onAuthorize()
         return;
     } else if (QString::fromLatin1(dByteArr) == OP_CODE_INCORRECT_SYM){
         emit errorAuthorization("Incorrect symbols in request");
+        return;
+    } else if (QString::fromLatin1(dByteArr) == OP_CODE_LOGIN_INACTIVE) {
+        emit activateKey();
         return;
     }
 
@@ -453,6 +480,31 @@ QNetworkReply * DapSession::authorizeRequest(const QString& a_user, const QStrin
         return Q_NULLPTR;
     }
     emit authRequested();
+    return m_netAuthorizeReply;
+}
+
+QNetworkReply * DapSession::authorizeByKeyRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey) {
+    m_userInform.clear();
+    m_netAuthorizeReply =  encRequest(a_serial + " " + a_domain + " " + a_pkey,
+                                     URL_DB, "auth", "serial", SLOT(onAuthorize()));
+    if(m_netAuthorizeReply == Q_NULLPTR) {
+        qCritical() << "Can't send authorize request";
+        return Q_NULLPTR;
+    }
+    emit authRequested();
+    return m_netAuthorizeReply;
+}
+
+QNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const QString& a_signed, const QString& a_domain,
+                                              const QString& a_pkey) {
+    m_userInform.clear();
+    m_netAuthorizeReply =  encRequest(a_serial + " " + " " + a_signed + a_domain + " " + a_pkey,
+                                     URL_DB, "auth_key", "serial", SLOT(onKeyActivated()));
+    if(m_netAuthorizeReply == Q_NULLPTR) {
+        qCritical() << "Can't send key activation request";
+        return Q_NULLPTR;
+    }
+    //emit keyActRequested();
     return m_netAuthorizeReply;
 }
 

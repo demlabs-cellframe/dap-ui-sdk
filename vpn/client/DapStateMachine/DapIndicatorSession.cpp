@@ -30,7 +30,10 @@ void DapIndicatorSession::init(QStateMachine &sm, const QString& stateName)
                                        _falseToTrue);
     streamCtlRequested  = new DapState(_falseToTrue->name() + "StreamCtlRequested",
                                        _falseToTrue);
-
+    keyActivationRequested = new DapState(_falseToTrue->name() + "KeyActivationRequested",
+                                          _falseToTrue);
+    keyActivated        = new DapState(_falseToTrue->name() + "KeyActivated",
+                                       _falseToTrue);
     // Init true substates
     streamSessionOpened = new DapState(_true->name() + "StreamOpened", _true);
 
@@ -77,6 +80,10 @@ void DapIndicatorSession::initAllowedSubstatesTransitions()
 
     // _authRequested =>
     addAllowedSubstatesTransitions(authRequested, authorized);
+    addAllowedSubstatesTransitions(authRequested, keyActivationRequested);
+    addAllowedSubstatesTransitions(keyActivationRequested, keyActivated);
+    addAllowedSubstatesTransitions(keyActivated, authRequested);
+    // error processing...
     addAllowedSubstatesTransitions(authRequested, authRequestCanceling);
     addAllowedSubstatesTransitions(authRequested, authRequestError);
 

@@ -30,6 +30,8 @@ public:
     DapState * handshakeRequested;
     DapState * handshakeResponse;
     DapState * authRequested;
+    DapState * keyActivationRequested;
+    DapState * keyActivated;
     DapState * authorized;
     DapState * streamCtlRequested;
 
