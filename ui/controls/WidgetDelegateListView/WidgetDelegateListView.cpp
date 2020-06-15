@@ -27,6 +27,27 @@ void WidgetDelegateListView::rowsInserted(const QModelIndex &parent, int start, 
     this->createIndexDelegates(start, end);
 }
 
+void WidgetDelegateListView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    if (!m_widgetDelegateFactory)
+        return;
+
+    for (auto l_selectedIndex: selected.indexes())
+    {
+        WidgetDelegateBase* selectedWidget = qobject_cast<WidgetDelegateBase*>(this->indexWidget(l_selectedIndex));
+        if (selectedWidget)
+            selectedWidget->setSelected(true);
+    }
+    for (auto l_deselectedIndex: deselected.indexes())
+    {
+        WidgetDelegateBase* deselectedWidget = qobject_cast<WidgetDelegateBase*>(this->indexWidget(l_deselectedIndex));
+        if (deselectedWidget)
+            deselectedWidget->setSelected(false);
+    }
+
+    this->CustomComboBoxListView::selectionChanged(selected, deselected);
+}
+
 void WidgetDelegateListView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
 {
     this->QListView::dataChanged(topLeft, bottomRight, roles);
@@ -83,8 +104,8 @@ void WidgetDelegateListView::createIndexDelegates(int a_start /*= 0*/, int a_end
         });
 
         widget->setData(this->model()->itemData(index));
+        widget->setSelected(this->selectionModel()->isSelected(index));
 
-        widget->setParent(this);
         this->setIndexWidget(index, widget);
     }
 }

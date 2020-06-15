@@ -62,30 +62,19 @@ void CustomPlacementButton::initButton()
     setLayout(m_layout);
 
     // on toggled update Appearance
-    connect(this, &QAbstractButton::toggled, [=](bool a_checked) {
-        this->setState(this->underMouse(), a_checked);
+    connect(this, &QAbstractButton::toggled, [=](bool a_checked)
+    {
+        this->setProperty(Properties::CHECKED, a_checked);
     });
 
-    connect(this, &CustomPlacementButton::tabFocusIn, [=]() {
 
-     //   this->updateAppearanceForFocus(true);
-
-    });
-    connect(this, &CustomPlacementButton::tabFocusOut, [=]() {
-
-     //   this->updateAppearanceForFocus(false);
-
-    });
-
-    connect(this, &CustomPlacementButton::tabFocusIn, [=]() {
-
+    connect(this, &CustomPlacementButton::tabFocusIn, [=]()
+    {
         this->updateAppearanceForFocus(true);
-
     });
-    connect(this, &CustomPlacementButton::tabFocusOut, [=]() {
-
+    connect(this, &CustomPlacementButton::tabFocusOut, [=]()
+    {
         this->updateAppearanceForFocus(false);
-
     });
 }
 
@@ -108,29 +97,16 @@ void CustomPlacementButton::setIcon(const QString &path)
     m_lbImage.setPixmap(icon);
 }
 
-/** @brief Updates appearance of image and text
- */
-void CustomPlacementButton::setState(bool a_isHover, bool a_isChecked)
-{
-    setProperty(Properties::HOVER  , a_isHover  );
-    setProperty(Properties::CHECKED, a_isChecked);
-}
-
 void CustomPlacementButton::setProperty(const QString &a_property, const QVariant &a_value)
 {
-    const char* property = a_property.toStdString().c_str();
-//qWarning()<< "==================================="<<a_property<<"-------"<<a_value;
-//    if (this->property(property) == a_value)
-//        return;
+    Utils::setPropertyAndUpdateStyle(this, a_property, a_value);
 
-    Utils::setPropertyAndUpdateStyle(&m_wgtRightSpacing, property, a_value);
-
+    Utils::setPropertyAndUpdateStyle(&m_wgtRightSpacing, a_property, a_value);
     for (QWidget* subcontrol: m_subcontrols)
     {
-        Utils::setPropertyAndUpdateStyle(subcontrol, property, a_value);
+        Utils::setPropertyAndUpdateStyle(subcontrol, a_property, a_value);
     }
-
-    Utils::setPropertyAndUpdateStyle(&m_wgtRightSpacing, property, a_value);
+    Utils::setPropertyAndUpdateStyle(&m_wgtRightSpacing, a_property, a_value);
 }
 
 /** @brief Updates appearance of image and text
@@ -170,12 +146,6 @@ void CustomPlacementButton::setLayoutDirection(Qt::LayoutDirection a_direction)
     m_layout->setDirection(Utils::toQBoxLayoutDirection(a_direction));
 }
 
-void CustomPlacementButton::setGraphicsEffect(StyledDropShadowEffect *a_effect)
-{
-    m_styledShadow = a_effect;
-    QPushButton::setGraphicsEffect(a_effect);
-}
-
 
 /** @brief event is sent to the widget when the mouse cursor enters the widget.
  *  @param event
@@ -185,10 +155,7 @@ void CustomPlacementButton::enterEvent(QEvent *event)
     Q_UNUSED(event);
 
     if (isEnabled())
-        setState(true, isChecked());
-
-    if (m_styledShadow)
-        m_styledShadow->updateStyle(HOVER_SHADOW);
+        this->setProperty(Properties::HOVER, true);
 }
 
 /** @brief A leave event is sent to the widget when the mouse cursor leaves the widget.
@@ -199,27 +166,13 @@ void CustomPlacementButton::leaveEvent(QEvent *event)
     Q_UNUSED(event);
 
     if (isEnabled())
-        setState(false, isChecked());
-
-    if (m_styledShadow)
-        m_styledShadow->updateStyle(DEFAULT_SHADOW);
+        this->setProperty(Properties::HOVER, false);
 }
 
 void CustomPlacementButton::setWidgetState(QWidget *a_widget, bool a_isHover, bool a_isChecked)
 {
     Utils::setPropertyAndUpdateStyle(a_widget, Properties::HOVER  , a_isHover  );
     Utils::setPropertyAndUpdateStyle(a_widget, Properties::CHECKED, a_isChecked);
-}
-
-/** @brief Reimplemented QPushButton::setObjectName method. Updates stylesheets.
- *  @param name Name
- */
-void CustomPlacementButton::setObjectName(const QString &name)
-{
-    QPushButton::setObjectName(name);
-
-    if (m_styledShadow)
-        m_styledShadow->updateStyleProperties();
 }
 
 Qt::Alignment CustomPlacementButton::alignment() const
@@ -269,6 +222,6 @@ void CustomPlacementButton::setAdditionalImage(bool a_visible)
 }
 void CustomPlacementButton::checkStateSet()
 {
-    setProperty(Properties::CHECKED, isChecked());
+    this->setProperty(Properties::CHECKED, isChecked());
     QPushButton::checkStateSet();
 }

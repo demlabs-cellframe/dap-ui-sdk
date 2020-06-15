@@ -43,7 +43,7 @@ void CustomButtonDelegate::setSelected(bool a_selected)
 {
     this->WidgetDelegateBase::setSelected(a_selected);
 
-    Utils::setPropertyAndUpdateStyle(m_button, Properties::SELECTED, a_selected);
+    m_button->setProperty(Properties::SELECTED, a_selected);
 }
 
 WidgetDelegateBase *CustomButtonDelegate::create()
