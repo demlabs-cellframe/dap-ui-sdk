@@ -30,7 +30,6 @@ protected:
 
     virtual void initVariantUi(QWidget * a_widget) override;
 
-private:
     const QString LVW_LIST_NAME    = "lvwList";
     const QString LBL_CAPTION_NAME = "lblCaption";
 };

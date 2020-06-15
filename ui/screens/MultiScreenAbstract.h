@@ -127,10 +127,10 @@ void MultiScreenAbstract::removeSubscreen()
 
     if (screen) { // If found ...
         // 1. remove from parent ChangingWidget, ...
-        MultiScreenAbstract *parentScreen = qobject_cast<MultiScreenAbstract*> (screen->parent());
-        parentScreen->changingWidget()->removeWidget(screen);
+//        MultiScreenAbstract *parentScreen = MultiScreenAbstract::parentMultiscreen(screen);
+        this->changingWidget()->removeWidget(screen);
         // 2. delete stackedWidget and screen
-        m_screens.remove(screen->screenName());
+        this->m_screens.remove(screen->screenName());
         // 3. delete from Map with screens pointers
         delete screen;
     }

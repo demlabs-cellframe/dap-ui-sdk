@@ -32,6 +32,7 @@ public:
     qreal opacity() const;
     void setOpacity(qreal a_opacity);
 
+
 protected:
     virtual void showEvent(QShowEvent *event) override;
     virtual void hideEvent(QHideEvent *event) override;
@@ -46,6 +47,8 @@ private:
 
     float m_blurRadius = 0.0;
     QGraphicsBlurEffect* m_blurEffect = nullptr;
+
+    QString *m_backgroundColor = nullptr;
 
 };
 

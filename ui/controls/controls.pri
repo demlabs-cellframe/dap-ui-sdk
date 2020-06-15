@@ -22,7 +22,8 @@ SOURCES += \
     $$PWD/CustomButtonAbstract.cpp \
     $$PWD/ClickableLabel.cpp \
     $$PWD/CustomTextEdit.cpp \
-    $$PWD/VersionLabel.cpp
+    $$PWD/VersionLabel.cpp \
+    $$PWD/ScreenMessage.cpp
 
 HEADERS += \
     $$PWD/AdaptiveWidget.h \
@@ -48,7 +49,8 @@ HEADERS += \
     $$PWD/CustomButtonAbstract.h \
     $$PWD/ClickableLabel.h \
     $$PWD/CustomTextEdit.h \
-    $$PWD/VersionLabel.h
+    $$PWD/VersionLabel.h \
+    $$PWD/ScreenMessage.h
 
 INCLUDEPATH += $$PWD
 INCLUDEPATH += $$PWD/WidgetDelegateListView
