@@ -5,25 +5,25 @@
 #include "CustomPopup.h"
 #include "ui_ScreenMessage.h"
 
-class ScreenMessage: public CustomPopup
+class SerialRemovalConfirmationMessage: public CustomPopup
 {
     Q_OBJECT
 
     QLabel *m_lblMessage = nullptr;
 public:
-    ScreenMessage(QWidget *parent = nullptr);
+    SerialRemovalConfirmationMessage(QWidget *parent = nullptr);
 
     virtual void setTextMessage(const QString& a_message);
 
 signals:
-    void deleteSerialKey();
+    void serialRemovalConfirmed();
 protected:
 
     virtual void initVariantUi(QWidget * a_widget) override;
 
-    const QString LBL_MESSAGE       = "lblMessage";
-    const QString BTN_CENCEL         = "btnCencel";
-    const QString BTN_DELETE         = "btnDelete";
+    const QString LBL_MESSAGE   = tr("lblMessage");
+    const QString BTN_CENCEL    = tr("btnCencel");
+    const QString BTN_DELETE    = tr("btnDelete");
 };
 
 #endif // SCREENMESSAGEWIDGET_H

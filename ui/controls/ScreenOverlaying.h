@@ -48,8 +48,6 @@ private:
     float m_blurRadius = 0.0;
     QGraphicsBlurEffect* m_blurEffect = nullptr;
 
-    QString *m_backgroundColor = nullptr;
-
 };
 
 
