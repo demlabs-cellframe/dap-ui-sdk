@@ -19,7 +19,7 @@ public:
     typedef WidgetDelegateBase* (WidgetDelegateFactory)();
     WidgetDelegateListView(QWidget *a_parent = nullptr);
 
-    virtual WidgetDelegateBase* createWidgetDelegate(); //Reimplement this method for your oun wdget delegate.
+    virtual WidgetDelegateBase* createWidgetDelegate(); //Reimplement this method for your oun widget delegate.
 
     void setWidgetDelegateFactory(WidgetDelegateFactory* a_factoryFunction);
 
@@ -27,6 +27,7 @@ public:
 
 protected slots:
     virtual void rowsInserted(const QModelIndex &parent, int start, int end) override;
+    virtual void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) override;
     virtual void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>()) override;
 
 private:
@@ -40,7 +41,7 @@ private:
 class WidgetListViewItemDelegate: public QStyledItemDelegate
 {
 public:
-    explicit WidgetListViewItemDelegate(QObject *parent = Q_NULLPTR);;
+    explicit WidgetListViewItemDelegate(QObject *parent = Q_NULLPTR);
 
     virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;;
 };

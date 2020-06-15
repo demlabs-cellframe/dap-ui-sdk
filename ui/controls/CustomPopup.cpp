@@ -4,7 +4,7 @@
 /** @brief PopUp with form and screen overlaying
 */
 CustomPopup::CustomPopup(QWidget *a_parent /*= nullptr*/)
-    : AdaptiveWidget(a_parent)
+    : AdaptiveWidget(Utils::findParent<QMainWindow*>(a_parent))
 {
     this->setObjectName("stwCustomPopup");
 }

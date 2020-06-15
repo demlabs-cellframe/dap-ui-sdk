@@ -68,13 +68,7 @@ public:
     /// Form initialization.
     /// @param path Path to Image.
     void setIcon(const QString &path);
-    /// Set object name..
-    /// @param name Object name.
-    void setObjectName(const QString &name);
-    /// Sets the state of the button.
-    /// @param isHover
-    /// @param isChecked
-    void setState(bool a_isHover, bool a_isChecked);
+
     void setProperty(const QString& a_property, const QVariant& a_value);
     /// .
     /// @param a_id Window GUI widget.
@@ -84,8 +78,6 @@ public:
     void setLayoutDirection(Qt::LayoutDirection a_direction);
 
     void setAdditionalImage(bool a_visible);
-
-    void setGraphicsEffect(StyledDropShadowEffect *a_effect);
 
     Qt::Alignment alignment() const;
     ///Makes widgets visible on the sides
@@ -118,8 +110,6 @@ protected:
     QWidget m_wgtRightSpacing;        ///<label for right spacing
 
 private:
-    ///For effect.
-    StyledDropShadowEffect *m_styledShadow = nullptr;
     Qt::Alignment m_alignment = Qt::AlignJustify;
 
     static void setWidgetState(QWidget* a_widget, bool a_isHover=false, bool a_isChecked = false);
