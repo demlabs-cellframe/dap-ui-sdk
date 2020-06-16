@@ -16,7 +16,7 @@ public:
     virtual void setTextMessage(const QString& a_message);
 
 signals:
-    void serialRemovalConfirmed();
+    void confirmed();
 protected:
 
     virtual void initVariantUi(QWidget * a_widget) override;

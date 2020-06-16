@@ -23,7 +23,7 @@ void SerialRemovalConfirmationMessage::initVariantUi(QWidget * a_widget)
     connect(btnCencel,&QPushButton::clicked,this,&SerialRemovalConfirmationMessage::hide);
 
     connect(btnDelete,&QPushButton::clicked,[=]{
-        emit this->serialRemovalConfirmed();
+        emit this->confirmed();
         this->hide();
     });
 }
