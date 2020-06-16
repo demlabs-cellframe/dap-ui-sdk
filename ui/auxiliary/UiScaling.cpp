@@ -77,6 +77,7 @@ float UiScaling::getNativDPI(){
 #endif
 #ifndef Q_OS_ANDROID
     //if dpi is less than 50, it may have been calculated incorrectly
+    if (dpi>50) return QGuiApplication::primaryScreen()->physicalDotsPerInch();//
     return (dpi < 50 ? QGuiApplication::primaryScreen()->physicalDotsPerInch() : dpi);
 
 #else
