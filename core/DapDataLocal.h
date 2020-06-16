@@ -16,10 +16,24 @@ class DapDataLocal : public QObject
     Q_OBJECT
     DapDataLocal();
     const QString ServerListName;
+
+    static DapDataLocal *_me;
+    static QMap<DapServerLocation, QString> m_pictruePath;
+
+    QList<DapServerInfo> m_servers;
+
+    void parseXML(const QString& a_fname);
+
+    DapKeyAes *secretKey = Q_NULLPTR;
+    bool initSecretKey();
+    QString getRandomString(int);
+    DapServerInfo* m_currentServer = nullptr;
 protected:
     QString     mLogin;      ///< Login.
     QString     mPassword;   ///< Password.
     QString     mServerName; ///< Server name.
+
+    QString     mSerialKey;  ///< Serial key.
 
     QList<QString> m_cdbServersList;
     QString     m_networkDefault;
@@ -42,23 +56,12 @@ public:
     QString locationToIconPath(DapServerLocation loc);
 
     QString login() const;
-public slots:
-    void setCurrentServer(int a_serverIndex);
-    void setCurrentServer(DapServerInfo* a_server);
 
-    void setLogin(const QString &login);
-public:
+    QString serialKey() const;
 
     QString password() const;
-public slots:
-    void setPassword(const QString &password);
-public:
-
     QString currentServerName() const;
     QString getServerNameByAddress(const QString& address);
-public slots:
-    void setServerName(const QString &serverName);
-public:
 
     const QList<QString> &cdbServersList() { return  m_cdbServersList; }
     const QString & networkDefault() { return  m_networkDefault; }
@@ -71,19 +74,17 @@ public:
     void saveSecretString(QString, QString);
     QString getSecretString(QString);
 
+public slots:
+    void setCurrentServer(int a_serverIndex);
+    void setCurrentServer(DapServerInfo* a_server);
 
+    void setLogin(const QString &login);
 
-private:
-    static DapDataLocal *_me;
-    static QMap<DapServerLocation, QString> m_pictruePath;
+    void setSerialKey(const QString &a_serialKey);
 
-    QList<DapServerInfo> m_servers;
+    void setPassword(const QString &password);
 
-    void parseXML(const QString& a_fname);
-
-    DapKeyAes *secretKey = Q_NULLPTR;
-    bool initSecretKey();
-    QString getRandomString(int);
+    void setServerName(const QString &serverName);
 
 signals:
     /// Signal emitted if login has changed.
@@ -100,7 +101,5 @@ signals:
 
     void serversCleared();
 
-private:
 
-    DapServerInfo* m_currentServer = nullptr;
 };

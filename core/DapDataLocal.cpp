@@ -322,3 +322,13 @@ QString DapDataLocal::locationToIconPath(DapServerLocation loc)
     }
     return locPath;
 }
+
+void DapDataLocal::setSerialKey(const QString &a_serialKey)
+{
+    mSerialKey = a_serialKey;
+}
+
+QString DapDataLocal::serialKey() const
+{
+    return mSerialKey;
+}
