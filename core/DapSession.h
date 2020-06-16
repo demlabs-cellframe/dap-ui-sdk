@@ -77,7 +77,7 @@ public slots:
     /* Request to server */
     /* QNetworkReply does not need to be cleared. It's do DapConnectClient */
     QNetworkReply * encryptInitRequest();
-    QNetworkReply * sendBugReport(QString pathToFile);
+    QNetworkReply * sendBugReport(QString pathToFile, QString email, QString message);
     QNetworkReply * authorizeRequest(const QString& a_user, const QString& a_password,
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
     QNetworkReply * logoutRequest();

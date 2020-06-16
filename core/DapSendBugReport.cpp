@@ -5,22 +5,21 @@ DapSendBugReport::DapSendBugReport()
 
 }
 
-bool DapSendBugReport::sendBugReport(){
+QString DapSendBugReport::sendBugReport(QString email, QString message){
 
-    QString pathToFile = QString("/opt/%1/bug_reports/").arg(DapDataLocal::me()->getBrandName());
+    QString pathToFile;
 
 #ifdef Q_OS_LINUX
     if (runScriptPackaging(QString(":/linux/report.sh")));
-        pathToFile += retLastModifyFile(pathToFile);
+        pathToFile = "/opt/%1/bug_reports/" + retLastModifyFile(QString("/opt/%1/bug_reports/").arg(DapDataLocal::me()->getBrandName()));
 
 #elif defined (Q_OS_WIN)
         //run script for windows
 #endif
 
-    m_network_reply = m_session->sendBugReport(pathToFile);
+    m_network_reply = m_session->sendBugReport(pathToFile, email, message);
     QString reply = m_network_reply->readAll();
-
-    return false;
+    return reply;
 }
 
 

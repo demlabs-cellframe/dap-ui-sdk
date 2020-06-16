@@ -17,7 +17,7 @@ public:
     DapSendBugReport();
 
     bool createBugReport();
-    bool sendBugReport();
+    QString sendBugReport(QString email, QString message);
     bool runScriptPackaging(QString path);
     QString retLastModifyFile(QString path);
     DapSession *m_session;

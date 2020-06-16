@@ -43,9 +43,9 @@ signals:
     void wrongReport();
 
     void emailEdited    (const QString &email   );
-    void reportEdited   (const QString &report);
+    void reportEdited   (const QString &report  );
 
-    void bugReportSent();
+    void bugReportSent  (const QString &reply   );
     void bugReportSendingError();
 
 protected:

@@ -127,18 +127,30 @@ QNetworkReply* DapSession::encryptInitRequest()
     return requestServerPublicKey();
 }
 
-QNetworkReply* DapSession::sendBugReport(QString pathToFile){
+QNetworkReply* DapSession::sendBugReport(QString pathToFile, QString email, QString message){
 
+    QString strData = "file_not_sent";
+    QByteArray data;
     QFile bugReportFile(pathToFile);
-    if(!bugReportFile.open(QIODevice::ReadOnly)) return m_netSendBugReportReply;
-    QByteArray DataFile = bugReportFile.readAll();
 
-    m_netSendBugReportReply = _buildNetworkReplyReq(URL_BUG_REPORT,
-                          &DataFile, true);
+    if(bugReportFile.open(QIODevice::ReadOnly)){
 
+        QByteArray data = bugReportFile.readAll();
+
+        QTextStream in(&bugReportFile);
+        strData = in.readAll();
+    }
+
+    strData +=  "::" + email + "::" + message;
+    data += strData; //may be
+
+
+   //m_netSendBugReportReply = encRequest(reqData, URL_BUG_REPORT, "", "sendbugreport", true);
+     m_netSendBugReportReply =  _buildNetworkReplyReq(URL_BUG_REPORT, &data, true);
+
+     //QString temp = m_netSendBugReportReply->readAll();
+     return m_netSendBugReportReply;
 }
-
-
 
 /**
  * @brief DapSession::onEnc

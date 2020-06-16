@@ -97,13 +97,13 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
 #endif
     });
 
-    connect(this, &BugReportScreen::bugReportSent, [=](){
-        lblStatusMessage->setText("Bug report sent<br>successfully");
-        btnSend->setText("Cancel");
+    connect(this, &BugReportScreen::bugReportSent, [=](const QString &reply){
+        lblStatusMessage->setText("Bug report sent<br>successfully. #" + reply);
+        btnSend->setText("Back");
     });
     connect(this, &BugReportScreen::bugReportSendingError, [=](){
         lblStatusMessage->setText("Bug report sending error :(");
-        btnSend->setText("Cancel");
+        btnSend->setText("Back");
     });
 
     connect(this, &BugReportScreen::goBack, [=](){
