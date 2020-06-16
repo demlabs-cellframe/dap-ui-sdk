@@ -6,7 +6,6 @@ void DapCmdServerData::handle(const QJsonObject *params) {
     if (params->value("address") != QJsonValue::Undefined
             && params->value("port") != QJsonValue::Undefined)
     {
-        qDebug() << "3983: handle cmd";
         emit sigChangeServerData(params->value("address").toString(), ushort(params->value("port").toInt()));
     }
 }

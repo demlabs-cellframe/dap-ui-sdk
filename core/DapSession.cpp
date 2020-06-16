@@ -535,7 +535,7 @@ QNetworkReply * DapSession::authorizeByKeyRequest(const QString& a_serial, const
 QNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const QByteArray& a_signed, const QString& a_domain,
                                               const QString& a_pkey) {
     m_userInform.clear();
-    QByteArray bData = QString(a_serial + " ").toLocal8Bit() + a_signed + QString(" " + a_domain + " " + a_pkey).toLocal8Bit();
+    QByteArray bData = QString(a_serial + " ").toLocal8Bit() + a_signed.toBase64() + QString(" " + a_domain + " " + a_pkey).toLocal8Bit();
 
     m_netAuthorizeReply =  encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()));
     if(m_netAuthorizeReply == Q_NULLPTR) {
