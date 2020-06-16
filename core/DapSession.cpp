@@ -250,6 +250,31 @@ QNetworkReply* DapSession::encRequest(const QString& reqData, const QString& url
     return _buildNetworkReplyReq(urlPath, &BAreqDataEnc, isCDB);
 }
 
+QNetworkReply* DapSession::encRequestRaw(const QByteArray& bData, const QString& url,
+                          const QString& subUrl, const QString& query)
+{
+    QByteArray BAreqDataEnc;
+    QByteArray BAsubUrlEncrypted;
+    QByteArray BAqueryEncrypted;
+    QByteArray subUrlByte = subUrl.toLatin1();
+    QByteArray queryByte = query.toLatin1();
+    DapCrypt *l_dapCrypt = m_dapCryptCDB;
+
+    l_dapCrypt->encode(const_cast<QByteArray&>(bData), BAreqDataEnc, KeyRoleSession);
+
+    QString urlPath = url;
+    if(subUrl.length()) {
+        l_dapCrypt->encode(subUrlByte, BAsubUrlEncrypted, KeyRoleSession);
+        urlPath += "/" + BAsubUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding);
+    }
+    if(query.length()) {
+        l_dapCrypt->encode(queryByte, BAqueryEncrypted, KeyRoleSession);
+        urlPath += "?" + BAqueryEncrypted.toBase64(QByteArray::Base64UrlEncoding);
+    }
+
+    return _buildNetworkReplyReq(urlPath, &BAreqDataEnc, true);
+}
+
 /**
  * @brief DapSession::setSaUri
  * @param saUri
@@ -457,6 +482,18 @@ QNetworkReply * DapSession::encRequest(const QString& reqData, const QString& ur
     return netReply;
 }
 
+QNetworkReply * DapSession::encRequestRaw(const QByteArray& bData, const QString& url, const QString& subUrl,
+                           const QString& query, QObject * obj, const char * slot)
+{
+    QNetworkReply * netReply = encRequestRaw(bData, url, subUrl, query);
+
+    connect(netReply, SIGNAL(finished()), obj, slot);
+    connect(netReply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this,SLOT(errorSlt(QNetworkReply::NetworkError)));
+    return netReply;
+}
+
+
 void DapSession::sendTxBackRequest(const QString &tx) {
     qDebug() << "Send tx back to cdb" << tx;
     encRequest(tx, URL_TX, "tx_out", "", true);
@@ -495,11 +532,12 @@ QNetworkReply * DapSession::authorizeByKeyRequest(const QString& a_serial, const
     return m_netAuthorizeReply;
 }
 
-QNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const QString& a_signed, const QString& a_domain,
+QNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const QByteArray& a_signed, const QString& a_domain,
                                               const QString& a_pkey) {
     m_userInform.clear();
-    m_netAuthorizeReply =  encRequest(a_serial + " " + " " + a_signed + a_domain + " " + a_pkey,
-                                     URL_DB, "auth_key", "serial", SLOT(onKeyActivated()));
+    QByteArray bData = QString(a_serial + " ").toLocal8Bit() + a_signed + QString(" " + a_domain + " " + a_pkey).toLocal8Bit();
+
+    m_netAuthorizeReply =  encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()));
     if(m_netAuthorizeReply == Q_NULLPTR) {
         qCritical() << "Can't send key activation request";
         return Q_NULLPTR;

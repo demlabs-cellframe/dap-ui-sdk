@@ -79,7 +79,7 @@ public slots:
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
     QNetworkReply * authorizeByKeyRequest(const QString& a_serial = QString(),
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
-    QNetworkReply * activateKeyRequest(const QString& a_serial = QString(), const QString& a_signed = QString(),
+    QNetworkReply * activateKeyRequest(const QString& a_serial = QString(), const QByteArray& a_signed = QByteArray(),
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
     QNetworkReply * logoutRequest();
     QNetworkReply * streamOpenRequest(const QString& subUrl, const QString& query);
@@ -109,13 +109,25 @@ protected:
     QNetworkReply* encRequest(const QString& reqData,const QString& url,
                               const QString& subUrl,const QString& query, bool isCDB);
 
+    QNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url,
+                                 const QString& subUrl, const QString& query);
+
     QNetworkReply* encRequest(const QString& reqData, const QString& url, const QString& subUrl,
                                const QString& query, QObject* obj, const char* slot, bool isCDB);
+
+    QNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url, const QString& subUrl,
+                               const QString& query, QObject* obj, const char* slot);
 
     QNetworkReply* encRequest(const QString& reqData, const QString& url,
                     const QString& subUrl, const QString& query, const char* slot, bool isCDB = false)
     {
         return encRequest(reqData, url, subUrl, query, this, slot, isCDB);
+    }
+
+    QNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url,
+                    const QString& subUrl, const QString& query, const char* slot)
+    {
+        return encRequestRaw(bData, url, subUrl, query, this, slot);
     }
 
     void fillSessionHttpHeaders(HttpHeaders& headers, bool isCDBSession = false) const;
