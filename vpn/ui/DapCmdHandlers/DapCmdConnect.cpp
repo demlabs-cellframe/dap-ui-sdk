@@ -7,7 +7,7 @@ DapCmdConnect::DapCmdConnect(QObject *parent)
 }
 
 void DapCmdConnect::sendCmdConnect(const QString& a_addr, quint16 a_port,
-                                   const QString& a_user, const QString& a_pswd)
+                                   const QString& a_user, const QString& a_pswd,  const QString& a_serial)
 {
     QJsonObject obj;
     obj["action"] = "Connect";
@@ -17,6 +17,8 @@ void DapCmdConnect::sendCmdConnect(const QString& a_addr, quint16 a_port,
         obj["user"] = a_user;
     if ( !a_pswd.isEmpty())
         obj["password"] = a_pswd;
+    if ( !a_serial.isEmpty() )
+        obj["serial"] = a_serial;
     obj["port"] = a_port;
     sendCmd(&obj);
 }

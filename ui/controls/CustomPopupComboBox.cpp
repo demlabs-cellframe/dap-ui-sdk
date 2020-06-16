@@ -21,14 +21,11 @@ void CustomPopupComboBox::showPopup()
 
             popup()->move(popupPosition);
 
-            qDebug() << "CustomPopupComboBox::showPopup" << this->width() << " " << this->popup()->maximumWidth() << this->popup()->width();
-            if (this->popup()->sizePolicy().horizontalPolicy() != QSizePolicy::Fixed)
-            {
-                this->popup()->setMaximumWidth(this->width());
-                this->popup()->resize(this->width(), popup()->height());
-            }
-
-            qDebug() << "CustomPopupComboBox::showPopup" << this->width() << " " << this->popup()->maximumWidth() << this->popup()->width();
+//            if (this->popup()->sizePolicy().horizontalPolicy() != QSizePolicy::Fixed)
+//            {
+//                this->popup()->setMaximumWidth(this->width());
+//                this->popup()->resize(this->width(), popup()->height());
+//            }
 
         }
         m_popup->show();
