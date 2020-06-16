@@ -535,8 +535,11 @@ QNetworkReply * DapSession::authorizeByKeyRequest(const QString& a_serial, const
 QNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const QByteArray& a_signed, const QString& a_domain,
                                               const QString& a_pkey) {
     m_userInform.clear();
-    QByteArray bData = QString(a_serial + " ").toLocal8Bit() + a_signed.toBase64() + QString(" " + a_domain + " " + a_pkey).toLocal8Bit();
-
+    char *buf64 = DAP_NEW_Z_SIZE(char, a_signed.size() * 2 + 6);
+    size_t buf64len = dap_enc_base64_encode(a_signed.data(), a_signed.size(), buf64, DAP_ENC_DATA_TYPE_B64_URLSAFE);
+    QByteArray a_signedB64(buf64, buf64len);
+    QByteArray bData = QString(a_serial + " ").toLocal8Bit() + a_signedB64 + QString(" " + a_domain + " " + a_pkey).toLocal8Bit();
+    DAP_DELETE(buf64);
     m_netAuthorizeReply =  encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()));
     if(m_netAuthorizeReply == Q_NULLPTR) {
         qCritical() << "Can't send key activation request";
