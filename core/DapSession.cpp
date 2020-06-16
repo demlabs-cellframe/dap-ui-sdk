@@ -414,7 +414,6 @@ void DapSession::onAuthorize()
             m_xmlStreamReader.skipCurrentElement();
         }
     }
-
     emit authorized(m_cookie);
     if(!isCookie) {
         //m_cookie.clear();
@@ -430,7 +429,6 @@ void DapSession::preserveCDBSession() {
     m_CDBport = m_upstreamPort;
     //todo: save cookie too
 }
-
 /**
  * @brief DapSession::onLogout
  */

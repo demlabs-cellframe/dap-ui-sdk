@@ -4,7 +4,8 @@ SOURCES += \
     $$PWD/ComboBoxPopup.cpp \
     $$PWD/CustomLicenseLineEdit.cpp \
     $$PWD/ScreenComboBox.cpp \
-    $$PWD/ScreenComboBoxPopup.cpp
+    $$PWD/ScreenComboBoxPopup.cpp \
+    $$PWD/SerialRemovalConfirmationMessage.cpp
 
 
 HEADERS  += \
@@ -13,7 +14,8 @@ HEADERS  += \
     $$PWD/ComboBoxPopup.h \
     $$PWD/CustomLicenseLineEdit.h \
     $$PWD/ScreenComboBox.h \
-    $$PWD/ScreenComboBoxPopup.h
+    $$PWD/ScreenComboBoxPopup.h \
+    $$PWD/SerialRemovalConfirmationMessage.h
 
 
 android {
