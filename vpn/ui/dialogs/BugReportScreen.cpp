@@ -21,12 +21,24 @@ QString BugReportScreen::screenName()
 void BugReportScreen::setEmail(const QString &a_email)
 {
     setChildProperties(EDT_EMAIL, "text", a_email);
+    for(int i=0;i<a_email.size(); i++){
+        if(a_email[i].isLower())
+            a_email[i].toUpper();
+        else
+            a_email[i].toLower();
+    }
     m_email = a_email;
 }
 
 void BugReportScreen::setReport(const QString &a_report)
 {
     setChildProperties(EDT_MESSAGE, "text", a_report);
+    for(int i=0;i<a_report.size(); i++){
+        if(a_report[i].isLower())
+            a_report[i].toUpper();
+        else
+            a_report[i].toLower();
+    }
     m_report_message = a_report;
 }
 
