@@ -74,9 +74,9 @@ void DapCmdStates::userHandler(const QString& state)
 
 void DapCmdStates::serverChangedHandler(const QString& state)
 {
-    if(state == "ServerNotChanged") {
+    if(state == "ServerChanged") {
         emit sigServerChanged();
-    } else if(state == "ServerChanged") {
+    } else if(state == "ServerNotChanged") {
         emit sigServerNotChanged();
     } else {
         qCritical() << "Unknown server changed state";

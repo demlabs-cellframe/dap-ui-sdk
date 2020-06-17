@@ -67,7 +67,6 @@ public:
     QList<QString> usersNames()          { return m_userInform.keys();     }
     const QString userInfo
           (const QString & user_name)    { return m_userInform[user_name]; }
-
     void setDapUri(const QString& addr, const uint16_t port);
     void clearCredentials();
     void preserveCDBSession();
@@ -77,6 +76,10 @@ public slots:
     /* QNetworkReply does not need to be cleared. It's do DapConnectClient */
     QNetworkReply * encryptInitRequest();
     QNetworkReply * authorizeRequest(const QString& a_user, const QString& a_password,
+                                     const QString& a_domain = QString(), const QString& a_pkey = QString() );
+    QNetworkReply * authorizeByKeyRequest(const QString& a_serial = QString(),
+                                     const QString& a_domain = QString(), const QString& a_pkey = QString() );
+    QNetworkReply * activateKeyRequest(const QString& a_serial = QString(), const QByteArray& a_signed = QByteArray(),
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
     QNetworkReply * logoutRequest();
     QNetworkReply * streamOpenRequest(const QString& subUrl, const QString& query);
@@ -90,7 +93,6 @@ protected:
 
     quint16 m_upstreamPort, m_CDBport;
     QString m_upstreamAddress, m_CDBaddress, m_user;
-
     // HTTP header fields
     QString m_cookie, m_sessionKeyID, m_userAgent, m_sessionKeyID_CDB;
 
@@ -107,13 +109,25 @@ protected:
     QNetworkReply* encRequest(const QString& reqData,const QString& url,
                               const QString& subUrl,const QString& query, bool isCDB);
 
+    QNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url,
+                                 const QString& subUrl, const QString& query);
+
     QNetworkReply* encRequest(const QString& reqData, const QString& url, const QString& subUrl,
                                const QString& query, QObject* obj, const char* slot, bool isCDB);
+
+    QNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url, const QString& subUrl,
+                               const QString& query, QObject* obj, const char* slot);
 
     QNetworkReply* encRequest(const QString& reqData, const QString& url,
                     const QString& subUrl, const QString& query, const char* slot, bool isCDB = false)
     {
         return encRequest(reqData, url, subUrl, query, this, slot, isCDB);
+    }
+
+    QNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url,
+                    const QString& subUrl, const QString& query, const char* slot)
+    {
+        return encRequestRaw(bData, url, subUrl, query, this, slot);
     }
 
     void fillSessionHttpHeaders(HttpHeaders& headers, bool isCDBSession = false) const;
@@ -126,6 +140,7 @@ private slots:
     void onEnc();
     void errorSlt(QNetworkReply::NetworkError);
     void onAuthorize();
+    void onKeyActivated();
     void onLogout();
 signals:
     void pubKeyRequested();
@@ -137,13 +152,15 @@ signals:
     void serverResponseError(const QString& msg);
 
     void errorAuthorization(const QString &);
-
+    void activateKey();
     void errorNetwork(const QString&);
 
     void authRequested();
+    void keyActRequested();
+    void repeatAuth();
     void authorized(const QString &);
     void onAuthorized();
-    //void usrDataChanged(const QString &addr, ushort port);
+    void usrDataChanged(const QString &addr, ushort port);
     void logoutRequested();
     void logouted();
 };

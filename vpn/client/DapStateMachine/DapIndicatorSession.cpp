@@ -30,7 +30,10 @@ void DapIndicatorSession::init(QStateMachine &sm, const QString& stateName)
                                        _falseToTrue);
     streamCtlRequested  = new DapState(_falseToTrue->name() + "StreamCtlRequested",
                                        _falseToTrue);
-
+    keyActivationRequested = new DapState(_falseToTrue->name() + "KeyActivationRequested",
+                                          _falseToTrue);
+    keyActivated        = new DapState(_falseToTrue->name() + "KeyActivated",
+                                       _falseToTrue);
     // Init true substates
     streamSessionOpened = new DapState(_true->name() + "StreamOpened", _true);
 
@@ -38,7 +41,7 @@ void DapIndicatorSession::init(QStateMachine &sm, const QString& stateName)
     logoutRequested = new DapState(_trueToFalse->name() + "LogoutRequsted",   _trueToFalse);
     unAuthorized = new DapState(_trueToFalse->name() + "UnAuthorized", _trueToFalse, true);
 
-    switchRequested = new DapState(_trueToFalse->name() + "switchRequested", _trueToFalse);
+    //switchRequested = new DapState(_trueToFalse->name() + "switchRequested", _trueToFalse);
 
     initAllowedSubstatesTransitions();
 }
@@ -77,6 +80,10 @@ void DapIndicatorSession::initAllowedSubstatesTransitions()
 
     // _authRequested =>
     addAllowedSubstatesTransitions(authRequested, authorized);
+    addAllowedSubstatesTransitions(authRequested, keyActivationRequested);
+    addAllowedSubstatesTransitions(keyActivationRequested, keyActivated);
+    addAllowedSubstatesTransitions(keyActivated, authRequested);
+    // error processing...
     addAllowedSubstatesTransitions(authRequested, authRequestCanceling);
     addAllowedSubstatesTransitions(authRequested, authRequestError);
 
@@ -100,9 +107,10 @@ void DapIndicatorSession::initAllowedSubstatesTransitions()
     // _streamSessionOpened =>
     addAllowedSubstatesTransitions(streamSessionOpened, logoutRequested);
     addAllowedSubstatesTransitions(streamSessionOpened, unAuthorized);
+    addAllowedSubstatesTransitions(streamSessionOpened, handshakeRequested);
 
-    addAllowedSubstatesTransitions(streamSessionOpened, switchRequested);
-    addAllowedSubstatesTransitions(switchRequested, handshakeRequested);
+    //addAllowedSubstatesTransitions(streamSessionOpened, switchRequested);
+    //addAllowedSubstatesTransitions(switchRequested, handshakeRequested);
 
     // TrueToFalse =>
     addAllowedSubstatesTransitions(logoutRequested, logoutError);

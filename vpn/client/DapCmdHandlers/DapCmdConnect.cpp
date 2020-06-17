@@ -63,6 +63,7 @@ void DapCmdConnect::handle(const QJsonObject* params) {
         {"password", QJsonValue::Undefined },
         {"port", QJsonValue::Undefined },
         {"user", QJsonValue::Undefined },
+        {"serial", QJsonValue::Undefined }
     };
 
     for(auto &k: mandatoryConnParams.keys()) {
@@ -71,13 +72,16 @@ void DapCmdConnect::handle(const QJsonObject* params) {
             mandatoryConnParams[k] = val;
         }
     }
-    
+
     if ( mandatoryConnParams["port"] != QJsonValue::Undefined  && mandatoryConnParams["address"] != QJsonValue::Undefined ){
         if ( mandatoryConnParams["address"] != QJsonValue::Undefined /* && mandatoryConnParams["password"] != QJsonValue::Undefined */)
-            emit sigConnect(mandatoryConnParams["user"].toString(),
-                            mandatoryConnParams["password"].toString(),
-                            mandatoryConnParams["address"].toString(),
-                            uint16_t(mandatoryConnParams["port"].toInt()));
+
+                emit sigConnect(mandatoryConnParams["serial"].toString(),
+                                mandatoryConnParams["user"].toString(),
+                                mandatoryConnParams["password"].toString(),
+                                mandatoryConnParams["address"].toString(),
+                                uint16_t(mandatoryConnParams["port"].toInt()));
+
         else
             emit sigConnectNoAuth( mandatoryConnParams["address"].toString(),
                              uint16_t(mandatoryConnParams["port"].toInt()));
