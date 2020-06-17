@@ -424,7 +424,6 @@ void DapSession::onAuthorize()
             m_xmlStreamReader.skipCurrentElement();
         }
     }
-
     if (!isAuth) {
         emit errorAuthorization("Authorization error");
     }
@@ -443,7 +442,6 @@ void DapSession::preserveCDBSession() {
     m_CDBport = m_upstreamPort;
     //todo: save cookie too
 }
-
 /**
  * @brief DapSession::onLogout
  */
