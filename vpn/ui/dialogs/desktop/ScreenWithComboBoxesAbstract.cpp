@@ -34,5 +34,10 @@ void ScreenWithComboBoxesAbstract::setComboBoxPopupScreen(ComboBoxPopupScreen* a
             popup->setParent(a_popupScreen);
             popup->setWindowType(Qt::Desktop);
             connect(a_popupScreen, SIGNAL(hidden()), popup, SLOT(allowClosingAndHide()));
+            connect(a_popupScreen, &ComboBoxPopupScreen::resized, [popup] (const QSize &a_size)
+            {
+                popup->resize(a_size);
+            });
         }
+
 }

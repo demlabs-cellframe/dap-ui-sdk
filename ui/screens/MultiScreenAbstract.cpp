@@ -32,6 +32,22 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 MultiScreenAbstract::MultiScreenAbstract(QWidget *parent)
     :AdaptiveScreen(parent)
 {
+    connect(this, SIGNAL(animationFinished()), SLOT(afterAnimationScreensRemoval()));
+}
+
+void MultiScreenAbstract::removeSubscreen(AdaptiveScreen *a_screen)
+{
+    MultiScreenAbstract *parentScreen = MultiScreenAbstract::parentMultiscreen(a_screen);
+    parentScreen->changingWidget()->removeWidget(a_screen);
+    parentScreen->m_screens.remove(a_screen->screenName(), a_screen);
+    parentScreen->m_screensForRemoval.removeAll(a_screen);
+    delete a_screen;
+}
+
+void MultiScreenAbstract::removeSubscreenAfterAnimationFinished(AdaptiveScreen* a_screen)
+{
+    if (a_screen && !m_screensForRemoval.contains(a_screen))
+        this->m_screensForRemoval.append(a_screen);
 }
 
 AdaptiveScreen *MultiScreenAbstract::activeScreen()
@@ -116,5 +132,13 @@ void MultiScreenAbstract::initChangingWidget(QWidget *a_widget /*= nullptr*/)
     connect(m_wgtChangingWidget, &AnimationChangingWidget::animationFinished, [=]{
         emit animationFinished();
     });
+}
+
+void MultiScreenAbstract::afterAnimationScreensRemoval()
+{
+    while (!m_screensForRemoval.isEmpty())
+    {
+        this->removeSubscreen(m_screensForRemoval.first());
+    }
 }
 

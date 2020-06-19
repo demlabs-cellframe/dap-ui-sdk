@@ -29,7 +29,6 @@ protected:
 
 #ifndef ANDROID
 protected:
-    virtual void showEvent(QShowEvent *event) override;
     virtual void setVisible(bool a_visible) override;
 
 public slots:
