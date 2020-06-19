@@ -77,7 +77,7 @@ public slots:
     /* Request to server */
     /* QNetworkReply does not need to be cleared. It's do DapConnectClient */
     QNetworkReply * encryptInitRequest();
-    QNetworkReply * sendBugReport(QString pathToFile, QString email, QString message);
+    QNetworkReply * sendBugReport(QString dataBugReport, QString email, QString message);
     QNetworkReply * authorizeRequest(const QString& a_user, const QString& a_password,
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
     QNetworkReply * logoutRequest();
@@ -130,6 +130,7 @@ private slots:
     void errorSlt(QNetworkReply::NetworkError);
     void onAuthorize();
     void onLogout();
+    void answerBugReport();
 signals:
     void pubKeyRequested();
     void pubKeyServerRecived();
@@ -149,6 +150,8 @@ signals:
     //void usrDataChanged(const QString &addr, ushort port);
     void logoutRequested();
     void logouted();
+
+    void receivedBugReportNumber(const QString& bugReportNumber);
 };
 
 

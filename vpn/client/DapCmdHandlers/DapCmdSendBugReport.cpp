@@ -16,6 +16,12 @@ void DapCmdSendBugReport::handle(const QJsonObject *params)
 {
     Q_UNUSED(params);
 
+    connect(this, &DapCmdSendBugReport::sigSendCmdBugReportNumber, [=](const QString& number){
+        QJsonObject obj;
+        obj["bugreport_number"] = number;
+        sendCmd(&obj);
+    });
+
     QString email = params->value("email").toString();
     QString message = params->value("message").toString();
 

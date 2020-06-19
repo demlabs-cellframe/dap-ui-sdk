@@ -3,6 +3,7 @@ QT += core network xml
 #INCLUDEPATH += ../libdap-crypto/include  ../libdap-crypto/src
 
 SOURCES += \
+    $$PWD/DapBugReport.cpp \
     $$PWD/DapDataLocal.cpp \
     $$PWD/DapLogHandler.cpp \
     $$PWD/DapSession.cpp \
@@ -18,6 +19,7 @@ SOURCES += \
     $$PWD/DapSendBugReport.cpp
 
 HEADERS += \
+    $$PWD/DapBugReport.h \
     $$PWD/DapDataLocal.h \
     $$PWD/DapLogHandler.h \
     $$PWD/DapSession.h \

@@ -127,23 +127,12 @@ QNetworkReply* DapSession::encryptInitRequest()
     return requestServerPublicKey();
 }
 
-QNetworkReply* DapSession::sendBugReport(QString pathToFile, QString email, QString message){
+QNetworkReply* DapSession::sendBugReport(QString dataBugReport, QString email, QString message){
 
-    QString strData = "file_not_sent";
-    QByteArray data;
-    QFile bugReportFile(pathToFile);
 
-    if(bugReportFile.open(QIODevice::ReadOnly)){
+   QString reqData = dataBugReport + "::" + email + "::" + message;
 
-        QByteArray data = bugReportFile.readAll();
-
-        QTextStream in(&bugReportFile);
-        strData = in.readAll();
-    }
-
-    strData +=  "::" + email + "::" + message;
-    data += strData; //may be
-
+   m_netSendBugReportReply = encRequest("", URL_BUG_REPORT, "", reqData, SLOT(answerBugReport()));
 
    //m_netSendBugReportReply = encRequest(reqData, URL_BUG_REPORT, "", "sendbugreport", true);
     // m_netSendBugReportReply =  _buildNetworkReplyReq(URL_BUG_REPORT, &data, true);
@@ -411,6 +400,16 @@ void DapSession::onLogout()
 {
     qInfo() << "Logouted on the remote server";
     emit logouted();
+}
+
+void DapSession::answerBugReport()
+{
+    qInfo() << "answerBugReport";
+
+    QByteArray arrData;
+    arrData.append(m_netSendBugReportReply->readAll());
+    QString bugReportNumber = "12541125";
+    emit receivedBugReportNumber(bugReportNumber);
 }
 
 void DapSession::clearCredentials()
