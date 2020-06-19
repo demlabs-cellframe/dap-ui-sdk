@@ -8,9 +8,6 @@
 #include <QFileInfo>
 #include <QDir>
 
-#include "DapSession.h"
-#include "DapDataLocal.h"
-
 class DapSendBugReport
 {
 public:
@@ -20,8 +17,11 @@ public:
     QString sendBugReport(QString email, QString message);
     bool runScriptPackaging(QString path);
     QString retLastModifyFile(QString path);
-    DapSession *m_session;
-    QNetworkReply * m_network_reply = Q_NULLPTR;
+    //DapSession *m_session;
+   // QNetworkReply * m_network_reply = Q_NULLPTR;
+
+signals:
+   // void sendingBugReportRequest(QString email, QString message);
 
 };
 

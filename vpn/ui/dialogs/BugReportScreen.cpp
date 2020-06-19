@@ -84,7 +84,7 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
             emit this->reportEdited(edtMessage->toPlainText());
             Utils::setPropertyAndUpdateStyle(edtMessage, Properties::WRONG, false);
         });
-    connect(this, &BugReportScreen::sendReportRequest, [=](){
+    connect(this, &BugReportScreen::sendingBugReportRequest, [=](){
         edtEmail->setVisible(false);
         edtMessage->setVisible(false);
         lblStatusMessage->setVisible(true);
@@ -164,6 +164,6 @@ void BugReportScreen::checkFieldsAndSendReport()
 
     qDebug() << "checkFieldsAndSendReport" << emailIsValid << reportIsValid;
     if (emailIsValid && reportIsValid)
-        emit this->sendReportRequest(m_email, m_report_message);
+        emit this->sendingBugReportRequest(m_email, m_report_message);
 }
 

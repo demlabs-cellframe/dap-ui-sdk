@@ -17,9 +17,10 @@ QString DapSendBugReport::sendBugReport(QString email, QString message){
         //run script for windows
 #endif
 
-    m_network_reply = m_session->sendBugReport(pathToFile, email, message);
-    QString reply = m_network_reply->readAll();
-    return reply;
+        //emit sendingBugReportRequest(email, message);
+   // m_network_reply = m_session->sendBugReport(pathToFile, email, message);
+   // QString reply = m_network_reply->readAll();
+    //return reply;
 }
 
 

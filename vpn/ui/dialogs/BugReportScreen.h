@@ -36,7 +36,7 @@ public slots:
     void checkFieldsAndSendReport();
 
 signals:
-    void sendReportRequest(const QString &a_email, const QString &a_message);
+    void sendingBugReportRequest(const QString &a_email, const QString &a_message);
     void goBack();
 
     void wrongEmail();

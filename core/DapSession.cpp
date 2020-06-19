@@ -146,7 +146,7 @@ QNetworkReply* DapSession::sendBugReport(QString pathToFile, QString email, QStr
 
 
    //m_netSendBugReportReply = encRequest(reqData, URL_BUG_REPORT, "", "sendbugreport", true);
-     m_netSendBugReportReply =  _buildNetworkReplyReq(URL_BUG_REPORT, &data, true);
+    // m_netSendBugReportReply =  _buildNetworkReplyReq(URL_BUG_REPORT, &data, true);
 
      //QString temp = m_netSendBugReportReply->readAll();
      return m_netSendBugReportReply;
