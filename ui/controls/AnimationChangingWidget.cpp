@@ -1,4 +1,5 @@
 #include "AnimationChangingWidget.h"
+#include <QDebug>
 
 class QLayout;
 
@@ -23,10 +24,9 @@ AnimationChangingWidget::AnimationChangingWidget(QWidget *a_parent) :
     //Animation setup
     m_animation.setDuration(100);
     m_animation.setEasingCurve(QEasingCurve::OutCirc);
-    //Emit animationFinished when animation has reached the end.
-    connect(&m_animation, &QAbstractAnimation::finished, [=]{
-       emit animationFinished();
-    });
+
+    connect(&m_animation, SIGNAL(finished()), this, SIGNAL(animationFinished()));
+    connect(this, SIGNAL(animationFinished()), SLOT(hideUnactiveWidgets()));
 }
 
 /**
@@ -49,10 +49,11 @@ void AnimationChangingWidget::removeWidget(int a_index)
 void AnimationChangingWidget::removeWidget(QWidget *a_widget)
 {
     // Remove and hide:
+    if(this->indexOf(a_widget) < m_currentIndex)
+        m_currentIndex--;
+
     m_ltWidgetPlacement.removeWidget(a_widget);
     a_widget->hide();
-
-    updateWidgetSize();
 }
 
 /**
@@ -64,6 +65,7 @@ int AnimationChangingWidget::indexOf(QWidget *a_widget)
 {
     return m_ltWidgetPlacement.indexOf(a_widget);
 }
+
 
 /**
  * @brief Count of widgets
@@ -81,10 +83,10 @@ int AnimationChangingWidget::count() const
 void AnimationChangingWidget::insertWidget(int a_index, QWidget *a_widget)
 {
     m_ltWidgetPlacement.insertWidget(a_index, a_widget);
+    if (a_index >=0 && a_index <= this->currentIndex())
+        m_currentIndex++;
 
-    updateWidgetSize();
-
-    a_widget->show();
+    a_widget->hide();
 }
 
 /**
@@ -107,25 +109,29 @@ void AnimationChangingWidget::setCurrentWidget(QWidget *a_widget)
 void AnimationChangingWidget::setCurrentIndex(int a_index)
 {
     //Q_ASSERT_X((a_index <= (count()-1)), "setCurrentIndex", "Index doesn't exist");
-
     if (m_currentIndex == a_index)
         return;
-    m_currentIndex = a_index;
+    bool animationIsNeeded = (this->currentIndex() != -1); // if no index was current, animation is not needed
 
-    // Animation setup and start:
-    m_animation.setStartValue(m_widget.pos());
-    m_animation.setEndValue(QPoint(-(width() * a_index), 0));
-    m_animation.start();
+    this->widgetAt(a_index)->show();
+    this->updateWidgetSize();
+
+    if (animationIsNeeded)
+    {
+        // Animation setup and start:
+        m_animation.setStartValue(m_widget.pos());
+
+        QPoint endPos = -this->widgetPosition(a_index);
+        m_animation.setEndValue(endPos);
+
+        m_animation.start();
+    }
+    m_currentIndex = a_index;
 }
 
 QWidget *AnimationChangingWidget::currentWidget()
 {
-    QLayoutItem* currentItem = m_ltWidgetPlacement.itemAt(this->currentIndex());
-
-    if (!currentItem)
-        return nullptr;
-
-    return currentItem->widget();
+    return this->widgetAt(this->currentIndex());
 }
 
 /**
@@ -142,7 +148,34 @@ int AnimationChangingWidget::currentIndex()
  */
 void AnimationChangingWidget::updateWidgetSize()
 {
-    m_widget.resize(width() * count(), height());
+    int countOfVisible = 0;
+    int oneScreenWidth = this->width();
+
+    if (currentIndex() == -1)
+        return m_widget.resize(oneScreenWidth, height()); ;
+
+    for (int i = 0; i < this->count(); i++)
+    {
+        if (i == this->currentIndex())
+        {
+            int xPos = -countOfVisible * oneScreenWidth; //countOfVisible - count of visible screens placed to the left of current screen.
+            m_widget.move(QPoint(xPos, 0));
+        }
+
+        if (this->widgetAt(i) && this->widgetAt(i)->isVisible())
+            countOfVisible++;
+    }
+    m_widget.resize(oneScreenWidth * countOfVisible, height());
+}
+
+void AnimationChangingWidget::hideUnactiveWidgets()
+{
+    for (int i = 0; i < this->count(); i++)
+    {
+        if (i != this->currentIndex())
+            this->widgetAt(i)->hide();
+    }
+    this->updateWidgetSize();
 }
 
 /**
@@ -164,4 +197,32 @@ void AnimationChangingWidget::replaceWidget(int a_index, QWidget *a_widget)
     // If a_widget exist and is the same do nothing
 }
 
+/**
+ * @brief Return widget from layout placed at a_index
+ * @param a_index Index of widget that will be returned
+ * @return QWidget at a_index
+ */
+QWidget *AnimationChangingWidget::widgetAt(int a_index)
+{
+    QLayoutItem* layoutItem = m_ltWidgetPlacement.itemAt(a_index);
+    if (!layoutItem)
+        return nullptr;
+
+    return layoutItem->widget();
+}
+
+/**
+ * @brief Return widget with index a_index position if its existed
+ * @param a_index Index of widget
+ * @return QPoint position of witget with a_index index
+ */
+QPoint AnimationChangingWidget::widgetPosition(int a_index)
+{
+    QWidget* widget = this->widgetAt(a_index);
+
+    if (!widget)
+        return QPoint();
+
+    return widget->pos();
+}
 

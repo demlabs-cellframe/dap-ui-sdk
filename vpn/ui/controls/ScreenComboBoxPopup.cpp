@@ -24,7 +24,6 @@ ScreenComboBoxPopup::ScreenComboBoxPopup(QWidget *a_parent)
     }
 #endif
     this->setChildProperties(LBL_CAPTION_NAME, Properties::VISIBLE, true);
-
 }
 
 void ScreenComboBoxPopup::initVariantUi(QWidget *a_widget)
@@ -33,20 +32,17 @@ void ScreenComboBoxPopup::initVariantUi(QWidget *a_widget)
 }
 
 #ifndef ANDROID
-void ScreenComboBoxPopup::showEvent(QShowEvent *event)
-{
-    m_canBeHidden = false;
-
-    this->CustomComboBoxPopup::showEvent(event);
-}
-
 void ScreenComboBoxPopup::setVisible(bool a_visible)
 {
     if (!a_visible && !m_canBeHidden)
+    {
         emit closingStarted();
+        return;
+    }
+    else if (a_visible)
+        m_canBeHidden = false;
 
-    else
-        this->CustomComboBoxPopup::setVisible(a_visible);
+    this->ComboBoxPopup::setVisible(a_visible);
 }
 
 void ScreenComboBoxPopup::allowClosingAndHide()
