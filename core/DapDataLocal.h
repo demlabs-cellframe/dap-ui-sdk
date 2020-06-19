@@ -86,6 +86,8 @@ public slots:
 
     void setServerName(const QString &serverName);
 
+    void rotateCDBList();
+
 signals:
     /// Signal emitted if login has changed.
     /// @param login Login.
