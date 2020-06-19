@@ -218,6 +218,13 @@ void DapDataLocal::setServerName(const QString &a_serverName)
     qFatal("There is no server with name %s", qPrintable(a_serverName));
 }
 
+void DapDataLocal::rotateCDBList() {
+    if (m_cdbServersList.size() > 1) {
+        auto tmp = m_cdbServersList.takeFirst();
+        m_cdbServersList.push_back(tmp);
+    }
+}
+
 void DapDataLocal::saveSecretString(QString key, QString string){
 
     QSettings settings;
