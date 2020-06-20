@@ -298,8 +298,6 @@ void DapSession::onKeyActivated() {
     QByteArray dByteArr;
     m_dapCrypt->decode(arrData, dByteArr, KeyRoleSession);
 
-    qDebug() << "[Key activation] decoded data: " << dByteArr;
-
     QString op_code = QString::fromLatin1(dByteArr).left(4);
 
     if (op_code == OP_CODE_SERIAL_ACTIVATED) {
@@ -329,8 +327,6 @@ void DapSession::onAuthorize()
 
     QByteArray dByteArr;
     m_dapCrypt->decode(arrData, dByteArr, KeyRoleSession);
-
-    qDebug() << "[DapSession] Decoded data: " << QString::fromLatin1(dByteArr);
 
     QString op_code = QString::fromLatin1(dByteArr).left(4);
 
