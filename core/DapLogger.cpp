@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "dap_common.h"
 #include "DapLogger.h"
+#include "DapDataLocal.h"
 
 DapLogger::DapLogger(QObject *parent, size_t prefix_width)
     : QObject(parent)
@@ -34,6 +35,7 @@ bool DapLogger::setLogFile(const QString& filePath) {
 
 
     qDebug() << "setLogFile: " << filePath;
+    DapDataLocal::me()->setLogFilePath(filePath);
     int i = dap_common_init( DAP_BRAND, filePath.toLatin1().data()) ;
     return i == 0;
 }

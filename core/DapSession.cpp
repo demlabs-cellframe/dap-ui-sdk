@@ -127,18 +127,12 @@ QNetworkReply* DapSession::encryptInitRequest()
     return requestServerPublicKey();
 }
 
-QNetworkReply* DapSession::sendBugReport(QString dataBugReport, QString email, QString message){
+void DapSession::sendBugReport(QString dataServiceLog, QString dataGuiLog, QString email, QString message){
 
-
-   QString reqData = dataBugReport + "::" + email + "::" + message;
+   QString reqData = dataServiceLog + ":@:" + dataGuiLog + ":@:" + email + ":@:" + message;
 
    m_netSendBugReportReply = encRequest("", URL_BUG_REPORT, "", reqData, SLOT(answerBugReport()));
 
-   //m_netSendBugReportReply = encRequest(reqData, URL_BUG_REPORT, "", "sendbugreport", true);
-    // m_netSendBugReportReply =  _buildNetworkReplyReq(URL_BUG_REPORT, &data, true);
-
-     //QString temp = m_netSendBugReportReply->readAll();
-     return m_netSendBugReportReply;
 }
 
 /**
@@ -405,10 +399,9 @@ void DapSession::onLogout()
 void DapSession::answerBugReport()
 {
     qInfo() << "answerBugReport";
-
     QByteArray arrData;
     arrData.append(m_netSendBugReportReply->readAll());
-    QString bugReportNumber = "12541125";
+    QString bugReportNumber = QString(arrData);
     emit receivedBugReportNumber(bugReportNumber);
 }
 

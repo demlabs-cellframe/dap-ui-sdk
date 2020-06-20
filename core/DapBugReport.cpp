@@ -2,23 +2,30 @@
 
 DapBugReport::DapBugReport()
 {
+    /*
 #ifdef Q_OS_LINUX
     if (runScriptPackaging(QString(":/linux/report.sh")));
         pathToFile = "/opt/%1/bug_reports/" + retLastModifyFile(QString("/opt/%1/bug_reports/").arg(DapDataLocal::me()->getBrandName()));
 
 #elif defined (Q_OS_WIN)
-    int df = 3;
+    pathToFile = DapDataLocal::me()->getLogFilePath();//= "C:/Users/Public/Documents/" DAP_BRAND "/log/" DAP_BRAND "Service.log";
         //run script for windows
 #endif
+*/
+    logService = DapDataLocal::me()->getLogFilePath();
+    logGui = QString(DapDataLocal::me()->getLogFilePath()).replace("Service", "GUI");
 
-    QFile bugReportFile(pathToFile);
-    if(bugReportFile.open(QIODevice::ReadOnly)){
+    QFile bugReportFileService(logService);
+    if(bugReportFileService.open(QIODevice::ReadOnly)){
+        QTextStream in(&bugReportFileService);
+        logService = in.readAll();
+    } else {logService = "file_missing";}
 
-        dataBugReportByteArray = bugReportFile.readAll();
-
-        QTextStream in(&bugReportFile);
-        dataBugReportString = in.readAll();
-    }
+    QFile bugReportFileGui(logGui);
+    if(bugReportFileGui.open(QIODevice::ReadOnly)){
+        QTextStream in(&bugReportFileGui);
+        logGui = in.readAll();
+    } else {logGui = "file_missing";}
 }
 
 bool DapBugReport::runScriptPackaging(QString path){

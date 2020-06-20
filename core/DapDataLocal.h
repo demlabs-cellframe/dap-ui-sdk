@@ -25,6 +25,7 @@ protected:
     QString     m_networkDefault;
     QString     m_brandName;
     QString     urlSignUp;
+    QString     logFilePath;
 
 public:
     using picturesMap = QMap<DapServerLocation, QString>;
@@ -43,6 +44,9 @@ public:
     QString locationToIconPath(DapServerLocation loc);
 
     QString login() const;
+
+    void setLogFilePath(QString path){logFilePath = path;}
+    QString getLogFilePath(){return logFilePath;}
 public slots:
     void setCurrentServer(int a_serverIndex);
     void setCurrentServer(DapServerInfo* a_server);

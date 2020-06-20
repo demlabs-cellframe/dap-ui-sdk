@@ -7,21 +7,19 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>
+#include "DapDataLocal.h"
 
 class DapBugReport
 {
 public:
     DapBugReport();
 
-    QByteArray getDataBugReportByteArr(){return dataBugReportByteArray;}
-    QString getDataBugReportStr(){return dataBugReportString;}
-    QString getPuthToFile(){return pathToFile;}
+    QString getDataLogService(){return logService;}
+    QString getDataLogGui(){return logGui;}
 
 private:
-    QByteArray dataBugReportByteArray;
-    QString dataBugReportString = "file_missing";
-    QString pathToFile = "";
-
+    QString logService = "";
+    QString logGui = "";
 
     bool runScriptPackaging(QString path);
     QString retLastModifyFile(QString path);
