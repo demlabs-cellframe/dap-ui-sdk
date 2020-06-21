@@ -86,7 +86,8 @@ void DapIndicatorSession::initAllowedSubstatesTransitions()
     // error processing...
     addAllowedSubstatesTransitions(authRequested, authRequestCanceling);
     addAllowedSubstatesTransitions(authRequested, authRequestError);
-
+    addAllowedSubstatesTransitions(keyActivationRequested, authRequestError);
+    addAllowedSubstatesTransitions(keyActivated, authRequestError);
     // _authorized =>
     addAllowedSubstatesTransitions(authorized, authCanceling);
     addAllowedSubstatesTransitions(authorized, handshakeRequested);

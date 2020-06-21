@@ -297,13 +297,16 @@ void DapSession::onKeyActivated() {
     }
     QByteArray dByteArr;
     m_dapCrypt->decode(arrData, dByteArr, KeyRoleSession);
-    if (QString::fromLatin1(dByteArr) == OP_CODE_LOGIN_INACTIVE) {
-        emit errorAuthorization("Serial key was not activated");
-        return;
-    } else if (QString::fromLatin1(dByteArr) == OP_CODE_SERIAL_ACTIVATED) {
+
+    QString op_code = QString::fromLatin1(dByteArr).left(4);
+
+    if (op_code == OP_CODE_SERIAL_ACTIVATED) {
         qInfo() << "Serial key activated, try to authorize";
-        // request auth again
         emit repeatAuth();
+        return;
+    }
+    else {
+        emit errorAuthorization("Serial key was not activated");
         return;
     }
 }
@@ -324,8 +327,6 @@ void DapSession::onAuthorize()
 
     QByteArray dByteArr;
     m_dapCrypt->decode(arrData, dByteArr, KeyRoleSession);
-
-    qDebug() << "[DapSession] Decoded data: " << QString::fromLatin1(dByteArr);
 
     QString op_code = QString::fromLatin1(dByteArr).left(4);
 
