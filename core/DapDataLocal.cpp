@@ -31,6 +31,22 @@ DapDataLocal::DapDataLocal()
 {
     qDebug() << "[DL] DapDataLocal Constructor";
     parseXML(":/data.xml");
+
+
+    QString serial = getSecretString(TEXT_SERIAL_KEY);
+    if(!serial.isEmpty())
+    {
+        setSerialKey(serial);
+    }
+
+    QString username = getSecretString(TEXT_LOGIN);
+    QString password = getSecretString(TEXT_PASSWORD);
+    if(!username.isEmpty() && !password.isEmpty())
+    {
+        setLogin(username);
+        setPassword(password);
+    }
+
 }
 
 void DapDataLocal::parseXML(const QString& a_fname)
@@ -194,7 +210,18 @@ void DapDataLocal::setPassword(const QString &password)
     mPassword = password;
     emit passwordChanged(mPassword);
 }
+/// Set serial key.
+/// @param serial serial key.
+void DapDataLocal::setSerialKey(const QString &a_serialKey)
+{
+    mSerialKey = a_serialKey;
+    emit serialChanged(mSerialKey);
+}
 
+QString DapDataLocal::serialKey() const
+{
+    return mSerialKey;
+}
 /// Get server name.
 /// @return Server name.
 QString DapDataLocal::currentServerName() const
@@ -330,12 +357,3 @@ QString DapDataLocal::locationToIconPath(DapServerLocation loc)
     return locPath;
 }
 
-void DapDataLocal::setSerialKey(const QString &a_serialKey)
-{
-    mSerialKey = a_serialKey;
-}
-
-QString DapDataLocal::serialKey() const
-{
-    return mSerialKey;
-}

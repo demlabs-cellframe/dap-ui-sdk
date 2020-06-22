@@ -74,6 +74,10 @@ public:
     void saveSecretString(QString, QString);
     QString getSecretString(QString);
 
+    const QString TEXT_SERIAL_KEY   = "serialkey";
+    const QString TEXT_LOGIN        = "login";
+    const QString TEXT_PASSWORD     = "password";
+
 public slots:
     void setCurrentServer(int a_serverIndex);
     void setCurrentServer(DapServerInfo* a_server);
@@ -95,6 +99,9 @@ signals:
     /// Signal emitted if password has changed.
     /// @param password Password.
     void passwordChanged(const QString& password);
+    /// Signal emitted if password has changed.
+    /// @param password Password.
+    void serialChanged(const QString& serial);
     /// Signal emitted if server name has changed.
     /// @param serverName Server name.
     void serverNameChanged(const QString& serverName);
