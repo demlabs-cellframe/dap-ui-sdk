@@ -28,16 +28,7 @@ class DapDataLocal : public QObject
     bool initSecretKey();
     QString getRandomString(int);
     DapServerInfo* m_currentServer = nullptr;
-protected:
-    QString     mLogin;      ///< Login.
-    QString     mPassword;   ///< Password.
-    QString     mServerName; ///< Server name.
 
-    QString     mSerialKey;  ///< Serial key.
-
-    QList<QString> m_cdbServersList;
-    QString     m_networkDefault;
-    QString urlSignUp;
 
 public:
     using picturesMap = QMap<DapServerLocation, QString>;
@@ -74,17 +65,22 @@ public:
     void saveSecretString(QString, QString);
     QString getSecretString(QString);
 
+    const QString TEXT_SERIAL_KEY   = "serialkey";
+    const QString TEXT_LOGIN        = "login";
+    const QString TEXT_PASSWORD     = "password";
+
 public slots:
     void setCurrentServer(int a_serverIndex);
     void setCurrentServer(DapServerInfo* a_server);
 
-    void setLogin(const QString &login);
+    void setLogin(const QString &a_login);
 
     void setSerialKey(const QString &a_serialKey);
-
     void setPassword(const QString &password);
-
     void setServerName(const QString &serverName);
+
+    void saveAuthorizationDatas();
+
 
     void rotateCDBList();
 
@@ -95,6 +91,9 @@ signals:
     /// Signal emitted if password has changed.
     /// @param password Password.
     void passwordChanged(const QString& password);
+    /// Signal emitted if password has changed.
+    /// @param password Password.
+    void serialKeyChanged(const QString& serial);
     /// Signal emitted if server name has changed.
     /// @param serverName Server name.
     void serverNameChanged(const QString& serverName);
@@ -102,6 +101,21 @@ signals:
     void serverAdded(const DapServerInfo& dsi);
 
     void serversCleared();
+
+
+protected:
+    QString     m_login;      ///< Login.
+    QString     m_password;   ///< Password.
+    QString     m_serverName; ///< Server name.
+
+    QString     m_serialKey;  ///< Serial key.
+
+    QList<QString> m_cdbServersList;
+    QString     m_networkDefault;
+    QString urlSignUp;
+
+private:
+    void loadAuthorizationDatas();
 
 
 };

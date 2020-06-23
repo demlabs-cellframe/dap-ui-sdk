@@ -31,6 +31,8 @@ DapDataLocal::DapDataLocal()
 {
     qDebug() << "[DL] DapDataLocal Constructor";
     parseXML(":/data.xml");
+
+    this->loadAuthorizationDatas();
 }
 
 void DapDataLocal::parseXML(const QString& a_fname)
@@ -169,32 +171,52 @@ void DapDataLocal::setRandomServerIfIsEmpty()
 /// @return Login.
 QString DapDataLocal::login() const
 {
-    return mLogin;
+    return m_login;
 }
 
 /// Set login.
 /// @param login Login.
-void DapDataLocal::setLogin(const QString &login)
+void DapDataLocal::setLogin(const QString &a_login)
 {
-    mLogin = login;
-    emit loginChanged(mLogin);
+    if (this->m_login == a_login)
+        return;
+    m_login = a_login;
+
+    emit loginChanged(m_login);
 }
 
 /// Get password.
 /// @return Password.
 QString DapDataLocal::password() const
 {
-    return mPassword;
+    return m_password;
 }
 
 /// Set password.
 /// @param password Password.
-void DapDataLocal::setPassword(const QString &password)
+void DapDataLocal::setPassword(const QString &a_password)
 {
-    mPassword = password;
-    emit passwordChanged(mPassword);
+    if (this->m_password == a_password)
+        return;
+    this->m_password = a_password;
+
+    emit this->passwordChanged(m_password);
+}
+/// Set serial key.
+/// @param serial serial key.
+void DapDataLocal::setSerialKey(const QString &a_serialKey)
+{
+    if (this->m_serialKey == a_serialKey)
+        return;
+    m_serialKey = a_serialKey;
+
+    emit this->serialKeyChanged(m_serialKey);
 }
 
+QString DapDataLocal::serialKey() const
+{
+    return m_serialKey;
+}
 /// Get server name.
 /// @return Server name.
 QString DapDataLocal::currentServerName() const
@@ -216,6 +238,20 @@ void DapDataLocal::setServerName(const QString &a_serverName)
     }
     
     qFatal("There is no server with name %s", qPrintable(a_serverName));
+}
+
+void DapDataLocal::saveAuthorizationDatas()
+{
+    DapDataLocal::me()->saveSecretString(DapDataLocal::me()->TEXT_LOGIN     , DapDataLocal::me()->serialKey());
+    DapDataLocal::me()->saveSecretString(DapDataLocal::me()->TEXT_PASSWORD  , DapDataLocal::me()->serialKey());
+    DapDataLocal::me()->saveSecretString(DapDataLocal::me()->TEXT_SERIAL_KEY, DapDataLocal::me()->serialKey());
+}
+
+void DapDataLocal::loadAuthorizationDatas()
+{
+    this->setSerialKey(getSecretString(TEXT_SERIAL_KEY));
+    this->setLogin(getSecretString(TEXT_LOGIN));
+    this->setPassword(getSecretString(TEXT_PASSWORD));
 }
 
 void DapDataLocal::rotateCDBList() {
@@ -330,12 +366,3 @@ QString DapDataLocal::locationToIconPath(DapServerLocation loc)
     return locPath;
 }
 
-void DapDataLocal::setSerialKey(const QString &a_serialKey)
-{
-    mSerialKey = a_serialKey;
-}
-
-QString DapDataLocal::serialKey() const
-{
-    return mSerialKey;
-}
