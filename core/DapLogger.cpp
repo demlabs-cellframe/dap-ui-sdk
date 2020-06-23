@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "dap_common.h"
+#include "dap_file_utils.h"
 #include "DapLogger.h"
 
 DapLogger::DapLogger(QObject *parent, size_t prefix_width)
@@ -31,10 +32,13 @@ void DapLogger::setLogLevel(dap_log_level ll) {
 }
 
 bool DapLogger::setLogFile(const QString& filePath) {
-
-
     qDebug() << "setLogFile: " << filePath;
-    int i = dap_common_init( DAP_BRAND, filePath.toLatin1().data()) ;
+    const char* file_path = qPrintable(filePath);
+    char file_dir[strlen(file_path)];
+    memset(file_dir, '\0', strlen(file_path));
+    memcpy(file_dir, file_path, strrchr((file_path), '/') - file_path);
+    dap_mkdir_with_parents(file_dir);
+    int i = dap_common_init(DAP_BRAND, qPrintable(filePath)) ;
     return i == 0;
 }
 
