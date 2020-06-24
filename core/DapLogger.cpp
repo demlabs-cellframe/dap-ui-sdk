@@ -34,15 +34,7 @@ void DapLogger::setLogLevel(dap_log_level ll) {
 }
 
 QString DapLogger::dateForNameLog(){
-
-    QSettings settings("demlabs", DAP_BRAND);
-    QString then = QDateTime::currentDateTime().toString("dd-MM-yyyy");
-
-    if (then != settings.value("date_log", "").toString()){
-        settings.setValue("date_log", then);
-        return then;
-    }
-
+    return QDateTime::currentDateTime().toString("dd-MM-yyyy");
 }
 
 int DapLogger::createLogFolder(QString path){
