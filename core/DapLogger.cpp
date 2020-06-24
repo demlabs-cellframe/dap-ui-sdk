@@ -1,4 +1,6 @@
+#include <QTimer>
 #include <stdio.h>
+#include <QCoreApplication>
 #include "dap_common.h"
 #include "dap_file_utils.h"
 #include "DapLogger.h"
@@ -31,17 +33,70 @@ void DapLogger::setLogLevel(dap_log_level ll) {
     dap_log_level_set(ll);
 }
 
+QString DapLogger::dateForNameLog(){
+
+    QSettings settings("demlabs", DAP_BRAND);
+    QString then = QDateTime::currentDateTime().toString("dd-MM-yyyy");
+
+    if (then != settings.value("date_log", "").toString()){
+        settings.setValue("date_log", then);
+        return then;
+    }
+
+}
+
+int DapLogger::createLogFolder(QString path){
+    dap_mkdir_with_parents(qPrintable(path));
+}
+
+void DapLogger::createChangerLogFiles(){
+
+    auto then = QDateTime::currentDateTime();
+    auto setTime = QTime::fromString("00:00", "hh:mm");
+    if(then.time() > setTime){
+        then = then.addDays(1);
+    }
+    then.setTime(setTime);
+
+    auto diff = QDateTime::currentDateTime().msecsTo(then);
+
+    QTimer::singleShot(diff, [this]{
+        this->updateCurrentLogName();
+        this->setLogFile(QString("%1/%2").arg(pathToLog).arg(currentLogName));
+        this->clearOldLogs();
+        auto t = new QTimer(QCoreApplication::instance());
+        connect(t, &QTimer::timeout, [this]{
+            this->updateCurrentLogName();
+            this->setLogFile(QString("%1/%2").arg(pathToLog).arg(currentLogName));
+            this->clearOldLogs();
+        });
+        t->start(24 * 3600 * 1000);
+    });
+}
+
 bool DapLogger::setLogFile(const QString& filePath) {
     qDebug() << "setLogFile: " << filePath;
-    const char* file_path = qPrintable(filePath);
-    char file_dir[strlen(file_path)];
-    memset(file_dir, '\0', strlen(file_path));
-    memcpy(file_dir, file_path, strrchr((file_path), '/') - file_path);
-    dap_mkdir_with_parents(file_dir);
     int i = dap_common_init(DAP_BRAND, qPrintable(filePath)) ;
     return i == 0;
 }
 
+void DapLogger::clearOldLogs(){
+
+    QDir dir(pathToLog);
+
+    if (!dir.exists()) {
+        qWarning("The directory does not exist");
+        return;
+    }
+
+    QFileInfoList list = dir.entryInfoList();
+    QDateTime deleteDate = QDateTime::currentDateTime().addDays(-3);
+    for (auto file : list){
+        if (file.lastModified() < deleteDate){
+            dir.remove(file.fileName());
+        }
+    }
+}
 
 void DapLogger::messageHandler(QtMsgType type,
                                const QMessageLogContext &ctx,
