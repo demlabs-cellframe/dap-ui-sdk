@@ -31,7 +31,7 @@ public:
     void setPathToLog(QString path){ pathToLog = path; }
     QString getCurrentLogName(){ return currentLogName; }
     void updateCurrentLogName(){
-        currentLogName = QString("%1" + appType + "_" + QDateTime::currentDateTime().toString("dd-MM-yyyy") + ".log").arg(DAP_BRAND); }
+        currentLogName = QString("%1%2_%3.log").arg(DAP_BRAND).arg(appType).arg(QDateTime::currentDateTime().toString("dd-MM-yyyy")); }
     void setAppType(QString type){appType = type;}
     void clearOldLogs();
     static void setLogLevel(dap_log_level ll);
