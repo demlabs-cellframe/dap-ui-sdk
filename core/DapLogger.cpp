@@ -47,8 +47,16 @@ void DapLogger::createChangerLogFiles(){
     then.setTime(setTime);
 
     auto diff = QDateTime::currentDateTime().msecsTo(then);
+    auto t = new QTimer(QCoreApplication::instance());
+    t->start(diff);
+    connect(t, &QTimer::timeout, [&]{
+        t->setInterval(24 * 3600 * 1000);
+        this->updateCurrentLogName();
+        this->setLogFile(QString("%1/%2").arg(pathToLog).arg(currentLogName));
+        this->clearOldLogs();
+    });
 
-    QTimer::singleShot(diff, [&]{
+ /*   QTimer::singleShot(diff, [&]{
         this->updateCurrentLogName();
         this->setLogFile(QString("%1/%2").arg(pathToLog).arg(currentLogName));
         this->clearOldLogs();
@@ -59,7 +67,7 @@ void DapLogger::createChangerLogFiles(){
             this->clearOldLogs();
         });
         t->start(24 * 3600 * 1000);
-    });
+    });*/
 }
 
 bool DapLogger::setLogFile(const QString& filePath) {
