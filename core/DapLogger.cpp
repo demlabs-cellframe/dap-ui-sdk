@@ -1,6 +1,4 @@
-#include <QTimer>
 #include <stdio.h>
-#include <QCoreApplication>
 #include "dap_common.h"
 #include "dap_file_utils.h"
 #include "DapLogger.h"
@@ -47,7 +45,6 @@ void DapLogger::createChangerLogFiles(){
     then.setTime(setTime);
 
     auto diff = QDateTime::currentDateTime().msecsTo(then);
-    auto t = new QTimer(QCoreApplication::instance());
     t->start(diff);
     connect(t, &QTimer::timeout, [&]{
         t->setInterval(24 * 3600 * 1000);
@@ -55,19 +52,6 @@ void DapLogger::createChangerLogFiles(){
         this->setLogFile(QString("%1/%2").arg(pathToLog).arg(currentLogName));
         this->clearOldLogs();
     });
-
- /*   QTimer::singleShot(diff, [&]{
-        this->updateCurrentLogName();
-        this->setLogFile(QString("%1/%2").arg(pathToLog).arg(currentLogName));
-        this->clearOldLogs();
-        auto t = new QTimer(QCoreApplication::instance());
-        connect(t, &QTimer::timeout, [&]{
-            this->updateCurrentLogName();
-            this->setLogFile(QString("%1/%2").arg(pathToLog).arg(currentLogName));
-            this->clearOldLogs();
-        });
-        t->start(24 * 3600 * 1000);
-    });*/
 }
 
 bool DapLogger::setLogFile(const QString& filePath) {

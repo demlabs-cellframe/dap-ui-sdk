@@ -1,12 +1,14 @@
 #ifndef DAPLOGGER_H
 #define DAPLOGGER_H
 
+#include <QCoreApplication>
 #include <QObject>
 #include <QDebug>
 #include <QFile>
 #include <QDateTime>
 #include <QSettings>
 #include <QDir>
+#include <QTimer>
 #include "dap_common.h"
 #include "dap_file_utils.h"
 
@@ -35,6 +37,7 @@ public:
     void clearOldLogs();
     static void setLogLevel(dap_log_level ll);
 private:
+    QTimer *t = new QTimer(QCoreApplication::instance());
     QString pathToLog;
     QString currentLogName;
     QString appType;
