@@ -33,10 +33,6 @@ void DapLogger::setLogLevel(dap_log_level ll) {
     dap_log_level_set(ll);
 }
 
-QString DapLogger::dateForNameLog(){
-    return QDateTime::currentDateTime().toString("dd-MM-yyyy");
-}
-
 int DapLogger::createLogFolder(QString path){
     dap_mkdir_with_parents(qPrintable(path));
 }
@@ -52,12 +48,12 @@ void DapLogger::createChangerLogFiles(){
 
     auto diff = QDateTime::currentDateTime().msecsTo(then);
 
-    QTimer::singleShot(diff, [this]{
+    QTimer::singleShot(diff, [&]{
         this->updateCurrentLogName();
         this->setLogFile(QString("%1/%2").arg(pathToLog).arg(currentLogName));
         this->clearOldLogs();
         auto t = new QTimer(QCoreApplication::instance());
-        connect(t, &QTimer::timeout, [this]{
+        connect(t, &QTimer::timeout, [&]{
             this->updateCurrentLogName();
             this->setLogFile(QString("%1/%2").arg(pathToLog).arg(currentLogName));
             this->clearOldLogs();

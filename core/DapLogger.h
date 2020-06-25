@@ -23,7 +23,6 @@ public:
     // return false if not success
     bool setLogFile(const QString& filePath);
 
-    QString dateForNameLog();
     int createLogFolder(QString path);
     void createChangerLogFiles();
 
