@@ -17,6 +17,16 @@
 #include <QDateTime>
 #include <QTimer>
 #include "ui_MainScreen.h"
+#include "Utilz.h"
+#include "AppStyleSheetHandler.h"
+#include "UiScaling.h"
+#include "ComboBox.h"
+#include <QDebug>
+
+#ifndef ANDROID
+    #include "ScreenComboBox.h"
+#endif
+
 #ifdef ANDROID
     #include <QFrame>
 #else
@@ -33,15 +43,12 @@ class MainScreen : public AdaptiveScreen
 
 #ifndef Q_OS_ANDROID
     QGraphicsScene *m_scene;
-    int m_sceneWidth;
-    int m_sceneHeight;
     Schedules schedules;
 
     /// Graphics styles.
     DapGraphicSceneStyle    mGraphicSceneStyle;
     QGraphicsScene* getScene() {return m_scene;}
-    int getSceneWidth() {return m_sceneWidth;}
-    int getSceneHeight() {return m_sceneHeight;}
+
 #endif
     enum class IndicatorsUnits {Bytes, Packets};
 
@@ -96,7 +103,6 @@ protected:
     /// @param a_w Window GUI widget.
     /// @param a_rotation Device display orientation.
     virtual void initVariantUi(QWidget *a_widget) override;
-
 
     void updateSentRecievedIndicators();
     void updateTimeIndicators();
@@ -167,6 +173,8 @@ private:
 
     ConnectionStates m_state {ConnectionStates::Disconnected};
     QString m_currentServer {};
+
+    QGraphicsView *m_graphicsView = nullptr;
 };
 
 #endif // MAINSCREEN_H

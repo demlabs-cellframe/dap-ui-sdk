@@ -242,8 +242,8 @@ void DapDataLocal::setServerName(const QString &a_serverName)
 
 void DapDataLocal::saveAuthorizationDatas()
 {
-    DapDataLocal::me()->saveSecretString(DapDataLocal::me()->TEXT_LOGIN     , DapDataLocal::me()->serialKey());
-    DapDataLocal::me()->saveSecretString(DapDataLocal::me()->TEXT_PASSWORD  , DapDataLocal::me()->serialKey());
+    DapDataLocal::me()->saveSecretString(DapDataLocal::me()->TEXT_LOGIN     , DapDataLocal::me()->login());
+    DapDataLocal::me()->saveSecretString(DapDataLocal::me()->TEXT_PASSWORD  , DapDataLocal::me()->password());
     DapDataLocal::me()->saveSecretString(DapDataLocal::me()->TEXT_SERIAL_KEY, DapDataLocal::me()->serialKey());
 }
 
