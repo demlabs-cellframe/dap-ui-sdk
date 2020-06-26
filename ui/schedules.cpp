@@ -20,26 +20,41 @@ void Schedules::setStyle(const DapGraphicSceneStyle &style)
     mBackGroundmColorChartUpload = new QColor(convertRGBA(style.value("shChartUpload").value("background-color").toString()));
     mColorGrid = new QColor(convertRGBA(style.value("shGrid").value("color").toString()));
     mDepthGrid = style.value("shGrid").value("depth").toReal();
+    m_horizontLines = style.value("graphicsLines").value("horizontalLines").toInt();
+    m_verticalLines = style.value("graphicsLines").value("verticalLines").toInt();
+    m_sceneWidth = style.value("graphicsLines").value("sceneWidth").toString().split("px")[0].toInt();
+    m_sceneHeight = style.value("graphicsLines").value("sceneHeight").toString().split("px")[0].toInt();
+
 }
 
 void Schedules::addInp(int elem){inp.addElem(elem);}
 void Schedules::addOut(int elem){out.addElem(elem);}
 
-void Schedules::draw_backgraund(QGraphicsScene *scene, int width, int height)
+int Schedules::getWidth()
+{
+    return m_sceneWidth+3;
+}
+
+int Schedules::getHeight()
+{
+    return m_sceneHeight+3;
+}
+
+void Schedules::draw_backgraund(QGraphicsScene *scene)
 {
     QPainterPath path;
 
-    int num_of_lines = 19;
+    int num_of_lines = m_horizontLines;
 
     for (int i = 1; i < num_of_lines; i++){
-        path.moveTo(i*width/num_of_lines, 0);
-        path.lineTo(i*width/num_of_lines, height);
+        path.moveTo(i*m_sceneWidth/num_of_lines, 0);
+        path.lineTo(i*m_sceneWidth/num_of_lines, m_sceneHeight);
     }
 
-    num_of_lines = 8;
+    num_of_lines = m_verticalLines;
     for (int i = 1; i < num_of_lines; i++){
-        path.moveTo(0, i*height/num_of_lines);
-        path.lineTo(width, i*height/num_of_lines);
+        path.moveTo(0, i*m_sceneHeight/num_of_lines);
+        path.lineTo(m_sceneWidth, i*m_sceneHeight/num_of_lines);
     }
     scene->setBackgroundBrush(QBrush(Qt::transparent));
     scene->addPath(path, QPen(QColor(mColorGrid->rgba()), mDepthGrid));
@@ -48,10 +63,10 @@ void Schedules::draw_backgraund(QGraphicsScene *scene, int width, int height)
 int maxInt (int a, int b) {return a > b ? a : b;}
 
 
-void Schedules::draw_chart(QGraphicsScene *scene, int width, int height)
+void Schedules::draw_chart(QGraphicsScene *scene)
 {
     scene->clear();
-    draw_backgraund(scene, width, height);
+    draw_backgraund(scene);
 
     if (out.size() < 2) return;
 
@@ -61,13 +76,13 @@ void Schedules::draw_chart(QGraphicsScene *scene, int width, int height)
         scene,
         QPen(QColor(mColorChartDownload->rgba64()), mDepthChartDownload),
         QColor(mBackGroundmColorChartDownload->rgba64()),
-         width, height, maxValue);
+         m_sceneWidth, m_sceneHeight, maxValue);
     
     out.showChart(
         scene,
         QPen(QColor(mColorChartUpload->rgba()), mDepthChartUpload),
         QColor(mBackGroundmColorChartUpload->rgba64()),
-        width, height, maxValue);
+        m_sceneWidth, m_sceneHeight, maxValue);
 }
 
 /// Convert color in string representation to rgba.

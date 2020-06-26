@@ -32,10 +32,6 @@ public:
 
     void setState(ConnectionStates a_state);
 
-signals:
-    void goToMonthPrice();
-    void goToSixMonthPrice();
-    void goToYearPrice();
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.

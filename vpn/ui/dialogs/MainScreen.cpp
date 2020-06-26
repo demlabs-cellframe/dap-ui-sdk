@@ -1,13 +1,4 @@
 #include "MainScreen.h"
-#include "Utilz.h"
-#include "AppStyleSheetHandler.h"
-#include "UiScaling.h"
-#include "ComboBox.h"
-#include <QDebug>
-
-#ifndef ANDROID
-    #include "ScreenComboBox.h"
-#endif
 
 const QString MainScreen::SCREEN_NAME = "Main";
 
@@ -57,7 +48,7 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     QCheckBox *chbAuthorized    ; Utils::findChild(a_widget, CHB_AUTHORIZED     , chbAuthorized);
     QCheckBox *chbStreamOpened  ; Utils::findChild(a_widget, CHB_STREAM_OPENED  , chbStreamOpened);
     QCheckBox *chbVirtualNetwork; Utils::findChild(a_widget, CHB_VIRTUAL_NETWORK, chbVirtualNetwork);
-    QFrame      *frmStatus      ; Utils::findChild(a_widget, FRM_STATUS         , frmStatus);
+    QFrame    *frmStatus      ; Utils::findChild(a_widget, FRM_STATUS         , frmStatus);
 
 #ifdef Q_OS_ANDROID
     QFrame      *frmConnect     ; Utils::findChild(a_widget, FRM_CONNECT        , frmConnect);
@@ -100,13 +91,8 @@ void MainScreen::initVariantUi(QWidget *a_widget)
 
     // создаём сцену
     m_scene = new QGraphicsScene();
-    QGraphicsView *graphicsView = a_widget->findChild<QGraphicsView*>("graphicsView"); Q_ASSERT(graphicsView);
-    graphicsView->setScene(m_scene);
-
-    m_sceneHeight = UiScaling::pointsToPixels(218);
-    m_sceneWidth  = UiScaling::pointsToPixels(428);
-
-    graphicsView->setSceneRect(0,0,m_sceneWidth-3, m_sceneHeight-3);
+    m_graphicsView = a_widget->findChild<QGraphicsView*>("graphicsView"); Q_ASSERT(m_graphicsView);
+    m_graphicsView->setScene(m_scene);
 
     connect(cbbServer, SIGNAL(activated(const QString &))  , this, SIGNAL(serverChangingRequested(const QString &)));
 
@@ -120,6 +106,7 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     addItemGraphicSceneStyle("shChartDownload",   AppStyleSheetHandler::getWidgetStyleSheet("#shChartDownload", "active"));
     addItemGraphicSceneStyle("shChartUpload",     AppStyleSheetHandler::getWidgetStyleSheet("#shChartUpload"  , "active"));
     addItemGraphicSceneStyle("shGrid",            AppStyleSheetHandler::getWidgetStyleSheet("#shGrid"         , "active"));
+    addItemGraphicSceneStyle("graphicsLines",     AppStyleSheetHandler::getWidgetStyleSheet("#graphicsLines"  , "active"));
 
 #endif
 
@@ -152,9 +139,7 @@ void MainScreen::setSentReceivedIndicators(int a_bytesReceived, int a_bytesSent,
     schedules.addInp(m_bytesReceived);
     schedules.addOut(m_bytesSent);
 
-    schedules.draw_chart(getScene(),
-                         getSceneWidth() - 3,
-                         getSceneHeight() - 3);
+    schedules.draw_chart(getScene());
     getScene()->update();
 #endif
 
@@ -327,6 +312,8 @@ void MainScreen::addItemGraphicSceneStyle(const QString &widget, const QString &
 
     schedules.setStyle(mGraphicSceneStyle);
 }
+
+
 
 /// Delete styles for the graphic element.
 /// @param widget Graphic element.
