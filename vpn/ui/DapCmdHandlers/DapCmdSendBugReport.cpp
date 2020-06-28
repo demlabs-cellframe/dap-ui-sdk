@@ -15,10 +15,10 @@ void DapCmdSendBugReport::sendingBugReportRequest(const QString &email, const QS
 }
 void DapCmdSendBugReport::handleResult(const QJsonObject& result)
 {
-    QString bugReportNumber = result.value("bugreport_number").toString().remove(QRegExp("\\D"));
-    qDebug() << "Bug report number:" << bugReportNumber;
-    if (!bugReportNumber.isEmpty())
-        emit sigBugReportSent(bugReportNumber);
+    QString request = result.value("bugreport_answer").toString();
+    qDebug() << request;
+    if (request.contains("saved successfully", Qt::CaseInsensitive))
+        emit sigBugReportSent(request.remove(QRegExp("\\D")));
     else emit sigBugReportSendingError();
 }
 

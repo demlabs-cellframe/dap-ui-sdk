@@ -5,6 +5,8 @@
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QPushButton>
+#include <QRegExpValidator>
+#include <QMovie>
 
 #include "AdaptiveScreen.h"
 #include "vpnDefine.h"
@@ -60,10 +62,13 @@ protected:
     const QString EDT_MESSAGE           = "edtMessage";
     const QString LBL_CAPTION           = "lblCaption";
     const QString VLT_BUG_REPORT        = "vltBugReport";
+    const QString LBL_GIF_LOADING       = "lblGifLoading";
 
 private:
     QString m_email;
     QString m_report_message;
+
+    QLineEdit *edtEmail;
 
     bool checkEmail();
     bool checkReport();

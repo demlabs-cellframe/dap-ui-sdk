@@ -17,10 +17,7 @@ class DapDataLocal : public QObject
     DapDataLocal();
     const QString ServerListName;
 
-    QList<QString> m_cdbServersList;
-    QString     m_networkDefault;
     QString     m_brandName;
-    QString     urlSignUp;
     QString     logFilePath;
     static DapDataLocal *_me;
     static QMap<DapServerLocation, QString> m_pictruePath;
@@ -55,9 +52,6 @@ public:
 
     void setLogFilePath(QString path){logFilePath = path;}
     QString getLogFilePath(){return logFilePath;}
-public slots:
-    void setCurrentServer(int a_serverIndex);
-    void setCurrentServer(DapServerInfo* a_server);
 
     QString serialKey() const;
 
@@ -81,6 +75,7 @@ public slots:
     const QString TEXT_LOGIN        = "login";
     const QString TEXT_PASSWORD     = "password";
 
+
 public slots:
     void setCurrentServer(int a_serverIndex);
     void setCurrentServer(DapServerInfo* a_server);
@@ -95,7 +90,6 @@ public slots:
 
 
     void rotateCDBList();
-
 signals:
     /// Signal emitted if login has changed.
     /// @param login Login.

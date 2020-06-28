@@ -133,7 +133,7 @@ void DapSession::sendBugReport(QString dataServiceLog, QString dataGuiLog, QStri
 
    QString reqData = dataServiceLog + ":@:" + dataGuiLog + ":@:" + email + ":@:" + message;
 
-   m_netSendBugReportReply = encRequest("", URL_BUG_REPORT, "", reqData, SLOT(answerBugReport()));
+   m_netSendBugReportReply = encRequest(reqData, URL_BUG_REPORT, QString(), QString(), SLOT(answerBugReport()), true);
 
 }
 
