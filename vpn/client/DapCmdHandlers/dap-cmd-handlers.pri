@@ -9,6 +9,7 @@ SOURCES += \
     $$PWD/DapCmdStates.cpp \
     $$PWD/DapCmdStats.cpp \
     $$PWD/DapCmdServersList.cpp \
+    $$PWD/DapCmdServerData.cpp \
     $$PWD/DapCmdAndroidTunnel.cpp
 
 HEADERS += \
@@ -22,6 +23,7 @@ HEADERS += \
     $$PWD/DapCmdStates.h \
     $$PWD/DapCmdStats.h \
     $$PWD/DapCmdServersList.h \
+    $$PWD/DapCmdServerData.h \
     $$PWD/DapCmdAndroidTunnel.h
 
 INCLUDEPATH += $$PWD

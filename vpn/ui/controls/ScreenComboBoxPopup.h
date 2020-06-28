@@ -25,7 +25,10 @@ public:
     explicit ScreenComboBoxPopup(QWidget *a_parent = nullptr);
 
 protected:
-    virtual void showEvent(QShowEvent *event) override;
+    virtual void initVariantUi(QWidget * a_widget) override;
+
+#ifndef ANDROID
+protected:
     virtual void setVisible(bool a_visible) override;
 
 public slots:
@@ -35,10 +38,8 @@ signals:
     void closingStarted();
 
 private:
-    const QString LVW_LIST_NAME    = "lvwList";
-    const QString LBL_CAPTION_NAME = "lblCaption";
-
     bool m_canBeHidden;
+#endif
 };
 
 #endif // SCREENCOMBOBOXPOPUP_H

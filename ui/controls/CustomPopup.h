@@ -26,6 +26,9 @@ public:
     Qt::WindowType windowType() const;
     void setWindowType(Qt::WindowType a_windowType);
 
+public slots:
+    virtual void setVisible(bool a_visible) override;
+
 signals:
     void opened();
     void closed();
@@ -34,9 +37,6 @@ protected:
     virtual void initVariantUi(QWidget * a_widget) override = 0;
 
     virtual void resizeEvent(QResizeEvent *a_event) override;
-
-    virtual void showEvent(QShowEvent *event) override;
-    virtual void hideEvent(QHideEvent *event) override;
 
     void updatePosition();
 
@@ -47,7 +47,6 @@ private:
     bool m_clouseOnClickOutside;
 
     Qt::WindowType m_windowType {Qt::Widget};
-
 };
 
 #endif // CUSTOMPOPUP_H

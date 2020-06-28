@@ -16,7 +16,14 @@ public:
 signals:
     void opened();
     void hidden();
+    void resized(const QSize &);
 
+
+    // QWidget interface
+protected:
+    virtual void resizeEvent(QResizeEvent *event) override;
 };
+
+
 
 #endif // COMBOBOXPOPUPSCREEN_H

@@ -32,6 +32,7 @@ public:
     qreal opacity() const;
     void setOpacity(qreal a_opacity);
 
+
 protected:
     virtual void showEvent(QShowEvent *event) override;
     virtual void hideEvent(QHideEvent *event) override;

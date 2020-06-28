@@ -30,6 +30,8 @@ public:
     DapState * handshakeRequested;
     DapState * handshakeResponse;
     DapState * authRequested;
+    DapState * keyActivationRequested;
+    DapState * keyActivated;
     DapState * authorized;
     DapState * streamCtlRequested;
 
@@ -39,7 +41,7 @@ public:
     // Substates TrueToFalse
     DapState * logoutRequested;
     DapState * unAuthorized;
-    DapState * switchRequested;
+    //DapState * switchRequested;
 };
 
 #endif // DAPINDICATORSESSION_H

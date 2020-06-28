@@ -12,7 +12,15 @@ public:
     void handle(const QJsonObject* params) override;
     ~DapCmdServersList() override {}
     const QList<QString> &serversList() { return  m_serversList; }
-    void rotateList() { if (m_serversList.size() > 1) { auto tmp = m_serversList.takeFirst(); m_serversList.push_back(tmp); } }
+    void rotateList() {
+        if (m_serversList.size() > 1) {
+            auto tmp = m_serversList.takeFirst();
+            m_serversList.push_back(tmp);
+            emit rotateCDBs();
+        }
+    }
+signals:
+    void rotateCDBs();
 public slots:
     void setServersList(const QList<QString>& a_serversList) { m_serversList = a_serversList ; }
 private:

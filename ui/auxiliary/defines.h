@@ -17,7 +17,15 @@ namespace Properties
     static const QString VISIBLE = "visible";
     static const QString VALID   = "valid";
     static const QString SELECTED= "selected";
+    static const QString CURRENT_INDEX = "currentIndex";
+    static const QString CURRENT_TEXT = "currentText";
 }
+enum class Language
+{
+    Undefined,
+    En,
+    Zh
+};
 
 
 #endif // DEFINES_H
