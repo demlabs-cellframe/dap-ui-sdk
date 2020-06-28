@@ -49,10 +49,16 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
     QPushButton             *btnSend            = a_widget->findChild<QPushButton*>(BTN_SEND);                      Q_ASSERT(btnSend);
     CustomTextEdit          *edtMessage         = a_widget->findChild<CustomTextEdit*>(EDT_MESSAGE);                Q_ASSERT(edtMessage);
 
+    QLabel                  *lblGifLoading      = a_widget->findChild<QLabel*>(LBL_GIF_LOADING);                    Q_ASSERT(lblGifLoading);
+                            edtEmail           = a_widget->findChild<QLineEdit*>(EDT_EMAIL );                       Q_ASSERT(edtEmail);
 #ifdef Q_OS_ANDROID
 
     QLabel                  *lblCaption         = a_widget->findChild<QLabel*>(LBL_CAPTION);                        Q_ASSERT(lblCaption);
-    CustomLineEdit          *edtEmail           = a_widget->findChild<CustomLineEdit*>(EDT_EMAIL );                 Q_ASSERT(edtEmail);
+    QWidget                 *wgtTopButton         = a_widget->findChild<QWidget*>("wgtTopButton");                        Q_ASSERT(wgtTopButton);
+    QWidget                 *wgtBottomEmail         = a_widget->findChild<QWidget*>("wgtBottomEmail");                        Q_ASSERT(wgtBottomEmail);
+
+
+    lblStatusMessage->setWordWrap(true);
 
     lblCaption->setAlignment(Qt::AlignJustify);
 
@@ -62,14 +68,7 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
 
     btnSend->setText("SEND");
 #else
-                             edtEmail           = a_widget->findChild<QLineEdit*>(EDT_EMAIL);                       Q_ASSERT(edtEmail);
     QLayout                 *vltBugReport       = a_widget->findChild<QLayout*>(VLT_BUG_REPORT);                    Q_ASSERT(vltBugReport);
-    QLabel                  *lblGifLoading      = a_widget->findChild<QLabel*>(LBL_GIF_LOADING);                    Q_ASSERT(vltBugReport);
-
-    QMovie *movie = new QMovie(":pics/Spin-1.2s-800px.gif", nullptr, lblGifLoading);
-
-    QRegularExpression rx("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b", QRegularExpression::CaseInsensitiveOption) ;
-    edtEmail->setValidator(new QRegularExpressionValidator(rx, this));
     edtEmail->setPlaceholderText("Your email");
 
     btnSend->setGraphicsEffect(new StyledDropShadowEffect(btnSend));
@@ -82,7 +81,9 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
     edtEmail->setAttribute(Qt::WA_MacShowFocusRect,false);
     edtMessage->setAttribute(Qt::WA_MacShowFocusRect,false);
 #endif
-
+    QRegularExpression rx("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b", QRegularExpression::CaseInsensitiveOption) ;
+    edtEmail->setValidator(new QRegularExpressionValidator(rx, this));
+QMovie *movie = new QMovie(":pics/Spin-1.2s-800px.gif", nullptr, lblGifLoading);
     lblStatusMessage->setVisible(false); 
     lblGifLoading->setVisible(false);
 
@@ -112,21 +113,36 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
         lblGifLoading->setVisible(true);
         movie->start();
 #ifndef Q_OS_ANDROID
-        btnSend->setText("Cancel");
+        btnSend->setText(TEXT_CANCEL);
 #else
-        btnSend->setText("BACK");
+        Utils::setPropertyAndUpdateStyle(lblStatusMessage,Properties::ACTIVE,true);
+        btnSend->setVisible(false);
 #endif
     });
 
     connect(this, &BugReportScreen::bugReportSent, [=](const QString &reply){
+
         lblStatusMessage->setText("Bug report sent<br>successfully. #" + reply);
         lblGifLoading->setMovie(nullptr);  //todo set gif
-        btnSend->setText("Back");
+
+        btnSend->setText(TEXT_BACK);
+#ifdef Q_OS_ANDROID
+        btnSend->setVisible(true);
+        Utils::setPropertyAndUpdateStyle(lblStatusMessage,Properties::ACTIVE,false);
+        wgtBottomEmail->setVisible(false);
+        wgtTopButton->setVisible(false);
+#endif
     });
     connect(this, &BugReportScreen::bugReportSendingError, [=](){
         lblStatusMessage->setText("Bug report sending error.");
         lblGifLoading->setMovie(nullptr); //todo set gif
-        btnSend->setText("Back");
+        btnSend->setText(TEXT_BACK);
+#ifdef Q_OS_ANDROID
+        btnSend->setVisible(true);
+        Utils::setPropertyAndUpdateStyle(lblStatusMessage,Properties::ACTIVE,false);
+        wgtBottomEmail->setVisible(false);
+        wgtTopButton->setVisible(false);
+#endif
     });
 
     connect(this, &BugReportScreen::goBack, [=](){
@@ -138,18 +154,19 @@ void BugReportScreen::initVariantUi(QWidget *a_widget)
         edtMessage->setVisible(true);
         lblStatusMessage->setVisible(false);
         lblGifLoading->setVisible(false);
-#ifndef Q_OS_ANDROID
-        btnSend->setText("Send");
-#else
-        btnSend->setText("SEND");
+
+        btnSend->setText(TEXT_SEND);
+#ifdef Q_OS_ANDROID
+        wgtBottomEmail->setVisible(true);
+        wgtTopButton->setVisible(true);
 #endif
     });
 
 
     connect(btnSend, &QPushButton::clicked,[=](){
-        if (btnSend->text() == "Send")
+        if (btnSend->text() == TEXT_SEND)
             checkFieldsAndSendReport();
-        else if (btnSend->text() == "Back" || btnSend->text() == "Cancel")
+        else if (btnSend->text() == TEXT_BACK || btnSend->text() == TEXT_CANCEL)
             emit this->goBack();
     });
 
@@ -191,4 +208,3 @@ void BugReportScreen::checkFieldsAndSendReport()
     if (emailIsValid && reportIsValid)
         emit this->sendingBugReportRequest(m_email, m_report_message);
 }
-

@@ -63,6 +63,15 @@ protected:
     const QString LBL_CAPTION           = "lblCaption";
     const QString VLT_BUG_REPORT        = "vltBugReport";
     const QString LBL_GIF_LOADING       = "lblGifLoading";
+#ifndef Q_OS_ANDROID
+    const QString TEXT_BACK = tr("Back");
+    const QString TEXT_CANCEL = tr("Cancel");
+    const QString TEXT_SEND = tr("Send");
+#else
+    const QString TEXT_BACK = tr("BACK");
+    const QString TEXT_CANCEL = tr("CANCEL");
+    const QString TEXT_SEND = tr("SEND");
+#endif
 
 private:
     QString m_email;
