@@ -15,8 +15,7 @@ SOURCES += \
     $$PWD/DapHttpPing.cpp \
     $$PWD/DapServerInfo.cpp \
     $$PWD/DapServersListRequester.cpp \
-    $$PWD/DapServersLocalStorage.cpp \
-    $$PWD/DapSendBugReport.cpp
+    $$PWD/DapServersLocalStorage.cpp
 
 HEADERS += \
     $$PWD/DapBugReport.h \
@@ -33,8 +32,7 @@ HEADERS += \
     $$PWD/DapHttpPing.h \
     $$PWD/DapServerInfo.h \
     $$PWD/DapServersListRequester.h \
-    $$PWD/DapServersLocalStorage.h \
-    $$PWD/DapSendBugReport.h
+    $$PWD/DapServersLocalStorage.h
 
 INCLUDEPATH += $$PWD
 
