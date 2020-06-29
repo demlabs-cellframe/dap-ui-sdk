@@ -32,7 +32,7 @@ void DapLogger::setLogLevel(dap_log_level ll) {
 }
 
 int DapLogger::createLogFolder(QString path){
-    dap_mkdir_with_parents(qPrintable(path));
+    return dap_mkdir_with_parents(qPrintable(path));
 }
 
 void DapLogger::createChangerLogFiles(){
