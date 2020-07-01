@@ -17,12 +17,12 @@ QString LoginScreenLayout::screenName()
     return LoginScreenLayout::SCREEN_NAME;
 }
 
-NavigationPanelBack *LoginScreenLayout::findNavigationPanel(QWidget *a_widget)
+LoginNavigationPanel *LoginScreenLayout::findNavigationPanel(QWidget *a_widget)
 {
     if (!a_widget)
         a_widget = this->variant();
 
-    NavigationPanelBack *panel = a_widget->findChild<NavigationPanelBack*>();
+    LoginNavigationPanel *panel = a_widget->findChild<LoginNavigationPanel*>();
     Q_ASSERT(panel);
 
     return panel;
@@ -38,8 +38,8 @@ void LoginScreenLayout::initVariantUi(QWidget *a_widget)
     a_widget->setObjectName("LoginScreenLayout");
     this->initChangingWidget(a_widget);
 
-    NavigationPanelBack* panel = this->findNavigationPanel(a_widget);
+    LoginNavigationPanel* panel = this->findNavigationPanel(a_widget);
 
-    connect(panel, &NavigationPanelBack::goBack , this, &LoginScreenLayout::goBack);
+//    connect(panel, &LoginNavigationPanel::goBack , this, &LoginScreenLayout::goBack);
 }
 
