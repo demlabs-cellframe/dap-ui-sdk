@@ -16,14 +16,19 @@ class DapDataLocal : public QObject
     Q_OBJECT
     DapDataLocal();
     const QString ServerListName;
-protected:
-    QString     mLogin;      ///< Login.
-    QString     mPassword;   ///< Password.
-    QString     mServerName; ///< Server name.
 
-    QList<QString> m_cdbServersList;
-    QString     m_networkDefault;
-    QString urlSignUp;
+    static DapDataLocal *_me;
+    static QMap<DapServerLocation, QString> m_pictruePath;
+
+    QList<DapServerInfo> m_servers;
+
+    void parseXML(const QString& a_fname);
+
+    DapKeyAes *secretKey = Q_NULLPTR;
+    bool initSecretKey();
+    QString getRandomString(int);
+    DapServerInfo* m_currentServer = nullptr;
+
 
 public:
     using picturesMap = QMap<DapServerLocation, QString>;
@@ -44,25 +49,15 @@ public:
     QString locationToIconPath(DapServerLocation loc);
 
     QString login() const;
-public slots:
-    void setCurrentServer(int a_serverIndex);
-    //void setCurrentServer(DapServerInfo* a_server);
-
-    void setLogin(const QString &login);
-
-    void setCurrentServer(DapServerInfo *a_server);
-public:
 
     QString password() const;
 public slots:
     void setPassword(const QString &password);
 public:
+    QString serialKey() const;
 
     QString currentServerName() const;
     QString getServerNameByAddress(const QString& address);
-public slots:
-    void setServerName(const QString &serverName);
-public:
 
     const QList<QString> &cdbServersList() { return  m_cdbServersList; }
     const QString & networkDefault() { return  m_networkDefault; }
@@ -75,19 +70,22 @@ public:
     void saveSecretString(QString, QString);
     QString getSecretString(QString);
 
+    const QString TEXT_SERIAL_KEY   = "serialkey";
+    const QString TEXT_LOGIN        = "login";
+    const QString TEXT_PASSWORD     = "password";
+
+    void setLogin(const QString &a_login);
+    void setCurrentServer(int a_serverIndex);
+
+    void setCurrentServer(DapServerInfo *a_server);
+    
+    void setSerialKey(const QString &a_serialKey);
+    void setServerName(const QString &serverName);
+
+    void saveAuthorizationDatas();
 
 
-private:
-    static DapDataLocal *_me;
-    static QMap<DapServerLocation, QString> m_pictruePath;
-
-    QList<DapServerInfo> m_servers;
-
-    void parseXML(const QString& a_fname);
-
-    DapKeyAes *secretKey = Q_NULLPTR;
-    bool initSecretKey();
-    QString getRandomString(int);
+    void rotateCDBList();
 
     bool bBeforeAutoServer = false;
     QVector<DapServerInfo> m_serversForCheck;
@@ -99,6 +97,9 @@ signals:
     /// Signal emitted if password has changed.
     /// @param password Password.
     void passwordChanged(const QString& password);
+    /// Signal emitted if password has changed.
+    /// @param password Password.
+    void serialKeyChanged(const QString& serial);
     /// Signal emitted if server name has changed.
     /// @param serverName Server name.
     void serverNameChanged(const QString& serverName);
@@ -107,7 +108,20 @@ signals:
 
     void serversCleared();
 
-private:
 
-    DapServerInfo* m_currentServer = nullptr;
+protected:
+    QString     m_login;      ///< Login.
+    QString     m_password;   ///< Password.
+    QString     m_serverName; ///< Server name.
+
+    QString     m_serialKey;  ///< Serial key.
+
+    QList<QString> m_cdbServersList;
+    QString     m_networkDefault;
+    QString urlSignUp;
+
+private:
+    void loadAuthorizationDatas();
+
+
 };

@@ -45,19 +45,25 @@ protected:
 
 public:
     template<class T>
-    T *createSubScreen(int a_index = -1);
+    T *createSubScreenIfNotExist(int a_index = -1);
 
     template<class T>
     void removeSubscreen();
+
+    void removeSubscreenAfterAnimationFinished(AdaptiveScreen* a_screen);
+    void removeSubscreen(AdaptiveScreen* a_screen);
 
     template<class OldT, class NewT>
     NewT *replaceSubscreen();
 
     template<class T>
+    T *refreshSubscreen();
+
+    template<class T>
     T *subScreen();
 
     template<class T>
-    T *activateScreen();
+    T *activateScreen(int a_index = -1);
 
     AdaptiveScreen* activeScreen();
     QString activeScreenName();
@@ -78,8 +84,15 @@ protected:
 
     AnimationChangingWidget *m_wgtChangingWidget = nullptr;     ///< Pointer to ChangingWidget controll
 
+private slots:
+    void afterAnimationScreensRemoval();
+
 private:
-    QMap<QString, AdaptiveScreen*> m_screens;          ///< Map with all screens that can be activated
+    template<class T>
+    T *createSubScreen(int a_index = -1);
+
+    QMultiMap<QString, AdaptiveScreen*> m_screens;          ///< Map with all screens that can be activated
+    QList<AdaptiveScreen*> m_screensForRemoval;
 };
 
 
@@ -99,7 +112,7 @@ private:
  * @return Existing or created screen
  */
 template<class T>
-T *MultiScreenAbstract::createSubScreen(int a_index /*= -1*/)
+T *MultiScreenAbstract::createSubScreenIfNotExist(int a_index /*= -1*/)
 {
     // if subscrin exist return
     T *newScreen = subScreen<T>();
@@ -116,6 +129,23 @@ T *MultiScreenAbstract::createSubScreen(int a_index /*= -1*/)
 }
 
 /**
+ * @brief Create screen with type T withowt existing check
+ * @param T new screen type
+ * @return Existing or created screen
+ */
+template<class T>
+T *MultiScreenAbstract::createSubScreen(int a_index /*= -1*/)
+{
+    T *newScreen = new T(this);                              // Create new screen
+
+    //insert screen to m_screens and changing sreen widget
+    m_screens.insertMulti(newScreen->screenName(), newScreen);
+    this->changingWidget()->insertWidget(a_index, newScreen);
+
+    return newScreen;
+}
+
+/**
  * @brief Remove subscreen with type T
  * @details If Screen with type T is not found do nothing
  * @param T Removing screen type
@@ -126,13 +156,7 @@ void MultiScreenAbstract::removeSubscreen()
     AdaptiveScreen *screen = subScreen<T>(); // Find subscreen
 
     if (screen) { // If found ...
-        // 1. remove from parent ChangingWidget, ...
-        MultiScreenAbstract *parentScreen = qobject_cast<MultiScreenAbstract*> (screen->parent());
-        parentScreen->changingWidget()->removeWidget(screen);
-        // 2. delete stackedWidget and screen
-        m_screens.remove(screen->screenName());
-        // 3. delete from Map with screens pointers
-        delete screen;
+        this->removeSubscreen(screen);
     }
     // if isn't found do nothing
 }
@@ -146,20 +170,50 @@ void MultiScreenAbstract::removeSubscreen()
 template<class OldT, class NewT>
 NewT *MultiScreenAbstract::replaceSubscreen()
 {
-    OldT *oldScreen = subScreen<OldT>();  // Find subscrin
+    OldT *oldScreen = this->subScreen<OldT>();  // Find subscrin
 
     if (oldScreen) {// If found ...
-        //1. get index of oldScreen stacked widget
-        MultiScreenAbstract *parentScreen = qobject_cast<MultiScreenAbstract*>(oldScreen->parent());
-        int index = parentScreen->changingWidget()->indexOf(oldScreen->sw());
-        //2. remove oldScreen, ...
+        MultiScreenAbstract *parentScreen = MultiScreenAbstract::parentMultiscreen(oldScreen);
+        int index = parentScreen->changingWidget()->indexOf(oldScreen);
+
         parentScreen->removeSubscreen<OldT>();
-        //3. create new subscreen in the place of deleted
         return parentScreen->createSubScreen<NewT>(index);
     }
     // if isn't found just create new
     return createSubScreen<NewT>();
+}
 
+/**
+ * @brief Refresh subscreen with type T
+ *
+ * @details Create subscreen with type T. If is active the same type run transition to new screen. Delete old screen after that
+ * @param OldT Removed screen type
+ * @param NewT New screen type
+ * @return New screen
+ */
+template<class T>
+T *MultiScreenAbstract::refreshSubscreen()
+{
+    AdaptiveScreen* existingScreen = this->subScreen<T>();
+    if (!existingScreen)
+        return nullptr;
+
+    MultiScreenAbstract* parentMultiScreen = MultiScreenAbstract::parentMultiscreen(existingScreen);
+
+    if (parentMultiScreen->activeScreen() == existingScreen)
+    {
+        int index = parentMultiScreen->changingWidget()->indexOf(existingScreen);
+
+        T* newScreen = parentMultiScreen->createSubScreen<T>(index + 1);
+
+        removeSubscreenAfterAnimationFinished(existingScreen);
+        parentMultiScreen->activateChildScreen(newScreen);
+        return newScreen;
+    }
+    else
+    {
+        return this->replaceSubscreen<T, T>();
+    }
 }
 
 /**
@@ -189,25 +243,31 @@ T *MultiScreenAbstract::subScreen()
 
 /**
  * @brief Find subScreen with type T and activate all child screens in line from this to found screen
+ * @details if doesn't, exists will be created at a_index
  * @param T activating screen type
+ * @param a_index index of new screen if it doesn't exist
  * @return activated subScreen with type T
  */
 template<class T>
-T *MultiScreenAbstract::activateScreen()
+T *MultiScreenAbstract::activateScreen(int a_index /* = -1*/)
 {
     T *screen = subScreen<T>();    //< find subScreen with type T
+    MultiScreenAbstract *parentMultiScreen;
 
-    // If does not exist create new
-    if (!screen)
-        screen = createSubScreen<T>();
+    if (screen)
+        parentMultiScreen = MultiScreenAbstract::parentMultiscreen(screen);
+    else
+    {
+        screen = this->createSubScreen<T>(a_index);
+        parentMultiScreen = this;
+    }
 
     // Activate all parent screens in line from found screen to this
-    MultiScreenAbstract *parent = MultiScreenAbstract::parentMultiscreen(screen);
     AdaptiveScreen *nextScreen = screen;
     //do while parent is not this screen
     while (nextScreen != this) {
-        nextScreen = parent->activateChildScreen(nextScreen);
-        parent = qobject_cast<MultiScreenAbstract*>(parent->parent());
+        nextScreen = parentMultiScreen->activateChildScreen(nextScreen);
+        parentMultiScreen = MultiScreenAbstract::parentMultiscreen(parentMultiScreen);
     }
     return screen;
 }

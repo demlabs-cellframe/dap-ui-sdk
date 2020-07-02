@@ -4,7 +4,7 @@
 /** @brief PopUp with form and screen overlaying
 */
 CustomPopup::CustomPopup(QWidget *a_parent /*= nullptr*/)
-    : AdaptiveWidget(a_parent)
+    : AdaptiveWidget(Utils::findParent<QMainWindow*>(a_parent))
 {
     this->setObjectName("stwCustomPopup");
 }
@@ -36,7 +36,8 @@ void CustomPopup::setScreenOverlayingOpacity(qreal a_opacity)
     if (!m_screenOverlaying && a_opacity < 1.0)
     {
         createScreenOverlaying();
-        m_windowType = Qt::Dialog;
+        if (this->windowType() == Qt::Widget || this->windowType() == Qt::Desktop)
+            m_windowType = Qt::Dialog;
     }
 
     m_screenOverlaying->setOpacity(a_opacity);
@@ -55,7 +56,8 @@ void CustomPopup::setScreenOverlayingBlurRadius(qreal a_blurRadius)
     if (!m_screenOverlaying && a_blurRadius > 0.0)
     {
         createScreenOverlaying();
-        m_windowType = Qt::Dialog;
+        if (this->windowType() == Qt::Widget || this->windowType() == Qt::Desktop)
+            m_windowType = Qt::Dialog;
     }
 
     m_screenOverlaying->setBlurRadius(a_blurRadius);
@@ -69,28 +71,6 @@ void CustomPopup::resizeEvent(QResizeEvent *a_event)
      AdaptiveWidget::resizeEvent(a_event);
 
      updatePosition();
-}
-
-void CustomPopup::showEvent(QShowEvent *event)
-{
-    Q_UNUSED(event)
-
-    if (m_screenOverlaying)
-        m_screenOverlaying->show();
-
-    AdaptiveWidget::showEvent(event);
-
-    emit opened();
-}
-
-void CustomPopup::hideEvent(QHideEvent *event)
-{
-    AdaptiveWidget::hideEvent(event);
-
-    if (m_screenOverlaying)
-        m_screenOverlaying->hide();
-
-    emit closed();
 }
 
 /** @brief Update dialog position
@@ -161,5 +141,16 @@ void CustomPopup::setWindowType(Qt::WindowType a_windowType)
 
     m_windowType = a_windowType;
     updatePosition();
+}
+
+void CustomPopup::setVisible(bool a_visible)
+{
+    if (m_screenOverlaying)
+        m_screenOverlaying->setVisible(a_visible);
+
+    this->AdaptiveWidget::setVisible(a_visible);
+
+    if (a_visible)
+        emit this->opened();
 }
 

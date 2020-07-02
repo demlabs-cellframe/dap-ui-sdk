@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "dap_common.h"
+#include "dap_file_utils.h"
 #include "DapLogger.h"
 
 DapLogger::DapLogger(QObject *parent, size_t prefix_width)
@@ -30,14 +31,52 @@ void DapLogger::setLogLevel(dap_log_level ll) {
     dap_log_level_set(ll);
 }
 
+int DapLogger::createLogFolder(QString path){
+    return dap_mkdir_with_parents(qPrintable(path));
+}
+
+void DapLogger::createChangerLogFiles(){
+
+    auto then = QDateTime::currentDateTime();
+    auto setTime = QTime::fromString("00:00", "hh:mm");
+    if(then.time() > setTime){
+        then = then.addDays(1);
+    }
+    then.setTime(setTime);
+
+    auto diff = QDateTime::currentDateTime().msecsTo(then);
+    t->start(diff);
+    connect(t, &QTimer::timeout, [&]{
+        t->setInterval(24 * 3600 * 1000);
+        this->updateCurrentLogName();
+        this->setLogFile(QString("%1/%2").arg(pathToLog).arg(currentLogName));
+        this->clearOldLogs();
+    });
+}
+
 bool DapLogger::setLogFile(const QString& filePath) {
-
-
     qDebug() << "setLogFile: " << filePath;
-    int i = dap_common_init( DAP_BRAND, filePath.toLatin1().data()) ;
+    int i = dap_common_init(DAP_BRAND, qPrintable(filePath)) ;
     return i == 0;
 }
 
+void DapLogger::clearOldLogs(){
+
+    QDir dir(pathToLog);
+
+    if (!dir.exists()) {
+        qWarning("The directory does not exist");
+        return;
+    }
+
+    QFileInfoList list = dir.entryInfoList();
+    QDateTime deleteDate = QDateTime::currentDateTime().addDays(-3);
+    for (auto file : list){
+        if (file.lastModified() < deleteDate){
+            dir.remove(file.fileName());
+        }
+    }
+}
 
 void DapLogger::messageHandler(QtMsgType type,
                                const QMessageLogContext &ctx,

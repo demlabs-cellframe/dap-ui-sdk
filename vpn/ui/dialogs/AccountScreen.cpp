@@ -21,12 +21,6 @@ void AccountScreen::setState(ConnectionStates a_state)
 
 void AccountScreen::initVariantUi(QWidget *a_widget)
 {
-    QPushButton   *btnMonthPrice     = a_widget->findChild<QPushButton*>(BTN_MONTH_PRICE);      Q_ASSERT(btnMonthPrice);
-    QPushButton   *btnSixMonthPrice  = a_widget->findChild<QPushButton*>(BTN_SIX_MONTH_PRICE);  Q_ASSERT(btnSixMonthPrice);
-    QPushButton   *btnYearPrice      = a_widget->findChild<QPushButton*>(BTN_YEAR_PRICE);       Q_ASSERT(btnYearPrice);
-
-    connect(btnMonthPrice,&QPushButton::clicked, this,&AccountScreen::goToMonthPrice);
-    connect(btnSixMonthPrice,&QPushButton::clicked, this,&AccountScreen::goToSixMonthPrice);
-    connect(btnYearPrice,&QPushButton::clicked, this,&AccountScreen::goToYearPrice);
+    Q_UNUSED(a_widget)
 
 }

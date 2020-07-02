@@ -46,6 +46,16 @@ Cert * Cert::generate(const QString& a_name, KeySignType a_type)
     return ret;
 }
 
+Cert * Cert::generate(const QString& a_name, const QString& a_seed, KeySignType a_type)
+{
+    Cert * ret = new Cert();
+    ret->m_cert = dap_cert_generate_mem_with_seed(a_name.toLatin1().constData() ,
+                                                   KeySign::typeToEncType(a_type), qPrintable(a_seed), a_seed.length() );
+    ret->m_key = new Key(ret->m_cert->enc_key);
+    return ret;
+}
+
+
 /**
  * @brief Cert::Cert
  * @param a_filePath

@@ -18,12 +18,14 @@
     along with any DAP based project.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
+#define OP_CODE_GENERAL_ERR           "0xf0"
 #define OP_CODE_LOGIN_INCORRECT_PSWD  "0xf2"
 #define OP_CODE_NOT_FOUND_LOGIN_IN_DB "0xf3"
 #define OP_CODE_SUBSCRIBE_EXPIRIED    "0xf4"
 #define OP_CODE_CANT_CONNECTION_TO_DB "0xf5"
 #define OP_CODE_INCORRECT_SYM         "0xf6"
+#define OP_CODE_LOGIN_INACTIVE        "0xf7"
+#define OP_CODE_SERIAL_ACTIVATED      "0xf8"
 
 #include "DapSession.h"
 #include "DapCrypt.h"
@@ -248,6 +250,31 @@ QNetworkReply* DapSession::encRequest(const QString& reqData, const QString& url
     return _buildNetworkReplyReq(urlPath, &BAreqDataEnc, isCDB);
 }
 
+QNetworkReply* DapSession::encRequestRaw(const QByteArray& bData, const QString& url,
+                          const QString& subUrl, const QString& query)
+{
+    QByteArray BAreqDataEnc;
+    QByteArray BAsubUrlEncrypted;
+    QByteArray BAqueryEncrypted;
+    QByteArray subUrlByte = subUrl.toLatin1();
+    QByteArray queryByte = query.toLatin1();
+    DapCrypt *l_dapCrypt = m_dapCryptCDB;
+
+    l_dapCrypt->encode(const_cast<QByteArray&>(bData), BAreqDataEnc, KeyRoleSession);
+
+    QString urlPath = url;
+    if(subUrl.length()) {
+        l_dapCrypt->encode(subUrlByte, BAsubUrlEncrypted, KeyRoleSession);
+        urlPath += "/" + BAsubUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding);
+    }
+    if(query.length()) {
+        l_dapCrypt->encode(queryByte, BAqueryEncrypted, KeyRoleSession);
+        urlPath += "?" + BAqueryEncrypted.toBase64(QByteArray::Base64UrlEncoding);
+    }
+
+    return _buildNetworkReplyReq(urlPath, &BAreqDataEnc, true);
+}
+
 /**
  * @brief DapSession::setSaUri
  * @param saUri
@@ -257,6 +284,31 @@ void DapSession::setDapUri(const QString& addr, const uint16_t port)
     qDebug() << "DapSession set Uri" << addr << port;
     m_upstreamAddress = addr;
     m_upstreamPort = port;
+}
+
+void DapSession::onKeyActivated() {
+    QByteArray arrData;
+    arrData.append(m_netAuthorizeReply->readAll());
+
+    if(arrData.size() <= 0)
+    {
+        emit errorAuthorization("Wrong answer from server");
+        return;
+    }
+    QByteArray dByteArr;
+    m_dapCrypt->decode(arrData, dByteArr, KeyRoleSession);
+
+    QString op_code = QString::fromLatin1(dByteArr).left(4);
+
+    if (op_code == OP_CODE_SERIAL_ACTIVATED) {
+        qInfo() << "Serial key activated, try to authorize";
+        emit repeatAuth();
+        return;
+    }
+    else {
+        emit errorAuthorization("Serial key was not activated");
+        return;
+    }
 }
 
 /**
@@ -272,31 +324,40 @@ void DapSession::onAuthorize()
         emit errorAuthorization("Wrong answer from server");
         return;
     }
+
     QByteArray dByteArr;
     m_dapCrypt->decode(arrData, dByteArr, KeyRoleSession);
 
-    QXmlStreamReader m_xmlStreamReader;
-    m_xmlStreamReader.addData(dByteArr);
-    qDebug() << "[DapSession] Decoded data: " << QString::fromLatin1(dByteArr);
+    QString op_code = QString::fromLatin1(dByteArr).left(4);
 
-    if (QString::fromLatin1(dByteArr) == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
+    if (op_code == OP_CODE_GENERAL_ERR) {
+        emit errorAuthorization ("Unknown authorization error");
+        return;
+    } else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
         emit errorAuthorization ("Login not found in database");
         return;
-    } else if (QString::fromLatin1(dByteArr) == OP_CODE_LOGIN_INCORRECT_PSWD) {
+    } else if (op_code == OP_CODE_LOGIN_INCORRECT_PSWD) {
         emit errorAuthorization ("Incorrect password");
         return;
-    } else if (QString::fromLatin1(dByteArr) == OP_CODE_SUBSCRIBE_EXPIRIED) {
+    } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRIED) {
         emit errorAuthorization ("Subscribe expired");
         return;
-    } else if (QString::fromLatin1(dByteArr) == OP_CODE_CANT_CONNECTION_TO_DB) {
+    } else if (op_code == OP_CODE_CANT_CONNECTION_TO_DB) {
         emit errorAuthorization ("Can't connect to database");
         return;
-    } else if (QString::fromLatin1(dByteArr) == OP_CODE_INCORRECT_SYM){
+    } else if (op_code == OP_CODE_INCORRECT_SYM) {
         emit errorAuthorization("Incorrect symbols in request");
+        return;
+    } else if (op_code == OP_CODE_LOGIN_INACTIVE) {
+        emit activateKey();
         return;
     }
 
+    QXmlStreamReader m_xmlStreamReader;
+    m_xmlStreamReader.addData(dByteArr);
+
     bool isCookie = false;
+    bool isAuth = false;
     QString SRname;
     while(m_xmlStreamReader.readNextStartElement())
     {
@@ -341,6 +402,8 @@ void DapSession::onAuthorize()
                              << m_userInform[m_xmlStreamReader.name().toString()];
                 }
             }
+            isAuth = true;
+            emit authorized(m_cookie);
         }/*else if (m_xmlStreamReader.name() == "tx_cond_tpl") {
             while(m_xmlStreamReader.readNextStartElement()) {
                 qDebug() << " tx_cond_tpl: " << m_xmlStreamReader.name();
@@ -362,12 +425,14 @@ void DapSession::onAuthorize()
             m_xmlStreamReader.skipCurrentElement();
         }
     }
-
-    emit authorized(m_cookie);
-    if(!isCookie) {
-        //m_cookie.clear();
-        //emit errorAuthorization("No authorization cookie in server's reply");
+    if (!isAuth) {
+        emit errorAuthorization("Authorization error");
     }
+
+    /*if(!isCookie) {
+        m_cookie.clear();
+        emit errorAuthorization("No authorization cookie in server's reply");
+    }*/
 }
 
 void DapSession::preserveCDBSession() {
@@ -378,7 +443,6 @@ void DapSession::preserveCDBSession() {
     m_CDBport = m_upstreamPort;
     //todo: save cookie too
 }
-
 /**
  * @brief DapSession::onLogout
  */
@@ -430,6 +494,18 @@ QNetworkReply * DapSession::encRequest(const QString& reqData, const QString& ur
     return netReply;
 }
 
+QNetworkReply * DapSession::encRequestRaw(const QByteArray& bData, const QString& url, const QString& subUrl,
+                           const QString& query, QObject * obj, const char * slot)
+{
+    QNetworkReply * netReply = encRequestRaw(bData, url, subUrl, query);
+
+    connect(netReply, SIGNAL(finished()), obj, slot);
+    connect(netReply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this,SLOT(errorSlt(QNetworkReply::NetworkError)));
+    return netReply;
+}
+
+
 void DapSession::sendTxBackRequest(const QString &tx) {
     qDebug() << "Send tx back to cdb" << tx;
     encRequest(tx, URL_TX, "tx_out", "", true);
@@ -453,6 +529,35 @@ QNetworkReply * DapSession::authorizeRequest(const QString& a_user, const QStrin
         return Q_NULLPTR;
     }
     emit authRequested();
+    return m_netAuthorizeReply;
+}
+
+QNetworkReply * DapSession::authorizeByKeyRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey) {
+    m_userInform.clear();
+    m_netAuthorizeReply =  encRequest(a_serial + " " + a_domain + " " + a_pkey,
+                                     URL_DB, "auth", "serial", SLOT(onAuthorize()));
+    if(m_netAuthorizeReply == Q_NULLPTR) {
+        qCritical() << "Can't send authorize request";
+        return Q_NULLPTR;
+    }
+    emit authRequested();
+    return m_netAuthorizeReply;
+}
+
+QNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const QByteArray& a_signed, const QString& a_domain,
+                                              const QString& a_pkey) {
+    m_userInform.clear();
+    char *buf64 = DAP_NEW_Z_SIZE(char, a_signed.size() * 2 + 6);
+    size_t buf64len = dap_enc_base64_encode(a_signed.data(), a_signed.size(), buf64, DAP_ENC_DATA_TYPE_B64_URLSAFE);
+    QByteArray a_signedB64(buf64, buf64len);
+    QByteArray bData = QString(a_serial + " ").toLocal8Bit() + a_signedB64 + QString(" " + a_domain + " " + a_pkey).toLocal8Bit();
+    DAP_DELETE(buf64);
+    m_netAuthorizeReply =  encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()));
+    if(m_netAuthorizeReply == Q_NULLPTR) {
+        qCritical() << "Can't send key activation request";
+        return Q_NULLPTR;
+    }
+    //emit keyActRequested();
     return m_netAuthorizeReply;
 }
 

@@ -28,7 +28,7 @@ float UiScaling::pointsToPixels(float a_pointsValue, float dpi /*default = 0*/)
     Q_UNUSED(dpi)
     static qreal dpi_Android(QGuiApplication::primaryScreen()->geometry().width());
 
-    float valueInPixels = dpi_Android * pointsToInches(a_pointsValue);
+    float valueInPixels = dpi_Android * a_pointsValue / 360.f;
 
 #endif
     return valueInPixels;
@@ -42,7 +42,7 @@ QSize UiScaling::pointsToPixels(const QSize &a_pointsSize)
 
 inline double UiScaling::pointsToInches(float a_pointsValue)
 {
-    return a_pointsValue / 360.f;
+    return a_pointsValue / 160.f;
 }
 
 float UiScaling::getNativDPI(){
@@ -76,7 +76,10 @@ float UiScaling::getNativDPI(){
     static qreal dpi(QGuiApplication::primaryScreen()->physicalDotsPerInch());
 #endif
 #ifndef Q_OS_ANDROID
-    return dpi;
+    //if dpi is less than 50, it may have been calculated incorrectly
+    if (dpi>50) return QGuiApplication::primaryScreen()->physicalDotsPerInch();//
+    return (dpi < 50 ? QGuiApplication::primaryScreen()->physicalDotsPerInch() : dpi);
+
 #else
     return 1;
 #endif
@@ -85,5 +88,6 @@ float UiScaling::getNativDPI(){
 float UiScaling::aptToPt(float apt){
     /*CSS has its own pt unit, which is 1.333 (96/72).
      times bigger than px however it is different from iOS p.*/
-    return apt * 1.333;
+    //1.270f - relatively window Mira
+    return apt * 1.270f;
 }
