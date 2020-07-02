@@ -32,11 +32,13 @@ void MainScreen::setState(ConnectionStates a_state)
 
     this->setChildProperties(LBL_STATUS_MESSAGE, Properties::TEXT , this->statusText());
 
+    this->setEnabled(a_state == ConnectionStates::Connected);
+
     if(a_state == ConnectionStates::Disconnected)
         this->stopConnectionTimer();
+
 #ifndef ANDROID
     this->setChildProperties(LBL_STATUS_MESSAGE, Properties::STATE, a_state);
-
     this->updateChildStyle  (LBL_STATUS_MESSAGE);
 #endif
 }
