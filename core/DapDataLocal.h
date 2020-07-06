@@ -57,6 +57,7 @@ public:
 
     QString serialKey() const;
 
+    QString password() const;
     QString currentServerName() const;
     QString getServerNameByAddress(const QString& address);
 
@@ -76,26 +77,24 @@ public:
     const QString TEXT_LOGIN        = "login";
     const QString TEXT_PASSWORD     = "password";
 
+    bool bSelectedAutoServer = false;
+    QVector<DapServerInfo> m_serversForCheck;
+
 
 public slots:
     void setCurrentServer(int a_serverIndex);
     void setCurrentServer(DapServerInfo* a_server);
 
     void setLogin(const QString &a_login);
-    void setCurrentServer(int a_serverIndex);
 
-    void setCurrentServer(DapServerInfo *a_server);
-    
     void setSerialKey(const QString &a_serialKey);
+    void setPassword(const QString &password);
     void setServerName(const QString &serverName);
 
     void saveAuthorizationDatas();
 
 
     void rotateCDBList();
-
-    bool bBeforeAutoServer = false;
-    QVector<DapServerInfo> m_serversForCheck;
 
 signals:
     /// Signal emitted if login has changed.

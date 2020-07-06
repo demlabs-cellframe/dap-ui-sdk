@@ -413,8 +413,8 @@ bool DapDataLocal::newServerAfterNetworkError()
 
     DapServerLocation alocation = currentServer->location;
 
-    if (currentServer->name == "Auto" || bBeforeAutoServer) {
-        bBeforeAutoServer = true;
+    if (currentServer->name == "Auto" || bSelectedAutoServer) {
+        bSelectedAutoServer = true;
         for (DapServerInfo& server : m_serversForCheck){
             if (currentServer->address != server.address){
                 this->setCurrentServer(&server);
