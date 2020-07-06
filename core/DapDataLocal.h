@@ -17,6 +17,8 @@ class DapDataLocal : public QObject
     DapDataLocal();
     const QString ServerListName;
 
+    QString     m_brandName;
+    QString     logFilePath;
     static DapDataLocal *_me;
     static QMap<DapServerLocation, QString> m_pictruePath;
 
@@ -50,18 +52,18 @@ public:
 
     QString login() const;
 
-    QString password() const;
-public slots:
-    void setPassword(const QString &password);
-public:
+    void setLogFilePath(QString path){logFilePath = path;}
+    QString getLogFilePath(){return logFilePath;}
+
     QString serialKey() const;
 
     QString currentServerName() const;
     QString getServerNameByAddress(const QString& address);
 
-    const QList<QString> &cdbServersList() { return  m_cdbServersList; }
-    const QString & networkDefault() { return  m_networkDefault; }
-    const QString & getUrlForSignUp() { return  urlSignUp; }
+    const QList<QString> &cdbServersList() { return m_cdbServersList; }
+    const QString & networkDefault()       { return m_networkDefault; }
+    const QString & getUrlForSignUp()      { return urlSignUp;        }
+    const QString & getBrandName()         { return m_brandName;      }
 
     void connectComboBox(QObject *a_comboBox);
 
@@ -73,6 +75,11 @@ public:
     const QString TEXT_SERIAL_KEY   = "serialkey";
     const QString TEXT_LOGIN        = "login";
     const QString TEXT_PASSWORD     = "password";
+
+
+public slots:
+    void setCurrentServer(int a_serverIndex);
+    void setCurrentServer(DapServerInfo* a_server);
 
     void setLogin(const QString &a_login);
     void setCurrentServer(int a_serverIndex);

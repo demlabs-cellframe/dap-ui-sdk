@@ -4,8 +4,11 @@ SOURCES += \
     $$PWD/MainScreen.cpp \
     $$PWD/MainScreenLayout.cpp \
     $$PWD/PasswordRecoveryScreen.cpp \
-#    $$PWD/SignUpScreen.cpp \
-    $$PWD/NavigationPanel.cpp
+    $$PWD/StartScreen.cpp \
+    $$PWD/NavigationPanel.cpp \
+    $$PWD/SignUpScreen.cpp \
+    $$PWD/TermsOfUseScreen.cpp \
+    $$PWD/PrivacyPolicyScreen.cpp
 
 HEADERS  += \
     $$PWD/AccountScreen.h \
@@ -13,8 +16,11 @@ HEADERS  += \
     $$PWD/MainScreen.h \
     $$PWD/MainScreenLayout.h \
     $$PWD/PasswordRecoveryScreen.h \
-#    $$PWD/SignUpScreen.h \
-    $$PWD/NavigationPanel.h
+    $$PWD/StartScreen.h \
+    $$PWD/NavigationPanel.h \
+    $$PWD/SignUpScreen.h \
+    $$PWD/TermsOfUseScreen.h \
+    $$PWD/PrivacyPolicyScreen.h
 
 !android {
     HEADERS  += \
