@@ -73,6 +73,9 @@ void CustomLicenseLineEdit::pasteEvent()
 #ifdef Q_OS_ANDROID
 void CustomLicenseLineEdit::inputMethodEvent(QInputMethodEvent *e)
 {
+    qWarning()<<"inputMethodEvent:Cursor position =====" <<QCursor::pos();
+qWarning()<<this->cursorPosition();
+
     if(e->preeditString().length() == this->maxLength())
     {
         QEvent event(QEvent::FocusOut);
@@ -84,6 +87,8 @@ void CustomLicenseLineEdit::inputMethodEvent(QInputMethodEvent *e)
 
 void CustomLicenseLineEdit::focusInEvent(QFocusEvent *e)
 {
+        qWarning()<<"focusInEvent:Cursor position =====" <<QCursor::pos();
+        qWarning()<<this->cursorPosition();
     if(e->reason() == Qt::MouseFocusReason)
         clear();
 
