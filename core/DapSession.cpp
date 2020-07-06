@@ -42,6 +42,7 @@ const QString DapSession::URL_CTL("/stream_ctl");
 const QString DapSession::URL_DB_FILE("/db_file");
 const QString DapSession::URL_SERVER_LIST("/nodelist");
 const QString DapSession::URL_TX("/tx");
+const QString DapSession::URL_BUG_REPORT("/bugreport");
 
 #define SESSION_KEY_ID_LEN 33
 
@@ -128,6 +129,13 @@ QNetworkReply* DapSession::encryptInitRequest()
     return requestServerPublicKey();
 }
 
+void DapSession::sendBugReport(QString dataServiceLog, QString dataGuiLog, QString email, QString message){
+
+   QString reqData = dataServiceLog + ":@:" + dataGuiLog + ":@:" + email + ":@:" + message;
+
+   m_netSendBugReportReply = encRequest(reqData, URL_BUG_REPORT, QString(), QString(), SLOT(answerBugReport()), true);
+
+}
 
 /**
  * @brief DapSession::onEnc
@@ -450,6 +458,15 @@ void DapSession::onLogout()
 {
     qInfo() << "Logouted on the remote server";
     emit logouted();
+}
+
+void DapSession::answerBugReport()
+{
+    qInfo() << "answerBugReport";
+    QByteArray arrData;
+    arrData.append(m_netSendBugReportReply->readAll());
+    QString bugReportNumber = QString(arrData);
+    emit receivedBugReportNumber(bugReportNumber);
 }
 
 void DapSession::clearCredentials()

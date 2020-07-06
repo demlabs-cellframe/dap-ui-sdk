@@ -46,6 +46,7 @@ public:
     static const QString URL_DB_FILE;
     static const QString URL_SERVER_LIST;
     static const QString URL_TX;
+    static const QString URL_BUG_REPORT;
 
     DapSession(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
     ~DapSession();
@@ -84,6 +85,8 @@ public slots:
     QNetworkReply * logoutRequest();
     QNetworkReply * streamOpenRequest(const QString& subUrl, const QString& query);
 
+    void sendBugReport(QString dataServiceLog, QString dataGuiLog, QString email, QString message);
+
     void abortEncryptionInitRequest() { m_netEncryptReply->abort(); }
     void abortAuthorizeRequest()      { m_netAuthorizeReply->abort(); }
     void abortLogoutRequest()         { m_netLogoutReply->abort();  }
@@ -103,6 +106,7 @@ protected:
     QNetworkReply * m_netEncryptReply;
     QNetworkReply * m_netAuthorizeReply;
     QNetworkReply * m_netLogoutReply;
+    QNetworkReply * m_netSendBugReportReply;
 
     QMap<QString,QString> m_userInform;
 
@@ -142,6 +146,7 @@ private slots:
     void onAuthorize();
     void onKeyActivated();
     void onLogout();
+    void answerBugReport();
 signals:
     void pubKeyRequested();
     void pubKeyServerRecived();
@@ -163,6 +168,8 @@ signals:
     void usrDataChanged(const QString &addr, ushort port);
     void logoutRequested();
     void logouted();
+
+    void receivedBugReportNumber(const QString& bugReportNumber);
 };
 
 
