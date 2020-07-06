@@ -5,6 +5,8 @@
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QPushButton>
+#include <QRegExpValidator>
+#include <QMovie>
 
 #include "AdaptiveScreen.h"
 #include "vpnDefine.h"
@@ -36,16 +38,17 @@ public slots:
     void checkFieldsAndSendReport();
 
 signals:
-    void sendReportRequest();
+    void sendingBugReportRequest(const QString &a_email, const QString &a_message);
     void goBack();
 
     void wrongEmail();
     void wrongReport();
 
     void emailEdited    (const QString &email   );
-    void reportEdited   (const QString &report);
+    void reportEdited   (const QString &report  );
 
-
+    void bugReportSent  (const QString &reply   );
+    void bugReportSendingError();
 
 protected:
     /// Form initialization.
@@ -59,10 +62,22 @@ protected:
     const QString EDT_MESSAGE           = "edtMessage";
     const QString LBL_CAPTION           = "lblCaption";
     const QString VLT_BUG_REPORT        = "vltBugReport";
+    const QString LBL_GIF_LOADING       = "lblGifLoading";
+#ifndef Q_OS_ANDROID
+    const QString TEXT_BACK = tr("Back");
+    const QString TEXT_CANCEL = tr("Cancel");
+    const QString TEXT_SEND = tr("Send");
+#else
+    const QString TEXT_BACK = tr("BACK");
+    const QString TEXT_CANCEL = tr("CANCEL");
+    const QString TEXT_SEND = tr("SEND");
+#endif
 
 private:
     QString m_email;
     QString m_report_message;
+
+    QLineEdit *edtEmail;
 
     bool checkEmail();
     bool checkReport();

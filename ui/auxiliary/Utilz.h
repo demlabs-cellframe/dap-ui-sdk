@@ -6,10 +6,15 @@
 #include <QVariant>
 #include <QDebug>
 #include <QBoxLayout>
+#include <QRegularExpression>
+
 class QMainWindow;
 
 namespace Utils
 {
+    ///Returns a regular expression for the email match.
+    QRegularExpression regularEmail();
+
     QColor toColor(const QString &strRGBA);
     ///The function returns the first integer in the string.
     /// 100%=>100 100px=>100 100**=>100 100=>100
