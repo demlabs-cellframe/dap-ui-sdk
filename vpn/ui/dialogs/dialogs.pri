@@ -5,7 +5,8 @@ SOURCES += \
     $$PWD/MainScreenLayout.cpp \
     $$PWD/PasswordRecoveryScreen.cpp \
 #    $$PWD/SignUpScreen.cpp \
-    $$PWD/NavigationPanel.cpp
+    $$PWD/NavigationPanel.cpp \
+    $$PWD/desktop/ComboBoxPopupScreenBase.cpp
 
 HEADERS  += \
     $$PWD/AccountScreen.h \
@@ -14,7 +15,8 @@ HEADERS  += \
     $$PWD/MainScreenLayout.h \
     $$PWD/PasswordRecoveryScreen.h \
 #    $$PWD/SignUpScreen.h \
-    $$PWD/NavigationPanel.h
+    $$PWD/NavigationPanel.h \
+    $$PWD/desktop/ComboBoxPopupScreenBase.h
 
 !android {
     HEADERS  += \
