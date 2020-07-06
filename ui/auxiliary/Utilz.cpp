@@ -9,6 +9,11 @@
 
 namespace Utils
 {
+    QRegularExpression regularEmail()
+    {
+        return QRegularExpression("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b", QRegularExpression::CaseInsensitiveOption) ;
+    }
+
     QColor toColor(const QString &strRGBA)
     {
         QString strColor(strRGBA.simplified());
