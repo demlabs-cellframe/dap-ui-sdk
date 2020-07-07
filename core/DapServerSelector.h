@@ -16,6 +16,7 @@ public:
     DapServerSelector();
 
     bool newServerAfterNetworkError();
+    bool question(QString title, QString message);
 };
 
 #endif // DAPSERVERSELECTOR_H

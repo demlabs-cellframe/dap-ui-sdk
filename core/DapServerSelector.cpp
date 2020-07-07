@@ -5,6 +5,13 @@ DapServerSelector::DapServerSelector()
 
 }
 
+bool DapServerSelector::question(QString title, QString message)
+{
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, title, message, QMessageBox::Yes|QMessageBox::No);
+    return reply == QMessageBox::Yes;
+}
+
 bool DapServerSelector::newServerAfterNetworkError()
 {
     if (DapDataLocal::me()->m_serversForCheck.isEmpty())
