@@ -56,6 +56,7 @@ bool DapServerSelector::newServerAfterNetworkError()
                     return true;
                 }
             }
+        else return false;
     }
     QMessageBox::information(this, "Network Error", "No servers available. Contact support or send bug-report.");
     return false;
