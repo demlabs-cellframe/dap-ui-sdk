@@ -3,6 +3,7 @@
 
 #include "NavigationPanelBack.h"
 #include "MultiScreenAbstract.h"
+#include "LoginNavigationPanel.h"
 
 #include "ui_LoginScreenLayout.h"
 
@@ -18,7 +19,7 @@ public:
     static const QString SCREEN_NAME;
     virtual QString screenName() override;
 
-    NavigationPanelBack* findNavigationPanel(QWidget* a_widget = nullptr);
+    LoginNavigationPanel *findNavigationPanel(QWidget* a_widget = nullptr);
 
 protected:
     /// Form initialization.
