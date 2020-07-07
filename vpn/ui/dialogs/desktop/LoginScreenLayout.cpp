@@ -37,9 +37,5 @@ void LoginScreenLayout::initVariantUi(QWidget *a_widget)
 {
     a_widget->setObjectName("LoginScreenLayout");
     this->initChangingWidget(a_widget);
-
-    LoginNavigationPanel* panel = this->findNavigationPanel(a_widget);
-
-//    connect(panel, &LoginNavigationPanel::goBack , this, &LoginScreenLayout::goBack);
 }
 

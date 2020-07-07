@@ -35,8 +35,10 @@ SOURCES += \
         $$PWD/desktop/ComboBoxPopupScreenBase.cpp \
         $$PWD/desktop/ComboBoxPopupScreen.cpp
 
+    FORMS += \
+        $$PWD/desktop/LoginScreenLayout.ui
+
     INCLUDEPATH += $$PWD/desktop
 }
 
-
-INCLUDEPATH += $$PWD $$PWD/$$BRAND
+INCLUDEPATH += $$PWD

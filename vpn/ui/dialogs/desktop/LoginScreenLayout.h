@@ -3,6 +3,7 @@
 
 #include "NavigationPanelBack.h"
 #include "MultiScreenAbstract.h"
+#include "LoginNavigationPanel.h"
 
 #include "ui_LoginScreenLayout.h"
 
