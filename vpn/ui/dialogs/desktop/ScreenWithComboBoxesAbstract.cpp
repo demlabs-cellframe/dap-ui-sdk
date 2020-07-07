@@ -22,7 +22,7 @@ void ScreenWithComboBoxesAbstract::initVariantUi(QWidget *a_widget)
     }
 }
 
-void ScreenWithComboBoxesAbstract::setComboBoxPopupScreen(ComboBoxPopupScreen* a_popupScreen)
+void ScreenWithComboBoxesAbstract::setComboBoxPopupScreen(ComboBoxPopupScreenBase* a_popupScreen)
 {
     for (QString comboBoxName: this->comboBoxesNames())
         for (ComboBox* combo: this->getTheSameWidgets<ComboBox>(comboBoxName))
@@ -34,7 +34,7 @@ void ScreenWithComboBoxesAbstract::setComboBoxPopupScreen(ComboBoxPopupScreen* a
             popup->setParent(a_popupScreen);
             popup->setWindowType(Qt::Desktop);
             connect(a_popupScreen, SIGNAL(hidden()), popup, SLOT(allowClosingAndHide()));
-            connect(a_popupScreen, &ComboBoxPopupScreen::resized, [popup] (const QSize &a_size)
+            connect(a_popupScreen, &ComboBoxPopupScreenBase::resized, [popup] (const QSize &a_size)
             {
                 popup->resize(a_size);
             });

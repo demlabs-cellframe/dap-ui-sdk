@@ -2,7 +2,7 @@
 #define SCREENWITHCOMBOBOXESABSTRACT_H
 
 #include "AdaptiveScreen.h"
-#include "ComboBoxPopupScreen.h"
+#include "ComboBoxPopupScreenBase.h"
 
 class ScreenWithComboBoxesAbstract : public AdaptiveScreen
 {
@@ -17,7 +17,7 @@ public:
 
     virtual void initVariantUi(QWidget * a_widget) override;
 
-    virtual void setComboBoxPopupScreen(ComboBoxPopupScreen *a_screen);
+    virtual void setComboBoxPopupScreen(ComboBoxPopupScreenBase *a_screen);
 
 public :
 signals:

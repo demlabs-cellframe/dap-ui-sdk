@@ -26,16 +26,24 @@ protected:
     template<class T>
     inline void create();
 
-    inline QWidget *createEmpty();
+    template<class T>
+    inline void create(QScopedPointer<T> &a_ui);
 
+    inline QWidget *createEmpty();
 
     template<class T>
     void setupWidgetForm(QWidget * a_widget);
 
+    template<class T>
+    void setupWidgetForm(QWidget * a_widget, QScopedPointer<T> &a_ui);
+
     virtual void initVariantUi(QWidget * a_widget) = 0;
 
     template<class T>
-    QPushButton* connectBtnToSignall(const QString& a_buttonName, void (T::*signal)(), QWidget* a_widget = nullptr);
+    QPushButton* connectBtnToSignall(const QString& a_buttonName, void (T::*a_signal)(), QWidget* a_widget = nullptr);
+
+    template<class T>
+    void connectBtnToSignall(QPushButton* a_button, void (T::*a_signal)());
 
     void setChildProperties(const QString& a_objName, const QString& a_property, const QVariant& a_value);
     void updateChildStyle(const QString& a_objName);
@@ -50,6 +58,12 @@ private:
     QMap<ScreenInfo::Rotation, QWidget*> m_variants;
 
 };
+
+
+
+
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -75,29 +89,51 @@ inline void AdaptiveWidget::create()
 }
 
 template<class T>
-void AdaptiveWidget::setupWidgetForm(QWidget * a_widget)
+void AdaptiveWidget::create(QScopedPointer<T> &a_ui)
 {
-    static T * l_uiForm = nullptr;
-    delete l_uiForm;
-    l_uiForm = new T;
-    l_uiForm->setupUi(a_widget);
+    ///TODO: add horisontal rotation for mobile.
+    QWidget *currentWidget = createEmpty();
 
-    //TODO: delete l_uiForm after use
+    this->setupWidgetForm<T>(currentWidget, a_ui);
+    this->initVariantUi(currentWidget);
 }
 
 template<class T>
-QPushButton* AdaptiveWidget::connectBtnToSignall(const QString& a_buttonName, void (T::*signal)(), QWidget* a_widget /*= nullptr*/)
+void AdaptiveWidget::setupWidgetForm(QWidget * a_widget)
+{
+    QScopedPointer<T> l_uiForm(new T);
+    l_uiForm->setupUi(a_widget);
+}
+
+template<class T>
+void AdaptiveWidget::setupWidgetForm(QWidget *a_widget, QScopedPointer<T> &a_ui)
+{
+    a_ui.reset(new T);
+    a_ui->setupUi(a_widget);
+}
+
+template<class T>
+QPushButton* AdaptiveWidget::connectBtnToSignall(const QString& a_buttonName, void (T::*a_signal)(), QWidget* a_widget /*= nullptr*/)
 {
     if (!a_widget)
         a_widget = this->variant();
 
     QPushButton* button; Utils::findChild(a_widget, a_buttonName, button);
 
+    this->connectBtnToSignall(button, a_signal);
+
+    return button;
+}
+
+template<class T>
+void AdaptiveWidget::connectBtnToSignall(QPushButton *a_button, void (T::*signal)())
+{
+    Q_ASSERT(a_button);
+
     T* reciever = qobject_cast<T*>(this);
     Q_ASSERT(reciever);
 
-    connect(button, &QPushButton::clicked, reciever, signal);
-    return button;
+    connect(a_button, &QPushButton::clicked, reciever, signal);
 }
 
 template <class T /*= QWidget*/>
