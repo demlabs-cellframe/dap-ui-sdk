@@ -45,7 +45,6 @@ public:
 
     DapServerInfo* currentServer();
     void setRandomServerIfIsEmpty();
-    bool newServerAfterNetworkError();
     void clearCurrentServer();
 
     QString locationToIconPath(DapServerLocation loc);
@@ -95,7 +94,6 @@ public slots:
 
 
     void rotateCDBList();
-
 signals:
     /// Signal emitted if login has changed.
     /// @param login Login.
