@@ -1,4 +1,5 @@
 #include "SignUpScreen.h"
+#include "QRegularExpressionValidator"
 
 
 const QString SignUpScreen::SCREEN_NAME = "SignUp";

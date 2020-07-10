@@ -1,4 +1,5 @@
 #include "PasswordRecoveryScreen.h"
+#include "QRegularExpressionValidator"
 
 const QString PasswordRecoveryScreen::SCREEN_NAME = "PasswordRecovery";
 
