@@ -1,6 +1,6 @@
 QT += core network xml
-#INCLUDEPATH += ../libdap/include ../libdap/src
 #INCLUDEPATH += ../libdap-crypto/include  ../libdap-crypto/src
+include (../quazip/quazip.pri)
 
 SOURCES += \
     $$PWD/DapBugReport.cpp \
@@ -40,5 +40,6 @@ win32{
     QMAKE_CXXFLAGS +=  -mno-ms-bitfields
 }
 
+INCLUDEPATH += $$PWD/../quazip
 
 

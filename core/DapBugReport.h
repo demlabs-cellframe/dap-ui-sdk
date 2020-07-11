@@ -8,21 +8,22 @@
 #include <QFileInfo>
 #include <QDir>
 #include "DapDataLocal.h"
+#include "JlCompress.h"
 
 class DapBugReport
 {
 public:
     DapBugReport();
 
-    QString getDataLogService(){return logService;}
-    QString getDataLogGui(){return logGui;}
+    void createZipDataBugReport(QString email, QString message);
+    QByteArray getDataZipFile(){return byteArrayZipFile;}
 
 private:
-    QString logService = "";
-    QString logGui = "";
+    QByteArray byteArrayZipFile;
 
-    bool runScriptPackaging(QString path);
-    QString retLastModifyFile(QString path);
+//    bool runScriptPackaging(QString path);
+//    QString retLastModifyFile(QString path);
+
 
 };
 
