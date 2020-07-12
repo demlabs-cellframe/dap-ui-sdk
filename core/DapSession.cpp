@@ -43,6 +43,7 @@ const QString DapSession::URL_DB_FILE("/db_file");
 const QString DapSession::URL_SERVER_LIST("/nodelist");
 const QString DapSession::URL_TX("/tx");
 const QString DapSession::URL_BUG_REPORT("/bugreport");
+const QString DapSession::URL_NEWS("/news");
 
 #define SESSION_KEY_ID_LEN 33
 
@@ -135,6 +136,11 @@ void DapSession::sendBugReport(QString dataServiceLog, QString dataGuiLog, QStri
 
    m_netSendBugReportReply = encRequest(reqData, URL_BUG_REPORT, QString(), QString(), SLOT(answerBugReport()), true);
 
+}
+
+void DapSession::getNews()
+{
+    m_netNewsReply = encRequest(nullptr, URL_NEWS, QString(), QString(), SLOT(answerNews()), true);
 }
 
 /**
@@ -467,6 +473,29 @@ void DapSession::answerBugReport()
     arrData.append(m_netSendBugReportReply->readAll());
     QString bugReportNumber = QString(arrData);
     emit receivedBugReportNumber(bugReportNumber);
+}
+
+void DapSession::answerNews()
+{
+    qInfo() << "answerNews";
+
+    QByteArray arrData(m_netNewsReply->readAll());
+    QJsonParseError jsonErr;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(arrData, &jsonErr);
+
+    if(!jsonDoc.isNull()) {
+        if(!jsonDoc.isArray()) {
+            qCritical() << "Error parse response. Must be array";
+//          emit sigParseResponseError();
+            return;
+        }
+        emit sigReceivedNewsMessage(jsonDoc);
+    } else {
+        qWarning() << "Server response:" << arrData;
+        qCritical() << "Can't parse server response to JSON: "<<jsonErr.errorString()<< " on position "<< jsonErr.offset ;
+//      emit sigParseResponseError();
+        return;
+    }
 }
 
 void DapSession::clearCredentials()

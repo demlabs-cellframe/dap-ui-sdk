@@ -13,6 +13,7 @@ void DapCmdSendBugReport::sendingBugReportRequest(const QString &email, const QS
     obj["message"] = message;
     sendCmd(&obj);
 }
+
 void DapCmdSendBugReport::handleResult(const QJsonObject& result)
 {
     QString request = result.value("bugreport_answer").toString();
