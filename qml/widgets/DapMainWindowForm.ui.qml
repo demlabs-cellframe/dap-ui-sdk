@@ -20,6 +20,9 @@ Rectangle
 
     property Rectangle dapLeftMenuBackground
     property Rectangle dapLeftRectangleBackground
+
+    property int dapMainRowSpacing: 0 * pt
+    property int dapMainColumnSpacing: 0 * pt
     
     anchors.fill: parent
 
@@ -35,6 +38,7 @@ Rectangle
     {
         id: columnMainWindow
         anchors.fill: parent
+        spacing: dapMainColumnSpacing
 
         // The horizontal location of the virtual menu column and tab view loader
         Row
@@ -42,6 +46,7 @@ Rectangle
             id: rowMainWindow
             width: columnMainWindow.width
             height: columnMainWindow.height - dapStatusBarWidget.height
+            spacing: dapMainRowSpacing
 
             Rectangle
             {
