@@ -16,7 +16,7 @@ Rectangle
     ///@detalis Path to the selected tab.
     property string pathScreen
 
-    color: "#070023"
+    color: "transparent"
     focus: true
 
     // Install the widget of the main menu panel
