@@ -9,7 +9,7 @@ class DapLogHandler : public QObject
     Q_OBJECT
 public:
 
-    explicit DapLogHandler(QString logPath, QObject *parent = nullptr);
+    explicit DapLogHandler(const QString& logPath, QObject *parent = nullptr);
 
 
 signals:

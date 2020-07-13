@@ -36,7 +36,7 @@ void DapTunAndroid::tunDeviceCreate()
 
 void DapTunAndroid::tunDeviceDestroy()
 {
-    QtAndroid::androidService().callMethod<void>("stopDapVpnServiceNative", "()V");
+    QtAndroid::androidService().callMethod<void>("stopDapChainVpnServiceNative", "()V");
     qInfo() << "Close tun device (and usualy destroy that after)";
     if(m_tunSocket>0){
         ::close(m_tunSocket);
