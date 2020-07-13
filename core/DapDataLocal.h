@@ -8,6 +8,7 @@
 #include <QSettings>
 #include "DapServerInfo.h"
 #include "DapKeyAes.h"
+#include "DapBugReportData.h"
 
 #define SERVER_LIST_FILE "vpn-servers.xml"
 
@@ -71,6 +72,11 @@ public:
     void saveSecretString(QString, QString);
     QString getSecretString(QString);
 
+    static QVariant getSetting (const QString& a_setting);
+    static void     saveSetting(const QString& a_setting, const QVariant& a_value);
+
+    DapBugReportData *bugReportData();
+
     const QString TEXT_SERIAL_KEY   = "serialkey";
     const QString TEXT_LOGIN        = "login";
     const QString TEXT_PASSWORD     = "password";
@@ -79,15 +85,14 @@ public:
 public slots:
     void setCurrentServer(int a_serverIndex);
     void setCurrentServer(DapServerInfo* a_server);
+    void setServerName(const QString &serverName);
 
     void setLogin(const QString &a_login);
 
     void setSerialKey(const QString &a_serialKey);
     void setPassword(const QString &password);
-    void setServerName(const QString &serverName);
 
     void saveAuthorizationDatas();
-
 
     void rotateCDBList();
 signals:
@@ -110,11 +115,13 @@ signals:
 
 
 protected:
-    QString     m_login;      ///< Login.
-    QString     m_password;   ///< Password.
-    QString     m_serverName; ///< Server name.
+    QString m_login;      ///< Login.
+    QString m_password;   ///< Password.
+    QString m_serverName; ///< Server name.
 
-    QString     m_serialKey;  ///< Serial key.
+    QString m_serialKey;  ///< Serial key.
+
+    DapBugReportData m_bugReportData;
 
     QList<QString> m_cdbServersList;
     QString     m_networkDefault;
