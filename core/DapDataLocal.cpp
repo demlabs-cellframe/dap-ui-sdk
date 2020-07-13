@@ -43,7 +43,6 @@ void DapDataLocal::parseXML(const QString& a_fname)
         return;
     }
     qDebug() << "data.xml opened, size "<< file.size();
-
     QXmlStreamReader *sr = new QXmlStreamReader(&file);
     if(sr->readNextStartElement()){
         if(sr->name() == "data"){
@@ -160,18 +159,6 @@ void DapDataLocal::setCurrentServer(DapServerInfo *a_server)
 
     emit this->serverNameChanged(a_server ? a_server->name : "");
 }
-
-void DapDataLocal::setRandomServerIfIsEmpty()
-{
-    if (!currentServer())
-    {
-        qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
-        int randIndex = qrand()%(this->servers().count());
-        this->setCurrentServer(randIndex);
-        qDebug()<<"Random server chosed:" << this->currentServerName();
-    }
-}
-
 
 /// Get login.
 /// @return Login.

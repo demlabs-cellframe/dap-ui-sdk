@@ -25,7 +25,7 @@ void BugReportWithEmailScreen::initVariantUi(QWidget *a_widget)
     Q_UNUSED(a_widget);
 
     this->BugReportScreenBase::initVariantUi(a_widget);
-#ifdef Q_OS_ANDROID
+#ifdef ANDROID
     m_ui->edtEmail->setPlaceholderText(tr("e-mail"));
 #elif defined(Q_OS_MAC)
     m_ui->edtEmail->setAttribute(Qt::WA_MacShowFocusRect,false);
@@ -59,7 +59,5 @@ bool BugReportWithEmailScreen::checkEmail()
 
 bool BugReportWithEmailScreen::checkFields()
 {
-    return true;
-
     return (this->checkEmail() && this->BugReportScreenBase::checkFields());
 }

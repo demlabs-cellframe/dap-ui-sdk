@@ -17,10 +17,14 @@ void BugReportScreenBase::initVariantUi(QWidget *a_widget)
 #ifdef ANDROID
     m_ui->btnSend->setText(tr("SEND REPORT"));
     QScroller::grabGesture(m_ui->edtMessage->viewport(), QScroller::LeftMouseButtonGesture);
-#elif defined(Q_OS_MAC)
-    m_ui->edtMessage->setAttribute(Qt::WA_MacShowFocusRect,false);
 #else
-    m_ui->btnSend->setGraphicsEffect(new StyledDropShadowEffect(m_ui->btnSend));
+    m_ui->layBugReportScreen->setAlignment(m_ui->frmBugReport, Qt::AlignHCenter);
+
+    #if defined(Q_OS_MAC)
+        m_ui->edtMessage->setAttribute(Qt::WA_MacShowFocusRect,false);
+    #else
+        m_ui->btnSend->setGraphicsEffect(new StyledDropShadowEffect(m_ui->btnSend));
+    #endif
 #endif
 
 
