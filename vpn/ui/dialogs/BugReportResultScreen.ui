@@ -53,7 +53,7 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item>
+      <item alignment="Qt::AlignHCenter">
        <widget class="QLabel" name="lblCaption">
         <property name="text">
          <string>Bug report</string>
@@ -63,7 +63,7 @@
         </property>
        </widget>
       </item>
-      <item>
+      <item alignment="Qt::AlignHCenter">
        <widget class="CustomLineHeightLabel" name="lblStatusMessage">
         <property name="alignment">
          <set>Qt::AlignCenter</set>

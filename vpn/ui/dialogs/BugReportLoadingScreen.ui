@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>82</width>
-    <height>125</height>
+    <width>199</width>
+    <height>284</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -53,7 +53,7 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item>
+      <item alignment="Qt::AlignHCenter">
        <widget class="QLabel" name="lblCaption">
         <property name="text">
          <string>Bug report</string>
@@ -63,7 +63,7 @@
         </property>
        </widget>
       </item>
-      <item>
+      <item alignment="Qt::AlignHCenter">
        <widget class="CustomLineHeightLabel" name="lblStatusMessage">
         <property name="text">
          <string>Sending...</string>
