@@ -14,6 +14,36 @@ namespace Utils
         return QRegularExpression("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b", QRegularExpression::CaseInsensitiveOption) ;
     }
 
+
+    int getNumberVersion(const QString &version,TypeVersion type)
+    {
+        int minVersion(0);
+        int majVersion(0);
+        int patVersion(0);
+
+        QStringList versionList = version.split(".");
+        if(!versionList[0].isEmpty())
+            majVersion = versionList[0].toInt();
+        if(versionList.count()>1)
+        {
+            QStringList minVersionList = versionList[1].split("-");
+            if(!minVersionList[0].isEmpty())
+                minVersion = minVersionList[0].toInt();
+            if(minVersionList.count()>1)
+                if(!minVersionList[1].isEmpty())
+                    patVersion = minVersionList[1].toInt();
+        }
+
+        if(type == TypeVersion::MAJOR)
+            return majVersion;
+        if(type == TypeVersion::MINOR)
+            return minVersion;
+        if(type == TypeVersion::PAT)
+            return patVersion;
+
+        return 0;
+    }
+
     QColor toColor(const QString &strRGBA)
     {
         QString strColor(strRGBA.simplified());
