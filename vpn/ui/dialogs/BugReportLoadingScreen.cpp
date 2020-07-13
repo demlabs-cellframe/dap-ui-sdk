@@ -22,7 +22,7 @@ void BugReportLoadingScreen::initVariantUi(QWidget *a_widget)
 #ifdef ANDROID
     m_ui->btnCancel->setText("CANCEL");
 #else
-    btnSend->btnCancel(new StyledDropShadowEffect(btnSend));
+    m_ui->btnCancel->setGraphicsEffect(new StyledDropShadowEffect(m_ui->btnCancel));
 #endif
     m_ui->lblGifLoading->setMovie(&m_movie);
     this->connectBtnToSignall(this->m_ui->btnCancel, &BugReportLoadingScreen::cancelled);
