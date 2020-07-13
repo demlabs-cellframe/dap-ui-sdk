@@ -4,6 +4,7 @@ QT += core network xml
 
 SOURCES += \
     $$PWD/DapBugReport.cpp \
+    $$PWD/DapBugReportData.cpp \
     $$PWD/DapDataLocal.cpp \
     $$PWD/DapLogHandler.cpp \
     $$PWD/DapSession.cpp \
@@ -19,6 +20,7 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/DapBugReport.h \
+    $$PWD/DapBugReportData.h \
     $$PWD/DapDataLocal.h \
     $$PWD/DapLogHandler.h \
     $$PWD/DapSession.h \

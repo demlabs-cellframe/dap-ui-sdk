@@ -10,7 +10,4 @@ enum ConnectionStates {
     ServerChanging = 4
 };
 
-
-
-
 #endif // VPNDEFINE_H
