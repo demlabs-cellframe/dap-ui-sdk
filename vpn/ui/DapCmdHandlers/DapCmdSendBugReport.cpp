@@ -6,11 +6,11 @@ DapCmdSendBugReport::DapCmdSendBugReport(QObject *parent)
 
 }
 
-void DapCmdSendBugReport::sendingBugReportRequest(const QString &email, const QString &message)
+void DapCmdSendBugReport::sendBugReport(const QString &a_message, const QString &a_email /*= ""*/)
 {
     QJsonObject obj;
-    obj["email"] = email;
-    obj["message"] = message;
+    obj["email"] = a_email;
+    obj["message"] = a_message;
     sendCmd(&obj);
 }
 

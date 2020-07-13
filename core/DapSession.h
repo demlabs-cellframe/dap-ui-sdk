@@ -86,7 +86,7 @@ public slots:
     QNetworkReply * logoutRequest();
     QNetworkReply * streamOpenRequest(const QString& subUrl, const QString& query);
 
-    void sendBugReport(QString dataServiceLog, QString dataGuiLog, QString email, QString message);
+    void sendBugReport(const QByteArray &data);
     void getNews();
 
     void abortEncryptionInitRequest() { m_netEncryptReply->abort(); }

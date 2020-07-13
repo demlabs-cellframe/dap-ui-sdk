@@ -1,9 +1,10 @@
 QT += core network xml
-#INCLUDEPATH += ../libdap/include ../libdap/src
 #INCLUDEPATH += ../libdap-crypto/include  ../libdap-crypto/src
+include (../quazip/quazip.pri)
 
 SOURCES += \
     $$PWD/DapBugReport.cpp \
+    $$PWD/DapBugReportData.cpp \
     $$PWD/DapDataLocal.cpp \
     $$PWD/DapLogHandler.cpp \
     $$PWD/DapSession.cpp \
@@ -19,6 +20,7 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/DapBugReport.h \
+    $$PWD/DapBugReportData.h \
     $$PWD/DapDataLocal.h \
     $$PWD/DapLogHandler.h \
     $$PWD/DapSession.h \
@@ -40,5 +42,6 @@ win32{
     QMAKE_CXXFLAGS +=  -mno-ms-bitfields
 }
 
+INCLUDEPATH += $$PWD/../quazip
 
 

@@ -22,7 +22,7 @@ public:
     explicit DapCmdSendBugReport(QObject *parent = nullptr);
     virtual ~DapCmdSendBugReport() override { }
 
-    void sendingBugReportRequest(const QString &address, const QString &message);
+    void sendBugReport(const QString &a_message, const QString &a_email = "");
 signals:
     void sigBugReportSent(const QString& bugReportNumber);
     void sigBugReportSendingError();
