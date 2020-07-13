@@ -129,12 +129,9 @@ QNetworkReply* DapSession::encryptInitRequest()
     return requestServerPublicKey();
 }
 
-void DapSession::sendBugReport(QString dataServiceLog, QString dataGuiLog, QString email, QString message){
-
-   QString reqData = dataServiceLog + ":@:" + dataGuiLog + ":@:" + email + ":@:" + message;
-
-   m_netSendBugReportReply = encRequest(reqData, URL_BUG_REPORT, QString(), QString(), SLOT(answerBugReport()), true);
-
+void DapSession::sendBugReport(const QByteArray &data)
+{
+   m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(), SLOT(answerBugReport()));
 }
 
 /**
