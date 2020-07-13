@@ -28,7 +28,7 @@ void DapBugReportData::setMessage(const QString &a_message)
         return;
 
     m_message = a_message;
-    emit this->messageChanged(a_message);
+//    emit this->messageChanged(a_message);
 }
 
 void DapBugReportData::setEmail(const QString &a_email)

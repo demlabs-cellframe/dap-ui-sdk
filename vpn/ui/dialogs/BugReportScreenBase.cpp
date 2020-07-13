@@ -29,7 +29,8 @@ void BugReportScreenBase::initVariantUi(QWidget *a_widget)
     });
 
     connect(this->m_ui->edtMessage, &CustomTextEdit::textChanged, [=](){
-        emit this->messageChanged(m_ui->edtMessage->toPlainText());
+        QString str = m_ui->edtMessage->toPlainText();
+        emit this->messageChanged(str);
         Utils::setPropertyAndUpdateStyle(m_ui->edtMessage, Properties::WRONG, false);
     });
 
