@@ -14,47 +14,83 @@ Rectangle
     ///@detalis Menu bar widget.
     property Item dapMenuWidget
     ///@detalis screen downloader widget.
-    property Item dabScreensWidget
+    property Item dapScreensWidget
+    ///@detalis status bar widget.
+    property Item dapStatusBarWidget
+
+    property Rectangle dapLeftMenuBackground
+    property Rectangle dapLeftRectangleBackground
     
     anchors.fill: parent
 
-    // The horizontal location of the virtual menu column and tab view loader
-    Row
+    Rectangle
     {
-        id: rowMainWindow
-
+        id: leftBackground
+        width: dapLeftRectangleBackground.width
+        height: dapLeftRectangleBackground.height
+        color: dapLeftRectangleBackground.color
+    }
+    // The vertical location of virtual menu with Screen downloader widget and Status Bar
+    Column
+    {
+        id: columnMainWindow
         anchors.fill: parent
 
-        // Virtual logo column frame and menu bar
-        Column
+        // The horizontal location of the virtual menu column and tab view loader
+        Row
         {
-            id: columnMenuTab
-            height: rowMainWindow.height
-            // Logotype widget
-            Item
+            id: rowMainWindow
+            width: columnMainWindow.width
+            height: columnMainWindow.height - dapStatusBarWidget.height
+
+            Rectangle
             {
-                id: logotype
-                data: dapLogotype
-                width: columnMenuTab.width
-                height: dapLogotype.height
+                id: leftMenuBackground
+                width: dapLeftMenuBackground.width
+                height: dapLeftMenuBackground.height
+                color: dapLeftMenuBackground.color
+                radius: dapLeftMenuBackground.radius
+
+                // Virtual logo column frame and menu bar
+                Column
+                {
+                    id: columnMenuTab
+                    height: rowMainWindow.height
+                    // Logotype widget
+                    Item
+                    {
+                        id: logotype
+                        data: dapLogotype
+                        width: columnMenuTab.width
+                        height: dapLogotype.height
+                    }
+                    // Menu bar widget
+                    Item
+                    {
+                        id: menuWidget
+                        data: dapMenuWidget
+                        width: dapMenuWidget.width
+                        height: rowMainWindow.height - logotype.height
+                    }
+                }
             }
-            // Menu bar widget
-            Item
-            {
-                id: menuWidget
-                data: dapMenuWidget
-                width: dapMenuWidget.width
-                height: columnMenuTab.height - logotype.height
-            }
+
+
+                // Screen downloader widget
+                Item
+                {
+                    id: screens
+                    data: dapScreensWidget
+                    height: rowMainWindow.height
+                    width: rowMainWindow.width - columnMenuTab.width
+                }
         }
-        
-        // Screen downloader widget
-        Item
+       Item
         {
-            id: screens
-            data: dabScreensWidget
-            height: rowMainWindow.height
-            width: rowMainWindow.width - columnMenuTab.width
+            id: statusBarWidget
+            data: dapStatusBarWidget
+            width: columnMainWindow.width
+            height: dapStatusBarWidget.height
         }
     }
 }
