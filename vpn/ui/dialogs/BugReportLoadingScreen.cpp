@@ -19,8 +19,10 @@ QString BugReportLoadingScreen::screenName()
 
 void BugReportLoadingScreen::initVariantUi(QWidget *a_widget)
 {
-#ifndef ANDROID
-    btnSend->setGraphicsEffect(new StyledDropShadowEffect(btnSend));
+#ifdef ANDROID
+    m_ui->btnCancel->setText("CANCEL");
+#else
+    btnSend->btnCancel(new StyledDropShadowEffect(btnSend));
 #endif
     m_ui->lblGifLoading->setMovie(&m_movie);
     this->connectBtnToSignall(this->m_ui->btnCancel, &BugReportLoadingScreen::cancelled);
