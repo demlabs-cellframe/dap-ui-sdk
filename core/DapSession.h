@@ -47,6 +47,7 @@ public:
     static const QString URL_SERVER_LIST;
     static const QString URL_TX;
     static const QString URL_BUG_REPORT;
+    static const QString URL_NEWS;
 
     DapSession(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
     ~DapSession();
@@ -85,7 +86,8 @@ public slots:
     QNetworkReply * logoutRequest();
     QNetworkReply * streamOpenRequest(const QString& subUrl, const QString& query);
 
-    void sendBugReport(QString dataServiceLog, QString dataGuiLog, QString email, QString message);
+    void sendBugReport(const QByteArray &data);
+    void getNews();
 
     void abortEncryptionInitRequest() { m_netEncryptReply->abort(); }
     void abortAuthorizeRequest()      { m_netAuthorizeReply->abort(); }
@@ -107,6 +109,7 @@ protected:
     QNetworkReply * m_netAuthorizeReply;
     QNetworkReply * m_netLogoutReply;
     QNetworkReply * m_netSendBugReportReply;
+    QNetworkReply * m_netNewsReply;
 
     QMap<QString,QString> m_userInform;
 
@@ -147,6 +150,7 @@ private slots:
     void onKeyActivated();
     void onLogout();
     void answerBugReport();
+    void answerNews();
 signals:
     void pubKeyRequested();
     void pubKeyServerRecived();
@@ -170,6 +174,7 @@ signals:
     void logouted();
 
     void receivedBugReportNumber(const QString& bugReportNumber);
+    void sigReceivedNewsMessage(const QJsonDocument& news);
 };
 
 

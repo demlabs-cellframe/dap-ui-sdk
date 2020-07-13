@@ -267,23 +267,41 @@ void DapDataLocal::rotateCDBList() {
     }
 }
 
-void DapDataLocal::saveSecretString(QString key, QString string){
+QString DapDataLocal::getSecretString(QString key)
+{
+    QByteArray stringIn = DapDataLocal::getSetting(key).toByteArray();
+    QByteArray stringOut;
 
-    QSettings settings;
-    initSecretKey();
-    QByteArray tempStringIn = string.toUtf8(), tempStringOut;
-    secretKey->encode(tempStringIn, tempStringOut);
-    settings.setValue(key, tempStringOut);
-}
-
-QString DapDataLocal::getSecretString(QString key){
-    QSettings settings;
-    QByteArray stringIn = settings.value(key).toByteArray(), stringOut;
     if (stringIn.isEmpty())
         return "";
     initSecretKey();
     secretKey->decode(stringIn, stringOut);
     return QString(stringOut);
+}
+
+void DapDataLocal::saveSecretString(QString key, QString string)
+{
+    initSecretKey();
+    QByteArray tempStringIn = string.toUtf8(), tempStringOut;
+    secretKey->encode(tempStringIn, tempStringOut);
+    DapDataLocal::saveSetting(key, tempStringOut);
+}
+
+QVariant DapDataLocal::getSetting(const QString &a_setting)
+{
+    QSettings settings;
+    return settings.value(a_setting);
+}
+
+void DapDataLocal::saveSetting(const QString &a_setting, const QVariant &a_value)
+{
+    QSettings settings;
+    settings.setValue(a_setting, a_value);
+}
+
+DapBugReportData *DapDataLocal::bugReportData()
+{
+    return &m_bugReportData;
 }
 
 bool DapDataLocal::initSecretKey(){

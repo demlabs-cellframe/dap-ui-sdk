@@ -15,6 +15,10 @@ namespace Utils
     ///Returns a regular expression for the email match.
     QRegularExpression regularEmail();
 
+    ///Returns the required version type
+    enum TypeVersion{MAJOR,MINOR,PAT};
+    int getNumberVersion(const QString &version,TypeVersion type);
+
     QColor toColor(const QString &strRGBA);
     ///The function returns the first integer in the string.
     /// 100%=>100 100px=>100 100**=>100 100=>100
