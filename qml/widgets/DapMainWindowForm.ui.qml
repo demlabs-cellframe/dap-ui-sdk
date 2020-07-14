@@ -45,7 +45,7 @@ Rectangle
         {
             id: rowMainWindow
             width: columnMainWindow.width
-            height: columnMainWindow.height - dapStatusBarWidget.height
+            height: columnMainWindow.height - dapStatusBarWidget.height - dapMainColumnSpacing
             spacing: dapMainRowSpacing
 
             Rectangle
