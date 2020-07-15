@@ -80,7 +80,7 @@ void SignUpScreen::initVariantUi(QWidget *a_widget)
     m_edtEmail->setValidator(new QRegularExpressionValidator(Utils::regularEmail(), this));
 
 #ifdef Q_OS_MAC
-    edtEmail->setAttribute(Qt::WA_MacShowFocusRect,false);
+    m_edtEmail->setAttribute(Qt::WA_MacShowFocusRect,false);
     m_edtPassword->setAttribute(Qt::WA_MacShowFocusRect,false);
     m_edtRptPassword->setAttribute(Qt::WA_MacShowFocusRect,false);
 #endif

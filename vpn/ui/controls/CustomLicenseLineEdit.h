@@ -23,13 +23,18 @@ public:
 
     QString text() const;
 
+#ifdef Q_OS_ANDROID
+    QString getText(){return m_serial;}
+#endif
+
 signals:
     void sigPasteAllLicense(QString license);
 
     void onFocusLicense();
-    ///Indicates the need to switch focus to a widget such as a button. Made for Android because of the features of the input fields.
+    //Indicates the need to switch focus to a widget such as a button. Made for Android because of the features of the input fields.
     void focusOutNeeded();
-
+    //Called for any loss of focus.
+    void focusOutLicense();
 public slots:
     virtual void paste();
 
@@ -44,6 +49,7 @@ protected:
 
 private:
     QString m_serial;
+
     ///A key indicating that the focus appeared at the click of the mouse (tap on the screen). Made for Android.
     bool m_focusFromMouse = false;
 #endif
