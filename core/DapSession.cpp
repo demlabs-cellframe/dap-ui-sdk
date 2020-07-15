@@ -155,7 +155,8 @@ void DapSession::onEnc()
         if(m_netEncryptReply->error() == QNetworkReply::NoError) {
             qCritical() << "No error and empty buffer!";
         } else {
-            errorSlt(m_netEncryptReply->error());
+            //errorSlt(m_netEncryptReply->error());
+            emit errorNetwork(m_netEncryptReply->errorString());
         }
         return;
     }
@@ -475,7 +476,10 @@ void DapSession::answerBugReport()
 void DapSession::answerNews()
 {
     qInfo() << "answerNews";
-
+    if(m_netNewsReply->error() != QNetworkReply::NetworkError::NoError) {
+        emit errorNetwork(m_netNewsReply->errorString());
+        return;
+    }
     QByteArray arrData(m_netNewsReply->readAll());
     QJsonParseError jsonErr;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(arrData, &jsonErr);
@@ -531,9 +535,13 @@ QNetworkReply * DapSession::encRequest(const QString& reqData, const QString& ur
     QNetworkReply * netReply = encRequest(reqData, url, subUrl, query, isCDB);
 
     connect(netReply, SIGNAL(finished()), obj, slot);
-    connect(netReply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this,SLOT(errorSlt(QNetworkReply::NetworkError)));
-
+    /*connect(netReply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this,SLOT(errorSlt(QNetworkReply::NetworkError)));*/
+    /*connect(netReply, static_cast<void(QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error), [=] {
+        if ((netReply->error() != QNetworkReply::NetworkError::NoError) && !netReply->isFinished()) {
+            netReply->close();
+        }
+    });*/
     return netReply;
 }
 
@@ -543,8 +551,11 @@ QNetworkReply * DapSession::encRequestRaw(const QByteArray& bData, const QString
     QNetworkReply * netReply = encRequestRaw(bData, url, subUrl, query);
 
     connect(netReply, SIGNAL(finished()), obj, slot);
-    connect(netReply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this,SLOT(errorSlt(QNetworkReply::NetworkError)));
+    connect(netReply, static_cast<void(QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error), [=] {
+        if ((netReply->error() != QNetworkReply::NetworkError::NoError) && netReply->isRunning()) {
+            netReply->abort();
+        }
+    });
     return netReply;
 }
 
@@ -608,7 +619,7 @@ QNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const QBy
  * @brief DapSession::errorSlt
  * @param error
  */
-void DapSession::errorSlt(QNetworkReply::NetworkError error)
+/*void DapSession::errorSlt(QNetworkReply::NetworkError error)
 {
     qWarning() << "Error: " << error;
     switch(error) {
@@ -648,4 +659,4 @@ void DapSession::errorSlt(QNetworkReply::NetworkError error)
             emit errorNetwork(tr("Undefined network error"));
         }
     }
-}
+}*/

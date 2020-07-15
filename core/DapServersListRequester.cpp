@@ -32,4 +32,9 @@ DapServersListNetworkReply::DapServersListNetworkReply(QNetworkReply *networkRep
             emit sigNetworkError(networkReply->error());
         }
     });
+    /*connect(networkReply, static_cast<void(QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error), [=] {
+        if (networkReply->isRunning()) {
+            networkReply->abort();
+        }
+    });*/
 }

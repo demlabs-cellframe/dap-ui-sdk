@@ -40,6 +40,7 @@ void DapIndicatorTunnel::initAllowedSubstatesTransitions()
 
     // need add error state for tunnelConfigrud
     addAllowedSubstatesTransitions(tunnelConfigured, tunnelClosing);
+    addAllowedSubstatesTransitions(tunnelConfiguring, tunnelClosing);
 
     // True =>
     addAllowedSubstatesTransitions(tunnelClosing, tunnelClosed);
