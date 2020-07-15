@@ -8,6 +8,7 @@ HEADERS  += \
     $$PWD/MainScreen.h \
     $$PWD/MainScreenLayout.h \
     $$PWD/PasswordRecoveryScreen.h \
+    $$PWD/ScreenWithCustomComboBoxesAbstract.h \
     $$PWD/StartScreen.h \
     $$PWD/NavigationPanel.h \
     $$PWD/SignUpScreen.h \
@@ -25,6 +26,7 @@ SOURCES += \
     $$PWD/MainScreenLayout.cpp \
     $$PWD/PasswordRecoveryScreen.cpp \
     $$PWD/NavigationPanel.cpp \
+    $$PWD/ScreenWithCustomComboBoxesAbstract.cpp \
     $$PWD/StartScreen.cpp \
     $$PWD/SignUpScreen.cpp \
     $$PWD/TermsOfUseScreen.cpp \
@@ -32,13 +34,13 @@ SOURCES += \
 
 !android {
     HEADERS  += \
-        $$PWD/desktop/ScreenWithComboBoxesAbstract.h \
+        $$PWD/desktop/ScreenWithScreenComboBoxesAbstract.h \
         $$PWD/desktop/LoginScreenLayout.h \
         $$PWD/desktop/ComboBoxPopupScreenBase.h \
         $$PWD/desktop/ComboBoxPopupScreen.h
 
     SOURCES += \
-        $$PWD/desktop/ScreenWithComboBoxesAbstract.cpp \
+        $$PWD/desktop/ScreenWithScreenComboBoxesAbstract.cpp \
         $$PWD/desktop/LoginScreenLayout.cpp \
         $$PWD/desktop/ComboBoxPopupScreenBase.cpp \
         $$PWD/desktop/ComboBoxPopupScreen.cpp

@@ -31,7 +31,6 @@ void ScreenComboBoxPopup::initVariantUi(QWidget *a_widget)
     this->CustomComboBoxPopup::initVariantUi(a_widget);
 }
 
-#ifndef ANDROID
 void ScreenComboBoxPopup::setVisible(bool a_visible)
 {
     if (!a_visible && !m_canBeHidden)
@@ -50,4 +49,3 @@ void ScreenComboBoxPopup::allowClosingAndHide()
     m_canBeHidden = true;
     this->hide();
 }
-#endif
