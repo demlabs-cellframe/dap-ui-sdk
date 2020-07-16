@@ -98,7 +98,7 @@ QNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath,
                                                             urlPath, false, &headers);
     }
 
-    DapReplyTimeout::set(result, m_requestTimeout);
+    DapReplyTimeout::set(result, (isCDB && data) ? (2 * m_requestTimeout) : m_requestTimeout);
     return result;
 }
 
