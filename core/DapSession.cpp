@@ -467,6 +467,10 @@ void DapSession::onLogout()
 void DapSession::answerBugReport()
 {
     qInfo() << "answerBugReport";
+    if(m_netSendBugReportReply->error() != QNetworkReply::NetworkError::NoError) {
+        emit errorNetwork(m_netSendBugReportReply->errorString());
+        return;
+    }
     QByteArray arrData;
     arrData.append(m_netSendBugReportReply->readAll());
     QString bugReportNumber = QString(arrData);
@@ -551,11 +555,11 @@ QNetworkReply * DapSession::encRequestRaw(const QByteArray& bData, const QString
     QNetworkReply * netReply = encRequestRaw(bData, url, subUrl, query);
 
     connect(netReply, SIGNAL(finished()), obj, slot);
-    connect(netReply, static_cast<void(QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error), [=] {
+    /*connect(netReply, static_cast<void(QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error), [=] {
         if ((netReply->error() != QNetworkReply::NetworkError::NoError) && netReply->isRunning()) {
             netReply->abort();
         }
-    });
+    });*/
     return netReply;
 }
 
