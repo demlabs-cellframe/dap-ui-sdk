@@ -14,13 +14,16 @@ public:
 
     virtual QString screenName() override = 0;
 
+public slots:
+    virtual void closeComboBoxesPopups();
+
 protected:
     virtual QList<ComboBox*> customComboBoxes() = 0;
 
     virtual void initVariantUi(QWidget * a_widget) override;
 
     virtual void connectComboBox(ComboBox* a_comboBox);
-public :
+
 signals:
     void comboBoxPopupOpened();
     void comboBoxPopupClosed();
