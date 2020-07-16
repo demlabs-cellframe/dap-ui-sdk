@@ -37,7 +37,7 @@ void DapBugReportData::setEmail(const QString &a_email)
         return;
 
     m_email = a_email;
-    emit this->emailChanged(a_email);
+//    emit this->emailChanged(a_email);
 }
 
 void DapBugReportData::saveDatas() const

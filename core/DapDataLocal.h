@@ -45,7 +45,6 @@ public:
     void setServerTheBest(const DapServerInfo& server);
 
     DapServerInfo* currentServer();
-    void setRandomServerIfIsEmpty();
 
     QString locationToIconPath(DapServerLocation loc);
 
