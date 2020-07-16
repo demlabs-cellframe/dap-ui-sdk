@@ -4,6 +4,9 @@
 #include "DapLogger.h"
 #include "DapDataLocal.h"
 #include <iostream>
+#ifdef Q_OS_WIN
+#include "registry.h"
+#endif
 
 DapLogger::DapLogger(QObject *parent, size_t prefix_width)
     : QObject(parent)
