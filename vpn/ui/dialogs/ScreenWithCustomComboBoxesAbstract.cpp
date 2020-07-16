@@ -3,7 +3,7 @@
 #include "ScreenComboBox.h"
 #include "ScreenComboBoxPopup.h"
 
-const QString ScreenWithCustomComboBoxesAbstract::SCREEN_NAME = "ScreenWithComboBoxesAbstract";
+const QString ScreenWithCustomComboBoxesAbstract::SCREEN_NAME = "ScreenWithCustomComboBoxesAbstract";
 
 ScreenWithCustomComboBoxesAbstract::ScreenWithCustomComboBoxesAbstract(QWidget *a_parent /*= nullptr*/)
     :AdaptiveScreen(a_parent)
@@ -11,13 +11,15 @@ ScreenWithCustomComboBoxesAbstract::ScreenWithCustomComboBoxesAbstract(QWidget *
     AdaptiveScreen::initScreen(this);
 }
 
+QString ScreenWithCustomComboBoxesAbstract::screenName()
+{
+    return ScreenWithCustomComboBoxesAbstract::SCREEN_NAME;
+}
+
 void ScreenWithCustomComboBoxesAbstract::initVariantUi(QWidget *a_widget)
 {
-    for (QString comboBoxName: this->comboBoxesNames())
-    {
-        ScreenComboBox* combo; Utils::findChild(a_widget, comboBoxName, combo);
-        this->connectComboBox(combo);
-    }
+    for (ComboBox* comboBox: this->customComboBoxes())
+        this->connectComboBox(comboBox);
 }
 
 void ScreenWithCustomComboBoxesAbstract::connectComboBox(ComboBox *a_comboBox)

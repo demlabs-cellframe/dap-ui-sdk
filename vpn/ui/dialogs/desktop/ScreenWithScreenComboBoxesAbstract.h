@@ -14,7 +14,6 @@ public:
     static const QString SCREEN_NAME;
 
     virtual QString screenName() override = 0;
-    virtual QStringList comboBoxesNames() const override = 0;
 
     virtual void initVariantUi(QWidget * a_widget) override;
 
@@ -27,10 +26,7 @@ signals:
     void comboBoxPopupHidden();
 
 protected:
-
-
-    // ScreenWithCustomComboBoxesAbstract interface
-public:
+    virtual QList<ComboBox*> customComboBoxes() override = 0;
     virtual void connectComboBox(ComboBox *a_comboBox) override;
 };
 

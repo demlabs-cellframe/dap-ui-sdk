@@ -12,8 +12,10 @@ public:
     ScreenWithCustomComboBoxesAbstract(QWidget *a_parent = nullptr);
     static const QString SCREEN_NAME;
 
-    virtual QString screenName() override= 0;
-    virtual QStringList comboBoxesNames() const = 0;
+    virtual QString screenName() override = 0;
+
+protected:
+    virtual QList<ComboBox*> customComboBoxes() = 0;
 
     virtual void initVariantUi(QWidget * a_widget) override;
 

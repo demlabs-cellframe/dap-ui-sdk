@@ -13,7 +13,8 @@ HEADERS  += \
     $$PWD/NavigationPanel.h \
     $$PWD/SignUpScreen.h \
     $$PWD/TermsOfUseScreen.h \
-    $$PWD/PrivacyPolicyScreen.h
+    $$PWD/PrivacyPolicyScreen.h \
+    $$PWD/screens.h
 
 SOURCES += \
     $$PWD/AccountScreen.cpp \
