@@ -11,6 +11,14 @@ ScreenWithCustomComboBoxesAbstract::ScreenWithCustomComboBoxesAbstract(QWidget *
     AdaptiveScreen::initScreen(this);
 }
 
+void ScreenWithCustomComboBoxesAbstract::closeComboBoxesPopups()
+{
+    for (ComboBox* comboBox: this->customComboBoxes())
+    {
+        comboBox->popup()->close();
+    }
+}
+
 QString ScreenWithCustomComboBoxesAbstract::screenName()
 {
     return ScreenWithCustomComboBoxesAbstract::SCREEN_NAME;
