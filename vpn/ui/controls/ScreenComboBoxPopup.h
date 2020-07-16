@@ -24,22 +24,18 @@ class ScreenComboBoxPopup : public ComboBoxPopup
 public:
     explicit ScreenComboBoxPopup(QWidget *a_parent = nullptr);
 
-protected:
-    virtual void initVariantUi(QWidget * a_widget) override;
-
-#ifndef ANDROID
-protected:
-    virtual void setVisible(bool a_visible) override;
-
 public slots:
     void allowClosingAndHide();
 
 signals:
     void closingStarted();
 
+protected:
+    virtual void initVariantUi(QWidget * a_widget) override;
+    virtual void setVisible(bool a_visible) override;
+
 private:
     bool m_canBeHidden;
-#endif
 };
 
 #endif // SCREENCOMBOBOXPOPUP_H
