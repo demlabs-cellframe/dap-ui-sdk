@@ -30,17 +30,22 @@ public:
 
     QString getPathToLog(){ return pathToLog; }
     void setPathToLog(QString path){ pathToLog = path; }
-    QString getCurrentLogName(){ return currentLogName; }
-    void updateCurrentLogName(){
-        currentLogName = QString("%1%2_%3.log").arg(DAP_BRAND).arg(appType).arg(QDateTime::currentDateTime().toString("dd-MM-yyyy")); }
-    void setAppType(QString type){appType = type;}
+
+    static QString defaultLogPath(const QString a_brand);
+    static QString currentLogFileName(const QString a_brand, const QString a_appType);
+    static QString currentLogFilePath(const QString a_brand, const QString a_appType);
+
+    QString getCurrentLogName(){ return m_currentLogName; }
+    void updateCurrentLogName();
+
+    void setAppType(QString type){m_appType = type;}
     void clearOldLogs();
     static void setLogLevel(dap_log_level ll);
 private:
     QTimer *t = new QTimer(QCoreApplication::instance());
     QString pathToLog;
-    QString currentLogName;
-    QString appType;
+    QString m_currentLogName;
+    QString m_appType;
 };
 
 #endif // DAPLOGGER_H

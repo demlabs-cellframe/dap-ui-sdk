@@ -2,9 +2,11 @@ QT += core network xml
 QT += widgets #for DapServerSelector - QMessageBox
 #INCLUDEPATH += ../libdap/include ../libdap/src
 #INCLUDEPATH += ../libdap-crypto/include  ../libdap-crypto/src
+include (../quazip/quazip.pri)
 
 SOURCES += \
     $$PWD/DapBugReport.cpp \
+    $$PWD/DapBugReportData.cpp \
     $$PWD/DapDataLocal.cpp \
     $$PWD/DapLogHandler.cpp \
     $$PWD/DapServerSelector.cpp \
@@ -21,6 +23,7 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/DapBugReport.h \
+    $$PWD/DapBugReportData.h \
     $$PWD/DapDataLocal.h \
     $$PWD/DapLogHandler.h \
     $$PWD/DapServerSelector.h \
@@ -43,5 +46,6 @@ win32{
     QMAKE_CXXFLAGS +=  -mno-ms-bitfields
 }
 
+INCLUDEPATH += $$PWD/../quazip
 
 

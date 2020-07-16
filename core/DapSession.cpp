@@ -43,6 +43,7 @@ const QString DapSession::URL_DB_FILE("/db_file");
 const QString DapSession::URL_SERVER_LIST("/nodelist");
 const QString DapSession::URL_TX("/tx");
 const QString DapSession::URL_BUG_REPORT("/bugreport");
+const QString DapSession::URL_NEWS("/news");
 
 #define SESSION_KEY_ID_LEN 33
 
@@ -129,12 +130,14 @@ QNetworkReply* DapSession::encryptInitRequest()
     return requestServerPublicKey();
 }
 
-void DapSession::sendBugReport(QString dataServiceLog, QString dataGuiLog, QString email, QString message){
+void DapSession::sendBugReport(const QByteArray &data)
+{
+   m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(), SLOT(answerBugReport()));
+}
 
-   QString reqData = dataServiceLog + ":@:" + dataGuiLog + ":@:" + email + ":@:" + message;
-
-   m_netSendBugReportReply = encRequest(reqData, URL_BUG_REPORT, QString(), QString(), SLOT(answerBugReport()), true);
-
+void DapSession::getNews()
+{
+    m_netNewsReply = encRequest(nullptr, URL_NEWS, QString(), QString(), SLOT(answerNews()), true);
 }
 
 /**
@@ -152,7 +155,8 @@ void DapSession::onEnc()
         if(m_netEncryptReply->error() == QNetworkReply::NoError) {
             qCritical() << "No error and empty buffer!";
         } else {
-            errorSlt(m_netEncryptReply->error());
+            //errorSlt(m_netEncryptReply->error());
+            emit errorNetwork(m_netEncryptReply->errorString());
         }
         return;
     }
@@ -469,6 +473,32 @@ void DapSession::answerBugReport()
     emit receivedBugReportNumber(bugReportNumber);
 }
 
+void DapSession::answerNews()
+{
+    qInfo() << "answerNews";
+    if(m_netNewsReply->error() != QNetworkReply::NetworkError::NoError) {
+        emit errorNetwork(m_netNewsReply->errorString());
+        return;
+    }
+    QByteArray arrData(m_netNewsReply->readAll());
+    QJsonParseError jsonErr;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(arrData, &jsonErr);
+
+    if(!jsonDoc.isNull()) {
+        if(!jsonDoc.isArray()) {
+            qCritical() << "Error parse response. Must be array";
+//          emit sigParseResponseError();
+            return;
+        }
+        emit sigReceivedNewsMessage(jsonDoc);
+    } else {
+        qWarning() << "Server response:" << arrData;
+        qCritical() << "Can't parse server response to JSON: "<<jsonErr.errorString()<< " on position "<< jsonErr.offset ;
+//      emit sigParseResponseError();
+        return;
+    }
+}
+
 void DapSession::clearCredentials()
 {
     qDebug() << "clearCredentials()";
@@ -505,9 +535,13 @@ QNetworkReply * DapSession::encRequest(const QString& reqData, const QString& ur
     QNetworkReply * netReply = encRequest(reqData, url, subUrl, query, isCDB);
 
     connect(netReply, SIGNAL(finished()), obj, slot);
-    connect(netReply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this,SLOT(errorSlt(QNetworkReply::NetworkError)));
-
+    /*connect(netReply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this,SLOT(errorSlt(QNetworkReply::NetworkError)));*/
+    /*connect(netReply, static_cast<void(QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error), [=] {
+        if ((netReply->error() != QNetworkReply::NetworkError::NoError) && !netReply->isFinished()) {
+            netReply->close();
+        }
+    });*/
     return netReply;
 }
 
@@ -517,8 +551,11 @@ QNetworkReply * DapSession::encRequestRaw(const QByteArray& bData, const QString
     QNetworkReply * netReply = encRequestRaw(bData, url, subUrl, query);
 
     connect(netReply, SIGNAL(finished()), obj, slot);
-    connect(netReply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this,SLOT(errorSlt(QNetworkReply::NetworkError)));
+    connect(netReply, static_cast<void(QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error), [=] {
+        if ((netReply->error() != QNetworkReply::NetworkError::NoError) && netReply->isRunning()) {
+            netReply->abort();
+        }
+    });
     return netReply;
 }
 
@@ -582,7 +619,7 @@ QNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const QBy
  * @brief DapSession::errorSlt
  * @param error
  */
-void DapSession::errorSlt(QNetworkReply::NetworkError error)
+/*void DapSession::errorSlt(QNetworkReply::NetworkError error)
 {
     qWarning() << "Error: " << error;
     switch(error) {
@@ -622,4 +659,4 @@ void DapSession::errorSlt(QNetworkReply::NetworkError error)
             emit errorNetwork(tr("Undefined network error"));
         }
     }
-}
+}*/
