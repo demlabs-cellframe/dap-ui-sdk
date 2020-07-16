@@ -17,7 +17,7 @@ class DapReplyTimeout : public QObject {
             Q_ASSERT(reply);
             if (reply->isOpen()) {
                 c = connect(reply, SIGNAL(finished()), this, SLOT(interrupt()));
-                QTimer::singleShot(timeout, this, [=]() {
+                QTimer::singleShot(timeout, Qt::PreciseTimer, this, [=]() {
                     if (!reply->isFinished()) {
                         qWarning() << "Request timeout";
                         reply->abort();
@@ -34,7 +34,6 @@ class DapReplyTimeout : public QObject {
         }
     protected slots:
         void interrupt() {
-            disconnect(c);
             qInfo() << "Request processed";
             QAbstractEventDispatcher::instance()->unregisterTimers(this);
             delete this;

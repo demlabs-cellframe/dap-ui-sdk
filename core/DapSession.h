@@ -145,7 +145,7 @@ private:
                                          const QByteArray* data = Q_NULLPTR, bool isCDB = false);
 private slots:
     void onEnc();
-    void errorSlt(QNetworkReply::NetworkError);
+    //void errorSlt(QNetworkReply::NetworkError);
     void onAuthorize();
     void onKeyActivated();
     void onLogout();
