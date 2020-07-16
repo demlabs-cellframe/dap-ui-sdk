@@ -346,10 +346,10 @@ void DapSession::onAuthorize()
         emit errorAuthorization ("Unknown authorization error");
         return;
     } else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
-        emit errorAuthorization ("Login not found in database");
+        emit errorAuthorization (isSerial ? "Serial key not found in database" : "Login not found in database");
         return;
     } else if (op_code == OP_CODE_LOGIN_INCORRECT_PSWD) {
-        emit errorAuthorization ("Incorrect password");
+        emit errorAuthorization (isSerial ? "Incorrect serial key" : "Incorrect password");
         return;
     } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRIED) {
         emit errorAuthorization ("Subscribe expired");

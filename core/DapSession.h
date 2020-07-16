@@ -72,6 +72,7 @@ public:
     void setDapUri(const QString& addr, const uint16_t port);
     void clearCredentials();
     void preserveCDBSession();
+    void activateBySerial(bool flag) { isSerial = flag; }
     DapCrypt* getDapCrypt() { return m_dapCrypt; }
 public slots:
     /* Request to server */
@@ -141,6 +142,7 @@ protected:
     QNetworkReply * requestServerPublicKey();
 private:
     DapCrypt* m_dapCrypt, *m_dapCryptCDB;
+    bool isSerial = false;
     QNetworkReply* _buildNetworkReplyReq(const QString& urlPath,
                                          const QByteArray* data = Q_NULLPTR, bool isCDB = false);
 private slots:
