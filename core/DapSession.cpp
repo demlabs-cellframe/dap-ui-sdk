@@ -98,7 +98,7 @@ QNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath,
                                                             urlPath, false, &headers);
     }
 
-    DapReplyTimeout::set(result, m_requestTimeout);
+    DapReplyTimeout::set(result, (isCDB && data) ? (2 * m_requestTimeout) : m_requestTimeout);
     return result;
 }
 
@@ -346,10 +346,10 @@ void DapSession::onAuthorize()
         emit errorAuthorization ("Unknown authorization error");
         return;
     } else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
-        emit errorAuthorization ("Login not found in database");
+        emit errorAuthorization (isSerial ? "Serial key not found in database" : "Login not found in database");
         return;
     } else if (op_code == OP_CODE_LOGIN_INCORRECT_PSWD) {
-        emit errorAuthorization ("Incorrect password");
+        emit errorAuthorization (isSerial ? "Incorrect serial key" : "Incorrect password");
         return;
     } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRIED) {
         emit errorAuthorization ("Subscribe expired");
@@ -467,6 +467,10 @@ void DapSession::onLogout()
 void DapSession::answerBugReport()
 {
     qInfo() << "answerBugReport";
+    if(m_netSendBugReportReply->error() != QNetworkReply::NetworkError::NoError) {
+        emit errorNetwork(m_netSendBugReportReply->errorString());
+        return;
+    }
     QByteArray arrData;
     arrData.append(m_netSendBugReportReply->readAll());
     QString bugReportNumber = QString(arrData);
@@ -551,11 +555,11 @@ QNetworkReply * DapSession::encRequestRaw(const QByteArray& bData, const QString
     QNetworkReply * netReply = encRequestRaw(bData, url, subUrl, query);
 
     connect(netReply, SIGNAL(finished()), obj, slot);
-    connect(netReply, static_cast<void(QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error), [=] {
+    /*connect(netReply, static_cast<void(QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error), [=] {
         if ((netReply->error() != QNetworkReply::NetworkError::NoError) && netReply->isRunning()) {
             netReply->abort();
         }
-    });
+    });*/
     return netReply;
 }
 
