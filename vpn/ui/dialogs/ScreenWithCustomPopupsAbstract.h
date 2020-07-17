@@ -4,29 +4,29 @@
 #include "AdaptiveScreen.h"
 #include "ComboBox.h"
 
-class ScreenWithCustomComboBoxesAbstract : public AdaptiveScreen
+class ScreenWithCustomPopupsAbstract : public AdaptiveScreen
 {
     Q_OBJECT
 
 public:
-    ScreenWithCustomComboBoxesAbstract(QWidget *a_parent = nullptr);
+    ScreenWithCustomPopupsAbstract(QWidget *a_parent = nullptr);
     static const QString SCREEN_NAME;
 
     virtual QString screenName() override = 0;
 
 public slots:
-    virtual void closeComboBoxesPopups();
+    virtual void closePopups();
 
 protected:
-    virtual QList<ComboBox*> customComboBoxes() = 0;
+    virtual QList<CustomPopup*> customPopups() = 0;
 
     virtual void initVariantUi(QWidget * a_widget) override;
 
-    virtual void connectComboBox(ComboBox* a_comboBox);
+    virtual void connectPopup(CustomPopup* a_popup);
 
 signals:
-    void comboBoxPopupOpened();
-    void comboBoxPopupClosed();
+    void popupOpened();
+    void popupClosed();
 
 protected:
 

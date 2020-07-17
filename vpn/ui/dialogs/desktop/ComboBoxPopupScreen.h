@@ -1,9 +1,9 @@
 #ifndef COMBOBOXPOPUPSCREEN_H
 #define COMBOBOXPOPUPSCREEN_H
 
-#include "ComboBoxPopupScreenBase.h"
+#include "PopupScreenBase.h"
 
-class ComboBoxPopupScreen : public ComboBoxPopupScreenBase
+class ComboBoxPopupScreen : public PopupScreenBase
 {
     Q_OBJECT
 public:

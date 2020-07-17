@@ -7,7 +7,7 @@
     #include "LoginScreenLayout.h"
     #include "ComboBoxPopupScreen.h"
     #include "LoginNavigationPanel.h"
-    #include "ScreenWithScreenComboBoxesAbstract.h"
+    #include "ScreenWithScreenPopupsAbstract.h"
 #endif
 #include "MainScreenLayout.h"
 
@@ -28,7 +28,7 @@
 #include "PasswordRecoveryScreen.h"
 #include "PrivacyPolicyScreen.h"
 #include "TermsOfUseScreen.h"
-#include "ScreenWithCustomComboBoxesAbstract.h"
+#include "ScreenWithCustomPopupsAbstract.h"
 
 
 #endif // SCREENS_H
