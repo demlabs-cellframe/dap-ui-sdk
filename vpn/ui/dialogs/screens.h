@@ -20,6 +20,7 @@
 #include "BugReportWithEmailScreen.h"
 #include "BugReportWithoutEmailScreen.h"
 #include "BugReportResultScreen.h"
+#include "BugReportLoadingScreen.h"
 #include "NavigationPanelBack.h"
 #include "NavigationPanelMain.h"
 #include "MainScreenLayout.h"

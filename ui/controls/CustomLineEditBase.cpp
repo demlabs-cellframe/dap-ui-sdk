@@ -10,8 +10,8 @@ CustomLineEditBase::CustomLineEditBase(QWidget* parent):QLineEdit (parent)
     btnControl->setObjectName("control");
     lblIcon->setObjectName("image");
 
-    btnControl->setVisible(false);
-    lblIcon->setVisible(false);
+    btnControl->hide();
+    lblIcon->hide();
 
     hblLineEdit = new QHBoxLayout(this);
     hblLineEdit->addWidget(lblIcon);

@@ -22,8 +22,6 @@ void BugReportScreenBase::initVariantUi(QWidget *a_widget)
 
     #if defined(Q_OS_MAC)
         m_ui->edtMessage->setAttribute(Qt::WA_MacShowFocusRect,false);
-    #else
-        m_ui->btnSend->setGraphicsEffect(new StyledDropShadowEffect(m_ui->btnSend));
     #endif
 #endif
 

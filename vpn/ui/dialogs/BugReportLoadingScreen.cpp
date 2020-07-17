@@ -22,8 +22,13 @@ void BugReportLoadingScreen::initVariantUi(QWidget *a_widget)
 #ifdef ANDROID
     m_ui->btnCancel->setText("CANCEL");
 #else
-    m_ui->btnCancel->setGraphicsEffect(new StyledDropShadowEffect(m_ui->btnCancel));
+    m_ui->layBugReportScreen->setAlignment(m_ui->frmBugReport, Qt::AlignHCenter);
+
+    #if defined(Q_OS_MAC)
+        m_ui->edtMessage->setAttribute(Qt::WA_MacShowFocusRect,false);
+    #endif
 #endif
+
     m_ui->lblGifLoading->setMovie(&m_movie);
     this->connectBtnToSignall(this->m_ui->btnCancel, &BugReportLoadingScreen::cancelled);
 }
