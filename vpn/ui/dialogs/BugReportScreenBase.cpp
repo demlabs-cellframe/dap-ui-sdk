@@ -37,13 +37,6 @@ void BugReportScreenBase::initVariantUi(QWidget *a_widget)
     });
 
     connectBtnToSignall(m_ui->btnSend, &BugReportScreenBase::checkFieldsAndSendReport);
-    connect(m_ui->btnSend, &QPushButton::clicked, []{
-        qDebug() << "&QPushButton::clicked";
-    });
-    connect(this, &BugReportScreenBase::sendRequested, []{
-        qDebug() << "&BugReportScreenBase::sendRequested";
-    });
-
 }
 
 void BugReportScreenBase::setMessage(const QString &a_message)
