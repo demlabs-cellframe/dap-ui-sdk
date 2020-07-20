@@ -327,7 +327,8 @@ QString DapDataLocal::getServerNameByAddress(const QString &address)
     QList<DapServerInfo>::const_iterator it = std::find_if(m_servers.cbegin(), m_servers.cend(), 
         [=] (const DapServerInfo& server) 
         { 
-            return server.address == address; 
+        if (server.name != "Auto")
+            return server.address == address;
         });
     
     if(it != m_servers.cend())
@@ -377,3 +378,7 @@ QString DapDataLocal::locationToIconPath(DapServerLocation loc)
     return locPath;
 }
 
+void DapDataLocal::clearCurrentServer()
+{
+    m_currentServer = nullptr;
+}
