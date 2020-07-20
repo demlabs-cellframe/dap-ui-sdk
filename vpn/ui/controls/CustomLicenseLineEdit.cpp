@@ -38,12 +38,12 @@ void CustomLicenseLineEdit::keyPressEvent(QKeyEvent *event)
     }
 
     QKeyEvent newEvent(
-        event->type(),
-        key,
-        event->modifiers(),
-        text,
-        event->isAutoRepeat(),
-        event->count());
+                event->type(),
+                key,
+                event->modifiers(),
+                text,
+                event->isAutoRepeat(),
+                event->count());
     QLineEdit::keyPressEvent(&newEvent);
 }
 
@@ -72,9 +72,16 @@ void CustomLicenseLineEdit::pasteEvent()
 
 #ifdef Q_OS_ANDROID
 void CustomLicenseLineEdit::inputMethodEvent(QInputMethodEvent *e)
-{
+{   
+    if(e->preeditString().length() > 0 )
+    {
+        m_serial = e->preeditString();
+    }
+
     if(e->preeditString().length() == this->maxLength())
     {
+
+        m_focusFromMouse = false;
         QEvent event(QEvent::FocusOut);
         QApplication::sendEvent(this,&event);
     }
@@ -85,11 +92,38 @@ void CustomLicenseLineEdit::inputMethodEvent(QInputMethodEvent *e)
 void CustomLicenseLineEdit::focusInEvent(QFocusEvent *e)
 {
     if(e->reason() == Qt::MouseFocusReason)
+    {
+        if(!this->text().isEmpty())
+            m_serial = this->text();
+        m_focusFromMouse = true;
         clear();
+    }
 
     emit onFocusLicense();
 
-    QLineEdit::focusInEvent(e);
+    if(this->text().length() == this->maxLength())
+    {
+        emit focusOutNeeded();
+    }
+    else
+    {
+        QApplication::inputMethod()->show();
+        QLineEdit::focusInEvent(e);
+    }
+
 }
 
+void CustomLicenseLineEdit::focusOutEvent(QFocusEvent *e)
+{
+    if(this->text().isEmpty() && !m_serial.isEmpty() && m_focusFromMouse)
+    {
+        this->setText(m_serial);
+        m_focusFromMouse = false;
+    }
+    emit focusOutLicense();
+
+    QApplication::inputMethod()->hide();
+
+    QLineEdit::focusOutEvent(e);
+}
 #endif

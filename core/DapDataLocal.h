@@ -8,6 +8,7 @@
 #include <QSettings>
 #include "DapServerInfo.h"
 #include "DapKeyAes.h"
+#include "DapBugReportData.h"
 
 #define SERVER_LIST_FILE "vpn-servers.xml"
 
@@ -17,6 +18,8 @@ class DapDataLocal : public QObject
     DapDataLocal();
     const QString ServerListName;
 
+    QString     m_brandName;
+    QString     logFilePath;
     static DapDataLocal *_me;
     static QMap<DapServerLocation, QString> m_pictruePath;
 
@@ -28,16 +31,7 @@ class DapDataLocal : public QObject
     bool initSecretKey();
     QString getRandomString(int);
     DapServerInfo* m_currentServer = nullptr;
-protected:
-    QString     mLogin;      ///< Login.
-    QString     mPassword;   ///< Password.
-    QString     mServerName; ///< Server name.
 
-    QString     mSerialKey;  ///< Serial key.
-
-    QList<QString> m_cdbServersList;
-    QString     m_networkDefault;
-    QString urlSignUp;
 
 public:
     using picturesMap = QMap<DapServerLocation, QString>;
@@ -52,10 +46,14 @@ public:
 
     DapServerInfo* currentServer();
     void setRandomServerIfIsEmpty();
+    void clearCurrentServer();
 
     QString locationToIconPath(DapServerLocation loc);
 
     QString login() const;
+
+    void setLogFilePath(QString path){logFilePath = path;}
+    QString getLogFilePath(){return logFilePath;}
 
     QString serialKey() const;
 
@@ -63,9 +61,10 @@ public:
     QString currentServerName() const;
     QString getServerNameByAddress(const QString& address);
 
-    const QList<QString> &cdbServersList() { return  m_cdbServersList; }
-    const QString & networkDefault() { return  m_networkDefault; }
-    const QString & getUrlForSignUp() { return  urlSignUp; }
+    const QList<QString> &cdbServersList() { return m_cdbServersList; }
+    const QString & networkDefault()       { return m_networkDefault; }
+    const QString & getUrlForSignUp()      { return urlSignUp;        }
+    const QString & getBrandName()         { return m_brandName;      }
 
     void connectComboBox(QObject *a_comboBox);
 
@@ -74,20 +73,32 @@ public:
     void saveSecretString(QString, QString);
     QString getSecretString(QString);
 
+    static QVariant getSetting (const QString& a_setting);
+    static void     saveSetting(const QString& a_setting, const QVariant& a_value);
+
+    DapBugReportData *bugReportData();
+
+    const QString TEXT_SERIAL_KEY   = "serialkey";
+    const QString TEXT_LOGIN        = "login";
+    const QString TEXT_PASSWORD     = "password";
+
+    bool bSelectedAutoServer = false;
+    QVector<DapServerInfo> m_serversForCheck;
+
+
 public slots:
     void setCurrentServer(int a_serverIndex);
     void setCurrentServer(DapServerInfo* a_server);
-
-    void setLogin(const QString &login);
-
-    void setSerialKey(const QString &a_serialKey);
-
-    void setPassword(const QString &password);
-
     void setServerName(const QString &serverName);
 
-    void rotateCDBList();
+    void setLogin(const QString &a_login);
 
+    void setSerialKey(const QString &a_serialKey);
+    void setPassword(const QString &password);
+
+    void saveAuthorizationDatas();
+
+    void rotateCDBList();
 signals:
     /// Signal emitted if login has changed.
     /// @param login Login.
@@ -95,6 +106,9 @@ signals:
     /// Signal emitted if password has changed.
     /// @param password Password.
     void passwordChanged(const QString& password);
+    /// Signal emitted if password has changed.
+    /// @param password Password.
+    void serialKeyChanged(const QString& serial);
     /// Signal emitted if server name has changed.
     /// @param serverName Server name.
     void serverNameChanged(const QString& serverName);
@@ -102,6 +116,23 @@ signals:
     void serverAdded(const DapServerInfo& dsi);
 
     void serversCleared();
+
+
+protected:
+    QString m_login;      ///< Login.
+    QString m_password;   ///< Password.
+    QString m_serverName; ///< Server name.
+
+    QString m_serialKey;  ///< Serial key.
+
+    DapBugReportData m_bugReportData;
+
+    QList<QString> m_cdbServersList;
+    QString     m_networkDefault;
+    QString urlSignUp;
+
+private:
+    void loadAuthorizationDatas();
 
 
 };

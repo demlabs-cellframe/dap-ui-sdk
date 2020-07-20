@@ -31,6 +31,8 @@ DapDataLocal::DapDataLocal()
 {
     qDebug() << "[DL] DapDataLocal Constructor";
     parseXML(":/data.xml");
+
+    this->loadAuthorizationDatas();
 }
 
 void DapDataLocal::parseXML(const QString& a_fname)
@@ -41,7 +43,6 @@ void DapDataLocal::parseXML(const QString& a_fname)
         return;
     }
     qDebug() << "data.xml opened, size "<< file.size();
-
     QXmlStreamReader *sr = new QXmlStreamReader(&file);
     if(sr->readNextStartElement()){
         if(sr->name() == "data"){
@@ -82,6 +83,12 @@ void DapDataLocal::parseXML(const QString& a_fname)
                     qInfo() << "Add CDB address: " << m_cdbServersList.back();
                 }else if( sr->name() == "network-default"){
                     m_networkDefault = sr->readElementText();
+                    qInfo() << "Network defaut: " << m_networkDefault;
+                }else if( sr->name() == "title"){
+                    m_brandName = sr->readElementText();
+                    qInfo() << "Network defaut: " << m_networkDefault;
+                }else if( sr->name() == "sign_up"){
+                    urlSignUp = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
                 }else{
                     qDebug() << "[DL] Inside tag 'data' unknown tag "<<sr->name();
@@ -153,48 +160,56 @@ void DapDataLocal::setCurrentServer(DapServerInfo *a_server)
     emit this->serverNameChanged(a_server ? a_server->name : "");
 }
 
-void DapDataLocal::setRandomServerIfIsEmpty()
-{
-    if (!currentServer())
-    {
-        qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
-        int randIndex = qrand()%(this->servers().count());
-        this->setCurrentServer(randIndex);
-        qDebug()<<"Random server chosed:" << this->currentServerName();
-    }
-}
-
-
 /// Get login.
 /// @return Login.
 QString DapDataLocal::login() const
 {
-    return mLogin;
+    return m_login;
 }
 
 /// Set login.
 /// @param login Login.
-void DapDataLocal::setLogin(const QString &login)
+void DapDataLocal::setLogin(const QString &a_login)
 {
-    mLogin = login;
-    emit loginChanged(mLogin);
+    if (this->m_login == a_login)
+        return;
+    m_login = a_login;
+
+    emit loginChanged(m_login);
 }
 
 /// Get password.
 /// @return Password.
 QString DapDataLocal::password() const
 {
-    return mPassword;
+    return m_password;
 }
 
 /// Set password.
 /// @param password Password.
-void DapDataLocal::setPassword(const QString &password)
+void DapDataLocal::setPassword(const QString &a_password)
 {
-    mPassword = password;
-    emit passwordChanged(mPassword);
+    if (this->m_password == a_password)
+        return;
+    this->m_password = a_password;
+
+    emit this->passwordChanged(m_password);
+}
+/// Set serial key.
+/// @param serial serial key.
+void DapDataLocal::setSerialKey(const QString &a_serialKey)
+{
+    if (this->m_serialKey == a_serialKey)
+        return;
+    m_serialKey = a_serialKey;
+
+    emit this->serialKeyChanged(m_serialKey);
 }
 
+QString DapDataLocal::serialKey() const
+{
+    return m_serialKey;
+}
 /// Get server name.
 /// @return Server name.
 QString DapDataLocal::currentServerName() const
@@ -218,6 +233,20 @@ void DapDataLocal::setServerName(const QString &a_serverName)
     qFatal("There is no server with name %s", qPrintable(a_serverName));
 }
 
+void DapDataLocal::saveAuthorizationDatas()
+{
+    DapDataLocal::me()->saveSecretString(DapDataLocal::me()->TEXT_LOGIN     , DapDataLocal::me()->login());
+    DapDataLocal::me()->saveSecretString(DapDataLocal::me()->TEXT_PASSWORD  , DapDataLocal::me()->password());
+    DapDataLocal::me()->saveSecretString(DapDataLocal::me()->TEXT_SERIAL_KEY, DapDataLocal::me()->serialKey());
+}
+
+void DapDataLocal::loadAuthorizationDatas()
+{
+    this->setSerialKey(getSecretString(TEXT_SERIAL_KEY));
+    this->setLogin(getSecretString(TEXT_LOGIN));
+    this->setPassword(getSecretString(TEXT_PASSWORD));
+}
+
 void DapDataLocal::rotateCDBList() {
     if (m_cdbServersList.size() > 1) {
         auto tmp = m_cdbServersList.takeFirst();
@@ -225,23 +254,41 @@ void DapDataLocal::rotateCDBList() {
     }
 }
 
-void DapDataLocal::saveSecretString(QString key, QString string){
+QString DapDataLocal::getSecretString(QString key)
+{
+    QByteArray stringIn = DapDataLocal::getSetting(key).toByteArray();
+    QByteArray stringOut;
 
-    QSettings settings;
-    initSecretKey();
-    QByteArray tempStringIn = string.toUtf8(), tempStringOut;
-    secretKey->encode(tempStringIn, tempStringOut);
-    settings.setValue(key, tempStringOut);
-}
-
-QString DapDataLocal::getSecretString(QString key){
-    QSettings settings;
-    QByteArray stringIn = settings.value(key).toByteArray(), stringOut;
     if (stringIn.isEmpty())
         return "";
     initSecretKey();
     secretKey->decode(stringIn, stringOut);
     return QString(stringOut);
+}
+
+void DapDataLocal::saveSecretString(QString key, QString string)
+{
+    initSecretKey();
+    QByteArray tempStringIn = string.toUtf8(), tempStringOut;
+    secretKey->encode(tempStringIn, tempStringOut);
+    DapDataLocal::saveSetting(key, tempStringOut);
+}
+
+QVariant DapDataLocal::getSetting(const QString &a_setting)
+{
+    QSettings settings;
+    return settings.value(a_setting);
+}
+
+void DapDataLocal::saveSetting(const QString &a_setting, const QVariant &a_value)
+{
+    QSettings settings;
+    settings.setValue(a_setting, a_value);
+}
+
+DapBugReportData *DapDataLocal::bugReportData()
+{
+    return &m_bugReportData;
 }
 
 bool DapDataLocal::initSecretKey(){
@@ -280,7 +327,8 @@ QString DapDataLocal::getServerNameByAddress(const QString &address)
     QList<DapServerInfo>::const_iterator it = std::find_if(m_servers.cbegin(), m_servers.cend(), 
         [=] (const DapServerInfo& server) 
         { 
-            return server.address == address; 
+        if (server.name != "Auto")
+            return server.address == address;
         });
     
     if(it != m_servers.cend())
@@ -330,12 +378,7 @@ QString DapDataLocal::locationToIconPath(DapServerLocation loc)
     return locPath;
 }
 
-void DapDataLocal::setSerialKey(const QString &a_serialKey)
+void DapDataLocal::clearCurrentServer()
 {
-    mSerialKey = a_serialKey;
-}
-
-QString DapDataLocal::serialKey() const
-{
-    return mSerialKey;
+    m_currentServer = nullptr;
 }

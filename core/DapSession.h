@@ -46,6 +46,8 @@ public:
     static const QString URL_DB_FILE;
     static const QString URL_SERVER_LIST;
     static const QString URL_TX;
+    static const QString URL_BUG_REPORT;
+    static const QString URL_NEWS;
 
     DapSession(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
     ~DapSession();
@@ -70,6 +72,7 @@ public:
     void setDapUri(const QString& addr, const uint16_t port);
     void clearCredentials();
     void preserveCDBSession();
+    void activateBySerial(bool flag) { isSerial = flag; }
     DapCrypt* getDapCrypt() { return m_dapCrypt; }
 public slots:
     /* Request to server */
@@ -83,6 +86,9 @@ public slots:
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
     QNetworkReply * logoutRequest();
     QNetworkReply * streamOpenRequest(const QString& subUrl, const QString& query);
+
+    void sendBugReport(const QByteArray &data);
+    void getNews();
 
     void abortEncryptionInitRequest() { m_netEncryptReply->abort(); }
     void abortAuthorizeRequest()      { m_netAuthorizeReply->abort(); }
@@ -103,6 +109,8 @@ protected:
     QNetworkReply * m_netEncryptReply;
     QNetworkReply * m_netAuthorizeReply;
     QNetworkReply * m_netLogoutReply;
+    QNetworkReply * m_netSendBugReportReply;
+    QNetworkReply * m_netNewsReply;
 
     QMap<QString,QString> m_userInform;
 
@@ -134,14 +142,17 @@ protected:
     QNetworkReply * requestServerPublicKey();
 private:
     DapCrypt* m_dapCrypt, *m_dapCryptCDB;
+    bool isSerial = false;
     QNetworkReply* _buildNetworkReplyReq(const QString& urlPath,
                                          const QByteArray* data = Q_NULLPTR, bool isCDB = false);
 private slots:
     void onEnc();
-    void errorSlt(QNetworkReply::NetworkError);
+    //void errorSlt(QNetworkReply::NetworkError);
     void onAuthorize();
     void onKeyActivated();
     void onLogout();
+    void answerBugReport();
+    void answerNews();
 signals:
     void pubKeyRequested();
     void pubKeyServerRecived();
@@ -163,6 +174,9 @@ signals:
     void usrDataChanged(const QString &addr, ushort port);
     void logoutRequested();
     void logouted();
+
+    void receivedBugReportNumber(const QString& bugReportNumber);
+    void sigReceivedNewsMessage(const QJsonDocument& news);
 };
 
 

@@ -12,6 +12,8 @@ QMap<DapJsonCmdType, QString> DapCmdAbstract::cmdString = {
     {DapJsonCmdType::TAP_DRIVER, "tap driver"},
     {DapJsonCmdType::PING_SERVER, "ping server"},
     {DapJsonCmdType::SEND_SERVER_DATA, "send server data"},
+    {DapJsonCmdType::SEND_BUG_REPORT, "send bug report"},
+    {DapJsonCmdType::GET_NEWS, "get news"},
     {DapJsonCmdType::GET_SERVERS_LIST, "get servers list"},
     {DapJsonCmdType::CREATE_ANDROID_TUNNEL, "create android tunnel"}
 };

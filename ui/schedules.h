@@ -34,16 +34,24 @@ private:
     Schedule inp = Schedule();
     Schedule out = Schedule();
 
-    void draw_backgraund(QGraphicsScene *scene, int width, int height);
+    void draw_backgraund(QGraphicsScene *scene);
     /// Convert color in string representation to rgba.
     /// @param strRGBA String color.
     QColor convertRGBA(const QString &strRGBA);
     
+    int m_horizontLines;
+    int m_verticalLines;
+
+    int m_sceneWidth;
+    int m_sceneHeight;
 public:
+    int getWidth();
+    int getHeight();
+
     void addInp(int elem);
     void addOut(int elem);
 
-    void draw_chart(QGraphicsScene *scene, int width, int height);
+    void draw_chart(QGraphicsScene *scene);
     Schedules();
     /// Set graphic styles.
     /// @param style Graphics styles.

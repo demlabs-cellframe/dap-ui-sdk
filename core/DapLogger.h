@@ -1,10 +1,16 @@
 #ifndef DAPLOGGER_H
 #define DAPLOGGER_H
 
+#include <QCoreApplication>
 #include <QObject>
 #include <QDebug>
 #include <QFile>
+#include <QDateTime>
+#include <QSettings>
+#include <QDir>
+#include <QTimer>
 #include "dap_common.h"
+#include "dap_file_utils.h"
 
 class DapLogger : public QObject
 {
@@ -19,7 +25,27 @@ public:
     // return false if not success
     bool setLogFile(const QString& filePath);
 
+    int createLogFolder(QString path);
+    void createChangerLogFiles();
+
+    QString getPathToLog(){ return pathToLog; }
+    void setPathToLog(QString path){ pathToLog = path; }
+
+    static QString defaultLogPath(const QString a_brand);
+    static QString currentLogFileName(const QString a_brand, const QString a_appType);
+    static QString currentLogFilePath(const QString a_brand, const QString a_appType);
+
+    QString getCurrentLogName(){ return m_currentLogName; }
+    void updateCurrentLogName();
+
+    void setAppType(QString type){m_appType = type;}
+    void clearOldLogs();
     static void setLogLevel(dap_log_level ll);
+private:
+    QTimer *t = new QTimer(QCoreApplication::instance());
+    QString pathToLog;
+    QString m_currentLogName;
+    QString m_appType;
 };
 
 #endif // DAPLOGGER_H

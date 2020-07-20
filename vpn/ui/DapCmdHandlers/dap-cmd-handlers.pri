@@ -1,6 +1,8 @@
 SOURCES += \
     $$PWD/DapCmdLastConnectionData.cpp \
+    $$PWD/DapCmdNews.cpp \
     $$PWD/DapCmdPingServer.cpp \
+    $$PWD/DapCmdSendBugReport.cpp \
     $$PWD/DapCmdStats.cpp \
     $$PWD/DapCmdTunTap.cpp \
     $$PWD/DapCmdServerData.cpp \
@@ -13,7 +15,9 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/DapCmdLastConnectionData.h \
+    $$PWD/DapCmdNews.h \
     $$PWD/DapCmdPingServer.h \
+    $$PWD/DapCmdSendBugReport.h \
     $$PWD/DapCmdStats.h \
     $$PWD/DapCmdTunTap.h \
     $$PWD/DapCmdServerData.h \
