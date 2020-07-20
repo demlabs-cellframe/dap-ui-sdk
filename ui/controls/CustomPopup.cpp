@@ -152,5 +152,7 @@ void CustomPopup::setVisible(bool a_visible)
 
     if (a_visible)
         emit this->opened();
+    else
+        emit this->closed();
 }
 

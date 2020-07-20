@@ -26,6 +26,9 @@ void BugReportResultScreen::initVariantUi(QWidget *a_widget)
 
 #ifdef ANDROID
     this->m_ui->btnClose->setText("BACK");
+#else
+    m_ui->layBugReportScreen->setAlignment(m_ui->frmBugReport, Qt::AlignHCenter);
 #endif
+
     this->connectBtnToSignall(this->m_ui->btnClose, &BugReportResultScreen::goBack);
 }
