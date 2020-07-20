@@ -193,7 +193,7 @@ QString MainScreen::statusText()
         case ConnectionStates::Connected:
             return tr("Connected to %1").arg(m_currentServer);
         case ConnectionStates::Disconnecting:
-            return tr("Server down");
+            return tr("Disconnecting...");
         case ConnectionStates::ServerChanging:
             return tr("Changing server...");
         default:
