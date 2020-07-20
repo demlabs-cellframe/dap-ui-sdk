@@ -145,19 +145,16 @@ void DapSession::getNews()
  */
 void DapSession::onEnc()
 {
-    qDebug() << "On Enc()";
-
+    qDebug() << "Enc reply";
+    if (m_netEncryptReply && (m_netEncryptReply->error() != QNetworkReply::NoError)) {
+        emit errorNetwork(m_netEncryptReply->errorString());
+        return;
+    }
     QByteArray arrData;
-    if (m_netEncryptReply)
-        arrData.append(m_netEncryptReply->readAll());
+    arrData.append(m_netEncryptReply->readAll());
     if(arrData.isEmpty()) {
-        qWarning() << "Empty buffer in onEnc";
-        if(m_netEncryptReply->error() == QNetworkReply::NoError) {
-            qCritical() << "No error and empty buffer!";
-        } else {
-            //errorSlt(m_netEncryptReply->error());
-            emit errorNetwork(m_netEncryptReply->errorString());
-        }
+        qWarning() << "Empty enc reply...";
+        emit errorEncryptInitialization("Empty enc reply");
         return;
     }
 

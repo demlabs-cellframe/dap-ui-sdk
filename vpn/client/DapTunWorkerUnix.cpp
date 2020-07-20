@@ -113,7 +113,7 @@ void DapTunWorkerUnix::loop()
                 break;
             }
         }else {
-            qCritical() << "[SapStreamChSF] listenTunnelThread() select() returned "<< ret;
+            qCritical() << "[SapStreamChSF] select() returned "<< ret << strerror(errno);
             emit loopError(QString("select() returned %1 (%2)").arg(ret).arg(::strerror(errno)));
             break;
         }
