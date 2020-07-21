@@ -30,14 +30,12 @@ DapTunWorkerUnix::DapTunWorkerUnix(DapTunAbstract *a_tun)
  */
 void DapTunWorkerUnix::loop()
 {
-    const size_t DAP_IP_MTU = 0xffff;
+    const size_t DAP_IP_MTU = 6000;
 
-    quint8 *tmpBuf;
+    quint8 tmpBuf[DAP_IP_MTU] = {'\0'};
     size_t tmpBufSize ;
-
-    tmpBuf = (quint8 *) calloc(1,100000);
     tmpBufSize = 0;
-    qDebug() << "[SapStreamChSF] listenTunnelThread() start with MTU = "<<100000;
+    qDebug() << "[SapStreamChSF] listenTunnelThread() start with MTU = " << DAP_IP_MTU;
 
     fd_set fds_read, fds_read_active;
     fd_set fds_write, fds_write_active;
@@ -65,7 +63,7 @@ void DapTunWorkerUnix::loop()
         if(ret > 0) {
             if (FD_ISSET (tunSocket(), &fds_read_active)){
                // qDebug() << "Tun socket is ready for read() ";
-                int readRet = ::read(tunSocket(), tmpBuf + tmpBufSize,DAP_IP_MTU-tmpBufSize);
+                int readRet = ::read(tunSocket(), tmpBuf + tmpBufSize, DAP_IP_MTU - tmpBufSize);
 
                 // qDebug() << "Read "<< readRet<<" bytes";
                 if (readRet < 0) {
@@ -113,15 +111,17 @@ void DapTunWorkerUnix::loop()
                 break;
             }
         }else {
-            qCritical() << "[SapStreamChSF] select() returned "<< ret << strerror(errno);
-            emit loopError(QString("select() returned %1 (%2)").arg(ret).arg(::strerror(errno)));
-            break;
+            if (errno == EINTR) {
+                continue;
+            } else {
+                qCritical() << "[SapStreamChSF] select() returned "<< ret << strerror(errno);
+                emit loopError(QString("select() returned %1 (%2)").arg(ret).arg(::strerror(errno)));
+                break;
+            }
         }
 
     }while(1);
 
     qDebug() << "[SapStreamChSF] Listen thread finished!";
-    ::free(tmpBuf);
-
     emit loopStopped();
 }
