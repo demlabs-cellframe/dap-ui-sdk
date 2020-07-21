@@ -29,21 +29,29 @@ void BugReportScreenBase::initVariantUi(QWidget *a_widget)
         Utils::setPropertyAndUpdateStyle(m_ui->edtMessage, Properties::WRONG, true);
     });
 
+    rxList << "\\\\";
     connect(this->m_ui->edtMessage, &CustomTextEdit::textChanged, [=](){
         QString str = m_ui->edtMessage->toPlainText();
-        QRegExp rx("\\\\");
-        if (str.contains(rx)){
-            QTextCursor fileViewerCursor = m_ui->edtMessage->textCursor();
-            m_ui->edtMessage->setText(str.remove(rx));
-            fileViewerCursor.movePosition(QTextCursor::End);
-            m_ui->edtMessage->setTextCursor(fileViewerCursor);
-        }
-
+        validateText(&str, rxList);
         emit this->messageChanged(str);
         Utils::setPropertyAndUpdateStyle(m_ui->edtMessage, Properties::WRONG, false);
     });
 
     connectBtnToSignall(m_ui->btnSend, &BugReportScreenBase::checkFieldsAndSendReport);
+}
+
+void BugReportScreenBase::validateText(QString *str, QStringList list)
+{
+    QString temp(*str);
+    for (auto item : list){
+        QRegExp rx(item);
+        if (str->contains(rx)){
+            QTextCursor fileViewerCursor = m_ui->edtMessage->textCursor();
+            m_ui->edtMessage->setText(str->remove(rx));
+            fileViewerCursor.movePosition(QTextCursor::End);
+            m_ui->edtMessage->setTextCursor(fileViewerCursor);
+        }
+    }
 }
 
 void BugReportScreenBase::setMessage(const QString &a_message)

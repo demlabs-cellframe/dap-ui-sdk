@@ -34,6 +34,10 @@ public:
     static const QString SCREEN_NAME;
     virtual QString screenName() override = 0;
 
+private:
+    void validateText(QString *str, QStringList list);
+    QStringList rxList;
+
 public slots:
     void setMessage(const QString &a_message);
     void checkFieldsAndSendReport();

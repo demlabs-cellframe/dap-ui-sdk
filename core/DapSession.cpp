@@ -468,9 +468,8 @@ void DapSession::answerBugReport()
 {
     qInfo() << "answerBugReport";
     if(m_netSendBugReportReply->error() != QNetworkReply::NetworkError::NoError) {
-        qInfo() << "Network error answerBugReport - errorString: " << m_netSendBugReportReply->errorString();
         emit errorNetwork(m_netSendBugReportReply->errorString());
-        //return;
+        return;
     }
     QByteArray arrData;
     arrData.append(m_netSendBugReportReply->readAll());
