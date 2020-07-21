@@ -6,8 +6,8 @@
 class DapBugReportData: public QObject
 {
     Q_OBJECT
+    DapBugReportData(); //private constructor becouse it's singletone
 public:
-    DapBugReportData();
 
     static DapBugReportData *instance();
 
