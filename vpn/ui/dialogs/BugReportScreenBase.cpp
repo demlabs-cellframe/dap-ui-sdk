@@ -25,13 +25,20 @@ void BugReportScreenBase::initVariantUi(QWidget *a_widget)
     #endif
 #endif
 
-
     connect(this, &BugReportScreenBase::wrongMessage, [=](){
         Utils::setPropertyAndUpdateStyle(m_ui->edtMessage, Properties::WRONG, true);
     });
 
     connect(this->m_ui->edtMessage, &CustomTextEdit::textChanged, [=](){
         QString str = m_ui->edtMessage->toPlainText();
+        QRegExp rx("\\\\");
+        if (str.contains(rx)){
+            QTextCursor fileViewerCursor = m_ui->edtMessage->textCursor();
+            m_ui->edtMessage->setText(str.remove(rx));
+            fileViewerCursor.movePosition(QTextCursor::End);
+            m_ui->edtMessage->setTextCursor(fileViewerCursor);
+        }
+
         emit this->messageChanged(str);
         Utils::setPropertyAndUpdateStyle(m_ui->edtMessage, Properties::WRONG, false);
     });
