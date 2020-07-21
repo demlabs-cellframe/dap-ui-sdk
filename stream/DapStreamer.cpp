@@ -41,7 +41,7 @@ DapStreamer::DapStreamer(DapSession * session, QObject* parent) :
 
     m_session = session;
     m_streamSocket = new QTcpSocket(this);
-    m_streamSocket->setReadBufferSize(1000024);
+    m_streamSocket->setReadBufferSize(6000);
 
     connect(m_streamSocket,&QIODevice::readyRead, this,&DapStreamer::sltStreamProcess);
     //connect(m_streamSocket,&QAbstractSocket::hostFound, this,&DapConnectStream::sltStreamHostFound);
@@ -180,20 +180,6 @@ void DapStreamer::sltStreamOpenCallback()
         return;
     }
 
-    QVariant statusCode = m_network_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-    if (!statusCode.isValid()) {
-        qWarning() << "Status code is not valid";
-    } else if (statusCode.toInt() == 401 ) {
-        qWarning() << "Server return unauthorized code. Need authorization";
-        emit sigStreamOpenHttpError(statusCode.toInt());
-        return;
-    } else if (statusCode.toInt() == 400 ) {
-        qWarning() << "Bad Reqeust! Maybe without cookie or keyID.";
-        emit sigStreamOpenHttpError(statusCode.toInt());
-    } else if (statusCode.toInt() >= 402 && statusCode.toInt() < 600) {
-        emit sigStreamOpenHttpError(statusCode.toInt());
-    }
-
     QByteArray baReply(m_network_reply->readAll());
     if(baReply.size() == 0) {
         qWarning() << "Reply is empty";
@@ -225,9 +211,16 @@ void DapStreamer::sltStreamOpenCallback()
         m_session->getDapCrypt()->initAesKey(streamServKey, KeyRoleStream);
 
         if(!m_streamSocket->isOpen()) {
+
             m_streamSocket->connectToHost(m_session->upstreamAddress(),
                                           m_session->upstreamPort(),
                                           QIODevice::ReadWrite);
+#ifndef Q_OS_WINDOWS
+            if (m_streamSocket->waitForConnected(10000)) {
+                return;
+            }
+            emit errorNetwork("Socket connection timeout");
+#endif
         } else {
             qCritical() << "Stream already open";
         }
@@ -237,7 +230,6 @@ void DapStreamer::sltStreamOpenCallback()
         emit sigStreamOpenBadResponseError();
         m_streamID.clear();
     }
-
 }
 
 void DapStreamer::sltStreamBytesWritten(qint64 bytes)
