@@ -35,8 +35,7 @@ public:
     virtual QString screenName() override = 0;
 
 private:
-    void validateText(QString *str, QStringList list);
-    QStringList rxList;
+    bool validateText(QString &str);
 
 public slots:
     void setMessage(const QString &a_message);
