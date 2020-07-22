@@ -9,7 +9,7 @@ BugReportLoadingScreen::BugReportLoadingScreen(QWidget *a_parent)
     this->create(m_ui);
 
 
-//    AdaptiveScreen::initScreen(this);
+    AdaptiveScreen::initScreen(this);
 }
 
 QString BugReportLoadingScreen::screenName()
@@ -20,7 +20,7 @@ QString BugReportLoadingScreen::screenName()
 void BugReportLoadingScreen::initVariantUi(QWidget *a_widget)
 {
 #ifdef ANDROID
-    m_ui->btnCancel->setText("CANCEL");
+    m_ui->btnCancel->setText(tr("CANCEL"));
 #else
     m_ui->layBugReportScreen->setAlignment(m_ui->frmBugReport, Qt::AlignHCenter);
 #endif

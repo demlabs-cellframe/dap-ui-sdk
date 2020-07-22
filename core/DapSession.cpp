@@ -145,19 +145,16 @@ void DapSession::getNews()
  */
 void DapSession::onEnc()
 {
-    qDebug() << "On Enc()";
-
+    qDebug() << "Enc reply";
+    if (m_netEncryptReply && (m_netEncryptReply->error() != QNetworkReply::NoError)) {
+        emit errorNetwork(m_netEncryptReply->errorString());
+        return;
+    }
     QByteArray arrData;
-    if (m_netEncryptReply)
-        arrData.append(m_netEncryptReply->readAll());
+    arrData.append(m_netEncryptReply->readAll());
     if(arrData.isEmpty()) {
-        qWarning() << "Empty buffer in onEnc";
-        if(m_netEncryptReply->error() == QNetworkReply::NoError) {
-            qCritical() << "No error and empty buffer!";
-        } else {
-            //errorSlt(m_netEncryptReply->error());
-            emit errorNetwork(m_netEncryptReply->errorString());
-        }
+        qWarning() << "Empty enc reply...";
+        emit errorEncryptInitialization("Empty enc reply");
         return;
     }
 
@@ -346,10 +343,10 @@ void DapSession::onAuthorize()
         emit errorAuthorization ("Unknown authorization error");
         return;
     } else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
-        emit errorAuthorization (isSerial ? "Serial key not found in database" : "Login not found in database");
+        emit errorAuthorization (isSerial ? tr("Serial key not found in database") : "Login not found in database");
         return;
     } else if (op_code == OP_CODE_LOGIN_INCORRECT_PSWD) {
-        emit errorAuthorization (isSerial ? "Incorrect serial key" : "Incorrect password");
+        emit errorAuthorization (isSerial ? tr("Incorrect serial key") : "Incorrect password");
         return;
     } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRIED) {
         emit errorAuthorization ("Subscribe expired");

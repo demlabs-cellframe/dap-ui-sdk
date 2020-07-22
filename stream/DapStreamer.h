@@ -46,7 +46,7 @@ public:
     ~DapStreamer();
     bool isConnected() { return m_streamSocket->isOpen(); }
     int upstreamSocket() { return m_streamSocket->isOpen()?m_streamSocket->socketDescriptor(): -1; }
-
+    QNetworkReply::NetworkError lastErr() { return m_network_reply->error(); }
     DapChThread* addChProc(char chId, DapChBase* obj);
 
 protected:

@@ -45,6 +45,8 @@ public:
     void setServerTheBest(const DapServerInfo& server);
 
     DapServerInfo* currentServer();
+    void setRandomServerIfIsEmpty();
+    void clearCurrentServer();
 
     QString locationToIconPath(DapServerLocation loc);
 
@@ -79,6 +81,9 @@ public:
     const QString TEXT_SERIAL_KEY   = "serialkey";
     const QString TEXT_LOGIN        = "login";
     const QString TEXT_PASSWORD     = "password";
+
+    bool bSelectedAutoServer = false;
+    QVector<DapServerInfo> m_serversForCheck;
 
 
 public slots:

@@ -23,7 +23,7 @@
 
 #include <QDataStream>
 
-constexpr size_t DAP_PKT_SIZE_MAX = 1048576;
+constexpr size_t DAP_PKT_SIZE_MAX = 6000;
 
 struct DapChannelPacketHdr
 {
