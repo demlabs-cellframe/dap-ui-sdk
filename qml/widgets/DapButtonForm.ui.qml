@@ -43,8 +43,14 @@ Button
     property int borderWidthButton
     ///@detalis dapHorizontalAlignment Horizontal text alignment.
     property alias dapHorizontalAlignment: buttonText.horizontalAlignment
+    ///@details button background radius
+    property alias radius: dapBackgroundButton.radius
+
 
     id: dapButton
+
+    ///@details empty default background
+    background: Item {  }
 
     contentItem: 
         Rectangle 
@@ -56,6 +62,8 @@ Button
             implicitHeight: heightButton
             border.color: borderColorButton
             border.width: borderWidthButton
+            radius: 0
+
             ///button text
             Text 
             {
