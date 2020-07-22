@@ -34,6 +34,9 @@ public:
     static const QString SCREEN_NAME;
     virtual QString screenName() override = 0;
 
+private:
+    bool validateText(QString &str);
+
 public slots:
     void setMessage(const QString &a_message);
     void checkFieldsAndSendReport();
