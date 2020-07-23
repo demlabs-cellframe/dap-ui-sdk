@@ -2,18 +2,18 @@
 
 PasswordLineEdit::PasswordLineEdit(QWidget *parent):CustomLineEditBase (parent)
 {
-    btnControl->setCheckable(true);
+    m_btnControl->setCheckable(true);
 
 
-    connect(btnControl,&QPushButton::clicked,[=]{
-        if(btnControl->isChecked())
+    connect(m_btnControl,&QPushButton::clicked,[=]{
+        if(m_btnControl->isChecked())
         {
-            btnControl->setChecked(true);
+            m_btnControl->setChecked(true);
             this->setEchoMode(QLineEdit::Normal);
         }
         else
         {
-            btnControl->setChecked(false);
+            m_btnControl->setChecked(false);
             this->setEchoMode(QLineEdit::Password);
         }
     });

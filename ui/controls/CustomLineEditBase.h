@@ -46,12 +46,29 @@
 *}
 */
 
+class ResizableIconLabel : public QLabel
+{
+    Q_OBJECT
+
+    friend class CustomLineEditBase;
+
+private:
+    ResizableIconLabel(QWidget* parent = Q_NULLPTR);
+
+signals:
+    void resized();
+
+protected:
+    virtual void resizeEvent(QResizeEvent *event);
+};
+
 class CustomLineEditBase : public QLineEdit
 {
     Q_OBJECT
 
     Q_PROPERTY(bool visibleIcon WRITE setVisibleIcon DESIGNABLE true)
     Q_PROPERTY(bool visibleButton WRITE setVisibleButton DESIGNABLE true)
+    Q_PROPERTY(bool useCustomPlaceholder READ useCustomPlaceholder WRITE setUseCustomPlaceholder)
 
 public:
     CustomLineEditBase(QWidget* parent = Q_NULLPTR);
@@ -59,10 +76,11 @@ public:
                        QWidget* parent = Q_NULLPTR);
 
 public:
-    void setUseCustomPlaceholder(bool custom);
     /// Setting the error signal.
     /// @param a_wrong
     void setWrongState(bool a_wrong);
+    bool useCustomPlaceholder() const;
+    void setUseCustomPlaceholder(bool useCustom);
 
 protected:
     virtual void focusOutEvent(QFocusEvent *event);
@@ -83,23 +101,26 @@ private:
     void showCustomPlaceholder();
     void hideCustomPlaceholder();
 
-private:
-    bool            customPlaceholder;
+private slots:
+    void adjustTextMargins();
 
 private:
-    QHBoxLayout*    layoutCtrl;
-    QLabel*         placeHolderCtrl;
+    bool    m_useCustomPlaceholder;
+
+private:
+    QHBoxLayout*    m_layoutCtrl;
+    QLabel*         m_placeHolderCtrl;
 
 private:
     ///Widget for icon
-    QLabel*         lblIcon;
+    ResizableIconLabel* m_lblIcon;
 
 protected:
     ///Widget for button
-    QPushButton*    btnControl;
+    QPushButton*    m_btnControl;
 
 private:
-    QSpacerItem*    spacer;
+    QSpacerItem*    m_spacer;
 };
 
 #endif // CUSTOMLINEEDITBASE_H
