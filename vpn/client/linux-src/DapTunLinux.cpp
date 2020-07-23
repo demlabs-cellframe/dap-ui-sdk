@@ -228,7 +228,7 @@ void DapTunLinux::onWorkerStarted()
     qDebug() << "cmd run [" << run << ']';
      ::system(run.toLatin1().constData() );
         
-    ::system("nmcli c delete DiveVPN");
+    ::system("nmcli c delete " DAP_BRAND);
     
     if(!isLocalAddress(upstreamAddress()))
     {
@@ -240,7 +240,7 @@ void DapTunLinux::onWorkerStarted()
     }
 
     QString cmdConnAdd = QString(
-                "nmcli connection add type tun con-name DiveVPN autoconnect false ifname %1 "
+                "nmcli connection add type tun con-name " DAP_BRAND " autoconnect false ifname %1 "
                 "mode tun ip4 %2 gw4 %3")
             .arg(tunDeviceName()).arg(addr()).arg(gw());
     
@@ -248,28 +248,28 @@ void DapTunLinux::onWorkerStarted()
     
     ::system(cmdConnAdd.toLatin1().constData());
 
-    ::system("nmcli connection modify DiveVPN"
+    ::system("nmcli connection modify " DAP_BRAND
              " +ipv4.ignore-auto-routes true");
     
-    ::system("nmcli connection modify DiveVPN"
+    ::system("nmcli connection modify " DAP_BRAND
              " +ipv4.ignore-auto-dns true");
     
-    ::system((QString("nmcli connection modify DiveVPN"
-        " +ipv4.dns-search DiveVPN")
+    ::system((QString("nmcli connection modify " DAP_BRAND
+        " +ipv4.dns-search " DAP_BRAND)
         ).toLatin1().constData());
 
-    ::system("nmcli connection modify DiveVPN ipv4.dns-priority 10");
+    ::system("nmcli connection modify " DAP_BRAND " ipv4.dns-priority 10");
     
-    ::system("nmcli connection modify DiveVPN"
+    ::system("nmcli connection modify " DAP_BRAND
              " +ipv4.method manual");
 
-    ::system((QString("nmcli connection modify DiveVPN +ipv4.dns %1")
-              .arg(gw())).toLatin1().constData());
+    ::system((QString("nmcli connection modify %1 +ipv4.dns %2")
+              .arg(DAP_BRAND).arg(gw())).toLatin1().constData());
 
-    ::system("nmcli connection modify DiveVPN"
+    ::system("nmcli connection modify " DAP_BRAND
              " +ipv4.route-metric 10");
     
-    ::system("nmcli connection up DiveVPN");
+    ::system("nmcli connection up " DAP_BRAND);
 }
 
 /**
@@ -279,8 +279,8 @@ void DapTunLinux::tunDeviceDestroy()
 {
     ::system(QString("ifconfig %1 down")
              .arg(tunDeviceName()).toLatin1().constData());
-    ::system("nmcli connection down DiveVPN");
-    ::system("nmcli connection delete DiveVPN");
+    ::system("nmcli connection down " DAP_BRAND);
+    ::system("nmcli connection delete " DAP_BRAND);
 
     QString run = QString("ip route add default via %1").arg(m_defaultGwOld);
         qDebug() << "cmd run [" << run << ']';

@@ -55,6 +55,11 @@ bool DapServerInfo::_isJsonValid(const QJsonObject& obj)
             && obj["Port"].isDouble();
 }
 
+bool DapServerInfo::isAuto() const
+{
+    return (this->name == "Auto");
+}
+
 bool DapServerInfo::fromJSON(const QJsonArray& jsonArr, DapServerInfoList& out)
 {
     for (auto it = jsonArr.constBegin(); it != jsonArr.constEnd(); ++it)

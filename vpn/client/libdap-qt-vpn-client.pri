@@ -61,10 +61,10 @@ win32{
     SOURCES+= $$PWD/../../../os/windows/tuntap/tuntap.cpp
     SOURCES+= $$PWD/../../../os/windows/service/Service.cpp
 
-    LIBS += -lWS2_32
-    LIBS += -lAdvapi32
-    LIBS += -lIphlpapi
-    LIBS += -lUser32
+    LIBS += -lws2_32
+    LIBS += -ladvapi32
+    LIBS += -liphlpapi
+    LIBS += -luser32
     LIBS += -lole32
     LIBS += -luuid
 

@@ -25,18 +25,31 @@ void BugReportScreenBase::initVariantUi(QWidget *a_widget)
     #endif
 #endif
 
-
     connect(this, &BugReportScreenBase::wrongMessage, [=](){
         Utils::setPropertyAndUpdateStyle(m_ui->edtMessage, Properties::WRONG, true);
     });
 
     connect(this->m_ui->edtMessage, &CustomTextEdit::textChanged, [=](){
         QString str = m_ui->edtMessage->toPlainText();
-        emit this->messageChanged(str);
+        if (!validateText(str))
+            emit this->messageChanged(str);
         Utils::setPropertyAndUpdateStyle(m_ui->edtMessage, Properties::WRONG, false);
     });
 
     connectBtnToSignall(m_ui->btnSend, &BugReportScreenBase::checkFieldsAndSendReport);
+}
+
+bool BugReportScreenBase::validateText(QString &str)
+{
+    QRegExp rx("\\\\");
+    if (str.contains(rx) || str.length() > 500){
+        QTextCursor fileViewerCursor = m_ui->edtMessage->textCursor();
+        m_ui->edtMessage->setPlainText(QString(str.remove(rx)).mid(0, 500));
+        fileViewerCursor.movePosition(QTextCursor::End);
+        m_ui->edtMessage->setTextCursor(fileViewerCursor);
+        return true;
+    }
+    return false;
 }
 
 void BugReportScreenBase::setMessage(const QString &a_message)

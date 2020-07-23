@@ -78,14 +78,14 @@ void MainScreen::initVariantUi(QWidget *a_widget)
         {
             m_serversModel = cbbServer->model();
 
-            for (DapServerInfo& server :DapDataLocal::me()->servers())
+            for (DapServerInfo& server :DapDataLocal::serversData()->servers())
                 cbbServer->addItem(server.name);
 
-            connect(DapDataLocal::me(), &DapDataLocal::serverAdded, [=](const DapServerInfo& a_serverInfo){
+            connect(DapDataLocal::serversData(), &DapServersData::serverAdded, [=](const DapServerInfo& a_serverInfo){
                 cbbServer->addItem(a_serverInfo.name);
             });
 
-            connect(DapDataLocal::me(), SIGNAL(serversCleared()), cbbServer, SLOT(clear()));
+            connect(DapDataLocal::serversData(), &DapServersData::serversCleared, cbbServer, &QComboBox::clear);
         }
         else
             cbbServer->setModel(m_serversModel);

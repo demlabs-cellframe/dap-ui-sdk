@@ -10,6 +10,7 @@ SOURCES += \
     $$PWD/DapDataLocal.cpp \
     $$PWD/DapLogHandler.cpp \
     $$PWD/DapServerSelector.cpp \
+    $$PWD/DapServersData.cpp \
     $$PWD/DapSession.cpp \
     $$PWD/DapCrypt.cpp \
     $$PWD/DapKeyMsrln.cpp \
@@ -27,6 +28,7 @@ HEADERS += \
     $$PWD/DapDataLocal.h \
     $$PWD/DapLogHandler.h \
     $$PWD/DapServerSelector.h \
+    $$PWD/DapServersData.h \
     $$PWD/DapSession.h \
     $$PWD/DapCrypt.h \
     $$PWD/InterfaceDapKey.h \

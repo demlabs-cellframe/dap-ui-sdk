@@ -91,7 +91,7 @@ void DapLogger::updateCurrentLogName()
 bool DapLogger::setLogFile(const QString& filePath) {
     qDebug() << "setLogFile: " << filePath;
     int i = dap_common_init(DAP_BRAND, qPrintable(filePath)) ;
-    DapDataLocal::me()->setLogFilePath(filePath);
+    DapDataLocal::instance()->setLogFilePath(filePath);
     return i == 0;
 }
 
