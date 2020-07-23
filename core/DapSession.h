@@ -175,7 +175,7 @@ signals:
     void logoutRequested();
     void logouted();
 
-    void receivedBugReportNumber(const QString& bugReportNumber);
+    void receivedBugReportAnswer(const QString& bugReportNumber);
     void sigReceivedNewsMessage(const QJsonDocument& news);
 };
 

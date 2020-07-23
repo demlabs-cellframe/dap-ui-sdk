@@ -471,7 +471,7 @@ void DapSession::answerBugReport()
     QByteArray arrData;
     arrData.append(m_netSendBugReportReply->readAll());
     QString bugReportNumber = QString(arrData);
-    emit receivedBugReportNumber(bugReportNumber);
+    emit receivedBugReportAnswer(bugReportNumber);
 }
 
 void DapSession::answerNews()
