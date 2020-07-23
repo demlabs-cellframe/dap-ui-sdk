@@ -5,11 +5,9 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QHBoxLayout>
-#include <QStyle>
 #include <QSpacerItem>
-#include "Utilz.h"
-#include "defines.h"
-#include <QEvent>
+#include <QFocusEvent>
+#include <QPaintEvent>
 
 /*
 *
@@ -56,32 +54,46 @@ class CustomLineEditBase : public QLineEdit
     Q_PROPERTY(bool visibleButton WRITE setVisibleButton DESIGNABLE true)
 
 public:
-    CustomLineEditBase(QWidget* parent = nullptr);
+    CustomLineEditBase(QWidget* parent = Q_NULLPTR);
+    CustomLineEditBase(const QString& contents,
+                       QWidget* parent = Q_NULLPTR);
+
+public:
     /// Setting the error signal.
     /// @param a_wrong
     void setWrongState(bool a_wrong);
 
 protected:
-    void focusOutEvent(QFocusEvent *e);
-    void focusInEvent(QFocusEvent *e);
+    virtual void focusOutEvent(QFocusEvent *event);
+    virtual void focusInEvent(QFocusEvent *event);
+    virtual void paintEvent(QPaintEvent* event);
 
-
+protected:
     /// Sets the visibility of the icon.
     /// @param a_visible This parameter is taken from css settings.
     void setVisibleIcon(bool &a_visible);
     /// Sets the visibility of the button.
     /// @param a_visible This parameter is taken from css settings.
     void setVisibleButton(bool a_visible);
-    ///Widget for icon
-    QLabel *lblIcon;
-    ///Widget for button
-    QPushButton *btnControl;
-    QHBoxLayout *hblLineEdit;
 
-    QSpacerItem *spacer;
 private:
+    void recreateSubControls();
+    bool adjustPlaceholderText();
 
+private:
+    QHBoxLayout*    layoutCtrl;
+    QLabel*         placeHolderCtrl;
 
+private:
+    ///Widget for icon
+    QLabel*         lblIcon;
+
+protected:
+    ///Widget for button
+    QPushButton*    btnControl;
+
+private:
+    QSpacerItem*    spacer;
 };
 
 #endif // CUSTOMLINEEDITBASE_H
