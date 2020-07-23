@@ -71,8 +71,12 @@ void MainScreen::initVariantUi(QWidget *a_widget)
     QPushButton *btnBytes  ; Utils::findChild(a_widget, BTN_BYTES  , btnBytes  );
     QPushButton *btnPackets; Utils::findChild(a_widget, BTN_PACKETS, btnPackets);
 
-    cbbServer->popup()->setObjectName("cbbServer_popup");
-    cbbServer->setCaptionPolicy(CustomButtonComboBox::CaptionPolicy::ShowAlways);
+    auto serversPopup = cbbServer->popup();
+    serversPopup->setObjectName("cbbServer_popup");
+
+    //cbbServer->popup()->setObjectName("cbbServer_popup");
+   // cbbServer->setCaptionPolicy(CustomButtonComboBox::CaptionPolicy::ShowAlways);
+    serversPopup->setStyleSheet("{}");//Needed for scrollbar. TODO: investigate whi it's needed.
 
     if (!m_serversModel)
         {
