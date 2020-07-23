@@ -5,6 +5,7 @@
 
 CustomLineEditBase::CustomLineEditBase(QWidget* parent)
     : QLineEdit(parent)
+    , customPlaceholder(false)
     , layoutCtrl(Q_NULLPTR)
     , placeHolderCtrl(Q_NULLPTR)
     , lblIcon(Q_NULLPTR)
@@ -17,6 +18,7 @@ CustomLineEditBase::CustomLineEditBase(QWidget* parent)
 CustomLineEditBase::CustomLineEditBase(const QString& contents,
                                        QWidget* parent)
     : QLineEdit(contents, parent)
+    , customPlaceholder(false)
     , layoutCtrl(Q_NULLPTR)
     , placeHolderCtrl(Q_NULLPTR)
     , lblIcon(Q_NULLPTR)
@@ -26,10 +28,18 @@ CustomLineEditBase::CustomLineEditBase(const QString& contents,
     recreateSubControls();
 }
 
+void CustomLineEditBase::setUseCustomPlaceholder(bool custom)
+{
+    if(custom ? !customPlaceholder : customPlaceholder)
+    {
+        customPlaceholder = custom;
+        adjustPlaceholder();
+    }
+}
+
 void CustomLineEditBase::setVisibleIcon(bool &a_visible)
 {
     lblIcon->setVisible(a_visible);
-
 }
 
 void CustomLineEditBase::setVisibleButton(bool a_visible)
@@ -39,7 +49,7 @@ void CustomLineEditBase::setVisibleButton(bool a_visible)
 
 void CustomLineEditBase::setWrongState(bool a_wrong)
 {
-        Utils::setPropertyAndUpdateStyle(this, Properties::WRONG,a_wrong);
+    Utils::setPropertyAndUpdateStyle(this, Properties::WRONG, a_wrong);
 }
 
 void CustomLineEditBase::focusOutEvent(QFocusEvent *event)
@@ -55,35 +65,18 @@ void CustomLineEditBase::focusOutEvent(QFocusEvent *event)
         Utils::setPropertyAndUpdateStyle(this, Properties::FILLED, true);
     }
 
-    if(displayText().isEmpty())
-    {
-        placeHolderCtrl->show();
-        layoutCtrl->setStretch(2, 0);
-    }
+    showCustomPlaceholder();
 
     QLineEdit::focusOutEvent(event);
 }
 
 void CustomLineEditBase::focusInEvent(QFocusEvent *event)
 {
-    placeHolderCtrl->hide();
-    layoutCtrl->setStretch(2, 1);
+    hideCustomPlaceholder();
 
     Utils::setPropertyAndUpdateStyle(this, Properties::ACTIVE, true);
 
     QLineEdit::focusInEvent(event);
-}
-
-void CustomLineEditBase::paintEvent(QPaintEvent* event)
-{
-    if(!adjustPlaceholderText())
-    {
-        QLineEdit::paintEvent(event);
-    }
-    else
-    {
-        event->accept();
-    }
 }
 
 void CustomLineEditBase::recreateSubControls()
@@ -91,12 +84,6 @@ void CustomLineEditBase::recreateSubControls()
     lblIcon = new QLabel(this);
     lblIcon->setObjectName("image");
     lblIcon->hide();
-
-    placeHolderCtrl = new QLabel(this);
-    placeHolderCtrl->setObjectName("placeholder");
-    placeHolderCtrl->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    placeHolderCtrl->setFocusPolicy(Qt::NoFocus);
-    placeHolderCtrl->hide();
 
     spacer = new QSpacerItem(16000, 10);
 
@@ -116,30 +103,92 @@ void CustomLineEditBase::recreateSubControls()
 
     layoutCtrl->addWidget(lblIcon);
     layoutCtrl->setStretch(0, 0);
-    layoutCtrl->addWidget(placeHolderCtrl);
-    layoutCtrl->setStretch(1, 1);
     layoutCtrl->addItem(spacer);
-    layoutCtrl->setStretch(2, 0);
+    layoutCtrl->setStretch(1, 1);
     layoutCtrl->addWidget(btnControl);
-    layoutCtrl->setStretch(3, 0);
+    layoutCtrl->setStretch(2, 0);
 
     setLayout(layoutCtrl);
+
+    adjustPlaceholder();
 }
 
-bool CustomLineEditBase::adjustPlaceholderText()
+void CustomLineEditBase::adjustPlaceholder()
 {
-    const QString placeHolderText(placeholderText());
-    if(!placeHolderText.isEmpty())
+    if(customPlaceholder)
     {
-        placeHolderCtrl->setText(placeHolderText);
-        setPlaceholderText(QString());
+        if(Q_NULLPTR == placeHolderCtrl)
+        {
+            placeHolderCtrl = new QLabel(this);
+            placeHolderCtrl->setObjectName("placeholder");
+            placeHolderCtrl->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            placeHolderCtrl->setFocusPolicy(Qt::NoFocus);
 
-        update();
-        placeHolderCtrl->update();
+            layoutCtrl->insertWidget(1, placeHolderCtrl, 0, (Qt::AlignJustify | Qt::AlignVCenter));
 
-        return true;
+            if(hasFocus())
+            {
+                hideCustomPlaceholder();
+            }
+            else
+            {
+                showCustomPlaceholder();
+            }
+        }
     }
-
-    return false;
+    else
+    {
+        if(Q_NULLPTR != placeHolderCtrl)
+        {
+            delete placeHolderCtrl;
+            placeHolderCtrl = Q_NULLPTR;
+            layoutCtrl->setStretch(1, 1);
+        }
+    }
 }
 
+void CustomLineEditBase::adjustPlaceholderText()
+{
+    if(Q_NULLPTR != placeHolderCtrl)
+    {
+        const QString placeHolderText(placeholderText());
+        if(!placeHolderText.isEmpty())
+        {
+            placeHolderCtrl->setText(placeHolderText);
+            setPlaceholderText(QString());
+
+            update();
+            placeHolderCtrl->update();
+        }
+    }
+}
+
+void CustomLineEditBase::showCustomPlaceholder()
+{
+    adjustPlaceholderText();
+
+    if(Q_NULLPTR != placeHolderCtrl)
+    {
+        if(displayText().isEmpty())
+        {
+            placeHolderCtrl->show();
+            layoutCtrl->setStretch(2, 0);
+        }
+        else
+        {
+            placeHolderCtrl->hide();
+            layoutCtrl->setStretch(2, 1);
+        }
+    }
+}
+
+void CustomLineEditBase::hideCustomPlaceholder()
+{
+    adjustPlaceholderText();
+
+    if(Q_NULLPTR != placeHolderCtrl)
+    {
+        placeHolderCtrl->hide();
+        layoutCtrl->setStretch(2, 1);
+    }
+}

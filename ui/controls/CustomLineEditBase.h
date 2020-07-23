@@ -59,6 +59,7 @@ public:
                        QWidget* parent = Q_NULLPTR);
 
 public:
+    void setUseCustomPlaceholder(bool custom);
     /// Setting the error signal.
     /// @param a_wrong
     void setWrongState(bool a_wrong);
@@ -66,7 +67,6 @@ public:
 protected:
     virtual void focusOutEvent(QFocusEvent *event);
     virtual void focusInEvent(QFocusEvent *event);
-    virtual void paintEvent(QPaintEvent* event);
 
 protected:
     /// Sets the visibility of the icon.
@@ -78,7 +78,13 @@ protected:
 
 private:
     void recreateSubControls();
-    bool adjustPlaceholderText();
+    void adjustPlaceholder();
+    void adjustPlaceholderText();
+    void showCustomPlaceholder();
+    void hideCustomPlaceholder();
+
+private:
+    bool            customPlaceholder;
 
 private:
     QHBoxLayout*    layoutCtrl;
