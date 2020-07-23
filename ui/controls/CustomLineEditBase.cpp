@@ -207,17 +207,14 @@ void CustomLineEditBase::hideCustomPlaceholder()
 
 void CustomLineEditBase::adjustTextMargins()
 {
-    QMargins margins(textMargins());
+    const QMargins marginsPrev(textMargins());
+    QMargins marginsNew(0, marginsPrev.top(), 0, marginsPrev.bottom());
 
     if(Q_NULLPTR != m_lblIcon)
     {
         if(m_lblIcon->isVisible())
         {
-            margins.setLeft(m_lblIcon->frameGeometry().width());
-        }
-        else
-        {
-            margins.setLeft(0);
+            marginsNew.setLeft(m_lblIcon->frameGeometry().width());
         }
     }
 
@@ -225,17 +222,13 @@ void CustomLineEditBase::adjustTextMargins()
     {
         if(m_btnControl->isVisible())
         {
-            margins.setRight(m_btnControl->frameGeometry().width());
-        }
-        else
-        {
-            margins.setRight(0);
+            marginsNew.setRight(m_btnControl->frameGeometry().width());
         }
     }
 
-    if((Q_NULLPTR != m_lblIcon) || (Q_NULLPTR != m_btnControl))
+    if(marginsPrev != marginsNew)
     {
-        setTextMargins(margins);
+        setTextMargins(marginsNew);
     }
 }
 
