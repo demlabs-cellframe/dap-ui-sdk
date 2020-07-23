@@ -96,7 +96,8 @@ void CustomLineEditBase::recreateSubControls()
 
     m_spacer = new QSpacerItem(16000, 10);
 
-    m_btnControl = new QPushButton(this);
+    m_btnControl = new ResizablePushButton(this);
+    connect(m_btnControl, SIGNAL(resized()), this, SLOT(adjustTextMargins()), Qt::DirectConnection);
     m_btnControl->setObjectName("control");
     connect(m_btnControl,&QPushButton::clicked,[=]{
         this->clear();
@@ -216,7 +217,7 @@ void CustomLineEditBase::adjustTextMargins()
         }
         else
         {
-            margins.setLeft(0);//m_lblIcon->frameGeometry().left());
+            margins.setLeft(0);
         }
     }
 
@@ -228,7 +229,7 @@ void CustomLineEditBase::adjustTextMargins()
         }
         else
         {
-            margins.setRight(0);//(geometry().width() - m_btnControl->frameGeometry().right());
+            margins.setRight(0);
         }
     }
 
@@ -246,6 +247,18 @@ ResizableIconLabel::ResizableIconLabel(QWidget* parent)
 void ResizableIconLabel::resizeEvent(QResizeEvent* event)
 {
     QLabel::resizeEvent(event);
+
+    emit resized();
+}
+
+ResizablePushButton::ResizablePushButton(QWidget* parent)
+    : QPushButton(parent)
+{
+}
+
+void ResizablePushButton::resizeEvent(QResizeEvent* event)
+{
+    QPushButton::resizeEvent(event);
 
     emit resized();
 }

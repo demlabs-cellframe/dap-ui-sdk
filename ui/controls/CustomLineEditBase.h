@@ -62,6 +62,22 @@ protected:
     virtual void resizeEvent(QResizeEvent *event);
 };
 
+class ResizablePushButton : public QPushButton
+{
+    Q_OBJECT
+
+    friend class CustomLineEditBase;
+
+private:
+    ResizablePushButton(QWidget* parent = Q_NULLPTR);
+
+signals:
+    void resized();
+
+protected:
+    virtual void resizeEvent(QResizeEvent *event);
+};
+
 class CustomLineEditBase : public QLineEdit
 {
     Q_OBJECT
@@ -117,7 +133,7 @@ private:
 
 protected:
     ///Widget for button
-    QPushButton*    m_btnControl;
+    ResizablePushButton*    m_btnControl;
 
 private:
     QSpacerItem*    m_spacer;
