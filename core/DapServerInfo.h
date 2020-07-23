@@ -44,6 +44,8 @@ public:
     QString name;
     DapServerLocation location;
 
+    bool isAuto() const;
+
     static bool fromJSON(const QJsonArray& jsonArr, DapServerInfoList& out);
     static bool fromJSON(const QJsonObject& jsonObj, DapServerInfo& out);
 
@@ -59,6 +61,7 @@ public:
     }
     static countryMap m_countries;
     static countryMap2 m_countries2;
+
 private:
     static bool _isJsonValid(const QJsonObject& obj);
 };

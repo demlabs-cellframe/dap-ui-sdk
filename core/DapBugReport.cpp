@@ -18,7 +18,7 @@ void DapBugReport::createZipDataBugReport(QString email, QString message)
 
     QFileInfo infoFileData(file);
     QStringList fileList;
-    fileList << DapDataLocal::me()->getLogFilePath() << QString(DapDataLocal::me()->getLogFilePath()).replace("Service", "GUI") << infoFileData.path() + "/" + infoFileData.fileName();
+    fileList << DapDataLocal::instance()->getLogFilePath() << QString(DapDataLocal::instance()->getLogFilePath()).replace("Service", "GUI") << infoFileData.path() + "/" + infoFileData.fileName();
 
     JlCompress::compressFiles("temp_bugReportZip.zip", fileList);
 

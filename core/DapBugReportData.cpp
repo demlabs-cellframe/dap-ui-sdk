@@ -9,7 +9,8 @@ DapBugReportData::DapBugReportData()
 
 DapBugReportData *DapBugReportData::instance()
 {
-    return DapDataLocal::me()->bugReportData();
+    static DapBugReportData s_instance;
+    return &s_instance;
 }
 
 QString DapBugReportData::message() const
