@@ -80,15 +80,15 @@ void DapServersData::loadDatas()
 
 const DapServerInfo *DapServersData::currentServer() const
 {
-    if (m_currentServerIndex < 0)
+    if (m_currentServerIndex < 0 || m_currentServerIndex >= this->serversCount())
         return nullptr;
 
     return &m_servers.at(this->m_currentServerIndex);
 }
 
-int DapServersData::serversCount()
+int DapServersData::serversCount() const
 {
-    m_servers.count();
+    return m_servers.count();
 }
 
 void DapServersData::clearServerList()
