@@ -20,7 +20,7 @@ public:
     QList<DapServerInfo>& servers(){return m_servers;}
 
     const DapServerInfo* currentServer() const;
-    int serversCount();
+    int serversCount() const;
 
     void clearServerList();
 
