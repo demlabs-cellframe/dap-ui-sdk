@@ -97,9 +97,9 @@ void DapDataLocal::parseXML(const QString& a_fname)
             }
         }
     }
-#ifdef  QT_DEBUG
-    DapDataLocal::serversData()->addServer(DapServerLocation::UNKNOWN, "local", "127.0.0.1",  8002);
-#endif
+//#ifdef  QT_DEBUG
+//    DapDataLocal::serversData()->addServer(DapServerLocation::UNKNOWN, "local", "127.0.0.1",  8002);
+//#endif
 
 
     delete sr;

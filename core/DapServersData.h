@@ -53,8 +53,8 @@ private:
 
  //   DapServerInfo* m_currentServer = nullptr;
 
-    int m_currentServerIndex;
-    bool m_currentServerIsAuto;
+    int m_currentServerIndex = -1;
+    bool m_currentServerIsAuto = false;
     QList<DapServerInfo> m_servers;
 };
 
