@@ -63,6 +63,7 @@ void DapServersData::setCurrentServer(const QString &a_serverName)
             setCurrentServer(i);
             return;
         }
+        this->setCurrentServer(-1);
     }
 
     qFatal("There is no server with name %s", qPrintable(a_serverName));
@@ -94,7 +95,7 @@ int DapServersData::serversCount() const
 void DapServersData::clearServerList()
 {
     m_servers.clear();
-    this->setCurrentServer(nullptr);
+    this->setCurrentServer(-1);
 
     emit this->serversCleared();
 }
