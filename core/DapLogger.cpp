@@ -68,7 +68,7 @@ QString DapLogger::defaultLogPath(const QString a_brand)
 #elif defined (Q_OS_WIN)
     return QString("%1/%2/log").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
-    return QString("/sdcard/%1").arg(DAP_BRAND);
+    return QString("/sdcard/%1").arg(a_brand);
 #endif
     return {};
 }

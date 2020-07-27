@@ -34,9 +34,7 @@ public:
     static const QString SCREEN_NAME;
     virtual QString screenName() override = 0;
 
-private:
-    bool validateText(QString &str);
-
+    QString message() const;
 public slots:
     void setMessage(const QString &a_message);
     void checkFieldsAndSendReport();
@@ -60,6 +58,9 @@ protected:
     virtual bool checkFields();
 
     QScopedPointer<BUG_REPORT_FORM> m_ui;
+
+private:
+    bool validateText(QString &str);
 };
 
 

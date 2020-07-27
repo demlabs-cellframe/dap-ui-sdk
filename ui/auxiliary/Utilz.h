@@ -36,7 +36,6 @@ namespace Utils
     template <class T>
     T findParent(QObject* a_object);
 
-
     void setPropertyAndUpdateStyle(QWidget* a_widget, const QString& a_property, const QVariant& a_value = true);
     void setPropertyAndUpdateStyle(QWidget* a_widget, const char*    a_property, const QVariant& a_value = true);
     void updateStyle(QWidget* a_widget);
