@@ -118,5 +118,4 @@ namespace Utils
                 return QBoxLayout::Direction::LeftToRight;
         }
     }
-
 }
