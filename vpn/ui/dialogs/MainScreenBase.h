@@ -37,6 +37,33 @@
 class MainScreenBase : public AdaptiveScreen
 {
     Q_OBJECT
+
+public:
+
+    /// Overloaded constructor.
+    /// @param a_parent Parent.
+    /// @param a_sw Application window stack.
+    MainScreenBase(QWidget *a_parent);
+
+    static const QString SCREEN_NAME;
+    virtual QString screenName() override;
+
+    void setState(ConnectionStates a_state);
+
+    enum class IndicatorsUnits {Bytes, Packets};
+
+    IndicatorsUnits indicatorUnits() const;
+
+
+#ifndef Q_OS_ANDROID
+    /// Add styles to the graphic element.
+    /// @param widget Graphic element.
+    /// @param styleWidget Graphic styles.
+    void addItemGraphicSceneStyle(const QString &widget, const QString &styleWidget);
+    /// Delete styles for the graphic element.
+    /// @param widget Graphic element.
+    void removeItemGraphicSceneStyle(const QString &widget);
+#endif
 protected:
     /// Timeout for total connection time calculator in milliseconds.
     const ushort CONNECTED_TIME_INTERVAL{1000};
@@ -52,7 +79,7 @@ protected:
 #ifndef Q_OS_ANDROID
     void initServerList();
 #endif
-    enum class IndicatorsUnits {Bytes, Packets};
+
     /// Form initialization.
     /// @param a_w Window GUI widget.
     /// @param a_rotation Device display orientation.
@@ -103,31 +130,6 @@ protected:
     ConnectionStates m_state {ConnectionStates::Disconnected};
     QString m_currentServer {};
 
-
-public:
-
-    /// Overloaded constructor.
-    /// @param a_parent Parent.
-    /// @param a_sw Application window stack.
-    MainScreenBase(QWidget *a_parent);
-
-    static const QString SCREEN_NAME;
-    virtual QString screenName() override;
-
-    void setState(ConnectionStates a_state);
-
-    IndicatorsUnits indicatorUnits() const;
-
-
-#ifndef Q_OS_ANDROID
-    /// Add styles to the graphic element.
-    /// @param widget Graphic element.
-    /// @param styleWidget Graphic styles.
-    void addItemGraphicSceneStyle(const QString &widget, const QString &styleWidget);
-    /// Delete styles for the graphic element.
-    /// @param widget Graphic element.
-    void removeItemGraphicSceneStyle(const QString &widget);
-#endif
 
 public slots:
 
