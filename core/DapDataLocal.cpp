@@ -200,13 +200,13 @@ void DapDataLocal::saveSecretString(QString key, QString string)
 
 QVariant DapDataLocal::getSetting(const QString &a_setting)
 {
-    QSettings settings;
+    QSettings settings(DAP_ORGANIZATION_NAME, DAP_BRAND);
     return settings.value(a_setting);
 }
 
 void DapDataLocal::saveSetting(const QString &a_setting, const QVariant &a_value)
 {
-    QSettings settings;
+    QSettings settings(DAP_ORGANIZATION_NAME, DAP_BRAND);
     settings.setValue(a_setting, a_value);
 }
 
@@ -222,7 +222,7 @@ DapServersData *DapDataLocal::serversData()
 
 bool DapDataLocal::initSecretKey(){
 
-    QSettings settings;
+    QSettings settings(DAP_ORGANIZATION_NAME, DAP_BRAND);
     if (settings.value("key").toString().isEmpty()){
         settings.setValue("key", getRandomString(40));
     }

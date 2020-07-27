@@ -182,7 +182,7 @@ void DapTunMac::workerPrepare()
 void DapTunMac::backupAndApplyDNS()
 {
     qDebug() << "backupAndApplyDNS()";
-    QSettings dnsSettigs;
+    QSettings dnsSettigs(DAP_ORGANIZATION_NAME, DAP_BRAND);
     dnsSettigs.setValue("ActiveNetIfs", "");
 
     QFile file(":/macos/GetActiveNetIFs.sh");
@@ -267,7 +267,7 @@ void DapTunMac::backupAndApplyDNS()
 void DapTunMac::getBackDNS()
 {
     qDebug() << "getBackDNS()";
-    QSettings dnsSettigs;
+    QSettings dnsSettigs(DAP_ORGANIZATION_NAME, DAP_BRAND);
     QString l_strActiveNetIfs = dnsSettigs.value("ActiveNetIfs").toString();
 
     QStringList l_lActiveNetIfs = l_strActiveNetIfs.split('\n');
