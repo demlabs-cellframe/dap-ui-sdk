@@ -24,7 +24,7 @@ class DapReplyTimeout : public QObject {
                     }
                 });
             } else {
-                qWarning() << "This network request is not running. Can't set request timeout";
+                qCritical() << "Request is already closed";
             }
         }
 

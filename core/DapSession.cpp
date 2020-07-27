@@ -325,6 +325,12 @@ void DapSession::onKeyActivated() {
  */
 void DapSession::onAuthorize()
 {
+    qDebug() << "Auth reply";
+    if (m_netAuthorizeReply && (m_netAuthorizeReply->error() != QNetworkReply::NoError)) {
+        emit errorNetwork(m_netAuthorizeReply->errorString());
+        return;
+    }
+
     QByteArray arrData;
     arrData.append(m_netAuthorizeReply->readAll());
 
