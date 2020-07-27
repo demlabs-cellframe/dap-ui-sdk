@@ -324,9 +324,15 @@ void DapStreamer::sltStreamConnected()
     quint64 ret = m_streamSocket->write(baReq.constData(), baReq.size());
     qDebug() << "[DapConnectStream] HTTP stream request sent "<< ret<< " bytes";
 
-    if( !m_streamSocket->waitForBytesWritten())
+    if( !m_streamSocket->waitForBytesWritten(
+#ifndef Q_OS_WINDOWS
+                10000
+#else
+#endif
+                )) {
         qDebug() << "[DapConnectStream] Can't wait until all bytes are sent: "
                  << m_streamSocket->errorString();
+    }
 
     m_streamState = SSS_FRAME_SEARCH;
     emit streamOpened();
