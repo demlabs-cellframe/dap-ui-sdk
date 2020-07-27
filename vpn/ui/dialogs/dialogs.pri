@@ -5,7 +5,7 @@ HEADERS  += \
     $$PWD/BugReportScreenBase.h \
     $$PWD/BugReportWithEmailScreen.h \
     $$PWD/BugReportWithoutEmailScreen.h \
-    $$PWD/MainScreen.h \
+    $$PWD/MainScreenBase.h \
     $$PWD/MainScreenLayout.h \
     $$PWD/PasswordRecoveryScreen.h \
     $$PWD/ScreenWithCustomPopupsAbstract.h \
@@ -23,7 +23,7 @@ SOURCES += \
     $$PWD/BugReportScreenBase.cpp \
     $$PWD/BugReportWithEmailScreen.cpp \
     $$PWD/BugReportWithoutEmailScreen.cpp \
-    $$PWD/MainScreen.cpp \
+    $$PWD/MainScreenBase.cpp \
     $$PWD/MainScreenLayout.cpp \
     $$PWD/PasswordRecoveryScreen.cpp \
     $$PWD/NavigationPanel.cpp \
