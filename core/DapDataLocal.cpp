@@ -28,8 +28,13 @@ DapDataLocal::picturesMap DapDataLocal::m_pictruePath = {
 DapDataLocal *DapDataLocal::_me = Q_NULLPTR;
 
 DapDataLocal::DapDataLocal()
+    : QObject()
+    , m_settings(new QSettings(DAP_ORGANIZATION_NAME, DAP_BRAND, this))
 {
     qDebug() << "[DL] DapDataLocal Constructor";
+
+    _me = this;
+
     parseXML(":/data.xml");
 
     this->loadAuthorizationDatas();
@@ -178,6 +183,11 @@ void DapDataLocal::rotateCDBList() {
     }
 }
 
+QSettings* DapDataLocal::settings()
+{
+    return _me->m_settings;
+}
+
 QString DapDataLocal::getSecretString(QString key)
 {
     QByteArray stringIn = DapDataLocal::getSetting(key).toByteArray();
@@ -200,14 +210,12 @@ void DapDataLocal::saveSecretString(QString key, QString string)
 
 QVariant DapDataLocal::getSetting(const QString &a_setting)
 {
-    QSettings settings(DAP_ORGANIZATION_NAME, DAP_BRAND);
-    return settings.value(a_setting);
+    return settings()->value(a_setting);
 }
 
 void DapDataLocal::saveSetting(const QString &a_setting, const QVariant &a_value)
 {
-    QSettings settings(DAP_ORGANIZATION_NAME, DAP_BRAND);
-    settings.setValue(a_setting, a_value);
+    settings()->setValue(a_setting, a_value);
 }
 
 DapBugReportData *DapDataLocal::bugReportData()
@@ -220,17 +228,17 @@ DapServersData *DapDataLocal::serversData()
     return DapServersData::instance();
 }
 
-bool DapDataLocal::initSecretKey(){
-
-    QSettings settings(DAP_ORGANIZATION_NAME, DAP_BRAND);
-    if (settings.value("key").toString().isEmpty()){
-        settings.setValue("key", getRandomString(40));
+bool DapDataLocal::initSecretKey()
+{
+    if (settings()->value("key").toString().isEmpty())
+    {
+        settings()->setValue("key", getRandomString(40));
     }
     if (secretKey != nullptr) {
         delete secretKey;
     }
     secretKey = new DapKeyAes();
-    QString kexString = settings.value("key").toString() + "SLKJGN234njg6vlkkNS3s5dfzkK5O54jhug3KUifw23";
+    QString kexString = settings()->value("key").toString() + "SLKJGN234njg6vlkkNS3s5dfzkK5O54jhug3KUifw23";
     return secretKey->init(QString(kexString));
 }
 
@@ -266,5 +274,7 @@ QString DapDataLocal::locationToIconPath(DapServerLocation loc)
 DapDataLocal *DapDataLocal::instance()
 {
     static DapDataLocal s_instance;
-    return &s_instance;
+
+    return _me;
 }
+

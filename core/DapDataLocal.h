@@ -34,7 +34,7 @@ class DapDataLocal : public QObject
 
 public:
     using picturesMap = QMap<DapServerLocation, QString>;
-    static DapDataLocal * instance();
+    static DapDataLocal* instance();
 
     QString locationToIconPath(DapServerLocation loc);
 
@@ -87,6 +87,9 @@ signals:
     /// @param password Password.
     void serialKeyChanged(const QString& serial);
 
+private:
+    static QSettings* settings();
+
 protected:
     QString m_login;      ///< Login.
     QString m_password;   ///< Password.
@@ -95,6 +98,9 @@ protected:
     QList<QString> m_cdbServersList;
     QString     m_networkDefault;
     QString urlSignUp;
+
+private:
+    QSettings*  m_settings;
 
 private:
     void loadAuthorizationDatas();
