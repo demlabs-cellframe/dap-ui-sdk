@@ -5,6 +5,7 @@
 #include <QDesktopWidget>
 #include <QRect>
 #include <QApplication>
+#include <qDebug>
 
 #ifdef Q_OS_WIN
 #include "windows.h"
@@ -48,10 +49,10 @@ inline double UiScaling::pointsToInches(float a_pointsValue)
 float UiScaling::getNativDPI(){
 #ifdef Q_OS_WIN
     HDC screen = GetDC(NULL);
-    int hSize=GetDeviceCaps(screen,HORZSIZE);
-    int hRes=GetDeviceCaps(screen,HORZRES);
+    int hSize = GetDeviceCaps(screen, HORZSIZE);
+    int hRes = GetDeviceCaps(screen, HORZRES);
 
-    float PixelsPerMM = (float)hRes / hSize; // pixels per millimeter
+    float PixelsPerMM = (float)(hRes / hSize); // pixels per millimeter
     float dpi = PixelsPerMM * 25.4f;
 #elif defined(Q_OS_LINUX)
 #ifndef Q_OS_ANDROID
@@ -77,8 +78,8 @@ float UiScaling::getNativDPI(){
 #endif
 #ifndef Q_OS_ANDROID
     //if dpi is less than 50, it may have been calculated incorrectly
-    if (dpi>50) return QGuiApplication::primaryScreen()->physicalDotsPerInch();//
-    return (dpi < 50 ? QGuiApplication::primaryScreen()->physicalDotsPerInch() : dpi);
+    qInfo() << "Pixels per mm: " << PixelsPerMM << " Resolution: " << hRes << " Screen height: " << hSize << " UiScaling - dpi: " << dpi;
+    return ((dpi < 50 || dpi > 350) ? QGuiApplication::primaryScreen()->physicalDotsPerInch() : dpi);
 
 #else
     return 1;
