@@ -113,6 +113,8 @@ void SignUpScreen::initVariantUi(QWidget *a_widget)
         Utils::setPropertyAndUpdateStyle(lblStatusMessage, Properties::WRONG, true);
         lblStatusMessage->setText(a_message);
         m_btnSignUp->setText(TEXT_SIGN_UP);
+        this->setChildProperties(WGT_MAIN_FRAME, Properties::ENABLED , true);
+        this->setChildProperties(BTN_SIGN_UP, Properties::ENABLED , true);
     });
 
     connect(this, &SignUpScreen::wrongRepeatPassword, [=](){
@@ -250,61 +252,32 @@ bool SignUpScreen::checkAgree()
         return true;
 }
 
-void SignUpScreen::replyFinished(QNetworkReply *reply){
-
-    this->setChildProperties(WGT_MAIN_FRAME, Properties::ENABLED , true);
-    this->setChildProperties(BTN_SIGN_UP, Properties::ENABLED , true);
-
-    if(reply->error() == QNetworkReply::NoError)
+void SignUpScreen::answerSignUp(const QString &a_answer)
+{
+    if(a_answer == "User created")
     {
-        QByteArray content = reply->readAll();
-        qDebug() << content;
-        QJsonDocument itemDoc = QJsonDocument::fromJson(content);
-        QJsonObject itemObj = itemDoc.object();
-        QVariantMap mainMap = itemObj.toVariantMap();
-        QVariantMap map = mainMap["result"].toMap();
-        QString message = map["message"].toString();
-        //here you can place the response processing from the site
-        if(message == "User created")
-        {
-            emit this->setStateFinalScreen();
-            qDebug() << "User created";
-        }
-        else
-        {
-            QString MESS_USER_NAME_EXISTS(tr("Sorry, that username already exists!"));
-            QString MESS_USER_CREATED_ERLIER(tr("Cannot create a user with an empty login name."));
-            if(message == MESS_USER_NAME_EXISTS || message == MESS_USER_CREATED_ERLIER)
-            {
-                emit this->wrongCreatedUser(message);
-            }
-        }
+        emit this->setStateFinalScreen();
+        qDebug() << "User created";
     }
-    else {
-        qDebug() << "ERROR in POST: " + reply->errorString();
+    else
+    {
+        emit this->wrongCreatedUser(a_answer);
     }
-        reply->deleteLater();
 }
 
 void SignUpScreen::checkFieldsAndSignUp()
 {
-    bool emailIsValid    = checkEmail();
-    bool passwordIsValid = checkPassword();
-    bool repeatPasswordIsValid = checkRepeatPassword();
-    bool agreeIsValid = checkAgree();
-
     qDebug() << "checkFieldsAndSignUp";
 
-    if (emailIsValid && passwordIsValid && repeatPasswordIsValid && agreeIsValid)
+    if (checkEmail() && checkPassword() && checkRepeatPassword() && checkAgree())
     {
         this->setChildProperties(WGT_MAIN_FRAME, Properties::ENABLED , false);
         this->setChildProperties(BTN_SIGN_UP, Properties::ENABLED , false);
         m_btnSignUp->setText(TEXT_CONNECTING);
-        QNetworkRequest request;
-        request.setUrl(QUrl(BrandProperties::URL_REGISTRATION/*"https://kelvpn.com/wp-json/dapvpn/v1/register/"*/));
-        request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
-        QString body = QString("email=%1&password=%2").arg(m_email).arg(m_password);
-        m_mgr->post(request, body.toUtf8());
+
+        DapSignUpData::instance()->setEmail(m_email);
+        DapSignUpData::instance()->setPassword(m_password);
+        emit signUpRequest();
     }
 }
 

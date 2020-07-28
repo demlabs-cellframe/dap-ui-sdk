@@ -64,16 +64,16 @@ void DapBugReportData::setLastSentNumber(const QString& a_lastSentNumber /*= {})
 
 void DapBugReportData::saveDatas() const
 {
-    DapDataLocal::saveSetting(SETTINGS_TEXT_EMAIL           , this->email());
-    DapDataLocal::saveSetting(SETTINGS_TEXT_MESSAGE         , this->message());
-    DapDataLocal::saveSetting(SETTINGS_TEXT_LAST_SENT_NUMBER, this->lastSentNumber());
+    DapDataLocal::instance()->saveSecretString(SETTINGS_TEXT_EMAIL  , this->email());
+    DapDataLocal::instance()->saveSecretString(SETTINGS_TEXT_MESSAGE, this->message());
+	DapDataLocal::instance()->saveSecretString(SETTINGS_TEXT_LAST_SENT_NUMBER, this->lastSentNumber());
 }
 
 void DapBugReportData::loadDatas()
 {
-    this->setEmail          (DapDataLocal::getSetting(SETTINGS_TEXT_EMAIL)           .toString());
-    this->setMessage        (DapDataLocal::getSetting(SETTINGS_TEXT_MESSAGE)         .toString());
-    this->setLastSentNumber (DapDataLocal::getSetting(SETTINGS_TEXT_LAST_SENT_NUMBER).toString());
+    this->setEmail  (DapDataLocal::instance()->getSecretString(SETTINGS_TEXT_EMAIL).toString());
+    this->setMessage(DapDataLocal::instance()->getSecretString(SETTINGS_TEXT_MESSAGE).toString());
+	this->setMessage(DapDataLocal::instance()->getSecretString(SETTINGS_TEXT_LAST_SENT_NUMBER).toString());
 }
 
 
