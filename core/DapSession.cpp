@@ -352,6 +352,9 @@ void DapSession::onAuthorize()
         emit errorAuthorization (isSerial ? tr("Serial key not found in database") : "Login not found in database");
         return;
     } else if (op_code == OP_CODE_LOGIN_INCORRECT_PSWD) {
+        if(m_user.isEmpty() && !isSerial)
+            emit errorAuthorization ("Login not found in database");
+        else
         emit errorAuthorization (isSerial ? tr("Incorrect serial key") : "Incorrect password");
         return;
     } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRIED) {

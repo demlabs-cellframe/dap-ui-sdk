@@ -78,9 +78,8 @@ void CustomLicenseLineEdit::inputMethodEvent(QInputMethodEvent *e)
         m_serial = e->preeditString();
     }
 
-    if(e->preeditString().length() == this->maxLength())
+    if(e->preeditString().length() + text().length() == this->maxLength())
     {
-
         m_focusFromMouse = false;
         QEvent event(QEvent::FocusOut);
         QApplication::sendEvent(this,&event);
