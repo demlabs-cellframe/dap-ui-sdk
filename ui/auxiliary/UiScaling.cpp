@@ -49,11 +49,10 @@ inline double UiScaling::pointsToInches(float a_pointsValue)
 float UiScaling::getNativDPI(){
 #ifdef Q_OS_WIN
     HDC screen = GetDC(NULL);
-    int hSize = GetDeviceCaps(screen, HORZSIZE);
-    int hRes = GetDeviceCaps(screen, HORZRES);
-
-    float PixelsPerMM = (float)(hRes / hSize); // pixels per millimeter
-    float dpi = PixelsPerMM * 25.4f;
+    int hSize       = GetDeviceCaps(screen, HORZSIZE);
+    int wSize       = GetDeviceCaps(screen, VERTSIZE);
+    int hResolution = GetDeviceCaps(screen, HORZRES);
+    int wResolution = GetDeviceCaps(screen, VERTRES);
 #elif defined(Q_OS_LINUX)
 #ifndef Q_OS_ANDROID
     Display *dpy;
@@ -66,21 +65,27 @@ float UiScaling::getNativDPI(){
     crtc_info = XRRGetCrtcInfo(dpy, screen, screen->crtcs[0]); //0 to get the first monitor
     outInfo = XRRGetOutputInfo(dpy, screen, *crtc_info->outputs);
 
-    float PixelsPerMM = (float)crtc_info->height / outInfo->mm_height;
-    float dpi = PixelsPerMM * 25.4f;
+    int hSize       = crtc_info->height;
+    int wSize       = crtc_info->width;
+    int hResolution = outInfo->mm_height;
+    int wResolution = outInfo->mm_width;
 #endif
 #elif defined(Q_OS_MACOS)
     auto mainDisplayId = CGMainDisplayID();
     CGSize screenSize = CGDisplayScreenSize(mainDisplayId);
-    float dpi = 25.4f * (CGDisplayPixelsWide(mainDisplayId) / screenSize.width);
+
+    int hSize       = screenSize.height;
+    int wSize       = screenSize.width;
+    int hResolution = CGDisplayPixelsHigh(mainDisplayId);
+    int wResolution = CGDisplayPixelsWide(mainDisplayId);
 #else
     static qreal dpi(QGuiApplication::primaryScreen()->physicalDotsPerInch());
 #endif
 #ifndef Q_OS_ANDROID
-    //if dpi is less than 50, it may have been calculated incorrectly
-    qInfo() << "Pixels per mm: " << PixelsPerMM << " Resolution: " << hRes << " Screen height: " << hSize << " UiScaling - dpi: " << dpi;
+    float pixelsPerMM = (float)(((hResolution + wResolution)/2) / ((hSize + wSize)/2));
+    float dpi = pixelsPerMM * 25.4f;
+    qInfo() << QString("Pixels pre mm: %1 Resolution: %2x%3 Screen size: %4x%5 UiScaling - dpi: %6").arg(pixelsPerMM).arg(hResolution).arg(wResolution).arg(hSize).arg(wSize).arg(dpi);
     return ((dpi < 50 || dpi > 350) ? QGuiApplication::primaryScreen()->physicalDotsPerInch() : dpi);
-
 #else
     return 1;
 #endif
