@@ -189,8 +189,6 @@ void SignUpScreen::initVariantUi(QWidget *a_widget)
     connect(btnAgree,           SIGNAL(clicked(bool)),          this, SIGNAL(agreeChanged(bool))            );
     connect(lblSignIn,          &ClickableLabel::clicked,       this, &SignUpScreen::goToSignIn);
 
-    connect(m_mgr,              SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
-
     connect(m_btnSignUp, &QPushButton::clicked,[=](){
 
         if(m_btnSignUp->text() == TEXT_SIGN_UP)
