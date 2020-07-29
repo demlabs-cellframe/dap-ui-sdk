@@ -87,8 +87,8 @@ void DapDataLocal::parseXML(const QString& a_fname)
                 }else if( sr->name() == "title"){
                     m_brandName = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
-                }else if( sr->name() == "sign_up"){
-                    urlSignUp = sr->readElementText();
+                }else if( sr->name() == "url_site"){
+                    m_urlSite = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
                 }else{
                     qDebug() << "[DL] Inside tag 'data' unknown tag "<<sr->name();
@@ -166,9 +166,9 @@ void DapDataLocal::saveAuthorizationDatas()
 
 void DapDataLocal::loadAuthorizationDatas()
 {
-    this->setSerialKey(getSecretString(TEXT_SERIAL_KEY));
-    this->setLogin(getSecretString(TEXT_LOGIN));
-    this->setPassword(getSecretString(TEXT_PASSWORD));
+    this->setSerialKey(getSecretString(TEXT_SERIAL_KEY).toString());
+    this->setLogin(getSecretString(TEXT_LOGIN).toString());
+    this->setPassword(getSecretString(TEXT_PASSWORD).toString());
 }
 
 void DapDataLocal::rotateCDBList() {
@@ -178,9 +178,9 @@ void DapDataLocal::rotateCDBList() {
     }
 }
 
-QString DapDataLocal::getSecretString(QString key)
+QVariant DapDataLocal::getSecretString(const QString &a_setting)
 {
-    QByteArray stringIn = DapDataLocal::getSetting(key).toByteArray();
+    QByteArray stringIn = DapDataLocal::getSetting(a_setting).toByteArray();
     QByteArray stringOut;
 
     if (stringIn.isEmpty())
@@ -190,12 +190,12 @@ QString DapDataLocal::getSecretString(QString key)
     return QString(stringOut);
 }
 
-void DapDataLocal::saveSecretString(QString key, QString string)
+void DapDataLocal::saveSecretString(const QString &a_setting, const QVariant &a_value)
 {
     initSecretKey();
-    QByteArray tempStringIn = string.toUtf8(), tempStringOut;
+    QByteArray tempStringIn = a_value.toByteArray(), tempStringOut;
     secretKey->encode(tempStringIn, tempStringOut);
-    DapDataLocal::saveSetting(key, tempStringOut);
+    DapDataLocal::saveSetting(a_setting, tempStringOut);
 }
 
 QVariant DapDataLocal::getSetting(const QString &a_setting)
