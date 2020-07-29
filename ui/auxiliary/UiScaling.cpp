@@ -5,7 +5,6 @@
 #include <QDesktopWidget>
 #include <QRect>
 #include <QApplication>
-#include <qDebug>
 
 #ifdef Q_OS_WIN
 #include "windows.h"
