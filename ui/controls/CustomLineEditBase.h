@@ -7,8 +7,8 @@
 #include <QHBoxLayout>
 #include <QSpacerItem>
 #include <QFocusEvent>
-#include <QPaintEvent>
 
+#include <QApplication>
 /*
 *
 *thisWidget

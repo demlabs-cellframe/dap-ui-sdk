@@ -64,23 +64,20 @@ void CustomLineEditBase::focusOutEvent(QFocusEvent *event)
 {
     Utils::setPropertyAndUpdateStyle(this, Properties::ACTIVE, false);
 
-    if(text().isEmpty())
-    {
-        Utils::setPropertyAndUpdateStyle(this, Properties::FILLED, false);
-    }
-    else
-    {
-        Utils::setPropertyAndUpdateStyle(this, Properties::FILLED, true);
-    }
-
     showCustomPlaceholder();
-
+#ifdef Q_OS_ANDROID
+    QApplication::inputMethod()->hide();
+#endif
     QLineEdit::focusOutEvent(event);
 }
 
 void CustomLineEditBase::focusInEvent(QFocusEvent *event)
 {
     hideCustomPlaceholder();
+
+#ifdef Q_OS_ANDROID
+    QApplication::inputMethod()->show();
+#endif
 
     Utils::setPropertyAndUpdateStyle(this, Properties::ACTIVE, true);
 
@@ -102,7 +99,7 @@ void CustomLineEditBase::recreateSubControls()
     connect(m_btnControl,&QPushButton::clicked,[=]{
         this->clear();
         setVisibleButton(false);
-        Utils::setPropertyAndUpdateStyle(this, Properties::FILLED, false);
+
         this->setFocus();
     });
     m_btnControl->hide();
