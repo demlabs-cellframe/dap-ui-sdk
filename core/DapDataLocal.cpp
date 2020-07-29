@@ -72,7 +72,7 @@ void DapDataLocal::parseXML(const QString& a_fname)
                                 }
                             }
                             qDebug() << "[DL] Server "<<item.name<<" added";
-                            m_servers.push_back(item);
+                            DapDataLocal::serversData()->addServer(item);
                         }else{
                             qDebug() << "[DL] Inside tag 'servers': unknown tag "<<sr->name();
                             sr->skipCurrentElement();
@@ -97,67 +97,12 @@ void DapDataLocal::parseXML(const QString& a_fname)
             }
         }
     }
-#ifdef  QT_DEBUG
-    addServer(DapServerLocation::UNKNOWN, "local", "127.0.0.1",  8002);
-#endif
+//#ifdef  QT_DEBUG
+//    DapDataLocal::serversData()->addServer(DapServerLocation::UNKNOWN, "local", "127.0.0.1",  8002);
+//#endif
 
 
     delete sr;
-}
-
-void DapDataLocal::addServer(const DapServerInfo& dsi) {
-
-    m_servers.push_back(dsi);
-
-    emit this->serverAdded(dsi);
-}
-
-/**
- * @brief DapDataLocal::clearServerList
- */
-void DapDataLocal::clearServerList()
-{
-    m_servers.clear();
-    this->setCurrentServer(nullptr);
-
-    emit serversCleared();
-}
-
-
-
-void DapDataLocal::setServerTheBest(const DapServerInfo &server){
-    int index = m_servers.indexOf(server);
-    if (index == -1) {
-        qWarning() << "Server not found";
-        return;
-    } else {
-        m_servers.move(index, 0);
-    }
-}
-
-DapServerInfo *DapDataLocal::currentServer()
-{
-    return m_currentServer;
-}
-
-void DapDataLocal::setCurrentServer(int a_serverIndex)
-{
-    if (a_serverIndex == -1)
-        return this->setCurrentServer(nullptr);
-
-    Q_ASSERT(a_serverIndex >= 0 && a_serverIndex < m_servers.count());
-
-    this->setCurrentServer(&m_servers[a_serverIndex]);
-}
-
-void DapDataLocal::setCurrentServer(DapServerInfo *a_server)
-{
-    qDebug() << "DapDataLocal::setCurrentServer(" << (a_server ? a_server->name : "") << ")";
-    if (m_currentServer == a_server)
-        return;
-    m_currentServer = a_server;
-
-    emit this->serverNameChanged(a_server ? a_server->name : "");
 }
 
 /// Get login.
@@ -210,34 +155,13 @@ QString DapDataLocal::serialKey() const
 {
     return m_serialKey;
 }
-/// Get server name.
-/// @return Server name.
-QString DapDataLocal::currentServerName() const
-{
-    return m_currentServer ? m_currentServer->name : "";
-}
 
-/// Set server name.
-/// @param server Server name.
-void DapDataLocal::setServerName(const QString &a_serverName)
-{
-    if (currentServerName() == a_serverName)
-        return;
-
-    for (DapServerInfo& l_currentServer: servers())
-    {
-        if (a_serverName == l_currentServer.name)
-            return this->setCurrentServer(&l_currentServer);
-    }
-    
-    qFatal("There is no server with name %s", qPrintable(a_serverName));
-}
 
 void DapDataLocal::saveAuthorizationDatas()
 {
-    DapDataLocal::me()->saveSecretString(DapDataLocal::me()->TEXT_LOGIN     , DapDataLocal::me()->login());
-    DapDataLocal::me()->saveSecretString(DapDataLocal::me()->TEXT_PASSWORD  , DapDataLocal::me()->password());
-    DapDataLocal::me()->saveSecretString(DapDataLocal::me()->TEXT_SERIAL_KEY, DapDataLocal::me()->serialKey());
+    this->saveSecretString(this->TEXT_LOGIN     , this->login());
+    this->saveSecretString(this->TEXT_PASSWORD  , this->password());
+    this->saveSecretString(this->TEXT_SERIAL_KEY, this->serialKey());
 }
 
 void DapDataLocal::loadAuthorizationDatas()
@@ -288,7 +212,12 @@ void DapDataLocal::saveSetting(const QString &a_setting, const QVariant &a_value
 
 DapBugReportData *DapDataLocal::bugReportData()
 {
-    return &m_bugReportData;
+    return DapBugReportData::instance();
+}
+
+DapServersData *DapDataLocal::serversData()
+{
+    return DapServersData::instance();
 }
 
 bool DapDataLocal::initSecretKey(){
@@ -319,50 +248,6 @@ QString DapDataLocal::getRandomString(int size)
    return randomString;
 }
 
-/// Get server name by its address.
-/// @param address Server address.
-/// @return Server name.
-QString DapDataLocal::getServerNameByAddress(const QString &address)
-{
-    QList<DapServerInfo>::const_iterator it = std::find_if(m_servers.cbegin(), m_servers.cend(), 
-        [=] (const DapServerInfo& server) 
-        { 
-        if (server.name != "Auto")
-            return server.address == address;
-        });
-    
-    if(it != m_servers.cend())
-        return (*it).name;
-    
-    qCritical() << "Server with address " << address << " not found";
-    
-    return QString();
-}
-
-void /// Connect ComboBox to DataLocale. ComboBox currentText and DataLocale serverName will be synchronized
-/// @param a_comboBox ComboBox
-DapDataLocal::connectComboBox(QObject*a_comboBox)
-{
-    //connection when serverName in DataLocale changed
-    connect(this,       SIGNAL(serverNameChanged(QString)),
-            a_comboBox, SLOT  (setCurrentText(QString)));
-
-    //connection when comboBoxChanged
-    connect(a_comboBox, SIGNAL(currentTextChanged(QString)),
-            this,       SLOT  (setServerName(QString)));
-}
-
-void DapDataLocal::addServer(DapServerLocation location, const QString& name,
-                          const QString & address, quint16 port)
-{
-    DapServerInfo ss;
-    ss.name = name;
-    ss.location = location;
-    ss.address = address;
-    ss.port = port;
-    addServer(std::move(ss));
-}
-
 /**
  * @brief DataLocal::locationToIcon
  * @param a_location
@@ -378,7 +263,8 @@ QString DapDataLocal::locationToIconPath(DapServerLocation loc)
     return locPath;
 }
 
-void DapDataLocal::clearCurrentServer()
+DapDataLocal *DapDataLocal::instance()
 {
-    m_currentServer = nullptr;
+    static DapDataLocal s_instance;
+    return &s_instance;
 }

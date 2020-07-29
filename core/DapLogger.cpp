@@ -68,7 +68,7 @@ QString DapLogger::defaultLogPath(const QString a_brand)
 #elif defined (Q_OS_WIN)
     return QString("%1/%2/log").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
-    return QString("/sdcard/%1").arg(DAP_BRAND);
+    return QString("/sdcard/%1").arg(a_brand);
 #endif
     return {};
 }
@@ -91,7 +91,7 @@ void DapLogger::updateCurrentLogName()
 bool DapLogger::setLogFile(const QString& filePath) {
     qDebug() << "setLogFile: " << filePath;
     int i = dap_common_init(DAP_BRAND, qPrintable(filePath)) ;
-    DapDataLocal::me()->setLogFilePath(filePath);
+    DapDataLocal::instance()->setLogFilePath(filePath);
     return i == 0;
 }
 
