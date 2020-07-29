@@ -21,6 +21,7 @@ public:
     DapState * handshakeError;
     DapState * logoutError;
     DapState * networkError;
+    DapState * networkErrorIdle;
     DapState * handshakeRequestCanceling;
     DapState * authRequestCanceling;
     DapState * authCanceling;

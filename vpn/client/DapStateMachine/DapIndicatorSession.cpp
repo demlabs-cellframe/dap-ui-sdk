@@ -11,6 +11,7 @@ void DapIndicatorSession::init(QStateMachine &sm, const QString& stateName)
     handshakeError   = new DapState(_false->name() + "HandshakeError", _false, true);
     logoutError      = new DapState(_false->name() + "LogoutError", _false, true);
     networkError     = new DapState(_false->name() + "NetworkError", _false, true);
+    networkErrorIdle = new DapState(_false->name() + "NetworkErrorIdle", _false, true);
 
     handshakeRequestCanceling = new DapState(_falseToTrue->name() + "SessionRequestCanceling", _false);
     streamRequestCanceling    = new DapState(_falseToTrue->name() + "StreamRequestCanceling", _false);
@@ -57,11 +58,13 @@ void DapIndicatorSession::initAllowedSubstatesTransitions()
     addAllowedSubstatesTransitions(handshakeError, handshakeRequested);
     addAllowedSubstatesTransitions(logoutError, handshakeRequested);
     addAllowedSubstatesTransitions(networkError, handshakeRequested);
+    //addAllowedSubstatesTransitions(networkErrorIdle, handshakeRequested);
 
     /* Init allowed falseToTrue substates  transitions */
     // _handshakeRequested =>
     addAllowedSubstatesTransitions(handshakeRequested, handshakeResponse);
     addAllowedSubstatesTransitions(handshakeRequested, handshakeError);
+    //addAllowedSubstatesTransitions(handshakeRequested, networkErrorIdle);
     addAllowedSubstatesTransitions(handshakeRequested, networkError);
     addAllowedSubstatesTransitions(handshakeRequested, handshakeRequestCanceling);
 

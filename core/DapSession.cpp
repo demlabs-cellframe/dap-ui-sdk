@@ -549,7 +549,7 @@ void DapSession::clearCredentials()
 QNetworkReply * DapSession::logoutRequest()
 {
     qDebug() << "Request for logout";
-    QNetworkReply * netReply = encRequest("", URL_DB, "auth", "logout", SLOT(onLogout()));
+    QNetworkReply * netReply = encRequest("", URL_DB, "auth", "logout", SLOT(onLogout()), true);
     clearCredentials();
     m_upstreamAddress.clear();
     m_upstreamPort = 0;
