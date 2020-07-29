@@ -10,6 +10,7 @@
 #include "DapKeyAes.h"
 #include "DapBugReportData.h"
 #include "DapServersData.h"
+#include "DapSignUpData.h"
 
 #define SERVER_LIST_FILE "vpn-servers.xml"
 
@@ -49,11 +50,11 @@ public:
 
     const QList<QString> &cdbServersList() { return m_cdbServersList; }
     const QString & networkDefault()       { return m_networkDefault; }
-    const QString & getUrlForSignUp()      { return urlSignUp;        }
+    const QString & getUrlSite()           { return m_urlSite;        }
     const QString & getBrandName()         { return m_brandName;      }
 
-    void saveSecretString(QString, QString);
-    QString getSecretString(QString);
+    void saveSecretString(const QString &a_setting, const QVariant &a_value);
+    QVariant getSecretString(const QString &a_setting);
 
     static QVariant getSetting (const QString& a_setting);
     static void     saveSetting(const QString& a_setting, const QVariant& a_value);
@@ -92,9 +93,9 @@ protected:
     QString m_password;   ///< Password.
     QString m_serialKey;  ///< Serial key.
 
-    QList<QString> m_cdbServersList;
-    QString     m_networkDefault;
-    QString urlSignUp;
+    QList<QString>  m_cdbServersList;
+    QString         m_networkDefault;
+    QString         m_urlSite;
 
 private:
     void loadAuthorizationDatas();

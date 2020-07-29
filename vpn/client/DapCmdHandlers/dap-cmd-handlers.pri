@@ -3,6 +3,7 @@ SOURCES += \
     $$PWD/DapCmdNews.cpp \
     $$PWD/DapCmdPingServer.cpp \
     $$PWD/DapCmdSendBugReport.cpp \
+    $$PWD/DapCmdSignUp.cpp \
     $$PWD/DapCmdTunTap.cpp \
     $$PWD/DapCmdUserData.cpp \
     $$PWD/DapCmdAuth.cpp \
@@ -18,6 +19,7 @@ HEADERS += \
     $$PWD/DapCmdNews.h \
     $$PWD/DapCmdPingServer.h \
     $$PWD/DapCmdSendBugReport.h \
+    $$PWD/DapCmdSignUp.h \
     $$PWD/DapCmdTunTap.h \
     $$PWD/DapCmdUserData.h \
     $$PWD/DapCmdConnect.h \

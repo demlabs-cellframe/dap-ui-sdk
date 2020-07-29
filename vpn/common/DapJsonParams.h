@@ -22,6 +22,7 @@ enum class DapJsonCmdType
     PING_SERVER,
     SEND_SERVER_DATA,
     SEND_BUG_REPORT,
+    SEND_SIGN_UP_REQUEST,
     UNKNOWN
 };
 

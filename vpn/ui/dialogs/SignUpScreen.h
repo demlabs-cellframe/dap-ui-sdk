@@ -22,6 +22,8 @@
 #include <QUrl>
 #include "BrandProperties.h"
 
+#include "DapSignUpData.h"
+
 #include <QSslConfiguration>
 
 class SignUpScreen : public AdaptiveScreen
@@ -44,8 +46,7 @@ public slots:
     void setAgree(const bool &a_agree);
 
     void checkFieldsAndSignUp();
-
-    void replyFinished(QNetworkReply *reply);
+    void answerSignUp(const QString &a_answer);
 
 protected:
 

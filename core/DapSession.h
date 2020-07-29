@@ -48,6 +48,7 @@ public:
     static const QString URL_TX;
     static const QString URL_BUG_REPORT;
     static const QString URL_NEWS;
+    static const QString URL_SIGN_UP;
 
     DapSession(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
     ~DapSession();
@@ -87,6 +88,7 @@ public slots:
     QNetworkReply * logoutRequest();
     QNetworkReply * streamOpenRequest(const QString& subUrl, const QString& query);
 
+    void sendSignUpRequest(const QString &host, const QString &email, const QString &password);
     void sendBugReport(const QByteArray &data);
     void getNews();
 
@@ -111,6 +113,7 @@ protected:
     QNetworkReply * m_netLogoutReply;
     QNetworkReply * m_netSendBugReportReply;
     QNetworkReply * m_netNewsReply;
+    QNetworkReply * m_netSignUpReply;
 
     QMap<QString,QString> m_userInform;
 
@@ -126,6 +129,7 @@ protected:
     QNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url, const QString& subUrl,
                                const QString& query, QObject* obj, const char* slot);
 
+
     QNetworkReply* encRequest(const QString& reqData, const QString& url,
                     const QString& subUrl, const QString& query, const char* slot, bool isCDB = false)
     {
@@ -137,6 +141,8 @@ protected:
     {
         return encRequestRaw(bData, url, subUrl, query, this, slot);
     }
+
+    QNetworkReply* requestRawToSite(const QString& dnsName, const QString& url, const QByteArray& bData, const char * slot, bool ssl, const QVector<HttpRequestHeader>* headers);
 
     void fillSessionHttpHeaders(HttpHeaders& headers, bool isCDBSession = false) const;
     QNetworkReply * requestServerPublicKey();
@@ -153,6 +159,7 @@ private slots:
     void onLogout();
     void answerBugReport();
     void answerNews();
+    void answerSignUp();
 signals:
     void pubKeyRequested();
     void pubKeyServerRecived();
@@ -176,6 +183,7 @@ signals:
     void logouted();
 
     void receivedBugReportAnswer(const QString& bugReportNumber);
+    void sigSignUpAnswer(const QString& signUpAnswer);
     void sigReceivedNewsMessage(const QJsonDocument& news);
 };
 
