@@ -10,6 +10,11 @@ BugReportScreenBase::BugReportScreenBase(QWidget *a_parent)
     //AdaptiveScreen::initScreen(this);
 }
 
+QString BugReportScreenBase::message() const
+{
+    return m_ui->edtMessage->toPlainText();
+}
+
 void BugReportScreenBase::initVariantUi(QWidget *a_widget)
 {
     Q_UNUSED(a_widget);
@@ -29,10 +34,14 @@ void BugReportScreenBase::initVariantUi(QWidget *a_widget)
         Utils::setPropertyAndUpdateStyle(m_ui->edtMessage, Properties::WRONG, true);
     });
 
-    connect(this->m_ui->edtMessage, &CustomTextEdit::textChanged, [=](){
-        QString str = m_ui->edtMessage->toPlainText();
-        if (!validateText(str))
-            emit this->messageChanged(str);
+    connect(this->m_ui->edtMessage, &CustomTextEdit::textChanged, [=]()
+    {
+        QString str = this->message();
+
+        if (validateText(str))
+            return;
+
+        emit this->messageChanged(str);
         Utils::setPropertyAndUpdateStyle(m_ui->edtMessage, Properties::WRONG, false);
     });
 
@@ -44,7 +53,7 @@ bool BugReportScreenBase::validateText(QString &str)
     QRegExp rx("\\\\");
     if (str.contains(rx) || str.length() > 500){
         QTextCursor fileViewerCursor = m_ui->edtMessage->textCursor();
-        m_ui->edtMessage->setPlainText(QString(str.remove(rx)).mid(0, 500));
+        m_ui->edtMessage->setPlainText(str.remove(rx).mid(0, 500));
         fileViewerCursor.movePosition(QTextCursor::End);
         m_ui->edtMessage->setTextCursor(fileViewerCursor);
         return true;
@@ -53,8 +62,11 @@ bool BugReportScreenBase::validateText(QString &str)
 }
 
 void BugReportScreenBase::setMessage(const QString &a_message)
-{
-    m_ui->edtMessage->setText(a_message);
+{   
+    if (this->message() == a_message)
+        return;
+
+    m_ui->edtMessage->setPlainText(a_message);
 }
 
 bool BugReportScreenBase::checkFields()

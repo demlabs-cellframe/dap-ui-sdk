@@ -7,6 +7,11 @@ DapBugReportData::DapBugReportData()
     this->loadDatas();
 }
 
+DapBugReportData::~DapBugReportData()
+{
+    this->saveDatas();
+}
+
 DapBugReportData *DapBugReportData::instance()
 {
     static DapBugReportData s_instance;
@@ -23,13 +28,18 @@ QString DapBugReportData::email() const
     return m_email;
 }
 
+QString DapBugReportData::lastSentNumber() const
+{
+    return m_lastSentNumber;
+}
+
 void DapBugReportData::setMessage(const QString &a_message)
 {
     if (m_message == a_message)
         return;
 
     m_message = a_message;
-//    emit this->messageChanged(a_message);
+    emit this->messageChanged(a_message);
 }
 
 void DapBugReportData::setEmail(const QString &a_email)
@@ -41,14 +51,29 @@ void DapBugReportData::setEmail(const QString &a_email)
 //    emit this->emailChanged(a_email);
 }
 
+///Return last successfull sent bug report number
+/// @return QString() if was error
+void DapBugReportData::setLastSentNumber(const QString& a_lastSentNumber /*= {})*/)
+{
+    if (m_lastSentNumber == a_lastSentNumber)
+        return;
+
+    m_lastSentNumber = a_lastSentNumber;
+    emit this->lastSentNumberChanged(a_lastSentNumber);
+}
+
 void DapBugReportData::saveDatas() const
 {
-    DapDataLocal::saveSetting(SETTINGS_TEXT_EMAIL  , this->email());
-    DapDataLocal::saveSetting(SETTINGS_TEXT_MESSAGE, this->message());
+    DapDataLocal::instance()->saveSecretString(SETTINGS_TEXT_EMAIL  , this->email());
+    DapDataLocal::instance()->saveSecretString(SETTINGS_TEXT_MESSAGE, this->message());
+	DapDataLocal::instance()->saveSecretString(SETTINGS_TEXT_LAST_SENT_NUMBER, this->lastSentNumber());
 }
 
 void DapBugReportData::loadDatas()
 {
-    this->setEmail  (DapDataLocal::getSetting(SETTINGS_TEXT_EMAIL)  .toString());
-    this->setMessage(DapDataLocal::getSetting(SETTINGS_TEXT_MESSAGE).toString());
+    this->setEmail  (DapDataLocal::instance()->getSecretString(SETTINGS_TEXT_EMAIL).toString());
+    this->setMessage(DapDataLocal::instance()->getSecretString(SETTINGS_TEXT_MESSAGE).toString());
+	this->setMessage(DapDataLocal::instance()->getSecretString(SETTINGS_TEXT_LAST_SENT_NUMBER).toString());
 }
+
+

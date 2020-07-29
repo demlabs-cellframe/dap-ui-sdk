@@ -44,6 +44,7 @@ const QString DapSession::URL_SERVER_LIST("/nodelist");
 const QString DapSession::URL_TX("/tx");
 const QString DapSession::URL_BUG_REPORT("/bugreport");
 const QString DapSession::URL_NEWS("/news");
+const QString DapSession::URL_SIGN_UP("/wp-json/dapvpn/v1/register/");
 
 #define SESSION_KEY_ID_LEN 33
 
@@ -133,6 +134,14 @@ QNetworkReply* DapSession::encryptInitRequest()
 void DapSession::sendBugReport(const QByteArray &data)
 {
    m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(), SLOT(answerBugReport()));
+}
+
+void DapSession::sendSignUpRequest(const QString &host, const QString &email, const QString &password)
+{
+    QVector<HttpRequestHeader> headers;
+    headers.append({"Content-Type", "application/x-www-form-urlencoded"});
+    QString body = QString("email=%1&password=%2").arg(email).arg(password);
+    m_netSignUpReply = requestRawToSite(host, URL_SIGN_UP, body.toUtf8(), SLOT(answerSignUp()), true, &headers);
 }
 
 void DapSession::getNews()
@@ -352,6 +361,9 @@ void DapSession::onAuthorize()
         emit errorAuthorization (isSerial ? tr("Serial key not found in database") : "Login not found in database");
         return;
     } else if (op_code == OP_CODE_LOGIN_INCORRECT_PSWD) {
+        if(m_user.isEmpty() && !isSerial)
+            emit errorAuthorization ("Login not found in database");
+        else
         emit errorAuthorization (isSerial ? tr("Incorrect serial key") : "Incorrect password");
         return;
     } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRIED) {
@@ -467,6 +479,24 @@ void DapSession::onLogout()
     emit logouted();
 }
 
+void DapSession::answerSignUp()
+{
+    qInfo() << "answerSignUp";
+    if(m_netSignUpReply->error() != QNetworkReply::NetworkError::NoError) {
+        qInfo() << m_netSignUpReply->errorString();
+        emit sigSignUpAnswer(m_netSignUpReply->errorString());
+        return;
+    }
+    QByteArray arrData;
+    arrData.append(m_netSignUpReply->readAll());
+    QJsonDocument itemDoc = QJsonDocument::fromJson(arrData);
+    QJsonObject itemObj = itemDoc.object();
+    QVariantMap mainMap = itemObj.toVariantMap();
+    QVariantMap map = mainMap["result"].toMap();
+    QString message = map["message"].toString();
+    emit sigSignUpAnswer(message);
+}
+
 void DapSession::answerBugReport()
 {
     qInfo() << "answerBugReport";
@@ -563,6 +593,13 @@ QNetworkReply * DapSession::encRequestRaw(const QByteArray& bData, const QString
             netReply->abort();
         }
     });*/
+    return netReply;
+}
+
+QNetworkReply * DapSession::requestRawToSite(const QString& dnsName, const QString& url, const QByteArray& bData, const char * slot, bool ssl, const QVector<HttpRequestHeader>* headers)
+{
+    QNetworkReply * netReply =  DapConnectClient::instance()->request_POST(dnsName, 80, url, bData, ssl, headers);
+    connect(netReply, SIGNAL(finished()), this, slot);
     return netReply;
 }
 

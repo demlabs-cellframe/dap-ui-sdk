@@ -20,7 +20,8 @@ SOURCES += \
     $$PWD/DapHttpPing.cpp \
     $$PWD/DapServerInfo.cpp \
     $$PWD/DapServersListRequester.cpp \
-    $$PWD/DapServersLocalStorage.cpp
+    $$PWD/DapServersLocalStorage.cpp \
+    $$PWD/DapSignUpData.cpp
 
 HEADERS += \
     $$PWD/DapBugReport.h \
@@ -31,6 +32,7 @@ HEADERS += \
     $$PWD/DapServersData.h \
     $$PWD/DapSession.h \
     $$PWD/DapCrypt.h \
+    $$PWD/DapSignUpData.h \
     $$PWD/InterfaceDapKey.h \
     $$PWD/DapKeyMsrln.h \
     $$PWD/DapLogger.h \

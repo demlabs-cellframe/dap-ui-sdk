@@ -41,11 +41,12 @@ void AppLanguageController::retranslateApp(Language a_language)
     if (a_language == Language::Undefined)
     {
         strLanguage = AppLanguageController::appLanguageString();
-        a_language = AppLanguageController::stringToLanguage(strLanguage);
     }
     else
     {
         strLanguage = AppLanguageController::languageToString(a_language);
+        if (strLanguage == AppLanguageController::instance()->appLanguageString())
+            return;
     }
 
     if (strLanguage.isEmpty())
