@@ -6,7 +6,6 @@
 #include <QDebug>
 #include <QFile>
 #include <QDateTime>
-#include <QSettings>
 #include <QDir>
 #include <QTimer>
 #include "dap_common.h"

@@ -22,7 +22,6 @@ class DapDataLocal : public QObject
 
     QString     m_brandName;
     QString     logFilePath;
-    static DapDataLocal *_me;
     static QMap<DapServerLocation, QString> m_pictruePath;
 
 
@@ -32,10 +31,9 @@ class DapDataLocal : public QObject
     bool initSecretKey();
     QString getRandomString(int);
 
-
 public:
     using picturesMap = QMap<DapServerLocation, QString>;
-    static DapDataLocal * instance();
+    static DapDataLocal* instance();
 
     QString locationToIconPath(DapServerLocation loc);
 
@@ -53,8 +51,8 @@ public:
     const QString & getUrlSite()           { return m_urlSite;        }
     const QString & getBrandName()         { return m_brandName;      }
 
-    void saveSecretString(const QString &a_setting, const QVariant &a_value);
-    QVariant getSecretString(const QString &a_setting);
+    void saveEncriptedSetting(const QString &a_setting, const QVariant &a_value);
+    QVariant getEncriptedSetting(const QString &a_setting);
 
     static QVariant getSetting (const QString& a_setting);
     static void     saveSetting(const QString& a_setting, const QVariant& a_value);
@@ -75,8 +73,8 @@ public slots:
     void setPassword(const QString &password);
 
     void saveAuthorizationDatas();
-
     void rotateCDBList();
+
 signals:
     /// Signal emitted if login has changed.
     /// @param login Login.
@@ -89,16 +87,17 @@ signals:
     void serialKeyChanged(const QString& serial);
 
 protected:
-    QString m_login;      ///< Login.
-    QString m_password;   ///< Password.
-    QString m_serialKey;  ///< Serial key.
-
     QList<QString>  m_cdbServersList;
     QString         m_networkDefault;
     QString         m_urlSite;
 
 private:
     void loadAuthorizationDatas();
+    static QSettings* settings();
+
+    QString m_login;      ///< Login.
+    QString m_password;   ///< Password.
+    QString m_serialKey;  ///< Serial key.
 };
 
 
