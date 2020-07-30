@@ -25,13 +25,17 @@ DapDataLocal::picturesMap DapDataLocal::m_pictruePath = {
     {DapServerLocation::Germany, ":/country/DE.png"},
 };
 
-DapDataLocal *DapDataLocal::_me = Q_NULLPTR;
+DapDataLocal *DapDataLocal::s_me = nullptr;
 
 DapDataLocal::DapDataLocal()
+    : QObject()
+    , m_settings(new QSettings(this))
 {
     qDebug() << "[DL] DapDataLocal Constructor";
-    parseXML(":/data.xml");
+    s_me = this;
 
+    parseXML(":/data.xml");
+    
     this->loadAuthorizationDatas();
 }
 
@@ -159,16 +163,16 @@ QString DapDataLocal::serialKey() const
 
 void DapDataLocal::saveAuthorizationDatas()
 {
-    this->saveSecretString(this->TEXT_LOGIN     , this->login());
-    this->saveSecretString(this->TEXT_PASSWORD  , this->password());
-    this->saveSecretString(this->TEXT_SERIAL_KEY, this->serialKey());
+    this->saveEncriptedSetting(this->TEXT_LOGIN     , this->login());
+    this->saveEncriptedSetting(this->TEXT_PASSWORD  , this->password());
+    this->saveEncriptedSetting(this->TEXT_SERIAL_KEY, this->serialKey());
 }
 
 void DapDataLocal::loadAuthorizationDatas()
 {
-    this->setSerialKey(getSecretString(TEXT_SERIAL_KEY).toString());
-    this->setLogin(getSecretString(TEXT_LOGIN).toString());
-    this->setPassword(getSecretString(TEXT_PASSWORD).toString());
+    this->setSerialKey(getEncriptedSetting(TEXT_SERIAL_KEY).toString());
+    this->setLogin(getEncriptedSetting(TEXT_LOGIN).toString());
+    this->setPassword(getEncriptedSetting(TEXT_PASSWORD).toString());
 }
 
 void DapDataLocal::rotateCDBList() {
@@ -178,7 +182,12 @@ void DapDataLocal::rotateCDBList() {
     }
 }
 
-QVariant DapDataLocal::getSecretString(const QString &a_setting)
+QSettings* DapDataLocal::settings()
+{
+    return DapDataLocal::instance()->m_settings;
+}
+
+QVariant DapDataLocal::getEncriptedSetting(const QString &a_setting)
 {
     QByteArray stringIn = DapDataLocal::getSetting(a_setting).toByteArray();
     QByteArray stringOut;
@@ -190,7 +199,7 @@ QVariant DapDataLocal::getSecretString(const QString &a_setting)
     return QString(stringOut);
 }
 
-void DapDataLocal::saveSecretString(const QString &a_setting, const QVariant &a_value)
+void DapDataLocal::saveEncriptedSetting(const QString &a_setting, const QVariant &a_value)
 {
     initSecretKey();
     QByteArray tempStringIn = a_value.toByteArray(), tempStringOut;
@@ -200,14 +209,12 @@ void DapDataLocal::saveSecretString(const QString &a_setting, const QVariant &a_
 
 QVariant DapDataLocal::getSetting(const QString &a_setting)
 {
-    QSettings settings;
-    return settings.value(a_setting);
+    return settings()->value(a_setting);
 }
 
 void DapDataLocal::saveSetting(const QString &a_setting, const QVariant &a_value)
 {
-    QSettings settings;
-    settings.setValue(a_setting, a_value);
+    settings()->setValue(a_setting, a_value);
 }
 
 DapBugReportData *DapDataLocal::bugReportData()
@@ -220,17 +227,17 @@ DapServersData *DapDataLocal::serversData()
     return DapServersData::instance();
 }
 
-bool DapDataLocal::initSecretKey(){
-
-    QSettings settings;
-    if (settings.value("key").toString().isEmpty()){
-        settings.setValue("key", getRandomString(40));
+bool DapDataLocal::initSecretKey()
+{
+    if (settings()->value("key").toString().isEmpty())
+    {
+        settings()->setValue("key", getRandomString(40));
     }
     if (secretKey != nullptr) {
         delete secretKey;
     }
     secretKey = new DapKeyAes();
-    QString kexString = settings.value("key").toString() + "SLKJGN234njg6vlkkNS3s5dfzkK5O54jhug3KUifw23";
+    QString kexString = settings()->value("key").toString() + "SLKJGN234njg6vlkkNS3s5dfzkK5O54jhug3KUifw23";
     return secretKey->init(QString(kexString));
 }
 
@@ -266,5 +273,5 @@ QString DapDataLocal::locationToIconPath(DapServerLocation loc)
 DapDataLocal *DapDataLocal::instance()
 {
     static DapDataLocal s_instance;
-    return &s_instance;
+    return s_me;
 }
