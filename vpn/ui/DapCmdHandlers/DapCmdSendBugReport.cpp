@@ -17,7 +17,7 @@ void DapCmdSendBugReport::sendBugReport(const QString &a_message, const QString 
 void DapCmdSendBugReport::handleResult(const QJsonObject& result)
 {
     QString request = result.value("bugreport_answer").toString();
-    qDebug() << request;
+    qDebug() << "Bug report answer: " << request;
     if (request.contains("saved successfully", Qt::CaseInsensitive))
         emit sigBugReportSent(request.remove(QRegExp("\\D")));
     else emit sigBugReportSendingError();

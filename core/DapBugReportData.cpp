@@ -28,6 +28,11 @@ QString DapBugReportData::email() const
     return m_email;
 }
 
+QString DapBugReportData::defaultEmail() const
+{
+    return DapDataLocal::instance()->getSecretString("login").toString();
+}
+
 QString DapBugReportData::lastSentNumber() const
 {
     return m_lastSentNumber;

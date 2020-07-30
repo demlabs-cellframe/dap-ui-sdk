@@ -76,8 +76,12 @@ bool BugReportScreenBase::checkFields()
 
 void BugReportScreenBase::checkFieldsAndSendReport()
 {
+    qDebug() << "BugReportScreenBase::checkFieldsAndSendReport";
     if (this->checkFields())
+    {
+        qDebug() << "Successful check fields";
         emit this->sendRequested();
+    }
 }
 
 bool BugReportScreenBase::checkMessage()

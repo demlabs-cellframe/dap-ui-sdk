@@ -24,7 +24,7 @@ void DapBugReport::createZipDataBugReport(QString email, QString message)
 
     QFile zipFile("temp_bugReportZip.zip");;
     if (zipFile.open(QIODevice::ReadOnly)){
-        qDebug() << "BugReport byte array size:" << (byteArrayZipFile = zipFile.readAll()).size();
+        qDebug() << "Bug-report byte array size: " << (byteArrayZipFile = zipFile.readAll()).size();
         zipFile.remove();
     }
 }

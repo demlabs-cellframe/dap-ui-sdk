@@ -500,14 +500,16 @@ void DapSession::answerSignUp()
 void DapSession::answerBugReport()
 {
     qInfo() << "answerBugReport";
+    QString bugReportAnswer;
     if(m_netSendBugReportReply->error() != QNetworkReply::NetworkError::NoError) {
+        bugReportAnswer = m_netSendBugReportReply->errorString();
         emit errorNetwork(m_netSendBugReportReply->errorString());
-        return;
     }
     QByteArray arrData;
     arrData.append(m_netSendBugReportReply->readAll());
-    QString bugReportNumber = QString(arrData);
-    emit receivedBugReportAnswer(bugReportNumber);
+    bugReportAnswer = QString(arrData);
+    qInfo() << "Answer bug-report: " << bugReportAnswer;
+    emit receivedBugReportAnswer(bugReportAnswer);
 }
 
 void DapSession::answerNews()
