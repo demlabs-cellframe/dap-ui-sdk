@@ -49,6 +49,7 @@ public:
     QNetworkReply::NetworkError lastErr() { return m_network_reply->error(); }
     DapChThread* addChProc(char chId, DapChBase* obj);
     void setStreamOpened(bool b) { m_isStreamOpened = b; }
+    void stopAutoStreamConnecting() { disconnect(m_streamTimeoutConn); }
 protected:
     static QHash<char, DapChBase*> m_dsb;
     DapChThread* m_dapChThead = Q_NULLPTR;
@@ -63,7 +64,7 @@ protected:
     QByteArray m_buf;
 
     int m_dapDataPosition;
-
+    QMetaObject::Connection m_streamTimeoutConn;
     QNetworkReply * m_network_reply = Q_NULLPTR;
 
     SafeartsStreamState m_streamState;

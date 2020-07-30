@@ -334,11 +334,11 @@ void DapStreamer::sltStreamConnected()
         qDebug() << "[DapConnectStream] Can't wait until all bytes are sent: "
                  << m_streamSocket->errorString();
     }*/
-    QMetaObject::Connection c = connect(m_streamSocket, &QAbstractSocket::bytesWritten, this, &DapStreamer::streamOpened);
+    m_streamTimeoutConn = connect(m_streamSocket, &QAbstractSocket::bytesWritten, this, &DapStreamer::streamOpened);
     m_streamState = SSS_FRAME_SEARCH;
     QTimer::singleShot(8000, Qt::PreciseTimer, this, [=]() {
         if (!m_isStreamOpened) {
-            disconnect(c);
+            disconnect(m_streamTimeoutConn);
             emit(errorNetwork("Stream timeout..."));
         }
     } );
