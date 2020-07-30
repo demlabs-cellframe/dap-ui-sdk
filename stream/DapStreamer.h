@@ -48,7 +48,7 @@ public:
     int upstreamSocket() { return m_streamSocket->isOpen()?m_streamSocket->socketDescriptor(): -1; }
     QNetworkReply::NetworkError lastErr() { return m_network_reply->error(); }
     DapChThread* addChProc(char chId, DapChBase* obj);
-
+    void setStreamOpened(bool b) { m_isStreamOpened = b; }
 protected:
     static QHash<char, DapChBase*> m_dsb;
     DapChThread* m_dapChThead = Q_NULLPTR;
@@ -67,7 +67,7 @@ protected:
     QNetworkReply * m_network_reply = Q_NULLPTR;
 
     SafeartsStreamState m_streamState;
-    bool m_isStreamOpened;
+    volatile bool m_isStreamOpened;
 
     QString m_streamID;
 
