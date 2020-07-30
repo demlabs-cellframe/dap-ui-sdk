@@ -4,7 +4,6 @@
 #include <QDir>
 #include <QFile>
 #include <QtDebug>
-#include <QSettings>
 #include <QCoreApplication>
 #include <algorithm>
 #include <QTime>
@@ -25,14 +24,10 @@ DapDataLocal::picturesMap DapDataLocal::m_pictruePath = {
     {DapServerLocation::Germany, ":/country/DE.png"},
 };
 
-DapDataLocal *DapDataLocal::s_me = nullptr;
-
 DapDataLocal::DapDataLocal()
     : QObject()
-    , m_settings(new QSettings(this))
 {
     qDebug() << "[DL] DapDataLocal Constructor";
-    s_me = this;
 
     parseXML(":/data.xml");
     
@@ -184,7 +179,8 @@ void DapDataLocal::rotateCDBList() {
 
 QSettings* DapDataLocal::settings()
 {
-    return DapDataLocal::instance()->m_settings;
+    static QSettings s_settings;
+    return &s_settings;
 }
 
 QVariant DapDataLocal::getEncriptedSetting(const QString &a_setting)
@@ -273,5 +269,5 @@ QString DapDataLocal::locationToIconPath(DapServerLocation loc)
 DapDataLocal *DapDataLocal::instance()
 {
     static DapDataLocal s_instance;
-    return s_me;
+    return &s_instance;
 }

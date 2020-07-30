@@ -1,7 +1,6 @@
 #ifndef APPLANGUAGECONTROLLER_H
 #define APPLANGUAGECONTROLLER_H
 
-#include <QSettings>
 #include <QTranslator>
 #include <QApplication>
 #include "defines.h"
@@ -30,7 +29,6 @@ private:
     static QString   languageToString(Language a_language);
     static Language stringToLanguage(const QString& a_Languagetr);
 
-    QSettings m_settings;
     QTranslator m_qtLanguageTranslator;
     const QString SETTING_NAME{"language"};
 

@@ -2,10 +2,10 @@
 
 #include <QApplication>
 #include <QDebug>
+#include <DapDataLocal.h>
 
 AppLanguageController::AppLanguageController(QObject *a_parent)
     :QObject(a_parent)
-    , m_settings(DAP_ORGANIZATION_NAME, DAP_BRAND)
 {}
 
 AppLanguageController *AppLanguageController::instance()
@@ -22,7 +22,7 @@ Language AppLanguageController::appLanguage()
 
 QString AppLanguageController::appLanguageString()
 {
-    QVariant local = instance()->m_settings.value(instance()->SETTING_NAME);
+    QVariant local = DapDataLocal::instance()->getEncriptedSetting(instance()->SETTING_NAME);
     QString strLocal;
 
     if (!local.isValid())
@@ -63,7 +63,7 @@ void AppLanguageController::retranslateApp(Language a_language)
 
 void AppLanguageController::setAppLanguage(QString a_language)
 {
-    this->m_settings.setValue(this->SETTING_NAME, a_language);
+    DapDataLocal::instance()->saveEncriptedSetting(this->SETTING_NAME, a_language);
 }
 
 QString AppLanguageController::languageToString(Language a_language)

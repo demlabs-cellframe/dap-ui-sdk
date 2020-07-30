@@ -73,8 +73,8 @@ public slots:
     void setPassword(const QString &password);
 
     void saveAuthorizationDatas();
-
     void rotateCDBList();
+
 signals:
     /// Signal emitted if login has changed.
     /// @param login Login.
@@ -86,23 +86,18 @@ signals:
     /// @param password Password.
     void serialKeyChanged(const QString& serial);
 
-private:
-    static QSettings* settings();
-
 protected:
-    QString m_login;      ///< Login.
-    QString m_password;   ///< Password.
-    QString m_serialKey;  ///< Serial key.
-
     QList<QString>  m_cdbServersList;
     QString         m_networkDefault;
     QString         m_urlSite;
 
 private:
     void loadAuthorizationDatas();
+    static QSettings* settings();
 
-    QSettings*  m_settings;
-    static DapDataLocal *s_me;
+    QString m_login;      ///< Login.
+    QString m_password;   ///< Password.
+    QString m_serialKey;  ///< Serial key.
 };
 
 
