@@ -101,7 +101,6 @@ protected:
 private:
     void loadAuthorizationDatas();
 
-
     QSettings*  m_settings;
     static DapDataLocal *s_me;
 };
