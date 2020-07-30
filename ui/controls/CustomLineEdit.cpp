@@ -2,7 +2,7 @@
 
 CustomLineEdit::CustomLineEdit(QWidget *parent):CustomLineEditBase (parent)
 {
-    connect(btnControl,&QPushButton::clicked,[=]{
+    connect(m_btnControl,&QPushButton::clicked,[=]{
         this->clear();
         setVisibleButton(false);
         Utils::setPropertyAndUpdateStyle(this, Properties::FILLED,false);
@@ -18,7 +18,7 @@ void CustomLineEdit::focusInEvent(QFocusEvent *e)
 
 void CustomLineEdit::focusOutEvent(QFocusEvent *e)
 {
-    if(!btnControl->hasFocus())
+    if(!m_btnControl->hasFocus())
         setVisibleButton(false);
 
     CustomLineEditBase::focusOutEvent(e);
