@@ -5,6 +5,7 @@
 
 AppLanguageController::AppLanguageController(QObject *a_parent)
     :QObject(a_parent)
+    , m_settings(DAP_ORGANIZATION_NAME, DAP_BRAND)
 {}
 
 AppLanguageController *AppLanguageController::instance()

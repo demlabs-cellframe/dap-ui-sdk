@@ -64,16 +64,16 @@ void DapBugReportData::setLastSentNumber(const QString& a_lastSentNumber /*= {})
 
 void DapBugReportData::saveDatas() const
 {
-    DapDataLocal::instance()->saveSecretString(SETTINGS_TEXT_EMAIL  , this->email());
-    DapDataLocal::instance()->saveSecretString(SETTINGS_TEXT_MESSAGE, this->message());
-	DapDataLocal::instance()->saveSecretString(SETTINGS_TEXT_LAST_SENT_NUMBER, this->lastSentNumber());
+    DapDataLocal::instance()->saveEncriptedSetting(SETTINGS_TEXT_EMAIL  , this->email());
+    DapDataLocal::instance()->saveEncriptedSetting(SETTINGS_TEXT_MESSAGE, this->message());
+    DapDataLocal::instance()->saveEncriptedSetting(SETTINGS_TEXT_LAST_SENT_NUMBER, this->lastSentNumber());
 }
 
 void DapBugReportData::loadDatas()
 {
-    this->setEmail  (DapDataLocal::instance()->getSecretString(SETTINGS_TEXT_EMAIL).toString());
-    this->setMessage(DapDataLocal::instance()->getSecretString(SETTINGS_TEXT_MESSAGE).toString());
-	this->setMessage(DapDataLocal::instance()->getSecretString(SETTINGS_TEXT_LAST_SENT_NUMBER).toString());
+    this->setEmail  (DapDataLocal::instance()->getEncriptedSetting(SETTINGS_TEXT_EMAIL).toString());
+    this->setMessage(DapDataLocal::instance()->getEncriptedSetting(SETTINGS_TEXT_MESSAGE).toString());
+    this->setMessage(DapDataLocal::instance()->getEncriptedSetting(SETTINGS_TEXT_LAST_SENT_NUMBER).toString());
 }
 
 
