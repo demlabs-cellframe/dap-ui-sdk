@@ -82,9 +82,11 @@ float UiScaling::getNativDPI(){
     static qreal dpi(QGuiApplication::primaryScreen()->physicalDotsPerInch());
 #endif
 #ifndef Q_OS_ANDROID
-    float pixelsPerMM = (float)(((hResolution + wResolution)/2) / ((hSize + wSize)/2));
+    float pixelsPerMM = ((float)hResolution / hSize + (float)hResolution / hSize)/2;
     float dpi = pixelsPerMM * 25.4f;
-    qInfo() << QString("Pixels pre mm: %1 Resolution: %2x%3 Screen size: %4x%5 UiScaling - dpi: %6").arg(pixelsPerMM).arg(hResolution).arg(wResolution).arg(hSize).arg(wSize).arg(dpi);
+    qInfo() << QString("UiScaling - Pixels pre mm: %1 Resolution: %2x%3 Screen size: %4x%5 dpi: %6 According to qt: %7")
+               .arg(pixelsPerMM).arg(hResolution).arg(wResolution).arg(hSize).arg(wSize).arg(dpi)
+               .arg(QGuiApplication::primaryScreen()->physicalDotsPerInch()); //for statistic, delete later
     return ((dpi < 50 || dpi > 350) ? QGuiApplication::primaryScreen()->physicalDotsPerInch() : dpi);
 #else
     return 1;
