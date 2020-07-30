@@ -21,6 +21,7 @@
 #include "DapStreamer.h"
 #include <QTcpSocket>
 #include <QSysInfo>
+#include <QTimer>
 #include <stdlib.h>
 
 constexpr quint8 daSig[] = {0xa0,0x95,0x96,0xa9,0x9e,0x5c,0xfb,0xfa};
@@ -298,7 +299,7 @@ void DapStreamer::sltStreamDisconnected()
 void DapStreamer::sltStreamConnected()
 {
     qDebug() << "[DapConnectStream] Connected to the server";
-    m_isStreamOpened=true;
+    //m_isStreamOpened=true;
     m_buf.clear();
 
     QString str_url = QString("%1/fjskd9234j?fj913htmdgaq-d9hf=%2")
@@ -324,7 +325,7 @@ void DapStreamer::sltStreamConnected()
     quint64 ret = m_streamSocket->write(baReq.constData(), baReq.size());
     qDebug() << "[DapConnectStream] HTTP stream request sent "<< ret<< " bytes";
 
-    if( !m_streamSocket->waitForBytesWritten(
+    /*if( !m_streamSocket->waitForBytesWritten(
 #ifndef Q_OS_WINDOWS
                 10000
 #else
@@ -332,10 +333,15 @@ void DapStreamer::sltStreamConnected()
                 )) {
         qDebug() << "[DapConnectStream] Can't wait until all bytes are sent: "
                  << m_streamSocket->errorString();
-    }
-
+    }*/
+    QMetaObject::Connection c = connect(m_streamSocket, &QAbstractSocket::bytesWritten, this, &DapStreamer::streamOpened);
     m_streamState = SSS_FRAME_SEARCH;
-    emit streamOpened();
+    QTimer::singleShot(8000, Qt::PreciseTimer, this, [=]() {
+        if (!m_isStreamOpened) {
+            disconnect(c);
+            emit(errorNetwork("Stream timeout..."));
+        }
+    } );
 }
 
 
