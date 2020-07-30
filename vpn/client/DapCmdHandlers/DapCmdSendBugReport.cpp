@@ -24,6 +24,7 @@ void DapCmdSendBugReport::handle(const QJsonObject *params)
 
     QString email = params->value("email").toString();
     QString message = params->value("message").toString();
+    qDebug() << QString("Received bug-report request - email: %1 message: %2").arg(email).arg(message);
 
     if (!email.isNull() && !message.isNull()){
 

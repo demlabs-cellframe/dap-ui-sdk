@@ -15,6 +15,7 @@ public:
     QString message() const;
     QString email() const;
     QString lastSentNumber() const;
+    QString defaultEmail() const;
 
 public slots:
     void setMessage(const QString &a_message);
