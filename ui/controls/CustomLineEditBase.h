@@ -46,37 +46,8 @@
 *}
 */
 
-class ResizableIconLabel : public QLabel
-{
-    Q_OBJECT
-
-    friend class CustomLineEditBase;
-
-private:
-    ResizableIconLabel(QWidget* parent = Q_NULLPTR);
-
-signals:
-    void resized();
-
-protected:
-    virtual void resizeEvent(QResizeEvent *event);
-};
-
-class ResizablePushButton : public QPushButton
-{
-    Q_OBJECT
-
-    friend class CustomLineEditBase;
-
-private:
-    ResizablePushButton(QWidget* parent = Q_NULLPTR);
-
-signals:
-    void resized();
-
-protected:
-    virtual void resizeEvent(QResizeEvent *event);
-};
+class ResizableIconLabel;
+class ResizablePushButton;
 
 class CustomLineEditBase : public QLineEdit
 {
@@ -137,6 +108,40 @@ protected:
 
 private:
     QSpacerItem*    m_spacer;
+};
+
+////////////////////////////////////////////////////////////////////
+
+class ResizableIconLabel : public QLabel
+{
+    Q_OBJECT
+
+    friend class CustomLineEditBase;
+
+private:
+    ResizableIconLabel(QWidget* parent = Q_NULLPTR);
+
+signals:
+    void resized();
+
+protected:
+    virtual void resizeEvent(QResizeEvent *event);
+};
+
+class ResizablePushButton : public QPushButton
+{
+    Q_OBJECT
+
+    friend class CustomLineEditBase;
+
+private:
+    ResizablePushButton(QWidget* parent = Q_NULLPTR);
+
+signals:
+    void resized();
+
+protected:
+    virtual void resizeEvent(QResizeEvent *event);
 };
 
 #endif // CUSTOMLINEEDITBASE_H

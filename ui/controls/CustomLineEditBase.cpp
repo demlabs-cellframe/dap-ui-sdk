@@ -229,6 +229,9 @@ void CustomLineEditBase::adjustTextMargins()
     }
 }
 
+
+//////////////////////////////////////////////////////////////////////////
+
 ResizableIconLabel::ResizableIconLabel(QWidget* parent)
     : QLabel(parent)
 {
