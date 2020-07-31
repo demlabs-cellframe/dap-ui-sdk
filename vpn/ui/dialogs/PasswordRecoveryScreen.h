@@ -18,6 +18,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QShortcut>
 
 class PasswordRecoveryScreen : public AdaptiveScreen
 {
@@ -35,6 +36,7 @@ public slots:
     void setEmail   (const QString &a_email   );
 
     void processReply(QNetworkReply *reply);
+    void passwordRecovery();
 signals:
     void wrongScreen(const QString &a_message);
 

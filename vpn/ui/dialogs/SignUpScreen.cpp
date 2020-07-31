@@ -46,6 +46,22 @@ void SignUpScreen::setAgree(const bool &a_agree)
     m_agree = a_agree;
 }
 
+void SignUpScreen::SignUp(){
+
+    if (m_btnSignUp->text() == TEXT_SIGN_UP)
+    {
+        emit this->fieldEdited();
+        checkFieldsAndSignUp();
+    }
+
+    if(m_btnSignUp->text() == TEXT_CHOOSE_PLANE)
+    {
+        QDesktopServices::openUrl(QUrl(BrandProperties::URL_CHOOSE_PRICE/*"https://kelvpn.com/pricing/"*/));
+        emit this->goToSignIn();
+        emit this->setStateNormalScreen();
+    }
+}
+
 void SignUpScreen::initVariantUi(QWidget *a_widget)
 {
                             m_btnSignUp              = a_widget->findChild<QPushButton*>(BTN_SIGN_UP);                   Q_ASSERT(m_btnSignUp);
@@ -91,7 +107,6 @@ void SignUpScreen::initVariantUi(QWidget *a_widget)
     m_edtRptPassword->setPlaceholderText("Repeat password");
     m_edtRptPassword->setEchoMode(QLineEdit::Password);
  //   chbAgree->setChecked(false);
-
 
     connect(this, &SignUpScreen::wrongEmail, [=](){
 
@@ -187,23 +202,12 @@ void SignUpScreen::initVariantUi(QWidget *a_widget)
     connect(m_edtPassword,      SIGNAL(textEdited(QString)),    this, SIGNAL(passwordEdited(QString))       );
     connect(m_edtRptPassword,   SIGNAL(textEdited(QString)),    this, SIGNAL(repeatPasswordEdited(QString)) );
     connect(btnAgree,           SIGNAL(clicked(bool)),          this, SIGNAL(agreeChanged(bool))            );
-    connect(lblSignIn,          &ClickableLabel::clicked,       this, &SignUpScreen::goToSignIn);
 
-    connect(m_btnSignUp, &QPushButton::clicked,[=](){
+    connect(lblSignIn,      &ClickableLabel::clicked,   this, &SignUpScreen::goToSignIn);
 
-        if(m_btnSignUp->text() == TEXT_SIGN_UP)
-        {
-            emit this->fieldEdited();
-            checkFieldsAndSignUp();
-        }
-
-        if(m_btnSignUp->text() == TEXT_CHOOSE_PLANE)
-        {
-            QDesktopServices::openUrl(QUrl(BrandProperties::URL_CHOOSE_PRICE/*"https://kelvpn.com/pricing/"*/));
-            emit this->goToSignIn();
-            emit this->setStateNormalScreen();
-        }
-    });
+    QShortcut *shortCutSignUp = new QShortcut(QKeySequence(Qt::Key_Return), this);
+    connect(shortCutSignUp, &QShortcut::activated, this, &SignUpScreen::SignUp);
+    connect(m_btnSignUp,    &QPushButton::clicked, this, &SignUpScreen::SignUp);
 }
 
 bool SignUpScreen::checkEmail()
