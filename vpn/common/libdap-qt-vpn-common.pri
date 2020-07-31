@@ -1,8 +1,8 @@
 SOURCES += \
     $$PWD/DapCmdParser.cpp \
-    $$PWD/DapConnectionInfo.cpp \
     $$PWD/DapJsonParams.cpp \
     $$PWD/DapIndicator.cpp \
+    $$PWD/DapServerConnectionInfo.cpp \
     $$PWD/DapState.cpp \
     $$PWD/DapJsonCmdController.cpp \
     $$PWD/DapCmdAbstract.cpp \
@@ -10,9 +10,9 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/DapCmdParser.h \
-    $$PWD/DapConnectionInfo.h \
     $$PWD/DapJsonParams.h \
     $$PWD/DapIndicator.h \
+    $$PWD/DapServerConnectionInfo.h \
     $$PWD/DapState.h \
     $$PWD/DapJsonCmdController.h \
     $$PWD/DapCmdAbstract.h \
