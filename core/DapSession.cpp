@@ -601,7 +601,7 @@ QNetworkReply * DapSession::encRequestRaw(const QByteArray& bData, const QString
 
 QNetworkReply * DapSession::requestRawToSite(const QString& dnsName, const QString& url, const QByteArray& bData, const char * slot, bool ssl, const QVector<HttpRequestHeader>* headers)
 {
-    QNetworkReply * netReply =  DapConnectClient::instance()->request_POST(dnsName, 80, url, bData, ssl, headers);
+    QNetworkReply * netReply =  DapConnectClient::instance()->request_POST(dnsName, 443, url, bData, ssl, headers);
     connect(netReply, SIGNAL(finished()), this, slot);
     return netReply;
 }
