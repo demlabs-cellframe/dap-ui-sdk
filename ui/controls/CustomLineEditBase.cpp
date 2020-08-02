@@ -96,12 +96,7 @@ void CustomLineEditBase::recreateSubControls()
     m_btnControl = new ResizablePushButton(this);
     connect(m_btnControl, SIGNAL(resized()), this, SLOT(adjustTextMargins()), Qt::DirectConnection);
     m_btnControl->setObjectName("control");
-    connect(m_btnControl,&QPushButton::clicked,[=]{
-        this->clear();
-        setVisibleButton(false);
 
-        this->setFocus();
-    });
     m_btnControl->hide();
 
     m_layoutCtrl = new QHBoxLayout();
