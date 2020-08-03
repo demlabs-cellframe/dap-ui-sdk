@@ -56,6 +56,7 @@ class CustomLineEditBase : public QLineEdit
     Q_PROPERTY(bool visibleIcon WRITE setVisibleIcon DESIGNABLE true)
     Q_PROPERTY(bool visibleButton WRITE setVisibleButton DESIGNABLE true)
     Q_PROPERTY(bool useCustomPlaceholder READ useCustomPlaceholder WRITE setUseCustomPlaceholder)
+   // Q_PROPERTY(bool placeholderPressToLeft READ useCustomPlaceholder WRITE setUseCustomPlaceholder)
 
 public:
     CustomLineEditBase(QWidget* parent = Q_NULLPTR);

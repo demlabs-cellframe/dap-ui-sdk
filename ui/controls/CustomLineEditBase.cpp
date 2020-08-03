@@ -91,7 +91,7 @@ void CustomLineEditBase::recreateSubControls()
     m_lblIcon->setObjectName("image");
     m_lblIcon->hide();
 
-    m_spacer = new QSpacerItem(16000, 10);
+    m_spacer = new QSpacerItem(0, 0);
 
     m_btnControl = new ResizablePushButton(this);
     connect(m_btnControl, SIGNAL(resized()), this, SLOT(adjustTextMargins()), Qt::DirectConnection);
