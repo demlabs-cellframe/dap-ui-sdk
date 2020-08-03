@@ -5,8 +5,8 @@ CustomLineEdit::CustomLineEdit(QWidget *parent):CustomLineEditBase (parent)
     connect(m_btnControl,&QPushButton::clicked,[=]{
         this->clear();
         setVisibleButton(false);
-        Utils::setPropertyAndUpdateStyle(this, Properties::FILLED,false);
         this->setFocus();
+        emit this->textEdited(this->text());
     });
 }
 
