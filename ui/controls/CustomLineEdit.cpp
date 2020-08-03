@@ -6,6 +6,7 @@ CustomLineEdit::CustomLineEdit(QWidget *parent):CustomLineEditBase (parent)
         this->clear();
         setVisibleButton(false);
         this->setFocus();
+        emit this->textEdited(this->text());
     });
 }
 
