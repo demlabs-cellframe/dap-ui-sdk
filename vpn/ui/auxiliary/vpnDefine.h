@@ -2,12 +2,14 @@
 #define VPNDEFINE_H
 
 
-enum ConnectionStates {
-    Disconnected = 0,
-    Connecting   = 1,
-    Connected    = 2,
-    Disconnecting = 3,
-    ServerChanging = 4
+
+enum ConnectionState {
+    ConnectingToService,
+    Disconnected,
+    Connecting,
+    Connected,
+    Disconnecting,
+    ServerChanging
 };
 
 #endif // VPNDEFINE_H

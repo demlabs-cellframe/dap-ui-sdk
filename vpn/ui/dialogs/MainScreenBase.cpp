@@ -38,16 +38,16 @@ QString MainScreenBase::screenName()
     return MainScreenBase::SCREEN_NAME;
 }
 
-void MainScreenBase::setState(ConnectionStates a_state)
+void MainScreenBase::setState(ConnectionState a_state)
 {
     if (a_state == m_state)
         return;
     m_state = a_state;
 
     m_ui->lblStatusMessage->setText(this->statusText());
-    this->setEnabled(a_state == ConnectionStates::Connected);
+    this->setEnabled(a_state == ConnectionState::Connected);
 
-    if(a_state == ConnectionStates::Disconnected)
+    if(a_state == ConnectionState::Disconnected)
         this->stopConnectionTimer();
 
 #ifndef ANDROID
@@ -155,15 +155,15 @@ QString MainScreenBase::statusText()
 {
     switch (m_state)
     {
-    case ConnectionStates::Disconnected:
+    case ConnectionState::Disconnected:
         return tr("Disconnected");
-    case ConnectionStates::Connecting:
+    case ConnectionState::Connecting:
         return tr("Connecting...");
-    case ConnectionStates::Connected:
+    case ConnectionState::Connected:
         return tr("Connected to %1").arg(m_currentServer);
-    case ConnectionStates::Disconnecting:
+    case ConnectionState::Disconnecting:
         return tr("Disconnecting...");
-    case ConnectionStates::ServerChanging:
+    case ConnectionState::ServerChanging:
         return tr("Changing server...");
     default:
         return QString();

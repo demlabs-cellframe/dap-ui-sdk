@@ -14,7 +14,7 @@ QString AccountScreen::screenName()
     return AccountScreen::SCREEN_NAME;
 }
 
-void AccountScreen::setState(ConnectionStates a_state)
+void AccountScreen::setState(ConnectionState a_state)
 {
     Q_UNUSED(a_state)
 }
