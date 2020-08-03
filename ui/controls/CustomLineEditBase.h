@@ -56,31 +56,42 @@ class CustomLineEditBase : public QLineEdit
     Q_PROPERTY(bool visibleIcon WRITE setVisibleIcon DESIGNABLE true)
     Q_PROPERTY(bool visibleButton WRITE setVisibleButton DESIGNABLE true)
     Q_PROPERTY(bool useCustomPlaceholder READ useCustomPlaceholder WRITE setUseCustomPlaceholder)
-   // Q_PROPERTY(bool placeholderPressToLeft READ useCustomPlaceholder WRITE setUseCustomPlaceholder)
+    Q_PROPERTY(Qt::Alignment alignmentPlaceholder WRITE setUseCustomPlaceholder DESIGNABLE true)
 
 public:
     CustomLineEditBase(QWidget* parent = Q_NULLPTR);
     CustomLineEditBase(const QString& contents,
                        QWidget* parent = Q_NULLPTR);
 
-public:
+
     /// Setting the error signal.
     /// @param a_wrong
     void setWrongState(bool a_wrong);
     bool useCustomPlaceholder() const;
     void setUseCustomPlaceholder(bool useCustom);
+    ///
+    /// \brief setUseCustomPlaceholder
+    /// \param a_alignment
+    /// Sets the placeholder position to the left or center
+    void setUseCustomPlaceholder(Qt::Alignment &a_alignment);
 
 protected:
     virtual void focusOutEvent(QFocusEvent *event);
     virtual void focusInEvent(QFocusEvent *event);
 
-protected:
+
     /// Sets the visibility of the icon.
     /// @param a_visible This parameter is taken from css settings.
     void setVisibleIcon(bool &a_visible);
     /// Sets the visibility of the button.
     /// @param a_visible This parameter is taken from css settings.
     void setVisibleButton(bool a_visible);
+
+    ///Widget for button
+    ResizablePushButton*    m_btnControl;
+
+private slots:
+    void adjustTextMargins();
 
 private:
     void recreateSubControls();
@@ -89,25 +100,16 @@ private:
     void showCustomPlaceholder();
     void hideCustomPlaceholder();
 
-private slots:
-    void adjustTextMargins();
-
-private:
     bool    m_useCustomPlaceholder;
 
-private:
+
     QHBoxLayout*    m_layoutCtrl;
     QLabel*         m_placeHolderCtrl;
 
-private:
+
     ///Widget for icon
     ResizableIconLabel* m_lblIcon;
 
-protected:
-    ///Widget for button
-    ResizablePushButton*    m_btnControl;
-
-private:
     QSpacerItem*    m_spacer;
 };
 
