@@ -53,6 +53,7 @@ bool DapKeyMsrln::generateSessionKey(const QByteArray& bobMessage,
                                (unsigned char*) bobMessage.data());
     if(_sharedSessionKey != Q_NULLPTR) {
         delete _sharedSessionKey;
+        _sharedSessionKey = nullptr;
     }
     _sharedSessionKey = new DapKeyAes();
 
