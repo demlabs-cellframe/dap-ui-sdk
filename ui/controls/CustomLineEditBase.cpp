@@ -91,7 +91,7 @@ void CustomLineEditBase::recreateSubControls()
     m_lblIcon->setObjectName("image");
     m_lblIcon->hide();
 
-    m_spacer = new QSpacerItem(16000, 10);
+    m_spacer = new QSpacerItem(0, 0);
 
     m_btnControl = new ResizablePushButton(this);
     connect(m_btnControl, SIGNAL(resized()), this, SLOT(adjustTextMargins()), Qt::DirectConnection);
@@ -115,6 +115,25 @@ void CustomLineEditBase::recreateSubControls()
     adjustPlaceholder();
 
     adjustTextMargins();
+}
+///
+/// \brief CustomLineEditBase::setUseCustomPlaceholder
+/// \param a_alignment
+// Sets the placeholder position to the left or center
+void CustomLineEditBase::setPlaceholderAlignment(Qt::Alignment &a_alignment)
+{
+    if(m_spacer!=Q_NULLPTR)
+    {
+        switch (a_alignment)
+        {
+            case Qt::AlignLeft:
+                m_spacer->changeSize(16000,0);
+                break;
+            case Qt::AlignCenter:
+                m_spacer->changeSize(0,0);
+                break;
+        }
+    }
 }
 
 void CustomLineEditBase::adjustPlaceholder()
