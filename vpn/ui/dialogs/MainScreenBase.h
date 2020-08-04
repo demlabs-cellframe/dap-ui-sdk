@@ -48,7 +48,7 @@ public:
     static const QString SCREEN_NAME;
     virtual QString screenName() override;
 
-    void setState(ConnectionStates a_state);
+    void setState(ConnectionState a_state);
 
     enum class IndicatorsUnits {Bytes, Packets};
 
@@ -127,7 +127,7 @@ protected:
     /// Total connection time in seconds.
     QDateTime m_loginTime {};
 
-    ConnectionStates m_state {ConnectionStates::Disconnected};
+    ConnectionState m_state {ConnectionState::Disconnected};
     QString m_currentServer {};
 
 
