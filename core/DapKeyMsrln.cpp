@@ -13,6 +13,8 @@ DapKeyMsrln::~DapKeyMsrln()
 {
     if(_key != Q_NULLPTR)
         dap_enc_key_delete(_key);
+    if (_sharedSessionKey)
+        delete _sharedSessionKey;
 }
 
 QByteArray DapKeyMsrln::generateAliceMessage()

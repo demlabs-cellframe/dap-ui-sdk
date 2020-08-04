@@ -45,6 +45,7 @@ public:
         dap_enc_key_serealize_t* temp2 = dap_enc_key_serealize(rhs.keySession->_sharedSessionKey->_key);
         dap_enc_key_t* l_ss_key = dap_enc_key_deserealize((const void*)temp2, sizeof (dap_enc_key_serealize_t));
         DAP_FREE(temp2);
+        keySession = new DapKeyMsrln;
         keySession->_key = l_key;
         keySession->_sharedSessionKey = new DapKeyAes();
         keySession->_sharedSessionKey->_key = l_ss_key;
