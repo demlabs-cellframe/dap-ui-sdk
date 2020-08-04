@@ -9,6 +9,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QShortcut>
 
 #include <QCheckBox>
 #include "AdaptiveScreen.h"
@@ -47,6 +48,8 @@ public slots:
 
     void checkFieldsAndSignUp();
     void answerSignUp(const QString &a_answer);
+
+    void SignUp();
 
 protected:
 
