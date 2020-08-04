@@ -30,7 +30,7 @@ public:
     static const QString SCREEN_NAME;
     virtual QString screenName() override;
 
-    void setState(ConnectionStates a_state);
+    void setState(ConnectionState a_state);
 
 protected:
     /// Form initialization.
