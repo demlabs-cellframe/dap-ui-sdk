@@ -120,7 +120,7 @@ void CustomLineEditBase::recreateSubControls()
 /// \brief CustomLineEditBase::setUseCustomPlaceholder
 /// \param a_alignment
 // Sets the placeholder position to the left or center
-void CustomLineEditBase::setUseCustomPlaceholder(Qt::Alignment &a_alignment)
+void CustomLineEditBase::setPlaceholderAlignment(Qt::Alignment &a_alignment)
 {
     if(m_spacer!=Q_NULLPTR)
     {

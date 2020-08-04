@@ -56,7 +56,7 @@ class CustomLineEditBase : public QLineEdit
     Q_PROPERTY(bool visibleIcon WRITE setVisibleIcon DESIGNABLE true)
     Q_PROPERTY(bool visibleButton WRITE setVisibleButton DESIGNABLE true)
     Q_PROPERTY(bool useCustomPlaceholder READ useCustomPlaceholder WRITE setUseCustomPlaceholder)
-    Q_PROPERTY(Qt::Alignment alignmentPlaceholder WRITE setUseCustomPlaceholder DESIGNABLE true)
+    Q_PROPERTY(Qt::Alignment placeholderAlignment WRITE setPlaceholderAlignment DESIGNABLE true)
 
 public:
     CustomLineEditBase(QWidget* parent = Q_NULLPTR);
@@ -73,7 +73,7 @@ public:
     /// \brief setUseCustomPlaceholder
     /// \param a_alignment
     /// Sets the placeholder position to the left or center
-    void setUseCustomPlaceholder(Qt::Alignment &a_alignment);
+    void setPlaceholderAlignment(Qt::Alignment &a_alignment);
 
 protected:
     virtual void focusOutEvent(QFocusEvent *event);
