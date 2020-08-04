@@ -36,6 +36,7 @@ private:
     dap_enc_key* _key;
     char decode_buff[BUFF_ENC_OP_SIZE];
     char encode_buff[BUFF_ENC_OP_SIZE];
+    friend class DapCrypt;
 public:
     DapKeyAes();
     ~DapKeyAes();

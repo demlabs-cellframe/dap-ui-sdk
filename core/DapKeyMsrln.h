@@ -13,7 +13,7 @@ class DapKeyMsrln : public DapKeyAbstract
     dap_enc_key *_key = Q_NULLPTR;
     DapKeyAes *_sharedSessionKey = Q_NULLPTR;
 
-    friend class DapKeyMsrlnTest;
+    friend class DapCrypt;
 public:
     DapKeyMsrln();
     ~DapKeyMsrln();
