@@ -52,11 +52,14 @@ DapSession::DapSession(QObject * obj, int requestTimeout) :
     QObject(obj), m_requestTimeout(requestTimeout)
 {
     m_dapCrypt = new DapCrypt;
+    m_dapCryptCDB = nullptr;
 }
 
 DapSession::~DapSession()
 {
     delete m_dapCrypt;
+    if (m_dapCryptCDB)
+        delete m_dapCryptCDB;
 }
 
 QNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QString& query)
@@ -464,6 +467,10 @@ void DapSession::onAuthorize()
 
 void DapSession::preserveCDBSession() {
     qInfo() << "Saving CDB session data";
+    if (m_dapCryptCDB) {
+        delete m_dapCryptCDB;
+        m_dapCryptCDB = nullptr;
+    }
     m_dapCryptCDB = new DapCrypt(*m_dapCrypt);
     m_sessionKeyID_CDB = m_sessionKeyID;
     m_CDBaddress = m_upstreamAddress;
@@ -503,7 +510,7 @@ void DapSession::answerBugReport()
     QString bugReportAnswer;
     if (m_netSendBugReportReply->error() != QNetworkReply::NetworkError::NoError) {
         bugReportAnswer = m_netSendBugReportReply->errorString();
-        emit errorNetwork(m_netSendBugReportReply->errorString());
+        //emit errorNetwork(m_netSendBugReportReply->errorString());
     } else {
         QByteArray arrData;
         arrData.append(m_netSendBugReportReply->readAll());

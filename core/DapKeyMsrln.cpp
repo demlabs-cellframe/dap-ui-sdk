@@ -13,6 +13,8 @@ DapKeyMsrln::~DapKeyMsrln()
 {
     if(_key != Q_NULLPTR)
         dap_enc_key_delete(_key);
+    if (_sharedSessionKey)
+        delete _sharedSessionKey;
 }
 
 QByteArray DapKeyMsrln::generateAliceMessage()
@@ -53,6 +55,7 @@ bool DapKeyMsrln::generateSessionKey(const QByteArray& bobMessage,
                                (unsigned char*) bobMessage.data());
     if(_sharedSessionKey != Q_NULLPTR) {
         delete _sharedSessionKey;
+        _sharedSessionKey = nullptr;
     }
     _sharedSessionKey = new DapKeyAes();
 
