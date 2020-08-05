@@ -62,19 +62,15 @@ void FAQWidget::mousePressEvent(QMouseEvent *event)
 {       
     if(!m_lblText->isVisible())
     {
-        m_lblIcon->setProperty("state","arow-down");
+        Utils::setPropertyAndUpdateStyle(m_lblIcon,Properties::ACTIVE,true);
+        Utils::setPropertyAndUpdateStyle(m_lblBottomLine,Properties::ACTIVE,true);
         m_lblText->setVisible(true);
-        style()->unpolish(m_lblIcon);
-        style()->polish(m_lblIcon);
-        update();
     }
     else
     {
-        m_lblIcon->setProperty("state","default");
+        Utils::setPropertyAndUpdateStyle(m_lblIcon,Properties::ACTIVE,false);
+        Utils::setPropertyAndUpdateStyle(m_lblBottomLine,Properties::ACTIVE,false);
         m_lblText->setVisible(false);
-        style()->unpolish(m_lblIcon);
-        style()->polish(m_lblIcon);
-        update();
     }
 
     QWidget::mousePressEvent(event);
