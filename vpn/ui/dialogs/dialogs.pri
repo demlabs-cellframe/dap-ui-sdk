@@ -5,10 +5,13 @@ HEADERS  += \
     $$PWD/BugReportScreenBase.h \
     $$PWD/BugReportWithEmailScreen.h \
     $$PWD/BugReportWithoutEmailScreen.h \
+    $$PWD/ComboBoxPopupScreen.h \
     $$PWD/MainScreenBase.h \
     $$PWD/MainScreenLayout.h \
     $$PWD/PasswordRecoveryScreen.h \
+    $$PWD/PopupScreenBase.h \
     $$PWD/ScreenWithCustomPopupsAbstract.h \
+    $$PWD/ScreenWithScreenPopupsAbstract.h \
     $$PWD/StartScreen.h \
     $$PWD/NavigationPanel.h \
     $$PWD/SignUpScreen.h \
@@ -23,11 +26,14 @@ SOURCES += \
     $$PWD/BugReportScreenBase.cpp \
     $$PWD/BugReportWithEmailScreen.cpp \
     $$PWD/BugReportWithoutEmailScreen.cpp \
+    $$PWD/ComboBoxPopupScreen.cpp \
     $$PWD/MainScreenBase.cpp \
     $$PWD/MainScreenLayout.cpp \
     $$PWD/PasswordRecoveryScreen.cpp \
     $$PWD/NavigationPanel.cpp \
+    $$PWD/PopupScreenBase.cpp \
     $$PWD/ScreenWithCustomPopupsAbstract.cpp \
+    $$PWD/ScreenWithScreenPopupsAbstract.cpp \
     $$PWD/StartScreen.cpp \
     $$PWD/SignUpScreen.cpp \
     $$PWD/TermsOfUseScreen.cpp \
@@ -35,16 +41,10 @@ SOURCES += \
 
 !android {
     HEADERS  += \
-        $$PWD/desktop/LoginScreenLayout.h \
-        $$PWD/desktop/ComboBoxPopupScreen.h \
-        $$PWD/desktop/PopupScreenBase.h \
-        $$PWD/desktop/ScreenWithScreenPopupsAbstract.h
+        $$PWD/desktop/LoginScreenLayout.h
 
     SOURCES += \
-        $$PWD/desktop/LoginScreenLayout.cpp \
-        $$PWD/desktop/ComboBoxPopupScreen.cpp \
-        $$PWD/desktop/PopupScreenBase.cpp \
-        $$PWD/desktop/ScreenWithScreenPopupsAbstract.cpp
+        $$PWD/desktop/LoginScreenLayout.cpp
 
     FORMS += \
         $$PWD/desktop/LoginScreenLayout.ui

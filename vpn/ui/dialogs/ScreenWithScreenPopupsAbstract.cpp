@@ -37,8 +37,10 @@ void ScreenWithScreenPopupsAbstract::setPopupScreen(PopupScreenBase* a_popupScre
 void ScreenWithScreenPopupsAbstract::connectPopup(CustomPopup *a_popup)
 {
     ScreenComboBoxPopup* screenPopup = qobject_cast<ScreenComboBoxPopup*>(a_popup);
-    if (screenPopup)
-        connect(screenPopup, &ScreenComboBoxPopup::closingStarted, this, &ScreenWithScreenPopupsAbstract::popupClosingStarted);
 
-    this->ScreenWithCustomPopupsAbstract::connectPopup(a_popup);
+    if (!screenPopup)
+        return this->ScreenWithCustomPopupsAbstract::connectPopup(a_popup);
+
+    connect(screenPopup, &ScreenComboBoxPopup::closingStarted, this, &ScreenWithScreenPopupsAbstract::popupClosingStarted);
+    connect(screenPopup, &CustomPopup::opened                , this, &ScreenWithScreenPopupsAbstract::screenComboBoxOpened);
 }
