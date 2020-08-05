@@ -381,6 +381,10 @@ void DapSession::onAuthorize()
     } else if (op_code == OP_CODE_LOGIN_INACTIVE) {
         emit activateKey();
         return;
+    } else {
+        emit errorAuthorization ("Unknown operation code: " + op_code);
+        qInfo() << "Error auth, response was: " << dByteArr;
+        return;
     }
 
     QXmlStreamReader m_xmlStreamReader;
