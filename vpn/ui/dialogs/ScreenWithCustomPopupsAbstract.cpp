@@ -32,7 +32,6 @@ void ScreenWithCustomPopupsAbstract::initVariantUi(QWidget *a_widget)
 
 void ScreenWithCustomPopupsAbstract::connectPopup(CustomPopup *a_popup)
 {
-//    ComboBoxPopup* popup = a_comboBox->popup();
     connect(a_popup, &CustomPopup::opened, this, &ScreenWithCustomPopupsAbstract::popupOpened);
     connect(a_popup, &CustomPopup::closed, this, &ScreenWithCustomPopupsAbstract::popupClosed);
 }
