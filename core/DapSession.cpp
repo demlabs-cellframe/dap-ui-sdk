@@ -339,7 +339,8 @@ void DapSession::onAuthorize()
 {
     qDebug() << "Auth reply";
     if (m_netAuthorizeReply && (m_netAuthorizeReply->error() != QNetworkReply::NoError)) {
-        emit errorNetwork(m_netAuthorizeReply->errorString());
+        qCritical() << m_netAuthorizeReply->errorString();
+        emit errorAuthorization("Authorization error, please report");
         return;
     }
 
