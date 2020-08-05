@@ -490,7 +490,7 @@ void DapSession::answerSignUp()
 {
     qInfo() << "answerSignUp";
     if(m_netSignUpReply->error() != QNetworkReply::NetworkError::NoError) {
-        qInfo() << m_netSignUpReply->errorString();
+        qInfo() << "Answer sign up error: " << m_netSignUpReply->errorString();
         emit sigSignUpAnswer(m_netSignUpReply->errorString());
         return;
     }
