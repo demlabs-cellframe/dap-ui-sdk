@@ -134,6 +134,7 @@ signals:
     void sigStreamOpenHttpError(int httpCode);
     void sigStreamOpenNetworkError(QNetworkReply::NetworkError);
     void sigStreamOpenBadResponseError();
+
     // all another errors
     void streamOpenError(int errorCode);
 

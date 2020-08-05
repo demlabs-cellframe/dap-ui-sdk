@@ -339,7 +339,7 @@ void DapStreamer::sltStreamConnected()
     QTimer::singleShot(8000, Qt::PreciseTimer, this, [=]() {
         if (!m_isStreamOpened) {
             disconnect(m_streamTimeoutConn);
-            emit(errorNetwork("Stream timeout..."));
+            emit sigStreamOpenNetworkError(QNetworkReply::NetworkError::TimeoutError);
         }
     } );
 }
