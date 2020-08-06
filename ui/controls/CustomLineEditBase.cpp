@@ -220,15 +220,13 @@ void CustomLineEditBase::hideCustomPlaceholder()
 void CustomLineEditBase::adjustTextMargins()
 {
     const QMargins marginsPrev(textMargins());
-    QMargins marginsNew(m_iconWidth, marginsPrev.top(), m_buttonWidth, marginsPrev.bottom());
+    QMargins marginsNew(0, marginsPrev.top(), 0, marginsPrev.bottom());
 
     if(Q_NULLPTR != m_lblIcon)
     {
         if(m_lblIcon->isVisible())
         {
-            if(m_iconWidth != m_lblIcon->frameGeometry().width())
-                m_iconWidth = m_lblIcon->frameGeometry().width();
-            marginsNew.setLeft(m_iconWidth);
+            marginsNew.setLeft(m_lblIcon->width());
         }
     }
 
@@ -236,9 +234,7 @@ void CustomLineEditBase::adjustTextMargins()
     {
         if(m_btnControl->isVisible())
         {
-            if(m_buttonWidth != m_btnControl->frameGeometry().width())
-                m_buttonWidth = m_btnControl->frameGeometry().width();
-            marginsNew.setRight(m_buttonWidth);
+            marginsNew.setRight(m_btnControl->width());
         }
     }
 
@@ -260,16 +256,9 @@ void ResizableIconLabel::resizeEvent(QResizeEvent* event)
 {
     QLabel::resizeEvent(event);
 
-    qWarning()<< event;
-qWarning()<<this<<"------------------------------resizeEvent---------------------------------------------"<<event;
     emit resized();
 }
-void ResizableIconLabel::paintEvent(QPaintEvent *event)
-{
-    QLabel::paintEvent(event);
-//    emit resized();
-//    qWarning()<<"-------------------------------PAIN EVENT---------------------------------------------";
-}
+
 ResizablePushButton::ResizablePushButton(QWidget* parent)
     : QPushButton(parent)
 {

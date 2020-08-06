@@ -99,8 +99,6 @@ private:
     void showCustomPlaceholder();
     void hideCustomPlaceholder();
 
-    int m_iconWidth = 0;
-    int m_buttonWidth = 0;
 
     bool    m_useCustomPlaceholder;
 
@@ -131,7 +129,6 @@ signals:
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);
-    void paintEvent(QPaintEvent *event);
 };
 
 class ResizablePushButton : public QPushButton
