@@ -79,7 +79,6 @@ protected:
     virtual void focusOutEvent(QFocusEvent *event);
     virtual void focusInEvent(QFocusEvent *event);
 
-
     /// Sets the visibility of the icon.
     /// @param a_visible This parameter is taken from css settings.
     void setVisibleIcon(bool &a_visible);
@@ -99,6 +98,9 @@ private:
     void adjustPlaceholderText();
     void showCustomPlaceholder();
     void hideCustomPlaceholder();
+
+    int m_iconWidth = 0;
+    int m_buttonWidth = 0;
 
     bool    m_useCustomPlaceholder;
 
@@ -129,6 +131,7 @@ signals:
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);
+    void paintEvent(QPaintEvent *event);
 };
 
 class ResizablePushButton : public QPushButton
