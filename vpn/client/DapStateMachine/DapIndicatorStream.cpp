@@ -41,6 +41,7 @@ void DapIndicatorStream::initAllowedSubstatesTransitions()
 {
     // False
     addAllowedSubstatesTransitions(disconnectedNormal, connected);
+    addAllowedSubstatesTransitions(disconnectedNormal, reconnectingError);
     addAllowedSubstatesTransitions(disconnectedError, connected);
     addAllowedSubstatesTransitions(ipRequestError, connected);
 

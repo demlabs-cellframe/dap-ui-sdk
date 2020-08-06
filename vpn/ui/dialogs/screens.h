@@ -5,9 +5,7 @@
 
 #ifndef ANDROID
     #include "LoginScreenLayout.h"
-    #include "ComboBoxPopupScreen.h"
     #include "LoginNavigationPanel.h"
-    #include "ScreenWithScreenPopupsAbstract.h"
 #endif
 #include "MainScreenLayout.h"
 
@@ -29,6 +27,8 @@
 #include "PrivacyPolicyScreen.h"
 #include "TermsOfUseScreen.h"
 #include "ScreenWithCustomPopupsAbstract.h"
+#include "ScreenWithScreenPopupsAbstract.h"
+#include "ComboBoxPopupScreen.h"
 
 
 #endif // SCREENS_H

@@ -2,6 +2,8 @@
 #define VERSIONLABEL_H
 
 #include <QLabel>
+#include <QDateTime>
+#include <QLocale>
 
 class VersionLabel: public QLabel
 {
