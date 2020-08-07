@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QDateTime>
 
+#include "DapServerInfo.h"
+
 class DapServerConnectionInfo : public QObject
 {
     Q_OBJECT
@@ -17,6 +19,11 @@ public:
     int bytesSent       () const;
     int packetsReceived () const;
     int packetsSent     () const;
+
+
+
+    const DapServerInfo *serverInfo() const;
+    void setServerInfo(const DapServerInfo &serverInfo);
 
 public slots:
     void setStartTime(const QDateTime &a_startTime);
@@ -37,14 +44,13 @@ signals:
                       int a_packetsSent);
 
 private:
-    DapServerConnectionInfo* m_currentConnection = nullptr;
-
     QDateTime   m_startTime {};
     int         m_bytesReceived = 0;
     int         m_bytesSent = 0;
     int         m_packetsReceived = 0;
     int         m_packetsSent = 0;
 
+    DapServerInfo m_serverInfo;
 
 };
 
