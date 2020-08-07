@@ -21,6 +21,7 @@ public:
 public :
 signals:
     void popupClosingStarted();
+    void screenComboBoxOpened();
 
     void popupHidden();
 

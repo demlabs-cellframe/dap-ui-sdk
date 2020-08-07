@@ -339,7 +339,8 @@ void DapSession::onAuthorize()
 {
     qDebug() << "Auth reply";
     if (m_netAuthorizeReply && (m_netAuthorizeReply->error() != QNetworkReply::NoError)) {
-        emit errorNetwork(m_netAuthorizeReply->errorString());
+        qCritical() << m_netAuthorizeReply->errorString();
+        emit errorAuthorization("Authorization error, please report");
         return;
     }
 
@@ -490,7 +491,7 @@ void DapSession::answerSignUp()
 {
     qInfo() << "answerSignUp";
     if(m_netSignUpReply->error() != QNetworkReply::NetworkError::NoError) {
-        qInfo() << m_netSignUpReply->errorString();
+        qInfo() << "Answer sign up error: " << m_netSignUpReply->errorString();
         emit sigSignUpAnswer(m_netSignUpReply->errorString());
         return;
     }

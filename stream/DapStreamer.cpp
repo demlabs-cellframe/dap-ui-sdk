@@ -320,7 +320,7 @@ void DapStreamer::sltStreamConnected()
                             .arg(2); // Do something with versioning
 
     qDebug() << "[DapConnectStream] Request on out : " << str_request;
-
+    m_isStreamOpened = false;
     QByteArray baReq( str_request.toLatin1() );
     quint64 ret = m_streamSocket->write(baReq.constData(), baReq.size());
     qDebug() << "[DapConnectStream] HTTP stream request sent "<< ret<< " bytes";
@@ -337,9 +337,10 @@ void DapStreamer::sltStreamConnected()
     m_streamTimeoutConn = connect(m_streamSocket, &QAbstractSocket::bytesWritten, this, &DapStreamer::streamOpened);
     m_streamState = SSS_FRAME_SEARCH;
     QTimer::singleShot(8000, Qt::PreciseTimer, this, [=]() {
+        qInfo() << "Async stream check: " << m_isStreamOpened;
         if (!m_isStreamOpened) {
             disconnect(m_streamTimeoutConn);
-            emit(errorNetwork("Stream timeout..."));
+            emit sigStreamOpenNetworkError(QNetworkReply::NetworkError::TimeoutError);
         }
     } );
 }

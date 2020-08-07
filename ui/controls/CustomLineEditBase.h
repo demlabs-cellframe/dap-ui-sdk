@@ -79,7 +79,6 @@ protected:
     virtual void focusOutEvent(QFocusEvent *event);
     virtual void focusInEvent(QFocusEvent *event);
 
-
     /// Sets the visibility of the icon.
     /// @param a_visible This parameter is taken from css settings.
     void setVisibleIcon(bool &a_visible);
@@ -99,6 +98,7 @@ private:
     void adjustPlaceholderText();
     void showCustomPlaceholder();
     void hideCustomPlaceholder();
+
 
     bool    m_useCustomPlaceholder;
 
