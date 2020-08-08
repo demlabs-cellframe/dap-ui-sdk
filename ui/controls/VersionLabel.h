@@ -14,6 +14,7 @@ public:
 /// 2-specifies the build date
 /// for line transfer use \n
     void setText(const QString &a_text);
+    static QString getVersion();
 };
 
 #endif // VERSIONLABEL_H
