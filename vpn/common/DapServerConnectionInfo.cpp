@@ -57,3 +57,13 @@ void DapServerConnectionInfo::clearStatisticAndStartTime()
     this->setStartTime      ({});
     DapServerConnectionInfo::setStatistic(0, 0, 0, 0);
 }
+
+const DapServerInfo* DapServerConnectionInfo::serverInfo() const
+{
+    return &m_serverInfo;
+}
+
+void DapServerConnectionInfo::setServerInfo(const DapServerInfo &serverInfo)
+{
+    m_serverInfo = serverInfo;
+}
