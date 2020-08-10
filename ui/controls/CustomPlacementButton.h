@@ -88,6 +88,8 @@ public:
 
     void emitTabFocus(bool isActiv);
 
+    QLabel *additionalImage();
+    QLabel *image();
 signals:
     void tabFocusIn();
     void tabFocusOut();

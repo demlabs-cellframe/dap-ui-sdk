@@ -83,6 +83,10 @@ void CustomPlacementButton::emitTabFocus(bool isActiv)
     isActiv ? emit tabFocusIn() : emit tabFocusOut();
 }
 
+QLabel *CustomPlacementButton::additionalImage(){return &m_lbAdditionalImage;}
+
+QLabel *CustomPlacementButton::image(){return &m_lbImage;}
+
 /** @brief Reimplemented QPushButton::setText method. Sets text property of text subcontrol.
  *  @param text Text
  */

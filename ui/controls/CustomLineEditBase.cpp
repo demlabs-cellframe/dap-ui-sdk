@@ -88,6 +88,7 @@ void CustomLineEditBase::recreateSubControls()
 {
     m_lblIcon = new ResizableIconLabel(this);
     connect(m_lblIcon, SIGNAL(resized()), this, SLOT(adjustTextMargins()), Qt::DirectConnection);
+
     m_lblIcon->setObjectName("image");
     m_lblIcon->hide();
 
@@ -225,7 +226,7 @@ void CustomLineEditBase::adjustTextMargins()
     {
         if(m_lblIcon->isVisible())
         {
-            marginsNew.setLeft(m_lblIcon->frameGeometry().width());
+            marginsNew.setLeft(m_lblIcon->width());
         }
     }
 
@@ -233,7 +234,7 @@ void CustomLineEditBase::adjustTextMargins()
     {
         if(m_btnControl->isVisible())
         {
-            marginsNew.setRight(m_btnControl->frameGeometry().width());
+            marginsNew.setRight(m_btnControl->width());
         }
     }
 
