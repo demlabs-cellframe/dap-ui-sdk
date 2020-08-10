@@ -44,16 +44,21 @@ void MainScreenBase::setState(ConnectionState a_state)
         return;
     m_state = a_state;
 
+#ifndef Q_OS_ANDROID
+    if(a_state == ConnectionState::Disconnected)
+    {
+        m_ui->btnConnection->setText(TEXT_CONNECT);
+    }
+    else {
+        m_ui->btnConnection->setText(TEXT_DISCONNECT);
+    }
+#endif
+
     m_ui->lblStatusMessage->setText(this->statusText());
     this->setEnabled(a_state == ConnectionState::Connected);
 
     if(a_state == ConnectionState::Disconnected)
         this->stopConnectionTimer();
-
-#ifndef ANDROID
-    // this->setChildProperties(LBL_STATUS_MESSAGE, Properties::STATE, a_state);
-    // this->updateChildStyle  (LBL_STATUS_MESSAGE);
-#endif
 }
 
 void MainScreenBase::initVariantUi(QWidget *a_widget)
