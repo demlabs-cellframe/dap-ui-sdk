@@ -46,12 +46,12 @@ void CustomLineEditBase::setWrongState(bool a_wrong)
     Utils::setPropertyAndUpdateStyle(this, Properties::WRONG, a_wrong);
 }
 
-bool CustomLineEditBase::useCustomPlaceholder() const
+bool CustomLineEditBase::usingCustomPlaceholder() const
 {
     return m_useCustomPlaceholder;
 }
 
-void CustomLineEditBase::setUseCustomPlaceholder(bool useCustom)
+void CustomLineEditBase::setUsingCustomPlaceholder(bool useCustom)
 {
     if(m_useCustomPlaceholder ? !useCustom : useCustom)
     {

@@ -28,11 +28,13 @@ class CustomTextEdit: public QTextEdit
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool useCustomPlaceholder WRITE setUseCustomPlaceholder  DESIGNABLE true)
+    Q_PROPERTY(bool usingCustomPlaceholder WRITE setUsingCustomPlaceholder  DESIGNABLE true)
 public:
     explicit CustomTextEdit(QWidget *a_parent = nullptr);
 
-    void setUseCustomPlaceholder(bool a_usePlaceholder);
+    void setUsingCustomPlaceholder(bool a_usePlaceholder);
+
+    void setPlaceholderText(const QString &placeholderText);
 protected:
 
     void focusOutEvent(QFocusEvent *e);
@@ -40,12 +42,13 @@ protected:
     void focusInEvent(QFocusEvent *e);
 
 private:
-    void recreateCustomTextEdit();
+    void createCustomPlaceholder();
+    void deleteCustomPlaceholder();
 
     QHBoxLayout*    m_layoutCtrl = nullptr;
     QLabel*         m_placeHolderCtrl = nullptr;
 
-    bool    m_useCustomPlaceholder = false;
+    bool    m_usingCustomPlaceholder = false;
 };
 
 #endif // CUSTOMTEXTEDIT_H
