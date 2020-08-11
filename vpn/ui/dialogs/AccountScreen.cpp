@@ -5,7 +5,7 @@ const QString AccountScreen::SCREEN_NAME = "Account";
 AccountScreen::AccountScreen(QWidget *a_parent)
     : AdaptiveScreen(a_parent)
 {
-    create<Ui::AccountScreen>();
+    this->create(m_ui);
     AdaptiveScreen::initScreen(this);
 }
 
@@ -23,4 +23,11 @@ void AccountScreen::initVariantUi(QWidget *a_widget)
 {
     Q_UNUSED(a_widget)
 
+#ifdef Q_OS_ANDROID
+    m_ui->lblCaption->setText("Renew subscription");
+#else
+    m_ui->verticalLayout_4->setAlignment(m_ui->btnYearPrice,Qt::AlignHCenter);
+    m_ui->verticalLayout_4->setAlignment(m_ui->btnMonthPrice,Qt::AlignHCenter);
+    m_ui->verticalLayout_4->setAlignment(m_ui->btnSixMonthPrice,Qt::AlignHCenter);
+#endif
 }

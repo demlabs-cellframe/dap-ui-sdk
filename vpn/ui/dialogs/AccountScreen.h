@@ -39,6 +39,9 @@ protected:
     const QString BTN_MONTH_PRICE      = "btnMonthPrice";
     const QString BTN_SIX_MONTH_PRICE  = "btnSixMonthPrice";
     const QString BTN_YEAR_PRICE       = "btnYearPrice";
+
+private:
+    QScopedPointer<Ui::AccountScreen> m_ui;
 };
 
 #endif // ACCOUNTSCREEN_H

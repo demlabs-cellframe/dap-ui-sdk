@@ -7,6 +7,7 @@
 #include "defines.h"
 #include "Utilz.h"
 #include <QScroller>
+#include <QLabel>
 
 /** @brief QGraphicsDropShadowEffect that can be adjusted from css
  *
@@ -25,17 +26,26 @@
 
 class CustomTextEdit: public QTextEdit
 {
-public:
-    explicit CustomTextEdit(QWidget *a_parent = Q_NULLPTR);
+    Q_OBJECT
 
+    Q_PROPERTY(bool useCustomPlaceholder WRITE setUseCustomPlaceholder  DESIGNABLE true)
+public:
+    explicit CustomTextEdit(QWidget *a_parent = nullptr);
+
+    void setUseCustomPlaceholder(bool a_usePlaceholder);
 protected:
 
     void focusOutEvent(QFocusEvent *e);
 
-    void inputMethodEvent(QInputMethodEvent *event);
-
     void focusInEvent(QFocusEvent *e);
 
+private:
+    void recreateCustomTextEdit();
+
+    QHBoxLayout*    m_layoutCtrl = nullptr;
+    QLabel*         m_placeHolderCtrl = nullptr;
+
+    bool    m_useCustomPlaceholder = false;
 };
 
 #endif // CUSTOMTEXTEDIT_H
