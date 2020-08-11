@@ -103,25 +103,26 @@
          <enum>Qt::ScrollBarAlwaysOff</enum>
         </property>
         <property name="placeholderText">
-         <string>Please describe the problem you've encountered. What you have done and what happened</string>
+         <string>Please describe the details of problem you faced. What actions did you take and what happened.</string>
+        </property>
+       </widget>
+      </item>
+      <item alignment="Qt::AlignRight">
+       <widget class="QLabel" name="lblCharacters">
+        <property name="text">
+         <string>0/200</string>
         </property>
        </widget>
       </item>
       <item>
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
+       <widget class="QPushButton" name="btnAttachImage">
+        <property name="text">
+         <string>Click here to attach a image</string>
         </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Expanding</enum>
+        <property name="flat">
+         <bool>true</bool>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-       </spacer>
+       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btnSend">
@@ -134,9 +135,25 @@
         <property name="text">
          <string>Send</string>
         </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
        </widget>
       </item>
-      <item alignment="Qt::AlignHCenter">
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>100</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item alignment="Qt::AlignHCenter|Qt::AlignBottom">
        <widget class="VersionLabel" name="lblVersion">
         <property name="text">
          <string>Version %1

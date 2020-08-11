@@ -472,8 +472,7 @@ void DapSession::preserveCDBSession() {
         delete m_dapCryptCDB;
         m_dapCryptCDB = nullptr;
     }
-    m_dapCryptCDB = m_dapCrypt;
-    m_dapCrypt = new DapCrypt();
+    m_dapCryptCDB = new DapCrypt(*m_dapCrypt);
     m_sessionKeyID_CDB = m_sessionKeyID;
     m_CDBaddress = m_upstreamAddress;
     m_CDBport = m_upstreamPort;

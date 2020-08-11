@@ -30,6 +30,8 @@ public:
 signals:
     void sigPasteAllLicense(QString license);
 
+    void sigProcessBeforFocus();
+
     void onFocusLicense();
     //Indicates the need to switch focus to a widget such as a button. Made for Android because of the features of the input fields.
     void focusOutNeeded();

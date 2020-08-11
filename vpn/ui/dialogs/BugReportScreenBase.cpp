@@ -38,6 +38,8 @@ void BugReportScreenBase::initVariantUi(QWidget *a_widget)
     {
         QString str = this->message();
 
+        this->m_ui->lblCharacters->setText(QString::number(str.size()) + "/200");
+
         if (validateText(str))
             return;
 
@@ -51,9 +53,9 @@ void BugReportScreenBase::initVariantUi(QWidget *a_widget)
 bool BugReportScreenBase::validateText(QString &str)
 {
     QRegExp rx("\\\\");
-    if (str.contains(rx) || str.length() > 500){
+    if (str.contains(rx) || str.length() > MAX_SIZE_MESSAGE){
         QTextCursor fileViewerCursor = m_ui->edtMessage->textCursor();
-        m_ui->edtMessage->setPlainText(str.remove(rx).mid(0, 500));
+        m_ui->edtMessage->setPlainText(str.remove(rx).mid(0, MAX_SIZE_MESSAGE));
         fileViewerCursor.movePosition(QTextCursor::End);
         m_ui->edtMessage->setTextCursor(fileViewerCursor);
         return true;
