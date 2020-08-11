@@ -22,8 +22,12 @@ void ConnectionScreenBase::setState(ConnectionState a_state)
     Q_UNUSED(a_state)
 }
 
+void ConnectionScreenBase::setCurrentServer(const QString &a_currentServer)
+{
+    //TODO...
+}
+
 void ConnectionScreenBase::initVariantUi(QWidget *a_widget)
 {
     Q_UNUSED(a_widget)
-
 }

@@ -1,29 +1,13 @@
 ﻿#ifndef CONNECTIONSCREENBASE_H
 #define CONNECTIONSCREENBASE_H
 
-#include <QLabel>
-
-#include "BrandAppProperties.h"
-
-#include "StyledDropShadowEffect.h"
-
-#include <QStateMachine>
-#include <QListView>
-
 #include "AdaptiveScreen.h"
 #include "vpnDefine.h"
-
-#include "defines.h"
-#include <QStyle>
-#include <QList>
-
-#include "ui_AccountScreen.h"
-#include "CustomPlacementButton.h"
+#include "BrandAppProperties.h"
 
 class ConnectionScreenBase : public AdaptiveScreen
 {
     Q_OBJECT
-
 public:
 
     /// Overloaded constructor.
@@ -34,6 +18,11 @@ public:
     virtual QString screenName() override;
 
     void setState(ConnectionState a_state);
+
+    void setCurrentServer(const QString& a_currentServer);
+
+signals:
+    void serverChangingRequested(const QString& serverName);
 
 protected:
     /// Form initialization.

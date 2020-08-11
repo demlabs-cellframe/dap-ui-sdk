@@ -37,14 +37,16 @@ SOURCES += \
     $$PWD/StartScreen.cpp \
     $$PWD/SignUpScreen.cpp \
     $$PWD/TermsOfUseScreen.cpp \
-    $$PWD/PrivacyPolicyScreen.cpp \
+    $$PWD/PrivacyPolicyScreen.cpp
 
 android {
     HEADERS  += \
         $$PWD/mobile/ConnectionScreenBase.h \
+        $$PWD/mobile/StatisticScreenBase.h
 
     SOURCES += \
-        $$PWD/mobile/ConnectionScreenBase.cpp
+        $$PWD/mobile/ConnectionScreenBase.cpp \
+        $$PWD/mobile/StatisticScreenBase.cpp
 
     INCLUDEPATH += $$PWD/mobile
 }
