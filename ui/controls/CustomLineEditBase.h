@@ -55,7 +55,7 @@ class CustomLineEditBase : public QLineEdit
 
     Q_PROPERTY(bool visibleIcon WRITE setVisibleIcon DESIGNABLE true)
     Q_PROPERTY(bool visibleButton WRITE setVisibleButton DESIGNABLE true)
-    Q_PROPERTY(bool useCustomPlaceholder READ useCustomPlaceholder WRITE setUseCustomPlaceholder)
+    Q_PROPERTY(bool usingCustomPlaceholder READ usingCustomPlaceholder WRITE setUsingCustomPlaceholder)
     Q_PROPERTY(Qt::Alignment placeholderAlignment WRITE setPlaceholderAlignment DESIGNABLE true)
 
 public:
@@ -67,8 +67,8 @@ public:
     /// Setting the error signal.
     /// @param a_wrong
     void setWrongState(bool a_wrong);
-    bool useCustomPlaceholder() const;
-    void setUseCustomPlaceholder(bool useCustom);
+    bool usingCustomPlaceholder() const;
+    void setUsingCustomPlaceholder(bool useCustom);
     ///
     /// \brief setUseCustomPlaceholder
     /// \param a_alignment

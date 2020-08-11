@@ -103,7 +103,6 @@ void CustomPlacementButton::setIcon(const QString &path)
 
 void CustomPlacementButton::setProperty(const QString &a_property, const QVariant &a_value)
 {
-qWarning()<<"=========================setProperty="<<a_property<<" param = "<< a_value;
     Utils::setPropertyAndUpdateStyle(this, a_property, a_value);
 
     Utils::setPropertyAndUpdateStyle(&m_wgtRightSpacing, a_property, a_value);
