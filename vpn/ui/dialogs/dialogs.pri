@@ -8,12 +8,12 @@ HEADERS  += \
     $$PWD/ComboBoxPopupScreen.h \
     $$PWD/MainScreenBase.h \
     $$PWD/MainScreenLayout.h \
+    $$PWD/NavigationPanelBase.h \
     $$PWD/PasswordRecoveryScreen.h \
     $$PWD/PopupScreenBase.h \
     $$PWD/ScreenWithCustomPopupsAbstract.h \
     $$PWD/ScreenWithScreenPopupsAbstract.h \
     $$PWD/StartScreen.h \
-    $$PWD/NavigationPanel.h \
     $$PWD/SignUpScreen.h \
     $$PWD/TermsOfUseScreen.h \
     $$PWD/PrivacyPolicyScreen.h \
@@ -29,17 +29,26 @@ SOURCES += \
     $$PWD/ComboBoxPopupScreen.cpp \
     $$PWD/MainScreenBase.cpp \
     $$PWD/MainScreenLayout.cpp \
+    $$PWD/NavigationPanelBase.cpp \
     $$PWD/PasswordRecoveryScreen.cpp \
-    $$PWD/NavigationPanel.cpp \
     $$PWD/PopupScreenBase.cpp \
     $$PWD/ScreenWithCustomPopupsAbstract.cpp \
     $$PWD/ScreenWithScreenPopupsAbstract.cpp \
     $$PWD/StartScreen.cpp \
     $$PWD/SignUpScreen.cpp \
     $$PWD/TermsOfUseScreen.cpp \
-    $$PWD/PrivacyPolicyScreen.cpp
+    $$PWD/PrivacyPolicyScreen.cpp \
 
-!android {
+android {
+    HEADERS  += \
+        $$PWD/mobile/ConnectionScreenBase.h \
+
+    SOURCES += \
+        $$PWD/mobile/ConnectionScreenBase.cpp
+
+    INCLUDEPATH += $$PWD/mobile
+}
+else {
     HEADERS  += \
         $$PWD/desktop/LoginScreenLayout.h
 

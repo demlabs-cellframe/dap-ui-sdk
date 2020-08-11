@@ -47,10 +47,19 @@ void CustomComboBoxPopup::addItem(const QString &a_text, const QVariant &a_userD
 
 void CustomComboBoxPopup::setCaption(const QString &a_caption)
 {
+    if (m_caption == a_caption)
+        return;
+    m_caption = a_caption;
+
     QString lblCaptionName = this->captionLabelName();
 
     if (!lblCaptionName.isEmpty())
         this->setChildProperties(this->captionLabelName(), Properties::TEXT, a_caption);
+}
+
+QString CustomComboBoxPopup::caption() const
+{
+    return m_caption;
 }
 
 void CustomComboBoxPopup::setCurrentIndex(int a_index)

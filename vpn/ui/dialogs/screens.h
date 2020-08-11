@@ -3,16 +3,19 @@
 
 //helper header file for including all scrreens
 
-#ifndef ANDROID
+#ifdef ANDROID
+    #include "ConnectionScreenBase.h"
+#else
     #include "LoginScreenLayout.h"
     #include "LoginNavigationPanel.h"
 #endif
+
 #include "MainScreenLayout.h"
 
 #include "StartScreen.h"
 #include "SignUpScreen.h"
 #include "SignInScreen.h"
-#include "NavigationPanel.h"
+#include "NavigationPanelBase.h"
 #include "MainScreen.h"
 #include "SettingsScreen.h"
 #include "BugReportWithEmailScreen.h"
@@ -29,6 +32,7 @@
 #include "ScreenWithCustomPopupsAbstract.h"
 #include "ScreenWithScreenPopupsAbstract.h"
 #include "ComboBoxPopupScreen.h"
+
 
 
 #endif // SCREENS_H

@@ -22,6 +22,7 @@ public :
 signals:
     void popupClosingStarted();
     void screenComboBoxOpened();
+    void showedScreenPopupCaptionChanged(const QString& a_caption);
 
     void popupHidden();
 

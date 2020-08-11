@@ -25,6 +25,8 @@ public:
     void addItem(const QString &a_text, const QVariant &a_userData = QVariant());
 
     virtual void setCaption(const QString& a_caption);
+    QString caption() const;
+
 public slots:
     void setCurrentIndex(int a_index);
 
@@ -42,6 +44,7 @@ signals:
 private:
 
     QAbstractItemModel* m_model{};
+    QString m_caption;
 };
 
 #endif // CUSTOMCOMBOBOXPOPUP_H
