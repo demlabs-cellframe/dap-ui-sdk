@@ -103,6 +103,9 @@ protected:
     const QString BYTES = "Bytes";
     const QString PACKETS = "Packets";
 
+    const QString TEXT_CONNECT = tr("Connect");
+    const QString TEXT_DISCONNECT = tr("Disconnect");
+
     static QString toTimeString(quint64 seconds);
     QString statusText();
 
