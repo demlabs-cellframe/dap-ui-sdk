@@ -41,6 +41,15 @@ protected:
     virtual void initVariantUi(QWidget *a_widget) override;
 
     QScopedPointer<CONNECTION_FORM> m_ui;
+
+    ConnectionState m_state {ConnectionState::Disconnected};
+    QString statusText();
+
+    QString m_currentServer {};
+
+signals:
+    void disconnectionRequested();
+    void serverChangingRequested(const QString& serverName);
 };
 
 #endif // CONNECTIONSCREENBASE_H
