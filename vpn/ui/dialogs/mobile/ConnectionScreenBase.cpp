@@ -52,6 +52,11 @@ QString ConnectionScreenBase::statusText()
     }
 }
 
+void ConnectionScreenBase::setCurrentServer(const QString &a_currentServer)
+{
+    //TODO...
+}
+
 void ConnectionScreenBase::initVariantUi(QWidget *a_widget)
 {
     Q_UNUSED(a_widget)
