@@ -17,6 +17,8 @@ public:
                      const QString& a_escapeButtonText = "No", const QString& a_text = "",
                      QWidget *a_parent = nullptr);
 
+    ~CustomMessageBox();
+
     void setDefaultButtonText(const QString&a_defaultButtonText);
     void setEscapeButtonText(const QString&a_escapeButtonText);
     void setText(const QString&a_text);
@@ -40,15 +42,10 @@ private slots:
 
 protected:
     virtual void closeEvent(QCloseEvent*)override;
-    virtual void initVariantUi(QWidget *a_widget) override;
-private:
-    //Ui::CustomMessageBox *ui;
-    QScopedPointer<Ui::CustomMessageBox> m_ui;
+    virtual void initVariantUi(QWidget *) override;
 
-    QString m_title{},
-    m_defaultButtonText{"Yes"},
-    m_escapeButtonText{"No"},
-    m_text{};
+private:
+    QScopedPointer<Ui::CustomMessageBox> m_ui;
 };
 
 #endif // CUSTOMMESSAGEBOX_H
