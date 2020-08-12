@@ -3,7 +3,7 @@
 const QString ConnectionScreenBase::SCREEN_NAME = "ConnectionScreenBase";
 
 ConnectionScreenBase::ConnectionScreenBase(QWidget *a_parent)
-    : AdaptiveScreen(a_parent)
+    : ScreenWithScreenPopupsAbstract(a_parent)
 {
     //Add this to inheritable class if you want have working inharitance initVariantUi method:
     //this->create(m_ui);
@@ -60,4 +60,9 @@ void ConnectionScreenBase::setCurrentServer(const QString &a_currentServer)
 void ConnectionScreenBase::initVariantUi(QWidget *a_widget)
 {
     Q_UNUSED(a_widget)
+}
+
+
+QList<CustomPopup *> ConnectionScreenBase::customPopups()
+{
 }
