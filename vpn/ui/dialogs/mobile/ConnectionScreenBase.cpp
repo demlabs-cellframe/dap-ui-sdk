@@ -10,6 +10,8 @@ ConnectionScreenBase::ConnectionScreenBase(QWidget *a_parent)
 
     //And this:
     //AdaptiveScreen::initScreen(this);
+
+    connect(m_ui->btnDisconnect, &QPushButton::clicked, this, &ConnectionScreenBase::disconnectionRequested);
 }
 
 QString ConnectionScreenBase::screenName()
@@ -19,16 +21,15 @@ QString ConnectionScreenBase::screenName()
 
 void ConnectionScreenBase::setState(ConnectionState a_state)
 {
+    qDebug() << "ConnectionScreenBase::setState" << a_state;
+
     Q_UNUSED(a_state)
-    qDebug() << "ConnectionScreenBase::setState " << this->statusText();
 
     if (a_state == m_state)
         return;
     m_state = a_state;
 
     m_ui->lblStatusMessage->setText(this->statusText());
-
-    qDebug() << "ConnectionScreenBase::setState " << this->statusText();
 
     Utils::setPropertyAndUpdateStyle(m_ui->btnDisconnect, Properties::CONNECTED, a_state == ConnectionState::Connected);
 }
@@ -54,7 +55,12 @@ QString ConnectionScreenBase::statusText()
 
 void ConnectionScreenBase::setCurrentServer(const QString &a_currentServer)
 {
-    //TODO...
+    qDebug() << "ConnectionScreenBase::setCurrentServer:" << a_currentServer;
+    if (m_currentServer == a_currentServer)
+        return;
+    m_currentServer = a_currentServer;
+
+    m_ui->lblStatusMessage->setText(this->statusText());
 }
 
 void ConnectionScreenBase::initVariantUi(QWidget *a_widget)
