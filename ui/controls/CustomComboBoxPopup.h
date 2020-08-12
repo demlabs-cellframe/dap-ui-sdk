@@ -16,6 +16,8 @@
 class CustomComboBoxPopup: public CustomPopup
 {
     Q_OBJECT
+    Q_PROPERTY(bool captionVisible READ captionIsVisible WRITE setCaptionVisible)
+
 public:
     CustomComboBoxPopup(QMainWindow *parent = nullptr);
 
@@ -26,6 +28,9 @@ public:
 
     virtual void setCaption(const QString& a_caption);
     QString caption() const;
+
+    void setCaptionVisible(bool a_visible);
+    bool captionIsVisible() const;
 
 public slots:
     void setCurrentIndex(int a_index);
@@ -45,6 +50,8 @@ private:
 
     QAbstractItemModel* m_model{};
     QString m_caption;
+
+    bool m_captionIsVisible {true};
 };
 
 #endif // CUSTOMCOMBOBOXPOPUP_H

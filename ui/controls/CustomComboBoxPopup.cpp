@@ -45,16 +45,31 @@ void CustomComboBoxPopup::addItem(const QString &a_text, const QVariant &a_userD
         model->setData(index, a_userData, Qt::UserRole);
 }
 
+
+void CustomComboBoxPopup::setCaptionVisible(bool a_visible)
+{
+    if (m_captionIsVisible == a_visible)
+        return;
+    m_captionIsVisible = a_visible;
+
+    QLabel *lblCaption = findChild<QLabel*>(this->captionLabelName());
+    
+    if (lblCaption)
+    	lblCaption->hide();
+}
+
+bool CustomComboBoxPopup::captionIsVisible() const
+{
+    return m_captionIsVisible;
+}
+
 void CustomComboBoxPopup::setCaption(const QString &a_caption)
 {
     if (m_caption == a_caption)
         return;
     m_caption = a_caption;
 
-    QString lblCaptionName = this->captionLabelName();
-
-    if (!lblCaptionName.isEmpty())
-        this->setChildProperties(this->captionLabelName(), Properties::TEXT, a_caption);
+    this->setChildProperties(this->captionLabelName(), Properties::TEXT, a_caption);
 }
 
 QString CustomComboBoxPopup::caption() const
