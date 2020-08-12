@@ -5,6 +5,7 @@ SOURCES += \
     $$PWD/CustomButtonComboBox.cpp \
     $$PWD/CustomComboBoxPopup.cpp \
     $$PWD/CustomLineHeightLabel.cpp \
+    $$PWD/CustomMessageBox.cpp \
     $$PWD/CustomPlacementButton.cpp \
     $$PWD/CustomPopup.cpp \
     $$PWD/CustomPopupComboBox.cpp \
@@ -31,6 +32,7 @@ HEADERS += \
     $$PWD/CustomButtonComboBox.h \
     $$PWD/CustomComboBoxPopup.h \
     $$PWD/CustomLineHeightLabel.h \
+    $$PWD/CustomMessageBox.h \
     $$PWD/CustomPlacementButton.h \
     $$PWD/CustomPopup.h \
     $$PWD/CustomPopupComboBox.h \
@@ -52,4 +54,7 @@ HEADERS += \
 
 INCLUDEPATH += $$PWD
 INCLUDEPATH += $$PWD/WidgetDelegateListView
+
+FORMS += \
+    $$PWD/CustomMessageBox.ui
 
