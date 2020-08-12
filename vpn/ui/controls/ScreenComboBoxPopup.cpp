@@ -13,7 +13,7 @@ ScreenComboBoxPopup::ScreenComboBoxPopup(QWidget *a_parent)
 {
 #ifdef ANDROID
     this->setObjectName("ScreenComboBoxPopup");
-    this->setWindowType(Qt::Popup);
+    //TODO!!!!!
 
      //remove widgets from items in all listViews (not one because adaptive)
     for (QListView* l_listView: this->allListViews())

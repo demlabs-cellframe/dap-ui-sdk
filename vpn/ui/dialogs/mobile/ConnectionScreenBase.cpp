@@ -59,10 +59,11 @@ void ConnectionScreenBase::setCurrentServer(const QString &a_currentServer)
 
 void ConnectionScreenBase::initVariantUi(QWidget *a_widget)
 {
-    Q_UNUSED(a_widget)
+    this->ScreenWithScreenPopupsAbstract::initVariantUi(a_widget);
 }
 
 
 QList<CustomPopup *> ConnectionScreenBase::customPopups()
 {
+    return {m_ui->cbbServer->popup()};
 }

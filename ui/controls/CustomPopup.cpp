@@ -55,8 +55,15 @@ void CustomPopup::setScreenOverlayingBlurRadius(qreal a_blurRadius)
 {
     if (!m_screenOverlaying && a_blurRadius > 0.0)
     {
+        if (this->windowType() == Qt::Desktop)
+        {
+            qWarning() << "Can't assign screenOverlaying to CustomPopup with Desktop windowType";
+            return;
+        }
+
         createScreenOverlaying();
-        if (this->windowType() == Qt::Widget || this->windowType() == Qt::Desktop)
+
+        if (this->windowType() == Qt::Widget)
             m_windowType = Qt::Dialog;
     }
 

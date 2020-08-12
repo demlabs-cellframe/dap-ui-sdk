@@ -138,10 +138,15 @@ void WidgetDelegateListView::setWidgetDelegateFactory(WidgetDelegateListView::Wi
         return;
 
     if (m_widgetDelegateFactory && !a_factoryFunction)
+    {
         this->deleteAllWidgetDelegates();
-
-    m_widgetDelegateFactory = a_factoryFunction;
-    this->createIndexDelegates();
+        m_widgetDelegateFactory = a_factoryFunction;
+    }
+    else
+    {
+        m_widgetDelegateFactory = a_factoryFunction;
+        this->createIndexDelegates();
+    }
 }
 
 
