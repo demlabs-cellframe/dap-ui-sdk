@@ -19,6 +19,8 @@ QString ConnectionScreenBase::screenName()
 
 void ConnectionScreenBase::initVariantUi(QWidget *a_widget)
 {
+    Utils::findChild(a_widget, CBB_SERVER       , cbbServer    );
+
     connect(m_ui->btnDisconnect, &QPushButton::clicked, this, &ConnectionScreenBase::disconnectionRequested);
     this->ScreenWithScreenPopupsAbstract::initVariantUi(a_widget);
 }
@@ -64,6 +66,7 @@ void ConnectionScreenBase::setCurrentServer(const QString &a_currentServer)
         return;
     m_currentServer = a_currentServer;
 
+    cbbServer->setCurrentText(a_currentServer);
     m_ui->lblStatusMessage->setText(this->statusText());
 }
 
