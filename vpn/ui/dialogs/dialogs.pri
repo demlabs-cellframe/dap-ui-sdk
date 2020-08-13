@@ -6,6 +6,7 @@ HEADERS  += \
     $$PWD/BugReportWithEmailScreen.h \
     $$PWD/BugReportWithoutEmailScreen.h \
     $$PWD/ComboBoxPopupScreen.h \
+    $$PWD/InformationScreen.h \
     $$PWD/MainScreenBase.h \
     $$PWD/MainScreenLayout.h \
     $$PWD/NavigationPanelBase.h \
@@ -27,6 +28,7 @@ SOURCES += \
     $$PWD/BugReportWithEmailScreen.cpp \
     $$PWD/BugReportWithoutEmailScreen.cpp \
     $$PWD/ComboBoxPopupScreen.cpp \
+    $$PWD/InformationScreen.cpp \
     $$PWD/MainScreenBase.cpp \
     $$PWD/MainScreenLayout.cpp \
     $$PWD/NavigationPanelBase.cpp \
@@ -68,4 +70,5 @@ INCLUDEPATH += $$PWD
 FORMS += \
     $$PWD/BugReportLoadingScreen.ui \
     $$PWD/BugReportResultScreen.ui \
-    $$PWD/BugReportScreen.ui
+    $$PWD/BugReportScreen.ui \
+    $$PWD/InformationScreen.ui
