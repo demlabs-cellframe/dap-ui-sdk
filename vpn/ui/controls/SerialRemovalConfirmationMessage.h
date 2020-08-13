@@ -1,29 +1,28 @@
 #ifndef SCREENMESSAGEWIDGET_H
 #define SCREENMESSAGEWIDGET_H
 
-#include <QWidget>
-#include "CustomPopup.h"
-#include "ui_ScreenMessage.h"
+#include "CustomMessageBox.h"
 
-class SerialRemovalConfirmationMessage: public CustomPopup
+class SerialRemovalConfirmationMessage: public CustomMessageBox
 {
     Q_OBJECT
 
-    QLabel *m_lblMessage = nullptr;
 public:
     SerialRemovalConfirmationMessage(QWidget *parent = nullptr);
+    SerialRemovalConfirmationMessage(const QString& a_title,
+                                     const QString& a_defaultButtonText = "Yes",
+                                     const QString& a_escapeButtonText = "No",
+                                     const QString& a_text = "",
+                                     QWidget *a_parent = nullptr);
 
-    virtual void setTextMessage(const QString& a_message);
+    virtual void doEscapeAction() override;
+    virtual void doDefaultAction() override;
 
-signals:
-    void confirmed();
+public slots:
+    void escape();
+
 protected:
-
-    virtual void initVariantUi(QWidget * a_widget) override;
-
-    const QString LBL_MESSAGE   = "lblMessage";
-    const QString BTN_CENCEL    = "btnCencel";
-    const QString BTN_DELETE    = "btnDelete";
+    virtual void closeEvent(QCloseEvent *) override;
 };
 
 #endif // SCREENMESSAGEWIDGET_H

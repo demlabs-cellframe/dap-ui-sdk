@@ -3,7 +3,7 @@
 
 
 CustomMessageBox::CustomMessageBox(QWidget *a_parent)
-    :CustomMessageBox("","Yes","No","", a_parent)
+    :CustomMessageBox("",tr("Yes"),tr("No"),"", a_parent)
 {
 
 }
@@ -36,7 +36,7 @@ void CustomMessageBox::setEscapeButtonText(const QString &a_escapeButtonText)
 
 void CustomMessageBox::setText(const QString &a_text)
 {
-    a_text.count()==0 ? m_ui->lblText->hide() : m_ui->lblText->show();
+    a_text.isEmpty() ? m_ui->lblText->hide() : m_ui->lblText->show();
     m_ui->lblText->setText(a_text);
 }
 
@@ -91,6 +91,15 @@ void CustomMessageBox::closeEvent(QCloseEvent *)
 
 void CustomMessageBox::initVariantUi(QWidget *)
 {
+    m_ui->lblTitle->setObjectName("lblTitle");
+    m_ui->btnDefault->setObjectName("btnDefault");
+    m_ui->btnEscape->setObjectName("btnEscape");
+    m_ui->lblText->setObjectName("lblText");
+    m_ui->frmCustomMessageBox->setObjectName("frmMessageBox");
+
+    m_ui->lblTitle->setAlignment(Qt::AlignCenter);
+    m_ui->lblText->setAlignment(Qt::AlignCenter);
+
     connect(m_ui->btnDefault,SIGNAL(clicked()),this, SLOT(onClickedDefaultButton()));
     connect(m_ui->btnEscape,SIGNAL(clicked()),this, SLOT(onClickedEscapeButton()));
 }

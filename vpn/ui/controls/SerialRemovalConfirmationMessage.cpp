@@ -1,30 +1,38 @@
 #include "SerialRemovalConfirmationMessage.h"
 
 SerialRemovalConfirmationMessage::SerialRemovalConfirmationMessage(QWidget *parent)
-    :CustomPopup(parent)
+    :CustomMessageBox(parent)
 {
-create<Ui::ScreenMessage>();
 
-this->hide();
 }
 
-void SerialRemovalConfirmationMessage::setTextMessage(const QString& a_message)
+SerialRemovalConfirmationMessage::SerialRemovalConfirmationMessage(const QString &a_title,
+     const QString &a_defaultButtonText, const QString &a_escapeButtonText,
+     const QString &a_text, QWidget *a_parent)
+    : CustomMessageBox(a_title,a_defaultButtonText,a_escapeButtonText,a_text,a_parent)
 {
-    m_lblMessage->setText(a_message);
+
 }
 
-void SerialRemovalConfirmationMessage::initVariantUi(QWidget * a_widget)
+void SerialRemovalConfirmationMessage::escape()
 {
-                    m_lblMessage    = a_widget->findChild<QLabel*>(LBL_MESSAGE);               Q_ASSERT(m_lblMessage);
-
-    QPushButton     *btnCencel      = a_widget->findChild<QPushButton*>(BTN_CENCEL);           Q_ASSERT(btnCencel);
-    QPushButton     *btnDelete      = a_widget->findChild<QPushButton*>(BTN_DELETE);           Q_ASSERT(btnDelete);
-
-    connect(btnCencel,&QPushButton::clicked,this,&SerialRemovalConfirmationMessage::hide);
-
-    connect(btnDelete,&QPushButton::clicked,[=]{
-        emit this->confirmed();
-        this->hide();
-    });
+    doDefaultAction();
+    qDebug()<<__FUNCTION__;
 }
 
+void SerialRemovalConfirmationMessage::closeEvent(QCloseEvent *)
+{
+    escape();
+}
+
+void SerialRemovalConfirmationMessage::doEscapeAction()
+{
+    accept();
+    qDebug()<<__FUNCTION__;
+}
+
+void SerialRemovalConfirmationMessage::doDefaultAction()
+{
+    reject();
+    qDebug()<<__FUNCTION__;
+}
