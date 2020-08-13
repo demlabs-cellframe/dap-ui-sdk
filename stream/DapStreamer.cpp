@@ -496,7 +496,7 @@ void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
         DapChannelPacketHdr* channelPkt = (DapChannelPacketHdr*) calloc (1,sizeof(DapChannelPacketHdr));
         memcpy(channelPkt, m_procPktInDecData.constData(), sizeof(DapChannelPacketHdr));
         _detectPacketLoose(channelPkt->seq_id);
-        void* channelData = calloc(1, m_procPktInDecData.size() - sizeof(DapChannelPacketHdr));
+        void* channelData = calloc(1, m_procPktInDecData.size() - sizeof(DapChannelPacketHdr) + 1);
         memcpy(channelData, m_procPktInDecData.constData() + sizeof(DapChannelPacketHdr),
                m_procPktInDecData.size() - sizeof(DapChannelPacketHdr));
 

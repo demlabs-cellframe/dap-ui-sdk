@@ -39,6 +39,7 @@ protected slots:
     void sendPacket(quint8 a_id, quint8 a_type, void * a_data, quint32 a_dataSize)
     {
         DapChannelPacketHdr* hdr= new DapChannelPacketHdr;
+        memset(hdr, 0, sizeof(*hdr));
         hdr->id=a_id;
         hdr->type=a_type;
         hdr->size=a_dataSize;
