@@ -19,11 +19,13 @@ public:
 
     void setState(ConnectionState a_state);
 
-    void setCurrentServer(const QString& a_currentServer);
-
 signals:
     void disconnectionRequested();
     void serverChangingRequested(const QString& serverName);
+
+public slots:
+
+    void setCurrentServer(const QString& a_currentServer);
 
 protected:
     /// Form initialization.
