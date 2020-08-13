@@ -24,6 +24,7 @@ ScreenComboBoxPopup::ScreenComboBoxPopup(QWidget *a_parent)
 //    }
 #endif
     this->setChildProperties(LBL_CAPTION_NAME, Properties::VISIBLE, true);
+    this->allowClosingAndHide();
 }
 
 void ScreenComboBoxPopup::initVariantUi(QWidget *a_widget)

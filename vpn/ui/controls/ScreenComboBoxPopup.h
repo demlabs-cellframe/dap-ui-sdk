@@ -26,13 +26,13 @@ public:
 
 public slots:
     void allowClosingAndHide();
+    virtual void setVisible(bool a_visible) override;
 
 signals:
     void closingStarted();
 
 protected:
     virtual void initVariantUi(QWidget * a_widget) override;
-    virtual void setVisible(bool a_visible) override;
 
 private:
     bool m_canBeHidden;

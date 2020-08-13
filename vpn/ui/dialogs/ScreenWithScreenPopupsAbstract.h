@@ -18,7 +18,6 @@ public:
 
     virtual void setPopupScreen(PopupScreenBase *a_screen);
 
-public :
 signals:
     void popupClosingStarted();
     void screenComboBoxOpened();
