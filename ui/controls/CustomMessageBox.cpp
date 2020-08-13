@@ -3,7 +3,7 @@
 
 
 CustomMessageBox::CustomMessageBox(QWidget *a_parent)
-    :CustomMessageBox("","Yes","No","", a_parent)
+    :CustomMessageBox("",tr("Yes"),tr("No"),"", a_parent)
 {
 
 }
@@ -36,7 +36,7 @@ void CustomMessageBox::setEscapeButtonText(const QString &a_escapeButtonText)
 
 void CustomMessageBox::setText(const QString &a_text)
 {
-    a_text.count()==0 ? m_ui->lblText->hide() : m_ui->lblText->show();
+    a_text.isEmpty() ? m_ui->lblText->hide() : m_ui->lblText->show();
     m_ui->lblText->setText(a_text);
 }
 
@@ -69,11 +69,6 @@ void CustomMessageBox::reject()
     emit rejected();
 }
 
-void CustomMessageBox::escape()
-{
-    doEscapeAction();
-}
-
 void CustomMessageBox::onClickedDefaultButton()
 {
     doDefaultAction();
@@ -86,7 +81,7 @@ void CustomMessageBox::onClickedEscapeButton()
 
 void CustomMessageBox::closeEvent(QCloseEvent *)
 {
-    escape();
+    doEscapeAction();
 }
 
 void CustomMessageBox::initVariantUi(QWidget *)

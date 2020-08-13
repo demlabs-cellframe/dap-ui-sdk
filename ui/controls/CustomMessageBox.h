@@ -34,7 +34,6 @@ signals:
 public slots:
     void accept();
     void reject();
-    void escape();
 
 private slots:
     void onClickedDefaultButton();
