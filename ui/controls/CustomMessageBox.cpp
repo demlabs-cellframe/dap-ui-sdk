@@ -69,11 +69,6 @@ void CustomMessageBox::reject()
     emit rejected();
 }
 
-void CustomMessageBox::escape()
-{
-    doEscapeAction();
-}
-
 void CustomMessageBox::onClickedDefaultButton()
 {
     doDefaultAction();
@@ -86,20 +81,11 @@ void CustomMessageBox::onClickedEscapeButton()
 
 void CustomMessageBox::closeEvent(QCloseEvent *)
 {
-    escape();
+    doEscapeAction();
 }
 
 void CustomMessageBox::initVariantUi(QWidget *)
 {
-    m_ui->lblTitle->setObjectName("lblTitle");
-    m_ui->btnDefault->setObjectName("btnDefault");
-    m_ui->btnEscape->setObjectName("btnEscape");
-    m_ui->lblText->setObjectName("lblText");
-    m_ui->frmCustomMessageBox->setObjectName("frmMessageBox");
-
-    m_ui->lblTitle->setAlignment(Qt::AlignCenter);
-    m_ui->lblText->setAlignment(Qt::AlignCenter);
-
     connect(m_ui->btnDefault,SIGNAL(clicked()),this, SLOT(onClickedDefaultButton()));
     connect(m_ui->btnEscape,SIGNAL(clicked()),this, SLOT(onClickedEscapeButton()));
 }
