@@ -10,13 +10,17 @@ ConnectionScreenBase::ConnectionScreenBase(QWidget *a_parent)
 
     //And this:
     //AdaptiveScreen::initScreen(this);
-
-    connect(m_ui->btnDisconnect, &QPushButton::clicked, this, &ConnectionScreenBase::disconnectionRequested);
 }
 
 QString ConnectionScreenBase::screenName()
 {
     return ConnectionScreenBase::SCREEN_NAME;
+}
+
+void ConnectionScreenBase::initVariantUi(QWidget *a_widget)
+{
+    connect(m_ui->btnDisconnect, &QPushButton::clicked, this, &ConnectionScreenBase::disconnectionRequested);
+    this->ScreenWithScreenPopupsAbstract::initVariantUi(a_widget);
 }
 
 void ConnectionScreenBase::setState(ConnectionState a_state)
@@ -61,11 +65,6 @@ void ConnectionScreenBase::setCurrentServer(const QString &a_currentServer)
     m_currentServer = a_currentServer;
 
     m_ui->lblStatusMessage->setText(this->statusText());
-}
-
-void ConnectionScreenBase::initVariantUi(QWidget *a_widget)
-{
-    this->ScreenWithScreenPopupsAbstract::initVariantUi(a_widget);
 }
 
 
