@@ -40,7 +40,8 @@ void CustomPopup::setScreenOverlayingOpacity(qreal a_opacity)
             m_windowType = Qt::Dialog;
     }
 
-    m_screenOverlaying->setOpacity(a_opacity);
+    if (m_screenOverlaying)
+        m_screenOverlaying->setOpacity(a_opacity);
 }
 
 qreal CustomPopup::screenOverlayingOpacity() const
@@ -59,8 +60,8 @@ void CustomPopup::setScreenOverlayingBlurRadius(qreal a_blurRadius)
         if (this->windowType() == Qt::Widget || this->windowType() == Qt::Desktop)
             m_windowType = Qt::Dialog;
     }
-
-    m_screenOverlaying->setBlurRadius(a_blurRadius);
+    if (m_screenOverlaying)
+        m_screenOverlaying->setBlurRadius(a_blurRadius);
 }
 
 /** @brief Reimplemented QFrame::resizeEvent method. Update dialog position.
