@@ -54,10 +54,21 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="lblTitle"/>
+       <widget class="QLabel" name="lblTitle">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
       </item>
       <item>
-       <widget class="QLabel" name="lblText"/>
+       <widget class="CustomLineHeightLabel" name="lblText">
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QWidget" name="wgtButtons" native="true">
@@ -108,6 +119,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CustomLineHeightLabel</class>
+   <extends>QLabel</extends>
+   <header>CustomLineHeightLabel.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
