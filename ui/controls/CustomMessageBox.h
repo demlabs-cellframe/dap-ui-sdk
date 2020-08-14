@@ -2,6 +2,7 @@
 #define CUSTOMMESSAGEBOX_H
 
 #include "CustomPopup.h"
+#include "CustomLineHeightLabel.h"
 
 namespace Ui {
 class CustomMessageBox;
