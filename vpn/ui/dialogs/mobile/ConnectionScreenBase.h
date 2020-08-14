@@ -18,7 +18,7 @@ public:
     virtual QString screenName() override;
 
     void setState(ConnectionState a_state);
-
+    QString currentServer();
 signals:
     void disconnectionRequested();
     void serverChangingRequested(const QString& serverName);
@@ -35,14 +35,9 @@ protected:
 
     QScopedPointer<CONNECTION_FORM> m_ui;
 
-    const QString CBB_SERVER         = "cbbServer";
-
 private:
     ConnectionState m_state {ConnectionState::Disconnected};
     QString statusText();
-    ComboBox       *cbbServer;
-
-    QString m_currentServer {};
 };
 
 #endif // CONNECTIONSCREENBASE_H

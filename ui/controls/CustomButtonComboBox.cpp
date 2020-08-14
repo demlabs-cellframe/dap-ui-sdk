@@ -31,7 +31,8 @@ void CustomButtonComboBox::setButtonControll(CustomButtonAbstract *a_button)
     });
 
     connect(this, &QComboBox::currentTextChanged, [this](const QString& a_text) {
-        this->setCurrentText(a_text);
+        Q_UNUSED(a_text)
+        this->updateButtonText();
     });
 }
 
@@ -56,31 +57,36 @@ CustomButtonAbstract *CustomButtonComboBox::buttonControll() const
     return m_button;
 }
 
-void CustomButtonComboBox::setCurrentText(const QString &a_text)
-{
-    if (m_button)
-    {
-        if ((m_captionPolicy == CaptionPolicy::ShowWhenUnselected && !a_text.isEmpty()) || this->caption().isEmpty())
-            m_button->setText(a_text);
-        else if (a_text == "")
-            m_button->setText(this->caption());
-    }
-}
-
 void CustomButtonComboBox::setCaption(const QString &a_caption)
 {
-    if (a_caption.isEmpty())
-        m_button->setText(this->currentText());
-
-    else if (m_button &&  ((m_captionPolicy == CaptionPolicy::ShowWhenUnselected && currentText()=="") ||  m_captionPolicy == CaptionPolicy::ShowAlways))
-        m_button->setText(a_caption);
-
+    if (this->caption() == a_caption)
+        return;
     this->CustomPopupComboBox::setCaption(a_caption);
+
+    this->updateButtonText();
 }
 
 void CustomButtonComboBox::setCaptionPolicy(CaptionPolicy a_policy)
 {
+    if (m_captionPolicy == a_policy)
+        return;
     m_captionPolicy = a_policy;
 
-    this->setCaption(this->caption());
+    this->updateButtonText();
+}
+
+void CustomButtonComboBox::updateButtonText()
+{
+    if (m_button)
+    {
+        QString curText = this->currentText();
+
+        if (curText.isEmpty())
+            m_button->setText(this->caption());
+        else if ((m_captionPolicy == CaptionPolicy::ShowWhenUnselected)
+                || this->caption().isEmpty())
+        {
+            m_button->setText(curText);
+        }
+    }
 }

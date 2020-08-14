@@ -26,15 +26,12 @@ public:
 
     void setCaptionPolicy(CaptionPolicy a_policy = CaptionPolicy::ShowWhenUnselected);
 
-public slots:
-
-    void setCurrentText(const QString &a_text);
-
 protected:
 
     virtual void paintEvent(QPaintEvent *e) override;
 
 private:
+    void updateButtonText();
 
     CaptionPolicy m_captionPolicy = CaptionPolicy::ShowWhenUnselected;
     CustomButtonAbstract* m_button = nullptr;

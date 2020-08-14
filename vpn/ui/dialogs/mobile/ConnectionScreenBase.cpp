@@ -19,9 +19,11 @@ QString ConnectionScreenBase::screenName()
 
 void ConnectionScreenBase::initVariantUi(QWidget *a_widget)
 {
-    Utils::findChild(a_widget, CBB_SERVER       , cbbServer    );
-
     connect(m_ui->btnDisconnect, &QPushButton::clicked, this, &ConnectionScreenBase::disconnectionRequested);
+    connect(m_ui->cbbServer, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated), [this](const QString &a_activatedServer){
+        emit this->serverChangingRequested(a_activatedServer);
+    });
+
     this->ScreenWithScreenPopupsAbstract::initVariantUi(a_widget);
 }
 
@@ -29,15 +31,22 @@ void ConnectionScreenBase::setState(ConnectionState a_state)
 {
     qDebug() << "ConnectionScreenBase::setState" << a_state;
 
-    Q_UNUSED(a_state)
-
     if (a_state == m_state)
         return;
     m_state = a_state;
 
     m_ui->lblStatusMessage->setText(this->statusText());
 
-    Utils::setPropertyAndUpdateStyle(m_ui->btnDisconnect, Properties::CONNECTED, a_state == ConnectionState::Connected);
+    bool isConnected(a_state == ConnectionState::Connected);
+    Utils::setPropertyAndUpdateStyle(m_ui->btnDisconnect, Properties::CONNECTED, isConnected);
+
+    m_ui->cbbServer->setEnabled(isConnected);
+    m_ui->btnDisconnect->setEnabled(isConnected);
+}
+
+QString ConnectionScreenBase::currentServer()
+{
+    return m_ui->cbbServer->currentText();
 }
 
 QString ConnectionScreenBase::statusText()
@@ -49,7 +58,7 @@ QString ConnectionScreenBase::statusText()
     case ConnectionState::Connecting:
         return tr("Connecting...");
     case ConnectionState::Connected:
-        return tr("Connected to %1").arg(m_currentServer);
+        return tr("Connected to %1").arg(this->currentServer());
     case ConnectionState::Disconnecting:
         return tr("Disconnecting...");
     case ConnectionState::ServerChanging:
@@ -61,12 +70,10 @@ QString ConnectionScreenBase::statusText()
 
 void ConnectionScreenBase::setCurrentServer(const QString &a_currentServer)
 {
-    qDebug() << "ConnectionScreenBase::setCurrentServer:" << a_currentServer;
-    if (m_currentServer == a_currentServer)
+    if (this->currentServer() == a_currentServer)
         return;
-    m_currentServer = a_currentServer;
 
-    cbbServer->setCurrentText(a_currentServer);
+    m_ui->cbbServer->setCurrentText(a_currentServer);
     m_ui->lblStatusMessage->setText(this->statusText());
 }
 
