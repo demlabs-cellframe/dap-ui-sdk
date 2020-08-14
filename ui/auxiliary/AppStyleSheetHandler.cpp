@@ -5,6 +5,7 @@
 #include <QWidget>
 
 #include "UiScaling.h"
+#include "math.h"
 
 /// Read stylesheet from file and convert points to pixels
 /// @details Check for existing and available to open
@@ -157,7 +158,7 @@ QApplication *AppStyleSheetHandler::appInstance()
 
 QString AppStyleSheetHandler::convertPointsToPixels(const QString a_stylesheet)
 {
-    const QRegExp regExp("([\\d.])+pt");
+    const QRegExp regExp("([\\d.])+((pt\\+)|(pt-)|(pt))");
     QMap<int, QString> matches;
     auto data = a_stylesheet;
     auto pos = 0;
