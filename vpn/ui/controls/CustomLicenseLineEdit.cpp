@@ -72,7 +72,7 @@ void CustomLicenseLineEdit::pasteEvent()
 
 #ifdef Q_OS_ANDROID
 void CustomLicenseLineEdit::inputMethodEvent(QInputMethodEvent *e)
-{   
+{
     if(e->preeditString().length() > 0 )
     {
         m_serial = e->preeditString();
@@ -90,6 +90,8 @@ void CustomLicenseLineEdit::inputMethodEvent(QInputMethodEvent *e)
 
 void CustomLicenseLineEdit::focusInEvent(QFocusEvent *e)
 {
+    emit sigProcessBeforFocus();
+
     if(e->reason() == Qt::MouseFocusReason)
     {
         if(!this->text().isEmpty())
@@ -109,7 +111,6 @@ void CustomLicenseLineEdit::focusInEvent(QFocusEvent *e)
         QApplication::inputMethod()->show();
         QLineEdit::focusInEvent(e);
     }
-
 }
 
 void CustomLicenseLineEdit::focusOutEvent(QFocusEvent *e)

@@ -21,6 +21,8 @@ void BugReportLoadingScreen::initVariantUi(QWidget *a_widget)
 {
 #ifdef ANDROID
     m_ui->btnCancel->setText(tr("CANCEL"));
+    if (DAP_BRAND == "TBCCVPN")
+        m_ui->lblCaption->hide();
 #else
     m_ui->layBugReportScreen->setAlignment(m_ui->frmBugReport, Qt::AlignHCenter);
 #endif

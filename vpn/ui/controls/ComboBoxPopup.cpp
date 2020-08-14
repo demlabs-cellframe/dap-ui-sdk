@@ -29,8 +29,5 @@ QString ComboBoxPopup::listViewName()
 
 void ComboBoxPopup::initVariantUi(QWidget *a_widget)
 {
-    QLabel* lblCaption; Utils::findChild(a_widget, "lblCaption", lblCaption);
-    lblCaption->hide();
-
     this->CustomComboBoxPopup::initVariantUi(a_widget);
 }

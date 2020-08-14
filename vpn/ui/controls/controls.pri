@@ -3,6 +3,7 @@ SOURCES += \
     $$PWD/ComboBoxListView.cpp \
     $$PWD/ComboBoxPopup.cpp \
     $$PWD/CustomLicenseLineEdit.cpp \
+    $$PWD/NavigationPanelBackBase.cpp \
     $$PWD/ScreenComboBox.cpp \
     $$PWD/ScreenComboBoxPopup.cpp \
     $$PWD/SerialRemovalConfirmationMessage.cpp \
@@ -15,6 +16,7 @@ HEADERS  += \
     $$PWD/ComboBoxListView.h \
     $$PWD/ComboBoxPopup.h \
     $$PWD/CustomLicenseLineEdit.h \
+    $$PWD/NavigationPanelBackBase.h \
     $$PWD/ScreenComboBox.h \
     $$PWD/ScreenComboBoxPopup.h \
     $$PWD/SerialRemovalConfirmationMessage.h \
@@ -36,3 +38,6 @@ android {
 
 INCLUDEPATH += $$PWD
 INCLUDEPATH += $$PWD/desktop
+
+FORMS += \
+    $$PWD/NavigationPanelBack.ui

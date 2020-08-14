@@ -17,7 +17,7 @@ QString MainScreenLayout::screenName()
     return MainScreenLayout::SCREEN_NAME;
 }
 
-NavigationPanel *MainScreenLayout::findNavigationPanel(QWidget* a_widget /*= nullptr*/)
+NavigationPanel *MainScreenLayout::navigationPanel(QWidget* a_widget /*= nullptr*/)
 {
     if (!a_widget)
         a_widget = this->variant();

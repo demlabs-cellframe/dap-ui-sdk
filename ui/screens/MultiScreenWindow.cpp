@@ -8,7 +8,8 @@ MultiScreenWindow::MultiScreenWindow(MultiScreenAbstract* a_centralScreen /*= nu
     if (!a_centralScreen)
         a_centralScreen = new DefaultMultiScreen(this);
 
-    connect(a_centralScreen, SIGNAL(animationFinished()), this, SIGNAL(screenChangingFinished()));
+    connect(a_centralScreen, &MultiScreenAbstract::animationFinished, this, &MultiScreenWindow::screenChangingFinished);
+
 
     m_centralScreen = a_centralScreen;
     setCentralWidget(a_centralScreen);

@@ -32,6 +32,7 @@ protected:
 
     const QString LVW_LIST_NAME    = "lvwList";
     const QString LBL_CAPTION_NAME = "lblCaption";
+
 };
 
 #endif // COMBOBOXPOPUP_H

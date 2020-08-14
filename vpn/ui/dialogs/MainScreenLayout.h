@@ -2,7 +2,7 @@
 #define MAINSCREENLAYOUT_H
 
 #include "MultiScreenAbstract.h"
-#include "NavigationPanel.h"
+#include "NavigationPanelBase.h"
 
 #include "ui_MainScreenLayout.h"
 
@@ -18,7 +18,7 @@ public:
     static const QString SCREEN_NAME;
     virtual QString screenName() override;
 
-    NavigationPanel* findNavigationPanel(QWidget* a_widget = nullptr);
+    NavigationPanel* navigationPanel(QWidget* a_widget = nullptr);
 
 protected:
     /// Form initialization.

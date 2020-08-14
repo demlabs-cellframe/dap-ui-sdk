@@ -22,6 +22,8 @@
     #define BUG_REPORT_FORM Ui::BugReportScreen
 #endif
 
+#define MAX_SIZE_MESSAGE 200
+
 class BugReportScreenBase : public AdaptiveScreen
 {
     Q_OBJECT

@@ -19,7 +19,7 @@ public:
     static const QString SCREEN_NAME;
     virtual QString screenName() override;
 
-    LoginNavigationPanel *findNavigationPanel(QWidget* a_widget = nullptr);
+    LoginNavigationPanel *navigationPanel(QWidget* a_widget = nullptr);
 
 protected:
     /// Form initialization.

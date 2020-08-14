@@ -1,16 +1,16 @@
-#include "NavigationPanel.h"
+#include "NavigationPanelBase.h"
 
 #include "defines.h"
 #include "NavigationPanelBack.h"
 #include "NavigationPanelMain.h"
 
-NavigationPanel::NavigationPanel(QWidget *a_parent)
+NavigationPanelBase::NavigationPanelBase(QWidget *a_parent)
     :PanelParentClass(a_parent)
 {
 
 }
 
-void NavigationPanel::setBackState(bool a_backState)
+void NavigationPanelBase::setBackState(bool a_backState)
 {
     if (a_backState == m_backState)
         return;
@@ -28,7 +28,7 @@ void NavigationPanel::setBackState(bool a_backState)
 
 }
 
-bool NavigationPanel::backState()
+bool NavigationPanelBase::backState()
 {
     return m_backState;
 }
