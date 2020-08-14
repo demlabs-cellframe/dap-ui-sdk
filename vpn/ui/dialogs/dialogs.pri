@@ -42,13 +42,16 @@ SOURCES += \
     $$PWD/PrivacyPolicyScreen.cpp
 
 android {
-    HEADERS  += \
-        $$PWD/mobile/ConnectionScreenBase.h \
-        $$PWD/mobile/StatisticScreenBase.h
 
-    SOURCES += \
-        $$PWD/mobile/ConnectionScreenBase.cpp \
-        $$PWD/mobile/StatisticScreenBase.cpp
+    defined(USING_SEPARATE_STATISTIC_SCREEN){
+        HEADERS  += \
+            $$PWD/mobile/ConnectionScreenBase.h \
+            $$PWD/mobile/StatisticScreenBase.h
+
+        SOURCES += \
+            $$PWD/mobile/ConnectionScreenBase.cpp \
+            $$PWD/mobile/StatisticScreenBase.cpp
+    }
 
     INCLUDEPATH += $$PWD/mobile
 }

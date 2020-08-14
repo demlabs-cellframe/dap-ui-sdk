@@ -31,6 +31,7 @@ public:
 
     void setCaptionVisible(bool a_visible);
     bool captionIsVisible() const;
+    QList<QListView*> allListViews();
 
 public slots:
     void setCurrentIndex(int a_index);
@@ -38,7 +39,6 @@ public slots:
 protected:
     virtual void initVariantUi(QWidget * a_widget) override;
     virtual QString listViewName() = 0;             // Needed to be overrided!
-    QList<QListView*> allListViews();
 
     virtual QString captionLabelName();
 

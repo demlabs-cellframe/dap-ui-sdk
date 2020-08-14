@@ -6,6 +6,7 @@
 
 class ComboBoxListView: public WidgetDelegateListView
 {
+    Q_OBJECT
 public:
     ComboBoxListView(QWidget *a_parent = nullptr);
 };

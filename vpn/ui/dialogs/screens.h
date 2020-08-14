@@ -18,7 +18,7 @@
 #include "SignUpScreen.h"
 #include "SignInScreen.h"
 #include "NavigationPanelBase.h"
-#if !USING_SEPARATE_STATISTIC_SCREEN
+#ifndef USING_SEPARATE_STATISTIC_SCREEN
     #include "MainScreen.h"
 #else
     #include "ConnectionScreenBase.h"
@@ -31,6 +31,7 @@
 #include "BugReportLoadingScreen.h"
 #include "NavigationPanelBack.h"
 #include "NavigationPanelMain.h"
+#include "NavigationPanelBackBase.h"
 #include "MainScreenLayout.h"
 #include "AccountScreen.h"
 #include "PasswordRecoveryScreen.h"

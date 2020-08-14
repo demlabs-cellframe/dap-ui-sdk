@@ -17,7 +17,7 @@ QString LoginScreenLayout::screenName()
     return LoginScreenLayout::SCREEN_NAME;
 }
 
-LoginNavigationPanel *LoginScreenLayout::findNavigationPanel(QWidget *a_widget)
+LoginNavigationPanel *LoginScreenLayout::navigationPanel(QWidget *a_widget)
 {
     if (!a_widget)
         a_widget = this->variant();
