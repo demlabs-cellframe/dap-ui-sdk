@@ -169,12 +169,34 @@ QString AppStyleSheetHandler::convertPointsToPixels(const QString a_stylesheet)
 
     int displacement = 0; // diference between the begin strings length and the end strings length
     float dpi = UiScaling::getNativDPI();
+    float pointsvalue{},temp{};
+    int pixelsValue{};
     for (auto index: matches.keys())
     {
         QString strInPoints = matches[index];
-        float pointsvalue = matches[index].replace("pt", "").toDouble();
-        int pixelsValue = qRound(UiScaling::pointsToPixels(pointsvalue, dpi));
-        pixelsValue = (pixelsValue < 1 && pointsvalue > 0.f) ? 1 : pixelsValue;
+        if (strInPoints.contains("pt+"))
+        {
+            pointsvalue = matches[index].replace("pt+", "").toDouble();
+            temp=UiScaling::pointsToPixels(pointsvalue, dpi);
+            if (temp!=std::floor(temp))
+            {
+                pixelsValue=std::floor(temp);
+                ++pixelsValue;
+            }
+        }
+        else if (strInPoints.contains("pt-"))
+        {
+            pointsvalue = matches[index].replace("pt-", "").toDouble();
+            temp=UiScaling::pointsToPixels(pointsvalue, dpi);
+            if (temp!=std::floor(temp)) pixelsValue=std::floor(temp);
+        }
+        else
+        {
+            pointsvalue = matches[index].replace("pt", "").toDouble();
+            pixelsValue = qRound(UiScaling::pointsToPixels(pointsvalue, dpi));
+            pixelsValue = (pixelsValue < 1 && pointsvalue > 0.f) ? 1 : pixelsValue;
+        }
+
 
         QString strInPixels = QString::number(pixelsValue) + "px";
         data.replace(index + displacement, strInPoints.length(), strInPixels);
