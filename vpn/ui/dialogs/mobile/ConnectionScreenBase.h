@@ -25,7 +25,7 @@ signals:
 
 public slots:
 
-    void setCurrentServer(const QString& a_currentServer);
+    virtual void setCurrentServer(const QString& a_currentServer);
 
 protected:
     /// Form initialization.
@@ -35,9 +35,12 @@ protected:
 
     QScopedPointer<CONNECTION_FORM> m_ui;
 
+    const QString CBB_SERVER         = "cbbServer";
+
 private:
     ConnectionState m_state {ConnectionState::Disconnected};
     QString statusText();
+    ComboBox       *cbbServer;
 
     QString m_currentServer {};
 };
