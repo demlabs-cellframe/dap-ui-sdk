@@ -1,5 +1,5 @@
 QT += core network xml
-QT += widgets #for DapServerSelector - QMessageBox
+QT += widgets #for DapServerRotator - QMessageBox
 #INCLUDEPATH += ../libdap/include ../libdap/src
 #INCLUDEPATH += ../libdap-crypto/include  ../libdap-crypto/src
 include (../quazip/quazip.pri)
@@ -9,7 +9,7 @@ SOURCES += \
     $$PWD/DapBugReportData.cpp \
     $$PWD/DapDataLocal.cpp \
     $$PWD/DapLogHandler.cpp \
-    $$PWD/DapServerSelector.cpp \
+    $$PWD/DapServerRotator.cpp \
     $$PWD/DapServersData.cpp \
     $$PWD/DapSession.cpp \
     $$PWD/DapCrypt.cpp \
@@ -28,7 +28,7 @@ HEADERS += \
     $$PWD/DapBugReportData.h \
     $$PWD/DapDataLocal.h \
     $$PWD/DapLogHandler.h \
-    $$PWD/DapServerSelector.h \
+    $$PWD/DapServerRotator.h \
     $$PWD/DapServersData.h \
     $$PWD/DapSession.h \
     $$PWD/DapCrypt.h \
