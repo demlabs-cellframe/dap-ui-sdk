@@ -169,7 +169,7 @@ QString AppStyleSheetHandler::convertPointsToPixels(const QString a_stylesheet)
 
     int displacement = 0; // diference between the begin strings length and the end strings length
     float dpi = UiScaling::getNativDPI();
-    float pointsvalue{},temp{};
+    float pointsvalue{};
     int pixelsValue{};
     for (auto index: matches.keys())
     {
