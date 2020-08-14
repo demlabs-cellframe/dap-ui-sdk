@@ -183,12 +183,13 @@ QString AppStyleSheetHandler::convertPointsToPixels(const QString a_stylesheet)
                 pixelsValue=std::floor(temp);
                 ++pixelsValue;
             }
+            else pixelsValue=temp;
         }
         else if (strInPoints.contains("pt-"))
         {
             pointsvalue = matches[index].replace("pt-", "").toDouble();
             temp=UiScaling::pointsToPixels(pointsvalue, dpi);
-            if (temp!=std::floor(temp)) pixelsValue=std::floor(temp);
+            pixelsValue=std::floor(temp);
         }
         else
         {
