@@ -43,7 +43,7 @@ SOURCES += \
 
 android {
 
-    defined(USING_SEPARATE_STATISTIC_SCREEN){
+defined(DAP_USING_SEPARATE_STATISTIC_SCREEN,var){
         HEADERS  += \
             $$PWD/mobile/ConnectionScreenBase.h \
             $$PWD/mobile/StatisticScreenBase.h
