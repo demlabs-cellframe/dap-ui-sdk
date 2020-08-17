@@ -146,18 +146,19 @@ void SerialNumberLineEdit::paint_outFocusWithContent()
 {
     for(auto& el:m_vecLineEdit)
     {
-        el->setProperty("inFocus", state::outFocus_withContent);
+        Utils::setPropertyAndUpdateStyle(el,"inFocus",state::outFocus_withContent);
+        //el->setProperty("inFocus", state::outFocus_withContent);
         //updateCSS(el);
         el->setVisible(true);
     }
     for(auto& el:m_vecLabel)
     {
-        el->setProperty("inFocus", state::outFocus_withContent);
+        Utils::setPropertyAndUpdateStyle(el,"inFocus",state::outFocus_withContent);
         //updateCSS(el);
         el->setVisible(true);
     }
     m_placeholder->setVisible(false);
-    setProperty("inFocus", state::outFocus_withContent);
+    Utils::setPropertyAndUpdateStyle(this,"inFocus",state::outFocus_withContent);
     //updateCSS(this);
 }
 
@@ -168,7 +169,8 @@ void SerialNumberLineEdit::paint_outFocusWithoutContent()
         el->setVisible(false);
     for(auto& el:m_vecLabel)
         el->setVisible(false);
-    setProperty("inFocus", state::outFocus_withoutContent);
+    Utils::setPropertyAndUpdateStyle(this,"inFocus",state::outFocus_withoutContent);
+    //setProperty("inFocus", state::outFocus_withoutContent);
     //updateCSS(this);
 }
 
@@ -178,12 +180,14 @@ void SerialNumberLineEdit::paint_inFocus()
     for(auto& el:m_vecLineEdit)
     {
         el->setVisible(true);
-        el->setProperty("inFocus", state::inFocus);
+        Utils::setPropertyAndUpdateStyle(el,"inFocus",state::inFocus);
+        //el->setProperty("inFocus", state::inFocus);
         //updateCSS(el);
     }
     for(auto& el:m_vecLabel)
         el->setVisible(true);
-    setProperty("inFocus", state::inFocus);
+    Utils::setPropertyAndUpdateStyle(this,"inFocus",state::inFocus);
+    //setProperty("inFocus", state::inFocus);
     //updateCSS(this);
 }
 

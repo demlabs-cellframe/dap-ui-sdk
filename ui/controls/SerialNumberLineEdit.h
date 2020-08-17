@@ -13,6 +13,8 @@
 #include <QMouseEvent>
 #include <QPainter>
 //#include <QLineEdit>
+#include "defines.h"
+#include "Utilz.h"
 #include "CustomLineEditBase.h"
 
 #ifndef MAX_COUNT_CHAR
