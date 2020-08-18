@@ -77,8 +77,9 @@ void SerialNumberLineEdit::init()
 
     m_layout->setContentsMargins(0, 0, 0, 0);
     setObjectName("serialNumberLineEdit");
-    m_regExp=QRegExp(static_cast<QString>(VALIDATOR)+
-                     "{1,"+QString::number(MAX_COUNT_CHAR)+"}");
+    m_regExp=QRegExp(QString(VALIDATOR)+
+                     "{0,"+QString::number(MAX_COUNT_CHAR)+"}");
+    qDebug()<<m_regExp;
 
     m_vecLabel.reserve(MAX_COUNT_PART-1);
     m_vecLineEdit.reserve(MAX_COUNT_PART);
@@ -102,16 +103,7 @@ void SerialNumberLineEdit::init()
         ++j;
         m_layout->addWidget(m_vecLineEdit[i],1,i+j,1,1);
     }
-
-    /*int id = QFontDatabase::addApplicationFont(":/Roboto-Regular.ttf");
-    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
-    m_font.setFamily(family);
-    setFont(m_font);
-    m_labelPaste->setFont(m_font);*/
-
-    //m_layout->setContentsMargins(0,0,0,13);
     setLayout(m_layout);
-    //updateCSS();
 }
 
 SerialFieldEdit *SerialNumberLineEdit::createLineEdit()
@@ -147,19 +139,15 @@ void SerialNumberLineEdit::paint_outFocusWithContent()
     for(auto& el:m_vecLineEdit)
     {
         Utils::setPropertyAndUpdateStyle(el,"inFocus",state::outFocus_withContent);
-        //el->setProperty("inFocus", state::outFocus_withContent);
-        //updateCSS(el);
         el->setVisible(true);
     }
     for(auto& el:m_vecLabel)
     {
         Utils::setPropertyAndUpdateStyle(el,"inFocus",state::outFocus_withContent);
-        //updateCSS(el);
         el->setVisible(true);
     }
     m_placeholder->setVisible(false);
     Utils::setPropertyAndUpdateStyle(this,"inFocus",state::outFocus_withContent);
-    //updateCSS(this);
 }
 
 void SerialNumberLineEdit::paint_outFocusWithoutContent()
@@ -170,8 +158,6 @@ void SerialNumberLineEdit::paint_outFocusWithoutContent()
     for(auto& el:m_vecLabel)
         el->setVisible(false);
     Utils::setPropertyAndUpdateStyle(this,"inFocus",state::outFocus_withoutContent);
-    //setProperty("inFocus", state::outFocus_withoutContent);
-    //updateCSS(this);
 }
 
 void SerialNumberLineEdit::paint_inFocus()
@@ -181,14 +167,10 @@ void SerialNumberLineEdit::paint_inFocus()
     {
         el->setVisible(true);
         Utils::setPropertyAndUpdateStyle(el,"inFocus",state::inFocus);
-        //el->setProperty("inFocus", state::inFocus);
-        //updateCSS(el);
     }
     for(auto& el:m_vecLabel)
         el->setVisible(true);
     Utils::setPropertyAndUpdateStyle(this,"inFocus",state::inFocus);
-    //setProperty("inFocus", state::inFocus);
-    //updateCSS(this);
 }
 
 
@@ -202,7 +184,7 @@ void SerialNumberLineEdit::slot_textEdited(QString text)
 
 
     QString name = qobject_cast<QLineEdit*>(sender())->objectName();
-    int obj=QString(name[name.size()-1]).toInt(); //static_cast<QString>(name.back()).toInt();
+    int obj=QString(name[name.size()-1]).toInt();
 
     if (text.count()==MAX_COUNT_CHAR && obj!=MAX_COUNT_PART)
     {
@@ -212,6 +194,7 @@ void SerialNumberLineEdit::slot_textEdited(QString text)
 
 void SerialNumberLineEdit::slot_textChanged(QString)
 {
+    qDebug()<<__FUNCTION__;
     m_serialNumber.clear();
     m_isFilledOut=false;
     for(const auto& el:m_vecLineEdit)
@@ -227,8 +210,7 @@ void SerialNumberLineEdit::slot_textChanged(QString)
     }
     for(auto& el:m_vecLabel)
     {
-        el->setProperty("empty",empty);
-        //updateCSS(el);
+        Utils::setPropertyAndUpdateStyle(el,"empty",empty);
     }
 
     if (m_serialNumber.count()==MAX_COUNT_CHAR * MAX_COUNT_PART)
@@ -268,9 +250,9 @@ void SerialNumberLineEdit::slot_checkOutOfLineEdit()
             }
             else paint_outFocusWithContent();
 
-    #ifdef Q_OS_ANDROID
+    /*#ifdef Q_OS_ANDROID
         QApplication::inputMethod()->hide();
-    #endif
+    #endif*/
 
         }
     });
@@ -284,12 +266,12 @@ void SerialNumberLineEdit::slot_checkInLineEdit()
 void SerialNumberLineEdit::slot_changeFocusBackspace()
 {
     QString name = qobject_cast<QLineEdit*>(sender())->objectName();
-    int obj=QString(name[name.size()-1]).toInt(); //static_cast<QString>(name.back()).toInt();
+    int obj=QString(name[name.size()-1]).toInt();
 
     if(obj==1) return;
 
     m_vecLineEdit[obj-2]->setFocus();
-    QTimer::singleShot(0,m_vecLineEdit[obj-2],&QLineEdit::deselect);
+    //QTimer::singleShot(0,m_vecLineEdit[obj-2],&QLineEdit::deselect);
     QString text{m_vecLineEdit[obj-2]->text()};
     text.chop(1);
     m_vecLineEdit[obj-2]->setText(text);
@@ -309,7 +291,7 @@ void SerialNumberLineEdit::slot_paste(QString text)
         }
     }
     m_vecLineEdit.back()->setFocus();
-    QTimer::singleShot(0, m_vecLineEdit.back(), &QLineEdit::deselect);
+    //QTimer::singleShot(0, m_vecLineEdit.back(), &QLineEdit::deselect);
 }
 
 //protected
@@ -319,9 +301,9 @@ void SerialNumberLineEdit::focusInEvent(QFocusEvent*)
     paint_inFocus();
     m_vecLineEdit[0]->setFocus();
     if (m_serialNumber.count()==0) emit visiblePaste(true);
-#ifdef Q_OS_ANDROID
+/*#ifdef Q_OS_ANDROID
     QApplication::inputMethod()->show();
-#endif
+#endif*/
 }
 void SerialNumberLineEdit::focusOutEvent(QFocusEvent*)
 {
@@ -337,23 +319,32 @@ void SerialFieldEdit::paste()
     if(text.count()==MAX_COUNT_CHAR*MAX_COUNT_PART)
         pasteEvent();
     else QLineEdit::paste();
-    QTimer::singleShot(0, this, &QLineEdit::deselect);
+    //QTimer::singleShot(0, this, &QLineEdit::deselect);
 }
 
 void SerialFieldEdit::focusInEvent(QFocusEvent *event)
 {
+    qDebug()<<__FUNCTION__;
     inFocus=true;
+#ifdef Q_OS_ANDROID
+    QApplication::inputMethod()->setVisible(true);
+#endif
     QLineEdit::focusInEvent(event);
-    QTimer::singleShot(0, this, &QLineEdit::selectAll);
+    //QTimer::singleShot(0, this, &QLineEdit::selectAll);
     emit signal_inLineEdit();
 
-#ifdef Q_OS_ANDROID
+
+/*#ifdef Q_OS_ANDROID
     if(!QApplication::inputMethod()->isVisible())
         QApplication::inputMethod()->setVisible(true);
-#endif
+#endif*/
 }
 void SerialFieldEdit::focusOutEvent(QFocusEvent *event)
 {
+#ifdef Q_OS_ANDROID
+    QApplication::inputMethod()->setVisible(false);
+#endif
+    qDebug()<<__FUNCTION__;
     inFocus=false;
     QLineEdit::focusOutEvent(event);
     emit signal_outOfLineEdit();
@@ -361,6 +352,7 @@ void SerialFieldEdit::focusOutEvent(QFocusEvent *event)
 
 void SerialFieldEdit::keyPressEvent(QKeyEvent *event)
 {
+    qDebug()<<__FUNCTION__;
     if (event->key()==Qt::Key_Backspace)
     {
         if (text().count()==0) emit signal_lineEditIsEmpty();
@@ -377,7 +369,6 @@ void SerialFieldEdit::keyPressEvent(QKeyEvent *event)
             return;
         }
     }
-
     QLineEdit::keyPressEvent(event);
 }
 
@@ -396,22 +387,16 @@ QPainter qPainter(viewport());
 if(m_paint) qPainter.fillRect(qRect, QColor("#00A86C"));
 else qPainter.fillRect(qRect, QColor("white"));*/
 
-
-
-        //QSize sizeRect(-5,20);
-        //QRect qRect = cursorRect();
-        //qRect.setSize(sizeRect);
-        //qRect.setSize(sizeRect);
-        //qDebug()<<cursorRect()<<qRect;
-        //qDebug()<<cursorPosition();
-
-
+        /*QSize sizeRect(-5,20);
+        QRect qRect = cursorRect();
+        qRect.setSize(sizeRect);
+        qRect.setSize(sizeRect);
+        qDebug()<<cursorRect()<<qRect;
+        qDebug()<<cursorPosition();*/
 
         /*const QRect qRect(-3,1,4,15);
         QPainter p(this);
         p.fillRect(qRect, QColor("#00A86C"));*/
-
-
 
         //QTextLayout::drawCursor(qPainter,point,cursorPosition(),5);
     }
@@ -423,6 +408,55 @@ void SerialFieldEdit::pasteEvent()
     emit signal_pasteEvent(text);
 }
 
+#ifdef Q_OS_ANDROID
+void SerialFieldEdit::inputMethodEvent(QInputMethodEvent *event)
+{
+    if(event->preeditString().length()>0)
+    {
+        if (event->preeditString().length()==MAX_COUNT_CHAR)
+        {
+            qDebug()<<"FULL";
+            QApplication::inputMethod()->commit();
+            QTimer::singleShot(0, this, &QLineEdit::selectAll);
+            return;
+        }
+
+        qDebug()<<"preeditString";
+        QLineEdit::inputMethodEvent(event);
+        QApplication::inputMethod()->commit();
+        QApplication::inputMethod()->reset();
+        return;
+        /*QString strRegExp{static_cast<QString>(VALIDATOR)+
+                    "{1,"+QString::number(MAX_COUNT_CHAR)+"}"};
+        QRegExp regExp(strRegExp);
+        if (regExp.exactMatch(event->preeditString()))
+        {
+            QLineEdit::inputMethodEvent(event);
+            QApplication::inputMethod()->commit();
+            QApplication::inputMethod()->reset();
+        }
+        else
+        {
+            qDebug()<<"IGNORE";
+            QApplication::inputMethod()->reset();
+        }
+        qDebug()<<this->text();
+        return;*/
+    }
+    else if (event->preeditString().length()==0)
+    {
+        qDebug()<<"EMPTY";
+    }
+
+    /*if(this->text().isEmpty())
+    {
+        qDebug()<<"EMPTY";
+        //emit signal_lineEditIsEmpty();
+        return;
+    }*/
+    QLineEdit::inputMethodEvent(event);
+}
+#endif
 
 //********************LabelPaste********************
 

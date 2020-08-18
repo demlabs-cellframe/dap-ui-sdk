@@ -33,15 +33,6 @@
 #define VALIDATOR "[A-Z0-9]"
 #endif
 
-/*#ifndef PATH_CSS
-    #ifdef Q_OS_ANDROID
-        #define PATH_CSS ":/StyleAndroid.css"
-    #else
-        #define PATH_CSS ":/Style.css"
-    #endif
-#endif*/
-
-//void updateCSS(QWidget* widget=nullptr);
 class SerialFieldEdit;
 class LabelPaste;
 class SerialNumberLineEdit:public QLineEdit
@@ -129,6 +120,9 @@ protected:
     virtual void keyPressEvent(QKeyEvent *event) override;
     virtual void paintEvent(QPaintEvent *event) override;
     virtual void pasteEvent();
+#ifdef Q_OS_ANDROID
+    virtual void inputMethodEvent(QInputMethodEvent *event) override;
+#endif
 private:
 
     SerialFieldEdit(QWidget* parent = Q_NULLPTR)
