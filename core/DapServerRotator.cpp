@@ -44,7 +44,7 @@ bool DapServerRotator::selectingRandomServer()
     qDebug() << "selectingRandomServer";
 
     if (!DapDataLocal::serversData()->serversForCheck().isEmpty()){
-        int indexRandomServer = qrand() % ((DapDataLocal::serversData()->serversForCheck().size() + 1) - 0) + 0;
+        int indexRandomServer = qrand() % DapDataLocal::serversData()->serversForCheck().size();
         DapDataLocal::serversData()->setCurrentServer(DapDataLocal::serversData()->serversForCheck()[indexRandomServer].name);
         qDebug() << "indexRandomServer " << DapDataLocal::serversData()->serversForCheck()[indexRandomServer].name;
         return true;
