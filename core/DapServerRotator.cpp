@@ -42,7 +42,6 @@ bool DapServerRotator::isDuplicate(const DapServerInfo m_server)
 bool DapServerRotator::selectingRandomServer()
 {
     qDebug() << "selectingRandomServer";
-    dropWasteServers();
 
     if (!DapDataLocal::serversData()->serversForCheck().isEmpty()){
         int indexRandomServer = qrand() % ((DapDataLocal::serversData()->serversForCheck().size() + 1) - 0) + 0;
@@ -50,12 +49,12 @@ bool DapServerRotator::selectingRandomServer()
         qDebug() << "indexRandomServer " << indexRandomServer;
         return true;
     }
+    qDebug() << " | selectingRandomServer - return false";
     return false;
 }
 
 bool DapServerRotator::selectingSameLocationServer()
 {   qDebug() << "selectingSameLocationServer";
-    dropWasteServers();
 
     if (!DapDataLocal::serversData()->serversForCheck().isEmpty()){
         for (DapServerInfo &server : DapDataLocal::serversData()->serversForCheck()){
@@ -69,5 +68,6 @@ bool DapServerRotator::selectingSameLocationServer()
     }
     else
         qDebug() << "serversForCheck isEmpty";
+    qDebug() << " | selectingSameLocationServer - return false";
     return false;
 }

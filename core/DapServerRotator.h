@@ -17,13 +17,21 @@ public:
 
     bool selectingRandomServer();
     bool selectingSameLocationServer();
+    void dropWasteServers();
+    void setRotationServersProcess(bool state){
+        bRotationServersProcess = state;
+    };
+    bool getRotationServersProcess(){
+        return bRotationServersProcess;
+    }
 
 private:
 
-    void dropWasteServers();
     void fillingServersContainer();
 
     bool isDuplicate(const DapServerInfo m_server);
+
+    bool bRotationServersProcess = false;
 
 
 };
