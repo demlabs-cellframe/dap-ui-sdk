@@ -9,6 +9,7 @@
 #include <QTime>
 
 #include "DapDataLocal.h"
+#include "DapSerialKeyData.h"
 
 DapDataLocal::picturesMap DapDataLocal::m_pictruePath = {
     {DapServerLocation::ENGLAND, ":/country/GB.png"},
@@ -26,6 +27,7 @@ DapDataLocal::picturesMap DapDataLocal::m_pictruePath = {
 
 DapDataLocal::DapDataLocal()
     : QObject()
+    , m_serialKeyData(new DapSerialKeyData(this))
 {
     qDebug() << "[DL] DapDataLocal Constructor";
 
@@ -139,33 +141,18 @@ void DapDataLocal::setPassword(const QString &a_password)
 
     emit this->passwordChanged(m_password);
 }
-/// Set serial key.
-/// @param serial serial key.
-void DapDataLocal::setSerialKey(const QString &a_serialKey)
-{
-    if (this->m_serialKey == a_serialKey)
-        return;
-    m_serialKey = a_serialKey;
-
-    emit this->serialKeyChanged(m_serialKey);
-}
-
-QString DapDataLocal::serialKey() const
-{
-    return m_serialKey;
-}
-
 
 void DapDataLocal::saveAuthorizationDatas()
 {
     this->saveEncriptedSetting(this->TEXT_LOGIN     , this->login());
     this->saveEncriptedSetting(this->TEXT_PASSWORD  , this->password());
-    this->saveEncriptedSetting(this->TEXT_SERIAL_KEY, this->serialKey());
+//    this->saveEncriptedSetting(this->TEXT_SERIAL_KEY, this->serialKey());
+
 }
 
 void DapDataLocal::loadAuthorizationDatas()
 {
-    this->setSerialKey(getEncriptedSetting(TEXT_SERIAL_KEY).toString());
+//    this->setSerialKey(getEncriptedSetting(TEXT_SERIAL_KEY).toString());
     this->setLogin(getEncriptedSetting(TEXT_LOGIN).toString());
     this->setPassword(getEncriptedSetting(TEXT_PASSWORD).toString());
 }
@@ -221,6 +208,11 @@ DapBugReportData *DapDataLocal::bugReportData()
 DapServersData *DapDataLocal::serversData()
 {
     return DapServersData::instance();
+}
+
+DapSerialKeyData *DapDataLocal::serialKeyData()
+{
+    return m_serialKeyData;
 }
 
 bool DapDataLocal::initSecretKey()

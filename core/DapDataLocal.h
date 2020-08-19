@@ -14,6 +14,8 @@
 
 #define SERVER_LIST_FILE "vpn-servers.xml"
 
+class DapSerialKeyData;
+
 class DapDataLocal : public QObject
 {
     Q_OBJECT
@@ -42,8 +44,6 @@ public:
     void setLogFilePath(QString path){logFilePath = path;}
     QString getLogFilePath(){return logFilePath;}
 
-    QString serialKey() const;
-
     QString password() const;
 
     const QList<QString> &cdbServersList() { return m_cdbServersList; }
@@ -59,6 +59,7 @@ public:
 
     static DapBugReportData *bugReportData();
     static DapServersData   *serversData();
+    DapSerialKeyData* serialKeyData();
 
     const QString TEXT_SERIAL_KEY   = "serialkey";
     const QString TEXT_LOGIN        = "login";
@@ -69,7 +70,6 @@ public:
 public slots:
     void setLogin(const QString &a_login);
 
-    void setSerialKey(const QString &a_serialKey);
     void setPassword(const QString &password);
 
     void saveAuthorizationDatas();
@@ -82,9 +82,6 @@ signals:
     /// Signal emitted if password has changed.
     /// @param password Password.
     void passwordChanged(const QString& password);
-    /// Signal emitted if password has changed.
-    /// @param password Password.
-    void serialKeyChanged(const QString& serial);
 
 protected:
     QList<QString>  m_cdbServersList;
@@ -95,9 +92,10 @@ private:
     void loadAuthorizationDatas();
     static QSettings* settings();
 
-    QString m_login;      ///< Login.
-    QString m_password;   ///< Password.
-    QString m_serialKey;  ///< Serial key.
+    QString m_login;
+    QString m_password;
+
+    DapSerialKeyData* m_serialKeyData;
 };
 
 
