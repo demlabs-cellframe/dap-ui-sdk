@@ -45,6 +45,7 @@ protected:
     virtual void initVariantUi(QWidget *) override;
 
 private:
+    void hideButton(QPushButton*btn);
     QScopedPointer<Ui::CustomMessageBox> m_ui;
 };
 
