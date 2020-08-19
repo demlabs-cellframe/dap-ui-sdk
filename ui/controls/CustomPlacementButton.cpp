@@ -127,17 +127,20 @@ void CustomPlacementButton::updateAppearanceForFocus(bool target)
 
 /** @brief add new subcontrol and place it in layout
  *  @param a_id text id of subcontrol wich is using in CSS file
+ *  @return created subcontrol
  */
-void CustomPlacementButton::addSubcontrol(QString a_id)
+QLabel* CustomPlacementButton::addSubcontrol(QString a_objectName)
 {
     QLabel *newSubcontrol = new QLabel((QPushButton*)this);
-    newSubcontrol->setObjectName(a_id);
+    newSubcontrol->setObjectName(a_objectName);
 
     CustomPlacementButton::setWidgetState(newSubcontrol, this->underMouse(), isChecked());
 
     //add to list and layout
     m_subcontrols.append(newSubcontrol);
-    m_layout->insertWidget(m_layout->count() - 1, newSubcontrol);
+    m_layout->insertWidget(m_layout->count() - 2, newSubcontrol);
+
+    return newSubcontrol;
 }
 
 Qt::LayoutDirection CustomPlacementButton::layoutDirection() const
