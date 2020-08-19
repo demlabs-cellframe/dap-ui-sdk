@@ -21,14 +21,6 @@ SignUpScreen::SignUpScreen(QWidget *a_parent)
     m_widgetSizeController->addDisappearingWidget(m_ui->lblLogo);
     m_widgetSizeController->addDisappearingWidget(m_ui->lblStatusMessage);
     m_widgetSizeController->addDisappearingWidget(m_ui->lblCaption);
-
-    m_widgetSizeController->addWidgetForFocus(m_ui->btnSignUp);
-
-    m_widgetSizeController->addWidgetEmitsSignal(m_ui->edtEmail);
-    m_widgetSizeController->addWidgetEmitsSignal(m_ui->edtPassword);
-    m_widgetSizeController->addWidgetEmitsSignal(m_ui->edtRptPassword);
-
-    connect(this,&SignUpScreen::sigMousePressMainWindow ,m_widgetSizeController,&WidgetInputSizeController::sigShowWidget);
 #endif
 
     AdaptiveScreen::initScreen(this);

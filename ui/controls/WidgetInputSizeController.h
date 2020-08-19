@@ -14,22 +14,13 @@ class WidgetInputSizeController : public QObject
 {
     Q_OBJECT
 public:
-    WidgetInputSizeController(QObject *a_parent = nullptr);
+    WidgetInputSizeController(QObject *a_parent);
 
     /// Adds widgets that should disappear/appear.
     void addDisappearingWidget(QWidget *a_widget);
-    ///Adds widgets to control input fields.
-    void addWidgetEmitsSignal(CustomLineEditBase *a_widget);
-    ///The widget on which we focus in the case of a click outside the input field or the folding keyboard.
-    void addWidgetForFocus(QWidget *a_widget);
 
 private:
     QList<QWidget*> m_disappearingWidget;
-
-    QWidget *m_widgetToGoShow = nullptr;
-signals:
-    void sigShowWidget();
-
 private slots:
     void setVisibleWidgets(bool a_visible);
 };

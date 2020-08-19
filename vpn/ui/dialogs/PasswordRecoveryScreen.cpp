@@ -13,13 +13,6 @@ PasswordRecoveryScreen::PasswordRecoveryScreen(QWidget *a_parent)
     m_widgetSizeController = new WidgetInputSizeController(this);
 
     m_widgetSizeController->addDisappearingWidget(m_ui->lblLogo);
-
-    m_widgetSizeController->addWidgetForFocus(m_ui->btnSendMail);
-
-    m_widgetSizeController->addWidgetEmitsSignal(m_ui->edtEmail);
-
-
-    connect(this,&PasswordRecoveryScreen::sigMousePressMainWindow ,m_widgetSizeController,&WidgetInputSizeController::sigShowWidget);
 #endif
 
     AdaptiveScreen::initScreen(this);

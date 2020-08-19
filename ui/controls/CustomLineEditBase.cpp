@@ -66,7 +66,8 @@ void CustomLineEditBase::focusOutEvent(QFocusEvent *event)
 
     showCustomPlaceholder();
 #ifdef Q_OS_ANDROID
-    changeVisibilityVitrulKeyboard(true);
+    QApplication::inputMethod()->hide();
+   // changeVisibilityVitrulKeyboard(true);
 #endif
     QLineEdit::focusOutEvent(event);
 }
@@ -76,7 +77,8 @@ void CustomLineEditBase::focusInEvent(QFocusEvent *event)
     hideCustomPlaceholder();
 
 #ifdef Q_OS_ANDROID
-    changeVisibilityVitrulKeyboard(false);
+    QApplication::inputMethod()->show();
+    //changeVisibilityVitrulKeyboard(false);
 #endif
 
     Utils::setPropertyAndUpdateStyle(this, Properties::ACTIVE, true);
@@ -237,7 +239,7 @@ void CustomLineEditBase::adjustTextMargins()
             marginsNew.setRight(m_btnControl->width());
         }
     }
-
+qWarning()<<objectName()<<"----------------------------------------------------------------------"<<marginsNew;
     if(marginsPrev != marginsNew)
     {
         setTextMargins(marginsNew);
@@ -255,7 +257,7 @@ ResizableIconLabel::ResizableIconLabel(QWidget* parent)
 void ResizableIconLabel::resizeEvent(QResizeEvent* event)
 {
     QLabel::resizeEvent(event);
-
+qWarning()<<"************************************ResizableIconLabel::resizeEvent*******************************************";
     emit resized();
 }
 
