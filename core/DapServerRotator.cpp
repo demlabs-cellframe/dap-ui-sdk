@@ -12,7 +12,7 @@ void DapServerRotator::fillingServersContainer()
     if (DapDataLocal::serversData()->serversForCheck().isEmpty())
         for (auto server : DapDataLocal::serversData()->servers())
             DapDataLocal::serversData()->serversForCheck().push_back(server);
-    dropWasteServers();
+//    dropWasteServers();
 }
 
 void DapServerRotator::dropWasteServers()
