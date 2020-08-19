@@ -305,9 +305,11 @@ void SerialNumberLineEdit::focusInEvent(QFocusEvent*)
     QApplication::inputMethod()->show();
 #endif*/
 }
-void SerialNumberLineEdit::focusOutEvent(QFocusEvent*)
+void SerialNumberLineEdit::focusOutEvent(QFocusEvent*event)
 {
     //empty
+    qDebug()<<"FOCUS OUT";
+    QLineEdit::focusOutEvent(event);
 }
 
 
@@ -327,7 +329,7 @@ void SerialFieldEdit::focusInEvent(QFocusEvent *event)
     qDebug()<<__FUNCTION__;
     inFocus=true;
 #ifdef Q_OS_ANDROID
-    QApplication::inputMethod()->setVisible(true);
+    QApplication::inputMethod()->show();
 #endif
     QLineEdit::focusInEvent(event);
     //QTimer::singleShot(0, this, &QLineEdit::selectAll);
@@ -342,7 +344,7 @@ void SerialFieldEdit::focusInEvent(QFocusEvent *event)
 void SerialFieldEdit::focusOutEvent(QFocusEvent *event)
 {
 #ifdef Q_OS_ANDROID
-    QApplication::inputMethod()->setVisible(false);
+    QApplication::inputMethod()->hide();
 #endif
     qDebug()<<__FUNCTION__;
     inFocus=false;
@@ -411,7 +413,7 @@ void SerialFieldEdit::pasteEvent()
 #ifdef Q_OS_ANDROID
 void SerialFieldEdit::inputMethodEvent(QInputMethodEvent *event)
 {
-    if(event->preeditString().length()>0)
+    /*if(event->preeditString().length()>0)
     {
         if (event->preeditString().length()==MAX_COUNT_CHAR)
         {
@@ -421,11 +423,14 @@ void SerialFieldEdit::inputMethodEvent(QInputMethodEvent *event)
             return;
         }
 
-        qDebug()<<"preeditString";
+        qDebug()<<"preeditString"<<event->preeditString();
         QLineEdit::inputMethodEvent(event);
-        QApplication::inputMethod()->commit();
+
         QApplication::inputMethod()->reset();
-        return;
+        QApplication::inputMethod()->commit();*/
+
+
+        //QApplication::inputMethod()->reset();
         /*QString strRegExp{static_cast<QString>(VALIDATOR)+
                     "{1,"+QString::number(MAX_COUNT_CHAR)+"}"};
         QRegExp regExp(strRegExp);
@@ -442,11 +447,7 @@ void SerialFieldEdit::inputMethodEvent(QInputMethodEvent *event)
         }
         qDebug()<<this->text();
         return;*/
-    }
-    else if (event->preeditString().length()==0)
-    {
-        qDebug()<<"EMPTY";
-    }
+    //}
 
     /*if(this->text().isEmpty())
     {
@@ -454,6 +455,8 @@ void SerialFieldEdit::inputMethodEvent(QInputMethodEvent *event)
         //emit signal_lineEditIsEmpty();
         return;
     }*/
+
+    qDebug()<<__FUNCTION__;
     QLineEdit::inputMethodEvent(event);
 }
 #endif
@@ -463,8 +466,7 @@ void SerialFieldEdit::inputMethodEvent(QInputMethodEvent *event)
 LabelPaste::LabelPaste(QWidget *parent)
     :QLabel(parent)
 {
-    setObjectName("obj_labelPaste");
-    setPixmap(QPixmap(":/Popover.svg"));
+    setObjectName("labelPaste");
     m_op=new QGraphicsOpacityEffect;
     m_op->setOpacity(0);
     setGraphicsEffect(m_op);
@@ -472,7 +474,6 @@ LabelPaste::LabelPaste(QWidget *parent)
     m_labelPaste=new QLabel("Paste");
     m_layout->addWidget(m_labelPaste);
     m_labelPaste->setAlignment(Qt::AlignCenter);
-    m_layout->setContentsMargins(0,10,0,15);
     setLayout(m_layout);
 }
 
@@ -505,18 +506,3 @@ void LabelPaste::mousePressEvent(QMouseEvent *ev)
     }
     QLabel::mousePressEvent(ev);
 }
-
-
-
-//********************Secondary Functions********************
-
-/*void updateCSS(QWidget *widget)
-{
-    QFile style(PATH_CSS);
-    if (style.open(QFile::ReadOnly))
-    {
-        if(widget==nullptr)qApp->setStyleSheet(style.readAll());
-        else widget->setStyleSheet(style.readAll());
-        style.close();
-    }
-}*/

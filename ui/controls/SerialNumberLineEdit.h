@@ -85,7 +85,7 @@ private slots:
     void slot_paste(QString text);
 protected:
     virtual void focusInEvent(QFocusEvent *) override;
-    virtual void focusOutEvent(QFocusEvent *) override;
+    virtual void focusOutEvent(QFocusEvent *event) override;
 private:
     QGridLayout* m_layout{Q_NULLPTR};
     QVector <SerialFieldEdit*>m_vecLineEdit{};
