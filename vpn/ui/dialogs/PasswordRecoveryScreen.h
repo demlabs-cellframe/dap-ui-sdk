@@ -20,6 +20,8 @@
 #include <QJsonArray>
 #include <QShortcut>
 
+#include "WidgetInputSizeController.h"
+
 class PasswordRecoveryScreen : public AdaptiveScreen
 {
     Q_OBJECT
@@ -45,6 +47,9 @@ signals:
     void goToSignIn();
 
     void setStateNormal();
+#ifdef Q_OS_ANDROID
+    void sigMousePressMainWindow();
+#endif
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
@@ -53,6 +58,10 @@ protected:
 
         virtual void initVariantUi(QWidget *a_widget) override;
 private:
+#ifdef Q_OS_ANDROID
+    WidgetInputSizeController *m_widgetSizeController = nullptr;
+#endif
+
     const QString LBL_LOGO                  = "lblLogo";
     const QString BTN_SEND_MAIL             = "btnSendMail";
     const QString LBL_STATUS_MESSAGE        = "lblStatusMessage";
@@ -86,5 +95,7 @@ private:
     bool checkEmail();
     void checkFieldsAndSendEmail();
     QString m_email;
+
+    QScopedPointer<Ui::PasswordRecoveryScreen> m_ui;
 };
 #endif // FORGETPASSWORDSCREEN_H

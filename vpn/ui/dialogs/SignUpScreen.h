@@ -27,6 +27,8 @@
 
 #include <QSslConfiguration>
 
+#include "WidgetInputSizeController.h"
+
 class SignUpScreen : public AdaptiveScreen
 {
     Q_OBJECT
@@ -84,7 +86,15 @@ signals:
     void setStateFinalScreen();
     void setStateNormalScreen();
     void setStateStutusMessageNormal();
+
+#ifdef Q_OS_ANDROID
+    void sigMousePressMainWindow();
+#endif
 private:
+
+#ifdef Q_OS_ANDROID
+    WidgetInputSizeController *m_widgetSizeController = nullptr;
+#endif
 
     bool checkEmail();
     bool checkPassword();
@@ -139,6 +149,8 @@ private:
     const QString TEXT_CHOOSE_PLANE             = tr("Choose plan");
     const QString TEXT_SIGN_UP                  = tr("Sign up");
 #endif
+
+    QScopedPointer<Ui::SignUpScreen> m_ui;
 };
 #endif // SIGNUPSCREEN_H
 

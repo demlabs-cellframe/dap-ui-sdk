@@ -92,6 +92,9 @@ protected:
 private slots:
     void adjustTextMargins();
 
+signals:
+    void changeVisibilityVitrulKeyboard(bool a_visible);
+
 private:
     void recreateSubControls();
     void adjustPlaceholder();

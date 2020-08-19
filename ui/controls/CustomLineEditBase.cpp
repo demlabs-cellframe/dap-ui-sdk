@@ -66,7 +66,7 @@ void CustomLineEditBase::focusOutEvent(QFocusEvent *event)
 
     showCustomPlaceholder();
 #ifdef Q_OS_ANDROID
-    QApplication::inputMethod()->hide();
+    changeVisibilityVitrulKeyboard(true);
 #endif
     QLineEdit::focusOutEvent(event);
 }
@@ -76,7 +76,7 @@ void CustomLineEditBase::focusInEvent(QFocusEvent *event)
     hideCustomPlaceholder();
 
 #ifdef Q_OS_ANDROID
-    QApplication::inputMethod()->show();
+    changeVisibilityVitrulKeyboard(false);
 #endif
 
     Utils::setPropertyAndUpdateStyle(this, Properties::ACTIVE, true);
@@ -270,3 +270,4 @@ void ResizablePushButton::resizeEvent(QResizeEvent* event)
 
     emit resized();
 }
+
