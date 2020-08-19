@@ -11,11 +11,13 @@ class DapSerialKeyData: public QObject
 public:
     DapSerialKeyData(QObject* a_parent = nullptr);
 
+    DapSerialKeyData(const DapSerialKeyData& another):QObject(){};
+
     QString serialKey() const;
     void setSerialKey(const QString &a_serialKey);
 
     bool isActivated() const;
-    void setIsActivated(bool isActivated);
+    void setActivated(bool isActivated);
 
 signals:
     void serialKeyChanged(const QString& serialKey);
@@ -25,5 +27,7 @@ private:
     QString m_serialKey;
     bool m_isActivated;
 };
+
+Q_DECLARE_METATYPE(DapSerialKeyData)
 
 #endif // DAPSERIALKEYDATA_H

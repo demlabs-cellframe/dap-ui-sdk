@@ -182,6 +182,23 @@ QVariant DapDataLocal::getEncriptedSetting(const QString &a_setting)
     return QString(stringOut);
 }
 
+void DapDataLocal::saveToSettings(const DapSerialKeyData &a_serialKeyData)
+{
+    this->saveEncriptedSetting(TEXT_SERIAL_KEY, QVariant::fromValue(a_serialKeyData));
+}
+
+bool DapDataLocal::loadFromSettings(DapSerialKeyData &a_serialKeyData)
+{
+    QVariant variantFromSettings = this->getEncriptedSetting(TEXT_SERIAL_KEY);
+    if (!variantFromSettings.isValid() || !variantFromSettings.canConvert<DapSerialKeyData>())
+        return false;
+
+    DapSerialKeyData dataFromSettings = variantFromSettings.value<DapSerialKeyData>();
+    a_serialKeyData.setSerialKey(dataFromSettings.serialKey());
+    a_serialKeyData.setActivated(dataFromSettings.isActivated());
+    return true;
+}
+
 void DapDataLocal::saveEncriptedSetting(const QString &a_setting, const QVariant &a_value)
 {
     initSecretKey();

@@ -54,6 +54,9 @@ public:
     void saveEncriptedSetting(const QString &a_setting, const QVariant &a_value);
     QVariant getEncriptedSetting(const QString &a_setting);
 
+    void saveToSettings(const DapSerialKeyData& a_serialKeyData);
+    bool loadFromSettings(DapSerialKeyData& a_serialKeyData);
+
     static QVariant getSetting (const QString& a_setting);
     static void     saveSetting(const QString& a_setting, const QVariant& a_value);
 

@@ -24,7 +24,7 @@ bool DapSerialKeyData::isActivated() const
     return m_isActivated;
 }
 
-void DapSerialKeyData::setIsActivated(bool isActivated)
+void DapSerialKeyData::setActivated(bool isActivated)
 {
     m_isActivated = isActivated;
 }
