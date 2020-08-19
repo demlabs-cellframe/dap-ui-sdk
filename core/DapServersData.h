@@ -18,6 +18,7 @@ public:
     void addServer(const DapServerInfo& dsi);
 
     QList<DapServerInfo>& servers(){return m_servers;}
+    QVector<DapServerInfo>& serversForCheck(){return m_serversForCheck;}
 
     const DapServerInfo* currentServer() const;
     int serversCount() const;
@@ -56,6 +57,7 @@ private:
     int m_currentServerIndex = -1;
     bool m_currentServerIsAuto = false;
     QList<DapServerInfo> m_servers;
+    QVector<DapServerInfo> m_serversForCheck;
 };
 
 #endif // DAPSERVERSDATA_H
