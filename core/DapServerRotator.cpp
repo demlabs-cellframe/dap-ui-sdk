@@ -20,10 +20,10 @@ void DapServerRotator::dropWasteServers()
     qDebug() << "dropWasteServers - begin size m_serversForCheck: " << DapDataLocal::serversData()->serversForCheck().size();
     QMutableVectorIterator<DapServerInfo> i(DapDataLocal::serversData()->serversForCheck());
     while(i.hasNext()) {
-        DapServerInfo tempServer = i.next();
+        DapServerInfo server = i.next();
         //drop current server and auto
-        if (tempServer.address == DapDataLocal::serversData()->currentServer()->address || tempServer.isAuto() || isDuplicate(tempServer)){
-            qDebug() << "dropWasteServers - drop: " << tempServer.name << " " << tempServer.address;
+        if (server.address == DapDataLocal::serversData()->currentServer()->address || server.isAuto() || isDuplicate(server)){
+            qDebug() << "dropWasteServers - drop: " << server.name << " " << server.address;
             i.remove();
         }
     }
@@ -46,7 +46,7 @@ bool DapServerRotator::selectingRandomServer()
     if (!DapDataLocal::serversData()->serversForCheck().isEmpty()){
         int indexRandomServer = qrand() % ((DapDataLocal::serversData()->serversForCheck().size() + 1) - 0) + 0;
         DapDataLocal::serversData()->setCurrentServer(DapDataLocal::serversData()->serversForCheck()[indexRandomServer].name);
-        qDebug() << "indexRandomServer " << indexRandomServer;
+        qDebug() << "indexRandomServer " << DapDataLocal::serversData()->serversForCheck()[indexRandomServer].name;
         return true;
     }
     qDebug() << " | selectingRandomServer - return false";

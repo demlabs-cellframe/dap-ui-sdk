@@ -18,6 +18,7 @@ public:
     bool selectingRandomServer();
     bool selectingSameLocationServer();
     void dropWasteServers();
+    void fillingServersContainer();
     void setRotationServersProcess(bool state){
         bRotationServersProcess = state;
     };
@@ -27,7 +28,6 @@ public:
 
 private:
 
-    void fillingServersContainer();
 
     bool isDuplicate(const DapServerInfo m_server);
 
