@@ -37,8 +37,6 @@ public:
 
     QString locationToIconPath(DapServerLocation loc);
 
-    QString getTextFromFile(const QString &a_fname);
-
     QString login() const;
 
     void setLogFilePath(QString path){logFilePath = path;}

@@ -266,15 +266,6 @@ QString DapDataLocal::locationToIconPath(DapServerLocation loc)
     return locPath;
 }
 
-QString DapDataLocal::getTextFromFile(const QString &a_fname){
-    QString temp;
-    QFile file(a_fname);
-    if(file.open(QIODevice::ReadOnly | QIODevice::Text)){
-        temp = QString(file.readAll());
-    }
-    return temp;
-}
-
 DapDataLocal *DapDataLocal::instance()
 {
     static DapDataLocal s_instance;
