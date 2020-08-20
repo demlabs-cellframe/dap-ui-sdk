@@ -456,8 +456,41 @@ void SerialFieldEdit::inputMethodEvent(QInputMethodEvent *event)
         return;
     }*/
 
-    qDebug()<<__FUNCTION__;
+
+    /*QString oneSymbol{event->preeditString()};
+    qDebug()<<__FUNCTION__<<oneSymbol;
+    QString strRegExp{QString(VALIDATOR)+"{0,1}"};
+    QRegExp regExp(strRegExp);
+    if (regExp.exactMatch(oneSymbol))
+    {
+        event->setCommitString(event->preeditString(),0,event->preeditString().length());
+        //QApplication::inputMethod()->commit();
+        QLineEdit::inputMethodEvent(event);
+        qDebug()<<"TRUE"<<event->preeditString()<<event->commitString();
+        QApplication::inputMethod()->reset();
+        qDebug()<<"TRUE"<<event->preeditString()<<event->commitString();
+    }
+    else
+    {
+        event->setCommitString("",0,1);
+        qDebug()<<"FALSE"<<event->preeditString()<<event->commitString();
+    }*/
+    /*qDebug()<<__FUNCTION__<<event->type();
+    if(event->KeyPress)
+    {
+        qDebug()<<event->commitString();
+        qDebug()<<event->preeditString();
+        qDebug()<<event->replacementStart();
+        qDebug()<<event->type();
+        qDebug()<<event->registerEventType();
+        //qDebug()<<"KEY";
+    }*/
+    qDebug()<<"commit - "<<event->commitString()<<"\tpreedit - "<<event->preeditString();
+    event->setCommitString(event->preeditString());
     QLineEdit::inputMethodEvent(event);
+    qDebug()<<"commit - "<<event->commitString()<<"\tpreedit - "<<event->preeditString();
+    /*QApplication::inputMethod()->reset();
+    qDebug()<<"commit - "<<event->commitString()<<"\tpreedit - "<<event->preeditString();*/
 }
 #endif
 
