@@ -4,7 +4,7 @@ const QString BugReportLoadingScreen::SCREEN_NAME = "BugReportLoading";
 
 BugReportLoadingScreen::BugReportLoadingScreen(QWidget *a_parent)
     : AdaptiveScreen(a_parent)
-    , m_movie(":pics/Spin-1.2s-800px.gif")
+    , m_movie(":pics/Spin-1s-800px.gif")
 {
     this->create(m_ui);
 

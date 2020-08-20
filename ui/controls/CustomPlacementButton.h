@@ -72,7 +72,7 @@ public:
     void setProperty(const QString& a_property, const QVariant& a_value);
     /// .
     /// @param a_id Window GUI widget.
-    void addSubcontrol(QString a_id);
+    QLabel* addSubcontrol(QString a_objectName);
 
     Qt::LayoutDirection layoutDirection() const;
     void setLayoutDirection(Qt::LayoutDirection a_direction);
