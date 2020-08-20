@@ -87,7 +87,7 @@ void SerialNumberLineEdit::init()
     m_labelPaste = new LabelPaste;
     m_layout->addWidget(m_labelPaste,0,1,1,2);
     connect(this,SIGNAL(visiblePaste(bool)),m_labelPaste,SLOT(setVisibility(bool)));
-
+    setReadOnly(true);
     setPlaceholderText();
 
     m_vecLineEdit.push_back(createLineEdit());
@@ -117,6 +117,8 @@ SerialFieldEdit *SerialNumberLineEdit::createLineEdit()
     temp->setValidator(validator);
     temp->setMaxLength(MAX_COUNT_CHAR);
     temp->setVisible(false);
+    temp->setInputMethodHints(Qt::ImhLatinOnly|Qt::ImhNoPredictiveText|Qt::ImhPreferUppercase|Qt::ImhUppercaseOnly);
+    //temp->setAlignment(Qt::AlignHCenter);
     connect(temp,SIGNAL(signal_outOfLineEdit()),SLOT(slot_checkOutOfLineEdit()));
     connect(temp,SIGNAL(signal_inLineEdit()),SLOT(slot_checkInLineEdit()));
     connect(temp,SIGNAL(textEdited(QString)),this,SLOT(slot_textEdited(QString)));
@@ -176,7 +178,7 @@ void SerialNumberLineEdit::paint_inFocus()
 
 void SerialNumberLineEdit::slot_textEdited(QString text)
 {
-
+    qDebug()<<__FUNCTION__;
     /*нужно что-то придумать с сигналами,
     чтобы они не дублировались*/
     emit serialEdited(text);
@@ -218,6 +220,7 @@ void SerialNumberLineEdit::slot_textChanged(QString)
         qDebug()<<"filledOut\t"<<m_serialNumber;
         emit filledOut();
         m_isFilledOut=true;
+        QApplication::inputMethod()->hide();
     }
 
 
@@ -290,7 +293,7 @@ void SerialNumberLineEdit::slot_paste(QString text)
             temp.remove(0,MAX_COUNT_CHAR);
         }
     }
-    m_vecLineEdit.back()->setFocus();
+    //m_vecLineEdit.back()->setFocus();
     //QTimer::singleShot(0, m_vecLineEdit.back(), &QLineEdit::deselect);
 }
 
@@ -328,11 +331,27 @@ void SerialFieldEdit::focusInEvent(QFocusEvent *event)
 {
     qDebug()<<__FUNCTION__;
     inFocus=true;
+
 #ifdef Q_OS_ANDROID
     QApplication::inputMethod()->show();
 #endif
     QLineEdit::focusInEvent(event);
     //QTimer::singleShot(0, this, &QLineEdit::selectAll);
+    if(event->reason() == Qt::MouseFocusReason)
+    {
+        qDebug()<<"SELECT";
+        //this->setCursorPosition(this->text().count());
+        //QTimer::singleShot(0, this, &QLineEdit::selectAll);
+        //emit selectAll();
+        /*QEvent ev=QEvent(QEvent::MouseButtonDblClick);
+        QLineEdit::event(&ev);*/
+
+        this->setSelection(0,text().count());
+        this->selectionStart();
+        qDebug()<<selectedText();
+        //this->selectAll();
+    }
+            //QTimer::singleShot(0, this, &QLineEdit::selectAll);
     emit signal_inLineEdit();
 
 
@@ -371,6 +390,8 @@ void SerialFieldEdit::keyPressEvent(QKeyEvent *event)
             return;
         }
     }
+
+
     QLineEdit::keyPressEvent(event);
 }
 
@@ -413,84 +434,8 @@ void SerialFieldEdit::pasteEvent()
 #ifdef Q_OS_ANDROID
 void SerialFieldEdit::inputMethodEvent(QInputMethodEvent *event)
 {
-    /*if(event->preeditString().length()>0)
-    {
-        if (event->preeditString().length()==MAX_COUNT_CHAR)
-        {
-            qDebug()<<"FULL";
-            QApplication::inputMethod()->commit();
-            QTimer::singleShot(0, this, &QLineEdit::selectAll);
-            return;
-        }
-
-        qDebug()<<"preeditString"<<event->preeditString();
-        QLineEdit::inputMethodEvent(event);
-
-        QApplication::inputMethod()->reset();
-        QApplication::inputMethod()->commit();*/
-
-
-        //QApplication::inputMethod()->reset();
-        /*QString strRegExp{static_cast<QString>(VALIDATOR)+
-                    "{1,"+QString::number(MAX_COUNT_CHAR)+"}"};
-        QRegExp regExp(strRegExp);
-        if (regExp.exactMatch(event->preeditString()))
-        {
-            QLineEdit::inputMethodEvent(event);
-            QApplication::inputMethod()->commit();
-            QApplication::inputMethod()->reset();
-        }
-        else
-        {
-            qDebug()<<"IGNORE";
-            QApplication::inputMethod()->reset();
-        }
-        qDebug()<<this->text();
-        return;*/
-    //}
-
-    /*if(this->text().isEmpty())
-    {
-        qDebug()<<"EMPTY";
-        //emit signal_lineEditIsEmpty();
-        return;
-    }*/
-
-
-    /*QString oneSymbol{event->preeditString()};
-    qDebug()<<__FUNCTION__<<oneSymbol;
-    QString strRegExp{QString(VALIDATOR)+"{0,1}"};
-    QRegExp regExp(strRegExp);
-    if (regExp.exactMatch(oneSymbol))
-    {
-        event->setCommitString(event->preeditString(),0,event->preeditString().length());
-        //QApplication::inputMethod()->commit();
-        QLineEdit::inputMethodEvent(event);
-        qDebug()<<"TRUE"<<event->preeditString()<<event->commitString();
-        QApplication::inputMethod()->reset();
-        qDebug()<<"TRUE"<<event->preeditString()<<event->commitString();
-    }
-    else
-    {
-        event->setCommitString("",0,1);
-        qDebug()<<"FALSE"<<event->preeditString()<<event->commitString();
-    }*/
-    /*qDebug()<<__FUNCTION__<<event->type();
-    if(event->KeyPress)
-    {
-        qDebug()<<event->commitString();
-        qDebug()<<event->preeditString();
-        qDebug()<<event->replacementStart();
-        qDebug()<<event->type();
-        qDebug()<<event->registerEventType();
-        //qDebug()<<"KEY";
-    }*/
-    qDebug()<<"commit - "<<event->commitString()<<"\tpreedit - "<<event->preeditString();
-    event->setCommitString(event->preeditString());
+    qDebug()<<__FUNCTION__;
     QLineEdit::inputMethodEvent(event);
-    qDebug()<<"commit - "<<event->commitString()<<"\tpreedit - "<<event->preeditString();
-    /*QApplication::inputMethod()->reset();
-    qDebug()<<"commit - "<<event->commitString()<<"\tpreedit - "<<event->preeditString();*/
 }
 #endif
 
