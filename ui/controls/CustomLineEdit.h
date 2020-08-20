@@ -83,6 +83,9 @@ public:
 protected:
     void focusOutEvent(QFocusEvent *e);
     void focusInEvent(QFocusEvent *e);
+
+private:
+    void setSettingsButton();
 };
 
 #endif // CUSTOMLINEEDIT_H

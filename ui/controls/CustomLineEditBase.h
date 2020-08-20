@@ -93,8 +93,7 @@ private slots:
     void adjustTextMargins();
 
 signals:
-    void changeVisibilityVitrulKeyboard(bool a_visible);
-
+    void focusChanged(bool a_focus);
 private:
     void recreateSubControls();
     void adjustPlaceholder();
@@ -102,6 +101,7 @@ private:
     void showCustomPlaceholder();
     void hideCustomPlaceholder();
 
+    virtual void setSettingsButton(){}
 
     bool    m_useCustomPlaceholder;
 

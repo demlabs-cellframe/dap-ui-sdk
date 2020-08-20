@@ -32,12 +32,37 @@ CustomLineEditBase::CustomLineEditBase(const QString& contents,
 
 void CustomLineEditBase::setVisibleIcon(bool &a_visible)
 {
-    m_lblIcon->setVisible(a_visible);
-    adjustTextMargins();
+        if(m_lblIcon == Q_NULLPTR)
+        {
+            m_lblIcon = new ResizableIconLabel(this);
+            connect(m_lblIcon, SIGNAL(resized()), this, SLOT(adjustTextMargins()), Qt::DirectConnection);
+
+            m_lblIcon->setObjectName("image");
+
+            if(m_layoutCtrl!=Q_NULLPTR)
+            {
+                m_layoutCtrl->insertWidget(0, m_lblIcon, 0, (Qt::AlignJustify | Qt::AlignVCenter));
+            }
+        }
+        m_lblIcon->setVisible(a_visible);
+        adjustTextMargins();
 }
 
 void CustomLineEditBase::setVisibleButton(bool a_visible)
 {
+    if(m_btnControl == Q_NULLPTR)
+    {
+    m_btnControl = new ResizablePushButton(this);
+    connect(m_btnControl, SIGNAL(resized()), this, SLOT(adjustTextMargins()), Qt::DirectConnection);
+    m_btnControl->setObjectName("control");
+
+    if(m_layoutCtrl!=Q_NULLPTR)
+    {
+        m_layoutCtrl->insertWidget(3,m_btnControl, 0, (Qt::AlignJustify | Qt::AlignVCenter));
+    }
+    setSettingsButton();
+    }
+
     m_btnControl->setVisible(a_visible);
 }
 
@@ -66,8 +91,8 @@ void CustomLineEditBase::focusOutEvent(QFocusEvent *event)
 
     showCustomPlaceholder();
 #ifdef Q_OS_ANDROID
-    QApplication::inputMethod()->hide();
-   // changeVisibilityVitrulKeyboard(true);
+    emit focusChanged(true);
+    QApplication::inputMethod()->hide();  
 #endif
     QLineEdit::focusOutEvent(event);
 }
@@ -77,8 +102,8 @@ void CustomLineEditBase::focusInEvent(QFocusEvent *event)
     hideCustomPlaceholder();
 
 #ifdef Q_OS_ANDROID
+    emit focusChanged(false);
     QApplication::inputMethod()->show();
-    //changeVisibilityVitrulKeyboard(false);
 #endif
 
     Utils::setPropertyAndUpdateStyle(this, Properties::ACTIVE, true);
@@ -88,30 +113,14 @@ void CustomLineEditBase::focusInEvent(QFocusEvent *event)
 
 void CustomLineEditBase::recreateSubControls()
 {
-    m_lblIcon = new ResizableIconLabel(this);
-    connect(m_lblIcon, SIGNAL(resized()), this, SLOT(adjustTextMargins()), Qt::DirectConnection);
-
-    m_lblIcon->setObjectName("image");
-    m_lblIcon->hide();
-
     m_spacer = new QSpacerItem(0, 0);
 
-    m_btnControl = new ResizablePushButton(this);
-    connect(m_btnControl, SIGNAL(resized()), this, SLOT(adjustTextMargins()), Qt::DirectConnection);
-    m_btnControl->setObjectName("control");
-
-    m_btnControl->hide();
-
     m_layoutCtrl = new QHBoxLayout();
+
     m_layoutCtrl->setSpacing(0);
     m_layoutCtrl->setContentsMargins(0, 0, 0, 0);
 
-    m_layoutCtrl->addWidget(m_lblIcon);
-    m_layoutCtrl->setStretch(0, 0);
     m_layoutCtrl->addItem(m_spacer);
-    m_layoutCtrl->setStretch(1, 1);
-    m_layoutCtrl->addWidget(m_btnControl);
-    m_layoutCtrl->setStretch(2, 0);
 
     setLayout(m_layoutCtrl);
 
@@ -150,7 +159,7 @@ void CustomLineEditBase::adjustPlaceholder()
             m_placeHolderCtrl->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             m_placeHolderCtrl->setFocusPolicy(Qt::NoFocus);
 
-            m_layoutCtrl->insertWidget(1, m_placeHolderCtrl, 0, (Qt::AlignJustify | Qt::AlignVCenter));
+            m_layoutCtrl->insertWidget(0, m_placeHolderCtrl, 0, (Qt::AlignJustify | Qt::AlignVCenter));
 
             if(hasFocus())
             {
@@ -222,28 +231,23 @@ void CustomLineEditBase::hideCustomPlaceholder()
 void CustomLineEditBase::adjustTextMargins()
 {
     const QMargins marginsPrev(textMargins());
-    QMargins marginsNew(0, marginsPrev.top(), 0, marginsPrev.bottom());
+    QMargins marginsNew(marginsPrev.left(), marginsPrev.top(), 0, marginsPrev.bottom());
 
     if(Q_NULLPTR != m_lblIcon)
     {
-        if(m_lblIcon->isVisible())
-        {
             marginsNew.setLeft(m_lblIcon->width());
-        }
     }
 
     if(Q_NULLPTR != m_btnControl)
     {
-        if(m_btnControl->isVisible())
-        {
             marginsNew.setRight(m_btnControl->width());
-        }
     }
-qWarning()<<objectName()<<"----------------------------------------------------------------------"<<marginsNew;
+
     if(marginsPrev != marginsNew)
     {
         setTextMargins(marginsNew);
     }
+
 }
 
 
@@ -257,7 +261,7 @@ ResizableIconLabel::ResizableIconLabel(QWidget* parent)
 void ResizableIconLabel::resizeEvent(QResizeEvent* event)
 {
     QLabel::resizeEvent(event);
-qWarning()<<"************************************ResizableIconLabel::resizeEvent*******************************************";
+
     emit resized();
 }
 

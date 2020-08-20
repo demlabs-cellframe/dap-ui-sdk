@@ -19,6 +19,9 @@ public:
     /// Adds widgets that should disappear/appear.
     void addDisappearingWidget(QWidget *a_widget);
 
+    ///Adds widgets to control input fields.
+    void addWidgetEmitsSignal(CustomLineEditBase *a_widget);
+
 private:
     QList<QWidget*> m_disappearingWidget;
 private slots:
