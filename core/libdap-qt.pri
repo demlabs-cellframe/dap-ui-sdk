@@ -35,6 +35,7 @@ HEADERS += \
     $$PWD/DapSession.h \
     $$PWD/DapCrypt.h \
     $$PWD/DapSignUpData.h \
+    $$PWD/DapUtils.h \
     $$PWD/InterfaceDapKey.h \
     $$PWD/DapKeyMsrln.h \
     $$PWD/DapLogger.h \

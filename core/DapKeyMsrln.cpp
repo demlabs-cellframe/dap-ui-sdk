@@ -64,12 +64,12 @@ bool DapKeyMsrln::generateSessionKey(const QByteArray& bobMessage,
     return true;
 }
 
-void DapKeyMsrln::encode(QByteArray &in, QByteArray &out)
+void DapKeyMsrln::encode(const QByteArray &in, QByteArray &out)
 {
     _sharedSessionKey->encode(in,out);
 }
 
-void DapKeyMsrln::decode(QByteArray &in, QByteArray &out)
+void DapKeyMsrln::decode(const QByteArray &in, QByteArray &out)
 {
     _sharedSessionKey->decode(in,out);
 }

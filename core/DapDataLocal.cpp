@@ -146,15 +146,21 @@ void DapDataLocal::saveAuthorizationDatas()
 {
     this->saveEncriptedSetting(this->TEXT_LOGIN     , this->login());
     this->saveEncriptedSetting(this->TEXT_PASSWORD  , this->password());
-//    this->saveEncriptedSetting(this->TEXT_SERIAL_KEY, this->serialKey());
+}
 
+void DapDataLocal::saveSerialKeyData()
+{
+    if (m_serialKeyData)
+        this->saveToSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
 }
 
 void DapDataLocal::loadAuthorizationDatas()
 {
-//    this->setSerialKey(getEncriptedSetting(TEXT_SERIAL_KEY).toString());
     this->setLogin(getEncriptedSetting(TEXT_LOGIN).toString());
     this->setPassword(getEncriptedSetting(TEXT_PASSWORD).toString());
+
+    if (m_serialKeyData)
+        this->loadFromSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
 }
 
 void DapDataLocal::rotateCDBList() {
@@ -172,39 +178,43 @@ QSettings* DapDataLocal::settings()
 
 QVariant DapDataLocal::getEncriptedSetting(const QString &a_setting)
 {
-    QByteArray stringIn = DapDataLocal::getSetting(a_setting).toByteArray();
-    QByteArray stringOut;
-
-    if (stringIn.isEmpty())
-        return "";
-    initSecretKey();
-    secretKey->decode(stringIn, stringOut);
-    return QString(stringOut);
+    QByteArray outString;
+    this->loadEncriptedSettingString(a_setting, outString);
+    return QString(outString);
 }
 
-void DapDataLocal::saveToSettings(const DapSerialKeyData &a_serialKeyData)
+bool DapDataLocal::loadEncriptedSettingString(const QString &a_setting, QByteArray& a_outString)
 {
-    this->saveEncriptedSetting(TEXT_SERIAL_KEY, QVariant::fromValue(a_serialKeyData));
-}
+    QVariant varSettings = DapDataLocal::getSetting(a_setting);
 
-bool DapDataLocal::loadFromSettings(DapSerialKeyData &a_serialKeyData)
-{
-    QVariant variantFromSettings = this->getEncriptedSetting(TEXT_SERIAL_KEY);
-    if (!variantFromSettings.isValid() || !variantFromSettings.canConvert<DapSerialKeyData>())
+    if (!varSettings.isValid() || !varSettings.canConvert<QByteArray>())
         return false;
 
-    DapSerialKeyData dataFromSettings = variantFromSettings.value<DapSerialKeyData>();
-    a_serialKeyData.setSerialKey(dataFromSettings.serialKey());
-    a_serialKeyData.setActivated(dataFromSettings.isActivated());
+    QByteArray encriptedString = varSettings.toByteArray();
+    if (encriptedString.isEmpty())
+    {
+        a_outString = "";
+        return true;
+    }
+
+    this->initSecretKey();
+    secretKey->decode(encriptedString, a_outString);
+
     return true;
 }
 
+
 void DapDataLocal::saveEncriptedSetting(const QString &a_setting, const QVariant &a_value)
 {
+    this->saveEncriptedSetting(a_setting, a_value.toByteArray());
+}
+
+void DapDataLocal::saveEncriptedSetting(const QString &a_setting, const QByteArray &a_string)
+{
     initSecretKey();
-    QByteArray tempStringIn = a_value.toByteArray(), tempStringOut;
-    secretKey->encode(tempStringIn, tempStringOut);
-    DapDataLocal::saveSetting(a_setting, tempStringOut);
+    QByteArray encodedString;
+    secretKey->encode(a_string, encodedString);
+    DapDataLocal::saveSetting(a_setting, encodedString);
 }
 
 QVariant DapDataLocal::getSetting(const QString &a_setting)
