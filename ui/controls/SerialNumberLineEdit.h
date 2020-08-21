@@ -12,7 +12,6 @@
 #include <QFontDatabase>
 #include <QMouseEvent>
 #include <QPainter>
-//#include <QLineEdit>
 #include "defines.h"
 #include "Utilz.h"
 #include "CustomLineEditBase.h"
@@ -30,7 +29,7 @@
 #endif
 
 #ifndef VALIDATOR
-#define VALIDATOR "[A-Z0-9]"
+#define VALIDATOR "A-Z0-9"
 #endif
 
 class SerialFieldEdit;
@@ -76,7 +75,7 @@ private:
 
 private slots:
     void slot_textEdited(QString text);
-    void slot_textChanged(QString);
+    void slot_textChanged(QString text);
 
     void slot_checkOutOfLineEdit();
     void slot_checkInLineEdit();
@@ -85,7 +84,6 @@ private slots:
     void slot_paste(QString text);
 protected:
     virtual void focusInEvent(QFocusEvent *) override;
-    virtual void focusOutEvent(QFocusEvent *event) override;
 private:
     QGridLayout* m_layout{Q_NULLPTR};
     QVector <SerialFieldEdit*>m_vecLineEdit{};
@@ -118,11 +116,7 @@ protected:
     virtual void focusInEvent(QFocusEvent *event) override;
     virtual void focusOutEvent(QFocusEvent *event) override;
     virtual void keyPressEvent(QKeyEvent *event) override;
-    virtual void paintEvent(QPaintEvent *event) override;
     virtual void pasteEvent();
-#ifdef Q_OS_ANDROID
-    virtual void inputMethodEvent(QInputMethodEvent *event) override;
-#endif
 private:
 
     SerialFieldEdit(QWidget* parent = Q_NULLPTR)
