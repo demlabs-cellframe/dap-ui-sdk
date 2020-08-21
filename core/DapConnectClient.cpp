@@ -53,9 +53,10 @@ void DapConnectClient::_rebuildNetworkManager()
 {
     qDebug() << "rebuildNetworkManager";
     emit sigNetworkManagerRebuild();
-    delete m_httpClient;
-    m_httpClient = new QNetworkAccessManager(this);
-    m_httpClient->setProxy(QNetworkProxy::NoProxy);
+    //delete m_httpClient;
+    //m_httpClient = new QNetworkAccessManager(this);
+    m_httpClient->setNetworkAccessible(QNetworkAccessManager::Accessible); // test...
+    //m_httpClient->setProxy(QNetworkProxy::NoProxy);
 }
 
 bool DapConnectClient::_buildRequest(QNetworkRequest& req, const QString& host,

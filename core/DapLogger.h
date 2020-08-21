@@ -41,7 +41,7 @@ public:
     void clearOldLogs();
     static void setLogLevel(dap_log_level ll);
 private:
-    QTimer *t = new QTimer(QCoreApplication::instance());
+    QTimer t;
     QString pathToLog;
     QString m_currentLogName;
     QString m_appType;
