@@ -40,6 +40,7 @@
 #include "ScreenWithCustomPopupsAbstract.h"
 #include "ScreenWithScreenPopupsAbstract.h"
 #include "ComboBoxPopupScreen.h"
+#include "FAQScreen.h"
 
 
 
