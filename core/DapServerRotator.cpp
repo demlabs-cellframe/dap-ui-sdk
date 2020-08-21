@@ -7,6 +7,8 @@ DapServerRotator::DapServerRotator(QObject *a_parent)
 void DapServerRotator::fillingAlternativeServersContainer()
 {
     m_alternativeServersList = QVector<DapServerInfo>::fromList(DapDataLocal::serversData()->servers());
+    m_sameLocationSearchAccepted = false;
+    m_anotherLocationSearchAccepted = false;
 }
 
 void DapServerRotator::dropWasteServers()
