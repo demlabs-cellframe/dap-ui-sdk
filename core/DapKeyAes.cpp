@@ -48,7 +48,7 @@ bool DapKeyAes::init(const QByteArray& seed, const QByteArray& kex_buf)
     return _key;
 }
 
-void DapKeyAes::encode(QByteArray& dataIn, QByteArray& dataOut)
+void DapKeyAes::encode(const QByteArray& dataIn, QByteArray& dataOut)
 {
     if(_key == Q_NULLPTR) {
         qWarning() << "Error encode. _key is null";
@@ -63,7 +63,7 @@ void DapKeyAes::encode(QByteArray& dataIn, QByteArray& dataOut)
 }
 
 
-void DapKeyAes::decode(QByteArray& dataIn, QByteArray& dataOut)
+void DapKeyAes::decode(const QByteArray& dataIn, QByteArray& dataOut)
 {
     if(_key == Q_NULLPTR) {
         qWarning() << "Error encode. _key is null";

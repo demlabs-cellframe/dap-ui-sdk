@@ -40,8 +40,8 @@ private:
 public:
     DapKeyAes();
     ~DapKeyAes();
-    void encode(QByteArray& in, QByteArray& out);
-    void decode(QByteArray& in, QByteArray& out);
+    void encode(const QByteArray &in, QByteArray& out);
+    void decode(const QByteArray &in, QByteArray& out);
 
     bool init(const QString& kex_buf);
     bool init(const QByteArray& seed, const QByteArray& kex_buf);

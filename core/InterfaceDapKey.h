@@ -31,8 +31,8 @@ public:
     DapKeyAbstract() { }
     virtual ~DapKeyAbstract() { }
 
-    virtual void encode(QByteArray& in, QByteArray& out) = 0;
-    virtual void decode(QByteArray& in, QByteArray& out) = 0;
+    virtual void encode(const QByteArray& in, QByteArray& out) = 0;
+    virtual void decode(const QByteArray& in, QByteArray& out) = 0;
     virtual bool init(const QString& key) {(void)key; return false;}
 };
 

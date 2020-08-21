@@ -29,8 +29,8 @@ public:
 
     bool generateAliceSharedKey(const QByteArray& bobMessage);
 
-    void encode(QByteArray& in, QByteArray& out);
-    void decode(QByteArray& in, QByteArray& out);
+    void encode(const QByteArray& in, QByteArray& out);
+    void decode(const QByteArray& in, QByteArray& out);
     bool init(const QString& key);
 };
 
