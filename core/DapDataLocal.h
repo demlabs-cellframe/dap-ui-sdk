@@ -11,8 +11,12 @@
 #include "DapBugReportData.h"
 #include "DapServersData.h"
 #include "DapSignUpData.h"
+#include "DapUtils.h"
+
 
 #define SERVER_LIST_FILE "vpn-servers.xml"
+
+class DapSerialKeyData;
 
 class DapDataLocal : public QObject
 {
@@ -42,8 +46,6 @@ public:
     void setLogFilePath(QString path){logFilePath = path;}
     QString getLogFilePath(){return logFilePath;}
 
-    QString serialKey() const;
-
     QString password() const;
 
     QString urlUpdate() const;
@@ -54,13 +56,22 @@ public:
     const QString & getBrandName()         { return m_brandName;      }
 
     void saveEncriptedSetting(const QString &a_setting, const QVariant &a_value);
+    void saveEncriptedSetting(const QString &a_setting, const QByteArray &a_value);
     QVariant getEncriptedSetting(const QString &a_setting);
+    bool loadEncriptedSettingString(const QString &a_setting, QByteArray& a_outString);
+
+    template<typename T>
+    void saveToSettings(const QString &a_setting, const T& a_value);
+    template<typename T>
+    bool loadFromSettings(const QString &a_setting, T& a_value);
 
     static QVariant getSetting (const QString& a_setting);
     static void     saveSetting(const QString& a_setting, const QVariant& a_value);
+    void saveSerialKeyData();
 
     static DapBugReportData *bugReportData();
     static DapServersData   *serversData();
+    DapSerialKeyData* serialKeyData();
 
     const QString TEXT_SERIAL_KEY   = "serialkey";
     const QString TEXT_LOGIN        = "login";
@@ -71,7 +82,6 @@ public:
 public slots:
     void setLogin(const QString &a_login);
 
-    void setSerialKey(const QString &a_serialKey);
     void setPassword(const QString &password);
 
     void setUrlUpdate(const QString &a_url);
@@ -86,9 +96,6 @@ signals:
     /// Signal emitted if password has changed.
     /// @param password Password.
     void passwordChanged(const QString& password);
-    /// Signal emitted if password has changed.
-    /// @param password Password.
-    void serialKeyChanged(const QString& serial);
 
 protected:
     QList<QString>  m_cdbServersList;
@@ -106,4 +113,20 @@ private:
     QString m_urlUpdate; ///< url for download
 };
 
+template<typename T>
+bool DapDataLocal::loadFromSettings(const QString &a_setting, T &a_value)
+{
+    QByteArray stringFromSettings;
 
+    if (!this->loadEncriptedSettingString(a_setting, stringFromSettings))
+        return false;
+
+    a_value = DapUtils::fromByteArray<T>(stringFromSettings);
+    return true;
+}
+
+template<typename T>
+void DapDataLocal::saveToSettings(const QString &a_setting, const T &a_value)
+{
+    this->saveEncriptedSetting(a_setting, DapUtils::toByteArray(a_value));
+}
