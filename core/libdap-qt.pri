@@ -1,5 +1,4 @@
 QT += core network xml
-QT += widgets #for DapServerRotator - QMessageBox
 #INCLUDEPATH += ../libdap/include ../libdap/src
 #INCLUDEPATH += ../libdap-crypto/include  ../libdap-crypto/src
 include (../quazip/quazip.pri)

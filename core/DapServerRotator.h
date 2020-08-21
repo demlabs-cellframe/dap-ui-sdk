@@ -2,37 +2,36 @@
 #define DAPSERVERROTATOR_H
 
 #include "DapDataLocal.h"
-#include <QWidget>
+//#include <QWidget>
 //#include <QMessageBox>
 #include <QtWidgets/QMessageBox>
 
-class DapServerRotator : public QWidget
+class DapServerRotator : public QObject
 {
 public:
 
-    /*static DapServerRotator *_me;
-    static DapServerRotator * me(){ return _me?_me: _me = new DapServerRotator();}*/
-
-    DapServerRotator(QWidget* a_parent = nullptr);
+    DapServerRotator(QObject* a_parent = nullptr);
 
     bool selectingRandomServer();
     bool selectingSameLocationServer();
     void dropWasteServers();
-    void fillingServersContainer();
-    void setRotationServersProcess(bool state){
-        bRotationServersProcess = state;
-    };
-    bool getRotationServersProcess(){
-        return bRotationServersProcess;
-    }
+    void fillingAlternativeServersContainer();
+
+    void setSameLocationSearchAccepted(bool value){ m_sameLocationSearchAccepted = value; };
+    void setAnotherLocationSearchAccepted(bool value){ m_anotherLocationSearchAccepted = value; };
+    bool sameLocationSearchAccepted(){return m_sameLocationSearchAccepted;};
+    bool anotherLocationSearchAccepted(){return m_anotherLocationSearchAccepted;};
+
+    QVector<DapServerInfo>& alternativeServersList(){ return m_alternativeServersList; }
 
 private:
 
-
     bool isDuplicate(const DapServerInfo m_server);
 
-    bool bRotationServersProcess = false;
+    QVector<DapServerInfo> m_alternativeServersList;
 
+    bool m_sameLocationSearchAccepted = false;
+    bool m_anotherLocationSearchAccepted = false;
 
 };
 

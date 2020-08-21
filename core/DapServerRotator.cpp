@@ -1,38 +1,30 @@
 #include "DapServerRotator.h"
 
-DapServerRotator::DapServerRotator(QWidget *a_parent)
+DapServerRotator::DapServerRotator(QObject *a_parent)
 {
-    qDebug() << "DapServerRotator";
-    fillingServersContainer();
 }
 
-void DapServerRotator::fillingServersContainer()
+void DapServerRotator::fillingAlternativeServersContainer()
 {
-    qDebug() << "fillingServersContainer";
-    if (DapDataLocal::serversData()->serversForCheck().isEmpty())
-        for (auto server : DapDataLocal::serversData()->servers())
-            DapDataLocal::serversData()->serversForCheck().push_back(server);
-//    dropWasteServers();
+    m_alternativeServersList = QVector<DapServerInfo>::fromList(DapDataLocal::serversData()->servers());
 }
 
 void DapServerRotator::dropWasteServers()
 {
-    qDebug() << "dropWasteServers - begin size m_serversForCheck: " << DapDataLocal::serversData()->serversForCheck().size();
-    QMutableVectorIterator<DapServerInfo> i(DapDataLocal::serversData()->serversForCheck());
+    qDebug() << "Drop waste servers - begin size m_alternativeServersList: " << alternativeServersList().size();
+    QMutableVectorIterator<DapServerInfo> i(alternativeServersList());
     while(i.hasNext()) {
         DapServerInfo server = i.next();
-        //drop current server and auto
         if (server.address == DapDataLocal::serversData()->currentServer()->address || server.isAuto() || isDuplicate(server)){
-            qDebug() << "dropWasteServers - drop: " << server.name << " " << server.address;
+            qDebug() << "drop: " << server.name << " " << server.address;
             i.remove();
         }
     }
-    qDebug() << "dropWasteServers - end size m_serversForCheck: " << DapDataLocal::serversData()->serversForCheck().size();
 }
 
 bool DapServerRotator::isDuplicate(const DapServerInfo m_server)
 {
-    for (auto a_server : DapDataLocal::serversData()->serversForCheck()){
+    for (auto a_server : alternativeServersList()){
         if (m_server.address == a_server.address && m_server.name != a_server.name)
             return true;
     }
@@ -41,33 +33,25 @@ bool DapServerRotator::isDuplicate(const DapServerInfo m_server)
 
 bool DapServerRotator::selectingRandomServer()
 {
-    qDebug() << "selectingRandomServer";
-
-    if (!DapDataLocal::serversData()->serversForCheck().isEmpty()){
-        int indexRandomServer = qrand() % DapDataLocal::serversData()->serversForCheck().size();
-        DapDataLocal::serversData()->setCurrentServer(DapDataLocal::serversData()->serversForCheck()[indexRandomServer].name);
-        qDebug() << "indexRandomServer " << DapDataLocal::serversData()->serversForCheck()[indexRandomServer].name;
+    if (!alternativeServersList().isEmpty()){
+        int indexRandomServer = qrand() % alternativeServersList().size();
+        DapDataLocal::serversData()->setCurrentServer(alternativeServersList()[indexRandomServer].name);
+        qDebug() << "DapServerRotator - set current server(random): " << alternativeServersList()[indexRandomServer].name;
         return true;
     }
-    qDebug() << " | selectingRandomServer - return false";
     return false;
 }
 
 bool DapServerRotator::selectingSameLocationServer()
-{   qDebug() << "selectingSameLocationServer";
-
-    if (!DapDataLocal::serversData()->serversForCheck().isEmpty()){
-        for (DapServerInfo &server : DapDataLocal::serversData()->serversForCheck()){
-            qDebug() << "for server: " << server.name;
+{
+    if (!alternativeServersList().isEmpty()){
+        for (DapServerInfo &server : alternativeServersList()){
             if (server.location == DapDataLocal::serversData()->currentServer()->location){
-                qDebug() << "serversData()->setCurrentServer: " << server.name;
+                qDebug() << "DapServerRotator - set current server(same location): " << server.name;
                 DapDataLocal::serversData()->setCurrentServer(server.name);
                 return true;
             }
         }
     }
-    else
-        qDebug() << "serversForCheck isEmpty";
-    qDebug() << " | selectingSameLocationServer - return false";
     return false;
 }
