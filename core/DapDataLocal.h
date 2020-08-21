@@ -111,6 +111,8 @@ private:
     QString m_serialKey;  ///< Serial key.
 
     QString m_urlUpdate; ///< url for download
+
+    DapSerialKeyData* m_serialKeyData;
 };
 
 template<typename T>
