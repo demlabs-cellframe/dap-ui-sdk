@@ -7,12 +7,25 @@ const QString SignUpScreen::SCREEN_NAME = "SignUp";
 SignUpScreen::SignUpScreen(QWidget *a_parent)
     : AdaptiveScreen(a_parent)
 {
-    create<Ui::SignUpScreen>();
+
+    this->create(m_ui);
 
     connect(this, SIGNAL(emailEdited            (const QString &)), SLOT(setEmail       (const QString &)));
     connect(this, SIGNAL(passwordEdited         (const QString &)), SLOT(setPassword    (const QString &)));
     connect(this, SIGNAL(repeatPasswordEdited   (const QString &)), SLOT(setRptPassword(const QString &)));
     connect(this, SIGNAL(agreeChanged           (const bool &)),    SLOT(setAgree       (const bool &))    );
+
+#ifdef Q_OS_ANDROID
+    m_widgetSizeController = new WidgetInputSizeController(this);
+
+    m_widgetSizeController->addDisappearingWidget(m_ui->lblLogo);
+    m_widgetSizeController->addDisappearingWidget(m_ui->lblStatusMessage);
+    m_widgetSizeController->addDisappearingWidget(m_ui->lblCaption);
+
+    m_widgetSizeController->addWidgetEmitsSignal(m_ui->edtEmail);
+    m_widgetSizeController->addWidgetEmitsSignal(m_ui->edtPassword);
+    m_widgetSizeController->addWidgetEmitsSignal(m_ui->edtRptPassword);
+#endif
 
     AdaptiveScreen::initScreen(this);
 }

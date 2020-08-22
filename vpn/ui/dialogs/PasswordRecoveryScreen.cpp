@@ -6,7 +6,16 @@ const QString PasswordRecoveryScreen::SCREEN_NAME = "PasswordRecovery";
 PasswordRecoveryScreen::PasswordRecoveryScreen(QWidget *a_parent)
     : AdaptiveScreen(a_parent)
 {
-    create<Ui::PasswordRecoveryScreen>();
+    //create<Ui::PasswordRecoveryScreen>();
+    this->create(m_ui);
+
+#ifdef Q_OS_ANDROID
+    m_widgetSizeController = new WidgetInputSizeController(this);
+
+    m_widgetSizeController->addDisappearingWidget(m_ui->lblLogo);
+
+    m_widgetSizeController->addWidgetEmitsSignal(m_ui->edtEmail);
+#endif
 
     AdaptiveScreen::initScreen(this);
 }
