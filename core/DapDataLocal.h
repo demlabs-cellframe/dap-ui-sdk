@@ -48,6 +48,8 @@ public:
 
     QString password() const;
 
+    QString urlUpdate() const;
+
     const QList<QString> &cdbServersList() { return m_cdbServersList; }
     const QString & networkDefault()       { return m_networkDefault; }
     const QString & getUrlSite()           { return m_urlSite;        }
@@ -82,6 +84,8 @@ public slots:
 
     void setPassword(const QString &password);
 
+    void setUrlUpdate(const QString &a_url);
+
     void saveAuthorizationDatas();
     void rotateCDBList();
 
@@ -102,8 +106,11 @@ private:
     void loadAuthorizationDatas();
     static QSettings* settings();
 
-    QString m_login;
-    QString m_password;
+    QString m_login;      ///< Login.
+    QString m_password;   ///< Password.
+    QString m_serialKey;  ///< Serial key.
+
+    QString m_urlUpdate; ///< url for download
 
     DapSerialKeyData* m_serialKeyData;
 };

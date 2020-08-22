@@ -290,3 +290,13 @@ DapDataLocal *DapDataLocal::instance()
     static DapDataLocal s_instance;
     return &s_instance;
 }
+
+void DapDataLocal::setUrlUpdate(const QString &a_url)
+{
+    m_urlUpdate = a_url;
+}
+
+QString DapDataLocal::urlUpdate() const
+{
+    return m_urlUpdate;
+}
