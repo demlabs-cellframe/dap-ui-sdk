@@ -9,6 +9,7 @@
 #include <QTime>
 
 #include "DapDataLocal.h"
+#include "DapSerialKeyData.h"
 
 DapDataLocal::picturesMap DapDataLocal::m_pictruePath = {
     {DapServerLocation::ENGLAND, ":/country/GB.png"},
@@ -26,6 +27,7 @@ DapDataLocal::picturesMap DapDataLocal::m_pictruePath = {
 
 DapDataLocal::DapDataLocal()
     : QObject()
+    , m_serialKeyData(new DapSerialKeyData(this))
 {
     qDebug() << "[DL] DapDataLocal Constructor";
 
@@ -139,35 +141,26 @@ void DapDataLocal::setPassword(const QString &a_password)
 
     emit this->passwordChanged(m_password);
 }
-/// Set serial key.
-/// @param serial serial key.
-void DapDataLocal::setSerialKey(const QString &a_serialKey)
-{
-    if (this->m_serialKey == a_serialKey)
-        return;
-    m_serialKey = a_serialKey;
-
-    emit this->serialKeyChanged(m_serialKey);
-}
-
-QString DapDataLocal::serialKey() const
-{
-    return m_serialKey;
-}
-
 
 void DapDataLocal::saveAuthorizationDatas()
 {
     this->saveEncriptedSetting(this->TEXT_LOGIN     , this->login());
     this->saveEncriptedSetting(this->TEXT_PASSWORD  , this->password());
-    this->saveEncriptedSetting(this->TEXT_SERIAL_KEY, this->serialKey());
+}
+
+void DapDataLocal::saveSerialKeyData()
+{
+    if (m_serialKeyData)
+        this->saveToSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
 }
 
 void DapDataLocal::loadAuthorizationDatas()
 {
-    this->setSerialKey(getEncriptedSetting(TEXT_SERIAL_KEY).toString());
     this->setLogin(getEncriptedSetting(TEXT_LOGIN).toString());
     this->setPassword(getEncriptedSetting(TEXT_PASSWORD).toString());
+
+    if (m_serialKeyData)
+        this->loadFromSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
 }
 
 void DapDataLocal::rotateCDBList() {
@@ -185,22 +178,43 @@ QSettings* DapDataLocal::settings()
 
 QVariant DapDataLocal::getEncriptedSetting(const QString &a_setting)
 {
-    QByteArray stringIn = DapDataLocal::getSetting(a_setting).toByteArray();
-    QByteArray stringOut;
-
-    if (stringIn.isEmpty())
-        return "";
-    initSecretKey();
-    secretKey->decode(stringIn, stringOut);
-    return QString(stringOut);
+    QByteArray outString;
+    this->loadEncriptedSettingString(a_setting, outString);
+    return QString(outString);
 }
+
+bool DapDataLocal::loadEncriptedSettingString(const QString &a_setting, QByteArray& a_outString)
+{
+    QVariant varSettings = DapDataLocal::getSetting(a_setting);
+
+    if (!varSettings.isValid() || !varSettings.canConvert<QByteArray>())
+        return false;
+
+    QByteArray encriptedString = varSettings.toByteArray();
+    if (encriptedString.isEmpty())
+    {
+        a_outString = "";
+        return true;
+    }
+
+    this->initSecretKey();
+    secretKey->decode(encriptedString, a_outString);
+
+    return true;
+}
+
 
 void DapDataLocal::saveEncriptedSetting(const QString &a_setting, const QVariant &a_value)
 {
+    this->saveEncriptedSetting(a_setting, a_value.toByteArray());
+}
+
+void DapDataLocal::saveEncriptedSetting(const QString &a_setting, const QByteArray &a_string)
+{
     initSecretKey();
-    QByteArray tempStringIn = a_value.toByteArray(), tempStringOut;
-    secretKey->encode(tempStringIn, tempStringOut);
-    DapDataLocal::saveSetting(a_setting, tempStringOut);
+    QByteArray encodedString;
+    secretKey->encode(a_string, encodedString);
+    DapDataLocal::saveSetting(a_setting, encodedString);
 }
 
 QVariant DapDataLocal::getSetting(const QString &a_setting)
@@ -221,6 +235,11 @@ DapBugReportData *DapDataLocal::bugReportData()
 DapServersData *DapDataLocal::serversData()
 {
     return DapServersData::instance();
+}
+
+DapSerialKeyData *DapDataLocal::serialKeyData()
+{
+    return m_serialKeyData;
 }
 
 bool DapDataLocal::initSecretKey()

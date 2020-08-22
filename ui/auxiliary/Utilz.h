@@ -39,6 +39,8 @@ namespace Utils
     void setPropertyAndUpdateStyle(QWidget* a_widget, const QString& a_property, const QVariant& a_value = true);
     void setPropertyAndUpdateStyle(QWidget* a_widget, const char*    a_property, const QVariant& a_value = true);
     void updateStyle(QWidget* a_widget);
+
+    QString getTextFromFile(const QString &a_fname);
 };
 
 template <class T>
