@@ -3,7 +3,7 @@
 #include <QApplication>
 #include <QFileInfo>
 #include <QWidget>
-
+#include <math.h>
 #include "UiScaling.h"
 #include "math.h"
 
