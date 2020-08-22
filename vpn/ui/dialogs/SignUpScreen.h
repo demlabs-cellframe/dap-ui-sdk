@@ -86,10 +86,6 @@ signals:
     void setStateFinalScreen();
     void setStateNormalScreen();
     void setStateStutusMessageNormal();
-
-#ifdef Q_OS_ANDROID
-    void sigMousePressMainWindow();
-#endif
 private:
 
 #ifdef Q_OS_ANDROID

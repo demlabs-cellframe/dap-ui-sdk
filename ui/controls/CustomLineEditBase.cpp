@@ -32,6 +32,8 @@ CustomLineEditBase::CustomLineEditBase(const QString& contents,
 
 void CustomLineEditBase::setVisibleIcon(bool &a_visible)
 {
+    if(a_visible)
+    {
         if(m_lblIcon == Q_NULLPTR)
         {
             m_lblIcon = new ResizableIconLabel(this);
@@ -46,24 +48,44 @@ void CustomLineEditBase::setVisibleIcon(bool &a_visible)
         }
         m_lblIcon->setVisible(a_visible);
         adjustTextMargins();
+    }
+    else
+    {
+        if(m_lblIcon != Q_NULLPTR)
+        {
+            delete m_lblIcon;
+            m_lblIcon = Q_NULLPTR;
+        }
+    }
 }
 
 void CustomLineEditBase::setVisibleButton(bool a_visible)
 {
-    if(m_btnControl == Q_NULLPTR)
+    if(a_visible)
     {
-    m_btnControl = new ResizablePushButton(this);
-    connect(m_btnControl, SIGNAL(resized()), this, SLOT(adjustTextMargins()), Qt::DirectConnection);
-    m_btnControl->setObjectName("control");
+        if(m_btnControl == Q_NULLPTR)
+        {
+            m_btnControl = new ResizablePushButton(this);
+            connect(m_btnControl, SIGNAL(resized()), this, SLOT(adjustTextMargins()), Qt::DirectConnection);
+            m_btnControl->setObjectName("control");
 
-    if(m_layoutCtrl!=Q_NULLPTR)
+            if(m_layoutCtrl!=Q_NULLPTR)
+            {
+                m_layoutCtrl->addWidget(m_btnControl);
+            }
+            setSettingsButton();
+        }
+
+        m_btnControl->setVisible(a_visible);
+    }
+    else
     {
-        m_layoutCtrl->insertWidget(3,m_btnControl, 0, (Qt::AlignJustify | Qt::AlignVCenter));
+        if(m_btnControl!=Q_NULLPTR)
+        {
+            delete m_btnControl;
+            m_btnControl = Q_NULLPTR;
+        }
     }
-    setSettingsButton();
-    }
-
-    m_btnControl->setVisible(a_visible);
 }
 
 void CustomLineEditBase::setWrongState(bool a_wrong)
@@ -92,7 +114,7 @@ void CustomLineEditBase::focusOutEvent(QFocusEvent *event)
     showCustomPlaceholder();
 #ifdef Q_OS_ANDROID
     emit focusChanged(true);
-    QApplication::inputMethod()->hide();  
+    QApplication::inputMethod()->hide();
 #endif
     QLineEdit::focusOutEvent(event);
 }
@@ -138,12 +160,12 @@ void CustomLineEditBase::setPlaceholderAlignment(Qt::Alignment &a_alignment)
     {
         switch (a_alignment)
         {
-            case Qt::AlignLeft:
-                m_spacer->changeSize(16000,0);
-                break;
-            case Qt::AlignCenter:
-                m_spacer->changeSize(0,0);
-                break;
+        case Qt::AlignLeft:
+            m_spacer->changeSize(16000,0);
+            break;
+        case Qt::AlignCenter:
+            m_spacer->changeSize(0,0);
+            break;
         }
     }
 }
@@ -159,7 +181,10 @@ void CustomLineEditBase::adjustPlaceholder()
             m_placeHolderCtrl->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             m_placeHolderCtrl->setFocusPolicy(Qt::NoFocus);
 
-            m_layoutCtrl->insertWidget(0, m_placeHolderCtrl, 0, (Qt::AlignJustify | Qt::AlignVCenter));
+            if(m_lblIcon == Q_NULLPTR)
+                m_layoutCtrl->insertWidget(0, m_placeHolderCtrl, 0, (Qt::AlignJustify | Qt::AlignVCenter));
+            else
+                m_layoutCtrl->insertWidget(1, m_placeHolderCtrl, 0, (Qt::AlignJustify | Qt::AlignVCenter));
 
             if(hasFocus())
             {
@@ -177,7 +202,6 @@ void CustomLineEditBase::adjustPlaceholder()
         {
             delete m_placeHolderCtrl;
             m_placeHolderCtrl = Q_NULLPTR;
-            m_layoutCtrl->setStretch(1, 1);
         }
     }
 }
@@ -235,12 +259,20 @@ void CustomLineEditBase::adjustTextMargins()
 
     if(Q_NULLPTR != m_lblIcon)
     {
-            marginsNew.setLeft(m_lblIcon->width());
+        marginsNew.setLeft(m_lblIcon->width());
+    }
+    else
+    {
+        marginsNew.setLeft(0);
     }
 
     if(Q_NULLPTR != m_btnControl)
     {
-            marginsNew.setRight(m_btnControl->width());
+        marginsNew.setRight(m_btnControl->width());
+    }
+    else
+    {
+        marginsNew.setRight(0);
     }
 
     if(marginsPrev != marginsNew)

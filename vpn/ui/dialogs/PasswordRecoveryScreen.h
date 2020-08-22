@@ -47,9 +47,6 @@ signals:
     void goToSignIn();
 
     void setStateNormal();
-#ifdef Q_OS_ANDROID
-    void sigMousePressMainWindow();
-#endif
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
