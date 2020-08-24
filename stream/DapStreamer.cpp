@@ -322,10 +322,7 @@ void DapStreamer::sltStreamConnected()
     qDebug() << "[DapConnectStream] Request on out : " << str_request;
     m_isStreamOpened = false;
     QByteArray baReq( str_request.toLatin1() );
-    QTimer *t = new QTimer(this);
-    t->setSingleShot(true);
-    t->start(8000);
-    quint64 ret = m_streamSocket->write(baReq.constData(), baReq.size());
+    qint64 ret = m_streamSocket->write(baReq.constData(), baReq.size());
     qDebug() << "[DapConnectStream] HTTP stream request sent "<< ret<< " bytes";
 
     /*if( !m_streamSocket->waitForBytesWritten(
@@ -339,21 +336,14 @@ void DapStreamer::sltStreamConnected()
     }*/
     m_streamTimeoutConn = connect(m_streamSocket, &QAbstractSocket::bytesWritten, this, &DapStreamer::streamOpened);
     m_streamState = SSS_FRAME_SEARCH;
-    auto l_streamCheckConn = connect(t, &QTimer::timeout, [&]{
-        if (!m_isStreamOpened) {
+    QTimer::singleShot(8000, Qt::PreciseTimer, this, [=]() {
+        if (!m_isStreamOpened && m_timeoutStreamCheck) {
             qCritical() << "Stream not opened";
             disconnect(m_streamTimeoutConn);
             emit sigStreamOpenNetworkError(QNetworkReply::NetworkError::TimeoutError);
+            m_timeoutStreamCheck = false;
         }
-        delete t;
     });
-    connect(this, &DapStreamer::streamOpened, [=] {
-        qInfo() << "Async stream check: " << m_isStreamOpened;
-        disconnect(l_streamCheckConn);
-        t->stop();
-        delete t;
-    });
-
 }
 
 
