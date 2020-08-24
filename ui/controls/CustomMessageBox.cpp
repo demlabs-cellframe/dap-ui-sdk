@@ -14,8 +14,10 @@ CustomMessageBox::CustomMessageBox(const QString &a_title, const QString &a_defa
 {
     this->create(m_ui);
     m_ui->lblTitle->setText(a_title);
-    m_ui->btnDefault->setText(a_defaultButtonText);
-    m_ui->btnEscape->setText(a_escapeButtonText);
+    a_defaultButtonText.isEmpty() ? hideButton(m_ui->btnDefault)
+                                  : m_ui->btnDefault->setText(a_defaultButtonText);
+    a_escapeButtonText.isEmpty() ? hideButton(m_ui->btnEscape)
+                                 : m_ui->btnEscape->setText(a_escapeButtonText);
     m_ui->lblText->setText(a_text);
 }
 
@@ -25,12 +27,16 @@ CustomMessageBox::~CustomMessageBox()
 }
 
 void CustomMessageBox::setDefaultButtonText(const QString &a_defaultButtonText)
-{
+{ 
+    a_defaultButtonText.isEmpty() ? hideButton(m_ui->btnDefault)
+                                  : showButton(m_ui->btnDefault);
     m_ui->btnDefault->setText(a_defaultButtonText);
 }
 
 void CustomMessageBox::setEscapeButtonText(const QString &a_escapeButtonText)
 {
+    a_escapeButtonText.isEmpty() ? hideButton(m_ui->btnEscape)
+                                 : showButton(m_ui->btnEscape);
     m_ui->btnEscape->setText(a_escapeButtonText);
 }
 
@@ -89,4 +95,19 @@ void CustomMessageBox::initVariantUi(QWidget *)
     connect(m_ui->btnDefault,SIGNAL(clicked()),this, SLOT(onClickedDefaultButton()));
     connect(m_ui->btnEscape,SIGNAL(clicked()),this, SLOT(onClickedEscapeButton()));
 }
+
+void CustomMessageBox::hideButton(QPushButton *btn)
+{
+    btn->hide();
+    m_ui->horizontalSpacer->changeSize(0,0);
+}
+
+void CustomMessageBox::showButton(QPushButton *btn)
+{
+    btn->show();
+    if(m_ui->btnDefault->isHidden()||m_ui->btnEscape->isHidden())
+        m_ui->horizontalSpacer->changeSize(0,0);
+    else m_ui->horizontalSpacer->changeSize(0,0,QSizePolicy::Expanding);
+}
+
 

@@ -23,7 +23,8 @@ SOURCES += \
     $$PWD/CustomButtonAbstract.cpp \
     $$PWD/ClickableLabel.cpp \
     $$PWD/CustomTextEdit.cpp \
-    $$PWD/VersionLabel.cpp
+    $$PWD/VersionLabel.cpp \
+    $$PWD/WidgetInputSizeController.cpp
 
 HEADERS += \
     $$PWD/AdaptiveWidget.h \
@@ -50,7 +51,8 @@ HEADERS += \
     $$PWD/CustomButtonAbstract.h \
     $$PWD/ClickableLabel.h \
     $$PWD/CustomTextEdit.h \
-    $$PWD/VersionLabel.h
+    $$PWD/VersionLabel.h \
+    $$PWD/WidgetInputSizeController.h
 
 INCLUDEPATH += $$PWD
 INCLUDEPATH += $$PWD/WidgetDelegateListView
