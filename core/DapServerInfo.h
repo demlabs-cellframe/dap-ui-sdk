@@ -45,6 +45,7 @@ public:
     DapServerLocation location;
 
     bool isAuto() const;
+    bool isValid() const;
 
     static bool fromJSON(const QJsonArray& jsonArr, DapServerInfoList& out);
     static bool fromJSON(const QJsonObject& jsonObj, DapServerInfo& out);

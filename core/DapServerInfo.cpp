@@ -60,6 +60,11 @@ bool DapServerInfo::isAuto() const
     return (this->name == "Auto");
 }
 
+bool DapServerInfo::isValid() const
+{
+    return (!address.isEmpty());
+}
+
 bool DapServerInfo::fromJSON(const QJsonArray& jsonArr, DapServerInfoList& out)
 {
     for (auto it = jsonArr.constBegin(); it != jsonArr.constEnd(); ++it)

@@ -57,9 +57,20 @@ void CustomMessageBox::doEscapeAction()
     reject();
 }
 
+bool CustomMessageBox::isAccepted()
+{
+    return m_isAccepted;
+}
+
+void CustomMessageBox::reset()
+{
+    m_isAccepted = false;
+}
+
 void CustomMessageBox::accept()
 {
     this->hide();
+    m_isAccepted = true;
     emit accepted();
 }
 

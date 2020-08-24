@@ -28,6 +28,9 @@ public:
     virtual void doDefaultAction();
     virtual void doEscapeAction();
 
+    bool isAccepted();
+    void reset();
+
 signals:
     void accepted();
     void rejected();
@@ -47,6 +50,8 @@ protected:
 private:
     void hideButton(QPushButton*btn);
     QScopedPointer<Ui::CustomMessageBox> m_ui;
+
+    bool m_isAccepted = false;
 };
 
 #endif // CUSTOMMESSAGEBOX_H
