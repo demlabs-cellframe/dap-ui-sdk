@@ -5,6 +5,10 @@ CustomTextEdit::CustomTextEdit(QWidget *a_parent)
     :QTextEdit (a_parent)
 {
     QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
+
+    connect(this, &QTextEdit::textChanged,[this]{
+        this->setNewHeight(font(),toPlainText());
+    });
 }
 
 void CustomTextEdit::createCustomPlaceholder()
@@ -60,8 +64,23 @@ void CustomTextEdit::focusOutEvent(QFocusEvent *e)
     if(this->toPlainText().isEmpty())
     {
         if(m_placeHolderCtrl!=nullptr)
+        {
             m_placeHolderCtrl->show();
+            if(m_usingResizeableSize)
+                setNewHeight(m_placeHolderCtrl->font(),m_placeHolderCtrl->text());
+        }
+        else
+        {
+            if(m_usingResizeableSize)
+                setNewHeight(font(),placeholderText());
+        }
     }
+    else
+    {
+        if(m_usingResizeableSize)
+            setNewHeight(font(),toPlainText());
+    }
+
 }
 
 
@@ -69,6 +88,9 @@ void CustomTextEdit::focusInEvent(QFocusEvent *e)
 {
     if(m_placeHolderCtrl!=nullptr)
         m_placeHolderCtrl->hide();
+
+    if(m_usingResizeableSize)
+        setNewHeight(font(),toPlainText());
 
     Utils::setPropertyAndUpdateStyle(this, Properties::ACTIVE,true);
     QTextEdit::focusInEvent(e);
@@ -89,4 +111,72 @@ void CustomTextEdit::setUsingCustomPlaceholder(bool a_usingPlaceholder)
 
     else
         deleteCustomPlaceholder();
+}
+
+void CustomTextEdit::setUsingResizableSize(bool a_using)
+{
+    m_usingResizeableSize = a_using;
+}
+
+void CustomTextEdit::resizeEvent(QResizeEvent *e)
+{
+    QTextEdit::resizeEvent(e);
+    if(m_usingResizeableSize)
+        if(e->oldSize().width() !=e->size().width())
+        {
+            if(this->toPlainText().isEmpty())
+            {
+                if(m_placeHolderCtrl!=nullptr)
+                {
+                    setNewHeight(m_placeHolderCtrl->font(),m_placeHolderCtrl->text());
+                }
+                else
+                {
+                    setNewHeight(font(),placeholderText());
+                }
+            }
+            else
+            {
+                setNewHeight(font(),toPlainText());
+            }
+
+        }
+}
+
+void CustomTextEdit::inputMethodEvent(QInputMethodEvent *e)
+{
+    QTextEdit::inputMethodEvent(e);
+
+    setNewHeight(font(), toPlainText() + e->preeditString());
+}
+
+void CustomTextEdit::setNormalHeight(const QString &a_heightStr)
+{
+    int height = a_heightStr.split("px")[0].toInt();
+    m_normalHeight = height;
+}
+
+void CustomTextEdit::setMaximimLineCount(int a_maxLine)
+{
+    m_maxLineCount = a_maxLine;
+}
+
+void CustomTextEdit::setNewHeight(const QFont &a_font, const QString &a_text)
+{
+    QFontMetrics textAnalized(a_font);
+
+    int lineCount = qCeil(textAnalized.width(a_text)/static_cast<double>(this->width()));
+    if(lineCount <= m_maxLineCount)
+    {
+        int height = ((lineCount - 1) * /*document()->size().height()*/textAnalized.height()) + m_normalHeight;
+        if(height!=this->height())
+        {
+            this->setMinimumHeight(height);
+            this->setMaximumHeight(height);
+            qWarning()<<"--------------------- m_normalHeight = "<< m_normalHeight;
+            qWarning()<<"--------------------- line Count = "<< lineCount;
+            qWarning()<<"--------------------- HEIGHT = "<< height;
+            qWarning()<<"--------------------- lineSpasing = "<<textAnalized.lineSpacing();
+        }
+    }
 }
