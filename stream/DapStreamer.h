@@ -49,6 +49,7 @@ public:
     QNetworkReply::NetworkError lastErr() { return m_network_reply->error(); }
     DapChThread* addChProc(char chId, DapChBase* obj);
     void setStreamOpened(bool b) { m_isStreamOpened = b; }
+    void setStreamTimeoutCheck(bool b) { m_timeoutStreamCheck = b; }
     void stopAutoStreamConnecting() { disconnect(m_streamTimeoutConn); }
 protected:
     static QHash<char, DapChBase*> m_dsb;
@@ -69,7 +70,7 @@ protected:
 
     SafeartsStreamState m_streamState;
     volatile bool m_isStreamOpened;
-
+    volatile bool m_timeoutStreamCheck;
     QString m_streamID;
 
     QByteArray m_procPktInDecData, m_procPktInData;
