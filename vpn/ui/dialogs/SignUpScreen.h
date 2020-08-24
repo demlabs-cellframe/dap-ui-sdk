@@ -107,7 +107,7 @@ private:
     QString m_email;
     QString m_password;
     QString m_repeat_password;
-    bool    m_agree;
+    bool    m_agree{};
 
     const QString BTN_SIGN_UP                   = "btnSignUp";
     const QString LBL_TERMS                     = "lblTerms";
