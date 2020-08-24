@@ -73,4 +73,5 @@ INCLUDEPATH += $$PWD
 FORMS += \
     $$PWD/BugReportLoadingScreen.ui \
     $$PWD/BugReportResultScreen.ui \
+    $$PWD/BugReportScreen.ui \
     $$PWD/InformationScreen.ui

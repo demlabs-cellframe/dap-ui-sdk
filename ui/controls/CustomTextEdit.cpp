@@ -139,7 +139,6 @@ void CustomTextEdit::resizeEvent(QResizeEvent *e)
             {
                 setNewHeight(font(),toPlainText());
             }
-
         }
 }
 
@@ -148,6 +147,7 @@ void CustomTextEdit::inputMethodEvent(QInputMethodEvent *e)
     QTextEdit::inputMethodEvent(e);
 
     setNewHeight(font(), toPlainText() + e->preeditString());
+ //   emit lineCount(toPlainText().length() + e->preeditString().length());
 }
 
 void CustomTextEdit::setNormalHeight(const QString &a_heightStr)
@@ -173,10 +173,20 @@ void CustomTextEdit::setNewHeight(const QFont &a_font, const QString &a_text)
         {
             this->setMinimumHeight(height);
             this->setMaximumHeight(height);
-            qWarning()<<"--------------------- m_normalHeight = "<< m_normalHeight;
-            qWarning()<<"--------------------- line Count = "<< lineCount;
-            qWarning()<<"--------------------- HEIGHT = "<< height;
-            qWarning()<<"--------------------- lineSpasing = "<<textAnalized.lineSpacing();
         }
     }
+
+    if(lineCount >= m_maxLineCount && m_usingVerticalScrollBar)
+    {
+        this->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    }
+    else
+    {
+        this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    }
+}
+
+void CustomTextEdit::setUsingVerticalScrollBar(bool a_usingScrollBar)
+{
+    m_usingVerticalScrollBar = a_usingScrollBar;
 }

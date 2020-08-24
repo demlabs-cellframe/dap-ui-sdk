@@ -35,6 +35,7 @@ class CustomTextEdit: public QTextEdit
     Q_PROPERTY(bool usingResizableSize WRITE setUsingResizableSize  DESIGNABLE true)
     Q_PROPERTY(QString normalHeight WRITE setNormalHeight DESIGNABLE true)
     Q_PROPERTY(int maximimLineCount WRITE setMaximimLineCount DESIGNABLE true)
+    Q_PROPERTY(bool usingVerticalScrollBar WRITE setUsingVerticalScrollBar DESIGNABLE true)
 public:
     explicit CustomTextEdit(QWidget *a_parent = nullptr);
 
@@ -46,6 +47,7 @@ public:
 
     void setNormalHeight(const QString &a_heightStr);
     void setMaximimLineCount(int a_maxLine);
+    void setUsingVerticalScrollBar(bool a_usingScrollBar);
 protected:
 
     void focusOutEvent(QFocusEvent *e);
@@ -55,6 +57,9 @@ protected:
     void resizeEvent(QResizeEvent *e);
 
     void inputMethodEvent(QInputMethodEvent *e);
+
+signals:
+    void lineCount(int a_count);
 private:
     void createCustomPlaceholder();
     void deleteCustomPlaceholder();
@@ -73,7 +78,7 @@ private:
     int m_maxLineCount = 0;
 
     bool m_usingResizeableSize = false;
-
+    bool m_usingVerticalScrollBar = false;
 };
 
 #endif // CUSTOMTEXTEDIT_H

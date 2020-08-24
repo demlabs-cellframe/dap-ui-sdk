@@ -19,14 +19,7 @@ QString BugReportScreenBase::message() const
 void BugReportScreenBase::initVariantUi(QWidget *a_widget)
 {
     Q_UNUSED(a_widget);
-    static int p =0;
-    connect(m_ui->btnSend,&QPushButton::clicked,[=]{
-        if(p%2 == 0)
-        m_ui->edtMessage->setMinimumHeight(300);
-        else
-            m_ui->edtMessage->setMinimumHeight(100);
-        p++;
-    });
+
 #ifdef ANDROID
     m_ui->btnSend->setText(tr("SEND REPORT"));
     QScroller::grabGesture(m_ui->edtMessage->viewport(), QScroller::LeftMouseButtonGesture);
