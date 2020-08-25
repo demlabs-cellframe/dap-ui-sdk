@@ -75,6 +75,7 @@ public:
     /// Sets the placeholder position to the left or center
     void setPlaceholderAlignment(Qt::Alignment &a_alignment);
 
+    void setText(const QString &a_text);
 protected:
     virtual void focusOutEvent(QFocusEvent *event);
     virtual void focusInEvent(QFocusEvent *event);
