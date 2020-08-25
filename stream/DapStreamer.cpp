@@ -336,7 +336,7 @@ void DapStreamer::sltStreamConnected()
     }*/
     m_streamTimeoutConn = connect(m_streamSocket, &QAbstractSocket::bytesWritten, this, &DapStreamer::streamOpened);
     m_streamState = SSS_FRAME_SEARCH;
-    QTimer::singleShot(8000, Qt::PreciseTimer, this, [=]() {
+    QTimer::singleShot(15000, Qt::PreciseTimer, this, [=]() {
         if (!m_isStreamOpened && m_timeoutStreamCheck) {
             qCritical() << "Stream not opened";
             disconnect(m_streamTimeoutConn);
