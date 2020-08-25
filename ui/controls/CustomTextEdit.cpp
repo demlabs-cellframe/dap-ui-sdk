@@ -6,9 +6,6 @@ CustomTextEdit::CustomTextEdit(QWidget *a_parent)
 {
     QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
 
-    connect(this, &QTextEdit::textChanged,[this]{
-        this->setNewHeight(font(),toPlainText());
-    });
 }
 
 void CustomTextEdit::createCustomPlaceholder()
@@ -61,6 +58,11 @@ void CustomTextEdit::focusOutEvent(QFocusEvent *e)
 
     QTextEdit::focusOutEvent(e);
 
+#ifdef Q_OS_ANDROID
+    emit focusChanged(true);
+    QApplication::inputMethod()->hide();
+#endif
+
     if(this->toPlainText().isEmpty())
     {
         if(m_placeHolderCtrl!=nullptr)
@@ -86,18 +88,20 @@ void CustomTextEdit::focusOutEvent(QFocusEvent *e)
 
 void CustomTextEdit::focusInEvent(QFocusEvent *e)
 {
+    QTextEdit::focusInEvent(e);
+
     if(m_placeHolderCtrl!=nullptr)
         m_placeHolderCtrl->hide();
 
-    if(m_usingResizeableSize)
-        setNewHeight(font(),toPlainText());
-
     Utils::setPropertyAndUpdateStyle(this, Properties::ACTIVE,true);
-    QTextEdit::focusInEvent(e);
 
 #ifdef Q_OS_ANDROID
+    emit focusChanged(false);
     QApplication::inputMethod()->show();
 #endif
+
+    if(m_usingResizeableSize)
+    setNewHeight(font(),toPlainText());
 }
 
 void CustomTextEdit::setUsingCustomPlaceholder(bool a_usingPlaceholder)
@@ -116,6 +120,11 @@ void CustomTextEdit::setUsingCustomPlaceholder(bool a_usingPlaceholder)
 void CustomTextEdit::setUsingResizableSize(bool a_using)
 {
     m_usingResizeableSize = a_using;
+
+    if(a_using && m_usingResizeableSize != a_using)
+    connect(this, &QTextEdit::textChanged,[this]{
+        this->setNewHeight(font(),toPlainText());
+    });
 }
 
 void CustomTextEdit::resizeEvent(QResizeEvent *e)
@@ -145,9 +154,9 @@ void CustomTextEdit::resizeEvent(QResizeEvent *e)
 void CustomTextEdit::inputMethodEvent(QInputMethodEvent *e)
 {
     QTextEdit::inputMethodEvent(e);
-
+    if(m_usingResizeableSize)
     setNewHeight(font(), toPlainText() + e->preeditString());
- //   emit lineCount(toPlainText().length() + e->preeditString().length());
+    emit lineCount(toPlainText().length() + e->preeditString().length());
 }
 
 void CustomTextEdit::setNormalHeight(const QString &a_heightStr)
@@ -165,15 +174,21 @@ void CustomTextEdit::setNewHeight(const QFont &a_font, const QString &a_text)
 {
     QFontMetrics textAnalized(a_font);
 
-    int lineCount = qCeil(textAnalized.width(a_text)/static_cast<double>(this->width()));
+    int lineCount = qCeil(textAnalized.width(a_text)/static_cast<double>(this->width() - textAnalized.width("w")));
+    int height = 0;
     if(lineCount <= m_maxLineCount)
     {
-        int height = ((lineCount - 1) * /*document()->size().height()*/textAnalized.height()) + m_normalHeight;
-        if(height!=this->height())
-        {
-            this->setMinimumHeight(height);
-            this->setMaximumHeight(height);
-        }
+        height = ((lineCount - 1) * textAnalized.height()) + m_normalHeight;
+    }
+    else
+    {
+        height = ((m_maxLineCount - 1) * textAnalized.height()) + m_normalHeight;
+    }
+
+    if(height!=this->height())
+    {
+        this->setMinimumHeight(height);
+        this->setMaximumHeight(height);
     }
 
     if(lineCount >= m_maxLineCount && m_usingVerticalScrollBar)

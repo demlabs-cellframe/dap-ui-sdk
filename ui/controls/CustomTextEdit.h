@@ -60,6 +60,8 @@ protected:
 
 signals:
     void lineCount(int a_count);
+
+    void focusChanged(bool a_focus);
 private:
     void createCustomPlaceholder();
     void deleteCustomPlaceholder();

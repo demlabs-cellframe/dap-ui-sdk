@@ -15,6 +15,7 @@
 #include "StyledDropShadowEffect.h"
 #include "CustomLineEdit.h"
 #include "CustomTextEdit.h"
+#include "WidgetInputSizeController.h"
 
 #include "ui_BugReportScreen.h"
 
@@ -60,9 +61,13 @@ protected:
     virtual bool checkFields();
 
     QScopedPointer<BUG_REPORT_FORM> m_ui;
-
+#ifdef Q_OS_ANDROID
+    WidgetInputSizeController *m_widgetSizeController = nullptr;
+#endif
 private:
     bool validateText(QString &str);
+
+
 };
 
 

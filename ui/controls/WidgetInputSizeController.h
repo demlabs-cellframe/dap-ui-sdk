@@ -22,6 +22,8 @@ public:
     ///Adds widgets to control input fields.
     void addWidgetEmitsSignal(CustomLineEditBase *a_widget);
 
+    void addWidgetEmitsSignal(CustomTextEdit *a_widget);
+
 private:
     QList<QWidget*> m_disappearingWidget;
 private slots:
