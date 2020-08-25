@@ -1,4 +1,5 @@
 SOURCES += \
+    $$PWD/DapAlternativeServersContainer.cpp \
     $$PWD/DapCmdParser.cpp \
     $$PWD/DapJsonParams.cpp \
     $$PWD/DapIndicator.cpp \
@@ -9,6 +10,7 @@ SOURCES += \
     $$PWD/DapCmdClientAbstract.cpp
 
 HEADERS += \
+    $$PWD/DapAlternativeServersContainer.h \
     $$PWD/DapCmdParser.h \
     $$PWD/DapJsonParams.h \
     $$PWD/DapIndicator.h \

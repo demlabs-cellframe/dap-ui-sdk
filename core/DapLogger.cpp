@@ -50,9 +50,9 @@ void DapLogger::createChangerLogFiles(){
     then.setTime(setTime);
 
     auto diff = QDateTime::currentDateTime().msecsTo(then);
-    t->start(diff);
-    connect(t, &QTimer::timeout, [&]{
-        t->setInterval(24 * 3600 * 1000);
+    t.start(diff);
+    connect(&t, &QTimer::timeout, [&]{
+        t.setInterval(24 * 3600 * 1000);
         this->updateCurrentLogName();
         this->setLogFile(QString("%1/%2").arg(pathToLog).arg(m_currentLogName));
         this->clearOldLogs();

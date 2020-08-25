@@ -108,10 +108,5 @@ QString DapServersData::currentServerName() const
 
 bool DapServersData::currentServerIsAuto() const
 {
-    return m_currentServerIsAuto;
-}
-
-void DapServersData::setCurrentServerIsAuto(bool a_auto)
-{
-    m_currentServerIsAuto = a_auto;
+    return this->currentServer()->isAuto();
 }

@@ -77,8 +77,6 @@ public:
     const QString TEXT_LOGIN        = "login";
     const QString TEXT_PASSWORD     = "password";
 
-    QVector<DapServerInfo> m_serversForCheck;
-
 public slots:
     void setLogin(const QString &a_login);
 

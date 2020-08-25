@@ -27,7 +27,6 @@ public:
     QString currentServerName() const;
 
     bool currentServerIsAuto() const;
-    void setCurrentServerIsAuto(bool a_auto = true);
 
 public slots:
     void setCurrentServer(const DapServerInfo *a_server);
@@ -54,7 +53,6 @@ private:
  //   DapServerInfo* m_currentServer = nullptr;
 
     int m_currentServerIndex = -1;
-    bool m_currentServerIsAuto = false;
     QList<DapServerInfo> m_servers;
 };
 
