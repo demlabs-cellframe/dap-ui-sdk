@@ -65,6 +65,7 @@ void DapIndicatorSession::initAllowedSubstatesTransitions()
     addAllowedSubstatesTransitions(handshakeRequested, handshakeResponse);
     addAllowedSubstatesTransitions(handshakeRequested, handshakeError);
     //addAllowedSubstatesTransitions(handshakeRequested, networkErrorIdle);
+    addAllowedSubstatesTransitions(streamSessionOpened, networkError);
     addAllowedSubstatesTransitions(handshakeRequested, networkError);
     addAllowedSubstatesTransitions(handshakeRequested, handshakeRequestCanceling);
 
