@@ -12,6 +12,7 @@ SOURCES += \
     $$PWD/FAQWidget.cpp \
     $$PWD/AnimatedLineEdit.cpp \
     $$PWD/ScreenOverlaying.cpp \
+    $$PWD/SerialNumberLineEdit.cpp \
     $$PWD/StyledDropShadowEffect.cpp \
     $$PWD/WidgetDelegateListView/CustomButtonDelegate.cpp \
     $$PWD/WidgetDelegateListView/CustomComboBoxListView.cpp \
@@ -24,7 +25,8 @@ SOURCES += \
     $$PWD/ClickableLabel.cpp \
     $$PWD/CustomTextEdit.cpp \
     $$PWD/VersionLabel.cpp \
-    $$PWD/WidgetInputSizeController.cpp
+    $$PWD/VersionLabel.cpp
+
 
 HEADERS += \
     $$PWD/AdaptiveWidget.h \
@@ -40,6 +42,7 @@ HEADERS += \
     $$PWD/FAQWidget.h \
     $$PWD/AnimatedLineEdit.h \
     $$PWD/ScreenOverlaying.h \
+    $$PWD/SerialNumberLineEdit.h \
     $$PWD/StyledDropShadowEffect.h \
     $$PWD/WidgetDelegateListView/CustomButtonDelegate.h \
     $$PWD/WidgetDelegateListView/CustomComboBoxListView.h \
