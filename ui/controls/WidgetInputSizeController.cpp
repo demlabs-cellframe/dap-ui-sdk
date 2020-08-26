@@ -31,7 +31,6 @@ void WidgetInputSizeController::addDisappearingWidget(QWidget *a_widget)
 
 void WidgetInputSizeController::setVisibleWidgets(bool a_visible)
 {
-    if(!m_disappearingWidget.isEmpty())
         for(auto widget:m_disappearingWidget)
         {
             widget->setVisible(a_visible);

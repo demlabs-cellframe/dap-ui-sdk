@@ -6,6 +6,10 @@ CustomTextEdit::CustomTextEdit(QWidget *a_parent)
 {
     QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
 
+    connect(this, &QTextEdit::textChanged,[this]{
+        if(m_autoChangingSize)
+            this->setNewHeight(font(),toPlainText());
+    });
 }
 
 void CustomTextEdit::createCustomPlaceholder()
@@ -68,18 +72,18 @@ void CustomTextEdit::focusOutEvent(QFocusEvent *e)
         if(m_placeHolderCtrl!=nullptr)
         {
             m_placeHolderCtrl->show();
-            if(m_usingResizeableSize)
+            if(m_autoChangingSize)
                 setNewHeight(m_placeHolderCtrl->font(),m_placeHolderCtrl->text());
         }
         else
         {
-            if(m_usingResizeableSize)
+            if(m_autoChangingSize)
                 setNewHeight(font(),placeholderText());
         }
     }
     else
     {
-        if(m_usingResizeableSize)
+        if(m_autoChangingSize)
             setNewHeight(font(),toPlainText());
     }
 
@@ -100,7 +104,7 @@ void CustomTextEdit::focusInEvent(QFocusEvent *e)
     QApplication::inputMethod()->show();
 #endif
 
-    if(m_usingResizeableSize)
+    if(m_autoChangingSize)
     setNewHeight(font(),toPlainText());
 }
 
@@ -117,20 +121,15 @@ void CustomTextEdit::setUsingCustomPlaceholder(bool a_usingPlaceholder)
         deleteCustomPlaceholder();
 }
 
-void CustomTextEdit::setUsingResizableSize(bool a_using)
+void CustomTextEdit::setAutoChangingSize(bool a_using)
 {
-    m_usingResizeableSize = a_using;
-
-    if(a_using && m_usingResizeableSize != a_using)
-    connect(this, &QTextEdit::textChanged,[this]{
-        this->setNewHeight(font(),toPlainText());
-    });
+    m_autoChangingSize = a_using;
 }
 
 void CustomTextEdit::resizeEvent(QResizeEvent *e)
 {
     QTextEdit::resizeEvent(e);
-    if(m_usingResizeableSize)
+    if(m_autoChangingSize)
         if(e->oldSize().width() !=e->size().width())
         {
             if(this->toPlainText().isEmpty())
@@ -154,7 +153,7 @@ void CustomTextEdit::resizeEvent(QResizeEvent *e)
 void CustomTextEdit::inputMethodEvent(QInputMethodEvent *e)
 {
     QTextEdit::inputMethodEvent(e);
-    if(m_usingResizeableSize)
+    if(m_autoChangingSize)
     setNewHeight(font(), toPlainText() + e->preeditString());
     emit lineCount(toPlainText().length() + e->preeditString().length());
 }
