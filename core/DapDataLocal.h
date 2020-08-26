@@ -84,7 +84,7 @@ public slots:
 
     void setUrlUpdate(const QString &a_url);
 
-    void saveAuthorizationDatas();
+    void saveAuthorizationData();
     void rotateCDBList();
 
 signals:
