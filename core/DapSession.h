@@ -75,6 +75,7 @@ public:
     void preserveCDBSession();
     void activateBySerial(bool flag) { isSerial = flag; }
     DapCrypt* getDapCrypt() { return m_dapCrypt; }
+    DapCrypt* getDapCryptCDB() { return m_dapCryptCDB; }
 public slots:
     /* Request to server */
     /* QNetworkReply does not need to be cleared. It's do DapConnectClient */
