@@ -36,7 +36,7 @@ class DapSession : public QObject
 {
     Q_OBJECT
 private:
-    static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
+    static const int DEFAULT_REQUEST_TIMEOUT = 20000; // 10 sec
     const int m_requestTimeout;
 public:
     static const QString URL_ENCRYPT;

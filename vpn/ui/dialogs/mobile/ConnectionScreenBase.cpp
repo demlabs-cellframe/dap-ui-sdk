@@ -58,7 +58,7 @@ QString ConnectionScreenBase::statusText()
     case ConnectionState::Connecting:
         return tr("Connecting...");
     case ConnectionState::Connected:
-        return tr("Connected to %1").arg(this->currentServer());
+        return tr("Connected to %1").arg(this->currentServer() == "Auto" ? tr("Auto") : this->currentServer());
     case ConnectionState::Disconnecting:
         return tr("Disconnecting...");
     case ConnectionState::ServerChanging:
