@@ -19,9 +19,10 @@
 */
 
 #define OP_CODE_GENERAL_ERR           "0xf0"
+#define OP_CODE_ALREADY_ACTIVATED     "0xf1"
 #define OP_CODE_LOGIN_INCORRECT_PSWD  "0xf2"
 #define OP_CODE_NOT_FOUND_LOGIN_IN_DB "0xf3"
-#define OP_CODE_SUBSCRIBE_EXPIRIED    "0xf4"
+#define OP_CODE_SUBSCRIBE_EXPIRED    "0xf4"
 #define OP_CODE_CANT_CONNECTION_TO_DB "0xf5"
 #define OP_CODE_INCORRECT_SYM         "0xf6"
 #define OP_CODE_LOGIN_INACTIVE        "0xf7"
@@ -361,6 +362,9 @@ void DapSession::onAuthorize()
     if (op_code == OP_CODE_GENERAL_ERR) {
         emit errorAuthorization ("Unknown authorization error");
         return;
+    } else if (op_code == OP_CODE_ALREADY_ACTIVATED) {
+        emit errorAuthorization ("Serial key already activated on another device");
+        return;
     } else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
         emit errorAuthorization (isSerial ? tr("Serial key not found in database") : "Login not found in database");
         return;
@@ -370,7 +374,7 @@ void DapSession::onAuthorize()
         else
         emit errorAuthorization (isSerial ? tr("Incorrect serial key") : "Incorrect password");
         return;
-    } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRIED) {
+    } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRED) {
         emit errorAuthorization ("Subscribe expired");
         return;
     } else if (op_code == OP_CODE_CANT_CONNECTION_TO_DB) {
@@ -472,8 +476,6 @@ void DapSession::preserveCDBSession() {
         delete m_dapCryptCDB;
         m_dapCryptCDB = nullptr;
     }
-//    m_dapCryptCDB = m_dapCrypt;
-//    m_dapCrypt = new DapCrypt();
     m_dapCryptCDB = new DapCrypt(*m_dapCrypt);
     m_sessionKeyID_CDB = m_sessionKeyID;
     m_CDBaddress = m_upstreamAddress;
