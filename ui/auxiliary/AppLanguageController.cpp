@@ -50,6 +50,16 @@ void AppLanguageController::retranslateApp(Language a_language)
             return;
     }
 
+    if (!DapDataLocal::instance()->getEncriptedSetting(instance()->SETTING_SYS_LANGUAGE).isValid() ||
+                QLocale().language()!=DapDataLocal::instance()->getEncriptedSetting(instance()->SETTING_SYS_LANGUAGE))
+        {
+            DapDataLocal::instance()->saveEncriptedSetting(instance()->SETTING_SYS_LANGUAGE,QLocale().language());
+            if (QLocale().language()==QLocale::Chinese)
+                strLanguage=AppLanguageController::languageToString(Language::Zh);
+            else
+                strLanguage=AppLanguageController::languageToString(Language::En);
+        }
+
     if (strLanguage.isEmpty())
         return;
 

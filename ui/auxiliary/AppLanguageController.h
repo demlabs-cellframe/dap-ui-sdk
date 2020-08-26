@@ -31,6 +31,7 @@ private:
 
     QTranslator m_qtLanguageTranslator;
     const QString SETTING_NAME{"language"};
+    const QString SETTING_SYS_LANGUAGE{"SysLanguage"};
 
     const QMap<Language, QString> m_languageStrings {{Language::En, "en"}, {Language::Zh, "zh"}};
 
