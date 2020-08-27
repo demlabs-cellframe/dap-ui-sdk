@@ -142,7 +142,7 @@ void DapDataLocal::setPassword(const QString &a_password)
     emit this->passwordChanged(m_password);
 }
 
-void DapDataLocal::saveAuthorizationDatas()
+void DapDataLocal::saveAuthorizationData()
 {
     this->saveEncriptedSetting(this->TEXT_LOGIN     , this->login());
     this->saveEncriptedSetting(this->TEXT_PASSWORD  , this->password());

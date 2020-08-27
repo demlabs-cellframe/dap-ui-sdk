@@ -282,7 +282,17 @@ void CustomLineEditBase::adjustTextMargins()
 
 }
 
+void CustomLineEditBase::setText(const QString &a_text)
+{
+    if(m_useCustomPlaceholder)
+    {
+        if(m_placeHolderCtrl!=Q_NULLPTR && text().isEmpty() && !a_text.isEmpty())
+            m_placeHolderCtrl->hide();
+    }
 
+    QLineEdit::setText(a_text);
+
+}
 //////////////////////////////////////////////////////////////////////////
 
 ResizableIconLabel::ResizableIconLabel(QWidget* parent)

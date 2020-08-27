@@ -37,19 +37,19 @@ QString SignUpScreen::screenName()
 
 void SignUpScreen::setEmail(const QString &a_email)
 {
-    setChildProperties(EDT_EMAIL, "text", a_email);
+    m_ui->edtEmail->setText(a_email);
     m_email = a_email;
 }
 
 void SignUpScreen::setPassword(const QString &a_password)
 {
-    setChildProperties(EDT_PASSWORD, "text", a_password);
+    m_ui->edtPassword->setText(a_password);
     m_password = a_password;
 }
 
 void SignUpScreen::setRptPassword(const QString &a_rpt_password)
 {
-    setChildProperties(EDT_RPT_PASSWORD, "text", a_rpt_password);
+    m_ui->edtRptPassword->setText(a_rpt_password);
     m_repeat_password = a_rpt_password;
 }
 
