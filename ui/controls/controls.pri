@@ -25,7 +25,7 @@ SOURCES += \
     $$PWD/ClickableLabel.cpp \
     $$PWD/CustomTextEdit.cpp \
     $$PWD/VersionLabel.cpp \
-    $$PWD/VersionLabel.cpp
+    $$PWD/WidgetInputSizeController.cpp
 
 
 HEADERS += \

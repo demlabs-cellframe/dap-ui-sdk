@@ -58,8 +58,8 @@ public:
 signals:
 
     void filledOut();
-    void serialChanged(const QString&);
-    void serialEdited(const QString&);
+    void serialKeyChanged(const QString&);
+    void serialKeyEdited(const QString&);
     void visiblePaste(bool);
 
 private:

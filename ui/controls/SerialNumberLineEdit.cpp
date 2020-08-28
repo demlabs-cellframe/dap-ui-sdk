@@ -37,6 +37,8 @@ bool SerialNumberLineEdit::setSerial(const QString &serialNumber)
             el->setText(temp.left(MAX_COUNT_CHAR));
             temp.remove(0,MAX_COUNT_CHAR);
         }
+        QTimer::singleShot(0, this, [this]{emit this->filledOut();});
+
         return true;
     }
 
@@ -172,7 +174,7 @@ void SerialNumberLineEdit::paint_inFocus()
 
 void SerialNumberLineEdit::slot_textEdited(QString text)
 {
-    emit serialEdited(text);
+    emit serialKeyEdited(text);
 }
 
 void SerialNumberLineEdit::slot_textChanged(QString text)
@@ -224,7 +226,7 @@ void SerialNumberLineEdit::slot_textChanged(QString text)
     //сигнал выходит 4 раза при вставке Ctrl+V
     QTimer::singleShot(0,this,[this]()
     {
-        emit serialChanged(m_serialNumber);
+        emit serialKeyChanged(m_serialNumber);
         //qDebug()<<__FUNCTION__<<m_serialNumber;
     });
 
