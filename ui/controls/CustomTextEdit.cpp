@@ -6,10 +6,11 @@ CustomTextEdit::CustomTextEdit(QWidget *a_parent)
 {
     QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
 
-    connect(this, &QTextEdit::textChanged,[this]{
-        if(m_autoChangingSize)
-            this->setNewHeight(font(),toPlainText());
-    });
+//    connect(this->document()->documentLayout(),&QAbstractTextDocumentLayout::documentSizeChanged, [=](const QSizeF &newSize){
+//        qWarning()<<"New size Document \n"<< newSize<<"normal height = "<<document()->lineCount();
+//        if(m_autoChangingSize)
+//            this->setNewHeight(newSize);
+//    });
 }
 
 void CustomTextEdit::createCustomPlaceholder()
@@ -66,26 +67,7 @@ void CustomTextEdit::focusOutEvent(QFocusEvent *e)
     emit focusChanged(true);
     QApplication::inputMethod()->hide();
 #endif
-
-    if(this->toPlainText().isEmpty())
-    {
-        if(m_placeHolderCtrl!=nullptr)
-        {
-            m_placeHolderCtrl->show();
-            if(m_autoChangingSize)
-                setNewHeight(m_placeHolderCtrl->font(),m_placeHolderCtrl->text());
-        }
-        else
-        {
-            if(m_autoChangingSize)
-                setNewHeight(font(),placeholderText());
-        }
-    }
-    else
-    {
-        if(m_autoChangingSize)
-            setNewHeight(font(),toPlainText());
-    }
+    sizingCondition();
 
 }
 
@@ -105,7 +87,16 @@ void CustomTextEdit::focusInEvent(QFocusEvent *e)
 #endif
 
     if(m_autoChangingSize)
-    setNewHeight(font(),toPlainText());
+    {
+        if(toPlainText().isEmpty() && m_placeHolderCtrl == nullptr)
+        {
+            setNewHeightForPlaceholder(font(),placeholderText());
+        }
+        else
+        {
+            setNewHeight(document()->documentLayout()->documentSize());
+        }
+    }
 }
 
 void CustomTextEdit::setUsingCustomPlaceholder(bool a_usingPlaceholder)
@@ -134,28 +125,37 @@ void CustomTextEdit::resizeEvent(QResizeEvent *e)
         {
             if(this->toPlainText().isEmpty())
             {
-                if(m_placeHolderCtrl!=nullptr)
-                {
-                    setNewHeight(m_placeHolderCtrl->font(),m_placeHolderCtrl->text());
-                }
-                else
-                {
-                    setNewHeight(font(),placeholderText());
-                }
-            }
-            else
-            {
-                setNewHeight(font(),toPlainText());
-            }
+                m_normalLineHeight = document()->size().height();
+           }
+            sizingCondition();
         }
 }
 
 void CustomTextEdit::inputMethodEvent(QInputMethodEvent *e)
 {
-    QTextEdit::inputMethodEvent(e);
+    if(e->commitString()=="\n" && m_redefineEnterButton)
+    {
+        emit pressedEnter();
+    }
+    else
+        QTextEdit::inputMethodEvent(e);
+
+
+
     if(m_autoChangingSize)
-    setNewHeight(font(), toPlainText() + e->preeditString());
-    emit lineCount(toPlainText().length() + e->preeditString().length());
+    {
+        if(toPlainText().isEmpty()&&e->preeditString().isEmpty() && m_placeHolderCtrl == nullptr)
+        {
+            setNewHeightForPlaceholder(font(),placeholderText());
+        }
+        else
+        {
+            setNewHeight(document()->documentLayout()->documentSize());
+        }
+    }
+#ifdef Q_OS_ANDROID
+    sendNumberOfCharacters(toPlainText().length() + e->preeditString().length());
+#endif
 }
 
 void CustomTextEdit::setNormalHeight(const QString &a_heightStr)
@@ -169,19 +169,20 @@ void CustomTextEdit::setMaximimLineCount(int a_maxLine)
     m_maxLineCount = a_maxLine;
 }
 
-void CustomTextEdit::setNewHeight(const QFont &a_font, const QString &a_text)
+void CustomTextEdit::setNewHeightForPlaceholder(const QFont &a_font, const QString &a_text)
 {
+
     QFontMetrics textAnalized(a_font);
 
     int lineCount = qCeil(textAnalized.width(a_text)/static_cast<double>(this->width() - textAnalized.width("w")));
     int height = 0;
     if(lineCount <= m_maxLineCount)
     {
-        height = ((lineCount - 1) * textAnalized.height()) + m_normalHeight;
+        height = static_cast<int>(((lineCount - 1) * m_normalLineHeight) + m_normalHeight);
     }
     else
     {
-        height = ((m_maxLineCount - 1) * textAnalized.height()) + m_normalHeight;
+        height = static_cast<int>(((m_maxLineCount - 1) * m_normalLineHeight) + m_normalHeight);
     }
 
     if(height!=this->height())
@@ -189,18 +190,80 @@ void CustomTextEdit::setNewHeight(const QFont &a_font, const QString &a_text)
         this->setMinimumHeight(height);
         this->setMaximumHeight(height);
     }
+}
 
-    if(lineCount >= m_maxLineCount && m_usingVerticalScrollBar)
+void CustomTextEdit::setNewHeight(const QSizeF &newSize)
+{
+    int height = 0;
+    if(newSize.height() <= m_normalLineHeight)
+        height = m_normalHeight;
+    else {
+        height = static_cast<int>(newSize.height() - m_normalLineHeight + m_normalHeight);
+    }
+
+    if(height/m_maxLineCount>m_normalLineHeight)
+        height = static_cast<int>(((m_maxLineCount - 1) * m_normalLineHeight) + m_normalHeight);
+
+    this->setMinimumHeight(height);
+    this->setMaximumHeight(height);
+}
+
+void CustomTextEdit::keyPressEvent(QKeyEvent *e)
+{
+    if(e->text()=="\n" && m_redefineEnterButton)
+        emit pressedEnter();
+    else
+        QTextEdit::keyPressEvent(e);
+
+    if(m_autoChangingSize)
     {
-        this->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        if(toPlainText().isEmpty() && m_placeHolderCtrl == nullptr)
+        {
+            setNewHeightForPlaceholder(font(),placeholderText());
+        }
+        else
+        {
+            setNewHeight(document()->documentLayout()->documentSize());
+        }
+    }
+#ifdef Q_OS_ANDROID
+    sendNumberOfCharacters(toPlainText().length());
+#endif
+}
+
+void CustomTextEdit::sizingCondition()
+{
+    if(this->toPlainText().isEmpty())
+    {
+        if(m_placeHolderCtrl!=nullptr)
+        {
+            m_placeHolderCtrl->show();
+            if(m_autoChangingSize)
+                setNewHeightForPlaceholder(m_placeHolderCtrl->font(),m_placeHolderCtrl->text());
+        }
+        else
+        {
+            if(m_autoChangingSize)
+                setNewHeightForPlaceholder(font(),placeholderText());
+        }
     }
     else
     {
-        this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        if(m_autoChangingSize)
+            setNewHeight(document()->documentLayout()->documentSize());
     }
 }
 
-void CustomTextEdit::setUsingVerticalScrollBar(bool a_usingScrollBar)
+void CustomTextEdit::setRedefineEnterButton(bool a_redefine)
 {
-    m_usingVerticalScrollBar = a_usingScrollBar;
+    m_redefineEnterButton = a_redefine;
+}
+
+void CustomTextEdit::sendNumberOfCharacters(int a_number)
+{
+    if(a_number != m_numberCharacter)
+    {
+        m_numberCharacter = a_number;
+        emit numberCharacterChange(a_number);
+    }
 }

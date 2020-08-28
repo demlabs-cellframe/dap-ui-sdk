@@ -96,6 +96,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="inputMethodHints">
+         <set>Qt::ImhMultiLine</set>
+        </property>
         <property name="verticalScrollBarPolicy">
          <enum>Qt::ScrollBarAlwaysOff</enum>
         </property>

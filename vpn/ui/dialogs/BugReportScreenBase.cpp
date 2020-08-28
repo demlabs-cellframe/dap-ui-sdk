@@ -37,8 +37,12 @@ void BugReportScreenBase::initVariantUi(QWidget *a_widget)
     });
 
 #ifdef Q_OS_ANDROID
-    connect(m_ui->edtMessage, &CustomTextEdit::lineCount,[=](int count){
+    connect(m_ui->edtMessage, &CustomTextEdit::numberCharacterChange,[=](int count){
         this->m_ui->lblCharacters->setText(QString::number(count) + "/200");
+    });
+
+    connect(m_ui->edtMessage, &CustomTextEdit::pressedEnter,[this]{
+        m_ui->btnSend->setFocus();
     });
 #endif
 
