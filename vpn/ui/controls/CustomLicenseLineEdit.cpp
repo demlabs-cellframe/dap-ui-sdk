@@ -24,7 +24,6 @@ void CustomLicenseLineEdit::keyPressEvent(QKeyEvent *event)
         pasteEvent();
         return;
     }
-
     if (!text.isEmpty()) {
         if (hasSelectedText()) {
             QRegExp re("\\s+");
