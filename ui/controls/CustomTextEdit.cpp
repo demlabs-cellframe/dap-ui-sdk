@@ -58,7 +58,7 @@ void CustomTextEdit::deleteCustomPlaceholder()
 }
 
 void CustomTextEdit::focusOutEvent(QFocusEvent *e)
-{
+{qWarning()<<"---- - - - focusOutEvent- -- - -----";
     Utils::setPropertyAndUpdateStyle(this, Properties::ACTIVE,false);
 
     QTextEdit::focusOutEvent(e);
@@ -68,12 +68,11 @@ void CustomTextEdit::focusOutEvent(QFocusEvent *e)
     QApplication::inputMethod()->hide();
 #endif
     sizingCondition();
-
 }
 
 
 void CustomTextEdit::focusInEvent(QFocusEvent *e)
-{
+{qWarning()<<"---- - - - focusInEvent- -- - -----";
     QTextEdit::focusInEvent(e);
 
     if(m_placeHolderCtrl!=nullptr)
@@ -100,7 +99,7 @@ void CustomTextEdit::focusInEvent(QFocusEvent *e)
 }
 
 void CustomTextEdit::setUsingCustomPlaceholder(bool a_usingPlaceholder)
-{
+{qWarning()<<"---- - - - setUsingCustomPlaceholder- -- - -----";
     if (m_usingCustomPlaceholder == a_usingPlaceholder)
         return;
     m_usingCustomPlaceholder = a_usingPlaceholder;
@@ -118,7 +117,7 @@ void CustomTextEdit::setAutoChangingSize(bool a_using)
 }
 
 void CustomTextEdit::resizeEvent(QResizeEvent *e)
-{
+{qWarning()<<"---- - - - resizeEvent- -- - -----";
     QTextEdit::resizeEvent(e);
     if(m_autoChangingSize)
         if(e->oldSize().width() !=e->size().width())
@@ -171,7 +170,7 @@ void CustomTextEdit::setMaximimLineCount(int a_maxLine)
 
 void CustomTextEdit::setNewHeightForPlaceholder(const QFont &a_font, const QString &a_text)
 {
-
+qWarning()<<"---- - - - setNewHeightForPlaceholder- -- - -----";
     QFontMetrics textAnalized(a_font);
 
     int lineCount = qCeil(textAnalized.width(a_text)/static_cast<double>(this->width() - textAnalized.width("w")));
@@ -179,12 +178,14 @@ void CustomTextEdit::setNewHeightForPlaceholder(const QFont &a_font, const QStri
     if(lineCount <= m_maxLineCount)
     {
         height = static_cast<int>(((lineCount - 1) * m_normalLineHeight) + m_normalHeight);
+        qWarning()<<"---- - - - if(lineCount <= m_maxLineCount)- -- - -----"<< height;
     }
     else
     {
         height = static_cast<int>(((m_maxLineCount - 1) * m_normalLineHeight) + m_normalHeight);
+        qWarning()<<"---- - - - else- -- - -----"<< height;
     }
-
+qWarning()<<"---- - - - setNewHeightForPlaceholder- -- - -----"<< height;
     if(height!=this->height())
     {
         this->setMinimumHeight(height);
@@ -193,7 +194,7 @@ void CustomTextEdit::setNewHeightForPlaceholder(const QFont &a_font, const QStri
 }
 
 void CustomTextEdit::setNewHeight(const QSizeF &newSize)
-{
+{qWarning()<<"---- - - - setNewHeight- -- - -----";
     int height = 0;
     if(newSize.height() <= m_normalLineHeight)
         height = m_normalHeight;
@@ -232,25 +233,22 @@ void CustomTextEdit::keyPressEvent(QKeyEvent *e)
 }
 
 void CustomTextEdit::sizingCondition()
-{
-    if(this->toPlainText().isEmpty())
+{qWarning()<<"---- - - - sizingCondition- -- - -----";
+    if(this->toPlainText().isEmpty() && m_autoChangingSize)
     {
         if(m_placeHolderCtrl!=nullptr)
         {
             m_placeHolderCtrl->show();
-            if(m_autoChangingSize)
-                setNewHeightForPlaceholder(m_placeHolderCtrl->font(),m_placeHolderCtrl->text());
+            setNewHeightForPlaceholder(m_placeHolderCtrl->font(),m_placeHolderCtrl->text());
         }
         else
         {
-            if(m_autoChangingSize)
-                setNewHeightForPlaceholder(font(),placeholderText());
+            setNewHeightForPlaceholder(font(),placeholderText());
         }
     }
     else
     {
-        if(m_autoChangingSize)
-            setNewHeight(document()->documentLayout()->documentSize());
+        setNewHeight(document()->documentLayout()->documentSize());
     }
 }
 
