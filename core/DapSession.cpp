@@ -366,13 +366,13 @@ void DapSession::onAuthorize()
         emit errorAuthorization ("Serial key already activated on another device");
         return;
     } else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
-        emit errorAuthorization (isSerial ? tr("Serial key not found in database") : "Login not found in database");
+        emit errorAuthorization (isSerial ? "Serial key not found in database" : "Login not found in database");
         return;
     } else if (op_code == OP_CODE_LOGIN_INCORRECT_PSWD) {
         if(m_user.isEmpty() && !isSerial)
             emit errorAuthorization ("Login not found in database");
         else
-        emit errorAuthorization (isSerial ? tr("Incorrect serial key") : "Incorrect password");
+        emit errorAuthorization (isSerial ? "Incorrect serial key" : "Incorrect password");
         return;
     } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRED) {
         emit errorAuthorization ("Subscribe expired");
