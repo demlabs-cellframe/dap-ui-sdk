@@ -58,7 +58,7 @@ void CustomTextEdit::deleteCustomPlaceholder()
 }
 
 void CustomTextEdit::focusOutEvent(QFocusEvent *e)
-{qWarning()<<"---- - - - focusOutEvent- -- - -----";
+{
     Utils::setPropertyAndUpdateStyle(this, Properties::ACTIVE,false);
 
     QTextEdit::focusOutEvent(e);
@@ -67,12 +67,21 @@ void CustomTextEdit::focusOutEvent(QFocusEvent *e)
     emit focusChanged(true);
     QApplication::inputMethod()->hide();
 #endif
-    sizingCondition();
+    if(this->toPlainText().isEmpty())
+    {
+        if(m_placeHolderCtrl!=nullptr)
+        {
+            m_placeHolderCtrl->show();
+        }
+    }
+
+    if(m_autoChangingSize)
+        sizingCondition();
 }
 
 
 void CustomTextEdit::focusInEvent(QFocusEvent *e)
-{qWarning()<<"---- - - - focusInEvent- -- - -----";
+{
     QTextEdit::focusInEvent(e);
 
     if(m_placeHolderCtrl!=nullptr)
@@ -99,7 +108,7 @@ void CustomTextEdit::focusInEvent(QFocusEvent *e)
 }
 
 void CustomTextEdit::setUsingCustomPlaceholder(bool a_usingPlaceholder)
-{qWarning()<<"---- - - - setUsingCustomPlaceholder- -- - -----";
+{
     if (m_usingCustomPlaceholder == a_usingPlaceholder)
         return;
     m_usingCustomPlaceholder = a_usingPlaceholder;
@@ -117,9 +126,10 @@ void CustomTextEdit::setAutoChangingSize(bool a_using)
 }
 
 void CustomTextEdit::resizeEvent(QResizeEvent *e)
-{qWarning()<<"---- - - - resizeEvent- -- - -----";
-    QTextEdit::resizeEvent(e);
+{
+
     if(m_autoChangingSize)
+    {
         if(e->oldSize().width() !=e->size().width())
         {
             if(this->toPlainText().isEmpty())
@@ -128,6 +138,8 @@ void CustomTextEdit::resizeEvent(QResizeEvent *e)
            }
             sizingCondition();
         }
+    }
+    QTextEdit::resizeEvent(e);
 }
 
 void CustomTextEdit::inputMethodEvent(QInputMethodEvent *e)
@@ -170,7 +182,6 @@ void CustomTextEdit::setMaximimLineCount(int a_maxLine)
 
 void CustomTextEdit::setNewHeightForPlaceholder(const QFont &a_font, const QString &a_text)
 {
-qWarning()<<"---- - - - setNewHeightForPlaceholder- -- - -----";
     QFontMetrics textAnalized(a_font);
 
     int lineCount = qCeil(textAnalized.width(a_text)/static_cast<double>(this->width() - textAnalized.width("w")));
@@ -178,14 +189,12 @@ qWarning()<<"---- - - - setNewHeightForPlaceholder- -- - -----";
     if(lineCount <= m_maxLineCount)
     {
         height = static_cast<int>(((lineCount - 1) * m_normalLineHeight) + m_normalHeight);
-        qWarning()<<"---- - - - if(lineCount <= m_maxLineCount)- -- - -----"<< height;
     }
     else
     {
         height = static_cast<int>(((m_maxLineCount - 1) * m_normalLineHeight) + m_normalHeight);
-        qWarning()<<"---- - - - else- -- - -----"<< height;
     }
-qWarning()<<"---- - - - setNewHeightForPlaceholder- -- - -----"<< height;
+
     if(height!=this->height())
     {
         this->setMinimumHeight(height);
@@ -194,7 +203,7 @@ qWarning()<<"---- - - - setNewHeightForPlaceholder- -- - -----"<< height;
 }
 
 void CustomTextEdit::setNewHeight(const QSizeF &newSize)
-{qWarning()<<"---- - - - setNewHeight- -- - -----";
+{
     int height = 0;
     if(newSize.height() <= m_normalLineHeight)
         height = m_normalHeight;
@@ -233,12 +242,11 @@ void CustomTextEdit::keyPressEvent(QKeyEvent *e)
 }
 
 void CustomTextEdit::sizingCondition()
-{qWarning()<<"---- - - - sizingCondition- -- - -----";
-    if(this->toPlainText().isEmpty() && m_autoChangingSize)
+{
+    if(this->toPlainText().isEmpty())
     {
         if(m_placeHolderCtrl!=nullptr)
         {
-            m_placeHolderCtrl->show();
             setNewHeightForPlaceholder(m_placeHolderCtrl->font(),m_placeHolderCtrl->text());
         }
         else
