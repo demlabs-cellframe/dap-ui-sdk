@@ -186,7 +186,7 @@ void SignInScreen::adjustStateMachine()
         if (m_stt_serviceState_connected->active() && m_stt_serverState_disconnected->active())
             m_ui->btnConnect->setEnabled(true);
 
-//        m_ui->ledSerialKey->hide();
+        m_ui->ledSerialKey->hide();
     });
     connect(m_stt_serialKey_activated           , &QState::exited, [this]{
         m_ui->ledSerialKey->show();
