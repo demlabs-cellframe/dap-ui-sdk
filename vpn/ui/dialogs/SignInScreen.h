@@ -64,45 +64,23 @@ signals:
     void connected();
     void serversListCleared();
 
-
-    void setStateNormal();
-    void keyActivated();
-
-    void sigChangeVisibleLogo();
-
     void serverChanged(int serverName);
 
-    void emailEdited   (const QString &email   );
-    void wrongSerialActivated();
-
-    void passwordEdited(const QString &password);
-
-
-    void goToSignUp();
-    void goToPasswordRecovery();
-
-
-    void changeServerAndTryConnectOneMore();
-
-    void signErrorClear();
-    void signNetworkUnavailable();
 protected:
 
     virtual void initVariantUi(QWidget *a_widget) override;
 
     virtual QList<CustomPopup *> customPopups() override;
 
-    bool checkSerial();
-
-
 private:
 
     void adjustStateMachine();
 
-    void setWrongState(const QString& a_labelName, bool a_wrong = true);
-    QString statusText(ConnectionState a_state);
-    QString buttonText(ConnectionState a_state);
     QString translatedErrorMsg(QString a_errorMsg);
+    bool serialKeyIsEntered();
+    bool serviceIsConnected();
+    bool isLoadingState();
+
 
     QStateMachine *m_inputStates;
     QState *m_stt_serialKey;
@@ -113,8 +91,6 @@ private:
     QState *m_stt_serialKey_activated;
     QState *m_stt_serverState;
     QState *m_stt_serverState_disconnected;
-//    QState *m_stt_serverState_inactivity_normal;
-//    QState *m_stt_serverState_inactivity_connectionError;
     QState *m_stt_serverState_loading;
     QState *m_stt_serverState_loading_serverList;
     QState *m_stt_serverState_loading_connecting;

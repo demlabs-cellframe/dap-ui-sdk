@@ -63,7 +63,6 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
         m_ui->cbbServer->addItem(a_serverInfo.name);
         m_ui->cbbServer->setEnabled(true);
         m_ui->cbbServer->setCaption("Choose server");
-        emit signErrorClear();
     });
 
     connect(DapDataLocal::serversData(), &DapServersData::serversCleared, [this](){
@@ -157,12 +156,6 @@ void SignInScreen::adjustStateMachine()
 
 
 
-    //btn connect enabled updating
-//    m_stt_serialKey_unactivated_input->assignProperty(m_ui->btnConnect, qPrintable(Properties::ENABLED), false);
-//    m_stt_serialKey_unactivated_wrong->assignProperty(m_ui->btnConnect, qPrintable(Properties::ENABLED), false);
-//    m_stt_serverState_loading->assignProperty(m_ui->btnConnect, qPrintable(Properties::ENABLED), false);
-//    m_stt_serviceState_connecting->assignProperty(m_ui->btnConnect, qPrintable(Properties::ENABLED), false);
-
     connect(m_stt_serialKey_unactivated_input   , &QState::entered, [this]{
         m_ui->btnConnect->setEnabled(false);
     });
@@ -176,14 +169,12 @@ void SignInScreen::adjustStateMachine()
     });
 
     connect(m_stt_serialKey_unactivated_entered , &QState::entered, [this]{
-        bool a = m_stt_serviceState_connected->active();
-        bool b = m_stt_serverState_disconnected->active();
-        if (m_stt_serviceState_connected->active() && m_stt_serverState_disconnected->active())
+        if (!this->isLoadingState() && this->serviceIsConnected())
             m_ui->btnConnect->setEnabled(true);
     });
 
     connect(m_stt_serialKey_activated           , &QState::entered, [this]{
-        if (m_stt_serviceState_connected->active() && m_stt_serverState_disconnected->active())
+        if (!this->isLoadingState() && this->serviceIsConnected())
             m_ui->btnConnect->setEnabled(true);
 
         m_ui->ledSerialKey->hide();
@@ -194,8 +185,7 @@ void SignInScreen::adjustStateMachine()
 
     // Server
     connect(m_stt_serverState_disconnected      , &QState::entered, [this] {
-        if ((m_stt_serialKey_unactivated_entered->active() || m_stt_serialKey_activated)
-                && !m_stt_serviceState_connected->active())
+        if (this->serialKeyIsEntered() && this->serviceIsConnected())
         {
             m_ui->btnConnect->setEnabled(true);
         }
@@ -208,11 +198,8 @@ void SignInScreen::adjustStateMachine()
     // Service
     connect(m_stt_serviceState_connected        , &QState::entered, [this]
     {
-        if ((m_stt_serialKey_unactivated_entered->active() || m_stt_serialKey_activated)
-            && m_stt_serverState_disconnected->active())
-        {
+        if (this->serialKeyIsEntered()&& !this->isLoadingState())
             m_ui->btnConnect->setEnabled(true);
-        }
     });
     connect(m_stt_serviceState_connecting       , &QState::entered, [this]
     {
@@ -327,6 +314,21 @@ QString SignInScreen::translatedErrorMsg(QString a_errorMsg)
         return  tr("Serial key activated, try to authorize");
 
     else return a_errorMsg;
+}
+
+bool SignInScreen::serialKeyIsEntered()
+{
+    return  m_stt_serialKey_unactivated_entered->active() || m_stt_serialKey_activated->active();
+}
+
+bool SignInScreen::serviceIsConnected()
+{
+    return m_stt_serviceState->active();
+}
+
+bool SignInScreen::isLoadingState()
+{
+    return !m_stt_serverState_disconnected->active();
 }
 
 
