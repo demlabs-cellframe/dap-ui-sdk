@@ -66,4 +66,8 @@ private:
     static bool _isJsonValid(const QJsonObject& obj);
 };
 
+Q_DECLARE_METATYPE(DapServerInfo)
+typedef DapServerInfo* DapServerInfoPtr;
+Q_DECLARE_METATYPE(DapServerInfoPtr)
+
 #endif // DAPSERVERINFO_H
