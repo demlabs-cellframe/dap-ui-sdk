@@ -39,7 +39,7 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
 
     connect(m_ui->btnConnect,&QPushButton::clicked, this, &SignInScreen::connectionRequested);
 
-
+    //m_ui->ledSerialKey
 
    // m_ui->cbbServer->popup()->setObjectName("cbbServer_popup");
     m_ui->cbbServer->setCaption("Updating server list...");
@@ -72,23 +72,10 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
 //================= end of ServersModel: =================
 
     connect(m_ui->cbbServer  , SIGNAL(currentIndexChanged(int))  , this, SIGNAL(serverChanged(int)));
-    connect(m_ui->ledSerialKey, &SerialNumberLineEdit::serialKeyEdited, this, &SignInScreen::serialKeyEdited);
+    connect(m_ui->ledSerialKey, &SerialKeyField::textEdited, this, &SignInScreen::serialKeyEdited);
 
 
-    connect(m_ui->ledSerialKey, &SerialNumberLineEdit::serialKeyChanged, this, &SignInScreen::serialKeyChanged);
-
-    connect(m_ui->ledSerialKey, &SerialNumberLineEdit::serialKeyEdited, [](const QString&a ){
-        qDebug() << "SerialNumberLineEdit::serialKeyEdited";
-    });
-
-    connect(m_ui->ledSerialKey, &SerialNumberLineEdit::serialKeyChanged, [](const QString& a){
-        qDebug() << "SerialNumberLineEdit::serialKeyChanged";
-    });
-    connect(m_ui->ledSerialKey, &SerialNumberLineEdit::filledOut, [this]{
-        qDebug() << "SerialNumberLineEdit::filledOut";
-        bool a = m_inputStates->isRunning();
-        qDebug()<<a;
-    });
+    connect(m_ui->ledSerialKey, &SerialKeyField::textChanged, this, &SignInScreen::serialKeyChanged);
 
     //Default properties:
     m_ui->btnConnect->setText(tr(BUTTON_TEXT_DEFAULT));
@@ -117,12 +104,12 @@ void SignInScreen::adjustStateMachine()
 
 
     m_stt_serialKey_unactivated->addTransition(this, &SignInScreen::serialKeyError, m_stt_serialKey_unactivated_wrong);
-    m_stt_serialKey_unactivated_wrong->addTransition(m_ui->ledSerialKey, &SerialNumberLineEdit::serialKeyChanged, m_stt_serialKey_unactivated_input);
-    m_stt_serialKey_unactivated_input->addTransition(m_ui->ledSerialKey, &SerialNumberLineEdit::filledOut, m_stt_serialKey_unactivated_entered);
-    m_stt_serialKey_unactivated_wrong->addTransition(m_ui->ledSerialKey, &SerialNumberLineEdit::filledOut, m_stt_serialKey_unactivated_entered);
+    m_stt_serialKey_unactivated_wrong->addTransition(m_ui->ledSerialKey, &SerialKeyField::textChanged, m_stt_serialKey_unactivated_input);
+    m_stt_serialKey_unactivated_input->addTransition(m_ui->ledSerialKey, &SerialKeyField::textEditedAndFilledOut, m_stt_serialKey_unactivated_entered);
+    m_stt_serialKey_unactivated_wrong->addTransition(m_ui->ledSerialKey, &SerialKeyField::textEditedAndFilledOut, m_stt_serialKey_unactivated_entered);
 
 
-    m_stt_serialKey_unactivated_entered->addTransition(m_ui->ledSerialKey, &SerialNumberLineEdit::serialKeyChanged, m_stt_serialKey_unactivated_input);
+    m_stt_serialKey_unactivated_entered->addTransition(m_ui->ledSerialKey, &SerialKeyField::textChanged, m_stt_serialKey_unactivated_input);
 
     m_stt_serialKey_unactivated->addTransition(this, &SignInScreen::activated, m_stt_serialKey_activated);
     m_stt_serialKey_activated->addTransition(this, &SignInScreen::unactivated, m_stt_serialKey_unactivated);
@@ -276,7 +263,7 @@ void SignInScreen::setCurrentServerName(const QString &a_serverName)
 
 void SignInScreen::setSerialKey(const QString &a_serial)
 {
-    m_ui->ledSerialKey->setSerial(a_serial);
+    m_ui->ledSerialKey->setText(a_serial);
 
     if (!m_inputStates->isRunning())
     {

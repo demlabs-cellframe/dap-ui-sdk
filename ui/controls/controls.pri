@@ -12,6 +12,7 @@ SOURCES += \
     $$PWD/FAQWidget.cpp \
     $$PWD/AnimatedLineEdit.cpp \
     $$PWD/ScreenOverlaying.cpp \
+    $$PWD/SerialKeyField.cpp \
     $$PWD/SerialNumberLineEdit.cpp \
     $$PWD/StyledDropShadowEffect.cpp \
     $$PWD/WidgetDelegateListView/CustomButtonDelegate.cpp \
@@ -42,6 +43,7 @@ HEADERS += \
     $$PWD/FAQWidget.h \
     $$PWD/AnimatedLineEdit.h \
     $$PWD/ScreenOverlaying.h \
+    $$PWD/SerialKeyField.h \
     $$PWD/SerialNumberLineEdit.h \
     $$PWD/StyledDropShadowEffect.h \
     $$PWD/WidgetDelegateListView/CustomButtonDelegate.h \
