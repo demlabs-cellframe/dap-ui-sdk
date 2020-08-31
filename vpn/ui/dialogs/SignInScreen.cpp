@@ -1,6 +1,7 @@
 #include "SignInScreen.h"
 
 #include "DapDataLocal.h"
+#include "SerialKeyField.h"
 
 const QString SignInScreen::SCREEN_NAME = "SignIn";
 
@@ -39,10 +40,6 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
 
     connect(m_ui->btnConnect,&QPushButton::clicked, this, &SignInScreen::connectionRequested);
 
-    //m_ui->ledSerialKey
-
-   // m_ui->cbbServer->popup()->setObjectName("cbbServer_popup");
-    m_ui->cbbServer->setCaption("Updating server list...");
 
 //================= ServersModl: =================
     for (DapServerInfo& server :DapDataLocal::serversData()->servers())
@@ -51,7 +48,6 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     if (m_ui->cbbServer->count()>0)
     {
         m_ui->cbbServer->setEnabled(true);
-        m_ui->cbbServer->setCaption("Choose server");
     }
     else
     {
@@ -62,7 +58,6 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     connect(DapDataLocal::serversData(), &DapServersData::serverAdded, [=](const DapServerInfo& a_serverInfo){
         m_ui->cbbServer->addItem(a_serverInfo.name);
         m_ui->cbbServer->setEnabled(true);
-        m_ui->cbbServer->setCaption("Choose server");
     });
 
     connect(DapDataLocal::serversData(), &DapServersData::serversCleared, [this](){
@@ -181,6 +176,8 @@ void SignInScreen::adjustStateMachine()
     connect(m_stt_serverState_loading           , &QState::entered, [this]{
         m_ui->btnConnect->setEnabled(false);
     });
+
+    m_stt_serverState_loading_serverList->assignProperty(m_ui->cbbServer, qPrintable(Properties::CAPTION), tr("Updating server list..."));
 
     // Service
     connect(m_stt_serviceState_connected        , &QState::entered, [this]
