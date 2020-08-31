@@ -276,6 +276,8 @@ void SignInScreen::setActivated(bool a_activated)
 {
     emit a_activated ? this->activated() : this->unactivated();
 
+    Utils::setPropertyAndUpdateStyle(m_ui->wgtUnderSerialMargin,Properties::ACTIVE,a_activated);
+
     if (!m_inputStates->isRunning())
         m_stt_serialKey->setInitialState(a_activated ? m_stt_serialKey_activated : m_stt_serialKey_unactivated);
 }

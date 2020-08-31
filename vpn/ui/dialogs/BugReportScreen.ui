@@ -96,6 +96,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="inputMethodHints">
+         <set>Qt::ImhMultiLine</set>
+        </property>
         <property name="verticalScrollBarPolicy">
          <enum>Qt::ScrollBarAlwaysOff</enum>
         </property>
@@ -115,6 +118,9 @@
        </widget>
       </item>
       <item>
+       <widget class="QWidget" name="wgtTopMarginAttachImage" native="true"/>
+      </item>
+      <item>
        <widget class="QPushButton" name="btnAttachImage">
         <property name="text">
          <string>Click here to attach a image</string>
@@ -123,6 +129,9 @@
          <bool>true</bool>
         </property>
        </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="wgtTopMarginSendButton" native="true"/>
       </item>
       <item>
        <widget class="QPushButton" name="btnSend">

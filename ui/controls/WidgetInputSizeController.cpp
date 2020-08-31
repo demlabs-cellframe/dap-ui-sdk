@@ -19,6 +19,11 @@ void WidgetInputSizeController::addWidgetEmitsSignal(CustomLineEditBase *a_widge
     connect(a_widget,&CustomLineEditBase::focusChanged,this,&WidgetInputSizeController::setVisibleWidgets);
 }
 
+void WidgetInputSizeController::addWidgetEmitsSignal(CustomTextEdit *a_widget)
+{
+    connect(a_widget,&CustomTextEdit::focusChanged,this,&WidgetInputSizeController::setVisibleWidgets);
+}
+
 void WidgetInputSizeController::addDisappearingWidget(QWidget *a_widget)
 {
     m_disappearingWidget.append(a_widget);
