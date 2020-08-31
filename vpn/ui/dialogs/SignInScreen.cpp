@@ -186,7 +186,7 @@ void SignInScreen::adjustStateMachine()
         if (m_stt_serviceState_connected->active() && m_stt_serverState_disconnected->active())
             m_ui->btnConnect->setEnabled(true);
 
-        m_ui->ledSerialKey->hide();
+//        m_ui->ledSerialKey->hide();
     });
     connect(m_stt_serialKey_activated           , &QState::exited, [this]{
         m_ui->ledSerialKey->show();
@@ -275,6 +275,8 @@ void SignInScreen::setState(ConnectionState a_state)
 void SignInScreen::setActivated(bool a_activated)
 {
     emit a_activated ? this->activated() : this->unactivated();
+
+    Utils::setPropertyAndUpdateStyle(m_ui->wgtUnderSerialMargin,Properties::ACTIVE,a_activated);
 
     if (!m_inputStates->isRunning())
         m_stt_serialKey->setInitialState(a_activated ? m_stt_serialKey_activated : m_stt_serialKey_unactivated);
