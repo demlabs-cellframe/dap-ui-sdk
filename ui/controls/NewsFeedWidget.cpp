@@ -91,5 +91,5 @@ void RunLineLabel::timerEvent(QTimerEvent *)
 {
     const int length = m_text.length();
     if(++m_shift >= length) m_shift = 0;
-    QLabel::setText(m_text.right(length-m_shift)+m_text.left(m_shift));
+    QLabel::setText(m_text.right(length-m_shift) + "   " + m_text.left(m_shift-3));
 }
