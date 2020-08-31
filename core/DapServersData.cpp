@@ -123,6 +123,20 @@ int DapServersData::rowCount(const QModelIndex &parent) const
     return m_servers.count();
 }
 
+const QString DapServersData::m_countries[static_cast<int>(DapServerLocation::COUNT)] = {
+    "", //UNKNOWN = 0,
+    "://country/Flag_uk.png", //ENGLAND,
+    "://country/FR.png", //FRANCE,
+    "://country/DE.png", //GERMANY,
+    "://country/US.png", //USA,
+    "://country/NL.png", //NETHERLANDS,
+    "://country/RU.png", //RUSSIA,
+    "://country/UA.png", //UKRAINE,
+    "://country/NL.png", //Netherlands,
+    "://country/SG.png", //Singapore,
+    "://country/DE.png", //Germany,
+};
+
 QVariant DapServersData::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
@@ -130,10 +144,16 @@ QVariant DapServersData::data(const QModelIndex &index, int role) const
     if (index.row() >= m_servers.size())
         return QVariant();
 
-    if (role == Qt::DisplayRole)
+    switch (role) {
+    case Qt::DisplayRole:
         return m_servers.at(index.row()).name;
-    else
-        return QVariant();
+    case Qt::DecorationRole:
+        return m_countries[static_cast<int>(m_servers.at(index.row()).location)];
+    default:
+        break;
+    }
+
+    return QVariant();
 }
 
 Qt::ItemFlags DapServersData::flags(const QModelIndex &index) const
@@ -148,7 +168,7 @@ bool DapServersData::setData(const QModelIndex &index, const QVariant &value, in
 {
     if (index.isValid() && role == Qt::EditRole) {
         m_servers.replace(index.row(), value.value<DapServerInfo>());
-        emit dataChanged(index, index);
+        emit dataChanged(index, index, {Qt::DisplayRole, Qt::DecorationRole});
         return true;
     }
     return false;

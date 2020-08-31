@@ -19,6 +19,7 @@ enum class DapServerLocation : int {
     Netherlands,
     Singapore,
     Germany,
+    COUNT
 };
 
 class DapServerInfo;
@@ -40,9 +41,9 @@ public:
 
     QString address;
     QString address6;
-    quint16 port;
+    quint16 port = 0;
     QString name;
-    DapServerLocation location;
+    DapServerLocation location = DapServerLocation::UNKNOWN;
 
     bool isAuto() const;
 
