@@ -13,8 +13,9 @@ DapServersData *DapServersData::instance()
 
 
 void DapServersData::addServer(const DapServerInfo& dsi) {
-
-    m_servers.push_back(dsi);
+    int row = m_servers.count();
+    insertRows(row, 1);
+    setData(index(row, 0), qVariantFromValue(dsi));
 
     emit this->serverAdded(dsi);
 }
@@ -109,4 +110,86 @@ QString DapServersData::currentServerName() const
 bool DapServersData::currentServerIsAuto() const
 {
     return this->currentServer()->isAuto();
+}
+
+int DapServersData::rowCount(const QModelIndex &parent) const
+{
+    Q_UNUSED(parent)
+    return m_servers.count();
+}
+
+const QString DapServersData::m_countries[static_cast<int>(DapServerLocation::COUNT)] = {
+    "", //UNKNOWN = 0,
+    "://country/Flag_uk.png", //ENGLAND,
+    "://country/FR.png", //FRANCE,
+    "://country/DE.png", //GERMANY,
+    "://country/US.png", //USA,
+    "://country/NL.png", //NETHERLANDS,
+    "://country/RU.png", //RUSSIA,
+    "://country/UA.png", //UKRAINE,
+    "://country/NL.png", //Netherlands,
+    "://country/SG.png", //Singapore,
+    "://country/DE.png", //Germany,
+};
+
+QVariant DapServersData::data(const QModelIndex &index, int role) const
+{
+    if (!index.isValid())
+        return QVariant();
+    if (index.row() >= m_servers.size())
+        return QVariant();
+
+    switch (role) {
+    case Qt::DisplayRole:
+        return m_servers.at(index.row()).name;
+    case Qt::DecorationRole:
+        return m_countries[static_cast<int>(m_servers.at(index.row()).location)];
+    default:
+        break;
+    }
+
+    return QVariant();
+}
+
+Qt::ItemFlags DapServersData::flags(const QModelIndex &index) const
+{
+    if (!index.isValid())
+            return Qt::ItemIsEnabled;
+
+    return QAbstractItemModel::flags(index);
+}
+
+bool DapServersData::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (index.isValid() && role == Qt::EditRole) {
+        m_servers.replace(index.row(), value.value<DapServerInfo>());
+        emit dataChanged(index, index, {Qt::DisplayRole, Qt::DecorationRole});
+        return true;
+    }
+    return false;
+}
+
+bool DapServersData::insertRows(int position, int rows, const QModelIndex &index)
+{
+    Q_UNUSED(index)
+    beginInsertRows(QModelIndex(), position, position+rows-1);
+
+    for (int row = 0; row < rows; ++row) {
+        m_servers.insert(position, DapServerInfo());
+    }
+    endInsertRows();
+    return true;
+}
+
+bool DapServersData::removeRows(int position, int rows, const QModelIndex &index)
+{
+    Q_UNUSED(index)
+    beginRemoveRows(QModelIndex(), position, position+rows-1);
+
+    for (int row = 0; row < rows; ++row) {
+        m_servers.removeAt(position);
+    }
+
+    endRemoveRows();
+    return true;
 }

@@ -63,9 +63,12 @@ void WidgetDelegateListView::dataChanged(const QModelIndex &topLeft, const QMode
         if (!widget)
             return;
 
-        for (int curRole: roles) {
-            widget->setData(index.data(curRole), curRole);
-        }
+        if (roles.isEmpty())
+            widget->setData(this->model()->data(index));
+        else
+            for (int curRole: roles) {
+                widget->setData(index.data(curRole), curRole);
+            }
     }
 }
 
