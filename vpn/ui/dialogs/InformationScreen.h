@@ -14,7 +14,8 @@ public:
     virtual QString screenName() override;
 
     void setText(const QString& a_text);
-
+    void setTextCaption(const QString &a_text);
+    void setVisibleCaption(bool a_visible);
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.

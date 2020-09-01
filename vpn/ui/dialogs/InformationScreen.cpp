@@ -29,3 +29,11 @@ void InformationScreen::initVariantUi(QWidget *a_widget)
     m_ui->lblCaption->hide();
 #endif
 }
+void InformationScreen::setTextCaption(const QString &a_text)
+{
+    m_ui->lblCaption->setText(a_text);
+}
+void InformationScreen::setVisibleCaption(bool a_visible)
+{
+    m_ui->lblCaption->setVisible(a_visible);
+}
