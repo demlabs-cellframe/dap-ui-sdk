@@ -60,21 +60,60 @@ void SerialKeyField::inputMethodEvent(QInputMethodEvent *e)
 #ifdef Q_OS_ANDROID
     if(!e->commitString().isEmpty())
     {
-        if(this->text().count()>this->cursorPosition()
-                && !this->hasSelectedText())
+        if(!this->hasSelectedText()
+                && this->text().count()>this->cursorPosition())
         {
             replaceNextCharacter(e->commitString().toUpper());
             checkoutFilledOutOrCleaned();
             return;
         }
+
+        else if (this->hasSelectedText()
+                 && this->text().count() > this->cursorPosition())
+        {
+            int newCursorPosition{this->cursorPosition() - this->selectedText().count() + 1};
+            if(m_regExp.exactMatch(e->commitString()))
+                e->setCommitString(e->commitString().toUpper());
+            else e->setCommitString("");
+            QLineEdit::inputMethodEvent(e);
+            this->setCursorPosition(newCursorPosition);
+            return;
+        }
+
         if(m_regExp.exactMatch(e->commitString()))
             e->setCommitString(e->commitString().toUpper());
-        else e->setCommitString("");
+        else
+            e->setCommitString("");
+    } 
+    else
+    {
+        if (this->text().isEmpty()) return;
+
+        if (this->text().count() > this->cursorPosition())
+        {
+            static int newCursorPosition{};
+            static bool selected{};
+            if (this->hasSelectedText())
+            {
+                selected=true;
+                newCursorPosition=this->selectionStart();
+            }
+            else
+            {
+                if (selected){}
+                else newCursorPosition=this->cursorPosition()-1;
+                selected=false;
+            }
+            int countText{this->text().count()};
+            QLineEdit::inputMethodEvent(e);
+            if(this->text().count()<countText) this->setCursorPosition(newCursorPosition);
+            return;
+        }
     }
-    else if (this->text().isEmpty())
-        return;
+
+    QString thisText{this->text()};
     QLineEdit::inputMethodEvent(e);
-    checkoutFilledOutOrCleaned();
+    if (thisText!=this->text()) checkoutFilledOutOrCleaned();
 #else
     QLineEdit::inputMethodEvent(e);
 #endif
@@ -89,10 +128,24 @@ void SerialKeyField::keyPressEvent(QKeyEvent *e)
     }
 #ifdef Q_OS_ANDROID
     if(m_keys.contains(e->key())
-            && this->text().count()>this->cursorPosition()
-            && !this->hasSelectedText())
+            && this->text().count()>this->cursorPosition())
     {
-        replaceNextCharacter(e->text());
+        if(!this->hasSelectedText()) replaceNextCharacter(e->text());
+        else
+        {
+            int newCursorPosition{this->cursorPosition()-this->selectedText().count()+1};
+            QLineEdit::keyPressEvent(e);
+            this->setCursorPosition(newCursorPosition);
+        }
+    }
+    else if(e->key()==Qt::Key_Backspace
+            && this->text().count()>this->cursorPosition())
+    {
+        int newCursorPosition{};
+        this->hasSelectedText() ? newCursorPosition=this->selectionStart()
+                : newCursorPosition=this->cursorPosition()-1;
+        QLineEdit::keyPressEvent(e);
+        this->setCursorPosition(newCursorPosition);
     }
     else QLineEdit::keyPressEvent(e);
     checkoutFilledOutOrCleaned();
