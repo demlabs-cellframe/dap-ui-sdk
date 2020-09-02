@@ -16,6 +16,7 @@
 #include <QList>
 #include "ui_AccountScreen.h"
 #include "CustomPlacementButton.h"
+#include "SerialRemovalConfirmationMessage.h"
 
 class AccountScreen : public AdaptiveScreen
 {
@@ -32,6 +33,20 @@ public:
 
     void setState(ConnectionState a_state);
 
+#ifndef Q_OS_ANDROID
+
+    enum class ActivationState {
+        Activated,
+        Unactivated
+    };
+
+    void setState(ActivationState a_activationState);
+
+signals:
+    void serialRemovalRequested();
+
+#endif
+
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
@@ -41,6 +56,9 @@ protected:
     const QString BTN_YEAR_PRICE       = "btnYearPrice";
 
 private:
+
+    SerialRemovalConfirmationMessage *m_serialRemovalMessage = nullptr;
+
     QScopedPointer<Ui::AccountScreen> m_ui;
 };
 

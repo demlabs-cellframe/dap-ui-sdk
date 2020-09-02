@@ -119,7 +119,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Back</string>
+         <string>BACK</string>
         </property>
        </widget>
       </item>
