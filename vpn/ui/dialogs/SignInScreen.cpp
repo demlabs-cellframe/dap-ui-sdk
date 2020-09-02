@@ -42,8 +42,7 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
 
 
 //================= ServersModl: =================
-    for (DapServerInfo& server :DapDataLocal::serversData()->servers())
-        m_ui->cbbServer->addItem(server.name);
+    m_ui->cbbServer->setModel(DapDataLocal::serversData());
 
     if (m_ui->cbbServer->count()>0)
     {
@@ -56,12 +55,11 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     }
 
     connect(DapDataLocal::serversData(), &DapServersData::serverAdded, [=](const DapServerInfo& a_serverInfo){
-        m_ui->cbbServer->addItem(a_serverInfo.name);
+        Q_UNUSED(a_serverInfo)
         m_ui->cbbServer->setEnabled(true);
     });
 
     connect(DapDataLocal::serversData(), &DapServersData::serversCleared, [this](){
-        m_ui->cbbServer->clear();
         m_ui->cbbServer->setEnabled(false);
     });
 //================= end of ServersModel: =================
