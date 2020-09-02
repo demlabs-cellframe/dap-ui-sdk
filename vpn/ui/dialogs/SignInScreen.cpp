@@ -244,7 +244,17 @@ void SignInScreen::setState(ConnectionState a_state)
 }
 
 void SignInScreen::setActivated(bool a_activated)
-{
+{qWarning()<<"setActivated(bool a_activated) - - - - - - -- - - - -  -"<<a_activated;
+
+    if(a_activated)
+    {
+        if(m_ui->ledSerialKey->text().isEmpty())
+            a_activated = false;
+        else
+            a_activated = true;
+    }
+    else a_activated = false;
+
     emit a_activated ? this->activated() : this->unactivated();
 
     Utils::setPropertyAndUpdateStyle(m_ui->wgtUnderSerialMargin,Properties::ACTIVE,a_activated);
