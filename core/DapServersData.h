@@ -64,7 +64,7 @@ private:
 
     int m_currentServerIndex = -1;
     QList<DapServerInfo> m_servers;
-    static const QString m_countries[static_cast<int>(DapServerLocation::COUNT)];
+    static const QStringList m_countries;
 };
 
 #endif // DAPSERVERSDATA_H

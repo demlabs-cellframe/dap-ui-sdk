@@ -118,7 +118,7 @@ int DapServersData::rowCount(const QModelIndex &parent) const
     return m_servers.count();
 }
 
-const QString DapServersData::m_countries[static_cast<int>(DapServerLocation::COUNT)] = {
+const QStringList DapServersData::m_countries = {
     "", //UNKNOWN = 0,
     "://country/Flag_uk.png", //ENGLAND,
     "://country/FR.png", //FRANCE,
