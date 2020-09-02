@@ -3,6 +3,7 @@
 
 enum ConnectionState {
     ConnectingToService,
+    ServersListLoading,
     Disconnected,
     Connecting,
     Connected,
