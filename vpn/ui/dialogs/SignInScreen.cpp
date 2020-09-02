@@ -99,6 +99,7 @@ void SignInScreen::adjustStateMachine()
 
 
     m_stt_serialKey_unactivated->addTransition(this, &SignInScreen::serialKeyError, m_stt_serialKey_unactivated_wrong);
+    m_stt_serialKey_activated->addTransition(this, &SignInScreen::serialKeyError, m_stt_serialKey_unactivated_wrong);
     m_stt_serialKey_unactivated_wrong->addTransition(m_ui->ledSerialKey, &SerialKeyField::textChanged, m_stt_serialKey_unactivated_input);
     m_stt_serialKey_unactivated_input->addTransition(m_ui->ledSerialKey, &SerialKeyField::textEditedAndFilledOut, m_stt_serialKey_unactivated_entered);
     m_stt_serialKey_unactivated_wrong->addTransition(m_ui->ledSerialKey, &SerialKeyField::textEditedAndFilledOut, m_stt_serialKey_unactivated_entered);
@@ -282,7 +283,7 @@ void SignInScreen::setErrorMessage(const QString &a_errorMsg /*= ""*/)
 {
     if (a_errorMsg == "Incorrect serial key"
             || a_errorMsg == "Serial key not found in database"
-            || a_errorMsg == "Serial key activated, try to authorize")
+            || a_errorMsg == "Serial key already activated on another device")
     {
         emit this->serialKeyError();
         emit this->connectionError();

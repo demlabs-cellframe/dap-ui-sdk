@@ -17,6 +17,9 @@ void DapServersData::addServer(const DapServerInfo& dsi) {
     insertRows(row, 1);
     setData(index(row, 0), qVariantFromValue(dsi));
 
+    if (m_currentServerIndex == -1)
+        setCurrentServer(0);
+
     emit this->serverAdded(dsi);
 }
 
