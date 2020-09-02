@@ -55,7 +55,7 @@ signals:
 
 private:
     void loadDatas();
-
+    static const QString findInCountriesMap(const QString& string);
 
     const QString CURRENT_SERVER_NAME_SETTING   = "email";
     const QString CURRENT_SERVER_ADDRESS_SETTING = "message";
@@ -65,6 +65,7 @@ private:
     int m_currentServerIndex = -1;
     QList<DapServerInfo> m_servers;
     static const QStringList m_countries;
+    static QMap<QString, QString> m_countryMap;
 };
 
 #endif // DAPSERVERSDATA_H
