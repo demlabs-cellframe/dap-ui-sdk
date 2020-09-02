@@ -160,9 +160,16 @@ void SignInScreen::adjustStateMachine()
             m_ui->btnConnect->setEnabled(true);
 
         m_ui->ledSerialKey->hide();
+#ifndef Q_OS_ANDROID
+        m_ui->wgtFrameBottom->hide();
+#endif
     });
+
     connect(m_stt_serialKey_activated           , &QState::exited, [this]{
         m_ui->ledSerialKey->show();
+#ifndef Q_OS_ANDROID
+        m_ui->wgtFrameBottom->show();
+#endif
     });
 
     // Server

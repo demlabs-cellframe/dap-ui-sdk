@@ -142,7 +142,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Send</string>
+         <string>SEND</string>
         </property>
         <property name="flat">
          <bool>false</bool>
@@ -180,6 +180,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>VersionLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">VersionLabel.h</header>
+  </customwidget>
+  <customwidget>
    <class>CustomLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">CustomLineEdit.h</header>
@@ -188,11 +193,6 @@
    <class>CustomTextEdit</class>
    <extends>QTextEdit</extends>
    <header location="global">CustomTextEdit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>VersionLabel</class>
-   <extends>QLabel</extends>
-   <header location="global">VersionLabel.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

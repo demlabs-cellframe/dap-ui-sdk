@@ -111,7 +111,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Cancel</string>
+         <string>CANCEL</string>
         </property>
        </widget>
       </item>
