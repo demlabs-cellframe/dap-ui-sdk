@@ -73,6 +73,8 @@ public:
     /// .
     /// @param a_id Window GUI widget.
     QLabel* addSubcontrol(QString a_objectName);
+    QLabel* addSubcontrol(QWidget& a_widgetSubcontroll);
+
 
     Qt::LayoutDirection layoutDirection() const;
     void setLayoutDirection(Qt::LayoutDirection a_direction);
@@ -105,7 +107,7 @@ protected:
     void checkStateSet();
     QHBoxLayout *m_layout;
     QWidget m_wgtLeftSpacing;         ///<label for left spacing
-    QList<QLabel*> m_subcontrols;
+    QList<QWidget*> m_subcontrols;
     QLabel m_lbImage;    ///<label with image
     QLabel m_lbText;     ///<label with text
     QLabel m_lbAdditionalImage;
