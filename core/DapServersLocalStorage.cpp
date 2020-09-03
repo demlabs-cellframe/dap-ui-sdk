@@ -140,6 +140,14 @@ int DapServersLocalStorage::_loadServers()
     if(DapServerInfo::fromJSON(_jsonServersListArr, _serversList) != true) {
         qCritical() << "Error parse servers list to storage";
     }
+    
+#ifdef  QT_DEBUG
+    DapServerInfo dServerInfo;
+    dServerInfo.address="127.0.0.1";
+    dServerInfo.port=8099;
+    dServerInfo.name="local";
+    addServer(dServerInfo);
+#endif
     qDebug() << "Loaded" << _jsonServersListArr.size() <<
                 (_jsonServersListArr.size() == 1 ? "server" : "servers");
     return 0;
