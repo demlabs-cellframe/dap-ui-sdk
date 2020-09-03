@@ -38,10 +38,6 @@ void AccountScreen::initVariantUi(QWidget *a_widget)
 #else
     connect(m_ui->btnResetSerial, &QPushButton::clicked, m_serialRemovalMessage, &SerialRemovalConfirmationMessage::show);
 
-
-//    m_ui->verticalLayout_4->setAlignment(m_ui->btnYearPrice,Qt::AlignHCenter);
-//    m_ui->verticalLayout_4->setAlignment(m_ui->btnMonthPrice,Qt::AlignHCenter);
-//    m_ui->verticalLayout_4->setAlignment(m_ui->btnSixMonthPrice,Qt::AlignHCenter);
 #endif
 }
 
