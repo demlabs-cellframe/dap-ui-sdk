@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDateTime>
+#include <QtMath>
 
 #include "DapServerInfo.h"
 
@@ -15,11 +16,12 @@ public:
     ~DapServerConnectionInfo();
 
     QDateTime startTime () const;
-    int bytesReceived   () const;
-    int bytesSent       () const;
-    int packetsReceived () const;
-    int packetsSent     () const;
-
+    quint64 bytesReceived   () const;
+    quint64 bytesSent       () const;
+    quint64 packetsReceived () const;
+    quint64 packetsSent     () const;
+    QString uploadSpeed   () const;
+    QString downloadSpeed () const;
 
 
     const DapServerInfo *serverInfo() const;
@@ -28,30 +30,36 @@ public:
 public slots:
     void setStartTime(const QDateTime &a_startTime);
 
-    void setStatistic(int a_bytesReceived,
-                      int a_bytesSent,
-                      int a_packetsReceived,
-                      int a_packetsSent);
+    void setStatistic(quint64 a_bytesReceived,
+                      quint64 a_bytesSent,
+                      quint64 a_packetsReceived,
+                      quint64 a_packetsSent);
 
     void clearStatisticAndStartTime();
 
 signals:
 
     void startTimeChanged(const QDateTime& a_time);
-    void statisticSet(int a_bytesReceived,
-                      int a_bytesSent,
-                      int a_packetsReceived,
-                      int a_packetsSent);
+    void statisticSet(quint64 a_bytesReceived,
+                      quint64 a_bytesSent,
+                      quint64 a_packetsReceived,
+                      quint64 a_packetsSent,
+                      QString a_uploadSpeed,
+                      QString a_downloadSpeed);
 
 private:
     QDateTime   m_startTime {};
-    int         m_bytesReceived = 0;
-    int         m_bytesSent = 0;
-    int         m_packetsReceived = 0;
-    int         m_packetsSent = 0;
+
+    quint64 m_bytesReceived     = 0;
+    quint64 m_bytesSent         = 0;
+    quint64 m_packetsReceived   = 0;
+    quint64 m_packetsSent       = 0;
+    QString m_uploadSpeed     = 0;
+    QString m_downloadSpeed   = 0;
 
     DapServerInfo m_serverInfo;
 
+    QString convertByte(const quint64 &bytes_new);
 };
 
 #endif // DAPCONNECTIONDATA_H
