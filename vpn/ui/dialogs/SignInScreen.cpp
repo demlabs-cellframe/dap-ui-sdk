@@ -155,6 +155,11 @@ void SignInScreen::adjustStateMachine()
     });
 
     connect(m_stt_serialKey_activated           , &QState::entered, [this]{
+        if (this->serialKey().isEmpty())
+        {
+            emit this->serialKeyError();
+            return;
+        }
         if (!this->isLoadingState() && this->serviceIsConnected())
             m_ui->btnConnect->setEnabled(true);
 
@@ -212,6 +217,11 @@ void SignInScreen::adjustStateMachine()
 QString SignInScreen::screenName()
 {
     return SCREEN_NAME;
+}
+
+QString SignInScreen::serialKey()
+{
+    return m_ui->ledSerialKey->text();
 }
 
 void SignInScreen::setState(ConnectionState a_state)

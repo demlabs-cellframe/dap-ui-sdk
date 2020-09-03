@@ -38,6 +38,7 @@ public:
     virtual QString screenName() override;
     static const QString SCREEN_NAME;
 
+    QString serialKey();
 
 public slots:
     void setState(ConnectionState a_state);
