@@ -1,11 +1,14 @@
 #include "TariffDelegate.h"
-#include "TariffItem.h"
 
+#include <QVBoxLayout>
+
+#include "TariffItem.h"
 #include "defines.h"
 #include "Utilz.h"
 
 TariffDelegate::TariffDelegate(QWidget* a_parent)
     : CustomButtonDelegate(a_parent)
+    , m_doubledSubcontroll(new QWidget(this))
     , m_lblMonthPrice(new QLabel(this))
     , m_lblDuration(new QLabel(this))
 {
@@ -13,10 +16,17 @@ TariffDelegate::TariffDelegate(QWidget* a_parent)
     m_lblMonthPrice  ->setObjectName("lblMonthPrice");
     m_lblDuration->setObjectName("lblPlanDuration");
 
-    this->layout()->addWidget(m_lblMonthPrice);
-    this->layout()->addWidget(m_lblDuration);
-    this->layout()->setMargin(0);
-    this->layout()->setSpacing(0);
+//    this->button()->setLayoutDirection(Qt::);
+
+    QVBoxLayout* subcontrollLayout = new QVBoxLayout(m_doubledSubcontroll);
+    m_doubledSubcontroll->setLayout(subcontrollLayout);
+    subcontrollLayout->setMargin(0);
+    subcontrollLayout->setSpacing(0);
+
+    subcontrollLayout->addWidget(m_lblMonthPrice);
+    subcontrollLayout->addWidget(m_lblDuration);
+
+    this->button()->addSubcontrol(*m_doubledSubcontroll);
 }
 
 void TariffDelegate::setData(const QVariant &a_value, int role)

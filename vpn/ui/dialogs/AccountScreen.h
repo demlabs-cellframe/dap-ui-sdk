@@ -17,10 +17,11 @@
 #include "ui_AccountScreen.h"
 #include "CustomPlacementButton.h"
 #include "SerialRemovalConfirmationMessage.h"
+#include "ScreenWithScreenPopupsAbstract.h"
 
 #include "TariffItem.h"
 
-class AccountScreen : public AdaptiveScreen
+class AccountScreen : public ScreenWithScreenPopupsAbstract
 {
     Q_OBJECT
 
@@ -42,7 +43,7 @@ public:
     };
     void setState(ActivationState a_activationState);
 
-    void appendTariff(QList<TariffItem>& a_tariffList);
+    void appendTariff(const QList<TariffItem> &a_tariffList);
 
 signals:
     void serialRemovalRequested();
@@ -53,9 +54,10 @@ protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
     virtual void initVariantUi(QWidget *a_widget) override;
-
+    
+    virtual QList<CustomPopup *> customPopups() override;
+    
 private:
-
     SerialRemovalConfirmationMessage *m_serialRemovalMessage = nullptr;
 
     QScopedPointer<Ui::AccountScreen> m_ui;
