@@ -150,6 +150,9 @@ void DapSession::sendSignUpRequest(const QString &host, const QString &email, co
 
 void DapSession::getNews()
 {
+    if (!m_dapCryptCDB) {
+        this->preserveCDBSession();
+    }
     m_netNewsReply = encRequest(nullptr, URL_NEWS, QString(), QString(), SLOT(answerNews()), true);
 }
 
