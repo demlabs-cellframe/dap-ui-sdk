@@ -35,6 +35,10 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     qDebug() << "initVariantUi";
 
     m_ui->cbbServer->popup()->setObjectName("cbbServer_popup");
+
+#ifndef Q_OS_ANDROID
+    m_ui->cbbServer->setPositionPopup(PositionPopup::overlappingPosition);
+#endif
 //*************************Serial field***************************************
 
 

@@ -13,6 +13,7 @@ AccountScreen::AccountScreen(QWidget *a_parent)
     m_serialRemovalMessage->setWindowType(Qt::Dialog);
     m_serialRemovalMessage->setObjectName("ScreenMessagePopup");
     connect(m_serialRemovalMessage, &SerialRemovalConfirmationMessage::accepted, this, &AccountScreen::serialRemovalRequested);
+
 #endif
 
     AdaptiveScreen::initScreen(this);
