@@ -19,18 +19,11 @@ SerialKeyField::SerialKeyField(QWidget *parent)
     });
     connect(this, &SerialKeyField::textEdited,[this](QString text)
     {
-        qDebug()<<"textEdited";
         Q_UNUSED(text);
         if (this->text().count()==MAX_COUNT_CHAR)
-        {
             emit textEditedAndFilledOut(this->text());
-            qDebug()<<"filed";
-        }
         else if(this->text().isEmpty())
-        {
             emit textEditedAndCleaned();
-            qDebug()<<"empty";
-        }
     });
 }
 
@@ -187,7 +180,6 @@ void SerialKeyField::keyPressEvent(QKeyEvent *e)
             else
             {
                 int newCursorPosition{this->cursorPosition()-this->selectedText().count()+1};
-                qDebug()<<newCursorPosition;
                 QKeyEvent upperEvent(e->type(), e->key(),
                             e->modifiers(), e->text().toUpper(),
                             e->isAutoRepeat(), e->count());
