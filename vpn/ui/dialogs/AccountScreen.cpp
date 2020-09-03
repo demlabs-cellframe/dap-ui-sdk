@@ -16,7 +16,6 @@ AccountScreen::AccountScreen(QWidget *a_parent)
 #endif
 
     AdaptiveScreen::initScreen(this);
-
 }
 
 QString AccountScreen::screenName()
@@ -37,11 +36,6 @@ void AccountScreen::initVariantUi(QWidget *a_widget)
     m_ui->lblCaption->setText("Renew subscription");
 #else
     connect(m_ui->btnResetSerial, &QPushButton::clicked, m_serialRemovalMessage, &SerialRemovalConfirmationMessage::show);
-
-
-//    m_ui->verticalLayout_4->setAlignment(m_ui->btnYearPrice,Qt::AlignHCenter);
-//    m_ui->verticalLayout_4->setAlignment(m_ui->btnMonthPrice,Qt::AlignHCenter);
-//    m_ui->verticalLayout_4->setAlignment(m_ui->btnSixMonthPrice,Qt::AlignHCenter);
 #endif
 }
 
@@ -49,5 +43,11 @@ void AccountScreen::initVariantUi(QWidget *a_widget)
 void AccountScreen::setState(ActivationState a_activationState)
 {
     m_ui->btnResetSerial->setEnabled(a_activationState == ActivationState::Activated);
+}
+
+void AccountScreen::appendTariff(QList<TariffItem> &a_tariffList)
+{
+    for (const TariffItem& currentTarriff: a_tariffList)
+        m_ui->cbbLicenceKey->addItem("", QVariant::fromValue(currentTarriff));
 }
 #endif

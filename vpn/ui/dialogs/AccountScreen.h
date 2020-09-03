@@ -18,6 +18,8 @@
 #include "CustomPlacementButton.h"
 #include "SerialRemovalConfirmationMessage.h"
 
+#include "TariffItem.h"
+
 class AccountScreen : public AdaptiveScreen
 {
     Q_OBJECT
@@ -34,26 +36,23 @@ public:
     void setState(ConnectionState a_state);
 
 #ifndef Q_OS_ANDROID
-
     enum class ActivationState {
         Activated,
         Unactivated
     };
-
     void setState(ActivationState a_activationState);
+
+    void appendTariff(QList<TariffItem>& a_tariffList);
 
 signals:
     void serialRemovalRequested();
-
 #endif
+//    void appendTarrif(QList<TariffItem> a_tariffList);
 
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
     virtual void initVariantUi(QWidget *a_widget) override;
-    const QString BTN_MONTH_PRICE      = "btnMonthPrice";
-    const QString BTN_SIX_MONTH_PRICE  = "btnSixMonthPrice";
-    const QString BTN_YEAR_PRICE       = "btnYearPrice";
 
 private:
 

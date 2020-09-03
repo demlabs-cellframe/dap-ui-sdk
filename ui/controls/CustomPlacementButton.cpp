@@ -48,10 +48,9 @@ void CustomPlacementButton::initButton()
 
     //Adding subcontrols to layout
     m_layout->addWidget(&m_wgtLeftSpacing);
-    for (QLabel *subcontrol: m_subcontrols)
+    for (QWidget *subcontrol: m_subcontrols)
     {
-        // Set up subcontroll ScaledContents:
-        subcontrol->setScaledContents(true);
+//        subcontrol->setScaledContents(true);
         m_layout->addWidget(subcontrol);
 
         CustomPlacementButton::setWidgetState(subcontrol);
@@ -136,11 +135,14 @@ QLabel* CustomPlacementButton::addSubcontrol(QString a_objectName)
 
     CustomPlacementButton::setWidgetState(newSubcontrol, this->underMouse(), isChecked());
 
-    //add to list and layout
-    m_subcontrols.append(newSubcontrol);
-    m_layout->insertWidget(m_layout->count() - 2, newSubcontrol);
-
+    this->addSubcontrol(*newSubcontrol);
     return newSubcontrol;
+}
+
+QLabel *CustomPlacementButton::addSubcontrol(QWidget &a_widgetSubcontroll)
+{
+    m_subcontrols.append(&a_widgetSubcontroll);
+    m_layout->insertWidget(m_layout->count() - 2, &a_widgetSubcontroll);
 }
 
 Qt::LayoutDirection CustomPlacementButton::layoutDirection() const
