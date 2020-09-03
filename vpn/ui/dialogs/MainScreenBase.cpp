@@ -70,20 +70,9 @@ void MainScreenBase::initServerList()
 {
     if (!m_serversModel)
     {
-        m_serversModel = m_ui->cbbServer->model();
-
-        for (DapServerInfo& server :DapDataLocal::serversData()->servers())
-            m_ui->cbbServer->addItem(server.name);
-
-        connect(DapDataLocal::serversData(), &DapServersData::serverAdded, [=](const DapServerInfo& a_serverInfo){
-            m_ui->cbbServer->addItem(a_serverInfo.name);
-        });
-
-        connect(DapDataLocal::serversData(), &DapServersData::serversCleared, m_ui->cbbServer, &QComboBox::clear);
+        m_serversModel = DapDataLocal::serversData();
     }
-    else
-        m_ui->cbbServer->setModel(m_serversModel);
-
+    m_ui->cbbServer->setModel(m_serversModel);
 }
 #endif
 void MainScreenBase::setAuthorized(bool a_authorized /*= true*/)

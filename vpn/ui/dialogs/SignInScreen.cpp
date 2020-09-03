@@ -46,8 +46,7 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
 
 
 //================= ServersModl: =================
-    for (DapServerInfo& server :DapDataLocal::serversData()->servers())
-        m_ui->cbbServer->addItem(server.name);
+    m_ui->cbbServer->setModel(DapDataLocal::serversData());
 
     if (m_ui->cbbServer->count()>0)
     {
@@ -60,12 +59,11 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     }
 
     connect(DapDataLocal::serversData(), &DapServersData::serverAdded, [=](const DapServerInfo& a_serverInfo){
-        m_ui->cbbServer->addItem(a_serverInfo.name);
+        Q_UNUSED(a_serverInfo)
         m_ui->cbbServer->setEnabled(true);
     });
 
     connect(DapDataLocal::serversData(), &DapServersData::serversCleared, [this](){
-        m_ui->cbbServer->clear();
         m_ui->cbbServer->setEnabled(false);
     });
 //================= end of ServersModel: =================
@@ -103,6 +101,7 @@ void SignInScreen::adjustStateMachine()
 
 
     m_stt_serialKey_unactivated->addTransition(this, &SignInScreen::serialKeyError, m_stt_serialKey_unactivated_wrong);
+    m_stt_serialKey_activated->addTransition(this, &SignInScreen::serialKeyError, m_stt_serialKey_unactivated_wrong);
     m_stt_serialKey_unactivated_wrong->addTransition(m_ui->ledSerialKey, &SerialKeyField::textChanged, m_stt_serialKey_unactivated_input);
     m_stt_serialKey_unactivated_input->addTransition(m_ui->ledSerialKey, &SerialKeyField::textEditedAndFilledOut, m_stt_serialKey_unactivated_entered);
     m_stt_serialKey_unactivated_wrong->addTransition(m_ui->ledSerialKey, &SerialKeyField::textEditedAndFilledOut, m_stt_serialKey_unactivated_entered);
@@ -256,15 +255,6 @@ void SignInScreen::setState(ConnectionState a_state)
 
 void SignInScreen::setActivated(bool a_activated)
 {
-    if(a_activated)
-    {
-        if(m_ui->ledSerialKey->text().isEmpty())
-            a_activated = false;
-        else
-            a_activated = true;
-    }
-    else a_activated = false;
-
     emit a_activated ? this->activated() : this->unactivated();
 
     Utils::setPropertyAndUpdateStyle(m_ui->wgtUnderSerialMargin,Properties::ACTIVE,a_activated);
@@ -295,7 +285,7 @@ void SignInScreen::setErrorMessage(const QString &a_errorMsg /*= ""*/)
 {
     if (a_errorMsg == "Incorrect serial key"
             || a_errorMsg == "Serial key not found in database"
-            || a_errorMsg == "Serial key activated, try to authorize")
+            || a_errorMsg == "Serial key already activated on another device")
     {
         emit this->serialKeyError();
         emit this->connectionError();
