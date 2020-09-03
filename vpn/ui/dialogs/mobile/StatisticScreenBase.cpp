@@ -50,8 +50,10 @@ void StatisticScreenBase::updateSentRecievedIndicators()
     // Check why sigReadWriteBytesStat signal send wrong datas (bytes/packets are contrarily)
     m_ui->lblSent->setText(QString::number(m_bytesSent));
     m_ui->lblReceived->setText(QString::number(m_bytesReceived));
+#ifdef ANDROID
     m_ui->lblUploadSpeed->setText(m_uploadSpeed);
     m_ui->lblDownloadSpeed->setText(m_downloadSpeed);
+#endif
 }
 
 void StatisticScreenBase::setSentReceivedIndicators(quint64 a_bytesReceived, quint64 a_bytesSent, quint64 a_packetsReceived, quint64 a_packetsSent, QString a_uploadSpeed, QString a_downloadSpeed)

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDateTime>
+#include <QtMath>
 
 #include "DapServerInfo.h"
 
@@ -58,7 +59,6 @@ private:
 
     DapServerInfo m_serverInfo;
 
-    int speedCalculation(const quint64 &bytes_new, const quint64 &bytes_old);
     QString convertByte(const quint64 &bytes_new);
 };
 

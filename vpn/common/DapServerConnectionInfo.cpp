@@ -54,19 +54,14 @@ QString DapServerConnectionInfo::downloadSpeed() const
 
 void DapServerConnectionInfo::setStatistic(quint64 a_bytesReceived, quint64 a_bytesSent, quint64 a_packetsReceived, quint64 a_packetsSent)
 {
-    m_uploadSpeed     = convertByte(speedCalculation(a_bytesSent, m_bytesSent));
-    m_downloadSpeed   = convertByte(speedCalculation(a_bytesReceived, m_bytesReceived));
+    m_uploadSpeed     = convertByte(a_bytesSent - m_bytesSent);
+    m_downloadSpeed   = convertByte(a_bytesReceived - m_bytesReceived);
     m_bytesReceived   = a_bytesReceived;
     m_bytesSent       = a_bytesSent;
     m_packetsReceived = a_packetsReceived;
     m_packetsSent     = a_packetsSent;
 
     emit this->statisticSet(a_bytesReceived, a_bytesSent, a_packetsReceived, a_packetsSent, m_uploadSpeed, m_downloadSpeed);
-}
-
-int DapServerConnectionInfo::speedCalculation(const quint64 &bytes_new, const quint64 &bytes_old)
-{
-    return bytes_new - bytes_old;
 }
 
 QString DapServerConnectionInfo::convertByte(const quint64 &byte)
