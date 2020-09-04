@@ -1,9 +1,11 @@
 #include "AccountScreen.h"
 
+#include "TariffDelegate.h"
+
 const QString AccountScreen::SCREEN_NAME = "Account";
 
 AccountScreen::AccountScreen(QWidget *a_parent)
-    : AdaptiveScreen(a_parent)
+    : ScreenWithScreenPopupsAbstract(a_parent)
     #ifndef Q_OS_ANDROID
     , m_serialRemovalMessage(new SerialRemovalConfirmationMessage(this))
     #endif
@@ -17,7 +19,6 @@ AccountScreen::AccountScreen(QWidget *a_parent)
 #endif
 
     AdaptiveScreen::initScreen(this);
-
 }
 
 QString AccountScreen::screenName()
@@ -39,7 +40,10 @@ void AccountScreen::initVariantUi(QWidget *a_widget)
 #else
     connect(m_ui->btnResetSerial, &QPushButton::clicked, m_serialRemovalMessage, &SerialRemovalConfirmationMessage::show);
 
+    m_ui->cbbLicenceKey->popup()->listView()->setWidgetDelegateFactory(&TariffDelegate::create);
 #endif
+
+    this->ScreenWithScreenPopupsAbstract::initVariantUi(a_widget);
 }
 
 #ifndef Q_OS_ANDROID
@@ -47,4 +51,20 @@ void AccountScreen::setState(ActivationState a_activationState)
 {
     m_ui->btnResetSerial->setEnabled(a_activationState == ActivationState::Activated);
 }
+
+void AccountScreen::appendTariff(const QList<TariffItem> &a_tariffList)
+{
+    for (const TariffItem& currentTarriff: a_tariffList)
+        m_ui->cbbLicenceKey->addItem("", QVariant::fromValue(currentTarriff));
+}
 #endif
+
+QList<CustomPopup *> AccountScreen::customPopups()
+{
+    return {
+#ifndef Q_OS_ANDROID
+        m_ui->cbbLicenceKey->popup(),
+        m_ui->cbbBugReport->popup()
+#endif
+    };
+}

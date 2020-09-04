@@ -6,7 +6,6 @@
 
 class CustomButtonDelegate : public WidgetDelegateBase
 {
-
 public:
     CustomButtonDelegate(QWidget* a_parent = Q_NULLPTR);
 

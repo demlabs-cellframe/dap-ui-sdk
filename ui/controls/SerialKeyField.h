@@ -35,7 +35,6 @@ public slots:
     void paste();
 private:
     void replaceNextCharacter(const QString& text);
-    void checkoutFilledOutOrCleaned();
 protected:
     virtual void inputMethodEvent(QInputMethodEvent *e) override;
     virtual void keyPressEvent(QKeyEvent *e) override;

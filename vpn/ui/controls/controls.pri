@@ -8,7 +8,8 @@ SOURCES += \
     $$PWD/ScreenComboBoxPopup.cpp \
     $$PWD/SerialRemovalConfirmationMessage.cpp \
     $$PWD/CustomTariffButton.cpp \
-    $$PWD/CustomGraphicsView.cpp
+    $$PWD/CustomGraphicsView.cpp \
+    $$PWD/TariffDelegate.cpp
 
 
 HEADERS  += \
@@ -21,7 +22,8 @@ HEADERS  += \
     $$PWD/ScreenComboBoxPopup.h \
     $$PWD/SerialRemovalConfirmationMessage.h \
     $$PWD/CustomTariffButton.h \
-    $$PWD/CustomGraphicsView.h
+    $$PWD/CustomGraphicsView.h \
+    $$PWD/TariffDelegate.h
 
 
 android {
