@@ -16,6 +16,11 @@ ComboBoxPopup::ComboBoxPopup(QWidget *a_parent /*= nullptr*/)
     :ComboBoxPopup(Utils::findParent<QMainWindow*>(a_parent))
 {
 }
+///Return WidgetDelegateListView with name: this->listViewName() from default screen
+WidgetDelegateListView *ComboBoxPopup::listView()
+{
+    return variant()->findChild<WidgetDelegateListView*>(this->listViewName());
+}
 
 QString ComboBoxPopup::captionLabelName()
 {

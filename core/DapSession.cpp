@@ -34,7 +34,7 @@
 #include "msrln/msrln.h"
 #include <QJsonDocument>
 #include <QJsonObject>
-
+#include "DapDataLocal.h"
 
 const QString DapSession::URL_ENCRYPT("/enc_init");
 const QString DapSession::URL_STREAM("/stream");
@@ -150,7 +150,9 @@ void DapSession::sendSignUpRequest(const QString &host, const QString &email, co
 
 void DapSession::getNews()
 {
-    m_netNewsReply = encRequest(nullptr, URL_NEWS, QString(), QString(), SLOT(answerNews()), true);
+    //m_netNewsReply = encRequest(nullptr, URL_NEWS, QString(), QString(), SLOT(answerNews()), true);
+    m_netNewsReply = DapConnectClient::instance()->request_GET(DapDataLocal::instance()->cdbServersList().front(), 80, URL_NEWS, false);
+    connect(m_netNewsReply, &QNetworkReply::finished, this, &DapSession::answerNews);
 }
 
 /**
