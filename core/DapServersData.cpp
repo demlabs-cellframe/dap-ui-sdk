@@ -373,16 +373,16 @@ QVariant DapServersData::data(const QModelIndex &index, int role) const
     switch (role) {
     case Qt::DisplayRole:
         return m_servers.at(index.row()).name;
-    case Qt::DecorationRole: {
-        auto si = m_servers.at(index.row());
-        if (si.name.isEmpty())
-            return QString();
+//    case Qt::DecorationRole: {
+//        auto si = m_servers.at(index.row());
+//        if (si.name.isEmpty())
+//            return QString();
 
-        if (si.location != DapServerLocation::UNKNOWN)
-            return m_countries[static_cast<int>(si.location)];
-        else
-            return findInCountriesMap(si.name.toUpper());
-    }
+//        if (si.location != DapServerLocation::UNKNOWN)
+//            return m_countries[static_cast<int>(si.location)];
+//        else
+//            return findInCountriesMap(si.name.toUpper());
+//    }
     default:
         break;
     }

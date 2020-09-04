@@ -171,3 +171,10 @@ QSize WidgetListViewItemDelegate::sizeHint(const QStyleOptionViewItem &option, c
 
     return itemWgt->size();
 }
+
+
+void WidgetDelegateListView::setModel(QAbstractItemModel *model)
+{
+    CustomComboBoxListView::setModel(model);
+    createIndexDelegates();
+}
