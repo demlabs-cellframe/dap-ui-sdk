@@ -13,27 +13,17 @@ public:
 
     static AppLanguageController* instance();
 
-    static Language appLanguage();
-    static QString appLanguageString();
-
+    void setLocale(QLocale a_locale);
 
 public slots:
-    static void retranslateApp(Language a_language = Language::Undefined);
-
-signals:
-    void appRetranslated();
+    static void retranslateApp(QLocale a_locale = QLocale());
 
 private:
-    void setAppLanguage(QString a_language);
-
-    static QString   languageToString(Language a_language);
-    static Language stringToLanguage(const QString& a_Languagetr);
 
     QTranslator m_qtLanguageTranslator;
-    const QString SETTING_NAME{"language"};
-    const QString SETTING_SYS_LANGUAGE{"SysLanguage"};
 
-    const QMap<Language, QString> m_languageStrings {{Language::En, "en"}, {Language::Zh, "zh"}};
+    const QString SETTING_LOCALE{"language"};
+    const QString SETTING_SYS_LOCALE{"SysLanguage"};
 
     QApplication* m_application;
 };
