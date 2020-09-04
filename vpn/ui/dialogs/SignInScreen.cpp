@@ -103,7 +103,7 @@ void SignInScreen::adjustStateMachine()
     m_stt_serialKey_unactivated_wrong->addTransition(m_ui->ledSerialKey, &SerialKeyField::textEditedAndFilledOut, m_stt_serialKey_unactivated_entered);
 
 
-    m_stt_serialKey_unactivated_entered->addTransition(m_ui->ledSerialKey, &SerialKeyField::textChanged, m_stt_serialKey_unactivated_input);
+//    m_stt_serialKey_unactivated_entered->addTransition(m_ui->ledSerialKey, &SerialKeyField::textChanged, m_stt_serialKey_unactivated_input);
 
     m_stt_serialKey_unactivated->addTransition(this, &SignInScreen::activated, m_stt_serialKey_activated);
     m_stt_serialKey_activated->addTransition(this, &SignInScreen::unactivated, m_stt_serialKey_unactivated);
