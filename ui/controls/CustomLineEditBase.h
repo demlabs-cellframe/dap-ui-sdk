@@ -55,25 +55,31 @@ class CustomLineEditBase : public QLineEdit
 
     Q_PROPERTY(bool visibleIcon WRITE setVisibleIcon DESIGNABLE true)
     Q_PROPERTY(bool visibleButton WRITE setVisibleButton DESIGNABLE true)
-    Q_PROPERTY(bool useCustomPlaceholder READ useCustomPlaceholder WRITE setUseCustomPlaceholder)
+    Q_PROPERTY(bool usingCustomPlaceholder READ usingCustomPlaceholder WRITE setUsingCustomPlaceholder)
+    Q_PROPERTY(Qt::Alignment placeholderAlignment WRITE setPlaceholderAlignment DESIGNABLE true)
 
 public:
     CustomLineEditBase(QWidget* parent = Q_NULLPTR);
     CustomLineEditBase(const QString& contents,
                        QWidget* parent = Q_NULLPTR);
 
-public:
+
     /// Setting the error signal.
     /// @param a_wrong
     void setWrongState(bool a_wrong);
-    bool useCustomPlaceholder() const;
-    void setUseCustomPlaceholder(bool useCustom);
+    bool usingCustomPlaceholder() const;
+    void setUsingCustomPlaceholder(bool useCustom);
+    ///
+    /// \brief setUseCustomPlaceholder
+    /// \param a_alignment
+    /// Sets the placeholder position to the left or center
+    void setPlaceholderAlignment(Qt::Alignment &a_alignment);
 
+    void setText(const QString &a_text);
 protected:
     virtual void focusOutEvent(QFocusEvent *event);
     virtual void focusInEvent(QFocusEvent *event);
 
-protected:
     /// Sets the visibility of the icon.
     /// @param a_visible This parameter is taken from css settings.
     void setVisibleIcon(bool &a_visible);
@@ -81,6 +87,14 @@ protected:
     /// @param a_visible This parameter is taken from css settings.
     void setVisibleButton(bool a_visible);
 
+    ///Widget for button
+    ResizablePushButton*    m_btnControl;
+
+private slots:
+    void adjustTextMargins();
+
+signals:
+    void focusChanged(bool a_focus);
 private:
     void recreateSubControls();
     void adjustPlaceholder();
@@ -88,25 +102,18 @@ private:
     void showCustomPlaceholder();
     void hideCustomPlaceholder();
 
-private slots:
-    void adjustTextMargins();
+    virtual void setSettingsButton(){}
 
-private:
     bool    m_useCustomPlaceholder;
 
-private:
+
     QHBoxLayout*    m_layoutCtrl;
     QLabel*         m_placeHolderCtrl;
 
-private:
+
     ///Widget for icon
     ResizableIconLabel* m_lblIcon;
 
-protected:
-    ///Widget for button
-    ResizablePushButton*    m_btnControl;
-
-private:
     QSpacerItem*    m_spacer;
 };
 

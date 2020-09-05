@@ -119,12 +119,20 @@ void AnimationChangingWidget::setCurrentIndex(int a_index)
     if (animationIsNeeded)
     {
         // Animation setup and start:
-        m_animation.setStartValue(m_widget.pos());
-
         QPoint endPos = -this->widgetPosition(a_index);
-        m_animation.setEndValue(endPos);
 
+#ifdef ANDROID
+        //TODO: Refactoring
+        m_widget.move(endPos);
+        m_currentIndex = a_index;
+        emit this->animationFinished();
+        return;
+#else
+        m_animation.setStartValue(m_widget.pos());
+        m_animation.setEndValue(endPos);
         m_animation.start();
+#endif
+
     }
     m_currentIndex = a_index;
 }

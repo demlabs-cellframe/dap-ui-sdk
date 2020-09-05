@@ -2,10 +2,11 @@
 #define DAPSERVERSDATA_H
 
 #include <QObject>
+#include <QAbstractListModel>
 
 #include "DapServerInfo.h"
 
-class DapServersData: public QObject
+class DapServersData: public QAbstractListModel
 {
     Q_OBJECT
     DapServersData();  //private constructor becouse it's singletone
@@ -27,7 +28,15 @@ public:
     QString currentServerName() const;
 
     bool currentServerIsAuto() const;
-    void setCurrentServerIsAuto(bool a_auto = true);
+
+    int rowCount(const QModelIndex &parent) const Q_DECL_OVERRIDE;
+    QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
+    //QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+    Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
+    bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex()) Q_DECL_OVERRIDE;
+    bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex()) Q_DECL_OVERRIDE;
+
 
 public slots:
     void setCurrentServer(const DapServerInfo *a_server);
@@ -46,7 +55,7 @@ signals:
 
 private:
     void loadDatas();
-
+    static const QString findInCountriesMap(const QString& string);
 
     const QString CURRENT_SERVER_NAME_SETTING   = "email";
     const QString CURRENT_SERVER_ADDRESS_SETTING = "message";
@@ -54,8 +63,9 @@ private:
  //   DapServerInfo* m_currentServer = nullptr;
 
     int m_currentServerIndex = -1;
-    bool m_currentServerIsAuto = false;
     QList<DapServerInfo> m_servers;
+    static const QStringList m_countries;
+    static QMap<QString, QString> m_countryMap;
 };
 
 #endif // DAPSERVERSDATA_H

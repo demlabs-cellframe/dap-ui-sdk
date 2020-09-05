@@ -44,16 +44,21 @@ void MainScreenBase::setState(ConnectionState a_state)
         return;
     m_state = a_state;
 
+#ifndef Q_OS_ANDROID
+    if(a_state == ConnectionState::Disconnected)
+    {
+        m_ui->btnConnection->setText(TEXT_CONNECT);
+    }
+    else {
+        m_ui->btnConnection->setText(TEXT_DISCONNECT);
+    }
+#endif
+
     m_ui->lblStatusMessage->setText(this->statusText());
     this->setEnabled(a_state == ConnectionState::Connected);
 
     if(a_state == ConnectionState::Disconnected)
         this->stopConnectionTimer();
-
-#ifndef ANDROID
-    // this->setChildProperties(LBL_STATUS_MESSAGE, Properties::STATE, a_state);
-    // this->updateChildStyle  (LBL_STATUS_MESSAGE);
-#endif
 }
 
 void MainScreenBase::initVariantUi(QWidget *a_widget)
@@ -65,20 +70,9 @@ void MainScreenBase::initServerList()
 {
     if (!m_serversModel)
     {
-        m_serversModel = m_ui->cbbServer->model();
-
-        for (DapServerInfo& server :DapDataLocal::serversData()->servers())
-            m_ui->cbbServer->addItem(server.name);
-
-        connect(DapDataLocal::serversData(), &DapServersData::serverAdded, [=](const DapServerInfo& a_serverInfo){
-            m_ui->cbbServer->addItem(a_serverInfo.name);
-        });
-
-        connect(DapDataLocal::serversData(), &DapServersData::serversCleared, m_ui->cbbServer, &QComboBox::clear);
+        m_serversModel = DapDataLocal::serversData();
     }
-    else
-        m_ui->cbbServer->setModel(m_serversModel);
-
+    m_ui->cbbServer->setModel(m_serversModel);
 }
 #endif
 void MainScreenBase::setAuthorized(bool a_authorized /*= true*/)
@@ -127,7 +121,6 @@ void MainScreenBase::updateSentRecievedIndicators()
     // Check why sigReadWriteBytesStat signal send wrong datas (bytes/packets are contrarily)
     m_ui->lblSent->setText(this->indicatorUnitsIsBytes() ? QString::number(m_bytesSent)    : QString::number(m_packetsSent));
     m_ui->lblReceived->setText(this->indicatorUnitsIsBytes() ? QString::number(m_bytesReceived): QString::number(m_packetsReceived));
-
 }
 
 void MainScreenBase::updateTimeIndicators()

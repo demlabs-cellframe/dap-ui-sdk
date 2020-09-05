@@ -34,7 +34,7 @@
 #include "msrln/msrln.h"
 #include <QJsonDocument>
 #include <QJsonObject>
-
+#include "DapDataLocal.h"
 
 const QString DapSession::URL_ENCRYPT("/enc_init");
 const QString DapSession::URL_STREAM("/stream");
@@ -150,7 +150,9 @@ void DapSession::sendSignUpRequest(const QString &host, const QString &email, co
 
 void DapSession::getNews()
 {
-    m_netNewsReply = encRequest(nullptr, URL_NEWS, QString(), QString(), SLOT(answerNews()), true);
+    //m_netNewsReply = encRequest(nullptr, URL_NEWS, QString(), QString(), SLOT(answerNews()), true);
+    m_netNewsReply = DapConnectClient::instance()->request_GET(DapDataLocal::instance()->cdbServersList().front(), 80, URL_NEWS, false);
+    connect(m_netNewsReply, &QNetworkReply::finished, this, &DapSession::answerNews);
 }
 
 /**
@@ -366,13 +368,13 @@ void DapSession::onAuthorize()
         emit errorAuthorization ("Serial key already activated on another device");
         return;
     } else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
-        emit errorAuthorization (isSerial ? tr("Serial key not found in database") : "Login not found in database");
+        emit errorAuthorization (isSerial ? "Serial key not found in database" : "Login not found in database");
         return;
     } else if (op_code == OP_CODE_LOGIN_INCORRECT_PSWD) {
         if(m_user.isEmpty() && !isSerial)
             emit errorAuthorization ("Login not found in database");
         else
-        emit errorAuthorization (isSerial ? tr("Incorrect serial key") : "Incorrect password");
+        emit errorAuthorization (isSerial ? "Incorrect serial key" : "Incorrect password");
         return;
     } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRED) {
         emit errorAuthorization ("Subscribe expired");
@@ -495,7 +497,7 @@ void DapSession::answerSignUp()
 {
     qInfo() << "answerSignUp";
     if(m_netSignUpReply->error() != QNetworkReply::NetworkError::NoError) {
-        qInfo() << m_netSignUpReply->errorString();
+        qInfo() << "Answer sign up error: " << m_netSignUpReply->errorString();
         emit sigSignUpAnswer(m_netSignUpReply->errorString());
         return;
     }

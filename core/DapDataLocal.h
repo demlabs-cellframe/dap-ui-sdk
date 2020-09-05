@@ -48,6 +48,8 @@ public:
 
     QString password() const;
 
+    QString urlUpdate() const;
+
     const QList<QString> &cdbServersList() { return m_cdbServersList; }
     const QString & networkDefault()       { return m_networkDefault; }
     const QString & getUrlSite()           { return m_urlSite;        }
@@ -75,14 +77,14 @@ public:
     const QString TEXT_LOGIN        = "login";
     const QString TEXT_PASSWORD     = "password";
 
-    QVector<DapServerInfo> m_serversForCheck;
-
 public slots:
     void setLogin(const QString &a_login);
 
     void setPassword(const QString &password);
 
-    void saveAuthorizationDatas();
+    void setUrlUpdate(const QString &a_url);
+
+    void saveAuthorizationData();
     void rotateCDBList();
 
 signals:
@@ -102,8 +104,11 @@ private:
     void loadAuthorizationDatas();
     static QSettings* settings();
 
-    QString m_login;
-    QString m_password;
+    QString m_login;      ///< Login.
+    QString m_password;   ///< Password.
+    QString m_serialKey;  ///< Serial key.
+
+    QString m_urlUpdate; ///< url for download
 
     DapSerialKeyData* m_serialKeyData;
 };

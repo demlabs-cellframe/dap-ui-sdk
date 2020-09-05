@@ -15,12 +15,15 @@
 #include "StyledDropShadowEffect.h"
 #include "CustomLineEdit.h"
 #include "CustomTextEdit.h"
+#include "WidgetInputSizeController.h"
 
 #include "ui_BugReportScreen.h"
 
 #ifndef BUG_REPORT_FORM
     #define BUG_REPORT_FORM Ui::BugReportScreen
 #endif
+
+#define MAX_SIZE_MESSAGE 200
 
 class BugReportScreenBase : public AdaptiveScreen
 {
@@ -58,9 +61,13 @@ protected:
     virtual bool checkFields();
 
     QScopedPointer<BUG_REPORT_FORM> m_ui;
-
+#ifdef Q_OS_ANDROID
+    WidgetInputSizeController *m_widgetSizeController = nullptr;
+#endif
 private:
     bool validateText(QString &str);
+
+
 };
 
 

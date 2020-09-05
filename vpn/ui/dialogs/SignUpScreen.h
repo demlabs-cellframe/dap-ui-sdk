@@ -9,6 +9,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QShortcut>
 
 #include <QCheckBox>
 #include "AdaptiveScreen.h"
@@ -25,6 +26,8 @@
 #include "DapSignUpData.h"
 
 #include <QSslConfiguration>
+
+#include "WidgetInputSizeController.h"
 
 class SignUpScreen : public AdaptiveScreen
 {
@@ -47,6 +50,8 @@ public slots:
 
     void checkFieldsAndSignUp();
     void answerSignUp(const QString &a_answer);
+
+    void SignUp();
 
 protected:
 
@@ -83,6 +88,10 @@ signals:
     void setStateStutusMessageNormal();
 private:
 
+#ifdef Q_OS_ANDROID
+    WidgetInputSizeController *m_widgetSizeController = nullptr;
+#endif
+
     bool checkEmail();
     bool checkPassword();
     bool checkRepeatPassword();
@@ -98,7 +107,7 @@ private:
     QString m_email;
     QString m_password;
     QString m_repeat_password;
-    bool    m_agree;
+    bool    m_agree{};
 
     const QString BTN_SIGN_UP                   = "btnSignUp";
     const QString LBL_TERMS                     = "lblTerms";
@@ -136,6 +145,8 @@ private:
     const QString TEXT_CHOOSE_PLANE             = tr("Choose plan");
     const QString TEXT_SIGN_UP                  = tr("Sign up");
 #endif
+
+    QScopedPointer<Ui::SignUpScreen> m_ui;
 };
 #endif // SIGNUPSCREEN_H
 

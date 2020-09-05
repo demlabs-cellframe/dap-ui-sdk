@@ -19,6 +19,7 @@ enum class DapServerLocation : int {
     Netherlands,
     Singapore,
     Germany,
+    COUNT
 };
 
 class DapServerInfo;
@@ -40,11 +41,12 @@ public:
 
     QString address;
     QString address6;
-    quint16 port;
+    quint16 port = 0;
     QString name;
-    DapServerLocation location;
+    DapServerLocation location = DapServerLocation::UNKNOWN;
 
     bool isAuto() const;
+    bool isValid() const;
 
     static bool fromJSON(const QJsonArray& jsonArr, DapServerInfoList& out);
     static bool fromJSON(const QJsonObject& jsonObj, DapServerInfo& out);
@@ -65,5 +67,9 @@ public:
 private:
     static bool _isJsonValid(const QJsonObject& obj);
 };
+
+Q_DECLARE_METATYPE(DapServerInfo)
+typedef DapServerInfo* DapServerInfoPtr;
+Q_DECLARE_METATYPE(DapServerInfoPtr)
 
 #endif // DAPSERVERINFO_H

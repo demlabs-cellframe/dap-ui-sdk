@@ -63,9 +63,12 @@ void WidgetDelegateListView::dataChanged(const QModelIndex &topLeft, const QMode
         if (!widget)
             return;
 
-        for (int curRole: roles) {
-            widget->setData(index.data(curRole), curRole);
-        }
+        if (roles.isEmpty())
+            widget->setData(this->model()->data(index));
+        else
+            for (int curRole: roles) {
+                widget->setData(index.data(curRole), curRole);
+            }
     }
 }
 
@@ -138,10 +141,15 @@ void WidgetDelegateListView::setWidgetDelegateFactory(WidgetDelegateListView::Wi
         return;
 
     if (m_widgetDelegateFactory && !a_factoryFunction)
+    {
         this->deleteAllWidgetDelegates();
-
-    m_widgetDelegateFactory = a_factoryFunction;
-    this->createIndexDelegates();
+        m_widgetDelegateFactory = a_factoryFunction;
+    }
+    else
+    {
+        m_widgetDelegateFactory = a_factoryFunction;
+        this->createIndexDelegates();
+    }
 }
 
 
@@ -162,4 +170,11 @@ QSize WidgetListViewItemDelegate::sizeHint(const QStyleOptionViewItem &option, c
         return QStyledItemDelegate::sizeHint(option, index);
 
     return itemWgt->size();
+}
+
+
+void WidgetDelegateListView::setModel(QAbstractItemModel *model)
+{
+    CustomComboBoxListView::setModel(model);
+    createIndexDelegates();
 }

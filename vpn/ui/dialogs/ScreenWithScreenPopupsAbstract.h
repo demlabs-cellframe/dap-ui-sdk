@@ -18,9 +18,10 @@ public:
 
     virtual void setPopupScreen(PopupScreenBase *a_screen);
 
-public :
 signals:
     void popupClosingStarted();
+    void screenComboBoxOpened();
+    void showedScreenPopupCaptionChanged(const QString& a_caption);
 
     void popupHidden();
 

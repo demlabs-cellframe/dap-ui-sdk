@@ -6,7 +6,16 @@ const QString PasswordRecoveryScreen::SCREEN_NAME = "PasswordRecovery";
 PasswordRecoveryScreen::PasswordRecoveryScreen(QWidget *a_parent)
     : AdaptiveScreen(a_parent)
 {
-    create<Ui::PasswordRecoveryScreen>();
+    //create<Ui::PasswordRecoveryScreen>();
+    this->create(m_ui);
+
+#ifdef Q_OS_ANDROID
+    m_widgetSizeController = new WidgetInputSizeController(this);
+
+    m_widgetSizeController->addDisappearingWidget(m_ui->lblLogo);
+
+    m_widgetSizeController->addWidgetEmitsSignal(m_ui->edtEmail);
+#endif
 
     AdaptiveScreen::initScreen(this);
 }
@@ -16,44 +25,48 @@ QString PasswordRecoveryScreen::screenName()
     return SCREEN_NAME;
 }
 
+void PasswordRecoveryScreen::passwordRecovery(){
+    if (m_btnSendMail->text() == TEXT_SEND_EMAIL)
+    {
+        m_btnSendMail->setText(TEXT_CONNECTING);
+        checkFieldsAndSendEmail();
+    }
+    else if (m_btnSendMail->text() == TEXT_BACK)
+        emit this->goBack();
+}
+
 void PasswordRecoveryScreen::initVariantUi(QWidget *a_widget)
 {
     Q_UNUSED(a_widget)
-                                m_btnSendMail = a_widget->findChild<QPushButton*>(BTN_SEND_MAIL);                               Q_ASSERT(m_btnSendMail);
-                                m_lblStatusMessage = a_widget->findChild<CustomLineHeightLabel*>(LBL_STATUS_MESSAGE);           Q_ASSERT(m_lblStatusMessage);
-                                m_edtEmail = a_widget->findChild<QLineEdit*>(EDT_EMAIL);                                        Q_ASSERT(m_edtEmail);
-                                m_lblEmailError = a_widget->findChild<QLabel*>(LBL_EMAIL_ERROR);                                Q_ASSERT(m_lblEmailError);
-        QLabel                  *lblCaption = a_widget->findChild<QLabel*>(LBL_CAPTION);                                        Q_ASSERT(lblCaption);
-        QWidget                 *wgtEmailBottom = a_widget->findChild<QWidget*>(WGT_EMAIL_BOTTOM);                              Q_ASSERT(wgtEmailBottom);
 
-        m_edtEmail->setValidator(new QRegularExpressionValidator(Utils::regularEmail(), this));
-        lblCaption->setText(TEXT_FORGOT_PASSWORD);
+             m_btnSendMail = a_widget->findChild<QPushButton*>(BTN_SEND_MAIL);                               Q_ASSERT(m_btnSendMail);
+             m_lblStatusMessage = a_widget->findChild<CustomLineHeightLabel*>(LBL_STATUS_MESSAGE);           Q_ASSERT(m_lblStatusMessage);
+             m_edtEmail = a_widget->findChild<QLineEdit*>(EDT_EMAIL);                                        Q_ASSERT(m_edtEmail);
+             m_lblEmailError = a_widget->findChild<QLabel*>(LBL_EMAIL_ERROR);                                Q_ASSERT(m_lblEmailError);
+    QLabel   *lblCaption = a_widget->findChild<QLabel*>(LBL_CAPTION);                                        Q_ASSERT(lblCaption);
+    QWidget  *wgtEmailBottom = a_widget->findChild<QWidget*>(WGT_EMAIL_BOTTOM);                              Q_ASSERT(wgtEmailBottom);
 
-        m_lblStatusMessage->setText("Please enter your email address.<br>We will send you an email to<br>reset your password.");
-        connect(this, &PasswordRecoveryScreen::wrongScreen, [=](const QString &a_message){
-                Utils::setPropertyAndUpdateStyle(m_edtEmail, Properties::WRONG, true);
+    m_edtEmail->setValidator(new QRegularExpressionValidator(Utils::regularEmail(), this));
+    lblCaption->setText(TEXT_FORGOT_PASSWORD);
 
-                m_lblEmailError->setText(a_message);
-                m_btnSendMail->setEnabled(true);
-                m_edtEmail->setEnabled(true);
-                m_btnSendMail->setText(TEXT_SEND_EMAIL);
-            });
+    m_lblStatusMessage->setText("Please enter your email address.<br>We will send you an email to<br>reset your password.");
+    connect(this, &PasswordRecoveryScreen::wrongScreen, [=](const QString &a_message){
+            Utils::setPropertyAndUpdateStyle(m_edtEmail, Properties::WRONG, true);
 
-        connect(m_edtEmail, &QLineEdit::textChanged, [=](){
-                Utils::setPropertyAndUpdateStyle(m_edtEmail, Properties::WRONG, false);
-                m_lblEmailError->clear();
-            });
+            m_lblEmailError->setText(a_message);
+            m_btnSendMail->setEnabled(true);
+            m_edtEmail->setEnabled(true);
+            m_btnSendMail->setText(TEXT_SEND_EMAIL);
+        });
 
-    connect(m_btnSendMail,&QPushButton::clicked,[=]{
+    connect(m_edtEmail, &QLineEdit::textChanged, [=](){
+            Utils::setPropertyAndUpdateStyle(m_edtEmail, Properties::WRONG, false);
+            m_lblEmailError->clear();
+        });
 
-        if (m_btnSendMail->text() == TEXT_SEND_EMAIL)
-        {
-            m_btnSendMail->setText(TEXT_CONNECTING);
-            checkFieldsAndSendEmail();
-        }
-        else if (m_btnSendMail->text() == TEXT_BACK)
-            emit this->goBack();
-    });
+    QShortcut *shortCutSignIn = new QShortcut(QKeySequence(Qt::Key_Return), this);
+    connect(shortCutSignIn, &QShortcut::activated, this, &PasswordRecoveryScreen::passwordRecovery);
+    connect(m_btnSendMail,&QPushButton::clicked, this, &PasswordRecoveryScreen::passwordRecovery);
 
     connect(this, &PasswordRecoveryScreen::emailSent,[=]{
 

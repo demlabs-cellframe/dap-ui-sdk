@@ -1,10 +1,9 @@
 #ifndef VPNDEFINE_H
 #define VPNDEFINE_H
 
-
-
 enum ConnectionState {
     ConnectingToService,
+    ServersListLoading,
     Disconnected,
     Connecting,
     Connected,

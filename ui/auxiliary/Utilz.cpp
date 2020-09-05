@@ -3,6 +3,7 @@
 #include <QVector>
 #include <QStyle>
 #include <QVariant>
+#include <QFile>
 #include <QDebug>
 #include <QMainWindow>
 
@@ -93,6 +94,15 @@ namespace Utils
     {
         a_widget->style()->unpolish(a_widget);
         a_widget->style()->polish(a_widget);
+    }
+
+    QString getTextFromFile(const QString &a_fname){
+        QString fileText;
+        QFile file(a_fname);
+        if(file.open(QIODevice::ReadOnly | QIODevice::Text)){
+            fileText = QString(file.readAll());
+        }
+        return fileText;
     }
 
     Qt::LayoutDirection toQtLayoutDirection(QBoxLayout::Direction a_direction)

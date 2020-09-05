@@ -6,6 +6,8 @@
 #include <QBoxLayout>
 #include <QTextEdit>
 #include <QStyle>
+#include "Utilz.h"
+#include "defines.h"
 
 #include "CustomLineHeightLabel.h"
 

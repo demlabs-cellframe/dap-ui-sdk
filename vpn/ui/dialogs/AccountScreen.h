@@ -16,8 +16,12 @@
 #include <QList>
 #include "ui_AccountScreen.h"
 #include "CustomPlacementButton.h"
+#include "SerialRemovalConfirmationMessage.h"
+#include "ScreenWithScreenPopupsAbstract.h"
 
-class AccountScreen : public AdaptiveScreen
+#include "TariffItem.h"
+
+class AccountScreen : public ScreenWithScreenPopupsAbstract
 {
     Q_OBJECT
 
@@ -32,13 +36,30 @@ public:
 
     void setState(ConnectionState a_state);
 
+#ifndef Q_OS_ANDROID
+    enum class ActivationState {
+        Activated,
+        Unactivated
+    };
+    void setState(ActivationState a_activationState);
+
+    void appendTariff(const QList<TariffItem> &a_tariffList);
+
+signals:
+    void serialRemovalRequested();
+#endif
+
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
     virtual void initVariantUi(QWidget *a_widget) override;
-    const QString BTN_MONTH_PRICE      = "btnMonthPrice";
-    const QString BTN_SIX_MONTH_PRICE  = "btnSixMonthPrice";
-    const QString BTN_YEAR_PRICE       = "btnYearPrice";
+
+    virtual QList<CustomPopup *> customPopups() override;
+
+private:
+    SerialRemovalConfirmationMessage *m_serialRemovalMessage = nullptr;
+
+    QScopedPointer<Ui::AccountScreen> m_ui;
 };
 
 #endif // ACCOUNTSCREEN_H

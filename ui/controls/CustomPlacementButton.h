@@ -72,7 +72,9 @@ public:
     void setProperty(const QString& a_property, const QVariant& a_value);
     /// .
     /// @param a_id Window GUI widget.
-    void addSubcontrol(QString a_id);
+    QLabel* addSubcontrol(QString a_objectName);
+    QLabel* addSubcontrol(QWidget& a_widgetSubcontroll);
+
 
     Qt::LayoutDirection layoutDirection() const;
     void setLayoutDirection(Qt::LayoutDirection a_direction);
@@ -88,6 +90,8 @@ public:
 
     void emitTabFocus(bool isActiv);
 
+    QLabel *additionalImage();
+    QLabel *image();
 signals:
     void tabFocusIn();
     void tabFocusOut();
@@ -103,7 +107,7 @@ protected:
     void checkStateSet();
     QHBoxLayout *m_layout;
     QWidget m_wgtLeftSpacing;         ///<label for left spacing
-    QList<QLabel*> m_subcontrols;
+    QList<QWidget*> m_subcontrols;
     QLabel m_lbImage;    ///<label with image
     QLabel m_lbText;     ///<label with text
     QLabel m_lbAdditionalImage;

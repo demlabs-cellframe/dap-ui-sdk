@@ -3,8 +3,9 @@
 #include <QApplication>
 #include <QFileInfo>
 #include <QWidget>
-
+#include <cmath>
 #include "UiScaling.h"
+#include "math.h"
 
 /// Read stylesheet from file and convert points to pixels
 /// @details Check for existing and available to open
@@ -157,7 +158,7 @@ QApplication *AppStyleSheetHandler::appInstance()
 
 QString AppStyleSheetHandler::convertPointsToPixels(const QString a_stylesheet)
 {
-    const QRegExp regExp("([\\d.])+pt");
+    const QRegExp regExp("([\\d.])+((pt\\+)|(pt-)|(pt))");
     QMap<int, QString> matches;
     auto data = a_stylesheet;
     auto pos = 0;
@@ -169,12 +170,29 @@ QString AppStyleSheetHandler::convertPointsToPixels(const QString a_stylesheet)
 
     int displacement = 0; // diference between the begin strings length and the end strings length
     float dpi = UiScaling::getNativDPI();
+    float pointsvalue{};
+    int pixelsValue{};
     for (auto index: matches.keys())
     {
         QString strInPoints = matches[index];
-        float pointsvalue = matches[index].replace("pt", "").toDouble();
-        int pixelsValue = qRound(UiScaling::pointsToPixels(pointsvalue, dpi));
-        pixelsValue = (pixelsValue < 1 && pointsvalue > 0.f) ? 1 : pixelsValue;
+        if (strInPoints.contains("pt+"))
+        {
+            pointsvalue = matches[index].replace("pt+", "").toDouble();
+            pixelsValue=std::ceil(UiScaling::pointsToPixels(pointsvalue, dpi));
+
+        }
+        else if (strInPoints.contains("pt-"))
+        {
+            pointsvalue = matches[index].replace("pt-", "").toDouble();
+            pixelsValue=std::floor(UiScaling::pointsToPixels(pointsvalue, dpi));
+        }
+        else
+        {
+            pointsvalue = matches[index].replace("pt", "").toDouble();
+            pixelsValue = qRound(UiScaling::pointsToPixels(pointsvalue, dpi));
+            pixelsValue = (pixelsValue < 1 && pointsvalue > 0.f) ? 1 : pixelsValue;
+        }
+
 
         QString strInPixels = QString::number(pixelsValue) + "px";
         data.replace(index + displacement, strInPoints.length(), strInPixels);

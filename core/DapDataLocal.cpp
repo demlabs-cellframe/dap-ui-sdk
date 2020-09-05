@@ -98,9 +98,9 @@ void DapDataLocal::parseXML(const QString& a_fname)
             }
         }
     }
-//#ifdef  QT_DEBUG
-//    DapDataLocal::serversData()->addServer(DapServerLocation::UNKNOWN, "local", "127.0.0.1",  8002);
-//#endif
+#ifdef  QT_DEBUG
+    DapDataLocal::serversData()->addServer(DapServerLocation::UNKNOWN, "local", "127.0.0.1",  8099);
+#endif
 
 
     delete sr;
@@ -142,7 +142,7 @@ void DapDataLocal::setPassword(const QString &a_password)
     emit this->passwordChanged(m_password);
 }
 
-void DapDataLocal::saveAuthorizationDatas()
+void DapDataLocal::saveAuthorizationData()
 {
     this->saveEncriptedSetting(this->TEXT_LOGIN     , this->login());
     this->saveEncriptedSetting(this->TEXT_PASSWORD  , this->password());
@@ -289,4 +289,14 @@ DapDataLocal *DapDataLocal::instance()
 {
     static DapDataLocal s_instance;
     return &s_instance;
+}
+
+void DapDataLocal::setUrlUpdate(const QString &a_url)
+{
+    m_urlUpdate = a_url;
+}
+
+QString DapDataLocal::urlUpdate() const
+{
+    return m_urlUpdate;
 }

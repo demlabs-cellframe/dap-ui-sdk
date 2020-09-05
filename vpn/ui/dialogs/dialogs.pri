@@ -5,12 +5,17 @@ HEADERS  += \
     $$PWD/BugReportScreenBase.h \
     $$PWD/BugReportWithEmailScreen.h \
     $$PWD/BugReportWithoutEmailScreen.h \
+    $$PWD/ComboBoxPopupScreen.h \
+    $$PWD/InformationScreen.h \
     $$PWD/MainScreenBase.h \
     $$PWD/MainScreenLayout.h \
+    $$PWD/NavigationPanelBase.h \
     $$PWD/PasswordRecoveryScreen.h \
+    $$PWD/PopupScreenBase.h \
     $$PWD/ScreenWithCustomPopupsAbstract.h \
+    $$PWD/ScreenWithScreenPopupsAbstract.h \
+    $$PWD/SignInScreen.h \
     $$PWD/StartScreen.h \
-    $$PWD/NavigationPanel.h \
     $$PWD/SignUpScreen.h \
     $$PWD/TermsOfUseScreen.h \
     $$PWD/PrivacyPolicyScreen.h \
@@ -23,28 +28,41 @@ SOURCES += \
     $$PWD/BugReportScreenBase.cpp \
     $$PWD/BugReportWithEmailScreen.cpp \
     $$PWD/BugReportWithoutEmailScreen.cpp \
+    $$PWD/ComboBoxPopupScreen.cpp \
+    $$PWD/InformationScreen.cpp \
     $$PWD/MainScreenBase.cpp \
     $$PWD/MainScreenLayout.cpp \
+    $$PWD/NavigationPanelBase.cpp \
     $$PWD/PasswordRecoveryScreen.cpp \
-    $$PWD/NavigationPanel.cpp \
+    $$PWD/PopupScreenBase.cpp \
     $$PWD/ScreenWithCustomPopupsAbstract.cpp \
+    $$PWD/ScreenWithScreenPopupsAbstract.cpp \
+    $$PWD/SignInScreen.cpp \
     $$PWD/StartScreen.cpp \
     $$PWD/SignUpScreen.cpp \
     $$PWD/TermsOfUseScreen.cpp \
     $$PWD/PrivacyPolicyScreen.cpp
 
-!android {
+android {
+
+defined(DAP_USING_SEPARATE_STATISTIC_SCREEN,var){
+        HEADERS  += \
+            $$PWD/mobile/ConnectionScreenBase.h \
+            $$PWD/mobile/StatisticScreenBase.h
+
+        SOURCES += \
+            $$PWD/mobile/ConnectionScreenBase.cpp \
+            $$PWD/mobile/StatisticScreenBase.cpp
+    }
+
+    INCLUDEPATH += $$PWD/mobile
+}
+else {
     HEADERS  += \
-        $$PWD/desktop/LoginScreenLayout.h \
-        $$PWD/desktop/ComboBoxPopupScreen.h \
-        $$PWD/desktop/PopupScreenBase.h \
-        $$PWD/desktop/ScreenWithScreenPopupsAbstract.h
+        $$PWD/desktop/LoginScreenLayout.h
 
     SOURCES += \
-        $$PWD/desktop/LoginScreenLayout.cpp \
-        $$PWD/desktop/ComboBoxPopupScreen.cpp \
-        $$PWD/desktop/PopupScreenBase.cpp \
-        $$PWD/desktop/ScreenWithScreenPopupsAbstract.cpp
+        $$PWD/desktop/LoginScreenLayout.cpp
 
     FORMS += \
         $$PWD/desktop/LoginScreenLayout.ui
@@ -57,4 +75,5 @@ INCLUDEPATH += $$PWD
 FORMS += \
     $$PWD/BugReportLoadingScreen.ui \
     $$PWD/BugReportResultScreen.ui \
-    $$PWD/BugReportScreen.ui
+    $$PWD/BugReportScreen.ui \
+    $$PWD/InformationScreen.ui

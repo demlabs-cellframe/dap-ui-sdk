@@ -24,6 +24,8 @@ public:
     explicit ComboBoxPopup(QMainWindow *a_parent = nullptr);
     explicit ComboBoxPopup(QWidget *a_parent = nullptr);
 
+    WidgetDelegateListView* listView();
+
 protected:
     virtual QString captionLabelName() override;
     virtual QString listViewName() override;
@@ -32,6 +34,7 @@ protected:
 
     const QString LVW_LIST_NAME    = "lvwList";
     const QString LBL_CAPTION_NAME = "lblCaption";
+
 };
 
 #endif // COMBOBOXPOPUP_H

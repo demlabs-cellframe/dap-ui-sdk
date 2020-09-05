@@ -19,6 +19,9 @@ namespace Properties
     static const QString SELECTED= "selected";
     static const QString CURRENT_INDEX = "currentIndex";
     static const QString CURRENT_TEXT = "currentText";
+    static const QString CONNECTED = "connected";
+    static const QString CAPTION = "caption";
+
 }
 enum class Language
 {

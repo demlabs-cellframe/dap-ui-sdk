@@ -16,6 +16,8 @@
 class CustomComboBoxPopup: public CustomPopup
 {
     Q_OBJECT
+    Q_PROPERTY(bool captionVisible READ captionIsVisible WRITE setCaptionVisible)
+
 public:
     CustomComboBoxPopup(QMainWindow *parent = nullptr);
 
@@ -25,13 +27,18 @@ public:
     void addItem(const QString &a_text, const QVariant &a_userData = QVariant());
 
     virtual void setCaption(const QString& a_caption);
+    QString caption() const;
+
+    void setCaptionVisible(bool a_visible);
+    bool captionIsVisible() const;
+    QList<QListView*> allListViews();
+
 public slots:
     void setCurrentIndex(int a_index);
 
 protected:
     virtual void initVariantUi(QWidget * a_widget) override;
     virtual QString listViewName() = 0;             // Needed to be overrided!
-    QList<QListView*> allListViews();
 
     virtual QString captionLabelName();
 
@@ -42,6 +49,9 @@ signals:
 private:
 
     QAbstractItemModel* m_model{};
+    QString m_caption;
+
+    bool m_captionIsVisible {true};
 };
 
 #endif // CUSTOMCOMBOBOXPOPUP_H

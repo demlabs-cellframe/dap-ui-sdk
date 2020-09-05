@@ -48,10 +48,9 @@ void CustomPlacementButton::initButton()
 
     //Adding subcontrols to layout
     m_layout->addWidget(&m_wgtLeftSpacing);
-    for (QLabel *subcontrol: m_subcontrols)
+    for (QWidget *subcontrol: m_subcontrols)
     {
-        // Set up subcontroll ScaledContents:
-        subcontrol->setScaledContents(true);
+//        subcontrol->setScaledContents(true);
         m_layout->addWidget(subcontrol);
 
         CustomPlacementButton::setWidgetState(subcontrol);
@@ -82,6 +81,10 @@ void CustomPlacementButton::emitTabFocus(bool isActiv)
 {
     isActiv ? emit tabFocusIn() : emit tabFocusOut();
 }
+
+QLabel *CustomPlacementButton::additionalImage(){return &m_lbAdditionalImage;}
+
+QLabel *CustomPlacementButton::image(){return &m_lbImage;}
 
 /** @brief Reimplemented QPushButton::setText method. Sets text property of text subcontrol.
  *  @param text Text
@@ -123,17 +126,23 @@ void CustomPlacementButton::updateAppearanceForFocus(bool target)
 
 /** @brief add new subcontrol and place it in layout
  *  @param a_id text id of subcontrol wich is using in CSS file
+ *  @return created subcontrol
  */
-void CustomPlacementButton::addSubcontrol(QString a_id)
+QLabel* CustomPlacementButton::addSubcontrol(QString a_objectName)
 {
     QLabel *newSubcontrol = new QLabel((QPushButton*)this);
-    newSubcontrol->setObjectName(a_id);
+    newSubcontrol->setObjectName(a_objectName);
 
     CustomPlacementButton::setWidgetState(newSubcontrol, this->underMouse(), isChecked());
 
-    //add to list and layout
-    m_subcontrols.append(newSubcontrol);
-    m_layout->insertWidget(m_layout->count() - 1, newSubcontrol);
+    this->addSubcontrol(*newSubcontrol);
+    return newSubcontrol;
+}
+
+QLabel *CustomPlacementButton::addSubcontrol(QWidget &a_widgetSubcontroll)
+{
+    m_subcontrols.append(&a_widgetSubcontroll);
+    m_layout->insertWidget(m_layout->count() - 2, &a_widgetSubcontroll);
 }
 
 Qt::LayoutDirection CustomPlacementButton::layoutDirection() const

@@ -4,7 +4,7 @@ const QString BugReportLoadingScreen::SCREEN_NAME = "BugReportLoading";
 
 BugReportLoadingScreen::BugReportLoadingScreen(QWidget *a_parent)
     : AdaptiveScreen(a_parent)
-    , m_movie(":pics/Spin-1.2s-800px.gif")
+    , m_movie(":pics/Spin-1s-800px.gif")
 {
     this->create(m_ui);
 
@@ -21,6 +21,8 @@ void BugReportLoadingScreen::initVariantUi(QWidget *a_widget)
 {
 #ifdef ANDROID
     m_ui->btnCancel->setText(tr("CANCEL"));
+    if (DAP_BRAND == "TBCCVPN")
+        m_ui->lblCaption->hide();
 #else
     m_ui->layBugReportScreen->setAlignment(m_ui->frmBugReport, Qt::AlignHCenter);
 #endif

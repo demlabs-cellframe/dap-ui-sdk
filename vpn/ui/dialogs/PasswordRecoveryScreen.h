@@ -18,6 +18,9 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QShortcut>
+
+#include "WidgetInputSizeController.h"
 
 class PasswordRecoveryScreen : public AdaptiveScreen
 {
@@ -35,6 +38,7 @@ public slots:
     void setEmail   (const QString &a_email   );
 
     void processReply(QNetworkReply *reply);
+    void passwordRecovery();
 signals:
     void wrongScreen(const QString &a_message);
 
@@ -51,6 +55,10 @@ protected:
 
         virtual void initVariantUi(QWidget *a_widget) override;
 private:
+#ifdef Q_OS_ANDROID
+    WidgetInputSizeController *m_widgetSizeController = nullptr;
+#endif
+
     const QString LBL_LOGO                  = "lblLogo";
     const QString BTN_SEND_MAIL             = "btnSendMail";
     const QString LBL_STATUS_MESSAGE        = "lblStatusMessage";
@@ -84,5 +92,7 @@ private:
     bool checkEmail();
     void checkFieldsAndSendEmail();
     QString m_email;
+
+    QScopedPointer<Ui::PasswordRecoveryScreen> m_ui;
 };
 #endif // FORGETPASSWORDSCREEN_H

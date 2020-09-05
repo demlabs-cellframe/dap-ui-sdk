@@ -129,7 +129,7 @@ void MultiScreenAbstract::initChangingWidget(QWidget *a_widget /*= nullptr*/)
     m_wgtChangingWidget = this->findChangingWidget(a_widget);
     Q_ASSERT(m_wgtChangingWidget);
 
-    connect(m_wgtChangingWidget, &AnimationChangingWidget::animationFinished, [=]{
+    connect(m_wgtChangingWidget, &AnimationChangingWidget::animationFinished, [this]{
         emit animationFinished();
     });
 }

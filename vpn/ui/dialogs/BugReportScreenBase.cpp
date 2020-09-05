@@ -8,6 +8,8 @@ BugReportScreenBase::BugReportScreenBase(QWidget *a_parent)
 
     //And this:
     //AdaptiveScreen::initScreen(this);
+
+
 }
 
 QString BugReportScreenBase::message() const
@@ -34,10 +36,22 @@ void BugReportScreenBase::initVariantUi(QWidget *a_widget)
         Utils::setPropertyAndUpdateStyle(m_ui->edtMessage, Properties::WRONG, true);
     });
 
+#ifdef Q_OS_ANDROID
+    connect(m_ui->edtMessage, &CustomTextEdit::numberCharacterChange,[=](int count){
+        this->m_ui->lblCharacters->setText(QString::number(count) + "/200");
+    });
+
+    connect(m_ui->edtMessage, &CustomTextEdit::pressedEnter,[this]{
+        m_ui->btnSend->setFocus();
+    });
+#endif
+
     connect(this->m_ui->edtMessage, &CustomTextEdit::textChanged, [=]()
     {
         QString str = this->message();
-
+#ifndef Q_OS_ANDROID
+        this->m_ui->lblCharacters->setText(QString::number(str.size()) + "/200");
+#endif
         if (validateText(str))
             return;
 
@@ -46,14 +60,20 @@ void BugReportScreenBase::initVariantUi(QWidget *a_widget)
     });
 
     connectBtnToSignall(m_ui->btnSend, &BugReportScreenBase::checkFieldsAndSendReport);
+
+#ifdef Q_OS_ANDROID
+    m_widgetSizeController = new WidgetInputSizeController(this);
+
+    m_widgetSizeController->addWidgetEmitsSignal(m_ui->edtMessage);
+#endif
 }
 
 bool BugReportScreenBase::validateText(QString &str)
 {
     QRegExp rx("\\\\");
-    if (str.contains(rx) || str.length() > 500){
+    if (str.contains(rx) || str.length() > MAX_SIZE_MESSAGE){
         QTextCursor fileViewerCursor = m_ui->edtMessage->textCursor();
-        m_ui->edtMessage->setPlainText(str.remove(rx).mid(0, 500));
+        m_ui->edtMessage->setPlainText(str.remove(rx).mid(0, MAX_SIZE_MESSAGE));
         fileViewerCursor.movePosition(QTextCursor::End);
         m_ui->edtMessage->setTextCursor(fileViewerCursor);
         return true;

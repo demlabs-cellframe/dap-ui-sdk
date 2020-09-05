@@ -7,12 +7,25 @@ const QString SignUpScreen::SCREEN_NAME = "SignUp";
 SignUpScreen::SignUpScreen(QWidget *a_parent)
     : AdaptiveScreen(a_parent)
 {
-    create<Ui::SignUpScreen>();
+
+    this->create(m_ui);
 
     connect(this, SIGNAL(emailEdited            (const QString &)), SLOT(setEmail       (const QString &)));
     connect(this, SIGNAL(passwordEdited         (const QString &)), SLOT(setPassword    (const QString &)));
     connect(this, SIGNAL(repeatPasswordEdited   (const QString &)), SLOT(setRptPassword(const QString &)));
     connect(this, SIGNAL(agreeChanged           (const bool &)),    SLOT(setAgree       (const bool &))    );
+
+#ifdef Q_OS_ANDROID
+    m_widgetSizeController = new WidgetInputSizeController(this);
+
+    m_widgetSizeController->addDisappearingWidget(m_ui->lblLogo);
+    m_widgetSizeController->addDisappearingWidget(m_ui->lblStatusMessage);
+    m_widgetSizeController->addDisappearingWidget(m_ui->lblCaption);
+
+    m_widgetSizeController->addWidgetEmitsSignal(m_ui->edtEmail);
+    m_widgetSizeController->addWidgetEmitsSignal(m_ui->edtPassword);
+    m_widgetSizeController->addWidgetEmitsSignal(m_ui->edtRptPassword);
+#endif
 
     AdaptiveScreen::initScreen(this);
 }
@@ -24,19 +37,19 @@ QString SignUpScreen::screenName()
 
 void SignUpScreen::setEmail(const QString &a_email)
 {
-    setChildProperties(EDT_EMAIL, "text", a_email);
+    m_ui->edtEmail->setText(a_email);
     m_email = a_email;
 }
 
 void SignUpScreen::setPassword(const QString &a_password)
 {
-    setChildProperties(EDT_PASSWORD, "text", a_password);
+    m_ui->edtPassword->setText(a_password);
     m_password = a_password;
 }
 
 void SignUpScreen::setRptPassword(const QString &a_rpt_password)
 {
-    setChildProperties(EDT_RPT_PASSWORD, "text", a_rpt_password);
+    m_ui->edtRptPassword->setText(a_rpt_password);
     m_repeat_password = a_rpt_password;
 }
 
@@ -44,6 +57,22 @@ void SignUpScreen::setAgree(const bool &a_agree)
 {
     setChildProperties(CHB_AGREE, "bool", a_agree);
     m_agree = a_agree;
+}
+
+void SignUpScreen::SignUp(){
+
+    if (m_btnSignUp->text() == TEXT_SIGN_UP)
+    {
+        emit this->fieldEdited();
+        checkFieldsAndSignUp();
+    }
+
+    if(m_btnSignUp->text() == TEXT_CHOOSE_PLANE)
+    {
+        QDesktopServices::openUrl(QUrl(BrandProperties::URL_CHOOSE_PRICE/*"https://kelvpn.com/pricing/"*/));
+        emit this->goToSignIn();
+        emit this->setStateNormalScreen();
+    }
 }
 
 void SignUpScreen::initVariantUi(QWidget *a_widget)
@@ -91,7 +120,6 @@ void SignUpScreen::initVariantUi(QWidget *a_widget)
     m_edtRptPassword->setPlaceholderText("Repeat password");
     m_edtRptPassword->setEchoMode(QLineEdit::Password);
  //   chbAgree->setChecked(false);
-
 
     connect(this, &SignUpScreen::wrongEmail, [=](){
 
@@ -187,23 +215,12 @@ void SignUpScreen::initVariantUi(QWidget *a_widget)
     connect(m_edtPassword,      SIGNAL(textEdited(QString)),    this, SIGNAL(passwordEdited(QString))       );
     connect(m_edtRptPassword,   SIGNAL(textEdited(QString)),    this, SIGNAL(repeatPasswordEdited(QString)) );
     connect(btnAgree,           SIGNAL(clicked(bool)),          this, SIGNAL(agreeChanged(bool))            );
-    connect(lblSignIn,          &ClickableLabel::clicked,       this, &SignUpScreen::goToSignIn);
 
-    connect(m_btnSignUp, &QPushButton::clicked,[=](){
+    connect(lblSignIn,      &ClickableLabel::clicked,   this, &SignUpScreen::goToSignIn);
 
-        if(m_btnSignUp->text() == TEXT_SIGN_UP)
-        {
-            emit this->fieldEdited();
-            checkFieldsAndSignUp();
-        }
-
-        if(m_btnSignUp->text() == TEXT_CHOOSE_PLANE)
-        {
-            QDesktopServices::openUrl(QUrl(BrandProperties::URL_CHOOSE_PRICE/*"https://kelvpn.com/pricing/"*/));
-            emit this->goToSignIn();
-            emit this->setStateNormalScreen();
-        }
-    });
+    QShortcut *shortCutSignUp = new QShortcut(QKeySequence(Qt::Key_Return), this);
+    connect(shortCutSignUp, &QShortcut::activated, this, &SignUpScreen::SignUp);
+    connect(m_btnSignUp,    &QPushButton::clicked, this, &SignUpScreen::SignUp);
 }
 
 bool SignUpScreen::checkEmail()

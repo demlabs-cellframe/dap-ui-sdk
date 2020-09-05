@@ -8,12 +8,20 @@ const QString StartScreen::SCREEN_NAME = "Start";
 StartScreen::StartScreen(QWidget *a_parent)
     : AdaptiveScreen(a_parent)
 {
-    create<Ui::StartScreen>();
+    create(m_ui);
+
+    AdaptiveScreen::initScreen(this);
 }
 
 QString StartScreen::screenName()
 {
     return StartScreen::SCREEN_NAME;
+}
+
+void StartScreen::setState(ConnectionState a_state)
+{
+    QString statusText = (a_state == ConnectionState::ServersListLoading) ? tr("Loading servers list...") : tr("Connecting to service...");
+    m_ui->lblSystemStatus->setText(statusText);
 }
 
 void StartScreen::initVariantUi(QWidget *a_widget)

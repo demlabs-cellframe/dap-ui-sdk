@@ -76,7 +76,8 @@ class PasswordLineEdit : public CustomLineEditBase
 
 public:
     PasswordLineEdit(QWidget *parent = nullptr);
-
+private:
+    void setSettingsButton();
 };
 
 #endif // PASSWORDLINEEDIT_H
