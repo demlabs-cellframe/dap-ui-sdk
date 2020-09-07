@@ -5,7 +5,9 @@
 #include <QObject>
 #include <QMap>
 #include <QPair>
+#include <QString>
 #include <QSettings>
+#include <QDateTime>
 #include "DapServerInfo.h"
 #include "DapKeyAes.h"
 #include "DapBugReportData.h"
@@ -27,7 +29,6 @@ class DapDataLocal : public QObject
     QString     m_brandName;
     QString     logFilePath;
     static QMap<DapServerLocation, QString> m_pictruePath;
-
 
     void parseXML(const QString& a_fname);
 
@@ -54,6 +55,9 @@ public:
     const QString & networkDefault()       { return m_networkDefault; }
     const QString & getUrlSite()           { return m_urlSite;        }
     const QString & getBrandName()         { return m_brandName;      }
+    const QDateTime & getLicenseTermTill();
+
+    void setLicenseTermTill(const QString &utcDate);
 
     void saveEncriptedSetting(const QString &a_setting, const QVariant &a_value);
     void saveEncriptedSetting(const QString &a_setting, const QByteArray &a_value);
@@ -94,6 +98,8 @@ signals:
     /// Signal emitted if password has changed.
     /// @param password Password.
     void passwordChanged(const QString& password);
+
+    void licenseTermTillChanged(const QString &a_date);
 
 protected:
     QList<QString>  m_cdbServersList;

@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QBoxLayout>
 #include <QRegularExpression>
+#include <QDateTime>
 
 class QMainWindow;
 
@@ -41,6 +42,8 @@ namespace Utils
     void updateStyle(QWidget* a_widget);
 
     QString getTextFromFile(const QString &a_fname);
+
+    uint dateDifference(const QDateTime &a_firstDate, const QDateTime &a_secondDate);
 };
 
 template <class T>

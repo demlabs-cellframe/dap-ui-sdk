@@ -31,6 +31,7 @@
 #include <QList>
 #include "DapConnectClient.h"
 #include <DapCrypt.h>
+#include "DapDataLocal.h"
 
 class DapSession : public QObject
 {

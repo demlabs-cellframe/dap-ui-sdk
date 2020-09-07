@@ -48,6 +48,21 @@ void DapSerialKeyData::reset()
     this->setActivated(false);
 }
 
+const void DapSerialKeyData::setLicenseTermTill(const QString &a_date)
+{
+    QDateTime tempDate = QDateTime::fromString(a_date);
+    if (this->m_licenseTermTill == tempDate)
+        return;
+    this->m_licenseTermTill = tempDate;
+
+//    emit this->licenseTermTillChanged(QString::number(tempDate.toTime_t()));
+}
+
+const QDateTime & DapSerialKeyData::getLicenseTermTill() {
+//    QDateTime dsf = m_licenseTermTill;
+    return m_licenseTermTill;
+}
+
 void DapSerialKeyData::operator=(const DapSerialKeyData &a_another)
 {
     this->setSerialKey(a_another.serialKey());
