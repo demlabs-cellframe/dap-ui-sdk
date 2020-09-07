@@ -113,7 +113,6 @@ protected:
     QLabel m_lbAdditionalImage;
     QWidget m_wgtRightSpacing;        ///<label for right spacing
 
-private:
     Qt::Alignment m_alignment = Qt::AlignJustify;
 
     static void setWidgetState(QWidget* a_widget, bool a_isHover=false, bool a_isChecked = false);

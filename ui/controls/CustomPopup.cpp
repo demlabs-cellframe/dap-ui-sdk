@@ -7,6 +7,7 @@ CustomPopup::CustomPopup(QWidget *a_parent /*= nullptr*/)
     : AdaptiveWidget(Utils::findParent<QMainWindow*>(a_parent))
 {
     this->setObjectName("stwCustomPopup");
+
 }
 
 void CustomPopup::setParent(QWidget *a_parent)
