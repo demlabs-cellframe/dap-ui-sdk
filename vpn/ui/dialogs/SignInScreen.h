@@ -86,7 +86,7 @@ private:
     QStateMachine *m_inputStates;
     QState *m_stt_serialKey;
     QState *m_stt_serialKey_unactivated;
-    QState *m_stt_serialKey_unactivated_input;
+    QState *m_stt_serialKey_unactivated_empty;
     QState *m_stt_serialKey_unactivated_entered;
     QState *m_stt_serialKey_unactivated_wrong;
     QState *m_stt_serialKey_activated;
