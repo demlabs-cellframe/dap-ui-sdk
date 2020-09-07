@@ -4,21 +4,27 @@
 #include <QTranslator>
 #include <QApplication>
 #include "defines.h"
+#include "LanguagesModel.h"
 
 class AppLanguageController : public QObject
 {
     Q_OBJECT
-    explicit AppLanguageController(QObject* a_parent = nullptr);
 public:
+    explicit AppLanguageController(QObject* a_parent = nullptr);
 
-    static AppLanguageController* instance();
+    LanguagesModel* languagesModel();
 
-    void setLocale(QLocale a_locale);
+    QLocale::Language currentLanguage() const;
 
 public slots:
-    static void retranslateApp(QLocale a_locale = QLocale());
+    void setCurrentLanguage(QLocale::Language a_language);
+    void setCurrentLanguageIndex(int a_index);
+
+signals:
+    void appRetranslated();
 
 private:
+    void retranslateApp(QLocale::Language a_language);
 
     QTranslator m_qtLanguageTranslator;
 
@@ -26,6 +32,12 @@ private:
     const QString SETTING_SYS_LOCALE{"SysLanguage"};
 
     QApplication* m_application;
+
+    LanguagesModel m_languagesModel;
+    QLocale::Language m_language;
 };
+
+QDataStream &operator<<(QDataStream &a_outStream, QLocale::Language a_serialKeyData);
+QDataStream &operator>>(QDataStream &a_inStream, QLocale::Language &a_serialKeyData);
 
 #endif // APPLANGUAGECONTROLLER_H
