@@ -54,13 +54,9 @@ public:
                                                                       port,
                                                                       "/nodelist",
                                                                       false);
-        DapReplyTimeout::set(networkReply, 15000); // 10 sec
+        DapReplyTimeout::set(networkReply, 15000); // 15 sec
         return new DapServersListNetworkReply(networkReply);
     }
-
-    /*static DapServersListNetworkReply* sendRequestsAll(QList<QString> s) {
-
-    }*/
 };
 
 #endif // DAPSERVERSLISTREQUESTER_H

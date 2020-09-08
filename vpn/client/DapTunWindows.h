@@ -18,6 +18,7 @@ protected:
     void workerPrepare()        override;
     void onWorkerStarted()      override;
     void workerStop()           override;
+    void workerPause()          override;
     void signalWriteQueueProc() override;
 };
 

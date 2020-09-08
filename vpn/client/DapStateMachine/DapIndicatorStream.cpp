@@ -4,16 +4,24 @@ void DapIndicatorStream::init(QStateMachine &sm, const QString& stateName)
 {
     DapIndicatorStateAbstract::init(sm, stateName);
 
+    upsDisconnected     = new DapState(_false->name()       + "_disconnected",      _false);
+    upsHandshakeRequest = new DapState(_falseToTrue->name() + "_handshakeRequest",  _falseToTrue);
+    upsHandshakeReply   = new DapState(_falseToTrue->name() + "_handshakeReply",    _falseToTrue);
+    upsChannelsOpen     = new DapState(_falseToTrue->name() + "_channelsOpen",      _falseToTrue);
+    networkErr          = new DapState(_false->name()       + "_networkError",      _false, true);
+    srvProvided         = new DapState(_falseToTrue->name() + "_serviceProvided",   _falseToTrue);
+    configProvided      = new DapState(_true->name()        + "_netconfigProvided", _true);
+
     // Init substates false
-    disconnectedNormal = new DapState(_false->name() + "DisconnectedNormal", _false);
+    /*disconnectedNormal = new DapState(_false->name() + "DisconnectedNormal", _false);
     disconnectedError  = new DapState(_false->name() + "DisconnectedError", _false, true);
     ipRequestError     = new DapState(_false->name() + "RequestError", _false, true);
-    serviceError       = new DapState(_false->name() + "ServiceError", _false, true);
+    serviceError       = new DapState(_false->name() + "ServiceError", _false, true);*/
 
-    _false->setInitialState(disconnectedNormal);
+    _false->setInitialState(upsDisconnected);
 
     // Init substates falseToTrue
-    connected          = new DapState(_falseToTrue->name() + "Connected",
+    /*connected          = new DapState(_falseToTrue->name() + "Connected",
                                        _falseToTrue);
     ipRequested        = new DapState(_falseToTrue->name() + "IpRequested",
                                        _falseToTrue);
@@ -33,14 +41,30 @@ void DapIndicatorStream::init(QStateMachine &sm, const QString& stateName)
 
     // Init substates TrueToFalse
     disconnecting      = new DapState(_trueToFalse->name() + "Disconnecting",
-                                            _trueToFalse);
+                                            _trueToFalse);*/
     initAllowedSubstatesTransitions();
 }
 
 void DapIndicatorStream::initAllowedSubstatesTransitions()
 {
+    addAllowedSubstatesTransitions(upsDisconnected,         upsHandshakeRequest);
+    addAllowedSubstatesTransitions(upsHandshakeRequest,     upsHandshakeReply);
+    addAllowedSubstatesTransitions(upsHandshakeRequest,     networkErr);
+    addAllowedSubstatesTransitions(upsHandshakeReply,       upsChannelsOpen);
+    addAllowedSubstatesTransitions(upsHandshakeReply,       networkErr);
+    addAllowedSubstatesTransitions(upsHandshakeReply,       upsDisconnected);
+    addAllowedSubstatesTransitions(upsChannelsOpen,         srvProvided);
+    addAllowedSubstatesTransitions(upsChannelsOpen,         upsDisconnected);
+    addAllowedSubstatesTransitions(upsChannelsOpen,         networkErr);
+    addAllowedSubstatesTransitions(srvProvided,             configProvided);
+    addAllowedSubstatesTransitions(srvProvided,             networkErr);
+    addAllowedSubstatesTransitions(srvProvided,             upsDisconnected);
+    addAllowedSubstatesTransitions(configProvided,          networkErr);
+    addAllowedSubstatesTransitions(configProvided,          upsDisconnected);
+    addAllowedSubstatesTransitions(networkErr,              upsHandshakeRequest);
+    addAllowedSubstatesTransitions(networkErr,              upsDisconnected);
     // False
-    addAllowedSubstatesTransitions(disconnectedNormal, connected);
+    /*addAllowedSubstatesTransitions(disconnectedNormal, connected);
     addAllowedSubstatesTransitions(disconnectedNormal, reconnectingError);
     addAllowedSubstatesTransitions(disconnectedError, connected);
     addAllowedSubstatesTransitions(ipRequestError, connected);
@@ -70,5 +94,5 @@ void DapIndicatorStream::initAllowedSubstatesTransitions()
 
     // FalseToTrue => *
     addAllowedSubstatesTransitions(disconnecting, disconnectedNormal);
-    addAllowedSubstatesTransitions(disconnecting, disconnectedError);
+    addAllowedSubstatesTransitions(disconnecting, disconnectedError);*/
 }

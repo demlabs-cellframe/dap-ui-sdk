@@ -20,7 +20,7 @@ public:
 
     void create(const QString& a_addr, const QString& a_gw,  const QString & a_upstreamAddress, qint16 a_upstreamPort, int a_upstreamSocket );
     void destroy();
-
+    void standby();
     void setTunSocket(int a_tunSocket){ m_tunSocket = a_tunSocket; }
     void setTunDeviceName(const QString& a_tunDeviceName){ m_tunDeviceName = a_tunDeviceName; }
 
@@ -84,7 +84,7 @@ protected:
 
     virtual void workerPrepare()=0;
     virtual void workerStop()=0;
-
+    virtual void workerPause() = 0;
     virtual void signalWriteQueueProc()=0;
 
     void initWorker();
@@ -102,7 +102,6 @@ protected:
     QString m_ethDeviceName;
     QString m_ethDevice;
     QString m_defaultGwOld;
-    QStringList m_defaultDNSRecord;
 
 private:
     const QString tempNetFileName = "TempConfigurationNetwork.xml";

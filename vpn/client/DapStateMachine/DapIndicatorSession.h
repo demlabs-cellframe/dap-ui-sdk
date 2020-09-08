@@ -15,7 +15,7 @@ protected:
     void initAllowedSubstatesTransitions() override;
 public:
     // Substates false
-    DapState * logouted;
+    /*DapState * logouted;
     DapState * authRequestError;
     DapState * streamCtlError;
     DapState * handshakeError;
@@ -41,8 +41,22 @@ public:
 
     // Substates TrueToFalse
     DapState * logoutRequested;
-    DapState * unAuthorized;
+    DapState * unAuthorized; // no need...
     //DapState * switchRequested;
+    */
+    DapState *cdbLogouted;
+    DapState *cdbLogined;
+    DapState *cdbLogoutRequest;
+
+    DapState *cdbKeyActivation;
+
+    DapState *cdbHandshakeRequest;
+    DapState *cdbHandshakeReply;
+
+    /*DapState *upstreamHandshakeRequest;
+    DapState *upstreamHandshakeReply;*/
+
+    DapState *networkErr;
 };
 
 #endif // DAPINDICATORSESSION_H

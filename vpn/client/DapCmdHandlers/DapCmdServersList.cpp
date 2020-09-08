@@ -25,6 +25,10 @@ void DapCmdServersList::handle(const QJsonObject* params)
             QJsonObject obj;
             obj["servers"] = arr;
             sendCmd(&obj);
+            DapServerInfoList l;
+            if (DapServerInfo::fromJSON(obj.value("servers").toArray(), l))
+                if (!l.isEmpty())
+                    emit updateNodesList(l);
         }
     });
 

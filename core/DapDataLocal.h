@@ -36,6 +36,7 @@ class DapDataLocal : public QObject
     QString getRandomString(int);
 
 public:
+    int m_rotations = 0;
     using picturesMap = QMap<DapServerLocation, QString>;
     static DapDataLocal* instance();
 

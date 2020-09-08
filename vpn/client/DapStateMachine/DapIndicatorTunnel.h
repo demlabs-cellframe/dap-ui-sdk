@@ -14,7 +14,13 @@ protected:
     void initAllowedSubstatesTransitions() override;
 public:
     // Substates False
-    DapState *tunnelClosed;
+
+    DapState *tunDisabled;
+    DapState *tunEnabled;
+    DapState *tunIdle;
+    DapState *tunError;
+
+    /*DapState *tunnelClosed;
     DapState *noTunnelError;
     DapState *noTunnelConfigError;
     DapState *oldConfigRestoreError;
@@ -29,7 +35,7 @@ public:
 
     // Substates TrueToFalse
     DapState *oldConfigRestoring;
-    DapState *tunnelClosing;
+    DapState *tunnelClosing;*/
 };
 
 #endif // DAPINDICATORTUNNEL_H
