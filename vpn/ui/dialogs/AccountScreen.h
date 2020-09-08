@@ -18,7 +18,8 @@
 #include "CustomPlacementButton.h"
 #include "SerialRemovalConfirmationMessage.h"
 #include "ScreenWithScreenPopupsAbstract.h"
-
+#include <QDesktopServices>
+#include <QUrl>
 #include "TariffItem.h"
 
 class AccountScreen : public ScreenWithScreenPopupsAbstract
