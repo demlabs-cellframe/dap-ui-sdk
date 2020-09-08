@@ -27,6 +27,8 @@ NewsFeedWidget::NewsFeedWidget(QString a_text, QString a_url, int a_speed, QWidg
 void NewsFeedWidget::updateGeometry()
 {
     this->setGeometry(0,m_parent->height()-this->size().rheight(),m_parent->width(),0);
+    qDebug()<<"*****news width = "<<this->width();
+    qDebug()<<"*****main window width = "<<m_parent->width();
 }
 
 void NewsFeedWidget::setUrl(const QString &a_url)
@@ -60,7 +62,7 @@ RunLineLabel::RunLineLabel(QString a_text, QString a_url, QWidget *parent)
     setObjectName("lblTextNews");
     connect(this,&ClickableLabel::clicked,[this]()
     {
-        QDesktopServices::openUrl(QUrl(m_url));
+        if (!m_url.isEmpty()) QDesktopServices::openUrl(QUrl(m_url));
     });
 }
 
@@ -87,9 +89,23 @@ void RunLineLabel::setSpeed(const int a_speed)
     if (a_speed) m_timerId = startTimer(1000/a_speed);
 }
 
+void RunLineLabel::updateGeometry()
+{
+    //emit newWidth(this->width());
+    qDebug()<<"*****label width = "<< this->width();
+    QFontMetrics fm(this->font());
+    qDebug()<<"*****text width = "<< fm.width(this->text());
+}
+
 void RunLineLabel::timerEvent(QTimerEvent *)
 {
     const int length = m_text.length();
     if(++m_shift >= length) m_shift = 0;
     QLabel::setText(m_text.right(length - m_shift) + " " + m_text.left(m_shift - 3));
+}
+
+void RunLineLabel::resizeEvent(QResizeEvent *ev)
+{
+    updateGeometry();
+    QLabel::resizeEvent(ev);
 }

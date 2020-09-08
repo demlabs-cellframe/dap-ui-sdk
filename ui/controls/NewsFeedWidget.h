@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QDebug>
 #include <QDesktopServices>
+#include <QFontMetrics>
 #include "Utilz.h"
 
 class RunLineLabel;
@@ -34,8 +35,12 @@ public:
     void setUrl(const QString &a_url);
     void setText(const QString &a_text);
     void setSpeed(const int a_speed);
+    void updateGeometry();
+/*signals:
+    void newWidth(int);*/
 protected:
     virtual void timerEvent(QTimerEvent*);
+    virtual void resizeEvent(QResizeEvent* ev);
 private:
     QString m_url{};
     QString m_text{};
