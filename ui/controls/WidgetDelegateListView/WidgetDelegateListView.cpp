@@ -75,7 +75,7 @@ void WidgetDelegateListView::dataChanged(const QModelIndex &topLeft, const QMode
 
 void WidgetDelegateListView::createIndexDelegates(int a_start /*= 0*/, int a_end /*= -1*/)
 {
-    if (!m_widgetDelegateFactory || !this->model())
+    if (!m_widgetDelegateFactory || !this->model() || this->model()->rowCount() == 0)
         return;
 
     int rowCount = this->model()->rowCount();
@@ -125,7 +125,6 @@ void WidgetDelegateListView::deleteAllWidgetDelegates()
     }
 
 }
-
 
 WidgetDelegateBase *WidgetDelegateListView::createWidgetDelegate()
 {
