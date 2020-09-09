@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QDesktopServices>
 #include <QFontMetrics>
+#include <QSizePolicy>
 #include "Utilz.h"
 
 class RunLineLabel;
@@ -31,7 +32,7 @@ class RunLineLabel:public ClickableLabel
 {
     Q_OBJECT
 public:
-    RunLineLabel(QString a_text, QString a_url, QWidget *parent = nullptr);
+    RunLineLabel(QString a_text, QString a_url, QWidget *a_parent);
     void setUrl(const QString &a_url);
     void setText(const QString &a_text);
     void setSpeed(const int a_speed);
@@ -46,6 +47,9 @@ private:
     QString m_text{};
     int m_shift{};
     int m_timerId{};
+    int m_widthText{};
+    QWidget* m_parent{Q_NULLPTR};
+    bool running{}, condition{};
 };
 
 

@@ -9,6 +9,7 @@ NewsFeedWidget::NewsFeedWidget(QString a_text, QString a_url, int a_speed, QWidg
     m_lblText = new RunLineLabel(a_text, a_url,this);
     setSpeed(a_speed);
 
+
     m_lblClose = new ClickableLabel(this);
     m_lblClose->setObjectName("lblCloseNews");
 
@@ -27,8 +28,6 @@ NewsFeedWidget::NewsFeedWidget(QString a_text, QString a_url, int a_speed, QWidg
 void NewsFeedWidget::updateGeometry()
 {
     this->setGeometry(0,m_parent->height()-this->size().rheight(),m_parent->width(),0);
-    qDebug()<<"*****news width = "<<this->width();
-    qDebug()<<"*****main window width = "<<m_parent->width();
 }
 
 void NewsFeedWidget::setUrl(const QString &a_url)
@@ -54,16 +53,20 @@ void NewsFeedWidget::resizeEvent(QResizeEvent *ev)
 
 
 //*****************RunLineLabel*****************
-RunLineLabel::RunLineLabel(QString a_text, QString a_url, QWidget *parent)
-    :ClickableLabel(parent)
+RunLineLabel::RunLineLabel(QString a_text, QString a_url, QWidget* a_parent)
+    :ClickableLabel(a_parent),
+      m_text(a_text),
+      m_shift(0),
+      m_parent(a_parent)
 {
-    RunLineLabel::setText(a_text);
+    QLabel::setText(a_text);
     setUrl(a_url);
     setObjectName("lblTextNews");
     connect(this,&ClickableLabel::clicked,[this]()
     {
         if (!m_url.isEmpty()) QDesktopServices::openUrl(QUrl(m_url));
     });
+    setAlignment(Qt::AlignHCenter);
 }
 
 void RunLineLabel::setUrl(const QString &a_url)
@@ -73,9 +76,18 @@ void RunLineLabel::setUrl(const QString &a_url)
 
 void RunLineLabel::setText(const QString &a_text)
 {
+    if (this->text().isEmpty()) m_widthText = 1;
     QLabel::setText(a_text);
     m_text = a_text;
     m_shift = 0;
+    running = condition = false;
+    if (m_widthText)
+    {
+        m_widthText = 0;
+        updateGeometry();
+        this->width() - 100 > m_widthText ? running = false
+                : running = true;
+    }
 }
 
 void RunLineLabel::setSpeed(const int a_speed)
@@ -91,21 +103,28 @@ void RunLineLabel::setSpeed(const int a_speed)
 
 void RunLineLabel::updateGeometry()
 {
-    //emit newWidth(this->width());
-    qDebug()<<"*****label width = "<< this->width();
-    QFontMetrics fm(this->font());
-    qDebug()<<"*****text width = "<< fm.width(this->text());
+    if(condition && m_widthText > this->width() - 100) running = true;
+    if (!m_widthText)
+    {
+        QFontMetrics fm(this->font());
+        m_widthText = fm.width(m_text);
+        condition = true;
+    }
+    setSizePolicy(QSizePolicy::Policy::Expanding,QSizePolicy::Policy::Expanding);
 }
 
 void RunLineLabel::timerEvent(QTimerEvent *)
 {
-    const int length = m_text.length();
-    if(++m_shift >= length) m_shift = 0;
-    QLabel::setText(m_text.right(length - m_shift) + " " + m_text.left(m_shift - 3));
+    if(running && this->isVisible())
+    {
+        const int length = m_text.length();
+        if(++m_shift >= length) m_shift = 0;
+        QLabel::setText(m_text.right(length - m_shift) + " " + m_text.left(m_shift));
+    }
 }
 
 void RunLineLabel::resizeEvent(QResizeEvent *ev)
 {
-    updateGeometry();
     QLabel::resizeEvent(ev);
+    updateGeometry();
 }
