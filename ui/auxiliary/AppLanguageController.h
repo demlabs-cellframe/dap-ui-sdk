@@ -4,38 +4,40 @@
 #include <QTranslator>
 #include <QApplication>
 #include "defines.h"
+#include "LanguagesModel.h"
 
 class AppLanguageController : public QObject
 {
     Q_OBJECT
-    explicit AppLanguageController(QObject* a_parent = nullptr);
 public:
+    explicit AppLanguageController(QObject* a_parent = nullptr);
 
-    static AppLanguageController* instance();
+    LanguagesModel* languagesModel();
 
-    static Language appLanguage();
-    static QString appLanguageString();
-
+    QLocale::Language currentLanguage() const;
 
 public slots:
-    static void retranslateApp(Language a_language = Language::Undefined);
+    void setCurrentLanguage(QLocale::Language a_language);
+    void setCurrentLanguageIndex(int a_index);
 
 signals:
     void appRetranslated();
 
 private:
-    void setAppLanguage(QString a_language);
-
-    static QString   languageToString(Language a_language);
-    static Language stringToLanguage(const QString& a_Languagetr);
+    void retranslateApp(QLocale::Language a_language);
 
     QTranslator m_qtLanguageTranslator;
-    const QString SETTING_NAME{"language"};
-    const QString SETTING_SYS_LANGUAGE{"SysLanguage"};
 
-    const QMap<Language, QString> m_languageStrings {{Language::En, "en"}, {Language::Zh, "zh"}};
+    const QString SETTING_LOCALE{"language"};
+    const QString SETTING_SYS_LOCALE{"SysLanguage"};
 
     QApplication* m_application;
+
+    LanguagesModel m_languagesModel;
+    QLocale::Language m_language;
 };
+
+QDataStream &operator<<(QDataStream &a_outStream, QLocale::Language a_serialKeyData);
+QDataStream &operator>>(QDataStream &a_inStream, QLocale::Language &a_serialKeyData);
 
 #endif // APPLANGUAGECONTROLLER_H
