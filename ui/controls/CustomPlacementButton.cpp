@@ -107,6 +107,14 @@ void CustomPlacementButton::setProperty(const QString &a_property, const QVarian
     Utils::setPropertyAndUpdateStyle(&m_wgtRightSpacing, a_property, a_value);
     for (QWidget* subcontrol: m_subcontrols)
     {
+        if(subcontrol->layout()!=nullptr)
+        {
+            for(int numItem = 0; numItem < subcontrol->layout()->count(); numItem++)
+            {
+                Utils::setPropertyAndUpdateStyle(subcontrol->layout()->itemAt(numItem)->widget(), a_property, a_value);
+            }
+        }
+        else
         Utils::setPropertyAndUpdateStyle(subcontrol, a_property, a_value);
     }
     Utils::setPropertyAndUpdateStyle(&m_wgtRightSpacing, a_property, a_value);

@@ -28,6 +28,8 @@ namespace Utils
     QBoxLayout::Direction toQBoxLayoutDirection(Qt::LayoutDirection a_direction);
     Qt::LayoutDirection toQtLayoutDirection(QBoxLayout::Direction a_direction);
 
+    QString toNativeLanguageName(QLocale::Language a_language);
+
     template <class T>
     inline T findChild(QObject* a_object, const QString& a_objectName, T &a_foundObjectOUT);
 
