@@ -50,7 +50,7 @@ void DapSerialKeyData::reset()
 
 const void DapSerialKeyData::setLicenseTermTill(const QString &a_date)
 {
-    QDateTime tempDate = QDateTime::fromString(a_date);
+    QDateTime tempDate = QDateTime::fromTime_t(a_date.toUInt());
     if (this->m_licenseTermTill == tempDate)
         return;
     this->m_licenseTermTill = tempDate;
