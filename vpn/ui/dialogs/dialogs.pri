@@ -1,5 +1,4 @@
 HEADERS  += \
-    $$PWD/AccountScreen.h \
     $$PWD/BugReportLoadingScreen.h \
     $$PWD/BugReportResultScreen.h \
     $$PWD/BugReportScreenBase.h \
@@ -22,7 +21,6 @@ HEADERS  += \
     $$PWD/screens.h
 
 SOURCES += \
-    $$PWD/AccountScreen.cpp \
     $$PWD/BugReportLoadingScreen.cpp \
     $$PWD/BugReportResultScreen.cpp \
     $$PWD/BugReportScreenBase.cpp \
