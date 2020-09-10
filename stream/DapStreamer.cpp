@@ -194,7 +194,7 @@ void DapStreamer::sltStreamOpenCallback()
 
     QStringList str_list = streamReplyStr.split(" ");
 
-    if(str_list.length() != 2)
+    if(str_list.length() < 2)
     {
         qWarning() << "Bad response. Wrong Reply Format!" << streamReplyStr;
         emit sigStreamOpenBadResponseError();
