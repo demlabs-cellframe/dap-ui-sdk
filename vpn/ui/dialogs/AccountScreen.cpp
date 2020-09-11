@@ -40,6 +40,12 @@ void AccountScreen::initVariantUi(QWidget *a_widget)
     connect(m_ui->btnResetSerial, &QPushButton::clicked, m_serialRemovalMessage, &SerialRemovalConfirmationMessage::show);
 
     m_ui->cbbLicenceKey->popup()->listView()->setWidgetDelegateFactory(&TariffDelegate::create);
+    m_ui->cbbLicenceKey->setCaptionPolicy(ComboBox::CaptionPolicy::ShowAlways);
+    connect(m_ui->cbbLicenceKey, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated), [] (const QString &a_current)
+    {
+        QDesktopServices::openUrl(QUrl(a_current));
+    });
+
 #endif
 
     this->ScreenWithScreenPopupsAbstract::initVariantUi(a_widget);
@@ -54,7 +60,7 @@ void AccountScreen::setState(ActivationState a_activationState)
 void AccountScreen::appendTariff(const QList<TariffItem> &a_tariffList)
 {
     for (const TariffItem& currentTarriff: a_tariffList)
-        m_ui->cbbLicenceKey->addItem("", QVariant::fromValue(currentTarriff));
+        m_ui->cbbLicenceKey->addItem(currentTarriff.urlTariff, QVariant::fromValue(currentTarriff));
 }
 #endif
 

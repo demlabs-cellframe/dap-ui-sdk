@@ -13,18 +13,20 @@ TariffDelegate::TariffDelegate(QWidget* a_parent)
     , m_lblDuration(new QLabel(this))
 {
     this             ->setObjectName("frmTariffDelegate");
+    button()->setObjectName("btnTarif");
     m_lblMonthPrice  ->setObjectName("lblMonthPrice");
-    m_lblDuration->setObjectName("lblPlanDuration");
+    m_lblDuration    ->setObjectName("lblPlanDuration");
+    m_doubledSubcontroll ->setObjectName("doubledSubcontroll");
 
-//    this->button()->setLayoutDirection(Qt::);
 
     QVBoxLayout* subcontrollLayout = new QVBoxLayout(m_doubledSubcontroll);
     m_doubledSubcontroll->setLayout(subcontrollLayout);
     subcontrollLayout->setMargin(0);
     subcontrollLayout->setSpacing(0);
 
-    subcontrollLayout->addWidget(m_lblMonthPrice);
     subcontrollLayout->addWidget(m_lblDuration);
+    subcontrollLayout->addWidget(m_lblMonthPrice);
+
 
     this->button()->addSubcontrol(*m_doubledSubcontroll);
 }
@@ -36,7 +38,15 @@ void TariffDelegate::setData(const QVariant &a_value, int role)
         TariffItem tariff = a_value.value<TariffItem>();
         this->button()->setText(tariff.totalPriceText);
         m_lblDuration->setText(tariff.durationText);
-        m_lblMonthPrice->setText(tariff.monthPriceText);
+        if(!tariff.monthPriceText.isEmpty())
+        {
+            m_lblMonthPrice->setText(tariff.monthPriceText);
+        }
+        else
+        {
+            m_lblMonthPrice->hide();
+        }
+
     }
 }
 
