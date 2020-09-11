@@ -81,6 +81,7 @@ public:
 
     static QVariant getSetting (const QString& a_setting);
     static void     saveSetting(const QString& a_setting, const QVariant& a_value);
+    static void     removeSetting(const QString& a_setting);
     void saveSerialKeyData();
 
     static DapBugReportData *bugReportData();

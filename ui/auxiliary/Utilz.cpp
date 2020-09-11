@@ -128,4 +128,21 @@ namespace Utils
                 return QBoxLayout::Direction::LeftToRight;
         }
     }
+
+    QString toNativeLanguageName(QLocale::Language a_language)
+    {
+        switch (a_language)
+        {
+            case QLocale::English   : return "English";
+            case QLocale::Chinese   : return "中文";
+            case QLocale::Russian   : return "Русский";
+            case QLocale::Ukrainian : return "Український";
+            case QLocale::French    : return "Française";
+            case QLocale::Korean    : return "한국어";
+            case QLocale::Thai      : return "ไทย";
+            case QLocale::Khmer     : return "ខ្មែរ";
+            default: return "";
+        }
+    }
+
 }

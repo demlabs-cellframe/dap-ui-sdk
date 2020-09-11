@@ -6,6 +6,7 @@
 
 struct TariffItem
 {
+    QString urlTariff;
     QString totalPriceText;
     QString monthPriceText;
     QString durationText;
