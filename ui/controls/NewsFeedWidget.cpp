@@ -144,55 +144,24 @@ void RunLineLabel::updateGeometry()
 {
     qDebug()<<"width = "<<this->width();
     qDebug()<<"font = "<<this->font();
-    if(condition && m_widthText > this->width() - 100) emit startAnimation();
+    QFontMetrics fm(this->font());
+    m_widthText = fm.width(this->text());
+    qDebug()<<"text width = "<<m_widthText;
+    if (m_widthText > this->width()) emit startAnimation();
+    /*if(condition && m_widthText > this->width()) emit startAnimation();
     if (!m_widthText)
     {
         QFontMetrics fm(this->font());
         m_widthText = fm.width(m_text);
         condition = true;
-    }
-    setSizePolicy(QSizePolicy::Policy::Expanding,QSizePolicy::Policy::Expanding);
+    }*/
+    //setSizePolicy(QSizePolicy::Policy::Expanding,QSizePolicy::Policy::Expanding);
 }
 
 QString RunLineLabel::text() const
 {
     if(!m_lblFirst) return this->QLabel::text();
     else return m_lblFirst->text();
-}
-
-void RunLineLabel::timerEvent(QTimerEvent *)
-{
-    qDebug()<<__FUNCTION__;
-    if(running && this->isVisible())
-    {
-        if(m_animFirst->state()==QPropertyAnimation::Running
-                || m_animSecond->state()==QPropertyAnimation::Running) return;
-
-        if(m_lblFirst->x() < -m_lblFirst->width())
-        {
-            qDebug()<<"FIRST **x** = "<<m_lblFirst->x()<<"**width** = "<<-m_lblFirst->width();
-            m_lblFirst->setGeometry(QRect(m_lblSecond->x() + m_lblSecond->width(),0,
-                                          m_lblFirst->width(),m_lblFirst->height()));
-        }
-
-        if(m_lblSecond->x() < -m_lblSecond->width())
-        {
-            qDebug()<<"SECOND **x** = "<<m_lblSecond->x()<<"**width** = "<<-m_lblSecond->width();
-            m_lblSecond->setGeometry(QRect(m_lblFirst->x() + m_lblFirst->width(),0,
-                                          m_lblSecond->width(),m_lblSecond->height()));
-        }
-
-        m_animFirst->setDuration(m_speed);
-        m_animSecond->setDuration(m_speed);
-
-        m_animFirst->setStartValue(m_lblFirst->geometry());
-        m_animFirst->setEndValue(QRect(m_lblFirst->x() - 10,0,m_lblFirst->width(),m_lblFirst->height()));
-
-        m_animSecond->setStartValue(m_lblSecond->geometry());
-        m_animSecond->setEndValue(QRect(m_lblSecond->x() - 10,0,m_lblSecond->width(),m_lblSecond->height()));
-
-        m_animFirst->start(); m_animSecond->start();
-    }
 }
 
 void RunLineLabel::resizeEvent(QResizeEvent *e)
@@ -219,11 +188,13 @@ void RunLineLabel::timeoutAnimation()
     static bool first{};
     if (!first)
     {
-        m_lblFirst->setGeometry(QRect(m_lblFirst->x(),m_lblFirst->y(),m_widthText+50,m_lblFirst->height()));
+        m_lblFirst->setGeometry(QRect(m_lblFirst->x(),m_lblFirst->y(),
+                                      m_widthText+50,m_lblFirst->height()));
         //m_lblFirst->setFixedWidth(m_widthText+50);
         qDebug()<<m_lblFirst->geometry();
 
-        m_lblSecond->setGeometry(QRect(m_widthText+50,m_lblSecond->y(),m_widthText+50,m_lblSecond->height()));
+        m_lblSecond->setGeometry(QRect(m_widthText + m_lblFirst->x() + 50,
+                                       m_lblSecond->y(),m_widthText+50,m_lblSecond->height()));
         //m_lblSecond->setFixedWidth(m_widthText+50);
         qDebug()<<m_lblSecond->geometry();
         first=true;

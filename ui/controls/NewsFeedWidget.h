@@ -46,7 +46,6 @@ public:
 signals:
     void startAnimation();
 protected:
-    virtual void timerEvent(QTimerEvent*);
     virtual void resizeEvent(QResizeEvent* e);
     virtual void showEvent(QShowEvent* e);
     virtual void closeEvent(QCloseEvent* e);
