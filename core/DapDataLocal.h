@@ -62,7 +62,7 @@ public:
 
     QString password() const;
 
-    DataToUpdate* getDataTuUpdate(){return &m_dataToUpdate;}
+    DataToUpdate* getDataToUpdate(){return &m_dataToUpdate;}
 
     const QList<QString> &cdbServersList() { return m_cdbServersList; }
     const QString & networkDefault()       { return m_networkDefault; }
