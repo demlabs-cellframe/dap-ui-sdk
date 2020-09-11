@@ -291,12 +291,11 @@ DapDataLocal *DapDataLocal::instance()
     return &s_instance;
 }
 
-void DapDataLocal::setUrlUpdate(const QString &a_url)
+void DapDataLocal::setDataToUpdate(DataToUpdate &a_data)
 {
-    m_urlUpdate = a_url;
+    m_dataToUpdate.state = a_data.state;
+    m_dataToUpdate.version = a_data.version;
+    m_dataToUpdate.URLUpdate = a_data.URLUpdate;
 }
 
-QString DapDataLocal::urlUpdate() const
-{
-    return m_urlUpdate;
-}
+
