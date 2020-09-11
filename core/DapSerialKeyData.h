@@ -30,7 +30,7 @@ signals:
     void activationChanged(bool activation);
 
 public slots:
-    const void setLicenseTermTill(const QString &a_date);
+    void setLicenseTermTill(const QString &a_date);
 
 private:
     QString m_serialKey;

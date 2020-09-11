@@ -108,11 +108,7 @@ namespace Utils
 
     uint dateDifference(const QDateTime &a_firstDate, const QDateTime &a_secondDate)
     {
-
-        qint64 dsf = a_firstDate.daysTo(a_secondDate) ;
-//                = QDateTime::fromString(a_secondDate).secsTo(QDateTime::fromString(a_firstDate));
-//        QString date = QString::number(( / 60) / 24);
-        return dsf;
+        return a_firstDate.daysTo(a_secondDate) ;
     }
 
     Qt::LayoutDirection toQtLayoutDirection(QBoxLayout::Direction a_direction)

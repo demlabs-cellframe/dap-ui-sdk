@@ -432,10 +432,8 @@ void DapSession::onAuthorize()
                         }
                     }
                 } else if (m_xmlStreamReader.name() == "ts_active_till"){
-//                    QString asd = m_xmlStreamReader.readElementText();
                     DapDataLocal::instance()->setLicenseTermTill(m_xmlStreamReader.readElementText());
-//                    QDateTime sasd = DapDataLocal::instance()->getLicenseTermTill();
-                    qDebug() << "ts_active_till: " << m_xmlStreamReader.readElementText();
+                    qDebug() << "ts_active_till: " << DapDataLocal::instance()->getLicenseTermTill();
                 } else {
                     m_userInform[m_xmlStreamReader.name().toString()] = m_xmlStreamReader.readElementText();
                     qDebug() << "Add user information: " << m_xmlStreamReader.name().toString()
