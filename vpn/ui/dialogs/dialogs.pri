@@ -43,7 +43,7 @@ SOURCES += \
 
 android {
 
-defined(DAP_USING_SEPARATE_STATISTIC_SCREEN,var){
+    defined(USING_SEPARATE_STATISTIC_SCREEN,var){
         HEADERS  += \
             $$PWD/mobile/ConnectionScreenBase.h \
             $$PWD/mobile/StatisticScreenBase.h
@@ -67,6 +67,15 @@ else {
 
     INCLUDEPATH += $$PWD/desktop
 }
+
+defined(USING_SEPARATE_ACCOUNT_SCREEN,var){
+    HEADERS  += \
+        $$PWD/AccountScreenBase.h
+
+    SOURCES += \
+        $$PWD/AccountScreenBase.cpp
+}
+
 
 INCLUDEPATH += $$PWD
 
