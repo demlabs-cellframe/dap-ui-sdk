@@ -41,8 +41,10 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
     connect(m_ui->btnConnect, &QPushButton::clicked, [this]{
         if (m_ui->ledSerialKey->text().isEmpty())
             emit this->serialKeyError();
-        else
+        else if (m_stt_serviceState_connected->active())
             emit this->connectionRequested();
+        else
+            emit this->connectingCancelRequest();
     });
 
 
@@ -217,9 +219,10 @@ void SignInScreen::adjustStateMachine()
         m_ui->lblStatusMessage->clear();
     });
 
-    m_stt_serverState_loading_connecting->assignProperty(m_ui->lblStatusMessage, qPrintable(Properties::TEXT), "");
+    m_stt_serverState_loading_connecting->assignProperty(m_ui->lblStatusMessage, qPrintable(Properties::TEXT), LABEL_TEXT_CONNECTING);
 
     m_stt_serverState_loading_connecting->assignProperty(m_ui->btnConnect, qPrintable(Properties::TEXT), BUTTON_TEXT_CONNECTING);
+    m_stt_serverState_loading_connecting->assignProperty(m_ui->btnConnect, qPrintable(Properties::ENABLED), true);
 
     this->m_inputStates->start();
 }

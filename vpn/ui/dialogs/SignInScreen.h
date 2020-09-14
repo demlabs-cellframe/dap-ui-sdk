@@ -21,7 +21,8 @@
 
 #define STATUS_TEXT_CONNECTING_TO_SERVICE "Connecting to service..."
 
-#define BUTTON_TEXT_CONNECTING "CONNECTING..."
+#define BUTTON_TEXT_CONNECTING "Cansel"
+#define LABEL_TEXT_CONNECTING "CONNECTING..."
 #define BUTTON_TEXT_DEFAULT "START"
 
 
@@ -66,6 +67,7 @@ signals:
     void serversListCleared();
 
     void serverChanged(int serverName);
+    void connectingCancelRequest();
 
 protected:
 
