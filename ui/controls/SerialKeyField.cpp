@@ -212,7 +212,18 @@ void SerialKeyField::pasteEvent(QString clipboardText)
         if(clipboardText.count()==MAX_COUNT_CHAR)
             this->setText(clipboardText);
         else
-            this->setText(this->text()+clipboardText.left(MAX_COUNT_CHAR-this->text().count()));
+        {
+            QString before{this->text().left(this->cursorPosition())};
+            QString after{this->text().right(this->text().count() - this->cursorPosition())};
+            qDebug()<<cursorPosition()<<before<<after<<clipboardText;
+            if(clipboardText.count() == MAX_COUNT_CHAR - before.count())
+                this->setText(before + clipboardText);
+            else
+            {
+                this->setText(before + clipboardText.left(MAX_COUNT_CHAR - before.count() - after.count()) + after);
+                this->setCursorPosition(before.count() + clipboardText.count());
+            }
+        }
         emit textEdited(clipboardText);
     }
 }
