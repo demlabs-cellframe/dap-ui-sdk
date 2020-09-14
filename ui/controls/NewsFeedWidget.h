@@ -6,11 +6,9 @@
 #include <QDebug>
 #include <QDesktopServices>
 #include <QFontMetrics>
-#include <QSizePolicy>
-#include <QPropertyAnimation>
-#include <QSequentialAnimationGroup>
 #include <QTimer>
 #include "Utilz.h"
+#include "UiScaling.h"
 
 class RunLineLabel;
 class AnimationLabel;
@@ -27,10 +25,12 @@ public:
 protected:
     virtual void resizeEvent(QResizeEvent* ev);
 private:
-    QHBoxLayout* m_layout{Q_NULLPTR};
-    ClickableLabel* m_lblClose{Q_NULLPTR};
-    RunLineLabel* m_lblText{Q_NULLPTR};
-    QWidget* m_parent{Q_NULLPTR};
+    QHBoxLayout*        m_layout{Q_NULLPTR};
+    ClickableLabel*     m_lblClose{Q_NULLPTR};
+    RunLineLabel*       m_lblText{Q_NULLPTR};
+    QWidget*            m_parent{Q_NULLPTR};
+    QSpacerItem*        m_spacerFirst{Q_NULLPTR};
+    QSpacerItem*        m_spacerSecond{Q_NULLPTR};
 };
 
 class RunLineLabel:public ClickableLabel
@@ -38,43 +38,33 @@ class RunLineLabel:public ClickableLabel
     Q_OBJECT
 public:
     RunLineLabel(QString a_text, QString a_url, QWidget *a_parent);
-    void setUrl(const QString &a_url);
+    void setUrl(const QString &a_url) {m_url = a_url;}
     void setText(const QString &a_text);
     void setSpeed(const int a_speed);
-    void updateGeometry();
-    QString text()const;
+    QString text()const {return m_text;}
 signals:
     void startAnimation();
+    void stopAnimation();
 protected:
-    virtual void resizeEvent(QResizeEvent* e);
     virtual void showEvent(QShowEvent* e);
     virtual void closeEvent(QCloseEvent* e);
+    virtual void hideEvent(QHideEvent* e);
 private slots:
     void timeoutAnimation();
-private:  
-    QString m_url{}, m_text{};
-    int m_speed{}, m_timerId{}, m_widthText{};
-    QWidget* m_parent{Q_NULLPTR};
-    bool running{}, condition{};
-
-    /*if animation start*/
-    QHBoxLayout* m_layout{Q_NULLPTR};
-    QLabel *m_lblFirst{Q_NULLPTR}, *m_lblSecond{Q_NULLPTR};
-    QPropertyAnimation *m_animFirst{Q_NULLPTR}, *m_animSecond{Q_NULLPTR};
-    QTimer* m_timer{Q_NULLPTR};
-};
-/*class AnimationLabel:public QLabel
-{
-    Q_OBJECT
-public:
-    AnimationLabel(QWidget *a_parent);
-    AnimationLabel(QString a_text, QWidget *a_parent);
-    void setWidth(int a_width);
-    int getWidth() const;
-protected:
-    virtual void resizeEvent(QResizeEvent* e);
 private:
-    int m_width{};
-};*/
+    void verifyWidth();
+    QString     m_text{};
+    QString     m_url{};
+    QWidget*    m_parent{Q_NULLPTR};
+    int         m_speed{};
+    int         m_widthText{};
+
+            /*if animation start*/
+    QHBoxLayout*            m_layout{Q_NULLPTR};
+    QLabel*                 m_lblFirst{Q_NULLPTR};
+    QLabel*                 m_lblSecond{Q_NULLPTR};
+    QTimer*                 m_timer{Q_NULLPTR};
+
+};
 
 #endif // NEWSFEEDWIDGET_H
