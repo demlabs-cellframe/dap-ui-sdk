@@ -72,6 +72,9 @@ protected:
 
     virtual QList<CustomPopup *> customPopups() override;
 
+    QScopedPointer<Ui::SignInScreen> m_ui;
+private:
+
     void adjustStateMachine();
 
     QString translatedErrorMsg(QString a_errorMsg);
@@ -100,9 +103,6 @@ protected:
     QString m_password;
 
     QString m_serial;
-
-    QScopedPointer<Ui::SignInScreen> m_ui;
-
 };
 
 

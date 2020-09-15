@@ -24,10 +24,11 @@ SignInScreenSerialNumberBase::SignInScreenSerialNumberBase(QWidget *a_parent)
     , m_stt_serviceState_connecting         (new QState(m_stt_serviceState))
 
 {
-    this->create(m_ui);
+    //Add this to inheritable class if you want have working inharitance initVariantUi method:
+    //this->create(m_ui);
 
-    this->adjustStateMachine();
-    AdaptiveScreen::initScreen(this);
+    //And this:
+    //AdaptiveScreen::initScreen(this);
 }
 
 void SignInScreenSerialNumberBase::initVariantUi(QWidget *a_widget)
@@ -84,6 +85,8 @@ void SignInScreenSerialNumberBase::initVariantUi(QWidget *a_widget)
 
     Utils::setPropertyAndUpdateStyle(m_ui->lblStatusMessage, Properties::WRONG, true);
     Utils::setPropertyAndUpdateStyle(m_ui->ledSerialKey, Properties::WRONG, false);
+
+    this->adjustStateMachine();
 
     ScreenWithScreenPopupsAbstract::initVariantUi(a_widget);
 }
