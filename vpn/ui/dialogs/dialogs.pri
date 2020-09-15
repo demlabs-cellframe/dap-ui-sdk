@@ -13,12 +13,13 @@ HEADERS  += \
     $$PWD/PopupScreenBase.h \
     $$PWD/ScreenWithCustomPopupsAbstract.h \
     $$PWD/ScreenWithScreenPopupsAbstract.h \
-    $$PWD/SignInScreen.h \
     $$PWD/StartScreen.h \
     $$PWD/SignUpScreen.h \
     $$PWD/TermsOfUseScreen.h \
     $$PWD/PrivacyPolicyScreen.h \
-    $$PWD/screens.h
+    $$PWD/screens.h \
+    $$PWD/SignInScreenSerialNumberBase.h \
+    $$PWD/SignInWithTariffLink.h
 
 SOURCES += \
     $$PWD/BugReportLoadingScreen.cpp \
@@ -35,11 +36,12 @@ SOURCES += \
     $$PWD/PopupScreenBase.cpp \
     $$PWD/ScreenWithCustomPopupsAbstract.cpp \
     $$PWD/ScreenWithScreenPopupsAbstract.cpp \
-    $$PWD/SignInScreen.cpp \
     $$PWD/StartScreen.cpp \
     $$PWD/SignUpScreen.cpp \
     $$PWD/TermsOfUseScreen.cpp \
-    $$PWD/PrivacyPolicyScreen.cpp
+    $$PWD/PrivacyPolicyScreen.cpp \
+    $$PWD/SignInScreenSerialNumberBase.cpp \
+    $$PWD/SignInWithTariffLink.cpp
 
 android {
 
