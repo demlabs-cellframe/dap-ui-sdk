@@ -31,12 +31,6 @@ public:
     const QString& tunDeviceName(){ return m_tunDeviceName; }
     int mtu() { return m_MTU; }
 
-
-    /*void tunWriteData(DapSockForwPacket * a_pkt){
-        addWriteData(a_pkt);
-        signalWriteQueueProc();
-    }*/
-
     void tunWriteData(Dap::Stream::Packet *a_pkt) {
         addWriteData(a_pkt);
         signalWriteQueueProc();

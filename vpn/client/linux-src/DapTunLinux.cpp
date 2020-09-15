@@ -51,6 +51,10 @@ DapTunLinux::DapTunLinux()
 void DapTunLinux::tunDeviceCreate()
 {
     qDebug() << "[DapTunLinux::tunDeviceCreate]";
+    if (m_tunSocket > 0) {
+        qInfo() << "Socket already open";
+        return;
+    }
     int fd=-1;
     struct ifreq ifr;
     char clonedev[] = "/dev/net/tun";
@@ -102,8 +106,6 @@ void DapTunLinux::tunDeviceCreate()
     /* this is the special file descriptor that the caller will use to talk
     * with the virtual interface */
     m_tunSocket = fd;
-    
-    emit created();
 }
 
 QString DapTunLinux::runBashCmd(const QString& cmd)
@@ -270,6 +272,7 @@ void DapTunLinux::onWorkerStarted()
              " +ipv4.route-metric 10");
     
     ::system("nmcli connection up " DAP_BRAND);
+    emit created();
 }
 
 /**

@@ -43,6 +43,10 @@ DapTunMac::DapTunMac()
  */
 void DapTunMac::tunDeviceCreate()
 {
+    if (m_tunSocket > 0) {
+        qInfo() << "Already created";
+        return;
+    }
     qDebug() << "tunDeviceCreate()";
     setTunDeviceName("tun5");
 
@@ -161,6 +165,14 @@ DapTunMac::~DapTunMac() {
 
 void DapTunMac::workerStop()
 {
+    if ( ::write( breaker1, "\0", 1) <= 0) {
+        qCritical() <<"Can't write to the breaker's pipe!";
+        return;
+    }
+    onWorkerStopped();
+}
+
+void DapTunMac::workerPause() {
     if ( ::write( breaker1, "\0", 1) <= 0) {
         qCritical() <<"Can't write to the breaker's pipe!";
         return;

@@ -21,6 +21,7 @@ protected:
 
 
     void workerStop();
+    void workerPause();
     void workerPrepare();
     void tunDeviceDestroy();
     void signalWriteQueueProc();

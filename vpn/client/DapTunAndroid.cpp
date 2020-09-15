@@ -61,6 +61,15 @@ void DapTunAndroid::workerStop()
         qCritical() <<"Can't write to the breaker's pipe!";
         return;
     }
+    onWorkerStopped();
+}
+
+void DapTunAndroid::workerPause()
+{
+    if ( ::write( breaker1, "\0", 1) <= 0){
+        qCritical() <<"Can't write to the breaker's pipe!";
+        return;
+    }
 }
 
 void DapTunAndroid::signalWriteQueueProc()

@@ -18,6 +18,7 @@ protected:
 
     void workerPrepare();
     void workerStop();
+    void workerPause();
     void signalWriteQueueProc();
 
     void backupAndApplyDNS();

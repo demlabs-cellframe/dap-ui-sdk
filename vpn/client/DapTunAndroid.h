@@ -17,6 +17,7 @@ private:
     void workerPrepare()        override;
     void onWorkerStarted()      override;
     void workerStop()           override;
+    void workerPause()          override;
     void signalWriteQueueProc() override;
     void onVpnEstablished();
     int breaker0,breaker1;
