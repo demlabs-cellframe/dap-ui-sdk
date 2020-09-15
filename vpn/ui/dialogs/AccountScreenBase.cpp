@@ -39,7 +39,11 @@ void AccountScreenBase::initVariantUi(QWidget *a_widget)
 #else
     connect(m_ui->btnResetSerial, &QPushButton::clicked, m_serialRemovalMessage, &SerialRemovalConfirmationMessage::show);
 
-    m_ui->cbbLicenceKey->popup()->listView()->setWidgetDelegateFactory(&TariffDelegate::create);
+    m_ui->cbbLicenceTariff->popup()->listView()->setWidgetDelegateFactory(&TariffDelegate::create);
+    m_ui->cbbLicenceTariff->setCaptionPolicy(ComboBox::CaptionPolicy::ShowAlways);
+    connect(m_ui->cbbLicenceTariff, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated), [=](const QString &a_url){
+        QDesktopServices::openUrl(QUrl(a_url));
+    });
 #endif
 
     this->ScreenWithScreenPopupsAbstract::initVariantUi(a_widget);
@@ -54,7 +58,7 @@ void AccountScreenBase::setState(ActivationState a_activationState)
 void AccountScreenBase::appendTariff(const QList<TariffItem> &a_tariffList)
 {
     for (const TariffItem& currentTarriff: a_tariffList)
-        m_ui->cbbLicenceKey->addItem("", QVariant::fromValue(currentTarriff));
+        m_ui->cbbLicenceTariff->addItem(currentTarriff.URL, QVariant::fromValue(currentTarriff));
 }
 #endif
 
@@ -62,7 +66,7 @@ QList<CustomPopup *> AccountScreenBase::customPopups()
 {
     return {
 #ifndef Q_OS_ANDROID
-        m_ui->cbbLicenceKey->popup(),
+        m_ui->cbbLicenceTariff->popup(),
         m_ui->cbbBugReport->popup()
 #endif
     };
