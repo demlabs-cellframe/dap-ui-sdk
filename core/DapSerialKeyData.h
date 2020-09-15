@@ -28,6 +28,7 @@ public:
 signals:
     void serialKeyChanged(const QString& serialKey);
     void activationChanged(bool activation);
+    void licenseTermTillChanged(const int &days);
 
 public slots:
     void setLicenseTermTill(const QString &a_date);
@@ -35,7 +36,7 @@ public slots:
 private:
     QString m_serialKey;
     bool m_isActivated;
-    QDateTime m_licenseTermTill;
+    QDateTime m_licenseTermTill = QDateTime::currentDateTime();
 };
 
 QDataStream &operator<<(QDataStream &a_outStream, const DapSerialKeyData &a_serialKeyData);
