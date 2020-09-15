@@ -229,6 +229,11 @@ void DapDataLocal::saveSetting(const QString &a_setting, const QVariant &a_value
     settings()->setValue(a_setting, a_value);
 }
 
+void DapDataLocal::removeSetting(const QString &a_setting)
+{
+    settings()->remove(a_setting);
+}
+
 DapBugReportData *DapDataLocal::bugReportData()
 {
     return DapBugReportData::instance();

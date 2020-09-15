@@ -6,90 +6,91 @@
 
 AppLanguageController::AppLanguageController(QObject *a_parent)
     :QObject(a_parent)
-{}
-
-AppLanguageController *AppLanguageController::instance()
 {
-    static AppLanguageController s_instance;
+    QLocale::Language systemLanguage = QLocale::system().language();
+    QLocale::Language savedLanguage;
 
-    return &s_instance;
-}
-
-Language AppLanguageController::appLanguage()
-{
-    return AppLanguageController::stringToLanguage(AppLanguageController::appLanguageString());
-}
-
-QString AppLanguageController::appLanguageString()
-{
-    QVariant local = DapDataLocal::instance()->getEncriptedSetting(instance()->SETTING_NAME);
-    QString strLocal;
-
-    if (!local.isValid())
+    if (DapDataLocal::instance()->loadFromSettings(SETTING_LOCALE, savedLanguage))
     {
-        strLocal = QLocale::system().name();
-        instance()->setAppLanguage(strLocal);
-    }
-    else
-        strLocal = local.toString();
-
-    return strLocal;
-}
-
-void AppLanguageController::retranslateApp(Language a_language)
-{
-    QString strLanguage;
-    if (a_language == Language::Undefined)
-    {
-        strLanguage = AppLanguageController::appLanguageString();
-    }
-    else
-    {
-        strLanguage = AppLanguageController::languageToString(a_language);
-        if (strLanguage == AppLanguageController::instance()->appLanguageString())
-            return;
-    }
-
-    if (!DapDataLocal::instance()->getEncriptedSetting(instance()->SETTING_SYS_LANGUAGE).isValid() ||
-                QLocale().language()!=DapDataLocal::instance()->getEncriptedSetting(instance()->SETTING_SYS_LANGUAGE))
+        QLocale::Language savedSystemLanguage;
+        if (DapDataLocal::instance()->loadFromSettings(SETTING_SYS_LOCALE, savedSystemLanguage))
         {
-            DapDataLocal::instance()->saveEncriptedSetting(instance()->SETTING_SYS_LANGUAGE,QLocale().language());
-            if (QLocale().language()==QLocale::Chinese)
-                strLanguage=AppLanguageController::languageToString(Language::Zh);
+            if (systemLanguage == savedSystemLanguage) //locale was changed;
+                this->retranslateApp(savedLanguage);
             else
-                strLanguage=AppLanguageController::languageToString(Language::En);
+            {
+                DapDataLocal::removeSetting(SETTING_LOCALE);
+                DapDataLocal::instance()->saveToSettings(SETTING_SYS_LOCALE, systemLanguage);
+                this->retranslateApp(systemLanguage);
+            }
         }
+        else
+        {
+            DapDataLocal::instance()->saveToSettings(SETTING_SYS_LOCALE, systemLanguage);
+            this->retranslateApp(savedLanguage);
+        }
+    }
+    else
+    {
+        DapDataLocal::instance()->saveToSettings(SETTING_SYS_LOCALE, systemLanguage);
+        this->retranslateApp(systemLanguage);
+    }
+}
 
-    if (strLanguage.isEmpty())
+QLocale::Language AppLanguageController::currentLanguage() const
+{
+    return m_language;
+}
+
+void AppLanguageController::setCurrentLanguage(QLocale::Language a_language)
+{
+    QLocale savedLocale;
+    bool localeWasSaved = DapDataLocal::instance()->loadFromSettings(SETTING_LOCALE, savedLocale);
+
+    if (localeWasSaved && savedLocale == a_language)
         return;
 
-    instance()->setAppLanguage(strLanguage);
-
-    instance()->m_qtLanguageTranslator.load(":/translations/dapChainVPNClient_" + strLanguage);
-    QApplication::instance()->installTranslator(&instance()->m_qtLanguageTranslator);
-
-    emit instance()->appRetranslated();
+    DapDataLocal::instance()->saveToSettings(SETTING_LOCALE ,a_language);
+    this->retranslateApp(a_language);
 }
 
-void AppLanguageController::setAppLanguage(QString a_language)
+LanguagesModel* AppLanguageController::languagesModel()
 {
-    DapDataLocal::instance()->saveEncriptedSetting(this->SETTING_NAME, a_language);
+    return &m_languagesModel;
 }
 
-QString AppLanguageController::languageToString(Language a_language)
+void AppLanguageController::setCurrentLanguageIndex(int a_index)
 {
-    if (instance()->m_languageStrings.contains(a_language))
-        return instance()->m_languageStrings[a_language];
-
-    return "";
+    this->setCurrentLanguage(this->languagesModel()->language(a_index));
 }
 
-Language AppLanguageController::stringToLanguage(const QString& a_languageStr)
+void AppLanguageController::retranslateApp(QLocale::Language a_language)
 {
-    Language lang = instance()->m_languageStrings.key(a_languageStr, Language::Undefined);
+    if (m_language == a_language)
+        return;
+    m_language = a_language;
 
-    if (lang == Language::Undefined)
-        qWarning()<< "Language string is not found";
+    QLocale l(a_language);
 
-    return lang;
+    this->m_qtLanguageTranslator.load(a_language, "dapChainVPNClient", "_", ":/translations/", ".qm");
+    QApplication::instance()->installTranslator(&m_qtLanguageTranslator);
+    emit this->appRetranslated();
+}
+
+/////////////////////////////////////////
+
+QDataStream &operator>>(QDataStream &a_inStream, QLocale::Language &a_language)
+{
+    QByteArray strLanguage;
+    a_inStream >> strLanguage;
+    a_language = static_cast<QLocale::Language>(strLanguage.toInt());
+
+    return a_inStream;
+}
+
+QDataStream &operator<<(QDataStream &a_outStream, QLocale::Language a_serialKeyData)
+{
+    a_outStream << QByteArray::number(a_serialKeyData);
+
+    return a_outStream;
 }

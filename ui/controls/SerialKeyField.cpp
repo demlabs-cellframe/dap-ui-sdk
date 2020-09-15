@@ -41,9 +41,9 @@ void SerialKeyField::paste()
 void SerialKeyField::replaceNextCharacter(const QString &text)
 {
     QString strText{this->text()};
-    int cursotPposition{this->cursorPosition()};
-    strText.remove(cursotPposition,1);
-    strText.insert(cursotPposition,text);
+    int cursorPposition{this->cursorPosition()};
+    strText.remove(cursorPposition,1);
+    strText.insert(cursorPposition,text);
 #ifndef Q_OS_ANDROID
     strText=strText.toUpper();
 #endif
@@ -51,7 +51,7 @@ void SerialKeyField::replaceNextCharacter(const QString &text)
     {
         this->setText(strText);
         emit textEdited(strText);
-        this->setCursorPosition(cursotPposition+1);
+        this->setCursorPosition(cursorPposition+1);
     }
 }
 
@@ -70,11 +70,11 @@ void SerialKeyField::inputMethodEvent(QInputMethodEvent *e)
         else if (this->hasSelectedText()
                  && this->text().count() > this->cursorPosition())
         {
-            int newCursorPosition{this->cursorPosition() - this->selectedText().count() + 1};
+            int newCursorPosition{this->selectionStart()+1};
             if(m_regExp.exactMatch(e->commitString()))
                 e->setCommitString(e->commitString().toUpper());
             else e->setCommitString("");
-            QLineEdit::inputMethodEvent(e);
+            CustomLineEdit::inputMethodEvent(e);
             this->setCursorPosition(newCursorPosition);
             return;
         }
@@ -86,8 +86,8 @@ void SerialKeyField::inputMethodEvent(QInputMethodEvent *e)
     } 
     else
     {
+/*******for emulator, signal from button delete come here*******/
         if (this->text().isEmpty()) return;
-
         if (this->text().count() > this->cursorPosition())
         {
             static int newCursorPosition{};
@@ -104,16 +104,15 @@ void SerialKeyField::inputMethodEvent(QInputMethodEvent *e)
                 selected=false;
             }
             int countText{this->text().count()};
-            QLineEdit::inputMethodEvent(e);
+            CustomLineEdit::inputMethodEvent(e);
             if(this->text().count()<countText) this->setCursorPosition(newCursorPosition);
             return;
         }
     }
 
-    QString thisText{this->text()};
-    QLineEdit::inputMethodEvent(e);
+    CustomLineEdit::inputMethodEvent(e);
 #else
-    QLineEdit::inputMethodEvent(e);
+    CustomLineEdit::inputMethodEvent(e);
 #endif
 }
 
@@ -131,8 +130,8 @@ void SerialKeyField::keyPressEvent(QKeyEvent *e)
         if(!this->hasSelectedText()) replaceNextCharacter(e->text());
         else
         {
-            int newCursorPosition{this->cursorPosition()-this->selectedText().count()+1};
-            QLineEdit::keyPressEvent(e);
+            int newCursorPosition{selectionStart()+1};
+            CustomLineEdit::keyPressEvent(e);
             this->setCursorPosition(newCursorPosition);
         }
     }
@@ -142,14 +141,17 @@ void SerialKeyField::keyPressEvent(QKeyEvent *e)
         int newCursorPosition{};
         this->hasSelectedText() ? newCursorPosition=this->selectionStart()
                 : newCursorPosition=this->cursorPosition()-1;
-        QLineEdit::keyPressEvent(e);
+        CustomLineEdit::keyPressEvent(e);
         this->setCursorPosition(newCursorPosition);
     }
-    else QLineEdit::keyPressEvent(e);
+    else
+    {
+        CustomLineEdit::keyPressEvent(e);
+    }
 #else
     if(e->text().isEmpty())
     {
-        QLineEdit::keyPressEvent(e);
+        CustomLineEdit::keyPressEvent(e);
         return;
     }
 
@@ -161,7 +163,7 @@ void SerialKeyField::keyPressEvent(QKeyEvent *e)
                     || e->key()==Qt::Key_Delete)
             {
                 int newCursorPosition{this->cursorPosition()};
-                QLineEdit::keyPressEvent(e);
+                CustomLineEdit::keyPressEvent(e);
                 e->key()==Qt::Key_Backspace ? this->setCursorPosition(newCursorPosition-1)
                                             : this->setCursorPosition(newCursorPosition);
             }
@@ -170,21 +172,20 @@ void SerialKeyField::keyPressEvent(QKeyEvent *e)
 
         else
         {
+            int newCursorPosition{this->selectionStart()};
             if(e->key()==Qt::Key_Backspace
                     || e->key()==Qt::Key_Delete)
             {
-                int newCursorPosition{this->selectionStart()};
-                QLineEdit::keyPressEvent(e);
+                CustomLineEdit::keyPressEvent(e);
                 this->setCursorPosition(newCursorPosition);
             }
             else
             {
-                int newCursorPosition{this->cursorPosition()-this->selectedText().count()+1};
                 QKeyEvent upperEvent(e->type(), e->key(),
                             e->modifiers(), e->text().toUpper(),
                             e->isAutoRepeat(), e->count());
-                QLineEdit::keyPressEvent(&upperEvent);
-                this->setCursorPosition(newCursorPosition);
+                CustomLineEdit::keyPressEvent(&upperEvent);
+                this->setCursorPosition(newCursorPosition+1);
             }
         }
     }
@@ -194,7 +195,7 @@ void SerialKeyField::keyPressEvent(QKeyEvent *e)
         QKeyEvent upperEvent(e->type(), e->key(),
                     e->modifiers(), e->text().toUpper(),
                     e->isAutoRepeat(), e->count());
-        QLineEdit::keyPressEvent(&upperEvent);
+        CustomLineEdit::keyPressEvent(&upperEvent);
     }
 #endif
 }
@@ -204,9 +205,14 @@ void SerialKeyField::pasteEvent(QString clipboardText)
     clipboardText=clipboardText.toUpper();
     clipboardText.replace("-","");
     clipboardText.replace(" ","");
+    if (clipboardText.count()>MAX_COUNT_CHAR)
+        clipboardText=clipboardText.left(MAX_COUNT_CHAR);
     if(m_regExp.exactMatch(clipboardText))
     {
-        this->setText(clipboardText);
+        if(clipboardText.count()==MAX_COUNT_CHAR)
+            this->setText(clipboardText);
+        else
+            this->setText(this->text()+clipboardText.left(MAX_COUNT_CHAR-this->text().count()));
         emit textEdited(clipboardText);
     }
 }
