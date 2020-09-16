@@ -13,6 +13,10 @@ void SignInWithTariffLink::initVariantUi(QWidget *a_widget)
     m_ui->cbbTariff->popup()->listView()->setWidgetDelegateFactory(&TariffDelegate::create);
     m_ui->cbbTariff->setCaptionPolicy(ComboBox::CaptionPolicy::ShowAlways);
 
+    connect(m_ui->cbbTariff, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated), [=](const QString &a_url){
+        QDesktopServices::openUrl(QUrl(a_url));
+    });
+
     SignInScreenSerialNumberBase::initVariantUi(a_widget);
 }
 

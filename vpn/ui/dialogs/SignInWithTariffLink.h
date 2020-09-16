@@ -4,6 +4,7 @@
 #include "SignInScreenSerialNumberBase.h"
 #include "TariffDelegate.h"
 #include "TariffItem.h"
+#include <QDesktopServices>
 
 class SignInWithTariffLink: public SignInScreenSerialNumberBase
 {
@@ -16,6 +17,7 @@ protected:
     virtual void initVariantUi(QWidget *a_widget) override;
 
     virtual QList<CustomPopup *> customPopups() override;
+
 };
 
 #endif // SIGNINWITHTARIFFLINK_H
