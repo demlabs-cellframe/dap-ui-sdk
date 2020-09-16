@@ -73,6 +73,21 @@ namespace Utils
         return regString.cap(0).toInt();
     }
 
+    QString convertByte(const quint64 &byte)
+    {
+        if (byte < 0){
+            return QString("error");
+        } else if (byte >= pow(2,40)){
+            return QString("%1 %2").arg(QString::number(byte/pow(2,40), 'f', 3)).arg("Tb");
+        } else if (byte >= pow(2,30)){
+            return QString("%1 %2").arg(QString::number(byte/pow(2,30), 'f', 3)).arg("Gb");
+        } else if (byte >= pow(2,20)){
+            return QString("%1 %2").arg(QString::number(byte/pow(2,20), 'f', 3)).arg("Mb");
+        } else if (byte >= pow(2,10)){
+            return QString("%1 %2").arg(QString::number(byte/pow(2,10), 'f', 3)).arg("Kb");
+        } else return QString("%1 %2").arg(QString::number(byte)).arg("bytes");
+    }
+
     void setPropertyAndUpdateStyle(QWidget *a_widget, const QString &a_property, const QVariant &a_value /*= true*/)
     {
         QByteArray l_tempStr = a_property.toLatin1();

@@ -59,7 +59,7 @@ private:
 
     DapServerInfo m_serverInfo;
 
-    QString convertByte(const quint64 &bytes_new);
+    QString convertBytePerSecond(const quint64 &bytes_new);
 };
 
 #endif // DAPCONNECTIONDATA_H
