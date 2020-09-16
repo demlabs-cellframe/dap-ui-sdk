@@ -119,8 +119,8 @@ void MainScreenBase::updateSentRecievedIndicators()
 {
     //TODO:
     // Check why sigReadWriteBytesStat signal send wrong datas (bytes/packets are contrarily)
-    m_ui->lblSent->setText(this->indicatorUnitsIsBytes() ? QString::number(m_bytesSent)    : QString::number(m_packetsSent));
-    m_ui->lblReceived->setText(this->indicatorUnitsIsBytes() ? QString::number(m_bytesReceived): QString::number(m_packetsReceived));
+    m_ui->lblSent->setText(this->indicatorUnitsIsBytes() ? Utils::convertByte(m_bytesSent)    : QString::number(m_packetsSent));
+    m_ui->lblReceived->setText(this->indicatorUnitsIsBytes() ? Utils::convertByte(m_bytesReceived): QString::number(m_packetsReceived));
 }
 
 void MainScreenBase::updateTimeIndicators()
@@ -192,12 +192,12 @@ void MainScreenBase::setIndicatorUnits(const IndicatorsUnits &a_indicatorUnits)
 
 QString MainScreenBase::receivedIndicatorTitle() const
 {
-    return (this->indicatorUnitsIsBytes() ? BYTES : PACKETS) + " received";
+    return (this->indicatorUnitsIsBytes() ? "Received" : PACKETS + " received") + ":";
 }
 
 QString MainScreenBase::sendIndicatorTitle() const
 {
-    return (this->indicatorUnitsIsBytes() ? BYTES : PACKETS) + " sent";
+    return (this->indicatorUnitsIsBytes() ? "Sent" : PACKETS + " sent") + ":";
 }
 #endif
 
