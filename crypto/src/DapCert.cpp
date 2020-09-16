@@ -214,13 +214,13 @@ bool Cert::importPKeyFromFile(const QString &a_path) {
 QString Cert::storagePath()
 {
 #if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
-    return QString("/opt/%1").arg(a_brand).toLower();
+    return QString("/opt/%1").arg(DAP_BRAND).toLower();
 #elif defined(Q_OS_MACOS)
-    return QString("/tmp/%1").arg(a_brand);
+    return QString("/tmp/%1").arg(DAP_BRAND);
 #elif defined (Q_OS_WIN)
     return QString("%1/%2").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
-    return QString("/sdcard/%1").arg(a_brand);
+    return QString("/sdcard/%1").arg(DAP_BRAND);
 #endif
     return {};
 }

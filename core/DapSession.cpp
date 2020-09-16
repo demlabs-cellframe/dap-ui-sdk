@@ -140,7 +140,19 @@ QNetworkReply* DapSession::encryptInitRequest()
 
 void DapSession::sendBugReport(const QByteArray &data)
 {
-   m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(), SLOT(answerBugReport()));
+    if (!m_dapCryptCDB) {
+        this->setDapUri(DapDataLocal::instance()->cdbServersList().front(), 80);
+        auto *l_tempConn = new QMetaObject::Connection();
+        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]{
+            preserveCDBSession();
+            m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(), SLOT(answerBugReport()));
+            disconnect(*l_tempConn);
+            delete l_tempConn;
+        });
+        requestServerPublicKey();
+    } else {
+        m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(), SLOT(answerBugReport()));
+    }
 }
 
 void DapSession::sendSignUpRequest(const QString &host, const QString &email, const QString &password)
@@ -482,8 +494,7 @@ void DapSession::onAuthorize()
 void DapSession::preserveCDBSession() {
     qInfo() << "Saving CDB session data";
     if (m_dapCryptCDB) {
-        delete m_dapCryptCDB;
-        m_dapCryptCDB = nullptr;
+        return;
     }
     m_dapCryptCDB = new DapCrypt(*m_dapCrypt);
     m_sessionKeyID_CDB = m_sessionKeyID;
