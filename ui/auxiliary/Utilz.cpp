@@ -5,6 +5,7 @@
 #include <QVariant>
 #include <QFile>
 #include <QDebug>
+#include <QString>
 #include <QMainWindow>
 
 
@@ -118,6 +119,11 @@ namespace Utils
             fileText = QString(file.readAll());
         }
         return fileText;
+    }
+
+    uint dateDifference(const QDateTime &a_firstDate, const QDateTime &a_secondDate)
+    {
+        return a_firstDate.daysTo(a_secondDate) ;
     }
 
     Qt::LayoutDirection toQtLayoutDirection(QBoxLayout::Direction a_direction)
