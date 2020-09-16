@@ -8,6 +8,8 @@
 #include <QDateTime>
 #include <QDir>
 #include <QTimer>
+#include <QFileSystemWatcher>
+
 #include "dap_common.h"
 #include "dap_file_utils.h"
 
@@ -19,12 +21,13 @@ private:
                                const QString & msg);
     inline static dap_log_level castQtMsgToDap(QtMsgType type);
 public:
-    explicit DapLogger(QObject *parent = nullptr, size_t prefix_width = 10);
+    explicit DapLogger(QObject *parent = nullptr, QString appType = "", size_t prefix_width = 10);
 
     // return false if not success
     bool setLogFile(const QString& filePath);
 
     int createLogFolder(QString path);
+    void setPermissionFolder(const QString &path);
     void createChangerLogFiles();
 
     QString getPathToLog(){ return pathToLog; }
@@ -45,6 +48,15 @@ private:
     QString pathToLog;
     QString m_currentLogName;
     QString m_appType;
+
+    QFileSystemWatcher * m_watcher;
+
+signals:
+    void logFileChanged();
+
+public slots:
+    void fileChanged(const QString& path);
+    void dirChanged(const QString& path);
 };
 
 #endif // DAPLOGGER_H

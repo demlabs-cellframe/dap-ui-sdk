@@ -8,11 +8,17 @@
 #include "registry.h"
 #endif
 
-DapLogger::DapLogger(QObject *parent, size_t prefix_width)
+DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     : QObject(parent)
 {
     dap_set_log_tag_width(prefix_width);
     qInstallMessageHandler(messageHandler);
+
+    m_appType = appType;
+
+    m_watcher = new QFileSystemWatcher(this);
+    connect(m_watcher, SIGNAL(fileChanged(QString)), this, SLOT(fileChanged(QString)));
+    connect(m_watcher, SIGNAL(directoryChanged(QString)), this, SLOT(dirChanged(QString)));
 }
 
 inline dap_log_level DapLogger::castQtMsgToDap(QtMsgType type) {
@@ -36,8 +42,25 @@ void DapLogger::setLogLevel(dap_log_level ll) {
     dap_log_level_set(ll);
 }
 
+bool DapLogger::setLogFile(const QString& filePath) {
+    qDebug() << "setLogFile: " << filePath;
+    int i = dap_common_init(DAP_BRAND, qPrintable(filePath)) ;
+    DapDataLocal::instance()->setLogFilePath(filePath);
+    m_watcher->addPath(filePath);
+    return i == 0;
+}
+
 int DapLogger::createLogFolder(QString path){
-    return dap_mkdir_with_parents(qPrintable(path));
+    int ret = dap_mkdir_with_parents(qPrintable(path));
+    setPermissionFolder(path);
+    m_watcher->addPath(path.replace("/log", ""));
+    return ret;
+}
+void DapLogger::setPermissionFolder(const QString& path)
+{
+#if !defined (Q_OS_WIN)
+    system(qPrintable("chown -R $(logname):$(logname) " + path));
+#endif
 }
 
 void DapLogger::createChangerLogFiles(){
@@ -53,10 +76,30 @@ void DapLogger::createChangerLogFiles(){
     t.start(diff);
     connect(&t, &QTimer::timeout, [&]{
         t.setInterval(24 * 3600 * 1000);
+        m_watcher->removePath(QString("%1/%2").arg(pathToLog).arg(m_currentLogName));
         this->updateCurrentLogName();
         this->setLogFile(QString("%1/%2").arg(pathToLog).arg(m_currentLogName));
         this->clearOldLogs();
     });
+}
+
+void DapLogger::fileChanged(const QString& path)
+{
+    QFileInfo check_file(path);
+    if (!check_file.exists() && !check_file.isFile()) {
+        m_watcher->removePath(path);
+        setLogFile(path);
+    }
+}
+
+void DapLogger::dirChanged(const QString& path)
+{
+    QDir check_dir(getPathToLog());
+    if (!check_dir.exists()) {
+        m_watcher->removePath(path);
+        createLogFolder(getPathToLog());
+        fileChanged(QString("%1/%2").arg(getPathToLog()).arg(getCurrentLogName()));
+    }
 }
 
 QString DapLogger::defaultLogPath(const QString a_brand)
@@ -68,7 +111,7 @@ QString DapLogger::defaultLogPath(const QString a_brand)
 #elif defined (Q_OS_WIN)
     return QString("%1/%2/log").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
-    return QString("/sdcard/%1").arg(a_brand);
+    return QString("/sdcard/%1/log").arg(a_brand);
 #endif
     return {};
 }
@@ -88,12 +131,6 @@ void DapLogger::updateCurrentLogName()
     m_currentLogName = DapLogger::currentLogFileName(DAP_BRAND, m_appType);
 }
 
-bool DapLogger::setLogFile(const QString& filePath) {
-    qDebug() << "setLogFile: " << filePath;
-    int i = dap_common_init(DAP_BRAND, qPrintable(filePath)) ;
-    DapDataLocal::instance()->setLogFilePath(filePath);
-    return i == 0;
-}
 
 void DapLogger::clearOldLogs(){
 
