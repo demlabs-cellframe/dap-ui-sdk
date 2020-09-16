@@ -237,6 +237,13 @@ void CustomPlacementButton::setAdditionalImage(bool a_visible)
 {
     m_lbAdditionalImage.setVisible(a_visible);
 }
+
+void CustomPlacementButton::setAdditionalImage(const QString &a_imageName)
+{
+    QPixmap icon(a_imageName);
+    m_lbAdditionalImage.setPixmap(icon);
+    m_lbAdditionalImage.setVisible(true);
+}
 void CustomPlacementButton::checkStateSet()
 {
     this->setProperty(Properties::CHECKED, isChecked());

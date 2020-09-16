@@ -80,6 +80,7 @@ public:
     void setLayoutDirection(Qt::LayoutDirection a_direction);
 
     void setAdditionalImage(bool a_visible);
+    void setAdditionalImage(const QString &a_imageName);
 
     Qt::Alignment alignment() const;
     ///Makes widgets visible on the sides
