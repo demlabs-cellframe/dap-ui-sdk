@@ -16,6 +16,12 @@ const QString DapCmdUserData::addressParam =
 
 void DapCmdUserData::handleResult(const QJsonObject& result)
 {
+    if(result.contains("license_term_till")) {
+        qDebug() << "license_term_till " << result.value("license_term_till").toString();
+        emit sigtLicenseTermTill(result.value("license_term_till").toString());
+        return;
+    }
+
     if (result.value(userParam) != QJsonValue::Undefined &&
         result.value(passwordParam) != QJsonValue::Undefined &&
         result.value(addressParam) != QJsonValue::Undefined) {

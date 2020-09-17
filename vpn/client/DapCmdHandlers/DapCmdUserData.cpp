@@ -25,3 +25,10 @@ void DapCmdUserData::setUserData(const QString &user, const QString &password, c
     m_address = address;
     m_port = a_port;
 }
+
+void DapCmdUserData::sendLicenseTermTill(const QString &date)
+{
+    QJsonObject response;
+    response["license_term_till"] = date;
+    sendCmd(&response);
+}
