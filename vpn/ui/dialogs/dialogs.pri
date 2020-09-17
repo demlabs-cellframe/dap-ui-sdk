@@ -18,8 +18,7 @@ HEADERS  += \
     $$PWD/TermsOfUseScreen.h \
     $$PWD/PrivacyPolicyScreen.h \
     $$PWD/screens.h \
-    $$PWD/SignInScreenSerialNumberBase.h \
-    $$PWD/SignInWithTariffLink.h
+    $$PWD/SignInScreenSerialNumberBase.h
 
 SOURCES += \
     $$PWD/BugReportLoadingScreen.cpp \
@@ -40,8 +39,16 @@ SOURCES += \
     $$PWD/SignUpScreen.cpp \
     $$PWD/TermsOfUseScreen.cpp \
     $$PWD/PrivacyPolicyScreen.cpp \
-    $$PWD/SignInScreenSerialNumberBase.cpp \
-    $$PWD/SignInWithTariffLink.cpp
+    $$PWD/SignInScreenSerialNumberBase.cpp  
+
+
+defined(USING_SIGN_IN_SCREEN_WITH_TARIFF_LINK,var){
+        HEADERS  += \
+        $$PWD/SignInWithTariffLink.h
+
+        SOURCES += \
+        $$PWD/SignInWithTariffLink.cpp
+}
 
 android {
 

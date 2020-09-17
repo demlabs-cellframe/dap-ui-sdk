@@ -34,6 +34,8 @@ public:
     /// @param a_parent Parent.
     SignInScreenSerialNumberBase(QWidget * a_parent);
 
+
+
     virtual QString screenName() override;
     static const QString SCREEN_NAME;
 
@@ -73,7 +75,7 @@ protected:
     virtual QList<CustomPopup *> customPopups() override;
 
     QScopedPointer<Ui::SignInScreen> m_ui;
-private:
+
 
     void adjustStateMachine();
 
