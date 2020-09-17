@@ -211,8 +211,25 @@ void SerialKeyField::pasteEvent(QString clipboardText)
     {
         if(clipboardText.count()==MAX_COUNT_CHAR)
             this->setText(clipboardText);
+
+        /*if paste to middle/start/end of text*/
         else
-            this->setText(this->text()+clipboardText.left(MAX_COUNT_CHAR-this->text().count()));
+        {
+            /*safe text before cursor and after*/
+            QString before{this->text().left(this->cursorPosition())};
+            QString after{this->text().right(this->text().count() - this->cursorPosition())};
+
+            /*if clipboard text equals count of symbols to end, then next symbols will be edited*/
+            if(clipboardText.count() == MAX_COUNT_CHAR - before.count())
+                this->setText(before + clipboardText);
+
+            /*paste principle: before cursor text + clipboard text + after cursor text*/
+            else
+            {
+                this->setText(before + clipboardText.left(MAX_COUNT_CHAR - before.count() - after.count()) + after);
+                this->setCursorPosition(before.count() + clipboardText.count());
+            }
+        }
         emit textEdited(clipboardText);
     }
 }
