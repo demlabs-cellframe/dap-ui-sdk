@@ -18,12 +18,19 @@ bool DapBugReport::createZipDataBugReport(QString email, QString message)
 
     QFileInfo infoFileData(file);
     QStringList fileList;
-    fileList << DapDataLocal::instance()->getLogFilePath() << QString(DapDataLocal::instance()->getLogFilePath()).replace("Service", "GUI") << infoFileData.path() + "/" + infoFileData.fileName();
-
-    for (int i = 0; i < fileList.count(); i++){
-        QFileInfo check_file(fileList[i]);
-        if (!check_file.exists() && !check_file.isFile()) {
-            fileList.removeAll(fileList[i]);
+    for (int i = 0; i < 3; i++){
+        QString path;
+        switch (i) {
+            case 0:
+                path = DapDataLocal::instance()->getLogFilePath(); break;
+            case 1:
+                path = QString(DapDataLocal::instance()->getLogFilePath()).replace("Service", "GUI"); break;
+            case 2:
+                path = infoFileData.path() + "/" + infoFileData.fileName(); break;
+        }
+        QFileInfo check_file(path);
+        if (check_file.exists() && check_file.isFile()) {
+            fileList << path;
         }
     }
 
