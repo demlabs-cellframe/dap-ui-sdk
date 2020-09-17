@@ -30,8 +30,8 @@ public:
     void setPermissionFolder(const QString &path);
     void createChangerLogFiles();
 
-    QString getPathToLog(){ return pathToLog; }
-    void setPathToLog(QString path){ pathToLog = path; }
+    QString getPathToLog(){ return m_pathToLog; }
+    void setPathToLog(QString path){ m_pathToLog = path; }
 
     static QString defaultLogPath(const QString a_brand);
     static QString currentLogFileName(const QString a_brand, const QString a_appType);
@@ -45,7 +45,7 @@ public:
     static void setLogLevel(dap_log_level ll);
 private:
     QTimer t;
-    QString pathToLog;
+    QString m_pathToLog;
     QString m_currentLogName;
     QString m_appType;
 

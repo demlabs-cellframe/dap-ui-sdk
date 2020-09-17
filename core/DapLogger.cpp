@@ -76,9 +76,9 @@ void DapLogger::createChangerLogFiles(){
     t.start(diff);
     connect(&t, &QTimer::timeout, [&]{
         t.setInterval(24 * 3600 * 1000);
-        m_watcher->removePath(QString("%1/%2").arg(pathToLog).arg(m_currentLogName));
+        m_watcher->removePath(QString("%1/%2").arg(m_pathToLog).arg(m_currentLogName));
         this->updateCurrentLogName();
-        this->setLogFile(QString("%1/%2").arg(pathToLog).arg(m_currentLogName));
+        this->setLogFile(QString("%1/%2").arg(m_pathToLog).arg(m_currentLogName));
         this->clearOldLogs();
     });
 }
@@ -134,7 +134,7 @@ void DapLogger::updateCurrentLogName()
 
 void DapLogger::clearOldLogs(){
 
-    QDir dir(pathToLog);
+    QDir dir(m_pathToLog);
 
     if (!dir.exists()) {
         qWarning("The directory does not exist");
