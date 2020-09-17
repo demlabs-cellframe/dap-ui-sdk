@@ -44,7 +44,7 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
         else if (m_stt_serviceState_connected->active())
             emit this->connectionRequested();
         else
-            emit this->connectingCancelRequest();
+            emit this->connectingCancelRequested();
     });
 
 
