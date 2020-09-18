@@ -12,25 +12,12 @@
 #include "DapServersData.h"
 #include "DapSignUpData.h"
 #include "DapUtils.h"
+#include "DataToUpdate.h"
 
 #define SERVER_LIST_FILE "vpn-servers.xml"
 
 class DapSerialKeyData;
-enum class DownloadingUpdateState{
-    Default, Download
-};
 
-struct DataToUpdate
-{
-    DownloadingUpdateState state;
-    QString version;
-    QString URLUpdate;
-
-    void setState(DownloadingUpdateState a_state)
-    {
-        this->state = a_state;
-    }
-};
 class DapDataLocal : public QObject
 {
     Q_OBJECT
@@ -62,7 +49,7 @@ public:
 
     QString password() const;
 
-    DataToUpdate* getDataToUpdate(){return &m_dataToUpdate;}
+    DataToUpdate& getDataToUpdate(){return m_dataToUpdate;}
 
     const QList<QString> &cdbServersList() { return m_cdbServersList; }
     const QString & networkDefault()       { return m_networkDefault; }
@@ -96,8 +83,6 @@ public slots:
     void setLogin(const QString &a_login);
 
     void setPassword(const QString &password);
-
-    void setDataToUpdate(DataToUpdate &a_data);
 
     void saveAuthorizationData();
     void rotateCDBList();

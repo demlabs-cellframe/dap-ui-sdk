@@ -296,11 +296,4 @@ DapDataLocal *DapDataLocal::instance()
     return &s_instance;
 }
 
-void DapDataLocal::setDataToUpdate(DataToUpdate &a_data)
-{
-    m_dataToUpdate.state = a_data.state;
-    m_dataToUpdate.version = a_data.version;
-    m_dataToUpdate.URLUpdate = a_data.URLUpdate;
-}
-
 
