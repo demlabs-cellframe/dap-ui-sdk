@@ -43,8 +43,10 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
             emit this->serialKeyError();
         else if (m_stt_serviceState_connected->active())
             emit this->connectionRequested();
-        else
+        else {
+            m_ui->lblStatusMessage->setText(tr("Aborted"));
             emit this->connectingCancelRequested();
+        }
     });
 
 
