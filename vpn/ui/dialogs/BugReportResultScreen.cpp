@@ -23,6 +23,9 @@ void BugReportResultScreen::setStatusMessage(const QString &a_message)
 void BugReportResultScreen::initVariantUi(QWidget *a_widget)
 {
     Q_UNUSED(a_widget)
+#ifdef TEXT_VERSION_DIFFERENT
+    m_ui->lblVersion->setText(QString("Version %1 %2").arg(DAP_VERSION).arg(__DATE__));
+#endif
 
 #ifdef ANDROID
     this->m_ui->btnClose->setText(tr("BACK"));
