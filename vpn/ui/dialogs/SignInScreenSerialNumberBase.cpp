@@ -32,11 +32,22 @@ SignInScreenSerialNumberBase::SignInScreenSerialNumberBase(QWidget *a_parent)
     //And this:
     AdaptiveScreen::initScreen(this);
 #endif
+
 }
 
 void SignInScreenSerialNumberBase::initVariantUi(QWidget *a_widget)
 {
     qDebug() << "initVariantUi";
+
+#ifdef Q_OS_ANDROID
+    m_widgetSizeController = new WidgetInputSizeController(this);
+
+    m_widgetSizeController->addDisappearingWidget(m_ui->lblLogo);
+//    m_widgetSizeController->addDisappearingWidget(m_ui->lblStatusMessage);
+//    m_widgetSizeController->addDisappearingWidget(m_ui->lblCaption);
+
+    m_widgetSizeController->addWidgetEmitsSignal(m_ui->ledSerialKey);
+#endif
 
     m_ui->cbbServer->popup()->setObjectName("cbbServer_popup");
 
