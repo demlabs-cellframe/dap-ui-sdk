@@ -17,8 +17,8 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     m_appType = appType;
 
     m_watcher = new QFileSystemWatcher(this);
-    connect(m_watcher, SIGNAL(fileChanged(QString)), this, SLOT(fileChanged(QString)));
-    connect(m_watcher, SIGNAL(directoryChanged(QString)), this, SLOT(dirChanged(QString)));
+    connect(m_watcher, SIGNAL(resetLogFileIfNotExist(QString)), this, SLOT(resetLogFileIfNotExist(QString)));
+    connect(m_watcher, SIGNAL(directoryChanged(QString)), this, SLOT(resetLogDirIfNotExist(QString)));
 }
 
 inline dap_log_level DapLogger::castQtMsgToDap(QtMsgType type) {
@@ -83,7 +83,7 @@ void DapLogger::createChangerLogFiles(){
     });
 }
 
-void DapLogger::fileChanged(const QString& path)
+void DapLogger::resetLogFileIfNotExist(const QString& path)
 {
     QFileInfo check_file(path);
     if (!check_file.exists() && !check_file.isFile()) {
@@ -92,13 +92,13 @@ void DapLogger::fileChanged(const QString& path)
     }
 }
 
-void DapLogger::dirChanged(const QString& path)
+void DapLogger::resetLogDirIfNotExist(const QString& path)
 {
     QDir check_dir(getPathToLog());
     if (!check_dir.exists()) {
         m_watcher->removePath(path);
         createLogFolder(getPathToLog());
-        fileChanged(QString("%1/%2").arg(getPathToLog()).arg(getCurrentLogName()));
+        resetLogFileIfNotExist(QString("%1/%2").arg(getPathToLog()).arg(getCurrentLogName()));
     }
 }
 

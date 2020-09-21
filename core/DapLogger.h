@@ -51,12 +51,9 @@ private:
 
     QFileSystemWatcher * m_watcher;
 
-signals:
-    void logFileChanged();
-
 public slots:
-    void fileChanged(const QString& path);
-    void dirChanged(const QString& path);
+    void resetLogFileIfNotExist(const QString& path);
+    void resetLogDirIfNotExist(const QString& path);
 };
 
 #endif // DAPLOGGER_H
