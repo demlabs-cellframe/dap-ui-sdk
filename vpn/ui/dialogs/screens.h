@@ -16,7 +16,7 @@
 
 #include "StartScreen.h"
 #include "SignUpScreen.h"
-#include "SignInScreen.h"
+#include "SignInScreenSerialNumberBase.h"
 #include "NavigationPanelBase.h"
 #ifndef USING_SEPARATE_STATISTIC_SCREEN
     #include "MainScreen.h"

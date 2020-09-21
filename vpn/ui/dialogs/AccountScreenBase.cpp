@@ -35,7 +35,7 @@ void AccountScreenBase::initVariantUi(QWidget *a_widget)
     Q_UNUSED(a_widget)
 
 #ifdef Q_OS_ANDROID
-    m_ui->lblCaption->setText("Renew subscription");
+  //  m_ui->lblCaption->setText("Renew subscription");
 #else
     connect(m_ui->btnResetSerial, &QPushButton::clicked, m_serialRemovalMessage, &SerialRemovalConfirmationMessage::show);
 
