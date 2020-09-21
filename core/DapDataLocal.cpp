@@ -157,6 +157,18 @@ void DapDataLocal::saveSerialKeyData()
 
 void DapDataLocal::loadAuthorizationDatas()
 {
+#ifdef Q_OS_ANDROID
+    // due to the fact that in the new version on Android we changed the path to the settings:
+    // check if there are no settings, maybe they are in the old place
+    auto keys = settings()->allKeys();
+    if (keys.isEmpty()) {
+        QSettings oldSettings;
+        for (auto key : oldSettings.allKeys()) {
+            settings()->setValue(key, oldSettings.value(key));
+        }
+    }
+#endif
+
     this->setLogin(getEncriptedSetting(TEXT_LOGIN).toString());
     this->setPassword(getEncriptedSetting(TEXT_PASSWORD).toString());
 
