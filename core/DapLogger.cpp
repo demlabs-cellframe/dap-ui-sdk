@@ -17,7 +17,7 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     m_appType = appType;
 
     m_watcher = new QFileSystemWatcher(this);
-    connect(m_watcher, SIGNAL(resetLogFileIfNotExist(QString)), this, SLOT(resetLogFileIfNotExist(QString)));
+    connect(m_watcher, SIGNAL(fileChanged(QString)), this, SLOT(resetLogFileIfNotExist(QString)));
     connect(m_watcher, SIGNAL(directoryChanged(QString)), this, SLOT(resetLogDirIfNotExist(QString)));
 }
 
