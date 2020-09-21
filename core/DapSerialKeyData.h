@@ -2,6 +2,7 @@
 #define DAPSERIALKEYDATA_H
 
 #include <QObject>
+#include <QDateTime>
 
 #include "DapServerInfo.h"
 
@@ -21,14 +22,21 @@ public:
     void setActivated(bool a_isActivated);
 
     void reset();
+
+    const QDateTime & getLicenseTermTill();
     
 signals:
     void serialKeyChanged(const QString& serialKey);
     void activationChanged(bool activation);
+    void licenseTermTillChanged(const int &days);
+
+public slots:
+    void setLicenseTermTill(const QString &a_date);
 
 private:
     QString m_serialKey;
     bool m_isActivated;
+    QDateTime m_licenseTermTill = QDateTime::currentDateTime();
 };
 
 QDataStream &operator<<(QDataStream &a_outStream, const DapSerialKeyData &a_serialKeyData);

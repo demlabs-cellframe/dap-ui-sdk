@@ -7,6 +7,8 @@
 #include <QDebug>
 #include <QBoxLayout>
 #include <QRegularExpression>
+#include <QtMath>
+#include <QDateTime>
 
 class QMainWindow;
 
@@ -23,6 +25,8 @@ namespace Utils
     ///The function returns the first integer in the string.
     /// 100%=>100 100px=>100 100**=>100 100=>100
     int toIntValue(const QString &a_text);
+
+    QString convertByte(const quint64 &byte);
 
     QBoxLayout::Direction toQBoxLayoutDirection(Qt::LayoutDirection a_direction);
     Qt::LayoutDirection toQtLayoutDirection(QBoxLayout::Direction a_direction);
@@ -43,6 +47,8 @@ namespace Utils
     void updateStyle(QWidget* a_widget);
 
     QString getTextFromFile(const QString &a_fname);
+
+    uint dateDifference(const QDateTime &a_firstDate, const QDateTime &a_secondDate);
 };
 
 template <class T>

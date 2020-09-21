@@ -24,8 +24,8 @@ void DapCmdStats::sendCmdStats(qint64 readBytes, qint64 writeBytes,
                                qint64 readPackages, qint64 writePackages)
 {
     static QJsonObject result;
-    result["read_kbytes"] = readBytes / 1024;
-    result["write_kbytes"] = writeBytes / 1024;
+    result["read_bytes"] = readBytes;
+    result["write_bytes"] = writeBytes;
     result["read_package"] = readPackages;
     result["write_package"] = writePackages;
     sendCmd(&result);
