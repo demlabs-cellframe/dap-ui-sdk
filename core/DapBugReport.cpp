@@ -5,7 +5,7 @@ DapBugReport::DapBugReport()
 
 }
 
-void DapBugReport::createZipDataBugReport(QString email, QString message)
+bool DapBugReport::createZipDataBugReport(QString email, QString message)
 {
     qDebug() << "DapBugReport::createZip";
 
@@ -18,15 +18,33 @@ void DapBugReport::createZipDataBugReport(QString email, QString message)
 
     QFileInfo infoFileData(file);
     QStringList fileList;
-    fileList << DapDataLocal::instance()->getLogFilePath() << QString(DapDataLocal::instance()->getLogFilePath()).replace("Service", "GUI") << infoFileData.path() + "/" + infoFileData.fileName();
+    for (int i = 0; i < 3; i++){
+        QString path;
+        switch (i) {
+            case 0:
+                path = DapDataLocal::instance()->getLogFilePath(); break;
+            case 1:
+                path = QString(DapDataLocal::instance()->getLogFilePath()).replace("Service", "GUI"); break;
+            case 2:
+                path = infoFileData.path() + "/" + infoFileData.fileName(); break;
+        }
+        QFileInfo check_file(path);
+        if (check_file.exists() && check_file.isFile()) {
+            fileList << path;
+        }
+    }
 
-    JlCompress::compressFiles("temp_bugReportZip.zip", fileList);
+    if (!JlCompress::compressFiles("temp_bugReportZip.zip", fileList)){
+        qDebug() << "Bug-report file not compress";
+        return false;
+    }
 
     QFile zipFile("temp_bugReportZip.zip");;
     if (zipFile.open(QIODevice::ReadOnly)){
         qDebug() << "Bug-report byte array size: " << (byteArrayZipFile = zipFile.readAll()).size();
         zipFile.remove();
     }
+    return true;
 }
 
 //bool DapBugReport::runScriptPackaging(QString path){
