@@ -19,9 +19,6 @@ QString BugReportLoadingScreen::screenName()
 
 void BugReportLoadingScreen::initVariantUi(QWidget *a_widget)
 {
-#ifdef TEXT_VERSION_DIFFERENT
-    m_ui->lblVersion->setText(QString("Version %1 %2").arg(DAP_VERSION).arg(__DATE__));
-#endif
 
 #ifdef ANDROID
     m_ui->btnCancel->setText(tr("CANCEL"));

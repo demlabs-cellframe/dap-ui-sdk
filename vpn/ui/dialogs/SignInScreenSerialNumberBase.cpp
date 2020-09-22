@@ -43,8 +43,6 @@ void SignInScreenSerialNumberBase::initVariantUi(QWidget *a_widget)
     m_widgetSizeController = new WidgetInputSizeController(this);
 
     m_widgetSizeController->addDisappearingWidget(m_ui->lblLogo);
-//    m_widgetSizeController->addDisappearingWidget(m_ui->lblStatusMessage);
-//    m_widgetSizeController->addDisappearingWidget(m_ui->lblCaption);
 
     m_widgetSizeController->addWidgetEmitsSignal(m_ui->ledSerialKey);
 #endif
