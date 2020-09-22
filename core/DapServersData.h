@@ -36,7 +36,7 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
     bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex()) Q_DECL_OVERRIDE;
     bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex()) Q_DECL_OVERRIDE;
-
+    QHash<int,QByteArray> roleNames() const Q_DECL_OVERRIDE;
 
 public slots:
     void setCurrentServer(const DapServerInfo *a_server);

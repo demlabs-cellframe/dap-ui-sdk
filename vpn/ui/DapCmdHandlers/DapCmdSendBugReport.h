@@ -25,7 +25,6 @@ public:
     void sendBugReport(const QString &a_message, const QString &a_email = "");
 signals:
     void sigBugReportSent(const QString& bugReportNumber);
-    void sigBugReportSendingError();
 };
 
 
