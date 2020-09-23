@@ -118,10 +118,10 @@ protected:
 #endif
 
     IndicatorsUnits m_indicatorUnits;
-    int m_bytesSent       = 0;
-    int m_bytesReceived   = 0;
-    int m_packetsSent     = 0;
-    int m_packetsReceived = 0;
+    quint64 m_bytesSent       = 0;
+    quint64 m_bytesReceived   = 0;
+    quint64 m_packetsSent     = 0;
+    quint64 m_packetsReceived = 0;
 
     QAbstractItemModel *m_serversModel = nullptr;
 
@@ -142,7 +142,7 @@ public slots:
     void setStreamOpened(bool a_streamOpened = true);
     void setVirtualNetwork(bool a_virtualNetwork = true);
 
-    void setSentReceivedIndicators(int a_bytesReceived, int a_bytesSent, int a_packetsReceived, int a_packetsSent);
+    void setSentReceivedIndicators(quint64 a_bytesReceived, quint64 a_bytesSent, quint64 a_packetsReceived, quint64 a_packetsSent);
 
     void startConnectionTimer(const QDateTime &a_startTime);
     void stopConnectionTimer();

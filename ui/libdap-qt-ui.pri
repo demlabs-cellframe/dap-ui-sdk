@@ -11,7 +11,8 @@ SOURCES += \
 
 HEADERS  += \
     $$PWD/schedule.h\
-    $$PWD/schedules.h
+    $$PWD/schedules.h \
+    $$PWD/SheduleElement.h
 
 include(auxiliary/auxiliary.pri)
 include(controls/controls.pri)

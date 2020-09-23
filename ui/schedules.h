@@ -48,8 +48,8 @@ public:
     int getWidth();
     int getHeight();
 
-    void addInp(int elem);
-    void addOut(int elem);
+    void addInp(quint64 elem);
+    void addOut(quint64 elem);
 
     void draw_chart(QGraphicsScene *scene);
     Schedules();
