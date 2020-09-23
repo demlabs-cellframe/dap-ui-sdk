@@ -77,6 +77,7 @@ void DapLogger::createChangerLogFiles(){
     connect(&t, &QTimer::timeout, [&]{
         t.setInterval(24 * 3600 * 1000);
         m_watcher->removePath(QString("%1/%2").arg(m_pathToLog).arg(m_currentLogName));
+        dap_common_deinit();
         this->updateCurrentLogName();
         this->setLogFile(QString("%1/%2").arg(m_pathToLog).arg(m_currentLogName));
         this->clearOldLogs();
@@ -86,8 +87,9 @@ void DapLogger::createChangerLogFiles(){
 void DapLogger::resetLogFileIfNotExist(const QString& path)
 {
     QFileInfo check_file(path);
-    if (!check_file.exists() && !check_file.isFile()) {
+    if (!(check_file.exists() && check_file.isFile())) {
         m_watcher->removePath(path);
+        dap_common_deinit();
         setLogFile(path);
     }
 }
