@@ -10,6 +10,7 @@
 
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
+#include "DapLogger.h"
 
 DapDataLocal::picturesMap DapDataLocal::m_pictruePath = {
     {DapServerLocation::ENGLAND, ":/country/GB.png"},
@@ -166,6 +167,18 @@ void DapDataLocal::saveSerialKeyData()
 
 void DapDataLocal::loadAuthorizationDatas()
 {
+#ifdef Q_OS_ANDROID
+    // due to the fact that in the new version on Android we changed the path to the settings:
+    // check if there are no settings, maybe they are in the old place
+    auto keys = settings()->allKeys();
+    if (keys.isEmpty()) {
+        QSettings oldSettings;
+        for (auto key : oldSettings.allKeys()) {
+            settings()->setValue(key, oldSettings.value(key));
+        }
+    }
+#endif
+
     this->setLogin(getEncriptedSetting(TEXT_LOGIN).toString());
     this->setPassword(getEncriptedSetting(TEXT_PASSWORD).toString());
 
@@ -182,7 +195,11 @@ void DapDataLocal::rotateCDBList() {
 
 QSettings* DapDataLocal::settings()
 {
+#ifdef Q_OS_ANDROID
+    static QSettings s_settings(DapLogger::defaultLogPath(DAP_BRAND).append("/settings.ini"), QSettings::IniFormat);
+#else
     static QSettings s_settings;
+#endif
     return &s_settings;
 }
 
@@ -235,6 +252,7 @@ QVariant DapDataLocal::getSetting(const QString &a_setting)
 void DapDataLocal::saveSetting(const QString &a_setting, const QVariant &a_value)
 {
     settings()->setValue(a_setting, a_value);
+    settings()->sync();
 }
 
 void DapDataLocal::removeSetting(const QString &a_setting)
