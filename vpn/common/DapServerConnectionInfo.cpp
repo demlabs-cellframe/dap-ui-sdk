@@ -66,7 +66,9 @@ void DapServerConnectionInfo::setStatistic(quint64 a_bytesReceived, quint64 a_by
 
 QString DapServerConnectionInfo::convertBytePerSecond(const quint64 &byte)
 {
-    if (byte >= pow(2,20))
+    if (byte < 0)
+        return QString("0 %1").arg("Mbps");
+    else if (byte >= pow(2,20))
         return QString("%1 %2").arg(QString::number(byte/pow(2,20), 'f', 2)).arg("Mbps");
     else
         return QString("%1 %2").arg(QString::number(byte/pow(2,10), 'f', 2)).arg("Kbps");
