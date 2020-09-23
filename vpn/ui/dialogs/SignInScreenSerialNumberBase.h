@@ -1,5 +1,4 @@
-#ifndef SIGNINSCREEN_H
-#define SIGNINSCREEN_H
+#pragma once
 
 #include <QLineEdit>
 #include <QDebug>
@@ -25,7 +24,7 @@
 #define BUTTON_TEXT_DEFAULT "START"
 
 
-class SignInScreen : public ScreenWithScreenPopupsAbstract
+class SignInScreenSerialNumberBase : public ScreenWithScreenPopupsAbstract
 {
     Q_OBJECT
 
@@ -33,7 +32,9 @@ public:
 
     /// Overloaded constructor.
     /// @param a_parent Parent.
-    SignInScreen(QWidget * a_parent);
+    SignInScreenSerialNumberBase(QWidget * a_parent);
+
+
 
     virtual QString screenName() override;
     static const QString SCREEN_NAME;
@@ -73,7 +74,8 @@ protected:
 
     virtual QList<CustomPopup *> customPopups() override;
 
-private:
+    QScopedPointer<Ui::SignInScreen> m_ui;
+
 
     void adjustStateMachine();
 
@@ -103,12 +105,7 @@ private:
     QString m_password;
 
     QString m_serial;
-
-    QScopedPointer<Ui::SignInScreen> m_ui;
-
 };
 
 
 
-
-#endif // SIGNINSCREEN_H
