@@ -73,7 +73,7 @@ public:
     /// .
     /// @param a_id Window GUI widget.
     QLabel* addSubcontrol(QString a_objectName);
-    QLabel* addSubcontrol(QWidget& a_widgetSubcontroll);
+    void addSubcontrol(QWidget& a_widgetSubcontroll);
 
 
     Qt::LayoutDirection layoutDirection() const;
