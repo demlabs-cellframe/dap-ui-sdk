@@ -147,7 +147,7 @@ QLabel* CustomPlacementButton::addSubcontrol(QString a_objectName)
     return newSubcontrol;
 }
 
-QLabel *CustomPlacementButton::addSubcontrol(QWidget &a_widgetSubcontroll)
+void CustomPlacementButton::addSubcontrol(QWidget &a_widgetSubcontroll)
 {
     m_subcontrols.append(&a_widgetSubcontroll);
     m_layout->insertWidget(m_layout->count() - 2, &a_widgetSubcontroll);
