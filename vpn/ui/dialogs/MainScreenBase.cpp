@@ -90,7 +90,7 @@ void MainScreenBase::setVirtualNetwork(bool a_virtualNetwork /*= true*/)
     m_ui->chbVirtualNetwork->setChecked(a_virtualNetwork);
 }
 
-void MainScreenBase::setSentReceivedIndicators(int a_bytesReceived, int a_bytesSent, int a_packetsReceived, int a_packetsSent)
+void MainScreenBase::setSentReceivedIndicators(quint64 a_bytesReceived, quint64 a_bytesSent, quint64 a_packetsReceived, quint64 a_packetsSent)
 {
     m_bytesReceived   = a_bytesReceived;
     m_bytesSent       = a_bytesSent;

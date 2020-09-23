@@ -4,20 +4,21 @@ Schedule::Schedule() {
     m_elems.push_front(SheduleElement(time(nullptr),0));
 }
 
-void Schedule::addElem(int newQuantity)
+void Schedule::addElem(quint64 newQuantity)
 {
     time_t newTime = time(nullptr);
     int velocity;
 
     if (newTime == s_time) {
-        velocity = diff = diff + newQuantity - s_quantity;
-        // убираем ненужный элемент.
+        velocity = diff = diff + static_cast<int>(m_elems.size()<=1? 0: newQuantity - s_quantity);
+
         m_elems.pop_front();
     } else {
-        diff     = newQuantity - s_quantity;
+        diff     = static_cast<int>(newQuantity - s_quantity);
         velocity = diff/(newTime - s_time);
         s_time   = newTime;
     }
+
     m_elems.push_front(SheduleElement(newTime, velocity));
     s_quantity = newQuantity;
 
@@ -101,8 +102,6 @@ time_pos = 1;
     }
 
     path.closeSubpath();
-
-    // отрисовка графика
 
     scene->addPath(path, pen, color);
 }
