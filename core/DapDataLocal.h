@@ -12,7 +12,7 @@
 #include "DapServersData.h"
 #include "DapSignUpData.h"
 #include "DapUtils.h"
-
+#include "DataToUpdate.h"
 
 #define SERVER_LIST_FILE "vpn-servers.xml"
 
@@ -36,6 +36,7 @@ class DapDataLocal : public QObject
     QString getRandomString(int);
 
 public:
+
     using picturesMap = QMap<DapServerLocation, QString>;
     static DapDataLocal* instance();
 
@@ -48,7 +49,7 @@ public:
 
     QString password() const;
 
-    QString urlUpdate() const;
+    DataToUpdate& getDataToUpdate(){return m_dataToUpdate;}
 
     const QList<QString> &cdbServersList() { return m_cdbServersList; }
     const QString & networkDefault()       { return m_networkDefault; }
@@ -83,8 +84,6 @@ public slots:
 
     void setPassword(const QString &password);
 
-    void setUrlUpdate(const QString &a_url);
-
     void saveAuthorizationData();
     void rotateCDBList();
 
@@ -109,7 +108,7 @@ private:
     QString m_password;   ///< Password.
     QString m_serialKey;  ///< Serial key.
 
-    QString m_urlUpdate; ///< url for download
+    DataToUpdate m_dataToUpdate; ///data to update
 
     DapSerialKeyData* m_serialKeyData;
 };
