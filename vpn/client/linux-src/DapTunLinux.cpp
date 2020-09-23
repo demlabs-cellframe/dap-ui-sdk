@@ -272,6 +272,7 @@ void DapTunLinux::onWorkerStarted()
              " +ipv4.route-metric 10");
     
     ::system("nmcli connection up " DAP_BRAND);
+    m_isCreated = true;
     emit created();
 }
 

@@ -122,8 +122,9 @@ QNetworkReply* DapSession::requestServerPublicKey()
     m_netEncryptReply = _buildNetworkReplyReq(URL_ENCRYPT + "/gd4y5yh78w42aaagh",
                                               &reqData);
 
-    if(!m_netEncryptReply){
-        qWarning() << "Can't send post request";
+    if(!m_netEncryptReply || !m_netEncryptReply->isRunning()){
+        qCritical() << "Network error: " << m_netEncryptReply->errorString();
+        emit errorNetwork(m_netEncryptReply->errorString());
         return Q_NULLPTR;
     }
 
@@ -508,7 +509,7 @@ void DapSession::preserveCDBSession() {
  */
 void DapSession::onLogout() {
     qInfo() << "Logouted";
-    emit logouted();
+    //emit logouted();
 }
 
 void DapSession::answerSignUp()
