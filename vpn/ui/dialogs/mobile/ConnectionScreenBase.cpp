@@ -58,7 +58,7 @@ QString ConnectionScreenBase::statusText()
     case ConnectionState::Connecting:
         return tr("Connecting...");
     case ConnectionState::Connected:
-        return tr("Connected to %1").arg(this->currentServer() == "Auto" ? tr("Auto") : this->currentServer());
+        return getConnectedToText().arg(this->currentServer() == "Auto" ? tr("Auto") : this->currentServer());
     case ConnectionState::Disconnecting:
         return tr("Disconnecting...");
     case ConnectionState::ServerChanging:
@@ -67,7 +67,11 @@ QString ConnectionScreenBase::statusText()
         return QString();
     }
 }
+const QString ConnectionScreenBase::getConnectedToText()
+{
+    return QString(tr("Connected to %1"));
 
+}
 void ConnectionScreenBase::setCurrentServer(const QString &a_currentServer)
 {
     if (this->currentServer() == a_currentServer)

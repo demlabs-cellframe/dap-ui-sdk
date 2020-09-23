@@ -18,6 +18,10 @@
 #include "ScreenWithScreenPopupsAbstract.h"
 #include "SerialNumberLineEdit.h"
 
+#ifdef Q_OS_ANDROID
+#include "WidgetInputSizeController.h"
+#endif
+
 #define STATUS_TEXT_CONNECTING_TO_SERVICE "Connecting to service..."
 
 #define BUTTON_TEXT_CONNECTING "CONNECTING..."
@@ -105,6 +109,10 @@ protected:
     QString m_password;
 
     QString m_serial;
+
+#ifdef Q_OS_ANDROID
+    WidgetInputSizeController *m_widgetSizeController = nullptr;
+#endif
 };
 
 
