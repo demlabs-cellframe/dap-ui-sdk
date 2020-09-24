@@ -6,8 +6,6 @@
 
 class CustomButtonDelegate : public WidgetDelegateBase
 {
-    // @brief When the ignoreIconsFromModel property is true, this list view ignores any images posted by the model.
-    Q_PROPERTY(bool ignoreIconsFromModel WRITE ignoreImages READ isImagesIgnored DESIGNABLE true)
 public:
     CustomButtonDelegate(QWidget* a_parent = Q_NULLPTR);
 
@@ -19,16 +17,8 @@ public:
 
     static WidgetDelegateBase* create();
 
-    void ignoreImages(bool y){
-        m_ignoreImages = y;
-    }
-    bool isImagesIgnored() {
-        return m_ignoreImages;
-    }
-
 private:
     CustomPlacementButton* m_button;
-    bool m_ignoreImages = true;
 };
 
 #endif // CUSTOMBUTTONDELEGATE_H
