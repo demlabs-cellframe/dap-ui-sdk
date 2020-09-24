@@ -373,7 +373,7 @@ QVariant DapServersData::data(const QModelIndex &index, int role) const
     switch (role) {
     case Qt::DisplayRole:
         return m_servers.at(index.row()).name;
-    case Qt::UserRole - 1: {
+    case Qt::UserRole: {
         auto si = m_servers.at(index.row());
         if (si.name.isEmpty())
             return QString();
@@ -402,7 +402,7 @@ bool DapServersData::setData(const QModelIndex &index, const QVariant &value, in
 {
     if (index.isValid() && role == Qt::EditRole) {
         m_servers.replace(index.row(), value.value<DapServerInfo>());
-        emit dataChanged(index, index, {Qt::DisplayRole, Qt::UserRole - 1});
+        emit dataChanged(index, index, {Qt::DisplayRole, Qt::UserRole});
         return true;
     }
     return false;
@@ -433,7 +433,10 @@ bool DapServersData::removeRows(int position, int rows, const QModelIndex &index
     return true;
 }
 
-QHash<int, QByteArray> DapServersData::roleNames() const
+QMap<int, QVariant> DapServersData::itemData(const QModelIndex &index) const
 {
-    return { {Qt::DisplayRole, "server"}, {Qt::UserRole - 1, "flag"} };
+    QMap<int, QVariant> map;
+    map[Qt::DisplayRole] = data(index, Qt::DisplayRole);
+    map[Qt::UserRole] = data(index, Qt::UserRole);
+    return map;
 }
