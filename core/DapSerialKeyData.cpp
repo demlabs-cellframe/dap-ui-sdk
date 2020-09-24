@@ -55,11 +55,10 @@ void DapSerialKeyData::setLicenseTermTill(const QString &a_date)
         return;
     this->m_licenseTermTill = tempDate;
 
-    emit this->licenseTermTillChanged(QDateTime::currentDateTime().daysTo(m_licenseTermTill));
+    emit this->licenseTermTillChanged(this->m_licenseTermTill.toTime_t() == 0 ? "Unlimited" : QString::number(QDateTime::currentDateTime().daysTo(m_licenseTermTill)));
 }
 
 const QDateTime & DapSerialKeyData::getLicenseTermTill() {
-//    QDateTime dsf = m_licenseTermTill;
     return m_licenseTermTill;
 }
 
