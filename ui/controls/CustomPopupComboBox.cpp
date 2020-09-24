@@ -17,8 +17,11 @@ void CustomPopupComboBox::showPopup()
         if (m_popup->windowType() == Qt::ToolTip)
         {
             QMainWindow* mainWindow = Utils::findParent<QMainWindow*>(this);
-            QPoint popupPosition = this->mapTo(mainWindow, QPoint(0, this->height()));
-
+            QPoint popupPosition;
+            if(m_positionPopup == PositionPopup::defaultPosition)
+                popupPosition = this->mapTo(mainWindow, QPoint(0, this->height()));
+            else
+                popupPosition = this->mapTo(mainWindow, QPoint(0, 0));
             popup()->move(popupPosition);
 
 //            if (this->popup()->sizePolicy().horizontalPolicy() != QSizePolicy::Fixed)
@@ -78,4 +81,9 @@ void CustomPopupComboBox::setCaption(const QString &a_text)
 QString CustomPopupComboBox::caption() const
 {
     return m_caption;
+}
+
+void CustomPopupComboBox::setPositionPopup(PositionPopup a_positon)
+{
+    m_positionPopup = a_positon;
 }
