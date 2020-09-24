@@ -107,7 +107,6 @@ void MainScreenBase::setSentReceivedIndicators(quint64 a_bytesReceived, quint64 
         schedules.draw_chart(getScene());
         getScene()->update();
     }
-
 }
 
 uint64_t MainScreenBase::connectedTime()
