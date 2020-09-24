@@ -11,7 +11,7 @@ class DapTunUnixAbstract : public DapTunAbstract
     Q_OBJECT
 public:
     DapTunUnixAbstract();
-    
+    void addNewUpstreamRoute(const QString&);
 protected:
 
     QString m_ethDevice; // eth adapter device name

@@ -26,7 +26,7 @@ public:
 
     bool isCreated();
     const QString& addr() { return m_addr; }
-    const QString& gw() { return m_gw; } //m_tunDest
+    const QString& gw() { return m_gw; }
     int upstreamSocket() { return m_upstreamSocket; }
     const QString& tunDeviceName(){ return m_tunDeviceName; }
     int mtu() { return m_MTU; }
@@ -36,7 +36,9 @@ public:
         signalWriteQueueProc();
     }
 
-    virtual void workerStart(); // В основном для мобильных платформ, где тун девайс открывается через задницу
+    virtual void addNewUpstreamRoute(const QString&)=0;
+
+    virtual void workerStart();
 
     QQueue<Dap::Stream::Packet*>* writeQueue(){ return &_m_writeQueue; }
     QReadWriteLock* writeQueueLock(){ return &m_writeQueueLock; }

@@ -144,7 +144,10 @@ void DapTunWindows::signalWriteQueueProc() {
     }
 }
 
-
+void DapTunWindows::addNewUpstreamRoute(const QString &a_addr) {
+    TunTap::getInstance().determineValidArgs(metric_eth, metric_tun);
+    TunTap::getInstance().makeRoute(TunTap::ETH, a_addr,  m_defaultGwOld, metric_eth);
+}
 
 
 

@@ -10,6 +10,7 @@ class DapTunAndroid : public DapTunAbstract
 public:
     DapTunAndroid();
     void workerStart()      override;
+    void addNewUpstreamRoute(const QString&) override;
 private:
     QTcpServer *receiver;
     void tunDeviceCreate()      override;
