@@ -28,7 +28,7 @@ void CustomButtonDelegate::setData(const QVariant &value, int role)
     case Qt::DecorationRole:
         m_button->setIcon(value.toString());
         break;
-    case Qt::UserRole - 1:
+    case Qt::UserRole:
         m_button->setImage(value.toString());
         m_button->image()->setScaledContents(true);
         break;
