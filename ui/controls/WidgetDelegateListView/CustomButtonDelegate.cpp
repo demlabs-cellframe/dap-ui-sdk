@@ -26,11 +26,14 @@ void CustomButtonDelegate::setData(const QVariant &value, int role)
         m_button->setText(value.toString());
         break;
     case Qt::DecorationRole:
-        m_button->setIcon(value.toString());
+        if (!m_ignoreImages)
+            m_button->setIcon(value.toString());
         break;
     case Qt::UserRole:
-        m_button->setImage(value.toString());
-        m_button->image()->setScaledContents(true);
+        if (!m_ignoreImages) {
+            m_button->setImage(value.toString());
+            m_button->image()->setScaledContents(true);
+        }
         break;
     default:
         qDebug() << "Wrong role";
