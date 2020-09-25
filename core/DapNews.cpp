@@ -1,6 +1,7 @@
 #include <QMap>
 #include <QDateTime>
 #include "DapNews.h"
+#include "DapDataLocal.h"
 
 DapNews::DapNews(QObject *parent) : QObject(parent)
 {
@@ -25,10 +26,7 @@ void DapNews::addNews(const QMap<QString, QString> &record)
     message.replace("COMPANY_NAME", DAP_ORGANIZATION_NAME);
     item.m_text = message;
 
-    if (item.m_type == "update_version") {
-        m_aboutUpdate = item;
-    }
-    else if (item.m_dateTime > m_lastRead) {
+    if (item.m_dateTime > m_lastRead) {
         m_list.insert(std::lower_bound(m_list.begin(), m_list.end(), item, [](const NewsItem& lhs, const NewsItem& rhs)->bool {
             return lhs.m_dateTime < rhs.m_dateTime;
         }), item);
@@ -38,7 +36,7 @@ void DapNews::addNews(const QMap<QString, QString> &record)
 
 QString DapNews::getCurrentNewsText() const
 {
-    if (m_aboutUpdate.m_url.isEmpty())
+    if (isUpdateAvailabel())
         return tr("New update available");
     else if (!m_list.isEmpty())
         return m_list.back().m_text;
@@ -47,8 +45,8 @@ QString DapNews::getCurrentNewsText() const
 }
 QString DapNews::getCurrentNewsUrl() const
 {
-    if (!m_aboutUpdate.m_url.isEmpty())
-        return m_aboutUpdate.m_url;
+    if (isUpdateAvailabel())
+        return m_updateData.URLUpdate;
     else if (!m_list.isEmpty())
         return m_list.back().m_url;
     else
@@ -57,13 +55,26 @@ QString DapNews::getCurrentNewsUrl() const
 
 bool DapNews::isNewsAvailable() const
 {
-    return !m_aboutUpdate.m_url.isEmpty() || (!m_list.isEmpty() && !m_list.last().m_text.isEmpty());
+    return isUpdateAvailabel() || (!m_list.isEmpty() && !m_list.last().m_text.isEmpty());
+}
+
+bool DapNews::isUpdateAvailabel() const
+{
+    return !m_updateData.version.isEmpty();
 }
 
 void DapNews::newsChecked()
 {
-    m_lastRead = m_list.back().m_dateTime;
-    m_list.pop_back();
+    if (isUpdateAvailabel()) {
+        m_updateData.version = QString();
+    }
+    else {
+        m_lastRead = m_list.back().m_dateTime;
+        m_list.pop_back();
+    }
+    if (isNewsAvailable()) {
+        emit haveNews(getCurrentNewsText(), getCurrentNewsUrl());
+    }
 }
 
 void DapNews::onGotNews(QList<QMap<QString, QString> > listNews)
@@ -71,7 +82,7 @@ void DapNews::onGotNews(QList<QMap<QString, QString> > listNews)
     for (auto item : listNews){
         if(item.value("type") == "update_version") {
             QStringList version = item.value("version").split(QRegExp("[.,-]"));
-            QStringList current = QString("6.0-0").split(QRegExp("[.,-]"));
+            QStringList current = QString(DAP_VERSION).split(QRegExp("[.,-]"));
 
             int verMajNew = version.size() > 0? version.at(0).toInt(): 0;
             int verMajActual = current.size() > 0? current.at(0).toInt(): 0;
@@ -90,7 +101,10 @@ void DapNews::onGotNews(QList<QMap<QString, QString> > listNews)
 
             if (keyStartNews)
             {
-                addNews(item);
+                m_updateData.state = DownloadingUpdateState::Default;
+                m_updateData.URLUpdate = item.value("url");
+                m_updateData.version = QString("-%1_%2-%3").arg(verMajNew).arg(verMinNew).arg(verPatNew);
+                DapDataLocal::instance()->getDataToUpdate() = m_updateData;
             }
         }
         else
@@ -99,7 +113,8 @@ void DapNews::onGotNews(QList<QMap<QString, QString> > listNews)
 
     if (isNewsAvailable()) {
         emit haveNews(getCurrentNewsText(), getCurrentNewsUrl());
-        if (!m_aboutUpdate.m_url.isEmpty())
-            emit haveUpdate(getCurrentNewsUrl());
+        if (isUpdateAvailabel()) {
+            emit haveUpdate(m_updateData);
+        }
     }
 }

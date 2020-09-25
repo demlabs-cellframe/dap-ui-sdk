@@ -5,6 +5,7 @@
 #include <QDateTime>
 #include <QList>
 #include <QMap>
+#include "DataToUpdate.h"
 
 class DapNews : public QObject
 {
@@ -17,7 +18,10 @@ public:
 
     QString getCurrentNewsText() const;
     QString getCurrentNewsUrl() const;
+    // @brief Check any news, include version update
     bool isNewsAvailable() const;
+    // @brief Check only version update
+    bool isUpdateAvailabel() const;
 
 public slots:
     // @brief Slot for processing the signal that the current news is marked as read
@@ -30,7 +34,7 @@ signals:
     // if it's about version update we also emit 'haveUpdate' signal
     void haveNews(const QString &message, const QString &url);
     // @brief We have version update
-    void haveUpdate(const QString &url);
+    void haveUpdate(const DataToUpdate &data);
 
 private:
     // @brief just add news, no signal emit
@@ -44,7 +48,7 @@ private:
         QString   m_text;
     };
     // @brief we can have only one news about update and we keep it separetly
-    NewsItem m_aboutUpdate;
+    DataToUpdate m_updateData;
     //m_list is sorted by dateTime and id
     // @brief we keep the timestamp of the latest news and afterward we ignore all the older ones
     QDateTime m_lastRead;
