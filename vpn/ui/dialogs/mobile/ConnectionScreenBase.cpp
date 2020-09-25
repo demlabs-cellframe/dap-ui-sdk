@@ -42,6 +42,7 @@ void ConnectionScreenBase::setState(ConnectionState a_state)
 
     m_ui->cbbServer->setEnabled(isConnected);
     m_ui->btnDisconnect->setEnabled(isConnected);
+
 }
 
 QString ConnectionScreenBase::currentServer()
@@ -58,7 +59,7 @@ QString ConnectionScreenBase::statusText()
     case ConnectionState::Connecting:
         return tr("Connecting...");
     case ConnectionState::Connected:
-        return getConnectedToText().arg(this->currentServer() == "Auto" ? tr("Auto") : this->currentServer());
+        return getConnectedToText();
     case ConnectionState::Disconnecting:
         return tr("Disconnecting...");
     case ConnectionState::ServerChanging:
@@ -69,7 +70,7 @@ QString ConnectionScreenBase::statusText()
 }
 const QString ConnectionScreenBase::getConnectedToText()
 {
-    return QString(tr("Connected to %1"));
+    return QString(tr("Connected to %1").arg(this->currentServer() == "Auto" ? tr("Auto") : this->currentServer()));
 
 }
 void ConnectionScreenBase::setCurrentServer(const QString &a_currentServer)
