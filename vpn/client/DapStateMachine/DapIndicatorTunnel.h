@@ -18,7 +18,6 @@ public:
     DapState *tunDisabled;
     DapState *tunEnabled;
     DapState *tunIdle;
-    DapState *tunError;
 
     /*DapState *tunnelClosed;
     DapState *noTunnelError;

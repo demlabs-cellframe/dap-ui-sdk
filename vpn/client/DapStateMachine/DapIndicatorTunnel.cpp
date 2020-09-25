@@ -7,7 +7,7 @@ void DapIndicatorTunnel::init(QStateMachine &sm, const QString& stateName)
     tunDisabled = new DapState(_false->name()       + "_tunDisabled",   _false);
     tunEnabled  = new DapState(_true->name()        + "_tunEnabled",    _true);
     tunIdle     = new DapState(_trueToFalse->name() + "_tunIdle",       _trueToFalse);
-    tunError    = new DapState(_false->name()       + "_tunError",      _false, true);
+    //tunError    = new DapState(_false->name()       + "_tunError",      _false, true);
     _false->setInitialState(tunDisabled);
     // Init substates false
     /*tunnelClosed           = new DapState(_false->name() + "Closed", _false);
@@ -37,7 +37,6 @@ void DapIndicatorTunnel::initAllowedSubstatesTransitions()
     addAllowedSubstatesTransitions(tunEnabled,      tunIdle);
     addAllowedSubstatesTransitions(tunIdle,         tunEnabled);
     addAllowedSubstatesTransitions(tunIdle,         tunDisabled);
-    addAllowedSubstatesTransitions(tunDisabled,     tunError);
     addAllowedSubstatesTransitions(tunEnabled,      tunDisabled);
 
     // False => FalseToTrue
