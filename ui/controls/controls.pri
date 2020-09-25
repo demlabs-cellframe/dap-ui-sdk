@@ -67,5 +67,5 @@ INCLUDEPATH += $$PWD
 INCLUDEPATH += $$PWD/WidgetDelegateListView
 
 FORMS += \
-    $$PWD/CustomMessageBox.ui
+    $$PWD/CustomMessageBox.ui \
 
