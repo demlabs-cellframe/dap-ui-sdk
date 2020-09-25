@@ -77,3 +77,9 @@ void DapTunUnixAbstract::workerPrepare()
     qInfo() <<"Prepare worker before the work";
 }
 
+void DapTunUnixAbstract::addNewUpstreamRoute(const QString &a_dest) {
+    QString run = QString("route add -host %2 gw %1 metric 10")
+            .arg(m_defaultGwOld).arg(qPrintable(a_dest));
+    qDebug() << "Execute "<<run;
+    ::system(run.toLatin1().constData());
+}
