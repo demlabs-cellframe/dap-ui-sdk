@@ -204,7 +204,7 @@ QMap<QString, QString> DapServersData::m_countryMap = {
     {"MICRONESIA", "FM"},
     {"FRANCE", "FR"},
     {"GABON", "GA"},
-    {"UNITED KINGSDOM", "GB"},
+    {"UNITED KINGDOM", "GB"},
     {"ENGLAND", "GB"},
     {"GRENADA", "GD"},
     {"GEORGIA", "GE"},
@@ -378,10 +378,7 @@ QVariant DapServersData::data(const QModelIndex &index, int role) const
         if (si.name.isEmpty())
             return QString();
 
-        if (si.location != DapServerLocation::UNKNOWN)
-            return m_countries[static_cast<int>(si.location)];
-        else
-            return findInCountriesMap(si.name.toUpper());
+        return findInCountriesMap(si.name.toUpper());
     }
     default:
         break;
