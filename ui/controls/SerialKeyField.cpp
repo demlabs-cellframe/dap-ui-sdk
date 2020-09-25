@@ -3,13 +3,13 @@
 SerialKeyField::SerialKeyField(QWidget *parent)
         :CustomLineEdit(parent)
 {
+    this->setAttribute(Qt::WA_MacShowFocusRect, false);
     m_regExp=QRegExp("[a-z"+QString(VALIDATOR)+"]"
                    "{0,"+QString::number(MAX_COUNT_CHAR)+"}");
     QValidator* validator=new QRegExpValidator(m_regExp);
     setValidator(validator);
     setMaxLength(MAX_COUNT_CHAR);
     setInputMethodHints(Qt::ImhLatinOnly|Qt::ImhNoPredictiveText|Qt::ImhPreferUppercase|Qt::ImhUppercaseOnly);
-    connect(this, &SerialKeyField::pasteTextCaused,&SerialKeyField::pasteEvent);
     connect(this, &SerialKeyField::textChanged,[this](QString text)
     {
         if (this->text().count()==MAX_COUNT_CHAR)
@@ -36,6 +36,25 @@ bool SerialKeyField::isFilledOut()
 void SerialKeyField::paste()
 {
     emit pasteTextCaused(QApplication::clipboard()->text());
+    QString clipboardText{QApplication::clipboard()->text()};
+    clipboardText.replace("-","");
+    clipboardText.replace(" ","");
+    clipboardText = clipboardText.toUpper();
+    if (clipboardText.count() == MAX_COUNT_CHAR)
+        pasteEvent(clipboardText);
+    else
+    {
+        int cursorPosition{};
+        this->hasSelectedText() ? cursorPosition = this->selectionStart()
+                : cursorPosition = this->cursorPosition();
+        QString text{this->text()};
+        QLineEdit::paste();
+        if (this->text() != text)
+        {
+            setText(this->text().toUpper());
+            setCursorPosition(cursorPosition + clipboardText.count());
+        }
+    }
 }
 
 void SerialKeyField::replaceNextCharacter(const QString &text)
@@ -121,8 +140,39 @@ void SerialKeyField::keyPressEvent(QKeyEvent *e)
     if(e==QKeySequence::Paste)
     {
         emit pasteTextCaused(QApplication::clipboard()->text());
+        QString clipboardText{QApplication::clipboard()->text()};
+        clipboardText.replace("-","");
+        clipboardText.replace(" ","");
+        clipboardText = clipboardText.toUpper();
+        if (clipboardText.count() == MAX_COUNT_CHAR)
+            pasteEvent(clipboardText);
+        else
+        {
+            int cursorPosition{};
+            this->hasSelectedText() ? cursorPosition = this->selectionStart()
+                    : cursorPosition = this->cursorPosition();
+            QString text{this->text()};
+            QLineEdit::keyPressEvent(e);
+            if (this->text() != text)
+            {
+                setText(this->text().toUpper());
+                setCursorPosition(cursorPosition + clipboardText.count());
+            }
+        }
+
         return;
     }
+    if(e==QKeySequence::Copy)
+    {
+        QLineEdit::keyPressEvent(e);
+        return;
+    }
+    if(e==QKeySequence::Cut)
+    {
+        QLineEdit::keyPressEvent(e);
+        return;
+    }
+
 #ifdef Q_OS_ANDROID
     if(m_keys.contains(e->key())
             && this->text().count()>this->cursorPosition())
@@ -151,7 +201,7 @@ void SerialKeyField::keyPressEvent(QKeyEvent *e)
 #else
     if(e->text().isEmpty())
     {
-        CustomLineEdit::keyPressEvent(e);
+        QLineEdit::keyPressEvent(e);
         return;
     }
 
@@ -163,7 +213,7 @@ void SerialKeyField::keyPressEvent(QKeyEvent *e)
                     || e->key()==Qt::Key_Delete)
             {
                 int newCursorPosition{this->cursorPosition()};
-                CustomLineEdit::keyPressEvent(e);
+                QLineEdit::keyPressEvent(e);
                 e->key()==Qt::Key_Backspace ? this->setCursorPosition(newCursorPosition-1)
                                             : this->setCursorPosition(newCursorPosition);
             }
@@ -176,7 +226,7 @@ void SerialKeyField::keyPressEvent(QKeyEvent *e)
             if(e->key()==Qt::Key_Backspace
                     || e->key()==Qt::Key_Delete)
             {
-                CustomLineEdit::keyPressEvent(e);
+                QLineEdit::keyPressEvent(e);
                 this->setCursorPosition(newCursorPosition);
             }
             else
@@ -184,7 +234,7 @@ void SerialKeyField::keyPressEvent(QKeyEvent *e)
                 QKeyEvent upperEvent(e->type(), e->key(),
                             e->modifiers(), e->text().toUpper(),
                             e->isAutoRepeat(), e->count());
-                CustomLineEdit::keyPressEvent(&upperEvent);
+                QLineEdit::keyPressEvent(&upperEvent);
                 this->setCursorPosition(newCursorPosition+1);
             }
         }
@@ -195,24 +245,13 @@ void SerialKeyField::keyPressEvent(QKeyEvent *e)
         QKeyEvent upperEvent(e->type(), e->key(),
                     e->modifiers(), e->text().toUpper(),
                     e->isAutoRepeat(), e->count());
-        CustomLineEdit::keyPressEvent(&upperEvent);
+        QLineEdit::keyPressEvent(&upperEvent);
     }
 #endif
 }
 
 void SerialKeyField::pasteEvent(QString clipboardText)
 {
-    clipboardText=clipboardText.toUpper();
-    clipboardText.replace("-","");
-    clipboardText.replace(" ","");
-    if (clipboardText.count()>MAX_COUNT_CHAR)
-        clipboardText=clipboardText.left(MAX_COUNT_CHAR);
-    if(m_regExp.exactMatch(clipboardText))
-    {
-        if(clipboardText.count()==MAX_COUNT_CHAR)
-            this->setText(clipboardText);
-        else
-            this->setText(this->text()+clipboardText.left(MAX_COUNT_CHAR-this->text().count()));
-        emit textEdited(clipboardText);
-    }
+    setText(clipboardText);
+    emit textEdited(clipboardText);
 }
