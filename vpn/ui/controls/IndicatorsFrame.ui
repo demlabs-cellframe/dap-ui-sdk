@@ -31,6 +31,9 @@
    </property>
    <item>
     <widget class="QCheckBox" name="autorizedCheckBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="text">
       <string>Authorized</string>
      </property>
@@ -38,6 +41,9 @@
    </item>
    <item>
     <widget class="QCheckBox" name="streamOpenedCheckBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="text">
       <string>Stream Established</string>
      </property>
@@ -45,6 +51,9 @@
    </item>
    <item>
     <widget class="QCheckBox" name="virtualNetworkCheckBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="text">
       <string>Network Settings Present</string>
      </property>
