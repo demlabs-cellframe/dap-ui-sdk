@@ -17,6 +17,7 @@
 #include "CustomLicenseLineEdit.h"
 #include "ScreenWithScreenPopupsAbstract.h"
 #include "SerialNumberLineEdit.h"
+#include "BrandTextProperties.h"
 
 #ifdef Q_OS_ANDROID
 #include "WidgetInputSizeController.h"
@@ -24,9 +25,16 @@
 
 #define STATUS_TEXT_CONNECTING_TO_SERVICE "Connecting to service..."
 
-#define BUTTON_TEXT_CONNECTING "CONNECTING..."
-#define BUTTON_TEXT_DEFAULT "START"
 
+/// from "BrandTextProperties.h"
+#ifndef LOGIN_BUTTON_TEXT_CONNECTING
+#define LOGIN_BUTTON_TEXT_CONNECTING "CONNECTING..."
+#endif
+
+/// from "BrandTextProperties.h"
+#ifndef LOGIN_BUTTON_TEXT_DEFAULT
+#define LOGIN_BUTTON_TEXT_DEFAULT "START"
+#endif
 
 class SignInScreenSerialNumberBase : public ScreenWithScreenPopupsAbstract
 {

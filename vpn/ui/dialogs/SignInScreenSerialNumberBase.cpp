@@ -93,7 +93,7 @@ void SignInScreenSerialNumberBase::initVariantUi(QWidget *a_widget)
     connect(m_ui->ledSerialKey, &SerialKeyField::textChanged, this, &SignInScreenSerialNumberBase::serialKeyChanged);
 
     //Default properties:
-    m_ui->btnConnect->setText(tr(BUTTON_TEXT_DEFAULT));
+    m_ui->btnConnect->setText(tr(LOGIN_BUTTON_TEXT_DEFAULT));
 
     Utils::setPropertyAndUpdateStyle(m_ui->lblStatusMessage, Properties::WRONG, true);
     Utils::setPropertyAndUpdateStyle(m_ui->ledSerialKey, Properties::WRONG, false);
@@ -234,7 +234,7 @@ void SignInScreenSerialNumberBase::adjustStateMachine()
 
     m_stt_serverState_loading_connecting->assignProperty(m_ui->lblStatusMessage, qPrintable(Properties::TEXT), "");
 
-    m_stt_serverState_loading_connecting->assignProperty(m_ui->btnConnect, qPrintable(Properties::TEXT), BUTTON_TEXT_CONNECTING);
+    m_stt_serverState_loading_connecting->assignProperty(m_ui->btnConnect, qPrintable(Properties::TEXT), tr(LOGIN_BUTTON_TEXT_CONNECTING));
 
     this->m_inputStates->start();
 }
