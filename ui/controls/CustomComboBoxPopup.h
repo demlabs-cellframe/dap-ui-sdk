@@ -35,9 +35,7 @@ public:
     bool captionIsVisible() const;
     QList<QListView*> allListViews();
 
-    void ignoreIconsFromModel(bool y) {
-        m_ignoreIconsFromModel = y;
-    }
+    void ignoreIconsFromModel(bool y);
     bool isIcomsFromModelIgnored() {
         return m_ignoreIconsFromModel;
     }

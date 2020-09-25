@@ -12,9 +12,7 @@ class WidgetDelegateBase : public QFrame
 public:
     explicit WidgetDelegateBase(QWidget *parent = nullptr);
 
-    void ignoreImages(bool y){
-        m_ignoreImages = y;
-    }
+    void ignoreImages(bool y);
     bool isImagesIgnored() {
         return m_ignoreImages;
     }

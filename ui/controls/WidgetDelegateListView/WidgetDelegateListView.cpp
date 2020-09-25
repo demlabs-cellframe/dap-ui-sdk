@@ -97,8 +97,6 @@ void WidgetDelegateListView::createIndexDelegates(int a_start /*= 0*/, int a_end
         if (!widget)
             return;
 
-        widget->setProperty("ignoreIconsFromModel", m_ignoreIcons);
-
         connect(widget, &WidgetDelegateBase::sizeChanged, [this, index](const QSize& a_size){
             Q_UNUSED(a_size)
             emit m_itemDelegate->sizeHintChanged(index);
@@ -106,6 +104,11 @@ void WidgetDelegateListView::createIndexDelegates(int a_start /*= 0*/, int a_end
 
         connect(widget, &WidgetDelegateBase::selected, [this, row]{
              emit this->itemSelected(row);
+        });
+
+        connect(this, &WidgetDelegateListView::styleChange, [this, widget, index](const QString&, QVariant value){
+            widget->setProperty("ignoreIconsFromModel", value.toBool());
+            widget->setData(this->model()->itemData(index));
         });
 
         widget->setData(this->model()->itemData(index));
@@ -178,4 +181,10 @@ void WidgetDelegateListView::setModel(QAbstractItemModel *model)
 {
     CustomComboBoxListView::setModel(model);
     createIndexDelegates();
+}
+
+void WidgetDelegateListView::ignoreIcons(bool ignore)
+{
+    m_ignoreIcons = ignore;
+    emit styleChange(QString("ignoreIconsFromModel"), QVariant(ignore));
 }

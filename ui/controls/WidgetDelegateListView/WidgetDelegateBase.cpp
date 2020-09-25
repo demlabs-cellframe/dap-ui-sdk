@@ -16,6 +16,12 @@ WidgetDelegateBase::WidgetDelegateBase(QWidget *parent)
     this->setLayout(m_layout);
 }
 
+void WidgetDelegateBase::ignoreImages(bool y)
+{
+    m_ignoreImages = y;
+
+}
+
 void WidgetDelegateBase::setData(const QMap<int, QVariant> &a_dataMap)
 {
     for (auto role: a_dataMap.keys())

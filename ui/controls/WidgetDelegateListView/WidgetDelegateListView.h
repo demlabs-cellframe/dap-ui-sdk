@@ -30,12 +30,12 @@ public:
     
     virtual void setModel(QAbstractItemModel *model) override;
 
-    void ignoreIcons(bool y) {
-        m_ignoreIcons = y;
-    }
+    void ignoreIcons(bool y);
     bool isIcomsIgnored() {
         return m_ignoreIcons;
     }
+signals:
+    void styleChange(const QString& propertyName, QVariant value);
 protected slots:
     virtual void rowsInserted(const QModelIndex &parent, int start, int end) override;
     virtual void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) override;
