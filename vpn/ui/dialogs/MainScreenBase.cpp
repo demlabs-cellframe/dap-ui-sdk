@@ -92,6 +92,8 @@ void MainScreenBase::setVirtualNetwork(bool a_virtualNetwork /*= true*/)
 
 void MainScreenBase::setSentReceivedIndicators(quint64 a_bytesReceived, quint64 a_bytesSent, quint64 a_packetsReceived, quint64 a_packetsSent)
 {
+    m_uploadSpeed     = convertBytePerSecond(a_bytesSent - m_bytesSent);
+    m_downloadSpeed   = convertBytePerSecond(a_bytesReceived - m_bytesReceived);
     m_bytesReceived   = a_bytesReceived;
     m_bytesSent       = a_bytesSent;
     m_packetsReceived = a_packetsReceived;
@@ -109,6 +111,14 @@ void MainScreenBase::setSentReceivedIndicators(quint64 a_bytesReceived, quint64 
     }
 }
 
+QString MainScreenBase::convertBytePerSecond(const quint64 &byte)
+{
+    if (byte >= pow(2,20))
+        return QString("%1 %2").arg(QString::number(byte/pow(2,20), 'f', 2)).arg("Mbps");
+    else
+        return QString("%1 %2").arg(QString::number(byte/pow(2,10), 'f', 2)).arg("Kbps");
+}
+
 uint64_t MainScreenBase::connectedTime()
 {
     return m_loginTime.secsTo(QDateTime::currentDateTime());
@@ -118,8 +128,11 @@ void MainScreenBase::updateSentRecievedIndicators()
 {
     //TODO:
     // Check why sigReadWriteBytesStat signal send wrong datas (bytes/packets are contrarily)
-    m_ui->lblSent->setText(this->indicatorUnitsIsBytes() ? Utils::convertByte(m_bytesSent)    : QString::number(m_packetsSent));
-    m_ui->lblReceived->setText(this->indicatorUnitsIsBytes() ? Utils::convertByte(m_bytesReceived): QString::number(m_packetsReceived));
+#if !defined Q_OS_ANDROID
+    m_ui->lblSpeed->setText(this->indicatorUnitsIsDownload() ? m_downloadSpeed : m_uploadSpeed);
+    m_ui->lblBytes->setText(this->indicatorUnitsIsDownload() ? Utils::convertByte(m_bytesReceived) : Utils::convertByte(m_bytesSent));
+    m_ui->lblPackets->setText(this->indicatorUnitsIsDownload() ? QString::number(m_packetsReceived) : QString::number(m_packetsSent));
+#endif
 }
 
 void MainScreenBase::updateTimeIndicators()
@@ -131,9 +144,9 @@ void MainScreenBase::updateTimeIndicators()
         loginTime = m_loginTime.toString("hh:mm");
     else
         loginTime = m_loginTime.toString("MM-dd-yy hh:mm");
-
+#if defined Q_OS_ANDROID
     m_ui->lblLoginTime->setText(loginTime);
-
+#endif
     QString connectedTime;
     if (this->connectedTime() == 0)
         connectedTime = EMPTY_TYME;
@@ -163,13 +176,13 @@ QString MainScreenBase::statusText()
 }
 
 
-bool MainScreenBase::indicatorUnitsIsBytes() const
+bool MainScreenBase::indicatorUnitsIsDownload() const
 {
 #ifdef ANDROID
     return true;
 }
 #else
-    return (this->indicatorUnits() == IndicatorsUnits::Bytes);
+    return (this->indicatorUnits() == IndicatorsUnits::Download);
 }
 
 void MainScreenBase::setIndicatorUnits(const IndicatorsUnits &a_indicatorUnits)
@@ -178,25 +191,32 @@ void MainScreenBase::setIndicatorUnits(const IndicatorsUnits &a_indicatorUnits)
         return;
     m_indicatorUnits = a_indicatorUnits;
 
-    m_ui->btnBytes->setChecked(indicatorUnitsIsBytes());
-    m_ui->btnBytes->setEnabled(!this->indicatorUnitsIsBytes());
-    m_ui->btnPackets->setChecked(!this->indicatorUnitsIsBytes());
-    m_ui->btnPackets->setEnabled( this->indicatorUnitsIsBytes());
+    m_ui->btnDownload->setChecked(indicatorUnitsIsDownload());
+    m_ui->btnDownload->setEnabled(!this->indicatorUnitsIsDownload());
 
-    m_ui->lblReceivedTitle->setText(this->receivedIndicatorTitle());
-    m_ui->lblSentTitle->setText(this->sendIndicatorTitle());
+    m_ui->btnUpload->setChecked(!this->indicatorUnitsIsDownload());
+    m_ui->btnUpload->setEnabled( this->indicatorUnitsIsDownload());
+
+    m_ui->lblSpeedTitle->setText(this->speedIndicatorTitle());
+    m_ui->lblBytesTitle->setText(this->bytesIndicatorTitle());
+    m_ui->lblPacketsTitle->setText(this->packetsIndicatorTitle());
 
     this->updateSentRecievedIndicators();
 }
 
-QString MainScreenBase::receivedIndicatorTitle() const
+QString MainScreenBase::speedIndicatorTitle() const
 {
-    return (this->indicatorUnitsIsBytes() ? "Received" : PACKETS + " received") + ":";
+    return (this->indicatorUnitsIsDownload() ? DOWNLOAD : UPLOAD) + " speed";
 }
 
-QString MainScreenBase::sendIndicatorTitle() const
+QString MainScreenBase::bytesIndicatorTitle() const
 {
-    return (this->indicatorUnitsIsBytes() ? "Sent" : PACKETS + " sent") + ":";
+    return "Bytes " + (this->indicatorUnitsIsDownload() ? RECEIVED : SENT);
+}
+
+QString MainScreenBase::packetsIndicatorTitle() const
+{
+    return "Packets " + (this->indicatorUnitsIsDownload() ? RECEIVED : SENT);
 }
 #endif
 
@@ -268,11 +288,11 @@ void MainScreenBase::initGraphic(QGraphicsView *a_graphic)
 
     connect(m_ui->cbbServer, SIGNAL(activated(const QString &))  , this, SIGNAL(serverChangingRequested(const QString &)));
 
-    connect(m_ui->btnBytes,&QPushButton::clicked,[=]{
-        setIndicatorUnits(IndicatorsUnits::Bytes);
+    connect(m_ui->btnDownload,&QPushButton::clicked,[=]{
+        setIndicatorUnits(IndicatorsUnits::Download);
     });
-    connect(m_ui->btnPackets,&QPushButton::clicked,[=]{
-        setIndicatorUnits(IndicatorsUnits::Packets);
+    connect(m_ui->btnUpload,&QPushButton::clicked,[=]{
+        setIndicatorUnits(IndicatorsUnits::Upload);
     });
     // Set styles for graphics.
     addItemGraphicSceneStyle("shChartDownload",   AppStyleSheetHandler::getWidgetStyleSheet("#shChartDownload", "active"));

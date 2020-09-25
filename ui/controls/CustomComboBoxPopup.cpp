@@ -2,6 +2,7 @@
 
 #include "CustomComboBoxListView.h"
 #include "defines.h"
+#include "BrandAppProperties.h"
 
 
 CustomComboBoxPopup::CustomComboBoxPopup(QMainWindow *parent)
@@ -17,6 +18,12 @@ CustomComboBoxPopup::CustomComboBoxPopup(QMainWindow *parent)
 
         this->hide();
     });
+
+    // Беда в том, что сначала вызывается SetModel
+    // (и используется по-умолчательное значение m_ignoreIconsFromModel),
+    // а уже после выставляется property ignoreIconsFromModel из CSS.
+    // Потому я не вижу иного выхода, как использовать Brand App Properties
+    m_ignoreIconsFromModel = IGNORE_COUNTRY_FLAGS;
 }
 
 QAbstractItemModel *CustomComboBoxPopup::model()
@@ -26,8 +33,10 @@ QAbstractItemModel *CustomComboBoxPopup::model()
 
 void CustomComboBoxPopup::setModel(QAbstractItemModel *a_model)
 {
-    for(QListView* curView : this->allListViews())
+    for(QListView* curView : this->allListViews()) {
+        curView->setProperty("ignoreIconsFromModel", m_ignoreIconsFromModel);
         curView->setModel(a_model);
+    }
 }
 
 void CustomComboBoxPopup::addItem(const QString &a_text, const QVariant &a_userData /*= QVariant()*/)

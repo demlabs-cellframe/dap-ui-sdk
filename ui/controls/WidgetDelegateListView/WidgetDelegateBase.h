@@ -7,8 +7,17 @@
 class WidgetDelegateBase : public QFrame
 {
     Q_OBJECT
+    // @brief When the ignoreIconsFromModel property is true, this list view ignores any images posted by the model.
+    Q_PROPERTY(bool ignoreIconsFromModel READ isImagesIgnored WRITE ignoreImages)
 public:
     explicit WidgetDelegateBase(QWidget *parent = nullptr);
+
+    void ignoreImages(bool y){
+        m_ignoreImages = y;
+    }
+    bool isImagesIgnored() {
+        return m_ignoreImages;
+    }
 
 public slots:
     virtual void setData(const QMap<int, QVariant>& a_dataMap);
@@ -27,7 +36,7 @@ protected:
 
     QBoxLayout *m_layout;
 
-
+    bool m_ignoreImages = true;
 };
 
 #endif // ABSTRACTWIDGETDELEGATE_H
