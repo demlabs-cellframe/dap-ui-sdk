@@ -6,11 +6,10 @@
 
 //helper header file for including all scrreens
 
-//#ifdef ANDROID
-//#else
+#ifdef USE_THO_LAYOUTS
     #include "LoginScreenLayout.h"
     #include "LoginNavigationPanel.h"
-//#endif
+#endif
 
 #include "MainScreenLayout.h"
 
