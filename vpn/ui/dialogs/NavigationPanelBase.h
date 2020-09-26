@@ -1,7 +1,7 @@
 #ifndef NAVIGATIONPANELBASE_H
 #define NAVIGATIONPANELBASE_H
 
-#ifdef ANDROID
+#ifndef USE_THO_LAYOUTS
     #include "DefaultMultiScreen.h"
     typedef DefaultMultiScreen PanelParentClass;
 #else

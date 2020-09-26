@@ -16,7 +16,7 @@ void NavigationPanelBase::setBackState(bool a_backState)
         return;
     m_backState = a_backState;
 
-#ifdef ANDROID
+#ifndef USE_THO_LAYOUTS
     if (a_backState)
         this->activateScreen<NavigationPanelBack>();
     else
