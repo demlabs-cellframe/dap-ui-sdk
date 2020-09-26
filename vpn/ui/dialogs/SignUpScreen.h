@@ -21,7 +21,7 @@
 #include "ClickableLabel.h"
 #include <QDesktopServices>
 #include <QUrl>
-#include "BrandProperties.h"
+#include "BrandTextProperties.h"
 
 #include "DapSignUpData.h"
 

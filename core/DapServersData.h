@@ -38,6 +38,7 @@ public:
     bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex()) Q_DECL_OVERRIDE;
     QMap<int, QVariant> itemData(const QModelIndex &index) const Q_DECL_OVERRIDE;
 
+    static const QString findInCountriesMap(const QString& string);
 public slots:
     void setCurrentServer(const DapServerInfo *a_server);
     void setCurrentServer(const QString &a_serverName);
@@ -55,7 +56,7 @@ signals:
 
 private:
     void loadDatas();
-    static const QString findInCountriesMap(const QString& string);
+
 
     const QString CURRENT_SERVER_NAME_SETTING   = "email";
     const QString CURRENT_SERVER_ADDRESS_SETTING = "message";
