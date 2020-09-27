@@ -84,3 +84,7 @@ void DapTunAndroid::workerPrepare()
 {
     qInfo() <<"Prepare worker before the work";
 }
+
+void DapTunAndroid::addNewUpstreamRoute(const QString &a_dest) {
+    Q_UNUSED(a_dest);
+}

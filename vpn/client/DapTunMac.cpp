@@ -301,3 +301,11 @@ void DapTunMac::getBackDNS()
     qDebug() << "cmd run [" << run << ']';
     ::system(run.toLatin1().constData() );
 }
+
+void DapTunMac::addNewUpstreamRoute(const QString &a_dest) {
+    QString run;
+    run = QString("route add -host %2 %1")
+        .arg(m_defaultGwOld).arg(qPrintable(a_dest));
+    qDebug() << "cmd run [" << run << ']';
+     ::system(run.toLatin1().constData() );
+}
