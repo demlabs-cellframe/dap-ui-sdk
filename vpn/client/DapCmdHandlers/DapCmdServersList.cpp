@@ -13,7 +13,8 @@ void DapCmdServersList::handle(const QJsonObject* params)
     Q_UNUSED(params)
     auto reply = DapServersListRequester::sendRequest(serversList().front());
     if (!reply) {
-        sendSimpleError(-32002, "Network unavailable");
+        sendSimpleError(-32000, "Network unavailable");
+        qWarning()<< "Network unavailable, do nothing";
         return;
     }
     connect(reply, &DapServersListNetworkReply::sigResponse, [=](const QJsonDocument& servers) {

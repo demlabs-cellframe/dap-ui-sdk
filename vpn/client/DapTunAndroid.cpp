@@ -70,6 +70,7 @@ void DapTunAndroid::workerPause()
         qCritical() <<"Can't write to the breaker's pipe!";
         return;
     }
+    onWorkerStopped(); // TODO: remove it when I find out how to allow requests bypass the socket
 }
 
 void DapTunAndroid::signalWriteQueueProc()
