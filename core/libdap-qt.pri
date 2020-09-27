@@ -42,7 +42,8 @@ HEADERS += \
     $$PWD/DapHttpPing.h \
     $$PWD/DapServerInfo.h \
     $$PWD/DapServersListRequester.h \
-    $$PWD/DapServersLocalStorage.h
+    $$PWD/DapServersLocalStorage.h \
+    $$PWD/DataToUpdate.h
 
 INCLUDEPATH += $$PWD
 

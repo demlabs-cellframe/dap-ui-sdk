@@ -19,6 +19,7 @@ QString BugReportLoadingScreen::screenName()
 
 void BugReportLoadingScreen::initVariantUi(QWidget *a_widget)
 {
+
 #ifdef ANDROID
     m_ui->btnCancel->setText(tr("CANCEL"));
     if (DAP_BRAND == "TBCCVPN")

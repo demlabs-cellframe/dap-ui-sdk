@@ -15,6 +15,9 @@ class WidgetListViewItemDelegate;
 class WidgetDelegateListView : public CustomComboBoxListView
 {
     Q_OBJECT
+    // @brief then 'ignoreIconsFromModel' property is true, this ignore any images model send in
+    Q_PROPERTY(bool ignoreIconsFromModel READ isIcomsIgnored WRITE ignoreIcons)
+
 public:
     typedef WidgetDelegateBase* (WidgetDelegateFactory)();
     WidgetDelegateListView(QWidget *a_parent = nullptr);
@@ -27,6 +30,12 @@ public:
     
     virtual void setModel(QAbstractItemModel *model) override;
 
+    void ignoreIcons(bool y) {
+        m_ignoreIcons = y;
+    }
+    bool isIcomsIgnored() {
+        return m_ignoreIcons;
+    }
 protected slots:
     virtual void rowsInserted(const QModelIndex &parent, int start, int end) override;
     virtual void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) override;
@@ -38,6 +47,8 @@ private:
 
     WidgetListViewItemDelegate *m_itemDelegate{};
     WidgetDelegateFactory* m_widgetDelegateFactory{};
+
+    bool m_ignoreIcons = true;
 };
 
 class WidgetListViewItemDelegate: public QStyledItemDelegate

@@ -33,6 +33,8 @@ protected:
     virtual void initVariantUi(QWidget *a_widget) override;
     virtual QList<CustomPopup *> customPopups() override;
 
+    virtual const QString getConnectedToText();
+
     QScopedPointer<CONNECTION_FORM> m_ui;
 
 private:

@@ -97,6 +97,8 @@ void WidgetDelegateListView::createIndexDelegates(int a_start /*= 0*/, int a_end
         if (!widget)
             return;
 
+        widget->setProperty("ignoreIconsFromModel", m_ignoreIcons);
+
         connect(widget, &WidgetDelegateBase::sizeChanged, [this, index](const QSize& a_size){
             Q_UNUSED(a_size)
             emit m_itemDelegate->sizeHintChanged(index);
