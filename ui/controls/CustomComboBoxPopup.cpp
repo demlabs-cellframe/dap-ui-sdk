@@ -113,12 +113,3 @@ QList<QListView *> CustomComboBoxPopup::allListViews()
 {
     return this->getTheSameWidgets<QListView>(this->listViewName());
 }
-
-void CustomComboBoxPopup::ignoreIconsFromModel(bool y)
-{
-    m_ignoreIconsFromModel = y;
-    for(QListView* curView : this->allListViews()) {
-        curView->setProperty("ignoreIconsFromModel", m_ignoreIconsFromModel);
-    }
-
-}

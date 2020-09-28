@@ -35,8 +35,6 @@ public:
     
     virtual void setModel(QAbstractItemModel *model) override;
 
-signals:
-    void styleChange(const QString& propertyName, QVariant value);
 protected slots:
     virtual void rowsInserted(const QModelIndex &parent, int start, int end) override;
     virtual void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) override;
