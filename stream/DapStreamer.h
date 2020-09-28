@@ -50,7 +50,7 @@ public:
     DapChThread* addChProc(char chId, DapChBase* obj);
     void setStreamOpened(bool b) { m_isStreamOpened = b; }
     void setStreamTimeoutCheck(bool b) { m_timeoutStreamCheck = b; }
-    void stopAutoStreamConnecting() { disconnect(m_streamTimeoutConn); }
+    uint16_t m_reconnectAttempts;
 protected:
     static QHash<char, DapChBase*> m_dsb;
     DapChThread* m_dapChThead = Q_NULLPTR;
@@ -65,7 +65,6 @@ protected:
     QByteArray m_buf;
 
     int m_dapDataPosition;
-    QMetaObject::Connection m_streamTimeoutConn;
     QNetworkReply * m_network_reply = Q_NULLPTR;
 
     SafeartsStreamState m_streamState;
@@ -105,10 +104,9 @@ public slots:
         streamOpen("stream_ctl","channels=s");
 
     }
-    void openChannels(const QString & a_channels) {
-        qDebug() << "[DapStreamer] Open socket_forward media item sf=1";
-        streamOpen(QString("stream_ctl,channels=%1").arg(a_channels),"");
 
+    void openChannels(const QString & a_channels) {
+        streamOpen(QString("stream_ctl,channels=%1").arg(a_channels),"");
     }
 
     void abortStreamRequest() { m_network_reply->abort(); }
@@ -120,7 +118,6 @@ public slots:
 
     // virtual void readChPacket(DapChannelPacketHdr *pkt, void *data) = 0;
 signals:
-    void finished();
     void errorNetwork(const QString &e);
     void authenticationRequiredError();
     void notify(const QString&);
@@ -143,6 +140,7 @@ signals:
     void streamServKeyRecieved();
 
     void sigStreamPacketLoosed(quint64 countLoosedPackets);
+    void sigNetworkMonitor();
 };
 
 #endif // DAPCONNECTSTREAM_H
