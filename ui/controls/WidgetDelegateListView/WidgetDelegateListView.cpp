@@ -3,6 +3,7 @@
 #include "Utilz.h"
 #include "QPushButton"
 #include <QScroller>
+
 WidgetDelegateListView::WidgetDelegateListView(QWidget *a_parent /*= nullptr*/)
     :CustomComboBoxListView(a_parent)
 {
@@ -14,6 +15,20 @@ WidgetDelegateListView::WidgetDelegateListView(QWidget *a_parent /*= nullptr*/)
     this->setItemDelegate(m_itemDelegate);
 }
 
+void WidgetDelegateListView::setUsingImageFromModel(bool a_use)
+{
+    if (m_usingImageFromModel == a_use)
+        return;
+
+    m_usingImageFromModel = a_use;
+
+    this->updateDelegateImages();
+}
+
+bool WidgetDelegateListView::usingImageFromModel()
+{
+    return m_usingImageFromModel;
+}
 
 WidgetDelegateBase *WidgetDelegateListView::indexWidget(const QModelIndex &index)
 {
@@ -64,10 +79,10 @@ void WidgetDelegateListView::dataChanged(const QModelIndex &topLeft, const QMode
             return;
 
         if (roles.isEmpty())
-            widget->setData(this->model()->data(index));
+            this->setDelegateData(widget, this->model()->data(index));
         else
             for (int curRole: roles) {
-                widget->setData(index.data(curRole), curRole);
+                this->setDelegateData(widget, index.data(curRole), curRole);
             }
     }
 }
@@ -106,12 +121,7 @@ void WidgetDelegateListView::createIndexDelegates(int a_start /*= 0*/, int a_end
              emit this->itemSelected(row);
         });
 
-        connect(this, &WidgetDelegateListView::styleChange, [this, widget, index](const QString&, QVariant value){
-            widget->setProperty("ignoreIconsFromModel", value.toBool());
-            widget->setData(this->model()->itemData(index));
-        });
-
-        widget->setData(this->model()->itemData(index));
+        this->setDelegateData(widget, this->model()->itemData(index));
         widget->setSelected(this->selectionModel()->isSelected(index));
 
         this->setIndexWidget(index, widget);
@@ -129,6 +139,54 @@ void WidgetDelegateListView::deleteAllWidgetDelegates()
         delete widget;
     }
 
+}
+
+///Set data to widget delegate
+/// If usingImageFromModel == false do nothing for DecorationRole and UserRole
+void WidgetDelegateListView::setDelegateData(WidgetDelegateBase *a_delegate, QMap<int, QVariant> a_dataMap)
+{
+    if (!this->usingImageFromModel())
+    {
+        a_dataMap.remove(Qt::DecorationRole);
+        a_dataMap.remove(CUSTOM_MODEL_ICON_ROLE);
+    }
+    a_delegate->setData(a_dataMap);
+}
+
+///Set data to widget delegate
+/// If usingImageFromModel == false do nothing for DecorationRole and UserRole
+void WidgetDelegateListView::setDelegateData(WidgetDelegateBase *a_delegate, const QVariant &a_value, int a_role)
+{
+    if (!this->usingImageFromModel() && (a_role == Qt::DecorationRole || a_role == CUSTOM_MODEL_ICON_ROLE))
+        return;
+
+    a_delegate->setData(a_value, a_role);
+}
+
+void WidgetDelegateListView::updateDelegateImages()
+{
+    if (!m_widgetDelegateFactory)
+        return;
+
+    for (int i = 0; i < this->model()->rowCount(); i++)
+    {
+        QModelIndex index = this->model()->index(i, 0);
+        WidgetDelegateBase* widgetDeleg = this->widgetDelegate(index);
+        if (!widgetDeleg)
+            continue;
+
+        if (this->usingImageFromModel())
+        {
+            widgetDeleg->setData(this->model()->data(index, Qt::DecorationRole), Qt::DecorationRole);
+            widgetDeleg->setData(this->model()->data(index, CUSTOM_MODEL_ICON_ROLE), CUSTOM_MODEL_ICON_ROLE);
+        }
+    }
+}
+
+WidgetDelegateBase *WidgetDelegateListView::widgetDelegate(const QModelIndex &a_index)
+{
+    QWidget* widget = this->indexWidget(a_index);
+    return dynamic_cast<WidgetDelegateBase*>(widget);
 }
 
 WidgetDelegateBase *WidgetDelegateListView::createWidgetDelegate()
@@ -181,10 +239,4 @@ void WidgetDelegateListView::setModel(QAbstractItemModel *model)
 {
     CustomComboBoxListView::setModel(model);
     createIndexDelegates();
-}
-
-void WidgetDelegateListView::ignoreIcons(bool ignore)
-{
-    m_ignoreIcons = ignore;
-    emit styleChange(QString("ignoreIconsFromModel"), QVariant(ignore));
 }

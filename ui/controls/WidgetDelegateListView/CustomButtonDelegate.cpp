@@ -19,6 +19,8 @@ CustomButtonDelegate::CustomButtonDelegate(QWidget* a_parent)
     });
 }
 
+
+
 void CustomButtonDelegate::setData(const QVariant &value, int role)
 {
     switch (role) {
@@ -26,14 +28,12 @@ void CustomButtonDelegate::setData(const QVariant &value, int role)
         m_button->setText(value.toString());
         break;
     case Qt::DecorationRole:
-        if (!m_ignoreImages)
-            m_button->setIcon(value.toString());
-        break;
     case Qt::UserRole:
-        if (!m_ignoreImages) {
-            m_button->setImage(value.toString());
+//        if (this->usingImageFromModel())
+//        {
+            m_button->setIcon(value.toString());
             m_button->image()->setScaledContents(true);
-        }
+//        }
         break;
     default:
         qDebug() << "Wrong role";
@@ -55,5 +55,6 @@ void CustomButtonDelegate::setSelected(bool a_selected)
 
 WidgetDelegateBase *CustomButtonDelegate::create()
 {
-    return new CustomButtonDelegate;
+    CustomButtonDelegate* newDelegate = new CustomButtonDelegate;
+    return newDelegate;
 }

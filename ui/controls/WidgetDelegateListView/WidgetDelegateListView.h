@@ -10,17 +10,22 @@
 #include "WidgetDelegateBase.h"
 #include "CustomComboBoxListView.h"
 
+#define CUSTOM_MODEL_ICON_ROLE Qt::UserRole
+
 class WidgetListViewItemDelegate;
 
 class WidgetDelegateListView : public CustomComboBoxListView
 {
     Q_OBJECT
-    // @brief then 'ignoreIconsFromModel' property is true, this ignore any images model send in
-    Q_PROPERTY(bool ignoreIconsFromModel READ isIcomsIgnored WRITE ignoreIcons)
+    // @brief When 'usingImageFromModel' property is false, this ignore any images model send in
+    Q_PROPERTY(bool usingImageFromModel READ usingImageFromModel WRITE setUsingImageFromModel)
 
 public:
     typedef WidgetDelegateBase* (WidgetDelegateFactory)();
     WidgetDelegateListView(QWidget *a_parent = nullptr);
+
+    void setUsingImageFromModel(bool a_use);
+    bool usingImageFromModel();
 
     virtual WidgetDelegateBase* createWidgetDelegate(); //Reimplement this method for your oun widget delegate.
 
@@ -30,10 +35,6 @@ public:
     
     virtual void setModel(QAbstractItemModel *model) override;
 
-    void ignoreIcons(bool y);
-    bool isIcomsIgnored() {
-        return m_ignoreIcons;
-    }
 signals:
     void styleChange(const QString& propertyName, QVariant value);
 protected slots:
@@ -44,11 +45,15 @@ protected slots:
 private:
     void createIndexDelegates(int a_start = 0, int a_end = -1);
     void deleteAllWidgetDelegates();
+    void setDelegateData(WidgetDelegateBase* a_delegate, QMap<int, QVariant> a_dataMap);
+    void setDelegateData(WidgetDelegateBase* a_delegate, const QVariant &a_value, int a_role = Qt::DisplayRole);
+    void updateDelegateImages();
+    WidgetDelegateBase* widgetDelegate(const QModelIndex& a_index);
 
     WidgetListViewItemDelegate *m_itemDelegate{};
     WidgetDelegateFactory* m_widgetDelegateFactory{};
 
-    bool m_ignoreIcons = true;
+    bool m_usingImageFromModel = false;
 };
 
 class WidgetListViewItemDelegate: public QStyledItemDelegate
