@@ -1,7 +1,7 @@
 #ifndef NAVIGATIONPANELBASE_H
 #define NAVIGATIONPANELBASE_H
 
-#ifndef USE_THO_LAYOUTS
+#ifndef USE_TWO_LAYOUTS
     #include "DefaultMultiScreen.h"
     typedef DefaultMultiScreen PanelParentClass;
 #else

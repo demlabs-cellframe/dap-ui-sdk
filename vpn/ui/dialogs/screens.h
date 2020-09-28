@@ -6,7 +6,7 @@
 
 //helper header file for including all scrreens
 
-#ifdef USE_THO_LAYOUTS
+#ifdef USE_TWO_LAYOUTS
     #include "LoginScreenLayout.h"
     #include "LoginNavigationPanel.h"
 #endif
@@ -43,6 +43,9 @@
 #include "ComboBoxPopupScreen.h"
 #include "FAQScreen.h"
 
+#ifdef USE_BOTTOM_PANEL
+#include "NavigationPanelBottom.h"
+#endif
 
 
 #endif // SCREENS_H

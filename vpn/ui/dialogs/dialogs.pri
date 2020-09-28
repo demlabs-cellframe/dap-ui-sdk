@@ -57,7 +57,7 @@ defined(USING_SIGN_IN_SCREEN_WITH_TARIFF_LINK,var){
         $$PWD/SignInWithTariffLink.cpp
 }
 
-defined(USE_THO_LAYOUTS,var){
+defined(USE_TWO_LAYOUTS,var){
 
     INCLUDEPATH += $$PWD/desktop
 

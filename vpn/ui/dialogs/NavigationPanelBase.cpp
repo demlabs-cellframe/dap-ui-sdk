@@ -16,7 +16,7 @@ void NavigationPanelBase::setBackState(bool a_backState)
         return;
     m_backState = a_backState;
 
-#ifndef USE_THO_LAYOUTS
+#ifndef USE_TWO_LAYOUTS
     if (a_backState)
         this->activateScreen<NavigationPanelBack>();
     else
