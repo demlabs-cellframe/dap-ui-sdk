@@ -187,9 +187,11 @@ void DapDataLocal::loadAuthorizationDatas()
 }
 
 void DapDataLocal::rotateCDBList() {
-    if (m_cdbServersList.size() > 1) {
+    if ((m_cdbServersList.size() > 1) && (m_cdbServersList.size() > ++m_rotations)) {
         auto tmp = m_cdbServersList.takeFirst();
         m_cdbServersList.push_back(tmp);
+    } else {
+        m_rotations = -1;
     }
 }
 

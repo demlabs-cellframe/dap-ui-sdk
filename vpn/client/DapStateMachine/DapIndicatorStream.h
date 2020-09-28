@@ -6,16 +6,23 @@
 class DapIndicatorStream : public DapIndicatorStateAbstract {
     Q_OBJECT
 public:
-    explicit DapIndicatorStream(QObject *parent = nullptr)
-        : DapIndicatorStateAbstract(parent) { }
+    explicit DapIndicatorStream(QObject *parent = nullptr): DapIndicatorStateAbstract(parent) { }
     void init(QStateMachine &sm, const QString& stateName) override;
 protected:
     void initAllowedSubstatesTransitions() override;
 public:
     static const time_t STREAM_RECONNECTING_TIMEOUT = 1500;
 
+    DapState *upsDisconnected;
+    DapState *upsHandshakeRequest;
+    DapState *upsHandshakeReply;
+    DapState *upsChannelsOpen;
+    DapState *networkErr;
+    DapState *srvProvided;
+    DapState *configProvided;
+
     // Substates False
-    DapState* disconnectedNormal;
+    /*DapState* disconnectedNormal;
     DapState* disconnectedError;
 
     // Substates for chain net services
@@ -36,7 +43,7 @@ public:
     DapState* addressReceived;
 
     // Substates TrueToFalse
-    DapState* disconnecting;
+    DapState* disconnecting;*/
 };
 
 #endif // DAPINDICATORSTREAM_H

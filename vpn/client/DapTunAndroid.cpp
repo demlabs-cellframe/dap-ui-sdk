@@ -61,6 +61,16 @@ void DapTunAndroid::workerStop()
         qCritical() <<"Can't write to the breaker's pipe!";
         return;
     }
+    onWorkerStopped();
+}
+
+void DapTunAndroid::workerPause()
+{
+    if ( ::write( breaker1, "\0", 1) <= 0){
+        qCritical() <<"Can't write to the breaker's pipe!";
+        return;
+    }
+    onWorkerStopped(); // TODO: remove it when I find out how to allow requests bypass the socket
 }
 
 void DapTunAndroid::signalWriteQueueProc()
@@ -73,4 +83,8 @@ void DapTunAndroid::signalWriteQueueProc()
 void DapTunAndroid::workerPrepare()
 {
     qInfo() <<"Prepare worker before the work";
+}
+
+void DapTunAndroid::addNewUpstreamRoute(const QString &a_dest) {
+    Q_UNUSED(a_dest);
 }
