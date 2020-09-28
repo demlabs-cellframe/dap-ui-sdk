@@ -149,16 +149,6 @@ void DapDataLocal::saveAuthorizationData()
     this->saveEncriptedSetting(this->TEXT_PASSWORD  , this->password());
 }
 
-void DapDataLocal::setLicenseTermTill(const QString &utcDate)
-{
-    this->m_serialKeyData->setLicenseTermTill(utcDate);
-}
-
-const QDateTime &DapDataLocal::getLicenseTermTill()
-{
-    return this->m_serialKeyData->getLicenseTermTill();
-}
-
 void DapDataLocal::saveSerialKeyData()
 {
     if (m_serialKeyData)
@@ -187,9 +177,11 @@ void DapDataLocal::loadAuthorizationDatas()
 }
 
 void DapDataLocal::rotateCDBList() {
-    if (m_cdbServersList.size() > 1) {
+    if ((m_cdbServersList.size() > 1) && (m_cdbServersList.size() > ++m_rotations)) {
         auto tmp = m_cdbServersList.takeFirst();
         m_cdbServersList.push_back(tmp);
+    } else {
+        m_rotations = -1;
     }
 }
 

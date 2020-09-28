@@ -35,6 +35,10 @@ DapTunDarwin::DapTunDarwin( )
  */
 void DapTunDarwin::tunDeviceCreate()
 {
+    if (m_tunSocket > 0) {
+        qInfo() << "Socket already open";
+        return;
+    }
     long a_num = 5;
     int fd;
     m_tunDeviceName=QString("tun%1").arg(a_num);

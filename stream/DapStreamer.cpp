@@ -22,6 +22,7 @@
 #include <QTcpSocket>
 #include <QSysInfo>
 #include <QTimer>
+#include <QNetworkProxy>
 #include <stdlib.h>
 
 constexpr quint8 daSig[] = {0xa0,0x95,0x96,0xa9,0x9e,0x5c,0xfb,0xfa};
@@ -43,7 +44,8 @@ DapStreamer::DapStreamer(DapSession * session, QObject* parent) :
     m_session = session;
     m_streamSocket = new QTcpSocket(this);
     m_streamSocket->setReadBufferSize(6000);
-
+    m_streamSocket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
+    m_streamSocket->setProxy(QNetworkProxy::NoProxy);
     connect(m_streamSocket,&QIODevice::readyRead, this,&DapStreamer::sltStreamProcess);
     //connect(m_streamSocket,&QAbstractSocket::hostFound, this,&DapConnectStream::sltStreamHostFound);
     connect(m_streamSocket,&QAbstractSocket::connected, this,&DapStreamer::sltStreamConnected);
@@ -107,20 +109,12 @@ void DapStreamer::streamOpen(const QString& subUrl, const QString& query)
                       "Closing current open socket";
         streamClose();
     }
-
-    qDebug() << "[DapConnectStream] Stream open SubUrl = " << subUrl;
-    qDebug() << "[DapConnectStream] Stream open query =" << query;
-
+    qDebug() << "Stream open SubUrl = " << subUrl;
+    qDebug() << "Stream open query =" << query;
     m_streamID.clear();
-
-    m_network_reply = m_session->streamOpenRequest(subUrl, query);
-
-    if(m_network_reply)
-    {
-        emit streamSessionRequested();
-        connect(m_network_reply, &QNetworkReply::finished, this, &DapStreamer::sltStreamOpenCallback);
-    } else {
-        qWarning() << "Network reply is NULL. Stream not will be open";
+    m_network_reply = m_session->streamOpenRequest(subUrl, query, this, SLOT(sltStreamOpenCallback()));
+    if (m_network_reply == nullptr) {
+        qWarning() << "Network error, stream cannot be opened";
         emit errorNetwork("Can't init network connection");
     }
 }
@@ -162,9 +156,9 @@ qint64 DapStreamer::writeStreamRaw(const void * data, size_t data_size)
     }
     else
     {
-        qWarning() << "Stream Socket is not writable";
+        //qWarning() << "Stream Socket is not writable";
         if(!m_streamSocket->isOpen()) {
-            qWarning() << "Stream socket is closed";
+            //qWarning() << "Stream socket is closed";
             emit streamClosed();
         }
         return 0;
@@ -202,13 +196,14 @@ void DapStreamer::sltStreamOpenCallback()
     }
 
     m_streamID = str_list.at(0);
+
     QString streamServKey = str_list.at(1);
 
     if(!m_streamID.isEmpty()) {
         qDebug() << "Stream id:" << m_streamID;
         qDebug()  << "[DapConnectStream] Stream server key for client requests: "
                   << streamServKey;
-        emit streamServKeyRecieved();
+
         m_session->getDapCrypt()->initAesKey(streamServKey, KeyRoleStream);
 
         if(!m_streamSocket->isOpen()) {
@@ -216,18 +211,19 @@ void DapStreamer::sltStreamOpenCallback()
             m_streamSocket->connectToHost(m_session->upstreamAddress(),
                                           m_session->upstreamPort(),
                                           QIODevice::ReadWrite);
-#ifndef Q_OS_WINDOWS
-            if (m_streamSocket->waitForConnected(10000)) {
+//#ifndef Q_OS_WINDOWS
+            if (m_streamSocket->waitForConnected(15000)) {
                 return;
+            } else {
+                emit errorNetwork("Socket connection timeout");
             }
-            emit errorNetwork("Socket connection timeout");
-#endif
+//#endif
         } else {
             qCritical() << "Stream already open";
         }
 
     } else {
-        qWarning() << "Can't open stream." << m_streamID;
+        qWarning() << "Can't open stream " << m_streamID;
         emit sigStreamOpenBadResponseError();
         m_streamID.clear();
     }
@@ -291,8 +287,7 @@ void DapStreamer::sltStreamError(QAbstractSocket::SocketError socketError)
 
 void DapStreamer::sltStreamDisconnected()
 {
-    qDebug() << "[DapConnectStream] sltStreamDisconnected.";
-    emit finished();
+    qDebug() << "[DapConnectStream] sltStreamDisconnected";
     emit streamClosed();
 }
 
@@ -323,7 +318,14 @@ void DapStreamer::sltStreamConnected()
     m_isStreamOpened = false;
     QByteArray baReq( str_request.toLatin1() );
     qint64 ret = m_streamSocket->write(baReq.constData(), baReq.size());
-    qDebug() << "[DapConnectStream] HTTP stream request sent "<< ret<< " bytes";
+    m_streamState = SSS_FRAME_SEARCH;
+    if (m_streamSocket->flush()) {
+        qDebug() << "[DapConnectStream] HTTP stream request sent "<< ret<< " bytes";
+        emit streamOpened();
+    } else {
+        qCritical() << "Stream not opened";
+        emit errorNetwork(m_streamSocket->errorString());
+    }
 
     /*if( !m_streamSocket->waitForBytesWritten(
 #ifndef Q_OS_WINDOWS
@@ -334,16 +336,6 @@ void DapStreamer::sltStreamConnected()
         qDebug() << "[DapConnectStream] Can't wait until all bytes are sent: "
                  << m_streamSocket->errorString();
     }*/
-    m_streamTimeoutConn = connect(m_streamSocket, &QAbstractSocket::bytesWritten, this, &DapStreamer::streamOpened);
-    m_streamState = SSS_FRAME_SEARCH;
-    QTimer::singleShot(15000, Qt::PreciseTimer, this, [=]() {
-        if (!m_isStreamOpened && m_timeoutStreamCheck) {
-            qCritical() << "Stream not opened";
-            disconnect(m_streamTimeoutConn);
-            emit sigStreamOpenNetworkError(QNetworkReply::NetworkError::TimeoutError);
-            m_timeoutStreamCheck = false;
-        }
-    });
 }
 
 

@@ -121,13 +121,6 @@ namespace Utils
         return fileText;
     }
 
-    QString dateDifference(const QDateTime &a_firstDate, const QDateTime &a_secondDate)
-    {
-        if (a_secondDate.toTime_t() == 0)
-            return "Unlimited";
-        return QString::number(a_firstDate.daysTo(a_secondDate));
-    }
-
     Qt::LayoutDirection toQtLayoutDirection(QBoxLayout::Direction a_direction)
     {
         switch (a_direction) {
@@ -167,5 +160,4 @@ namespace Utils
             default: return "";
         }
     }
-
 }

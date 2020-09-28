@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "DapCmdServiceAbstract.h"
+#include "DapServerInfo.h"
 
 class DapCmdServersList: public DapCmdServiceAbstract
 {
@@ -21,6 +22,7 @@ public:
     }
 signals:
     void rotateCDBs();
+    void updateNodesList(const DapServerInfoList&);
 public slots:
     void setServersList(const QList<QString>& a_serversList) { m_serversList = a_serversList ; }
 private:

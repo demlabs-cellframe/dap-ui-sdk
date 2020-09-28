@@ -52,5 +52,3 @@ win32{
 }
 
 INCLUDEPATH += $$PWD/../quazip
-
-
