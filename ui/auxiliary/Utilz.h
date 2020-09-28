@@ -48,7 +48,7 @@ namespace Utils
 
     QString getTextFromFile(const QString &a_fname);
 
-    uint dateDifference(const QDateTime &a_firstDate, const QDateTime &a_secondDate);
+    QString dateDifference(const QDateTime &a_firstDate, const QDateTime &a_secondDate);
 };
 
 template <class T>

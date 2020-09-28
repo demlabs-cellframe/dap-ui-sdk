@@ -28,7 +28,7 @@ public:
 signals:
     void serialKeyChanged(const QString& serialKey);
     void activationChanged(bool activation);
-    void licenseTermTillChanged(const int &days);
+    void licenseTermTillChanged(const QString &days);
 
 public slots:
     void setLicenseTermTill(const QString &a_date);
