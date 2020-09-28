@@ -51,6 +51,7 @@ INCLUDEPATH += $$PWD
 INCLUDEPATH += $$PWD/desktop
 
 FORMS += \
+    $$PWD/IndicatorsFrame.ui \
     $$PWD/NavigationPanelBack.ui \
     $$PWD/StatisticWidgetTab.ui \
     $$PWD/StatisticWidgetWithTabs.ui
