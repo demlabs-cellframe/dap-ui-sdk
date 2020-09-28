@@ -149,16 +149,6 @@ void DapDataLocal::saveAuthorizationData()
     this->saveEncriptedSetting(this->TEXT_PASSWORD  , this->password());
 }
 
-void DapDataLocal::setLicenseTermTill(const QString &utcDate)
-{
-    this->m_serialKeyData->setLicenseTermTill(utcDate);
-}
-
-const QDateTime &DapDataLocal::getLicenseTermTill()
-{
-    return this->m_serialKeyData->getLicenseTermTill();
-}
-
 void DapDataLocal::saveSerialKeyData()
 {
     if (m_serialKeyData)

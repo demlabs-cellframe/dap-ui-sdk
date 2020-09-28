@@ -57,9 +57,6 @@ public:
     const QString & networkDefault()       { return m_networkDefault; }
     const QString & getUrlSite()           { return m_urlSite;        }
     const QString & getBrandName()         { return m_brandName;      }
-    const QDateTime & getLicenseTermTill();
-
-    void setLicenseTermTill(const QString &utcDate);
 
     void saveEncriptedSetting(const QString &a_setting, const QVariant &a_value);
     void saveEncriptedSetting(const QString &a_setting, const QByteArray &a_value);
