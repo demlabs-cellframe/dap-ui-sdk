@@ -33,7 +33,8 @@
 #include "NavigationPanelBackBase.h"
 #include "MainScreenLayout.h"
 #ifdef USING_SEPARATE_ACCOUNT_SCREEN
-#include "AccountScreenBase.h"
+//#include "AccountScreenBase.h"
+#include "AccountScreen.h"
 #endif
 #include "PasswordRecoveryScreen.h"
 #include "PrivacyPolicyScreen.h"

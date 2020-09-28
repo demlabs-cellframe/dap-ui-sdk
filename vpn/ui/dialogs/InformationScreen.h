@@ -22,6 +22,8 @@ protected:
     virtual void initVariantUi(QWidget *a_widget) override;
 
     QScopedPointer<Ui::InformationScreen> m_ui;
+
+    QString text;
 };
 
 #endif // INFORMATIONSCREEN_H

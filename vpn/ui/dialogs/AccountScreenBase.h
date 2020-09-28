@@ -21,8 +21,6 @@
 #include <QDesktopServices>
 #include "TariffItem.h"
 
-
-
 class AccountScreenBase : public ScreenWithScreenPopupsAbstract
 {
     Q_OBJECT
@@ -38,7 +36,7 @@ public:
 
     void setState(ConnectionState a_state);
 
-#ifndef Q_OS_ANDROID
+
     enum class ActivationState {
         Activated,
         Unactivated
@@ -49,7 +47,6 @@ public:
 
 signals:
     void serialRemovalRequested();
-#endif
 
 protected:
     /// Form initialization.
@@ -58,10 +55,10 @@ protected:
 
     virtual QList<CustomPopup *> customPopups() override;
 
-private:
     SerialRemovalConfirmationMessage *m_serialRemovalMessage = nullptr;
 
     QScopedPointer<Ui::AccountScreen> m_ui;
+
 };
 
 #endif // ACCOUNTSCREENBASE_H
