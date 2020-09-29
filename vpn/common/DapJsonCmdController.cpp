@@ -18,17 +18,14 @@ DapCmdAbstract* DapJsonCmdController::_findHandler(DapJsonCmdType cmd)
 
 void DapJsonCmdController::handleCmd(const QByteArray &a_cmd)
 {
-
     QJsonParseError err;
     QJsonDocument doc = QJsonDocument::fromJson(a_cmd, &err);
 
     if (err.error == QJsonParseError::IllegalUTF8String ){
-
         QString s = QString::fromUtf8(a_cmd);
         if (s.toUtf8() != a_cmd) {
           s = QString::fromLatin1(a_cmd);
         }
-
         doc = QJsonDocument::fromJson(s.toUtf8(), &err);
     }
 
