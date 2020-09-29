@@ -26,6 +26,8 @@ void BugReportLoadingScreen::initVariantUi(QWidget *a_widget)
         m_ui->lblCaption->hide();
 #else
     m_ui->layBugReportScreen->setAlignment(m_ui->frmBugReport, Qt::AlignHCenter);
+
+    m_ui->frmBugReport->layout()->setAlignment(m_ui->btnCancel,Qt::AlignHCenter);
 #endif
 
     m_ui->lblGifLoading->setMovie(&m_movie);

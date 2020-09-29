@@ -29,7 +29,13 @@ void BugReportScreenBase::initVariantUi(QWidget *a_widget)
     m_ui->btnSend->setText(tr("SEND REPORT"));
     QScroller::grabGesture(m_ui->edtMessage->viewport(), QScroller::LeftMouseButtonGesture);
 #else
+
     m_ui->layBugReportScreen->setAlignment(m_ui->frmBugReport, Qt::AlignHCenter);
+
+    m_ui->layBugReport->setAlignment(m_ui->edtMessage,Qt::AlignHCenter);
+    m_ui->layBugReport->setAlignment(m_ui->lblCharacters,Qt::AlignHCenter);
+    m_ui->layBugReport->setAlignment(m_ui->btnAttachImage,Qt::AlignHCenter);
+    m_ui->layBugReport->setAlignment(m_ui->btnSend,Qt::AlignHCenter);
 
     #if defined(Q_OS_MAC)
         m_ui->edtMessage->setAttribute(Qt::WA_MacShowFocusRect,false);
