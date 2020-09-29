@@ -44,17 +44,11 @@ void DapTunAbstract::initWorker()
     qDebug() << "[DapTunAbstract] Tun worker init";
 #ifndef Q_OS_ANDROID
     DapNetworkMonitor::instance(); // To call a contructor in main thread.
-
+    DapNetworkMonitor::instance()->monitoringStart();
     connect(tunThread,&QThread::started, [=] {
         DapNetworkMonitor::instance()->sltSetServerAddress(this->m_sUpstreamAddress);
         DapNetworkMonitor::instance()->sltSetTunnelDestination(this->m_addr);
         DapNetworkMonitor::instance()->sltSetTunGateway(this->m_gw);
-        DapNetworkMonitor::instance()->monitoringStart();
-    });
-
-    connect(tunThread,&QThread::finished, [=] {
-        qDebug() << "Tun worker is finished!";
-        DapNetworkMonitor::instance()->monitoringStop();
     });
 #endif
 
@@ -110,7 +104,7 @@ void DapTunAbstract::workerStart()
         emit sigStartWorkerLoop();
         qInfo() << "tunThread started, tun socket: " << m_tunSocket;
     }else{
-        emit error(tr("Can't open tun socket"));
+        qInfo() << "Tun socket " << m_tunSocket << " already opened";
         return;
     }
     onWorkerStarted();
@@ -130,6 +124,11 @@ void DapTunAbstract::destroy()
     }
 }
 
+void DapTunAbstract::standby() {
+    workerPause();
+    tunThread->quit();
+    tunThread->wait();
+}
 
 /**
  * @brief DapTunAbstract::onWorkerStarted

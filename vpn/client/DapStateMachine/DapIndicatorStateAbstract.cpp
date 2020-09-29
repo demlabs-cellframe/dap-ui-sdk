@@ -34,8 +34,8 @@ void DapIndicatorStateAbstract::addTransition(DapState *from, DapState *to, cons
         return;
     }
     from->addTransition(sender, signal, to);
-    qDebug() << "Added transition from:" << from->name() <<
-                "to:" << to->name();
+    /*qDebug() << "Added transition from:" << from->name() <<
+                "to:" << to->name(); */
 }
 
 bool DapIndicatorStateAbstract::isAllowedSubstateTransitions(DapState *from, DapState *to)

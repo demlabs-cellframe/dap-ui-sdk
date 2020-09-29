@@ -3,8 +3,6 @@
 
 #include "InterfaceDapKey.h"
 #include "rand/dap_rand.h"
-#include "dap_enc_key.h"
-// #include "liboqs/kex/kex.h"
 #include "DapKeyAes.h"
 
 
