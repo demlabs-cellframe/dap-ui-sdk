@@ -15,6 +15,9 @@ public:
     void setText(const QString &a_text);
     void setSpeed(const int a_speed);
     QString text()const;
+signals:
+    // @brief This signal means that user read and close the news widget.
+    void newsClosed();
 protected:
     virtual void resizeEvent(QResizeEvent* ev);
 private:

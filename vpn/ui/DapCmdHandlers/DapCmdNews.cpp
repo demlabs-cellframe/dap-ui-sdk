@@ -43,14 +43,13 @@ bool DapCmdNews::fromJSON(const QJsonArray& jsonArr, QList<QMap<QString, QString
 
         QJsonObject jsonObj = val.toObject();
         QMap<QString, QString> temp;
-        if (jsonObj["type"].toString() == "update_version"){
-           temp = { {"type",    jsonObj["type"].toString()},
-                    {"message", jsonObj["message"].toString()},
-                    {"version", jsonObj["version"].toString()},
-                    {"url",     jsonObj["url"].toString()}};
-        } else if (jsonObj["type"].toString() == "news"){
-           temp = { {"type",    jsonObj["type"].toString()},
-                    {"message", jsonObj["message"].toString()}};
+        for (auto key: jsonObj.keys()) {
+            if (jsonObj[key].type() == QJsonValue::Double) {
+                temp[key] = QString::number(qint64(jsonObj[key].toDouble()));
+            }
+            else {
+                temp[key] = jsonObj[key].toString();
+            }
         }
 
         listNews->append(temp);
