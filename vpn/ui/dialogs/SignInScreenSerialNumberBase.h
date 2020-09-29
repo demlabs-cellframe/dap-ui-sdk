@@ -76,6 +76,7 @@ signals:
     void connectionRequested();
     void connectionError();
     void connected();
+    void disconnected();
     void serversListCleared();
 
     void serverChanged(int serverName);
