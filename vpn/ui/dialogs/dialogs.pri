@@ -62,13 +62,13 @@ defined(USE_TWO_LAYOUTS,var){
     INCLUDEPATH += $$PWD/desktop
 
     HEADERS += \
-        $$PWD/desktop/LoginScreenLayout.h
+        $$PWD/LoginScreenLayout.h
 
     SOURCES += \
-        $$PWD/desktop/LoginScreenLayout.cpp
+        $$PWD/LoginScreenLayout.cpp
 
     FORMS += \
-        $$PWD/desktop/LoginScreenLayout.ui
+        $$PWD/LoginScreenLayout.ui
 
 }
 

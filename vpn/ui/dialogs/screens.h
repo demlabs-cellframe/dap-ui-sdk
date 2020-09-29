@@ -44,9 +44,4 @@
 #include "ComboBoxPopupScreen.h"
 #include "FAQScreen.h"
 
-#ifdef USE_BOTTOM_PANEL
-#include "NavigationPanelBottom.h"
-#endif
-
-
 #endif // SCREENS_H

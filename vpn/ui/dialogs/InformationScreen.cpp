@@ -15,7 +15,6 @@ QString InformationScreen::screenName()
 
 void InformationScreen::setText(const QString &a_text)
 {
-    qWarning()<< m_ui->lblText->text();
     m_ui->lblText->setText(a_text);
 }
 
