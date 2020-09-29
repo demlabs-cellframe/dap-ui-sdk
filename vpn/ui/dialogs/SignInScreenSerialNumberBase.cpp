@@ -33,6 +33,12 @@ SignInScreenSerialNumberBase::SignInScreenSerialNumberBase(QWidget *a_parent)
     AdaptiveScreen::initScreen(this);
 #endif
 
+    connect(this, &SignInScreenSerialNumberBase::connectionRequested, [this](){
+        m_isConnectionRequested = true;
+    });
+    connect(this, &SignInScreenSerialNumberBase::disconnectionRequested, [this](){
+        m_isConnectionRequested = false;
+    });
 }
 
 void SignInScreenSerialNumberBase::initVariantUi(QWidget *a_widget)
@@ -55,12 +61,7 @@ void SignInScreenSerialNumberBase::initVariantUi(QWidget *a_widget)
 //*************************Serial field***************************************
 
 
-    connect(m_ui->btnConnect, &QPushButton::clicked, [this]{
-        if (m_ui->ledSerialKey->text().isEmpty())
-            emit this->serialKeyError();
-        else
-            emit this->connectionRequested();
-    });
+    connect(m_ui->btnConnect, &QPushButton::clicked, this, &SignInScreenSerialNumberBase::TryConnectOrDisconnect);
 
 
 //================= ServersModl: =================
@@ -139,6 +140,7 @@ void SignInScreenSerialNumberBase::adjustStateMachine()
 
     m_stt_serverState_disconnected->addTransition(this, &SignInScreenSerialNumberBase::connectionRequested, m_stt_serverState_loading_connecting);
     m_stt_serverState_loading_connecting->addTransition(this, &SignInScreenSerialNumberBase::connectionError, m_stt_serverState_disconnected);
+    m_stt_serverState_loading_connecting->addTransition(this, &SignInScreenSerialNumberBase::disconnectionRequested, m_stt_serverState_disconnected);
 
     m_stt_serverState_loading_serverList->addTransition(m_ui->cbbServer->model(), &QAbstractItemModel::rowsInserted, m_stt_serverState_disconnected);
     m_stt_serverState_disconnected->addTransition(this, &SignInScreenSerialNumberBase::serversListCleared, m_stt_serverState_loading_serverList);
@@ -221,18 +223,13 @@ void SignInScreenSerialNumberBase::adjustStateMachine()
         if (this->serialKeyIsEntered()&& !this->isLoadingState())
             m_ui->btnConnect->setEnabled(true);
     });
-    connect(m_stt_serviceState_connecting       , &QState::entered, [this]
-    {
-        m_ui->btnConnect->setEnabled(false);
-        m_ui->lblStatusMessage->setText(tr(STATUS_TEXT_CONNECTING_TO_SERVICE));
-    });
-
 
     connect(m_stt_serviceState_connecting       , &QState::exited, [this]{
         m_ui->lblStatusMessage->clear();
     });
 
-    m_stt_serverState_loading_connecting->assignProperty(m_ui->lblStatusMessage, qPrintable(Properties::TEXT), "");
+    m_stt_serverState_loading_connecting->assignProperty(m_ui->lblStatusMessage, qPrintable(Properties::TEXT), tr(STATUS_TEXT_CONNECTING_TO_SERVICE));
+    m_stt_serverState_loading_connecting->assignProperty(m_ui->btnConnect, qPrintable(Properties::ENABLED), true);
 
     m_stt_serverState_loading_connecting->assignProperty(m_ui->btnConnect, qPrintable(Properties::TEXT), tr(LOGIN_BUTTON_TEXT_CONNECTING));
 
@@ -361,3 +358,19 @@ QList<CustomPopup *> SignInScreenSerialNumberBase::customPopups()
     return {m_ui->cbbServer->popup()};
 }
 
+
+void SignInScreenSerialNumberBase::TryConnectOrDisconnect()
+{
+    if (m_ui->ledSerialKey->text().isEmpty())
+        emit this->serialKeyError();
+    // i have no idea way but serviceIsConnected() is lies
+    // so i need another way to know was service connection requested or not
+    // and i still haven't found anything better but use 'bool m_isConnectionRequested' like this:
+    else if (!m_isConnectionRequested) {
+        emit this->connectionRequested();
+    }
+    else {
+        emit this->disconnectionRequested();
+        m_ui->lblStatusMessage->setText(tr("Aborted"));
+    }
+}

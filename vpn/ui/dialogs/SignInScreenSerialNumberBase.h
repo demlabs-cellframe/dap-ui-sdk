@@ -28,7 +28,7 @@
 
 /// from "BrandTextProperties.h"
 #ifndef LOGIN_BUTTON_TEXT_CONNECTING
-#define LOGIN_BUTTON_TEXT_CONNECTING "CONNECTING..."
+#define LOGIN_BUTTON_TEXT_CONNECTING "CANCEL"
 #endif
 
 /// from "BrandTextProperties.h"
@@ -79,6 +79,7 @@ signals:
     void serversListCleared();
 
     void serverChanged(int serverName);
+    void disconnectionRequested();
 
 protected:
 
@@ -95,6 +96,7 @@ protected:
     bool serialKeyIsEntered();
     bool serviceIsConnected();
     bool isLoadingState();
+    void TryConnectOrDisconnect();
 
 
     QStateMachine *m_inputStates;
@@ -117,6 +119,8 @@ protected:
     QString m_password;
 
     QString m_serial;
+
+    bool m_isConnectionRequested = false;
 
 #ifdef Q_OS_ANDROID
     WidgetInputSizeController *m_widgetSizeController = nullptr;
