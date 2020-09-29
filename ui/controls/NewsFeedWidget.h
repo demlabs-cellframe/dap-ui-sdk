@@ -17,7 +17,7 @@ public:
     QString text()const;
 signals:
     // @brief This signal means that user read and close the news widget.
-    void newsChecked();
+    void newsClosed();
 protected:
     virtual void resizeEvent(QResizeEvent* ev);
 private:

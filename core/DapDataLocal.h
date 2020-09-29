@@ -83,6 +83,9 @@ public:
     const QString TEXT_LOGIN        = "login";
     const QString TEXT_PASSWORD     = "password";
 
+    QDateTime& getLastNewsDatetime() { return m_lastNewsDatetime; }
+    quint64& getLastNewsId() { return m_lastNewsId; }
+
 public slots:
     void setLogin(const QString &a_login);
 
@@ -117,6 +120,9 @@ private:
     DataToUpdate m_dataToUpdate; ///data to update
 
     DapSerialKeyData* m_serialKeyData;
+
+    QDateTime m_lastNewsDatetime;
+    quint64   m_lastNewsId = 0;
 };
 
 template<typename T>

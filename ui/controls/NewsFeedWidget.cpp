@@ -18,7 +18,7 @@ NewsFeedWidget::NewsFeedWidget(QString a_text, QString a_url, int a_speed, QWidg
     connect(m_lblClose,&ClickableLabel::clicked,[this]()
     {
         this->close();
-        emit this->newsChecked();
+        emit this->newsClosed();
     });
 
     connect(m_lblText,&ClickableLabel::clicked,[this]()

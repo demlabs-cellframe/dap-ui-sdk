@@ -5,6 +5,8 @@
 
 DapNews::DapNews(QObject *parent) : QObject(parent)
 {
+    m_lastReadDatetime = DapDataLocal::instance()->getLastNewsDatetime();
+    m_lastReadId = DapDataLocal::instance()->getLastNewsId();
 }
 
 DapNews *DapNews::instance()
@@ -18,7 +20,8 @@ void DapNews::addNews(const QMap<QString, QString> &record)
     NewsItem item;
     item.m_dateTime.setTime_t(record.value("timestamp").toLongLong());
     item.m_id = record.value("id").toULongLong();
-    item.m_type = record.value("type");
+    if (record.value("type") == QString("update_version"))
+        item.m_type = UPDATE;
     item.m_url = record.value("url");
 
     QString message{record.value("message")};
@@ -26,12 +29,14 @@ void DapNews::addNews(const QMap<QString, QString> &record)
     message.replace("COMPANY_NAME", DAP_ORGANIZATION_NAME);
     item.m_text = message;
 
-    if (item.m_dateTime > m_lastRead) {
-        m_list.insert(std::lower_bound(m_list.begin(), m_list.end(), item, [](const NewsItem& lhs, const NewsItem& rhs)->bool {
-            return lhs.m_dateTime < rhs.m_dateTime;
-        }), item);
-    }
-    // else news is old and already read - ignore it
+    if (item.m_dateTime < m_lastReadDatetime)
+        return;
+    if (item.m_dateTime == m_lastReadDatetime && item.m_id <= m_lastReadId)
+        return;
+
+    m_list.insert(std::lower_bound(m_list.begin(), m_list.end(), item, [](const NewsItem& lhs, const NewsItem& rhs)->bool {
+        return lhs.m_dateTime < rhs.m_dateTime;
+    }), item);
 }
 
 QString DapNews::getCurrentNewsText() const
@@ -63,21 +68,24 @@ bool DapNews::isUpdateAvailabel() const
     return !m_updateData.version.isEmpty();
 }
 
-void DapNews::newsChecked()
+void DapNews::giveNextNews()
 {
+    // forget current news
     if (isUpdateAvailabel()) {
         m_updateData.version = QString();
     }
     else {
-        m_lastRead = m_list.back().m_dateTime;
+        m_lastReadDatetime = m_list.back().m_dateTime;
+        m_lastReadId = m_list.back().m_id;
         m_list.pop_back();
     }
+    // give next news if available
     if (isNewsAvailable()) {
         emit haveNews(getCurrentNewsText(), getCurrentNewsUrl());
     }
 }
 
-void DapNews::onGotNews(QList<QMap<QString, QString> > listNews)
+void DapNews::addNewsByList(QList<QMap<QString, QString> > listNews)
 {
     for (auto item : listNews){
         if(item.value("type") == "update_version") {
