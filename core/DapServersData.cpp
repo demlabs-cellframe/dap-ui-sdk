@@ -338,6 +338,7 @@ QMap<QString, QString> DapServersData::m_countryMap = {
     {"UKRAINE", "UA"},
     {"UGANDA", "UG"},
     {"UNITED STATES", "US"},
+    {"USA", "US"},
     {"URUGUAY", "UY"},
     {"UZBEKISTAN", "UZ"},
     {"SAINT VINCENT AND THE GRINADINES", "VC"},
@@ -373,7 +374,7 @@ QVariant DapServersData::data(const QModelIndex &index, int role) const
     switch (role) {
     case Qt::DisplayRole:
         return m_servers.at(index.row()).name;
-    case Qt::UserRole: {
+    case COUTRY_FLAG_ROLE: {
         auto si = m_servers.at(index.row());
         if (si.name.isEmpty())
             return QString();
@@ -399,7 +400,7 @@ bool DapServersData::setData(const QModelIndex &index, const QVariant &value, in
 {
     if (index.isValid() && role == Qt::EditRole) {
         m_servers.replace(index.row(), value.value<DapServerInfo>());
-        emit dataChanged(index, index, {Qt::DisplayRole, Qt::UserRole});
+        emit dataChanged(index, index, {Qt::DisplayRole, COUTRY_FLAG_ROLE});
         return true;
     }
     return false;
@@ -434,6 +435,6 @@ QMap<int, QVariant> DapServersData::itemData(const QModelIndex &index) const
 {
     QMap<int, QVariant> map;
     map[Qt::DisplayRole] = data(index, Qt::DisplayRole);
-    map[Qt::UserRole] = data(index, Qt::UserRole);
+    map[COUTRY_FLAG_ROLE] = data(index, COUTRY_FLAG_ROLE);
     return map;
 }

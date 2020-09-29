@@ -29,6 +29,7 @@ void CustomButtonDelegate::setData(const QVariant &value, int role)
         break;
     case Qt::DecorationRole:
     case Qt::UserRole:
+    case COUNTRY_FLAG_ROLE:
             m_button->setIcon(value.toString());
             m_button->image()->setScaledContents(true);
         break;
