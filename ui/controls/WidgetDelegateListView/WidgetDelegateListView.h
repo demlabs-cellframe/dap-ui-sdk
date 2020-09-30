@@ -10,7 +10,7 @@
 #include "WidgetDelegateBase.h"
 #include "CustomComboBoxListView.h"
 
-#define CUSTOM_MODEL_ICON_ROLE Qt::UserRole
+#define CUSTOM_MODEL_ICON_ROLE (Qt::UserRole+10)
 
 class WidgetListViewItemDelegate;
 
