@@ -6,6 +6,8 @@
 
 #include "DapServerInfo.h"
 
+#define COUTRY_FLAG_ROLE (Qt::UserRole + 10)
+
 class DapServersData: public QAbstractListModel
 {
     Q_OBJECT
