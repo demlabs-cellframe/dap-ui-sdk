@@ -50,6 +50,7 @@ void DapIndicatorStream::initAllowedSubstatesTransitions()
     addAllowedSubstatesTransitions(upsDisconnected,         upsHandshakeRequest);
     addAllowedSubstatesTransitions(upsHandshakeRequest,     upsHandshakeReply);
     addAllowedSubstatesTransitions(upsHandshakeRequest,     networkErr);
+    addAllowedSubstatesTransitions(upsHandshakeRequest,     upsDisconnected);
     addAllowedSubstatesTransitions(upsHandshakeReply,       upsChannelsOpen);
     addAllowedSubstatesTransitions(upsHandshakeReply,       networkErr);
     addAllowedSubstatesTransitions(upsHandshakeReply,       upsDisconnected);
