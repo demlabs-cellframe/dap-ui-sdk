@@ -53,7 +53,7 @@
         <x>0</x>
         <y>0</y>
         <width>398</width>
-        <height>833</height>
+        <height>281</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -75,21 +75,7 @@
        <item>
         <widget class="QLabel" name="lblText">
          <property name="text">
-          <string>The service Kelvin Virtual Private Network (hereinafter called KelvinVPN) is hereby offered by Demlabs LLC, Certificate of Incorporation # 2922266, Address of the Company’s Registered Office: 6/F, OTB Building, 160 Gloucester Road, Wanchai, Hong Kong (hereinafter called Demlabs Ltd).
-
-This document (hereinafter – the “Privacy Policy”) explains the privacy rules applicable to KelvinVPN service. 
-
-Demlabs Ltd stores and processes your email, login, and password in order to provide you access to KelvinVPN services. We assure you we don’t have any other purpose to store and process this data. We don’t transfer or sell this information to third parties or to anyone else. You can access this information, change it, or delete it at any time. 
-
-Due to the specificity of Cellframe architecture, we don’t have the ability and to collect and store other user data, such as name, age, preferences, precise location, IP, and any other personal information by which a user can be recognized. 
-
-We also collect some depersonalized statistical data such as device information, a country from which a user comes to our website to download KelvinVPN apps, an operational system to which a user installed our apps, and types of devices on which our apps are used. The purpose is to understand our markets and provide our services more efficiently. We don’t transfer or sell this information to third parties or to anyone else. Due to all these, you can be sure that we accurately store and process your personal information defined in this Policy and it will never be sold/transferred to third parties or anyone else. 
-
-For all operations, which imply the storage of payment data, Demlabs Ltd cooperates with third-party providers, who undertake the separate storage of data.
-
-By downloading KelvinVPN Apps to your device (a computer, a smartphone, etc.) you make us sure that you give us your consent to collect and process data mentioned in this Policy for purposes mentioned above. You are informed that you can revoke this consent at any time by emailing us. 
-
-Please contact us by email at info@kelvpn.com  if you have any questions on our Privacy Policy or you want to enforce any of your rights related to your privacy.</string>
+          <string/>
          </property>
          <property name="wordWrap">
           <bool>true</bool>

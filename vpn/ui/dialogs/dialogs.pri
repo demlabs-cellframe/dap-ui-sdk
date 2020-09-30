@@ -39,7 +39,14 @@ SOURCES += \
     $$PWD/SignUpScreen.cpp \
     $$PWD/TermsOfUseScreen.cpp \
     $$PWD/PrivacyPolicyScreen.cpp \
-    $$PWD/SignInScreenSerialNumberBase.cpp  
+    $$PWD/SignInScreenSerialNumberBase.cpp
+
+
+FORMS += \
+    $$PWD/BugReportLoadingScreen.ui \
+    $$PWD/BugReportResultScreen.ui \
+    $$PWD/BugReportScreen.ui \
+    $$PWD/InformationScreen.ui
 
 
 defined(USING_SIGN_IN_SCREEN_WITH_TARIFF_LINK,var){
@@ -48,6 +55,21 @@ defined(USING_SIGN_IN_SCREEN_WITH_TARIFF_LINK,var){
 
         SOURCES += \
         $$PWD/SignInWithTariffLink.cpp
+}
+
+defined(USE_TWO_LAYOUTS,var){
+
+    INCLUDEPATH += $$PWD/desktop
+
+    HEADERS += \
+        $$PWD/LoginScreenLayout.h
+
+    SOURCES += \
+        $$PWD/LoginScreenLayout.cpp
+
+    FORMS += \
+        $$PWD/LoginScreenLayout.ui
+
 }
 
 android {
@@ -64,18 +86,6 @@ android {
 
     INCLUDEPATH += $$PWD/mobile
 }
-else {
-    HEADERS  += \
-        $$PWD/desktop/LoginScreenLayout.h
-
-    SOURCES += \
-        $$PWD/desktop/LoginScreenLayout.cpp
-
-    FORMS += \
-        $$PWD/desktop/LoginScreenLayout.ui
-
-    INCLUDEPATH += $$PWD/desktop
-}
 
 defined(USING_SEPARATE_ACCOUNT_SCREEN,var){
     HEADERS  += \
@@ -85,11 +95,4 @@ defined(USING_SEPARATE_ACCOUNT_SCREEN,var){
         $$PWD/AccountScreenBase.cpp
 }
 
-
 INCLUDEPATH += $$PWD
-
-FORMS += \
-    $$PWD/BugReportLoadingScreen.ui \
-    $$PWD/BugReportResultScreen.ui \
-    $$PWD/BugReportScreen.ui \
-    $$PWD/InformationScreen.ui

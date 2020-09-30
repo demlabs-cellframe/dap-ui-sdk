@@ -206,7 +206,7 @@ void SignInScreenSerialNumberBase::adjustStateMachine()
     connect(m_stt_serverState_disconnected      , &QState::entered, [this] {
         if (this->serialKeyIsEntered() && this->serviceIsConnected())
         {
-            m_ui->btnConnect->setText(tr(BUTTON_TEXT_DEFAULT));
+            m_ui->btnConnect->setText(tr(LOGIN_BUTTON_TEXT_DEFAULT));
             m_ui->btnConnect->setEnabled(true);
         }
     });

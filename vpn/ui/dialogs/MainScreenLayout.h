@@ -4,6 +4,7 @@
 #include "MultiScreenAbstract.h"
 #include "NavigationPanelBase.h"
 
+
 #include "ui_MainScreenLayout.h"
 
 class MainScreenLayout : public MultiScreenAbstract
