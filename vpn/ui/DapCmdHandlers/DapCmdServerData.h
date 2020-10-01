@@ -14,6 +14,7 @@
 #include <QJsonValue>
 
 #include "DapCmdServiceAbstract.h"
+#include "DapServerInfo.h"
 
 class DapCmdServerData: public DapCmdServiceAbstract
 {
@@ -37,6 +38,9 @@ public:
 
     /// @param address Server address.
     void sendServerData(const QString &address, quint16 a_port);
+
+signals:
+    void sentCurrentServerName(const DapServerInfo &server);
 };
 
 #endif // DAPCMDSERVERDATAHANDLER_H
