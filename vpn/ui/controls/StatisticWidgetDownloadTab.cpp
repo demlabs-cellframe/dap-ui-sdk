@@ -1,11 +1,10 @@
 #include "StatisticWidgetDownloadTab.h"
 
-const QString StatisticWidgetDownloadTab::SCREEN_NAME = "NavigationPanelBackBase";
+const QString StatisticWidgetDownloadTab::SCREEN_NAME = "StatisticWidgetDownloadTab";
 
 StatisticWidgetDownloadTab::StatisticWidgetDownloadTab(QWidget *a_parrent)
     : AdaptiveScreen(a_parrent)
 {
-    ///TODO
     this->create(m_ui);
 }
 
@@ -16,27 +15,55 @@ QString StatisticWidgetDownloadTab::screenName()
 
 void StatisticWidgetDownloadTab::setSpeed(QString a_speedStr)
 {
-    ///TODO
+    m_ui->lblSpeedValue->setText(a_speedStr);
 }
 
-void StatisticWidgetDownloadTab::setBytes()
+void StatisticWidgetDownloadTab::setBytes(quint64 a_bytes)
 {
-    ///TODO
+    m_ui->lblBytesValue->setText(Utils::convertByte(a_bytes));
 }
 
-void StatisticWidgetDownloadTab::setPackets()
+void StatisticWidgetDownloadTab::setPackets(quint64 a_packets)
 {
-    ///TODO
+    m_ui->lblPacketsValue->setText(QString::number(a_packets));
 }
 
-void StatisticWidgetDownloadTab::setConnectingTimePoint()
+void StatisticWidgetDownloadTab::setTimeConnected(QDateTime a_time)
 {
-    ///TODO
+    QString connectedTime{};
+    if (a_time.secsTo(QDateTime::currentDateTime()) == 0)
+        connectedTime = "...";
+    else
+        connectedTime = toTimeString(a_time.secsTo(QDateTime::currentDateTime()));
+    m_ui->lblTimeValue->setText(connectedTime);
+}
+
+void StatisticWidgetDownloadTab::setTitles(QString a_speed, QString a_bytes, QString a_packets, QString a_time)
+{
+    m_ui->lblSpeedTitle->setText(a_speed);
+    m_ui->lblBytesTitle->setText(a_bytes);
+    m_ui->lblPacketsTitle->setText(a_packets);
+    m_ui->lblTimeTitle->setText(a_time);
+}
+
+QString StatisticWidgetDownloadTab::toTimeString(quint64 seconds)
+{
+    const qint64 DAY = 86400;
+    qint64 days = seconds / DAY;
+    QTime t = QTime(0,0).addSecs(seconds % DAY);
+
+    QString res = QString();
+    if (days > 0)
+        res.sprintf("%d %02d:%02d:%02d", static_cast<int>(days), t.hour(), t.minute(), t.second());
+    else
+        res.sprintf("%02d:%02d:%02d", t.hour(), t.minute(), t.second());
+
+    return res;
 }
 
 
 void StatisticWidgetDownloadTab::initVariantUi(QWidget *a_widget)
 {
-    ///TODO
+    setTitles(DOWNLOAD_SPEED,BYTES_RECEIVED,PACKETS_RECEIVED,TIME_CONNECTED);
 }
 
