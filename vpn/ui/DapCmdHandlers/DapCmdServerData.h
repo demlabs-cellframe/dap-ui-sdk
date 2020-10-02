@@ -40,7 +40,7 @@ public:
     void sendServerData(const QString &address, quint16 a_port);
 
 signals:
-    void sentCurrentServerName(const DapServerInfo &server);
+    void sentCurrentServerInfo(const DapServerInfo &server);
 };
 
 #endif // DAPCMDSERVERDATAHANDLER_H

@@ -28,7 +28,7 @@ void DapCmdServerData::handle(const QJsonObject *params)
         dsi.location = DapServerInfo::stringToLocation(params->value("location").toString());
     }
 
-    emit sentCurrentServerName(dsi);
+    emit sentCurrentServerInfo(dsi);
 }
 
 /// @param address Server address.
