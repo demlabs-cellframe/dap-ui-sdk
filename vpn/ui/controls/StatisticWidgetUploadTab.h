@@ -14,6 +14,11 @@ public:
 
 private:
     void changeLabels();
+
+    const QString UPLOAD_SPEED      = tr("Upload speed");
+    const QString BYTES_SENT        = tr("Bytes sent");
+    const QString PACKETS_SENT      = tr("Packets sent");
+    const QString TIME_CONNECTED    = tr("Time connected");
 };
 
 #endif // STATISTICWIDGETUPLOADTAB_H

@@ -1,6 +1,6 @@
 #include "StatisticWidgetUploadTab.h"
 
-const QString StatisticWidgetUploadTab::SCREEN_NAME = "NavigationPanelBackBase";
+const QString StatisticWidgetUploadTab::SCREEN_NAME = "StatisticWidgetUploadTab";
 
 StatisticWidgetUploadTab::StatisticWidgetUploadTab(QWidget* a_parrent /*= nullptr*/)
     : StatisticWidgetDownloadTab(a_parrent)
@@ -10,7 +10,7 @@ StatisticWidgetUploadTab::StatisticWidgetUploadTab(QWidget* a_parrent /*= nullpt
 
 void StatisticWidgetUploadTab::changeLabels()
 {
-
+    this->setTitles(UPLOAD_SPEED,BYTES_SENT,PACKETS_SENT,TIME_CONNECTED);
 }
 
 

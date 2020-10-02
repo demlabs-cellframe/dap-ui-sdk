@@ -26,7 +26,6 @@ protected slots:
     void activateDownloadTab();
     void activateUploadTab();
 
-
     // StatisticFrameBase interface
 public:
     virtual void setSentReceivedQuantity(quint64 a_bytesReceived, quint64 a_bytesSent, quint64 a_packetsReceived, quint64 a_packetsSent) override;
