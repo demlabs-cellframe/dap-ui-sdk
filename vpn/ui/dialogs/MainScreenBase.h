@@ -22,6 +22,7 @@
 #include "UiScaling.h"
 #include "ComboBox.h"
 #include <QDebug>
+#include "BrandTextProperties.h"
 
 #ifndef ANDROID
     #include "ScreenComboBox.h"
@@ -33,6 +34,18 @@
     #include "CustomComboBoxPopup.h"
     #include <QComboBox>
 #endif
+
+
+/// from "BrandTextProperties.h"
+#ifndef DASHBOARD_TEXT_CONNECT
+#define DASHBOARD_TEXT_CONNECT "CONNECT"
+#endif
+
+/// from "BrandTextProperties.h"
+#ifndef DASHBOARD_TEXT_DISCONNECT
+#define DASHBOARD_TEXT_DISCONNECT "DISCONNECT"
+#endif
+
 
 class MainScreenBase : public AdaptiveScreen
 {
@@ -105,8 +118,8 @@ protected:
     const QString RECEIVED = "received";
     const QString SENT = "sent";
 
-    const QString TEXT_CONNECT = tr("Connect");
-    const QString TEXT_DISCONNECT = tr("Disconnect");
+//    const QString TEXT_CONNECT = tr("CONNECT");
+//    const QString TEXT_DISCONNECT = tr("DISCONNECT");
 
     static QString toTimeString(quint64 seconds);
     QString statusText();
