@@ -14,7 +14,7 @@ SOURCES += \
     $$PWD/DapCrypt.cpp \
     $$PWD/DapKeyMsrln.cpp \
     $$PWD/DapLogger.cpp \
-    $$PWD/DapKeyAes.cpp \
+    $$PWD/DapKeyCommon.cpp \
     $$PWD/DapConnectClient.cpp \
     $$PWD/DapHttpPing.cpp \
     $$PWD/DapServerInfo.cpp \
@@ -36,7 +36,7 @@ HEADERS += \
     $$PWD/InterfaceDapKey.h \
     $$PWD/DapKeyMsrln.h \
     $$PWD/DapLogger.h \
-    $$PWD/DapKeyAes.h \
+    $$PWD/DapKeyCommon.h \
     $$PWD/DapConnectClient.h \
     $$PWD/DapReplyTimeout.h \
     $$PWD/DapHttpPing.h \
