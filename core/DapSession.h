@@ -116,7 +116,6 @@ protected:
     QNetworkReply * m_netAuthorizeReply;
     QNetworkReply * m_netLogoutReply;
     QNetworkReply * m_netSendBugReportReply;
-    QNetworkReply * m_netNewsReply;
     QNetworkReply * m_netSignUpReply;
 
     QMap<QString,QString> m_userInform;
@@ -161,7 +160,6 @@ private slots:
     void onKeyActivated();
     void onLogout();
     void answerBugReport();
-    void answerNews();
     void answerSignUp();
 signals:
     void encryptInitialized();

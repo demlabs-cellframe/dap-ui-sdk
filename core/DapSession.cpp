@@ -171,9 +171,30 @@ void DapSession::sendSignUpRequest(const QString &host, const QString &email, co
 
 void DapSession::getNews()
 {
-    m_netNewsReply = DapConnectClient::instance()->request_GET(DapDataLocal::instance()->cdbServersList().front(), 80, URL_NEWS, false);
+    QNetworkReply *m_netNewsReply = DapConnectClient::instance()->request_GET(DapDataLocal::instance()->cdbServersList().front(), 80, URL_NEWS, false);
     DapReplyTimeout::set(m_netNewsReply, 10000);
-    connect(m_netNewsReply, &QNetworkReply::finished, this, &DapSession::answerNews);
+    connect(m_netNewsReply, &QNetworkReply::finished, this, [=]() {
+        if(m_netNewsReply && (m_netNewsReply->error() != QNetworkReply::NetworkError::NoError)) {
+            qWarning() << "Error on pulling the news";
+            return;
+        }
+        qInfo() << "News received";
+        QByteArray arrData(m_netNewsReply->readAll());
+        QJsonParseError jsonErr;
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(arrData, &jsonErr);
+
+        if(!jsonDoc.isNull()) {
+            if(!jsonDoc.isArray()) {
+                qCritical() << "Error parse response. Must be array";
+                return;
+            }
+            emit sigReceivedNewsMessage(jsonDoc);
+        } else {
+            qWarning() << "Server response:" << arrData;
+            qCritical() << "Can't parse server response to JSON: "<<jsonErr.errorString()<< " on position "<< jsonErr.offset ;
+            return;
+        }
+    });
 }
 
 /**
@@ -550,31 +571,6 @@ void DapSession::answerBugReport()
     }
     qInfo() << "Answer bug-report: " << bugReportAnswer;
     emit receivedBugReportAnswer(bugReportAnswer);
-}
-
-void DapSession::answerNews()
-{
-    qInfo() << "answerNews";
-    if(m_netNewsReply && (m_netNewsReply->error() != QNetworkReply::NetworkError::NoError)) {
-        return;
-    }
-    QByteArray arrData(m_netNewsReply->readAll());
-    QJsonParseError jsonErr;
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(arrData, &jsonErr);
-
-    if(!jsonDoc.isNull()) {
-        if(!jsonDoc.isArray()) {
-            qCritical() << "Error parse response. Must be array";
-//          emit sigParseResponseError();
-            return;
-        }
-        emit sigReceivedNewsMessage(jsonDoc);
-    } else {
-        qWarning() << "Server response:" << arrData;
-        qCritical() << "Can't parse server response to JSON: "<<jsonErr.errorString()<< " on position "<< jsonErr.offset ;
-//      emit sigParseResponseError();
-        return;
-    }
 }
 
 void DapSession::clearCredentials()
