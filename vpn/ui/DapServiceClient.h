@@ -63,11 +63,11 @@ public slots:
     void sendCmd(const QString & a_cmd);
     void init() override;
     void connectToService();
+    void startReconnectingToService();
 
 protected:
 
     DapServiceClient(const QString& a_serviceName, QObject* parent = Q_NULLPTR);
-    void startReconnectingToService();
 protected slots:
     virtual void procCmdController(const QByteArray &a_cmd) = 0;
 private:
