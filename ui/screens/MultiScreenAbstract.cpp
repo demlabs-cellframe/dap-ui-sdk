@@ -38,16 +38,25 @@ MultiScreenAbstract::MultiScreenAbstract(QWidget *parent)
 void MultiScreenAbstract::removeSubscreen(AdaptiveScreen *a_screen)
 {
     MultiScreenAbstract *parentScreen = MultiScreenAbstract::parentMultiscreen(a_screen);
-    parentScreen->changingWidget()->removeWidget(a_screen);
-    parentScreen->m_screens.remove(a_screen->screenName(), a_screen);
+    //removes
+    for(int i = 0;i<m_screensForRemoval.count();i++)
+    {
+        if(m_screensForRemoval.at(i)==a_screen)
+            m_screensForRemoval.removeAt(i);
+    }
+    //do not deleted
     parentScreen->m_screensForRemoval.removeAll(a_screen);
+    parentScreen->m_screens.remove(a_screen->screenName(), a_screen);
+        parentScreen->changingWidget()->removeWidget(a_screen);
     delete a_screen;
 }
 
 void MultiScreenAbstract::removeSubscreenAfterAnimationFinished(AdaptiveScreen* a_screen)
 {
     if (a_screen && !m_screensForRemoval.contains(a_screen))
+    {
         this->m_screensForRemoval.append(a_screen);
+    }
 }
 
 AdaptiveScreen *MultiScreenAbstract::activeScreen()
@@ -89,7 +98,7 @@ MultiScreenAbstract *MultiScreenAbstract::parentMultiscreen(AdaptiveScreen *a_sc
         l_parentMultiscr = qobject_cast<MultiScreenAbstract*>(parentObj);
         if (l_parentMultiscr)
             return l_parentMultiscr;
-    }
+     }
     return nullptr;
 }
 

@@ -203,9 +203,7 @@ T *MultiScreenAbstract::refreshSubscreen()
     if (parentMultiScreen->activeScreen() == existingScreen)
     {
         int index = parentMultiScreen->changingWidget()->indexOf(existingScreen);
-
         T* newScreen = parentMultiScreen->createSubScreen<T>(index + 1);
-
         removeSubscreenAfterAnimationFinished(existingScreen);
         parentMultiScreen->activateChildScreen(newScreen);
         return newScreen;

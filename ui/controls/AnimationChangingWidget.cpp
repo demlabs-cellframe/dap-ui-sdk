@@ -1,6 +1,6 @@
 #include "AnimationChangingWidget.h"
 #include <QDebug>
-
+#include "AdaptiveScreen.h"
 class QLayout;
 
 /**
@@ -82,11 +82,25 @@ int AnimationChangingWidget::count() const
  */
 void AnimationChangingWidget::insertWidget(int a_index, QWidget *a_widget)
 {
+#ifndef Q_OS_ANDROID
+    //Added because sometimes indexes are specified incorrectly and the widget may replace the wrong one.
+    for(int m = 0; m<m_ltWidgetPlacement.count(); m++)
+    {
+        if(qobject_cast<AdaptiveScreen*>(a_widget)->screenName()==qobject_cast<AdaptiveScreen*>(widgetAt(m))->screenName())
+        {
+            m_ltWidgetPlacement.insertWidget(m, a_widget);
+
+            return;
+        }
+    }
+#endif
     m_ltWidgetPlacement.insertWidget(a_index, a_widget);
     if (a_index >=0 && a_index <= this->currentIndex())
         m_currentIndex++;
 
     a_widget->hide();
+
+
 }
 
 /**
