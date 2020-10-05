@@ -24,9 +24,9 @@ signals:
     void serverChangingRequested(const QString& serverName);
 
 public slots:
-
     virtual void setCurrentServer(const QString& a_currentServer);
 
+    virtual void showMessageAboutProblemConnection(bool a_virtualNetworkState);
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
