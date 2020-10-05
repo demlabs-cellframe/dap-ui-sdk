@@ -28,6 +28,7 @@
 #include <QAbstractSocket>
 #include "DapChThread.h"
 #include "DapChBase.h"
+#include "DapClientDefinitions.h"
 
 #define DATA_PACKET 0x00
 #define SERVICE_PACKET 0xff
@@ -106,7 +107,11 @@ public slots:
     }
 
     void openChannels(const QString & a_channels) {
-        streamOpen(QString("stream_ctl,channels=%1").arg(a_channels),"");
+        streamOpen(QString("stream_ctl,channels=%1,enc_type=%2,enc_headers=%3")
+                   .arg(a_channels)
+                   .arg(DAP_ENC_KEY_TYPE_BF_CBC)
+                   .arg(0)
+                   ,"");
     }
 
     void abortStreamRequest() { m_network_reply->abort(); }

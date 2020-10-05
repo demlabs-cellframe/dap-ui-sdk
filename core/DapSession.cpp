@@ -18,15 +18,15 @@
     along with any DAP based project.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define OP_CODE_GENERAL_ERR           "0xf0"
-#define OP_CODE_ALREADY_ACTIVATED     "0xf1"
-#define OP_CODE_LOGIN_INCORRECT_PSWD  "0xf2"
-#define OP_CODE_NOT_FOUND_LOGIN_IN_DB "0xf3"
-#define OP_CODE_SUBSCRIBE_EXPIRED    "0xf4"
-#define OP_CODE_CANT_CONNECTION_TO_DB "0xf5"
-#define OP_CODE_INCORRECT_SYM         "0xf6"
-#define OP_CODE_LOGIN_INACTIVE        "0xf7"
-#define OP_CODE_SERIAL_ACTIVATED      "0xf8"
+#define OP_CODE_GENERAL_ERR             "0xf0"
+#define OP_CODE_ALREADY_ACTIVATED       "0xf1"
+#define OP_CODE_LOGIN_INCORRECT_PSWD    "0xf2"
+#define OP_CODE_NOT_FOUND_LOGIN_IN_DB   "0xf3"
+#define OP_CODE_SUBSCRIBE_EXPIRED       "0xf4"
+#define OP_CODE_CANT_CONNECTION_TO_DB   "0xf5"
+#define OP_CODE_INCORRECT_SYM           "0xf6"
+#define OP_CODE_LOGIN_INACTIVE          "0xf7"
+#define OP_CODE_SERIAL_ACTIVATED        "0xf8"
 
 #include "DapSession.h"
 #include "DapCrypt.h"
@@ -36,19 +36,18 @@
 #include <QJsonObject>
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
+#include "DapClientDefinitions.h"
 
-const QString DapSession::URL_ENCRYPT("/enc_init");
-const QString DapSession::URL_STREAM("/stream");
-const QString DapSession::URL_DB("/db");
-const QString DapSession::URL_CTL("/stream_ctl");
-const QString DapSession::URL_DB_FILE("/db_file");
-const QString DapSession::URL_SERVER_LIST("/nodelist");
-const QString DapSession::URL_TX("/tx");
-const QString DapSession::URL_BUG_REPORT("/bugreport");
-const QString DapSession::URL_NEWS("/news");
-const QString DapSession::URL_SIGN_UP("/wp-json/dapvpn/v1/register/");
-
-#define SESSION_KEY_ID_LEN 33
+const QString DapSession::URL_ENCRYPT       ("/enc_init");
+const QString DapSession::URL_STREAM        ("/stream");
+const QString DapSession::URL_DB            ("/db");
+const QString DapSession::URL_CTL           ("/stream_ctl");
+const QString DapSession::URL_DB_FILE       ("/db_file");
+const QString DapSession::URL_SERVER_LIST   ("/nodelist");
+const QString DapSession::URL_TX            ("/tx");
+const QString DapSession::URL_BUG_REPORT    ("/bugreport");
+const QString DapSession::URL_NEWS          ("/news");
+const QString DapSession::URL_SIGN_UP(      "/wp-json/dapvpn/v1/register/");
 
 DapSession::DapSession(QObject * obj, int requestTimeout) :
     QObject(obj), m_requestTimeout(requestTimeout)
@@ -119,9 +118,14 @@ QNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath,
 QNetworkReply* DapSession::requestServerPublicKey()
 {
     QByteArray reqData = m_dapCrypt->generateAliceMessage().toBase64();
-
-    m_netEncryptReply = _buildNetworkReplyReq(URL_ENCRYPT + "/gd4y5yh78w42aaagh",
-                                              &reqData);
+    m_enc_type          = DAP_ENC_KEY_TYPE_BF_CBC;
+    m_pkey_exch_type    = DAP_ENC_KEY_TYPE_MSRLN;
+    m_netEncryptReply = _buildNetworkReplyReq(QString("%1/gd4y5yh78w42aaagh?enc_type=%2,pkey_exchange_type=%3,pkey_exchange_size=%4")
+                                              .arg(URL_ENCRYPT)
+                                              .arg(m_enc_type)
+                                              .arg(m_pkey_exch_type)
+                                              .arg(MSRLN_PKA_BYTES)
+                                              , &reqData);
 
     if(!m_netEncryptReply || !m_netEncryptReply->isRunning()){
         qCritical() << "Network error: " << m_netEncryptReply->errorString();
@@ -168,6 +172,7 @@ void DapSession::sendSignUpRequest(const QString &host, const QString &email, co
 void DapSession::getNews()
 {
     m_netNewsReply = DapConnectClient::instance()->request_GET(DapDataLocal::instance()->cdbServersList().front(), 80, URL_NEWS, false);
+    DapReplyTimeout::set(m_netNewsReply, 10000);
     connect(m_netNewsReply, &QNetworkReply::finished, this, &DapSession::answerNews);
 }
 
@@ -607,8 +612,6 @@ QNetworkReply * DapSession::encRequest(const QString& reqData, const QString& ur
     QNetworkReply * netReply = encRequest(reqData, url, subUrl, query, isCDB);
 
     connect(netReply, SIGNAL(finished()), obj, slot);
-    /*connect(netReply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this,SLOT(errorSlt(QNetworkReply::NetworkError)));*/
     /*connect(netReply, static_cast<void(QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error), [=] {
         if ((netReply->error() != QNetworkReply::NetworkError::NoError) && !netReply->isFinished()) {
             netReply->close();
@@ -680,7 +683,7 @@ QNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const QBy
                                               const QString& a_pkey) {
     m_userInform.clear();
     char buf64[a_signed.size() * 2 + 6];
-    int buf64len = dap_enc_base64_encode(a_signed.data(), a_signed.size(), buf64, DAP_ENC_DATA_TYPE_B64_URLSAFE);
+    int buf64len = dap_enc_base64_encode(a_signed.constData(), a_signed.size(), buf64, DAP_ENC_DATA_TYPE_B64_URLSAFE);
     QByteArray a_signedB64(buf64, buf64len);
     QByteArray bData = QString(a_serial + " ").toLocal8Bit() + a_signedB64 + QString(" " + a_domain + " " + a_pkey).toLocal8Bit();
     m_netAuthorizeReply = encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()));
@@ -691,49 +694,3 @@ QNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const QBy
     }
     return m_netAuthorizeReply;
 }
-
-/**
- * @brief DapSession::errorSlt
- * @param error
- */
-/*void DapSession::errorSlt(QNetworkReply::NetworkError error)
-{
-    qWarning() << "Error: " << error;
-    switch(error) {
-        case QNetworkReply::NoError: // Do nothing. No error
-        break;
-        case QNetworkReply::ConnectionRefusedError:
-            emit errorNetwork("connection refused");
-            break;
-        case QNetworkReply::HostNotFoundError:
-            emit errorNetwork("Network error: host not found");
-            break;
-        case QNetworkReply::TimeoutError:
-            emit errorNetwork("Network error: timeout, may be host is down?");
-            break;
-        case QNetworkReply::TemporaryNetworkFailureError:
-            emit errorNetwork("Network error: Tempororary network problems, reply request as soon as the network connection is re-established");
-            break;
-        case QNetworkReply::NetworkSessionFailedError:
-            emit errorNetwork("Network error: No network connection");
-            break;
-        case QNetworkReply::BackgroundRequestNotAllowedError:
-            emit errorNetwork("Network error: background request are not permitted by OS");
-            break;
-        case QNetworkReply::ProxyConnectionRefusedError:
-            emit errorNetwork("Network error: Proxy refused to connection");
-            break;
-        case QNetworkReply::ProxyNotFoundError:
-            emit errorNetwork(tr("Proxy server is not found"));
-            break;
-        case QNetworkReply::ProxyTimeoutError:
-            emit errorNetwork(tr("Proxy server timeout, is it up?"));
-            break;
-        case QNetworkReply::ProxyAuthenticationRequiredError:
-            emit errorNetwork(tr("Authorization problem"));
-            break;
-        default:{
-            emit errorNetwork(tr("Undefined network error"));
-        }
-    }
-}*/

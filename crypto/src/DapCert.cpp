@@ -144,7 +144,7 @@ void Cert::sign(const QByteArray & a_data, QByteArray & a_output)
  */
 bool Cert::compareWithSign(const QByteArray & a_data)
 {
-    return dap_cert_compare_with_sign(m_cert, reinterpret_cast<const dap_sign_t*>( a_data.data() ) ) == 0;
+    return dap_cert_compare_with_sign(m_cert, reinterpret_cast<const dap_sign_t*>( a_data.constData() ) ) == 0;
 }
 
 /**
