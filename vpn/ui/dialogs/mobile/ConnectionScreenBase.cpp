@@ -44,6 +44,22 @@ void ConnectionScreenBase::setState(ConnectionState a_state)
     m_ui->btnDisconnect->setEnabled(isConnected);
 }
 
+void ConnectionScreenBase::showMessageAboutProblemConnection(bool a_virtualNetworkState)
+{
+    if(m_state == ConnectionState::Connected)
+    {
+        if(!a_virtualNetworkState)
+        {
+            m_ui->lblStatusMessage->setText(tr("No connection"));
+        }
+        else
+        {
+            m_ui->lblStatusMessage->setText(this->statusText());
+        }
+    }
+}
+
+
 QString ConnectionScreenBase::currentServer()
 {
     return m_ui->cbbServer->currentText();
