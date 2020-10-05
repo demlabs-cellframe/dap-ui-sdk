@@ -33,12 +33,6 @@ SignInScreenSerialNumberBase::SignInScreenSerialNumberBase(QWidget *a_parent)
     AdaptiveScreen::initScreen(this);
 #endif
 
-    connect(this, &SignInScreenSerialNumberBase::connectionRequested, [this](){
-        m_isConnectionRequested = true;
-    });
-    connect(this, &SignInScreenSerialNumberBase::disconnectionRequested, [this](){
-        m_isConnectionRequested = false;
-    });
 }
 
 void SignInScreenSerialNumberBase::initVariantUi(QWidget *a_widget)
@@ -363,10 +357,7 @@ void SignInScreenSerialNumberBase::TryConnectOrDisconnect()
 {
     if (m_ui->ledSerialKey->text().isEmpty())
         emit this->serialKeyError();
-    // i have no idea way but serviceIsConnected() is lies
-    // so i need another way to know was service connection requested or not
-    // and i still haven't found anything better but use 'bool m_isConnectionRequested' like this:
-    else if (!m_isConnectionRequested) {
+    else if (!m_stt_serverState_loading_connecting->active()) {
         emit this->connectionRequested();
     }
     else {

@@ -120,8 +120,6 @@ protected:
 
     QString m_serial;
 
-    bool m_isConnectionRequested = false;
-
 #ifdef Q_OS_ANDROID
     WidgetInputSizeController *m_widgetSizeController = nullptr;
 #endif
