@@ -204,7 +204,7 @@ void DapStreamer::sltStreamOpenCallback()
         qDebug()  << "[DapConnectStream] Stream server key for client requests: "
                   << streamServKey;
 
-        m_session->getDapCrypt()->initAesKey(streamServKey, KeyRoleStream);
+        m_session->getDapCrypt()->initKey(DAP_ENC_KEY_TYPE_BF_CBC, streamServKey, KeyRoleStream);
 
         if(!m_streamSocket->isOpen()) {
 
@@ -485,7 +485,7 @@ void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
 
     m_session->getDapCrypt()->decode(m_procPktInData, m_procPktInDecData, KeyRoleStream);
 
-    if(m_procPktInDecData.size() != 0) {
+    if(m_procPktInDecData.size() > sizeof(DapChannelPacketHdr)) {
         DapChannelPacketHdr* channelPkt = (DapChannelPacketHdr*) calloc (1,sizeof(DapChannelPacketHdr));
         memcpy(channelPkt, m_procPktInDecData.constData(), sizeof(DapChannelPacketHdr));
         _detectPacketLoose(channelPkt->seq_id);
