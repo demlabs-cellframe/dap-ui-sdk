@@ -55,11 +55,14 @@ signals:
 
     void error(QString);
 
+    void serviceInitialized();
+
     void sigTunTapError();
     void sigTunTapPresent();
 public slots:
     void sendCmd(const QString & a_cmd);
     void init() override;
+    void connectToService();
 
 protected:
 
@@ -77,7 +80,6 @@ private:
 
 private slots:
     void onCtlSocketConnected();
-    void connectToService();
     void onCtlSocketError(DapUiSocketError socketError);
 };
 #endif // DAPSERVICECLIENT_H

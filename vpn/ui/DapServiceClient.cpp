@@ -46,7 +46,7 @@ void DapServiceClient::init()
 {
     qDebug() << "[DapServiceClient::init]";
     DapServiceNative::init();
-    connectToService();
+    emit serviceInitialized();
 }
 
 /**
@@ -56,12 +56,9 @@ void DapServiceClient::connectToService()
 {
     sockCtl->abort(); // sometimes need to abort previous pending connecting to connect then faster
 #ifdef DAP_UI_SOCKET_TCP
-            sockCtl->connectToHost(QHostAddress::LocalHost, SERVICE_LOCAL_PORT);
+    sockCtl->connectToHost(QHostAddress::LocalHost, SERVICE_LOCAL_PORT);
 #else
-           // QTimer::singleShot(1000,[=]{
-            //    qDebug() << "[connectToService]";
-                sockCtl->connectToServer(DAP_BRAND);
-           // });
+    sockCtl->connectToServer(DAP_BRAND);
 #endif
 }
 
