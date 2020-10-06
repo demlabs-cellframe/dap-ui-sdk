@@ -45,6 +45,7 @@ public slots:
     void setCurrentServer(const DapServerInfo *a_server);
     void setCurrentServer(const QString &a_serverName);
     void setCurrentServer(int a_serverIndex);
+    void setCurrentServerFromService(const DapServerInfo *a_server);
 
     void saveDatas() const;
 

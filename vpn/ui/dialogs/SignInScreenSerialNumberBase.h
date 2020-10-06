@@ -25,7 +25,6 @@
 
 #define STATUS_TEXT_CONNECTING_TO_SERVICE "Connecting to service..."
 
-
 /// from "BrandTextProperties.h"
 #ifndef LOGIN_BUTTON_TEXT_CONNECTING
 #define LOGIN_BUTTON_TEXT_CONNECTING "CONNECTING..."

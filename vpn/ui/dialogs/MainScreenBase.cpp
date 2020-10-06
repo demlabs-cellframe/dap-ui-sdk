@@ -47,10 +47,10 @@ void MainScreenBase::setState(ConnectionState a_state)
 #ifndef Q_OS_ANDROID
     if(a_state == ConnectionState::Disconnected)
     {
-        m_ui->btnConnection->setText(TEXT_CONNECT);
+        m_ui->btnConnection->setText(tr(DASHBOARD_TEXT_CONNECT));
     }
     else {
-        m_ui->btnConnection->setText(TEXT_DISCONNECT);
+        m_ui->btnConnection->setText(tr(DASHBOARD_TEXT_DISCONNECT));
     }
 #endif
 

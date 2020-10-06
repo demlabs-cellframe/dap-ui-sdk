@@ -9,7 +9,7 @@
 #include <QSettings>
 #include <QDateTime>
 #include "DapServerInfo.h"
-#include "DapKeyAes.h"
+#include "DapKeyCommon.h"
 #include "DapBugReportData.h"
 #include "DapServersData.h"
 #include "DapSignUpData.h"
@@ -32,8 +32,8 @@ class DapDataLocal : public QObject
 
     void parseXML(const QString& a_fname);
 
-    DapKeyAes *secretKey = Q_NULLPTR;
-    bool initSecretKey();
+    DapKey *secretKey = Q_NULLPTR;
+    void initSecretKey();
     QString getRandomString(int);
 
 public:

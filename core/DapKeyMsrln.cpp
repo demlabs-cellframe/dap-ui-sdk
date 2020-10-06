@@ -31,7 +31,7 @@ QByteArray DapKeyMsrln::generateAliceMessage()
 bool DapKeyMsrln::generateAliceSharedKey(const QByteArray& bobMessage)
 {
     _key->gen_alice_shared_key(_key, _key->priv_key_data, (size_t)bobMessage.size(),
-                               (unsigned char*) bobMessage.data());
+                               (unsigned char*) bobMessage.constData());
     return true;
 }
 
@@ -42,7 +42,7 @@ QByteArray DapKeyMsrln::generateBobMessage(QByteArray aliceMessage)
     }
 
     _key = dap_enc_key_new(DAP_ENC_KEY_TYPE_MSRLN);
-    _key->gen_bob_shared_key(_key, aliceMessage.data(), (size_t)aliceMessage.size(),
+    _key->gen_bob_shared_key(_key, aliceMessage.constData(), (size_t)aliceMessage.size(),
                              (void**)&_key->pub_key_data);
 
     return QByteArray((char*)_key->pub_key_data, _key->pub_key_data_size);
@@ -52,15 +52,14 @@ bool DapKeyMsrln::generateSessionKey(const QByteArray& bobMessage,
                                               const QByteArray& seed)
 {
     _key->gen_alice_shared_key(_key, _key->priv_key_data, (size_t)bobMessage.size(),
-                               (unsigned char*) bobMessage.data());
+                               (unsigned char*) bobMessage.constData());
     if(_sharedSessionKey != Q_NULLPTR) {
         delete _sharedSessionKey;
         _sharedSessionKey = nullptr;
     }
-    _sharedSessionKey = new DapKeyAes();
-
-    _sharedSessionKey->init(seed, QByteArray((char*)_key->priv_key_data, _key->priv_key_data_size));
-
+    _sharedSessionKey = new DapKey(DAP_ENC_KEY_TYPE_BF_CBC,
+                                   QByteArray((char*)_key->priv_key_data, _key->priv_key_data_size),
+                                   seed);
     return true;
 }
 
@@ -77,7 +76,5 @@ void DapKeyMsrln::decode(const QByteArray &in, QByteArray &out)
 bool DapKeyMsrln::init(const QString &key)
 {
     (void)key;
-    //aes_key = new DapKeyIaes();
-    //return aes_key->init(key);
     return false;
 }

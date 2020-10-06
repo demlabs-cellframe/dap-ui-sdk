@@ -37,8 +37,10 @@ class DapSession : public QObject
 {
     Q_OBJECT
 private:
-    static const int DEFAULT_REQUEST_TIMEOUT = 20000; // 10 sec
+    static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
     const int m_requestTimeout;
+    int m_enc_type;
+    int m_pkey_exch_type;
 public:
     static const QString URL_ENCRYPT;
     static const QString URL_STREAM;
@@ -114,7 +116,6 @@ protected:
     QNetworkReply * m_netAuthorizeReply;
     QNetworkReply * m_netLogoutReply;
     QNetworkReply * m_netSendBugReportReply;
-    QNetworkReply * m_netNewsReply;
     QNetworkReply * m_netSignUpReply;
 
     QMap<QString,QString> m_userInform;
@@ -159,7 +160,6 @@ private slots:
     void onKeyActivated();
     void onLogout();
     void answerBugReport();
-    void answerNews();
     void answerSignUp();
 signals:
     void encryptInitialized();
