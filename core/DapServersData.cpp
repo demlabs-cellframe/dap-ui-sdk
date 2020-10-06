@@ -46,9 +46,22 @@ void DapServersData::setCurrentServer(int a_serverIndex)
 
 void DapServersData::setCurrentServer(const DapServerInfo *a_server)
 {
-    qDebug() << "DapDataLocal::setCurrentServer(" << (a_server ? a_server->name : "") << ")";
+    qDebug() << "Selecting the current server: " << (a_server ? a_server->name : "null");
 
     setCurrentServer(m_servers.indexOf(*a_server));
+}
+
+void DapServersData::setCurrentServerFromService(const DapServerInfo *a_server)
+{
+    qDebug() << "Selecting the current server received from the service: " << (a_server ? a_server->name : "null");
+
+    int index = -1;
+    index = m_servers.indexOf(*a_server);
+    if (index == -1) {
+        addServer(*a_server);
+        index = m_servers.indexOf(*a_server);
+    }
+    setCurrentServer(index);
 }
 
 /// Set server name.
