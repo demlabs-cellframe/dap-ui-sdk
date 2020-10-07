@@ -236,7 +236,7 @@ void SignInScreenSerialNumberBase::adjustStateMachine()
 
     m_stt_serverState_loading_connecting->assignProperty(m_ui->lblStatusMessage, qPrintable(Properties::TEXT), "");
 
-    m_stt_serverState_loading_connecting->assignProperty(m_ui->btnConnect, qPrintable(Properties::TEXT), LOGIN_BUTTON_TEXT_CONNECTING);
+    m_stt_serverState_loading_connecting->assignProperty(m_ui->btnConnect, qPrintable(Properties::TEXT), tr(LOGIN_BUTTON_TEXT_CONNECTING));
 
     this->m_inputStates->start();
 }
