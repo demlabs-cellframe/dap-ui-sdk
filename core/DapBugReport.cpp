@@ -5,14 +5,14 @@ DapBugReport::DapBugReport()
 
 }
 
-bool DapBugReport::createZipDataBugReport(QString email, QString message)
+bool DapBugReport::createZipDataBugReport(QString serial, QString message)
 {
     qDebug() << "DapBugReport::createZip";
 
     QFile file("data.txt");
     if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
         QTextStream writeStream(&file);
-        writeStream << email << endl << message;
+        writeStream << serial << endl << message.toUtf8();
         file.close();
     }
 

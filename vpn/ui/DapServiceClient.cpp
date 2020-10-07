@@ -74,7 +74,7 @@ void DapServiceClient::sendCmd(const QString & a_cmd)
 {
     //qDebug() << "[DapServiceClient] sock ctl send command "<< a_cmd;
     if(sockCtl->isWritable())
-        sockCtl->write(QString("%1%2").arg(a_cmd).arg('\n').toLatin1());
+        sockCtl->write(QString("%1%2").arg(a_cmd).arg('\n').toUtf8());
     else
         qCritical() << "Can't send command. Socket is not writable";
 }
