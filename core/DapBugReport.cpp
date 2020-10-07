@@ -12,7 +12,7 @@ bool DapBugReport::createZipDataBugReport(QString serial, QString message)
     QFile file("data.txt");
     if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
         QTextStream writeStream(&file);
-        writeStream << serial << endl << message.toUtf8();
+        writeStream << serial << endl << " App: " DAP_BRAND " " DAP_VERSION << endl << getSystemInfo() << endl << message.toUtf8();
         file.close();
     }
 
@@ -46,6 +46,18 @@ bool DapBugReport::createZipDataBugReport(QString serial, QString message)
         zipFile.remove();
     }
     return true;
+}
+
+QString DapBugReport::getSystemInfo()
+{
+    return " Kernel: " + QSysInfo::kernelType()
+           + " " + QSysInfo::kernelVersion()
+           + " Product: " +   QSysInfo::productType()
+           + " Version: " +   QSysInfo::productVersion()
+           + " (" + QSysInfo::prettyProductName() + ") "
+           + " Cpu architecture build: " +   QSysInfo::buildCpuArchitecture()
+           + " Current: " +  QSysInfo::currentCpuArchitecture()
+           + " Machine host name: " +  QSysInfo::machineHostName();
 }
 
 //bool DapBugReport::runScriptPackaging(QString path){
