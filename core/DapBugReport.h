@@ -15,7 +15,7 @@ class DapBugReport
 public:
     DapBugReport();
 
-    bool createZipDataBugReport(QString email, QString message);
+    bool createZipDataBugReport(QString serial, QString message);
     QByteArray getDataZipFile(){return byteArrayZipFile;}
 
 private:
