@@ -177,7 +177,6 @@ void CustomPlacementButton::enterEvent(QEvent *event)
 {
     Q_UNUSED(event);
 
-    if (isEnabled())
         this->setProperty(Properties::HOVER, true);
 }
 
@@ -188,8 +187,16 @@ void CustomPlacementButton::leaveEvent(QEvent *event)
 {
     Q_UNUSED(event);
 
-    if (isEnabled())
         this->setProperty(Properties::HOVER, false);
+}
+
+void CustomPlacementButton::showEvent(QShowEvent *event)
+{
+    QPushButton::showEvent(event);
+    if(!underMouse())
+    {
+        setProperty(Properties::HOVER,false);
+    }
 }
 
 void CustomPlacementButton::setWidgetState(QWidget *a_widget, bool a_isHover, bool a_isChecked)
