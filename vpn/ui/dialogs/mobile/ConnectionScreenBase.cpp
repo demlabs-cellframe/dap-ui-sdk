@@ -44,7 +44,7 @@ void ConnectionScreenBase::setState(ConnectionState a_state)
     m_ui->btnDisconnect->setEnabled(isConnected);
 }
 
-void ConnectionScreenBase::showMessageAboutProblemConnection(bool a_virtualNetworkState)
+void ConnectionScreenBase::showMessageAboutConnectionProblem(bool a_virtualNetworkState)
 {
     if(m_state == ConnectionState::Connected)
     {
