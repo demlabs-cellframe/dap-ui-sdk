@@ -123,5 +123,5 @@ void DapTunWorkerUnix::loop()
     }while(1);
 
     qDebug() << "[SapStreamChSF] Listen thread finished!";
-    emit loopStopped();
+    //emit loopStopped();
 }

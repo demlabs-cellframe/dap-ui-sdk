@@ -21,11 +21,21 @@ void BugReportScreenBase::initVariantUi(QWidget *a_widget)
 {
     Q_UNUSED(a_widget);
 
+#ifdef TEXT_VERSION_DIFFERENT
+    m_ui->lblVersion->setText(QString("Version %1 %2").arg(DAP_VERSION).arg(__DATE__));
+#endif
+
 #ifdef ANDROID
     m_ui->btnSend->setText(tr("SEND REPORT"));
     QScroller::grabGesture(m_ui->edtMessage->viewport(), QScroller::LeftMouseButtonGesture);
 #else
+
     m_ui->layBugReportScreen->setAlignment(m_ui->frmBugReport, Qt::AlignHCenter);
+
+    m_ui->layBugReport->setAlignment(m_ui->edtMessage,Qt::AlignHCenter);
+    m_ui->layBugReport->setAlignment(m_ui->lblCharacters,Qt::AlignHCenter);
+    m_ui->layBugReport->setAlignment(m_ui->btnAttachImage,Qt::AlignHCenter);
+    m_ui->layBugReport->setAlignment(m_ui->btnSend,Qt::AlignHCenter);
 
     #if defined(Q_OS_MAC)
         m_ui->edtMessage->setAttribute(Qt::WA_MacShowFocusRect,false);

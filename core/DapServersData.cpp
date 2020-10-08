@@ -46,9 +46,22 @@ void DapServersData::setCurrentServer(int a_serverIndex)
 
 void DapServersData::setCurrentServer(const DapServerInfo *a_server)
 {
-    qDebug() << "DapDataLocal::setCurrentServer(" << (a_server ? a_server->name : "") << ")";
+    qDebug() << "Selecting the current server: " << (a_server ? a_server->name : "null");
 
     setCurrentServer(m_servers.indexOf(*a_server));
+}
+
+void DapServersData::setCurrentServerFromService(const DapServerInfo *a_server)
+{
+    qDebug() << "Selecting the current server received from the service: " << (a_server ? a_server->name : "null");
+
+    int index = -1;
+    index = m_servers.indexOf(*a_server);
+    if (index == -1) {
+        addServer(*a_server);
+        index = m_servers.indexOf(*a_server);
+    }
+    setCurrentServer(index);
 }
 
 /// Set server name.
@@ -204,7 +217,7 @@ QMap<QString, QString> DapServersData::m_countryMap = {
     {"MICRONESIA", "FM"},
     {"FRANCE", "FR"},
     {"GABON", "GA"},
-    {"UNITED KINGSDOM", "GB"},
+    {"UNITED KINGDOM", "GB"},
     {"ENGLAND", "GB"},
     {"GRENADA", "GD"},
     {"GEORGIA", "GE"},
@@ -338,6 +351,7 @@ QMap<QString, QString> DapServersData::m_countryMap = {
     {"UKRAINE", "UA"},
     {"UGANDA", "UG"},
     {"UNITED STATES", "US"},
+    {"USA", "US"},
     {"URUGUAY", "UY"},
     {"UZBEKISTAN", "UZ"},
     {"SAINT VINCENT AND THE GRINADINES", "VC"},
@@ -373,16 +387,13 @@ QVariant DapServersData::data(const QModelIndex &index, int role) const
     switch (role) {
     case Qt::DisplayRole:
         return m_servers.at(index.row()).name;
-//    case Qt::DecorationRole: {
-//        auto si = m_servers.at(index.row());
-//        if (si.name.isEmpty())
-//            return QString();
+    case COUTRY_FLAG_ROLE: {
+        auto si = m_servers.at(index.row());
+        if (si.name.isEmpty())
+            return QString();
 
-//        if (si.location != DapServerLocation::UNKNOWN)
-//            return m_countries[static_cast<int>(si.location)];
-//        else
-//            return findInCountriesMap(si.name.toUpper());
-//    }
+        return findInCountriesMap(si.name.toUpper());
+    }
     default:
         break;
     }
@@ -402,7 +413,7 @@ bool DapServersData::setData(const QModelIndex &index, const QVariant &value, in
 {
     if (index.isValid() && role == Qt::EditRole) {
         m_servers.replace(index.row(), value.value<DapServerInfo>());
-        emit dataChanged(index, index, {Qt::DisplayRole, Qt::DecorationRole});
+        emit dataChanged(index, index, {Qt::DisplayRole, COUTRY_FLAG_ROLE});
         return true;
     }
     return false;
@@ -431,4 +442,12 @@ bool DapServersData::removeRows(int position, int rows, const QModelIndex &index
 
     endRemoveRows();
     return true;
+}
+
+QMap<int, QVariant> DapServersData::itemData(const QModelIndex &index) const
+{
+    QMap<int, QVariant> map;
+    map[Qt::DisplayRole] = data(index, Qt::DisplayRole);
+    map[COUTRY_FLAG_ROLE] = data(index, COUTRY_FLAG_ROLE);
+    return map;
 }

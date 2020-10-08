@@ -17,14 +17,13 @@
 #include "CustomLicenseLineEdit.h"
 #include "ScreenWithScreenPopupsAbstract.h"
 #include "SerialNumberLineEdit.h"
-
+#include "BrandTextProperties.h"
 
 #ifdef Q_OS_ANDROID
 #include "WidgetInputSizeController.h"
 #endif
 
 #define STATUS_TEXT_CONNECTING_TO_SERVICE "Connecting to service..."
-
 
 /// from "BrandTextProperties.h"
 #ifndef LOGIN_BUTTON_TEXT_CONNECTING
@@ -76,6 +75,7 @@ signals:
     void connectionRequested();
     void connectionError();
     void connected();
+    void disconnected();
     void serversListCleared();
 
     void serverChanged(int serverName);

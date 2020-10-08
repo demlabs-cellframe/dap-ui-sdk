@@ -19,12 +19,15 @@ QString BugReportLoadingScreen::screenName()
 
 void BugReportLoadingScreen::initVariantUi(QWidget *a_widget)
 {
+
 #ifdef ANDROID
     m_ui->btnCancel->setText(tr("CANCEL"));
     if (DAP_BRAND == "TBCCVPN")
         m_ui->lblCaption->hide();
 #else
     m_ui->layBugReportScreen->setAlignment(m_ui->frmBugReport, Qt::AlignHCenter);
+
+    m_ui->frmBugReport->layout()->setAlignment(m_ui->btnCancel,Qt::AlignHCenter);
 #endif
 
     m_ui->lblGifLoading->setMovie(&m_movie);

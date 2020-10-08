@@ -23,11 +23,16 @@ void BugReportResultScreen::setStatusMessage(const QString &a_message)
 void BugReportResultScreen::initVariantUi(QWidget *a_widget)
 {
     Q_UNUSED(a_widget)
+#ifdef TEXT_VERSION_DIFFERENT
+    m_ui->lblVersion->setText(QString("Version %1 %2").arg(DAP_VERSION).arg(__DATE__));
+#endif
 
 #ifdef ANDROID
     this->m_ui->btnClose->setText(tr("BACK"));
 #else
     m_ui->layBugReportScreen->setAlignment(m_ui->frmBugReport, Qt::AlignHCenter);
+
+    m_ui->frmBugReport->layout()->setAlignment(m_ui->btnClose,Qt::AlignHCenter);
 #endif
 
     this->connectBtnToSignall(this->m_ui->btnClose, &BugReportResultScreen::goBack);

@@ -47,20 +47,16 @@ private:
     explicit DapServersListRequester() {}
 public:
     static DapServersListNetworkReply* sendRequest(const QString& host, quint16 port = 80) {
-        /*if (DapConnectClient::instance()->getNAM() && DapConnectClient::instance()->getNAM()->networkAccessible() == 0) {
+        /*if (!DapNetworkMonitor::instance()->isTunGatewayDefined()) {
             return nullptr;
         }*/
         auto networkReply = DapConnectClient::instance()->request_GET(host,
                                                                       port,
                                                                       "/nodelist",
                                                                       false);
-        DapReplyTimeout::set(networkReply, 15000); // 10 sec
+        DapReplyTimeout::set(networkReply, 15000); // 15 sec
         return new DapServersListNetworkReply(networkReply);
     }
-
-    /*static DapServersListNetworkReply* sendRequestsAll(QList<QString> s) {
-
-    }*/
 };
 
 #endif // DAPSERVERSLISTREQUESTER_H

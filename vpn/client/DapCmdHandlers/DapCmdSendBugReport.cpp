@@ -22,13 +22,13 @@ void DapCmdSendBugReport::handle(const QJsonObject *params)
         sendCmd(&obj);
     });
 
-    QString email = params->value("email").toString();
+    QString serial = params->value("serial").toString();
     QString message = params->value("message").toString();
     qDebug() << QString("Received bug-report request");
 
-    if (!email.isNull() && !message.isNull()){
+    if (!serial.isNull() && !message.isNull()){
 
-        emit sigBugReportSendRequest(email, message);
+        emit sigBugReportSendRequest(serial, message);
 
     } else {
         qWarning() << "Bad value" << *params;

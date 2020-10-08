@@ -122,6 +122,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnAttachImage">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Click here to attach a image</string>
         </property>

@@ -4,6 +4,7 @@
 #include <QFrame>
 #include <QBoxLayout>
 
+#include <QDebug>
 class WidgetDelegateBase : public QFrame
 {
     Q_OBJECT
@@ -23,11 +24,7 @@ signals:
 protected:
     virtual void resizeEvent(QResizeEvent *event);
 
-
-
     QBoxLayout *m_layout;
-
-
 };
 
 #endif // ABSTRACTWIDGETDELEGATE_H

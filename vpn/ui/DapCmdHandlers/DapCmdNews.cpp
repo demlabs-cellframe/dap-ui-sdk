@@ -22,7 +22,7 @@ void DapCmdNews::handleResult(const QJsonObject& result)
 
         if (fromJSON(result.value("news_list").toArray(), &listNews))
         {
-            emit sigGetedNews(listNews);
+            emit sigGotNews(listNews);
         } else {
             qCritical() << "Error parse response from service";
         }

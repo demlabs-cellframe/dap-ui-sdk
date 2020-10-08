@@ -35,7 +35,7 @@ void SignInWithTariffLink::initVariantUi(QWidget *a_widget)
 void SignInWithTariffLink::appendTariff(const QList<TariffItem> &a_tariffList)
 {
     for (const TariffItem& currentTarriff: a_tariffList)
-        m_ui->cbbTariff->addItem(currentTarriff.urlTariff, QVariant::fromValue(currentTarriff));
+        m_ui->cbbTariff->addItem(currentTarriff.URL, QVariant::fromValue(currentTarriff));
 }
 
 QList<CustomPopup *> SignInWithTariffLink::customPopups()

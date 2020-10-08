@@ -20,29 +20,25 @@ public:
 
     void create(const QString& a_addr, const QString& a_gw,  const QString & a_upstreamAddress, qint16 a_upstreamPort, int a_upstreamSocket );
     void destroy();
-
+    void standby();
     void setTunSocket(int a_tunSocket){ m_tunSocket = a_tunSocket; }
     void setTunDeviceName(const QString& a_tunDeviceName){ m_tunDeviceName = a_tunDeviceName; }
 
     bool isCreated();
     const QString& addr() { return m_addr; }
-    const QString& gw() { return m_gw; } //m_tunDest
+    const QString& gw() { return m_gw; }
     int upstreamSocket() { return m_upstreamSocket; }
     const QString& tunDeviceName(){ return m_tunDeviceName; }
     int mtu() { return m_MTU; }
-
-
-    /*void tunWriteData(DapSockForwPacket * a_pkt){
-        addWriteData(a_pkt);
-        signalWriteQueueProc();
-    }*/
 
     void tunWriteData(Dap::Stream::Packet *a_pkt) {
         addWriteData(a_pkt);
         signalWriteQueueProc();
     }
 
-    virtual void workerStart(); // В основном для мобильных платформ, где тун девайс открывается через задницу
+    virtual void addNewUpstreamRoute(const QString&)=0;
+
+    virtual void workerStart();
 
     QQueue<Dap::Stream::Packet*>* writeQueue(){ return &_m_writeQueue; }
     QReadWriteLock* writeQueueLock(){ return &m_writeQueueLock; }
@@ -84,7 +80,7 @@ protected:
 
     virtual void workerPrepare()=0;
     virtual void workerStop()=0;
-
+    virtual void workerPause() = 0;
     virtual void signalWriteQueueProc()=0;
 
     void initWorker();
@@ -102,7 +98,6 @@ protected:
     QString m_ethDeviceName;
     QString m_ethDevice;
     QString m_defaultGwOld;
-    QStringList m_defaultDNSRecord;
 
 private:
     const QString tempNetFileName = "TempConfigurationNetwork.xml";

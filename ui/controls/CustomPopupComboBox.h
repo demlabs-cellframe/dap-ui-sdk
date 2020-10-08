@@ -5,6 +5,7 @@
 #include <QComboBox>
 
 class CustomComboBoxPopup;
+
 enum PositionPopup{
     defaultPosition, //bottom combobox
     overlappingPosition
@@ -17,6 +18,8 @@ class CustomPopupComboBox : public QComboBox
 
     Q_PROPERTY(QString caption WRITE setCaption DESIGNABLE true)
 public:
+
+
     CustomPopupComboBox(QWidget *parent = Q_NULLPTR);
 
     virtual void showPopup() override;

@@ -61,15 +61,15 @@ public:
 
     explicit CustomPlacementButton(QWidget *a_parent = Q_NULLPTR);
 
-    QString text();
+    QString text() override;
     /// Set text button.
     /// @param text Set text.
-    virtual void setText(const QString &text);
+    virtual void setText(const QString &text) override;
     /// Form initialization.
     /// @param path Path to Image.
     void setIcon(const QString &path);
 
-    void setProperty(const QString& a_property, const QVariant& a_value);
+    void setProperty(const QString& a_property, const QVariant& a_value) override;
     /// .
     /// @param a_id Window GUI widget.
     QLabel* addSubcontrol(QString a_objectName);
@@ -80,6 +80,7 @@ public:
     void setLayoutDirection(Qt::LayoutDirection a_direction);
 
     void setAdditionalImage(bool a_visible);
+    void setImage(const QPixmap &a_pixmap);
 
     Qt::Alignment alignment() const;
     ///Makes widgets visible on the sides
@@ -100,11 +101,13 @@ signals:
 protected:
     /// Cursor in.
     /// @param event Signal source.
-    void enterEvent(QEvent *event);
+    void enterEvent(QEvent *event) override;
     /// Cursor out.
     /// @param event Signal source.
-    void leaveEvent(QEvent *event);
-    void checkStateSet();
+    void leaveEvent(QEvent *event) override;
+
+    void showEvent(QShowEvent *event) override;
+    void checkStateSet() override;
     QHBoxLayout *m_layout;
     QWidget m_wgtLeftSpacing;         ///<label for left spacing
     QList<QWidget*> m_subcontrols;

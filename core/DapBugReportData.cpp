@@ -60,8 +60,8 @@ void DapBugReportData::setEmail(const QString &a_email)
 /// @return QString() if was error
 void DapBugReportData::setLastSentNumber(const QString& a_lastSentNumber /*= {})*/)
 {
-    if (m_lastSentNumber == a_lastSentNumber)
-        return;
+    if (m_lastSentNumber == a_lastSentNumber && a_lastSentNumber != "")
+           return;
 
     m_lastSentNumber = a_lastSentNumber;
     emit this->lastSentNumberChanged(a_lastSentNumber);

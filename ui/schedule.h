@@ -17,16 +17,15 @@
 // Класс для хранения и отрисовки меток скорости на графике.
 class Schedule
 {
-    std::list<SheduleElement> elems;
     QList<SheduleElement> m_elems;
     time_t s_time     = time(nullptr);
-    int s_quantity = 0;
+    quint64 s_quantity = 0;
     int diff       = 0;
 
 
 public:
     Schedule();
-    void addElem(int elem);
+    void addElem(quint64 elem);
     int size() {return m_elems.size();}
 
     int maxValue();

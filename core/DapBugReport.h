@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>
+#include <QSysInfo>
 #include "DapDataLocal.h"
 #include "JlCompress.h"
 
@@ -15,7 +16,8 @@ class DapBugReport
 public:
     DapBugReport();
 
-    void createZipDataBugReport(QString email, QString message);
+    QString getSystemInfo();
+    bool createZipDataBugReport(QString serial, QString message);
     QByteArray getDataZipFile(){return byteArrayZipFile;}
 
 private:

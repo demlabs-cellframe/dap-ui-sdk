@@ -143,6 +143,7 @@ void SignInScreenSerialNumberBase::adjustStateMachine()
     m_stt_serverState_loading_serverList->addTransition(m_ui->cbbServer->model(), &QAbstractItemModel::rowsInserted, m_stt_serverState_disconnected);
     m_stt_serverState_disconnected->addTransition(this, &SignInScreenSerialNumberBase::serversListCleared, m_stt_serverState_loading_serverList);
     m_stt_serverState_loading_connecting->addTransition(this, &SignInScreenSerialNumberBase::connected, m_stt_serverState_disconnected);
+    m_stt_serverState_loading_connecting->addTransition(this, &SignInScreenSerialNumberBase::disconnected, m_stt_serverState_disconnected);
 
     m_stt_serviceState_connected->addTransition(this, &SignInScreenSerialNumberBase::serviceDisconnected, m_stt_serviceState_connecting);
     m_stt_serviceState_connecting->addTransition(this, &SignInScreenSerialNumberBase::serviceConnected, m_stt_serviceState_connected);
@@ -205,6 +206,7 @@ void SignInScreenSerialNumberBase::adjustStateMachine()
     connect(m_stt_serverState_disconnected      , &QState::entered, [this] {
         if (this->serialKeyIsEntered() && this->serviceIsConnected())
         {
+            m_ui->btnConnect->setText(tr(LOGIN_BUTTON_TEXT_DEFAULT));
             m_ui->btnConnect->setEnabled(true);
         }
     });
@@ -280,6 +282,12 @@ void SignInScreenSerialNumberBase::setState(ConnectionState a_state)
     if (a_state == ConnectionState::Connected)
     {
         emit this->connected();
+        m_ui->lblStatusMessage->clear();
+    }
+
+    if (a_state == ConnectionState::Disconnected)
+    {
+        emit this->disconnected();
         m_ui->lblStatusMessage->clear();
     }
 }
