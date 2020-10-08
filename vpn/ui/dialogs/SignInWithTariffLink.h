@@ -13,6 +13,9 @@ public:
     SignInWithTariffLink(QWidget *a_parent = nullptr);
 
     void appendTariff(const QList<TariffItem> &a_tariffList);
+signals:
+    void showPopupScreenTarriff();
+
 protected:
     virtual void initVariantUi(QWidget *a_widget) override;
 
