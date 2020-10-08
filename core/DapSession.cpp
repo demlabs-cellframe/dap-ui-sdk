@@ -150,6 +150,7 @@ void DapSession::sendBugReport(const QByteArray &data)
         this->setDapUri(DapDataLocal::instance()->cdbServersList().front(), 80);
         auto *l_tempConn = new QMetaObject::Connection();
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]{
+            preserveCDBSession();
             m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(), SLOT(answerBugReport()));
             disconnect(*l_tempConn);
             delete l_tempConn;
