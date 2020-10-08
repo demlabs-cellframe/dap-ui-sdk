@@ -17,7 +17,6 @@ protected:
     virtual void initVariantUi(QWidget *a_widget) override;
 
     virtual QList<CustomPopup *> customPopups() override;
-
 };
 
 #endif // SIGNINWITHTARIFFLINK_H

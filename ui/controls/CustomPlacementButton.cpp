@@ -177,7 +177,6 @@ void CustomPlacementButton::enterEvent(QEvent *event)
 {
     Q_UNUSED(event);
 
-    if (isEnabled())
         this->setProperty(Properties::HOVER, true);
 }
 
@@ -188,8 +187,16 @@ void CustomPlacementButton::leaveEvent(QEvent *event)
 {
     Q_UNUSED(event);
 
-    if (isEnabled())
         this->setProperty(Properties::HOVER, false);
+}
+
+void CustomPlacementButton::showEvent(QShowEvent *event)
+{
+    QPushButton::showEvent(event);
+    if(!underMouse())
+    {
+        setProperty(Properties::HOVER,false);
+    }
 }
 
 void CustomPlacementButton::setWidgetState(QWidget *a_widget, bool a_isHover, bool a_isChecked)
@@ -244,10 +251,6 @@ void CustomPlacementButton::setAdditionalImage(bool a_visible)
     m_lbAdditionalImage.setVisible(a_visible);
 }
 
-void CustomPlacementButton::setImage(const QPixmap &a_pixmap)
-{
-    m_lbImage.setPixmap(a_pixmap);
-}
 void CustomPlacementButton::checkStateSet()
 {
     this->setProperty(Properties::CHECKED, isChecked());

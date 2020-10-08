@@ -33,7 +33,7 @@ DapDataLocal::DapDataLocal()
     qDebug() << "[DL] DapDataLocal Constructor";
 
     parseXML(":/data.xml");
-    
+    initSecretKey();
     this->loadAuthorizationDatas();
 }
 
@@ -149,16 +149,6 @@ void DapDataLocal::saveAuthorizationData()
     this->saveEncriptedSetting(this->TEXT_PASSWORD  , this->password());
 }
 
-void DapDataLocal::setLicenseTermTill(const QString &utcDate)
-{
-    this->m_serialKeyData->setLicenseTermTill(utcDate);
-}
-
-const QDateTime &DapDataLocal::getLicenseTermTill()
-{
-    return this->m_serialKeyData->getLicenseTermTill();
-}
-
 void DapDataLocal::saveSerialKeyData()
 {
     if (m_serialKeyData)
@@ -187,9 +177,11 @@ void DapDataLocal::loadAuthorizationDatas()
 }
 
 void DapDataLocal::rotateCDBList() {
-    if (m_cdbServersList.size() > 1) {
+    if ((m_cdbServersList.size() > 1) && (m_cdbServersList.size() > ++m_rotations)) {
         auto tmp = m_cdbServersList.takeFirst();
         m_cdbServersList.push_back(tmp);
+    } else {
+        m_rotations = -1;
     }
 }
 
@@ -223,8 +215,6 @@ bool DapDataLocal::loadEncriptedSettingString(const QString &a_setting, QByteArr
         a_outString = "";
         return true;
     }
-
-    this->initSecretKey();
     secretKey->decode(encriptedString, a_outString);
 
     return true;
@@ -238,7 +228,6 @@ void DapDataLocal::saveEncriptedSetting(const QString &a_setting, const QVariant
 
 void DapDataLocal::saveEncriptedSetting(const QString &a_setting, const QByteArray &a_string)
 {
-    initSecretKey();
     QByteArray encodedString;
     secretKey->encode(a_string, encodedString);
     DapDataLocal::saveSetting(a_setting, encodedString);
@@ -275,7 +264,7 @@ DapSerialKeyData *DapDataLocal::serialKeyData()
     return m_serialKeyData;
 }
 
-bool DapDataLocal::initSecretKey()
+void DapDataLocal::initSecretKey()
 {
     if (settings()->value("key").toString().isEmpty())
     {
@@ -284,9 +273,7 @@ bool DapDataLocal::initSecretKey()
     if (secretKey != nullptr) {
         delete secretKey;
     }
-    secretKey = new DapKeyAes();
-    QString kexString = settings()->value("key").toString() + "SLKJGN234njg6vlkkNS3s5dfzkK5O54jhug3KUifw23";
-    return secretKey->init(QString(kexString));
+    secretKey = new DapKey(DAP_ENC_KEY_TYPE_IAES, settings()->value("key").toString() + "SLKJGN234njg6vlkkNS3s5dfzkK5O54jhug3KUifw23");
 }
 
 QString DapDataLocal::getRandomString(int size)

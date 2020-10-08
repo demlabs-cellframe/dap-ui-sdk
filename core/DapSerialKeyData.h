@@ -23,12 +23,15 @@ public:
 
     void reset();
 
-    const QDateTime & getLicenseTermTill();
-    
+    const QDateTime & licenseTermTill();
+    int daysLeft();
+    QString daysLeftString();
+
 signals:
     void serialKeyChanged(const QString& serialKey);
     void activationChanged(bool activation);
-    void licenseTermTillChanged(const int &days);
+    void licenseTermTillChanged(const QString &days);
+    void daysLeftStringChanged(const QString &days);
 
 public slots:
     void setLicenseTermTill(const QString &a_date);

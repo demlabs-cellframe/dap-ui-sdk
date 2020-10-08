@@ -6,6 +6,8 @@
 
 #include "DapServerInfo.h"
 
+#define COUTRY_FLAG_ROLE (Qt::UserRole + 10)
+
 class DapServersData: public QAbstractListModel
 {
     Q_OBJECT
@@ -43,6 +45,7 @@ public slots:
     void setCurrentServer(const DapServerInfo *a_server);
     void setCurrentServer(const QString &a_serverName);
     void setCurrentServer(int a_serverIndex);
+    void setCurrentServerFromService(const DapServerInfo *a_server);
 
     void saveDatas() const;
 

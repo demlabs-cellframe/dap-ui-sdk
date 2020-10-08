@@ -34,6 +34,7 @@ DapConnectClient::DapConnectClient(QObject *parent) :
     m_httpClient->setProxy(QNetworkProxy::NoProxy);
 
     connect(m_httpClient, &QNetworkAccessManager::finished, this, &DapConnectClient::finished);
+#ifndef Q_OS_WINDOWS
     connect(m_httpClient, &QNetworkAccessManager::networkAccessibleChanged,
             [=](QNetworkAccessManager::NetworkAccessibility accessible) {
         qDebug() << "Network accessible changed to" << accessible;
@@ -41,7 +42,7 @@ DapConnectClient::DapConnectClient(QObject *parent) :
             _rebuildNetworkManager();
         }
     });
-
+#endif
     connect(m_netConfManager, &QNetworkConfigurationManager::configurationChanged,
             [=](const QNetworkConfiguration & config){
         qDebug() << "Configuration changed to" << config.name();

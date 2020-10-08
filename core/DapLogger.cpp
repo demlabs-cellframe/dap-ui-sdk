@@ -54,6 +54,7 @@ int DapLogger::createLogFolder(QString path){
     int ret = dap_mkdir_with_parents(qPrintable(path));
     setPermissionFolder(path);
     m_watcher->addPath(path.replace("/log", ""));
+    m_watcher->addPath(path.replace(QString("/" DAP_BRAND).toLower(), ""));
     return ret;
 }
 void DapLogger::setPermissionFolder(const QString& path)
@@ -77,7 +78,6 @@ void DapLogger::createChangerLogFiles(){
     connect(&t, &QTimer::timeout, [&]{
         t.setInterval(24 * 3600 * 1000);
         m_watcher->removePath(QString("%1/%2").arg(m_pathToLog).arg(m_currentLogName));
-        dap_common_deinit();
         this->updateCurrentLogName();
         this->setLogFile(QString("%1/%2").arg(m_pathToLog).arg(m_currentLogName));
         this->clearOldLogs();
@@ -89,7 +89,6 @@ void DapLogger::resetLogFileIfNotExist(const QString& path)
     QFileInfo check_file(path);
     if (!(check_file.exists() && check_file.isFile())) {
         m_watcher->removePath(path);
-        dap_common_deinit();
         setLogFile(path);
     }
 }
@@ -169,8 +168,8 @@ void DapLogger::messageHandler(QtMsgType type,
         strcpy(prefixBuffer, fileName);
         sprintf(strrchr(prefixBuffer, '.'), ":%d", ctx.line);
 
-        _log_it(prefixBuffer, castQtMsgToDap(type), msg.toLatin1().data());
+        _log_it(prefixBuffer, castQtMsgToDap(type), qPrintable(msg));
     } else {
-        _log_it("\0", castQtMsgToDap(type), msg.toLatin1().data());
+        _log_it("\0", castQtMsgToDap(type), qPrintable(msg));
     }
 }

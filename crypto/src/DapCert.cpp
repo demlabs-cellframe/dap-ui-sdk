@@ -28,6 +28,9 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 #include "dap_cert.h"
 #include "dap_cert_file.h"
 #include "DapCert.h"
+#ifdef Q_OS_WIN
+#include "registry.h"
+#endif
 
 using namespace Dap;
 using namespace Dap::Crypto;
@@ -141,7 +144,7 @@ void Cert::sign(const QByteArray & a_data, QByteArray & a_output)
  */
 bool Cert::compareWithSign(const QByteArray & a_data)
 {
-    return dap_cert_compare_with_sign(m_cert, reinterpret_cast<const dap_sign_t*>( a_data.data() ) ) == 0;
+    return dap_cert_compare_with_sign(m_cert, reinterpret_cast<const dap_sign_t*>( a_data.constData() ) ) == 0;
 }
 
 /**
@@ -163,4 +166,61 @@ QString Cert::exportPKeyBase64()
         }
     }
     return QString();
+}
+
+bool Cert::exportPKeyToFile(const QString &a_path) {
+    FILE *l_file = fopen(qPrintable(a_path), "wb");
+    if (l_file) {
+        size_t buflen = 0;
+        uint8_t *buf = dap_enc_key_serealize_pub_key(*m_key, &buflen);
+        if (buf) {
+            if (size_t l_ret = fwrite(buf, 1, buflen, l_file) != buflen) {
+                qCritical() << "Error occured on pkey export: " << l_ret << " != " << buflen;
+                DAP_DELETE(buf);
+                fclose(l_file);
+                return false;
+            }
+            DAP_DELETE(buf);
+            fclose(l_file);
+            return true;
+        }
+    }
+    qCritical() << "Couldn't export pkey";
+    return false;
+}
+
+bool Cert::importPKeyFromFile(const QString &a_path) {
+    FILE *l_file = fopen(qPrintable(a_path), "rb");
+    if (l_file) {
+        fseek(l_file, 0L, SEEK_END);
+        long l_len = ftell(l_file);
+        fseek(l_file, 0L, SEEK_SET);
+        uint8_t buf[l_len];
+        fread(buf, 1, l_len, l_file);
+        int l_err = dap_enc_key_deserealize_pub_key(*m_key, buf, l_len);
+        if (l_err != 0) {
+            qCritical() << "Error occured on deserialization, code " << l_err;
+            fclose(l_file);
+            return false;
+        }
+    } else {
+        qInfo() << "No pkey found";
+        return false;
+    }
+    qInfo() << "Pkey successfully imported";
+    return true;
+}
+
+QString Cert::storagePath()
+{
+#if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
+    return QString("/opt/%1").arg(DAP_BRAND).toLower();
+#elif defined(Q_OS_MACOS)
+    return QString("/tmp/%1").arg(DAP_BRAND);
+#elif defined (Q_OS_WIN)
+    return QString("%1/%2").arg(regWGetUsrPath()).arg(DAP_BRAND);
+#elif defined Q_OS_ANDROID
+    return QString("/sdcard/%1").arg(DAP_BRAND);
+#endif
+    return {};
 }

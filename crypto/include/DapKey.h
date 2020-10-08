@@ -23,7 +23,8 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 */
 #pragma once
 #include <QByteArray>
-typedef struct dap_enc_key dap_enc_key_t;
+#include "dap_enc_key.h"
+
 namespace Dap {
     namespace  Crypto{
         class Key
@@ -32,9 +33,13 @@ namespace Dap {
             dap_enc_key_t * m_key;
             Key(){ m_key = nullptr; } // Only for generator funciton, Key can't be empty by design
         public:
-            Key( dap_enc_key_t * a_key): m_key(a_key) {}
+            Key(dap_enc_key_t *a_key) {
+                dap_enc_key_serealize_t* temp = dap_enc_key_serealize(a_key);
+                m_key = dap_enc_key_deserealize(temp, sizeof (dap_enc_key_serealize_t));
+                DAP_DEL_Z(temp)
+            }
             Key(const QByteArray& a_keyPrivate);
-            operator dap_enc_key_t * () { return  m_key; }
+            operator dap_enc_key_t*() { return  m_key; }
 
             ~Key();
         };

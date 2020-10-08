@@ -7,9 +7,7 @@ DapServersListNetworkReply::DapServersListNetworkReply(QNetworkReply *networkRep
     QObject(networkReply)
 {
     connect(networkReply, &QNetworkReply::finished, this, [=] {
-
         if(networkReply->error() == QNetworkReply::NetworkError::NoError) {
-
             QByteArray ba(networkReply->readAll());
             QJsonParseError jsonErr;
             QJsonDocument jsonDoc = QJsonDocument::fromJson(ba, &jsonErr);
@@ -27,14 +25,8 @@ DapServersListNetworkReply::DapServersListNetworkReply(QNetworkReply *networkRep
                 emit sigParseResponseError();
                 return;
             }
-
         } else {
             emit sigNetworkError(networkReply->error());
         }
     });
-    /*connect(networkReply, static_cast<void(QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error), [=] {
-        if (networkReply->isRunning()) {
-            networkReply->abort();
-        }
-    });*/
 }

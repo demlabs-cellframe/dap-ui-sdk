@@ -17,8 +17,6 @@ class CustomComboBoxPopup: public CustomPopup
 {
     Q_OBJECT
     Q_PROPERTY(bool captionVisible READ captionIsVisible WRITE setCaptionVisible)
-    // @brief When the ignoreIconsFromModel property is true, this list view ignores any images posted by the model.
-    Q_PROPERTY(bool ignoreIconsFromModel READ isIcomsFromModelIgnored WRITE ignoreIconsFromModel DESIGNABLE true)
 
 public:
     CustomComboBoxPopup(QMainWindow *parent = nullptr);
@@ -34,13 +32,6 @@ public:
     void setCaptionVisible(bool a_visible);
     bool captionIsVisible() const;
     QList<QListView*> allListViews();
-
-    void ignoreIconsFromModel(bool y) {
-        m_ignoreIconsFromModel = y;
-    }
-    bool isIcomsFromModelIgnored() {
-        return m_ignoreIconsFromModel;
-    }
 
 public slots:
     void setCurrentIndex(int a_index);

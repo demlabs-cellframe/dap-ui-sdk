@@ -9,7 +9,7 @@
 #include <QSettings>
 #include <QDateTime>
 #include "DapServerInfo.h"
-#include "DapKeyAes.h"
+#include "DapKeyCommon.h"
 #include "DapBugReportData.h"
 #include "DapServersData.h"
 #include "DapSignUpData.h"
@@ -32,11 +32,12 @@ class DapDataLocal : public QObject
 
     void parseXML(const QString& a_fname);
 
-    DapKeyAes *secretKey = Q_NULLPTR;
-    bool initSecretKey();
+    DapKey *secretKey = Q_NULLPTR;
+    void initSecretKey();
     QString getRandomString(int);
 
 public:
+    int m_rotations = 0;
 
     using picturesMap = QMap<DapServerLocation, QString>;
     static DapDataLocal* instance();
@@ -56,9 +57,6 @@ public:
     const QString & networkDefault()       { return m_networkDefault; }
     const QString & getUrlSite()           { return m_urlSite;        }
     const QString & getBrandName()         { return m_brandName;      }
-    const QDateTime & getLicenseTermTill();
-
-    void setLicenseTermTill(const QString &utcDate);
 
     void saveEncriptedSetting(const QString &a_setting, const QVariant &a_value);
     void saveEncriptedSetting(const QString &a_setting, const QByteArray &a_value);
