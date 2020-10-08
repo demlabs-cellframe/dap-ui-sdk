@@ -3,38 +3,40 @@
 
 #include <QObject>
 #include <QString>
+#include <QMap>
 
-#if !defined Q_OS_WIN
 #include <QtPurchasing>
-#else
-#include "microsoftshop.h"
-#endif
-
 
 class DapShopManager : public QObject
 {
     Q_OBJECT
 
-    QInAppStore *m_store;
-    void setupConnections();
 public:
-    enum Products { PRODUCT_1MONTH_KEY, PRODUCT_6MONTHS_KEY, PRODUCT_YEAR_KEY};
+    enum Products { PRODUCT_UNDEFINED, PRODUCT_1MONTH_KEY, PRODUCT_6MONTHS_KEY, PRODUCT_YEAR_KEY, PRODUCT_COUNT};
+    enum ProductState { STATE_UNAVAILABLE, STATE_AVAILABLE, STATE_PURCHASED };
     static const QStringList m_productNames;
 
-    explicit DapShopManager(QObject *parent = nullptr);
-
+    static DapShopManager* instance();
     void doPurchase(Products product);
-    //void restorePurchases(); not relevant... or?..
+    ProductState getProdustState(Products product) const;
 
 signals:
-    void productPurchased(Products product);
-    //void error(const QString& errorMessage); are we need it?
+    //@brief Signal that the product status has changed
+    // This signal is emitted when the App Store is initializing and after the purchase is complete.
+    void productStateChanged(Products product, ProductState state);
 
-public slots:
-    void handleErrorGracefully(QInAppProduct*);
+private slots:
+    void handleError(QInAppProduct::ProductType productType, const QString &identifier);
     void handleTransaction(QInAppTransaction*);
     void markProductAvailable(QInAppProduct*);
 
+private:
+    explicit DapShopManager(QObject *parent = nullptr);
+    void setupConnections();
+    void changeProductState(const QString &productId, ProductState state);
+
+    QInAppStore *m_store;
+    QMap<int, ProductState> m_products;
 };
 
 #endif // DAPSHOPMANAGER_H

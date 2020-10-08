@@ -20,6 +20,7 @@
 #include "ScreenWithScreenPopupsAbstract.h"
 #include <QDesktopServices>
 #include "TariffItem.h"
+#include "DapShopManager.h"
 
 class AccountScreen : public ScreenWithScreenPopupsAbstract
 {
@@ -48,6 +49,8 @@ public:
 signals:
     void serialRemovalRequested();
 #endif
+
+    void tariffUpdate(DapShopManager::Products tariff, DapShopManager::ProductState state);
 
 protected:
     /// Form initialization.

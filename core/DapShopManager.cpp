@@ -1,33 +1,44 @@
 #include "DapShopManager.h"
 #include <QString>
 
-//TODO: string ID here not a real strig ID
+const QString androidPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArU3LGlb29Qc715q8nC0JpNdxWHW8xVXG5qw4iiBWomw9GESeM/dEegOHFa66Hl+iGe5/zkfc/Wgchg8Ta7+fBxOvmKxSnuaAMzaTlzxUGqKYDAhCJAlUkFK578XNGNAr2uia4DcGQfAQYAjeYfZl0kS81uqXAAGlJCWUMUO4pSAJF27L12xLzCA6rIjBzFbhrJXm0P4htCdssAQDl1kv1piuhRJUWW+FCxVyjV/oJl0N/Td9wpPQn284vxWFaxU6WaHKwU8CPIGA4Ze50MjiPfCbQsiiTLUC7BxKGiIH8m4Dglig2Fgr2q9UjWGpn5qwgCfTiVVhayfCMY/tUDOdXQIDAQAB";
+
+// The product ID
 const QStringList DapShopManager::m_productNames = {
-    QStringLiteral("Key_for_1_month"),
-    QStringLiteral("Key_for_6_month"),
-    QStringLiteral("Key_for_year")
+    QStringLiteral("android.demlabs.kelvpn_1"),
+    QStringLiteral("android.demlabs.kelvpn_2"),
+    QStringLiteral("android.demlabs.kelvpn_3")
 };
 
 void DapShopManager::setupConnections()
 {
-    connect(m_store, SIGNAL(productRegistered(QInAppProduct*)),
-            this, SLOT(markProductAvailable(QInAppProduct*)));
-    connect(m_store, SIGNAL(productUnknown(QInAppProduct*)),
-            this, SLOT(handleErrorGracefully(QInAppProduct*)));
-    connect(m_store, SIGNAL(transactionReady(QInAppTransaction*)),
-            this, SLOT(handleTransaction(QInAppTransaction*)));
+    connect(m_store, &QInAppStore::productRegistered,
+            this, &DapShopManager::markProductAvailable);
+    connect(m_store, &QInAppStore::productUnknown,
+            this, &DapShopManager::handleError);
+    connect(m_store, &QInAppStore::transactionReady,
+            this, &DapShopManager::handleTransaction);
 }
 
 DapShopManager::DapShopManager(QObject *parent) : QObject(parent)
 {
+    for (int i = PRODUCT_UNDEFINED + 1; i < PRODUCT_COUNT; i++) {
+        m_products[i] = STATE_UNAVAILABLE;
+    }
+
     m_store = new QInAppStore(parent);
-    //TODO: setup Android Public Key here:
-    //m_store->setPlatformProperty(QStringLiteral("AndroidPublicKey"), QStringLiteral(""));
+    m_store->setPlatformProperty(QStringLiteral("AndroidPublicKey"), androidPublicKey);
     setupConnections();
 
     for (auto name: m_productNames) {
         m_store->registerProduct(QInAppProduct::Consumable, name);
     }
+}
+
+DapShopManager *DapShopManager::instance()
+{
+    static DapShopManager s_instance;
+    return &s_instance;
 }
 
 void DapShopManager::doPurchase(DapShopManager::Products product)
@@ -44,34 +55,62 @@ void DapShopManager::doPurchase(DapShopManager::Products product)
     case PRODUCT_YEAR_KEY:
         inAppProduct = m_store->registeredProduct(m_productNames[2]);
         break;
+    default: // unknown product
+        break;
     }
     if (inAppProduct)
         inAppProduct->purchase();
 }
 
-void DapShopManager::handleErrorGracefully(QInAppProduct *product)
+DapShopManager::ProductState DapShopManager::getProdustState(DapShopManager::Products product) const
 {
-    qDebug() << "[IN-APP STORE] Error: product " << product->identifier() << product;
-    //TODO: set disable product in screen
+    ProductState state = STATE_UNAVAILABLE;
+    if (product > PRODUCT_UNDEFINED && product < PRODUCT_COUNT)
+        state = m_products[product];
+    return state;
+}
+
+void DapShopManager::changeProductState(const QString &productId, DapShopManager::ProductState state)
+{
+    int i = 1;
+    for (auto name: m_productNames) {
+        if (name == productId) {
+            m_products[i] = state;
+            emit productStateChanged(Products(i), state);
+            break;
+        }
+        ++i;
+    }
+}
+
+void DapShopManager::handleError(QInAppProduct::ProductType productType, const QString &identifier)
+{
+    Q_UNUSED(productType)
+    qDebug() << "[IN-APP STORE] Error: product unknown: " << identifier;
+    changeProductState(identifier, STATE_UNAVAILABLE);
 }
 
 void DapShopManager::handleTransaction(QInAppTransaction *transaction)
 {
+    if (transaction == nullptr)
+        return;
+
     if (transaction->status() == QInAppTransaction::PurchaseApproved) {
-        //TODO: realize something like this:
-        //  if (!hasAlreadyStoredTransaction(transaction->orderId())) {
-        //      if (!addKeyToPersistentStorage(transaction->orderId()))
-        //          popupErrorDialog(tr("Unable to write to persistent storage. Please make sure there is sufficient space and restart."));
-        //      else
-                    transaction->finalize();
-        //  }
-    } else if (transaction->status() == QInAppTransaction::PurchaseFailed) {
-        qDebug() << "[IN-APP STORE] Error: " << "Purchase is failed.";
-        transaction->finalize();
+        auto product = transaction->product();
+        changeProductState(product->identifier(), STATE_PURCHASED);
+        qDebug() << "[IN-APP STORE] product purchased: " << product->identifier();
     }
+    else if (transaction->status() == QInAppTransaction::PurchaseFailed) {
+        qDebug() << "[IN-APP STORE] Transaction failed: " << transaction->failureReason() << transaction->errorString();
+    }
+    transaction->finalize();
 }
 
-void DapShopManager::markProductAvailable(QInAppProduct *)
+void DapShopManager::markProductAvailable(QInAppProduct *product)
 {
-    //TODO: set enable product in screen
+    if (product == nullptr)
+        return;
+
+    changeProductState(product->identifier(), STATE_AVAILABLE);
+    qDebug() << "[IN-APP STORE] product available: " << product->identifier();
 }
