@@ -5,7 +5,10 @@
 #include <QComboBox>
 
 class CustomComboBoxPopup;
-
+enum PositionPopup{
+    defaultPosition, //bottom combobox
+    overlappingPosition
+};
 ///
 /// \brief The CustomPopupComboBox class
 class CustomPopupComboBox : public QComboBox
@@ -27,10 +30,12 @@ public:
     virtual void setCaption(const QString &a_text);
     QString caption() const;
 
-
+    void setPositionPopup(PositionPopup a_positon);
 private:
 
     CustomComboBoxPopup *m_popup = nullptr;
     QString m_caption;
+
+    PositionPopup m_positionPopup = PositionPopup::defaultPosition;
 };
 #endif // CUSTOMCOMBOBOX_H

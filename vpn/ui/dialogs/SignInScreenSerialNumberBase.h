@@ -1,5 +1,4 @@
-#ifndef SIGNINSCREEN_H
-#define SIGNINSCREEN_H
+#pragma once
 
 #include <QLineEdit>
 #include <QDebug>
@@ -19,13 +18,25 @@
 #include "ScreenWithScreenPopupsAbstract.h"
 #include "SerialNumberLineEdit.h"
 
+
+#ifdef Q_OS_ANDROID
+#include "WidgetInputSizeController.h"
+#endif
+
 #define STATUS_TEXT_CONNECTING_TO_SERVICE "Connecting to service..."
 
-#define BUTTON_TEXT_CONNECTING "CONNECTING..."
-#define BUTTON_TEXT_DEFAULT "START"
 
+/// from "BrandTextProperties.h"
+#ifndef LOGIN_BUTTON_TEXT_CONNECTING
+#define LOGIN_BUTTON_TEXT_CONNECTING "CONNECTING..."
+#endif
 
-class SignInScreen : public ScreenWithScreenPopupsAbstract
+/// from "BrandTextProperties.h"
+#ifndef LOGIN_BUTTON_TEXT_DEFAULT
+#define LOGIN_BUTTON_TEXT_DEFAULT "START"
+#endif
+
+class SignInScreenSerialNumberBase : public ScreenWithScreenPopupsAbstract
 {
     Q_OBJECT
 
@@ -33,7 +44,9 @@ public:
 
     /// Overloaded constructor.
     /// @param a_parent Parent.
-    SignInScreen(QWidget * a_parent);
+    SignInScreenSerialNumberBase(QWidget * a_parent);
+
+
 
     virtual QString screenName() override;
     static const QString SCREEN_NAME;
@@ -73,7 +86,8 @@ protected:
 
     virtual QList<CustomPopup *> customPopups() override;
 
-private:
+    QScopedPointer<Ui::SignInScreen> m_ui;
+
 
     void adjustStateMachine();
 
@@ -104,11 +118,10 @@ private:
 
     QString m_serial;
 
-    QScopedPointer<Ui::SignInScreen> m_ui;
-
+#ifdef Q_OS_ANDROID
+    WidgetInputSizeController *m_widgetSizeController = nullptr;
+#endif
 };
 
 
 
-
-#endif // SIGNINSCREEN_H
