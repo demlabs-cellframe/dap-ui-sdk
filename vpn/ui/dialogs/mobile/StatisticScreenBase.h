@@ -49,7 +49,7 @@ protected:
     QString m_downloadSpeed     = "0 bps";
 
     void updateSentRecievedIndicators();
-    bool indicatorUnitsIsBytes() const;
+    bool indicatorUnitsIsDownload() const;
     void updateTimeIndicators();
 
     QDateTime m_loginTime {};

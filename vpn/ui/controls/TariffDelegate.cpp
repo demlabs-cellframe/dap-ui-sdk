@@ -46,7 +46,6 @@ void TariffDelegate::setData(const QVariant &a_value, int role)
         {
             m_lblMonthPrice->hide();
         }
-
     }
 }
 

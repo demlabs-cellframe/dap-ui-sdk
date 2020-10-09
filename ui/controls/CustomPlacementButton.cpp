@@ -82,9 +82,15 @@ void CustomPlacementButton::emitTabFocus(bool isActiv)
     isActiv ? emit tabFocusIn() : emit tabFocusOut();
 }
 
-QLabel *CustomPlacementButton::additionalImage(){return &m_lbAdditionalImage;}
+QLabel *CustomPlacementButton::additionalImage()
+{
+    return &m_lbAdditionalImage;
+}
 
-QLabel *CustomPlacementButton::image(){return &m_lbImage;}
+QLabel *CustomPlacementButton::image()
+{
+    return &m_lbImage;
+}
 
 /** @brief Reimplemented QPushButton::setText method. Sets text property of text subcontrol.
  *  @param text Text
@@ -171,7 +177,6 @@ void CustomPlacementButton::enterEvent(QEvent *event)
 {
     Q_UNUSED(event);
 
-    if (isEnabled())
         this->setProperty(Properties::HOVER, true);
 }
 
@@ -182,8 +187,16 @@ void CustomPlacementButton::leaveEvent(QEvent *event)
 {
     Q_UNUSED(event);
 
-    if (isEnabled())
         this->setProperty(Properties::HOVER, false);
+}
+
+void CustomPlacementButton::showEvent(QShowEvent *event)
+{
+    QPushButton::showEvent(event);
+    if(!underMouse())
+    {
+        setProperty(Properties::HOVER,false);
+    }
 }
 
 void CustomPlacementButton::setWidgetState(QWidget *a_widget, bool a_isHover, bool a_isChecked)
@@ -237,6 +250,7 @@ void CustomPlacementButton::setAdditionalImage(bool a_visible)
 {
     m_lbAdditionalImage.setVisible(a_visible);
 }
+
 void CustomPlacementButton::checkStateSet()
 {
     this->setProperty(Properties::CHECKED, isChecked());

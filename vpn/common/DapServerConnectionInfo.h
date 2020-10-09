@@ -50,16 +50,16 @@ signals:
 private:
     QDateTime   m_startTime {};
 
-    quint64 m_bytesReceived     = 0;
-    quint64 m_bytesSent         = 0;
-    quint64 m_packetsReceived   = 0;
-    quint64 m_packetsSent       = 0;
-    QString m_uploadSpeed     = 0;
-    QString m_downloadSpeed   = 0;
+    quint64 m_bytesReceived   = 0;
+    quint64 m_bytesSent       = 0;
+    quint64 m_packetsReceived = 0;
+    quint64 m_packetsSent     = 0;
+    QString m_uploadSpeed     = "0 bps";
+    QString m_downloadSpeed   = "0 bps";
 
     DapServerInfo m_serverInfo;
 
-    QString convertByte(const quint64 &bytes_new);
+    QString convertBytePerSecond(const quint64 &bytes_new);
 };
 
 #endif // DAPCONNECTIONDATA_H

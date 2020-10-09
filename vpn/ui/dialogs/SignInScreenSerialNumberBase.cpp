@@ -1,11 +1,11 @@
-#include "SignInScreen.h"
+#include "SignInScreenSerialNumberBase.h"
 
 #include "DapDataLocal.h"
 #include "SerialKeyField.h"
 
-const QString SignInScreen::SCREEN_NAME = "SignIn";
+const QString SignInScreenSerialNumberBase::SCREEN_NAME = "SignIn";
 
-SignInScreen::SignInScreen(QWidget *a_parent)
+SignInScreenSerialNumberBase::SignInScreenSerialNumberBase(QWidget *a_parent)
     : ScreenWithScreenPopupsAbstract(a_parent)
     , m_inputStates                         (new QStateMachine(this))
     , m_stt_serialKey                       (new QState(m_inputStates))
@@ -24,17 +24,34 @@ SignInScreen::SignInScreen(QWidget *a_parent)
     , m_stt_serviceState_connecting         (new QState(m_stt_serviceState))
 
 {
+
+#ifndef USING_SIGN_IN_SCREEN_WITH_TARIFF_LINK
+    //Add this to inheritable class if you want have working inharitance initVariantUi method:
     this->create(m_ui);
 
-    this->adjustStateMachine();
+    //And this:
     AdaptiveScreen::initScreen(this);
+#endif
+
 }
 
-void SignInScreen::initVariantUi(QWidget *a_widget)
+void SignInScreenSerialNumberBase::initVariantUi(QWidget *a_widget)
 {
     qDebug() << "initVariantUi";
 
+#ifdef Q_OS_ANDROID
+    m_widgetSizeController = new WidgetInputSizeController(this);
+
+    m_widgetSizeController->addDisappearingWidget(m_ui->lblLogo);
+
+    m_widgetSizeController->addWidgetEmitsSignal(m_ui->ledSerialKey);
+#endif
+
     m_ui->cbbServer->popup()->setObjectName("cbbServer_popup");
+
+#ifndef Q_OS_ANDROID
+    m_ui->cbbServer->setPositionPopup(PositionPopup::overlappingPosition);
+#endif
 //*************************Serial field***************************************
 
 
@@ -70,21 +87,23 @@ void SignInScreen::initVariantUi(QWidget *a_widget)
 //================= end of ServersModel: =================
 
     connect(m_ui->cbbServer  , SIGNAL(currentIndexChanged(int))  , this, SIGNAL(serverChanged(int)));
-    connect(m_ui->ledSerialKey, &SerialKeyField::textEdited, this, &SignInScreen::serialKeyEdited);
+    connect(m_ui->ledSerialKey, &SerialKeyField::textEdited, this, &SignInScreenSerialNumberBase::serialKeyEdited);
 
 
-    connect(m_ui->ledSerialKey, &SerialKeyField::textChanged, this, &SignInScreen::serialKeyChanged);
+    connect(m_ui->ledSerialKey, &SerialKeyField::textChanged, this, &SignInScreenSerialNumberBase::serialKeyChanged);
 
     //Default properties:
-    m_ui->btnConnect->setText(tr(BUTTON_TEXT_DEFAULT));
+    m_ui->btnConnect->setText(tr(LOGIN_BUTTON_TEXT_DEFAULT));
 
     Utils::setPropertyAndUpdateStyle(m_ui->lblStatusMessage, Properties::WRONG, true);
     Utils::setPropertyAndUpdateStyle(m_ui->ledSerialKey, Properties::WRONG, false);
 
+    this->adjustStateMachine();
+
     ScreenWithScreenPopupsAbstract::initVariantUi(a_widget);
 }
 
-void SignInScreen::adjustStateMachine()
+void SignInScreenSerialNumberBase::adjustStateMachine()
 {
     m_inputStates->setChildMode(QState::ChildMode::ParallelStates);
     m_inputStates->setGlobalRestorePolicy(QState::RestorePolicy::RestoreProperties);
@@ -101,8 +120,8 @@ void SignInScreen::adjustStateMachine()
     m_stt_serviceState          ->setInitialState(m_stt_serviceState_connected);
 
 
-    m_stt_serialKey_unactivated->addTransition(this, &SignInScreen::serialKeyError, m_stt_serialKey_unactivated_wrong);
-    m_stt_serialKey_activated->addTransition(this, &SignInScreen::serialKeyError, m_stt_serialKey_unactivated_wrong);
+    m_stt_serialKey_unactivated->addTransition(this, &SignInScreenSerialNumberBase::serialKeyError, m_stt_serialKey_unactivated_wrong);
+    m_stt_serialKey_activated->addTransition(this, &SignInScreenSerialNumberBase::serialKeyError, m_stt_serialKey_unactivated_wrong);
     m_stt_serialKey_unactivated_wrong->addTransition(m_ui->ledSerialKey, &SerialKeyField::textChanged, m_stt_serialKey_unactivated_entered);
     m_stt_serialKey_unactivated_empty->addTransition(m_ui->ledSerialKey, &SerialKeyField::textChanged, m_stt_serialKey_unactivated_entered);
     m_stt_serialKey_unactivated_wrong->addTransition(m_ui->ledSerialKey, &SerialKeyField::textEditedAndFilledOut, m_stt_serialKey_unactivated_entered);
@@ -115,18 +134,19 @@ void SignInScreen::adjustStateMachine()
 
 //    m_stt_serialKey_unactivated_entered->addTransition(m_ui->ledSerialKey, &SerialKeyField::textChanged, m_stt_serialKey_unactivated_input);
 
-    m_stt_serialKey_unactivated->addTransition(this, &SignInScreen::activated, m_stt_serialKey_activated);
-    m_stt_serialKey_activated->addTransition(this, &SignInScreen::unactivated, m_stt_serialKey_unactivated);
+    m_stt_serialKey_unactivated->addTransition(this, &SignInScreenSerialNumberBase::activated, m_stt_serialKey_activated);
+    m_stt_serialKey_activated->addTransition(this, &SignInScreenSerialNumberBase::unactivated, m_stt_serialKey_unactivated);
 
-    m_stt_serverState_disconnected->addTransition(this, &SignInScreen::connectionRequested, m_stt_serverState_loading_connecting);
-    m_stt_serverState_loading_connecting->addTransition(this, &SignInScreen::connectionError, m_stt_serverState_disconnected);
+    m_stt_serverState_disconnected->addTransition(this, &SignInScreenSerialNumberBase::connectionRequested, m_stt_serverState_loading_connecting);
+    m_stt_serverState_loading_connecting->addTransition(this, &SignInScreenSerialNumberBase::connectionError, m_stt_serverState_disconnected);
 
     m_stt_serverState_loading_serverList->addTransition(m_ui->cbbServer->model(), &QAbstractItemModel::rowsInserted, m_stt_serverState_disconnected);
-    m_stt_serverState_disconnected->addTransition(this, &SignInScreen::serversListCleared, m_stt_serverState_loading_serverList);
-    m_stt_serverState_loading_connecting->addTransition(this, &SignInScreen::connected, m_stt_serverState_disconnected);
+    m_stt_serverState_disconnected->addTransition(this, &SignInScreenSerialNumberBase::serversListCleared, m_stt_serverState_loading_serverList);
+    m_stt_serverState_loading_connecting->addTransition(this, &SignInScreenSerialNumberBase::connected, m_stt_serverState_disconnected);
+    m_stt_serverState_loading_connecting->addTransition(this, &SignInScreenSerialNumberBase::disconnected, m_stt_serverState_disconnected);
 
-    m_stt_serviceState_connected->addTransition(this, &SignInScreen::serviceDisconnected, m_stt_serviceState_connecting);
-    m_stt_serviceState_connecting->addTransition(this, &SignInScreen::serviceConnected, m_stt_serviceState_connected);
+    m_stt_serviceState_connected->addTransition(this, &SignInScreenSerialNumberBase::serviceDisconnected, m_stt_serviceState_connecting);
+    m_stt_serviceState_connecting->addTransition(this, &SignInScreenSerialNumberBase::serviceConnected, m_stt_serviceState_connected);
 
 
     connect(m_stt_serialKey_unactivated, &QState::entered, []{qDebug() << " ============ m_stt_serialKey_unactivated entered";});
@@ -174,22 +194,19 @@ void SignInScreen::adjustStateMachine()
             m_ui->btnConnect->setEnabled(true);
 
         m_ui->ledSerialKey->hide();
-#ifndef Q_OS_ANDROID
-        m_ui->wgtFrameBottom->hide();
-#endif
+
     });
 
     connect(m_stt_serialKey_activated           , &QState::exited, [this]{
         m_ui->ledSerialKey->show();
-#ifndef Q_OS_ANDROID
-        m_ui->wgtFrameBottom->show();
-#endif
+
     });
 
     // Server
     connect(m_stt_serverState_disconnected      , &QState::entered, [this] {
         if (this->serialKeyIsEntered() && this->serviceIsConnected())
         {
+            m_ui->btnConnect->setText(tr(LOGIN_BUTTON_TEXT_DEFAULT));
             m_ui->btnConnect->setEnabled(true);
         }
     });
@@ -219,22 +236,22 @@ void SignInScreen::adjustStateMachine()
 
     m_stt_serverState_loading_connecting->assignProperty(m_ui->lblStatusMessage, qPrintable(Properties::TEXT), "");
 
-    m_stt_serverState_loading_connecting->assignProperty(m_ui->btnConnect, qPrintable(Properties::TEXT), BUTTON_TEXT_CONNECTING);
+    m_stt_serverState_loading_connecting->assignProperty(m_ui->btnConnect, qPrintable(Properties::TEXT), tr(LOGIN_BUTTON_TEXT_CONNECTING));
 
     this->m_inputStates->start();
 }
 
-QString SignInScreen::screenName()
+QString SignInScreenSerialNumberBase::screenName()
 {
     return SCREEN_NAME;
 }
 
-QString SignInScreen::serialKey()
+QString SignInScreenSerialNumberBase::serialKey()
 {
     return m_ui->ledSerialKey->text();
 }
 
-void SignInScreen::setState(ConnectionState a_state)
+void SignInScreenSerialNumberBase::setState(ConnectionState a_state)
 {
     //initial states adjusting:
     if (!m_inputStates->isRunning())
@@ -267,9 +284,15 @@ void SignInScreen::setState(ConnectionState a_state)
         emit this->connected();
         m_ui->lblStatusMessage->clear();
     }
+
+    if (a_state == ConnectionState::Disconnected)
+    {
+        emit this->disconnected();
+        m_ui->lblStatusMessage->clear();
+    }
 }
 
-void SignInScreen::setActivated(bool a_activated)
+void SignInScreenSerialNumberBase::setActivated(bool a_activated)
 {
     emit a_activated ? this->activated() : this->unactivated();
 
@@ -279,12 +302,12 @@ void SignInScreen::setActivated(bool a_activated)
         m_stt_serialKey->setInitialState(a_activated ? m_stt_serialKey_activated : m_stt_serialKey_unactivated);
 }
 
-void SignInScreen::setCurrentServerName(const QString &a_serverName)
+void SignInScreenSerialNumberBase::setCurrentServerName(const QString &a_serverName)
 {
     m_ui->cbbServer->setCurrentText(a_serverName);
 }
 
-void SignInScreen::setSerialKey(const QString &a_serial)
+void SignInScreenSerialNumberBase::setSerialKey(const QString &a_serial)
 {
     m_ui->ledSerialKey->setText(a_serial);
 
@@ -297,7 +320,7 @@ void SignInScreen::setSerialKey(const QString &a_serial)
     }
 }
 
-void SignInScreen::setErrorMessage(const QString &a_errorMsg /*= ""*/)
+void SignInScreenSerialNumberBase::setErrorMessage(const QString &a_errorMsg /*= ""*/)
 {
     if (a_errorMsg == "Incorrect serial key"
             || a_errorMsg == "Serial key not found in database"
@@ -312,7 +335,7 @@ void SignInScreen::setErrorMessage(const QString &a_errorMsg /*= ""*/)
     m_ui->lblStatusMessage->setText(translatedErrorMsg(a_errorMsg));
 }
 
-QString SignInScreen::translatedErrorMsg(QString a_errorMsg)
+QString SignInScreenSerialNumberBase::translatedErrorMsg(QString a_errorMsg)
 {
     if (a_errorMsg == "Incorrect serial key")
         return tr("Incorrect serial key");
@@ -326,23 +349,22 @@ QString SignInScreen::translatedErrorMsg(QString a_errorMsg)
     else return a_errorMsg;
 }
 
-bool SignInScreen::serialKeyIsEntered()
+bool SignInScreenSerialNumberBase::serialKeyIsEntered()
 {
     return  m_stt_serialKey_unactivated_entered->active() || m_stt_serialKey_activated->active();
 }
 
-bool SignInScreen::serviceIsConnected()
+bool SignInScreenSerialNumberBase::serviceIsConnected()
 {
     return m_stt_serviceState->active();
 }
 
-bool SignInScreen::isLoadingState()
+bool SignInScreenSerialNumberBase::isLoadingState()
 {
     return !m_stt_serverState_disconnected->active();
 }
 
-
-QList<CustomPopup *> SignInScreen::customPopups()
+QList<CustomPopup *> SignInScreenSerialNumberBase::customPopups()
 {
     return {m_ui->cbbServer->popup()};
 }

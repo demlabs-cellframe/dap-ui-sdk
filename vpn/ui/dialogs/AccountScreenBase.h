@@ -1,5 +1,5 @@
-﻿#ifndef ACCOUNTSCREEN_H
-#define ACCOUNTSCREEN_H
+#ifndef ACCOUNTSCREENBASE_H
+#define ACCOUNTSCREENBASE_H
 
 #include <QLabel>
 
@@ -21,7 +21,9 @@
 #include <QDesktopServices>
 #include "TariffItem.h"
 
-class AccountScreen : public ScreenWithScreenPopupsAbstract
+
+
+class AccountScreenBase : public ScreenWithScreenPopupsAbstract
 {
     Q_OBJECT
 
@@ -29,7 +31,7 @@ public:
 
     /// Overloaded constructor.
     /// @param a_parent Parent.
-    AccountScreen(QWidget *a_parent);
+    AccountScreenBase(QWidget *a_parent);
 
     static const QString SCREEN_NAME;
     virtual QString screenName() override;
@@ -62,4 +64,4 @@ private:
     QScopedPointer<Ui::AccountScreen> m_ui;
 };
 
-#endif // ACCOUNTSCREEN_H
+#endif // ACCOUNTSCREENBASE_H

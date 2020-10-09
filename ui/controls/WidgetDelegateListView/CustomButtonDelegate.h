@@ -4,6 +4,8 @@
 #include "WidgetDelegateBase.h"
 #include "CustomPlacementButton.h"
 
+#define COUNTRY_FLAG_ROLE (Qt::UserRole + 10)
+
 class CustomButtonDelegate : public WidgetDelegateBase
 {
 public:

@@ -11,7 +11,7 @@
 #include "ui_PasswordRecoveryScreen.h"
 #include <QStyle>
 #include "Utilz.h"
-#include "BrandProperties.h"
+#include "BrandTextProperties.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>

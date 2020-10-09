@@ -52,6 +52,7 @@ private:
     QString m_caption;
 
     bool m_captionIsVisible {true};
+    bool m_ignoreIconsFromModel = true;
 };
 
 #endif // CUSTOMCOMBOBOXPOPUP_H
