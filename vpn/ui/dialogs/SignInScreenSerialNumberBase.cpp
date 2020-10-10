@@ -53,7 +53,9 @@ void SignInScreenSerialNumberBase::initVariantUi(QWidget *a_widget)
     m_ui->cbbServer->setPositionPopup(PositionPopup::overlappingPosition);
 #endif
 //*************************Serial field***************************************
-
+#ifdef Q_OS_MAC
+    m_ui->ledSerialKey->setAttribute(Qt::WA_MacShowFocusRect,false);
+#endif
 
     connect(m_ui->btnConnect, &QPushButton::clicked, [this]{
         if (m_ui->ledSerialKey->text().isEmpty())
