@@ -26,9 +26,8 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 #include <QByteArray>
 #include "DapKey.h"
 #include "dap_enc_key.h"
+#include "dap_sign.h"
 
-typedef struct dap_sign dap_sign_t;
-//typedef enum dap_enc_key_type dap_enc_key_type_t;
 namespace Dap {
     namespace  Crypto{
         enum KeySignType { KeySignTypeTesla , KeySignTypeDilithium, KeySignTypeBliss, KeySignTypePicnic , KeySignTypeUndefined = -1};

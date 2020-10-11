@@ -134,6 +134,7 @@ void Cert::sign(const QByteArray & a_data, QByteArray & a_output)
 {
     dap_sign_t * sign = dap_cert_sign( m_cert, a_data.constData(), static_cast<size_t>(a_data.size()), 0 );
     size_t l_buf_size = dap_sign_get_size( sign );
+    qInfo() << "4554: get_size " << l_buf_size << " " << sign->header.sign_size << " + " << sign->header.sign_pkey_size;
     char l_buf[l_buf_size];
     memcpy(l_buf, sign, l_buf_size);
     a_output = QByteArray(l_buf, l_buf_size);

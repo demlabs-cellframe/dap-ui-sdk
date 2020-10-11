@@ -24,7 +24,6 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 
 #include <QtDebug>
 #include "dap_enc.h"
-#include "dap_sign.h"
 #include "DapKeySign.h"
 
 using namespace Dap;
