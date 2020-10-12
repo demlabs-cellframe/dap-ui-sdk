@@ -37,33 +37,12 @@ class DapCrypt
     DapKeyAbstract * roleToKey(KeyRole kRole) const;
 public:
     DapCrypt();
-    DapCrypt(const DapCrypt &rhs) : keyStream(Q_NULLPTR)
-    {
-        dap_enc_key_serealize_t* temp = dap_enc_key_serealize(rhs.keySession->_key);
-        dap_enc_key_t* l_key = dap_enc_key_deserealize(temp, sizeof (dap_enc_key_serealize_t));
-        DAP_DEL_Z(temp)
-        temp = dap_enc_key_serealize(rhs.keySession->_sharedSessionKey->_key);
-        dap_enc_key_t* l_ss_key = dap_enc_key_deserealize(temp, sizeof (dap_enc_key_serealize_t));
-        DAP_DEL_Z(temp)
-        if (keySession) {
-            if (keySession->_sharedSessionKey) {
-                delete keySession->_sharedSessionKey;
-                keySession->_sharedSessionKey = nullptr;
-            }
-            delete keySession;
-            keySession = nullptr;
-        }
-        keySession = new DapKeyMsrln;
-        keySession->_key = l_key;
-
-        keySession->_sharedSessionKey = new DapKeyAes();
-        keySession->_sharedSessionKey->_key = l_ss_key;
-    }
+    DapCrypt(const DapCrypt &rhs);
     ~DapCrypt();
 
     QString getRandomString(int length);
 
-    void initAesKey(QString &keyStr, KeyRole kRole);
+    void initKey(dap_enc_key_type_t a_type, QString &keyStr, KeyRole kRole);
     void setRsaPubKeyServer(const QString & a_keyStr){ keySession->init(a_keyStr); }
 
     void encode(QByteArray& in, QByteArray& out, KeyRole kRole) const;

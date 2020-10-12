@@ -49,6 +49,7 @@ bool ServiceCtl::startService(){
     if (ret == 0) {
         qDebug() << "[ServiceCtl] Start " DAP_BRAND "Service";
         serviceRestartCounter++;
+        emit started();
         return true;
     } else {
         qCritical() << "[ServiceCtl] " DAP_BRAND "Service not starting";

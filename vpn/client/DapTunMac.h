@@ -9,7 +9,7 @@ class DapTunMac : public DapTunAbstract
 {
 public:
     DapTunMac();
-    
+    void addNewUpstreamRoute(const QString&);
     ~DapTunMac();
 protected:
     void tunDeviceCreate();
@@ -18,6 +18,7 @@ protected:
 
     void workerPrepare();
     void workerStop();
+    void workerPause();
     void signalWriteQueueProc();
 
     void backupAndApplyDNS();

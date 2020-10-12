@@ -17,7 +17,7 @@ protected:
     bool fromJSON(const QJsonArray& jsonArr, QList<QMap<QString, QString>> *listNews);
 
 signals:
-    void sigGetedNews(QList<QMap<QString, QString>>);
+    void sigGotNews(QList<QMap<QString, QString>>);
 
 };
 

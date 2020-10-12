@@ -31,13 +31,16 @@
 #include <QList>
 #include "DapConnectClient.h"
 #include <DapCrypt.h>
+#include "DapDataLocal.h"
 
 class DapSession : public QObject
 {
     Q_OBJECT
 private:
-    static const int DEFAULT_REQUEST_TIMEOUT = 20000; // 10 sec
+    static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
     const int m_requestTimeout;
+    int m_enc_type;
+    int m_pkey_exch_type;
 public:
     static const QString URL_ENCRYPT;
     static const QString URL_STREAM;
@@ -77,9 +80,8 @@ public:
     DapCrypt* getDapCrypt() { return m_dapCrypt; }
     DapCrypt* getDapCryptCDB() { return m_dapCryptCDB; }
 public slots:
-    /* Request to server */
-    /* QNetworkReply does not need to be cleared. It's do DapConnectClient */
     QNetworkReply * encryptInitRequest();
+    QNetworkReply * requestServerPublicKey();
     QNetworkReply * authorizeRequest(const QString& a_user, const QString& a_password,
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
     QNetworkReply * authorizeByKeyRequest(const QString& a_serial = QString(),
@@ -87,7 +89,8 @@ public slots:
     QNetworkReply * activateKeyRequest(const QString& a_serial = QString(), const QByteArray& a_signed = QByteArray(),
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
     QNetworkReply * logoutRequest();
-    QNetworkReply * streamOpenRequest(const QString& subUrl, const QString& query);
+    QNetworkReply *streamOpenRequest(const QString& subUrl, const QString& query);
+    QNetworkReply *streamOpenRequest(const QString& subUrl, const QString& query, QObject* obj, const char *slot);
 
     void sendSignUpRequest(const QString &host, const QString &email, const QString &password);
     void sendBugReport(const QByteArray &data);
@@ -113,7 +116,6 @@ protected:
     QNetworkReply * m_netAuthorizeReply;
     QNetworkReply * m_netLogoutReply;
     QNetworkReply * m_netSendBugReportReply;
-    QNetworkReply * m_netNewsReply;
     QNetworkReply * m_netSignUpReply;
 
     QMap<QString,QString> m_userInform;
@@ -146,7 +148,6 @@ protected:
     QNetworkReply* requestRawToSite(const QString& dnsName, const QString& url, const QByteArray& bData, const char * slot, bool ssl, const QVector<HttpRequestHeader>* headers);
 
     void fillSessionHttpHeaders(HttpHeaders& headers, bool isCDBSession = false) const;
-    QNetworkReply * requestServerPublicKey();
 private:
     DapCrypt* m_dapCrypt, *m_dapCryptCDB;
     bool isSerial = false;
@@ -159,12 +160,8 @@ private slots:
     void onKeyActivated();
     void onLogout();
     void answerBugReport();
-    void answerNews();
     void answerSignUp();
 signals:
-    void pubKeyRequested();
-    void pubKeyServerRecived();
-
     void encryptInitialized();
     void errorEncryptInitialization(const QString& msg);
 
@@ -176,7 +173,6 @@ signals:
 
     void authRequested();
     void keyActRequested();
-    void repeatAuth();
     void authorized(const QString &);
     void onAuthorized();
     void usrDataChanged(const QString &addr, ushort port);

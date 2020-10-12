@@ -14,6 +14,8 @@ public:
 
     virtual QString screenName() override = 0;
 
+
+    ///Call it in inherited classes initVariantUi() method
     virtual void initVariantUi(QWidget * a_widget) override;
 
     virtual void setPopupScreen(PopupScreenBase *a_screen);

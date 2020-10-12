@@ -6,6 +6,10 @@
 
 class CustomComboBoxPopup;
 
+enum PositionPopup{
+    defaultPosition, //bottom combobox
+    overlappingPosition
+};
 ///
 /// \brief The CustomPopupComboBox class
 class CustomPopupComboBox : public QComboBox
@@ -14,6 +18,8 @@ class CustomPopupComboBox : public QComboBox
 
     Q_PROPERTY(QString caption WRITE setCaption DESIGNABLE true)
 public:
+
+
     CustomPopupComboBox(QWidget *parent = Q_NULLPTR);
 
     virtual void showPopup() override;
@@ -27,10 +33,12 @@ public:
     virtual void setCaption(const QString &a_text);
     QString caption() const;
 
-
+    void setPositionPopup(PositionPopup a_positon);
 private:
 
     CustomComboBoxPopup *m_popup = nullptr;
     QString m_caption;
+
+    PositionPopup m_positionPopup = PositionPopup::defaultPosition;
 };
 #endif // CUSTOMCOMBOBOX_H

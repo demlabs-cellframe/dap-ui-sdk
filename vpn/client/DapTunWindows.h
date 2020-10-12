@@ -8,7 +8,7 @@ class DapTunWindows : public DapTunAbstract
     
 public:
     DapTunWindows();
-    
+    void addNewUpstreamRoute(const QString&) override;
 protected:
     bool dhcpEnabled;
     ulong metric_eth, metric_tun;
@@ -18,7 +18,9 @@ protected:
     void workerPrepare()        override;
     void onWorkerStarted()      override;
     void workerStop()           override;
+    void workerPause()          override;
     void signalWriteQueueProc() override;
+
 };
 
 #endif // DAPTUNWINDOWS_H

@@ -26,12 +26,14 @@ signals:
 public slots:
 
     virtual void setCurrentServer(const QString& a_currentServer);
-
+    virtual void showMessageAboutConnectionProblem(bool a_virtualNetworkState);
 protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
     virtual void initVariantUi(QWidget *a_widget) override;
     virtual QList<CustomPopup *> customPopups() override;
+
+    virtual const QString getConnectedToText();
 
     QScopedPointer<CONNECTION_FORM> m_ui;
 

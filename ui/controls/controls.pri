@@ -1,6 +1,7 @@
 SOURCES += \
     $$PWD/AdaptiveWidget.cpp \
     $$PWD/AnimationChangingWidget.cpp \
+    $$PWD/ClickableRunningLabel.cpp \
     $$PWD/ComboBoxDelegate.cpp \
     $$PWD/CustomButtonComboBox.cpp \
     $$PWD/CustomComboBoxPopup.cpp \
@@ -33,6 +34,7 @@ SOURCES += \
 HEADERS += \
     $$PWD/AdaptiveWidget.h \
     $$PWD/AnimationChangingWidget.h \
+    $$PWD/ClickableRunningLabel.h \
     $$PWD/ComboBoxDelegate.h \
     $$PWD/CustomButtonComboBox.h \
     $$PWD/CustomComboBoxPopup.h \

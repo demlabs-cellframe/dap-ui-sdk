@@ -118,5 +118,5 @@ void DapTunWorkerMac::loop()
     qDebug() << "[DapTunWorkerMac] Listen thread finished!";
     ::free(tmpBuf);
 
-    emit loopStopped();
+    //emit loopStopped();
 }

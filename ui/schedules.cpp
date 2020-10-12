@@ -27,8 +27,8 @@ void Schedules::setStyle(const DapGraphicSceneStyle &style)
 
 }
 
-void Schedules::addInp(int elem){inp.addElem(elem);}
-void Schedules::addOut(int elem){out.addElem(elem);}
+void Schedules::addInp(quint64 elem){inp.addElem(elem);}
+void Schedules::addOut(quint64 elem){out.addElem(elem);}
 
 int Schedules::getWidth()
 {

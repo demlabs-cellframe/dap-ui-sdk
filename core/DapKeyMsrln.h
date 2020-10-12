@@ -3,15 +3,13 @@
 
 #include "InterfaceDapKey.h"
 #include "rand/dap_rand.h"
-#include "dap_enc_key.h"
-// #include "liboqs/kex/kex.h"
-#include "DapKeyAes.h"
+#include "DapKeyCommon.h"
 
 
 class DapKeyMsrln : public DapKeyAbstract
 {
     dap_enc_key *_key = Q_NULLPTR;
-    DapKeyAes *_sharedSessionKey = Q_NULLPTR;
+    DapKey *_sharedSessionKey = Q_NULLPTR;
 
     friend class DapCrypt;
 public:

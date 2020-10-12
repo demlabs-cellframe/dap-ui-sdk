@@ -6,10 +6,10 @@ DapCmdSendBugReport::DapCmdSendBugReport(QObject *parent)
 
 }
 
-void DapCmdSendBugReport::sendBugReport(const QString &a_message, const QString &a_email /*= ""*/)
+void DapCmdSendBugReport::sendBugReport(const QString &a_message, const QString &a_serial /*= ""*/)
 {
     QJsonObject obj;
-    obj["email"] = a_email;
+    obj["serial"] = a_serial;
     obj["message"] = a_message;
     sendCmd(&obj);
 }
@@ -20,7 +20,7 @@ void DapCmdSendBugReport::handleResult(const QJsonObject& result)
     qDebug() << "Bug report answer: " << request;
     if (request.contains("saved successfully", Qt::CaseInsensitive))
         emit sigBugReportSent(request.remove(QRegExp("\\D")));
-    else emit sigBugReportSendingError();
+    else emit sigBugReportSent("");
 }
 
 void DapCmdSendBugReport::handleError(int code, const QString& message)

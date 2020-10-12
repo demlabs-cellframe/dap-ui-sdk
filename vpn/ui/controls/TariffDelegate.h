@@ -5,7 +5,7 @@
 
 class TariffDelegate : public CustomButtonDelegate
 {
-
+    Q_OBJECT
 public:
     TariffDelegate(QWidget* a_parent = Q_NULLPTR);
 

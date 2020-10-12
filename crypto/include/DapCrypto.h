@@ -23,7 +23,7 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 */
 #pragma once
 
-#include "DapKey.h"
+#include "DapKeyCommon.h"
 #include "DapPKey.h"
 #include "DapKeySign.h"
 #include "DapCert.h"
