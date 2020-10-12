@@ -96,10 +96,7 @@
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <property name="spacing">
-          <number>0</number>
-         </property>
+        <layout class="QGridLayout" name="gridLayout">
          <property name="leftMargin">
           <number>0</number>
          </property>
@@ -112,7 +109,10 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item>
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <item row="1" column="1">
           <widget class="CustomTextEdit" name="edtMessage">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -133,6 +133,18 @@
             <string>Please describe the details of problem you faced. What actions did you take and what happened.</string>
            </property>
           </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QWidget" name="wgtLeftMargin" native="true"/>
+         </item>
+         <item row="1" column="2">
+          <widget class="QWidget" name="wgtRightMargin" native="true"/>
+         </item>
+         <item row="0" column="0" colspan="3">
+          <widget class="QWidget" name="wgtTopMargin" native="true"/>
+         </item>
+         <item row="2" column="0" colspan="3">
+          <widget class="QWidget" name="wgtBottomMargin" native="true"/>
          </item>
         </layout>
        </widget>
