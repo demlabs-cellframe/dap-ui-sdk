@@ -4,8 +4,6 @@
         <file>widgets/DapButtonForm.ui.qml</file>
         <file>widgets/DapComboBox.qml</file>
         <file>widgets/DapComboBoxForm.ui.qml</file>
-        <file>widgets/DapMainWindow.qml</file>
-        <file>widgets/DapMainWindowForm.ui.qml</file>
         <file>widgets/DapMenuTabWidget.qml</file>
         <file>widgets/DapMenuTabWidgetForm.ui.qml</file>
         <file>widgets/DapPanelForm.ui.qml</file>
