@@ -11,8 +11,6 @@ public:
 protected:
     void initAllowedSubstatesTransitions() override;
 public:
-    static const time_t STREAM_RECONNECTING_TIMEOUT = 1500;
-
     DapState *upsDisconnected;
     DapState *upsHandshakeRequest;
     DapState *upsHandshakeReply;
@@ -20,30 +18,6 @@ public:
     DapState *networkErr;
     DapState *srvProvided;
     DapState *configProvided;
-
-    // Substates False
-    /*DapState* disconnectedNormal;
-    DapState* disconnectedError;
-
-    // Substates for chain net services
-    DapState* serviceRequested;
-    DapState* serviceError;
-    DapState* serviceSuccess;
-
-
-    DapState* ipRequestError;
-    // Substates falseToTrue
-    DapState* ipRequested;
-    DapState* connected;
-    DapState* connectError;
-    DapState* reconnecting;
-    DapState* reconnectingError;
-
-    // Substates true
-    DapState* addressReceived;
-
-    // Substates TrueToFalse
-    DapState* disconnecting;*/
 };
 
 #endif // DAPINDICATORSTREAM_H

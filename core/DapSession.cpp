@@ -47,7 +47,7 @@ const QString DapSession::URL_SERVER_LIST   ("/nodelist");
 const QString DapSession::URL_TX            ("/tx");
 const QString DapSession::URL_BUG_REPORT    ("/bugreport");
 const QString DapSession::URL_NEWS          ("/news");
-const QString DapSession::URL_SIGN_UP(      "/wp-json/dapvpn/v1/register/");
+const QString DapSession::URL_SIGN_UP       ("/wp-json/dapvpn/v1/register/");
 
 DapSession::DapSession(QObject * obj, int requestTimeout) :
     QObject(obj), m_requestTimeout(requestTimeout)
@@ -523,7 +523,7 @@ void DapSession::onAuthorize()
 void DapSession::preserveCDBSession() {
     qInfo() << "Saving CDB session data";
     if (m_dapCryptCDB) {
-        return;
+        delete m_dapCryptCDB;
     }
     m_dapCryptCDB = new DapCrypt(*m_dapCrypt);
     m_sessionKeyID_CDB = m_sessionKeyID;
@@ -536,7 +536,6 @@ void DapSession::preserveCDBSession() {
  */
 void DapSession::onLogout() {
     qInfo() << "Logouted";
-    //emit logouted();
 }
 
 void DapSession::answerSignUp()
