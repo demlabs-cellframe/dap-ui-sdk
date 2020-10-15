@@ -17,7 +17,14 @@ SerialKeyField::SerialKeyField(QWidget *parent)
         if (this->text().count()==MAX_COUNT_CHAR)
             emit textChangedAndFilledOut(text);
         else if(this->text().isEmpty())
+        {
             emit textChangedAndCleaned();
+            if(!this->hasFocus())
+            {
+                QFocusEvent ev(QFocusEvent::FocusOut);
+                SerialKeyField::focusOutEvent(&ev);
+            }
+        }
     });
     connect(this, &SerialKeyField::textEdited,[this](QString text)
     {
@@ -104,7 +111,7 @@ void SerialKeyField::inputMethodEvent(QInputMethodEvent *e)
             e->setCommitString(e->commitString().toUpper());
         else
             e->setCommitString("");
-    } 
+    }
     else
     {
 /*******for emulator, signal from button delete come here*******/

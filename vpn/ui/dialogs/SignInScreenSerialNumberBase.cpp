@@ -59,7 +59,11 @@ void SignInScreenSerialNumberBase::initVariantUi(QWidget *a_widget)
 
     connect(m_ui->btnConnect, &QPushButton::clicked, [this]{
         if (m_ui->ledSerialKey->text().isEmpty())
+        {
             emit this->serialKeyError();
+            m_ui->lblStatusMessage->setText(tr("Input serial number"));
+            m_ui->ledSerialKey->setFocus();
+        }
         else
             emit this->connectionRequested();
     });
