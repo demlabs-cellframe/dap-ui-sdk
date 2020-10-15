@@ -11,6 +11,21 @@ CustomTextEdit::CustomTextEdit(QWidget *a_parent)
 //        if(m_autoChangingSize)
 //            this->setNewHeight(newSize);
 //    });
+
+
+    connect(this, &CustomTextEdit::textChanged, this, [this]()
+    {
+#ifdef Q_OS_ANDROID
+        sendNumberOfCharacters(toPlainText().length());
+#endif
+        if(this->toPlainText().isEmpty() && !this->hasFocus())
+        {
+            QFocusEvent event(QFocusEvent::FocusOut);
+            this->focusOutEvent(&event);
+        }
+
+    });
+
 }
 
 void CustomTextEdit::createCustomPlaceholder()
