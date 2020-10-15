@@ -207,14 +207,10 @@ void DapSession::onEnc()
 
         qCritical() << "Network error: " << m_netEncryptReply->errorString();
 
-        if (m_netEncryptReply->error() == QNetworkReply::OperationCanceledError){
-            qCritical() << "QNetworkReply::OperationCanceledError";
+        if (m_netEncryptReply->error() == QNetworkReply::OperationCanceledError)
             emit errorNetwork(6543 , m_netEncryptReply->errorString());
-        }
-        else if (m_netEncryptReply->error() == QNetworkReply::NetworkSessionFailedError){
-            qCritical() << "QNetworkReply::NetworkSessionFailedError";
+        else if (m_netEncryptReply->error() == QNetworkReply::NetworkSessionFailedError)
             emit errorNetwork(3244 , m_netEncryptReply->errorString());
-        }
         else
             emit errorNetwork(m_netEncryptReply->errorString());
         return;
