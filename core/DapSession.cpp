@@ -207,9 +207,12 @@ void DapSession::onEnc()
 
         qCritical() << "Network error: " << m_netEncryptReply->errorString();
 
-        if (m_netEncryptReply->errorString() == "Operation canceled")
+        if (m_netEncryptReply->error() == QNetworkReply::OperationCanceledError){
+            qCritical() << "QNetworkReply::OperationCanceledError";
             emit errorNetwork(6543 , m_netEncryptReply->errorString());
-        else if (m_netEncryptReply->errorString() == "Network access is disabled."){
+        }
+        else if (m_netEncryptReply->error() == QNetworkReply::NetworkSessionFailedError){
+            qCritical() << "QNetworkReply::NetworkSessionFailedError";
             emit errorNetwork(3244 , m_netEncryptReply->errorString());
         }
         else
