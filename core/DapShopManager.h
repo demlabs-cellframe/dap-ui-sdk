@@ -24,6 +24,7 @@ signals:
     //@brief Signal that the product status has changed
     // This signal is emitted when the App Store is initializing and after the purchase is complete.
     void productStateChanged(Products product, ProductState state);
+    void errorMessage(const QString& meg);
 
 private slots:
     void handleError(QInAppProduct::ProductType productType, const QString &identifier);
@@ -37,6 +38,7 @@ private:
 
     QInAppStore *m_store;
     QMap<int, ProductState> m_products;
+    QString m_log;
 };
 
 #endif // DAPSHOPMANAGER_H

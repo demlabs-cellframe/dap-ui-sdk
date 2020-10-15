@@ -15,20 +15,6 @@ AccountScreen::AccountScreen(QWidget *a_parent)
     m_serialRemovalMessage->setWindowType(Qt::Dialog);
     m_serialRemovalMessage->setObjectName("ScreenMessagePopup");
     connect(m_serialRemovalMessage, &SerialRemovalConfirmationMessage::accepted, this, &AccountScreen::serialRemovalRequested);
-#else
-    connect (DapShopManager::instance(), &DapShopManager::productStateChanged, this, &AccountScreen::tariffUpdate);
-    tariffUpdate(DapShopManager::PRODUCT_1MONTH_KEY, DapShopManager::instance()->getProdustState(DapShopManager::PRODUCT_1MONTH_KEY));
-    tariffUpdate(DapShopManager::PRODUCT_6MONTHS_KEY, DapShopManager::instance()->getProdustState(DapShopManager::PRODUCT_6MONTHS_KEY));
-    tariffUpdate(DapShopManager::PRODUCT_YEAR_KEY, DapShopManager::instance()->getProdustState(DapShopManager::PRODUCT_YEAR_KEY));
-    connect (m_ui->btnMonthPrice, &QPushButton::clicked, []{
-        DapShopManager::instance()->doPurchase(DapShopManager::PRODUCT_1MONTH_KEY);
-    });
-    connect (m_ui->btnSixMonthPrice, &QPushButton::clicked, []{
-        DapShopManager::instance()->doPurchase(DapShopManager::PRODUCT_6MONTHS_KEY);
-    });
-    connect (m_ui->btnYearPrice, &QPushButton::clicked, []{
-        DapShopManager::instance()->doPurchase(DapShopManager::PRODUCT_YEAR_KEY);
-    });
 #endif
 
     AdaptiveScreen::initScreen(this);
@@ -44,6 +30,7 @@ void AccountScreen::setState(ConnectionState a_state)
     Q_UNUSED(a_state)
 }
 
+#ifdef Q_OS_ANDROID
 void AccountScreen::tariffUpdate(DapShopManager::Products tariff, DapShopManager::ProductState state)
 {
     QPushButton* button = nullptr;
@@ -74,6 +61,7 @@ void AccountScreen::tariffUpdate(DapShopManager::Products tariff, DapShopManager
         break;
     }
 }
+#endif
 
 void AccountScreen::initVariantUi(QWidget *a_widget)
 {
@@ -118,3 +106,29 @@ QList<CustomPopup *> AccountScreen::customPopups()
 #endif
     };
 }
+
+#ifdef Q_OS_ANDROID
+void AccountScreen::showMessage(const QString& msg) {
+    m_ui->label->setText(msg);
+}
+
+// this function used for take aut BRAND-specific code
+QPushButton* AccountScreen::getTariffButton(DapShopManager::Products tariff) {
+    QPushButton* ptr = nullptr;
+    switch (tariff) {
+    case DapShopManager::PRODUCT_1MONTH_KEY:
+        ptr = m_ui->btnMonthPrice;
+        break;
+    case DapShopManager::PRODUCT_6MONTHS_KEY:
+        ptr = m_ui->btnSixMonthPrice;
+        break;
+    case DapShopManager::PRODUCT_YEAR_KEY:
+        ptr = m_ui->btnYearPrice;
+        break;
+    default:
+        break;
+    }
+    return ptr;
+}
+#endif
+

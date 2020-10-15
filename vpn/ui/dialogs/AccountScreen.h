@@ -50,7 +50,14 @@ signals:
     void serialRemovalRequested();
 #endif
 
+#ifdef Q_OS_ANDROID
+    // This BRAND-specific slot connected in KelvinVPN/BrandScreensInit
     void tariffUpdate(DapShopManager::Products tariff, DapShopManager::ProductState state);
+    // This BRAND-specific slot connected in KelvinVPN/BrandScreensInit
+    void showMessage(const QString& msg);
+    // This function used for take aut BRAND-specific code
+    QPushButton* getTariffButton(DapShopManager::Products tariff);
+#endif
 
 protected:
     /// Form initialization.

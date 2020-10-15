@@ -30,6 +30,8 @@ DapShopManager::DapShopManager(QObject *parent) : QObject(parent)
     m_store->setPlatformProperty(QStringLiteral("AndroidPublicKey"), androidPublicKey);
     setupConnections();
 
+    m_log = QString("Setup connection to playmarket <br>");
+
     for (auto name: m_productNames) {
         m_store->registerProduct(QInAppProduct::Consumable, name);
     }
@@ -44,22 +46,30 @@ DapShopManager *DapShopManager::instance()
 void DapShopManager::doPurchase(DapShopManager::Products product)
 {
     QInAppProduct *inAppProduct = nullptr;
+    int index = 0;
     switch (product)
     {
     case PRODUCT_1MONTH_KEY:
-        inAppProduct = m_store->registeredProduct(m_productNames[0]);
+        index = 0;
         break;
     case PRODUCT_6MONTHS_KEY:
-        inAppProduct = m_store->registeredProduct(m_productNames[1]);
+        index = 1;
         break;
     case PRODUCT_YEAR_KEY:
-        inAppProduct = m_store->registeredProduct(m_productNames[2]);
+        index = 2;
         break;
     default: // unknown product
         break;
     }
-    if (inAppProduct)
+    inAppProduct = m_store->registeredProduct(m_productNames[index]);
+    if (inAppProduct) {
         inAppProduct->purchase();
+    }
+    else {
+        m_log = m_productNames[index];
+        m_log.append(" purchase failed by unknown reasen");
+        emit errorMessage(m_log);
+    }
 }
 
 DapShopManager::ProductState DapShopManager::getProdustState(DapShopManager::Products product) const
@@ -77,6 +87,7 @@ void DapShopManager::changeProductState(const QString &productId, DapShopManager
         if (name == productId) {
             m_products[i] = state;
             emit productStateChanged(Products(i), state);
+            m_log.append(name);
             break;
         }
         ++i;
@@ -88,6 +99,8 @@ void DapShopManager::handleError(QInAppProduct::ProductType productType, const Q
     Q_UNUSED(productType)
     qDebug() << "[IN-APP STORE] Error: product unknown: " << identifier;
     changeProductState(identifier, STATE_UNAVAILABLE);
+    m_log.append(" unavailable in store <br>");
+    emit errorMessage(m_log);
 }
 
 void DapShopManager::handleTransaction(QInAppTransaction *transaction)
@@ -99,11 +112,14 @@ void DapShopManager::handleTransaction(QInAppTransaction *transaction)
         auto product = transaction->product();
         changeProductState(product->identifier(), STATE_PURCHASED);
         qDebug() << "[IN-APP STORE] product purchased: " << product->identifier();
+        m_log = product->identifier().append(" purchased");
     }
     else if (transaction->status() == QInAppTransaction::PurchaseFailed) {
         qDebug() << "[IN-APP STORE] Transaction failed: " << transaction->failureReason() << transaction->errorString();
+        m_log.append("<br>").append(transaction->errorString());
     }
     transaction->finalize();
+    emit errorMessage(m_log);
 }
 
 void DapShopManager::markProductAvailable(QInAppProduct *product)
@@ -112,5 +128,7 @@ void DapShopManager::markProductAvailable(QInAppProduct *product)
         return;
 
     changeProductState(product->identifier(), STATE_AVAILABLE);
+    m_log.append(" available in store <br>");
+    emit errorMessage(m_log);
     qDebug() << "[IN-APP STORE] product available: " << product->identifier();
 }
