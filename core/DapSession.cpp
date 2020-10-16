@@ -206,10 +206,9 @@ void DapSession::onEnc()
     if (m_netEncryptReply && (m_netEncryptReply->error() != QNetworkReply::NoError)) {
 
         qCritical() << "Network error: " << m_netEncryptReply->errorString();
-
-        if (m_netEncryptReply->error() == QNetworkReply::OperationCanceledError)
+        if (m_netEncryptReply->error() == QNetworkReply::OperationCanceledError || m_netEncryptReply->error() == QNetworkReply::ConnectionRefusedError)
             emit errorNetwork(6543 , m_netEncryptReply->errorString());
-        else if (m_netEncryptReply->error() == QNetworkReply::NetworkSessionFailedError)
+        else if (m_netEncryptReply->error() == QNetworkReply::UnknownNetworkError)
             emit errorNetwork(3244 , m_netEncryptReply->errorString());
         else
             emit errorNetwork(m_netEncryptReply->errorString());
