@@ -33,6 +33,4 @@ void DapCmdRemoveSerial::handle(const QJsonObject *params)
         qWarning() << "Bad value" << *params;
         return;
     }
-
-    emit sendRemoveSerialAnswer(true);
 }

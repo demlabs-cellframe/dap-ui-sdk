@@ -15,7 +15,7 @@ public:
     void handle(const QJsonObject *params) override;
 signals:
     void sendRemoveSerialAnswer(const bool& removed);
-    void removeSerial(const QString& answer);
+    void removeSerial(const QString& serial);
 
 };
 
