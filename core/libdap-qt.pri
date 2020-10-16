@@ -1,4 +1,4 @@
-QT += core network xml
+QT += core network xml purchasing
 #INCLUDEPATH += ../libdap/include ../libdap/src
 #INCLUDEPATH += ../libdap-crypto/include  ../libdap-crypto/src
 include (../quazip/quazip.pri)
@@ -20,6 +20,7 @@ SOURCES += \
     $$PWD/DapServerInfo.cpp \
     $$PWD/DapServersListRequester.cpp \
     $$PWD/DapServersLocalStorage.cpp \
+    $$PWD/DapShopManager.cpp \
     $$PWD/DapSignUpData.cpp
 
 HEADERS += \
@@ -31,6 +32,7 @@ HEADERS += \
     $$PWD/DapServersData.h \
     $$PWD/DapSession.h \
     $$PWD/DapCrypt.h \
+    $$PWD/DapShopManager.h \
     $$PWD/DapSignUpData.h \
     $$PWD/DapUtils.h \
     $$PWD/InterfaceDapKey.h \
