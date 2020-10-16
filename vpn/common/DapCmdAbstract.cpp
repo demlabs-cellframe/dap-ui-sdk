@@ -16,6 +16,7 @@ QMap<DapJsonCmdType, QString> DapCmdAbstract::cmdString = {
     {DapJsonCmdType::SEND_SIGN_UP_REQUEST, "send sign up request"},
     {DapJsonCmdType::GET_NEWS, "get news"},
     {DapJsonCmdType::GET_SERVERS_LIST, "get servers list"},
+    {DapJsonCmdType::SEND_REMOVE_SERIAL_REQUEST, "send remove serial request"},
     {DapJsonCmdType::CREATE_ANDROID_TUNNEL, "create android tunnel"}
 };
 
