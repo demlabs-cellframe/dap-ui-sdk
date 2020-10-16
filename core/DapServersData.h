@@ -6,6 +6,8 @@
 
 #include "DapServerInfo.h"
 
+#define COUTRY_FLAG_ROLE (Qt::UserRole + 10)
+
 class DapServersData: public QAbstractListModel
 {
     Q_OBJECT
@@ -36,12 +38,13 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
     bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex()) Q_DECL_OVERRIDE;
     bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex()) Q_DECL_OVERRIDE;
-
+    QMap<int, QVariant> itemData(const QModelIndex &index) const Q_DECL_OVERRIDE;
 
 public slots:
     void setCurrentServer(const DapServerInfo *a_server);
     void setCurrentServer(const QString &a_serverName);
     void setCurrentServer(int a_serverIndex);
+    void setCurrentServerFromService(const DapServerInfo *a_server);
 
     void saveDatas() const;
 

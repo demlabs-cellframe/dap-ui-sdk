@@ -5,9 +5,11 @@
 #include <QObject>
 #include <QMap>
 #include <QPair>
+#include <QString>
 #include <QSettings>
+#include <QDateTime>
 #include "DapServerInfo.h"
-#include "DapKeyAes.h"
+#include "DapKeyCommon.h"
 #include "DapBugReportData.h"
 #include "DapServersData.h"
 #include "DapSignUpData.h"
@@ -28,14 +30,14 @@ class DapDataLocal : public QObject
     QString     logFilePath;
     static QMap<DapServerLocation, QString> m_pictruePath;
 
-
     void parseXML(const QString& a_fname);
 
-    DapKeyAes *secretKey = Q_NULLPTR;
-    bool initSecretKey();
+    DapKey *secretKey = Q_NULLPTR;
+    void initSecretKey();
     QString getRandomString(int);
 
 public:
+    int m_rotations = 0;
 
     using picturesMap = QMap<DapServerLocation, QString>;
     static DapDataLocal* instance();
@@ -94,6 +96,8 @@ signals:
     /// Signal emitted if password has changed.
     /// @param password Password.
     void passwordChanged(const QString& password);
+
+    void licenseTermTillChanged(const QString &a_date);
 
 protected:
     QList<QString>  m_cdbServersList;

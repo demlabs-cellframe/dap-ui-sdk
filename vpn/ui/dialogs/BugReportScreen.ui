@@ -89,25 +89,64 @@
        <widget class="QWidget" name="wgtMessageTopMargin" native="true"/>
       </item>
       <item>
-       <widget class="CustomTextEdit" name="edtMessage">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <widget class="QFrame" name="frmEditMessage">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
         </property>
-        <property name="inputMethodHints">
-         <set>Qt::ImhMultiLine</set>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
         </property>
-        <property name="verticalScrollBarPolicy">
-         <enum>Qt::ScrollBarAlwaysOff</enum>
-        </property>
-        <property name="horizontalScrollBarPolicy">
-         <enum>Qt::ScrollBarAlwaysOff</enum>
-        </property>
-        <property name="placeholderText">
-         <string>Please describe the details of problem you faced. What actions did you take and what happened.</string>
-        </property>
+        <layout class="QGridLayout" name="gridLayout">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <item row="1" column="1">
+          <widget class="CustomTextEdit" name="edtMessage">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="inputMethodHints">
+            <set>Qt::ImhMultiLine</set>
+           </property>
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="placeholderText">
+            <string>Please describe the details of problem you faced. What actions did you take and what happened.</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QWidget" name="wgtLeftMargin" native="true"/>
+         </item>
+         <item row="1" column="2">
+          <widget class="QWidget" name="wgtRightMargin" native="true"/>
+         </item>
+         <item row="0" column="0" colspan="3">
+          <widget class="QWidget" name="wgtTopMargin" native="true"/>
+         </item>
+         <item row="2" column="0" colspan="3">
+          <widget class="QWidget" name="wgtBottomMargin" native="true"/>
+         </item>
+        </layout>
        </widget>
       </item>
       <item alignment="Qt::AlignRight">
@@ -122,6 +161,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnAttachImage">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Click here to attach a image</string>
         </property>

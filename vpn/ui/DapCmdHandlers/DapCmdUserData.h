@@ -46,6 +46,7 @@ signals:
     /// @param password User password.
     /// @param address Server address.
     void sigUserData(const QString& user, const QString& password, const QString& address);
+    void sigtLicenseTermTill(const QString &date);
 };
 
 #endif // DAPCMDUSERDATAHANDLER_H

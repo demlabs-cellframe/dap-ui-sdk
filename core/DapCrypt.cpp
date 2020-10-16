@@ -19,7 +19,7 @@
 */
 
 #include "DapCrypt.h"
-#include "DapKeyAes.h"
+#include "DapKeyCommon.h"
 #include <QDebug>
 #include "DapSession.h"
 
@@ -33,6 +33,22 @@ DapCrypt::DapCrypt()
     keyStream = Q_NULLPTR;
 }
 
+DapCrypt::DapCrypt(const DapCrypt &rhs) : keyStream(Q_NULLPTR) {
+    if (keySession) {
+        if (keySession->_sharedSessionKey) {
+            delete keySession->_sharedSessionKey;
+            keySession->_sharedSessionKey = nullptr;
+        }
+        delete keySession;
+        keySession = nullptr;
+    }
+    keySession = new DapKeyMsrln;
+    dap_enc_key_serealize_t* temp = dap_enc_key_serealize(rhs.keySession->_key);
+    keySession->_key = dap_enc_key_deserealize(temp, sizeof (dap_enc_key_serealize_t));
+    DAP_DEL_Z(temp)
+    keySession->_sharedSessionKey = new DapKey(rhs.keySession->_sharedSessionKey->m_key);
+}
+
 DapCrypt::~DapCrypt()
 {
     delete keySession;
@@ -40,11 +56,9 @@ DapCrypt::~DapCrypt()
 
 DapKeyAbstract* DapCrypt::roleToKey(KeyRole kRole) const
 {
-    switch(kRole)
-    {
-    case KeyRoleSession: return keySession;
-    case KeyRoleStream:   return keyStream;
-    default: return Q_NULLPTR;
+    switch(kRole) {
+    case KeyRoleSession:    return keySession;
+    case KeyRoleStream:     return keyStream;
     }
 }
 
@@ -97,24 +111,20 @@ bool DapCrypt::generateSharedSessionKey(const QByteArray& bobMsg,
     return keySession->generateSessionKey(bobMsg, sessionID);
 }
 
-void DapCrypt::initAesKey(QString &keyStr, KeyRole kRole)
-{
-    QString keyEnd;
-    DapKeyAbstract ** dapKey;
-    switch(kRole)
+void DapCrypt::initKey(dap_enc_key_type_t a_type, QString &a_keyStr, KeyRole a_keyRole) {
+    DapKeyAbstract **dapKey;
+    switch(a_keyRole)
     {
     case KeyRoleStream:
         dapKey = &keyStream;
-        keyEnd = keyStr;
         break;
     default:
-        qCritical() <<"[DapCrypt] initAESKEY: Wrong key role " << kRole;
+        qCritical() <<"Wrong key role " << a_keyRole;
         return;
     }
 
     if(*dapKey)
         delete *dapKey;
 
-    *dapKey = new DapKeyAes;
-    (*dapKey)->init(QString(keyStr));
+    *dapKey = new DapKey(a_type, a_keyStr);
 }

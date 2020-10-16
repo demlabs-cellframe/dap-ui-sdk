@@ -43,6 +43,10 @@ DapTunMac::DapTunMac()
  */
 void DapTunMac::tunDeviceCreate()
 {
+    if (m_tunSocket > 0) {
+        qInfo() << "Already created";
+        return;
+    }
     qDebug() << "tunDeviceCreate()";
     setTunDeviceName("tun5");
 
@@ -161,6 +165,14 @@ DapTunMac::~DapTunMac() {
 
 void DapTunMac::workerStop()
 {
+    if ( ::write( breaker1, "\0", 1) <= 0) {
+        qCritical() <<"Can't write to the breaker's pipe!";
+        return;
+    }
+    onWorkerStopped();
+}
+
+void DapTunMac::workerPause() {
     if ( ::write( breaker1, "\0", 1) <= 0) {
         qCritical() <<"Can't write to the breaker's pipe!";
         return;
@@ -288,4 +300,12 @@ void DapTunMac::getBackDNS()
     QString run = QString("sudo killall -HUP mDNSResponder");
     qDebug() << "cmd run [" << run << ']';
     ::system(run.toLatin1().constData() );
+}
+
+void DapTunMac::addNewUpstreamRoute(const QString &a_dest) {
+    QString run;
+    run = QString("route add -host %2 %1")
+        .arg(m_defaultGwOld).arg(qPrintable(a_dest));
+    qDebug() << "cmd run [" << run << ']';
+     ::system(run.toLatin1().constData() );
 }

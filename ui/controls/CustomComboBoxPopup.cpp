@@ -2,6 +2,7 @@
 
 #include "CustomComboBoxListView.h"
 #include "defines.h"
+#include "BrandAppProperties.h"
 
 
 CustomComboBoxPopup::CustomComboBoxPopup(QMainWindow *parent)
@@ -26,8 +27,9 @@ QAbstractItemModel *CustomComboBoxPopup::model()
 
 void CustomComboBoxPopup::setModel(QAbstractItemModel *a_model)
 {
-    for(QListView* curView : this->allListViews())
+    for(QListView* curView : this->allListViews()) {
         curView->setModel(a_model);
+    }
 }
 
 void CustomComboBoxPopup::addItem(const QString &a_text, const QVariant &a_userData /*= QVariant()*/)

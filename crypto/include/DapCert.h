@@ -49,6 +49,10 @@ namespace Dap {
 
             bool save(const QString & a_filePath);
             QString exportPKeyBase64();
+            bool exportPKeyToFile   (const QString&);
+            bool importPKeyFromFile (const QString&);
+            QString storagePath     ();
+            QString pkeyHash        ();
         };
     }
 }

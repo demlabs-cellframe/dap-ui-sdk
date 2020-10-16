@@ -26,15 +26,16 @@ void DapCmdStats::sendCmdStatsTrafficOn(bool val)
     sendCmd(&obj);
 }
 
-void DapCmdStats::trafficStatsHandler(const QJsonValue& readBytes, const QJsonValue& writeBytes,
-        const QJsonValue& readPackage, const QJsonValue& writePackage)
+void DapCmdStats::trafficStatsHandler(const QJsonValue &readBytes, const QJsonValue &writeBytes,
+        const QJsonValue&readPackage, const QJsonValue &writePackage)
 {
-    int bRead = readBytes.toInt(-1),
-        bWrite = writeBytes.toInt(-1),
-        pRead = readPackage.toInt(-1),
-        pWrite = writePackage.toInt(-1);
+    bool ok1, ok2, ok3, ok4;
+    qint64 bRead    = readBytes     .toString().toLongLong(&ok1,10);
+    qint64 bWrite   = writeBytes    .toString().toLongLong(&ok2,10);
+    qint64 pRead    = readPackage   .toString().toLongLong(&ok3,10);
+    qint64 pWrite   = writePackage  .toString().toLongLong(&ok4,10);
     
-    if (bRead == -1 || bWrite == -1 || pRead == -1 || pWrite == -1) {
+    if (!ok1 || !ok2 || !ok3 || !ok4) {
         qWarning() << "Something wrong can't parse traffic stats";
         return;
     }

@@ -19,11 +19,11 @@ private:
     static const QString writeBytesParam;
     static const QString readPackageParam;
     static const QString writePackageParam;
-    void trafficStatsHandler(const QJsonValue& readBytes, const QJsonValue& writeBytes, 
+    void trafficStatsHandler(const QJsonValue &readBytes, const QJsonValue &writeBytes,
                              const QJsonValue &readPackage, const QJsonValue &writePackage);
     void readWriteBytesHandler();
 signals:
-    void sigReadWriteBytesStat(int readBytes, int writeBytes, int readPackage, int writePackage);
+    void sigReadWriteBytesStat(qint64 readBytes, qint64 writeBytes, qint64 readPackage, qint64 writePackage);
 public slots:
 };
 

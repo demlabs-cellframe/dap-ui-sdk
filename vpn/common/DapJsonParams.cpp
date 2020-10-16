@@ -51,8 +51,8 @@ const QString& DapJsonParams::toString(Params p) {
     static QMap<Params, QString> paramsName = {
         {VALUE, "value"},
         {STATE_NAME, "state_name"},
-        {READ_BYTES, "read_kbytes"},
-        {WRITE_BYTES, "write_kbytes"},
+        {READ_BYTES, "read_bytes"},
+        {WRITE_BYTES, "write_bytes"},
         {ADDRESS, "address"},
         {PORT, "port"},
         {HOST, "host"},

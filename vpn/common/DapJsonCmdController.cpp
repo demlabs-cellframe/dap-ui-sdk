@@ -18,7 +18,17 @@ DapCmdAbstract* DapJsonCmdController::_findHandler(DapJsonCmdType cmd)
 
 void DapJsonCmdController::handleCmd(const QByteArray &a_cmd)
 {
-    QJsonDocument doc = QJsonDocument::fromJson(a_cmd);
+    QJsonParseError err;
+    QJsonDocument doc = QJsonDocument::fromJson(a_cmd, &err);
+
+    if (err.error == QJsonParseError::IllegalUTF8String ){
+        QString s = QString::fromUtf8(a_cmd);
+        if (s.toUtf8() != a_cmd) {
+          s = QString::fromLatin1(a_cmd);
+        }
+        doc = QJsonDocument::fromJson(s.toUtf8(), &err);
+    }
+
     if (doc.isEmpty()) {
         qCritical() << "Bad command" << a_cmd;
         return;
@@ -42,16 +52,13 @@ void DapJsonCmdController::handleCmd(const QByteArray &a_cmd)
 void DapJsonCmdController::addNewHandler(DapCmdAbstract* handler)
 {
     Q_ASSERT(handler);
-    qDebug() << __func__;
     if(_findHandler(handler->cmd()) != Q_NULLPTR) {
         qCritical() << "Handler for command" << DapCmdAbstract::commandToString(handler->cmd())
                     << "already exists";
         return;
     }
-    qDebug() << "Added handler for command" << DapCmdAbstract::commandToString(handler->cmd());
     connect(handler, &DapCmdAbstract::send,
             this, &DapJsonCmdController::sendDapCmd);
 
     m_handlers.append(handler);
-    qDebug() << __func__<< "end";
 }
