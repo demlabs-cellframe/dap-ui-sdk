@@ -23,7 +23,8 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 */
 
 #pragma once
-#include <QNetworkConfigurationManager>
+
+#include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QDebug>
 using HttpRequestHeader = QPair<const QString, const QString>;
@@ -35,8 +36,6 @@ private:
     bool _buildRequest(QNetworkRequest& req, const QString& host,
                        quint16 port, const QString & urlPath, bool ssl,
                        const QVector<HttpRequestHeader>* headers);
-
-    void _rebuildNetworkManager();
 
     DapConnectClient(QObject *parent = Q_NULLPTR);
     ~DapConnectClient() = default;
@@ -67,12 +66,11 @@ public:
             }
         }
     }
-
+    void _rebuildNetworkManager();
     QNetworkAccessManager *getNAM() { return m_httpClient; }
 
 private:
     QNetworkAccessManager * m_httpClient;
-    QNetworkConfigurationManager* m_netConfManager;
 private slots:
     // For clear all network reply objects
     void finished(QNetworkReply *reply) { reply->deleteLater(); }

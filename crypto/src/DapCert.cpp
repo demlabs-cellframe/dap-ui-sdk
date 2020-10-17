@@ -123,6 +123,8 @@ Cert::~Cert()
 {
     if ( m_cert != nullptr )
         dap_cert_delete( m_cert );
+    if (m_key)
+        delete m_key;
 }
 
 /**
@@ -134,7 +136,7 @@ void Cert::sign(const QByteArray & a_data, QByteArray & a_output)
 {
     dap_sign_t * sign = dap_cert_sign( m_cert, a_data.constData(), static_cast<size_t>(a_data.size()), 0 );
     a_output.append(  QByteArray( reinterpret_cast<char*>(sign), static_cast<int>(dap_sign_get_size( sign )) ));
-    //qInfo() << "++++ pkey_size " << sign->header.sign_pkey_size << " sign_size " << sign->header.sign_size << "and total: " << a_output.size();
+    qInfo() << "4554 pkey_size " << sign->header.sign_pkey_size << " sign_size " << sign->header.sign_size << "and total: " << a_output.size();
     DAP_DELETE (sign);
 }
 
@@ -170,6 +172,10 @@ QString Cert::exportPKeyBase64()
 }
 
 bool Cert::exportPKeyToFile(const QString &a_path) {
+    if (m_key) {
+        delete m_key;
+    }
+    m_key = new Key(m_cert->enc_key);
     FILE *l_file = fopen(qPrintable(a_path), "wb");
     if (l_file) {
         size_t buflen = 0;
@@ -183,6 +189,7 @@ bool Cert::exportPKeyToFile(const QString &a_path) {
             }
             DAP_DELETE(buf);
             fclose(l_file);
+            qInfo() << "pkey exported";
             return true;
         }
     }
