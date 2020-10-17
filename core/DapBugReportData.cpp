@@ -78,7 +78,7 @@ void DapBugReportData::loadDatas()
 {
     this->setEmail  (DapDataLocal::instance()->getEncriptedSetting(SETTINGS_TEXT_EMAIL).toString());
     this->setMessage(DapDataLocal::instance()->getEncriptedSetting(SETTINGS_TEXT_MESSAGE).toString());
-    this->setMessage(DapDataLocal::instance()->getEncriptedSetting(SETTINGS_TEXT_LAST_SENT_NUMBER).toString());
+    this->setLastSentNumber(DapDataLocal::instance()->getEncriptedSetting(SETTINGS_TEXT_LAST_SENT_NUMBER).toString());
 }
 
 
