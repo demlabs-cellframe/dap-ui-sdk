@@ -11,6 +11,12 @@ CustomTextEdit::CustomTextEdit(QWidget *a_parent)
 //        if(m_autoChangingSize)
 //            this->setNewHeight(newSize);
 //    });
+#ifdef Q_OS_ANDROID
+    connect(this, &CustomTextEdit::textChanged,this,[this]()
+    {
+        sendNumberOfCharacters(toPlainText().length());
+    });
+#endif
 }
 
 void CustomTextEdit::createCustomPlaceholder()
@@ -26,6 +32,7 @@ void CustomTextEdit::createCustomPlaceholder()
     m_placeHolderCtrl->setObjectName("placeholder");
 
     m_placeHolderCtrl->setWordWrap(true);
+    m_placeHolderCtrl->setVisible(this->toPlainText().isEmpty());
 
     setPlaceholderText(this->placeholderText());
 }
