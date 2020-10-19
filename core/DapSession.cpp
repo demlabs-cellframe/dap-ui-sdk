@@ -36,7 +36,6 @@
 #include <QJsonObject>
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
-#include "DapClientDefinitions.h"
 
 const QString DapSession::URL_ENCRYPT       ("/enc_init");
 const QString DapSession::URL_STREAM        ("/stream");
