@@ -1,5 +1,9 @@
 #include "DapBugReport.h"
 
+#ifndef DAP_VERSION
+#define DAP_VERSION ""
+#endif
+
 DapBugReport::DapBugReport()
 {
 
@@ -12,7 +16,7 @@ bool DapBugReport::createZipDataBugReport(QString serial, QString message)
     QFile file("data.txt");
     if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
         QTextStream writeStream(&file);
-        writeStream << serial << endl << " App: " DAP_BRAND " " DAP_VERSION << endl << getSystemInfo() << endl << message.toUtf8();
+        writeStream << serial << endl << " App: " DAP_BRAND" " << DAP_VERSION << endl << getSystemInfo() << endl << message.toUtf8();
         file.close();
     }
 
