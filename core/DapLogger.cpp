@@ -59,7 +59,9 @@ int DapLogger::createLogFolder(QString path){
 }
 void DapLogger::setPermissionFolder(const QString& path)
 {
-#if !defined (Q_OS_WIN)
+#if defined(Q_OS_MACOS)
+    system(qPrintable("chown -R $(logname): /tmp/KelvinVPN
+#elif !defined (Q_OS_WIN)
     system(qPrintable("chown -R $(logname):$(logname) " + path));
 #endif
 }
