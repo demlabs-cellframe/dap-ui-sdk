@@ -13,9 +13,10 @@ protected:
 public:
     explicit DapCmdServersList(QObject *parent = nullptr);
 signals:
-    void sigServersList(const DapServerInfoList& servers);
+    void sigServersListUpdate(const DapServerInfoList& servers);
     void sigEmptyList(const QString &msg);
     void sigErrorNetwork(const QString &msg);
+    void sigNetworkUnreachable(const QString &msg);
 public slots:
     void sendCmdGetServersList() { sendCmd(); }
 };
