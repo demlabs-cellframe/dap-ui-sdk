@@ -203,8 +203,14 @@ void DapSession::onEnc()
 {
     qDebug() << "Enc reply";
     if (m_netEncryptReply && (m_netEncryptReply->error() != QNetworkReply::NoError)) {
+
         qCritical() << "Network error: " << m_netEncryptReply->errorString();
-        emit errorNetwork(m_netEncryptReply->errorString());
+        if (m_netEncryptReply->error() == QNetworkReply::OperationCanceledError || m_netEncryptReply->error() == QNetworkReply::ConnectionRefusedError)
+            emit errorNetwork(6543 , m_netEncryptReply->errorString());
+        else if (m_netEncryptReply->error() == QNetworkReply::UnknownNetworkError)
+            emit errorNetwork(3244 , m_netEncryptReply->errorString());
+        else
+            emit errorNetwork(m_netEncryptReply->errorString());
         return;
     }
     QByteArray arrData;
@@ -479,7 +485,7 @@ void DapSession::onAuthorize()
                     }
                 } else if (m_xmlStreamReader.name() == "ts_active_till"){
                     DapDataLocal::instance()->serialKeyData()->setLicenseTermTill(m_xmlStreamReader.readElementText());
-                    qDebug() << "ts_active_till: " << DapDataLocal::instance()->serialKeyData()->licenseTermTill();
+                    qDebug() << "ts_active_till: " << DapDataLocal::instance()->serialKeyData()->licenseTermTill().toTime_t();
                 } else {
                     m_userInform[m_xmlStreamReader.name().toString()] = m_xmlStreamReader.readElementText();
                     qDebug() << "Add user information: " << m_xmlStreamReader.name().toString()
