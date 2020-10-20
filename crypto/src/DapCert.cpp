@@ -42,6 +42,7 @@ using namespace Dap::Crypto;
  */
 Cert * Cert::generate(const QString& a_name, KeySignType a_type)
 {
+    dap_enc_init();
     Cert * ret = new Cert();
     ret->m_cert = dap_cert_generate_mem(a_name.toLatin1().constData() ,
                                                    KeySign::typeToEncType(a_type) );
@@ -51,6 +52,7 @@ Cert * Cert::generate(const QString& a_name, KeySignType a_type)
 
 Cert * Cert::generate(const QString& a_name, const QString& a_seed, KeySignType a_type)
 {
+    dap_enc_init();
     Cert * ret = new Cert();
     ret->m_cert = dap_cert_generate_mem_with_seed(a_name.toLatin1().constData() ,
                                                    KeySign::typeToEncType(a_type), qPrintable(a_seed), a_seed.length() );
@@ -156,39 +158,39 @@ bool Cert::compareWithSign(const QByteArray & a_data)
  */
 QString Cert::exportPKeyBase64()
 {
-    if( m_cert && m_cert->enc_key  ){
-        size_t buflen = 0;
-        uint8_t * buf = dap_enc_key_serealize_pub_key( *m_key,&buflen);
-        if ( buf ){
-            char * buf64 = DAP_NEW_Z_SIZE(char, buflen*2+6);
-            size_t buf64len = dap_enc_base64_encode(buf,buflen, buf64,DAP_ENC_DATA_TYPE_B64_URLSAFE );
-            QString ret = QString::fromLatin1( buf64, static_cast<int>(buf64len));
-            DAP_DELETE(buf64);
-            DAP_DELETE(buf);
-            return ret;
-        }
+    if(!m_key){
+        m_key = new Key(m_cert->enc_key);
+        qWarning() << "pkey was updated from cert...";
     }
-    return QString();
+    size_t buflen = 0;
+    uint8_t * buf = dap_enc_key_serealize_pub_key(*m_key, &buflen);
+    if (!buf) {
+        qWarning() << "Empty hash!";
+        return QString();
+    }
+    char * buf64 = DAP_NEW_Z_SIZE(char, buflen * 2 + 6);
+    size_t buf64len = dap_enc_base64_encode(buf, buflen, buf64, DAP_ENC_DATA_TYPE_B64_URLSAFE);
+    QString ret = QString::fromLatin1(buf64, static_cast<int>(buf64len));
+    DAP_DELETE(buf64);
+    DAP_DELETE(buf);
+    return ret;
 }
 
 bool Cert::exportPKeyToFile(const QString &a_path) {
-    if (m_key) {
-        delete m_key;
-    }
-    m_key = new Key(m_cert->enc_key);
     FILE *l_file = fopen(qPrintable(a_path), "wb");
     if (l_file) {
         size_t buflen = 0;
-        uint8_t *buf = dap_enc_key_serealize_pub_key(*m_key, &buflen);
+        uint8_t *buf = dap_enc_key_serealize_pub_key(m_cert->enc_key, &buflen);
         if (buf) {
             if (size_t l_ret = fwrite(buf, 1, buflen, l_file) != buflen) {
                 qCritical() << "Error occured on pkey export: " << l_ret << " != " << buflen;
-                DAP_DELETE(buf);
                 fclose(l_file);
+                DAP_DELETE(buf);
                 return false;
             }
-            DAP_DELETE(buf);
+            fflush(l_file);
             fclose(l_file);
+            DAP_DELETE(buf);
             qInfo() << "pkey exported";
             return true;
         }
@@ -212,30 +214,22 @@ QString Cert::pkeyHash() {
 
 bool Cert::importPKeyFromFile(const QString &a_path) {
     FILE *l_file = fopen(qPrintable(a_path), "rb");
-    if (l_file) {
-        fseek(l_file, 0L, SEEK_END);
-        long l_len = ftell(l_file);
-        fseek(l_file, 0L, SEEK_SET);
-        uint8_t buf[l_len];
-        fread(buf, 1, l_len, l_file);
-        int l_err = dap_enc_key_deserealize_pub_key(*m_key, buf, l_len);
-        if (l_err != 0) {
-            qCritical() << "Error occured on deserialization, code " << l_err;
-            fclose(l_file);
-            return false;
-        }
-        if (m_cert->enc_key) {
-            DAP_DEL_Z(m_cert->enc_key->pub_key_data);
-            m_cert->enc_key->pub_key_data = DAP_NEW_Z_SIZE(byte_t, ((dap_enc_key_t*)(*m_key))->pub_key_data_size);
-            m_cert->enc_key->pub_key_data_size =  ((dap_enc_key_t*)(*m_key))->pub_key_data_size;
-            memcpy(m_cert->enc_key->pub_key_data, ((dap_enc_key_t*)(*m_key))->pub_key_data, ((dap_enc_key_t*)(*m_key))->pub_key_data_size);
-            qInfo() << "Cert key restored";
-        }
-    } else {
-        qInfo() << "No pkey found";
+    if (!l_file) {
         return false;
     }
-    qInfo() << "Pkey successfully imported";
+    fseek(l_file, 0L, SEEK_END);
+    long l_len = ftell(l_file);
+    fseek(l_file, 0L, SEEK_SET);
+    uint8_t buf[l_len];
+    fread(buf, 1, l_len, l_file);
+    fclose(l_file);
+    if ((dap_enc_key_deserealize_pub_key(*m_key, buf, l_len) != 0)
+            /*|| dap_enc_key_deserealize_pub_key(m_cert->enc_key, buf, l_len) != 0*/) {
+        delete m_key;
+        m_key = new Key(m_cert->enc_key);
+        qCritical() << "Error occured on deserialization";
+        return false;
+    }
     return true;
 }
 
