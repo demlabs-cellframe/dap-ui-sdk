@@ -45,5 +45,10 @@ void DapCmdConnect::handleError(int code, const QString& message)
     qDebug() << "handleError";
     Q_UNUSED(code);
     qWarning() << *m_errorObject;
+    if (code == 6543 || code == -1025){
+        emit errorMessage("Server not available. Please, try others or the same later");
+        return;
+    }
+
     emit errorMessage(message);
 }
