@@ -82,6 +82,7 @@ void CustomLineEditBase::setVisibleButton(bool a_visible)
     {
         if(m_btnControl!=Q_NULLPTR)
         {
+            m_btnControl->setGeometry(0,0,0,0);
             delete m_btnControl;
             m_btnControl = Q_NULLPTR;
         }
