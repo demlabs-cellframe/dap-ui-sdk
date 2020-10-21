@@ -60,7 +60,7 @@ public:
 
     void abortRequests() {
         for (auto &l_rpl : m_httpClient->findChildren<QNetworkReply*>()) {
-            if (l_rpl->isOpen()) {
+            if (!l_rpl->isFinished()) {
                 qDebug() << "Abort request " << l_rpl->url().toString();
                 l_rpl->abort();
             }
@@ -74,6 +74,4 @@ private:
 private slots:
     // For clear all network reply objects
     void finished(QNetworkReply *reply) { reply->deleteLater(); }
-signals:
-    void sigNetworkManagerRebuild();
 };

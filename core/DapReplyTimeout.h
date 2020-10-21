@@ -16,10 +16,6 @@ private:
         Q_ASSERT(reply);
         if (reply->isOpen()) {
             connect(reply, &QNetworkReply::finished, this, [=] {
-                if ((reply->error() == QNetworkReply::NetworkSessionFailedError)
-                        || (reply->error() == QNetworkReply::UnknownNetworkError)) {
-                    DapConnectClient::instance()->_rebuildNetworkManager();
-                }
                 qInfo() << "Request processed";
                 QAbstractEventDispatcher::instance()->unregisterTimers(this);
                 delete this;

@@ -36,8 +36,8 @@ DapConnectClient::DapConnectClient(QObject *parent) :
 void DapConnectClient::_rebuildNetworkManager()
 {
     qDebug() << "Restarting NAM";
-    emit sigNetworkManagerRebuild();
-    delete m_httpClient;
+    abortRequests();
+    m_httpClient->deleteLater();
     m_httpClient = new QNetworkAccessManager(this);
     m_httpClient->setProxy(QNetworkProxy::NoProxy);
     connect(m_httpClient, &QNetworkAccessManager::finished, this, &DapConnectClient::finished);
@@ -77,7 +77,6 @@ QNetworkReply* DapConnectClient::request_GET(const QString& host,  quint16 port,
         return Q_NULLPTR;
     }
     auto netReply = m_httpClient->get(req);
-    connect(this, &DapConnectClient::sigNetworkManagerRebuild, netReply, &QNetworkReply::abort);
     return netReply;
 }
 
@@ -90,6 +89,5 @@ QNetworkReply* DapConnectClient::request_POST(const QString& host,  quint16 port
         return Q_NULLPTR;
     }
     auto netReply = m_httpClient->post(req, data);
-    connect(this, &DapConnectClient::sigNetworkManagerRebuild, netReply, &QNetworkReply::abort);
     return netReply;
 }
