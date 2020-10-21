@@ -170,7 +170,7 @@ void AnimationChangingWidget::updateWidgetSize()
             m_widget.move(QPoint(xPos, 0));
         }
 
-        if (this->widgetAt(i) && this->widgetAt(i)->isVisible())
+        if (this->widgetAt(i) && this->widgetAt(i)->isVisibleTo(this))
             countOfVisible++;
     }
     m_widget.resize(oneScreenWidth * countOfVisible, height());

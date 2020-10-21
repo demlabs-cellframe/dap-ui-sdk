@@ -26,6 +26,7 @@ public:
     virtual QString screenName() override;
 
     void setState(ConnectionState a_state);
+    void setErrorMessage(const QString &msg);
 
 protected:
 

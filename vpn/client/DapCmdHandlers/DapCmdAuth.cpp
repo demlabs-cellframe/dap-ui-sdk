@@ -39,6 +39,19 @@ void DapCmdAuth::sendCmdErrorAuth(const QString errorMsg)
     sendCmd(&response);
 }
 
+void DapCmdAuth::sendCmdErrorAuth(const int& a_errorCode, const QString a_errorMsg)
+{
+    qWarning() <<"Error message: "<< a_errorMsg;
+    QJsonObject response;
+    QJsonObject errorObj;
+
+    errorObj["code"] = a_errorCode;
+    errorObj["message"] = a_errorMsg;
+    response["error"] = errorObj;
+
+    sendCmd(&response);
+}
+
 /**
  * @brief DapCmdAuth::handle
  * @param params

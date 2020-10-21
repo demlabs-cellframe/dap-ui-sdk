@@ -53,7 +53,9 @@ void SignInScreenSerialNumberBase::initVariantUi(QWidget *a_widget)
     m_ui->cbbServer->setPositionPopup(PositionPopup::overlappingPosition);
 #endif
 //*************************Serial field***************************************
-
+#ifdef Q_OS_MAC
+    m_ui->ledSerialKey->setAttribute(Qt::WA_MacShowFocusRect,false);
+#endif
 
     connect(m_ui->btnConnect, &QPushButton::clicked, [this]{
         if (m_ui->ledSerialKey->text().isEmpty())
@@ -345,6 +347,9 @@ QString SignInScreenSerialNumberBase::translatedErrorMsg(QString a_errorMsg)
 
     else if (a_errorMsg == "Serial key activated, try to authorize")
         return  tr("Serial key activated, try to authorize");
+
+    else if (a_errorMsg == "Server not available. Please, try others or the same later")
+            return tr("Server not available. Please, try others or the same later");
 
     else return a_errorMsg;
 }

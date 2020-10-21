@@ -134,6 +134,7 @@ void Cert::sign(const QByteArray & a_data, QByteArray & a_output)
 {
     dap_sign_t * sign = dap_cert_sign( m_cert, a_data.constData(), static_cast<size_t>(a_data.size()), 0 );
     a_output.append(  QByteArray( reinterpret_cast<char*>(sign), static_cast<int>(dap_sign_get_size( sign )) ));
+    //qInfo() << "++++ pkey_size " << sign->header.sign_pkey_size << " sign_size " << sign->header.sign_size << "and total: " << a_output.size();
     DAP_DELETE (sign);
 }
 
@@ -189,6 +190,19 @@ bool Cert::exportPKeyToFile(const QString &a_path) {
     return false;
 }
 
+QString Cert::pkeyHash() {
+    dap_chain_hash_fast_t l_hash_pkey, l_hash_cert_pkey;
+    // serialized key -> key hash
+    dap_hash_fast(((dap_enc_key_t*)(*m_key))->pub_key_data, ((dap_enc_key_t*)(*m_key))->pub_key_data_size, &l_hash_pkey);
+    char *l_pkey_hash_str = dap_chain_hash_fast_to_str_new(&l_hash_pkey);
+    dap_hash_fast(m_cert->enc_key->pub_key_data, m_cert->enc_key->pub_key_data_size, &l_hash_cert_pkey);
+    char *l_cert_pkey_hash_str = dap_chain_hash_fast_to_str_new(&l_hash_cert_pkey);
+    QString ret = QString("Key hash: %1, Certificate key hash: %2").arg(l_pkey_hash_str).arg(l_cert_pkey_hash_str);
+    DAP_DEL_Z(l_pkey_hash_str);
+    DAP_DEL_Z(l_cert_pkey_hash_str);
+    return ret;
+}
+
 bool Cert::importPKeyFromFile(const QString &a_path) {
     FILE *l_file = fopen(qPrintable(a_path), "rb");
     if (l_file) {
@@ -202,6 +216,13 @@ bool Cert::importPKeyFromFile(const QString &a_path) {
             qCritical() << "Error occured on deserialization, code " << l_err;
             fclose(l_file);
             return false;
+        }
+        if (m_cert->enc_key) {
+            DAP_DEL_Z(m_cert->enc_key->pub_key_data);
+            m_cert->enc_key->pub_key_data = DAP_NEW_Z_SIZE(byte_t, ((dap_enc_key_t*)(*m_key))->pub_key_data_size);
+            m_cert->enc_key->pub_key_data_size =  ((dap_enc_key_t*)(*m_key))->pub_key_data_size;
+            memcpy(m_cert->enc_key->pub_key_data, ((dap_enc_key_t*)(*m_key))->pub_key_data, ((dap_enc_key_t*)(*m_key))->pub_key_data_size);
+            qInfo() << "Cert key restored";
         }
     } else {
         qInfo() << "No pkey found";
