@@ -12,7 +12,6 @@
         <file>widgets/DapScreen.qml</file>
         <file>widgets/DapScreenForm.ui.qml</file>
         <file>widgets/DapTab.qml</file>
-        <file>widgets/DapTabForm.ui.qml</file>
         <file>widgets/DapTopPanel.qml</file>
         <file>Device.qml</file>
         <file>widgets/DapRadioButton.qml</file>
