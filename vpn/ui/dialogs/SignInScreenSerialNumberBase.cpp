@@ -348,6 +348,9 @@ QString SignInScreenSerialNumberBase::translatedErrorMsg(QString a_errorMsg)
     else if (a_errorMsg == "Serial key activated, try to authorize")
         return  tr("Serial key activated, try to authorize");
 
+    else if (a_errorMsg == "Server not available. Please, try others or the same later")
+            return tr("Server not available. Please, try others or the same later");
+
     else return a_errorMsg;
 }
 
