@@ -15,9 +15,6 @@ public:
 
 protected:
     virtual void closeEvent(QCloseEvent *) override;
-    virtual void hideEvent(QHideEvent* e)override;
-    virtual void showEvent(QShowEvent* e)override;
-    virtual void keyPressEvent(QKeyEvent* e)override;
 };
 
 #endif // SCREENMESSAGEWIDGET_H
