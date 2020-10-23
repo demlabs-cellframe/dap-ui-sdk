@@ -29,7 +29,6 @@ public:
     const QString& gw() { return m_gw; }
     int upstreamSocket() { return m_upstreamSocket; }
     const QString& tunDeviceName(){ return m_tunDeviceName; }
-    int mtu() { return m_MTU; }
 
     void tunWriteData(Dap::Stream::Packet *a_pkt) {
         addWriteData(a_pkt);
@@ -103,7 +102,6 @@ private:
     const QString tempNetFileName = "TempConfigurationNetwork.xml";
 
     int m_upstreamSocket;
-    int m_MTU;
     pthread_t pidTun;
 
     QQueue<Dap::Stream::Packet*> _m_writeQueue;
