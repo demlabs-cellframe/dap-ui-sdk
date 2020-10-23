@@ -20,6 +20,7 @@ protected:
     /// Form initialization.
     /// @param a_w Window GUI widget.
     virtual void initVariantUi(QWidget *a_widget) override;
+    virtual void hideEvent(QHideEvent* e) override;
 
     QScopedPointer<Ui::InformationScreen> m_ui;
 };
