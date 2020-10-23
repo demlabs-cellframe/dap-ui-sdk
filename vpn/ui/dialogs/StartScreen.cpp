@@ -24,7 +24,13 @@ void StartScreen::setState(ConnectionState a_state)
     m_ui->lblSystemStatus->setText(statusText);
 }
 
+void StartScreen::setErrorMessage(const QString &msg)
+{
+    m_ui->lblSystemStatus->setText(msg);
+}
+
 void StartScreen::initVariantUi(QWidget *a_widget)
 {
     Q_UNUSED(a_widget)
 }
+

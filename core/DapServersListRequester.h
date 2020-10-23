@@ -20,6 +20,11 @@ public:
         }
         return reply->errorString();
     }
+
+    QNetworkReply::NetworkError networkReplyError(){
+        return qobject_cast<QNetworkReply *>(parent())->error();
+    }
+
 signals:
     void sigResponse(const QJsonDocument& doc);
     void sigNetworkError(QNetworkReply::NetworkError);
