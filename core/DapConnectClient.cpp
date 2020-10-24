@@ -28,33 +28,16 @@
 DapConnectClient::DapConnectClient(QObject *parent) :
     QObject(parent)
 {
-    m_netConfManager = new QNetworkConfigurationManager();
-
     m_httpClient = new QNetworkAccessManager(this);
     m_httpClient->setProxy(QNetworkProxy::NoProxy);
-
     connect(m_httpClient, &QNetworkAccessManager::finished, this, &DapConnectClient::finished);
-#ifndef Q_OS_WINDOWS
-    connect(m_httpClient, &QNetworkAccessManager::networkAccessibleChanged,
-            [=](QNetworkAccessManager::NetworkAccessibility accessible) {
-        qDebug() << "Network accessible changed to" << accessible;
-        if(accessible != QNetworkAccessManager::NetworkAccessibility::Accessible) {
-            _rebuildNetworkManager();
-        }
-    });
-#endif
-    connect(m_netConfManager, &QNetworkConfigurationManager::configurationChanged,
-            [=](const QNetworkConfiguration & config){
-        qDebug() << "Configuration changed to" << config.name();
-        //_rebuildNetworkManager();
-    });
 }
 
 void DapConnectClient::_rebuildNetworkManager()
 {
-    qDebug() << "rebuildNetworkManager";
-    emit sigNetworkManagerRebuild();
-    delete m_httpClient;
+    qDebug() << "Restarting NAM";
+    abortRequests();
+    m_httpClient->deleteLater();
     m_httpClient = new QNetworkAccessManager(this);
     m_httpClient->setProxy(QNetworkProxy::NoProxy);
     connect(m_httpClient, &QNetworkAccessManager::finished, this, &DapConnectClient::finished);
@@ -64,12 +47,6 @@ bool DapConnectClient::_buildRequest(QNetworkRequest& req, const QString& host,
                                      quint16 port, const QString & urlPath, bool ssl,
                                      const QVector<HttpRequestHeader>* headers)
 {
-/*#ifndef Q_OS_WIN // In Windows OS QNetworkAccessManager always NotAccessible
-    if(m_httpClient->networkAccessible() == QNetworkAccessManager::NotAccessible) {
-        _rebuildNetworkManager();
-    }
-#endif*/
-
     QString httpAddress = QString("%1://%2:%3%4").arg(ssl ? "https" : "http")
             .arg(host).arg(port).arg(urlPath);
 
@@ -100,7 +77,6 @@ QNetworkReply* DapConnectClient::request_GET(const QString& host,  quint16 port,
         return Q_NULLPTR;
     }
     auto netReply = m_httpClient->get(req);
-    connect(this, &DapConnectClient::sigNetworkManagerRebuild, netReply, &QNetworkReply::abort);
     return netReply;
 }
 
@@ -113,6 +89,5 @@ QNetworkReply* DapConnectClient::request_POST(const QString& host,  quint16 port
         return Q_NULLPTR;
     }
     auto netReply = m_httpClient->post(req, data);
-    connect(this, &DapConnectClient::sigNetworkManagerRebuild, netReply, &QNetworkReply::abort);
     return netReply;
 }

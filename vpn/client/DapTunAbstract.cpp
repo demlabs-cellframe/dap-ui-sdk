@@ -21,7 +21,6 @@
 DapTunAbstract::DapTunAbstract()
     : QObject(nullptr)
 {
-    m_MTU=0xfffff;
     tunThread = new QThread();
     tunWorker = nullptr;
     m_tunSocket = -1;
