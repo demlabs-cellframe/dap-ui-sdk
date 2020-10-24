@@ -14,7 +14,7 @@ public:
 
     void appendTariff(const QList<TariffItem> &a_tariffList);
 signals:
-    void showPopupScreenTarriff();
+    void TarriffScreenPopupOpened();
 
 protected:
     virtual void initVariantUi(QWidget *a_widget) override;
