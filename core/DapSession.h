@@ -170,7 +170,7 @@ signals:
     void errorAuthorization(const QString &);
     void activateKey();
     void errorNetwork(const QString&);
-    void errorNetwork(const int&, const QString&);
+    void errorNetwork(const int, const QString&);
 
     void authRequested();
     void keyActRequested();
