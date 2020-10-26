@@ -39,6 +39,10 @@ void AccountScreenBase::initVariantUi(QWidget *a_widget)
         QDesktopServices::openUrl(QUrl(a_url));
     });
 
+#ifndef Q_OS_ANDROID
+    m_ui->cbbBugReport->hide();
+#endif
+
     this->ScreenWithScreenPopupsAbstract::initVariantUi(a_widget);
 }
 

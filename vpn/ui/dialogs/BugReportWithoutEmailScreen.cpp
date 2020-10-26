@@ -20,7 +20,7 @@ void BugReportWithoutEmailScreen::initVariantUi(QWidget *a_widget)
     Q_UNUSED(a_widget)
 
     m_ui->edtEmail->hide();
-    //Для Кельвина мешает Кажется плохая идея.
+    m_ui->btnAttachImage->hide();
 //    m_ui->lblCaption->hide();
 
     this->BugReportScreenBase::initVariantUi(a_widget);

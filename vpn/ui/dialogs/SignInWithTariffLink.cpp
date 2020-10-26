@@ -29,6 +29,8 @@ void SignInWithTariffLink::initVariantUi(QWidget *a_widget)
         QDesktopServices::openUrl(QUrl(a_url));
     });
 
+    connect(m_ui->cbbTariff->buttonControll(),&QPushButton::clicked,this,&SignInWithTariffLink::tarriffScreenPopupOpened);
+
     SignInScreenSerialNumberBase::initVariantUi(a_widget);
 }
 

@@ -34,9 +34,7 @@ namespace Dap {
             Key(){ m_key = nullptr; } // Only for generator funciton, Key can't be empty by design
         public:
             Key(dap_enc_key_t *a_key) {
-                dap_enc_key_serealize_t* temp = dap_enc_key_serealize(a_key);
-                m_key = dap_enc_key_deserealize(temp, sizeof (dap_enc_key_serealize_t));
-                DAP_DEL_Z(temp)
+                m_key = dap_enc_key_dup(a_key);
             }
             Key(const QByteArray& a_keyPrivate);
             operator dap_enc_key_t*() { return  m_key; }
