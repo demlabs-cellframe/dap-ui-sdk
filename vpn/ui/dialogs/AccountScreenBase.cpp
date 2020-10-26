@@ -61,6 +61,8 @@ QList<CustomPopup *> AccountScreenBase::customPopups()
 {
     return {
         m_ui->cbbLicenceTariff->popup(),
-//        m_ui->cbbBugReport->popup()
+ //       m_ui->cbbBugReport->popup(),
+        m_serialRemovalMessage
+#endif
     };
 }
