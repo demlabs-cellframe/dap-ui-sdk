@@ -34,7 +34,6 @@ namespace Dap {
         {
         protected:
             dap_cert_t * m_cert = nullptr;
-            Key *m_key = nullptr;
             Cert(){ }
         public:
             static Cert * generate(const QString& a_name, KeySignType a_type);
@@ -43,14 +42,15 @@ namespace Dap {
             static Cert * load(const QString& a_filePath);
             ~Cert();
 
-            Key& key() {  return  *m_key; }
+            dap_enc_key_t *key();
+
             void sign(const QByteArray & a_data, QByteArray & a_output);
             bool compareWithSign(const QByteArray & a_data);
 
             bool save(const QString & a_filePath);
             QString exportPKeyBase64();
-            bool exportPKeyToFile   (const QString&);
-            bool importPKeyFromFile (const QString&);
+            int exportPKeyToFile   (const QString&);
+            int importPKeyFromFile (const QString&);
             QString storagePath     ();
             QString pkeyHash        ();
         };
