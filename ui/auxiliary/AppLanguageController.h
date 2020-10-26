@@ -10,7 +10,7 @@ class AppLanguageController : public QObject
 {
     Q_OBJECT
 public:
-    explicit AppLanguageController(QObject* a_parent = nullptr);
+    explicit AppLanguageController(QList<QLocale::Language> a_languages, QObject* a_parent = nullptr);
 
     LanguagesModel* languagesModel();
 
@@ -35,6 +35,7 @@ private:
 
     LanguagesModel m_languagesModel;
     QLocale::Language m_language;
+    QLocale::Language m_defaultLanguage{QLocale::English};
 };
 
 QDataStream &operator<<(QDataStream &a_outStream, QLocale::Language a_serialKeyData);
