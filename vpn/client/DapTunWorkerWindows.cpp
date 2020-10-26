@@ -29,28 +29,25 @@ void DapTunWorkerWindows::loop() {
         //emit loopStopped();
         return;
     }
-    const int mtu = 6000; // x4 relative to max protocol data unit, aswell as max PPP frame.
-    quint8 tmpBuf[mtu] = {'\0'};
-    size_t tmpBufSize = 0;
-    qDebug() << "Tunnel listen, socket: " << tun()->m_tunSocket << ", mtu " << mtu;
+    size_t l_bufSize = 0;
+    qDebug() << "Tunnel listen, socket: " << tun()->m_tunSocket << ", mtu " << DAP_IP_MTU;
     do {
         if (!TunTap::getInstance()) {
             qCritical() << "No tun device present!";
             break;
         }
-        int readRet = TunTap::getInstance().read_tun(tun()->m_tunSocket, tmpBuf + tmpBufSize, mtu - tmpBufSize);
+        int readRet = TunTap::getInstance().read_tun(tun()->m_tunSocket, m_tunBuf + l_bufSize, DAP_IP_MTU - l_bufSize);
         if (readRet < 0) {
             qWarning() << "[DapTunWorkerWindows] Error read from tun";
             //continue;
             emit loopError("Error read from tun");
             break;
         }
-        tmpBufSize += readRet;
-        if(tmpBufSize > (int)sizeof(struct ip)) {
-            emit bytesWrite((int)tmpBufSize);
-            procDataFromTun(tmpBuf, tmpBufSize);
-            memset(tmpBuf, '\0', mtu);
-            tmpBufSize = 0;
+        l_bufSize += readRet;
+        if(l_bufSize > (int)sizeof(struct ip)) {
+            emit bytesWrite((int)l_bufSize);
+            procDataFromTun(m_tunBuf, l_bufSize);
+            l_bufSize = 0;
         }
     } while (1);
 }

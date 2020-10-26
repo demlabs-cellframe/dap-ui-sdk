@@ -27,6 +27,10 @@ DapServersListNetworkReply::DapServersListNetworkReply(QNetworkReply *networkRep
             }
         } else {
             emit sigNetworkError(networkReply->error());
+            if ((networkReply->error() == QNetworkReply::NetworkSessionFailedError)
+                    || (networkReply->error() == QNetworkReply::UnknownNetworkError)) {
+                //TODO
+            }
         }
     });
 }
