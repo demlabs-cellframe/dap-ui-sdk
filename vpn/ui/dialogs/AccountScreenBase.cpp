@@ -44,6 +44,8 @@ void AccountScreenBase::initVariantUi(QWidget *a_widget)
     connect(m_ui->cbbLicenceTariff, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated), [=](const QString &a_url){
         QDesktopServices::openUrl(QUrl(a_url));
     });
+
+    m_ui->cbbBugReport->hide();
 #endif
 
     this->ScreenWithScreenPopupsAbstract::initVariantUi(a_widget);
