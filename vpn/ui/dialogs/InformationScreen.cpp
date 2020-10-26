@@ -1,4 +1,5 @@
 #include "InformationScreen.h"
+#include <QScrollBar>
 
 const QString InformationScreen::SCREEN_NAME = "Information";
 
@@ -27,6 +28,17 @@ void InformationScreen::initVariantUi(QWidget *a_widget)
 
     //TODO:
     m_ui->lblCaption->hide();
+#endif
+}
+
+void InformationScreen::hideEvent(QHideEvent *e)
+{
+    AdaptiveScreen::hideEvent(e);
+#ifndef ANDROID
+    m_ui->scrArea->verticalScrollBar()->setValue(m_ui->scrArea->verticalScrollBar()->minimum());
+#else
+    if(QScroller::hasScroller(m_ui->scrArea->viewport()))
+        QScroller::scroller(m_ui->scrArea->viewport())->scrollTo(QPoint(0,0));
 #endif
 }
 void InformationScreen::setTextCaption(const QString &a_text)
