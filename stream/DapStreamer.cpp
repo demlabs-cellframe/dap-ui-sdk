@@ -88,8 +88,7 @@ void DapStreamer::writeChannelPacket(DapChannelPacketHdr *a_pktHdr, void *data, 
 
     size_t pktOutDataSize = sizeof(DapPacketHdr) + dOutEnc.size();
     DapPacketHdr* pktOut = (DapPacketHdr* ) m_writeEncDataOut;
-
-    pktOut->type = DATA_PACKET;
+    pktOut->type = (a_pktHdr->type == 0x11 ? 0x11 : DATA_PACKET);
 
     memcpy(pktOut->sig, daSig, sizeof(pktOut->sig));
 
