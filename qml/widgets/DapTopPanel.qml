@@ -2,7 +2,6 @@ import QtQuick 2.4
 
 Rectangle
 {
-    anchors.top: parent.top
     radius: 8 * pt
 
     height: 60 * pt
