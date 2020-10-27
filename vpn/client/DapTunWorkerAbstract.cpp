@@ -8,7 +8,6 @@ DapTunWorkerAbstract::DapTunWorkerAbstract( DapTunAbstract * a_tun )
     m_writeQueue     = a_tun->writeQueue();
     m_writeQueueCond = a_tun->writeQueueCond();
     m_writeQueueLock = a_tun->writeQueueLock();
-
 }
 
 /**
@@ -18,8 +17,6 @@ DapTunWorkerAbstract::DapTunWorkerAbstract( DapTunAbstract * a_tun )
  */
 void DapTunWorkerAbstract::procDataFromTun(void * a_buf,size_t a_bufSize)
 {
-    // struct ip *iph = (struct ip* ) tmpBuf;
-    // qDebug() << "[DapChSockForw] saddr = " << ::inet_ntoa(iph->ip_src)<< " dadrr = " << inet_ntoa( iph->ip_dst) << " size = "<<tmpBufSize  ;
     Dap::Stream::Packet* pktOut =
         (Dap::Stream::Packet*)::calloc(1,sizeof(pktOut->header)+a_bufSize );
     pktOut->header.op_code = STREAM_SF_PACKET_OP_CODE_RAW_SEND;

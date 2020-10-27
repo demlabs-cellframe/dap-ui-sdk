@@ -43,9 +43,11 @@ DapStreamer::DapStreamer(DapSession * session, QObject* parent) :
 
     m_session = session;
     m_streamSocket = new QTcpSocket(this);
-    m_streamSocket->setReadBufferSize(6000);
+    m_streamSocket->setReadBufferSize(DAP_PKT_SIZE_MAX);
     m_streamSocket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
+    m_streamSocket->setSocketOption(QAbstractSocket::KeepAliveOption, 1);
     m_streamSocket->setProxy(QNetworkProxy::NoProxy);
+
     connect(m_streamSocket,&QIODevice::readyRead, this,&DapStreamer::sltStreamProcess);
     //connect(m_streamSocket,&QAbstractSocket::hostFound, this,&DapConnectStream::sltStreamHostFound);
     connect(m_streamSocket,&QAbstractSocket::connected, this,&DapStreamer::sltStreamConnected);
@@ -68,7 +70,7 @@ void DapStreamer::writeChannelPacket(DapChannelPacketHdr *a_pktHdr, void *data, 
 {
 
     if(a_pktHdr->size + sizeof (DapChannelPacketHdr) > DAP_PKT_SIZE_MAX) {
-        qWarning() << "Too large package";
+        qWarning() << "Too large package size " << a_pktHdr->size;
         return;
     }
     Q_UNUSED(dest_addr)
@@ -86,8 +88,7 @@ void DapStreamer::writeChannelPacket(DapChannelPacketHdr *a_pktHdr, void *data, 
 
     size_t pktOutDataSize = sizeof(DapPacketHdr) + dOutEnc.size();
     DapPacketHdr* pktOut = (DapPacketHdr* ) m_writeEncDataOut;
-
-    pktOut->type = DATA_PACKET;
+    pktOut->type = (a_pktHdr->type == 0x11 ? 0x11 : DATA_PACKET);
 
     memcpy(pktOut->sig, daSig, sizeof(pktOut->sig));
 

@@ -12,6 +12,7 @@ public:
     void appendLanguage(QLocale::Language a_locale);
     void appendLanguages(const QList<QLocale::Language>& a_languageList);
     QLocale::Language language(int a_index) const;
+    bool isExist(QLocale::Language a_language) const;
 
     virtual int rowCount(const QModelIndex &parent) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;

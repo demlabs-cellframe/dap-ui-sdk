@@ -4,9 +4,10 @@
 #include <QDebug>
 #include <DapDataLocal.h>
 
-AppLanguageController::AppLanguageController(QObject *a_parent)
+AppLanguageController::AppLanguageController(QList<QLocale::Language> a_languages, QObject *a_parent)
     :QObject(a_parent)
 {
+    m_languagesModel.appendLanguages(a_languages);
     QLocale::Language systemLanguage = QLocale::system().language();
     QLocale::Language savedLanguage;
 
@@ -21,7 +22,8 @@ AppLanguageController::AppLanguageController(QObject *a_parent)
             {
                 DapDataLocal::removeSetting(SETTING_LOCALE);
                 DapDataLocal::instance()->saveToSettings(SETTING_SYS_LOCALE, systemLanguage);
-                this->retranslateApp(systemLanguage);
+                m_languagesModel.isExist(systemLanguage) ? this->retranslateApp(systemLanguage)
+                                                         : this->retranslateApp(m_defaultLanguage);
             }
         }
         else
@@ -33,7 +35,8 @@ AppLanguageController::AppLanguageController(QObject *a_parent)
     else
     {
         DapDataLocal::instance()->saveToSettings(SETTING_SYS_LOCALE, systemLanguage);
-        this->retranslateApp(systemLanguage);
+        m_languagesModel.isExist(systemLanguage) ? this->retranslateApp(systemLanguage)
+                                                 : this->retranslateApp(m_defaultLanguage);
     }
 }
 
