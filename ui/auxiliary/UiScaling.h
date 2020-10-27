@@ -2,6 +2,7 @@
 #define UISCALING_H
 
 #include <QSize>
+#include "DapLogger.h"
 
 class UiScaling
 {

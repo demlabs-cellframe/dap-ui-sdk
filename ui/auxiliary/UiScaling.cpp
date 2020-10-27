@@ -6,6 +6,7 @@
 #include <QRect>
 #include <QApplication>
 #include <QDebug>
+#include <QSettings>
 
 #ifdef Q_OS_WIN
 #include "windows.h"
@@ -47,42 +48,58 @@ inline double UiScaling::pointsToInches(float a_pointsValue)
 }
 
 float UiScaling::getNativDPI(){
+
+    int hSize       = 0;
+    int wSize       = 0;
+    int hResolution = 0;
+    int wResolution = 0;
+
+    if (QGuiApplication::screens().isEmpty()){
+        qInfo() << "UiScaling - no active screens found";
+        QSettings settings(DapLogger::defaultLogPath(DAP_BRAND) + "/ScreenSettings.ini", QSettings::IniFormat);
+        hSize       = settings.value("hSize", 0).toInt();
+        wSize       = settings.value("wSize", 0).toInt();
+        hResolution = settings.value("hResolution", 0).toInt();
+        wResolution = settings.value("wResolution", 0).toInt();
+    } else {
 #ifdef Q_OS_WIN
-    HDC screen = GetDC(NULL);
-    int hSize       = GetDeviceCaps(screen, HORZSIZE);
-    int wSize       = GetDeviceCaps(screen, VERTSIZE);
-    int hResolution = GetDeviceCaps(screen, HORZRES);
-    int wResolution = GetDeviceCaps(screen, VERTRES);
+        HDC screen = GetDC(NULL);
+        hSize       = GetDeviceCaps(screen, HORZSIZE);
+        wSize       = GetDeviceCaps(screen, VERTSIZE);
+        hResolution = GetDeviceCaps(screen, HORZRES);
+        wResolution = GetDeviceCaps(screen, VERTRES);
 #elif defined(Q_OS_LINUX)
 #ifndef Q_OS_ANDROID
-    Display *dpy;
-    XRRScreenResources *screen;
-    XRROutputInfo * outInfo;
-    XRRCrtcInfo *crtc_info;
+        Display *dpy;
+        XRRScreenResources *screen;
+        XRROutputInfo * outInfo;
+        XRRCrtcInfo *crtc_info;
 
-    dpy = XOpenDisplay(":0");
-    screen = XRRGetScreenResources(dpy, DefaultRootWindow(dpy));
-    crtc_info = XRRGetCrtcInfo(dpy, screen, screen->crtcs[0]); //0 to get the first monitor
-    outInfo = XRRGetOutputInfo(dpy, screen, *crtc_info->outputs);
+        dpy = XOpenDisplay(":0");
+        screen = XRRGetScreenResources(dpy, DefaultRootWindow(dpy));
+        crtc_info = XRRGetCrtcInfo(dpy, screen, screen->crtcs[0]); //0 to get the first monitor
+        outInfo = XRRGetOutputInfo(dpy, screen, *crtc_info->outputs);
 
-    int hSize       = crtc_info->height;
-    int wSize       = crtc_info->width;
-    int hResolution = outInfo->mm_height;
-    int wResolution = outInfo->mm_width;
+        hSize       = crtc_info->height;
+        wSize       = crtc_info->width;
+        hResolution = outInfo->mm_height;
+        wResolution = outInfo->mm_width;
 #endif
 #elif defined(Q_OS_MACOS)
-    auto mainDisplayId = CGMainDisplayID();
-    CGSize screenSize = CGDisplayScreenSize(mainDisplayId);
+        auto mainDisplayId = CGMainDisplayID();
+        CGSize screenSize = CGDisplayScreenSize(mainDisplayId);
 
-    int hSize       = screenSize.height;
-    int wSize       = screenSize.width;
-    int hResolution = CGDisplayPixelsHigh(mainDisplayId);
-    int wResolution = CGDisplayPixelsWide(mainDisplayId);
+        hSize       = screenSize.height;
+        wSize       = screenSize.width;
+        hResolution = CGDisplayPixelsHigh(mainDisplayId);
+        wResolution = CGDisplayPixelsWide(mainDisplayId);
 #else
-    static qreal dpi(QGuiApplication::primaryScreen()->physicalDotsPerInch());
+        static qreal dpi(QGuiApplication::primaryScreen()->physicalDotsPerInch());
 #endif
+    }
 #ifndef Q_OS_ANDROID
-    float pixelsPerMM = ((float)hResolution / hSize + (float)hResolution / hSize)/2;
+
+    float pixelsPerMM = ((float)hResolution / hSize + (float)wResolution / wSize)/2;
     float dpi = pixelsPerMM * 25.4f;
     qInfo() << QString("UiScaling - Pixels pre mm: %1 Resolution: %2x%3 Screen size: %4x%5 dpi: %6 According to qt: %7")
                .arg(pixelsPerMM).arg(hResolution).arg(wResolution).arg(hSize).arg(wSize).arg(dpi)
