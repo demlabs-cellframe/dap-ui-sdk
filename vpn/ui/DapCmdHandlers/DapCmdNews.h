@@ -2,6 +2,7 @@
 #define DAPCMDNEWS_H
 
 #include "DapCmdClientAbstract.h"
+#include "Utilz.h"
 
 class DapCmdNews: public DapCmdClientAbstract
 {
@@ -15,7 +16,7 @@ protected:
     void handleResult(const QJsonObject& result) override;
     void handleError(int code, const QString& message) override;
     bool fromJSON(const QJsonArray& jsonArr, QList<QMap<QString, QString>> *listNews);
-
+    void fillingListNews(const QJsonObject& jsonObj, QList<QMap<QString, QString>>* listNews);
 signals:
     void sigGotNews(QList<QMap<QString, QString>>);
 
