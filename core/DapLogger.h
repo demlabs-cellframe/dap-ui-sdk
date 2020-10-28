@@ -20,14 +20,11 @@ private:
     static void messageHandler(QtMsgType type, const QMessageLogContext &ctx,
                                const QString & msg);
     inline static dap_log_level castQtMsgToDap(QtMsgType type);
+
 public:
     explicit DapLogger(QObject *parent = nullptr, QString appType = "", size_t prefix_width = 10);
 
-    // return false if not success
-    bool setLogFile(const QString& filePath);
-
-    int createLogFolder(QString path);
-    void setPermissionFolder(const QString &path);
+    void setLogFile(const QString& filePath);
     void createChangerLogFiles();
 
     QString getPathToLog(){ return m_pathToLog; }
@@ -48,12 +45,6 @@ private:
     QString m_pathToLog;
     QString m_currentLogName;
     QString m_appType;
-
-    QFileSystemWatcher * m_watcher;
-
-public slots:
-    void resetLogFileIfNotExist(const QString& path);
-    void resetLogDirIfNotExist(const QString& path);
 };
 
 #endif // DAPLOGGER_H
