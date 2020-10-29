@@ -12,15 +12,10 @@ AccountScreenBase::AccountScreenBase(QWidget *a_parent)
 {
     this->create(m_ui);
 #ifndef Q_OS_ANDROID
-//    m_serialRemovalMessage->setDefaultButtonText(tr("NO"));
-//    m_serialRemovalMessage->setEscapeButtonText(tr("YES"));
-//    m_serialRemovalMessage->setText(tr("Are you sure?"));
     m_serialRemovalMessage->setWindowType(Qt::Dialog);
     m_serialRemovalMessage->setObjectName("ScreenMessagePopup");
     connect(m_serialRemovalMessage, &SerialRemovalConfirmationMessage::accepted, this, &AccountScreenBase::serialRemovalRequested);
 #endif
-//    CustomMessageBox::CustomMessageBox(const QString &a_title, const QString &a_defaultButtonText,
-//                                       const QString &a_escapeButtonText, const QString &a_text, QWidget *a_parent)
     AdaptiveScreen::initScreen(this);
 }
 
