@@ -6,6 +6,14 @@ SerialRemovalConfirmationMessage::SerialRemovalConfirmationMessage(QWidget *a_pa
 
 }
 
+SerialRemovalConfirmationMessage::SerialRemovalConfirmationMessage(const QString& a_title, const QString& a_defaultButtonText,
+                 const QString& a_escapeButtonText, const QString& a_text,
+                 QWidget *a_parent)
+    :CustomMessageBox(a_title, a_defaultButtonText,a_escapeButtonText,a_text,a_parent)
+{
+
+}
+
 void SerialRemovalConfirmationMessage::closeEvent(QCloseEvent *)
 {
     doDefaultAction();

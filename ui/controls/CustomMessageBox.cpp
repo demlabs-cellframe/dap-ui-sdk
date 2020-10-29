@@ -26,6 +26,11 @@ CustomMessageBox::~CustomMessageBox()
 
 }
 
+void CustomMessageBox::setLayoutDirectionButtonsFrame(Qt::LayoutDirection a_direction)
+{
+    m_ui->horizontalLayout_2->setDirection(Utils::toQBoxLayoutDirection(a_direction));
+}
+
 void CustomMessageBox::setDefaultButtonText(const QString &a_defaultButtonText)
 { 
     a_defaultButtonText.isEmpty() ? hideButton(m_ui->btnDefault)

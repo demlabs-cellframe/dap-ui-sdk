@@ -12,6 +12,8 @@ class CustomMessageBox : public CustomPopup
 {
     Q_OBJECT
 
+    Q_PROPERTY(Qt::LayoutDirection layoutDirectionButtonsFrame WRITE setLayoutDirectionButtonsFrame DESIGNABLE true)
+
 public:
     CustomMessageBox(QWidget* a_parent=nullptr);
     CustomMessageBox(const QString& a_title, const QString& a_defaultButtonText = "Yes",
@@ -24,6 +26,7 @@ public:
     void setEscapeButtonText(const QString&a_escapeButtonText);
     void setText(const QString&a_text);
     void setTitleText(const QString&a_title);
+    void setLayoutDirectionButtonsFrame(Qt::LayoutDirection a_direction);
 
     virtual void doDefaultAction();
     virtual void doEscapeAction();

@@ -49,6 +49,7 @@ public:
 
 signals:
     void serialRemovalRequested();
+    void tarriffScreenPopupOpened();
 #endif
 
 protected:
