@@ -128,7 +128,7 @@ signals:
     void notify(const QString&);
 
     void recivedChannelPacket(DapChannelPacketHdr* pkt, void* data);
-
+    void isAlive();
     void streamDisconnecting();
     void streamOpened();
     void streamClosed();

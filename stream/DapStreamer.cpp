@@ -88,8 +88,7 @@ void DapStreamer::writeChannelPacket(DapChannelPacketHdr *a_pktHdr, void *data, 
 
     size_t pktOutDataSize = sizeof(DapPacketHdr) + dOutEnc.size();
     DapPacketHdr* pktOut = (DapPacketHdr* ) m_writeEncDataOut;
-
-    pktOut->type = DATA_PACKET;
+    pktOut->type = (a_pktHdr->type == 0x11 ? 0x11 : DATA_PACKET);
 
     memcpy(pktOut->sig, daSig, sizeof(pktOut->sig));
 
@@ -411,6 +410,12 @@ void DapStreamer::sltStreamProcess()
                     m_streamState = SSS_FRAME_SEARCH;
                     m_dapDataPosition = 0;
                     return;
+                } else if ((dapPktSize == 0) && (dapPktConstHdr->type == 0x12)) {
+                    m_buf.clear();
+                    m_streamState = SSS_FRAME_SEARCH;
+                    m_dapDataPosition = 0;
+                    emit isAlive();
+                    return;
                 }
 
                 memcpy(&m_dapPktHdr, m_buf.constData(), sizeof(DapPacketHdr));
@@ -441,7 +446,6 @@ void DapStreamer::sltStreamProcess()
 
         case SSS_FRAME_BODY:
         {
-
           if(m_buf.length() < ( (int)m_dapPktHdr.size) - m_dapDataPosition)
           {
               memcpy(m_dapData + m_dapDataPosition, m_buf.constData(), (size_t) m_buf.length());
@@ -484,7 +488,6 @@ void DapStreamer::_detectPacketLoose(quint64 currentSeqId)
 void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
 {
     m_procPktInData.append((const char*) data, pkt->size);
-
     m_session->getDapCrypt()->decode(m_procPktInData, m_procPktInDecData, KeyRoleStream);
 
     if(m_procPktInDecData.size() > sizeof(DapChannelPacketHdr)) {
