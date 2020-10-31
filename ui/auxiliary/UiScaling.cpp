@@ -54,8 +54,8 @@ float UiScaling::getNativDPI(){
     int hResolution = 0;
     int wResolution = 0;
 
-    if (QGuiApplication::screens().isEmpty()){
-        qInfo() << "UiScaling - no active screens found";
+    if (QFile().exists(DapLogger::defaultLogPath(DAP_BRAND) + "/ScreenSettings.ini")){
+        qInfo() << "UiScaling - Manual setting of screen characteristics selected";
         QSettings settings(DapLogger::defaultLogPath(DAP_BRAND) + "/ScreenSettings.ini", QSettings::IniFormat);
         hSize       = settings.value("hSize", 0).toInt();
         wSize       = settings.value("wSize", 0).toInt();
@@ -68,8 +68,7 @@ float UiScaling::getNativDPI(){
         wSize       = GetDeviceCaps(screen, VERTSIZE);
         hResolution = GetDeviceCaps(screen, HORZRES);
         wResolution = GetDeviceCaps(screen, VERTRES);
-#elif defined(Q_OS_LINUX)
-#ifndef Q_OS_ANDROID
+#elif defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
         Display *dpy;
         XRRScreenResources *screen;
         XRROutputInfo * outInfo;
@@ -84,7 +83,6 @@ float UiScaling::getNativDPI(){
         wSize       = crtc_info->width;
         hResolution = outInfo->mm_height;
         wResolution = outInfo->mm_width;
-#endif
 #elif defined(Q_OS_MACOS)
         auto mainDisplayId = CGMainDisplayID();
         CGSize screenSize = CGDisplayScreenSize(mainDisplayId);
