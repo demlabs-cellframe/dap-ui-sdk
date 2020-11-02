@@ -44,7 +44,8 @@ public:
     void setState(ActivationState a_activationState);
 
     void appendTariff(const QList<TariffItem> &a_tariffList);
-
+public slots:
+    void openTariffPopup();
 signals:
     void serialRemovalRequested();
 
