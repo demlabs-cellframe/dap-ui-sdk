@@ -3,15 +3,23 @@
 WidgetInputSizeController::WidgetInputSizeController(QObject *a_parent)
     :QObject (a_parent)
 {
-    connect(QApplication::inputMethod(),&QInputMethod::keyboardRectangleChanged,[=]{
-        if(QApplication::inputMethod()->isVisible() && QApplication::inputMethod()->keyboardRectangle().height() == 0.0)
-        {
-            setVisibleWidgets(true);
+    connect(QApplication::inputMethod(),&QInputMethod::keyboardRectangleChanged,this,&WidgetInputSizeController::setVisibilityWidgetDependingOnStateKeyboard);
+}
 
-            if(parent()!=nullptr)
-                qobject_cast<QWidget*>(parent())->setFocus();
-        }
-    });
+WidgetInputSizeController::~WidgetInputSizeController()
+{
+    disconnect(QApplication::inputMethod(),&QInputMethod::keyboardRectangleChanged,this,&WidgetInputSizeController::setVisibilityWidgetDependingOnStateKeyboard);
+}
+
+void WidgetInputSizeController::setVisibilityWidgetDependingOnStateKeyboard()
+{
+    if(QApplication::inputMethod()->isVisible() && QApplication::inputMethod()->keyboardRectangle().height() == 0.0)
+    {
+        setVisibleWidgets(true);
+
+        if(parent()!=nullptr)
+            qobject_cast<QWidget*>(parent())->setFocus();
+    }
 }
 
 void WidgetInputSizeController::addWidgetEmitsSignal(CustomLineEditBase *a_widget)
