@@ -93,7 +93,6 @@ void DapTunWindows::onWorkerStarted() {
         metric_tun = 100; // pconst: no idea, depends on machine...
     }
 
-    //TunTap::getInstance().setDNS(m_ethDeviceName, m_gw); // pconst: not yet sure whether it's totally useless...
     TunTap::getInstance().setDNS(TunTap::getInstance().getTunTapAdapterIndex(), m_gw);
     dhcpEnabled = TunTap::getInstance().dhcpEnabled(TunTap::getInstance().getDefaultAdapterIndex());
     if (dhcpEnabled) {
@@ -103,14 +102,9 @@ void DapTunWindows::onWorkerStarted() {
             exec_silent("ipconfig /registerdns");
         }
     }
-    //TunTap::getInstance().defaultRouteDelete();
-    //TunTap::getInstance().makeRoute(TunTap::ETH, "0.0.0.0",         m_defaultGwOld, metric_eth, "0.0.0.0"   );
     TunTap::getInstance().deleteRoutesByIfIndex(TunTap::getInstance().getTunTapAdapterIndex());
-    //TunTap::getInstance().defaultRouteDelete();
-    //TunTap::getInstance().deleteRoutesByGw("0.0.0.0");
     TunTap::getInstance().makeRoute(TunTap::TUN, "0.0.0.0",         m_gw,           metric_tun, "0.0.0.0" );
-    //TunTap::getInstance().makeRoute(TunTap::TUN, "128.0.0.0",       m_gw,           metric_tun, "128.0.0.0" );
-    TunTap::getInstance().makeRoute(TunTap::ETH, upstreamResolved,  m_defaultGwOld, metric_eth              );
+    TunTap::getInstance().makeRoute(TunTap::ETH, upstreamResolved,  m_defaultGwOld, metric_eth);
     TunTap::getInstance().enableDefaultRoutes(TunTap::getInstance().getDefaultAdapterIndex(), false);
 
     qInfo() << "Flushing DNS cache...";
