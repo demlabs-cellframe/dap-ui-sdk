@@ -72,7 +72,7 @@
       </item>
       <item>
        <widget class="QWidget" name="wgtButtons" native="true">
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <layout class="QHBoxLayout" name="ltButtons">
          <property name="spacing">
           <number>0</number>
          </property>
