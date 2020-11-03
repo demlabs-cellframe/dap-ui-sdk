@@ -27,14 +27,8 @@ DapTunWorkerMac::DapTunWorkerMac(DapTunAbstract *a_tun)
  */
 void DapTunWorkerMac::loop()
 {
-    const size_t DAP_IP_MTU = 0xffff;
-
-    quint8 *tmpBuf;
-    size_t tmpBufSize ;
-
-    tmpBuf = (quint8 *) calloc(1,100000);
-    tmpBufSize = 0;
-    qDebug() << "[DapTunWorkerMac] loop() start with MTU = "<<100000;
+    size_t l_bufSize = 0;
+    qDebug() << "[DapTunWorkerMac] loop() start with MTU = " << DAP_IP_MTU;
 
     fd_set fds_read, fds_read_active;
     fd_set fds_write, fds_write_active;
@@ -62,7 +56,7 @@ void DapTunWorkerMac::loop()
         if(ret > 0) {
             if (FD_ISSET (tunSocket(), &fds_read_active)){
                // qDebug() << "Tun socket is ready for read() ";
-                int readRet = ::read(tunSocket(), tmpBuf + tmpBufSize,DAP_IP_MTU-tmpBufSize);
+                int readRet = ::read(tunSocket(), m_tunBuf + l_bufSize, DAP_IP_MTU - l_bufSize);
 
                 // qDebug() << "Read "<< readRet<<" bytes";
                 if (readRet < 0) {
@@ -71,12 +65,12 @@ void DapTunWorkerMac::loop()
                     qDebug() << QString("read() returned %1 (%2)").arg(readRet).arg(::strerror(errno));
                     break;
                 }
-                tmpBufSize += readRet;
+                l_bufSize += readRet;
 
-                if (tmpBufSize > (int)sizeof(struct ip)) {
-                    emit bytesWrite(tmpBufSize);
-                    procDataFromTun(tmpBuf,tmpBufSize); // Pack data with SF headers and emit it out to DapStreamer
-                    tmpBufSize = 0;
+                if (l_bufSize > (int)sizeof(struct ip)) {
+                    emit bytesWrite(l_bufSize);
+                    procDataFromTun(m_tunBuf, l_bufSize); // Pack data with SF headers and emit it out to DapStreamer
+                    l_bufSize = 0;
                 }
 
             }else if( (pktOut) && (FD_ISSET (tunSocket(), &fds_write_active))){ // Event to Tun socket
@@ -116,7 +110,5 @@ void DapTunWorkerMac::loop()
     }while(1);
 
     qDebug() << "[DapTunWorkerMac] Listen thread finished!";
-    ::free(tmpBuf);
-
     //emit loopStopped();
 }

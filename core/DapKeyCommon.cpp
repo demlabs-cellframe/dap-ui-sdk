@@ -20,9 +20,7 @@ DapKey::DapKey(dap_enc_key_type_t a_type, const QByteArray &a_kexBuf, const QByt
 }
 
 DapKey::DapKey(dap_enc_key_t *a_key) {
-    dap_enc_key_serealize_t* tmp = dap_enc_key_serealize(a_key);
-    m_key = dap_enc_key_deserealize(tmp, sizeof(dap_enc_key_serealize_t));
-    DAP_DEL_Z(tmp)
+    m_key = dap_enc_key_dup(a_key);
 }
 
 DapKey::~DapKey() {

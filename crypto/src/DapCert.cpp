@@ -42,19 +42,19 @@ using namespace Dap::Crypto;
  */
 Cert * Cert::generate(const QString& a_name, KeySignType a_type)
 {
+    dap_enc_init();
     Cert * ret = new Cert();
     ret->m_cert = dap_cert_generate_mem(a_name.toLatin1().constData() ,
                                                    KeySign::typeToEncType(a_type) );
-    ret->m_key = new Key(ret->m_cert->enc_key);
     return ret;
 }
 
 Cert * Cert::generate(const QString& a_name, const QString& a_seed, KeySignType a_type)
 {
+    dap_enc_init();
     Cert * ret = new Cert();
     ret->m_cert = dap_cert_generate_mem_with_seed(a_name.toLatin1().constData() ,
                                                    KeySign::typeToEncType(a_type), qPrintable(a_seed), a_seed.length() );
-    ret->m_key = new Key(ret->m_cert->enc_key);
     return ret;
 }
 
@@ -73,7 +73,6 @@ Cert* Cert::load(const QString& a_filePath )
         }else {
             Cert * ret = new Cert();
             ret->m_cert = l_cert;
-            ret->m_key = new Key(ret->m_cert->enc_key);
             return ret;
         }
     }else
@@ -108,7 +107,6 @@ Cert* Cert::load(const QByteArray& a_certData)
         }else{
             Cert * ret = new Cert();
             ret->m_cert = l_cert;
-            ret->m_key = new Key(ret->m_cert->enc_key);
             return ret;
         }
     }else
@@ -121,8 +119,10 @@ Cert* Cert::load(const QByteArray& a_certData)
  */
 Cert::~Cert()
 {
-    if ( m_cert != nullptr )
+    if ( m_cert != nullptr ) {
         dap_cert_delete( m_cert );
+        m_cert = nullptr;
+    }
 }
 
 /**
@@ -133,8 +133,9 @@ Cert::~Cert()
 void Cert::sign(const QByteArray & a_data, QByteArray & a_output)
 {
     dap_sign_t * sign = dap_cert_sign( m_cert, a_data.constData(), static_cast<size_t>(a_data.size()), 0 );
+    qInfo() << "4554 pkey_size " << sign->header.sign_pkey_size << " sign_size " << sign->header.sign_size << "and total: " << dap_sign_get_size(sign);
     a_output.append(  QByteArray( reinterpret_cast<char*>(sign), static_cast<int>(dap_sign_get_size( sign )) ));
-    DAP_DELETE (sign);
+    DAP_DEL_Z(sign)
 }
 
 /**
@@ -153,62 +154,73 @@ bool Cert::compareWithSign(const QByteArray & a_data)
  */
 QString Cert::exportPKeyBase64()
 {
-    if( m_cert && m_cert->enc_key  ){
-        size_t buflen = 0;
-        uint8_t * buf = dap_enc_key_serealize_pub_key( *m_key,&buflen);
-        if ( buf ){
-            char * buf64 = DAP_NEW_Z_SIZE(char, buflen*2+6);
-            size_t buf64len = dap_enc_base64_encode(buf,buflen, buf64,DAP_ENC_DATA_TYPE_B64_URLSAFE );
-            QString ret = QString::fromLatin1( buf64, static_cast<int>(buf64len));
-            DAP_DELETE(buf64);
-            DAP_DELETE(buf);
-            return ret;
-        }
+    size_t buflen = 0;
+    uint8_t * buf = dap_enc_key_serealize_pub_key(m_cert->enc_key, &buflen);
+    if (!buf) {
+        qWarning() << "Empty hash!";
+        return QString();
     }
-    return QString();
+    char * buf64 = DAP_NEW_Z_SIZE(char, buflen * 2 + 6);
+    size_t buf64len = dap_enc_base64_encode(buf, buflen, buf64, DAP_ENC_DATA_TYPE_B64_URLSAFE);
+    QString ret = QString::fromLatin1(buf64, static_cast<int>(buf64len));
+    DAP_DELETE(buf64);
+    DAP_DELETE(buf);
+    return ret;
 }
 
-bool Cert::exportPKeyToFile(const QString &a_path) {
+int Cert::exportPKeyToFile(const QString &a_path) {
+    int res = -1;
     FILE *l_file = fopen(qPrintable(a_path), "wb");
-    if (l_file) {
-        size_t buflen = 0;
-        uint8_t *buf = dap_enc_key_serealize_pub_key(*m_key, &buflen);
-        if (buf) {
-            if (size_t l_ret = fwrite(buf, 1, buflen, l_file) != buflen) {
-                qCritical() << "Error occured on pkey export: " << l_ret << " != " << buflen;
-                DAP_DELETE(buf);
-                fclose(l_file);
-                return false;
-            }
-            DAP_DELETE(buf);
-            fclose(l_file);
-            return true;
-        }
+    if (!l_file) {
+        return 1;
     }
-    qCritical() << "Couldn't export pkey";
-    return false;
+    size_t buflen = 0;
+    uint8_t *buf = dap_enc_key_serealize_pub_key(m_cert->enc_key, &buflen);
+    if (!buf) {
+        return 2;
+    }
+
+    if (size_t l_ret = fwrite(buf, 1, buflen, l_file) == buflen) {
+        res = 0;
+        fflush(l_file);
+    }
+    fclose(l_file);
+    DAP_DELETE(buf);
+    return res;
 }
 
-bool Cert::importPKeyFromFile(const QString &a_path) {
+QString Cert::pkeyHash() {
+    dap_chain_hash_fast_t l_hash_cert_pkey;
+    dap_hash_fast(m_cert->enc_key->pub_key_data, m_cert->enc_key->pub_key_data_size, &l_hash_cert_pkey);
+    char *l_cert_pkey_hash_str = dap_chain_hash_fast_to_str_new(&l_hash_cert_pkey);
+    QString ret = QString::fromLatin1(l_cert_pkey_hash_str);
+    DAP_DEL_Z(l_cert_pkey_hash_str)
+    return ret;
+}
+
+int Cert::importPKeyFromFile(const QString &a_path) {
     FILE *l_file = fopen(qPrintable(a_path), "rb");
-    if (l_file) {
-        fseek(l_file, 0L, SEEK_END);
-        long l_len = ftell(l_file);
-        fseek(l_file, 0L, SEEK_SET);
-        uint8_t buf[l_len];
-        fread(buf, 1, l_len, l_file);
-        int l_err = dap_enc_key_deserealize_pub_key(*m_key, buf, l_len);
-        if (l_err != 0) {
-            qCritical() << "Error occured on deserialization, code " << l_err;
-            fclose(l_file);
-            return false;
-        }
-    } else {
-        qInfo() << "No pkey found";
-        return false;
+    if (!l_file) {
+        return 1;
     }
-    qInfo() << "Pkey successfully imported";
-    return true;
+    fseek(l_file, 0L, SEEK_END);
+    long l_len = ftell(l_file);
+    fseek(l_file, 0L, SEEK_SET);
+    uint8_t buf[l_len];
+    fread(buf, 1, (size_t)l_len, l_file);
+    fclose(l_file);
+
+    dap_enc_key_t *l_temp =  dap_enc_key_new(m_cert->enc_key->type);
+    if (dap_enc_key_deserealize_pub_key(l_temp, buf, (size_t)l_len) != 0) {
+        dap_enc_key_delete(l_temp);
+        return 2;
+    }
+    dap_enc_key_delete(l_temp);
+    return dap_enc_key_deserealize_pub_key(key(), buf, (size_t)l_len);
+}
+
+dap_enc_key_t* Cert::key() {
+    return m_cert->enc_key;
 }
 
 QString Cert::storagePath()

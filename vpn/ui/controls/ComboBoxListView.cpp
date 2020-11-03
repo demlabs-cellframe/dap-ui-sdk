@@ -8,7 +8,12 @@ ComboBoxListView::ComboBoxListView(QWidget *a_parent /*= nullptr*/)
 {
 #ifdef ANDROID
     this->setFocusPolicy(Qt::NoFocus);
-    QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
+    QScroller* scroller = QScroller::scroller(this);
+    QScrollerProperties sp;
+    sp.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy, QScrollerProperties::OvershootAlwaysOff);
+    scroller->setScrollerProperties(sp);
+    scroller->grabGesture(this, QScroller::LeftMouseButtonGesture);
+    this->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 #endif
     this->setWidgetDelegateFactory(&CustomButtonDelegate::create); // Add creating item widgets

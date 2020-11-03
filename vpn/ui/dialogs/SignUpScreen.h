@@ -102,8 +102,6 @@ private:
     PasswordLineEdit        *m_edtRptPassword = nullptr;
     QPushButton             *m_btnSignUp = nullptr;
 
-    QNetworkAccessManager *m_mgr = new QNetworkAccessManager(this);
-
     QString m_email;
     QString m_password;
     QString m_repeat_password;

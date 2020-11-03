@@ -29,6 +29,7 @@ Key::~Key()
 {
     if ( m_key )
         dap_enc_key_delete( m_key );
+    m_key = nullptr;
 }
 
 Key::Key(const QByteArray& a_keyPrivate)
