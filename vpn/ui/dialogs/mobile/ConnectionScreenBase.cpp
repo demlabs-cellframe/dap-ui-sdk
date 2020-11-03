@@ -51,10 +51,12 @@ void ConnectionScreenBase::showMessageAboutConnectionProblem(bool a_virtualNetwo
         if(!a_virtualNetworkState)
         {
             m_ui->lblStatusMessage->setText(tr("No connection"));
+            Utils::setPropertyAndUpdateStyle(m_ui->btnDisconnect, Properties::CONNECTED, false);
         }
         else
         {
             m_ui->lblStatusMessage->setText(this->statusText());
+            Utils::setPropertyAndUpdateStyle(m_ui->btnDisconnect, Properties::CONNECTED, true);
         }
     }
 }
