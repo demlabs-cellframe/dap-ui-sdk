@@ -122,9 +122,9 @@ void DapStreamer::streamOpen(const QString& subUrl, const QString& query)
 
 void DapStreamer::streamClose()
 {
-    qDebug() <<"[SC] close the stream";
     emit streamDisconnecting();
     if(m_streamSocket->isOpen()){
+        qDebug() <<"[SC] close the stream";
         m_streamSocket->close();
     }
     emit streamClosed();

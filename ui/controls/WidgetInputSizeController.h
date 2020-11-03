@@ -15,7 +15,7 @@ class WidgetInputSizeController : public QObject
     Q_OBJECT
 public:
     WidgetInputSizeController(QObject *a_parent);
-
+    ~WidgetInputSizeController();
     /// Adds widgets that should disappear/appear.
     void addDisappearingWidget(QWidget *a_widget);
 
@@ -28,6 +28,7 @@ private:
     QList<QWidget*> m_disappearingWidget;
 private slots:
     void setVisibleWidgets(bool a_visible);
+    void setVisibilityWidgetDependingOnStateKeyboard();
 };
 
 #endif // WIDGETINPUTSIZECONTROLLER_H
