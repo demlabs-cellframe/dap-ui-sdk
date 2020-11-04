@@ -26,7 +26,7 @@ CustomMessageBox::~CustomMessageBox()
 
 }
 
-void CustomMessageBox::setOrderAlternationButtons(Qt::LayoutDirection a_direction)
+void CustomMessageBox::setButtonsLayoutDirection(Qt::LayoutDirection a_direction)
 {
     m_ui->ltButtons->setDirection(Utils::toQBoxLayoutDirection(a_direction));
 }

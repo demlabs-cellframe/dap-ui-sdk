@@ -12,7 +12,7 @@ class CustomMessageBox : public CustomPopup
 {
     Q_OBJECT
 
-    Q_PROPERTY(Qt::LayoutDirection sequenceButtons WRITE setOrderAlternationButtons DESIGNABLE true)
+    Q_PROPERTY(Qt::LayoutDirection buttonsLayoutDirection WRITE setButtonsLayoutDirection DESIGNABLE true)
 
 public:
     CustomMessageBox(QWidget* a_parent=nullptr);
@@ -26,7 +26,7 @@ public:
     void setEscapeButtonText(const QString&a_escapeButtonText);
     void setText(const QString&a_text);
     void setTitleText(const QString&a_title);
-    void setOrderAlternationButtons(Qt::LayoutDirection a_direction);
+    void setButtonsLayoutDirection(Qt::LayoutDirection a_direction);
 
     virtual void doDefaultAction();
     virtual void doEscapeAction();
