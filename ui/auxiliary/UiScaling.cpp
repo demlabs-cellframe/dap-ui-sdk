@@ -49,10 +49,7 @@ inline double UiScaling::pointsToInches(float a_pointsValue)
 
 float UiScaling::getNativDPI(){
 
-    int hSize       = 0;
-    int wSize       = 0;
-    int hResolution = 0;
-    int wResolution = 0;
+    int hSize = 0, wSize = 0, hResolution = 0, wResolution = 0;
 
     if (QFile().exists(DapSystem::dirAppFiles(DAP_BRAND) + "/ScreenSettings.ini")){
         qInfo() << "UiScaling - Manual setting of screen characteristics selected";
