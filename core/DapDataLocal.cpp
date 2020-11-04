@@ -188,7 +188,14 @@ void DapDataLocal::rotateCDBList() {
 QSettings* DapDataLocal::settings()
 {
 #ifdef Q_OS_ANDROID
-    static QSettings s_settings(DapLogger::defaultLogPath(DAP_BRAND).append("/settings.ini"), QSettings::IniFormat);
+    //to transfer the settings file from the logs folder / delete in the future
+    if (QFile().exists(DapLogger::defaultLogPath(DAP_BRAND).append("/settings.ini"))){
+        QFile::copy(DapLogger::defaultLogPath(DAP_BRAND) + "/settings.ini", DapSystem::dirAppFiles(DAP_BRAND) + "/settings.ini");
+        if (QFile().exists(DapSystem::dirAppFiles(DAP_BRAND) + "/settings.ini")){
+            QFile::remove(DapLogger::defaultLogPath(DAP_BRAND) + "/settings.ini");
+        }
+    }
+    static QSettings s_settings(DapSystem::dirAppFiles(DAP_BRAND) + "/settings.ini", QSettings::IniFormat);
 #else
     static QSettings s_settings;
 #endif

@@ -10,6 +10,7 @@
 #include <QTimer>
 #include <QFileSystemWatcher>
 
+#include "DapSystem.h"
 #include "dap_common.h"
 #include "dap_file_utils.h"
 

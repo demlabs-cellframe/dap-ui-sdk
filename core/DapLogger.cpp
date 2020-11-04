@@ -68,16 +68,7 @@ void DapLogger::createChangerLogFiles()
 
 QString DapLogger::defaultLogPath(const QString a_brand)
 {
-#if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
-    return QString("/opt/%1/log").arg(a_brand).toLower();
-#elif defined(Q_OS_MACOS)
-    return QString("/tmp/%1/log").arg(a_brand);
-#elif defined (Q_OS_WIN)
-    return QString("%1/%2/log").arg(regWGetUsrPath()).arg(DAP_BRAND);
-#elif defined Q_OS_ANDROID
-    return QString("/sdcard/%1/log").arg(a_brand);
-#endif
-    return {};
+    return QString("%1/log").arg(DapSystem::dirAppFiles(a_brand));
 }
 
 QString DapLogger::currentLogFileName(const QString a_brand, const QString a_appType)

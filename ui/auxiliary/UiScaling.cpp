@@ -54,9 +54,9 @@ float UiScaling::getNativDPI(){
     int hResolution = 0;
     int wResolution = 0;
 
-    if (QFile().exists(DapLogger::defaultLogPath(DAP_BRAND) + "/ScreenSettings.ini")){
+    if (QFile().exists(DapSystem::dirAppFiles(DAP_BRAND) + "/ScreenSettings.ini")){
         qInfo() << "UiScaling - Manual setting of screen characteristics selected";
-        QSettings settings(DapLogger::defaultLogPath(DAP_BRAND) + "/ScreenSettings.ini", QSettings::IniFormat);
+        QSettings settings(DapSystem::dirAppFiles(DAP_BRAND) + "/ScreenSettings.ini", QSettings::IniFormat);
         hSize       = settings.value("hSize", 0).toInt();
         wSize       = settings.value("wSize", 0).toInt();
         hResolution = settings.value("hResolution", 0).toInt();
