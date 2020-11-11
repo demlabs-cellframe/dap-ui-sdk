@@ -32,16 +32,18 @@ void SignInWithTariffLink::appendTariff(const QList<TariffItem> &a_tariffList, s
 {
     for (const TariffItem& currentTarriff: a_tariffList)
         m_ui->cbbTariff->addItem(currentTarriff.URL, QVariant::fromValue(currentTarriff));
-    if (func == Q_NULLPTR) {
-        connect(m_ui->cbbTariff, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated), [=](const QString &a_url){
-            QDesktopServices::openUrl(QUrl(a_url));
-        });
-        qDebug()<<"func is NULLPTR";
-    }
-    else {
-        qDebug()<<"func is NOT a NULLPTR";
-        connect(m_ui->cbbTariff, static_cast<void(QComboBox::*)(int)>(&QComboBox::activated), func);
-    }
+
+    connect(m_ui->cbbTariff, static_cast<void(QComboBox::*)(int)>(&QComboBox::activated), func);
+}
+
+void SignInWithTariffLink::appendTariff(const QList<TariffItem> &a_tariffList)
+{
+    for (const TariffItem& currentTarriff: a_tariffList)
+        m_ui->cbbTariff->addItem(currentTarriff.URL, QVariant::fromValue(currentTarriff));
+
+    connect(m_ui->cbbTariff, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated), [=](const QString &a_url){
+        QDesktopServices::openUrl(QUrl(a_url));
+    });
 }
 
 QList<CustomPopup *> SignInWithTariffLink::customPopups()

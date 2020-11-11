@@ -12,7 +12,10 @@ class SignInWithTariffLink: public SignInScreenSerialNumberBase
 public:
     SignInWithTariffLink(QWidget *a_parent = nullptr);
 
-    void appendTariff(const QList<TariffItem> &a_tariffList, std::function<void (int)> func = Q_NULLPTR);
+    // установит тарифы и соединит сигнал выбора тарифа так, чтобы открывать URL
+    void appendTariff(const QList<TariffItem> &a_tariffList);
+    // установит тарифы но сигнал выбора тарифа перенаправил в func (для in-app purchasing)
+    void appendTariff(const QList<TariffItem> &a_tariffList, std::function<void (int)> func);
 protected:
     virtual void initVariantUi(QWidget *a_widget) override;
 
