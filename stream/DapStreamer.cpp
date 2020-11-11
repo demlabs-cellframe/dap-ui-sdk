@@ -75,27 +75,35 @@ void DapStreamer::writeChannelPacket(DapChannelPacketHdr *a_pktHdr, void *data, 
     }
     Q_UNUSED(dest_addr)
 
-    a_pktHdr->seq_id = m_pktOutLastSeqID++;
-
-    size_t dOutSize = a_pktHdr->size + sizeof(DapChannelPacketHdr);
-
-    memcpy(m_writeDataOut, a_pktHdr, sizeof(DapChannelPacketHdr));
-    memcpy(m_writeDataOut + sizeof(DapChannelPacketHdr), data, a_pktHdr->size);
-
-    QByteArray dOutEnc, dOutRaw(m_writeDataOut, dOutSize);
-
-    m_session->getDapCrypt()->encode(dOutRaw, dOutEnc, KeyRoleStream);
-
-    size_t pktOutDataSize = sizeof(DapPacketHdr) + dOutEnc.size();
     DapPacketHdr* pktOut = (DapPacketHdr* ) m_writeEncDataOut;
-    pktOut->type = (a_pktHdr->type == 0x11 ? 0x11 : DATA_PACKET);
+    size_t pktOutDataSize = sizeof(DapPacketHdr);
 
+    if (a_pktHdr->type == CH_KEEPALIVE_PKT) {
+
+        pktOut->type = KEEPALIVE_PACKET;
+
+    } else {
+
+        pktOut->type = DATA_PACKET;
+
+        a_pktHdr->seq_id = m_pktOutLastSeqID++;
+
+        size_t dOutSize = a_pktHdr->size + sizeof(DapChannelPacketHdr);
+
+        memcpy(m_writeDataOut, a_pktHdr, sizeof(DapChannelPacketHdr));
+        memcpy(m_writeDataOut + sizeof(DapChannelPacketHdr), data, a_pktHdr->size);
+
+        QByteArray dOutEnc, dOutRaw(m_writeDataOut, dOutSize);
+
+        m_session->getDapCrypt()->encode(dOutRaw, dOutEnc, KeyRoleStream);
+
+        pktOutDataSize += dOutEnc.size();
+
+        pktOut->size = dOutEnc.size();
+
+        memcpy(m_writeEncDataOut + sizeof(DapPacketHdr), dOutEnc, dOutEnc.size());
+    }
     memcpy(pktOut->sig, daSig, sizeof(pktOut->sig));
-
-    pktOut->size = dOutEnc.size();
-
-    memcpy(m_writeEncDataOut + sizeof(DapPacketHdr), dOutEnc, dOutEnc.size());
-
     writeStreamRaw(m_writeEncDataOut, pktOutDataSize);
 
     ::free (data);
