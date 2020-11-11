@@ -73,6 +73,7 @@ android {
         $$PWD/../../../os/android/src/com/demlabs/dapchain/MainActivity.java \
         $$PWD/../../../os/android/src/com/demlabs/dapchain/DapChainVpnService.java \
         $$PWD/../../../os/android/src/com/demlabs/dapchain/DapChainVpnServiceNative.java \
+        $$PWD/../../../os/android/src/com/demlabs/dapchain/InAppShop.java \
         $$PWD/../../../os/android/gradlew.bat
 }
 
