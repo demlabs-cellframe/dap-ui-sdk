@@ -81,6 +81,7 @@ void DapStreamer::writeChannelPacket(DapChannelPacketHdr *a_pktHdr, void *data, 
     if (a_pktHdr->type == CH_KEEPALIVE_PKT) {
 
         pktOut->type = KEEPALIVE_PACKET;
+        pktOut->size = 0;
 
     } else {
 
@@ -104,6 +105,7 @@ void DapStreamer::writeChannelPacket(DapChannelPacketHdr *a_pktHdr, void *data, 
         memcpy(m_writeEncDataOut + sizeof(DapPacketHdr), dOutEnc, dOutEnc.size());
     }
     memcpy(pktOut->sig, daSig, sizeof(pktOut->sig));
+
     writeStreamRaw(m_writeEncDataOut, pktOutDataSize);
 
     ::free (data);
