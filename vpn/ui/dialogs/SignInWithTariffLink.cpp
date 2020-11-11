@@ -25,13 +25,20 @@ void SignInWithTariffLink::initVariantUi(QWidget *a_widget)
         m_ui->wgtFrameBottom->hide();
     });
 
+    connect(m_ui->cbbTariff->buttonControll(),&QPushButton::clicked,this,&SignInWithTariffLink::tarriffScreenPopupOpened);
+
     SignInScreenSerialNumberBase::initVariantUi(a_widget);
+}
+
+void SignInWithTariffLink::appendTariff(const QList<TariffItem> &a_tariffList)
+{
+    for (const TariffItem& currentTarriff: a_tariffList)
+        m_ui->cbbTariff->addItem(currentTarriff.URL, QVariant::fromValue(currentTarriff));
 }
 
 void SignInWithTariffLink::appendTariff(const QList<TariffItem> &a_tariffList, std::function<void (int)> func)
 {
-    for (const TariffItem& currentTarriff: a_tariffList)
-        m_ui->cbbTariff->addItem(currentTarriff.URL, QVariant::fromValue(currentTarriff));
+    appendTariff(a_tariffList);
     if (func == Q_NULLPTR) {
         connect(m_ui->cbbTariff, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated), [=](const QString &a_url){
             QDesktopServices::openUrl(QUrl(a_url));

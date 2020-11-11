@@ -27,6 +27,12 @@ QLocale::Language LanguagesModel::language(int a_index) const
     return m_languages[a_index];
 }
 
+bool LanguagesModel::isExist(QLocale::Language a_language) const
+{
+    if (qFind(m_languages.begin(),m_languages.end(), a_language) == m_languages.end()) return false;
+    else return true;
+}
+
 int LanguagesModel::rowCount(const QModelIndex &a_parent) const
 {
     Q_UNUSED(a_parent)

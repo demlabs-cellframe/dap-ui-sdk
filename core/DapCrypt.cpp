@@ -43,9 +43,7 @@ DapCrypt::DapCrypt(const DapCrypt &rhs) : keyStream(Q_NULLPTR) {
         keySession = nullptr;
     }
     keySession = new DapKeyMsrln;
-    dap_enc_key_serealize_t* temp = dap_enc_key_serealize(rhs.keySession->_key);
-    keySession->_key = dap_enc_key_deserealize(temp, sizeof (dap_enc_key_serealize_t));
-    DAP_DEL_Z(temp)
+    keySession->_key = dap_enc_key_dup(rhs.keySession->_key);
     keySession->_sharedSessionKey = new DapKey(rhs.keySession->_sharedSessionKey->m_key);
 }
 

@@ -30,11 +30,7 @@ DapTunWorkerUnix::DapTunWorkerUnix(DapTunAbstract *a_tun)
  */
 void DapTunWorkerUnix::loop()
 {
-    const size_t DAP_IP_MTU = 6000;
-
-    quint8 tmpBuf[DAP_IP_MTU] = {'\0'};
-    size_t tmpBufSize ;
-    tmpBufSize = 0;
+    size_t l_bufSize = 0;
     qDebug() << "[SapStreamChSF] listenTunnelThread() start with MTU = " << DAP_IP_MTU;
 
     fd_set fds_read, fds_read_active;
@@ -63,7 +59,7 @@ void DapTunWorkerUnix::loop()
         if(ret > 0) {
             if (FD_ISSET (tunSocket(), &fds_read_active)){
                // qDebug() << "Tun socket is ready for read() ";
-                int readRet = ::read(tunSocket(), tmpBuf + tmpBufSize, DAP_IP_MTU - tmpBufSize);
+                int readRet = ::read(tunSocket(), m_tunBuf + l_bufSize, DAP_IP_MTU - l_bufSize);
 
                 // qDebug() << "Read "<< readRet<<" bytes";
                 if (readRet < 0) {
@@ -72,12 +68,12 @@ void DapTunWorkerUnix::loop()
                     qDebug() << QString("read() returned %1 (%2)").arg(readRet).arg(::strerror(errno));
                     break;
                 }
-                tmpBufSize += readRet;
+                l_bufSize += readRet;
 
-                if (tmpBufSize > (int)sizeof(struct ip)) {
-                    emit bytesWrite(tmpBufSize);
-                    procDataFromTun(tmpBuf,tmpBufSize); // Pack data with SF headers and emit it out to DapStreamer
-                    tmpBufSize = 0;
+                if (l_bufSize > (int)sizeof(struct ip)) {
+                    emit bytesWrite(l_bufSize);
+                    procDataFromTun(m_tunBuf, l_bufSize); // Pack data with SF headers and emit it out to DapStreamer
+                    l_bufSize = 0;
                 }
 
             }else if( (pktOut) && (FD_ISSET (tunSocket(), &fds_write_active))){ // Event to Tun socket
