@@ -5,7 +5,8 @@
 #include <QString>
 #include <QMap>
 
-#include <QtPurchasing>
+#include <QtAndroidExtras/qandroidjniobject.h>
+#include <QtAndroidExtras/qandroidactivityresultreceiver.h>
 
 class DapShopManager : public QObject
 {
@@ -27,18 +28,16 @@ signals:
     void errorMessage(const QString& meg);
 
 private slots:
-    void handleError(QInAppProduct::ProductType productType, const QString &identifier);
-    void handleTransaction(QInAppTransaction*);
-    void markProductAvailable(QInAppProduct*);
+    static void purchaseFailed(const QString &error);
+    static void purchaseSucceeded(QString sku, QString token);
 
 private:
     explicit DapShopManager(QObject *parent = nullptr);
     void setupConnections();
     void changeProductState(const QString &productId, ProductState state);
 
-    QInAppStore *m_store;
+    QAndroidJniObject m_store;
     QMap<int, ProductState> m_products;
-    QString m_log;
 };
 
 #endif // DAPSHOPMANAGER_H
