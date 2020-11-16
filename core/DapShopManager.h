@@ -23,13 +23,16 @@ public:
 
 signals:
     //@brief Signal that the product status has changed
-    // This signal is emitted when the App Store is initializing and after the purchase is complete.
+    // This signal is emitted after the purchase is complete.
     void productStateChanged(Products product, ProductState state);
     void errorMessage(const QString& meg);
+    void requestPurchaseVerify(const QString& productId, const QString& purchaseToken);
 
 private slots:
-    static void purchaseFailed(const QString &error);
-    static void purchaseSucceeded(QString sku, QString token);
+    static void reportError(const QString &error);
+    static void reportPurchase(QString sku, QString token);
+
+    void purchaseVerified(const QString& key);
 
 private:
     explicit DapShopManager(QObject *parent = nullptr);

@@ -47,6 +47,7 @@ const QString DapSession::URL_TX            ("/tx");
 const QString DapSession::URL_BUG_REPORT    ("/bugreport");
 const QString DapSession::URL_NEWS          ("/news");
 const QString DapSession::URL_SIGN_UP       ("/wp-json/dapvpn/v1/register/");
+const QString DapSession::URL_VERIFY_PURCHASE("cbd.klvn.io/verify_purchase");
 
 DapSession::DapSession(QObject * obj, int requestTimeout) :
     QObject(obj), m_requestTimeout(requestTimeout)
@@ -693,4 +694,27 @@ QNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const QBy
         return Q_NULLPTR;
     }
     return m_netAuthorizeReply;
+}
+
+void DapSession::requestPurchaseVerify(const QJsonObject *params)
+{
+    QJsonDocument jdoc(*params);
+    QNetworkReply * netReply =  DapConnectClient::instance()->request_POST("cbd.klvn.io", 443, "/verify_purchase", jdoc.toJson());
+    connect(netReply, &QNetworkReply::finished, this, [=]() {
+        if(netReply && (netReply->error() != QNetworkReply::NetworkError::NoError)) {
+            qWarning() << "Error on pulling the purchase verify";
+            return;
+        }
+        qInfo() << "purchase verify request replied";
+        QByteArray arrData(netReply->readAll());
+        QJsonParseError jsonErr;
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(arrData, &jsonErr);
+
+        if(!jsonDoc.isNull()) {
+            emit purchaseResponseReceived(jsonDoc);
+        } else {
+            qWarning() << "Purchase responce is null" << arrData;
+            return;
+        }
+    });
 }

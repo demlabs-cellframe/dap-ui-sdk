@@ -34,15 +34,16 @@ DapShopManager::DapShopManager(QObject *parent) : QObject(parent)
     }
 
     JNINativeMethod methods[] {
-        {"purchaseFailed", "(JLjava/lang/String;)V", reinterpret_cast<void *>(DapShopManager::purchaseFailed)},
-        {"purchaseSucceeded", "(I)V", reinterpret_cast<void *>(DapShopManager::purchaseSucceeded)}
+        {"purchaseFailed", "(JLjava/lang/String;)V", reinterpret_cast<void *>(DapShopManager::reportError)},
+        {"purchaseSucceeded", "(JLjava/lang/String;Ljava/lang/String;)V", reinterpret_cast<void *>(DapShopManager::reportPurchase)}
     };
     QAndroidJniEnvironment env;
     jclass objectClass = env->GetObjectClass(m_store.object<jobject>());
-        env->RegisterNatives(objectClass,
-                             methods,
-                             sizeof(methods) / sizeof(methods[0]));
-        env->DeleteLocalRef(objectClass);
+    env->RegisterNatives(objectClass, methods, sizeof(methods) / sizeof(methods[0]));
+    env->DeleteLocalRef(objectClass);
+
+    m_store.callObjectMethod("initialize", "(I)V");
+
 }
 
 DapShopManager *DapShopManager::instance()
@@ -92,16 +93,21 @@ DapShopManager::ProductState DapShopManager::getProdustState(DapShopManager::Pro
     return state;
 }
 
-void DapShopManager::purchaseFailed(const QString &error)
+void DapShopManager::reportError(const QString &error)
 {
     QString s = QString("[IN-APP STORE] Error: ").append(error);
     qDebug() << s;
     emit DapShopManager::instance()->errorMessage(s);
 }
 
-void DapShopManager::purchaseSucceeded(QString sku, QString token)
+void DapShopManager::reportPurchase(QString sku, QString token)
 {
-    // post json with sku and token
+    emit DapShopManager::instance()->requestPurchaseVerify(sku, token);
+}
+
+void DapShopManager::purchaseVerified(const QString &key)
+{
+    //TODO: Acknowledge делается на сервере, ключ нужен не здесь, а в экране SignIn, наверное, так что тут ничего делать не нужно? или?
 }
 
 void DapShopManager::changeProductState(const QString &productId, DapShopManager::ProductState state)

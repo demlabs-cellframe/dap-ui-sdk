@@ -52,6 +52,7 @@ public:
     static const QString URL_BUG_REPORT;
     static const QString URL_NEWS;
     static const QString URL_SIGN_UP;
+    static const QString URL_VERIFY_PURCHASE;
 
     DapSession(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
     ~DapSession();
@@ -100,6 +101,8 @@ public slots:
     void abortAuthorizeRequest()      { m_netAuthorizeReply->abort(); }
     void abortLogoutRequest()         { m_netLogoutReply->abort();  }
     void sendTxBackRequest(const QString &tx);
+
+    void requestPurchaseVerify(const QJsonObject *params);
 protected:
     using HttpHeaders = QVector<HttpRequestHeader>;
 
@@ -183,6 +186,7 @@ signals:
     void receivedBugReportAnswer(const QString& bugReportNumber);
     void sigSignUpAnswer(const QString& signUpAnswer);
     void sigReceivedNewsMessage(const QJsonDocument& news);
+    void purchaseResponseReceived(const QJsonDocument& responce);
 };
 
 
