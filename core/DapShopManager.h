@@ -5,8 +5,10 @@
 #include <QString>
 #include <QMap>
 
+#ifdef Q_OS_ANDROID
 #include <QtAndroidExtras/qandroidjniobject.h>
 #include <QtAndroidExtras/qandroidactivityresultreceiver.h>
+#endif
 
 class DapShopManager : public QObject
 {
@@ -20,6 +22,7 @@ public:
     static DapShopManager* instance();
     void doPurchase(Products product);
     ProductState getProdustState(Products product) const;
+    void purchaseVerified(const QString& key);
 
 signals:
     //@brief Signal that the product status has changed
@@ -32,14 +35,16 @@ private slots:
     static void reportError(const QString &error);
     static void reportPurchase(QString sku, QString token);
 
-    void purchaseVerified(const QString& key);
 
 private:
     explicit DapShopManager(QObject *parent = nullptr);
     void setupConnections();
     void changeProductState(const QString &productId, ProductState state);
 
+#ifdef Q_OS_ANDROID
     QAndroidJniObject m_store;
+#endif
+
     QMap<int, ProductState> m_products;
 };
 

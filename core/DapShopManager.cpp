@@ -1,8 +1,11 @@
 #include "DapShopManager.h"
 #include <QString>
 #include <QDebug>
+
+#ifdef Q_OS_ANDROID
 #include <QtAndroid>
 #include <QAndroidJniEnvironment>
+#endif
 
 const QString androidPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArU3LGlb29Qc715q8nC0JpNdxWHW8xVXG5qw4iiBWomw9GESeM/dEegOHFa66Hl+iGe5/zkfc/Wgchg8Ta7+fBxOvmKxSnuaAMzaTlzxUGqKYDAhCJAlUkFK578XNGNAr2uia4DcGQfAQYAjeYfZl0kS81uqXAAGlJCWUMUO4pSAJF27L12xLzCA6rIjBzFbhrJXm0P4htCdssAQDl1kv1piuhRJUWW+FCxVyjV/oJl0N/Td9wpPQn284vxWFaxU6WaHKwU8CPIGA4Ze50MjiPfCbQsiiTLUC7BxKGiIH8m4Dglig2Fgr2q9UjWGpn5qwgCfTiVVhayfCMY/tUDOdXQIDAQAB";
 
@@ -19,6 +22,7 @@ void DapShopManager::setupConnections()
 
 DapShopManager::DapShopManager(QObject *parent) : QObject(parent)
 {
+#ifdef Q_OS_ANDROID
     qDebug()<<"[IN-APP STORE] DapShopManager";
     for (int i = PRODUCT_UNDEFINED + 1; i < PRODUCT_COUNT; i++) {
         m_products[i] = STATE_AVAILABLE;
@@ -43,7 +47,7 @@ DapShopManager::DapShopManager(QObject *parent) : QObject(parent)
     env->DeleteLocalRef(objectClass);
 
     m_store.callObjectMethod("initialize", "(I)V");
-
+#endif
 }
 
 DapShopManager *DapShopManager::instance()
@@ -81,8 +85,10 @@ void DapShopManager::doPurchase(DapShopManager::Products product)
     //    emit errorMessage(m_log);
     //}
 
+#ifdef Q_OS_ANDROID
     m_store.callMethod<void>("launchBilling", "(Ljava/lang/String;)V",
                              QAndroidJniObject::fromString(m_productNames[index]).object<jstring>());
+#endif
 }
 
 DapShopManager::ProductState DapShopManager::getProdustState(DapShopManager::Products product) const

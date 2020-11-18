@@ -1,4 +1,4 @@
-QT += core network xml purchasing
+QT += core network xml
 #INCLUDEPATH += ../libdap/include ../libdap/src
 #INCLUDEPATH += ../libdap-crypto/include  ../libdap-crypto/src
 include (../quazip/quazip.pri)
@@ -51,6 +51,9 @@ INCLUDEPATH += $$PWD
 
 win32{
     QMAKE_CXXFLAGS +=  -mno-ms-bitfields
+}
+android {
+QT += androidextras
 }
 
 INCLUDEPATH += $$PWD/../quazip
