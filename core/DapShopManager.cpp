@@ -38,15 +38,15 @@ DapShopManager::DapShopManager(QObject *parent) : QObject(parent)
     }
 
     JNINativeMethod methods[] {
-        {"purchaseFailed", "(JLjava/lang/String;)V", reinterpret_cast<void *>(DapShopManager::reportError)},
-        {"purchaseSucceeded", "(JLjava/lang/String;Ljava/lang/String;)V", reinterpret_cast<void *>(DapShopManager::reportPurchase)}
+        {"reportError", "(Ljava/lang/String;)V", reinterpret_cast<void *>(DapShopManager::reportError)},
+        {"reportPurchase", "(Ljava/lang/String;Ljava/lang/String;)V", reinterpret_cast<void *>(DapShopManager::reportPurchase)}
     };
     QAndroidJniEnvironment env;
     jclass objectClass = env->GetObjectClass(m_store.object<jobject>());
     env->RegisterNatives(objectClass, methods, sizeof(methods) / sizeof(methods[0]));
     env->DeleteLocalRef(objectClass);
 
-    m_store.callObjectMethod("initialize", "(I)V");
+    m_store.callObjectMethod("initialize", "(V)V");
 #endif
 }
 
