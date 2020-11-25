@@ -29,7 +29,7 @@ DapShopManager::DapShopManager(QObject *parent) : QObject(parent)
     }
 
     m_store = QAndroidJniObject("com/demlabs/dapchain/InAppShop",
-                                "(Landroid/content/Context;J)V",
+                                "(Landroid/app/Activity;J)V",
                                 QtAndroid::androidActivity().object<jobject>(),
                                 reinterpret_cast<jlong>(this));
     if (!m_store.isValid()) {
@@ -46,7 +46,7 @@ DapShopManager::DapShopManager(QObject *parent) : QObject(parent)
     env->RegisterNatives(objectClass, methods, sizeof(methods) / sizeof(methods[0]));
     env->DeleteLocalRef(objectClass);
 
-    m_store.callObjectMethod("initialize", "(V)V");
+    m_store.callMethod<void>("initialize", "()V");
 #endif
 }
 
@@ -86,7 +86,7 @@ void DapShopManager::doPurchase(DapShopManager::Products product)
     //}
 
 #ifdef Q_OS_ANDROID
-    m_store.callMethod<void>("launchBilling", "(Ljava/lang/String;)V",
+    m_store.callMethod<jint>("launchBilling", "(Ljava/lang/String;)I",
                              QAndroidJniObject::fromString(m_productNames[index]).object<jstring>());
 #endif
 }
