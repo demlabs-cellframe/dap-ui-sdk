@@ -699,7 +699,7 @@ QNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const QBy
 void DapSession::requestPurchaseVerify(const QJsonObject *params)
 {
     QJsonDocument jdoc(*params);
-    QNetworkReply * netReply = encRequestRaw(jdoc.toJson(), "cbd.klvn.io/verify_purchase", QString(), QString());
+    QNetworkReply * netReply = encRequestRaw(jdoc.toJson(), URL_VERIFY_PURCHASE, QString(), QString());
 
     connect(netReply, &QNetworkReply::finished, this, [=]() {
         if(netReply && (netReply->error() != QNetworkReply::NetworkError::NoError)) {
