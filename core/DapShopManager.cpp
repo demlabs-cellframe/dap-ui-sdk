@@ -37,6 +37,9 @@ DapShopManager::DapShopManager(QObject *parent) : QObject(parent)
         return;
     }
 
+    //jint i = m_store.callMethod<jint>("test", "(I)I", 3);
+    //qDebug()<<"demlab: jni test: "<<i;
+
     JNINativeMethod methods[] {
         {"reportError", "(Ljava/lang/String;)V", reinterpret_cast<void *>(DapShopManager::reportError)},
         {"reportPurchase", "(Ljava/lang/String;Ljava/lang/String;)V", reinterpret_cast<void *>(DapShopManager::reportPurchase)}
@@ -113,7 +116,8 @@ void DapShopManager::reportPurchase(QString sku, QString token)
 
 void DapShopManager::purchaseVerified(const QString &key)
 {
-    //TODO: Acknowledge делается на сервере, ключ нужен не здесь, а в экране SignIn, наверное, так что тут ничего делать не нужно? или?
+    // Acknowledge (подтверждение покупки) делается на сервере
+    //TODO: тут делаем Consume (использование покупки), чтобы иметь возможность продать этот товар повторно
 }
 
 void DapShopManager::changeProductState(const QString &productId, DapShopManager::ProductState state)
