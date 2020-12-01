@@ -13,7 +13,7 @@ void DapCmdPurchase::requestVerify(const QString &packageName, const QString &pr
     obj["packageName"] = packageName;
     obj["productId"] = productId;
     obj["token"] = token;
-    //sendCmd(&obj);
+    sendCmd(&obj);
 }
 
 void DapCmdPurchase::handleResult(const QJsonObject &result)
