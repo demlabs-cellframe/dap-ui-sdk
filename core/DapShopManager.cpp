@@ -102,22 +102,20 @@ DapShopManager::ProductState DapShopManager::getProdustState(DapShopManager::Pro
     return state;
 }
 
-void DapShopManager::reportError(JNIEnv *env, jobject thiz, QAndroidJniObject error)
+void DapShopManager::reportError(JNIEnv *env, jobject thiz, jstring error)
 {
-    Q_UNUSED(env)
     Q_UNUSED(thiz)
-    QString str = error.toString();
+    QString str = env->GetStringUTFChars(error, 0);
     QString s = QString("[IN-APP STORE] Error: ").append(str);
     qDebug() << s;
     emit DapShopManager::instance()->errorMessage(s);
 }
 
-void DapShopManager::reportPurchase(JNIEnv *env, jobject thiz, QAndroidJniObject sku, QAndroidJniObject token)
+void DapShopManager::reportPurchase(JNIEnv *env, jobject thiz, jstring sku, jstring token)
 {
-    Q_UNUSED(env)
     Q_UNUSED(thiz)
-    QString strSku = sku.toString();
-    QString strToken = token.toString();
+    QString strSku = env->GetStringUTFChars(sku, 0);
+    QString strToken = env->GetStringUTFChars(token, 0);
     emit DapShopManager::instance()->requestPurchaseVerify(strSku, strToken);
 }
 

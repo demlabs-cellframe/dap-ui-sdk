@@ -33,8 +33,8 @@ signals:
 
 private slots:
 #ifdef Q_OS_ANDROID
-    static void reportError(JNIEnv *env, jobject thiz, QAndroidJniObject error);
-    static void reportPurchase(JNIEnv *env, jobject thiz, QAndroidJniObject sku, QAndroidJniObject token);
+    static void reportError(JNIEnv *env, jobject thiz, jstring error);
+    static void reportPurchase(JNIEnv *env, jobject thiz, jstring sku, jstring token);
 #endif
 
 private:
