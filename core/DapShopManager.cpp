@@ -102,22 +102,35 @@ DapShopManager::ProductState DapShopManager::getProdustState(DapShopManager::Pro
     return state;
 }
 
-void DapShopManager::reportError(const QString &error)
+void DapShopManager::reportError(JNIEnv *env, jobject thiz, QAndroidJniObject error)
 {
-    QString s = QString("[IN-APP STORE] Error: ").append(error);
+    Q_UNUSED(env)
+    Q_UNUSED(thiz)
+    QString str = error.toString();
+    QString s = QString("[IN-APP STORE] Error: ").append(str);
     qDebug() << s;
     emit DapShopManager::instance()->errorMessage(s);
 }
 
-void DapShopManager::reportPurchase(QString sku, QString token)
+void DapShopManager::reportPurchase(JNIEnv *env, jobject thiz, QAndroidJniObject sku, QAndroidJniObject token)
 {
-    emit DapShopManager::instance()->requestPurchaseVerify(sku, token);
+    Q_UNUSED(env)
+    Q_UNUSED(thiz)
+    QString strSku = sku.toString();
+    QString strToken = token.toString();
+    emit DapShopManager::instance()->requestPurchaseVerify(strSku, strToken);
 }
 
 void DapShopManager::purchaseVerified(const QString &key)
 {
     // Acknowledge (подтверждение покупки) делается на сервере
     //TODO: тут делаем Consume (использование покупки), чтобы иметь возможность продать этот товар повторно
+#ifdef Q_OS_ANDROID
+    if (!key.isNull() && !key.isEmpty()) {
+        m_store.callMethod<void>("purchaseConsume", "(Ljava/lang/String;)V",
+                                 QAndroidJniObject::fromString(key).object<jstring>());
+    }
+#endif
 }
 
 void DapShopManager::changeProductState(const QString &productId, DapShopManager::ProductState state)

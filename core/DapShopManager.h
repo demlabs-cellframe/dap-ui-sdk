@@ -29,12 +29,13 @@ signals:
     // This signal is emitted after the purchase is complete.
     void productStateChanged(Products product, ProductState state);
     void errorMessage(const QString& meg);
-    void requestPurchaseVerify(const QString& productId, const QString& purchaseToken);
+    void requestPurchaseVerify(QString productId, QString purchaseToken);
 
 private slots:
-    static void reportError(const QString &error);
-    static void reportPurchase(QString sku, QString token);
-
+#ifdef Q_OS_ANDROID
+    static void reportError(JNIEnv *env, jobject thiz, QAndroidJniObject error);
+    static void reportPurchase(JNIEnv *env, jobject thiz, QAndroidJniObject sku, QAndroidJniObject token);
+#endif
 
 private:
     explicit DapShopManager(QObject *parent = nullptr);
