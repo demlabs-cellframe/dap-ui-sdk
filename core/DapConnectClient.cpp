@@ -21,6 +21,7 @@
 
 #include "DapConnectClient.h"
 #include <QNetworkProxy>
+#include "dap_client_http.h"
 
 #define HTTP_ADDRESS_URL_TEMPLATE(ssl, host, port, url) \
     QString("https://%1:%2%3").arg(host).arg(port).arg(url)

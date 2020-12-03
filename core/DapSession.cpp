@@ -145,6 +145,7 @@ QNetworkReply* DapSession::requestServerPublicKey()
 
 void DapSession::requestDapClientHttp(const QString & urlPath, const QString & body, bool isCDB)
 {
+    qDebug() << "Dap Client HTTP Requested " << urlPath ;
     char * a_body = body.toLocal8Bit().data();
     dap_client_http_request(NULL,
                             isCDB ? m_CDBaddress.toLocal8Bit().data() : m_upstreamAddress.toLocal8Bit().data(),
@@ -163,14 +164,12 @@ void DapSession::requestDapClientHttp(const QString & urlPath, const QString & b
 
 void DapSession::responseCallback(void * a_response, size_t a_response_size, void * a_obj)
 {
-    int test = 0;
-    test = 1;
+    qDebug() << "Dap Client HTTP Request: response received, size=" << a_response_size ;
 }
 
 void DapSession::responseCallbackError(int a_err_code, void * a_obj)
 {
-    int test = 0;
-    test = 1;
+    qWarning() << "Dap Client HTTP Request: error code " << a_err_code ;
 }
 
 QNetworkReply* DapSession::encryptInitRequest()
@@ -198,7 +197,7 @@ void DapSession::sendBugReport(const QByteArray &data)
 void DapSession::sendSignUpRequest(const QString &host, const QString &email, const QString &password)
 {
     QVector<HttpRequestHeader> headers;
-    headers.append({"Content-Type", "application/x-www-form-urlencoded"});
+    headers.append(HttpRequestHeader({"Content-Type", "application/x-www-form-urlencoded"}));
     QString body = QString("email=%1&password=%2").arg(email).arg(password);
     m_netSignUpReply = requestRawToSite(host, URL_SIGN_UP, body.toUtf8(), SLOT(answerSignUp()), true, &headers);
 }

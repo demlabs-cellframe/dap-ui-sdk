@@ -67,8 +67,6 @@ public:
         }
     }
     void _rebuildNetworkManager();
-    QNetworkAccessManager *getNAM() { return m_httpClient; }
-
 private:
     QNetworkAccessManager * m_httpClient;
 private slots:
