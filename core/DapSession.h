@@ -156,7 +156,7 @@ private:
 
 //    void requestDapClientHttp(const QString& host,  quint16 port, const QByteArray& data, const QString & urlPath, bool isCDB = false);
 
-    void requestDapClientHttp(const QString & urlPath, const QString & body, bool isCDB = false);
+    void requestDapClientHttp(const QString & urlPath, const QByteArray & body, bool isCDB = false);
 
     static void responseCallback(void * a_response, size_t a_response_size, void * a_obj);
     static void responseCallbackError(int a_err_code, void * a_obj);

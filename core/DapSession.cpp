@@ -116,9 +116,12 @@ QNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath,
  */
 QNetworkReply* DapSession::requestServerPublicKey()
 {
-    QByteArray reqData = m_dapCrypt->generateAliceMessage().toBase64();
+    QByteArray aliceMessage= m_dapCrypt->generateAliceMessage();
+    QByteArray reqData = aliceMessage.toBase64();
     m_enc_type          = DAP_ENC_KEY_TYPE_BF_CBC;
     m_pkey_exch_type    = DAP_ENC_KEY_TYPE_MSRLN;
+
+    qDebug() << "Alice message size "<< aliceMessage.size();
 //    m_netEncryptReply = _buildNetworkReplyReq(QString("%1/gd4y5yh78w42aaagh?enc_type=%2,pkey_exchange_type=%3,pkey_exchange_size=%4")
 //                                              .arg(URL_ENCRYPT)
 //                                              .arg(m_enc_type)
@@ -126,10 +129,11 @@ QNetworkReply* DapSession::requestServerPublicKey()
 //                                              .arg(MSRLN_PKA_BYTES)
 //                                              , &reqData);
 
-    requestDapClientHttp(URL_ENCRYPT, QString("gd4y5yh78w42aaagh?enc_type=%1,pkey_exchange_type=%2,pkey_exchange_size=%3")
+    requestDapClientHttp(QString("%1/gd4y5yh78w42aaagh?enc_type=%2,pkey_exchange_type=%3,pkey_exchange_size=%4")
+                         .arg(URL_ENCRYPT)
                          .arg(m_enc_type)
                          .arg(m_pkey_exch_type)
-                         .arg(MSRLN_PKA_BYTES));
+                         .arg(MSRLN_PKA_BYTES),reqData);
 
 //    if(!m_netEncryptReply || !m_netEncryptReply->isRunning()){
 //        qCritical() << "Network error: " << m_netEncryptReply->errorString();
@@ -143,27 +147,29 @@ QNetworkReply* DapSession::requestServerPublicKey()
 //    return m_netEncryptReply;
 }
 
-void DapSession::requestDapClientHttp(const QString & urlPath, const QString & body, bool isCDB)
+void DapSession::requestDapClientHttp(const QString & urlPath, const QByteArray & body, bool isCDB)
 {
     qDebug() << "Dap Client HTTP Requested " << urlPath ;
-    char * a_body = body.toLocal8Bit().data();
-    dap_client_http_request(NULL,
+    dap_client_http_request(NULL ,
                             isCDB ? m_CDBaddress.toLocal8Bit().data() : m_upstreamAddress.toLocal8Bit().data(),
                             isCDB ? m_CDBport : m_upstreamPort,
                             "POST",
                             "text/text",
-                            urlPath.toLocal8Bit().data(),
-                            &a_body,
-                            strlen(body.toLocal8Bit().data()),
+                            urlPath.toLocal8Bit().constData(),
+                            body.constData(),
+                            body.size(),
                             NULL,
-                            &responseCallback,
-                            &responseCallbackError,
+                            &DapSession::responseCallback,
+                            &DapSession::responseCallbackError,
                             this,
                             NULL);
 }
 
 void DapSession::responseCallback(void * a_response, size_t a_response_size, void * a_obj)
 {
+    QString reply(reinterpret_cast<const QChar*>(a_response), a_response_size);
+    DapSession * session = reinterpret_cast<DapSession*>(a_obj);
+
     qDebug() << "Dap Client HTTP Request: response received, size=" << a_response_size ;
 }
 
