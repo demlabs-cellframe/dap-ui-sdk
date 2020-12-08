@@ -53,6 +53,7 @@ DapSession::DapSession(QObject * obj, int requestTimeout) :
 {
     m_dapCrypt = new DapCrypt;
     m_dapCryptCDB = nullptr;
+    m_replyManager = new DapNetworkAccessManager;
 }
 
 DapSession::~DapSession()
@@ -129,54 +130,56 @@ QNetworkReply* DapSession::requestServerPublicKey()
 //                                              .arg(MSRLN_PKA_BYTES)
 //                                              , &reqData);
 
-    requestDapClientHttp(QString("%1/gd4y5yh78w42aaagh?enc_type=%2,pkey_exchange_type=%3,pkey_exchange_size=%4")
-                         .arg(URL_ENCRYPT)
-                         .arg(m_enc_type)
-                         .arg(m_pkey_exch_type)
-                         .arg(MSRLN_PKA_BYTES),reqData);
+    m_replyManager->requestHttp(m_upstreamAddress.toLocal8Bit().data(),
+                                m_upstreamPort,
+                                QString("%1/gd4y5yh78w42aaagh?enc_type=%2,pkey_exchange_type=%3,pkey_exchange_size=%4").arg(URL_ENCRYPT)
+                                .arg(m_enc_type)
+                                .arg(m_pkey_exch_type)
+                                .arg(MSRLN_PKA_BYTES),
+                                reqData);
 
-//    if(!m_netEncryptReply || !m_netEncryptReply->isRunning()){
-//        qCritical() << "Network error: " << m_netEncryptReply->errorString();
-//        emit errorNetwork(m_netEncryptReply->errorString());
-//        return Q_NULLPTR;
-//    }
+    if(!m_replyManager || !m_replyManager->isRunning()){
+        qCritical() << "Network error: " << m_replyManager->errorString();
+        emit errorNetwork(m_replyManager->errorString());
+        return Q_NULLPTR; //-----
+    }
 
-//    connect(m_netEncryptReply, &QNetworkReply::finished, this, &DapSession::onEnc);
+    connect(m_replyManager, &DapNetworkAccessManager::finished, this, &DapSession::onEnc);
 
 //    qDebug() << "Public key requested";
 //    return m_netEncryptReply;
 }
 
-void DapSession::requestDapClientHttp(const QString & urlPath, const QByteArray & body, bool isCDB)
-{
-    qDebug() << "Dap Client HTTP Requested " << urlPath ;
-    dap_client_http_request(NULL ,
-                            isCDB ? m_CDBaddress.toLocal8Bit().data() : m_upstreamAddress.toLocal8Bit().data(),
-                            isCDB ? m_CDBport : m_upstreamPort,
-                            "POST",
-                            "text/text",
-                            urlPath.toLocal8Bit().constData(),
-                            body.constData(),
-                            body.size(),
-                            NULL,
-                            &DapSession::responseCallback,
-                            &DapSession::responseCallbackError,
-                            this,
-                            NULL);
-}
+//void DapSession::requestDapClientHttp(const QString & urlPath, const QByteArray & body, bool isCDB)
+//{
+//    qDebug() << "Dap Client HTTP Requested " << urlPath ;
+//    dap_client_http_request(NULL ,
+//                            isCDB ? m_CDBaddress.toLocal8Bit().data() : m_upstreamAddress.toLocal8Bit().data(),
+//                            isCDB ? m_CDBport : m_upstreamPort,
+//                            "POST",
+//                            "text/text",
+//                            urlPath.toLocal8Bit().constData(),
+//                            body.constData(),
+//                            body.size(),
+//                            NULL,
+//                            &DapSession::responseCallback,
+//                            &DapSession::responseCallbackError,
+//                            this,
+//                            NULL);
+//}
 
-void DapSession::responseCallback(void * a_response, size_t a_response_size, void * a_obj)
-{
-    QString reply(reinterpret_cast<const QChar*>(a_response), a_response_size);
-    DapSession * session = reinterpret_cast<DapSession*>(a_obj);
+//void DapSession::responseCallback(void * a_response, size_t a_response_size, void * a_obj)
+//{
+//    QString reply(reinterpret_cast<const QChar*>(a_response), a_response_size);
+//    DapSession * session = reinterpret_cast<DapSession*>(a_obj);
 
-    qDebug() << "Dap Client HTTP Request: response received, size=" << a_response_size ;
-}
+//    qDebug() << "Dap Client HTTP Request: response received, size=" << a_response_size ;
+//}
 
-void DapSession::responseCallbackError(int a_err_code, void * a_obj)
-{
-    qWarning() << "Dap Client HTTP Request: error code " << a_err_code ;
-}
+//void DapSession::responseCallbackError(int a_err_code, void * a_obj)
+//{
+//    qWarning() << "Dap Client HTTP Request: error code " << a_err_code ;
+//}
 
 QNetworkReply* DapSession::encryptInitRequest()
 {
@@ -242,19 +245,20 @@ void DapSession::getNews()
 void DapSession::onEnc()
 {
     qDebug() << "Enc reply";
-    if (m_netEncryptReply && (m_netEncryptReply->error() != QNetworkReply::NoError)) {
+//    if (m_netEncryptReply && (m_netEncryptReply->error() != QNetworkReply::NoError)) {
 
-        qCritical() << "Network error: " << m_netEncryptReply->errorString();
-        if (m_netEncryptReply->error() == QNetworkReply::OperationCanceledError || m_netEncryptReply->error() == QNetworkReply::ConnectionRefusedError)
-            emit errorNetwork(6543 , m_netEncryptReply->errorString());
-        else if (m_netEncryptReply->error() == QNetworkReply::UnknownNetworkError)
-            emit errorNetwork(3244 , m_netEncryptReply->errorString());
-        else
-            emit errorNetwork(m_netEncryptReply->errorString());
-        return;
-    }
+//        qCritical() << "Network error: " << m_netEncryptReply->errorString();
+//        if (m_netEncryptReply->error() == QNetworkReply::OperationCanceledError || m_netEncryptReply->error() == QNetworkReply::ConnectionRefusedError)
+//            emit errorNetwork(6543 , m_netEncryptReply->errorString());
+//        else if (m_netEncryptReply->error() == QNetworkReply::UnknownNetworkError)
+//            emit errorNetwork(3244 , m_netEncryptReply->errorString());
+//        else
+//            emit errorNetwork(m_netEncryptReply->errorString());
+//        return;
+//    }
     QByteArray arrData;
-    arrData.append(m_netEncryptReply->readAll());
+    QString dsgf = m_replyManager->getReplyData();
+    arrData.append(m_replyManager->getReplyData().toUtf8());
     if(arrData.isEmpty()) {
         qWarning() << "Empty enc reply...";
         emit errorEncryptInitialization("Empty enc reply");

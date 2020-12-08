@@ -32,6 +32,7 @@
 #include "DapDataLocal.h"
 
 #include "dap_client_http.h"
+#include "DapNetworkAccessManager.h"
 
 class DapSession : public QObject
 {
@@ -154,12 +155,13 @@ private:
     QNetworkReply* _buildNetworkReplyReq(const QString& urlPath,
                                          const QByteArray* data = Q_NULLPTR, bool isCDB = false);
 
+    DapNetworkAccessManager *m_replyManager;
 //    void requestDapClientHttp(const QString& host,  quint16 port, const QByteArray& data, const QString & urlPath, bool isCDB = false);
 
-    void requestDapClientHttp(const QString & urlPath, const QByteArray & body, bool isCDB = false);
+//    void requestDapClientHttp(const QString & urlPath, const QByteArray & body, bool isCDB = false);
 
-    static void responseCallback(void * a_response, size_t a_response_size, void * a_obj);
-    static void responseCallbackError(int a_err_code, void * a_obj);
+//    static void responseCallback(void * a_response, size_t a_response_size, void * a_obj);
+//    static void responseCallbackError(int a_err_code, void * a_obj);
 
 private slots:
     void onEnc();
