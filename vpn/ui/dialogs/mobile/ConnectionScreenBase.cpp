@@ -46,15 +46,18 @@ void ConnectionScreenBase::setState(ConnectionState a_state)
 
 void ConnectionScreenBase::showMessageAboutConnectionProblem(bool a_virtualNetworkState)
 {
+
     if(m_state == ConnectionState::Connected)
     {
         if(!a_virtualNetworkState)
         {
-            m_ui->lblStatusMessage->setText(tr("No connection"));
+            m_ui->lblStatusMessage->setText(QString(tr("No connection")));
+            Utils::setPropertyAndUpdateStyle(m_ui->btnDisconnect, Properties::CONNECTED, false);
         }
         else
         {
             m_ui->lblStatusMessage->setText(this->statusText());
+            Utils::setPropertyAndUpdateStyle(m_ui->btnDisconnect, Properties::CONNECTED, true);
         }
     }
 }

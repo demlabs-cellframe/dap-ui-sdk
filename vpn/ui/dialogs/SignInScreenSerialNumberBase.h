@@ -23,16 +23,16 @@
 #include "WidgetInputSizeController.h"
 #endif
 
-#define STATUS_TEXT_CONNECTING_TO_SERVICE "Connecting to service..."
-
+#define STATUS_TEXT_CONNECTING_TO_SERVICE QObject::tr("Connecting to service...")
+//QObject::tr("");
 /// from "BrandTextProperties.h"
 #ifndef LOGIN_BUTTON_TEXT_CONNECTING
-#define LOGIN_BUTTON_TEXT_CONNECTING "CONNECTING..."
+#define LOGIN_BUTTON_TEXT_CONNECTING QObject::tr("CONNECTING...")
 #endif
 
 /// from "BrandTextProperties.h"
 #ifndef LOGIN_BUTTON_TEXT_DEFAULT
-#define LOGIN_BUTTON_TEXT_DEFAULT "START"
+#define LOGIN_BUTTON_TEXT_DEFAULT QObject::tr("START")
 #endif
 
 class SignInScreenSerialNumberBase : public ScreenWithScreenPopupsAbstract

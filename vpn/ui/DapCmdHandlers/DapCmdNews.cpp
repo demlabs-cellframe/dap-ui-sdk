@@ -43,19 +43,44 @@ bool DapCmdNews::fromJSON(const QJsonArray& jsonArr, QList<QMap<QString, QString
 
         QJsonObject jsonObj = val.toObject();
         QMap<QString, QString> temp;
-        if (jsonObj["type"].toString() == "update_version"){
-           temp = { {"type",    jsonObj["type"].toString()},
-                    {"message", jsonObj["message"].toString()},
-                    {"version", jsonObj["version"].toString()},
-                    {"url",     jsonObj["url"].toString()}};
-        } else if (jsonObj["type"].toString() == "news"){
-           temp = { {"type",    jsonObj["type"].toString()},
-                    {"message", jsonObj["message"].toString()}};
-        }
 
-        listNews->append(temp);
+        if (jsonObj["target_os"].isArray()){
+            QJsonArray target_os = jsonObj["target_os"].toArray();
+            for (int i = 0; i < target_os.size(); i++){
+                if (target_os[i].toString() == Utils::getOSName()){
+                    fillingListNews(jsonObj, listNews);
+                }
+            }
+        } else {
+            if (jsonObj["target_os"].toString() == "any" || jsonObj["target_os"].toString() == Utils::getOSName()){
+                fillingListNews(jsonObj, listNews);
+            }
+        }
     }
     return true;
+}
+
+void DapCmdNews::fillingListNews(const QJsonObject& jsonObj, QList<QMap<QString, QString>>* listNews)
+{
+    if (jsonObj["type"].toString() == "update_version"){
+
+       listNews->append({
+                          {"type",    jsonObj["type"].toString()},
+                          {"message", jsonObj["message"].toString()},
+                          {"version", jsonObj["version"].toString()},
+                          {"url",     jsonObj["url"].toString()}
+                        });
+
+    } else if (jsonObj["type"].toString() == "news"){
+
+       listNews->append({
+                          {"type",    jsonObj["type"].toString()},
+                          {"message", jsonObj["message"].toString()}
+                        });
+
+    } else {
+        qInfo() << "News does not match known types";
+    }
 }
 
 
