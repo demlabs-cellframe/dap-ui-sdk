@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
+#include <QJsonDocument>
 #include <QDir>
 #include <QSysInfo>
 #include "DapDataLocal.h"
@@ -17,7 +18,7 @@ public:
     DapBugReport();
 
     QString getSystemInfo();
-    bool createZipDataBugReport(QString serial, QString message);
+    bool createZipDataBugReport(const QString &serial, const QString &message, const QString &pkeyHash);
     QByteArray getDataZipFile(){return byteArrayZipFile;}
 
 private:

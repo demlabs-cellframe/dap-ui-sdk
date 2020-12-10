@@ -11,6 +11,18 @@ CustomTextEdit::CustomTextEdit(QWidget *a_parent)
 //        if(m_autoChangingSize)
 //            this->setNewHeight(newSize);
 //    });
+
+    connect(this, &CustomTextEdit::textChanged, this, [this]()
+    {
+#ifdef Q_OS_ANDROID
+        sendNumberOfCharacters(toPlainText().length());
+#endif
+        if(m_placeHolderCtrl && !this->hasFocus())
+        {
+            this->toPlainText().isEmpty() ? m_placeHolderCtrl->show()
+                                          : m_placeHolderCtrl->hide();
+        }
+    });
 }
 
 void CustomTextEdit::createCustomPlaceholder()
@@ -26,6 +38,7 @@ void CustomTextEdit::createCustomPlaceholder()
     m_placeHolderCtrl->setObjectName("placeholder");
 
     m_placeHolderCtrl->setWordWrap(true);
+    m_placeHolderCtrl->setVisible(this->toPlainText().isEmpty());
 
     setPlaceholderText(this->placeholderText());
 }

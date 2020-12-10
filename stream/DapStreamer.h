@@ -33,6 +33,7 @@
 #define DATA_PACKET 0x00
 #define SERVICE_PACKET 0xff
 #define KEEPALIVE_PACKET 0x11
+#define CH_KEEPALIVE_PKT 0x88
 
 
 class DapStreamer : public QObject

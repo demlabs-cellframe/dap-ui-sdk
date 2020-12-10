@@ -10,7 +10,7 @@ SignInWithTariffLink::SignInWithTariffLink(QWidget *a_parent)
 
 void SignInWithTariffLink::initVariantUi(QWidget *a_widget)
 {
-    m_ui->cbbTariff->popup()->setCaption("Renew subscription");
+    m_ui->cbbTariff->popup()->setCaption(tr("Renew subscription"));
     m_ui->cbbTariff->popup()->listView()->setWidgetDelegateFactory(&TariffDelegate::create);
     m_ui->cbbTariff->setCaptionPolicy(ComboBox::CaptionPolicy::ShowAlways);
 
