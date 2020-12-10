@@ -20,6 +20,7 @@ namespace Utils
     ///Returns the required version type
     enum TypeVersion{MAJOR,MINOR,PAT};
     int getNumberVersion(const QString &version,TypeVersion type);
+    QString getOSName();
 
     QColor toColor(const QString &strRGBA);
     ///The function returns the first integer in the string.

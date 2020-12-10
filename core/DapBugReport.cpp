@@ -9,18 +9,24 @@ DapBugReport::DapBugReport()
 
 }
 
-bool DapBugReport::createZipDataBugReport(QString serial, QString message)
+bool DapBugReport::createZipDataBugReport(const QString &serial, const QString &message, const QString &pkeyHash)
 {
     qDebug() << "DapBugReport::createZip";
 
-    QFile file("data.txt");
-    if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
-        QTextStream writeStream(&file);
-        writeStream << serial << endl << " App: " DAP_BRAND" " << DAP_VERSION << endl << getSystemInfo() << endl << message.toUtf8();
-        file.close();
+    QFile fileJsonData("data.json");
+    if(fileJsonData.open(QIODevice::WriteOnly | QIODevice::Text)){
+        QJsonObject obj;
+        obj["sn"] = serial;
+        obj["version_app"] = DAP_BRAND " " DAP_VERSION;
+        obj["os"] = getSystemInfo();
+        obj["message"] = message;
+        obj["pKeyHash"] = pkeyHash;
+        QJsonDocument saveDoc(obj);
+        fileJsonData.write(saveDoc.toJson());
+        fileJsonData.close();
     }
 
-    QFileInfo infoFileData(file);
+    QFileInfo infoFileData(fileJsonData);
     QStringList fileList;
     for (int i = 0; i < 3; i++){
         QString path;
@@ -48,6 +54,7 @@ bool DapBugReport::createZipDataBugReport(QString serial, QString message)
         byteArrayZipFile = zipFile.readAll();
         qDebug() << "Bug-report byte array size: " << byteArrayZipFile.size();
         zipFile.remove();
+        fileJsonData.remove();
     }
     return true;
 }

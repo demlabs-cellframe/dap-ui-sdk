@@ -46,6 +46,23 @@ namespace Utils
         return 0;
     }
 
+    QString getOSName()
+    {
+        #if defined(Q_OS_ANDROID)
+        return QLatin1String("android");
+        #elif defined(Q_OS_MACOS)
+        return QLatin1String("macos");
+        #elif defined(Q_OS_WIN)
+        return QLatin1String("windows");
+        #elif defined(Q_OS_IOS)
+        return QLatin1String("ios");
+        #elif defined(Q_OS_LINUX)
+        return QLatin1String("linux");
+        #else
+        return QLatin1String("unknown");
+        #endif
+    }
+
     QColor toColor(const QString &strRGBA)
     {
         QString strColor(strRGBA.simplified());

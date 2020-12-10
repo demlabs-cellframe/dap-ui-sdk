@@ -95,7 +95,7 @@ void SignInScreenSerialNumberBase::initVariantUi(QWidget *a_widget)
     connect(m_ui->ledSerialKey, &SerialKeyField::textChanged, this, &SignInScreenSerialNumberBase::serialKeyChanged);
 
     //Default properties:
-    m_ui->btnConnect->setText(tr(LOGIN_BUTTON_TEXT_DEFAULT));
+    m_ui->btnConnect->setText(LOGIN_BUTTON_TEXT_DEFAULT);
 
     Utils::setPropertyAndUpdateStyle(m_ui->lblStatusMessage, Properties::WRONG, true);
     Utils::setPropertyAndUpdateStyle(m_ui->ledSerialKey, Properties::WRONG, false);
@@ -208,7 +208,7 @@ void SignInScreenSerialNumberBase::adjustStateMachine()
     connect(m_stt_serverState_disconnected      , &QState::entered, [this] {
         if (this->serialKeyIsEntered() && this->serviceIsConnected())
         {
-            m_ui->btnConnect->setText(tr(LOGIN_BUTTON_TEXT_DEFAULT));
+            m_ui->btnConnect->setText(LOGIN_BUTTON_TEXT_DEFAULT);
             m_ui->btnConnect->setEnabled(true);
         }
     });
@@ -228,7 +228,7 @@ void SignInScreenSerialNumberBase::adjustStateMachine()
     connect(m_stt_serviceState_connecting       , &QState::entered, [this]
     {
         m_ui->btnConnect->setEnabled(false);
-        m_ui->lblStatusMessage->setText(tr(STATUS_TEXT_CONNECTING_TO_SERVICE));
+        m_ui->lblStatusMessage->setText(STATUS_TEXT_CONNECTING_TO_SERVICE);
     });
 
 
@@ -238,7 +238,7 @@ void SignInScreenSerialNumberBase::adjustStateMachine()
 
     m_stt_serverState_loading_connecting->assignProperty(m_ui->lblStatusMessage, qPrintable(Properties::TEXT), "");
 
-    m_stt_serverState_loading_connecting->assignProperty(m_ui->btnConnect, qPrintable(Properties::TEXT), tr(LOGIN_BUTTON_TEXT_CONNECTING));
+    m_stt_serverState_loading_connecting->assignProperty(m_ui->btnConnect, qPrintable(Properties::TEXT), LOGIN_BUTTON_TEXT_CONNECTING);
 
     this->m_inputStates->start();
 }
