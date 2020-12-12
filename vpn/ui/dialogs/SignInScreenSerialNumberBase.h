@@ -35,6 +35,13 @@
 #define LOGIN_BUTTON_TEXT_DEFAULT QObject::tr("START")
 #endif
 
+#ifndef LOGIN_TEXT_CONNECTING
+#define LOGIN_TEXT_CONNECTING QObject::tr("Connecting...")
+#endif
+
+#ifndef LOGIN_STATUS_TEXT_DEFAULT
+#define LOGIN_STATUS_TEXT_DEFAULT QObject::tr("Enter serial key to continue")
+#endif
 class SignInScreenSerialNumberBase : public ScreenWithScreenPopupsAbstract
 {
     Q_OBJECT
@@ -85,6 +92,8 @@ protected:
     virtual void initVariantUi(QWidget *a_widget) override;
 
     virtual QList<CustomPopup *> customPopups() override;
+
+    void setDefaultStatusText();
 
     QScopedPointer<Ui::SignInScreen> m_ui;
 
