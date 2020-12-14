@@ -27,10 +27,11 @@ void DapNetworkAccessManager::requestHttp(const QString &address, const uint16_t
 void DapNetworkAccessManager::responseCallback(void * a_response, size_t a_response_size, void * a_obj)
 {
     DapNetworkAccessManager * manager = reinterpret_cast<DapNetworkAccessManager*>(a_obj);
+    //QByteArray response(  reinterpret_cast<const char*>(a_response), a_response_size);
     manager->bRunning = false;
-    manager->reply = QString(reinterpret_cast<const QChar*>(a_response), a_response_size).toUtf8();
+    manager->reply = QString::fromLatin1( reinterpret_cast<const char*>(a_response), a_response_size) ;
 
-    qDebug() << "Dap Client HTTP Request: response received, size=" << a_response_size ;
+    qDebug() << "Dap Client HTTP Request: response received, size=" << a_response_size;
     emit manager->finished();
 }
 
