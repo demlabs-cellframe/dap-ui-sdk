@@ -4,8 +4,9 @@
 
 DapHttpPingNetworkReply* DapHttpPing::sendRequest(const QString& host, quint16 port)
 {
-    auto networkReply = DapConnectClient::instance()->request_GET(host,
+    DapNetworkReply *networkReply =  new DapNetworkReply;
+    DapConnectClient::instance()->request_GET(host,
                                                                   port, // temporary url For dapServer
-                                                                  "/server-info/version");
-    return new DapHttpPingNetworkReply(networkReply, host, port);
+                                                                  "server-info/version", *networkReply, false);
+//    return new DapHttpPingNetworkReply(networkReply, host, port);
 }

@@ -11,9 +11,9 @@ class DapServersListNetworkReply : public QObject {
     Q_OBJECT
 private:
 public:
-    explicit DapServersListNetworkReply(QNetworkReply *networkReply);
+    explicit DapServersListNetworkReply(DapNetworkReply *networkReply);
     QString errorString() const {
-        QNetworkReply * reply = qobject_cast<QNetworkReply *>(parent());
+        DapNetworkReply * reply = qobject_cast<DapNetworkReply *>(parent());
         if(reply == Q_NULLPTR) {
             qCritical() << "Error cast";
             return "";
@@ -21,13 +21,13 @@ public:
         return reply->errorString();
     }
 
-    QNetworkReply::NetworkError networkReplyError(){
-        return qobject_cast<QNetworkReply *>(parent())->error();
+    DapNetworkReply::NetworkError networkReplyError(){
+        return qobject_cast<DapNetworkReply *>(parent())->error();
     }
 
 signals:
     void sigResponse(const QJsonDocument& doc);
-    void sigNetworkError(QNetworkReply::NetworkError);
+    void sigNetworkError(DapNetworkReply::NetworkError);
     void sigParseResponseError();
 };
 
@@ -55,10 +55,12 @@ public:
         /*if (!DapNetworkMonitor::instance()->isTunGatewayDefined()) {
             return nullptr;
         }*/
-        auto networkReply = DapConnectClient::instance()->request_GET(host,
-                                                                      port,
-                                                                      "/nodelist",
-                                                                      false);
+        DapNetworkReply *networkReply = new DapNetworkReply;
+        DapConnectClient::instance()->request_GET(host,
+                                                  port,
+                                                  "/nodelist",
+                                                  *networkReply,
+                                                  false);
         DapReplyTimeout::set(networkReply, 15000); // 15 sec
         return new DapServersListNetworkReply(networkReply);
     }

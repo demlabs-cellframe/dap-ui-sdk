@@ -3,11 +3,12 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
-DapServersListNetworkReply::DapServersListNetworkReply(QNetworkReply *networkReply) :
-    QObject(networkReply)
+#include "DapNetworkReply.h"
+
+DapServersListNetworkReply::DapServersListNetworkReply(DapNetworkReply *networkReply)
 {
-    connect(networkReply, &QNetworkReply::finished, this, [=] {
-        if(networkReply->error() == QNetworkReply::NetworkError::NoError) {
+    connect(networkReply, &DapNetworkReply::finished, this, [=] {
+        if(networkReply->error() == DapNetworkReply::NetworkError::NoError) {
             QByteArray ba(networkReply->readAll());
             QJsonParseError jsonErr;
             QJsonDocument jsonDoc = QJsonDocument::fromJson(ba, &jsonErr);
@@ -27,8 +28,8 @@ DapServersListNetworkReply::DapServersListNetworkReply(QNetworkReply *networkRep
             }
         } else {
             emit sigNetworkError(networkReply->error());
-            if ((networkReply->error() == QNetworkReply::NetworkSessionFailedError)
-                    || (networkReply->error() == QNetworkReply::UnknownNetworkError)) {
+            if ((networkReply->error() == DapNetworkReply::NetworkError::NetworkSessionFailedError)
+                    || (networkReply->error() == DapNetworkReply::NetworkError::UnknownNetworkError)) {
                 //TODO
             }
         }

@@ -12,10 +12,10 @@
 class DapReplyTimeout : public QObject {
 Q_OBJECT
 private:
-    DapReplyTimeout(QNetworkReply* reply, const int timeout) : QObject(reply) {
+    DapReplyTimeout(DapNetworkReply* reply, const int timeout){
         Q_ASSERT(reply);
-        if (reply->isOpen()) {
-            connect(reply, &QNetworkReply::finished, this, [=] {
+        if (reply) {
+            connect(reply, &DapNetworkReply::finished, this, [=] {
                 qInfo() << "Request processed";
                 QAbstractEventDispatcher::instance()->unregisterTimers(this);
                 delete this;
@@ -23,7 +23,7 @@ private:
             QTimer::singleShot(timeout, Qt::PreciseTimer, this, [=]() {
                 if (!reply->isFinished()) {
                     qWarning() << "Request timeout";
-                    reply->abort();
+//                    reply->abort();
                 }
             });
         } else {
@@ -34,7 +34,7 @@ private:
     }
 
 public:
-    static void set(QNetworkReply* reply, const int timeout) {
+    static void set(DapNetworkReply* reply, const int timeout) {
         new DapReplyTimeout(reply, timeout);
     }
 };

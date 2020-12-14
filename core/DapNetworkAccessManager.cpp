@@ -5,11 +5,11 @@ DapNetworkAccessManager::DapNetworkAccessManager()
 
 }
 
-void DapNetworkAccessManager::requestHttp(const QString &address, const uint16_t &port, const QString & urlPath, const QByteArray & body)
+void DapNetworkAccessManager::requestHttp_POST(const QString &address, const uint16_t &port, const QString & urlPath, const QByteArray & body, DapNetworkReply *netReply)
 {
-    qDebug() << "Dap Client HTTP Requested " << urlPath ;
+    qDebug() << "Dap Client HTTP Requested - POST: " << urlPath ;
     bRunning = true;
-    dap_client_http_request(NULL ,
+    dap_client_http_request(NULL,
                             address.toLocal8Bit().constData(),
                             port,
                             "POST",
@@ -20,25 +20,44 @@ void DapNetworkAccessManager::requestHttp(const QString &address, const uint16_t
                             NULL,
                             &DapNetworkAccessManager::responseCallback,
                             &DapNetworkAccessManager::responseCallbackError,
-                            this,
+                            &netReply,
+                            NULL);
+}
+
+void DapNetworkAccessManager::requestHttp_GET(const QString &address, const uint16_t &port, const QString & urlPath, DapNetworkReply *netReply)
+{
+    qDebug() << "Dap Client HTTP Requested - GET: " << urlPath ;
+    bRunning = true;
+    dap_client_http_request(NULL,
+                            address.toLocal8Bit().constData(),
+                            port,
+                            "GET",
+                            "text/text",
+                            urlPath.toLocal8Bit().constData(),
+                            NULL,
+                            NULL,
+                            NULL,
+                            &DapNetworkAccessManager::responseCallback,
+                            &DapNetworkAccessManager::responseCallbackError,
+                            &netReply,
                             NULL);
 }
 
 void DapNetworkAccessManager::responseCallback(void * a_response, size_t a_response_size, void * a_obj)
 {
-    DapNetworkAccessManager * manager = reinterpret_cast<DapNetworkAccessManager*>(a_obj);
-    //QByteArray response(  reinterpret_cast<const char*>(a_response), a_response_size);
-    manager->bRunning = false;
-    manager->reply = QString::fromLatin1( reinterpret_cast<const char*>(a_response), a_response_size) ;
+    DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
+//    manager->bRunning = false;
+    reply->setReply(QString::fromLatin1( reinterpret_cast<const char*>(a_response), a_response_size));
 
     qDebug() << "Dap Client HTTP Request: response received, size=" << a_response_size;
-    emit manager->finished();
+    emit reply->finished();
 }
 
 void DapNetworkAccessManager::responseCallbackError(int a_err_code, void * a_obj)
 {
-    DapNetworkAccessManager * manager = reinterpret_cast<DapNetworkAccessManager*>(a_obj);
-    manager->bRunning = false;
+    DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
+//    manager->bRunning = false;
+    reply->setError(DapNetworkReply::NetworkError::Error);
 
     qWarning() << "Dap Client HTTP Request: error code " << a_err_code ;
 }
