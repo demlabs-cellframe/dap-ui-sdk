@@ -24,12 +24,22 @@ public:
     ProductState getProdustState(Products product) const;
     void purchaseVerified(const QString& key);
 
+    QString getLastError() {
+        return m_lastError;
+    }
+    QString getLastPurchaseSku() {
+        return m_sku;
+    }
+    QString getLastPurchaseToken() {
+        return m_token;
+    }
+
 signals:
     //@brief Signal that the product status has changed
     // This signal is emitted after the purchase is complete.
     void productStateChanged(Products product, ProductState state);
     void errorMessage(const QString& meg);
-    void requestPurchaseVerify(QString productId, QString purchaseToken);
+    void requestPurchaseVerify(const QString& productId, const QString& purchaseToken);
 
 private slots:
 #ifdef Q_OS_ANDROID
@@ -41,9 +51,14 @@ private:
     explicit DapShopManager(QObject *parent = nullptr);
     void setupConnections();
     void changeProductState(const QString &productId, ProductState state);
+    void requestPurchase(const QString& sku, const QString& token);
+    void reportErrorMessage(const QString& msg);
 
 #ifdef Q_OS_ANDROID
     QAndroidJniObject m_store;
+    QString m_token;
+    QString m_sku;
+    QString m_lastError;
 #endif
 
     QMap<int, ProductState> m_products;

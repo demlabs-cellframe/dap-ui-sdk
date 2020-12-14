@@ -14,7 +14,7 @@ public:
     // запросить проверку покупки
     // productId - это Sku - у нас это: "android.demlabs.kelvpn_6", или "android.demlabs.kelvpn_12" или "android.demlabs.kelvpn_1"
     // token - это токен покупки от Google Play
-    void requestVerify(const QString &packageName, const QString& productId, const QString& token);
+    void requestVerify(const QString &packageName, const QString &productId, const QString &token);
 
 protected:
     void handleResult(const QJsonObject& result) override;

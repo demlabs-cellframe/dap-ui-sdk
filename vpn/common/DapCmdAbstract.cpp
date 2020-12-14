@@ -16,7 +16,8 @@ QMap<DapJsonCmdType, QString> DapCmdAbstract::cmdString = {
     {DapJsonCmdType::SEND_SIGN_UP_REQUEST, "send sign up request"},
     {DapJsonCmdType::GET_NEWS, "get news"},
     {DapJsonCmdType::GET_SERVERS_LIST, "get servers list"},
-    {DapJsonCmdType::CREATE_ANDROID_TUNNEL, "create android tunnel"}
+    {DapJsonCmdType::CREATE_ANDROID_TUNNEL, "create android tunnel"},
+    {DapJsonCmdType::REQUEST_PURCHASE_VERIFY, "verify purchase"}
 };
 
 void DapCmdAbstract::sendCmd(const QJsonObject * obj)
