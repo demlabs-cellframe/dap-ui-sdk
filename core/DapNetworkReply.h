@@ -57,8 +57,9 @@ public:
         ServiceUnavailableError,
         UnknownServerError = 499
     };
+    Q_ENUM(NetworkError)
 
-    NetworkError error(){ return m_error; };
+    NetworkError error() const;
 
     QString errorString(){ return m_errorString; };
     QString getReplyData(){ return m_reply; };
