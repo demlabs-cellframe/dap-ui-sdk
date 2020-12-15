@@ -10,24 +10,26 @@
 class DapServersListNetworkReply : public QObject {
     Q_OBJECT
 private:
+    DapNetworkReply *m_networkReply;
 public:
-    explicit DapServersListNetworkReply(DapNetworkReply *networkReply);
+    explicit DapServersListNetworkReply(DapNetworkReply *a_networkReply);
     QString errorString() const {
-        DapNetworkReply * reply = qobject_cast<DapNetworkReply *>(parent());
-        if(reply == Q_NULLPTR) {
+//        DapNetworkReply * reply = qobject_cast<DapNetworkReply *>(parent());
+        if(m_networkReply == Q_NULLPTR) {
             qCritical() << "Error cast";
             return "";
         }
-        return reply->errorString();
+        return m_networkReply->errorString();
     }
 
-    DapNetworkReply::NetworkError networkReplyError(){
-        return qobject_cast<DapNetworkReply *>(parent())->error();
+    DapNetworkReply::DapNetworkError networkReplyError(){
+//        return qobject_cast<DapNetworkReply *>(parent())->error();
+        return m_networkReply->error();
     }
 
 signals:
     void sigResponse(const QJsonDocument& doc);
-    void sigNetworkError(DapNetworkReply::NetworkError);
+    void sigNetworkError(DapNetworkReply::DapNetworkError);
     void sigParseResponseError();
 };
 

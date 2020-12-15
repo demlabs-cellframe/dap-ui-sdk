@@ -6,7 +6,7 @@ DapNetworkAccessManager::DapNetworkAccessManager()
 
 }
 
-void DapNetworkAccessManager::requestHttp_POST(const QString &address, const uint16_t &port, const QString & urlPath, const QByteArray & body, DapNetworkReply *netReply)
+void DapNetworkAccessManager::requestHttp_POST(const QString &address, const uint16_t &port, const QString & urlPath, const QByteArray & body, DapNetworkReply &netReply)
 {
     qDebug() << "Dap Client HTTP Requested - POST: " << urlPath ;
     bRunning = true;
@@ -48,9 +48,11 @@ void DapNetworkAccessManager::responseCallback(void * a_response, size_t a_respo
 {
     DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
 //    manager->bRunning = false;
+    QString *test = new QString (QString::fromLatin1( reinterpret_cast<const char*>(a_response), a_response_size));
     reply->setReply(QString::fromLatin1( reinterpret_cast<const char*>(a_response), a_response_size));
 
     qDebug() << "Dap Client HTTP Request: response received, size=" << a_response_size;
+    reply->setError(DapNetworkReply::DapNetworkError::NoError);
     emit reply->finished();
 }
 
@@ -58,7 +60,7 @@ void DapNetworkAccessManager::responseCallbackError(int a_err_code, void * a_obj
 {
     DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
 //    manager->bRunning = false;
-    reply->setError(DapNetworkReply::NetworkError::Error);
+    reply->setError(DapNetworkReply::DapNetworkError::Error);
 
     qWarning() << "Dap Client HTTP Request: error code " << a_err_code ;
 }

@@ -79,5 +79,5 @@ void DapConnectClient::request_GET(const QString& host,  quint16 port, const QSt
 void DapConnectClient::request_POST(const QString& host,  quint16 port,
                             const QString & urlPath, const QByteArray& data, DapNetworkReply &a_netReply, bool ssl)
 {
-    m_httpClient->requestHttp_POST(host, port, urlPath, data, &a_netReply);
+    m_httpClient->requestHttp_POST(host, port, urlPath, data, a_netReply);
 }

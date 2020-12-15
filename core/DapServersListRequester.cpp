@@ -5,11 +5,12 @@
 
 #include "DapNetworkReply.h"
 
-DapServersListNetworkReply::DapServersListNetworkReply(DapNetworkReply *networkReply)
+DapServersListNetworkReply::DapServersListNetworkReply(DapNetworkReply *a_networkReply)
 {
-    connect(networkReply, &DapNetworkReply::finished, this, [=] {
-        if(networkReply->error() == DapNetworkReply::NetworkError::NoError) {
-            QByteArray ba(networkReply->readAll());
+    m_networkReply = a_networkReply;
+    connect(m_networkReply, &DapNetworkReply::finished, this, [=] {
+        if(m_networkReply->error() == DapNetworkReply::DapNetworkError::NoError) {
+            QByteArray ba(m_networkReply->readAll());
             QJsonParseError jsonErr;
             QJsonDocument jsonDoc = QJsonDocument::fromJson(ba, &jsonErr);
 
@@ -27,9 +28,9 @@ DapServersListNetworkReply::DapServersListNetworkReply(DapNetworkReply *networkR
                 return;
             }
         } else {
-            emit sigNetworkError(networkReply->error());
-            if ((networkReply->error() == DapNetworkReply::NetworkError::NetworkSessionFailedError)
-                    || (networkReply->error() == DapNetworkReply::NetworkError::UnknownNetworkError)) {
+            emit sigNetworkError(m_networkReply->error());
+            if ((m_networkReply->error() == DapNetworkReply::DapNetworkError::NetworkSessionFailedError)
+                    || (m_networkReply->error() == DapNetworkReply::DapNetworkError::UnknownNetworkError)) {
                 //TODO
             }
         }

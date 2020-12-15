@@ -48,7 +48,7 @@ public:
     ~DapStreamer();
     bool isConnected() { return m_streamSocket->isOpen(); }
     int upstreamSocket() { return m_streamSocket->isOpen()?m_streamSocket->socketDescriptor(): -1; }
-    DapNetworkReply::NetworkError lastErr() { return m_network_reply->error(); }
+    DapNetworkReply::DapNetworkError lastErr() { return m_network_reply->error(); }
     DapChThread* addChProc(char chId, DapChBase* obj);
     void setStreamOpened(bool b) { m_isStreamOpened = b; }
     void setStreamTimeoutCheck(bool b) { m_timeoutStreamCheck = b; }
@@ -136,7 +136,7 @@ signals:
 
     /* StreamOpen error signals */
     void sigStreamOpenHttpError(int httpCode);
-    void sigStreamOpenNetworkError(DapNetworkReply::NetworkError);
+    void sigStreamOpenNetworkError(DapNetworkReply::DapNetworkError);
     void sigStreamOpenBadResponseError();
 
     // all another errors
