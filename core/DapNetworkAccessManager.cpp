@@ -1,6 +1,7 @@
 #include "DapNetworkAccessManager.h"
 
 DapNetworkAccessManager::DapNetworkAccessManager()
+                    :QObject(nullptr)
 {
 
 }

@@ -4,10 +4,11 @@
 #include <QObject>
 #include <QDebug>
 
-class DapNetworkReply
+class DapNetworkReply: public QObject
 {
+    Q_OBJECT
 public:
-    DapNetworkReply();
+    explicit DapNetworkReply();
 
     enum NetworkError {
         Error = -1,
@@ -65,6 +66,10 @@ public:
     void setError(NetworkError a_error){m_error = a_error;};
     bool isFinished(){return m_finished;}
 
+signals:
+    void finished();
+    void sigError();
+
 protected:
 //    static void responseCallback(void * a_response, size_t a_response_size, void * a_obj);
 //    static void responseCallbackError(int a_err_code, void * a_obj);
@@ -75,9 +80,6 @@ protected:
     QString m_errorString;
     bool m_finished;
 
-signals:
-    void finished();
-    void sigError();
 };
 
 #endif // DAPNETWORKREPLY_H

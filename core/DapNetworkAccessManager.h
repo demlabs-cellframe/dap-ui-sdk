@@ -13,19 +13,20 @@ class DapNetworkAccessManager : public QObject
 {
     Q_OBJECT
 public:
-    DapNetworkAccessManager();
+    explicit DapNetworkAccessManager();
     void requestHttp_POST(const QString &address, const uint16_t &port, const QString & urlPath, const QByteArray & body, DapNetworkReply *netReply);
     void requestHttp_GET(const QString &address, const uint16_t &port, const QString & urlPath, DapNetworkReply *netReply);
 
     bool isRunning(){ return bRunning; };
+
+signals:
+    void finished();
 
 protected:
     bool bRunning;
     static void responseCallback(void * a_response, size_t a_response_size, void * a_obj);
     static void responseCallbackError(int a_err_code, void * a_obj);
 
-signals:
-    void finished();
 };
 
 #endif // DAPNETWORKACCESSMANAGER_H

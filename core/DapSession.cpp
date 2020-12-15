@@ -87,7 +87,7 @@ DapNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QSt
 
 DapNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QString& query, QObject *obj, const char *slot) {
     DapNetworkReply *netReply = streamOpenRequest(subUrl, query);
-    connect(netReply, &DapNetworkReply::finished, obj, slot);
+    connect(netReply, SIGNAL(finished()), obj, slot);
     return netReply;
 }
 
@@ -628,7 +628,7 @@ DapNetworkReply * DapSession::encRequest(const QString& reqData, const QString& 
 {
     DapNetworkReply * netReply = encRequest(reqData, url, subUrl, query, isCDB);
 
-    connect(netReply, &DapNetworkReply::finished, obj, slot);
+    connect(netReply, SIGNAL(finished()), obj, slot);
     /*connect(netReply, static_cast<void(QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error), [=] {
         if ((netReply->error() != QNetworkReply::NetworkError::NoError) && !netReply->isFinished()) {
             netReply->close();
@@ -642,7 +642,7 @@ DapNetworkReply * DapSession::encRequestRaw(const QByteArray& bData, const QStri
 {
     DapNetworkReply * netReply = encRequestRaw(bData, url, subUrl, query);
 
-    connect(netReply, &DapNetworkReply::finished, obj, slot);
+    connect(netReply, SIGNAL(finished()), obj, slot);
     /*connect(netReply, static_cast<void(QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error), [=] {
         if ((netReply->error() != QNetworkReply::NetworkError::NoError) && netReply->isRunning()) {
             netReply->abort();
@@ -655,7 +655,7 @@ DapNetworkReply * DapSession::requestRawToSite(const QString& dnsName, const QSt
 {
     DapNetworkReply * netReply = new DapNetworkReply;
     DapConnectClient::instance()->request_POST(dnsName, 443, url, bData, *netReply, ssl);
-    connect(netReply, &DapNetworkReply::finished, this, slot);
+    connect(netReply, SIGNAL(finished()), this, slot);
     return netReply;
 }
 

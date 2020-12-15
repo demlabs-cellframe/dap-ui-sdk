@@ -31,7 +31,7 @@ DapConnectClient::DapConnectClient(QObject *parent) :
 {
     m_httpClient = new DapNetworkAccessManager();
 //    m_httpClient->setProxy(QNetworkProxy::NoProxy);
-    connect(m_httpClient, &DapNetworkAccessManager::finished, this, &DapConnectClient::finished); //todo_m: связать сигнал завершения менеджера с коллбеком
+  //  connect(m_httpClient, &DapNetworkAccessManager::finished, this, &DapConnectClient::finished); //todo_m: связать сигнал завершения менеджера с коллбеком
 }
 
 void DapConnectClient::_rebuildNetworkManager()
@@ -41,7 +41,7 @@ void DapConnectClient::_rebuildNetworkManager()
     m_httpClient->deleteLater();
     m_httpClient = new DapNetworkAccessManager();
 //    m_httpClient->setProxy(QNetworkProxy::NoProxy);
-    connect(m_httpClient, &DapNetworkAccessManager::finished, this, &DapConnectClient::finished); //todo_m: связать сигнал завершения менеджера с коллбеком
+//    connect(m_httpClient, &DapNetworkAccessManager::finished, this, &DapConnectClient::finished); //todo_m: связать сигнал завершения менеджера с коллбеком
 }
 
 bool DapConnectClient::_buildRequest(QNetworkRequest& req, const QString& host,
