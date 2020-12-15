@@ -55,10 +55,10 @@ public:
         /*if (!DapNetworkMonitor::instance()->isTunGatewayDefined()) {
             return nullptr;
         }*/
-        DapNetworkReply *networkReply = new DapNetworkReply;
+        DapNetworkReply *networkReply = new DapNetworkReply();
         DapConnectClient::instance()->request_GET(host,
                                                   port,
-                                                  "/nodelist",
+                                                  "nodelist",
                                                   *networkReply,
                                                   false);
         DapReplyTimeout::set(networkReply, 15000); // 15 sec

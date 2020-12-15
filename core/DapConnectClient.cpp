@@ -73,7 +73,7 @@ bool DapConnectClient::_buildRequest(QNetworkRequest& req, const QString& host,
 void DapConnectClient::request_GET(const QString& host,  quint16 port, const QString & urlPath,
                            DapNetworkReply &a_netReply, bool ssl)
 {
-    m_httpClient->requestHttp_GET(host, port, urlPath, &a_netReply);
+    m_httpClient->requestHttp_GET(host, port, urlPath, a_netReply);
 }
 
 void DapConnectClient::request_POST(const QString& host,  quint16 port,

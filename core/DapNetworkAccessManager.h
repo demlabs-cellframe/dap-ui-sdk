@@ -15,7 +15,7 @@ class DapNetworkAccessManager : public QObject
 public:
     explicit DapNetworkAccessManager();
     void requestHttp_POST(const QString &address, const uint16_t &port, const QString & urlPath, const QByteArray & body, DapNetworkReply *netReply);
-    void requestHttp_GET(const QString &address, const uint16_t &port, const QString & urlPath, DapNetworkReply *netReply);
+    void requestHttp_GET(const QString &address, const uint16_t &port, const QString & urlPath, DapNetworkReply &netReply);
 
     bool isRunning(){ return bRunning; };
 

@@ -25,7 +25,7 @@ void DapNetworkAccessManager::requestHttp_POST(const QString &address, const uin
                             NULL);
 }
 
-void DapNetworkAccessManager::requestHttp_GET(const QString &address, const uint16_t &port, const QString & urlPath, DapNetworkReply *netReply)
+void DapNetworkAccessManager::requestHttp_GET(const QString &address, const uint16_t &port, const QString & urlPath, DapNetworkReply &netReply)
 {
     qDebug() << "Dap Client HTTP Requested - GET: " << urlPath ;
     bRunning = true;
