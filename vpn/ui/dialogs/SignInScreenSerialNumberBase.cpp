@@ -105,11 +105,6 @@ void SignInScreenSerialNumberBase::initVariantUi(QWidget *a_widget)
     ScreenWithScreenPopupsAbstract::initVariantUi(a_widget);
 }
 
-void SignInScreenSerialNumberBase::setDefaultStatusText()
-{
-    Utils::setPropertyAndUpdateStyle(m_ui->lblStatusMessage, Properties::WRONG, false);
-    m_ui->lblStatusMessage->setText( LOGIN_STATUS_TEXT_DEFAULT);
-}
 
 void SignInScreenSerialNumberBase::adjustStateMachine()
 {
@@ -136,8 +131,7 @@ void SignInScreenSerialNumberBase::adjustStateMachine()
     m_stt_serialKey_unactivated_entered->addTransition(m_ui->ledSerialKey, &SerialKeyField::textChangedAndCleaned, m_stt_serialKey_unactivated_empty);
 
     connect(m_ui->ledSerialKey, &SerialKeyField::textChanged, [this]{
-        setDefaultStatusText();
-      // m_ui->lblStatusMessage->clear();
+       m_ui->lblStatusMessage->clear();
     });
 
 
@@ -158,10 +152,8 @@ void SignInScreenSerialNumberBase::adjustStateMachine()
     m_stt_serviceState_connecting->addTransition(this, &SignInScreenSerialNumberBase::serviceConnected, m_stt_serviceState_connected);
 
 
-    connect(m_stt_serialKey_unactivated, &QState::entered, [=]{
-    setDefaultStatusText();
+    connect(m_stt_serialKey_unactivated, &QState::entered, []{
         qDebug() << " ============ m_stt_serialKey_unactivated entered";});
-
     connect(m_stt_serialKey_unactivated_empty, &QState::entered, []{
         qDebug() << " ============ m_stt_serialKey_unactivated_empty entered";
     });
@@ -172,7 +164,9 @@ void SignInScreenSerialNumberBase::adjustStateMachine()
     connect(m_stt_serialKey_activated, &QState::entered, []{qDebug() << " ============ m_stt_serialKey_activated entered";});
     connect(m_stt_serverState_disconnected, &QState::entered, []{qDebug() << " ============ m_stt_serverState_normal entered";});
     connect(m_stt_serverState_loading, &QState::entered, []{qDebug() << " ============ m_stt_serverState_loading entered";});
-    connect(m_stt_serverState_loading_connecting, &QState::entered, []{qDebug() << " ============ m_stt_serverState_loading_connecting entered";});
+    connect(m_stt_serverState_loading_connecting, &QState::entered, [this]{
+        Utils::setPropertyAndUpdateStyle(m_ui->lblStatusMessage, Properties::WRONG, false);
+        qDebug() << " ============ m_stt_serverState_loading_connecting entered";});
     connect(m_stt_serverState_loading_serverList, &QState::entered, []{qDebug() << " ============ m_stt_serverState_loading_serverList entered";});
     connect(m_stt_serviceState_connected, &QState::entered, []{qDebug() << " ============ m_stt_serviceState_connected entered";});
     connect(m_stt_serviceState_connecting, &QState::entered, []{qDebug() << " ============ m_stt_serviceState_connecting entered";});
