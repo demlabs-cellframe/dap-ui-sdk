@@ -51,9 +51,17 @@ const QString DapSession::URL_SIGN_UP       ("wp-json/dapvpn/v1/register/");
 DapSession::DapSession(QObject * obj, int requestTimeout) :
     QObject(obj), m_requestTimeout(requestTimeout)
 {
+    m_netAuthorizeReply = new DapNetworkReply;
+
+    m_netEncryptReply       = new DapNetworkReply;
+    m_netAuthorizeReply     = new DapNetworkReply;
+    m_netLogoutReply        = new DapNetworkReply;
+    m_netSendBugReportReply = new DapNetworkReply;
+    m_netSignUpReply        = new DapNetworkReply;
+
     m_dapCrypt = new DapCrypt;
     m_dapCryptCDB = nullptr;
-//    m_netAccessManager = new DapNetworkAccessManager;
+    m_httpClient = new DapNetworkAccessManager;
 }
 
 DapSession::~DapSession()
@@ -230,8 +238,8 @@ void DapSession::onEnc()
         return;
     }
     QByteArray arrData;
-    QString dsgf = m_netAuthorizeReply->getReplyData();
-    arrData.append(m_netAuthorizeReply->getReplyData().toUtf8());
+    QString dsgf = m_netEncryptReply->getReplyData();
+    arrData.append(m_netEncryptReply->getReplyData().toUtf8());
     if(arrData.isEmpty()) {
         qWarning() << "Empty enc reply...";
         emit errorEncryptInitialization("Empty enc reply");

@@ -116,12 +116,11 @@ protected:
     QString m_cdbAuthTxCond, m_cdbAuthNet, m_cdbAuthToken;
 
     DapNetworkReply * m_netEncryptReply;
-//    QNetworkReply * m_netAuthorizeReply;
+    DapNetworkReply * m_netAuthorizeReply;
     DapNetworkReply * m_netLogoutReply;
     DapNetworkReply * m_netSendBugReportReply;
     DapNetworkReply * m_netSignUpReply;
 
-    DapNetworkReply *m_netAuthorizeReply;
 
     QMap<QString,QString> m_userInform;
 
