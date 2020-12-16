@@ -38,14 +38,18 @@
 
 /// from "BrandTextProperties.h"
 #ifndef DASHBOARD_TEXT_CONNECT
-#define DASHBOARD_TEXT_CONNECT "CONNECT"
+#define DASHBOARD_TEXT_CONNECT QObject::tr("CONNECT")
 #endif
 
 /// from "BrandTextProperties.h"
 #ifndef DASHBOARD_TEXT_DISCONNECT
-#define DASHBOARD_TEXT_DISCONNECT "DISCONNECT"
+#define DASHBOARD_TEXT_DISCONNECT QObject::tr("DISCONNECT")
 #endif
 
+/// from "BrandTextProperties.h"
+#ifndef DASHBOARD_TEXT_CONNECTING_TO
+#define DASHBOARD_TEXT_CONNECTING_TO QObject::tr("Connected to %1")
+#endif
 
 class MainScreenBase : public AdaptiveScreen
 {

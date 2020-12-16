@@ -28,7 +28,8 @@ SOURCES += \
     $$PWD/ClickableLabel.cpp \
     $$PWD/CustomTextEdit.cpp \
     $$PWD/VersionLabel.cpp \
-    $$PWD/WidgetInputSizeController.cpp
+    $$PWD/WidgetInputSizeController.cpp \
+    $$PWD/LabelToLink.cpp
 
 
 HEADERS += \
@@ -61,7 +62,8 @@ HEADERS += \
     $$PWD/ClickableLabel.h \
     $$PWD/CustomTextEdit.h \
     $$PWD/VersionLabel.h \
-    $$PWD/WidgetInputSizeController.h
+    $$PWD/WidgetInputSizeController.h \
+    $$PWD/LabelToLink.h
 
 INCLUDEPATH += $$PWD
 INCLUDEPATH += $$PWD/WidgetDelegateListView
