@@ -47,10 +47,10 @@ void MainScreenBase::setState(ConnectionState a_state)
 #ifndef Q_OS_ANDROID
     if(a_state == ConnectionState::Disconnected)
     {
-        m_ui->btnConnection->setText(tr(DASHBOARD_TEXT_CONNECT));
+        m_ui->btnConnection->setText(DASHBOARD_TEXT_CONNECT);
     }
     else {
-        m_ui->btnConnection->setText(tr(DASHBOARD_TEXT_DISCONNECT));
+        m_ui->btnConnection->setText(DASHBOARD_TEXT_DISCONNECT);
     }
 #endif
 
@@ -165,7 +165,7 @@ QString MainScreenBase::statusText()
     case ConnectionState::Connecting:
         return tr("Connecting...");
     case ConnectionState::Connected:
-        return tr("Connected to %1").arg(m_currentServer);
+        return DASHBOARD_TEXT_CONNECTING_TO.arg(m_currentServer);
     case ConnectionState::Disconnecting:
         return tr("Disconnecting...");
     case ConnectionState::ServerChanging:
