@@ -93,8 +93,6 @@ protected:
 
     virtual QList<CustomPopup *> customPopups() override;
 
-    void setDefaultStatusText();
-
     QScopedPointer<Ui::SignInScreen> m_ui;
 
 
