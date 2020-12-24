@@ -42,7 +42,7 @@ void DapCmdServersList::handle(const QJsonObject* params)
     connect(reply, &DapServersListNetworkReply::sigNetworkError, [=]{
         qWarning()<< "Network error: " << reply->errorString();
         rotateList();
-        if (reply->networkReplyError() == QNetworkReply::UnknownNetworkError)
+        if (reply->networkReplyError() == DapNetworkReply::UnknownNetworkError)
             sendSimpleError(-32003, reply->errorString());
         else
             sendSimpleError(-32002, reply->errorString());

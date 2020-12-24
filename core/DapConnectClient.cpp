@@ -21,6 +21,7 @@
 
 #include "DapConnectClient.h"
 #include <QNetworkProxy>
+#include "dap_client_http.h"
 
 #define HTTP_ADDRESS_URL_TEMPLATE(ssl, host, port, url) \
     QString("https://%1:%2%3").arg(host).arg(port).arg(url)
@@ -28,9 +29,9 @@
 DapConnectClient::DapConnectClient(QObject *parent) :
     QObject(parent)
 {
-    m_httpClient = new QNetworkAccessManager(this);
-    m_httpClient->setProxy(QNetworkProxy::NoProxy);
-    connect(m_httpClient, &QNetworkAccessManager::finished, this, &DapConnectClient::finished);
+    m_httpClient = new DapNetworkAccessManager();
+//    m_httpClient->setProxy(QNetworkProxy::NoProxy);
+  //  connect(m_httpClient, &DapNetworkAccessManager::finished, this, &DapConnectClient::finished); //todo_m: связать сигнал завершения менеджера с коллбеком
 }
 
 void DapConnectClient::_rebuildNetworkManager()
@@ -38,9 +39,9 @@ void DapConnectClient::_rebuildNetworkManager()
     qDebug() << "Restarting NAM";
     abortRequests();
     m_httpClient->deleteLater();
-    m_httpClient = new QNetworkAccessManager(this);
-    m_httpClient->setProxy(QNetworkProxy::NoProxy);
-    connect(m_httpClient, &QNetworkAccessManager::finished, this, &DapConnectClient::finished);
+    m_httpClient = new DapNetworkAccessManager();
+//    m_httpClient->setProxy(QNetworkProxy::NoProxy);
+//    connect(m_httpClient, &DapNetworkAccessManager::finished, this, &DapConnectClient::finished); //todo_m: связать сигнал завершения менеджера с коллбеком
 }
 
 bool DapConnectClient::_buildRequest(QNetworkRequest& req, const QString& host,
@@ -69,25 +70,14 @@ bool DapConnectClient::_buildRequest(QNetworkRequest& req, const QString& host,
     return true;
 }
 
-QNetworkReply* DapConnectClient::request_GET(const QString& host,  quint16 port, const QString & urlPath,
-                           bool ssl, const QVector<HttpRequestHeader>* headers)
+void DapConnectClient::request_GET(const QString& host,  quint16 port, const QString & urlPath,
+                           DapNetworkReply &a_netReply, const QString& headers, bool ssl)
 {
-    QNetworkRequest req;
-    if(!_buildRequest(req, host, port, urlPath, ssl, headers)) {
-        return Q_NULLPTR;
-    }
-    auto netReply = m_httpClient->get(req);
-    return netReply;
+    m_httpClient->requestHttp_GET(host, port, urlPath, headers, a_netReply);
 }
 
-QNetworkReply* DapConnectClient::request_POST(const QString& host,  quint16 port,
-                            const QString & urlPath, const QByteArray& data, bool ssl,
-                            const QVector<HttpRequestHeader>* headers)
+void DapConnectClient::request_POST(const QString& host,  quint16 port,
+                            const QString & urlPath, const QByteArray& data, DapNetworkReply &a_netReply, const QString& headers, bool ssl)
 {
-    QNetworkRequest req;
-    if(!_buildRequest(req, host, port, urlPath, ssl, headers)) {
-        return Q_NULLPTR;
-    }
-    auto netReply = m_httpClient->post(req, data);
-    return netReply;
+    m_httpClient->requestHttp_POST(host, port, urlPath, data, headers, a_netReply);
 }

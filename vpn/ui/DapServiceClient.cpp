@@ -56,8 +56,10 @@ void DapServiceClient::connectToService()
 {
     sockCtl->abort(); // sometimes need to abort previous pending connecting to connect then faster
 #ifdef DAP_UI_SOCKET_TCP
+    qDebug() << "Connecting to localhost: " << SERVICE_LOCAL_PORT;
     sockCtl->connectToHost(QHostAddress::LocalHost, SERVICE_LOCAL_PORT);
 #else
+    qDebug() << "Connecting to local server " << DAP_BRAND;
     sockCtl->connectToServer(DAP_BRAND);
 #endif
 }

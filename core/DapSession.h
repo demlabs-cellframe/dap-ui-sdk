@@ -18,10 +18,8 @@
     along with any DAP based project.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef DAPSESSION_H
 #define DAPSESSION_H
-
 
 #include <QCoreApplication>
 #include <QString>
@@ -32,6 +30,11 @@
 #include "DapConnectClient.h"
 #include <DapCrypt.h>
 #include "DapDataLocal.h"
+
+#include "dap_client_http.h"
+#include "DapNetworkAccessManager.h"
+#include "DapNetworkReply.h"
+
 
 class DapSession : public QObject
 {
@@ -80,25 +83,25 @@ public:
     DapCrypt* getDapCrypt() { return m_dapCrypt; }
     DapCrypt* getDapCryptCDB() { return m_dapCryptCDB; }
 public slots:
-    QNetworkReply * encryptInitRequest();
-    QNetworkReply * requestServerPublicKey();
-    QNetworkReply * authorizeRequest(const QString& a_user, const QString& a_password,
+    DapNetworkReply * encryptInitRequest();
+    DapNetworkReply * requestServerPublicKey();
+    DapNetworkReply * authorizeRequest(const QString& a_user, const QString& a_password,
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
-    QNetworkReply * authorizeByKeyRequest(const QString& a_serial = QString(),
+    DapNetworkReply * authorizeByKeyRequest(const QString& a_serial = QString(),
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
-    QNetworkReply * activateKeyRequest(const QString& a_serial = QString(), const QByteArray& a_signed = QByteArray(),
+    DapNetworkReply * activateKeyRequest(const QString& a_serial = QString(), const QByteArray& a_signed = QByteArray(),
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
-    QNetworkReply * logoutRequest();
-    QNetworkReply *streamOpenRequest(const QString& subUrl, const QString& query);
-    QNetworkReply *streamOpenRequest(const QString& subUrl, const QString& query, QObject* obj, const char *slot);
+    DapNetworkReply * logoutRequest();
+    DapNetworkReply *streamOpenRequest(const QString& subUrl, const QString& query);
+    DapNetworkReply *streamOpenRequest(const QString& subUrl, const QString& query, QObject* obj, const char *slot);
 
     void sendSignUpRequest(const QString &host, const QString &email, const QString &password);
     void sendBugReport(const QByteArray &data);
     void getNews();
 
-    void abortEncryptionInitRequest() { m_netEncryptReply->abort(); }
-    void abortAuthorizeRequest()      { m_netAuthorizeReply->abort(); }
-    void abortLogoutRequest()         { m_netLogoutReply->abort();  }
+//    void abortEncryptionInitRequest() { m_netEncryptReply->abort(); }
+//    void abortAuthorizeRequest()      { m_netAuthorizeReply->abort(); }
+//    void abortLogoutRequest()         { m_netLogoutReply->abort();  }
     void sendTxBackRequest(const QString &tx);
 protected:
     using HttpHeaders = QVector<HttpRequestHeader>;
@@ -112,47 +115,58 @@ protected:
 
     QString m_cdbAuthTxCond, m_cdbAuthNet, m_cdbAuthToken;
 
-    QNetworkReply * m_netEncryptReply;
-    QNetworkReply * m_netAuthorizeReply;
-    QNetworkReply * m_netLogoutReply;
-    QNetworkReply * m_netSendBugReportReply;
-    QNetworkReply * m_netSignUpReply;
+    DapNetworkReply * m_netEncryptReply;
+//    QNetworkReply * m_netAuthorizeReply;
+    DapNetworkReply * m_netLogoutReply;
+    DapNetworkReply * m_netSendBugReportReply;
+    DapNetworkReply * m_netSignUpReply;
+
+    DapNetworkReply *m_netAuthorizeReply;
 
     QMap<QString,QString> m_userInform;
 
-    QNetworkReply* encRequest(const QString& reqData,const QString& url,
+    DapNetworkReply* encRequest(const QString& reqData,const QString& url,
                               const QString& subUrl,const QString& query, bool isCDB);
 
-    QNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url,
+    DapNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url,
                                  const QString& subUrl, const QString& query);
 
-    QNetworkReply* encRequest(const QString& reqData, const QString& url, const QString& subUrl,
+    DapNetworkReply* encRequest(const QString& reqData, const QString& url, const QString& subUrl,
                                const QString& query, QObject* obj, const char* slot, bool isCDB);
 
-    QNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url, const QString& subUrl,
+    DapNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url, const QString& subUrl,
                                const QString& query, QObject* obj, const char* slot);
 
 
-    QNetworkReply* encRequest(const QString& reqData, const QString& url,
+    DapNetworkReply* encRequest(const QString& reqData, const QString& url,
                     const QString& subUrl, const QString& query, const char* slot, bool isCDB = false)
     {
         return encRequest(reqData, url, subUrl, query, this, slot, isCDB);
     }
 
-    QNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url,
+    DapNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url,
                     const QString& subUrl, const QString& query, const char* slot)
     {
         return encRequestRaw(bData, url, subUrl, query, this, slot);
     }
 
-    QNetworkReply* requestRawToSite(const QString& dnsName, const QString& url, const QByteArray& bData, const char * slot, bool ssl, const QVector<HttpRequestHeader>* headers);
+    DapNetworkReply* requestRawToSite(const QString& dnsName, const QString& url, const QByteArray& bData, const char * slot, bool ssl, const QString& headers);
 
     void fillSessionHttpHeaders(HttpHeaders& headers, bool isCDBSession = false) const;
 private:
+    DapNetworkAccessManager * m_httpClient;
     DapCrypt* m_dapCrypt, *m_dapCryptCDB;
     bool isSerial = false;
-    QNetworkReply* _buildNetworkReplyReq(const QString& urlPath,
-                                         const QByteArray* data = Q_NULLPTR, bool isCDB = false);
+    DapNetworkReply* _buildNetworkReplyReq(const QString& urlPath,
+                                         const QByteArray* data = Q_NULLPTR, bool isCDB = false/*, DapNetworkReply *netReply = nullptr*/);
+
+//    void requestDapClientHttp(const QString& host,  quint16 port, const QByteArray& data, const QString & urlPath, bool isCDB = false);
+
+//    void requestDapClientHttp(const QString & urlPath, const QByteArray & body, bool isCDB = false);
+
+//    static void responseCallback(void * a_response, size_t a_response_size, void * a_obj);
+//    static void responseCallbackError(int a_err_code, void * a_obj);
+
 private slots:
     void onEnc();
     //void errorSlt(QNetworkReply::NetworkError);

@@ -8,6 +8,8 @@ SOURCES += \
     $$PWD/DapBugReportData.cpp \
     $$PWD/DapDataLocal.cpp \
     $$PWD/DapLogHandler.cpp \
+    $$PWD/DapNetworkAccessManager.cpp \
+    $$PWD/DapNetworkReply.cpp \
     $$PWD/DapSerialKeyData.cpp \
     $$PWD/DapServersData.cpp \
     $$PWD/DapSession.cpp \
@@ -27,6 +29,8 @@ HEADERS += \
     $$PWD/DapBugReportData.h \
     $$PWD/DapDataLocal.h \
     $$PWD/DapLogHandler.h \
+    $$PWD/DapNetworkAccessManager.h \
+    $$PWD/DapNetworkReply.h \
     $$PWD/DapSerialKeyData.h \
     $$PWD/DapServersData.h \
     $$PWD/DapSession.h \
