@@ -27,6 +27,9 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QDebug>
+
+#include "DapNetworkAccessManager.h"
+#include "DapNetworkReply.h"
 using HttpRequestHeader = QPair<const QString, const QString>;
 
 class DapConnectClient : public QObject
@@ -42,6 +45,7 @@ private:
     DapConnectClient(const DapConnectClient&) = delete;
     DapConnectClient& operator=(const DapConnectClient&) = delete;
 public:
+    DapNetworkAccessManager * m_httpClient;
     static DapConnectClient* instance()  {static DapConnectClient client; return &client;}
 
     /* Example call: request_GET("google.com", &{
@@ -50,13 +54,11 @@ public:
      *                                         }); */
 
     // if headers nullptr sets Content-Type Header by default "text/plain"
-    QNetworkReply* request_GET(const QString& host,  quint16 port,
-                               const QString & urlPath, bool ssl = false,
-                               const QVector<HttpRequestHeader>* headers = Q_NULLPTR);
+    void request_GET(const QString& host,  quint16 port,
+                               const QString & urlPath, DapNetworkReply &a_netReply, const QString &headers = "", bool ssl = false);
 
-    QNetworkReply* request_POST(const QString& host,  quint16 port,
-                                const QString & urlPath, const QByteArray& data, bool ssl = false,
-                                const QVector<HttpRequestHeader>* headers = Q_NULLPTR);
+    void request_POST(const QString& host,  quint16 port,
+                                const QString & urlPath, const QByteArray& data, DapNetworkReply &a_netReply, const QString &headers = "", bool ssl = false);
 
     void abortRequests() {
         for (auto &l_rpl : m_httpClient->findChildren<QNetworkReply*>()) {
@@ -67,10 +69,6 @@ public:
         }
     }
     void _rebuildNetworkManager();
-    QNetworkAccessManager *getNAM() { return m_httpClient; }
-
-private:
-    QNetworkAccessManager * m_httpClient;
 private slots:
     // For clear all network reply objects
     void finished(QNetworkReply *reply) { reply->deleteLater(); }

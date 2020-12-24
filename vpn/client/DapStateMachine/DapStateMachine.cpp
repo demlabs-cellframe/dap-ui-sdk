@@ -1,10 +1,8 @@
 #include "DapStateMachine.h"
 #include "DapCmdConnect.h"
 
-DapStateMachine::DapStateMachine(QObject *parent) : QObject(parent)
+DapStateMachine::DapStateMachine(QObject *parent) : QObject(parent), sm(QState::ParallelStates,this)
 {
-    sm.setChildMode(QState::ParallelStates);
-
     sessionStates.init(sm, "session");
     streamStates.init(sm, "stream");
     tunnelStates.init(sm, "tunnel");

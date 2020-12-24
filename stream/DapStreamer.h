@@ -48,7 +48,7 @@ public:
     ~DapStreamer();
     bool isConnected() { return m_streamSocket->isOpen(); }
     int upstreamSocket() { return m_streamSocket->isOpen()?m_streamSocket->socketDescriptor(): -1; }
-    QNetworkReply::NetworkError lastErr() { return m_network_reply->error(); }
+    DapNetworkReply::DapNetworkError lastErr() { return m_network_reply->error(); }
     DapChThread* addChProc(char chId, DapChBase* obj);
     void setStreamOpened(bool b) { m_isStreamOpened = b; }
     void setStreamTimeoutCheck(bool b) { m_timeoutStreamCheck = b; }
@@ -67,7 +67,7 @@ protected:
     QByteArray m_buf;
 
     int m_dapDataPosition;
-    QNetworkReply * m_network_reply = Q_NULLPTR;
+    DapNetworkReply * m_network_reply = Q_NULLPTR;
 
     SafeartsStreamState m_streamState;
     volatile bool m_isStreamOpened;
@@ -115,7 +115,7 @@ public slots:
                    ,"");
     }
 
-    void abortStreamRequest() { m_network_reply->abort(); }
+//    void abortStreamRequest() { m_network_reply->abort(); }
 
     void streamOpen(const QString& subUrl, const QString& query);
     void streamClose();
@@ -136,7 +136,7 @@ signals:
 
     /* StreamOpen error signals */
     void sigStreamOpenHttpError(int httpCode);
-    void sigStreamOpenNetworkError(QNetworkReply::NetworkError);
+    void sigStreamOpenNetworkError(DapNetworkReply::DapNetworkError);
     void sigStreamOpenBadResponseError();
 
     // all another errors
