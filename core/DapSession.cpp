@@ -104,7 +104,7 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath,
                                                      urlPath, *netReply,
                                                      QString("KeyID: %1\r\n").arg(isCDB ? m_sessionKeyID_CDB : m_sessionKeyID));
 
-    DapReplyTimeout::set(netReply, m_requestTimeout);
+    //DapReplyTimeout::set(netReply, m_requestTimeout);
     return netReply;
 }
 
@@ -181,7 +181,7 @@ void DapSession::getNews()
     DapNetworkReply *m_netNewsReply = new DapNetworkReply;
     DapConnectClient::instance()->request_GET(DapDataLocal::instance()->cdbServersList().front(), 80, URL_NEWS, *m_netNewsReply);
 
-    DapReplyTimeout::set(m_netNewsReply, 10000);
+    //DapReplyTimeout::set(m_netNewsReply, 10000);
 
     connect(m_netNewsReply, &DapNetworkReply::finished, this, [=]() {
         if(m_netNewsReply && (m_netNewsReply->error() != DapNetworkReply::DapNetworkError::NoError)) {
