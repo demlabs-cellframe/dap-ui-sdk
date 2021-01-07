@@ -69,7 +69,4 @@ public:
         }
     }
     void _rebuildNetworkManager();
-private slots:
-    // For clear all network reply objects
-    void finished(QNetworkReply *reply) { reply->deleteLater(); }
 };
