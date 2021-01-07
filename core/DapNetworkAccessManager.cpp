@@ -30,6 +30,7 @@ void DapNetworkAccessManager::responseCallback(void * a_response, size_t a_respo
     qDebug() << "Dap Client HTTP Request: response received, size=" << a_response_size;
     reply->setError(DapNetworkReply::DapNetworkError::NoError);
     emit reply->finished();
+    reply->deleteLater();
 }
 
 void DapNetworkAccessManager::responseCallbackError(int a_err_code, void * a_obj)
@@ -39,4 +40,5 @@ void DapNetworkAccessManager::responseCallbackError(int a_err_code, void * a_obj
     reply->setError(DapNetworkReply::DapNetworkError::Error);
     qWarning() << "Dap Client HTTP Request: error code " << a_err_code ;
     emit reply->finished();
+    reply->deleteLater();
 }
