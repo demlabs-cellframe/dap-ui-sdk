@@ -40,5 +40,6 @@ void DapNetworkAccessManager::responseCallbackError(int a_err_code, void * a_obj
     reply->setError(DapNetworkReply::DapNetworkError::Error);
     qWarning() << "Dap Client HTTP Request: error code " << a_err_code ;
     emit reply->finished();
+    emit reply->sigError();
     reply->deleteLater();
 }
