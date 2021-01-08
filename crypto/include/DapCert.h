@@ -51,6 +51,7 @@ namespace Dap {
             QString exportPKeyBase64();
             int exportPKeyToFile   (const QString&);
             int importPKeyFromFile (const QString&);
+            int importPKeyFromOldFile (const QString&);
             QString storagePath     ();
             QString pkeyHash        ();
         };

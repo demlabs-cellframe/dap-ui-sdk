@@ -219,6 +219,29 @@ int Cert::importPKeyFromFile(const QString &a_path) {
     return dap_enc_key_deserealize_pub_key(key(), buf, (size_t)l_len);
 }
 
+int Cert::importPKeyFromOldFile(const QString &a_path) {
+    FILE *l_file = fopen(qPrintable(a_path), "rb");
+    if (!l_file) {
+        return 1;
+    }
+    fseek(l_file, 0L, SEEK_END);
+    long l_len = ftell(l_file);
+    fseek(l_file, 0L, SEEK_SET);
+    byte_t buf[l_len];
+    fread(buf, 1, (size_t)l_len, l_file);
+    fclose(l_file);
+
+
+    dap_enc_key_t *l_temp =  dap_enc_key_new(m_cert->enc_key->type);
+    if (dap_enc_key_deserealize_pub_key_old(l_temp, buf, (size_t)l_len) != 0) {
+        dap_enc_key_delete(l_temp);
+        return 2;
+    }
+    dap_enc_key_delete(l_temp);
+    return dap_enc_key_deserealize_pub_key_old(key(), buf, (size_t)l_len);
+}
+
+
 dap_enc_key_t* Cert::key() {
     return m_cert->enc_key;
 }
