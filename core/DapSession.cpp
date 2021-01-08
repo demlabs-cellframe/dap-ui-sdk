@@ -95,6 +95,9 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath,
                                                  const QByteArray* data, bool isCDB/*, DapNetworkReply *netReply*/)
 {
     DapNetworkReply *netReply = new DapNetworkReply();
+    connect(netReply, &DapNetworkReply::sigError, this, [=] {
+        emit errorNetwork("Connection error");
+    });
     data ? DapConnectClient::instance()->request_POST(isCDB ? m_CDBaddress : m_upstreamAddress,
                                                       isCDB ? m_CDBport : m_upstreamPort,
                                                       urlPath, *data, *netReply,
@@ -103,8 +106,6 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath,
                                                      isCDB ? m_CDBport : m_upstreamPort,
                                                      urlPath, *netReply,
                                                      QString("KeyID: %1\r\n").arg(isCDB ? m_sessionKeyID_CDB : m_sessionKeyID));
-
-    //DapReplyTimeout::set(netReply, m_requestTimeout);
     return netReply;
 }
 
@@ -118,7 +119,6 @@ DapNetworkReply* DapSession::requestServerPublicKey()
     m_enc_type          = DAP_ENC_KEY_TYPE_BF_CBC;
     m_pkey_exch_type    = DAP_ENC_KEY_TYPE_MSRLN;
 
-    qDebug() << "Alice message size "<< aliceMessage.size();
     m_netEncryptReply = _buildNetworkReplyReq(QString("%1/gd4y5yh78w42aaagh?enc_type=%2,pkey_exchange_type=%3,pkey_exchange_size=%4")
                                               .arg(URL_ENCRYPT)
                                               .arg(m_enc_type)
@@ -275,20 +275,6 @@ void DapSession::onEnc()
     emit encryptInitialized();
 }
 
-void DapSession::fillSessionHttpHeaders(HttpHeaders& headers, bool isCDBSession) const
-{
-    auto setHeader = [&](const QString& field, const QString& value) {
-        if(!value.isEmpty()) {
-            headers.append({field, value});
-        }
-    };
-
-    setHeader("Content-Type","text/plain");
-    setHeader("Cookie", m_cookie);
-    setHeader("KeyID", isCDBSession ? m_sessionKeyID_CDB : m_sessionKeyID);
-    setHeader("User-Agent", m_userAgent);
-}
-
 void DapSession::setUserAgent(const QString& userAgent)
 {
     m_userAgent = userAgent;
@@ -367,19 +353,19 @@ void DapSession::setDapUri(const QString& addr, const uint16_t port)
 
 void DapSession::onKeyActivated() {
     qInfo() << "Activation reply";
-    if (m_netAuthorizeReply && (m_netAuthorizeReply->error() != DapNetworkReply::DapNetworkError::NoError)) {
-        qCritical() << m_netAuthorizeReply->errorString();
+    if (m_netKeyActivateReply && (m_netKeyActivateReply->error() != DapNetworkReply::DapNetworkError::NoError)) {
+        qCritical() << m_netKeyActivateReply->errorString();
         emit errorAuthorization("Key activation error, please report");
         return;
     }
 
-    if(m_netAuthorizeReply->getReplyData().size() <= 0) {
+    if(m_netKeyActivateReply->getReplyData().size() <= 0) {
         emit errorAuthorization("Wrong answer from server");
         return;
     }
 
     QByteArray dByteArr;
-    m_dapCrypt->decode(m_netAuthorizeReply->getReplyData(), dByteArr, KeyRoleSession);
+    m_dapCrypt->decode(m_netKeyActivateReply->getReplyData(), dByteArr, KeyRoleSession);
     QString op_code = QString::fromLatin1(dByteArr).left(4);
     if (op_code == OP_CODE_SERIAL_ACTIVATED) {
         qInfo() << "Serial key activated, try to authorize";
@@ -687,11 +673,11 @@ DapNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const Q
     int buf64len = dap_enc_base64_encode(a_signed.constData(), a_signed.size(), buf64, DAP_ENC_DATA_TYPE_B64_URLSAFE);
     QByteArray a_signedB64(buf64, buf64len);
     QByteArray bData = QString(a_serial + " ").toLocal8Bit() + a_signedB64 + QString(" " + a_domain + " " + a_pkey).toLocal8Bit();
-    m_netAuthorizeReply = encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()));
-    if(m_netAuthorizeReply == Q_NULLPTR) {
+    m_netKeyActivateReply = encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()));
+    if(m_netKeyActivateReply == Q_NULLPTR) {
         qCritical() << "Can't send key activation request";
         emit errorAuthorization("Key activation error, please report");
         return Q_NULLPTR;
     }
-    return m_netAuthorizeReply;
+    return m_netKeyActivateReply;
 }
