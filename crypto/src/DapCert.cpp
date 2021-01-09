@@ -36,13 +36,20 @@ using namespace Dap;
 using namespace Dap::Crypto;
 
 /**
+ * @brief Cert::Cert
+ */
+void Cert::init()
+{
+    dap_enc_init();
+}
+
+/**
  * @brief Cert::generate
  * @param a_type
  * @return
  */
 Cert * Cert::generate(const QString& a_name, KeySignType a_type)
 {
-    dap_enc_init();
     Cert * ret = new Cert();
     ret->m_cert = dap_cert_generate_mem(a_name.toLatin1().constData() ,
                                                    KeySign::typeToEncType(a_type) );
@@ -51,7 +58,6 @@ Cert * Cert::generate(const QString& a_name, KeySignType a_type)
 
 Cert * Cert::generate(const QString& a_name, const QString& a_seed, KeySignType a_type)
 {
-    dap_enc_init();
     Cert * ret = new Cert();
     ret->m_cert = dap_cert_generate_mem_with_seed(a_name.toLatin1().constData() ,
                                                    KeySign::typeToEncType(a_type), qPrintable(a_seed), a_seed.length() );
@@ -133,7 +139,7 @@ Cert::~Cert()
 void Cert::sign(const QByteArray & a_data, QByteArray & a_output)
 {
     dap_sign_t * sign = dap_cert_sign( m_cert, a_data.constData(), static_cast<size_t>(a_data.size()), 0 );
-    qInfo() << "4554 pkey_size " << sign->header.sign_pkey_size << " sign_size " << sign->header.sign_size << "and total: " << dap_sign_get_size(sign);
+    qInfo() << "Cert::sign call with pkey_size " << sign->header.sign_pkey_size << " sign_size " << sign->header.sign_size << "and total: " << dap_sign_get_size(sign);
     a_output.append(  QByteArray( reinterpret_cast<char*>(sign), static_cast<int>(dap_sign_get_size( sign )) ));
     DAP_DEL_Z(sign)
 }
@@ -211,11 +217,12 @@ int Cert::importPKeyFromFile(const QString &a_path) {
     fclose(l_file);
 
     dap_enc_key_t *l_temp =  dap_enc_key_new(m_cert->enc_key->type);
-    if (dap_enc_key_deserealize_pub_key(l_temp, buf, (size_t)l_len) != 0) {
+    if ( dap_enc_key_deserealize_pub_key(l_temp, buf, (size_t)l_len) != 0) {
         dap_enc_key_delete(l_temp);
         return 2;
     }
     dap_enc_key_delete(l_temp);
+
     return dap_enc_key_deserealize_pub_key(key(), buf, (size_t)l_len);
 }
 

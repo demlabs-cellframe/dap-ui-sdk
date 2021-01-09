@@ -34,8 +34,10 @@ namespace Dap {
         {
         protected:
             dap_cert_t * m_cert = nullptr;
-            Cert(){ }
+            Cert(){};
         public:
+            static void init();
+
             static Cert * generate(const QString& a_name, KeySignType a_type);
             static Cert * generate(const QString& a_name, const QString& a_seed, KeySignType a_type);
             static Cert * load(const QByteArray& a_certData);
