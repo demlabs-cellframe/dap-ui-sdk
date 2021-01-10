@@ -37,9 +37,8 @@ void DapNetworkAccessManager::responseCallbackError(int a_err_code, void * a_obj
 {
     DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
 //    manager->bRunning = false;
-    reply->setError(DapNetworkReply::DapNetworkError::Error);
+    reply->setError(static_cast<DapNetworkReply::DapNetworkError>(a_err_code));
     qWarning() << "Dap Client HTTP Request: error code " << a_err_code ;
-    emit reply->finished();
     emit reply->sigError();
     reply->deleteLater();
 }
