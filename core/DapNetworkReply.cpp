@@ -8,6 +8,5 @@ DapNetworkReply::DapNetworkReply()
 
 DapNetworkReply::DapNetworkError DapNetworkReply::error() const
 {
-    int test = 3;
     return m_error;
 }

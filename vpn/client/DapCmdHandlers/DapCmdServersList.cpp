@@ -39,12 +39,12 @@ void DapCmdServersList::handle(const QJsonObject* params)
         sendSimpleError(-32001, "Bad response from server. Parse error");
     });
 
-    connect(reply, &DapServersListNetworkReply::sigNetworkError, [=]{
-        qWarning()<< "Network error: " << reply->errorString();
+    connect(reply, &DapServersListNetworkReply::sigNetworkError, [=](DapNetworkReply::DapNetworkError err){
+        qWarning()<< "Network error: " << err;
         rotateList();
-        if (reply->networkReplyError() == DapNetworkReply::UnknownNetworkError)
-            sendSimpleError(-32003, reply->errorString());
+        if (err == DapNetworkReply::UnknownNetworkError)
+            sendSimpleError(-32003, "Unknown error");
         else
-            sendSimpleError(-32002, reply->errorString());
+            sendSimpleError(-32002, "Error fetching nodelist");
     });
 }

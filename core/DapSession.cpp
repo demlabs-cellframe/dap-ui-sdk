@@ -96,6 +96,7 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath,
 {
     DapNetworkReply *netReply = new DapNetworkReply();
     connect(netReply, &DapNetworkReply::sigError, this, [=] {
+        qCritical() << "Network connection error";
         emit errorNetwork("Connection error");
     });
     data ? DapConnectClient::instance()->request_POST(isCDB ? m_CDBaddress : m_upstreamAddress,
@@ -202,6 +203,11 @@ void DapSession::getNews()
             qCritical() << "Can't parse server response to JSON: "<<jsonErr.errorString()<< " on position "<< jsonErr.offset ;
             return;
         }
+    });
+
+    connect(m_netNewsReply, &DapNetworkReply::sigError, this, [=]() {
+        qCritical() << "Couldn't fetch news";
+        return;
     });
 }
 

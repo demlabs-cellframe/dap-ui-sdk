@@ -34,4 +34,9 @@ DapServersListNetworkReply::DapServersListNetworkReply(DapNetworkReply *a_networ
             }
         }
     });
+
+    connect(m_networkReply, &DapNetworkReply::sigError, this, [=] {
+        qCritical() << "Couldn't fetch servers list";
+        emit sigNetworkError(m_networkReply->error());
+    });
 }
