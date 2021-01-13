@@ -97,7 +97,7 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath,
     DapNetworkReply *netReply = new DapNetworkReply();
     connect(netReply, &DapNetworkReply::sigError, this, [=] {
         qCritical() << "Network connection error";
-        emit errorNetwork("Connection error");
+        emit errorNetwork(netReply->error(), "Connection error");
     });
     data ? DapConnectClient::instance()->request_POST(isCDB ? m_CDBaddress : m_upstreamAddress,
                                                       isCDB ? m_CDBport : m_upstreamPort,
