@@ -53,6 +53,7 @@ public:
     void setStreamOpened(bool b) { m_isStreamOpened = b; }
     void setStreamTimeoutCheck(bool b) { m_timeoutStreamCheck = b; }
     uint16_t m_reconnectAttempts;
+    uint16_t m_aliveChecks;
 protected:
     static QHash<char, DapChBase*> m_dsb;
     DapChThread* m_dapChThead = Q_NULLPTR;
@@ -129,7 +130,7 @@ signals:
     void notify(const QString&);
 
     void recivedChannelPacket(DapChannelPacketHdr* pkt, void* data);
-    void isAlive();
+    void isAlive(bool reset);
     void streamDisconnecting();
     void streamOpened();
     void streamClosed();

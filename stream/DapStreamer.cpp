@@ -423,7 +423,7 @@ void DapStreamer::sltStreamProcess()
                     m_buf.clear();
                     m_streamState = SSS_FRAME_SEARCH;
                     m_dapDataPosition = 0;
-                    emit isAlive();
+                    emit isAlive(true);
                     return;
                 }
 
