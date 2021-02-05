@@ -117,14 +117,15 @@ DapNetworkReply* DapSession::requestServerPublicKey()
 {
     QByteArray aliceMessage= m_dapCrypt->generateAliceMessage();
     QByteArray reqData = aliceMessage.toBase64();
-    m_enc_type          = DAP_ENC_KEY_TYPE_BF_CBC;
+    m_enc_type          = DAP_ENC_KEY_TYPE_SALSA2012;
     m_pkey_exch_type    = DAP_ENC_KEY_TYPE_MSRLN;
-
-    m_netEncryptReply = _buildNetworkReplyReq(QString("%1/gd4y5yh78w42aaagh?enc_type=%2,pkey_exchange_type=%3,pkey_exchange_size=%4")
+    m_enc_size = 32;
+    m_netEncryptReply = _buildNetworkReplyReq(QString("%1/gd4y5yh78w42aaagh?enc_type=%2,pkey_exchange_type=%3,pkey_exchange_size=%4,block_key_size=%5")
                                               .arg(URL_ENCRYPT)
                                               .arg(m_enc_type)
                                               .arg(m_pkey_exch_type)
                                               .arg(MSRLN_PKA_BYTES)
+                                              .arg(m_enc_size)
                                               ,&reqData);
 
 //    m_httpClient->requestHttp(m_upstreamAddress.toLocal8Bit().data(),

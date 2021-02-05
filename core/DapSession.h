@@ -43,7 +43,9 @@ private:
     static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
     const int m_requestTimeout;
     int m_enc_type;
+    size_t m_enc_size;
     int m_pkey_exch_type;
+
 public:
     static const QString URL_ENCRYPT;
     static const QString URL_STREAM;
