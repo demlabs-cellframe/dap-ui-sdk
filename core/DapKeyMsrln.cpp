@@ -57,7 +57,7 @@ bool DapKeyMsrln::generateSessionKey(const QByteArray& bobMessage,
         delete _sharedSessionKey;
         _sharedSessionKey = nullptr;
     }
-    _sharedSessionKey = new DapKey(DAP_ENC_KEY_TYPE_BF_CBC,
+    _sharedSessionKey = new DapKey(DAP_ENC_KEY_TYPE_SALSA2012,
                                    QByteArray((char*)_key->priv_key_data, _key->priv_key_data_size),
                                    seed);
     return true;
