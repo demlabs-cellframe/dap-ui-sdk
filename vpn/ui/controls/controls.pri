@@ -35,18 +35,6 @@ HEADERS  += \
     $$PWD/TariffDelegate.h
 
 
-android {
-    SOURCES +=
-
-    HEADERS  +=
-}
-!android {
-    SOURCES +=
-
-    HEADERS  +=
-}
-
-
 INCLUDEPATH += $$PWD
 INCLUDEPATH += $$PWD/desktop
 
