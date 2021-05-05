@@ -38,6 +38,7 @@ android{
 darwin {
     HEADERS  += $$PWD/DapTunDarwin.h
     SOURCES += $$PWD/DapTunDarwin.cpp
+    include ($$PWD/darwin/darwin.pri)
     #INCLUDEPATH += /usr/local/opt/openssl/include
     #LIBS += -L/usr/local/opt/openssl/lib
     #LIBS += -lcrypto
