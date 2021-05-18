@@ -36,19 +36,17 @@ android{
 }
 
 darwin {
-    HEADERS  += $$PWD/DapTunDarwin.h
-    SOURCES += $$PWD/DapTunDarwin.cpp
+    HEADERS  += $$PWD/DapTunDarwin.h $$PWD/DapTunWorkerDarwin.h
+    SOURCES += $$PWD/DapTunDarwin.cpp $$PWD/DapTunWorkerDarwin.cpp
     include ($$PWD/darwin/darwin.pri)
     #INCLUDEPATH += /usr/local/opt/openssl/include
     #LIBS += -L/usr/local/opt/openssl/lib
-    #LIBS += -lcrypto
+    LIBS += -framework NetworkExtension
 }
 
 macos {
     CONFIG  -= app_bundle
-    DEFINES += DAP_SERVICE_CONNECT_TCP VPN_TUNTAP
-    HEADERS += $$PWD/DapTunMac.h $$PWD/DapTunWorkerMac.h
-    SOURCES += $$PWD/DapTunMac.cpp $$PWD/DapTunWorkerMac.cpp
+    DEFINES += DAP_SERVICE_CONNECT_TCP
 }
 
 win32{
