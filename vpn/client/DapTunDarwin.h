@@ -35,6 +35,13 @@ protected:
     void onWorkerStarted() override;
     void onWorkerStopped() override;
 private:
+#ifdef __cplusplus
     id tunnelProvider;
+    id tunnelManager;
+#else
+    DapPacketTunnelProvider* tunnelProvider;
+    NETunnelProviderManager* tunnelManager;
+#endif
+    void refreshManager();
 };
 
