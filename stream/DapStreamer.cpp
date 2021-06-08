@@ -214,7 +214,7 @@ void DapStreamer::sltStreamOpenCallback()
         qDebug()  << "[DapConnectStream] Stream server key for client requests: "
                   << streamServKey;
 
-        m_session->getDapCrypt()->initKey(DAP_ENC_KEY_TYPE_BF_CBC, streamServKey, KeyRoleStream);
+        m_session->getDapCrypt()->initKey(DAP_ENC_KEY_TYPE_SALSA2012, streamServKey, KeyRoleStream);
 
         if(!m_streamSocket->isOpen()) {
 

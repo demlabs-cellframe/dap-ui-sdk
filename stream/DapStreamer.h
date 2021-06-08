@@ -111,7 +111,7 @@ public slots:
     void openChannels(const QString & a_channels) {
         streamOpen(QString("stream_ctl,channels=%1,enc_type=%2,enc_headers=%3")
                    .arg(a_channels)
-                   .arg(DAP_ENC_KEY_TYPE_BF_CBC)
+                   .arg(DAP_ENC_KEY_TYPE_SALSA2012)
                    .arg(0)
                    ,"");
     }
