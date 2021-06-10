@@ -180,21 +180,20 @@ void DapStreamer::sltStreamOpenCallback()
 {
     qDebug() << "Stream Open callback;";
 
-    if(m_network_reply->error() != QNetworkReply::NetworkError::NoError) {
+    if(m_network_reply->error() != DapNetworkReply::DapNetworkError::NoError) {
         qWarning() << "Can't open stream. Network error " << m_network_reply->errorString();
         emit sigStreamOpenNetworkError(m_network_reply->error());
         return;
     }
 
-    QByteArray baReply(m_network_reply->readAll());
-    if(baReply.size() == 0) {
+    if(m_network_reply->getReplyData().size() == 0) {
         qWarning() << "Reply is empty";
         emit sigStreamOpenBadResponseError();
         return;
     }
 
     QByteArray streamReplyDec;
-    m_session->getDapCrypt()->decode(baReply, streamReplyDec, KeyRoleSession);
+    m_session->getDapCrypt()->decode(m_network_reply->getReplyData(), streamReplyDec, KeyRoleSession);
     QString streamReplyStr(streamReplyDec);
 
     QStringList str_list = streamReplyStr.split(" ");
@@ -308,7 +307,7 @@ void DapStreamer::sltStreamConnected()
     //m_isStreamOpened=true;
     m_buf.clear();
 
-    QString str_url = QString("%1/fjskd9234j?fj913htmdgaq-d9hf=%2")
+    QString str_url = QString("/%1/fjskd9234j?fj913htmdgaq-d9hf=%2")
             .arg(DapSession::URL_STREAM).arg(m_streamID);
 
     qDebug() << "[DapConnectStream] Stream URL: " << str_url;
@@ -424,7 +423,7 @@ void DapStreamer::sltStreamProcess()
                     m_buf.clear();
                     m_streamState = SSS_FRAME_SEARCH;
                     m_dapDataPosition = 0;
-                    emit isAlive();
+                    emit isAlive(true);
                     return;
                 }
 

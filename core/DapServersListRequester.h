@@ -10,24 +10,26 @@
 class DapServersListNetworkReply : public QObject {
     Q_OBJECT
 private:
+    DapNetworkReply *m_networkReply;
 public:
-    explicit DapServersListNetworkReply(QNetworkReply *networkReply);
+    explicit DapServersListNetworkReply(DapNetworkReply *a_networkReply);
     QString errorString() const {
-        QNetworkReply * reply = qobject_cast<QNetworkReply *>(parent());
-        if(reply == Q_NULLPTR) {
+//        DapNetworkReply * reply = qobject_cast<DapNetworkReply *>(parent());
+        if(m_networkReply == Q_NULLPTR) {
             qCritical() << "Error cast";
             return "";
         }
-        return reply->errorString();
+        return m_networkReply->errorString();
     }
 
-    QNetworkReply::NetworkError networkReplyError(){
-        return qobject_cast<QNetworkReply *>(parent())->error();
+    DapNetworkReply::DapNetworkError networkReplyError(){
+//        return qobject_cast<DapNetworkReply *>(parent())->error();
+        return m_networkReply->error();
     }
 
 signals:
     void sigResponse(const QJsonDocument& doc);
-    void sigNetworkError(QNetworkReply::NetworkError);
+    void sigNetworkError(DapNetworkReply::DapNetworkError);
     void sigParseResponseError();
 };
 
@@ -55,11 +57,9 @@ public:
         /*if (!DapNetworkMonitor::instance()->isTunGatewayDefined()) {
             return nullptr;
         }*/
-        auto networkReply = DapConnectClient::instance()->request_GET(host,
-                                                                      port,
-                                                                      "/nodelist",
-                                                                      false);
-        DapReplyTimeout::set(networkReply, 15000); // 15 sec
+        DapNetworkReply *networkReply = new DapNetworkReply();
+        DapConnectClient::instance()->request_GET(host, port, "nodelist", *networkReply);
+        //DapReplyTimeout::set(networkReply, 15000); // 15 sec
         return new DapServersListNetworkReply(networkReply);
     }
 };

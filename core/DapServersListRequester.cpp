@@ -3,14 +3,15 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
-DapServersListNetworkReply::DapServersListNetworkReply(QNetworkReply *networkReply) :
-    QObject(networkReply)
+#include "DapNetworkReply.h"
+
+DapServersListNetworkReply::DapServersListNetworkReply(DapNetworkReply *a_networkReply)
 {
-    connect(networkReply, &QNetworkReply::finished, this, [=] {
-        if(networkReply->error() == QNetworkReply::NetworkError::NoError) {
-            QByteArray ba(networkReply->readAll());
+    m_networkReply = a_networkReply;
+    connect(m_networkReply, &DapNetworkReply::finished, this, [=] {
+        if(m_networkReply->error() == DapNetworkReply::DapNetworkError::NoError) {
             QJsonParseError jsonErr;
-            QJsonDocument jsonDoc = QJsonDocument::fromJson(ba, &jsonErr);
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(m_networkReply->getReplyData(), &jsonErr);
 
             if(!jsonDoc.isNull()) {
                 if(!jsonDoc.isArray()) {
@@ -20,17 +21,22 @@ DapServersListNetworkReply::DapServersListNetworkReply(QNetworkReply *networkRep
                 }
                 emit sigResponse(jsonDoc);
             } else {
-                qWarning() << "Server response:" << ba;
+                qWarning() << "Server response:" << m_networkReply->getReplyData();
                 qCritical() << "Can't parse server response to JSON: "<<jsonErr.errorString()<< " on position "<< jsonErr.offset ;
                 emit sigParseResponseError();
                 return;
             }
         } else {
-            emit sigNetworkError(networkReply->error());
-            if ((networkReply->error() == QNetworkReply::NetworkSessionFailedError)
-                    || (networkReply->error() == QNetworkReply::UnknownNetworkError)) {
+            emit sigNetworkError(m_networkReply->error());
+            if ((m_networkReply->error() == DapNetworkReply::DapNetworkError::NetworkSessionFailedError)
+                    || (m_networkReply->error() == DapNetworkReply::DapNetworkError::UnknownNetworkError)) {
                 //TODO
             }
         }
+    });
+
+    connect(m_networkReply, &DapNetworkReply::sigError, this, [=] {
+        qCritical() << "Couldn't fetch servers list";
+        emit sigNetworkError(m_networkReply->error());
     });
 }

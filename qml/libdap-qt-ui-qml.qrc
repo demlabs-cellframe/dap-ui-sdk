@@ -23,8 +23,6 @@
         <file>DapFont.qml</file>
         <file>widgets/DapBusyIndicator.qml</file>
         <file>widgets/DapBusyIndicatorForm.ui.qml</file>
-        <file>widgets/DapCalendar.qml</file>
-        <file>widgets/DapCalendarForm.ui.qml</file>
         <file>widgets/DapComboBoxCustomRange.qml</file>
         <file>widgets/DapComboBoxCustomRangeForm.ui.qml</file>
         <file>widgets/DapButton_New.qml</file>

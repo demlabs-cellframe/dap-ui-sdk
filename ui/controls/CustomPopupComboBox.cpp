@@ -18,11 +18,22 @@ void CustomPopupComboBox::showPopup()
         {
             QMainWindow* mainWindow = Utils::findParent<QMainWindow*>(this);
             QPoint popupPosition;
-            if(m_positionPopup == PositionPopup::defaultPosition)
+            switch (m_positionPopup)
+            {
+            case PositionPopup::defaultPosition:
                 popupPosition = this->mapTo(mainWindow, QPoint(0, this->height()));
-            else
+                break;
+            case PositionPopup::overlappingPosition:
                 popupPosition = this->mapTo(mainWindow, QPoint(0, 0));
+                break;
+            case PositionPopup::usingOffsetLeftEdge:
+                popupPosition = this->mapTo(mainWindow, QPoint(m_offsetLeftEdge*(-1), 0));
+                break;
+            }
+
             popup()->move(popupPosition);
+
+
 
 //            if (this->popup()->sizePolicy().horizontalPolicy() != QSizePolicy::Fixed)
 //            {
@@ -36,6 +47,13 @@ void CustomPopupComboBox::showPopup()
 
     else
         this->QComboBox::showPopup();
+}
+
+void CustomPopupComboBox::setOffsetLeftEdge(QString &a_offeset)
+{
+    QStringList offset = a_offeset.split("px");
+    if(!offset.isEmpty())
+        m_offsetLeftEdge = offset[0].toInt();
 }
 
 CustomComboBoxPopup *CustomPopupComboBox::popup() const
