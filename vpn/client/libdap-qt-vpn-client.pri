@@ -46,11 +46,6 @@ darwin {
     LIBS += -framework NetworkExtension
 }
 
-macos {
-    CONFIG  -= app_bundle
-    DEFINES += DAP_SERVICE_CONNECT_TCP
-}
-
 win32{
     QMAKE_CXXFLAGS +=  -mno-ms-bitfields
     INCLUDEPATH += $$PWD/../../../os/windows/windows

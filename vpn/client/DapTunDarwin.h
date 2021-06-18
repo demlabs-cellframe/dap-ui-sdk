@@ -34,14 +34,18 @@ protected:
     void tunDeviceCreate() override;
     void onWorkerStarted() override;
     void onWorkerStopped() override;
+protected slots:
+    void tunnelManagerStart();
+    void tunnelManagerStop();
 private:
 #ifdef __cplusplus
+    id tunnelProtocol;
     id tunnelProvider;
     id tunnelManager;
 #else
     DapPacketTunnelProvider* tunnelProvider;
+    DapPacketTunnelProtocol* tunnelProtocol;
     NETunnelProviderManager* tunnelManager;
 #endif
-    void refreshManager();
 };
 

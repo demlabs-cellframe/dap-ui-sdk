@@ -57,34 +57,131 @@
  */
 DapTunDarwin::DapTunDarwin( )
 {
+    qDebug() << "DapTunDarwin::DapTunDarwin( )";
     tunWorker = new DapTunWorkerDarwin(this);
-
     initWorker();
+    tunnelManagerStart();
 }
 
-void DapTunDarwin::refreshManager()
+void DapTunDarwin::tunnelManagerStart()
 {
-    //[NETunnelProviderManager loadAllFromPreferences completionHandler:{}];
-    /*NETunnelProviderManager.loadAllFromPreferences(   completionHandler: { (managers, error) in
-                if nil == error {
-                    if let managers = managers {
-                        for manager in managers {
-                            if manager.localizedDescription == VPNConnect.vpnDescription {
-                                self.manager = manager
-                                return
-                            }
-                        }
+    qDebug() << "DapTunDarwin::tunnelManagerStart";
+
+    //NSLog (@"Call loadAllFromPreferencesWithCompletionHandler");
+    __block NETunnelProviderManager *manager;
+
+    manager = [[NETunnelProviderManager alloc] init];
+
+    NETunnelProviderProtocol *protocol = [[NETunnelProviderProtocol alloc] init];
+    [protocol.includeAllNetworks: YES];
+   // [protocol.enforceRoutes: YES];
+    [protocol.serverAddress: [NSString stringWithUTF8String: upstreamAddress().toLatin1().constData()]];
+    [protocol.providerBundleIdentifier: [NSString stringWithUTF8String: "com.kelvpn" ]];
+
+    [manager.protocolConfiguration: protocol];
+    [manager.enabled: YES];
+    [manager setLocalizedDescription:@DAP_BRAND];
+
+    tunnelProtocol = protocol;
+    tunnelManager = manager;
+
+    NSLog(@"Connection desciption: %@", manager.localizedDescription);
+    NSLog(@"VPN status:  %i", manager.connection.status);
+    //[[NSNotificationCenter defaultCenter] addObserver:this selector:@selector(vpnConnectionStatusChanged) name:NEVPNStatusDidChangeNotification object:nil];
+
+    [manager saveToPreferencesWithCompletionHandler:^(NSError *error) {
+        if(error) {
+           NSLog(@"Save error: %@", error);
+        }else {
+            NSLog(@"No error");
+            [manager loadFromPreferencesWithCompletionHandler:^(NSError *error) {
+                if(error) {
+                    NSLog(@"Load error: %@", error);
+                }else {
+                    NEPacketTunnelNetworkSettings * settings = [[NEPacketTunnelNetworkSettings alloc] init];
+
+                    NSError *startError;
+                    [manager.connection startVPNTunnelAndReturnError:&startError];
+                    if(startError) {
+                        NSLog(@"Start error: %@", startError.localizedDescription);
                     }
                 }
-                self.setPreferences()
-            })*/
+            }];
+        }
+    }];
+
+/*    [NETunnelProviderManager loadAllFromPreferencesWithCompletionHandler:^(NSArray<NETunnelProviderManager *> * _Nullable managers, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"Load Error: %@", error.description);
+            return;
+        }else {
+            NSLog (@"Loaded well");
+        }
+
+        if (managers.count > 0) {
+            manager = managers[0];
+        }else {
+            [manager saveToPreferencesWithCompletionHandler:^(NSError *error) {
+                if(error) {
+                   NSLog(@"Save error: %@", error);
+                }else {
+                    NSLog(@"No error");
+                    [manager loadFromPreferencesWithCompletionHandler:^(NSError *error) {
+                        if(error) {
+                            NSLog(@"Load error: %@", error);
+                        }else {
+                            NEPacketTunnelNetworkSettings * settings = [[NEPacketTunnelNetworkSettings alloc] init];
+
+                            NSError *startError;
+                            [manager.connection startVPNTunnelAndReturnError:&startError];
+                            if(startError) {
+                                NSLog(@"Start error: %@", startError.localizedDescription);
+                            }
+                        }
+                    }];
+                }
+            }];
+        }
+    }];*/
+
+    //__block DapPacketTunnelProvider *provider = [[DapPacketTunnelProvider alloc] init];
+    //tunnelProvider = provider;
+    //[provider startTunnel];
+    @try{
+        NSError *startError;
+        NSDictionary *providerConfiguration = [protocol providerConfiguration];
+        [manager.connection startTunnelWithOptions:&startError];
+        if(startError) {
+            NSLog(@"Start error: %@", startError.localizedDescription);
+        }
+    }@catch (NSException *e) {
+        NSLog(@"Error %@",e);
+    }
+
+
+    qDebug() << "Tunnel manager start over";
+
 }
+
+/**
+ * @brief DapTunDarwin::tunnelManagerStop
+ */
+void DapTunDarwin::tunnelManagerStop()
+{
+    qDebug() << "DapTunDarwin::tunnelManagerStop()";
+    NETunnelProviderManager * manager = ((NETunnelProviderManager *) tunnelManager);
+    [manager stop];
+}
+
 
 /**
  * @brief DapTunDarwin::requestTunDeviceCreate
  */
 void DapTunDarwin::tunDeviceCreate()
 {
+    qDebug() << "DapTunDarwin::tunDeviceCreate()";
+
+    tunnelManagerStart();
 }
 
 /**
@@ -92,35 +189,7 @@ void DapTunDarwin::tunDeviceCreate()
  */
 void DapTunDarwin::onWorkerStarted()
 {
-    __block NETunnelProviderManager *manager = [[NETunnelProviderManager alloc] init];
-
-    tunnelManager = manager;
-
-    DapPacketTunnelProvider *protocol = [[DapPacketTunnelProvider alloc] init];
-//    manager.protocolConfiguration = protocol;
-    manager.enabled = true;
-
-    [NETunnelProviderManager loadAllFromPreferencesWithCompletionHandler:^(NSArray<NETunnelProviderManager *> * _Nullable managers, NSError * _Nullable error) {
-        if ([managers count] > 0) {
-            manager = [managers objectAtIndex:0];
-            [manager start];
-        } else {
-            [manager saveToPreferencesWithCompletionHandler:^(NSError *error) {
-                if (error) {
-                    NSLog(@"Error 1: %@", error.description);
-                } else {
-                    [manager loadFromPreferencesWithCompletionHandler:^(NSError * _Nullable error) {
-                        if (error) {
-                            NSLog(@"Error 2: %@", error.description);
-                        } else {
-                            [manager start];
-                        }
-                    }];
-                }
-            }];
-        }
-    }];
-
+    qDebug() << "DapTunDarwin::OnWorkerStarted()";
 }
 
 /**
@@ -128,5 +197,5 @@ void DapTunDarwin::onWorkerStarted()
  */
 void DapTunDarwin::onWorkerStopped()
 {
-    qInfo() <<"Restore network configuration";
+    qDebug() << "DapTunDarwin::OnWorkerStopped()";
 }

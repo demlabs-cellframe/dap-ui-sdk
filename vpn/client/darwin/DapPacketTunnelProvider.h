@@ -4,8 +4,8 @@
 #import <NetworkExtension/NEPacketTunnelProvider.h>
 
 @interface DapPacketTunnelProvider : NEPacketTunnelProvider
-+ (void) mainInit;
 
+- (void) startTunnel;
 - (void)startTunnelWithOptions:(NSDictionary<NSString *,NSObject *> *)options
           completionHandler:(void (^)(NSError *error))completionHandler;
 - (void)stopTunnelWithReason:(NEProviderStopReason)reason
