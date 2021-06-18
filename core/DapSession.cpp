@@ -185,6 +185,11 @@ void DapSession::getNews()
 
     //DapReplyTimeout::set(m_netNewsReply, 10000);
 
+    connect(m_netNewsReply, &DapNetworkReply::sigError, this, [=]() {
+        qCritical() << "Couldn't fetch news";
+        return;
+    });
+
     connect(m_netNewsReply, &DapNetworkReply::finished, this, [=]() {
         if(m_netNewsReply && (m_netNewsReply->error() != DapNetworkReply::DapNetworkError::NoError)) {
             qWarning() << "Error on pulling the news";
@@ -204,11 +209,6 @@ void DapSession::getNews()
             qCritical() << "Can't parse server response to JSON: "<<jsonErr.errorString()<< " on position "<< jsonErr.offset ;
             return;
         }
-    });
-
-    connect(m_netNewsReply, &DapNetworkReply::sigError, this, [=]() {
-        qCritical() << "Couldn't fetch news";
-        return;
     });
 }
 
@@ -580,12 +580,12 @@ void DapSession::clearCredentials()
  */
 DapNetworkReply *DapSession::logoutRequest() {
     qInfo() << "Logout on CDB...";
-    m_netLogoutReply = encRequest("", URL_DB, "auth", "logout", SLOT(onLogout()), true);
+    //m_netLogoutReply = encRequest("", URL_DB, "auth", "logout", SLOT(onLogout()), true);
     emit logouted();
     clearCredentials();
     m_upstreamAddress.clear();
     m_upstreamPort = 0;
-    return m_netLogoutReply;
+    return nullptr;
 }
 
 /**
