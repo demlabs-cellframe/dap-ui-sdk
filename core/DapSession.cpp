@@ -386,6 +386,31 @@ void DapSession::onKeyActivated() {
     }
 }
 
+void DapSession::onPurchaseVerified() {
+    if (m_netPurchaseReply && (m_netPurchaseReply->error() != DapNetworkReply::DapNetworkError::NoError)) {
+        qCritical() << m_netPurchaseReply->errorString();
+        emit errorNetwork("Purchase error, please report");
+        return;
+    }
+
+    if(m_netPurchaseReply->getReplyData().size() <= 0) {
+        emit errorNetwork("Wrong answer from server");
+        return;
+    }
+
+    qInfo() << "purchase verify request replied";
+    QByteArray arrData(m_netPurchaseReply->getReplyData());
+    QJsonParseError jsonErr;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(arrData, &jsonErr);
+
+    if(!jsonDoc.isNull()) {
+        emit purchaseResponseReceived(jsonDoc);
+    } else {
+        qWarning() << "Purchase responce is null" << arrData;
+        return;
+    }
+}
+
 /**
  * @brief DapSession::onAuthorize
  */
@@ -693,23 +718,10 @@ DapNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const Q
 void DapSession::requestPurchaseVerify(const QJsonObject *params)
 {
     QJsonDocument jdoc(*params);
-    QNetworkReply * netReply = encRequestRaw(jdoc.toJson(), URL_VERIFY_PURCHASE, QString(), QString());
-
-    connect(netReply, &QNetworkReply::finished, this, [=]() {
-        if(netReply && (netReply->error() != QNetworkReply::NetworkError::NoError)) {
-            qWarning() << "Error on pulling the purchase verify";
-            return;
-        }
-        qInfo() << "purchase verify request replied";
-        QByteArray arrData(netReply->readAll());
-        QJsonParseError jsonErr;
-        QJsonDocument jsonDoc = QJsonDocument::fromJson(arrData, &jsonErr);
-
-        if(!jsonDoc.isNull()) {
-            emit purchaseResponseReceived(jsonDoc);
-        } else {
-            qWarning() << "Purchase responce is null" << arrData;
-            return;
-        }
-    });
+    m_netPurchaseReply = encRequestRaw(jdoc.toJson(), URL_VERIFY_PURCHASE, QString(), QString(), SLOT(onPurchaseVerified()));
+    if(m_netPurchaseReply == Q_NULLPTR) {
+        qCritical() << "Can't send request";
+        emit errorNetwork("Purchase verification error");
+    }
+    return;
 }

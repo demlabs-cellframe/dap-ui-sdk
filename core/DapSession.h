@@ -123,6 +123,7 @@ protected:
     DapNetworkReply * m_netEncryptReply;
     DapNetworkReply * m_netAuthorizeReply;
     DapNetworkReply * m_netKeyActivateReply;
+    DapNetworkReply * m_netPurchaseReply;
     DapNetworkReply * m_netLogoutReply;
     DapNetworkReply * m_netSendBugReportReply;
     DapNetworkReply * m_netSignUpReply;
@@ -177,6 +178,7 @@ private slots:
     //void errorSlt(QNetworkReply::NetworkError);
     void onAuthorize();
     void onKeyActivated();
+    void onPurchaseVerified();
     void onLogout();
     void answerBugReport();
     void answerSignUp();
