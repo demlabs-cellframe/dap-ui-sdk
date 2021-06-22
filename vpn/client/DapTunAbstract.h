@@ -1,5 +1,4 @@
- #ifndef DAPTUNABSTRACT_H
-#define DAPTUNABSTRACT_H
+#pragma once
 
 #include <QObject>
 #include <QThread>
@@ -150,5 +149,3 @@ public slots:
     void setUpstreamPort(qint16 aiUpstreamPort);
     
 };
-
-#endif // DAPTUNABSTRACT_H

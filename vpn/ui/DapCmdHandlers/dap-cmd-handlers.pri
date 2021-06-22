@@ -15,8 +15,7 @@ SOURCES += \
     $$PWD/DapCmdServersList.cpp \
     $$PWD/DapCmdAndroidTunnel.cpp
 
-HEADERS += \
-    $$PWD/DapCmdLastConnectionData.h \
+HEADERS += $$PWD/DapCmdLastConnectionData.h \
     $$PWD/DapCmdNews.h \
     $$PWD/DapCmdPingServer.h \
     $$PWD/DapCmdPurchase.h \

@@ -29,9 +29,9 @@ typedef class DapServiceNativeAndroid DapServiceNative;
 #elif defined(Q_OS_LINUX)
 #include "DapServiceNativeLinux.h"
 typedef class DapServiceNativeLinux DapServiceNative;
-#elif defined(Q_OS_MACOS)
-#include "DapServiceNativeMacOS.h"
-typedef class DapServiceNativeMacOS DapServiceNative;
+#elif defined(Q_OS_DARWIN)
+#include "DapServiceNativeDarwin.h"
+typedef class DapServiceNativeDarwin DapServiceNative;
 #elif defined(Q_OS_WIN)
 #include "DapServiceNativeWindows.h"
 typedef class DapServiceNativeWindows DapServiceNative;
