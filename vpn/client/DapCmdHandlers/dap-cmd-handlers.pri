@@ -2,7 +2,6 @@ SOURCES += \
     $$PWD/DapCmdLastConnectionData.cpp \
     $$PWD/DapCmdNews.cpp \
     $$PWD/DapCmdPingServer.cpp \
-    $$PWD/DapCmdPurchase.cpp \
     $$PWD/DapCmdSendBugReport.cpp \
     $$PWD/DapCmdSignUp.cpp \
     $$PWD/DapCmdTunTap.cpp \
@@ -14,12 +13,15 @@ SOURCES += \
     $$PWD/DapCmdServersList.cpp \
     $$PWD/DapCmdServerData.cpp \
     $$PWD/DapCmdAndroidTunnel.cpp
+    
+equals(BUILD_VARIANT, "GooglePlay") {
+	SOURCES += $$PWD/DapCmdPurchase.cpp
+}
 
 HEADERS += \
     $$PWD/DapCmdLastConnectionData.h \
     $$PWD/DapCmdNews.h \
     $$PWD/DapCmdPingServer.h \
-    $$PWD/DapCmdPurchase.h \
     $$PWD/DapCmdSendBugReport.h \
     $$PWD/DapCmdSignUp.h \
     $$PWD/DapCmdTunTap.h \
@@ -31,6 +33,10 @@ HEADERS += \
     $$PWD/DapCmdServersList.h \
     $$PWD/DapCmdServerData.h \
     $$PWD/DapCmdAndroidTunnel.h
+
+equals(BUILD_VARIANT, "GooglePlay") {
+	HEADERS += $$PWD/DapCmdPurchase.h
+}
 
 INCLUDEPATH += $$PWD
 

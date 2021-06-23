@@ -22,8 +22,11 @@ SOURCES += \
     $$PWD/DapServerInfo.cpp \
     $$PWD/DapServersListRequester.cpp \
     $$PWD/DapServersLocalStorage.cpp \
-    $$PWD/DapShopManager.cpp \
     $$PWD/DapSignUpData.cpp
+
+equals(BUILD_VARIANT, "GooglePlay") {
+	SOURCES += $$PWD/DapShopManager.cpp
+}
 
 HEADERS += \
     $$PWD/DapBugReport.h \
@@ -36,7 +39,6 @@ HEADERS += \
     $$PWD/DapServersData.h \
     $$PWD/DapSession.h \
     $$PWD/DapCrypt.h \
-    $$PWD/DapShopManager.h \
     $$PWD/DapSignUpData.h \
     $$PWD/DapUtils.h \
     $$PWD/InterfaceDapKey.h \
@@ -50,6 +52,10 @@ HEADERS += \
     $$PWD/DapServersListRequester.h \
     $$PWD/DapServersLocalStorage.h \
     $$PWD/DataToUpdate.h
+
+equals(BUILD_VARIANT, "GooglePlay") {
+	HEADERS += $$PWD/DapShopManager.h
+}
 
 INCLUDEPATH += $$PWD
 

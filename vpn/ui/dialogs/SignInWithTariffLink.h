@@ -11,12 +11,10 @@ class SignInWithTariffLink: public SignInScreenSerialNumberBase
     Q_OBJECT
 public:
     SignInWithTariffLink(QWidget *a_parent = nullptr);
-
-    // установит тарифы и соединит сигнал выбора тарифа так, чтобы открывать URL
     void appendTariff(const QList<TariffItem> &a_tariffList);
-    // установит тарифы но сигнал выбора тарифа перенаправил в func (для in-app purchasing)
+#ifdef BUILD_VAR_GOOGLE
     void appendTariff(const QList<TariffItem> &a_tariffList, std::function<void (int)> func);
-
+#endif
 signals:
     void tarriffScreenPopupOpened();
 

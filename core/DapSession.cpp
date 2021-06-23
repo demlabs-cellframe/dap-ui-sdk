@@ -47,7 +47,9 @@ const QString DapSession::URL_TX            ("tx");
 const QString DapSession::URL_BUG_REPORT    ("bugreport");
 const QString DapSession::URL_NEWS          ("news");
 const QString DapSession::URL_SIGN_UP       ("wp-json/dapvpn/v1/register/");
+#ifdef BUILD_VAR_GOOGLE
 const QString DapSession::URL_VERIFY_PURCHASE("verify_purchase");
+#endif
 
 DapSession::DapSession(QObject * obj, int requestTimeout) :
     QObject(obj), m_requestTimeout(requestTimeout)
@@ -386,6 +388,7 @@ void DapSession::onKeyActivated() {
     }
 }
 
+#ifdef BUILD_VAR_GOOGLE
 void DapSession::onPurchaseVerified() {
     if (m_netPurchaseReply && (m_netPurchaseReply->error() != DapNetworkReply::DapNetworkError::NoError)) {
         qCritical() << m_netPurchaseReply->errorString();
@@ -410,7 +413,7 @@ void DapSession::onPurchaseVerified() {
         return;
     }
 }
-
+#endif
 /**
  * @brief DapSession::onAuthorize
  */
@@ -715,6 +718,7 @@ DapNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const Q
     return m_netKeyActivateReply;
 }
 
+#ifdef BUILD_VAR_GOOGLE
 void DapSession::requestPurchaseVerify(const QJsonObject *params)
 {
     QJsonDocument jdoc(*params);
@@ -725,3 +729,4 @@ void DapSession::requestPurchaseVerify(const QJsonObject *params)
     }
     return;
 }
+#endif
