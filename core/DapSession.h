@@ -57,6 +57,9 @@ public:
     static const QString URL_BUG_REPORT;
     static const QString URL_NEWS;
     static const QString URL_SIGN_UP;
+#ifdef BUILD_VAR_GOOGLE
+    static const QString URL_VERIFY_PURCHASE;
+#endif
 
     DapSession(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
     ~DapSession();
@@ -105,6 +108,9 @@ public slots:
 //    void abortAuthorizeRequest()      { m_netAuthorizeReply->abort(); }
 //    void abortLogoutRequest()         { m_netLogoutReply->abort();  }
     void sendTxBackRequest(const QString &tx);
+#ifdef BUILD_VAR_GOOGLE
+    void requestPurchaseVerify(const QJsonObject *params);
+#endif
 protected:
     using HttpHeaders = QVector<HttpRequestHeader>;
 
@@ -123,7 +129,9 @@ protected:
     DapNetworkReply * m_netLogoutReply;
     DapNetworkReply * m_netSendBugReportReply;
     DapNetworkReply * m_netSignUpReply;
-
+#ifdef BUILD_VAR_GOOGLE
+    DapNetworkReply * m_netPurchaseReply;
+#endif
 
 
     QMap<QString,QString> m_userInform;
@@ -174,6 +182,9 @@ private slots:
     //void errorSlt(QNetworkReply::NetworkError);
     void onAuthorize();
     void onKeyActivated();
+#ifdef BUILD_VAR_GOOGLE
+    void onPurchaseVerified();
+#endif
     void onLogout();
     void answerBugReport();
     void answerSignUp();
@@ -199,6 +210,9 @@ signals:
     void receivedBugReportAnswer(const QString& bugReportNumber);
     void sigSignUpAnswer(const QString& signUpAnswer);
     void sigReceivedNewsMessage(const QJsonDocument& news);
+#ifdef BUILD_VAR_GOOGLE
+    void purchaseResponseReceived(const QJsonDocument& responce);
+#endif
 };
 
 

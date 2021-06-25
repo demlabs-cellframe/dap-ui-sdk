@@ -24,6 +24,10 @@ SOURCES += \
     $$PWD/DapServersLocalStorage.cpp \
     $$PWD/DapSignUpData.cpp
 
+equals(BUILD_VARIANT, "GooglePlay") {
+	SOURCES += $$PWD/DapShopManager.cpp
+}
+
 HEADERS += \
     $$PWD/DapBugReport.h \
     $$PWD/DapBugReportData.h \
@@ -49,10 +53,17 @@ HEADERS += \
     $$PWD/DapServersLocalStorage.h \
     $$PWD/DataToUpdate.h
 
+equals(BUILD_VARIANT, "GooglePlay") {
+	HEADERS += $$PWD/DapShopManager.h
+}
+
 INCLUDEPATH += $$PWD
 
 win32{
     QMAKE_CXXFLAGS +=  -mno-ms-bitfields
+}
+android {
+QT += androidextras
 }
 
 INCLUDEPATH += $$PWD/../quazip

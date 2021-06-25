@@ -23,6 +23,7 @@ enum class DapJsonCmdType
     SEND_SERVER_DATA,
     SEND_BUG_REPORT,
     SEND_SIGN_UP_REQUEST,
+    REQUEST_PURCHASE_VERIFY,
     UNKNOWN
 };
 
