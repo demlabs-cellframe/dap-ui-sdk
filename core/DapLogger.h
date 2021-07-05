@@ -40,6 +40,9 @@ public:
     void setAppType(QString type){m_appType = type;}
     void clearOldLogs();
     static void setLogLevel(dap_log_level ll);
+#ifdef Q_OS_ANDROID
+    void rmLegacyOutput();
+#endif
 private:
     QTimer t;
     QString m_pathToLog;
