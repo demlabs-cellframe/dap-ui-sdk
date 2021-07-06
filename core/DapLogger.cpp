@@ -119,9 +119,9 @@ void DapLogger::clearOldLogs()
 
 #ifdef Q_OS_ANDROID
 void DapLogger::rmLegacyOutput() {
-    if (QFile::exists("/sdcard/KelvinVPN/log/settings.ini")) {
-        QFile::copy("/sdcard/KelvinVPN/log/settings.ini", qPrintable(DapLogger::defaultLogPath(DAP_BRAND).append("/settings.ini")));
-        QDir dir(QString("/sdcard/KelvinVPN"));
+    if (QFile::exists("/sdcard/KelVPN/log/settings.ini")) {
+        QFile::copy("/sdcard/KelVPN/log/settings.ini", qPrintable(DapLogger::defaultLogPath(DAP_BRAND).append("/settings.ini")));
+        QDir dir(QString("/sdcard/KelVPN"));
         dir.removeRecursively();
     }
 }
