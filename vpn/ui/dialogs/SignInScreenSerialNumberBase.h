@@ -7,6 +7,7 @@
 #include <QStandardItemModel>
 
 #include "ScreenInfo.h"
+#include "DapDataLocal.h"
 #include "vpnDefine.h"
 #include "defines.h"
 #include "ui_SignInScreen.h"
@@ -63,7 +64,7 @@ public slots:
     void setState(ConnectionState a_state);
     void setActivated(bool a_activated);
 
-    void setCurrentServerName(const QString &a_serverName);
+    void setCurrentServerName(const DapServerInfo *a_serverName);
 
     void setErrorMessage(const QString &a_errorMsg = "");
 

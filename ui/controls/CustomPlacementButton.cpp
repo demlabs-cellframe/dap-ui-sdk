@@ -178,6 +178,10 @@ void CustomPlacementButton::enterEvent(QEvent *event)
     Q_UNUSED(event);
 
         this->setProperty(Properties::HOVER, true);
+
+        if (!this->toolTip().isEmpty()) {
+            QToolTip::showText(QCursor::pos(), this->toolTip());
+        }
 }
 
 /** @brief A leave event is sent to the widget when the mouse cursor leaves the widget.
