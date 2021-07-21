@@ -62,6 +62,11 @@ void AccountScreenBase::appendTariff(const QList<TariffItem> &a_tariffList)
     for (const TariffItem& currentTarriff: a_tariffList)
         m_ui->cbbLicenceTariff->addItem(currentTarriff.URL, QVariant::fromValue(currentTarriff));
 }
+
+void AccountScreenBase::openTariffPopup()
+{
+    m_ui->cbbLicenceTariff->popup()->show();
+}
 #endif
 
 QList<CustomPopup *> AccountScreenBase::customPopups()
@@ -69,7 +74,8 @@ QList<CustomPopup *> AccountScreenBase::customPopups()
     return {
 #ifndef Q_OS_ANDROID
         m_ui->cbbLicenceTariff->popup(),
-        m_ui->cbbBugReport->popup()
+        //m_ui->cbbBugReport->popup(),
+        m_serialRemovalMessage
 #endif
     };
 }
