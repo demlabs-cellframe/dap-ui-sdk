@@ -49,6 +49,8 @@ public:
 
 signals:
     void serialRemovalRequested();
+public slots:
+    void openTariffPopup();
 #endif
 
 protected:
