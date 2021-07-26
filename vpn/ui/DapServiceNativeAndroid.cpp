@@ -27,8 +27,8 @@ void DapServiceNativeAndroid::checkInstallation()
 {
     qWarning() << "[DapServiceNativeAndroid] checkInstallation() not implemented";
     //QtAndroid::androidActivity().callMethod<void>("stopService", "()V");
-    bool isRunning = QAndroidJniObject::callStaticMethod<jboolean>(
-                "com/demlabs/dapchain/DapChainVpnService", "checkServiceRunning", "()Z");
+    bool isRunning = false;/*QAndroidJniObject::callStaticMethod<jboolean>(
+                "com/KelVPN/KelVPNService", "checkServiceRunning", "()Z"); */
     qDebug() << "Service check status: " << isRunning;
     if (!isRunning) {
         QtAndroid::androidActivity().callMethod<void>( "startService", "()V" );
