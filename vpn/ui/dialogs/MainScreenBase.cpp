@@ -55,7 +55,7 @@ void MainScreenBase::setState(ConnectionState a_state)
 #endif
 
     m_ui->lblStatusMessage->setText(this->statusText());
-    this->setEnabled(a_state == ConnectionState::Connected);
+    //this->setEnabled(a_state == ConnectionState::Connected);
 
     if(a_state == ConnectionState::Disconnected)
         this->stopConnectionTimer();
