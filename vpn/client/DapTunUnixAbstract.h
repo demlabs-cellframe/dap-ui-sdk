@@ -1,5 +1,4 @@
-#ifndef DAPTUNUNIXABSTRACT_H
-#define DAPTUNUNIXABSTRACT_H
+#pragma once
 
 #include <QObject>
 #include "DapTunAbstract.h"
@@ -31,4 +30,3 @@ protected:
 
 };
 
-#endif // DAPTUNUNIX_H

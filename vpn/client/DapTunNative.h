@@ -9,10 +9,7 @@ typedef class DapTunWindows DapTunNative;
 #elif defined(Q_OS_ANDROID)
 #include "DapTunAndroid.h"
 typedef class DapTunAndroid DapTunNative;
-#elif defined(Q_OS_MACOS)
-#include "DapTunMac.h"
-typedef class DapTunMac DapTunNative;
-#elif defined(Q_OS_IOS)
+#elif defined (Q_OS_DARWIN)
 #include "DapTunDarwin.h"
 typedef class DapTunDarwin DapTunNative;
 #elif defined(Q_OS_LINUX)

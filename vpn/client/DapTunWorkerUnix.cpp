@@ -31,7 +31,7 @@ DapTunWorkerUnix::DapTunWorkerUnix(DapTunAbstract *a_tun)
 void DapTunWorkerUnix::loop()
 {
     size_t l_bufSize = 0;
-    qDebug() << "[SapStreamChSF] listenTunnelThread() start with MTU = " << DAP_IP_MTU;
+    qDebug() << "listenTunnelThread() start with MTU = " << DAP_IP_MTU;
 
     fd_set fds_read, fds_read_active;
     fd_set fds_write, fds_write_active;

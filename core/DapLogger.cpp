@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "dap_common.h"
 #include "dap_file_utils.h"
+
+#include <QStandardPaths>
 #include "DapLogger.h"
 #include "DapDataLocal.h"
 #include <iostream>
@@ -71,7 +73,7 @@ QString DapLogger::defaultLogPath(const QString a_brand)
 #if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
     return QString("/opt/%1/log").arg(a_brand).toLower();
 #elif defined(Q_OS_MACOS)
-    return QString("/tmp/%1/log").arg(a_brand);
+    return QString("/var/log/");
 #elif defined (Q_OS_WIN)
     return QString("%1/%2/log").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
@@ -136,6 +138,8 @@ void DapLogger::messageHandler(QtMsgType type,
     } else {
         _log_it("\0", castQtMsgToDap(type), qUtf8Printable(msg));
     }
+    printf("%s\n",qUtf8Printable(msg));
+
     std::cerr.flush();
     std::cout.flush();
 }

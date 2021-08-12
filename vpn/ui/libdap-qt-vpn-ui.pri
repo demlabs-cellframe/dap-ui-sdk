@@ -27,12 +27,6 @@ android{
     HEADERS += $$PWD/DapServiceNativeAndroid.h
 }
 
-ios{
-    DEFINES += DAP_PLATFORM_MOBILE
-    DEFINES += DAP_PLATFORM=\\\"mobile\\\"
-    SOURCES += $$PWD/DapServiceNativeIOS.cpp
-    HEADERS += $$PWD/DapServiceNativeIOS.h
-}
 
 linux-* {
         DEFINES += DAP_PLATFORM=\\\"desktop\\\"
@@ -50,14 +44,22 @@ win32 {
         DEFINES += _WIN32_WINNT=0x0600
         RC_ICONS = $$PWD/../../../brand/$${BRAND}/DapChainVpnGui/resources/pics/icon_app.ico
 }
-macos {
-        DEFINES += DAP_PLATFORM=\\\"desktop\\\"
-        DEFINES += DAP_PLATFORM_DESKTOP DAP_SERVICE_CONNECT_TCP
-        SOURCES += $$PWD/DapServiceNativeMacOS.cpp
-        HEADERS += $$PWD/DapServiceNativeMacOS.h
+
+darwin {
+        SOURCES += $$PWD/DapServiceNativeDarwin.cpp
+        HEADERS += $$PWD/DapServiceNativeDarwin.h
         ICON = resources/$$BRAND/pics/$${BRAND}.icns
 }
 
+ios{
+    DEFINES += DAP_PLATFORM_MOBILE
+    DEFINES += DAP_PLATFORM=\\\"mobile\\\"
+}
+
+macos {
+        DEFINES += DAP_PLATFORM=\\\"desktop\\\"
+        DEFINES += DAP_PLATFORM_DESKTOP DAP_SERVICE_CONNECT_TCP
+}
 
 
 
@@ -74,6 +76,9 @@ android {
         $$PWD/../../../os/android/src/com/demlabs/dapchain/DapChainVpnService.java \
         $$PWD/../../../os/android/src/com/demlabs/dapchain/DapChainVpnServiceNative.java \
         $$PWD/../../../os/android/gradlew.bat
+	equals(BUILD_VARIANT, "GooglePlay") {
+		DISTFILES += $$PWD/../../../os/android/src/com/demlabs/dapchain/InAppShop.java
+	}
 }
 
 

@@ -13,6 +13,7 @@ SOURCES += \
     $$PWD/StatisticWidgetDownloadTab.cpp \
     $$PWD/StatisticWidgetUploadTab.cpp \
     $$PWD/StatisticWidgetWithTabs.cpp \
+    $$PWD/SystemTrayIcon.cpp \
     $$PWD/TariffDelegate.cpp
 
 
@@ -32,19 +33,8 @@ HEADERS  += \
     $$PWD/StatisticWidgetDownloadTab.h \
     $$PWD/StatisticWidgetUploadTab.h \
     $$PWD/StatisticWidgetWithTabs.h \
+    $$PWD/SystemTrayIcon.h \
     $$PWD/TariffDelegate.h
-
-
-android {
-    SOURCES +=
-
-    HEADERS  +=
-}
-!android {
-    SOURCES +=
-
-    HEADERS  +=
-}
 
 
 INCLUDEPATH += $$PWD

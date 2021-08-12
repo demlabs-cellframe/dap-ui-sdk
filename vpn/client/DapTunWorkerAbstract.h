@@ -1,5 +1,4 @@
-#ifndef DAPTUNWORKERABSTRACT_H
-#define DAPTUNWORKERABSTRACT_H
+#pragma once
 
 #include <QObject>
 
@@ -65,4 +64,3 @@ private:
     QReadWriteLock* m_writeQueueLock;
 };
 
-#endif // DAPTUNWORKERABSTRACT_H

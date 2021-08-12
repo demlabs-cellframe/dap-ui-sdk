@@ -47,6 +47,9 @@ const QString DapSession::URL_TX            ("tx");
 const QString DapSession::URL_BUG_REPORT    ("bugreport");
 const QString DapSession::URL_NEWS          ("news");
 const QString DapSession::URL_SIGN_UP       ("wp-json/dapvpn/v1/register/");
+#ifdef BUILD_VAR_GOOGLE
+const QString DapSession::URL_VERIFY_PURCHASE("verify_purchase");
+#endif
 
 DapSession::DapSession(QObject * obj, int requestTimeout) :
     QObject(obj), m_requestTimeout(requestTimeout)
@@ -385,6 +388,32 @@ void DapSession::onKeyActivated() {
     }
 }
 
+#ifdef BUILD_VAR_GOOGLE
+void DapSession::onPurchaseVerified() {
+    if (m_netPurchaseReply && (m_netPurchaseReply->error() != DapNetworkReply::DapNetworkError::NoError)) {
+        qCritical() << m_netPurchaseReply->errorString();
+        emit errorNetwork("Purchase error, please report");
+        return;
+    }
+
+    if(m_netPurchaseReply->getReplyData().size() <= 0) {
+        emit errorNetwork("Wrong answer from server");
+        return;
+    }
+
+    qInfo() << "purchase verify request replied";
+    QByteArray arrData(m_netPurchaseReply->getReplyData());
+    QJsonParseError jsonErr;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(arrData, &jsonErr);
+
+    if(!jsonDoc.isNull()) {
+        emit purchaseResponseReceived(jsonDoc);
+    } else {
+        qWarning() << "Purchase responce is null" << arrData;
+        return;
+    }
+}
+#endif
 /**
  * @brief DapSession::onAuthorize
  */
@@ -688,3 +717,16 @@ DapNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const Q
     }
     return m_netKeyActivateReply;
 }
+
+#ifdef BUILD_VAR_GOOGLE
+void DapSession::requestPurchaseVerify(const QJsonObject *params)
+{
+    QJsonDocument jdoc(*params);
+    m_netPurchaseReply = encRequestRaw(jdoc.toJson(), URL_VERIFY_PURCHASE, QString(), QString(), SLOT(onPurchaseVerified()));
+    if(m_netPurchaseReply == Q_NULLPTR) {
+        qCritical() << "Can't send request";
+        emit errorNetwork("Purchase verification error");
+    }
+    return;
+}
+#endif

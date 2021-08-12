@@ -21,31 +21,14 @@
     along with any DAP SDK based project.  If not, see <http://www.gnu.org/licenses/>.
 */
 #pragma once
+#include "DapTunWorkerAbstract.h"
 
-#include "DapTunUnixAbstract.h"
-#include <objc/objc-runtime.h>
-
-
-class DapTunDarwin:public DapTunUnixAbstract
+class DapTunWorkerDarwin : public DapTunWorkerAbstract
 {
+    Q_OBJECT
 public:
-    DapTunDarwin();
-protected:
-    void tunDeviceCreate() override;
-    void onWorkerStarted() override;
-    void onWorkerStopped() override;
-protected slots:
-    void tunnelManagerStart();
-    void tunnelManagerStop();
-private:
-#ifdef __cplusplus
-    id tunnelProtocol;
-    id tunnelProvider;
-    id tunnelManager;
-#else
-    DapPacketTunnelProvider* tunnelProvider;
-    DapPacketTunnelProtocol* tunnelProtocol;
-    NETunnelProviderManager* tunnelManager;
-#endif
-};
+    DapTunWorkerDarwin(DapTunAbstract *a_tun);
+public slots:
+    void loop() override;
 
+};
