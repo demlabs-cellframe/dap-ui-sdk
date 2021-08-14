@@ -3,6 +3,18 @@
 #include "DapServiceClient.h"
 #include "DapClientDefinitions.h"
 
+#define DUMP_ARGS sockCtl, this
+
+#ifdef DAP_GUI_TEST_COMMON
+#undef DUMP_ARGS
+#define DUMP_ARGS sockCtl, this, DapCmdParser::TM_COMMON
+#endif // DAP_GUI_TEST_COMMON
+
+#ifdef DAP_GUI_TEST_CONNECTING
+#undef DUMP_ARGS
+#define DUMP_ARGS sockCtl, this, DapCmdParser::TM_SERVICECONNECTINPROCESS
+#endif // DAP_GUI_TEST_CONNECTING
+
 /**
  * @brief DapServiceClient::SapServiceClient
  * @param parent
@@ -15,7 +27,7 @@ DapServiceClient::DapServiceClient(const QString& a_serviceName,
 
     sockCtl = new DapUiSocket();
 
-    dapCmdParser = new DapCmdParser(sockCtl, this);
+    dapCmdParser = new DapCmdParser(DUMP_ARGS);
 
     connect(dapCmdParser, &DapCmdParser::cmdReady, this, &DapServiceClient::procCmdController);
 

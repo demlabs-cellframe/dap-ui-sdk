@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>service_common_messages.xml</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,683 @@
+@{"id": "0","seconds": "0"}
+{
+    "command": "get states",
+    "result": {
+        "state": "false",
+        "state_name": "session"
+    }
+}
+@{"id": "1","seconds": "0"}
+{
+    "command": "get states",
+    "result": {
+        "state": "false",
+        "state_name": "stream"
+    }
+}
+@{"id": "2","seconds": "0"}
+{
+    "command": "get states",
+    "result": {
+        "state": "false",
+        "state_name": "tunnel"
+    }
+}
+@{"id": "3","seconds": "12"}
+{
+    "command": "get states",
+    "result": {
+        "state": "false",
+        "state_name": "session"
+    }
+}
+@{"id": "4","seconds": "12"}
+{
+    "command": "get states",
+    "result": {
+        "state": "false",
+        "state_name": "stream"
+    }
+}
+@{"id": "5","seconds": "12"}
+{
+    "command": "get states",
+    "result": {
+        "state": "false",
+        "state_name": "tunnel"
+    }
+}
+@{"id": "6","seconds": "12"}
+{
+    "command": "get states",
+    "result": {
+        "state": "Disconnect",
+        "state_name": "user_request_state"
+    }
+}
+@{"id": "7","seconds": "12"}
+{
+    "command": "get user data",
+    "result": {
+        "address": "",
+        "password": "",
+        "port": 27694,
+        "user": ""
+    }
+}
+@{"id": "8","seconds": "12"}
+{
+    "command": "tap driver",
+    "result": {
+        "value": "ok"
+    }
+}
+@{"id": "9","seconds": "13"}
+{
+    "command": "get news",
+    "result": {
+        "news_list": [
+            {
+                "message": "no news"
+            }
+        ]
+    }
+}
+@{"id": "10","seconds": "13"}
+{
+    "command": "get servers list",
+    "result": {
+        "servers": [
+            {
+                "Address": "135.181.37.253",
+                "ChainNet": "kelvin-testnet",
+                "Ext": "0x520246696E6C616E6400",
+                "Location": "Finland",
+                "Name": "Auto",
+                "Port": 80,
+                "Price": 80,
+                "PriceToken": "KELT",
+                "PriceUnits": 1,
+                "State": "unknown"
+            },
+            {
+                "Address": "193.201.82.141",
+                "ChainNet": "kelvin-testnet",
+                "Ext": "0x5202526F6D616E696100",
+                "Location": "Romania",
+                "Name": "Europe",
+                "Port": 80,
+                "Price": 80,
+                "PriceToken": "KELT",
+                "PriceUnits": 1,
+                "State": "unknown"
+            },
+            {
+                "Address": "155.138.131.128",
+                "ChainNet": "kelvin-testnet",
+                "Ext": "0x520343616E61646100",
+                "Location": "Canada",
+                "Name": "North America",
+                "Port": 80,
+                "Price": 80,
+                "PriceToken": "KELT",
+                "PriceUnits": 1,
+                "State": "unknown"
+            },
+            {
+                "Address": "178.128.29.185",
+                "ChainNet": "kelvin-testnet",
+                "Ext": "0x520653696E6761706F726500",
+                "Location": "Singapore",
+                "Name": "Asia",
+                "Port": 80,
+                "Price": 80,
+                "PriceToken": "KELT",
+                "PriceUnits": 1,
+                "State": "unknown"
+            },
+            {
+                "Address": "135.181.37.249",
+                "ChainNet": "kelvin-testnet",
+                "Ext": "0x520246696E6C616E6400",
+                "Location": "Finland",
+                "Name": "Europe.Finland.1",
+                "Port": 80,
+                "Price": 80,
+                "PriceToken": "KELT",
+                "PriceUnits": 1,
+                "State": "unknown"
+            },
+            {
+                "Address": "161.35.145.253",
+                "ChainNet": "kelvin-testnet",
+                "Ext": "0x52024E65746865726C616E647300",
+                "Location": "Netherlands",
+                "Name": "Europe.Netherlands.2",
+                "Port": 80,
+                "Price": 80,
+                "PriceToken": "KELT",
+                "PriceUnits": 1,
+                "State": "unknown"
+            },
+            {
+                "Address": "135.181.37.253",
+                "ChainNet": "kelvin-testnet",
+                "Ext": "0x520246696E6C616E6400",
+                "Location": "Finland",
+                "Name": "Europe.Finland.3",
+                "Port": 80,
+                "Price": 80,
+                "PriceToken": "KELT",
+                "PriceUnits": 1,
+                "State": "unknown"
+            },
+            {
+                "Address": "95.154.237.182",
+                "ChainNet": "kelvin-testnet",
+                "Ext": "0x5202556E69746564204B696E67646F6D00",
+                "Location": "United Kingdom",
+                "Name": "Europe.United Kingdom.4",
+                "Port": 80,
+                "Price": 80,
+                "PriceToken": "KELT",
+                "PriceUnits": 1,
+                "State": "unknown"
+            },
+            {
+                "Address": "164.90.189.80",
+                "ChainNet": "kelvin-testnet",
+                "Ext": "0x52024765726D616E7900",
+                "Location": "Germany",
+                "Name": "Europe.Germany.5",
+                "Port": 80,
+                "Price": 80,
+                "PriceToken": "KELT",
+                "PriceUnits": 1,
+                "State": "unknown"
+            },
+            {
+                "Address": "31.24.224.9",
+                "ChainNet": "kelvin-testnet",
+                "Ext": "0x5202556E69746564204B696E67646F6D00",
+                "Location": "United Kingdom",
+                "Name": "Europe.United Kingdom.6",
+                "Port": 80,
+                "Price": 80,
+                "PriceToken": "KELT",
+                "PriceUnits": 1,
+                "State": "unknown"
+            },
+            {
+                "Address": "193.201.82.141",
+                "ChainNet": "kelvin-testnet",
+                "Ext": "0x5202526F6D616E696100",
+                "Location": "Romania",
+                "Name": "Europe.Romania.7",
+                "Port": 80,
+                "Price": 80,
+                "PriceToken": "KELT",
+                "PriceUnits": 1,
+                "State": "unknown"
+            },
+            {
+                "Address": "88.198.78.178",
+                "ChainNet": "kelvin-testnet",
+                "Ext": "0x52024765726D616E7900",
+                "Location": "Germany",
+                "Name": "Europe.Germany.8",
+                "Port": 80,
+                "Price": 80,
+                "PriceToken": "KELT",
+                "PriceUnits": 1,
+                "State": "unknown"
+            },
+            {
+                "Address": "108.62.122.112",
+                "ChainNet": "kelvin-testnet",
+                "Ext": "0x5203556E697465642053746174657300",
+                "Location": "United States",
+                "Name": "North America.United States.1",
+                "Port": 80,
+                "Price": 80,
+                "PriceToken": "KELT",
+                "PriceUnits": 1,
+                "State": "unknown"
+            },
+            {
+                "Address": "155.138.131.128",
+                "ChainNet": "kelvin-testnet",
+                "Ext": "0x520343616E61646100",
+                "Location": "Canada",
+                "Name": "North America.Canada.2",
+                "Port": 80,
+                "Price": 80,
+                "PriceToken": "KELT",
+                "PriceUnits": 1,
+                "State": "unknown"
+            },
+            {
+                "Address": "103.75.117.129",
+                "ChainNet": "kelvin-testnet",
+                "Ext": "0x5206486F6E67204B6F6E6700",
+                "Location": "Hong Kong",
+                "Name": "Asia.Hong Kong.2",
+                "Port": 80,
+                "Price": 80,
+                "PriceToken": "KELT",
+                "PriceUnits": 1,
+                "State": "unknown"
+            },
+            {
+                "Address": "178.128.29.185",
+                "ChainNet": "kelvin-testnet",
+                "Ext": "0x520653696E6761706F726500",
+                "Location": "Singapore",
+                "Name": "Asia.Singapore.3",
+                "Port": 80,
+                "Price": 80,
+                "PriceToken": "KELT",
+                "PriceUnits": 1,
+                "State": "unknown"
+            }
+        ]
+    }
+}
+@{"id": "11","seconds": "23"}
+{
+    "command": "get states",
+    "result": {
+        "state": "false_to_true",
+        "state_name": "session"
+    }
+}
+@{"id": "12","seconds": "23"}
+{
+    "command": "get states",
+    "result": {
+        "state": "true",
+        "state_name": "session"
+    }
+}
+@{"id": "13","seconds": "23"}
+{
+    "command": "get user data",
+    "result": {
+        "license_term_till": "1630343413"
+    }
+}
+@{"id": "14","seconds": "23"}
+{
+    "command": "get states",
+    "result": {
+        "state": "false_to_true",
+        "state_name": "stream"
+    }
+}
+@{"id": "15","seconds": "24"}
+{
+    "command": "get states",
+    "result": {
+        "state": "true",
+        "state_name": "stream"
+    }
+}
+@{"id": "16","seconds": "24"}
+{
+    "command": "send server data",
+    "result": {
+        "address": "135.181.37.253",
+        "address6": "",
+        "location": "Canada",
+        "name": "Europe.Finland.3",
+        "port": 80
+    }
+}
+@{"id": "17","seconds": "24"}
+{
+    "command": "get states",
+    "result": {
+        "state": "true",
+        "state_name": "tunnel"
+    }
+}
+@{"id": "18","seconds": "24"}
+{
+    "command": "get last connection data",
+    "result": {
+        "last_connection": "сб авг. 14 15:12:31 2021"
+    }
+}
+@{"id": "19","seconds": "25"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "428",
+        "read_package": "3",
+        "write_bytes": "459",
+        "write_package": "6"
+    }
+}
+@{"id": "20","seconds": "25"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "753",
+        "read_package": "5",
+        "write_bytes": "979",
+        "write_package": "13"
+    }
+}
+@{"id": "21","seconds": "26"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "1780",
+        "read_package": "15",
+        "write_bytes": "1534",
+        "write_package": "21"
+    }
+}
+@{"id": "22","seconds": "26"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "2348",
+        "read_package": "20",
+        "write_bytes": "2685",
+        "write_package": "31"
+    }
+}
+@{"id": "23","seconds": "27"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "3980",
+        "read_package": "32",
+        "write_bytes": "4598",
+        "write_package": "50"
+    }
+}
+@{"id": "24","seconds": "27"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "6159",
+        "read_package": "50",
+        "write_bytes": "7766",
+        "write_package": "75"
+    }
+}
+@{"id": "25","seconds": "28"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "97340",
+        "read_package": "120",
+        "write_bytes": "12265",
+        "write_package": "141"
+    }
+}
+@{"id": "26","seconds": "28"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "1513855",
+        "read_package": "1079",
+        "write_bytes": "58050",
+        "write_package": "1019"
+    }
+}
+@{"id": "27","seconds": "29"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "5166495",
+        "read_package": "3547",
+        "write_bytes": "129212",
+        "write_package": "2381"
+    }
+}
+@{"id": "28","seconds": "29"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "8360783",
+        "read_package": "5709",
+        "write_bytes": "185678",
+        "write_package": "3465"
+    }
+}
+@{"id": "29","seconds": "30"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "8360783",
+        "read_package": "5709",
+        "write_bytes": "186472",
+        "write_package": "3474"
+    }
+}
+@{"id": "30","seconds": "30"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "8362222",
+        "read_package": "5718",
+        "write_bytes": "189318",
+        "write_package": "3487"
+    }
+}
+@{"id": "31","seconds": "31"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "8363274",
+        "read_package": "5723",
+        "write_bytes": "190053",
+        "write_package": "3497"
+    }
+}
+@{"id": "32","seconds": "31"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "8363431",
+        "read_package": "5724",
+        "write_bytes": "190340",
+        "write_package": "3500"
+    }
+}
+@{"id": "33","seconds": "32"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "8363431",
+        "read_package": "5724",
+        "write_bytes": "191415",
+        "write_package": "3511"
+    }
+}
+@{"id": "34","seconds": "32"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "8363431",
+        "read_package": "5724",
+        "write_bytes": "191808",
+        "write_package": "3515"
+    }
+}
+@{"id": "35","seconds": "33"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "8363431",
+        "read_package": "5724",
+        "write_bytes": "192102",
+        "write_package": "3519"
+    }
+}
+@{"id": "36","seconds": "33"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "8363431",
+        "read_package": "5724",
+        "write_bytes": "192635",
+        "write_package": "3527"
+    }
+}
+@{"id": "37","seconds": "34"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "8363431",
+        "read_package": "5724",
+        "write_bytes": "193335",
+        "write_package": "3535"
+    }
+}
+@{"id": "38","seconds": "34"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "8363431",
+        "read_package": "5724",
+        "write_bytes": "193937",
+        "write_package": "3541"
+    }
+}
+@{"id": "39","seconds": "35"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "8363431",
+        "read_package": "5724",
+        "write_bytes": "194085",
+        "write_package": "3543"
+    }
+}
+@{"id": "40","seconds": "35"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "8363943",
+        "read_package": "5728",
+        "write_bytes": "194960",
+        "write_package": "3553"
+    }
+}
+@{"id": "41","seconds": "36"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "8364288",
+        "read_package": "5730",
+        "write_bytes": "195447",
+        "write_package": "3557"
+    }
+}
+@{"id": "42","seconds": "36"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "8364288",
+        "read_package": "5730",
+        "write_bytes": "195842",
+        "write_package": "3561"
+    }
+}
+@{"id": "43","seconds": "37"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "8364288",
+        "read_package": "5730",
+        "write_bytes": "195923",
+        "write_package": "3562"
+    }
+}
+@{"id": "44","seconds": "37"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "8565807",
+        "read_package": "5872",
+        "write_bytes": "201080",
+        "write_package": "3648"
+    }
+}
+@{"id": "45","seconds": "38"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "12969271",
+        "read_package": "8852",
+        "write_bytes": "255001",
+        "write_package": "4566"
+    }
+}
+@{"id": "46","seconds": "38"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "16652258",
+        "read_package": "11364",
+        "write_bytes": "334312",
+        "write_package": "5841"
+    }
+}
+@{"id": "47","seconds": "39"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "16655249",
+        "read_package": "11375",
+        "write_bytes": "336215",
+        "write_package": "5858"
+    }
+}
+@{"id": "48","seconds": "39"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "16662539",
+        "read_package": "11386",
+        "write_bytes": "340019",
+        "write_package": "5873"
+    }
+}
+@{"id": "49","seconds": "40"}
+{
+    "command": "stats",
+    "result": {
+        "read_bytes": "16662539",
+        "read_package": "11386",
+        "write_bytes": "340071",
+        "write_package": "5874"
+    }
+}
+@{"id": "50","seconds": "40"}
+{
+    "command": "get states",
+    "result": {
+        "state": "false",
+        "state_name": "session"
+    }
+}
+@{"id": "51","seconds": "40"}
+{
+    "command": "get states",
+    "result": {
+        "state": "false",
+        "state_name": "stream"
+    }
+}
+@{"id": "52","seconds": "40"}
+{
+    "command": "get states",
+    "result": {
+        "state": "false",
+        "state_name": "tunnel"
+    }
+}

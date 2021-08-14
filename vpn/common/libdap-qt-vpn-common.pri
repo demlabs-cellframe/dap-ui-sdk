@@ -24,3 +24,6 @@ HEADERS += \
 
 INCLUDEPATH += $$PWD  \
     $$PWD/../../../brand/$$BRAND/DapChainVpnService
+
+RESOURCES += \
+    $$PWD/DapCommonCommSimulation/comm_sim.qrc
