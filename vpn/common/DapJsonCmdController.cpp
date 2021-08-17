@@ -62,3 +62,9 @@ void DapJsonCmdController::addNewHandler(DapCmdAbstract* handler)
 
     m_handlers.append(handler);
 }
+
+DapJsonCmdController &DapJsonCmdController::operator<<(DapCmdAbstract *hander)
+{
+  addNewHandler (hander);
+  return *this;
+}

@@ -5,7 +5,6 @@
 #include "DapCmdServiceAbstract.h"
 #include <QMap>
 #include <QMutex>
-#include <QScopedPointer>
 #include <typeinfo>
 
 /****************************************//**

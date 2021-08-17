@@ -16,11 +16,12 @@ private:
 public:
     explicit DapJsonCmdController(QObject *parent = nullptr);
 
-    void handleCmd(const QByteArray &a_cmd);
     void addNewHandler(DapCmdAbstract* handler);
+    DapJsonCmdController &operator<<(DapCmdAbstract *hander);
 signals:
     void sendDapCmd(const QByteArray& ba);
 public slots:
+    void handleCmd(const QByteArray &a_cmd);
 };
 
 #endif // DAPCMDCONTROLLER_H

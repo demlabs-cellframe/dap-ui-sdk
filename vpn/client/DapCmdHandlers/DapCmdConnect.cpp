@@ -7,7 +7,7 @@ const QString DapCmdConnect::actionParam = "action";
 
 DapCmdConnect::DapCmdConnect(QObject *parent)
     : DapCmdServiceAbstract(DapJsonCmdType::CONNECTION, parent) {
-
+  qRegisterMetaType<uint16_t>("uint16_t");
 }
 
 DapCmdConnect::~DapCmdConnect()
