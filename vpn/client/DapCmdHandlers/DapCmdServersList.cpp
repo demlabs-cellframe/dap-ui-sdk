@@ -13,11 +13,13 @@ void DapCmdServersList::handle(const QJsonObject* params)
     Q_UNUSED(params)
     auto reply = DapServersListRequester::sendRequest(serversList().front());
     if (!reply) {
+        reply->deleteLater();
         sendSimpleError(-32000, "Network unavailable");
         qWarning()<< "Network unavailable, do nothing";
         return;
     }
     connect(reply, &DapServersListNetworkReply::sigResponse, [=](const QJsonDocument& servers) {
+        reply->deleteLater();
         auto arr = servers.array();
         if (arr.isEmpty()) {
             rotateList();
@@ -34,12 +36,14 @@ void DapCmdServersList::handle(const QJsonObject* params)
     });
 
     connect(reply, &DapServersListNetworkReply::sigParseResponseError, [=]{
+        reply->deleteLater();
         qWarning()<< "Bad response from server. Parse error";
         rotateList();
         sendSimpleError(-32001, "Bad response from server. Parse error");
     });
 
     connect(reply, &DapServersListNetworkReply::sigNetworkError, [=](DapNetworkReply::DapNetworkError err){
+        reply->deleteLater();
         qWarning()<< "Network error: " << err;
         rotateList();
         if (err == DapNetworkReply::UnknownNetworkError)
