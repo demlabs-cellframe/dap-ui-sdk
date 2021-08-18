@@ -160,8 +160,8 @@ lb_read_str:
 
               file->write (
                 //QString ("<item id=\"%2\" date=\"%1\">\n")
-                QString ("@{\"id\": \"%2\",\"seconds\": \"\%1\"}\n")
-                .arg (seconds).arg (counter)
+                QString ("@{\"id\": \"%2\",\"seconds\": \"\%1\", \"timestamp\": \"%3\"}\n")
+                .arg (seconds).arg (counter).arg (dt.toString ("HH:mm:ss.zzz_dd-MM-yyyy"))
                 .toLocal8Bit());
               file->write (readBuffer);
               file->flush();
