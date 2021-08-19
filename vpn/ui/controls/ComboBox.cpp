@@ -12,8 +12,10 @@ ComboBox::ComboBox(CustomComboBoxPopup *a_popup, QWidget *a_parent /*= nullptr*/
     : CustomButtonComboBox(a_parent)
 {
     CustomPlacementButton *button = new CustomPlacementButton(this);
+    QLabel *label = new QLabel(this);
 
     this->setButtonControll(button);
+    this->setInscriptionComboBox(label);
     this->setPopup(a_popup);
 }
 
@@ -25,4 +27,9 @@ ComboBoxPopup *ComboBox::popup()
 CustomPlacementButton *ComboBox::buttonControll() const
 {
     return qobject_cast<CustomPlacementButton*>(CustomButtonComboBox::buttonControll());
+}
+
+QLabel *ComboBox::buttonInscription() const
+{
+    return qobject_cast<QLabel*>(this->CustomButtonComboBox::buttonInscription());
 }

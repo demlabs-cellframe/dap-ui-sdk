@@ -10,7 +10,7 @@
 #include <CustomLineEdit.h>
 
 #ifndef VALIDATOR
-#define VALIDATOR "A-Z0-9"
+#define VALIDATOR "A-Z0-9_"
 #endif
 
 #ifndef MAX_COUNT_CHAR

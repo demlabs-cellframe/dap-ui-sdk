@@ -4,6 +4,8 @@
 #include "CustomButtonComboBox.h"
 #include "ComboBoxPopup.h"
 
+#include <QLabel>
+
 class ComboBox : public CustomButtonComboBox
 {
     Q_OBJECT
@@ -14,6 +16,8 @@ public:
     ComboBoxPopup* popup();
 
     CustomPlacementButton *buttonControll() const;
+
+    QLabel *buttonInscription() const;
 };
 
 #endif // SERVERSCOMBOBOX_H

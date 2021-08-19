@@ -30,16 +30,6 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="LoginNavigationPanel" name="wgtNavigationPanel" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="AnimationChangingWidget" name="wgtChangingPart" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -49,6 +39,16 @@
      </property>
      <property name="styleSheet">
       <string notr="true">#wgtChangingPart{}</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="LoginNavigationPanel" name="wgtNavigationPanel" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
     </widget>
    </item>

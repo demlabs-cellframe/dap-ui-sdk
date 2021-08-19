@@ -48,6 +48,7 @@ void SignInScreenSerialNumberBase::initVariantUi(QWidget *a_widget)
 #endif
 
     m_ui->cbbServer->popup()->setObjectName("cbbServer_popup");
+    m_ui->cbbServer->setInscriptionText("CHOOSING SERVER");
 
 #ifndef Q_OS_ANDROID
     m_ui->cbbServer->setPositionPopup(PositionPopup::overlappingPosition);

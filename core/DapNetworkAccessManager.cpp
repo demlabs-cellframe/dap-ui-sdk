@@ -12,7 +12,7 @@ void DapNetworkAccessManager::requestHttp_POST(const QString &address, const uin
     bRunning = true;
     dap_client_http_request_custom(nullptr, qPrintable(address), port, "POST", "text/plain", qPrintable(urlPath), body.constData(), static_cast<size_t>(body.size()), nullptr,
                             &DapNetworkAccessManager::responseCallback, &DapNetworkAccessManager::responseCallbackError,
-                                   &netReply, headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr, false);
+                                   &netReply, headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
 }
 
 void DapNetworkAccessManager::requestHttp_GET(const QString &address, const uint16_t port, const QString &urlPath, const QString &headers, DapNetworkReply &netReply)
@@ -21,7 +21,7 @@ void DapNetworkAccessManager::requestHttp_GET(const QString &address, const uint
     bRunning = true;
     dap_client_http_request_custom(nullptr, qPrintable(address), port, "GET", "text/plain", qPrintable(urlPath), nullptr, 0, nullptr,
                             &DapNetworkAccessManager::responseCallback, &DapNetworkAccessManager::responseCallbackError, &netReply,
-                                   headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr, false);
+                                   headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
 }
 
 void DapNetworkAccessManager::responseCallback(void * a_response, size_t a_response_size, void * a_obj)

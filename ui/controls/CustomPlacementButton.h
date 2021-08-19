@@ -113,6 +113,7 @@ protected:
     QList<QWidget*> m_subcontrols;
     QLabel m_lbImage;    ///<label with image
     QLabel m_lbText;     ///<label with text
+    QLabel m_lbText2;     ///<label with text
     QLabel m_lbAdditionalImage;
     QWidget m_wgtRightSpacing;        ///<label for right spacing
 

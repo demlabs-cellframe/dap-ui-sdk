@@ -2,6 +2,7 @@
 #define CUSTOMBUTTONCOMBOBOX_H
 
 #include <QPushButton>
+#include <QLabel>
 
 #include "CustomPopupComboBox.h"
 #include "CustomPlacementButton.h"
@@ -20,7 +21,12 @@ public:
 
     void setButtonControll(CustomButtonAbstract* a_button);
 
+    void setInscriptionComboBox(QLabel *a_label);
+    void setInscriptionText(QString a_text);
+
     virtual CustomButtonAbstract *buttonControll() const;
+
+    virtual QLabel *buttonInscription() const;
 
     virtual void setCaption(const QString &a_caption) override;
 
@@ -35,8 +41,10 @@ private:
 
     CaptionPolicy m_captionPolicy = CaptionPolicy::ShowWhenUnselected;
     CustomButtonAbstract* m_button = nullptr;
+    QLabel* m_lable = nullptr;
 
     static const QString BUTTON_NAME_SUFFIX;
+    static const QString LABEL_NAME_SUFFIX;
 };
 
 #endif // CUSTOMBUTTONCOMBOBOX_H

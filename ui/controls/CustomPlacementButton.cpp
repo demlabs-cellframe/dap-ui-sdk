@@ -13,6 +13,7 @@ CustomPlacementButton::CustomPlacementButton(QWidget *a_parent)
     m_wgtLeftSpacing (this),
     m_lbImage       (this),
     m_lbText        (this),
+    m_lbText2        (this),
     m_lbAdditionalImage(this),
     m_wgtRightSpacing(this)
 {
@@ -25,6 +26,7 @@ void CustomPlacementButton::initButton()
     m_wgtLeftSpacing .setObjectName("leftSpacing");
     m_lbImage       .setObjectName("image");
     m_lbText        .setObjectName("text");
+    m_lbText2       .setObjectName("text2");
     m_lbAdditionalImage .setObjectName("additionalImage");
     m_wgtRightSpacing.setObjectName("rightSpacing");
 

@@ -6,6 +6,7 @@
 #include "CustomComboBoxPopup.h"
 
 const QString CustomButtonComboBox::BUTTON_NAME_SUFFIX = "_control";
+const QString CustomButtonComboBox::LABEL_NAME_SUFFIX = "_label";
 
 CustomButtonComboBox::CustomButtonComboBox(QWidget *a_parent)
     : CustomPopupComboBox(a_parent)
@@ -36,6 +37,25 @@ void CustomButtonComboBox::setButtonControll(CustomButtonAbstract *a_button)
     });
 }
 
+void CustomButtonComboBox::setInscriptionComboBox(QLabel *a_label/*, QString& a_text*/)
+{
+    if (m_lable)
+        delete m_lable;
+
+    a_label->setObjectName(this->objectName() + LABEL_NAME_SUFFIX);
+    a_label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    a_label->setVisible(false);
+    this->layout()->addWidget(a_label);
+    this->m_lable = a_label;
+}
+
+void CustomButtonComboBox::setInscriptionText(QString a_text)
+{
+    m_lable->setVisible(true);
+    m_lable->setText(a_text);
+}
+
 void CustomButtonComboBox::setObjectName(const QString &a_name)
 {
     if (a_name.isEmpty())
@@ -44,6 +64,8 @@ void CustomButtonComboBox::setObjectName(const QString &a_name)
     CustomPopupComboBox::setObjectName(a_name);
     if(m_button)
         m_button->setObjectName(a_name + BUTTON_NAME_SUFFIX);
+    if(m_lable)
+        m_lable->setObjectName(a_name + LABEL_NAME_SUFFIX);
 }
 
 void CustomButtonComboBox::paintEvent(QPaintEvent *e)
@@ -55,6 +77,11 @@ void CustomButtonComboBox::paintEvent(QPaintEvent *e)
 CustomButtonAbstract *CustomButtonComboBox::buttonControll() const
 {
     return m_button;
+}
+
+QLabel *CustomButtonComboBox::buttonInscription() const
+{
+    return m_lable;
 }
 
 void CustomButtonComboBox::setCaption(const QString &a_caption)
