@@ -13,6 +13,11 @@
 #include "dap_common.h"
 #include "dap_file_utils.h"
 
+#ifdef Q_OS_ANDROID
+#include <QtAndroid>
+#include <QAndroidJniObject>
+#endif
+
 class DapLogger : public QObject
 {
     Q_OBJECT

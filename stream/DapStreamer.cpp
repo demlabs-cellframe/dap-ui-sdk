@@ -486,7 +486,7 @@ void DapStreamer::_detectPacketLoose(quint64 currentSeqId)
     if (countLoosedPackets > 0) {
         qWarning() << "Packet Loosed count:" << countLoosedPackets;
         emit sigStreamPacketLoosed(countLoosedPackets);
-    } else if(countLoosedPackets < 0) {
+    } else if((countLoosedPackets < 0) && (currentSeqId > 0)) {
         qWarning() << "Something wrong. countLoosedPackets is " << countLoosedPackets
                    << "can't be less than zero. Current seq id:" << currentSeqId
                    << "last seq id: " << m_lastSeqId;

@@ -6,6 +6,8 @@
 #include "DapTunWorkerWindows.h"
 #include "DapTunWindows.h"
 #include "DapNetworkMonitorWindows.h"
+#include "dap_config.h"
+#include "dap_strfuncs.h"
 
 DapTunWindows::DapTunWindows()
 {
@@ -35,13 +37,12 @@ void DapTunWindows::tunDeviceDestroy()
     m_gw.chop(1);
     m_gw.append('0');
     TunTap::getInstance().deleteRoutesByGw(qPrintable(m_gw));
-    //QString run = QString("ROUTE DELETE 0.0.0.0 & ROUTE DELETE 128.0.0.0 & ROUTE DELETE %6 & ROUTE DELETE %1 & ROUTE DELETE %4 & ROUTE DELETE %5 & ROUTE ADD 0.0.0.0 MASK 0.0.0.0 %2 IF %3").arg(upstreamResolved).arg(m_defaultGwOld).arg(TunTap::getInstance().getDefaultAdapterIndex()).arg(_gw).arg(m_gw).arg(m_addr);
-    //exec_silent(qPrintable(run));
     TunTap::getInstance().enableDefaultRoutes();
     TunTap::getInstance().resetDNS();
+    TunTap::getInstance().deleteRoutesByIfIndex(static_cast<DWORD>(TunTap::getInstance().getTunTapAdapterIndex()));
     TunTap::getInstance().deleteCustomRoutes();
     TunTap::getInstance().determineValidArgs(metric_eth, metric_tun);
-    TunTap::getInstance().makeRoute(TunTap::ETH, "0.0.0.0", m_defaultGwOld, metric_eth, "0.0.0.0", false);
+    //TunTap::getInstance().makeRoute(TunTap::ETH, "0.0.0.0", m_defaultGwOld, metric_eth, "0.0.0.0", false);
     TunTap::getInstance().closeTun();
     /*if (dhcpEnabled) {
         if (TunTap::getInstance().ipReleaseAddr(TunTap::getInstance().getDefaultAdapterIndex()) == 0) {
@@ -77,6 +78,8 @@ void DapTunWindows::onWorkerStarted() {
     qInfo() << "Default gateway: " << m_defaultGwOld;
     m_ethDeviceName = TunTap::getInstance().getNameAndDefaultDNS(TunTap::getInstance().getDefaultAdapterIndex());
     m_tunDeviceReg = TunTap::getInstance().getNameAndDefaultDNS(TunTap::getInstance().getTunTapAdapterIndex());
+    DapNetworkMonitorWindows::instance()->sltSetIfIndex(static_cast<ulong>(TunTap::getInstance().getDefaultAdapterIndex()));
+    DapNetworkMonitorWindows::instance()->sltSetTapIfIndex(static_cast<ulong>(TunTap::getInstance().getTunTapAdapterIndex()));
     if (m_defaultGwOld.isEmpty()) {
         qWarning() << "[DapChSockForw] Not found old gateway, looks like its better to restart the network";
         return;
@@ -93,7 +96,6 @@ void DapTunWindows::onWorkerStarted() {
         metric_tun = 100; // pconst: no idea, depends on machine...
     }
 
-    //TunTap::getInstance().setDNS(m_ethDeviceName, m_gw); // pconst: not yet sure whether it's totally useless...
     TunTap::getInstance().setDNS(TunTap::getInstance().getTunTapAdapterIndex(), m_gw);
     dhcpEnabled = TunTap::getInstance().dhcpEnabled(TunTap::getInstance().getDefaultAdapterIndex());
     if (dhcpEnabled) {
@@ -103,22 +105,71 @@ void DapTunWindows::onWorkerStarted() {
             exec_silent("ipconfig /registerdns");
         }
     }
-    //TunTap::getInstance().defaultRouteDelete();
-    //TunTap::getInstance().makeRoute(TunTap::ETH, "0.0.0.0",         m_defaultGwOld, metric_eth, "0.0.0.0"   );
     TunTap::getInstance().deleteRoutesByIfIndex(TunTap::getInstance().getTunTapAdapterIndex());
     //TunTap::getInstance().defaultRouteDelete();
     //TunTap::getInstance().deleteRoutesByGw("0.0.0.0");
-    TunTap::getInstance().makeRoute(TunTap::TUN, "0.0.0.0",         m_gw,           metric_tun, "0.0.0.0" );
-    //TunTap::getInstance().makeRoute(TunTap::TUN, "128.0.0.0",       m_gw,           metric_tun, "128.0.0.0" );
-    TunTap::getInstance().makeRoute(TunTap::ETH, upstreamResolved,  m_defaultGwOld, metric_eth              );
-    TunTap::getInstance().enableDefaultRoutes(TunTap::getInstance().getDefaultAdapterIndex(), false);
+    TunTap::getInstance().makeRoute(TunTap::ETH, upstreamResolved,  m_defaultGwOld, metric_eth);
+
+    /*dap_config_init(qPrintable(QString("%1/%2/etc").arg(regWGetUsrPath()).arg(DAP_BRAND)));
+    if ((g_config = dap_config_open("split")) == NULL) {
+        qInfo() << "No custom config found, route all traffic to tunnel";
+        TunTap::getInstance().makeRoute(TunTap::TUN, "0.0.0.0", m_gw, metric_tun, "0.0.0.0");
+        TunTap::getInstance().enableDefaultRoutes(static_cast<ulong>(TunTap::getInstance().getDefaultAdapterIndex()), false);
+    } else {
+        uint16_t l_size = 0;
+        char **l_custom_routes = dap_config_get_array_str(g_config, "general", "include_only", &l_size);
+
+        for (uint16_t i = 0; i < l_size; ++i) {
+            char * l_dummy = NULL;
+            char *l_addr = strtok_r(l_custom_routes[i], ":", &l_dummy);
+            char *l_mask = strtok_r(NULL, "\0", &l_dummy);
+            TunTap::getInstance().makeRoute(TunTap::TUN, l_addr, m_gw, metric_tun, l_mask);
+        }
+        dap_config_close(g_config);
+    }*/
+
+    QFile f(QString("%1/%2/etc/%3").arg(regWGetUsrPath()).arg(DAP_BRAND).arg("split.json"));
+    if (!f.open(QIODevice::ReadOnly)) {
+        qInfo() << "No custom config found, route all traffic to tunnel";
+        TunTap::getInstance().makeRoute(TunTap::TUN, "0.0.0.0", m_gw, metric_tun, "0.0.0.0");
+        TunTap::getInstance().enableDefaultRoutes(static_cast<ulong>(TunTap::getInstance().getDefaultAdapterIndex()), false);
+    } else {
+        QByteArray configJsonBytes = f.readAll();
+        f.close();
+        QJsonParseError jsonErr;
+        auto configJsonDoc = QJsonDocument::fromJson(configJsonBytes, &jsonErr);
+        if (configJsonDoc.isNull()) {
+            qCritical() << "JSON parse error " << jsonErr.errorString() << " on pos " << jsonErr.offset;
+        }
+
+        auto configArray = configJsonDoc.array();
+        for (const auto obj : configArray) {
+            auto configObject = obj.toObject();
+            qInfo() << "Applying config for " << configObject.value("Name").toString();
+            auto addrsArray = configObject.value("Addresses").toArray();
+            for (const auto addr : addrsArray) {
+                auto l = addr.toString().split("/");
+                if (l.count() == 2) {
+                    if (l.last().contains(".")) {
+                        TunTap::getInstance().makeRoute(TunTap::TUN, l.first(), m_gw, metric_tun, l.last());
+                    } else {
+                        uint l_umask = (0xFFFFFFFF << (32 - l.last().toInt())) & 0xFFFFFFFF;
+                        char l_mask[16] = {'\0'};
+                        sprintf_s(l_mask, sizeof(l_mask), "%u.%u.%u.%u", l_umask >> 24, (l_umask >> 16) & 0xFF, (l_umask >> 8) & 0xFF, l_umask & 0xFF);
+                        TunTap::getInstance().makeRoute(TunTap::TUN, l.first(), m_gw, metric_tun, l_mask);
+                    }
+                } else if (l.count() == 1) {
+                    TunTap::getInstance().makeRoute(TunTap::TUN, l.first(), m_gw, metric_tun);
+                }
+            }
+        }
+    }
 
     qInfo() << "Flushing DNS cache...";
     if(!TunTap::getInstance().flushDNS()) {
         qDebug() << "Re-flushing DNS...";
         exec_silent("ipconfig /flushdns");
     }
-    //DapNetworkMonitorWindows::instance()->monitoringStart();
     emit created();
 }
 
