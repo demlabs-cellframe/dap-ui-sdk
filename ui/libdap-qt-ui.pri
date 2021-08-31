@@ -17,6 +17,7 @@ HEADERS  += \
 include(auxiliary/auxiliary.pri)
 include(controls/controls.pri)
 include(screens/screens.pri)
+include(KelVPN/KelVPN.pri)
 
 INCLUDEPATH += $$PWD
 
