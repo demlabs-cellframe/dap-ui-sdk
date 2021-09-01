@@ -6,6 +6,8 @@
 #include "DapTunWorkerWindows.h"
 #include "DapTunWindows.h"
 #include "DapNetworkMonitorWindows.h"
+#include "dap_config.h"
+#include "dap_strfuncs.h"
 
 DapTunWindows::DapTunWindows()
 {
@@ -73,6 +75,11 @@ void DapTunWindows::tunDeviceDestroy()
 void DapTunWindows::onWorkerStarted() {
     DapTunAbstract::onWorkerStarted();
     m_defaultGwOld = TunTap::getInstance().getDefaultGateWay();
+    qInfo() << "Default gateway: " << m_defaultGwOld;
+    m_ethDeviceName = TunTap::getInstance().getNameAndDefaultDNS(TunTap::getInstance().getDefaultAdapterIndex());
+    m_tunDeviceReg = TunTap::getInstance().getNameAndDefaultDNS(TunTap::getInstance().getTunTapAdapterIndex());
+    DapNetworkMonitorWindows::instance()->sltSetIfIndex(static_cast<ulong>(TunTap::getInstance().getDefaultAdapterIndex()));
+    DapNetworkMonitorWindows::instance()->sltSetTapIfIndex(static_cast<ulong>(TunTap::getInstance().getTunTapAdapterIndex()));
     if (m_defaultGwOld.isEmpty()) {
         qCritical() << "Default gateway is undefined, odd network settings!";
         return;
