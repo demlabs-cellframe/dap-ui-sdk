@@ -6,8 +6,6 @@
 #include "DapTunWorkerWindows.h"
 #include "DapTunWindows.h"
 #include "DapNetworkMonitorWindows.h"
-#include "dap_config.h"
-#include "dap_strfuncs.h"
 
 DapTunWindows::DapTunWindows()
 {
