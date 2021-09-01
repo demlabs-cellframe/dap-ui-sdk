@@ -10,11 +10,6 @@
 #include "registry.h"
 #endif
 
-#ifdef Q_OS_ANDROID
-#include <QtAndroid>
-#include <QAndroidJniObject>
-#endif
-
 DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     : QObject(parent)
 {
@@ -82,7 +77,7 @@ QString DapLogger::defaultLogPath(const QString a_brand)
 #elif defined (Q_OS_WIN)
     return QString("%1/%2/log").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
-    QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod("getExtFilesDir", "()Ljava/lang/String;");
+    static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod("getExtFilesDir", "()Ljava/lang/String;");
     return QString("%1/log/").arg(l_pathObj.toString());
 #endif
     return {};

@@ -79,6 +79,7 @@ protected:
     virtual void workerPrepare()=0;
     virtual void workerStop()=0;
     virtual void workerPause() = 0;
+    //virtual void workerResume() = 0;
     virtual void signalWriteQueueProc()=0;
 
     void initWorker();
