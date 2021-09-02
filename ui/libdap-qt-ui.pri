@@ -20,8 +20,4 @@ include(screens/screens.pri)
 
 INCLUDEPATH += $$PWD
 
-win32: LIBS += -lgdi32
-unix: !mac: !android: LIBS += -lX11 -lXrandr
-mac:LIBS += -framework AppKit
-
 DISTFILES +=
