@@ -32,7 +32,8 @@ SOURCES     += \
 RESOURCES += \
     $$PWD/widgetsRes.qrc
 
-DISTFILES +=
+DISTFILES += \
+    $$PWD/README.md
 
 INCLUDEPATH += $$PWD
 
