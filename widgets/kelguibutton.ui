@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>KelGuiButtonUI</class>
+ <widget class="QWidget" name="KelGuiButtonUI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>480</width>
+    <height>551</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="vl">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="KelGuiWidget" name="KelGuiButtonBackground" native="true">
+     <property name="styleSheet">
+      <string notr="true">QLabel#KelGuiButtonTextMain,
+QLabel#KelGuiButtonTextMain_2,
+QLabel#KelGuiButtonTextMain_3,
+QLabel#KelGuiButtonTextMain_4
+{
+font: 20px/24px;
+font-weight: normal;
+font-style: normal;
+font-size: bold;
+font-family: 'Lato';
+}
+
+QLabel#KelGuiButtonTextSub,
+QLabel#KelGuiButtonTextSub_2,
+QLabel#KelGuiButtonTextSub_3,
+QLabel#KelGuiButtonTextSub_4
+{
+margin-top: 3px;
+font: 12px/15px;
+font-weight: normal;
+font-style: normal;
+font-size: normal;
+font-family: 'Lato';
+}
+
+QLabel#KelGuiButtonTextLeft
+{
+margin-left: 30px;
+font: 30px/36px;
+font-weight: bold;
+font-style: bold;
+font-size: bold;
+font-family: 'Lato';
+}
+
+QWidget#KelGuiButtonBackground[frame=true]
+{
+background: #f7f8fa;
+border-radius: 13px;
+border-top: 3px inset #ffffff;
+border-left: 3px inset #ffffff;
+border-bottom: 3px inset rgba(174,174,192,96);
+border-right: 3px inset rgba(174,174,192,96);
+}</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QWidget" name="Style0" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="KelGuiLabel" name="KelGuiButtonTextMain">
+           <property name="text">
+            <string>Main Text</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiLabel" name="KelGuiButtonTextSub">
+           <property name="text">
+            <string>Sub Text</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignHCenter|Qt::AlignTop</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="Style1" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="KelGuiLabel" name="KelGuiButtonTextSub_2">
+           <property name="text">
+            <string>Sub Test</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiLabel" name="KelGuiButtonTextMain_2">
+           <property name="text">
+            <string>Main Text</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignHCenter|Qt::AlignTop</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="Style2" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="KelGuiLabel" name="KelGuiButtonTextLeft">
+           <property name="text">
+            <string>$0.00</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="KelGuiLabel" name="KelGuiButtonTextMain_3">
+             <property name="text">
+              <string>Main Text</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="KelGuiLabel" name="KelGuiButtonTextSub_3">
+             <property name="text">
+              <string>Sub Text</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="Style3" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="KelGuiLabel" name="KelGuiButtonIcon">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiLabel" name="KelGuiButtonTextMain_4">
+           <property name="text">
+            <string>Main Text</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiLabel" name="KelGuiButtonTextSub_4">
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string>Sub Text</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="KelGuiSeparator" name="kelGuiSeparator">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>4</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KelGuiSeparator</class>
+   <extends>QWidget</extends>
+   <header>kelguiseparator.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">kelguiwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">kelguilabel.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

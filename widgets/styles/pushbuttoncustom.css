@@ -1,0 +1,30 @@
+*
+{
+min-width: %1px;
+min-height: %2px;
+max-width: %1px;
+max-height: %2px;
+background-image: url(%3);
+}
+*:hover
+{
+background-image: url(%4);
+}
+*:checked
+{
+background-image: url(%5);
+}
+QPushButton
+{
+color: #FFFFFF;
+font: 14px/12px;
+font-weight: bold;
+font-style: bold;
+font-size: bold;
+text-transform: uppercase;
+font-family: 'Roboto';
+background-color: rgba(0, 0, 0, 0);
+}
+
+
+
