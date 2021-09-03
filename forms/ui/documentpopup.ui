@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DocumentPopup</class>
+ <widget class="QWidget" name="DocumentPopup">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>428</width>
+    <height>929</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>428</width>
+    <height>929</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>428</width>
+    <height>929</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QWidget" name="Background" native="true">
+     <property name="styleSheet">
+      <string notr="true">#Background
+{
+background-color: #F7F8FA;
+}</string>
+     </property>
+     <widget class="KelGuiPushButton" name="btnClose">
+      <property name="geometry">
+       <rect>
+        <x>33</x>
+        <y>61</y>
+        <width>30</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="style">
+       <enum>KelGuiPushButton::Custom</enum>
+      </property>
+      <property name="custom">
+       <url>
+        <string>qrc:/gui/ui/asset/ic_close.png</string>
+       </url>
+      </property>
+      <property name="customHover">
+       <url>
+        <string>qrc:/gui/ui/asset/ic_close.png</string>
+       </url>
+      </property>
+      <property name="customPushed">
+       <url>
+        <string>qrc:/gui/ui/asset/ic_close.png</string>
+       </url>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>73</x>
+        <y>62</y>
+        <width>282</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: #04004E;
+font: 24px/29px;
+font-weight: normal;
+font-style: normal;
+font-size: bold;
+font-family: 'Lato';
+background-color: rgba(0, 0, 0, 0);</string>
+      </property>
+      <property name="text">
+       <string>Terms of use</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="textField">
+      <property name="geometry">
+       <rect>
+        <x>33</x>
+        <y>144</y>
+        <width>363</width>
+        <height>751</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background: rgba(0,0,0,0);</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KelGuiPushButton</class>
+   <extends>QPushButton</extends>
+   <header>kelguipushbutton.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

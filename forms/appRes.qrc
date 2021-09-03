@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/gui">
+        <file>ui/asset/bg_dark-stripes.png</file>
+        <file>ui/asset/logo_kelvpn-white.png</file>
+        <file>ui/asset/ic_version.png</file>
+        <file>ui/asset/logo_kelvpn-color.png</file>
+        <file>ui/asset/icon_online.png</file>
+        <file>ui/asset/icon_offline.png</file>
+        <file>ui/asset/ic_close.png</file>
+        <file>ui/asset/Spinner.gif</file>
+        <file>ui/asset/ic_bot.png</file>
+        <file>ui/asset/ic_information_bug-report.png</file>
+        <file>ui/asset/ic_key.png</file>
+        <file>ui/asset/ic_key-history.png</file>
+        <file>ui/asset/ic_key-item.png</file>
+        <file>ui/asset/ic_renew.png</file>
+        <file>ui/asset/ic_language.png</file>
+        <file>ui/asset/ic_report-item.png</file>
+        <file>ui/asset/ic_send-report.png</file>
+        <file>ui/asset/ic_terms_policy.png</file>
+        <file>ui/data/terms.html</file>
+        <file>ui/data/privacy_ru.html</file>
+        <file>ui/data/privacy.html</file>
+    </qresource>
+</RCC>

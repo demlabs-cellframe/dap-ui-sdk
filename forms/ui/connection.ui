@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Connection</class>
+ <widget class="QWidget" name="Connection">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>428</width>
+    <height>926</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>428</width>
+    <height>926</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>428</width>
+    <height>926</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QWidget" name="Background" native="true">
+     <property name="styleSheet">
+      <string notr="true">#Background
+{
+background-color: #F7F8FA;
+}</string>
+     </property>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>44</x>
+        <y>62</y>
+        <width>340</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: #DA0B82;
+font: 24px/29px;
+font-weight: normal;
+font-style: normal;
+font-size: bold;
+font-family: 'Lato';</string>
+      </property>
+      <property name="text">
+       <string>VPN Connected</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="KelGuiPushButton" name="kelGuiPushButton">
+      <property name="geometry">
+       <rect>
+        <x>102</x>
+        <y>277</y>
+        <width>260</width>
+        <height>176</height>
+       </rect>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+      <property name="style">
+       <enum>KelGuiPushButton::Switch</enum>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox">
+      <property name="geometry">
+       <rect>
+        <x>164</x>
+        <y>116</y>
+        <width>5</width>
+        <height>5</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QCheckBox::indicator
+{
+background-image: url(:/gui/ui/asset/icon_offline.png);
+}
+QCheckBox::indicator:checked
+{
+background-image: url(:/gui/ui/asset/icon_online.png);
+}</string>
+      </property>
+      <property name="text">
+       <string>56 : 30 : 10</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>175</x>
+        <y>107</y>
+        <width>90</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">*
+{
+color: #04004E;
+font: 18px/22px;
+font-weight: normal;
+font-style: normal;
+font-size: normal;
+font-family: 'Lato';
+}
+</string>
+      </property>
+      <property name="text">
+       <string>56 : 30 : 10</string>
+      </property>
+     </widget>
+     <widget class="KelGuiButton" name="kelGuiButton">
+      <property name="geometry">
+       <rect>
+        <x>42</x>
+        <y>471</y>
+        <width>154</width>
+        <height>99</height>
+       </rect>
+      </property>
+      <property name="mainText">
+       <string>120 kb/s</string>
+      </property>
+      <property name="subText">
+       <string>download</string>
+      </property>
+     </widget>
+     <widget class="KelGuiButton" name="kelGuiButton_2">
+      <property name="geometry">
+       <rect>
+        <x>228</x>
+        <y>471</y>
+        <width>154</width>
+        <height>99</height>
+       </rect>
+      </property>
+      <property name="mainText">
+       <string>34.7 kb/s</string>
+      </property>
+      <property name="subText">
+       <string>upload</string>
+      </property>
+     </widget>
+     <widget class="KelGuiButton" name="kelGuiButton_3">
+      <property name="geometry">
+       <rect>
+        <x>36</x>
+        <y>575</y>
+        <width>357</width>
+        <height>96</height>
+       </rect>
+      </property>
+      <property name="mainText">
+       <string>North America - Canada</string>
+      </property>
+      <property name="subText">
+       <string>231:532:531:20</string>
+      </property>
+      <property name="link">
+       <bool>true</bool>
+      </property>
+      <property name="frame">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KelGuiButton</class>
+   <extends>QWidget</extends>
+   <header>kelguibutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiPushButton</class>
+   <extends>QPushButton</extends>
+   <header>kelguipushbutton.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

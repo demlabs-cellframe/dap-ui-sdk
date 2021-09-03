@@ -1,0 +1,45 @@
+#ifndef LANGUAGEMODEL_H
+#define LANGUAGEMODEL_H
+
+/* INCLUDES */
+#include <QScrollArea>
+#include <QBoxLayout>
+#include <kelguiradio.h>
+#include "modelbase.h"
+
+/****************************************//**
+ * @brief choose server model list widget
+ * @date 01.09.2021
+ * @author Mikhail Shilenko
+ *******************************************/
+
+class LanguageModel : public ModelBase
+{
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
+private:
+  QList<KelGuiRadio*> m_list;
+  /// @}
+
+  /****************************************//**
+   * @name CONSTRUCT/DESTRUCT
+   *******************************************/
+  /// @{
+public:
+  explicit LanguageModel (QWidget *parent = nullptr);
+  ~LanguageModel();
+  /// @}
+
+  /****************************************//**
+   * @name PUBLIC SLOTS
+   *******************************************/
+  /// @{
+public slots:
+  void slotSetup();
+  /// @}
+};
+
+/*-----------------------------------------*/
+#endif // LANGUAGEMODEL_H

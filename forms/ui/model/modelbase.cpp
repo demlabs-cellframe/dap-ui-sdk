@@ -1,0 +1,45 @@
+/* INCLUDES */
+#include "modelbase.h"
+
+/********************************************
+ * CONSTRUCT/DESTRUCT
+ *******************************************/
+
+ModelBase::ModelBase (QWidget *parent)
+  : QScrollArea (parent),
+    lay (nullptr)
+{
+
+}
+
+/********************************************
+ * PROTECTED METHODS
+ *******************************************/
+
+void ModelBase::setupLayout()
+{
+  /* setup model */
+  if (lay)
+    return;
+
+  /* if widget exists */
+  if (widget())
+    {
+      /* if layout not present */
+      if (!layout())
+        {
+          /* cerate and store */
+          lay    = new QVBoxLayout (widget());
+          widget()->setLayout (lay);
+        }
+
+      /* get existing layout */
+      else
+        lay = dynamic_cast<QVBoxLayout *> (widget()->layout());
+    }
+  /* no widget -> no model job */
+  else
+    return;
+}
+
+/*-----------------------------------------*/

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Statistics</class>
+ <widget class="QWidget" name="Statistics">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>428</width>
+    <height>926</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>428</width>
+    <height>926</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>428</width>
+    <height>926</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QWidget" name="Background" native="true">
+     <property name="styleSheet">
+      <string notr="true">#Background
+{
+background-color: #F7F8FA;
+}</string>
+     </property>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>73</x>
+        <y>62</y>
+        <width>282</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: #04004E;
+font: 24px/29px;
+font-weight: normal;
+font-style: normal;
+font-size: bold;
+font-family: 'Lato';
+background-color: rgba(0, 0, 0, 0);</string>
+      </property>
+      <property name="text">
+       <string>Statistics</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="KelGuiButton" name="kelGuiButton_5">
+      <property name="geometry">
+       <rect>
+        <x>228</x>
+        <y>307</y>
+        <width>154</width>
+        <height>99</height>
+       </rect>
+      </property>
+      <property name="mainText">
+       <string>20 896 Mbps</string>
+      </property>
+      <property name="subText">
+       <string>upload speed</string>
+      </property>
+     </widget>
+     <widget class="KelGuiButton" name="kelGuiButton_6">
+      <property name="geometry">
+       <rect>
+        <x>228</x>
+        <y>406</y>
+        <width>154</width>
+        <height>99</height>
+       </rect>
+      </property>
+      <property name="mainText">
+       <string>20 896 Mb</string>
+      </property>
+      <property name="subText">
+       <string>bytes sent</string>
+      </property>
+     </widget>
+     <widget class="KelGuiButton" name="kelGuiButton_4">
+      <property name="geometry">
+       <rect>
+        <x>42</x>
+        <y>604</y>
+        <width>154</width>
+        <height>99</height>
+       </rect>
+      </property>
+      <property name="mainText">
+       <string>146:7:27</string>
+      </property>
+      <property name="subText">
+       <string>uptime</string>
+      </property>
+     </widget>
+     <widget class="KelGuiButton" name="kelGuiButton_7">
+      <property name="geometry">
+       <rect>
+        <x>228</x>
+        <y>505</y>
+        <width>154</width>
+        <height>99</height>
+       </rect>
+      </property>
+      <property name="mainText">
+       <string>4 086</string>
+      </property>
+      <property name="subText">
+       <string>packets sent</string>
+      </property>
+     </widget>
+     <widget class="KelGuiButton" name="kelGuiButton">
+      <property name="geometry">
+       <rect>
+        <x>42</x>
+        <y>307</y>
+        <width>154</width>
+        <height>99</height>
+       </rect>
+      </property>
+      <property name="mainText">
+       <string>10205 Mbps</string>
+      </property>
+      <property name="subText">
+       <string>download speed</string>
+      </property>
+     </widget>
+     <widget class="KelGuiButton" name="kelGuiButton_2">
+      <property name="geometry">
+       <rect>
+        <x>42</x>
+        <y>406</y>
+        <width>154</width>
+        <height>99</height>
+       </rect>
+      </property>
+      <property name="mainText">
+       <string>29 896 Gb</string>
+      </property>
+      <property name="subText">
+       <string>bytes received</string>
+      </property>
+     </widget>
+     <widget class="KelGuiButton" name="kelGuiButton_8">
+      <property name="geometry">
+       <rect>
+        <x>228</x>
+        <y>604</y>
+        <width>154</width>
+        <height>99</height>
+       </rect>
+      </property>
+      <property name="mainText">
+       <string>34 ms</string>
+      </property>
+      <property name="subText">
+       <string>ping</string>
+      </property>
+     </widget>
+     <widget class="QFrame" name="frame">
+      <property name="geometry">
+       <rect>
+        <x>34</x>
+        <y>133</y>
+        <width>360</width>
+        <height>162</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+     <widget class="KelGuiButton" name="kelGuiButton_3">
+      <property name="geometry">
+       <rect>
+        <x>42</x>
+        <y>505</y>
+        <width>154</width>
+        <height>99</height>
+       </rect>
+      </property>
+      <property name="mainText">
+       <string>454 086</string>
+      </property>
+      <property name="subText">
+       <string>packets received</string>
+      </property>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KelGuiButton</class>
+   <extends>QWidget</extends>
+   <header>kelguibutton.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
