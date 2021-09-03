@@ -8,7 +8,8 @@
 #include "modelbase.h"
 
 /****************************************//**
- * @brief choose server model list widget
+ * @brief choose language model list widget
+ * @ingroup groupUiModels
  * @date 01.09.2021
  * @author Mikhail Shilenko
  *******************************************/

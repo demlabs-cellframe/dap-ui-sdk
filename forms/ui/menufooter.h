@@ -13,6 +13,7 @@ QT_END_NAMESPACE
 /****************************************//**
  * @brief menu footer widget
  * usualy lays on top of screen
+ * @ingroup groupUiClasses
  * @date 27.08.2021
  * @author Mikhail Shilenko
  *******************************************/

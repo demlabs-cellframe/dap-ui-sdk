@@ -6,6 +6,7 @@
 
 /****************************************//**
  * @brief settings model list widget
+ * @ingroup groupUiModels
  * @date 31.08.2021
  * @author Mikhail Shilenko
  *******************************************/

@@ -10,6 +10,8 @@ namespace Ui { class Connection;}
 QT_END_NAMESPACE
 
 /****************************************//**
+ * @brief ui/class for connection status
+ * @ingroup groupUiClasses
  * @date 26.08.2021
  * @author Mikhail Shilenko
  *******************************************/

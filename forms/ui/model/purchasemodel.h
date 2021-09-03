@@ -7,6 +7,7 @@
 
 /****************************************//**
  * @brief purchase model list widget
+ * @ingroup groupUiModels
  * @date 01.09.2021
  * @author Mikhail Shilenko
  *******************************************/

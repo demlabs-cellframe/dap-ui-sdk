@@ -10,6 +10,8 @@ namespace Ui { class SplashScreen; }
 QT_END_NAMESPACE
 
 /****************************************//**
+ * @brief ui/class for splash into screen
+ * @ingroup groupUiClasses
  * @date 25.08.2021
  * @author Mikhail Shilenko
  *******************************************/

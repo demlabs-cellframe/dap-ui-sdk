@@ -10,6 +10,8 @@ namespace Ui { class History; }
 QT_END_NAMESPACE
 
 /****************************************//**
+ * @brief ui/class for licence list
+ * @ingroup groupUiClasses
  * @date 01.09.2021
  * @author Mikhail Shilenko
  *******************************************/

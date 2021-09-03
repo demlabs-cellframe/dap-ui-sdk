@@ -10,6 +10,8 @@ namespace Ui { class Login; }
 QT_END_NAMESPACE
 
 /****************************************//**
+ * @brief ui/class for login page
+ * @ingroup groupUiClasses
  * @date 25.08.2021
  * @author Mikhail Shilenko
  *******************************************/

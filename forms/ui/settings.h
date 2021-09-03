@@ -10,6 +10,8 @@ namespace Ui { class Settings; }
 QT_END_NAMESPACE
 
 /****************************************//**
+ * @brief ui/class for settings
+ * @ingroup groupUiClasses
  * @date 01.09.2021
  * @author Mikhail Shilenko
  *******************************************/

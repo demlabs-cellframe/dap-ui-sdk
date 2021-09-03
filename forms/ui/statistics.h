@@ -10,6 +10,8 @@ namespace Ui { class Statistics; }
 QT_END_NAMESPACE
 
 /****************************************//**
+ * @brief ui/class for statistics display
+ * @ingroup groupUiClasses
  * @date 27.08.2021
  * @author Mikhail Shilenko
  *******************************************/

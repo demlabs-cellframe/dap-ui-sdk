@@ -8,6 +8,7 @@
 /****************************************//**
  * @brief base class for model
  * inside scrollarea
+ * @ingroup groupUiModels
  * @date 01.09.2021
  * @author Mikhail Shilenko
  *******************************************/

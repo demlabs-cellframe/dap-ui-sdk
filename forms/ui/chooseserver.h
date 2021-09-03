@@ -10,6 +10,8 @@ namespace Ui { class ChooseServer; }
 QT_END_NAMESPACE
 
 /****************************************//**
+ * @brief ui/class for server list
+ * @ingroup groupUiClasses
  * @date 01.09.2021
  * @author Mikhail Shilenko
  *******************************************/

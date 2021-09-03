@@ -10,6 +10,8 @@ namespace Ui { class Purchase;}
 QT_END_NAMESPACE
 
 /****************************************//**
+ * @brief ui/class for licence purchases
+ * @ingroup groupUiClasses
  * @date 01.09.2021
  * @author Mikhail Shilenko
  *******************************************/

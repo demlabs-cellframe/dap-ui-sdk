@@ -6,7 +6,8 @@
 #include "modelbase.h"
 
 /****************************************//**
- * @brief choose server model list widget
+ * @brief watch licence history list widget
+ * @ingroup groupUiModels
  * @date 01.09.2021
  * @author Mikhail Shilenko
  *******************************************/
