@@ -23,7 +23,13 @@ ClassParser::ClassParser (
   QString simpleSheet = styleSheet;
 
   /* remove lines */
-  simpleSheet = simpleSheet.replace ('\n', "");
+  simpleSheet =
+    simpleSheet
+    .replace ('\n', "")
+    .replace ('{', "")
+    .replace ('}', "")
+    .replace ('\n', "")
+    .replace ('\t', "");
 
   /* split by combo of new lines and dots */
   for (auto i = styleSheet.cbegin(),
@@ -81,10 +87,21 @@ void ClassParser::naming (ClassParser *ssc, it &i)
 void ClassParser::body (ClassParser *ssc, it &i)
 {
   /* body finished */
-  if ((*i == '}') && (!ssc->names.isEmpty()))
+  if (*i == '}')
     {
-      /* store into map */
-      ssc->styleMap.insert (ssc->names, ssc->currentBody);
+      /* if got atleast on keyname */
+      if (!ssc->names.isEmpty())
+        {
+          /* store into map */
+          ssc->styleMap.insert (ssc->names, ssc->currentBody);
+        }
+
+      /* clear names and body */
+      ssc->names.clear();
+      ssc->currentName.clear();
+      ssc->currentBody.clear();
+
+      /* change mode to none */
       ssc->method = none;
       return;
     }

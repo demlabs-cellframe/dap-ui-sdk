@@ -13,9 +13,60 @@
 #include <QObject>
 #include <QMutexLocker>
 
+#define KELGUI_ENABLECSSSTYLE \
+void applyStyle() override \
+{ setStyleSheet (styleByClassName (m_cssStyle)); }
+
+#define KELGUI_ENABLEWIDGETSTYLE \
+void paintEvent (QPaintEvent *) override \
+{ \
+  QStyleOption opt; \
+  opt.init (this); \
+  QPainter p (this); \
+  style()->drawPrimitive (QStyle::PE_Widget, &opt, &p, this); \
+}
 
 /****************************************//**
  * @brief style manager for widgets
+ * Class provide easy way to setup different
+ * style classes and get result stylesheet
+ * by providing classNames list (setCssStyle)
+ * separated by space (' ')
+ *
+ * @code
+ * setCssStyle(
+ *   ".tab .content,"
+ *   ".outline .font16");
+ * @endcode
+ *
+ * To enable style autoapplying put
+ * define KELGUI_ENABLECSSSTYLE inside
+ * child class.
+ *
+ * @code
+ * class Box : public KelGuiStyleManager, QPushButton
+ * {
+ *   KELGUI_ENABLECSSSTYLE
+ * public:
+ *   explicit Box (QWidget *parent)
+ * : QPushButton (parent) {}
+ * }
+ * @endcode
+ *
+ * To enable QWidget styling add define
+ * KELGUI_ENABLEWIDGETSTYLE inside child class
+ *
+ * @code
+ * class Box : public KelGuiStyleManager, QWidget
+ * {
+ *   KELGUI_ENABLECSSSTYLE
+ *   KELGUI_ENABLEWIDGETSTYLE
+ * public:
+ *   explicit Box (QWidget *parent)
+ * : QWidget (parent) {}
+ * }
+ * @endcode
+ *
  * @ingroup groupKelGuiStyle
  * @date 07.09.2021
  * @author Mikhail Shilenko
@@ -29,7 +80,7 @@ class KelGuiStyleManager : public QObject
    * @name PROPERTIES
    *******************************************/
   /// @{
-  Q_PROPERTY (QString cssStyle READ cssStyle WRITE setCssStyle)
+  Q_PROPERTY (QString cssStyle READ cssStyle WRITE setCssStyle NOTIFY cssStyleChanged)
   /// @}
 
   /****************************************//**
@@ -45,16 +96,43 @@ protected:
    *******************************************/
   /// @{
 public:
-  explicit KelGuiStyleManager(QObject *parent);
+  KelGuiStyleManager();
+  virtual ~KelGuiStyleManager();
   /// @}
 
   /****************************************//**
-   * @name PUBLIC METHODS
+   * @name STATIC METHODS
    *******************************************/
   /// @{
 public:
+  static void setupGlobalStyleSheet (
+    const QString &styleSheet,
+    const float &DPI);
+  /// @}
+
+  /****************************************//**
+   * @name PUBLIC SLOTS
+   *******************************************/
+  /// @{
+public slots:
   QString cssStyle() const;
-  void setCssStyle(const QString &cssStyle);
+  void setCssStyle (const QString &cssStyle);
+  /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void cssStyleChanged();
+  /// @}
+
+  /****************************************//**
+   * @name VIRTUAL METHODS
+   *******************************************/
+  /// @{
+protected:
+  virtual void applyStyle() {}
   /// @}
 
   /****************************************//**
@@ -65,13 +143,9 @@ protected:
   /// get style by class name
   QString styleByClassName (const QString &className);
   /// collect all styles by class array (separated by space)
-  /// @param[in] classNameList class array (separated by space)
-  /// @param[in] addNamedStyle will append nametag style
-  QString styleByClassList (const QString &classNameList, bool addNamedStyle = true);
+  QString styleByClassList (const QString &classNameList);
   /// collect all styles by class array
-  /// @param[in] classNameList class array
-  /// @param[in] addNamedStyle will append nametag style
-  QString styleByClassList (const QStringList &classNameList, bool addNamedStyle = true);
+  QString styleByClassList (const QStringList &classNameList);
   /// @}
 };
 

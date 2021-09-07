@@ -22,7 +22,7 @@ namespace StyleSheet
 
 class ClassParser
 {
-  friend class KelGuiStyleManager;
+  friend class ClassMap;
 
   /****************************************//**
    * @name DEFS

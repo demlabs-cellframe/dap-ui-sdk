@@ -1,5 +1,6 @@
 /* INCLUDES */
 #include "stylesheetclassmap.h"
+#include "stylesheetclassparser.h"
 
 /* NAMESPACE */
 namespace StyleSheet
@@ -17,6 +18,11 @@ namespace StyleSheet
 /********************************************
  * METHODS
  *******************************************/
+
+void ClassMap::setup (const QString &styleSheet, const float &DPI)
+{
+  StyleSheet::ClassParser (styleSheet, *this, DPI);
+}
 
 void ClassMap::clear()
 {
