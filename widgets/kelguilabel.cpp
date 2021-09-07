@@ -37,7 +37,7 @@ public:
     QString operator[] (const QString &className)
     {
       QString value = _LabelStyleManager::instance()->m_styleMap.value (className);
-      return value.replace('{',"").replace('}',"").replace('\n',"").replace('\t',"");
+      return value.replace ('{', "").replace ('}', "").replace ('\n', "").replace ('\t', "");
     }
 
     /// split classes by 'space' and collect all styles as one string
@@ -94,18 +94,18 @@ KelGuiLabel::KelGuiLabel (QWidget *parent)
  * PUBLIC METHODS
  *******************************************/
 
-QString KelGuiLabel::cssStyle() const
-{
-  return m_cssStyle;
-}
+//QString KelGuiLabel::cssStyle() const
+//{
+//  return m_cssStyle;
+//}
 
-void KelGuiLabel::setCssStyle(const QString &cssStyleText)
-{
-  m_cssStyle  = cssStyleText;
-  _LabelStyleManager::Operation op;
-  auto style  = op.compile(m_cssStyle);
-  setStyleSheet (style);
-}
+//void KelGuiLabel::setCssStyle(const QString &cssStyleText)
+//{
+//  m_cssStyle  = cssStyleText;
+//  _LabelStyleManager::Operation op;
+//  auto style  = op.compile(m_cssStyle);
+//  setStyleSheet (style);
+//}
 
 
 /*-----------------------------------------*/

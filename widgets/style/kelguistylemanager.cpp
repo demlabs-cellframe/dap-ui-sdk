@@ -51,6 +51,11 @@ KelGuiStyleManager::KelGuiStyleManager()
 
 }
 
+KelGuiStyleManager::~KelGuiStyleManager()
+{
+
+}
+
 /********************************************
  * STATIC METHODS
  *******************************************/

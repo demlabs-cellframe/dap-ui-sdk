@@ -25,15 +25,15 @@ ClassParser::ClassParser (
   /* remove lines */
   simpleSheet =
     simpleSheet
-    .replace ('\n', "")
-    .replace ('{', "")
-    .replace ('}', "")
-    .replace ('\n', "")
-    .replace ('\t', "");
+    .replace ('\n', " ");
+//    .replace ('{', "")
+//    .replace ('}', "")
+//    .replace ('\n', "")
+//    .replace ('\t', "");
 
   /* split by combo of new lines and dots */
-  for (auto i = styleSheet.cbegin(),
-       e = styleSheet.cend();
+  for (auto i = simpleSheet.cbegin(),
+       e = simpleSheet.cend();
        i != e;
        i++, index++)
     method (this, i);

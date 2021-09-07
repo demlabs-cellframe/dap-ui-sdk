@@ -60,26 +60,29 @@ const QStringList &ClassMap::keys() const
 
 const QStringList &ClassMap::value (const QString &key) const
 {
-  /* vars */
-  static QStringList result;
+//  /* vars */
+//  static QStringList result;
 
-  /* cycle thru existing items */
-  for (auto j = m_items.cbegin(), k = m_items.cend(); j != k; j++)
-    {
-      /* check if item contains key */
-      if (j->keys.contains (key))
+//  /* cycle thru existing items */
+//  for (auto j = m_items.cbegin(), k = m_items.cend(); j != k; j++)
+//    {
+//      /* check if item contains key */
+//      if (j->keys.contains (key))
 
-        // store into list
-        result << j->styles;
-    }
+//        // store into list
+//        result << j->styles;
+//    }
 
-  return result;
+//  return result;
+  QStringList keys = key.split (' ');
+  return values (keys);
 }
 
 const QStringList &ClassMap::values (const QStringList &keys) const
 {
   /* vars */
   static QStringList result;
+  result.clear();
 
   /* cycle trhu provided keys */
   for (auto i = keys.cbegin(), e = keys.cend(); i != e; i++)

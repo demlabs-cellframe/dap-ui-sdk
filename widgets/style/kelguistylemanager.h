@@ -72,10 +72,8 @@ void paintEvent (QPaintEvent *) override \
  * @author Mikhail Shilenko
  *******************************************/
 
-class KelGuiStyleManager : public QObject
+class KelGuiStyleManager
 {
-  Q_OBJECT
-
   /****************************************//**
    * @name PROPERTIES
    *******************************************/

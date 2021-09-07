@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QLabel>
+#include "style/kelguistylemanager.h"
 
 /****************************************//**
  * @brief widget with custom properties
@@ -11,41 +12,41 @@
  * @author Mikhail Shilenko
  *******************************************/
 
-class KelGuiLabel : public QLabel
+class KelGuiLabel : public QLabel, public KelGuiStyleManager
 {
-  Q_OBJECT
+  KELGUI_ENABLECSSSTYLE
 
-  /****************************************//**
-   * @name PROPERTIES
-   *******************************************/
-  /// @{
-  Q_PROPERTY (QString cssStyle READ cssStyle WRITE setCssStyle)
-  /// @}
+//  /****************************************//**
+//   * @name PROPERTIES
+//   *******************************************/
+//  /// @{
+//  Q_PROPERTY (QString cssStyle READ cssStyle WRITE setCssStyle)
+//  /// @}
 
-  /****************************************//**
-   * @name VARS
-   *******************************************/
-  /// @{
-private:
-  QString m_cssStyle;
-  /// @}
+//  /****************************************//**
+//   * @name VARS
+//   *******************************************/
+//  /// @{
+//private:
+//  QString m_cssStyle;
+//  /// @}
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
 public:
-  explicit KelGuiLabel(QWidget *parent = nullptr);
+  explicit KelGuiLabel (QWidget *parent = nullptr);
   /// @}
 
-  /****************************************//**
-   * @name PUBLIC METHODS
-   *******************************************/
-  /// @{
-public:
-  QString cssStyle() const;
-  void setCssStyle(const QString &cssStyleText);
-  /// @}
+//  /****************************************//**
+//   * @name PUBLIC METHODS
+//   *******************************************/
+//  /// @{
+//public:
+//  QString cssStyle() const;
+//  void setCssStyle(const QString &cssStyleText);
+//  /// @}
 };
 
 /*-----------------------------------------*/
