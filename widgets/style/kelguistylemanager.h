@@ -72,8 +72,10 @@ void paintEvent (QPaintEvent *) override \
  * @author Mikhail Shilenko
  *******************************************/
 
-class KelGuiStyleManager
+class KelGuiStyleManager : public QObject
 {
+  Q_OBJECT
+
   /****************************************//**
    * @name PROPERTIES
    *******************************************/
@@ -87,6 +89,7 @@ class KelGuiStyleManager
   /// @{
 protected:
   QString m_cssStyle;
+  QWidget *m_widget;
   /// @}
 
   /****************************************//**
@@ -94,7 +97,8 @@ protected:
    *******************************************/
   /// @{
 public:
-  KelGuiStyleManager();
+  KelGuiStyleManager (QWidget *parent);
+  KelGuiStyleManager (KelGuiStyleManager &&src);
   virtual ~KelGuiStyleManager();
   /// @}
 
@@ -123,14 +127,6 @@ public slots:
   /// @{
 signals:
   void cssStyleChanged();
-  /// @}
-
-  /****************************************//**
-   * @name VIRTUAL METHODS
-   *******************************************/
-  /// @{
-protected:
-  virtual void applyStyle() {}
   /// @}
 
   /****************************************//**

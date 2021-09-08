@@ -12,6 +12,7 @@ CONFIG(plugin) {
 HEADERS     += \
     $$PWD/kelguibuttonplugin.h \
     $$PWD/kelguicheckboxplugin.h \
+    $$PWD/kelguilabelplugin.h \
     $$PWD/kelguiplaintexteditplugin.h \
     $$PWD/kelguipushbuttonplugin.h \
     $$PWD/kelguiradioplugin.h \
@@ -21,6 +22,7 @@ HEADERS     += \
 SOURCES     += \
     $$PWD/kelguibuttonplugin.cpp \
     $$PWD/kelguicheckboxplugin.cpp \
+    $$PWD/kelguilabelplugin.cpp \
     $$PWD/kelguiplaintexteditplugin.cpp \
     $$PWD/kelguipushbuttonplugin.cpp \
     $$PWD/kelguiradioplugin.cpp \

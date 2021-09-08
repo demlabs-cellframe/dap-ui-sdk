@@ -1,7 +1,6 @@
 /* INCLUDES */
 #include "kelguistylemanager.h"
-#include <QMap>
-#include <QApplication>
+#include <QWidget>
 #include "stylesheetclassmap.h"
 #include "stylesheetclassparser.h"
 
@@ -46,9 +45,21 @@ typedef _GlobalStyleSheet Gss;
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-KelGuiStyleManager::KelGuiStyleManager()
+KelGuiStyleManager::KelGuiStyleManager (QWidget *parent)
+  : m_widget (parent)
 {
 
+}
+
+KelGuiStyleManager::KelGuiStyleManager (KelGuiStyleManager &&src)
+{
+  if (this == &src)
+    return;
+
+  m_cssStyle  = src.m_cssStyle;
+  m_widget    = src.m_widget;
+  src.m_cssStyle.clear();
+  src.m_widget  = nullptr;
 }
 
 KelGuiStyleManager::~KelGuiStyleManager()
@@ -79,7 +90,7 @@ QString KelGuiStyleManager::cssStyle() const
 void KelGuiStyleManager::setCssStyle (const QString &cssStyle)
 {
   m_cssStyle  = cssStyle;
-  applyStyle();
+  m_widget->setStyleSheet (styleByClassName (m_cssStyle));
 }
 
 /********************************************

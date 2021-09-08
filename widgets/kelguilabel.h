@@ -12,9 +12,16 @@
  * @author Mikhail Shilenko
  *******************************************/
 
-class KelGuiLabel : public QLabel, public KelGuiStyleManager
+class KelGuiLabel : public QLabel
 {
-  KELGUI_ENABLECSSSTYLE
+  Q_PROPERTY (QString cssStyle READ cssStyle WRITE setCssStyle)
+  KelGuiStyleManager __kgsm = KelGuiStyleManager (this);
+public:
+  QString cssStyle() const { return __kgsm.cssStyle(); }
+  void setCssStyle (const QString &cssStyle) { __kgsm.setCssStyle (cssStyle); }
+private:
+
+  //KELGUI_ENABLECSSSTYLE
 
 //  /****************************************//**
 //   * @name PROPERTIES
