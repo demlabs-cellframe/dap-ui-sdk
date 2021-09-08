@@ -1,11 +1,9 @@
 /* INCLUDES */
 #include "kelguilabel.h"
+#include "kelguicommon.h"
 
 #include <QMutex>
 #include <QMap>
-
-/* FUNCS */
-QString fromFile (const QString &filename);
 
 /* DEFS */
 
@@ -55,7 +53,7 @@ public:
 private:
   _LabelStyleManager()
   {
-    auto style = fromFile ("://styles/buttonlabel.css");
+    auto style = Common::fromFile ("://styles/buttonlabel.css");
     auto list  = style.split ('.');
     //auto inst  = _LabelStyleManager::instance();
     foreach (auto &item, list)

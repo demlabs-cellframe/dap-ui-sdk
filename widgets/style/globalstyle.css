@@ -1,0 +1,91 @@
+/****************************************************
+ * Colors
+ ***************************************************/
+
+.darkblue
+{
+	color: #04004E;
+}
+
+.red
+{
+	color: #DA0B82;
+}
+
+.gray
+{
+	color: #A4A3C0;
+}
+
+/****************************************************
+ * Rules
+ ***************************************************/
+
+.uppercase
+{
+	text-transform: uppercase;
+}
+
+/****************************************************
+ * Font Styles
+ ***************************************************/
+
+.normal
+{
+	font-weight: normal;
+	font-style: normal;
+	font-size: normal;
+}
+
+.normalbold
+{
+	font-weight: normal;
+	font-style: normal;
+	font-size: bold;
+}
+
+.bold
+{
+	font-weight: bold;
+	font-style: bold;
+	font-size: bold;
+}
+
+/****************************************************
+ * Fonts
+ ***************************************************/
+
+.font12
+{
+	font: 12pt/15pt;
+}
+
+.font16
+{
+	font: 16pt/19pt;
+}
+
+.font20
+{
+	font: 20pt/24pt;
+}
+
+.font24
+{
+	font: 24pt/29pt;
+}
+
+.font30
+{
+	font: 30pt/36pt;
+}
+
+.margin28
+{
+	margin: 28pt;
+}
+
+.margin-right28
+{
+	margin-right: 28pt;
+}

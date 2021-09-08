@@ -8,8 +8,7 @@
 #include "kelvpnneuromorphic.h"
 
 #include "style/kelguistylemanager.h"
-
-QString fromFile (const QString &filename);
+#include "kelguicommon.h"
 
 KelVpnNeuromorphic::KelVpnNeuromorphic (QObject *parent)
   : QObject (parent)
@@ -26,7 +25,7 @@ KelVpnNeuromorphic::KelVpnNeuromorphic (QObject *parent)
   QFontDatabase::addApplicationFont ("://fonts/Lato-Regular.ttf");
   QFontDatabase::addApplicationFont ("://fonts/Roboto-Bold.ttf");
 
-  auto style = fromFile ("://styles/buttonlabel.css");
+  auto style = Common::fromFile ("://style/globalstyle.css");
   KelGuiStyleManager::setupGlobalStyleSheet (style, 69.8);
 }
 

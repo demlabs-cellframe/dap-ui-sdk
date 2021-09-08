@@ -1,5 +1,6 @@
 /* INCLUDES */
 #include "kelguipushbutton.h"
+#include "kelguicommon.h"
 
 #include <QFile>
 #include <QStyleOption>
@@ -15,9 +16,6 @@ struct _KgpbItem
 {
   QString filename, hover, checked;
 };
-
-/* FUNCS */
-QString fromFile (const QString &filename);
 
 /* VARS */
 static QMap<KelGuiPushButton::Style, _KgpbItem> s_presets =
@@ -68,7 +66,7 @@ KelGuiPushButton::KelGuiPushButton (QWidget *parent)
 
   //setStyleSheet (fromFile ("://styles/pushbutton.css"));
   //updateStyle();
-  setStyle(m_style);
+  setStyle (m_style);
 
   /* signals */
   connect (this, &QPushButton::clicked,
@@ -94,12 +92,12 @@ void KelGuiPushButton::setStyle (const Style &style)
   m_style = style;
 
   /* setup style, if present */
-  if(s_presets.contains(style))
+  if (s_presets.contains (style))
     {
-      auto item = s_presets.value(style);
-      setCustom(item.filename.mid(2));
-      setCustomHover(item.hover.mid(2));
-      setCustomPushed(item.checked.mid(2));
+      auto item = s_presets.value (style);
+      setCustom (item.filename.mid (2));
+      setCustomHover (item.hover.mid (2));
+      setCustomPushed (item.checked.mid (2));
       return emit styleChanged();
     }
 
@@ -185,10 +183,11 @@ void KelGuiPushButton::updateStyle()
   QPixmap img (names[0]);
 
   /* setup style sheet based on pixmap size and files names */
-  QString style = fromFile ("://styles/pushbuttoncustom.css")
-                  .arg (img.size().width())
-                  .arg (img.size().height())
-                  .arg (names[0], names[1], names[2]);
+  QString style =
+    Common::fromFile ("://styles/pushbuttoncustom.css")
+    .arg (img.size().width())
+    .arg (img.size().height())
+    .arg (names[0], names[1], names[2]);
 
   setStyleSheet (style);
 #ifdef ENABLEPURPLE

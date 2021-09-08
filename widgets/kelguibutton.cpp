@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "kelguibutton.h"
 #include "ui_kelguibutton.h"
+#include "kelguicommon.h"
 
 #include <QFile>
 #include <QStyleOption>
@@ -46,8 +47,6 @@ static thread_local BoolHelper<Qt::AlignmentFlag> s_mainHelper (
 {Qt::AlignVCenter, Qt::AlignBottom}); // sub is not empty
 
 /* FUNCS */
-QString fromFile (const QString &filename);
-
 template<class T, class U>
 T *as (U *u)
 {
@@ -103,7 +102,7 @@ KelGuiButton::KelGuiButton (QWidget *parent)
   m_lLink->hide();
 
   /* final style manip */
-  auto labelStyle = fromFile ("://styles/buttonlabel.css");
+  auto labelStyle = Common::fromFile ("://styles/buttonlabel.css");
   for (auto i = m_widgets.begin(), e = m_widgets.end(); i != e; i++)
     if (i.key() != "styledWidgets")
       (*i)->setStyleSheet (labelStyle);
@@ -352,7 +351,7 @@ void KelGuiButton::setupLabels()
     {"textLeft",  leftCssClass()},
   };
 
-  auto labelStyle = fromFile ("://styles/buttonlabel.css");
+  auto labelStyle = Common::fromFile ("://styles/buttonlabel.css");
   for (auto i = m_widgets.begin(), e = m_widgets.end(); i != e; i++)
     if (i.key() != "styledWidgets")
       as<KelGuiLabel> (*i)->setCssStyle (labelMap.value (i.key()));

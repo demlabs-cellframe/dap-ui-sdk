@@ -1,4 +1,10 @@
+/* INCLUDES */
+#include "kelguicommon.h"
 #include <QFile>
+
+/* NAMESPACE */
+namespace Common
+{
 
 QString fromFile (const QString &filename)
 {
@@ -6,3 +12,7 @@ QString fromFile (const QString &filename)
   file.open (QIODevice::ReadOnly);
   return file.readAll();
 }
+
+};
+
+/*-----------------------------------------*/

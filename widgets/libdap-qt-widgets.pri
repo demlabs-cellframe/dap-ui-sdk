@@ -5,7 +5,7 @@ unix: !mac: !android: LIBS += -lX11 -lXrandr
 mac:LIBS += -framework AppKit
 
 SOURCES     += \
-    $$PWD/kelguiwidgets.cpp
+    $$PWD/kelguicommon.cpp
 
 # add plugin definitions for QtDesigner
 CONFIG(plugin) {
@@ -48,3 +48,6 @@ include(kelguiseparator.pri)
 include(kelguilabel.pri)
 include(kelguiwidget.pri)
 include(style/kelguistylemanager.pri)
+
+HEADERS += \
+    $$PWD/kelguicommon.h

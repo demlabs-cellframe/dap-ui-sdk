@@ -4,9 +4,6 @@
 #include <QStyleOption>
 #include <QPainter>
 
-/* FUNCS */
-QString fromFile (const QString &filename);
-
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/
@@ -29,7 +26,7 @@ KelGuiSeparator::KelGuiSeparator (QWidget *parent)
  * OVERRIDE
  *******************************************/
 
-void KelGuiSeparator::paintEvent(QPaintEvent *)
+void KelGuiSeparator::paintEvent (QPaintEvent *)
 {
   QStyleOption opt;
   opt.init (this);
