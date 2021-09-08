@@ -13,9 +13,12 @@
 #include <QObject>
 #include <QMutexLocker>
 
-#define KELGUI_ENABLECSSSTYLE \
-void applyStyle() override \
-{ setStyleSheet (styleByClassName (m_cssStyle)); }
+#define KELGUI_ENABLECSS \
+public: \
+  Q_PROPERTY (QString cssStyle READ cssStyle WRITE setCssStyle) \
+  KelGuiStyleManager __kgsm = KelGuiStyleManager (this); \
+  QString cssStyle() const { return __kgsm.cssStyle(); } \
+  void setCssStyle (const QString &cssStyle) { __kgsm.setCssStyle (cssStyle); }
 
 #define KELGUI_ENABLEWIDGETSTYLE \
 void paintEvent (QPaintEvent *) override \

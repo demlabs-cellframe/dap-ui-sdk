@@ -243,15 +243,15 @@ border-right: 3px inset rgba(174,174,192,96);
    <header>kelguiseparator.h</header>
   </customwidget>
   <customwidget>
+   <class>KelGuiLabel</class>
+   <extends>QLabel</extends>
+   <header>kelguilabel.h</header>
+  </customwidget>
+  <customwidget>
    <class>KelGuiWidget</class>
    <extends>QWidget</extends>
    <header location="global">kelguiwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>KelGuiLabel</class>
-   <extends>QLabel</extends>
-   <header location="global">kelguilabel.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

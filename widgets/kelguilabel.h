@@ -14,46 +14,16 @@
 
 class KelGuiLabel : public QLabel
 {
-  Q_PROPERTY (QString cssStyle READ cssStyle WRITE setCssStyle)
-  KelGuiStyleManager __kgsm = KelGuiStyleManager (this);
-public:
-  QString cssStyle() const { return __kgsm.cssStyle(); }
-  void setCssStyle (const QString &cssStyle) { __kgsm.setCssStyle (cssStyle); }
-private:
-
-  //KELGUI_ENABLECSSSTYLE
-
-//  /****************************************//**
-//   * @name PROPERTIES
-//   *******************************************/
-//  /// @{
-//  Q_PROPERTY (QString cssStyle READ cssStyle WRITE setCssStyle)
-//  /// @}
-
-//  /****************************************//**
-//   * @name VARS
-//   *******************************************/
-//  /// @{
-//private:
-//  QString m_cssStyle;
-//  /// @}
+  Q_OBJECT
+  KELGUI_ENABLECSS
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
 public:
-  explicit KelGuiLabel (QWidget *parent = nullptr);
+  KelGuiLabel (QWidget *parent = nullptr);
   /// @}
-
-//  /****************************************//**
-//   * @name PUBLIC METHODS
-//   *******************************************/
-//  /// @{
-//public:
-//  QString cssStyle() const;
-//  void setCssStyle(const QString &cssStyleText);
-//  /// @}
 };
 
 /*-----------------------------------------*/
