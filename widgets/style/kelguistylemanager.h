@@ -11,7 +11,8 @@
 
 /* INCLUDES */
 #include <QObject>
-#include <QMutexLocker>
+#include <QStyleOption>
+#include <QPainter>
 
 #define KELGUI_ENABLECSS \
 public: \
@@ -43,16 +44,16 @@ void paintEvent (QPaintEvent *) override \
  * @endcode
  *
  * To enable style autoapplying put
- * define KELGUI_ENABLECSSSTYLE inside
+ * define KELGUI_ENABLECSS inside
  * child class.
  *
  * @code
- * class Box : public KelGuiStyleManager, QPushButton
+ * class BoxButton : public QPushButton
  * {
- *   KELGUI_ENABLECSSSTYLE
+ *   KELGUI_ENABLECSS
  * public:
  *   explicit Box (QWidget *parent)
- * : QPushButton (parent) {}
+ *     : QPushButton (parent) {}
  * }
  * @endcode
  *
@@ -60,13 +61,13 @@ void paintEvent (QPaintEvent *) override \
  * KELGUI_ENABLEWIDGETSTYLE inside child class
  *
  * @code
- * class Box : public KelGuiStyleManager, QWidget
+ * class Box : public QWidget
  * {
- *   KELGUI_ENABLECSSSTYLE
+ *   KELGUI_ENABLECSS
  *   KELGUI_ENABLEWIDGETSTYLE
  * public:
  *   explicit Box (QWidget *parent)
- * : QWidget (parent) {}
+ *     : QWidget (parent) {}
  * }
  * @endcode
  *

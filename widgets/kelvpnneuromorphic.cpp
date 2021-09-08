@@ -5,6 +5,7 @@
 #include "kelguilabelplugin.h"
 #include "kelguiplaintexteditplugin.h"
 #include "kelguiseparatorplugin.h"
+#include "kelguiwidgetplugin.h"
 #include "kelvpnneuromorphic.h"
 
 #include "style/kelguistylemanager.h"
@@ -20,6 +21,7 @@ KelVpnNeuromorphic::KelVpnNeuromorphic (QObject *parent)
   m_widgets.append (new KelGuiPlainTextEditPlugin (this));
   m_widgets.append (new KelGuiSeparatorPlugin (this));
   m_widgets.append (new KelGuiLabelPlugin (this));
+  m_widgets.append (new KelGuiWidgetPlugin (this));
 
   QFontDatabase::addApplicationFont ("://fonts/Lato-Bold.ttf");
   QFontDatabase::addApplicationFont ("://fonts/Lato-Regular.ttf");

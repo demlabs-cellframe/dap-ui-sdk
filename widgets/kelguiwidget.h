@@ -3,9 +3,10 @@
 
 /* INCLUDES */
 #include <QWidget>
+#include "style/kelguistylemanager.h"
 
 /****************************************//**
- * @brief widget with custom properties
+ * @brief widget with custom style
  * @ingroup groupKelGuiWidgets
  * @date 30.08.2021
  * @author Mikhail Shilenko
@@ -14,45 +15,15 @@
 class KelGuiWidget : public QWidget
 {
   Q_OBJECT
-
-  /****************************************//**
-   * @name PROPERTIES
-   *******************************************/
-  /// @{
-  Q_PROPERTY (bool frame READ frame WRITE setFrame)
-  /// @}
-
-  /****************************************//**
-   * @name VARS
-   *******************************************/
-  /// @{
-private:
-  bool m_frame; ///< show frame
-  /// @}
+  KELGUI_ENABLECSS
+  KELGUI_ENABLEWIDGETSTYLE
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
 public:
-  explicit KelGuiWidget(QWidget *parent = nullptr);
-  /// @}
-
-  /****************************************//**
-   * @name PUBLIC METHODS
-   *******************************************/
-  /// @{
-public:
-  bool frame() const;
-  void setFrame(bool frame);
-  /// @}
-
-  /****************************************//**
-   * @name OVERRIDE
-   *******************************************/
-  /// @{
-public:
-  void paintEvent (QPaintEvent *) override;
+  explicit KelGuiWidget (QWidget *parent = nullptr);
   /// @}
 };
 

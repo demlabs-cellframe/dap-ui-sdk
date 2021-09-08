@@ -89,3 +89,17 @@
 {
 	margin-right: 28pt;
 }
+
+/****************************************************
+ * Frame
+ ***************************************************/
+
+.frame
+{
+	background: #f7f8fa;
+	border-radius: 13px;
+	border-top: 3px inset #ffffff;
+	border-left: 3px inset #ffffff;
+	border-bottom: 3px inset rgba(174,174,192,96);
+	border-right: 3px inset rgba(174,174,192,96);
+}

@@ -17,6 +17,7 @@ HEADERS     += \
     $$PWD/kelguipushbuttonplugin.h \
     $$PWD/kelguiradioplugin.h \
     $$PWD/kelguiseparatorplugin.h \
+    $$PWD/kelguiwidgetplugin.h \
     $$PWD/kelvpnneuromorphic.h
 
 SOURCES     += \
@@ -27,6 +28,7 @@ SOURCES     += \
     $$PWD/kelguipushbuttonplugin.cpp \
     $$PWD/kelguiradioplugin.cpp \
     $$PWD/kelguiseparatorplugin.cpp \
+    $$PWD/kelguiwidgetplugin.cpp \
     $$PWD/kelvpnneuromorphic.cpp
 # message ($$HEADERS)
 }

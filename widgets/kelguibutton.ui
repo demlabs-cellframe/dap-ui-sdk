@@ -30,52 +30,9 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="KelGuiWidget" name="KelGuiButtonBackground" native="true">
+    <widget class="KelGuiWidget" name="KelGuiButtonBackground">
      <property name="styleSheet">
-      <string notr="true">QLabel#KelGuiButtonTextMain,
-QLabel#KelGuiButtonTextMain_2,
-QLabel#KelGuiButtonTextMain_3,
-QLabel#KelGuiButtonTextMain_4
-{
-font: 20px/24px;
-font-weight: normal;
-font-style: normal;
-font-size: bold;
-font-family: 'Lato';
-}
-
-QLabel#KelGuiButtonTextSub,
-QLabel#KelGuiButtonTextSub_2,
-QLabel#KelGuiButtonTextSub_3,
-QLabel#KelGuiButtonTextSub_4
-{
-margin-top: 3px;
-font: 12px/15px;
-font-weight: normal;
-font-style: normal;
-font-size: normal;
-font-family: 'Lato';
-}
-
-QLabel#KelGuiButtonTextLeft
-{
-margin-left: 30px;
-font: 30px/36px;
-font-weight: bold;
-font-style: bold;
-font-size: bold;
-font-family: 'Lato';
-}
-
-QWidget#KelGuiButtonBackground[frame=true]
-{
-background: #f7f8fa;
-border-radius: 13px;
-border-top: 3px inset #ffffff;
-border-left: 3px inset #ffffff;
-border-bottom: 3px inset rgba(174,174,192,96);
-border-right: 3px inset rgba(174,174,192,96);
-}</string>
+      <string notr="true"/>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <property name="leftMargin">
@@ -250,7 +207,7 @@ border-right: 3px inset rgba(174,174,192,96);
   <customwidget>
    <class>KelGuiWidget</class>
    <extends>QWidget</extends>
-   <header location="global">kelguiwidget.h</header>
+   <header>kelguiwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

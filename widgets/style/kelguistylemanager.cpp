@@ -1,8 +1,12 @@
 /* INCLUDES */
 #include "kelguistylemanager.h"
+//#include <QFile>
 #include <QWidget>
+#include <QMutexLocker>
 #include "stylesheetclassmap.h"
 #include "stylesheetclassparser.h"
+//#include <QClipboard>
+//#include <QApplication>
 
 /* VARS */
 static StyleSheet::ClassMap s_styleMap;
@@ -90,7 +94,14 @@ QString KelGuiStyleManager::cssStyle() const
 void KelGuiStyleManager::setCssStyle (const QString &cssStyle)
 {
   m_cssStyle  = cssStyle;
-  m_widget->setStyleSheet (styleByClassName (m_cssStyle));
+  QString s   =
+    "#" + m_widget->objectName() +
+    "{" + styleByClassName (m_cssStyle) + "}";
+  m_widget->setStyleSheet (s);
+//  QApplication::clipboard()->setText (s);
+//  QFile f ("/home/user/log.log");
+//  f.open (QIODevice::WriteOnly | QIODevice::Truncate);
+//  f.write (s.toStdString().c_str());
 }
 
 /********************************************

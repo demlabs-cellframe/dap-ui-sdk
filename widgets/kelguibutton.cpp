@@ -329,11 +329,9 @@ void KelGuiButton::setIcon (const QUrl &icon)
 
 void KelGuiButton::setupStyle()
 {
-//  QString style = fromFile ("://styles/button.css");
-
-//  setStyleSheet (style);
-  ui->KelGuiButtonBackground->setFrame (m_frame);
-  ui->KelGuiButtonBackground->setStyleSheet (ui->KelGuiButtonBackground->styleSheet());
+  //ui->KelGuiButtonBackground->setFrame (m_frame);
+  ui->KelGuiButtonBackground->setCssStyle (m_frame ? "frame" : "");
+  //ui->KelGuiButtonBackground->setStyleSheet (ui->KelGuiButtonBackground->styleSheet());
   //ui->KelGuiButtonBackground->repaint();
 
   m_effect->setEnabled (m_frame);
