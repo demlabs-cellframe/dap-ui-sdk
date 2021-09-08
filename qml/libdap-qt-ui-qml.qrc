@@ -26,5 +26,9 @@
         <file>widgets/DapComboBoxCustomRange.qml</file>
         <file>widgets/DapComboBoxCustomRangeForm.ui.qml</file>
         <file>widgets/DapButton_New.qml</file>
+        <file>widgets/DapCalendar.qml</file>
+        <file>widgets/DapCalendarForm.ui.qml</file>
+        <file>widgets/DapMenuTabWidget.qml</file>
+        <file>widgets/DapMenuTabWidgetForm.ui.qml</file>
     </qresource>
 </RCC>
