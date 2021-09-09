@@ -66,9 +66,10 @@ KelGuiButton::KelGuiButton (QWidget *parent)
   , m_mainText ("Main text")
   , m_subText ("Sub text")
   , m_leftText ("$0.00")
-  , m_mainCssClass ("darkblue normalbold")
-  , m_subCssClass ("gray uppercase")
-  , m_leftCssClass ("darkblue normalbold")
+  , m_mainCssClass ("darkblue normalbold font20")
+  , m_subCssClass ("gray uppercase font12")
+  , m_leftCssClass ("darkblue normalbold font30")
+  , m_iconCssClass ("")
   , m_link (false)
   , m_frame (false)
   , m_effect (new QGraphicsDropShadowEffect)
@@ -92,6 +93,7 @@ KelGuiButton::KelGuiButton (QWidget *parent)
   m_widgets.insert ("textSub", ui->KelGuiButtonTextSub_4);
   m_widgets.insert ("marginOnLink", ui->KelGuiButtonTextSub_4);
   m_widgets.insert ("textLeft", ui->KelGuiButtonTextLeft);
+  m_widgets.insert ("iconLeft", ui->KelGuiButtonIcon);
 
   /* prepare link icon */
   m_lLink->setPixmap (QPixmap ("://gfx/ic_arrow-right.png"));
@@ -102,10 +104,11 @@ KelGuiButton::KelGuiButton (QWidget *parent)
   m_lLink->hide();
 
   /* final style manip */
-  auto labelStyle = Common::fromFile ("://styles/buttonlabel.css");
-  for (auto i = m_widgets.begin(), e = m_widgets.end(); i != e; i++)
-    if (i.key() != "styledWidgets")
-      (*i)->setStyleSheet (labelStyle);
+//  auto labelStyle = Common::fromFile ("://styles/buttonlabel.css");
+//  for (auto i = m_widgets.begin(), e = m_widgets.end(); i != e; i++)
+//    if (i.key() != "styledWidgets")
+//      (*i)->setStyleSheet (labelStyle);
+
 //  ui->KelGuiButtonTextMain->setStyleSheet (labelStyle);
 //  ui->KelGuiButtonTextMain_2->setStyleSheet (labelStyle);
 //  ui->KelGuiButtonTextMain_3->setStyleSheet (labelStyle);
@@ -116,7 +119,7 @@ KelGuiButton::KelGuiButton (QWidget *parent)
 //  ui->KelGuiButtonTextSub_4->setStyleSheet (labelStyle);
 //  ui->KelGuiButtonTextLeft->setStyleSheet (labelStyle);
 
-  setIcon (m_icon);
+  //setIcon (m_icon);
   setupStyle();
   setSeparator (false);
 
@@ -262,6 +265,17 @@ void KelGuiButton::setLeftCssClass (const QString &leftCssClass)
   setupLabels();
 }
 
+QString KelGuiButton::iconCssClass() const
+{
+  return m_iconCssClass;
+}
+
+void KelGuiButton::setIconCssClass (const QString &iconCssClass)
+{
+  m_iconCssClass = iconCssClass;
+  setupLabels();
+}
+
 bool KelGuiButton::link() const
 {
   return m_link;
@@ -304,29 +318,6 @@ void KelGuiButton::setSeparator (bool separator)
   ui->kelGuiSeparator->setVisible (m_separator);
 }
 
-QUrl KelGuiButton::icon() const
-{
-  return m_icon;
-}
-
-void KelGuiButton::setIcon (const QUrl &icon)
-{
-  m_icon = icon;
-  QPixmap px (QString (":/") + m_icon.path());
-  auto style =
-    QString ("image: url(%1);\n"
-             "min-width: %2px;\n"
-             "min-height: %3px;\n"
-             "max-width: %2px;\n"
-             "max-height: %3px;\n")
-    .arg (QString (":/") + m_icon.path())
-    .arg (px.width())
-    .arg (px.height());
-//  m_lIcon->setStyleSheet (style);
-  ui->KelGuiButtonIcon->setStyleSheet (style);
-//  QApplication::clipboard()->setText(style);
-}
-
 void KelGuiButton::setupStyle()
 {
   //ui->KelGuiButtonBackground->setFrame (m_frame);
@@ -347,12 +338,14 @@ void KelGuiButton::setupLabels()
     {"textMain",  mainCssClass()},
     {"textSub",   subCssClass()},
     {"textLeft",  leftCssClass()},
+    {"iconLeft",  iconCssClass()},
   };
 
-  auto labelStyle = Common::fromFile ("://styles/buttonlabel.css");
+  //auto labelStyle = Common::fromFile ("://styles/buttonlabel.css");
   for (auto i = m_widgets.begin(), e = m_widgets.end(); i != e; i++)
     if (i.key() != "styledWidgets")
-      as<KelGuiLabel> (*i)->setCssStyle (labelMap.value (i.key()));
+      if (labelMap.contains (i.key()))
+        as<KelGuiLabel> (*i)->setCssStyle (labelMap.value (i.key()));
 
 //  ui->KelGuiButtonTextMain->setStyleId (mainStyle());
 //  ui->KelGuiButtonTextMain_2->setStyleId (mainStyle());

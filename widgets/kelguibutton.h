@@ -35,7 +35,7 @@ public:
     LeftTopMainBottomSub, ///< left:left, top:main, bottom:sub
     IconMainSub,          ///< icon, main, sub
   };
-  Q_ENUM(ButtonStyle)
+  Q_ENUM (ButtonStyle)
   /// @}
 
   /****************************************//**
@@ -49,10 +49,10 @@ public:
   Q_PROPERTY (QString mainCssClass    READ mainCssClass WRITE setMainCssClass)
   Q_PROPERTY (QString subCssClass     READ subCssClass  WRITE setSubCssClass)
   Q_PROPERTY (QString leftCssClass    READ leftCssClass WRITE setLeftCssClass)
+  Q_PROPERTY (QString iconCssClass    READ iconCssClass WRITE setIconCssClass)
   Q_PROPERTY (bool separator          READ separator    WRITE setSeparator)
   Q_PROPERTY (bool link               READ link         WRITE setLink)
   Q_PROPERTY (bool frame              READ frame        WRITE setFrame)
-  Q_PROPERTY (QUrl icon               READ icon         WRITE setIcon)
 
   /// @}
 
@@ -69,13 +69,13 @@ private:
   QString m_mainCssClass;
   QString m_subCssClass;
   QString m_leftCssClass;
+  QString m_iconCssClass;
   bool m_separator;       ///< bottom separator
   bool m_link;            ///< link button
   bool m_frame;           ///< show frame
-  QUrl m_icon;            ///< icon url
 
   QGraphicsDropShadowEffect *m_effect; ///< @note attached widget will take control. this means instance doesnt need to be deleted
-  QMultiMap<QString,QWidget*> m_widgets; ///< categorized map for widget
+  QMultiMap<QString, QWidget *> m_widgets; ///< categorized map for widget
 
   /// labels
   std::unique_ptr<QLabel> m_lLink;
@@ -101,7 +101,7 @@ public:
   /// @{
 public:
   ButtonStyle btnStyle() const;
-  void setBtnStyle(const ButtonStyle &style);
+  void setBtnStyle (const ButtonStyle &style);
 
   QString mainText() const;
   void setMainText (const QString &mainText);
@@ -113,13 +113,16 @@ public:
   void setLeftText (const QString &leftText);
 
   QString mainCssClass() const;
-  void setMainCssClass(const QString &mainStyle);
+  void setMainCssClass (const QString &mainStyle);
 
   QString subCssClass() const;
-  void setSubCssClass(const QString &subStyle);
+  void setSubCssClass (const QString &subStyle);
 
   QString leftCssClass() const;
-  void setLeftCssClass(const QString &leftStyle);
+  void setLeftCssClass (const QString &leftStyle);
+
+  QString iconCssClass() const;
+  void setIconCssClass (const QString &iconCssClass);
 
   bool link() const;
   void setLink (bool link);
@@ -128,13 +131,10 @@ public:
   void setFrame (bool frame);
 
   bool showIcon() const;
-  void setShowIcon(bool showIcon);
-
-  QUrl icon() const;
-  void setIcon(const QUrl &icon);
+  void setShowIcon (bool showIcon);
 
   bool separator() const;
-  void setSeparator(bool separator);
+  void setSeparator (bool separator);
 
   void setupStyle();
   void setupLabels();

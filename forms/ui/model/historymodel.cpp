@@ -49,7 +49,7 @@ void HistoryModel::slotSetup()
   m_list.clear();
 
   /* create new buttons */
-  foreach(auto &item, s_history)
+  foreach (auto &item, s_history)
     {
       /* get data */
       QString text = item.name;
@@ -66,9 +66,9 @@ void HistoryModel::slotSetup()
       btn->setSubText ("");
 
       btn->setSeparator (true);
-      btn->setIcon (QUrl ( "qrc:/gui/ui/asset/ic_key-item.png"));
+      btn->setIconCssClass ("settings_icon ic_key-item"); //btn->setIcon (QUrl ( "qrc:/gui/ui/asset/ic_key-item.png"));
 
-      btn->setMaximumWidth(392);
+      btn->setMaximumWidth (392);
       lay->addWidget (btn);
     }
 }

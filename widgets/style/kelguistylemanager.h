@@ -129,7 +129,8 @@ public slots:
    *******************************************/
   /// @{
 signals:
-  void cssStyleChanged();
+  void cssStyleChanged();   ///< emited when item change it's style
+  void forceStyleUpdate();  ///< emited when global style changed
   /// @}
 
   /****************************************//**
@@ -143,6 +144,8 @@ protected:
   QString styleByClassList (const QString &classNameList);
   /// collect all styles by class array
   QString styleByClassList (const QStringList &classNameList);
+protected slots:
+  void forcedStyleUpdate();
   /// @}
 };
 

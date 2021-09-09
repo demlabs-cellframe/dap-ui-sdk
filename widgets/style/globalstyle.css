@@ -94,6 +94,16 @@
  * Frame
  ***************************************************/
 
+.window
+{
+	width: 428pt;
+	height: 926pt;
+	min-width: 428pt;
+	min-height: 926pt;
+	max-width: 428pt;
+	max-height: 926pt;
+}
+
 .frame
 {
 	background: #f7f8fa;
@@ -103,3 +113,71 @@
 	border-bottom: 3px inset rgba(174,174,192,96);
 	border-right: 3px inset rgba(174,174,192,96);
 }
+
+/****************************************************
+ * Icons
+ ***************************************************/
+
+.settings_icon
+{
+	min-width: 34pt;
+	min-height: 34pt;
+	max-width: 34pt;
+	max-height: 34pt;
+}
+
+.ic_renew
+{
+	image: url("://gui/ui/asset/ic_renew.png");
+}
+
+.ic_key
+{
+	image: url("://gui/ui/asset/ic_key.png");
+}
+
+.ic_key-item
+{
+	image: url("://gui/ui/asset/ic_key-item.png");
+}
+
+.ic_language
+{
+	image: url("://gui/ui/asset/ic_language.png");
+}
+
+.ic_send-report
+{
+	image: url("://gui/ui/asset/ic_send-report.png");
+}
+
+.ic_bot
+{
+	image: url("://gui/ui/asset/ic_bot.png");
+}
+
+.ic_information_bug-report
+{
+	image: url("://gui/ui/asset/ic_information_bug-report.png");
+}
+
+.ic_key-history
+{
+	image: url("://gui/ui/asset/ic_key-history.png");
+}
+
+.ic_terms_policy
+{
+	image: url("://gui/ui/asset/ic_terms_policy.png");
+}
+
+.ic_terms_policy
+{
+	image: url("://gui/ui/asset/ic_terms_policy.png");
+}
+
+.ic_version
+{
+	image: url("://gui/ui/asset/ic_version.png");
+}
+

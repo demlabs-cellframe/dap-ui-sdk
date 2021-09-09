@@ -29,7 +29,7 @@ Settings::~Settings()
 void Settings::restartUi()
 {
   BASEFORM_RESTARTUI_ROUTINE (Ui::Settings);
-  QTimer::singleShot (0, ui->scrollArea, &SettingsModel::slotSetup);
+  //QTimer::singleShot (0, ui->scrollArea, &SettingsModel::slotSetup);
 }
 
 /*-----------------------------------------*/

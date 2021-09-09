@@ -11,6 +11,7 @@
 /* VARS */
 static StyleSheet::ClassMap s_styleMap;
 static QMutex s_mutex;
+static KelGuiStyleManager s_signal (nullptr);
 
 /* DEFS */
 
@@ -37,6 +38,7 @@ public:
   /// setup global style sheet
   void set (const QString &styleSheet)
   {
+    s_styleMap.clear();
     s_styleMap.setup (styleSheet);
   }
 };
@@ -52,7 +54,9 @@ typedef _GlobalStyleSheet Gss;
 KelGuiStyleManager::KelGuiStyleManager (QWidget *parent)
   : m_widget (parent)
 {
-
+  if (this != &s_signal)
+    connect (&s_signal, &KelGuiStyleManager::forceStyleUpdate,
+             this, &KelGuiStyleManager::forcedStyleUpdate);
 }
 
 KelGuiStyleManager::KelGuiStyleManager (KelGuiStyleManager &&src)
@@ -64,6 +68,10 @@ KelGuiStyleManager::KelGuiStyleManager (KelGuiStyleManager &&src)
   m_widget    = src.m_widget;
   src.m_cssStyle.clear();
   src.m_widget  = nullptr;
+
+  if (this != &s_signal)
+    connect (&s_signal, &KelGuiStyleManager::forceStyleUpdate,
+             this, &KelGuiStyleManager::forcedStyleUpdate);
 }
 
 KelGuiStyleManager::~KelGuiStyleManager()
@@ -78,6 +86,7 @@ KelGuiStyleManager::~KelGuiStyleManager()
 void KelGuiStyleManager::setupGlobalStyleSheet (const QString &styleSheet)
 {
   Gss().set (styleSheet);
+  emit s_signal.forceStyleUpdate();
 }
 
 /********************************************
@@ -92,14 +101,7 @@ QString KelGuiStyleManager::cssStyle() const
 void KelGuiStyleManager::setCssStyle (const QString &cssStyle)
 {
   m_cssStyle  = cssStyle;
-  QString s   =
-    "#" + m_widget->objectName() +
-    "{" + styleByClassName (m_cssStyle) + "}";
-  m_widget->setStyleSheet (s);
-//  QApplication::clipboard()->setText (s);
-//  QFile f ("/home/user/log.log");
-//  f.open (QIODevice::WriteOnly | QIODevice::Truncate);
-//  f.write (s.toStdString().c_str());
+  forcedStyleUpdate();
 }
 
 /********************************************
@@ -119,6 +121,14 @@ QString KelGuiStyleManager::styleByClassList (const QString &classNameList)
 QString KelGuiStyleManager::styleByClassList (const QStringList &classNameList)
 {
   return Gss()[classNameList];
+}
+
+void KelGuiStyleManager::forcedStyleUpdate()
+{
+  QString s   =
+    "#" + m_widget->objectName() +
+    "{" + styleByClassName (m_cssStyle) + "}";
+  m_widget->setStyleSheet (s);
 }
 
 /*-----------------------------------------*/
