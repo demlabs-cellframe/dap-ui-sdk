@@ -35,15 +35,7 @@ private:
   /// @{
 public:
   explicit Purchase (QWidget *parent = nullptr);
-  ~Purchase() override;
-  /// @}
-
-  /****************************************//**
-   * @name OVERRIDE
-   *******************************************/
-  /// @{
-public:
-  void restartUi() override;
+  ~Purchase();
   /// @}
 };
 

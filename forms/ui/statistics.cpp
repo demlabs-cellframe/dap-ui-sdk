@@ -18,13 +18,4 @@ Statistics::~Statistics()
   delete ui;
 }
 
-/********************************************
- * OVERRIDE
- *******************************************/
-
-void Statistics::restartUi()
-{
-  BASEFORM_RESTARTUI_ROUTINE (Ui::Statistics);
-}
-
 /*-----------------------------------------*/

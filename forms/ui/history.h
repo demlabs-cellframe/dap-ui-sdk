@@ -35,15 +35,7 @@ private:
   /// @{
 public:
   explicit History (QWidget *parent = nullptr);
-  ~History() override;
-  /// @}
-
-  /****************************************//**
-   * @name OVERRIDE
-   *******************************************/
-  /// @{
-public:
-  void restartUi() override;
+  ~History();
   /// @}
 };
 

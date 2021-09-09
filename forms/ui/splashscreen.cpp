@@ -18,13 +18,4 @@ SplashScreen::~SplashScreen()
   delete ui;
 }
 
-/********************************************
- * OVERRIDE
- *******************************************/
-
-void SplashScreen::restartUi()
-{
-  BASEFORM_RESTARTUI_ROUTINE (Ui::SplashScreen);
-}
-
 /*-----------------------------------------*/

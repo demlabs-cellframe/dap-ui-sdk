@@ -21,13 +21,4 @@ History::~History()
   delete ui;
 }
 
-/********************************************
- * OVERRIDE
- *******************************************/
-
-void History::restartUi()
-{
-  BASEFORM_RESTARTUI_ROUTINE (Ui::History);
-}
-
 /*-----------------------------------------*/

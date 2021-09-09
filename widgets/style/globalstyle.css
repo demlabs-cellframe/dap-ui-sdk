@@ -104,6 +104,16 @@
 	max-height: 926pt;
 }
 
+.footer
+{
+	width: 428pt;
+	height: 201pt;
+	min-width: 428pt;
+	min-height: 201pt;
+	max-width: 428pt;
+	max-height: 201pt;
+}
+
 .frame
 {
 	background: #f7f8fa;

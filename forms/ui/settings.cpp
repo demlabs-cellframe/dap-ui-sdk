@@ -22,14 +22,4 @@ Settings::~Settings()
   delete ui;
 }
 
-/********************************************
- * OVERRIDE
- *******************************************/
-
-void Settings::restartUi()
-{
-  BASEFORM_RESTARTUI_ROUTINE (Ui::Settings);
-  //QTimer::singleShot (0, ui->scrollArea, &SettingsModel::slotSetup);
-}
-
 /*-----------------------------------------*/

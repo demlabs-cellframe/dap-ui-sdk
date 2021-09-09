@@ -35,15 +35,7 @@ private:
   /// @{
 public:
   explicit ChooseServer (QWidget *parent = nullptr);
-  ~ChooseServer() override;
-  /// @}
-
-  /****************************************//**
-   * @name OVERRIDE
-   *******************************************/
-  /// @{
-public:
-  void restartUi() override;
+  ~ChooseServer();
   /// @}
 };
 

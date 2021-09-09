@@ -21,13 +21,4 @@ Purchase::~Purchase()
   delete ui;
 }
 
-/********************************************
- * OVERRIDE
- *******************************************/
-
-void Purchase::restartUi()
-{
-  BASEFORM_RESTARTUI_ROUTINE (Ui::Purchase);
-}
-
 /*-----------------------------------------*/

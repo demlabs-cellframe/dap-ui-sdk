@@ -37,14 +37,6 @@ public:
   explicit Language (QWidget *parent = nullptr);
   ~Language();
   /// @}
-
-  /****************************************//**
-   * @name OVERRIDE
-   *******************************************/
-  /// @{
-public:
-  void restartUi() override;
-  /// @}
 };
 
 /*-----------------------------------------*/

@@ -60,7 +60,7 @@ private:
   /// @{
 public:
   explicit BugReports (QWidget *parent = nullptr);
-  ~BugReports() override;
+  ~BugReports();
   /// @}
 
   /****************************************//**
@@ -71,14 +71,6 @@ public slots:
   void slotSetMode (Mode mode);
 private slots:
   void slotRadioTest();
-  /// @}
-
-  /****************************************//**
-   * @name OVERRIDE
-   *******************************************/
-  /// @{
-public:
-  void restartUi() override;
   /// @}
 };
 

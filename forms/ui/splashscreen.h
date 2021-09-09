@@ -35,15 +35,7 @@ private:
   /// @{
 public:
   explicit SplashScreen (QWidget *parent = nullptr);
-  ~SplashScreen() override;
-  /// @}
-
-  /****************************************//**
-   * @name OVERRIDE
-   *******************************************/
-  /// @{
-public:
-  void restartUi() override;
+  ~SplashScreen();
   /// @}
 };
 

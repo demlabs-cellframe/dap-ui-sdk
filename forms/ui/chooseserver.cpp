@@ -36,13 +36,4 @@ ChooseServer::~ChooseServer()
   delete ui;
 }
 
-/********************************************
- * OVERRIDE
- *******************************************/
-
-void ChooseServer::restartUi()
-{
-  BASEFORM_RESTARTUI_ROUTINE (Ui::ChooseServer);
-}
-
 /*-----------------------------------------*/

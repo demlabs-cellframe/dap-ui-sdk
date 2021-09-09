@@ -3,31 +3,7 @@
 
 /* INCLUDES */
 #include <QWidget>
-
-#define BASEFORM_RESTARTUI_ROUTINE(t)
-//{ \
-//  QLayoutItem *wItem; \
-//  while ((wItem = layout()->takeAt(0)) != 0) \
-//  { \
-//    if(wItem->widget()) \
-//      wItem->widget()->setParent(nullptr); \
-//    delete wItem; \
-//  } \
-//  delete layout(); \
-//  ui->setupUi (this); \
-//}
-
-//delete layout(); \
-//while (QWidget *w = findChild<QWidget *>()) \
-//  delete w; \
-//ui->setupUi (this)
-
-
-//  delete ui; ui = nullptr
-
-//  delete ui; \
-//  ui = new t; \
-//  ui->setupUi (this)
+#include "style/kelguistylemanager.h"
 
 /****************************************//**
  * @brief base for ui/classes
@@ -39,6 +15,8 @@
 class BaseForm : public QWidget
 {
   Q_OBJECT
+  KELGUI_ENABLECSS
+  KELGUI_ENABLEWIDGETSTYLE
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
@@ -47,14 +25,6 @@ class BaseForm : public QWidget
 public:
   explicit BaseForm (QWidget *parent = nullptr);
   ~BaseForm() override;
-  /// @}
-
-  /****************************************//**
-   * @name VIRTUAL
-   *******************************************/
-  /// @{
-public:
-  virtual void restartUi() = 0;
   /// @}
 };
 

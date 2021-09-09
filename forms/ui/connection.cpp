@@ -18,13 +18,4 @@ Connection::~Connection()
   delete ui;
 }
 
-/********************************************
- * OVERRIDE
- *******************************************/
-
-void Connection::restartUi()
-{
-  BASEFORM_RESTARTUI_ROUTINE (Ui::Connection);
-}
-
 /*-----------------------------------------*/

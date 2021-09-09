@@ -35,15 +35,7 @@ private:
   /// @{
 public:
   explicit Connection (QWidget *parent = nullptr);
-  ~Connection() override;
-  /// @}
-
-  /****************************************//**
-   * @name OVERRIDE
-   *******************************************/
-  /// @{
-public:
-  void restartUi() override;
+  ~Connection();
   /// @}
 };
 

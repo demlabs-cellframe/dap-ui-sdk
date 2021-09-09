@@ -14,6 +14,7 @@ MenuFooter::MenuFooter (QWidget *parent) :
 {
   /* setup */
   ui->setupUi (this);
+  setCssStyle ("footer");
   qRegisterMetaType<ButtonState> ("ButtonState");
   //setWindowFlags(Qt::WindowStaysOnTopHint);
 
@@ -91,15 +92,6 @@ void MenuFooter::slotButtonToggled (bool checked)
   /* if set, find in map and setup */
   auto state = m_statesMap.value (sender(), BS_NONE);
   slotSetButtonState (state);
-}
-
-/********************************************
- * OVERRIDE
- *******************************************/
-
-void MenuFooter::restartUi()
-{
-  BASEFORM_RESTARTUI_ROUTINE (Ui::MenuFooter);
 }
 
 /*-----------------------------------------*/

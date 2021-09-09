@@ -21,13 +21,4 @@ Language::~Language()
   delete ui;
 }
 
-/********************************************
- * OVERRIDE
- *******************************************/
-
-void Language::restartUi()
-{
-  BASEFORM_RESTARTUI_ROUTINE (Ui::Language);
-}
-
 /*-----------------------------------------*/

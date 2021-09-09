@@ -55,7 +55,7 @@ private:
   /// @{
 public:
   explicit MenuFooter (QWidget *parent = nullptr);
-  ~MenuFooter() override;
+  ~MenuFooter();
   /// @}
 
   /****************************************//**
@@ -75,14 +75,6 @@ public slots:
 private slots:
   /// react on user interaction
   void slotButtonToggled (bool checked);
-  /// @}
-
-  /****************************************//**
-   * @name OVERRIDE
-   *******************************************/
-  /// @{
-public:
-  void restartUi() override;
   /// @}
 };
 

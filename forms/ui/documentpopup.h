@@ -48,7 +48,7 @@ private:
   /// @{
 public:
   explicit DocumentPopup (Type t, QWidget *parent = nullptr);
-  ~DocumentPopup() override;
+  ~DocumentPopup();
   /// @}
 
   /****************************************//**
@@ -58,14 +58,6 @@ public:
 public slots:
   void slotShowTermsOfUse();
   void slotShowPrivacyPolicy();
-  /// @}
-
-  /****************************************//**
-   * @name OVERRIDE
-   *******************************************/
-  /// @{
-public:
-  void restartUi() override;
   /// @}
 };
 

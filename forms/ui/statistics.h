@@ -35,15 +35,7 @@ private:
   /// @{
 public:
   explicit Statistics (QWidget *parent = nullptr);
-  ~Statistics() override;
-  /// @}
-
-  /****************************************//**
-   * @name OVERRIDE
-   *******************************************/
-  /// @{
-public:
-  void restartUi() override;
+  ~Statistics();
   /// @}
 };
 

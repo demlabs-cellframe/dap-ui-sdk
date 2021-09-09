@@ -99,20 +99,4 @@ void BugReports::slotRadioTest()
   slotSetMode (p_radioTestToMode.value (sender(), List));
 }
 
-/********************************************
- * OVERRIDE
- *******************************************/
-
-void BugReports::restartUi()
-{
-  BASEFORM_RESTARTUI_ROUTINE (Ui::BugReports)
-//  QLayoutItem *wItem;
-//  while ((wItem = layout()->takeAt(0)) != 0)
-//  {
-//    if(wItem->widget())
-//      wItem->widget()->setParent(nullptr);
-//    delete wItem;
-//  }
-}
-
 /*-----------------------------------------*/

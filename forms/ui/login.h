@@ -35,15 +35,7 @@ private:
   /// @{
 public:
   explicit Login (QWidget *parent = nullptr);
-  ~Login() override;
-  /// @}
-
-  /****************************************//**
-   * @name OVERRIDE
-   *******************************************/
-  /// @{
-public:
-  void restartUi() override;
+  ~Login();
   /// @}
 };
 

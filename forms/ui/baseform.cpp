@@ -7,7 +7,7 @@
 BaseForm::BaseForm (QWidget *parent)
   : QWidget (parent)
 {
-
+  setCssStyle ("window");
 }
 
 BaseForm::~BaseForm()

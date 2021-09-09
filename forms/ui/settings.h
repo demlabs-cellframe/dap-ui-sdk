@@ -35,15 +35,7 @@ private:
   /// @{
 public:
   explicit Settings (QWidget *parent = nullptr);
-  ~Settings() override;
-  /// @}
-
-  /****************************************//**
-   * @name OVERRIDE
-   *******************************************/
-  /// @{
-public:
-  void restartUi() override;
+  ~Settings();
   /// @}
 };
 

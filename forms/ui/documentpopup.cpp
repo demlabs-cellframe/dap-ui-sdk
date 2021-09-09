@@ -43,13 +43,4 @@ void DocumentPopup::slotShowPrivacyPolicy()
   ui->textField->setHtml (Common::fromFile (":/gui/ui/data/privacy.html"));
 }
 
-/********************************************
- * OVERRIDE
- *******************************************/
-
-void DocumentPopup::restartUi()
-{
-  BASEFORM_RESTARTUI_ROUTINE (Ui::DocumentPopup);
-}
-
 /*-----------------------------------------*/
