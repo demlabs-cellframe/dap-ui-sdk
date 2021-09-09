@@ -5,6 +5,7 @@ unix: !mac: !android: LIBS += -lX11 -lXrandr
 mac:LIBS += -framework AppKit
 
 SOURCES     += \
+    $$PWD/ui/baseform.cpp \
     $$PWD/ui/bugreports.cpp \
     $$PWD/ui/chooseserver.cpp \
     $$PWD/ui/connection.cpp \
@@ -25,6 +26,7 @@ SOURCES     += \
     $$PWD/ui/statistics.cpp
 
 HEADERS     += \
+    $$PWD/ui/baseform.h \
     $$PWD/ui/bugreports.h \
     $$PWD/ui/chooseserver.h \
     $$PWD/ui/connection.h \

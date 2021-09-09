@@ -12,12 +12,10 @@ namespace StyleSheet
 
 ClassParser::ClassParser (
   const QString &styleSheet,
-  ClassMap &styleMap,
-  const float &DPI)
+  ClassMap &styleMap)
   : styleMap (styleMap),
     method (none),        ///< none as default callback
-    index (0),
-    DPI (DPI)
+    index (0)
 {
   /* vars */
   QString simpleSheet = styleSheet;

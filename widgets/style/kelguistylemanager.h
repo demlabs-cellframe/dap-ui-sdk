@@ -112,8 +112,7 @@ public:
   /// @{
 public:
   static void setupGlobalStyleSheet (
-    const QString &styleSheet,
-    const float &DPI);
+    const QString &styleSheet);
   /// @}
 
   /****************************************//**

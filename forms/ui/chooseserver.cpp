@@ -15,11 +15,11 @@
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-ChooseServer::ChooseServer(QWidget *parent) :
-  QWidget(parent),
-  ui(new Ui::ChooseServer)
+ChooseServer::ChooseServer (QWidget *parent) :
+  BaseForm (parent),
+  ui (new Ui::ChooseServer)
 {
-  ui->setupUi(this);
+  ui->setupUi (this);
 
   /* simulate model items */
   auto list = DapServersData::instance();
@@ -34,6 +34,15 @@ ChooseServer::ChooseServer(QWidget *parent) :
 ChooseServer::~ChooseServer()
 {
   delete ui;
+}
+
+/********************************************
+ * OVERRIDE
+ *******************************************/
+
+void ChooseServer::restartUi()
+{
+  BASEFORM_RESTARTUI_ROUTINE (Ui::ChooseServer);
 }
 
 /*-----------------------------------------*/

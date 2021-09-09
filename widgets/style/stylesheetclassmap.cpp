@@ -19,9 +19,9 @@ namespace StyleSheet
  * METHODS
  *******************************************/
 
-void ClassMap::setup (const QString &styleSheet, const float &DPI)
+void ClassMap::setup (const QString &styleSheet)
 {
-  StyleSheet::ClassParser (styleSheet, *this, DPI);
+  StyleSheet::ClassParser (styleSheet, *this);
 }
 
 void ClassMap::clear()

@@ -8,7 +8,7 @@
  *******************************************/
 
 DocumentPopup::DocumentPopup (Type t, QWidget *parent) :
-  QWidget (parent),
+  BaseForm (parent),
   ui (new Ui::DocumentPopup)
 {
   ui->setupUi (this);
@@ -41,6 +41,15 @@ void DocumentPopup::slotShowPrivacyPolicy()
   setObjectName ("Privacy policy");
   ui->label->setText ("Privacy policy");
   ui->textField->setHtml (Common::fromFile (":/gui/ui/data/privacy.html"));
+}
+
+/********************************************
+ * OVERRIDE
+ *******************************************/
+
+void DocumentPopup::restartUi()
+{
+  BASEFORM_RESTARTUI_ROUTINE (Ui::DocumentPopup);
 }
 
 /*-----------------------------------------*/

@@ -48,7 +48,7 @@ public:
   /// @{
 public:
   /// fill map with provided stylesheet
-  void setup (const QString &styleSheet, const float &DPI);
+  void setup (const QString &styleSheet);
   /// remove all items and release memory
   void clear();
   /// store one style by it's class as a key

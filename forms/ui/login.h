@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QWidget>
+#include "baseform.h"
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
@@ -16,7 +17,7 @@ QT_END_NAMESPACE
  * @author Mikhail Shilenko
  *******************************************/
 
-class Login : public QWidget
+class Login : public BaseForm
 {
   Q_OBJECT
 
@@ -33,8 +34,16 @@ private:
    *******************************************/
   /// @{
 public:
-  explicit Login(QWidget *parent = nullptr);
-  ~Login();
+  explicit Login (QWidget *parent = nullptr);
+  ~Login() override;
+  /// @}
+
+  /****************************************//**
+   * @name OVERRIDE
+   *******************************************/
+  /// @{
+public:
+  void restartUi() override;
   /// @}
 };
 

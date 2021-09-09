@@ -40,7 +40,7 @@ class ClassParser
   QStringList names;
   QString currentName, currentBody;
   callback method;
-  int index; const float &DPI;
+  int index;
   /// @}
 
   /****************************************//**
@@ -50,8 +50,7 @@ class ClassParser
 protected:
   ClassParser (
     const QString &styleSheet,
-    ClassMap &styleMap,
-    const float &DPI);
+    ClassMap &styleMap);
   /// @}
 
   /****************************************//**

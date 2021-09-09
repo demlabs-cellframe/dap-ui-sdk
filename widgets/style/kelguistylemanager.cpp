@@ -35,9 +35,9 @@ public:
   }
 
   /// setup global style sheet
-  void set (const QString &styleSheet, const float &DPI)
+  void set (const QString &styleSheet)
   {
-    s_styleMap.setup (styleSheet, DPI);
+    s_styleMap.setup (styleSheet);
   }
 };
 
@@ -75,11 +75,9 @@ KelGuiStyleManager::~KelGuiStyleManager()
  * STATIC METHODS
  *******************************************/
 
-void KelGuiStyleManager::setupGlobalStyleSheet (
-  const QString &styleSheet,
-  const float &DPI)
+void KelGuiStyleManager::setupGlobalStyleSheet (const QString &styleSheet)
 {
-  Gss().set (styleSheet, DPI);
+  Gss().set (styleSheet);
 }
 
 /********************************************

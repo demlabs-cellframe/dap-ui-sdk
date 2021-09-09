@@ -8,17 +8,26 @@
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-History::History(QWidget *parent) :
-  QWidget(parent),
-  ui(new Ui::History)
+History::History (QWidget *parent) :
+  BaseForm (parent),
+  ui (new Ui::History)
 {
-  ui->setupUi(this);
+  ui->setupUi (this);
   QTimer::singleShot (0, ui->scrollArea, &HistoryModel::slotSetup);
 }
 
 History::~History()
 {
   delete ui;
+}
+
+/********************************************
+ * OVERRIDE
+ *******************************************/
+
+void History::restartUi()
+{
+  BASEFORM_RESTARTUI_ROUTINE (Ui::History);
 }
 
 /*-----------------------------------------*/

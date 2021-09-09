@@ -7,7 +7,7 @@
  *******************************************/
 
 MenuFooter::MenuFooter (QWidget *parent) :
-  QWidget (parent),
+  BaseForm (parent),
   ui (new Ui::MenuFooter),
   m_state (BS_NONE),
   m_lock (false)
@@ -74,7 +74,7 @@ void MenuFooter::slotSetButtonState (MenuFooter::ButtonState state)
 void MenuFooter::slotMoveToBottom()
 {
   raise();
-  if(auto p = dynamic_cast<QWidget*> (parent()))
+  if (auto p = dynamic_cast<QWidget *> (parent()))
     move (0, p->height() - height());
 }
 
@@ -91,6 +91,15 @@ void MenuFooter::slotButtonToggled (bool checked)
   /* if set, find in map and setup */
   auto state = m_statesMap.value (sender(), BS_NONE);
   slotSetButtonState (state);
+}
+
+/********************************************
+ * OVERRIDE
+ *******************************************/
+
+void MenuFooter::restartUi()
+{
+  BASEFORM_RESTARTUI_ROUTINE (Ui::MenuFooter);
 }
 
 /*-----------------------------------------*/

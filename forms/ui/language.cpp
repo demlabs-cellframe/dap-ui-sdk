@@ -9,7 +9,7 @@
  *******************************************/
 
 Language::Language (QWidget *parent) :
-  QWidget (parent),
+  BaseForm (parent),
   ui (new Ui::Language)
 {
   ui->setupUi (this);
@@ -19,6 +19,15 @@ Language::Language (QWidget *parent) :
 Language::~Language()
 {
   delete ui;
+}
+
+/********************************************
+ * OVERRIDE
+ *******************************************/
+
+void Language::restartUi()
+{
+  BASEFORM_RESTARTUI_ROUTINE (Ui::Language);
 }
 
 /*-----------------------------------------*/

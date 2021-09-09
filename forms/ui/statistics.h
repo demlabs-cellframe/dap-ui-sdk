@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QWidget>
+#include "baseform.h"
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
@@ -16,7 +17,7 @@ QT_END_NAMESPACE
  * @author Mikhail Shilenko
  *******************************************/
 
-class Statistics : public QWidget
+class Statistics : public BaseForm
 {
   Q_OBJECT
 
@@ -33,8 +34,16 @@ private:
    *******************************************/
   /// @{
 public:
-  explicit Statistics(QWidget *parent = nullptr);
-  ~Statistics();
+  explicit Statistics (QWidget *parent = nullptr);
+  ~Statistics() override;
+  /// @}
+
+  /****************************************//**
+   * @name OVERRIDE
+   *******************************************/
+  /// @{
+public:
+  void restartUi() override;
   /// @}
 };
 

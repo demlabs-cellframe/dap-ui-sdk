@@ -1,51 +1,50 @@
-#ifndef HISTORY_H
-#define HISTORY_H
+#ifndef BASEFORM_H
+#define BASEFORM_H
 
 /* INCLUDES */
 #include <QWidget>
-#include "baseform.h"
 
-/* DEFS */
-QT_BEGIN_NAMESPACE
-namespace Ui { class History; }
-QT_END_NAMESPACE
+#define BASEFORM_RESTARTUI_ROUTINE(t) \
+  delete layout(); \
+  ui->setupUi (this)
+
+//  while (QWidget *w = findChild<QWidget *>()) \
+//    delete w; \
+
+//  delete ui; ui = nullptr
+
+//  delete ui; \
+//  ui = new t; \
+//  ui->setupUi (this)
 
 /****************************************//**
- * @brief ui/class for licence list
+ * @brief base for ui/classes
  * @ingroup groupUiClasses
- * @date 01.09.2021
+ * @date 09.09.2021
  * @author Mikhail Shilenko
  *******************************************/
 
-class History : public BaseForm
+class BaseForm : public QWidget
 {
   Q_OBJECT
-
-  /****************************************//**
-   * @name VARS
-   *******************************************/
-  /// @{
-private:
-  Ui::History *ui;
-  /// @}
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
 public:
-  explicit History (QWidget *parent = nullptr);
-  ~History() override;
+  explicit BaseForm (QWidget *parent = nullptr);
+  ~BaseForm() override;
   /// @}
 
   /****************************************//**
-   * @name OVERRIDE
+   * @name VIRTUAL
    *******************************************/
   /// @{
 public:
-  void restartUi() override;
+  virtual void restartUi() = 0;
   /// @}
 };
 
 /*-----------------------------------------*/
-#endif // HISTORY_H
+#endif // BASEFORM_H

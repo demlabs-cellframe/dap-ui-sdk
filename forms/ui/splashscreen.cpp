@@ -6,16 +6,25 @@
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-SplashScreen::SplashScreen(QWidget *parent) :
-  QWidget(parent),
-  ui(new Ui::SplashScreen)
+SplashScreen::SplashScreen (QWidget *parent) :
+  BaseForm (parent),
+  ui (new Ui::SplashScreen)
 {
-  ui->setupUi(this);
+  ui->setupUi (this);
 }
 
 SplashScreen::~SplashScreen()
 {
   delete ui;
+}
+
+/********************************************
+ * OVERRIDE
+ *******************************************/
+
+void SplashScreen::restartUi()
+{
+  BASEFORM_RESTARTUI_ROUTINE (Ui::SplashScreen);
 }
 
 /*-----------------------------------------*/
