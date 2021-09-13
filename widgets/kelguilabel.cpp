@@ -4,6 +4,7 @@
 
 #include <QMutex>
 #include <QMap>
+#include <QMouseEvent>
 
 /* DEFS */
 
@@ -89,21 +90,13 @@ KelGuiLabel::KelGuiLabel (QWidget *parent)
 }
 
 /********************************************
- * PUBLIC METHODS
+ * OVERRIDE
  *******************************************/
 
-//QString KelGuiLabel::cssStyle() const
-//{
-//  return m_cssStyle;
-//}
-
-//void KelGuiLabel::setCssStyle(const QString &cssStyleText)
-//{
-//  m_cssStyle  = cssStyleText;
-//  _LabelStyleManager::Operation op;
-//  auto style  = op.compile(m_cssStyle);
-//  setStyleSheet (style);
-//}
-
+void KelGuiLabel::mousePressEvent (QMouseEvent *event)
+{
+  if (event->button() == Qt::LeftButton)
+    emit clicked();
+}
 
 /*-----------------------------------------*/

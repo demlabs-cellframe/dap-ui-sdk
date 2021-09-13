@@ -24,6 +24,22 @@ class KelGuiLabel : public QLabel
 public:
   KelGuiLabel (QWidget *parent = nullptr);
   /// @}
+
+  /****************************************//**
+   * @name OVERRIDE
+   *******************************************/
+  /// @{
+public:
+  void mousePressEvent (QMouseEvent *) override;
+  /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void clicked();         ///< button is clicked
+  /// @}
 };
 
 /*-----------------------------------------*/

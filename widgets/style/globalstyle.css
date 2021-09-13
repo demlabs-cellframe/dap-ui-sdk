@@ -12,9 +12,19 @@
 	color: #DA0B82;
 }
 
+.red_error
+{
+	color: #F53172;
+}
+
 .gray
 {
 	color: #A4A3C0;
+}
+
+.gray_passive
+{
+	color: #5C5B74;
 }
 
 .white
@@ -68,6 +78,11 @@
 .font12
 {
 	font: 12pt/15pt;
+}
+
+.font13
+{
+	font: 13pt/18pt;
 }
 
 .font16
@@ -228,4 +243,24 @@
 	min-height: 59pt;
 	max-height: 59pt;
 	image: url(:/gui/ui/asset/logo_kelvpn-white.png);
+}
+
+/****************************************************
+ * Login
+ ***************************************************/
+
+.login_logo
+{
+	width: 260pt;
+	height: 89pt;
+	min-width: 260pt;
+	min-height: 89pt;
+	max-width: 260pt;
+	max-height: 89pt;
+	image: url(:/gui/ui/asset/logo_kelvpn-color.png);
+}
+
+.login-margin-connect-top
+{
+	margin-top: 50pt;
 }
