@@ -129,6 +129,11 @@
  * Frame
  ***************************************************/
 
+.backgroundcolor
+{
+	background: #f7f8fa;
+}
+
 .window
 {
 	width: 428pt;
@@ -165,14 +170,7 @@
 
 .cw_pushbutton
 {
-	color: #FFFFFF;
 	font: 14pt/12pt;
-	font-weight: bold;
-	font-style: bold;
-	font-size: bold;
-	text-transform: uppercase;
-	font-family: 'Roboto';
-	background-color: rgba(0, 0, 0, 0);
 }
 
 .cwpb_bigbutton

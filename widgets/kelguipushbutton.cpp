@@ -165,6 +165,7 @@ QString KelGuiPushButton::customCss() const
 void KelGuiPushButton::setCustomCss (const QString &customCss)
 {
   m_customCss = customCss;
+  updateStyle();
 }
 
 bool KelGuiPushButton::customEnabled() const

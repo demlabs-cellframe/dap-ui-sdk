@@ -28,6 +28,7 @@ KelVpnNeuromorphic::KelVpnNeuromorphic (QObject *parent)
   QFontDatabase::addApplicationFont ("://fonts/Roboto-Bold.ttf");
 
   auto style = Common::fromFile ("://style/globalstyle.css");
+  style.replace ("pt", "px");
   KelGuiStyleManager::setupGlobalStyleSheet (style);
 }
 
