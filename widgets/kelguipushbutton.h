@@ -7,7 +7,7 @@
 #include <QUrl>
 #include <QGraphicsDropShadowEffect>
 #include <memory>
-
+#include "kelguipushbuttonstylemanager.h"
 /* DEFS */
 //#define ENABLEPURPLE
 
@@ -43,7 +43,7 @@ public:
     Switch,
     Custom,
   };
-  Q_ENUM(Style)
+  Q_ENUM (Style)
   /// @}
 
   /****************************************//**
@@ -57,6 +57,11 @@ public:
   Q_PROPERTY (QUrl custom READ custom WRITE setCustom NOTIFY customChanged DESIGNABLE customEnabled)
   Q_PROPERTY (QUrl customHover READ customHover WRITE setCustomHover NOTIFY customHoverChanged DESIGNABLE customEnabled)
   Q_PROPERTY (QUrl customPushed READ customPushed WRITE setCustomPushed NOTIFY customPushedChanged DESIGNABLE customEnabled)
+
+  Q_PROPERTY (QString cssStyle READ _cssStyle WRITE _setCssStyle)
+  KelGuiPushButtonStyleManager __kgsm = KelGuiPushButtonStyleManager (this);
+  QString _cssStyle() const { return __kgsm.cssStyle(); }
+  void _setCssStyle (const QString &cssStyle) { __kgsm.setCssStyle (cssStyle); }
   /// @}
 
   /****************************************//**
@@ -66,6 +71,7 @@ public:
 private:
   Style m_style;
   QUrl m_custom, m_customHover, m_customPushed;
+  QString m_customCss;
 
 #ifdef ENABLEPURPLE
   QString m_text;
@@ -90,21 +96,24 @@ public:
 public:
 
   Style style() const;
-  void setStyle(const Style &style);
+  void setStyle (const Style &style);
 
 #ifdef ENABLEPURPLE
   QString text() const;
-  void setText(const QString &text);
+  void setText (const QString &text);
 #endif // ENABLEPURPLE
 
   QUrl custom() const;
-  void setCustom(const QUrl &custom);
+  void setCustom (const QUrl &custom);
 
   QUrl customHover() const;
-  void setCustomHover(const QUrl &customHover);
+  void setCustomHover (const QUrl &customHover);
 
   QUrl customPushed() const;
-  void setCustomPushed(const QUrl &customPushed);
+  void setCustomPushed (const QUrl &customPushed);
+
+  QString customCss() const;
+  void setCustomCss (const QString &customCss);
 
   bool customEnabled() const;
 

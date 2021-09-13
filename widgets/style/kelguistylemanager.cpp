@@ -123,6 +123,11 @@ QString KelGuiStyleManager::styleByClassList (const QStringList &classNameList)
   return Gss()[classNameList];
 }
 
+KelGuiStyleManager &KelGuiStyleManager::_signal()
+{
+  return s_signal;
+}
+
 void KelGuiStyleManager::forcedStyleUpdate()
 {
   QString s   =

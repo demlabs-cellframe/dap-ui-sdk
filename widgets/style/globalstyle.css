@@ -75,6 +75,11 @@
 	font-family: 'Lato';
 }
 
+.roboto
+{
+	font-family: 'Roboto';
+}
+
 .font12
 {
 	font: 12pt/15pt;
@@ -152,6 +157,62 @@
 	border-left: 3px inset #ffffff;
 	border-bottom: 3px inset rgba(174,174,192,96);
 	border-right: 3px inset rgba(174,174,192,96);
+}
+
+/****************************************************
+ * Custom Widgets
+ ***************************************************/
+
+.cw_pushbutton
+{
+	color: #FFFFFF;
+	font: 14pt/12pt;
+	font-weight: bold;
+	font-style: bold;
+	font-size: bold;
+	text-transform: uppercase;
+	font-family: 'Roboto';
+	background-color: rgba(0, 0, 0, 0);
+}
+
+.cwpb_bigbutton
+{
+	width: 374pt;
+	height: 80pt;
+	min-width: 374pt;
+	min-height: 80pt;
+	max-width: 374pt;
+	max-height: 80pt;
+}
+
+.cwpb_square
+{
+	width: 130pt;
+	height: 130pt;
+	min-width: 130pt;
+	min-height: 130pt;
+	max-width: 130pt;
+	max-height: 130pt;
+}
+
+.cwpb_checkbox .cwpb_radio
+{
+	width: 60pt;
+	height: 60pt;
+	min-width: 60pt;
+	min-height: 60pt;
+	max-width: 60pt;
+	max-height: 60pt;
+}
+
+.cwpb_switch
+{
+	width: 266pt;
+	height: 174pt;
+	min-width: 266pt;
+	min-height: 174pt;
+	max-width: 266pt;
+	max-height: 174pt;
 }
 
 /****************************************************
@@ -263,4 +324,9 @@
 .login-margin-connect-top
 {
 	margin-top: 50pt;
+}
+
+.login-margin-bottom
+{
+	margin-top: 230pt;
 }

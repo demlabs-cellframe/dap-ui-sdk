@@ -144,6 +144,8 @@ protected:
   QString styleByClassList (const QString &classNameList);
   /// collect all styles by class array
   QString styleByClassList (const QStringList &classNameList);
+  /// get singleton signal instance
+  KelGuiStyleManager &_signal();
 protected slots:
   void forcedStyleUpdate();
   /// @}
