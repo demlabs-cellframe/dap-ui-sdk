@@ -17,6 +17,11 @@
 	color: #A4A3C0;
 }
 
+.white
+{
+	color: #FFFFFF;
+}
+
 /****************************************************
  * Rules
  ***************************************************/
@@ -55,6 +60,11 @@
  * Fonts
  ***************************************************/
 
+.lato
+{
+	font-family: 'Lato';
+}
+
 .font12
 {
 	font: 12pt/15pt;
@@ -63,6 +73,11 @@
 .font16
 {
 	font: 16pt/19pt;
+}
+
+.font18
+{
+	font: 18pt/22pt;
 }
 
 .font20
@@ -191,3 +206,26 @@
 	image: url("://gui/ui/asset/ic_version.png");
 }
 
+/****************************************************
+ * Splash Screen
+ ***************************************************/
+
+.splashscreen_background
+{
+	width: 428pt;
+	height: 926pt;
+	min-width: 428pt;
+	min-height: 926pt;
+	max-width: 428pt;
+	max-height: 926pt;
+	image: url(:/gui/ui/asset/bg_dark-stripes.png);
+}
+
+.splashscreen_logo
+{
+	min-width: 230pt;
+	max-width: 230pt;
+	min-height: 59pt;
+	max-height: 59pt;
+	image: url(:/gui/ui/asset/logo_kelvpn-white.png);
+}
