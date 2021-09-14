@@ -134,7 +134,7 @@ Usualy unvisible by being empty</string>
          <string>choosing server</string>
         </property>
         <property name="mainCssClass">
-         <string>darkblue normalbold font20 lato</string>
+         <string>darkblue bold font20 lato</string>
         </property>
         <property name="subCssClass">
          <string>gray uppercase font12 lato</string>
@@ -157,6 +157,12 @@ Usualy unvisible by being empty</string>
         </property>
         <property name="subText">
          <string>serial key</string>
+        </property>
+        <property name="mainCssClass">
+         <string>darkblue bold font20 lato</string>
+        </property>
+        <property name="subCssClass">
+         <string>gray uppercase font12 lato</string>
         </property>
         <property name="separator">
          <bool>true</bool>
@@ -186,6 +192,21 @@ Usualy unvisible by being empty</string>
       <item>
        <widget class="QWidget" name="widget_4" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="KelGuiLabel" name="label_2">
            <property name="styleSheet">
@@ -196,6 +217,9 @@ Usualy unvisible by being empty</string>
            </property>
            <property name="text">
             <string>Don't have a serial key?</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="cssStyle">
             <string>font16 gray_passive lato normal</string>

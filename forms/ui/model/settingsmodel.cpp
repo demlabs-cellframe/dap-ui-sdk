@@ -37,11 +37,11 @@ void defaultCb (int &index) { Q_UNUSED (index) }
 /* VARS */
 static QMap<StyleId, Info> s_presets =
 {
-  {SI_TITLE,      {"darkblue normalbold font24 margin28", ""}},
-  {SI_BUTTON,     {"darkblue normal font16",  "darkblue normal font16"}},
-  {SI_BUTTONRED,  {"darkblue normal font16",  "red bold font16"}},
-  {SI_BUTTONGRAY, {"darkblue normal font16",  "darkblue gray font16"}},
-  {SI_LINK,       {"darkblue normal font16",  ""}},
+  {SI_TITLE,      {"darkblue normalbold font24 margin28 lato", ""}},
+  {SI_BUTTON,     {"darkblue normal font16 lato",  "darkblue normal font16 lato"}},
+  {SI_BUTTONRED,  {"darkblue normal font16 lato",  "red bold font16 lato"}},
+  {SI_BUTTONGRAY, {"darkblue normal font16 lato",  "darkblue gray font16 lato"}},
+  {SI_LINK,       {"darkblue normal font16 lato",  ""}},
 };
 
 static QList<_SItem> s_items =

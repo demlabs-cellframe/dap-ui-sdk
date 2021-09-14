@@ -499,3 +499,54 @@
 	max-width: 356pt;
 	max-height: 128pt;
 }
+
+/****************************************************
+ * Statistics
+ ***************************************************/
+
+.stat-top-spacer
+{
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
+}
+
+.stat-top-text-statistics
+{
+	height: 28pt;
+	min-height: 28pt;
+	max-height: 28pt;
+}
+
+.stat-top-frame-spacer
+{
+	height: 40pt;
+	min-height: 40pt;
+	max-height: 40pt;
+}
+
+.stat-bottom-frame-spacer
+{
+	height: 10pt;
+	min-height: 10pt;
+	max-height: 10pt;
+}
+
+.stat-frame
+{
+	border: 1px solid #000;
+
+	width: 360pt;
+	height: 162pt;
+	min-width: 360pt;
+	min-height: 162pt;
+	max-width: 360pt;
+	max-height: 162pt;
+}
+
+.stat-info
+{
+	height: 99pt;
+	min-height: 99pt;
+	max-height: 99pt;
+}

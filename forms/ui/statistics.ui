@@ -30,182 +30,275 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="Background" native="true">
+    <widget class="KelGuiWidget" name="Background">
      <property name="styleSheet">
-      <string notr="true">#Background
-{
-background-color: #F7F8FA;
-}</string>
+      <string notr="true">#Background{ 	background-color: #f7f8fa; }</string>
      </property>
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>73</x>
-        <y>62</y>
-        <width>282</width>
-        <height>28</height>
-       </rect>
+     <property name="cssStyle">
+      <string>backgroundcolor</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="spacing">
+       <number>0</number>
       </property>
-      <property name="styleSheet">
-       <string notr="true">color: #04004E;
-font: 24px/29px;
-font-weight: normal;
-font-style: normal;
-font-size: bold;
-font-family: 'Lato';
-background-color: rgba(0, 0, 0, 0);</string>
+      <property name="leftMargin">
+       <number>0</number>
       </property>
-      <property name="text">
-       <string>Statistics</string>
+      <property name="topMargin">
+       <number>0</number>
       </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
+      <property name="rightMargin">
+       <number>0</number>
       </property>
-     </widget>
-     <widget class="KelGuiButton" name="kelGuiButton_5">
-      <property name="geometry">
-       <rect>
-        <x>228</x>
-        <y>307</y>
-        <width>154</width>
-        <height>99</height>
-       </rect>
+      <property name="bottomMargin">
+       <number>0</number>
       </property>
-      <property name="mainText">
-       <string>20 896 Mbps</string>
-      </property>
-      <property name="subText">
-       <string>upload speed</string>
-      </property>
-     </widget>
-     <widget class="KelGuiButton" name="kelGuiButton_6">
-      <property name="geometry">
-       <rect>
-        <x>228</x>
-        <y>406</y>
-        <width>154</width>
-        <height>99</height>
-       </rect>
-      </property>
-      <property name="mainText">
-       <string>20 896 Mb</string>
-      </property>
-      <property name="subText">
-       <string>bytes sent</string>
-      </property>
-     </widget>
-     <widget class="KelGuiButton" name="kelGuiButton_4">
-      <property name="geometry">
-       <rect>
-        <x>42</x>
-        <y>604</y>
-        <width>154</width>
-        <height>99</height>
-       </rect>
-      </property>
-      <property name="mainText">
-       <string>146:7:27</string>
-      </property>
-      <property name="subText">
-       <string>uptime</string>
-      </property>
-     </widget>
-     <widget class="KelGuiButton" name="kelGuiButton_7">
-      <property name="geometry">
-       <rect>
-        <x>228</x>
-        <y>505</y>
-        <width>154</width>
-        <height>99</height>
-       </rect>
-      </property>
-      <property name="mainText">
-       <string>4 086</string>
-      </property>
-      <property name="subText">
-       <string>packets sent</string>
-      </property>
-     </widget>
-     <widget class="KelGuiButton" name="kelGuiButton">
-      <property name="geometry">
-       <rect>
-        <x>42</x>
-        <y>307</y>
-        <width>154</width>
-        <height>99</height>
-       </rect>
-      </property>
-      <property name="mainText">
-       <string>10205 Mbps</string>
-      </property>
-      <property name="subText">
-       <string>download speed</string>
-      </property>
-     </widget>
-     <widget class="KelGuiButton" name="kelGuiButton_2">
-      <property name="geometry">
-       <rect>
-        <x>42</x>
-        <y>406</y>
-        <width>154</width>
-        <height>99</height>
-       </rect>
-      </property>
-      <property name="mainText">
-       <string>29 896 Gb</string>
-      </property>
-      <property name="subText">
-       <string>bytes received</string>
-      </property>
-     </widget>
-     <widget class="KelGuiButton" name="kelGuiButton_8">
-      <property name="geometry">
-       <rect>
-        <x>228</x>
-        <y>604</y>
-        <width>154</width>
-        <height>99</height>
-       </rect>
-      </property>
-      <property name="mainText">
-       <string>34 ms</string>
-      </property>
-      <property name="subText">
-       <string>ping</string>
-      </property>
-     </widget>
-     <widget class="QFrame" name="frame">
-      <property name="geometry">
-       <rect>
-        <x>34</x>
-        <y>133</y>
-        <width>360</width>
-        <height>162</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-     </widget>
-     <widget class="KelGuiButton" name="kelGuiButton_3">
-      <property name="geometry">
-       <rect>
-        <x>42</x>
-        <y>505</y>
-        <width>154</width>
-        <height>99</height>
-       </rect>
-      </property>
-      <property name="mainText">
-       <string>454 086</string>
-      </property>
-      <property name="subText">
-       <string>packets received</string>
-      </property>
-     </widget>
+      <item>
+       <widget class="KelGuiWidget" name="kelGuiWidget_4">
+        <property name="cssStyle">
+         <string>stat-top-spacer</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="KelGuiLabel" name="label">
+        <property name="styleSheet">
+         <string notr="true">#label{ 	height: 28px; 	min-height: 28px; 	max-height: 28px; 
+ 	font: 24px/29px; 
+ 	color: #04004E; 
+ 	font-weight: normal; 	font-style: normal; 	font-size: bold; 
+ 	font-family: 'Lato'; }</string>
+        </property>
+        <property name="text">
+         <string>Statistics</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="cssStyle">
+         <string>stat-top-text-statistics font24 darkblue normalbold lato</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="KelGuiWidget" name="kelGuiWidget_3">
+        <property name="cssStyle">
+         <string>stat-top-frame-spacer</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="KelGuiWidget" name="frame">
+          <property name="cssStyle">
+           <string>stat-frame</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="KelGuiWidget" name="kelGuiWidget_5">
+        <property name="cssStyle">
+         <string>stat-bottom-frame-spacer</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="KelGuiWidget" name="kelGuiWidget_2">
+          <property name="styleSheet">
+           <string notr="true">#kelGuiWidget_2{}</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <item row="4" column="1">
+            <widget class="KelGuiButton" name="kelGuiButton_8">
+             <property name="cssStyle">
+              <string>stat-info</string>
+             </property>
+             <property name="mainText">
+              <string>34 ms</string>
+             </property>
+             <property name="subText">
+              <string>ping</string>
+             </property>
+             <property name="mainCssClass">
+              <string>darkblue normal font24 lato</string>
+             </property>
+             <property name="subCssClass">
+              <string>gray uppercase font12 lato</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="KelGuiButton" name="kelGuiButton_3">
+             <property name="cssStyle">
+              <string>stat-info</string>
+             </property>
+             <property name="mainText">
+              <string>454 086</string>
+             </property>
+             <property name="subText">
+              <string>packets received</string>
+             </property>
+             <property name="mainCssClass">
+              <string>darkblue normal font24 lato</string>
+             </property>
+             <property name="subCssClass">
+              <string>gray uppercase font12 lato</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="KelGuiButton" name="kelGuiButton_7">
+             <property name="cssStyle">
+              <string>stat-info</string>
+             </property>
+             <property name="mainText">
+              <string>4 086</string>
+             </property>
+             <property name="subText">
+              <string>packets sent</string>
+             </property>
+             <property name="mainCssClass">
+              <string>darkblue normal font24 lato</string>
+             </property>
+             <property name="subCssClass">
+              <string>gray uppercase font12 lato</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="KelGuiButton" name="kelGuiButton_4">
+             <property name="cssStyle">
+              <string>stat-info</string>
+             </property>
+             <property name="mainText">
+              <string>146:7:27</string>
+             </property>
+             <property name="subText">
+              <string>uptime</string>
+             </property>
+             <property name="mainCssClass">
+              <string>darkblue normal font24 lato</string>
+             </property>
+             <property name="subCssClass">
+              <string>gray uppercase font12 lato</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="KelGuiButton" name="kelGuiButton_5">
+             <property name="cssStyle">
+              <string>stat-info</string>
+             </property>
+             <property name="mainText">
+              <string>20 896 Mbps</string>
+             </property>
+             <property name="subText">
+              <string>upload speed</string>
+             </property>
+             <property name="mainCssClass">
+              <string>darkblue normal font24 lato</string>
+             </property>
+             <property name="subCssClass">
+              <string>gray uppercase font12 lato</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="KelGuiButton" name="kelGuiButton">
+             <property name="cssStyle">
+              <string>stat-info</string>
+             </property>
+             <property name="mainText">
+              <string>10205 Mbps</string>
+             </property>
+             <property name="subText">
+              <string>download speed</string>
+             </property>
+             <property name="mainCssClass">
+              <string>darkblue normal font24 lato</string>
+             </property>
+             <property name="subCssClass">
+              <string>gray uppercase font12 lato</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="KelGuiButton" name="kelGuiButton_6">
+             <property name="cssStyle">
+              <string>stat-info</string>
+             </property>
+             <property name="mainText">
+              <string>20 896 Mb</string>
+             </property>
+             <property name="subText">
+              <string>bytes sent</string>
+             </property>
+             <property name="mainCssClass">
+              <string>darkblue normal font24 lato</string>
+             </property>
+             <property name="subCssClass">
+              <string>gray uppercase font12 lato</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="KelGuiButton" name="kelGuiButton_2">
+             <property name="cssStyle">
+              <string>stat-info</string>
+             </property>
+             <property name="mainText">
+              <string>29 896 Gb</string>
+             </property>
+             <property name="subText">
+              <string>bytes received</string>
+             </property>
+             <property name="mainCssClass">
+              <string>darkblue normal font24 lato</string>
+             </property>
+             <property name="subCssClass">
+              <string>gray uppercase font12 lato</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="KelGuiWidget" name="kelGuiWidget">
+        <property name="cssStyle">
+         <string>footer</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
@@ -215,6 +308,17 @@ background-color: rgba(0, 0, 0, 0);</string>
    <class>KelGuiButton</class>
    <extends>QWidget</extends>
    <header>kelguibutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiLabel</class>
+   <extends>QLabel</extends>
+   <header>kelguilabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiWidget</class>
+   <extends>QWidget</extends>
+   <header>kelguiwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
