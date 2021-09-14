@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>428</width>
-    <height>926</height>
+    <width>446</width>
+    <height>942</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,207 +37,237 @@
 background-color: #F7F8FA;
 }</string>
      </property>
-     <widget class="KelGuiLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>44</x>
-        <y>62</y>
-        <width>340</width>
-        <height>28</height>
-       </rect>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="spacing">
+       <number>0</number>
       </property>
-      <property name="styleSheet">
-       <string notr="true">#label{}</string>
+      <property name="leftMargin">
+       <number>0</number>
       </property>
-      <property name="text">
-       <string>VPN Connected</string>
+      <property name="topMargin">
+       <number>0</number>
       </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
+      <property name="rightMargin">
+       <number>0</number>
       </property>
-     </widget>
-     <widget class="KelGuiPushButton" name="kelGuiPushButton">
-      <property name="geometry">
-       <rect>
-        <x>102</x>
-        <y>277</y>
-        <width>266</width>
-        <height>174</height>
-       </rect>
+      <property name="bottomMargin">
+       <number>0</number>
       </property>
-      <property name="checkable">
-       <bool>true</bool>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-      <property name="style">
-       <enum>KelGuiPushButton::Switch</enum>
-      </property>
-     </widget>
-     <widget class="KelGuiLabel" name="label_2">
-      <property name="geometry">
-       <rect>
-        <x>175</x>
-        <y>107</y>
-        <width>90</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">#label_2{}</string>
-      </property>
-      <property name="text">
-       <string>56 : 30 : 10</string>
-      </property>
-     </widget>
-     <widget class="KelGuiButton" name="kelGuiButton">
-      <property name="geometry">
-       <rect>
-        <x>42</x>
-        <y>471</y>
-        <width>154</width>
-        <height>99</height>
-       </rect>
-      </property>
-      <property name="mainText">
-       <string>120 kb/s</string>
-      </property>
-      <property name="subText">
-       <string>download</string>
-      </property>
-     </widget>
-     <widget class="KelGuiButton" name="kelGuiButton_2">
-      <property name="geometry">
-       <rect>
-        <x>228</x>
-        <y>471</y>
-        <width>154</width>
-        <height>99</height>
-       </rect>
-      </property>
-      <property name="mainText">
-       <string>34.7 kb/s</string>
-      </property>
-      <property name="subText">
-       <string>upload</string>
-      </property>
-     </widget>
-     <widget class="KelGuiButton" name="kelGuiButton_3">
-      <property name="geometry">
-       <rect>
-        <x>36</x>
-        <y>575</y>
-        <width>357</width>
-        <height>96</height>
-       </rect>
-      </property>
-      <property name="mainText">
-       <string>North America - Canada</string>
-      </property>
-      <property name="subText">
-       <string>231:532:531:20</string>
-      </property>
-      <property name="link">
-       <bool>true</bool>
-      </property>
-      <property name="frame">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="KelGuiWidget" name="kelGuiWidget">
-      <property name="geometry">
-       <rect>
-        <x>140</x>
-        <y>760</y>
-        <width>428</width>
-        <height>201</height>
-       </rect>
-      </property>
-      <property name="cssStyle">
-       <string>footer</string>
-      </property>
-     </widget>
-     <widget class="KelGuiWidget" name="kelGuiWidget_2">
-      <property name="geometry">
-       <rect>
-        <x>130</x>
-        <y>10</y>
-        <width>16</width>
-        <height>60</height>
-       </rect>
-      </property>
-      <property name="cssStyle">
-       <string>conn-top-spacer</string>
-      </property>
-     </widget>
-     <widget class="QWidget" name="widget" native="true">
-      <property name="geometry">
-       <rect>
-        <x>50</x>
-        <y>150</y>
-        <width>104</width>
-        <height>37</height>
-       </rect>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
+      <item>
+       <widget class="KelGuiWidget" name="kelGuiWidget_2">
+        <property name="cssStyle">
+         <string>conn-top-spacer</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="KelGuiLabel" name="label">
+        <property name="styleSheet">
+         <string notr="true">#label{ 	height: 28px; 	min-height: 28px; 	max-height: 28px; 
+ 	font: 24px/29px; 
+ 	color: #DA0B82; 
+ 	font-weight: normal; 	font-style: normal; 	font-size: bold; }</string>
+        </property>
+        <property name="text">
+         <string>VPN Connected</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="cssStyle">
+         <string>conn-top-text-connected font24 red normalbold</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="KelGuiWidget" name="kelGuiWidget_5">
+        <property name="cssStyle">
+         <string>conn-top-text-time</string>
+        </property>
         <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
-          <widget class="QCheckBox" name="checkBox">
-           <property name="styleSheet">
-            <string notr="true">QCheckBox::indicator
-{
-background-image: url(:/gui/ui/asset/icon_offline.png);
-}
-QCheckBox::indicator:checked
-{
-background-image: url(:/gui/ui/asset/icon_online.png);
-}</string>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
            </property>
-           <property name="text">
-            <string/>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
            </property>
-           <property name="checked">
-            <bool>true</bool>
+          </spacer>
+         </item>
+         <item>
+          <widget class="KelGuiPushButton" name="kelGuiPushButton_2">
+           <property name="style">
+            <enum>KelGuiPushButton::Custom</enum>
+           </property>
+           <property name="custom">
+            <url>
+             <string>qrc:/gui/ui/asset/icon_offline.png</string>
+            </url>
+           </property>
+           <property name="customHover">
+            <url>
+             <string>qrc:/gui/ui/asset/icon_online.png</string>
+            </url>
+           </property>
+           <property name="customPushed">
+            <url>
+             <string>qrc:/gui/ui/asset/icon_online.png</string>
+            </url>
+           </property>
+           <property name="cssStyle" stdset="0">
+            <string>cwpb_connection_status</string>
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="KelGuiLabel" name="label_2">
+           <property name="styleSheet">
+            <string notr="true">#label_2{ 	height: 22px; 	min-height: 22px; 	max-height: 22px; 
+ 	font: 18px/22px; 
+ 	font-weight: normal; 	font-style: normal; 	font-size: normal; 
+ 	color: #04004E; }</string>
+           </property>
+           <property name="text">
+            <string>56 : 30 : 10</string>
+           </property>
+           <property name="cssStyle">
+            <string>conn-top-text-time font18 normal darkblue</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
         </layout>
-       </item>
-      </layout>
-     </widget>
-     <widget class="KelGuiPushButton" name="kelGuiPushButton_2">
-      <property name="geometry">
-       <rect>
-        <x>80</x>
-        <y>200</y>
-        <width>374</width>
-        <height>80</height>
-       </rect>
-      </property>
-      <property name="style">
-       <enum>KelGuiPushButton::Custom</enum>
-      </property>
-      <property name="custom">
-       <url>
-        <string>qrc:/gui/ui/asset/icon_offline.png</string>
-       </url>
-      </property>
-      <property name="customHover">
-       <url>
-        <string>qrc:/gui/ui/asset/icon_online.png</string>
-       </url>
-      </property>
-      <property name="customPushed">
-       <url>
-        <string>qrc:/gui/ui/asset/icon_online.png</string>
-       </url>
-      </property>
-      <property name="cssStyle" stdset="0">
-       <string>cwpb_connection-status</string>
-      </property>
-     </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="KelGuiWidget" name="kelGuiWidget_3">
+        <property name="cssStyle">
+         <string>conn-mid-button-spacer</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="KelGuiPushButton" name="kelGuiPushButton">
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+          <property name="style">
+           <enum>KelGuiPushButton::Switch</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="KelGuiWidget" name="kelGuiWidget_4">
+        <property name="cssStyle">
+         <string>conn-down-button-spacer</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="KelGuiButton" name="kelGuiButton">
+          <property name="cssStyle">
+           <string>conn-status-button</string>
+          </property>
+          <property name="mainText">
+           <string>120 kb/s</string>
+          </property>
+          <property name="subText">
+           <string>download</string>
+          </property>
+          <property name="mainCssClass">
+           <string>darkblue normalbold font26</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="KelGuiButton" name="kelGuiButton_2">
+          <property name="cssStyle">
+           <string>conn-status-button</string>
+          </property>
+          <property name="mainText">
+           <string>34.7 kb/s</string>
+          </property>
+          <property name="subText">
+           <string>upload</string>
+          </property>
+          <property name="mainCssClass">
+           <string>darkblue normalbold font26</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="KelGuiButton" name="kelGuiButton_3">
+          <property name="cssStyle">
+           <string>conn-connectedto-button</string>
+          </property>
+          <property name="mainText">
+           <string>North America - Canada</string>
+          </property>
+          <property name="subText">
+           <string>231:532:531:20</string>
+          </property>
+          <property name="link">
+           <bool>true</bool>
+          </property>
+          <property name="frame">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="KelGuiWidget" name="kelGuiWidget">
+        <property name="cssStyle">
+         <string>footer</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>

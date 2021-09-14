@@ -110,6 +110,11 @@
 	font: 24pt/29pt;
 }
 
+.font26
+{
+	font: 26pt/32pt;
+}
+
 .font30
 {
 	font: 30pt/36pt;
@@ -213,7 +218,7 @@
 	max-height: 174pt;
 }
 
-.cwpb_connection-status
+.cwpb_connection_status
 {
 	width: 5pt;
 	height: 5pt;
@@ -366,4 +371,52 @@
 	height: 60pt;
 	min-height: 60pt;
 	max-height: 60pt;
+}
+
+.conn-top-text-connected
+{
+	height: 28pt;
+	min-height: 28pt;
+	max-height: 28pt;
+}
+
+.conn-top-text-time
+{
+	height: 22pt;
+	min-height: 22pt;
+	max-height: 22pt;
+}
+
+.conn-mid-button-spacer
+{
+	height: 110pt;
+	min-height: 110pt;
+	max-height: 110pt;
+}
+
+.conn-status-button
+{
+	width: 154pt;
+	height: 99pt;
+	min-width: 154pt;
+	min-height: 99pt;
+	max-width: 154pt;
+	max-height: 99pt;
+}
+
+.conn-down-button-spacer
+{
+	height: 10pt;
+	min-height: 10pt;
+	max-height: 10pt;
+}
+
+.conn-connectedto-button
+{
+	width: 357pt;
+	height: 96pt;
+	min-width: 357pt;
+	min-height: 96pt;
+	max-width: 357pt;
+	max-height: 96pt;
 }
