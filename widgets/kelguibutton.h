@@ -7,6 +7,7 @@
 #include <QGraphicsDropShadowEffect>
 #include <QUrl>
 #include <QMap>
+#include "style/kelguistylemanager.h"
 #include <memory>
 
 /* DEFS */
@@ -22,6 +23,8 @@ namespace Ui { class KelGuiButtonUI; };
 class KelGuiButton : public QWidget
 {
   Q_OBJECT
+  KELGUI_ENABLECSS
+  KELGUI_ENABLEWIDGETSTYLE
 
   /****************************************//**
    * @name DEFS
@@ -145,7 +148,7 @@ public:
    *******************************************/
   /// @{
 public:
-  void paintEvent (QPaintEvent *) override;
+  //void paintEvent (QPaintEvent *) override;
   void mousePressEvent (QMouseEvent *) override;
   void resizeEvent (QResizeEvent *) override;
   /// @}

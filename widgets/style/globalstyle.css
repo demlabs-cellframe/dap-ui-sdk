@@ -213,6 +213,23 @@
 	max-height: 174pt;
 }
 
+.cwpb_connection-status
+{
+	width: 5pt;
+	height: 5pt;
+	min-width: 5pt;
+	min-height: 5pt;
+	max-width: 5pt;
+	max-height: 5pt;
+}
+
+.cwb_height
+{
+	height: 108pt;
+	min-height: 108pt;
+	max-height: 108pt;
+}
+
 /****************************************************
  * Icons
  ***************************************************/
@@ -321,10 +338,32 @@
 
 .login-margin-connect-top
 {
-	margin-top: 50pt;
+	height: 120pt;
+	min-height: 120pt;
+	max-height: 120pt;
 }
 
 .login-margin-bottom
 {
-	margin-top: 230pt;
+	height: 20pt;
+	min-height: 20pt;
+	max-height: 20pt;
+}
+
+.login-margin-at-connect
+{
+	height: 50pt;
+	min-height: 50pt;
+	max-height: 50pt;
+}
+
+/****************************************************
+ * Connection
+ ***************************************************/
+
+.conn-top-spacer
+{
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
 }

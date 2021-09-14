@@ -1,3 +1,4 @@
+/* INCLUDES */
 #include "kelguibuttonplugin.h"
 #include "kelguipushbuttonplugin.h"
 #include "kelguiradioplugin.h"
@@ -10,6 +11,15 @@
 
 #include "style/kelguistylemanager.h"
 #include "kelguicommon.h"
+
+#include "widgetsdebugsettings.h"
+
+/* VARS */
+static WidgetsDebugSettings *s_settings = nullptr;
+
+/********************************************
+ * CONSTRUCT/DESTRUCT
+ *******************************************/
 
 KelVpnNeuromorphic::KelVpnNeuromorphic (QObject *parent)
   : QObject (parent)
@@ -30,7 +40,14 @@ KelVpnNeuromorphic::KelVpnNeuromorphic (QObject *parent)
   auto style = Common::fromFile ("://style/globalstyle.css");
   style.replace ("pt", "px");
   KelGuiStyleManager::setupGlobalStyleSheet (style);
+
+  s_settings  = new WidgetsDebugSettings;
+  s_settings->show();
 }
+
+/********************************************
+ * METHODS
+ *******************************************/
 
 QList<QDesignerCustomWidgetInterface *> KelVpnNeuromorphic::customWidgets() const
 {
@@ -40,3 +57,5 @@ QList<QDesignerCustomWidgetInterface *> KelVpnNeuromorphic::customWidgets() cons
 #if QT_VERSION < 0x050000
 Q_EXPORT_PLUGIN2 (kelvpnneuromorphicplugin, KelVpnNeuromorphic)
 #endif // QT_VERSION < 0x050000
+
+/*-----------------------------------------*/

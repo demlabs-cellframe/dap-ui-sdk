@@ -18,7 +18,8 @@ HEADERS     += \
     $$PWD/kelguiradioplugin.h \
     $$PWD/kelguiseparatorplugin.h \
     $$PWD/kelguiwidgetplugin.h \
-    $$PWD/kelvpnneuromorphic.h
+    $$PWD/kelvpnneuromorphic.h \
+    $$PWD/widgetsdebugsettings.h
 
 SOURCES     += \
     $$PWD/kelguibuttonplugin.cpp \
@@ -29,7 +30,11 @@ SOURCES     += \
     $$PWD/kelguiradioplugin.cpp \
     $$PWD/kelguiseparatorplugin.cpp \
     $$PWD/kelguiwidgetplugin.cpp \
-    $$PWD/kelvpnneuromorphic.cpp
+    $$PWD/kelvpnneuromorphic.cpp \
+    $$PWD/widgetsdebugsettings.cpp
+
+FORMS += \
+    $$PWD/widgetsdebugsettings.ui
 # message ($$HEADERS)
 }
 

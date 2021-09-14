@@ -362,14 +362,14 @@ void KelGuiButton::setupLabels()
  * OVERRIDE
  *******************************************/
 
-void KelGuiButton::paintEvent (QPaintEvent *)
-{
-  QStyleOption opt;
-  opt.init (this);
+//void KelGuiButton::paintEvent (QPaintEvent *)
+//{
+//  QStyleOption opt;
+//  opt.init (this);
 
-  QPainter p (this);
-  QWidget::style()->drawPrimitive (QStyle::PE_Widget, &opt, &p, this);
-}
+//  QPainter p (this);
+//  QWidget::style()->drawPrimitive (QStyle::PE_Widget, &opt, &p, this);
+//}
 
 void KelGuiButton::mousePressEvent (QMouseEvent *event)
 {

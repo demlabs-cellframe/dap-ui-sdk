@@ -58,10 +58,10 @@ public:
   Q_PROPERTY (QUrl customHover READ customHover WRITE setCustomHover NOTIFY customHoverChanged DESIGNABLE customEnabled)
   Q_PROPERTY (QUrl customPushed READ customPushed WRITE setCustomPushed NOTIFY customPushedChanged DESIGNABLE customEnabled)
 
-  Q_PROPERTY (QString cssStyle READ _cssStyle WRITE _setCssStyle)
+  Q_PROPERTY (QString cssStyle READ customCss WRITE setCustomCss)
   KelGuiPushButtonStyleManager __kgsm = KelGuiPushButtonStyleManager (this);
-  QString _cssStyle() const { return __kgsm.cssStyle(); }
-  void _setCssStyle (const QString &cssStyle) { __kgsm.setCssStyle (cssStyle); }
+//  QString _cssStyle() const { return __kgsm.cssStyle(); }
+//  void _setCssStyle (const QString &cssStyle) { __kgsm.setCssStyle (cssStyle); }
   /// @}
 
   /****************************************//**

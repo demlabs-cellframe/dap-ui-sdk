@@ -37,7 +37,7 @@
 background-color: #F7F8FA;
 }</string>
      </property>
-     <widget class="QLabel" name="label">
+     <widget class="KelGuiLabel" name="label">
       <property name="geometry">
        <rect>
         <x>44</x>
@@ -47,12 +47,7 @@ background-color: #F7F8FA;
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">color: #DA0B82;
-font: 24px/29px;
-font-weight: normal;
-font-style: normal;
-font-size: bold;
-font-family: 'Lato';</string>
+       <string notr="true">#label{}</string>
       </property>
       <property name="text">
        <string>VPN Connected</string>
@@ -66,8 +61,8 @@ font-family: 'Lato';</string>
        <rect>
         <x>102</x>
         <y>277</y>
-        <width>260</width>
-        <height>176</height>
+        <width>266</width>
+        <height>174</height>
        </rect>
       </property>
       <property name="checkable">
@@ -80,33 +75,7 @@ font-family: 'Lato';</string>
        <enum>KelGuiPushButton::Switch</enum>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox">
-      <property name="geometry">
-       <rect>
-        <x>164</x>
-        <y>116</y>
-        <width>5</width>
-        <height>5</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QCheckBox::indicator
-{
-background-image: url(:/gui/ui/asset/icon_offline.png);
-}
-QCheckBox::indicator:checked
-{
-background-image: url(:/gui/ui/asset/icon_online.png);
-}</string>
-      </property>
-      <property name="text">
-       <string>56 : 30 : 10</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_2">
+     <widget class="KelGuiLabel" name="label_2">
       <property name="geometry">
        <rect>
         <x>175</x>
@@ -116,16 +85,7 @@ background-image: url(:/gui/ui/asset/icon_online.png);
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">*
-{
-color: #04004E;
-font: 18px/22px;
-font-weight: normal;
-font-style: normal;
-font-size: normal;
-font-family: 'Lato';
-}
-</string>
+       <string notr="true">#label_2{}</string>
       </property>
       <property name="text">
        <string>56 : 30 : 10</string>
@@ -185,6 +145,99 @@ font-family: 'Lato';
        <bool>true</bool>
       </property>
      </widget>
+     <widget class="KelGuiWidget" name="kelGuiWidget">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>760</y>
+        <width>428</width>
+        <height>201</height>
+       </rect>
+      </property>
+      <property name="cssStyle">
+       <string>footer</string>
+      </property>
+     </widget>
+     <widget class="KelGuiWidget" name="kelGuiWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>10</y>
+        <width>16</width>
+        <height>60</height>
+       </rect>
+      </property>
+      <property name="cssStyle">
+       <string>conn-top-spacer</string>
+      </property>
+     </widget>
+     <widget class="QWidget" name="widget" native="true">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>150</y>
+        <width>104</width>
+        <height>37</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QCheckBox" name="checkBox">
+           <property name="styleSheet">
+            <string notr="true">QCheckBox::indicator
+{
+background-image: url(:/gui/ui/asset/icon_offline.png);
+}
+QCheckBox::indicator:checked
+{
+background-image: url(:/gui/ui/asset/icon_online.png);
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="KelGuiPushButton" name="kelGuiPushButton_2">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>200</y>
+        <width>374</width>
+        <height>80</height>
+       </rect>
+      </property>
+      <property name="style">
+       <enum>KelGuiPushButton::Custom</enum>
+      </property>
+      <property name="custom">
+       <url>
+        <string>qrc:/gui/ui/asset/icon_offline.png</string>
+       </url>
+      </property>
+      <property name="customHover">
+       <url>
+        <string>qrc:/gui/ui/asset/icon_online.png</string>
+       </url>
+      </property>
+      <property name="customPushed">
+       <url>
+        <string>qrc:/gui/ui/asset/icon_online.png</string>
+       </url>
+      </property>
+      <property name="cssStyle" stdset="0">
+       <string>cwpb_connection-status</string>
+      </property>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -199,6 +252,17 @@ font-family: 'Lato';
    <class>KelGuiPushButton</class>
    <extends>QPushButton</extends>
    <header>kelguipushbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiLabel</class>
+   <extends>QLabel</extends>
+   <header>kelguilabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiWidget</class>
+   <extends>QWidget</extends>
+   <header>kelguiwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

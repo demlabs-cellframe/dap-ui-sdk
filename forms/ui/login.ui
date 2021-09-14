@@ -35,18 +35,15 @@
       <string>window backgroundcolor</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="spacing">
+       <number>0</number>
+      </property>
       <item>
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
+       <widget class="KelGuiWidget" name="kelGuiWidget_2">
+        <property name="cssStyle">
+         <string>login-margin-connect-top</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
+       </widget>
       </item>
       <item>
        <widget class="QWidget" name="widget" native="true">
@@ -83,20 +80,23 @@
        </widget>
       </item>
       <item>
-       <spacer name="verticalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
+       <widget class="KelGuiWidget" name="kelGuiWidget_4">
+        <property name="styleSheet">
+         <string notr="true">#kelGuiWidget_4{ 	height: 20px; 	min-height: 20px; 	max-height: 20px; }</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
+        <property name="cssStyle">
+         <string>login-margin-bottom</string>
         </property>
-       </spacer>
+       </widget>
       </item>
       <item>
        <widget class="KelGuiLabel" name="label_3">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="styleSheet">
          <string notr="true">#label_3{ 	font: 13px/18px; 
  	color: #F53172; 
@@ -108,7 +108,7 @@
 Usualy unvisible by being empty</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignHCenter|Qt::AlignTop</set>
+         <set>Qt::AlignCenter</set>
         </property>
         <property name="cssStyle">
          <string>font13 red_error lato normal</string>
@@ -116,10 +116,17 @@ Usualy unvisible by being empty</string>
        </widget>
       </item>
       <item>
-       <widget class="KelGuiSeparator" name="kelGuiSeparator"/>
+       <widget class="KelGuiSeparator" name="kelGuiSeparator">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="KelGuiButton" name="kelGuiButton">
+        <property name="cssStyle">
+         <string>cwb_height</string>
+        </property>
         <property name="mainText">
          <string>Auto select</string>
         </property>
@@ -142,6 +149,9 @@ Usualy unvisible by being empty</string>
       </item>
       <item>
        <widget class="KelGuiButton" name="kelGuiButton_2">
+        <property name="cssStyle">
+         <string>cwb_height</string>
+        </property>
         <property name="mainText">
          <string>_ _ _ _   _ _ _ _   _ _ _ _   _ _ _ _</string>
         </property>
@@ -156,7 +166,7 @@ Usualy unvisible by being empty</string>
       <item>
        <widget class="KelGuiWidget" name="kelGuiWidget">
         <property name="cssStyle">
-         <string>login-margin-connect-top</string>
+         <string>login-margin-at-connect {</string>
         </property>
        </widget>
       </item>
@@ -215,9 +225,9 @@ Usualy unvisible by being empty</string>
        </widget>
       </item>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget_2">
+       <widget class="KelGuiWidget" name="kelGuiWidget_3">
         <property name="cssStyle">
-         <string>login-margin-bottom</string>
+         <string>footer</string>
         </property>
        </widget>
       </item>
@@ -251,6 +261,7 @@ Usualy unvisible by being empty</string>
    <class>KelGuiWidget</class>
    <extends>QWidget</extends>
    <header>kelguiwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

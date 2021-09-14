@@ -56,7 +56,7 @@ QString KelGuiWidgetPlugin::whatsThis() const
 
 bool KelGuiWidgetPlugin::isContainer() const
 {
-  return false;
+  return true;
 }
 
 QString KelGuiWidgetPlugin::domXml() const
