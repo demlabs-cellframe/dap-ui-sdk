@@ -136,7 +136,12 @@
 
 .backgroundcolor
 {
-	background: #f7f8fa;
+	background-color: #f7f8fa;
+}
+
+.nobackground
+{
+	background-color: rgba(0,0,0,0);
 }
 
 .window
@@ -157,6 +162,16 @@
 	min-height: 201pt;
 	max-width: 428pt;
 	max-height: 201pt;
+}
+
+.screenarea
+{
+	width: 428pt;
+	height: 725pt;
+	min-width: 428pt;
+	min-height: 725pt;
+	max-width: 428pt;
+	max-height: 725pt;
 }
 
 .frame
@@ -226,6 +241,7 @@
 	min-height: 5pt;
 	max-width: 5pt;
 	max-height: 5pt;
+	margin-right: 6pt;
 }
 
 .cwb_height
@@ -233,6 +249,31 @@
 	height: 108pt;
 	min-height: 108pt;
 	max-height: 108pt;
+}
+
+.cwb_top
+{
+	padding-bottom: 1pt;
+}
+
+.cwb_bottom
+{
+	padding-top: 1pt;
+}
+
+.cwb_mid
+{
+	padding-left: 2pt;
+}
+
+.cwb_left
+{
+
+}
+
+.cwb_right
+{
+	padding-right: 2pt;
 }
 
 /****************************************************
@@ -419,4 +460,42 @@
 	min-height: 96pt;
 	max-width: 357pt;
 	max-height: 96pt;
+}
+
+/****************************************************
+ * Settings
+ ***************************************************/
+
+.sett-scroll-holder
+{
+	/*margin-left: 28pt;*/
+	/*padding-left: 18pt;*/
+}
+
+.sett-scroll-area
+{
+	margin-left: 18pt;
+	/*padding-left: 18pt;*/
+}
+
+.sett-scroll-btn
+{
+	margin-left: 18pt;
+	padding-left: 18pt;
+	width: 356pt;
+	height: 64pt;
+	min-width: 356pt;
+	min-height: 64pt;
+	max-width: 356pt;
+	max-height: 64pt;
+}
+
+.set-scroll-title
+{
+	width: 356pt;
+	height: 128pt;
+	min-width: 356pt;
+	min-height: 128pt;
+	max-width: 356pt;
+	max-height: 128pt;
 }

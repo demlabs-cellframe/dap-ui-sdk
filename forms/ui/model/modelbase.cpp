@@ -30,6 +30,8 @@ void ModelBase::setupLayout()
         {
           /* cerate and store */
           lay    = new QVBoxLayout (widget());
+          lay->setMargin (0);
+          lay->setSpacing (0);
           widget()->setLayout (lay);
         }
 

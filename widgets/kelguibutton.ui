@@ -35,6 +35,9 @@
       <string notr="true"/>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
+      <property name="spacing">
+       <number>0</number>
+      </property>
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -50,6 +53,21 @@
       <item>
        <widget class="QWidget" name="Style0" native="true">
         <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="KelGuiLabel" name="KelGuiButtonTextMain">
            <property name="text">
@@ -76,6 +94,21 @@
       <item>
        <widget class="QWidget" name="Style1" native="true">
         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="KelGuiLabel" name="KelGuiButtonTextSub_2">
            <property name="text">
@@ -102,6 +135,21 @@
       <item>
        <widget class="QWidget" name="Style2" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="KelGuiLabel" name="KelGuiButtonTextLeft">
            <property name="text">
@@ -114,6 +162,9 @@
          </item>
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_3">
+           <property name="spacing">
+            <number>0</number>
+           </property>
            <item>
             <widget class="KelGuiLabel" name="KelGuiButtonTextMain_3">
              <property name="text">
@@ -142,6 +193,21 @@
       <item>
        <widget class="QWidget" name="Style3" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="KelGuiLabel" name="KelGuiButtonIcon">
            <property name="text">
@@ -150,14 +216,14 @@
           </widget>
          </item>
          <item>
-          <widget class="KelGuiLabel" name="KelGuiButtonTextMain_4">
+          <widget class="KelGuiLabel" name="KelGuiButtonTextMid">
            <property name="text">
             <string>Main Text</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="KelGuiLabel" name="KelGuiButtonTextSub_4">
+          <widget class="KelGuiLabel" name="KelGuiButtonTextRight">
            <property name="styleSheet">
             <string notr="true"/>
            </property>

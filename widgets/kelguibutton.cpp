@@ -86,12 +86,12 @@ KelGuiButton::KelGuiButton (QWidget *parent)
   m_widgets.insert ("textMain", ui->KelGuiButtonTextMain);
   m_widgets.insert ("textMain", ui->KelGuiButtonTextMain_2);
   m_widgets.insert ("textMain", ui->KelGuiButtonTextMain_3);
-  m_widgets.insert ("textMain", ui->KelGuiButtonTextMain_4);
+  m_widgets.insert ("textMid", ui->KelGuiButtonTextMid);
   m_widgets.insert ("textSub", ui->KelGuiButtonTextSub);
   m_widgets.insert ("textSub", ui->KelGuiButtonTextSub_2);
   m_widgets.insert ("textSub", ui->KelGuiButtonTextSub_3);
-  m_widgets.insert ("textSub", ui->KelGuiButtonTextSub_4);
-  m_widgets.insert ("marginOnLink", ui->KelGuiButtonTextSub_4);
+  m_widgets.insert ("textRight", ui->KelGuiButtonTextRight);
+  m_widgets.insert ("marginOnLink", ui->KelGuiButtonTextRight);
   m_widgets.insert ("textLeft", ui->KelGuiButtonTextLeft);
   m_widgets.insert ("iconLeft", ui->KelGuiButtonIcon);
 
@@ -169,7 +169,7 @@ void KelGuiButton::setMainText (const QString &mainText)
 {
   m_mainText = mainText;
 
-  auto array = m_widgets.values ("textMain");
+  auto array = m_widgets.values ("textMain") + m_widgets.values ("textMid");
   for (auto i = array.begin(), e = array.end(); i != e; i++)
     as<KelGuiLabel> (*i)->setText (m_mainText);
 
@@ -188,7 +188,7 @@ void KelGuiButton::setSubText (const QString &subText)
 {
   m_subText = subText;
 
-  auto array = m_widgets.values ("textSub");
+  auto array = m_widgets.values ("textSub") + m_widgets.values ("textRight");
   for (auto i = array.begin(), e = array.end(); i != e; i++)
     {
       auto j = as<KelGuiLabel> (*i);
@@ -200,10 +200,19 @@ void KelGuiButton::setSubText (const QString &subText)
   for (auto i = array.begin(), e = array.end(); i != e; i++)
     {
       auto j = as<KelGuiLabel> (*i);
-      j->setAlignment (
-        s_mainHelper (
-          btnStyle() == LeftTopMainBottomSub
-          || btnStyle() == IconMainSub, !m_subText.isEmpty()));
+
+      /* for swapped top and bottom labels */
+      if (j == ui->KelGuiButtonTextMain_2)
+        j->setAlignment (Qt::AlignHCenter | Qt::AlignTop);
+      else if (j == ui->KelGuiButtonTextSub_2)
+        j->setAlignment (Qt::AlignHCenter | Qt::AlignBottom);
+
+      /* for usual (top main, bottom sub) */
+      else
+        j->setAlignment (
+          s_mainHelper (
+            btnStyle() == LeftTopMainBottomSub
+            || btnStyle() == IconMainSub, !m_subText.isEmpty()));
     }
 
 //  ui->KelGuiButtonTextSub->setVisible (!subText.isEmpty());
@@ -335,27 +344,29 @@ void KelGuiButton::setupLabels()
 {
   QMap <QString, QString> labelMap =
   {
-    {"textMain",  mainCssClass()},
-    {"textSub",   subCssClass()},
-    {"textLeft",  leftCssClass()},
+    {"textMain",  mainCssClass()  + " cwb_top"},
+    {"textMid",   mainCssClass()  + " cwb_mid"},
+    {"textSub",   subCssClass()   + " cwb_bottom"},
+    {"textRight", subCssClass()   + " cwb_right"},
+    {"textLeft",  leftCssClass()  + " cwb_left"},
     {"iconLeft",  iconCssClass()},
   };
 
-  //auto labelStyle = Common::fromFile ("://styles/buttonlabel.css");
   for (auto i = m_widgets.begin(), e = m_widgets.end(); i != e; i++)
-    if (i.key() != "styledWidgets")
+    {
       if (labelMap.contains (i.key()))
-        as<KelGuiLabel> (*i)->setCssStyle (labelMap.value (i.key()));
+        {
+          /* for swapped top and bottom labels */
+          if (*i == ui->KelGuiButtonTextMain_2)
+            as<KelGuiLabel> (*i)->setCssStyle (mainCssClass() + " cwb_bottom");
+          else if (*i == ui->KelGuiButtonTextSub_2)
+            as<KelGuiLabel> (*i)->setCssStyle (subCssClass() + " cwb_top");
 
-//  ui->KelGuiButtonTextMain->setStyleId (mainStyle());
-//  ui->KelGuiButtonTextMain_2->setStyleId (mainStyle());
-//  ui->KelGuiButtonTextMain_3->setStyleId (mainStyle());
-//  ui->KelGuiButtonTextMain_4->setStyleId (mainStyle());
-//  ui->KelGuiButtonTextSub->setStyleId (subStyle());
-//  ui->KelGuiButtonTextSub_2->setStyleId (subStyle());
-//  ui->KelGuiButtonTextSub_3->setStyleId (subStyle());
-//  ui->KelGuiButtonTextSub_4->setStyleId (subStyle());
-//  ui->KelGuiButtonTextLeft->setStyleId (leftStyle());
+          /* for usual (top main, bottom sub) */
+          else
+            as<KelGuiLabel> (*i)->setCssStyle (labelMap.value (i.key()));
+        }
+    }
 }
 
 /********************************************

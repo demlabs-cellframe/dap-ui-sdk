@@ -241,14 +241,26 @@ background-color: #F7F8FA;
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <widget class="KelGuiButton" name="kelGuiButton_3">
+          <property name="styleSheet">
+           <string notr="true">#kelGuiButton_3{ 	width: 357px; 	height: 96px; 	min-width: 357px; 	min-height: 96px; 	max-width: 357px; 	max-height: 96px; }</string>
+          </property>
           <property name="cssStyle">
            <string>conn-connectedto-button</string>
+          </property>
+          <property name="buttonStyle" stdset="0">
+           <enum>KelGuiButton::TopSubBottomMain</enum>
           </property>
           <property name="mainText">
            <string>North America - Canada</string>
           </property>
           <property name="subText">
            <string>231:532:531:20</string>
+          </property>
+          <property name="mainCssClass">
+           <string>darkblue normalbold font18</string>
+          </property>
+          <property name="subCssClass">
+           <string>gray uppercase font16</string>
           </property>
           <property name="link">
            <bool>true</bool>

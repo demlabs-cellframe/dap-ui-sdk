@@ -30,50 +30,74 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="Background" native="true">
-     <property name="styleSheet">
-      <string notr="true">#Background, #scrollAreaWidgetContents
-{
-background-color: #F7F8FA;
-}</string>
+    <widget class="KelGuiWidget" name="Background">
+     <property name="cssStyle">
+      <string>backgroundcolor sett-scroll-holder</string>
      </property>
-     <widget class="SettingsModel" name="scrollArea">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>23</y>
-        <width>428</width>
-        <height>721</height>
-       </rect>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="spacing">
+       <number>0</number>
       </property>
-      <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
+      <property name="leftMargin">
+       <number>0</number>
       </property>
-      <property name="verticalScrollBarPolicy">
-       <enum>Qt::ScrollBarAlwaysOff</enum>
+      <property name="topMargin">
+       <number>0</number>
       </property>
-      <property name="horizontalScrollBarPolicy">
-       <enum>Qt::ScrollBarAlwaysOff</enum>
+      <property name="rightMargin">
+       <number>0</number>
       </property>
-      <property name="widgetResizable">
-       <bool>true</bool>
+      <property name="bottomMargin">
+       <number>0</number>
       </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>428</width>
-         <height>721</height>
-        </rect>
-       </property>
-      </widget>
-     </widget>
+      <item>
+       <widget class="SettingsModel" name="scrollArea">
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="widgetResizable">
+         <bool>true</bool>
+        </property>
+        <widget class="KelGuiWidget" name="scrollAreaWidgetContents">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>428</width>
+           <height>725</height>
+          </rect>
+         </property>
+         <property name="cssStyle">
+          <string>backgroundcolor</string>
+         </property>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="KelGuiWidget" name="kelGuiWidget">
+        <property name="cssStyle">
+         <string>footer</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>KelGuiWidget</class>
+   <extends>QWidget</extends>
+   <header>kelguiwidget.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>SettingsModel</class>
    <extends>QScrollArea</extends>

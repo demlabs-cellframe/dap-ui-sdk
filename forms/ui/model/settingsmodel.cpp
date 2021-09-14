@@ -73,6 +73,7 @@ static QList<_SItem> s_items =
 SettingsModel::SettingsModel (QWidget *parent)
   : ModelBase (parent)
 {
+  setCssStyle ("screenarea sett-scroll-area backgroundcolor");
 }
 
 SettingsModel::~SettingsModel()
@@ -110,7 +111,11 @@ void SettingsModel::slotSetup()
       btn->setLink (item.sid == SI_LINK);
       btn->setIconCssClass (item.iconCss); //btn->setIcon (item.icon);
 
-      btn->setMaximumWidth (392);
+      btn->setCssStyle (
+        item.sid != SI_TITLE
+        ? "sett-scroll-btn"
+        : "set-scroll-title"
+      );
 
       /* add into list */
       lay->addWidget (btn);
