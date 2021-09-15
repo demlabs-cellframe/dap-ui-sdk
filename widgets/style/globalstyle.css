@@ -343,6 +343,11 @@
 	image: url("://gui/ui/asset/ic_version.png");
 }
 
+.ic_spinner
+{
+	image: url("://gui/ui/asset/Spinner.gif");
+}
+
 /****************************************************
  * Splash Screen
  ***************************************************/
@@ -550,3 +555,56 @@
 	min-height: 99pt;
 	max-height: 99pt;
 }
+
+/****************************************************
+ * Bug reports
+ ***************************************************/
+
+.bugrep-widget
+{
+	width: 390pt;
+	min-width: 390pt;
+	max-width: 390pt;
+}
+
+.bugrep-top-spacer
+{
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
+}
+
+.bugrep-close-btn
+{
+	width: 28pt;
+	height: 28pt;
+	min-width: 28pt;
+	min-height: 28pt;
+	max-width: 28pt;
+	max-height: 28pt;
+}
+
+.bugrep-title-text
+{
+	width: 282pt;
+	height: 28pt;
+	min-width: 282pt;
+	min-height: 28pt;
+	max-width: 282pt;
+	max-height: 28pt;
+}
+
+.bugrep-top-input-spacer
+{
+	height: 40pt;
+	min-height: 40pt;
+	max-height: 40pt;
+}
+
+.bugrep-attach-send-spacer
+{
+	height: 30pt;
+	min-height: 30pt;
+	max-height: 30pt;
+}
+
