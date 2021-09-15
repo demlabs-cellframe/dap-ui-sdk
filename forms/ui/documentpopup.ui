@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -30,91 +30,140 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="Background" native="true">
-     <property name="styleSheet">
-      <string notr="true">#Background
-{
-background-color: #F7F8FA;
-}</string>
+    <widget class="KelGuiWidget" name="Background">
+     <property name="cssStyle">
+      <string>backgroundcolor</string>
      </property>
-     <widget class="KelGuiPushButton" name="btnClose">
-      <property name="geometry">
-       <rect>
-        <x>33</x>
-        <y>61</y>
-        <width>30</width>
-        <height>30</height>
-       </rect>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>0</number>
       </property>
-      <property name="style">
-       <enum>KelGuiPushButton::Custom</enum>
+      <property name="leftMargin">
+       <number>0</number>
       </property>
-      <property name="custom">
-       <url>
-        <string>qrc:/gui/ui/asset/ic_close.png</string>
-       </url>
+      <property name="topMargin">
+       <number>0</number>
       </property>
-      <property name="customHover">
-       <url>
-        <string>qrc:/gui/ui/asset/ic_close.png</string>
-       </url>
+      <property name="rightMargin">
+       <number>0</number>
       </property>
-      <property name="customPushed">
-       <url>
-        <string>qrc:/gui/ui/asset/ic_close.png</string>
-       </url>
+      <property name="bottomMargin">
+       <number>0</number>
       </property>
-     </widget>
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>73</x>
-        <y>62</y>
-        <width>282</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">color: #04004E;
-font: 24px/29px;
-font-weight: normal;
-font-style: normal;
-font-size: bold;
-font-family: 'Lato';
-background-color: rgba(0, 0, 0, 0);</string>
-      </property>
-      <property name="text">
-       <string>Terms of use</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QTextEdit" name="textField">
-      <property name="geometry">
-       <rect>
-        <x>33</x>
-        <y>144</y>
-        <width>363</width>
-        <height>751</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background: rgba(0,0,0,0);</string>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
-      </property>
-      <property name="verticalScrollBarPolicy">
-       <enum>Qt::ScrollBarAlwaysOff</enum>
-      </property>
-      <property name="horizontalScrollBarPolicy">
-       <enum>Qt::ScrollBarAlwaysOff</enum>
-      </property>
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-     </widget>
+      <item>
+       <widget class="KelGuiWidget" name="MainWidget">
+        <property name="cssStyle">
+         <string>base-widget</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="KelGuiWidget" name="kelGuiWidget_3">
+           <property name="cssStyle">
+            <string>docpop-top-spacer</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="KelGuiPushButton" name="btnClose">
+             <property name="style">
+              <enum>KelGuiPushButton::Custom</enum>
+             </property>
+             <property name="custom">
+              <url>
+               <string>qrc:/gui/ui/asset/ic_close.png</string>
+              </url>
+             </property>
+             <property name="customHover">
+              <url>
+               <string>qrc:/gui/ui/asset/ic_close.png</string>
+              </url>
+             </property>
+             <property name="customPushed">
+              <url>
+               <string>qrc:/gui/ui/asset/ic_close.png</string>
+              </url>
+             </property>
+             <property name="cssStyle" stdset="0">
+              <string>cwb_close-btn</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="KelGuiLabel" name="label">
+             <property name="text">
+              <string>Terms of use</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="cssStyle">
+              <string>docpop-title-text normalbold font24 darkblue lato</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="KelGuiWidget" name="kelGuiWidget">
+             <property name="cssStyle">
+              <string>cwb_close-btn</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="KelGuiWidget" name="kelGuiWidget_2">
+           <property name="cssStyle">
+            <string>docpop-top-content-spacer</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiTextEdit" name="textField">
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+           <property name="html">
+            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lato'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="cssStyle">
+            <string>nobackground font14 lato darkblue normal</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
@@ -124,6 +173,22 @@ background-color: rgba(0, 0, 0, 0);</string>
    <class>KelGuiPushButton</class>
    <extends>QPushButton</extends>
    <header>kelguipushbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>kelguitextedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiLabel</class>
+   <extends>QLabel</extends>
+   <header>kelguilabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiWidget</class>
+   <extends>QWidget</extends>
+   <header>kelguiwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
