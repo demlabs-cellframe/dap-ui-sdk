@@ -327,14 +327,6 @@
  * Icons
  ***************************************************/
 
-.settings_icon
-{
-	min-width: 34pt;
-	min-height: 34pt;
-	max-width: 34pt;
-	max-height: 34pt;
-}
-
 .ic_renew
 {
 	image: url("://gui/ui/asset/ic_renew.png");
@@ -363,6 +355,16 @@
 .ic_bot
 {
 	image: url("://gui/ui/asset/ic_bot.png");
+}
+
+.ic_close
+{
+	image: url("://gui/ui/asset/ic_close.png");
+}
+
+.ic_copy
+{
+	image: url("://gui/ui/asset/ic_copy.png");
 }
 
 .ic_information_bug-report
@@ -550,6 +552,14 @@
 	min-height: 128pt;
 	max-width: 356pt;
 	max-height: 128pt;
+}
+
+.settings_icon
+{
+	min-width: 34pt;
+	min-height: 34pt;
+	max-width: 34pt;
+	max-height: 34pt;
 }
 
 /****************************************************
@@ -763,3 +773,50 @@
 	max-width: 282pt;
 	max-height: 28pt;
 }
+
+/****************************************************
+ * History
+ ***************************************************/
+
+.history-top-spacer
+{
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
+}
+
+.history-top-content-spacer
+{
+	height: 50pt;
+	min-height: 50pt;
+	max-height: 50pt;
+}
+
+.history-title-text
+{
+	width: 282pt;
+	height: 28pt;
+	min-width: 282pt;
+	min-height: 28pt;
+	max-width: 282pt;
+	max-height: 28pt;
+}
+
+.history-item
+{
+	width: 392pt;
+	height: 64pt;
+	min-width: 392pt;
+	min-height: 64pt;
+	max-width: 392pt;
+	max-height: 64pt;
+}
+
+.history-icon
+{
+	min-width: 60pt;
+	min-height: 60pt;
+	max-width: 60pt;
+	max-height: 60pt;
+}
+

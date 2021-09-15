@@ -63,14 +63,19 @@ void HistoryModel::slotSetup()
       btn->setMainText (text);
       btn->setMainCssClass ("darkblue uppercase font16");
 
-      btn->setSubText ("");
+      btn->setSubText (" ");
 
       btn->setSeparator (true);
-      btn->setIconCssClass ("settings_icon ic_key-item"); //btn->setIcon (QUrl ( "qrc:/gui/ui/asset/ic_key-item.png"));
+      btn->setIconCssClass ("history-icon ic_key-item");
 
-      btn->setMaximumWidth (392);
+      btn->setSubCssClass ("history-icon ic_copy");
+
+      btn->setCssStyle ("history-item");
       lay->addWidget (btn);
     }
+
+  QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  lay->addItem (sp);
 }
 
 /*-----------------------------------------*/
