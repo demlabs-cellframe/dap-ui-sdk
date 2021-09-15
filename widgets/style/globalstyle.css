@@ -735,3 +735,31 @@
 	max-width: 282pt;
 	max-height: 28pt;
 }
+
+/****************************************************
+ * Choose language
+ ***************************************************/
+
+.cholang-top-spacer
+{
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
+}
+
+.cholang-top-content-spacer
+{
+	height: 50pt;
+	min-height: 50pt;
+	max-height: 50pt;
+}
+
+.cholang-title-text
+{
+	width: 282pt;
+	height: 28pt;
+	min-width: 282pt;
+	min-height: 28pt;
+	max-width: 282pt;
+	max-height: 28pt;
+}

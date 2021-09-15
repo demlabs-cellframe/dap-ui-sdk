@@ -57,6 +57,9 @@ void LanguageModel::slotSetup()
       item->setText (text);
       lay->addWidget (item);
     }
+
+  QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  lay->addItem (sp);
 }
 
 /*-----------------------------------------*/
