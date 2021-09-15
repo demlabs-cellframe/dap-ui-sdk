@@ -146,6 +146,9 @@
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout">
+           <property name="spacing">
+            <number>0</number>
+           </property>
            <item>
             <widget class="KelGuiPushButton" name="btnReturn">
              <property name="style">

@@ -71,15 +71,20 @@ void PurchaseModel::slotSetup()
       btn->setLeftText (score);
       btn->setMainText (plan);
       btn->setSubText (item.description);
-      btn->setLeftCssClass ("font30 darkblue bold");
-      btn->setMainCssClass ("font18 darkblue normalbold");
-      btn->setSubCssClass ("font16 gray");
+      btn->setLeftCssClass ("font30 darkblue bold purchase-item-text-left");
+      btn->setMainCssClass ("font18 darkblue normalbold purchase-item-text-main");
+      btn->setSubCssClass ("font16 gray purchase-item-text-sub");
+      btn->setCssStyle ("purchase-item");
       btn->setFrame (true);
-      btn->setMaximumSize (357, 96);
+      //btn->setMaximumSize (357, 96);
+
 
       /* add into list */
       lay->addWidget (btn);
     }
+
+  QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  lay->addItem (sp);
 }
 
 /********************************************

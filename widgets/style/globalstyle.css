@@ -184,6 +184,13 @@
 	border-right: 3px inset rgba(174,174,192,96);
 }
 
+.base-widget
+{
+	width: 390pt;
+	min-width: 390pt;
+	max-width: 390pt;
+}
+
 /****************************************************
  * Custom Widgets
  ***************************************************/
@@ -242,6 +249,16 @@
 	max-width: 5pt;
 	max-height: 5pt;
 	margin-right: 6pt;
+}
+
+.cwb_close-btn
+{
+	width: 28pt;
+	height: 28pt;
+	min-width: 28pt;
+	min-height: 28pt;
+	max-width: 28pt;
+	max-height: 28pt;
 }
 
 .cwb_height
@@ -608,3 +625,55 @@
 	max-height: 30pt;
 }
 
+/****************************************************
+ * Purchase
+ ***************************************************/
+
+.purchase-top-spacer
+{
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
+}
+
+.purchase-top-content-spacer
+{
+	height: 50pt;
+	min-height: 50pt;
+	max-height: 50pt;
+}
+
+.purchase-title-text
+{
+	width: 282pt;
+	height: 28pt;
+	min-width: 282pt;
+	min-height: 28pt;
+	max-width: 282pt;
+	max-height: 28pt;
+}
+
+.purchase-item
+{
+	width: 357pt;
+	height: 96pt;
+	min-width: 357pt;
+	min-height: 96pt;
+	max-width: 357pt;
+	max-height: 96pt;
+}
+
+.purchase-item-text-left
+{
+	padding-left: 35pt;
+}
+
+.purchase-item-text-main
+{
+	
+}
+
+.purchase-item-text-sub
+{
+	
+}
