@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QCheckBox>
+#include "kelguicheckboxstylemanager.h"
 
 /****************************************//**
  * @brief overlap for checkbox style
@@ -15,12 +16,14 @@ class KelGuiCheckBox : public QCheckBox
 {
   Q_OBJECT
 
+  KelGuiCheckBoxStyleManager __kgsm = KelGuiCheckBoxStyleManager (this);
+
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
 public:
-  KelGuiCheckBox(QWidget *parent = 0);
+  KelGuiCheckBox (QWidget *parent = 0);
   /// @}
 };
 

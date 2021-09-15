@@ -8,7 +8,7 @@
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-ChooseServerModel::ChooseServerModel(QWidget *parent)
+ChooseServerModel::ChooseServerModel (QWidget *parent)
   : ModelBase (parent)
 {
 
@@ -23,11 +23,11 @@ ChooseServerModel::~ChooseServerModel()
  * PUBLIC METHODS
  *******************************************/
 
-void ChooseServerModel::setModel(QAbstractListModel *model)
+void ChooseServerModel::setModel (QAbstractListModel *model)
 {
   /* store and invoke setup */
   m_model = model;
-  QTimer::singleShot(0, this, &ChooseServerModel::slotSetup);
+  QTimer::singleShot (0, this, &ChooseServerModel::slotSetup);
 }
 
 QAbstractListModel *ChooseServerModel::model() const
@@ -52,7 +52,7 @@ void ChooseServerModel::slotSetup()
   m_list.clear();
 
   /* check */
-  if(m_model == nullptr)
+  if (m_model == nullptr)
     return;
 
   /* create new buttons */
@@ -68,6 +68,9 @@ void ChooseServerModel::slotSetup()
       item->setText (text);
       lay->addWidget (item);
     }
+
+  QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  lay->addItem (sp);
 }
 
 /*-----------------------------------------*/

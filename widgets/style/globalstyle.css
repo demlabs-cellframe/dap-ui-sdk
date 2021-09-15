@@ -293,6 +293,36 @@
 	padding-right: 2pt;
 }
 
+.ccb_indicator
+{
+	width: 60pt;
+	height: 60pt;
+	min-width: 60pt;
+	min-height: 60pt;
+	max-width: 60pt;
+	max-height: 60pt;
+}
+
+.ccb_textstyle
+{
+	
+}
+
+.crb_indicator
+{
+	width: 60pt;
+	height: 60pt;
+	min-width: 60pt;
+	min-height: 60pt;
+	max-width: 60pt;
+	max-height: 60pt;
+}
+
+.crb_textstyle
+{
+	
+}
+
 /****************************************************
  * Icons
  ***************************************************/
@@ -676,4 +706,32 @@
 .purchase-item-text-sub
 {
 	
+}
+
+/****************************************************
+ * Choose server
+ ***************************************************/
+
+.choser-top-spacer
+{
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
+}
+
+.choser-top-content-spacer
+{
+	height: 50pt;
+	min-height: 50pt;
+	max-height: 50pt;
+}
+
+.choser-title-text
+{
+	width: 282pt;
+	height: 28pt;
+	min-width: 282pt;
+	min-height: 28pt;
+	max-width: 282pt;
+	max-height: 28pt;
 }

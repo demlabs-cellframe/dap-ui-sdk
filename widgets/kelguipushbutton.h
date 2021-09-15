@@ -60,8 +60,6 @@ public:
 
   Q_PROPERTY (QString cssStyle READ customCss WRITE setCustomCss)
   KelGuiPushButtonStyleManager __kgsm = KelGuiPushButtonStyleManager (this);
-//  QString _cssStyle() const { return __kgsm.cssStyle(); }
-//  void _setCssStyle (const QString &cssStyle) { __kgsm.setCssStyle (cssStyle); }
   /// @}
 
   /****************************************//**

@@ -1,2 +1,4 @@
-HEADERS += $$PWD/kelguiradio.h
-SOURCES += $$PWD/kelguiradio.cpp
+HEADERS += $$PWD/kelguiradio.h \
+    $$PWD/kelguiradiostylemanager.h
+SOURCES += $$PWD/kelguiradio.cpp \
+    $$PWD/kelguiradiostylemanager.cpp
