@@ -10,6 +10,7 @@ SOURCES     += \
     $$PWD/ui/chooseserver.cpp \
     $$PWD/ui/connection.cpp \
     $$PWD/ui/documentpopup.cpp \
+    $$PWD/ui/helper/trafficstringhelper.cpp \
     $$PWD/ui/history.cpp \
     $$PWD/ui/language.cpp \
     $$PWD/ui/login.cpp \
@@ -32,6 +33,7 @@ HEADERS     += \
     $$PWD/ui/connection.h \
     $$PWD/ui/docs.h \
     $$PWD/ui/documentpopup.h \
+    $$PWD/ui/helper/trafficstringhelper.h \
     $$PWD/ui/history.h \
     $$PWD/ui/language.h \
     $$PWD/ui/login.h \
