@@ -1,23 +1,24 @@
-#ifndef TRAFFICSTRINGHELPER_H
-#define TRAFFICSTRINGHELPER_H
+#ifndef UPTIMESTRINGHELPER_H
+#define UPTIMESTRINGHELPER_H
 
 /* INCLUDES */
 #include <QtCore>
 
 /****************************************//**
- * @brief traffic string helper
+ * @brief uptime string helper
  * @date 16.09.2021
  * @author Mikhail Shilenko
  *******************************************/
 
-class TrafficStringHelper
+class UptimeStringHelper
 {
   /****************************************//**
    * @name VARS
    *******************************************/
   /// @{
 private:
-  quint64 m_bytes;
+  quint64 m_msecs;
+  quint16 sec, min, hour, day;
   /// @}
 
   /****************************************//**
@@ -25,16 +26,17 @@ private:
    *******************************************/
   /// @{
 public:
-  TrafficStringHelper (quint64 bytes);
+  UptimeStringHelper (quint64 msec);
   /// @}
 
   /****************************************//**
    * @name METHODS
    *******************************************/
   /// @{
+public:
   QString asString();
   /// @}
 };
 
 /*-----------------------------------------*/
-#endif // TRAFFICSTRINGHELPER_H
+#endif // UPTIMESTRINGHELPER_H

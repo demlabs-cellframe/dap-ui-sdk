@@ -87,7 +87,7 @@ public:
   quint64 ping() const;
   void setPing (const quint64 &ping);
 
-  QDateTime uptime();
+  quint64 uptime();
   QString uptimeStr();
   QDateTime started() const;
   void setStarted (const QDateTime &started);

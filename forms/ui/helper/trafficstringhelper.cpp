@@ -1,10 +1,19 @@
+/* INCLUDES */
 #include "trafficstringhelper.h"
+
+/********************************************
+ * CONSTRUCT/DESTRUCT
+ *******************************************/
 
 TrafficStringHelper::TrafficStringHelper (quint64 bytes)
   : m_bytes (bytes)
 {
 
 }
+
+/********************************************
+ * METHODS
+ *******************************************/
 
 QString TrafficStringHelper::asString()
 {
@@ -16,3 +25,5 @@ QString TrafficStringHelper::asString()
     return QString ("%1 Mb").arg (m_bytes / (1024 * 1024));
   return QString ("%1 Gb").arg (m_bytes / (1024 * 1024 * 1024));
 }
+
+/*-----------------------------------------*/

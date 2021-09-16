@@ -2,6 +2,7 @@
 #include "statistics.h"
 #include "ui_statistics.h"
 #include "helper/trafficstringhelper.h"
+#include "helper/uptimestringhelper.h"
 #include <QTimer>
 
 /* VARS */
@@ -80,6 +81,9 @@ void Statistics::startImitatingSchedules()
     addPacketsReceived (1);
     addPacketsSent (1);
     setPing (qrand() % 300);
+
+    /* update uptime */
+    ui->statUptime->setMainText (uptimeStr());
 
     /* draw scene */
     schedules.draw_chart (scene);
@@ -218,17 +222,15 @@ void Statistics::setPing (const quint64 &ping)
   ui->statPing->setMainText (text);
 }
 
-QDateTime Statistics::uptime()
+quint64 Statistics::uptime()
 {
-//  auto secs = m_started.secsTo (QDateTime::currentDateTime());
-//  QDateTime result(QDate(0),QTime(0));
-//  result.addSecs (secs);
-//  return result;
+  return m_started.msecsTo (QDateTime::currentDateTime());
 }
 
 QString Statistics::uptimeStr()
 {
-
+  UptimeStringHelper u (uptime());
+  return u.asString();
 }
 
 QDateTime Statistics::started() const
