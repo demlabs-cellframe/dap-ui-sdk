@@ -3,6 +3,7 @@
 #include "kelguipushbuttonplugin.h"
 #include "kelguiradioplugin.h"
 #include "kelguicheckboxplugin.h"
+#include "kelguigraphicsviewplugin.h"
 #include "kelguilabelplugin.h"
 #include "kelguiplaintexteditplugin.h"
 #include "kelguiseparatorplugin.h"
@@ -34,6 +35,7 @@ KelVpnNeuromorphic::KelVpnNeuromorphic (QObject *parent)
   m_widgets.append (new KelGuiTextEditPlugin (this));
   m_widgets.append (new KelGuiLabelPlugin (this));
   m_widgets.append (new KelGuiWidgetPlugin (this));
+  m_widgets.append (new KelGuiGraphicsViewPlugin (this));
 
   QFontDatabase::addApplicationFont ("://fonts/Lato-Bold.ttf");
   QFontDatabase::addApplicationFont ("://fonts/Lato-Regular.ttf");
