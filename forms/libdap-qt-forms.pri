@@ -49,7 +49,8 @@ HEADERS     += \
     $$PWD/ui/purchase.h \
     $$PWD/ui/settings.h \
     $$PWD/ui/splashscreen.h \
-    $$PWD/ui/statistics.h
+    $$PWD/ui/statistics.h \
+    $$PWD/vpnDefine.h
 
 FORMS += \
     $$PWD/ui/bugreports.ui \
