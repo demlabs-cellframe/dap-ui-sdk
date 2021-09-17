@@ -37,6 +37,14 @@ public:
   explicit ChooseServer (QWidget *parent = nullptr);
   ~ChooseServer();
   /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void sigReturn();
+  /// @}
 };
 
 /*-----------------------------------------*/

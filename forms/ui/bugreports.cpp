@@ -34,6 +34,10 @@ BugReports::BugReports (QWidget *parent) :
   connect (ui->radioTestLoading, &QRadioButton::clicked,
            this, &BugReports::slotRadioTest);
 
+  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+           this, &BugReports:: sigReturn,
+           Qt::QueuedConnection);
+
   /* finish setup */
   slotSetMode (Write);
 }

@@ -29,6 +29,11 @@ ChooseServer::ChooseServer (QWidget *parent) :
 
   /* setup model */
   ui->scrollArea->setModel (DapServersData::instance());
+
+  /* signals */
+  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+           this, &ChooseServer::sigReturn,
+           Qt::QueuedConnection);
 }
 
 ChooseServer::~ChooseServer()

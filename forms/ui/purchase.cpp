@@ -14,6 +14,11 @@ Purchase::Purchase (QWidget *parent) :
 {
   ui->setupUi (this);
   QTimer::singleShot (0, ui->scrollArea, &PurchaseModel::slotSetup);
+
+  /* signals */
+  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+           this, &Purchase::sigReturn,
+           Qt::QueuedConnection);
 }
 
 Purchase::~Purchase()

@@ -14,6 +14,11 @@ Language::Language (QWidget *parent) :
 {
   ui->setupUi (this);
   QTimer::singleShot (0, ui->scrollArea, &LanguageModel::slotSetup);
+
+  /* signals */
+  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+           this, &Language::sigReturn,
+           Qt::QueuedConnection);
 }
 
 Language::~Language()

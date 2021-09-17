@@ -81,7 +81,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <widget class="KelGuiPushButton" name="btnClose">
+            <widget class="KelGuiPushButton" name="btnReturn">
              <property name="style">
               <enum>KelGuiPushButton::Custom</enum>
              </property>

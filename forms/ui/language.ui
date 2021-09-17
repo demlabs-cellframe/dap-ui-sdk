@@ -84,7 +84,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="KelGuiPushButton" name="btnClose">
+            <widget class="KelGuiPushButton" name="btnReturn">
              <property name="style">
               <enum>KelGuiPushButton::Custom</enum>
              </property>

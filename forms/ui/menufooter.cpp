@@ -7,7 +7,7 @@
  *******************************************/
 
 MenuFooter::MenuFooter (QWidget *parent) :
-  BaseForm (parent),
+    BaseForm (parent),
   ui (new Ui::MenuFooter),
   m_state (BS_NONE),
   m_lock (false)
@@ -46,7 +46,16 @@ MenuFooter::~MenuFooter()
 }
 
 /********************************************
- * CONSTRUCT/DESTRUCT
+ * METHODS
+ *******************************************/
+
+MenuFooter::ButtonState MenuFooter::state() const
+{
+    return m_state;
+}
+
+/********************************************
+ * SLOTS
  *******************************************/
 
 void MenuFooter::slotSetProgressValue (int value)

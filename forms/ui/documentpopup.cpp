@@ -18,6 +18,11 @@ DocumentPopup::DocumentPopup (Type t, QWidget *parent) :
     case TermsOfUse: slotShowTermsOfUse(); break;
     case PrivacyPolicy: slotShowPrivacyPolicy(); break;
     }
+
+  /* signals */
+  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+           this, &DocumentPopup:: sigReturn,
+           Qt::QueuedConnection);
 }
 
 DocumentPopup::~DocumentPopup()
