@@ -1,7 +1,7 @@
 !CONFIG(neuromorphic) {
 include ( controls/controls.pri)
-}
 include ( dialogs/dialogs.pri)
+}
 include ( auxiliary/auxiliary.pri)
 
 SOURCES += \
