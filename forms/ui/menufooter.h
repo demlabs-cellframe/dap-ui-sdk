@@ -62,6 +62,14 @@ public:
    * @name SLOTS
    *******************************************/
   /// @{
+signals:
+  void sigStateChanged (MenuFooter::ButtonState state);
+  /// @}
+
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
 public slots:
   /// set progressbar value
   void slotSetProgressValue (int value);
