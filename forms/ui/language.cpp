@@ -9,7 +9,7 @@
  *******************************************/
 
 Language::Language (QWidget *parent) :
-  QWidget (parent),
+  BaseForm (parent),
   ui (new Ui::Language)
 {
   ui->setupUi (this);

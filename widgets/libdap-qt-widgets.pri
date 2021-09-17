@@ -5,27 +5,40 @@ unix: !mac: !android: LIBS += -lX11 -lXrandr
 mac:LIBS += -framework AppKit
 
 SOURCES     += \
-    $$PWD/kelguiwidgets.cpp
+    $$PWD/kelguicommon.cpp
 
 # add plugin definitions for QtDesigner
 CONFIG(plugin) {
 HEADERS     += \
     $$PWD/kelguibuttonplugin.h \
     $$PWD/kelguicheckboxplugin.h \
+    $$PWD/kelguigraphicsviewplugin.h \
+    $$PWD/kelguilabelplugin.h \
     $$PWD/kelguiplaintexteditplugin.h \
     $$PWD/kelguipushbuttonplugin.h \
     $$PWD/kelguiradioplugin.h \
     $$PWD/kelguiseparatorplugin.h \
-    $$PWD/kelvpnneuromorphic.h
+    $$PWD/kelguitexteditplugin.h \
+    $$PWD/kelguiwidgetplugin.h \
+    $$PWD/kelvpnneuromorphic.h \
+    $$PWD/widgetsdebugsettings.h
 
 SOURCES     += \
     $$PWD/kelguibuttonplugin.cpp \
     $$PWD/kelguicheckboxplugin.cpp \
+    $$PWD/kelguigraphicsviewplugin.cpp \
+    $$PWD/kelguilabelplugin.cpp \
     $$PWD/kelguiplaintexteditplugin.cpp \
     $$PWD/kelguipushbuttonplugin.cpp \
     $$PWD/kelguiradioplugin.cpp \
     $$PWD/kelguiseparatorplugin.cpp \
-    $$PWD/kelvpnneuromorphic.cpp
+    $$PWD/kelguitexteditplugin.cpp \
+    $$PWD/kelguiwidgetplugin.cpp \
+    $$PWD/kelvpnneuromorphic.cpp \
+    $$PWD/widgetsdebugsettings.cpp
+
+FORMS += \
+    $$PWD/widgetsdebugsettings.ui
 # message ($$HEADERS)
 }
 
@@ -39,9 +52,15 @@ INCLUDEPATH += $$PWD
 
 include(kelguibutton.pri)
 include(kelguicheckbox.pri)
+include(kelguigraphicsview.pri)
 include(kelguiplaintextedit.pri)
 include(kelguipushbutton.pri)
 include(kelguiradio.pri)
 include(kelguiseparator.pri)
+include(kelguitextedit.pri)
 include(kelguilabel.pri)
 include(kelguiwidget.pri)
+include(style/kelguistylemanager.pri)
+
+HEADERS += \
+    $$PWD/kelguicommon.h

@@ -5,10 +5,13 @@ unix: !mac: !android: LIBS += -lX11 -lXrandr
 mac:LIBS += -framework AppKit
 
 SOURCES     += \
+    $$PWD/ui/baseform.cpp \
     $$PWD/ui/bugreports.cpp \
     $$PWD/ui/chooseserver.cpp \
     $$PWD/ui/connection.cpp \
     $$PWD/ui/documentpopup.cpp \
+    $$PWD/ui/helper/trafficstringhelper.cpp \
+    $$PWD/ui/helper/uptimestringhelper.cpp \
     $$PWD/ui/history.cpp \
     $$PWD/ui/language.cpp \
     $$PWD/ui/login.cpp \
@@ -25,11 +28,14 @@ SOURCES     += \
     $$PWD/ui/statistics.cpp
 
 HEADERS     += \
+    $$PWD/ui/baseform.h \
     $$PWD/ui/bugreports.h \
     $$PWD/ui/chooseserver.h \
     $$PWD/ui/connection.h \
     $$PWD/ui/docs.h \
     $$PWD/ui/documentpopup.h \
+    $$PWD/ui/helper/trafficstringhelper.h \
+    $$PWD/ui/helper/uptimestringhelper.h \
     $$PWD/ui/history.h \
     $$PWD/ui/language.h \
     $$PWD/ui/login.h \
@@ -43,7 +49,8 @@ HEADERS     += \
     $$PWD/ui/purchase.h \
     $$PWD/ui/settings.h \
     $$PWD/ui/splashscreen.h \
-    $$PWD/ui/statistics.h
+    $$PWD/ui/statistics.h \
+    $$PWD/vpnDefine.h
 
 FORMS += \
     $$PWD/ui/bugreports.ui \

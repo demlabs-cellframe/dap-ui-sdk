@@ -1,0 +1,849 @@
+/****************************************************
+ * Colors
+ ***************************************************/
+
+.darkblue
+{
+	color: #04004E;
+}
+
+.red
+{
+	color: #DA0B82;
+}
+
+.red_error
+{
+	color: #F53172;
+}
+
+.gray
+{
+	color: #A4A3C0;
+}
+
+.gray_passive
+{
+	color: #5C5B74;
+}
+
+.white
+{
+	color: #FFFFFF;
+}
+
+/****************************************************
+ * Rules
+ ***************************************************/
+
+.uppercase
+{
+	text-transform: uppercase;
+}
+
+/****************************************************
+ * Font Styles
+ ***************************************************/
+
+.normal
+{
+	font-weight: normal;
+	font-style: normal;
+	font-size: normal;
+}
+
+.normalbold
+{
+	font-weight: normal;
+	font-style: normal;
+	font-size: bold;
+}
+
+.bold
+{
+	font-weight: bold;
+	font-style: bold;
+	font-size: bold;
+}
+
+/****************************************************
+ * Fonts
+ ***************************************************/
+
+.lato
+{
+	font-family: 'Lato';
+}
+
+.roboto
+{
+	font-family: 'Roboto';
+}
+
+.font12
+{
+	font: 12pt/15pt;
+}
+
+.font13
+{
+	font: 13pt/18pt;
+}
+
+.font16
+{
+	font: 16pt/19pt;
+}
+
+.font18
+{
+	font: 18pt/22pt;
+}
+
+.font20
+{
+	font: 20pt/24pt;
+}
+
+.font24
+{
+	font: 24pt/29pt;
+}
+
+.font26
+{
+	font: 26pt/32pt;
+}
+
+.font30
+{
+	font: 30pt/36pt;
+}
+
+.margin28
+{
+	margin: 28pt;
+}
+
+.margin-right28
+{
+	margin-right: 28pt;
+}
+
+/****************************************************
+ * Frame
+ ***************************************************/
+
+.backgroundcolor
+{
+	background-color: #f7f8fa;
+}
+
+.nobackground
+{
+	background-color: rgba(0,0,0,0);
+}
+
+.window
+{
+	width: 428pt;
+	height: 926pt;
+	min-width: 428pt;
+	min-height: 926pt;
+	max-width: 428pt;
+	max-height: 926pt;
+}
+
+.footer
+{
+	width: 428pt;
+	height: 201pt;
+	min-width: 428pt;
+	min-height: 201pt;
+	max-width: 428pt;
+	max-height: 201pt;
+}
+
+.screenarea
+{
+	width: 428pt;
+	height: 725pt;
+	min-width: 428pt;
+	min-height: 725pt;
+	max-width: 428pt;
+	max-height: 725pt;
+}
+
+.frame
+{
+	background: #f7f8fa;
+	border-radius: 13px;
+	border-top: 3px inset #ffffff;
+	border-left: 3px inset #ffffff;
+	border-bottom: 3px inset rgba(174,174,192,96);
+	border-right: 3px inset rgba(174,174,192,96);
+}
+
+.base-widget
+{
+	width: 390pt;
+	min-width: 390pt;
+	max-width: 390pt;
+}
+
+/****************************************************
+ * Custom Widgets
+ ***************************************************/
+
+.cw_pushbutton
+{
+	font: 14pt/12pt;
+}
+
+.cwpb_bigbutton
+{
+	width: 374pt;
+	height: 80pt;
+	min-width: 374pt;
+	min-height: 80pt;
+	max-width: 374pt;
+	max-height: 80pt;
+}
+
+.cwpb_square
+{
+	width: 130pt;
+	height: 130pt;
+	min-width: 130pt;
+	min-height: 130pt;
+	max-width: 130pt;
+	max-height: 130pt;
+}
+
+.cwpb_checkbox .cwpb_radio
+{
+	width: 60pt;
+	height: 60pt;
+	min-width: 60pt;
+	min-height: 60pt;
+	max-width: 60pt;
+	max-height: 60pt;
+}
+
+.cwpb_switch
+{
+	width: 266pt;
+	height: 174pt;
+	min-width: 266pt;
+	min-height: 174pt;
+	max-width: 266pt;
+	max-height: 174pt;
+}
+
+.cwpb_connection_status
+{
+	width: 5pt;
+	height: 5pt;
+	min-width: 5pt;
+	min-height: 5pt;
+	max-width: 5pt;
+	max-height: 5pt;
+	margin-right: 6pt;
+}
+
+.cwb_close-btn
+{
+	width: 28pt;
+	height: 28pt;
+	min-width: 28pt;
+	min-height: 28pt;
+	max-width: 28pt;
+	max-height: 28pt;
+}
+
+.cwb_height
+{
+	height: 108pt;
+	min-height: 108pt;
+	max-height: 108pt;
+}
+
+.cwb_top
+{
+	padding-bottom: 1pt;
+}
+
+.cwb_bottom
+{
+	padding-top: 1pt;
+}
+
+.cwb_mid
+{
+	padding-left: 2pt;
+}
+
+.cwb_left
+{
+
+}
+
+.cwb_right
+{
+	padding-right: 2pt;
+}
+
+.ccb_indicator
+{
+	width: 60pt;
+	height: 60pt;
+	min-width: 60pt;
+	min-height: 60pt;
+	max-width: 60pt;
+	max-height: 60pt;
+}
+
+.ccb_textstyle
+{
+	
+}
+
+.crb_indicator
+{
+	width: 60pt;
+	height: 60pt;
+	min-width: 60pt;
+	min-height: 60pt;
+	max-width: 60pt;
+	max-height: 60pt;
+}
+
+.crb_textstyle
+{
+	
+}
+
+/****************************************************
+ * Icons
+ ***************************************************/
+
+.ic_renew
+{
+	image: url("://gui/ui/asset/ic_renew.png");
+}
+
+.ic_key
+{
+	image: url("://gui/ui/asset/ic_key.png");
+}
+
+.ic_key-item
+{
+	image: url("://gui/ui/asset/ic_key-item.png");
+}
+
+.ic_language
+{
+	image: url("://gui/ui/asset/ic_language.png");
+}
+
+.ic_send-report
+{
+	image: url("://gui/ui/asset/ic_send-report.png");
+}
+
+.ic_bot
+{
+	image: url("://gui/ui/asset/ic_bot.png");
+}
+
+.ic_close
+{
+	image: url("://gui/ui/asset/ic_close.png");
+}
+
+.ic_copy
+{
+	image: url("://gui/ui/asset/ic_copy.png");
+}
+
+.ic_information_bug-report
+{
+	image: url("://gui/ui/asset/ic_information_bug-report.png");
+}
+
+.ic_key-history
+{
+	image: url("://gui/ui/asset/ic_key-history.png");
+}
+
+.ic_terms_policy
+{
+	image: url("://gui/ui/asset/ic_terms_policy.png");
+}
+
+.ic_terms_policy
+{
+	image: url("://gui/ui/asset/ic_terms_policy.png");
+}
+
+.ic_version
+{
+	image: url("://gui/ui/asset/ic_version.png");
+}
+
+.ic_spinner
+{
+	image: url("://gui/ui/asset/Spinner.gif");
+}
+
+/****************************************************
+ * Splash Screen
+ ***************************************************/
+
+.splashscreen_background
+{
+	width: 428pt;
+	height: 926pt;
+	min-width: 428pt;
+	min-height: 926pt;
+	max-width: 428pt;
+	max-height: 926pt;
+	image: url(:/gui/ui/asset/bg_dark-stripes.png);
+}
+
+.splashscreen_logo
+{
+	min-width: 230pt;
+	max-width: 230pt;
+	min-height: 59pt;
+	max-height: 59pt;
+	image: url(:/gui/ui/asset/logo_kelvpn-white.png);
+}
+
+/****************************************************
+ * Login
+ ***************************************************/
+
+.login_logo
+{
+	width: 260pt;
+	height: 89pt;
+	min-width: 260pt;
+	min-height: 89pt;
+	max-width: 260pt;
+	max-height: 89pt;
+	image: url(:/gui/ui/asset/logo_kelvpn-color.png);
+}
+
+.login-margin-connect-top
+{
+	height: 120pt;
+	min-height: 120pt;
+	max-height: 120pt;
+}
+
+.login-margin-bottom
+{
+	height: 20pt;
+	min-height: 20pt;
+	max-height: 20pt;
+}
+
+.login-margin-at-connect
+{
+	height: 50pt;
+	min-height: 50pt;
+	max-height: 50pt;
+}
+
+/****************************************************
+ * Connection
+ ***************************************************/
+
+.conn-top-spacer
+{
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
+}
+
+.conn-top-text-connected
+{
+	height: 28pt;
+	min-height: 28pt;
+	max-height: 28pt;
+}
+
+.conn-top-text-time
+{
+	height: 22pt;
+	min-height: 22pt;
+	max-height: 22pt;
+}
+
+.conn-mid-button-spacer
+{
+	height: 110pt;
+	min-height: 110pt;
+	max-height: 110pt;
+}
+
+.conn-status-button
+{
+	width: 154pt;
+	height: 99pt;
+	min-width: 154pt;
+	min-height: 99pt;
+	max-width: 154pt;
+	max-height: 99pt;
+}
+
+.conn-down-button-spacer
+{
+	height: 10pt;
+	min-height: 10pt;
+	max-height: 10pt;
+}
+
+.conn-connectedto-button
+{
+	width: 357pt;
+	height: 96pt;
+	min-width: 357pt;
+	min-height: 96pt;
+	max-width: 357pt;
+	max-height: 96pt;
+}
+
+/****************************************************
+ * Settings
+ ***************************************************/
+
+.sett-scroll-holder
+{
+	/*margin-left: 28pt;*/
+	/*padding-left: 18pt;*/
+}
+
+.sett-scroll-area
+{
+	margin-left: 18pt;
+	/*padding-left: 18pt;*/
+}
+
+.sett-scroll-btn
+{
+	margin-left: 18pt;
+	padding-left: 18pt;
+	width: 356pt;
+	height: 64pt;
+	min-width: 356pt;
+	min-height: 64pt;
+	max-width: 356pt;
+	max-height: 64pt;
+}
+
+.set-scroll-title
+{
+	width: 356pt;
+	height: 128pt;
+	min-width: 356pt;
+	min-height: 128pt;
+	max-width: 356pt;
+	max-height: 128pt;
+}
+
+.settings_icon
+{
+	min-width: 34pt;
+	min-height: 34pt;
+	max-width: 34pt;
+	max-height: 34pt;
+}
+
+/****************************************************
+ * Statistics
+ ***************************************************/
+
+.stat-top-spacer
+{
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
+}
+
+.stat-top-text-statistics
+{
+	height: 28pt;
+	min-height: 28pt;
+	max-height: 28pt;
+}
+
+.stat-top-frame-spacer
+{
+	height: 40pt;
+	min-height: 40pt;
+	max-height: 40pt;
+}
+
+.stat-bottom-frame-spacer
+{
+	height: 10pt;
+	min-height: 10pt;
+	max-height: 10pt;
+}
+
+.stat-frame
+{
+	border: 1px solid #000;
+
+	width: 360pt;
+	height: 162pt;
+	min-width: 360pt;
+	min-height: 162pt;
+	max-width: 360pt;
+	max-height: 162pt;
+}
+
+.stat-info
+{
+	height: 99pt;
+	min-height: 99pt;
+	max-height: 99pt;
+}
+
+/****************************************************
+ * Bug reports
+ ***************************************************/
+
+.bugrep-widget
+{
+	width: 390pt;
+	min-width: 390pt;
+	max-width: 390pt;
+}
+
+.bugrep-top-spacer
+{
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
+}
+
+.bugrep-close-btn
+{
+	width: 28pt;
+	height: 28pt;
+	min-width: 28pt;
+	min-height: 28pt;
+	max-width: 28pt;
+	max-height: 28pt;
+}
+
+.bugrep-title-text
+{
+	width: 282pt;
+	height: 28pt;
+	min-width: 282pt;
+	min-height: 28pt;
+	max-width: 282pt;
+	max-height: 28pt;
+}
+
+.bugrep-top-input-spacer
+{
+	height: 40pt;
+	min-height: 40pt;
+	max-height: 40pt;
+}
+
+.bugrep-attach-send-spacer
+{
+	height: 30pt;
+	min-height: 30pt;
+	max-height: 30pt;
+}
+
+/****************************************************
+ * Purchase
+ ***************************************************/
+
+.purchase-top-spacer
+{
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
+}
+
+.purchase-top-content-spacer
+{
+	height: 50pt;
+	min-height: 50pt;
+	max-height: 50pt;
+}
+
+.purchase-title-text
+{
+	width: 282pt;
+	height: 28pt;
+	min-width: 282pt;
+	min-height: 28pt;
+	max-width: 282pt;
+	max-height: 28pt;
+}
+
+.purchase-item
+{
+	width: 357pt;
+	height: 96pt;
+	min-width: 357pt;
+	min-height: 96pt;
+	max-width: 357pt;
+	max-height: 96pt;
+}
+
+.purchase-item-text-left
+{
+	padding-left: 35pt;
+}
+
+.purchase-item-text-main
+{
+	
+}
+
+.purchase-item-text-sub
+{
+	
+}
+
+/****************************************************
+ * Choose server
+ ***************************************************/
+
+.choser-top-spacer
+{
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
+}
+
+.choser-top-content-spacer
+{
+	height: 50pt;
+	min-height: 50pt;
+	max-height: 50pt;
+}
+
+.choser-title-text
+{
+	width: 282pt;
+	height: 28pt;
+	min-width: 282pt;
+	min-height: 28pt;
+	max-width: 282pt;
+	max-height: 28pt;
+}
+
+/****************************************************
+ * Choose language
+ ***************************************************/
+
+.cholang-top-spacer
+{
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
+}
+
+.cholang-top-content-spacer
+{
+	height: 50pt;
+	min-height: 50pt;
+	max-height: 50pt;
+}
+
+.cholang-title-text
+{
+	width: 282pt;
+	height: 28pt;
+	min-width: 282pt;
+	min-height: 28pt;
+	max-width: 282pt;
+	max-height: 28pt;
+}
+
+/****************************************************
+ * History
+ ***************************************************/
+
+.history-top-spacer
+{
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
+}
+
+.history-top-content-spacer
+{
+	height: 50pt;
+	min-height: 50pt;
+	max-height: 50pt;
+}
+
+.history-title-text
+{
+	width: 282pt;
+	height: 28pt;
+	min-width: 282pt;
+	min-height: 28pt;
+	max-width: 282pt;
+	max-height: 28pt;
+}
+
+.history-item
+{
+	width: 392pt;
+	height: 64pt;
+	min-width: 392pt;
+	min-height: 64pt;
+	max-width: 392pt;
+	max-height: 64pt;
+}
+
+.history-icon
+{
+	min-width: 60pt;
+	min-height: 60pt;
+	max-width: 60pt;
+	max-height: 60pt;
+}
+
+/****************************************************
+ * Document Popup
+ ***************************************************/
+
+.docpop-top-spacer
+{
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
+}
+
+.docpop-top-content-spacer
+{
+	height: 50pt;
+	min-height: 50pt;
+	max-height: 50pt;
+}
+
+.docpop-title-text
+{
+	width: 282pt;
+	height: 28pt;
+	min-width: 282pt;
+	min-height: 28pt;
+	max-width: 282pt;
+	max-height: 28pt;
+}

@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QWidget>
+#include "baseform.h"
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
@@ -16,7 +17,7 @@ QT_END_NAMESPACE
  * @author Mikhail Shilenko
  *******************************************/
 
-class DocumentPopup : public QWidget
+class DocumentPopup : public BaseForm
 {
   Q_OBJECT
 
@@ -30,7 +31,7 @@ public:
     TermsOfUse,
     PrivacyPolicy,
   };
-  Q_ENUM(Type)
+  Q_ENUM (Type)
   /// @}
 
   /****************************************//**
@@ -46,7 +47,7 @@ private:
    *******************************************/
   /// @{
 public:
-  explicit DocumentPopup(Type t, QWidget *parent = nullptr);
+  explicit DocumentPopup (Type t, QWidget *parent = nullptr);
   ~DocumentPopup();
   /// @}
 

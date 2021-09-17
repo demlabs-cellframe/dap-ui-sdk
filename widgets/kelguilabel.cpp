@@ -1,11 +1,10 @@
 /* INCLUDES */
 #include "kelguilabel.h"
+#include "kelguicommon.h"
 
 #include <QMutex>
 #include <QMap>
-
-/* FUNCS */
-QString fromFile (const QString &filename);
+#include <QMouseEvent>
 
 /* DEFS */
 
@@ -37,7 +36,7 @@ public:
     QString operator[] (const QString &className)
     {
       QString value = _LabelStyleManager::instance()->m_styleMap.value (className);
-      return value.replace('{',"").replace('}',"").replace('\n',"").replace('\t',"");
+      return value.replace ('{', "").replace ('}', "").replace ('\n', "").replace ('\t', "");
     }
 
     /// split classes by 'space' and collect all styles as one string
@@ -55,7 +54,7 @@ public:
 private:
   _LabelStyleManager()
   {
-    auto style = fromFile ("://styles/buttonlabel.css");
+    auto style = Common::fromFile ("://styles/buttonlabel.css");
     auto list  = style.split ('.');
     //auto inst  = _LabelStyleManager::instance();
     foreach (auto &item, list)
@@ -91,21 +90,13 @@ KelGuiLabel::KelGuiLabel (QWidget *parent)
 }
 
 /********************************************
- * PUBLIC METHODS
+ * OVERRIDE
  *******************************************/
 
-QString KelGuiLabel::cssStyle() const
+void KelGuiLabel::mousePressEvent (QMouseEvent *event)
 {
-  return m_cssStyle;
+  if (event->button() == Qt::LeftButton)
+    emit clicked();
 }
-
-void KelGuiLabel::setCssStyle(const QString &cssStyleText)
-{
-  m_cssStyle  = cssStyleText;
-  _LabelStyleManager::Operation op;
-  auto style  = op.compile(m_cssStyle);
-  setStyleSheet (style);
-}
-
 
 /*-----------------------------------------*/

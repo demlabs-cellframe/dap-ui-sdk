@@ -40,5 +40,6 @@
         <file>styles/pushbutton.css</file>
         <file>styles/pushbuttoncustom.css</file>
         <file>styles/radiobutton.css</file>
+        <file>style/globalstyle.css</file>
     </qresource>
 </RCC>

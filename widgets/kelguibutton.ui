@@ -30,54 +30,14 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="KelGuiWidget" name="KelGuiButtonBackground" native="true">
+    <widget class="KelGuiWidget" name="KelGuiButtonBackground">
      <property name="styleSheet">
-      <string notr="true">QLabel#KelGuiButtonTextMain,
-QLabel#KelGuiButtonTextMain_2,
-QLabel#KelGuiButtonTextMain_3,
-QLabel#KelGuiButtonTextMain_4
-{
-font: 20px/24px;
-font-weight: normal;
-font-style: normal;
-font-size: bold;
-font-family: 'Lato';
-}
-
-QLabel#KelGuiButtonTextSub,
-QLabel#KelGuiButtonTextSub_2,
-QLabel#KelGuiButtonTextSub_3,
-QLabel#KelGuiButtonTextSub_4
-{
-margin-top: 3px;
-font: 12px/15px;
-font-weight: normal;
-font-style: normal;
-font-size: normal;
-font-family: 'Lato';
-}
-
-QLabel#KelGuiButtonTextLeft
-{
-margin-left: 30px;
-font: 30px/36px;
-font-weight: bold;
-font-style: bold;
-font-size: bold;
-font-family: 'Lato';
-}
-
-QWidget#KelGuiButtonBackground[frame=true]
-{
-background: #f7f8fa;
-border-radius: 13px;
-border-top: 3px inset #ffffff;
-border-left: 3px inset #ffffff;
-border-bottom: 3px inset rgba(174,174,192,96);
-border-right: 3px inset rgba(174,174,192,96);
-}</string>
+      <string notr="true"/>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
+      <property name="spacing">
+       <number>0</number>
+      </property>
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -93,6 +53,21 @@ border-right: 3px inset rgba(174,174,192,96);
       <item>
        <widget class="QWidget" name="Style0" native="true">
         <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="KelGuiLabel" name="KelGuiButtonTextMain">
            <property name="text">
@@ -119,6 +94,21 @@ border-right: 3px inset rgba(174,174,192,96);
       <item>
        <widget class="QWidget" name="Style1" native="true">
         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="KelGuiLabel" name="KelGuiButtonTextSub_2">
            <property name="text">
@@ -145,6 +135,21 @@ border-right: 3px inset rgba(174,174,192,96);
       <item>
        <widget class="QWidget" name="Style2" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="KelGuiLabel" name="KelGuiButtonTextLeft">
            <property name="text">
@@ -157,6 +162,9 @@ border-right: 3px inset rgba(174,174,192,96);
          </item>
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_3">
+           <property name="spacing">
+            <number>0</number>
+           </property>
            <item>
             <widget class="KelGuiLabel" name="KelGuiButtonTextMain_3">
              <property name="text">
@@ -185,6 +193,21 @@ border-right: 3px inset rgba(174,174,192,96);
       <item>
        <widget class="QWidget" name="Style3" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="KelGuiLabel" name="KelGuiButtonIcon">
            <property name="text">
@@ -193,14 +216,14 @@ border-right: 3px inset rgba(174,174,192,96);
           </widget>
          </item>
          <item>
-          <widget class="KelGuiLabel" name="KelGuiButtonTextMain_4">
+          <widget class="KelGuiLabel" name="KelGuiButtonTextMid">
            <property name="text">
             <string>Main Text</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="KelGuiLabel" name="KelGuiButtonTextSub_4">
+          <widget class="KelGuiLabel" name="KelGuiButtonTextRight">
            <property name="styleSheet">
             <string notr="true"/>
            </property>
@@ -243,15 +266,15 @@ border-right: 3px inset rgba(174,174,192,96);
    <header>kelguiseparator.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">kelguiwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>KelGuiLabel</class>
    <extends>QLabel</extends>
-   <header location="global">kelguilabel.h</header>
+   <header>kelguilabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiWidget</class>
+   <extends>QWidget</extends>
+   <header>kelguiwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

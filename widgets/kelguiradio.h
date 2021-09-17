@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QRadioButton>
+#include "kelguiradiostylemanager.h"
 
 /****************************************//**
  * @brief overlap for radio button style
@@ -15,12 +16,14 @@ class KelGuiRadio : public QRadioButton
 {
   Q_OBJECT
 
+  KelGuiRadioStyleManager __kgsm = KelGuiRadioStyleManager (this);
+
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
 public:
-  KelGuiRadio(QWidget *parent = 0);
+  KelGuiRadio (QWidget *parent = 0);
   /// @}
 };
 

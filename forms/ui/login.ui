@@ -10,18 +10,6 @@
     <height>926</height>
    </rect>
   </property>
-  <property name="minimumSize">
-   <size>
-    <width>428</width>
-    <height>926</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>428</width>
-    <height>926</height>
-   </size>
-  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -42,167 +30,232 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="Background" native="true">
-     <property name="styleSheet">
-      <string notr="true">#Background
-{
-background-color: #F7F8FA;
-}</string>
+    <widget class="KelGuiWidget" name="Background">
+     <property name="cssStyle">
+      <string>window backgroundcolor</string>
      </property>
-     <widget class="KelGuiButton" name="kelGuiButton">
-      <property name="geometry">
-       <rect>
-        <x>39</x>
-        <y>292</y>
-        <width>350</width>
-        <height>108</height>
-       </rect>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="spacing">
+       <number>0</number>
       </property>
-      <property name="mainText">
-       <string>Auto select</string>
-      </property>
-      <property name="subText">
-       <string>choosing server</string>
-      </property>
-      <property name="separator">
-       <bool>true</bool>
-      </property>
-      <property name="link">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="KelGuiButton" name="kelGuiButton_2">
-      <property name="geometry">
-       <rect>
-        <x>39</x>
-        <y>406</y>
-        <width>350</width>
-        <height>108</height>
-       </rect>
-      </property>
-      <property name="mainText">
-       <string>_ _ _ _   _ _ _ _   _ _ _ _   _ _ _ _</string>
-      </property>
-      <property name="subText">
-       <string>serial key</string>
-      </property>
-      <property name="separator">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="KelGuiPushButton" name="kelGuiPushButton">
-      <property name="geometry">
-       <rect>
-        <x>27</x>
-        <y>570</y>
-        <width>376</width>
-        <height>82</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>connect</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>99</x>
-        <y>132</y>
-        <width>260</width>
-        <height>89</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-image: url(:/gui/ui/asset/logo_kelvpn-color.png);
-min-width: 260px; min-height: 89px;
-max-width: 260px; max-height: 89px;</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-     <widget class="KelGuiSeparator" name="kelGuiSeparator">
-      <property name="geometry">
-       <rect>
-        <x>37</x>
-        <y>291</y>
-        <width>354</width>
-        <height>4</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_2">
-      <property name="geometry">
-       <rect>
-        <x>50</x>
-        <y>675</y>
-        <width>165</width>
-        <height>19</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">color: #5C5B74;
-font: 16px/40px;
-font-weight: normal;
-font-style: normal;
-font-size: normal;
-font-family: 'Lato';</string>
-      </property>
-      <property name="text">
-       <string>Don't have a serial key?</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton">
-      <property name="geometry">
-       <rect>
-        <x>221</x>
-        <y>675</y>
-        <width>158</width>
-        <height>19</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgba(0, 0, 0, 0);
-color: #DA0B82;
-font: 16px/40px;
-font-weight: normal;
-font-style: normal;
-font-size: normal;
-font-family: 'Lato';</string>
-      </property>
-      <property name="text">
-       <string>Tap here to obtain one</string>
-      </property>
-      <property name="flat">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_3">
-      <property name="geometry">
-       <rect>
-        <x>51</x>
-        <y>236</y>
-        <width>327</width>
-        <height>57</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgba(0, 0, 0, 0);
-color: #F53172;
-font: 13px/18px;
-font-weight: normal;
-font-style: normal;
-font-size: normal;
-font-family: 'Lato';</string>
-      </property>
-      <property name="text">
-       <string>Error message box
+      <item>
+       <widget class="KelGuiWidget" name="kelGuiWidget_2">
+        <property name="cssStyle">
+         <string>login-margin-connect-top</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="KelGuiLabel" name="label">
+           <property name="styleSheet">
+            <string notr="true">#label{ 	width: 260px; 	height: 89px; 	min-width: 260px; 	min-height: 89px; 	max-width: 260px; 	max-height: 89px; 	image: url(:/gui/ui/asset/logo_kelvpn-color.png); }</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="cssStyle">
+            <string>login_logo</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="KelGuiWidget" name="kelGuiWidget_4">
+        <property name="styleSheet">
+         <string notr="true">#kelGuiWidget_4{ 	height: 20px; 	min-height: 20px; 	max-height: 20px; }</string>
+        </property>
+        <property name="cssStyle">
+         <string>login-margin-bottom</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="KelGuiLabel" name="label_3">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">#label_3{ 	font: 13px/18px; 
+ 	color: #F53172; 
+ 	font-family: 'Lato'; 
+ 	font-weight: normal; 	font-style: normal; 	font-size: normal; }</string>
+        </property>
+        <property name="text">
+         <string>Error message box
 Usualy unvisible by being empty</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignHCenter|Qt::AlignTop</set>
-      </property>
-     </widget>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="cssStyle">
+         <string>font13 red_error lato normal</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="KelGuiSeparator" name="kelGuiSeparator">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="KelGuiButton" name="kelGuiButton">
+        <property name="cssStyle">
+         <string>cwb_height</string>
+        </property>
+        <property name="mainText">
+         <string>Auto select</string>
+        </property>
+        <property name="subText">
+         <string>choosing server</string>
+        </property>
+        <property name="mainCssClass">
+         <string>darkblue bold font20 lato</string>
+        </property>
+        <property name="subCssClass">
+         <string>gray uppercase font12 lato</string>
+        </property>
+        <property name="separator">
+         <bool>true</bool>
+        </property>
+        <property name="link">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="KelGuiButton" name="kelGuiButton_2">
+        <property name="cssStyle">
+         <string>cwb_height</string>
+        </property>
+        <property name="mainText">
+         <string>_ _ _ _   _ _ _ _   _ _ _ _   _ _ _ _</string>
+        </property>
+        <property name="subText">
+         <string>serial key</string>
+        </property>
+        <property name="mainCssClass">
+         <string>darkblue bold font20 lato</string>
+        </property>
+        <property name="subCssClass">
+         <string>gray uppercase font12 lato</string>
+        </property>
+        <property name="separator">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="KelGuiWidget" name="kelGuiWidget">
+        <property name="cssStyle">
+         <string>login-margin-at-connect {</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget_3" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="KelGuiPushButton" name="kelGuiPushButton">
+           <property name="text">
+            <string>connect</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget_4" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="KelGuiLabel" name="label_2">
+           <property name="styleSheet">
+            <string notr="true">#label_2{ 	font: 16px/19px; 
+ 	color: #5C5B74; 
+ 	font-family: 'Lato'; 
+ 	font-weight: normal; 	font-style: normal; 	font-size: normal; }</string>
+           </property>
+           <property name="text">
+            <string>Don't have a serial key?</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="cssStyle">
+            <string>font16 gray_passive lato normal</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiLabel" name="pushButton">
+           <property name="styleSheet">
+            <string notr="true">#pushButton{ 	font: 16px/19px; 
+ 	color: #DA0B82; 
+ 	font-family: 'Lato'; 
+ 	font-weight: normal; 	font-style: normal; 	font-size: normal; }</string>
+           </property>
+           <property name="text">
+            <string>Tap here to obtain one</string>
+           </property>
+           <property name="cssStyle">
+            <string>font16 red lato normal</string>
+           </property>
+           <property name="flat" stdset="0">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="KelGuiWidget" name="kelGuiWidget_3">
+        <property name="cssStyle">
+         <string>footer</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
@@ -222,6 +275,17 @@ Usualy unvisible by being empty</string>
    <class>KelGuiSeparator</class>
    <extends>QWidget</extends>
    <header>kelguiseparator.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiLabel</class>
+   <extends>QLabel</extends>
+   <header>kelguilabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiWidget</class>
+   <extends>QWidget</extends>
+   <header>kelguiwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

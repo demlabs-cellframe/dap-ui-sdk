@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <QWidget>
 #include <QMap>
+#include "baseform.h"
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
@@ -18,7 +19,7 @@ QT_END_NAMESPACE
  * @author Mikhail Shilenko
  *******************************************/
 
-class MenuFooter : public QWidget
+class MenuFooter : public BaseForm
 {
   Q_OBJECT
 
@@ -34,7 +35,7 @@ public:
     BS_CONNECTION,
     BS_ACCAUNT,
   };
-  Q_ENUM(ButtonState)
+  Q_ENUM (ButtonState)
   /// @}
 
   /****************************************//**
@@ -44,7 +45,7 @@ public:
 private:
   Ui::MenuFooter *ui;
   ButtonState m_state;
-  QMap<QObject*,ButtonState> m_statesMap;
+  QMap<QObject *, ButtonState> m_statesMap;
   bool m_lock; ///< prevent recursion in slotButtonToggled
   /// @}
 
@@ -53,7 +54,7 @@ private:
    *******************************************/
   /// @{
 public:
-  explicit MenuFooter(QWidget *parent = nullptr);
+  explicit MenuFooter (QWidget *parent = nullptr);
   ~MenuFooter();
   /// @}
 
@@ -63,16 +64,16 @@ public:
   /// @{
 public slots:
   /// set progressbar value
-  void slotSetProgressValue(int value);
+  void slotSetProgressValue (int value);
   /// set progressbar range
-  void slotSetProgressRange(int minimum, int maximum);
+  void slotSetProgressRange (int minimum, int maximum);
   /// change buttons states
-  void slotSetButtonState(ButtonState state);
+  void slotSetButtonState (ButtonState state);
   /// fix position
   void slotMoveToBottom();
 private slots:
   /// react on user interaction
-  void slotButtonToggled(bool checked);
+  void slotButtonToggled (bool checked);
   /// @}
 };
 

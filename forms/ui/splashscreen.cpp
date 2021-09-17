@@ -6,29 +6,31 @@
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-SplashScreen::SplashScreen(QWidget *parent) :
-  QWidget(parent),
-  m_ui(new Ui::SplashScreen)
+SplashScreen::SplashScreen (QWidget *parent) :
+  BaseForm (parent),
+  ui (new Ui::SplashScreen)
 {
-  m_ui->setupUi(this);
+  ui->setupUi (this);
 }
 
 SplashScreen::~SplashScreen()
 {
-  delete m_ui;
+  delete ui;
+}
+
+/********************************************
+ * PUBLIC METHODS
+ *******************************************/
+
+void SplashScreen::setState (ConnectionState a_state)
+{
+  QString statusText = (a_state == ConnectionState::ServersListLoading) ? tr ("Loading servers list...") : tr ("Connecting to service...");
+  ui->lStatus->setText (statusText);
+}
+
+void SplashScreen::setErrorMessage (const QString &msg)
+{
+  ui->lStatus->setText (msg);
 }
 
 /*-----------------------------------------*/
-
-
-
-void SplashScreen::setState(ConnectionState a_state)
-{
-    QString statusText = (a_state == ConnectionState::ServersListLoading) ? tr("Loading servers list...") : tr("Connecting to service...");
-    m_ui->lStatus->setText(statusText);
-}
-
-void SplashScreen::setErrorMessage(const QString &msg)
-{
-    m_ui->lStatus->setText(msg);
-}

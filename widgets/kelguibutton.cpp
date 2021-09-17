@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "kelguibutton.h"
 #include "ui_kelguibutton.h"
+#include "kelguicommon.h"
 
 #include <QFile>
 #include <QStyleOption>
@@ -46,8 +47,6 @@ static thread_local BoolHelper<Qt::AlignmentFlag> s_mainHelper (
 {Qt::AlignVCenter, Qt::AlignBottom}); // sub is not empty
 
 /* FUNCS */
-QString fromFile (const QString &filename);
-
 template<class T, class U>
 T *as (U *u)
 {
@@ -67,9 +66,10 @@ KelGuiButton::KelGuiButton (QWidget *parent)
   , m_mainText ("Main text")
   , m_subText ("Sub text")
   , m_leftText ("$0.00")
-  , m_mainCssClass ("darkblue normalbold")
-  , m_subCssClass ("gray uppercase")
-  , m_leftCssClass ("darkblue normalbold")
+  , m_mainCssClass ("darkblue normalbold font20")
+  , m_subCssClass ("gray uppercase font12")
+  , m_leftCssClass ("darkblue normalbold font30")
+  , m_iconCssClass ("")
   , m_link (false)
   , m_frame (false)
   , m_effect (new QGraphicsDropShadowEffect)
@@ -86,13 +86,14 @@ KelGuiButton::KelGuiButton (QWidget *parent)
   m_widgets.insert ("textMain", ui->KelGuiButtonTextMain);
   m_widgets.insert ("textMain", ui->KelGuiButtonTextMain_2);
   m_widgets.insert ("textMain", ui->KelGuiButtonTextMain_3);
-  m_widgets.insert ("textMain", ui->KelGuiButtonTextMain_4);
+  m_widgets.insert ("textMid", ui->KelGuiButtonTextMid);
   m_widgets.insert ("textSub", ui->KelGuiButtonTextSub);
   m_widgets.insert ("textSub", ui->KelGuiButtonTextSub_2);
   m_widgets.insert ("textSub", ui->KelGuiButtonTextSub_3);
-  m_widgets.insert ("textSub", ui->KelGuiButtonTextSub_4);
-  m_widgets.insert ("marginOnLink", ui->KelGuiButtonTextSub_4);
+  m_widgets.insert ("textRight", ui->KelGuiButtonTextRight);
+  m_widgets.insert ("marginOnLink", ui->KelGuiButtonTextRight);
   m_widgets.insert ("textLeft", ui->KelGuiButtonTextLeft);
+  m_widgets.insert ("iconLeft", ui->KelGuiButtonIcon);
 
   /* prepare link icon */
   m_lLink->setPixmap (QPixmap ("://gfx/ic_arrow-right.png"));
@@ -103,10 +104,11 @@ KelGuiButton::KelGuiButton (QWidget *parent)
   m_lLink->hide();
 
   /* final style manip */
-  auto labelStyle = fromFile ("://styles/buttonlabel.css");
-  for (auto i = m_widgets.begin(), e = m_widgets.end(); i != e; i++)
-    if (i.key() != "styledWidgets")
-      (*i)->setStyleSheet (labelStyle);
+//  auto labelStyle = Common::fromFile ("://styles/buttonlabel.css");
+//  for (auto i = m_widgets.begin(), e = m_widgets.end(); i != e; i++)
+//    if (i.key() != "styledWidgets")
+//      (*i)->setStyleSheet (labelStyle);
+
 //  ui->KelGuiButtonTextMain->setStyleSheet (labelStyle);
 //  ui->KelGuiButtonTextMain_2->setStyleSheet (labelStyle);
 //  ui->KelGuiButtonTextMain_3->setStyleSheet (labelStyle);
@@ -117,7 +119,7 @@ KelGuiButton::KelGuiButton (QWidget *parent)
 //  ui->KelGuiButtonTextSub_4->setStyleSheet (labelStyle);
 //  ui->KelGuiButtonTextLeft->setStyleSheet (labelStyle);
 
-  setIcon (m_icon);
+  //setIcon (m_icon);
   setupStyle();
   setSeparator (false);
 
@@ -167,7 +169,7 @@ void KelGuiButton::setMainText (const QString &mainText)
 {
   m_mainText = mainText;
 
-  auto array = m_widgets.values ("textMain");
+  auto array = m_widgets.values ("textMain") + m_widgets.values ("textMid");
   for (auto i = array.begin(), e = array.end(); i != e; i++)
     as<KelGuiLabel> (*i)->setText (m_mainText);
 
@@ -186,7 +188,7 @@ void KelGuiButton::setSubText (const QString &subText)
 {
   m_subText = subText;
 
-  auto array = m_widgets.values ("textSub");
+  auto array = m_widgets.values ("textSub") + m_widgets.values ("textRight");
   for (auto i = array.begin(), e = array.end(); i != e; i++)
     {
       auto j = as<KelGuiLabel> (*i);
@@ -198,10 +200,19 @@ void KelGuiButton::setSubText (const QString &subText)
   for (auto i = array.begin(), e = array.end(); i != e; i++)
     {
       auto j = as<KelGuiLabel> (*i);
-      j->setAlignment (
-        s_mainHelper (
-          btnStyle() == LeftTopMainBottomSub
-          || btnStyle() == IconMainSub, !m_subText.isEmpty()));
+
+      /* for swapped top and bottom labels */
+      if (j == ui->KelGuiButtonTextMain_2)
+        j->setAlignment (Qt::AlignHCenter | Qt::AlignTop);
+      else if (j == ui->KelGuiButtonTextSub_2)
+        j->setAlignment (Qt::AlignHCenter | Qt::AlignBottom);
+
+      /* for usual (top main, bottom sub) */
+      else
+        j->setAlignment (
+          s_mainHelper (
+            btnStyle() == LeftTopMainBottomSub
+            || btnStyle() == IconMainSub, !m_subText.isEmpty()));
     }
 
 //  ui->KelGuiButtonTextSub->setVisible (!subText.isEmpty());
@@ -263,6 +274,17 @@ void KelGuiButton::setLeftCssClass (const QString &leftCssClass)
   setupLabels();
 }
 
+QString KelGuiButton::iconCssClass() const
+{
+  return m_iconCssClass;
+}
+
+void KelGuiButton::setIconCssClass (const QString &iconCssClass)
+{
+  m_iconCssClass = iconCssClass;
+  setupLabels();
+}
+
 bool KelGuiButton::link() const
 {
   return m_link;
@@ -305,36 +327,11 @@ void KelGuiButton::setSeparator (bool separator)
   ui->kelGuiSeparator->setVisible (m_separator);
 }
 
-QUrl KelGuiButton::icon() const
-{
-  return m_icon;
-}
-
-void KelGuiButton::setIcon (const QUrl &icon)
-{
-  m_icon = icon;
-  QPixmap px (QString (":/") + m_icon.path());
-  auto style =
-    QString ("image: url(%1);\n"
-             "min-width: %2px;\n"
-             "min-height: %3px;\n"
-             "max-width: %2px;\n"
-             "max-height: %3px;\n")
-    .arg (QString (":/") + m_icon.path())
-    .arg (px.width())
-    .arg (px.height());
-//  m_lIcon->setStyleSheet (style);
-  ui->KelGuiButtonIcon->setStyleSheet (style);
-//  QApplication::clipboard()->setText(style);
-}
-
 void KelGuiButton::setupStyle()
 {
-//  QString style = fromFile ("://styles/button.css");
-
-//  setStyleSheet (style);
-  ui->KelGuiButtonBackground->setFrame (m_frame);
-  ui->KelGuiButtonBackground->setStyleSheet (ui->KelGuiButtonBackground->styleSheet());
+  //ui->KelGuiButtonBackground->setFrame (m_frame);
+  ui->KelGuiButtonBackground->setCssStyle (m_frame ? "frame" : "");
+  //ui->KelGuiButtonBackground->setStyleSheet (ui->KelGuiButtonBackground->styleSheet());
   //ui->KelGuiButtonBackground->repaint();
 
   m_effect->setEnabled (m_frame);
@@ -347,39 +344,43 @@ void KelGuiButton::setupLabels()
 {
   QMap <QString, QString> labelMap =
   {
-    {"textMain",  mainCssClass()},
-    {"textSub",   subCssClass()},
-    {"textLeft",  leftCssClass()},
+    {"textMain",  mainCssClass()  + " cwb_top"},
+    {"textMid",   mainCssClass()  + " cwb_mid"},
+    {"textSub",   subCssClass()   + " cwb_bottom"},
+    {"textRight", subCssClass()   + " cwb_right"},
+    {"textLeft",  leftCssClass()  + " cwb_left"},
+    {"iconLeft",  iconCssClass()},
   };
 
-  auto labelStyle = fromFile ("://styles/buttonlabel.css");
   for (auto i = m_widgets.begin(), e = m_widgets.end(); i != e; i++)
-    if (i.key() != "styledWidgets")
-      as<KelGuiLabel> (*i)->setCssStyle (labelMap.value (i.key()));
+    {
+      if (labelMap.contains (i.key()))
+        {
+          /* for swapped top and bottom labels */
+          if (*i == ui->KelGuiButtonTextMain_2)
+            as<KelGuiLabel> (*i)->setCssStyle (mainCssClass() + " cwb_bottom");
+          else if (*i == ui->KelGuiButtonTextSub_2)
+            as<KelGuiLabel> (*i)->setCssStyle (subCssClass() + " cwb_top");
 
-//  ui->KelGuiButtonTextMain->setStyleId (mainStyle());
-//  ui->KelGuiButtonTextMain_2->setStyleId (mainStyle());
-//  ui->KelGuiButtonTextMain_3->setStyleId (mainStyle());
-//  ui->KelGuiButtonTextMain_4->setStyleId (mainStyle());
-//  ui->KelGuiButtonTextSub->setStyleId (subStyle());
-//  ui->KelGuiButtonTextSub_2->setStyleId (subStyle());
-//  ui->KelGuiButtonTextSub_3->setStyleId (subStyle());
-//  ui->KelGuiButtonTextSub_4->setStyleId (subStyle());
-//  ui->KelGuiButtonTextLeft->setStyleId (leftStyle());
+          /* for usual (top main, bottom sub) */
+          else
+            as<KelGuiLabel> (*i)->setCssStyle (labelMap.value (i.key()));
+        }
+    }
 }
 
 /********************************************
  * OVERRIDE
  *******************************************/
 
-void KelGuiButton::paintEvent (QPaintEvent *)
-{
-  QStyleOption opt;
-  opt.init (this);
+//void KelGuiButton::paintEvent (QPaintEvent *)
+//{
+//  QStyleOption opt;
+//  opt.init (this);
 
-  QPainter p (this);
-  QWidget::style()->drawPrimitive (QStyle::PE_Widget, &opt, &p, this);
-}
+//  QPainter p (this);
+//  QWidget::style()->drawPrimitive (QStyle::PE_Widget, &opt, &p, this);
+//}
 
 void KelGuiButton::mousePressEvent (QMouseEvent *event)
 {

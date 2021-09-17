@@ -8,11 +8,11 @@
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-Purchase::Purchase(QWidget *parent) :
-  QWidget(parent),
-  ui(new Ui::Purchase)
+Purchase::Purchase (QWidget *parent) :
+  BaseForm (parent),
+  ui (new Ui::Purchase)
 {
-  ui->setupUi(this);
+  ui->setupUi (this);
   QTimer::singleShot (0, ui->scrollArea, &PurchaseModel::slotSetup);
 }
 

@@ -27,7 +27,7 @@ struct _SItem
 {
   StyleId sid;
   QString text[2];
-  QUrl icon;
+  QString iconCss;
   ItemCB cb;
 };
 
@@ -37,42 +37,43 @@ void defaultCb (int &index) { Q_UNUSED (index) }
 /* VARS */
 static QMap<StyleId, Info> s_presets =
 {
-  {SI_TITLE,      {"darkblue normalbold font24 margin28", ""}},
-  {SI_BUTTON,     {"darkblue normal font16",  "darkblue normal font16"}},
-  {SI_BUTTONRED,  {"darkblue normal font16",  "red bold font16"}},
-  {SI_BUTTONGRAY, {"darkblue normal font16",  "darkblue gray font16"}},
-  {SI_LINK,       {"darkblue normal font16",  ""}},
+  {SI_TITLE,      {"darkblue normalbold font24 margin28 lato", ""}},
+  {SI_BUTTON,     {"darkblue normal font16 lato",  "darkblue normal font16 lato"}},
+  {SI_BUTTONRED,  {"darkblue normal font16 lato",  "red bold font16 lato"}},
+  {SI_BUTTONGRAY, {"darkblue normal font16 lato",  "darkblue gray font16 lato"}},
+  {SI_LINK,       {"darkblue normal font16 lato",  ""}},
 };
 
 static QList<_SItem> s_items =
 {
-  _SItem{SI_TITLE,      {"Settings", ""}, QUrl(), defaultCb},
+  _SItem{SI_TITLE,      {"Settings", ""}, "settings_icon", defaultCb},
 
-  _SItem{SI_BUTTONRED,  {"Get new licence key", "265 days left"}, QUrl ("qrc:/gui/ui/asset/ic_renew.png"), defaultCb},
-  _SItem{SI_BUTTON,     {"Reset licence key"}, QUrl ("qrc:/gui/ui/asset/ic_key.png"), defaultCb},
-  _SItem{SI_LINK,       {"Language"}, QUrl ("qrc:/gui/ui/asset/ic_language.png"), defaultCb},
+  _SItem{SI_BUTTONRED,  {"Get new licence key", "265 days left"}, "settings_icon ic_renew", defaultCb},
+  _SItem{SI_BUTTON,     {"Reset licence key"}, "settings_icon ic_key", defaultCb},
+  _SItem{SI_LINK,       {"Language"}, "settings_icon ic_language", defaultCb},
 
-  _SItem{SI_TITLE,      {"Support", ""}, QUrl(), defaultCb},
+  _SItem{SI_TITLE,      {"Support", ""}, "settings_icon", defaultCb},
 
-  _SItem{SI_BUTTON,     {"Send a bug report", ""}, QUrl ("qrc:/gui/ui/asset/ic_send-report.png"), defaultCb},
-  _SItem{SI_BUTTON,     {"Telegram support bot", ""}, QUrl ("qrc:/gui/ui/asset/ic_bot.png"), defaultCb},
+  _SItem{SI_BUTTON,     {"Send a bug report", ""}, "settings_icon ic_send-report", defaultCb},
+  _SItem{SI_BUTTON,     {"Telegram support bot", ""}, "settings_icon ic_bot", defaultCb},
 
-  _SItem{SI_TITLE,      {"Information", ""}, QUrl(), defaultCb},
+  _SItem{SI_TITLE,      {"Information", ""}, "settings_icon", defaultCb},
 
-  _SItem{SI_LINK,       {"Bug Report"}, QUrl ("qrc:/gui/ui/asset/ic_information_bug-report.png"), defaultCb},
-  _SItem{SI_BUTTON,     {"Serial key history on this device"}, QUrl ("qrc:/gui/ui/asset/ic_key-history.png"), defaultCb},
-  _SItem{SI_BUTTON,     {"Terms of use"}, QUrl ("qrc:/gui/ui/asset/ic_terms_policy.png"), defaultCb},
-  _SItem{SI_BUTTON,     {"Privacy policy"}, QUrl ("qrc:/gui/ui/asset/ic_terms_policy.png"), defaultCb},
-  _SItem{SI_BUTTONGRAY, {"Serial key history on this device", "@version"}, QUrl ("qrc:/gui/ui/asset/ic_version.png"), defaultCb},
+  _SItem{SI_LINK,       {"Bug Report"}, "settings_icon ic_information_bug-report", defaultCb},
+  _SItem{SI_BUTTON,     {"Serial key history on this device"}, "settings_icon ic_key-history", defaultCb},
+  _SItem{SI_BUTTON,     {"Terms of use"}, "settings_icon ic_terms_policy", defaultCb},
+  _SItem{SI_BUTTON,     {"Privacy policy"}, "settings_icon ic_terms_policy", defaultCb},
+  _SItem{SI_BUTTONGRAY, {"Serial key history on this device", "@version"}, "settings_icon ic_version", defaultCb},
 };
 
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-SettingsModel::SettingsModel(QWidget *parent)
+SettingsModel::SettingsModel (QWidget *parent)
   : ModelBase (parent)
 {
+  setCssStyle ("screenarea sett-scroll-area backgroundcolor");
 }
 
 SettingsModel::~SettingsModel()
@@ -89,16 +90,16 @@ void SettingsModel::slotSetup()
   setupLayout();
 
   /* add every item */
-  foreach(auto &item, s_items)
+  foreach (auto &item, s_items)
     {
       /* get item and preset */
       auto btn = new KelGuiButton;
       auto preset = s_presets.value (item.sid);
 
       /* setup new widget */
-      btn->setBtnStyle(item.sid != SI_TITLE
-          ? KelGuiButton::ButtonStyle::IconMainSub
-          : KelGuiButton::ButtonStyle::TopMainBottomSub);
+      btn->setBtnStyle (item.sid != SI_TITLE
+                        ? KelGuiButton::ButtonStyle::IconMainSub
+                        : KelGuiButton::ButtonStyle::TopMainBottomSub);
 
       btn->setMainText (item.text[0]);
       btn->setMainCssClass (preset.style[0]);
@@ -108,9 +109,13 @@ void SettingsModel::slotSetup()
 
       btn->setSeparator (item.sid != SI_TITLE);
       btn->setLink (item.sid == SI_LINK);
-      btn->setIcon (item.icon);
+      btn->setIconCssClass (item.iconCss); //btn->setIcon (item.icon);
 
-      btn->setMaximumWidth(392);
+      btn->setCssStyle (
+        item.sid != SI_TITLE
+        ? "sett-scroll-btn"
+        : "set-scroll-title"
+      );
 
       /* add into list */
       lay->addWidget (btn);

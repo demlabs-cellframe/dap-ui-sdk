@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include "modelbase.h"
+#include "style/kelguistylemanager.h"
 
 /****************************************//**
  * @brief settings model list widget
@@ -13,6 +14,9 @@
 
 class SettingsModel : public ModelBase
 {
+  KELGUI_ENABLECSS
+  //KELGUI_ENABLEWIDGETSTYLE
+
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
    *******************************************/

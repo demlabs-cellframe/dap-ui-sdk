@@ -1,16 +1,14 @@
 /* INCLUDES */
 #include "documentpopup.h"
 #include "ui_documentpopup.h"
-
-/* FUNCS */
-QString fromFile (const QString &filename);
+#include "kelguicommon.h"
 
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
 DocumentPopup::DocumentPopup (Type t, QWidget *parent) :
-  QWidget (parent),
+  BaseForm (parent),
   ui (new Ui::DocumentPopup)
 {
   ui->setupUi (this);
@@ -33,16 +31,16 @@ DocumentPopup::~DocumentPopup()
 
 void DocumentPopup::slotShowTermsOfUse()
 {
-  setObjectName("Terms of use");
+  setObjectName ("Terms of use");
   ui->label->setText ("Terms of use");
-  ui->textField->setHtml (fromFile (":/gui/ui/data/terms.html"));
+  ui->textField->setHtml (Common::fromFile (":/gui/ui/data/terms.html"));
 }
 
 void DocumentPopup::slotShowPrivacyPolicy()
 {
-  setObjectName("Privacy policy");
+  setObjectName ("Privacy policy");
   ui->label->setText ("Privacy policy");
-  ui->textField->setHtml (fromFile (":/gui/ui/data/privacy.html"));
+  ui->textField->setHtml (Common::fromFile (":/gui/ui/data/privacy.html"));
 }
 
 /*-----------------------------------------*/

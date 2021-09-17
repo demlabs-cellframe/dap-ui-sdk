@@ -9,12 +9,12 @@
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-Settings::Settings(QWidget *parent) :
-  QWidget(parent),
-  ui(new Ui::Settings)
+Settings::Settings (QWidget *parent) :
+  BaseForm (parent),
+  ui (new Ui::Settings)
 {
-  ui->setupUi(this);
-  QTimer::singleShot(0,ui->scrollArea, &SettingsModel::slotSetup);
+  ui->setupUi (this);
+  QTimer::singleShot (0, ui->scrollArea, &SettingsModel::slotSetup);
 }
 
 Settings::~Settings()

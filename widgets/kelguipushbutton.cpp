@@ -1,5 +1,6 @@
 /* INCLUDES */
 #include "kelguipushbutton.h"
+#include "kelguicommon.h"
 
 #include <QFile>
 #include <QStyleOption>
@@ -13,22 +14,19 @@
 /* DEFS */
 struct _KgpbItem
 {
-  QString filename, hover, checked;
+  QString filename, hover, checked, cssStyle;
 };
-
-/* FUNCS */
-QString fromFile (const QString &filename);
 
 /* VARS */
 static QMap<KelGuiPushButton::Style, _KgpbItem> s_presets =
 {
-  {KelGuiPushButton::Main,        {"://gfx/btn_bg.png",         "://gfx/btn_bg_hover_active.png",   "://gfx/btn_bg_hover_active.png"}},
-  {KelGuiPushButton::Connection,  {"://gfx/btn_connection.png", "://gfx/btn_connection_active.png", "://gfx/btn_connection_active.png"}},
-  {KelGuiPushButton::Account,     {"://gfx/btn_account.png",    "://gfx/btn_account_active.png",    "://gfx/btn_account_active.png"}},
-  {KelGuiPushButton::Settings,    {"://gfx/btn_settings.png",   "://gfx/btn_settings_active.png",   "://gfx/btn_settings_active.png"}},
-  {KelGuiPushButton::Check,       {"://gfx/check_btn_off.png",  "://gfx/check_btn_on.png",          "://gfx/check_btn_on.png"}},
-  //{KelGuiPushButton::Radio,       {"://gfx/radio_btn_off.png",  "://gfx/radio_btn_on.png",          "://gfx/radio_btn_on.png"}},
-  {KelGuiPushButton::Switch,      {"://gfx/switch_off.png",     "://gfx/switch.png",                "://gfx/switch.png"}},
+  {KelGuiPushButton::Main,        {"://gfx/btn_bg.png",         "://gfx/btn_bg_hover_active.png",   "://gfx/btn_bg_hover_active.png",   "cwpb_bigbutton"}},
+  {KelGuiPushButton::Connection,  {"://gfx/btn_connection.png", "://gfx/btn_connection_active.png", "://gfx/btn_connection_active.png", "cwpb_square"}},
+  {KelGuiPushButton::Account,     {"://gfx/btn_account.png",    "://gfx/btn_account_active.png",    "://gfx/btn_account_active.png",    "cwpb_square"}},
+  {KelGuiPushButton::Settings,    {"://gfx/btn_settings.png",   "://gfx/btn_settings_active.png",   "://gfx/btn_settings_active.png",   "cwpb_square"}},
+  {KelGuiPushButton::Check,       {"://gfx/check_btn_off.png",  "://gfx/check_btn_on.png",          "://gfx/check_btn_on.png",          "cwpb_checkbox"}},
+  //{KelGuiPushButton::Radio,       {"://gfx/radio_btn_off.png",  "://gfx/radio_btn_on.png",          "://gfx/radio_btn_on.png",         "cwpb_radio"}},
+  {KelGuiPushButton::Switch,      {"://gfx/switch_off.png",     "://gfx/switch.png",                "://gfx/switch.png",                "cwpb_switch"}},
 };
 
 /********************************************
@@ -68,7 +66,7 @@ KelGuiPushButton::KelGuiPushButton (QWidget *parent)
 
   //setStyleSheet (fromFile ("://styles/pushbutton.css"));
   //updateStyle();
-  setStyle(m_style);
+  setStyle (m_style);
 
   /* signals */
   connect (this, &QPushButton::clicked,
@@ -94,12 +92,13 @@ void KelGuiPushButton::setStyle (const Style &style)
   m_style = style;
 
   /* setup style, if present */
-  if(s_presets.contains(style))
+  if (s_presets.contains (style))
     {
-      auto item = s_presets.value(style);
-      setCustom(item.filename.mid(2));
-      setCustomHover(item.hover.mid(2));
-      setCustomPushed(item.checked.mid(2));
+      auto item = s_presets.value (style);
+      setCustom (item.filename.mid (2));
+      setCustomHover (item.hover.mid (2));
+      setCustomPushed (item.checked.mid (2));
+      setCustomCss (item.cssStyle);
       return emit styleChanged();
     }
 
@@ -158,6 +157,17 @@ void KelGuiPushButton::setCustomPushed (const QUrl &customPushed)
   emit customPushedChanged();
 }
 
+QString KelGuiPushButton::customCss() const
+{
+  return m_customCss;
+}
+
+void KelGuiPushButton::setCustomCss (const QString &customCss)
+{
+  m_customCss = customCss;
+  updateStyle();
+}
+
 bool KelGuiPushButton::customEnabled() const
 {
   return m_style == Custom;
@@ -173,24 +183,29 @@ void KelGuiPushButton::updateStyle()
     }
 #endif // ENABLEPURPLE
 
-  /* collect 3 files name */
-  QString names[3] =
-  {
-    tr (":/") + m_custom.path(),
-    tr (":/") + m_customHover.path(),
-    tr (":/") + m_customPushed.path(),
-  };
+//  /* collect 3 files name */
+//  QString names[4] =
+//  {
+//    tr (":/") + m_custom.path(),
+//    tr (":/") + m_customHover.path(),
+//    tr (":/") + m_customPushed.path(),
+//    m_customCss,
+//  };
 
-  /* get first file pixmap */
-  QPixmap img (names[0]);
+//  /* get first file pixmap */
+//  QPixmap img (names[0]);
 
-  /* setup style sheet based on pixmap size and files names */
-  QString style = fromFile ("://styles/pushbuttoncustom.css")
-                  .arg (img.size().width())
-                  .arg (img.size().height())
-                  .arg (names[0], names[1], names[2]);
+//  /* setup style sheet based on pixmap size and files names */
+//  QString style =
+//    Common::fromFile ("://styles/pushbuttoncustom.css")
+//    .arg (img.size().width())
+//    .arg (img.size().height())
+//    .arg (names[0], names[1], names[2]);
 
-  setStyleSheet (style);
+//  setStyleSheet (style);
+
+  __kgsm.forcedButtonStyleUpdate();
+
 #ifdef ENABLEPURPLE
   m_label->show();
 #endif // ENABLEPURPLE

@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <QWidget>
 #include "vpnDefine.h"
+#include "baseform.h"
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
@@ -17,16 +18,23 @@ QT_END_NAMESPACE
  * @author Mikhail Shilenko
  *******************************************/
 
-class SplashScreen : public QWidget
+class SplashScreen : public BaseForm
 {
   Q_OBJECT
+
+  /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
+  struct StateLinks;
+  /// @}
 
   /****************************************//**
    * @name VARS
    *******************************************/
   /// @{
 private:
-  Ui::SplashScreen *m_ui;
+  Ui::SplashScreen *ui;
   /// @}
 
   /****************************************//**
@@ -34,15 +42,18 @@ private:
    *******************************************/
   /// @{
 public:
-
-    struct StateLinks;
-
-    SplashScreen(QWidget *parent = nullptr);
-    ~SplashScreen();
+  explicit SplashScreen (QWidget *parent = nullptr);
+  ~SplashScreen();
   /// @}
 
-  void setState(ConnectionState a_state);
-  void setErrorMessage(const QString &msg);
+  /****************************************//**
+   * @name PUBLIC METHODS
+   *******************************************/
+  /// @{
+public:
+  void setState (ConnectionState a_state);
+  void setErrorMessage (const QString &msg);
+  /// @}
 };
 
 /*-----------------------------------------*/

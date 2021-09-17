@@ -9,9 +9,9 @@
 const QString BugReports::SCREEN_NAME = "BugReports";
 
 BugReports::BugReports (QWidget *parent) :
-  QWidget (parent),
+  BaseForm (parent),
   ui (new Ui::BugReports),
-  movLoading (new QMovie(":/gui/ui/asset/Spinner.gif"))
+  movLoading (new QMovie (":/gui/ui/asset/Spinner.gif"))
 {
   /* setup */
   ui->setupUi (this);
@@ -78,7 +78,7 @@ void BugReports::slotSetMode (BugReports::Mode mode)
   /* movie */
   //movLoading->setFileName(":/gui/ui/asset/Spinner.gif");
   //ui->labelLoading->setMovie (movLoading);
-  if(m_mode == Loading)
+  if (m_mode == Loading)
     movLoading->start();
   else
     movLoading->stop();
@@ -87,7 +87,7 @@ void BugReports::slotSetMode (BugReports::Mode mode)
 void BugReports::slotRadioTest()
 {
   /* fill whne required */
-  if(p_radioTestToMode.empty())
+  if (p_radioTestToMode.empty())
     {
       p_radioTestToMode =
       {

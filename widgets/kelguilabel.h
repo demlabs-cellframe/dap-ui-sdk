@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QLabel>
+#include "style/kelguistylemanager.h"
 
 /****************************************//**
  * @brief widget with custom properties
@@ -14,37 +15,30 @@
 class KelGuiLabel : public QLabel
 {
   Q_OBJECT
-
-  /****************************************//**
-   * @name PROPERTIES
-   *******************************************/
-  /// @{
-  Q_PROPERTY (QString cssStyle READ cssStyle WRITE setCssStyle)
-  /// @}
-
-  /****************************************//**
-   * @name VARS
-   *******************************************/
-  /// @{
-private:
-  QString m_cssStyle;
-  /// @}
+  KELGUI_ENABLECSS
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
 public:
-  explicit KelGuiLabel(QWidget *parent = nullptr);
+  KelGuiLabel (QWidget *parent = nullptr);
   /// @}
 
   /****************************************//**
-   * @name PUBLIC METHODS
+   * @name OVERRIDE
    *******************************************/
   /// @{
 public:
-  QString cssStyle() const;
-  void setCssStyle(const QString &cssStyleText);
+  void mousePressEvent (QMouseEvent *) override;
+  /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void clicked();         ///< button is clicked
   /// @}
 };
 

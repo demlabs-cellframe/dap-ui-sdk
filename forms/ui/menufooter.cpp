@@ -7,14 +7,15 @@
  *******************************************/
 
 MenuFooter::MenuFooter (QWidget *parent) :
-  QWidget (parent),
+  BaseForm (parent),
   ui (new Ui::MenuFooter),
   m_state (BS_NONE),
   m_lock (false)
 {
   /* setup */
   ui->setupUi (this);
-  this->setVisible(false);
+  this->setVisible (false);
+  setCssStyle ("footer");
   qRegisterMetaType<ButtonState> ("ButtonState");
   //setWindowFlags(Qt::WindowStaysOnTopHint);
 
@@ -75,7 +76,7 @@ void MenuFooter::slotSetButtonState (MenuFooter::ButtonState state)
 void MenuFooter::slotMoveToBottom()
 {
   raise();
-  if(auto p = dynamic_cast<QWidget*> (parent()))
+  if (auto p = dynamic_cast<QWidget *> (parent()))
     move (0, p->height() - height());
 }
 

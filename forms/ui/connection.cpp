@@ -6,11 +6,11 @@
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-Connection::Connection(QWidget *parent) :
-  QWidget(parent),
-  ui(new Ui::Connection)
+Connection::Connection (QWidget *parent) :
+  BaseForm (parent),
+  ui (new Ui::Connection)
 {
-  ui->setupUi(this);
+  ui->setupUi (this);
 }
 
 Connection::~Connection()
