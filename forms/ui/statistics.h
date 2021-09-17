@@ -4,10 +4,10 @@
 /* INCLUDES */
 #include <QWidget>
 #include "baseform.h"
-#ifndef TestApp
+#ifndef NEUROMORPHIC
 #include "../../ui/schedules.h"
 #else // TestApp
-#include "dummy/ui/schedules.h"
+#include "ui/helper/schedule/schedules.h"
 #endif // TestApp
 
 /* DEFS */
@@ -49,7 +49,7 @@ private:
    *******************************************/
   /// @{
 public:
-  explicit Statistics (QWidget *parent = nullptr);
+  Statistics (QWidget *parent = nullptr);
   ~Statistics();
   /// @}
 

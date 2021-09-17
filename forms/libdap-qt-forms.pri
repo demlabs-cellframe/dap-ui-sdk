@@ -10,6 +10,10 @@ SOURCES     += \
     $$PWD/ui/chooseserver.cpp \
     $$PWD/ui/connection.cpp \
     $$PWD/ui/documentpopup.cpp \
+    $$PWD/ui/helper/auxiliary/AppStyleSheetHandler.cpp \
+    $$PWD/ui/helper/auxiliary/UiScaling.cpp \
+    $$PWD/ui/helper/schedule/schedule.cpp \
+    $$PWD/ui/helper/schedule/schedules.cpp \
     $$PWD/ui/helper/trafficstringhelper.cpp \
     $$PWD/ui/helper/uptimestringhelper.cpp \
     $$PWD/ui/history.cpp \
@@ -34,6 +38,11 @@ HEADERS     += \
     $$PWD/ui/connection.h \
     $$PWD/ui/docs.h \
     $$PWD/ui/documentpopup.h \
+    $$PWD/ui/helper/auxiliary/AppStyleSheetHandler.h \
+    $$PWD/ui/helper/auxiliary/UiScaling.h \
+    $$PWD/ui/helper/schedule/SheduleElement.h \
+    $$PWD/ui/helper/schedule/schedule.h \
+    $$PWD/ui/helper/schedule/schedules.h \
     $$PWD/ui/helper/trafficstringhelper.h \
     $$PWD/ui/helper/uptimestringhelper.h \
     $$PWD/ui/history.h \
