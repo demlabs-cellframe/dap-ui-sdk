@@ -7,7 +7,7 @@
  * Ui forms and classes that represents GUI.
  *
  * @date 03.09.2021
- * @authors Segaman
+ * @author Mikhail Shilenko
  *******************************************/
 
 /****************************************//**
@@ -17,7 +17,7 @@
  * information and provide interaction.
  *
  * @date 03.09.2021
- * @authors Segaman
+ * @author Mikhail Shilenko
  *******************************************/
 
 #endif // DOCS_H
