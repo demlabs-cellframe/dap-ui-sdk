@@ -132,6 +132,18 @@ KelGuiButton::KelGuiButton (QWidget *parent)
 
   setGraphicsEffect (m_effect);
   m_effect->setEnabled (false);
+
+  /* connect clicked signals */
+  for (auto i = m_widgets.begin(), e = m_widgets.end(); i != e; i++)
+    {
+      auto *label  = qobject_cast<KelGuiLabel*>(*i);
+
+      if(!label)
+        continue;
+
+      connect (label, &KelGuiLabel::clicked,
+               this, &KelGuiButton::clicked);
+    }
 }
 
 KelGuiButton::~KelGuiButton()
