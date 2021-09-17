@@ -70,7 +70,6 @@ public slots:
   void slotSetButtonState(ButtonState state);
   /// fix position
   void slotMoveToBottom();
-
 private slots:
   /// react on user interaction
   void slotButtonToggled(bool checked);

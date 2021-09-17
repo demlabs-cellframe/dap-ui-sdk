@@ -6,6 +6,8 @@
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
+const QString BugReports::SCREEN_NAME = "BugReports";
+
 BugReports::BugReports (QWidget *parent) :
   QWidget (parent),
   ui (new Ui::BugReports),

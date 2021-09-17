@@ -1,6 +1,6 @@
 #include "ScreenInfo.h"
 
-ScreenInfo::Rotation ScreenInfo::s_currentRotation = ScreenInfo::Rotation::Horizontal;
+ScreenInfo::Rotation ScreenInfo::s_currentRotation = ScreenInfo::Rotation::Vertical;
 
 ScreenInfo::ScreenInfo()
 {
@@ -9,7 +9,7 @@ ScreenInfo::ScreenInfo()
 
 QSize ScreenInfo::getWindowSizeInPoints()
 {
-    return QSize(1024, 744);
+    return QSize(428, 926);
 }
 
 QList<ScreenInfo::Rotation> ScreenInfo::allRotations()

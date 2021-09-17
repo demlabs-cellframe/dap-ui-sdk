@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QWidget>
+#include "vpnDefine.h"
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
@@ -25,7 +26,7 @@ class SplashScreen : public QWidget
    *******************************************/
   /// @{
 private:
-  Ui::SplashScreen *ui;
+  Ui::SplashScreen *m_ui;
   /// @}
 
   /****************************************//**
@@ -33,9 +34,15 @@ private:
    *******************************************/
   /// @{
 public:
-  explicit SplashScreen(QWidget *parent = nullptr);
-  ~SplashScreen();
+
+    struct StateLinks;
+
+    SplashScreen(QWidget *parent = nullptr);
+    ~SplashScreen();
   /// @}
+
+  void setState(ConnectionState a_state);
+  void setErrorMessage(const QString &msg);
 };
 
 /*-----------------------------------------*/

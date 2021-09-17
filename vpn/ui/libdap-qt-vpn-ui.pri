@@ -1,5 +1,5 @@
-include ( controls/controls.pri)
-include ( dialogs/dialogs.pri)
+#include ( controls/controls.pri)
+#include ( dialogs/dialogs.pri)
 include ( auxiliary/auxiliary.pri)
 
 SOURCES += \
@@ -13,9 +13,6 @@ HEADERS  += \
     $$PWD/DapServiceNativeAbstract.h\
     $$PWD/ServiceCtl.h\
     $$PWD/usrmsg.h
-
-
-
 
 INCLUDEPATH += $$PWD
 

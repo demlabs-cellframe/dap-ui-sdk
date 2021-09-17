@@ -14,6 +14,7 @@ MenuFooter::MenuFooter (QWidget *parent) :
 {
   /* setup */
   ui->setupUi (this);
+  this->setVisible(false);
   qRegisterMetaType<ButtonState> ("ButtonState");
   //setWindowFlags(Qt::WindowStaysOnTopHint);
 
