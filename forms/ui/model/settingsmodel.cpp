@@ -1,5 +1,6 @@
 /* INCLUDES */
 #include "settingsmodel.h"
+#include "../settings.h"
 
 #include "kelguibutton.h"
 #include <QUrl>
@@ -7,7 +8,7 @@
 
 /* DEFS */
 typedef QString TextStyle;
-typedef void (*ItemCB) (int &index);
+typedef void (*ItemCB) ();
 
 enum StyleId
 {
@@ -32,7 +33,23 @@ struct _SItem
 };
 
 /* LINKS */
-void defaultCb (int &index) { Q_UNUSED (index) }
+static void defaultCb () {}
+
+/* settings */
+static void cbLicenceGet();
+static void cbLicenceReset();
+static void cbLanguage();
+
+/* support */
+static void cbBugSend();
+static void cbTelegramBot();
+
+/* info */
+static void cbBugReport();
+static void cbLicenceHistory();
+static void cbTermsOfUse();
+static void cbPrivacyPolicy();
+static void cbVersion();
 
 /* VARS */
 static QMap<StyleId, Info> s_presets =
@@ -48,23 +65,28 @@ static QList<_SItem> s_items =
 {
   _SItem{SI_TITLE,      {"Settings", ""}, "settings_icon", defaultCb},
 
-  _SItem{SI_BUTTONRED,  {"Get new licence key", "265 days left"}, "settings_icon ic_renew", defaultCb},
-  _SItem{SI_BUTTON,     {"Reset licence key"}, "settings_icon ic_key", defaultCb},
-  _SItem{SI_LINK,       {"Language"}, "settings_icon ic_language", defaultCb},
+  _SItem{SI_BUTTONRED,  {"Get new licence key", "265 days left"}, "settings_icon ic_renew", cbLicenceGet},
+  _SItem{SI_BUTTON,     {"Reset licence key"}, "settings_icon ic_key", cbLicenceReset},
+  _SItem{SI_LINK,       {"Language"}, "settings_icon ic_language", cbLanguage},
 
   _SItem{SI_TITLE,      {"Support", ""}, "settings_icon", defaultCb},
 
-  _SItem{SI_BUTTON,     {"Send a bug report", ""}, "settings_icon ic_send-report", defaultCb},
-  _SItem{SI_BUTTON,     {"Telegram support bot", ""}, "settings_icon ic_bot", defaultCb},
+  _SItem{SI_BUTTON,     {"Send a bug report", ""}, "settings_icon ic_send-report", cbBugSend},
+  _SItem{SI_BUTTON,     {"Telegram support bot", ""}, "settings_icon ic_bot", cbTelegramBot},
 
   _SItem{SI_TITLE,      {"Information", ""}, "settings_icon", defaultCb},
 
-  _SItem{SI_LINK,       {"Bug Report"}, "settings_icon ic_information_bug-report", defaultCb},
-  _SItem{SI_BUTTON,     {"Serial key history on this device"}, "settings_icon ic_key-history", defaultCb},
-  _SItem{SI_BUTTON,     {"Terms of use"}, "settings_icon ic_terms_policy", defaultCb},
-  _SItem{SI_BUTTON,     {"Privacy policy"}, "settings_icon ic_terms_policy", defaultCb},
-  _SItem{SI_BUTTONGRAY, {"Serial key history on this device", "@version"}, "settings_icon ic_version", defaultCb},
+  _SItem{SI_LINK,       {"Bug Report"}, "settings_icon ic_information_bug-report", cbBugReport},
+  _SItem{SI_BUTTON,     {"Serial key history on this device"}, "settings_icon ic_key-history", cbLicenceHistory},
+  _SItem{SI_BUTTON,     {"Terms of use"}, "settings_icon ic_terms_policy", cbTermsOfUse},
+  _SItem{SI_BUTTON,     {"Privacy policy"}, "settings_icon ic_terms_policy", cbPrivacyPolicy},
+  _SItem{SI_BUTTONGRAY, {"Version", "@version"}, "settings_icon ic_version", cbVersion},
 };
+
+static QMap<KelGuiButton*, ItemCB> s_btnCallbacks;
+
+/* VARS */
+Settings *s_settings = nullptr;
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -79,6 +101,16 @@ SettingsModel::SettingsModel (QWidget *parent)
 SettingsModel::~SettingsModel()
 {
 
+}
+
+/********************************************
+ * PUBLIC METHODS
+ *******************************************/
+
+void SettingsModel::setInterface(Settings *s)
+{
+  /* store */
+  s_settings = s;
 }
 
 /********************************************
@@ -119,7 +151,42 @@ void SettingsModel::slotSetup()
 
       /* add into list */
       lay->addWidget (btn);
+
+      /* store callback */
+      s_btnCallbacks.insert(btn,item.cb);
+
+      /* connect signal */
+      connect (btn, &KelGuiButton::clicked,
+               this, &SettingsModel::slotClicked,
+               Qt::QueuedConnection);
     }
 }
+
+void SettingsModel::slotClicked()
+{
+  auto btn  = qobject_cast<KelGuiButton*> (sender());
+  auto cb   = s_btnCallbacks.value (btn, defaultCb);
+  cb();
+}
+
+/********************************************
+ * STATIC FUNCTIONS
+ *******************************************/
+
+/* settings */
+void cbLicenceGet()     { emit s_settings->sigLicenceGet(); }
+void cbLicenceReset()   { emit s_settings->sigLicenceReset(); }
+void cbLanguage()       { emit s_settings->sigLanguage(); }
+
+/* support */
+void cbBugSend()        { emit s_settings->sigBugSend(); }
+void cbTelegramBot()    { emit s_settings->sigTelegramBot(); }
+
+/* info */
+void cbBugReport()      { emit s_settings->sigBugReport(); }
+void cbLicenceHistory() { emit s_settings->sigLicenceHistory(); }
+void cbTermsOfUse()     { emit s_settings->sigTermsOfUse(); }
+void cbPrivacyPolicy()  { emit s_settings->sigPrivacyPolicy(); }
+void cbVersion()        { emit s_settings->sigVersion(); }
 
 /*-----------------------------------------*/

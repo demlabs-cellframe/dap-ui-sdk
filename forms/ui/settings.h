@@ -37,6 +37,29 @@ public:
   explicit Settings (QWidget *parent = nullptr);
   ~Settings();
   /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+
+  /* settings */
+  void sigLicenceGet();
+  void sigLicenceReset();
+  void sigLanguage();
+
+  /* support */
+  void sigBugSend();
+  void sigTelegramBot();
+
+  /* info */
+  void sigBugReport();
+  void sigLicenceHistory();
+  void sigTermsOfUse();
+  void sigPrivacyPolicy();
+  void sigVersion();
+  /// @}
 };
 
 /*-----------------------------------------*/

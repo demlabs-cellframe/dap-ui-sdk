@@ -5,6 +5,8 @@
 #include "modelbase.h"
 #include "style/kelguistylemanager.h"
 
+class Settings;
+
 /****************************************//**
  * @brief settings model list widget
  * @ingroup groupUiModels
@@ -27,11 +29,20 @@ public:
   /// @}
 
   /****************************************//**
+   * @name PUBLIC METHODS
+   *******************************************/
+  /// @{
+public:
+  void setInterface (Settings *s);
+  /// @}
+
+  /****************************************//**
    * @name PUBLIC SLOTS
    *******************************************/
   /// @{
 public slots:
   void slotSetup();
+  void slotClicked();
   /// @}
 };
 

@@ -13,7 +13,11 @@ Settings::Settings (QWidget *parent) :
   BaseForm (parent),
   ui (new Ui::Settings)
 {
+  /* setup ui */
   ui->setupUi (this);
+  ui->scrollArea->setInterface (this); // this will allow to send signals
+
+  /* start model */
   QTimer::singleShot (0, ui->scrollArea, &SettingsModel::slotSetup);
 }
 

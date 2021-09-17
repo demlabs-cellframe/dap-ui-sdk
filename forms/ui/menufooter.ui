@@ -52,6 +52,9 @@
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
           <property name="style">
            <enum>KelGuiPushButton::Connection</enum>
           </property>
@@ -126,6 +129,7 @@ border-radius: 2px;
    <class>KelGuiWidget</class>
    <extends>QWidget</extends>
    <header>kelguiwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
