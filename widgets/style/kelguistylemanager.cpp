@@ -52,7 +52,8 @@ typedef _GlobalStyleSheet Gss;
  *******************************************/
 
 KelGuiStyleManager::KelGuiStyleManager (QWidget *parent)
-  : m_widget (parent)
+  : QObject (parent)
+  , m_widget (parent)
 {
   if (this != &s_signal)
     connect (&s_signal, &KelGuiStyleManager::forceStyleUpdate,
@@ -64,9 +65,10 @@ KelGuiStyleManager::KelGuiStyleManager (KelGuiStyleManager &&src)
   if (this == &src)
     return;
 
-  m_cssStyle  = src.m_cssStyle;
+  setParent (src.m_widget);
+  m_cssStyle  = std::move (src.m_cssStyle);
   m_widget    = src.m_widget;
-  src.m_cssStyle.clear();
+  //src.m_cssStyle.clear();
   src.m_widget  = nullptr;
 
   if (this != &s_signal)
@@ -130,6 +132,8 @@ KelGuiStyleManager &KelGuiStyleManager::_signal()
 
 void KelGuiStyleManager::forcedStyleUpdate()
 {
+  if(!m_widget)
+    return;
   QString s   =
     "#" + m_widget->objectName() +
     "{" + styleByClassName (m_cssStyle) + "}";
