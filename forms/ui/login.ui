@@ -156,16 +156,19 @@ Usualy unvisible by being empty</string>
          <enum>KelGuiButton::EditTopMainBottomSub</enum>
         </property>
         <property name="mainText">
-         <string>_ _ _ _   _ _ _ _   _ _ _ _   _ _ _ _</string>
+         <string/>
         </property>
         <property name="subText">
          <string>serial key</string>
         </property>
         <property name="mainCssClass">
-         <string>darkblue bold font20 lato nobackground</string>
+         <string>darkblue bold font20 lato nobackground letterspace</string>
         </property>
         <property name="subCssClass">
          <string>gray uppercase font12 lato</string>
+        </property>
+        <property name="inputMaskCssClass">
+         <string>&gt;NNNN-NNNN-NNNN-NNNN;_</string>
         </property>
         <property name="separator">
          <bool>true</bool>

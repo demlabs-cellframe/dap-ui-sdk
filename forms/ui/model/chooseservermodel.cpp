@@ -1,5 +1,6 @@
 /* INCLUDES */
 #include "chooseservermodel.h"
+#include "ui/chooseserver.h"
 
 #include <QBoxLayout>
 #include <QTimer>
@@ -23,10 +24,11 @@ ChooseServerModel::~ChooseServerModel()
  * PUBLIC METHODS
  *******************************************/
 
-void ChooseServerModel::setModel (QAbstractListModel *model)
+void ChooseServerModel::setModel (QAbstractListModel *model, ChooseServer *cs)
 {
   /* store and invoke setup */
   m_model = model;
+  m_cs    = cs;
   QTimer::singleShot (0, this, &ChooseServerModel::slotSetup);
 }
 
@@ -65,12 +67,35 @@ void ChooseServerModel::slotSetup()
       /* create item */
       auto item = new KelGuiRadio;
       m_list << item;
+
+      /* setup */
       item->setText (text);
       lay->addWidget (item);
+
+      /* signals */
+      connect (item, &KelGuiRadio::clicked,
+               this, &ChooseServerModel::slotToggled,
+               Qt::QueuedConnection);
     }
 
   QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
   lay->addItem (sp);
+}
+
+void ChooseServerModel::slotToggled()
+{
+  /* get sender radio */
+  auto s = qobject_cast<KelGuiRadio*> (sender());
+  if (!s)
+    return;
+
+  /* get it's index */
+  int index = m_list.indexOf (s);
+  if (index == -1)
+    return;
+
+  /* send selection event signal */
+  emit m_cs->sigSelect (index, s->text());
 }
 
 /*-----------------------------------------*/

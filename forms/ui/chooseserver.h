@@ -44,6 +44,7 @@ public:
   /// @{
 signals:
   void sigReturn();
+  void sigSelect(int index, QString name);
   /// @}
 };
 

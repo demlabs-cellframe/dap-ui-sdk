@@ -6,6 +6,9 @@
 #include <kelguiradio.h>
 #include "modelbase.h"
 
+/* DEFS */
+class ChooseServer;
+
 /****************************************//**
  * @brief choose server model list widget
  * @ingroup groupUiModels
@@ -23,6 +26,7 @@ class ChooseServerModel : public ModelBase
   /// @{
 private:
   QAbstractListModel *m_model;
+  ChooseServer *m_cs;
   QList<KelGuiRadio*> m_list;
   /// @}
 
@@ -42,7 +46,7 @@ public:
 public:
   /// set model into this widget
   /// @note old model will not be deleted
-  void setModel (QAbstractListModel *model);
+  void setModel (QAbstractListModel *model, ChooseServer *cs);
   QAbstractListModel *model() const;
   /// @}
 
@@ -52,6 +56,9 @@ public:
   /// @{
 public slots:
   void slotSetup();
+private slots:
+  /// radio button toggle
+  void slotToggled();
   /// @}
 };
 

@@ -28,7 +28,7 @@ ChooseServer::ChooseServer (QWidget *parent) :
   list->addServer (DapServerLocation::GERMANY, "Gremany", "Address", 8081);
 
   /* setup model */
-  ui->scrollArea->setModel (DapServersData::instance());
+  ui->scrollArea->setModel (DapServersData::instance(), this);
 
   /* signals */
   connect (ui->btnReturn, &KelGuiPushButton::clicked,
