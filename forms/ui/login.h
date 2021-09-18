@@ -1,4 +1,4 @@
-#ifndef LOGIN_H
+﻿#ifndef LOGIN_H
 #define LOGIN_H
 
 /* INCLUDES */
@@ -36,6 +36,27 @@ private:
 public:
   explicit Login (QWidget *parent = nullptr);
   ~Login();
+  /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void sigChooseServer();
+  void sigChooseSerial();
+  void sigConnect();
+  void sigObtainNewKey();
+  /// @}
+
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
+public slots:
+  void slotErrorText (QString text);
+  void slotChangeServerName (QString serverName);
+  void slotChangeSerial (QString serialKey);
   /// @}
 };
 

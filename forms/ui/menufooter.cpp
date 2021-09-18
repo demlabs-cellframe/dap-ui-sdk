@@ -9,7 +9,7 @@
 MenuFooter::MenuFooter (QWidget *parent) :
     BaseForm (parent),
   ui (new Ui::MenuFooter),
-  m_state (BS_NONE),
+  m_state (BS_CONNECTION),
   m_lock (false)
 {
   /* setup */

@@ -90,7 +90,7 @@
        </widget>
       </item>
       <item>
-       <widget class="KelGuiLabel" name="label_3">
+       <widget class="KelGuiLabel" name="lError">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -123,7 +123,7 @@ Usualy unvisible by being empty</string>
        </widget>
       </item>
       <item>
-       <widget class="KelGuiButton" name="kelGuiButton">
+       <widget class="KelGuiButton" name="btnChooseServer">
         <property name="cssStyle">
          <string>cwb_height</string>
         </property>
@@ -148,7 +148,7 @@ Usualy unvisible by being empty</string>
        </widget>
       </item>
       <item>
-       <widget class="KelGuiButton" name="kelGuiButton_2">
+       <widget class="KelGuiButton" name="btnChooseSerial">
         <property name="cssStyle">
          <string>cwb_height</string>
         </property>
@@ -180,7 +180,7 @@ Usualy unvisible by being empty</string>
        <widget class="QWidget" name="widget_3" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="KelGuiPushButton" name="kelGuiPushButton">
+          <widget class="KelGuiPushButton" name="btnConnect">
            <property name="text">
             <string>connect</string>
            </property>
@@ -193,7 +193,7 @@ Usualy unvisible by being empty</string>
        <widget class="QWidget" name="widget_4" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <property name="spacing">
-          <number>0</number>
+          <number>4</number>
          </property>
          <property name="leftMargin">
           <number>0</number>
@@ -208,7 +208,7 @@ Usualy unvisible by being empty</string>
           <number>0</number>
          </property>
          <item>
-          <widget class="KelGuiLabel" name="label_2">
+          <widget class="KelGuiLabel" name="lDontHave">
            <property name="styleSheet">
             <string notr="true">#label_2{ 	font: 16px/19px; 
  	color: #5C5B74; 
@@ -227,7 +227,7 @@ Usualy unvisible by being empty</string>
           </widget>
          </item>
          <item>
-          <widget class="KelGuiLabel" name="pushButton">
+          <widget class="KelGuiLabel" name="btnObtainNewKey">
            <property name="styleSheet">
             <string notr="true">#pushButton{ 	font: 16px/19px; 
  	color: #DA0B82; 
