@@ -27,6 +27,7 @@ SOURCES     += \
     $$PWD/ui/model/purchasemodel.cpp \
     $$PWD/ui/model/settingsmodel.cpp \
     $$PWD/ui/purchase.cpp \
+    $$PWD/ui/resetkeydialog.cpp \
     $$PWD/ui/settings.cpp \
     $$PWD/ui/splashscreen.cpp \
     $$PWD/ui/statistics.cpp
@@ -56,6 +57,7 @@ HEADERS     += \
     $$PWD/ui/model/purchasemodel.h \
     $$PWD/ui/model/settingsmodel.h \
     $$PWD/ui/purchase.h \
+    $$PWD/ui/resetkeydialog.h \
     $$PWD/ui/settings.h \
     $$PWD/ui/splashscreen.h \
     $$PWD/ui/statistics.h \
@@ -71,6 +73,7 @@ FORMS += \
     $$PWD/ui/login.ui \
     $$PWD/ui/menufooter.ui \
     $$PWD/ui/purchase.ui \
+    $$PWD/ui/resetkeydialog.ui \
     $$PWD/ui/settings.ui \
     $$PWD/ui/splashscreen.ui \
     $$PWD/ui/statistics.ui

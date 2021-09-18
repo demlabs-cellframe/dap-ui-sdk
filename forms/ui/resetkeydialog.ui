@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ResetKeyDialog</class>
+ <widget class="QWidget" name="ResetKeyDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>280</width>
+    <height>186</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="KelGuiWidget" name="kelGuiWidget">
+     <property name="cssStyle">
+      <string>backgroundcolor</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="KelGuiLabel" name="lTitle">
+        <property name="text">
+         <string>Reset the serial key</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="cssStyle">
+         <string>darkblue lato font20 normal</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="KelGuiLabel" name="lDescription">
+        <property name="text">
+         <string>This action will reset the serial
+key on your device. Are you sure?</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="cssStyle">
+         <string>gray font16 lato normal</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="KelGuiWidget" name="spacer2"/>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="KelGuiLabel" name="btnYes">
+          <property name="text">
+           <string>YES</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="cssStyle">
+           <string>darkblue font14 lato normal</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="KelGuiWidget" name="spacer"/>
+        </item>
+        <item>
+         <widget class="KelGuiLabel" name="btnNo">
+          <property name="text">
+           <string>NO</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="cssStyle">
+           <string>darkblue font14 lato normal red</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KelGuiLabel</class>
+   <extends>QLabel</extends>
+   <header>kelguilabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiWidget</class>
+   <extends>QWidget</extends>
+   <header>kelguiwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
