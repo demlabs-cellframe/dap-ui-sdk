@@ -239,6 +239,44 @@
        </widget>
       </item>
       <item>
+       <widget class="QWidget" name="Style4" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="KelGuiLineEdit" name="kelGuiLineEditMain">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="inputMask">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Main Text</string>
+           </property>
+           <property name="frame">
+            <bool>false</bool>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiLabel" name="KelGuiButtonTextSub_4">
+           <property name="text">
+            <string>Sub Text</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignHCenter|Qt::AlignTop</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
        <widget class="KelGuiSeparator" name="kelGuiSeparator">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -264,6 +302,11 @@
    <class>KelGuiSeparator</class>
    <extends>QWidget</extends>
    <header>kelguiseparator.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>kelguilineedit.h</header>
   </customwidget>
   <customwidget>
    <class>KelGuiLabel</class>

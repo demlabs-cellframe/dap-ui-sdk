@@ -14,6 +14,7 @@ HEADERS     += \
     $$PWD/kelguicheckboxplugin.h \
     $$PWD/kelguigraphicsviewplugin.h \
     $$PWD/kelguilabelplugin.h \
+    $$PWD/kelguilineeditplugin.h \
     $$PWD/kelguiplaintexteditplugin.h \
     $$PWD/kelguipushbuttonplugin.h \
     $$PWD/kelguiradioplugin.h \
@@ -28,6 +29,7 @@ SOURCES     += \
     $$PWD/kelguicheckboxplugin.cpp \
     $$PWD/kelguigraphicsviewplugin.cpp \
     $$PWD/kelguilabelplugin.cpp \
+    $$PWD/kelguilineeditplugin.cpp \
     $$PWD/kelguiplaintexteditplugin.cpp \
     $$PWD/kelguipushbuttonplugin.cpp \
     $$PWD/kelguiradioplugin.cpp \
@@ -59,6 +61,7 @@ include(kelguiradio.pri)
 include(kelguiseparator.pri)
 include(kelguitextedit.pri)
 include(kelguilabel.pri)
+include(kelguilineedit.pri)
 include(kelguiwidget.pri)
 include(style/kelguistylemanager.pri)
 

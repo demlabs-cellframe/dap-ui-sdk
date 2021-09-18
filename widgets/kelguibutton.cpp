@@ -60,12 +60,12 @@ T *as (U *u)
  *******************************************/
 
 KelGuiButton::KelGuiButton (QWidget *parent)
-  : QWidget (parent)
-  , ui (new Ui::KelGuiButtonUI)
-  , m_btnStyle (TopMainBottomSub)
-  , m_mainText ("Main text")
-  , m_subText ("Sub text")
-  , m_leftText ("$0.00")
+    : QWidget (parent)
+    , ui (new Ui::KelGuiButtonUI)
+    , m_btnStyle (TopMainBottomSub)
+    , m_mainText ("Main text")
+    , m_subText ("Sub text")
+    , m_leftText ("$0.00")
   , m_mainCssClass ("darkblue normalbold font20")
   , m_subCssClass ("gray uppercase font12")
   , m_leftCssClass ("darkblue normalbold font30")
@@ -83,13 +83,16 @@ KelGuiButton::KelGuiButton (QWidget *parent)
   m_widgets.insert ("styledWidgets", ui->Style1);
   m_widgets.insert ("styledWidgets", ui->Style2);
   m_widgets.insert ("styledWidgets", ui->Style3);
+  m_widgets.insert ("styledWidgets", ui->Style4);
   m_widgets.insert ("textMain", ui->KelGuiButtonTextMain);
   m_widgets.insert ("textMain", ui->KelGuiButtonTextMain_2);
   m_widgets.insert ("textMain", ui->KelGuiButtonTextMain_3);
   m_widgets.insert ("textMid", ui->KelGuiButtonTextMid);
+  m_widgets.insert ("textEdit", ui->kelGuiLineEditMain);
   m_widgets.insert ("textSub", ui->KelGuiButtonTextSub);
   m_widgets.insert ("textSub", ui->KelGuiButtonTextSub_2);
   m_widgets.insert ("textSub", ui->KelGuiButtonTextSub_3);
+  m_widgets.insert ("textSub", ui->KelGuiButtonTextSub_4);
   m_widgets.insert ("textRight", ui->KelGuiButtonTextRight);
   m_widgets.insert ("marginOnLink", ui->KelGuiButtonTextRight);
   m_widgets.insert ("textLeft", ui->KelGuiButtonTextLeft);
@@ -181,7 +184,7 @@ void KelGuiButton::setMainText (const QString &mainText)
 {
   m_mainText = mainText;
 
-  auto array = m_widgets.values ("textMain") + m_widgets.values ("textMid");
+  auto array = m_widgets.values ("textMain") + m_widgets.values ("textMid") + m_widgets.values ("textEdit");
   for (auto i = array.begin(), e = array.end(); i != e; i++)
     as<KelGuiLabel> (*i)->setText (m_mainText);
 
@@ -297,6 +300,17 @@ void KelGuiButton::setIconCssClass (const QString &iconCssClass)
   setupLabels();
 }
 
+QString KelGuiButton::inputMaskCssClass() const
+{
+  return m_inputMaskCssClass;
+}
+
+void KelGuiButton::setInputMaskCssClass(const QString &inputMaskCssClass)
+{
+  m_inputMaskCssClass = inputMaskCssClass;
+  ui->kelGuiLineEditMain->setInputMask(inputMaskCssClass);
+}
+
 bool KelGuiButton::link() const
 {
   return m_link;
@@ -358,6 +372,7 @@ void KelGuiButton::setupLabels()
   {
     {"textMain",  mainCssClass()  + " cwb_top"},
     {"textMid",   mainCssClass()  + " cwb_mid"},
+    {"textEdit",  mainCssClass()  + " cwb_edit"},
     {"textSub",   subCssClass()   + " cwb_bottom"},
     {"textRight", subCssClass()   + " cwb_right"},
     {"textLeft",  leftCssClass()  + " cwb_left"},
@@ -366,17 +381,18 @@ void KelGuiButton::setupLabels()
 
   for (auto i = m_widgets.begin(), e = m_widgets.end(); i != e; i++)
     {
+      as<QObject> (*i)->setProperty("cssStyle", mainCssClass() + " cwb_bottom");
       if (labelMap.contains (i.key()))
         {
           /* for swapped top and bottom labels */
           if (*i == ui->KelGuiButtonTextMain_2)
-            as<KelGuiLabel> (*i)->setCssStyle (mainCssClass() + " cwb_bottom");
+            /*as<KelGuiLabel> (*i)->setCssStyle (*/ as<QObject> (*i)->setProperty("cssStyle", mainCssClass() + " cwb_bottom");
           else if (*i == ui->KelGuiButtonTextSub_2)
-            as<KelGuiLabel> (*i)->setCssStyle (subCssClass() + " cwb_top");
+            /*as<KelGuiLabel> (*i)->setCssStyle (*/ as<QObject> (*i)->setProperty("cssStyle", subCssClass() + " cwb_top");
 
           /* for usual (top main, bottom sub) */
           else
-            as<KelGuiLabel> (*i)->setCssStyle (labelMap.value (i.key()));
+            /*as<KelGuiLabel> (*i)->setCssStyle (*/ as<QObject> (*i)->setProperty("cssStyle", labelMap.value (i.key()));
         }
     }
 }

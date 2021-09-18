@@ -98,7 +98,7 @@
          </sizepolicy>
         </property>
         <property name="styleSheet">
-         <string notr="true">#label_3{ 	font: 13px/18px; 
+         <string notr="true">#lError{ 	font: 13px/18px; 
  	color: #F53172; 
  	font-family: 'Lato'; 
  	font-weight: normal; 	font-style: normal; 	font-size: normal; }</string>
@@ -152,6 +152,9 @@ Usualy unvisible by being empty</string>
         <property name="cssStyle">
          <string>cwb_height</string>
         </property>
+        <property name="buttonStyle" stdset="0">
+         <enum>KelGuiButton::EditTopMainBottomSub</enum>
+        </property>
         <property name="mainText">
          <string>_ _ _ _   _ _ _ _   _ _ _ _   _ _ _ _</string>
         </property>
@@ -159,7 +162,7 @@ Usualy unvisible by being empty</string>
          <string>serial key</string>
         </property>
         <property name="mainCssClass">
-         <string>darkblue bold font20 lato</string>
+         <string>darkblue bold font20 lato nobackground</string>
         </property>
         <property name="subCssClass">
          <string>gray uppercase font12 lato</string>
@@ -210,7 +213,7 @@ Usualy unvisible by being empty</string>
          <item>
           <widget class="KelGuiLabel" name="lDontHave">
            <property name="styleSheet">
-            <string notr="true">#label_2{ 	font: 16px/19px; 
+            <string notr="true">#lDontHave{ 	font: 16px/19px; 
  	color: #5C5B74; 
  	font-family: 'Lato'; 
  	font-weight: normal; 	font-style: normal; 	font-size: normal; }</string>
@@ -229,7 +232,7 @@ Usualy unvisible by being empty</string>
          <item>
           <widget class="KelGuiLabel" name="btnObtainNewKey">
            <property name="styleSheet">
-            <string notr="true">#pushButton{ 	font: 16px/19px; 
+            <string notr="true">#btnObtainNewKey{ 	font: 16px/19px; 
  	color: #DA0B82; 
  	font-family: 'Lato'; 
  	font-weight: normal; 	font-style: normal; 	font-size: normal; }</string>

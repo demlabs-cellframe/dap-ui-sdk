@@ -37,6 +37,7 @@ public:
     TopSubBottomMain,     ///< top:sub,  bottom:main
     LeftTopMainBottomSub, ///< left:left, top:main, bottom:sub
     IconMainSub,          ///< icon, main, sub
+    EditTopMainBottomSub, ///< top:edit, bottom:sub
   };
   Q_ENUM (ButtonStyle)
   /// @}
@@ -53,6 +54,7 @@ public:
   Q_PROPERTY (QString subCssClass     READ subCssClass  WRITE setSubCssClass)
   Q_PROPERTY (QString leftCssClass    READ leftCssClass WRITE setLeftCssClass)
   Q_PROPERTY (QString iconCssClass    READ iconCssClass WRITE setIconCssClass)
+  Q_PROPERTY (QString inputMaskCssClass READ inputMaskCssClass WRITE setInputMaskCssClass)
   Q_PROPERTY (bool separator          READ separator    WRITE setSeparator)
   Q_PROPERTY (bool link               READ link         WRITE setLink)
   Q_PROPERTY (bool frame              READ frame        WRITE setFrame)
@@ -73,6 +75,7 @@ private:
   QString m_subCssClass;
   QString m_leftCssClass;
   QString m_iconCssClass;
+  QString m_inputMaskCssClass;
   bool m_separator;       ///< bottom separator
   bool m_link;            ///< link button
   bool m_frame;           ///< show frame
@@ -126,6 +129,9 @@ public:
 
   QString iconCssClass() const;
   void setIconCssClass (const QString &iconCssClass);
+
+  QString inputMaskCssClass() const;
+  void setInputMaskCssClass(const QString &inputMaskCssClass);
 
   bool link() const;
   void setLink (bool link);
