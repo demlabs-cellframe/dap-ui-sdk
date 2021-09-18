@@ -186,7 +186,8 @@ void KelGuiButton::setMainText (const QString &mainText)
 
   auto array = m_widgets.values ("textMain") + m_widgets.values ("textMid") + m_widgets.values ("textEdit");
   for (auto i = array.begin(), e = array.end(); i != e; i++)
-    as<KelGuiLabel> (*i)->setText (m_mainText);
+    //as<KelGuiLabel> (*i)->setText (m_mainText);
+    as<QObject> (*i)->setProperty("text", m_mainText);
 
 //  ui->KelGuiButtonTextMain->setText (m_mainText);
 //  ui->KelGuiButtonTextMain_2->setText (m_mainText);
