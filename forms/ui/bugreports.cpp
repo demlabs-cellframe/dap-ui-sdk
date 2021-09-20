@@ -2,6 +2,9 @@
 #include "bugreports.h"
 #include "ui_bugreports.h"
 
+/* VARS */
+static BugReports *__inst = nullptr;
+
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/
@@ -14,9 +17,11 @@ BugReports::BugReports (QWidget *parent) :
   movLoading (new QMovie (":/gui/ui/asset/Spinner.gif"))
 {
   /* setup */
+  __inst  = this;
   ui->setupUi (this);
   qRegisterMetaType<Mode> ("Mode");
   ui->labelLoading->setMovie (movLoading);
+  ui->top_spacer_debug->setVisible (false);
 
   /* fill map */
   m_map.insert (Write,   ui->btnAttachScreenshot);
@@ -46,6 +51,15 @@ BugReports::~BugReports()
 {
   delete ui;
   delete movLoading;
+}
+
+/********************************************
+ * METHODS
+ *******************************************/
+
+BugReports *BugReports::instance()
+{
+  return __inst;
 }
 
 /********************************************
