@@ -10,6 +10,8 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class ChooseServer; }
 QT_END_NAMESPACE
 
+class ChooseServerModel;
+
 /****************************************//**
  * @brief ui/class for server list
  * @ingroup groupUiClasses
@@ -36,6 +38,14 @@ private:
 public:
   explicit ChooseServer (QWidget *parent = nullptr);
   ~ChooseServer();
+  /// @}
+
+  /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  ChooseServerModel *model();
   /// @}
 
   /****************************************//**
