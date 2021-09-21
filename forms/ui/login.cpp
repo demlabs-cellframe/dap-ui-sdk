@@ -34,44 +34,49 @@ Login::~Login()
  * SLOTS
  *******************************************/
 
-void Login::slotKeyEnable(bool enable)
+void Login::slotKeyEnable (bool enable)
 {
   ui->btnChooseSerial->setVisible (enable);
 }
 
-void Login::slotErrorText(QString text)
+void Login::slotErrorText (QString text, ErrorColor color)
 {
   ui->lStatus->setText (text);
+  ui->lStatus->setCssStyle (
+    (color == ErrorColor::ERRCOL_RED)
+    ? "font13 red_error lato normal"
+    : "font13 darkblue lato normal"
+  );
 }
 
-void Login::slotChangeServerName(QString serverName)
+void Login::slotChangeServerName (QString serverName)
 {
   ui->btnChooseServer->setMainText (serverName);
 }
 
-void Login::slotChangeSerial(QString serialKey)
+void Login::slotChangeSerial (QString serialKey)
 {
   ui->btnChooseSerial->setMainText (serialKey);
 }
 
 void Login::slotServerChooserActivate()
 {
-    ui->btnChooseServer->setEnabled(true);
+  ui->btnChooseServer->setEnabled (true);
 }
 
 void Login::slotClearStatusLable()
 {
-    ui->lStatus->clear();
+  ui->lStatus->clear();
 }
 
-void Login::setSerialNumber(const QString &a_serial)
+void Login::setSerialNumber (const QString &a_serial)
 {
-    ui->btnChooseSerial->setMainText(a_serial);
+  ui->btnChooseSerial->setMainText (a_serial);
 }
 
 QString Login::getSerialNumber()
 {
-    return ui->btnChooseSerial->mainText();
+  return ui->btnChooseSerial->mainText();
 }
 
 /*-----------------------------------------*/

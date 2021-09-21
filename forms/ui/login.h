@@ -23,6 +23,18 @@ class Login : public BaseForm
   Q_OBJECT
 
   /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
+public:
+  enum ErrorColor
+  {
+    ERRCOL_BLACK,
+    ERRCOL_RED,
+  };
+  /// @}
+
+  /****************************************//**
    * @name VARS
    *******************************************/
   /// @{
@@ -57,12 +69,12 @@ signals:
   /// @{
 public slots:
   void slotKeyEnable (bool enable);
-  void slotErrorText (QString text);
+  void slotErrorText (QString text, ErrorColor color = ErrorColor::ERRCOL_RED);
   void slotChangeServerName (QString serverName);
   void slotChangeSerial (QString serialKey);
   void slotServerChooserActivate();
   void slotClearStatusLable();
-  void setSerialNumber(const QString &a_serial);
+  void setSerialNumber (const QString &a_serial);
   /// @}
 };
 
