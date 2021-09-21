@@ -166,6 +166,15 @@ public:
 signals:
   void clicked();         ///< button is clicked
   /// @}
+
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
+private slots:
+  /// copy info into clipboard when alt hold and mouse press
+  void _slotDebugInfo();
+  /// @}
 };
 
 /*-----------------------------------------*/

@@ -6,6 +6,9 @@
 #include <QFile>
 #include <QStyleOption>
 #include <QPainter>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QClipboard>
 
 #include <QMouseEvent>
 
@@ -146,6 +149,10 @@ KelGuiButton::KelGuiButton (QWidget *parent)
 
       connect (label, &KelGuiLabel::clicked,
                this, &KelGuiButton::clicked);
+#ifdef QT_DEBUG
+      connect (label, &KelGuiLabel::clicked,
+               this, &KelGuiButton::_slotDebugInfo);
+#endif // QT_DEBUG
     }
 }
 
@@ -415,12 +422,44 @@ void KelGuiButton::mousePressEvent (QMouseEvent *event)
 {
   if (event->button() == Qt::LeftButton)
     emit clicked();
+  _slotDebugInfo();
 }
 
 void KelGuiButton::resizeEvent (QResizeEvent *ev)
 {
   m_lLink->move (ev->size().width() - LINK_WIDTH - 10, 0);
   m_lLink->resize (LINK_WIDTH, ev->size().height());
+}
+
+void KelGuiButton::_slotDebugInfo()
+{
+#ifdef QT_DEBUG
+  if(qApp->keyboardModifiers() & Qt::AltModifier)
+    {
+      QJsonObject jobj;
+      jobj["mainText"]      = m_mainText;
+      jobj["subText"]       = m_subText;
+      jobj["leftText"]      = m_leftText;
+      jobj["mainCssClass"]  = m_mainCssClass;
+      jobj["subCssClass;"]  = m_subCssClass;
+      jobj["leftCssClass"]  = m_leftCssClass;
+      jobj["iconCssClass"]  = m_iconCssClass;
+      jobj["inputMaskCssClass"]  = m_inputMaskCssClass;
+      jobj["btnStyle"]      = m_btnStyle;
+      jobj["cssStyle"]      = QJsonObject{
+        {"name", cssStyle()},
+        {"text", styleSheet()},
+      };
+      jobj["rect"] = QJsonObject{
+        {"x",pos().x()},
+        {"y",pos().y()},
+        {"width",size().width()},
+        {"heigh",size().height()},
+      };
+      auto dump = QJsonDocument (jobj).toJson();
+      qApp->clipboard()->setText (dump);
+    }
+#endif // QT_DEBUG
 }
 
 /*-----------------------------------------*/
