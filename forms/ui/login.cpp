@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "login.h"
 #include "ui_login.h"
+#include "ui/chooseserver.h"
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -35,7 +36,7 @@ Login::~Login()
 
 void Login::slotErrorText(QString text)
 {
-  ui->lError->setText (text);
+  ui->lStatus->setText (text);
 }
 
 void Login::slotChangeServerName(QString serverName)
@@ -46,6 +47,26 @@ void Login::slotChangeServerName(QString serverName)
 void Login::slotChangeSerial(QString serialKey)
 {
   ui->btnChooseSerial->setMainText (serialKey);
+}
+
+void Login::slotServerChooserActivate()
+{
+    ui->btnChooseServer->setEnabled(true);
+}
+
+void Login::slotClearStatusLable()
+{
+    ui->lStatus->clear();
+}
+
+void Login::setSerialNumber(const QString &a_serial)
+{
+    ui->btnChooseSerial->setMainText(a_serial);
+}
+
+QString Login::getSerialNumber()
+{
+    return ui->btnChooseSerial->mainText();
 }
 
 /*-----------------------------------------*/

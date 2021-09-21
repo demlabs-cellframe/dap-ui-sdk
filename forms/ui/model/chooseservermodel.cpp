@@ -80,6 +80,9 @@ void ChooseServerModel::slotSetup()
 
   QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
   lay->addItem (sp);
+
+  if (!m_list.isEmpty())
+    emit filled();
 }
 
 void ChooseServerModel::slotToggled()
