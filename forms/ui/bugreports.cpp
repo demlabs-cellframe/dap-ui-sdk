@@ -4,6 +4,7 @@
 
 /* VARS */
 static BugReports *__inst = nullptr;
+#define MAX_LENGTH (200)
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -19,6 +20,7 @@ BugReports::BugReports (QWidget *parent) :
   /* setup */
   __inst  = this;
   ui->setupUi (this);
+  m_edit  = ui->editReport->editWidget();
   qRegisterMetaType<Mode> ("Mode");
   ui->labelLoading->setMovie (movLoading);
   ui->top_spacer_debug->setVisible (false);
@@ -33,15 +35,18 @@ BugReports::BugReports (QWidget *parent) :
 
   /* signals */
   connect (ui->radioTestList, &QRadioButton::clicked,
-           this, &BugReports::slotRadioTest);
+           this, &BugReports::_slotRadioTest);
   connect (ui->radioTestWrite, &QRadioButton::clicked,
-           this, &BugReports::slotRadioTest);
+           this, &BugReports::_slotRadioTest);
   connect (ui->radioTestLoading, &QRadioButton::clicked,
-           this, &BugReports::slotRadioTest);
+           this, &BugReports::_slotRadioTest);
 
   connect (ui->btnReturn, &KelGuiPushButton::clicked,
-           this, &BugReports:: sigReturn,
+           this, &BugReports::sigReturn,
            Qt::QueuedConnection);
+
+  connect (m_edit, &QPlainTextEdit::textChanged,
+           this, &BugReports::_slotTextChanged);
 
   /* finish setup */
   slotSetMode (Write);
@@ -102,7 +107,7 @@ void BugReports::slotSetMode (BugReports::Mode mode)
     movLoading->stop();
 }
 
-void BugReports::slotRadioTest()
+void BugReports::_slotRadioTest()
 {
   /* fill whne required */
   if (p_radioTestToMode.empty())
@@ -117,6 +122,32 @@ void BugReports::slotRadioTest()
 
   /* setup mode */
   slotSetMode (p_radioTestToMode.value (sender(), List));
+}
+
+void BugReports::_slotTextChanged()
+{
+  /* get text */
+  auto text = m_edit->toPlainText();
+
+  /* print length */
+  ui->labelLetterAmount->setText (
+    QString("%1/%2")
+    .arg (text.length())
+    .arg (MAX_LENGTH));
+
+  /* check if limit reachced */
+  if(text.length() <= MAX_LENGTH)
+    return;
+
+  /* fix text length */
+  int diff  = text.length() - MAX_LENGTH;
+  text.chop (diff);
+  m_edit->setPlainText (text);
+
+  /* fix cursor pos */
+  auto cur  = m_edit->textCursor();
+  cur.movePosition (QTextCursor::End, QTextCursor::MoveAnchor);
+  m_edit->setTextCursor (cur);
 }
 
 /*-----------------------------------------*/

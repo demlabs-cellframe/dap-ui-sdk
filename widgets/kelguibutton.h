@@ -145,6 +145,9 @@ public:
   bool separator() const;
   void setSeparator (bool separator);
 
+  QString inputText() const;
+  void setInputText (const QString &text);
+
   void setupStyle();
   void setupLabels();
   /// @}

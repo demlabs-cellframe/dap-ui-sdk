@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QMap>
 #include <QMovie>
+#include <QPlainTextEdit>
 #include "baseform.h"
 
 /* DEFS */
@@ -46,6 +47,7 @@ public:
 private:
   /// gui
   Ui::BugReports *ui;
+  QPlainTextEdit *m_edit;
   /// animation
   QMovie *movLoading;
   /// current mode
@@ -88,7 +90,8 @@ signals:
 public slots:
   void slotSetMode (Mode mode);
 private slots:
-  void slotRadioTest();
+  void _slotRadioTest();
+  void _slotTextChanged();
   /// @}
 };
 

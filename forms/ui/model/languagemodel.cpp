@@ -11,7 +11,7 @@ struct _Language
 static QList<_Language> s_langauges =
 {
   {"English"},
-  {"Русский"}
+  //{"Русский"},
 };
 
 /********************************************

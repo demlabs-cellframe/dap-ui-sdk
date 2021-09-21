@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QWidget>
+#include <QPlainTextEdit>
 
 /* DEFS */
 namespace Ui { class KelGuiPlainTextEditUI; };
@@ -53,6 +54,8 @@ public:
 
   QString plainText() const;
   void setPlainText(const QString &plainText);
+
+  QPlainTextEdit *editWidget();
   /// @}
 
   /****************************************//**

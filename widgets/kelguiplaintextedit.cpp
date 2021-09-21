@@ -54,7 +54,12 @@ QString KelGuiPlainTextEdit::plainText() const
 
 void KelGuiPlainTextEdit::setPlainText(const QString &plainText)
 {
-    ui->kgpteuPlainTextEdit->setPlainText(plainText);
+  ui->kgpteuPlainTextEdit->setPlainText(plainText);
+}
+
+QPlainTextEdit *KelGuiPlainTextEdit::editWidget()
+{
+  return ui->kgpteuPlainTextEdit;
 }
 
 /*-----------------------------------------*/

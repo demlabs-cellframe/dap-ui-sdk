@@ -361,6 +361,16 @@ void KelGuiButton::setSeparator (bool separator)
   ui->kelGuiSeparator->setVisible (m_separator);
 }
 
+QString KelGuiButton::inputText() const
+{
+  return ui->kelGuiLineEditMain->text();
+}
+
+void KelGuiButton::setInputText (const QString &text)
+{
+  ui->kelGuiLineEditMain->setText (text);
+}
+
 void KelGuiButton::setupStyle()
 {
   //ui->KelGuiButtonBackground->setFrame (m_frame);
