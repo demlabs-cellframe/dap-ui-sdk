@@ -211,6 +211,35 @@
           </widget>
          </item>
          <item>
+          <widget class="BugReportsModel" name="scrollArea">
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="widgetResizable">
+            <bool>true</bool>
+           </property>
+           <widget class="KelGuiWidget" name="scrollAreaWidgetContents">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>390</width>
+              <height>68</height>
+             </rect>
+            </property>
+            <property name="cssStyle">
+             <string>backgroundcolor</string>
+            </property>
+           </widget>
+          </widget>
+         </item>
+         <item>
           <widget class="KelGuiPlainTextEdit" name="editReport">
            <property name="placeholderText">
             <string>Please describe the details of problem you faced. What actions did you take and what happened.</string>
@@ -301,13 +330,6 @@
           </layout>
          </item>
          <item>
-          <widget class="QListView" name="listView">
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(0,0,0,0);</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <layout class="QHBoxLayout" name="horizontalLayout_7">
            <item>
             <widget class="KelGuiLabel" name="labelLoading">
@@ -384,6 +406,12 @@
    <class>KelGuiWidget</class>
    <extends>QWidget</extends>
    <header>kelguiwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>BugReportsModel</class>
+   <extends>QScrollArea</extends>
+   <header location="global">ui/model/bugreportsmodel.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

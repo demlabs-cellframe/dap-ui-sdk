@@ -691,6 +691,26 @@
 	max-height: 30pt;
 }
 
+.bugrep-item
+{
+	width: 392pt;
+	height: 64pt;
+	min-width: 392pt;
+	min-height: 64pt;
+	max-width: 392pt;
+	max-height: 64pt;
+}
+
+.bugrep-icon
+{
+	width: 34pt;
+	height: 34pt;
+	min-width: 34pt;
+	min-height: 34pt;
+	max-width: 34pt;
+	max-height: 34pt;
+}
+
 /****************************************************
  * Purchase
  ***************************************************/

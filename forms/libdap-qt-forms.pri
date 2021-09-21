@@ -20,6 +20,7 @@ SOURCES     += \
     $$PWD/ui/language.cpp \
     $$PWD/ui/login.cpp \
     $$PWD/ui/menufooter.cpp \
+    $$PWD/ui/model/bugreportsmodel.cpp \
     $$PWD/ui/model/chooseservermodel.cpp \
     $$PWD/ui/model/historymodel.cpp \
     $$PWD/ui/model/languagemodel.cpp \
@@ -50,6 +51,7 @@ HEADERS     += \
     $$PWD/ui/language.h \
     $$PWD/ui/login.h \
     $$PWD/ui/menufooter.h \
+    $$PWD/ui/model/bugreportsmodel.h \
     $$PWD/ui/model/chooseservermodel.h \
     $$PWD/ui/model/historymodel.h \
     $$PWD/ui/model/languagemodel.h \

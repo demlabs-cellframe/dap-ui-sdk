@@ -2,6 +2,8 @@
 #include "bugreports.h"
 #include "ui_bugreports.h"
 
+#include <QTimer>
+
 /* VARS */
 static BugReports *__inst = nullptr;
 #define MAX_LENGTH (200)
@@ -24,13 +26,14 @@ BugReports::BugReports (QWidget *parent) :
   qRegisterMetaType<Mode> ("Mode");
   ui->labelLoading->setMovie (movLoading);
   ui->top_spacer_debug->setVisible (false);
+  QTimer::singleShot (0, ui->scrollArea, &BugReportsModel::slotSetup);
 
   /* fill map */
   m_map.insert (Write,   ui->btnAttachScreenshot);
   m_map.insert (Write,   ui->btnSendReport);
   m_map.insert (Write,   ui->editReport);
   m_map.insert (Write,   ui->labelLetterAmount);
-  m_map.insert (List,    ui->listView);
+  m_map.insert (List,    ui->scrollArea);
   m_map.insert (Loading, ui->labelLoading);
 
   /* signals */
