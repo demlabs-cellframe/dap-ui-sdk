@@ -60,6 +60,8 @@ private slots:
   /// radio button toggle
   void slotToggled();
   /// @}
+signals:
+  void filled();
 };
 
 /*-----------------------------------------*/

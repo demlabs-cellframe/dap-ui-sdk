@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QWidget>
+#include <QStateMachine>
 #include "baseform.h"
 
 /* DEFS */
@@ -36,6 +37,7 @@ private:
 public:
   explicit Login (QWidget *parent = nullptr);
   ~Login();
+  QString getSerialNumber();
   /// @}
 
   /****************************************//**
@@ -58,6 +60,9 @@ public slots:
   void slotErrorText (QString text);
   void slotChangeServerName (QString serverName);
   void slotChangeSerial (QString serialKey);
+  void slotServerChooserActivate();
+  void slotClearStatusLable();
+  void setSerialNumber(const QString &a_serial);
   /// @}
 };
 

@@ -30,8 +30,8 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="KelGuiWidget" name="Background">
-     <property name="cssStyle">
+    <widget class="KelGuiWidget" name="Background" native="true">
+     <property name="cssStyle" stdset="0">
       <string>window backgroundcolor</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -39,8 +39,8 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget_2">
-        <property name="cssStyle">
+       <widget class="KelGuiWidget" name="kelGuiWidget_2" native="true">
+        <property name="cssStyle" stdset="0">
          <string>login-margin-connect-top</string>
         </property>
        </widget>
@@ -71,7 +71,7 @@
            <property name="text">
             <string/>
            </property>
-           <property name="cssStyle">
+           <property name="cssStyle" stdset="0">
             <string>login_logo</string>
            </property>
           </widget>
@@ -80,17 +80,17 @@
        </widget>
       </item>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget_4">
+       <widget class="KelGuiWidget" name="kelGuiWidget_4" native="true">
         <property name="styleSheet">
          <string notr="true">#kelGuiWidget_4{ 	height: 20px; 	min-height: 20px; 	max-height: 20px; }</string>
         </property>
-        <property name="cssStyle">
+        <property name="cssStyle" stdset="0">
          <string>login-margin-bottom</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="KelGuiLabel" name="lError">
+       <widget class="KelGuiLabel" name="lStatus">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -98,7 +98,7 @@
          </sizepolicy>
         </property>
         <property name="styleSheet">
-         <string notr="true">#lError{ 	font: 13px/18px; 
+         <string notr="true">#lStatus{ 	font: 13px/18px; 
  	color: #F53172; 
  	font-family: 'Lato'; 
  	font-weight: normal; 	font-style: normal; 	font-size: normal; }</string>
@@ -110,13 +110,13 @@ Usualy unvisible by being empty</string>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
-        <property name="cssStyle">
+        <property name="cssStyle" stdset="0">
          <string>font13 red_error lato normal</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="KelGuiSeparator" name="kelGuiSeparator">
+       <widget class="KelGuiSeparator" name="kelGuiSeparator" native="true">
         <property name="styleSheet">
          <string notr="true"/>
         </property>
@@ -124,8 +124,8 @@ Usualy unvisible by being empty</string>
       </item>
       <item>
        <widget class="KelGuiButton" name="btnChooseServer">
-        <property name="cssStyle">
-         <string>cwb_height</string>
+        <property name="enabled">
+         <bool>false</bool>
         </property>
         <property name="mainText">
          <string>Auto select</string>
@@ -133,51 +133,51 @@ Usualy unvisible by being empty</string>
         <property name="subText">
          <string>choosing server</string>
         </property>
-        <property name="mainCssClass">
-         <string>darkblue bold font20 lato</string>
-        </property>
-        <property name="subCssClass">
-         <string>gray uppercase font12 lato</string>
-        </property>
-        <property name="separator">
+        <property name="link">
          <bool>true</bool>
         </property>
-        <property name="link">
+        <property name="cssStyle" stdset="0">
+         <string>cwb_height</string>
+        </property>
+        <property name="mainCssClass" stdset="0">
+         <string>darkblue bold font20 lato</string>
+        </property>
+        <property name="subCssClass" stdset="0">
+         <string>gray uppercase font12 lato</string>
+        </property>
+        <property name="separator" stdset="0">
          <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
        <widget class="KelGuiButton" name="btnChooseSerial">
-        <property name="cssStyle">
-         <string>cwb_height</string>
-        </property>
-        <property name="buttonStyle" stdset="0">
-         <enum>KelGuiButton::EditTopMainBottomSub</enum>
-        </property>
         <property name="mainText">
          <string/>
         </property>
         <property name="subText">
          <string>serial key</string>
         </property>
-        <property name="mainCssClass">
+        <property name="cssStyle" stdset="0">
+         <string>cwb_height</string>
+        </property>
+        <property name="mainCssClass" stdset="0">
          <string>darkblue bold font20 lato nobackground letterspace</string>
         </property>
-        <property name="subCssClass">
+        <property name="subCssClass" stdset="0">
          <string>gray uppercase font12 lato</string>
         </property>
-        <property name="inputMaskCssClass">
+        <property name="inputMaskCssClass" stdset="0">
          <string>&gt;NNNN-NNNN-NNNN-NNNN;_</string>
         </property>
-        <property name="separator">
+        <property name="separator" stdset="0">
          <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget">
-        <property name="cssStyle">
+       <widget class="KelGuiWidget" name="kelGuiWidget" native="true">
+        <property name="cssStyle" stdset="0">
          <string>login-margin-at-connect {</string>
         </property>
        </widget>
@@ -227,7 +227,7 @@ Usualy unvisible by being empty</string>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
-           <property name="cssStyle">
+           <property name="cssStyle" stdset="0">
             <string>font16 gray_passive lato normal</string>
            </property>
           </widget>
@@ -243,7 +243,7 @@ Usualy unvisible by being empty</string>
            <property name="text">
             <string>Tap here to obtain one</string>
            </property>
-           <property name="cssStyle">
+           <property name="cssStyle" stdset="0">
             <string>font16 red lato normal</string>
            </property>
            <property name="flat" stdset="0">
@@ -255,8 +255,8 @@ Usualy unvisible by being empty</string>
        </widget>
       </item>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget_3">
-        <property name="cssStyle">
+       <widget class="KelGuiWidget" name="kelGuiWidget_3" native="true">
+        <property name="cssStyle" stdset="0">
          <string>footer</string>
         </property>
        </widget>
