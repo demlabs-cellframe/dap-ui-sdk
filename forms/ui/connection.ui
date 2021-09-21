@@ -63,7 +63,7 @@ background-color: #F7F8FA;
       <item>
        <widget class="KelGuiLabel" name="lTitle">
         <property name="styleSheet">
-         <string notr="true">#label{ 	height: 28px; 	min-height: 28px; 	max-height: 28px; 
+         <string notr="true">#lTitle{ 	height: 28px; 	min-height: 28px; 	max-height: 28px; 
  	font: 24px/29px; 
  	color: #DA0B82; 
  	font-weight: normal; 	font-style: normal; 	font-size: bold; 
@@ -124,7 +124,7 @@ background-color: #F7F8FA;
          <item>
           <widget class="KelGuiLabel" name="lUptime">
            <property name="styleSheet">
-            <string notr="true">#label_2{ 	height: 22px; 	min-height: 22px; 	max-height: 22px; 
+            <string notr="true">#lUptime{ 	height: 22px; 	min-height: 22px; 	max-height: 22px; 
  	font: 18px/22px; 
  	font-weight: normal; 	font-style: normal; 	font-size: normal; 
  	color: #04004E; 
@@ -231,8 +231,14 @@ background-color: #F7F8FA;
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <widget class="KelGuiButton" name="btnServer">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="styleSheet">
-           <string notr="true">#kelGuiButton_3{ 	width: 357px; 	height: 96px; 	min-width: 357px; 	min-height: 96px; 	max-width: 357px; 	max-height: 96px; }</string>
+           <string notr="true">#btnServer{ 	width: 357px; 	height: 96px; 	min-width: 357px; 	min-height: 96px; 	max-width: 357px; 	max-height: 96px; }</string>
           </property>
           <property name="cssStyle">
            <string>conn-connectedto-button</string>

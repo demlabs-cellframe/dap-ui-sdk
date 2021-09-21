@@ -38,6 +38,7 @@ Connection::Connection (QWidget *parent) :
            Qt::QueuedConnection);
 
   /* finish */
+  slotSetDownUp (0, 0);
   _slotUpdateStatusIcon();
 }
 
