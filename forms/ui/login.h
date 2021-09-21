@@ -54,6 +54,7 @@ signals:
    *******************************************/
   /// @{
 public slots:
+  void slotKeyEnable (bool enable);
   void slotErrorText (QString text);
   void slotChangeServerName (QString serverName);
   void slotChangeSerial (QString serialKey);

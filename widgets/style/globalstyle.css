@@ -402,6 +402,16 @@
 	image: url("://gui/ui/asset/Spinner.gif");
 }
 
+.ic_online
+{
+	image: url("://gui/ui/asset/icon_offline.png");
+}
+
+.ic_offline
+{
+	image: url("://gui/ui/asset/icon_online.png");
+}
+
 /****************************************************
  * Splash Screen
  ***************************************************/
@@ -519,6 +529,17 @@
 	min-height: 96pt;
 	max-width: 357pt;
 	max-height: 96pt;
+}
+
+.conn-status-icon
+{
+	width: 5pt;
+	height: 5pt;
+	min-width: 5pt;
+	min-height: 5pt;
+	max-width: 5pt;
+	max-height: 5pt;
+	margin-right: 11pt;
 }
 
 /****************************************************

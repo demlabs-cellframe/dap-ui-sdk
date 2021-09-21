@@ -33,6 +33,11 @@ Login::~Login()
  * SLOTS
  *******************************************/
 
+void Login::slotKeyEnable(bool enable)
+{
+  ui->btnChooseSerial->setVisible (enable);
+}
+
 void Login::slotErrorText(QString text)
 {
   ui->lError->setText (text);
