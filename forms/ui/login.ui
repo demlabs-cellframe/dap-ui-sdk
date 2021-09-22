@@ -30,8 +30,8 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="KelGuiWidget" name="Background" native="true">
-     <property name="cssStyle" stdset="0">
+    <widget class="KelGuiWidget" name="Background">
+     <property name="cssStyle">
       <string>window backgroundcolor</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -39,8 +39,8 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget_2" native="true">
-        <property name="cssStyle" stdset="0">
+       <widget class="KelGuiWidget" name="kelGuiWidget_2">
+        <property name="cssStyle">
          <string>login-margin-connect-top</string>
         </property>
        </widget>
@@ -71,7 +71,7 @@
            <property name="text">
             <string/>
            </property>
-           <property name="cssStyle" stdset="0">
+           <property name="cssStyle">
             <string>login_logo</string>
            </property>
           </widget>
@@ -80,11 +80,11 @@
        </widget>
       </item>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget_4" native="true">
+       <widget class="KelGuiWidget" name="kelGuiWidget_4">
         <property name="styleSheet">
          <string notr="true">#kelGuiWidget_4{ 	height: 20px; 	min-height: 20px; 	max-height: 20px; }</string>
         </property>
-        <property name="cssStyle" stdset="0">
+        <property name="cssStyle">
          <string>login-margin-bottom</string>
         </property>
        </widget>
@@ -110,13 +110,13 @@ Usualy unvisible by being empty</string>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
-        <property name="cssStyle" stdset="0">
+        <property name="cssStyle">
          <string>font13 red_error lato normal</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="KelGuiSeparator" name="kelGuiSeparator" native="true">
+       <widget class="KelGuiSeparator" name="kelGuiSeparator">
         <property name="styleSheet">
          <string notr="true"/>
         </property>
@@ -127,57 +127,60 @@ Usualy unvisible by being empty</string>
         <property name="enabled">
          <bool>false</bool>
         </property>
+        <property name="cssStyle">
+         <string>cwb_height</string>
+        </property>
         <property name="mainText">
          <string>Auto select</string>
         </property>
         <property name="subText">
          <string>choosing server</string>
         </property>
-        <property name="link">
-         <bool>true</bool>
-        </property>
-        <property name="cssStyle" stdset="0">
-         <string>cwb_height</string>
-        </property>
-        <property name="mainCssClass" stdset="0">
+        <property name="mainCssClass">
          <string>darkblue bold font20 lato</string>
         </property>
-        <property name="subCssClass" stdset="0">
+        <property name="subCssClass">
          <string>gray uppercase font12 lato</string>
         </property>
-        <property name="separator" stdset="0">
+        <property name="separator">
+         <bool>true</bool>
+        </property>
+        <property name="link">
          <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
        <widget class="KelGuiButton" name="btnChooseSerial">
+        <property name="cssStyle">
+         <string>cwb_height</string>
+        </property>
+        <property name="buttonStyle" stdset="0">
+         <enum>KelGuiButton::EditTopMainBottomSub</enum>
+        </property>
         <property name="mainText">
          <string/>
         </property>
         <property name="subText">
          <string>serial key</string>
         </property>
-        <property name="cssStyle" stdset="0">
-         <string>cwb_height</string>
-        </property>
-        <property name="mainCssClass" stdset="0">
+        <property name="mainCssClass">
          <string>darkblue bold font20 lato nobackground letterspace</string>
         </property>
-        <property name="subCssClass" stdset="0">
+        <property name="subCssClass">
          <string>gray uppercase font12 lato</string>
         </property>
-        <property name="inputMaskCssClass" stdset="0">
+        <property name="inputMaskCssClass">
          <string>&gt;NNNN-NNNN-NNNN-NNNN;_</string>
         </property>
-        <property name="separator" stdset="0">
+        <property name="separator">
          <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget" native="true">
-        <property name="cssStyle" stdset="0">
+       <widget class="KelGuiWidget" name="kelGuiWidget">
+        <property name="cssStyle">
          <string>login-margin-at-connect {</string>
         </property>
        </widget>
@@ -227,7 +230,7 @@ Usualy unvisible by being empty</string>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
-           <property name="cssStyle" stdset="0">
+           <property name="cssStyle">
             <string>font16 gray_passive lato normal</string>
            </property>
           </widget>
@@ -243,7 +246,7 @@ Usualy unvisible by being empty</string>
            <property name="text">
             <string>Tap here to obtain one</string>
            </property>
-           <property name="cssStyle" stdset="0">
+           <property name="cssStyle">
             <string>font16 red lato normal</string>
            </property>
            <property name="flat" stdset="0">
@@ -255,8 +258,8 @@ Usualy unvisible by being empty</string>
        </widget>
       </item>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget_3" native="true">
-        <property name="cssStyle" stdset="0">
+       <widget class="KelGuiWidget" name="kelGuiWidget_3">
+        <property name="cssStyle">
          <string>footer</string>
         </property>
        </widget>
