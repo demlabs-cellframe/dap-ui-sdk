@@ -168,6 +168,8 @@ public:
   /// @{
 signals:
   void clicked();         ///< button is clicked
+  void textChanged(const QString &);
+  void textEdited(const QString &);
   /// @}
 
   /****************************************//**

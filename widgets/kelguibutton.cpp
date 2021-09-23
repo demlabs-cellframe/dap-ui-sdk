@@ -154,6 +154,12 @@ KelGuiButton::KelGuiButton (QWidget *parent)
                this, &KelGuiButton::_slotDebugInfo);
 #endif // QT_DEBUG
     }
+
+  /* signals */
+  connect (ui->kelGuiLineEditMain, &KelGuiLineEdit::textChanged,
+           this, &KelGuiButton::textChanged);
+  connect (ui->kelGuiLineEditMain, &KelGuiLineEdit::textEdited,
+           this, &KelGuiButton::textEdited);
 }
 
 KelGuiButton::~KelGuiButton()
