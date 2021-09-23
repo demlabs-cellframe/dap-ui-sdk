@@ -145,9 +145,6 @@ public:
   bool separator() const;
   void setSeparator (bool separator);
 
-  QString inputText() const;
-  void setInputText (const QString &text);
-
   void setupStyle();
   void setupLabels();
   /// @}
@@ -179,6 +176,7 @@ signals:
 private slots:
   /// copy info into clipboard when alt hold and mouse press
   void _slotDebugInfo();
+  void _slotTextEdited(const QString &a_text);
   /// @}
 };
 

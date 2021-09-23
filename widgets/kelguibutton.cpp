@@ -109,22 +109,6 @@ KelGuiButton::KelGuiButton (QWidget *parent)
   m_lLink->setParent (ui->KelGuiButtonBackground);
   m_lLink->hide();
 
-  /* final style manip */
-//  auto labelStyle = Common::fromFile ("://styles/buttonlabel.css");
-//  for (auto i = m_widgets.begin(), e = m_widgets.end(); i != e; i++)
-//    if (i.key() != "styledWidgets")
-//      (*i)->setStyleSheet (labelStyle);
-
-//  ui->KelGuiButtonTextMain->setStyleSheet (labelStyle);
-//  ui->KelGuiButtonTextMain_2->setStyleSheet (labelStyle);
-//  ui->KelGuiButtonTextMain_3->setStyleSheet (labelStyle);
-//  ui->KelGuiButtonTextMain_4->setStyleSheet (labelStyle);
-//  ui->KelGuiButtonTextSub->setStyleSheet (labelStyle);
-//  ui->KelGuiButtonTextSub_2->setStyleSheet (labelStyle);
-//  ui->KelGuiButtonTextSub_3->setStyleSheet (labelStyle);
-//  ui->KelGuiButtonTextSub_4->setStyleSheet (labelStyle);
-//  ui->KelGuiButtonTextLeft->setStyleSheet (labelStyle);
-
   //setIcon (m_icon);
   setupStyle();
   setSeparator (false);
@@ -160,6 +144,8 @@ KelGuiButton::KelGuiButton (QWidget *parent)
            this, &KelGuiButton::textChanged);
   connect (ui->kelGuiLineEditMain, &KelGuiLineEdit::textEdited,
            this, &KelGuiButton::textEdited);
+  connect (ui->kelGuiLineEditMain, &KelGuiLineEdit::textEdited,
+           this, &KelGuiButton::_slotTextEdited);
 }
 
 KelGuiButton::~KelGuiButton()
@@ -201,11 +187,6 @@ void KelGuiButton::setMainText (const QString &mainText)
   for (auto i = array.begin(), e = array.end(); i != e; i++)
     //as<KelGuiLabel> (*i)->setText (m_mainText);
     as<QObject> (*i)->setProperty("text", m_mainText);
-
-//  ui->KelGuiButtonTextMain->setText (m_mainText);
-//  ui->KelGuiButtonTextMain_2->setText (m_mainText);
-//  ui->KelGuiButtonTextMain_3->setText (m_mainText);
-//  ui->KelGuiButtonTextMain_4->setText (m_mainText);
 }
 
 QString KelGuiButton::subText() const
@@ -243,15 +224,6 @@ void KelGuiButton::setSubText (const QString &subText)
             btnStyle() == LeftTopMainBottomSub
             || btnStyle() == IconMainSub, !m_subText.isEmpty()));
     }
-
-//  ui->KelGuiButtonTextSub->setVisible (!subText.isEmpty());
-//  ui->KelGuiButtonTextSub_2->setVisible (!subText.isEmpty());
-//  ui->KelGuiButtonTextSub_3->setVisible (!subText.isEmpty());
-//  ui->KelGuiButtonTextSub_4->setVisible (!subText.isEmpty());
-//  ui->KelGuiButtonTextSub->setText (m_subText);
-//  ui->KelGuiButtonTextSub_2->setText (m_subText);
-//  ui->KelGuiButtonTextSub_3->setText (m_subText);
-//  ui->KelGuiButtonTextSub_4->setText (m_subText);
 }
 
 QString KelGuiButton::leftText() const
@@ -266,8 +238,6 @@ void KelGuiButton::setLeftText (const QString &leftText)
   auto array = m_widgets.values ("textLeft");
   for (auto i = array.begin(), e = array.end(); i != e; i++)
     as<KelGuiLabel> (*i)->setText (m_leftText);
-
-  //ui->KelGuiButtonTextLeft->setText (m_leftText);
 }
 
 QString KelGuiButton::mainCssClass() const
@@ -342,7 +312,6 @@ void KelGuiButton::setLink (bool link)
       auto js = j->cssStyle();
       j->setCssStyle (js + " margin-right28");
     }
-  //setStyleSheet(fromFile ("://styles/buttonlabel.css") + "QLabel{margin-right: 28px;}");
 }
 
 bool KelGuiButton::frame() const
@@ -365,16 +334,6 @@ void KelGuiButton::setSeparator (bool separator)
 {
   m_separator = separator;
   ui->kelGuiSeparator->setVisible (m_separator);
-}
-
-QString KelGuiButton::inputText() const
-{
-  return ui->kelGuiLineEditMain->text();
-}
-
-void KelGuiButton::setInputText (const QString &text)
-{
-  ui->kelGuiLineEditMain->setText (text);
 }
 
 void KelGuiButton::setupStyle()
@@ -476,6 +435,11 @@ void KelGuiButton::_slotDebugInfo()
       qApp->clipboard()->setText (dump);
     }
 #endif // QT_DEBUG
+}
+
+void KelGuiButton::_slotTextEdited(const QString &a_text)
+{
+  m_mainText = a_text;
 }
 
 /*-----------------------------------------*/
