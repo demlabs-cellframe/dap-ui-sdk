@@ -81,6 +81,7 @@ public:
   /// @{
 signals:
   void sigReturn();
+  void sigSend();
   /// @}
 
   /****************************************//**

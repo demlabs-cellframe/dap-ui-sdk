@@ -47,6 +47,9 @@ BugReports::BugReports (QWidget *parent) :
   connect (ui->btnReturn, &KelGuiPushButton::clicked,
            this, &BugReports::sigReturn,
            Qt::QueuedConnection);
+  connect (ui->btnSendReport, &KelGuiPushButton::clicked,
+           this, &BugReports::sigSend,
+           Qt::QueuedConnection);
 
   connect (m_edit, &QPlainTextEdit::textChanged,
            this, &BugReports::_slotTextChanged);
