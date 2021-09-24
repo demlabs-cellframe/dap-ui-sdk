@@ -75,7 +75,7 @@ KelGuiButton::KelGuiButton (QWidget *parent)
   , m_iconCssClass ("")
   , m_link (false)
   , m_frame (false)
-  , m_effect (new QGraphicsDropShadowEffect)
+  , m_shadowEffect (new QGraphicsDropShadowEffect)
   , m_lLink (new QLabel (this))
 {
   /* setup style */
@@ -114,14 +114,13 @@ KelGuiButton::KelGuiButton (QWidget *parent)
   setSeparator (false);
 
   /* setup shadow effect */
-  m_effect->setBlurRadius (40);
-  m_effect->setXOffset (10);
-  m_effect->setYOffset (10);
-  m_effect->setColor (QColor::fromRgba (qRgba (0x40, 0x14, 0x24, 0x24)));
-  m_effect->setEnabled (true);
+  m_shadowEffect->setBlurRadius (40);
+  m_shadowEffect->setXOffset (10);
+  m_shadowEffect->setYOffset (10);
+  m_shadowEffect->setColor (QColor::fromRgba (qRgba (0x40, 0x14, 0x24, 0x24)));
 
-  setGraphicsEffect (m_effect);
-  m_effect->setEnabled (false);
+  setGraphicsEffect (m_shadowEffect);
+  m_shadowEffect->setEnabled (false);
 
   /* connect clicked signals */
   for (auto i = m_widgets.begin(), e = m_widgets.end(); i != e; i++)
@@ -343,7 +342,7 @@ void KelGuiButton::setupStyle()
   //ui->KelGuiButtonBackground->setStyleSheet (ui->KelGuiButtonBackground->styleSheet());
   //ui->KelGuiButtonBackground->repaint();
 
-  m_effect->setEnabled (m_frame);
+  m_shadowEffect->setEnabled (m_frame);
   setBtnStyle (m_btnStyle);
   setStyleSheet (styleSheet());
   repaint();

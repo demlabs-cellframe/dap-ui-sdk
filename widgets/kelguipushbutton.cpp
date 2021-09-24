@@ -36,6 +36,7 @@ static QMap<KelGuiPushButton::Style, _KgpbItem> s_presets =
 KelGuiPushButton::KelGuiPushButton (QWidget *parent)
   : QPushButton (parent)
   , m_style (Main)
+  , m_opacityEffect (new QGraphicsOpacityEffect)
 #ifdef ENABLEPURPLE
   , m_text ("Push Button")
   , m_label (new QLabel (m_text))
@@ -67,6 +68,12 @@ KelGuiPushButton::KelGuiPushButton (QWidget *parent)
   //setStyleSheet (fromFile ("://styles/pushbutton.css"));
   //updateStyle();
   setStyle (m_style);
+
+  /* setup opacity */
+  m_opacityEffect->setOpacity (0.5);
+  m_opacityEffect->setEnabled (true);
+  setGraphicsEffect (m_opacityEffect);
+  setAutoFillBackground (true);
 
   /* signals */
   connect (this, &QPushButton::clicked,
@@ -104,6 +111,16 @@ void KelGuiPushButton::setStyle (const Style &style)
 
   updateStyle();
   emit styleChanged();
+}
+
+void KelGuiPushButton::setEnabled(bool value)
+{
+  setDisabled (!value);
+}
+
+void KelGuiPushButton::setDisabled(bool value)
+{
+  m_opacityEffect->setOpacity (value ? 0.5 : 1);
 }
 
 #ifdef ENABLEPURPLE

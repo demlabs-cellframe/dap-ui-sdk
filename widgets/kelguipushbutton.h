@@ -6,8 +6,10 @@
 #include <QLabel>
 #include <QUrl>
 #include <QGraphicsDropShadowEffect>
+#include <QGraphicsOpacityEffect>
 #include <memory>
 #include "kelguipushbuttonstylemanager.h"
+
 /* DEFS */
 //#define ENABLEPURPLE
 
@@ -70,6 +72,7 @@ private:
   Style m_style;
   QUrl m_custom, m_customHover, m_customPushed;
   QString m_customCss;
+  QGraphicsOpacityEffect *m_opacityEffect;
 
 #ifdef ENABLEPURPLE
   QString m_text;
@@ -95,6 +98,9 @@ public:
 
   Style style() const;
   void setStyle (const Style &style);
+
+  void setEnabled(bool value);
+  void setDisabled(bool value);
 
 #ifdef ENABLEPURPLE
   QString text() const;

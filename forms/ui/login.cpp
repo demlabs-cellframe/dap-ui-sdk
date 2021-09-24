@@ -39,6 +39,11 @@ void Login::slotKeyEnable (bool enable)
   ui->btnChooseSerial->setVisible (enable);
 }
 
+void Login::slotSetConnectBtnEnabled(bool enable)
+{
+  ui->btnConnect->setEnabled (enable);
+}
+
 void Login::slotErrorText (QString text, ErrorColor color)
 {
   ui->lStatus->setText (text);

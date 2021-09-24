@@ -42,6 +42,7 @@ public:
   /// @{
 public slots:
   void slotSetup();
+  void slotSetDaysLeft (QString days);
   void slotClicked();
   /// @}
 };

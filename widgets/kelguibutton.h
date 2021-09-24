@@ -80,7 +80,7 @@ private:
   bool m_link;            ///< link button
   bool m_frame;           ///< show frame
 
-  QGraphicsDropShadowEffect *m_effect; ///< @note attached widget will take control. this means instance doesnt need to be deleted
+  QGraphicsDropShadowEffect *m_shadowEffect; ///< @note attached widget will take control. this means instance doesnt need to be deleted
   QMultiMap<QString, QWidget *> m_widgets; ///< categorized map for widget
 
   /// labels

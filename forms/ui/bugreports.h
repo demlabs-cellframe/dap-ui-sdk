@@ -34,6 +34,7 @@ public:
     List,
     Write,
     Loading,
+    Result,
   };
   Q_ENUM (Mode);
   /// @}
@@ -73,6 +74,9 @@ public:
   /// @{
 public:
   static BugReports *instance();
+  QString text() const;
+  void setText (const QString &a_text);
+  void setResultText (const QString &a_result);
   /// @}
 
   /****************************************//**
@@ -82,6 +86,7 @@ public:
 signals:
   void sigReturn();
   void sigSend();
+  void sigResultBack();
   /// @}
 
   /****************************************//**

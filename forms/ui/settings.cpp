@@ -17,6 +17,10 @@ Settings::Settings (QWidget *parent) :
   ui->setupUi (this);
   ui->scrollArea->setInterface (this); // this will allow to send signals
 
+  /* signals */
+  connect (this, &Settings::sigSetDaysLeft,
+           ui->scrollArea, &SettingsModel::slotSetDaysLeft);
+
   /* start model */
   QTimer::singleShot (0, ui->scrollArea, &SettingsModel::slotSetup);
 }

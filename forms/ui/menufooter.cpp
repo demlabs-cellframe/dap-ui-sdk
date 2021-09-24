@@ -73,7 +73,8 @@ void MenuFooter::slotSetButtonState (MenuFooter::ButtonState state)
   m_lock = true;
 
   /* store state */
-  m_state = state;
+  if (state != BS_NONE)
+    m_state = state;
 
   /* setup buttons */
   ui->btnSettings->setChecked (m_state == BS_SETTINGS);

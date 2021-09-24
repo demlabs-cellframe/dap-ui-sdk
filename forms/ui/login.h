@@ -69,6 +69,7 @@ signals:
   /// @{
 public slots:
   void slotKeyEnable (bool enable);
+  void slotSetConnectBtnEnabled (bool enable);
   void slotErrorText (QString text, ErrorColor color = ErrorColor::ERRCOL_RED);
   void slotChangeServerName (QString serverName);
   void slotChangeSerial (QString serialKey);

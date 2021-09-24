@@ -65,9 +65,9 @@ static QList<_SItem> s_items =
 {
   _SItem{SI_TITLE,      {"Settings", ""}, "settings_icon", defaultCb},
 
-  _SItem{SI_BUTTONRED,  {"Get new licence key", "265 days left"}, "settings_icon ic_renew", cbLicenceGet},
+  _SItem{SI_BUTTONRED,  {"Get new licence key", /*"265 days left"*/" "}, "settings_icon ic_renew", cbLicenceGet},
   _SItem{SI_BUTTON,     {"Reset licence key"}, "settings_icon ic_key", cbLicenceReset},
-  _SItem{SI_LINK,       {"Language"}, "settings_icon ic_language", cbLanguage},
+  //_SItem{SI_LINK,       {"Language"}, "settings_icon ic_language", cbLanguage},
 
   _SItem{SI_TITLE,      {"Support", ""}, "settings_icon", defaultCb},
 
@@ -76,14 +76,15 @@ static QList<_SItem> s_items =
 
   _SItem{SI_TITLE,      {"Information", ""}, "settings_icon", defaultCb},
 
-  _SItem{SI_LINK,       {"Bug Report"}, "settings_icon ic_information_bug-report", cbBugReport},
-  _SItem{SI_BUTTON,     {"Serial key history on this device"}, "settings_icon ic_key-history", cbLicenceHistory},
+  //_SItem{SI_LINK,       {"Bug Reports"}, "settings_icon ic_information_bug-report", cbBugReport},
+  //_SItem{SI_BUTTON,     {"Serial key history on this device"}, "settings_icon ic_key-history", cbLicenceHistory},
   _SItem{SI_BUTTON,     {"Terms of use"}, "settings_icon ic_terms_policy", cbTermsOfUse},
   _SItem{SI_BUTTON,     {"Privacy policy"}, "settings_icon ic_terms_policy", cbPrivacyPolicy},
   _SItem{SI_BUTTONGRAY, {"Version", "@version"}, "settings_icon ic_version", cbVersion},
 };
 
 static QMap<KelGuiButton*, ItemCB> s_btnCallbacks;
+static KelGuiButton* s_licenceKey;
 
 /* VARS */
 Settings *s_settings = nullptr;
@@ -122,6 +123,7 @@ void SettingsModel::slotSetup()
   setupLayout();
 
   /* add every item */
+  int i = 0;
   foreach (auto &item, s_items)
     {
       /* get item and preset */
@@ -153,13 +155,25 @@ void SettingsModel::slotSetup()
       lay->addWidget (btn);
 
       /* store callback */
-      s_btnCallbacks.insert(btn,item.cb);
+      s_btnCallbacks.insert (btn, item.cb);
+
+      /* store licence key button */
+      if (i == 1)
+        s_licenceKey = btn;
 
       /* connect signal */
       connect (btn, &KelGuiButton::clicked,
                this, &SettingsModel::slotClicked,
                Qt::QueuedConnection);
+
+      i++;
     }
+}
+
+void SettingsModel::slotSetDaysLeft(QString days)
+{
+  if (s_licenceKey)
+    s_licenceKey->setSubText (days);
 }
 
 void SettingsModel::slotClicked()

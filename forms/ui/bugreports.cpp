@@ -35,6 +35,8 @@ BugReports::BugReports (QWidget *parent) :
   m_map.insert (Write,   ui->labelLetterAmount);
   m_map.insert (List,    ui->scrollArea);
   m_map.insert (Loading, ui->labelLoading);
+  m_map.insert (Result,  ui->lResult);
+  m_map.insert (Result,  ui->btnResultBack);
 
   /* signals */
   connect (ui->radioTestList, &QRadioButton::clicked,
@@ -49,6 +51,9 @@ BugReports::BugReports (QWidget *parent) :
            Qt::QueuedConnection);
   connect (ui->btnSendReport, &KelGuiPushButton::clicked,
            this, &BugReports::sigSend,
+           Qt::QueuedConnection);
+  connect (ui->btnResultBack, &KelGuiPushButton::clicked,
+           this, &BugReports::sigResultBack,
            Qt::QueuedConnection);
 
   connect (m_edit, &QPlainTextEdit::textChanged,
@@ -73,6 +78,21 @@ BugReports *BugReports::instance()
   return __inst;
 }
 
+QString BugReports::text() const
+{
+  return ui->editReport->plainText();
+}
+
+void BugReports::setText(const QString &a_text)
+{
+  ui->editReport->setPlainText (a_text);
+}
+
+void BugReports::setResultText(const QString &a_result)
+{
+  ui->lResult->setText(a_result);
+}
+
 /********************************************
  * PUBLIC SLOTS
  *******************************************/
@@ -83,11 +103,11 @@ void BugReports::slotSetMode (BugReports::Mode mode)
   m_mode = mode;
 
   /* prepare hidings */
-  QList<Mode> hidden = {List, Write, Loading};
+  QList<Mode> hidden = {List, Write, Loading, Result};
   hidden.removeOne (mode);
 
   /* show/hide items in cycle */
-  for (int ns = 0; ns < 3; ns++)
+  for (int ns = 0; ns < 4; ns++)
     {
       /*
        * get values based on hidden or current mode
@@ -95,13 +115,13 @@ void BugReports::slotSetMode (BugReports::Mode mode)
        */
       auto values =
         m_map.values (
-          (ns < 2)
+          (ns < 3)
           ? (hidden.at (ns))
           : (mode));
 
       /* set visisble only on third cycle */
       foreach (auto *w, values)
-        w->setVisible (ns == 2);
+        w->setVisible (ns == 3);
     }
 
   /* movie */
