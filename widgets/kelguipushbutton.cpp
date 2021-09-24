@@ -71,7 +71,7 @@ KelGuiPushButton::KelGuiPushButton (QWidget *parent)
 
   /* setup opacity */
   m_opacityEffect->setOpacity (0.5);
-  m_opacityEffect->setEnabled (true);
+  m_opacityEffect->setEnabled (false);
   setGraphicsEffect (m_opacityEffect);
   setAutoFillBackground (true);
 
