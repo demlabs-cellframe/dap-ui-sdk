@@ -24,10 +24,10 @@ PopupDialog::PopupDialog (QWidget *parent) :
            Qt::QueuedConnection);
 
   connect (ui->btnYes, &KelGuiLabel::clicked,
-           this, &PopupDialog::slotButtonPress,
+           this, &PopupDialog::_slotButtonPress,
            Qt::QueuedConnection);
   connect (ui->btnNo, &KelGuiLabel::clicked,
-           this, &PopupDialog::slotButtonPress,
+           this, &PopupDialog::_slotButtonPress,
            Qt::QueuedConnection);
 
   m_shadow->setStyleSheet (
@@ -76,7 +76,7 @@ void PopupDialog::slotShow (QWidget *parent, const QString &a_title, const QStri
   show();
 }
 
-void PopupDialog::slotButtonPress()
+void PopupDialog::_slotButtonPress()
 {
   /* delete effect and enable parent wodget */
   m_parent->setGraphicsEffect (nullptr);
