@@ -22,12 +22,21 @@ Settings::Settings (QWidget *parent) :
            ui->scrollArea, &SettingsModel::slotSetDaysLeft);
 
   /* start model */
-  QTimer::singleShot (0, ui->scrollArea, &SettingsModel::slotSetup);
+  ui->scrollArea->slotSetup();
 }
 
 Settings::~Settings()
 {
   delete ui;
+}
+
+/********************************************
+ * SLOTS
+ *******************************************/
+
+void Settings::slotSetVersion(const QString &a_text)
+{
+  ui->scrollArea->setVersionText (a_text);
 }
 
 /*-----------------------------------------*/
