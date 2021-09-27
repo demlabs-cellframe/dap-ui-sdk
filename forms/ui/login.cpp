@@ -23,6 +23,28 @@ Login::Login (QWidget *parent) :
            this, &Login::sigConnect);
   connect (ui->btnObtainNewKey, &KelGuiLabel::clicked,
            this, &Login::sigObtainNewKey);
+  connect (ui->btnChooseSerial, &KelGuiButton::textChanged,
+          this, &Login::sigObtainNewKey);
+
+
+  connect(ui->btnChooseSerial, &KelGuiButton::textChanged,[this](QString text){
+      if (ui->btnChooseSerial->mainText().remove("-").count() == MAX_COUNT_CHAR)
+          emit textChangedAndFilledOut(ui->btnChooseSerial->mainText().remove("-"));
+      else if(ui->btnChooseSerial->mainText().remove("-").isEmpty())
+          emit textChangedAndCleaned();
+      else
+          emit slotSerialFillingIncorrect();
+  });
+  connect(ui->btnChooseSerial, &KelGuiButton::textEdited,[this](QString text){
+      Q_UNUSED(text);
+      if (ui->btnChooseSerial->mainText().remove("-").count() == MAX_COUNT_CHAR)
+          emit textEditedAndFilledOut(ui->btnChooseSerial->mainText());
+      else if(ui->btnChooseSerial->mainText().remove("-").isEmpty())
+          emit textEditedAndCleaned();
+      else
+          emit slotSerialFillingIncorrect();
+  });
+
 }
 
 Login::~Login()
@@ -41,7 +63,13 @@ void Login::slotKeyEnable (bool enable)
 
 void Login::slotSetConnectBtnEnabled(bool enable)
 {
-  ui->btnConnect->setEnabled (enable);
+//    ui->btnConnect->setDisabled()
+  ui->btnConnect->setEnabledCustom (enable);
+}
+void Login::slotSetConnectBtnText(QString a_text)
+{
+    //    ui->btnConnect->setDisabled()
+    ui->btnConnect->setText(a_text);
 }
 
 void Login::slotErrorText (QString text, ErrorColor color)
