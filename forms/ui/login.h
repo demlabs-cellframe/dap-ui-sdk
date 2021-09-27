@@ -11,6 +11,10 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class Login; }
 QT_END_NAMESPACE
 
+#ifndef MAX_COUNT_CHAR
+#define MAX_COUNT_CHAR 16
+#endif
+
 /****************************************//**
  * @brief ui/class for login page
  * @ingroup groupUiClasses
@@ -61,6 +65,14 @@ signals:
   void sigChooseSerial();
   void sigConnect();
   void sigObtainNewKey();
+
+  void textEditedAndCleaned();
+  void textEditedAndFilledOut(QString);
+
+  void textChangedAndCleaned();
+  void textChangedAndFilledOut(QString);
+
+  void slotSerialFillingIncorrect();
   /// @}
 
   /****************************************//**
@@ -70,6 +82,7 @@ signals:
 public slots:
   void slotKeyEnable (bool enable);
   void slotSetConnectBtnEnabled (bool enable);
+  void slotSetConnectBtnText(QString a_text);
   void slotErrorText (QString text, ErrorColor color = ErrorColor::ERRCOL_RED);
   void slotChangeServerName (QString serverName);
   void slotChangeSerial (QString serialKey);

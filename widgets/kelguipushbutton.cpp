@@ -74,7 +74,7 @@ KelGuiPushButton::KelGuiPushButton (QWidget *parent)
   m_opacityEffect->setEnabled (true);
   setGraphicsEffect (m_opacityEffect);
   setAutoFillBackground (true);
-  setEnabled(isEnabled()); // refresh pacity
+  setEnabled(isEnabled()); // refresh opacity
 
   /* signals */
   connect (this, &QPushButton::clicked,
@@ -114,14 +114,15 @@ void KelGuiPushButton::setStyle (const Style &style)
   emit styleChanged();
 }
 
-void KelGuiPushButton::setEnabled(bool value)
+void KelGuiPushButton::setEnabledCustom(bool value)
 {
-  setDisabled (!value);
+  this->setEnabled(value);
+  setOpacity (value);
 }
 
-void KelGuiPushButton::setDisabled(bool value)
+void KelGuiPushButton::setOpacity(bool value)
 {
-  m_opacityEffect->setOpacity (value ? 0.5 : 1);
+  m_opacityEffect->setOpacity (value ? 1 : 0.2);
 }
 
 #ifdef ENABLEPURPLE

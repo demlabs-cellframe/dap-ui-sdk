@@ -99,8 +99,8 @@ public:
   Style style() const;
   void setStyle (const Style &style);
 
-  void setEnabled(bool value);
-  void setDisabled(bool value);
+  void setEnabledCustom(bool value);
+  void setOpacity(bool value);
 
 #ifdef ENABLEPURPLE
   QString text() const;
