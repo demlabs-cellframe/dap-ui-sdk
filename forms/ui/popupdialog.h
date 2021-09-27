@@ -1,12 +1,12 @@
-#ifndef RESETKEYDIALOG_H
-#define RESETKEYDIALOG_H
+#ifndef POPUPDIALOG_H
+#define POPUPDIALOG_H
 
 /* INCLUDES */
 #include <QWidget>
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
-namespace Ui { class ResetKeyDialog; }
+namespace Ui { class PopupDialog; }
 QT_END_NAMESPACE
 
 /****************************************//**
@@ -16,7 +16,7 @@ QT_END_NAMESPACE
  * @author Mikhail Shilenko
  *******************************************/
 
-class ResetKeyDialog : public QWidget
+class PopupDialog : public QWidget
 {
   Q_OBJECT
 
@@ -25,7 +25,7 @@ class ResetKeyDialog : public QWidget
    *******************************************/
   /// @{
 private:
-  Ui::ResetKeyDialog *ui;
+  Ui::PopupDialog *ui;
   QWidget *m_parent, *m_shadow;
   /// @}
 
@@ -34,8 +34,8 @@ private:
    *******************************************/
   /// @{
 public:
-  explicit ResetKeyDialog(QWidget *parent = nullptr);
-  ~ResetKeyDialog();
+  explicit PopupDialog(QWidget *parent = nullptr);
+  ~PopupDialog();
   /// @}
 
   /****************************************//**
@@ -52,10 +52,18 @@ signals:
    *******************************************/
   /// @{
 public slots:
-  void slotShow(QWidget *parent);
-  void slotButtonPress();
+  /**
+   * @brief show dialog
+   * @param parent[in] - widget that will hold this dialog on top. !must have parent widget!
+   * @param a_title[in] - title text
+   * @param a_description[in] - description text
+   */
+  void slotShow (QWidget *parent, const QString &a_title, const QString &a_description);
+
+protected slots:
+  void _slotButtonPress();
   /// @}
 };
 
 /*-----------------------------------------*/
-#endif // RESETKEYDIALOG_H
+#endif // POPUPDIALOG_H
