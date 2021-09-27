@@ -31,7 +31,8 @@ SOURCES     += \
     $$PWD/ui/purchase.cpp \
     $$PWD/ui/settings.cpp \
     $$PWD/ui/splashscreen.cpp \
-    $$PWD/ui/statistics.cpp
+    $$PWD/ui/statistics.cpp \
+    $$PWD/ui/versionupdate.cpp
 
 HEADERS     += \
     $$PWD/ui/baseform.h \
@@ -63,6 +64,7 @@ HEADERS     += \
     $$PWD/ui/settings.h \
     $$PWD/ui/splashscreen.h \
     $$PWD/ui/statistics.h \
+    $$PWD/ui/versionupdate.h \
     $$PWD/vpnDefine.h
 
 FORMS += \
@@ -78,7 +80,8 @@ FORMS += \
     $$PWD/ui/purchase.ui \
     $$PWD/ui/settings.ui \
     $$PWD/ui/splashscreen.ui \
-    $$PWD/ui/statistics.ui
+    $$PWD/ui/statistics.ui \
+    $$PWD/ui/versionupdate.ui
 
 RESOURCES += \
     $$PWD/appRes.qrc

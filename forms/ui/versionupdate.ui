@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>VersionUpdate</class>
+ <widget class="QWidget" name="VersionUpdate">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>428</width>
+    <height>926</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="KelGuiWidget" name="Background">
+     <property name="cssStyle">
+      <string>backgroundcolor splashscreen_background</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="KelGuiWidget" name="MainWidget">
+        <property name="cssStyle">
+         <string>base-widget</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="KelGuiWidget" name="kelGuiWidget_2">
+           <property name="cssStyle">
+            <string>ver-top-spacer</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiWidget" name="widget">
+           <property name="cssStyle">
+            <string>ver-title-text</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="KelGuiPushButton" name="btnReturn">
+              <property name="style">
+               <enum>KelGuiPushButton::Custom</enum>
+              </property>
+              <property name="custom">
+               <url>
+                <string>qrc:/gui/ui/asset/ic_close.png</string>
+               </url>
+              </property>
+              <property name="customHover">
+               <url>
+                <string>qrc:/gui/ui/asset/ic_close.png</string>
+               </url>
+              </property>
+              <property name="customPushed">
+               <url>
+                <string>qrc:/gui/ui/asset/ic_close.png</string>
+               </url>
+              </property>
+              <property name="cssStyle" stdset="0">
+               <string>bugrep-close-btn</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="KelGuiLabel" name="kelGuiLabel">
+              <property name="text">
+               <string>Version</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="cssStyle">
+               <string>bugrep-title-text normalbold font24 darkblue lato</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="KelGuiWidget" name="kelGuiWidget">
+              <property name="cssStyle">
+               <string>bugrep-close-btn</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiWidget" name="kelGuiWidget_3">
+           <property name="cssStyle">
+            <string>ver-top-content-spacer</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiWidget" name="kelGuiWidget_6">
+           <property name="cssStyle">
+            <string>ver-title-img-container</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="KelGuiLabel" name="kelGuiLabel_2">
+              <property name="cssStyle">
+               <string>login_logo</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiWidget" name="kelGuiWidget_4">
+           <property name="cssStyle">
+            <string>ver-button-spacer</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiWidget" name="kelGuiWidget_7">
+           <property name="cssStyle">
+            <string>ver-button-container</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="KelGuiPushButton" name="btnUpdate">
+              <property name="text">
+               <string>install update</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiWidget" name="kelGuiWidget_5"/>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KelGuiPushButton</class>
+   <extends>QPushButton</extends>
+   <header>kelguipushbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiLabel</class>
+   <extends>QLabel</extends>
+   <header>kelguilabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiWidget</class>
+   <extends>QWidget</extends>
+   <header>kelguiwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
