@@ -63,10 +63,9 @@ public slots:
   void slotSetUp (quint64 up);
   void slotSetSererIP (QString ip);
   void slotSetStartedTime (QDateTime dt);
+  void slotSetStatusState (bool connected);
 private slots:
   void _slotTimeUpdate();
-  /// fires if m_started is not null
-  void _slotUpdateStatusIcon();
   /// @}
 };
 

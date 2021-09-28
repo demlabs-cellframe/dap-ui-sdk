@@ -30,16 +30,12 @@ Connection::Connection (QWidget *parent) :
   connect (ui->btnSwitch, &KelGuiPushButton::toggled,
            this, &Connection::sigSwitchToggle,
            Qt::QueuedConnection);
-  connect (ui->btnSwitch, &KelGuiPushButton::clicked,
-           this, &Connection::_slotUpdateStatusIcon,
-           Qt::QueuedConnection);
   connect (ui->btnServer, &KelGuiButton::clicked,
            this, &Connection::sigServerClicked,
            Qt::QueuedConnection);
 
   /* finish */
   slotSetDownUp (0, 0);
-  _slotUpdateStatusIcon();
 }
 
 Connection::~Connection()
@@ -54,7 +50,6 @@ Connection::~Connection()
 void Connection::slotSwitchSetState(bool checked)
 {
   ui->btnSwitch->setChecked (checked);
-  _slotUpdateStatusIcon();
 }
 
 void Connection::slotSetDownUp(quint64 down, quint64 up)
@@ -88,8 +83,15 @@ void Connection::slotSetStartedTime(QDateTime dt)
   /* setup timer */
   if(!m_started.isNull())
     m_updateTime->start();
+}
 
-  _slotUpdateStatusIcon();
+void Connection::slotSetStatusState(bool connected)
+{
+  ui->lStatusIcon->setCssStyle(
+        (connected)
+        ? "conn-status-icon ic_online"
+        : "conn-status-icon ic_offline"
+      );
 }
 
 void Connection::_slotTimeUpdate()
@@ -97,15 +99,6 @@ void Connection::_slotTimeUpdate()
   auto msecs  = m_started.msecsTo (QDateTime::currentDateTime());
   auto text   = UptimeStringHelper (msecs).asString();
   ui->lUptime->setText (text);
-}
-
-void Connection::_slotUpdateStatusIcon()
-{
-  ui->lStatusIcon->setCssStyle(
-        (!m_started.isNull())
-        ? "conn-status-icon ic_online"
-        : "conn-status-icon ic_offline"
-      );
 }
 
 /*-----------------------------------------*/
