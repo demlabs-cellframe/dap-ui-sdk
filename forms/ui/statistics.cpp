@@ -21,9 +21,30 @@ Statistics::Statistics (QWidget *parent) :
   m_bytesSent (0),
   m_packetsReceived (0),
   m_packetsSent (0),
-  m_ping (0)
+  m_ping (0),
+  m_scene (new QGraphicsScene),
+  m_uptimeUpdateTimer (new QTimer)
 {
+  /* setup ui */
   ui->setupUi (this);
+  ui->statPing->setVisible (false);
+
+  /* setup scene */
+  ui->graphicsView->setScene (m_scene);
+
+  /* setup uptime timer */
+  m_uptimeUpdateTimer->setSingleShot (false);
+  m_uptimeUpdateTimer->setInterval (1000);
+
+  /* set styles for graphics */
+  addItemGraphicSceneStyle ("shChartDownload",  "color:#D61F5D;depth:1;background-color:rgba(0,181,43,0.00);");
+  addItemGraphicSceneStyle ("shChartUpload",    "color:#2D1FD6;depth:1;background-color:rgba(3,167,198,0.00);");
+  addItemGraphicSceneStyle ("shGrid",           "color:#ECECEC;depth:0.1;");
+  addItemGraphicSceneStyle ("graphicsLines",    "horizontalLines:19;verticalLines:8;");//"horizontalLines:19;verticalLines:8;sceneWidth:236px;sceneHeight:119px;");
+
+  /* signals */
+  connect (m_uptimeUpdateTimer, &QTimer::timeout,
+           this, &Statistics::_slotUpdateUptimeTime);
 }
 
 Statistics::~Statistics()
@@ -39,30 +60,25 @@ void Statistics::startImitatingSchedules()
 {
   /* vars */
   static QTimer *t              = nullptr;
-  static QGraphicsScene *scene  = nullptr;
 
   /* checks */
   if (t)
     return;
-
-  /* create scene */
-  scene = new QGraphicsScene;
-  ui->graphicsView->setScene (scene);
 
   /* create timer */
   t = new QTimer;
   t->setSingleShot (false);
   t->setInterval (1000);
 
-  /* set styles for graphics */
-//  addItemGraphicSceneStyle ("shChartDownload",   AppStyleSheetHandler::getWidgetStyleSheet ("#shChartDownload", "active"));
-//  addItemGraphicSceneStyle ("shChartUpload",     AppStyleSheetHandler::getWidgetStyleSheet ("#shChartUpload", "active"));
-//  addItemGraphicSceneStyle ("shGrid",            AppStyleSheetHandler::getWidgetStyleSheet ("#shGrid", "active"));
-//  addItemGraphicSceneStyle ("graphicsLines",     AppStyleSheetHandler::getWidgetStyleSheet ("#graphicsLines", "active"));
-  addItemGraphicSceneStyle ("shChartDownload",  "color:#D61F5D;depth:1;background-color:rgba(0,181,43,0.00);");
-  addItemGraphicSceneStyle ("shChartUpload",    "color:#2D1FD6;depth:1;background-color:rgba(3,167,198,0.00);");
-  addItemGraphicSceneStyle ("shGrid",           "color:#ECECEC;depth:0.1;");
-  addItemGraphicSceneStyle ("graphicsLines",    "horizontalLines:19;verticalLines:8;");//"horizontalLines:19;verticalLines:8;sceneWidth:236px;sceneHeight:119px;");
+//  /* set styles for graphics */
+////  addItemGraphicSceneStyle ("shChartDownload",   AppStyleSheetHandler::getWidgetStyleSheet ("#shChartDownload", "active"));
+////  addItemGraphicSceneStyle ("shChartUpload",     AppStyleSheetHandler::getWidgetStyleSheet ("#shChartUpload", "active"));
+////  addItemGraphicSceneStyle ("shGrid",            AppStyleSheetHandler::getWidgetStyleSheet ("#shGrid", "active"));
+////  addItemGraphicSceneStyle ("graphicsLines",     AppStyleSheetHandler::getWidgetStyleSheet ("#graphicsLines", "active"));
+//  addItemGraphicSceneStyle ("shChartDownload",  "color:#D61F5D;depth:1;background-color:rgba(0,181,43,0.00);");
+//  addItemGraphicSceneStyle ("shChartUpload",    "color:#2D1FD6;depth:1;background-color:rgba(3,167,198,0.00);");
+//  addItemGraphicSceneStyle ("shGrid",           "color:#ECECEC;depth:0.1;");
+//  addItemGraphicSceneStyle ("graphicsLines",    "horizontalLines:19;verticalLines:8;");//"horizontalLines:19;verticalLines:8;sceneWidth:236px;sceneHeight:119px;");
 
   /* connect lambda to timer */
   connect (t, &QTimer::timeout, [&]
@@ -86,8 +102,7 @@ void Statistics::startImitatingSchedules()
     ui->statUptime->setMainText (uptimeStr());
 
     /* draw scene */
-    schedules.draw_chart (scene);
-    scene->update();
+    updateGraph();
   });
 
   /* start timer */
@@ -144,6 +159,7 @@ void Statistics::setBytesReceived (const quint64 &bytesReceived)
   m_bytesReceived = bytesReceived;
   auto text       = TrafficStringHelper (m_bytesReceived).asString(); //QString ("%1 Bytes").arg (m_bytesReceived);
   ui->statBytesRec->setMainText (text);
+  schedules.addInp (m_bytesReceived);
 }
 
 void Statistics::addBytesReceived (const quint64 &bytesReceived)
@@ -163,6 +179,7 @@ void Statistics::setBytesSent (const quint64 &bytesSent)
   m_bytesSent = bytesSent;
   auto text   = TrafficStringHelper (m_bytesSent).asString(); //QString ("%1 Bytes").arg (m_bytesSent);
   ui->statBytesSent->setMainText (text);
+  schedules.addOut (m_bytesSent);
 }
 
 void Statistics::addBytesSent (const quint64 &bytesSent)
@@ -241,6 +258,24 @@ QDateTime Statistics::started() const
 void Statistics::setStarted (const QDateTime &started)
 {
   m_started = started;
+
+  if (!started.isNull())
+    m_uptimeUpdateTimer->start();
+  else
+    m_uptimeUpdateTimer->stop();
+
+  _slotUpdateUptimeTime();
+}
+
+void Statistics::updateGraph()
+{
+  schedules.draw_chart (m_scene);
+  m_scene->update();
+}
+
+void Statistics::_slotUpdateUptimeTime()
+{
+  ui->statUptime->setMainText (uptimeStr());
 }
 
 /*-----------------------------------------*/
