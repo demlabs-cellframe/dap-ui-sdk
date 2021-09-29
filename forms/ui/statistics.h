@@ -42,6 +42,8 @@ private:
           m_packetsSent,
           m_ping;
   QDateTime m_started;
+  QGraphicsScene *m_scene;
+  QTimer *m_uptimeUpdateTimer;
   /// @}
 
   /****************************************//**
@@ -91,6 +93,16 @@ public:
   QString uptimeStr();
   QDateTime started() const;
   void setStarted (const QDateTime &started);
+
+  void updateGraph();
+  /// @}
+
+  /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  void _slotUpdateUptimeTime();
   /// @}
 };
 

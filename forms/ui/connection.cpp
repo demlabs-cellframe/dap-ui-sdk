@@ -124,9 +124,8 @@ void Connection::slotSetStartedTime(QDateTime dt)
   /* setup timer */
   if(!m_started.isNull())
     m_updateTime->start();
-
-//  _slotUpdateStatusIcon();
 }
+
 
 void Connection::_slotTimeUpdate()
 {

@@ -893,3 +893,50 @@
 	max-width: 282pt;
 	max-height: 28pt;
 }
+
+/****************************************************
+ * VersionUpdate
+ ***************************************************/
+
+.ver-top-spacer
+{
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
+}
+
+.ver-top-content-spacer
+{
+	height: 150pt;
+	min-height: 150pt;
+	max-height: 150pt;
+}
+
+.ver-title-text
+{
+	height: 28pt;
+	min-height: 28pt;
+	max-height: 28pt;
+}
+
+.ver-title-img-container
+{
+	height: 89pt;
+	min-height: 89pt;
+	max-height: 89pt;
+}
+
+.ver-button-spacer
+{
+	height: 330pt;
+	min-height: 330pt;
+	max-height: 330pt;
+}
+
+.ver-button-container
+{
+	height: 80pt;
+	min-height: 80pt;
+	max-height: 80pt;
+}
+

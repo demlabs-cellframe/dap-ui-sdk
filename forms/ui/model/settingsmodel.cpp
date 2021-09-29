@@ -85,6 +85,7 @@ static QList<_SItem> s_items =
 
 static QMap<KelGuiButton*, ItemCB> s_btnCallbacks;
 static KelGuiButton* s_licenceKey;
+static KelGuiButton* s_version;
 
 /* VARS */
 Settings *s_settings = nullptr;
@@ -112,6 +113,13 @@ void SettingsModel::setInterface(Settings *s)
 {
   /* store */
   s_settings = s;
+}
+
+void SettingsModel::setVersionText(const QString &a_text)
+{
+  if(!s_version)
+    return;
+  s_version->setSubText (a_text);
 }
 
 /********************************************
@@ -160,6 +168,8 @@ void SettingsModel::slotSetup()
       /* store licence key button */
       if (i == 1)
         s_licenceKey = btn;
+      if (item.text[1] == "@version")
+        s_version = btn;
 
       /* connect signal */
       connect (btn, &KelGuiButton::clicked,

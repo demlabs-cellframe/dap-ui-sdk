@@ -34,6 +34,7 @@ public:
   /// @{
 public:
   void setInterface (Settings *s);
+  void setVersionText (const QString &a_text);
   /// @}
 
   /****************************************//**
