@@ -8,6 +8,7 @@
         <file>icons/check.png</file>
         <file>icons/radio.png</file>
         <file>icons/separator.png</file>
+        <file>icons/switch.png</file>
         <file>gfx/btn_bg.png</file>
         <file>gfx/btn_bg_hover_active.png</file>
         <file>gfx/check_btn_off.png</file>
@@ -41,5 +42,9 @@
         <file>styles/pushbuttoncustom.css</file>
         <file>styles/radiobutton.css</file>
         <file>style/globalstyle.css</file>
+        <file>gfx/switch/toggle_on.png</file>
+        <file>gfx/switch/bg_on.png</file>
+        <file>gfx/switch/toggle_off.png</file>
+        <file>gfx/switch/bg_off.png</file>
     </qresource>
 </RCC>

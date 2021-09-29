@@ -8,6 +8,7 @@
 #include "kelguilineeditplugin.h"
 #include "kelguiplaintexteditplugin.h"
 #include "kelguiseparatorplugin.h"
+#include "kelguiswitchplugin.h"
 #include "kelguitexteditplugin.h"
 #include "kelguiwidgetplugin.h"
 #include "kelvpnneuromorphic.h"
@@ -33,6 +34,7 @@ KelVpnNeuromorphic::KelVpnNeuromorphic (QObject *parent)
   m_widgets.append (new KelGuiCheckBoxPlugin (this));
   m_widgets.append (new KelGuiPlainTextEditPlugin (this));
   m_widgets.append (new KelGuiSeparatorPlugin (this));
+  m_widgets.append (new KelGuiSwitchPlugin (this));
   m_widgets.append (new KelGuiLineEditPlugin (this));
   m_widgets.append (new KelGuiTextEditPlugin (this));
   m_widgets.append (new KelGuiLabelPlugin (this));

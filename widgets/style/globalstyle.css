@@ -328,6 +328,58 @@
 	
 }
 
+/* switch */
+
+.sw-ui
+{
+	width: 270pt;
+	height: 174pt;
+	min-width: 270pt;
+	min-height: 174pt;
+	max-width: 270pt;
+	max-height: 174pt;
+}
+
+.swbg
+{
+	width: 246pt;
+	height: 126pt;
+	min-width: 246pt;
+	min-height: 126pt;
+	max-width: 246pt;
+	max-height: 126pt;
+}
+
+.sw-toggle
+{
+	width: 174pt;
+	height: 174pt;
+	min-width: 174pt;
+	min-height: 174pt;
+	max-width: 174pt;
+	max-height: 174pt;
+}
+
+.sw-on
+{
+	border-image: url("://gfx/switch/bg_on.png");
+}
+
+.sw-off
+{
+	border-image: url("://gfx/switch/bg_off.png");
+}
+
+.sw-toggle-on
+{
+	border-image: url("://gfx/switch/toggle_on.png");
+}
+
+.sw-toggle-off
+{
+	border-image: url("://gfx/switch/toggle_off.png");
+}
+
 /****************************************************
  * Icons
  ***************************************************/
