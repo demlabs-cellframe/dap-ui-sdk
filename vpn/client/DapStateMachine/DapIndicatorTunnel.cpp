@@ -1,7 +1,7 @@
 #include "DapIndicatorTunnel.h"
 
-void DapIndicatorTunnel::init(QStateMachine &sm, const QString& stateName) {
-    DapIndicatorStateAbstract::init(sm, stateName);
+void DapIndicatorTunnel::init(DapState *s, const QString& stateName) {
+    DapIndicatorStateAbstract::init(s, stateName);
     tunDisabled = new DapState(_false->name()       + "_tunDisabled",   _false);
     tunEnabled  = new DapState(_true->name()        + "_tunEnabled",    _true);
     tunIdle     = new DapState(_trueToFalse->name() + "_tunIdle",       _trueToFalse);

@@ -16,7 +16,7 @@ public:
     explicit DapIndicatorStateAbstract(QObject *parent = nullptr)
         : QObject(parent) {}
 
-    virtual void init(QStateMachine &sm, const QString& stateName);
+    virtual void init(DapState *s, const QString& stateName);
     bool isAllowedSubstateTransitions(DapState *from, DapState *to);
 
     void addTransition(DapState *from, DapState *to, const QObject *sender, const char *signal);

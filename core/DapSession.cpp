@@ -30,7 +30,6 @@
 
 #include "DapSession.h"
 #include "DapCrypt.h"
-#include "DapReplyTimeout.h"
 #include "msrln/msrln.h"
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -99,7 +98,6 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath,
 {
     DapNetworkReply *netReply = new DapNetworkReply();
     connect(netReply, &DapNetworkReply::sigError, this, [=] {
-        qCritical() << "Network connection error";
         emit errorNetwork(netReply->error(), "Connection error");
     });
     data ? DapConnectClient::instance()->request_POST(isCDB ? m_CDBaddress : m_upstreamAddress,
@@ -185,8 +183,6 @@ void DapSession::getNews()
 {
     DapNetworkReply *m_netNewsReply = new DapNetworkReply;
     DapConnectClient::instance()->request_GET(DapDataLocal::instance()->cdbServersList().front(), 80, URL_NEWS, *m_netNewsReply);
-
-    //DapReplyTimeout::set(m_netNewsReply, 10000);
 
     connect(m_netNewsReply, &DapNetworkReply::sigError, this, [=]() {
         qCritical() << "Couldn't fetch news";

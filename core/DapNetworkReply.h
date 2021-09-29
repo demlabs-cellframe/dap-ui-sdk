@@ -60,12 +60,14 @@ public:
     Q_ENUM(DapNetworkError)
 
     DapNetworkReply::DapNetworkError error() const;
+    int errorNative() const;
 
     QString errorString(){ return m_errorString; }
     QByteArray &getReplyData(){ return m_reply; }
 
     void setReply(const QByteArray &a_reply) { m_reply = a_reply; }
     void setError(DapNetworkError a_error) { m_error = a_error; }
+    void setErrorNative(int a_err) { m_errorNative = a_err; }
     bool isFinished(){ return m_finished; }
     QByteArray m_reply;
 
@@ -79,6 +81,7 @@ protected:
 //    QString errorString;
 
     DapNetworkError m_error;
+    int m_errorNative;
     QString m_errorString;
     bool m_finished;
 

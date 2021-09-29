@@ -1,8 +1,8 @@
 #include "DapIndicatorStream.h"
 
-void DapIndicatorStream::init(QStateMachine &sm, const QString& stateName)
+void DapIndicatorStream::init(DapState *s, const QString& stateName)
 {
-    DapIndicatorStateAbstract::init(sm, stateName);
+    DapIndicatorStateAbstract::init(s, stateName);
     upsDisconnected     = new DapState(_false->name()       + "_disconnected",      _false);
     upsHandshakeRequest = new DapState(_falseToTrue->name() + "_handshakeRequest",  _falseToTrue);
     upsHandshakeReply   = new DapState(_falseToTrue->name() + "_handshakeReply",    _falseToTrue);

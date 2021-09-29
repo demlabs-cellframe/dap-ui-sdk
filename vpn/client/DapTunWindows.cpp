@@ -23,6 +23,7 @@ void DapTunWindows::tunDeviceCreate()
         m_tunSocket=TunTap::getInstance().makeTunTapDevice(m_tunDeviceName);
         m_isCreated = true;
     } else {
+        qDebug() << "Wake up";
         TunTap::getInstance().wakeupTun();
     }
     TunTap::getInstance().unassignTunAdp();
@@ -73,17 +74,16 @@ void DapTunWindows::tunDeviceDestroy()
 void DapTunWindows::onWorkerStarted() {
     DapTunAbstract::onWorkerStarted();
     m_defaultGwOld = TunTap::getInstance().getDefaultGateWay();
-    qInfo() << "Default gateway: " << m_defaultGwOld;
-    m_ethDeviceName = TunTap::getInstance().getNameAndDefaultDNS(TunTap::getInstance().getDefaultAdapterIndex());
-    m_tunDeviceReg = TunTap::getInstance().getNameAndDefaultDNS(TunTap::getInstance().getTunTapAdapterIndex());
-    DapNetworkMonitorWindows::instance()->sltSetIfIndex(static_cast<ulong>(TunTap::getInstance().getDefaultAdapterIndex()));
-    DapNetworkMonitorWindows::instance()->sltSetTapIfIndex(static_cast<ulong>(TunTap::getInstance().getTunTapAdapterIndex()));
     if (m_defaultGwOld.isEmpty()) {
         qCritical() << "Default gateway is undefined, odd network settings!";
         return;
     } else {
         qInfo() << "Default gateway: " << m_defaultGwOld;
     }
+    m_ethDeviceName = TunTap::getInstance().getNameAndDefaultDNS(TunTap::getInstance().getDefaultAdapterIndex());
+    m_tunDeviceReg = TunTap::getInstance().getNameAndDefaultDNS(TunTap::getInstance().getTunTapAdapterIndex());
+    DapNetworkMonitorWindows::instance()->sltSetIfIndex(static_cast<ulong>(TunTap::getInstance().getDefaultAdapterIndex()));
+    DapNetworkMonitorWindows::instance()->sltSetTapIfIndex(static_cast<ulong>(TunTap::getInstance().getTunTapAdapterIndex()));
     m_ethDeviceName = TunTap::getInstance().getNameAndDefaultDNS(TunTap::getInstance().getDefaultAdapterIndex());
     m_tunDeviceReg = TunTap::getInstance().getNameAndDefaultDNS(TunTap::getInstance().getTunTapAdapterIndex());
     DapNetworkMonitorWindows::instance()->sltSetIfIndex(static_cast<ulong>(TunTap::getInstance().getDefaultAdapterIndex()));
