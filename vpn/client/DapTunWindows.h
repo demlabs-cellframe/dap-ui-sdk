@@ -20,7 +20,6 @@ protected:
     void workerStop()           override;
     void workerPause()          override;
     void signalWriteQueueProc() override;
-
 };
 
 #endif // DAPTUNWINDOWS_H

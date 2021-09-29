@@ -419,11 +419,19 @@ void DapStreamer::sltStreamProcess()
                     m_streamState = SSS_FRAME_SEARCH;
                     m_dapDataPosition = 0;
                     return;
-                } else if ((dapPktSize == 0) && (dapPktConstHdr->type == 0x12)) {
+                } else if (dapPktSize == 0) {
+                    switch (dapPktConstHdr->type) {
+                    case 0x11: //Keep-alive pkt
+                    case 0x12: //Keep-alive pkt too...
+                        emit isAlive(true);
+                        break;
+                    default:
+                        //qDebug() << "Pkt type " << dapPktConstHdr->type << " unrecognized, len " << m_buf.length();
+                        break;
+                    }
                     m_buf.clear();
                     m_streamState = SSS_FRAME_SEARCH;
                     m_dapDataPosition = 0;
-                    emit isAlive(true);
                     return;
                 }
 
@@ -486,7 +494,7 @@ void DapStreamer::_detectPacketLoose(quint64 currentSeqId)
     if (countLoosedPackets > 0) {
         qWarning() << "Packet Loosed count:" << countLoosedPackets;
         emit sigStreamPacketLoosed(countLoosedPackets);
-    } else if(countLoosedPackets < 0) {
+    } else if((countLoosedPackets < 0) && (currentSeqId > 0)) {
         qWarning() << "Something wrong. countLoosedPackets is " << countLoosedPackets
                    << "can't be less than zero. Current seq id:" << currentSeqId
                    << "last seq id: " << m_lastSeqId;

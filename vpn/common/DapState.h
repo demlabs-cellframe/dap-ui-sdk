@@ -28,7 +28,6 @@ protected:
     // Only friend class can add transition
     friend class DapIndicatorStateAbstract;
     friend class DapStateMachine;
-
     QSignalTransition *addTransition(const QObject *sender, const char *signal, QAbstractState *target)
     { return QState::addTransition(sender, signal, target); }
     void addTransition(QAbstractTransition *transition) { QState::addTransition(transition); }

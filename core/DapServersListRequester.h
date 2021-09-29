@@ -5,7 +5,6 @@
 #include <QNetworkReply>
 #include <DapConnectClient.h>
 #include "DapServerInfo.h"
-#include "DapReplyTimeout.h"
 
 class DapServersListNetworkReply : public QObject {
     Q_OBJECT
@@ -59,7 +58,6 @@ public:
         }*/
         DapNetworkReply *networkReply = new DapNetworkReply();
         DapConnectClient::instance()->request_GET(host, port, "nodelist", *networkReply);
-        //DapReplyTimeout::set(networkReply, 15000); // 15 sec
         return new DapServersListNetworkReply(networkReply);
     }
 };

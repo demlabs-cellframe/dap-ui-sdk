@@ -27,10 +27,10 @@ void DapNetworkAccessManager::requestHttp_GET(const QString &address, const uint
 void DapNetworkAccessManager::responseCallback(void * a_response, size_t a_response_size, void * a_obj)
 {
     DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
-//    manager->bRunning = false;
     reply->setReply(QByteArray(reinterpret_cast<const char*>(a_response), static_cast<int>(a_response_size)));
     qDebug() << "Dap Client HTTP Request: response received, size=" << a_response_size;
     reply->setError(DapNetworkReply::DapNetworkError::NoError);
+    reply->setErrorNative(0);
     emit reply->finished();
     reply->deleteLater();
 }
@@ -38,7 +38,7 @@ void DapNetworkAccessManager::responseCallback(void * a_response, size_t a_respo
 void DapNetworkAccessManager::responseCallbackError(int a_err_code, void * a_obj)
 {
     DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
-//    manager->bRunning = false;
+    reply->setErrorNative(a_err_code);
     reply->setError(static_cast<DapNetworkReply::DapNetworkError>(a_err_code));
     qWarning() << "Dap Client HTTP Request: error code " << a_err_code ;
     emit reply->sigError();

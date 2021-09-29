@@ -44,7 +44,7 @@ void DapTunAbstract::initWorker()
 #ifndef Q_OS_ANDROID
     DapNetworkMonitor::instance(); // To call a contructor in main thread.
     DapNetworkMonitor::instance()->monitoringStart();
-    connect(tunThread,&QThread::started, [=] {
+    connect(tunThread, &QThread::started, [&] {
         DapNetworkMonitor::instance()->sltSetServerAddress(this->m_sUpstreamAddress);
         DapNetworkMonitor::instance()->sltSetTunnelDestination(this->m_addr);
         DapNetworkMonitor::instance()->sltSetTunGateway(this->m_gw);
@@ -96,7 +96,7 @@ void DapTunAbstract::create(const QString &a_addr, const QString &a_gw,
 void DapTunAbstract::workerStart()
 {
     qInfo() <<"Tun device created" << m_tunSocket;
-    if(m_tunSocket>0){
+    if(m_tunSocket > 0){
         tunWorker->setTunSocket(m_tunSocket);
         tunWorker->moveToThread(tunThread);
         tunThread->start();

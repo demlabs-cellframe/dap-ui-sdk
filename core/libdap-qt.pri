@@ -46,7 +46,6 @@ HEADERS += \
     $$PWD/DapLogger.h \
     $$PWD/DapKeyCommon.h \
     $$PWD/DapConnectClient.h \
-    $$PWD/DapReplyTimeout.h \
     $$PWD/DapHttpPing.h \
     $$PWD/DapServerInfo.h \
     $$PWD/DapServersListRequester.h \

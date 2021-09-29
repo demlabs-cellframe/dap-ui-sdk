@@ -1,11 +1,14 @@
 #include "DapStateMachine.h"
 #include "DapCmdConnect.h"
 
-DapStateMachine::DapStateMachine(QObject *parent) : QObject(parent), sm(QState::ParallelStates,this)
+DapStateMachine::DapStateMachine(QObject *parent) : QObject(parent), sm(this)
 {
-    sessionStates.init(sm, "session");
-    streamStates.init(sm, "stream");
-    tunnelStates.init(sm, "tunnel");
+    initState = new DapState("initial", &sm);
+    initState->setChildMode(QState::ParallelStates);
+    sm.setInitialState(initState);
+    sessionStates.init(initState, "session");
+    streamStates.init(initState, "stream");
+    tunnelStates.init(initState, "tunnel");
     _initUserRequestStates();
 
     _statesBuffer.resize(DapIndicator::TYPE_COUNT);
@@ -52,9 +55,8 @@ void DapStateMachine::addUserRequestConnect(const QObject *sender, const char *s
 
 void DapStateMachine::_initUserRequestStates()
 {
-    userRequestStates = new DapState("statesRequest", &sm);
+    userRequestStates = new DapState("statesRequest", initState);
     userRequestStateDisconnect = new DapState(userRequestStates->name() + "Disconnect", userRequestStates);
-
     userRequestStateConnect = new DapState(userRequestStates->name() + "Connect", userRequestStates);
     userRequestStates->setInitialState(userRequestStateDisconnect);
 }

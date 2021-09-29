@@ -9,7 +9,7 @@ class DapIndicatorTunnel: public DapIndicatorStateAbstract
 public:
     explicit DapIndicatorTunnel(QObject *parent = nullptr)
         : DapIndicatorStateAbstract(parent) { }
-    void init(QStateMachine &sm, const QString& stateName) override;
+    void init(DapState *s, const QString& stateName) override;
 protected:
     void initAllowedSubstatesTransitions() override;
 public:

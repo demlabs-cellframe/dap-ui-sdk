@@ -37,6 +37,8 @@ public:
     DapState *userRequestStateConnect;
     DapState *userRequestStateDisconnect;
 
+    DapState *initState;
+
     const QVector<DapIndicator>& getCachedStates();
 signals:
     void stateChanged(DapIndicator i);
