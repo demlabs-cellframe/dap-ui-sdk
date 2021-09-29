@@ -27,10 +27,10 @@ Connection::Connection (QWidget *parent) :
            Qt::QueuedConnection);
 
   /* signals */
-  connect (ui->btnSwitch, &KelGuiPushButton::toggled,
+  connect (ui->btnSwitch, &KelGuiSwitch::toggled,
            this, &Connection::sigSwitchToggle,
            Qt::QueuedConnection);
-  connect (ui->btnSwitch, &KelGuiPushButton::clicked,
+  connect (ui->btnSwitch, &KelGuiSwitch::clicked,
            this, &Connection::slotDisconnectionRequested,
            Qt::QueuedConnection);
   connect (ui->btnServer, &KelGuiButton::clicked,
@@ -104,7 +104,7 @@ void Connection::setStatusIdicator(bool a_enabled /*= false*/)
 void Connection::setBtnSwitchChecked(bool a_authorized /*= true*/)
 {
 //    slotUpdateStatusIcon(a_authorized);
-//    ui->btnSwitch->setChecked(a_authorized);
+    ui->btnSwitch->setChecked(a_authorized);
 }
 
 void Connection::setDownloadSpeed(QString a_text)

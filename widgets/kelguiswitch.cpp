@@ -9,12 +9,12 @@
 #include <QClipboard>
 
 #include <QPropertyAnimation>
+#include <QTimer>
+#include <QDebug>
 
 /* DEFS */
 #define TOGGLE_ON_POS (270 - 174)
-
-/* VARS */
-KelGuiSwitch::P2pCallback KelGuiSwitch::m_p2p = nullptr;
+#define BG_POS (12)
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -25,21 +25,35 @@ KelGuiSwitch::KelGuiSwitch (QWidget *parent)
   , ui (new Ui::KelGuiSwitch)
   , m_checked (false)
   , m_toggleOnPos (TOGGLE_ON_POS)
+  , m_animGroup (new QParallelAnimationGroup)
 {
   /* setup style */
   ui->setupUi (this);
-  __kgsm.forcedStyleUpdate();
+  QTimer::singleShot(10, &__kgsm, &KelGuiSwitchStyleManager::forcedStyleUpdate);
+  m_bgPos[0] = BG_POS;
+  m_bgPos[1] = BG_POS * 2;
 
   /* setup animation */
   m_animToggle = new QPropertyAnimation (ui->switch_toggle, "pos");
   m_animToggle->setDuration (100);
   _setAnimByState();
 
-  m_animGroup.addAnimation (m_animToggle);
+  m_animGroup->addAnimation (m_animToggle);
 
   /* signals */
-  connect (&m_animGroup, &QParallelAnimationGroup::finished,
+  connect (&__kgsm, &KelGuiSwitchStyleManager::styleUpdated,
+           this, &KelGuiSwitch::_moveItems);
+  connect (m_animGroup, &QParallelAnimationGroup::finished,
            this, &KelGuiSwitch::_setAnimByState);
+
+  /* move items to proper places */
+  _moveItems();
+}
+
+KelGuiSwitch::~KelGuiSwitch()
+{
+  m_animGroup->clear();
+  m_animGroup->deleteLater();
 }
 
 /********************************************
@@ -53,15 +67,20 @@ bool KelGuiSwitch::isChecked() const
 
 void KelGuiSwitch::setChecked(bool a_checked)
 {
+  /* skip */
+  if (m_checked == a_checked)
+    return;
+
   /* update position based on DPI */
-//  float dpi     = UiScaling::getNativDPI();
-//  m_toggleOnPos = UiScaling::pointsToPixels (TOGGLE_ON_POS, dpi);
-  if(m_p2p)
-    m_toggleOnPos = m_p2p (TOGGLE_ON_POS);
+  {
+    auto ww       = width();
+    auto tw       = ui->switch_toggle->width();
+    m_toggleOnPos = ww - tw + 2;
+  }
 
   /* animation */
   _setAnimByState();
-  m_animGroup.start();
+  m_animGroup->start();
 
   /* store */
   m_checked = a_checked;
@@ -77,6 +96,7 @@ void KelGuiSwitch::setChecked(bool a_checked)
 
   /* signal */
   emit stateChanged (m_checked);
+  emit toggled (m_checked);
 }
 
 void KelGuiSwitch::toggle()
@@ -99,15 +119,6 @@ void KelGuiSwitch::mousePressEvent(QMouseEvent *event)
 }
 
 /********************************************
- * METHODS
- *******************************************/
-
-void KelGuiSwitch::setP2p(P2pCallback newP2p)
-{
-  m_p2p = newP2p;
-}
-
-/********************************************
  *
  *******************************************/
 
@@ -118,7 +129,46 @@ void KelGuiSwitch::_setAnimByState()
       m_checked
       ? QPoint (0, ui->switch_toggle->y())
       : QPoint (m_toggleOnPos, ui->switch_toggle->y())
-    );
+        );
+}
+
+void KelGuiSwitch::_moveItems()
+{
+  static bool hook = false;
+
+  if (!hook)
+    {
+      hook = true;
+      QTimer::singleShot (10, this, &KelGuiSwitch::_moveItems);
+      return;
+    }
+  else
+    hook = false;
+
+  {
+    auto ww       = width();
+    auto hh       = height();
+    auto tw       = ui->switch_toggle->width();
+    auto bw       = ui->switch_bg->width();
+    auto bh       = ui->switch_bg->height();
+    //auto wwd      = m_p2p (ww);
+    //auto hhd      = m_p2p (hh);
+    //auto twd      = m_p2p (tw);
+    //auto bwd      = m_p2p (bw);
+    //auto bhd      = m_p2p (bh);
+//    m_toggleOnPos = wwd - twd;
+//    m_bgPos[0]    = (wwd - bwd) / 2;
+//    m_bgPos[1]    = (hhd - bhd) / 2;
+    m_toggleOnPos = ww - tw + 2;
+    m_bgPos[0]    = (ww - bw) / 2;
+    m_bgPos[1]    = (hh - bh) / 2;
+//#ifdef QT_DEBUG
+//    qDebug() << __PRETTY_FUNCTION__ << ww << tw << bw;
+//#endif // QT_DEBUG
+  }
+
+  ui->switch_toggle->move (m_checked ? m_toggleOnPos : 0, 0);
+  ui->switch_bg->move (m_bgPos[0], m_bgPos[1]);
 }
 
 void KelGuiSwitch::_debugInfoClipboard()
@@ -127,13 +177,13 @@ void KelGuiSwitch::_debugInfoClipboard()
   if(qApp->keyboardModifiers() & Qt::AltModifier)
     {
       QJsonObject jobj;
-      jobj["cssStyle"]      = QJsonObject{
+      jobj["switch_bg_css"]     = ui->switch_bg->cssStyle();
+      jobj["switch_bg_qss"]     = ui->switch_bg->styleSheet();
+      jobj["switch_toggle_css"] = ui->switch_toggle->cssStyle();
+      jobj["switch_toggle_qss"] = ui->switch_toggle->styleSheet();
+      jobj["cssStyle"]          = QJsonObject{
         {"name", __kgsm.cssStyle()},
         {"text", styleSheet()},
-        {"switch_bg_css", ui->switch_bg->cssStyle()},
-        {"switch_bg_qss", ui->switch_bg->styleSheet()},
-        {"switch_toggle_css", ui->switch_toggle->cssStyle()},
-        {"switch_toggle_qss", ui->switch_toggle->styleSheet()},
       };
       jobj["rect"] = QJsonObject{
         {"x",pos().x()},

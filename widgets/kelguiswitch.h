@@ -23,14 +23,6 @@ class KelGuiSwitch : public QWidget
   KELGUI_ENABLEWIDGETSTYLE
 
   /****************************************//**
-   * @name DEFS
-   *******************************************/
-  /// @{
-public:
-  typedef double (*P2pCallback) (double points);
-  /// @}
-
-  /****************************************//**
    * @name VARS
    *******************************************/
   /// @{
@@ -41,14 +33,11 @@ private:
   KelGuiSwitchStyleManager __kgsm = KelGuiSwitchStyleManager (this);
   /// state
   bool m_checked;
-  /// toggle position x coordinate
-  double m_toggleOnPos;
+  /// toggle & bg position x coordinate
+  double m_toggleOnPos, m_bgPos[2];
   /// toogle animation group
-  QParallelAnimationGroup m_animGroup;
+  QParallelAnimationGroup *m_animGroup;
   QPropertyAnimation *m_animToggle;
-
-  /// callback for UiScaling::pointsToPixels
-  static P2pCallback m_p2p;
   /// @}
 
   /****************************************//**
@@ -57,6 +46,7 @@ private:
   /// @{
 public:
   explicit KelGuiSwitch (QWidget *parent = 0);
+  ~KelGuiSwitch();
   /// @}
 
   /****************************************//**
@@ -67,8 +57,6 @@ public:
   bool isChecked() const;
   void setChecked (bool a_checked);
   void toggle();
-  /// set UiScaling::pointsToPixels function pointer
-  void setP2p(P2pCallback newP2p);
   /// @}
 
   /****************************************//**
@@ -78,6 +66,7 @@ public:
 signals:
   void stateChanged (bool);
   void clicked();
+  void toggled(bool);
   /// @}
 
   /****************************************//**
@@ -94,6 +83,7 @@ public:
   /// @{
 protected slots:
   void _setAnimByState();
+  void _moveItems();
   void _debugInfoClipboard();
   /// @}
 };

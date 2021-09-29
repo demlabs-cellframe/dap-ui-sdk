@@ -26,6 +26,14 @@ protected:
   KelGuiSwitchStyleManager (KelGuiSwitchStyleManager &&src);
   ~KelGuiSwitchStyleManager() override;
   /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void styleUpdated();
+  /// @}
 };
 
 /*-----------------------------------------*/
