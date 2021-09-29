@@ -404,12 +404,12 @@
 
 .ic_online
 {
-	image: url("://gui/ui/asset/icon_offline.png");
+	image: url("://gui/ui/asset/icon_online.png");
 }
 
 .ic_offline
 {
-	image: url("://gui/ui/asset/icon_online.png");
+	image: url("://gui/ui/asset/icon_offline.png");
 }
 
 /****************************************************

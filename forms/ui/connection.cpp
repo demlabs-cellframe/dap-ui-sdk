@@ -36,6 +36,7 @@ Connection::Connection (QWidget *parent) :
 
   /* finish */
   slotSetDownUp (0, 0);
+  slotSetStatusState (false);
 }
 
 Connection::~Connection()
@@ -87,11 +88,13 @@ void Connection::slotSetStartedTime(QDateTime dt)
 
 void Connection::slotSetStatusState(bool connected)
 {
-  ui->lStatusIcon->setCssStyle(
-        (connected)
-        ? "conn-status-icon ic_online"
-        : "conn-status-icon ic_offline"
-      );
+//  ui->lStatusIcon->setCssStyle(
+//        (connected)
+//        ? "conn-status-icon ic_online"
+//        : "conn-status-icon ic_offline"
+//      );
+  ui->lStatusIconOn->setVisible (connected);
+  ui->lStatusIconOff->setVisible (!connected);
 }
 
 void Connection::_slotTimeUpdate()

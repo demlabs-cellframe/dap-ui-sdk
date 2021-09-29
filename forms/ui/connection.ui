@@ -115,9 +115,16 @@ background-color: #F7F8FA;
           </spacer>
          </item>
          <item>
-          <widget class="KelGuiLabel" name="lStatusIcon">
+          <widget class="KelGuiWidget" name="lStatusIconOn">
            <property name="cssStyle">
             <string>conn-status-icon ic_online</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiWidget" name="lStatusIconOff">
+           <property name="cssStyle">
+            <string>conn-status-icon ic_offline</string>
            </property>
           </widget>
          </item>
