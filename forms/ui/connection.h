@@ -66,13 +66,13 @@ public slots:
   void slotSetStartedTime (QDateTime dt);
   void setStatusText(QString a_text);
   void setConnectedTime(QString a_text);
-  void setAuthorizedChecked(bool a_authorized = true);
+  void setStatusIdicator(bool a_enabled = false);
   void setBtnSwitchChecked(bool a_authorized = true);
   void setDownloadSpeed(QString a_text);
   void setUploadSpeed(QString a_text);
   void setServerInfo(QString a_name, QString a_ip);
   void slotDisconnectionRequested();
-  void slotUpdateStatusIcon(bool a_switch);
+//  void slotUpdateStatusIcon(bool a_switch);
 
 
 private slots:

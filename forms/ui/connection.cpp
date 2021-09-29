@@ -39,7 +39,7 @@ Connection::Connection (QWidget *parent) :
 
   /* finish */
   slotSetDownUp (0, 0);
-  slotUpdateStatusIcon(false);
+  setStatusIdicator(false);
 }
 
 Connection::~Connection()
@@ -93,14 +93,17 @@ void Connection::setConnectedTime(QString a_text)
     ui->lUptime->setText(a_text);
 }
 
-void Connection::setAuthorizedChecked(bool a_authorized /*= true*/)
+void Connection::setStatusIdicator(bool a_enabled /*= false*/)
 {
+    ui->lStatusIconOn->setVisible (a_enabled);
+    ui->lStatusIconOff->setVisible (!a_enabled);
+
 //    ui->lStatusIcon->setChecked(a_authorized);
 }
 
 void Connection::setBtnSwitchChecked(bool a_authorized /*= true*/)
 {
-    slotUpdateStatusIcon(a_authorized);
+//    slotUpdateStatusIcon(a_authorized);
 //    ui->btnSwitch->setChecked(a_authorized);
 }
 
@@ -140,17 +143,17 @@ void Connection::slotDisconnectionRequested()
     emit sigDisconnectionRequested();
 }
 
-void Connection::slotUpdateStatusIcon(bool a_switch)
-{
-  ui->lStatusIconOn->setVisible (connected);
-  ui->lStatusIconOff->setVisible (!connected);
+//void Connection::slotUpdateStatusIcon(bool a_switch)
+//{
+//  ui->lStatusIconOn->setVisible (a_switch);
+//  ui->lStatusIconOff->setVisible (!a_switch);
   
-    qDebug() << a_switch;
-  ui->lStatusIcon->setCssStyle(
-        a_switch
-        ? "conn-status-icon ic_online"
-        : "conn-status-icon ic_offline"
-      );
-}
+////    qDebug() << a_switch;
+////  ui->lStatusIcon->setCssStyle(
+////        a_switch
+////        ? "conn-status-icon ic_online"
+////        : "conn-status-icon ic_offline"
+////      );
+//}
 
 /*-----------------------------------------*/
