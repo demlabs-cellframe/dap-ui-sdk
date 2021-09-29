@@ -114,9 +114,9 @@ KelGuiButton::KelGuiButton (QWidget *parent)
   setSeparator (false);
 
   /* setup shadow effect */
-  m_shadowEffect->setBlurRadius (40);
-  m_shadowEffect->setXOffset (10);
-  m_shadowEffect->setYOffset (10);
+  m_shadowEffect->setBlurRadius (60);
+  m_shadowEffect->setXOffset (5);
+  m_shadowEffect->setYOffset (5);
   m_shadowEffect->setColor (QColor::fromRgba (qRgba (0x40, 0x14, 0x24, 0x24)));
 
   setGraphicsEffect (m_shadowEffect);
