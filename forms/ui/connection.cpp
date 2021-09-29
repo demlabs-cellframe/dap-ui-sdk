@@ -142,6 +142,9 @@ void Connection::slotDisconnectionRequested()
 
 void Connection::slotUpdateStatusIcon(bool a_switch)
 {
+  ui->lStatusIconOn->setVisible (connected);
+  ui->lStatusIconOff->setVisible (!connected);
+  
     qDebug() << a_switch;
   ui->lStatusIcon->setCssStyle(
         a_switch
