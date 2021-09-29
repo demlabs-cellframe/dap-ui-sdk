@@ -50,6 +50,7 @@ public:
 signals:
   void sigSwitchToggle (bool checked);
   void sigServerClicked();
+  void sigDisconnectionRequested();
   /// @}
 
   /****************************************//**
@@ -57,16 +58,25 @@ signals:
    *******************************************/
   /// @{
 public slots:
-  void slotSwitchSetState (bool checked);
+//  void slotSwitchSetState (bool checked);
   void slotSetDownUp (quint64 down, quint64 up);
   void slotSetDown (quint64 down);
   void slotSetUp (quint64 up);
   void slotSetSererIP (QString ip);
   void slotSetStartedTime (QDateTime dt);
+  void setStatusText(QString a_text);
+  void setConnectedTime(QString a_text);
+  void setAuthorizedChecked(bool a_authorized = true);
+  void setBtnSwitchChecked(bool a_authorized = true);
+  void setDownloadSpeed(QString a_text);
+  void setUploadSpeed(QString a_text);
+  void setServerInfo(QString a_name, QString a_ip);
+  void slotDisconnectionRequested();
+  void slotUpdateStatusIcon(bool a_switch);
+
+
 private slots:
   void _slotTimeUpdate();
-  /// fires if m_started is not null
-  void _slotUpdateStatusIcon();
   /// @}
 };
 

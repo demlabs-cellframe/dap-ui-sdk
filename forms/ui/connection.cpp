@@ -31,7 +31,7 @@ Connection::Connection (QWidget *parent) :
            this, &Connection::sigSwitchToggle,
            Qt::QueuedConnection);
   connect (ui->btnSwitch, &KelGuiPushButton::clicked,
-           this, &Connection::_slotUpdateStatusIcon,
+           this, &Connection::slotDisconnectionRequested,
            Qt::QueuedConnection);
   connect (ui->btnServer, &KelGuiButton::clicked,
            this, &Connection::sigServerClicked,
@@ -39,7 +39,7 @@ Connection::Connection (QWidget *parent) :
 
   /* finish */
   slotSetDownUp (0, 0);
-  _slotUpdateStatusIcon();
+  slotUpdateStatusIcon(false);
 }
 
 Connection::~Connection()
@@ -51,11 +51,11 @@ Connection::~Connection()
  * SLOTS
  *******************************************/
 
-void Connection::slotSwitchSetState(bool checked)
-{
-  ui->btnSwitch->setChecked (checked);
-  _slotUpdateStatusIcon();
-}
+//void Connection::slotSwitchSetState(bool checked)
+//{
+//  ui->btnSwitch->setChecked (checked);
+//  _slotUpdateStatusIcon();
+//}
 
 void Connection::slotSetDownUp(quint64 down, quint64 up)
 {
@@ -77,6 +77,42 @@ void Connection::slotSetSererIP(QString ip)
 {
   ui->btnServer->setSubText (ip);
 }
+void Connection::setStatusText(QString a_text)
+{
+    ui->lTitle->setText(a_text);
+}
+
+void Connection::setServerInfo(QString a_name, QString a_ip)
+{
+    ui->btnServer->setMainText(a_name);
+    ui->btnServer->setSubText(a_ip);
+}
+
+void Connection::setConnectedTime(QString a_text)
+{
+    ui->lUptime->setText(a_text);
+}
+
+void Connection::setAuthorizedChecked(bool a_authorized /*= true*/)
+{
+//    ui->lStatusIcon->setChecked(a_authorized);
+}
+
+void Connection::setBtnSwitchChecked(bool a_authorized /*= true*/)
+{
+    slotUpdateStatusIcon(a_authorized);
+//    ui->btnSwitch->setChecked(a_authorized);
+}
+
+void Connection::setDownloadSpeed(QString a_text)
+{
+    ui->lDownload->setMainText(a_text);
+}
+
+void Connection::setUploadSpeed(QString a_text)
+{
+    ui->lUpload->setMainText(a_text);
+}
 
 void Connection::slotSetStartedTime(QDateTime dt)
 {
@@ -89,7 +125,7 @@ void Connection::slotSetStartedTime(QDateTime dt)
   if(!m_started.isNull())
     m_updateTime->start();
 
-  _slotUpdateStatusIcon();
+//  _slotUpdateStatusIcon();
 }
 
 void Connection::_slotTimeUpdate()
@@ -99,10 +135,17 @@ void Connection::_slotTimeUpdate()
   ui->lUptime->setText (text);
 }
 
-void Connection::_slotUpdateStatusIcon()
+void Connection::slotDisconnectionRequested()
 {
+//    this->_slotUpdateStatusIcon();
+    emit sigDisconnectionRequested();
+}
+
+void Connection::slotUpdateStatusIcon(bool a_switch)
+{
+    qDebug() << a_switch;
   ui->lStatusIcon->setCssStyle(
-        (!m_started.isNull())
+        a_switch
         ? "conn-status-icon ic_online"
         : "conn-status-icon ic_offline"
       );
