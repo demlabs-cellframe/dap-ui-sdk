@@ -4,6 +4,8 @@
 /* INCLUDES */
 #include <QCheckBox>
 #include "kelguiswitchstylemanager.h"
+#include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
 
 /* DEFS */
 namespace Ui { class KelGuiSwitch; };
@@ -20,11 +22,34 @@ class KelGuiSwitch : public QWidget
   Q_OBJECT
   KELGUI_ENABLEWIDGETSTYLE
 
-  Ui::KelGuiSwitch *ui;
-  KelGuiSwitchStyleManager __kgsm = KelGuiSwitchStyleManager (this);
-  bool m_checked;
+  /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
+public:
+  typedef double (*P2pCallback) (double points);
+  /// @}
 
-  void _debugInfoClipboard();
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
+private:
+  /// form
+  Ui::KelGuiSwitch *ui;
+  /// styler
+  KelGuiSwitchStyleManager __kgsm = KelGuiSwitchStyleManager (this);
+  /// state
+  bool m_checked;
+  /// toggle position x coordinate
+  double m_toggleOnPos;
+  /// toogle animation group
+  QParallelAnimationGroup m_animGroup;
+  QPropertyAnimation *m_animToggle;
+
+  /// callback for UiScaling::pointsToPixels
+  static P2pCallback m_p2p;
+  /// @}
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
@@ -42,6 +67,8 @@ public:
   bool isChecked() const;
   void setChecked (bool a_checked);
   void toggle();
+  /// set UiScaling::pointsToPixels function pointer
+  void setP2p(P2pCallback newP2p);
   /// @}
 
   /****************************************//**
@@ -59,6 +86,15 @@ signals:
   /// @{
 public:
   void mousePressEvent (QMouseEvent *) override;
+  /// @}
+
+  /****************************************//**
+   * @name PROTECTED METHODS
+   *******************************************/
+  /// @{
+protected slots:
+  void _setAnimByState();
+  void _debugInfoClipboard();
   /// @}
 };
 
