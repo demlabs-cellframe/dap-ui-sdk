@@ -149,6 +149,11 @@
 	background-color: rgba(0,0,0,0);
 }
 
+.noborder
+{
+	border: none;
+}
+
 .window
 {
 	width: 428pt;
@@ -386,82 +391,82 @@
 
 .ic_renew
 {
-	image: url("://gui/ui/asset/ic_renew.png");
+	border-image: url("://gui/ui/asset/ic_renew.png");
 }
 
 .ic_key
 {
-	image: url("://gui/ui/asset/ic_key.png");
+	border-image: url("://gui/ui/asset/ic_key.png");
 }
 
 .ic_key-item
 {
-	image: url("://gui/ui/asset/ic_key-item.png");
+	border-image: url("://gui/ui/asset/ic_key-item.png");
 }
 
 .ic_language
 {
-	image: url("://gui/ui/asset/ic_language.png");
+	border-image: url("://gui/ui/asset/ic_language.png");
 }
 
 .ic_send-report
 {
-	image: url("://gui/ui/asset/ic_send-report.png");
+	border-image: url("://gui/ui/asset/ic_send-report.png");
 }
 
 .ic_bot
 {
-	image: url("://gui/ui/asset/ic_bot.png");
+	border-image: url("://gui/ui/asset/ic_bot.png");
 }
 
 .ic_close
 {
-	image: url("://gui/ui/asset/ic_close.png");
+	border-image: url("://gui/ui/asset/ic_close.png");
 }
 
 .ic_copy
 {
-	image: url("://gui/ui/asset/ic_copy.png");
+	border-image: url("://gui/ui/asset/ic_copy.png");
 }
 
 .ic_information_bug-report
 {
-	image: url("://gui/ui/asset/ic_information_bug-report.png");
+	border-image: url("://gui/ui/asset/ic_information_bug-report.png");
 }
 
 .ic_key-history
 {
-	image: url("://gui/ui/asset/ic_key-history.png");
+	border-image: url("://gui/ui/asset/ic_key-history.png");
 }
 
 .ic_terms_policy
 {
-	image: url("://gui/ui/asset/ic_terms_policy.png");
+	border-image: url("://gui/ui/asset/ic_terms_policy.png");
 }
 
 .ic_terms_policy
 {
-	image: url("://gui/ui/asset/ic_terms_policy.png");
+	border-image: url("://gui/ui/asset/ic_terms_policy.png");
 }
 
 .ic_version
 {
-	image: url("://gui/ui/asset/ic_version.png");
+	border-image: url("://gui/ui/asset/ic_version.png");
 }
 
 .ic_spinner
 {
-	image: url("://gui/ui/asset/Spinner.gif");
+	border-image: url("://gui/ui/asset/Spinner.gif");
 }
 
 .ic_online
 {
-	image: url("://gui/ui/asset/icon_online.png");
+	border-image: url("://gui/ui/asset/icon_online.png");
 }
 
 .ic_offline
 {
-	image: url("://gui/ui/asset/icon_offline.png");
+	border-image: url("://gui/ui/asset/icon_offline.png");
 }
 
 /****************************************************
@@ -476,7 +481,7 @@
 	min-height: 926pt;
 	max-width: 428pt;
 	max-height: 926pt;
-	image: url(:/gui/ui/asset/bg_dark-stripes.png);
+	border-image: url(:/gui/ui/asset/bg_dark-stripes.png);
 }
 
 .splashscreen_logo
@@ -485,7 +490,7 @@
 	max-width: 230pt;
 	min-height: 59pt;
 	max-height: 59pt;
-	image: url(:/gui/ui/asset/logo_kelvpn-white.png);
+	border-image: url(:/gui/ui/asset/logo_kelvpn-white.png);
 }
 
 /****************************************************
@@ -500,7 +505,7 @@
 	min-height: 89pt;
 	max-width: 260pt;
 	max-height: 89pt;
-	image: url(:/gui/ui/asset/logo_kelvpn-color.png);
+	border-image: url(:/gui/ui/asset/logo_kelvpn-color.png);
 }
 
 .login-margin-connect-top

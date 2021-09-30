@@ -15,7 +15,11 @@ MenuFooter::MenuFooter (QWidget *parent) :
   /* setup */
   ui->setupUi (this);
   this->setVisible (false);
+#ifndef Q_OS_ANDROID
   setCssStyle ("footer");
+#else
+  ui->Background->setCssStyle ("backgroundcolor");
+#endif // Q_OS_ANDROID
   qRegisterMetaType<ButtonState> ("ButtonState");
   qRegisterMetaType<MenuFooter::ButtonState> ("MenuFooter::ButtonState");
   //setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -88,7 +92,10 @@ void MenuFooter::slotMoveToBottom()
 {
   raise();
   if (auto p = dynamic_cast<QWidget *> (parent()))
-    move (0, p->height() - height());
+    {
+      move (0, p->height() - height());
+      resize (p->width(), height());
+    }
 }
 
 void MenuFooter::slotButtonToggled (bool checked)

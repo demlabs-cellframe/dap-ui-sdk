@@ -37,7 +37,7 @@
      <property name="styleSheet">
       <string notr="true">#Background
 {
-background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgb(230, 44, 199), stop:1 rgb(245, 49, 114));
+background: rgb(230, 44, 199);
 }</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -59,7 +59,7 @@ background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgb(230, 
       <item>
        <widget class="KelGuiWidget" name="MainWidget">
         <property name="styleSheet">
-         <string notr="true">#MainWidget{}</string>
+         <string notr="true">#MainWidget{ 	width: 428px; 	height: 926px; 	min-width: 428px; 	min-height: 926px; 	max-width: 428px; 	max-height: 926px; 	image: url(:/gui/ui/asset/bg_dark-stripes.png); }</string>
         </property>
         <property name="cssStyle">
          <string>splashscreen_background</string>
@@ -74,7 +74,7 @@ background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgb(230, 
             <item>
              <widget class="KelGuiLabel" name="lLogo">
               <property name="styleSheet">
-               <string notr="true">#lLogo{}</string>
+               <string notr="true">#lLogo{ 	min-width: 230px; 	max-width: 230px; 	min-height: 59px; 	max-height: 59px; 	image: url(:/gui/ui/asset/logo_kelvpn-white.png); }</string>
               </property>
               <property name="text">
                <string/>
@@ -93,7 +93,10 @@ background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgb(230, 
          <item>
           <widget class="KelGuiLabel" name="lStatus">
            <property name="styleSheet">
-            <string notr="true">#lStatus{ 	font-weight: normal; 	font-style: normal; 	font-size: normal; }</string>
+            <string notr="true">#lStatus{ 	color: #FFFFFF; 
+ 	font: 18px/22px; 
+ 	font-weight: normal; 	font-style: normal; 	font-size: normal; 
+ 	font-family: 'Lato'; }</string>
            </property>
            <property name="text">
             <string>Status message</string>
@@ -109,8 +112,10 @@ background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgb(230, 
          <item>
           <widget class="KelGuiLabel" name="lVersion">
            <property name="styleSheet">
-            <string notr="true">#lVersion{ 	font: 12pt/15pt; 
- 	font-weight: normal; 	font-style: normal; 	font-size: normal; }</string>
+            <string notr="true">#lVersion{ 	color: #FFFFFF; 
+ 	font: 12px/15px; 
+ 	font-weight: normal; 	font-style: normal; 	font-size: normal; 
+ 	font-family: 'Lato'; }</string>
            </property>
            <property name="text">
             <string>Version 7.0-5
@@ -191,6 +196,7 @@ border-radius: 2px;
    <class>KelGuiWidget</class>
    <extends>QWidget</extends>
    <header>kelguiwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

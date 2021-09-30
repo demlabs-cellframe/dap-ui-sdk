@@ -104,6 +104,7 @@ void KelGuiStyleManager::setCssStyle (const QString &cssStyle)
 {
   m_cssStyle  = cssStyle;
   forcedStyleUpdate();
+  emit cssStyleChanged();
 }
 
 /********************************************

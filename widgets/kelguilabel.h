@@ -16,6 +16,7 @@ class KelGuiLabel : public QLabel
 {
   Q_OBJECT
   KELGUI_ENABLECSS
+  bool _cssHook;
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
@@ -39,6 +40,14 @@ public:
   /// @{
 signals:
   void clicked();         ///< button is clicked
+  /// @}
+
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
+protected slots:
+  void _slotCssStyleUpdate();
   /// @}
 };
 
