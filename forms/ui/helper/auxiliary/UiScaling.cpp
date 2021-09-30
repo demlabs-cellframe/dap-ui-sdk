@@ -24,17 +24,20 @@ static float s_DPI = 0.0;
 
 float UiScaling::pointsToPixels (float a_pointsValue, float dpi /*default = 0*/)
 {
-//#ifndef Q_OS_ANDROID
+#ifndef Q_OS_ANDROID
   if (!dpi)
     dpi = getNativDPI();
   float valueInPixels = dpi * pointsToInches (aptToPt (a_pointsValue));
-//#else
+#else
 //  Q_UNUSED (dpi)
 //  static qreal dpi_Android (QGuiApplication::primaryScreen()->geometry().width());
 
 //  float valueInPixels = dpi_Android * a_pointsValue / 360.f;
+  if (!dpi)
+    dpi = getNativDPI();
 
-//#endif
+  float valueInPixels = dpi * pointsToInches (a_pointsValue);
+#endif
   return valueInPixels;
 }
 
@@ -80,8 +83,8 @@ float UiScaling::getNativDPI()
   QScreen *screen = QApplication::primaryScreen();
   int hSize       = screen->physicalSize().height();
   int wSize       = screen->physicalSize().width();
-  int hResolution = screen->availableSize().height();
-  int wResolution = screen->availableSize().width();
+  int hResolution = screen->size().height();
+  int wResolution = screen->size().width();
   qDebug() << __PRETTY_FUNCTION__ << "physical: " << wSize << hSize << " virtual: " << wResolution << hResolution;
 #endif
 #elif defined(Q_OS_MACOS)
@@ -96,7 +99,7 @@ float UiScaling::getNativDPI()
   static qreal dpi (QGuiApplication::primaryScreen()->physicalDotsPerInch());
 #endif
 //#ifndef Q_OS_ANDROID
-  float pixelsPerMM = ((float)hResolution / hSize + (float)hResolution / hSize) / 2;
+  float pixelsPerMM = ((float)wResolution / wSize + (float)hResolution / hSize) / 2;
   float dpi = pixelsPerMM * 25.4f;
   qInfo() << QString ("UiScaling - Pixels pre mm: %1 Resolution: %2x%3 Screen size: %4x%5 dpi: %6 According to qt: %7")
           .arg (pixelsPerMM).arg (hResolution).arg (wResolution).arg (hSize).arg (wSize).arg (dpi)
