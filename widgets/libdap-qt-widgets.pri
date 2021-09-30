@@ -19,6 +19,7 @@ HEADERS     += \
     $$PWD/kelguipushbuttonplugin.h \
     $$PWD/kelguiradioplugin.h \
     $$PWD/kelguiseparatorplugin.h \
+    $$PWD/kelguiswitchplugin.h \
     $$PWD/kelguitexteditplugin.h \
     $$PWD/kelguiwidgetplugin.h \
     $$PWD/kelvpnneuromorphic.h \
@@ -34,6 +35,7 @@ SOURCES     += \
     $$PWD/kelguipushbuttonplugin.cpp \
     $$PWD/kelguiradioplugin.cpp \
     $$PWD/kelguiseparatorplugin.cpp \
+    $$PWD/kelguiswitchplugin.cpp \
     $$PWD/kelguitexteditplugin.cpp \
     $$PWD/kelguiwidgetplugin.cpp \
     $$PWD/kelvpnneuromorphic.cpp \
@@ -59,6 +61,7 @@ include(kelguiplaintextedit.pri)
 include(kelguipushbutton.pri)
 include(kelguiradio.pri)
 include(kelguiseparator.pri)
+include(kelguiswitch.pri)
 include(kelguitextedit.pri)
 include(kelguilabel.pri)
 include(kelguilineedit.pri)

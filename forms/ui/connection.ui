@@ -171,17 +171,7 @@ background-color: #F7F8FA;
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="KelGuiPushButton" name="btnSwitch">
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-          <property name="style">
-           <enum>KelGuiPushButton::Switch</enum>
-          </property>
-         </widget>
+         <widget class="KelGuiSwitch" name="btnSwitch"/>
         </item>
        </layout>
       </item>
@@ -297,9 +287,9 @@ background-color: #F7F8FA;
    <header>kelguibutton.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiPushButton</class>
-   <extends>QPushButton</extends>
-   <header>kelguipushbutton.h</header>
+   <class>KelGuiSwitch</class>
+   <extends>QWidget</extends>
+   <header>kelguiswitch.h</header>
   </customwidget>
   <customwidget>
    <class>KelGuiLabel</class>
