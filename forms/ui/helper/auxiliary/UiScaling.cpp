@@ -6,6 +6,7 @@
 #include <QRect>
 #include <QApplication>
 #include <QDebug>
+#include <QScreen>
 
 #ifdef Q_OS_WIN
 #include "windows.h"
@@ -23,17 +24,17 @@ static float s_DPI = 0.0;
 
 float UiScaling::pointsToPixels (float a_pointsValue, float dpi /*default = 0*/)
 {
-#ifndef Q_OS_ANDROID
+//#ifndef Q_OS_ANDROID
   if (!dpi)
     dpi = getNativDPI();
   float valueInPixels = dpi * pointsToInches (aptToPt (a_pointsValue));
-#else
-  Q_UNUSED (dpi)
-  static qreal dpi_Android (QGuiApplication::primaryScreen()->geometry().width());
+//#else
+//  Q_UNUSED (dpi)
+//  static qreal dpi_Android (QGuiApplication::primaryScreen()->geometry().width());
 
-  float valueInPixels = dpi_Android * a_pointsValue / 360.f;
+//  float valueInPixels = dpi_Android * a_pointsValue / 360.f;
 
-#endif
+//#endif
   return valueInPixels;
 }
 
@@ -75,6 +76,13 @@ float UiScaling::getNativDPI()
   int wSize       = crtc_info->width;
   int hResolution = outInfo->mm_height;
   int wResolution = outInfo->mm_width;
+#else
+  QScreen *screen = QApplication::primaryScreen();
+  int hSize       = screen->physicalSize().height();
+  int wSize       = screen->physicalSize().width();
+  int hResolution = screen->availableSize().height();
+  int wResolution = screen->availableSize().width();
+  qDebug() << __PRETTY_FUNCTION__ << "physical: " << wSize << hSize << " virtual: " << wResolution << hResolution;
 #endif
 #elif defined(Q_OS_MACOS)
   auto mainDisplayId = CGMainDisplayID();
@@ -87,7 +95,7 @@ float UiScaling::getNativDPI()
 #else
   static qreal dpi (QGuiApplication::primaryScreen()->physicalDotsPerInch());
 #endif
-#ifndef Q_OS_ANDROID
+//#ifndef Q_OS_ANDROID
   float pixelsPerMM = ((float)hResolution / hSize + (float)hResolution / hSize) / 2;
   float dpi = pixelsPerMM * 25.4f;
   qInfo() << QString ("UiScaling - Pixels pre mm: %1 Resolution: %2x%3 Screen size: %4x%5 dpi: %6 According to qt: %7")
@@ -95,9 +103,9 @@ float UiScaling::getNativDPI()
           .arg (QGuiApplication::primaryScreen()->physicalDotsPerInch()); //for statistic, delete later
   s_DPI = ((dpi < 50 || dpi > 350) ? QGuiApplication::primaryScreen()->physicalDotsPerInch() : dpi);
   return s_DPI;
-#else
-  return 1;
-#endif
+//#else
+//  return 1;
+//#endif
 }
 
 void UiScaling::setPseudoDPI (const float &pseudoDPI)
