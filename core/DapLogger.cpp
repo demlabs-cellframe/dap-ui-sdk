@@ -78,7 +78,7 @@ QString DapLogger::defaultLogPath(const QString a_brand)
     return QString("%1/%2/log").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
     static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod("getExtFilesDir", "()Ljava/lang/String;");
-    return QString("%1/log/").arg(l_pathObj.toString());
+    return QString("%1/log").arg(l_pathObj.toString());
 #endif
     return {};
 }

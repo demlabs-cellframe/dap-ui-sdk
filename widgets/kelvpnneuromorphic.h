@@ -22,7 +22,11 @@
  ***************************************************/
 
 /* INCLUDES */
+#ifdef Q_OS_ANDROID
+#include <QtUiPlugin/QDesignerCustomWidgetCollectionInterface>
+#else
 #include <QtDesigner>
+#endif
 #include <qplugin.h>
 
 /****************************************//**

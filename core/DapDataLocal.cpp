@@ -40,9 +40,9 @@ DapDataLocal::DapDataLocal()
     qDebug() << "[DL] DapDataLocal Constructor";
     parseXML(":/data.xml");
 #ifdef Q_OS_ANDROID
-    int res = QtAndroid::androidContext().callMethod<jint>("procSettings", "(I)I", 1);
+    /*int res = QtAndroid::androidContext().callMethod<jint>("procSettings", "(I)I", 1);
     qDebug() << "Import result: " << res;
-    /*struct stat statBuf;
+    struct stat statBuf;
     int l_fd = QtAndroid::androidContext().callMethod<jint>("saveAndUpdateSettings", "()I");
     if (l_fd > 0) {
         fstat(l_fd, &statBuf);
@@ -208,7 +208,8 @@ void DapDataLocal::rotateCDBList() {
 QSettings* DapDataLocal::settings()
 {
 #ifdef Q_OS_ANDROID
-    static QSettings s_settings(DapLogger::defaultLogPath(DAP_BRAND).append("/settings.ini"), QSettings::IniFormat);
+    static QString s_path = DapLogger::defaultLogPath(DAP_BRAND).chopped(3).append("settings.ini");
+    static QSettings s_settings(s_path, QSettings::IniFormat);
 #else
     static QSettings s_settings;
 #endif

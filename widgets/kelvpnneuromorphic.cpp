@@ -16,6 +16,7 @@
 #include "kelguicommon.h"
 
 #include "widgetsdebugsettings.h"
+#include <QFontDatabase>
 
 /* VARS */
 static WidgetsDebugSettings *s_settings = nullptr;

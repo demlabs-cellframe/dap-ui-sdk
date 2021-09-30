@@ -32,6 +32,11 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 #include "registry.h"
 #endif
 
+#ifdef Q_OS_ANDROID
+#include <QtAndroid>
+#include <QAndroidJniObject>
+#endif
+
 using namespace Dap;
 using namespace Dap::Crypto;
 
@@ -262,7 +267,8 @@ QString Cert::storagePath()
 #elif defined (Q_OS_WIN)
     return QString("%1/%2").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
-    return QString("/sdcard/%1").arg(DAP_BRAND);
+    static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod("getExtFilesDir", "()Ljava/lang/String;");
+    return l_pathObj.toString();
 #endif
     return {};
 }
