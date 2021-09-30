@@ -135,9 +135,22 @@ void KelGuiStyleManager::forcedStyleUpdate()
 {
   if(!m_widget)
     return;
+
+  auto style  = styleByClassName (m_cssStyle);
+
+  if(!style.contains("background"))
+    {
+      //m_widget->setAttribute(Qt::WA_NoSystemBackground);
+      //m_widget->setAttribute(Qt::WA_TranslucentBackground);
+      //m_widget->setAttribute(Qt::WA_PaintOnScreen);
+      //m_widget->setAttribute(Qt::WA_TransparentForMouseEvents);
+      style += "background-color: rgba(0,0,0,0);";
+    }
+
   QString s   =
     "#" + m_widget->objectName() +
-    "{" + styleByClassName (m_cssStyle) + "}";
+    "{" + style + "}";
+
   m_widget->setStyleSheet (s);
 }
 

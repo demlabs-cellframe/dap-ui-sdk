@@ -149,6 +149,21 @@
 	background-color: rgba(0,0,0,0);
 }
 
+.bgdebug-green
+{
+	background-color: #0f0;
+}
+
+.bgdebug-blue
+{
+	background-color: #00f;
+}
+
+.bgdebug-red
+{
+	background-color: #f00;
+}
+
 .noborder
 {
 	border: none;
@@ -157,31 +172,31 @@
 .window
 {
 	width: 428pt;
-	height: 926pt;
+	/*height: 926pt;*/
 	min-width: 428pt;
-	min-height: 926pt;
+	/*min-height: 926pt;*/
 	max-width: 428pt;
-	max-height: 926pt;
+	/*max-height: 926pt;*/
 }
 
 .footer
 {
 	width: 428pt;
-	height: 201pt;
+	height: 144pt;
 	min-width: 428pt;
-	min-height: 201pt;
+	min-height: 144pt;
 	max-width: 428pt;
-	max-height: 201pt;
+	max-height: 144pt;
 }
 
 .screenarea
 {
 	width: 428pt;
-	height: 725pt;
+	/*height: 725pt;*/
 	min-width: 428pt;
-	min-height: 725pt;
+	/*min-height: 725pt;*/
 	max-width: 428pt;
-	max-height: 725pt;
+	/*max-height: 725pt;*/
 }
 
 .frame
@@ -508,11 +523,25 @@
 	border-image: url(:/gui/ui/asset/logo_kelvpn-color.png);
 }
 
+.login-logo-holder
+{
+	height: 89pt;
+	min-height: 89pt;
+	max-height: 89pt;
+}
+
 .login-margin-connect-top
 {
 	height: 120pt;
 	min-height: 120pt;
 	max-height: 120pt;
+}
+
+.login-error-message
+{
+	height: 40pt;
+	min-height: 40pt;
+	max-height: 40pt;
 }
 
 .login-margin-bottom

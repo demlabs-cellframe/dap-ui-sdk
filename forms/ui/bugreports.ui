@@ -56,7 +56,7 @@
       <item>
        <widget class="KelGuiWidget" name="MainWidget">
         <property name="cssStyle">
-         <string>bugrep-widget</string>
+         <string>bugrep-widget backgroundcolor</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <property name="spacing">
@@ -197,7 +197,7 @@
            <item>
             <widget class="KelGuiWidget" name="spacer_spacer">
              <property name="cssStyle">
-              <string>bugrep-close-btn</string>
+              <string>bugrep-close-btn nobackground</string>
              </property>
             </widget>
            </item>
@@ -359,7 +359,7 @@
               </size>
              </property>
              <property name="styleSheet">
-              <string notr="true">#labelLoading{ 	image: url(&quot;://gui/ui/asset/Spinner.gif&quot;); }</string>
+              <string notr="true">#labelLoading{ 	border-image: url(&quot;://gui/ui/asset/Spinner.gif&quot;); }</string>
              </property>
              <property name="text">
               <string/>

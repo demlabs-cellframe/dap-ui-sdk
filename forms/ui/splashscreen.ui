@@ -58,23 +58,27 @@ background: rgb(230, 44, 199);
       </property>
       <item>
        <widget class="KelGuiWidget" name="MainWidget">
-        <property name="styleSheet">
-         <string notr="true">#MainWidget{ 	width: 428px; 	height: 926px; 	min-width: 428px; 	min-height: 926px; 	max-width: 428px; 	max-height: 926px; 	image: url(:/gui/ui/asset/bg_dark-stripes.png); }</string>
-        </property>
         <property name="cssStyle">
          <string>splashscreen_background</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="KelGuiWidget" name="kelGuiWidget_2"/>
+          <widget class="KelGuiWidget" name="kelGuiWidget_2">
+           <property name="cssStyle">
+            <string>nobackground</string>
+           </property>
+          </widget>
          </item>
          <item>
-          <widget class="QWidget" name="widget" native="true">
+          <widget class="KelGuiWidget" name="widget">
+           <property name="cssStyle">
+            <string>nobackground</string>
+           </property>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
              <widget class="KelGuiLabel" name="lLogo">
               <property name="styleSheet">
-               <string notr="true">#lLogo{ 	min-width: 230px; 	max-width: 230px; 	min-height: 59px; 	max-height: 59px; 	image: url(:/gui/ui/asset/logo_kelvpn-white.png); }</string>
+               <string notr="true">#lLogo{ 	min-width: 230px; 	max-width: 230px; 	min-height: 59px; 	max-height: 59px; 	border-image: url(:/gui/ui/asset/logo_kelvpn-white.png); }</string>
               </property>
               <property name="text">
                <string/>
@@ -88,7 +92,11 @@ background: rgb(230, 44, 199);
           </widget>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="kelGuiWidget"/>
+          <widget class="KelGuiWidget" name="kelGuiWidget">
+           <property name="cssStyle">
+            <string>nobackground</string>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="KelGuiLabel" name="lStatus">
@@ -130,9 +138,12 @@ September 10 2021</string>
           </widget>
          </item>
          <item>
-          <widget class="QWidget" name="wLoadingHolder" native="true">
+          <widget class="KelGuiWidget" name="wLoadingHolder">
            <property name="styleSheet">
-            <string notr="true">max-height: 5px;</string>
+            <string notr="true">#wLoadingHolder{ 	background-color: rgba(0,0,0,0); }</string>
+           </property>
+           <property name="cssStyle">
+            <string>nobackground</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <property name="spacing">

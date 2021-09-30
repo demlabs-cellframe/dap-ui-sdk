@@ -1,6 +1,13 @@
 /* INCLUDES */
 #include "menufooter.h"
 #include "ui_menufooter.h"
+#include <QApplication>
+#include <QScreen>
+#include <QDebug>
+#include "ui/helper/auxiliary/UiScaling.h"
+
+/* DEFS */
+#define HEIGHT (144)
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -14,12 +21,14 @@ MenuFooter::MenuFooter (QWidget *parent) :
 {
   /* setup */
   ui->setupUi (this);
-  this->setVisible (false);
-#ifndef Q_OS_ANDROID
-  setCssStyle ("footer");
-#else
-  ui->Background->setCssStyle ("backgroundcolor");
-#endif // Q_OS_ANDROID
+  setVisible (false);
+  ui->progress->setVisible (false);
+  setCssStyle ("footer backgroundcolor");
+//#ifndef Q_OS_ANDROID
+//  setCssStyle ("footer");
+//#else
+//  ui->Background->setCssStyle ("backgroundcolor");
+//#endif // Q_OS_ANDROID
   qRegisterMetaType<ButtonState> ("ButtonState");
   qRegisterMetaType<MenuFooter::ButtonState> ("MenuFooter::ButtonState");
   //setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -91,11 +100,22 @@ void MenuFooter::slotSetButtonState (MenuFooter::ButtonState state)
 void MenuFooter::slotMoveToBottom()
 {
   raise();
+#ifndef Q_OS_ANDROID
   if (auto p = dynamic_cast<QWidget *> (parent()))
     {
-      move (0, p->height() - height());
-      resize (p->width(), height());
+      auto posY   = p->height() - HEIGHT;
+      move (0, posY);
+      resize (p->width(), HEIGHT);
+      qDebug() << __PRETTY_FUNCTION__ << "y:" << posY << ",screen:" << p->width() << p->height() << height();
     }
+#else // Q_OS_ANDROID
+  auto screen = QApplication::screens().first();
+  auto height = UiScaling::pointsToPixels(HEIGHT, UiScaling::getNativDPI());
+  auto posY   = screen->availableSize().height() - height;
+  move (0, posY);
+  resize (screen->availableSize().width(), height);
+  qDebug() << __PRETTY_FUNCTION__ << "y:" << posY << ",screen:" << screen->availableSize().width() << screen->availableSize().height() << height;
+#endif // Q_OS_ANDROID
 }
 
 void MenuFooter::slotButtonToggled (bool checked)

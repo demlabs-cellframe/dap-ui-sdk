@@ -32,7 +32,10 @@
    <item>
     <widget class="KelGuiWidget" name="KelGuiButtonBackground">
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">#KelGuiButtonBackground{ 	background-color: rgba(0,0,0,0); }</string>
+     </property>
+     <property name="cssStyle">
+      <string>nobackground</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <property name="spacing">
@@ -51,7 +54,10 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QWidget" name="Style0" native="true">
+       <widget class="KelGuiWidget" name="Style0">
+        <property name="cssStyle">
+         <string>nobackground</string>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <property name="spacing">
           <number>0</number>
@@ -92,7 +98,10 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="Style1" native="true">
+       <widget class="KelGuiWidget" name="Style1">
+        <property name="cssStyle">
+         <string>nobackground</string>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <property name="spacing">
           <number>0</number>
@@ -133,7 +142,10 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="Style2" native="true">
+       <widget class="KelGuiWidget" name="Style2">
+        <property name="cssStyle">
+         <string>nobackground</string>
+        </property>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <property name="spacing">
           <number>0</number>
@@ -191,7 +203,10 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="Style3" native="true">
+       <widget class="KelGuiWidget" name="Style3">
+        <property name="cssStyle">
+         <string>nobackground</string>
+        </property>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <property name="spacing">
           <number>0</number>
@@ -239,7 +254,10 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="Style4" native="true">
+       <widget class="KelGuiWidget" name="Style4">
+        <property name="cssStyle">
+         <string>nobackground</string>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
          <item>
           <widget class="KelGuiLineEdit" name="kelGuiLineEditMain">

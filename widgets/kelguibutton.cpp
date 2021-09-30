@@ -63,12 +63,12 @@ T *as (U *u)
  *******************************************/
 
 KelGuiButton::KelGuiButton (QWidget *parent)
-    : QWidget (parent)
-    , ui (new Ui::KelGuiButtonUI)
-    , m_btnStyle (TopMainBottomSub)
-    , m_mainText ("Main text")
-    , m_subText ("Sub text")
-    , m_leftText ("$0.00")
+  : QWidget (parent)
+  , ui (new Ui::KelGuiButtonUI)
+  , m_btnStyle (TopMainBottomSub)
+  , m_mainText ("Main text")
+  , m_subText ("Sub text")
+  , m_leftText ("$0.00")
   , m_mainCssClass ("darkblue normalbold font20")
   , m_subCssClass ("gray uppercase font12")
   , m_leftCssClass ("darkblue normalbold font30")
@@ -107,6 +107,7 @@ KelGuiButton::KelGuiButton (QWidget *parent)
   m_lLink->setMaximumWidth (LINK_WIDTH);
   m_lLink->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
   m_lLink->setParent (ui->KelGuiButtonBackground);
+  m_lLink->setStyleSheet ("background-color: rgba(0,0,0,0);");
   m_lLink->hide();
 
   //setIcon (m_icon);

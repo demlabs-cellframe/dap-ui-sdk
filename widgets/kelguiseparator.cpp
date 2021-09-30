@@ -13,6 +13,7 @@ KelGuiSeparator::KelGuiSeparator (QWidget *parent)
   , ui (new Ui::KelGuiSeparatorUI)
 {
   ui->setupUi (this);
+  setMaximumHeight (4);
 //  auto sz     = QPixmap ("://gfx/separator.png").size();
 //  auto style  = QString ("background-image: url(://gfx/separator.png);"
 //                         "min-width: %1px;min-height: %2px;"
