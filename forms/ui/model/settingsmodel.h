@@ -46,6 +46,14 @@ public slots:
   void slotSetDaysLeft (QString days);
   void slotClicked();
   /// @}
+
+  /****************************************//**
+   * @name OVERRIDE
+   *******************************************/
+  /// @{
+public:
+  bool eventFilter(QObject *o, QEvent *e) override;
+  /// @}
 };
 
 /*-----------------------------------------*/

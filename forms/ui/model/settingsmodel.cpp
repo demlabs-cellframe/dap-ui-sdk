@@ -5,6 +5,8 @@
 #include "kelguibutton.h"
 #include <QUrl>
 #include <QBoxLayout>
+#include <QEvent>
+#include <QScrollBar>
 
 /* DEFS */
 typedef QString TextStyle;
@@ -191,6 +193,19 @@ void SettingsModel::slotClicked()
   auto btn  = qobject_cast<KelGuiButton*> (sender());
   auto cb   = s_btnCallbacks.value (btn, defaultCb);
   cb();
+}
+
+/********************************************
+ * OVERRIDE
+ *******************************************/
+
+bool SettingsModel::eventFilter(QObject *o, QEvent *e)
+{
+  // This works because QScrollArea::setWidget installs an eventFilter on the widget
+  if(o && o == widget() && e->type() == QEvent::Resize)
+    setMinimumWidth(widget()->minimumSizeHint().width() + verticalScrollBar()->width());
+
+  return QScrollArea::eventFilter(o, e);
 }
 
 /********************************************

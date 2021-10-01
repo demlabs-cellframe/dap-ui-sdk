@@ -10,6 +10,7 @@
 #endif // TestApp
 
 #include <QTimer>
+#include <QScroller>
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -20,6 +21,7 @@ ChooseServer::ChooseServer (QWidget *parent) :
   ui (new Ui::ChooseServer)
 {
   ui->setupUi (this);
+  QScroller::grabGesture(this->ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
 
 #ifdef TestApp
   /* simulate model items */

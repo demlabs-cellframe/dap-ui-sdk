@@ -33,6 +33,7 @@ void ModelBase::setupLayout()
           lay->setMargin (0);
           lay->setSpacing (0);
           widget()->setLayout (lay);
+          widget()->installEventFilter (this);
         }
 
       /* get existing layout */
