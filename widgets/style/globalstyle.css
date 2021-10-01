@@ -1026,3 +1026,44 @@
 	max-height: 80pt;
 }
 
+/****************************************************
+ * Serial Input
+ ***************************************************/
+
+.serin-input
+{
+	height: 48pt;
+	min-height: 48pt;
+	max-height: 48pt;
+}
+
+.serin-top-content-spacer
+{
+	height: 56pt;
+	min-height: 56pt;
+	max-height: 56pt;
+}
+
+.serin-title-text
+{
+	width: 282pt;
+	height: 28pt;
+	min-width: 282pt;
+	min-height: 28pt;
+	max-width: 282pt;
+	max-height: 28pt;
+}
+
+.serin-bottom-content-spacer
+{
+	height: 28pt;
+	min-height: 28pt;
+	max-height: 28pt;
+}
+
+.serin-text-separator
+{
+	width: 14pt;
+	min-width: 14pt;
+	max-width: 14pt;
+}

@@ -13,6 +13,10 @@ Login::Login (QWidget *parent) :
 {
   /* ui */
   ui->setupUi (this);
+#ifdef Q_OS_ANDROID
+  ui->btnChooseSerial->setBtnStyle (KelGuiButton::TopMainBottomSub);
+  ui->btnChooseSerial->setMainText ("____-____-____-____");
+#endif
 
   /* signals */
   connect (ui->btnChooseServer, &KelGuiButton::clicked,
@@ -27,29 +31,42 @@ Login::Login (QWidget *parent) :
           this, &Login::sigObtainNewKey);
 
 
-  connect(ui->btnChooseSerial, &KelGuiButton::textChanged,[this](QString text){
-      if (ui->btnChooseSerial->mainText().remove("-").count() == MAX_COUNT_CHAR)
-          emit textChangedAndFilledOut(ui->btnChooseSerial->mainText().remove("-"));
-      else if(ui->btnChooseSerial->mainText().remove("-").isEmpty())
-          emit textChangedAndCleaned();
-      else
-          emit slotSerialFillingIncorrect();
-  });
-  connect(ui->btnChooseSerial, &KelGuiButton::textEdited,[this](QString text){
-      Q_UNUSED(text);
-      if (ui->btnChooseSerial->mainText().remove("-").count() == MAX_COUNT_CHAR)
-          emit textEditedAndFilledOut(ui->btnChooseSerial->mainText());
-      else if(ui->btnChooseSerial->mainText().remove("-").isEmpty())
-          emit textEditedAndCleaned();
-      else
-          emit slotSerialFillingIncorrect();
-  });
+//  connect(ui->btnChooseSerial, &KelGuiButton::textChanged,[this](QString text){
+//      if (ui->btnChooseSerial->mainText().remove("-").count() == MAX_COUNT_CHAR)
+//          emit textChangedAndFilledOut(ui->btnChooseSerial->mainText().remove("-"));
+//      else if(ui->btnChooseSerial->mainText().remove("-").isEmpty())
+//          emit textChangedAndCleaned();
+//      else
+//          emit slotSerialFillingIncorrect();
+//  });
+//  connect(ui->btnChooseSerial, &KelGuiButton::textEdited,[this](QString text){
+//      Q_UNUSED(text);
+//      if (ui->btnChooseSerial->mainText().remove("-").count() == MAX_COUNT_CHAR)
+//          emit textEditedAndFilledOut(ui->btnChooseSerial->mainText());
+//      else if(ui->btnChooseSerial->mainText().remove("-").isEmpty())
+//          emit textEditedAndCleaned();
+//      else
+//          emit slotSerialFillingIncorrect();
+//  });
 
+  connect (ui->btnChooseSerial, &KelGuiButton::textChanged,
+           this, &Login::slotSerialChanged);
+  connect (ui->btnChooseSerial, &KelGuiButton::textEdited,
+           this, &Login::slotSerialChanged);
 }
 
 Login::~Login()
 {
   delete ui;
+}
+
+/********************************************
+ * METHODS
+ *******************************************/
+
+QString Login::getSerialNumber()
+{
+  return ui->btnChooseSerial->mainText();
 }
 
 /********************************************
@@ -107,9 +124,18 @@ void Login::setSerialNumber (const QString &a_serial)
   ui->btnChooseSerial->setMainText (a_serial);
 }
 
-QString Login::getSerialNumber()
+void Login::slotSerialChanged(const QString &a_serial)
 {
-  return ui->btnChooseSerial->mainText();
+  Q_UNUSED(a_serial);
+
+  auto text = ui->btnChooseSerial->mainText().remove("-");
+
+  if (text.count() == MAX_COUNT_CHAR)
+      emit textEditedAndFilledOut(ui->btnChooseSerial->mainText());
+  else if(text.isEmpty())
+      emit textEditedAndCleaned();
+  else
+      emit slotSerialFillingIncorrect();
 }
 
 /*-----------------------------------------*/

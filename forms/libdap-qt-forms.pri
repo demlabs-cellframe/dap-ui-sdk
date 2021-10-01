@@ -29,6 +29,7 @@ SOURCES     += \
     $$PWD/ui/model/settingsmodel.cpp \
     $$PWD/ui/popupdialog.cpp \
     $$PWD/ui/purchase.cpp \
+    $$PWD/ui/serialinput.cpp \
     $$PWD/ui/settings.cpp \
     $$PWD/ui/splashscreen.cpp \
     $$PWD/ui/statistics.cpp \
@@ -61,6 +62,7 @@ HEADERS     += \
     $$PWD/ui/model/settingsmodel.h \
     $$PWD/ui/popupdialog.h \
     $$PWD/ui/purchase.h \
+    $$PWD/ui/serialinput.h \
     $$PWD/ui/settings.h \
     $$PWD/ui/splashscreen.h \
     $$PWD/ui/statistics.h \
@@ -78,6 +80,7 @@ FORMS += \
     $$PWD/ui/menufooter.ui \
     $$PWD/ui/popupdialog.ui \
     $$PWD/ui/purchase.ui \
+    $$PWD/ui/serialinput.ui \
     $$PWD/ui/settings.ui \
     $$PWD/ui/splashscreen.ui \
     $$PWD/ui/statistics.ui \

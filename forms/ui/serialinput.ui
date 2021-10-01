@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SerialInput</class>
+ <widget class="QWidget" name="SerialInput">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>428</width>
+    <height>926</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="KelGuiWidget" name="Background">
+     <property name="cssStyle">
+      <string>backgroundcolor</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="KelGuiWidget" name="MainWidget">
+        <property name="cssStyle">
+         <string>base-widget nobackground</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="KelGuiWidget" name="kelGuiWidget_2">
+           <property name="cssStyle">
+            <string>serin-top-content-spacer nobackground</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiWidget" name="kelGuiWidget_6">
+           <property name="cssStyle">
+            <string>serin-title-text nobackground</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="KelGuiPushButton" name="btnReturn">
+              <property name="style">
+               <enum>KelGuiPushButton::Custom</enum>
+              </property>
+              <property name="custom">
+               <url>
+                <string>qrc:/gui/ui/asset/ic_close.png</string>
+               </url>
+              </property>
+              <property name="customHover">
+               <url>
+                <string>qrc:/gui/ui/asset/ic_close.png</string>
+               </url>
+              </property>
+              <property name="customPushed">
+               <url>
+                <string>qrc:/gui/ui/asset/ic_close.png</string>
+               </url>
+              </property>
+              <property name="cssStyle" stdset="0">
+               <string>cwb_close-btn nobackground</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="KelGuiLabel" name="lTitle">
+              <property name="text">
+               <string>Serial Key</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="cssStyle">
+               <string>serin-title-text normalbold font24 darkblue lato noborder nobackground noborder nobackground noborder nobackground noborder nobackground</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="KelGuiWidget" name="kelGuiWidget_7">
+              <property name="cssStyle">
+               <string>cwb_close-btn nobackground</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiWidget" name="kelGuiWidget_8">
+           <property name="cssStyle">
+            <string>serin-bottom-content-spacer nobackground</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiWidget" name="kelGuiWidget">
+           <property name="cssStyle">
+            <string>serin-input nobackground</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="KelGuiPlainTextEdit" name="editSerial1">
+              <property name="verticalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="KelGuiLabel" name="kelGuiLabel">
+              <property name="text">
+               <string>-</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="cssStyle">
+               <string>font30 darkblue lato normal serin-text-separator nobackground noborder nobackground noborder nobackground noborder nobackground noborder nobackground</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="KelGuiPlainTextEdit" name="editSerial2">
+              <property name="verticalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="KelGuiLabel" name="kelGuiLabel_2">
+              <property name="text">
+               <string>-</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="cssStyle">
+               <string>font30 darkblue lato normal serin-text-separator nobackground noborder nobackground noborder nobackground noborder nobackground noborder nobackground</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="KelGuiPlainTextEdit" name="editSerial3">
+              <property name="verticalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="KelGuiLabel" name="kelGuiLabel_3">
+              <property name="text">
+               <string>-</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="cssStyle">
+               <string>font30 darkblue lato normal serin-text-separator nobackground noborder nobackground noborder nobackground noborder nobackground noborder nobackground</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="KelGuiPlainTextEdit" name="editSerial4">
+              <property name="verticalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiWidget" name="kelGuiWidget_5">
+           <property name="cssStyle">
+            <string>serin-top-content-spacer nobackground</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiWidget" name="kelGuiWidget_4">
+           <property name="cssStyle">
+            <string>nobackground</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="KelGuiPushButton" name="btnConfirm">
+              <property name="text">
+               <string>CONFIRM</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="KelGuiWidget" name="kelGuiWidget_3">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="cssStyle">
+            <string>nobackground</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KelGuiPushButton</class>
+   <extends>QPushButton</extends>
+   <header>kelguipushbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiPlainTextEdit</class>
+   <extends>QWidget</extends>
+   <header>kelguiplaintextedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiLabel</class>
+   <extends>QLabel</extends>
+   <header>kelguilabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiWidget</class>
+   <extends>QWidget</extends>
+   <header>kelguiwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

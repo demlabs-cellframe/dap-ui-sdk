@@ -53,6 +53,13 @@ private:
 public:
   explicit Login (QWidget *parent = nullptr);
   ~Login();
+  /// @}
+
+  /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
   QString getSerialNumber();
   /// @}
 
@@ -89,6 +96,8 @@ public slots:
   void slotServerChooserActivate();
   void slotClearStatusLable();
   void setSerialNumber (const QString &a_serial);
+  /// serial text changed
+  void slotSerialChanged (const QString &a_serial);
   /// @}
 };
 
