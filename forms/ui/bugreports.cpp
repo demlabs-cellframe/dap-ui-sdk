@@ -17,7 +17,8 @@ const QString BugReports::SCREEN_NAME = "BugReports";
 BugReports::BugReports (QWidget *parent) :
   BaseForm (parent),
   ui (new Ui::BugReports),
-  movLoading (new QMovie (":/gui/ui/asset/Spinner.gif"))
+  movLoading (new QMovie (":/gui/ui/asset/Spinner.gif")),
+  _textHook (false)
 {
   /* setup */
   __inst  = this;
@@ -152,18 +153,23 @@ void BugReports::_slotRadioTest()
 
 void BugReports::_slotTextChanged()
 {
+  if(_textHook)
+    return;
+
   /* get text */
   auto text = m_edit->toPlainText();
 
   /* print length */
   ui->labelLetterAmount->setText (
     QString("%1/%2")
-    .arg (text.length())
+    .arg ((text.length() < MAX_LENGTH) ? text.length() : MAX_LENGTH)
     .arg (MAX_LENGTH));
 
   /* check if limit reachced */
   if(text.length() <= MAX_LENGTH)
     return;
+
+  _textHook = true;
 
   /* fix text length */
   int diff  = text.length() - MAX_LENGTH;
@@ -171,9 +177,14 @@ void BugReports::_slotTextChanged()
   m_edit->setPlainText (text);
 
   /* fix cursor pos */
-  auto cur  = m_edit->textCursor();
-  cur.movePosition (QTextCursor::End, QTextCursor::MoveAnchor);
-  m_edit->setTextCursor (cur);
+  QTimer::singleShot(10, [=]
+  {
+    auto cur  = m_edit->textCursor();
+    cur.movePosition (QTextCursor::End, QTextCursor::MoveAnchor);
+    m_edit->setTextCursor (cur);
+  });
+
+  _textHook = false;
 }
 
 /*-----------------------------------------*/

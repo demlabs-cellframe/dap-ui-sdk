@@ -57,6 +57,7 @@ private:
   QMultiMap<Mode, QWidget *> m_map;
   /// testing radio map @see slotRadioTest
   QMap<QObject *, Mode> p_radioTestToMode;
+  bool _textHook;
   /// @}
 
   /****************************************//**
