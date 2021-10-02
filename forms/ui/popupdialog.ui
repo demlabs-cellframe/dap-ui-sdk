@@ -59,7 +59,7 @@
          <set>Qt::AlignCenter</set>
         </property>
         <property name="cssStyle">
-         <string>darkblue lato font20 normal</string>
+         <string>darkblue lato font20 normal noborder nobackground</string>
         </property>
        </widget>
       </item>
@@ -73,12 +73,16 @@ key on your device. Are you sure?</string>
          <set>Qt::AlignCenter</set>
         </property>
         <property name="cssStyle">
-         <string>gray font16 lato normal</string>
+         <string>gray font16 lato normal noborder nobackground</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="KelGuiWidget" name="spacer2"/>
+       <widget class="KelGuiWidget" name="spacer2">
+        <property name="cssStyle">
+         <string>nobackground</string>
+        </property>
+       </widget>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -91,12 +95,16 @@ key on your device. Are you sure?</string>
            <set>Qt::AlignCenter</set>
           </property>
           <property name="cssStyle">
-           <string>darkblue font14 lato normal</string>
+           <string>darkblue font14 lato normal noborder nobackground</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="KelGuiWidget" name="spacer"/>
+         <widget class="KelGuiWidget" name="spacer">
+          <property name="cssStyle">
+           <string>nobackground</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="KelGuiLabel" name="btnNo">
@@ -107,7 +115,7 @@ key on your device. Are you sure?</string>
            <set>Qt::AlignCenter</set>
           </property>
           <property name="cssStyle">
-           <string>darkblue font14 lato normal red</string>
+           <string>darkblue font14 lato normal red noborder nobackground</string>
           </property>
          </widget>
         </item>
