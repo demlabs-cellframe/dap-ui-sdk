@@ -98,6 +98,7 @@ public slots:
   void setSerialNumber (const QString &a_serial);
   /// serial text changed
   void slotSerialChanged (const QString &a_serial);
+  void slotSerialEdited (const QString &a_serial);
   /// @}
 };
 

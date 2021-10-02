@@ -52,7 +52,7 @@ Login::Login (QWidget *parent) :
   connect (ui->btnChooseSerial, &KelGuiButton::textChanged,
            this, &Login::slotSerialChanged);
   connect (ui->btnChooseSerial, &KelGuiButton::textEdited,
-           this, &Login::slotSerialChanged);
+           this, &Login::slotSerialEdited);
 }
 
 Login::~Login()
@@ -131,11 +131,25 @@ void Login::slotSerialChanged(const QString &a_serial)
   auto text = ui->btnChooseSerial->mainText().remove("-");
 
   if (text.count() == MAX_COUNT_CHAR)
-      emit textEditedAndFilledOut(ui->btnChooseSerial->mainText());
+    emit textChangedAndFilledOut(ui->btnChooseSerial->mainText());
   else if(text.isEmpty())
-      emit textEditedAndCleaned();
+    emit textChangedAndCleaned();
   else
-      emit slotSerialFillingIncorrect();
+    emit slotSerialFillingIncorrect();
+}
+
+void Login::slotSerialEdited(const QString &a_serial)
+{
+  Q_UNUSED(a_serial);
+
+  auto text = ui->btnChooseSerial->mainText().remove("-");
+
+  if (text.count() == MAX_COUNT_CHAR)
+    emit textEditedAndFilledOut(ui->btnChooseSerial->mainText());
+  else if(text.isEmpty())
+    emit textEditedAndCleaned();
+  else
+    emit slotSerialFillingIncorrect();
 }
 
 /*-----------------------------------------*/
