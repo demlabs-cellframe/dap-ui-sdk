@@ -15,12 +15,7 @@
 class KelGuiLineEdit : public QLineEdit
 {
   Q_OBJECT
-  //KELGUI_ENABLECSS
-  Q_PROPERTY (QString cssStyle READ cssStyle WRITE setCssStyle)
-  KelGuiStyleManager *__kgsm = new KelGuiStyleManager (this);
-  QString cssStyle() const { return __kgsm->cssStyle(); }
-  void setCssStyle (const QString &cssStyle) { __kgsm->setCssStyle (cssStyle); }
-
+  KELGUI_ENABLECSS
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT

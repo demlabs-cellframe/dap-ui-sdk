@@ -27,8 +27,8 @@ Login::Login (QWidget *parent) :
            this, &Login::sigConnect);
   connect (ui->btnObtainNewKey, &KelGuiLabel::clicked,
            this, &Login::sigObtainNewKey);
-  connect (ui->btnChooseSerial, &KelGuiButton::textChanged,
-          this, &Login::sigObtainNewKey);
+//  connect (ui->btnChooseSerial, &KelGuiButton::textChanged,
+//          this, &Login::sigObtainNewKey);
 
 
 //  connect(ui->btnChooseSerial, &KelGuiButton::textChanged,[this](QString text){

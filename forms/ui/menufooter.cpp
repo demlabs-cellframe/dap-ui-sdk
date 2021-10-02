@@ -111,10 +111,10 @@ void MenuFooter::slotMoveToBottom()
 #else // Q_OS_ANDROID
   auto screen = QApplication::screens().first();
   auto height = UiScaling::pointsToPixels(HEIGHT, UiScaling::getNativDPI());
-  auto posY   = screen->availableSize().height() - height;
+  auto posY   = screen->size().height() - height;
   move (0, posY);
-  resize (screen->availableSize().width(), height);
-  qDebug() << __PRETTY_FUNCTION__ << "y:" << posY << ",screen:" << screen->availableSize().width() << screen->availableSize().height() << height;
+  resize (screen->size().width(), height);
+  qDebug() << __PRETTY_FUNCTION__ << "y:" << posY << ",screen:" << screen->size().width() << screen->size().height() << height;
 #endif // Q_OS_ANDROID
 }
 

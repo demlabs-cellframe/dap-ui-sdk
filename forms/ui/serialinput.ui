@@ -133,7 +133,7 @@
                <set>Qt::AlignCenter</set>
               </property>
               <property name="cssStyle">
-               <string>serin-title-text normalbold font24 darkblue lato noborder nobackground noborder nobackground noborder nobackground noborder nobackground</string>
+               <string>serin-title-text normalbold font24 darkblue lato noborder nobackground noborder nobackground noborder nobackground noborder nobackground noborder nobackground noborder nobackground noborder nobackground noborder nobackground</string>
               </property>
              </widget>
             </item>
@@ -155,106 +155,10 @@
           </widget>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="kelGuiWidget">
+          <widget class="KelGuiLineEdit" name="editSerial">
            <property name="cssStyle">
-            <string>serin-input nobackground</string>
+            <string>nobackground</string>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <property name="spacing">
-             <number>0</number>
-            </property>
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="KelGuiPlainTextEdit" name="editSerial1">
-              <property name="verticalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-              <property name="horizontalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="KelGuiLabel" name="kelGuiLabel">
-              <property name="text">
-               <string>-</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-              <property name="cssStyle">
-               <string>font30 darkblue lato normal serin-text-separator nobackground noborder nobackground noborder nobackground noborder nobackground noborder nobackground</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="KelGuiPlainTextEdit" name="editSerial2">
-              <property name="verticalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-              <property name="horizontalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="KelGuiLabel" name="kelGuiLabel_2">
-              <property name="text">
-               <string>-</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-              <property name="cssStyle">
-               <string>font30 darkblue lato normal serin-text-separator nobackground noborder nobackground noborder nobackground noborder nobackground noborder nobackground</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="KelGuiPlainTextEdit" name="editSerial3">
-              <property name="verticalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-              <property name="horizontalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="KelGuiLabel" name="kelGuiLabel_3">
-              <property name="text">
-               <string>-</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-              <property name="cssStyle">
-               <string>font30 darkblue lato normal serin-text-separator nobackground noborder nobackground noborder nobackground noborder nobackground noborder nobackground</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="KelGuiPlainTextEdit" name="editSerial4">
-              <property name="verticalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-              <property name="horizontalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-             </widget>
-            </item>
-           </layout>
           </widget>
          </item>
          <item>
@@ -323,9 +227,9 @@
    <header>kelguipushbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiPlainTextEdit</class>
-   <extends>QWidget</extends>
-   <header>kelguiplaintextedit.h</header>
+   <class>KelGuiLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>kelguilineedit.h</header>
   </customwidget>
   <customwidget>
    <class>KelGuiLabel</class>

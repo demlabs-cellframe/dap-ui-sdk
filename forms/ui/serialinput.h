@@ -10,6 +10,8 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class SerialInput; }
 QT_END_NAMESPACE
 
+class KelGuiLineEdit;
+
 /****************************************//**
  * @brief ui/class for serial input
  * @ingroup groupUiClasses
@@ -27,7 +29,7 @@ class SerialInput : public QWidget
   /// @{
 private:
   Ui::SerialInput *ui;
-  QMap<QObject *, int> m_inputMap;
+  KelGuiLineEdit *m_input;
   bool m_textChangeHook;
   /// @}
 
