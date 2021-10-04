@@ -345,7 +345,19 @@
 
 .crb_textstyle
 {
-	
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
+}
+
+.crb_on
+{
+	border-image: url("://gfx/radio_btn_on.png");
+}
+
+.crb_off
+{
+	border-image: url("://gfx/radio_btn_off.png");
 }
 
 /* switch */

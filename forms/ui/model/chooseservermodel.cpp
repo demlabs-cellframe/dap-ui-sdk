@@ -4,6 +4,7 @@
 
 #include <QBoxLayout>
 #include <QTimer>
+#include <QDebug>
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -11,6 +12,7 @@
 
 ChooseServerModel::ChooseServerModel (QWidget *parent)
   : ModelBase (parent)
+  , _hook (false)
 {
 
 }
@@ -70,12 +72,12 @@ void ChooseServerModel::slotSetup()
 
       /* setup */
       item->setText (text);
+      item->setSeparator (i + 1 < size);
       lay->addWidget (item);
 
       /* signals */
-      connect (item, &KelGuiRadio::clicked,
-               this, &ChooseServerModel::slotToggled,
-               Qt::QueuedConnection);
+      connect (item, &KelGuiRadio::toggled,
+               this, &ChooseServerModel::slotToggled);
     }
 
   QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -85,17 +87,40 @@ void ChooseServerModel::slotSetup()
     emit filled();
 }
 
-void ChooseServerModel::slotToggled()
+void ChooseServerModel::slotToggled(bool checked)
 {
+//  if(_hook)
+//    {
+//      qDebug() << __PRETTY_FUNCTION__ << "skipped";
+//      return;
+//    }
+
   /* get sender radio */
   auto s = qobject_cast<KelGuiRadio*> (sender());
-  if (!s)
+  if (!s || checked == false)
     return;
 
   /* get it's index */
   int index = m_list.indexOf (s);
   if (index == -1)
     return;
+
+//  /* uncheck other radio's */
+//  _hook = true;
+//  int counter = 0, found = 0;
+
+//  for (auto i = m_list.begin(), e = m_list.end(); i != e; i++)
+//    {
+//      if (*i != s)
+//        {
+//          (*i)->setChecked (false);
+//          counter++;
+//        }
+//    }
+
+//  qDebug() << __PRETTY_FUNCTION__ << "changed" << counter << "found" << found;
+
+//  _hook = false;
 
   /* send selection event signal */
   emit m_cs->sigSelect (index, s->text());

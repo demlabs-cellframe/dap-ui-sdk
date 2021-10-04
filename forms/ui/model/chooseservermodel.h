@@ -28,6 +28,7 @@ private:
   QAbstractListModel *m_model;
   ChooseServer *m_cs;
   QList<KelGuiRadio*> m_list;
+  bool _hook;
   /// @}
 
   /****************************************//**
@@ -58,7 +59,7 @@ public slots:
   void slotSetup();
 private slots:
   /// radio button toggle
-  void slotToggled();
+  void slotToggled (bool checked);
   /// @}
 signals:
   void filled();

@@ -52,15 +52,22 @@ void KelGuiRadioStyleManager::forcedRadioStyleUpdate()
   QString s =
     QString (
       "*\n{"
+      "border: none;"
       "%5}\n"
 
+      "QRadioButton{border: none;}\n"
+      "KelGuiRadio{border: none;}\n"
+
       "QRadioButton::indicator\n{"
+      "border: none;"
       "border-image: url(\"%1\");%4}\n"
 
       "QRadioButton::indicator:hover\n{"
+      "border: none;"
       "border-image: url(\"%2\");}\n"
 
       "QRadioButton::indicator:checked\n{"
+      "border: none;"
       "border-image: url(\"%3\");}\n")
     .arg (
       "://gfx/radio_btn_off.png",
