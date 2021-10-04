@@ -7,7 +7,7 @@
 #include "ui/helper/auxiliary/UiScaling.h"
 
 /* DEFS */
-#define HEIGHT (144)
+#define HEIGHT (172)
 
 /********************************************
  * CONSTRUCT/DESTRUCT
