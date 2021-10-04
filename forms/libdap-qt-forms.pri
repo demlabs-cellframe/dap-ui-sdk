@@ -12,6 +12,7 @@ SOURCES     += \
     $$PWD/ui/documentpopup.cpp \
     $$PWD/ui/helper/auxiliary/AppStyleSheetHandler.cpp \
     $$PWD/ui/helper/auxiliary/UiScaling.cpp \
+    $$PWD/ui/helper/gradientwidget.cpp \
     $$PWD/ui/helper/schedule/schedule.cpp \
     $$PWD/ui/helper/schedule/schedules.cpp \
     $$PWD/ui/helper/trafficstringhelper.cpp \
@@ -44,6 +45,7 @@ HEADERS     += \
     $$PWD/ui/documentpopup.h \
     $$PWD/ui/helper/auxiliary/AppStyleSheetHandler.h \
     $$PWD/ui/helper/auxiliary/UiScaling.h \
+    $$PWD/ui/helper/gradientwidget.h \
     $$PWD/ui/helper/schedule/SheduleElement.h \
     $$PWD/ui/helper/schedule/schedule.h \
     $$PWD/ui/helper/schedule/schedules.h \

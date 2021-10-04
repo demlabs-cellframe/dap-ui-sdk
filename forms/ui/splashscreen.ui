@@ -33,12 +33,9 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="Background" native="true">
+    <widget class="GradientWidget" name="Background" native="true">
      <property name="styleSheet">
-      <string notr="true">#Background
-{
-background: rgb(230, 44, 199);
-}</string>
+      <string notr="true"/>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <property name="spacing">
@@ -78,13 +75,15 @@ background: rgb(230, 44, 199);
             <item>
              <widget class="KelGuiLabel" name="lLogo">
               <property name="styleSheet">
-               <string notr="true">#lLogo{ 	min-width: 230px; 	max-width: 230px; 	min-height: 59px; 	max-height: 59px; 	border-image: url(:/gui/ui/asset/logo_kelvpn-white.png); }</string>
+               <string notr="true">#lLogo{ 	min-width: 230px; 	max-width: 230px; 	min-height: 59px; 	max-height: 59px; 	border-image: url(:/gui/ui/asset/logo_kelvpn-white.png); 
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); }</string>
               </property>
               <property name="text">
                <string/>
               </property>
               <property name="cssStyle">
-               <string>splashscreen_logo</string>
+               <string>splashscreen_logo noborder nobackground</string>
               </property>
              </widget>
             </item>
@@ -104,7 +103,9 @@ background: rgb(230, 44, 199);
             <string notr="true">#lStatus{ 	color: #FFFFFF; 
  	font: 18px/22px; 
  	font-weight: normal; 	font-style: normal; 	font-size: normal; 
- 	font-family: 'Lato'; }</string>
+ 	font-family: 'Lato'; 
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); }</string>
            </property>
            <property name="text">
             <string>Status message</string>
@@ -113,7 +114,7 @@ background: rgb(230, 44, 199);
             <set>Qt::AlignCenter</set>
            </property>
            <property name="cssStyle">
-            <string>white font18 normal lato</string>
+            <string>white font18 normal lato noborder nobackground</string>
            </property>
           </widget>
          </item>
@@ -123,7 +124,9 @@ background: rgb(230, 44, 199);
             <string notr="true">#lVersion{ 	color: #FFFFFF; 
  	font: 12px/15px; 
  	font-weight: normal; 	font-style: normal; 	font-size: normal; 
- 	font-family: 'Lato'; }</string>
+ 	font-family: 'Lato'; 
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); }</string>
            </property>
            <property name="text">
             <string>Version 7.0-5
@@ -133,7 +136,7 @@ September 10 2021</string>
             <set>Qt::AlignBottom|Qt::AlignHCenter</set>
            </property>
            <property name="cssStyle">
-            <string>white font12 normal lato</string>
+            <string>white font12 normal lato noborder nobackground</string>
            </property>
           </widget>
          </item>
@@ -207,6 +210,12 @@ border-radius: 2px;
    <class>KelGuiWidget</class>
    <extends>QWidget</extends>
    <header>kelguiwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GradientWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">ui/helper/gradientwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
