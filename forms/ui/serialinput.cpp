@@ -93,10 +93,16 @@ void SerialInput::slotTextChanged()
       /* replace wrong characters */
       qDebug() << __PRETTY_FUNCTION__ << "wr";
       QChar c = text.at(i);
-      if (c < 0x30
-          && c > 0x39
-          && c < 0x41
-          && c > 0x5A
+      if (
+          (
+            c < 0x30
+
+            || (c > 0x39
+            && c < 0x41)
+
+            || c > 0x5A
+          )
+
           && c != '-')
         text.replace (i, 1, "_");
     }
