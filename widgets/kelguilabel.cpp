@@ -41,7 +41,11 @@ void KelGuiLabel::_slotCssStyleUpdate()
     }
 
   _cssHook = true;
-  __kgsm.setCssStyle (__kgsm.cssStyle() + " noborder nobackground");
+
+  /* transparent attach */
+  auto css = __kgsm.cssStyle();
+  if (!css.contains ("noborder") && !css.contains ("nobackground"))
+    __kgsm.setCssStyle (__kgsm.cssStyle() + " noborder nobackground");
 }
 
 /*-----------------------------------------*/

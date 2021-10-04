@@ -11,6 +11,7 @@ SplashScreen::SplashScreen (QWidget *parent) :
   ui (new Ui::SplashScreen)
 {
   ui->setupUi (this);
+  ui->pLoading->setVisible (false);
 }
 
 SplashScreen::~SplashScreen()

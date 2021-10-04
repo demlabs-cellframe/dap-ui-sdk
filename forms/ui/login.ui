@@ -102,13 +102,15 @@
             <item>
              <widget class="KelGuiLabel" name="label">
               <property name="styleSheet">
-               <string notr="true">#label{ 	width: 260px; 	height: 89px; 	min-width: 260px; 	min-height: 89px; 	max-width: 260px; 	max-height: 89px; 	border-image: url(:/gui/ui/asset/logo_kelvpn-color.png); }</string>
+               <string notr="true">#label{ 	width: 260px; 	height: 89px; 	min-width: 260px; 	min-height: 89px; 	max-width: 260px; 	max-height: 89px; 	border-image: url(:/gui/ui/asset/logo_kelvpn-color.png); 
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); }</string>
               </property>
               <property name="text">
                <string/>
               </property>
               <property name="cssStyle">
-               <string>login_logo</string>
+               <string>login_logo noborder nobackground</string>
               </property>
              </widget>
             </item>
@@ -118,7 +120,7 @@
          <item>
           <widget class="KelGuiWidget" name="kelGuiWidget_4">
            <property name="styleSheet">
-            <string notr="true">#kelGuiWidget_4{ 	height: 20px; 	min-height: 20px; 	max-height: 20px; }</string>
+            <string notr="true">#kelGuiWidget_4{ 	height: 20px; 	min-height: 20px; 	max-height: 20px; background-color: rgba(0,0,0,0);}</string>
            </property>
            <property name="cssStyle">
             <string>login-margin-bottom</string>
@@ -132,7 +134,9 @@
  	color: #F53172; 
  	font-family: 'Lato'; 
  	font-weight: normal; 	font-style: normal; 	font-size: normal; 
- 	height: 40px; 	min-height: 40px; 	max-height: 40px; }</string>
+ 	height: 40px; 	min-height: 40px; 	max-height: 40px; 
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); }</string>
            </property>
            <property name="text">
             <string>Error message box
@@ -142,7 +146,7 @@ Usualy unvisible by being empty</string>
             <set>Qt::AlignCenter</set>
            </property>
            <property name="cssStyle">
-            <string>font13 red_error lato normal login-error-message</string>
+            <string>font13 red_error lato normal login-error-message noborder nobackground</string>
            </property>
           </widget>
          </item>
@@ -168,10 +172,13 @@ Usualy unvisible by being empty</string>
             <string>choosing server</string>
            </property>
            <property name="mainCssClass">
-            <string>darkblue bold font20 lato nobackground</string>
+            <string>darkblue bold font20 lato nobackground noborder</string>
            </property>
            <property name="subCssClass">
-            <string>gray uppercase font12 lato nobackground</string>
+            <string>gray uppercase font12 lato nobackground noborder</string>
+           </property>
+           <property name="leftCssClass">
+            <string>darkblue normalbold font30 noborder</string>
            </property>
            <property name="separator">
             <bool>true</bool>
@@ -196,10 +203,13 @@ Usualy unvisible by being empty</string>
             <string>serial key</string>
            </property>
            <property name="mainCssClass">
-            <string>darkblue bold font20 lato nobackground letterspace</string>
+            <string>darkblue bold font20 lato nobackground letterspace noborder</string>
            </property>
            <property name="subCssClass">
-            <string>gray uppercase font12 lato nobackground</string>
+            <string>gray uppercase font12 lato nobackground noborder</string>
+           </property>
+           <property name="leftCssClass">
+            <string>darkblue normalbold font30 noborder</string>
            </property>
            <property name="inputMaskCssClass">
             <string>&gt;NNNN-NNNN-NNNN-NNNN;_</string>
@@ -252,7 +262,9 @@ Usualy unvisible by being empty</string>
                <string notr="true">#lDontHave{ 	font: 16px/19px; 
  	color: #5C5B74; 
  	font-family: 'Lato'; 
- 	font-weight: normal; 	font-style: normal; 	font-size: normal; }</string>
+ 	font-weight: normal; 	font-style: normal; 	font-size: normal; 
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); }</string>
               </property>
               <property name="text">
                <string>Don't have a serial key?</string>
@@ -261,7 +273,7 @@ Usualy unvisible by being empty</string>
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
               <property name="cssStyle">
-               <string>font16 gray_passive lato normal</string>
+               <string>font16 gray_passive lato normal noborder nobackground</string>
               </property>
              </widget>
             </item>
@@ -271,13 +283,15 @@ Usualy unvisible by being empty</string>
                <string notr="true">#btnObtainNewKey{ 	font: 16px/19px; 
  	color: #DA0B82; 
  	font-family: 'Lato'; 
- 	font-weight: normal; 	font-style: normal; 	font-size: normal; }</string>
+ 	font-weight: normal; 	font-style: normal; 	font-size: normal; 
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); }</string>
               </property>
               <property name="text">
                <string>Tap here to obtain one</string>
               </property>
               <property name="cssStyle">
-               <string>font16 red lato normal</string>
+               <string>font16 red lato normal noborder nobackground</string>
               </property>
               <property name="flat" stdset="0">
                <bool>true</bool>

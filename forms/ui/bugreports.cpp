@@ -25,12 +25,16 @@ BugReports::BugReports (QWidget *parent) :
   ui->setupUi (this);
   m_edit  = ui->editReport->editWidget();
   qRegisterMetaType<Mode> ("Mode");
+  ui->labelLoading->setScaledContents (true);
   ui->labelLoading->setMovie (movLoading);
+  //movLoading->start();
   ui->top_spacer_debug->setVisible (false);
+  ui->btnAttachScreenshot->setVisible (false);
   QTimer::singleShot (0, ui->scrollArea, &BugReportsModel::slotSetup);
+  //setText (movLoading->lastErrorString());
 
   /* fill map */
-  m_map.insert (Write,   ui->btnAttachScreenshot);
+  //m_map.insert (Write,   ui->btnAttachScreenshot);
   m_map.insert (Write,   ui->btnSendReport);
   m_map.insert (Write,   ui->editReport);
   m_map.insert (Write,   ui->labelLetterAmount);

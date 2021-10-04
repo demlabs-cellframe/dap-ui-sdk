@@ -59,7 +59,7 @@
          <set>Qt::AlignCenter</set>
         </property>
         <property name="cssStyle">
-         <string>darkblue lato font20 normal noborder nobackground</string>
+         <string>darkblue lato font20 normal noborder nobackground noborder nobackground</string>
         </property>
        </widget>
       </item>

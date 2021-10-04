@@ -176,13 +176,6 @@
            </item>
            <item>
             <widget class="KelGuiLabel" name="labelBugReports">
-             <property name="styleSheet">
-              <string notr="true">#labelBugReports{ 	width: 282px; 	height: 28px; 	min-width: 282px; 	min-height: 28px; 	max-width: 282px; 	max-height: 28px; 
- 	font-weight: normal; 	font-style: normal; 	font-size: bold; 
- 	font: 24px/29px; 
- 	color: #04004E; 
- 	font-family: 'Lato'; }</string>
-             </property>
              <property name="text">
               <string>Bug reports</string>
              </property>
@@ -190,7 +183,7 @@
               <set>Qt::AlignCenter</set>
              </property>
              <property name="cssStyle">
-              <string>bugrep-title-text normalbold font24 darkblue lato</string>
+              <string>bugrep-title-text normalbold font24 darkblue lato noborder nobackground</string>
              </property>
             </widget>
            </item>
@@ -255,7 +248,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="cssStyle">
-            <string>font18 lato normal darkblue</string>
+            <string>font18 lato normal darkblue noborder nobackground</string>
            </property>
           </widget>
          </item>
@@ -276,12 +269,6 @@
            </item>
            <item>
             <widget class="KelGuiLabel" name="labelLetterAmount">
-             <property name="styleSheet">
-              <string notr="true">#labelLetterAmount{ 	font: 16px/19px; 
- 	font-weight: normal; 	font-style: normal; 	font-size: normal; 
- 	font-family: 'Lato'; 
- 	color: #A4A3C0; }</string>
-             </property>
              <property name="text">
               <string>0/200</string>
              </property>
@@ -289,7 +276,7 @@
               <set>Qt::AlignCenter</set>
              </property>
              <property name="cssStyle">
-              <string>font16 normal lato gray</string>
+              <string>font16 normal lato gray noborder nobackground</string>
              </property>
             </widget>
            </item>
@@ -308,7 +295,15 @@
             <string notr="true">#btnAttachScreenshot{ 	font-family: 'Lato'; 
  	color: #DA0B82; 
  	font: 16px/19px; 
- 	font-weight: normal; 	font-style: normal; 	font-size: normal; }</string>
+ 	font-weight: normal; 	font-style: normal; 	font-size: normal; 
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); 
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); 
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); 
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); }</string>
            </property>
            <property name="text">
             <string>Click here to attach a screenshot</string>
@@ -317,7 +312,7 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="cssStyle">
-            <string>lato red font16 normal</string>
+            <string>lato red font16 normal noborder nobackground</string>
            </property>
            <property name="flat" stdset="0">
             <bool>false</bool>
@@ -358,14 +353,11 @@
                <height>86</height>
               </size>
              </property>
-             <property name="styleSheet">
-              <string notr="true">#labelLoading{ 	border-image: url(&quot;://gui/ui/asset/Spinner.gif&quot;); }</string>
-             </property>
              <property name="text">
               <string/>
              </property>
              <property name="cssStyle">
-              <string>ic_spinner</string>
+              <string>ic_spinner noborder nobackground noborder nobackground</string>
              </property>
             </widget>
            </item>
@@ -398,7 +390,7 @@
          <item>
           <widget class="KelGuiLabel" name="footer">
            <property name="cssStyle">
-            <string>footer</string>
+            <string>footer noborder nobackground</string>
            </property>
           </widget>
          </item>

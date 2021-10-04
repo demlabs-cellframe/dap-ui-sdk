@@ -133,7 +133,7 @@
                <set>Qt::AlignCenter</set>
               </property>
               <property name="cssStyle">
-               <string>serin-title-text normalbold font24 darkblue lato noborder nobackground noborder nobackground noborder nobackground noborder nobackground noborder nobackground noborder nobackground noborder nobackground noborder nobackground</string>
+               <string>serin-title-text normalbold font24 darkblue lato noborder nobackground</string>
               </property>
              </widget>
             </item>

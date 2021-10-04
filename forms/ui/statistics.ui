@@ -62,13 +62,6 @@
       </item>
       <item>
        <widget class="KelGuiLabel" name="label">
-        <property name="styleSheet">
-         <string notr="true">#label{ 	height: 28px; 	min-height: 28px; 	max-height: 28px; 
- 	font: 24px/29px; 
- 	color: #04004E; 
- 	font-weight: normal; 	font-style: normal; 	font-size: bold; 
- 	font-family: 'Lato'; }</string>
-        </property>
         <property name="text">
          <string>Statistics</string>
         </property>
@@ -76,7 +69,7 @@
          <set>Qt::AlignCenter</set>
         </property>
         <property name="cssStyle">
-         <string>stat-top-text-statistics font24 darkblue normalbold lato</string>
+         <string>stat-top-text-statistics font24 darkblue normalbold lato noborder nobackground</string>
         </property>
        </widget>
       </item>
@@ -145,9 +138,6 @@
         </property>
         <item>
          <widget class="KelGuiWidget" name="kelGuiWidget_2">
-          <property name="styleSheet">
-           <string notr="true">#kelGuiWidget_2{ 	background-color: rgba(0,0,0,0); }</string>
-          </property>
           <property name="cssStyle">
            <string>nobackground</string>
           </property>
@@ -179,13 +169,13 @@
               <string>ping</string>
              </property>
              <property name="mainCssClass">
-              <string>darkblue normal font24 lato nobackground</string>
+              <string>darkblue normal font24 lato noborder nobackground</string>
              </property>
              <property name="subCssClass">
-              <string>gray uppercase font12 lato nobackground</string>
+              <string>gray uppercase font12 lato noborder nobackground</string>
              </property>
              <property name="leftCssClass">
-              <string>darkblue normalbold font30 nobackground</string>
+              <string>darkblue normalbold font30 noborder nobackground</string>
              </property>
             </widget>
            </item>
@@ -201,13 +191,13 @@
               <string>packets received</string>
              </property>
              <property name="mainCssClass">
-              <string>darkblue normal font24 lato nobackground</string>
+              <string>darkblue normal font24 lato noborder nobackground</string>
              </property>
              <property name="subCssClass">
-              <string>gray uppercase font12 lato nobackground</string>
+              <string>gray uppercase font12 lato noborder nobackground</string>
              </property>
              <property name="leftCssClass">
-              <string>darkblue normalbold font30 nobackground</string>
+              <string>darkblue normalbold font30 noborder nobackground</string>
              </property>
             </widget>
            </item>
@@ -223,13 +213,13 @@
               <string>packets sent</string>
              </property>
              <property name="mainCssClass">
-              <string>darkblue normal font24 lato nobackground</string>
+              <string>darkblue normal font24 lato noborder nobackground</string>
              </property>
              <property name="subCssClass">
-              <string>gray uppercase font12 lato nobackground</string>
+              <string>gray uppercase font12 lato noborder nobackground</string>
              </property>
              <property name="leftCssClass">
-              <string>darkblue normalbold font30 nobackground</string>
+              <string>darkblue normalbold font30 noborder nobackground</string>
              </property>
             </widget>
            </item>
@@ -245,13 +235,13 @@
               <string>uptime</string>
              </property>
              <property name="mainCssClass">
-              <string>darkblue normal font24 lato nobackground</string>
+              <string>darkblue normal font24 lato noborder nobackground</string>
              </property>
              <property name="subCssClass">
-              <string>gray uppercase font12 lato nobackground</string>
+              <string>gray uppercase font12 lato noborder nobackground</string>
              </property>
              <property name="leftCssClass">
-              <string>darkblue normalbold font30 nobackground</string>
+              <string>darkblue normalbold font30 noborder nobackground</string>
              </property>
             </widget>
            </item>
@@ -267,13 +257,13 @@
               <string>upload speed</string>
              </property>
              <property name="mainCssClass">
-              <string>darkblue normal font24 lato nobackground</string>
+              <string>darkblue normal font24 lato noborder nobackground</string>
              </property>
              <property name="subCssClass">
-              <string>gray uppercase font12 lato nobackground</string>
+              <string>gray uppercase font12 lato noborder nobackground</string>
              </property>
              <property name="leftCssClass">
-              <string>darkblue normalbold font30 nobackground</string>
+              <string>darkblue normalbold font30 noborder nobackground</string>
              </property>
             </widget>
            </item>
@@ -289,13 +279,13 @@
               <string>download speed</string>
              </property>
              <property name="mainCssClass">
-              <string>darkblue normal font24 lato nobackground</string>
+              <string>darkblue normal font24 lato noborder nobackground</string>
              </property>
              <property name="subCssClass">
-              <string>gray uppercase font12 lato nobackground</string>
+              <string>gray uppercase font12 lato noborder nobackground</string>
              </property>
              <property name="leftCssClass">
-              <string>darkblue normalbold font30 nobackground</string>
+              <string>darkblue normalbold font30 noborder nobackground</string>
              </property>
             </widget>
            </item>
@@ -311,13 +301,13 @@
               <string>bytes sent</string>
              </property>
              <property name="mainCssClass">
-              <string>darkblue normal font24 lato nobackground</string>
+              <string>darkblue normal font24 lato noborder nobackground</string>
              </property>
              <property name="subCssClass">
-              <string>gray uppercase font12 lato nobackground</string>
+              <string>gray uppercase font12 lato noborder nobackground</string>
              </property>
              <property name="leftCssClass">
-              <string>darkblue normalbold font30 nobackground</string>
+              <string>darkblue normalbold font30 noborder nobackground</string>
              </property>
             </widget>
            </item>
@@ -333,13 +323,13 @@
               <string>bytes received</string>
              </property>
              <property name="mainCssClass">
-              <string>darkblue normal font24 lato nobackground</string>
+              <string>darkblue normal font24 lato noborder nobackground</string>
              </property>
              <property name="subCssClass">
-              <string>gray uppercase font12 lato nobackground</string>
+              <string>gray uppercase font12 lato noborder nobackground</string>
              </property>
              <property name="leftCssClass">
-              <string>darkblue normalbold font30 nobackground</string>
+              <string>darkblue normalbold font30 noborder nobackground</string>
              </property>
             </widget>
            </item>
