@@ -31,6 +31,7 @@ Statistics::Statistics (QWidget *parent) :
 
   /* setup scene */
   ui->graphicsView->setScene (m_scene);
+  ui->graphicsView->setBackgroundBrush(QBrush("#f7f8fa", Qt::SolidPattern));
 
   /* setup uptime timer */
   m_uptimeUpdateTimer->setSingleShot (false);
@@ -39,7 +40,7 @@ Statistics::Statistics (QWidget *parent) :
   /* set styles for graphics */
   addItemGraphicSceneStyle ("shChartDownload",  "color:#D61F5D;depth:1;background-color:rgba(0,181,43,0.00);");
   addItemGraphicSceneStyle ("shChartUpload",    "color:#2D1FD6;depth:1;background-color:rgba(3,167,198,0.00);");
-  addItemGraphicSceneStyle ("shGrid",           "color:#ECECEC;depth:0.1;");
+  addItemGraphicSceneStyle ("shGrid",           "color:#f7f8fa;depth:0.1;");
   addItemGraphicSceneStyle ("graphicsLines",    "horizontalLines:19;verticalLines:8;");//"horizontalLines:19;verticalLines:8;sceneWidth:236px;sceneHeight:119px;");
 
   /* signals */

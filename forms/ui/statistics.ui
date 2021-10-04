@@ -69,7 +69,7 @@
          <set>Qt::AlignCenter</set>
         </property>
         <property name="cssStyle">
-         <string>stat-top-text-statistics font24 darkblue normalbold lato noborder nobackground</string>
+         <string>stat-top-text-statistics font24 darkblue normalbold lato noborder nobackground noborder nobackground</string>
         </property>
        </widget>
       </item>
