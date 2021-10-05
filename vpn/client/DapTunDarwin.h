@@ -31,7 +31,9 @@ class DapTunDarwin:public DapTunUnixAbstract
 public:
     DapTunDarwin();
 protected:
+    QThread *tunThread;
     void tunDeviceCreate() override;
+    void workerStart()     override;
     void onWorkerStarted() override;
     void onWorkerStopped() override;
 protected slots:

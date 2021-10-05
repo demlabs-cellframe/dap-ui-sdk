@@ -8,8 +8,10 @@
 
 #include "DapSession.h"
 #include "DapTunWorkerAbstract.h"
-//#include "DapSockForwPacket.h"
 #include "DapStreamChChainVpnPacket.h"
+#ifdef ANDROID
+#include <QFuture>
+#endif
 
 class DapTunAbstract : public QObject
 {
@@ -22,7 +24,6 @@ public:
     void standby();
     void setTunSocket(int a_tunSocket){ m_tunSocket = a_tunSocket; }
     void setTunDeviceName(const QString& a_tunDeviceName){ m_tunDeviceName = a_tunDeviceName; }
-
     bool isCreated();
     const QString& addr() { return m_addr; }
     const QString& gw() { return m_gw; }
@@ -36,7 +37,7 @@ public:
 
     virtual void addNewUpstreamRoute(const QString&)=0;
 
-    virtual void workerStart();
+    virtual void workerStart() = 0;
 
     QQueue<Dap::Stream::Packet*>* writeQueue(){ return &_m_writeQueue; }
     QReadWriteLock* writeQueueLock(){ return &m_writeQueueLock; }
@@ -88,7 +89,6 @@ protected:
 
     QString m_gwOld;
     DapTunWorkerAbstract * tunWorker;
-    QThread * tunThread;
     bool m_isCreated;
 
     QString m_tunDeviceName; // tunDevice name
