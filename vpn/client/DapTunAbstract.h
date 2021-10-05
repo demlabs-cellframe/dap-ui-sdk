@@ -34,10 +34,8 @@ public:
         addWriteData(a_pkt);
         signalWriteQueueProc();
     }
-
-    virtual void addNewUpstreamRoute(const QString&)=0;
-
     virtual void workerStart() = 0;
+    virtual void addNewUpstreamRoute(const QString&)=0;
 
     QQueue<Dap::Stream::Packet*>* writeQueue(){ return &_m_writeQueue; }
     QReadWriteLock* writeQueueLock(){ return &m_writeQueueLock; }
@@ -76,7 +74,6 @@ signals:
 protected:
     virtual void tunDeviceCreate()=0;
     virtual void tunDeviceDestroy()=0;
-
     virtual void workerPrepare()=0;
     virtual void workerStop()=0;
     virtual void workerPause() = 0;
@@ -148,5 +145,4 @@ public slots:
     /// Set upstream port.
     /// @param aiUpstreamPort Upstream port.
     void setUpstreamPort(qint16 aiUpstreamPort);
-    
 };

@@ -9,6 +9,7 @@ class DapTunWindows : public DapTunAbstract
 public:
     DapTunWindows();
     void addNewUpstreamRoute(const QString&) override;
+    void workerStart()          override;
 protected:
     QThread *tunThread;
     bool dhcpEnabled;
@@ -17,7 +18,6 @@ protected:
     void tunDeviceCreate()      override;
     void tunDeviceDestroy()     override;
     void workerPrepare()        override;
-    void workerStart()          override;
     void onWorkerStarted()      override;
     void workerStop()           override;
     void workerPause()          override;
