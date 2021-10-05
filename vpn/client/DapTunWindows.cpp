@@ -10,7 +10,9 @@
 DapTunWindows::DapTunWindows()
 {
     qInfo() << "Native windows tun driver ctl initialized";
+    tunThread = new QThread();
     tunWorker = new DapTunWorkerWindows(this);
+    connect(this, &DapTunAbstract::sigStartWorkerLoop, tunWorker, &DapTunWorkerAbstract::loop);
     initWorker();
 }
 
@@ -159,13 +161,32 @@ void DapTunWindows::workerPrepare() {
     qInfo() <<"Prepare worker";
 }
 
+void DapTunWindows::workerStart() {
+    qInfo() <<"Tun device created" << m_tunSocket;
+    if (m_tunSocket > 0){
+        tunWorker->setTunSocket(m_tunSocket);
+        tunWorker->moveToThread(tunThread);
+        tunThread->start();
+        emit sigStartWorkerLoop();
+        qInfo() << "tunThread started, tun socket: " << m_tunSocket;
+    } else {
+        qInfo() << "Tun socket " << m_tunSocket << " already opened";
+        return;
+    }
+    onWorkerStarted();
+}
+
 void DapTunWindows::workerStop() {
     TunTap::getInstance().doCloseTun();
+    tunThread->quit();
+    tunThread->wait();
     onWorkerStopped();
 }
 
 void DapTunWindows::workerPause() {
     TunTap::getInstance().doCloseTun();
+    tunThread->quit();
+    tunThread->wait();
 }
 
 void DapTunWindows::signalWriteQueueProc() {

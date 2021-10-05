@@ -3,7 +3,7 @@
 
 #include "DapTunAbstract.h"
 #include "DapTunWorkerUnix.h"
-#include <QTcpServer>
+#include <QFuture>
 
 class DapTunAndroid : public DapTunAbstract
 {
@@ -12,7 +12,7 @@ public:
     void workerStart()      override;
     void addNewUpstreamRoute(const QString&) override;
 private:
-    QTcpServer *receiver;
+    QFuture<void> tunFuture;
     void tunDeviceCreate()      override;
     void tunDeviceDestroy()     override;
     void workerPrepare()        override;
