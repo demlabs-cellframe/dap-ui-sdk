@@ -103,9 +103,10 @@ void MenuFooter::slotMoveToBottom()
 #ifndef Q_OS_ANDROID
   if (auto p = dynamic_cast<QWidget *> (parent()))
     {
-      auto posY   = p->height() - HEIGHT;
+      auto hh     = UiScaling::pointsToPixels (HEIGHT, UiScaling::getNativDPI());
+      auto posY   = p->height() - hh;
       move (0, posY);
-      resize (p->width(), HEIGHT);
+      resize (p->width(), hh);
       qDebug() << __PRETTY_FUNCTION__ << "y:" << posY << ",screen:" << p->width() << p->height() << height();
     }
 #else // Q_OS_ANDROID
