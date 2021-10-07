@@ -428,16 +428,36 @@ void KelGuiButton::_slotDebugInfo()
       jobj["mainText"]      = m_mainText;
       jobj["subText"]       = m_subText;
       jobj["leftText"]      = m_leftText;
-      jobj["mainCssClass"]  = m_mainCssClass;
-      jobj["subCssClass;"]  = m_subCssClass;
-      jobj["leftCssClass"]  = m_leftCssClass;
-      jobj["iconCssClass"]  = m_iconCssClass;
+      //jobj["mainCssClass"]  = m_mainCssClass;
+      //jobj["subCssClass;"]  = m_subCssClass;
+      //jobj["leftCssClass"]  = m_leftCssClass;
+      //jobj["iconCssClass"]  = m_iconCssClass;
       jobj["inputMaskCssClass"]  = m_inputMaskCssClass;
       jobj["btnStyle"]      = m_btnStyle;
       jobj["cssStyle"]      = QJsonObject{
         {"name", cssStyle()},
         {"text", styleSheet()},
       };
+      jobj["mainCssStyle"]      = QJsonObject{
+        {"name", ui->KelGuiButtonTextMain->cssStyle()},
+        {"text", ui->KelGuiButtonTextMain->styleSheet()},
+      };
+      jobj["subCssStyle"]      = QJsonObject{
+        {"name", ui->KelGuiButtonTextSub->cssStyle()},
+        {"text", ui->KelGuiButtonTextSub->styleSheet()},
+      };
+      jobj["leftCssStyle"]      = QJsonObject{
+        {"name", ui->KelGuiButtonTextLeft->cssStyle()},
+        {"text", ui->KelGuiButtonTextLeft->styleSheet()},
+      };
+      jobj["iconCssStyle"]      = QJsonObject{
+        {"name", ui->KelGuiButtonIcon->cssStyle()},
+        {"text", ui->KelGuiButtonIcon->styleSheet()},
+      };
+//      jobj["inputCssStyle"]      = QJsonObject{
+//        {"name", ui->kelGuiLineEditMain->cssStyle()},
+//        {"text", ui->kelGuiLineEditMain->styleSheet()},
+//      };
       jobj["rect"] = QJsonObject{
         {"x",pos().x()},
         {"y",pos().y()},

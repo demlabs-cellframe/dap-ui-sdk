@@ -135,6 +135,11 @@
 	margin-right: 28pt;
 }
 
+.margin-bottom28
+{
+	margin-bottom: 28pt;
+}
+
 /****************************************************
  * Frame
  ***************************************************/
@@ -644,22 +649,37 @@
  * Settings
  ***************************************************/
 
+.sett-top-spacer
+{
+	height: 60pt;
+	min-height: 60pt;
+	max-height: 60pt;
+}
+
+.sett-title
+{
+	height: 28pt;
+	min-height: 28pt;
+	max-height: 28pt;
+}
+
+.sett-bottom-spacer
+{
+	height: 40pt;
+	min-height: 40pt;
+	max-height: 40pt;
+}
+
 .sett-scroll-holder
 {
-	/*margin-left: 28pt;*/
-	/*padding-left: 18pt;*/
 }
 
 .sett-scroll-area
 {
-	margin-left: 18pt;
-	/*padding-left: 18pt;*/
 }
 
 .sett-scroll-btn
 {
-	margin-left: 18pt;
-	padding-left: 18pt;
 	width: 390pt;
 	height: 64pt;
 	min-width: 390pt;
@@ -668,14 +688,24 @@
 	max-height: 64pt;
 }
 
-.set-scroll-title
+.sett-scroll-title
 {
 	width: 390pt;
-	height: 128pt;
+	height: 96pt;
 	min-width: 390pt;
-	min-height: 128pt;
+	min-height: 96pt;
 	max-width: 390pt;
-	max-height: 128pt;
+	max-height: 96pt;
+}
+
+.sett-scroll-title-top
+{
+	width: 390pt;
+	height: 28pt;
+	min-width: 390pt;
+	min-height: 28pt;
+	max-width: 390pt;
+	max-height: 28pt;
 }
 
 .settings_icon

@@ -15,10 +15,12 @@ typedef void (*ItemCB) ();
 enum StyleId
 {
   SI_TITLE,
+  SI_TITLETOP,
   SI_BUTTON,
   SI_BUTTONRED,
   SI_BUTTONGRAY,
   SI_LINK,
+  SI_SPACER
 };
 
 struct Info
@@ -56,16 +58,20 @@ static void cbVersion();
 /* VARS */
 static QMap<StyleId, Info> s_presets =
 {
-  {SI_TITLE,      {"darkblue normalbold font24 margin28 lato", ""}},
+  {SI_TITLETOP,   {"darkblue bold font24 lato", ""}},
+  {SI_TITLE,      {"darkblue bold font24 margin28 lato", ""}},
   {SI_BUTTON,     {"darkblue normal font16 lato",  "darkblue normal font16 lato"}},
   {SI_BUTTONRED,  {"darkblue normal font16 lato",  "red bold font16 lato"}},
   {SI_BUTTONGRAY, {"darkblue normal font16 lato",  "darkblue gray font16 lato"}},
   {SI_LINK,       {"darkblue normal font16 lato",  ""}},
+  {SI_SPACER,     {"",  ""}},
 };
 
 static QList<_SItem> s_items =
 {
-  _SItem{SI_TITLE,      {"Settings", ""}, "settings_icon", defaultCb},
+  _SItem{SI_SPACER,     {"", ""}, "1", defaultCb},
+  _SItem{SI_TITLETOP,   {"Settings", ""}, "settings_icon", defaultCb},
+  _SItem{SI_SPACER,     {"", ""}, "2", defaultCb},
 
   _SItem{SI_BUTTONRED,  {"Get new licence key", /*"265 days left"*/" "}, "settings_icon ic_renew", cbLicenceGet},
   _SItem{SI_BUTTON,     {"Reset licence key"}, "settings_icon ic_key", cbLicenceReset},
@@ -141,7 +147,7 @@ void SettingsModel::slotSetup()
       auto preset = s_presets.value (item.sid);
 
       /* setup new widget */
-      btn->setBtnStyle (item.sid != SI_TITLE
+      btn->setBtnStyle ((item.sid != SI_TITLE && item.sid != SI_TITLETOP)
                         ? KelGuiButton::ButtonStyle::IconMainSub
                         : KelGuiButton::ButtonStyle::TopMainBottomSub);
 
@@ -151,15 +157,24 @@ void SettingsModel::slotSetup()
       btn->setSubText (item.text[1]);
       btn->setSubCssClass (preset.style[1]);
 
-      btn->setSeparator (item.sid != SI_TITLE);
+      btn->setSeparator (
+        item.sid != SI_TITLE
+        && item.sid != SI_TITLETOP
+        && item.sid != SI_SPACER);
       btn->setLink (item.sid == SI_LINK);
       btn->setIconCssClass (item.iconCss); //btn->setIcon (item.icon);
 
-      btn->setCssStyle (
-        item.sid != SI_TITLE
-        ? "sett-scroll-btn"
-        : "set-scroll-title"
-      );
+      switch (item.sid)
+        {
+        case SI_TITLETOP: btn->setCssStyle ("sett-scroll-title-top"); break;
+        case SI_TITLE:    btn->setCssStyle ("sett-scroll-title"); break;
+        case SI_SPACER:   btn->setCssStyle (
+            (item.iconCss == "1")
+            ? ("sett-top-spacer")
+            : ("sett-bottom-spacer")
+          ); break;
+        default:          btn->setCssStyle ("sett-scroll-btn"); break;
+        }
 
       /* add into list */
       lay->addWidget (btn);
