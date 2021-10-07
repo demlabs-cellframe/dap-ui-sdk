@@ -66,8 +66,10 @@ background-color: #F7F8FA;
          <string notr="true">#lTitle{ 	height: 28px; 	min-height: 28px; 	max-height: 28px; 
  	font: 24px/29px; 
  	color: #DA0B82; 
- 	font-weight: normal; 	font-style: normal; 	font-size: bold; 
- 	font-family: 'Lato'; }</string>
+ 	font-weight: bold; 	font-style: bold; 	font-size: bold; 
+ 	font-family: 'Lato'; 
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); }</string>
         </property>
         <property name="text">
          <string>VPN Connected</string>
@@ -76,7 +78,7 @@ background-color: #F7F8FA;
          <set>Qt::AlignCenter</set>
         </property>
         <property name="cssStyle">
-         <string>conn-top-text-connected font24 red normalbold lato</string>
+         <string>conn-top-text-connected font24 red normalbold lato noborder nobackground</string>
         </property>
        </widget>
       </item>
@@ -135,13 +137,15 @@ background-color: #F7F8FA;
  	font: 18px/22px; 
  	font-weight: normal; 	font-style: normal; 	font-size: normal; 
  	color: #04004E; 
- 	font-family: 'Lato'; }</string>
+ 	font-family: 'Lato'; 
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); }</string>
            </property>
            <property name="text">
             <string>56 : 30 : 10</string>
            </property>
            <property name="cssStyle">
-            <string>conn-top-text-time font18 normal darkblue lato</string>
+            <string>conn-top-text-time font18 normal darkblue lato noborder nobackground</string>
            </property>
           </widget>
          </item>
@@ -235,10 +239,11 @@ background-color: #F7F8FA;
            </sizepolicy>
           </property>
           <property name="styleSheet">
-           <string notr="true">#btnServer{ 	width: 357px; 	height: 96px; 	min-width: 357px; 	min-height: 96px; 	max-width: 357px; 	max-height: 96px; }</string>
+           <string notr="true">#btnServer{ 	width: 357px; 	height: 96px; 	min-width: 357px; 	min-height: 96px; 	max-width: 357px; 	max-height: 96px; 
+ 	background-color: rgba(0,0,0,0); }</string>
           </property>
           <property name="cssStyle">
-           <string>conn-connectedto-button</string>
+           <string>conn-connectedto-button nobackground</string>
           </property>
           <property name="buttonStyle" stdset="0">
            <enum>KelGuiButton::TopSubBottomMain</enum>

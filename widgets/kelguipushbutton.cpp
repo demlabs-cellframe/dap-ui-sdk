@@ -45,6 +45,7 @@ KelGuiPushButton::KelGuiPushButton (QWidget *parent)
 {
   //setObjectName ("KelGuiPushButton");
   //setFlat(true);
+  setFocusPolicy (Qt::NoFocus);
 
 #ifdef ENABLEPURPLE
   auto hor = new QHBoxLayout;
