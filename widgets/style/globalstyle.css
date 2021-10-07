@@ -59,8 +59,8 @@
 
 .normalbold
 {
-	font-weight: normal;
-	font-style: normal;
+	font-weight: bold;
+	font-style: bold;
 	font-size: bold;
 }
 
@@ -660,21 +660,21 @@
 {
 	margin-left: 18pt;
 	padding-left: 18pt;
-	width: 356pt;
+	width: 390pt;
 	height: 64pt;
-	min-width: 356pt;
+	min-width: 390pt;
 	min-height: 64pt;
-	max-width: 356pt;
+	max-width: 390pt;
 	max-height: 64pt;
 }
 
 .set-scroll-title
 {
-	width: 356pt;
+	width: 390pt;
 	height: 128pt;
-	min-width: 356pt;
+	min-width: 390pt;
 	min-height: 128pt;
-	max-width: 356pt;
+	max-width: 390pt;
 	max-height: 128pt;
 }
 
