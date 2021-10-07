@@ -73,6 +73,9 @@
          </property>
          <item>
           <widget class="SettingsModel" name="scrollArea">
+           <property name="styleSheet">
+            <string notr="true">background-color: rgba(0,0,0,0);</string>
+           </property>
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
            </property>

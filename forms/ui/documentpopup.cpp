@@ -2,6 +2,8 @@
 #include "documentpopup.h"
 #include "ui_documentpopup.h"
 #include "kelguicommon.h"
+#include <QScroller>
+#include <QScrollBar>
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -12,6 +14,25 @@ DocumentPopup::DocumentPopup (Type t, QWidget *parent) :
   ui (new Ui::DocumentPopup)
 {
   ui->setupUi (this);
+
+  m_layout  = new QVBoxLayout (ui->scrollArea->widget());
+  m_label   = new KelGuiLabel;
+  m_filter  = new Filter;
+  auto *sp  = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+  ui->scrollArea->widget()->setLayout(m_layout);
+#ifndef Q_OS_ANDROID
+  ui->scrollArea->setVerticalScrollBarPolicy (Qt::ScrollBarAsNeeded);
+#else // Q_OS_ANDROID
+  QScroller::grabGesture(this->ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
+  ui->scrollArea->widget()->installEventFilter (this);
+#endif // Q_OS_ANDROID
+
+  m_layout->addWidget (m_label);
+  m_layout->addItem (sp);
+
+  m_label->setCssStyle ("darkblue font16 normal backgroundcolor");
+  m_label->setWordWrap (true);
 
   switch (t)
     {
@@ -38,14 +59,30 @@ void DocumentPopup::slotShowTermsOfUse()
 {
   setObjectName ("Terms of use");
   ui->label->setText ("Terms of use");
-  ui->textField->setHtml (Common::fromFile (":/gui/ui/data/terms.html"));
+  m_label->setText (Common::fromFile (":/gui/ui/data/terms.html"));
 }
 
 void DocumentPopup::slotShowPrivacyPolicy()
 {
   setObjectName ("Privacy policy");
   ui->label->setText ("Privacy policy");
-  ui->textField->setHtml (Common::fromFile (":/gui/ui/data/privacy.html"));
+  m_label->setText (Common::fromFile (":/gui/ui/data/privacy.html"));
+}
+
+bool DocumentPopup::eventFilter(QObject *o, QEvent *e)
+{
+  // This works because QScrollArea::setWidget installs an eventFilter on the widget
+  if(o && o == ui->scrollArea->widget() && e->type() == QEvent::Resize)
+    setMinimumWidth (
+      ui->scrollArea->widget()->minimumSizeHint().width()
+      + ui->scrollArea->verticalScrollBar()->width());
+
+  return m_filter->eventFilter (o, e);
 }
 
 /*-----------------------------------------*/
+
+bool DocumentPopup::Filter::eventFilter(QObject *o, QEvent *e)
+{
+  return QScrollArea::eventFilter(o, e);
+}

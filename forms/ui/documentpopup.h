@@ -3,7 +3,10 @@
 
 /* INCLUDES */
 #include <QWidget>
+#include <QVBoxLayout>
+#include <QScrollArea>
 #include "baseform.h"
+#include "kelguilabel.h"
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
@@ -32,6 +35,9 @@ public:
     PrivacyPolicy,
   };
   Q_ENUM (Type)
+
+protected:
+  class Filter : public QScrollArea { public: bool eventFilter(QObject *o, QEvent *e) override; };
   /// @}
 
   /****************************************//**
@@ -40,6 +46,9 @@ public:
   /// @{
 private:
   Ui::DocumentPopup *ui;
+  KelGuiLabel *m_label;
+  QVBoxLayout *m_layout;
+  Filter *m_filter;
   /// @}
 
   /****************************************//**
@@ -66,6 +75,14 @@ signals:
 public slots:
   void slotShowTermsOfUse();
   void slotShowPrivacyPolicy();
+  /// @}
+
+  /****************************************//**
+   * @name OVERRIDE
+   *******************************************/
+  /// @{
+public:
+  bool eventFilter(QObject *o, QEvent *e) override;
   /// @}
 };
 
