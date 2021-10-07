@@ -190,7 +190,7 @@ void DapSession::getNews()
     });
 
     connect(m_netNewsReply, &DapNetworkReply::finished, this, [=]() {
-        if(m_netNewsReply && (m_netNewsReply->error() != DapNetworkReply::DapNetworkError::NoError)) {
+        if(m_netNewsReply && (m_netNewsReply->error() != 0)) {
             qWarning() << "Error on pulling the news";
             return;
         }
@@ -217,7 +217,7 @@ void DapSession::getNews()
 void DapSession::onEnc()
 {
     qDebug() << "Enc reply";
-    if (m_netEncryptReply && (m_netEncryptReply->error() != DapNetworkReply::NoError)) {
+    if (m_netEncryptReply && (m_netEncryptReply->error() != 0)) {
 
         qCritical() << "Network error: " << m_netEncryptReply->errorString();
 //        if (m_netEncryptReply->error() == QNetworkReply::OperationCanceledError || m_netEncryptReply->error() == QNetworkReply::ConnectionRefusedError)
@@ -359,7 +359,7 @@ void DapSession::setDapUri(const QString& addr, const uint16_t port)
 
 void DapSession::onKeyActivated() {
     qInfo() << "Activation reply";
-    if (m_netKeyActivateReply && (m_netKeyActivateReply->error() != DapNetworkReply::DapNetworkError::NoError)) {
+    if (m_netKeyActivateReply && (m_netKeyActivateReply->error() != 0)) {
         qCritical() << m_netKeyActivateReply->errorString();
         emit errorAuthorization("Key activation error, please report");
         return;
@@ -386,7 +386,7 @@ void DapSession::onKeyActivated() {
 
 #ifdef BUILD_VAR_GOOGLE
 void DapSession::onPurchaseVerified() {
-    if (m_netPurchaseReply && (m_netPurchaseReply->error() != DapNetworkReply::DapNetworkError::NoError)) {
+    if (m_netPurchaseReply && (m_netPurchaseReply->error() != 0)) {
         qCritical() << m_netPurchaseReply->errorString();
         emit errorNetwork("Purchase error, please report");
         return;
@@ -416,7 +416,7 @@ void DapSession::onPurchaseVerified() {
 void DapSession::onAuthorize()
 {
     qDebug() << "Auth reply";
-    if (m_netAuthorizeReply && (m_netAuthorizeReply->error() != DapNetworkReply::DapNetworkError::NoError)) {
+    if (m_netAuthorizeReply && (m_netAuthorizeReply->error() != 0)) {
         qCritical() << m_netAuthorizeReply->getReplyData();
         emit errorAuthorization("Authorization error, please report");
         return;
@@ -566,7 +566,7 @@ void DapSession::onLogout() {
 void DapSession::answerSignUp()
 {
     qInfo() << "answerSignUp";
-    if(m_netSignUpReply->error() != DapNetworkReply::DapNetworkError::NoError) {
+    if(m_netSignUpReply->error() != 0) {
         qInfo() << m_netSignUpReply->errorString();
         emit sigSignUpAnswer(m_netSignUpReply->errorString());
         return;
@@ -584,7 +584,7 @@ void DapSession::answerBugReport()
 {
     qInfo() << "DapSession::answerBugReport()";
     QString bugReportAnswer;
-    if (m_netSendBugReportReply->error() != DapNetworkReply::DapNetworkError::NoError) {
+    if (m_netSendBugReportReply->error() != 0) {
         bugReportAnswer = m_netSendBugReportReply->errorString();
     } else {
         bugReportAnswer = QString::fromUtf8(m_netSendBugReportReply->getReplyData());

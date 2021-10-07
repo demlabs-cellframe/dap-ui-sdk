@@ -21,14 +21,14 @@ public:
         return m_networkReply->errorString();
     }
 
-    DapNetworkReply::DapNetworkError networkReplyError(){
+    int networkReplyError(){
 //        return qobject_cast<DapNetworkReply *>(parent())->error();
         return m_networkReply->error();
     }
 
 signals:
     void sigResponse(const QJsonDocument& doc);
-    void sigNetworkError(DapNetworkReply::DapNetworkError);
+    void sigNetworkError(int);
     void sigParseResponseError();
 };
 

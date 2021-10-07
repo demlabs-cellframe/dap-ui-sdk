@@ -9,7 +9,7 @@ DapServersListNetworkReply::DapServersListNetworkReply(DapNetworkReply *a_networ
 {
     m_networkReply = a_networkReply;
     connect(m_networkReply, &DapNetworkReply::finished, this, [=] {
-        if(m_networkReply->error() == DapNetworkReply::DapNetworkError::NoError) {
+        if(m_networkReply->error() == 0) {
             QJsonParseError jsonErr;
             QJsonDocument jsonDoc = QJsonDocument::fromJson(m_networkReply->getReplyData(), &jsonErr);
 
@@ -28,10 +28,6 @@ DapServersListNetworkReply::DapServersListNetworkReply(DapNetworkReply *a_networ
             }
         } else {
             emit sigNetworkError(m_networkReply->error());
-            if ((m_networkReply->error() == DapNetworkReply::DapNetworkError::NetworkSessionFailedError)
-                    || (m_networkReply->error() == DapNetworkReply::DapNetworkError::UnknownNetworkError)) {
-                //TODO
-            }
         }
     });
 
