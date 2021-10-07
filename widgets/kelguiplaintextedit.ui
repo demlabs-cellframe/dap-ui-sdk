@@ -86,7 +86,7 @@ background-image: url(:/gfx/frame_left.png);</string>
      <property name="styleSheet">
       <string notr="true">QPlainTextEdit
 {
-color: #5C5B74;
+color: #04004E;
 background-color: #F7F8FA;
 font: 16px/25px;
 font-weight: normal;
@@ -102,6 +102,9 @@ color: #9C9B9D;
      </property>
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="plainText">
+      <string/>
      </property>
     </widget>
    </item>
