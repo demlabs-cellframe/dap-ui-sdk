@@ -58,12 +58,12 @@ static void cbVersion();
 /* VARS */
 static QMap<StyleId, Info> s_presets =
 {
-  {SI_TITLETOP,   {"darkblue bold font24 lato", ""}},
-  {SI_TITLE,      {"darkblue bold font24 margin28 lato", ""}},
-  {SI_BUTTON,     {"darkblue normal font16 lato",  "darkblue normal font16 lato"}},
-  {SI_BUTTONRED,  {"darkblue normal font16 lato",  "red bold font16 lato"}},
-  {SI_BUTTONGRAY, {"darkblue normal font16 lato",  "darkblue gray font16 lato"}},
-  {SI_LINK,       {"darkblue normal font16 lato",  ""}},
+  {SI_TITLETOP,   {"darkblue font24 lato bold", ""}},
+  {SI_TITLE,      {"darkblue font24 margin28 lato bold", ""}},
+  {SI_BUTTON,     {"darkblue font16 lato normal",  "darkblue font16 lato normal"}},
+  {SI_BUTTONRED,  {"darkblue font16 lato normal",  "red font16 lato bold"}},
+  {SI_BUTTONGRAY, {"darkblue font16 lato normal",  "darkblue gray font16 lato"}},
+  {SI_LINK,       {"darkblue font16 lato normal",  ""}},
   {SI_SPACER,     {"",  ""}},
 };
 

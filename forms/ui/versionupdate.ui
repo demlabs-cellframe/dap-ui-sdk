@@ -133,7 +133,7 @@
                <set>Qt::AlignCenter</set>
               </property>
               <property name="cssStyle">
-               <string>bugrep-title-text normalbold font24 darkblue lato</string>
+               <string>bugrep-title-text font24 darkblue lato normalbold noborder nobackground</string>
               </property>
              </widget>
             </item>
@@ -178,7 +178,7 @@
             <item>
              <widget class="KelGuiLabel" name="kelGuiLabel_2">
               <property name="cssStyle">
-               <string>login_logo</string>
+               <string>login_logo noborder nobackground</string>
               </property>
              </widget>
             </item>

@@ -183,7 +183,7 @@
               <set>Qt::AlignCenter</set>
              </property>
              <property name="cssStyle">
-              <string>bugrep-title-text normalbold font24 darkblue lato noborder nobackground</string>
+              <string>bugrep-title-text font24 darkblue lato normalbold noborder nobackground</string>
              </property>
             </widget>
            </item>
@@ -296,12 +296,6 @@
  	color: #DA0B82; 
  	font: 16px/19px; 
  	font-weight: normal; 	font-style: normal; 	font-size: normal; 
- 	border: none; 
- 	background-color: rgba(0,0,0,0); 
- 	border: none; 
- 	background-color: rgba(0,0,0,0); 
- 	border: none; 
- 	background-color: rgba(0,0,0,0); 
  	border: none; 
  	background-color: rgba(0,0,0,0); }</string>
            </property>

@@ -581,9 +581,9 @@
 
 .conn-top-spacer
 {
-	height: 60pt;
-	min-height: 60pt;
-	max-height: 60pt;
+	height: 10pt;
+	min-height: 10pt;
+	max-height: 10pt;
 }
 
 .conn-top-text-connected
@@ -651,9 +651,9 @@
 
 .sett-top-spacer
 {
-	height: 60pt;
-	min-height: 60pt;
-	max-height: 60pt;
+	height: 19pt;
+	min-height: 19pt;
+	max-height: 19pt;
 }
 
 .sett-title
@@ -722,9 +722,9 @@
 
 .stat-top-spacer
 {
-	height: 60pt;
-	min-height: 60pt;
-	max-height: 60pt;
+	height: 20pt;
+	min-height: 20pt;
+	max-height: 20pt;
 }
 
 .stat-top-text-statistics
@@ -780,9 +780,9 @@
 
 .bugrep-top-spacer
 {
-	height: 60pt;
-	min-height: 60pt;
-	max-height: 60pt;
+	height: 20pt;
+	min-height: 20pt;
+	max-height: 20pt;
 }
 
 .bugrep-close-btn
@@ -845,9 +845,9 @@
 
 .purchase-top-spacer
 {
-	height: 60pt;
-	min-height: 60pt;
-	max-height: 60pt;
+	height: 20pt;
+	min-height: 20pt;
+	max-height: 20pt;
 }
 
 .purchase-top-content-spacer
@@ -898,9 +898,9 @@
 
 .choser-top-spacer
 {
-	height: 60pt;
-	min-height: 60pt;
-	max-height: 60pt;
+	height: 20pt;
+	min-height: 20pt;
+	max-height: 20pt;
 }
 
 .choser-top-content-spacer
@@ -926,9 +926,9 @@
 
 .cholang-top-spacer
 {
-	height: 60pt;
-	min-height: 60pt;
-	max-height: 60pt;
+	height: 20pt;
+	min-height: 20pt;
+	max-height: 20pt;
 }
 
 .cholang-top-content-spacer
@@ -954,9 +954,9 @@
 
 .history-top-spacer
 {
-	height: 60pt;
-	min-height: 60pt;
-	max-height: 60pt;
+	height: 20pt;
+	min-height: 20pt;
+	max-height: 20pt;
 }
 
 .history-top-content-spacer
@@ -1000,9 +1000,9 @@
 
 .docpop-top-spacer
 {
-	height: 60pt;
-	min-height: 60pt;
-	max-height: 60pt;
+	height: 20pt;
+	min-height: 20pt;
+	max-height: 20pt;
 }
 
 .docpop-top-content-spacer
@@ -1028,9 +1028,9 @@
 
 .ver-top-spacer
 {
-	height: 60pt;
-	min-height: 60pt;
-	max-height: 60pt;
+	height: 20pt;
+	min-height: 20pt;
+	max-height: 20pt;
 }
 
 .ver-top-content-spacer

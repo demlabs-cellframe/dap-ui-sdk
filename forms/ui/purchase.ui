@@ -114,7 +114,7 @@
               <set>Qt::AlignCenter</set>
              </property>
              <property name="cssStyle">
-              <string>purchase-title-text normalbold lato font24 darkblue</string>
+              <string>purchase-title-text lato font24 normalbold darkblue noborder nobackground</string>
              </property>
             </widget>
            </item>

@@ -112,10 +112,12 @@
             <widget class="KelGuiLabel" name="label">
              <property name="styleSheet">
               <string notr="true">#label{ 	width: 282px; 	height: 28px; 	min-width: 282px; 	min-height: 28px; 	max-width: 282px; 	max-height: 28px; 
- 	font-weight: normal; 	font-style: normal; 	font-size: bold; 
  	font: 24px/29px; 
  	color: #04004E; 
- 	font-family: 'Lato'; }</string>
+ 	font-family: 'Lato'; 
+ 	font-weight: bold; 	font-style: bold; 	font-size: bold; 
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); }</string>
              </property>
              <property name="text">
               <string>Language</string>
@@ -124,7 +126,7 @@
               <set>Qt::AlignCenter</set>
              </property>
              <property name="cssStyle">
-              <string>cholang-title-text normalbold font24 darkblue lato</string>
+              <string>cholang-title-text font24 darkblue lato normalbold noborder nobackground</string>
              </property>
             </widget>
            </item>

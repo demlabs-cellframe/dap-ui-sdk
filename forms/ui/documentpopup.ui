@@ -114,7 +114,7 @@
               <set>Qt::AlignCenter</set>
              </property>
              <property name="cssStyle">
-              <string>docpop-title-text normalbold font24 darkblue lato</string>
+              <string>docpop-title-text font24 darkblue lato normalbold noborder nobackground</string>
              </property>
             </widget>
            </item>

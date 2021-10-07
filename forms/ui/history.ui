@@ -114,7 +114,7 @@
               <set>Qt::AlignCenter</set>
              </property>
              <property name="cssStyle">
-              <string>history-title-text normalbold font24 darkblue lato</string>
+              <string>history-title-text font24 darkblue lato normalbold noborder nobackground</string>
              </property>
             </widget>
            </item>
