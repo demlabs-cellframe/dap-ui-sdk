@@ -19,6 +19,8 @@
 //#include <QClipboard>
 //#include <QApplication>
 
+#include "ui/helper/auxiliary/UiScaling.h"
+
 /* DEFS */
 /// helps to decide value
 template<class T>
@@ -48,6 +50,8 @@ public:
 static thread_local BoolHelper<Qt::AlignmentFlag> s_mainHelper (
 {Qt::AlignHCenter, Qt::AlignLeft},    // left is visible
 {Qt::AlignVCenter, Qt::AlignBottom}); // sub is not empty
+
+static thread_local int s_linkWidth = LINK_WIDTH;
 
 /* FUNCS */
 template<class T, class U>
@@ -80,6 +84,7 @@ KelGuiButton::KelGuiButton (QWidget *parent)
 {
   /* setup style */
   ui->setupUi (this);
+  s_linkWidth = UiScaling::pointsToPixels (LINK_WIDTH, UiScaling::getNativDPI());
 
   /* fill widgets map */
   m_widgets.insert ("styledWidgets", ui->Style0);
@@ -102,12 +107,14 @@ KelGuiButton::KelGuiButton (QWidget *parent)
   m_widgets.insert ("iconLeft", ui->KelGuiButtonIcon);
 
   /* prepare link icon */
-  m_lLink->setPixmap (QPixmap ("://gfx/ic_arrow-right.png"));
-  m_lLink->setMinimumWidth (LINK_WIDTH);
-  m_lLink->setMaximumWidth (LINK_WIDTH);
+//  m_lLink->setPixmap (QPixmap ("://gfx/ic_arrow-right.png"));
+//  m_lLink->setMinimumWidth (s_linkWidth);
+//  m_lLink->setMaximumWidth (s_linkWidth);
   m_lLink->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
   m_lLink->setParent (ui->KelGuiButtonBackground);
-  m_lLink->setStyleSheet ("background-color: rgba(0,0,0,0);");
+  m_lLink->setStyleSheet (
+        "background-color: rgba(0,0,0,0);"
+        "border-image: url(\"://gfx/ic_arrow-right.png\");");
   m_lLink->hide();
 
   //setIcon (m_icon);
@@ -402,8 +409,14 @@ void KelGuiButton::mousePressEvent (QMouseEvent *event)
 
 void KelGuiButton::resizeEvent (QResizeEvent *ev)
 {
-  m_lLink->move (ev->size().width() - LINK_WIDTH - 10, 0);
-  m_lLink->resize (LINK_WIDTH, ev->size().height());
+  s_linkWidth = UiScaling::pointsToPixels (LINK_WIDTH, UiScaling::getNativDPI());
+  auto sz     = ev->size();
+  QPoint pos{
+    sz.width() - s_linkWidth - s_linkWidth/4,
+    (sz.height() - s_linkWidth) / 2
+  };
+  m_lLink->move (pos);
+  m_lLink->resize (s_linkWidth, s_linkWidth);
 }
 
 void KelGuiButton::_slotDebugInfo()
