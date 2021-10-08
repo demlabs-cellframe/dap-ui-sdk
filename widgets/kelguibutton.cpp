@@ -291,15 +291,40 @@ void KelGuiButton::setIconCssClass (const QString &iconCssClass)
   setupLabels();
 }
 
-QString KelGuiButton::inputMaskCssClass() const
+QString KelGuiButton::inputMask() const
 {
-  return m_inputMaskCssClass;
+  return m_inputMask;
 }
 
-void KelGuiButton::setInputMaskCssClass(const QString &inputMaskCssClass)
+void KelGuiButton::setInputMask(const QString &inputMask)
 {
-  m_inputMaskCssClass = inputMaskCssClass;
-  ui->kelGuiLineEditMain->setInputMask(inputMaskCssClass);
+  m_inputMask = inputMask;
+  ui->kelGuiLineEditMain->setInputMask(inputMask);
+}
+
+KelGuiLineEdit *KelGuiButton::edit() const
+{
+  return ui->kelGuiLineEditMain;
+}
+
+KelGuiLineEdit::cbTextEdit KelGuiButton::inputCallback() const
+{
+  return ui->kelGuiLineEditMain->callbackTextEdit();
+}
+
+void KelGuiButton::setInputCallback(const KelGuiLineEdit::cbTextEdit &cb)
+{
+  ui->kelGuiLineEditMain->setCallbackTextEdit (cb);
+}
+
+KelGuiLineEdit::cbFocusEvent KelGuiButton::inputFocusCallback() const
+{
+  return ui->kelGuiLineEditMain->callbackFocusEvent();
+}
+
+void KelGuiButton::setInputFocusCallback(const KelGuiLineEdit::cbFocusEvent &cb)
+{
+  ui->kelGuiLineEditMain->setCallbackFocusEvent (cb);
 }
 
 bool KelGuiButton::link() const
@@ -341,6 +366,16 @@ void KelGuiButton::setSeparator (bool separator)
 {
   m_separator = separator;
   ui->kelGuiSeparator->setVisible (m_separator);
+}
+
+int KelGuiButton::maxLength() const
+{
+  return ui->kelGuiLineEditMain->maxLength();
+}
+
+void KelGuiButton::setMaxLength(const int &max)
+{
+  ui->kelGuiLineEditMain->setMaxLength (max);
 }
 
 void KelGuiButton::setupStyle()
@@ -432,7 +467,7 @@ void KelGuiButton::_slotDebugInfo()
       //jobj["subCssClass;"]  = m_subCssClass;
       //jobj["leftCssClass"]  = m_leftCssClass;
       //jobj["iconCssClass"]  = m_iconCssClass;
-      jobj["inputMaskCssClass"]  = m_inputMaskCssClass;
+      jobj["inputMask"]     = m_inputMask;
       jobj["btnStyle"]      = m_btnStyle;
       jobj["cssStyle"]      = QJsonObject{
         {"name", cssStyle()},

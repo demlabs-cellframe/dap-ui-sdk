@@ -211,11 +211,11 @@ Usualy unvisible by being empty</string>
            <property name="leftCssClass">
             <string>darkblue normalbold font30 noborder</string>
            </property>
-           <property name="inputMaskCssClass">
-            <string>&gt;NNNN-NNNN-NNNN-NNNN;_</string>
-           </property>
            <property name="separator">
             <bool>true</bool>
+           </property>
+           <property name="inputMask" stdset="0">
+            <string/>
            </property>
           </widget>
          </item>

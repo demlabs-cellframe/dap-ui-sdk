@@ -27,6 +27,20 @@ SerialInput::SerialInput(QWidget *parent) :
 //           this, &SerialInput::slotTextChanged);
 //  connect (m_input, &KelGuiLineEdit::textEdited,
 //           this, &SerialInput::slotTextChanged);
+  connect (m_input, &KelGuiLineEdit::sigTextEditing,
+           this, &SerialInput::slotTextChanged,
+           Qt::QueuedConnection);
+  connect (m_input, &KelGuiLineEdit::editingFinished,
+           this, &SerialInput::slotCloseInput,
+           Qt::QueuedConnection);
+  connect (m_input, &KelGuiLineEdit::returnPressed,
+           this, &SerialInput::slotCloseInput,
+           Qt::QueuedConnection);
+
+  connect (this, &SerialInput::sigReturn,
+           this, &SerialInput::slotCloseInput,
+           Qt::QueuedConnection);
+
   connect (ui->btnReturn, &KelGuiPushButton::clicked,
            this, &SerialInput::sigReturn,
            Qt::QueuedConnection);
@@ -64,7 +78,7 @@ void SerialInput::slotTextChanged()
   if(m_textChangeHook)
     return;
 
-  qDebug() << __PRETTY_FUNCTION__ << "start";
+  //qDebug() << __PRETTY_FUNCTION__ << "start";
 
   /* get input text */
   auto text   = m_input->text().toUpper();
@@ -76,7 +90,7 @@ void SerialInput::slotTextChanged()
       /*     4    9    E     */
 
       /* insert separators */
-      qDebug() << __PRETTY_FUNCTION__ << "sep";
+      //qDebug() << __PRETTY_FUNCTION__ << "sep";
       if ((i == 4) || (i == 9) || (i == 14))
         {
           if (i == 4)
@@ -91,7 +105,7 @@ void SerialInput::slotTextChanged()
         }
 
       /* replace wrong characters */
-      qDebug() << __PRETTY_FUNCTION__ << "wr";
+      //qDebug() << __PRETTY_FUNCTION__ << "wr";
       QChar c = text.at(i);
       if (
           (
@@ -112,16 +126,16 @@ void SerialInput::slotTextChanged()
   /* check if limit reachced */
   if(text.length() < MAX_LENGTH)
     {
-      qDebug() << __PRETTY_FUNCTION__ << "skippo";
+      //qDebug() << __PRETTY_FUNCTION__ << "skippo";
       if (!text.isEmpty())
         m_input->setText (text);
 
-      qDebug() << __PRETTY_FUNCTION__ << "skipped" << text;
+      //qDebug() << __PRETTY_FUNCTION__ << "skipped" << text;
       m_textChangeHook = false;
       return;
     }
 
-  qDebug() << __PRETTY_FUNCTION__ << "finno";
+  //qDebug() << __PRETTY_FUNCTION__ << "finno";
   /* fix text length */
   int diff  = text.length() - MAX_LENGTH;
   text.chop (diff);
@@ -130,7 +144,7 @@ void SerialInput::slotTextChanged()
   /* fix cursor pos */
   m_input->setCursorPosition (diff);
 
-  qDebug() << __PRETTY_FUNCTION__ << "finish" << text;
+  qDebug() << __PRETTY_FUNCTION__ << "result" << text;
   m_textChangeHook = false;
 }
 
@@ -146,6 +160,11 @@ void SerialInput::slotSetSerial(const QString &a_serial)
 
   qDebug() << __PRETTY_FUNCTION__ << "finish";
   m_textChangeHook = false;
+}
+
+void SerialInput::slotCloseInput()
+{
+  QGuiApplication::inputMethod()->hide();
 }
 
 /*-----------------------------------------*/

@@ -8,6 +8,7 @@
 #include <QUrl>
 #include <QMap>
 #include "style/kelguistylemanager.h"
+#include "kelguilineedit.h"
 #include <memory>
 
 /* DEFS */
@@ -54,10 +55,11 @@ public:
   Q_PROPERTY (QString subCssClass     READ subCssClass  WRITE setSubCssClass)
   Q_PROPERTY (QString leftCssClass    READ leftCssClass WRITE setLeftCssClass)
   Q_PROPERTY (QString iconCssClass    READ iconCssClass WRITE setIconCssClass)
-  Q_PROPERTY (QString inputMaskCssClass READ inputMaskCssClass WRITE setInputMaskCssClass)
+  Q_PROPERTY (QString inputMask READ inputMask WRITE setInputMask)
   Q_PROPERTY (bool separator          READ separator    WRITE setSeparator)
   Q_PROPERTY (bool link               READ link         WRITE setLink)
   Q_PROPERTY (bool frame              READ frame        WRITE setFrame)
+  Q_PROPERTY (int maxLength           READ maxLength    WRITE setMaxLength)
 
   /// @}
 
@@ -75,7 +77,7 @@ private:
   QString m_subCssClass;
   QString m_leftCssClass;
   QString m_iconCssClass;
-  QString m_inputMaskCssClass;
+  QString m_inputMask;
   bool m_separator;       ///< bottom separator
   bool m_link;            ///< link button
   bool m_frame;           ///< show frame
@@ -130,8 +132,16 @@ public:
   QString iconCssClass() const;
   void setIconCssClass (const QString &iconCssClass);
 
-  QString inputMaskCssClass() const;
-  void setInputMaskCssClass(const QString &inputMaskCssClass);
+  QString inputMask() const;
+  void setInputMask(const QString &inputMask);
+
+  KelGuiLineEdit *edit() const;
+
+  KelGuiLineEdit::cbTextEdit inputCallback() const;
+  void setInputCallback (const KelGuiLineEdit::cbTextEdit &cb);
+
+  KelGuiLineEdit::cbFocusEvent inputFocusCallback() const;
+  void setInputFocusCallback (const KelGuiLineEdit::cbFocusEvent &cb);
 
   bool link() const;
   void setLink (bool link);
@@ -144,6 +154,9 @@ public:
 
   bool separator() const;
   void setSeparator (bool separator);
+
+  int maxLength() const;
+  void setMaxLength (const int &max);
 
   void setupStyle();
   void setupLabels();

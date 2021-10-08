@@ -66,6 +66,7 @@ signals:
 public:
   void slotTextChanged();
   void slotSetSerial (const QString &a_serial);
+  void slotCloseInput();
   /// @}
 };
 
