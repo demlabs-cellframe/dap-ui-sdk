@@ -35,11 +35,26 @@
       <string>footer backgroundcolor</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
       <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <item>
          <widget class="KelGuiPushButton" name="btnSettings">
           <property name="checkable">
@@ -47,6 +62,9 @@
           </property>
           <property name="style">
            <enum>KelGuiPushButton::Settings</enum>
+          </property>
+          <property name="cssStyle" stdset="0">
+           <string>cwpb_square nobackground</string>
           </property>
          </widget>
         </item>
@@ -61,6 +79,9 @@
           <property name="style">
            <enum>KelGuiPushButton::Connection</enum>
           </property>
+          <property name="cssStyle" stdset="0">
+           <string>cwpb_square nobackground</string>
+          </property>
          </widget>
         </item>
         <item>
@@ -70,6 +91,9 @@
           </property>
           <property name="style">
            <enum>KelGuiPushButton::Account</enum>
+          </property>
+          <property name="cssStyle" stdset="0">
+           <string>cwpb_square nobackground</string>
           </property>
          </widget>
         </item>
@@ -90,6 +114,9 @@
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <item>
          <widget class="QProgressBar" name="progress">
           <property name="styleSheet">
