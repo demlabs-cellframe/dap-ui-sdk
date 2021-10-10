@@ -38,10 +38,25 @@ void DapNetworkAccessManager::responseCallbackError(int a_err_code, void * a_obj
 {
     DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
     reply->setError(a_err_code);
+    char buf[256] = { };
     qWarning() << "Dap Client HTTP Request: error code " << a_err_code
-#ifndef Q_OS_WIN
-               << ": " << strerror(a_err_code) ;
-#endif
+               << ": " << strerror_r(a_err_code, buf, sizeof(buf));
+    reply->setErrorStr(strerror(a_err_code));
+/*#else
+               ;
+    {
+        char buf[400] = { };
+        FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                      NULL,
+                      a_err_code,
+                      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                      buf,
+                      sizeof(buf),
+                      NULL);
+        reply->setErrorStr(buf);
+        qWarning() << reply->errorString();
+    }
+#endif*/
     emit reply->sigError();
     reply->deleteLater();
 }

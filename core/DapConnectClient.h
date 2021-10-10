@@ -36,10 +36,6 @@ class DapConnectClient : public QObject
 {
     Q_OBJECT
 private:
-    bool _buildRequest(QNetworkRequest& req, const QString& host,
-                       quint16 port, const QString & urlPath, bool ssl,
-                       const QVector<HttpRequestHeader>* headers);
-
     DapConnectClient(QObject *parent = Q_NULLPTR);
     ~DapConnectClient() = default;
     DapConnectClient(const DapConnectClient&) = delete;
@@ -59,14 +55,4 @@ public:
 
     void request_POST(const QString& host,  quint16 port,
                                 const QString & urlPath, const QByteArray& data, DapNetworkReply &a_netReply, const QString &headers = "", bool ssl = false);
-
-    void abortRequests() {
-        for (auto &l_rpl : m_httpClient->findChildren<QNetworkReply*>()) {
-            if (!l_rpl->isFinished()) {
-                qDebug() << "Abort request " << l_rpl->url().toString();
-                l_rpl->abort();
-            }
-        }
-    }
-    void _rebuildNetworkManager();
 };

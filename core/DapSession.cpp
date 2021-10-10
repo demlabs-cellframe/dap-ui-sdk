@@ -65,7 +65,7 @@ DapSession::~DapSession()
         delete m_dapCryptCDB;
 }
 
-DapNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QString& query) {
+DapNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QString& query, QObject *obj, const char *slot, const char *slot_err) {
     if(m_sessionKeyID.isEmpty()) {
         qCritical() << "Can't send request to server."
                        " Session was not initialized";
@@ -84,21 +84,19 @@ DapNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QSt
             .arg(QString(subUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding)))
             .arg(QString(queryEncrypted.toBase64(QByteArray::Base64UrlEncoding)));
 
-    return _buildNetworkReplyReq(str_url, Q_NULLPTR);
+    return _buildNetworkReplyReq(str_url, obj, slot, slot_err, Q_NULLPTR);
 }
 
-DapNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QString& query, QObject *obj, const char *slot) {
-    DapNetworkReply *netReply = streamOpenRequest(subUrl, query);
-    connect(netReply, SIGNAL(finished()), obj, slot);
-    return netReply;
-}
-
-DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath,
-                                                 const QByteArray* data, bool isCDB/*, DapNetworkReply *netReply*/)
+DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObject *obj, const char *slot,  const char *slot_err,
+                                                 const QByteArray* data, bool isCDB)
 {
     DapNetworkReply *netReply = new DapNetworkReply();
+    if (slot)
+        connect(netReply, SIGNAL(finished()), obj, slot);
     connect(netReply, &DapNetworkReply::sigError, this, [=] {
-        emit errorNetwork(netReply->error(), "Connection error");
+        emit errorNetwork(netReply->error(), netReply->errorString());
+        if (slot_err)
+            QMetaObject::invokeMethod(obj, slot_err, Qt::ConnectionType::AutoConnection, Q_ARG(const QString&, netReply->errorString()));
     });
     data ? DapConnectClient::instance()->request_POST(isCDB ? m_CDBaddress : m_upstreamAddress,
                                                       isCDB ? m_CDBport : m_upstreamPort,
@@ -127,32 +125,9 @@ DapNetworkReply* DapSession::requestServerPublicKey()
                                               .arg(m_pkey_exch_type)
                                               .arg(MSRLN_PKA_BYTES)
                                               .arg(m_enc_size)
-                                              ,&reqData);
-
-//    m_httpClient->requestHttp(m_upstreamAddress.toLocal8Bit().data(),
-//                                m_upstreamPort,
-//                                QString("%1/gd4y5yh78w42aaagh?enc_type=%2,pkey_exchange_type=%3,pkey_exchange_size=%4").arg(URL_ENCRYPT)
-//                                .arg(m_enc_type)
-//                                .arg(m_pkey_exch_type)
-//                                .arg(MSRLN_PKA_BYTES),
-//                                reqData,
-//                                m_netEncryptReply);
-
-    if(!m_netEncryptReply || !DapConnectClient::instance()->m_httpClient->isRunning()){
-        qCritical() << "Unknown network error occured";
-        emit errorNetwork("Unknown network error");
-        return Q_NULLPTR; //-----
-    }
-
-    connect(m_netEncryptReply, &DapNetworkReply::finished, this, &DapSession::onEnc);
-
+                                              ,this, SLOT(onEnc()), NULL, /*QT_STRINGIFY(errorNetwork),*/ &reqData);
     qDebug() << "Public key requested";
     return m_netEncryptReply;
-}
-
-DapNetworkReply* DapSession::encryptInitRequest()
-{
-    return requestServerPublicKey();
 }
 
 void DapSession::sendBugReport(const QByteArray &data)
@@ -162,13 +137,15 @@ void DapSession::sendBugReport(const QByteArray &data)
         auto *l_tempConn = new QMetaObject::Connection();
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]{
             preserveCDBSession();
-            m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(), SLOT(answerBugReport()));
+            m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(),
+                                                    SLOT(answerBugReport()), QT_STRINGIFY(receivedBugReportAnswer));
             disconnect(*l_tempConn);
             delete l_tempConn;
         });
         requestServerPublicKey();
     } else {
-        m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(), SLOT(answerBugReport()));
+        m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(),
+                                                SLOT(answerBugReport()), QT_STRINGIFY(receivedBugReportAnswer));
     }
 }
 
@@ -182,18 +159,12 @@ void DapSession::sendSignUpRequest(const QString &host, const QString &email, co
 void DapSession::getNews()
 {
     DapNetworkReply *m_netNewsReply = new DapNetworkReply;
-    DapConnectClient::instance()->request_GET(DapDataLocal::instance()->cdbServersList().front(), 80, URL_NEWS, *m_netNewsReply);
-
     connect(m_netNewsReply, &DapNetworkReply::sigError, this, [=]() {
         qCritical() << "Couldn't fetch news";
         return;
     });
 
     connect(m_netNewsReply, &DapNetworkReply::finished, this, [=]() {
-        if(m_netNewsReply && (m_netNewsReply->error() != 0)) {
-            qWarning() << "Error on pulling the news";
-            return;
-        }
         qInfo() << "News received";
         QJsonParseError jsonErr;
         QJsonDocument jsonDoc = QJsonDocument::fromJson(m_netNewsReply->getReplyData(), &jsonErr);
@@ -209,6 +180,7 @@ void DapSession::getNews()
             return;
         }
     });
+    DapConnectClient::instance()->request_GET(DapDataLocal::instance()->cdbServersList().front(), 80, URL_NEWS, *m_netNewsReply);
 }
 
 /**
@@ -217,17 +189,6 @@ void DapSession::getNews()
 void DapSession::onEnc()
 {
     qDebug() << "Enc reply";
-    if (m_netEncryptReply && (m_netEncryptReply->error() != 0)) {
-
-        qCritical() << "Network error: " << m_netEncryptReply->errorString();
-//        if (m_netEncryptReply->error() == QNetworkReply::OperationCanceledError || m_netEncryptReply->error() == QNetworkReply::ConnectionRefusedError)
-//            emit errorNetwork(6543 , m_netEncryptReply->errorString());
-//        else if (m_netEncryptReply->error() == QNetworkReply::UnknownNetworkError)
-//            emit errorNetwork(3244 , m_netEncryptReply->errorString());
-//        else
-            emit errorNetwork(m_netEncryptReply->errorString());
-        return;
-    }
     if(m_netEncryptReply->getReplyData().isEmpty()) {
         qWarning() << "Empty enc reply...";
         emit errorEncryptInitialization("Empty enc reply");
@@ -296,7 +257,7 @@ void DapSession::setUserAgent(const QString& userAgent)
  * @return
  */
 DapNetworkReply* DapSession::encRequest(const QString& reqData, const QString& url,
-                          const QString& subUrl, const QString& query, bool isCDB)
+                          const QString& subUrl, const QString& query, QObject* obj, const char* slot, const char* slot_err, bool isCDB)
 {
     QByteArray BAreqData = reqData.toLatin1();
     QByteArray BAreqDataEnc;
@@ -318,11 +279,11 @@ DapNetworkReply* DapSession::encRequest(const QString& reqData, const QString& u
         urlPath += "?" + BAqueryEncrypted.toBase64(QByteArray::Base64UrlEncoding);
     }
 
-    return _buildNetworkReplyReq(urlPath, &BAreqDataEnc, isCDB);
+    return _buildNetworkReplyReq(urlPath, obj, slot, slot_err, &BAreqDataEnc, isCDB);
 }
 
 DapNetworkReply* DapSession::encRequestRaw(const QByteArray& bData, const QString& url,
-                          const QString& subUrl, const QString& query)
+                          const QString& subUrl, const QString& query, QObject* obj, const char* slot, const char* slot_err)
 {
     QByteArray BAreqDataEnc;
     QByteArray BAsubUrlEncrypted;
@@ -343,7 +304,7 @@ DapNetworkReply* DapSession::encRequestRaw(const QByteArray& bData, const QStrin
         urlPath += "?" + BAqueryEncrypted.toBase64(QByteArray::Base64UrlEncoding);
     }
 
-    return _buildNetworkReplyReq(urlPath, &BAreqDataEnc, true);
+    return _buildNetworkReplyReq(urlPath, obj, slot, slot_err, &BAreqDataEnc, true);
 }
 
 /**
@@ -359,11 +320,6 @@ void DapSession::setDapUri(const QString& addr, const uint16_t port)
 
 void DapSession::onKeyActivated() {
     qInfo() << "Activation reply";
-    if (m_netKeyActivateReply && (m_netKeyActivateReply->error() != 0)) {
-        qCritical() << m_netKeyActivateReply->errorString();
-        emit errorAuthorization("Key activation error, please report");
-        return;
-    }
 
     if(m_netKeyActivateReply->getReplyData().size() <= 0) {
         emit errorAuthorization("Wrong answer from server");
@@ -416,12 +372,6 @@ void DapSession::onPurchaseVerified() {
 void DapSession::onAuthorize()
 {
     qDebug() << "Auth reply";
-    if (m_netAuthorizeReply && (m_netAuthorizeReply->error() != 0)) {
-        qCritical() << m_netAuthorizeReply->getReplyData();
-        emit errorAuthorization("Authorization error, please report");
-        return;
-    }
-
     if(m_netAuthorizeReply->getReplyData().size() <= 0)
     {
         emit errorAuthorization("Wrong answer from server");
@@ -582,15 +532,8 @@ void DapSession::answerSignUp()
 
 void DapSession::answerBugReport()
 {
-    qInfo() << "DapSession::answerBugReport()";
-    QString bugReportAnswer;
-    if (m_netSendBugReportReply->error() != 0) {
-        bugReportAnswer = m_netSendBugReportReply->errorString();
-    } else {
-        bugReportAnswer = QString::fromUtf8(m_netSendBugReportReply->getReplyData());
-    }
-    qInfo() << "Answer bug-report: " << bugReportAnswer;
-    emit receivedBugReportAnswer(bugReportAnswer);
+    qInfo() << "Bugreport reply: " << m_netSendBugReportReply->getReplyData();
+    emit receivedBugReportAnswer(QString::fromUtf8(m_netSendBugReportReply->getReplyData()));
 }
 
 void DapSession::clearCredentials()
@@ -613,43 +556,6 @@ DapNetworkReply *DapSession::logoutRequest() {
     return nullptr;
 }
 
-/**
- * @brief DapSession::encRequest
- * @param reqData
- * @param url
- * @param subUrl
- * @param query
- * @param obj
- * @param slot
- */
-DapNetworkReply * DapSession::encRequest(const QString& reqData, const QString& url, const QString& subUrl,
-                           const QString& query, QObject * obj, const char * slot, bool isCDB)
-{
-    DapNetworkReply * netReply = encRequest(reqData, url, subUrl, query, isCDB);
-
-    connect(netReply, SIGNAL(finished()), obj, slot);
-    /*connect(netReply, static_cast<void(QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error), [=] {
-        if ((netReply->error() != QNetworkReply::NetworkError::NoError) && !netReply->isFinished()) {
-            netReply->close();
-        }
-    });*/
-    return netReply;
-}
-
-DapNetworkReply * DapSession::encRequestRaw(const QByteArray& bData, const QString& url, const QString& subUrl,
-                           const QString& query, QObject * obj, const char * slot)
-{
-    DapNetworkReply * netReply = encRequestRaw(bData, url, subUrl, query);
-
-    connect(netReply, SIGNAL(finished()), obj, slot);
-    /*connect(netReply, static_cast<void(QNetworkReply::*)(QNetworkReply::NetworkError)>(&QNetworkReply::error), [=] {
-        if ((netReply->error() != QNetworkReply::NetworkError::NoError) && netReply->isRunning()) {
-            netReply->abort();
-        }
-    });*/
-    return netReply;
-}
-
 DapNetworkReply * DapSession::requestRawToSite(const QString& dnsName, const QString& url, const QByteArray& bData, const char * slot, bool ssl, const QString& headers)
 {
     DapNetworkReply * netReply = new DapNetworkReply;
@@ -661,7 +567,7 @@ DapNetworkReply * DapSession::requestRawToSite(const QString& dnsName, const QSt
 
 void DapSession::sendTxBackRequest(const QString &tx) {
     qDebug() << "Send tx back to cdb" << tx;
-    encRequest(tx, URL_TX, "tx_out", "", true);
+    encRequest(tx, URL_TX, "tx_out", NULL, true);
 }
 
 /**
@@ -677,24 +583,14 @@ DapNetworkReply * DapSession::authorizeRequest(const QString& a_user, const QStr
 
     m_netAuthorizeReply = encRequest(a_pkey.isNull() ? a_user + " " + a_password + " " + a_domain :
                                                        a_user + " " + a_password + " " + a_domain + " " + a_pkey,
-                                     URL_DB, "auth", "login", SLOT(onAuthorize()));
-
-    if(m_netAuthorizeReply == Q_NULLPTR) {
-        qCritical() << "Can't send request";
-        emit errorAuthorization("Authorization request error, please report");
-        return Q_NULLPTR;
-    }
+                                     URL_DB, "auth", "login", SLOT(onAuthorize()), QT_STRINGIFY(errorAuthorization));
     return m_netAuthorizeReply;
 }
 
 DapNetworkReply * DapSession::authorizeByKeyRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey) {
     m_userInform.clear();
-    m_netAuthorizeReply = encRequest(a_serial + " " + a_domain + " " + a_pkey, URL_DB, "auth", "serial", SLOT(onAuthorize()));
-    if(m_netAuthorizeReply == Q_NULLPTR) {
-        qCritical() << "Can't send request";
-        emit errorAuthorization("Authorization request error, please report");
-        return Q_NULLPTR;
-    }
+    m_netAuthorizeReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
+                                     URL_DB, "auth", "serial", SLOT(onAuthorize()), QT_STRINGIFY(errorAuthorization));
     return m_netAuthorizeReply;
 }
 
@@ -705,12 +601,7 @@ DapNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const Q
     int buf64len = dap_enc_base64_encode(a_signed.constData(), a_signed.size(), buf64, DAP_ENC_DATA_TYPE_B64_URLSAFE);
     QByteArray a_signedB64(buf64, buf64len);
     QByteArray bData = QString(a_serial + " ").toLocal8Bit() + a_signedB64 + QString(" " + a_domain + " " + a_pkey).toLocal8Bit();
-    m_netKeyActivateReply = encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()));
-    if(m_netKeyActivateReply == Q_NULLPTR) {
-        qCritical() << "Can't send key activation request";
-        emit errorAuthorization("Key activation error, please report");
-        return Q_NULLPTR;
-    }
+    m_netKeyActivateReply = encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()), QT_STRINGIFY(errorAuthorization));
     return m_netKeyActivateReply;
 }
 
