@@ -910,6 +910,13 @@
  * Choose server
  ***************************************************/
 
+.choser-width
+{
+	width: 363pt;
+	min-width: 363pt;
+	max-width: 363pt;
+}
+
 .choser-top-spacer
 {
 	height: 20pt;
@@ -932,6 +939,14 @@
 	min-height: 28pt;
 	max-width: 282pt;
 	max-height: 28pt;
+}
+
+.choser-item
+{
+	height: 64pt;
+	min-height: 64pt;
+	max-height: 64pt;
+	margin-top: 20pt;
 }
 
 /****************************************************

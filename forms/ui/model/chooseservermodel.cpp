@@ -73,6 +73,7 @@ void ChooseServerModel::slotSetup()
       /* setup */
       item->setText (text);
       item->setSeparator (i + 1 < size);
+      item->setCssStyle ("choser-item");
       lay->addWidget (item);
 
       /* signals */
@@ -101,29 +102,19 @@ void ChooseServerModel::slotToggled(bool checked)
     return;
 
   /* get it's index */
-  int index = m_list.indexOf (s);
-  if (index == -1)
+  m_currentIndex = m_list.indexOf (s);
+  if (m_currentIndex == -1)
     return;
 
-//  /* uncheck other radio's */
-//  _hook = true;
-//  int counter = 0, found = 0;
+  /* get current server */
+  m_currentText = s->text();
 
-//  for (auto i = m_list.begin(), e = m_list.end(); i != e; i++)
-//    {
-//      if (*i != s)
-//        {
-//          (*i)->setChecked (false);
-//          counter++;
-//        }
-//    }
-
-//  qDebug() << __PRETTY_FUNCTION__ << "changed" << counter << "found" << found;
-
-//  _hook = false;
-
-  /* send selection event signal */
-  emit m_cs->sigSelect (index, s->text());
+  /* show selection and select */
+  QTimer::singleShot(300, [&]
+  {
+    /* send selection event signal */
+    emit m_cs->sigSelect (m_currentIndex, m_currentText);
+  });
 }
 
 /*-----------------------------------------*/

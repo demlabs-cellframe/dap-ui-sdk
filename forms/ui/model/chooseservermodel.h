@@ -29,6 +29,8 @@ private:
   ChooseServer *m_cs;
   QList<KelGuiRadio*> m_list;
   bool _hook;
+  int m_currentIndex;
+  QString m_currentText;
   /// @}
 
   /****************************************//**
