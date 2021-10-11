@@ -3,6 +3,8 @@
 #include "ui_serialinput.h"
 #include "kelguilineedit.h"
 #include <QDebug>
+#include <QKeyEvent>
+#include <QClipboard>
 
 /* DEFS */
 #define EXPECT_LENGTH (16)
@@ -34,6 +36,7 @@ SerialInput::SerialInput(QWidget *parent) :
 #else
   ui->btnSerial->setInputMask (">NNNN-NNNN-NNNN-NNNN;_");
 #endif // Q_OS_ANDROID
+  m_input->setCallbackKeyEvent (cbKeyEvent);
 
   /* signals */
 
@@ -82,6 +85,33 @@ SerialInput::~SerialInput()
 QString SerialInput::serialKey() const
 {
   return m_input->text();
+}
+
+bool SerialInput::cbKeyEvent(KelGuiLineEdit *e, QKeyEvent *event)
+{
+  /* on paste */
+  if (event == QKeySequence::Paste)
+    {
+      /* disable event */
+      event->ignore();
+
+      /* get clipboard and fix content */
+      auto text = QApplication::clipboard()->text().toUpper();
+      fixSerialString (e, text, true);
+
+      /* set into form */
+      __inst->ui->btnSerial->setMainText (text);
+
+      /* disable focus */
+      QEvent nve (QEvent::FocusOut);
+      QApplication::sendEvent (e, &nve);
+      __inst->ui->btnConfirm->setFocus (Qt::MouseFocusReason);
+
+      qDebug() << __PRETTY_FUNCTION__ << "pasted text:" << text;
+      return true;
+    }
+
+  return false;
 }
 
 void SerialInput::cbSerialFocus(KelGuiLineEdit *e, const Qt::FocusReason &reason)
@@ -135,7 +165,7 @@ void SerialInput::cbSerialText(KelGuiLineEdit *e, QString &preedit, QString &com
       preedit.clear();
       __inst->ui->btnConfirm->setFocus (Qt::MouseFocusReason);
       __inst->ui->btnSerial->setMainText (text);
-      qDebug() << "finished with text:" << text;
+      qDebug() << __PRETTY_FUNCTION__ << "finished with text:" << text;
     }
 
   qDebug() << __PRETTY_FUNCTION__

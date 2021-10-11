@@ -24,6 +24,7 @@ class KelGuiLineEdit : public QLineEdit
 public:
   typedef void (*cbTextEdit) (KelGuiLineEdit *e, QString &preedit, QString &commit, int from, int to);
   typedef void (*cbFocusEvent) (KelGuiLineEdit *e, const Qt::FocusReason &reason);
+  typedef bool (*cbKeyEvent) (KelGuiLineEdit *e, QKeyEvent *event);
   /// @}
 
   /****************************************//**
@@ -33,6 +34,7 @@ public:
 public:
   cbTextEdit m_callbackTextEdit;
   cbFocusEvent m_callbackFocusEvent;
+  cbKeyEvent m_callbackKeyEvent;
   /// @}
 
   /****************************************//**
@@ -53,6 +55,9 @@ public:
 
   cbFocusEvent callbackFocusEvent() const;
   void setCallbackFocusEvent(cbFocusEvent newCallbackFocusEvent);
+
+  cbKeyEvent callbackKeyEvent() const;
+  void setCallbackKeyEvent(cbKeyEvent newCallbackKeyEvent);
   /// @}
 
   /****************************************//**

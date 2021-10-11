@@ -40,6 +40,16 @@ void KelGuiLineEdit::setCallbackFocusEvent(KelGuiLineEdit::cbFocusEvent newCallb
   m_callbackFocusEvent = newCallbackFocusEvent;
 }
 
+KelGuiLineEdit::cbKeyEvent KelGuiLineEdit::callbackKeyEvent() const
+{
+  return m_callbackKeyEvent;
+}
+
+void KelGuiLineEdit::setCallbackKeyEvent(KelGuiLineEdit::cbKeyEvent newCallbackKeyEvent)
+{
+  m_callbackKeyEvent = newCallbackKeyEvent;
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
@@ -49,6 +59,11 @@ void KelGuiLineEdit::keyPressEvent(QKeyEvent *event)
   qDebug() << __PRETTY_FUNCTION__
            << "key:" << event->key()
            << "text:" << event->text();
+
+  if (m_callbackKeyEvent)
+    if (m_callbackKeyEvent (this, event))
+      return;
+
   QLineEdit::keyPressEvent (event);
 }
 
