@@ -139,29 +139,47 @@ void SerialInput::cbSerialText(KelGuiLineEdit *e, QString &preedit, QString &com
 //  fixSerialString (e, preedit, true);
 //  fixSerialString (e, commit, true);
 
-  /* skip for commit */
-  if(!commit.isEmpty())
-    {
-      commit.clear();
-      __inst->ui->btnSerial->setMainText ("");
-      QEvent event (QEvent::FocusOut);
-      QApplication::sendEvent (e, &event);
-      __inst->ui->btnConfirm->setFocus (Qt::MouseFocusReason);
-      return;
-    }
+//  /* skip for commit */
+//  if(!commit.isEmpty())
+//    {
+////      commit.clear();
+////      __inst->ui->btnSerial->setMainText ("");
+////      QEvent event (QEvent::FocusOut);
+////      QApplication::sendEvent (e, &event);
+////      __inst->ui->btnConfirm->setFocus (Qt::MouseFocusReason);
+//      return;
+//    }
 
   /* get text and length */
-  auto text = e->text() + preedit;
-  auto len  = text.length(),
-       clen = e->text().length();
+  auto field  = e->text();
+  auto text   = field + commit + preedit;
+  auto len    = text.length(),
+       clen   = field.length();
+  bool isCommit   = !commit.isEmpty(),
+       isPreedit  = !preedit.isEmpty();
+
+  qDebug() << __PRETTY_FUNCTION__
+           << "before:"
+           << "text" << text
+           << "commit" << commit
+           << "preedit" << preedit;
 
   /* fix string */
   fixSerialString (e, text, true);
-  preedit = text.mid (clen);
+  if (isPreedit)
+    preedit = text.mid (clen);
+  if (isCommit)
+    {
+      commit.clear();
+      //commit  = text.mid (clen);
+      __inst->ui->btnSerial->setMainText (text);
+      __inst->ui->btnSerial->edit()->setCursorPosition (text.length());
+    }
 
   /* loose focus */
-  if (len == EXPECT_LENGTH)
+  if (len == MAX_LENGTH) // EXPECT_LENGTH)
     {
+      commit.clear();
       preedit.clear();
       __inst->ui->btnConfirm->setFocus (Qt::MouseFocusReason);
       __inst->ui->btnSerial->setMainText (text);
@@ -174,7 +192,7 @@ void SerialInput::cbSerialText(KelGuiLineEdit *e, QString &preedit, QString &com
            << "text" << text
            << "commit" << commit
            << "preedit" << preedit
-           << "field" << e->text();
+           << "field" << field;
 }
 
 void SerialInput::fixSerialString(KelGuiLineEdit *e, QString &serial, bool inserted)
@@ -183,11 +201,20 @@ void SerialInput::fixSerialString(KelGuiLineEdit *e, QString &serial, bool inser
   auto text   = serial.toUpper();
 
   /* fix letters */
-  for (auto i = text.begin(), e = text.end(); i != e; i++)
-    if ((*i < 0x30)
-        || ((*i > 0x39) && (*i < 0x41))
-        || (*i > 0x5A))
-      *i = 'A';
+  int j = 0;
+  for (auto i = text.begin(), e = text.end(); i != e; i++, j++)
+    {
+      /* ignore minus */
+      if ((*i == '-')
+          && (j == 4 || j == 9 || j == 14))
+        continue;
+
+      /* replace symbols */
+      if ((*i < 0x30)
+          || ((*i > 0x39) && (*i < 0x41))
+          || (*i > 0x5A))
+        *i = 'A';
+    }
 
   if (inserted)
     {
