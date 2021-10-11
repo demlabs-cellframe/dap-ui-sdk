@@ -48,6 +48,10 @@ public:
   /// @{
 public:
   QString serialKey() const;
+protected:
+  static void cbSerialFocus (KelGuiLineEdit *e, const Qt::FocusReason &reason);
+  static void cbSerialText (KelGuiLineEdit *e, QString &preedit, QString &commit, int from, int to);
+  static void fixSerialString (KelGuiLineEdit *e, QString &serial, bool inserted);
   /// @}
 
   /****************************************//**

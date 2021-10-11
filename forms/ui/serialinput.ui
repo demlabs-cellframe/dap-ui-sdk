@@ -155,6 +155,37 @@
           </widget>
          </item>
          <item>
+          <widget class="KelGuiSeparator" name="kelGuiSeparator"/>
+         </item>
+         <item>
+          <widget class="KelGuiButton" name="btnSerial">
+           <property name="cssStyle">
+            <string>cwb_height nobackground noborder</string>
+           </property>
+           <property name="buttonStyle" stdset="0">
+            <enum>KelGuiButton::EditTopMainBottomSub</enum>
+           </property>
+           <property name="mainText">
+            <string>____-____-____-____</string>
+           </property>
+           <property name="subText">
+            <string>insert serial key</string>
+           </property>
+           <property name="mainCssClass">
+            <string>darkblue normalbold font20 nobackground noborder</string>
+           </property>
+           <property name="subCssClass">
+            <string>gray uppercase font12 nobackground noborder</string>
+           </property>
+           <property name="leftCssClass">
+            <string>darkblue normalbold font30 nobackground noborder</string>
+           </property>
+           <property name="separator">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="KelGuiLineEdit" name="editSerial">
            <property name="maxLength">
             <number>19</number>
@@ -225,9 +256,19 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>KelGuiButton</class>
+   <extends>QWidget</extends>
+   <header>kelguibutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>KelGuiPushButton</class>
    <extends>QPushButton</extends>
    <header>kelguipushbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KelGuiSeparator</class>
+   <extends>QWidget</extends>
+   <header>kelguiseparator.h</header>
   </customwidget>
   <customwidget>
    <class>KelGuiLineEdit</class>
