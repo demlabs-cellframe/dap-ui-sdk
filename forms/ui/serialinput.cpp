@@ -10,7 +10,6 @@
 
 /* VARS */
 static SerialInput *__inst          = nullptr;
-static int s_oldSerialLength  = 0;
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -99,39 +98,53 @@ void SerialInput::cbSerialFocus(KelGuiLineEdit *e, const Qt::FocusReason &reason
 void SerialInput::cbSerialText(KelGuiLineEdit *e, QString &preedit, QString &commit, int from, int to)
 {
   /* compare length's */
-  //s_oldSerialLength = e->text().length();
-  int len     = (preedit.length() > commit.length())
-                ? preedit.length()
-                : commit.length();
-  auto &text  = (preedit.length() > commit.length())
-                ? preedit
-                : commit;
-//  if (from || to)
-//    {
-//      s_enteredSerial.replace (e->selectionStart() + from, to, commit);
-//    }
+//  int len     = (preedit.length() > commit.length())
+//                ? preedit.length()
+//                : commit.length();
+//  auto &text  = (preedit.length() > commit.length())
+//                ? preedit
+//                : commit;
 
-  /* fix strings */
-  fixSerialString (e, preedit, true);
-  fixSerialString (e, commit, true);
+//  /* fix strings */
+//  fixSerialString (e, preedit, true);
+//  fixSerialString (e, commit, true);
+
+  /* skip for commit */
+  if(!commit.isEmpty())
+    {
+      commit.clear();
+      __inst->ui->btnSerial->setMainText ("");
+      QEvent event (QEvent::FocusOut);
+      QApplication::sendEvent (e, &event);
+      __inst->ui->btnConfirm->setFocus (Qt::MouseFocusReason);
+      return;
+    }
+
+  /* get text and length */
+  auto text = e->text() + preedit;
+  auto len  = text.length(),
+       clen = e->text().length();
+
+  /* fix string */
+  fixSerialString (e, text, true);
+  preedit = text.mid (clen);
 
   /* loose focus */
-  if (len == EXPECT_LENGTH && s_oldSerialLength == EXPECT_LENGTH)
+  if (len == EXPECT_LENGTH)
     {
-      __inst->ui->btnSerial->setFocus (Qt::MouseFocusReason);
-      //__inst->ui->btnSerial->setMainText (text);
+      preedit.clear();
+      __inst->ui->btnConfirm->setFocus (Qt::MouseFocusReason);
+      __inst->ui->btnSerial->setMainText (text);
       qDebug() << "finished with text:" << text;
     }
 
   qDebug() << __PRETTY_FUNCTION__
-           << "old" << s_oldSerialLength
            << "len" << len
+           << "clen" << clen
+           << "text" << text
            << "commit" << commit
            << "preedit" << preedit
-           << "text" << e->text();
-
-  /* update old */
-  s_oldSerialLength = len;
+           << "field" << e->text();
 }
 
 void SerialInput::fixSerialString(KelGuiLineEdit *e, QString &serial, bool inserted)
