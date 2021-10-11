@@ -53,7 +53,7 @@
       <item>
        <widget class="KelGuiWidget" name="MainWidget">
         <property name="cssStyle">
-         <string>base-widget</string>
+         <string>sett-width</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <property name="spacing">
@@ -93,7 +93,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>390</width>
+              <width>354</width>
               <height>754</height>
              </rect>
             </property>

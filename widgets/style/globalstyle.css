@@ -529,6 +529,13 @@
  * Login
  ***************************************************/
 
+.login-width
+{
+	width: 354pt;
+	min-width: 354pt;
+	max-width: 354pt;
+}
+
 .login_logo
 {
 	width: 260pt;
@@ -649,6 +656,13 @@
  * Settings
  ***************************************************/
 
+.sett-width
+{
+	width: 363pt;
+	min-width: 363pt;
+	max-width: 363pt;
+}
+
 .sett-top-spacer
 {
 	height: 20pt;
@@ -680,31 +694,31 @@
 
 .sett-scroll-btn
 {
-	width: 390pt;
+	width: 363pt;
 	height: 64pt;
-	min-width: 390pt;
+	min-width: 363pt;
 	min-height: 64pt;
-	max-width: 390pt;
+	max-width: 363pt;
 	max-height: 64pt;
 }
 
 .sett-scroll-title
 {
-	width: 390pt;
+	width: 363pt;
 	height: 96pt;
-	min-width: 390pt;
+	min-width: 363pt;
 	min-height: 96pt;
-	max-width: 390pt;
+	max-width: 363pt;
 	max-height: 96pt;
 }
 
 .sett-scroll-title-top
 {
-	width: 390pt;
+	width: 363pt;
 	height: 28pt;
-	min-width: 390pt;
+	min-width: 363pt;
 	min-height: 28pt;
-	max-width: 390pt;
+	max-width: 363pt;
 	max-height: 28pt;
 }
 
