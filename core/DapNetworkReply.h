@@ -16,6 +16,7 @@ public:
 
     void setReply(const QByteArray &a_reply) { m_reply = a_reply; }
     void setError(int a_error) { m_error = a_error; }
+    void setErrorStr(QString a_str) { m_errorString = a_str; }
     bool isFinished(){ return m_finished; }
     QByteArray m_reply;
 

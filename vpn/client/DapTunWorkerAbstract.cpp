@@ -25,5 +25,4 @@ void DapTunWorkerAbstract::procDataFromTun(void * a_buf,size_t a_bufSize)
     memcpy(pktOut->data, a_buf, pktOut->header.op_data.data_size);
 
     emit packetOut(pktOut);
-    emit readPackets();
 }

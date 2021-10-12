@@ -34,42 +34,6 @@ DapConnectClient::DapConnectClient(QObject *parent) :
   //  connect(m_httpClient, &DapNetworkAccessManager::finished, this, &DapConnectClient::finished); //todo_m: связать сигнал завершения менеджера с коллбеком
 }
 
-void DapConnectClient::_rebuildNetworkManager()
-{
-    qDebug() << "Restarting NAM";
-    abortRequests();
-    m_httpClient->deleteLater();
-    m_httpClient = new DapNetworkAccessManager();
-//    m_httpClient->setProxy(QNetworkProxy::NoProxy);
-//    connect(m_httpClient, &DapNetworkAccessManager::finished, this, &DapConnectClient::finished); //todo_m: связать сигнал завершения менеджера с коллбеком
-}
-
-bool DapConnectClient::_buildRequest(QNetworkRequest& req, const QString& host,
-                                     quint16 port, const QString & urlPath, bool ssl,
-                                     const QVector<HttpRequestHeader>* headers)
-{
-    QString httpAddress = QString("%1://%2:%3%4").arg(ssl ? "https" : "http")
-            .arg(host).arg(port).arg(urlPath);
-
-    qDebug()<< "Requests httpAddress + url " << httpAddress;
-
-    req.setUrl(httpAddress);
-    if(!req.url().isValid()) {
-        qCritical() << "Bad URL";
-        return false;
-    }
-
-    if(headers != Q_NULLPTR) {
-        for(const auto& header : *headers) {
-            req.setRawHeader(header.first.toLatin1(), header.second.toLatin1());
-        }
-    } else {
-        req.setRawHeader("Content-Type","text/plain");
-    }
-
-    return true;
-}
-
 void DapConnectClient::request_GET(const QString& host,  quint16 port, const QString & urlPath,
                            DapNetworkReply &a_netReply, const QString& headers, bool ssl)
 {

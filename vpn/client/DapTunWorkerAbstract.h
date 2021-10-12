@@ -31,8 +31,6 @@ signals:
     void bytesWrite(quint64);
     void bytesRead(quint64);
 
-    void readPackets();
-
     void loopStarted();
     void loopStopped();
     void loopError(const QString&);

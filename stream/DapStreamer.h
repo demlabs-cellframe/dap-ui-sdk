@@ -26,7 +26,6 @@
 #include "DapChannelPacket.h"
 #include <DapCrypt.h>
 #include <QAbstractSocket>
-#include "DapChThread.h"
 #include "DapChBase.h"
 #include "DapClientDefinitions.h"
 
@@ -46,23 +45,22 @@ public:
     DapStreamer(DapSession * session, QObject* parent = Q_NULLPTR);
 
     ~DapStreamer();
-    bool isConnected() { return m_streamSocket->isOpen(); }
-    int upstreamSocket() { return m_streamSocket->isOpen()?m_streamSocket->socketDescriptor(): -1; }
-    DapChThread* addChProc(char chId, DapChBase* obj);
+    bool isConnected() { return m_streamSocket.isOpen(); }
+    int upstreamSocket() { return m_streamSocket.isOpen() ? m_streamSocket.socketDescriptor(): -1; }
+    void addChProc(char chId, DapChBase* obj);
     void setStreamOpened(bool b) { m_isStreamOpened = b; }
     void setStreamTimeoutCheck(bool b) { m_timeoutStreamCheck = b; }
     uint16_t m_reconnectAttempts;
     uint16_t m_aliveChecks;
 protected:
     static QHash<char, DapChBase*> m_dsb;
-    DapChThread* m_dapChThead = Q_NULLPTR;
     DapSession *m_session;
     quint32 m_pktOutLastSeqID;
     DapPacketHdr m_dapPktHdr;
 
     quint8 m_dapData[DAP_PKT_SIZE_MAX] = {0};
 
-    QAbstractSocket * m_streamSocket;
+    QTcpSocket m_streamSocket;
 
     QByteArray m_buf;
 
@@ -95,11 +93,6 @@ private slots:
 
     void sltStreamBytesWritten(qint64 bytes);
 
-protected slots:
-    void readChPacket(DapChannelPacketHdr* pkt, void* data) {
-        m_dapChThead->sltProcPacket(new DapChannelPacket(pkt, data));
-    }
-
 public slots:
     void openDefault(   ) {
         qDebug() << "[DapStreamer] Open socket_forward media item sf=1";
@@ -124,10 +117,10 @@ public slots:
 
     // virtual void readChPacket(DapChannelPacketHdr *pkt, void *data) = 0;
 signals:
-    void errorNetwork(const QString &e);
+    Q_INVOKABLE void errorNetwork(const QString &e);
     void authenticationRequiredError();
     void notify(const QString&);
-
+    void sigProcPacket(DapChannelPacket *pkt);
     void recivedChannelPacket(DapChannelPacketHdr* pkt, void* data);
     void isAlive(bool reset);
     void streamDisconnecting();
@@ -135,8 +128,6 @@ signals:
     void streamClosed();
 
     /* StreamOpen error signals */
-    void sigStreamOpenHttpError(int httpCode);
-    void sigStreamOpenNetworkError(int);
     void sigStreamOpenBadResponseError();
 
     // all another errors
