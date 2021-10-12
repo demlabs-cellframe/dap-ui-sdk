@@ -23,6 +23,7 @@ BugReports::BugReports (QWidget *parent) :
   /* setup */
   __inst  = this;
   ui->setupUi (this);
+  ui->editReport->setPlainText ("");
   m_edit  = ui->editReport->editWidget();
   qRegisterMetaType<Mode> ("Mode");
   ui->labelLoading->setScaledContents (true);

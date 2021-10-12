@@ -82,7 +82,7 @@ background-image: url(:/gfx/frame_left.png);</string>
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QPlainTextEdit" name="kgpteuPlainTextEdit">
+    <widget class="KelGuiPlainTextEditInterface" name="kgpteuPlainTextEdit">
      <property name="styleSheet">
       <string notr="true">QPlainTextEdit
 {
@@ -162,6 +162,13 @@ background-image: url(:/gfx/frame_bottomright.png);</string>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KelGuiPlainTextEditInterface</class>
+   <extends>QPlainTextEdit</extends>
+   <header location="global">kelguiplaintexteditinterface.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

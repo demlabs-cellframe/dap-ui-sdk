@@ -7,6 +7,7 @@
 
 /* DEFS */
 namespace Ui { class KelGuiPlainTextEditUI; };
+class KelGuiPlainTextEditInterface;
 
 /****************************************//**
  * @brief framed plaintextedit
@@ -79,6 +80,20 @@ public:
   /// @{
 signals:
   void textChanged(); ///< text is changed
+  /// @}
+
+  /****************************************//**
+   * @name PROTECTED METHODS
+   *******************************************/
+  /// @{
+protected:
+  static void _cbTextEdit (KelGuiPlainTextEditInterface *e, QString &preedit, QString &commit, int from, int to);
+  static void _cbFocusEvent (KelGuiPlainTextEditInterface *e, const Qt::FocusReason &reason);
+  static void _cbUnfocusEvent (KelGuiPlainTextEditInterface *e, const Qt::FocusReason &reason);
+  static bool _cbKeyEvent (KelGuiPlainTextEditInterface *e, QKeyEvent *event);
+  bool eventFilter(QObject* obj, QEvent* event) override;
+
+  void _updateStyle();
   /// @}
 };
 
