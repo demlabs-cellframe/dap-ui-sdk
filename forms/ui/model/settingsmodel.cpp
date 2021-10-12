@@ -183,7 +183,7 @@ void SettingsModel::slotSetup()
       s_btnCallbacks.insert (btn, item.cb);
 
       /* store licence key button */
-      if (i == 3)
+      if (item.sid == SI_BUTTONRED) // (i == 3)
         s_licenceKey = btn;
       if (item.text[1] == "@version")
         s_version = btn;
