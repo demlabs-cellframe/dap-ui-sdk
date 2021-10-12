@@ -15,7 +15,7 @@ DapServersData *DapServersData::instance()
 void DapServersData::addServer(const DapServerInfo& dsi) {
     int row = m_servers.count();
     insertRows(row, 1);
-    setData(index(row, 0), qVariantFromValue(dsi));
+    setData(index(row, 0), QVariant::fromValue(dsi));
 
     if (m_currentServerIndex == -1)
         setCurrentServer(0);
@@ -110,7 +110,7 @@ int DapServersData::serversCount() const
 void DapServersData::clearServerList()
 {
     m_servers.clear();
-    this->setCurrentServer(-1);
+    //this->setCurrentServer(-1); // what for?..
 
     emit this->serversCleared();
 }
