@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "kelguiplaintexteditinterface.h"
 #include <QDebug>
+#include <QApplication>
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -44,6 +45,12 @@ KelGuiPlainTextEditInterface::cbFocusEvent KelGuiPlainTextEditInterface::callbac
 void KelGuiPlainTextEditInterface::setCallbackUnfocusEvent(KelGuiPlainTextEditInterface::cbFocusEvent newCallbackUnfocusEvent)
 {
   m_callbackUnfocusEvent = newCallbackUnfocusEvent;
+}
+
+void KelGuiPlainTextEditInterface::unfocus()
+{
+  QEvent nve (QEvent::FocusOut);
+  QApplication::sendEvent (this, &nve);
 }
 
 KelGuiPlainTextEditInterface::cbKeyEvent KelGuiPlainTextEditInterface::callbackKeyEvent() const

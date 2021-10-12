@@ -99,6 +99,7 @@ public slots:
 private slots:
   void _slotRadioTest();
   void _slotTextChanged();
+  void _slotTextEditFinish();
   /// @}
 };
 

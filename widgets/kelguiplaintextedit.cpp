@@ -95,9 +95,14 @@ QTextCursor KelGuiPlainTextEdit::textCursor() const
   return ui->kgpteuPlainTextEdit->textCursor();
 }
 
-QPlainTextEdit *KelGuiPlainTextEdit::editWidget()
+QPlainTextEdit *KelGuiPlainTextEdit::editWidget() const
 {
   return ui->kgpteuPlainTextEdit;
+}
+
+void KelGuiPlainTextEdit::unfocus()
+{
+  ui->kgpteuPlainTextEdit->unfocus();
 }
 
 /********************************************

@@ -26,10 +26,16 @@ Login::Login (QWidget *parent) :
   __inst  = this;
   ui->setupUi (this);
   ui->btnChooseSerial->setMaxLength (MAX_LENGTH);
+  {
+    auto style = ui->btnChooseSerial->edit()->cssStyle();
+    style.remove ("noborder");
+    style.append (" login-input-border");
+    ui->btnChooseSerial->edit()->setCssStyle(style);
+  }
 #ifdef Q_OS_ANDROID
   ui->btnChooseSerial->setBtnStyle (KelGuiButton::TopMainBottomSub);
   ui->btnChooseSerial->setMainText ("____-____-____-____");
-#endif
+#endif // Q_OS_ANDROID
 
 //  ui->btnChooseSerial->setInputFocusCallback (cbSerialFocus);
 //#ifdef Q_OS_ANDROID

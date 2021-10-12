@@ -62,6 +62,16 @@ BugReports::BugReports (QWidget *parent) :
            this, &BugReports::sigResultBack,
            Qt::QueuedConnection);
 
+  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+           this, &BugReports::_slotTextEditFinish,
+           Qt::QueuedConnection);
+  connect (ui->btnSendReport, &KelGuiPushButton::clicked,
+           this, &BugReports::_slotTextEditFinish,
+           Qt::QueuedConnection);
+  connect (ui->btnResultBack, &KelGuiPushButton::clicked,
+           this, &BugReports::_slotTextEditFinish,
+           Qt::QueuedConnection);
+
   connect (m_edit, &QPlainTextEdit::textChanged,
            this, &BugReports::_slotTextChanged);
 
@@ -190,6 +200,11 @@ void BugReports::_slotTextChanged()
   });
 
   _textHook = false;
+}
+
+void BugReports::_slotTextEditFinish()
+{
+  ui->editReport->unfocus();
 }
 
 /*-----------------------------------------*/

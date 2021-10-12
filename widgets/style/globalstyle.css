@@ -582,6 +582,12 @@
 	max-height: 50pt;
 }
 
+.login-input-border
+{
+	border: 1pt solid #A4A3C0;
+	border-radius: 10pt;
+}
+
 /****************************************************
  * Connection
  ***************************************************/
@@ -665,9 +671,9 @@
 
 .sett-top-spacer
 {
-	height: 20pt;
-	min-height: 20pt;
-	max-height: 20pt;
+	height: 40pt;
+	min-height: 40pt;
+	max-height: 40pt;
 }
 
 .sett-title
@@ -736,9 +742,9 @@
 
 .stat-top-spacer
 {
-	height: 20pt;
-	min-height: 20pt;
-	max-height: 20pt;
+	height: 40pt;
+	min-height: 40pt;
+	max-height: 40pt;
 }
 
 .stat-top-text-statistics
@@ -794,9 +800,9 @@
 
 .bugrep-top-spacer
 {
-	height: 20pt;
-	min-height: 20pt;
-	max-height: 20pt;
+	height: 40pt;
+	min-height: 40pt;
+	max-height: 40pt;
 }
 
 .bugrep-close-btn
@@ -859,9 +865,9 @@
 
 .purchase-top-spacer
 {
-	height: 20pt;
-	min-height: 20pt;
-	max-height: 20pt;
+	height: 40pt;
+	min-height: 40pt;
+	max-height: 40pt;
 }
 
 .purchase-top-content-spacer
@@ -919,9 +925,9 @@
 
 .choser-top-spacer
 {
-	height: 20pt;
-	min-height: 20pt;
-	max-height: 20pt;
+	height: 40pt;
+	min-height: 40pt;
+	max-height: 40pt;
 }
 
 .choser-top-content-spacer
@@ -955,9 +961,9 @@
 
 .cholang-top-spacer
 {
-	height: 20pt;
-	min-height: 20pt;
-	max-height: 20pt;
+	height: 40pt;
+	min-height: 40pt;
+	max-height: 40pt;
 }
 
 .cholang-top-content-spacer
@@ -983,9 +989,9 @@
 
 .history-top-spacer
 {
-	height: 20pt;
-	min-height: 20pt;
-	max-height: 20pt;
+	height: 40pt;
+	min-height: 40pt;
+	max-height: 40pt;
 }
 
 .history-top-content-spacer
@@ -1029,9 +1035,9 @@
 
 .docpop-top-spacer
 {
-	height: 20pt;
-	min-height: 20pt;
-	max-height: 20pt;
+	height: 40pt;
+	min-height: 40pt;
+	max-height: 40pt;
 }
 
 .docpop-top-content-spacer
@@ -1057,9 +1063,9 @@
 
 .ver-top-spacer
 {
-	height: 20pt;
-	min-height: 20pt;
-	max-height: 20pt;
+	height: 40pt;
+	min-height: 40pt;
+	max-height: 40pt;
 }
 
 .ver-top-content-spacer
@@ -1110,9 +1116,9 @@
 
 .serin-top-content-spacer
 {
-	height: 56pt;
-	min-height: 56pt;
-	max-height: 56pt;
+	height: 40pt;
+	min-height: 40pt;
+	max-height: 40pt;
 }
 
 .serin-title-text

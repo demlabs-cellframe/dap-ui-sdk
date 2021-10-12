@@ -71,7 +71,8 @@ public:
   void setTextCursor(const QTextCursor &a_cursor);
   QTextCursor textCursor() const;
 
-  QPlainTextEdit *editWidget();
+  QPlainTextEdit *editWidget() const;
+  void unfocus();
   /// @}
 
   /****************************************//**

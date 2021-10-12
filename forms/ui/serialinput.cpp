@@ -26,6 +26,12 @@ SerialInput::SerialInput(QWidget *parent) :
   __inst  = this;
   ui->setupUi(this);
   ui->editSerial->hide();
+  {
+    auto style = ui->btnSerial->edit()->cssStyle();
+    style.remove ("noborder");
+    style.append (" login-input-border");
+    ui->btnSerial->edit()->setCssStyle(style);
+  }
 
   /* fill map */
   m_input = ui->btnSerial->edit(); //ui->editSerial;

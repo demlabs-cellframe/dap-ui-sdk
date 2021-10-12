@@ -62,6 +62,8 @@ public:
 
   cbFocusEvent callbackUnfocusEvent() const;
   void setCallbackUnfocusEvent(cbFocusEvent newCallbackUnfocusEvent);
+
+  void unfocus();
   /// @}
 
   /****************************************//**
