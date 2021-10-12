@@ -3,6 +3,7 @@
 #include "ui_bugreports.h"
 
 #include <QTimer>
+#include <QDebug>
 
 /* VARS */
 static BugReports *__inst = nullptr;
@@ -141,8 +142,12 @@ void BugReports::slotSetMode (BugReports::Mode mode)
     }
 
   /* movie */
-  //movLoading->setFileName(":/gui/ui/asset/Spinner.gif");
-  //ui->labelLoading->setMovie (movLoading);
+  int w   = ui->labelLoading->width();
+  movLoading->setFileName(":/gui/ui/asset/Spinner.gif");
+  movLoading->setScaledSize (QSize (w, w));
+
+  qDebug() << __PRETTY_FUNCTION__ << "spinner width:" << w;
+
   if (m_mode == Loading)
     movLoading->start();
   else

@@ -335,23 +335,11 @@
           <layout class="QHBoxLayout" name="horizontalLayout_7">
            <item>
             <widget class="KelGuiLabel" name="labelLoading">
-             <property name="minimumSize">
-              <size>
-               <width>86</width>
-               <height>86</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>86</width>
-               <height>86</height>
-              </size>
-             </property>
              <property name="text">
               <string/>
              </property>
              <property name="cssStyle">
-              <string>ic_spinner noborder nobackground noborder nobackground</string>
+              <string>ic_spinner bugrep-spinner noborder nobackground</string>
              </property>
             </widget>
            </item>
