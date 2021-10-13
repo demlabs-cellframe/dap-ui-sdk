@@ -186,11 +186,11 @@
 
 .footer
 {
-	width: 428pt;
+	/*width: 428pt;*/
 	height: 172pt;
-	min-width: 428pt;
+	/*min-width: 428pt;*/
 	min-height: 172pt;
-	max-width: 428pt;
+	/*max-width: 428pt;*/
 	max-height: 172pt;
 }
 
