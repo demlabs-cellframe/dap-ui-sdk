@@ -186,32 +186,21 @@
 
 .footer
 {
-	/*width: 428pt;*/
 	height: 172pt;
-	/*min-width: 428pt;*/
 	min-height: 172pt;
-	/*max-width: 428pt;*/
 	max-height: 172pt;
 }
 
 .screenarea
 {
 	width: 428pt;
-	/*height: 725pt;*/
 	min-width: 428pt;
-	/*min-height: 725pt;*/
 	max-width: 428pt;
-	/*max-height: 725pt;*/
 }
 
 .frame
 {
-	background: #f7f8fa;
-	border-radius: 13px;
-	border-top: 3px inset #ffffff;
-	border-left: 3px inset #ffffff;
-	border-bottom: 3px inset rgba(174,174,192,96);
-	border-right: 3px inset rgba(174,174,192,96);
+	border-image: url("://gfx/btn_server_bg.png");
 }
 
 .base-widget

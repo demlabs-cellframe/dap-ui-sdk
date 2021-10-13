@@ -46,5 +46,6 @@
         <file>gfx/switch/bg_on.png</file>
         <file>gfx/switch/toggle_off.png</file>
         <file>gfx/switch/bg_off.png</file>
+        <file>gfx/btn_server_bg.png</file>
     </qresource>
 </RCC>
