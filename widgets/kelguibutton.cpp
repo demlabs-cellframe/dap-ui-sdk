@@ -385,7 +385,7 @@ void KelGuiButton::setupStyle()
   //ui->KelGuiButtonBackground->setStyleSheet (ui->KelGuiButtonBackground->styleSheet());
   //ui->KelGuiButtonBackground->repaint();
 
-  m_shadowEffect->setEnabled (m_frame);
+  //m_shadowEffect->setEnabled (m_frame);
   setBtnStyle (m_btnStyle);
   setStyleSheet (styleSheet());
   repaint();
@@ -447,7 +447,7 @@ void KelGuiButton::resizeEvent (QResizeEvent *ev)
   s_linkWidth = UiScaling::pointsToPixels (LINK_WIDTH, UiScaling::getNativDPI());
   auto sz     = ev->size();
   QPoint pos{
-    sz.width() - s_linkWidth - s_linkWidth/4,
+    sz.width() - s_linkWidth*3,
     (sz.height() - s_linkWidth) / 2
   };
   m_lLink->move (pos);
