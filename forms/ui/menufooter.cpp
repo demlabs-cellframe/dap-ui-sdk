@@ -100,23 +100,27 @@ void MenuFooter::slotSetButtonState (MenuFooter::ButtonState state)
 void MenuFooter::slotMoveToBottom()
 {
   raise();
-#ifndef Q_OS_ANDROID
+//#ifndef Q_OS_ANDROID
   if (auto p = dynamic_cast<QWidget *> (parent()))
     {
       auto hh     = UiScaling::pointsToPixels (HEIGHT, UiScaling::getNativDPI());
       auto posY   = p->height() - hh;
       move (0, posY);
-      resize (p->width(), hh);
+      //resize (p->width(), hh);
+      setMinimumSize (p->width(), hh);
+      setMaximumSize (p->width(), hh);
+      ui->Background->setMinimumSize (p->width(), hh);
+      ui->Background->setMaximumSize (p->width(), hh);
       qDebug() << __PRETTY_FUNCTION__ << "y:" << posY << ",screen:" << p->width() << p->height() << height();
     }
-#else // Q_OS_ANDROID
-  auto screen = QApplication::screens().first();
-  auto height = UiScaling::pointsToPixels(HEIGHT, UiScaling::getNativDPI());
-  auto posY   = screen->size().height() - height;
-  move (0, posY);
-  resize (screen->size().width(), height);
-  qDebug() << __PRETTY_FUNCTION__ << "y:" << posY << ",screen:" << screen->size().width() << screen->size().height() << height;
-#endif // Q_OS_ANDROID
+//#else // Q_OS_ANDROID
+//  auto screen = QApplication::screens().first();
+//  auto height = UiScaling::pointsToPixels(HEIGHT, UiScaling::getNativDPI());
+//  auto posY   = screen->size().height() - height;
+//  move (0, posY);
+//  resize (screen->size().width(), height);
+//  qDebug() << __PRETTY_FUNCTION__ << "y:" << posY << ",screen:" << screen->size().width() << screen->size().height() << height;
+//#endif // Q_OS_ANDROID
 }
 
 void MenuFooter::slotButtonToggled (bool checked)
