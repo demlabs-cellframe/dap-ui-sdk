@@ -213,6 +213,7 @@ int Cert::importPKeyFromFile(const QString &a_path) {
     FILE *l_file = fopen(qPrintable(a_path), "rb");
     if (!l_file) {
         /* Legacy pkey import, will be deprecated on targeting API 30+ */
+#ifdef ANDROID
         int _l_fd_old = open("/sdcard/KelvinVPN/public.key", O_RDONLY);
         int l_fd_old = _l_fd_old ? _l_fd_old : open("/sdcard/" DAP_BRAND "/public.key", O_RDONLY);
         if (l_fd_old) {
@@ -221,6 +222,9 @@ int Cert::importPKeyFromFile(const QString &a_path) {
         } else {
             return 1;
         }
+#else
+        return 1;
+#endif
     }
     fseek(l_file, 0L, SEEK_END);
     long l_len = ftell(l_file);
