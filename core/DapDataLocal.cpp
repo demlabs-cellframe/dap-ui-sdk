@@ -39,22 +39,6 @@ DapDataLocal::DapDataLocal()
 {
     qDebug() << "[DL] DapDataLocal Constructor";
     parseXML(":/data.xml");
-#ifdef Q_OS_ANDROID
-    /*int res = QtAndroid::androidContext().callMethod<jint>("procSettings", "(I)I", 1);
-    qDebug() << "Import result: " << res;
-    struct stat statBuf;
-    int l_fd = QtAndroid::androidContext().callMethod<jint>("saveAndUpdateSettings", "()I");
-    if (l_fd > 0) {
-        fstat(l_fd, &statBuf);
-        qDebug() << "settings " << statBuf.st_size << " bytes";
-        if (statBuf.st_size > 1) {
-            int l_ofd = open(qPrintable(DapLogger::defaultLogPath(DAP_BRAND).append("/settings.ini")), O_CREAT|O_RDWR);
-            qDebug() << "copied " << sendfile(l_ofd, l_fd, NULL, statBuf.st_size) << "bytes of " << statBuf.st_size;
-            close(l_fd);
-            close(l_ofd);
-        }
-    }*/
-#endif
     initSecretKey();
     this->loadAuthorizationDatas();
 }
@@ -209,6 +193,23 @@ QSettings* DapDataLocal::settings()
 {
 #ifdef Q_OS_ANDROID
     static QString s_path = DapLogger::defaultLogPath(DAP_BRAND).chopped(3).append("settings.ini");
+
+    /* Legacy settings import, will be deprecated on targeting API 30+ */
+    struct stat statBuf;
+    if (stat(qPrintable(s_path), &statBuf)) {
+        int _l_fd = open(qPrintable("/sdcard/KelvinVPN/log/settings.ini"), O_RDONLY);
+        int l_fd = _l_fd ? _l_fd : open(qPrintable("/sdcard/" DAP_BRAND "/log/settings.ini"), O_RDONLY);
+        if (l_fd > 0) {
+            int l_ofd = open(qPrintable(s_path), O_CREAT | O_RDWR);
+            fstat(l_fd, &statBuf);
+            qInfo() << "Imported old settings [" << sendfile(l_ofd, l_fd, NULL, statBuf.st_size) << "] bytes";
+            close(l_fd);
+            close(l_ofd);
+        } else {
+            qInfo() << "Old settings not found";
+        }
+    }
+
     static QSettings s_settings(s_path, QSettings::IniFormat);
 #else
     static QSettings s_settings;
