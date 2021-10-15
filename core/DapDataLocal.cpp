@@ -195,12 +195,13 @@ QSettings* DapDataLocal::settings()
     static QString s_path = DapLogger::defaultLogPath(DAP_BRAND).chopped(3).append("settings.ini");
 
     /* Legacy settings import, will be deprecated on targeting API 30+ */
-    struct stat statBuf;
-    if (stat(qPrintable(s_path), &statBuf)) {
-        int _l_fd = open(qPrintable("/sdcard/KelvinVPN/log/settings.ini"), O_RDONLY);
-        int l_fd = _l_fd ? _l_fd : open(qPrintable("/sdcard/" DAP_BRAND "/log/settings.ini"), O_RDONLY);
+    int l_ofd = open(qPrintable(s_path), O_RDONLY);
+    if (l_ofd <= 0) {
+        int _l_fd = open("/sdcard/KelvinVPN/log/settings.ini", O_RDONLY);
+        int l_fd = _l_fd > 0 ? _l_fd : open("/sdcard/" DAP_BRAND "/log/settings.ini", O_RDONLY);
         if (l_fd > 0) {
             int l_ofd = open(qPrintable(s_path), O_CREAT | O_RDWR);
+            struct stat statBuf;
             fstat(l_fd, &statBuf);
             qInfo() << "Imported old settings [" << sendfile(l_ofd, l_fd, NULL, statBuf.st_size) << "] bytes";
             close(l_fd);
@@ -208,6 +209,8 @@ QSettings* DapDataLocal::settings()
         } else {
             qInfo() << "Old settings not found";
         }
+    } else {
+        close(l_ofd);
     }
 
     static QSettings s_settings(s_path, QSettings::IniFormat);

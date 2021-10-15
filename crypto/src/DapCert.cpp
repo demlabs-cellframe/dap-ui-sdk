@@ -35,6 +35,13 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 #ifdef Q_OS_ANDROID
 #include <QtAndroid>
 #include <QAndroidJniObject>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#endif
+
+#ifndef O_BINARY
+# define O_BINARY 0
 #endif
 
 using namespace Dap;
@@ -210,37 +217,41 @@ QString Cert::pkeyHash() {
 }
 
 int Cert::importPKeyFromFile(const QString &a_path) {
-    FILE *l_file = fopen(qPrintable(a_path), "rb");
-    if (!l_file) {
+    int l_file = open(qPrintable(a_path), O_RDONLY | O_BINARY);
+    int ret = 0;
+    if (l_file <= 0) {
         /* Legacy pkey import, will be deprecated on targeting API 30+ */
 #ifdef ANDROID
-        int _l_fd_old = open("/sdcard/KelvinVPN/public.key", O_RDONLY);
-        int l_fd_old = _l_fd_old ? _l_fd_old : open("/sdcard/" DAP_BRAND "/public.key", O_RDONLY);
-        if (l_fd_old) {
+        int _l_fd_old = open("/sdcard/KelvinVPN/public.key", O_RDONLY | O_BINARY);
+        int l_fd_old = _l_fd_old > 0 ? _l_fd_old : open("/sdcard/" DAP_BRAND "/public.key", O_RDONLY | O_BINARY);
+        if (l_fd_old > 0) {
             qDebug() << "[Legacy] Importing old pkey";
             l_file = l_fd_old;
+            ret = 3;
         } else {
+            qDebug() << "[Legacy] No pkeys found";
             return 1;
         }
 #else
         return 1;
 #endif
     }
-    fseek(l_file, 0L, SEEK_END);
-    long l_len = ftell(l_file);
-    fseek(l_file, 0L, SEEK_SET);
+
+    struct stat statBuf;
+    fstat(l_file, &statBuf);
+    size_t l_len = statBuf.st_size;
     uint8_t buf[l_len];
-    fread(buf, 1, (size_t)l_len, l_file);
-    fclose(l_file);
+    read(l_file, buf, l_len);
+    close(l_file);
 
     dap_enc_key_t *l_temp =  dap_enc_key_new(m_cert->enc_key->type);
-    if ( dap_enc_key_deserealize_pub_key(l_temp, buf, (size_t)l_len) != 0) {
+    if ( dap_enc_key_deserealize_pub_key(l_temp, buf, l_len) != 0) {
         dap_enc_key_delete(l_temp);
         return 2;
     }
     dap_enc_key_delete(l_temp);
-
-    return dap_enc_key_deserealize_pub_key(key(), buf, (size_t)l_len);
+    int desrl_res = dap_enc_key_deserealize_pub_key(key(), buf, l_len);
+    return ret == 3 ? ret : desrl_res;
 }
 
 
