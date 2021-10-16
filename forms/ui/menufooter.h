@@ -67,7 +67,7 @@ public:
   /// @}
 
   /****************************************//**
-   * @name SLOTS
+   * @name SIGNALS
    *******************************************/
   /// @{
 signals:
@@ -87,6 +87,8 @@ public slots:
   void slotSetButtonState (ButtonState state);
   /// fix position
   void slotMoveToBottom();
+  /// resize event
+  void slotResizeEvent (QSize a_oldSize, QSize a_newSize);
 private slots:
   /// react on user interaction
   void slotButtonToggled (bool checked);

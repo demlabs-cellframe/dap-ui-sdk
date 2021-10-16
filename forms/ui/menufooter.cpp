@@ -120,7 +120,15 @@ void MenuFooter::slotMoveToBottom()
 //  move (0, posY);
 //  resize (screen->size().width(), height);
 //  qDebug() << __PRETTY_FUNCTION__ << "y:" << posY << ",screen:" << screen->size().width() << screen->size().height() << height;
-//#endif // Q_OS_ANDROID
+  //#endif // Q_OS_ANDROID
+}
+
+void MenuFooter::slotResizeEvent(QSize a_oldSize, QSize a_newSize)
+{
+  qDebug() << __PRETTY_FUNCTION__ << a_oldSize << a_newSize;
+  Q_UNUSED (a_oldSize)
+  Q_UNUSED (a_newSize)
+  slotMoveToBottom();
 }
 
 void MenuFooter::slotButtonToggled (bool checked)
