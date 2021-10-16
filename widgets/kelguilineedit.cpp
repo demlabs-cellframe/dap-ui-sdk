@@ -11,6 +11,9 @@
 
 KelGuiLineEdit::KelGuiLineEdit (QWidget *parent)
   : QLineEdit (parent)
+  , m_callbackTextEdit (nullptr)
+  , m_callbackFocusEvent (nullptr)
+  , m_callbackKeyEvent (nullptr)
 {
 
 }
