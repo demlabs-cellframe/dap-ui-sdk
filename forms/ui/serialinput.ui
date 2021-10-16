@@ -155,9 +155,6 @@
           </widget>
          </item>
          <item>
-          <widget class="KelGuiSeparator" name="kelGuiSeparator"/>
-         </item>
-         <item>
           <widget class="KelGuiButton" name="btnSerial">
            <property name="cssStyle">
             <string>cwb_height nobackground noborder</string>
@@ -264,11 +261,6 @@
    <class>KelGuiPushButton</class>
    <extends>QPushButton</extends>
    <header>kelguipushbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KelGuiSeparator</class>
-   <extends>QWidget</extends>
-   <header>kelguiseparator.h</header>
   </customwidget>
   <customwidget>
    <class>KelGuiLineEdit</class>
