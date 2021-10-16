@@ -15,6 +15,7 @@ SOURCES     += \
     $$PWD/ui/helper/gradientwidget.cpp \
     $$PWD/ui/helper/schedule/schedule.cpp \
     $$PWD/ui/helper/schedule/schedules.cpp \
+    $$PWD/ui/helper/serialinputfield.cpp \
     $$PWD/ui/helper/trafficstringhelper.cpp \
     $$PWD/ui/helper/uptimestringhelper.cpp \
     $$PWD/ui/history.cpp \
@@ -49,6 +50,7 @@ HEADERS     += \
     $$PWD/ui/helper/schedule/SheduleElement.h \
     $$PWD/ui/helper/schedule/schedule.h \
     $$PWD/ui/helper/schedule/schedules.h \
+    $$PWD/ui/helper/serialinputfield.h \
     $$PWD/ui/helper/trafficstringhelper.h \
     $$PWD/ui/helper/uptimestringhelper.h \
     $$PWD/ui/history.h \

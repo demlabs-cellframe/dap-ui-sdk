@@ -169,7 +169,7 @@
             <string>insert serial key</string>
            </property>
            <property name="mainCssClass">
-            <string>darkblue normalbold font20 nobackground noborder</string>
+            <string>darkblue normalbold font20 nobackground noborder transparent</string>
            </property>
            <property name="subCssClass">
             <string>gray uppercase font12 nobackground noborder</string>
@@ -179,6 +179,16 @@
            </property>
            <property name="separator">
             <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="SerialInputField" name="customInput" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>96</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -224,6 +234,9 @@
              <widget class="KelGuiPushButton" name="btnConfirm">
               <property name="text">
                <string>CONFIRM</string>
+              </property>
+              <property name="cssStyle" stdset="0">
+               <string>cwpb_bigbutton</string>
               </property>
              </widget>
             </item>
@@ -276,6 +289,12 @@
    <class>KelGuiWidget</class>
    <extends>QWidget</extends>
    <header>kelguiwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SerialInputField</class>
+   <extends>QWidget</extends>
+   <header location="global">ui/helper/serialinputfield.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
