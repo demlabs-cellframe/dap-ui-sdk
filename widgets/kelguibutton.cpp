@@ -19,7 +19,7 @@
 //#include <QClipboard>
 //#include <QApplication>
 
-#include "ui/helper/auxiliary/UiScaling.h"
+#include "../forms/ui/helper/auxiliary/UiScaling.h"
 
 /* DEFS */
 /// helps to decide value
@@ -192,8 +192,7 @@ void KelGuiButton::setMainText (const QString &mainText)
 
   auto array = m_widgets.values ("textMain") + m_widgets.values ("textMid") + m_widgets.values ("textEdit");
   for (auto i = array.begin(), e = array.end(); i != e; i++)
-    //as<KelGuiLabel> (*i)->setText (m_mainText);
-    as<QObject> (*i)->setProperty("text", m_mainText);
+    (*i)->setProperty("text", m_mainText);
 }
 
 QString KelGuiButton::subText() const
@@ -382,8 +381,6 @@ void KelGuiButton::setupStyle()
 {
   //ui->KelGuiButtonBackground->setFrame (m_frame);
   ui->KelGuiButtonBackground->setCssStyle (m_frame ? "frame" : "");
-  //ui->KelGuiButtonBackground->setStyleSheet (ui->KelGuiButtonBackground->styleSheet());
-  //ui->KelGuiButtonBackground->repaint();
 
   //m_shadowEffect->setEnabled (m_frame);
   setBtnStyle (m_btnStyle);
@@ -406,18 +403,18 @@ void KelGuiButton::setupLabels()
 
   for (auto i = m_widgets.begin(), e = m_widgets.end(); i != e; i++)
     {
-      as<QObject> (*i)->setProperty("cssStyle", mainCssClass() + " cwb_bottom");
+      (*i)->setProperty("cssStyle", mainCssClass() + " cwb_bottom");
       if (labelMap.contains (i.key()))
         {
           /* for swapped top and bottom labels */
           if (*i == ui->KelGuiButtonTextMain_2)
-            /*as<KelGuiLabel> (*i)->setCssStyle (*/ as<QObject> (*i)->setProperty("cssStyle", mainCssClass() + " cwb_bottom");
+            (*i)->setProperty("cssStyle", mainCssClass() + " cwb_bottom");
           else if (*i == ui->KelGuiButtonTextSub_2)
-            /*as<KelGuiLabel> (*i)->setCssStyle (*/ as<QObject> (*i)->setProperty("cssStyle", subCssClass() + " cwb_top");
+            (*i)->setProperty("cssStyle", subCssClass() + " cwb_top");
 
           /* for usual (top main, bottom sub) */
           else
-            /*as<KelGuiLabel> (*i)->setCssStyle (*/ as<QObject> (*i)->setProperty("cssStyle", labelMap.value (i.key()));
+            (*i)->setProperty("cssStyle", labelMap.value (i.key()));
         }
     }
 }

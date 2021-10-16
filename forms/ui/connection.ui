@@ -238,10 +238,6 @@ background-color: #F7F8FA;
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="styleSheet">
-           <string notr="true">#btnServer{ 	width: 357px; 	height: 96px; 	min-width: 357px; 	min-height: 96px; 	max-width: 357px; 	max-height: 96px; 
- 	background-color: rgba(0,0,0,0); }</string>
-          </property>
           <property name="cssStyle">
            <string>conn-connectedto-button nobackground</string>
           </property>
@@ -255,10 +251,10 @@ background-color: #F7F8FA;
            <string>231:532:531:20</string>
           </property>
           <property name="mainCssClass">
-           <string>darkblue normalbold font18</string>
+           <string>darkblue font18 normalbold</string>
           </property>
           <property name="subCssClass">
-           <string>gray uppercase font16 lato</string>
+           <string>gray uppercase font16 lato normal</string>
           </property>
           <property name="leftCssClass">
            <string>darkblue normalbold font30 lato</string>
