@@ -35,10 +35,10 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 #ifdef Q_OS_ANDROID
 #include <QtAndroid>
 #include <QAndroidJniObject>
+#endif
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#endif
 
 #ifndef O_BINARY
 # define O_BINARY 0
