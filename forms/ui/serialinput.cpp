@@ -31,6 +31,7 @@ SerialInput::SerialInput(QWidget *parent) :
 
   /* store input ptr */
   m_input = ui->customInput;
+  m_input->setText ("");
 
   /* signals */
 
@@ -73,7 +74,7 @@ void SerialInput::slotSetSerial(const QString &a_serial)
     return;
 
   m_textChangeHook = true;
-  qDebug() << __PRETTY_FUNCTION__ << "start";
+  qDebug() << __PRETTY_FUNCTION__ << "start" << a_serial;
 
   m_input->setText (a_serial);
 

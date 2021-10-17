@@ -32,6 +32,7 @@ SerialInputField::SerialInputField(QWidget *parent)
   m_child->hide();
   setAttribute (Qt::WA_InputMethodEnabled);
   setFocusPolicy (Qt::StrongFocus);
+  repaint();
 }
 
 /********************************************
