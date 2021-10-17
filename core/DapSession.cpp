@@ -133,7 +133,7 @@ DapNetworkReply* DapSession::requestServerPublicKey()
 void DapSession::sendBugReport(const QByteArray &data)
 {
     if (!m_dapCryptCDB) {
-        this->setDapUri(DapDataLocal::instance()->cdbServersList().front(), 80);
+        this->setDapUri(*DapDataLocal::instance()->m_cdbIter, 80);
         auto *l_tempConn = new QMetaObject::Connection();
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]{
             preserveCDBSession();
@@ -399,7 +399,7 @@ void DapSession::onAuthorize()
         emit errorAuthorization (isSerial ? tr("Incorrect serial key") : "Incorrect password");
         return;
     } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRED) {
-        emit errorAuthorization ("Subscribe expired");
+        emit errorAuthorization ("Serial key expired");
         return;
     } else if (op_code == OP_CODE_CANT_CONNECTION_TO_DB) {
         emit errorAuthorization ("Can't connect to database");

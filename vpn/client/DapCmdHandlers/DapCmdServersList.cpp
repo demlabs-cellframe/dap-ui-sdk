@@ -19,12 +19,12 @@ void DapCmdServersList::handle(const QJsonObject* params)
         QJsonDocument jsonDoc = QJsonDocument::fromJson(reply->getReplyData(), &jsonErr);
         if (jsonDoc.isNull() || !jsonDoc.isArray()) {
             qCritical() << "Can't parse server response to JSON: "<< jsonErr.errorString() << " on position "<< jsonErr.offset;
-            emit rotateCDBs();
+            emit nextCdb();
             sendSimpleError(-32001, "Bad response from server. Parse error");
         } else {
             auto arr = jsonDoc.array();
             if (arr.isEmpty()) {
-                emit rotateCDBs();
+                emit nextCdb();
                 sendSimpleError(-666, "Empty nodelist, try another CDB...");
             } else {
                 QJsonObject obj;
@@ -39,7 +39,7 @@ void DapCmdServersList::handle(const QJsonObject* params)
     });
 
     connect(reply, &DapNetworkReply::sigError, this, [=] {
-        emit rotateCDBs();
+        emit nextCdb();
         sendSimpleError(-32002, "Error fetching nodelist");
     });
     DapConnectClient::instance()->request_GET(serversList().front(), 80, "nodelist", *reply);
