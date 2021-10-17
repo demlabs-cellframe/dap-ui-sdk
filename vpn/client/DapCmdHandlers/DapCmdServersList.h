@@ -14,7 +14,7 @@ public:
     ~DapCmdServersList() override {}
     const QList<QString> &serversList() { return  m_serversList; }
 signals:
-    void rotateCDBs();
+    void nextCdb();
     void updateNodesList(const DapServerInfoList&);
     void sendCurrent();
 public slots:

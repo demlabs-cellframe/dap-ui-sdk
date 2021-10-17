@@ -37,8 +37,6 @@ class DapDataLocal : public QObject
     QString getRandomString(int);
 
 public:
-    int m_rotations = 0;
-
     using picturesMap = QMap<DapServerLocation, QString>;
     static DapDataLocal* instance();
 
@@ -57,6 +55,8 @@ public:
     const QString & networkDefault()       { return m_networkDefault; }
     const QString & getUrlSite()           { return m_urlSite;        }
     const QString & getBrandName()         { return m_brandName;      }
+
+    QList<QString>::const_iterator m_cdbIter;
 
     void saveEncriptedSetting(const QString &a_setting, const QVariant &a_value);
     void saveEncriptedSetting(const QString &a_setting, const QByteArray &a_value);
@@ -83,12 +83,8 @@ public:
 
 public slots:
     void setLogin(const QString &a_login);
-
     void setPassword(const QString &password);
-
     void saveAuthorizationData();
-    void rotateCDBList();
-
 signals:
     /// Signal emitted if login has changed.
     /// @param login Login.

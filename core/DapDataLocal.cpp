@@ -180,15 +180,6 @@ void DapDataLocal::loadAuthorizationDatas()
         this->loadFromSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
 }
 
-void DapDataLocal::rotateCDBList() {
-    if ((m_cdbServersList.size() > 1) && (m_cdbServersList.size() > ++m_rotations)) {
-        auto tmp = m_cdbServersList.takeFirst();
-        m_cdbServersList.push_back(tmp);
-    } else {
-        m_rotations = -1;
-    }
-}
-
 QSettings* DapDataLocal::settings()
 {
 #ifdef Q_OS_ANDROID
