@@ -294,8 +294,11 @@ void SerialInputField::paintEvent(QPaintEvent *)
 //  p.drawText (rect(), Qt::AlignCenter, rich);
 
   QTextDocument doc;
-  QTextOption opt  = doc.defaultTextOption();
+  QTextOption opt = doc.defaultTextOption();
+  auto fontSize   = UiScaling::pointsToPixels (20, UiScaling::getNativDPI());
+  QFont myFont ("Lato", fontSize);
   opt.setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
+  doc.setDefaultFont (myFont);
   doc.setDefaultTextOption (opt);
   doc.setTextWidth (rect().width());
   doc.setHtml (rich);
