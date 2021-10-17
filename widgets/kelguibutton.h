@@ -136,6 +136,8 @@ public:
   void setInputMask(const QString &inputMask);
 
   KelGuiLineEdit *edit() const;
+  /// @warning this is permanent. ask Mikhail Shilenko for more info
+  void setEdit (QWidget *newEdit) const;
 
   KelGuiLineEdit::cbTextEdit inputCallback() const;
   void setInputCallback (const KelGuiLineEdit::cbTextEdit &cb);

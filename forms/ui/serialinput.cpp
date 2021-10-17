@@ -2,6 +2,7 @@
 #include "serialinput.h"
 #include "ui_serialinput.h"
 #include "kelguilineedit.h"
+#include "helper/serialinputfield.h"
 #include <QDebug>
 #include <QKeyEvent>
 #include <QClipboard>
@@ -26,12 +27,24 @@ SerialInput::SerialInput(QWidget *parent) :
   __inst  = this;
   ui->setupUi(this);
   ui->editSerial->hide();
-  {
-    auto style = ui->btnSerial->edit()->cssStyle();
-    style.remove ("noborder");
-    style.append (" login-input-border");
-    ui->btnSerial->edit()->setCssStyle(style);
-  }
+  //ui->customInputBorder->hide();
+//  {
+//    auto style = ui->btnSerial->edit()->cssStyle();
+//    style.remove ("noborder");
+//    style.append (" login-input-border");
+//    ui->btnSerial->edit()->setCssStyle(style);
+//  }
+//  auto holder = new KelGuiWidget;
+//  auto input  = new SerialInputField;
+//  holder->setCssStyle ("login-input-border nobackground");
+//  input->setStyleSheet("background-color: rgba(0,0,0,0);");
+//  holder->setLayout (new QHBoxLayout);
+//  //holder->layout()->addWidget (input);
+//  //ui->btnSerial->setEdit (holder);
+//  ui->kelGuiWidget_5->setLayout (new QVBoxLayout);
+//  ui->kelGuiWidget_5->layout()->addWidget (input);
+  ui->MainWidget->layout()->removeWidget (ui->customInputBorder);
+  ui->btnSerial->setEdit (ui->customInputBorder);
 
   /* fill map */
   m_input = ui->btnSerial->edit(); //ui->editSerial;

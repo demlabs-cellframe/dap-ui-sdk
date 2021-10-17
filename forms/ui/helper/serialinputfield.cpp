@@ -121,9 +121,9 @@ void SerialInputField::slotUnfocus()
   QEvent event (QEvent::FocusOut);
   QGuiApplication::sendEvent (this, &event);
   QGuiApplication::inputMethod()->hide();
-  m_child->show();
-  m_child->setFocus (Qt::MouseFocusReason);
-  m_child->hide();
+//  m_child->show();
+//  m_child->setFocus (Qt::MouseFocusReason);
+//  m_child->hide();
 }
 
 /********************************************

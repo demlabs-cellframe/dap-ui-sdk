@@ -183,7 +183,7 @@
           </widget>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="kelGuiWidget">
+          <widget class="KelGuiWidget" name="customInputBorder">
            <property name="cssStyle">
             <string>login-input-border nobackground</string>
            </property>

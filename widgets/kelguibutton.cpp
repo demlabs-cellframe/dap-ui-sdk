@@ -306,6 +306,21 @@ KelGuiLineEdit *KelGuiButton::edit() const
   return ui->kelGuiLineEditMain;
 }
 
+void KelGuiButton::setEdit(QWidget *newEdit) const
+{
+  /* take items from style 4 */
+  auto lay      = ui->Style4->layout();
+  auto subText  = lay->takeAt (1);
+  auto editText = lay->takeAt (0);
+
+  /* insert items */
+  lay->addWidget (newEdit);
+  lay->addItem (editText);
+  lay->addItem (subText);
+
+  ui->kelGuiLineEditMain->hide();
+}
+
 KelGuiLineEdit::cbTextEdit KelGuiButton::inputCallback() const
 {
   return ui->kelGuiLineEditMain->callbackTextEdit();

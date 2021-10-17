@@ -580,6 +580,9 @@
 {
 	border: 1pt solid #A4A3C0;
 	border-radius: 10pt;
+	height: 28pt;
+	min-height: 28pt;
+	max-height: 28pt;
 }
 
 /****************************************************
