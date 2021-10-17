@@ -7,6 +7,8 @@
 #include <QGuiApplication>
 #include <QPainter>
 #include <QTextDocument>
+#include <QKeySequence>
+#include <QClipboard>
 
 /* DEFS */
 #define EXPECT_LENGTH (16)
@@ -114,6 +116,16 @@ repeat:
   m_temp    = text;
 }
 
+void SerialInputField::slotUnfocus()
+{
+  QEvent event (QEvent::FocusOut);
+  QGuiApplication::sendEvent (this, &event);
+  QGuiApplication::inputMethod()->hide();
+  m_child->show();
+  m_child->setFocus (Qt::MouseFocusReason);
+  m_child->hide();
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
@@ -139,6 +151,28 @@ void SerialInputField::keyPressEvent(QKeyEvent *e)
   qDebug() << __PRETTY_FUNCTION__
            << "key:" << e->key()
            << "text:" << e->text();
+
+  /* on paste */
+  if (e == QKeySequence::Paste)
+    {
+      /* disable event */
+      e->ignore();
+
+      /* get clipboard and fix content */
+      auto text = QGuiApplication::clipboard()->text().toUpper();
+      m_temp    = text;
+      slotFixString ();
+
+      /* store result and unfocus */
+      m_text    = m_temp;
+      slotUnfocus();
+
+      qDebug() << __PRETTY_FUNCTION__
+               << "pasted:" << text
+               << "result:" << m_text;
+      return;
+    }
+
   QWidget::keyPressEvent (e);
 }
 
@@ -173,12 +207,7 @@ void SerialInputField::inputMethodEvent(QInputMethodEvent *e)
   if (!commit.isEmpty() || m_cursor == MAX_LENGTH)
     {
       m_text  = m_temp;
-      QEvent event (QEvent::FocusOut);
-      QGuiApplication::sendEvent (this, &event);
-      QGuiApplication::inputMethod()->hide();
-      m_child->show();
-      m_child->setFocus (Qt::MouseFocusReason);
-      m_child->hide();
+      slotUnfocus();
     }
 //  else
 //    QGuiApplication::inputMethod()->commit();

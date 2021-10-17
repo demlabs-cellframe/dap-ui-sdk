@@ -49,6 +49,7 @@ signals:
 protected slots:
   void slotCursorPositionChanged(int oldPos, int newPos);
   void slotFixString();
+  void slotUnfocus();
   /// @}
 
   /****************************************//**

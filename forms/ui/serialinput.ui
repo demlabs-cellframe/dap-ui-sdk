@@ -169,7 +169,7 @@
             <string>insert serial key</string>
            </property>
            <property name="mainCssClass">
-            <string>darkblue normalbold font20 nobackground noborder transparent</string>
+            <string>darkblue normalbold font20 nobackground noborder</string>
            </property>
            <property name="subCssClass">
             <string>gray uppercase font12 nobackground noborder</string>
@@ -183,13 +183,40 @@
           </widget>
          </item>
          <item>
-          <widget class="SerialInputField" name="customInput" native="true">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>96</height>
-            </size>
+          <widget class="KelGuiWidget" name="kelGuiWidget">
+           <property name="cssStyle">
+            <string>login-input-border nobackground</string>
            </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="SerialInputField" name="customInput" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>96</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: rgba(0,0,0,0);</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
          <item>
