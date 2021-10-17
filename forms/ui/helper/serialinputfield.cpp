@@ -33,6 +33,26 @@ SerialInputField::SerialInputField(QWidget *parent)
 }
 
 /********************************************
+ * METHODS
+ *******************************************/
+
+void SerialInputField::setText(const QString &a_text)
+{
+  /* set and fix */
+  m_temp    = a_text;
+  slotFixString ();
+
+  /* store result and repaint */
+  m_text    = m_temp;
+  repaint();
+}
+
+QString SerialInputField::text()
+{
+  return m_temp;
+}
+
+/********************************************
  * SLOTS
  *******************************************/
 
@@ -124,6 +144,7 @@ void SerialInputField::slotUnfocus()
 //  m_child->show();
 //  m_child->setFocus (Qt::MouseFocusReason);
 //  m_child->hide();
+  emit sigSerialChanged();
 }
 
 /********************************************

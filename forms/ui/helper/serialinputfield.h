@@ -35,11 +35,21 @@ public:
   /// @}
 
   /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  void setText (const QString &a_text);
+  QString text();
+  /// @}
+
+  /****************************************//**
    * @name SIGNALS
    *******************************************/
   /// @{
 signals:
   void cursorPositionChanged(int oldPos, int newPos);
+  void sigSerialChanged(); ///< will send as soon as input is come to an end
   /// @}
 
   /****************************************//**

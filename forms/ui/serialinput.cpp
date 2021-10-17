@@ -2,7 +2,6 @@
 #include "serialinput.h"
 #include "ui_serialinput.h"
 #include "kelguilineedit.h"
-#include "helper/serialinputfield.h"
 #include <QDebug>
 #include <QKeyEvent>
 #include <QClipboard>
@@ -27,52 +26,13 @@ SerialInput::SerialInput(QWidget *parent) :
   __inst  = this;
   ui->setupUi(this);
   ui->editSerial->hide();
-  //ui->customInputBorder->hide();
-//  {
-//    auto style = ui->btnSerial->edit()->cssStyle();
-//    style.remove ("noborder");
-//    style.append (" login-input-border");
-//    ui->btnSerial->edit()->setCssStyle(style);
-//  }
-//  auto holder = new KelGuiWidget;
-//  auto input  = new SerialInputField;
-//  holder->setCssStyle ("login-input-border nobackground");
-//  input->setStyleSheet("background-color: rgba(0,0,0,0);");
-//  holder->setLayout (new QHBoxLayout);
-//  //holder->layout()->addWidget (input);
-//  //ui->btnSerial->setEdit (holder);
-//  ui->kelGuiWidget_5->setLayout (new QVBoxLayout);
-//  ui->kelGuiWidget_5->layout()->addWidget (input);
   ui->MainWidget->layout()->removeWidget (ui->customInputBorder);
   ui->btnSerial->setEdit (ui->customInputBorder);
 
-  /* fill map */
-  m_input = ui->btnSerial->edit(); //ui->editSerial;
-
-#ifdef Q_OS_ANDROID
-  m_input->setCallbackFocusEvent (cbSerialFocus);
-  m_input->setCallbackTextEdit (cbSerialText);
-#else
-  ui->btnSerial->setInputMask (">NNNN-NNNN-NNNN-NNNN;_");
-#endif // Q_OS_ANDROID
-  m_input->setCallbackKeyEvent (cbKeyEvent);
+  /* store input ptr */
+  m_input = ui->customInput;
 
   /* signals */
-
-////  connect (m_input, &KelGuiLineEdit::textChanged,
-////           this, &SerialInput::slotTextChanged);
-////  connect (m_input, &KelGuiLineEdit::textEdited,
-////           this, &SerialInput::slotTextChanged);
-
-//  connect (m_input, &KelGuiLineEdit::sigTextEditing,
-//           this, &SerialInput::slotTextChanged,
-//           Qt::QueuedConnection);
-//  connect (m_input, &KelGuiLineEdit::editingFinished,
-//           this, &SerialInput::slotCloseInput,
-//           Qt::QueuedConnection);
-//  connect (m_input, &KelGuiLineEdit::returnPressed,
-//           this, &SerialInput::slotCloseInput,
-//           Qt::QueuedConnection);
 
   connect (this, &SerialInput::sigReturn,
            this, &SerialInput::slotCloseInput,
@@ -80,9 +40,6 @@ SerialInput::SerialInput(QWidget *parent) :
 
   connect (ui->btnReturn, &KelGuiPushButton::clicked,
            this, &SerialInput::sigReturn,
-           Qt::QueuedConnection);
-  connect (ui->btnConfirm, &KelGuiPushButton::clicked,
-           this, &SerialInput::slotTextChanged,
            Qt::QueuedConnection);
   connect (ui->btnConfirm, &KelGuiPushButton::clicked,
            this, &SerialInput::sigConfirm,
@@ -106,262 +63,9 @@ QString SerialInput::serialKey() const
   return m_input->text();
 }
 
-bool SerialInput::cbKeyEvent(KelGuiLineEdit *e, QKeyEvent *event)
-{
-  /* on paste */
-  if (event == QKeySequence::Paste)
-    {
-      /* disable event */
-      event->ignore();
-
-      /* get clipboard and fix content */
-      auto text = QApplication::clipboard()->text().toUpper();
-      fixSerialString (e, text, true);
-
-      /* set into form */
-      __inst->ui->btnSerial->setMainText (text);
-
-      /* disable focus */
-      QEvent nve (QEvent::FocusOut);
-      QApplication::sendEvent (e, &nve);
-      __inst->ui->btnConfirm->setFocus (Qt::MouseFocusReason);
-
-      qDebug() << __PRETTY_FUNCTION__ << "pasted text:" << text;
-      return true;
-    }
-
-  return false;
-}
-
-void SerialInput::cbSerialFocus(KelGuiLineEdit *e, const Qt::FocusReason &reason)
-{
-  Q_UNUSED (e)
-
-  if (reason == Qt::MouseFocusReason)
-    {
-      auto btn  = __inst->ui->btnSerial;
-      btn->setMainText ("");
-    }
-}
-
-void SerialInput::cbSerialText(KelGuiLineEdit *e, QString &preedit, QString &commit, int from, int to)
-{
-  /* compare length's */
-//  int len     = (preedit.length() > commit.length())
-//                ? preedit.length()
-//                : commit.length();
-//  auto &text  = (preedit.length() > commit.length())
-//                ? preedit
-//                : commit;
-
-//  /* fix strings */
-//  fixSerialString (e, preedit, true);
-//  fixSerialString (e, commit, true);
-
-//  /* skip for commit */
-//  if(!commit.isEmpty())
-//    {
-////      commit.clear();
-////      __inst->ui->btnSerial->setMainText ("");
-////      QEvent event (QEvent::FocusOut);
-////      QApplication::sendEvent (e, &event);
-////      __inst->ui->btnConfirm->setFocus (Qt::MouseFocusReason);
-//      return;
-//    }
-
-  /* get text and length */
-  auto field  = e->text();
-  auto text   = field + commit + preedit;
-  auto len    = text.length(),
-       clen   = field.length();
-  bool isCommit   = !commit.isEmpty(),
-       isPreedit  = !preedit.isEmpty();
-
-  qDebug() << __PRETTY_FUNCTION__
-           << "before:"
-           << "text" << text
-           << "commit" << commit
-           << "preedit" << preedit;
-
-  /* fix string */
-  fixSerialString (e, text, true);
-  if (isPreedit)
-    preedit = text.mid (clen);
-  if (isCommit)
-    {
-      commit.clear();
-      //commit  = text.mid (clen);
-      __inst->ui->btnSerial->setMainText (text);
-      __inst->ui->btnSerial->edit()->setCursorPosition (text.length());
-    }
-
-  /* loose focus */
-  if (len == MAX_LENGTH) // EXPECT_LENGTH)
-    {
-      commit.clear();
-      preedit.clear();
-      __inst->ui->btnConfirm->setFocus (Qt::MouseFocusReason);
-      __inst->ui->btnSerial->setMainText (text);
-      qDebug() << __PRETTY_FUNCTION__ << "finished with text:" << text;
-    }
-
-  qDebug() << __PRETTY_FUNCTION__
-           << "len" << len
-           << "clen" << clen
-           << "text" << text
-           << "commit" << commit
-           << "preedit" << preedit
-           << "field" << field;
-}
-
-void SerialInput::fixSerialString(KelGuiLineEdit *e, QString &serial, bool inserted)
-{
-  /* get copy */
-  auto text   = serial.toUpper();
-
-  /* fix letters */
-  int j = 0;
-  for (auto i = text.begin(), e = text.end(); i != e; i++, j++)
-    {
-      /* ignore minus */
-      if ((*i == '-')
-          && (j == 4 || j == 9 || j == 14))
-        continue;
-
-      /* replace symbols */
-      if ((*i < 0x30)
-          || ((*i > 0x39) && (*i < 0x41))
-          || (*i > 0x5A))
-        *i = 'A';
-    }
-
-  if (inserted)
-    {
-      /* add separator */
-      if (text.length() == 4
-          || text.length() == 9
-          || text.length() == 14)
-        {
-          text += '-';
-          //e->cursorForward (false);
-          //e->setCursorPosition (text.length());
-        }
-
-      /* insert separator */
-      if (text.length() >= 4 && text.at (4) != '-')
-        text.insert (4, '-');
-      if (text.length() >= 9 && text.at (9) != '-')
-        text.insert (9, '-');
-      if (text.length() >= 14 && text.at (14) != '-')
-        text.insert (14, '-');
-    }
-
-//  /* replace separators */
-//  if (text.length() >= 4)
-//    text.replace (4, 1, '-');
-//  if (text.length() >= 9)
-//    text.replace (9, 1, '-');
-//  if (text.length() >= 14)
-//    text.replace (14, 1, '-');
-
-  /* check if limit reachced */
-  if (text.length() < MAX_LENGTH)
-    {
-      if (!text.isEmpty())
-        serial  = text;
-      return;
-    }
-  else
-    {
-      /* make loose focus */
-      QEvent event (QEvent::FocusOut);
-      QApplication::sendEvent (e, &event);
-    }
-
-  /* fix text length */
-  int diff  = text.length() - MAX_LENGTH;
-  text.chop (diff);
-  serial    = text;
-}
-
 /********************************************
  * SLOTS
  *******************************************/
-
-void SerialInput::slotTextChanged()
-{
-  if(m_textChangeHook)
-    return;
-
-  //qDebug() << __PRETTY_FUNCTION__ << "start";
-
-  /* get input text */
-  auto text   = m_input->text().toUpper();
-
-  /* add separators */
-  for(int i = 0; i < text.length(); i++)
-    {
-      /* AAAA-AAAA-AAAA-AAAA */
-      /*     4    9    E     */
-
-      /* insert separators */
-      //qDebug() << __PRETTY_FUNCTION__ << "sep";
-      if ((i == 4) || (i == 9) || (i == 14))
-        {
-          if (i == 4)
-            if (text.at(4) != '-')
-              text.insert(4,'-');
-          if (i == 9)
-            if (text.at(9) != '-')
-              text.insert(9,'-');
-          if (i == 14)
-            if (text.at(14) != '-')
-              text.insert(14,'-');
-        }
-
-      /* replace wrong characters */
-      //qDebug() << __PRETTY_FUNCTION__ << "wr";
-      QChar c = text.at(i);
-      if (
-          (
-            c < 0x30
-
-            || (c > 0x39
-            && c < 0x41)
-
-            || c > 0x5A
-          )
-
-          && c != '-')
-        text.replace (i, 1, "_");
-    }
-
-  m_textChangeHook = true;
-
-  /* check if limit reachced */
-  if(text.length() < MAX_LENGTH)
-    {
-      //qDebug() << __PRETTY_FUNCTION__ << "skippo";
-      if (!text.isEmpty())
-        m_input->setText (text);
-
-      //qDebug() << __PRETTY_FUNCTION__ << "skipped" << text;
-      m_textChangeHook = false;
-      return;
-    }
-
-  //qDebug() << __PRETTY_FUNCTION__ << "finno";
-  /* fix text length */
-  int diff  = text.length() - MAX_LENGTH;
-  text.chop (diff);
-  m_input->setText (text);
-
-  /* fix cursor pos */
-  m_input->setCursorPosition (diff);
-
-  qDebug() << __PRETTY_FUNCTION__ << "result" << text;
-  m_textChangeHook = false;
-}
 
 void SerialInput::slotSetSerial(const QString &a_serial)
 {
