@@ -1,7 +1,8 @@
 #include "schedule.h"
 
-Schedule::Schedule() {
-    m_elems.push_front(SheduleElement(time(nullptr),0));
+Schedule::Schedule()
+{
+  m_elems.push_front (SheduleElement (time (nullptr), 0));
 }
 
 void Schedule::addElem(quint64 newQuantity)
@@ -24,7 +25,16 @@ void Schedule::addElem(quint64 newQuantity)
 
     if (m_elems.size() > 40) {
         m_elems.pop_back();
-    }
+      }
+}
+
+void Schedule::reset()
+{
+  m_elems.clear();
+  m_elems.push_front (SheduleElement (time (nullptr), 0));
+  s_time     = time(nullptr);
+  s_quantity = 0;
+  diff       = 0;
 }
 
 int Schedule::maxValue()

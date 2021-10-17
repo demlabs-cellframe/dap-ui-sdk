@@ -57,6 +57,7 @@ signals:
   void sigLicenceReset();
   void sigLanguage();
   void sigSetDaysLeft (QString days);
+  void sigResetDaysLeft();
 
   /* support */
   void sigBugSend();

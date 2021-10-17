@@ -27,6 +27,7 @@ public:
     Schedule();
     void addElem(quint64 elem);
     int size() {return m_elems.size();}
+    void reset();
 
     int maxValue();
     void showChart(QGraphicsScene *scene, QPen pen, QColor color, int width, int height, int maxVal);

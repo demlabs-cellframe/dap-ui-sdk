@@ -274,6 +274,12 @@ void Statistics::updateGraph()
   m_scene->update();
 }
 
+void Statistics::resetGraph()
+{
+  schedules.reset();
+  updateGraph();
+}
+
 void Statistics::_slotUpdateUptimeTime()
 {
   ui->statUptime->setMainText (uptimeStr());

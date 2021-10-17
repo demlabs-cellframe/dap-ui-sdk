@@ -95,6 +95,7 @@ public:
   void setStarted (const QDateTime &started);
 
   void updateGraph();
+  void resetGraph();
   /// @}
 
   /****************************************//**

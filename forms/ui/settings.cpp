@@ -25,7 +25,11 @@ Settings::Settings (QWidget *parent) :
 
   /* signals */
   connect (this, &Settings::sigSetDaysLeft,
-           ui->scrollArea, &SettingsModel::slotSetDaysLeft);
+           ui->scrollArea, &SettingsModel::slotSetDaysLeft,
+           Qt::QueuedConnection);
+  connect (this, &Settings::sigResetDaysLeft,
+           ui->scrollArea, &SettingsModel::slotResetDaysLeft,
+           Qt::QueuedConnection);
 
   /* start model */
   ui->scrollArea->slotSetup();

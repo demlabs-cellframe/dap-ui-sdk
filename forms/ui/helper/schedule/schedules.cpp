@@ -30,6 +30,12 @@ void Schedules::setStyle (const DapGraphicSceneStyle &style)
 void Schedules::addInp (quint64 elem) {inp.addElem (elem);}
 void Schedules::addOut (quint64 elem) {out.addElem (elem);}
 
+void Schedules::reset()
+{
+  inp.reset();
+  out.reset();
+}
+
 int Schedules::getWidth()
 {
   return m_sceneWidth + 3;

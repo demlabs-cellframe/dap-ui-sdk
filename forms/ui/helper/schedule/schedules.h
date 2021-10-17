@@ -50,6 +50,7 @@ public:
 
     void addInp(quint64 elem);
     void addOut(quint64 elem);
+    void reset();
 
     void draw_chart(QGraphicsScene *scene);
     Schedules();

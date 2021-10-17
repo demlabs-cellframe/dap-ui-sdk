@@ -96,7 +96,8 @@ static KelGuiButton* s_licenceKey;
 static KelGuiButton* s_version;
 
 /* VARS */
-Settings *s_settings = nullptr;
+static Settings *s_settings   = nullptr;
+static SettingsModel *s_model = nullptr;
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -105,6 +106,7 @@ Settings *s_settings = nullptr;
 SettingsModel::SettingsModel (QWidget *parent)
   : ModelBase (parent)
 {
+  s_model = this;
   setCssStyle ("screenarea sett-scroll-area backgroundcolor");
 }
 
@@ -201,6 +203,11 @@ void SettingsModel::slotSetDaysLeft(QString days)
 {
   if (s_licenceKey)
     s_licenceKey->setSubText (days);
+}
+
+void SettingsModel::slotResetDaysLeft()
+{
+  slotSetDaysLeft ("");
 }
 
 void SettingsModel::slotClicked()

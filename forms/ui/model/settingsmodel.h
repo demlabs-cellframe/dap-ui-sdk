@@ -44,6 +44,7 @@ public:
 public slots:
   void slotSetup();
   void slotSetDaysLeft (QString days);
+  void slotResetDaysLeft ();
   void slotClicked();
   /// @}
 
