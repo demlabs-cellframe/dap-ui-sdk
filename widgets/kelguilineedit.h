@@ -35,6 +35,7 @@ public:
   cbTextEdit m_callbackTextEdit;
   cbFocusEvent m_callbackFocusEvent;
   cbKeyEvent m_callbackKeyEvent;
+  bool m_hideAnchor;
   /// @}
 
   /****************************************//**
@@ -64,9 +65,19 @@ public:
    * @name SIGNALS
    *******************************************/
   /// @{
+  bool hideAnchor() const;
+  void setHideAnchor(bool newHideAnchor);
 
 signals:
   void sigTextEditing();
+  /// @}
+
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
+public slots:
+  void slotUnfocus();
   /// @}
 
   /****************************************//**
@@ -78,6 +89,9 @@ protected:
 #ifdef Q_OS_ANDROID
   void inputMethodEvent(QInputMethodEvent *e) override;
   void focusInEvent(QFocusEvent *e) override;
+public:
+  QVariant inputMethodQuery (Qt::InputMethodQuery a_imq) const override;
+  Q_INVOKABLE QVariant inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const;
 #endif // Q_OS_ANDROID
   /// @}
 };

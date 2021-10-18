@@ -9,6 +9,16 @@
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
+bool KelGuiLineEdit::hideAnchor() const
+{
+  return m_hideAnchor;
+}
+
+void KelGuiLineEdit::setHideAnchor(bool newHideAnchor)
+{
+  m_hideAnchor = newHideAnchor;
+}
+
 KelGuiLineEdit::KelGuiLineEdit (QWidget *parent)
   : QLineEdit (parent)
   , m_callbackTextEdit (nullptr)
@@ -51,6 +61,14 @@ KelGuiLineEdit::cbKeyEvent KelGuiLineEdit::callbackKeyEvent() const
 void KelGuiLineEdit::setCallbackKeyEvent(KelGuiLineEdit::cbKeyEvent newCallbackKeyEvent)
 {
   m_callbackKeyEvent = newCallbackKeyEvent;
+}
+
+void KelGuiLineEdit::slotUnfocus()
+{
+  QEvent event (QEvent::FocusOut);
+  QGuiApplication::sendEvent (this, &event);
+  QGuiApplication::inputMethod()->hide();
+  emit textChanged (text());
 }
 
 /********************************************
@@ -118,6 +136,34 @@ void KelGuiLineEdit::focusInEvent(QFocusEvent *e)
     m_callbackFocusEvent (this, e->reason());
 
   QLineEdit::focusInEvent(e);
+}
+
+QVariant KelGuiLineEdit::inputMethodQuery(Qt::InputMethodQuery a_imq) const
+{
+  if (m_hideAnchor)
+    return inputMethodQuery (a_imq, QVariant());
+  return QLineEdit::inputMethodQuery (a_imq);
+}
+
+QVariant KelGuiLineEdit::inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const
+{
+  /* if any options set */
+  if (m_hideAnchor)
+    {
+      switch (property)
+        {
+
+        case Qt::ImAnchorRectangle:
+        case Qt::ImCursorRectangle:
+          /* ignore anchor & cursor */
+          return QRect (-1024, -1024, 0, 0);
+
+        default: break;
+
+        }
+    }
+
+  return QLineEdit::inputMethodQuery (property, argument);
 }
 
 #endif // Q_OS_ANDROID

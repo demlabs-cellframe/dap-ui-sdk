@@ -4,7 +4,6 @@
 /* INCLUDES */
 #include <QWidget>
 #include <QMap>
-#include "helper/serialinputfield.h"
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
@@ -30,7 +29,7 @@ class SerialInput : public QWidget
   /// @{
 private:
   Ui::SerialInput *ui;
-  SerialInputField *m_input;
+  KelGuiLineEdit *m_input;
   bool m_textChangeHook;
   /// @}
 
@@ -49,6 +48,9 @@ public:
   /// @{
 public:
   QString serialKey() const;
+private:
+  void fixSerialKey (QString &a_serial) const;
+  static void cbFocusEvent (KelGuiLineEdit *e, const Qt::FocusReason &reason);
   /// @}
 
   /****************************************//**

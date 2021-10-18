@@ -26,30 +26,41 @@ SerialInput::SerialInput(QWidget *parent) :
   __inst  = this;
   ui->setupUi(this);
   ui->editSerial->hide();
-  ui->MainWidget->layout()->removeWidget (ui->customInputBorder);
-  ui->btnSerial->setEdit (ui->customInputBorder);
+  ui->customInputBorder->hide();
+//  ui->MainWidget->layout()->removeWidget (ui->customInputBorder);
+//  ui->btnSerial->setEdit (ui->customInputBorder);
+  {
+    auto style = ui->btnSerial->edit()->cssStyle();
+    style.remove ("noborder");
+    style.append (" login-input-border");
+    ui->btnSerial->edit()->setCssStyle(style);
+  }
+  ui->btnSerial->edit()->setMaxLength (MAX_LENGTH);
 
   /* store input ptr */
-  m_input = ui->customInput;
+  m_input = ui->btnSerial->edit(); // ui->customInput;
   m_input->setText ("");
+  //m_input->setHideAnchor (true);
+  m_input->setCallbackFocusEvent (cbFocusEvent);
 
   /* signals */
-
-  connect (this, &SerialInput::sigReturn,
-           m_input, &SerialInputField::slotUnfocus,
-           Qt::QueuedConnection);
-  connect (this, &SerialInput::sigConfirm,
-           m_input, &SerialInputField::slotUnfocus,
-           Qt::QueuedConnection);
 
   connect (ui->btnReturn, &KelGuiPushButton::clicked,
            this, &SerialInput::sigReturn,
            Qt::QueuedConnection);
+
   connect (ui->btnConfirm, &KelGuiPushButton::clicked,
            this, &SerialInput::sigConfirm,
            Qt::QueuedConnection);
   connect (ui->btnConfirm, &KelGuiPushButton::clicked,
            this, &SerialInput::sigReturn,
+           Qt::QueuedConnection);
+
+  connect (this, &SerialInput::sigReturn,
+           m_input, &KelGuiLineEdit::slotUnfocus,
+           Qt::QueuedConnection);
+  connect (this, &SerialInput::sigConfirm,
+           m_input, &KelGuiLineEdit::slotUnfocus,
            Qt::QueuedConnection);
 }
 
@@ -64,7 +75,71 @@ SerialInput::~SerialInput()
 
 QString SerialInput::serialKey() const
 {
-  return m_input->text();
+  auto serial = m_input->text();
+  fixSerialKey (serial);
+  return serial;
+}
+
+void SerialInput::fixSerialKey(QString &a_serial) const
+{
+  /* get copy */
+  auto text   = a_serial.toUpper();
+
+  /* fix text length */
+  int diff  = text.length() - MAX_LENGTH;
+  text.chop (diff);
+  a_serial    = text;
+
+  /* fix letters */
+repeat:
+    /* start counter */
+    int j = 0;
+
+    /* run thru cycle */
+    for (auto i = text.cbegin(), e = text.cend(); i != e; i++, j++)
+      {
+        QChar k = *i;
+
+        /* ignore minus */
+        if ((k == '-')
+            && (j == 4 || j == 9 || j == 14))
+            continue;
+
+        /* fix symbols */
+        if ((k < QChar ('0' /*0x30*/))
+            || ((k > QChar ('9' /*0x39*/)) && (k < QChar ('A' /*0x41*/)))
+            || (k > QChar ('Z' /*0x5A*/)))
+          {
+            /* remove and restart cycle */
+            text.remove (j, 1);
+            goto repeat;
+          }
+        }
+
+    {
+      /* insert separator */
+      if (text.length() >= 5 && text.at (4) != '-')
+        text.insert (4, '-');
+      if (text.length() >= 10 && text.at (9) != '-')
+        text.insert (9, '-');
+      if (text.length() >= 15 && text.at (14) != '-')
+        text.insert (14, '-');
+    }
+
+  /* check if limit reachced */
+  m_input->setText (text);
+  if (text.length() < MAX_LENGTH)
+    {
+      a_serial  = text;
+      return;
+    }
+}
+
+void SerialInput::cbFocusEvent(KelGuiLineEdit *e, const Qt::FocusReason &reason)
+{
+  if (reason == Qt::MouseFocusReason)
+    if (e->text() == "____-____-____-____")
+      e->setText ("");
 }
 
 /********************************************
@@ -77,11 +152,7 @@ void SerialInput::slotSetSerial(const QString &a_serial)
     return;
 
   m_textChangeHook = true;
-  qDebug() << __PRETTY_FUNCTION__ << "start" << a_serial;
-
   m_input->setText (a_serial);
-
-  qDebug() << __PRETTY_FUNCTION__ << "finish";
   m_textChangeHook = false;
 }
 
