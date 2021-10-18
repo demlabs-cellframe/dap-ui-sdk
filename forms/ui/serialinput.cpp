@@ -6,6 +6,8 @@
 #include <QKeyEvent>
 #include <QClipboard>
 
+#include "../forms/ui/helper/auxiliary/UiScaling.h"
+
 /* DEFS */
 #define EXPECT_LENGTH (16)
 #define MAX_LENGTH (EXPECT_LENGTH + 3)
@@ -35,13 +37,21 @@ SerialInput::SerialInput(QWidget *parent) :
     style.append (" login-input-border");
     ui->btnSerial->edit()->setCssStyle(style);
   }
-  ui->btnSerial->edit()->setMaxLength (MAX_LENGTH);
 
   /* store input ptr */
   m_input = ui->btnSerial->edit(); // ui->customInput;
   m_input->setText ("");
   //m_input->setHideAnchor (true);
   m_input->setCallbackFocusEvent (cbFocusEvent);
+  m_input->setMaxLength (MAX_LENGTH);
+
+  /* set font uppercase */
+  {
+    auto fontSize   = UiScaling::pointsToPixels (20, UiScaling::getNativDPI());
+    QFont myFont ("Lato", fontSize);
+    myFont.setCapitalization (QFont::AllUppercase);
+    m_input->setFont (myFont);
+  }
 
   /* signals */
 
