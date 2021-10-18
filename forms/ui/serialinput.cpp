@@ -36,7 +36,10 @@ SerialInput::SerialInput(QWidget *parent) :
   /* signals */
 
   connect (this, &SerialInput::sigReturn,
-           this, &SerialInput::slotCloseInput,
+           m_input, &SerialInputField::slotUnfocus,
+           Qt::QueuedConnection);
+  connect (this, &SerialInput::sigConfirm,
+           m_input, &SerialInputField::slotUnfocus,
            Qt::QueuedConnection);
 
   connect (ui->btnReturn, &KelGuiPushButton::clicked,
@@ -80,11 +83,6 @@ void SerialInput::slotSetSerial(const QString &a_serial)
 
   qDebug() << __PRETTY_FUNCTION__ << "finish";
   m_textChangeHook = false;
-}
-
-void SerialInput::slotCloseInput()
-{
-  QGuiApplication::inputMethod()->hide();
 }
 
 /*-----------------------------------------*/

@@ -44,6 +44,12 @@ void SerialInputField::setText(const QString &a_text)
   /* set and fix */
   m_temp    = a_text;
   slotFixString ();
+  m_cursor      = m_temp.length();
+  {
+    QString tt = "____-____-____-____";
+    tt.replace (0, m_temp.length(), m_temp);
+    m_temp  = tt;
+  }
 
   /* store result and repaint */
   m_text    = m_temp;
@@ -322,47 +328,41 @@ QVariant SerialInputField::inputMethodQuery(Qt::InputMethodQuery property, QVari
     {
     case Qt::ImAnchorRectangle:
     case Qt::ImCursorRectangle:
-      //return QRect (2, 2, 1, 32);//d->cursorRect();
-      {
-        auto fontSize   = UiScaling::pointsToPixels (20, UiScaling::getNativDPI());
-        QFont myFont ("Lato", fontSize);
-        auto cur    = m_cursor;
+      return QRect (-1024, -1024, 0, 0);
+//      {
+//        auto fontSize   = UiScaling::pointsToPixels (20, UiScaling::getNativDPI());
+//        QFont myFont ("Lato", fontSize);
+//        auto cur    = m_cursor;
 
-        /* adjust cursor */
-        if (cur == 4)
-          cur++;
-        else if (cur == 9)
-          cur++;
-        else if (cur == 14)
-          cur++;
+//        /* adjust cursor */
+//        if (cur == 4)
+//          cur++;
+//        else if (cur == 9)
+//          cur++;
+//        else if (cur == 14)
+//          cur++;
 
-        QFontMetrics fm (myFont);
-        auto textWidth  = fm.horizontalAdvance (m_temp);
-        auto posWidth   = fm.horizontalAdvance (m_temp, cur);
+//        QFontMetrics fm (myFont);
+//        auto textWidth  = fm.horizontalAdvance (m_temp);
+//        auto posWidth   = fm.horizontalAdvance (m_temp, cur);
 
-        auto pos        = width() / 2 - textWidth / 2 + posWidth;
-//          qDebug() << __FUNCTION__
-//                   << "property" << property
-//                   << "fontSize" << fontSize
-//                   << "width" << width()
-//                   << "m_cursor" << m_cursor
-//                   << "cur" << cur
-//                   << "textWidth:" << textWidth
-//                   << "posWidth:" << posWidth;
-        return QRect (pos, 2, 1, fm.height());
-      }
-//    case Qt::ImAnchorRectangle:
-//        return d->adjustedControlRect(d->control->anchorRect());
+//        auto pos        = width() / 2 - textWidth / 2 + posWidth;
+////          qDebug() << __FUNCTION__
+////                   << "property" << property
+////                   << "fontSize" << fontSize
+////                   << "width" << width()
+////                   << "m_cursor" << m_cursor
+////                   << "cur" << cur
+////                   << "textWidth:" << textWidth
+////                   << "posWidth:" << posWidth;
+//        return QRect (pos, 2, 1, fm.height());
+//      }
+////    case Qt::ImAnchorRectangle:
+////        return d->adjustedControlRect(d->control->anchorRect());
     case Qt::ImFont:
       return font();
-    case Qt::ImCursorPosition: {
+    case Qt::ImCursorPosition:
       return m_cursor;
-      //return QRect (2, 2, 1, 32);
-//        const QPointF pt = argument.toPointF();
-//        if (!pt.isNull())
-//            return QVariant(d->xToPos(pt.x(), QTextLine::CursorBetweenCharacters));
-//        return QVariant(d->control->cursor());
-      }
     case Qt::ImSurroundingText:
       return m_text;
     case Qt::ImCurrentSelection:
@@ -370,13 +370,6 @@ QVariant SerialInputField::inputMethodQuery(Qt::InputMethodQuery property, QVari
     case Qt::ImMaximumTextLength:
       return EXPECT_LENGTH;
     case Qt::ImAnchorPosition:
-//        if (d->control->selectionStart() == d->control->selectionEnd())
-//            return QVariant(d->control->cursor());
-//        else if (d->control->selectionStart() == d->control->cursor())
-//            return QVariant(d->control->selectionEnd());
-//        else
-//            return QVariant(d->control->selectionStart());
-      //return QRect (2, 2, 1, 32);
       return m_cursor;
     default:
         return QWidget::inputMethodQuery(property);

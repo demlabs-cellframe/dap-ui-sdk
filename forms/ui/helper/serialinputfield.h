@@ -15,6 +15,8 @@ class SerialInputField : public QWidget
 {
   Q_OBJECT
 
+  friend class SerialInput;
+
   /****************************************//**
    * @name VARS
    *******************************************/

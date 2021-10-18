@@ -580,9 +580,9 @@
 {
 	border: 1pt solid #A4A3C0;
 	border-radius: 10pt;
-	height: 28pt;
-	min-height: 28pt;
-	max-height: 28pt;
+	height: 44pt;
+	min-height: 44pt;
+	max-height: 44pt;
 }
 
 /****************************************************
@@ -1140,9 +1140,9 @@
 
 .serin-bottom-content-spacer
 {
-	height: 28pt;
-	min-height: 28pt;
-	max-height: 28pt;
+	height: 44pt;
+	min-height: 44pt;
+	max-height: 44pt;
 }
 
 .serin-text-separator

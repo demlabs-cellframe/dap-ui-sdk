@@ -177,9 +177,6 @@
            <property name="leftCssClass">
             <string>darkblue normalbold font30 nobackground noborder</string>
            </property>
-           <property name="separator">
-            <bool>true</bool>
-           </property>
           </widget>
          </item>
          <item>
