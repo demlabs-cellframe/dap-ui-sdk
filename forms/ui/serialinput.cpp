@@ -77,6 +77,7 @@ QString SerialInput::serialKey() const
 {
   auto serial = m_input->text();
   fixSerialKey (serial);
+  m_input->setHideAnchor (true);
   return serial;
 }
 
@@ -138,8 +139,11 @@ repeat:
 void SerialInput::cbFocusEvent(KelGuiLineEdit *e, const Qt::FocusReason &reason)
 {
   if (reason == Qt::MouseFocusReason)
-    if (e->text() == "____-____-____-____")
-      e->setText ("");
+    {
+      e->setHideAnchor (false);
+      if (e->text() == "____-____-____-____")
+        e->setText ("");
+    }
 }
 
 /********************************************
@@ -154,6 +158,11 @@ void SerialInput::slotSetSerial(const QString &a_serial)
   m_textChangeHook = true;
   m_input->setText (a_serial);
   m_textChangeHook = false;
+}
+
+void SerialInput::slotActiavted()
+{
+  m_input->setHideAnchor (false);
 }
 
 /*-----------------------------------------*/

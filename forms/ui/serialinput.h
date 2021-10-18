@@ -68,6 +68,7 @@ signals:
   /// @{
 public:
   void slotSetSerial (const QString &a_serial);
+  void slotActiavted();
   /// @}
 };
 
