@@ -31,7 +31,7 @@ void ChooseServerModel::setModel (QAbstractListModel *model, ChooseServer *cs)
   /* store and invoke setup */
   m_model = model;
   m_cs    = cs;
-  QTimer::singleShot (0, this, &ChooseServerModel::slotSetup);
+  QMetaObject::invokeMethod(this, &ChooseServerModel::slotSetup, Qt::QueuedConnection);
 }
 
 QAbstractListModel *ChooseServerModel::model() const

@@ -13,7 +13,7 @@ Language::Language (QWidget *parent) :
   ui (new Ui::Language)
 {
   ui->setupUi (this);
-  QTimer::singleShot (0, ui->scrollArea, &LanguageModel::slotSetup);
+  QMetaObject::invokeMethod(ui->scrollArea, &LanguageModel::slotSetup, Qt::QueuedConnection);
 
   /* signals */
   connect (ui->btnReturn, &KelGuiPushButton::clicked,

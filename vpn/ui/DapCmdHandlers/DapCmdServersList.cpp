@@ -27,13 +27,13 @@ void DapCmdServersList::handleResult(const QJsonObject& result)
 
 void DapCmdServersList::handleError(int code, const QString& message)
 {
-    Q_UNUSED(message)
-    if (code == -666) {
+    switch(code) {
+    case -32003:
+    case -32001:
         emit sigEmptyList(message);
-    } else if (code == -32002) {
+        break;
+    default:
         emit sigErrorNetwork(message);
-    } else if (code == -32003) {
-        emit sigNetworkUnreachable(message);
+        break;
     }
-    qWarning() << *m_errorObject;
 }

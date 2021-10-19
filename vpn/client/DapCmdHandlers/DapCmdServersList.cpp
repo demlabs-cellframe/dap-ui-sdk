@@ -3,6 +3,7 @@
 #include "DapJsonParams.h"
 #include "DapNetworkReply.h"
 #include "DapConnectClient.h"
+#include "DapDataLocal.h"
 
 DapCmdServersList::DapCmdServersList(QObject *parent)
     : DapCmdServiceAbstract(DapJsonCmdType::GET_SERVERS_LIST, parent)
@@ -25,7 +26,7 @@ void DapCmdServersList::handle(const QJsonObject* params)
             auto arr = jsonDoc.array();
             if (arr.isEmpty()) {
                 emit nextCdb();
-                sendSimpleError(-666, "Empty nodelist, try another CDB...");
+                sendSimpleError(-32003, "Empty nodelist, try another CDB...");
             } else {
                 QJsonObject obj;
                 obj["servers"] = arr;
@@ -40,7 +41,7 @@ void DapCmdServersList::handle(const QJsonObject* params)
 
     connect(reply, &DapNetworkReply::sigError, this, [=] {
         emit nextCdb();
-        sendSimpleError(-32002, "Error fetching nodelist");
+        sendSimpleError(reply->error(), reply->errorString());
     });
-    DapConnectClient::instance()->request_GET(serversList().front(), 80, "nodelist", *reply);
+    DapConnectClient::instance()->request_GET(*DapDataLocal::instance()->m_cdbIter, 80, "nodelist", *reply);
 }
