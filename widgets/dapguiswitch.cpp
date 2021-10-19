@@ -29,7 +29,7 @@ DapGuiSwitch::DapGuiSwitch (QWidget *parent)
 {
   /* setup style */
   ui->setupUi (this);
-  QTimer::singleShot(10, &__kgsm, &DapGuiSwitchStyleManager::forcedStyleUpdate);
+  QMetaObject::invokeMethod(&__kgsm, &DapGuiSwitchStyleManager::forcedStyleUpdate, Qt::QueuedConnection);
   m_bgPos[0] = BG_POS;
   m_bgPos[1] = BG_POS * 2;
 
@@ -139,7 +139,7 @@ void DapGuiSwitch::_moveItems()
   if (!hook)
     {
       hook = true;
-      QTimer::singleShot (10, this, &DapGuiSwitch::_moveItems);
+      QMetaObject::invokeMethod(this, &DapGuiSwitch::_moveItems, Qt::QueuedConnection);
       return;
     }
   else

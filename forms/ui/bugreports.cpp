@@ -32,7 +32,7 @@ BugReports::BugReports (QWidget *parent) :
   //movLoading->start();
   ui->top_spacer_debug->setVisible (false);
   ui->btnAttachScreenshot->setVisible (false);
-  QTimer::singleShot (0, ui->scrollArea, &BugReportsModel::slotSetup);
+  QMetaObject::invokeMethod(ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
   //setText (movLoading->lastErrorString());
 
   /* fill map */
@@ -197,12 +197,11 @@ void BugReports::_slotTextChanged()
   m_edit->setPlainText (text);
 
   /* fix cursor pos */
-  QTimer::singleShot(10, [=]
-  {
-    auto cur  = m_edit->textCursor();
-    cur.movePosition (QTextCursor::End, QTextCursor::MoveAnchor);
-    m_edit->setTextCursor (cur);
-  });
+  QMetaObject::invokeMethod(this, [=] () {
+      auto cur = m_edit->textCursor();
+      cur.movePosition (QTextCursor::End, QTextCursor::MoveAnchor);
+      m_edit->setTextCursor (cur);
+  }, Qt::QueuedConnection);
 
   _textHook = false;
 }

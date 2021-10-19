@@ -13,7 +13,7 @@ History::History (QWidget *parent) :
   ui (new Ui::History)
 {
   ui->setupUi (this);
-  QTimer::singleShot (0, ui->scrollArea, &HistoryModel::slotSetup);
+  QMetaObject::invokeMethod(ui->scrollArea, &HistoryModel::slotSetup, Qt::QueuedConnection);
 
   /* signals */
   connect (ui->btnReturn, &DapGuiPushButton::clicked,

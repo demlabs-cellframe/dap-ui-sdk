@@ -180,7 +180,7 @@ void DapSession::getNews()
             return;
         }
     });
-    DapConnectClient::instance()->request_GET(DapDataLocal::instance()->cdbServersList().front(), 80, URL_NEWS, *m_netNewsReply);
+    DapConnectClient::instance()->request_GET(*DapDataLocal::instance()->m_cdbIter, 80, URL_NEWS, *m_netNewsReply);
 }
 
 /**
@@ -583,14 +583,14 @@ DapNetworkReply * DapSession::authorizeRequest(const QString& a_user, const QStr
 
     m_netAuthorizeReply = encRequest(a_pkey.isNull() ? a_user + " " + a_password + " " + a_domain :
                                                        a_user + " " + a_password + " " + a_domain + " " + a_pkey,
-                                     URL_DB, "auth", "login", SLOT(onAuthorize()), QT_STRINGIFY(errorAuthorization));
+                                     URL_DB, "auth", "login", SLOT(onAuthorize()), /*QT_STRINGIFY(errorAuthorization)*/ NULL);
     return m_netAuthorizeReply;
 }
 
 DapNetworkReply * DapSession::authorizeByKeyRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey) {
     m_userInform.clear();
     m_netAuthorizeReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
-                                     URL_DB, "auth", "serial", SLOT(onAuthorize()), QT_STRINGIFY(errorAuthorization));
+                                     URL_DB, "auth", "serial", SLOT(onAuthorize()), /*QT_STRINGIFY(errorAuthorization)*/ NULL);
     return m_netAuthorizeReply;
 }
 
@@ -601,7 +601,7 @@ DapNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const Q
     int buf64len = dap_enc_base64_encode(a_signed.constData(), a_signed.size(), buf64, DAP_ENC_DATA_TYPE_B64_URLSAFE);
     QByteArray a_signedB64(buf64, buf64len);
     QByteArray bData = QString(a_serial + " ").toLocal8Bit() + a_signedB64 + QString(" " + a_domain + " " + a_pkey).toLocal8Bit();
-    m_netKeyActivateReply = encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()), QT_STRINGIFY(errorAuthorization));
+    m_netKeyActivateReply = encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()), /*QT_STRINGIFY(errorAuthorization)*/ NULL);
     return m_netKeyActivateReply;
 }
 
