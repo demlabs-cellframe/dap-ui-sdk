@@ -50,6 +50,8 @@ RESOURCES += \
     $$PWD/widgetsRes.qrc
 
 DISTFILES += \
+    $$PWD/DoxyLayout.xml \
+    $$PWD/Doxyfile \
     $$PWD/README.md
 
 INCLUDEPATH += $$PWD

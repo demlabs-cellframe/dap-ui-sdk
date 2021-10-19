@@ -11,7 +11,7 @@
 #include "dapguiswitchplugin.h"
 #include "dapguitexteditplugin.h"
 #include "dapguiwidgetplugin.h"
-#include "kelvpnneuromorphic.h"
+#include "dapvpnneuromorphic.h"
 
 #include "style/dapguistylemanager.h"
 #include "dapguicommon.h"
@@ -26,7 +26,7 @@ static WidgetsDebugSettings *s_settings = nullptr;
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-KelVpnNeuromorphic::KelVpnNeuromorphic (QObject *parent)
+DapVpnNeuromorphic::DapVpnNeuromorphic (QObject *parent)
   : QObject (parent)
 {
   m_widgets.append (new DapGuiButtonPlugin (this));
@@ -58,7 +58,7 @@ KelVpnNeuromorphic::KelVpnNeuromorphic (QObject *parent)
  * METHODS
  *******************************************/
 
-QList<QDesignerCustomWidgetInterface *> KelVpnNeuromorphic::customWidgets() const
+QList<QDesignerCustomWidgetInterface *> DapVpnNeuromorphic::customWidgets() const
 {
   return m_widgets;
 }

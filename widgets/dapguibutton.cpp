@@ -79,7 +79,6 @@ DapGuiButton::DapGuiButton (QWidget *parent)
   , m_iconCssClass ("")
   , m_link (false)
   , m_frame (false)
-  , m_shadowEffect (new QGraphicsDropShadowEffect)
   , m_lLink (new QLabel (this))
 {
   /* setup style */
@@ -121,15 +120,6 @@ DapGuiButton::DapGuiButton (QWidget *parent)
   setupStyle();
   setSeparator (false);
 
-  /* setup shadow effect */
-  m_shadowEffect->setBlurRadius (60);
-  m_shadowEffect->setXOffset (5);
-  m_shadowEffect->setYOffset (5);
-  m_shadowEffect->setColor (QColor::fromRgba (qRgba (0x40, 0x14, 0x24, 0x24)));
-
-  setGraphicsEffect (m_shadowEffect);
-  m_shadowEffect->setEnabled (false);
-
   /* connect clicked signals */
   for (auto i = m_widgets.begin(), e = m_widgets.end(); i != e; i++)
     {
@@ -164,6 +154,19 @@ DapGuiButton::~DapGuiButton()
  * PUBLIC METHODS
  *******************************************/
 
+
+
+/****************************************//**
+ * @property DapGuiButton::buttonStyle
+ * @brief button's current style.
+ *
+ * All styles is present inside
+ * file **dapguibutton.ui**
+ *
+ * @accessors %btnStyle(), %setBtnStyle()
+ * @see ButtonStyle
+ *******************************************/
+
 DapGuiButton::ButtonStyle DapGuiButton::btnStyle() const
 {
   return m_btnStyle;
@@ -181,6 +184,12 @@ void DapGuiButton::setBtnStyle (const ButtonStyle &style)
     (*j)->setVisible (i == int (m_btnStyle));
 }
 
+/****************************************//**
+ * @property DapGuiButton::mainText
+ * @brief main label text
+ * @accessors %mainText(), %setMainText()
+ *******************************************/
+
 QString DapGuiButton::mainText() const
 {
   return m_mainText;
@@ -194,6 +203,12 @@ void DapGuiButton::setMainText (const QString &mainText)
   for (auto i = array.begin(), e = array.end(); i != e; i++)
     (*i)->setProperty("text", m_mainText);
 }
+
+/****************************************//**
+ * @property DapGuiButton::subText
+ * @brief second label text
+ * @accessors %subText(), %setSubText()
+ *******************************************/
 
 QString DapGuiButton::subText() const
 {
@@ -232,6 +247,12 @@ void DapGuiButton::setSubText (const QString &subText)
     }
 }
 
+/****************************************//**
+ * @property DapGuiButton::leftText
+ * @brief left label text
+ * @accessors %leftText(), %setLeftText()
+ *******************************************/
+
 QString DapGuiButton::leftText() const
 {
   return m_leftText;
@@ -246,6 +267,13 @@ void DapGuiButton::setLeftText (const QString &leftText)
     as<DapGuiLabel> (*i)->setText (m_leftText);
 }
 
+/****************************************//**
+ * @property DapGuiButton::mainCssClass
+ * @brief css list for main label
+ * @see DapGuiStyleManager
+ * @accessors %mainCssClass(), %setMainCssClass()
+ *******************************************/
+
 QString DapGuiButton::mainCssClass() const
 {
   return m_mainCssClass;
@@ -256,6 +284,13 @@ void DapGuiButton::setMainCssClass (const QString &mainCssClass)
   m_mainCssClass = mainCssClass;
   setupLabels();
 }
+
+/****************************************//**
+ * @property DapGuiButton::subCssClass
+ * @brief css list for second label
+ * @see DapGuiStyleManager
+ * @accessors %subCssClass(), %setSubCssClass()
+ *******************************************/
 
 QString DapGuiButton::subCssClass() const
 {
@@ -268,6 +303,13 @@ void DapGuiButton::setSubCssClass (const QString &subCssClass)
   setupLabels();
 }
 
+/****************************************//**
+ * @property DapGuiButton::leftCssClass
+ * @brief css list for left label
+ * @see DapGuiStyleManager
+ * @accessors %leftCssClass(), %setLeftCssClass()
+ *******************************************/
+
 QString DapGuiButton::leftCssClass() const
 {
   return m_leftCssClass;
@@ -278,6 +320,13 @@ void DapGuiButton::setLeftCssClass (const QString &leftCssClass)
   m_leftCssClass = leftCssClass;
   setupLabels();
 }
+
+/****************************************//**
+ * @property DapGuiButton::iconCssClass
+ * @brief css list for icon label
+ * @see DapGuiStyleManager
+ * @accessors %iconCssClass(), %setIconCssClass()
+ *******************************************/
 
 QString DapGuiButton::iconCssClass() const
 {
@@ -290,6 +339,13 @@ void DapGuiButton::setIconCssClass (const QString &iconCssClass)
   setupLabels();
 }
 
+/****************************************//**
+ * @property DapGuiButton::inputMask
+ * @brief regexp for input field
+ * @see <a href="https://doc.qt.io/qt-5/qlineedit.html#inputMask-prop" target="_blank">QLineEdit::inputMask</a>
+ * @accessors %inputMask(), %setInputMask()
+ *******************************************/
+
 QString DapGuiButton::inputMask() const
 {
   return m_inputMask;
@@ -301,10 +357,21 @@ void DapGuiButton::setInputMask(const QString &inputMask)
   ui->kelGuiLineEditMain->setInputMask(inputMask);
 }
 
+/****************************************//**
+ * @brief custom widget inside edit field
+ *
+ * By default, property is nullptr
+ *******************************************/
+
 DapGuiLineEdit *DapGuiButton::edit() const
 {
   return ui->kelGuiLineEditMain;
 }
+
+/****************************************//**
+ * @brief setup custom widget into edit field
+ * @warning this is permanent. ask Mikhail Shilenko for more info
+ *******************************************/
 
 void DapGuiButton::setEdit(QWidget *newEdit) const
 {
@@ -321,25 +388,50 @@ void DapGuiButton::setEdit(QWidget *newEdit) const
   ui->kelGuiLineEditMain->hide();
 }
 
+/****************************************//**
+ * @see DapGuiLineEdit::callbackTextEdit
+ *******************************************/
+
 DapGuiLineEdit::cbTextEdit DapGuiButton::inputCallback() const
 {
   return ui->kelGuiLineEditMain->callbackTextEdit();
 }
+
+/****************************************//**
+ * @see DapGuiLineEdit::setCallbackTextEdit
+ *******************************************/
 
 void DapGuiButton::setInputCallback(const DapGuiLineEdit::cbTextEdit &cb)
 {
   ui->kelGuiLineEditMain->setCallbackTextEdit (cb);
 }
 
+/****************************************//**
+ * @see DapGuiLineEdit::callbackFocusEvent
+ *******************************************/
+
 DapGuiLineEdit::cbFocusEvent DapGuiButton::inputFocusCallback() const
 {
   return ui->kelGuiLineEditMain->callbackFocusEvent();
 }
 
+/****************************************//**
+ * @see DapGuiLineEdit::setCallbackFocusEvent
+ *******************************************/
+
 void DapGuiButton::setInputFocusCallback(const DapGuiLineEdit::cbFocusEvent &cb)
 {
   ui->kelGuiLineEditMain->setCallbackFocusEvent (cb);
 }
+
+/****************************************//**
+ * @property DapGuiButton::link
+ * @brief link icon
+ *
+ * Draw small link icon at the right side of the button
+ *
+ * @accessors %link(), %setLink()
+ *******************************************/
 
 bool DapGuiButton::link() const
 {
@@ -360,6 +452,15 @@ void DapGuiButton::setLink (bool link)
     }
 }
 
+/****************************************//**
+ * @property DapGuiButton::frame
+ * @brief show frame
+ *
+ * Draw frame around button
+ *
+ * @accessors %frame(), %setFrame()
+ *******************************************/
+
 bool DapGuiButton::frame() const
 {
   return m_frame;
@@ -371,6 +472,15 @@ void DapGuiButton::setFrame (bool frame)
   setupStyle();
 }
 
+/****************************************//**
+ * @property DapGuiButton::separator
+ * @brief show separator
+ *
+ * Draw separator at the bottom of the button
+ *
+ * @accessors %separator(), %setSeparator()
+ *******************************************/
+
 bool DapGuiButton::separator() const
 {
   return m_separator;
@@ -381,6 +491,15 @@ void DapGuiButton::setSeparator (bool separator)
   m_separator = separator;
   ui->kelGuiSeparator->setVisible (m_separator);
 }
+
+/****************************************//**
+ * @property DapGuiButton::maxLength
+ * @brief edit field's max length
+ *
+ * Set text max length limit to edit field
+ *
+ * @accessors %maxLength(), %setMaxLength()
+ *******************************************/
 
 int DapGuiButton::maxLength() const
 {

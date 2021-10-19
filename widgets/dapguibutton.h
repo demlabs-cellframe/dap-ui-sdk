@@ -70,28 +70,22 @@ public:
 private:
   Ui::DapGuiButtonUI *ui;
   ButtonStyle m_btnStyle; ///< button style
-  QString m_mainText;
-  QString m_subText;
-  QString m_leftText;
-  QString m_mainCssClass;
-  QString m_subCssClass;
-  QString m_leftCssClass;
-  QString m_iconCssClass;
-  QString m_inputMask;
+  QString m_mainText;     ///< main label text
+  QString m_subText;      ///< second label text
+  QString m_leftText;     ///< left label text
+  QString m_mainCssClass; ///< css list for main label
+  QString m_subCssClass;  ///< css list for second label
+  QString m_leftCssClass; ///< css list for left label
+  QString m_iconCssClass; ///< css list for icon label
+  QString m_inputMask;    ///< regexp for input field
   bool m_separator;       ///< bottom separator
   bool m_link;            ///< link button
   bool m_frame;           ///< show frame
 
-  QGraphicsDropShadowEffect *m_shadowEffect; ///< @note attached widget will take control. this means instance doesnt need to be deleted
-  QMultiMap<QString, QWidget *> m_widgets; ///< categorized map for widget
+  QMultiMap<QString, QWidget *> m_widgets;    ///< categorized map for widget. used for abstract property control
 
   /// labels
-  std::unique_ptr<QLabel> m_lLink;
-//  std::unique_ptr<QLabel> m_lMain,
-//      m_lSub,
-//      m_lLeft,
-//      m_lLink,
-//      m_lIcon;
+  std::unique_ptr<QLabel> m_lLink;  ///< link icon at right side
   /// @}
 
   /****************************************//**
@@ -136,7 +130,6 @@ public:
   void setInputMask(const QString &inputMask);
 
   DapGuiLineEdit *edit() const;
-  /// @warning this is permanent. ask Mikhail Shilenko for more info
   void setEdit (QWidget *newEdit) const;
 
   DapGuiLineEdit::cbTextEdit inputCallback() const;
@@ -151,17 +144,14 @@ public:
   bool frame() const;
   void setFrame (bool frame);
 
-  bool showIcon() const;
-  void setShowIcon (bool showIcon);
-
   bool separator() const;
   void setSeparator (bool separator);
 
   int maxLength() const;
   void setMaxLength (const int &max);
 
-  void setupStyle();
-  void setupLabels();
+  void setupStyle();    ///< @brief update style sheet and repaint
+  void setupLabels();   ///< @brief update label's css style property
   /// @}
 
   /****************************************//**
@@ -179,9 +169,9 @@ public:
    *******************************************/
   /// @{
 signals:
-  void clicked();         ///< button is clicked
-  void textChanged(const QString &);
-  void textEdited(const QString &);
+  void clicked();                     ///< button is clicked
+  void textChanged(const QString &);  ///< text changed by user or programm. @see <a href="https://doc.qt.io/qt-5/qlineedit.html#textChanged" target="_blank">QLineEdit::textChanged</a>
+  void textEdited(const QString &);   ///< text changed by user. @see <a href="https://doc.qt.io/qt-5/qlineedit.html#textEdited" target="_blank">QLineEdit::textEdited</a>
   /// @}
 
   /****************************************//**
@@ -189,8 +179,10 @@ signals:
    *******************************************/
   /// @{
 private slots:
-  /// copy info into clipboard when alt hold and mouse press
+  /// @brief copy info into clipboard when alt hold and mouse press
+  /// @note only for Debug builds
   void _slotDebugInfo();
+  /// @brief update mainText property
   void _slotTextEdited(const QString &a_text);
   /// @}
 };

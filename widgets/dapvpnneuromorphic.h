@@ -2,20 +2,9 @@
 #define KELVPNNEUROMORPHIC_H
 
 /************************************************//**
- * @defgroup groupDapGuiWidgets Kel Gui Widgets
- * Classes represents custom widgets for Kel Gui
+ * @defgroup groupDapGuiWidgets Dap Gui Widgets
  *
- * Basic classes:
- * - DapGuiButton
- * - DapGuiPushButton
- * - DapGuiRadio
- * - DapGuiCheckBox
- * - DapGuiSeparator
- * - DapGuiPlainTextEdit
- *
- * Misc. classes:
- * - DapGuiLabel
- * - DapGuiWidget
+ * Classes represents custom widgets for Dap Gui
  *
  * @date 02.09.2021
  * @authors Mikhail Shilenko
@@ -36,7 +25,7 @@
  * @author Mikhail Shilenko
  *******************************************/
 
-class KelVpnNeuromorphic : public QObject, public QDesignerCustomWidgetCollectionInterface
+class DapVpnNeuromorphic : public QObject, public QDesignerCustomWidgetCollectionInterface
 {
   Q_OBJECT
   Q_INTERFACES(QDesignerCustomWidgetCollectionInterface)
@@ -49,7 +38,7 @@ class KelVpnNeuromorphic : public QObject, public QDesignerCustomWidgetCollectio
    *******************************************/
   /// @{
 public:
-  explicit KelVpnNeuromorphic(QObject *parent = 0);
+  explicit DapVpnNeuromorphic(QObject *parent = 0);
   /// @}
 
   /****************************************//**
