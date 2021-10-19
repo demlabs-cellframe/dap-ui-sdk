@@ -41,8 +41,9 @@ SerialInput::SerialInput(QWidget *parent) :
   /* store input ptr */
   m_input = ui->btnSerial->edit(); // ui->customInput;
   m_input->setText ("");
-  //m_input->setHideAnchor (true);
+  // m_input->setHideAnchor (true); // this will hide anchor for no reason
   m_input->setCallbackFocusEvent (cbFocusEvent);
+  // m_input->setCallbackTextEdit (cbTextEdit); // this will mess the input
   m_input->setMaxLength (MAX_LENGTH);
 
   /* set font uppercase */
@@ -55,10 +56,21 @@ SerialInput::SerialInput(QWidget *parent) :
 
   /* signals */
 
+  // notify about returning
   connect (ui->btnReturn, &KelGuiPushButton::clicked,
            this, &SerialInput::sigReturn,
            Qt::QueuedConnection);
 
+  // commit on any button
+  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+           QGuiApplication::inputMethod(), &QInputMethod::commit,
+           Qt::QueuedConnection);
+  connect (ui->btnConfirm, &KelGuiPushButton::clicked,
+           QGuiApplication::inputMethod(), &QInputMethod::commit,
+           Qt::QueuedConnection);
+
+  // notify about confirming,
+  // return after confirming
   connect (ui->btnConfirm, &KelGuiPushButton::clicked,
            this, &SerialInput::sigConfirm,
            Qt::QueuedConnection);
@@ -66,6 +78,7 @@ SerialInput::SerialInput(QWidget *parent) :
            this, &SerialInput::sigReturn,
            Qt::QueuedConnection);
 
+  // unfocus on any button
   connect (this, &SerialInput::sigReturn,
            m_input, &KelGuiLineEdit::slotUnfocus,
            Qt::QueuedConnection);
@@ -153,6 +166,18 @@ void SerialInput::cbFocusEvent(KelGuiLineEdit *e, const Qt::FocusReason &reason)
       e->setHideAnchor (false);
       if (e->text() == "____-____-____-____")
         e->setText ("");
+    }
+}
+
+void SerialInput::cbTextEdit(KelGuiLineEdit *e, QString &preedit, QString &commit, int from, int to)
+{
+  Q_UNUSED(from)
+  Q_UNUSED(to)
+  int len   = e->text().length() + preedit.length() + commit.length();
+  if (len >= MAX_LENGTH)
+    {
+      QGuiApplication::inputMethod()->commit();
+      e->slotUnfocus();
     }
 }
 

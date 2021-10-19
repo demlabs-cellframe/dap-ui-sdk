@@ -51,6 +51,7 @@ public:
 private:
   void fixSerialKey (QString &a_serial) const;
   static void cbFocusEvent (KelGuiLineEdit *e, const Qt::FocusReason &reason);
+  static void cbTextEdit (KelGuiLineEdit *e, QString &preedit, QString &commit, int from, int to);
   /// @}
 
   /****************************************//**
