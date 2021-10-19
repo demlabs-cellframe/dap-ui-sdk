@@ -53,23 +53,23 @@ BugReports::BugReports (QWidget *parent) :
   connect (ui->radioTestLoading, &QRadioButton::clicked,
            this, &BugReports::_slotRadioTest);
 
-  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+  connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &BugReports::sigReturn,
            Qt::QueuedConnection);
-  connect (ui->btnSendReport, &KelGuiPushButton::clicked,
+  connect (ui->btnSendReport, &DapGuiPushButton::clicked,
            this, &BugReports::sigSend,
            Qt::QueuedConnection);
-  connect (ui->btnResultBack, &KelGuiPushButton::clicked,
+  connect (ui->btnResultBack, &DapGuiPushButton::clicked,
            this, &BugReports::sigResultBack,
            Qt::QueuedConnection);
 
-  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+  connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &BugReports::_slotTextEditFinish,
            Qt::QueuedConnection);
-  connect (ui->btnSendReport, &KelGuiPushButton::clicked,
+  connect (ui->btnSendReport, &DapGuiPushButton::clicked,
            this, &BugReports::_slotTextEditFinish,
            Qt::QueuedConnection);
-  connect (ui->btnResultBack, &KelGuiPushButton::clicked,
+  connect (ui->btnResultBack, &DapGuiPushButton::clicked,
            this, &BugReports::_slotTextEditFinish,
            Qt::QueuedConnection);
 

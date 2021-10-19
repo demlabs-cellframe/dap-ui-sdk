@@ -3,7 +3,7 @@
 
 /* INCLUDES */
 #include <QAbstractListModel>
-#include <kelguiradio.h>
+#include <dapguiradio.h>
 #include "modelbase.h"
 
 /* DEFS */
@@ -27,7 +27,7 @@ class ChooseServerModel : public ModelBase
 private:
   QAbstractListModel *m_model;
   ChooseServer *m_cs;
-  QList<KelGuiRadio*> m_list;
+  QList<DapGuiRadio*> m_list;
   bool _hook;
   int m_currentIndex;
   QString m_currentText;

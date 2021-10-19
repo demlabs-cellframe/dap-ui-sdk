@@ -14,8 +14,8 @@ namespace StyleSheet
  * Class takes stylesheet string, find
  * all names (starting with dots) and
  * stores style body into map.
- * @see KelGuiStyleManager
- * @ingroup groupKelGuiStyle
+ * @see DapGuiStyleManager
+ * @ingroup groupDapGuiStyle
  * @date 07.09.2021
  * @author Mikhail Shilenko
  *******************************************/

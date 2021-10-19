@@ -27,13 +27,13 @@ Connection::Connection (QWidget *parent) :
            Qt::QueuedConnection);
 
   /* signals */
-  connect (ui->btnSwitch, &KelGuiSwitch::toggled,
+  connect (ui->btnSwitch, &DapGuiSwitch::toggled,
            this, &Connection::sigSwitchToggle,
            Qt::QueuedConnection);
-  connect (ui->btnSwitch, &KelGuiSwitch::clicked,
+  connect (ui->btnSwitch, &DapGuiSwitch::clicked,
            this, &Connection::slotDisconnectionRequested,
            Qt::QueuedConnection);
-  connect (ui->btnServer, &KelGuiButton::clicked,
+  connect (ui->btnServer, &DapGuiButton::clicked,
            this, &Connection::sigServerClicked,
            Qt::QueuedConnection);
 

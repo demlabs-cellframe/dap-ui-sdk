@@ -16,7 +16,7 @@ History::History (QWidget *parent) :
   QTimer::singleShot (0, ui->scrollArea, &HistoryModel::slotSetup);
 
   /* signals */
-  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+  connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &History::sigReturn,
            Qt::QueuedConnection);
 }

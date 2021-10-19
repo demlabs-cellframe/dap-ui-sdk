@@ -13,10 +13,10 @@ VersionUpdate::VersionUpdate(QWidget *parent) :
   ui->setupUi(this);
 
   /* signals */
-  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+  connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &VersionUpdate::sigReturn,
            Qt::QueuedConnection);
-  connect (ui->btnUpdate, &KelGuiPushButton::clicked,
+  connect (ui->btnUpdate, &DapGuiPushButton::clicked,
            this, &VersionUpdate::sigUpdate,
            Qt::QueuedConnection);
 }

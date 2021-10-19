@@ -10,7 +10,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class SerialInput; }
 QT_END_NAMESPACE
 
-class KelGuiLineEdit;
+class DapGuiLineEdit;
 
 /****************************************//**
  * @brief ui/class for serial input
@@ -29,7 +29,7 @@ class SerialInput : public QWidget
   /// @{
 private:
   Ui::SerialInput *ui;
-  KelGuiLineEdit *m_input;
+  DapGuiLineEdit *m_input;
   bool m_textChangeHook;
   /// @}
 
@@ -50,8 +50,8 @@ public:
   QString serialKey() const;
 private:
   void fixSerialKey (QString &a_serial) const;
-  static void cbFocusEvent (KelGuiLineEdit *e, const Qt::FocusReason &reason);
-  static void cbTextEdit (KelGuiLineEdit *e, QString &preedit, QString &commit, int from, int to);
+  static void cbFocusEvent (DapGuiLineEdit *e, const Qt::FocusReason &reason);
+  static void cbTextEdit (DapGuiLineEdit *e, QString &preedit, QString &commit, int from, int to);
   /// @}
 
   /****************************************//**

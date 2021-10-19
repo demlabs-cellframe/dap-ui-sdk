@@ -16,7 +16,7 @@ Language::Language (QWidget *parent) :
   QTimer::singleShot (0, ui->scrollArea, &LanguageModel::slotSetup);
 
   /* signals */
-  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+  connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &Language::sigReturn,
            Qt::QueuedConnection);
 }

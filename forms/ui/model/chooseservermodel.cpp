@@ -67,7 +67,7 @@ void ChooseServerModel::slotSetup()
       QString text = m_model->data (m_model->index (i)).toString();
 
       /* create item */
-      auto item = new KelGuiRadio;
+      auto item = new DapGuiRadio;
       m_list << item;
 
       /* setup */
@@ -77,7 +77,7 @@ void ChooseServerModel::slotSetup()
       lay->addWidget (item);
 
       /* signals */
-      connect (item, &KelGuiRadio::toggled,
+      connect (item, &DapGuiRadio::toggled,
                this, &ChooseServerModel::slotToggled);
     }
 
@@ -97,7 +97,7 @@ void ChooseServerModel::slotToggled(bool checked)
 //    }
 
   /* get sender radio */
-  auto s = qobject_cast<KelGuiRadio*> (sender());
+  auto s = qobject_cast<DapGuiRadio*> (sender());
   if (!s || checked == false)
     return;
 

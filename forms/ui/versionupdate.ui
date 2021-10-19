@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="KelGuiWidget" name="Background">
+    <widget class="DapGuiWidget" name="Background">
      <property name="cssStyle">
       <string>backgroundcolor splashscreen_background</string>
      </property>
@@ -51,7 +51,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="KelGuiWidget" name="MainWidget">
+       <widget class="DapGuiWidget" name="MainWidget">
         <property name="cssStyle">
          <string>base-widget</string>
         </property>
@@ -72,14 +72,14 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="KelGuiWidget" name="kelGuiWidget_2">
+          <widget class="DapGuiWidget" name="kelGuiWidget_2">
            <property name="cssStyle">
             <string>ver-top-spacer</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="widget">
+          <widget class="DapGuiWidget" name="widget">
            <property name="cssStyle">
             <string>ver-title-text</string>
            </property>
@@ -100,9 +100,9 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="KelGuiPushButton" name="btnReturn">
+             <widget class="DapGuiPushButton" name="btnReturn">
               <property name="style">
-               <enum>KelGuiPushButton::Custom</enum>
+               <enum>DapGuiPushButton::Custom</enum>
               </property>
               <property name="custom">
                <url>
@@ -125,7 +125,7 @@
              </widget>
             </item>
             <item>
-             <widget class="KelGuiLabel" name="kelGuiLabel">
+             <widget class="DapGuiLabel" name="kelGuiLabel">
               <property name="text">
                <string>Version</string>
               </property>
@@ -138,7 +138,7 @@
              </widget>
             </item>
             <item>
-             <widget class="KelGuiWidget" name="kelGuiWidget">
+             <widget class="DapGuiWidget" name="kelGuiWidget">
               <property name="cssStyle">
                <string>bugrep-close-btn</string>
               </property>
@@ -148,14 +148,14 @@
           </widget>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="kelGuiWidget_3">
+          <widget class="DapGuiWidget" name="kelGuiWidget_3">
            <property name="cssStyle">
             <string>ver-top-content-spacer</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="kelGuiWidget_6">
+          <widget class="DapGuiWidget" name="kelGuiWidget_6">
            <property name="cssStyle">
             <string>ver-title-img-container</string>
            </property>
@@ -176,7 +176,7 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="KelGuiLabel" name="kelGuiLabel_2">
+             <widget class="DapGuiLabel" name="kelGuiLabel_2">
               <property name="cssStyle">
                <string>login_logo noborder nobackground</string>
               </property>
@@ -186,14 +186,14 @@
           </widget>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="kelGuiWidget_4">
+          <widget class="DapGuiWidget" name="kelGuiWidget_4">
            <property name="cssStyle">
             <string>ver-button-spacer</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="kelGuiWidget_7">
+          <widget class="DapGuiWidget" name="kelGuiWidget_7">
            <property name="cssStyle">
             <string>ver-button-container</string>
            </property>
@@ -214,7 +214,7 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="KelGuiPushButton" name="btnUpdate">
+             <widget class="DapGuiPushButton" name="btnUpdate">
               <property name="text">
                <string>install update</string>
               </property>
@@ -224,7 +224,7 @@
           </widget>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="kelGuiWidget_5"/>
+          <widget class="DapGuiWidget" name="kelGuiWidget_5"/>
          </item>
         </layout>
        </widget>
@@ -236,19 +236,19 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KelGuiPushButton</class>
+   <class>DapGuiPushButton</class>
    <extends>QPushButton</extends>
-   <header>kelguipushbutton.h</header>
+   <header>dapguipushbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiLabel</class>
+   <class>DapGuiLabel</class>
    <extends>QLabel</extends>
-   <header>kelguilabel.h</header>
+   <header>dapguilabel.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiWidget</class>
+   <class>DapGuiWidget</class>
    <extends>QWidget</extends>
-   <header>kelguiwidget.h</header>
+   <header>dapguiwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

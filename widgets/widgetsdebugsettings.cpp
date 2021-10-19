@@ -1,8 +1,8 @@
 /* INCLUDES */
 #include "widgetsdebugsettings.h"
 #include "ui_widgetsdebugsettings.h"
-#include "style/kelguistylemanager.h"
-#include "kelguicommon.h"
+#include "style/dapguistylemanager.h"
+#include "dapguicommon.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -41,10 +41,10 @@ WidgetsDebugSettings::WidgetsDebugSettings (QWidget *parent) :
 
   /* get main window and menu */
   auto mw   = getMainWindow();
-  auto menu = mw->menuBar()->addMenu ("..::KelGui Custom Widgets::..");
+  auto menu = mw->menuBar()->addMenu ("..::DapGui Custom Widgets::..");
 
   /* create docker */
-  QDockWidget *dock = new QDockWidget ("..::KelGui Custom Widgets Style Settings::..", mw);
+  QDockWidget *dock = new QDockWidget ("..::DapGui Custom Widgets Style Settings::..", mw);
   dock->setWidget (this);
 
   /* create menu */
@@ -104,7 +104,7 @@ void WidgetsDebugSettings::on_btnUpdateGlobalStyle_clicked()
     }
 
   style.replace ("pt", "px");
-  KelGuiStyleManager::setupGlobalStyleSheet (style);
+  DapGuiStyleManager::setupGlobalStyleSheet (style);
 }
 
 /*-----------------------------------------*/

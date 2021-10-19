@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="KelGuiWidget" name="Background">
+    <widget class="DapGuiWidget" name="Background">
      <property name="styleSheet">
       <string notr="true">#Background{ 	background-color: #f7f8fa; }</string>
      </property>
@@ -54,7 +54,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="KelGuiWidget" name="MainWidget">
+       <widget class="DapGuiWidget" name="MainWidget">
         <property name="cssStyle">
          <string>bugrep-widget backgroundcolor</string>
         </property>
@@ -75,7 +75,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="KelGuiWidget" name="top_spacer">
+          <widget class="DapGuiWidget" name="top_spacer">
            <property name="cssStyle">
             <string>bugrep-top-spacer</string>
            </property>
@@ -93,7 +93,7 @@
              <number>2</number>
             </property>
             <item>
-             <widget class="KelGuiWidget" name="top_spacer_debug">
+             <widget class="DapGuiWidget" name="top_spacer_debug">
               <layout class="QHBoxLayout" name="horizontalLayout_2">
                <property name="leftMargin">
                 <number>0</number>
@@ -150,9 +150,9 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="KelGuiPushButton" name="btnReturn">
+            <widget class="DapGuiPushButton" name="btnReturn">
              <property name="style">
-              <enum>KelGuiPushButton::Custom</enum>
+              <enum>DapGuiPushButton::Custom</enum>
              </property>
              <property name="custom">
               <url>
@@ -175,7 +175,7 @@
             </widget>
            </item>
            <item>
-            <widget class="KelGuiLabel" name="labelBugReports">
+            <widget class="DapGuiLabel" name="labelBugReports">
              <property name="text">
               <string>Bug reports</string>
              </property>
@@ -188,7 +188,7 @@
             </widget>
            </item>
            <item>
-            <widget class="KelGuiWidget" name="spacer_spacer">
+            <widget class="DapGuiWidget" name="spacer_spacer">
              <property name="cssStyle">
               <string>bugrep-close-btn nobackground</string>
              </property>
@@ -197,7 +197,7 @@
           </layout>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="top_input_spacer">
+          <widget class="DapGuiWidget" name="top_input_spacer">
            <property name="cssStyle">
             <string>bugrep-top-input-spacer</string>
            </property>
@@ -217,7 +217,7 @@
            <property name="widgetResizable">
             <bool>true</bool>
            </property>
-           <widget class="KelGuiWidget" name="scrollAreaWidgetContents">
+           <widget class="DapGuiWidget" name="scrollAreaWidgetContents">
             <property name="geometry">
              <rect>
               <x>0</x>
@@ -233,14 +233,14 @@
           </widget>
          </item>
          <item>
-          <widget class="KelGuiPlainTextEdit" name="editReport">
+          <widget class="DapGuiPlainTextEdit" name="editReport">
            <property name="placeholderText">
             <string>Please describe the details of problem you faced. What actions did you take and what happened.</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="KelGuiLabel" name="lResult">
+          <widget class="DapGuiLabel" name="lResult">
            <property name="text">
             <string>Bug report status</string>
            </property>
@@ -268,7 +268,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="KelGuiLabel" name="labelLetterAmount">
+            <widget class="DapGuiLabel" name="labelLetterAmount">
              <property name="text">
               <string>0/200</string>
              </property>
@@ -283,14 +283,14 @@
           </layout>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="top_spacer_2">
+          <widget class="DapGuiWidget" name="top_spacer_2">
            <property name="cssStyle">
             <string>bugrep-top-spacer</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="KelGuiLabel" name="btnAttachScreenshot">
+          <widget class="DapGuiLabel" name="btnAttachScreenshot">
            <property name="styleSheet">
             <string notr="true">#btnAttachScreenshot{ 	font-family: 'Lato'; 
  	color: #DA0B82; 
@@ -314,7 +314,7 @@
           </widget>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="attach_send_spacer">
+          <widget class="DapGuiWidget" name="attach_send_spacer">
            <property name="cssStyle">
             <string>bugrep-attach-send-spacer</string>
            </property>
@@ -323,7 +323,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_5">
            <item>
-            <widget class="KelGuiPushButton" name="btnSendReport">
+            <widget class="DapGuiPushButton" name="btnSendReport">
              <property name="text">
               <string>send report</string>
              </property>
@@ -334,7 +334,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_7">
            <item>
-            <widget class="KelGuiLabel" name="labelLoading">
+            <widget class="DapGuiLabel" name="labelLoading">
              <property name="text">
               <string/>
              </property>
@@ -348,7 +348,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_8">
            <item>
-            <widget class="KelGuiPushButton" name="btnResultBack">
+            <widget class="DapGuiPushButton" name="btnResultBack">
              <property name="text">
               <string>back</string>
              </property>
@@ -370,7 +370,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="KelGuiLabel" name="footer">
+          <widget class="DapGuiLabel" name="footer">
            <property name="cssStyle">
             <string>footer noborder nobackground</string>
            </property>
@@ -386,24 +386,24 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KelGuiPushButton</class>
+   <class>DapGuiPushButton</class>
    <extends>QPushButton</extends>
-   <header>kelguipushbutton.h</header>
+   <header>dapguipushbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiPlainTextEdit</class>
+   <class>DapGuiPlainTextEdit</class>
    <extends>QWidget</extends>
-   <header>kelguiplaintextedit.h</header>
+   <header>dapguiplaintextedit.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiLabel</class>
+   <class>DapGuiLabel</class>
    <extends>QLabel</extends>
-   <header>kelguilabel.h</header>
+   <header>dapguilabel.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiWidget</class>
+   <class>DapGuiWidget</class>
    <extends>QWidget</extends>
-   <header>kelguiwidget.h</header>
+   <header>dapguiwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

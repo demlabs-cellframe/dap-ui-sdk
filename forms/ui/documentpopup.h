@@ -6,7 +6,7 @@
 #include <QVBoxLayout>
 #include <QScrollArea>
 #include "baseform.h"
-#include "kelguilabel.h"
+#include "dapguilabel.h"
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
@@ -46,7 +46,7 @@ protected:
   /// @{
 private:
   Ui::DocumentPopup *ui;
-  KelGuiLabel *m_label;
+  DapGuiLabel *m_label;
   QVBoxLayout *m_layout;
   Filter *m_filter;
   /// @}

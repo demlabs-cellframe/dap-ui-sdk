@@ -55,10 +55,10 @@ void HistoryModel::slotSetup()
       QString text = item.name;
 
       /* create item */
-      auto btn = new KelGuiButton;
+      auto btn = new DapGuiButton;
       m_list << btn;
 
-      btn->setBtnStyle (KelGuiButton::IconMainSub);
+      btn->setBtnStyle (DapGuiButton::IconMainSub);
 
       btn->setMainText (text);
       btn->setMainCssClass ("darkblue uppercase font16");

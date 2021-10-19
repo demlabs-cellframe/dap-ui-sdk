@@ -3,7 +3,7 @@
 
 /* INCLUDES */
 #include "modelbase.h"
-#include "style/kelguistylemanager.h"
+#include "style/dapguistylemanager.h"
 
 class Settings;
 
@@ -16,8 +16,8 @@ class Settings;
 
 class SettingsModel : public ModelBase
 {
-  KELGUI_ENABLECSS
-  //KELGUI_ENABLEWIDGETSTYLE
+  DAPGUI_ENABLECSS
+  //DAPGUI_ENABLEWIDGETSTYLE
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT

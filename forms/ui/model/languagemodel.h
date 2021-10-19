@@ -4,7 +4,7 @@
 /* INCLUDES */
 #include <QScrollArea>
 #include <QBoxLayout>
-#include <kelguiradio.h>
+#include <dapguiradio.h>
 #include "modelbase.h"
 
 /****************************************//**
@@ -21,7 +21,7 @@ class LanguageModel : public ModelBase
    *******************************************/
   /// @{
 private:
-  QList<KelGuiRadio*> m_list;
+  QList<DapGuiRadio*> m_list;
   /// @}
 
   /****************************************//**

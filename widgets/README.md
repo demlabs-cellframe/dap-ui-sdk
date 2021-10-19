@@ -34,4 +34,4 @@ To use this module inside QtDesigner:<br>
 <a id="markdown-header-widgets"></a>
 # Widgets
 
-All widgets can be found inside group @ref groupKelGuiWidgets
+All widgets can be found inside group @ref groupDapGuiWidgets

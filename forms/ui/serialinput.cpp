@@ -1,7 +1,7 @@
 /* INCLUDES */
 #include "serialinput.h"
 #include "ui_serialinput.h"
-#include "kelguilineedit.h"
+#include "dapguilineedit.h"
 #include <QDebug>
 #include <QKeyEvent>
 #include <QClipboard>
@@ -57,33 +57,33 @@ SerialInput::SerialInput(QWidget *parent) :
   /* signals */
 
   // notify about returning
-  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+  connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &SerialInput::sigReturn,
            Qt::QueuedConnection);
 
   // commit on any button
-  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+  connect (ui->btnReturn, &DapGuiPushButton::clicked,
            QGuiApplication::inputMethod(), &QInputMethod::commit,
            Qt::QueuedConnection);
-  connect (ui->btnConfirm, &KelGuiPushButton::clicked,
+  connect (ui->btnConfirm, &DapGuiPushButton::clicked,
            QGuiApplication::inputMethod(), &QInputMethod::commit,
            Qt::QueuedConnection);
 
   // notify about confirming,
   // return after confirming
-  connect (ui->btnConfirm, &KelGuiPushButton::clicked,
+  connect (ui->btnConfirm, &DapGuiPushButton::clicked,
            this, &SerialInput::sigConfirm,
            Qt::QueuedConnection);
-  connect (ui->btnConfirm, &KelGuiPushButton::clicked,
+  connect (ui->btnConfirm, &DapGuiPushButton::clicked,
            this, &SerialInput::sigReturn,
            Qt::QueuedConnection);
 
   // unfocus on any button
   connect (this, &SerialInput::sigReturn,
-           m_input, &KelGuiLineEdit::slotUnfocus,
+           m_input, &DapGuiLineEdit::slotUnfocus,
            Qt::QueuedConnection);
   connect (this, &SerialInput::sigConfirm,
-           m_input, &KelGuiLineEdit::slotUnfocus,
+           m_input, &DapGuiLineEdit::slotUnfocus,
            Qt::QueuedConnection);
 }
 
@@ -159,7 +159,7 @@ repeat:
     }
 }
 
-void SerialInput::cbFocusEvent(KelGuiLineEdit *e, const Qt::FocusReason &reason)
+void SerialInput::cbFocusEvent(DapGuiLineEdit *e, const Qt::FocusReason &reason)
 {
   if (reason == Qt::MouseFocusReason)
     {
@@ -169,7 +169,7 @@ void SerialInput::cbFocusEvent(KelGuiLineEdit *e, const Qt::FocusReason &reason)
     }
 }
 
-void SerialInput::cbTextEdit(KelGuiLineEdit *e, QString &preedit, QString &commit, int from, int to)
+void SerialInput::cbTextEdit(DapGuiLineEdit *e, QString &preedit, QString &commit, int from, int to)
 {
   Q_UNUSED(from)
   Q_UNUSED(to)

@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="KelGuiWidget" name="Background">
+    <widget class="DapGuiWidget" name="Background">
      <property name="styleSheet">
       <string notr="true">#Background{ 	background-color: #f7f8fa; }</string>
      </property>
@@ -54,14 +54,14 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget_4">
+       <widget class="DapGuiWidget" name="kelGuiWidget_4">
         <property name="cssStyle">
          <string>stat-top-spacer</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="KelGuiLabel" name="label">
+       <widget class="DapGuiLabel" name="label">
         <property name="text">
          <string>Statistics</string>
         </property>
@@ -74,7 +74,7 @@
        </widget>
       </item>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget_3">
+       <widget class="DapGuiWidget" name="kelGuiWidget_3">
         <property name="cssStyle">
          <string>stat-top-frame-spacer</string>
         </property>
@@ -86,7 +86,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="KelGuiWidget" name="frame">
+         <widget class="DapGuiWidget" name="frame">
           <property name="cssStyle">
            <string>stat-frame nobackground</string>
           </property>
@@ -107,7 +107,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="KelGuiGraphicsView" name="graphicsView">
+            <widget class="DapGuiGraphicsView" name="graphicsView">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -125,7 +125,7 @@
        </layout>
       </item>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget_5">
+       <widget class="DapGuiWidget" name="kelGuiWidget_5">
         <property name="cssStyle">
          <string>stat-bottom-frame-spacer</string>
         </property>
@@ -137,7 +137,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="KelGuiWidget" name="kelGuiWidget_2">
+         <widget class="DapGuiWidget" name="kelGuiWidget_2">
           <property name="cssStyle">
            <string>nobackground</string>
           </property>
@@ -158,7 +158,7 @@
             <number>0</number>
            </property>
            <item row="4" column="1">
-            <widget class="KelGuiButton" name="statPing">
+            <widget class="DapGuiButton" name="statPing">
              <property name="cssStyle">
               <string>stat-info nobackground</string>
              </property>
@@ -180,7 +180,7 @@
             </widget>
            </item>
            <item row="3" column="0">
-            <widget class="KelGuiButton" name="statPackRec">
+            <widget class="DapGuiButton" name="statPackRec">
              <property name="cssStyle">
               <string>stat-info nobackground</string>
              </property>
@@ -202,7 +202,7 @@
             </widget>
            </item>
            <item row="3" column="1">
-            <widget class="KelGuiButton" name="statPackSent">
+            <widget class="DapGuiButton" name="statPackSent">
              <property name="cssStyle">
               <string>stat-info nobackground</string>
              </property>
@@ -224,7 +224,7 @@
             </widget>
            </item>
            <item row="4" column="0">
-            <widget class="KelGuiButton" name="statUptime">
+            <widget class="DapGuiButton" name="statUptime">
              <property name="cssStyle">
               <string>stat-info nobackground</string>
              </property>
@@ -246,7 +246,7 @@
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="KelGuiButton" name="statUpSp">
+            <widget class="DapGuiButton" name="statUpSp">
              <property name="cssStyle">
               <string>stat-info nobackground</string>
              </property>
@@ -268,7 +268,7 @@
             </widget>
            </item>
            <item row="1" column="0">
-            <widget class="KelGuiButton" name="statDownSp">
+            <widget class="DapGuiButton" name="statDownSp">
              <property name="cssStyle">
               <string>stat-info nobackground</string>
              </property>
@@ -290,7 +290,7 @@
             </widget>
            </item>
            <item row="2" column="1">
-            <widget class="KelGuiButton" name="statBytesSent">
+            <widget class="DapGuiButton" name="statBytesSent">
              <property name="cssStyle">
               <string>stat-info nobackground</string>
              </property>
@@ -312,7 +312,7 @@
             </widget>
            </item>
            <item row="2" column="0">
-            <widget class="KelGuiButton" name="statBytesRec">
+            <widget class="DapGuiButton" name="statBytesRec">
              <property name="cssStyle">
               <string>stat-info nobackground</string>
              </property>
@@ -339,7 +339,7 @@
        </layout>
       </item>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget">
+       <widget class="DapGuiWidget" name="kelGuiWidget">
         <property name="cssStyle">
          <string>footer</string>
         </property>
@@ -352,25 +352,25 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KelGuiButton</class>
+   <class>DapGuiButton</class>
    <extends>QWidget</extends>
-   <header>kelguibutton.h</header>
+   <header>dapguibutton.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiLabel</class>
+   <class>DapGuiLabel</class>
    <extends>QLabel</extends>
-   <header>kelguilabel.h</header>
+   <header>dapguilabel.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiWidget</class>
+   <class>DapGuiWidget</class>
    <extends>QWidget</extends>
-   <header>kelguiwidget.h</header>
+   <header>dapguiwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>KelGuiGraphicsView</class>
+   <class>DapGuiGraphicsView</class>
    <extends>QGraphicsView</extends>
-   <header>kelguigraphicsview.h</header>
+   <header>dapguigraphicsview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

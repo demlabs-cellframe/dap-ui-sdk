@@ -33,7 +33,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="KelGuiWidget" name="Background">
+    <widget class="DapGuiWidget" name="Background">
      <property name="cssStyle">
       <string>footer backgroundcolor</string>
      </property>
@@ -59,12 +59,12 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="KelGuiPushButton" name="btnSettings">
+         <widget class="DapGuiPushButton" name="btnSettings">
           <property name="checkable">
            <bool>true</bool>
           </property>
           <property name="style">
-           <enum>KelGuiPushButton::Settings</enum>
+           <enum>DapGuiPushButton::Settings</enum>
           </property>
           <property name="cssStyle" stdset="0">
            <string>cwpb_square nobackground</string>
@@ -72,7 +72,7 @@
          </widget>
         </item>
         <item>
-         <widget class="KelGuiPushButton" name="btnConnection">
+         <widget class="DapGuiPushButton" name="btnConnection">
           <property name="checkable">
            <bool>true</bool>
           </property>
@@ -80,7 +80,7 @@
            <bool>true</bool>
           </property>
           <property name="style">
-           <enum>KelGuiPushButton::Connection</enum>
+           <enum>DapGuiPushButton::Connection</enum>
           </property>
           <property name="cssStyle" stdset="0">
            <string>cwpb_square nobackground</string>
@@ -88,12 +88,12 @@
          </widget>
         </item>
         <item>
-         <widget class="KelGuiPushButton" name="btnAccaunt">
+         <widget class="DapGuiPushButton" name="btnAccaunt">
           <property name="checkable">
            <bool>true</bool>
           </property>
           <property name="style">
-           <enum>KelGuiPushButton::Account</enum>
+           <enum>DapGuiPushButton::Account</enum>
           </property>
           <property name="cssStyle" stdset="0">
            <string>cwpb_square nobackground</string>
@@ -154,14 +154,14 @@ border-radius: 2px;
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KelGuiPushButton</class>
+   <class>DapGuiPushButton</class>
    <extends>QPushButton</extends>
-   <header>kelguipushbutton.h</header>
+   <header>dapguipushbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiWidget</class>
+   <class>DapGuiWidget</class>
    <extends>QWidget</extends>
-   <header>kelguiwidget.h</header>
+   <header>dapguiwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

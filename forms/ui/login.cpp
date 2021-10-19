@@ -33,7 +33,7 @@ Login::Login (QWidget *parent) :
     ui->btnChooseSerial->edit()->setCssStyle(style);
   }
 #ifdef Q_OS_ANDROID
-  ui->btnChooseSerial->setBtnStyle (KelGuiButton::TopMainBottomSub);
+  ui->btnChooseSerial->setBtnStyle (DapGuiButton::TopMainBottomSub);
   ui->btnChooseSerial->setMainText ("____-____-____-____");
 #endif // Q_OS_ANDROID
 
@@ -45,19 +45,19 @@ Login::Login (QWidget *parent) :
 //#endif // Q_OS_ANDROID
 
   /* signals */
-  connect (ui->btnChooseServer, &KelGuiButton::clicked,
+  connect (ui->btnChooseServer, &DapGuiButton::clicked,
            this, &Login::sigChooseServer);
-  connect (ui->btnChooseSerial, &KelGuiButton::clicked,
+  connect (ui->btnChooseSerial, &DapGuiButton::clicked,
            this, &Login::sigChooseSerial);
-  connect (ui->btnConnect, &KelGuiPushButton::clicked,
+  connect (ui->btnConnect, &DapGuiPushButton::clicked,
            this, &Login::sigConnect);
-  connect (ui->btnObtainNewKey, &KelGuiLabel::clicked,
+  connect (ui->btnObtainNewKey, &DapGuiLabel::clicked,
            this, &Login::sigObtainNewKey);
-//  connect (ui->btnChooseSerial, &KelGuiButton::textChanged,
+//  connect (ui->btnChooseSerial, &DapGuiButton::textChanged,
 //          this, &Login::sigObtainNewKey);
 
 
-//  connect(ui->btnChooseSerial, &KelGuiButton::textChanged,[this](QString text){
+//  connect(ui->btnChooseSerial, &DapGuiButton::textChanged,[this](QString text){
 //      if (ui->btnChooseSerial->mainText().remove("-").count() == MAX_COUNT_CHAR)
 //          emit textChangedAndFilledOut(ui->btnChooseSerial->mainText().remove("-"));
 //      else if(ui->btnChooseSerial->mainText().remove("-").isEmpty())
@@ -65,7 +65,7 @@ Login::Login (QWidget *parent) :
 //      else
 //          emit slotSerialFillingIncorrect();
 //  });
-//  connect(ui->btnChooseSerial, &KelGuiButton::textEdited,[this](QString text){
+//  connect(ui->btnChooseSerial, &DapGuiButton::textEdited,[this](QString text){
 //      Q_UNUSED(text);
 //      if (ui->btnChooseSerial->mainText().remove("-").count() == MAX_COUNT_CHAR)
 //          emit textEditedAndFilledOut(ui->btnChooseSerial->mainText());
@@ -75,9 +75,9 @@ Login::Login (QWidget *parent) :
 //          emit slotSerialFillingIncorrect();
 //  });
 
-  connect (ui->btnChooseSerial, &KelGuiButton::textChanged,
+  connect (ui->btnChooseSerial, &DapGuiButton::textChanged,
            this, &Login::slotSerialChanged);
-  connect (ui->btnChooseSerial, &KelGuiButton::textEdited,
+  connect (ui->btnChooseSerial, &DapGuiButton::textEdited,
            this, &Login::slotSerialEdited);
 }
 
@@ -95,7 +95,7 @@ QString Login::getSerialNumber()
   return ui->btnChooseSerial->mainText();
 }
 
-void Login::cbSerialFocus (KelGuiLineEdit *e, const Qt::FocusReason &reason)
+void Login::cbSerialFocus (DapGuiLineEdit *e, const Qt::FocusReason &reason)
 {
   Q_UNUSED (e)
 
@@ -107,7 +107,7 @@ void Login::cbSerialFocus (KelGuiLineEdit *e, const Qt::FocusReason &reason)
     }
 }
 
-void Login::cbSerialText (KelGuiLineEdit *e, QString &preedit, QString &commit, int from, int to)
+void Login::cbSerialText (DapGuiLineEdit *e, QString &preedit, QString &commit, int from, int to)
 {
   /* compare length's */
   //s_oldSerialLength = e->text().length();
@@ -145,7 +145,7 @@ void Login::cbSerialText (KelGuiLineEdit *e, QString &preedit, QString &commit, 
   s_oldSerialLength = len;
 }
 
-void Login::fixSerialString (KelGuiLineEdit *e, QString &serial, bool inserted)
+void Login::fixSerialString (DapGuiLineEdit *e, QString &serial, bool inserted)
 {
   /* get copy */
   auto text   = serial.toUpper();
@@ -206,7 +206,7 @@ void Login::fixSerialString (KelGuiLineEdit *e, QString &serial, bool inserted)
   serial    = text;
 }
 
-void Login::fixSerialString_ (KelGuiLineEdit *e, QString &serial, bool inserted)
+void Login::fixSerialString_ (DapGuiLineEdit *e, QString &serial, bool inserted)
 {
   //qDebug() << __PRETTY_FUNCTION__ << "start";
 
