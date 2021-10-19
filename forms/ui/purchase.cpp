@@ -16,7 +16,7 @@ Purchase::Purchase (QWidget *parent) :
   QTimer::singleShot (0, ui->scrollArea, &PurchaseModel::slotSetup);
 
   /* signals */
-  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+  connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &Purchase::sigReturn,
            Qt::QueuedConnection);
 }

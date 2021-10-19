@@ -1,4 +1,4 @@
-QLabel#KelGuiButtonTextMain
+QLabel#DapGuiButtonTextMain
 {
 color: #04004E;
 font: 20px/24px;
@@ -8,7 +8,7 @@ font-size: bold;
 font-family: 'Lato';
 }
 
-QLabel#KelGuiButtonTextSub
+QLabel#DapGuiButtonTextSub
 {
 color: #A4A3C0;
 margin-top: 3px;
@@ -20,7 +20,7 @@ font-family: 'Lato';
 text-transform: uppercase;
 }
 
-QLabel#KelGuiButtonTextLeft
+QLabel#DapGuiButtonTextLeft
 {
 color: #04004E;
 margin-left: 30px;

@@ -16,7 +16,7 @@ Language::Language (QWidget *parent) :
   QMetaObject::invokeMethod(ui->scrollArea, &LanguageModel::slotSetup, Qt::QueuedConnection);
 
   /* signals */
-  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+  connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &Language::sigReturn,
            Qt::QueuedConnection);
 }

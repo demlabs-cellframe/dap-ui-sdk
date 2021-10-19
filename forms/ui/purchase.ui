@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="KelGuiWidget" name="Background">
+    <widget class="DapGuiWidget" name="Background">
      <property name="cssStyle">
       <string>backgroundcolor</string>
      </property>
@@ -51,7 +51,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="KelGuiWidget" name="MainWidget">
+       <widget class="DapGuiWidget" name="MainWidget">
         <property name="cssStyle">
          <string>base-widget</string>
         </property>
@@ -72,7 +72,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="KelGuiWidget" name="top_spacer">
+          <widget class="DapGuiWidget" name="top_spacer">
            <property name="cssStyle">
             <string>purchase-top-spacer</string>
            </property>
@@ -81,9 +81,9 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <widget class="KelGuiPushButton" name="btnReturn">
+            <widget class="DapGuiPushButton" name="btnReturn">
              <property name="style">
-              <enum>KelGuiPushButton::Custom</enum>
+              <enum>DapGuiPushButton::Custom</enum>
              </property>
              <property name="custom">
               <url>
@@ -106,7 +106,7 @@
             </widget>
            </item>
            <item>
-            <widget class="KelGuiLabel" name="labelTitle">
+            <widget class="DapGuiLabel" name="labelTitle">
              <property name="text">
               <string>Get a new licence key</string>
              </property>
@@ -119,7 +119,7 @@
             </widget>
            </item>
            <item>
-            <widget class="KelGuiWidget" name="kelGuiWidget">
+            <widget class="DapGuiWidget" name="kelGuiWidget">
              <property name="cssStyle">
               <string>cwb_close-btn</string>
              </property>
@@ -128,7 +128,7 @@
           </layout>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="kelGuiWidget_2">
+          <widget class="DapGuiWidget" name="kelGuiWidget_2">
            <property name="cssStyle">
             <string>purchase-top-content-spacer</string>
            </property>
@@ -173,19 +173,19 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KelGuiPushButton</class>
+   <class>DapGuiPushButton</class>
    <extends>QPushButton</extends>
-   <header>kelguipushbutton.h</header>
+   <header>dapguipushbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiLabel</class>
+   <class>DapGuiLabel</class>
    <extends>QLabel</extends>
-   <header>kelguilabel.h</header>
+   <header>dapguilabel.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiWidget</class>
+   <class>DapGuiWidget</class>
    <extends>QWidget</extends>
-   <header>kelguiwidget.h</header>
+   <header>dapguiwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

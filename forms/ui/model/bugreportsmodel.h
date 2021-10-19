@@ -2,7 +2,7 @@
 #define BUGREPORTSMODEL_H
 
 /* INCLUDES */
-#include <kelguibutton.h>
+#include <dapguibutton.h>
 #include "modelbase.h"
 
 /****************************************//**
@@ -21,7 +21,7 @@ class BugReportsModel : public ModelBase
    *******************************************/
   /// @{
 private:
-  QList<KelGuiButton*> m_list;
+  QList<DapGuiButton*> m_list;
   /// @}
 
   /****************************************//**

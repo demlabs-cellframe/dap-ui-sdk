@@ -16,7 +16,7 @@ History::History (QWidget *parent) :
   QMetaObject::invokeMethod(ui->scrollArea, &HistoryModel::slotSetup, Qt::QueuedConnection);
 
   /* signals */
-  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+  connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &History::sigReturn,
            Qt::QueuedConnection);
 }

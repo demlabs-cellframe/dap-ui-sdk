@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="KelGuiWidget" name="Background">
+    <widget class="DapGuiWidget" name="Background">
      <property name="cssStyle">
       <string>backgroundcolor sett-scroll-holder</string>
      </property>
@@ -51,7 +51,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="KelGuiWidget" name="MainWidget">
+       <widget class="DapGuiWidget" name="MainWidget">
         <property name="cssStyle">
          <string>sett-width</string>
         </property>
@@ -88,7 +88,7 @@
            <property name="widgetResizable">
             <bool>true</bool>
            </property>
-           <widget class="KelGuiWidget" name="scrollAreaWidgetContents">
+           <widget class="DapGuiWidget" name="scrollAreaWidgetContents">
             <property name="geometry">
              <rect>
               <x>0</x>
@@ -104,7 +104,7 @@
           </widget>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="kelGuiWidget">
+          <widget class="DapGuiWidget" name="kelGuiWidget">
            <property name="cssStyle">
             <string>footer</string>
            </property>
@@ -120,9 +120,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KelGuiWidget</class>
+   <class>DapGuiWidget</class>
    <extends>QWidget</extends>
-   <header>kelguiwidget.h</header>
+   <header>dapguiwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

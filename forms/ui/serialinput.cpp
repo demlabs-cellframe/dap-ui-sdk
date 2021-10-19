@@ -1,7 +1,7 @@
 /* INCLUDES */
 #include "serialinput.h"
 #include "ui_serialinput.h"
-#include "kelguilineedit.h"
+#include "dapguilineedit.h"
 #include <QDebug>
 #include <QKeyEvent>
 #include <QClipboard>
@@ -41,8 +41,9 @@ SerialInput::SerialInput(QWidget *parent) :
   /* store input ptr */
   m_input = ui->btnSerial->edit(); // ui->customInput;
   m_input->setText ("");
-  //m_input->setHideAnchor (true);
+  // m_input->setHideAnchor (true); // this will hide anchor for no reason
   m_input->setCallbackFocusEvent (cbFocusEvent);
+  // m_input->setCallbackTextEdit (cbTextEdit); // this will mess the input
   m_input->setMaxLength (MAX_LENGTH);
 
   /* set font uppercase */
@@ -55,22 +56,34 @@ SerialInput::SerialInput(QWidget *parent) :
 
   /* signals */
 
-  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+  // notify about returning
+  connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &SerialInput::sigReturn,
            Qt::QueuedConnection);
 
-  connect (ui->btnConfirm, &KelGuiPushButton::clicked,
+  // commit on any button
+  connect (ui->btnReturn, &DapGuiPushButton::clicked,
+           QGuiApplication::inputMethod(), &QInputMethod::commit,
+           Qt::QueuedConnection);
+  connect (ui->btnConfirm, &DapGuiPushButton::clicked,
+           QGuiApplication::inputMethod(), &QInputMethod::commit,
+           Qt::QueuedConnection);
+
+  // notify about confirming,
+  // return after confirming
+  connect (ui->btnConfirm, &DapGuiPushButton::clicked,
            this, &SerialInput::sigConfirm,
            Qt::QueuedConnection);
-  connect (ui->btnConfirm, &KelGuiPushButton::clicked,
+  connect (ui->btnConfirm, &DapGuiPushButton::clicked,
            this, &SerialInput::sigReturn,
            Qt::QueuedConnection);
 
+  // unfocus on any button
   connect (this, &SerialInput::sigReturn,
-           m_input, &KelGuiLineEdit::slotUnfocus,
+           m_input, &DapGuiLineEdit::slotUnfocus,
            Qt::QueuedConnection);
   connect (this, &SerialInput::sigConfirm,
-           m_input, &KelGuiLineEdit::slotUnfocus,
+           m_input, &DapGuiLineEdit::slotUnfocus,
            Qt::QueuedConnection);
 }
 
@@ -146,13 +159,25 @@ repeat:
     }
 }
 
-void SerialInput::cbFocusEvent(KelGuiLineEdit *e, const Qt::FocusReason &reason)
+void SerialInput::cbFocusEvent(DapGuiLineEdit *e, const Qt::FocusReason &reason)
 {
   if (reason == Qt::MouseFocusReason)
     {
       e->setHideAnchor (false);
       if (e->text() == "____-____-____-____")
         e->setText ("");
+    }
+}
+
+void SerialInput::cbTextEdit(DapGuiLineEdit *e, QString &preedit, QString &commit, int from, int to)
+{
+  Q_UNUSED(from)
+  Q_UNUSED(to)
+  int len   = e->text().length() + preedit.length() + commit.length();
+  if (len >= MAX_LENGTH)
+    {
+      QGuiApplication::inputMethod()->commit();
+      e->slotUnfocus();
     }
 }
 

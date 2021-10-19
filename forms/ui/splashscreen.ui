@@ -54,26 +54,26 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="KelGuiWidget" name="MainWidget">
+       <widget class="DapGuiWidget" name="MainWidget">
         <property name="cssStyle">
          <string>splashscreen_background</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="KelGuiWidget" name="kelGuiWidget_2">
+          <widget class="DapGuiWidget" name="kelGuiWidget_2">
            <property name="cssStyle">
             <string>nobackground</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="widget">
+          <widget class="DapGuiWidget" name="widget">
            <property name="cssStyle">
             <string>nobackground</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
-             <widget class="KelGuiLabel" name="lLogo">
+             <widget class="DapGuiLabel" name="lLogo">
               <property name="styleSheet">
                <string notr="true">#lLogo{ 	min-width: 230px; 	max-width: 230px; 	min-height: 59px; 	max-height: 59px; 	border-image: url(:/gui/ui/asset/logo_kelvpn-white.png); 
  	border: none; 
@@ -91,14 +91,14 @@
           </widget>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="kelGuiWidget">
+          <widget class="DapGuiWidget" name="kelGuiWidget">
            <property name="cssStyle">
             <string>nobackground</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="KelGuiLabel" name="lStatus">
+          <widget class="DapGuiLabel" name="lStatus">
            <property name="styleSheet">
             <string notr="true">#lStatus{ 	color: #FFFFFF; 
  	font: 18px/22px; 
@@ -119,7 +119,7 @@
           </widget>
          </item>
          <item>
-          <widget class="KelGuiLabel" name="lVersion">
+          <widget class="DapGuiLabel" name="lVersion">
            <property name="styleSheet">
             <string notr="true">#lVersion{ 	color: #FFFFFF; 
  	font: 12px/15px; 
@@ -141,7 +141,7 @@ September 10 2021</string>
           </widget>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="wLoadingHolder">
+          <widget class="DapGuiWidget" name="wLoadingHolder">
            <property name="styleSheet">
             <string notr="true">#wLoadingHolder{ 	background-color: rgba(0,0,0,0); }</string>
            </property>
@@ -202,14 +202,14 @@ border-radius: 2px;
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KelGuiLabel</class>
+   <class>DapGuiLabel</class>
    <extends>QLabel</extends>
-   <header>kelguilabel.h</header>
+   <header>dapguilabel.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiWidget</class>
+   <class>DapGuiWidget</class>
    <extends>QWidget</extends>
-   <header>kelguiwidget.h</header>
+   <header>dapguiwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

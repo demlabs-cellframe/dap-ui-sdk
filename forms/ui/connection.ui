@@ -54,14 +54,14 @@ background-color: #F7F8FA;
        <number>0</number>
       </property>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget_2">
+       <widget class="DapGuiWidget" name="kelGuiWidget_2">
         <property name="cssStyle">
          <string>conn-top-spacer</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="KelGuiLabel" name="lTitle">
+       <widget class="DapGuiLabel" name="lTitle">
         <property name="styleSheet">
          <string notr="true">#lTitle{ 	height: 28px; 	min-height: 28px; 	max-height: 28px; 
  	font: 24px/29px; 
@@ -83,7 +83,7 @@ background-color: #F7F8FA;
        </widget>
       </item>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget_5">
+       <widget class="DapGuiWidget" name="kelGuiWidget_5">
         <property name="cssStyle">
          <string>conn-top-text-time</string>
         </property>
@@ -117,21 +117,21 @@ background-color: #F7F8FA;
           </spacer>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="lStatusIconOn">
+          <widget class="DapGuiWidget" name="lStatusIconOn">
            <property name="cssStyle">
             <string>conn-status-icon ic_online</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="KelGuiWidget" name="lStatusIconOff">
+          <widget class="DapGuiWidget" name="lStatusIconOff">
            <property name="cssStyle">
             <string>conn-status-icon ic_offline</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="KelGuiLabel" name="lUptime">
+          <widget class="DapGuiLabel" name="lUptime">
            <property name="styleSheet">
             <string notr="true">#lUptime{ 	height: 22px; 	min-height: 22px; 	max-height: 22px; 
  	font: 18px/22px; 
@@ -166,7 +166,7 @@ background-color: #F7F8FA;
        </widget>
       </item>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget_3">
+       <widget class="DapGuiWidget" name="kelGuiWidget_3">
         <property name="cssStyle">
          <string>conn-mid-button-spacer</string>
         </property>
@@ -175,12 +175,12 @@ background-color: #F7F8FA;
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="KelGuiSwitch" name="btnSwitch"/>
+         <widget class="DapGuiSwitch" name="btnSwitch"/>
         </item>
        </layout>
       </item>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget_4">
+       <widget class="DapGuiWidget" name="kelGuiWidget_4">
         <property name="cssStyle">
          <string>conn-down-button-spacer</string>
         </property>
@@ -189,7 +189,7 @@ background-color: #F7F8FA;
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="KelGuiButton" name="lDownload">
+         <widget class="DapGuiButton" name="lDownload">
           <property name="cssStyle">
            <string>conn-status-button</string>
           </property>
@@ -208,7 +208,7 @@ background-color: #F7F8FA;
          </widget>
         </item>
         <item>
-         <widget class="KelGuiButton" name="lUpload">
+         <widget class="DapGuiButton" name="lUpload">
           <property name="cssStyle">
            <string>conn-status-button</string>
           </property>
@@ -231,7 +231,7 @@ background-color: #F7F8FA;
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="KelGuiButton" name="btnServer">
+         <widget class="DapGuiButton" name="btnServer">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
             <horstretch>0</horstretch>
@@ -242,7 +242,7 @@ background-color: #F7F8FA;
            <string>conn-connectedto-button nobackground</string>
           </property>
           <property name="buttonStyle" stdset="0">
-           <enum>KelGuiButton::TopSubBottomMain</enum>
+           <enum>DapGuiButton::TopSubBottomMain</enum>
           </property>
           <property name="mainText">
            <string>North America - Canada</string>
@@ -270,7 +270,7 @@ background-color: #F7F8FA;
        </layout>
       </item>
       <item>
-       <widget class="KelGuiWidget" name="kelGuiWidget">
+       <widget class="DapGuiWidget" name="kelGuiWidget">
         <property name="cssStyle">
          <string>footer</string>
         </property>
@@ -283,24 +283,24 @@ background-color: #F7F8FA;
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KelGuiButton</class>
+   <class>DapGuiButton</class>
    <extends>QWidget</extends>
-   <header>kelguibutton.h</header>
+   <header>dapguibutton.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiSwitch</class>
+   <class>DapGuiSwitch</class>
    <extends>QWidget</extends>
-   <header>kelguiswitch.h</header>
+   <header>dapguiswitch.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiLabel</class>
+   <class>DapGuiLabel</class>
    <extends>QLabel</extends>
-   <header>kelguilabel.h</header>
+   <header>dapguilabel.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiWidget</class>
+   <class>DapGuiWidget</class>
    <extends>QWidget</extends>
-   <header>kelguiwidget.h</header>
+   <header>dapguiwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="KelGuiWidget" name="kelGuiWidget">
+    <widget class="DapGuiWidget" name="kelGuiWidget">
      <property name="cssStyle">
       <string>backgroundcolor</string>
      </property>
@@ -51,7 +51,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="KelGuiLabel" name="lTitle">
+       <widget class="DapGuiLabel" name="lTitle">
         <property name="text">
          <string>Reset the serial key</string>
         </property>
@@ -64,7 +64,7 @@
        </widget>
       </item>
       <item>
-       <widget class="KelGuiLabel" name="lDescription">
+       <widget class="DapGuiLabel" name="lDescription">
         <property name="text">
          <string>This action will reset the serial
 key on your device. Are you sure?</string>
@@ -78,7 +78,7 @@ key on your device. Are you sure?</string>
        </widget>
       </item>
       <item>
-       <widget class="KelGuiWidget" name="spacer2">
+       <widget class="DapGuiWidget" name="spacer2">
         <property name="cssStyle">
          <string>nobackground</string>
         </property>
@@ -87,7 +87,7 @@ key on your device. Are you sure?</string>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="KelGuiLabel" name="btnYes">
+         <widget class="DapGuiLabel" name="btnYes">
           <property name="text">
            <string>YES</string>
           </property>
@@ -100,14 +100,14 @@ key on your device. Are you sure?</string>
          </widget>
         </item>
         <item>
-         <widget class="KelGuiWidget" name="spacer">
+         <widget class="DapGuiWidget" name="spacer">
           <property name="cssStyle">
            <string>nobackground</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="KelGuiLabel" name="btnNo">
+         <widget class="DapGuiLabel" name="btnNo">
           <property name="text">
            <string>NO</string>
           </property>
@@ -128,14 +128,14 @@ key on your device. Are you sure?</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KelGuiLabel</class>
+   <class>DapGuiLabel</class>
    <extends>QLabel</extends>
-   <header>kelguilabel.h</header>
+   <header>dapguilabel.h</header>
   </customwidget>
   <customwidget>
-   <class>KelGuiWidget</class>
+   <class>DapGuiWidget</class>
    <extends>QWidget</extends>
-   <header>kelguiwidget.h</header>
+   <header>dapguiwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

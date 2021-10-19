@@ -2,7 +2,7 @@
 #include "settingsmodel.h"
 #include "../settings.h"
 
-#include "kelguibutton.h"
+#include "dapguibutton.h"
 #include <QUrl>
 #include <QBoxLayout>
 #include <QEvent>
@@ -91,9 +91,9 @@ static QList<_SItem> s_items =
   _SItem{SI_BUTTONGRAY, {"Version", "@version"}, "settings_icon ic_version", cbVersion},
 };
 
-static QMap<KelGuiButton*, ItemCB> s_btnCallbacks;
-static KelGuiButton* s_licenceKey;
-static KelGuiButton* s_version;
+static QMap<DapGuiButton*, ItemCB> s_btnCallbacks;
+static DapGuiButton* s_licenceKey;
+static DapGuiButton* s_version;
 
 /* VARS */
 static Settings *s_settings   = nullptr;
@@ -145,13 +145,13 @@ void SettingsModel::slotSetup()
   foreach (auto &item, s_items)
     {
       /* get item and preset */
-      auto btn = new KelGuiButton;
+      auto btn = new DapGuiButton;
       auto preset = s_presets.value (item.sid);
 
       /* setup new widget */
       btn->setBtnStyle ((item.sid != SI_TITLE && item.sid != SI_TITLETOP)
-                        ? KelGuiButton::ButtonStyle::IconMainSub
-                        : KelGuiButton::ButtonStyle::TopMainBottomSub);
+                        ? DapGuiButton::ButtonStyle::IconMainSub
+                        : DapGuiButton::ButtonStyle::TopMainBottomSub);
 
       btn->setMainText (item.text[0]);
       btn->setMainCssClass (preset.style[0]);
@@ -191,7 +191,7 @@ void SettingsModel::slotSetup()
         s_version = btn;
 
       /* connect signal */
-      connect (btn, &KelGuiButton::clicked,
+      connect (btn, &DapGuiButton::clicked,
                this, &SettingsModel::slotClicked,
                Qt::QueuedConnection);
 
@@ -212,7 +212,7 @@ void SettingsModel::slotResetDaysLeft()
 
 void SettingsModel::slotClicked()
 {
-  auto btn  = qobject_cast<KelGuiButton*> (sender());
+  auto btn  = qobject_cast<DapGuiButton*> (sender());
   auto cb   = s_btnCallbacks.value (btn, defaultCb);
   cb();
 }

@@ -16,17 +16,17 @@ PopupDialog::PopupDialog (QWidget *parent) :
 {
   ui->setupUi (this);
 
-  connect (ui->btnYes, &KelGuiLabel::clicked,
+  connect (ui->btnYes, &DapGuiLabel::clicked,
            this, &PopupDialog::sigYes,
            Qt::QueuedConnection);
-  connect (ui->btnNo, &KelGuiLabel::clicked,
+  connect (ui->btnNo, &DapGuiLabel::clicked,
            this, &PopupDialog::sigNo,
            Qt::QueuedConnection);
 
-  connect (ui->btnYes, &KelGuiLabel::clicked,
+  connect (ui->btnYes, &DapGuiLabel::clicked,
            this, &PopupDialog::_slotButtonPress,
            Qt::QueuedConnection);
-  connect (ui->btnNo, &KelGuiLabel::clicked,
+  connect (ui->btnNo, &DapGuiLabel::clicked,
            this, &PopupDialog::_slotButtonPress,
            Qt::QueuedConnection);
 

@@ -1,7 +1,7 @@
 /* INCLUDES */
 #include "documentpopup.h"
 #include "ui_documentpopup.h"
-#include "kelguicommon.h"
+#include "dapguicommon.h"
 #include <QScroller>
 #include <QScrollBar>
 
@@ -16,7 +16,7 @@ DocumentPopup::DocumentPopup (Type t, QWidget *parent) :
   ui->setupUi (this);
 
   m_layout  = new QVBoxLayout (ui->scrollArea->widget());
-  m_label   = new KelGuiLabel;
+  m_label   = new DapGuiLabel;
   m_filter  = new Filter;
   auto *sp  = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
@@ -41,7 +41,7 @@ DocumentPopup::DocumentPopup (Type t, QWidget *parent) :
     }
 
   /* signals */
-  connect (ui->btnReturn, &KelGuiPushButton::clicked,
+  connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &DocumentPopup:: sigReturn,
            Qt::QueuedConnection);
 }

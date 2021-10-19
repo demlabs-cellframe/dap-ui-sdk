@@ -1,7 +1,7 @@
 /* INCLUDES */
 #include "purchasemodel.h"
 
-#include "kelguibutton.h"
+#include "dapguibutton.h"
 
 /* DEFS */
 
@@ -55,7 +55,7 @@ void PurchaseModel::slotSetup()
   foreach (auto &item, s_licences)
     {
       /* new item */
-      auto btn = new KelGuiButton;
+      auto btn = new DapGuiButton;
 
       /* setup text */
       auto score = QString().sprintf ("$%.02lf", item.score);
@@ -67,7 +67,7 @@ void PurchaseModel::slotSetup()
           item.length > 0 ? "s" : "");
 
       /* setup new widget */
-      btn->setBtnStyle (KelGuiButton::LeftTopMainBottomSub);
+      btn->setBtnStyle (DapGuiButton::LeftTopMainBottomSub);
       btn->setLeftText (score);
       btn->setMainText (plan);
       btn->setSubText (item.description);

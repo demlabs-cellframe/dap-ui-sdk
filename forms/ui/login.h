@@ -3,7 +3,7 @@
 
 /* INCLUDES */
 #include <QWidget>
-#include "kelguibutton.h"
+#include "dapguibutton.h"
 #include "baseform.h"
 
 /* DEFS */
@@ -62,10 +62,10 @@ public:
 public:
   QString getSerialNumber();
 protected:
-  static void cbSerialFocus (KelGuiLineEdit *e, const Qt::FocusReason &reason);
-  static void cbSerialText (KelGuiLineEdit *e, QString &preedit, QString &commit, int from, int to);
-  static void fixSerialString (KelGuiLineEdit *e, QString &serial, bool inserted);
-  static void fixSerialString_ (KelGuiLineEdit *e, QString &serial, bool inserted);
+  static void cbSerialFocus (DapGuiLineEdit *e, const Qt::FocusReason &reason);
+  static void cbSerialText (DapGuiLineEdit *e, QString &preedit, QString &commit, int from, int to);
+  static void fixSerialString (DapGuiLineEdit *e, QString &serial, bool inserted);
+  static void fixSerialString_ (DapGuiLineEdit *e, QString &serial, bool inserted);
   /// @}
 
   /****************************************//**

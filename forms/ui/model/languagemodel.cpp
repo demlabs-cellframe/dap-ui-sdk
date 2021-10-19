@@ -52,7 +52,7 @@ void LanguageModel::slotSetup()
       QString text = (*i).name;
 
       /* create item */
-      auto item = new KelGuiRadio;
+      auto item = new DapGuiRadio;
       m_list << item;
       item->setText (text);
       lay->addWidget (item);

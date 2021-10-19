@@ -3,7 +3,7 @@
 
 /* INCLUDES */
 #include <QWidget>
-#include "style/kelguistylemanager.h"
+#include "style/dapguistylemanager.h"
 
 /****************************************//**
  * @brief base for ui/classes
@@ -15,8 +15,8 @@
 class BaseForm : public QWidget
 {
   Q_OBJECT
-  KELGUI_ENABLECSS
-  KELGUI_ENABLEWIDGETSTYLE
+  DAPGUI_ENABLECSS
+  DAPGUI_ENABLEWIDGETSTYLE
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
