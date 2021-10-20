@@ -19,10 +19,11 @@ Rectangle
         width: parent.radius
         x: parent.width - width
     }
+    //left ligt line
     Rectangle{
         width: 2
-        color: "#393945"
-        anchors.bottom: control.bottom
+        color: currTheme.reflection
+        height: control.height - (currTheme.radiusRectangle-5*pt)
         anchors.top: control.top
         anchors.left: control.left
 

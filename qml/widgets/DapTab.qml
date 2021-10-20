@@ -70,13 +70,12 @@ Rectangle
     }
 
     DropShadow {
-            anchors.fill: topPanel
-            horizontalOffset: 5
-            verticalOffset: 5
-            radius: 8.0
-            color: "#21232A"
-            source: topPanel
-            spread: 0.1
-        }
-
+        anchors.fill: topPanel
+        horizontalOffset: currTheme.hOffset
+        verticalOffset: currTheme.vOffset
+        radius: currTheme.radiusShadow
+        color: currTheme.shadowColor
+        source: topPanel
+        spread: 0.1
+    }
 }
