@@ -12,6 +12,17 @@ namespace Ui { class DapGuiSwitch; };
 
 /****************************************//**
  * @brief custom switch button
+ *
+ * Widget made using 2 DapGuiWidget 's
+ * inside ui-form
+ *
+ * Features:
+ * - Css Style
+ * - Acting like checkbox
+ * - Has animated moving part
+ * - Automaticaly change size on need
+ * - Changing color on different states
+ *
  * @ingroup groupDapGuiWidgets
  * @date 29.08.2021
  * @author Mikhail Shilenko
@@ -21,6 +32,13 @@ class DapGuiSwitch : public QWidget
 {
   Q_OBJECT
   DAPGUI_ENABLEWIDGETSTYLE
+
+  /****************************************//**
+   * @name PROPERTIES
+   *******************************************/
+  /// @{
+  Q_PROPERTY (bool checked  READ checked  WRITE setChecked)
+  /// @}
 
   /****************************************//**
    * @name VARS
@@ -37,6 +55,7 @@ private:
   double m_toggleOnPos, m_bgPos[2];
   /// toogle animation group
   QParallelAnimationGroup *m_animGroup;
+  /// toggle animation
   QPropertyAnimation *m_animToggle;
   /// @}
 
@@ -45,7 +64,7 @@ private:
    *******************************************/
   /// @{
 public:
-  explicit DapGuiSwitch (QWidget *parent = 0);
+  explicit DapGuiSwitch (QWidget *parent = nullptr);
   ~DapGuiSwitch();
   /// @}
 
@@ -54,7 +73,7 @@ public:
    *******************************************/
   /// @{
 public:
-  bool isChecked() const;
+  bool checked() const;
   void setChecked (bool a_checked);
   void toggle();
   /// @}

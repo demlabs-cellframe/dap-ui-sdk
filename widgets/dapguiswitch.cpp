@@ -60,7 +60,16 @@ DapGuiSwitch::~DapGuiSwitch()
  * METHODS
  *******************************************/
 
-bool DapGuiSwitch::isChecked() const
+
+
+
+/****************************************//**
+ * @property DapGuiSwitch::checked
+ * @brief switch state
+ * @accessors %checked(), %setChecked(), %toggle()
+ *******************************************/
+
+bool DapGuiSwitch::checked() const
 {
   return m_checked;
 }
@@ -101,7 +110,7 @@ void DapGuiSwitch::setChecked(bool a_checked)
 
 void DapGuiSwitch::toggle()
 {
-  setChecked (!isChecked());
+  setChecked (!checked());
 }
 
 /********************************************
@@ -151,20 +160,9 @@ void DapGuiSwitch::_moveItems()
     auto tw       = ui->switch_toggle->width();
     auto bw       = ui->switch_bg->width();
     auto bh       = ui->switch_bg->height();
-    //auto wwd      = m_p2p (ww);
-    //auto hhd      = m_p2p (hh);
-    //auto twd      = m_p2p (tw);
-    //auto bwd      = m_p2p (bw);
-    //auto bhd      = m_p2p (bh);
-//    m_toggleOnPos = wwd - twd;
-//    m_bgPos[0]    = (wwd - bwd) / 2;
-//    m_bgPos[1]    = (hhd - bhd) / 2;
     m_toggleOnPos = ww - tw + 2;
     m_bgPos[0]    = (ww - bw) / 2;
     m_bgPos[1]    = (hh - bh) / 2;
-//#ifdef QT_DEBUG
-//    qDebug() << __PRETTY_FUNCTION__ << ww << tw << bw;
-//#endif // QT_DEBUG
   }
 
   ui->switch_toggle->move (m_checked ? m_toggleOnPos : 0, 0);

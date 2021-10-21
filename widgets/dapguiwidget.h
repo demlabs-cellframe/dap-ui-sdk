@@ -6,7 +6,7 @@
 #include "style/dapguistylemanager.h"
 
 /****************************************//**
- * @brief widget with custom style
+ * @brief widget with css style
  * @ingroup groupDapGuiWidgets
  * @date 30.08.2021
  * @author Mikhail Shilenko

@@ -7,6 +7,11 @@
 
 /****************************************//**
  * @brief overlap for text edit style
+ *
+ * Features:
+ * - Css Style
+ * - QTextEdit
+ *
  * @ingroup groupDapGuiWidgets
  * @date 15.09.2021
  * @author Mikhail Shilenko

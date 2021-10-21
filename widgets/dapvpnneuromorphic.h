@@ -6,6 +6,8 @@
  *
  * Classes represents custom widgets for Dap Gui
  *
+ * Plugin definition class: DapVpnNeuromorphic
+ *
  * @date 02.09.2021
  * @authors Mikhail Shilenko
  ***************************************************/
