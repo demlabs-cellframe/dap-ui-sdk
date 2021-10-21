@@ -2,7 +2,7 @@
 #define DAPGUISTYLEMANAGER_H
 
 /************************************************//**
- * @defgroup groupDapGuiStyle Kel Gui Style
+ * @defgroup groupDapGuiStyle Dap Gui Style
  * Classes responsible for Gui style
  * @ingroup groupDapGuiWidgets
  * @date 07.09.2021
