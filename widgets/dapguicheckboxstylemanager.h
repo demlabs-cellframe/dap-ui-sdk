@@ -6,7 +6,12 @@
 
 /****************************************//**
  * @brief check box style overlap
+ *
+ * Overrides slot forcedStyleUpdate
+ * with forcedCheckboxStyleUpdate
+ *
  * @warning do not use this class outside
+ * DapGuiCheckBox
  * @date 15.09.2021
  * @author Mikhail Shilenko
  *******************************************/

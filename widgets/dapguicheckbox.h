@@ -7,6 +7,11 @@
 
 /****************************************//**
  * @brief overlap for checkbox style
+ *
+ * Using inerhit from DapGuiStyleManager
+ * class DapGuiCheckBoxStyleManager to show
+ * styled Checkbox
+ *
  * @ingroup groupDapGuiWidgets
  * @date 23.08.2021
  * @author Mikhail Shilenko

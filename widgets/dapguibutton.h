@@ -16,6 +16,16 @@ namespace Ui { class DapGuiButtonUI; };
 
 /****************************************//**
  * @brief framed button with customiseable style
+ *
+ * Features:
+ * - Css Style
+ * - Different label layout (ButtonStyle)
+ * - Label Css Styles
+ * - Bottom separator
+ * - Link icon
+ * - Frame border
+ * - Line edi
+ *
  * @ingroup groupDapGuiWidgets
  * @date 19.08.2021
  * @author Mikhail Shilenko

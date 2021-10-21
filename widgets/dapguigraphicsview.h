@@ -6,7 +6,12 @@
 #include "dapguigraphicsviewstylemanager.h"
 
 /****************************************//**
- * @brief overlap for checkbox style
+ * @brief overlap for graphics view style
+ *
+ * Using inerhit from DapGuiStyleManager
+ * class DapGuiGraphicsViewStyleManager to
+ * update scene size at style update
+ *
  * @ingroup groupDapGuiWidgets
  * @date 23.08.2021
  * @author Mikhail Shilenko

@@ -6,7 +6,15 @@
 
 /****************************************//**
  * @brief graphics view style overlap
+ *
+ * Connects to signal forceStyleUpdate
+ * with forcedGraphicsViewStyleUpdate
+ *
+ * Used to change Scene size when style
+ * updates requested (after style change)
+ *
  * @warning do not use this class outside
+ * DapGuiGraphicsView
  * @date 16.09.2021
  * @author Mikhail Shilenko
  *******************************************/

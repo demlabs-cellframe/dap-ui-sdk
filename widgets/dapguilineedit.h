@@ -6,7 +6,18 @@
 #include "style/dapguistylemanager.h"
 
 /****************************************//**
- * @brief overlap for line edit style
+ * @brief overlap for line edit style and
+ * events
+ *
+ * Features (Descktop):
+ * - Css Style
+ * - Event callbacks (cbKeyEvent)
+ *
+ * Features (Android)
+ * - Event callbacks (cbTextEdit, cbFocusEvent)
+ * - Hide/Show anchors
+ * - Text editing signal (sigTextEditing)
+ *
  * @ingroup groupDapGuiWidgets
  * @date 18.09.2021
  * @author Mikhail Shilenko
@@ -32,10 +43,10 @@ public:
    *******************************************/
   /// @{
 public:
-  cbTextEdit m_callbackTextEdit;
-  cbFocusEvent m_callbackFocusEvent;
-  cbKeyEvent m_callbackKeyEvent;
-  bool m_hideAnchor;
+  cbTextEdit m_callbackTextEdit;      ///< called in inputMethodEvent
+  cbFocusEvent m_callbackFocusEvent;  ///< called in focusInEvent
+  cbKeyEvent m_callbackKeyEvent;      ///< called in keyPressEvent
+  bool m_hideAnchor;                  ///< hide's android anchors
   /// @}
 
   /****************************************//**

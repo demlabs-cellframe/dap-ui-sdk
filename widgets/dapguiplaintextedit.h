@@ -10,7 +10,11 @@ namespace Ui { class DapGuiPlainTextEditUI; };
 class DapGuiPlainTextEditInterface;
 
 /****************************************//**
- * @brief framed plaintextedit
+ * @brief framed plaintextedit overlap
+ *
+ * This widget presented as frame around inerhitted
+ * from QPlainTextEdit widget DapGuiPlainTextEditInterface
+ *
  * @ingroup groupDapGuiWidgets
  * @date 24.08.2021
  * @author Mikhail Shilenko

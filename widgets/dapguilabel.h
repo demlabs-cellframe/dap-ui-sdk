@@ -6,7 +6,12 @@
 #include "style/dapguistylemanager.h"
 
 /****************************************//**
- * @brief widget with custom properties
+ * @brief overlap for label style
+ *
+ * Features:
+ * - Css Style
+ * - Mouse Button Press signal
+ *
  * @ingroup groupDapGuiWidgets
  * @date 30.08.2021
  * @author Mikhail Shilenko

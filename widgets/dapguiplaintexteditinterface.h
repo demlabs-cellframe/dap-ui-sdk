@@ -7,6 +7,13 @@
 
 /****************************************//**
  * @brief overlap for line edit style
+ *
+ * Features Desktop:
+ * - Event callbacks (cbKeyEvent)
+ *
+ * Features Android:
+ * - Event callbacks (cbTextEdit, cbFocusEvent)
+ *
  * @ingroup groupDapGuiWidgets
  * @date 18.09.2021
  * @author Mikhail Shilenko
@@ -16,6 +23,8 @@ class DapGuiPlainTextEditInterface : public QPlainTextEdit
 {
   Q_OBJECT
   DAPGUI_ENABLECSS
+
+  friend class DapGuiPlainTextEdit;
 
   /****************************************//**
    * @name DEFS
@@ -31,10 +40,29 @@ public:
    * @name VARS
    *******************************************/
   /// @{
-public:
+private:
+  /**
+   * @brief callback on inputMethodEvent
+   * @note only on Android
+   * @accessors %callbackTextEdit(), setCallbackTextEdit()
+   */
   cbTextEdit m_callbackTextEdit;
+  /**
+   * @brief callback on focusInEvent
+   * @note only on Android
+   * @accessors %callbackFocusEvent(), setCallbackFocusEvent()
+   */
   cbFocusEvent m_callbackFocusEvent;
+  /**
+   * @brief callback on focusOutEvent
+   * @note only on Android
+   * @accessors %callbackUnfocusEvent(), setCallbackUnfocusEvent()
+   */
   cbFocusEvent m_callbackUnfocusEvent;
+  /**
+   * @brief callback on keyPressEvent
+   * @accessors %callbackKeyEvent(), setCallbackKeyEvent()
+   */
   cbKeyEvent m_callbackKeyEvent;
   /// @}
 
@@ -50,7 +78,7 @@ public:
    * @name METHODS
    *******************************************/
   /// @{
-public:
+protected:
   cbTextEdit callbackTextEdit() const;
   void setCallbackTextEdit(cbTextEdit cb);
 
@@ -70,7 +98,7 @@ public:
    * @name OVERRIDE
    *******************************************/
   /// @{
-protected:
+private:
   void keyPressEvent(QKeyEvent *event) override;
 #ifdef Q_OS_ANDROID
   void inputMethodEvent(QInputMethodEvent *e) override;
