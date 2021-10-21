@@ -37,37 +37,8 @@ DapGuiPushButton::DapGuiPushButton (QWidget *parent)
   : QPushButton (parent)
   , m_style (Main)
   , m_opacityEffect (new QGraphicsOpacityEffect)
-#ifdef ENABLEPURPLE
-  , m_text ("Push Button")
-  , m_label (new QLabel (m_text))
-  , m_effect (new QGraphicsDropShadowEffect)
-#endif // ENABLEPURPLE
 {
-  //setObjectName ("DapGuiPushButton");
-  //setFlat(true);
   setFocusPolicy (Qt::NoFocus);
-
-#ifdef ENABLEPURPLE
-  auto hor = new QHBoxLayout;
-  hor->addWidget (m_label.get());
-
-  setAttribute (Qt::WA_Hover);
-  m_label->setObjectName ("DapGuiPushButtonText");
-  m_label->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
-
-  setLayout (hor);
-
-  m_effect->setBlurRadius (5);
-  m_effect->setXOffset (5);
-  m_effect->setYOffset (5);
-  m_effect->setColor (QColor::fromRgba (qRgba (0x40, 0x14, 0x24, 0x24)));
-  m_effect->setEnabled (true);
-
-  setGraphicsEffect (m_effect);
-#endif // ENABLEPURPLE
-
-  //setStyleSheet (fromFile ("://styles/pushbutton.css"));
-  //updateStyle();
   setStyle (m_style);
 
   /* setup opacity */
@@ -89,6 +60,20 @@ DapGuiPushButton::~DapGuiPushButton()
 
 /********************************************
  * PUBLIC METHODS
+ *******************************************/
+
+
+
+/****************************************//**
+ * @property DapGuiPushButton::style
+ * @brief button's built-in style.
+ *
+ * All built-in styles stored in
+ * static **QMap s_presets** inside
+ * **dapguipushbutton.cpp**
+ *
+ * @accessors %style(), %setStyle()
+ * @see DapGuiPushButton::Style
  *******************************************/
 
 DapGuiPushButton::Style DapGuiPushButton::style() const
@@ -121,25 +106,36 @@ void DapGuiPushButton::setEnabledCustom(bool value)
   setOpacity (value);
 }
 
+/****************************************//**
+ * @property DapGuiPushButton::opacity
+ * @brief button's opacity effect
+ *
+ * Makes button semi-transparent
+ *
+ * Available opacity:
+ * - 1 on true
+ * - 0.2 on false
+ *
+ * @accessors %opacity(), %setOpacity()
+ *******************************************/
+
+bool DapGuiPushButton::opacity() const
+{
+  return m_opacityEffect->opacity() == 1;
+}
+
 void DapGuiPushButton::setOpacity(bool value)
 {
   m_opacityEffect->setOpacity (value ? 1 : 0.2);
 }
 
-#ifdef ENABLEPURPLE
-QString DapGuiPushButton::text() const
-{
-  return m_text;
-}
-
-void DapGuiPushButton::setText (const QString &text)
-{
-  m_text = text;
-  m_label->setText (text);
-  updateStyle();
-  emit textChanged();
-}
-#endif // ENABLEPURPLE
+/****************************************//**
+ * @property DapGuiPushButton::custom
+ * @brief custom default state picture url
+ * @note available only when
+ * DapGuiPushButton::Style is Custom
+ * @accessors %custom(), %setCustom()
+ *******************************************/
 
 QUrl DapGuiPushButton::custom() const
 {
@@ -153,6 +149,14 @@ void DapGuiPushButton::setCustom (const QUrl &custom)
   emit customChanged();
 }
 
+/****************************************//**
+ * @property DapGuiPushButton::customHover
+ * @brief custom hover state picture url
+ * @note available only when
+ * DapGuiPushButton::Style is Custom
+ * @accessors %customHover(), %setCustomHover()
+ *******************************************/
+
 QUrl DapGuiPushButton::customHover() const
 {
   return m_customHover;
@@ -165,6 +169,14 @@ void DapGuiPushButton::setCustomHover (const QUrl &customHover)
   emit customHoverChanged();
 }
 
+/****************************************//**
+ * @property DapGuiPushButton::customPushed
+ * @brief custom pushed state picture url
+ * @note available only when
+ * DapGuiPushButton::Style is Custom
+ * @accessors %customPushed(), %setCustomPushed()
+ *******************************************/
+
 QUrl DapGuiPushButton::customPushed() const
 {
   return m_customPushed;
@@ -176,6 +188,12 @@ void DapGuiPushButton::setCustomPushed (const QUrl &customPushed)
   updateStyle();
   emit customPushedChanged();
 }
+
+/****************************************//**
+ * @property DapGuiPushButton::cssStyle
+ * @brief custom css style
+ * @accessors %customCss(), %setCustomCss()
+ *******************************************/
 
 QString DapGuiPushButton::customCss() const
 {
@@ -195,82 +213,8 @@ bool DapGuiPushButton::customEnabled() const
 
 void DapGuiPushButton::updateStyle()
 {
-#ifdef ENABLEPURPLE
-  if (m_style == Purple)
-    {
-      m_label->hide();
-      return setStyleSheet (fromFile ("://styles/pushbutton.css"));
-    }
-#endif // ENABLEPURPLE
-
-//  /* collect 3 files name */
-//  QString names[4] =
-//  {
-//    tr (":/") + m_custom.path(),
-//    tr (":/") + m_customHover.path(),
-//    tr (":/") + m_customPushed.path(),
-//    m_customCss,
-//  };
-
-//  /* get first file pixmap */
-//  QPixmap img (names[0]);
-
-//  /* setup style sheet based on pixmap size and files names */
-//  QString style =
-//    Common::fromFile ("://styles/pushbuttoncustom.css")
-//    .arg (img.size().width())
-//    .arg (img.size().height())
-//    .arg (names[0], names[1], names[2]);
-
-//  setStyleSheet (style);
-
   __kgsm.forcedButtonStyleUpdate();
-
-#ifdef ENABLEPURPLE
-  m_label->show();
-#endif // ENABLEPURPLE
 }
-
-/********************************************
- * OVERRIDE
- *******************************************/
-
-//void DapGuiPushButton::paintEvent (QPaintEvent *)
-//{
-//  QStyleOption opt;
-//  opt.init (this);
-
-//  QPainter p (this);
-//  QWidget::style()->drawPrimitive (QStyle::PE_Widget, &opt, &p, this);
-//}
-
-//void DapGuiPushButton::mousePressEvent(QMouseEvent *event)
-//{
-//  if (event->button() == Qt::LeftButton)
-//    emit s_clicked();
-//}
-
-//bool DapGuiPushButton::event(QEvent *e)
-//{
-//  switch(e->type())
-//    {
-//    case QEvent::HoverEnter:
-//      {
-//        m_effect->setEnabled (false);
-//        return true;
-//      }break;
-
-//    case QEvent::HoverLeave:
-//      {
-//        m_effect->setEnabled (m_style == Purple);
-//        return true;
-//      }break;
-
-//    default:break;
-//    }
-
-//  return QWidget::event(e);
-//}
 
 /*-----------------------------------------*/
 

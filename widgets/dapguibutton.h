@@ -19,7 +19,7 @@ namespace Ui { class DapGuiButtonUI; };
  *
  * Features:
  * - Css Style
- * - Different label layout (ButtonStyle)
+ * - Different label layout (DapGuiButton::ButtonStyle)
  * - Label Css Styles
  * - Bottom separator
  * - Link icon

@@ -10,12 +10,17 @@
 #include <memory>
 #include "dapguipushbuttonstylemanager.h"
 
-/* DEFS */
-//#define ENABLEPURPLE
-
 /****************************************//**
- * @brief overlap for button style
+ * @brief overlap for push button style
  * @note this button can be used as checkbox
+ *
+ * Features:
+ * - Built-in styles (DapGuiPushButton::Style)
+ * - Css Style
+ * - Customizable button PNG's
+ * - Choosable opacity (1 or 0.2)
+ * - Several signals
+ *
  * @ingroup groupDapGuiWidgets
  * @date 19.08.2021
  * @author Mikhail Shilenko
@@ -30,12 +35,10 @@ class DapGuiPushButton : public QPushButton
    *******************************************/
   /// @{
 public:
+  /// Button built-in styles
   enum Style
   {
     Basic,
-#ifdef ENABLEPURPLE
-    Purple,
-#endif // ENABLEPURPLE
     Main,
     Connection,
     Account,
@@ -52,16 +55,12 @@ public:
    * @name PROPERTIES
    *******************************************/
   /// @{
-  Q_PROPERTY (Style style READ style WRITE setStyle NOTIFY styleChanged)
-#ifdef ENABLEPURPLE
-  Q_PROPERTY (QString text READ text WRITE setText NOTIFY textChanged)
-#endif // ENABLEPURPLE
-  Q_PROPERTY (QUrl custom READ custom WRITE setCustom NOTIFY customChanged DESIGNABLE customEnabled)
-  Q_PROPERTY (QUrl customHover READ customHover WRITE setCustomHover NOTIFY customHoverChanged DESIGNABLE customEnabled)
+  Q_PROPERTY (Style style       READ style        WRITE setStyle NOTIFY styleChanged)
+  Q_PROPERTY (QUrl custom       READ custom       WRITE setCustom NOTIFY customChanged DESIGNABLE customEnabled)
+  Q_PROPERTY (QUrl customHover  READ customHover  WRITE setCustomHover NOTIFY customHoverChanged DESIGNABLE customEnabled)
   Q_PROPERTY (QUrl customPushed READ customPushed WRITE setCustomPushed NOTIFY customPushedChanged DESIGNABLE customEnabled)
-
-  Q_PROPERTY (QString cssStyle READ customCss WRITE setCustomCss)
-  DapGuiPushButtonStyleManager __kgsm = DapGuiPushButtonStyleManager (this);
+  Q_PROPERTY (QString cssStyle  READ customCss    WRITE setCustomCss)
+  Q_PROPERTY (bool opacity      READ opacity      WRITE setOpacity)
   /// @}
 
   /****************************************//**
@@ -73,12 +72,7 @@ private:
   QUrl m_custom, m_customHover, m_customPushed;
   QString m_customCss;
   QGraphicsOpacityEffect *m_opacityEffect;
-
-#ifdef ENABLEPURPLE
-  QString m_text;
-  std::unique_ptr<QLabel> m_label;
-  QGraphicsDropShadowEffect *m_effect;
-#endif // ENABLEPURPLE
+  DapGuiPushButtonStyleManager __kgsm = DapGuiPushButtonStyleManager (this);
   /// @}
 
   /****************************************//**
@@ -99,13 +93,11 @@ public:
   Style style() const;
   void setStyle (const Style &style);
 
+  bool customEnabled() const;
   void setEnabledCustom(bool value);
-  void setOpacity(bool value);
 
-#ifdef ENABLEPURPLE
-  QString text() const;
-  void setText (const QString &text);
-#endif // ENABLEPURPLE
+  bool opacity() const;
+  void setOpacity(bool value);
 
   QUrl custom() const;
   void setCustom (const QUrl &custom);
@@ -119,7 +111,6 @@ public:
   QString customCss() const;
   void setCustomCss (const QString &customCss);
 
-  bool customEnabled() const;
 
   /// @}
 
@@ -129,16 +120,6 @@ public:
   /// @{
 private:
   void updateStyle();
-  /// @}
-
-  /****************************************//**
-   * @name OVERRIDE
-   *******************************************/
-  /// @{
-public:
-  //void paintEvent (QPaintEvent *) override;
-  //void mousePressEvent (QMouseEvent *) override;
-  //bool event(QEvent *) override;
   /// @}
 
   /****************************************//**
