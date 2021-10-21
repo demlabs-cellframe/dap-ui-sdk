@@ -10,6 +10,9 @@ namespace StyleSheet
 
 class ClassMap
 {
+  friend class ClassParser;
+  friend class DapGuiStyleManager;
+  friend class _GlobalStyleSheet;
   /****************************************//**
    * @name DEFS
    *******************************************/
@@ -35,18 +38,10 @@ protected:
   /// @}
 
   /****************************************//**
-   * @name CONSTRUCT/DESTRUCT
-   *******************************************/
-  /// @{
-public:
-  //ClassMap();
-  /// @}
-
-  /****************************************//**
    * @name METHODS
    *******************************************/
   /// @{
-public:
+protected:
   /// fill map with provided stylesheet
   void setup (const QString &styleSheet);
   /// remove all items and release memory
@@ -67,7 +62,7 @@ public:
    * @name OPERATORS
    *******************************************/
   /// @{
-public:
+protected:
   /// @see value
   const QStringList &operator[] (const QString &key) const;
   /// @see values
@@ -78,7 +73,7 @@ public:
    * @name PROTECTED METHODS
    *******************************************/
   /// @{
-public:
+protected:
   Iterator find (const QString &key);
   ConstIterator find (const QString &key) const;
   bool isValid (Iterator &it) const;

@@ -11,9 +11,11 @@ namespace StyleSheet
 
 /****************************************//**
  * @brief style sheet parser for classes
+ *
  * Class takes stylesheet string, find
  * all names (starting with dots) and
  * stores style body into map.
+ *
  * @see DapGuiStyleManager
  * @ingroup groupDapGuiStyle
  * @date 07.09.2021

@@ -8,7 +8,11 @@
 namespace Ui { class DapGuiSeparatorUI; };
 
 /****************************************//**
- * @brief overlap for line style
+ * @brief separator styled widget
+ *
+ * Displayed using 3 QLabel 's
+ * Can be found inside ui-form
+ *
  * @ingroup groupDapGuiWidgets
  * @date 30.08.2021
  * @author Mikhail Shilenko

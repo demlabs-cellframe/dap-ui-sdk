@@ -15,6 +15,9 @@ static DapGuiStyleManager s_signal (nullptr);
 
 /* DEFS */
 
+namespace StyleSheet
+{
+
 /// class wrap over mutex and give acces to map
 class _GlobalStyleSheet : public QMutexLocker
 {
@@ -43,8 +46,10 @@ public:
   }
 };
 
+};
+
 //typedef QSharedPointer<_GlobalStyleSheet> Gss;
-typedef _GlobalStyleSheet Gss;
+using Gss = StyleSheet::_GlobalStyleSheet;
 
 
 /********************************************
@@ -95,6 +100,15 @@ void DapGuiStyleManager::setupGlobalStyleSheet (const QString &styleSheet)
  * PUBLIC METHODS
  *******************************************/
 
+
+
+
+/****************************************//**
+ * @property DapGuiStyleManager::cssStyle
+ * @brief css style classes separated by space
+ * @accessors %cssStyle(), %setCssStyle()
+ *******************************************/
+
 QString DapGuiStyleManager::cssStyle() const
 {
   return m_cssStyle;
@@ -139,13 +153,7 @@ void DapGuiStyleManager::forcedStyleUpdate()
   auto style  = styleByClassName (m_cssStyle);
 
   if(!style.contains("background"))
-    {
-      //m_widget->setAttribute(Qt::WA_NoSystemBackground);
-      //m_widget->setAttribute(Qt::WA_TranslucentBackground);
-      //m_widget->setAttribute(Qt::WA_PaintOnScreen);
-      //m_widget->setAttribute(Qt::WA_TransparentForMouseEvents);
-      style += "background-color: rgba(0,0,0,0);";
-    }
+    style += "background-color: rgba(0,0,0,0);";
 
   QString s   =
     "#" + m_widget->objectName() +

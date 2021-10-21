@@ -33,6 +33,15 @@ DapGuiRadio::DapGuiRadio (QWidget *parent)
  * METHODS
  *******************************************/
 
+
+
+/****************************************//**
+ * @property DapGuiRadio::text
+ * @brief text label's text
+ * @note stored inside DapGuiLabel
+ * @accessors %text(), %setText()
+ *******************************************/
+
 QString DapGuiRadio::text() const
 {
   return ui->label->text();
@@ -42,6 +51,13 @@ void DapGuiRadio::setText(const QString &a_text)
 {
   ui->label->setText (a_text);
 }
+
+/****************************************//**
+ * @property DapGuiRadio::textCssClass
+ * @brief text label's css style
+ * @note stored inside DapGuiLabel
+ * @accessors %textCssClass(), %setTextCssClass()
+ *******************************************/
 
 QString DapGuiRadio::textCssClass() const
 {
@@ -53,6 +69,13 @@ void DapGuiRadio::setTextCssClass(const QString &a_cssClass)
   ui->label->setCssStyle (a_cssClass);
 }
 
+/****************************************//**
+ * @property DapGuiRadio::checkedCssClass
+ * @brief checked label's css style
+ * @note stored inside DapGuiLabel
+ * @accessors %checkedCssClass(), %setCheckedCssClass()
+ *******************************************/
+
 QString DapGuiRadio::checkedCssClass() const
 {
   return ui->indicator_checked->cssStyle();
@@ -63,6 +86,13 @@ void DapGuiRadio::setCheckedCssClass(const QString &a_cssClass)
   ui->indicator_checked->setCssStyle (a_cssClass);
 }
 
+/****************************************//**
+ * @property DapGuiRadio::uncheckedCssClass
+ * @brief unchecked label's css style
+ * @note stored inside DapGuiLabel
+ * @accessors %uncheckedCssClass(), %setUncheckedCssClass()
+ *******************************************/
+
 QString DapGuiRadio::uncheckedCssClass() const
 {
   return ui->indicator_unchecked->cssStyle();
@@ -72,6 +102,12 @@ void DapGuiRadio::setUncheckedCssClass(const QString &a_cssClass)
 {
   ui->indicator_unchecked->setCssStyle (a_cssClass);
 }
+
+/****************************************//**
+ * @property DapGuiRadio::checked
+ * @brief radio state
+ * @accessors %checked(), %setChecked()
+ *******************************************/
 
 bool DapGuiRadio::checked() const
 {
@@ -85,6 +121,12 @@ void DapGuiRadio::setChecked(bool a_newChecked)
   ui->indicator_unchecked->setVisible (!m_checked);
   emit toggled (a_newChecked);
 }
+
+/****************************************//**
+ * @property DapGuiRadio::separator
+ * @brief separator show/hide
+ * @accessors %separator(), %setSeparator()
+ *******************************************/
 
 bool DapGuiRadio::separator() const
 {
@@ -101,6 +143,16 @@ void DapGuiRadio::setSeparator(bool a_separator)
  * SLOTS
  *******************************************/
 
+
+
+
+/****************************************//**
+ * @brief send signal and uncheck other radio's
+ *
+ * Will try to control other instances of
+ * DapGuiRadio classes inside parent's layout
+ * when clicked (checked/unchecked)
+ *******************************************/
 void DapGuiRadio::_slotClicked()
 {
   /* send signal */

@@ -9,7 +9,15 @@
 namespace Ui { class DapGuiRadioButtonUI; };
 
 /****************************************//**
- * @brief overlap for radio button style
+ * @brief custom radio button
+ *
+ * Widget made using 3 DapGuiLabel 's
+ * and DapGuiSeparator inside ui-form
+ *
+ * Widget will try to control other
+ * instances of DapGuiRadio classes inside
+ * parent's layout when clicked (checked/unchecked)
+ *
  * @ingroup groupDapGuiWidgets
  * @date 23.08.2021
  * @author Mikhail Shilenko

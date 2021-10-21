@@ -32,19 +32,22 @@ void paintEvent (QPaintEvent *) override \
 
 /****************************************//**
  * @brief style manager for widgets
+ *
  * Class provide easy way to setup different
  * style classes and get result stylesheet
  * by providing classNames list (setCssStyle)
  * separated by space (' ')
  *
+ * ### Class setup
+ *
  * @code
- * setCssStyle(
- *   ".tab .content,"
- *   ".outline .font16");
+ * setCssStyle ("tab content outline font16");
  * @endcode
  *
- * To enable style autoapplying put
- * define DAPGUI_ENABLECSS inside
+ * ### Attaching to widget
+ *
+ * To enable style applying to your widget
+ * put define DAPGUI_ENABLECSS inside
  * child class.
  *
  * @code
@@ -69,6 +72,35 @@ void paintEvent (QPaintEvent *) override \
  *   explicit Box (QWidget *parent)
  *     : QWidget (parent) {}
  * }
+ * @endcode
+ *
+ * ### Css class definitions
+ *
+ * All css classes is contained inside static
+ * map, which contains data parsed from
+ * one global css-file provided by the static method
+ * DapGuiStyleManager::setupGlobalStyleSheet
+ *
+ * If you want to start using Css Classes,
+ * read and provide correct CSS-file body to
+ * DapGuiStyleManager::setupGlobalStyleSheet
+ *
+ * ### Rules
+ *
+ * Css class name always starts with dot symbol<br>
+ * All other class definition will cause issues.
+ *
+ * @code
+ * ".tab {border: 1px solid black;} .margin28 {margin:28px;}"
+ * @endcode
+ *
+ * @warning Don't use classes definitions without dot
+ * symbol at the start of the class name!
+ * It will give an undefined behavior.
+ *
+ * @code
+ * DapGuiStyleManager::setupGlobalStyleSheet (".margin28 {margin:28px;}");
+ * widget.setCssStyle ("margin28);
  * @endcode
  *
  * @ingroup groupDapGuiStyle
