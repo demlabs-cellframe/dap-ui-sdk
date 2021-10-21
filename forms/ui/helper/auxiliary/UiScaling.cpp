@@ -107,9 +107,9 @@ float UiScaling::getNativDPI()
   s_DPI = ((dpi < 50 || dpi > 350) ? QGuiApplication::primaryScreen()->physicalDotsPerInch() : dpi);
 
 #ifndef Q_OS_ANDROID
-  // lock low dpi to 100 minimum
-  if (s_DPI < 100)
-    s_DPI = 100;
+  // lock low dpi to 125 minimum
+  if (s_DPI < 125)
+    s_DPI = 125;
 #endif // Q_OS_ANDROID
 
   return s_DPI;
