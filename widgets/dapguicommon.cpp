@@ -9,8 +9,12 @@ namespace Common
 QString fromFile (const QString &filename)
 {
   QFile file (filename);
-  file.open (QIODevice::ReadOnly);
-  return file.readAll();
+  QString ret;
+  if (file.open (QIODevice::ReadOnly)) {
+    ret = file.readAll();
+    file.close();
+  }
+  return ret;
 }
 
 };

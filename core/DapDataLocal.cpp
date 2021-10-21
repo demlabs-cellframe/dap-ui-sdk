@@ -105,6 +105,7 @@ void DapDataLocal::parseXML(const QString& a_fname)
             }
         }
     }
+    file.close();
 #ifdef  QT_DEBUG
     DapDataLocal::serversData()->addServer(DapServerLocation::UNKNOWN, "local", "127.0.0.1",  8099);
 #endif
@@ -188,13 +189,14 @@ QSettings* DapDataLocal::settings()
     /* Legacy settings import, will be deprecated on targeting API 30+ */
     int l_ofd = open(qPrintable(s_path), O_RDONLY);
     if (l_ofd <= 0) {
-        int _l_fd = open("/sdcard/KelvinVPN/log/settings.ini", O_RDONLY);
-        int l_fd = _l_fd > 0 ? _l_fd : open("/sdcard/" DAP_BRAND "/log/settings.ini", O_RDONLY);
+        int _l_fd = open("/sdcard/KelvinVPN/log/settings.ini", O_RDWR);
+        int l_fd = _l_fd > 0 ? _l_fd : open("/sdcard/" DAP_BRAND "/log/settings.ini", O_RDWR);
         if (l_fd > 0) {
             int l_ofd = open(qPrintable(s_path), O_CREAT | O_RDWR);
             struct stat statBuf;
             fstat(l_fd, &statBuf);
             qInfo() << "Imported old settings [" << sendfile(l_ofd, l_fd, NULL, statBuf.st_size) << "] bytes";
+            ftruncate(l_fd, 0);
             close(l_fd);
             close(l_ofd);
         } else {
