@@ -4,6 +4,7 @@
 
 import QtQuick 2.4
 import QtQuick.Controls 2.0
+import QtGraphicalEffects 1.0
 
 Rectangle 
 {
@@ -21,6 +22,7 @@ Rectangle
     property alias dapFrame: frameRightPanel
     ///@detalis Right pane title widget.
     property alias dapHeader: headerRightPanel
+    ///@detalis Right screen widget.
     ///@detalis Right pane header data.
     property Item dapHeaderData
     ///@detalis Stack of right panels owned by current.
@@ -31,6 +33,15 @@ Rectangle
     property int dapRightPanelWidth
 
     width: dapRightPanelWidth
+    anchors.top: parent.top
+    anchors.topMargin: 24 * pt
+    anchors.right: parent.right
+    anchors.rightMargin: 20 * pt
+    anchors.left: parent.left
+    anchors.leftMargin: 24 * pt
+    anchors.bottom: parent.bottom
+    anchors.bottomMargin: 24 * pt
+    radius: currTheme.radiusRectangle
 
     // Install right panel title
     Item
@@ -51,4 +62,27 @@ Rectangle
         anchors.right: parent.right
         anchors.bottom: parent.bottom
     }
+    InnerShadow {
+            id: topLeftSadow
+            anchors.fill: frameRightPanel
+            cached: true
+            horizontalOffset: 5
+            verticalOffset: 5
+            radius: 4
+            samples: 32
+            color: "#2A2C33"
+            smooth: true
+            source: frameRightPanel
+        }
+    InnerShadow {
+            anchors.fill: frameRightPanel
+            cached: true
+            horizontalOffset: -1
+            verticalOffset: -1
+            radius: 1
+            samples: 32
+            color: "#4C4B5A"
+//            smooth: true
+            source: topLeftSadow
+        }
 }
