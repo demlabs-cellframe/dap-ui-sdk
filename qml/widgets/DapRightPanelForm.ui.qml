@@ -41,27 +41,8 @@ Rectangle
     anchors.leftMargin: 24 * pt
     anchors.bottom: parent.bottom
     anchors.bottomMargin: 24 * pt
-    radius: currTheme.radiusRectangle
 
-    // Install right panel title
-    Item
-    {
-        id: headerRightPanel
-        data: dapHeaderData
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-    }
-    // Install right panel content
-    Item
-    {
-        id: contentItemRightPanel
-        data: dapContentItemData
-        anchors.top: headerRightPanel.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-    }
+
     InnerShadow {
             id: topLeftSadow
             anchors.fill: frameRightPanel
@@ -85,4 +66,25 @@ Rectangle
 //            smooth: true
             source: topLeftSadow
         }
+
+    // Install right panel title
+    Item
+    {
+        id: headerRightPanel
+        data: dapHeaderData
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+    }
+    // Install right panel content
+    Item
+    {
+        id: contentItemRightPanel
+        data: dapContentItemData
+        anchors.top: headerRightPanel.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+    }
+
 }
