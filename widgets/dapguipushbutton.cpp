@@ -219,6 +219,7 @@ void DapGuiPushButton::updateStyle()
 
 void DapGuiPushButton::paintEvent(QPaintEvent *)
 {
+#ifndef ANDROID
   QStylePainter p (this);
   QString pxFile;
 
@@ -242,6 +243,12 @@ void DapGuiPushButton::paintEvent(QPaintEvent *)
   p.drawPixmap (rect(), px);
   p.drawItemText (rect(), Qt::AlignCenter, palette(), isEnabled(), text(), QPalette::ButtonText);
   //p.drawControl (QStyle::CE_PushButton, option);
+#else
+  QStylePainter p(this);
+  QStyleOptionButton option;
+  initStyleOption(&option);
+  p.drawControl(QStyle::CE_PushButton, option);
+#endif
 }
 
 /*-----------------------------------------*/
