@@ -1,9 +1,6 @@
 /* INCLUDES */
 #include "dapguiwidget.h"
 
-#include <QStyleOption>
-#include <QPainter>
-
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/

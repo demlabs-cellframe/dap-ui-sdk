@@ -3,6 +3,7 @@
 #include "dapguicommon.h"
 
 #include <QFile>
+#include <QStylePainter>
 #include <QStyleOption>
 #include <QPainter>
 
@@ -214,6 +215,33 @@ bool DapGuiPushButton::customEnabled() const
 void DapGuiPushButton::updateStyle()
 {
   __kgsm.forcedButtonStyleUpdate();
+}
+
+void DapGuiPushButton::paintEvent(QPaintEvent *)
+{
+  QStylePainter p (this);
+  QString pxFile;
+
+  QStyleOptionButton option;
+  initStyleOption (&option);
+  QStyle::State state = option.state;
+
+  if (state & QStyle::State_On)
+    pxFile  = customPushed().path();
+  else if (state & QStyle::State_MouseOver)
+    pxFile  = customHover().path();
+  else
+    pxFile  = custom().path();
+
+  QPixmap px  = QPixmap(":/" + pxFile)
+      .scaled(
+        rect().size(),
+        Qt::IgnoreAspectRatio,
+        Qt::SmoothTransformation);
+
+  p.drawPixmap (rect(), px);
+  p.drawItemText (rect(), Qt::AlignCenter, palette(), isEnabled(), text(), QPalette::ButtonText);
+  //p.drawControl (QStyle::CE_PushButton, option);
 }
 
 /*-----------------------------------------*/

@@ -122,6 +122,8 @@ private:
   void updateStyle();
   /// @}
 
+  void paintEvent(QPaintEvent *) override;
+
   /****************************************//**
    * @name SIGNALS
    *******************************************/
