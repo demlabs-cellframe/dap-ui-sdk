@@ -351,12 +351,17 @@
 
 .crb_on
 {
-	border-image: url("://gfx/radio_btn_on.png");
+	qproperty-scaledPixmap: url("://gfx/radio_btn_on.png");
 }
 
 .crb_off
 {
-	border-image: url("://gfx/radio_btn_off.png");
+	qproperty-scaledPixmap: url("://gfx/radio_btn_off.png");
+}
+
+.cl_smooth
+{
+	qproperty-scaledContents: true;
 }
 
 /* switch */
@@ -393,22 +398,22 @@
 
 .sw-on
 {
-	border-image: url("://gfx/switch/bg_on.png");
+	qproperty-scaledPixmap: url("://gfx/switch/bg_on.png");
 }
 
 .sw-off
 {
-	border-image: url("://gfx/switch/bg_off.png");
+	qproperty-scaledPixmap: url("://gfx/switch/bg_off.png");
 }
 
 .sw-toggle-on
 {
-	border-image: url("://gfx/switch/toggle_on.png");
+	qproperty-scaledPixmap: url("://gfx/switch/toggle_on.png");
 }
 
 .sw-toggle-off
 {
-	border-image: url("://gfx/switch/toggle_off.png");
+	qproperty-scaledPixmap: url("://gfx/switch/toggle_off.png");
 }
 
 /****************************************************
@@ -417,82 +422,82 @@
 
 .ic_renew
 {
-	border-image: url("://gui/ui/asset/ic_renew.png");
+	qproperty-scaledPixmap: url("://gui/ui/asset/ic_renew.png");
 }
 
 .ic_key
 {
-	border-image: url("://gui/ui/asset/ic_key.png");
+	qproperty-scaledPixmap: url("://gui/ui/asset/ic_key.png");
 }
 
 .ic_key-item
 {
-	border-image: url("://gui/ui/asset/ic_key-item.png");
+	qproperty-scaledPixmap: url("://gui/ui/asset/ic_key-item.png");
 }
 
 .ic_language
 {
-	border-image: url("://gui/ui/asset/ic_language.png");
+	qproperty-scaledPixmap: url("://gui/ui/asset/ic_language.png");
 }
 
 .ic_send-report
 {
-	border-image: url("://gui/ui/asset/ic_send-report.png");
+	qproperty-scaledPixmap: url("://gui/ui/asset/ic_send-report.png");
 }
 
 .ic_bot
 {
-	border-image: url("://gui/ui/asset/ic_bot.png");
+	qproperty-scaledPixmap: url("://gui/ui/asset/ic_bot.png");
 }
 
 .ic_close
 {
-	border-image: url("://gui/ui/asset/ic_close.png");
+	qproperty-scaledPixmap: url("://gui/ui/asset/ic_close.png");
 }
 
 .ic_copy
 {
-	border-image: url("://gui/ui/asset/ic_copy.png");
+	qproperty-scaledPixmap: url("://gui/ui/asset/ic_copy.png");
 }
 
 .ic_information_bug-report
 {
-	border-image: url("://gui/ui/asset/ic_information_bug-report.png");
+	qproperty-scaledPixmap: url("://gui/ui/asset/ic_information_bug-report.png");
 }
 
 .ic_key-history
 {
-	border-image: url("://gui/ui/asset/ic_key-history.png");
+	qproperty-scaledPixmap: url("://gui/ui/asset/ic_key-history.png");
 }
 
 .ic_terms_policy
 {
-	border-image: url("://gui/ui/asset/ic_terms_policy.png");
+	qproperty-scaledPixmap: url("://gui/ui/asset/ic_terms_policy.png");
 }
 
 .ic_terms_policy
 {
-	border-image: url("://gui/ui/asset/ic_terms_policy.png");
+	qproperty-scaledPixmap: url("://gui/ui/asset/ic_terms_policy.png");
 }
 
 .ic_version
 {
-	border-image: url("://gui/ui/asset/ic_version.png");
+	qproperty-scaledPixmap: url("://gui/ui/asset/ic_version.png");
 }
 
 .ic_spinner
 {
-	border-image: url("://gui/ui/asset/Spinner.gif");
+	qproperty-scaledPixmap: url("://gui/ui/asset/Spinner.gif");
 }
 
 .ic_online
 {
-	border-image: url("://gui/ui/asset/icon_online.png");
+	qproperty-scaledPixmap: url("://gui/ui/asset/icon_online.png");
 }
 
 .ic_offline
 {
-	border-image: url("://gui/ui/asset/icon_offline.png");
+	qproperty-scaledPixmap: url("://gui/ui/asset/icon_offline.png");
 }
 
 /****************************************************
@@ -516,7 +521,7 @@
 	max-width: 230pt;
 	min-height: 59pt;
 	max-height: 59pt;
-	border-image: url(:/gui/ui/asset/logo_kelvpn-white.png);
+	qproperty-scaledPixmap: url(:/gui/ui/asset/logo_kelvpn-white.png);
 }
 
 /****************************************************
@@ -538,7 +543,7 @@
 	min-height: 89pt;
 	max-width: 260pt;
 	max-height: 89pt;
-	border-image: url(:/gui/ui/asset/logo_kelvpn-color.png);
+	qproperty-scaledPixmap: url(:/gui/ui/asset/logo_kelvpn-color.png);
 }
 
 .login-logo-holder

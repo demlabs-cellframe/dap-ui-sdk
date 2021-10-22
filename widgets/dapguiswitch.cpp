@@ -41,6 +41,11 @@ DapGuiSwitch::DapGuiSwitch (QWidget *parent)
   m_animGroup->addAnimation (m_animToggle);
 
   /* signals */
+  connect (ui->switch_bg, &DapGuiLabel::clicked,
+           this, &DapGuiSwitch::_slotClicked);
+  connect (ui->switch_toggle, &DapGuiLabel::clicked,
+           this, &DapGuiSwitch::_slotClicked);
+
   connect (&__kgsm, &DapGuiSwitchStyleManager::styleUpdated,
            this, &DapGuiSwitch::_moveItems);
   connect (m_animGroup, &QParallelAnimationGroup::finished,
@@ -120,11 +125,23 @@ void DapGuiSwitch::toggle()
 void DapGuiSwitch::mousePressEvent(QMouseEvent *event)
 {
   if (event->button() == Qt::LeftButton)
-    {
-      emit clicked();
-      toggle();
-      _debugInfoClipboard();
-    }
+    _slotClicked();
+}
+
+void DapGuiSwitch::paintEvent(QPaintEvent *)
+{
+  ui->switch_bg->setEnabled (true);
+  ui->switch_toggle->setEnabled (true);
+
+  QStyleOption opt;
+  opt.init (this);
+  opt.state |= QStyle::State_Enabled;
+
+  auto state  = opt.state;
+  qDebug() << state;
+
+  QPainter p (this);
+  style()->drawPrimitive (QStyle::PE_Widget, &opt, &p, this);
 }
 
 /********************************************
@@ -167,6 +184,13 @@ void DapGuiSwitch::_moveItems()
 
   ui->switch_toggle->move (m_checked ? m_toggleOnPos : 0, 0);
   ui->switch_bg->move (m_bgPos[0], m_bgPos[1]);
+}
+
+void DapGuiSwitch::_slotClicked()
+{
+  emit clicked();
+  toggle();
+  _debugInfoClipboard();
 }
 
 void DapGuiSwitch::_debugInfoClipboard()

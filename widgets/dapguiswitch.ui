@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="DapGuiWidget" name="switch_bg">
+  <widget class="DapGuiLabel" name="switch_bg">
    <property name="geometry">
     <rect>
      <x>12</x>
@@ -26,7 +26,7 @@
     <string>swbg sw-off</string>
    </property>
   </widget>
-  <widget class="DapGuiWidget" name="switch_toggle">
+  <widget class="DapGuiLabel" name="switch_toggle">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -41,12 +41,17 @@
   </widget>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>DapGuiWidget</class>
-   <extends>QWidget</extends>
-   <header>dapguiwidget.h</header>
-   <container>1</container>
-  </customwidget>
+ <customwidget>
+  <class>DapGuiWidget</class>
+  <extends>QWidget</extends>
+  <header>dapguiwidget.h</header>
+  <container>1</container>
+ </customwidget>
+ <customwidget>
+  <class>DapGuiLabel</class>
+  <extends>QLabel</extends>
+  <header>dapguilabel.h</header>
+ </customwidget>
  </customwidgets>
  <resources/>
  <connections/>

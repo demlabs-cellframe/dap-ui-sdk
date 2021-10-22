@@ -21,7 +21,11 @@ class DapGuiLabel : public QLabel
 {
   Q_OBJECT
   DAPGUI_ENABLECSS
+
+  Q_PROPERTY(QString scaledPixmap READ scaledPixmap WRITE setScaledPixmap)
+
   bool _cssHook;
+  QString m_scaledPixmap;
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
@@ -32,11 +36,21 @@ public:
   /// @}
 
   /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  QString scaledPixmap() const;
+  void setScaledPixmap (const QString &scaledPixmap);
+  /// @}
+
+  /****************************************//**
    * @name OVERRIDE
    *******************************************/
   /// @{
 public:
   void mousePressEvent (QMouseEvent *) override;
+  void paintEvent(QPaintEvent *) override;
   /// @}
 
   /****************************************//**

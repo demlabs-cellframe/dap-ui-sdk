@@ -31,7 +31,7 @@ namespace Ui { class DapGuiSwitch; };
 class DapGuiSwitch : public QWidget
 {
   Q_OBJECT
-  DAPGUI_ENABLEWIDGETSTYLE
+  //DAPGUI_ENABLEWIDGETSTYLE
 
   /****************************************//**
    * @name PROPERTIES
@@ -94,6 +94,7 @@ signals:
   /// @{
 public:
   void mousePressEvent (QMouseEvent *) override;
+  void paintEvent (QPaintEvent *) override;
   /// @}
 
   /****************************************//**
@@ -103,6 +104,7 @@ public:
 protected slots:
   void _setAnimByState();
   void _moveItems();
+  void _slotClicked();
   void _debugInfoClipboard();
   /// @}
 };
