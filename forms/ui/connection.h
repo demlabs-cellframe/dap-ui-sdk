@@ -50,7 +50,7 @@ public:
 signals:
   void sigSwitchToggle (bool checked);
   void sigServerClicked();
-  void sigDisconnectionRequested();
+  void sigConnectionStatusChangeRequested();
   /// @}
 
   /****************************************//**
@@ -71,7 +71,7 @@ public slots:
   void setDownloadSpeed(QString a_text);
   void setUploadSpeed(QString a_text);
   void setServerInfo(QString a_name, QString a_ip);
-  void slotDisconnectionRequested();
+  void slotConnectionRequesteButtonPressed();
 //  void slotUpdateStatusIcon(bool a_switch);
 
 
