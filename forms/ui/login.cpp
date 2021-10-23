@@ -35,6 +35,8 @@ Login::Login (QWidget *parent) :
 #ifdef Q_OS_ANDROID
   ui->btnChooseSerial->setBtnStyle (DapGuiButton::TopMainBottomSub);
   ui->btnChooseSerial->setMainText ("____-____-____-____");
+#else
+  ui->btnChooseSerial->setInputMask (">NNNN-NNNN-NNNN-NNNN;_");
 #endif // Q_OS_ANDROID
 
 //  ui->btnChooseSerial->setInputFocusCallback (cbSerialFocus);

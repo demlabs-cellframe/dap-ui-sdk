@@ -230,6 +230,9 @@ Usualy unvisible by being empty</string>
                  <property name="cssStyle" stdset="0">
                   <string>cwb_height</string>
                  </property>
+                 <property name="buttonStyle" stdset="0">
+                  <enum>DapGuiButton::EditTopMainBottomSub</enum>
+                 </property>
                  <property name="mainText" stdset="0">
                   <string/>
                  </property>
