@@ -55,15 +55,14 @@ Button
     contentItem:
         Rectangle
         {
-
             id: dapBackgroundButton
             anchors.fill: parent
-            color: dapButton.hovered ? currTheme.buttonColorHover : currTheme.buttonColorNormal
+            color: dapButton.enabled ? dapButton.hovered ? currTheme.buttonColorHover : currTheme.buttonColorNormal : currTheme.buttonColorNoActive
             implicitWidth: widthButton
             implicitHeight: heightButton
             border.color: borderColorButton
             border.width: borderWidthButton
-            radius: dapButton.hovered ? 3 : 20
+            radius: currTheme.radiusButton
 
             ///button text
             Text
