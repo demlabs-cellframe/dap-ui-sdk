@@ -55,14 +55,15 @@ Button
     contentItem:
         Rectangle
         {
+
             id: dapBackgroundButton
             anchors.fill: parent
-            color: dapButton.hovered ? colorBackgroundHover : colorBackgroundNormal
+            color: dapButton.hovered ? currTheme.buttonColorHover : currTheme.buttonColorNormal
             implicitWidth: widthButton
             implicitHeight: heightButton
             border.color: borderColorButton
             border.width: borderWidthButton
-            radius: 0
+            radius: dapButton.hovered ? 3 : 20
 
             ///button text
             Text
@@ -72,7 +73,7 @@ Button
                 verticalAlignment: Qt.AlignVCenter
                 horizontalAlignment: Qt.AlignRight
                 anchors.rightMargin: indentTextRight
-                color: dapButton.hovered ? colorButtonTextHover : colorButtonTextNormal
+                color: currTheme.textColor
                 text: qsTr(textButton)
             }
 

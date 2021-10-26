@@ -6,7 +6,7 @@ import QtQuick 2.4
 import QtQuick.Controls 2.0
 import QtGraphicalEffects 1.0
 
-Rectangle 
+Page
 {
     id: frameRightPanel
 
@@ -33,19 +33,25 @@ Rectangle
     property int dapRightPanelWidth
 
     width: dapRightPanelWidth
-    anchors.top: parent.top
-    anchors.topMargin: 24 * pt
-    anchors.right: parent.right
-    anchors.rightMargin: 20 * pt
-    anchors.left: parent.left
-    anchors.leftMargin: 24 * pt
-    anchors.bottom: parent.bottom
-    anchors.bottomMargin: 24 * pt
+    anchors {
+        top: parent.top
+        topMargin: 24 * pt
+        right: parent.right
+        rightMargin: 20 * pt
+        left: parent.left
+        leftMargin: 24 * pt
+        bottom: parent.bottom
+        bottomMargin: 24 * pt
+    }
 
+    background: Rectangle {
+        id: backGrndRect
+        color: currTheme.backgroundElements
+        radius: currTheme.radiusRectangle
 
-    InnerShadow {
+        InnerShadow {
             id: topLeftSadow
-            anchors.fill: frameRightPanel
+            anchors.fill: backGrndRect
             cached: true
             horizontalOffset: 5
             verticalOffset: 5
@@ -53,19 +59,37 @@ Rectangle
             samples: 32
             color: "#2A2C33"
             smooth: true
-            source: frameRightPanel
+            source: backGrndRect
         }
-    InnerShadow {
-            anchors.fill: frameRightPanel
+        InnerShadow {
+            anchors.fill: backGrndRect
             cached: true
             horizontalOffset: -1
             verticalOffset: -1
             radius: 1
             samples: 32
             color: "#4C4B5A"
-//            smooth: true
+            //            smooth: true
             source: topLeftSadow
         }
+    }
+
+    //Close button for right pannel
+    property DapButton dapButtonClose:
+        DapButton
+        {
+            id: buttonClose
+            height: 20 * pt
+            width: 20 * pt
+            heightImageButton: 10 * pt
+            widthImageButton: 10 * pt
+            normalImageButton: "qrc:/resources/icons/"+pathTheme+"/close_icon.png"
+            hoverImageButton:  "qrc:/resources/icons/"+pathTheme+"/close_icon_hover.png"
+        }
+
+    //Header height
+    dapHeader.height: 36 * pt
+    dapRightPanelWidth: visible? 350 * pt : 0 * pt
 
     // Install right panel title
     Item
