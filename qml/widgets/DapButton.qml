@@ -57,7 +57,9 @@ Button
         {
             id: dapBackgroundButton
             anchors.fill: parent
+
             color: dapButton.enabled ? dapButton.hovered ? currTheme.buttonColorHover : currTheme.buttonColorNormal : currTheme.buttonColorNoActive
+
             implicitWidth: widthButton
             implicitHeight: heightButton
             border.color: borderColorButton

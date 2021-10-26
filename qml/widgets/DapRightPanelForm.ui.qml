@@ -32,6 +32,9 @@ Page
     ///@detalis dapRightPanelWidth External property for possibility to hiding RightPanel
     property int dapRightPanelWidth
 
+    //Header height
+    dapHeader.height: 36 * pt
+    dapRightPanelWidth: visible? 350 * pt : 0 * pt
     width: dapRightPanelWidth
     anchors {
         top: parent.top
@@ -87,9 +90,7 @@ Page
             hoverImageButton:  "qrc:/resources/icons/"+pathTheme+"/close_icon_hover.png"
         }
 
-    //Header height
-    dapHeader.height: 36 * pt
-    dapRightPanelWidth: visible? 350 * pt : 0 * pt
+
 
     // Install right panel title
     Item

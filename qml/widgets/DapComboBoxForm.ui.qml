@@ -100,6 +100,7 @@ ComboBox
             height: indicatorHeight
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: parent.right
+            anchors.rightMargin: sidePaddingNormal * pt
 //            anchors.rightMargin: sidePaddingActive
         }
 
