@@ -31,7 +31,7 @@ class DapGuiPlainTextEditInterface : public QPlainTextEdit
    *******************************************/
   /// @{
 public:
-  typedef void (*cbTextEdit) (DapGuiPlainTextEditInterface *e, QString &preedit, QString &commit, int from, int to);
+  typedef bool (*cbTextEdit) (DapGuiPlainTextEditInterface *e, QString &preedit, QString &commit, int from, int to);
   typedef void (*cbFocusEvent) (DapGuiPlainTextEditInterface *e, const Qt::FocusReason &reason);
   typedef bool (*cbKeyEvent) (DapGuiPlainTextEditInterface *e, QKeyEvent *event);
   /// @}

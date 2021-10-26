@@ -10,7 +10,8 @@
 
 DapGuiPlainTextEdit::DapGuiPlainTextEdit (QWidget *parent) :
     QWidget (parent),
-    ui(new Ui::DapGuiPlainTextEditUI)
+    ui (new Ui::DapGuiPlainTextEditUI),
+    m_callbackTextEdit (nullptr)
 {
   ui->setupUi(this);
 
@@ -105,6 +106,16 @@ void DapGuiPlainTextEdit::unfocus()
   ui->kgpteuPlainTextEdit->unfocus();
 }
 
+DapGuiPlainTextEdit::cbTextEdit DapGuiPlainTextEdit::callbackTextEdit() const
+{
+  return m_callbackTextEdit;
+}
+
+void DapGuiPlainTextEdit::setCallbackTextEdit(cbTextEdit newCallbackTextEdit)
+{
+  m_callbackTextEdit = newCallbackTextEdit;
+}
+
 /********************************************
  * PROTECTED METHODS
  *******************************************/
@@ -128,13 +139,8 @@ static const char * const s_styles[2] =
   "}\n"
 };
 
-void DapGuiPlainTextEdit::_cbTextEdit(DapGuiPlainTextEditInterface *e, QString &preedit, QString &commit, int from, int to)
+bool DapGuiPlainTextEdit::_cbTextEdit(DapGuiPlainTextEditInterface *e, QString &preedit, QString &commit, int from, int to)
 {
-  Q_UNUSED(e)
-  Q_UNUSED(preedit)
-  Q_UNUSED(commit)
-  Q_UNUSED(from)
-  Q_UNUSED(to)
   auto p  = qobject_cast<DapGuiPlainTextEdit*> (e->parentWidget());
   if (p)
     {
@@ -145,6 +151,11 @@ void DapGuiPlainTextEdit::_cbTextEdit(DapGuiPlainTextEditInterface *e, QString &
         );
       p->_updateStyle();
     }
+
+  if (p->m_callbackTextEdit)
+    return p->m_callbackTextEdit (e, preedit, commit, from, to);
+
+  return false;
 }
 
 void DapGuiPlainTextEdit::_cbFocusEvent(DapGuiPlainTextEditInterface *e, const Qt::FocusReason &reason)
