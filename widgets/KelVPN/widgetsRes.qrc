@@ -35,17 +35,11 @@
         <file>gfx/separator_left.png</file>
         <file>gfx/separator_mid.png</file>
         <file>gfx/separator_right.png</file>
-        <file>styles/button.css</file>
-        <file>styles/buttonlabel.css</file>
-        <file>styles/checkbox.css</file>
-        <file>styles/pushbutton.css</file>
-        <file>styles/pushbuttoncustom.css</file>
-        <file>styles/radiobutton.css</file>
-        <file>style/globalstyle.css</file>
         <file>gfx/switch/toggle_on.png</file>
         <file>gfx/switch/bg_on.png</file>
         <file>gfx/switch/toggle_off.png</file>
         <file>gfx/switch/bg_off.png</file>
         <file>gfx/btn_server_bg.png</file>
+        <file>style.css</file>
     </qresource>
 </RCC>
