@@ -14,6 +14,11 @@ class DapGuiLineEdit;
 
 /****************************************//**
  * @brief ui/class for serial input
+ *
+ * Serial input form screen.
+ *
+ * Used to insert serial key on phone devices.
+ *
  * @ingroup groupUiClasses
  * @date 01.10.2021
  * @author Mikhail Shilenko

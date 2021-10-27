@@ -16,6 +16,20 @@ QT_END_NAMESPACE
 
 /****************************************//**
  * @brief ui/class for bug reports
+ *
+ * 4 modes:
+ * - Report list
+ * - Report input
+ * - Sending
+ * - Send request result
+ *
+ * To change mode, use BugReports::slotSetMode
+ *
+ * @note report list mode is temporeraly disabled
+ *
+ * @note has debug field with radio buttons
+ * for mode change test purposes
+ *
  * @ingroup groupUiClasses
  * @date 27.08.2021
  * @author Mikhail Shilenko

@@ -15,6 +15,13 @@ QT_END_NAMESPACE
 
 /****************************************//**
  * @brief ui/class for displaying documents
+ *
+ * Display's documents
+ *
+ * Features:
+ * - Touch scrolling
+ * - Flexible document integration
+ *
  * @ingroup groupUiClasses
  * @date 01.09.2021
  * @author Mikhail Shilenko

@@ -12,6 +12,11 @@ QT_END_NAMESPACE
 
 /****************************************//**
  * @brief ui/class for settings
+ *
+ * Uses model to display options.
+ *
+ * @note several options is temporeraly disabled
+ *
  * @ingroup groupUiClasses
  * @date 01.09.2021
  * @author Mikhail Shilenko

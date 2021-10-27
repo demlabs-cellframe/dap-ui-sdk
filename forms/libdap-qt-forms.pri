@@ -41,7 +41,7 @@ HEADERS     += \
     $$PWD/ui/baseform.h \
     $$PWD/ui/bugreports.h \
     $$PWD/ui/chooseserver.h \
-    $$PWD/ui/connection.h \
+    $$PWD/ui/dashboard.h \
     $$PWD/ui/docs.h \
     $$PWD/ui/documentpopup.h \
     $$PWD/ui/helper/auxiliary/AppStyleSheetHandler.h \

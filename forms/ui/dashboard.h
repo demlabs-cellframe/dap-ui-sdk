@@ -1,5 +1,5 @@
-#ifndef CONNECTION_H
-#define CONNECTION_H
+#ifndef DASHBOARD_H
+#define DASHBOARD_H
 
 /* INCLUDES */
 #include <QWidget>
@@ -13,6 +13,16 @@ QT_END_NAMESPACE
 
 /****************************************//**
  * @brief ui/class for connection status
+ *
+ * Dashboard screen show's information
+ * about current connection
+ *
+ * Features:
+ * - %Connection time
+ * - Switch
+ * - Download/Upload speed
+ * - Choose other server
+ *
  * @note status icon fires up if datetime
  * provided slotSetStartedTime is not null
  * @ingroup groupUiClasses
@@ -20,7 +30,7 @@ QT_END_NAMESPACE
  * @author Mikhail Shilenko
  *******************************************/
 
-class Connection : public BaseForm
+class Dashboard : public BaseForm
 {
   Q_OBJECT
 
@@ -39,8 +49,8 @@ private:
    *******************************************/
   /// @{
 public:
-  explicit Connection (QWidget *parent = nullptr);
-  ~Connection();
+  explicit Dashboard (QWidget *parent = nullptr);
+  ~Dashboard();
   /// @}
 
   /****************************************//**
@@ -58,22 +68,32 @@ signals:
    *******************************************/
   /// @{
 public slots:
-//  void slotSwitchSetState (bool checked);
+  /// set both speeds
   void slotSetDownUp (quint64 down, quint64 up);
+  /// set download speed
   void slotSetDown (quint64 down);
+  /// set upload speed
   void slotSetUp (quint64 up);
+  /// set server ip
   void slotSetSererIP (QString ip);
+  /// setup connection time (or invalid for disconnected)
   void slotSetStartedTime (QDateTime dt);
-  void setStatusText(QString a_text);
-  void setConnectedTime(QString a_text);
+  /// set status text
+  void setStatusText (QString a_text);
+  /// set connectet time text
+  void setConnectedTime (QString a_text);
+  /// activate/deactivate status indicator
   void setStatusIdicator(bool a_enabled = false);
+  /// turn on/off switch
   void setBtnSwitchChecked(bool a_authorized = true);
+  /// set download speed text
   void setDownloadSpeed(QString a_text);
+  /// set upload speed text
   void setUploadSpeed(QString a_text);
+  /// set server information into button
   void setServerInfo(QString a_name, QString a_ip);
+  /// start disconnection
   void slotDisconnectionRequested();
-//  void slotUpdateStatusIcon(bool a_switch);
-
 
 private slots:
   void _slotTimeUpdate();
@@ -81,4 +101,4 @@ private slots:
 };
 
 /*-----------------------------------------*/
-#endif // CONNECTION_H
+#endif // DASHBOARD_H

@@ -12,6 +12,9 @@ QT_END_NAMESPACE
 
 /****************************************//**
  * @brief ui/class for language list
+ *
+ * Choose different languages
+ *
  * @ingroup groupUiClasses
  * @date 01.09.2021
  * @author Mikhail Shilenko

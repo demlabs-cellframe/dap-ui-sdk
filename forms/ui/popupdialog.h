@@ -11,6 +11,11 @@ QT_END_NAMESPACE
 
 /****************************************//**
  * @brief ui/class for reset licence
+ *
+ * Flexible popup dialog.
+ *
+ * Only two answers: Yes and No
+ *
  * @ingroup groupUiClasses
  * @date 18.09.2021
  * @author Mikhail Shilenko

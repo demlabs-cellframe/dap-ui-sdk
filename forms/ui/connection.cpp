@@ -1,5 +1,5 @@
 /* INCLUDES */
-#include "connection.h"
+#include "dashboard.h"
 #include "ui_connection.h"
 #include "helper/trafficstringhelper.h"
 #include "helper/uptimestringhelper.h"
@@ -8,7 +8,7 @@
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-Connection::Connection (QWidget *parent) :
+Dashboard::Dashboard (QWidget *parent) :
   BaseForm (parent),
   ui (new Ui::Connection),
   m_started (QDateTime())
@@ -23,18 +23,18 @@ Connection::Connection (QWidget *parent) :
   _slotTimeUpdate();
 
   connect (m_updateTime, &QTimer::timeout,
-           this, &Connection::_slotTimeUpdate,
+           this, &Dashboard::_slotTimeUpdate,
            Qt::QueuedConnection);
 
   /* signals */
   connect (ui->btnSwitch, &DapGuiSwitch::toggled,
-           this, &Connection::sigSwitchToggle,
+           this, &Dashboard::sigSwitchToggle,
            Qt::QueuedConnection);
   connect (ui->btnSwitch, &DapGuiSwitch::clicked,
-           this, &Connection::slotDisconnectionRequested,
+           this, &Dashboard::slotDisconnectionRequested,
            Qt::QueuedConnection);
   connect (ui->btnServer, &DapGuiButton::clicked,
-           this, &Connection::sigServerClicked,
+           this, &Dashboard::sigServerClicked,
            Qt::QueuedConnection);
 
   /* finish */
@@ -42,7 +42,7 @@ Connection::Connection (QWidget *parent) :
   setStatusIdicator(false);
 }
 
-Connection::~Connection()
+Dashboard::~Dashboard()
 {
   delete ui;
 }
@@ -51,49 +51,48 @@ Connection::~Connection()
  * SLOTS
  *******************************************/
 
-//void Connection::slotSwitchSetState(bool checked)
-//{
-//  ui->btnSwitch->setChecked (checked);
-//  _slotUpdateStatusIcon();
-//}
-
-void Connection::slotSetDownUp(quint64 down, quint64 up)
+/// @deprecated
+void Dashboard::slotSetDownUp(quint64 down, quint64 up)
 {
   slotSetDown (down);
   slotSetUp (up);
 }
 
-void Connection::slotSetDown(quint64 down)
+/// @deprecated
+void Dashboard::slotSetDown(quint64 down)
 {
   ui->lDownload->setMainText (TrafficStringHelper (down).asString());
 }
 
-void Connection::slotSetUp(quint64 up)
+/// @deprecated
+void Dashboard::slotSetUp(quint64 up)
 {
   ui->lUpload->setMainText (TrafficStringHelper (up).asString());
 }
 
-void Connection::slotSetSererIP(QString ip)
+/// @deprecated
+void Dashboard::slotSetSererIP(QString ip)
 {
   ui->btnServer->setSubText (ip);
 }
-void Connection::setStatusText(QString a_text)
+
+void Dashboard::setStatusText(QString a_text)
 {
     ui->lTitle->setText(a_text);
 }
 
-void Connection::setServerInfo(QString a_name, QString a_ip)
+void Dashboard::setServerInfo(QString a_name, QString a_ip)
 {
     ui->btnServer->setMainText(a_name);
     ui->btnServer->setSubText(a_ip);
 }
 
-void Connection::setConnectedTime(QString a_text)
+void Dashboard::setConnectedTime(QString a_text)
 {
     ui->lUptime->setText(a_text);
 }
 
-void Connection::setStatusIdicator(bool a_enabled /*= false*/)
+void Dashboard::setStatusIdicator(bool a_enabled /*= false*/)
 {
     ui->lStatusIconOn->setVisible (a_enabled);
     ui->lStatusIconOff->setVisible (!a_enabled);
@@ -101,23 +100,24 @@ void Connection::setStatusIdicator(bool a_enabled /*= false*/)
 //    ui->lStatusIcon->setChecked(a_authorized);
 }
 
-void Connection::setBtnSwitchChecked(bool a_authorized /*= true*/)
+void Dashboard::setBtnSwitchChecked(bool a_authorized /*= true*/)
 {
 //    slotUpdateStatusIcon(a_authorized);
     ui->btnSwitch->setChecked(a_authorized);
 }
 
-void Connection::setDownloadSpeed(QString a_text)
+void Dashboard::setDownloadSpeed(QString a_text)
 {
     ui->lDownload->setMainText(a_text);
 }
 
-void Connection::setUploadSpeed(QString a_text)
+void Dashboard::setUploadSpeed(QString a_text)
 {
     ui->lUpload->setMainText(a_text);
 }
 
-void Connection::slotSetStartedTime(QDateTime dt)
+/// @deprecated
+void Dashboard::slotSetStartedTime(QDateTime dt)
 {
   m_started = dt;
 
@@ -129,31 +129,18 @@ void Connection::slotSetStartedTime(QDateTime dt)
     m_updateTime->start();
 }
 
-
-void Connection::_slotTimeUpdate()
+/// @deprecated
+void Dashboard::_slotTimeUpdate()
 {
   auto msecs  = m_started.msecsTo (QDateTime::currentDateTime());
   auto text   = UptimeStringHelper (msecs).asString();
   ui->lUptime->setText (text);
 }
 
-void Connection::slotDisconnectionRequested()
+void Dashboard::slotDisconnectionRequested()
 {
 //    this->_slotUpdateStatusIcon();
     emit sigDisconnectionRequested();
 }
-
-//void Connection::slotUpdateStatusIcon(bool a_switch)
-//{
-//  ui->lStatusIconOn->setVisible (a_switch);
-//  ui->lStatusIconOff->setVisible (!a_switch);
-  
-////    qDebug() << a_switch;
-////  ui->lStatusIcon->setCssStyle(
-////        a_switch
-////        ? "conn-status-icon ic_online"
-////        : "conn-status-icon ic_offline"
-////      );
-//}
 
 /*-----------------------------------------*/

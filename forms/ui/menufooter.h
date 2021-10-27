@@ -13,7 +13,10 @@ QT_END_NAMESPACE
 
 /****************************************//**
  * @brief menu footer widget
- * usualy lays on top of screen
+ *
+ * Usualy lays on top of all screen widgets
+ * at the bottom of the screen space
+ *
  * @ingroup groupUiClasses
  * @date 27.08.2021
  * @author Mikhail Shilenko
