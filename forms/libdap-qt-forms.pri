@@ -94,4 +94,5 @@ RESOURCES += \
     $$PWD/appRes.qrc
 
 DISTFILES += \
+    $$PWD/DoxyLayout.xml \
     $$PWD/README.md
