@@ -8,7 +8,7 @@ SOURCES     += \
     $$PWD/ui/baseform.cpp \
     $$PWD/ui/bugreports.cpp \
     $$PWD/ui/chooseserver.cpp \
-    $$PWD/ui/connection.cpp \
+    $$PWD/ui/dashboard.cpp \
     $$PWD/ui/documentpopup.cpp \
     $$PWD/ui/helper/auxiliary/AppStyleSheetHandler.cpp \
     $$PWD/ui/helper/auxiliary/UiScaling.cpp \
@@ -76,7 +76,7 @@ HEADERS     += \
 FORMS += \
     $$PWD/ui/bugreports.ui \
     $$PWD/ui/chooseserver.ui \
-    $$PWD/ui/connection.ui \
+    $$PWD/ui/dashboard.ui \
     $$PWD/ui/documentpopup.ui \
     $$PWD/ui/history.ui \
     $$PWD/ui/language.ui \
