@@ -86,6 +86,7 @@ Page
             width: 20 * pt
             heightImageButton: 10 * pt
             widthImageButton: 10 * pt
+            activeFrame: false
             normalImageButton: "qrc:/resources/icons/"+pathTheme+"/close_icon.png"
             hoverImageButton:  "qrc:/resources/icons/"+pathTheme+"/close_icon_hover.png"
         }

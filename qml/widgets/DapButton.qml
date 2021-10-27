@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
+import QtGraphicalEffects 1.0
 
 Button
 {
@@ -45,20 +46,38 @@ Button
     property alias dapHorizontalAlignment: buttonText.horizontalAlignment
     ///@details button background radius
     property alias radius: dapBackgroundButton.radius
+    property string shadowColor : "#2A2C33"
+    property bool activeFrame : true
 
 
     id: dapButton
 
     ///@details empty default background
-    background: Item {  }
+    background: Item { id:background }
 
     contentItem:
         Rectangle
         {
             id: dapBackgroundButton
             anchors.fill: parent
+            LinearGradient
+            {
+                anchors.fill: parent
+                source: parent
+                start: Qt.point(0,parent.height/2)
+                end: Qt.point(parent.width,parent.height/2)
+                gradient:
+                    Gradient {
+                        GradientStop { position: 0; color: dapButton.hovered?"#E62083":"#C91D73"}
+                        GradientStop { position: 1; color: dapButton.hovered?"#E62263":"#D51F5D"}
+                    }
+            }
 
-            color: dapButton.enabled ? dapButton.hovered ? currTheme.buttonColorHover : currTheme.buttonColorNormal : currTheme.buttonColorNoActive
+            color: !dapButton.activeFrame? "transparent " :
+                   dapButton.enabled ?
+                   dapButton.hovered ? currTheme.buttonColorHover :
+                                       currTheme.buttonColorNormal :
+                                       currTheme.buttonColorNoActive
 
             implicitWidth: widthButton
             implicitHeight: heightButton
@@ -90,4 +109,17 @@ Button
                 height: heightImageButton
             }
         }
+    DropShadow {
+//                Layout.alignment: buttonSend
+        anchors.fill: dapBackgroundButton
+        horizontalOffset: 2
+        verticalOffset: 2
+        radius: 10
+        samples: 32
+        color: shadowColor
+        source: dapBackgroundButton
+        smooth: true
+        }
+
+
 }
