@@ -5,6 +5,15 @@ import QtGraphicalEffects 1.0
 
 ComboBox {
     id: control
+//    ///@detalis mainRow The model role for the main line of cloded ComboBox.
+//    property var mainRow: [""]
+//    //@detalis mainLineText Text without unneccesary part.
+//    property string mainLineText
+//    ///@detalis comboBoxTextRole The model roles used for the ComboBox.
+//    property var comboBoxTextRole: ["text"]
+
+
+//    model: (popup.visible) ? comboBoxTextRole.length : 1
 
         leftPadding: 10
 
@@ -15,7 +24,7 @@ ComboBox {
             contentItem: Text {
                 text: modelData.name
                 color: currTheme.textColor
-                font: control.font
+                font: dapQuicksandFonts.dapMainFontTheme.dapFontQuicksandRegular16
                 elide: Text.ElideRight
                 verticalAlignment: Text.AlignVCenter
             }
@@ -36,10 +45,8 @@ ComboBox {
             x: control.width - width - 20
             y: control.topPadding + (control.availableHeight - height) / 2
 
-            width: 25; height: 15
-            fillMode: Image.PreserveAspectFit
-            source: "qrc:/icons/arrow_down.svg"
-            sourceSize.width: 12
+            width: 24; height: 24
+            source: "qrc:/resources/icons/"+pathTheme+"/icon_arrow_down.png"
             rotation: control.popup.opened ? 180 : 0
 
             ColorOverlay {
@@ -49,7 +56,7 @@ ComboBox {
                 color: parent.color
             }
 
-            Behavior on rotation { NumberAnimation { duration: 200 } }
+//            Behavior on rotation { NumberAnimation { duration: 200 } }
         }
 
         contentItem: Text {
@@ -58,7 +65,7 @@ ComboBox {
 
             text: control.displayText
             font: control.font
-            color: "Gray"
+            color: currTheme.textColor
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight
         }
