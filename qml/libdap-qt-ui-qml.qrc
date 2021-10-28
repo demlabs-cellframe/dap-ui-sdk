@@ -33,5 +33,7 @@
         <file>widgets/DapCheckBox.qml</file>
         <file>widgets/DapCheckBoxForm.ui.qml</file>
         <file>widgets/DapTextField.qml</file>
+        <file>widgets/DapComboBoxNew.qml</file>
+        <file>icons/arrow_down.svg</file>
     </qresource>
 </RCC>
