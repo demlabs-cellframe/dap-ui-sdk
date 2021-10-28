@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>History</class>
- <widget class="QWidget" name="History">
+ <class>Purchase</class>
+ <widget class="QWidget" name="Purchase">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>428</width>
-    <height>929</height>
+    <height>926</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_3">
+  <layout class="QHBoxLayout" name="horizontalLayout_2">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -34,7 +34,7 @@
      <property name="cssStyle">
       <string>backgroundcolor</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
       <property name="spacing">
        <number>0</number>
       </property>
@@ -55,7 +55,7 @@
         <property name="cssStyle">
          <string>base-widget</string>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
+        <layout class="QVBoxLayout" name="verticalLayout">
          <property name="spacing">
           <number>0</number>
          </property>
@@ -72,9 +72,9 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="DapGuiWidget" name="kelGuiWidget_2">
+          <widget class="DapGuiWidget" name="top_spacer">
            <property name="cssStyle">
-            <string>history-top-spacer</string>
+            <string>purchase-top-spacer</string>
            </property>
           </widget>
          </item>
@@ -87,17 +87,17 @@
              </property>
              <property name="custom">
               <url>
-               <string>qrc:/gui/ui/asset/ic_close.png</string>
+               <string>qrc:/gui/asset/ic_close.png</string>
               </url>
              </property>
              <property name="customHover">
               <url>
-               <string>qrc:/gui/ui/asset/ic_close.png</string>
+               <string>qrc:/gui/asset/ic_close.png</string>
               </url>
              </property>
              <property name="customPushed">
               <url>
-               <string>qrc:/gui/ui/asset/ic_close.png</string>
+               <string>qrc:/gui/asset/ic_close.png</string>
               </url>
              </property>
              <property name="cssStyle" stdset="0">
@@ -108,13 +108,13 @@
            <item>
             <widget class="DapGuiLabel" name="labelTitle">
              <property name="text">
-              <string>History</string>
+              <string>Get a new licence key</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
              <property name="cssStyle">
-              <string>history-title-text font24 darkblue lato normalbold noborder nobackground</string>
+              <string>purchase-title-text lato font24 normalbold darkblue noborder nobackground</string>
              </property>
             </widget>
            </item>
@@ -128,28 +128,37 @@
           </layout>
          </item>
          <item>
-          <widget class="DapGuiWidget" name="kelGuiWidget_3">
+          <widget class="DapGuiWidget" name="kelGuiWidget_2">
            <property name="cssStyle">
-            <string>history-top-content-spacer</string>
+            <string>purchase-top-content-spacer</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="HistoryModel" name="scrollArea">
+          <widget class="PurchaseModel" name="scrollArea">
            <property name="styleSheet">
-            <string notr="true">background: rgba(0,0,0,0);</string>
+            <string notr="true">background-color: rgba(0,0,0,0);</string>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
            </property>
            <property name="widgetResizable">
             <bool>true</bool>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
            </property>
            <widget class="QWidget" name="scrollAreaWidgetContents">
             <property name="geometry">
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>388</width>
-              <height>787</height>
+              <width>390</width>
+              <height>786</height>
              </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgba(0,0,0,0);</string>
             </property>
            </widget>
           </widget>
@@ -180,9 +189,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>HistoryModel</class>
+   <class>PurchaseModel</class>
    <extends>QScrollArea</extends>
-   <header location="global">ui/model/historymodel.h</header>
+   <header location="global">ui/model/purchasemodel.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

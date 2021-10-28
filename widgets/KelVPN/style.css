@@ -422,82 +422,82 @@
 
 .ic_renew
 {
-	qproperty-scaledPixmap: url("://gui/ui/asset/ic_renew.png");
+	qproperty-scaledPixmap: url("://gui/asset/ic_renew.png");
 }
 
 .ic_key
 {
-	qproperty-scaledPixmap: url("://gui/ui/asset/ic_key.png");
+	qproperty-scaledPixmap: url("://gui/asset/ic_key.png");
 }
 
 .ic_key-item
 {
-	qproperty-scaledPixmap: url("://gui/ui/asset/ic_key-item.png");
+	qproperty-scaledPixmap: url("://gui/asset/ic_key-item.png");
 }
 
 .ic_language
 {
-	qproperty-scaledPixmap: url("://gui/ui/asset/ic_language.png");
+	qproperty-scaledPixmap: url("://gui/asset/ic_language.png");
 }
 
 .ic_send-report
 {
-	qproperty-scaledPixmap: url("://gui/ui/asset/ic_send-report.png");
+	qproperty-scaledPixmap: url("://gui/asset/ic_send-report.png");
 }
 
 .ic_bot
 {
-	qproperty-scaledPixmap: url("://gui/ui/asset/ic_bot.png");
+	qproperty-scaledPixmap: url("://gui/asset/ic_bot.png");
 }
 
 .ic_close
 {
-	qproperty-scaledPixmap: url("://gui/ui/asset/ic_close.png");
+	qproperty-scaledPixmap: url("://gui/asset/ic_close.png");
 }
 
 .ic_copy
 {
-	qproperty-scaledPixmap: url("://gui/ui/asset/ic_copy.png");
+	qproperty-scaledPixmap: url("://gui/asset/ic_copy.png");
 }
 
 .ic_information_bug-report
 {
-	qproperty-scaledPixmap: url("://gui/ui/asset/ic_information_bug-report.png");
+	qproperty-scaledPixmap: url("://gui/asset/ic_information_bug-report.png");
 }
 
 .ic_key-history
 {
-	qproperty-scaledPixmap: url("://gui/ui/asset/ic_key-history.png");
+	qproperty-scaledPixmap: url("://gui/asset/ic_key-history.png");
 }
 
 .ic_terms_policy
 {
-	qproperty-scaledPixmap: url("://gui/ui/asset/ic_terms_policy.png");
+	qproperty-scaledPixmap: url("://gui/asset/ic_terms_policy.png");
 }
 
 .ic_terms_policy
 {
-	qproperty-scaledPixmap: url("://gui/ui/asset/ic_terms_policy.png");
+	qproperty-scaledPixmap: url("://gui/asset/ic_terms_policy.png");
 }
 
 .ic_version
 {
-	qproperty-scaledPixmap: url("://gui/ui/asset/ic_version.png");
+	qproperty-scaledPixmap: url("://gui/asset/ic_version.png");
 }
 
 .ic_spinner
 {
-	qproperty-scaledPixmap: url("://gui/ui/asset/Spinner.gif");
+	qproperty-scaledPixmap: url("://gui/asset/Spinner.gif");
 }
 
 .ic_online
 {
-	qproperty-scaledPixmap: url("://gui/ui/asset/icon_online.png");
+	qproperty-scaledPixmap: url("://gui/asset/icon_online.png");
 }
 
 .ic_offline
 {
-	qproperty-scaledPixmap: url("://gui/ui/asset/icon_offline.png");
+	qproperty-scaledPixmap: url("://gui/asset/icon_offline.png");
 }
 
 /****************************************************
@@ -512,7 +512,7 @@
 	min-height: 926pt;
 	max-width: 428pt;
 	max-height: 926pt;
-	border-image: url(:/gui/ui/asset/bg_dark-stripes.png);
+	border-image: url(:/gui/asset/bg_dark-stripes.png);
 }
 
 .splashscreen_logo
@@ -521,7 +521,7 @@
 	max-width: 230pt;
 	min-height: 59pt;
 	max-height: 59pt;
-	qproperty-scaledPixmap: url(:/gui/ui/asset/logo_kelvpn-white.png);
+	qproperty-scaledPixmap: url(:/gui/asset/logo_kelvpn-white.png);
 }
 
 /****************************************************
@@ -543,7 +543,7 @@
 	min-height: 89pt;
 	max-width: 260pt;
 	max-height: 89pt;
-	qproperty-scaledPixmap: url(:/gui/ui/asset/logo_kelvpn-color.png);
+	qproperty-scaledPixmap: url(:/gui/asset/logo_kelvpn-color.png);
 }
 
 .login-logo-holder

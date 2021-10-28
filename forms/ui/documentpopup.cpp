@@ -59,14 +59,14 @@ void DocumentPopup::slotShowTermsOfUse()
 {
   setObjectName ("Terms of use");
   ui->label->setText ("Terms of use");
-  m_label->setText (Common::fromFile (":/gui/ui/data/terms.html"));
+  m_label->setText (Common::fromFile (":/gui/data/terms.html"));
 }
 
 void DocumentPopup::slotShowPrivacyPolicy()
 {
   setObjectName ("Privacy policy");
   ui->label->setText ("Privacy policy");
-  m_label->setText (Common::fromFile (":/gui/ui/data/privacy.html"));
+  m_label->setText (Common::fromFile (":/gui/data/privacy.html"));
 }
 
 bool DocumentPopup::eventFilter(QObject *o, QEvent *e)

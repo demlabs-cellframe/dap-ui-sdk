@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Purchase</class>
- <widget class="QWidget" name="Purchase">
+ <class>DocumentPopup</class>
+ <widget class="QWidget" name="DocumentPopup">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>428</width>
-    <height>926</height>
+    <height>929</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -34,7 +34,7 @@
      <property name="cssStyle">
       <string>backgroundcolor</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="spacing">
        <number>0</number>
       </property>
@@ -72,14 +72,14 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="DapGuiWidget" name="top_spacer">
+          <widget class="DapGuiWidget" name="kelGuiWidget_3">
            <property name="cssStyle">
-            <string>purchase-top-spacer</string>
+            <string>docpop-top-spacer</string>
            </property>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
             <widget class="DapGuiPushButton" name="btnReturn">
              <property name="style">
@@ -87,17 +87,17 @@
              </property>
              <property name="custom">
               <url>
-               <string>qrc:/gui/ui/asset/ic_close.png</string>
+               <string>qrc:/gui/asset/ic_close.png</string>
               </url>
              </property>
              <property name="customHover">
               <url>
-               <string>qrc:/gui/ui/asset/ic_close.png</string>
+               <string>qrc:/gui/asset/ic_close.png</string>
               </url>
              </property>
              <property name="customPushed">
               <url>
-               <string>qrc:/gui/ui/asset/ic_close.png</string>
+               <string>qrc:/gui/asset/ic_close.png</string>
               </url>
              </property>
              <property name="cssStyle" stdset="0">
@@ -106,15 +106,15 @@
             </widget>
            </item>
            <item>
-            <widget class="DapGuiLabel" name="labelTitle">
+            <widget class="DapGuiLabel" name="label">
              <property name="text">
-              <string>Get a new licence key</string>
+              <string>Terms of use</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
              <property name="cssStyle">
-              <string>purchase-title-text lato font24 normalbold darkblue noborder nobackground</string>
+              <string>docpop-title-text font24 darkblue lato normalbold noborder nobackground</string>
              </property>
             </widget>
            </item>
@@ -130,35 +130,41 @@
          <item>
           <widget class="DapGuiWidget" name="kelGuiWidget_2">
            <property name="cssStyle">
-            <string>purchase-top-content-spacer</string>
+            <string>docpop-top-content-spacer</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="PurchaseModel" name="scrollArea">
+          <widget class="QScrollArea" name="scrollArea">
            <property name="styleSheet">
             <string notr="true">background-color: rgba(0,0,0,0);</string>
            </property>
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
            </property>
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
            <property name="widgetResizable">
             <bool>true</bool>
            </property>
-           <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-           </property>
-           <widget class="QWidget" name="scrollAreaWidgetContents">
+           <widget class="DapGuiWidget" name="scrollAreaWidgetContents">
             <property name="geometry">
              <rect>
               <x>0</x>
               <y>0</y>
               <width>390</width>
-              <height>786</height>
+              <height>789</height>
              </rect>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgba(0,0,0,0);</string>
+             <string notr="true">#scrollAreaWidgetContents{ 	background-color: #f7f8fa; }</string>
+            </property>
+            <property name="cssStyle">
+             <string>backgroundcolor</string>
             </property>
            </widget>
           </widget>
@@ -186,12 +192,6 @@
    <class>DapGuiWidget</class>
    <extends>QWidget</extends>
    <header>dapguiwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>PurchaseModel</class>
-   <extends>QScrollArea</extends>
-   <header location="global">ui/model/purchasemodel.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
