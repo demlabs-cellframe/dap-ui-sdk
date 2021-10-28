@@ -57,15 +57,15 @@ DocumentPopup::~DocumentPopup()
 
 void DocumentPopup::slotShowTermsOfUse()
 {
-  setObjectName ("Terms of use");
-  ui->label->setText ("Terms of use");
+  setObjectName (tr ("Terms of use"));
+  ui->label->setText (tr ("Terms of use"));
   m_label->setText (Common::fromFile (":/gui/data/terms.html"));
 }
 
 void DocumentPopup::slotShowPrivacyPolicy()
 {
-  setObjectName ("Privacy policy");
-  ui->label->setText ("Privacy policy");
+  setObjectName (tr ("Privacy policy"));
+  ui->label->setText (tr ("Privacy policy"));
   m_label->setText (Common::fromFile (":/gui/data/privacy.html"));
 }
 
