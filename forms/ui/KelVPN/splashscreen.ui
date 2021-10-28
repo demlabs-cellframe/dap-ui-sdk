@@ -75,7 +75,7 @@
             <item>
              <widget class="DapGuiLabel" name="lLogo">
               <property name="styleSheet">
-               <string notr="true">#lLogo{ 	min-width: 230px; 	max-width: 230px; 	min-height: 59px; 	max-height: 59px; 	border-image: url(:/gui/ui/asset/logo_kelvpn-white.png); 
+               <string notr="true">#lLogo{ 	min-width: 230px; 	max-width: 230px; 	min-height: 59px; 	max-height: 59px; 	qproperty-scaledPixmap: url(:/gui/ui/asset/logo_kelvpn-white.png); 
  	border: none; 
  	background-color: rgba(0,0,0,0); }</string>
               </property>
