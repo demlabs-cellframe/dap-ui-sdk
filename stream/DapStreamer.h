@@ -26,6 +26,7 @@
 #include "DapChannelPacket.h"
 #include <DapCrypt.h>
 #include <QAbstractSocket>
+#include <QTcpSocket>
 #include "DapChBase.h"
 #include "DapClientDefinitions.h"
 

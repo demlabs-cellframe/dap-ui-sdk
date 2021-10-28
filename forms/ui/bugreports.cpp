@@ -4,6 +4,7 @@
 
 #include <QTimer>
 #include <QDebug>
+#include <QScrollBar>
 
 /* VARS */
 static BugReports *__inst = nullptr;
@@ -21,15 +22,23 @@ BugReports::BugReports (QWidget *parent) :
   movLoading (new QMovie (":/gui/ui/asset/Spinner.gif")),
   _textHook (false)
 {
+  qRegisterMetaType<Mode> ("Mode");
+
   /* setup */
   __inst  = this;
   ui->setupUi (this);
+
   ui->editReport->setPlainText ("");
+  ui->editReport->setCallbackTextEdit (_cbTextEdit);
   m_edit  = ui->editReport->editWidget();
-  qRegisterMetaType<Mode> ("Mode");
+  //m_edit->verticalScrollBar()->setMaximumWidth (width() / 10);
+  m_edit->setVerticalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
+  m_edit->setHorizontalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
+
   ui->labelLoading->setScaledContents (true);
   ui->labelLoading->setMovie (movLoading);
   //movLoading->start();
+
   ui->top_spacer_debug->setVisible (false);
   ui->btnAttachScreenshot->setVisible (false);
   QMetaObject::invokeMethod(ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
@@ -173,28 +182,63 @@ void BugReports::_slotRadioTest()
 
 void BugReports::_slotTextChanged()
 {
+  auto text = m_edit->toPlainText();
+  updateData (text, text.length());
+}
+
+void BugReports::_slotTextEditFinish()
+{
+  ui->editReport->unfocus();
+}
+
+bool BugReports::_cbTextEdit (
+    DapGuiPlainTextEditInterface *e,
+    QString &preedit,
+    QString &commit,
+    int from,
+    int to)
+{
+  Q_UNUSED(from)
+  Q_UNUSED(to)
+
+  /* get length only */
+  auto text = e->toPlainText() + preedit + commit;
+  auto len  = text.length();
+
+  /* update only by length */
+  text.clear();
+  __inst->updateData (text, len);
+  return false;
+}
+
+void BugReports::updateData (QString &a_text, int a_len)
+{
   if(_textHook)
     return;
 
-  /* get text */
-  auto text = m_edit->toPlainText();
-
   /* print length */
+  auto len  = (a_len < MAX_LENGTH) ? a_len : MAX_LENGTH;
   ui->labelLetterAmount->setText (
     QString("%1/%2")
-    .arg ((text.length() < MAX_LENGTH) ? text.length() : MAX_LENGTH)
+    .arg (len)
     .arg (MAX_LENGTH));
+  //ui->labelLetterAmount->repaint();
+  //style()->polish (ui->labelLetterAmount);
 
   /* check if limit reachced */
-  if(text.length() <= MAX_LENGTH)
+  if(a_text.length() <= MAX_LENGTH)
     return;
 
   _textHook = true;
 
   /* fix text length */
-  int diff  = text.length() - MAX_LENGTH;
-  text.chop (diff);
-  m_edit->setPlainText (text);
+  int diff  = a_text.length() - MAX_LENGTH;
+  a_text.chop (diff);
+  m_edit->setPlainText (a_text);
+
+  /* kill focus */
+  ui->editReport->unfocus();
+  QGuiApplication::inputMethod()->hide();
 
   /* fix cursor pos */
   QMetaObject::invokeMethod(this, [=] () {
@@ -204,11 +248,6 @@ void BugReports::_slotTextChanged()
   }, Qt::QueuedConnection);
 
   _textHook = false;
-}
-
-void BugReports::_slotTextEditFinish()
-{
-  ui->editReport->unfocus();
 }
 
 /*-----------------------------------------*/

@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <QWidget>
 #include <QPlainTextEdit>
+#include "dapguiplaintexteditinterface.h"
 
 /* DEFS */
 namespace Ui { class DapGuiPlainTextEditUI; };
@@ -24,6 +25,8 @@ class DapGuiPlainTextEdit : public QWidget
 {
   Q_OBJECT
 
+  using cbTextEdit = DapGuiPlainTextEditInterface::cbTextEdit;
+
   /****************************************//**
    * @name PROPERTIES
    *******************************************/
@@ -41,6 +44,7 @@ class DapGuiPlainTextEdit : public QWidget
   /// @{
 private:
   Ui::DapGuiPlainTextEditUI *ui;
+  cbTextEdit m_callbackTextEdit;
   /// @}
 
   /****************************************//**
@@ -77,12 +81,16 @@ public:
 
   QPlainTextEdit *editWidget() const;
   void unfocus();
+
+  cbTextEdit callbackTextEdit() const;
+  void setCallbackTextEdit(cbTextEdit newCallbackTextEdit);
   /// @}
 
   /****************************************//**
    * @name SIGNALS
    *******************************************/
   /// @{
+
 signals:
   void textChanged(); ///< text is changed
   /// @}
@@ -92,7 +100,7 @@ signals:
    *******************************************/
   /// @{
 protected:
-  static void _cbTextEdit (DapGuiPlainTextEditInterface *e, QString &preedit, QString &commit, int from, int to);
+  static bool _cbTextEdit (DapGuiPlainTextEditInterface *e, QString &preedit, QString &commit, int from, int to);
   static void _cbFocusEvent (DapGuiPlainTextEditInterface *e, const Qt::FocusReason &reason);
   static void _cbUnfocusEvent (DapGuiPlainTextEditInterface *e, const Qt::FocusReason &reason);
   static bool _cbKeyEvent (DapGuiPlainTextEditInterface *e, QKeyEvent *event);

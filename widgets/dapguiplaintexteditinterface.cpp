@@ -80,23 +80,28 @@ void DapGuiPlainTextEditInterface::keyPressEvent(QKeyEvent *event)
 
 void DapGuiPlainTextEditInterface::inputMethodEvent(QInputMethodEvent *e)
 {
-  /* get entered strings */
-  QString preedit = e->preeditString();
-  QString commit  = e->commitString();
-
-  qDebug() << __PRETTY_FUNCTION__ << "preedit:" << preedit << "commit" << commit;
-
   /* callback */
   if (m_callbackTextEdit /*&& !e->replacementLength()*/)
-    m_callbackTextEdit (this, preedit, commit, e->replacementStart(), e->replacementLength());
+    {
+      /* get entered strings */
+      QString preedit = e->preeditString();
+      QString commit  = e->commitString();
+#ifdef QT_DEBUG
+      qDebug() << __PRETTY_FUNCTION__ << "preedit:" << preedit << "commit" << commit;
+#endif // QT_DEBUG
+      if (m_callbackTextEdit (this, preedit, commit, e->replacementStart(), e->replacementLength()))
+        {
+          /* simulate event */
+          QInputMethodEvent newEvent (preedit, e->attributes());
+          newEvent.setCommitString (
+            commit,
+            e->replacementStart(),
+            e->replacementLength());
+          return QPlainTextEdit::inputMethodEvent (&newEvent);
+        }
+    }
 
-  /* simulate event */
-  QInputMethodEvent newEvent (preedit, e->attributes());
-  newEvent.setCommitString (
-    commit,
-    e->replacementStart(),
-    e->replacementLength());
-  QPlainTextEdit::inputMethodEvent (&newEvent); //(e);
+  QPlainTextEdit::inputMethodEvent (e);
 }
 
 void DapGuiPlainTextEditInterface::focusInEvent(QFocusEvent *e)

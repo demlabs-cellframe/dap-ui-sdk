@@ -369,13 +369,6 @@
            </property>
           </spacer>
          </item>
-         <item>
-          <widget class="DapGuiLabel" name="footer">
-           <property name="cssStyle">
-            <string>footer noborder nobackground</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
       </item>
