@@ -51,6 +51,10 @@ void LanguageModel::slotSetup()
     }
   m_list.clear();
 
+  /* check */
+  if (m_model == nullptr)
+    return;
+
   /* create new buttons */
   int size  = m_model->rowCount();
   for (int i = 0; i < size; i++)

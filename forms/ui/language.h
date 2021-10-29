@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <QWidget>
 #include "baseform.h"
+#include "model/languagemodel.h"
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
@@ -42,13 +43,21 @@ public:
   /// @}
 
   /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  LanguageModel *model();
+  /// @}
+
+  /****************************************//**
    * @name SIGNALS
    *******************************************/
   /// @{
 signals:
   void sigReturn();
+  void sigSelect(int index, QString name);
   /// @}
-
 };
 
 /*-----------------------------------------*/

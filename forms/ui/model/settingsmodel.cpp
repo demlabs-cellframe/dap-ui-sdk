@@ -11,30 +11,7 @@
 /* DEFS */
 typedef QString TextStyle;
 typedef void (*ItemCB) ();
-
-enum StyleId
-{
-  SI_TITLE,
-  SI_TITLETOP,
-  SI_BUTTON,
-  SI_BUTTONRED,
-  SI_BUTTONGRAY,
-  SI_LINK,
-  SI_SPACER
-};
-
-struct Info
-{
-  TextStyle style[2];
-};
-
-struct _SItem
-{
-  StyleId sid;
-  QString text[2];
-  QString iconCss;
-  ItemCB cb;
-};
+#define TR(a) []() -> QString {return a;}
 
 /* LINKS */
 static void defaultCb () {}
@@ -56,40 +33,8 @@ static void cbPrivacyPolicy();
 static void cbVersion();
 
 /* VARS */
-static QMap<StyleId, Info> s_presets =
-{
-  {SI_TITLETOP,   {"darkblue font24 lato bold", ""}},
-  {SI_TITLE,      {"darkblue font24 margin28 lato bold", ""}},
-  {SI_BUTTON,     {"darkblue font16 lato normal",  "darkblue font16 lato normal"}},
-  {SI_BUTTONRED,  {"darkblue font16 lato normal",  "red font16 lato bold"}},
-  {SI_BUTTONGRAY, {"darkblue font16 lato normal",  "darkblue gray font16 lato"}},
-  {SI_LINK,       {"darkblue font16 lato normal",  ""}},
-  {SI_SPACER,     {"",  ""}},
-};
-
-static QList<_SItem> s_items =
-{
-  _SItem{SI_SPACER,     {"", ""}, "1", defaultCb},
-  _SItem{SI_TITLETOP,   {"Settings", ""}, "settings_icon", defaultCb},
-  _SItem{SI_SPACER,     {"", ""}, "2", defaultCb},
-
-  _SItem{SI_BUTTONRED,  {"Get new licence key", /*"265 days left"*/" "}, "settings_icon ic_renew", cbLicenceGet},
-  _SItem{SI_BUTTON,     {"Reset licence key"}, "settings_icon ic_key", cbLicenceReset},
-  //_SItem{SI_LINK,       {"Language"}, "settings_icon ic_language", cbLanguage},
-
-  _SItem{SI_TITLE,      {"Support", ""}, "settings_icon", defaultCb},
-
-  _SItem{SI_BUTTON,     {"Send a bug report", ""}, "settings_icon ic_send-report", cbBugSend},
-  _SItem{SI_BUTTON,     {"Telegram support bot", ""}, "settings_icon ic_bot", cbTelegramBot},
-
-  _SItem{SI_TITLE,      {"Information", ""}, "settings_icon", defaultCb},
-
-  //_SItem{SI_LINK,       {"Bug Reports"}, "settings_icon ic_information_bug-report", cbBugReport},
-  //_SItem{SI_BUTTON,     {"Serial key history on this device"}, "settings_icon ic_key-history", cbLicenceHistory},
-  _SItem{SI_BUTTON,     {"Terms of use"}, "settings_icon ic_terms_policy", cbTermsOfUse},
-  _SItem{SI_BUTTON,     {"Privacy policy"}, "settings_icon ic_terms_policy", cbPrivacyPolicy},
-  _SItem{SI_BUTTONGRAY, {"Version", "@version"}, "settings_icon ic_version", cbVersion},
-};
+QMap<SettingsModel::StyleId, SettingsModel::Info> SettingsModel::s_presets;
+QList<SettingsModel::_SItem> SettingsModel::s_items;
 
 static QMap<DapGuiButton*, ItemCB> s_btnCallbacks;
 static DapGuiButton* s_licenceKey;
@@ -108,6 +53,41 @@ SettingsModel::SettingsModel (QWidget *parent)
 {
   s_model = this;
   setCssStyle ("screenarea sett-scroll-area backgroundcolor");
+
+  s_presets =
+  {
+    {SI_TITLETOP,   {"darkblue font24 lato bold", ""}},
+    {SI_TITLE,      {"darkblue font24 margin28 lato bold", ""}},
+    {SI_BUTTON,     {"darkblue font16 lato normal",  "darkblue font16 lato normal"}},
+    {SI_BUTTONRED,  {"darkblue font16 lato normal",  "red font16 lato bold"}},
+    {SI_BUTTONGRAY, {"darkblue font16 lato normal",  "darkblue gray font16 lato"}},
+    {SI_LINK,       {"darkblue font16 lato normal",  ""}},
+    {SI_SPACER,     {"",  ""}},
+  };
+
+  s_items =
+  {
+    _SItem{SI_SPACER,     {TR (""), TR ("")}, "1", defaultCb},
+    _SItem{SI_TITLETOP,   {TR (tr ("Settings")), TR ("")}, "settings_icon", defaultCb},
+    _SItem{SI_SPACER,     {TR (""), TR ("")}, "2", defaultCb},
+
+    _SItem{SI_BUTTONRED,  {TR (tr ("Get new licence key")), /*"265 days left"*/TR (" ")}, "settings_icon ic_renew", cbLicenceGet},
+    _SItem{SI_BUTTON,     {TR (tr ("Reset licence key")), TR ("")}, "settings_icon ic_key", cbLicenceReset},
+    _SItem{SI_LINK,       {TR (tr ("Language")), TR ("")}, "settings_icon ic_language", cbLanguage},
+
+    _SItem{SI_TITLE,      {TR (tr ("Support")), TR ("")}, "settings_icon", defaultCb},
+
+    _SItem{SI_BUTTON,     {TR (tr ("Send a bug report")), TR ("")}, "settings_icon ic_send-report", cbBugSend},
+    _SItem{SI_BUTTON,     {TR (tr ("Telegram support bot")), TR ("")}, "settings_icon ic_bot", cbTelegramBot},
+
+    _SItem{SI_TITLE,      {TR (tr ("Information")), TR ("")}, "settings_icon", defaultCb},
+
+    //_SItem{SI_LINK,       {TR (tr ("Bug Reports"))}, "settings_icon ic_information_bug-report", cbBugReport},
+    //_SItem{SI_BUTTON,     {TR (tr ("Serial key history on this device"))}, "settings_icon ic_key-history", cbLicenceHistory},
+    _SItem{SI_BUTTON,     {TR (tr ("Terms of use")), TR ("")}, "settings_icon ic_terms_policy", cbTermsOfUse},
+    _SItem{SI_BUTTON,     {TR (tr ("Privacy policy")), TR ("")}, "settings_icon ic_terms_policy", cbPrivacyPolicy},
+    _SItem{SI_BUTTONGRAY, {TR (tr ("Version")), TR ("@version")}, "settings_icon ic_version", cbVersion},
+  };
 }
 
 SettingsModel::~SettingsModel()
@@ -153,10 +133,10 @@ void SettingsModel::slotSetup()
                         ? DapGuiButton::ButtonStyle::IconMainSub
                         : DapGuiButton::ButtonStyle::TopMainBottomSub);
 
-      btn->setMainText (item.text[0]);
+      btn->setMainText (item.text[0]());
       btn->setMainCssClass (preset.style[0]);
 
-      btn->setSubText (item.text[1]);
+      btn->setSubText (item.text[1]());
       btn->setSubCssClass (preset.style[1]);
 
       btn->setSeparator (
@@ -187,7 +167,7 @@ void SettingsModel::slotSetup()
       /* store licence key button */
       if (item.sid == SI_BUTTONRED) // (i == 3)
         s_licenceKey = btn;
-      if (item.text[1] == "@version")
+      if (item.text[1]() == "@version")
         s_version = btn;
 
       /* connect signal */
@@ -215,6 +195,24 @@ void SettingsModel::slotClicked()
   auto btn  = qobject_cast<DapGuiButton*> (sender());
   auto cb   = s_btnCallbacks.value (btn, defaultCb);
   cb();
+}
+
+void SettingsModel::slotRetranslate()
+{
+  /* start cycling */
+  int size  = s_items.size();
+  if (lay->count() < size)
+    return;
+
+  for (int i = 0; i < size; i++)
+    {
+      const auto &item  = s_items[i];
+      auto button       = qobject_cast<DapGuiButton*> (lay->itemAt(i)->widget());
+      if (button == nullptr)
+        continue;
+      button->setMainText (item.text[0]());
+      button->setSubText (item.text[1]());
+    }
 }
 
 /********************************************

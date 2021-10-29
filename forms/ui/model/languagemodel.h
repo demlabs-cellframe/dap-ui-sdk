@@ -17,6 +17,8 @@
 
 class LanguageModel : public ModelBase
 {
+  Q_OBJECT
+
   /****************************************//**
    * @name VARS
    *******************************************/
