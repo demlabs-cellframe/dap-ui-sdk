@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <QScrollArea>
 #include <QBoxLayout>
+#include <QAbstractListModel>
 #include <dapguiradio.h>
 #include "modelbase.h"
 
@@ -22,6 +23,9 @@ class LanguageModel : public ModelBase
   /// @{
 private:
   QList<DapGuiRadio*> m_list;
+  QAbstractListModel *m_model;
+  int m_currentIndex;
+  QString m_currentText;
   /// @}
 
   /****************************************//**
@@ -34,11 +38,33 @@ public:
   /// @}
 
   /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void sigSelect(int index, QString name);
+  /// @}
+
+  /****************************************//**
+   * @name PUBLIC METHODS
+   *******************************************/
+  /// @{
+public:
+  /// set model into this widget
+  /// @note old model will not be deleted
+  void setModel (QAbstractListModel *model);
+  QAbstractListModel *model() const;
+  /// @}
+
+  /****************************************//**
    * @name PUBLIC SLOTS
    *******************************************/
   /// @{
 public slots:
   void slotSetup();
+private slots:
+  /// radio button toggle
+  void slotToggled (bool checked);
   /// @}
 };
 
