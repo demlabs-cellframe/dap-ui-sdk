@@ -18,6 +18,6 @@ void DapCmdServerData::sendServerInfo(const DapServerInfo &server)
     obj["address6"]    = server.address6;
     obj["port"]        = server.port;
     obj["name"]        = server.name;
-    obj["location"]    = server.m_countries.key(server.location);
+    obj["location"]    = server.location;
     sendCmd(&obj);
 }

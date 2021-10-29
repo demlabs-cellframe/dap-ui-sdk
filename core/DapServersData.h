@@ -16,7 +16,7 @@ public:
 
     static DapServersData *instance();
 
-    void addServer(DapServerLocation location, const QString& name,
+    void addServer(QString location, const QString& name,
                    const QString & address, quint16 port);
     void addServer(const DapServerInfo& dsi);
 

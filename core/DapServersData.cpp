@@ -23,7 +23,7 @@ void DapServersData::addServer(const DapServerInfo& dsi) {
     emit this->serverAdded(dsi);
 }
 
-void DapServersData::addServer(DapServerLocation location, const QString& name,
+void DapServersData::addServer(QString location, const QString& name,
                           const QString & address, quint16 port)
 {
     DapServerInfo ss;

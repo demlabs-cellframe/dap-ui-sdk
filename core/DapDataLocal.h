@@ -28,7 +28,6 @@ class DapDataLocal : public QObject
 
     QString     m_brandName;
     QString     logFilePath;
-    static QMap<DapServerLocation, QString> m_pictruePath;
 
     void parseXML(const QString& a_fname);
 
@@ -37,10 +36,7 @@ class DapDataLocal : public QObject
     QString getRandomString(int);
 
 public:
-    using picturesMap = QMap<DapServerLocation, QString>;
     static DapDataLocal* instance();
-
-    QString locationToIconPath(DapServerLocation loc);
 
     QString login() const;
 

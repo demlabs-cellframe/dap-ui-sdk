@@ -25,7 +25,7 @@ void DapCmdServerData::handle(const QJsonObject *params)
     }
     if(params->contains("location")) {
         qDebug() << "location" << params->value("location").toString();
-        dsi.location = DapServerInfo::stringToLocation(params->value("location").toString());
+        dsi.location = params->value("location").toString();
     }
 
     emit sentCurrentServerInfo(dsi);
