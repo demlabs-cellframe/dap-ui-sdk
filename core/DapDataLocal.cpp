@@ -74,7 +74,10 @@ void DapDataLocal::parseXML(const QString& a_fname)
                                     item.port = port;
                                 } else if(sr->name() == "location") {
                                     item.location = DapServerInfo::stringToLocation(sr->readElementText());
-                                } else {
+                                } else if (sr->name() == "state") {
+                                    item.online = sr->readElementText();
+                                }
+                                else {
                                     qWarning() << "[DL] Inside tag 'server': Unknown tag "<<sr->name();
                                     sr->skipCurrentElement();
                                 }

@@ -33,6 +33,7 @@ void DapIndicatorStream::initAllowedSubstatesTransitions()
     addAllowedSubstatesTransitions(srvProvided,             upsDisconnected);
     addAllowedSubstatesTransitions(configProvided,          networkErr);
     addAllowedSubstatesTransitions(configProvided,          upsDisconnected);
+    addAllowedSubstatesTransitions(configProvided,          upsHandshakeRequest);
     addAllowedSubstatesTransitions(networkErr,              upsHandshakeRequest);
     addAllowedSubstatesTransitions(networkErr,              upsDisconnected);
 }

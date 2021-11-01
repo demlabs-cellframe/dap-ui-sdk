@@ -60,6 +60,11 @@ bool DapServerInfo::isAuto() const
     return (this->name == "Auto");
 }
 
+bool DapServerInfo::isOnline() const
+{
+    return (this->online == "available");
+}
+
 bool DapServerInfo::isValid() const
 {
     return (!address.isEmpty());
@@ -93,6 +98,7 @@ QJsonObject DapServerInfo::toJSON(const DapServerInfo& dsi)
     obj["Address6"] = dsi.address6;
     obj["Port"] = dsi.port;
     obj["Name"] = dsi.name;
+    obj["State"] = dsi.online;
     obj["Location"] =  DapServerInfo::m_countries2[ dsi.location];
     return obj;
 }
@@ -108,6 +114,7 @@ bool DapServerInfo::fromJSON(const QJsonObject& jsonObj, DapServerInfo& out)
     out.address6 = jsonObj["Address6"].toString();
     out.port = quint16(jsonObj["Port"].toInt());
     out.name = jsonObj["Name"].toString();
+    out.online = jsonObj["State"].toString();
     if (out.name == "Auto"){
      out.location = m_countries[ "UNKNOWN" ];
         return true;
