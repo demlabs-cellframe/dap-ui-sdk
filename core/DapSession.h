@@ -209,7 +209,7 @@ signals:
     void sigSignUpAnswer(const QString& signUpAnswer);
     void sigReceivedNewsMessage(const QJsonDocument& news);
 #ifdef BUILD_VAR_GOOGLE
-    void purchaseResponseReceived(const QJsonDocument& responce);
+    Q_INVOKABLE void purchaseResponseReceived(const QJsonDocument& responce);
 #endif
 };
 

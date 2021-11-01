@@ -609,7 +609,7 @@ DapNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const Q
 void DapSession::requestPurchaseVerify(const QJsonObject *params)
 {
     QJsonDocument jdoc(*params);
-    m_netPurchaseReply = encRequestRaw(jdoc.toJson(), URL_VERIFY_PURCHASE, QString(), QString(), SLOT(onPurchaseVerified()));
+    m_netPurchaseReply = encRequestRaw(jdoc.toJson(), URL_VERIFY_PURCHASE, QString(), QString(), SLOT(onPurchaseVerified()), NULL);
     if(m_netPurchaseReply == Q_NULLPTR) {
         qCritical() << "Can't send request";
         emit errorNetwork("Purchase verification error");
