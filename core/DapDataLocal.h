@@ -73,13 +73,17 @@ public:
     static void     removeSetting(const QString& a_setting);
     void saveSerialKeyData();
 
+    void saveSerialKeyDataHistory();
+    QList<QString> getSerialKeyDataHistory();
+
     static DapBugReportData *bugReportData();
     static DapServersData   *serversData();
     DapSerialKeyData* serialKeyData();
 
-    const QString TEXT_SERIAL_KEY   = "serialkey";
-    const QString TEXT_LOGIN        = "login";
-    const QString TEXT_PASSWORD     = "password";
+    const QString TEXT_SERIAL_KEY           = "serialkey";
+    const QString TEXT_SERIAL_KEY_HISTORY   = "serialkeyhistory";
+    const QString TEXT_LOGIN                = "login";
+    const QString TEXT_PASSWORD             = "password";
 
 public slots:
     void setLogin(const QString &a_login);
@@ -111,6 +115,7 @@ private:
     DataToUpdate m_dataToUpdate; ///data to update
 
     DapSerialKeyData* m_serialKeyData;
+    QSet <QString> * m_serialKeyDataList;
 };
 
 template<typename T>

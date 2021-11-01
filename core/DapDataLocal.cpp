@@ -165,6 +165,26 @@ void DapDataLocal::saveSerialKeyData()
         this->saveToSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
 }
 
+void DapDataLocal::saveSerialKeyDataHistory()
+{
+    if (!m_serialKeyDataList)
+        m_serialKeyDataList = new QSet<QString>;
+
+    this->loadFromSettings(TEXT_SERIAL_KEY_HISTORY, *m_serialKeyDataList);
+    m_serialKeyDataList->insert(m_serialKeyData->serialKey());
+
+    this->saveToSettings(TEXT_SERIAL_KEY_HISTORY, *m_serialKeyDataList);
+}
+
+QList<QString> DapDataLocal::getSerialKeyDataHistory()
+{
+    if (!m_serialKeyDataList)
+        m_serialKeyDataList = new QSet<QString>;
+
+    this->loadFromSettings(TEXT_SERIAL_KEY_HISTORY, *m_serialKeyDataList);
+    return m_serialKeyDataList->toList();
+}
+
 void DapDataLocal::loadAuthorizationDatas()
 {
 #ifdef Q_OS_ANDROID

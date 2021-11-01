@@ -85,7 +85,7 @@ static QList<_SItem> s_items =
   _SItem{SI_TITLE,      {"Information", ""}, "settings_icon", defaultCb},
 
   //_SItem{SI_LINK,       {"Bug Reports"}, "settings_icon ic_information_bug-report", cbBugReport},
-  //_SItem{SI_BUTTON,     {"Serial key history on this device"}, "settings_icon ic_key-history", cbLicenceHistory},
+  _SItem{SI_BUTTON,     {"Serial key history on this device"}, "settings_icon ic_key-history", cbLicenceHistory},
   _SItem{SI_BUTTON,     {"Terms of use"}, "settings_icon ic_terms_policy", cbTermsOfUse},
   _SItem{SI_BUTTON,     {"Privacy policy"}, "settings_icon ic_terms_policy", cbPrivacyPolicy},
   _SItem{SI_BUTTONGRAY, {"Version", "@version"}, "settings_icon ic_version", cbVersion},

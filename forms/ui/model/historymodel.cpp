@@ -1,5 +1,8 @@
 /* INCLUDES */
 #include "historymodel.h"
+#include "DapDataLocal.h"
+#include <QApplication>
+#include <QClipboard>
 
 /* DEFS */
 struct _HistoryRecord
@@ -49,18 +52,15 @@ void HistoryModel::slotSetup()
   m_list.clear();
 
   /* create new buttons */
-  foreach (auto &item, s_history)
+  foreach (auto &item, DapDataLocal::instance()->getSerialKeyDataHistory())
     {
-      /* get data */
-      QString text = item.name;
-
       /* create item */
-      auto btn = new DapGuiButton;
+      DapGuiButton *btn = new DapGuiButton;
       m_list << btn;
 
       btn->setBtnStyle (DapGuiButton::IconMainSub);
 
-      btn->setMainText (text);
+      btn->setMainText (item);
       btn->setMainCssClass ("darkblue uppercase font16");
 
       btn->setSubText (" ");
@@ -70,7 +70,13 @@ void HistoryModel::slotSetup()
 
       btn->setSubCssClass ("history-icon ic_copy");
 
+      btn->setCursor(Qt::PointingHandCursor);
+
       btn->setCssStyle ("history-item");
+
+      connect(btn, &DapGuiButton::clicked, [btn](){
+          QApplication::clipboard()->setText(btn->mainText());
+      });
       lay->addWidget (btn);
     }
 
