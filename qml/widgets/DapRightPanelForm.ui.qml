@@ -41,10 +41,10 @@ Page
         topMargin: 24 * pt
         right: parent.right
         rightMargin: 20 * pt
-        left: parent.left
-        leftMargin: 24 * pt
+//        left: parent.left
+//        leftMargin: 24 * pt
         bottom: parent.bottom
-        bottomMargin: 24 * pt
+        bottomMargin: 20 * pt
     }
 
     background: Rectangle {
