@@ -19,11 +19,23 @@ Language::Language (QWidget *parent) :
   connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &Language::sigReturn,
            Qt::QueuedConnection);
+  connect (ui->scrollArea, &LanguageModel::sigSelect,
+           this, &Language::sigSelect,
+           Qt::QueuedConnection);
 }
 
 Language::~Language()
 {
   delete ui;
+}
+
+/********************************************
+ * CONSTRUCT/DESTRUCT
+ *******************************************/
+
+LanguageModel *Language::model()
+{
+  return ui->scrollArea;
 }
 
 /*-----------------------------------------*/

@@ -74,24 +74,24 @@ HEADERS     += \
     $$PWD/vpnDefine.h
 
 FORMS += \
-    $$PWD/ui/bugreports.ui \
-    $$PWD/ui/chooseserver.ui \
-    $$PWD/ui/dashboard.ui \
-    $$PWD/ui/documentpopup.ui \
-    $$PWD/ui/history.ui \
-    $$PWD/ui/language.ui \
-    $$PWD/ui/login.ui \
-    $$PWD/ui/menufooter.ui \
-    $$PWD/ui/popupdialog.ui \
-    $$PWD/ui/purchase.ui \
-    $$PWD/ui/serialinput.ui \
-    $$PWD/ui/settings.ui \
-    $$PWD/ui/splashscreen.ui \
-    $$PWD/ui/statistics.ui \
-    $$PWD/ui/versionupdate.ui
+    $$PWD/ui/$$BRAND/bugreports.ui \
+    $$PWD/ui/$$BRAND/chooseserver.ui \
+    $$PWD/ui/$$BRAND/dashboard.ui \
+    $$PWD/ui/$$BRAND/documentpopup.ui \
+    $$PWD/ui/$$BRAND/history.ui \
+    $$PWD/ui/$$BRAND/language.ui \
+    $$PWD/ui/$$BRAND/login.ui \
+    $$PWD/ui/$$BRAND/menufooter.ui \
+    $$PWD/ui/$$BRAND/popupdialog.ui \
+    $$PWD/ui/$$BRAND/purchase.ui \
+    $$PWD/ui/$$BRAND/serialinput.ui \
+    $$PWD/ui/$$BRAND/settings.ui \
+    $$PWD/ui/$$BRAND/splashscreen.ui \
+    $$PWD/ui/$$BRAND/statistics.ui \
+    $$PWD/ui/$$BRAND/versionupdate.ui
 
 RESOURCES += \
-    $$PWD/appRes.qrc
+    $$PWD/ui/$$BRAND/appRes.qrc
 
 DISTFILES += \
     $$PWD/DoxyLayout.xml \

@@ -87,17 +87,17 @@
              </property>
              <property name="custom">
               <url>
-               <string>qrc:/gui/ui/asset/ic_close.png</string>
+               <string>qrc:/gui/asset/ic_close.png</string>
               </url>
              </property>
              <property name="customHover">
               <url>
-               <string>qrc:/gui/ui/asset/ic_close.png</string>
+               <string>qrc:/gui/asset/ic_close.png</string>
               </url>
              </property>
              <property name="customPushed">
               <url>
-               <string>qrc:/gui/ui/asset/ic_close.png</string>
+               <string>qrc:/gui/asset/ic_close.png</string>
               </url>
              </property>
              <property name="cssStyle" stdset="0">

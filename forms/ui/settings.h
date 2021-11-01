@@ -49,6 +49,7 @@ public:
   /// @{
 public slots:
   void slotSetVersion (const QString &a_text);
+  void slotRetranslated();
   /// @}
 
   /****************************************//**
@@ -56,7 +57,6 @@ public slots:
    *******************************************/
   /// @{
 signals:
-
   /* settings */
   void sigLicenceGet();
   void sigLicenceReset();

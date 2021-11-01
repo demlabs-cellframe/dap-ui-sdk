@@ -20,6 +20,49 @@ class SettingsModel : public ModelBase
   //DAPGUI_ENABLEWIDGETSTYLE
 
   /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
+private:
+  typedef QString TextStyle;
+  typedef void (*ItemCB) ();
+  typedef QString (*TranslatingString) ();
+
+  enum StyleId
+  {
+    SI_TITLE,
+    SI_TITLETOP,
+    SI_BUTTON,
+    SI_BUTTONRED,
+    SI_BUTTONGRAY,
+    SI_LINK,
+    SI_SPACER
+  };
+
+  struct Info
+  {
+    TextStyle style[2];
+  };
+
+  struct _SItem
+  {
+    StyleId sid;
+    TranslatingString text[2];
+    QString iconCss;
+    ItemCB cb;
+  };
+  /// @}
+
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
+private:
+  static QMap<StyleId, Info> s_presets;
+  static QList<_SItem> s_items;
+  /// @}
+
+  /****************************************//**
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
@@ -38,7 +81,7 @@ public:
   /// @}
 
   /****************************************//**
-   * @name PUBLIC SLOTS
+   * @name SLOTS
    *******************************************/
   /// @{
 public slots:
@@ -46,6 +89,7 @@ public slots:
   void slotSetDaysLeft (QString days);
   void slotResetDaysLeft ();
   void slotClicked();
+  void slotRetranslate();
   /// @}
 
   /****************************************//**
