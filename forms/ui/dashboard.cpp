@@ -1,6 +1,6 @@
 /* INCLUDES */
 #include "dashboard.h"
-#include "ui_connection.h"
+#include "ui_dashboard.h"
 #include "helper/trafficstringhelper.h"
 #include "helper/uptimestringhelper.h"
 
