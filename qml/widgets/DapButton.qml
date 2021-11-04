@@ -120,6 +120,10 @@ Button
         source: dapBackgroundButton
         smooth: true
         }
-
+        MouseArea {
+            enabled: false
+            anchors.fill: parent
+            cursorShape: Qt.PointingHandCursor
+        }
 
 }

@@ -13,7 +13,7 @@ ComboBox {
         width: control.width
 
         contentItem: Text {
-            text: modelData
+            text: modelData.name
             color: currTheme.textColor
             font: control.font
             elide: Text.ElideRight

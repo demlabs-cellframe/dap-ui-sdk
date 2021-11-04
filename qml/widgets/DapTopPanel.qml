@@ -1,71 +1,69 @@
-import QtQuick 2.4
+import QtQuick 2.12
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.12
 import QtGraphicalEffects 1.0
 
-Rectangle
+Page
 {
-    id:control
-    property alias source: loader.source
-    property alias sourceComponent: loader.sourceComponent
-
-    x: 0 * pt
-    anchors.left: parent.left
-//    radius: 8 * pt
-    height: 60 * pt
-    width: parent.width
-//    color: "#070023"
+    id: control
+    height: 55
+    background: Rectangle {
+        color: "transparent"
+    }
 
     Rectangle {
-        color: parent.color
-        height: parent.height
-        width: parent.radius
-        x: parent.width - width
-    }
-
-    Rectangle{
-        id:blockRadius
-        width: parent.radius
-        color: currTheme.backgroundPanel
-        height: control.height - (currTheme.radiusRectangle-5*pt)
-        anchors.top: control.top
-        anchors.left: control.left
-        radius: 1
-    }
-    InnerShadow {
-            anchors.fill: control
-            cached: true
-            horizontalOffset: 1
-            verticalOffset: 0
-            radius: 1
-            samples: 1
-            color: "#4C4B5A"
-//            smooth: true
-            source: control
-        }
-    InnerShadow {
-            anchors.fill: blockRadius
-            cached: true
-            horizontalOffset: 1
-            verticalOffset: 0
-            radius: 1
-            samples: 10
-            color: "#4C4B5A"
-//            smooth: true
-            source: blockRadius
-        }
-
-    //left ligt line
-//    Rectangle{
-//        width: 2
-//        color: currTheme.reflection
-//        height: control.height - (currTheme.radiusRectangle-5*pt)
-//        anchors.top: control.top
-//        anchors.left: control.left
-
-//    }
-    Loader
-    {
+        id: beckgrndRect
         anchors.fill: parent
-        id: loader
+        radius: 20
+        color: currTheme.backgroundPanel
+
+        Rectangle {
+            height: control.height
+            width: 50
+            color: parent.color
+            anchors {
+                top: parent.top
+                right: parent.right
+            }
+        }
+
+        Rectangle {
+            id: leftRect
+            width: 50
+            height: parent.height - parent.radius
+            color: parent.color
+            anchors {
+                top: parent.top
+                left: parent.left
+            }
+        }
+    }
+
+    DropShadow {
+        anchors.fill: beckgrndRect
+        verticalOffset: 3
+        radius: 8.0
+        samples: 17
+        color: "#80000000"
+        source: beckgrndRect
+    }
+
+    InnerShadow {
+        anchors.fill: beckgrndRect
+        radius: 0
+        samples: 16
+        horizontalOffset: 1
+        color: "#4C4B5A"
+        source: beckgrndRect
+    }
+
+    InnerShadow {
+        anchors.fill: leftRect
+        radius: 0
+        samples: 16
+        horizontalOffset: 1
+        color: "#4C4B5A"
+        source: leftRect
     }
 }
 
