@@ -68,16 +68,32 @@ Button
                 end: Qt.point(parent.width,parent.height/2)
                 gradient:
                     Gradient {
-                        GradientStop { position: 0; color: dapButton.hovered?"#E62083":"#C91D73"}
-                        GradientStop { position: 1; color: dapButton.hovered?"#E62263":"#D51F5D"}
+                        GradientStop
+                        {
+                            position: 0;
+                            color: dapButton.enabled ?
+                                   dapButton.hovered ? currTheme.buttonColorHoverPosition0 :
+                                                       currTheme.buttonColorNormalPosition0 :
+                                                       currTheme.buttonColorNoActive
+
+                        }
+                        GradientStop
+                        {
+                            position: 1;
+                            color:  dapButton.enabled ?
+                                    dapButton.hovered ? currTheme.buttonColorHoverPosition1 :
+                                                        currTheme.buttonColorNormalPosition1 :
+                                                        currTheme.buttonColorNoActive
+
+                        }
                     }
             }
 
             color: !dapButton.activeFrame? "transparent " :
-                   dapButton.enabled ?
-                   dapButton.hovered ? currTheme.buttonColorHover :
-                                       currTheme.buttonColorNormal :
-                                       currTheme.buttonColorNoActive
+                                           dapButton.enabled ?
+                                           dapButton.hovered ? currTheme.buttonColorHover :
+                                                               currTheme.buttonColorNormal :
+                                                               currTheme.buttonColorNoActive
 
             implicitWidth: widthButton
             implicitHeight: heightButton
@@ -120,10 +136,39 @@ Button
         source: dapBackgroundButton
         smooth: true
         }
+
         MouseArea {
             enabled: false
             anchors.fill: parent
             cursorShape: Qt.PointingHandCursor
         }
+
+//    function getColor(position)
+//    {
+//        var rcv_color
+
+//        if(position === 0)
+//            rcv_color = !dapButton.activeFrame? "transparent " :
+//                            dapButton.enabled ?
+//                            dapButton.hovered ? currTheme.buttonColorHoverPosition0 :
+//                                                currTheme.buttonColorNormalPosition0 :
+//                                                currTheme.buttonColorNoActive
+//        else if(position === 1)
+//            rcv_color = !dapButton.activeFrame? "transparent " :
+//                            dapButton.enabled ?
+//                            dapButton.hovered ? currTheme.buttonColorHoverPosition1 :
+//                                                currTheme.buttonColorNormalPosition1 :
+//                                                currTheme.buttonColorNoActive
+
+//        else
+//            rcv_color = !dapButton.activeFrame? "transparent " :
+//                               dapButton.enabled ?
+//                               dapButton.hovered ? currTheme.buttonColorHover :
+//                                                   currTheme.buttonColorNormal :
+//                                                   currTheme.buttonColorNoActive
+
+//        return rcv_color
+//    }
+
 
 }
