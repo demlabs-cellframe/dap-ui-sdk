@@ -58,6 +58,14 @@ signals:
   void sigReturn();
   void sigSelect(int index, QString name);
   /// @}
+
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
+public slots:
+  void slotRetranslated();
+  /// @}
 };
 
 /*-----------------------------------------*/

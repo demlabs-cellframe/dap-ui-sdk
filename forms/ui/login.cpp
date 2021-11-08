@@ -141,6 +141,19 @@ void Login::slotServerChooserActivate()
   ui->btnChooseServer->setEnabled (true);
 }
 
+void Login::slotRetranslated()
+{
+  ui->btnChooseServer->setMainText (tr ("Auto select"));
+  ui->btnChooseServer->setSubText (tr ("choosing server"));
+
+  ui->btnChooseSerial->setSubText (tr ("serial key"));
+
+  ui->btnConnect->setText (tr ("connect"));
+
+  ui->lDontHave->setText (tr ("Don't have a serial key?"));
+  ui->btnObtainNewKey->setText (tr ("Tap here to obtain one"));
+}
+
 void Login::_slotSerialChanged (const QString &a_serial)
 {
   Q_UNUSED (a_serial);

@@ -96,14 +96,16 @@ public:
 
   void updateGraph();
   void resetGraph();
+private:
+  void _slotUpdateUptimeTime();
   /// @}
 
   /****************************************//**
-   * @name METHODS
+   * @name SLOTS
    *******************************************/
   /// @{
-public:
-  void _slotUpdateUptimeTime();
+public slots:
+  void slotRetranslated();
   /// @}
 };
 

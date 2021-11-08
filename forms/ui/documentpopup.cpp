@@ -11,7 +11,8 @@
 
 DocumentPopup::DocumentPopup (Type t, QWidget *parent) :
   BaseForm (parent),
-  ui (new Ui::DocumentPopup)
+  ui (new Ui::DocumentPopup),
+  m_type (t)
 {
   ui->setupUi (this);
 
@@ -57,6 +58,7 @@ DocumentPopup::~DocumentPopup()
 
 void DocumentPopup::slotShowTermsOfUse()
 {
+  m_type  = TermsOfUse;
   setObjectName (tr ("Terms of use"));
   ui->label->setText (tr ("Terms of use"));
   m_label->setText (Common::fromFile (":/gui/data/terms.html"));
@@ -64,9 +66,19 @@ void DocumentPopup::slotShowTermsOfUse()
 
 void DocumentPopup::slotShowPrivacyPolicy()
 {
+  m_type  = PrivacyPolicy;
   setObjectName (tr ("Privacy policy"));
   ui->label->setText (tr ("Privacy policy"));
   m_label->setText (Common::fromFile (":/gui/data/privacy.html"));
+}
+
+void DocumentPopup::slotRetranslated()
+{
+  switch (m_type)
+  {
+    case PrivacyPolicy: return slotShowPrivacyPolicy();
+    case TermsOfUse:    return slotShowTermsOfUse();
+  }
 }
 
 bool DocumentPopup::eventFilter(QObject *o, QEvent *e)

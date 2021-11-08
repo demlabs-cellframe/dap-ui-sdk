@@ -109,6 +109,8 @@ public slots:
   void slotChangeSerial (QString serialKey);
   /// set server choose button active
   void slotServerChooserActivate();
+  /// translate contents
+  void slotRetranslated();
 private slots:
   void _slotSerialChanged (const QString &a_serial);
   void _slotSerialEdited (const QString &a_serial);

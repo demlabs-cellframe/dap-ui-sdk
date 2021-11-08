@@ -163,6 +163,18 @@ void BugReports::slotSetMode (BugReports::Mode mode)
     movLoading->stop();
 }
 
+void BugReports::slotRetranslated()
+{
+  ui->labelBugReports->setText (tr ("Bug reports"));
+  ui->editReport
+      ->setPlaceholderText (
+        tr ("Please describe the details of problem you faced. "
+            "What actions did you take and what happened."));
+  ui->btnAttachScreenshot->setText (tr ("Click here to attach a screenshot"));
+  ui->btnSendReport->setText (tr ("send report"));
+  ui->btnResultBack->setText (tr ("back"));
+}
+
 void BugReports::_slotRadioTest()
 {
   /* fill whne required */

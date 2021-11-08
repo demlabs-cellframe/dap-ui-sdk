@@ -56,6 +56,7 @@ private:
   DapGuiLabel *m_label;
   QVBoxLayout *m_layout;
   Filter *m_filter;
+  Type m_type;
   /// @}
 
   /****************************************//**
@@ -82,6 +83,7 @@ signals:
 public slots:
   void slotShowTermsOfUse();
   void slotShowPrivacyPolicy();
+  void slotRetranslated();
   /// @}
 
   /****************************************//**

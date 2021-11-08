@@ -30,12 +30,21 @@ Language::~Language()
 }
 
 /********************************************
- * CONSTRUCT/DESTRUCT
+ * METHODS
  *******************************************/
 
 LanguageModel *Language::model()
 {
   return ui->scrollArea;
+}
+
+/********************************************
+ * SLOTS
+ *******************************************/
+
+void Language::slotRetranslated()
+{
+  ui->label->setText (tr ("Language"));
 }
 
 /*-----------------------------------------*/

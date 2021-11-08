@@ -285,4 +285,21 @@ void Statistics::_slotUpdateUptimeTime()
   ui->statUptime->setMainText (uptimeStr());
 }
 
+void Statistics::slotRetranslated()
+{
+  ui->label->setText (tr ("Statistics"));
+
+  ui->statDownSp->setSubText (tr ("download speed"));
+  ui->statUpSp->setSubText (tr ("upload speed"));
+
+  ui->statBytesRec->setSubText (tr ("bytes received"));
+  ui->statBytesSent->setSubText (tr ("bytes sent"));
+
+  ui->statPackRec->setSubText (tr ("packets received"));
+  ui->statPackSent->setSubText (tr ("packets sent"));
+
+  ui->statUptime->setSubText (tr ("uptime"));
+  ui->statPing->setSubText (tr ("ping"));
+}
+
 /*-----------------------------------------*/

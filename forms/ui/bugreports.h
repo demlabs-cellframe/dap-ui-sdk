@@ -111,6 +111,7 @@ signals:
   /// @{
 public slots:
   void slotSetMode (Mode mode);
+  void slotRetranslated();
 private slots:
   void _slotRadioTest();
   void _slotTextChanged();

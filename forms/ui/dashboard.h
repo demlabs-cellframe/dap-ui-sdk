@@ -94,6 +94,8 @@ public slots:
   void setServerInfo(QString a_name, QString a_ip);
   /// start disconnection
   void slotDisconnectionRequested();
+  /// translate text
+  void slotRetranslated();
 
 private slots:
   void _slotTimeUpdate();

@@ -140,7 +140,13 @@ void Dashboard::_slotTimeUpdate()
 void Dashboard::slotDisconnectionRequested()
 {
 //    this->_slotUpdateStatusIcon();
-    emit sigDisconnectionRequested();
+  emit sigDisconnectionRequested();
+}
+
+void Dashboard::slotRetranslated()
+{
+  ui->lDownload->setSubText (tr ("download"));
+  ui->lUpload->setSubText (tr ("upload"));
 }
 
 /*-----------------------------------------*/
