@@ -16,6 +16,7 @@ class Settings;
 
 class SettingsModel : public ModelBase
 {
+  Q_OBJECT
   DAPGUI_ENABLECSS
   //DAPGUI_ENABLEWIDGETSTYLE
 
@@ -26,7 +27,6 @@ class SettingsModel : public ModelBase
 private:
   typedef QString TextStyle;
   typedef void (*ItemCB) ();
-  typedef QString (*TranslatingString) ();
 
   enum StyleId
   {
@@ -47,7 +47,7 @@ private:
   struct _SItem
   {
     StyleId sid;
-    TranslatingString text[2];
+    QString text[2];
     QString iconCss;
     ItemCB cb;
   };
@@ -98,6 +98,14 @@ public slots:
   /// @{
 public:
   bool eventFilter(QObject *o, QEvent *e) override;
+  /// @}
+
+  /****************************************//**
+   * @name PRIVATE METHODS
+   *******************************************/
+  /// @{
+private:
+  void _updateLabels();
   /// @}
 };
 

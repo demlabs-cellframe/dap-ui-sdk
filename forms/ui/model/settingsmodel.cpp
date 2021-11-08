@@ -11,7 +11,6 @@
 /* DEFS */
 typedef QString TextStyle;
 typedef void (*ItemCB) ();
-#define TR(a) []() -> QString {return a;}
 
 /* LINKS */
 static void defaultCb () {}
@@ -65,29 +64,7 @@ SettingsModel::SettingsModel (QWidget *parent)
     {SI_SPACER,     {"",  ""}},
   };
 
-  s_items =
-  {
-    _SItem{SI_SPACER,     {TR (""), TR ("")}, "1", defaultCb},
-    _SItem{SI_TITLETOP,   {TR (tr ("Settings")), TR ("")}, "settings_icon", defaultCb},
-    _SItem{SI_SPACER,     {TR (""), TR ("")}, "2", defaultCb},
-
-    _SItem{SI_BUTTONRED,  {TR (tr ("Get new licence key")), /*"265 days left"*/TR (" ")}, "settings_icon ic_renew", cbLicenceGet},
-    _SItem{SI_BUTTON,     {TR (tr ("Reset licence key")), TR ("")}, "settings_icon ic_key", cbLicenceReset},
-    _SItem{SI_LINK,       {TR (tr ("Language")), TR ("")}, "settings_icon ic_language", cbLanguage},
-
-    _SItem{SI_TITLE,      {TR (tr ("Support")), TR ("")}, "settings_icon", defaultCb},
-
-    _SItem{SI_BUTTON,     {TR (tr ("Send a bug report")), TR ("")}, "settings_icon ic_send-report", cbBugSend},
-    _SItem{SI_BUTTON,     {TR (tr ("Telegram support bot")), TR ("")}, "settings_icon ic_bot", cbTelegramBot},
-
-    _SItem{SI_TITLE,      {TR (tr ("Information")), TR ("")}, "settings_icon", defaultCb},
-
-    //_SItem{SI_LINK,       {TR (tr ("Bug Reports"))}, "settings_icon ic_information_bug-report", cbBugReport},
-    //_SItem{SI_BUTTON,     {TR (tr ("Serial key history on this device"))}, "settings_icon ic_key-history", cbLicenceHistory},
-    _SItem{SI_BUTTON,     {TR (tr ("Terms of use")), TR ("")}, "settings_icon ic_terms_policy", cbTermsOfUse},
-    _SItem{SI_BUTTON,     {TR (tr ("Privacy policy")), TR ("")}, "settings_icon ic_terms_policy", cbPrivacyPolicy},
-    _SItem{SI_BUTTONGRAY, {TR (tr ("Version")), TR ("@version")}, "settings_icon ic_version", cbVersion},
-  };
+  _updateLabels();
 }
 
 SettingsModel::~SettingsModel()
@@ -133,10 +110,10 @@ void SettingsModel::slotSetup()
                         ? DapGuiButton::ButtonStyle::IconMainSub
                         : DapGuiButton::ButtonStyle::TopMainBottomSub);
 
-      btn->setMainText (item.text[0]());
+      btn->setMainText (item.text[0]);
       btn->setMainCssClass (preset.style[0]);
 
-      btn->setSubText (item.text[1]());
+      btn->setSubText (item.text[1]);
       btn->setSubCssClass (preset.style[1]);
 
       btn->setSeparator (
@@ -167,7 +144,7 @@ void SettingsModel::slotSetup()
       /* store licence key button */
       if (item.sid == SI_BUTTONRED) // (i == 3)
         s_licenceKey = btn;
-      if (item.text[1]() == "@version")
+      if (item.text[1] == "@version")
         s_version = btn;
 
       /* connect signal */
@@ -199,6 +176,8 @@ void SettingsModel::slotClicked()
 
 void SettingsModel::slotRetranslate()
 {
+  _updateLabels();
+
   /* start cycling */
   int size  = s_items.size();
   if (lay->count() < size)
@@ -210,8 +189,8 @@ void SettingsModel::slotRetranslate()
       auto button       = qobject_cast<DapGuiButton*> (lay->itemAt(i)->widget());
       if (button == nullptr)
         continue;
-      button->setMainText (item.text[0]());
-      button->setSubText (item.text[1]());
+      button->setMainText (item.text[0]);
+      button->setSubText (item.text[1]);
     }
 }
 
@@ -226,6 +205,37 @@ bool SettingsModel::eventFilter(QObject *o, QEvent *e)
     setMinimumWidth(widget()->minimumSizeHint().width() + verticalScrollBar()->width());
 
   return QScrollArea::eventFilter(o, e);
+}
+
+/********************************************
+ * PRIVATE METHODS
+ *******************************************/
+
+void SettingsModel::_updateLabels()
+{
+  s_items =
+  {
+    _SItem{SI_SPACER,     {"", ""}, "1", defaultCb},
+    _SItem{SI_TITLETOP,   {tr("Settings"), ""}, "settings_icon", defaultCb},
+    _SItem{SI_SPACER,     {"", ""}, "2", defaultCb},
+
+    _SItem{SI_BUTTONRED,  {tr("Get new licence key"), /*"265 days left"*/" "}, "settings_icon ic_renew", cbLicenceGet},
+    _SItem{SI_BUTTON,     {tr("Reset licence key"), ""}, "settings_icon ic_key", cbLicenceReset},
+    _SItem{SI_LINK,       {tr("Language"), ""}, "settings_icon ic_language", cbLanguage},
+
+    _SItem{SI_TITLE,      {tr("Support"), ""}, "settings_icon", defaultCb},
+
+    _SItem{SI_BUTTON,     {tr("Send a bug report"), ""}, "settings_icon ic_send-report", cbBugSend},
+    _SItem{SI_BUTTON,     {tr("Telegram support bot"), ""}, "settings_icon ic_bot", cbTelegramBot},
+
+    _SItem{SI_TITLE,      {tr("Information"), ""}, "settings_icon", defaultCb},
+
+    //_SItem{SI_LINK,       {TR ("Bug Reports")}, "settings_icon ic_information_bug-report", cbBugReport},
+    //_SItem{SI_BUTTON,     {TR ("Serial key history on this device")}, "settings_icon ic_key-history", cbLicenceHistory},
+    _SItem{SI_BUTTON,     {tr("Terms of use"), ""}, "settings_icon ic_terms_policy", cbTermsOfUse},
+    _SItem{SI_BUTTON,     {tr("Privacy policy"), ""}, "settings_icon ic_terms_policy", cbPrivacyPolicy},
+    _SItem{SI_BUTTONGRAY, {tr("Version"), "@version"}, "settings_icon ic_version", cbVersion},
+  };
 }
 
 /********************************************
