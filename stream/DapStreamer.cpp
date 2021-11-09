@@ -34,7 +34,7 @@ inline static int daSigDetect(const QByteArray& b) { return b.indexOf(daSigQ); }
 QHash<char, DapChBase*> DapStreamer::m_dsb;
 
 DapStreamer::DapStreamer(DapSession * session, QObject* parent) :
-    QObject(parent),m_pktOutLastSeqID(0), m_streamState(SSS_NONE), m_isStreamOpened(false)
+    QObject(parent),m_pktOutLastSeqID(0), m_streamSocket(this), m_streamState(SSS_NONE), m_isStreamOpened(false)
 {
     qDebug() << "[DapConnectStream::DapConnectStream]";
 
@@ -42,28 +42,26 @@ DapStreamer::DapStreamer(DapSession * session, QObject* parent) :
     m_procPktInDecData.reserve(DAP_PKT_SIZE_MAX);
 
     m_session = session;
-    m_streamSocket = new QTcpSocket(this);
-    m_streamSocket->setReadBufferSize(DAP_PKT_SIZE_MAX);
-    m_streamSocket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
-    m_streamSocket->setSocketOption(QAbstractSocket::KeepAliveOption, 1);
-    m_streamSocket->setProxy(QNetworkProxy::NoProxy);
+    m_streamSocket.setReadBufferSize(DAP_PKT_SIZE_MAX);
+    m_streamSocket.setSocketOption(QAbstractSocket::LowDelayOption, 1);
+    m_streamSocket.setSocketOption(QAbstractSocket::KeepAliveOption, 1);
+    m_streamSocket.setProxy(QNetworkProxy::NoProxy);
 
-    connect(m_streamSocket,&QIODevice::readyRead, this,&DapStreamer::sltStreamProcess);
+    connect(&m_streamSocket,&QIODevice::readyRead, this,&DapStreamer::sltStreamProcess);
     //connect(m_streamSocket,&QAbstractSocket::hostFound, this,&DapConnectStream::sltStreamHostFound);
-    connect(m_streamSocket,&QAbstractSocket::connected, this,&DapStreamer::sltStreamConnected);
-    connect(m_streamSocket,&QAbstractSocket::disconnected, this,&DapStreamer::sltStreamDisconnected);
-    connect(m_streamSocket,SIGNAL(bytesWritten(qint64)), this, SLOT(sltStreamBytesWritten(qint64)) );
+    connect(&m_streamSocket,&QAbstractSocket::connected, this,&DapStreamer::sltStreamConnected);
+    connect(&m_streamSocket,&QAbstractSocket::disconnected, this,&DapStreamer::sltStreamDisconnected);
+    connect(&m_streamSocket,SIGNAL(bytesWritten(qint64)), this, SLOT(sltStreamBytesWritten(qint64)) );
 
    typedef void (QAbstractSocket::*QAbstractSocketErrorSignal)(QAbstractSocket::SocketError);
 
-   connect(m_streamSocket,static_cast<QAbstractSocketErrorSignal>(&QAbstractSocket::error),
+   connect(&m_streamSocket,static_cast<QAbstractSocketErrorSignal>(&QAbstractSocket::error),
            this, &DapStreamer::sltStreamError);
 
 }
 
 DapStreamer::~DapStreamer()
 {
-
 }
 
 void DapStreamer::writeChannelPacket(DapChannelPacketHdr *a_pktHdr, void *data, uint64_t *dest_addr)
@@ -115,7 +113,7 @@ void DapStreamer::writeChannelPacket(DapChannelPacketHdr *a_pktHdr, void *data, 
 
 void DapStreamer::streamOpen(const QString& subUrl, const QString& query)
 {
-    if(m_streamSocket->isOpen()) {
+    if(m_streamSocket.isOpen()) {
         qWarning() << "Stream socket already open. "
                       "Closing current open socket";
         streamClose();
@@ -123,19 +121,15 @@ void DapStreamer::streamOpen(const QString& subUrl, const QString& query)
     qDebug() << "Stream open SubUrl = " << subUrl;
     qDebug() << "Stream open query =" << query;
     m_streamID.clear();
-    m_network_reply = m_session->streamOpenRequest(subUrl, query, this, SLOT(sltStreamOpenCallback()));
-    if (m_network_reply == nullptr) {
-        qWarning() << "Network error, stream cannot be opened";
-        emit errorNetwork("Can't init network connection");
-    }
+    m_network_reply = m_session->streamOpenRequest(subUrl, query, this, SLOT(sltStreamOpenCallback()), QT_STRINGIFY(errorNetwork));
 }
 
 void DapStreamer::streamClose()
 {
     emit streamDisconnecting();
-    if(m_streamSocket->isOpen()){
+    if(m_streamSocket.isOpen()){
         qDebug() <<"[SC] close the stream";
-        m_streamSocket->close();
+        m_streamSocket.close();
     }
     emit streamClosed();
     m_pktOutLastSeqID = 0;
@@ -145,12 +139,12 @@ void DapStreamer::streamClose()
 qint64 DapStreamer::writeStreamRaw(const void * data, size_t data_size)
 {
     quint64 outWriteSize, wr, ret = 0;
-    if(m_streamSocket->isWritable())
+    if(m_streamSocket.isWritable())
     {
         while (ret < (quint64) data_size)
         {
             outWriteSize = ((quint64) data_size) - ret;
-            wr = m_streamSocket->write((const char*)data + ret, outWriteSize);
+            wr = m_streamSocket.write((const char*)data + ret, outWriteSize);
 
             if(wr > 0)
                 ret += wr;
@@ -168,7 +162,7 @@ qint64 DapStreamer::writeStreamRaw(const void * data, size_t data_size)
     else
     {
         //qWarning() << "Stream Socket is not writable";
-        if(!m_streamSocket->isOpen()) {
+        if(!m_streamSocket.isOpen()) {
             //qWarning() << "Stream socket is closed";
             emit streamClosed();
         }
@@ -178,13 +172,7 @@ qint64 DapStreamer::writeStreamRaw(const void * data, size_t data_size)
 
 void DapStreamer::sltStreamOpenCallback()
 {
-    qDebug() << "Stream Open callback;";
-
-    if(m_network_reply->error() != DapNetworkReply::DapNetworkError::NoError) {
-        qWarning() << "Can't open stream. Network error " << m_network_reply->errorString();
-        emit sigStreamOpenNetworkError(m_network_reply->error());
-        return;
-    }
+    qDebug() << "Opening stream";
 
     if(m_network_reply->getReplyData().size() == 0) {
         qWarning() << "Reply is empty";
@@ -216,13 +204,13 @@ void DapStreamer::sltStreamOpenCallback()
 
         m_session->getDapCrypt()->initKey(DAP_ENC_KEY_TYPE_SALSA2012, streamServKey, KeyRoleStream);
 
-        if(!m_streamSocket->isOpen()) {
+        if(!m_streamSocket.isOpen()) {
 
-            m_streamSocket->connectToHost(m_session->upstreamAddress(),
+            m_streamSocket.connectToHost(m_session->upstreamAddress(),
                                           m_session->upstreamPort(),
                                           QIODevice::ReadWrite);
 //#ifndef Q_OS_WINDOWS
-            if (m_streamSocket->waitForConnected(15000)) {
+            if (m_streamSocket.waitForConnected(15000)) {
                 return;
             } else {
                 emit errorNetwork("Socket connection timeout");
@@ -247,7 +235,7 @@ void DapStreamer::sltStreamBytesWritten(qint64 bytes)
 void DapStreamer::sltStreamError(QAbstractSocket::SocketError socketError)
 {
 
-    qWarning() << "Socket error: " <<m_streamSocket->errorString();
+    qWarning() << "Socket error: " <<m_streamSocket.errorString();
     switch (socketError) {
         case QAbstractSocket::NetworkError:
             emit errorNetwork( tr("Networking error, pls fix your network configuration"));
@@ -289,7 +277,7 @@ void DapStreamer::sltStreamError(QAbstractSocket::SocketError socketError)
             break;
         default:{
             emit errorNetwork(tr("The following error occurred: %1")
-                       .arg(m_streamSocket->errorString()));
+                       .arg(m_streamSocket.errorString()));
 
         }
     }
@@ -327,14 +315,14 @@ void DapStreamer::sltStreamConnected()
     qDebug() << "[DapConnectStream] Request on out : " << str_request;
     m_isStreamOpened = false;
     QByteArray baReq( str_request.toLatin1() );
-    qint64 ret = m_streamSocket->write(baReq.constData(), baReq.size());
+    qint64 ret = m_streamSocket.write(baReq.constData(), baReq.size());
     m_streamState = SSS_FRAME_SEARCH;
-    if (m_streamSocket->flush()) {
+    if (m_streamSocket.flush()) {
         qDebug() << "[DapConnectStream] HTTP stream request sent "<< ret<< " bytes";
         emit streamOpened();
     } else {
         qCritical() << "Stream not opened";
-        emit errorNetwork(m_streamSocket->errorString());
+        emit errorNetwork(m_streamSocket.errorString());
     }
 
     /*if( !m_streamSocket->waitForBytesWritten(
@@ -352,19 +340,19 @@ void DapStreamer::sltStreamConnected()
 void DapStreamer::sltStreamProcess()
 {
    // qDebug()<< "[DapConnectStream::sltStreamProcess]";
-    if( m_streamSocket->bytesAvailable() == 0 )
+    if( m_streamSocket.bytesAvailable() == 0 )
     {
         qWarning() << "[DapConnectStream] No data after wait!";
         return;
     }
 
-    if( m_streamSocket->bytesAvailable() < 0 )
+    if( m_streamSocket.bytesAvailable() < 0 )
     {
         qWarning() << "[DapConnectStream] No data";
         return;
     }
 
-    QByteArray btAr = m_streamSocket->readAll();
+    QByteArray btAr = m_streamSocket.readAll();
     int bufferLengthBefore = m_buf.length();
     m_buf.append(btAr);
     bool cycle_flag = true;
@@ -419,11 +407,19 @@ void DapStreamer::sltStreamProcess()
                     m_streamState = SSS_FRAME_SEARCH;
                     m_dapDataPosition = 0;
                     return;
-                } else if ((dapPktSize == 0) && (dapPktConstHdr->type == 0x12)) {
+                } else if (dapPktSize == 0) {
+                    switch (dapPktConstHdr->type) {
+                    case 0x11: //Keep-alive pkt
+                    case 0x12: //Keep-alive pkt too...
+                        emit isAlive(true);
+                        break;
+                    default:
+                        //qDebug() << "Pkt type " << dapPktConstHdr->type << " unrecognized, len " << m_buf.length();
+                        break;
+                    }
                     m_buf.clear();
                     m_streamState = SSS_FRAME_SEARCH;
                     m_dapDataPosition = 0;
-                    emit isAlive(true);
                     return;
                 }
 
@@ -486,7 +482,7 @@ void DapStreamer::_detectPacketLoose(quint64 currentSeqId)
     if (countLoosedPackets > 0) {
         qWarning() << "Packet Loosed count:" << countLoosedPackets;
         emit sigStreamPacketLoosed(countLoosedPackets);
-    } else if(countLoosedPackets < 0) {
+    } else if((countLoosedPackets < 0) && (currentSeqId > 0)) {
         qWarning() << "Something wrong. countLoosedPackets is " << countLoosedPackets
                    << "can't be less than zero. Current seq id:" << currentSeqId
                    << "last seq id: " << m_lastSeqId;
@@ -500,14 +496,13 @@ void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
     m_session->getDapCrypt()->decode(m_procPktInData, m_procPktInDecData, KeyRoleStream);
 
     if(m_procPktInDecData.size() > sizeof(DapChannelPacketHdr)) {
-        DapChannelPacketHdr* channelPkt = (DapChannelPacketHdr*) calloc (1,sizeof(DapChannelPacketHdr));
+        DapChannelPacketHdr* channelPkt = (DapChannelPacketHdr*) malloc(sizeof(DapChannelPacketHdr));
         memcpy(channelPkt, m_procPktInDecData.constData(), sizeof(DapChannelPacketHdr));
         _detectPacketLoose(channelPkt->seq_id);
-        void* channelData = calloc(1, m_procPktInDecData.size() - sizeof(DapChannelPacketHdr) + 1);
+        void* channelData = malloc(m_procPktInDecData.size() - sizeof(DapChannelPacketHdr) + 1);
         memcpy(channelData, m_procPktInDecData.constData() + sizeof(DapChannelPacketHdr),
                m_procPktInDecData.size() - sizeof(DapChannelPacketHdr));
-
-        readChPacket(channelPkt, channelData);
+        emit sigProcPacket(new DapChannelPacket(channelPkt, channelData));
     } else {
         qWarning() << "Error decode. Packet loosed";
     }
@@ -516,21 +511,13 @@ void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)
     m_procPktInDecData.clear();
 }
 
-DapChThread* DapStreamer::addChProc(char chId, DapChBase* obj) {
+void DapStreamer::addChProc(char chId, DapChBase* obj) {
     if(m_dsb.contains(chId)) {
         qCritical() << "Proc with id" << chId << "already exists";
-        return m_dapChThead;
+        return;
     }
     m_dsb.insert(chId, obj);
-    if (!m_dapChThead) {
-        m_dapChThead = new DapChThread(obj);
-    }
     connect(obj, &DapChBase::pktChOut, this, &DapStreamer::writeChannelPacket);
-    connect (m_dapChThead, &DapChThread::sigNewPkt, obj, &DapChBase::onPktIn);
-    if (!m_dapChThead->isRunning()) {
-        m_dapChThead->start();
-    }
-    return m_dapChThead;
-
+    connect (this, &DapStreamer::sigProcPacket, obj, &DapChBase::onPktIn);
 }
 

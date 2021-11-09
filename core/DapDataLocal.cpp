@@ -12,6 +12,13 @@
 #include "DapSerialKeyData.h"
 #include "DapLogger.h"
 
+#ifdef DAP_OS_ANDROID
+#include <sys/sendfile.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#endif
+
 DapDataLocal::picturesMap DapDataLocal::m_pictruePath = {
     {DapServerLocation::ENGLAND, ":/country/GB.png"},
     {DapServerLocation::FRANCE, ":/country/FR.png"},
@@ -31,7 +38,6 @@ DapDataLocal::DapDataLocal()
     , m_serialKeyData(new DapSerialKeyData(this))
 {
     qDebug() << "[DL] DapDataLocal Constructor";
-
     parseXML(":/data.xml");
     initSecretKey();
     this->loadAuthorizationDatas();
@@ -68,7 +74,10 @@ void DapDataLocal::parseXML(const QString& a_fname)
                                     item.port = port;
                                 } else if(sr->name() == "location") {
                                     item.location = DapServerInfo::stringToLocation(sr->readElementText());
-                                } else {
+                                } else if (sr->name() == "state") {
+                                    item.online = sr->readElementText();
+                                }
+                                else {
                                     qWarning() << "[DL] Inside tag 'server': Unknown tag "<<sr->name();
                                     sr->skipCurrentElement();
                                 }
@@ -99,6 +108,7 @@ void DapDataLocal::parseXML(const QString& a_fname)
             }
         }
     }
+    file.close();
 #ifdef  QT_DEBUG
     DapDataLocal::serversData()->addServer(DapServerLocation::UNKNOWN, "local", "127.0.0.1",  8099);
 #endif
@@ -158,8 +168,6 @@ void DapDataLocal::saveSerialKeyData()
 void DapDataLocal::loadAuthorizationDatas()
 {
 #ifdef Q_OS_ANDROID
-    // due to the fact that in the new version on Android we changed the path to the settings:
-    // check if there are no settings, maybe they are in the old place
     auto keys = settings()->allKeys();
     if (keys.isEmpty()) {
         QSettings oldSettings;
@@ -176,19 +184,32 @@ void DapDataLocal::loadAuthorizationDatas()
         this->loadFromSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
 }
 
-void DapDataLocal::rotateCDBList() {
-    if ((m_cdbServersList.size() > 1) && (m_cdbServersList.size() > ++m_rotations)) {
-        auto tmp = m_cdbServersList.takeFirst();
-        m_cdbServersList.push_back(tmp);
-    } else {
-        m_rotations = -1;
-    }
-}
-
 QSettings* DapDataLocal::settings()
 {
 #ifdef Q_OS_ANDROID
-    static QSettings s_settings(DapLogger::defaultLogPath(DAP_BRAND).append("/settings.ini"), QSettings::IniFormat);
+    static QString s_path = DapLogger::defaultLogPath(DAP_BRAND).chopped(3).append("settings.ini");
+
+    /* Legacy settings import, will be deprecated on targeting API 30+ */
+    int l_ofd = open(qPrintable(s_path), O_RDONLY);
+    if (l_ofd <= 0) {
+        int _l_fd = open("/sdcard/KelvinVPN/log/settings.ini", O_RDWR);
+        int l_fd = _l_fd > 0 ? _l_fd : open("/sdcard/" DAP_BRAND "/log/settings.ini", O_RDWR);
+        if (l_fd > 0) {
+            int l_ofd = open(qPrintable(s_path), O_CREAT | O_RDWR);
+            struct stat statBuf;
+            fstat(l_fd, &statBuf);
+            qInfo() << "Imported old settings [" << sendfile(l_ofd, l_fd, NULL, statBuf.st_size) << "] bytes";
+            ftruncate(l_fd, 0);
+            close(l_fd);
+            close(l_ofd);
+        } else {
+            qInfo() << "Old settings not found";
+        }
+    } else {
+        close(l_ofd);
+    }
+
+    static QSettings s_settings(s_path, QSettings::IniFormat);
 #else
     static QSettings s_settings;
 #endif

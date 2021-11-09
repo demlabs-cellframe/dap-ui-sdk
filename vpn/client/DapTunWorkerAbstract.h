@@ -1,5 +1,4 @@
-#ifndef DAPTUNWORKERABSTRACT_H
-#define DAPTUNWORKERABSTRACT_H
+#pragma once
 
 #include <QObject>
 
@@ -32,8 +31,6 @@ signals:
     void bytesWrite(quint64);
     void bytesRead(quint64);
 
-    void readPackets();
-
     void loopStarted();
     void loopStopped();
     void loopError(const QString&);
@@ -65,4 +62,3 @@ private:
     QReadWriteLock* m_writeQueueLock;
 };
 
-#endif // DAPTUNWORKERABSTRACT_H

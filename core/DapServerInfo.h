@@ -37,6 +37,7 @@ public:
         port        = cp.port;
         name        = cp.name;
         location    = cp.location;
+        online      = cp.online;
     }
 
     QString address;
@@ -44,9 +45,11 @@ public:
     quint16 port = 0;
     QString name;
     DapServerLocation location = DapServerLocation::UNKNOWN;
+    QString online;
 
     bool isAuto() const;
     bool isValid() const;
+    bool isOnline() const;
 
     static bool fromJSON(const QJsonArray& jsonArr, DapServerInfoList& out);
     static bool fromJSON(const QJsonObject& jsonObj, DapServerInfo& out);
@@ -58,7 +61,7 @@ public:
     friend QDebug operator<< (QDebug out, const DapServerInfo &dsi) {
         out << "DapServer address:" << dsi.address << " address6:" << dsi.address6 << "port:" << dsi.port
             << "name:"    << dsi.name    << "location:"
-            << m_countries.key(dsi.location);
+            << m_countries.key(dsi.location) << "state: " << dsi.online;
         return out;
     }
     static countryMap m_countries;

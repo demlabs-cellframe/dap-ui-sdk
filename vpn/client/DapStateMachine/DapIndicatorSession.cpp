@@ -1,8 +1,8 @@
 #include "DapIndicatorSession.h"
 
-void DapIndicatorSession::init(QStateMachine &sm, const QString& stateName)
+void DapIndicatorSession::init(DapState *s, const QString& stateName)
 {
-    DapIndicatorStateAbstract::init(sm, stateName);
+    DapIndicatorStateAbstract::init(s, stateName);
 
     cdbLogouted         = new DapState(_false->name()       + "_cdbLogouted",       _false);
     networkErr          = new DapState(_false->name()       + "_networkErr",        _false, true);
@@ -13,7 +13,6 @@ void DapIndicatorSession::init(QStateMachine &sm, const QString& stateName)
     cdbKeyActivation    = new DapState(_falseToTrue->name() + "_cdbKeyActivation",  _falseToTrue);
 
     _false->setInitialState(cdbLogouted);
-
     initAllowedSubstatesTransitions();
 }
 
@@ -25,6 +24,7 @@ void DapIndicatorSession::initAllowedSubstatesTransitions() {
     addAllowedSubstatesTransitions(cdbHandshakeReply,       cdbLogined);
     addAllowedSubstatesTransitions(cdbHandshakeReply,       cdbLogouted);
     addAllowedSubstatesTransitions(cdbHandshakeReply,       networkErr);
+    addAllowedSubstatesTransitions(cdbHandshakeReply,       cdbHandshakeRequest);
     addAllowedSubstatesTransitions(networkErr,              cdbLogouted);
     addAllowedSubstatesTransitions(networkErr,              cdbHandshakeRequest);
     addAllowedSubstatesTransitions(cdbKeyActivation,        cdbHandshakeReply);
