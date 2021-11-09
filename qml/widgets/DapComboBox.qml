@@ -84,7 +84,8 @@ DapComboBoxForm
                                                  fontComboBox[index] :
                                                  fontComboBox[0];
                                 textColor: hovered ? colorTextComboBox[index][1] : colorTextComboBox[index][0]
-                                fullText: getModelData(rectangleTextComboBox.comboBoxIndex, comboBoxTextRole[index])
+                                fullText: getModelData(rectangleTextComboBox.comboBoxIndex, comboBoxTextRole[index])?
+                                              getModelData(rectangleTextComboBox.comboBoxIndex, comboBoxTextRole[index]):""
                                 textElide: (elideTextComboBox.length > index) ?
                                                elideTextComboBox[index] :
                                                elideTextComboBox[0];

@@ -6,10 +6,11 @@ Rectangle
     property alias sourceComponent: loader.sourceComponent
 
     x: 3 * pt
-    radius: 8 * pt
+    anchors.left: parent.left
+//    radius: 8 * pt
     height: 60 * pt
     width: parent.width
-    color: "#241E46"
+    color: "#070023"
 
     Rectangle {
         color: parent.color
