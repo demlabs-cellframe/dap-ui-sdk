@@ -20,7 +20,8 @@ BugReports::BugReports (QWidget *parent) :
   BaseForm (parent),
   ui (new Ui::BugReports),
   movLoading (new QMovie (":/gui/ui/asset/Spinner.gif")),
-  _textHook (false)
+  _textHook (false),
+  _spacer (true)
 {
   qRegisterMetaType<Mode> ("Mode");
 
@@ -148,6 +149,24 @@ void BugReports::slotSetMode (BugReports::Mode mode)
       /* set visisble only on third cycle */
       foreach (auto *w, values)
         w->setVisible (ns == 3);
+    }
+
+  /* spacer */
+  if (mode == List)
+    {
+      if (_spacer)
+        {
+          ui->verticalLayout_3->takeAt (ui->verticalLayout_3->count()-1);
+          _spacer = false;
+        }
+    }
+  else
+    {
+      if (!_spacer)
+        {
+          ui->verticalLayout_3->addItem (ui->verticalSpacer);
+          _spacer = true;
+        }
     }
 
   /* movie */
