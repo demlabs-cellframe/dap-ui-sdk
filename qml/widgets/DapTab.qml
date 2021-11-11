@@ -4,6 +4,7 @@
 
 import QtQuick 2.4
 import QtQuick.Controls 2.0
+import QtGraphicalEffects 1.0
 
 Rectangle
 {
@@ -35,6 +36,7 @@ Rectangle
         anchors.left: parent.left
         anchors.right: parent.right
     }
+
     // Install the screen widget and the right panel
     Row
     {
@@ -65,5 +67,15 @@ Rectangle
             height: parent.height
             width: dapRightPanel.width
         }
+    }
+
+    DropShadow {
+        anchors.fill: topPanel
+        horizontalOffset: currTheme.hOffset
+        verticalOffset: currTheme.vOffset
+        radius: currTheme.radiusShadow
+        color: currTheme.shadowColor
+        source: topPanel
+        spread: 0.1
     }
 }
