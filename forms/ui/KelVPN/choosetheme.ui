@@ -135,7 +135,7 @@
           </widget>
          </item>
          <item>
-          <widget class="ChooseServerModel" name="scrollArea">
+          <widget class="ChooseThemeModel" name="scrollArea">
            <property name="styleSheet">
             <string notr="true">background: rgba(0,0,0,0);</string>
            </property>
@@ -186,9 +186,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>ChooseServerModel</class>
+   <class>ChooseThemeModel</class>
    <extends>QScrollArea</extends>
-   <header location="global">ui/model/chooseservermodel.h</header>
+   <header location="global">ui/model/choosethememodel.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

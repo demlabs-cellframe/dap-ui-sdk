@@ -25,6 +25,7 @@ SOURCES     += \
     $$PWD/ui/menufooter.cpp \
     $$PWD/ui/model/bugreportsmodel.cpp \
     $$PWD/ui/model/chooseservermodel.cpp \
+    $$PWD/ui/model/choosethememodel.cpp \
     $$PWD/ui/model/historymodel.cpp \
     $$PWD/ui/model/languagemodel.cpp \
     $$PWD/ui/model/modelbase.cpp \
@@ -61,6 +62,7 @@ HEADERS     += \
     $$PWD/ui/menufooter.h \
     $$PWD/ui/model/bugreportsmodel.h \
     $$PWD/ui/model/chooseservermodel.h \
+    $$PWD/ui/model/choosethememodel.h \
     $$PWD/ui/model/historymodel.h \
     $$PWD/ui/model/languagemodel.h \
     $$PWD/ui/model/modelbase.h \
