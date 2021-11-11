@@ -3,6 +3,7 @@
 #include "ui_history.h"
 
 #include <QTimer>
+#include <QScroller>
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -14,6 +15,7 @@ History::History (QWidget *parent) :
 {
   ui->setupUi (this);
   QMetaObject::invokeMethod(ui->scrollArea, &HistoryModel::slotSetup, Qt::QueuedConnection);
+  QScroller::grabGesture(this->ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
 
   /* signals */
   connect (ui->btnReturn, &DapGuiPushButton::clicked,

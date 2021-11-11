@@ -139,17 +139,23 @@
            <property name="styleSheet">
             <string notr="true">background: rgba(0,0,0,0);</string>
            </property>
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
            <property name="widgetResizable">
             <bool>true</bool>
            </property>
-           <widget class="QWidget" name="scrollAreaWidgetContents">
+           <widget class="DapGuiWidget" name="scrollAreaWidgetContents">
             <property name="geometry">
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>388</width>
-              <height>787</height>
+              <width>390</width>
+              <height>809</height>
              </rect>
+            </property>
+            <property name="cssStyle">
+             <string>backgroundcolor</string>
             </property>
            </widget>
           </widget>
