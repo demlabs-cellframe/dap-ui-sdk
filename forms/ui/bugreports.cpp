@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <QScrollBar>
+#include <QScroller>
 
 /* VARS */
 static BugReports *__inst = nullptr;
@@ -23,11 +24,12 @@ BugReports::BugReports (QWidget *parent) :
   _textHook (false),
   _spacer (true)
 {
-  qRegisterMetaType<Mode> ("Mode");
-
   /* setup */
   __inst  = this;
   ui->setupUi (this);
+
+  qRegisterMetaType<Mode> ("Mode");
+  QScroller::grabGesture(this->ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
 
   ui->editReport->setPlainText ("");
   ui->editReport->setCallbackTextEdit (_cbTextEdit);
