@@ -67,19 +67,17 @@ Popup
 
     id: dapCalendarPopup
 
-
     background:
         Rectangle
         {
             id: dapCalendarBackground
             width: dapLeftPadding + dapRightPadding + 7 * dapDayWidth + 6 * dapDayLeftInterval
             height: dapTopPadding + dapBottomPadding + dapCalendar.__style.control.height
-            color: currTheme.backgroundMainScreen
+            color: dapCalendarBackgroundColor
             Rectangle
             {
                 id: contentCorner
                 anchors.fill: parent
-                color: currTheme.backgroundMainScreen
             }
 
             DropShadow

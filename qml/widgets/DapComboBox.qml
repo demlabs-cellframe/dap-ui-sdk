@@ -3,18 +3,18 @@ import QtQuick.Controls 2.0
 
 DapComboBoxForm
 {
-//    Component.onCompleted:
-//    {
-//        if(model.count > 0)
-//        {
-//            if(isDefaultNeedToAppend && getModelData(0, comboBoxTextRole[0]) !== mainLineText)
-//            {
-//                model.insert(0, {});
-//                model.setProperty(0, comboBoxTextRole[0], mainLineText);
-//                currentIndex = 0;
-//            }
-//        }
-//    }
+    Component.onCompleted:
+    {
+        if(model.count > 0)
+        {
+            if(isDefaultNeedToAppend && getModelData(0, comboBoxTextRole[0]) !== mainLineText)
+            {
+                model.insert(0, {});
+                model.setProperty(0, comboBoxTextRole[0], mainLineText);
+                currentIndex = 0;
+            }
+        }
+    }
 
     delegate:
         ItemDelegate

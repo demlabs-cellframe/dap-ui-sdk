@@ -100,8 +100,7 @@ ComboBox
             height: indicatorHeight
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: parent.right
-            anchors.rightMargin: sidePaddingNormal * pt
-//            anchors.rightMargin: sidePaddingActive
+            anchors.rightMargin: popup.visible ? sidePaddingActive : sidePaddingNormal
         }
 
     //Defining the background for the main line
@@ -187,19 +186,15 @@ ComboBox
                     {
                         id: contentCorner
                         anchors.fill: parent
-                        color: currTheme.buttonColorNormal
                     }
         
                     DropShadow
                     {
                         anchors.fill: parent
                         source: contentCorner
-                        verticalOffset: currTheme.vOffset
-                        horizontalOffset: currTheme.hOffset
-//                        samples: 13 * pt
-                        radius: currTheme.radiusShadow
+                        verticalOffset: 9 * pt
+                        samples: 13 * pt
                         color: colorDropShadow
-                        spread: 0.1
                     }
                 }
         }
