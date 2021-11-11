@@ -145,6 +145,9 @@ public:
 public:
   static void setupGlobalStyleSheet (
     const QString &styleSheet);
+  static void setupTheme (
+    const QJsonArray &themesArray,
+    const QString &themeName);
   /// @}
 
   /****************************************//**

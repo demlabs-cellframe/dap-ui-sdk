@@ -31,9 +31,6 @@
    </property>
    <item>
     <widget class="DapGuiWidget" name="Background">
-     <property name="styleSheet">
-      <string notr="true">#Background{ 	background-color: #f7f8fa; }</string>
-     </property>
      <property name="cssStyle">
       <string>backgroundcolor</string>
      </property>

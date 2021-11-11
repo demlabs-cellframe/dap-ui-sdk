@@ -1,0 +1,23 @@
+[
+    {
+        "name": "Light Theme",
+        "patch": []
+    },
+    {
+        "name": "Dark Theme",
+        "patch": [
+            {
+                "name": "darkblue",
+                "replace": "darkblue-dark"
+            },
+            {
+                "name": "backgroundcolor",
+                "replace": "backgroundcolordark"
+            },
+            {
+                "name": "login-input-border",
+                "append": "login-input-border-dark"
+            }
+        ]
+    }
+]

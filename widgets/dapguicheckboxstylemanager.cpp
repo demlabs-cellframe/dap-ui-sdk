@@ -54,18 +54,15 @@ void DapGuiCheckBoxStyleManager::forcedCheckboxStyleUpdate()
       "*\n{"
       "%5}\n"
 
-      "QCheckBox::indicator\n{"
-      "border-image: url(\"%1\");%4}\n"
+      "QCheckBox::indicator\n{%1%4}\n"
 
-      "QCheckBox::indicator:hover\n{"
-      "border-image: url(\"%2\");}\n"
+      "QCheckBox::indicator:hover\n{%2}\n"
 
-      "QCheckBox::indicator:checked\n{"
-      "border-image: url(\"%3\");}\n")
+      "QCheckBox::indicator:checked\n{%3}\n")
     .arg (
-      "://gfx/check_btn_off.png",
-      "://gfx/check_btn_on.png",
-      "://gfx/check_btn_on.png",
+      styleByClassName ("ccb_off-light"),
+      styleByClassName ("ccb_on-light"),
+      styleByClassName ("ccb_on-light"),
       styleByClassName ("ccb_indicator"),
       styleByClassName ("ccb_textstyle font16 darkblue normal lato"));
 

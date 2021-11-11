@@ -8,6 +8,7 @@ SOURCES     += \
     $$PWD/ui/baseform.cpp \
     $$PWD/ui/bugreports.cpp \
     $$PWD/ui/chooseserver.cpp \
+    $$PWD/ui/choosetheme.cpp \
     $$PWD/ui/dashboard.cpp \
     $$PWD/ui/documentpopup.cpp \
     $$PWD/ui/helper/auxiliary/AppStyleSheetHandler.cpp \
@@ -41,6 +42,7 @@ HEADERS     += \
     $$PWD/ui/baseform.h \
     $$PWD/ui/bugreports.h \
     $$PWD/ui/chooseserver.h \
+    $$PWD/ui/choosetheme.h \
     $$PWD/ui/dashboard.h \
     $$PWD/ui/docs.h \
     $$PWD/ui/documentpopup.h \
@@ -88,7 +90,8 @@ FORMS += \
     $$PWD/ui/$$BRAND/settings.ui \
     $$PWD/ui/$$BRAND/splashscreen.ui \
     $$PWD/ui/$$BRAND/statistics.ui \
-    $$PWD/ui/$$BRAND/versionupdate.ui
+    $$PWD/ui/$$BRAND/versionupdate.ui \
+    $$PWD/ui/$$BRAND/choosetheme.ui
 
 RESOURCES += \
     $$PWD/ui/$$BRAND/appRes.qrc

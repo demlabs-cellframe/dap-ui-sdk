@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "stylesheetclassmap.h"
 #include "stylesheetclassparser.h"
+#include <QJsonObject>
 
 /* NAMESPACE */
 namespace StyleSheet
@@ -13,6 +14,66 @@ namespace StyleSheet
 void ClassMap::setup (const QString &styleSheet)
 {
   StyleSheet::ClassParser (styleSheet, *this);
+}
+
+void ClassMap::patch (const QJsonArray &array)
+{
+  for (auto i = array.constBegin(), e = array.constEnd(); i != e; i++)
+    {
+      /* get jobject */
+      auto j = (*i).toObject();
+
+      /* read into structure */
+      struct
+      {
+        QString name;
+        QString replace;
+        QString append;
+      } item =
+      {
+        j.value("name").toString(),
+        j.value("replace").toString(),
+        j.value("append").toString()
+      };
+
+      /* check */
+      if (!m_allKeys.contains(item.name))
+        continue;
+
+      /* get origin */
+      QStringList origin  = values ({item.name});
+      bool canUpdate      = false;
+
+      /* if append */
+      if (!item.append.isEmpty())
+        {
+          QStringList append  = values ({item.append});
+          origin.append (append);
+          canUpdate           = true;
+        }
+
+      /* if replace */
+      else if (!item.replace.isEmpty())
+        {
+          QStringList replace = values ({item.replace});
+          origin              = replace;
+          canUpdate           = true;
+        }
+
+      /* update */
+      if (canUpdate)
+        {
+          for (auto i = m_items.begin(), e = m_items.end(); i != e; i++)
+            {
+              /* skip */
+              if (!i->keys.contains (item.name))
+                continue;
+
+              /* store */
+              i->styles = origin;
+            }
+        }
+    }
 }
 
 void ClassMap::clear()

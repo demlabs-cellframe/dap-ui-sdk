@@ -7,6 +7,8 @@
 #include "stylesheetclassparser.h"
 //#include <QClipboard>
 //#include <QApplication>
+#include <QJsonArray>
+#include <QJsonObject>
 
 /* VARS */
 static StyleSheet::ClassMap s_styleMap;
@@ -43,6 +45,11 @@ public:
   {
     s_styleMap.clear();
     s_styleMap.setup (styleSheet);
+  }
+
+  void patch (const QJsonArray &themesArray)
+  {
+    s_styleMap.patch (themesArray);
   }
 };
 
@@ -94,6 +101,19 @@ void DapGuiStyleManager::setupGlobalStyleSheet (const QString &styleSheet)
 {
   Gss().set (styleSheet);
   emit s_signal.forceStyleUpdate();
+}
+
+void DapGuiStyleManager::setupTheme(
+  const QJsonArray &themesArray,
+  const QString &themeName)
+{
+  for (auto i = themesArray.constBegin(), e = themesArray.constEnd(); i != e; i++)
+    {
+      auto j = (*i).toObject();
+      if (j.value("name").toString() != themeName)
+        continue;
+      Gss().patch (j.value ("patch").toArray());
+    }
 }
 
 /********************************************
