@@ -18,7 +18,7 @@ RadioButton
     ///@detalis spaceIndicatorText The gap between the indicator and the text.
     property int spaceIndicatorText
     ///@detalis indicatorBorder Border indicator.
-//    property alias indicatorBorder: indicatorRadioButton.border
+    property alias indicatorBorder: indicatorRadioButton.border
     ///@detalis indicatorBorderColor Border color indicator.
     property string indicatorBorderColor
     ///@detalis indicatorBackgroundColor Background color indicator.
@@ -45,21 +45,34 @@ RadioButton
             anchors.leftMargin: customRadioButton.indicator.width + spaceIndicatorText
             verticalAlignment: Text.AlignVCenter
             anchors.verticalCenter: parent.verticalCenter
-            color: currTheme.textColor
+            color: "#3E3853"
             horizontalAlignment: Text.AlignLeft
             text: qsTr("template")
         }
     ///Indicator Options.
     indicator:
-        Image
+        Rectangle
         {
             id: indicatorRadioButton
-            width: indicatorInnerSize
-            height: indicatorInnerSize
-            anchors.verticalCenter: parent.verticalCenter
-            source: checked ? "qrc:/resources/icons/" + pathTheme + "/radio_btn_on.png" : "qrc:/resources/icons/" + pathTheme + "/radio_btn_off.png"
-        }
+            implicitWidth: indicatorSize
+            implicitHeight: indicatorSize
+            x: 0
+            y: parent.height / 2 - height / 2
+            radius: indicatorSize/2
+            color: indicatorBackgroundColor
 
+            ///Indicator inner options.
+            Rectangle
+            {
+                width: indicatorInnerSize
+                height: indicatorInnerSize
+                x: (indicatorRadioButton.width/2)-(width/2)
+                y: (indicatorRadioButton.height/2)-(height/2)
+                radius: indicatorInnerSize/2
+                color: customRadioButton.checked ? indicatorInnerColorActiv : indicatorInnerColorNormal
+                visible: customRadioButton.checked
+            }
+        }
     ///Background options.
     background: Rectangle
     {

@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
-import QtGraphicalEffects 1.0
 
 Button
 {
@@ -46,60 +45,24 @@ Button
     property alias dapHorizontalAlignment: buttonText.horizontalAlignment
     ///@details button background radius
     property alias radius: dapBackgroundButton.radius
-    property string shadowColor : "#2A2C33"
-    property bool activeFrame : true
 
 
     id: dapButton
 
     ///@details empty default background
-    background: Item { id:background }
+    background: Item {  }
 
     contentItem:
         Rectangle
         {
             id: dapBackgroundButton
             anchors.fill: parent
-            LinearGradient
-            {
-                anchors.fill: parent
-                source: parent
-                start: Qt.point(0,parent.height/2)
-                end: Qt.point(parent.width,parent.height/2)
-                gradient:
-                    Gradient {
-                        GradientStop
-                        {
-                            position: 0;
-                            color: dapButton.enabled ?
-                                   dapButton.hovered ? currTheme.buttonColorHoverPosition0 :
-                                                       currTheme.buttonColorNormalPosition0 :
-                                                       currTheme.buttonColorNoActive
-
-                        }
-                        GradientStop
-                        {
-                            position: 1;
-                            color:  dapButton.enabled ?
-                                    dapButton.hovered ? currTheme.buttonColorHoverPosition1 :
-                                                        currTheme.buttonColorNormalPosition1 :
-                                                        currTheme.buttonColorNoActive
-
-                        }
-                    }
-            }
-
-            color: !dapButton.activeFrame? "transparent " :
-                                           dapButton.enabled ?
-                                           dapButton.hovered ? currTheme.buttonColorHover :
-                                                               currTheme.buttonColorNormal :
-                                                               currTheme.buttonColorNoActive
-
+            color: dapButton.hovered ? colorBackgroundHover : colorBackgroundNormal
             implicitWidth: widthButton
             implicitHeight: heightButton
             border.color: borderColorButton
             border.width: borderWidthButton
-            radius: currTheme.radiusButton
+            radius: 0
 
             ///button text
             Text
@@ -109,7 +72,7 @@ Button
                 verticalAlignment: Qt.AlignVCenter
                 horizontalAlignment: Qt.AlignRight
                 anchors.rightMargin: indentTextRight
-                color: currTheme.textColor
+                color: dapButton.hovered ? colorButtonTextHover : colorButtonTextNormal
                 text: qsTr(textButton)
             }
 
@@ -125,44 +88,4 @@ Button
                 height: heightImageButton
             }
         }
-    DropShadow {
-//                Layout.alignment: buttonSend
-        anchors.fill: dapBackgroundButton
-        horizontalOffset: 2
-        verticalOffset: 2
-        radius: 10
-        samples: 32
-        color: shadowColor
-        source: dapBackgroundButton
-        smooth: true
-        }
-
-//    function getColor(position)
-//    {
-//        var rcv_color
-
-//        if(position === 0)
-//            rcv_color = !dapButton.activeFrame? "transparent " :
-//                            dapButton.enabled ?
-//                            dapButton.hovered ? currTheme.buttonColorHoverPosition0 :
-//                                                currTheme.buttonColorNormalPosition0 :
-//                                                currTheme.buttonColorNoActive
-//        else if(position === 1)
-//            rcv_color = !dapButton.activeFrame? "transparent " :
-//                            dapButton.enabled ?
-//                            dapButton.hovered ? currTheme.buttonColorHoverPosition1 :
-//                                                currTheme.buttonColorNormalPosition1 :
-//                                                currTheme.buttonColorNoActive
-
-//        else
-//            rcv_color = !dapButton.activeFrame? "transparent " :
-//                               dapButton.enabled ?
-//                               dapButton.hovered ? currTheme.buttonColorHover :
-//                                                   currTheme.buttonColorNormal :
-//                                                   currTheme.buttonColorNoActive
-
-//        return rcv_color
-//    }
-
-
 }

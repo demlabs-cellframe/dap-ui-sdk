@@ -113,7 +113,6 @@ DapCalendarForm
                     id: rectangleDayOfWeekDelegate
                     width: dapDayWidth
                     height: dapDayHeight
-                    color: dapCalendarBackgroundColor
                     Label
                     {
                         text: dapCalendar.__locale.dayName(styleData.dayOfWeek, dapDayOfWeeksFormat)
@@ -130,7 +129,7 @@ DapCalendarForm
                     id: rectangleDayDelegate
                     width: dapDayWidth + (styleData.index % 7 === 6 ? 0 : dapDayLeftInterval)
                     height: dapDayHeight + (styleData.index >= 35 ? 0 : dapDayTopInterval)
-                    color: dapCalendarBackgroundColor
+
                     Rectangle
                     {
                         anchors.left: parent.left
