@@ -97,6 +97,7 @@ signals:
   /// @{
 public slots:
   void slotSetMode (Mode mode);
+  void refreshHistoryList();
 private slots:
   void _slotRadioTest();
   void _slotTextChanged();

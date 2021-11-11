@@ -30,8 +30,8 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="DapGuiWidget" name="Background">
-     <property name="cssStyle">
+    <widget class="DapGuiWidget" name="Background" native="true">
+     <property name="cssStyle" stdset="0">
       <string>backgroundcolor</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -51,8 +51,8 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="DapGuiWidget" name="MainWidget">
-        <property name="cssStyle">
+       <widget class="DapGuiWidget" name="MainWidget" native="true">
+        <property name="cssStyle" stdset="0">
          <string>base-widget</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -72,8 +72,8 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="DapGuiWidget" name="kelGuiWidget_2">
-           <property name="cssStyle">
+          <widget class="DapGuiWidget" name="kelGuiWidget_2" native="true">
+           <property name="cssStyle" stdset="0">
             <string>history-top-spacer</string>
            </property>
           </widget>
@@ -82,20 +82,17 @@
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
             <widget class="DapGuiPushButton" name="btnReturn">
-             <property name="style">
-              <enum>DapGuiPushButton::Custom</enum>
-             </property>
-             <property name="custom">
+             <property name="custom" stdset="0">
               <url>
                <string>qrc:/gui/ui/asset/ic_close.png</string>
               </url>
              </property>
-             <property name="customHover">
+             <property name="customHover" stdset="0">
               <url>
                <string>qrc:/gui/ui/asset/ic_close.png</string>
               </url>
              </property>
-             <property name="customPushed">
+             <property name="customPushed" stdset="0">
               <url>
                <string>qrc:/gui/ui/asset/ic_close.png</string>
               </url>
@@ -113,14 +110,14 @@
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
-             <property name="cssStyle">
+             <property name="cssStyle" stdset="0">
               <string>history-title-text font24 darkblue lato normalbold noborder nobackground</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="DapGuiWidget" name="kelGuiWidget">
-             <property name="cssStyle">
+            <widget class="DapGuiWidget" name="kelGuiWidget" native="true">
+             <property name="cssStyle" stdset="0">
               <string>cwb_close-btn</string>
              </property>
             </widget>
@@ -128,8 +125,8 @@
           </layout>
          </item>
          <item>
-          <widget class="DapGuiWidget" name="kelGuiWidget_3">
-           <property name="cssStyle">
+          <widget class="DapGuiWidget" name="kelGuiWidget_3" native="true">
+           <property name="cssStyle" stdset="0">
             <string>history-top-content-spacer</string>
            </property>
           </widget>
@@ -147,8 +144,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>388</width>
-              <height>787</height>
+              <width>426</width>
+              <height>880</height>
              </rect>
             </property>
            </widget>

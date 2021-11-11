@@ -26,4 +26,9 @@ History::~History()
   delete ui;
 }
 
+void History::refreshHistoryList()
+{
+    QMetaObject::invokeMethod(ui->scrollArea, &HistoryModel::slotSetup, Qt::QueuedConnection);
+}
+
 /*-----------------------------------------*/

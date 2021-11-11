@@ -22,6 +22,7 @@ class HistoryModel : public ModelBase
   /// @{
 private:
   QList<DapGuiButton*> m_list;
+  int d = 0;
   /// @}
 
   /****************************************//**

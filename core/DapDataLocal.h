@@ -18,6 +18,12 @@
 
 #define SERVER_LIST_FILE "vpn-servers.xml"
 
+const QString TEXT_SERIAL_KEY           = "serialkey";
+const QString TEXT_SERIAL_KEY_HISTORY   = "serialkeyhistory";
+const QString TEXT_BUGREPORT_HISTORY    = "bugreporthistory";
+const QString TEXT_LOGIN                = "login";
+const QString TEXT_PASSWORD             = "password";
+
 class DapSerialKeyData;
 
 class DapDataLocal : public QObject
@@ -73,17 +79,12 @@ public:
     static void     removeSetting(const QString& a_setting);
     void saveSerialKeyData();
 
-    void saveSerialKeyDataHistory();
-    QList<QString> getSerialKeyDataHistory();
+    void saveHistoryData(QString a_type, QString a_data);
+    QList<QString> getHistoryData(QString a_type);
 
     static DapBugReportData *bugReportData();
     static DapServersData   *serversData();
     DapSerialKeyData* serialKeyData();
-
-    const QString TEXT_SERIAL_KEY           = "serialkey";
-    const QString TEXT_SERIAL_KEY_HISTORY   = "serialkeyhistory";
-    const QString TEXT_LOGIN                = "login";
-    const QString TEXT_PASSWORD             = "password";
 
 public slots:
     void setLogin(const QString &a_login);

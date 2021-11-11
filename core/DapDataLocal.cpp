@@ -155,8 +155,8 @@ void DapDataLocal::setPassword(const QString &a_password)
 
 void DapDataLocal::saveAuthorizationData()
 {
-    this->saveEncriptedSetting(this->TEXT_LOGIN     , this->login());
-    this->saveEncriptedSetting(this->TEXT_PASSWORD  , this->password());
+    this->saveEncriptedSetting(TEXT_LOGIN     , this->login());
+    this->saveEncriptedSetting(TEXT_PASSWORD  , this->password());
 }
 
 void DapDataLocal::saveSerialKeyData()
@@ -165,24 +165,27 @@ void DapDataLocal::saveSerialKeyData()
         this->saveToSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
 }
 
-void DapDataLocal::saveSerialKeyDataHistory()
+void DapDataLocal::saveHistoryData(QString a_type, QString a_data)
 {
-    if (!m_serialKeyDataList)
-        m_serialKeyDataList = new QSet<QString>;
+    if (a_data.isEmpty())
+        return;
+    QList<QString>* m_tempHistoryDataList = new QList<QString>;
+    this->loadFromSettings(a_type, *m_tempHistoryDataList);
+    if (!m_tempHistoryDataList->contains(a_data))
+        m_tempHistoryDataList->prepend(a_data);
+//    m_tempHistoryDataList->clear();
+    this->saveToSettings(a_type, *m_tempHistoryDataList);
 
-    this->loadFromSettings(TEXT_SERIAL_KEY_HISTORY, *m_serialKeyDataList);
-    m_serialKeyDataList->insert(m_serialKeyData->serialKey());
-
-    this->saveToSettings(TEXT_SERIAL_KEY_HISTORY, *m_serialKeyDataList);
+    delete m_tempHistoryDataList;
 }
 
-QList<QString> DapDataLocal::getSerialKeyDataHistory()
+QList<QString> DapDataLocal::getHistoryData(QString a_type)
 {
-    if (!m_serialKeyDataList)
-        m_serialKeyDataList = new QSet<QString>;
+    QList<QString>* m_tempHistoryDataList = new QList<QString>;
 
-    this->loadFromSettings(TEXT_SERIAL_KEY_HISTORY, *m_serialKeyDataList);
-    return m_serialKeyDataList->toList();
+
+    this->loadFromSettings(a_type, *m_tempHistoryDataList);
+    return *m_tempHistoryDataList;
 }
 
 void DapDataLocal::loadAuthorizationDatas()

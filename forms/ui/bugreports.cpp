@@ -250,4 +250,8 @@ void BugReports::updateData (QString &a_text, int a_len)
   _textHook = false;
 }
 
+void BugReports::refreshHistoryList(){
+    QMetaObject::invokeMethod(ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
+}
+
 /*-----------------------------------------*/

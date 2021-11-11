@@ -45,7 +45,8 @@ public:
 signals:
   void sigReturn();
   /// @}
-
+public slots:
+  void refreshHistoryList();
 };
 
 /*-----------------------------------------*/

@@ -1,5 +1,6 @@
 /* INCLUDES */
 #include "bugreportsmodel.h"
+#include <QScrollBar>
 
 /* DEFS */
 enum _ReportType
@@ -63,13 +64,14 @@ void BugReportsModel::slotSetup()
       lay->removeWidget (oldItem);
       delete oldItem;
     }
+  clearLayout(lay);
   m_list.clear();
 
   /* create new buttons */
-  foreach (auto &item, s_history)
+  foreach (auto &item, DapDataLocal::instance()->getHistoryData(TEXT_BUGREPORT_HISTORY))
     {
       /* get data */
-      QString text = item.name;
+//      QString text = item.name;
 
       /* create item */
       auto btn = new DapGuiButton;
@@ -77,10 +79,10 @@ void BugReportsModel::slotSetup()
 
       btn->setBtnStyle (DapGuiButton::IconMainSub);
 
-      btn->setMainText (text);
+      btn->setMainText ("Report #" + item);
       btn->setMainCssClass ("darkblue lato font16");
 
-      btn->setSubText (s_repNameMap.value (item.type));
+      btn->setSubText ("Unknown"/*s_repNameMap.value (item.type)*/);
 
       btn->setSeparator (true);
       btn->setIconCssClass ("bugrep-icon ic_information_bug-report");
@@ -90,9 +92,17 @@ void BugReportsModel::slotSetup()
       btn->setCssStyle ("bugrep-item");
       lay->addWidget (btn);
     }
-
   QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
   lay->addItem (sp);
+}
+
+bool BugReportsModel::eventFilter(QObject *o, QEvent *e)
+{
+    // This works because QScrollArea::setWidget installs an eventFilter on the widget
+    if(o && o == widget() && e->type() == QEvent::Resize)
+        setMinimumWidth(widget()->minimumSizeHint().width() + verticalScrollBar()->width());
+
+    return QScrollArea::eventFilter(o, e);
 }
 
 /*-----------------------------------------*/
