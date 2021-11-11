@@ -173,7 +173,6 @@ void DapDataLocal::saveHistoryData(QString a_type, QString a_data)
     this->loadFromSettings(a_type, *m_tempHistoryDataList);
     if (!m_tempHistoryDataList->contains(a_data))
         m_tempHistoryDataList->prepend(a_data);
-//    m_tempHistoryDataList->clear();
     this->saveToSettings(a_type, *m_tempHistoryDataList);
 
     delete m_tempHistoryDataList;

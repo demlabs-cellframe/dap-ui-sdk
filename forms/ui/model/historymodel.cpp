@@ -11,13 +11,23 @@ struct _HistoryRecord
 };
 
 /* VARS */
-static QList<_HistoryRecord> s_history =
+static QList<QString> s_history =
 {
-  {"GTSF-WWRM-KLMWQ-OWWM"},
-  {"GTSF-WWRM-KLMWQ-OWWM"},
-  {"GTSF-WWRM-KLMWQ-OWWM"},
-  {"GTSF-WWRM-KLMWQ-OWWM"},
-  {"GTSF-WWRM-KLMWQ-OWWM"},
+    {"GTSF-WWRM-KLMWQ-OWWM"},
+    {"GTSF-WWRM-KLMWQ-OWWM"},
+    {"GTSF-WWRM-KLMWQ-OWWM"},
+    {"GTSF-WWRM-KLMWQ-OWWM"},
+    {"GTSF-WWRM-KLMWQ-OWWM"},
+    {"GTSF-WWRM-KLMWQ-OWWM"},
+    {"GTSF-WWRM-KLMWQ-OWWM"},
+    {"GTSF-WWRM-KLMWQ-OWWM"},
+    {"GTSF-WWRM-KLMWQ-OWWM"},
+    {"GTSF-WWRM-KLMWQ-OWWM"},
+    {"GTSF-WWRM-KLMWQ-OWWM"},
+    {"GTSF-WWRM-KLMWQ-OWWM"},
+    {"GTSF-WWRM-KLMWQ-OWWM"},
+    {"GTSF-WWRM-KLMWQ-OWWM"},
+    {"GTSF-WWRM-KLMWQ-OWWM"},
 };
 
 /********************************************
@@ -53,7 +63,7 @@ void HistoryModel::slotSetup()
   m_list.clear();
 
   /* create new buttons */
-  foreach (auto &item, DapDataLocal::instance()->getHistoryData(TEXT_SERIAL_KEY_HISTORY))
+  foreach (auto &item, s_history/*DapDataLocal::instance()->getHistoryData(TEXT_SERIAL_KEY_HISTORY)*/)
     {
       /* create item */
       DapGuiButton *btn = new DapGuiButton;
@@ -80,10 +90,8 @@ void HistoryModel::slotSetup()
       });
       lay->addWidget (btn);
     }
-//    lay->widget()->move(0,0);
   QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
   lay->addItem (sp);
-//  lay->
 }
 
 /*-----------------------------------------*/
