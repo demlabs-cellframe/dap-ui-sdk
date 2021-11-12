@@ -135,9 +135,9 @@ void DapLogger::messageHandler(QtMsgType type,
         strcpy(prefixBuffer, fileName);
         sprintf(strrchr(prefixBuffer, '.'), ":%d", ctx.line);
 
-        _log_it(prefixBuffer, castQtMsgToDap(type), qUtf8Printable(msg));
+        _log_it(prefixBuffer, castQtMsgToDap(type), "%s", qUtf8Printable(msg));
     } else {
-        _log_it("\0", castQtMsgToDap(type), qUtf8Printable(msg));
+        _log_it("\0", castQtMsgToDap(type), "%s", qUtf8Printable(msg));
     }
     printf("%s\n",qUtf8Printable(msg));
 
