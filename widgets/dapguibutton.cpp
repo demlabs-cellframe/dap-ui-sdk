@@ -111,9 +111,6 @@ DapGuiButton::DapGuiButton (QWidget *parent)
 //  m_lLink->setMaximumWidth (s_linkWidth);
   m_lLink->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
   m_lLink->setParent (ui->DapGuiButtonBackground);
-  m_lLink->setStyleSheet (
-        "background-color: rgba(0,0,0,0);"
-        "border-image: url(\"://gfx/ic_arrow-right.png\");");
   m_lLink->hide();
 
   //setIcon (m_icon);
@@ -143,6 +140,11 @@ DapGuiButton::DapGuiButton (QWidget *parent)
            this, &DapGuiButton::textEdited);
   connect (ui->kelGuiLineEditMain, &DapGuiLineEdit::textEdited,
            this, &DapGuiButton::_slotTextEdited);
+  connect (&__kgsm, &DapGuiStyleManager::forceStyleUpdate,
+           this, &DapGuiButton::_slotStyleUpdate);
+
+  /* update style staff */
+  _slotStyleUpdate();
 }
 
 DapGuiButton::~DapGuiButton()
@@ -639,6 +641,15 @@ void DapGuiButton::_slotDebugInfo()
 void DapGuiButton::_slotTextEdited(const QString &a_text)
 {
   m_mainText = a_text;
+}
+
+void DapGuiButton::_slotStyleUpdate()
+{
+  m_lLink->setStyleSheet (
+    QString(
+      "background-color: rgba(0,0,0,0);"
+      "border-image: url(\"://gfx/%1/ic_arrow-right.png\");"
+    ).arg (__kgsm.themeDir()));
 }
 
 /*-----------------------------------------*/

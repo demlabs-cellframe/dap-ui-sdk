@@ -194,6 +194,8 @@ private slots:
   void _slotDebugInfo();
   /// @brief update mainText property
   void _slotTextEdited(const QString &a_text);
+  /// @brief react on style update
+  void _slotStyleUpdate();
   /// @}
 };
 

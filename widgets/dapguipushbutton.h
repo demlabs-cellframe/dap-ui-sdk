@@ -73,6 +73,7 @@ private:
   QString m_customCss;
   QGraphicsOpacityEffect *m_opacityEffect;
   DapGuiPushButtonStyleManager __kgsm = DapGuiPushButtonStyleManager (this);
+  bool _styleHook;
   /// @}
 
   /****************************************//**

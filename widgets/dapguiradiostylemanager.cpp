@@ -60,15 +60,15 @@ void DapGuiRadioStyleManager::forcedRadioStyleUpdate()
 
       "QRadioButton::indicator\n{"
       "border: none;"
-      "border-image: url(\"%1\");%4}\n"
+      "%1%4}\n"
 
       "QRadioButton::indicator:hover\n{"
       "border: none;"
-      "border-image: url(\"%2\");}\n"
+      "%2}\n"
 
       "QRadioButton::indicator:checked\n{"
       "border: none;"
-      "border-image: url(\"%3\");}\n")
+      "%3}\n")
     .arg (
       styleByClassName ("crb_off"),
       styleByClassName ("crb_on"),

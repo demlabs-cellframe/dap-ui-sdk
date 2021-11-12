@@ -14,6 +14,7 @@
 static StyleSheet::ClassMap s_styleMap;
 static QMutex s_mutex;
 static DapGuiStyleManager s_signal (nullptr);
+static QString s_themeDir = "light";
 
 /* DEFS */
 
@@ -47,9 +48,9 @@ public:
     s_styleMap.setup (styleSheet);
   }
 
-  void patch (const QJsonArray &themesArray)
+  void patch (const QJsonArray &themesArray, const QString &themeDir)
   {
-    s_styleMap.patch (themesArray);
+    s_styleMap.patch (themesArray, themeDir);
   }
 };
 
@@ -112,8 +113,14 @@ void DapGuiStyleManager::setupTheme(
       auto j = (*i).toObject();
       if (j.value("name").toString() != themeName)
         continue;
-      Gss().patch (j.value ("patch").toArray());
+      Gss().patch (j.value ("patch").toArray(), j.value ("dir").toString());
     }
+  emit s_signal.forceStyleUpdate();
+}
+
+const QString &DapGuiStyleManager::themeDir()
+{
+  return s_themeDir;
 }
 
 /********************************************
@@ -163,6 +170,11 @@ QString DapGuiStyleManager::styleByClassList (const QStringList &classNameList)
 DapGuiStyleManager &DapGuiStyleManager::_signal()
 {
   return s_signal;
+}
+
+void DapGuiStyleManager_setThemeDir(const QString &a_themeDir)
+{
+  s_themeDir  = a_themeDir;
 }
 
 void DapGuiStyleManager::forcedStyleUpdate()

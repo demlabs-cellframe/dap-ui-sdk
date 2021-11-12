@@ -148,6 +148,7 @@ public:
   static void setupTheme (
     const QJsonArray &themesArray,
     const QString &themeName);
+  static const QString &themeDir();
   /// @}
 
   /****************************************//**

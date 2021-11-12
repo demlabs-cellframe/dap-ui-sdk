@@ -4,7 +4,7 @@
 
 .darkblue
 {
-	color: #04004E;
+
 }
 
 .red
@@ -38,6 +38,11 @@
 }
 
 
+
+.darkblue-light
+{
+	color: #04004E;
+}
 
 .darkblue-dark
 {
@@ -158,10 +163,15 @@
 
 .backgroundcolor
 {
+
+}
+
+.backgroundcolor-light
+{
 	background-color: #f7f8fa;
 }
 
-.backgroundcolordark
+.backgroundcolor-dark
 {
 	background-color: #292827;
 }
@@ -217,7 +227,7 @@
 
 .frame
 {
-	border-image: url("://gfx/btn_server_bg.png");
+
 }
 
 .base-widget
@@ -225,6 +235,17 @@
 	width: 390pt;
 	min-width: 390pt;
 	max-width: 390pt;
+}
+
+
+.frame-light
+{
+	border-image: url("://gfx/light/btn_server_bg.png");
+}
+
+.frame-dark
+{
+	border-image: url("://gfx/dark/btn_server_bg.png");
 }
 
 /****************************************************
@@ -421,6 +442,61 @@
 	qproperty-scaledPixmap: url("://gfx/dark/radio_btn_off.png");
 }
 
+.csep-left
+{
+
+}
+
+.csep-mid
+{
+
+}
+
+.csep-right
+{
+
+}
+
+.csep-height
+{
+	min-height: 4px;	max-height: 4px;
+}
+
+.csep-width
+{
+	min-width: 8px;		max-width: 8px; 
+}
+
+.csep-left-light
+{
+	qproperty-scaledPixmap: url(:/gfx/light/separator_left.png);
+}
+
+.csep-mid-light
+{
+	qproperty-scaledPixmap: url(:/gfx/light/separator_mid.png);
+}
+
+.csep-right-light
+{
+	qproperty-scaledPixmap: url(:/gfx/light/separator_right.png);
+}
+
+.csep-left-dark
+{
+	qproperty-scaledPixmap: url(:/gfx/dark/separator_left.png);
+}
+
+.csep-mid-dark
+{
+	qproperty-scaledPixmap: url(:/gfx/dark/separator_mid.png);
+}
+
+.csep-right-dark
+{
+	qproperty-scaledPixmap: url(:/gfx/dark/separator_right.png);
+}
+
 
 .cl_smooth
 {
@@ -461,22 +537,64 @@
 
 .sw-on
 {
-	qproperty-scaledPixmap: url("://gfx/switch/bg_on.png");
+
 }
 
 .sw-off
 {
-	qproperty-scaledPixmap: url("://gfx/switch/bg_off.png");
+
 }
 
 .sw-toggle-on
 {
-	qproperty-scaledPixmap: url("://gfx/switch/toggle_on.png");
+
 }
 
 .sw-toggle-off
 {
-	qproperty-scaledPixmap: url("://gfx/switch/toggle_off.png");
+
+}
+
+
+.sw-on-light
+{
+	qproperty-scaledPixmap: url("://gfx/light/switch/bg_on.png");
+}
+
+.sw-off-light
+{
+	qproperty-scaledPixmap: url("://gfx/light/switch/bg_off.png");
+}
+
+.sw-toggle-on-light
+{
+	qproperty-scaledPixmap: url("://gfx/light/switch/toggle_on.png");
+}
+
+.sw-toggle-off-light
+{
+	qproperty-scaledPixmap: url("://gfx/light/switch/toggle_off.png");
+}
+
+
+.sw-on-dark
+{
+	qproperty-scaledPixmap: url("://gfx/dark/switch/bg_on.png");
+}
+
+.sw-off-dark
+{
+	qproperty-scaledPixmap: url("://gfx/dark/switch/bg_off.png");
+}
+
+.sw-toggle-on-dark
+{
+	qproperty-scaledPixmap: url("://gfx/dark/switch/toggle_on.png");
+}
+
+.sw-toggle-off-dark
+{
+	qproperty-scaledPixmap: url("://gfx/dark/switch/toggle_off.png");
 }
 
 /****************************************************
@@ -569,6 +687,31 @@
 }
 
 /****************************************************
+ * Menu Footer
+ ***************************************************/
+
+.mf_settings
+{
+	qproperty-custom: url("://gfx/light/btn_settings.png");
+	qproperty-customHover: url("://gfx/light/btn_settings_active.png");
+	qproperty-customPushed: url("://gfx/light/btn_settings_active.png");
+}
+
+.mf_connection
+{
+	qproperty-custom: url("://gfx/light/btn_connection.png");
+	qproperty-customHover: url("://gfx/light/btn_connection_active.png");
+	qproperty-customPushed: url("://gfx/light/btn_connection_active.png");
+}
+
+.mf_accaunt
+{
+	qproperty-custom: url("://gfx/light/btn_account.png");
+	qproperty-customHover: url("://gfx/light/btn_account_active.png");
+	qproperty-customPushed: url("://gfx/light/btn_account_active.png");
+}
+
+/****************************************************
  * Splash Screen
  ***************************************************/
 
@@ -651,11 +794,21 @@
 
 .login-input-border
 {
+
+}
+
+.login-input-border-base
+{
 	border: 1pt solid #A4A3C0;
 	border-radius: 10pt;
 	height: 44pt;
 	min-height: 44pt;
 	max-height: 44pt;
+}
+
+.login-input-border-light
+{
+	border: 1pt solid #A4A3C0;
 }
 
 .login-input-border-dark

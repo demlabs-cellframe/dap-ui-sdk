@@ -1,7 +1,12 @@
 /* INCLUDES */
 #include "stylesheetclassmap.h"
 #include "stylesheetclassparser.h"
+#include "dapguistylemanager.h"
 #include <QJsonObject>
+
+/* FUNCS */
+/// set global theme directory
+extern void DapGuiStyleManager_setThemeDir (const QString &a_themeDir);
 
 /* NAMESPACE */
 namespace StyleSheet
@@ -16,8 +21,9 @@ void ClassMap::setup (const QString &styleSheet)
   StyleSheet::ClassParser (styleSheet, *this);
 }
 
-void ClassMap::patch (const QJsonArray &array)
+void ClassMap::patch (const QJsonArray &array, const QString &themeDir)
 {
+  DapGuiStyleManager_setThemeDir (themeDir);
   for (auto i = array.constBegin(), e = array.constEnd(); i != e; i++)
     {
       /* get jobject */

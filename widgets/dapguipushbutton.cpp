@@ -21,13 +21,13 @@ struct _KgpbItem
 /* VARS */
 static QMap<DapGuiPushButton::Style, _KgpbItem> s_presets =
 {
-  {DapGuiPushButton::Main,        {"://gfx/btn_bg.png",         "://gfx/btn_bg_hover_active.png",   "://gfx/btn_bg_hover_active.png",   "cwpb_bigbutton"}},
-  {DapGuiPushButton::Connection,  {"://gfx/btn_connection.png", "://gfx/btn_connection_active.png", "://gfx/btn_connection_active.png", "cwpb_square"}},
-  {DapGuiPushButton::Account,     {"://gfx/btn_account.png",    "://gfx/btn_account_active.png",    "://gfx/btn_account_active.png",    "cwpb_square"}},
-  {DapGuiPushButton::Settings,    {"://gfx/btn_settings.png",   "://gfx/btn_settings_active.png",   "://gfx/btn_settings_active.png",   "cwpb_square"}},
-  {DapGuiPushButton::Check,       {"://gfx/check_btn_off.png",  "://gfx/check_btn_on.png",          "://gfx/check_btn_on.png",          "cwpb_checkbox"}},
-  //{DapGuiPushButton::Radio,       {"://gfx/radio_btn_off.png",  "://gfx/radio_btn_on.png",          "://gfx/radio_btn_on.png",         "cwpb_radio"}},
-  {DapGuiPushButton::Switch,      {"://gfx/switch_off.png",     "://gfx/switch.png",                "://gfx/switch.png",                "cwpb_switch"}},
+  {DapGuiPushButton::Main,        {"://gfx/%1/btn_bg.png",         "://gfx/%1/btn_bg_hover_active.png",   "://gfx/%1/btn_bg_hover_active.png",   "cwpb_bigbutton"}},
+  {DapGuiPushButton::Connection,  {"://gfx/%1/btn_connection.png", "://gfx/%1/btn_connection_active.png", "://gfx/%1/btn_connection_active.png", "cwpb_square"}},
+  {DapGuiPushButton::Account,     {"://gfx/%1/btn_account.png",    "://gfx/%1/btn_account_active.png",    "://gfx/%1/btn_account_active.png",    "cwpb_square"}},
+  {DapGuiPushButton::Settings,    {"://gfx/%1/btn_settings.png",   "://gfx/%1/btn_settings_active.png",   "://gfx/%1/btn_settings_active.png",   "cwpb_square"}},
+  {DapGuiPushButton::Check,       {"://gfx/%1/check_btn_off.png",  "://gfx/%1/check_btn_on.png",          "://gfx/%1/check_btn_on.png",          "cwpb_checkbox"}},
+  //{DapGuiPushButton::Radio,       {"://gfx/%1/radio_btn_off.png",  "://gfx/%1/radio_btn_on.png",          "://gfx/%1/radio_btn_on.png",         "cwpb_radio"}},
+  {DapGuiPushButton::Switch,      {"://gfx/%1/switch_off.png",     "://gfx/%1/switch.png",                "://gfx/%1/switch.png",                "cwpb_switch"}},
 };
 
 /********************************************
@@ -38,6 +38,7 @@ DapGuiPushButton::DapGuiPushButton (QWidget *parent)
   : QPushButton (parent)
   , m_style (Main)
   , m_opacityEffect (new QGraphicsOpacityEffect)
+  , _styleHook (false)
 {
   setFocusPolicy (Qt::NoFocus);
   setStyle (m_style);
@@ -84,21 +85,41 @@ DapGuiPushButton::Style DapGuiPushButton::style() const
 
 void DapGuiPushButton::setStyle (const Style &style)
 {
+  /* check hook */
+  if(_styleHook)
+    return;
+
+  /* start hook */
+  _styleHook  = true;
+
   m_style = style;
 
   /* setup style, if present */
   if (s_presets.contains (style))
     {
       auto item = s_presets.value (style);
+      auto dir  = __kgsm.themeDir();
+
+      item.filename = item.filename.arg (dir);
+      item.hover    = item.hover.arg (dir);
+      item.checked  = item.checked.arg (dir);
+
       setCustom (item.filename.mid (2));
       setCustomHover (item.hover.mid (2));
       setCustomPushed (item.checked.mid (2));
       setCustomCss (item.cssStyle);
+
+      /* free hook */
+      _styleHook  = false;
+
       return emit styleChanged();
     }
 
   updateStyle();
   emit styleChanged();
+
+  /* free hook */
+  _styleHook  = false;
 }
 
 void DapGuiPushButton::setEnabledCustom(bool value)

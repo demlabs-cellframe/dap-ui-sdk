@@ -58,6 +58,9 @@ void DapGuiPushButtonStyleManager::forcedButtonStyleUpdate()
   if (!pb)
     return;
 
+  /* reinit style */
+  pb->setStyle (pb->style());
+
   /* collect 3 files name + style */
   QString names[4] =
   {

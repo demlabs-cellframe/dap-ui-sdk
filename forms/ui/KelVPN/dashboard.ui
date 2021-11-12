@@ -30,12 +30,9 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="Background" native="true">
-     <property name="styleSheet">
-      <string notr="true">#Background
-{
-background-color: #F7F8FA;
-}</string>
+    <widget class="DapGuiWidget" name="Background">
+     <property name="cssStyle">
+      <string>backgroundcolor</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <property name="spacing">
@@ -119,14 +116,14 @@ background-color: #F7F8FA;
          <item>
           <widget class="DapGuiLabel" name="lStatusIconOn">
            <property name="cssStyle">
-            <string>conn-status-icon ic_online</string>
+            <string>conn-status-icon ic_online noborder nobackground</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="DapGuiLabel" name="lStatusIconOff">
            <property name="cssStyle">
-            <string>conn-status-icon ic_offline</string>
+            <string>conn-status-icon ic_offline noborder nobackground</string>
            </property>
           </widget>
          </item>
