@@ -11,14 +11,12 @@ class DapTunUnixAbstract : public DapTunAbstract
 public:
     DapTunUnixAbstract();
     void addNewUpstreamRoute(const QString&);
+    void workerStart();
 protected:
-
+    QThread *tunThread;
     QString m_ethDevice; // eth adapter device name
     QString m_TunDeviceH;// tunDevice name human freendly name
-
     void tunDeviceCreate(){;}
-
-
     void workerStop();
     void workerPause();
     void workerPrepare();

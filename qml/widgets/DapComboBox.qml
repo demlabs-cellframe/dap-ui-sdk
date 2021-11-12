@@ -3,18 +3,18 @@ import QtQuick.Controls 2.0
 
 DapComboBoxForm
 {
-    Component.onCompleted:
-    {
-        if(model.count > 0)
-        {
-            if(isDefaultNeedToAppend && getModelData(0, comboBoxTextRole[0]) !== mainLineText)
-            {
-                model.insert(0, {});
-                model.setProperty(0, comboBoxTextRole[0], mainLineText);
-                currentIndex = 0;
-            }
-        }
-    }
+//    Component.onCompleted:
+//    {
+//        if(model.count > 0)
+//        {
+//            if(isDefaultNeedToAppend && getModelData(0, comboBoxTextRole[0]) !== mainLineText)
+//            {
+//                model.insert(0, {});
+//                model.setProperty(0, comboBoxTextRole[0], mainLineText);
+//                currentIndex = 0;
+//            }
+//        }
+//    }
 
     delegate:
         ItemDelegate
@@ -84,7 +84,8 @@ DapComboBoxForm
                                                  fontComboBox[index] :
                                                  fontComboBox[0];
                                 textColor: hovered ? colorTextComboBox[index][1] : colorTextComboBox[index][0]
-                                fullText: getModelData(rectangleTextComboBox.comboBoxIndex, comboBoxTextRole[index])
+                                fullText: getModelData(rectangleTextComboBox.comboBoxIndex, comboBoxTextRole[index])?
+                                              getModelData(rectangleTextComboBox.comboBoxIndex, comboBoxTextRole[index]):""
                                 textElide: (elideTextComboBox.length > index) ?
                                                elideTextComboBox[index] :
                                                elideTextComboBox[0];

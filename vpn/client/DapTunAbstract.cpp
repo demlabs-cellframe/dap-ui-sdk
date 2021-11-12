@@ -21,7 +21,6 @@
 DapTunAbstract::DapTunAbstract()
     : QObject(nullptr)
 {
-    tunThread = new QThread();
     tunWorker = nullptr;
     m_tunSocket = -1;
     m_isCreated = false;
@@ -44,29 +43,23 @@ void DapTunAbstract::initWorker()
 #ifndef Q_OS_ANDROID
     DapNetworkMonitor::instance(); // To call a contructor in main thread.
     DapNetworkMonitor::instance()->monitoringStart();
-    connect(tunThread,&QThread::started, [=] {
+    /*connect(tunThread, &QThread::started, [&] {
         DapNetworkMonitor::instance()->sltSetServerAddress(this->m_sUpstreamAddress);
         DapNetworkMonitor::instance()->sltSetTunnelDestination(this->m_addr);
         DapNetworkMonitor::instance()->sltSetTunGateway(this->m_gw);
-    });
+    });*/
 #endif
 
     if (tunWorker == nullptr) {
         qWarning() << "[DapTunAbstract::initWorker] tunWorker is nullptr";
         return;
     }
-
-    connect(this, &DapTunAbstract::sigStartWorkerLoop, tunWorker, &DapTunWorkerAbstract::loop);
-
     connect(tunWorker,&DapTunWorkerAbstract::loopStarted,this,&DapTunAbstract::created);
-
     connect(tunWorker,&DapTunWorkerAbstract::packetOut,this, &DapTunAbstract::packetOut);
     connect(tunWorker,&DapTunWorkerAbstract::bytesRead, this, &DapTunAbstract::bytesRead);
     connect(tunWorker,&DapTunWorkerAbstract::bytesWrite, this, &DapTunAbstract::bytesWrite);
     connect(tunWorker,&DapTunWorkerAbstract::loopError,this, &DapTunAbstract::error);
-
     connect(tunWorker,&DapTunWorkerAbstract::loopStopped,this,&DapTunAbstract::onWorkerStopped);
-  //  connect(tunWorker,&DapTunWorkerAbstract::loopStopped,this,&DapTunAbstract::tunDeviceDestroy);
 }
 
 /**
@@ -93,22 +86,6 @@ void DapTunAbstract::create(const QString &a_addr, const QString &a_gw,
     tunDeviceCreate();
 }
 
-void DapTunAbstract::workerStart()
-{
-    qInfo() <<"Tun device created" << m_tunSocket;
-    if(m_tunSocket>0){
-        tunWorker->setTunSocket(m_tunSocket);
-        tunWorker->moveToThread(tunThread);
-        tunThread->start();
-        emit sigStartWorkerLoop();
-        qInfo() << "tunThread started, tun socket: " << m_tunSocket;
-    }else{
-        qInfo() << "Tun socket " << m_tunSocket << " already opened";
-        return;
-    }
-    onWorkerStarted();
-}
-
 /**
  * @brief DapTunAbstract::destroy
  */
@@ -116,8 +93,6 @@ void DapTunAbstract::destroy()
 {
     if(m_tunSocket) {
         workerStop();
-        tunThread->quit();
-        tunThread->wait();
     } else {
         qWarning() << "Tunnel is not working";
     }
@@ -125,8 +100,6 @@ void DapTunAbstract::destroy()
 
 void DapTunAbstract::standby() {
     workerPause();
-    tunThread->quit();
-    tunThread->wait();
 }
 
 /**
@@ -143,8 +116,6 @@ void DapTunAbstract::onWorkerStarted()
 void DapTunAbstract::onWorkerStopped()
 {
     qInfo()<<"Worker loop stopped";
-  //  tunWorker->moveToThread(this->thread());
-    //tunWorker->setTunSocket(-1);
     tunDeviceDestroy();
     afterTunDeviceDestroyed();
 }

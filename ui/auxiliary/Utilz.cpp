@@ -134,6 +134,7 @@ namespace Utils
         QFile file(a_fname);
         if(file.open(QIODevice::ReadOnly | QIODevice::Text)){
             fileText = QString(file.readAll());
+            file.close();
         }
         return fileText;
     }

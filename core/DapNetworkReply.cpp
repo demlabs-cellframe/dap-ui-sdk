@@ -5,8 +5,3 @@ DapNetworkReply::DapNetworkReply()
 {
 
 }
-
-DapNetworkReply::DapNetworkError DapNetworkReply::error() const
-{
-    return m_error;
-}

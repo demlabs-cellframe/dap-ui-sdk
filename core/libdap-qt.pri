@@ -1,8 +1,6 @@
 QT += core network xml
 #INCLUDEPATH += ../libdap/include ../libdap/src
-#INCLUDEPATH += ../libdap-crypto/include  ../libdap-crypto/src
 include (../quazip/quazip.pri)
-
 SOURCES += \
     $$PWD/DapBugReport.cpp \
     $$PWD/DapBugReportData.cpp \
@@ -20,9 +18,12 @@ SOURCES += \
     $$PWD/DapConnectClient.cpp \
     $$PWD/DapHttpPing.cpp \
     $$PWD/DapServerInfo.cpp \
-    $$PWD/DapServersListRequester.cpp \
     $$PWD/DapServersLocalStorage.cpp \
     $$PWD/DapSignUpData.cpp
+
+equals(BUILD_VARIANT, "GooglePlay") {
+	SOURCES += $$PWD/DapShopManager.cpp
+}
 
 HEADERS += \
     $$PWD/DapBugReport.h \
@@ -42,17 +43,22 @@ HEADERS += \
     $$PWD/DapLogger.h \
     $$PWD/DapKeyCommon.h \
     $$PWD/DapConnectClient.h \
-    $$PWD/DapReplyTimeout.h \
     $$PWD/DapHttpPing.h \
     $$PWD/DapServerInfo.h \
-    $$PWD/DapServersListRequester.h \
     $$PWD/DapServersLocalStorage.h \
     $$PWD/DataToUpdate.h
+
+equals(BUILD_VARIANT, "GooglePlay") {
+	HEADERS += $$PWD/DapShopManager.h
+}
 
 INCLUDEPATH += $$PWD
 
 win32{
     QMAKE_CXXFLAGS +=  -mno-ms-bitfields
+}
+android {
+QT += androidextras
 }
 
 INCLUDEPATH += $$PWD/../quazip

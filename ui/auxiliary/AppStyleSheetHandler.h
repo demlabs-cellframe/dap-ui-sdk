@@ -57,7 +57,6 @@ public:
     static QString getValueFromStylesheet(const QString a_styleSheet, const QString &a_property);
     static QString appStyleSheet();
 
-private:
     static QApplication* appInstance();
     static QString convertPointsToPixels(const QString a_stylesheet);
 

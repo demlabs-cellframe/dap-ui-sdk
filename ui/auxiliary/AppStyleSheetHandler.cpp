@@ -4,7 +4,7 @@
 #include <QFileInfo>
 #include <QWidget>
 #include <cmath>
-#include "UiScaling.h"
+//#include "UiScaling.h"
 #include "math.h"
 
 /// Read stylesheet from file and convert points to pixels
@@ -169,7 +169,7 @@ QString AppStyleSheetHandler::convertPointsToPixels(const QString a_stylesheet)
     }
 
     int displacement = 0; // diference between the begin strings length and the end strings length
-    float dpi = UiScaling::getNativDPI();
+//    float dpi = UiScaling::getNativDPI();
     float pointsvalue{};
     int pixelsValue{};
     for (auto index: matches.keys())

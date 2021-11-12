@@ -58,7 +58,9 @@
 DapTunDarwin::DapTunDarwin( )
 {
     qDebug() << "DapTunDarwin::DapTunDarwin( )";
+    tunThread = new QThread();
     tunWorker = new DapTunWorkerDarwin(this);
+    connect(this, &DapTunAbstract::sigStartWorkerLoop, tunWorker, &DapTunWorkerAbstract::loop);
     initWorker();
     tunnelManagerStart();
 }
@@ -182,6 +184,21 @@ void DapTunDarwin::tunDeviceCreate()
     qDebug() << "DapTunDarwin::tunDeviceCreate()";
 
     tunnelManagerStart();
+}
+
+void DapTunDarwin::workerStart() {
+    qInfo() <<"Tun device created" << m_tunSocket;
+    if (m_tunSocket > 0){
+        tunWorker->setTunSocket(m_tunSocket);
+        tunWorker->moveToThread(tunThread);
+        tunThread->start();
+        emit sigStartWorkerLoop();
+        qInfo() << "tunThread started, tun socket: " << m_tunSocket;
+    } else {
+        qInfo() << "Tun socket " << m_tunSocket << " already opened";
+        return;
+    }
+    onWorkerStarted();
 }
 
 /**

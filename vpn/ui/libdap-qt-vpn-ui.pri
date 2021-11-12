@@ -1,5 +1,7 @@
+!CONFIG(neuromorphic) {
 include ( controls/controls.pri)
 include ( dialogs/dialogs.pri)
+}
 include ( auxiliary/auxiliary.pri)
 
 SOURCES += \
@@ -13,9 +15,6 @@ HEADERS  += \
     $$PWD/DapServiceNativeAbstract.h\
     $$PWD/ServiceCtl.h\
     $$PWD/usrmsg.h
-
-
-
 
 INCLUDEPATH += $$PWD
 
@@ -67,15 +66,18 @@ android {
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../../../brand/$$BRAND/os/android
 
     DISTFILES += \
-        $$PWD/../../../os/android/gradle/wrapper/gradle-wrapper.jar \
-        $$PWD/../../../os/android/gradlew \
-        $$PWD/../../../os/android/res/values/libs.xml \
-        $$PWD/../../../os/android/build.gradle \
-        $$PWD/../../../os/android/gradle/wrapper/gradle-wrapper.properties \
-        $$PWD/../../../os/android/src/com/demlabs/dapchain/MainActivity.java \
-        $$PWD/../../../os/android/src/com/demlabs/dapchain/DapChainVpnService.java \
-        $$PWD/../../../os/android/src/com/demlabs/dapchain/DapChainVpnServiceNative.java \
-        $$PWD/../../../os/android/gradlew.bat
+        $$PWD/../../../brand/$$BRAND/os/android/gradle/wrapper/gradle-wrapper.jar \
+        $$PWD/../../../brand/$$BRAND/os/android/gradlew \
+        $$PWD/../../../brand/$$BRAND/os/android/res/values/libs.xml \
+        $$PWD/../../../brand/$$BRAND/os/android/build.gradle \
+        $$PWD/../../../brand/$$BRAND/os/android/gradle/wrapper/gradle-wrapper.properties \
+        $$PWD/../../../brand/$$BRAND/os/android/src/com/KelVPN/MainActivity.java \
+        $$PWD/../../../brand/$$BRAND/os/android/src/com/KelVPN/KelVPNService.java \
+        $$PWD/../../../brand/$$BRAND/os/android/src/com/KelVPN/KelVPNServiceNative.java \
+        $$PWD/../../../brand/$$BRAND/os/android/gradlew.bat
+	equals(BUILD_VARIANT, "GooglePlay") {
+                DISTFILES += $$PWD/../../../brand/$$BRAND/os/android/src/com/KelVPN/InAppShop.java
+	}
 }
 
 

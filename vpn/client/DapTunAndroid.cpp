@@ -6,6 +6,7 @@
 #include <jni.h>
 #include <unistd.h>
 #include <QTcpSocket>
+#include <QtConcurrent/QtConcurrent>
 #include <sys/stat.h>
 #include <sys/socket.h>
 
@@ -22,7 +23,8 @@
 DapTunAndroid::DapTunAndroid()
 {
     qDebug() << "[DapTunAndroid::DapTunAndroid]";
-    tunWorker = (tunWorkerAndroid = new DapTunWorkerUnix(this));
+    tunWorker = new DapTunWorkerUnix(this);
+    tunWorkerAndroid = dynamic_cast<DapTunWorkerUnix*>(tunWorker);
     breaker0 = tunWorkerAndroid->breaker(0);
     breaker1 = tunWorkerAndroid->breaker(1);
     initWorker();
@@ -36,7 +38,7 @@ void DapTunAndroid::tunDeviceCreate()
 
 void DapTunAndroid::tunDeviceDestroy()
 {
-    QtAndroid::androidService().callMethod<void>("stopDapChainVpnServiceNative", "()V");
+    QtAndroid::androidService().callMethod<void>("stopKelVPNServiceNative", "()V");
     qInfo() << "Close tun device (and usualy destroy that after)";
     if(m_tunSocket>0){
         ::close(m_tunSocket);
@@ -52,7 +54,13 @@ void DapTunAndroid::onWorkerStarted() {
 }
 
 void DapTunAndroid::workerStart() {
-    DapTunAbstract::workerStart();
+    if (m_tunSocket <= 0) {
+        qCritical() << "Invalid socket!";
+        return;
+    }
+    tunWorker->setTunSocket(m_tunSocket);
+    tunFuture = QtConcurrent::run(tunWorkerAndroid, &DapTunWorkerUnix::loop);
+    onWorkerStarted();
 }
 
 void DapTunAndroid::workerStop()
@@ -61,6 +69,7 @@ void DapTunAndroid::workerStop()
         qCritical() <<"Can't write to the breaker's pipe!";
         return;
     }
+    tunFuture.waitForFinished();
     onWorkerStopped();
 }
 
@@ -70,6 +79,7 @@ void DapTunAndroid::workerPause()
         qCritical() <<"Can't write to the breaker's pipe!";
         return;
     }
+    tunFuture.waitForFinished();
     onWorkerStopped(); // TODO: remove it when I find out how to allow requests bypass the socket
 }
 

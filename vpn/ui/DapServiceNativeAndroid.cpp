@@ -25,16 +25,8 @@ void DapServiceNativeAndroid::restartService()
 
 void DapServiceNativeAndroid::checkInstallation()
 {
-    qWarning() << "[DapServiceNativeAndroid] checkInstallation() not implemented";
-    //QtAndroid::androidActivity().callMethod<void>("stopService", "()V");
-    bool isRunning = QAndroidJniObject::callStaticMethod<jboolean>(
-                "com/demlabs/dapchain/DapChainVpnService", "checkServiceRunning", "()Z");
-    qDebug() << "Service check status: " << isRunning;
-    if (!isRunning) {
+    if (!QtAndroid::androidService().isValid()) {
+        qInfo() << "Starting Android service";
         QtAndroid::androidActivity().callMethod<void>( "startService", "()V" );
     }
-    /*QAndroidJniObject::callStaticMethod<void>("com/demlabs/dapchain/DapChainVpnService",
-                                              "startService",
-                                              "(Landroid/content/Context;)V",
-                                              QtAndroid::androidActivity().object());*/
 }

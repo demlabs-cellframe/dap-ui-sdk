@@ -8,8 +8,10 @@
 
 #include "DapSession.h"
 #include "DapTunWorkerAbstract.h"
-//#include "DapSockForwPacket.h"
 #include "DapStreamChChainVpnPacket.h"
+#ifdef ANDROID
+#include <QFuture>
+#endif
 
 class DapTunAbstract : public QObject
 {
@@ -22,7 +24,6 @@ public:
     void standby();
     void setTunSocket(int a_tunSocket){ m_tunSocket = a_tunSocket; }
     void setTunDeviceName(const QString& a_tunDeviceName){ m_tunDeviceName = a_tunDeviceName; }
-
     bool isCreated();
     const QString& addr() { return m_addr; }
     const QString& gw() { return m_gw; }
@@ -33,10 +34,8 @@ public:
         addWriteData(a_pkt);
         signalWriteQueueProc();
     }
-
+    virtual void workerStart() = 0;
     virtual void addNewUpstreamRoute(const QString&)=0;
-
-    virtual void workerStart();
 
     QQueue<Dap::Stream::Packet*>* writeQueue(){ return &_m_writeQueue; }
     QReadWriteLock* writeQueueLock(){ return &m_writeQueueLock; }
@@ -75,10 +74,10 @@ signals:
 protected:
     virtual void tunDeviceCreate()=0;
     virtual void tunDeviceDestroy()=0;
-
     virtual void workerPrepare()=0;
     virtual void workerStop()=0;
     virtual void workerPause() = 0;
+    //virtual void workerResume() = 0;
     virtual void signalWriteQueueProc()=0;
 
     void initWorker();
@@ -87,7 +86,6 @@ protected:
 
     QString m_gwOld;
     DapTunWorkerAbstract * tunWorker;
-    QThread * tunThread;
     bool m_isCreated;
 
     QString m_tunDeviceName; // tunDevice name
@@ -147,5 +145,4 @@ public slots:
     /// Set upstream port.
     /// @param aiUpstreamPort Upstream port.
     void setUpstreamPort(qint16 aiUpstreamPort);
-    
 };

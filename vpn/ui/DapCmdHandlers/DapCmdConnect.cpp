@@ -18,7 +18,7 @@ void DapCmdConnect::sendCmdConnect(const QString& a_addr, quint16 a_port,
     if ( !a_pswd.isEmpty())
         obj["password"] = a_pswd;
     if ( !a_serial.isEmpty() )
-        obj["serial"] = a_serial;
+        obj["serial"] = QString(a_serial).remove('-');
     obj["port"] = a_port;
     sendCmd(&obj);
 }
