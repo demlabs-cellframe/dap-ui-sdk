@@ -1,11 +1,44 @@
 [
     {
         "name": "Light Theme",
-        "patch": []
+        "patch": [
+            {
+                "name": "ccb_off",
+                "replace": "ccb_off-light"
+            },
+            {
+                "name": "ccb_on",
+                "replace": "ccb_on-light"
+            },
+            {
+                "name": "crb_off",
+                "replace": "crb_off-light"
+            },
+            {
+                "name": "crb_on",
+                "replace": "crb_on-light"
+            }
+        ]
     },
     {
         "name": "Dark Theme",
         "patch": [
+            {
+                "name": "ccb_off",
+                "replace": "ccb_off-dark"
+            },
+            {
+                "name": "ccb_on",
+                "replace": "ccb_on-dark"
+            },
+            {
+                "name": "crb_off",
+                "replace": "crb_off-dark"
+            },
+            {
+                "name": "crb_on",
+                "replace": "crb_on-dark"
+            },
             {
                 "name": "darkblue",
                 "replace": "darkblue-dark"

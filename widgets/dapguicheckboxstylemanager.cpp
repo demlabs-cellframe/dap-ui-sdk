@@ -60,9 +60,9 @@ void DapGuiCheckBoxStyleManager::forcedCheckboxStyleUpdate()
 
       "QCheckBox::indicator:checked\n{%3}\n")
     .arg (
-      styleByClassName ("ccb_off-light"),
-      styleByClassName ("ccb_on-light"),
-      styleByClassName ("ccb_on-light"),
+      styleByClassName ("ccb_off"),
+      styleByClassName ("ccb_on"),
+      styleByClassName ("ccb_on"),
       styleByClassName ("ccb_indicator"),
       styleByClassName ("ccb_textstyle font16 darkblue normal lato"));
 

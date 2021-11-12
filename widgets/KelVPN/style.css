@@ -344,6 +344,16 @@
 	
 }
 
+.ccb_on
+{
+	
+}
+
+.ccb_off
+{
+	
+}
+
 .ccb_on-light
 {
 	border-image: url("://gfx/light/check_btn_on.png");
@@ -383,13 +393,34 @@
 
 .crb_on
 {
-	qproperty-scaledPixmap: url("://gfx/radio_btn_on.png");
+	
 }
 
 .crb_off
 {
-	qproperty-scaledPixmap: url("://gfx/radio_btn_off.png");
+	
 }
+
+.crb_on-light
+{
+	qproperty-scaledPixmap: url("://gfx/light/radio_btn_on.png");
+}
+
+.crb_off-light
+{
+	qproperty-scaledPixmap: url("://gfx/light/radio_btn_off.png");
+}
+
+.crb_on-dark
+{
+	qproperty-scaledPixmap: url("://gfx/dark/radio_btn_on.png");
+}
+
+.crb_off-dark
+{
+	qproperty-scaledPixmap: url("://gfx/dark/radio_btn_off.png");
+}
+
 
 .cl_smooth
 {

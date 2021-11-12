@@ -70,9 +70,9 @@ void DapGuiRadioStyleManager::forcedRadioStyleUpdate()
       "border: none;"
       "border-image: url(\"%3\");}\n")
     .arg (
-      "://gfx/radio_btn_off.png",
-      "://gfx/radio_btn_on.png",
-      "://gfx/radio_btn_on.png",
+      styleByClassName ("crb_off"),
+      styleByClassName ("crb_on"),
+      styleByClassName ("crb_on"),
       styleByClassName ("crb_indicator"),
       styleByClassName ("crb_textstyle font16 darkblue normal lato"));
 
