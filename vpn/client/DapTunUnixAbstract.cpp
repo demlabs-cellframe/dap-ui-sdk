@@ -8,11 +8,28 @@
 DapTunUnixAbstract::DapTunUnixAbstract()
 {
     qDebug() << "[DapTunUnixAbstract::DapTunUnixAbstract]";
+    tunThread = new QThread();
     tunWorker = (tunWorkerUnix=new DapTunWorkerUnix(this));
     breaker0 = tunWorkerUnix->breaker(0);
     breaker1 = tunWorkerUnix->breaker(1);
+    connect(this, &DapTunAbstract::sigStartWorkerLoop, tunWorker, &DapTunWorkerAbstract::loop);
     initWorker();
 
+}
+
+void DapTunUnixAbstract::workerStart() {
+    qInfo() <<"Tun device created" << m_tunSocket;
+    if (m_tunSocket > 0){
+        tunWorker->setTunSocket(m_tunSocket);
+        tunWorker->moveToThread(tunThread);
+        tunThread->start();
+        emit sigStartWorkerLoop();
+        qInfo() << "tunThread started, tun socket: " << m_tunSocket;
+    } else {
+        qInfo() << "Tun socket " << m_tunSocket << " already opened";
+        return;
+    }
+    onWorkerStarted();
 }
 
 /**
@@ -34,6 +51,8 @@ void DapTunUnixAbstract::workerStop()
             return;
         }
     }*/
+    tunThread->quit();
+    tunThread->wait();
     onWorkerStopped();
 }
 
@@ -43,6 +62,8 @@ void DapTunUnixAbstract::workerPause()
         qCritical() <<"Can't write to the breaker's pipe!";
         return;
     }
+    tunThread->quit();
+    tunThread->wait();
 }
 
 /**

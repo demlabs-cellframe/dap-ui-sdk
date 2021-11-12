@@ -1,7 +1,9 @@
 #include <QtDebug>
 #include "DapCmdServersList.h"
 #include "DapJsonParams.h"
-#include "DapServersListRequester.h"
+#include "DapNetworkReply.h"
+#include "DapConnectClient.h"
+#include "DapDataLocal.h"
 
 DapCmdServersList::DapCmdServersList(QObject *parent)
     : DapCmdServiceAbstract(DapJsonCmdType::GET_SERVERS_LIST, parent)
@@ -11,40 +13,35 @@ DapCmdServersList::DapCmdServersList(QObject *parent)
 void DapCmdServersList::handle(const QJsonObject* params)
 {
     Q_UNUSED(params)
-    auto reply = DapServersListRequester::sendRequest(serversList().front());
-    if (!reply) {
-        sendSimpleError(-32000, "Network unavailable");
-        qWarning()<< "Network unavailable, do nothing";
-        return;
-    }
-    connect(reply, &DapServersListNetworkReply::sigResponse, [=](const QJsonDocument& servers) {
-        auto arr = servers.array();
-        if (arr.isEmpty()) {
-            rotateList();
-            sendSimpleError(-666, "Empty nodelist, try another CDB...");
+    emit sendCurrent();
+    auto reply = new DapNetworkReply();
+    connect(reply, &DapNetworkReply::finished, this, [=] {
+        QJsonParseError jsonErr;
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(reply->getReplyData(), &jsonErr);
+        if (jsonDoc.isNull() || !jsonDoc.isArray()) {
+            qCritical() << "Can't parse server response to JSON: "<< jsonErr.errorString() << " on position "<< jsonErr.offset;
+            emit nextCdb();
+            sendSimpleError(-32001, "Bad response from server. Parse error");
         } else {
-            QJsonObject obj;
-            obj["servers"] = arr;
-            sendCmd(&obj);
-            DapServerInfoList l;
-            if (DapServerInfo::fromJSON(obj.value("servers").toArray(), l))
-                if (!l.isEmpty())
-                    emit updateNodesList(l);
+            auto arr = jsonDoc.array();
+            if (arr.isEmpty()) {
+                emit nextCdb();
+                sendSimpleError(-32003, "Empty nodelist, try another CDB...");
+            } else {
+                QJsonObject obj;
+                obj["servers"] = arr;
+                sendCmd(&obj);
+                DapServerInfoList l;
+                if (DapServerInfo::fromJSON(obj.value("servers").toArray(), l))
+                    if (!l.isEmpty())
+                        emit updateNodesList(l);
+            }
         }
     });
 
-    connect(reply, &DapServersListNetworkReply::sigParseResponseError, [=]{
-        qWarning()<< "Bad response from server. Parse error";
-        rotateList();
-        sendSimpleError(-32001, "Bad response from server. Parse error");
+    connect(reply, &DapNetworkReply::sigError, this, [=] {
+        emit nextCdb();
+        sendSimpleError(reply->error(), reply->errorString());
     });
-
-    connect(reply, &DapServersListNetworkReply::sigNetworkError, [=](DapNetworkReply::DapNetworkError err){
-        qWarning()<< "Network error: " << err;
-        rotateList();
-        if (err == DapNetworkReply::UnknownNetworkError)
-            sendSimpleError(-32003, "Unknown error");
-        else
-            sendSimpleError(-32002, "Error fetching nodelist");
-    });
+    DapConnectClient::instance()->request_GET(*DapDataLocal::instance()->m_cdbIter, 80, "nodelist", *reply);
 }

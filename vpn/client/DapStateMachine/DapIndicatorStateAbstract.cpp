@@ -1,9 +1,9 @@
 #include "DapIndicatorStateAbstract.h"
 #include <QDebug>
 
-void DapIndicatorStateAbstract::init(QStateMachine &sm, const QString& stateName)
+void DapIndicatorStateAbstract::init(DapState *s, const QString& stateName)
 {
-    _parentState = new DapState(stateName, &sm);
+    _parentState = new DapState(stateName, s);
     _false = new DapState(_parentState->name() + "False", _parentState);
     _falseToTrue = new DapState(_parentState->name() + "FalseToTrue", _parentState);
     _true = new DapState(_parentState->name() + "True", _parentState);

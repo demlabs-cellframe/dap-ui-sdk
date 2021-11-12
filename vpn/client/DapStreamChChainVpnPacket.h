@@ -1,6 +1,8 @@
 #ifndef DAPSTREAMCHCHAINVPNPACKET_H
 #define DAPSTREAMCHCHAINVPNPACKET_H
 
+#include <QtGlobal>
+
 namespace Dap {
 namespace Stream {
 struct PacketHdr{

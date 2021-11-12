@@ -71,13 +71,13 @@ void Schedules::draw_chart(QGraphicsScene *scene)
     if (out.size() < 2) return;
 
     int maxValue = maxInt(inp.maxValue(), out.maxValue());
-    
+
     inp.showChart(
         scene,
         QPen(QColor(mColorChartDownload->rgba64()), mDepthChartDownload),
         QColor(mBackGroundmColorChartDownload->rgba64()),
          m_sceneWidth, m_sceneHeight, maxValue);
-    
+
     out.showChart(
         scene,
         QPen(QColor(mColorChartUpload->rgba()), mDepthChartUpload),
@@ -87,7 +87,7 @@ void Schedules::draw_chart(QGraphicsScene *scene)
 
 /// Convert color in string representation to rgba.
 /// @param strRGBA String color.
-QColor Schedules::convertRGBA(const QString &strRGBA) 
+QColor Schedules::convertRGBA(const QString &strRGBA)
 {
     QVector<int> result;
     QString temp;
@@ -99,7 +99,7 @@ QColor Schedules::convertRGBA(const QString &strRGBA)
         {
             result.append(temp.contains(".") ? int(temp.toDouble() * 255) : temp.toInt());
             temp.clear();
-        }  
+        }
     }
     return (result.size() == 4) ? QColor(result.at(0), result.at(1), result.at(2), result.at(3)) : QColor();
 }

@@ -1,0 +1,42 @@
+QLabel#DapGuiButtonTextMain
+{
+color: #04004E;
+font: 20px/24px;
+font-weight: bold;
+font-style: bold;
+font-size: bold;
+font-family: 'Lato';
+}
+
+QLabel#DapGuiButtonTextSub
+{
+color: #A4A3C0;
+margin-top: 3px;
+font: 12px/15px;
+font-weight: normal;
+font-style: normal;
+font-size: normal;
+font-family: 'Lato';
+text-transform: uppercase;
+}
+
+QLabel#DapGuiButtonTextLeft
+{
+color: #04004E;
+margin-left: 30px;
+font: 30px/36px;
+font-weight: bold;
+font-style: bold;
+font-size: bold;
+font-family: 'Lato';
+}
+
+QWidget[frame=true]
+{
+background: #f7f8fa;
+border-radius: 13px;
+border-top: 3px inset #ffffff;
+border-left: 3px inset #ffffff;
+border-bottom: 3px inset rgba(174,174,192,96);
+border-right: 3px inset rgba(174,174,192,96);
+}

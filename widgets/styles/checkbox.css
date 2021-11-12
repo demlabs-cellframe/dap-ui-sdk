@@ -1,0 +1,28 @@
+*
+{
+min-width: 60px;
+min-height: 60px;
+color: #04004E;
+font: 16px/24px;
+font-weight: normal;
+font-style: normal;
+font-size: normal;
+font-family: 'Lato';
+}
+QCheckBox::indicator
+{
+min-width: %1px;
+min-height: %2px;
+background-image: url(://gfx/check_btn_off.png);
+}
+QCheckBox::indicator:hover
+{
+background-image: url(://gfx/check_btn_on.png);
+}
+QCheckBox::indicator:checked
+{
+background-image: url(://gfx/check_btn_on.png);
+}
+
+
+

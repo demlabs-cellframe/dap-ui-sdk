@@ -18,7 +18,6 @@ public:
     void requestHttp_GET    (const QString &address, const uint16_t port, const QString &urlPath, const QString &headers, DapNetworkReply &netReply);
 
     bool isRunning(){ return bRunning; }
-
 signals:
     void finished();
 

@@ -57,6 +57,9 @@ public:
     static const QString URL_BUG_REPORT;
     static const QString URL_NEWS;
     static const QString URL_SIGN_UP;
+#ifdef BUILD_VAR_GOOGLE
+    static const QString URL_VERIFY_PURCHASE;
+#endif
 
     DapSession(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
     ~DapSession();
@@ -85,7 +88,6 @@ public:
     DapCrypt* getDapCrypt() { return m_dapCrypt; }
     DapCrypt* getDapCryptCDB() { return m_dapCryptCDB; }
 public slots:
-    DapNetworkReply * encryptInitRequest();
     DapNetworkReply * requestServerPublicKey();
     DapNetworkReply * authorizeRequest(const QString& a_user, const QString& a_password,
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
@@ -94,8 +96,7 @@ public slots:
     DapNetworkReply * activateKeyRequest(const QString& a_serial = QString(), const QByteArray& a_signed = QByteArray(),
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
     DapNetworkReply * logoutRequest();
-    DapNetworkReply *streamOpenRequest(const QString& subUrl, const QString& query);
-    DapNetworkReply *streamOpenRequest(const QString& subUrl, const QString& query, QObject* obj, const char *slot);
+    DapNetworkReply *streamOpenRequest(const QString& subUrl, const QString& query, QObject* obj, const char *slot, const char *slot_err);
 
     void sendSignUpRequest(const QString &host, const QString &email, const QString &password);
     void sendBugReport(const QByteArray &data);
@@ -105,6 +106,9 @@ public slots:
 //    void abortAuthorizeRequest()      { m_netAuthorizeReply->abort(); }
 //    void abortLogoutRequest()         { m_netLogoutReply->abort();  }
     void sendTxBackRequest(const QString &tx);
+#ifdef BUILD_VAR_GOOGLE
+    void requestPurchaseVerify(const QJsonObject *params);
+#endif
 protected:
     using HttpHeaders = QVector<HttpRequestHeader>;
 
@@ -123,34 +127,37 @@ protected:
     DapNetworkReply * m_netLogoutReply;
     DapNetworkReply * m_netSendBugReportReply;
     DapNetworkReply * m_netSignUpReply;
-
+#ifdef BUILD_VAR_GOOGLE
+    DapNetworkReply * m_netPurchaseReply;
+#endif
 
 
     QMap<QString,QString> m_userInform;
-
-    DapNetworkReply* encRequest(const QString& reqData,const QString& url,
-                              const QString& subUrl,const QString& query, bool isCDB);
 
     DapNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url,
                                  const QString& subUrl, const QString& query);
 
     DapNetworkReply* encRequest(const QString& reqData, const QString& url, const QString& subUrl,
-                               const QString& query, QObject* obj, const char* slot, bool isCDB);
+                               const QString& query, QObject* obj, const char* slot, const char* slot_err, bool isCDB);
 
     DapNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url, const QString& subUrl,
-                               const QString& query, QObject* obj, const char* slot);
+                               const QString& query, QObject* obj, const char* slot, const char* slot_err);
 
+    DapNetworkReply* encRequest(const QString& reqData,const QString& url,
+                                const QString& subUrl,const QString& query, bool isCDB) {
+        return encRequest(reqData, url, subUrl, query, this, NULL, NULL, isCDB);
+    }
 
     DapNetworkReply* encRequest(const QString& reqData, const QString& url,
-                    const QString& subUrl, const QString& query, const char* slot, bool isCDB = false)
+                    const QString& subUrl, const QString& query, const char* slot, const char* slot_err, bool isCDB = false)
     {
-        return encRequest(reqData, url, subUrl, query, this, slot, isCDB);
+        return encRequest(reqData, url, subUrl, query, this, slot, slot_err, isCDB);
     }
 
     DapNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url,
-                    const QString& subUrl, const QString& query, const char* slot)
+                    const QString& subUrl, const QString& query, const char* slot, const char* slot_err)
     {
-        return encRequestRaw(bData, url, subUrl, query, this, slot);
+        return encRequestRaw(bData, url, subUrl, query, this, slot, slot_err);
     }
 
     DapNetworkReply* requestRawToSite(const QString& dnsName, const QString& url, const QByteArray& bData, const char * slot, bool ssl, const QString& headers);
@@ -159,7 +166,7 @@ private:
     DapNetworkAccessManager * m_httpClient;
     DapCrypt* m_dapCrypt, *m_dapCryptCDB;
     bool isSerial = false;
-    DapNetworkReply* _buildNetworkReplyReq(const QString& urlPath,
+    DapNetworkReply* _buildNetworkReplyReq(const QString& urlPath, QObject *obj, const char *slot, const char *slot_err,
                                          const QByteArray* data = Q_NULLPTR, bool isCDB = false/*, DapNetworkReply *netReply = nullptr*/);
 
 //    void requestDapClientHttp(const QString& host,  quint16 port, const QByteArray& data, const QString & urlPath, bool isCDB = false);
@@ -171,9 +178,11 @@ private:
 
 private slots:
     void onEnc();
-    //void errorSlt(QNetworkReply::NetworkError);
     void onAuthorize();
     void onKeyActivated();
+#ifdef BUILD_VAR_GOOGLE
+    void onPurchaseVerified();
+#endif
     void onLogout();
     void answerBugReport();
     void answerSignUp();
@@ -183,10 +192,10 @@ signals:
 
     void serverResponseError(const QString& msg);
 
-    void errorAuthorization(const QString &);
+    Q_INVOKABLE void errorAuthorization(const QString&);
     void activateKey();
-    void errorNetwork(const QString&);
-    void errorNetwork(const int, const QString&);
+    Q_INVOKABLE void errorNetwork(const QString&);
+    Q_INVOKABLE void errorNetwork(const int, const QString&);
 
     void authRequested();
     void keyActRequested();
@@ -196,9 +205,12 @@ signals:
     void logoutRequested();
     void logouted();
 
-    void receivedBugReportAnswer(const QString& bugReportNumber);
+    Q_INVOKABLE void receivedBugReportAnswer(const QString&);
     void sigSignUpAnswer(const QString& signUpAnswer);
     void sigReceivedNewsMessage(const QJsonDocument& news);
+#ifdef BUILD_VAR_GOOGLE
+    void purchaseResponseReceived(const QJsonDocument& responce);
+#endif
 };
 
 

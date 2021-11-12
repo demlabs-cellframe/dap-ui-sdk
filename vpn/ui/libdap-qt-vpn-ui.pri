@@ -1,5 +1,7 @@
+!CONFIG(neuromorphic) {
 include ( controls/controls.pri)
 include ( dialogs/dialogs.pri)
+}
 include ( auxiliary/auxiliary.pri)
 
 SOURCES += \
@@ -14,9 +16,6 @@ HEADERS  += \
     $$PWD/ServiceCtl.h\
     $$PWD/usrmsg.h
 
-
-
-
 INCLUDEPATH += $$PWD
 
 android{
@@ -27,12 +26,6 @@ android{
     HEADERS += $$PWD/DapServiceNativeAndroid.h
 }
 
-ios{
-    DEFINES += DAP_PLATFORM_MOBILE
-    DEFINES += DAP_PLATFORM=\\\"mobile\\\"
-    SOURCES += $$PWD/DapServiceNativeIOS.cpp
-    HEADERS += $$PWD/DapServiceNativeIOS.h
-}
 
 linux-* {
         DEFINES += DAP_PLATFORM=\\\"desktop\\\"
@@ -50,14 +43,22 @@ win32 {
         DEFINES += _WIN32_WINNT=0x0600
         RC_ICONS = $$PWD/../../../brand/$${BRAND}/DapChainVpnGui/resources/pics/icon_app.ico
 }
-macos {
-        DEFINES += DAP_PLATFORM=\\\"desktop\\\"
-        DEFINES += DAP_PLATFORM_DESKTOP DAP_SERVICE_CONNECT_TCP
-        SOURCES += $$PWD/DapServiceNativeMacOS.cpp
-        HEADERS += $$PWD/DapServiceNativeMacOS.h
+
+darwin {
+        SOURCES += $$PWD/DapServiceNativeDarwin.cpp
+        HEADERS += $$PWD/DapServiceNativeDarwin.h
         ICON = resources/$$BRAND/pics/$${BRAND}.icns
 }
 
+ios{
+    DEFINES += DAP_PLATFORM_MOBILE
+    DEFINES += DAP_PLATFORM=\\\"mobile\\\"
+}
+
+macos {
+        DEFINES += DAP_PLATFORM=\\\"desktop\\\"
+        DEFINES += DAP_PLATFORM_DESKTOP DAP_SERVICE_CONNECT_TCP
+}
 
 
 
@@ -65,15 +66,18 @@ android {
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../../../brand/$$BRAND/os/android
 
     DISTFILES += \
-        $$PWD/../../../os/android/gradle/wrapper/gradle-wrapper.jar \
-        $$PWD/../../../os/android/gradlew \
-        $$PWD/../../../os/android/res/values/libs.xml \
-        $$PWD/../../../os/android/build.gradle \
-        $$PWD/../../../os/android/gradle/wrapper/gradle-wrapper.properties \
-        $$PWD/../../../os/android/src/com/demlabs/dapchain/MainActivity.java \
-        $$PWD/../../../os/android/src/com/demlabs/dapchain/DapChainVpnService.java \
-        $$PWD/../../../os/android/src/com/demlabs/dapchain/DapChainVpnServiceNative.java \
-        $$PWD/../../../os/android/gradlew.bat
+        $$PWD/../../../brand/$$BRAND/os/android/gradle/wrapper/gradle-wrapper.jar \
+        $$PWD/../../../brand/$$BRAND/os/android/gradlew \
+        $$PWD/../../../brand/$$BRAND/os/android/res/values/libs.xml \
+        $$PWD/../../../brand/$$BRAND/os/android/build.gradle \
+        $$PWD/../../../brand/$$BRAND/os/android/gradle/wrapper/gradle-wrapper.properties \
+        $$PWD/../../../brand/$$BRAND/os/android/src/com/KelVPN/MainActivity.java \
+        $$PWD/../../../brand/$$BRAND/os/android/src/com/KelVPN/KelVPNService.java \
+        $$PWD/../../../brand/$$BRAND/os/android/src/com/KelVPN/KelVPNServiceNative.java \
+        $$PWD/../../../brand/$$BRAND/os/android/gradlew.bat
+	equals(BUILD_VARIANT, "GooglePlay") {
+                DISTFILES += $$PWD/../../../brand/$$BRAND/os/android/src/com/KelVPN/InAppShop.java
+	}
 }
 
 

@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "dap_common.h"
 #include "dap_file_utils.h"
+
+#include <QStandardPaths>
 #include "DapLogger.h"
 #include "DapDataLocal.h"
 #include <iostream>
@@ -71,11 +73,12 @@ QString DapLogger::defaultLogPath(const QString a_brand)
 #if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
     return QString("/opt/%1/log").arg(a_brand).toLower();
 #elif defined(Q_OS_MACOS)
-    return QString("/tmp/%1/log").arg(a_brand);
+    return QString("/var/log/");
 #elif defined (Q_OS_WIN)
     return QString("%1/%2/log").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
-    return QString("/sdcard/%1/log").arg(a_brand);
+    static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod("getExtFilesDir", "()Ljava/lang/String;");
+    return QString("%1/log").arg(l_pathObj.toString());
 #endif
     return {};
 }
@@ -132,10 +135,12 @@ void DapLogger::messageHandler(QtMsgType type,
         strcpy(prefixBuffer, fileName);
         sprintf(strrchr(prefixBuffer, '.'), ":%d", ctx.line);
 
-        _log_it(prefixBuffer, castQtMsgToDap(type), qUtf8Printable(msg));
+        _log_it(prefixBuffer, castQtMsgToDap(type), "%s", qUtf8Printable(msg));
     } else {
-        _log_it("\0", castQtMsgToDap(type), qUtf8Printable(msg));
+        _log_it("\0", castQtMsgToDap(type), "%s", qUtf8Printable(msg));
     }
+    printf("%s\n",qUtf8Printable(msg));
+
     std::cerr.flush();
     std::cout.flush();
 }

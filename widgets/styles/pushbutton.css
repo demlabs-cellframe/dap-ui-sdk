@@ -1,0 +1,27 @@
+*
+{
+min-width: 354px;
+min-height: 60px;
+max-width: 354px;
+max-height: 60px;
+background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(242, 0, 203, 255), stop:1 rgba(218, 11, 130, 255));
+border-radius: 30px;
+margin: 10px;
+}
+*:hover
+{
+background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(230, 44, 199, 255), stop:1 rgba(245, 49, 114, 255));
+}
+QLabel
+{
+color: #FFFFFF;
+font: 14px/12px;
+font-weight: normal;
+font-style: normal;
+font-size: bold;
+text-transform: uppercase;
+font-family: 'Roboto';
+}
+
+
+
