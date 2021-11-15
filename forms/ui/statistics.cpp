@@ -31,7 +31,8 @@ Statistics::Statistics (QWidget *parent) :
 
   /* setup scene */
   ui->graphicsView->setScene (m_scene);
-  ui->graphicsView->setBackgroundBrush(QBrush("#f7f8fa", Qt::SolidPattern));
+  ui->graphicsView->setForm (this);
+  //ui->graphicsView->setBackgroundBrush(QBrush("#f7f8fa", Qt::SolidPattern));
 
   /* setup uptime timer */
   m_uptimeUpdateTimer->setSingleShot (false);
@@ -42,6 +43,8 @@ Statistics::Statistics (QWidget *parent) :
   addItemGraphicSceneStyle ("shChartUpload",    "color:#2D1FD6;depth:1;background-color:rgba(3,167,198,0.00);");
   addItemGraphicSceneStyle ("shGrid",           "color:#F4F4F8;depth:0.1;");
   addItemGraphicSceneStyle ("graphicsLines",    "horizontalLines:19;verticalLines:8;");//"horizontalLines:19;verticalLines:8;sceneWidth:236px;sceneHeight:119px;");
+
+  ui->graphicsView->updateG();
 
   /* signals */
   connect (m_uptimeUpdateTimer, &QTimer::timeout,
@@ -278,6 +281,36 @@ void Statistics::resetGraph()
 {
   schedules.reset();
   updateGraph();
+}
+
+const QColor &Statistics::colorBackground() const
+{
+  return schedules.colorBackground();
+}
+
+void Statistics::setColorBackground(const QColor &newColorBackground)
+{
+  schedules.setColorBackground (newColorBackground);
+}
+
+const QColor &Statistics::colorChartDownload() const
+{
+  return schedules.colorChartDownload();
+}
+
+void Statistics::setColorChartDownload(const QColor &newColorChartDownload)
+{
+  schedules.setColorChartDownload (newColorChartDownload);
+}
+
+const QColor &Statistics::colorChartUpload() const
+{
+  return schedules.colorChartUpload();
+}
+
+void Statistics::setColorChartUpload(const QColor &newColorChartUpload)
+{
+  schedules.setColorChartUpload (newColorChartUpload);
 }
 
 void Statistics::_slotUpdateUptimeTime()

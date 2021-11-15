@@ -46,7 +46,7 @@
 
 .darkblue-dark
 {
-	color: #DDDDDD;
+	color: #FFFFFF;
 }
 
 /****************************************************
@@ -173,7 +173,7 @@
 
 .backgroundcolor-dark
 {
-	background-color: #292827;
+	background-color: #28264D;
 }
 
 .nobackground
@@ -295,6 +295,16 @@
 	min-height: 174pt;
 	max-width: 266pt;
 	max-height: 174pt;
+}
+
+.cwpb_close
+{
+	width: 28pt;
+	height: 28pt;
+	min-width: 28pt;
+	min-height: 28pt;
+	max-width: 28pt;
+	max-height: 28pt;
 }
 
 .cwpb_connection_status

@@ -46,6 +46,7 @@ public:
     Check,
     //Radio,
     Switch,
+    Close,
     Custom,
   };
   Q_ENUM (Style)

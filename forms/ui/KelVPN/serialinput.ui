@@ -102,25 +102,25 @@
             <item>
              <widget class="DapGuiPushButton" name="btnReturn">
               <property name="style">
-               <enum>DapGuiPushButton::Custom</enum>
+               <enum>DapGuiPushButton::Close</enum>
               </property>
               <property name="custom">
                <url>
-                <string>qrc:/gui/asset/ic_close.png</string>
+                <string>/gfx/light/ic_close.png</string>
                </url>
               </property>
               <property name="customHover">
                <url>
-                <string>qrc:/gui/asset/ic_close.png</string>
+                <string>/gfx/light/ic_close_hover.png</string>
                </url>
               </property>
               <property name="customPushed">
                <url>
-                <string>qrc:/gui/asset/ic_close.png</string>
+                <string>/gfx/light/ic_close_hover.png</string>
                </url>
               </property>
               <property name="cssStyle" stdset="0">
-               <string>cwb_close-btn nobackground</string>
+               <string>cwpb_close</string>
               </property>
              </widget>
             </item>
@@ -291,27 +291,27 @@
  <customwidgets>
   <customwidget>
    <class>DapGuiButton</class>
-   <extends>QWidget</extends>
+   <extends></extends>
    <header>dapguibutton.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiPushButton</class>
-   <extends>QPushButton</extends>
+   <extends></extends>
    <header>dapguipushbutton.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiLineEdit</class>
-   <extends>QLineEdit</extends>
+   <extends></extends>
    <header>dapguilineedit.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiLabel</class>
-   <extends>QLabel</extends>
+   <extends></extends>
    <header>dapguilabel.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiWidget</class>
-   <extends>QWidget</extends>
+   <extends></extends>
    <header>dapguiwidget.h</header>
    <container>1</container>
   </customwidget>

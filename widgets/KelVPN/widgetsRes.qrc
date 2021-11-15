@@ -38,6 +38,8 @@
         <file>gfx/light/switch/toggle_off.png</file>
         <file>gfx/light/switch/bg_off.png</file>
         <file>gfx/light/btn_server_bg.png</file>
+        <file>gfx/light/ic_close.png</file>
+        <file>gfx/light/ic_close_hover.png</file>
         <file>gfx/dark/btn_bg.png</file>
         <file>gfx/dark/btn_bg_hover_active.png</file>
         <file>gfx/dark/check_btn_off.png</file>
@@ -67,6 +69,8 @@
         <file>gfx/dark/switch/toggle_off.png</file>
         <file>gfx/dark/switch/bg_off.png</file>
         <file>gfx/dark/btn_server_bg.png</file>
+        <file>gfx/dark/ic_close.png</file>
+        <file>gfx/dark/ic_close_hover.png</file>
         <file>style.css</file>
         <file>theme.json</file>
     </qresource>

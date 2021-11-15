@@ -86,25 +86,25 @@
            <item>
             <widget class="DapGuiPushButton" name="btnReturn">
              <property name="style">
-              <enum>DapGuiPushButton::Custom</enum>
+              <enum>DapGuiPushButton::Close</enum>
              </property>
              <property name="custom">
               <url>
-               <string>qrc:/gui/asset/ic_close.png</string>
+               <string>/gfx/light/ic_close.png</string>
               </url>
              </property>
              <property name="customHover">
               <url>
-               <string>qrc:/gui/asset/ic_close.png</string>
+               <string>/gfx/light/ic_close_hover.png</string>
               </url>
              </property>
              <property name="customPushed">
               <url>
-               <string>qrc:/gui/asset/ic_close.png</string>
+               <string>/gfx/light/ic_close_hover.png</string>
               </url>
              </property>
              <property name="cssStyle" stdset="0">
-              <string>cwb_close-btn</string>
+              <string>cwpb_close</string>
              </property>
             </widget>
            </item>
@@ -113,7 +113,7 @@
              <property name="styleSheet">
               <string notr="true">#label{ 	width: 282px; 	height: 28px; 	min-width: 282px; 	min-height: 28px; 	max-width: 282px; 	max-height: 28px; 
  	font: 24px/29px; 
- 	color: #04004E; 
+  
  	font-family: 'Lato'; 
  	font-weight: bold; 	font-style: bold; 	font-size: bold; 
  	border: none; 
@@ -160,7 +160,7 @@
               <x>0</x>
               <y>0</y>
               <width>388</width>
-              <height>787</height>
+              <height>807</height>
              </rect>
             </property>
            </widget>
@@ -177,17 +177,17 @@
  <customwidgets>
   <customwidget>
    <class>DapGuiPushButton</class>
-   <extends>QPushButton</extends>
+   <extends></extends>
    <header>dapguipushbutton.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiLabel</class>
-   <extends>QLabel</extends>
+   <extends></extends>
    <header>dapguilabel.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiWidget</class>
-   <extends>QWidget</extends>
+   <extends></extends>
    <header>dapguiwidget.h</header>
    <container>1</container>
   </customwidget>
