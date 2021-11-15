@@ -3,6 +3,7 @@
 #include "DapDataLocal.h"
 #include <QApplication>
 #include <QClipboard>
+#include <QScrollBar>
 
 /* DEFS */
 struct _HistoryRecord
@@ -92,6 +93,19 @@ void HistoryModel::slotSetup()
     }
   QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
   lay->addItem (sp);
+}
+
+/********************************************
+ * OVERRIDE
+ *******************************************/
+
+bool HistoryModel::eventFilter(QObject *o, QEvent *e)
+{
+  // This works because QScrollArea::setWidget installs an eventFilter on the widget
+  if(o && o == widget() && e->type() == QEvent::Resize)
+    setMinimumWidth(widget()->minimumSizeHint().width() + verticalScrollBar()->width());
+
+  return QScrollArea::eventFilter(o, e);
 }
 
 /*-----------------------------------------*/
