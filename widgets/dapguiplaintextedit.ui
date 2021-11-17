@@ -30,54 +30,42 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QLabel" name="kgpteu1">
-     <property name="styleSheet">
-      <string notr="true">max-width: 14px;
-max-height: 14px;
-min-width: 14px;
-min-height: 14px;
-background-image: url(:/gfx/frame_topleft.png);</string>
-     </property>
+    <widget class="DapGuiLabel" name="kgpteu1">
      <property name="text">
       <string/>
+     </property>
+     <property name="cssStyle">
+      <string>cpte-1 cpte-base-hor cpte-base-ver noborder nobackground</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QLabel" name="kgpteu2">
-     <property name="styleSheet">
-      <string notr="true">max-height: 14px;
-min-height: 14px;
-background-image: url(:/gfx/frame_top.png);</string>
-     </property>
+    <widget class="DapGuiLabel" name="kgpteu2">
      <property name="text">
       <string/>
+     </property>
+     <property name="cssStyle">
+      <string>cpte-2 cpte-base-ver noborder nobackground</string>
      </property>
     </widget>
    </item>
    <item row="0" column="2">
-    <widget class="QLabel" name="kgpteu5">
-     <property name="styleSheet">
-      <string notr="true">max-width: 14px;
-max-height: 14px;
-min-width: 14px;
-min-height: 14px;
-background-image: url(:/gfx/frame_topright.png);</string>
-     </property>
+    <widget class="DapGuiLabel" name="kgpteu5">
      <property name="text">
       <string/>
+     </property>
+     <property name="cssStyle">
+      <string>cpte-5 cpte-base-hor cpte-base-ver noborder nobackground</string>
      </property>
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QLabel" name="kgpteu3">
-     <property name="styleSheet">
-      <string notr="true">max-width: 14px;
-min-width: 14px;
-background-image: url(:/gfx/frame_left.png);</string>
-     </property>
+    <widget class="DapGuiLabel" name="kgpteu3">
      <property name="text">
       <string/>
+     </property>
+     <property name="cssStyle">
+      <string>cpte-3 cpte-base-hor noborder nobackground</string>
      </property>
     </widget>
    </item>
@@ -109,60 +97,53 @@ color: #9C9B9D;
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QLabel" name="kgpteu6">
-     <property name="styleSheet">
-      <string notr="true">max-width: 14px;
-min-width: 14px;
-background-image: url(:/gfx/frame_right.png);</string>
-     </property>
+    <widget class="DapGuiLabel" name="kgpteu6">
      <property name="text">
       <string/>
+     </property>
+     <property name="cssStyle">
+      <string>cpte-6 cpte-base-hor noborder nobackground</string>
      </property>
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QLabel" name="kgpteu8">
-     <property name="styleSheet">
-      <string notr="true">max-width: 14px;
-max-height: 14px;
-min-width: 14px;
-min-height: 14px;
-background-image: url(:/gfx/frame_bottomleft.png);</string>
-     </property>
+    <widget class="DapGuiLabel" name="kgpteu8">
      <property name="text">
       <string/>
+     </property>
+     <property name="cssStyle">
+      <string>cpte-8 cpte-base-hor cpte-base-ver noborder nobackground</string>
      </property>
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QLabel" name="kgpteu4">
-     <property name="styleSheet">
-      <string notr="true">max-height: 14px;
-min-height: 14px;
-background-image: url(:/gfx/frame_bottom.png);</string>
-     </property>
+    <widget class="DapGuiLabel" name="kgpteu4">
      <property name="text">
       <string/>
+     </property>
+     <property name="cssStyle">
+      <string>cpte-4 cpte-base-ver noborder nobackground</string>
      </property>
     </widget>
    </item>
    <item row="2" column="2">
-    <widget class="QLabel" name="kgpteu7">
-     <property name="styleSheet">
-      <string notr="true">max-width: 14px;
-max-height: 14px;
-min-width: 14px;
-min-height: 14px;
-background-image: url(:/gfx/frame_bottomright.png);</string>
-     </property>
+    <widget class="DapGuiLabel" name="kgpteu7">
      <property name="text">
       <string/>
+     </property>
+     <property name="cssStyle">
+      <string>cpte-7 cpte-base-hor cpte-base-ver noborder nobackground</string>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>DapGuiLabel</class>
+   <extends>QLabel</extends>
+   <header>dapguilabel.h</header>
+  </customwidget>
   <customwidget>
    <class>DapGuiPlainTextEditInterface</class>
    <extends>QPlainTextEdit</extends>
