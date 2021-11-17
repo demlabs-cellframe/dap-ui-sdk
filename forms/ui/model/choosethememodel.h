@@ -49,7 +49,8 @@ public:
 public:
   /// set model into this widget
   /// @note old model will not be deleted
-  void setLanguageArray (const QJsonArray &a_array, ChooseTheme *a_cs);
+  void setColorThemeArray (const QJsonArray &a_array, ChooseTheme *a_cs);
+  void setCurrentColorTheme (const QString a_colorTheme);
   const QStringList &array() const;
   /// @}
 

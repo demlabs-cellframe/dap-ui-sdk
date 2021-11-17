@@ -21,7 +21,7 @@ ChooseTheme::ChooseTheme (QWidget *parent) :
 
   /* setup model */
   auto theme = Common::fromFile ("://theme.json");
-  ui->scrollArea->setLanguageArray (QJsonDocument::fromJson (theme.toUtf8()).array(), this);
+  ui->scrollArea->setColorThemeArray (QJsonDocument::fromJson (theme.toUtf8()).array(), this);
 
   /* signals */
   connect (ui->btnReturn, &DapGuiPushButton::clicked,
@@ -50,6 +50,11 @@ ChooseThemeModel *ChooseTheme::model()
 void ChooseTheme::slotRetranslated()
 {
   ui->label->setText (tr ("Choose server"));
+}
+
+void ChooseTheme::slotSetColorTheme(const QString a_colorTheme)
+{
+  ui->scrollArea->setCurrentColorTheme (a_colorTheme);
 }
 
 /*-----------------------------------------*/

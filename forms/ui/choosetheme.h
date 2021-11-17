@@ -70,6 +70,7 @@ signals:
   /// @{
 public slots:
   void slotRetranslated();
+  void slotSetColorTheme (const QString a_colorTheme);
   /// @}
 };
 

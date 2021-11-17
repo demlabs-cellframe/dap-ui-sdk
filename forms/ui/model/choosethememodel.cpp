@@ -28,7 +28,7 @@ ChooseThemeModel::~ChooseThemeModel()
  * PUBLIC METHODS
  *******************************************/
 
-void ChooseThemeModel::setLanguageArray (const QJsonArray &a_array, ChooseTheme *a_cs)
+void ChooseThemeModel::setColorThemeArray (const QJsonArray &a_array, ChooseTheme *a_cs)
 {
   /* parse and store languages */
   for (auto i = a_array.constBegin(), e = a_array.constEnd(); i != e; i++)
@@ -41,6 +41,20 @@ void ChooseThemeModel::setLanguageArray (const QJsonArray &a_array, ChooseTheme 
   /* store and invoke setup */
   m_cs    = a_cs;
   QMetaObject::invokeMethod(this, &ChooseThemeModel::slotSetup, Qt::QueuedConnection);
+}
+
+void ChooseThemeModel::setCurrentColorTheme(const QString a_colorTheme)
+{
+  _hook = true;
+  /* delete old buttons */
+  foreach (auto *item, m_list)
+    {
+      if (item->text() != a_colorTheme)
+        continue;
+      item->setChecked (true);
+      break;
+    }
+  _hook = false;
 }
 
 const QStringList &ChooseThemeModel::array() const
@@ -95,11 +109,11 @@ void ChooseThemeModel::slotSetup()
 
 void ChooseThemeModel::slotToggled(bool checked)
 {
-//  if(_hook)
-//    {
-//      qDebug() << __PRETTY_FUNCTION__ << "skipped";
-//      return;
-//    }
+  if(_hook)
+    {
+      qDebug() << __PRETTY_FUNCTION__ << "skipped";
+      return;
+    }
 
   /* get sender radio */
   auto s = qobject_cast<DapGuiRadio*> (sender());
