@@ -65,6 +65,7 @@ signals:
   /// @{
 public slots:
   void slotRetranslated();
+  void slotSetCurrentLanguage (const QLocale::Language a_language, const QString a_languageName);
   /// @}
 };
 

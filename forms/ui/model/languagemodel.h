@@ -26,6 +26,7 @@ class LanguageModel : public ModelBase
 private:
   QList<DapGuiRadio*> m_list;
   QAbstractListModel *m_model;
+  bool _hook;
   int m_currentIndex;
   QString m_currentText;
   /// @}
@@ -55,6 +56,7 @@ public:
   /// set model into this widget
   /// @note old model will not be deleted
   void setModel (QAbstractListModel *model);
+  void setCurrentLanguage (const QLocale::Language a_language, const QString a_languageName);
   QAbstractListModel *model() const;
   /// @}
 

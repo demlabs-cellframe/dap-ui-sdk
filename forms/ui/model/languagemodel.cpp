@@ -1,7 +1,6 @@
 /* INCLUDES */
 #include "languagemodel.h"
 #include <QTimer>
-
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/
@@ -9,6 +8,7 @@
 LanguageModel::LanguageModel (QWidget *parent)
   : ModelBase (parent)
   , m_model (nullptr)
+  , _hook (false)
   , m_currentIndex (0)
 {
 
@@ -28,6 +28,23 @@ void LanguageModel::setModel(QAbstractListModel *model)
   /* store and invoke setup */
   m_model = model;
   QMetaObject::invokeMethod(this, &LanguageModel::slotSetup, Qt::QueuedConnection);
+}
+
+void LanguageModel::setCurrentLanguage(const QLocale::Language, const QString a_languageName)
+{
+  _hook = true;
+  int i = 0;
+  foreach (auto *item, m_list)
+    {
+      i++;
+      if (item->text() != a_languageName)
+        continue;
+      item->setChecked (true);
+      m_currentIndex  = i - 1;
+      m_currentText   = a_languageName;
+      break;
+    }
+  _hook = false;
 }
 
 QAbstractListModel *LanguageModel::model() const
@@ -68,6 +85,8 @@ void LanguageModel::slotSetup()
       item->setText (text);
       item->setSeparator (i + 1 < size);
       item->setCssStyle ("choser-item");
+      if (text == m_currentText)
+        item->setChecked (true);
       lay->addWidget (item);
 
       /* signals */
@@ -81,6 +100,10 @@ void LanguageModel::slotSetup()
 
 void LanguageModel::slotToggled(bool checked)
 {
+  /* check hook */
+  if (_hook)
+    return;
+
   /* get sender radio */
   auto s = qobject_cast<DapGuiRadio*> (sender());
   if (!s || checked == false)

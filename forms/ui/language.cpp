@@ -47,4 +47,9 @@ void Language::slotRetranslated()
   ui->label->setText (tr ("Language"));
 }
 
+void Language::slotSetCurrentLanguage(const QLocale::Language a_language, const QString a_languageName)
+{
+  ui->scrollArea->setCurrentLanguage (a_language, a_languageName);
+}
+
 /*-----------------------------------------*/
