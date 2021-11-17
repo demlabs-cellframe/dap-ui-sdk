@@ -29,7 +29,9 @@
             {"name": "backgroundcolor",     "replace": "backgroundcolor-light"},
 
             {"name": "login-input-border",  "replace": "login-input-border-base"},
-            {"name": "login-input-border",  "append": "login-input-border-light"}
+            {"name": "login-input-border",  "append": "login-input-border-light"},
+            {"name": "login_logo",          "replace": "login_logo-base"},
+            {"name": "login_logo",          "append": "login_logo-light"}
         ]
     },
     {
@@ -62,7 +64,9 @@
             {"name": "backgroundcolor",     "replace": "backgroundcolor-dark"},
 
             {"name": "login-input-border",  "replace": "login-input-border-base"},
-            {"name": "login-input-border",  "append": "login-input-border-dark"}
+            {"name": "login-input-border",  "append": "login-input-border-dark"},
+            {"name": "login_logo",          "replace": "login_logo-base"},
+            {"name": "login_logo",          "append": "login_logo-dark"}
         ]
     }
 ]

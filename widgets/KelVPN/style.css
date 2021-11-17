@@ -758,13 +758,27 @@
 
 .login_logo
 {
+
+}
+
+.login_logo-base
+{
 	width: 260pt;
 	height: 89pt;
 	min-width: 260pt;
 	min-height: 89pt;
 	max-width: 260pt;
 	max-height: 89pt;
+}
+
+.login_logo-light
+{
 	qproperty-scaledPixmap: url(:/gui/asset/logo_kelvpn-color.png);
+}
+
+.login_logo-dark
+{
+	qproperty-scaledPixmap: url(:/gui/asset/logo_kelvpn-color-dark.png);
 }
 
 .login-logo-holder
