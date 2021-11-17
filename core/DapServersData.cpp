@@ -47,6 +47,8 @@ void DapServersData::setCurrentServerNotSignal(int a_serverIndex)
         return;
     Q_ASSERT(a_serverIndex < m_servers.count());
     m_currentServerIndex = a_serverIndex;
+
+    emit currentServerNameChangedNotRequestChangingServer(this->currentServerName());
 }
 
 void DapServersData::setCurrentServer(const DapServerInfo *a_server)

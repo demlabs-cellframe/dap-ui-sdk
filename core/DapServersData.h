@@ -54,6 +54,7 @@ signals:
     /// Signal emitted if server name has changed.
     /// @param serverName Server name.
     void currentServerNameChanged(const QString& serverName);
+    void currentServerNameChangedNotRequestChangingServer(const QString& serverName);
     void serverAdded(const DapServerInfo& dsi);
     void serversCleared();
 
