@@ -10,8 +10,8 @@
 GradientWidget::GradientWidget(QWidget *parent)
   : QWidget(parent)
 {
-  m_gradient.setColorAt(0, "#E62CC7");
-  m_gradient.setColorAt(1, "#F53172");
+  m_gradient.setColorAt(0, "#0098CC");
+  m_gradient.setColorAt(1, "#01BFE8");
 }
 
 /********************************************
