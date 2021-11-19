@@ -1,8 +1,8 @@
-#!CONFIG(neuromorphic) {
-#include ( controls/controls.pri)
-#include ( dialogs/dialogs.pri)
-#}
-#include ( auxiliary/auxiliary.pri)
+!CONFIG(neuromorphic) {
+include ( controls/controls.pri)
+include ( dialogs/dialogs.pri)
+}
+include ( auxiliary/auxiliary.pri)
 
 SOURCES += \
     $$PWD/DapServiceClient.cpp\
