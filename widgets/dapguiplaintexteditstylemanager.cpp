@@ -1,12 +1,13 @@
 /* INCLUDES */
 #include "dapguiplaintexteditstylemanager.h"
 #include "dapguiplaintextedit.h"
+#include <QTimer>
 
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-DapGuiPlainTextEditStyleManager::DapGuiPlainTextEditStyleManager(QWidget *parent)
+DapGuiPlainTextEditStyleManager::DapGuiPlainTextEditStyleManager (QWidget *parent)
   : DapGuiStyleManager (parent)
 {
   /* reconnect into different slot */
@@ -19,7 +20,7 @@ DapGuiPlainTextEditStyleManager::DapGuiPlainTextEditStyleManager(QWidget *parent
     }
 }
 
-DapGuiPlainTextEditStyleManager::DapGuiPlainTextEditStyleManager(DapGuiPlainTextEditStyleManager &&src)
+DapGuiPlainTextEditStyleManager::DapGuiPlainTextEditStyleManager (DapGuiPlainTextEditStyleManager &&src)
   : DapGuiStyleManager ((DapGuiStyleManager &&)src)
 {
   /* reconnect into different slot */
@@ -38,6 +39,21 @@ DapGuiPlainTextEditStyleManager::~DapGuiPlainTextEditStyleManager()
 }
 
 /********************************************
+QPlainTextEdit
+{
+color: #04004E;
+background-color: #F7F8FA;
+font: 16px/25px;
+font-weight: normal;
+font-style: normal;
+font-size: normal;
+font-family: 'Lato';
+}
+
+QPlainTextEdit[plainText=""]
+{
+color: #9C9B9D;
+}
  * METHODS
  *******************************************/
 
@@ -47,11 +63,19 @@ void DapGuiPlainTextEditStyleManager::updatePlaceholderStyle (bool a_isEmpty)
   if (p)
     {
       auto s  =
-          (!a_isEmpty)
-          ? QString() + styleByClassName ("cpte-text")
-          : QString() + styleByClassName ("cpte-text") + styleByClassName ("cpte-text-placeholder");
+        (!a_isEmpty)
+        ? QString() + styleByClassName ("cpte-text")
+        : QString() + styleByClassName ("cpte-text") + styleByClassName ("cpte-text-placeholder");
       p->editWidget()->setStyleSheet (s);
+      p->editWidget()->style()->polish (p->editWidget());
+      s   = styleByClassList (QString ("nobackground noborder").split (" "));
+      p->setStyleSheet (s);
     }
+}
+
+QString DapGuiPlainTextEditStyleManager::styleByClassName (const QString &className)
+{
+  return DapGuiStyleManager::styleByClassName (className);
 }
 
 /********************************************
@@ -60,9 +84,30 @@ void DapGuiPlainTextEditStyleManager::updatePlaceholderStyle (bool a_isEmpty)
 
 void DapGuiPlainTextEditStyleManager::forcedPteStyleUpdate()
 {
+  QTimer::singleShot (500, this,
+                      &DapGuiPlainTextEditStyleManager::slotTimedStyleUpdate);
+}
+
+void DapGuiPlainTextEditStyleManager::slotTimedStyleUpdate()
+{
   auto p  = qobject_cast<DapGuiPlainTextEdit *> (m_widget);
-  if (p)
-    updatePlaceholderStyle (p->plainText().isEmpty());
+  if (p == nullptr)
+    return;
+
+#ifdef Q_OS_ANDROID
+  /* update for android */
+  updatePlaceholderStyle (p->plainText().isEmpty());
+#else
+  /* update for pc */
+  auto s = QString (
+         "*{%1}\n"
+         "*[plainText=\"\"]{%2}\n"
+       ).arg (styleByClassName ("cpte-text"), styleByClassName ("cpte-text-placeholder"));
+  p->editWidget()->setStyleSheet (s);
+  p->editWidget()->style()->polish (p->editWidget());
+  s   = styleByClassList (QString ("nobackground noborder").split (" "));
+  p->setStyleSheet (s);
+#endif // Q_OS_ANDROID
 }
 
 /*-----------------------------------------*/

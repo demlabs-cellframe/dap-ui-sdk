@@ -18,6 +18,7 @@ class DapGuiPlainTextEditStyleManager : public DapGuiStyleManager
   Q_OBJECT
 
   friend class DapGuiPlainTextEdit;
+  friend class DapGuiPlainTextEditInterface;
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
@@ -35,6 +36,7 @@ protected:
   /// @{
 protected:
   void updatePlaceholderStyle (bool a_isEmpty);
+  static QString styleByClassName (const QString &className);
   /// @}
 
   /****************************************//**
@@ -43,6 +45,7 @@ protected:
   /// @{
 protected slots:
   void forcedPteStyleUpdate();
+  void slotTimedStyleUpdate();
   /// @}
 };
 

@@ -3,6 +3,8 @@
 #include "ui_dapguiplaintextedit.h"
 #include <QStyle>
 #include <QDebug>
+#include <QMetaObject>
+#include <QTimer>
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -21,6 +23,7 @@ DapGuiPlainTextEdit::DapGuiPlainTextEdit (QWidget *parent) :
   ui->kgpteuPlainTextEdit->setCallbackKeyEvent (_cbKeyEvent);
   ui->kgpteuPlainTextEdit->setCallbackTextEdit (_cbTextEdit);
   ui->kgpteuPlainTextEdit->installEventFilter (this);
+
 
   /* signals */
   connect (ui->kgpteuPlainTextEdit, &QPlainTextEdit::textChanged,
@@ -149,7 +152,7 @@ bool DapGuiPlainTextEdit::_cbTextEdit (DapGuiPlainTextEditInterface *e, QString 
 //          ? QString() + s_styles[0]
 //          : QString() + s_styles[0] + s_styles[1]
 //        );
-      p->__kgsm.updatePlaceholderStyle ((!commit.isEmpty() || !preedit.isEmpty() || !e->toPlainText().isEmpty()));
+      p->__kgsm.updatePlaceholderStyle ((commit.isEmpty() && preedit.isEmpty() && e->toPlainText().isEmpty()));
       p->_updateStyle();
 
       if (p->m_callbackTextEdit)
