@@ -32,7 +32,8 @@ DocumentPopup::DocumentPopup (Type t, QWidget *parent) :
   m_layout->addWidget (m_label);
   m_layout->addItem (sp);
 
-  m_label->setCssStyle ("darkblue font16 normal backgroundcolor");
+  m_label->setObjectName ("DocumentContents");
+  m_label->setCssStyle ("darkblue font16 normal");
   m_label->setWordWrap (true);
 
   switch (t)
@@ -78,7 +79,7 @@ void DocumentPopup::slotRetranslated()
   {
     case PrivacyPolicy: return slotShowPrivacyPolicy();
     case TermsOfUse:    return slotShowTermsOfUse();
-  }
+    }
 }
 
 bool DocumentPopup::eventFilter(QObject *o, QEvent *e)
@@ -98,3 +99,5 @@ bool DocumentPopup::Filter::eventFilter(QObject *o, QEvent *e)
 {
   return QScrollArea::eventFilter(o, e);
 }
+
+/*-----------------------------------------*/
