@@ -19,6 +19,8 @@
 {
 min-height: 4px;
 max-height: 4px;
+background-color: rgba(0,0,0,0);
+border: none;
 }</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -38,7 +40,10 @@ max-height: 4px;
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="DapGuiSeparatorBackground" native="true">
+    <widget class="DapGuiWidget" name="DapGuiSeparatorBackground">
+     <property name="cssStyle">
+      <string>nobackground noborder</string>
+     </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="spacing">
        <number>0</number>
@@ -58,7 +63,8 @@ max-height: 4px;
       <item>
        <widget class="DapGuiLabel" name="DapGuiSeparatorLeft">
         <property name="styleSheet">
-         <string notr="true">#DapGuiSeparatorLeft{ 	border: none; 
+         <string notr="true">#DapGuiSeparatorLeft{  
+ 	border: none; 
  	background-color: rgba(0,0,0,0); }</string>
         </property>
         <property name="text">
@@ -72,7 +78,8 @@ max-height: 4px;
       <item>
        <widget class="DapGuiLabel" name="DapGuiSeparatorMid">
         <property name="styleSheet">
-         <string notr="true">#DapGuiSeparatorMid{ 	border: none; 
+         <string notr="true">#DapGuiSeparatorMid{  
+ 	border: none; 
  	background-color: rgba(0,0,0,0); }</string>
         </property>
         <property name="text">
@@ -86,7 +93,8 @@ max-height: 4px;
       <item>
        <widget class="DapGuiLabel" name="DapGuiSeparatorRight">
         <property name="styleSheet">
-         <string notr="true">#DapGuiSeparatorRight{ 	border: none; 
+         <string notr="true">#DapGuiSeparatorRight{  
+ 	border: none; 
  	background-color: rgba(0,0,0,0); }</string>
         </property>
         <property name="text">
@@ -107,6 +115,12 @@ max-height: 4px;
    <class>DapGuiLabel</class>
    <extends>QLabel</extends>
    <header>dapguilabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DapGuiWidget</class>
+   <extends>QWidget</extends>
+   <header>dapguiwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
