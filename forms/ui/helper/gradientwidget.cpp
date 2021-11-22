@@ -1,7 +1,18 @@
 /* INCLUDES */
 #include "gradientwidget.h"
+#include "style/dapguistylemanager.h"
 #include <QPaintEvent>
 #include <QPainter>
+
+/* DEFS */
+class StyleAccess : public DapGuiStyleManager
+{
+public:
+  static QString styleByClassList (const QStringList &classNameList)
+  {
+    return DapGuiStyleManager::styleByClassList (classNameList);
+  }
+};
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -10,8 +21,12 @@
 GradientWidget::GradientWidget(QWidget *parent)
   : QWidget(parent)
 {
-  m_gradient.setColorAt(0, "#E62CC7");
-  m_gradient.setColorAt(1, "#F53172");
+  auto color1 = StyleAccess::styleByClassList({"gradientcolor1"});
+  auto color2 = StyleAccess::styleByClassList({"gradientcolor2"});
+  color1  = color1.remove("color:").remove(";");
+  color2  = color2.remove("color:").remove(";");
+  m_gradient.setColorAt(0, color1); //"#E62CC7");
+  m_gradient.setColorAt(1, color2); //"#F53172");
 }
 
 /********************************************
