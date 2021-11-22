@@ -49,7 +49,8 @@ ChooseThemeModel *ChooseTheme::model()
 
 void ChooseTheme::slotRetranslated()
 {
-  ui->label->setText (tr ("Choose server"));
+  ui->label->setText (tr ("Choose theme"));
+  ui->scrollArea->slotRetranslate();
 }
 
 void ChooseTheme::slotSetColorTheme(const QString a_colorTheme)

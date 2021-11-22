@@ -52,6 +52,7 @@ public:
   void setColorThemeArray (const QJsonArray &a_array, ChooseTheme *a_cs);
   void setCurrentColorTheme (const QString a_colorTheme);
   const QStringList &array() const;
+  QString themeName (const QString a_colorTheme);
   /// @}
 
   /****************************************//**
@@ -60,6 +61,7 @@ public:
   /// @{
 public slots:
   void slotSetup();
+  void slotRetranslate();
 private slots:
   /// radio button toggle
   void slotToggled (bool checked);

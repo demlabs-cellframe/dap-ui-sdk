@@ -49,7 +49,7 @@ void ChooseThemeModel::setCurrentColorTheme(const QString a_colorTheme)
   /* delete old buttons */
   foreach (auto *item, m_list)
     {
-      if (item->text() != a_colorTheme)
+      if (item->text() != themeName (a_colorTheme))
         continue;
       item->setChecked (true);
       break;
@@ -60,6 +60,16 @@ void ChooseThemeModel::setCurrentColorTheme(const QString a_colorTheme)
 const QStringList &ChooseThemeModel::array() const
 {
   return m_array;
+}
+
+QString ChooseThemeModel::themeName(const QString a_colorTheme)
+{
+  QMap<QString, QString> ctName =
+  {
+    { "Light Theme",  tr("Light Theme") },
+    { "Dark Theme",   tr("Dark Theme") },
+  };
+  return ctName.value(a_colorTheme, ctName.first());
 }
 
 /********************************************
@@ -90,7 +100,7 @@ void ChooseThemeModel::slotSetup()
       m_list << item;
 
       /* setup */
-      item->setText (text);
+      item->setText (themeName (text));
       item->setSeparator (i + 1 < size);
       item->setCssStyle ("choser-item");
       lay->addWidget (item);
@@ -105,6 +115,23 @@ void ChooseThemeModel::slotSetup()
 
   if (!m_list.isEmpty())
     emit filled();
+}
+
+void ChooseThemeModel::slotRetranslate()
+{
+  /* start cycling */
+  int size = m_array.size();
+  if (lay->count() < size)
+    return;
+
+  for (int i = 0; i < size; i++)
+    {
+      const auto &item  = m_array[i];
+      auto button       = qobject_cast<DapGuiRadio*> (lay->itemAt(i)->widget());
+      if (button == nullptr)
+        continue;
+      button->setText (themeName (item));
+    }
 }
 
 void ChooseThemeModel::slotToggled(bool checked)
@@ -125,7 +152,7 @@ void ChooseThemeModel::slotToggled(bool checked)
   if (m_currentIndex == -1)
     return;
 
-  /* get current server */
+  /* get current text */
   m_currentText = s->text();
 
   /* show selection and select */
