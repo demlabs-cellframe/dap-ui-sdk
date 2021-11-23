@@ -39,6 +39,10 @@ public:
     static QString currentLogFileName(const QString a_brand, const QString a_appType);
     static QString currentLogFilePath(const QString a_brand, const QString a_appType);
 
+    static QString defaultPluginPath(const QString a_brand);
+    void setPathToPlugin(QString path){ m_pathToPlugin = path; }
+    QString getPathToPlugin(){ return m_pathToPlugin; }
+
     QString getCurrentLogName(){ return m_currentLogName; }
     void updateCurrentLogName();
 
@@ -50,6 +54,7 @@ private:
     QString m_pathToLog;
     QString m_currentLogName;
     QString m_appType;
+    QString m_pathToPlugin;
 };
 
 #endif // DAPLOGGER_H
