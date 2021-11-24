@@ -52,7 +52,7 @@ public:
   void setColorThemeArray (const QJsonArray &a_array, ChooseTheme *a_cs);
   void setCurrentColorTheme (const QString a_colorTheme);
   const QStringList &array() const;
-  QString themeName (const QString a_colorTheme);
+  QString themeName (const QString a_colorTheme, const QString a_transColorTheme = QString());
   /// @}
 
   /****************************************//**

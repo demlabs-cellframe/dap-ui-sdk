@@ -62,14 +62,16 @@ const QStringList &ChooseThemeModel::array() const
   return m_array;
 }
 
-QString ChooseThemeModel::themeName(const QString a_colorTheme)
+QString ChooseThemeModel::themeName (const QString a_colorTheme, const QString a_transColorTheme)
 {
   QMap<QString, QString> ctName =
   {
     { "Light Theme",  tr("Light Theme") },
     { "Dark Theme",   tr("Dark Theme") },
   };
-  return ctName.value(a_colorTheme, ctName.first());
+  if (!a_colorTheme.isEmpty())
+    return ctName.value(a_colorTheme, ctName.first());
+  return ctName.key(a_transColorTheme, ctName.first());
 }
 
 /********************************************
@@ -153,7 +155,7 @@ void ChooseThemeModel::slotToggled(bool checked)
     return;
 
   /* get current text */
-  m_currentText = s->text();
+  m_currentText = themeName(QString(), s->text());
 
   /* show selection and select */
   QTimer::singleShot(300, [&]
