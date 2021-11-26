@@ -32,6 +32,20 @@ Page
     ///@detalis dapRightPanelWidth External property for possibility to hiding RightPanel
     property int dapRightPanelWidth
 
+    //Close button for right pannel
+    property DapButton dapButtonClose:
+    DapButton
+    {
+        id: buttonClose
+        height: 20 * pt
+        width: 20 * pt
+        heightImageButton: 10 * pt
+        widthImageButton: 10 * pt
+        activeFrame: false
+        normalImageButton: "qrc:/resources/icons/"+pathTheme+"/close_icon.png"
+        hoverImageButton:  "qrc:/resources/icons/"+pathTheme+"/close_icon_hover.png"
+    }
+
     //Header height
     dapHeader.height: 36 * pt
     dapRightPanelWidth: visible? 350 * pt : 0 * pt
@@ -47,70 +61,44 @@ Page
         bottomMargin: 20 * pt
     }
 
-    background: Rectangle {
-        id: backGrndRect
+    background:
+    Item {}
+
+    DapRectangleLitAndShaded
+    {
+        id: mainFrameHistory
+        anchors.fill: parent
         color: currTheme.backgroundElements
         radius: currTheme.radiusRectangle
+        shadowColor: currTheme.shadowColor
+        lightColor: currTheme.reflectionLight
 
-        InnerShadow {
-            id: topLeftSadow
-            anchors.fill: backGrndRect
-            cached: true
-            horizontalOffset: 5
-            verticalOffset: 5
-            radius: 4
-            samples: 32
-            color: "#2A2C33"
-            smooth: true
-            source: backGrndRect
-        }
-        InnerShadow {
-            anchors.fill: backGrndRect
-            cached: true
-            horizontalOffset: -1
-            verticalOffset: -1
-            radius: 1
-            samples: 32
-            color: "#4C4B5A"
-            //            smooth: true
-            source: topLeftSadow
-        }
+        contentData:
+            Item
+            {
+                anchors.fill: parent
+
+                // Install right panel title
+                Item
+                {
+                    id: headerRightPanel
+                    data: dapHeaderData
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                }
+                // Install right panel content
+                Item
+                {
+                    id: contentItemRightPanel
+                    data: dapContentItemData
+                    anchors.top: headerRightPanel.bottom
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                }
+            }
     }
 
-    //Close button for right pannel
-    property DapButton dapButtonClose:
-        DapButton
-        {
-            id: buttonClose
-            height: 20 * pt
-            width: 20 * pt
-            heightImageButton: 10 * pt
-            widthImageButton: 10 * pt
-            activeFrame: false
-            normalImageButton: "qrc:/resources/icons/"+pathTheme+"/close_icon.png"
-            hoverImageButton:  "qrc:/resources/icons/"+pathTheme+"/close_icon_hover.png"
-        }
-
-
-
-    // Install right panel title
-    Item
-    {
-        id: headerRightPanel
-        data: dapHeaderData
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-    }
-    // Install right panel content
-    Item
-    {
-        id: contentItemRightPanel
-        data: dapContentItemData
-        anchors.top: headerRightPanel.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-    }
 
 }

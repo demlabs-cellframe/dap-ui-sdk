@@ -35,5 +35,6 @@
         <file>widgets/DapTextField.qml</file>
         <file>widgets/DapComboBoxNew.qml</file>
         <file>icons/arrow_down.svg</file>
+        <file>widgets/DapRectangleLitAndShaded.qml</file>
     </qresource>
 </RCC>
