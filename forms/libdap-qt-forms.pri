@@ -78,25 +78,25 @@ HEADERS     += \
     $$PWD/vpnDefine.h
 
 FORMS += \
-    $$PWD/ui/$$BRAND/bugreports.ui \
-    $$PWD/ui/$$BRAND/chooseserver.ui \
-    $$PWD/ui/$$BRAND/dashboard.ui \
-    $$PWD/ui/$$BRAND/documentpopup.ui \
-    $$PWD/ui/$$BRAND/history.ui \
-    $$PWD/ui/$$BRAND/language.ui \
-    $$PWD/ui/$$BRAND/login.ui \
-    $$PWD/ui/$$BRAND/menufooter.ui \
-    $$PWD/ui/$$BRAND/popupdialog.ui \
-    $$PWD/ui/$$BRAND/purchase.ui \
-    $$PWD/ui/$$BRAND/serialinput.ui \
-    $$PWD/ui/$$BRAND/settings.ui \
-    $$PWD/ui/$$BRAND/splashscreen.ui \
-    $$PWD/ui/$$BRAND/statistics.ui \
-    $$PWD/ui/$$BRAND/versionupdate.ui \
-    $$PWD/ui/$$BRAND/choosetheme.ui
+    $$PWD/ui/brand_ui/$$BRAND/bugreports.ui \
+    $$PWD/ui/brand_ui/$$BRAND/chooseserver.ui \
+    $$PWD/ui/brand_ui/$$BRAND/dashboard.ui \
+    $$PWD/ui/brand_ui/$$BRAND/documentpopup.ui \
+    $$PWD/ui/brand_ui/$$BRAND/history.ui \
+    $$PWD/ui/brand_ui/$$BRAND/language.ui \
+    $$PWD/ui/brand_ui/$$BRAND/login.ui \
+    $$PWD/ui/brand_ui/$$BRAND/menufooter.ui \
+    $$PWD/ui/brand_ui/$$BRAND/popupdialog.ui \
+    $$PWD/ui/brand_ui/$$BRAND/purchase.ui \
+    $$PWD/ui/brand_ui/$$BRAND/serialinput.ui \
+    $$PWD/ui/brand_ui/$$BRAND/settings.ui \
+    $$PWD/ui/brand_ui/$$BRAND/splashscreen.ui \
+    $$PWD/ui/brand_ui/$$BRAND/statistics.ui \
+    $$PWD/ui/brand_ui/$$BRAND/versionupdate.ui \
+    $$PWD/ui/brand_ui/$$BRAND/choosetheme.ui
 
 RESOURCES += \
-    $$PWD/ui/$$BRAND/appRes.qrc
+    $$PWD/ui/brand_ui/$$BRAND/appRes.qrc
 
 DISTFILES += \
     $$PWD/DoxyLayout.xml \
