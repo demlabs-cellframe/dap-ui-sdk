@@ -14,6 +14,8 @@ Rectangle
     property font fontMessage
     ///@details fontButtonText Font setting.
     property font fontButtonText
+    color: currTheme.backgroundElements
+    radius: currTheme.radiusRectangle
 
     layer.enabled: true
     layer.effect:
@@ -23,7 +25,7 @@ Rectangle
             verticalOffset: 3
             radius: 13
             samples: 17
-            color: "#ababab"
+            color: currTheme.shadowColor
         }
 
     Rectangle
@@ -33,7 +35,8 @@ Rectangle
         anchors.left: parent.left
         anchors.right: parent.right
         height: 44 * pt
-        color: "#908D9D"
+        color: currTheme.backgroundMainScreen
+        radius: currTheme.radiusRectangle
 
         Text
         {
@@ -44,7 +47,19 @@ Rectangle
             anchors.leftMargin: 30 * pt
             anchors.rightMargin: 30 * pt
             font: fontMessage
-            color: "#FFFFFF"
+            color: currTheme.textColor
+        }
+        Rectangle
+        {
+            anchors
+            {
+                top: titleText.bottom
+                bottom: parent.bottom
+                left: parent.left
+                right: parent.right
+            }
+            height: 10 * pt
+            color: currTheme.backgroundMainScreen
         }
     }
 
@@ -60,7 +75,7 @@ Rectangle
         anchors.rightMargin: 30 * pt
         anchors.bottomMargin: 32 * pt
         height: 172 * pt
-        color: "#FFFFFF"
+        color: currTheme.backgroundElements
 
         Text
         {
@@ -70,7 +85,7 @@ Rectangle
             anchors.right: parent.right
             anchors.bottom: buttonOk.top
             font: fontMessage
-            color: "#070023"
+            color: currTheme.textColor
             wrapMode: Text.WordWrap
         }
 
@@ -82,15 +97,8 @@ Rectangle
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             textButton: qsTr("OK")
-            colorBackgroundNormal:"#3E3853"
-            colorBackgroundHover: "#D51F5D"
-            colorButtonTextNormal: "#FFFFFF"
-            colorButtonTextHover: "#FFFFFF"
             fontButton: fontButtonText
-            borderColorButton: "#FFFFFF"
-            borderWidthButton: 0
             horizontalAligmentText:Qt.AlignCenter
-            colorTextButton: "#FFFFFF"
         }
     }
 }

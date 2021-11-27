@@ -16,6 +16,7 @@ Rectangle
 
     anchors.fill: parent
     color: currTheme.backgroundMainScreen
+    radius: 16 * pt
     width: 678 * pt
 
 //    anchors
