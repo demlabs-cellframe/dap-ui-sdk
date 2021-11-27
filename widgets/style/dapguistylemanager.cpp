@@ -52,6 +52,11 @@ public:
   {
     s_styleMap.patch (themesArray, themeDir);
   }
+
+  QStringList keys()
+  {
+    return s_styleMap.keys();
+  }
 };
 
 };
@@ -165,6 +170,11 @@ QString DapGuiStyleManager::styleByClassList (const QString &classNameList)
 QString DapGuiStyleManager::styleByClassList (const QStringList &classNameList)
 {
   return Gss()[classNameList];
+}
+
+QStringList DapGuiStyleManager::classList()
+{
+  return Gss().keys();
 }
 
 DapGuiStyleManager &DapGuiStyleManager::_signal()
