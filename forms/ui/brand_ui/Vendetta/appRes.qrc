@@ -22,5 +22,6 @@
         <file>data/privacy.html</file>
         <file>asset/logo-vendeta-white.png</file>
         <file>asset/logo-vendeta-color.png</file>
+        <file>asset/logo-vendeta-color-dark.png</file>
     </qresource>
 </RCC>
