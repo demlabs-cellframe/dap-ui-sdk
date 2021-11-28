@@ -180,6 +180,8 @@ protected:
   static QString styleByClassList (const QString &classNameList);
   /// collect all styles by class array
   static QString styleByClassList (const QStringList &classNameList);
+  /// all classes list
+  static QStringList classList();
   /// get singleton signal instance
   static DapGuiStyleManager &_signal();
 protected slots:
