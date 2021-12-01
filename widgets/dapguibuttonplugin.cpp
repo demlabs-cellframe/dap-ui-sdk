@@ -37,7 +37,7 @@ QString DapGuiButtonPlugin::name() const
 
 QString DapGuiButtonPlugin::group() const
 {
-  return QLatin1String("KelVPN-Neuromorphic");
+  return QLatin1String(DAP_BRAND "-Neuromorphic");
 }
 
 QIcon DapGuiButtonPlugin::icon() const
@@ -47,12 +47,12 @@ QIcon DapGuiButtonPlugin::icon() const
 
 QString DapGuiButtonPlugin::toolTip() const
 {
-  return QLatin1String("KelVPN-Neuromorphic GUI Element");
+  return QLatin1String(DAP_BRAND "-Neuromorphic GUI Element");
 }
 
 QString DapGuiButtonPlugin::whatsThis() const
 {
-  return QLatin1String("Custom QWidget for KelVPN-Neuromorphic");
+  return QLatin1String("Custom QWidget for " DAP_BRAND "-Neuromorphic");
 }
 
 bool DapGuiButtonPlugin::isContainer() const
