@@ -1,7 +1,17 @@
 #ifndef DAPPLUGINSPATHCONTROLL_H
 #define DAPPLUGINSPATHCONTROLL_H
 
+#include <QCoreApplication>
 #include <QObject>
+#include <QDebug>
+#include <QFile>
+#include <QDateTime>
+#include <QDir>
+#include <QTimer>
+#include <QFileSystemWatcher>
+
+#include "dap_common.h"
+#include "dap_file_utils.h"
 
 class DapPluginsPathControll : public QObject
 {
