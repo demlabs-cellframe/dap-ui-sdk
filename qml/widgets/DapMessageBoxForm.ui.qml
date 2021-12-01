@@ -1,6 +1,9 @@
 import QtQuick 2.4
 import QtQuick.Controls 2.0
+import QtQuick.Controls 1.4 as OldControls
+import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.0
+import QtQuick.Layouts 1.12
 
 Rectangle
 {
@@ -8,7 +11,9 @@ Rectangle
 
     property alias dapTitleText: titleText
     property alias dapContentText: contentText
+    property alias dapContentInput: contentInput
     property alias dapButtonOk: buttonOk
+    property alias dapButtonBack: buttonBack
 
     ///@details fontMessage Font setting.
     property font fontMessage
@@ -70,9 +75,9 @@ Rectangle
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        anchors.topMargin: 30 * pt
-        anchors.leftMargin: 30 * pt
-        anchors.rightMargin: 30 * pt
+        anchors.topMargin: 20 * pt
+        anchors.leftMargin: 15 * pt
+        anchors.rightMargin: 15 * pt
         anchors.bottomMargin: 32 * pt
         height: 172 * pt
         color: currTheme.backgroundElements
@@ -83,10 +88,57 @@ Rectangle
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.bottom: buttonOk.top
             font: fontMessage
             color: currTheme.textColor
             wrapMode: Text.WordWrap
+        }
+        OldControls.TextField
+        {
+            id:contentInput
+            anchors.top: contentText.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: 30 * pt
+            anchors.topMargin: 20 * pt
+            visible: false
+            font: fontMessage
+            clip:true
+            style:
+                TextFieldStyle
+                {
+                    textColor: currTheme.textColor
+                    placeholderTextColor: currTheme.textColor
+                    background:
+                        Rectangle
+                        {
+                            border.width: 0
+                            color: currTheme.backgroundElements
+                        }
+                }
+            Rectangle //bottom line
+            {
+                anchors
+                {
+                    left: parent.left
+                    right: parent.right
+                    top: parent.bottom
+                }
+                height: 1 * pt
+                color: currTheme.borderColor
+            }
+        }
+
+        DapButton
+        {
+            id: buttonBack
+            widthButton: 78 * pt
+            heightButton: 36 * pt
+            anchors.left: parent.left
+            anchors.bottom: parent.bottom
+            textButton: qsTr("Back")
+            fontButton: fontButtonText
+            horizontalAligmentText:Qt.AlignCenter
+            visible: contentInput.visible
         }
 
         DapButton
@@ -96,9 +148,10 @@ Rectangle
             heightButton: 36 * pt
             anchors.right: parent.right
             anchors.bottom: parent.bottom
-            textButton: qsTr("OK")
+            textButton: qsTr("Ok")
             fontButton: fontButtonText
             horizontalAligmentText:Qt.AlignCenter
         }
+
     }
 }
