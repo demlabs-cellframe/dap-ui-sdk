@@ -1,5 +1,9 @@
 #include "DapPluginsPathControll.h"
 
+#ifdef Q_OS_WIN
+#include "registry.h"
+#endif
+
 DapPluginsPathControll::DapPluginsPathControll(QObject *parent) : QObject(parent)
 {
 
