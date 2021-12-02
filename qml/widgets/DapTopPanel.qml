@@ -17,26 +17,10 @@ Page
         radius: 20
         color: currTheme.backgroundPanel
 
-        Rectangle {
-            height: control.height
-            width: 50
-            color: parent.color
-            anchors {
-                top: parent.top
-                right: parent.right
-            }
-        }
-
-        Rectangle {
-            id: leftRect
-            width: 50
-            height: parent.height - parent.radius
-            color: parent.color
-            anchors {
-                top: parent.top
-                left: parent.left
-            }
-        }
+        height: control.height - (currTheme.radiusRectangle-5*pt)
+        anchors.top: control.top
+        anchors.left: control.left
+        radius: 1
     }
 
     DropShadow {
