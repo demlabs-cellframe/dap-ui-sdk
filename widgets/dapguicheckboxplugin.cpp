@@ -36,7 +36,7 @@ QString DapGuiCheckBoxPlugin::name() const
 
 QString DapGuiCheckBoxPlugin::group() const
 {
-  return QLatin1String(DAP_BRAND "-Neuromorphic");
+  return QLatin1String ("KelVPN-Neuromorphic");
 }
 
 QIcon DapGuiCheckBoxPlugin::icon() const
@@ -46,12 +46,12 @@ QIcon DapGuiCheckBoxPlugin::icon() const
 
 QString DapGuiCheckBoxPlugin::toolTip() const
 {
-  return QLatin1String(DAP_BRAND "-Neuromorphic GUI Element");
+  return QLatin1String ("KelVPN-Neuromorphic GUI Element");
 }
 
 QString DapGuiCheckBoxPlugin::whatsThis() const
 {
-  return QLatin1String("Custom QWidget for " DAP_BRAND "-Neuromorphic");
+  return QLatin1String ("Custom QWidget for KelVPN-Neuromorphic");
 }
 
 bool DapGuiCheckBoxPlugin::isContainer() const
