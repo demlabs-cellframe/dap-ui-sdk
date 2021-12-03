@@ -12,6 +12,7 @@
 #include "DapKeyCommon.h"
 #include "DapBugReportData.h"
 #include "DapServersData.h"
+#include "DapBugReportHistory.h"
 #include "DapSignUpData.h"
 #include "DapUtils.h"
 #include "DataToUpdate.h"
@@ -80,11 +81,13 @@ public:
     void saveSerialKeyData();
 
     void saveHistoryData(QString a_type, QString a_data);
-    QList<QString> getHistoryData(QString a_type);
+    QList<QString> getHistorySerialKeyData();
 
     static DapBugReportData *bugReportData();
     static DapServersData   *serversData();
     DapSerialKeyData* serialKeyData();
+
+    DapBugReportHistory *bugReportHistory();
 
 public slots:
     void setLogin(const QString &a_login);
@@ -117,6 +120,8 @@ private:
 
     DapSerialKeyData* m_serialKeyData;
     QSet <QString> * m_serialKeyDataList;
+
+    DapBugReportHistory* m_buReportHistory;
 };
 
 template<typename T>

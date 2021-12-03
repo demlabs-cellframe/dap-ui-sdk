@@ -36,6 +36,7 @@ DapDataLocal::picturesMap DapDataLocal::m_pictruePath = {
 DapDataLocal::DapDataLocal()
     : QObject()
     , m_serialKeyData(new DapSerialKeyData(this))
+    , m_buReportHistory(new DapBugReportHistory(this))
 {
     qDebug() << "[DL] DapDataLocal Constructor";
     parseXML(":/data.xml");
@@ -178,12 +179,10 @@ void DapDataLocal::saveHistoryData(QString a_type, QString a_data)
     delete m_tempHistoryDataList;
 }
 
-QList<QString> DapDataLocal::getHistoryData(QString a_type)
+QList<QString> DapDataLocal::getHistorySerialKeyData()
 {
     QList<QString>* m_tempHistoryDataList = new QList<QString>;
-
-
-    this->loadFromSettings(a_type, *m_tempHistoryDataList);
+    this->loadFromSettings(TEXT_SERIAL_KEY_HISTORY, *m_tempHistoryDataList);
     return *m_tempHistoryDataList;
 }
 
@@ -305,6 +304,11 @@ DapServersData *DapDataLocal::serversData()
 DapSerialKeyData *DapDataLocal::serialKeyData()
 {
     return m_serialKeyData;
+}
+
+DapBugReportHistory * DapDataLocal::bugReportHistory()
+{
+    return m_buReportHistory;
 }
 
 void DapDataLocal::initSecretKey()

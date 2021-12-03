@@ -64,7 +64,7 @@ void HistoryModel::slotSetup()
   m_list.clear();
 
   /* create new buttons */
-  foreach (auto &item, DapDataLocal::instance()->getHistoryData(TEXT_SERIAL_KEY_HISTORY))
+  foreach (auto &item, DapDataLocal::instance()->getHistorySerialKeyData())
     {
       /* create item */
       DapGuiButton *btn = new DapGuiButton;

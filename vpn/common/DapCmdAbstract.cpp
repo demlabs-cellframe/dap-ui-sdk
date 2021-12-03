@@ -13,6 +13,7 @@ QMap<DapJsonCmdType, QString> DapCmdAbstract::cmdString = {
     {DapJsonCmdType::PING_SERVER, "ping server"},
     {DapJsonCmdType::SEND_SERVER_DATA, "send server data"},
     {DapJsonCmdType::SEND_BUG_REPORT, "send bug report"},
+    {DapJsonCmdType::BUG_REPORTS_STATUS, "bug reports status request"},
     {DapJsonCmdType::SEND_SIGN_UP_REQUEST, "send sign up request"},
     {DapJsonCmdType::GET_NEWS, "get news"},
     {DapJsonCmdType::GET_SERVERS_LIST, "get servers list"},

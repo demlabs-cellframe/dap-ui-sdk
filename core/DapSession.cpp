@@ -36,16 +36,17 @@
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
 
-const QString DapSession::URL_ENCRYPT       ("enc_init");
-const QString DapSession::URL_STREAM        ("stream");
-const QString DapSession::URL_DB            ("db");
-const QString DapSession::URL_CTL           ("stream_ctl");
-const QString DapSession::URL_DB_FILE       ("db_file");
-const QString DapSession::URL_SERVER_LIST   ("nodelist");
-const QString DapSession::URL_TX            ("tx");
-const QString DapSession::URL_BUG_REPORT    ("bugreport");
-const QString DapSession::URL_NEWS          ("news");
-const QString DapSession::URL_SIGN_UP       ("wp-json/dapvpn/v1/register/");
+const QString DapSession::URL_ENCRYPT               ("enc_init");
+const QString DapSession::URL_STREAM                ("stream");
+const QString DapSession::URL_DB                    ("db");
+const QString DapSession::URL_CTL                   ("stream_ctl");
+const QString DapSession::URL_DB_FILE               ("db_file");
+const QString DapSession::URL_SERVER_LIST           ("nodelist");
+const QString DapSession::URL_TX                    ("tx");
+const QString DapSession::URL_BUG_REPORT            ("bugreport");
+const QString DapSession::URL_BUG_REPORTS_STATUS    ("bugreport");
+const QString DapSession::URL_NEWS                  ("news");
+const QString DapSession::URL_SIGN_UP               ("wp-json/dapvpn/v1/register/");
 #ifdef BUILD_VAR_GOOGLE
 const QString DapSession::URL_VERIFY_PURCHASE("verify_purchase");
 #endif
@@ -146,6 +147,25 @@ void DapSession::sendBugReport(const QByteArray &data)
     } else {
         m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(),
                                                 SLOT(answerBugReport()), QT_STRINGIFY(receivedBugReportAnswer));
+    }
+}
+
+void DapSession::sendBugReportStatusRequest(const QByteArray &data)
+{
+    if (!m_dapCryptCDB) {
+        this->setDapUri(*DapDataLocal::instance()->m_cdbIter, 80);
+        auto *l_tempConn = new QMetaObject::Connection();
+        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]{
+            preserveCDBSession();
+            m_netBugReportsStatusReply = encRequestRaw(data, URL_BUG_REPORTS_STATUS, QString(), QString(),
+                                                    SLOT(answerBugReport()), QT_STRINGIFY(receivedBugReportStatusAnswer));
+            disconnect(*l_tempConn);
+            delete l_tempConn;
+        });
+        requestServerPublicKey();
+    } else {
+        m_netBugReportsStatusReply = encRequestRaw(data, URL_BUG_REPORTS_STATUS, QString(), QString(),
+                                                SLOT(answerBugReport()), QT_STRINGIFY(receivedBugReportStatusAnswer));
     }
 }
 
@@ -534,6 +554,12 @@ void DapSession::answerBugReport()
 {
     qInfo() << "Bugreport reply: " << m_netSendBugReportReply->getReplyData();
     emit receivedBugReportAnswer(QString::fromUtf8(m_netSendBugReportReply->getReplyData()));
+}
+
+void DapSession::answerBugReportsStatus()
+{
+    qInfo() << "Bugreport status reply: " << m_netBugReportsStatusReply->getReplyData();
+    emit receivedBugReportStatusAnswer(QString::fromUtf8(m_netBugReportsStatusReply->getReplyData()));
 }
 
 void DapSession::clearCredentials()

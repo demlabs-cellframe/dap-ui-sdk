@@ -4,6 +4,7 @@ include (../quazip/quazip.pri)
 SOURCES += \
     $$PWD/DapBugReport.cpp \
     $$PWD/DapBugReportData.cpp \
+    $$PWD/DapBugReportHistory.cpp \
     $$PWD/DapDataLocal.cpp \
     $$PWD/DapLogHandler.cpp \
     $$PWD/DapNetworkAccessManager.cpp \
@@ -28,6 +29,7 @@ equals(BUILD_VARIANT, "GooglePlay") {
 HEADERS += \
     $$PWD/DapBugReport.h \
     $$PWD/DapBugReportData.h \
+    $$PWD/DapBugReportHistory.h \
     $$PWD/DapDataLocal.h \
     $$PWD/DapLogHandler.h \
     $$PWD/DapNetworkAccessManager.h \
