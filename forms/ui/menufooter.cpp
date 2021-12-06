@@ -17,21 +17,23 @@ MenuFooter::MenuFooter (QWidget *parent) :
     BaseForm (parent),
   ui (new Ui::MenuFooter),
   m_state (BS_CONNECTION),
-  m_lock (false)
+  m_lock (false),
+  m_active (false),
+  position ({0,0,0})
 {
   /* setup */
   ui->setupUi (this);
   setVisible (false);
   ui->progress->setVisible (false);
   setCssStyle ("footer backgroundcolor");
-//#ifndef Q_OS_ANDROID
-//  setCssStyle ("footer");
-//#else
-//  ui->Background->setCssStyle ("backgroundcolor");
-//#endif // Q_OS_ANDROID
+
   qRegisterMetaType<ButtonState> ("ButtonState");
   qRegisterMetaType<MenuFooter::ButtonState> ("MenuFooter::ButtonState");
   //setWindowFlags(Qt::WindowStaysOnTopHint);
+
+  /* setup animation */
+  m_posAnim  = new QPropertyAnimation (this, "pos");
+  m_posAnim->setDuration (100);
 
   /* fill state map */
   m_statesMap =
@@ -50,7 +52,12 @@ MenuFooter::MenuFooter (QWidget *parent) :
            this, &MenuFooter::slotButtonToggled);
 
   /* move to bottom */
-  slotMoveToBottom();
+  auto p = dynamic_cast<QWidget *> (parent);
+  position.screenHeight = p->height();
+  position.height       = UiScaling::pointsToPixels (HEIGHT, UiScaling::getNativDPI());
+  position.y            = position.screenHeight - position.height;
+  move (0, position.screenHeight);
+  QMetaObject::invokeMethod (this, &MenuFooter::slotMoveToBottom, Qt::QueuedConnection);
 }
 
 MenuFooter::~MenuFooter()
@@ -61,6 +68,17 @@ MenuFooter::~MenuFooter()
 /********************************************
  * METHODS
  *******************************************/
+
+bool MenuFooter::active() const
+{
+  return m_active;
+}
+
+void MenuFooter::setActive(bool newActive)
+{
+  m_active = newActive;
+  QMetaObject::invokeMethod (this, &MenuFooter::slotMoveToBottom, Qt::QueuedConnection);
+}
 
 MenuFooter::ButtonState MenuFooter::state() const
 {
@@ -99,28 +117,30 @@ void MenuFooter::slotSetButtonState (MenuFooter::ButtonState state)
 
 void MenuFooter::slotMoveToBottom()
 {
+  auto p = dynamic_cast<QWidget *> (parent());
   raise();
-//#ifndef Q_OS_ANDROID
-  if (auto p = dynamic_cast<QWidget *> (parent()))
-    {
-      auto hh     = UiScaling::pointsToPixels (HEIGHT, UiScaling::getNativDPI());
-      auto posY   = p->height() - hh;
-      move (0, posY);
-      //resize (p->width(), hh);
-      setMinimumSize (p->width(), hh);
-      setMaximumSize (p->width(), hh);
-      ui->Background->setMinimumSize (p->width(), hh);
-      ui->Background->setMaximumSize (p->width(), hh);
-      qDebug() << __PRETTY_FUNCTION__ << "y:" << posY << ",screen:" << p->width() << p->height() << height();
-    }
-//#else // Q_OS_ANDROID
-//  auto screen = QApplication::screens().first();
-//  auto height = UiScaling::pointsToPixels(HEIGHT, UiScaling::getNativDPI());
-//  auto posY   = screen->size().height() - height;
-//  move (0, posY);
-//  resize (screen->size().width(), height);
-//  qDebug() << __PRETTY_FUNCTION__ << "y:" << posY << ",screen:" << screen->size().width() << screen->size().height() << height;
-  //#endif // Q_OS_ANDROID
+
+  if (p == nullptr)
+    return;
+
+  position.screenHeight = p->height();
+  position.height       = UiScaling::pointsToPixels (HEIGHT, UiScaling::getNativDPI());
+  position.y            = position.screenHeight - position.height;
+
+//  if ((y() != position.y)
+//      && (y() != position.y))
+//    move (0, position.y);
+  //resize (p->width(), position.height);
+
+  setMinimumSize (p->width(), position.height);
+  setMaximumSize (p->width(), position.height);
+  ui->Background->setMinimumSize (p->width(), position.height);
+  ui->Background->setMaximumSize (p->width(), position.height);
+
+  _setAnimByState();
+  _startAnim();
+
+  qDebug() << __PRETTY_FUNCTION__ << "y:" << position.y << ",screen:" << p->width() << p->height() << height();
 }
 
 void MenuFooter::slotResizeEvent(QSize a_oldSize, QSize a_newSize)
@@ -145,6 +165,21 @@ void MenuFooter::slotButtonToggled (bool checked)
   auto state = m_statesMap.value (sender(), BS_NONE);
   slotSetButtonState (state);
   emit sigStateChanged (state);
+}
+
+void MenuFooter::_setAnimByState()
+{
+  m_posAnim->setStartValue (pos());
+  m_posAnim->setEndValue (
+      m_active
+      ? QPoint (0, position.y)
+      : QPoint (0, position.screenHeight)
+        );
+}
+
+void MenuFooter::_startAnim()
+{
+  m_posAnim->start();
 }
 
 /*-----------------------------------------*/

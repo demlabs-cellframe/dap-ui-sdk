@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <QWidget>
 #include <QMap>
+#include <QPropertyAnimation>
 #include "baseform.h"
 
 /* DEFS */
@@ -49,7 +50,13 @@ private:
   Ui::MenuFooter *ui;
   ButtonState m_state;
   QMap<QObject *, ButtonState> m_statesMap;
-  bool m_lock; ///< prevent recursion in slotButtonToggled
+  bool m_lock;                      ///< prevent recursion in slotButtonToggled
+  bool m_active;                    ///< show/hide
+  QPropertyAnimation *m_posAnim; ///< toggle animation
+  struct
+  {
+    float y, height, screenHeight;
+  } position;
   /// @}
 
   /****************************************//**
@@ -66,6 +73,8 @@ public:
    *******************************************/
   /// @{
 public:
+  bool active() const;
+  void setActive (bool newActive);
   MenuFooter::ButtonState state() const;
   /// @}
 
@@ -95,6 +104,9 @@ public slots:
 private slots:
   /// react on user interaction
   void slotButtonToggled (bool checked);
+
+  void _setAnimByState();
+  void _startAnim();
   /// @}
 };
 
