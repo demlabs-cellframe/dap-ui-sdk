@@ -2,6 +2,7 @@
     <qresource prefix="/gui">
         <file>asset/bg_dark-stripes.png</file>
         <file>asset/ic_version.png</file>
+        <file>asset/logo.png</file>
         <file>asset/logo_kelvpn-white.png</file>
         <file>asset/logo_kelvpn-color.png</file>
         <file>asset/logo_kelvpn-color-dark.png</file>
