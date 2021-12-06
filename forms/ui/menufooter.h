@@ -52,7 +52,7 @@ private:
   QMap<QObject *, ButtonState> m_statesMap;
   bool m_lock;                      ///< prevent recursion in slotButtonToggled
   bool m_active;                    ///< show/hide
-  QPropertyAnimation *m_posAnim; ///< toggle animation
+  QPropertyAnimation *m_posAnim;    ///< animation
   struct
   {
     float y, height, screenHeight;
