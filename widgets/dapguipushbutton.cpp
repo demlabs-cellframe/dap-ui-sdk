@@ -22,9 +22,9 @@ struct _KgpbItem
 static QMap<DapGuiPushButton::Style, _KgpbItem> s_presets =
 {
   {DapGuiPushButton::Main,        {"://gfx/%1/btn_bg.png",         "://gfx/%1/btn_bg_hover_active.png",   "://gfx/%1/btn_bg_hover_active.png",   "cwpb_bigbutton"}},
-  {DapGuiPushButton::Connection,  {"://gfx/%1/btn_connection.png", "://gfx/%1/btn_connection_active.png", "://gfx/%1/btn_connection_active.png", "cwpb_square"}},
-  {DapGuiPushButton::Account,     {"://gfx/%1/btn_account.png",    "://gfx/%1/btn_account_active.png",    "://gfx/%1/btn_account_active.png",    "cwpb_square"}},
-  {DapGuiPushButton::Settings,    {"://gfx/%1/btn_settings.png",   "://gfx/%1/btn_settings_active.png",   "://gfx/%1/btn_settings_active.png",   "cwpb_square"}},
+  {DapGuiPushButton::Connection,  {"://gfx/%1/btn_connection.png", "://gfx/%1/btn_connection.png", "://gfx/%1/btn_connection_active.png", "cwpb_square"}},
+  {DapGuiPushButton::Account,     {"://gfx/%1/btn_account.png",    "://gfx/%1/btn_account.png",    "://gfx/%1/btn_account_active.png",    "cwpb_square"}},
+  {DapGuiPushButton::Settings,    {"://gfx/%1/btn_settings.png",   "://gfx/%1/btn_settings.png",   "://gfx/%1/btn_settings_active.png",   "cwpb_square"}},
   {DapGuiPushButton::Check,       {"://gfx/%1/check_btn_off.png",  "://gfx/%1/check_btn_on.png",          "://gfx/%1/check_btn_on.png",          "cwpb_checkbox"}},
   //{DapGuiPushButton::Radio,       {"://gfx/%1/radio_btn_off.png",  "://gfx/%1/radio_btn_on.png",          "://gfx/%1/radio_btn_on.png",         "cwpb_radio"}},
   {DapGuiPushButton::Switch,      {"://gfx/%1/switch_off.png",     "://gfx/%1/switch.png",                "://gfx/%1/switch.png",                "cwpb_switch"}},
