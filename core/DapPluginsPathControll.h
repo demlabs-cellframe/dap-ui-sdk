@@ -21,11 +21,14 @@ public:
 
 public:
     static QString defaultPluginPath(const QString a_brand);
-    void setPathToPlugin(QString path){ m_pathToPlugin = path; }
+    void setPathToPlugin(QString path){ m_pathToPlugin = path;
+                                        m_pathToPluginsDownload = path + "/download";}
     QString getPathToPlugin(){ return m_pathToPlugin; }
+    QString getPathToPluginsDownload(){ return m_pathToPluginsDownload; }
 
 private:
     QString m_pathToPlugin;
+    QString m_pathToPluginsDownload;
 
 
 };
