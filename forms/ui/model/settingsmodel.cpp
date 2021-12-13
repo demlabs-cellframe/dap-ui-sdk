@@ -240,6 +240,18 @@ void SettingsModel::_updateLabels()
   };
 }
 
+void SettingsModel::_getResetDialogLabels (
+    QString &a_title,
+    QString &a_description,
+    QString &a_btnYes,
+    QString &a_btnNo)
+{
+  a_title       = tr ("Reset the serial key");
+  a_description = tr ("This action will reset the serial\nkey on your device. Are you sure?");
+  a_btnYes      = tr ("YES");
+  a_btnNo       = tr ("NO");
+}
+
 /********************************************
  * STATIC FUNCTIONS
  *******************************************/

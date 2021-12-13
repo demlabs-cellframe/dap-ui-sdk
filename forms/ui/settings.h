@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <QWidget>
 #include "baseform.h"
+#include "model/settingsmodel.h"
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
@@ -41,6 +42,14 @@ private:
 public:
   explicit Settings (QWidget *parent = nullptr);
   ~Settings();
+  /// @}
+
+  /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  SettingsModel *model();
   /// @}
 
   /****************************************//**

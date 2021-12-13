@@ -20,6 +20,8 @@ class SettingsModel : public ModelBase
   DAPGUI_ENABLECSS
   //DAPGUI_ENABLEWIDGETSTYLE
 
+  friend class iSettings;
+
   /****************************************//**
    * @name DEFS
    *******************************************/
@@ -104,8 +106,13 @@ public:
    * @name PRIVATE METHODS
    *******************************************/
   /// @{
-private:
+protected:
   void _updateLabels();
+  void _getResetDialogLabels (
+      QString &a_title,
+      QString &a_description,
+      QString &a_btnYes,
+      QString &a_btnNo);
   /// @}
 };
 

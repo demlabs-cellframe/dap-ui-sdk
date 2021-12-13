@@ -63,7 +63,12 @@ public slots:
    * @param a_title[in] - title text
    * @param a_description[in] - description text
    */
-  void slotShow (QWidget *a_parent, const QString &a_title, const QString &a_description);
+  void slotShow (
+      QWidget *a_parent,
+      const QString &a_title,
+      const QString &a_description,
+      const QString &a_btnYes,
+      const QString &a_btnNo);
 
 protected slots:
   void _slotButtonPress();

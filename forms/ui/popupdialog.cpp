@@ -45,7 +45,12 @@ PopupDialog::~PopupDialog()
  * SLOTS
  *******************************************/
 
-void PopupDialog::slotShow (QWidget *a_parent, const QString &a_title, const QString &a_description)
+void PopupDialog::slotShow (
+    QWidget *a_parent,
+    const QString &a_title,
+    const QString &a_description,
+    const QString &a_btnYes,
+    const QString &a_btnNo)
 {
   /* create blur effect */
   QGraphicsBlurEffect *p_blur = new QGraphicsBlurEffect;
@@ -71,6 +76,8 @@ void PopupDialog::slotShow (QWidget *a_parent, const QString &a_title, const QSt
   /* setup text */
   ui->lTitle->setText (a_title);
   ui->lDescription->setText (a_description);
+  ui->btnYes->setText (a_btnYes);
+  ui->btnNo->setText (a_btnNo);
 
   /* display */
   show();
