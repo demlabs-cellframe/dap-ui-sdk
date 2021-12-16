@@ -192,13 +192,14 @@ void DapGuiStyleManager::forcedStyleUpdate()
   if(!m_widget)
     return;
 
-  auto style  = styleByClassName (m_cssStyle);
+  auto style    = styleByClassName (m_cssStyle);
+  auto objName  = m_widget->objectName();
 
   if(!style.contains("background"))
     style += "background-color: rgba(0,0,0,0);";
 
   QString s   =
-    "#" + m_widget->objectName() +
+    "#" + objName +
     "{" + style + "}";
 
   m_widget->setStyleSheet (s);

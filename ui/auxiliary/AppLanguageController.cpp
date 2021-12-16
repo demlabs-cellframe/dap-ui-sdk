@@ -5,7 +5,8 @@
 #include <DapDataLocal.h>
 
 AppLanguageController::AppLanguageController(QList<QLocale::Language> a_languages, QObject *a_parent)
-    :QObject(a_parent)
+    : QObject(a_parent)
+    , m_language (QLocale::English)
 {
     m_languagesModel.appendLanguages(a_languages);
     QLocale::Language systemLanguage = QLocale::system().language();
@@ -72,8 +73,6 @@ void AppLanguageController::retranslateApp(QLocale::Language a_language)
     if (m_language == a_language)
         return;
     m_language = a_language;
-
-    QLocale l(a_language);
 
     this->m_qtLanguageTranslator.load(a_language, "dapChainVPNClient", "_", ":/", ".qm");
     QApplication::instance()->installTranslator(&m_qtLanguageTranslator);

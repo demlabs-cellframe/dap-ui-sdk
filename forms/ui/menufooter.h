@@ -96,7 +96,7 @@ public slots:
   /// set progressbar range
   void slotSetProgressRange (int minimum, int maximum);
   /// change buttons states
-  void slotSetButtonState (ButtonState state);
+  void slotSetButtonState (MenuFooter::ButtonState state);
   /// fix position
   void slotMoveToBottom();
   /// resize event

@@ -56,7 +56,7 @@ void DapGuiGraphicsViewStyleManager::forcedGraphicsViewStyleUpdate()
   static QMap<QString, ColorStruct> mapColor =
   {
     { "light", {"#f7f8fa", "#D61F5D", "#2D1FD6"} },
-    { "dark",  {"#28264d", "#FF22A2", "#9F83FF"} },
+    { "dark",  {"#2f2e42", "#FF22A2", "#9F83FF"} },
   };
   auto dir    = themeDir();
   auto color  = mapColor.value (dir, mapColor.first());

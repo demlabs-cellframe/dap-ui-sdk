@@ -13,7 +13,10 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -26,100 +29,65 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <property name="spacing">
-    <number>0</number>
-   </property>
-   <item row="0" column="0">
-    <widget class="DapGuiLabel" name="kgpteu1">
-     <property name="text">
-      <string/>
-     </property>
+   <item>
+    <widget class="DapGuiLabel" name="kelGuiSpooser">
      <property name="cssStyle">
-      <string>cpte-1 cpte-base-hor cpte-base-ver noborder nobackground</string>
+      <string>cpxte-spooser noborder nobackground</string>
      </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="DapGuiLabel" name="kgpteu2">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="cssStyle">
-      <string>cpte-2 cpte-base-ver noborder nobackground</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="DapGuiLabel" name="kgpteu5">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="cssStyle">
-      <string>cpte-5 cpte-base-hor cpte-base-ver noborder nobackground</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="DapGuiLabel" name="kgpteu3">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="cssStyle">
-      <string>cpte-3 cpte-base-hor noborder nobackground</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="DapGuiPlainTextEditInterface" name="kgpteuPlainTextEdit">
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(206, 92, 0);</string>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
-     </property>
-     <property name="plainText">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="DapGuiLabel" name="kgpteu6">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="cssStyle">
-      <string>cpte-6 cpte-base-hor noborder nobackground</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="DapGuiLabel" name="kgpteu8">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="cssStyle">
-      <string>cpte-8 cpte-base-hor cpte-base-ver noborder nobackground</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="DapGuiLabel" name="kgpteu4">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="cssStyle">
-      <string>cpte-4 cpte-base-ver noborder nobackground</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="DapGuiLabel" name="kgpteu7">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="cssStyle">
-      <string>cpte-7 cpte-base-hor cpte-base-ver noborder nobackground</string>
-     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="DapGuiLabel" name="kgpteuDolder">
+        <property name="cssStyle">
+         <string>cpxte-dolder noborder nobackground</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="DapGuiPlainTextEditInterface" name="kgpteuPlainTextEdit">
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(206, 92, 0);</string>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="plainText">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
@@ -129,6 +97,12 @@
    <class>DapGuiLabel</class>
    <extends>QLabel</extends>
    <header>dapguilabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DapGuiWidget</class>
+   <extends>QWidget</extends>
+   <header>dapguiwidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>DapGuiPlainTextEditInterface</class>

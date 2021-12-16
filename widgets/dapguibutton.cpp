@@ -133,6 +133,11 @@ DapGuiButton::DapGuiButton (QWidget *parent)
 #endif // QT_DEBUG
     }
 
+  /* temporary arrays */
+  _setMainTextWidgets           = m_widgets.values ("textMain") + m_widgets.values ("textMid") + m_widgets.values ("textEdit");
+  _setSubTextWidgetsSubRight    = m_widgets.values ("textSub") + m_widgets.values ("textRight");
+  _setSubTextWidgetsMain        = m_widgets.values ("textMain");
+
   /* signals */
   connect (ui->kelGuiLineEditMain, &DapGuiLineEdit::textChanged,
            this, &DapGuiButton::textChanged);
@@ -201,8 +206,7 @@ void DapGuiButton::setMainText (const QString &mainText)
 {
   m_mainText = mainText;
 
-  auto array = m_widgets.values ("textMain") + m_widgets.values ("textMid") + m_widgets.values ("textEdit");
-  for (auto i = array.begin(), e = array.end(); i != e; i++)
+  for (auto i = _setMainTextWidgets.begin(), e = _setMainTextWidgets.end(); i != e; i++)
     (*i)->setProperty("text", m_mainText);
 }
 
@@ -221,16 +225,14 @@ void DapGuiButton::setSubText (const QString &subText)
 {
   m_subText = subText;
 
-  auto array = m_widgets.values ("textSub") + m_widgets.values ("textRight");
-  for (auto i = array.begin(), e = array.end(); i != e; i++)
+  for (auto i = _setSubTextWidgetsSubRight.begin(), e = _setSubTextWidgetsSubRight.end(); i != e; i++)
     {
       auto j = as<DapGuiLabel> (*i);
       j->setText (m_subText);
       j->setVisible (!m_subText.isEmpty());
     }
 
-  array = m_widgets.values ("textMain");
-  for (auto i = array.begin(), e = array.end(); i != e; i++)
+  for (auto i = _setSubTextWidgetsMain.begin(), e = _setSubTextWidgetsMain.end(); i != e; i++)
     {
       auto j = as<DapGuiLabel> (*i);
 

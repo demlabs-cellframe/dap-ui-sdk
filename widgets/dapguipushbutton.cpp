@@ -257,13 +257,18 @@ void DapGuiPushButton::paintEvent(QPaintEvent *)
 
   QRect cr          = contentsRect();
   QSize scaledSize  = cr.size() * devicePixelRatioF();
-  QPixmap px  = QPixmap(":/" + pxFile)
-      .scaled(
-        scaledSize,
-        Qt::IgnoreAspectRatio,
-        Qt::SmoothTransformation);
+  if (_cache.size != scaledSize ||  _cache.filename != pxFile)
+  {
+      _cache.filename   = pxFile;
+      _cache.size       = scaledSize;
+      _cache.pixmap = QPixmap(":/" + pxFile)
+              .scaled(
+                scaledSize,
+                Qt::IgnoreAspectRatio,
+                Qt::SmoothTransformation);
+  }
 
-  p.drawPixmap (cr, px);
+  p.drawPixmap (cr, _cache.pixmap);
   p.drawItemText (rect(), Qt::AlignCenter, palette(), isEnabled(), text(), QPalette::ButtonText);
   //p.drawControl (QStyle::CE_PushButton, option);
 }

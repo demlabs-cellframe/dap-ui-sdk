@@ -64,11 +64,14 @@ void DapGuiPlainTextEditStyleManager::updatePlaceholderStyle (bool a_isEmpty)
     {
       auto s  =
         (!a_isEmpty)
-        ? QString() + styleByClassName ("cpte-text")
-        : QString() + styleByClassName ("cpte-text") + styleByClassName ("cpte-text-placeholder");
+        ? QString() + styleByClassName ("cpxte-text")
+        : QString() + styleByClassName ("cpxte-text") + styleByClassName ("cpxte-text-placeholder");
       p->editWidget()->setStyleSheet (s);
       p->editWidget()->style()->polish (p->editWidget());
-      s   = styleByClassList (QString ("nobackground noborder").split (" "));
+      s = QString (
+             "#%1{%2}"
+           ).arg (p->objectName(), styleByClassList (QString ("cpxte-holder nobackground noborder").split (" ")));
+      //s   = styleByClassList (QString ("cpxte-holder nobackground noborder").split (" "));
       p->setStyleSheet (s);
     }
 }
@@ -102,10 +105,13 @@ void DapGuiPlainTextEditStyleManager::slotTimedStyleUpdate()
   auto s = QString (
          "*{%1}\n"
          "*[plainText=\"\"]{%2}\n"
-       ).arg (styleByClassName ("cpte-text"), styleByClassName ("cpte-text-placeholder"));
+       ).arg (styleByClassName ("cpxte-text"), styleByClassName ("cpxte-text-placeholder"));
   p->editWidget()->setStyleSheet (s);
   p->editWidget()->style()->polish (p->editWidget());
-  s   = styleByClassList (QString ("nobackground noborder").split (" "));
+  s = QString (
+         "#%1{%2}"
+       ).arg (p->objectName(), styleByClassList (QString ("cpxte-holder nobackground noborder").split (" ")));
+  //s   = styleByClassList (QString ("cpxte-holder nobackground noborder").split (" "));
   p->setStyleSheet (s);
 #endif // Q_OS_ANDROID
 }

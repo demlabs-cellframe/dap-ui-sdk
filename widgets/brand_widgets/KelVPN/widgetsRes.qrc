@@ -22,14 +22,7 @@
         <file>gfx/light/btn_connection.png</file>
         <file>gfx/light/btn_account_active.png</file>
         <file>gfx/light/btn_account.png</file>
-        <file>gfx/light/frame_left.png</file>
-        <file>gfx/light/frame_topleft.png</file>
-        <file>gfx/light/frame_top.png</file>
-        <file>gfx/light/frame_topright.png</file>
-        <file>gfx/light/frame_right.png</file>
-        <file>gfx/light/frame_bottomright.png</file>
-        <file>gfx/light/frame_bottom.png</file>
-        <file>gfx/light/frame_bottomleft.png</file>
+        <file>gfx/light/report_bg.png</file>
         <file>gfx/light/separator_left.png</file>
         <file>gfx/light/separator_mid.png</file>
         <file>gfx/light/separator_right.png</file>
@@ -53,14 +46,7 @@
         <file>gfx/dark/btn_connection.png</file>
         <file>gfx/dark/btn_account_active.png</file>
         <file>gfx/dark/btn_account.png</file>
-        <file>gfx/dark/frame_left.png</file>
-        <file>gfx/dark/frame_topleft.png</file>
-        <file>gfx/dark/frame_top.png</file>
-        <file>gfx/dark/frame_topright.png</file>
-        <file>gfx/dark/frame_right.png</file>
-        <file>gfx/dark/frame_bottomright.png</file>
-        <file>gfx/dark/frame_bottom.png</file>
-        <file>gfx/dark/frame_bottomleft.png</file>
+        <file>gfx/dark/report_bg.png</file>
         <file>gfx/dark/separator_left.png</file>
         <file>gfx/dark/separator_mid.png</file>
         <file>gfx/dark/separator_right.png</file>

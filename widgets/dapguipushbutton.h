@@ -75,6 +75,12 @@ private:
   QGraphicsOpacityEffect *m_opacityEffect;
   DapGuiPushButtonStyleManager __kgsm = DapGuiPushButtonStyleManager (this);
   bool _styleHook;
+  struct
+  {
+      QString filename;
+      QPixmap pixmap;
+      QSize size;
+  } _cache;
   /// @}
 
   /****************************************//**
