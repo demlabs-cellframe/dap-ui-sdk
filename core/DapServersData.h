@@ -28,6 +28,7 @@ public:
     void clearServerList();
 
     QString currentServerName() const;
+    QString currentServerAdress() const;
 
     bool currentServerIsAuto() const;
 
@@ -52,7 +53,7 @@ signals:
 
     /// Signal emitted if server name has changed.
     /// @param serverName Server name.
-    void currentServerNameChanged(const QString& serverName);
+    void currentServerNameChanged(const DapServerInfo* server);
     void serverAdded(const DapServerInfo& dsi);
     void serversCleared();
 

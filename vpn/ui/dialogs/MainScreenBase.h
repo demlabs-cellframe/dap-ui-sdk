@@ -16,6 +16,7 @@
 
 #include <QDateTime>
 #include <QTimer>
+#include <QClipboard>
 #include "ui_MainScreen.h"
 #include "Utilz.h"
 #include "AppStyleSheetHandler.h"
@@ -154,11 +155,13 @@ protected:
 
     ConnectionState m_state {ConnectionState::Disconnected};
     QString m_currentServer {};
+    QString m_currentServerAdress {};
 
 
 public slots:
 
-    void setCurrentServer(const QString& a_currentServer);
+    void setCurrentServer(const DapServerInfo* a_currentServer);
+    void setCurrentServerAdress(const QString &a_currentServerAdress);
 
     void setAuthorized(bool a_authorized = true);
     void setStreamOpened(bool a_streamOpened = true);

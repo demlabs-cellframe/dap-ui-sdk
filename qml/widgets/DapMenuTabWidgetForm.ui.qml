@@ -11,12 +11,12 @@ Rectangle
 
     ///@detalis Main menu panel widget frame.
     property alias dapFrameMenuTab: frameMenuTab
+//    property alias dapFrameMenuTabColor: color
     ///@detalis Main menu bar widget.
     property ListView dapMenuWidget
     ///@detalis Path to the selected tab.
     property string pathScreen
 
-    color: "#070023"
     focus: true
 
     // Install the widget of the main menu panel
