@@ -41,7 +41,7 @@ void DapServersData::setCurrentServer(int a_serverIndex)
     if (!this->currentServer())
         return;
 
-    emit currentServerNameChanged(this->currentServer());
+    emit currentServerNameChanged(this->currentServerName());
 }
 
 void DapServersData::setCurrentServerNotSignal(int a_serverIndex)
