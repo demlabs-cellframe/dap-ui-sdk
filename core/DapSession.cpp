@@ -536,6 +536,11 @@ void DapSession::answerBugReport()
     emit receivedBugReportAnswer(QString::fromUtf8(m_netSendBugReportReply->getReplyData()));
 }
 
+void DapSession::resetReply() {
+    qDebug() << "Serial key reset reply: " << m_netKeyActivateReply->getReplyData();
+    emit receivedResetReply(QString::fromUtf8(m_netKeyActivateReply->getReplyData()));
+}
+
 void DapSession::clearCredentials()
 {
     qDebug() << "clearCredentials()";
@@ -604,6 +609,27 @@ DapNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const Q
     m_netKeyActivateReply = encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()), /*QT_STRINGIFY(errorAuthorization)*/ NULL);
     return m_netKeyActivateReply;
 }
+
+void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey) {
+    if (!m_dapCryptCDB) {
+        this->setDapUri(*DapDataLocal::instance()->m_cdbIter, 80);
+        auto *l_tempConn = new QMetaObject::Connection();
+        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, l_tempConn]{
+            preserveCDBSession();
+            m_netKeyActivateReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
+                                               URL_DB, "auth_deactivate", "serial",
+                                               SLOT(resetReply()), QT_STRINGIFY(receivedResetReply));
+            disconnect(*l_tempConn);
+            delete l_tempConn;
+        });
+        requestServerPublicKey();
+    } else {
+        m_netKeyActivateReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
+                                           URL_DB, "auth_deactivate", "serial",
+                                           SLOT(resetReply()), QT_STRINGIFY(receivedResetReply));
+    }
+}
+
 
 #ifdef BUILD_VAR_GOOGLE
 void DapSession::requestPurchaseVerify(const QJsonObject *params)

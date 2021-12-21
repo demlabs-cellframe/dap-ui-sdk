@@ -95,6 +95,8 @@ public slots:
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
     DapNetworkReply * activateKeyRequest(const QString& a_serial = QString(), const QByteArray& a_signed = QByteArray(),
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
+    void resetKeyRequest(const QString& a_serial = QString(),
+                                      const QString& a_domain = QString(), const QString& a_pkey = QString());
     DapNetworkReply * logoutRequest();
     DapNetworkReply *streamOpenRequest(const QString& subUrl, const QString& query, QObject* obj, const char *slot, const char *slot_err);
 
@@ -186,6 +188,8 @@ private slots:
     void onLogout();
     void answerBugReport();
     void answerSignUp();
+
+    void resetReply();
 signals:
     void encryptInitialized();
     void errorEncryptInitialization(const QString& msg);
@@ -206,6 +210,7 @@ signals:
     void logouted();
 
     Q_INVOKABLE void receivedBugReportAnswer(const QString&);
+    Q_INVOKABLE void receivedResetReply(const QString&);
     void sigSignUpAnswer(const QString& signUpAnswer);
     void sigReceivedNewsMessage(const QJsonDocument& news);
 #ifdef BUILD_VAR_GOOGLE
