@@ -31,7 +31,7 @@ Connection::Connection (QWidget *parent) :
            this, &Connection::sigSwitchToggle,
            Qt::QueuedConnection);
   connect (ui->btnSwitch, &DapGuiSwitch::clicked,
-           this, &Connection::slotDisconnectionRequested,
+           this, &Connection::slotConnectionRequesteButtonPressed,
            Qt::QueuedConnection);
   connect (ui->btnServer, &DapGuiButton::clicked,
            this, &Connection::sigServerClicked,
@@ -103,7 +103,6 @@ void Connection::setStatusIdicator(bool a_enabled /*= false*/)
 
 void Connection::setBtnSwitchChecked(bool a_authorized /*= true*/)
 {
-//    slotUpdateStatusIcon(a_authorized);
     ui->btnSwitch->setChecked(a_authorized);
 }
 
@@ -137,10 +136,9 @@ void Connection::_slotTimeUpdate()
   ui->lUptime->setText (text);
 }
 
-void Connection::slotDisconnectionRequested()
+void Connection::slotConnectionRequesteButtonPressed()
 {
-//    this->_slotUpdateStatusIcon();
-    emit sigDisconnectionRequested();
+    emit sigConnectionStatusChangeRequested();
 }
 
 //void Connection::slotUpdateStatusIcon(bool a_switch)

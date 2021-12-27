@@ -36,5 +36,8 @@
         <file>widgets/DapComboBoxNew.qml</file>
         <file>icons/arrow_down.svg</file>
         <file>widgets/DapRectangleLitAndShaded.qml</file>
+        <file>widgets/DapSwitch.qml</file>
+        <file>icons/switch_off.png</file>
+        <file>icons/switch_on.png</file>
     </qresource>
 </RCC>

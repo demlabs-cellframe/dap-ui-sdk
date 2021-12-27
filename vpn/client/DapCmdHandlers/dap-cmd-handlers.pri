@@ -4,6 +4,7 @@ SOURCES += \
     $$PWD/DapCmdPingServer.cpp \
     $$PWD/DapCmdSendBugReport.cpp \
     $$PWD/DapCmdSignUp.cpp \
+    $$PWD/DapCmdResetSerialKey.cpp \
     $$PWD/DapCmdTunTap.cpp \
     $$PWD/DapCmdUserData.cpp \
     $$PWD/DapCmdAuth.cpp \
@@ -24,6 +25,7 @@ HEADERS += \
     $$PWD/DapCmdPingServer.h \
     $$PWD/DapCmdSendBugReport.h \
     $$PWD/DapCmdSignUp.h \
+    $$PWD/DapCmdResetSerialKey.h \
     $$PWD/DapCmdTunTap.h \
     $$PWD/DapCmdUserData.h \
     $$PWD/DapCmdConnect.h \
