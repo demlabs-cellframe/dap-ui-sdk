@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>dapqml-widgets/DapQmlTabButton.qml</file>
+        <file>dapqml-widgets/DapQmlSeparator.qml</file>
+        <file>dapqml-widgets/DapQmlPushButton.qml</file>
+        <file>dapqml-widgets/DapQmlLabel.qml</file>
+        <file>dapqml-widgets/DapQmlButton.qml</file>
+    </qresource>
+</RCC>
