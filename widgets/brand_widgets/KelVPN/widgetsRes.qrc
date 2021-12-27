@@ -13,7 +13,6 @@
         <file>gfx/light/btn_bg_hover_active.png</file>
         <file>gfx/light/check_btn_off.png</file>
         <file>gfx/light/check_btn_on.png</file>
-        <file>gfx/light/ic_arrow-right.png</file>
         <file>gfx/light/radio_btn_off.png</file>
         <file>gfx/light/radio_btn_on.png</file>
         <file>gfx/light/btn_settings_active.png</file>
@@ -22,22 +21,16 @@
         <file>gfx/light/btn_connection.png</file>
         <file>gfx/light/btn_account_active.png</file>
         <file>gfx/light/btn_account.png</file>
-        <file>gfx/light/report_bg.png</file>
-        <file>gfx/light/separator_left.png</file>
-        <file>gfx/light/separator_mid.png</file>
-        <file>gfx/light/separator_right.png</file>
         <file>gfx/light/switch/toggle_on.png</file>
         <file>gfx/light/switch/bg_on.png</file>
         <file>gfx/light/switch/toggle_off.png</file>
         <file>gfx/light/switch/bg_off.png</file>
-        <file>gfx/light/btn_server_bg.png</file>
         <file>gfx/light/ic_close.png</file>
         <file>gfx/light/ic_close_hover.png</file>
         <file>gfx/dark/btn_bg.png</file>
         <file>gfx/dark/btn_bg_hover_active.png</file>
         <file>gfx/dark/check_btn_off.png</file>
         <file>gfx/dark/check_btn_on.png</file>
-        <file>gfx/dark/ic_arrow-right.png</file>
         <file>gfx/dark/radio_btn_off.png</file>
         <file>gfx/dark/radio_btn_on.png</file>
         <file>gfx/dark/btn_settings_active.png</file>
@@ -46,15 +39,10 @@
         <file>gfx/dark/btn_connection.png</file>
         <file>gfx/dark/btn_account_active.png</file>
         <file>gfx/dark/btn_account.png</file>
-        <file>gfx/dark/report_bg.png</file>
-        <file>gfx/dark/separator_left.png</file>
-        <file>gfx/dark/separator_mid.png</file>
-        <file>gfx/dark/separator_right.png</file>
         <file>gfx/dark/switch/toggle_on.png</file>
         <file>gfx/dark/switch/bg_on.png</file>
         <file>gfx/dark/switch/toggle_off.png</file>
         <file>gfx/dark/switch/bg_off.png</file>
-        <file>gfx/dark/btn_server_bg.png</file>
         <file>gfx/dark/ic_close.png</file>
         <file>gfx/dark/ic_close_hover.png</file>
         <file>style.css</file>
