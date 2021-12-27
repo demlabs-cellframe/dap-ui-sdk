@@ -16,8 +16,10 @@ Item {
 
     signal toggled()
 
-    property int leverOffPosition: 2
-    property int leverOnPosition: width - lever.width - 2
+    property int leverMargin: 4
+
+    property int leverOffPosition: leverMargin
+    property int leverOnPosition: width - lever.width - leverMargin
 
     function toggle() {
         if (toggleswitch.state == "on")
@@ -49,7 +51,7 @@ Item {
         radius: height*0.5
         color: backgroundColor
         border.color: borderColor
-        border.width: leverOffPosition
+        border.width: 2
     }
 
     InnerShadow
@@ -68,9 +70,9 @@ Item {
 
     Image {
         id: lever
-        x: leverOffPosition; y: 2
-        width: background.height-4
-        height: background.height-4
+        x: leverOffPosition; y: leverMargin
+        width: background.height - leverMargin*2
+        height: background.height - leverMargin*2
         source: imageOff
         fillMode: Image.PreserveAspectFit
     }
@@ -92,7 +94,7 @@ Item {
 
     transitions: Transition {
         id: positionTransition
-        NumberAnimation { properties: "x"; easing.type: Easing.InOutQuad; duration: 150 }
+        NumberAnimation { properties: "x"; easing.type: Easing.InOutQuad; duration: 100 }
     }
 
     MouseArea {
