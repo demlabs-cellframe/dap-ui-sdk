@@ -198,6 +198,7 @@ signals:
 
     Q_INVOKABLE void errorAuthorization(const QString&);
     void activateKey();
+    Q_INVOKABLE void errorActivation(const QString&);
     Q_INVOKABLE void errorNetwork(const QString&);
     Q_INVOKABLE void errorNetwork(const int, const QString&);
 

@@ -606,7 +606,7 @@ DapNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const Q
     int buf64len = dap_enc_base64_encode(a_signed.constData(), a_signed.size(), buf64, DAP_ENC_DATA_TYPE_B64_URLSAFE);
     QByteArray a_signedB64(buf64, buf64len);
     QByteArray bData = QString(a_serial + " ").toLocal8Bit() + a_signedB64 + QString(" " + a_domain + " " + a_pkey).toLocal8Bit();
-    m_netKeyActivateReply = encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()), /*QT_STRINGIFY(errorAuthorization)*/ NULL);
+    m_netKeyActivateReply = encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()), QT_STRINGIFY(errorActivation));
     return m_netKeyActivateReply;
 }
 
@@ -614,11 +614,11 @@ void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domai
     if (!m_dapCryptCDB) {
         this->setDapUri(*DapDataLocal::instance()->m_cdbIter, 80);
         auto *l_tempConn = new QMetaObject::Connection();
-        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, l_tempConn]{
+        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, a_serial, a_domain, a_pkey, l_tempConn]{
             preserveCDBSession();
             m_netKeyActivateReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
                                                URL_DB, "auth_deactivate", "serial",
-                                               SLOT(resetReply()), QT_STRINGIFY(receivedResetReply));
+                                               SLOT(resetReply()), QT_STRINGIFY(receivedResetReply), true);
             disconnect(*l_tempConn);
             delete l_tempConn;
         });
@@ -626,7 +626,7 @@ void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domai
     } else {
         m_netKeyActivateReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
                                            URL_DB, "auth_deactivate", "serial",
-                                           SLOT(resetReply()), QT_STRINGIFY(receivedResetReply));
+                                           SLOT(resetReply()), QT_STRINGIFY(receivedResetReply), true);
     }
 }
 
