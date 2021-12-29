@@ -57,9 +57,10 @@ DapQmlModelSettings::DapQmlModelSettings(QObject *parent)
   __inst  = this;
 
   /* signals */
-  QMetaObject::invokeMethod (
-        this, &DapQmlModelSettings::slotUpdateLabels,
-        Qt::QueuedConnection);
+//  QMetaObject::invokeMethod (
+//        this, &DapQmlModelSettings::slotUpdateLabels,
+//        Qt::QueuedConnection);
+  slotUpdateLabels();
 }
 
 /********************************************
@@ -124,9 +125,15 @@ void DapQmlModelSettings::slotUpdateLabels()
 {
   s_items =
   {
-    DapQmlModelSettingsItem{SI_SPACER,     "", "", "1", defaultCb},
-    DapQmlModelSettingsItem{SI_TITLETOP,   tr("Settings"), "", "settings_icon", defaultCb},
-    DapQmlModelSettingsItem{SI_SPACER,     "", "", "2", defaultCb},
+//    DapQmlModelSettingsItem{DapQmlModelSettings::StyleId(0),     "0", "", "1", defaultCb},
+//    DapQmlModelSettingsItem{DapQmlModelSettings::StyleId(1),     "1", "", "1", defaultCb},
+//    DapQmlModelSettingsItem{DapQmlModelSettings::StyleId(2),     "2", "", "1", defaultCb},
+//    DapQmlModelSettingsItem{DapQmlModelSettings::StyleId(3),     "3", "", "1", defaultCb},
+//    DapQmlModelSettingsItem{DapQmlModelSettings::StyleId(4),     "4", "", "1", defaultCb},
+
+//    DapQmlModelSettingsItem{SI_SPACER,     "", "", "1", defaultCb},
+    DapQmlModelSettingsItem{SI_TITLE/*TOP*/,   tr("Settings"), "", "settings_icon", defaultCb},
+//    DapQmlModelSettingsItem{SI_SPACER,     "", "", "2", defaultCb},
 
     DapQmlModelSettingsItem{SI_BUTTONRED,  tr("Get new licence key"), /*"265 days left"*/" ", "settings_icon ic_renew", cbLicenceGet},
     DapQmlModelSettingsItem{SI_BUTTON,     tr("Reset licence key"), "", "settings_icon ic_key", cbLicenceReset},

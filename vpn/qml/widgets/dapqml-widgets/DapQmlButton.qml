@@ -1,6 +1,7 @@
 import QtQuick 2.1
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
+import DapQmlStyle 1.0
 
 Rectangle {
     id: root
@@ -24,8 +25,18 @@ Rectangle {
     property color mainColor: "#04004E"
     property color leftColor: "#04004E"
     property color subColor: "#A4A3C0"
+    property int mainSize: 20
+    property int subSize: 12
+    property int leftSize: 30
+    property int mainWeight: Font.Bold
+    property int subWeight: Font.Normal
+    property int leftWeight: Font.Bold
+    property string icon: ""
+    property int iconSize: 34
     property int buttonStyle: DapQmlButton.Style.TopMainBottomSub
     property bool separator: true
+
+    DapQmlStyle { id: style; qss: "settings_item"; item: this }
 
     /* user no background */
     color: "transparent"
@@ -55,8 +66,8 @@ Rectangle {
                 text: root.leftText
                 color: root.leftColor
                 font.family: "Lato"
-                font.pixelSize: 30
-                font.weight: Font.DemiBold
+                font.pixelSize: root.leftSize
+                font.weight: root.leftWeight
             }
 
             /* right side two labels */
@@ -76,8 +87,8 @@ Rectangle {
                     text: root.mainText
                     color: root.mainColor
                     font.family: "Lato"
-                    font.pixelSize: 20
-                    font.weight: Font.Bold
+                    font.pixelSize: root.mainSize
+                    font.weight: root.mainWeight
                 }
 
                 /* sub text */
@@ -91,8 +102,8 @@ Rectangle {
                     text: root.subText
                     color: root.subColor
                     font.family: "Lato"
-                    font.pixelSize: 12
-                    font.weight: Font.Normal
+                    font.pixelSize: root.subSize
+                    font.weight: root.subWeight
                 }
 
             }
@@ -117,8 +128,8 @@ Rectangle {
                 text: root.mainText
                 color: root.mainColor
                 font.family: "Lato"
-                font.pixelSize: 20
-                font.weight: Font.Bold
+                font.pixelSize: root.mainSize
+                font.weight: root.mainWeight
             }
 
             /* sub text */
@@ -132,8 +143,8 @@ Rectangle {
                 text: root.subText
                 color: root.subColor
                 font.family: "Lato"
-                font.pixelSize: 12
-                font.weight: Font.Normal
+                font.pixelSize: root.subSize
+                font.weight: root.subWeight
             }
 
         }
@@ -157,8 +168,8 @@ Rectangle {
                 text: root.subText
                 color: root.subColor
                 font.family: "Lato"
-                font.pixelSize: 12
-                font.weight: Font.Normal
+                font.pixelSize: root.subSize
+                font.weight: root.subWeight
             }
 
             /* main text */
@@ -172,10 +183,58 @@ Rectangle {
                 text: root.mainText
                 color: root.mainColor
                 font.family: "Lato"
-                font.pixelSize: 20
-                font.weight: Font.Bold
+                font.pixelSize: root.mainSize
+                font.weight: root.mainWeight
             }
 
+        }
+
+        /* IconMainSub */
+        /* Three items by horiontal */
+        GridLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            columns: 3
+            visible: (root.buttonStyle === DapQmlButton.Style.IconMainSub)
+
+            Image {
+                Layout.preferredWidth: root.iconSize
+                Layout.preferredHeight: root.iconSize
+
+                source: root.icon
+                width: root.iconSize
+                height: root.iconSize
+            }
+
+            /* main text */
+            Text {
+                Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignVCenter
+                text: root.mainText
+                color: root.mainColor
+                font.family: "Lato"
+                font.pixelSize: root.mainSize
+                font.weight: root.mainWeight
+            }
+
+            /* sub text */
+            Text {
+                Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                horizontalAlignment: Text.AlignRight
+                verticalAlignment: Text.AlignVCenter
+                text: root.subText
+                color: root.subColor
+                font.family: "Lato"
+                font.pixelSize: root.subSize
+                font.weight: root.subWeight
+            }
         }
 
         /* bottom item */
