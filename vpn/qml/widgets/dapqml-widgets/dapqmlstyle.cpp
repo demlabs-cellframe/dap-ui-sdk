@@ -41,6 +41,11 @@ void DapQmlStyle::setItem (QObject *a_newItem)
   emit itemChanged();
 }
 
+void DapQmlStyle::setup(const QString &styleSheet)
+{
+  Style::QssMap::setup (styleSheet);
+}
+
 /********************************************
  * SLOTS
  *******************************************/
@@ -61,10 +66,10 @@ void DapQmlStyle::_applyStyle()
       auto item = *i;
 
       /* cycle thru all item properties */
-      for (auto it = item.cbegin(), en = item.cend(); it != en; it++)
+      for (auto it = item->cbegin(), en = item->cend(); it != en; it++)
         {
           /* set properties */
-          m_item->setProperty (it.key(), it.value());
+          m_item->setProperty (it.key().toStdString().c_str(), it.value());
         }
     }
 }

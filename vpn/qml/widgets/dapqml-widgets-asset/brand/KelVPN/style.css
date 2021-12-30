@@ -1,0 +1,28 @@
+/****************************************************
+ * Settings
+ ***************************************************/
+
+.settings_item
+{
+	mainSize: 64;
+	subSize: 64;
+	leftSize: 30;
+	mainWeight: Font.Bold;
+	subWeight: Font.Normal;
+	leftWeight: Font.Bold;
+	iconSize: 34;
+}
+
+.sett-btn-lbl-main
+{
+	color: "#04004E";
+	size: 20;
+	weight: Font.Bold;
+}
+
+.sett-btn-lbl-sub
+{
+	color: "#A4A3C0";
+	size: 12;
+	weight: Font.Normal;
+}

@@ -22,21 +22,25 @@ Rectangle {
     property string mainText: "Main text"
     property string subText: "Sub text"
     property string leftText: "Left text"
-    property color mainColor: "#04004E"
-    property color leftColor: "#04004E"
-    property color subColor: "#A4A3C0"
-    property int mainSize: 20
-    property int subSize: 12
-    property int leftSize: 30
-    property int mainWeight: Font.Bold
-    property int subWeight: Font.Normal
-    property int leftWeight: Font.Bold
+    property string qss: ""
+    property string mainQss: ""
+    property string leftQss: ""
+    property string subQss: ""
+//    property color mainColor: "#04004E"
+//    property color leftColor: "#04004E"
+//    property color subColor: "#A4A3C0"
+//    property int mainSize: 20
+//    property int subSize: 12
+//    property int leftSize: 30
+//    property int mainWeight: Font.Bold
+//    property int subWeight: Font.Normal
+//    property int leftWeight: Font.Bold
     property string icon: ""
     property int iconSize: 34
     property int buttonStyle: DapQmlButton.Style.TopMainBottomSub
-    property bool separator: true
+    property bool separator: false
 
-    DapQmlStyle { id: style; qss: "settings_item"; item: this }
+    DapQmlStyle { id: style; qss: root.qss; item: root }
 
     /* user no background */
     color: "transparent"
@@ -56,7 +60,7 @@ Rectangle {
             visible: (root.buttonStyle === DapQmlButton.Style.LeftTopMainBottomSub)
 
             /* left big label */
-            Text {
+            DapQmlLabel {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -64,10 +68,11 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 text: root.leftText
-                color: root.leftColor
-                font.family: "Lato"
-                font.pixelSize: root.leftSize
-                font.weight: root.leftWeight
+                qss: root.leftQss
+//                color: root.leftColor
+//                font.family: "Lato"
+//                font.pixelSize: root.leftSize
+//                font.weight: root.leftWeight
             }
 
             /* right side two labels */
@@ -77,7 +82,7 @@ Rectangle {
                 columns: 1
 
                 /* main text */
-                Text {
+                DapQmlLabel {
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -85,14 +90,15 @@ Rectangle {
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignBottom
                     text: root.mainText
-                    color: root.mainColor
-                    font.family: "Lato"
-                    font.pixelSize: root.mainSize
-                    font.weight: root.mainWeight
+                    qss: root.mainQss
+//                    color: root.mainColor
+//                    font.family: "Lato"
+//                    font.pixelSize: root.mainSize
+//                    font.weight: root.mainWeight
                 }
 
                 /* sub text */
-                Text {
+                DapQmlLabel {
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -100,10 +106,11 @@ Rectangle {
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignTop
                     text: root.subText
-                    color: root.subColor
-                    font.family: "Lato"
-                    font.pixelSize: root.subSize
-                    font.weight: root.subWeight
+                    qss: root.subQss
+//                    color: root.subColor
+//                    font.family: "Lato"
+//                    font.pixelSize: root.subSize
+//                    font.weight: root.subWeight
                 }
 
             }
@@ -118,7 +125,7 @@ Rectangle {
             visible: (root.buttonStyle === DapQmlButton.Style.TopMainBottomSub)
 
             /* main text */
-            Text {
+            DapQmlLabel {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -126,14 +133,15 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignBottom
                 text: root.mainText
-                color: root.mainColor
-                font.family: "Lato"
-                font.pixelSize: root.mainSize
-                font.weight: root.mainWeight
+                qss: root.mainQss
+//                color: root.mainColor
+//                font.family: "Lato"
+//                font.pixelSize: root.mainSize
+//                font.weight: root.mainWeight
             }
 
             /* sub text */
-            Text {
+            DapQmlLabel {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -141,10 +149,11 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignTop
                 text: root.subText
-                color: root.subColor
-                font.family: "Lato"
-                font.pixelSize: root.subSize
-                font.weight: root.subWeight
+                qss: root.subQss
+//                color: root.subColor
+//                font.family: "Lato"
+//                font.pixelSize: root.subSize
+//                font.weight: root.subWeight
             }
 
         }
@@ -158,7 +167,7 @@ Rectangle {
             visible: (root.buttonStyle === DapQmlButton.Style.TopSubBottomMain)
 
             /* sub text */
-            Text {
+            DapQmlLabel {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -166,14 +175,15 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignBottom
                 text: root.subText
-                color: root.subColor
-                font.family: "Lato"
-                font.pixelSize: root.subSize
-                font.weight: root.subWeight
+                qss: root.subQss
+//                color: root.subColor
+//                font.family: "Lato"
+//                font.pixelSize: root.subSize
+//                font.weight: root.subWeight
             }
 
             /* main text */
-            Text {
+            DapQmlLabel {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -181,10 +191,11 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignTop
                 text: root.mainText
-                color: root.mainColor
-                font.family: "Lato"
-                font.pixelSize: root.mainSize
-                font.weight: root.mainWeight
+                qss: root.mainQss
+//                color: root.mainColor
+//                font.family: "Lato"
+//                font.pixelSize: root.mainSize
+//                font.weight: root.mainWeight
             }
 
         }
@@ -207,7 +218,7 @@ Rectangle {
             }
 
             /* main text */
-            Text {
+            DapQmlLabel {
                 Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -215,14 +226,15 @@ Rectangle {
                 horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignVCenter
                 text: root.mainText
-                color: root.mainColor
-                font.family: "Lato"
-                font.pixelSize: root.mainSize
-                font.weight: root.mainWeight
+                qss: root.mainQss
+//                color: root.mainColor
+//                font.family: "Lato"
+//                font.pixelSize: root.mainSize
+//                font.weight: root.mainWeight
             }
 
             /* sub text */
-            Text {
+            DapQmlLabel {
                 Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -230,10 +242,11 @@ Rectangle {
                 horizontalAlignment: Text.AlignRight
                 verticalAlignment: Text.AlignVCenter
                 text: root.subText
-                color: root.subColor
-                font.family: "Lato"
-                font.pixelSize: root.subSize
-                font.weight: root.subWeight
+                qss: root.subQss
+//                color: root.subColor
+//                font.family: "Lato"
+//                font.pixelSize: root.subSize
+//                font.weight: root.subWeight
             }
         }
 

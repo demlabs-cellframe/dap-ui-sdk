@@ -49,6 +49,7 @@ public:
   Q_INVOKABLE void setQss (const QString &a_newQss);
   Q_INVOKABLE QObject *getItem() const;
   Q_INVOKABLE void setItem (QObject *a_newItem);
+  static void setup (const QString &styleSheet);
   /// @}
 
   /****************************************//**

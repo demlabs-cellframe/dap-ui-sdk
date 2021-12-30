@@ -37,12 +37,15 @@ Item {
                 mainText: model.textMain
                 subText: model.textSub
                 separator: isSep(model.sid)
-                mainSize: 16
-                subSize: 16
-                mainWeight: model.sid !== DapQmlModelSettings.SI_TITLE ? Font.Normal : Font.Bold
-                subWeight: Font.Normal
+                qss: "settings_item"
+                mainQss: "sett-btn-lbl-main"
+                subQss: "sett-btn-lbl-sub"
+                //mainSize: 16
+                //subSize: 16
+                //mainWeight: model.sid !== DapQmlModelSettings.SI_TITLE ? Font.Normal : Font.Bold
+                //subWeight: Font.Normal
                 icon: model.icon
-                iconSize: 34
+                //iconSize: 34
             }
         }
 

@@ -1,0 +1,322 @@
+/* INCLUDES */
+#include "qssparser.h"
+#include "qssmap.h"
+#include <QStringList>
+#include <QColor>
+#include <QUrl>
+#include <QDebug>
+#include <QFont>
+
+/* NAMESPACE */
+namespace Style
+{
+
+/* DEFS */
+typedef QString::const_iterator it;
+typedef void (*callback) (it &i);
+
+/// single line item
+class QssLine
+{
+  QString m_field;
+  QString m_value;
+public:
+  QssLine (const QString &a_src);
+
+  const QString &field() const;
+  void setField (const QString &newField);
+  const QString &value() const;
+  void setValue (const QString &newValue);
+  QVariant asVariant() const;
+
+  /// parse qss body and split it into QssLine's instances (body inside '{}')
+  static QList<QssLine> parse (const QString &a_src);
+};
+
+/* LINKS */
+static void none (it &i);
+static void naming (it &i);
+static void body (it &i);
+extern QHash<QString, Style::QssItem> s_map;
+
+/* VARS */
+static QStringList names;
+static QString currentName, currentBody;
+static callback method  = none;
+static int index        = 0;
+
+/********************************************
+ * METHODS
+ *******************************************/
+
+void QssParser::perform (const QString &styleSheet)
+{
+  /* vars */
+  QString simpleSheet = styleSheet;
+
+  /* remove lines */
+  simpleSheet =
+    simpleSheet
+    .replace ('\r', " ")
+    .replace ('\n', " ")
+    //.replace (' ', "")
+    .replace ('\t', "");
+
+  /* split by combo of new lines and dots */
+  for (auto i = simpleSheet.cbegin(),
+       e = simpleSheet.cend();
+       i != e;
+       i++, index++)
+    method (i);
+}
+
+/********************************************
+ * STATIC METHODS
+ *******************************************/
+
+void none (it &i)
+{
+  /* start naming new item */
+  if (*i == '.')
+    {
+      /* change mode to naming */
+      method = naming;
+      return;
+    }
+
+  /* start naming new item */
+  if (*i == '{')
+    {
+      /* change mode to body */
+      method = body;
+      return;
+    }
+}
+
+void naming (it &i)
+{
+  /* store name and start new one */
+  if ((*i == ' ') || (*i == '{') || (*i == ','))
+    {
+      /* store name into list */
+      names  += currentName;
+      method = (*i == ' ') ? none : body;
+      currentName.clear();
+      return;
+    }
+
+  /* store name letter */
+  currentName += *i;
+}
+
+void body (it &i)
+{
+  /* body finished */
+  if (*i == '}')
+    {
+      /* if got atleast on keyname */
+      if (!names.isEmpty())
+        {
+          /* store into map */
+          //styleMap.insert (names, currentBody);
+
+          /* parse body */
+          auto lines  = QssLine::parse (currentBody);
+
+          /* form an item */
+          QssItem item;
+          qDebug() << "new item: " << names;
+          for (auto it = lines.cbegin(), en = lines.cend(); it != en; it++)
+            {
+              auto value  = it->asVariant();
+              qDebug() << "field[" << it->field() << "]:[" << value << "]";
+              item.insert (it->field(), value);
+            }
+
+          /* store */
+          for (auto it = names.cbegin(), en = names.cend(); it != en; it++)
+            s_map.insert (*it, item);
+        }
+
+      /* clear names and body */
+      names.clear();
+      currentName.clear();
+      currentBody.clear();
+
+      /* change mode to none */
+      method = none;
+      return;
+    }
+
+  /* store body letter */
+  currentBody += *i;
+}
+
+/********************************************
+ * QSSLINE
+ *******************************************/
+
+static QMap<QString, int> s_fontWeigthMap =
+{
+  {"Thin", 100},
+  {"ExtraLight", 200},
+  {"Light", 300},
+  {"Normal", 400},
+  {"Medium", 500},
+  {"DemiBold", 600},
+  {"Bold", 700},
+  {"ExtraBold", 800},
+  {"Black", 900},
+};
+
+static void removeBeginSpaces (QString &a_value)
+{
+  int counter = 0;
+  for (auto i = a_value.cbegin(), e = a_value.cend(); i != e ; i++)
+    if (*i == ' ')
+      counter++;
+  a_value = a_value.remove (0, counter);
+}
+
+static QColor rgba (const QString &a_value)
+{
+  int firstBracket  = a_value.indexOf ('(') + 1,
+      secondBracket = a_value.indexOf (')');
+
+  auto data         = a_value.mid (firstBracket, secondBracket - firstBracket);
+  auto valuesStr    = data.split (',');
+
+  if (valuesStr.size() != 4)
+    return QColor();
+
+  double values[4] =
+  {
+    valuesStr.at (0).toDouble(),
+    valuesStr.at (1).toDouble(),
+    valuesStr.at (2).toDouble(),
+    valuesStr.at (3).toDouble(),
+  };
+
+  return QColor::fromRgba (
+           qRgba (
+             qRed (values[0]),
+             qGreen (values[1]),
+             qBlue (values[2]),
+             qAlpha (values[3])));
+}
+
+static QUrl url (const QString &a_value)
+{
+  int firstBracket  = a_value.indexOf ('(') + 1,
+      secondBracket = a_value.indexOf (')');
+
+  auto value        = a_value.mid (firstBracket, secondBracket - firstBracket);
+
+  return QUrl (value);
+}
+
+static int font (const QString &a_value)
+{
+  auto value  = a_value.mid (5);
+  auto weight = s_fontWeigthMap.value(value, 400);
+  return weight;
+}
+
+QList<QssLine> QssLine::parse (const QString &a_src)
+{
+  /* vars */
+  QList<QssLine> result;
+
+  /* check empty */
+  if (!a_src.contains (';'))
+    return result;
+
+  /* split to lines */
+  auto lines  = a_src.split (';');
+
+  /* cycle thru lines, separating them to QssLine instances */
+  for (auto i = lines.cbegin(), e = lines.cend(); i != e; i++)
+    if (i->contains(':') && !i->contains("/*"))
+      result += QssLine (*i);
+
+  return result;
+}
+
+const QString &QssLine::value() const
+{
+  return m_value;
+}
+
+void QssLine::setValue (const QString &newValue)
+{
+  m_value = newValue;
+}
+
+QVariant QssLine::asVariant() const
+{
+  /* check issue */
+  if (m_field.isEmpty() || m_value.isEmpty())
+    return m_value;
+
+  /* color */
+  if (m_value.at (0) == '#')
+    return QColor (m_value);
+
+  /* rgba */
+  if ((m_value.size() > 12) && (m_value.mid (0, 4) == "rgba"))
+    return rgba (m_value);
+
+  /* url */
+  if ((m_value.size() > 4) && (m_value.mid (0, 3) == "url"))
+    return url (m_value);
+
+  /* font-weight */
+  if ((m_value.size() > 6) && (m_value.mid(0, 5) == "Font."))
+    return font (m_value);
+
+  /* string */
+  if (m_value.startsWith('\'') && m_value.endsWith('\''))
+    return m_value.mid (1, m_value.size() - 2);
+
+  /* integer */
+  bool success;
+  int value = m_value.toInt(&success);
+  if (success)
+    return value;
+
+  return m_value;
+}
+
+QssLine::QssLine (const QString &a_src)
+{
+  /* split to field and value */
+  auto sep    = a_src.indexOf(':');
+  auto parts  = QStringList {a_src.mid (0, sep), a_src.mid (sep + 1)};
+
+  /* skip invalid */
+  if (parts.size() != 2)
+    return;
+
+  /* store */
+  m_field = parts.at (0);
+  m_value = parts.at (1);
+
+  /* process value */
+  removeBeginSpaces (m_field);
+  removeBeginSpaces (m_value);
+}
+
+const QString &QssLine::field() const
+{
+  return m_field;
+}
+
+void QssLine::setField (const QString &newField)
+{
+  m_field = newField;
+}
+
+/*-----------------------------------------*/
+}
+
+/*-----------------------------------------*/
