@@ -7,6 +7,18 @@ struct _BugReportInfo
 {
     QString number;
     QString status;
+
+    _BugReportInfo(QString a_number, QString a_status){
+        number = a_number;
+        status = a_status;
+    };
+
+    _BugReportInfo& operator = (const _BugReportInfo &s)
+    {
+        status = s.status;
+        number = s.number;
+        return (*this);
+    }
 };
 
 class DapBugReportHistory : public QObject
@@ -16,9 +28,13 @@ public:
     DapBugReportHistory(QObject *parent = nullptr);
 
 
-    QList<_BugReportInfo> getBugReportsList();
+    QList<_BugReportInfo> *getBugReportsList();
 
-    void getHistoryBugReportData();
+    void loadHistoryBugReportData();
+    void setBugReportsList(QList<_BugReportInfo>*);
+    QList<_BugReportInfo> bugReportsList(){
+        return *m_bugReportsList;
+    }
 protected:
     void bugReportInfoListToStringList(QList<_BugReportInfo>);
 

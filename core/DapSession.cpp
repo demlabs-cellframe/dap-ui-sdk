@@ -44,7 +44,6 @@ const QString DapSession::URL_DB_FILE               ("db_file");
 const QString DapSession::URL_SERVER_LIST           ("nodelist");
 const QString DapSession::URL_TX                    ("tx");
 const QString DapSession::URL_BUG_REPORT            ("bugreport");
-const QString DapSession::URL_BUG_REPORTS_STATUS    ("bugreport");
 const QString DapSession::URL_NEWS                  ("news");
 const QString DapSession::URL_SIGN_UP               ("wp-json/dapvpn/v1/register/");
 #ifdef BUILD_VAR_GOOGLE
@@ -152,21 +151,7 @@ void DapSession::sendBugReport(const QByteArray &data)
 
 void DapSession::sendBugReportStatusRequest(const QByteArray &data)
 {
-    if (!m_dapCryptCDB) {
-        this->setDapUri(*DapDataLocal::instance()->m_cdbIter, 80);
-        auto *l_tempConn = new QMetaObject::Connection();
-        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]{
-            preserveCDBSession();
-            m_netBugReportsStatusReply = encRequestRaw(data, URL_BUG_REPORTS_STATUS, QString(), QString(),
-                                                    SLOT(answerBugReport()), QT_STRINGIFY(receivedBugReportStatusAnswer));
-            disconnect(*l_tempConn);
-            delete l_tempConn;
-        });
-        requestServerPublicKey();
-    } else {
-        m_netBugReportsStatusReply = encRequestRaw(data, URL_BUG_REPORTS_STATUS, QString(), QString(),
-                                                SLOT(answerBugReport()), QT_STRINGIFY(receivedBugReportStatusAnswer));
-    }
+    m_netBugReportsStatusReply = _buildNetworkReplyReq(*DapDataLocal::instance()->m_cdbIter + "80" + URL_BUG_REPORT + "?bugreports=" + data, this, SLOT(answerBugReportsStatus), NULL, NULL, true);
 }
 
 void DapSession::sendSignUpRequest(const QString &host, const QString &email, const QString &password)
@@ -191,14 +176,12 @@ void DapSession::getNews()
         if(!jsonDoc.isNull()) {
             if(!jsonDoc.isArray()) {
                 qCritical() << "Error parse response. Must be array";
-                return;
             }
-            emit sigReceivedNewsMessage(jsonDoc);
         } else {
             qWarning() << "Server response:" << m_netNewsReply->getReplyData();
             qCritical() << "Can't parse server response to JSON: "<<jsonErr.errorString()<< " on position "<< jsonErr.offset ;
-            return;
         }
+        emit sigReceivedNewsMessage(jsonDoc);
     });
     DapConnectClient::instance()->request_GET(*DapDataLocal::instance()->m_cdbIter, 80, URL_NEWS, *m_netNewsReply);
 }
@@ -552,12 +535,16 @@ void DapSession::answerSignUp()
 
 void DapSession::answerBugReport()
 {
+    if (!m_netSendBugReportReply)
+        return;
     qInfo() << "Bugreport reply: " << m_netSendBugReportReply->getReplyData();
     emit receivedBugReportAnswer(QString::fromUtf8(m_netSendBugReportReply->getReplyData()));
 }
 
 void DapSession::answerBugReportsStatus()
 {
+    if (!m_netBugReportsStatusReply)
+        return;
     qInfo() << "Bugreport status reply: " << m_netBugReportsStatusReply->getReplyData();
     emit receivedBugReportStatusAnswer(QString::fromUtf8(m_netBugReportsStatusReply->getReplyData()));
 }

@@ -23,7 +23,9 @@ void DapCmdBugReportsStatus::bugReportsStatusRequest(QList<QString> a_bugReports
 
 void DapCmdBugReportsStatus::handleResult(const QJsonObject& result)
 {
-
+    QString request = result.value("bug_reports_numbers_list_answer").toString();
+    qDebug() << "Bug-reports status answer: " << request;
+    emit sigBugReportStatusAnswer(request);
 }
 
 void DapCmdBugReportsStatus::handleError(int code, const QString& message)

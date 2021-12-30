@@ -8,18 +8,21 @@ DapBugReportHistory::DapBugReportHistory(QObject *parent)
 
 }
 
-QList<_BugReportInfo> DapBugReportHistory::getBugReportsList(){
-    getHistoryBugReportData();
-    return *m_bugReportsList;
+QList<_BugReportInfo>* DapBugReportHistory::getBugReportsList(){
+    return m_bugReportsList;
 };
 
+void DapBugReportHistory::setBugReportsList(QList<_BugReportInfo> *a_bugReportsList){
+    m_bugReportsList = a_bugReportsList;
+}
 
-void DapBugReportHistory::getHistoryBugReportData()
+
+void DapBugReportHistory::loadHistoryBugReportData()
 {
     QList<QString>* m_tempHistoryDataList = new QList<QString>;
     DapDataLocal::instance()->loadFromSettings(TEXT_BUGREPORT_HISTORY, *m_tempHistoryDataList);
     for(auto item : *m_tempHistoryDataList)
-        m_bugReportsList->push_front(_BugReportInfo{item, "unknown"});
+        m_bugReportsList->push_back(_BugReportInfo{item, "unknown"});
     bugReportInfoListToStringList(*m_bugReportsList);
 }
 

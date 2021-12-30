@@ -15,7 +15,7 @@ void DapCmdBugReportsStatus::handle(const QJsonObject *params)
 {
     Q_UNUSED(params);
 
-    connect(this, &DapCmdBugReportsStatus::sigSendCmdBugReportAnswer, [=](const QString& answer){
+    connect(this, &DapCmdBugReportsStatus::sigSendCmdBugReportStatusAnswer, [=](const QString& answer){
         QJsonObject obj;
         obj["bug_reports_numbers_list_answer"] = answer;
         sendCmd(&obj);

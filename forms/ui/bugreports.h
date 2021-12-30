@@ -8,6 +8,7 @@
 #include <QPlainTextEdit>
 #include "baseform.h"
 #include "dapguiplaintexteditinterface.h"
+#include "DapDataLocal.h"
 
 /* DEFS */
 QT_BEGIN_NAMESPACE

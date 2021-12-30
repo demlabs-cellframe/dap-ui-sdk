@@ -15,7 +15,7 @@ public:
 
 signals:
     void sigBugReportsStatusSendRequest(const QString&);
-    void sigSendCmdBugReportAnswer(const QString& answer);
+    void sigSendCmdBugReportStatusAnswer(const QString& answer);
 };
 
 #endif // DAPCMDBUGREPORTSSTATUS_H

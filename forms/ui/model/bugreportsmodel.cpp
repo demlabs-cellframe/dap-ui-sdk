@@ -45,7 +45,7 @@ void BugReportsModel::slotSetup()
   m_list.clear();
 
   /* create new buttons */
-  foreach (auto &item, DapDataLocal::instance()->bugReportHistory()->getBugReportsList())
+  foreach (auto &item, *DapDataLocal::instance()->bugReportHistory()->getBugReportsList())
     {
       /* create item */
       auto btn = new DapGuiButton;

@@ -18,6 +18,7 @@ protected:
     void handleError(int code, const QString& message) override;
 
 signals:
+    void sigBugReportStatusAnswer(const QString &answer);
 
 public slots:
 };
