@@ -75,20 +75,18 @@ bool DapServerInfo::fromJSON(const QJsonArray& jsonArr, DapServerInfoList& out)
     for (auto it = jsonArr.constBegin(); it != jsonArr.constEnd(); ++it)
     {
         const QJsonValue &val = *it;
-
         if(!val.isObject()) {
             qCritical() << "Error parse QJsonValue to QJsonObject";
             return false;
         }
-
         DapServerInfo dsi;
         if(fromJSON(val.toObject(), dsi) == false) {
-            return false;
+            continue;
         }
-
         out.append(std::move(dsi));
     }
-    return true;
+
+    return !out.isEmpty();
 }
 
 QJsonObject DapServerInfo::toJSON(const DapServerInfo& dsi)
