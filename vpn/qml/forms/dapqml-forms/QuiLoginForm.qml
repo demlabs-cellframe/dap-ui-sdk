@@ -1,10 +1,12 @@
 import QtQuick 2.4
+import QtQml 2.12
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    property int calcWidth: centerWidth()
 
     function centerHor(item) {
         return root.width / 2 - item.width / 2;
@@ -12,6 +14,19 @@ Item {
 
     function centerWidth() {
         return root.width - 78;
+    }
+
+    Timer {
+        interval: 500
+        running: true
+        repeat: false
+        onTriggered: {
+            calcWidth                   = centerWidth();
+            btnChooseServer.separator   = false;
+            btnEnterSerial.separator    = false;
+            btnChooseServer.separator   = true;
+            btnEnterSerial.separator    = true;
+        }
     }
 
     /* background */
@@ -36,15 +51,16 @@ Item {
         x: centerHor(this)
         y: 291
         z: 15
-        width: centerWidth()
+        width: root.calcWidth
     }
 
     /* choose server */
     DapQmlButton {
+        id: btnChooseServer
         x: centerHor(this)
         y: 292
         z: 15
-        width: centerWidth()
+        width: root.calcWidth
         height: 108
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub
@@ -58,10 +74,11 @@ Item {
 
     /* enter serial */
     DapQmlButton {
+        id: btnEnterSerial
         x: centerHor(this)
         y: 406
         z: 15
-        width: centerWidth()
+        width: root.calcWidth
         height: 108
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub

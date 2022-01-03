@@ -252,7 +252,11 @@ Rectangle {
         }
 
         /* bottom item */
-        DapQmlSeparator { width: root.width; visible: root.separator }
+        DapQmlSeparator {
+            Layout.fillWidth: true
+            width: root.width
+            visible: root.separator
+        }
     }
 
 }
