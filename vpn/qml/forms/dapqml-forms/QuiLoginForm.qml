@@ -7,7 +7,11 @@ Item {
     id: root
 
     function centerHor(item) {
-        return root.width / 2 - item.width / 2
+        return root.width / 2 - item.width / 2;
+    }
+
+    function centerWidth() {
+        return root.width - 78;
     }
 
     /* background */
@@ -32,7 +36,7 @@ Item {
         x: centerHor(this)
         y: 291
         z: 15
-        width: 350
+        width: centerWidth()
     }
 
     /* choose server */
@@ -40,12 +44,16 @@ Item {
         x: centerHor(this)
         y: 292
         z: 15
-        width: 350
+        width: centerWidth()
         height: 108
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub
         mainText: "Auto select"
         subText: "CHOOSING SERVER"
+        qss: "login-btn"
+        mainQss: "login-btn-main"
+        subQss: "login-btn-sub"
+        separator: true
     }
 
     /* enter serial */
@@ -53,12 +61,16 @@ Item {
         x: centerHor(this)
         y: 406
         z: 15
-        width: 350
+        width: centerWidth()
         height: 108
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub
         mainText: "____ ____ ____ ____"
         subText: "SERIAL KEY"
+        qss: "login-btn"
+        mainQss: "login-btn-main"
+        subQss: "login-btn-sub"
+        separator: true
     }
 
     /* connect */

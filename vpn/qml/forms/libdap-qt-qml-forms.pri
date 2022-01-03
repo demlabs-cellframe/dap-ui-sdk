@@ -9,6 +9,7 @@ INCLUDEPATH += $$PWD
 include(../config.pri)
 
 RESOURCES += \
+    $$PWD/dapqml-forms-asset.qrc \
     $$PWD/dapqml-forms.qrc
 
 HEADERS += \

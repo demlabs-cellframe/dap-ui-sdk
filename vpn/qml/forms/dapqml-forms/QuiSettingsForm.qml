@@ -10,7 +10,8 @@ Item {
     function isSep(sid) {
         if (sid === DapQmlModelSettings.SI_BUTTON
         || sid === DapQmlModelSettings.SI_BUTTONRED
-        || sid === DapQmlModelSettings.SI_BUTTONGRAY)
+        || sid === DapQmlModelSettings.SI_BUTTONGRAY
+        || sid === DapQmlModelSettings.SI_LINK)
             return true;
         return false;
     }
@@ -30,22 +31,30 @@ Item {
             clip: true
             model: settingsModel
 
-            delegate: DapQmlButton {
-                width: 350
+            delegate: Item {
                 height: model.sid !== DapQmlModelSettings.SI_TITLE ? 64 : 108
-                buttonStyle: DapQmlButton.Style.IconMainSub
-                mainText: model.textMain
-                subText: model.textSub
-                separator: isSep(model.sid)
-                qss: "settings_item"
-                mainQss: "sett-btn-lbl-main"
-                subQss: "sett-btn-lbl-sub"
-                //mainSize: 16
-                //subSize: 16
-                //mainWeight: model.sid !== DapQmlModelSettings.SI_TITLE ? Font.Normal : Font.Bold
-                //subWeight: Font.Normal
-                icon: model.icon
-                //iconSize: 34
+
+                DapQmlButton {
+                    visible: model.sid !== DapQmlModelSettings.SI_TITLE
+                    width: 350
+                    height: 64
+                    buttonStyle: DapQmlButton.Style.IconMainSub
+                    mainText: model.textMain
+                    subText: model.textSub
+                    separator: isSep(model.sid)
+                    qss: "sett-item"
+                    mainQss: "sett-btn-lbl-main"
+                    subQss: "sett-btn-lbl-sub"
+                    icon: model.icon
+                }
+
+                DapQmlLabel {
+                    visible: model.sid === DapQmlModelSettings.SI_TITLE
+                    width: 350
+                    height: 108
+                    text: model.textMain
+                    qss: "sett-title-lbl-main"
+                }
             }
         }
 

@@ -65,8 +65,8 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
+                horizontalAlign: Text.AlignHCenter
+                verticalAlign: Text.AlignVCenter
                 text: root.leftText
                 qss: root.leftQss
 //                color: root.leftColor
@@ -87,8 +87,8 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignBottom
+                    horizontalAlign: Text.AlignLeft
+                    verticalAlign: Text.AlignBottom
                     text: root.mainText
                     qss: root.mainQss
 //                    color: root.mainColor
@@ -103,8 +103,8 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignTop
+                    horizontalAlign: Text.AlignLeft
+                    verticalAlign: Text.AlignTop
                     text: root.subText
                     qss: root.subQss
 //                    color: root.subColor
@@ -130,8 +130,8 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignBottom
+                horizontalAlign: Text.AlignHCenter
+                verticalAlign: Text.AlignBottom
                 text: root.mainText
                 qss: root.mainQss
 //                color: root.mainColor
@@ -146,8 +146,8 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignTop
+                horizontalAlign: Text.AlignHCenter
+                verticalAlign: Text.AlignTop
                 text: root.subText
                 qss: root.subQss
 //                color: root.subColor
@@ -172,8 +172,8 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignBottom
+                horizontalAlign: Text.AlignHCenter
+                verticalAlign: Text.AlignBottom
                 text: root.subText
                 qss: root.subQss
 //                color: root.subColor
@@ -188,8 +188,8 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignTop
+                horizontalAlign: Text.AlignHCenter
+                verticalAlign: Text.AlignTop
                 text: root.mainText
                 qss: root.mainQss
 //                color: root.mainColor
@@ -208,11 +208,12 @@ Rectangle {
             columns: 3
             visible: (root.buttonStyle === DapQmlButton.Style.IconMainSub)
 
-            Image {
+            //Image {
+            DapQmlLabel {
                 Layout.preferredWidth: root.iconSize
                 Layout.preferredHeight: root.iconSize
 
-                source: root.icon
+                qss: root.icon
                 width: root.iconSize
                 height: root.iconSize
             }
@@ -223,8 +224,8 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                horizontalAlignment: Text.AlignLeft
-                verticalAlignment: Text.AlignVCenter
+                horizontalAlign: Text.AlignLeft
+                verticalAlign: Text.AlignVCenter
                 text: root.mainText
                 qss: root.mainQss
 //                color: root.mainColor
@@ -239,8 +240,8 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                horizontalAlignment: Text.AlignRight
-                verticalAlignment: Text.AlignVCenter
+                horizontalAlign: Text.AlignRight
+                verticalAlign: Text.AlignVCenter
                 text: root.subText
                 qss: root.subQss
 //                color: root.subColor

@@ -158,16 +158,33 @@ void body (it &i)
 
 static QMap<QString, int> s_fontWeigthMap =
 {
-  {"Thin", 100},
-  {"ExtraLight", 200},
-  {"Light", 300},
-  {"Normal", 400},
-  {"Medium", 500},
-  {"DemiBold", 600},
-  {"Bold", 700},
-  {"ExtraBold", 800},
-  {"Black", 900},
+  {"Thin", 0},
+  {"ExtraLight", 12},
+  {"Light", 25},
+  {"Normal", 50},
+  {"Medium", 57},
+  {"DemiBold", 63},
+  {"Bold", 75},
+  {"ExtraBold", 81},
+  {"Black", 87},
 };
+
+static void removeMinuses (QString &a_value)
+{
+  for (int i = 0; i < a_value.size(); i++)
+    {
+      if (a_value[i] == '-' && i + 1 < a_value.size())
+        {
+          a_value.remove (i, 1);
+          a_value[i]  = a_value[i].toUpper();
+        }
+    }
+}
+
+static void removeQproperty (QString &a_value)
+{
+  a_value = a_value.remove("qproperty-");
+}
 
 static void removeBeginSpaces (QString &a_value)
 {
@@ -212,13 +229,16 @@ static QUrl url (const QString &a_value)
 
   auto value        = a_value.mid (firstBracket, secondBracket - firstBracket);
 
+  if (value.at(0) == '\"' && value.at(value.size()-1) == '\"')
+    value           = value.mid (1, value.size() - 2);
+
   return QUrl (value);
 }
 
 static int font (const QString &a_value)
 {
   auto value  = a_value.mid (5);
-  auto weight = s_fontWeigthMap.value(value, 400);
+  auto weight = s_fontWeigthMap.value(value, 50);
   return weight;
 }
 
@@ -259,8 +279,8 @@ QVariant QssLine::asVariant() const
     return m_value;
 
   /* color */
-  if (m_value.at (0) == '#')
-    return QColor (m_value);
+  if (m_value.at (0) == '#' || m_value.at (1) == '#')
+    return QColor (QString (m_value).replace ('\"',""));
 
   /* rgba */
   if ((m_value.size() > 12) && (m_value.mid (0, 4) == "rgba"))
@@ -275,7 +295,8 @@ QVariant QssLine::asVariant() const
     return font (m_value);
 
   /* string */
-  if (m_value.startsWith('\'') && m_value.endsWith('\''))
+  if ((m_value.startsWith('\'') && m_value.endsWith('\''))
+      || (m_value.startsWith('\"') && m_value.endsWith('\"')))
     return m_value.mid (1, m_value.size() - 2);
 
   /* integer */
@@ -304,6 +325,8 @@ QssLine::QssLine (const QString &a_src)
   /* process value */
   removeBeginSpaces (m_field);
   removeBeginSpaces (m_value);
+  removeQproperty (m_field);
+  removeMinuses (m_field);
 }
 
 const QString &QssLine::field() const

@@ -1,28 +1,148 @@
 /****************************************************
+ * Icons
+ ***************************************************/
+
+.ic_renew
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_renew.png");
+}
+
+.ic_key
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_key.png");
+}
+
+.ic_key-item
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_key-item.png");
+}
+
+.ic_language
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_language.png");
+}
+
+.ic_send-report
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_send-report.png");
+}
+
+.ic_bot
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_bot.png");
+}
+
+.ic_close
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_close.png");
+}
+
+.ic_copy
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_copy.png");
+}
+
+.ic_information_bug-report
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_information_bug-report.png");
+}
+
+.ic_key-history
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_key-history.png");
+}
+
+.ic_terms_policy
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_terms_policy.png");
+}
+
+.ic_terms_policy
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_terms_policy.png");
+}
+
+.ic_version
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_version.png");
+}
+
+.ic_theme
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_theme.png");
+}
+
+.ic_spinner
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/Spinner.gif");
+}
+
+.ic_online
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/icon_online.png");
+}
+
+.ic_offline
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/icon_offline.png");
+}
+
+
+/****************************************************
+ * Login
+ ***************************************************/
+
+.login-btn
+{
+	main-Weight: Font.Bold;
+	sub-weight: Font.Normal;
+}
+
+.login-btn-main
+{
+	font-size: 20;
+	color: "#04004E";
+}
+
+.login-btn-sub
+{
+	font-size: 12;
+	color: "#A4A3C0";
+}
+
+/****************************************************
  * Settings
  ***************************************************/
 
-.settings_item
+.sett-item
 {
-	mainSize: 64;
-	subSize: 64;
-	leftSize: 30;
-	mainWeight: Font.Bold;
-	subWeight: Font.Normal;
-	leftWeight: Font.Bold;
-	iconSize: 34;
+	main-size: 64;
+	sub-size: 64;
+	left-size: 30;
+	main-Weight: Font.Bold;
+	sub-weight: Font.Normal;
+	left-weight: Font.Bold;
+	icon-size: 34;
 }
 
 .sett-btn-lbl-main
 {
 	color: "#04004E";
-	size: 20;
-	weight: Font.Bold;
+	font-size: 16;
+	font-weight: Font.Normal;
 }
 
 .sett-btn-lbl-sub
 {
 	color: "#A4A3C0";
-	size: 12;
-	weight: Font.Normal;
+	font-size: 16;
+	font-weight: Font.Normal;
+}
+
+.sett-title-lbl-main
+{
+	color: "#04004E";
+	horizontal-align: Text.AlignHCenter;
+	font-size: 24;
+	font-weight: Font.Bold;
 }

@@ -1,24 +1,37 @@
-import QtQuick 2.1
+import QtQuick 2.12
 import DapQmlStyle 1.0
 
-Rectangle {
+Item {
     id: root
     property string qss
     property string text: ""
-    property int horizontalAlignment: Text.AlignHCenter
-    property int verticalAlignment: Text.AlignVCenter
+    property color color
+    property string scaledPixmap: ""
+    property string fontFamiliy: "Lato"
+    property int fontSize: 12
+    property int fontWeight: Font.Normal
+    property int horizontalAlign: Text.AlignHCenter
+    property int verticalAlign: Text.AlignVCenter
+
+    Image {
+        anchors.fill: root
+        source: root.scaledPixmap
+        mipmap: true
+    }
 
     Text {
         anchors.fill: root
 
-        horizontalAlignment: root.horizontalAlignment
-        verticalAlignment: root.verticalAlignment
+        horizontalAlignment: root.horizontalAlign
+        verticalAlignment: root.verticalAlign
 
         text: root.text
+        color: root.color
 
         font {
-            family: "Lato"
-            pixelSize: 20
+            family: root.fontFamiliy
+            pixelSize: root.fontSize
+            weight: root.fontWeight
         }
     }
 
