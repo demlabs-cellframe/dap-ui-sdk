@@ -94,20 +94,21 @@
 
 .login-btn
 {
-	main-Weight: Font.Bold;
-	sub-weight: Font.Normal;
+
 }
 
 .login-btn-main
 {
 	font-size: 20;
 	color: "#04004E";
+	font-weight: Font.Bold;
 }
 
 .login-btn-sub
 {
 	font-size: 12;
 	color: "#A4A3C0";
+	font-weight: Font.Normal;
 }
 
 /****************************************************
