@@ -536,9 +536,14 @@ void DapSession::answerBugReport()
     emit receivedBugReportAnswer(QString::fromUtf8(m_netSendBugReportReply->getReplyData()));
 }
 
+
 void DapSession::resetReply() {
-    qDebug() << "Serial key reset reply: " << m_netKeyActivateReply->getReplyData();
-    emit receivedResetReply(QString::fromUtf8(m_netKeyActivateReply->getReplyData()));
+
+    QByteArray dByteArr;
+    m_dapCrypt->decode(m_netKeyActivateReply->getReplyData(), dByteArr, KeyRoleSession);
+
+    qDebug() << "Serial key reset reply: " << dByteArr;
+    emit receivedResetReply(QString::fromUtf8(dByteArr));
 }
 
 void DapSession::clearCredentials()
