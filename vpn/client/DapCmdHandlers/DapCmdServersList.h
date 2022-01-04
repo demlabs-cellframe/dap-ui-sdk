@@ -16,7 +16,7 @@ public:
 signals:
     void nextCdb();
     void updateNodesList(const DapServerInfoList&);
-    void sendCurrent();
+    void sendCurrentServer();
 public slots:
     void setServersList(const QList<QString>& a_serversList) { m_serversList = a_serversList ; }
 private:
