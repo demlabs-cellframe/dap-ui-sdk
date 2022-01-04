@@ -19,5 +19,6 @@ void DapCmdServerData::sendServerInfo(const DapServerInfo &server)
     obj["port"]        = server.port;
     obj["name"]        = server.name;
     obj["location"]    = server.m_countries.key(server.location);
+    obj["online"]      = server.online;
     sendCmd(&obj);
 }
