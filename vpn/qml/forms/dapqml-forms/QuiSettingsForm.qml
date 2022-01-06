@@ -35,6 +35,7 @@ Item {
                 height: model.sid !== DapQmlModelSettings.SI_TITLE ? 64 : 108
 
                 DapQmlButton {
+                    property int myIndex: model.index
                     visible: model.sid !== DapQmlModelSettings.SI_TITLE
                     width: 350
                     height: 64
@@ -46,6 +47,10 @@ Item {
                     mainQss: "sett-btn-lbl-main"
                     subQss: "sett-btn-lbl-sub"
                     icon: model.icon
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: settingsModel.exec(parent.myIndex)
+                    }
                 }
 
                 DapQmlLabel {

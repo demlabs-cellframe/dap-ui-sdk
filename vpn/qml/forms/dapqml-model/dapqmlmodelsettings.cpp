@@ -74,6 +74,16 @@ DapQmlModelSettings *DapQmlModelSettings::instance()
   return __inst;
 }
 
+void DapQmlModelSettings::exec(int index)
+{
+  if (index < 0 || index >= s_items.size())
+    return;
+
+  auto cbv  = s_items.at(index).get("callback");
+  auto cb   = reinterpret_cast<ItemCB>(cbv.toULongLong());
+  cb();
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
@@ -256,7 +266,7 @@ QVariant DapQmlModelSettingsItem::get (const QString a_name) const
     case textMain:  return m_textMain;
     case textSub:   return m_textSub;
     case icon:      return m_icon;
-    case callback:  return m_cb;
+    case callback:  return reinterpret_cast<quint64> (reinterpret_cast<void*> (m_cb));
     default: return QVariant();
     }
 }

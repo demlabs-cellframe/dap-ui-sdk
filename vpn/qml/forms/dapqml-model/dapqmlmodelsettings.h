@@ -50,6 +50,7 @@ public:
   /// @{
 public:
   static DapQmlModelSettings *instance();
+  Q_INVOKABLE void exec(int index);
   /// @}
 
   /****************************************//**
