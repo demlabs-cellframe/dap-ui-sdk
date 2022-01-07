@@ -32,6 +32,18 @@ void DapCmdServersList::handleError(int code, const QString& message)
     case -32001:
         emit sigEmptyList(message);
         break;
+    case 101:
+        emit sigErrorNetwork(tr("Internet is not available. \nError code: ") + QString::number(code) + "\nСheck the connection");
+        break;
+    case -666:
+        emit sigErrorNetwork(tr("Remote server disconnected before he sends all... \nError code: ") + QString::number(code) + "\nСheck the connection");
+        break;
+    case -667:
+        emit sigErrorNetwork(tr("Remote server replied only with headers... Error code: ") + QString::number(code));
+        break;
+    case -668:
+        emit sigErrorNetwork(tr("Remote server disconnected without reply. Try again... \nError code: ") + QString::number(code) + "\nСheck the connection");
+        break;
     default:
         emit sigErrorNetwork(message);
         break;

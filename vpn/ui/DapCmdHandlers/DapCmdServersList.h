@@ -16,7 +16,6 @@ signals:
     void sigServersListUpdate(const DapServerInfoList& servers);
     void sigEmptyList(const QString &msg);
     void sigErrorNetwork(const QString &msg);
-    void sigNetworkUnreachable(const QString &msg);
 public slots:
     void sendCmdGetServersList() { sendCmd(); }
 };
