@@ -13,18 +13,16 @@ Item {
             columns: 1
             Layout.alignment: Qt.AlignHCenter
 
-            Text {
+            DapQmlLabel {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
+                horizontalAlign: Text.AlignHCenter
+                verticalAlign: Text.AlignVCenter
+                height: 28+64
                 text: "Statistics"
-                color: "#04004E"
-                font.family: "Lato"
-                font.pixelSize: 24
-                font.weight: Font.DemiBold
+                qss: "stat-title"
             }
 
             Rectangle {
@@ -50,7 +48,8 @@ Item {
                     buttonStyle: DapQmlButton.Style.TopMainBottomSub
                     mainText: "10 205 Mbps"
                     subText: "DOWNLOAD SPEED"
-                    separator: false
+                    mainQss: "stat-item-main"
+                    subQss: "stat-item-sub"
                 }
 
                 DapQmlButton {
@@ -64,7 +63,8 @@ Item {
                     buttonStyle: DapQmlButton.Style.TopMainBottomSub
                     mainText: "20 896 Mbps"
                     subText: "UPLOAD SPEED"
-                    separator: false
+                    mainQss: "stat-item-main"
+                    subQss: "stat-item-sub"
                 }
 
                 DapQmlButton {
@@ -78,7 +78,8 @@ Item {
                     buttonStyle: DapQmlButton.Style.TopMainBottomSub
                     mainText: "29 896 Gb"
                     subText: "BYTES RECEIVED"
-                    separator: false
+                    mainQss: "stat-item-main"
+                    subQss: "stat-item-sub"
                 }
 
                 DapQmlButton {
@@ -92,7 +93,8 @@ Item {
                     buttonStyle: DapQmlButton.Style.TopMainBottomSub
                     mainText: "20 896 Mb"
                     subText: "BYTES SENT"
-                    separator: false
+                    mainQss: "stat-item-main"
+                    subQss: "stat-item-sub"
                 }
 
                 DapQmlButton {
@@ -106,7 +108,8 @@ Item {
                     buttonStyle: DapQmlButton.Style.TopMainBottomSub
                     mainText: "454 086"
                     subText: "PACKETS RECEIVED"
-                    separator: false
+                    mainQss: "stat-item-main"
+                    subQss: "stat-item-sub"
                 }
 
                 DapQmlButton {
@@ -120,7 +123,8 @@ Item {
                     buttonStyle: DapQmlButton.Style.TopMainBottomSub
                     mainText: "4 086"
                     subText: "PACKETS SENT"
-                    separator: false
+                    mainQss: "stat-item-main"
+                    subQss: "stat-item-sub"
                 }
 
                 DapQmlButton {
@@ -134,7 +138,8 @@ Item {
                     buttonStyle: DapQmlButton.Style.TopMainBottomSub
                     mainText: "146:7:27"
                     subText: "UPTIME"
-                    separator: false
+                    mainQss: "stat-item-main"
+                    subQss: "stat-item-sub"
                 }
 
                 DapQmlButton {
@@ -148,7 +153,8 @@ Item {
                     buttonStyle: DapQmlButton.Style.TopMainBottomSub
                     mainText: "34 ms"
                     subText: "PING"
-                    separator: false
+                    mainQss: "stat-item-main"
+                    subQss: "stat-item-sub"
                 }
 
             }

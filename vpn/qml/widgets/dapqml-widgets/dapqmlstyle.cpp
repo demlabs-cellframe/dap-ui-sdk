@@ -10,6 +10,9 @@ DapQmlStyle::DapQmlStyle(QObject *parent)
   : QObject (parent)
 {
   /* signals */
+  connect (this, &DapQmlStyle::qssChanged,
+           this, &DapQmlStyle::_applyStyle,
+           Qt::QueuedConnection);
   connect (this, &DapQmlStyle::itemChanged,
            this, &DapQmlStyle::_applyStyle,
            Qt::QueuedConnection);

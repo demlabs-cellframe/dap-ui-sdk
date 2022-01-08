@@ -43,4 +43,56 @@ Item {
             qss: "dashboard-status"
         }
     }
+
+    /* switch */
+    DapQmlSwitch {
+        x: root.width / 2 - 270 / 2;
+        y: 220
+        width: 270
+        height: 174
+    }
+
+    /* speed */
+    RowLayout {
+        x: centerHor(this)
+        y: 471
+        width: root.width - 88
+        height: 99
+
+        DapQmlButton {
+            Layout.fillWidth: true
+            Layout.preferredWidth: 154
+            Layout.preferredHeight: 99
+            mainText: "120 Mb/s"
+            subText: "DOWNLOAD"
+            mainQss: "dashboard-speed-main"
+            subQss: "dashboard-speed-sub"
+        }
+
+        DapQmlButton {
+            Layout.fillWidth: true
+            Layout.preferredWidth: 154
+            Layout.preferredHeight: 99
+            mainText: "34.7 Mb/s"
+            subText: "UPLOAD"
+            mainQss: "dashboard-speed-main"
+            subQss: "dashboard-speed-sub"
+        }
+    }
+
+    /* change server button */
+    DapQmlButton {
+        x: centerHor(this)
+        y: 575
+        width: 410
+        height: 137
+        link: true
+        frame: true
+
+        buttonStyle: DapQmlButton.TopSubBottomMain
+        mainText: "North America - Canada"
+        subText: "231:532:531:20"
+        mainQss: "dashboard-server-main"
+        subQss: "dashboard-server-sub"
+    }
 }

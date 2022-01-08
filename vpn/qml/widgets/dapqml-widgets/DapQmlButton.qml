@@ -26,24 +26,36 @@ Rectangle {
     property string mainQss: ""
     property string leftQss: ""
     property string subQss: ""
-//    property color mainColor: "#04004E"
-//    property color leftColor: "#04004E"
-//    property color subColor: "#A4A3C0"
-//    property int mainSize: 20
-//    property int subSize: 12
-//    property int leftSize: 30
-//    property int mainWeight: Font.Bold
-//    property int subWeight: Font.Normal
-//    property int leftWeight: Font.Bold
     property string icon: ""
     property int iconSize: 34
     property int buttonStyle: DapQmlButton.Style.TopMainBottomSub
     property bool separator: false
+    property bool link: false
+    property bool frame: false
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
 
     /* user no background */
     color: "transparent"
+
+    /* link */
+    Image {
+        x: root.width - (width * 3)
+        y: (root.height - height) / 2
+        z: 1
+        width: 22
+        height: 22
+        visible: root.link
+        source: "qrc:/light/ic_arrow-right.png"
+    }
+
+    /* background */
+    Image {
+        anchors.fill: parent
+        z: -1
+        visible: root.link
+        source: "qrc:/light/btn_server_bg.png"
+    }
 
     /* Top - Item, Bottom - Separator */
     GridLayout {
@@ -69,10 +81,6 @@ Rectangle {
                 verticalAlign: Text.AlignVCenter
                 text: root.leftText
                 qss: root.leftQss
-//                color: root.leftColor
-//                font.family: "Lato"
-//                font.pixelSize: root.leftSize
-//                font.weight: root.leftWeight
             }
 
             /* right side two labels */
@@ -91,10 +99,6 @@ Rectangle {
                     verticalAlign: Text.AlignBottom
                     text: root.mainText
                     qss: root.mainQss
-//                    color: root.mainColor
-//                    font.family: "Lato"
-//                    font.pixelSize: root.mainSize
-//                    font.weight: root.mainWeight
                 }
 
                 /* sub text */
@@ -107,10 +111,6 @@ Rectangle {
                     verticalAlign: Text.AlignTop
                     text: root.subText
                     qss: root.subQss
-//                    color: root.subColor
-//                    font.family: "Lato"
-//                    font.pixelSize: root.subSize
-//                    font.weight: root.subWeight
                 }
 
             }
@@ -134,10 +134,6 @@ Rectangle {
                 verticalAlign: Text.AlignBottom
                 text: root.mainText
                 qss: root.mainQss
-//                color: root.mainColor
-//                font.family: "Lato"
-//                font.pixelSize: root.mainSize
-//                font.weight: root.mainWeight
             }
 
             /* sub text */
@@ -150,10 +146,6 @@ Rectangle {
                 verticalAlign: Text.AlignTop
                 text: root.subText
                 qss: root.subQss
-//                color: root.subColor
-//                font.family: "Lato"
-//                font.pixelSize: root.subSize
-//                font.weight: root.subWeight
             }
 
         }
@@ -176,10 +168,6 @@ Rectangle {
                 verticalAlign: Text.AlignBottom
                 text: root.subText
                 qss: root.subQss
-//                color: root.subColor
-//                font.family: "Lato"
-//                font.pixelSize: root.subSize
-//                font.weight: root.subWeight
             }
 
             /* main text */
@@ -192,10 +180,6 @@ Rectangle {
                 verticalAlign: Text.AlignTop
                 text: root.mainText
                 qss: root.mainQss
-//                color: root.mainColor
-//                font.family: "Lato"
-//                font.pixelSize: root.mainSize
-//                font.weight: root.mainWeight
             }
 
         }
@@ -228,10 +212,6 @@ Rectangle {
                 verticalAlign: Text.AlignVCenter
                 text: root.mainText
                 qss: root.mainQss
-//                color: root.mainColor
-//                font.family: "Lato"
-//                font.pixelSize: root.mainSize
-//                font.weight: root.mainWeight
             }
 
             /* sub text */
@@ -244,10 +224,6 @@ Rectangle {
                 verticalAlign: Text.AlignVCenter
                 text: root.subText
                 qss: root.subQss
-//                color: root.subColor
-//                font.family: "Lato"
-//                font.pixelSize: root.subSize
-//                font.weight: root.subWeight
             }
         }
 

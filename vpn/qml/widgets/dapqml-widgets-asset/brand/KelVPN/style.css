@@ -1,4 +1,28 @@
 /****************************************************
+ * Widgets
+ ***************************************************/
+
+.switch-bg-off
+{
+	qproperty-scaledPixmap: url("qrc:/light/switch/bg_off.png");
+}
+
+.switch-bg-on
+{
+	qproperty-scaledPixmap: url("qrc:/light/switch/bg_on.png");
+}
+
+.switch-toggle-off
+{
+	qproperty-scaledPixmap: url("qrc:/light/switch/toggle_off.png");
+}
+
+.switch-toggle-on
+{
+	qproperty-scaledPixmap: url("qrc:/light/switch/toggle_on.png");
+}
+
+/****************************************************
  * Icons
  ***************************************************/
 
@@ -149,6 +173,31 @@
 }
 
 /****************************************************
+ * Statistics
+ ***************************************************/
+
+.stat-title
+{
+	color: "#04004E";
+	font-size: 24;
+	font-weight: Font.Bold;
+}
+
+.stat-item-main
+{
+	color: "#04004E";
+	font-size: 24;
+	font-weight: Font.Normal;
+}
+
+.stat-item-sub
+{
+	color: "#A4A3C0";
+	font-size: 12;
+	font-weight: Font.Normal;
+}
+
+/****************************************************
  * Dashboard
  ***************************************************/
 
@@ -156,10 +205,37 @@
 {
 	color: "#DA0B82";
 	font-size: 24;
+	font-weight: Font.Bold;
 }
 
 .dashboard-status
 {
 	color: "#04004E";
 	font-size: 18;
+}
+
+.dashboard-speed-main
+{
+	color: "#04004E";
+	font-size: 26;
+	font-weight: Font.Bold;
+}
+
+.dashboard-speed-sub
+{
+	color: "#A4A3C0";
+	font-size: 12;
+}
+
+.dashboard-server-main
+{
+	color: "#04004E";
+	font-size: 18;
+	font-weight: Font.Bold;
+}
+
+.dashboard-server-sub
+{
+	color: "#A4A3C0";
+	font-size: 15;
 }
