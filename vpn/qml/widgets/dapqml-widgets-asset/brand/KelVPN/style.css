@@ -147,3 +147,19 @@
 	font-size: 24;
 	font-weight: Font.Bold;
 }
+
+/****************************************************
+ * Dashboard
+ ***************************************************/
+
+.dashboard-title
+{
+	color: "#DA0B82";
+	font-size: 24;
+}
+
+.dashboard-status
+{
+	color: "#04004E";
+	font-size: 18;
+}
