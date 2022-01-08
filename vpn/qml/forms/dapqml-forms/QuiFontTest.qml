@@ -2,7 +2,7 @@ import QtQuick 2.4
 import QtQuick.Controls 2.5
 import "qrc:/dapqml-widgets"
 
-ApplicationWindow {
+Item {
     id: window
     width: 428
     height: 926
@@ -11,14 +11,14 @@ ApplicationWindow {
         function wtext(weight) {
             return "1 2 3 4 font.weight: Font." + weight
         }
-        DapQmlLabel { text: parent.wtext(weight); weight: "Thin"       }
-        DapQmlLabel { text: parent.wtext(weight); weight: "ExtraLight" }
-        DapQmlLabel { text: parent.wtext(weight); weight: "Light"      }
-        DapQmlLabel { text: parent.wtext(weight); weight: "Normal"     }
-        DapQmlLabel { text: parent.wtext(weight); weight: "Medium"     }
-        DapQmlLabel { text: parent.wtext(weight); weight: "DemiBold"   }
-        DapQmlLabel { text: parent.wtext(weight); weight: "Bold"       }
-        DapQmlLabel { text: parent.wtext(weight); weight: "ExtraBold"  }
-        DapQmlLabel { text: parent.wtext(weight); weight: "Black"      }
+        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.Thin       }
+        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.ExtraLight }
+        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.Light      }
+        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.Normal     }
+        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.Medium     }
+        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.DemiBold   }
+        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.Bold       }
+        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.ExtraBold  }
+        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.Black      }
     }
 }
