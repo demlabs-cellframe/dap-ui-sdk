@@ -6,6 +6,7 @@
 /* VARS */
 static DapQmlStyle *s_globalSignal = nullptr;
 static bool s_gsHook = false;
+static thread_local double s_screenWidth = 428, s_screenHeight = 926;
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -132,6 +133,14 @@ void DapQmlStyle::_applyStyle()
       /* cycle thru all item properties */
       for (auto it = item->cbegin(), en = item->cend(); it != en; it++)
         {
+          /* set scale */
+          if (it.key() == "scaled")
+            {
+              auto scaled = it.value().value<Style::Scaled> ();
+              scaled.adjust (m_item, s_screenWidth, s_screenHeight);
+              continue;
+            }
+
           /* set properties */
           m_item->setProperty (it.key().toStdString().c_str(), it.value());
         }
@@ -140,7 +149,10 @@ void DapQmlStyle::_applyStyle()
 
 void DapQmlStyle::_resized(int a_width, int a_height)
 {
-  qDebug() << __PRETTY_FUNCTION__ << a_width << a_height;
+  //qDebug() << __PRETTY_FUNCTION__ << a_width << a_height;
+  s_screenWidth   = a_width;
+  s_screenHeight  = a_height;
+  _applyStyle();
 }
 
 /*-----------------------------------------*/

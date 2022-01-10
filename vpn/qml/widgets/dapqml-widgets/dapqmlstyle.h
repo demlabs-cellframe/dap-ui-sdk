@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <QObject>
 #include <QSize>
+#include "style/scaled.h"
 
 /****************************************//**
  * @brief style manager for qml widgets
@@ -31,6 +32,7 @@ class DapQmlStyle : public QObject
 protected:
   QString m_qss;
   QObject *m_item;
+  Style::Scaled m_scaled;
   /// @}
 
   /****************************************//**

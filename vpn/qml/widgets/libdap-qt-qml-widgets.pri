@@ -18,10 +18,12 @@ HEADERS += \
     $$PWD/dapqml-widgets/dapqmlstyle.h \
     $$PWD/dapqml-widgets/style/qssitem.h \
     $$PWD/dapqml-widgets/style/qssmap.h \
-    $$PWD/dapqml-widgets/style/qssparser.h
+    $$PWD/dapqml-widgets/style/qssparser.h \
+    $$PWD/dapqml-widgets/style/scaled.h
 
 SOURCES += \
     $$PWD/dapqml-widgets/dapqmlstyle.cpp \
     $$PWD/dapqml-widgets/style/qssitem.cpp \
     $$PWD/dapqml-widgets/style/qssmap.cpp \
-    $$PWD/dapqml-widgets/style/qssparser.cpp
+    $$PWD/dapqml-widgets/style/qssparser.cpp \
+    $$PWD/dapqml-widgets/style/scaled.cpp

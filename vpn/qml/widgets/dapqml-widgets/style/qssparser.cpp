@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "qssparser.h"
 #include "qssmap.h"
+#include "scaled.h"
 #include <QStringList>
 #include <QColor>
 #include <QUrl>
@@ -242,6 +243,36 @@ static int font (const QString &a_value)
   return weight;
 }
 
+static const Scaled *scaled (const QString &a_value)
+{
+  static thread_local Scaled result;
+  int firstBracket  = a_value.indexOf ('(') + 1,
+      secondBracket = a_value.indexOf (')');
+
+  auto data         = a_value.mid (firstBracket, secondBracket - firstBracket);
+  auto valuesStr    = data.split (',');
+
+  if (valuesStr.size() != 5)
+    return &(result = Scaled());
+
+  double values[4] =
+  {
+    valuesStr.at (0).toDouble(),
+    valuesStr.at (1).toDouble(),
+    valuesStr.at (2).toDouble(),
+    valuesStr.at (3).toDouble(),
+  };
+  bool aspect = valuesStr.at(4) == "true";
+
+  result.setX (values[0]);
+  result.setY (values[1]);
+  result.setW (values[2]);
+  result.setH (values[3]);
+  result.setAspect (aspect);
+
+  return &result;
+}
+
 QList<QssLine> QssLine::parse (const QString &a_src)
 {
   /* vars */
@@ -289,6 +320,10 @@ QVariant QssLine::asVariant() const
   /* url */
   if ((m_value.size() > 4) && (m_value.mid (0, 3) == "url"))
     return url (m_value);
+
+  /* url */
+  if ((m_value.size() > 4) && (m_value.mid (0, 6) == "scaled"))
+    return scaled (m_value);
 
   /* font-weight */
   if ((m_value.size() > 6) && (m_value.mid(0, 5) == "Font."))
