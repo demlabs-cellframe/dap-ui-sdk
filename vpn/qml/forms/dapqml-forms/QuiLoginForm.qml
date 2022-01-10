@@ -2,20 +2,51 @@ import QtQuick 2.4
 import QtQml 2.12
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
+import DapQmlStyle 1.0
 import "qrc:/dapqml-widgets"
 
 Item {
     id: root
     property int calcWidth: centerWidth()
 
+    /* defs */
+    enum CoordType
+    {
+        CTX,
+        CTY
+    }
+
+    /* functions */
     function centerHor(item) {
         return root.width / 2 - item.width / 2;
+    }
+    function centerVer(item) {
+        return root.height / 2 - item.height / 2;
     }
 
     function centerWidth() {
         return root.width - 78;
     }
+    function adjustedCoord(type,coord,item) {
+        var multH = root.width / 428;
+        var multV = root.height / 926;
+        switch(type) {
+        case QuiLoginForm.CTX: return (coord * multH) - (item.width / 2);
+        case QuiLoginForm.CTY: return (coord * multV);
+        }
+        return 0;
+    }
+    function adjustedSize(type,size,item) {
+        var multH = root.width / 428;
+        var multV = root.height / 926;
+        switch(type) {
+        case QuiLoginForm.CTX: return (size * multH);
+        case QuiLoginForm.CTY: return (size * multV);
+        }
+        return size;
+    }
 
+    /* W I P */
     Timer {
         interval: 500
         running: true
@@ -29,17 +60,10 @@ Item {
         }
     }
 
-    /* background */
-    Rectangle {
-        anchors.fill: parent
-        z: 10
-        color: "#F7F8FA"
-    }
-
     /* logo */
     Image {
-        x: centerHor(this)
-        y: 117
+        x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
+        y: adjustedCoord(QuiLoginForm.CTY, 117, this) // 117
         z: 15
         width: 260
         height: 89
@@ -48,8 +72,8 @@ Item {
 
     /* top separator */
     DapQmlSeparator {
-        x: centerHor(this)
-        y: 291
+        x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
+        y: adjustedCoord(QuiLoginForm.CTY, 291, this) // 291
         z: 15
         width: root.calcWidth
     }
@@ -57,8 +81,8 @@ Item {
     /* choose server */
     DapQmlButton {
         id: btnChooseServer
-        x: centerHor(this)
-        y: 292
+        x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
+        y: adjustedCoord(QuiLoginForm.CTY, 292, this) // 292
         z: 15
         width: root.calcWidth
         height: 108
@@ -75,8 +99,8 @@ Item {
     /* enter serial */
     DapQmlButton {
         id: btnEnterSerial
-        x: centerHor(this)
-        y: 406
+        x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
+        y: adjustedCoord(QuiLoginForm.CTY, 406, this) // 406
         z: 15
         width: root.calcWidth
         height: 108
@@ -93,8 +117,8 @@ Item {
     /* connect */
     DapQmlPushButton {
         id: btnConnect
-        x: centerHor(this)
-        y: 570
+        x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
+        y: adjustedCoord(QuiLoginForm.CTY, 570, this) // 570
         z: 15
 
         text: qsTr("CONNECT")
@@ -102,9 +126,10 @@ Item {
 
     /* obtain key */
     RowLayout {
-        x: centerHor(this)
-        y: 675
+        x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
+        y: adjustedCoord(QuiLoginForm.CTY, 675, this) // 675
         z: 15
+        width: root.calcWidth
         height: 19
         Text {
             Layout.fillWidth: true

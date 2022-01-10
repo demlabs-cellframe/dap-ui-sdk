@@ -47,8 +47,13 @@ public:
 public:
   Q_INVOKABLE QString getQss() const;
   Q_INVOKABLE void setQss (const QString &a_newQss);
+
   Q_INVOKABLE QObject *getItem() const;
   Q_INVOKABLE void setItem (QObject *a_newItem);
+
+  Q_INVOKABLE double centerHor (QObject *a_root, QObject *a_item);
+  Q_INVOKABLE double centerVer (QObject *a_root, QObject *a_item);
+
   static void setup (const QString &styleSheet);
   /// @}
 
