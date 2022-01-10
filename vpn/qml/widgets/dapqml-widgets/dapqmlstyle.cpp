@@ -1,6 +1,11 @@
 /* INCLUDES */
 #include "dapqmlstyle.h"
 #include "style/qssmap.h"
+#include <QDebug>
+
+/* VARS */
+static DapQmlStyle *s_globalSignal = nullptr;
+static bool s_gsHook = false;
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -10,6 +15,14 @@ DapQmlStyle::DapQmlStyle(QObject *parent)
   : QObject (parent)
   , m_item (nullptr)
 {
+  /* global instance */
+  if (s_globalSignal == nullptr && s_gsHook == false)
+    {
+      s_gsHook        = true;
+      s_globalSignal  = new DapQmlStyle;
+      s_gsHook        = false;
+    }
+
   /* signals */
   connect (this, &DapQmlStyle::qssChanged,
            this, &DapQmlStyle::_applyStyle,
@@ -17,6 +30,11 @@ DapQmlStyle::DapQmlStyle(QObject *parent)
   connect (this, &DapQmlStyle::itemChanged,
            this, &DapQmlStyle::_applyStyle,
            Qt::QueuedConnection);
+
+  if (s_globalSignal)
+    connect (s_globalSignal, &DapQmlStyle::resized,
+             this, &DapQmlStyle::_resized,
+             Qt::QueuedConnection);
 }
 
 /********************************************
@@ -43,6 +61,12 @@ void DapQmlStyle::setItem (QObject *a_newItem)
 {
   m_item = a_newItem;
   emit itemChanged();
+}
+
+void DapQmlStyle::windowResized(int a_width, int a_height)
+{
+  if (s_globalSignal)
+    emit s_globalSignal->resized (a_width, a_height);
 }
 
 double DapQmlStyle::centerHor (QObject *a_root, QObject *a_item)
@@ -112,6 +136,11 @@ void DapQmlStyle::_applyStyle()
           m_item->setProperty (it.key().toStdString().c_str(), it.value());
         }
     }
+}
+
+void DapQmlStyle::_resized(int a_width, int a_height)
+{
+  qDebug() << __PRETTY_FUNCTION__ << a_width << a_height;
 }
 
 /*-----------------------------------------*/

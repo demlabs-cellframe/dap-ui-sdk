@@ -65,8 +65,8 @@ Item {
         x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
         y: adjustedCoord(QuiLoginForm.CTY, 117, this) // 117
         z: 15
-        width: 260
-        height: 89
+        width: adjustedSize(QuiLoginForm.CTY, 260, this) // 260
+        height: adjustedSize(QuiLoginForm.CTY, 89, this) // 89
         source: "qrc:/light/login-logo.png"
     }
 
@@ -75,7 +75,8 @@ Item {
         x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
         y: adjustedCoord(QuiLoginForm.CTY, 291, this) // 291
         z: 15
-        width: root.calcWidth
+        width: adjustedSize(QuiLoginForm.CTX, root.calcWidth, this) // root.calcWidth
+        height: adjustedSize(QuiLoginForm.CTY, 4, this)
     }
 
     /* choose server */
@@ -84,8 +85,8 @@ Item {
         x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
         y: adjustedCoord(QuiLoginForm.CTY, 292, this) // 292
         z: 15
-        width: root.calcWidth
-        height: 108
+        width: adjustedSize(QuiLoginForm.CTX, root.calcWidth, this) // root.calcWidth
+        height: adjustedSize(QuiLoginForm.CTY, 108, this) // 108
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub
         mainText: "Auto select"
@@ -102,8 +103,8 @@ Item {
         x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
         y: adjustedCoord(QuiLoginForm.CTY, 406, this) // 406
         z: 15
-        width: root.calcWidth
-        height: 108
+        width: adjustedSize(QuiLoginForm.CTX, root.calcWidth, this) // root.calcWidth
+        height: adjustedSize(QuiLoginForm.CTY, 108, this) // 108
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub
         mainText: "____ ____ ____ ____"
@@ -120,6 +121,8 @@ Item {
         x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
         y: adjustedCoord(QuiLoginForm.CTY, 570, this) // 570
         z: 15
+        width: adjustedSize(QuiLoginForm.CTY, 374, this)
+        height: adjustedSize(QuiLoginForm.CTY, 90, this)
 
         text: qsTr("CONNECT")
     }

@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QObject>
+#include <QSize>
 
 /****************************************//**
  * @brief style manager for qml widgets
@@ -51,6 +52,8 @@ public:
   Q_INVOKABLE QObject *getItem() const;
   Q_INVOKABLE void setItem (QObject *a_newItem);
 
+  Q_INVOKABLE void windowResized (int a_width, int a_height);
+
   Q_INVOKABLE double centerHor (QObject *a_root, QObject *a_item);
   Q_INVOKABLE double centerVer (QObject *a_root, QObject *a_item);
 
@@ -64,6 +67,7 @@ public:
 signals:
   void qssChanged();
   void itemChanged();
+  void resized (int a_width, int a_height);
   /// @}
 
   /****************************************//**
@@ -72,6 +76,7 @@ signals:
   /// @{
 protected slots:
   void _applyStyle();
+  void _resized (int a_width, int a_height);
   /// @}
 };
 
