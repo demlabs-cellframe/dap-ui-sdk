@@ -68,13 +68,12 @@ Item {
         visible: background.visible
     }
 
-    Image {
-        id: lever
+    DapImageLoader{
+        id:lever
         x: leverOffPosition; y: leverMargin
-        width: background.height - leverMargin*2
-        height: background.height - leverMargin*2
+        innerWidth: background.height - leverMargin*2
+        innerHeight: background.height - leverMargin*2
         source: imageOff
-        fillMode: Image.PreserveAspectFit
     }
 
     states: [

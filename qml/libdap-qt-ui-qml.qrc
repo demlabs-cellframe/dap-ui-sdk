@@ -39,5 +39,6 @@
         <file>widgets/DapSwitch.qml</file>
         <file>icons/switch_off.png</file>
         <file>icons/switch_on.png</file>
+        <file>widgets/DapImageLoader.qml</file>
     </qresource>
 </RCC>
