@@ -108,6 +108,21 @@ void Scaled::adjust (QObject *a_item, double a_screenWidth, double a_screenHeigh
   resultW = (!fullWidth) ? (w() * multH) : (a_screenWidth);
   resultH = (!fullHeight) ? (h() * multV) : (a_screenHeight);
 
+  /* aspect */
+  if (aspect() && !fullWidth && !fullHeight)
+    {
+      if (resultW > resultH)
+        {
+          resultX += (w() * multH - w() * multV) / 2;
+          resultW = w() * multV;
+        }
+      else
+        {
+          resultY += (h() * multV - h() * multH) / 2;
+          resultH = h() * multH;
+        }
+    }
+
   /* setup adjusts */
   a_item->setProperty ("x", resultX);
   a_item->setProperty ("y", resultY);
