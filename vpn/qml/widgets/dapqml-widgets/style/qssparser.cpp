@@ -243,7 +243,7 @@ static int font (const QString &a_value)
   return weight;
 }
 
-static const Scaled *scaled (const QString &a_value)
+static Scaled scaled (const QString &a_value)
 {
   static thread_local Scaled result;
   int firstBracket  = a_value.indexOf ('(') + 1,
@@ -253,7 +253,7 @@ static const Scaled *scaled (const QString &a_value)
   auto valuesStr    = data.split (',');
 
   if (valuesStr.size() != 5)
-    return &(result = Scaled());
+    return (result = Scaled());
 
   double values[4] =
   {
@@ -270,7 +270,7 @@ static const Scaled *scaled (const QString &a_value)
   result.setH (values[3]);
   result.setAspect (aspect);
 
-  return &result;
+  return result;
 }
 
 QList<QssLine> QssLine::parse (const QString &a_src)
@@ -323,7 +323,7 @@ QVariant QssLine::asVariant() const
 
   /* url */
   if ((m_value.size() > 4) && (m_value.mid (0, 6) == "scaled"))
-    return scaled (m_value);
+    return QVariant::fromValue (scaled (m_value));
 
   /* font-weight */
   if ((m_value.size() > 6) && (m_value.mid(0, 5) == "Font."))

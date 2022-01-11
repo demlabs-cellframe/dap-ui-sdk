@@ -29,7 +29,7 @@ Item {
     }
     function adjustedCoord(type,coord,item) {
         var multH = root.width / 428;
-        var multV = root.height / 926;
+        var multV = root.height / (926 - 172);
         switch(type) {
         case QuiLoginForm.CTX: return (coord * multH) - (item.width / 2);
         case QuiLoginForm.CTY: return (coord * multV);
@@ -38,7 +38,7 @@ Item {
     }
     function adjustedSize(type,size,item) {
         var multH = root.width / 428;
-        var multV = root.height / 926;
+        var multV = root.height / (926 - 172);
         switch(type) {
         case QuiLoginForm.CTX: return (size * multH);
         case QuiLoginForm.CTY: return (size * multV);
@@ -82,16 +82,16 @@ Item {
     /* choose server */
     DapQmlButton {
         id: btnChooseServer
-        x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
-        y: adjustedCoord(QuiLoginForm.CTY, 292, this) // 292
+//        x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
+//        y: adjustedCoord(QuiLoginForm.CTY, 292, this) // 292
         z: 15
-        width: adjustedSize(QuiLoginForm.CTX, root.calcWidth, this) // root.calcWidth
-        height: adjustedSize(QuiLoginForm.CTY, 108, this) // 108
+//        width: adjustedSize(QuiLoginForm.CTX, root.calcWidth, this) // root.calcWidth
+//        height: adjustedSize(QuiLoginForm.CTY, 108, this) // 108
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub
         mainText: "Auto select"
         subText: "CHOOSING SERVER"
-        qss: "login-btn"
+        qss: "login-btn-server"
         mainQss: "login-btn-main"
         subQss: "login-btn-sub"
         separator: true
@@ -100,16 +100,16 @@ Item {
     /* enter serial */
     DapQmlButton {
         id: btnEnterSerial
-        x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
-        y: adjustedCoord(QuiLoginForm.CTY, 406, this) // 406
+//        x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
+//        y: adjustedCoord(QuiLoginForm.CTY, 406, this) // 406
         z: 15
-        width: adjustedSize(QuiLoginForm.CTX, root.calcWidth, this) // root.calcWidth
-        height: adjustedSize(QuiLoginForm.CTY, 108, this) // 108
+//        width: adjustedSize(QuiLoginForm.CTX, root.calcWidth, this) // root.calcWidth
+//        height: adjustedSize(QuiLoginForm.CTY, 108, this) // 108
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub
         mainText: "____ ____ ____ ____"
         subText: "SERIAL KEY"
-        qss: "login-btn"
+        qss: "login-btn-serial"
         mainQss: "login-btn-main"
         subQss: "login-btn-sub"
         separator: true

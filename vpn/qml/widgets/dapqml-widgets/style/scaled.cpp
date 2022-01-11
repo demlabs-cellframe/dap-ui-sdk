@@ -11,9 +11,24 @@ namespace Style
  *******************************************/
 
 Scaled::Scaled()
-  : m_x (0), m_y (0)
+  : QObject()
+  , m_x (0), m_y (0)
   , m_w (0), m_h (0)
   , m_aspect (false)
+{
+
+}
+
+Scaled::Scaled (const Scaled &src)
+  : QObject()
+  , m_x (src.m_x), m_y (src.m_y)
+  , m_w (src.m_w), m_h (src.m_h)
+  , m_aspect (src.m_aspect)
+{
+
+}
+
+Scaled::~Scaled()
 {
 
 }
@@ -75,10 +90,10 @@ void Scaled::setAspect(bool newAspect)
 void Scaled::adjust (QObject *a_item, double a_screenWidth, double a_screenHeight) const
 {
   /* defs */
-  bool centerHor  = false;
-  bool centerVer  = false;
-  bool fullWidth  = false;
-  bool fullHeight = false;
+  bool centerHor  = x() == -1;
+  bool centerVer  = y() == -1;
+  bool fullWidth  = w() == -1;
+  bool fullHeight = h() == -1;
 
   /* multipliers */
   double multH    = a_screenWidth / double(428);
@@ -87,39 +102,31 @@ void Scaled::adjust (QObject *a_item, double a_screenWidth, double a_screenHeigh
          resultY  = y(),
          resultW, resultH;
 
-  /* centers and fulls */
-  if (x() == -1)
-    { resultX = (a_screenWidth / 2); centerHor = true; }
-  if (y() == -1)
-    { resultY = (a_screenHeight / 2); centerVer = true; }
-
-  if (w() == -1)
-    { fullWidth = true; }
-  if (h() == -1)
-    { fullHeight = true; }
-
-  /* calc aspect */
-  if (!aspect())
-    {
-      resultW   = (fullWidth) ? (a_screenWidth) : (w() * multH);
-      resultH   = (fullHeight) ? (a_screenHeight) : (h() * multV);
-    }
-  else
-    {
-      bool widthHigh  = w() > h();
-      resultW   = (fullWidth) ? (a_screenWidth) : (w() * ((widthHigh) ? multV : multH));
-      resultH   = (fullHeight) ? (a_screenHeight) : (h() * ((widthHigh) ? multV : multH));
-    }
-
   /* calc */
-  resultX   = (resultX * multH) - ((centerHor) ? (resultW / 2) : (0));
-  resultY   = (resultY * multV) - ((centerVer) ? (resultH / 2) : (0));
+  resultX = (!centerHor) ? (resultX * multH) : (0);
+  resultY = (!centerVer) ? (resultY * multV) : (0);
+  resultW = (!fullWidth) ? (w() * multH) : (a_screenWidth);
+  resultH = (!fullHeight) ? (h() * multV) : (a_screenHeight);
 
   /* setup adjusts */
   a_item->setProperty ("x", resultX);
   a_item->setProperty ("y", resultY);
   a_item->setProperty ("width", resultW);
   a_item->setProperty ("height", resultH);
+}
+
+/********************************************
+ * OPERATORS
+ *******************************************/
+
+Scaled &Scaled::operator=(const Scaled &src)
+{
+  m_x       = src.m_x;
+  m_y       = src.m_y;
+  m_w       = src.m_w;
+  m_h       = src.m_h;
+  m_aspect  = src.m_aspect;
+  return *this;
 }
 
 /*-----------------------------------------*/

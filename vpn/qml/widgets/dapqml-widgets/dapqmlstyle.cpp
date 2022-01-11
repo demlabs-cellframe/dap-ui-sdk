@@ -134,9 +134,14 @@ void DapQmlStyle::_applyStyle()
       for (auto it = item->cbegin(), en = item->cend(); it != en; it++)
         {
           /* set scale */
-          if (it.key() == "scaled")
+          if (it.key() == "scaledRect")
             {
-              auto scaled = it.value().value<Style::Scaled> ();
+//              auto value  = it.value(); // .value<Style::Scaled> ();
+//              auto object = qvariant_cast<QObject*> (value);
+//              auto scaled = qobject_cast<Style::Scaled*> (object);
+//              if (scaled)
+//                scaled->adjust (m_item, s_screenWidth, s_screenHeight);
+              auto scaled  = it.value().value<Style::Scaled> ();
               scaled.adjust (m_item, s_screenWidth, s_screenHeight);
               continue;
             }

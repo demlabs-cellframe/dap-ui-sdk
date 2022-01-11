@@ -116,9 +116,14 @@
  * Login
  ***************************************************/
 
-.login-btn
+.login-btn-server
 {
-	scaledRect: scaled(-1,292,-1,108,false);
+	scaled-rect: scaled(-1,292,-1,108,false);
+}
+
+.login-btn-serial
+{
+	scaled-rect: scaled(-1,406,-1,108,false);
 }
 
 .login-btn-main

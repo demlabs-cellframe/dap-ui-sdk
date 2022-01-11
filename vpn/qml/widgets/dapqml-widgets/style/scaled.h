@@ -8,8 +8,10 @@
 namespace Style
 {
 
-class Scaled
+class Scaled : public QObject
 {
+  Q_OBJECT
+
   /****************************************//**
    * @name VARS
    *******************************************/
@@ -24,6 +26,8 @@ class Scaled
   /// @{
 public:
   Scaled();
+  Scaled(const Scaled &src);
+  ~Scaled();
   /// @}
 
   /****************************************//**
@@ -47,6 +51,14 @@ public:
   void setAspect(bool newAspect);
 
   void adjust (QObject *a_item, double a_screenWidth, double a_screenHeight) const;
+  /// @}
+
+  /****************************************//**
+   * @name OPERATORS
+   *******************************************/
+  /// @{
+public:
+  Scaled& operator=(const Scaled &src);
   /// @}
 };
 
