@@ -13,7 +13,6 @@ DapCmdServersList::DapCmdServersList(QObject *parent)
 void DapCmdServersList::handle(const QJsonObject* params)
 {
     Q_UNUSED(params)
-    emit sendCurrent();
     auto reply = new DapNetworkReply();
     connect(reply, &DapNetworkReply::finished, this, [=] {
         QJsonParseError jsonErr;
@@ -33,8 +32,10 @@ void DapCmdServersList::handle(const QJsonObject* params)
                 sendCmd(&obj);
                 DapServerInfoList l;
                 if (DapServerInfo::fromJSON(obj.value("servers").toArray(), l))
-                    if (!l.isEmpty())
+                    if (!l.isEmpty()){
                         emit updateNodesList(l);
+                        emit sendCurrentServer();
+                    }
             }
         }
     });

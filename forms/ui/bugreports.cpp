@@ -71,6 +71,9 @@ BugReports::BugReports (QWidget *parent) :
   connect (ui->btnResultBack, &DapGuiPushButton::clicked,
            this, &BugReports::sigResultBack,
            Qt::QueuedConnection);
+  connect (ui->btnResultBack, &DapGuiPushButton::clicked,
+           this, &BugReports::sigReturn,
+           Qt::QueuedConnection);
 
   connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &BugReports::_slotTextEditFinish,
