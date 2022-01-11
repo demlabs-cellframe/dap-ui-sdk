@@ -165,6 +165,14 @@ void DapDataLocal::saveSerialKeyData()
         this->saveToSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
 }
 
+void DapDataLocal::resetSerialKeyData()
+{
+    if (m_serialKeyData){
+        m_serialKeyData->reset();
+        this->saveToSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
+    }
+}
+
 void DapDataLocal::loadAuthorizationDatas()
 {
 #ifdef Q_OS_ANDROID

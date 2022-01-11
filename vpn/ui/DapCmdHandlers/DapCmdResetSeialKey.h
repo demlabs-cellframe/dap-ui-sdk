@@ -22,6 +22,7 @@ public:
     void sendResetSerialKeyRequest(const QString &a_serial = "");
 signals:
     void sigResetSerialKeyError(const QString& error);
+    void sigResetSerialKeyErrorSetOnlyMessage(const QString& error);
     void sigSerialKeyReseted();
 };
 

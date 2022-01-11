@@ -189,7 +189,9 @@ private slots:
     void answerBugReport();
     void answerSignUp();
 
-    void resetReply();
+    void onResetSerialKey();
+    void errorResetSerialKey(const QString&);
+
 signals:
     void encryptInitialized();
     void errorEncryptInitialization(const QString& msg);
@@ -211,9 +213,11 @@ signals:
     void logouted();
 
     Q_INVOKABLE void receivedBugReportAnswer(const QString&);
-    Q_INVOKABLE void receivedResetReply(const QString&);
     void sigSignUpAnswer(const QString& signUpAnswer);
     void sigReceivedNewsMessage(const QJsonDocument& news);
+
+    void sigSerialKeyReseted(const QString&);
+    void sigResetSerialKeyError(const int, const QString&);
 #ifdef BUILD_VAR_GOOGLE
     void purchaseResponseReceived(const QJsonDocument& responce);
 #endif

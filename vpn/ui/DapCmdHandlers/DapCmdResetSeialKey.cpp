@@ -21,14 +21,21 @@ void DapCmdResetSeialKey::handleResult(const QJsonObject& result)
 {
     QString request = result.value("reset_reply").toString();
     qDebug() << "Serial reset answer: " << request;
-    if (!request.contains("successfully", Qt::CaseInsensitive))
-        emit sigResetSerialKeyError(request.remove(QRegExp("\\D")));
-    else emit sigSerialKeyReseted();
+    emit sigSerialKeyReseted();
 }
 
 void DapCmdResetSeialKey::handleError(int code, const QString& message)
 {
     Q_UNUSED(code); Q_UNUSED(message);
     qWarning() << *m_errorObject;
+
+    switch (code) {
+    case 1:
+        emit sigResetSerialKeyError(message);
+        break;
+    case 2:
+        emit sigResetSerialKeyErrorSetOnlyMessage(message);
+        break;
+    }
 }
 
