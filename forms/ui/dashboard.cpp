@@ -31,7 +31,7 @@ Dashboard::Dashboard (QWidget *parent) :
            this, &Dashboard::sigSwitchToggle,
            Qt::QueuedConnection);
   connect (ui->btnSwitch, &DapGuiSwitch::clicked,
-           this, &Dashboard::slotDisconnectionRequested,
+           this, &Dashboard::slotConnectionRequesteButtonPressed,
            Qt::QueuedConnection);
   connect (ui->btnServer, &DapGuiButton::clicked,
            this, &Dashboard::sigServerClicked,
@@ -102,7 +102,6 @@ void Dashboard::setStatusIdicator(bool a_enabled /*= false*/)
 
 void Dashboard::setBtnSwitchChecked(bool a_authorized /*= true*/)
 {
-//    slotUpdateStatusIcon(a_authorized);
     ui->btnSwitch->setChecked(a_authorized);
 }
 
@@ -137,16 +136,27 @@ void Dashboard::_slotTimeUpdate()
   ui->lUptime->setText (text);
 }
 
-void Dashboard::slotDisconnectionRequested()
-{
-//    this->_slotUpdateStatusIcon();
-  emit sigDisconnectionRequested();
-}
-
 void Dashboard::slotRetranslated()
 {
   ui->lDownload->setSubText (tr ("download"));
   ui->lUpload->setSubText (tr ("upload"));
 }
+void Dashboard::slotConnectionRequesteButtonPressed()
+{
+    emit sigConnectionStatusChangeRequested();
+}
+
+//void Connection::slotUpdateStatusIcon(bool a_switch)
+//{
+//  ui->lStatusIconOn->setVisible (a_switch);
+//  ui->lStatusIconOff->setVisible (!a_switch);
+  
+////    qDebug() << a_switch;
+////  ui->lStatusIcon->setCssStyle(
+////        a_switch
+////        ? "conn-status-icon ic_online"
+////        : "conn-status-icon ic_offline"
+////      );
+//}
 
 /*-----------------------------------------*/

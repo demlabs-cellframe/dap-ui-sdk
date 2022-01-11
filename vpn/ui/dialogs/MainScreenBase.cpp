@@ -20,6 +20,11 @@ MainScreenBase::MainScreenBase(QWidget *a_parent)
     });
 
     connect(m_ui->btnConnection,&QPushButton::clicked,this,&MainScreenBase::disconnectionRequested);
+    connect(m_ui->btn_Address,&QPushButton::clicked, [=](){
+        QClipboard* clipboard = QApplication::clipboard();
+        clipboard->setText(m_ui->btn_Address->text(), QClipboard::Clipboard);
+        QToolTip::showText(QCursor::pos(), "Copy");
+    });
 
 #ifdef Q_OS_ANDROID
 
@@ -237,16 +242,26 @@ MainScreenBase::IndicatorsUnits MainScreenBase::indicatorUnits() const
     return m_indicatorUnits;
 }
 
-void MainScreenBase::setCurrentServer(const QString &a_currentServer)
+void MainScreenBase::setCurrentServer(const DapServerInfo *a_currentServer)
 {
     qDebug() << "MainScreen::setCurrentServer:" << a_currentServer;
-    if (m_currentServer == a_currentServer)
+    if (!a_currentServer || m_currentServer == a_currentServer->name)
         return;
-    m_currentServer = a_currentServer;
+    m_currentServer = a_currentServer->name;
 
     m_ui->lblStatusMessage->setText(this->statusText());
+    m_ui->btn_Address->setText(a_currentServer->address);
 }
 
+void MainScreenBase::setCurrentServerAdress(const QString &a_currentServerAdress)
+{
+    qDebug() << "MainScreen::setCurrentServerAderss:" << a_currentServerAdress;
+    if (m_currentServerAdress == a_currentServerAdress)
+        return;
+    m_currentServerAdress = a_currentServerAdress;
+
+    m_ui->btn_Address->setText(m_currentServerAdress);
+}
 
 QString MainScreenBase::toTimeString(quint64 seconds)
 {

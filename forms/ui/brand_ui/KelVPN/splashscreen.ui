@@ -54,21 +54,21 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="DapGuiWidget" name="MainWidget">
-        <property name="cssStyle">
+       <widget class="DapGuiWidget" name="MainWidget" native="true">
+        <property name="cssStyle" stdset="0">
          <string>splashscreen_background</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="DapGuiWidget" name="kelGuiWidget_2">
-           <property name="cssStyle">
+          <widget class="DapGuiWidget" name="kelGuiWidget_2" native="true">
+           <property name="cssStyle" stdset="0">
             <string>nobackground</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="DapGuiWidget" name="widget">
-           <property name="cssStyle">
+          <widget class="DapGuiWidget" name="widget" native="true">
+           <property name="cssStyle" stdset="0">
             <string>nobackground</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -82,7 +82,7 @@
               <property name="text">
                <string/>
               </property>
-              <property name="cssStyle">
+              <property name="cssStyle" stdset="0">
                <string>splashscreen_logo noborder nobackground</string>
               </property>
              </widget>
@@ -91,8 +91,8 @@
           </widget>
          </item>
          <item>
-          <widget class="DapGuiWidget" name="kelGuiWidget">
-           <property name="cssStyle">
+          <widget class="DapGuiWidget" name="kelGuiWidget" native="true">
+           <property name="cssStyle" stdset="0">
             <string>nobackground</string>
            </property>
           </widget>
@@ -113,7 +113,10 @@
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
-           <property name="cssStyle">
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+           <property name="cssStyle" stdset="0">
             <string>white font18 normal lato noborder nobackground</string>
            </property>
           </widget>
@@ -135,17 +138,17 @@ September 10 2021</string>
            <property name="alignment">
             <set>Qt::AlignBottom|Qt::AlignHCenter</set>
            </property>
-           <property name="cssStyle">
+           <property name="cssStyle" stdset="0">
             <string>white font12 normal lato noborder nobackground</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="DapGuiWidget" name="wLoadingHolder">
+          <widget class="DapGuiWidget" name="wLoadingHolder" native="true">
            <property name="styleSheet">
             <string notr="true">#wLoadingHolder{ 	background-color: rgba(0,0,0,0); }</string>
            </property>
-           <property name="cssStyle">
+           <property name="cssStyle" stdset="0">
             <string>nobackground</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_2">

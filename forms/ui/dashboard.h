@@ -60,7 +60,7 @@ public:
 signals:
   void sigSwitchToggle (bool checked);
   void sigServerClicked();
-  void sigDisconnectionRequested();
+  void sigConnectionStatusChangeRequested();
   /// @}
 
   /****************************************//**
@@ -92,10 +92,10 @@ public slots:
   void setUploadSpeed(QString a_text);
   /// set server information into button
   void setServerInfo(QString a_name, QString a_ip);
-  /// start disconnection
-  void slotDisconnectionRequested();
   /// translate text
   void slotRetranslated();
+  void slotConnectionRequesteButtonPressed();
+//  void slotUpdateStatusIcon(bool a_switch);
 
 private slots:
   void _slotTimeUpdate();

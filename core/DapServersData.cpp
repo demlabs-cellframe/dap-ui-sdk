@@ -17,9 +17,6 @@ void DapServersData::addServer(const DapServerInfo& dsi) {
     insertRows(row, 1);
     setData(index(row, 0), QVariant::fromValue(dsi));
 
-    if (m_currentServerIndex == -1)
-        setCurrentServer(0);
-
     emit this->serverAdded(dsi);
 }
 
@@ -41,7 +38,20 @@ void DapServersData::setCurrentServer(int a_serverIndex)
     Q_ASSERT(a_serverIndex < m_servers.count());
     m_currentServerIndex = a_serverIndex;
 
+    if (!this->currentServer())
+        return;
+
     emit currentServerNameChanged(this->currentServerName());
+}
+
+void DapServersData::setCurrentServerNotSignal(int a_serverIndex)
+{
+    if (m_currentServerIndex == a_serverIndex)
+        return;
+    Q_ASSERT(a_serverIndex < m_servers.count());
+    m_currentServerIndex = a_serverIndex;
+
+    emit currentServerNameChangedNotRequestChangingServer(this->currentServerName());
 }
 
 void DapServersData::setCurrentServer(const DapServerInfo *a_server)
@@ -61,7 +71,7 @@ void DapServersData::setCurrentServerFromService(const DapServerInfo *a_server)
         addServer(*a_server);
         index = m_servers.lastIndexOf(*a_server);
     }
-    setCurrentServer(index);
+    setCurrentServerNotSignal(index);
 }
 
 /// Set server name.
@@ -121,6 +131,12 @@ QString DapServersData::currentServerName() const
 {
     const DapServerInfo* currentServer = this->currentServer();
     return currentServer ? currentServer->name : "";
+}
+
+QString DapServersData::currentServerAdress() const
+{
+    const DapServerInfo* currentServer = this->currentServer();
+    return currentServer ? currentServer->address : "";
 }
 
 bool DapServersData::currentServerIsAuto() const

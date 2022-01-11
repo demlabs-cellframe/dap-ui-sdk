@@ -8,6 +8,7 @@ SOURCES += \
     $$PWD/DapLogHandler.cpp \
     $$PWD/DapNetworkAccessManager.cpp \
     $$PWD/DapNetworkReply.cpp \
+    $$PWD/DapPluginsPathControll.cpp \
     $$PWD/DapSerialKeyData.cpp \
     $$PWD/DapServersData.cpp \
     $$PWD/DapSession.cpp \
@@ -32,6 +33,7 @@ HEADERS += \
     $$PWD/DapLogHandler.h \
     $$PWD/DapNetworkAccessManager.h \
     $$PWD/DapNetworkReply.h \
+    $$PWD/DapPluginsPathControll.h \
     $$PWD/DapSerialKeyData.h \
     $$PWD/DapServersData.h \
     $$PWD/DapSession.h \
