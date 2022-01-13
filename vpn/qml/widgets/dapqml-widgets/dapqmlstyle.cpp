@@ -134,7 +134,7 @@ void DapQmlStyle::_applyStyle()
       for (auto it = item->cbegin(), en = item->cend(); it != en; it++)
         {
           /* set scale */
-          if (it.key() == "scaledRect")
+          if (it.key() == "scaledRect" || it.key() == "scaledFont")
             {
 //              auto value  = it.value(); // .value<Style::Scaled> ();
 //              auto object = qvariant_cast<QObject*> (value);

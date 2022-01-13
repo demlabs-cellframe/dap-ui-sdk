@@ -14,7 +14,9 @@ Scaled::Scaled()
   : QObject()
   , m_x (0), m_y (0)
   , m_w (0), m_h (0)
+  , m_fontSize (0)
   , m_aspect (false)
+  , m_type (Invalid)
 {
 
 }
@@ -23,7 +25,9 @@ Scaled::Scaled (const Scaled &src)
   : QObject()
   , m_x (src.m_x), m_y (src.m_y)
   , m_w (src.m_w), m_h (src.m_h)
+  , m_fontSize (src.m_fontSize)
   , m_aspect (src.m_aspect)
+  , m_type (src.m_type)
 {
 
 }
@@ -77,6 +81,16 @@ void Scaled::setH(double newH)
   m_h = newH;
 }
 
+int Scaled::fontSize() const
+{
+  return m_fontSize;
+}
+
+void Scaled::setFontSize(int newFontSize)
+{
+  m_fontSize = newFontSize;
+}
+
 bool Scaled::aspect() const
 {
   return m_aspect;
@@ -85,6 +99,16 @@ bool Scaled::aspect() const
 void Scaled::setAspect(bool newAspect)
 {
   m_aspect = newAspect;
+}
+
+Scaled::Type Scaled::type() const
+{
+  return m_type;
+}
+
+void Scaled::setType(Type newType)
+{
+  m_type = newType;
 }
 
 void Scaled::adjust (QObject *a_item, double a_screenWidth, double a_screenHeight) const
@@ -124,10 +148,28 @@ void Scaled::adjust (QObject *a_item, double a_screenWidth, double a_screenHeigh
     }
 
   /* setup adjusts */
-  a_item->setProperty ("x", resultX);
-  a_item->setProperty ("y", resultY);
-  a_item->setProperty ("width", resultW);
-  a_item->setProperty ("height", resultH);
+  if (type() == RectOnly || type() == All)
+    {
+      a_item->setProperty ("x", resultX);
+      a_item->setProperty ("y", resultY);
+      a_item->setProperty ("width", resultW);
+      a_item->setProperty ("height", resultH);
+    }
+
+  /* setup font adjustments */
+  if (type() == FontOnly || type() == All)
+    {
+      /* if item is DapQmlLabel */
+      if (a_item->property ("fontSize").isValid())
+        {
+          int fs  = fontSize();
+          if (resultW > resultH)
+            fs  *= multH;
+          else
+            fs  *= multV;
+          a_item->setProperty ("fontSize", fs);
+        }
+    }
 }
 
 /********************************************
@@ -136,11 +178,13 @@ void Scaled::adjust (QObject *a_item, double a_screenWidth, double a_screenHeigh
 
 Scaled &Scaled::operator=(const Scaled &src)
 {
-  m_x       = src.m_x;
-  m_y       = src.m_y;
-  m_w       = src.m_w;
-  m_h       = src.m_h;
-  m_aspect  = src.m_aspect;
+  m_x         = src.m_x;
+  m_y         = src.m_y;
+  m_w         = src.m_w;
+  m_h         = src.m_h;
+  m_fontSize  = src.m_fontSize;
+  m_aspect    = src.m_aspect;
+  m_type      = src.m_type;
   return *this;
 }
 

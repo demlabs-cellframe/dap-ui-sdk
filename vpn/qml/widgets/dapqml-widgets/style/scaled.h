@@ -13,11 +13,29 @@ class Scaled : public QObject
   Q_OBJECT
 
   /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
+public:
+  enum Type
+  {
+    Invalid,
+
+    RectOnly,
+    FontOnly,
+    All
+  };
+  /// @}
+
+  /****************************************//**
    * @name VARS
    *******************************************/
   /// @{
+private:
   double m_x, m_y, m_w, m_h;
+  int m_fontSize;
   bool m_aspect;
+  Type m_type;
   /// @}
 
   /****************************************//**
@@ -47,8 +65,14 @@ public:
   double h() const;
   void setH(double newH);
 
+  int fontSize() const;
+  void setFontSize(int newFontSize);
+
   bool aspect() const;
   void setAspect(bool newAspect);
+
+  Type type() const;
+  void setType(Type newType);
 
   void adjust (QObject *a_item, double a_screenWidth, double a_screenHeight) const;
   /// @}

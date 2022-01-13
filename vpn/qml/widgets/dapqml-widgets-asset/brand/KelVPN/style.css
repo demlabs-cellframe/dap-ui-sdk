@@ -161,6 +161,7 @@
 
 .login-btn-main
 {
+	scaled-font: scaled(20);
 	font-size: 20;
 	color: "#04004E";
 	font-weight: Font.Bold;
@@ -168,6 +169,7 @@
 
 .login-btn-sub
 {
+	scaled-font: scaled(20);
 	font-size: 12;
 	color: "#A4A3C0";
 	font-weight: Font.Normal;

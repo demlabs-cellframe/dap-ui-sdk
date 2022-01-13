@@ -245,31 +245,83 @@ static int font (const QString &a_value)
 
 static Scaled scaled (const QString &a_value)
 {
-  static thread_local Scaled result;
+  /* vars */
+  Scaled result;
+  Scaled::Type type = Scaled::Invalid;
+
+  /* parse data */
   int firstBracket  = a_value.indexOf ('(') + 1,
       secondBracket = a_value.indexOf (')');
 
   auto data         = a_value.mid (firstBracket, secondBracket - firstBracket);
   auto valuesStr    = data.split (',');
 
-  if (valuesStr.size() != 5)
+  /* ------------------------------------------------------------ */
+  /* lambda's */
+
+  auto parseFont  = [ = ](Scaled &result)
+    {
+      /* store font size */
+      result.setFontSize (valuesStr.at (0).toInt());
+    };
+
+  auto parseRect  = [ = ](Scaled &result)
+    {
+      /* get all rect values */
+      double values[4] =
+      {
+        valuesStr.at (0).toDouble(),
+        valuesStr.at (1).toDouble(),
+        valuesStr.at (2).toDouble(),
+        valuesStr.at (3).toDouble(),
+      };
+      bool aspect = valuesStr.at(4) == "true";
+
+      /* store */
+      result.setX (values[0]);
+      result.setY (values[1]);
+      result.setW (values[2]);
+      result.setH (values[3]);
+      result.setAspect (aspect);
+    };
+
+  auto parseAll   = [ = ](Scaled &result, QStringList &valuesStr)
+    {
+      /* store rect */
+      parseRect (result);
+
+      /* move font size to first */
+      valuesStr.move (5,0);
+
+      /* store font size */
+      parseFont (result);
+    };
+
+  /* ------------------------------------------------------------ */
+
+  /* set proper type */
+  if (valuesStr.size() == 1)
+    type  = Scaled::FontOnly;
+  else if (valuesStr.size() == 5)
+    type  = Scaled::RectOnly;
+  else if (valuesStr.size() == 6)
+    type  = Scaled::All;
+
+  /* finish, if invalid */
+  if (type == Scaled::Invalid)
     return (result = Scaled());
 
-  double values[4] =
-  {
-    valuesStr.at (0).toDouble(),
-    valuesStr.at (1).toDouble(),
-    valuesStr.at (2).toDouble(),
-    valuesStr.at (3).toDouble(),
-  };
-  bool aspect = valuesStr.at(4) == "true";
+  /* parse by type */
+  switch (type)
+    {
+    case Scaled::Invalid:   break;
+    case Scaled::FontOnly:  parseFont (result); break;
+    case Scaled::RectOnly:  parseRect (result); break;
+    case Scaled::All:       parseAll (result, valuesStr); break;
+    }
 
-  result.setX (values[0]);
-  result.setY (values[1]);
-  result.setW (values[2]);
-  result.setH (values[3]);
-  result.setAspect (aspect);
-
+  /* store type and return */
+  result.setType (type);
   return result;
 }
 
