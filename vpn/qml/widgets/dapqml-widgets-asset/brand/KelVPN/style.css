@@ -149,6 +149,22 @@
  * Login
  ***************************************************/
 
+.login-logo-container
+{
+	scaled-rect: scaled(-1,117,-1,89,true);
+}
+
+.login-logo
+{
+	scaled-rect: scaled(nan,nan,260,89,true);
+	qproperty-scaledPixmap: url("qrc:/light/login-logo.png");
+}
+
+.login-separator
+{
+	scaled-rect: scaled(-1,291,-1,4,false);
+}
+
 .login-btn-server
 {
 	scaled-rect: scaled(-1,292,-1,108,false);

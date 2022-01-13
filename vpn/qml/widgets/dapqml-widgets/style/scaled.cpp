@@ -150,10 +150,14 @@ void Scaled::adjust (QObject *a_item, double a_screenWidth, double a_screenHeigh
   /* setup adjusts */
   if (type() == RectOnly || type() == All)
     {
-      a_item->setProperty ("x", resultX);
-      a_item->setProperty ("y", resultY);
-      a_item->setProperty ("width", resultW);
-      a_item->setProperty ("height", resultH);
+      if (x() != -32000)
+        a_item->setProperty ("x", resultX);
+      if (y() != -32000)
+        a_item->setProperty ("y", resultY);
+      if (w() != -32000)
+        a_item->setProperty ("width", resultW);
+      if (h() != -32000)
+        a_item->setProperty ("height", resultH);
     }
 
   /* setup font adjustments */
@@ -167,7 +171,8 @@ void Scaled::adjust (QObject *a_item, double a_screenWidth, double a_screenHeigh
             fs  *= multH;
           else
             fs  *= multV;
-          a_item->setProperty ("fontSize", fs);
+          if (fontSize() != -32000)
+            a_item->setProperty ("fontSize", fs);
         }
     }
 }

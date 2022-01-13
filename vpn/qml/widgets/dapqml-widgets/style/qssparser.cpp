@@ -270,10 +270,10 @@ static Scaled scaled (const QString &a_value)
       /* get all rect values */
       double values[4] =
       {
-        valuesStr.at (0).toDouble(),
-        valuesStr.at (1).toDouble(),
-        valuesStr.at (2).toDouble(),
-        valuesStr.at (3).toDouble(),
+        valuesStr.at(0) == "nan" ? -32000 : valuesStr.at (0).toDouble(),
+        valuesStr.at(1) == "nan" ? -32000 : valuesStr.at (1).toDouble(),
+        valuesStr.at(2) == "nan" ? -32000 : valuesStr.at (2).toDouble(),
+        valuesStr.at(3) == "nan" ? -32000 : valuesStr.at (3).toDouble(),
       };
       bool aspect = valuesStr.at(4) == "true";
 
