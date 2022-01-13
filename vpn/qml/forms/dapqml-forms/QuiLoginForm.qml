@@ -133,38 +133,40 @@ Item {
     }
 
     /* obtain key */
-    RowLayout {
-        x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
-        y: adjustedCoord(QuiLoginForm.CTY, 675, this) // 675
-        z: 15
-        width: root.calcWidth
-        height: 19
-        Text {
-            Layout.fillWidth: true
+    DapQmlRectangle {
+        qss: "login-obtain-container"
+
+        DapQmlLabel {
+            id: obtainLabel
             text: "Don't have a serial key?"
             color: "#5C5B74"
-            font.family: "Lato"
-            font.pixelSize: 16
-            font.weight: Font.Normal
+            width: parent.width / 2 - 2
+            height: parent.height
+            horizontalAlign: Text.AlignRight
+            qss: "login-obtain-font"
+//          font.family: "Lato"
+//          font.pixelSize: 16
+//          font.weight: Font.Normal
         }
 
-        Button {
-            Layout.fillWidth: true
-            background: Rectangle { color: "transparent" }
+        DapQmlLabel {
+            id: obtainLinkLabel
+            x: parent.width / 2 + 2
+            text: "Tap here to obtain one"
+            color: "#DA0B82"
+            width: parent.width / 2
+            height: parent.height
+            horizontalAlign: Text.AlignLeft
+            qss: "login-obtain-font"
+//          font.family: "Lato"
+//          font.pixelSize: 16
+//          font.weight: Font.Normal
 
-            contentItem: Text {
-                text: "Tap here to obtain one"
-                color: "#DA0B82"
-                font.family: "Lato"
-                font.pixelSize: 16
-                font.weight: Font.Normal
-
-                MouseArea {
-                    id: mouseArea
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    enabled: false
-                }
+            MouseArea {
+                id: mouseArea
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                enabled: false
             }
         }
     }

@@ -3,6 +3,9 @@ import DapQmlStyle 1.0
 
 Item {
     id: root
+    clip: true
+//    width: (label.paintedWidth > icon.paintedWidth) ? label.paintedWidth : icon.paintedWidth
+//    height: (label.paintedHeight > icon.paintedHeight) ? label.paintedHeight : icon.paintedHeight
     property string qss
     property string text: ""
     property color color
@@ -14,12 +17,14 @@ Item {
     property int verticalAlign: Text.AlignVCenter
 
     Image {
+        id: icon
         anchors.fill: root
         source: root.scaledPixmap
         mipmap: true
     }
 
     Text {
+        id: label
         anchors.fill: root
 
         horizontalAlignment: root.horizontalAlign

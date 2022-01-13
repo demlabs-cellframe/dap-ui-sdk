@@ -10,6 +10,7 @@ Button {
 
     property string active: "qrc:/light/btn_bg_hover_active.png"
     property string inactive: "qrc:/light/btn_bg.png"
+    property int fontSize: 14
     property string qss
 
     function isStill()
@@ -27,7 +28,7 @@ Button {
         color: "#FFFFFF"
         text: root.text
         font.family: "Roboto"
-        font.pixelSize: 14
+        font.pixelSize: root.fontSize
         font.weight: Font.Bold
     }
 

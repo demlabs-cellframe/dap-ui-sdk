@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "scaled.h"
 #include <QVariant>
+#include <QQmlProperty>
 
 /* NAMESPACE */
 namespace Style
@@ -151,29 +152,23 @@ void Scaled::adjust (QObject *a_item, double a_screenWidth, double a_screenHeigh
   if (type() == RectOnly || type() == All)
     {
       if (x() != -32000)
-        a_item->setProperty ("x", resultX);
+        QQmlProperty::write (a_item, "x", resultX); // a_item->setProperty ("x", resultX);
       if (y() != -32000)
-        a_item->setProperty ("y", resultY);
+        QQmlProperty::write (a_item, "y", resultY); // a_item->setProperty ("y", resultY);
       if (w() != -32000)
-        a_item->setProperty ("width", resultW);
+        QQmlProperty::write (a_item, "width", resultW); // a_item->setProperty ("width", resultW);
       if (h() != -32000)
-        a_item->setProperty ("height", resultH);
+        QQmlProperty::write (a_item, "height", resultH); // a_item->setProperty ("height", resultH);
     }
 
   /* setup font adjustments */
   if (type() == FontOnly || type() == All)
     {
-      /* if item is DapQmlLabel */
+      /* if item have fontSize property */
       if (a_item->property ("fontSize").isValid())
         {
-          int fs  = fontSize();
-
-          if (resultW > resultH)
-            fs  *= multH;
-          else
-            fs  *= multV;
-
-          a_item->setProperty ("fontSize", fs);
+          int fs  = fontSize() * multV;
+          QQmlProperty::write (a_item, "fontSize", fs); // a_item->setProperty ("fontSize", fs);
         }
     }
 }

@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "dapqmlstyle.h"
 #include "style/qssmap.h"
+#include <QQmlProperty>
 #include <QDebug>
 
 /* VARS */
@@ -147,7 +148,7 @@ void DapQmlStyle::_applyStyle()
             }
 
           /* set properties */
-          m_item->setProperty (it.key().toStdString().c_str(), it.value());
+          QQmlProperty::write (m_item, it.key(), it.value()); // m_item->setProperty (it.key().toStdString().c_str(), it.value());
         }
     }
 }

@@ -193,7 +193,6 @@
 .login-btn-main
 {
 	scaled-font: scaled(20);
-	font-size: 20;
 	color: "#04004E";
 	font-weight: Font.Bold;
 }
@@ -201,7 +200,6 @@
 .login-btn-sub
 {
 	scaled-font: scaled(12);
-	font-size: 12;
 	color: "#A4A3C0";
 	font-weight: Font.Normal;
 }
@@ -213,8 +211,29 @@
 
 .login-connect
 {
-	scaled-rect: scaled(nan,nan,374,90,true);
+	scaled-rect: scaled(nan,nan,374,90,true,14);
 }
+
+.login-obtain-container
+{
+	scaled-rect: scaled(-1,675,-1,19,false);
+}
+
+.login-obtain-font
+{
+	scaled-font: scaled(16);	
+}
+
+.login-obtain-label
+{
+	scaled-rect: scaled(nan,nan,160,nan,false);
+}
+
+.login-obtain-link
+{
+	scaled-rect: scaled(nan,nan,160,nan,false);
+}
+
 
 /****************************************************
  * Settings

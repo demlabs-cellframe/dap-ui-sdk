@@ -259,13 +259,13 @@ static Scaled scaled (const QString &a_value)
   /* ------------------------------------------------------------ */
   /* lambda's */
 
-  auto parseFont  = [ = ](Scaled &result)
+  auto parseFont  = [ = ](Scaled &result, QStringList &valuesStr)
     {
       /* store font size */
       result.setFontSize (valuesStr.at (0).toInt());
     };
 
-  auto parseRect  = [ = ](Scaled &result)
+  auto parseRect  = [ = ](Scaled &result, QStringList &valuesStr)
     {
       /* get all rect values */
       double values[4] =
@@ -288,13 +288,13 @@ static Scaled scaled (const QString &a_value)
   auto parseAll   = [ = ](Scaled &result, QStringList &valuesStr)
     {
       /* store rect */
-      parseRect (result);
+      parseRect (result, valuesStr);
 
       /* move font size to first */
-      valuesStr.move (5,0);
+      auto customList = QStringList {valuesStr.at (5)};
 
       /* store font size */
-      parseFont (result);
+      parseFont (result, customList);
     };
 
   /* ------------------------------------------------------------ */
@@ -315,8 +315,8 @@ static Scaled scaled (const QString &a_value)
   switch (type)
     {
     case Scaled::Invalid:   break;
-    case Scaled::FontOnly:  parseFont (result); break;
-    case Scaled::RectOnly:  parseRect (result); break;
+    case Scaled::FontOnly:  parseFont (result, valuesStr); break;
+    case Scaled::RectOnly:  parseRect (result, valuesStr); break;
     case Scaled::All:       parseAll (result, valuesStr); break;
     }
 
