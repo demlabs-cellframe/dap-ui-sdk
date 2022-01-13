@@ -71,53 +71,65 @@ Item {
     }
 
     /* top separator */
-    DapQmlSeparator {
-        z: 15
-        qss: "login-separator"
+    DapQmlRectangle {
+        qss: "login-separator-container"
+        DapQmlSeparator {
+            x: (parent.width - width) / 2
+            z: 15
+            width: parent.width - 74
+            qss: "login-separator"
+        }
     }
 
     /* choose server */
-    DapQmlButton {
-        id: btnChooseServer
-        z: 15
+    DapQmlRectangle {
+        qss: "login-btn-server-container"
+        DapQmlButton {
+            id: btnChooseServer
+            x: (parent.width - width) / 2
+            z: 15
+            width: parent.width - 74
 
-        buttonStyle: DapQmlButton.Style.TopMainBottomSub
-        mainText: "Auto select"
-        subText: "CHOOSING SERVER"
-        qss: "login-btn-server"
-        mainQss: "login-btn-main"
-        subQss: "login-btn-sub"
-        separator: true
+            buttonStyle: DapQmlButton.Style.TopMainBottomSub
+            mainText: "Auto select"
+            subText: "CHOOSING SERVER"
+            qss: "login-btn-server"
+            mainQss: "login-btn-main"
+            subQss: "login-btn-sub"
+            separator: true
+        }
     }
 
     /* enter serial */
-    DapQmlButton {
-        id: btnEnterSerial
-//        x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
-//        y: adjustedCoord(QuiLoginForm.CTY, 406, this) // 406
-        z: 15
-//        width: adjustedSize(QuiLoginForm.CTX, root.calcWidth, this) // root.calcWidth
-//        height: adjustedSize(QuiLoginForm.CTY, 108, this) // 108
+    DapQmlRectangle {
+        qss: "login-btn-serial-container"
+        DapQmlButton {
+            id: btnEnterSerial
+            x: (parent.width - width) / 2
+            z: 15
+            width: parent.width - 74
 
-        buttonStyle: DapQmlButton.Style.TopMainBottomSub
-        mainText: "____ ____ ____ ____"
-        subText: "SERIAL KEY"
-        qss: "login-btn-serial"
-        mainQss: "login-btn-main"
-        subQss: "login-btn-sub"
-        separator: true
+            buttonStyle: DapQmlButton.Style.TopMainBottomSub
+            mainText: "____ ____ ____ ____"
+            subText: "SERIAL KEY"
+            qss: "login-btn-serial"
+            mainQss: "login-btn-main"
+            subQss: "login-btn-sub"
+            separator: true
+        }
     }
 
     /* connect */
-    DapQmlPushButton {
-        id: btnConnect
-        x: adjustedCoord(QuiLoginForm.CTX, 428 / 2, this) // centerHor(this)
-        y: adjustedCoord(QuiLoginForm.CTY, 570, this) // 570
-        z: 15
-        width: adjustedSize(QuiLoginForm.CTY, 374, this)
-        height: adjustedSize(QuiLoginForm.CTY, 90, this)
+    DapQmlRectangle {
+        qss: "login-connect-container"
+        DapQmlPushButton {
+            id: btnConnect
+            qss: "login-connect"
+            x: (parent.width - width) / 2
+            z: 15
 
-        text: qsTr("CONNECT")
+            text: qsTr("CONNECT")
+        }
     }
 
     /* obtain key */

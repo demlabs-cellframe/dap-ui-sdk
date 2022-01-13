@@ -1,6 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.1
 import QtGraphicalEffects 1.5
+import DapQmlStyle 1.0
 
 Button {
     id: root
@@ -9,6 +10,7 @@ Button {
 
     property string active: "qrc:/light/btn_bg_hover_active.png"
     property string inactive: "qrc:/light/btn_bg.png"
+    property string qss
 
     function isStill()
     {
@@ -34,4 +36,6 @@ Button {
         mipmap: true
         source: !isStill() ? root.active : root.inactive
     }
+
+    DapQmlStyle { id: style; qss: root.qss; item: root }
 }

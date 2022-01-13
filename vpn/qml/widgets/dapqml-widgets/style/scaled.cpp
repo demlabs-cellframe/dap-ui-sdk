@@ -167,12 +167,13 @@ void Scaled::adjust (QObject *a_item, double a_screenWidth, double a_screenHeigh
       if (a_item->property ("fontSize").isValid())
         {
           int fs  = fontSize();
+
           if (resultW > resultH)
             fs  *= multH;
           else
             fs  *= multV;
-          if (fontSize() != -32000)
-            a_item->setProperty ("fontSize", fs);
+
+          a_item->setProperty ("fontSize", fs);
         }
     }
 }

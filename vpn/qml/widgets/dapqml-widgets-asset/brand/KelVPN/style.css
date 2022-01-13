@@ -160,19 +160,34 @@
 	qproperty-scaledPixmap: url("qrc:/light/login-logo.png");
 }
 
+.login-separator-container
+{
+	scaled-rect: scaled(-1,291,-1,4,true);
+}
+
 .login-separator
 {
-	scaled-rect: scaled(-1,291,-1,4,false);
+	scaled-rect: scaled(nan,nan,nan,4,false);
+}
+
+.login-btn-server-container
+{
+	scaled-rect: scaled(-1,292,-1,108,true);
 }
 
 .login-btn-server
 {
-	scaled-rect: scaled(-1,292,-1,108,false);
+	scaled-rect: scaled(nan,nan,nan,108,false);
+}
+
+.login-btn-serial-container
+{
+	scaled-rect: scaled(-1,406,-1,108,true);
 }
 
 .login-btn-serial
 {
-	scaled-rect: scaled(-1,406,-1,108,false);
+	scaled-rect: scaled(nan,nan,nan,108,false);
 }
 
 .login-btn-main
@@ -185,10 +200,20 @@
 
 .login-btn-sub
 {
-	scaled-font: scaled(20);
+	scaled-font: scaled(12);
 	font-size: 12;
 	color: "#A4A3C0";
 	font-weight: Font.Normal;
+}
+
+.login-connect-container
+{
+	scaled-rect: scaled(-1,570,-1,90,true);
+}
+
+.login-connect
+{
+	scaled-rect: scaled(nan,nan,374,90,true);
 }
 
 /****************************************************
