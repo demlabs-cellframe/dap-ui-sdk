@@ -7,44 +7,44 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
-    property int calcWidth: centerWidth()
+//    property int calcWidth: centerWidth()
 
-    /* defs */
-    enum CoordType
-    {
-        CTX,
-        CTY
-    }
+//    /* defs */
+//    enum CoordType
+//    {
+//        CTX,
+//        CTY
+//    }
 
-    /* functions */
-    function centerHor(item) {
-        return root.width / 2 - item.width / 2;
-    }
-    function centerVer(item) {
-        return root.height / 2 - item.height / 2;
-    }
+//    /* functions */
+//    function centerHor(item) {
+//        return root.width / 2 - item.width / 2;
+//    }
+//    function centerVer(item) {
+//        return root.height / 2 - item.height / 2;
+//    }
 
-    function centerWidth() {
-        return root.width - 78;
-    }
-    function adjustedCoord(type,coord,item) {
-        var multH = root.width / 428;
-        var multV = root.height / (926 - 172);
-        switch(type) {
-        case QuiLoginForm.CTX: return (coord * multH) - (item.width / 2);
-        case QuiLoginForm.CTY: return (coord * multV);
-        }
-        return 0;
-    }
-    function adjustedSize(type,size,item) {
-        var multH = root.width / 428;
-        var multV = root.height / (926 - 172);
-        switch(type) {
-        case QuiLoginForm.CTX: return (size * multH);
-        case QuiLoginForm.CTY: return (size * multV);
-        }
-        return size;
-    }
+//    function centerWidth() {
+//        return root.width - 78;
+//    }
+//    function adjustedCoord(type,coord,item) {
+//        var multH = root.width / 428;
+//        var multV = root.height / (926 - 172);
+//        switch(type) {
+//        case QuiLoginForm.CTX: return (coord * multH) - (item.width / 2);
+//        case QuiLoginForm.CTY: return (coord * multV);
+//        }
+//        return 0;
+//    }
+//    function adjustedSize(type,size,item) {
+//        var multH = root.width / 428;
+//        var multV = root.height / (926 - 172);
+//        switch(type) {
+//        case QuiLoginForm.CTX: return (size * multH);
+//        case QuiLoginForm.CTY: return (size * multV);
+//        }
+//        return size;
+//    }
 
     /* W I P */
     Timer {
@@ -52,7 +52,7 @@ Item {
         running: true
         repeat: false
         onTriggered: {
-            calcWidth                   = centerWidth();
+//            calcWidth                   = centerWidth();
             btnChooseServer.separator   = false;
             btnEnterSerial.separator    = false;
             btnChooseServer.separator   = true;

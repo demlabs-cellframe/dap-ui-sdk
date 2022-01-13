@@ -1,10 +1,12 @@
 import QtQuick 2.0
+import DapQmlStyle 1.0
 
 Item {
     id: root
     width: 270
     height: 174
     property bool checked: false
+    property string qss
 
     /* signals */
     signal clicked();
@@ -58,4 +60,6 @@ Item {
         anchors.fill: parent
         onClicked: toggle()
     }
+
+    DapQmlStyle { id: style; qss: root.qss; item: root }
 }

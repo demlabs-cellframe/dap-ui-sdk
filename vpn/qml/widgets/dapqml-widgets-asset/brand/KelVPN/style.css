@@ -304,14 +304,29 @@
 .dashboard-title
 {
 	color: "#DA0B82";
-	font-size: 24;
+	scaled-rect: scaled(-1,62,-1,28,false,24);
 	font-weight: Font.Bold;
 }
 
-.dashboard-status
+.dashboard-status-container
+{
+	scaled-rect: scaled(-1,107,108,22,false);
+}
+
+.dashboard-status-label
 {
 	color: "#04004E";
-	font-size: 18;
+	scaled-rect: scaled(nan,nan,120,22,false,18);
+}
+
+.dashboard-status-icon
+{
+	scaled-rect: scaled(nan,nan,5,5,true);
+}
+
+.dashboard-switch
+{
+	scaled-rect: scaled(-1,220,270,174,true);
 }
 
 .dashboard-speed-main
