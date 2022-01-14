@@ -5,6 +5,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    clip: true
     DapQmlModelSettings { id: settingsModel }
 
     function isSep(sid) {
@@ -23,22 +24,33 @@ Item {
         ListView {
             id: settingsListView
 
-            x: (parent.width - width) / 2
+            x: 36
             y: 0
-            width: 350
-            height: parent.height
+            width: root.width - 72
+            height: root.height
 
             clip: true
             model: settingsModel
 
+            /* this item simulates resizing to give values:*/
+            /* width -> item.height, */
+            /* height -> title.height, */
+            /* fontSize -> item.iconSize */
+            DapQmlRectangle {
+                visible: false
+                id: resizer
+                qss: "sett-resizer"
+            }
+
             delegate: Item {
-                height: model.sid !== DapQmlModelSettings.SI_TITLE ? 64 : 108
+                id: delegate
+                height: resizer.width//model.sid !== DapQmlModelSettings.SI_TITLE ? resizer.width : resizer.height
 
                 DapQmlButton {
                     property int myIndex: model.index
                     visible: model.sid !== DapQmlModelSettings.SI_TITLE
-                    width: 350
-                    height: 64
+                    width: settingsListView.width
+                    height: delegate.height
                     buttonStyle: DapQmlButton.Style.IconMainSub
                     mainText: model.textMain
                     subText: model.textSub
@@ -47,6 +59,7 @@ Item {
                     mainQss: "sett-btn-lbl-main"
                     subQss: "sett-btn-lbl-sub"
                     icon: model.icon
+                    iconSize: resizer.fontSize
                     MouseArea {
                         anchors.fill: parent
                         onClicked: settingsModel.exec(parent.myIndex)
@@ -55,74 +68,12 @@ Item {
 
                 DapQmlLabel {
                     visible: model.sid === DapQmlModelSettings.SI_TITLE
-                    width: 350
-                    height: 108
+                    width: settingsListView.width
+                    height: delegate.height
                     text: model.textMain
                     qss: "sett-title-lbl-main"
                 }
             }
         }
-
-//        GridLayout {
-//            width: 400
-//            columns: 1
-
-//            DapQmlButton {
-//                width: 350
-//                height: 108
-
-//                Layout.alignment: Qt.AlignHCenter
-//                Layout.preferredWidth: width
-//                Layout.preferredHeight: height
-
-//                buttonStyle: DapQmlButton.Style.TopMainBottomSub
-//                mainText: "Test item 1"
-//                subText: "TopMainBottomSub"
-//            }
-
-//            DapQmlButton {
-//                width: 350
-//                height: 108
-
-//                Layout.alignment: Qt.AlignHCenter
-//                Layout.preferredWidth: width
-//                Layout.preferredHeight: height
-
-//                buttonStyle: DapQmlButton.Style.TopSubBottomMain
-//                mainText: "Test item 2"
-//                subText: "TopSubBottomMain"
-//            }
-
-//            DapQmlButton {
-//                width: 350
-//                height: 108
-
-//                Layout.alignment: Qt.AlignHCenter
-//                Layout.preferredWidth: width
-//                Layout.preferredHeight: height
-
-//                buttonStyle: DapQmlButton.Style.LeftTopMainBottomSub
-//                leftText: "$ Third"
-//                mainText: "Test item 3"
-//                subText: "TopSubBottomMain"
-//            }
-
-//            DapQmlSeparator {
-//                Layout.alignment: Qt.AlignHCenter
-//                Layout.preferredWidth: width
-//                Layout.preferredHeight: height
-//            }
-
-//            DapQmlPushButton {
-//                id: btnConnect
-//                checkable: true
-//                checked: true
-//                Layout.alignment: Qt.AlignHCenter
-//                Layout.preferredWidth: width
-//                Layout.preferredHeight: height
-//                text: qsTr("CONNECT")
-//            }
-
-//        }
     }
 }

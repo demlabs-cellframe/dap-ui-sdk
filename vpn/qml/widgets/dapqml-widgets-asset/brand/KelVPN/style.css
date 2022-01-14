@@ -239,28 +239,27 @@
  * Settings
  ***************************************************/
 
+.sett-resizer
+{
+	scaled-rect: scaled(nan,nan,64,108,false,34);
+}
+
 .sett-item
 {
-	main-size: 64;
-	sub-size: 64;
-	left-size: 30;
-	main-Weight: Font.Bold;
-	sub-weight: Font.Normal;
-	left-weight: Font.Bold;
-	icon-size: 34;
+	scaled-rect: scaled(nan,nan,nan,nan,false,34);
 }
 
 .sett-btn-lbl-main
 {
 	color: "#04004E";
-	font-size: 16;
+	scaled-font: scaled(16);	
 	font-weight: Font.Normal;
 }
 
 .sett-btn-lbl-sub
 {
 	color: "#A4A3C0";
-	font-size: 16;
+	scaled-font: scaled(16);	
 	font-weight: Font.Normal;
 }
 
@@ -268,7 +267,7 @@
 {
 	color: "#04004E";
 	horizontal-align: Text.AlignHCenter;
-	font-size: 24;
+	scaled-rect: scaled(nan,nan,nan,nan,false,24);
 	font-weight: Font.Bold;
 }
 
