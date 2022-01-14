@@ -136,6 +136,7 @@ void Scaled::adjust (QObject *a_item, double a_screenWidth, double a_screenHeigh
   /* aspect */
   if (aspect() && !fullWidth && !fullHeight)
     {
+      /* put centered inside rectangle */
       if (resultW > resultH)
         {
           resultX += (w() * multH - w() * multV) / 2;
@@ -147,6 +148,12 @@ void Scaled::adjust (QObject *a_item, double a_screenWidth, double a_screenHeigh
           resultH = h() * multH;
         }
     }
+
+    /* move to center on the whole screen */
+    if (centerHor)
+      resultX = (a_screenWidth - resultW) / 2;
+    if (centerVer)
+      resultY = (a_screenHeight - resultH) / 2;
 
   /* setup adjusts */
   if (type() == RectOnly || type() == All)

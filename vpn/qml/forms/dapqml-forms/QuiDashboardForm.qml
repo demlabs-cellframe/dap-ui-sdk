@@ -17,8 +17,9 @@ Item {
     }
 
     /* status */
-    Item {
+    DapQmlRectangle {
         id: statusContainer
+        qss: "dashboard-status-container"
 
         DapQmlLabel {
             id: indicator
@@ -35,8 +36,6 @@ Item {
             text: "56:30:10"
             qss: "dashboard-status-label"
         }
-
-        DapQmlStyle { item: statusContainer; qss: "dashboard-status-container"; }
     }
 
     /* switch */
@@ -46,15 +45,11 @@ Item {
 
     /* speed */
     RowLayout {
-        x: 0//centerHor(this)
-        y: 471
-        width: root.width - 88
-        height: 99
+        id: speedContainer
 
         DapQmlButton {
             Layout.fillWidth: true
-            Layout.preferredWidth: 154
-            Layout.preferredHeight: 99
+            Layout.fillHeight: true
             mainText: "120 Mb/s"
             subText: "DOWNLOAD"
             mainQss: "dashboard-speed-main"
@@ -63,21 +58,22 @@ Item {
 
         DapQmlButton {
             Layout.fillWidth: true
-            Layout.preferredWidth: 154
-            Layout.preferredHeight: 99
+            Layout.fillHeight: true
             mainText: "34.7 Mb/s"
             subText: "UPLOAD"
             mainQss: "dashboard-speed-main"
             subQss: "dashboard-speed-sub"
         }
+
+        DapQmlStyle { item: speedContainer; qss: "dashboard-speed-container" }
     }
 
     /* change server button */
     DapQmlButton {
-        x: 0//centerHor(this)
-        y: 575
-        width: 410
-        height: 137
+//        x: 0//centerHor(this)
+//        y: 575
+//        width: 410
+//        height: 137
         link: true
         frame: true
 
@@ -86,5 +82,6 @@ Item {
         subText: "231:532:531:20"
         mainQss: "dashboard-server-main"
         subQss: "dashboard-server-sub"
+        qss: "dashboard-server-container"
     }
 }

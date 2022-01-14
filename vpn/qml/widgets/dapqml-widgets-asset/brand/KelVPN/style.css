@@ -340,28 +340,38 @@
 	scaled-rect: scaled(-1,220,270,174,true);
 }
 
+.dashboard-speed-container
+{
+	scaled-rect: scaled(-1,471,-1,99,true);
+}
+
 .dashboard-speed-main
 {
 	color: "#04004E";
-	font-size: 26;
+	scaled-font: scaled(26);	
 	font-weight: Font.Bold;
 }
 
 .dashboard-speed-sub
 {
 	color: "#A4A3C0";
-	font-size: 12;
+	scaled-font: scaled(12);	
+}
+
+.dashboard-server-container
+{
+	scaled-rect: scaled(-1,575,410,137,true);
 }
 
 .dashboard-server-main
 {
 	color: "#04004E";
-	font-size: 18;
+	scaled-font: scaled(18);	
 	font-weight: Font.Bold;
 }
 
 .dashboard-server-sub
 {
 	color: "#A4A3C0";
-	font-size: 15;
+	scaled-font: scaled(15);	
 }
