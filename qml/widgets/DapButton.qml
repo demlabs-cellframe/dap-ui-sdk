@@ -99,7 +99,7 @@ Button
             implicitHeight: heightButton
             border.color: borderColorButton
             border.width: borderWidthButton
-            radius: currTheme.radiusButton
+            radius: dapButton.enabled  ? currTheme.radiusButton : currTheme.radiusRectangle
 
             ///button text
             Text
