@@ -17,25 +17,26 @@ Item {
     }
 
     /* status */
-    RowLayout {
+    Item {
+        id: statusContainer
+
         DapQmlLabel {
-            Layout.fillWidth: false
-            //Layout.preferredWidth: 5
-            //Layout.preferredHeight: 5
             id: indicator
+            x: statusTime.x - width * 2
+            y: (statusContainer.height - height) / 2
+            horizontalAlign: Text.AlignRight
             qss: "dashboard-status-icon ic_online"
         }
 
         DapQmlLabel {
-            Layout.fillWidth: false
-            //Layout.preferredWidth: 86
-            //Layout.preferredHeight: 22
             id: statusTime
+            x: (parent.width - width) / 2
+            horizontalAlign: Text.AlignLeft
             text: "56:30:10"
             qss: "dashboard-status-label"
         }
 
-        DapQmlStyle { item: parent; qss: "dashboard-status-container"; }
+        DapQmlStyle { item: statusContainer; qss: "dashboard-status-container"; }
     }
 
     /* switch */
@@ -45,7 +46,7 @@ Item {
 
     /* speed */
     RowLayout {
-        x: centerHor(this)
+        x: 0//centerHor(this)
         y: 471
         width: root.width - 88
         height: 99
@@ -73,7 +74,7 @@ Item {
 
     /* change server button */
     DapQmlButton {
-        x: centerHor(this)
+        x: 0//centerHor(this)
         y: 575
         width: 410
         height: 137

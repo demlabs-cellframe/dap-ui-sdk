@@ -299,6 +299,17 @@
 
 /****************************************************
  * Dashboard
+.login-logo-container
+{
+	scaled-rect: scaled(-1,117,-1,89,true);
+}
+
+.login-logo
+{
+	scaled-rect: scaled(nan,nan,260,89,true);
+	qproperty-scaledPixmap: url("qrc:/light/login-logo.png");
+}
+
  ***************************************************/
 
 .dashboard-title
@@ -310,13 +321,13 @@
 
 .dashboard-status-container
 {
-	scaled-rect: scaled(-1,107,108,22,false);
+	scaled-rect: scaled(-1,107,-1,22,true);
 }
 
 .dashboard-status-label
 {
 	color: "#04004E";
-	scaled-rect: scaled(nan,nan,120,22,false,18);
+	scaled-rect: scaled(nan,nan,108,22,true,18);
 }
 
 .dashboard-status-icon
