@@ -51,29 +51,13 @@ RadioButton
         }
     ///Indicator Options.
     indicator:
-        Item {
-//        anchors.fill: parent
+        DapImageLoader {
         anchors.verticalCenter: parent.verticalCenter
-        width: indicatorInnerSize
-        height: indicatorInnerSize
-            Image
-            {
-                anchors.fill: parent
-                id: indicatorRadioButton
-                sourceSize.width: indicatorInnerSize
-                sourceSize.height: indicatorInnerSize
-                anchors.verticalCenter: parent.verticalCenter
-                fillMode: Image.PreserveAspectFit
-                source: checked ? "qrc:/resources/icons/" + pathTheme + "/radio_btn_on.png" : "qrc:/resources/icons/" + pathTheme + "/radio_btn_off.png"
-                visible: true
-            }
-            ColorOverlay {
-                id: overlay
-                anchors.fill: indicatorRadioButton
-                source: indicatorRadioButton
-                color: "#FFFF0000"
-                visible: false
-              }
+        innerWidth: indicatorInnerSize
+        innerHeight: indicatorInnerSize
+
+        source: checked ? "qrc:/resources/icons/" + pathTheme + "/radio_btn_on.png" : "qrc:/resources/icons/" + pathTheme + "/radio_btn_off.png"
+        visible: true
     }
 
     ///Background options.

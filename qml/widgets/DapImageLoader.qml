@@ -15,7 +15,6 @@ Item {
         id: image
         sourceSize.width: innerWidth
         sourceSize.height: innerHeight
-//        anchors.verticalCenter: parent.verticalCenter
         fillMode: Image.PreserveAspectFit
         visible: true
     }
