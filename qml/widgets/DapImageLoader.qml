@@ -17,6 +17,7 @@ Item {
         sourceSize.height: innerHeight
         fillMode: Image.PreserveAspectFit
         visible: true
+        antialiasing: true
     }
     ColorOverlay {
         id: overlay
