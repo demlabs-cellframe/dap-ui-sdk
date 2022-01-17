@@ -16,14 +16,18 @@ RESOURCES += \
 
 HEADERS += \
     $$PWD/dapqml-widgets/dapqmlstyle.h \
+    $$PWD/dapqml-widgets/style/debug/styledebugitemdescriptor.h \
     $$PWD/dapqml-widgets/style/qssitem.h \
     $$PWD/dapqml-widgets/style/qssmap.h \
     $$PWD/dapqml-widgets/style/qssparser.h \
-    $$PWD/dapqml-widgets/style/scaled.h
+    $$PWD/dapqml-widgets/style/scaled.h \
+    $$PWD/dapqml-widgets/style/debug/styledebugtree.h
 
 SOURCES += \
     $$PWD/dapqml-widgets/dapqmlstyle.cpp \
+    $$PWD/dapqml-widgets/style/debug/styledebugitemdescriptor.cpp \
     $$PWD/dapqml-widgets/style/qssitem.cpp \
     $$PWD/dapqml-widgets/style/qssmap.cpp \
     $$PWD/dapqml-widgets/style/qssparser.cpp \
-    $$PWD/dapqml-widgets/style/scaled.cpp
+    $$PWD/dapqml-widgets/style/scaled.cpp \
+    $$PWD/dapqml-widgets/style/debug/styledebugtree.cpp
