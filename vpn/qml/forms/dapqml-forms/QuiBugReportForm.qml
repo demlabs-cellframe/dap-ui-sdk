@@ -5,6 +5,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    property int mode: 0
 
     signal close()
 
@@ -14,45 +15,98 @@ Item {
         qss: "dialog-title"
     }
 
-    /* text edit */
+    /* INPUT */
     Item {
-        id: input
-        property string qss: "bugrep-input"
+        anchors.fill: parent
+        visible: root.mode == 0
 
-        Image {
-            anchors.fill: input
-            source: "qrc:/light/report_bg.png"
+        /* text edit */
+        Item {
+            id: input
+            property string qss: "bugrep-input"
+
+            Image {
+                anchors.fill: input
+                source: "qrc:/light/report_bg.png"
+            }
+
+            DapQmlStyle { id: style; qss: input.qss; item: input }
         }
 
-        DapQmlStyle { id: style; qss: input.qss; item: input }
-    }
+        /* letter counter */
+        DapQmlLabel {
+            qss: "bugrep-letter-counter"
+            text: "0/200"
+            color: "#A4A3C0"
+            horizontalAlign: Text.AlignRight
+        }
 
-    /* letter counter */
-    DapQmlLabel {
-        qss: "bugrep-letter-counter"
-        text: "0/200"
-        color: "#A4A3C0"
-        horizontalAlign: Text.AlignRight
-    }
+        /* attach */
+        DapQmlLabel {
+            id: attach
+            qss: "bugrep-attach-btn"
+            text: "Click here to attach a screenshot"
+            color: "#DA0B82"
 
-    /* attach */
-    DapQmlLabel {
-        id: attach
-        qss: "bugrep-attach-btn"
-        text: "Click here to attach a screenshot"
-        color: "#DA0B82"
+            MouseArea {
+                id: mouseArea
+                anchors.fill: attach
+                cursorShape: Qt.PointingHandCursor
+                enabled: false
+            }
+        }
 
-        MouseArea {
-            id: mouseArea
-            anchors.fill: attach
-            cursorShape: Qt.PointingHandCursor
-            enabled: false
+        /* send button */
+        DapQmlPushButton {
+            qss: "bugrep-send-btn"
+            text: "SEND REPORT"
+            onClicked: root.mode = 1
         }
     }
 
-    /* send button */
-    DapQmlPushButton {
-        qss: "bugrep-send-btn"
-        text: "SEND REPORT"
+    /* SENDING */
+    Item {
+        anchors.fill: parent
+        visible: root.mode == 1
+
+        /* info */
+        DapQmlLabel {
+            qss: "bugrep-sending"
+            text: "Sending..."
+        }
+
+        /* animated spinner */
+        AnimatedImage {
+            id: animation
+            source: "qrc:/dapqml-forms-asset/Spinner.gif"
+            DapQmlStyle { qss: "bugrep-animation"; item: animation }
+        }
+
+        /* cancel */
+        DapQmlPushButton {
+            qss: "bugrep-send-btn"
+            text: "CANCEL"
+            onClicked: root.mode = 2
+        }
+    }
+
+    /* STATUS */
+    Item {
+        anchors.fill: parent
+        visible: root.mode == 2
+
+        /* status text */
+        DapQmlLabel {
+            qss: "bugrep-status"
+            wrapMode: Text.WordWrap
+            text: "Bug report # 368647 sent successfully"
+        }
+
+        /* back */
+        DapQmlPushButton {
+            qss: "bugrep-send-btn"
+            text: "BACK"
+            onClicked: root.mode = 0
+        }
     }
 }
