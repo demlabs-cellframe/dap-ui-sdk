@@ -36,7 +36,7 @@ Item {
             /* width -> item.height, */
             /* height -> title.height, */
             /* fontSize -> item.iconSize */
-            DapQmlRectangle {
+            DapQmlLabel {
                 visible: false
                 id: resizer
                 qss: "sett-resizer"

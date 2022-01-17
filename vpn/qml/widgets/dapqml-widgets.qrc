@@ -7,5 +7,6 @@
         <file>dapqml-widgets/DapQmlButton.qml</file>
         <file>dapqml-widgets/DapQmlSwitch.qml</file>
         <file>dapqml-widgets/DapQmlRectangle.qml</file>
+        <file>dapqml-widgets/DapQmlDialogTitle.qml</file>
     </qresource>
 </RCC>

@@ -22,6 +22,19 @@
 	qproperty-scaledPixmap: url("qrc:/light/switch/toggle_on.png");
 }
 
+
+
+.form-title-close-btn
+{
+	scaled-rect: scaled(0,0,28,28,true);
+}
+
+.form-title-label
+{
+	scaled-rect: scaled(39,0,282,28,false,24);
+	color: "#04004E";
+}
+
 /****************************************************
  * Icons
  ***************************************************/
@@ -119,6 +132,15 @@
 .content-frame
 {
 	scaled-rect: scaled(0,0,-1,754,false);
+}
+
+/****************************************************
+ * Misc
+ ***************************************************/
+
+.dialog-title
+{
+	scaled-rect: scaled(34,62,360,28,false);
 }
 
 /****************************************************
@@ -368,4 +390,29 @@
 {
 	color: "#A4A3C0";
 	scaled-font: scaled(15);	
+}
+
+/****************************************************
+ * Bug report
+ ***************************************************/
+
+.bugrep-input
+{
+	scaled-rect: scaled(19,133,390,200,true,16);
+}
+
+.bugrep-letter-counter
+{
+	scaled-rect: scaled(291,333,100,19,false,16);
+}
+
+.bugrep-attach-btn
+{
+	scaled-rect: scaled(19,392,390,20,false,16);
+	color: "#DA0B82";
+}
+
+.bugrep-send-btn
+{
+	scaled-rect: scaled(27,441,374,80,true,14);
 }

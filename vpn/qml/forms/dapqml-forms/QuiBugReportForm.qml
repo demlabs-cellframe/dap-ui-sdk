@@ -1,5 +1,6 @@
 import QtQuick 2.4
 import QtQuick.Layouts 1.3
+import DapQmlStyle 1.0
 import "qrc:/dapqml-widgets"
 
 Item {
@@ -7,60 +8,51 @@ Item {
 
     signal close()
 
-    GridLayout {
-        anchors.fill: parent
-        columns: 1
+    /* title */
+    DapQmlDialogTitle {
+        text: "Bug report"
+        qss: "dialog-title"
+    }
 
-        /* title */
-        Item {
-            Layout.fillWidth: true
+    /* text edit */
+    Item {
+        id: input
+        property string qss: "bugrep-input"
 
-            Image {
-                id: btnClose
-                width: 28
-                height: 28
-                source: "qrc:/light/ic_close.png"
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: root.close()
-                }
-            }
-
-            DapQmlLabel {
-                text: "Bug report"
-                width: parent.width
-            }
+        Image {
+            anchors.fill: input
+            source: "qrc:/light/report_bg.png"
         }
 
-        /* text edit */
-        Item {
-            Layout.fillWidth: true
-            Image {
-                width: 390
-                height: 200
-                source: "qrc:/dark/report_bg.png"
-            }
-        }
+        DapQmlStyle { id: style; qss: input.qss; item: input }
+    }
 
-        /* letter counter */
-        DapQmlLabel {
-            Layout.fillWidth: true
-            text: "0/200"
-            color: "#A4A3C0"
-            horizontalAlign: Text.AlignRight
-        }
+    /* letter counter */
+    DapQmlLabel {
+        qss: "bugrep-letter-counter"
+        text: "0/200"
+        color: "#A4A3C0"
+        horizontalAlign: Text.AlignRight
+    }
 
-        /* attach */
-        DapQmlLabel {
-            Layout.fillWidth: true
-            text: "Click here to attach a screenshot"
-            color: "#DA0B82"
-        }
+    /* attach */
+    DapQmlLabel {
+        id: attach
+        qss: "bugrep-attach-btn"
+        text: "Click here to attach a screenshot"
+        color: "#DA0B82"
 
-        /* send button */
-        DapQmlPushButton {
-            text: "SEND REPORT"
+        MouseArea {
+            id: mouseArea
+            anchors.fill: attach
+            cursorShape: Qt.PointingHandCursor
+            enabled: false
         }
+    }
+
+    /* send button */
+    DapQmlPushButton {
+        qss: "bugrep-send-btn"
+        text: "SEND REPORT"
     }
 }
