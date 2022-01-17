@@ -160,6 +160,12 @@
 	qproperty-scaledPixmap: url("qrc:/light/login-logo.png");
 }
 
+.login-error-label
+{
+	scaled-rect: scaled(51,236,327,57,false,14);
+	color: "#F53172";
+}
+
 .login-separator-container
 {
 	scaled-rect: scaled(-1,291,-1,4,true);
@@ -298,17 +304,6 @@
 
 /****************************************************
  * Dashboard
-.login-logo-container
-{
-	scaled-rect: scaled(-1,117,-1,89,true);
-}
-
-.login-logo
-{
-	scaled-rect: scaled(nan,nan,260,89,true);
-	qproperty-scaledPixmap: url("qrc:/light/login-logo.png");
-}
-
  ***************************************************/
 
 .dashboard-title

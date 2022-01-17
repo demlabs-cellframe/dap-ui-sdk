@@ -37,8 +37,8 @@ Item {
         x: centerHor(this)
         y: centerVer(this)
         z: 0
-        width: root.width - 24
-        height: root.height - 48
+        width: root.width - 24 * (root.width / 270)
+        height: root.height - 48 * (root.height / 174)
         qss: "switch-bg-off"
     }
 

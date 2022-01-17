@@ -70,6 +70,13 @@ Item {
         }
     }
 
+    /* error label */
+    DapQmlLabel {
+        qss: "login-error-label"
+        wrapMode: Text.WordWrap
+        text: "Temporary network problems, request will be handled as soon as the network connection is re-established"
+    }
+
     /* top separator */
     DapQmlRectangle {
         qss: "login-separator-container"

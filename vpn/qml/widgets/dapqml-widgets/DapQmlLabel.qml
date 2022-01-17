@@ -15,6 +15,7 @@ Item {
     property int fontWeight: Font.Normal
     property int horizontalAlign: Text.AlignHCenter
     property int verticalAlign: Text.AlignVCenter
+    property int wrapMode: Text.NoWrap
 
     Image {
         id: icon
@@ -32,6 +33,7 @@ Item {
 
         text: root.text
         color: root.color
+        wrapMode: root.wrapMode
 
         font {
             family: root.fontFamiliy
