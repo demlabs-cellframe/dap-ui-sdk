@@ -1,5 +1,4 @@
 import QtQuick 2.4
-import QtQuick.Layouts 1.3
 import DapQmlStyle 1.0
 import "qrc:/dapqml-widgets"
 

@@ -7,5 +7,6 @@
         <file>dapqml-forms/QuiSplashScreenForm.qml</file>
         <file>dapqml-forms/QuiBugReportForm.qml</file>
         <file>dapqml-forms/QuiDashboardForm.qml</file>
+        <file>dapqml-forms/QuiPurchaseForm.qml</file>
     </qresource>
 </RCC>

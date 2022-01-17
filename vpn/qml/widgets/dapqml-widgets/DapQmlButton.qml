@@ -53,7 +53,7 @@ Rectangle {
     Image {
         anchors.fill: parent
         z: -1
-        visible: root.link
+        visible: root.frame
         source: "qrc:/light/btn_server_bg.png"
     }
 

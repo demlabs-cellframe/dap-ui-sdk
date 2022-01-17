@@ -434,3 +434,17 @@
 	color: "#04004E";
 }
 
+/****************************************************
+ * Purchase
+ ***************************************************/
+
+.purchase-btn-resizer
+{
+	scaled-rect: scaled(nan,nan,390,130,true);
+	color: "#04004E";
+}
+
+.purchase-listview
+{
+	scaled-rect: scaled(-1,nan,390,nan,false);
+}
