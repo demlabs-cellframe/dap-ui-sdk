@@ -49,6 +49,11 @@ void DapCmdConnect::handleError(int code, const QString& message)
         emit errorMessage("Server not available. Please, try others or the same later");
         return;
     }
-
+    // sevice connection line fail
+    if (code == 110)
+    {
+        emit connectionFail();
+        return;
+    }
     emit errorMessage(message);
 }

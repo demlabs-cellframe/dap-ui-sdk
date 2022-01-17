@@ -21,5 +21,6 @@ protected:
     void handleError(int code, const QString& message) override;
 signals:
     void errorMessage(const QString& message);
+    void connectionFail();
 };
 
