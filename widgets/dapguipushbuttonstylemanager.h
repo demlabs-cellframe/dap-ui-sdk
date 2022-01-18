@@ -16,6 +16,7 @@ class DapGuiPushButtonStyleManager : public DapGuiStyleManager
   Q_OBJECT
 
   friend class DapGuiPushButton;
+  bool _hook;
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT

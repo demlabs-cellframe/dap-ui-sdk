@@ -13,6 +13,9 @@ QT_END_NAMESPACE
 
 /****************************************//**
  * @brief ui/class for splash into screen
+ *
+ * Intro screen. Shows at app launch
+ *
  * @ingroup groupUiClasses
  * @date 25.08.2021
  * @author Mikhail Shilenko

@@ -46,7 +46,7 @@ DapVpnNeuromorphic::DapVpnNeuromorphic (QObject *parent)
   QFontDatabase::addApplicationFont ("://fonts/Lato-Regular.ttf");
   QFontDatabase::addApplicationFont ("://fonts/Roboto-Bold.ttf");
 
-  auto style = Common::fromFile ("://style/globalstyle.css");
+  auto style = Common::fromFile ("://style.css");
   style.replace ("pt", "px");
   DapGuiStyleManager::setupGlobalStyleSheet (style);
 

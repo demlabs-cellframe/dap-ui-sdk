@@ -19,11 +19,37 @@ Language::Language (QWidget *parent) :
   connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &Language::sigReturn,
            Qt::QueuedConnection);
+  connect (ui->scrollArea, &LanguageModel::sigSelect,
+           this, &Language::sigSelect,
+           Qt::QueuedConnection);
 }
 
 Language::~Language()
 {
   delete ui;
+}
+
+/********************************************
+ * METHODS
+ *******************************************/
+
+LanguageModel *Language::model()
+{
+  return ui->scrollArea;
+}
+
+/********************************************
+ * SLOTS
+ *******************************************/
+
+void Language::slotRetranslated()
+{
+  ui->label->setText (tr ("Language"));
+}
+
+void Language::slotSetCurrentLanguage(const QLocale::Language a_language, const QString a_languageName)
+{
+  ui->scrollArea->setCurrentLanguage (a_language, a_languageName);
 }
 
 /*-----------------------------------------*/

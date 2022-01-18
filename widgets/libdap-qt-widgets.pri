@@ -22,8 +22,9 @@ HEADERS     += \
     $$PWD/dapguiswitchplugin.h \
     $$PWD/dapguitexteditplugin.h \
     $$PWD/dapguiwidgetplugin.h \
-    $$PWD/dapvpnneuromorphic.h \
-    $$PWD/widgetsdebugsettings.h
+    $$PWD/dapvpnneuromorphic.h \ \
+    $$PWD/widgetsdebugsettings.h \
+    $$PWD/widgetsstyletable.h
 
 SOURCES     += \
     $$PWD/dapguibuttonplugin.cpp \
@@ -39,15 +40,17 @@ SOURCES     += \
     $$PWD/dapguitexteditplugin.cpp \
     $$PWD/dapguiwidgetplugin.cpp \
     $$PWD/dapvpnneuromorphic.cpp \
-    $$PWD/widgetsdebugsettings.cpp
+    $$PWD/widgetsdebugsettings.cpp \
+    $$PWD/widgetsstyletable.cpp
 
-FORMS += \
-    $$PWD/widgetsdebugsettings.ui
+FORMS +=  \
+    $$PWD/widgetsdebugsettings.ui \
+    $$PWD/widgetsstyletable.ui
 # message ($$HEADERS)
 }
 
 RESOURCES += \
-    $$PWD/widgetsRes.qrc
+    $$PWD/brand_widgets/$$BRAND/widgetsRes.qrc
 
 DISTFILES += \
     $$PWD/DoxyLayout.xml \

@@ -7,6 +7,11 @@
 
 /****************************************//**
  * @brief base for ui/classes
+ *
+ * Features:
+ * - Css Style
+ * - Css Class "window" as default
+ *
  * @ingroup groupUiClasses
  * @date 09.09.2021
  * @author Mikhail Shilenko

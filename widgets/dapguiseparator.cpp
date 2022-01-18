@@ -20,13 +20,13 @@ DapGuiSeparator::DapGuiSeparator (QWidget *parent)
  * OVERRIDE
  *******************************************/
 
-void DapGuiSeparator::paintEvent (QPaintEvent *)
-{
-  QStyleOption opt;
-  opt.init (this);
+//void DapGuiSeparator::paintEvent (QPaintEvent *)
+//{
+//  QStyleOption opt;
+//  opt.init (this);
 
-  QPainter p (this);
-  style()->drawPrimitive (QStyle::PE_Widget, &opt, &p, this);
-}
+//  QPainter p (this);
+//  style()->drawPrimitive (QStyle::PE_Widget, &opt, &p, this);
+//}
 
 /*-----------------------------------------*/

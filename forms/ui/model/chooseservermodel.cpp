@@ -12,6 +12,7 @@
 
 ChooseServerModel::ChooseServerModel (QWidget *parent)
   : ModelBase (parent)
+  , m_model (nullptr)
   , _hook (false)
 {
 

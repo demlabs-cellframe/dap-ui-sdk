@@ -46,6 +46,7 @@ public:
     Check,
     //Radio,
     Switch,
+    Close,
     Custom,
   };
   Q_ENUM (Style)
@@ -73,6 +74,13 @@ private:
   QString m_customCss;
   QGraphicsOpacityEffect *m_opacityEffect;
   DapGuiPushButtonStyleManager __kgsm = DapGuiPushButtonStyleManager (this);
+  bool _styleHook;
+  struct
+  {
+      QString filename;
+      QPixmap pixmap;
+      QSize size;
+  } _cache;
   /// @}
 
   /****************************************//**

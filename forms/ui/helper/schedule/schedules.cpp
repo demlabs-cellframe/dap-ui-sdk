@@ -12,10 +12,10 @@ Schedules::Schedules() {}
 /// @param style Graphics styles.
 void Schedules::setStyle (const DapGraphicSceneStyle &style)
 {
-  mColorChartDownload = new QColor (style.value ("shChartDownload").value ("color").toString());
+  m_colorChartDownload = QColor (style.value ("shChartDownload").value ("color").toString());
   mDepthChartDownload = style.value ("shChartDownload").value ("depth").toReal();
   mBackGroundmColorChartDownload = new QColor (convertRGBA (style.value ("shChartDownload").value ("background-color").toString()));
-  mColorChartUpload = new QColor (style.value ("shChartUpload").value ("color").toString());
+  m_colorChartUpload = QColor (style.value ("shChartUpload").value ("color").toString());
   mDepthChartUpload = style.value ("shChartUpload").value ("depth").toReal();
   mBackGroundmColorChartUpload = new QColor (convertRGBA (style.value ("shChartUpload").value ("background-color").toString()));
   mColorGrid = new QColor (convertRGBA (style.value ("shGrid").value ("color").toString()));
@@ -46,6 +46,36 @@ int Schedules::getHeight()
   return m_sceneHeight + 3;
 }
 
+const QColor &Schedules::colorBackground() const
+{
+  return m_colorBackground;
+}
+
+void Schedules::setColorBackground(const QColor &newColorBackground)
+{
+  m_colorBackground = newColorBackground;
+}
+
+const QColor &Schedules::colorChartDownload() const
+{
+  return m_colorChartDownload;
+}
+
+void Schedules::setColorChartDownload (const QColor &newColorChartDownload)
+{
+  m_colorChartDownload = newColorChartDownload;
+}
+
+const QColor &Schedules::colorChartUpload() const
+{
+  return m_colorChartUpload;
+}
+
+void Schedules::setColorChartUpload (const QColor &newColorChartUpload)
+{
+  m_colorChartUpload = newColorChartUpload;
+}
+
 void Schedules::draw_backgraund (QGraphicsScene *scene)
 {
   QPainterPath path;
@@ -64,6 +94,7 @@ void Schedules::draw_backgraund (QGraphicsScene *scene)
       path.moveTo (0, i * m_sceneHeight / num_of_lines);
       path.lineTo (m_sceneWidth, i * m_sceneHeight / num_of_lines);
     }
+  scene->addRect (0, 0, m_sceneWidth, m_sceneHeight, QPen (Qt::transparent), QBrush (colorBackground()));
   scene->setBackgroundBrush (QBrush (Qt::transparent));
   scene->addPath (path, QPen (QColor (mColorGrid->rgba()), mDepthGrid));
 }
@@ -85,13 +116,13 @@ void Schedules::draw_chart (QGraphicsScene *scene)
 
   inp.showChart (
     scene,
-    QPen (QColor (mColorChartDownload->rgba64()), mDepthChartDownload),
+    QPen (QColor (m_colorChartDownload.rgba64()), mDepthChartDownload),
     QColor (mBackGroundmColorChartDownload->rgba64()),
     m_sceneWidth, m_sceneHeight, maxValue);
 
   out.showChart (
     scene,
-    QPen (QColor (mColorChartUpload->rgba()), mDepthChartUpload),
+    QPen (QColor (m_colorChartUpload.rgba()), mDepthChartUpload),
     QColor (mBackGroundmColorChartUpload->rgba64()),
     m_sceneWidth, m_sceneHeight, maxValue);
 }

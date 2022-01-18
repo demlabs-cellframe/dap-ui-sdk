@@ -8,7 +8,8 @@ SOURCES     += \
     $$PWD/ui/baseform.cpp \
     $$PWD/ui/bugreports.cpp \
     $$PWD/ui/chooseserver.cpp \
-    $$PWD/ui/connection.cpp \
+    $$PWD/ui/choosetheme.cpp \
+    $$PWD/ui/dashboard.cpp \
     $$PWD/ui/documentpopup.cpp \
     $$PWD/ui/helper/auxiliary/AppStyleSheetHandler.cpp \
     $$PWD/ui/helper/auxiliary/UiScaling.cpp \
@@ -24,6 +25,7 @@ SOURCES     += \
     $$PWD/ui/menufooter.cpp \
     $$PWD/ui/model/bugreportsmodel.cpp \
     $$PWD/ui/model/chooseservermodel.cpp \
+    $$PWD/ui/model/choosethememodel.cpp \
     $$PWD/ui/model/historymodel.cpp \
     $$PWD/ui/model/languagemodel.cpp \
     $$PWD/ui/model/modelbase.cpp \
@@ -41,7 +43,8 @@ HEADERS     += \
     $$PWD/ui/baseform.h \
     $$PWD/ui/bugreports.h \
     $$PWD/ui/chooseserver.h \
-    $$PWD/ui/connection.h \
+    $$PWD/ui/choosetheme.h \
+    $$PWD/ui/dashboard.h \
     $$PWD/ui/docs.h \
     $$PWD/ui/documentpopup.h \
     $$PWD/ui/helper/auxiliary/AppStyleSheetHandler.h \
@@ -59,6 +62,7 @@ HEADERS     += \
     $$PWD/ui/menufooter.h \
     $$PWD/ui/model/bugreportsmodel.h \
     $$PWD/ui/model/chooseservermodel.h \
+    $$PWD/ui/model/choosethememodel.h \
     $$PWD/ui/model/historymodel.h \
     $$PWD/ui/model/languagemodel.h \
     $$PWD/ui/model/modelbase.h \
@@ -74,24 +78,26 @@ HEADERS     += \
     $$PWD/vpnDefine.h
 
 FORMS += \
-    $$PWD/ui/bugreports.ui \
-    $$PWD/ui/chooseserver.ui \
-    $$PWD/ui/connection.ui \
-    $$PWD/ui/documentpopup.ui \
-    $$PWD/ui/history.ui \
-    $$PWD/ui/language.ui \
-    $$PWD/ui/login.ui \
-    $$PWD/ui/menufooter.ui \
-    $$PWD/ui/popupdialog.ui \
-    $$PWD/ui/purchase.ui \
-    $$PWD/ui/serialinput.ui \
-    $$PWD/ui/settings.ui \
-    $$PWD/ui/splashscreen.ui \
-    $$PWD/ui/statistics.ui \
-    $$PWD/ui/versionupdate.ui
+    $$PWD/ui/brand_ui/$$BRAND/bugreports.ui \
+    $$PWD/ui/brand_ui/$$BRAND/chooseserver.ui \
+    $$PWD/ui/brand_ui/$$BRAND/dashboard.ui \
+    $$PWD/ui/brand_ui/$$BRAND/documentpopup.ui \
+    $$PWD/ui/brand_ui/$$BRAND/history.ui \
+    $$PWD/ui/brand_ui/$$BRAND/language.ui \
+    $$PWD/ui/brand_ui/$$BRAND/login.ui \
+    $$PWD/ui/brand_ui/$$BRAND/menufooter.ui \
+    $$PWD/ui/brand_ui/$$BRAND/popupdialog.ui \
+    $$PWD/ui/brand_ui/$$BRAND/purchase.ui \
+    $$PWD/ui/brand_ui/$$BRAND/serialinput.ui \
+    $$PWD/ui/brand_ui/$$BRAND/settings.ui \
+    $$PWD/ui/brand_ui/$$BRAND/splashscreen.ui \
+    $$PWD/ui/brand_ui/$$BRAND/statistics.ui \
+    $$PWD/ui/brand_ui/$$BRAND/versionupdate.ui \
+    $$PWD/ui/brand_ui/$$BRAND/choosetheme.ui
 
 RESOURCES += \
-    $$PWD/appRes.qrc
+    $$PWD/ui/brand_ui/$$BRAND/appRes.qrc
 
 DISTFILES += \
+    $$PWD/DoxyLayout.xml \
     $$PWD/README.md
