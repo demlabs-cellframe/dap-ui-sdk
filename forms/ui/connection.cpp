@@ -79,7 +79,17 @@ void Connection::slotSetSererIP(QString ip)
 }
 void Connection::setStatusText(QString a_text)
 {
-    ui->lTitle->setText(a_text);
+  ui->lTitle->setText(a_text);
+}
+
+void Connection::setErrorText(QString text, ErrorColor color)
+{
+  ui->lStatus->setText (text);
+  ui->lStatus->setCssStyle (
+    (color == ErrorColor::ERRCOL_RED)
+    ? "font13 red_error lato normal"
+    : "font13 darkblue lato normal"
+  );
 }
 
 void Connection::setServerInfo(QString a_name, QString a_ip)

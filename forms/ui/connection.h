@@ -25,6 +25,18 @@ class Connection : public BaseForm
   Q_OBJECT
 
   /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
+public:
+  enum ErrorColor
+  {
+    ERRCOL_BLACK,
+    ERRCOL_RED,
+  };
+  /// @}
+
+  /****************************************//**
    * @name VARS
    *******************************************/
   /// @{
@@ -65,6 +77,7 @@ public slots:
   void slotSetSererIP (QString ip);
   void slotSetStartedTime (QDateTime dt);
   void setStatusText(QString a_text);
+  void setErrorText (QString text, ErrorColor color = ErrorColor::ERRCOL_RED);
   void setConnectedTime(QString a_text);
   void setStatusIdicator(bool a_enabled = false);
   void setBtnSwitchChecked(bool a_authorized = true);

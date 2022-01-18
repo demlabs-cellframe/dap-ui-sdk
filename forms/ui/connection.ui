@@ -63,13 +63,13 @@ background-color: #F7F8FA;
       <item>
        <widget class="DapGuiLabel" name="lTitle">
         <property name="styleSheet">
-         <string notr="true">#lTitle{ 	height: 28px; 	min-height: 28px; 	max-height: 28px; 
- 	font: 24px/29px; 
- 	color: #DA0B82; 
- 	font-weight: bold; 	font-style: bold; 	font-size: bold; 
- 	font-family: 'Lato'; 
- 	border: none; 
- 	background-color: rgba(0,0,0,0); }</string>
+         <string notr="true">#lTitle{ height: 28px; min-height: 28px; max-height: 28px; 
+ font: 24px/29px; 
+ color: #DA0B82; 
+ font-weight: bold; font-style: bold; font-size: bold; 
+ font-family: 'Lato'; 
+ border: none; 
+ background-color: rgba(0,0,0,0); }</string>
         </property>
         <property name="text">
          <string>VPN Connected</string>
@@ -119,27 +119,27 @@ background-color: #F7F8FA;
          <item>
           <widget class="DapGuiLabel" name="lStatusIconOn">
            <property name="cssStyle">
-            <string>conn-status-icon ic_online</string>
+            <string>conn-status-icon ic_online noborder nobackground</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="DapGuiLabel" name="lStatusIconOff">
            <property name="cssStyle">
-            <string>conn-status-icon ic_offline</string>
+            <string>conn-status-icon ic_offline noborder nobackground</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="DapGuiLabel" name="lUptime">
            <property name="styleSheet">
-            <string notr="true">#lUptime{ 	height: 22px; 	min-height: 22px; 	max-height: 22px; 
- 	font: 18px/22px; 
- 	font-weight: normal; 	font-style: normal; 	font-size: normal; 
- 	color: #04004E; 
- 	font-family: 'Lato'; 
- 	border: none; 
- 	background-color: rgba(0,0,0,0); }</string>
+            <string notr="true">#lUptime{ height: 22px; min-height: 22px; max-height: 22px; 
+ font: 18px/22px; 
+ font-weight: normal; font-style: normal; font-size: normal; 
+  
+ font-family: 'Lato'; 
+ border: none; 
+ background-color: rgba(0,0,0,0); }</string>
            </property>
            <property name="text">
             <string>56 : 30 : 10</string>
@@ -170,6 +170,22 @@ background-color: #F7F8FA;
         <property name="cssStyle">
          <string>conn-mid-button-spacer</string>
         </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="DapGuiLabel" name="lStatus">
+           <property name="text">
+            <string>Error message box
+Usualy unvisible by being empty</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="cssStyle">
+            <string>font13 red_error lato normal login-error-message noborder nobackground</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
