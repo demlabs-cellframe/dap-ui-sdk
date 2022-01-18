@@ -145,6 +145,10 @@ public:
 public:
   static void setupGlobalStyleSheet (
     const QString &styleSheet);
+  static void setupTheme (
+    const QJsonArray &themesArray,
+    const QString &themeName);
+  static const QString &themeDir();
   /// @}
 
   /****************************************//**
@@ -171,13 +175,15 @@ signals:
   /// @{
 protected:
   /// get style by class name
-  QString styleByClassName (const QString &className);
+  static QString styleByClassName (const QString &className);
   /// collect all styles by class array (separated by space)
-  QString styleByClassList (const QString &classNameList);
+  static QString styleByClassList (const QString &classNameList);
   /// collect all styles by class array
-  QString styleByClassList (const QStringList &classNameList);
+  static QString styleByClassList (const QStringList &classNameList);
+  /// all classes list
+  static QStringList classList();
   /// get singleton signal instance
-  DapGuiStyleManager &_signal();
+  static DapGuiStyleManager &_signal();
 protected slots:
   void forcedStyleUpdate();
   /// @}

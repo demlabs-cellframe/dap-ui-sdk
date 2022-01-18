@@ -37,7 +37,7 @@ protected:
    * @name PROTECTED METHODS
    *******************************************/
   /// @{
-protected slots:
+public slots:
   void forcedGraphicsViewStyleUpdate();
   /// @}
 };

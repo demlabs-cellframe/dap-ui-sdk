@@ -22,6 +22,7 @@ class DapGuiGraphicsView : public QGraphicsView
   Q_OBJECT
 
   DapGuiGraphicsViewStyleManager __kgsm = DapGuiGraphicsViewStyleManager (this);
+  QObject *m_form; ///< Statistics form. required to apply colors
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
@@ -29,6 +30,16 @@ class DapGuiGraphicsView : public QGraphicsView
   /// @{
 public:
   DapGuiGraphicsView (QWidget *parent = 0);
+  /// @}
+
+  /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  QObject *form() const;
+  void setForm (QObject *a_form);
+  void updateG ();
   /// @}
 
   /****************************************//**

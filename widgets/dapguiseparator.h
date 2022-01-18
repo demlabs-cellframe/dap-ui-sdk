@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QWidget>
+#include "style/dapguistylemanager.h"
 
 /* DEFS */
 namespace Ui { class DapGuiSeparatorUI; };
@@ -21,6 +22,8 @@ namespace Ui { class DapGuiSeparatorUI; };
 class DapGuiSeparator : public QWidget
 {
   Q_OBJECT
+  DAPGUI_ENABLECSS
+  DAPGUI_ENABLEWIDGETSTYLE
 
   /****************************************//**
    * @name VARS
@@ -43,7 +46,7 @@ public:
    *******************************************/
   /// @{
 public:
-  void paintEvent (QPaintEvent *) override;
+//  void paintEvent (QPaintEvent *) override;
   /// @}
 
 };

@@ -12,30 +12,6 @@
 typedef QString TextStyle;
 typedef void (*ItemCB) ();
 
-enum StyleId
-{
-  SI_TITLE,
-  SI_TITLETOP,
-  SI_BUTTON,
-  SI_BUTTONRED,
-  SI_BUTTONGRAY,
-  SI_LINK,
-  SI_SPACER
-};
-
-struct Info
-{
-  TextStyle style[2];
-};
-
-struct _SItem
-{
-  StyleId sid;
-  QString text[2];
-  QString iconCss;
-  ItemCB cb;
-};
-
 /* LINKS */
 static void defaultCb () {}
 
@@ -43,6 +19,7 @@ static void defaultCb () {}
 static void cbLicenceGet();
 static void cbLicenceReset();
 static void cbLanguage();
+static void cbColorTheme();
 
 /* support */
 static void cbBugSend();
@@ -56,40 +33,8 @@ static void cbPrivacyPolicy();
 static void cbVersion();
 
 /* VARS */
-static QMap<StyleId, Info> s_presets =
-{
-  {SI_TITLETOP,   {"darkblue font24 lato bold", ""}},
-  {SI_TITLE,      {"darkblue font24 margin28 lato bold", ""}},
-  {SI_BUTTON,     {"darkblue font16 lato normal",  "darkblue font16 lato normal"}},
-  {SI_BUTTONRED,  {"darkblue font16 lato normal",  "red font16 lato bold"}},
-  {SI_BUTTONGRAY, {"darkblue font16 lato normal",  "darkblue gray font16 lato"}},
-  {SI_LINK,       {"darkblue font16 lato normal",  ""}},
-  {SI_SPACER,     {"",  ""}},
-};
-
-static QList<_SItem> s_items =
-{
-  _SItem{SI_SPACER,     {"", ""}, "1", defaultCb},
-  _SItem{SI_TITLETOP,   {"Settings", ""}, "settings_icon", defaultCb},
-  _SItem{SI_SPACER,     {"", ""}, "2", defaultCb},
-
-  _SItem{SI_BUTTONRED,  {"Get new licence key", /*"265 days left"*/" "}, "settings_icon ic_renew", cbLicenceGet},
-  _SItem{SI_BUTTON,     {"Reset licence key"}, "settings_icon ic_key", cbLicenceReset},
-  //_SItem{SI_LINK,       {"Language"}, "settings_icon ic_language", cbLanguage},
-
-  _SItem{SI_TITLE,      {"Support", ""}, "settings_icon", defaultCb},
-
-  _SItem{SI_BUTTON,     {"Send a bug report", ""}, "settings_icon ic_send-report", cbBugSend},
-  _SItem{SI_BUTTON,     {"Telegram support bot", ""}, "settings_icon ic_bot", cbTelegramBot},
-
-  _SItem{SI_TITLE,      {"Information", ""}, "settings_icon", defaultCb},
-
-  //_SItem{SI_LINK,       {"Bug Reports"}, "settings_icon ic_information_bug-report", cbBugReport},
-  //_SItem{SI_BUTTON,     {"Serial key history on this device"}, "settings_icon ic_key-history", cbLicenceHistory},
-  _SItem{SI_BUTTON,     {"Terms of use"}, "settings_icon ic_terms_policy", cbTermsOfUse},
-  _SItem{SI_BUTTON,     {"Privacy policy"}, "settings_icon ic_terms_policy", cbPrivacyPolicy},
-  _SItem{SI_BUTTONGRAY, {"Version", "@version"}, "settings_icon ic_version", cbVersion},
-};
+QMap<SettingsModel::StyleId, SettingsModel::Info> SettingsModel::s_presets;
+QList<SettingsModel::_SItem> SettingsModel::s_items;
 
 static QMap<DapGuiButton*, ItemCB> s_btnCallbacks;
 static DapGuiButton* s_licenceKey;
@@ -108,6 +53,19 @@ SettingsModel::SettingsModel (QWidget *parent)
 {
   s_model = this;
   setCssStyle ("screenarea sett-scroll-area backgroundcolor");
+
+  s_presets =
+  {
+    {SI_TITLETOP,   {"darkblue font24 lato bold", ""}},
+    {SI_TITLE,      {"darkblue font24 margin28 lato bold", ""}},
+    {SI_BUTTON,     {"darkblue font16 lato normal",  "darkblue font16 lato normal"}},
+    {SI_BUTTONRED,  {"darkblue font16 lato normal",  "red font16 lato bold"}},
+    {SI_BUTTONGRAY, {"darkblue font16 lato normal",  "darkblue gray font16 lato"}},
+    {SI_LINK,       {"darkblue font16 lato normal",  ""}},
+    {SI_SPACER,     {"",  ""}},
+  };
+
+  _updateLabels();
 }
 
 SettingsModel::~SettingsModel()
@@ -217,6 +175,26 @@ void SettingsModel::slotClicked()
   cb();
 }
 
+void SettingsModel::slotRetranslate()
+{
+  _updateLabels();
+
+  /* start cycling */
+  int size  = s_items.size();
+  if (lay->count() < size)
+    return;
+
+  for (int i = 0; i < size; i++)
+    {
+      const auto &item  = s_items[i];
+      auto button       = qobject_cast<DapGuiButton*> (lay->itemAt(i)->widget());
+      if (button == nullptr)
+        continue;
+      button->setMainText (item.text[0]);
+      button->setSubText (item.text[1]);
+    }
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
@@ -231,6 +209,52 @@ bool SettingsModel::eventFilter(QObject *o, QEvent *e)
 }
 
 /********************************************
+ * PRIVATE METHODS
+ *******************************************/
+
+void SettingsModel::_updateLabels()
+{
+  s_items =
+  {
+    _SItem{SI_SPACER,     {"", ""}, "1", defaultCb},
+    _SItem{SI_TITLETOP,   {tr("Settings"), ""}, "settings_icon", defaultCb},
+    _SItem{SI_SPACER,     {"", ""}, "2", defaultCb},
+
+    _SItem{SI_BUTTONRED,  {tr("Get new licence key"), /*"265 days left"*/" "}, "settings_icon ic_renew", cbLicenceGet},
+    _SItem{SI_BUTTON,     {tr("Reset licence key"), ""}, "settings_icon ic_key", cbLicenceReset},
+    /* WIP */ /// _SItem{SI_LINK,       {tr("Language"), ""}, "settings_icon ic_language", cbLanguage},
+#ifndef DISABLE_THEMES
+    _SItem{SI_LINK,       {tr("Color theme"), ""}, "settings_icon ic_theme", cbColorTheme},
+#endif // DISABLE_THEMES
+
+    _SItem{SI_TITLE,      {tr("Support"), ""}, "settings_icon", defaultCb},
+
+    _SItem{SI_BUTTON,     {tr("Send a bug report"), ""}, "settings_icon ic_send-report", cbBugSend},
+    _SItem{SI_BUTTON,     {tr("Telegram support bot"), ""}, "settings_icon ic_bot", cbTelegramBot},
+
+    _SItem{SI_TITLE,      {tr("Information"), ""}, "settings_icon", defaultCb},
+
+    //_SItem{SI_LINK,       {TR ("Bug Reports")}, "settings_icon ic_information_bug-report", cbBugReport},
+    //_SItem{SI_BUTTON,     {TR ("Serial key history on this device")}, "settings_icon ic_key-history", cbLicenceHistory},
+    _SItem{SI_BUTTON,     {tr("Terms of use"), ""}, "settings_icon ic_terms_policy", cbTermsOfUse},
+    _SItem{SI_BUTTON,     {tr("Privacy policy"), ""}, "settings_icon ic_terms_policy", cbPrivacyPolicy},
+    _SItem{SI_BUTTONGRAY, {tr("Version"), "@version"}, "settings_icon ic_version", cbVersion},
+  };
+}
+
+void SettingsModel::_getResetDialogLabels (
+    QString &a_title,
+    QString &a_description,
+    QString &a_btnYes,
+    QString &a_btnNo)
+{
+  a_title       = tr ("Reset the serial key");
+  a_description = tr ("This action will reset the serial\nkey on your device. Are you sure?");
+  a_btnYes      = tr ("YES");
+  a_btnNo       = tr ("NO");
+}
+
+/********************************************
  * STATIC FUNCTIONS
  *******************************************/
 
@@ -238,6 +262,7 @@ bool SettingsModel::eventFilter(QObject *o, QEvent *e)
 void cbLicenceGet()     { emit s_settings->sigLicenceGet(); }
 void cbLicenceReset()   { emit s_settings->sigLicenceReset(); }
 void cbLanguage()       { emit s_settings->sigLanguage(); }
+void cbColorTheme()     { emit s_settings->sigColorTheme(); }
 
 /* support */
 void cbBugSend()        { emit s_settings->sigBugSend(); }

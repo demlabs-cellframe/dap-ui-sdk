@@ -26,6 +26,11 @@ class DapGuiLabel : public QLabel
 
   bool _cssHook;
   QString m_scaledPixmap;
+  struct
+  {
+      QPixmap pixmap;
+      QSize size;
+  } _cache;
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT

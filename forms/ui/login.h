@@ -17,6 +17,14 @@ QT_END_NAMESPACE
 
 /****************************************//**
  * @brief ui/class for login page
+ *
+ * Login screen
+ *
+ * Features:
+ * - Insert serial key
+ * - Choose server to connect
+ * - Open "buy key" webpage
+ *
  * @ingroup groupUiClasses
  * @date 25.08.2021
  * @author Mikhail Shilenko
@@ -61,11 +69,6 @@ public:
   /// @{
 public:
   QString getSerialNumber();
-protected:
-  static void cbSerialFocus (DapGuiLineEdit *e, const Qt::FocusReason &reason);
-  static void cbSerialText (DapGuiLineEdit *e, QString &preedit, QString &commit, int from, int to);
-  static void fixSerialString (DapGuiLineEdit *e, QString &serial, bool inserted);
-  static void fixSerialString_ (DapGuiLineEdit *e, QString &serial, bool inserted);
   /// @}
 
   /****************************************//**
@@ -84,7 +87,7 @@ signals:
   void textChangedAndCleaned();
   void textChangedAndFilledOut(QString);
 
-  void slotSerialFillingIncorrect();
+  void sigSerialFillingIncorrect();
   /// @}
 
   /****************************************//**
@@ -92,18 +95,25 @@ signals:
    *******************************************/
   /// @{
 public slots:
+  /// show/hide serial key input
   void slotKeyEnable (bool enable);
+  /// enable/disable "connect" button
   void slotSetConnectBtnEnabled (bool enable);
+  /// change button text
   void slotSetConnectBtnText(QString a_text);
+  /// show error text
   void slotErrorText (QString text, ErrorColor color = ErrorColor::ERRCOL_RED);
+  /// change server name text
   void slotChangeServerName (QString serverName);
+  /// change inserted serial
   void slotChangeSerial (QString serialKey);
+  /// set server choose button active
   void slotServerChooserActivate();
-  void slotClearStatusLable();
-  void setSerialNumber (const QString &a_serial);
-  /// serial text changed
-  void slotSerialChanged (const QString &a_serial);
-  void slotSerialEdited (const QString &a_serial);
+  /// translate contents
+  void slotRetranslated();
+private slots:
+  void _slotSerialChanged (const QString &a_serial);
+  void _slotSerialEdited (const QString &a_serial);
   /// @}
 };
 

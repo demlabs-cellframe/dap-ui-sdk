@@ -15,6 +15,13 @@ QT_END_NAMESPACE
 
 /****************************************//**
  * @brief ui/class for displaying documents
+ *
+ * Display's documents
+ *
+ * Features:
+ * - Touch scrolling
+ * - Flexible document integration
+ *
  * @ingroup groupUiClasses
  * @date 01.09.2021
  * @author Mikhail Shilenko
@@ -49,6 +56,7 @@ private:
   DapGuiLabel *m_label;
   QVBoxLayout *m_layout;
   Filter *m_filter;
+  Type m_type;
   /// @}
 
   /****************************************//**
@@ -75,6 +83,7 @@ signals:
 public slots:
   void slotShowTermsOfUse();
   void slotShowPrivacyPolicy();
+  void slotRetranslated();
   /// @}
 
   /****************************************//**

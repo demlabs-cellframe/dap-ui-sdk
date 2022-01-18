@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <QWidget>
 #include "baseform.h"
+#include "model/languagemodel.h"
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
@@ -12,6 +13,9 @@ QT_END_NAMESPACE
 
 /****************************************//**
  * @brief ui/class for language list
+ *
+ * Choose different languages
+ *
  * @ingroup groupUiClasses
  * @date 01.09.2021
  * @author Mikhail Shilenko
@@ -39,13 +43,30 @@ public:
   /// @}
 
   /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  LanguageModel *model();
+  /// @}
+
+  /****************************************//**
    * @name SIGNALS
    *******************************************/
   /// @{
 signals:
   void sigReturn();
+  void sigSelect(int index, QString name);
   /// @}
 
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
+public slots:
+  void slotRetranslated();
+  void slotSetCurrentLanguage (const QLocale::Language a_language, const QString a_languageName);
+  /// @}
 };
 
 /*-----------------------------------------*/

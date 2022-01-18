@@ -71,12 +71,12 @@ android {
         $$PWD/../../../brand/$$BRAND/os/android/res/values/libs.xml \
         $$PWD/../../../brand/$$BRAND/os/android/build.gradle \
         $$PWD/../../../brand/$$BRAND/os/android/gradle/wrapper/gradle-wrapper.properties \
-        $$PWD/../../../brand/$$BRAND/os/android/src/com/KelVPN/MainActivity.java \
-        $$PWD/../../../brand/$$BRAND/os/android/src/com/KelVPN/KelVPNService.java \
-        $$PWD/../../../brand/$$BRAND/os/android/src/com/KelVPN/KelVPNServiceNative.java \
+        $$PWD/../../../brand/$$BRAND/os/android/src/com/$${BRAND}/MainActivity.java \
+        $$PWD/../../../brand/$$BRAND/os/android/src/com/$${BRAND}/$${BRAND}Service.java \
+        $$PWD/../../../brand/$$BRAND/os/android/src/com/$${BRAND}/$${BRAND}ServiceNative.java \
         $$PWD/../../../brand/$$BRAND/os/android/gradlew.bat
 	equals(BUILD_VARIANT, "GooglePlay") {
-                DISTFILES += $$PWD/../../../brand/$$BRAND/os/android/src/com/KelVPN/InAppShop.java
+                DISTFILES += $$PWD/../../../brand/$$BRAND/os/android/src/com/$${BRAND}/InAppShop.java
 	}
 }
 

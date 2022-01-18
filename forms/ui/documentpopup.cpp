@@ -11,7 +11,8 @@
 
 DocumentPopup::DocumentPopup (Type t, QWidget *parent) :
   BaseForm (parent),
-  ui (new Ui::DocumentPopup)
+  ui (new Ui::DocumentPopup),
+  m_type (t)
 {
   ui->setupUi (this);
 
@@ -31,7 +32,8 @@ DocumentPopup::DocumentPopup (Type t, QWidget *parent) :
   m_layout->addWidget (m_label);
   m_layout->addItem (sp);
 
-  m_label->setCssStyle ("darkblue font16 normal backgroundcolor");
+  m_label->setObjectName ("DocumentContents");
+  m_label->setCssStyle ("darkblue font16 normal");
   m_label->setWordWrap (true);
 
   switch (t)
@@ -57,16 +59,27 @@ DocumentPopup::~DocumentPopup()
 
 void DocumentPopup::slotShowTermsOfUse()
 {
-  setObjectName ("Terms of use");
-  ui->label->setText ("Terms of use");
-  m_label->setText (Common::fromFile (":/gui/ui/data/terms.html"));
+  m_type  = TermsOfUse;
+  setObjectName (tr ("Terms of use"));
+  ui->label->setText (tr ("Terms of use"));
+  m_label->setText (Common::fromFile (":/gui/data/terms.html"));
 }
 
 void DocumentPopup::slotShowPrivacyPolicy()
 {
-  setObjectName ("Privacy policy");
-  ui->label->setText ("Privacy policy");
-  m_label->setText (Common::fromFile (":/gui/ui/data/privacy.html"));
+  m_type  = PrivacyPolicy;
+  setObjectName (tr ("Privacy policy"));
+  ui->label->setText (tr ("Privacy policy"));
+  m_label->setText (Common::fromFile (":/gui/data/privacy.html"));
+}
+
+void DocumentPopup::slotRetranslated()
+{
+  switch (m_type)
+  {
+    case PrivacyPolicy: return slotShowPrivacyPolicy();
+    case TermsOfUse:    return slotShowTermsOfUse();
+    }
 }
 
 bool DocumentPopup::eventFilter(QObject *o, QEvent *e)
@@ -86,3 +99,5 @@ bool DocumentPopup::Filter::eventFilter(QObject *o, QEvent *e)
 {
   return QScrollArea::eventFilter(o, e);
 }
+
+/*-----------------------------------------*/
