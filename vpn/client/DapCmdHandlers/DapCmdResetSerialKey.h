@@ -12,7 +12,11 @@ public:
     ~DapCmdResetSerialKey() override {};
 
     void handle(const QJsonObject *params) override;
+
+public slots:
+    void sendResetSerialError(const int& a_errorCode, const QString&);
+
 signals:
     void sigResetRequestSent(const QString&);
-    void sigResetRequestReplied(const QString&);
+    void sigResetSerialKeyReplied(const QString&);
 };

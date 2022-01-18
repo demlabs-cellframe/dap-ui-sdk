@@ -536,11 +536,48 @@ void DapSession::answerBugReport()
     emit receivedBugReportAnswer(QString::fromUtf8(m_netSendBugReportReply->getReplyData()));
 }
 
-void DapSession::resetReply() {
+
+void DapSession::errorResetSerialKey(const QString& error)
+{
+    qDebug() << "Reset serial key error: network error";
+    emit sigResetSerialKeyError (2, "Network error during the reset of the serial number");
+    return;
+}
+
+void DapSession::onResetSerialKey()
+{
+    if(m_netKeyActivateReply->getReplyData().size() <= 0 ) {
+        emit errorResetSerialKey("Wrong answer from server");
+        return;
+    }
+
     QByteArray replyArr;
     m_dapCryptCDB->decode(m_netKeyActivateReply->getReplyData(), replyArr, KeyRoleSession);
     qDebug() << "Serial key reset reply: " << QString::fromUtf8(replyArr);
-    emit receivedResetReply(QString::fromUtf8(replyArr));
+
+    QString op_code = QString::fromUtf8(replyArr).left(4);
+
+    if (op_code == OP_CODE_GENERAL_ERR) {
+        emit sigResetSerialKeyError (1, "Unknown authorization error");
+        return;
+    } else if (op_code == OP_CODE_ALREADY_ACTIVATED) {
+        emit sigResetSerialKeyError (1, "Serial key already activated on another device");
+        return;
+    } else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
+        emit sigResetSerialKeyError (1, isSerial ? tr("Serial key not found in database") : "Login not found in database");
+        return;
+    } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRED) {
+        emit sigResetSerialKeyError (1, "Serial key expired");
+        return;
+    } else if (op_code == OP_CODE_CANT_CONNECTION_TO_DB) {
+        emit sigResetSerialKeyError (1, "Can't connect to database");
+        return;
+    } else if (op_code == OP_CODE_INCORRECT_SYM) {
+        emit sigResetSerialKeyError(1, "Incorrect symbols in request");
+        return;
+    }
+
+    emit sigSerialKeyReseted(tr("Serial key reset successfully"));
 }
 
 void DapSession::clearCredentials()
@@ -620,7 +657,7 @@ void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domai
             preserveCDBSession();
             m_netKeyActivateReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
                                                URL_DB, "auth_deactivate", "serial",
-                                               SLOT(resetReply()), QT_STRINGIFY(receivedResetReply), true);
+                                               SLOT(onResetSerialKey()), QT_STRINGIFY(errorResetSerialKey), true);
             disconnect(*l_tempConn);
             delete l_tempConn;
         });
@@ -628,7 +665,7 @@ void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domai
     } else {
         m_netKeyActivateReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
                                            URL_DB, "auth_deactivate", "serial",
-                                           SLOT(resetReply()), QT_STRINGIFY(receivedResetReply), true);
+                                           SLOT(onResetSerialKey()), QT_STRINGIFY(errorResetSerialKey), true);
     }
 }
 
