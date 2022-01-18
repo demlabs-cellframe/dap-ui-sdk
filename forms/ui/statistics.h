@@ -27,6 +27,15 @@ class Statistics : public BaseForm
   Q_OBJECT
 
   /****************************************//**
+   * @name PROPERTIES
+   *******************************************/
+  /// @{
+  Q_PROPERTY (QColor colorBackground    READ colorBackground    WRITE setColorBackground)
+  Q_PROPERTY (QColor colorChartDownload READ colorChartDownload WRITE setColorChartDownload)
+  Q_PROPERTY (QColor colorChartUpload   READ colorChartUpload   WRITE setColorChartUpload)
+  /// @}
+
+  /****************************************//**
    * @name VARS
    *******************************************/
   /// @{
@@ -96,14 +105,24 @@ public:
 
   void updateGraph();
   void resetGraph();
+
+  const QColor &colorBackground() const;
+  void setColorBackground(const QColor &newColorBackground);
+  const QColor &colorChartDownload() const;
+  void setColorChartDownload (const QColor &newColorChartDownload);
+  const QColor &colorChartUpload() const;
+  void setColorChartUpload (const QColor &newColorChartUpload);
+
+private:
+  void _slotUpdateUptimeTime();
   /// @}
 
   /****************************************//**
-   * @name METHODS
+   * @name SLOTS
    *******************************************/
   /// @{
-public:
-  void _slotUpdateUptimeTime();
+public slots:
+  void slotRetranslated();
   /// @}
 };
 

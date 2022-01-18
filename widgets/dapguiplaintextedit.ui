@@ -13,7 +13,10 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -26,143 +29,81 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <property name="spacing">
-    <number>0</number>
-   </property>
-   <item row="0" column="0">
-    <widget class="QLabel" name="kgpteu1">
-     <property name="styleSheet">
-      <string notr="true">max-width: 14px;
-max-height: 14px;
-min-width: 14px;
-min-height: 14px;
-background-image: url(:/gfx/frame_topleft.png);</string>
+   <item>
+    <widget class="DapGuiLabel" name="kelGuiSpooser">
+     <property name="cssStyle">
+      <string>cpxte-spooser noborder nobackground</string>
      </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLabel" name="kgpteu2">
-     <property name="styleSheet">
-      <string notr="true">max-height: 14px;
-min-height: 14px;
-background-image: url(:/gfx/frame_top.png);</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QLabel" name="kgpteu5">
-     <property name="styleSheet">
-      <string notr="true">max-width: 14px;
-max-height: 14px;
-min-width: 14px;
-min-height: 14px;
-background-image: url(:/gfx/frame_topright.png);</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="kgpteu3">
-     <property name="styleSheet">
-      <string notr="true">max-width: 14px;
-min-width: 14px;
-background-image: url(:/gfx/frame_left.png);</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="DapGuiPlainTextEditInterface" name="kgpteuPlainTextEdit">
-     <property name="styleSheet">
-      <string notr="true">QPlainTextEdit
-{
-color: #04004E;
-background-color: #F7F8FA;
-font: 16px/25px;
-font-weight: normal;
-font-style: normal;
-font-size: normal;
-font-family: 'Lato';
-}
-
-QPlainTextEdit[plainText=&quot;&quot;]
-{
-color: #9C9B9D;
-}</string>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
-     </property>
-     <property name="plainText">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QLabel" name="kgpteu6">
-     <property name="styleSheet">
-      <string notr="true">max-width: 14px;
-min-width: 14px;
-background-image: url(:/gfx/frame_right.png);</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="kgpteu8">
-     <property name="styleSheet">
-      <string notr="true">max-width: 14px;
-max-height: 14px;
-min-width: 14px;
-min-height: 14px;
-background-image: url(:/gfx/frame_bottomleft.png);</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QLabel" name="kgpteu4">
-     <property name="styleSheet">
-      <string notr="true">max-height: 14px;
-min-height: 14px;
-background-image: url(:/gfx/frame_bottom.png);</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="QLabel" name="kgpteu7">
-     <property name="styleSheet">
-      <string notr="true">max-width: 14px;
-max-height: 14px;
-min-width: 14px;
-min-height: 14px;
-background-image: url(:/gfx/frame_bottomright.png);</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="DapGuiLabel" name="kgpteuDolder">
+        <property name="cssStyle">
+         <string>cpxte-dolder noborder nobackground</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="DapGuiPlainTextEditInterface" name="kgpteuPlainTextEdit">
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(206, 92, 0);</string>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="plainText">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>DapGuiLabel</class>
+   <extends>QLabel</extends>
+   <header>dapguilabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DapGuiWidget</class>
+   <extends>QWidget</extends>
+   <header>dapguiwidget.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>DapGuiPlainTextEditInterface</class>
    <extends>QPlainTextEdit</extends>

@@ -12,6 +12,9 @@ QT_END_NAMESPACE
 
 /****************************************//**
  * @brief ui/class for licence list
+ *
+ * Serial key's history list
+ *
  * @ingroup groupUiClasses
  * @date 01.09.2021
  * @author Mikhail Shilenko

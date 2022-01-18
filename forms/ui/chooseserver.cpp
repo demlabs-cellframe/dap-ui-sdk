@@ -54,4 +54,13 @@ ChooseServerModel *ChooseServer::model()
   return ui->scrollArea;
 }
 
+/********************************************
+ * SLOTS
+ *******************************************/
+
+void ChooseServer::slotRetranslated()
+{
+  ui->label->setText (tr ("Choose server"));
+}
+
 /*-----------------------------------------*/

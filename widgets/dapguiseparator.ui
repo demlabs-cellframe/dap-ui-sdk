@@ -19,6 +19,8 @@
 {
 min-height: 4px;
 max-height: 4px;
+background-color: rgba(0,0,0,0);
+border: none;
 }</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -38,7 +40,10 @@ max-height: 4px;
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="DapGuiSeparatorBackground" native="true">
+    <widget class="DapGuiWidget" name="DapGuiSeparatorBackground">
+     <property name="cssStyle">
+      <string>nobackground noborder</string>
+     </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="spacing">
        <number>0</number>
@@ -56,37 +61,47 @@ max-height: 4px;
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="DapGuiSeparatorLeft">
+       <widget class="DapGuiLabel" name="DapGuiSeparatorLeft">
         <property name="styleSheet">
-         <string notr="true">background-image: url(:/gfx/separator_left.png);
-min-width: 8px; max-width: 8px; 
-min-height: 4px; max-height: 4px; </string>
+         <string notr="true">#DapGuiSeparatorLeft{  
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); }</string>
         </property>
         <property name="text">
          <string/>
+        </property>
+        <property name="cssStyle">
+         <string>csep-left noborder nobackground</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="DapGuiSeparatorMid">
+       <widget class="DapGuiLabel" name="DapGuiSeparatorMid">
         <property name="styleSheet">
-         <string notr="true">background-image: url(:/gfx/separator_mid.png);
-min-height: 4px; max-height: 4px; </string>
+         <string notr="true">#DapGuiSeparatorMid{  
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); }</string>
         </property>
         <property name="text">
          <string/>
+        </property>
+        <property name="cssStyle">
+         <string>csep-mid noborder nobackground</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="DapGuiSeparatorRight">
+       <widget class="DapGuiLabel" name="DapGuiSeparatorRight">
         <property name="styleSheet">
-         <string notr="true">background-image: url(:/gfx/separator_right.png);
-min-width: 8px; max-width: 8px; 
-min-height: 4px; max-height: 4px; </string>
+         <string notr="true">#DapGuiSeparatorRight{  
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); }</string>
         </property>
         <property name="text">
          <string/>
+        </property>
+        <property name="cssStyle">
+         <string>csep-right noborder nobackground</string>
         </property>
        </widget>
       </item>
@@ -95,6 +110,19 @@ min-height: 4px; max-height: 4px; </string>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DapGuiLabel</class>
+   <extends>QLabel</extends>
+   <header>dapguilabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DapGuiWidget</class>
+   <extends>QWidget</extends>
+   <header>dapguiwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

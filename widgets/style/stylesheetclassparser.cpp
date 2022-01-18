@@ -23,11 +23,11 @@ ClassParser::ClassParser (
   /* remove lines */
   simpleSheet =
     simpleSheet
-    .replace ('\n', " ");
+    .replace ('\n', " ")
 //    .replace ('{', "")
 //    .replace ('}', "")
 //    .replace ('\n', "")
-//    .replace ('\t', "");
+    .replace ('\t', "");
 
   /* split by combo of new lines and dots */
   for (auto i = simpleSheet.cbegin(),

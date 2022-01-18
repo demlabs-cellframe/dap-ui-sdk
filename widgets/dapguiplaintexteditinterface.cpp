@@ -1,5 +1,6 @@
 /* INCLUDES */
 #include "dapguiplaintexteditinterface.h"
+#include "dapguiplaintexteditstylemanager.h"
 #include <QDebug>
 #include <QApplication>
 

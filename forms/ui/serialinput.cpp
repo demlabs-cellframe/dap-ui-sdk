@@ -200,4 +200,11 @@ void SerialInput::slotActiavted()
   m_input->setHideAnchor (false);
 }
 
+void SerialInput::slotRetranslated()
+{
+  ui->lTitle->setText (tr ("Serial Key"));
+  ui->btnSerial->setSubText (tr ("insert serial key"));
+  ui->btnConfirm->setText (tr ("CONFIRM"));
+}
+
 /*-----------------------------------------*/

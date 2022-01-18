@@ -93,6 +93,8 @@ private:
   bool m_frame;           ///< show frame
 
   QMultiMap<QString, QWidget *> m_widgets;    ///< categorized map for widget. used for abstract property control
+  QList<QWidget *> _setMainTextWidgets;
+  QList<QWidget *> _setSubTextWidgetsSubRight, _setSubTextWidgetsMain;
 
   /// labels
   std::unique_ptr<QLabel> m_lLink;  ///< link icon at right side
@@ -194,6 +196,8 @@ private slots:
   void _slotDebugInfo();
   /// @brief update mainText property
   void _slotTextEdited(const QString &a_text);
+  /// @brief react on style update
+  void _slotStyleUpdate();
   /// @}
 };
 

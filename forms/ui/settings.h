@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <QWidget>
 #include "baseform.h"
+#include "model/settingsmodel.h"
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
@@ -12,6 +13,11 @@ QT_END_NAMESPACE
 
 /****************************************//**
  * @brief ui/class for settings
+ *
+ * Uses model to display options.
+ *
+ * @note several options is temporeraly disabled
+ *
  * @ingroup groupUiClasses
  * @date 01.09.2021
  * @author Mikhail Shilenko
@@ -39,11 +45,20 @@ public:
   /// @}
 
   /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  SettingsModel *model();
+  /// @}
+
+  /****************************************//**
    * @name SLOTS
    *******************************************/
   /// @{
 public slots:
   void slotSetVersion (const QString &a_text);
+  void slotRetranslated();
   /// @}
 
   /****************************************//**
@@ -51,11 +66,11 @@ public slots:
    *******************************************/
   /// @{
 signals:
-
   /* settings */
   void sigLicenceGet();
   void sigLicenceReset();
   void sigLanguage();
+  void sigColorTheme();
   void sigSetDaysLeft (QString days);
   void sigResetDaysLeft();
 

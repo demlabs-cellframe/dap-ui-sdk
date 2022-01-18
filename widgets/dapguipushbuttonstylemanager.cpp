@@ -8,6 +8,7 @@
 
 DapGuiPushButtonStyleManager::DapGuiPushButtonStyleManager (QWidget *parent)
   : DapGuiStyleManager (parent)
+  , _hook (false)
 {
   /* reconnect into different slot */
   if (this != &_signal())
@@ -21,6 +22,7 @@ DapGuiPushButtonStyleManager::DapGuiPushButtonStyleManager (QWidget *parent)
 
 DapGuiPushButtonStyleManager::DapGuiPushButtonStyleManager (DapGuiPushButtonStyleManager &&src)
   : DapGuiStyleManager ((DapGuiStyleManager &&)src)
+  , _hook (false)
 {
   /* reconnect into different slot */
   if (this != &_signal())
@@ -53,10 +55,18 @@ void DapGuiPushButtonStyleManager::setCssStyle (const QString &cssStyle)
 
 void DapGuiPushButtonStyleManager::forcedButtonStyleUpdate()
 {
+  /* hook check */
+  if (_hook)
+    return;
+  _hook = true;
+
   /* get push button ptr */
   DapGuiPushButton *pb  = dynamic_cast<DapGuiPushButton *> (m_widget);
   if (!pb)
     return;
+
+  /* reinit style */
+  pb->setStyle (pb->style());
 
   /* collect 3 files name + style */
   QString names[4] =
@@ -96,6 +106,7 @@ void DapGuiPushButtonStyleManager::forcedButtonStyleUpdate()
       styleByClassName ("cw_pushbutton"));
 
   pb->setStyleSheet (s);
+  _hook = false;
 }
 
 /*-----------------------------------------*/

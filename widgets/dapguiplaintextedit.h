@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QPlainTextEdit>
 #include "dapguiplaintexteditinterface.h"
+#include "dapguiplaintexteditstylemanager.h"
 
 /* DEFS */
 namespace Ui { class DapGuiPlainTextEditUI; };
@@ -45,6 +46,7 @@ class DapGuiPlainTextEdit : public QWidget
 private:
   Ui::DapGuiPlainTextEditUI *ui;
   cbTextEdit m_callbackTextEdit;
+  DapGuiPlainTextEditStyleManager __kgsm = DapGuiPlainTextEditStyleManager (this);
   /// @}
 
   /****************************************//**

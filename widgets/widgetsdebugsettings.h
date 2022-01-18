@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QWidget>
+#include "widgetsstyletable.h"
 
 /* DEFS */
 namespace Ui { class WidgetsDebugSettings; }
@@ -23,6 +24,7 @@ class WidgetsDebugSettings : public QWidget
   /// @{
 private:
   Ui::WidgetsDebugSettings *ui;
+  WidgetsStyleTable *m_debugStyle;
   QString m_globalStyleFilename;
   /// @}
 
@@ -50,6 +52,7 @@ public:
 private slots:
   void on_btnChooseGlobalStyle_clicked();
   void on_btnUpdateGlobalStyle_clicked();
+  void on_btnProfiler_clicked();
   /// @}
 };
 

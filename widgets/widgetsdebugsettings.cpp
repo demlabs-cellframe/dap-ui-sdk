@@ -22,13 +22,22 @@ QMainWindow *getMainWindow()
   return nullptr;
 }
 
+class Parenter : public QObject
+{
+  QObject *m_child;
+public:
+  Parenter (QObject *a_child, QObject *a_parent)  : QObject(a_parent), m_child (a_child) {};
+  ~Parenter() { delete m_child; }
+};
+
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
 WidgetsDebugSettings::WidgetsDebugSettings (QWidget *parent) :
   QWidget (parent),
-  ui (new Ui::WidgetsDebugSettings)
+  ui (new Ui::WidgetsDebugSettings),
+  m_debugStyle (new WidgetsStyleTable)
 {
   /* setup ui */
   ui->setupUi (this);
@@ -42,6 +51,7 @@ WidgetsDebugSettings::WidgetsDebugSettings (QWidget *parent) :
   /* get main window and menu */
   auto mw   = getMainWindow();
   auto menu = mw->menuBar()->addMenu ("..::DapGui Custom Widgets::..");
+  new Parenter (m_debugStyle, mw);
 
   /* create docker */
   QDockWidget *dock = new QDockWidget ("..::DapGui Custom Widgets Style Settings::..", mw);
@@ -59,6 +69,7 @@ WidgetsDebugSettings::WidgetsDebugSettings (QWidget *parent) :
 WidgetsDebugSettings::~WidgetsDebugSettings()
 {
   delete ui;
+  m_debugStyle->deleteLater();
 }
 
 /********************************************
@@ -105,6 +116,11 @@ void WidgetsDebugSettings::on_btnUpdateGlobalStyle_clicked()
 
   style.replace ("pt", "px");
   DapGuiStyleManager::setupGlobalStyleSheet (style);
+}
+
+void WidgetsDebugSettings::on_btnProfiler_clicked()
+{
+  m_debugStyle->show();
 }
 
 /*-----------------------------------------*/

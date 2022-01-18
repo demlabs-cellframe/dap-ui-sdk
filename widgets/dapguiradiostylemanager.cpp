@@ -60,19 +60,19 @@ void DapGuiRadioStyleManager::forcedRadioStyleUpdate()
 
       "QRadioButton::indicator\n{"
       "border: none;"
-      "border-image: url(\"%1\");%4}\n"
+      "%1%4}\n"
 
       "QRadioButton::indicator:hover\n{"
       "border: none;"
-      "border-image: url(\"%2\");}\n"
+      "%2}\n"
 
       "QRadioButton::indicator:checked\n{"
       "border: none;"
-      "border-image: url(\"%3\");}\n")
+      "%3}\n")
     .arg (
-      "://gfx/radio_btn_off.png",
-      "://gfx/radio_btn_on.png",
-      "://gfx/radio_btn_on.png",
+      styleByClassName ("crb_off"),
+      styleByClassName ("crb_on"),
+      styleByClassName ("crb_on"),
       styleByClassName ("crb_indicator"),
       styleByClassName ("crb_textstyle font16 darkblue normal lato"));
 

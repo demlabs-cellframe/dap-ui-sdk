@@ -12,6 +12,10 @@ QT_END_NAMESPACE
 
 /****************************************//**
  * @brief ui/class for licence purchases
+ *
+ * Purchase licence right inside app using
+ * this form page
+ *
  * @ingroup groupUiClasses
  * @date 01.09.2021
  * @author Mikhail Shilenko

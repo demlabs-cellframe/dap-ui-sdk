@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <QWidget>
 #include <QMap>
+#include <QPropertyAnimation>
 #include "baseform.h"
 
 /* DEFS */
@@ -13,7 +14,10 @@ QT_END_NAMESPACE
 
 /****************************************//**
  * @brief menu footer widget
- * usualy lays on top of screen
+ *
+ * Usualy lays on top of all screen widgets
+ * at the bottom of the screen space
+ *
  * @ingroup groupUiClasses
  * @date 27.08.2021
  * @author Mikhail Shilenko
@@ -46,7 +50,13 @@ private:
   Ui::MenuFooter *ui;
   ButtonState m_state;
   QMap<QObject *, ButtonState> m_statesMap;
-  bool m_lock; ///< prevent recursion in slotButtonToggled
+  bool m_lock;                      ///< prevent recursion in slotButtonToggled
+  bool m_active;                    ///< show/hide
+  QPropertyAnimation *m_posAnim;    ///< animation
+  struct
+  {
+    float y, height, screenHeight;
+  } position;
   /// @}
 
   /****************************************//**
@@ -63,6 +73,8 @@ public:
    *******************************************/
   /// @{
 public:
+  bool active() const;
+  void setActive (bool newActive);
   MenuFooter::ButtonState state() const;
   /// @}
 
@@ -84,7 +96,7 @@ public slots:
   /// set progressbar range
   void slotSetProgressRange (int minimum, int maximum);
   /// change buttons states
-  void slotSetButtonState (ButtonState state);
+  void slotSetButtonState (MenuFooter::ButtonState state);
   /// fix position
   void slotMoveToBottom();
   /// resize event
@@ -92,6 +104,9 @@ public slots:
 private slots:
   /// react on user interaction
   void slotButtonToggled (bool checked);
+
+  void _setAnimByState();
+  void _startAnim();
   /// @}
 };
 
