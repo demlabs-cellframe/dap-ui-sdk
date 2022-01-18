@@ -78,6 +78,9 @@ void DapServerConnectionInfo::clearStatisticAndStartTime()
 {
     this->setStartTime      ({});
     DapServerConnectionInfo::setStatistic(0, 0, 0, 0);
+    m_uploadSpeed     = convertBytePerSecond(0);
+    m_downloadSpeed   = convertBytePerSecond(0);
+    emit this->statisticSet(m_bytesReceived, m_bytesSent, m_packetsReceived, m_packetsSent, m_uploadSpeed, m_downloadSpeed);
 }
 
 const DapServerInfo* DapServerConnectionInfo::serverInfo() const
