@@ -8,13 +8,15 @@
  *******************************************/
 
 StyleDebugItemDescriptor::StyleDebugItemDescriptor()
-  : m_item (nullptr)
+  : QObject()
+  , m_item (nullptr)
 {
 
 }
 
 StyleDebugItemDescriptor::StyleDebugItemDescriptor (QString a_name, QStringList a_fields, QObject *a_item)
-  : m_name (a_name)
+  : QObject()
+  , m_name (a_name)
   , m_fields (a_fields)
   , m_item (a_item)
 {
@@ -22,7 +24,8 @@ StyleDebugItemDescriptor::StyleDebugItemDescriptor (QString a_name, QStringList 
 }
 
 StyleDebugItemDescriptor::StyleDebugItemDescriptor (const StyleDebugItemDescriptor &a_src)
-  : m_name (a_src.m_name)
+  : QObject (a_src.parent())
+  , m_name (a_src.m_name)
   , m_fields (a_src.m_fields)
   , m_item (a_src.m_item)
   , m_fieldData (a_src.m_fieldData)
@@ -31,7 +34,8 @@ StyleDebugItemDescriptor::StyleDebugItemDescriptor (const StyleDebugItemDescript
 }
 
 StyleDebugItemDescriptor::StyleDebugItemDescriptor (StyleDebugItemDescriptor &&a_src)
-  : m_name (std::move (a_src.m_name))
+  : QObject (a_src.parent())
+  , m_name (std::move (a_src.m_name))
   , m_fields (std::move (a_src.m_fields))
   , m_item (std::move (a_src.m_item))
   , m_fieldData (std::move (a_src.m_fieldData))

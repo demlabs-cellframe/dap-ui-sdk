@@ -1,6 +1,7 @@
 import QtQuick 2.4
 import QtQuick.Layouts 1.3
 import DapQmlModelSettings 1.0
+import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
 Item {
@@ -40,6 +41,10 @@ Item {
                 visible: false
                 id: resizer
                 qss: "sett-resizer"
+                Component.onCompleted: StyleDebugTree.describe (
+                   "Settings Resizer",
+                    ["x", "y", "width", "height"],
+                   this);
             }
 
             delegate: Item {

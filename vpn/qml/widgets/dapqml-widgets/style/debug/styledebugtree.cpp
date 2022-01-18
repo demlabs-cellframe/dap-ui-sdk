@@ -11,7 +11,6 @@ static thread_local StyleDebugTree::TreeItem s_item;
 
 StyleDebugTree::StyleDebugTree (QObject *parent)
   : QAbstractItemModel (parent)
-  , m_root ({0, TreeItem::Root, Line()})
 {
   s_instance  = this;
 }
@@ -32,27 +31,45 @@ StyleDebugTree *StyleDebugTree::instance()
   return s_instance;
 }
 
+QObject *StyleDebugTree::singletonProvider (QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+  Q_UNUSED (engine)
+  Q_UNUSED (scriptEngine)
+  return StyleDebugTree::instance();
+}
+
 bool StyleDebugTree::describe (QString a_name, QStringList a_fields, QObject *a_item)
 {
   /* skip when already exists */
   if (m_names.contains (a_name))
     return false;
 
-  m_descriptors << Descriptor (a_name, a_fields, a_item);
+  m_root.append (new TreeItem (Descriptor (a_name, a_fields, a_item), &m_root));
   return true;
 }
 
-bool StyleDebugTree::undescribe (QString a_name)
+void StyleDebugTree::update()
 {
-  /* skip when already exists */
-  if (!m_names.contains (a_name))
-    return false;
-
-  int index = m_names.indexOf (a_name);
-  m_descriptors.removeAt (index);
-  m_names.removeAt (index);
-  return true;
+  beginResetModel();
+  for (auto i = 0, e = m_root.childCount(); i < e; i++)
+    {
+      auto child  = m_root.child (i);
+      child->update();
+    }
+  endResetModel();
 }
+
+//bool StyleDebugTree::undescribe (QString a_name)
+//{
+//  /* skip when already exists */
+//  if (!m_names.contains (a_name))
+//    return false;
+
+//  int index = m_names.indexOf (a_name);
+//  m_descriptors.removeAt (index);
+//  m_names.removeAt (index);
+//  return true;
+//}
 
 /********************************************
  * OVERRIDE
@@ -60,17 +77,35 @@ bool StyleDebugTree::undescribe (QString a_name)
 
 QVariant StyleDebugTree::data (const QModelIndex &index, int role) const
 {
+  if (!index.isValid())
+    return QVariant();
 
+//  if (role != Qt::DisplayRole)
+//    return QVariant();
+
+  TreeItem *item = static_cast<TreeItem *> (index.internalPointer());
+
+  return item->data (role);//(index.column());
 }
 
 Qt::ItemFlags StyleDebugTree::flags (const QModelIndex &index) const
 {
-
+  return QAbstractItemModel::flags (index);
 }
 
 QVariant StyleDebugTree::headerData (int section, Qt::Orientation orientation, int role) const
 {
+  Q_UNUSED (section)
+  if (orientation != Qt::Horizontal || role != Qt::DisplayRole)
+    return QVariant();
 
+  switch (role)
+    {
+    case 0: return "Name";
+    case 1: return "Value";
+    }
+
+  return QVariant();
 }
 
 QModelIndex StyleDebugTree::index (int row, int column, const QModelIndex &parent) const
@@ -107,7 +142,7 @@ QModelIndex StyleDebugTree::parent (const QModelIndex &index) const
   TreeItem *childItem = static_cast<TreeItem *> (index.internalPointer());
   TreeItem *parentItem = childItem->parentItem();
 
-  if (parentItem == &m_root)
+  if (parentItem == nullptr || parentItem == &m_root)
     return QModelIndex();
 
   return createIndex (parentItem->row(), 0, parentItem);
@@ -115,73 +150,154 @@ QModelIndex StyleDebugTree::parent (const QModelIndex &index) const
 
 int StyleDebugTree::rowCount (const QModelIndex &parent) const
 {
+  const TreeItem *parentItem;
+  if (parent.column() > 0)
+    return 0;
 
+  if (!parent.isValid())
+    parentItem = &m_root;
+  else
+    parentItem = static_cast<TreeItem *> (parent.internalPointer());
+
+  return parentItem->childCount();
 }
 
 int StyleDebugTree::columnCount (const QModelIndex &parent) const
 {
+  Q_UNUSED (parent)
+  return 2;
+}
 
+QHash<int, QByteArray> StyleDebugTree::roleNames() const
+{
+  QHash<int, QByteArray> names;
+
+  names[0]  = "name";
+  names[1]  = "value";
+
+  return names;
 }
 
 /*-----------------------------------------*/
 
-StyleDebugTree::TreeItem::TreeItem()
-  : m_row (-1)
-  , m_type (None)
+
+
+StyleDebugTree::TreeItem::TreeItem (TreeItem *a_parentItem)
+  : m_parent (a_parentItem)
 {
 
 }
 
-StyleDebugTree::TreeItem::TreeItem (int a_row, Type a_type, Descriptor a_descriptor)
-  : m_row (a_row)
-  , m_type (a_type)
+StyleDebugTree::TreeItem::TreeItem (Descriptor a_descriptor, TreeItem *a_parentItem)
+  : m_parent (a_parentItem)
   , m_item (QVariant::fromValue (a_descriptor))
 {
-
+  /* append fields as children */
+  for (auto i = a_descriptor.fieldsData().cbegin(), e = a_descriptor.fieldsData().cend(); i != e; i++)
+    append (new TreeItem (*i, this));
 }
 
-StyleDebugTree::TreeItem::TreeItem (int a_row, Type a_type, Line a_line)
-  : m_row (a_row)
-  , m_type (a_type)
+StyleDebugTree::TreeItem::TreeItem (Line a_line, TreeItem *a_parentItem)
+  : m_parent (a_parentItem)
   , m_item (QVariant::fromValue (a_line))
 {
 
 }
 
+int StyleDebugTree::TreeItem::append(TreeItem *a_child)
+{
+  int row = m_childItems.size();
+  m_childItems.append (a_child);
+  return row;
+}
+
 StyleDebugTree::TreeItem *StyleDebugTree::TreeItem::child (int row) const
 {
-  /* return none */
-  if (m_type != Root || m_type != Item)
-    return nullptr; // &(s_item = TreeItem(TreeItem::None, nullptr));
-
-  /* return child of root item */
-  if ((m_type == Root) && (row < 0 || row >= s_instance->m_descriptors.size()))
+  if (row < 0 || row >= m_childItems.size())
     return nullptr;
-  else
-    return & (s_item = TreeItem (row, TreeItem::Item, s_instance->m_descriptors[row]));
-
-  /* return child of descriptor item */
-  if (m_type == Item)
-    {
-      Descriptor line = m_item.value<Descriptor>();
-      if ((row < 0 || row >= line.fieldsData().size()))
-        return nullptr;
-      else
-        return & (s_item = TreeItem (row, TreeItem::Item, line.fieldsData()[row]));
-    }
-
-  /* unknown behavior */
-  return nullptr;
+  return m_childItems[row];
 }
 
 StyleDebugTree::TreeItem *StyleDebugTree::TreeItem::parentItem() const
 {
-  if (m_type != Item)
-    return nullptr;
-  return & (s_item = TreeItem ());
+  return m_parent;
 }
 
-int StyleDebugTree::TreeItem::row()
+QVariant StyleDebugTree::TreeItem::data (int column) const
 {
-  return m_row;
+  if (!m_item.isValid())
+    return QVariant();
+
+  auto type = QString (m_item.typeName());
+
+  if (type == "StyleDebugItemDescriptor")
+    {
+      switch(column)
+        {
+        case 0: return m_item.value<Descriptor>().name();
+        case 1: return QVariant();
+        }
+    }
+
+  if (type == "StyleDebugItemDescriptor::Line")
+    {
+      Line line = m_item.value<Line> ();
+      switch(column)
+        {
+        case 0: return line.first;
+        case 1: return line.second;
+        }
+    }
+
+  return QVariant();
 }
+
+int StyleDebugTree::TreeItem::row() const
+{
+  if (m_parent == nullptr)
+    return 0;
+
+  for (auto i = 0, e = m_parent->m_childItems.size(); i < e; i++)
+    if (m_parent->m_childItems.at(i) == this)
+      return i;
+
+  return 0;
+}
+
+int StyleDebugTree::TreeItem::childCount() const
+{
+  return m_childItems.size();
+}
+
+void StyleDebugTree::TreeItem::update()
+{
+  /* protect type */
+  auto type = QString (m_item.typeName());
+  if (type != "StyleDebugItemDescriptor")
+    return;
+
+  /* update fields data */
+  auto desc = m_item.value<Descriptor> ();
+  desc.update();
+  m_item    = QVariant::fromValue (desc);
+
+  /* update fields tree representations */
+  for (auto i = 0, e = m_childItems.size(); i != e; i++)
+    {
+      auto child  = m_childItems.at(i);
+      auto data   = desc.fieldsData().value(i);
+      child->update (data);
+    }
+}
+
+void StyleDebugTree::TreeItem::update(Line a_line)
+{
+  /* protect type */
+  auto type = QString (m_item.typeName());
+  if (type != "StyleDebugItemDescriptor::Line")
+    return;
+
+  m_item  = QVariant::fromValue (a_line);
+}
+
+/*-----------------------------------------*/

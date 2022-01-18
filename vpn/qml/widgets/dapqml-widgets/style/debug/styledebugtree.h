@@ -3,6 +3,8 @@
 
 /* INCLUDES */
 #include <QAbstractItemModel>
+#include <QQmlEngine>
+#include <QJSEngine>
 #include "styledebugitemdescriptor.h"
 
 /****************************************//**
@@ -30,25 +32,25 @@ public:
   using Line        = StyleDebugItemDescriptor::Line;
   class TreeItem
   {
-  public:
-    enum Type
-    {
-      None, Root, Item, Field
-    };
-
-  protected:
-    int m_row;
-    Type m_type;
+    TreeItem *m_parent;
     QVariant m_item;
+    QList<TreeItem*> m_childItems;
 
   public:
-    TreeItem();
-    TreeItem (int a_row, Type a_type, Descriptor a_descriptor);
-    TreeItem (int a_row, Type a_type, Line a_line);
+    explicit TreeItem (TreeItem *a_parentItem = nullptr);
+    explicit TreeItem (Descriptor a_descriptor, TreeItem *a_parentItem = nullptr);
+    explicit TreeItem (Line a_line, TreeItem *a_parentItem = nullptr);
 
+    int append (TreeItem *a_child);
     TreeItem *child (int row) const;
     TreeItem *parentItem() const;
-    int row();
+    QVariant data(int column) const;
+    int row() const;
+    int childCount() const;
+
+    /// update field data
+    void update();
+    void update(Line a_line);
   };
 
   /// @}
@@ -58,7 +60,6 @@ public:
    *******************************************/
   /// @{
 protected:
-  QList<Descriptor> m_descriptors;
   QStringList m_names;
   TreeItem m_root;
   /// @}
@@ -78,9 +79,13 @@ public:
   /// @{
 public:
   Q_INVOKABLE static StyleDebugTree *instance();
+  Q_INVOKABLE static QObject *singletonProvider (QQmlEngine *engine, QJSEngine *scriptEngine);
 
   Q_INVOKABLE bool describe (QString a_name, QStringList a_fields, QObject *a_item);
-  Q_INVOKABLE bool undescribe (QString a_name);
+  //Q_INVOKABLE bool undescribe (QString a_name);
+
+  /// update data inside descriptors
+  Q_INVOKABLE void update();
   /// @}
 
   /****************************************//**
@@ -97,6 +102,7 @@ public:
   QModelIndex parent (const QModelIndex &index) const override;
   int rowCount (const QModelIndex &parent = QModelIndex()) const override;
   int columnCount (const QModelIndex &parent = QModelIndex()) const override;
+  QHash<int, QByteArray> roleNames() const override;
   /// @}
 };
 
