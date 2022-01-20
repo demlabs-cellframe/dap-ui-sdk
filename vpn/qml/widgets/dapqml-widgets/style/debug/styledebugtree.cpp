@@ -50,13 +50,13 @@ bool StyleDebugTree::describe (QString a_name, QStringList a_fields, QObject *a_
 
 void StyleDebugTree::update()
 {
-  beginResetModel();
+  emit layoutAboutToBeChanged(); // beginResetModel();
   for (auto i = 0, e = m_root.childCount(); i < e; i++)
     {
       auto child  = m_root.child (i);
       child->update();
     }
-  endResetModel();
+  emit layoutChanged(); // endResetModel();
 }
 
 //bool StyleDebugTree::undescribe (QString a_name)
