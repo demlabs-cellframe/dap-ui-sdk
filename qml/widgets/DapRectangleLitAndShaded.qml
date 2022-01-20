@@ -46,10 +46,11 @@ Rectangle
     {
         id: shadow
         anchors.fill: firstRect
-        horizontalOffset: 4
-        verticalOffset: 4
+        horizontalOffset: 2
+        verticalOffset: 2
         radius: 10
-        fast: true
+        samples: 10
+//        fast: true
         cached: true
         color: shadowColor
         source: firstRect
@@ -58,10 +59,11 @@ Rectangle
     InnerShadow {
         id: light
         anchors.fill: firstRect
-        horizontalOffset: -2
-        verticalOffset: -2
-        radius: 8
-        fast: true
+        horizontalOffset: -1
+        verticalOffset: -1
+        radius: 0
+        samples: 10
+//        fast: true
         cached: true
         color: lightColor
         source: shadow
