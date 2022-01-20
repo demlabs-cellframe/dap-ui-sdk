@@ -1,5 +1,6 @@
 /* INCLUDES */
 #include "styledebugitemdescriptor.h"
+#include "styledebugtree.h"
 #include <QPair>
 #include <QVariant>
 
@@ -21,6 +22,7 @@ StyleDebugItemDescriptor::StyleDebugItemDescriptor (QString a_name, QStringList 
   , m_item (a_item)
 {
   update();
+  _reconnectItem();
 }
 
 StyleDebugItemDescriptor::StyleDebugItemDescriptor (const StyleDebugItemDescriptor &a_src)
@@ -30,7 +32,7 @@ StyleDebugItemDescriptor::StyleDebugItemDescriptor (const StyleDebugItemDescript
   , m_item (a_src.m_item)
   , m_fieldData (a_src.m_fieldData)
 {
-
+  _reconnectItem();
 }
 
 StyleDebugItemDescriptor::StyleDebugItemDescriptor (StyleDebugItemDescriptor &&a_src)
@@ -40,7 +42,7 @@ StyleDebugItemDescriptor::StyleDebugItemDescriptor (StyleDebugItemDescriptor &&a
   , m_item (std::move (a_src.m_item))
   , m_fieldData (std::move (a_src.m_fieldData))
 {
-
+  _reconnectItem();
 }
 
 StyleDebugItemDescriptor::~StyleDebugItemDescriptor()
@@ -89,6 +91,10 @@ const QList<QPair<QString, QString>> &StyleDebugItemDescriptor::fieldsData() con
 
 void StyleDebugItemDescriptor::update()
 {
+  /* check */
+  if (m_item == nullptr)
+    return;
+
   /* clear storage */
   m_fieldData.clear();
 
@@ -106,6 +112,28 @@ void StyleDebugItemDescriptor::update()
     }
 }
 
+void StyleDebugItemDescriptor::_reconnectItem()
+{
+  if (m_conn)
+    QObject::disconnect (m_conn);
+
+  if (m_item)
+    m_conn  = connect (m_item, &QObject::destroyed,
+                       this, &StyleDebugItemDescriptor::slotOnDestroyed);
+}
+
+/********************************************
+ * SLOTS
+ *******************************************/
+
+void StyleDebugItemDescriptor::slotOnDestroyed(QObject *a_ptr)
+{
+  if (a_ptr != m_item)
+    return;
+  m_item = nullptr;
+  StyleDebugTree::instance()->undescribe (m_name); // m_name  = m_name + " #destroyed";
+}
+
 /********************************************
  * OPERATORS
  *******************************************/
@@ -116,6 +144,10 @@ StyleDebugItemDescriptor &StyleDebugItemDescriptor::operator=(const StyleDebugIt
   m_fields    = a_src.m_fields;
   m_item      = a_src.m_item;
   m_fieldData = a_src.m_fieldData;
+
+  /* reconnect */
+  _reconnectItem();
+
   return *this;
 }
 
@@ -125,6 +157,10 @@ StyleDebugItemDescriptor &StyleDebugItemDescriptor::operator=(StyleDebugItemDesc
   m_fields    = std::move (a_src.m_fields);
   m_item      = std::move (a_src.m_item);
   m_fieldData = std::move (a_src.m_fieldData);
+
+  /* reconnect */
+  _reconnectItem();
+
   return *this;
 }
 

@@ -45,6 +45,19 @@ bool StyleDebugTree::describe (QString a_name, QStringList a_fields, QObject *a_
     return false;
 
   m_root.append (new TreeItem (Descriptor (a_name, a_fields, a_item), &m_root));
+  m_names.append (a_name);
+  return true;
+}
+
+bool StyleDebugTree::undescribe (QString a_name)
+{
+  /* skip when already exists */
+  if (!m_names.contains (a_name))
+    return false;
+
+  int index = m_names.indexOf (a_name);
+  m_root.remove (index); // m_descriptors.removeAt (index);
+  m_names.removeAt (index);
   return true;
 }
 
@@ -59,17 +72,11 @@ void StyleDebugTree::update()
   emit layoutChanged(); // endResetModel();
 }
 
-//bool StyleDebugTree::undescribe (QString a_name)
-//{
-//  /* skip when already exists */
-//  if (!m_names.contains (a_name))
-//    return false;
-
-//  int index = m_names.indexOf (a_name);
-//  m_descriptors.removeAt (index);
-//  m_names.removeAt (index);
-//  return true;
-//}
+void StyleDebugTree::redraw()
+{
+  beginResetModel();
+  endResetModel();
+}
 
 /********************************************
  * OVERRIDE
@@ -211,6 +218,28 @@ int StyleDebugTree::TreeItem::append(TreeItem *a_child)
   return row;
 }
 
+void StyleDebugTree::TreeItem::remove (int a_index)
+{
+  m_childItems.removeAt (a_index);
+}
+
+void StyleDebugTree::TreeItem::remove (QString a_name)
+{
+  for (auto i = 0, e = m_childItems.size(); i != e; i++)
+    {
+      auto item = m_childItems[i]->m_item;
+
+      if (QString (item.typeName()) == "StyleDebugItemDescriptor")
+        {
+          if (item.value<Descriptor>().name() == a_name)
+            {
+              m_childItems.removeAt(i);
+              return;
+            }
+        }
+    }
+}
+
 StyleDebugTree::TreeItem *StyleDebugTree::TreeItem::child (int row) const
 {
   if (row < 0 || row >= m_childItems.size())
@@ -280,6 +309,10 @@ void StyleDebugTree::TreeItem::update()
   auto desc = m_item.value<Descriptor> ();
   desc.update();
   m_item    = QVariant::fromValue (desc);
+
+  /* skip, if not same children amount*/
+  if (m_childItems.size() != desc.fieldsData().size())
+    return;
 
   /* update fields tree representations */
   for (auto i = 0, e = m_childItems.size(); i != e; i++)

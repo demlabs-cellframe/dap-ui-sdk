@@ -1,6 +1,7 @@
 import QtQuick 2.0
-import "qrc:/dapqml-widgets"
 import DapQmlStyle 1.0
+import StyleDebugTree 1.0
+import "qrc:/dapqml-widgets"
 
 Item {
     id: root
@@ -39,12 +40,18 @@ Item {
         id: resizer
         visible: false
         qss: "purchase-btn-resizer"
+        Component.onCompleted: StyleDebugTree.describe (
+           "Purchase Resizer",
+            ["x", "y", "width", "height"],
+           this);
     }
 
     /* list */
     ListView {
         id: purchaseListView
+        x: (root.width - width) / 2
         y: title.y + title.height * 2
+        width: resizer.width
         height: root.height - y
         clip: true
 
@@ -52,6 +59,11 @@ Item {
         DapQmlStyle { qss: purchaseListView.qss; item: purchaseListView }
 
         model: purchaseListModel
+
+        Component.onCompleted: StyleDebugTree.describe (
+           "Purchase Listview",
+            ["x", "y", "width", "height"],
+           this);
 
         delegate: DapQmlButton {
             width: resizer.width // purchaseListView.width

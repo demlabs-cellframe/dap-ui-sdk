@@ -36,6 +36,7 @@ protected:
   QString m_name;
   QStringList m_fields;
   QObject *m_item;
+  QMetaObject::Connection m_conn;
 
   /* CACHED STORAGE */
   QList<Line> m_fieldData;
@@ -71,6 +72,16 @@ public:
   Q_INVOKABLE const QList<Line> &fieldsData() const;
   /// update cache
   Q_INVOKABLE void update();
+protected:
+  void _reconnectItem();
+  /// @}
+
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
+protected slots:
+  void slotOnDestroyed (QObject *a_ptr);
   /// @}
 
   /****************************************//**

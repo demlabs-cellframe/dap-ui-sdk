@@ -42,6 +42,8 @@ public:
     explicit TreeItem (Line a_line, TreeItem *a_parentItem = nullptr);
 
     int append (TreeItem *a_child);
+    void remove (int a_index);
+    void remove (QString a_name);
     TreeItem *child (int row) const;
     TreeItem *parentItem() const;
     QVariant data(int column) const;
@@ -82,10 +84,11 @@ public:
   Q_INVOKABLE static QObject *singletonProvider (QQmlEngine *engine, QJSEngine *scriptEngine);
 
   Q_INVOKABLE bool describe (QString a_name, QStringList a_fields, QObject *a_item);
-  //Q_INVOKABLE bool undescribe (QString a_name);
+  Q_INVOKABLE bool undescribe (QString a_name);
 
   /// update data inside descriptors
   Q_INVOKABLE void update();
+  Q_INVOKABLE void redraw();
   /// @}
 
   /****************************************//**

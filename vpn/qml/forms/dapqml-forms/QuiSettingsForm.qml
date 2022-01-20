@@ -34,22 +34,33 @@ Item {
             model: settingsModel
 
             /* this item simulates resizing to give values:*/
-            /* width -> item.height, */
-            /* height -> title.height, */
-            /* fontSize -> item.iconSize */
+            /* height1 -> item.height, */
+            /* height2 -> title.height, */
+            /* fontSize1 -> item.iconSize */
             DapQmlLabel {
                 visible: false
-                id: resizer
-                qss: "sett-resizer"
-                Component.onCompleted: StyleDebugTree.describe (
-                   "Settings Resizer",
-                    ["x", "y", "width", "height"],
-                   this);
+                id: resizer1
+                qss: "sett-resizer1"
+//                Component.onCompleted: StyleDebugTree.describe (
+//                   "Settings Resizer 1",
+//                    ["x", "y", "width", "height"],
+//                   this);
+            }
+
+            DapQmlLabel {
+                visible: false
+                id: resizer2
+                qss: "sett-resizer2"
+//                Component.onCompleted: StyleDebugTree.describe (
+//                   "Settings Resizer 2",
+//                    ["x", "y", "width", "height"],
+//                   this);
             }
 
             delegate: Item {
                 id: delegate
-                height: resizer.width//model.sid !== DapQmlModelSettings.SI_TITLE ? resizer.width : resizer.height
+                height: model.sid !== DapQmlModelSettings.SI_TITLE ? resizer1.height : resizer2.height
+                property int mySid: model.sid
 
                 DapQmlButton {
                     property int myIndex: model.index
@@ -64,7 +75,7 @@ Item {
                     mainQss: "sett-btn-lbl-main"
                     subQss: "sett-btn-lbl-sub"
                     icon: model.icon
-                    iconSize: resizer.fontSize
+                    iconSize: resizer1.fontSize
                     MouseArea {
                         anchors.fill: parent
                         onClicked: settingsModel.exec(parent.myIndex)
@@ -78,6 +89,11 @@ Item {
                     text: model.textMain
                     qss: "sett-title-lbl-main"
                 }
+
+//                Component.onCompleted: StyleDebugTree.describe (
+//                   "Settings Item " + model.index,
+//                    ["height", "mySid"],
+//                   this);
             }
         }
     }

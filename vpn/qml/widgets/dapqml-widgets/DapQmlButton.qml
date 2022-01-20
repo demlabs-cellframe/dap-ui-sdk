@@ -212,18 +212,21 @@ Rectangle {
                 verticalAlign: Text.AlignVCenter
                 text: root.mainText
                 qss: root.mainQss
+                clip: false
             }
 
             /* sub text */
             DapQmlLabel {
-                Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
-                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                Layout.fillWidth: text.length > 0
                 Layout.fillHeight: true
 
                 horizontalAlign: Text.AlignRight
                 verticalAlign: Text.AlignVCenter
                 text: root.subText
                 qss: root.subQss
+                clip: false
+                visible: text.length > 0
             }
         }
 

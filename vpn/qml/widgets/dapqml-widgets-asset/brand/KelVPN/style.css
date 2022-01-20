@@ -267,9 +267,14 @@
  * Settings
  ***************************************************/
 
-.sett-resizer
+.sett-resizer1
 {
-	scaled-rect: scaled(nan,nan,64,108,false,34);
+	scaled-rect: scaled(nan,nan,nan,64,false,34);
+}
+
+.sett-resizer2
+{
+	scaled-rect: scaled(nan,nan,nan,108,false);
 }
 
 .sett-item
@@ -442,9 +447,4 @@
 {
 	scaled-rect: scaled(nan,nan,390,130,true);
 	color: "#04004E";
-}
-
-.purchase-listview
-{
-	scaled-rect: scaled(-1,nan,390,nan,false);
 }
