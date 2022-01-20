@@ -73,6 +73,9 @@ Item {
             leftText: model.price
             mainText: model.main
             subText: model.sub
+            mainQss: "purchase-btn-label-main"
+            subQss: "purchase-btn-label-sub"
+            leftQss: "purchase-btn-label-left"
         }
     }
 

@@ -448,3 +448,22 @@
 	scaled-rect: scaled(nan,nan,390,130,true);
 	color: "#04004E";
 }
+
+.purchase-btn-label-main
+{
+	scaled-font: scaled(18);	
+	color: "#04004E";
+}
+
+.purchase-btn-label-sub
+{
+	scaled-font: scaled(15);	
+	color: "#A4A3C0";
+}
+
+.purchase-btn-label-left
+{
+	scaled-font: scaled(30);	
+	color: "#04004E";
+	font-weight: Font.Bold;
+}

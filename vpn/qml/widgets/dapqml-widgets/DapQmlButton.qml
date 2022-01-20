@@ -93,10 +93,10 @@ Rectangle {
                 DapQmlLabel {
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
+                    Layout.fillHeight: text.length > 0
 
                     horizontalAlign: Text.AlignLeft
-                    verticalAlign: Text.AlignBottom
+                    verticalAlign: root.subText.length > 0 ? Text.AlignBottom : Text.AlignVCenter
                     text: root.mainText
                     qss: root.mainQss
                 }
@@ -105,10 +105,10 @@ Rectangle {
                 DapQmlLabel {
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
+                    Layout.fillHeight: text.length > 0
 
                     horizontalAlign: Text.AlignLeft
-                    verticalAlign: Text.AlignTop
+                    verticalAlign: root.subText.length > 0 ? Text.AlignTop : Text.AlignVCenter
                     text: root.subText
                     qss: root.subQss
                 }
