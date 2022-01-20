@@ -54,7 +54,7 @@ Page
         top: parent.top
         topMargin: 24 * pt
         right: parent.right
-        rightMargin: 20 * pt
+        rightMargin: 24 * pt
 //        left: parent.left
 //        leftMargin: 24 * pt
         bottom: parent.bottom

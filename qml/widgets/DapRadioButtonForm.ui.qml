@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
-
+import QtGraphicalEffects 1.0
 RadioButton
 {
     ///@detalis textButton Text RadioButton.
@@ -51,14 +51,14 @@ RadioButton
         }
     ///Indicator Options.
     indicator:
-        Image
-        {
-            id: indicatorRadioButton
-            width: indicatorInnerSize
-            height: indicatorInnerSize
-            anchors.verticalCenter: parent.verticalCenter
-            source: checked ? "qrc:/resources/icons/" + pathTheme + "/radio_btn_on.png" : "qrc:/resources/icons/" + pathTheme + "/radio_btn_off.png"
-        }
+        DapImageLoader {
+        anchors.verticalCenter: parent.verticalCenter
+        innerWidth: indicatorInnerSize
+        innerHeight: indicatorInnerSize
+
+        source: checked ? "qrc:/resources/icons/" + pathTheme + "/radio_btn_on.png" : "qrc:/resources/icons/" + pathTheme + "/radio_btn_off.png"
+        visible: true
+    }
 
     ///Background options.
     background: Rectangle
