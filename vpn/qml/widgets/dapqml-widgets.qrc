@@ -8,5 +8,6 @@
         <file>dapqml-widgets/DapQmlSwitch.qml</file>
         <file>dapqml-widgets/DapQmlRectangle.qml</file>
         <file>dapqml-widgets/DapQmlDialogTitle.qml</file>
+        <file>dapqml-widgets/DapQmlRadioButton.qml</file>
     </qresource>
 </RCC>

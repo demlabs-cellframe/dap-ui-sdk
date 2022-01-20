@@ -17,6 +17,12 @@ Item {
     property int verticalAlign: Text.AlignVCenter
     property int wrapMode: Text.NoWrap
 
+    property real bottomPadding
+    property real leftPadding
+    property real padding
+    property real rightPadding
+    property real topPadding
+
     Image {
         id: icon
         anchors.fill: root
@@ -27,6 +33,12 @@ Item {
     Text {
         id: label
         anchors.fill: root
+
+        bottomPadding: root.bottomPadding
+        leftPadding: root.leftPadding
+        padding: root.padding
+        rightPadding: root.rightPadding
+        topPadding: root.topPadding
 
         horizontalAlignment: root.horizontalAlign
         verticalAlignment: root.verticalAlign

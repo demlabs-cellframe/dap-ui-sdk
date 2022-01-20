@@ -38,6 +38,13 @@ Item {
         }
     }
 
+    /* error label */
+    DapQmlLabel {
+        qss: "dashboard-error-label"
+        wrapMode: Text.WordWrap
+        text: "Temporary network problems, request will be handled as soon as the network connection is re-established"
+    }
+
     /* switch */
     DapQmlSwitch {
         qss: "dashboard-switch"

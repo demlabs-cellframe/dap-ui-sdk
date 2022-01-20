@@ -24,6 +24,26 @@
 
 
 
+.radio-on
+{
+	qproperty-scaledPixmap: url("qrc:/light/radio_btn_on.png");
+}
+
+.radio-off
+{
+	qproperty-scaledPixmap: url("qrc:/light/radio_btn_off.png");
+}
+
+.radio-label
+{
+	color: "#04004E";
+	scaled-font: scaled(16);	
+	font-weight: Font.Normal;
+}
+
+
+
+
 .form-title-close-btn
 {
 	scaled-rect: scaled(0,0,28,28,true);
@@ -356,6 +376,12 @@
 	scaled-rect: scaled(nan,nan,5,5,true);
 }
 
+.dashboard-error-label
+{
+	scaled-rect: scaled(51,140,327,57,false,14);
+	color: "#F53172";
+}
+
 .dashboard-switch
 {
 	scaled-rect: scaled(-1,220,270,174,true);
@@ -466,4 +492,13 @@
 	scaled-font: scaled(30);	
 	color: "#04004E";
 	font-weight: Font.Bold;
+}
+
+/****************************************************
+ * Choose Server
+ ***************************************************/
+
+.chooseserver-btn-resizer
+{
+	scaled-rect: scaled(nan,nan,392,64,false);
 }

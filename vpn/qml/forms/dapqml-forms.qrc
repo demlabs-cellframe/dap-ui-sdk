@@ -8,5 +8,6 @@
         <file>dapqml-forms/QuiBugReportForm.qml</file>
         <file>dapqml-forms/QuiDashboardForm.qml</file>
         <file>dapqml-forms/QuiPurchaseForm.qml</file>
+        <file>dapqml-forms/QuiChooseServerForm.qml</file>
     </qresource>
 </RCC>
