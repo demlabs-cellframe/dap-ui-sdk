@@ -41,12 +41,26 @@ Settings::~Settings()
 }
 
 /********************************************
+ * METHODS
+ *******************************************/
+
+SettingsModel *Settings::model()
+{
+  return ui->scrollArea;
+}
+
+/********************************************
  * SLOTS
  *******************************************/
 
 void Settings::slotSetVersion(const QString &a_text)
 {
   ui->scrollArea->setVersionText (a_text);
+}
+
+void Settings::slotRetranslated()
+{
+  ui->scrollArea->slotRetranslate();
 }
 
 /*-----------------------------------------*/

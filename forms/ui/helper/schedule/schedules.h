@@ -14,13 +14,13 @@ class Schedules
 
 private:
     /// Download curve color.
-    QColor  *mColorChartDownload{nullptr};
+    QColor  m_colorChartDownload;
     /// Load curve line thickness.
     qreal   mDepthChartDownload{0};
     /// Fill infinite load integral.
     QColor  *mBackGroundmColorChartDownload{nullptr};
     /// Upload curve color.
-    QColor  *mColorChartUpload{nullptr};
+    QColor  m_colorChartUpload;
     /// Upload curve line thickness.
     qreal   mDepthChartUpload{0};
     /// Fill infinite upload integral.
@@ -29,7 +29,9 @@ private:
     QColor  *mColorGrid{nullptr};
     /// Thickness of grid lines.
     qreal   mDepthGrid{0};
-    
+    /// Background color
+    QColor  m_colorBackground;
+
     
     Schedule inp = Schedule();
     Schedule out = Schedule();
@@ -57,6 +59,13 @@ public:
     /// Set graphic styles.
     /// @param style Graphics styles.
     void setStyle(const DapGraphicSceneStyle &style);
+
+    const QColor &colorBackground() const;
+    void setColorBackground (const QColor &newColorBackground);
+    const QColor &colorChartDownload() const;
+    void setColorChartDownload (const QColor &newColorChartDownload);
+    const QColor &colorChartUpload() const;
+    void setColorChartUpload (const QColor &newColorChartUpload);
 };
 
 

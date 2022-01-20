@@ -62,16 +62,3 @@ win32{
     DEFINES += NTDDI_VERSION=0x06000000
     DEFINES += _WIN32_WINNT=0x0600
 }
-
-android{
-    TEMPLATE = lib
-    CONFIG += shared
-    CONFIG -= console
-    DEFINES += DAP_SERVICE_BUILD_LIB DAP_SERVICE_CONNECT_TCP
-    QT += androidextras
-    DEFINES += DAP_PLATFORM_MOBILE
-}
-
-ios{
-    DEFINES += DAP_PLATFORM_MOBILE
-}

@@ -71,6 +71,9 @@ BugReports::BugReports (QWidget *parent) :
   connect (ui->btnResultBack, &DapGuiPushButton::clicked,
            this, &BugReports::sigResultBack,
            Qt::QueuedConnection);
+  connect (ui->btnResultBack, &DapGuiPushButton::clicked,
+           this, &BugReports::sigReturn,
+           Qt::QueuedConnection);
 
   connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &BugReports::_slotTextEditFinish,
@@ -161,6 +164,18 @@ void BugReports::slotSetMode (BugReports::Mode mode)
     movLoading->start();
   else
     movLoading->stop();
+}
+
+void BugReports::slotRetranslated()
+{
+  ui->labelBugReports->setText (tr ("Bug reports"));
+  ui->editReport
+      ->setPlaceholderText (
+        tr ("Please describe the details of problem you faced. "
+            "What actions did you take and what happened."));
+  ui->btnAttachScreenshot->setText (tr ("Click here to attach a screenshot"));
+  ui->btnSendReport->setText (tr ("send report"));
+  ui->btnResultBack->setText (tr ("back"));
 }
 
 void BugReports::_slotRadioTest()

@@ -16,8 +16,53 @@ class Settings;
 
 class SettingsModel : public ModelBase
 {
+  Q_OBJECT
   DAPGUI_ENABLECSS
   //DAPGUI_ENABLEWIDGETSTYLE
+
+  friend class iSettings;
+
+  /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
+private:
+  typedef QString TextStyle;
+  typedef void (*ItemCB) ();
+
+  enum StyleId
+  {
+    SI_TITLE,
+    SI_TITLETOP,
+    SI_BUTTON,
+    SI_BUTTONRED,
+    SI_BUTTONGRAY,
+    SI_LINK,
+    SI_SPACER
+  };
+
+  struct Info
+  {
+    TextStyle style[2];
+  };
+
+  struct _SItem
+  {
+    StyleId sid;
+    QString text[2];
+    QString iconCss;
+    ItemCB cb;
+  };
+  /// @}
+
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
+private:
+  static QMap<StyleId, Info> s_presets;
+  static QList<_SItem> s_items;
+  /// @}
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
@@ -38,7 +83,7 @@ public:
   /// @}
 
   /****************************************//**
-   * @name PUBLIC SLOTS
+   * @name SLOTS
    *******************************************/
   /// @{
 public slots:
@@ -46,6 +91,7 @@ public slots:
   void slotSetDaysLeft (QString days);
   void slotResetDaysLeft ();
   void slotClicked();
+  void slotRetranslate();
   /// @}
 
   /****************************************//**
@@ -54,6 +100,19 @@ public slots:
   /// @{
 public:
   bool eventFilter(QObject *o, QEvent *e) override;
+  /// @}
+
+  /****************************************//**
+   * @name PRIVATE METHODS
+   *******************************************/
+  /// @{
+protected:
+  void _updateLabels();
+  void _getResetDialogLabels (
+      QString &a_title,
+      QString &a_description,
+      QString &a_btnYes,
+      QString &a_btnNo);
   /// @}
 };
 

@@ -7,11 +7,14 @@
 #include "stylesheetclassparser.h"
 //#include <QClipboard>
 //#include <QApplication>
+#include <QJsonArray>
+#include <QJsonObject>
 
 /* VARS */
 static StyleSheet::ClassMap s_styleMap;
 static QMutex s_mutex;
 static DapGuiStyleManager s_signal (nullptr);
+static QString s_themeDir = "light";
 
 /* DEFS */
 
@@ -43,6 +46,16 @@ public:
   {
     s_styleMap.clear();
     s_styleMap.setup (styleSheet);
+  }
+
+  void patch (const QJsonArray &themesArray, const QString &themeDir)
+  {
+    s_styleMap.patch (themesArray, themeDir);
+  }
+
+  QStringList keys()
+  {
+    return s_styleMap.keys();
   }
 };
 
@@ -96,6 +109,25 @@ void DapGuiStyleManager::setupGlobalStyleSheet (const QString &styleSheet)
   emit s_signal.forceStyleUpdate();
 }
 
+void DapGuiStyleManager::setupTheme(
+  const QJsonArray &themesArray,
+  const QString &themeName)
+{
+  for (auto i = themesArray.constBegin(), e = themesArray.constEnd(); i != e; i++)
+    {
+      auto j = (*i).toObject();
+      if (j.value("name").toString() != themeName)
+        continue;
+      Gss().patch (j.value ("patch").toArray(), j.value ("dir").toString());
+    }
+  emit s_signal.forceStyleUpdate();
+}
+
+const QString &DapGuiStyleManager::themeDir()
+{
+  return s_themeDir;
+}
+
 /********************************************
  * PUBLIC METHODS
  *******************************************/
@@ -140,9 +172,19 @@ QString DapGuiStyleManager::styleByClassList (const QStringList &classNameList)
   return Gss()[classNameList];
 }
 
+QStringList DapGuiStyleManager::classList()
+{
+  return Gss().keys();
+}
+
 DapGuiStyleManager &DapGuiStyleManager::_signal()
 {
   return s_signal;
+}
+
+void DapGuiStyleManager_setThemeDir(const QString &a_themeDir)
+{
+  s_themeDir  = a_themeDir;
 }
 
 void DapGuiStyleManager::forcedStyleUpdate()
@@ -150,13 +192,14 @@ void DapGuiStyleManager::forcedStyleUpdate()
   if(!m_widget)
     return;
 
-  auto style  = styleByClassName (m_cssStyle);
+  auto style    = styleByClassName (m_cssStyle);
+  auto objName  = m_widget->objectName();
 
   if(!style.contains("background"))
     style += "background-color: rgba(0,0,0,0);";
 
   QString s   =
-    "#" + m_widget->objectName() +
+    "#" + objName +
     "{" + style + "}";
 
   m_widget->setStyleSheet (s);

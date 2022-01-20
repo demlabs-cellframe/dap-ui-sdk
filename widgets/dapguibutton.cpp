@@ -111,9 +111,6 @@ DapGuiButton::DapGuiButton (QWidget *parent)
 //  m_lLink->setMaximumWidth (s_linkWidth);
   m_lLink->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
   m_lLink->setParent (ui->DapGuiButtonBackground);
-  m_lLink->setStyleSheet (
-        "background-color: rgba(0,0,0,0);"
-        "border-image: url(\"://gfx/ic_arrow-right.png\");");
   m_lLink->hide();
 
   //setIcon (m_icon);
@@ -136,6 +133,11 @@ DapGuiButton::DapGuiButton (QWidget *parent)
 #endif // QT_DEBUG
     }
 
+  /* temporary arrays */
+  _setMainTextWidgets           = m_widgets.values ("textMain") + m_widgets.values ("textMid") + m_widgets.values ("textEdit");
+  _setSubTextWidgetsSubRight    = m_widgets.values ("textSub") + m_widgets.values ("textRight");
+  _setSubTextWidgetsMain        = m_widgets.values ("textMain");
+
   /* signals */
   connect (ui->kelGuiLineEditMain, &DapGuiLineEdit::textChanged,
            this, &DapGuiButton::textChanged);
@@ -143,6 +145,11 @@ DapGuiButton::DapGuiButton (QWidget *parent)
            this, &DapGuiButton::textEdited);
   connect (ui->kelGuiLineEditMain, &DapGuiLineEdit::textEdited,
            this, &DapGuiButton::_slotTextEdited);
+  connect (&__kgsm, &DapGuiStyleManager::forceStyleUpdate,
+           this, &DapGuiButton::_slotStyleUpdate);
+
+  /* update style staff */
+  _slotStyleUpdate();
 }
 
 DapGuiButton::~DapGuiButton()
@@ -199,8 +206,7 @@ void DapGuiButton::setMainText (const QString &mainText)
 {
   m_mainText = mainText;
 
-  auto array = m_widgets.values ("textMain") + m_widgets.values ("textMid") + m_widgets.values ("textEdit");
-  for (auto i = array.begin(), e = array.end(); i != e; i++)
+  for (auto i = _setMainTextWidgets.begin(), e = _setMainTextWidgets.end(); i != e; i++)
     (*i)->setProperty("text", m_mainText);
 }
 
@@ -219,16 +225,14 @@ void DapGuiButton::setSubText (const QString &subText)
 {
   m_subText = subText;
 
-  auto array = m_widgets.values ("textSub") + m_widgets.values ("textRight");
-  for (auto i = array.begin(), e = array.end(); i != e; i++)
+  for (auto i = _setSubTextWidgetsSubRight.begin(), e = _setSubTextWidgetsSubRight.end(); i != e; i++)
     {
       auto j = as<DapGuiLabel> (*i);
       j->setText (m_subText);
       j->setVisible (!m_subText.isEmpty());
     }
 
-  array = m_widgets.values ("textMain");
-  for (auto i = array.begin(), e = array.end(); i != e; i++)
+  for (auto i = _setSubTextWidgetsMain.begin(), e = _setSubTextWidgetsMain.end(); i != e; i++)
     {
       auto j = as<DapGuiLabel> (*i);
 
@@ -639,6 +643,15 @@ void DapGuiButton::_slotDebugInfo()
 void DapGuiButton::_slotTextEdited(const QString &a_text)
 {
   m_mainText = a_text;
+}
+
+void DapGuiButton::_slotStyleUpdate()
+{
+  m_lLink->setStyleSheet (
+    QString(
+      "background-color: rgba(0,0,0,0);"
+      "border-image: url(\"://gfx/%1/ic_arrow-right.png\");"
+    ).arg (__kgsm.themeDir()));
 }
 
 /*-----------------------------------------*/

@@ -45,7 +45,12 @@ PopupDialog::~PopupDialog()
  * SLOTS
  *******************************************/
 
-void PopupDialog::slotShow (QWidget *parent, const QString &a_title, const QString &a_description)
+void PopupDialog::slotShow (
+    QWidget *a_parent,
+    const QString &a_title,
+    const QString &a_description,
+    const QString &a_btnYes,
+    const QString &a_btnNo)
 {
   /* create blur effect */
   QGraphicsBlurEffect *p_blur = new QGraphicsBlurEffect;
@@ -53,24 +58,26 @@ void PopupDialog::slotShow (QWidget *parent, const QString &a_title, const QStri
   p_blur->setBlurHints (QGraphicsBlurEffect::PerformanceHint);
 
   /* setup effect and disable parent */
-  m_parent  = parent;
+  m_parent  = a_parent;
   m_parent->setGraphicsEffect (p_blur);
   m_parent->setDisabled (true);
 
   /* attach shadow widget */
-  m_shadow->setParent (parent);
-  m_shadow->resize (parent->size());
+  m_shadow->setParent (a_parent);
+  m_shadow->resize (a_parent->size());
   m_shadow->move (0,0);
   m_shadow->show();
 
   /* centering */
-  setParent (parent->parentWidget());
-  move (parent->width() / 2 - width() / 2,
-        parent->height() / 2 - height() / 2);
+  setParent (a_parent->parentWidget());
+  move (a_parent->width() / 2 - width() / 2,
+        a_parent->height() / 2 - height() / 2);
 
   /* setup text */
   ui->lTitle->setText (a_title);
   ui->lDescription->setText (a_description);
+  ui->btnYes->setText (a_btnYes);
+  ui->btnNo->setText (a_btnNo);
 
   /* display */
   show();

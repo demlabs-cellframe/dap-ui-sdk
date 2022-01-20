@@ -72,6 +72,7 @@ public:
     static void     saveSetting(const QString& a_setting, const QVariant& a_value);
     static void     removeSetting(const QString& a_setting);
     void saveSerialKeyData();
+    void resetSerialKeyData();
 
     static DapBugReportData *bugReportData();
     static DapServersData   *serversData();

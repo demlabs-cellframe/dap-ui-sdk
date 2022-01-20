@@ -1,7 +1,6 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
-
 #include <QString>
 
 namespace Properties
@@ -21,15 +20,13 @@ namespace Properties
     static const QString CURRENT_TEXT = "currentText";
     static const QString CONNECTED = "connected";
     static const QString CAPTION = "caption";
-
 }
-enum class Language
-{
-    Undefined,
-    En,
-    Zh
-};
 
-
+//enum class Language
+//{
+//    Undefined,
+//    En,
+//    Zh
+//};
 
 #endif // DEFINES_H
