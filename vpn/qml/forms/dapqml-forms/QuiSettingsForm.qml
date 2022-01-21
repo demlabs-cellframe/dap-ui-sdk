@@ -2,12 +2,14 @@ import QtQuick 2.4
 import QtQuick.Layouts 1.3
 import DapQmlModelSettings 1.0
 import StyleDebugTree 1.0
+import SettingsInterface 1.0
 import "qrc:/dapqml-widgets"
 
 Item {
     id: root
     clip: true
     DapQmlModelSettings { id: settingsModel }
+    SettingsInterface { id: settingsInterface; Component.onCompleted: setup(settingsModel); }
 
     function isSep(sid) {
         if (sid === DapQmlModelSettings.SI_BUTTON

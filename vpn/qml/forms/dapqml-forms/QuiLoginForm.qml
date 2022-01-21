@@ -2,6 +2,7 @@ import QtQuick 2.4
 import QtQml 2.12
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
+import StyleDebugTree 1.0
 import DapQmlStyle 1.0
 import "qrc:/dapqml-widgets"
 
@@ -21,6 +22,11 @@ Item {
             btnEnterSerial.separator    = true;
         }
     }
+
+//    Component.onCompleted: StyleDebugTree.describe (
+//       "Login",
+//        ["x", "y", "z", "width", "height"],
+//       this);
 
     /* logo */
     DapQmlRectangle {
