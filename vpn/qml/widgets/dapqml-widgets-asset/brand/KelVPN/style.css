@@ -82,7 +82,7 @@
 .form-title-label
 {
 	scaled-rect: scaled(39,0,282,28,false,24);
-	color: "#04004E";
+	color: "@text";
 }
 
 /****************************************************
@@ -307,7 +307,7 @@
 .login-btn-main
 {
 	scaled-font: scaled(20);
-	color: "#04004E";
+	color: "@text";
 	font-weight: Font.Bold;
 }
 
@@ -370,7 +370,7 @@
 
 .sett-btn-lbl-main
 {
-	color: "#04004E";
+	color: "@text";
 	scaled-font: scaled(16);	
 	font-weight: Font.Normal;
 }
@@ -384,7 +384,7 @@
 
 .sett-title-lbl-main
 {
-	color: "#04004E";
+	color: "@text";
 	horizontal-align: Text.AlignHCenter;
 	scaled-rect: scaled(nan,nan,nan,nan,false,24);
 	font-weight: Font.Bold;
@@ -396,14 +396,14 @@
 
 .stat-title
 {
-	color: "#04004E";
+	color: "@text";
 	font-size: 24;
 	font-weight: Font.Bold;
 }
 
 .stat-item-main
 {
-	color: "#04004E";
+	color: "@text";
 	font-size: 24;
 	font-weight: Font.Normal;
 }
@@ -433,7 +433,7 @@
 
 .dashboard-status-label
 {
-	color: "#04004E";
+	color: "@text";
 	scaled-rect: scaled(nan,nan,108,22,true,18);
 }
 
@@ -460,7 +460,7 @@
 
 .dashboard-speed-main
 {
-	color: "#04004E";
+	color: "@text";
 	scaled-font: scaled(26);	
 	font-weight: Font.Bold;
 }
@@ -478,7 +478,7 @@
 
 .dashboard-server-main
 {
-	color: "#04004E";
+	color: "@text";
 	scaled-font: scaled(18);	
 	font-weight: Font.Bold;
 }
@@ -528,7 +528,7 @@
 .bugrep-status
 {
 	scaled-rect: scaled(112,241,200,104,false,18);
-	color: "#04004E";
+	color: "@text";
 }
 
 /****************************************************
@@ -538,13 +538,13 @@
 .purchase-btn-resizer
 {
 	scaled-rect: scaled(nan,nan,390,130,true);
-	color: "#04004E";
+	color: "@text";
 }
 
 .purchase-btn-label-main
 {
 	scaled-font: scaled(18);	
-	color: "#04004E";
+	color: "@text";
 }
 
 .purchase-btn-label-sub
@@ -556,7 +556,7 @@
 .purchase-btn-label-left
 {
 	scaled-font: scaled(30);	
-	color: "#04004E";
+	color: "@text";
 	font-weight: Font.Bold;
 }
 
