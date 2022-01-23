@@ -30,8 +30,8 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="DapGuiWidget" name="Background">
-     <property name="cssStyle">
+    <widget class="DapGuiWidget" name="Background" native="true">
+     <property name="cssStyle" stdset="0">
       <string>backgroundcolor</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -115,14 +115,14 @@
          </item>
          <item>
           <widget class="DapGuiLabel" name="lStatusIconOn">
-           <property name="cssStyle">
+           <property name="cssStyle" stdset="0">
             <string>conn-status-icon ic_online noborder nobackground</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="DapGuiLabel" name="lStatusIconOff">
-           <property name="cssStyle">
+           <property name="cssStyle" stdset="0">
             <string>conn-status-icon ic_offline noborder nobackground</string>
            </property>
           </widget>
@@ -163,11 +163,81 @@
        </widget>
       </item>
       <item>
-       <widget class="DapGuiWidget" name="kelGuiWidget_3" native="true">
-        <property name="cssStyle" stdset="0">
-         <string>conn-mid-button-spacer</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>15</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="DapGuiLabel" name="lStatus">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">#lStatus{ 	font: 13px/18px; 
+ 	color: #F53172; 
+ 	font-family: 'Lato'; 
+ 	font-weight: normal; 	font-style: normal; 	font-size: normal; 
+ 	height: 40px; 	min-height: 40px; 	max-height: 40px; 
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); }</string>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="text">
+           <string>Error message box
+Usualy unvisible by being empty</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+          <property name="cssStyle" stdset="0">
+           <string>font13 red_error lato normal login-error-message noborder nobackground</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>15</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">

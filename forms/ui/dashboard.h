@@ -92,6 +92,8 @@ public slots:
   void setUploadSpeed(QString a_text);
   /// set server information into button
   void setServerInfo(QString a_name, QString a_ip);
+  /// set error information
+  void slotErrorText (QString text);
   /// translate text
   void slotRetranslated();
   void slotConnectionRequesteButtonPressed();

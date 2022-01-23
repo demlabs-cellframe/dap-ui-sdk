@@ -43,8 +43,14 @@ void DapCmdConnect::handleResult(const QJsonObject& result)
 void DapCmdConnect::handleError(int code, const QString& message)
 {
     qDebug() << "handleError";
-    Q_UNUSED(code);
+//    Q_UNUSED(code);
     qWarning() << *m_errorObject;
+    // Сode: -10 (the hash of the conditional transaction) is temporarily ignored.
+    if (code == -10)
+    {
+        qWarning() << "Сode: -10 (the hash of the conditional transaction) is temporarily ignored.";
+        return;
+    }
     if (code == 6543 || code == -1025){
         emit errorMessage("Server not available. Please, try others or the same later");
         return;
@@ -53,6 +59,7 @@ void DapCmdConnect::handleError(int code, const QString& message)
     if (code == 110)
     {
         emit connectionFail();
+        emit errorMessage("Server not available. Network connection is disabled.");
         return;
     }
     emit errorMessage(message);
