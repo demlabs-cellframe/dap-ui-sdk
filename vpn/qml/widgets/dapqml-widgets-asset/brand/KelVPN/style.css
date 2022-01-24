@@ -612,3 +612,23 @@
 	color: "@light-grey";
 	scaled-font: scaled(12);
 }
+
+/****************************************************
+ * Purchase History
+ ***************************************************/
+
+.ph-btn-resizer
+{
+	scaled-rect: scaled(nan,nan,363,64,false);
+}
+
+.ph-icn-resizer
+{
+	scaled-rect: scaled(nan,nan,30,30,true);
+}
+
+.ph-btn-label-main
+{
+	color: "@text";
+	scaled-font: scaled(16);	
+}

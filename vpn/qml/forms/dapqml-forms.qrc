@@ -12,5 +12,6 @@
         <file>dapqml-forms/QuiChooseLanguageForm.qml</file>
         <file>dapqml-forms/QuiChooseThemeForm.qml</file>
         <file>dapqml-forms/QuiBugReportHistoryForm.qml</file>
+        <file>dapqml-forms/QuiPurchaseHistoryForm.qml</file>
     </qresource>
 </RCC>
