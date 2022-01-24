@@ -157,8 +157,8 @@ void DapQmlModelSettings::slotUpdateLabels()
 
     DapQmlModelSettingsItem{SI_TITLE,      tr("Information"), "", "settings_icon", defaultCb},
 
-    //ModelSettingsItem{SI_LINK,       tr ("Bug Reports"), "settings_icon ic_information_bug-report", cbBugReport},
-    //ModelSettingsItem{SI_BUTTON,     tt ("Serial key history on this device"), "settings_icon ic_key-history", cbLicenceHistory},
+    DapQmlModelSettingsItem{SI_LINK,       tr ("Bug Reports"), "", "settings_icon ic_information_bug-report", cbBugReport},
+    //DapQmlModelSettingsItem{SI_BUTTON,     tt ("Serial key history on this device"), "settings_icon ic_key-history", cbLicenceHistory},
     DapQmlModelSettingsItem{SI_BUTTON,     tr("Terms of use"), "", "settings_icon ic_terms_policy", cbTermsOfUse},
     DapQmlModelSettingsItem{SI_BUTTON,     tr("Privacy policy"), "", "settings_icon ic_terms_policy", cbPrivacyPolicy},
     DapQmlModelSettingsItem{SI_BUTTONGRAY, tr("Version"), "@version", "settings_icon ic_version", cbVersion},

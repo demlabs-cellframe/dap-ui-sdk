@@ -37,6 +37,11 @@ QssLink::~QssLink()
  * METHODS
  *******************************************/
 
+QStringList QssLink::categories()
+{
+  return s_categories.keys();
+}
+
 void QssLink::changeCategory(const QString a_category)
 {
   s_currentCategory = a_category;

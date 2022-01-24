@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import DapQmlStyle 1.0
+import PageCtl 1.0
 
 Item {
     id: root
@@ -11,6 +12,7 @@ Item {
         inactive: "qrc:/light/ic_close.png"
         active: "qrc:/light/ic_close_hover.png"
         qss: "form-title-close-btn"
+        onClicked: PageCtl.slotBackwardAuto()
     }
 
     /* label */

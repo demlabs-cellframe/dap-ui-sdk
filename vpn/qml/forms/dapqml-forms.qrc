@@ -9,5 +9,8 @@
         <file>dapqml-forms/QuiDashboardForm.qml</file>
         <file>dapqml-forms/QuiPurchaseForm.qml</file>
         <file>dapqml-forms/QuiChooseServerForm.qml</file>
+        <file>dapqml-forms/QuiChooseLanguageForm.qml</file>
+        <file>dapqml-forms/QuiChooseThemeForm.qml</file>
+        <file>dapqml-forms/QuiBugReportHistoryForm.qml</file>
     </qresource>
 </RCC>

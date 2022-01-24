@@ -5,7 +5,7 @@
 #include <QAbstractTableModel>
 
 /****************************************//**
- * @brief settings model list widget
+ * @brief settings model list
  * @ingroup groupUiModels
  * @date 27.12.2021
  * @author Mikhail Shilenko

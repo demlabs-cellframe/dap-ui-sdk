@@ -568,3 +568,47 @@
 {
 	scaled-rect: scaled(nan,nan,392,64,false);
 }
+
+/****************************************************
+ * Choose Language
+ ***************************************************/
+
+.chooselanguage-btn-resizer
+{
+	scaled-rect: scaled(nan,nan,392,64,false);
+}
+
+/****************************************************
+ * Choose Theme
+ ***************************************************/
+
+.choosetheme-btn-resizer
+{
+	scaled-rect: scaled(nan,nan,392,64,false);
+}
+
+/****************************************************
+ * Bug Report History
+ ***************************************************/
+
+.brh-btn-resizer
+{
+	scaled-rect: scaled(nan,nan,392,64,false);
+}
+
+.brh-icn-resizer
+{
+	scaled-rect: scaled(nan,nan,44,44,true);
+}
+
+.brh-btn-label-main
+{
+	color: "@text";
+	scaled-font: scaled(16);	
+}
+
+.brh-btn-label-sub
+{
+	color: "@light-grey";
+	scaled-font: scaled(12);
+}

@@ -5,6 +5,7 @@
 #include <QColor>
 #include <QUrl>
 #include <QFont>
+#include <QMetaEnum>
 
 /* NAMESPACE */
 namespace Style
@@ -129,6 +130,19 @@ static int font (const QString &a_value)
   auto value  = a_value.mid (5);
   auto weight = s_fontWeigthMap.value(value, 50);
   return weight;
+}
+
+static int alignment (const QString &a_value)
+{
+  auto value      = a_value.mid (5);
+  auto metaEnum   = QMetaEnum::fromType<Qt::Alignment>();
+  bool ok;
+  auto result     = metaEnum.keyToValue (value.toStdString().c_str(), &ok);
+
+  if (ok)
+    return result;
+
+  return 0;
 }
 
 static Scaled scaled (const QString &a_value)
@@ -292,6 +306,10 @@ QVariant QssValue::asVariant() const
   /* font-weight */
   if ((m_value.size() > 6) && (m_value.mid(0, 5) == "Font."))
     return font (m_value);
+
+  /* font-weight */
+  if ((m_value.size() > 6) && (m_value.mid(0, 5) == "Text."))
+    return alignment (m_value);
 
   /* string */
   if ((m_value.startsWith('\'') && m_value.endsWith('\''))
