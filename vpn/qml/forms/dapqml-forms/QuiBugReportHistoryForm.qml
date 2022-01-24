@@ -38,12 +38,22 @@ Item {
         id: resizer
         visible: false
         qss: "brh-btn-resizer"
+
+        Component.onCompleted: StyleDebugTree.describe (
+           "resizer",
+            ["x", "y", "z", "width", "height"],
+           this);
     }
 
     DapQmlRectangle {
         id: icnResizer
         visible: false
         qss: "brh-icn-resizer"
+
+        Component.onCompleted: StyleDebugTree.describe (
+           "icnResizer",
+            ["x", "y", "z", "width", "height"],
+           this);
     }
 
     /* listview */
@@ -52,9 +62,14 @@ Item {
 
         x: (root.width - width) / 2
         y: title.y + title.height * 2
-        width: root.width - 72
+        width: resizer.width // root.width - 72
         height: root.height - y
         clip: true
+
+        Component.onCompleted: StyleDebugTree.describe (
+           "listview",
+            ["x", "y", "z", "width", "height"],
+           this);
 
         model: reportModel
 
@@ -70,10 +85,18 @@ Item {
             width: resizer.width
             height: resizer.height
 
-//            Component.onCompleted: StyleDebugTree.describe (
-//               "Report " + model.index,
-//                ["x", "y", "z", "width", "height"],
-//               this);
+            Component.onCompleted: {
+                StyleDebugTree.describe (
+                    "Report sub " + model.index,
+                    ["x", "y", "z", "width", "height",
+                     "color", "horizontalAlign", "verticalAlign",
+                     "leftPadding", "rightPadding"],
+                    this.labelSub);
+                StyleDebugTree.describe (
+                    "Report item " + model.index,
+                    ["x", "y", "z", "width", "height", "iconSize"],
+                    this);
+            }
         }
     }
 }

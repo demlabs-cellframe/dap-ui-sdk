@@ -9,6 +9,9 @@ namespace Style
 static QHash<QString, QssLink> s_categories;
 static QString s_currentCategory  = "light";
 
+/* LINKS */
+extern void removeMinuses (QString &a_value);
+
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/
@@ -57,6 +60,9 @@ QVariant QssLink::get (QString a_name, QString a_category)
   if (a_name.at(0) == '@')
     a_name  = a_name.mid (1);
 
+  /* remove minuses */
+  removeMinuses (a_name);
+
   /* check category existence */
   if (!s_categories.contains (a_category))
     return QVariant();
@@ -72,11 +78,14 @@ QVariant QssLink::get (QString a_name, QString a_category)
   return cat.m_map.value (a_name);
 }
 
-void QssLink::set (const QString &a_name, QString a_category, const QVariant &a_value)
+void QssLink::set (QString a_name, QString a_category, const QVariant &a_value)
 {
   /* remove @ symbol */
   if (a_category.at(0) == '@')
     a_category  = a_category.mid (1);
+
+  /* remove minuses */
+  removeMinuses (a_name);
 
   /* create category if not present */
   if (!s_categories.contains (a_category))

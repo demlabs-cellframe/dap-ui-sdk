@@ -26,7 +26,7 @@ static QMap<QString, int> s_fontWeigthMap =
 };
 
 /* LINKS */
-static void removeMinuses (QString &a_value);
+void removeMinuses (QString &a_value);
 static void removeQproperty (QString &a_value);
 static void removeBeginSpaces (QString &a_value);
 

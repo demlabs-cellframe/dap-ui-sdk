@@ -38,7 +38,7 @@ public:
   static QStringList categories();
   static void changeCategory (const QString a_category);
   static QVariant get (QString a_name, QString a_category = "");
-  static void set (const QString &a_name, QString a_category, const QVariant &a_value);
+  static void set (QString a_name, QString a_category, const QVariant &a_value);
   static void set (const QString &a_category, const QssItem &a_value);
   /// @}
 

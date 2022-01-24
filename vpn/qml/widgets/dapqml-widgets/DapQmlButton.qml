@@ -33,10 +33,42 @@ Rectangle {
     property bool link: false
     property bool frame: false
 
+    property var labelMain
+    property var labelSub
+    property var labelLeft
+    property var labelIcon
+
     DapQmlStyle { id: style; qss: root.qss; item: root }
 
     /* user no background */
     color: "transparent"
+
+    /* store references */
+    Component.onCompleted: {
+        if(root.buttonStyle === DapQmlButton.Style.LeftTopMainBottomSub)
+        {
+            root.labelMain  = ltmbsMain;
+            root.labelSub   = ltmbsSub;
+            root.labelLeft  = ltmbsLeft;
+        }
+        else if(root.buttonStyle === DapQmlButton.Style.TopMainBottomSub)
+        {
+            root.labelMain  = tmbsMain;
+            root.labelSub   = tmbsSub;
+        }
+        else if(root.buttonStyle === DapQmlButton.Style.TopSubBottomMain)
+        {
+            root.labelMain  = tsbmMain;
+            root.labelSub   = tsbmSub;
+        }
+        else if(root.buttonStyle === DapQmlButton.Style.IconMainSub)
+        {
+            root.labelMain  = imsMain;
+            root.labelSub   = imsSub;
+            root.labelIcon  = imsIcon;
+        }
+
+    }
 
     /* link */
     Image {
@@ -71,8 +103,19 @@ Rectangle {
             columns: 2
             visible: (root.buttonStyle === DapQmlButton.Style.LeftTopMainBottomSub)
 
+            /* store references */
+            Component.onCompleted: {
+                if(visible)
+                {
+                    root.labelMain  = ltmbsMain;
+                    root.labelSub   = ltmbsSub;
+                    root.labelLeft  = ltmbsLeft;
+                }
+            }
+
             /* left big label */
             DapQmlLabel {
+                id: ltmbsLeft
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -91,6 +134,7 @@ Rectangle {
 
                 /* main text */
                 DapQmlLabel {
+                    id: ltmbsMain
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     Layout.fillWidth: true
                     Layout.fillHeight: text.length > 0
@@ -103,6 +147,7 @@ Rectangle {
 
                 /* sub text */
                 DapQmlLabel {
+                    id: ltmbsSub
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     Layout.fillWidth: true
                     Layout.fillHeight: text.length > 0
@@ -124,8 +169,18 @@ Rectangle {
             columns: 1
             visible: (root.buttonStyle === DapQmlButton.Style.TopMainBottomSub)
 
+            /* store references */
+            Component.onCompleted: {
+                if(visible)
+                {
+                    root.labelMain  = tmbsMain;
+                    root.labelSub   = tmbsSub;
+                }
+            }
+
             /* main text */
             DapQmlLabel {
+                id: tmbsMain
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -138,6 +193,7 @@ Rectangle {
 
             /* sub text */
             DapQmlLabel {
+                id: tmbsSub
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -150,7 +206,7 @@ Rectangle {
 
         }
 
-        /* TopMainBottomSub */
+        /* TopSubBottomMain */
         /* Two items by vertical */
         GridLayout {
             Layout.fillWidth: true
@@ -158,8 +214,18 @@ Rectangle {
             columns: 1
             visible: (root.buttonStyle === DapQmlButton.Style.TopSubBottomMain)
 
+            /* store references */
+            Component.onCompleted: {
+                if(visible)
+                {
+                    root.labelMain  = tsbmMain;
+                    root.labelSub   = tsbmSub;
+                }
+            }
+
             /* sub text */
             DapQmlLabel {
+                id: tsbmSub
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -172,6 +238,7 @@ Rectangle {
 
             /* main text */
             DapQmlLabel {
+                id: tsbmMain
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -192,8 +259,19 @@ Rectangle {
             columns: 3
             visible: (root.buttonStyle === DapQmlButton.Style.IconMainSub)
 
-            //Image {
+            /* store references */
+            Component.onCompleted: {
+                if(visible)
+                {
+                    root.labelMain  = imsMain;
+                    root.labelSub   = imsSub;
+                    root.labelIcon  = imsIcon;
+                }
+            }
+
+            /* icon */
             DapQmlLabel {
+                id: imsIcon
                 Layout.preferredWidth: root.iconSize
                 Layout.preferredHeight: root.iconSize
 
@@ -204,6 +282,7 @@ Rectangle {
 
             /* main text */
             DapQmlLabel {
+                id: imsMain
                 Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -217,6 +296,7 @@ Rectangle {
 
             /* sub text */
             DapQmlLabel {
+                id: imsSub
                 Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                 Layout.fillWidth: text.length > 0
                 Layout.fillHeight: true

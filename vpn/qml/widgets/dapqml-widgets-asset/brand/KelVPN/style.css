@@ -593,12 +593,12 @@
 
 .brh-btn-resizer
 {
-	scaled-rect: scaled(nan,nan,392,64,false);
+	scaled-rect: scaled(nan,nan,363,64,false);
 }
 
 .brh-icn-resizer
 {
-	scaled-rect: scaled(nan,nan,44,44,true);
+	scaled-rect: scaled(nan,nan,30,30,true);
 }
 
 .brh-btn-label-main
