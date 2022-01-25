@@ -20,7 +20,9 @@ const GUID GUID_CLASS_MONITOR = { 0x4d36e96e, 0xe325, 0x11ce, 0xbf, 0xc1, 0x08, 
 #include <CoreGraphics/CoreGraphics.h>
 #endif
 
+/* VARS */
 static float s_DPI = 0.0;
+static QSize s_resolution;
 
 float UiScaling::pointsToPixels (float a_pointsValue, float dpi /*default = 0*/)
 {
@@ -105,6 +107,7 @@ float UiScaling::getNativDPI()
           .arg (pixelsPerMM).arg (hResolution).arg (wResolution).arg (hSize).arg (wSize).arg (dpi)
           .arg (QGuiApplication::primaryScreen()->physicalDotsPerInch()); //for statistic, delete later
   s_DPI = ((dpi < 50 || dpi > 350) ? QGuiApplication::primaryScreen()->physicalDotsPerInch() : dpi);
+  s_resolution  = QSize (wResolution, hResolution);
 
 #ifndef Q_OS_ANDROID
   // lock low dpi to 128 minimum
@@ -121,6 +124,11 @@ float UiScaling::getNativDPI()
 void UiScaling::setPseudoDPI (const float &pseudoDPI)
 {
   s_DPI = pseudoDPI;
+}
+
+QSize UiScaling::deviceResolution()
+{
+  return s_resolution;
 }
 
 float UiScaling::aptToPt (float apt)
