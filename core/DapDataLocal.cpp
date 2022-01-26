@@ -59,7 +59,7 @@ void DapDataLocal::parseXML(const QString& a_fname)
                                     }
                                     item.port = port;
                                 } else if(sr->name() == "location") {
-                                    item.location = DapServerInfo::stringToLocation(sr->readElementText());
+                                    item.location = sr->readElementText();
                                 } else if (sr->name() == "state") {
                                     item.online = sr->readElementText();
                                 }

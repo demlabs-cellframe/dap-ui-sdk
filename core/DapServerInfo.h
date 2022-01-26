@@ -39,7 +39,6 @@ public:
 
     static QJsonObject toJSON(const DapServerInfo& dsi);
 
-    static QString stringToLocation(const QString& location);
     friend bool operator==(const DapServerInfo& lhs, const DapServerInfo& rhs);
     friend QDebug operator<< (QDebug out, const DapServerInfo &dsi) {
         out << "DapServer address:" << dsi.address << " address6:" << dsi.address6 << "port:" << dsi.port

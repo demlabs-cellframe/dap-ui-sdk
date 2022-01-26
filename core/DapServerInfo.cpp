@@ -2,10 +2,6 @@
 
 
 
-QString DapServerInfo::stringToLocation(const QString& location) {
-    return location.toUpper();
-}
-
 bool operator==(const DapServerInfo& lhs, const DapServerInfo& rhs)
 {
     if( lhs.address == rhs.address && lhs.address6 == rhs.address6 && lhs.port == rhs.port) {
