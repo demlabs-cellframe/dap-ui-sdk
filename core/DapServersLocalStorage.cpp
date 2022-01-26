@@ -163,6 +163,7 @@ int DapServersLocalStorage::addServer(const DapServerInfo& server)
     auto jsonObj = DapServerInfo::toJSON(server);
     _jsonServersListArr.append(jsonObj);
     _serversList.append(server);
+    _locationInfo.addLocation(server.location);
 
     emit changed();
     return _rewriteJsonFile();

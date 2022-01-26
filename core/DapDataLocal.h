@@ -21,38 +21,6 @@
 class DapSerialKeyData;
 
 
-#define UNKNOWNLOCATION "UNKNOWN"
-class DapLocationFiels
-{
-public:
-    DapLocationFiels();
-    DapLocationFiels(const QString& path);
-    void setPicturePath(const QString& path);
-    QString picturePath();
-    DapLocationFiels &operator = (const DapLocationFiels &a_data)
-    {
-        this->m_picturePath = a_data.m_picturePath;
-        return *this;
-    }
-protected:
-    QString m_picturePath;
-};
-
-
-class DapLocationInfo
-{
-public:
-    DapLocationInfo();
-    bool addLocation(const QString& location, QString picturePath);
-    QString picturePath(const QString& location);
-    bool contain(const QString& location);
-
-protected:
-    void defaultFill();
-    QMap<QString, DapLocationFiels> m_location;
-};
-
-
 class DapDataLocal : public QObject
 {
 public:
@@ -144,8 +112,6 @@ private:
     QString m_serialKey;  ///< Serial key.
 
     DataToUpdate m_dataToUpdate; ///data to update
-    DapLocationInfo m_LocationInfo; ///location information
-
     DapSerialKeyData* m_serialKeyData;
 };
 

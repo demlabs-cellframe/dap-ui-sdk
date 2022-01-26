@@ -16,7 +16,7 @@ void DapServersData::addServer(const DapServerInfo& dsi) {
     int row = m_servers.count();
     insertRows(row, 1);
     setData(index(row, 0), QVariant::fromValue(dsi));
-
+    m_locationInfo.addLocation(dsi.location);
     emit this->serverAdded(dsi);
 }
 

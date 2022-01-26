@@ -5,6 +5,7 @@
 #include <QAbstractListModel>
 
 #include "DapServerInfo.h"
+#include "DapLocationInfo.h"
 
 #define COUTRY_FLAG_ROLE (Qt::UserRole + 10)
 
@@ -72,6 +73,7 @@ private:
     int m_currentServerIndex = -1;
     QList<DapServerInfo> m_servers;
 //    static const QStringList m_countries;
+    DapLocationInfo m_locationInfo;
     static QMap<QString, QString> m_countryMap;
 };
 
