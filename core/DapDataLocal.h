@@ -20,7 +20,6 @@
 
 class DapSerialKeyData;
 
-
 class DapDataLocal : public QObject
 {
 public:
@@ -30,7 +29,6 @@ public:
 
     QString     m_brandName;
     QString     logFilePath;
-//    static QMap<DapServerLocation, QString> m_pictruePath;
 
     void parseXML(const QString& a_fname);
 
@@ -39,10 +37,7 @@ public:
     QString getRandomString(int);
 
 public:
-//    using picturesMap = QMap<DapServerLocation, QString>;
     static DapDataLocal* instance();
-
-//    QString locationToIconPath(DapServerLocation loc);
 
     QString login() const;
 
@@ -112,6 +107,7 @@ private:
     QString m_serialKey;  ///< Serial key.
 
     DataToUpdate m_dataToUpdate; ///data to update
+
     DapSerialKeyData* m_serialKeyData;
 };
 

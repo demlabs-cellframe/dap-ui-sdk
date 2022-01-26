@@ -24,7 +24,7 @@ class DapLocationInfo
 {
 public:
     DapLocationInfo();
-    bool addLocation(const QString& location, const QString& picturePath = "");
+    void addLocation(const QString& location, const QString& picturePath = "");
     QString picturePath(const QString& location);
     bool contain(const QString& location);
     QList<QString> locations();

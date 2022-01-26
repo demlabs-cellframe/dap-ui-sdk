@@ -27,11 +27,8 @@ ChooseServer::ChooseServer (QWidget *parent) :
   /* simulate model items */
   auto list = DapServersData::instance();
   list->addServer ("USA", "USA", "Address", 8081);
-//  list->addServer (DapServerLocation::USA, "USA", "Address", 8081);
   list->addServer ("RUSSIA", "Russia", "Address", 8081);
-//  list->addServer (DapServerLocation::RUSSIA, "Russia", "Address", 8081);
   list->addServer ("GERMANY", "Gremany", "Address", 8081);
-//  list->addServer (DapServerLocation::GERMANY, "Gremany", "Address", 8081);
 #endif // TestApp
 
   /* setup model */

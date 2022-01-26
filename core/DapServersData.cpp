@@ -20,7 +20,6 @@ void DapServersData::addServer(const DapServerInfo& dsi) {
     emit this->serverAdded(dsi);
 }
 
-//void DapServersData::addServer(DapServerLocation location, const QString& name,
 void DapServersData::addServer(const QString& location, const QString& name,
                           const QString & address, quint16 port)
 {
@@ -150,20 +149,6 @@ int DapServersData::rowCount(const QModelIndex &parent) const
     Q_UNUSED(parent)
     return m_servers.count();
 }
-
-//const QStringList DapServersData::m_countries = {
-//    "", //UNKNOWN = 0,
-//    "://country/GB.png", //ENGLAND,
-//    "://country/FR.png", //FRANCE,
-//    "://country/DE.png", //GERMANY,
-//    "://country/US.png", //USA,
-//    "://country/NL.png", //NETHERLANDS,
-//    "://country/RU.png", //RUSSIA,
-//    "://country/UA.png", //UKRAINE,
-//    "://country/NL.png", //Netherlands,
-//    "://country/SG.png", //Singapore,
-//    "://country/DE.png", //Germany,
-//};
 
 QMap<QString, QString> DapServersData::m_countryMap = {
     {"ANDORRA", "AD"},

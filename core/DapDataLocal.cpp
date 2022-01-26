@@ -19,20 +19,6 @@
 #include <sys/stat.h>
 #endif
 
-//DapDataLocal::picturesMap DapDataLocal::m_pictruePath = {
-//    {DapServerLocation::ENGLAND, ":/country/GB.png"},
-//    {DapServerLocation::FRANCE, ":/country/FR.png"},
-//    {DapServerLocation::GERMANY, ":/country/DE.png"},
-//    {DapServerLocation::USA, ":/country/US.png"},
-//    {DapServerLocation::NETHERLANDS, ":/country/NL.png"},
-//    {DapServerLocation::RUSSIA, ":/country/RU.png"},
-//    {DapServerLocation::UKRAINE, ":/country/UA.png"},
-//    {DapServerLocation::UNKNOWN, ":/country/Flag_gf.png"},
-//    {DapServerLocation::Netherlands, ":/country/NL.png"},
-//    {DapServerLocation::Singapore, ":/country/SG.png"},
-//    {DapServerLocation::Germany, ":/country/DE.png"},
-//};
-
 DapDataLocal::DapDataLocal()
     : QObject()
     , m_serialKeyData(new DapSerialKeyData(this))
@@ -110,7 +96,6 @@ void DapDataLocal::parseXML(const QString& a_fname)
     }
     file.close();
 #ifdef  QT_DEBUG
-//    DapDataLocal::serversData()->addServer(DapServerLocation::UNKNOWN, "local", "127.0.0.1",  8099);
     DapDataLocal::serversData()->addServer("UNKNOWN", "local", "127.0.0.1",  8099);
 #endif
 
@@ -319,21 +304,6 @@ QString DapDataLocal::getRandomString(int size)
    }
    return randomString;
 }
-
-///**
-// * @brief DataLocal::locationToIcon
-// * @param a_location
-// * @return
-// */
-//QString DapDataLocal::locationToIconPath(DapServerLocation loc)
-//{
-//    QString locPath = m_pictruePath.value(loc);
-//    if (locPath == "") {
-//        qWarning() << "Not found picture for current location. Return default!";
-//        return m_pictruePath.value(DapServerLocation::UNKNOWN);
-//    }
-//    return locPath;
-//}
 
 DapDataLocal *DapDataLocal::instance()
 {

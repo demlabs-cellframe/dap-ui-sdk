@@ -39,27 +39,19 @@ QString DapLocationFiels::picturePath()
 
 DapLocationInfo::DapLocationInfo()
 {
-    defaultFill();
 }
 
-bool DapLocationInfo::addLocation(const QString& location, const QString& picturePath)
+void DapLocationInfo::addLocation(const QString& location, const QString& picturePath)
 {
-//    https://stackoverflow.com/questions/35885760/is-there-any-way-to-set-a-class-in-the-qmap-value
     QString a_location = location.toUpper();
     if (a_location == "")
+    {
+        qWarning() << "Unknown location" << location;
         a_location = UNKNOWNLOCATION;
-    m_location.insert(a_location, DapLocationFiels());
-    if (picturePath != "")
-        m_location[a_location].setPicturePath(picturePath);
-    qDebug() << "------------------ " << a_location << " : " << m_location.count();
-    //DapServerLocation DapServerInfo::stringToLocation(const QString& location) {
-    //    DapServerLocation v = m_countries.value(location.toUpper());
-    //    if (int(v) == 0) {
-    //        qWarning() << "Unknown location" << location;
-    //        return DapServerLocation::UNKNOWN;
-    //    }
-    //    return v;
-    //}
+    }
+    if (!m_location.contains(a_location))
+        m_location.insert(a_location, DapLocationFiels());
+    m_location[a_location].setPicturePath(picturePath);
 }
 
 bool DapLocationInfo::contain(const QString &location)
@@ -72,9 +64,27 @@ QString DapLocationInfo::picturePath(const QString& location)
 {
     QString a_location = location.toUpper();
     if (m_location.contains(a_location))
-        return m_location[a_location].picturePath();
+    {
+        QString path = m_location[a_location].picturePath();
+        if (path == "")
+            qWarning() << "Not found picture for current location. Return default!";
+        return path;
+    }
     else
+    {
+        qWarning() << "Not found location. Return default!";
         return "";
+    }
+}
+
+QList<QString> DapLocationInfo::locations()
+{
+    return m_location.keys();
+}
+
+int DapLocationInfo::count()
+{
+    return m_location.count();
 }
 
 void DapLocationInfo::defaultFill()
@@ -89,14 +99,4 @@ void DapLocationInfo::defaultFill()
 //    addLocation("UKRAINE", ":/country/UA.png");
 //    addLocation("Netherlands", ":/country/NL.png");
 //    addLocation("Singapore", ":/country/SG.png");
-}
-
-QList<QString> DapLocationInfo::locations()
-{
-    return m_location.keys();
-}
-
-int DapLocationInfo::count()
-{
-    return m_location.count();
 }

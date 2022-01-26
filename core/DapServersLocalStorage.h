@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QVector>
 #include <DapServerInfo.h>
-#include <DapLocationInfo.h>
 #include <QFile>
 
 
@@ -16,7 +15,6 @@ private:
     QJsonArray _jsonServersListArr; // mirrors array from QSettings
     // it's a _jsonServersListArr in the native view
     DapServerInfoList _serversList;
-    DapLocationInfo _locationInfo;
 
     int _rewriteJsonFile();
     int _loadServers(); // fill _serversList from QSettings
