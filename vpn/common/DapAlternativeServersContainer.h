@@ -9,14 +9,16 @@ class DapAlternativeServersContainer : public QObject
 public:
     DapAlternativeServersContainer(QObject* a_parent = nullptr);
 
-    DapServerInfo takeNext(DapServerLocation a_location = DapServerLocation::UNKNOWN);
+//    DapServerInfo takeNext(DapServerLocation a_location = DapServerLocation::UNKNOWN);
+    DapServerInfo takeNext(const QString& a_location = "UNKNOWN");
     void refill(const QList<DapServerInfo>& serversList);
 
 
 private:
     bool hasAddress(const QString& a_allress);
 
-    QMultiMap<DapServerLocation, DapServerInfo> m_servers;
+//    QMultiMap<DapServerLocation, DapServerInfo> m_servers;
+    QMultiMap<QString, DapServerInfo> m_servers;
 };
 
 #endif // DAPALTERNATIVESERVERSCONTAINER_H

@@ -19,19 +19,89 @@
 #include <sys/stat.h>
 #endif
 
-DapDataLocal::picturesMap DapDataLocal::m_pictruePath = {
-    {DapServerLocation::ENGLAND, ":/country/GB.png"},
-    {DapServerLocation::FRANCE, ":/country/FR.png"},
-    {DapServerLocation::GERMANY, ":/country/DE.png"},
-    {DapServerLocation::USA, ":/country/US.png"},
-    {DapServerLocation::NETHERLANDS, ":/country/NL.png"},
-    {DapServerLocation::RUSSIA, ":/country/RU.png"},
-    {DapServerLocation::UKRAINE, ":/country/UA.png"},
-    {DapServerLocation::UNKNOWN, ":/country/Flag_gf.png"},
-    {DapServerLocation::Netherlands, ":/country/NL.png"},
-    {DapServerLocation::Singapore, ":/country/SG.png"},
-    {DapServerLocation::Germany, ":/country/DE.png"},
-};
+DapLocationFiels::DapLocationFiels()
+    : m_picturePath("")
+{
+}
+
+DapLocationFiels::DapLocationFiels(const QString &path)
+{
+    setPicturePath(path);
+}
+
+void DapLocationFiels::setPicturePath(const QString& path)
+{
+    m_picturePath = path;
+}
+
+QString DapLocationFiels::picturePath()
+{
+    return m_picturePath;
+}
+
+DapLocationInfo::DapLocationInfo()
+{
+    defaultFill();
+}
+
+bool DapLocationInfo::addLocation(const QString& location, QString picturePath)
+{
+//    https://stackoverflow.com/questions/35885760/is-there-any-way-to-set-a-class-in-the-qmap-value
+    QString a_location = location.toUpper();
+    m_location.insert(a_location, DapLocationFiels(picturePath));
+    //DapServerLocation DapServerInfo::stringToLocation(const QString& location) {
+    //    DapServerLocation v = m_countries.value(location.toUpper());
+    //    if (int(v) == 0) {
+    //        qWarning() << "Unknown location" << location;
+    //        return DapServerLocation::UNKNOWN;
+    //    }
+    //    return v;
+    //}
+}
+
+bool DapLocationInfo::contain(const QString &location)
+{
+    QString a_location = location.toUpper();
+    return m_location.contains(a_location);
+}
+
+QString DapLocationInfo::picturePath(const QString& location)
+{
+    QString a_location = location.toUpper();
+    if (m_location.contains(a_location))
+        return m_location[a_location].picturePath();
+    else
+        return "";
+}
+
+void DapLocationInfo::defaultFill()
+{
+    addLocation("ENGLAND", ":/country/GB.png");
+    addLocation("FRANCE", ":/country/FR.png");
+    addLocation("GERMANY", ":/country/DE.png");
+    addLocation("USA", ":/country/US.png");
+    addLocation("NETHERLANDS", ":/country/NL.png");
+    addLocation("RUSSIA", ":/country/RU.png");
+    addLocation("UKRAINE", ":/country/UA.png");
+    addLocation("UNKNOWN", ":/country/Flag_gf.png");
+    addLocation("Netherlands", ":/country/NL.png");
+    addLocation("Singapore", ":/country/SG.png");
+}
+
+
+//DapDataLocal::picturesMap DapDataLocal::m_pictruePath = {
+//    {DapServerLocation::ENGLAND, ":/country/GB.png"},
+//    {DapServerLocation::FRANCE, ":/country/FR.png"},
+//    {DapServerLocation::GERMANY, ":/country/DE.png"},
+//    {DapServerLocation::USA, ":/country/US.png"},
+//    {DapServerLocation::NETHERLANDS, ":/country/NL.png"},
+//    {DapServerLocation::RUSSIA, ":/country/RU.png"},
+//    {DapServerLocation::UKRAINE, ":/country/UA.png"},
+//    {DapServerLocation::UNKNOWN, ":/country/Flag_gf.png"},
+//    {DapServerLocation::Netherlands, ":/country/NL.png"},
+//    {DapServerLocation::Singapore, ":/country/SG.png"},
+//    {DapServerLocation::Germany, ":/country/DE.png"},
+//};
 
 DapDataLocal::DapDataLocal()
     : QObject()
@@ -110,7 +180,8 @@ void DapDataLocal::parseXML(const QString& a_fname)
     }
     file.close();
 #ifdef  QT_DEBUG
-    DapDataLocal::serversData()->addServer(DapServerLocation::UNKNOWN, "local", "127.0.0.1",  8099);
+//    DapDataLocal::serversData()->addServer(DapServerLocation::UNKNOWN, "local", "127.0.0.1",  8099);
+    DapDataLocal::serversData()->addServer("UNKNOWN", "local", "127.0.0.1",  8099);
 #endif
 
 
@@ -319,20 +390,20 @@ QString DapDataLocal::getRandomString(int size)
    return randomString;
 }
 
-/**
- * @brief DataLocal::locationToIcon
- * @param a_location
- * @return
- */
-QString DapDataLocal::locationToIconPath(DapServerLocation loc)
-{
-    QString locPath = m_pictruePath.value(loc);
-    if (locPath == "") {
-        qWarning() << "Not found picture for current location. Return default!";
-        return m_pictruePath.value(DapServerLocation::UNKNOWN);
-    }
-    return locPath;
-}
+///**
+// * @brief DataLocal::locationToIcon
+// * @param a_location
+// * @return
+// */
+//QString DapDataLocal::locationToIconPath(DapServerLocation loc)
+//{
+//    QString locPath = m_pictruePath.value(loc);
+//    if (locPath == "") {
+//        qWarning() << "Not found picture for current location. Return default!";
+//        return m_pictruePath.value(DapServerLocation::UNKNOWN);
+//    }
+//    return locPath;
+//}
 
 DapDataLocal *DapDataLocal::instance()
 {

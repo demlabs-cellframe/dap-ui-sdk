@@ -16,7 +16,8 @@ public:
 
     static DapServersData *instance();
 
-    void addServer(DapServerLocation location, const QString& name,
+//    void addServer(DapServerLocation location, const QString& name,
+    void addServer(const QString& location, const QString& name,
                    const QString & address, quint16 port);
     void addServer(const DapServerInfo& dsi);
 
@@ -70,7 +71,7 @@ private:
 
     int m_currentServerIndex = -1;
     QList<DapServerInfo> m_servers;
-    static const QStringList m_countries;
+//    static const QStringList m_countries;
     static QMap<QString, QString> m_countryMap;
 };
 
