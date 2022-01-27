@@ -23,14 +23,6 @@ ChooseServer::ChooseServer (QWidget *parent) :
   ui->setupUi (this);
   QScroller::grabGesture(this->ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
 
-#ifdef TestApp
-  /* simulate model items */
-  auto list = DapServersData::instance();
-  list->addServer ("USA", "USA", "Address", 8081);
-  list->addServer ("RUSSIA", "Russia", "Address", 8081);
-  list->addServer ("GERMANY", "Gremany", "Address", 8081);
-#endif // TestApp
-
   /* setup model */
   ui->scrollArea->setModel (DapServersData::instance(), this);
 
