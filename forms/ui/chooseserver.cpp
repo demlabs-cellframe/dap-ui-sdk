@@ -3,11 +3,7 @@
 #include "ui_chooseserver.h"
 
 #include "ui/model/chooseservermodel.h"
-#ifndef TestApp
 #include "../core/DapServersData.h"
-#else // TestApp
-#include "dummy/DapServersData.h"
-#endif // TestApp
 
 #include <QTimer>
 #include <QScroller>
