@@ -152,7 +152,7 @@ DapComboBoxForm
                             return bottomIntervalListElement
                         return intervalListElement
                     }
-                    color: hovered ? hilightColor : normalColor
+                    color: hovered ? currTheme.hilightColorComboBox : normalColor
                 }
             highlighted: parent.highlightedIndex === index
         }
