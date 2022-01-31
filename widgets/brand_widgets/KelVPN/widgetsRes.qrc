@@ -57,6 +57,8 @@
         <file>gfx/dark/btn_server_bg.png</file>
         <file>gfx/dark/ic_close.png</file>
         <file>gfx/dark/ic_close_hover.png</file>
+        <file>dark.qss</file>
+        <file>light.qss</file>
         <file>style.css</file>
         <file>theme.json</file>
     </qresource>

@@ -4,11 +4,7 @@
 /* INCLUDES */
 #include <QWidget>
 #include "baseform.h"
-#ifndef NEUROMORPHIC
-#include "../../ui/schedules.h"
-#else // TestApp
 #include "ui/helper/schedule/schedules.h"
-#endif // TestApp
 
 /* DEFS */
 QT_BEGIN_NAMESPACE

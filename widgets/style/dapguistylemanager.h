@@ -149,6 +149,7 @@ public:
     const QJsonArray &themesArray,
     const QString &themeName);
   static const QString &themeDir();
+  static void compileResultTheme (QString &a_outTheme);
   /// @}
 
   /****************************************//**

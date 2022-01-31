@@ -31,8 +31,10 @@ ChooseServer::ChooseServer (QWidget *parent) :
   list->addServer (DapServerLocation::GERMANY, "Gremany", "Address", 8081);
 #endif // TestApp
 
+#ifdef NEUROMORPHIC
   /* setup model */
   ui->scrollArea->setModel (DapServersData::instance(), this);
+#endif // NEUROMORPHIC
 
   /* signals */
   connect (ui->btnReturn, &DapGuiPushButton::clicked,

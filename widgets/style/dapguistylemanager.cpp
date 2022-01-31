@@ -128,6 +128,19 @@ const QString &DapGuiStyleManager::themeDir()
   return s_themeDir;
 }
 
+void DapGuiStyleManager::compileResultTheme(QString &a_outTheme)
+{
+  Gss gss;
+  auto keys = gss.keys();
+  for (auto i = keys.cbegin(), e = keys.cend(); i != e; i++)
+    {
+      auto itemName = *i;
+      auto itemBody = gss[itemName];
+      auto result   = QString (".%1\n{\n%2\n}\n\n").arg (itemName, itemBody);
+      a_outTheme.append (result);
+    }
+}
+
 /********************************************
  * PUBLIC METHODS
  *******************************************/
