@@ -27,7 +27,6 @@ private:
     void setPathToLog(QString path){ m_pathToLog = path; }
     void updateCurrentLogName();
     void setLogFile(const QString&);
-    void createChangerLogFiles();
 public:
     explicit DapLogger(QObject *parent = nullptr, QString appType = "", size_t prefix_width = 10);
     QString getPathToLog(){ return m_pathToLog; }
@@ -38,6 +37,7 @@ public:
     void setAppType(QString type){m_appType = type;}
     void clearOldLogs();
     static void setLogLevel(dap_log_level ll);
+    void createChangerLogFiles();
 private:
     QTimer t;
     QString m_pathToLog;
