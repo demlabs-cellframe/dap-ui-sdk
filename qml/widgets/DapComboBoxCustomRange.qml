@@ -21,6 +21,7 @@ DapComboBoxCustomRangeForm
     delegate:
         ItemDelegate
         {
+            hoverEnabled: true
             width: parent.width
             height:
             {

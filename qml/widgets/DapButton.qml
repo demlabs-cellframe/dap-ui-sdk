@@ -4,6 +4,7 @@ import QtGraphicalEffects 1.0
 
 Button
 {
+    hoverEnabled: true
     ///@detalis heightButton Button height.
     property int heightButton
     ///@detalis widthButton Button width.
@@ -136,33 +137,4 @@ Button
         source: dapBackgroundButton
         smooth: true
         }
-
-//    function getColor(position)
-//    {
-//        var rcv_color
-
-//        if(position === 0)
-//            rcv_color = !dapButton.activeFrame? "transparent " :
-//                            dapButton.enabled ?
-//                            dapButton.hovered ? currTheme.buttonColorHoverPosition0 :
-//                                                currTheme.buttonColorNormalPosition0 :
-//                                                currTheme.buttonColorNoActive
-//        else if(position === 1)
-//            rcv_color = !dapButton.activeFrame? "transparent " :
-//                            dapButton.enabled ?
-//                            dapButton.hovered ? currTheme.buttonColorHoverPosition1 :
-//                                                currTheme.buttonColorNormalPosition1 :
-//                                                currTheme.buttonColorNoActive
-
-//        else
-//            rcv_color = !dapButton.activeFrame? "transparent " :
-//                               dapButton.enabled ?
-//                               dapButton.hovered ? currTheme.buttonColorHover :
-//                                                   currTheme.buttonColorNormal :
-//                                                   currTheme.buttonColorNoActive
-
-//        return rcv_color
-//    }
-
-
 }

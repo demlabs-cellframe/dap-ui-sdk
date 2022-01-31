@@ -20,6 +20,7 @@ DapComboBoxForm
         ItemDelegate
         {
             width: parent.width
+            hoverEnabled: true
 
             //Adjusting the height of the line, taking into account that the second element from the end may be the last
             height:
