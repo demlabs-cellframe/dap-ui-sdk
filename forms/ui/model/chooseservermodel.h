@@ -59,6 +59,7 @@ public:
   /// @{
 public slots:
   void slotSetup();
+  void setSelectedItem(QString name);
 private slots:
   /// radio button toggle
   void slotToggled (bool checked);
