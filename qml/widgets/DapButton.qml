@@ -4,6 +4,7 @@ import QtGraphicalEffects 1.0
 
 Button
 {
+    hoverEnabled: true
     ///@detalis heightButton Button height.
     property int heightButton
     ///@detalis widthButton Button width.
@@ -48,6 +49,7 @@ Button
     property alias radius: dapBackgroundButton.radius
     property string shadowColor : "#2A2C33"
     property bool activeFrame : true
+    property bool transColor : false
 
 
     id: dapButton
@@ -62,6 +64,7 @@ Button
             anchors.fill: parent
             LinearGradient
             {
+                visible: transColor? false : true
                 anchors.fill: parent
                 source: parent
                 start: Qt.point(0,parent.height/2)
@@ -89,7 +92,8 @@ Button
                     }
             }
 
-            color: !dapButton.activeFrame? "transparent " :
+            color: transColor?"transparent":
+                                          !dapButton.activeFrame? "transparent " :
                                            dapButton.enabled ?
                                            dapButton.hovered ? currTheme.buttonColorHover :
                                                                currTheme.buttonColorNormal :
