@@ -3,11 +3,7 @@
 #include "ui_chooseserver.h"
 
 #include "ui/model/chooseservermodel.h"
-#ifndef TestApp
 #include "../core/DapServersData.h"
-#else // TestApp
-#include "dummy/DapServersData.h"
-#endif // TestApp
 
 #include <QTimer>
 #include <QScroller>
@@ -22,14 +18,6 @@ ChooseServer::ChooseServer (QWidget *parent) :
 {
   ui->setupUi (this);
   QScroller::grabGesture(this->ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
-
-#ifdef TestApp
-  /* simulate model items */
-  auto list = DapServersData::instance();
-  list->addServer (DapServerLocation::USA, "USA", "Address", 8081);
-  list->addServer (DapServerLocation::RUSSIA, "Russia", "Address", 8081);
-  list->addServer (DapServerLocation::GERMANY, "Gremany", "Address", 8081);
-#endif // TestApp
 
   /* setup model */
   ui->scrollArea->setModel (DapServersData::instance(), this);

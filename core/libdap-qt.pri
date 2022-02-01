@@ -5,6 +5,7 @@ SOURCES += \
     $$PWD/DapBugReport.cpp \
     $$PWD/DapBugReportData.cpp \
     $$PWD/DapDataLocal.cpp \
+    $$PWD/DapLocationInfo.cpp \
     $$PWD/DapLogHandler.cpp \
     $$PWD/DapNetworkAccessManager.cpp \
     $$PWD/DapNetworkReply.cpp \
@@ -30,6 +31,7 @@ HEADERS += \
     $$PWD/DapBugReport.h \
     $$PWD/DapBugReportData.h \
     $$PWD/DapDataLocal.h \
+    $$PWD/DapLocationInfo.h \
     $$PWD/DapLogHandler.h \
     $$PWD/DapNetworkAccessManager.h \
     $$PWD/DapNetworkReply.h \
