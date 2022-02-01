@@ -6,9 +6,9 @@
 #include "baseform.h"
 #ifndef NEUROMORPHIC
 #include "../../ui/schedules.h"
-#else // TestApp
+#else // NEUROMORPHIC
 #include "ui/helper/schedule/schedules.h"
-#endif // TestApp
+#endif // NEUROMORPHIC
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
