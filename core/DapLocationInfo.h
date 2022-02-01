@@ -15,7 +15,7 @@ public:
 
     void setPicturePath(const QString& picturePath);
     QString picturePath();
-protected:
+private:
     QString m_picturePath;
 };
 
@@ -30,7 +30,7 @@ public:
     QList<QString> locations();
     int count();
 
-protected:
+private:
     void defaultFill();
     QMap<QString, DapLocationFields> m_location;
 };
