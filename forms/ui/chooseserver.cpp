@@ -63,4 +63,9 @@ void ChooseServer::slotRetranslated()
   ui->label->setText (tr ("Choose server"));
 }
 
+void ChooseServer::setSelectedServer(QString name)
+{
+    ui->scrollArea->setSelectedItem(name);
+}
+
 /*-----------------------------------------*/
