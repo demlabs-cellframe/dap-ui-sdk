@@ -1,22 +1,22 @@
 #include "DapLocationInfo.h"
 
-DapLocationFiels::DapLocationFiels()
+DapLocationFields::DapLocationFields()
     : m_picturePath("")
 {
 }
 
-DapLocationFiels::DapLocationFiels(const DapLocationFiels& other)
+DapLocationFields::DapLocationFields(const DapLocationFields& other)
 {
     this->m_picturePath = other.m_picturePath;
 }
 
-DapLocationFiels::DapLocationFiels(DapLocationFiels&& other)
+DapLocationFields::DapLocationFields(DapLocationFields&& other)
 {
     this->m_picturePath = other.m_picturePath;
     other.m_picturePath = "";
 }
 
-DapLocationFiels& DapLocationFiels::operator = (const DapLocationFiels &other)
+DapLocationFields& DapLocationFields::operator = (const DapLocationFields &other)
 {
     if (this == &other)
         return *this;
@@ -24,12 +24,12 @@ DapLocationFiels& DapLocationFiels::operator = (const DapLocationFiels &other)
     return *this;
 }
 
-void DapLocationFiels::setPicturePath(const QString& picturePath)
+void DapLocationFields::setPicturePath(const QString& picturePath)
 {
     m_picturePath = picturePath;
 }
 
-QString DapLocationFiels::picturePath()
+QString DapLocationFields::picturePath()
 {
     return m_picturePath;
 }
@@ -50,7 +50,7 @@ void DapLocationInfo::addLocation(const QString& location, const QString& pictur
         a_location = UNKNOWNLOCATION;
     }
     if (!m_location.contains(a_location))
-        m_location.insert(a_location, DapLocationFiels());
+        m_location.insert(a_location, DapLocationFields());
     m_location[a_location].setPicturePath(picturePath);
 }
 

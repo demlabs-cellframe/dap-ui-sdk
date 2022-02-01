@@ -5,13 +5,13 @@
 #include <QDebug>
 
 #define UNKNOWNLOCATION "UNKNOWN"
-class DapLocationFiels
+class DapLocationFields
 {
 public:
-    DapLocationFiels();
-    DapLocationFiels(const DapLocationFiels& other);
-    DapLocationFiels(DapLocationFiels&& other);
-    DapLocationFiels &operator = (const DapLocationFiels &other);
+    DapLocationFields();
+    DapLocationFields(const DapLocationFields& other);
+    DapLocationFields(DapLocationFields&& other);
+    DapLocationFields &operator = (const DapLocationFields &other);
 
     void setPicturePath(const QString& picturePath);
     QString picturePath();
@@ -32,7 +32,7 @@ public:
 
 protected:
     void defaultFill();
-    QMap<QString, DapLocationFiels> m_location;
+    QMap<QString, DapLocationFields> m_location;
 };
 
 #endif // DAPLOCATIONINFO_H
