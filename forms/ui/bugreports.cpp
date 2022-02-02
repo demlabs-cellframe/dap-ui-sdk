@@ -19,7 +19,7 @@ const QString BugReports::SCREEN_NAME = "BugReports";
 BugReports::BugReports (QWidget *parent) :
   BaseForm (parent),
   ui (new Ui::BugReports),
-  movLoading (new QMovie (":/gui/ui/asset/Spinner.gif")),
+  movLoading (new QMovie (":/gui/asset/Spinner.gif")),
   _textHook (false)
 {
   qRegisterMetaType<Mode> ("Mode");
@@ -155,7 +155,7 @@ void BugReports::slotSetMode (BugReports::Mode mode)
 
   /* movie */
   int w   = ui->labelLoading->width();
-  movLoading->setFileName(":/gui/ui/asset/Spinner.gif");
+  movLoading->setFileName(":/gui/asset/Spinner.gif");
   movLoading->setScaledSize (QSize (w, w));
 
   qDebug() << __PRETTY_FUNCTION__ << "spinner width:" << w;

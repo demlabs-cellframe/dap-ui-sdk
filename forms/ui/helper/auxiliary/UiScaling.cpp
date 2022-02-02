@@ -34,6 +34,12 @@ float UiScaling::pointsToPixels (float a_pointsValue, float dpi /*default = 0*/)
 //  Q_UNUSED (dpi)
 //  static qreal dpi_Android (QGuiApplication::primaryScreen()->geometry().width());
 
+  if (a_pointsValue == 428 && s_resolution.width() > 0)
+    {
+      qDebug() << "full width requested:" << s_resolution.width();
+      return s_resolution.width();
+    }
+
 //  float valueInPixels = dpi_Android * a_pointsValue / 360.f;
   if (!dpi)
     dpi = getNativDPI();
