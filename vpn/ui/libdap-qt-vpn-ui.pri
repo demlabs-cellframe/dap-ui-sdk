@@ -75,9 +75,9 @@ android {
         $$PWD/../../../brand/$$BRAND/os/android/src/com/$${BRAND}/$${BRAND}Service.java \
         $$PWD/../../../brand/$$BRAND/os/android/src/com/$${BRAND}/$${BRAND}ServiceNative.java \
         $$PWD/../../../brand/$$BRAND/os/android/gradlew.bat
-	equals(BUILD_VARIANT, "GooglePlay") {
-                DISTFILES += $$PWD/../../../brand/$$BRAND/os/android/src/com/$${BRAND}/InAppShop.java
-	}
+        #equals(BUILD_VARIANT, "GooglePlay") {
+        #        DISTFILES += $$PWD/../../../brand/$$BRAND/os/android/src/com/$${BRAND}/InAppShop.java
+        #}
 }
 
 
