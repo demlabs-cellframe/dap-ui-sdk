@@ -223,7 +223,4 @@ signals:
 #endif
 };
 
-
-
-
 #endif // DAPSESSION_H

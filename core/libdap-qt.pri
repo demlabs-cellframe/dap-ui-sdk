@@ -23,9 +23,9 @@ SOURCES += \
     $$PWD/DapServersLocalStorage.cpp \
     $$PWD/DapSignUpData.cpp
 
-equals(BUILD_VARIANT, "GooglePlay") {
-	SOURCES += $$PWD/DapShopManager.cpp
-}
+#equals(BUILD_VARIANT, "GooglePlay") {
+#	SOURCES += $$PWD/DapShopManager.cpp
+#}
 
 HEADERS += \
     $$PWD/DapBugReport.h \
@@ -52,9 +52,9 @@ HEADERS += \
     $$PWD/DapServersLocalStorage.h \
     $$PWD/DataToUpdate.h
 
-equals(BUILD_VARIANT, "GooglePlay") {
-	HEADERS += $$PWD/DapShopManager.h
-}
+#equals(BUILD_VARIANT, "GooglePlay") {
+#	HEADERS += $$PWD/DapShopManager.h
+#}
 
 INCLUDEPATH += $$PWD
 
