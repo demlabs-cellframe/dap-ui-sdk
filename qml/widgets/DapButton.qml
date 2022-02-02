@@ -51,6 +51,13 @@ Button
     property bool activeFrame : true
     property bool transColor : false
 
+    property bool customColors: false
+    property string gradientHover0
+    property string gradientNormal0
+    property string gradientHover1
+    property string gradientNormal1
+    property string gradientNoActive
+
 
     id: dapButton
 
@@ -74,19 +81,19 @@ Button
                         GradientStop
                         {
                             position: 0;
-                            color: dapButton.enabled ?
-                                   dapButton.hovered ? currTheme.buttonColorHoverPosition0 :
-                                                       currTheme.buttonColorNormalPosition0 :
-                                                       currTheme.buttonColorNoActive
+                            color: customColors ? dapButton.getColor(0) : dapButton.enabled ?
+                                                                 dapButton.hovered ? currTheme.buttonColorHoverPosition0 :
+                                                                                     currTheme.buttonColorNormalPosition0 :
+                                                                                     currTheme.buttonColorNoActive
 
                         }
                         GradientStop
                         {
                             position: 1;
-                            color:  dapButton.enabled ?
-                                    dapButton.hovered ? currTheme.buttonColorHoverPosition1 :
-                                                        currTheme.buttonColorNormalPosition1 :
-                                                        currTheme.buttonColorNoActive
+                            color:  customColors ? dapButton.getColor(1) : dapButton.enabled ?
+                                                                  dapButton.hovered ? currTheme.buttonColorHoverPosition1 :
+                                                                                      currTheme.buttonColorNormalPosition1 :
+                                                                                      currTheme.buttonColorNoActive
 
                         }
                     }
@@ -141,32 +148,21 @@ Button
         smooth: true
         }
 
-//    function getColor(position)
-//    {
-//        var rcv_color
+    function getColor(position)
+    {
+        var rcv_color
 
-//        if(position === 0)
-//            rcv_color = !dapButton.activeFrame? "transparent " :
-//                            dapButton.enabled ?
-//                            dapButton.hovered ? currTheme.buttonColorHoverPosition0 :
-//                                                currTheme.buttonColorNormalPosition0 :
-//                                                currTheme.buttonColorNoActive
-//        else if(position === 1)
-//            rcv_color = !dapButton.activeFrame? "transparent " :
-//                            dapButton.enabled ?
-//                            dapButton.hovered ? currTheme.buttonColorHoverPosition1 :
-//                                                currTheme.buttonColorNormalPosition1 :
-//                                                currTheme.buttonColorNoActive
+        if(position === 0)
+            rcv_color =     dapButton.enabled ?
+                            dapButton.hovered ? gradientHover0  :
+                                                gradientNormal0 :
+                                                gradientNoActive
+        else if(position === 1)
+            rcv_color =     dapButton.enabled ?
+                            dapButton.hovered ? gradientHover1  :
+                                                gradientNormal1 :
+                                                gradientNoActive
 
-//        else
-//            rcv_color = !dapButton.activeFrame? "transparent " :
-//                               dapButton.enabled ?
-//                               dapButton.hovered ? currTheme.buttonColorHover :
-//                                                   currTheme.buttonColorNormal :
-//                                                   currTheme.buttonColorNoActive
-
-//        return rcv_color
-//    }
-
-
+        return rcv_color
+    }
 }
