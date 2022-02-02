@@ -4,8 +4,8 @@ import QtGraphicalEffects 1.0
 Item {
     id: toggleswitch
 
-    property string imageOn: "qrc:/icons/switch_on.png"
-    property string imageOff: "qrc:/icons/switch_off.png"
+    property string imageOn: "qrc:/resources/icons/switch_on.png"
+    property string imageOff: "qrc:/resources/icons/switch_off.png"
     property color backgroundColor: "#666"
     property color borderColor: "gray"
     property color shadowColor: "black"
@@ -16,7 +16,7 @@ Item {
 
     signal toggled()
 
-    property int leverMargin: 4
+    property int leverMargin: 0
 
     property int leverOffPosition: leverMargin
     property int leverOnPosition: width - lever.width - leverMargin
@@ -100,5 +100,6 @@ Item {
         anchors.fill: parent
         onClicked: toggle()
     }
+
 
 }
