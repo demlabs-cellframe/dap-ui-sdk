@@ -18,7 +18,7 @@ ComboBox
     ///@detalis normalColor Item color in normal state.
     property string normalColor
     ///@detalis hilightColor Item color in selected state.
-//    property string hilightColor
+    property string hilightColor
     ///@detalis normalTopColor Top string color in normal state.
     property string normalTopColor
     ///@detalis hilightTopColor Top string color in selected state.
