@@ -31,6 +31,9 @@ QString DapGuiLabel::scaledPixmap() const
 
 void DapGuiLabel::setScaledPixmap (const QString &scaledPixmap)
 {
+  if (m_scaledPixmap == scaledPixmap)
+    return;
+
   m_scaledPixmap = scaledPixmap;
   setPixmap (scaledPixmap);
   _cache.size = QSize();
@@ -61,7 +64,7 @@ void DapGuiLabel::paintEvent(QPaintEvent *e)
   if (_cache.size != scaledSize)
   {
       _cache.size   = scaledSize;
-      _cache.pixmap = pixmap()->scaled(
+      _cache.pixmap = pixmap(Qt::ReturnByValue).scaled(
             scaledSize,
             Qt::IgnoreAspectRatio,
             Qt::SmoothTransformation);
