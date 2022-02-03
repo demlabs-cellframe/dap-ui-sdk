@@ -159,4 +159,11 @@ void Dashboard::slotConnectionRequesteButtonPressed()
 ////      );
 //}
 
+//void Dashboard::slotErrorText (QString text, ErrorColor color)
+void Dashboard::slotErrorText (QString text)
+{
+  ui->lStatus->setText (text);
+  ui->lStatus->setCssStyle ("font13 red_error lato normal");
+}
+
 /*-----------------------------------------*/
