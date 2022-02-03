@@ -1,25 +1,25 @@
 <RCC>
     <qresource prefix="/gui">
-        <file>asset/bg_dark-stripes.png</file>
-        <file>asset/ic_version.png</file>
-        <file>asset/logo.png</file>
-        <file>asset/icon_online.png</file>
-        <file>asset/icon_offline.png</file>
-        <file>asset/ic_copy.png</file>
-        <file>asset/Spinner.gif</file>
-        <file>asset/ic_bot.png</file>
-        <file>asset/ic_information_bug-report.png</file>
-        <file>asset/ic_key.png</file>
-        <file>asset/ic_key-history.png</file>
-        <file>asset/ic_key-item.png</file>
-        <file>asset/ic_renew.png</file>
-        <file>asset/ic_language.png</file>
-        <file>asset/ic_report-item.png</file>
-        <file>asset/ic_send-report.png</file>
-        <file>asset/ic_terms_policy.png</file>
-        <file>asset/ic_theme.png</file>
-        <file>asset/logo-vendeta-white.png</file>
-        <file>asset/logo-vendeta-color.png</file>
-        <file>asset/logo-vendeta-color-dark.png</file>
+        <file compress="1">asset/bg_dark-stripes.png</file>
+        <file compress="1">asset/ic_version.png</file>
+        <file compress="1">asset/logo.png</file>
+        <file compress="1">asset/icon_online.png</file>
+        <file compress="1">asset/icon_offline.png</file>
+        <file compress="1">asset/ic_copy.png</file>
+        <file compress="1">asset/Spinner.gif</file>
+        <file compress="1">asset/ic_bot.png</file>
+        <file compress="1">asset/ic_information_bug-report.png</file>
+        <file compress="1">asset/ic_key.png</file>
+        <file compress="1">asset/ic_key-history.png</file>
+        <file compress="1">asset/ic_key-item.png</file>
+        <file compress="1">asset/ic_renew.png</file>
+        <file compress="1">asset/ic_language.png</file>
+        <file compress="1">asset/ic_report-item.png</file>
+        <file compress="1">asset/ic_send-report.png</file>
+        <file compress="1">asset/ic_terms_policy.png</file>
+        <file compress="1">asset/ic_theme.png</file>
+        <file compress="1">asset/logo-vendeta-white.png</file>
+        <file compress="1">asset/logo-vendeta-color.png</file>
+        <file compress="1">asset/logo-vendeta-color-dark.png</file>
     </qresource>
 </RCC>
