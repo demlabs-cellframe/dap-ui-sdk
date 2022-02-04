@@ -189,7 +189,7 @@ private slots:
     void onLogout();
     void answerBugReport();
     void answerBugReportsStatus();
-    Q_INVOKABLE void answerBugReportsStatusError();
+    Q_INVOKABLE void answerBugReportsStatusError(const QString& msg);
     void answerSignUp();
 signals:
     void encryptInitialized();

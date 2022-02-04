@@ -151,8 +151,9 @@ void DapSession::sendBugReport(const QByteArray &data)
 
 void DapSession::sendBugReportStatusRequest(const QByteArray &data)
 {
-    m_CDBaddress = m_upstreamAddress;
-    m_netBugReportsStatusReply = _buildNetworkReplyReq(*DapDataLocal::instance()->m_cdbIter + ":80/" + URL_BUG_REPORT + "?bugreports=" + data, this, SLOT(answerBugReportsStatus()), SLOT(answerBugReportsStatusError()), NULL, true);
+    m_CDBaddress = *DapDataLocal::instance()->m_cdbIter;
+    m_CDBport = 80;
+    m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this, SLOT(answerBugReportsStatus()), QT_STRINGIFY(answerBugReportsStatusError), NULL, true);
 }
 
 void DapSession::sendSignUpRequest(const QString &host, const QString &email, const QString &password)
@@ -550,12 +551,11 @@ void DapSession::answerBugReportsStatus()
     emit receivedBugReportStatusAnswer(QString::fromUtf8(m_netBugReportsStatusReply->getReplyData()));
 }
 
-void DapSession::answerBugReportsStatusError()
+void DapSession::answerBugReportsStatusError(const QString& msg)
 {
-    if (!m_netBugReportsStatusReply)
+    if (msg.isEmpty())
         return;
-    qInfo() << "Bugreport status reply: " << m_netBugReportsStatusReply->getReplyData();
-    emit receivedBugReportStatusAnswer(QString::fromUtf8(m_netBugReportsStatusReply->getReplyData()));
+    qInfo() << "Bugreport status reply error: " << msg;
 }
 
 void DapSession::clearCredentials()

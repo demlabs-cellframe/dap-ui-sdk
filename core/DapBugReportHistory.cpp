@@ -12,6 +12,10 @@ QList<_BugReportInfo>* DapBugReportHistory::getBugReportsList(){
     return m_bugReportsList;
 };
 
+QList<QString> DapBugReportHistory::getBugReportStringList(){
+    return bugReportInfoListToStringList(m_bugReportsList);
+}
+
 void DapBugReportHistory::setBugReportsList(QList<_BugReportInfo> *a_bugReportsList){
     m_bugReportsList = a_bugReportsList;
 }
@@ -24,14 +28,14 @@ void DapBugReportHistory::loadHistoryBugReportData()
     m_bugReportsList->clear();
     for(auto item : m_tempHistoryDataList)
         m_bugReportsList->push_back(_BugReportInfo{item, "unknown"});
-    bugReportInfoListToStringList(*m_bugReportsList);
+    bugReportInfoListToStringList(m_bugReportsList);
 }
 
-void DapBugReportHistory::bugReportInfoListToStringList(QList<_BugReportInfo> a_bugReportInfoList){
+QList<QString> DapBugReportHistory::bugReportInfoListToStringList(QList<_BugReportInfo>* a_bugReportInfoList){
 
     QList<QString> stringListSrverInfo;
-    for (auto item : a_bugReportInfoList){
+    for (auto item : *a_bugReportInfoList){
         stringListSrverInfo.push_front(item.number);
     }
-    emit bugReportListLoaded(stringListSrverInfo);
+    return stringListSrverInfo;
 }

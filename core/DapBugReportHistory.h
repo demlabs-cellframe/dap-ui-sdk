@@ -29,14 +29,15 @@ public:
 
 
     QList<_BugReportInfo> *getBugReportsList();
+    QList<QString> getBugReportStringList();
 
     void loadHistoryBugReportData();
     void setBugReportsList(QList<_BugReportInfo>*);
     QList<_BugReportInfo> bugReportsList(){
         return *m_bugReportsList;
     }
+    QList<QString> bugReportInfoListToStringList(QList<_BugReportInfo>*);
 protected:
-    void bugReportInfoListToStringList(QList<_BugReportInfo>);
 
     QList<_BugReportInfo> *m_bugReportsList;
 
