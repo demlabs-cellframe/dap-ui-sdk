@@ -4,7 +4,7 @@ import QtGraphicalEffects 1.0
 
 Button
 {
-    hoverEnabled: true
+//    hoverEnabled: true
     ///@detalis heightButton Button height.
     property int heightButton
     ///@detalis widthButton Button width.
