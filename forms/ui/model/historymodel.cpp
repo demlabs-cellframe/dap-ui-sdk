@@ -11,26 +11,6 @@ struct _HistoryRecord
   QString name;
 };
 
-/* VARS */
-static QList<QString> s_history =
-{
-    {"GTSF-WWRM-KLMWQ-OWWM"},
-    {"GTSF-WWRM-KLMWQ-OWWM"},
-    {"GTSF-WWRM-KLMWQ-OWWM"},
-    {"GTSF-WWRM-KLMWQ-OWWM"},
-    {"GTSF-WWRM-KLMWQ-OWWM"},
-    {"GTSF-WWRM-KLMWQ-OWWM"},
-    {"GTSF-WWRM-KLMWQ-OWWM"},
-    {"GTSF-WWRM-KLMWQ-OWWM"},
-    {"GTSF-WWRM-KLMWQ-OWWM"},
-    {"GTSF-WWRM-KLMWQ-OWWM"},
-    {"GTSF-WWRM-KLMWQ-OWWM"},
-    {"GTSF-WWRM-KLMWQ-OWWM"},
-    {"GTSF-WWRM-KLMWQ-OWWM"},
-    {"GTSF-WWRM-KLMWQ-OWWM"},
-    {"GTSF-WWRM-KLMWQ-OWWM"},
-};
-
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/
