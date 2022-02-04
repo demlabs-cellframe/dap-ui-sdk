@@ -64,7 +64,7 @@ void DapGuiLabel::paintEvent(QPaintEvent *e)
   if (_cache.size != scaledSize)
   {
       _cache.size   = scaledSize;
-      _cache.pixmap = pixmap(Qt::ReturnByValue).scaled(
+      _cache.pixmap = pixmap()->scaled(
             scaledSize,
             Qt::IgnoreAspectRatio,
             Qt::SmoothTransformation);
