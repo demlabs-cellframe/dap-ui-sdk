@@ -202,6 +202,9 @@ void DapGuiStyleManager::forcedStyleUpdate()
     "#" + objName +
     "{" + style + "}";
 
+  if (s == m_widget->styleSheet())
+    return;
+
   m_widget->setStyleSheet (s);
 }
 
