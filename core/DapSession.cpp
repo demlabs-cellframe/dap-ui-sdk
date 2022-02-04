@@ -151,7 +151,7 @@ void DapSession::sendBugReport(const QByteArray &data)
 
 void DapSession::sendBugReportStatusRequest(const QByteArray &data)
 {
-    m_netBugReportsStatusReply = _buildNetworkReplyReq(*DapDataLocal::instance()->m_cdbIter + "80" + URL_BUG_REPORT + "?bugreports=" + data, this, SLOT(answerBugReportsStatus), NULL, NULL, true);
+    m_netBugReportsStatusReply = _buildNetworkReplyReq(*DapDataLocal::instance()->m_cdbIter + ":80/" + URL_BUG_REPORT + "?bugreports=" + data, this, SLOT(answerBugReportsStatus()), NULL, NULL, true);
 }
 
 void DapSession::sendSignUpRequest(const QString &host, const QString &email, const QString &password)

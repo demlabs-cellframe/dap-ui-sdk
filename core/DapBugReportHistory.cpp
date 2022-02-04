@@ -19,9 +19,9 @@ void DapBugReportHistory::setBugReportsList(QList<_BugReportInfo> *a_bugReportsL
 
 void DapBugReportHistory::loadHistoryBugReportData()
 {
-    QList<QString>* m_tempHistoryDataList = new QList<QString>;
-    DapDataLocal::instance()->loadFromSettings(TEXT_BUGREPORT_HISTORY, *m_tempHistoryDataList);
-    for(auto item : *m_tempHistoryDataList)
+    QList<QString> m_tempHistoryDataList;
+    DapDataLocal::instance()->loadFromSettings(TEXT_BUGREPORT_HISTORY, m_tempHistoryDataList);
+    for(auto item : m_tempHistoryDataList)
         m_bugReportsList->push_back(_BugReportInfo{item, "unknown"});
     bugReportInfoListToStringList(*m_bugReportsList);
 }

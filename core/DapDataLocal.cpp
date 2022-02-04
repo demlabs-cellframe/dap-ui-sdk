@@ -181,9 +181,9 @@ void DapDataLocal::saveHistoryData(QString a_type, QString a_data)
 
 QList<QString> DapDataLocal::getHistorySerialKeyData()
 {
-    QList<QString>* m_tempHistoryDataList = new QList<QString>;
-    this->loadFromSettings(TEXT_SERIAL_KEY_HISTORY, *m_tempHistoryDataList);
-    return *m_tempHistoryDataList;
+    QList<QString> m_tempHistoryDataList;
+    this->loadFromSettings(TEXT_SERIAL_KEY_HISTORY, m_tempHistoryDataList);
+    return m_tempHistoryDataList;
 }
 
 void DapDataLocal::loadAuthorizationDatas()
