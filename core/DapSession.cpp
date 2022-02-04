@@ -151,7 +151,8 @@ void DapSession::sendBugReport(const QByteArray &data)
 
 void DapSession::sendBugReportStatusRequest(const QByteArray &data)
 {
-    m_netBugReportsStatusReply = _buildNetworkReplyReq(*DapDataLocal::instance()->m_cdbIter + ":80/" + URL_BUG_REPORT + "?bugreports=" + data, this, SLOT(answerBugReportsStatus()), NULL, NULL, true);
+    m_CDBaddress = m_upstreamAddress;
+    m_netBugReportsStatusReply = _buildNetworkReplyReq(*DapDataLocal::instance()->m_cdbIter + ":80/" + URL_BUG_REPORT + "?bugreports=" + data, this, SLOT(answerBugReportsStatus()), SLOT(answerBugReportsStatusError()), NULL, true);
 }
 
 void DapSession::sendSignUpRequest(const QString &host, const QString &email, const QString &password)
@@ -542,6 +543,14 @@ void DapSession::answerBugReport()
 }
 
 void DapSession::answerBugReportsStatus()
+{
+    if (!m_netBugReportsStatusReply)
+        return;
+    qInfo() << "Bugreport status reply: " << m_netBugReportsStatusReply->getReplyData();
+    emit receivedBugReportStatusAnswer(QString::fromUtf8(m_netBugReportsStatusReply->getReplyData()));
+}
+
+void DapSession::answerBugReportsStatusError()
 {
     if (!m_netBugReportsStatusReply)
         return;

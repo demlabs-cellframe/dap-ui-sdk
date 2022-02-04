@@ -21,6 +21,7 @@ void DapBugReportHistory::loadHistoryBugReportData()
 {
     QList<QString> m_tempHistoryDataList;
     DapDataLocal::instance()->loadFromSettings(TEXT_BUGREPORT_HISTORY, m_tempHistoryDataList);
+    m_bugReportsList->clear();
     for(auto item : m_tempHistoryDataList)
         m_bugReportsList->push_back(_BugReportInfo{item, "unknown"});
     bugReportInfoListToStringList(*m_bugReportsList);

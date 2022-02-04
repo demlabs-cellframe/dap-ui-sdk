@@ -45,6 +45,7 @@ void BugReportsModel::slotSetup()
   m_list.clear();
 
   /* create new buttons */
+  DapDataLocal::instance()->bugReportHistory()->loadHistoryBugReportData();
   foreach (auto &item, *DapDataLocal::instance()->bugReportHistory()->getBugReportsList())
     {
       /* create item */

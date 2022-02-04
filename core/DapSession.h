@@ -189,6 +189,7 @@ private slots:
     void onLogout();
     void answerBugReport();
     void answerBugReportsStatus();
+    Q_INVOKABLE void answerBugReportsStatusError();
     void answerSignUp();
 signals:
     void encryptInitialized();

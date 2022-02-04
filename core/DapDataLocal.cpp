@@ -170,13 +170,13 @@ void DapDataLocal::saveHistoryData(QString a_type, QString a_data)
 {
     if (a_data.isEmpty())
         return;
-    QList<QString>* m_tempHistoryDataList = new QList<QString>;
-    this->loadFromSettings(a_type, *m_tempHistoryDataList);
-    if (!m_tempHistoryDataList->contains(a_data))
-        m_tempHistoryDataList->prepend(a_data);
-    this->saveToSettings(a_type, *m_tempHistoryDataList);
+    QList<QString> m_tempHistoryDataList;
+    this->loadFromSettings(a_type, m_tempHistoryDataList);
+    if (!m_tempHistoryDataList.contains(a_data))
+        m_tempHistoryDataList.prepend(a_data);
+    this->saveToSettings(a_type, m_tempHistoryDataList);
 
-    delete m_tempHistoryDataList;
+    emit sigHistoryDataSaved();
 }
 
 QList<QString> DapDataLocal::getHistorySerialKeyData()
