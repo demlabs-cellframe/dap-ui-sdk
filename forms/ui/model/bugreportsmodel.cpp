@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "bugreportsmodel.h"
 #include <QScrollBar>
+#include <QEvent>
 
 /* DEFS */
 enum _ReportType
