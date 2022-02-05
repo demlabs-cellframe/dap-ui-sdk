@@ -45,4 +45,11 @@ void ModelBase::setupLayout()
     return;
 }
 
+void ModelBase::clearLayout(QLayout *layout)
+{
+    QLayoutItem *item;
+    while ((item = layout->takeAt(0)))
+        delete item;
+}
+
 /*-----------------------------------------*/

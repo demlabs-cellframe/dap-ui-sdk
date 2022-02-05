@@ -22,6 +22,7 @@
 DapDataLocal::DapDataLocal()
     : QObject()
     , m_serialKeyData(new DapSerialKeyData(this))
+    , m_buReportHistory(new DapBugReportHistory(this))
 {
     qDebug() << "[DL] DapDataLocal Constructor";
     parseXML(":/data.xml");
@@ -141,8 +142,8 @@ void DapDataLocal::setPassword(const QString &a_password)
 
 void DapDataLocal::saveAuthorizationData()
 {
-    this->saveEncriptedSetting(this->TEXT_LOGIN     , this->login());
-    this->saveEncriptedSetting(this->TEXT_PASSWORD  , this->password());
+    this->saveEncriptedSetting(TEXT_LOGIN     , this->login());
+    this->saveEncriptedSetting(TEXT_PASSWORD  , this->password());
 }
 
 void DapDataLocal::saveSerialKeyData()
@@ -157,6 +158,26 @@ void DapDataLocal::resetSerialKeyData()
         m_serialKeyData->reset();
         this->saveToSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
     }
+}
+
+void DapDataLocal::saveHistoryData(QString a_type, QString a_data)
+{
+    if (a_data.isEmpty())
+        return;
+    QList<QString> m_tempHistoryDataList;
+    this->loadFromSettings(a_type, m_tempHistoryDataList);
+    if (!m_tempHistoryDataList.contains(a_data))
+        m_tempHistoryDataList.prepend(a_data);
+    this->saveToSettings(a_type, m_tempHistoryDataList);
+
+    emit sigHistoryDataSaved();
+}
+
+QList<QString> DapDataLocal::getHistorySerialKeyData()
+{
+    QList<QString> m_tempHistoryDataList;
+    this->loadFromSettings(TEXT_SERIAL_KEY_HISTORY, m_tempHistoryDataList);
+    return m_tempHistoryDataList;
 }
 
 void DapDataLocal::loadAuthorizationDatas()
@@ -277,6 +298,11 @@ DapServersData *DapDataLocal::serversData()
 DapSerialKeyData *DapDataLocal::serialKeyData()
 {
     return m_serialKeyData;
+}
+
+DapBugReportHistory * DapDataLocal::bugReportHistory()
+{
+    return m_buReportHistory;
 }
 
 void DapDataLocal::initSecretKey()

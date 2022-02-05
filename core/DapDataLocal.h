@@ -12,11 +12,18 @@
 #include "DapKeyCommon.h"
 #include "DapBugReportData.h"
 #include "DapServersData.h"
+#include "DapBugReportHistory.h"
 #include "DapSignUpData.h"
 #include "DapUtils.h"
 #include "DataToUpdate.h"
 
 #define SERVER_LIST_FILE "vpn-servers.xml"
+
+const QString TEXT_SERIAL_KEY           = "serialkey";
+const QString TEXT_SERIAL_KEY_HISTORY   = "serialkeyhistory";
+const QString TEXT_BUGREPORT_HISTORY    = "bugreporthistory";
+const QString TEXT_LOGIN                = "login";
+const QString TEXT_PASSWORD             = "password";
 
 class DapSerialKeyData;
 
@@ -71,13 +78,14 @@ public:
     void saveSerialKeyData();
     void resetSerialKeyData();
 
+    void saveHistoryData(QString a_type, QString a_data);
+    QList<QString> getHistorySerialKeyData();
+
     static DapBugReportData *bugReportData();
     static DapServersData   *serversData();
     DapSerialKeyData* serialKeyData();
 
-    const QString TEXT_SERIAL_KEY   = "serialkey";
-    const QString TEXT_LOGIN        = "login";
-    const QString TEXT_PASSWORD     = "password";
+    DapBugReportHistory *bugReportHistory();
 
 public slots:
     void setLogin(const QString &a_login);
@@ -92,6 +100,8 @@ signals:
     void passwordChanged(const QString& password);
 
     void licenseTermTillChanged(const QString &a_date);
+
+    void sigHistoryDataSaved();
 
 protected:
     QList<QString>  m_cdbServersList;
@@ -109,6 +119,9 @@ private:
     DataToUpdate m_dataToUpdate; ///data to update
 
     DapSerialKeyData* m_serialKeyData;
+    QSet <QString> * m_serialKeyDataList;
+
+    DapBugReportHistory* m_buReportHistory;
 };
 
 template<typename T>

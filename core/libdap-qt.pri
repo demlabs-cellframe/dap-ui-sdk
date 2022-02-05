@@ -4,6 +4,7 @@ include (../quazip/quazip.pri)
 SOURCES += \
     $$PWD/DapBugReport.cpp \
     $$PWD/DapBugReportData.cpp \
+    $$PWD/DapBugReportHistory.cpp \
     $$PWD/DapDataLocal.cpp \
     $$PWD/DapLocationInfo.cpp \
     $$PWD/DapLogHandler.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
 HEADERS += \
     $$PWD/DapBugReport.h \
     $$PWD/DapBugReportData.h \
+    $$PWD/DapBugReportHistory.h \
     $$PWD/DapDataLocal.h \
     $$PWD/DapLocationInfo.h \
     $$PWD/DapLogHandler.h \

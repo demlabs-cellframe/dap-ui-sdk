@@ -1,4 +1,5 @@
 SOURCES += \
+    $$PWD/DapCmdBugReportsStatus.cpp \
     $$PWD/DapCmdLastConnectionData.cpp \
     $$PWD/DapCmdNews.cpp \
     $$PWD/DapCmdPingServer.cpp \
@@ -20,6 +21,7 @@ equals(BUILD_VARIANT, "GooglePlay") {
 }
 
 HEADERS += \
+    $$PWD/DapCmdBugReportsStatus.h \
     $$PWD/DapCmdLastConnectionData.h \
     $$PWD/DapCmdNews.h \
     $$PWD/DapCmdPingServer.h \

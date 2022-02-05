@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <QScrollBar>
+#include <QScroller>
 
 /* VARS */
 static BugReports *__inst = nullptr;
@@ -20,13 +21,15 @@ BugReports::BugReports (QWidget *parent) :
   BaseForm (parent),
   ui (new Ui::BugReports),
   movLoading (new QMovie (":/gui/asset/Spinner.gif")),
-  _textHook (false)
+  _textHook (false),
+  _spacer (true)
 {
-  qRegisterMetaType<Mode> ("Mode");
-
   /* setup */
   __inst  = this;
   ui->setupUi (this);
+
+  qRegisterMetaType<Mode> ("Mode");
+  QScroller::grabGesture(this->ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
 
   ui->editReport->setPlainText ("");
   ui->editReport->setCallbackTextEdit (_cbTextEdit);
@@ -153,6 +156,24 @@ void BugReports::slotSetMode (BugReports::Mode mode)
         w->setVisible (ns == 3);
     }
 
+  /* spacer */
+  if (mode == List)
+    {
+      if (_spacer)
+        {
+          ui->verticalLayout_3->takeAt (ui->verticalLayout_3->count()-1);
+          _spacer = false;
+        }
+    }
+  else
+    {
+      if (!_spacer)
+        {
+          ui->verticalLayout_3->addItem (ui->verticalSpacer);
+          _spacer = true;
+        }
+    }
+
   /* movie */
   int w   = ui->labelLoading->width();
   movLoading->setFileName(":/gui/asset/Spinner.gif");
@@ -263,6 +284,10 @@ void BugReports::updateData (QString &a_text, int a_len)
   }, Qt::QueuedConnection);
 
   _textHook = false;
+}
+
+void BugReports::refreshHistoryList(){
+    QMetaObject::invokeMethod(ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
 }
 
 /*-----------------------------------------*/
