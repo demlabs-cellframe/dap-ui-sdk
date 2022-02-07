@@ -1,5 +1,5 @@
-#ifndef CHOOSESERVERMODEL_H
-#define CHOOSESERVERMODEL_H
+#ifndef CHOOSETHEMEMODEL_H
+#define CHOOSETHEMEMODEL_H
 
 /* INCLUDES */
 #include <QStringList>
@@ -71,4 +71,4 @@ signals:
 };
 
 /*-----------------------------------------*/
-#endif // CHOOSESERVERMODEL_H
+#endif // CHOOSETHEMEMODEL_H

@@ -47,7 +47,8 @@ Button
     property alias dapHorizontalAlignment: buttonText.horizontalAlignment
     ///@details button background radius
     property alias radius: dapBackgroundButton.radius
-    property string shadowColor : "#2A2C33"
+    property string shadowColor : currTheme.buttonShadow
+    property string innerShadowColor : currTheme.buttonInnerShadow
     property bool activeFrame : true
 
 
@@ -100,7 +101,7 @@ Button
             implicitHeight: heightButton
             border.color: borderColorButton
             border.width: borderWidthButton
-            radius: dapButton.enabled  ? currTheme.radiusButton : currTheme.radiusRectangle
+            radius: currTheme.radiusButton
 
             ///button text
             Text
@@ -127,14 +128,29 @@ Button
             }
         }
     DropShadow {
+        id:shadow
 //                Layout.alignment: buttonSend
         anchors.fill: dapBackgroundButton
         horizontalOffset: 2
         verticalOffset: 2
-        radius: 10
+        radius: 8
         samples: 32
         color: shadowColor
         source: dapBackgroundButton
         smooth: true
         }
+
+    InnerShadow {
+        id: light
+        anchors.fill: dapBackgroundButton
+        horizontalOffset: 1
+        verticalOffset: 1
+        radius: 5
+        samples: 50
+        cached: true
+        color: innerShadowColor
+        source: shadow
+        visible: dapBackgroundButton.visible
+        spread: 0
+    }
 }

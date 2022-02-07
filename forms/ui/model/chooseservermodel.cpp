@@ -118,4 +118,17 @@ void ChooseServerModel::slotToggled(bool checked)
   });
 }
 
+void ChooseServerModel::setSelectedItem(QString name)
+{
+    if (m_model == nullptr)
+      return;
+    int listSize = m_list.length();
+    for (int row=0; row<m_model->rowCount(); row++)
+    {
+        QString text = m_model->data(m_model->index(row)).toString();
+        if (row < listSize)
+            m_list.at(row)->setIndicatorChecked(text == name);
+    }
+}
+
 /*-----------------------------------------*/

@@ -106,7 +106,7 @@ void DapGuiRadio::setUncheckedCssClass(const QString &a_cssClass)
 /****************************************//**
  * @property DapGuiRadio::checked
  * @brief radio state
- * @accessors %checked(), %setChecked()
+ * @accessors %checked(), %setIndicatorChecked(), %setChecked()
  *******************************************/
 
 bool DapGuiRadio::checked() const
@@ -114,11 +114,16 @@ bool DapGuiRadio::checked() const
   return m_checked;
 }
 
-void DapGuiRadio::setChecked(bool a_newChecked)
+void DapGuiRadio::setIndicatorChecked(bool a_newChecked)
 {
   m_checked = a_newChecked;
   ui->indicator_checked->setVisible (m_checked);
   ui->indicator_unchecked->setVisible (!m_checked);
+}
+
+void DapGuiRadio::setChecked(bool a_newChecked)
+{
+  setIndicatorChecked(a_newChecked);
   emit toggled (a_newChecked);
 }
 
