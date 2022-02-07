@@ -234,8 +234,8 @@ void SettingsModel::_updateLabels()
 
     _SItem{SI_TITLE,      {tr("Information"), ""}, "settings_icon", defaultCb},
 
-    //_SItem{SI_LINK,       {TR ("Bug Reports")}, "settings_icon ic_information_bug-report", cbBugReport},
-    //_SItem{SI_BUTTON,     {TR ("Serial key history on this device")}, "settings_icon ic_key-history", cbLicenceHistory},
+    _SItem{SI_LINK,       {tr ("Bug Reports")}, "settings_icon ic_information_bug-report", cbBugReport},
+    _SItem{SI_LINK,       {tr ("Serial key history on this device")}, "settings_icon ic_key-history", cbLicenceHistory},
     _SItem{SI_BUTTON,     {tr("Terms of use"), ""}, "settings_icon ic_terms_policy", cbTermsOfUse},
     _SItem{SI_BUTTON,     {tr("Privacy policy"), ""}, "settings_icon ic_terms_policy", cbPrivacyPolicy},
     _SItem{SI_BUTTONGRAY, {tr("Version"), "@version"}, "settings_icon ic_version", cbVersion},
