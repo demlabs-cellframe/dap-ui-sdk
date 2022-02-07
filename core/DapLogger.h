@@ -22,29 +22,22 @@ class DapLogger : public QObject
 {
     Q_OBJECT
 private:
-    static void messageHandler(QtMsgType type, const QMessageLogContext &ctx,
-                               const QString & msg);
+    static void messageHandler(QtMsgType type, const QMessageLogContext &ctx, const QString & msg);
     inline static dap_log_level castQtMsgToDap(QtMsgType type);
-
+    void setPathToLog(QString path){ m_pathToLog = path; }
+    void updateCurrentLogName();
+    void setLogFile(const QString&);
 public:
     explicit DapLogger(QObject *parent = nullptr, QString appType = "", size_t prefix_width = 10);
-
-    void setLogFile(const QString& filePath);
-    void createChangerLogFiles();
-
     QString getPathToLog(){ return m_pathToLog; }
-    void setPathToLog(QString path){ m_pathToLog = path; }
-
     static QString defaultLogPath(const QString a_brand);
     static QString currentLogFileName(const QString a_brand, const QString a_appType);
     static QString currentLogFilePath(const QString a_brand, const QString a_appType);
-
     QString getCurrentLogName(){ return m_currentLogName; }
-    void updateCurrentLogName();
-
     void setAppType(QString type){m_appType = type;}
     void clearOldLogs();
     static void setLogLevel(dap_log_level ll);
+    void createChangerLogFiles();
 private:
     QTimer t;
     QString m_pathToLog;
