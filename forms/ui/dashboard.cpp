@@ -10,7 +10,7 @@
 
 Dashboard::Dashboard (QWidget *parent) :
   BaseForm (parent),
-  ui (new Ui::Connection),
+  ui (new Ui::Dashboard),
   m_started (QDateTime())
 {
   /* setup ui */

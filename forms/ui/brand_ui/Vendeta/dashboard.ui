@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Connection</class>
- <widget class="QWidget" name="Connection">
+ <class>Dashboard</class>
+ <widget class="QWidget" name="Dashboard">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -30,8 +30,8 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="DapGuiWidget" name="Background">
-     <property name="cssStyle">
+    <widget class="DapGuiWidget" name="Background" native="true">
+     <property name="cssStyle" stdset="0">
       <string>backgroundcolor</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -51,8 +51,8 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="DapGuiWidget" name="kelGuiWidget_2">
-        <property name="cssStyle">
+       <widget class="DapGuiWidget" name="kelGuiWidget_2" native="true">
+        <property name="cssStyle" stdset="0">
          <string>conn-top-spacer</string>
         </property>
        </widget>
@@ -74,14 +74,14 @@
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
-        <property name="cssStyle">
+        <property name="cssStyle" stdset="0">
          <string>conn-top-text-connected font24 red normalbold lato noborder nobackground</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="DapGuiWidget" name="kelGuiWidget_5">
-        <property name="cssStyle">
+       <widget class="DapGuiWidget" name="kelGuiWidget_5" native="true">
+        <property name="cssStyle" stdset="0">
          <string>conn-top-text-time</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout">
@@ -115,14 +115,14 @@
          </item>
          <item>
           <widget class="DapGuiLabel" name="lStatusIconOn">
-           <property name="cssStyle">
+           <property name="cssStyle" stdset="0">
             <string>conn-status-icon ic_online noborder nobackground</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="DapGuiLabel" name="lStatusIconOff">
-           <property name="cssStyle">
+           <property name="cssStyle" stdset="0">
             <string>conn-status-icon ic_offline noborder nobackground</string>
            </property>
           </widget>
@@ -141,7 +141,7 @@
            <property name="text">
             <string>56 : 30 : 10</string>
            </property>
-           <property name="cssStyle">
+           <property name="cssStyle" stdset="0">
             <string>conn-top-text-time font18 normal darkblue lato noborder nobackground</string>
            </property>
           </widget>
@@ -163,22 +163,92 @@
        </widget>
       </item>
       <item>
-       <widget class="DapGuiWidget" name="kelGuiWidget_3">
-        <property name="cssStyle">
-         <string>conn-mid-button-spacer</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
-         <widget class="DapGuiSwitch" name="btnSwitch"/>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>15</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="DapGuiLabel" name="lStatus">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">#lStatus{ 	font: 13px/18px; 
+ 	color: #F53172; 
+ 	font-family: 'Lato'; 
+ 	font-weight: normal; 	font-style: normal; 	font-size: normal; 
+ 	height: 40px; 	min-height: 40px; 	max-height: 40px; 
+ 	border: none; 
+ 	background-color: rgba(0,0,0,0); }</string>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="text">
+           <string>Error message box
+Usualy unvisible by being empty</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+          <property name="cssStyle" stdset="0">
+           <string>font13 red_error lato normal login-error-message noborder nobackground</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>15</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </item>
       <item>
-       <widget class="DapGuiWidget" name="kelGuiWidget_4">
-        <property name="cssStyle">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="DapGuiSwitch" name="btnSwitch" native="true"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="DapGuiWidget" name="kelGuiWidget_4" native="true">
+        <property name="cssStyle" stdset="0">
          <string>conn-down-button-spacer</string>
         </property>
        </widget>
@@ -186,39 +256,39 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="DapGuiButton" name="lDownload">
-          <property name="cssStyle">
+         <widget class="DapGuiButton" name="lDownload" native="true">
+          <property name="cssStyle" stdset="0">
            <string>conn-status-button</string>
           </property>
-          <property name="mainText">
+          <property name="mainText" stdset="0">
            <string>120 kb/s</string>
           </property>
-          <property name="subText">
+          <property name="subText" stdset="0">
            <string>download</string>
           </property>
-          <property name="mainCssClass">
+          <property name="mainCssClass" stdset="0">
            <string>darkblue bold font26 lato</string>
           </property>
-          <property name="subCssClass">
+          <property name="subCssClass" stdset="0">
            <string>gray uppercase font12 lato</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="DapGuiButton" name="lUpload">
-          <property name="cssStyle">
+         <widget class="DapGuiButton" name="lUpload" native="true">
+          <property name="cssStyle" stdset="0">
            <string>conn-status-button</string>
           </property>
-          <property name="mainText">
+          <property name="mainText" stdset="0">
            <string>34.7 kb/s</string>
           </property>
-          <property name="subText">
+          <property name="subText" stdset="0">
            <string>upload</string>
           </property>
-          <property name="mainCssClass">
+          <property name="mainCssClass" stdset="0">
            <string>darkblue normalbold font26 lato</string>
           </property>
-          <property name="subCssClass">
+          <property name="subCssClass" stdset="0">
            <string>gray uppercase font12 lato</string>
           </property>
          </widget>
@@ -228,38 +298,35 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="DapGuiButton" name="btnServer">
+         <widget class="DapGuiButton" name="btnServer" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="cssStyle">
+          <property name="cssStyle" stdset="0">
            <string>conn-connectedto-button nobackground</string>
           </property>
-          <property name="buttonStyle" stdset="0">
-           <enum>DapGuiButton::TopSubBottomMain</enum>
-          </property>
-          <property name="mainText">
+          <property name="mainText" stdset="0">
            <string>North America - Canada</string>
           </property>
-          <property name="subText">
+          <property name="subText" stdset="0">
            <string>231:532:531:20</string>
           </property>
-          <property name="mainCssClass">
+          <property name="mainCssClass" stdset="0">
            <string>darkblue font18 normalbold</string>
           </property>
-          <property name="subCssClass">
+          <property name="subCssClass" stdset="0">
            <string>gray uppercase font16 lato normal</string>
           </property>
-          <property name="leftCssClass">
+          <property name="leftCssClass" stdset="0">
            <string>darkblue normalbold font30 lato</string>
           </property>
-          <property name="link">
+          <property name="link" stdset="0">
            <bool>true</bool>
           </property>
-          <property name="frame">
+          <property name="frame" stdset="0">
            <bool>true</bool>
           </property>
          </widget>
@@ -267,8 +334,8 @@
        </layout>
       </item>
       <item>
-       <widget class="DapGuiWidget" name="kelGuiWidget">
-        <property name="cssStyle">
+       <widget class="DapGuiWidget" name="kelGuiWidget" native="true">
+        <property name="cssStyle" stdset="0">
          <string>footer</string>
         </property>
        </widget>
@@ -280,16 +347,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>DapGuiButton</class>
-   <extends>QWidget</extends>
-   <header>dapguibutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>DapGuiSwitch</class>
-   <extends>QWidget</extends>
-   <header>dapguiswitch.h</header>
-  </customwidget>
-  <customwidget>
    <class>DapGuiLabel</class>
    <extends>QLabel</extends>
    <header>dapguilabel.h</header>
@@ -299,6 +356,16 @@
    <extends>QWidget</extends>
    <header>dapguiwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DapGuiButton</class>
+   <extends>QWidget</extends>
+   <header>dapguibutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DapGuiSwitch</class>
+   <extends>QWidget</extends>
+   <header>dapguiswitch.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
