@@ -8,7 +8,7 @@
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
-namespace Ui { class Connection;}
+namespace Ui { class Dashboard;}
 QT_END_NAMESPACE
 
 /****************************************//**
@@ -39,7 +39,7 @@ class Dashboard : public BaseForm
    *******************************************/
   /// @{
 private:
-  Ui::Connection *ui;
+  Ui::Dashboard *ui;
   QDateTime m_started;
   QTimer *m_updateTime;
   /// @}
