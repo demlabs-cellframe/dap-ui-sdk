@@ -87,6 +87,8 @@ ComboBox
     ///@details isDefaultNeedToAppend Sign to add default data to the beginning of model
     property bool isDefaultNeedToAppend: false
 
+    property string recomendedText
+
     width: popup.visible ? widthPopupComboBoxActive : widthPopupComboBoxNormal
     height: popup.visible ? heightComboBoxActive : heightComboBoxNormal
     anchors.verticalCenter: parent.verticalCenter
