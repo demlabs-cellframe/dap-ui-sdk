@@ -7,6 +7,7 @@
 /* VARS */
 static DapQmlStyle *s_globalSignal = nullptr;
 static bool s_gsHook = false;
+static QString s_styleSheet;
 static thread_local double s_screenWidth = 428, s_screenHeight = 926;
 
 /********************************************
@@ -34,9 +35,14 @@ DapQmlStyle::DapQmlStyle(QObject *parent)
            Qt::QueuedConnection);
 
   if (s_globalSignal)
-    connect (s_globalSignal, &DapQmlStyle::resized,
-             this, &DapQmlStyle::_resized,
-             Qt::QueuedConnection);
+    {
+      connect (s_globalSignal, &DapQmlStyle::resized,
+               this, &DapQmlStyle::_resized,
+               Qt::QueuedConnection);
+      connect (s_globalSignal, &DapQmlStyle::redrawRequested,
+               this, &DapQmlStyle::_applyStyle,
+               Qt::QueuedConnection);
+    }
 }
 
 /********************************************
@@ -69,6 +75,15 @@ void DapQmlStyle::windowResized(int a_width, int a_height)
 {
   if (s_globalSignal)
     emit s_globalSignal->resized (a_width, a_height);
+}
+
+void DapQmlStyle::requestRedraw()
+{
+  if (s_globalSignal)
+    {
+      update();
+      emit s_globalSignal->redrawRequested();
+    }
 }
 
 double DapQmlStyle::centerHor (QObject *a_root, QObject *a_item)
@@ -109,7 +124,13 @@ double DapQmlStyle::centerVer (QObject *a_root, QObject *a_item)
 
 void DapQmlStyle::setup(const QString &styleSheet)
 {
-  Style::QssMap::setup (styleSheet);
+  s_styleSheet  = styleSheet;
+  update();
+}
+
+void DapQmlStyle::update()
+{
+  Style::QssMap::setup (s_styleSheet);
 }
 
 /********************************************

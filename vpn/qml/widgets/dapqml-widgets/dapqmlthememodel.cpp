@@ -14,6 +14,22 @@ DapQmlThemeModel::DapQmlThemeModel(QObject *parent)
 }
 
 /********************************************
+ * METHODS
+ *******************************************/
+
+QString DapQmlThemeModel::currentCategory() const
+{
+  auto cc = Style::QssLink::currentCategory();
+  return cc.at(0).toUpper() + cc.mid(1);
+}
+
+bool DapQmlThemeModel::isCurrent(const QString &a_name) const
+{
+  auto compare = currentCategory();
+  return compare == a_name;
+}
+
+/********************************************
  * OVERRIDE
  *******************************************/
 

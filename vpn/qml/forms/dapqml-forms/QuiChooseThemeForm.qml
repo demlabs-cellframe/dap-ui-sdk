@@ -1,11 +1,25 @@
 import QtQuick 2.0
 import DapQmlThemeModel 1.0
+import ChooseThemeInterface 1.0
+import PageCtl 1.0
+import DapQmlStyle 1.0
 import "qrc:/dapqml-widgets"
 
 Item {
     id: root
 
-    signal close()
+    /* vars */
+    ChooseThemeInterface{ id: chooseThemeInterface }
+    DapQmlStyle { id: style }
+
+    /* go back timer */
+    Timer {
+        id: backTimer
+        interval: 350
+        running: false
+        repeat: false
+        onTriggered: PageCtl.slotBackwardAuto()
+    }
 
     /* title */
     DapQmlDialogTitle {
@@ -39,10 +53,16 @@ Item {
         model: themeModel
 
         delegate: DapQmlRadioButton {
-            text: model.name
+            text: model.name + " Theme"
             separator: true
             iconSize: resizer.height
             width: resizer.width
             height: resizer.height
+            checked: themeModel.isCurrent (model.name)
+            onClicked: {
+                chooseThemeInterface.clicked (model.name);
+                style.requestRedraw();
+                backTimer.start();
+            }
         }
     }}

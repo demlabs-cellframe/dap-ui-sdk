@@ -55,11 +55,13 @@ public:
   Q_INVOKABLE void setItem (QObject *a_newItem);
 
   Q_INVOKABLE void windowResized (int a_width, int a_height);
+  Q_INVOKABLE void requestRedraw();
 
   Q_INVOKABLE double centerHor (QObject *a_root, QObject *a_item);
   Q_INVOKABLE double centerVer (QObject *a_root, QObject *a_item);
 
   static void setup (const QString &styleSheet);
+  static void update();
   /// @}
 
   /****************************************//**
@@ -67,6 +69,7 @@ public:
    *******************************************/
   /// @{
 signals:
+  void redrawRequested();
   void qssChanged();
   void itemChanged();
   void resized (int a_width, int a_height);

@@ -6,8 +6,6 @@ import DapQmlStyle 1.0
 RadioButton {
     id: root
 
-    signal clicked();
-
     /* VARS */
 
     text: ""
@@ -40,47 +38,4 @@ RadioButton {
         width: root.width
         visible: root.separator
     }
-
-//    /* content */
-//    GridLayout {
-//        anchors.fill: parent;
-//        columns: 1
-
-//        /* btn & label */
-//        GridLayout {
-//            Layout.fillWidth: true
-//            Layout.fillHeight: true
-//            columns: 2
-
-//            /* icon */
-//            DapQmlLabel {
-//                Layout.preferredWidth: root.iconSize
-//                Layout.preferredHeight: root.iconSize
-
-//                qss: root.checked ? "radio-on" : "radio-off"
-//                width: root.iconSize
-//                height: root.iconSize
-//            }
-
-//            /* text */
-//            DapQmlLabel {
-//                Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
-//                Layout.fillWidth: true
-//                Layout.fillHeight: true
-
-//                horizontalAlign: Text.AlignLeft
-//                verticalAlign: Text.AlignVCenter
-//                text: root.text
-//                qss: root.textQss
-//                clip: false
-//            }
-//        }
-
-//        /* bottom separator */
-//        DapQmlSeparator {
-//            Layout.fillWidth: true
-//            width: root.width
-//            visible: root.separator
-//        }
-//    }
 }

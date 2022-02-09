@@ -13,12 +13,21 @@
 	accent: "#F53172";
 	upload: "#5E31F5";
 	grid: "#211F46";
+	separator-left:             "qrc:/light/separator_left.png";
+	separator-mid:              "qrc:/light/separator_mid.png";
+	separator-right:            "qrc:/light/separator_right.png";
+	footer-settings-active:     "qrc:/light/btn_settings_active.png";
+	footer-settings-inactive:   "qrc:/light/btn_settings.png";
+	footer-dashboard-active:    "qrc:/light/btn_connection_active.png";
+	footer-dashboard-inactive:  "qrc:/light/btn_connection.png";
+	footer-statistics-active:   "qrc:/light/btn_account_active.png";
+	footer-statistics-inactive: "qrc:/light/btn_account.png";
 }
 
 .@dark
 {
 	text: "#FFFFFF";
-	background: "#28264D";
+	background: "#2f2e42";
 	label: "#A4A3C0";
 	light-grey: "#A4A3C0";
 	error: "#F5FF00";
@@ -26,6 +35,15 @@
 	accent: "#FF22A2";
 	upload: "#9F83FF";
 	grid: "#211F46";
+	separator-left:             "qrc:/dark/separator_left.png";
+	separator-mid:              "qrc:/dark/separator_mid.png";
+	separator-right:            "qrc:/dark/separator_right.png";
+	footer-settings-active:     "qrc:/dark/btn_settings_active.png";
+	footer-settings-inactive:   "qrc:/dark/btn_settings.png";
+	footer-dashboard-active:    "qrc:/dark/btn_connection_active.png";
+	footer-dashboard-inactive:  "qrc:/dark/btn_connection.png";
+	footer-statistics-active:   "qrc:/dark/btn_account_active.png";
+	footer-statistics-inactive: "qrc:/dark/btn_account.png";
 }
 
 /****************************************************
@@ -83,6 +101,23 @@
 {
 	scaled-rect: scaled(39,0,282,28,false,24);
 	color: "@text";
+}
+
+
+
+.sep-left
+{
+	source: "@separator-left";
+}
+
+.sep-mid
+{
+	source: "@separator-mid";
+}
+
+.sep-right
+{
+	source: "@separator-right";
 }
 
 /****************************************************
@@ -184,6 +219,11 @@
 	scaled-rect: scaled(0,0,-1,754,false);
 }
 
+.content-background
+{
+	color: "@background";
+}
+
 /****************************************************
  * Misc
  ***************************************************/
@@ -191,6 +231,7 @@
 .dialog-title
 {
 	scaled-rect: scaled(34,62,360,28,false);
+	color: "@text";
 }
 
 /****************************************************
@@ -241,16 +282,22 @@
 .footer-btn-settings
 {
 	scaled-rect: scaled(19,0,130,130,true);
+	active: "@footer-settings-active";
+	inactive: "@footer-settings-inactive";
 }
 
 .footer-btn-dashboard
 {
 	scaled-rect: scaled(149,0,130,130,true);
+	active: "@footer-dashboard-active";
+	inactive: "@footer-dashboard-inactive";
 }
 
 .footer-btn-statistics
 {
 	scaled-rect: scaled(279,0,130,130,true);
+	active: "@footer-statistics-active";
+	inactive: "@footer-statistics-inactive";
 }
 
 /****************************************************

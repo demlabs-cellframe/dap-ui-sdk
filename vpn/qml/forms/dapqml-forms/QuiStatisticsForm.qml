@@ -6,7 +6,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: "#F7F8FA"
+        color: "transparent"
 
         GridLayout {
             anchors.fill: parent
