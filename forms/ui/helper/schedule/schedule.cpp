@@ -24,7 +24,6 @@ void Schedule::updateSample()
     quint64 newTime = CurrentMillisecond();
     if (newTime != s_time)
     {
-        qDebug() << (s_sample0 - s_sample1) << (newTime - s_time) << newTime;
         viewfilter.push(1000 * (s_sample0 - s_sample1)/(newTime - s_time));
         m_elems.push_front(SheduleElement(newTime, viewfilter.sum()));
         s_sample1 = s_sample0;
