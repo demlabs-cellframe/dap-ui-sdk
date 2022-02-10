@@ -96,11 +96,12 @@ Item {
             width: parent.width - 74
 
             buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
-            mainText: "____ ____ ____ ____"
+            //mainText: "____ ____ ____ ____"
             subText: "SERIAL KEY"
             qss: "login-btn-serial"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
+            inputMask: ">NNNN-NNNN-NNNN-NNNN;_"
             separator: true
 
             onClicked: root.sigChooseSerial()

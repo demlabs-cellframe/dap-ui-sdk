@@ -27,6 +27,7 @@ Rectangle {
     property string mainText: "Main text"
     property string subText: "Sub text"
     property string leftText: "Left text"
+    property string inputMask
     property string qss: ""
     property string mainQss: ""
     property string leftQss: ""
@@ -292,6 +293,7 @@ Rectangle {
                 //verticalAlignment: Text.AlignBottom
                 text: root.mainText
                 //qss: root.mainQss
+                inputMask: root.inputMask
 
                 onTextEdited: { root.mainText = text; root.textEdited(); }
                 onTextChanged: { root.mainText = text; root.textChanged(); }
