@@ -21,6 +21,7 @@ RadioButton {
         qss: root.checked ? "radio-on" : "radio-off"
         width: root.iconSize
         height: root.iconSize
+        onClicked: { root.toggle(); root.clicked(); }
     }
 
     contentItem: DapQmlLabel {
@@ -30,6 +31,7 @@ RadioButton {
         text: root.text
         qss: root.textQss
         clip: false
+        onClicked: { root.toggle(); root.clicked(); }
     }
 
     /* bottom separator */
