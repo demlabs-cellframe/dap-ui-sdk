@@ -4,7 +4,8 @@ import "qrc:/dapqml-widgets"
 Item {
     id: root
 
-    signal close()
+    /* signals */
+    signal sigSelect(int index, string name);
 
     /* title */
     DapQmlDialogTitle {
@@ -55,6 +56,7 @@ Item {
             iconSize: resizer.height
             width: resizer.width
             height: resizer.height
+            onClicked: root.sigSelect (model.index, model.name)
         }
     }
 }

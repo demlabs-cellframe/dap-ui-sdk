@@ -6,6 +6,11 @@ import "qrc:/dapqml-widgets"
 Item {
     id: root
 
+    /* signals */
+    signal sigSwitchToggle (bool checked);
+    signal sigServerClicked();
+    //signal sigDisconnectionRequested();
+
     /* title */
     DapQmlLabel {
 //        x: centerHor(this)
@@ -48,6 +53,7 @@ Item {
     /* switch */
     DapQmlSwitch {
         qss: "dashboard-switch"
+        onClicked: root.sigSwitchToggle(checked)
     }
 
     /* speed */
@@ -90,5 +96,6 @@ Item {
         mainQss: "dashboard-server-main"
         subQss: "dashboard-server-sub"
         qss: "dashboard-server-container"
+        onClicked: root.sigServerClicked()
     }
 }

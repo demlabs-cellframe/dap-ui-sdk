@@ -8,6 +8,9 @@ import "qrc:/dapqml-widgets"
 Item {
     id: root
 
+    /* signals */
+    signal sigSelect(int index, string name);
+
     /* vars */
     ChooseThemeInterface{ id: chooseThemeInterface }
     DapQmlStyle { id: style }
@@ -63,6 +66,7 @@ Item {
                 chooseThemeInterface.clicked (model.name);
                 style.requestRedraw();
                 backTimer.start();
+                root.sigSelect (mode.index, model.name);
             }
         }
     }}

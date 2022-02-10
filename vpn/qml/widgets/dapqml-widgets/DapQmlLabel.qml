@@ -4,8 +4,11 @@ import DapQmlStyle 1.0
 Item {
     id: root
     clip: true
-//    width: (label.paintedWidth > icon.paintedWidth) ? label.paintedWidth : icon.paintedWidth
-//    height: (label.paintedHeight > icon.paintedHeight) ? label.paintedHeight : icon.paintedHeight
+
+    /* signals */
+    signal clicked();
+
+    /* VARS */
     property string qss
     property string text: ""
     property color color
@@ -52,6 +55,11 @@ Item {
             pixelSize: root.fontSize
             weight: root.fontWeight
         }
+    }
+
+    MouseArea {
+        anchors.fill: root
+        onClicked: root.clicked()
     }
 
     DapQmlStyle { id: style; qss: root.qss; item: root }

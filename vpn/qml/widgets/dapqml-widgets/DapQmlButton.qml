@@ -6,6 +6,11 @@ import DapQmlStyle 1.0
 Rectangle {
     id: root
 
+    /* signals */
+    signal clicked();
+    signal textEdited();
+    signal textChanged();
+
     /* DEFS */
 
     enum Style
@@ -66,6 +71,11 @@ Rectangle {
             root.labelMain  = imsMain;
             root.labelSub   = imsSub;
             root.labelIcon  = imsIcon;
+        }
+        else if(root.buttonStyle === DapQmlButton.Style.EditTopMainBottomSub)
+        {
+            root.labelMain  = etmbsMain;
+            root.labelSub   = etmbsSub;
         }
 
     }
@@ -247,6 +257,60 @@ Rectangle {
                 verticalAlign: Text.AlignTop
                 text: root.mainText
                 qss: root.mainQss
+            }
+
+        }
+
+        /* EditTopMainBottomSub */
+        /* Two items by vertical with editable text field */
+        Item {
+            id: etmbs
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            visible: (root.buttonStyle === DapQmlButton.Style.EditTopMainBottomSub)
+
+            /* store references */
+            Component.onCompleted: {
+                if(visible)
+                {
+                    root.labelMain  = etmbsMain;
+                    root.labelSub   = etmbsSub;
+                }
+            }
+
+            /* main text */
+            TextField {
+                id: etmbsMain
+                //Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                //Layout.fillWidth: true
+                //Layout.fillHeight: true
+                y: 0
+                width: etmbs.width
+                height: etmbs.height / 2
+
+                horizontalAlignment: Text.AlignHCenter
+                //verticalAlignment: Text.AlignBottom
+                text: root.mainText
+                //qss: root.mainQss
+
+                onTextEdited: { root.mainText = text; root.textEdited(); }
+                onTextChanged: { root.mainText = text; root.textChanged(); }
+            }
+
+            /* sub text */
+            DapQmlLabel {
+                id: etmbsSub
+                //Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                //Layout.fillWidth: true
+                //Layout.fillHeight: true
+                y: etmbs.height / 2
+                width: etmbs.width
+                height: etmbs.height / 2
+
+                horizontalAlign: Text.AlignHCenter
+                //verticalAlign: Text.AlignTop
+                text: root.subText
+                qss: root.subQss
             }
 
         }

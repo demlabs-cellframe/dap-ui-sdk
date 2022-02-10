@@ -9,6 +9,20 @@ import "qrc:/dapqml-widgets"
 Item {
     id: root
 
+    /* signals */
+    signal sigChooseServer();
+    signal sigChooseSerial();
+    signal sigConnect();
+    signal sigObtainNewKey();
+
+    signal textEditedAndCleaned();
+    signal textEditedAndFilledOut (string serial);
+
+    signal textChangedAndCleaned();
+    signal textChangedAndFilledOut (string serial);
+
+    signal sigSerialFillingIncorrect();
+
     /* W I P */
     Timer {
         interval: 500
@@ -22,11 +36,6 @@ Item {
             btnEnterSerial.separator    = true;
         }
     }
-
-//    Component.onCompleted: StyleDebugTree.describe (
-//       "Login",
-//        ["x", "y", "z", "width", "height"],
-//       this);
 
     /* logo */
     DapQmlRectangle {
@@ -72,6 +81,7 @@ Item {
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
             separator: true
+            onClicked: root.sigChooseServer()
         }
     }
 
@@ -80,17 +90,40 @@ Item {
         qss: "login-btn-serial-container"
         DapQmlButton {
             id: btnEnterSerial
+            property int maxCountChar: 16
             x: (parent.width - width) / 2
             z: 15
             width: parent.width - 74
 
-            buttonStyle: DapQmlButton.Style.TopMainBottomSub
+            buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
             mainText: "____ ____ ____ ____"
             subText: "SERIAL KEY"
             qss: "login-btn-serial"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
             separator: true
+
+            onClicked: root.sigChooseSerial()
+            onTextChanged: {
+                var text    = mainText;
+
+                if (text.length == maxCountChar)
+                    root.textChangedAndFilledOut (mainText);
+                else if (text.length == 0)
+                    root.textChangedAndCleaned();
+                else
+                    root.sigSerialFillingIncorrect();
+            }
+            onTextEdited: {
+                var text    = mainText;
+
+                if (text.length == maxCountChar)
+                    root.textEditedAndFilledOut (mainText);
+                else if (text.length == 0)
+                    root.textEditedAndCleaned();
+                else
+                    root.sigSerialFillingIncorrect();
+            }
         }
     }
 
@@ -104,6 +137,7 @@ Item {
             z: 15
 
             text: qsTr("CONNECT")
+            onClicked: root.sigConnect()
         }
     }
 
@@ -119,6 +153,7 @@ Item {
             height: parent.height
             horizontalAlign: Text.AlignRight
             qss: "login-obtain-font"
+            onClicked: root.sigObtainNewKey()
 //          font.family: "Lato"
 //          font.pixelSize: 16
 //          font.weight: Font.Normal
