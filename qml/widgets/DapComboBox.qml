@@ -95,6 +95,18 @@ DapComboBoxForm
                                                alignTextComboBox[0];
                                 onElTextChanged: textRow.elTextArray[index] = elText
 
+
+
+                                Text
+                                {
+                                    x: parent.width / 4 * 3 - width * 0.5
+                                    y: parent.height * 0.5 - height * 0.5
+                                    text: "Recommended"
+                                    font.pixelSize: 10
+                                    color: textColor
+                                    visible: fullText == recomendedText
+                                }
+
                                 Component.onCompleted:
                                 {
                                     if(rectangleTextComboBox.comboBoxIndex == rectangleTextComboBox.comboBoxCurrentIndex)
