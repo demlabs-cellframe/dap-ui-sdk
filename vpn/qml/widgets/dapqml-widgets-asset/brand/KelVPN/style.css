@@ -545,6 +545,11 @@
 	scaled-rect: scaled(19,133,390,200,true,16);
 }
 
+.bugrep-input-content
+{
+	scaled-rect: scaled(-1,40,340,144,true,16);
+}
+
 .bugrep-letter-counter
 {
 	scaled-rect: scaled(291,333,100,19,false,16);

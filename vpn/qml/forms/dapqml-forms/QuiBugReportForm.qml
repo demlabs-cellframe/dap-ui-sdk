@@ -1,5 +1,7 @@
 import QtQuick 2.4
 import DapQmlStyle 1.0
+import QtQuick.Controls 2.12
+import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
 Item {
@@ -27,6 +29,35 @@ Item {
             Image {
                 anchors.fill: input
                 source: "qrc:/light/report_bg.png"
+
+                Component.onCompleted: StyleDebugTree.describe (
+                   "Bug rep image",
+                    ["x", "y", "width", "height"],
+                   this);
+
+                ScrollView
+                {
+                    id: bugRepInput
+                    clip: true
+
+                    DapQmlStyle { item: bugRepInput; qss: "bugrep-input-content"; }
+
+                    Component.onCompleted: StyleDebugTree.describe (
+                       "Bug rep scrollview",
+                        ["x", "y", "width", "height"],
+                       this);
+
+                    TextEdit {
+                        anchors.fill: parent
+                        //maximumLength: 200
+                        wrapMode: TextEdit.Wrap
+
+                        Component.onCompleted: StyleDebugTree.describe (
+                           "Bug rep input",
+                            ["x", "y", "width", "height"],
+                           this);
+                    }
+                }
             }
 
             DapQmlStyle { id: style; qss: input.qss; item: input }
