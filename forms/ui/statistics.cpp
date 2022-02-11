@@ -23,7 +23,8 @@ Statistics::Statistics (QWidget *parent) :
   m_packetsSent (0),
   m_ping (0),
   m_scene (new QGraphicsScene),
-  m_uptimeUpdateTimer (new QTimer)
+  m_uptimeUpdateTimer (new QTimer),
+  m_drawGraphTimer(new QTimer)
 {
   /* setup ui */
   ui->setupUi (this);
@@ -32,6 +33,7 @@ Statistics::Statistics (QWidget *parent) :
   /* setup scene */
   ui->graphicsView->setScene (m_scene);
   ui->graphicsView->setForm (this);
+  ui->graphicsView->scale(0.965, 0.935);
   //ui->graphicsView->setBackgroundBrush(QBrush("#f7f8fa", Qt::SolidPattern));
 
   /* setup uptime timer */
@@ -46,9 +48,20 @@ Statistics::Statistics (QWidget *parent) :
 
   ui->graphicsView->updateG();
 
+  /* update graph timer */
+  m_drawGraphTimer->setInterval(500);
+  connect (m_drawGraphTimer, &QTimer::timeout, [&]
+  {
+      m_drawGraphTimer->stop();
+      updateGraph();
+      m_drawGraphTimer->start();
+  });
+
   /* signals */
   connect (m_uptimeUpdateTimer, &QTimer::timeout,
            this, &Statistics::_slotUpdateUptimeTime);
+
+  m_drawGraphTimer->start();
 }
 
 Statistics::~Statistics()

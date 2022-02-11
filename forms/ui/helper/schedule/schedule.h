@@ -11,16 +11,44 @@
 #endif
 #include "SheduleElement.h"
 
+// view filter
+#define FILTER_SIZE 3
+class ViewFilter
+{
+public:
+    ViewFilter() { clear(); }
+    void push(quint64 data)
+    {
+        for (int k = 0; k < FILTER_SIZE - 1; k++)
+            sample[k] = sample[k + 1];
+        sample[FILTER_SIZE - 1] = data;
+    }
+    quint64 sum()
+    {
+        quint64 d = 0;
+        for (int k = 0; k < FILTER_SIZE; k++)
+            d += sample[k];
+        return (quint64) d / FILTER_SIZE;
+    }
+    void clear()
+    {
+        for (int k = 0; k < FILTER_SIZE; k++)
+            sample[k] = 0;
+    }
+private:
+    quint64 sample[FILTER_SIZE];
+};
+
 ///Adjustments were made, std::list was replaced with List ,and the reverse graph was made to close the line.
 /// You need to redo and refactor the code.
 ///
-// Класс для хранения и отрисовки меток скорости на графике.
 class Schedule
 {
     QList<SheduleElement> m_elems;
-    time_t s_time     = time(nullptr);
-    quint64 s_quantity = 0;
-    int diff       = 0;
+    quint64 s_time;
+    quint64 s_sample0 = 0;
+    quint64 s_sample1 = 0;
+    ViewFilter viewfilter;
 
 
 public:
@@ -31,6 +59,7 @@ public:
 
     int maxValue();
     void showChart(QGraphicsScene *scene, QPen pen, QColor color, int width, int height, int maxVal);
+    void updateSample();
 };
 
 #endif // SCHEDULE_H
