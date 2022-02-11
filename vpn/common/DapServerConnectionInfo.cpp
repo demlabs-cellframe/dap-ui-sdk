@@ -80,7 +80,6 @@ void DapServerConnectionInfo::clearStatisticAndStartTime()
     DapServerConnectionInfo::setStatistic(0, 0, 0, 0);
     m_uploadSpeed.reset();
     m_downloadSpeed.reset();
-    qDebug() << "DapServerConnectionInfo::clearStatisticAndStartTime";
     emit this->statisticSet(m_bytesReceived, m_bytesSent, m_packetsReceived, m_packetsSent,
                             m_uploadSpeed.speed(), m_downloadSpeed.speed(), m_uploadSpeed.asString(), m_downloadSpeed.asString());
 }
