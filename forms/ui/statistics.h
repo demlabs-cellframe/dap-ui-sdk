@@ -53,6 +53,7 @@ private:
   QDateTime m_started;
   QGraphicsScene *m_scene;
   QTimer *m_uptimeUpdateTimer;
+  QTimer *m_drawGraphTimer;
   /// @}
 
   /****************************************//**
@@ -103,7 +104,6 @@ public:
   QDateTime started() const;
   void setStarted (const QDateTime &started);
 
-  void updateGraph();
   void resetGraph();
 
   const QColor &colorBackground() const;
@@ -123,6 +123,7 @@ private:
   /// @{
 public slots:
   void slotRetranslated();
+  void updateGraph();
   /// @}
 };
 

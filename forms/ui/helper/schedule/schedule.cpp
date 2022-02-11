@@ -1,40 +1,48 @@
 #include "schedule.h"
 
+// return current time in ms
+quint64 CurrentMillisecond()
+{
+    quint64 ctime = (quint64) time(nullptr);
+    QTime qttime = QTime().currentTime();
+    return ctime * 1000 + qttime.msec();
+}
+
+
 Schedule::Schedule()
 {
-  m_elems.push_front (SheduleElement (time (nullptr), 0));
+  m_elems.push_front(SheduleElement (time (nullptr), 0));
 }
 
 void Schedule::addElem(quint64 newQuantity)
 {
-    time_t newTime = time(nullptr);
-    int velocity;
+    s_sample0 = newQuantity;
+}
 
-    if (newTime == s_time) {
-        velocity = diff = diff + static_cast<int>(m_elems.size()<=1? 0: newQuantity - s_quantity);
-
-        m_elems.pop_front();
-    } else {
-        diff     = static_cast<int>(newQuantity - s_quantity);
-        velocity = diff/(newTime - s_time);
-        s_time   = newTime;
+void Schedule::updateSample()
+{
+    quint64 newTime = CurrentMillisecond();
+    if (newTime != s_time)
+    {
+        viewfilter.push(1000 * (s_sample0 - s_sample1)/(newTime - s_time));
+        m_elems.push_front(SheduleElement(newTime, viewfilter.sum()));
+        s_sample1 = s_sample0;
+        s_time = newTime;
+        if (m_elems.size() > 40)
+        {
+            m_elems.pop_back();
+        }
     }
-
-    m_elems.push_front(SheduleElement(newTime, velocity));
-    s_quantity = newQuantity;
-
-    if (m_elems.size() > 40) {
-        m_elems.pop_back();
-      }
 }
 
 void Schedule::reset()
 {
   m_elems.clear();
-  m_elems.push_front (SheduleElement (time (nullptr), 0));
-  s_time     = time(nullptr);
-  s_quantity = 0;
-  diff       = 0;
+  m_elems.push_front(SheduleElement (time (nullptr), 0));
+  s_time = CurrentMillisecond();
+  s_sample0 = 0;
+  s_sample1 = 0;
+  viewfilter.clear();
 }
 
 int Schedule::maxValue()
@@ -73,46 +81,44 @@ int y_shift(int y, int height, int maxValue)
 
 
 void Schedule::showChart(
-    QGraphicsScene *scene, QPen pen, QColor color, int width, int height, int maxVal)
+        QGraphicsScene *scene, QPen pen, QColor color, int width, int height, int maxVal)
 {
     int size_of_chart = size();
-
     QPainterPath path = QPainterPath();
-
-    // выставляем на начальные позиции
     path.moveTo(
-        width,
-        y_shift(m_elems.begin()->velocity, height, maxVal)
-    );
-
+                width,
+                y_shift(m_elems.begin()->velocity, height, maxVal)
+                );
     int time_pos = size_of_chart - 2;
-    // отрисовываем путь
-
-     for(int i = 1;i<m_elems.size();i++)
+    for(int i = 1;i<m_elems.size();i++)
     {
         int y = 0;
         if (m_elems[i].velocity > y) y = m_elems[i].velocity;
 
         path.lineTo(
-            x_shift(time_pos, width, size_of_chart),
-            y_shift(y, height, maxVal));
+                    x_shift(time_pos, width, size_of_chart),
+                    y_shift(y, height, maxVal));
         time_pos--;
     }
-time_pos = 1;
-
+    time_pos = 1;
     for(int i = m_elems.size()-2;i>0;i--)
     {
         int y = m_elems[i].velocity;
         if (m_elems[i].velocity < y) y = m_elems[i].velocity;
 
         path.lineTo(
-            x_shift(time_pos, width, size_of_chart),
-            y_shift(y, height, maxVal));
+                    x_shift(time_pos, width, size_of_chart),
+                    y_shift(y, height, maxVal));
         time_pos++;
     }
-
     path.closeSubpath();
-
-    scene->addPath(path, pen, color);
+    QPen a_pen = QPen(pen);
+    a_pen.setJoinStyle(Qt::RoundJoin);
+#ifdef Q_OS_ANDROID
+    a_pen.setWidth(5);
+#else
+    a_pen.setWidth(2);
+#endif
+    scene->addPath(path, a_pen, color);
 }
 

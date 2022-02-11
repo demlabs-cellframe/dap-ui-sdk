@@ -82,14 +82,14 @@ void Schedules::draw_backgraund (QGraphicsScene *scene)
 
   int num_of_lines = m_horizontLines;
 
-  for (int i = 1; i < num_of_lines; i++)
+  for (int i = 0; i < num_of_lines + 1; i++)
     {
       path.moveTo (i * m_sceneWidth / num_of_lines, 0);
       path.lineTo (i * m_sceneWidth / num_of_lines, m_sceneHeight);
     }
 
   num_of_lines = m_verticalLines;
-  for (int i = 1; i < num_of_lines; i++)
+  for (int i = 0; i < num_of_lines + 1; i++)
     {
       path.moveTo (0, i * m_sceneHeight / num_of_lines);
       path.lineTo (m_sceneWidth, i * m_sceneHeight / num_of_lines);
@@ -108,6 +108,9 @@ void Schedules::draw_chart (QGraphicsScene *scene)
   m_sceneHeight = scene->height();
   scene->clear();
   draw_backgraund (scene);
+
+  inp.updateSample();
+  out.updateSample();
 
   if (out.size() < 2)
     return;
