@@ -45,9 +45,6 @@ private:
 class Schedule
 {
     QList<SheduleElement> m_elems;
-    quint64 s_time;
-    quint64 s_sample0 = 0;
-    quint64 s_sample1 = 0;
     ViewFilter viewfilter;
 
 
@@ -59,7 +56,6 @@ public:
 
     int maxValue();
     void showChart(QGraphicsScene *scene, QPen pen, QColor color, int width, int height, int maxVal);
-    void updateSample();
 };
 
 #endif // SCHEDULE_H

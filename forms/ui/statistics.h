@@ -8,7 +8,6 @@
 #include "../../ui/schedules.h"
 #else // NEUROMORPHIC
 #include "ui/helper/schedule/schedules.h"
-#include "ui/helper/speedhelper.h"
 #endif // NEUROMORPHIC
 
 /* DEFS */

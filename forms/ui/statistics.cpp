@@ -117,9 +117,6 @@ void Statistics::startImitatingSchedules()
 
     /* update uptime */
     ui->statUptime->setMainText (uptimeStr());
-
-    /* draw scene */
-    updateGraph();
   });
 
   /* start timer */
@@ -150,6 +147,7 @@ quint64 Statistics::downloadSpeed() const
 void Statistics::setDownloadSpeed (const quint64 &downloadSpeed)
 {
   m_downloadSpeed = downloadSpeed;
+  schedules.addInp (m_downloadSpeed);
 }
 
 void Statistics::setDownloadSpeedString(const QString &downloadSpeed)
@@ -165,6 +163,7 @@ quint64 Statistics::uploadSpeed() const
 void Statistics::setUploadSpeed (const quint64 &uploadSpeed)
 {
   m_uploadSpeed = uploadSpeed;
+  schedules.addOut (m_uploadSpeed);
 }
 
 void Statistics::setUploadSpeedString(const QString &uploadSpeed)
@@ -183,7 +182,6 @@ void Statistics::setBytesReceived (const quint64 &bytesReceived)
   m_bytesReceived = bytesReceived;
   auto text       = TrafficStringHelper (m_bytesReceived).asString(); //QString ("%1 Bytes").arg (m_bytesReceived);
   ui->statBytesRec->setMainText (text);
-  schedules.addInp (m_bytesReceived);
 }
 
 void Statistics::addBytesReceived (const quint64 &bytesReceived)
@@ -203,7 +201,6 @@ void Statistics::setBytesSent (const quint64 &bytesSent)
   m_bytesSent = bytesSent;
   auto text   = TrafficStringHelper (m_bytesSent).asString(); //QString ("%1 Bytes").arg (m_bytesSent);
   ui->statBytesSent->setMainText (text);
-  schedules.addOut (m_bytesSent);
 }
 
 void Statistics::addBytesSent (const quint64 &bytesSent)

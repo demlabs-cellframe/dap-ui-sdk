@@ -1,9 +1,12 @@
-#ifndef SPEEDHELPER_H
-#define SPEEDHELPER_H
+#ifndef DAPSPEED_H
+#define DAPSPEED_H
 
 #include <QtCore>
 
-class SpeedStringHelper
+quint64 CurrentMillisecond();
+QString SpeedToString(quint64 a_speed);
+
+class DapSpeed
 {
 private:
     quint64 m_bytes;
@@ -11,9 +14,9 @@ private:
     quint64 m_speed;
     bool    m_init;
     // return current time in ms
-    quint64 CurrentMillisecond();
+    quint64 currentMillisecond();
 public:
-    SpeedStringHelper ();
+    DapSpeed ();
     void setTraffic(quint64 bytes);
     quint64 speed() const;
     quint64 traffic() const;
@@ -22,4 +25,4 @@ public:
 };
 
 /*-----------------------------------------*/
-#endif // SPEEDHELPER_H
+#endif // DAPSPEED_H
