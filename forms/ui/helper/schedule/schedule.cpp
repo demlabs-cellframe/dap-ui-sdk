@@ -27,6 +27,7 @@ void Schedule::updateSample()
         viewfilter.push(1000 * (s_sample0 - s_sample1)/(newTime - s_time));
         m_elems.push_front(SheduleElement(newTime, viewfilter.sum()));
         s_sample1 = s_sample0;
+        s_time = newTime;
         if (m_elems.size() > 40)
         {
             m_elems.pop_back();
