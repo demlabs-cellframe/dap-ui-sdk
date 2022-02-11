@@ -19,6 +19,7 @@ SOURCES     += \
     $$PWD/ui/helper/serialinputfield.cpp \
     $$PWD/ui/helper/trafficstringhelper.cpp \
     $$PWD/ui/helper/uptimestringhelper.cpp \
+    $$PWD/ui/helper/speedhelper.cpp \
     $$PWD/ui/history.cpp \
     $$PWD/ui/language.cpp \
     $$PWD/ui/login.cpp \
@@ -57,6 +58,7 @@ HEADERS     += \
     $$PWD/ui/helper/serialinputfield.h \
     $$PWD/ui/helper/trafficstringhelper.h \
     $$PWD/ui/helper/uptimestringhelper.h \
+    $$PWD/ui/helper/speedhelper.h \
     $$PWD/ui/history.h \
     $$PWD/ui/language.h \
     $$PWD/ui/login.h \

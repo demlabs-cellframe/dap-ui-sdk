@@ -8,6 +8,7 @@
 #include "../../ui/schedules.h"
 #else // NEUROMORPHIC
 #include "ui/helper/schedule/schedules.h"
+#include "ui/helper/speedhelper.h"
 #endif // NEUROMORPHIC
 
 /* DEFS */
@@ -75,9 +76,11 @@ public:
 
   quint64 downloadSpeed() const;
   void setDownloadSpeed (const quint64 &downloadSpeed);
+  void setDownloadSpeedString (const QString &downloadSpeed);
 
   quint64 uploadSpeed() const;
   void setUploadSpeed (const quint64 &uploadSpeed);
+  void setUploadSpeedString (const QString &uploadSpeed);
 
   quint64 bytesReceived() const;
   void setBytesReceived (const quint64 &bytesReceived);
