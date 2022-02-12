@@ -115,7 +115,7 @@
          <item>
           <widget class="DapGuiWidget" name="kelGuiWidget_4">
            <property name="styleSheet">
-            <string notr="true">#kelGuiWidget_4{ 	height: 20px; 	min-height: 20px; 	max-height: 20px; background-color: rgba(0,0,0,0);}</string>
+            <string notr="true">#kelGuiWidget_4{ height: 20px; min-height: 20px; max-height: 20px; background-color: rgba(0,0,0,0);}</string>
            </property>
            <property name="cssStyle">
             <string>login-margin-bottom</string>
@@ -125,13 +125,13 @@
          <item>
           <widget class="DapGuiLabel" name="lStatus">
            <property name="styleSheet">
-            <string notr="true">#lStatus{ 	font: 13px/18px; 
- 	color: #F53172; 
- 	font-family: 'Lato'; 
- 	font-weight: normal; 	font-style: normal; 	font-size: normal; 
- 	height: 40px; 	min-height: 40px; 	max-height: 40px; 
- 	border: none; 
- 	background-color: rgba(0,0,0,0); }</string>
+            <string notr="true">#lStatus{ font: 13px/18px; 
+ color: #F53172; 
+ font-family: 'Lato'; 
+ font-weight: normal; font-style: normal; font-size: normal; 
+ height: 40px; min-height: 40px; max-height: 40px; 
+ border: none; 
+ background-color: rgba(0,0,0,0); }</string>
            </property>
            <property name="text">
             <string>Error message box
@@ -209,13 +209,10 @@ Usualy unvisible by being empty</string>
                   <string>choosing server</string>
                  </property>
                  <property name="mainCssClass">
-                  <string>darkblue bold font20 lato nobackground noborder</string>
+                  <string>darkblue font20 bold lato nobackground noborder</string>
                  </property>
                  <property name="subCssClass">
                   <string>gray uppercase font12 lato nobackground noborder</string>
-                 </property>
-                 <property name="leftCssClass">
-                  <string>darkblue normalbold font30 noborder</string>
                  </property>
                  <property name="separator">
                   <bool>true</bool>
@@ -240,7 +237,7 @@ Usualy unvisible by being empty</string>
                   <string>serial key</string>
                  </property>
                  <property name="mainCssClass">
-                  <string>darkblue bold font20 lato nobackground letterspace noborder</string>
+                  <string>darkblue font20 bold lato nobackground letterspace noborder</string>
                  </property>
                  <property name="subCssClass">
                   <string>gray uppercase font12 lato nobackground noborder</string>
@@ -321,12 +318,12 @@ Usualy unvisible by being empty</string>
                </sizepolicy>
               </property>
               <property name="styleSheet">
-               <string notr="true">#lDontHave{ 	font: 16px/19px; 
- 	color: #5C5B74; 
- 	font-family: 'Lato'; 
- 	font-weight: normal; 	font-style: normal; 	font-size: normal; 
- 	border: none; 
- 	background-color: rgba(0,0,0,0); }</string>
+               <string notr="true">#lDontHave{ font: 16px/19px; 
+ color: #5C5B74; 
+ font-family: 'Lato'; 
+ font-weight: normal; font-style: normal; font-size: normal; 
+ border: none; 
+ background-color: rgba(0,0,0,0); }</string>
               </property>
               <property name="text">
                <string>Don't have a serial key?</string>
@@ -348,12 +345,12 @@ Usualy unvisible by being empty</string>
                </sizepolicy>
               </property>
               <property name="styleSheet">
-               <string notr="true">#btnObtainNewKey{ 	font: 16px/19px; 
- 	color: #DA0B82; 
- 	font-family: 'Lato'; 
- 	font-weight: normal; 	font-style: normal; 	font-size: normal; 
- 	border: none; 
- 	background-color: rgba(0,0,0,0); }</string>
+               <string notr="true">#btnObtainNewKey{ font: 16px/19px; 
+ color: #DA0B82; 
+ font-family: 'Lato'; 
+ font-weight: normal; font-style: normal; font-size: normal; 
+ border: none; 
+ background-color: rgba(0,0,0,0); }</string>
               </property>
               <property name="text">
                <string>Tap here to obtain one</string>
