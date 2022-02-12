@@ -20,7 +20,7 @@ QString SpeedToString(quint64 a_speed)
             digitCount = 2;
         if ((100 > speed) && (speed >= 10))
             digitCount = 1;
-        return QString("%1 %2").arg(QString::number(speed, 'f', digitCount)).arg("Mb/s");
+        return QString("%1 %2").arg(QString::number(speed, 'f', digitCount)).arg("MB/s");
     }
     else
     {
@@ -30,7 +30,7 @@ QString SpeedToString(quint64 a_speed)
             digitCount = 2;
         if ((100 > speed) && (speed >= 10))
             digitCount = 1;
-        return QString("%1 %2").arg(QString::number(speed, 'f', digitCount)).arg("Kb/s");
+        return QString("%1 %2").arg(QString::number(speed, 'f', digitCount)).arg("kB/s");
     }
 }
 
