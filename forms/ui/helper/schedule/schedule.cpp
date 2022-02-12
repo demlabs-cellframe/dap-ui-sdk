@@ -1,13 +1,5 @@
 #include "schedule.h"
-
-// return current time in ms
-quint64 CurrentMillisecond()
-{
-    quint64 ctime = (quint64) time(nullptr);
-    QTime qttime = QTime().currentTime();
-    return ctime * 1000 + qttime.msec();
-}
-
+#include "DapSpeed.h"
 
 Schedule::Schedule()
 {
@@ -16,32 +8,17 @@ Schedule::Schedule()
 
 void Schedule::addElem(quint64 newQuantity)
 {
-    s_sample0 = newQuantity;
-}
-
-void Schedule::updateSample()
-{
+    viewfilter.push(newQuantity);
     quint64 newTime = CurrentMillisecond();
-    if (newTime != s_time)
-    {
-        viewfilter.push(1000 * (s_sample0 - s_sample1)/(newTime - s_time));
-        m_elems.push_front(SheduleElement(newTime, viewfilter.sum()));
-        s_sample1 = s_sample0;
-        s_time = newTime;
-        if (m_elems.size() > 40)
-        {
-            m_elems.pop_back();
-        }
-    }
+    m_elems.push_front(SheduleElement(newTime, viewfilter.sum()));
+    if (m_elems.size() > 40)
+        m_elems.pop_back();
 }
 
 void Schedule::reset()
 {
   m_elems.clear();
   m_elems.push_front(SheduleElement (time (nullptr), 0));
-  s_time = CurrentMillisecond();
-  s_sample0 = 0;
-  s_sample1 = 0;
   viewfilter.clear();
 }
 

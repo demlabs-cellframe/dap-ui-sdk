@@ -21,6 +21,7 @@ SOURCES += \
     $$PWD/DapConnectClient.cpp \
     $$PWD/DapHttpPing.cpp \
     $$PWD/DapServerInfo.cpp \
+    $$PWD/DapSpeed.cpp \
     $$PWD/DapServersLocalStorage.cpp \
     $$PWD/DapSignUpData.cpp
 
@@ -47,6 +48,7 @@ HEADERS += \
     $$PWD/DapConnectClient.h \
     $$PWD/DapHttpPing.h \
     $$PWD/DapServerInfo.h \
+    $$PWD/DapSpeed.h \
     $$PWD/DapServersLocalStorage.h \
     $$PWD/DataToUpdate.h
 

@@ -109,9 +109,6 @@ void Schedules::draw_chart (QGraphicsScene *scene)
   scene->clear();
   draw_backgraund (scene);
 
-  inp.updateSample();
-  out.updateSample();
-
   if (out.size() < 2)
     return;
 
