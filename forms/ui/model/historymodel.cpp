@@ -43,6 +43,7 @@ void HistoryModel::slotSetup()
   clearLayout(lay);
   m_list.clear();
 
+#ifndef TestApp
   /* create new buttons */
   foreach (auto &item, DapDataLocal::instance()->getHistorySerialKeyData())
     {
@@ -71,6 +72,7 @@ void HistoryModel::slotSetup()
       });
       lay->addWidget (btn);
     }
+#endif // TestApp
   QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
   lay->addItem (sp);
 }

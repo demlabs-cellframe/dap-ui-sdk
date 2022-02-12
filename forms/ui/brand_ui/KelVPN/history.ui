@@ -57,7 +57,7 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <property name="spacing">
-          <number>0</number>
+          <number>8</number>
          </property>
          <property name="leftMargin">
           <number>0</number>
@@ -157,13 +157,29 @@
               <x>0</x>
               <y>0</y>
               <width>390</width>
-              <height>809</height>
+              <height>691</height>
              </rect>
             </property>
             <property name="cssStyle">
              <string>backgroundcolor</string>
             </property>
            </widget>
+          </widget>
+         </item>
+         <item>
+          <widget class="DapGuiLabel" name="kelGuiLabel">
+           <property name="text">
+            <string>The license key usage history is stored locally on this device. After reinstalling the system the key history will be unavailable.</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+           <property name="cssStyle">
+            <string>base-widget lato font16 gray_passive  noborder nobackground margin-bottom28</string>
+           </property>
           </widget>
          </item>
         </layout>
@@ -177,17 +193,17 @@
  <customwidgets>
   <customwidget>
    <class>DapGuiPushButton</class>
-   <extends></extends>
+   <extends>QPushButton</extends>
    <header>dapguipushbutton.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiLabel</class>
-   <extends></extends>
+   <extends>QLabel</extends>
    <header>dapguilabel.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiWidget</class>
-   <extends></extends>
+   <extends>QWidget</extends>
    <header>dapguiwidget.h</header>
    <container>1</container>
   </customwidget>

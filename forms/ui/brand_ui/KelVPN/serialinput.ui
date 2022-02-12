@@ -133,7 +133,7 @@
                <set>Qt::AlignCenter</set>
               </property>
               <property name="cssStyle">
-               <string>serin-title-text normalbold font24 darkblue lato noborder nobackground</string>
+               <string>serin-title-text font24 normalbold darkblue lato noborder nobackground</string>
               </property>
              </widget>
             </item>
@@ -155,6 +155,9 @@
           </widget>
          </item>
          <item>
+          <widget class="DapGuiSeparator" name="kelGuiSeparator"/>
+         </item>
+         <item>
           <widget class="DapGuiButton" name="btnSerial">
            <property name="cssStyle">
             <string>cwb_height nobackground noborder</string>
@@ -166,7 +169,7 @@
             <string>____-____-____-____</string>
            </property>
            <property name="subText">
-            <string>insert serial key</string>
+            <string>serial key</string>
            </property>
            <property name="mainCssClass">
             <string>darkblue normalbold font20 nobackground noborder</string>
@@ -176,6 +179,9 @@
            </property>
            <property name="leftCssClass">
             <string>darkblue normalbold font30 nobackground noborder</string>
+           </property>
+           <property name="separator">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -291,27 +297,32 @@
  <customwidgets>
   <customwidget>
    <class>DapGuiButton</class>
-   <extends></extends>
+   <extends>QWidget</extends>
    <header>dapguibutton.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiPushButton</class>
-   <extends></extends>
+   <extends>QPushButton</extends>
    <header>dapguipushbutton.h</header>
   </customwidget>
   <customwidget>
+   <class>DapGuiSeparator</class>
+   <extends>QWidget</extends>
+   <header>dapguiseparator.h</header>
+  </customwidget>
+  <customwidget>
    <class>DapGuiLineEdit</class>
-   <extends></extends>
+   <extends>QLineEdit</extends>
    <header>dapguilineedit.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiLabel</class>
-   <extends></extends>
+   <extends>QLabel</extends>
    <header>dapguilabel.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiWidget</class>
-   <extends></extends>
+   <extends>QWidget</extends>
    <header>dapguiwidget.h</header>
    <container>1</container>
   </customwidget>

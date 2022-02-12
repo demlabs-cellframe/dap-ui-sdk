@@ -217,28 +217,28 @@ void SettingsModel::_updateLabels()
   s_items =
   {
     _SItem{SI_SPACER,     {"", ""}, "1", defaultCb},
-    _SItem{SI_TITLETOP,   {tr("Settings"), ""}, "settings_icon", defaultCb},
+    _SItem{SI_TITLETOP,   {tr ("Settings"), ""}, "settings_icon", defaultCb},
     _SItem{SI_SPACER,     {"", ""}, "2", defaultCb},
 
-    _SItem{SI_BUTTONRED,  {tr("Get new licence key"), /*"265 days left"*/" "}, "settings_icon ic_renew", cbLicenceGet},
-    _SItem{SI_BUTTON,     {tr("Reset licence key"), ""}, "settings_icon ic_key", cbLicenceReset},
-    /* WIP */ /// _SItem{SI_LINK,       {tr("Language"), ""}, "settings_icon ic_language", cbLanguage},
+    _SItem{SI_BUTTONRED,  {tr ("Get a new licence key"), /*"265 days left"*/" "}, "settings_icon ic_renew", cbLicenceGet},
+    _SItem{SI_BUTTON,     {tr ("Reset licence key"), ""}, "settings_icon ic_key", cbLicenceReset},
+    /* WIP */ /// _SItem{SI_LINK,       {tr ("Language"), ""}, "settings_icon ic_language", cbLanguage},
 #ifndef DISABLE_THEMES
-    _SItem{SI_LINK,       {tr("Color theme"), ""}, "settings_icon ic_theme", cbColorTheme},
+    _SItem{SI_LINK,       {tr ("Color theme"), ""}, "settings_icon ic_theme", cbColorTheme},
 #endif // DISABLE_THEMES
 
-    _SItem{SI_TITLE,      {tr("Support"), ""}, "settings_icon", defaultCb},
+    _SItem{SI_TITLE,      {tr ("Support"), ""}, "settings_icon", defaultCb},
 
-    _SItem{SI_BUTTON,     {tr("Send a bug report"), ""}, "settings_icon ic_send-report", cbBugSend},
-    _SItem{SI_BUTTON,     {tr("Telegram support bot"), ""}, "settings_icon ic_bot", cbTelegramBot},
+    _SItem{SI_BUTTON,     {tr ("Send a bug report"), ""}, "settings_icon ic_send-report", cbBugSend},
+    _SItem{SI_BUTTON,     {tr ("Telegram support bot"), ""}, "settings_icon ic_bot", cbTelegramBot},
 
-    _SItem{SI_TITLE,      {tr("Information"), ""}, "settings_icon", defaultCb},
+    _SItem{SI_TITLE,      {tr ("Information"), ""}, "settings_icon", defaultCb},
 
     _SItem{SI_LINK,       {tr ("Bug Reports")}, "settings_icon ic_information_bug-report", cbBugReport},
     _SItem{SI_LINK,       {tr ("Serial key history on this device")}, "settings_icon ic_key-history", cbLicenceHistory},
-    _SItem{SI_BUTTON,     {tr("Terms of use"), ""}, "settings_icon ic_terms_policy", cbTermsOfUse},
-    _SItem{SI_BUTTON,     {tr("Privacy policy"), ""}, "settings_icon ic_terms_policy", cbPrivacyPolicy},
-    _SItem{SI_BUTTONGRAY, {tr("Version"), "@version"}, "settings_icon ic_version", cbVersion},
+    _SItem{SI_BUTTON,     {tr ("Terms of use"), ""}, "settings_icon ic_terms_policy", cbTermsOfUse},
+    _SItem{SI_BUTTON,     {tr ("Privacy policy"), ""}, "settings_icon ic_terms_policy", cbPrivacyPolicy},
+    _SItem{SI_BUTTONGRAY, {tr ("Version"), "@version"}, "settings_icon ic_version", cbVersion},
   };
 }
 

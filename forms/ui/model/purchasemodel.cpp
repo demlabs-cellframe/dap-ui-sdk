@@ -65,7 +65,7 @@ void PurchaseModel::slotSetup (QWidget *a_form)
           "%d-%s%s plan",
           item.length,
           item.type == LT_MONTH ? "month" : "year",
-          item.length > 0 ? "s" : "");
+          item.length > 1 ? "s" : "");
 
       /* setup new widget */
       btn->setBtnStyle (DapGuiButton::LeftTopMainBottomSub);

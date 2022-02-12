@@ -45,6 +45,7 @@ void BugReportsModel::slotSetup()
   clearLayout(lay);
   m_list.clear();
 
+#ifndef TestApp
   /* create new buttons */
   DapDataLocal::instance()->bugReportHistory()->loadHistoryBugReportData();
   foreach (auto &item, *DapDataLocal::instance()->bugReportHistory()->getBugReportsList())
@@ -68,6 +69,7 @@ void BugReportsModel::slotSetup()
       btn->setCssStyle ("bugrep-item");
       lay->addWidget (btn);
     }
+#endif // TestApp
   QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
   lay->addItem (sp);
 }
