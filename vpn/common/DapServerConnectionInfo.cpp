@@ -42,45 +42,46 @@ quint64 DapServerConnectionInfo::packetsSent() const
     return m_packetsSent;
 }
 
-QString DapServerConnectionInfo::uploadSpeed() const
+quint64 DapServerConnectionInfo::uploadSpeed() const
 {
-    return m_uploadSpeed;
+    return m_uploadSpeed.speed();
 }
 
-QString DapServerConnectionInfo::downloadSpeed() const
+quint64 DapServerConnectionInfo::downloadSpeed() const
 {
-    return m_downloadSpeed;
+    return m_downloadSpeed.speed();
+}
+
+QString DapServerConnectionInfo::uploadSpeedString() const
+{
+    return m_uploadSpeed.asString();
+}
+
+QString DapServerConnectionInfo::downloadSpeedString() const
+{
+    return m_downloadSpeed.asString();
 }
 
 void DapServerConnectionInfo::setStatistic(quint64 a_bytesReceived, quint64 a_bytesSent, quint64 a_packetsReceived, quint64 a_packetsSent)
 {
-    m_uploadSpeed     = convertBytePerSecond(a_bytesSent - m_bytesSent);
-    m_downloadSpeed   = convertBytePerSecond(a_bytesReceived - m_bytesReceived);
     m_bytesReceived   = a_bytesReceived;
     m_bytesSent       = a_bytesSent;
     m_packetsReceived = a_packetsReceived;
     m_packetsSent     = a_packetsSent;
-
-    emit this->statisticSet(a_bytesReceived, a_bytesSent, a_packetsReceived, a_packetsSent, m_uploadSpeed, m_downloadSpeed);
-}
-
-QString DapServerConnectionInfo::convertBytePerSecond(const quint64 &byte)
-{
-    if (byte < 0)
-        return QString("0 %1").arg("Mbps");
-    else if (byte >= pow(2,20))
-        return QString("%1 %2").arg(QString::number(byte/pow(2,20), 'f', 2)).arg("Mbps");
-    else
-        return QString("%1 %2").arg(QString::number(byte/pow(2,10), 'f', 2)).arg("Kbps");
+    m_uploadSpeed.setTraffic(m_bytesSent);
+    m_downloadSpeed.setTraffic(m_bytesReceived);
+    emit this->statisticSet(a_bytesReceived, a_bytesSent, a_packetsReceived, a_packetsSent,
+                            m_uploadSpeed.speed(), m_downloadSpeed.speed(), m_uploadSpeed.asString(), m_downloadSpeed.asString());
 }
 
 void DapServerConnectionInfo::clearStatisticAndStartTime()
 {
     this->setStartTime      ({});
     DapServerConnectionInfo::setStatistic(0, 0, 0, 0);
-    m_uploadSpeed     = convertBytePerSecond(0);
-    m_downloadSpeed   = convertBytePerSecond(0);
-    emit this->statisticSet(m_bytesReceived, m_bytesSent, m_packetsReceived, m_packetsSent, m_uploadSpeed, m_downloadSpeed);
+    m_uploadSpeed.reset();
+    m_downloadSpeed.reset();
+    emit this->statisticSet(m_bytesReceived, m_bytesSent, m_packetsReceived, m_packetsSent,
+                            m_uploadSpeed.speed(), m_downloadSpeed.speed(), m_uploadSpeed.asString(), m_downloadSpeed.asString());
 }
 
 const DapServerInfo* DapServerConnectionInfo::serverInfo() const
@@ -92,3 +93,14 @@ void DapServerConnectionInfo::setServerInfo(const DapServerInfo &serverInfo)
 {
     m_serverInfo = serverInfo;
 }
+
+//void DapServerConnectionInfo::setState(ConnectionState a_state)
+//{
+//    if (a_state == m_state)
+//        return;
+//    m_state = a_state;
+//    if (m_state == ConnectionState::Disconnected)
+//    {
+//        clearStatisticAndStartTime();
+//    }
+//}
