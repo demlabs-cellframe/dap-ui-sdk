@@ -12,26 +12,36 @@ Item {
     //DapQmlModelSettings { id: settingsModel }
     //SettingsInterface { id: settingsInterface; Component.onCompleted: setup(settingsModel); }
 
+    /* defs */
+    enum StyleId
+    {
+      SI_TITLE,
+      SI_TITLETOP,
+      SI_BUTTON,
+      SI_BUTTONRED,
+      SI_BUTTONGRAY,
+      SI_LINK,
+      SI_SPACER
+    }
+
     /* methods */
     function isSep(sid) {
-        if (sid === DapQmlModelSettings.SI_BUTTON
-        || sid === DapQmlModelSettings.SI_BUTTONRED
-        || sid === DapQmlModelSettings.SI_BUTTONGRAY
-        || sid === DapQmlModelSettings.SI_LINK)
+        if (sid === QuiSettingsForm.StyleId.SI_BUTTON
+        || sid === QuiSettingsForm.StyleId.SI_BUTTONRED
+        || sid === QuiSettingsForm.StyleId.SI_BUTTONGRAY
+        || sid === QuiSettingsForm.StyleId.SI_LINK)
             return true;
         return false;
     }
 
-    function setModel(model) {
-        settingsListView.model  = model;
-    }
-
     Rectangle {
+        id: settingsContainer
         anchors.fill: parent
         color: "transparent"
 
         ListView {
             id: settingsListView
+            objectName: "settingsListView"
 
             x: 36
             y: 0
@@ -67,12 +77,13 @@ Item {
 
             delegate: Item {
                 id: delegate
-                height: model.sid !== DapQmlModelSettings.SI_TITLE ? resizer1.height : resizer2.height
+                height: model.sid !== QuiSettingsForm.StyleId.SI_TITLE ? resizer1.height : resizer2.height
                 property int mySid: model.sid
+                property var settingsModel: settingsListView.model
 
                 DapQmlButton {
                     property int myIndex: model.index
-                    visible: model.sid !== DapQmlModelSettings.SI_TITLE
+                    visible: model.sid !== QuiSettingsForm.StyleId.SI_TITLE
                     width: settingsListView.width
                     height: delegate.height
                     buttonStyle: DapQmlButton.Style.IconMainSub
@@ -91,7 +102,7 @@ Item {
                 }
 
                 DapQmlLabel {
-                    visible: model.sid === DapQmlModelSettings.SI_TITLE
+                    visible: model.sid === QuiSettingsForm.StyleId.SI_TITLE
                     width: settingsListView.width
                     height: delegate.height
                     text: model.textMain
