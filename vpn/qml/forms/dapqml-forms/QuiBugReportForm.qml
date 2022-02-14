@@ -8,7 +8,10 @@ Item {
     id: root
     property int mode: 0
 
-    signal close()
+    /* signals */
+    signal sigSend()
+    signal sigCancel();
+    signal sigResultBack()
 
     /* title */
     DapQmlDialogTitle {
@@ -24,8 +27,10 @@ Item {
         /* text edit */
         Item {
             id: input
-            property string qss: "bugrep-input"
 
+            DapQmlStyle { id: style; qss: "bugrep-input"; item: input }
+
+            /* background image */
             Image {
                 anchors.fill: input
                 source: "qrc:/light/report_bg.png"
@@ -35,50 +40,59 @@ Item {
                     ["x", "y", "width", "height"],
                    this);
 
-                ScrollView
-                {
-                    id: bugRepInput
-                    clip: true
-                    contentWidth: bugRepInput.width
-
-                    DapQmlStyle { item: bugRepInput; qss: "bugrep-input-content"; }
-
-                    Component.onCompleted: StyleDebugTree.describe (
-                       "Bug rep scrollview",
-                        ["x", "y", "width", "height"],
-                       this);
-
-                    TextEdit {
-                        anchors.fill: parent
-                        clip: true
-                        property int maximumLength: 200
-                        property string previousText: text
-                        wrapMode: TextEdit.Wrap
-
-                        onTextChanged: {
-                            if (text.length > maximumLength) {
-                                var cursor = cursorPosition;
-                                text = previousText;
-                                if (cursor > text.length) {
-                                    cursorPosition = text.length;
-                                } else {
-                                    cursorPosition = cursor-1;
-                                }
-                            }
-                            previousText = text
-
-                            letterAmount.text = text.length + "/200"
-                        }
-
-                        Component.onCompleted: StyleDebugTree.describe (
-                           "Bug rep input",
-                            ["x", "y", "width", "height"],
-                           this);
-                    }
+                MouseArea {
+                    id: mouseAreaInput
+                    anchors.fill: input
+                    cursorShape: Qt.IBeamCursor
+                    enabled: false
+                    onClicked: bugRepInputField.forceActiveFocus()
                 }
             }
 
-            DapQmlStyle { id: style; qss: input.qss; item: input }
+            /* input scrollarea */
+            ScrollView
+            {
+                id: bugRepInput
+                clip: true
+                contentWidth: bugRepInput.width
+
+                DapQmlStyle { item: bugRepInput; qss: "bugrep-input-content"; }
+
+                Component.onCompleted: StyleDebugTree.describe (
+                   "Bug rep scrollview",
+                    ["x", "y", "width", "height"],
+                   this);
+
+                /* input */
+                TextEdit {
+                    id: bugRepInputField
+                    anchors.fill: parent
+                    clip: true
+                    property int maximumLength: 200
+                    property string previousText: text
+                    wrapMode: TextEdit.Wrap
+
+                    onTextChanged: {
+                        if (text.length > maximumLength) {
+                            var cursor = cursorPosition;
+                            text = previousText;
+                            if (cursor > text.length) {
+                                cursorPosition = text.length;
+                            } else {
+                                cursorPosition = cursor-1;
+                            }
+                        }
+                        previousText = text
+
+                        letterAmount.text = text.length + "/200"
+                    }
+
+                    Component.onCompleted: StyleDebugTree.describe (
+                       "Bug rep input",
+                        ["x", "y", "width", "height"],
+                       this);
+                }
+            }
         }
 
         /* letter counter */
@@ -109,7 +123,7 @@ Item {
         DapQmlPushButton {
             qss: "bugrep-send-btn"
             text: "SEND REPORT"
-            onClicked: root.mode = 1
+            onClicked: { root.mode = 1; root.sigSend(); }
         }
     }
 
@@ -135,7 +149,7 @@ Item {
         DapQmlPushButton {
             qss: "bugrep-send-btn"
             text: "CANCEL"
-            onClicked: root.mode = 2
+            onClicked: { root.mode = 2; root.sigCancel(); }
         }
     }
 
@@ -155,7 +169,7 @@ Item {
         DapQmlPushButton {
             qss: "bugrep-send-btn"
             text: "BACK"
-            onClicked: root.mode = 0
+            onClicked: { root.mode = 0; root.sigResultBack(); }
         }
     }
 }

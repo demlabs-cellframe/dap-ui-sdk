@@ -547,7 +547,7 @@
 
 .bugrep-input-content
 {
-	scaled-rect: scaled(25,25,340,144,true,16);
+	scaled-rect: scaled(-1,25,340,144,true,16);
 }
 
 .bugrep-letter-counter
