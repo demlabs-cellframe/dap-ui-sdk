@@ -39,6 +39,7 @@ Item {
                 {
                     id: bugRepInput
                     clip: true
+                    contentWidth: bugRepInput.width
 
                     DapQmlStyle { item: bugRepInput; qss: "bugrep-input-content"; }
 
@@ -49,8 +50,25 @@ Item {
 
                     TextEdit {
                         anchors.fill: parent
-                        //maximumLength: 200
+                        clip: true
+                        property int maximumLength: 200
+                        property string previousText: text
                         wrapMode: TextEdit.Wrap
+
+                        onTextChanged: {
+                            if (text.length > maximumLength) {
+                                var cursor = cursorPosition;
+                                text = previousText;
+                                if (cursor > text.length) {
+                                    cursorPosition = text.length;
+                                } else {
+                                    cursorPosition = cursor-1;
+                                }
+                            }
+                            previousText = text
+
+                            letterAmount.text = text.length + "/200"
+                        }
 
                         Component.onCompleted: StyleDebugTree.describe (
                            "Bug rep input",
@@ -65,6 +83,7 @@ Item {
 
         /* letter counter */
         DapQmlLabel {
+            id: letterAmount
             qss: "bugrep-letter-counter"
             text: "0/200"
             color: "#A4A3C0"
