@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import DapQmlThemeModel 1.0
-import ChooseThemeInterface 1.0
 import PageCtl 1.0
 import DapQmlStyle 1.0
 import "qrc:/dapqml-widgets"
@@ -13,7 +12,6 @@ Item {
     signal sigSelect(int index, string name);
 
     /* vars */
-    ChooseThemeInterface{ id: chooseThemeInterface }
     DapQmlStyle { id: style }
 
     /* methods */
@@ -70,10 +68,7 @@ Item {
             height: resizer.height
             checked: themeModel.isCurrent (model.name)
             onClicked: {
-                chooseThemeInterface.clicked (model.name);
-                style.requestRedraw();
-                backTimer.start();
-                root.sigSelect (mode.index, model.name);
+                root.sigSelect (model.index, model.name);
             }
         }
     }}
