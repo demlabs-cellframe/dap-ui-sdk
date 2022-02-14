@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.3
 import "qrc:/dapqml-widgets"
 
 Item {
+    property string formName: "Statistics"
 
     Rectangle {
         anchors.fill: parent

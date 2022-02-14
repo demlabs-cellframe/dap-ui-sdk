@@ -3,6 +3,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    property string formName: "PurchaseHistory"
 
     /* title */
     DapQmlDialogTitle {

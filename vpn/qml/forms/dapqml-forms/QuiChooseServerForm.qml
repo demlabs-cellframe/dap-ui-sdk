@@ -3,6 +3,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    property string formName: "ChooseServer"
 
     /* signals */
     signal sigSelect(int index, string name);

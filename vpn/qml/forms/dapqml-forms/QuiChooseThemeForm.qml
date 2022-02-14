@@ -7,6 +7,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    property string formName: "ChooseTheme"
 
     /* signals */
     signal sigSelect(int index, string name);
@@ -14,6 +15,12 @@ Item {
     /* vars */
     ChooseThemeInterface{ id: chooseThemeInterface }
     DapQmlStyle { id: style }
+
+    /* methods */
+    function updateState() {
+        style.requestRedraw();
+        backTimer.start();
+    }
 
     /* go back timer */
     Timer {

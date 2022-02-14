@@ -4,6 +4,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    property string formName: "BugReportHistory"
 
     /* title */
     DapQmlDialogTitle {

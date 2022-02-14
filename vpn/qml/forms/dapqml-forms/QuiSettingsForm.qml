@@ -1,16 +1,18 @@
 import QtQuick 2.4
 import QtQuick.Layouts 1.3
-import DapQmlModelSettings 1.0
+//import DapQmlModelSettings 1.0
 import StyleDebugTree 1.0
-import SettingsInterface 1.0
+//import SettingsInterface 1.0
 import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    property string formName: "Settings"
     clip: true
-    DapQmlModelSettings { id: settingsModel }
-    SettingsInterface { id: settingsInterface; Component.onCompleted: setup(settingsModel); }
+    //DapQmlModelSettings { id: settingsModel }
+    //SettingsInterface { id: settingsInterface; Component.onCompleted: setup(settingsModel); }
 
+    /* methods */
     function isSep(sid) {
         if (sid === DapQmlModelSettings.SI_BUTTON
         || sid === DapQmlModelSettings.SI_BUTTONRED
@@ -18,6 +20,10 @@ Item {
         || sid === DapQmlModelSettings.SI_LINK)
             return true;
         return false;
+    }
+
+    function setModel(model) {
+        settingsListView.model  = model;
     }
 
     Rectangle {
@@ -33,7 +39,7 @@ Item {
             height: root.height
 
             clip: true
-            model: settingsModel
+            //model: settingsModel
 
             /* this item simulates resizing to give values:*/
             /* height1 -> item.height, */

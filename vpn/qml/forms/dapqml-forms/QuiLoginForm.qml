@@ -8,6 +8,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    property string formName: "Login"
 
     /* signals */
     signal sigChooseServer();

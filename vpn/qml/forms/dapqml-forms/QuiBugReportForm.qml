@@ -7,6 +7,7 @@ import "qrc:/dapqml-widgets"
 Item {
     id: root
     property int mode: 0
+    property string formName: "BugReport"
 
     /* signals */
     signal sigSend()

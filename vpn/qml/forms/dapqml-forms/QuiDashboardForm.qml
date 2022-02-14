@@ -5,6 +5,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    property string formName: "Dashboard"
 
     /* signals */
     signal sigSwitchToggle (bool checked);

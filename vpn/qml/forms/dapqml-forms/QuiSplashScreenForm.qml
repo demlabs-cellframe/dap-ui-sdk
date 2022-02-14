@@ -3,6 +3,7 @@ import QtGraphicalEffects 1.5
 
 Item {
     id: root
+    property string formName: "SplashScreen"
 
     property color mainColor: "#FFFFFF"
     property string statusText: "Status message"
