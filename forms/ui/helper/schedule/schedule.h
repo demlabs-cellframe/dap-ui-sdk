@@ -21,10 +21,10 @@
 class ChartPoint2D
 {
 public:
-    double x, y;
+    qreal x, y;
 
     ChartPoint2D() { x = 0.0; y = 0.0; };
-    ChartPoint2D(double _x, double _y) { x = _x; y = _y; };
+    ChartPoint2D(qreal _x, qreal _y) { x = _x; y = _y; };
 
     ChartPoint2D operator +(const ChartPoint2D &point) const { return ChartPoint2D(x + point.x, y + point.y); };
     ChartPoint2D operator -(const ChartPoint2D &point) const { return ChartPoint2D(x - point.x, y - point.y); };
@@ -34,9 +34,17 @@ public:
 
     void normalize()
     {
-        double l = sqrt(x * x + y * y);
-        x /= l;
-        y /= l;
+        qreal l = sqrt(x * x + y * y);
+        if (l == 0)
+        {
+            x = 0;
+            y = 0;
+        }
+        else
+        {
+            x /= l;
+            y /= l;
+        }
     }
 };
 
@@ -81,33 +89,6 @@ public:
     };
 };
 
-// view filter
-#define FILTER_SIZE 3
-class ViewFilter
-{
-public:
-    ViewFilter() { clear(); }
-    void push(quint64 data)
-    {
-        for (int k = 0; k < FILTER_SIZE - 1; k++)
-            sample[k] = sample[k + 1];
-        sample[FILTER_SIZE - 1] = data;
-    }
-    quint64 sum()
-    {
-        quint64 d = 0;
-        for (int k = 0; k < FILTER_SIZE; k++)
-            d += sample[k];
-        return (quint64) d / FILTER_SIZE;
-    }
-    void clear()
-    {
-        for (int k = 0; k < FILTER_SIZE; k++)
-            sample[k] = 0;
-    }
-private:
-    quint64 sample[FILTER_SIZE];
-};
 
 ///Adjustments were made, std::list was replaced with List ,and the reverse graph was made to close the line.
 /// You need to redo and refactor the code.
@@ -115,17 +96,15 @@ private:
 class Schedule
 {
     QList<SheduleElement> m_elems;
-    ViewFilter viewfilter;
-
+    quint64 m_graphStartTime;
 
 public:
     Schedule();
     void addElem(quint64 elem);
     int size() {return m_elems.size();}
     void reset();
-
     int maxValue();
-    void showChart(QGraphicsScene *scene, QPen pen, QColor color, int width, int height, int maxVal);
+    void showChart(QGraphicsScene *scene, QPen pen, QColor color, int width, int height, qreal maxVal);
 };
 
 #endif // SCHEDULE_H

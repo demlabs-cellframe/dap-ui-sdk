@@ -99,7 +99,7 @@ void Schedules::draw_backgraund (QGraphicsScene *scene)
   scene->addPath (path, QPen (QColor (mColorGrid->rgba()), mDepthGrid));
 }
 
-int maxInt (int a, int b) {return a > b ? a : b;}
+qreal maxInt (qreal a, qreal b) {return a > b ? a : b;}
 
 
 void Schedules::draw_chart (QGraphicsScene *scene)
@@ -112,7 +112,7 @@ void Schedules::draw_chart (QGraphicsScene *scene)
   if (out.size() < 2)
     return;
 
-  int maxValue = maxInt (inp.maxValue() * 10, out.maxValue() * 10);
+  qreal maxValue = maxInt (inp.maxValue() * 10, out.maxValue() * 10);
 
   inp.showChart (
     scene,

@@ -19,7 +19,7 @@ bool calculateSpline(const QList<ChartPoint2D> &values, QList<Segment> &bezier)
 
     --valuesSize;
 
-    double l1, l2, tmp, x;
+    qreal l1, l2, tmp, x;
 
     for (int i = 0; i < valuesSize; ++i)
     {
@@ -91,10 +91,9 @@ void Interpolation(QList<SheduleElement> &chartData, QList<SheduleElement> &resu
     QList<ChartPoint2D> charPoints;
     QList<Segment> spline;
     ChartPoint2D p;
-    time_t a = chartData.back().time;
     for (int k = 0; k < chartData.size(); k++)
     {
-        charPoints.push_front(ChartPoint2D(chartData[k].time - a, chartData[k].velocity));
+        charPoints.push_front(ChartPoint2D(chartData[k].time, chartData[k].velocity));
     }
     calculateSpline(charPoints, spline);
     qDebug() << "calculateSpline";
@@ -103,34 +102,35 @@ void Interpolation(QList<SheduleElement> &chartData, QList<SheduleElement> &resu
         for (int i = 0; i < RESOLUTION; ++i)
         {
             s.calc((double)i / (double)RESOLUTION, p);
-            result.push_front(SheduleElement((quint64) abs(p.x * 10), abs(p.y * 10)));
+            result.push_front(SheduleElement(p.x * 10, abs(p.y * 10)));
         }
     }
-    for (int k = 0; k < result.size(); k++)
-        qDebug() << k << result[k].velocity << result[k].time;
+//    for (int k = 0; k < result.size(); k++)
+//        qDebug() << k << result[k].velocity << result[k].time;
 }
 
 
-Schedule::Schedule()
+Schedule::Schedule():
+    m_graphStartTime(0)
 {
-  m_elems.push_front(SheduleElement (time (nullptr), 0));
+    m_elems.push_front(SheduleElement (0, 0));
 }
 
-void Schedule::addElem(quint64 newQuantity)
+void Schedule::addElem(quint64 speed)
 {
-//    viewfilter.push(newQuantity);
     quint64 newTime = CurrentMillisecond();
-//    m_elems.push_front(SheduleElement(newTime, viewfilter.sum()));
-    m_elems.push_front(SheduleElement(newTime, newQuantity));
+    if (m_graphStartTime == 0)
+        m_graphStartTime = newTime;
+    m_elems.push_front(SheduleElement(newTime - m_graphStartTime, (qreal)speed));
     if (m_elems.size() > 40)
         m_elems.pop_back();
 }
 
 void Schedule::reset()
 {
-  m_elems.clear();
-  m_elems.push_front(SheduleElement (time (nullptr), 0));
-  viewfilter.clear();
+    m_elems.clear();
+    m_elems.push_front(SheduleElement (0, 0));
+    m_graphStartTime = 0;
 }
 
 int Schedule::maxValue()
@@ -169,7 +169,7 @@ qreal y_shift(qreal y, qreal height, qreal maxValue)
 
 
 void Schedule::showChart(
-        QGraphicsScene *scene, QPen pen, QColor color, int width, int height, int maxVal)
+        QGraphicsScene *scene, QPen pen, QColor color, int width, int height, qreal maxVal)
 {
     QList<SheduleElement> itrp;
     Interpolation(m_elems, itrp);
