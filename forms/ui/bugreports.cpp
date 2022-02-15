@@ -54,6 +54,7 @@ BugReports::BugReports (QWidget *parent) :
   m_map.insert (Write,   ui->labelLetterAmount);
   m_map.insert (List,    ui->scrollArea);
   m_map.insert (Loading, ui->labelLoading);
+  m_map.insert (Loading, ui->btnCancel);
   m_map.insert (Result,  ui->lResult);
   m_map.insert (Result,  ui->btnResultBack);
 
@@ -72,6 +73,9 @@ BugReports::BugReports (QWidget *parent) :
            this, &BugReports::sigSend,
            Qt::QueuedConnection);
   connect (ui->btnResultBack, &DapGuiPushButton::clicked,
+           this, &BugReports::sigResultBack,
+           Qt::QueuedConnection);
+  connect (ui->btnCancel, &DapGuiPushButton::clicked,
            this, &BugReports::sigResultBack,
            Qt::QueuedConnection);
   connect (ui->btnResultBack, &DapGuiPushButton::clicked,
