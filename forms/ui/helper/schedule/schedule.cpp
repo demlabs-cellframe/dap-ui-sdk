@@ -2,14 +2,12 @@
 #include "DapSpeed.h"
 
 
-bool calculateSpline(const QList<ChartPoint2D> &values, QList<Segment> &bezier)
+bool calculateSpline(const QList<ChartPoint2D> &values, QList<FourPointsSegment> &bezier)
 {
     int valuesSize = values.size() - 1;
 
     if (valuesSize < 2)
         return false;
-
-//    bezier.resize(n);
 
     ChartPoint2D tgL;
     ChartPoint2D tgR;
@@ -23,7 +21,7 @@ bool calculateSpline(const QList<ChartPoint2D> &values, QList<Segment> &bezier)
 
     for (int i = 0; i < valuesSize; ++i)
     {
-        bezier.push_back(Segment(values[i], values[i],
+        bezier.push_back(FourPointsSegment(values[i], values[i],
                                  values[i + 1], values[i + 1]));
 
         cur = next;
@@ -78,7 +76,7 @@ bool calculateSpline(const QList<ChartPoint2D> &values, QList<Segment> &bezier)
 
     l1 = abs(tgL.x) > EPSILON ? (values[valuesSize + 1].x - values[valuesSize].x) / (2.0 * tgL.x) : 1.0;
 
-    bezier.push_back(Segment(values[valuesSize], values[valuesSize],
+    bezier.push_back(FourPointsSegment(values[valuesSize], values[valuesSize],
                              values[valuesSize + 1], values[valuesSize + 1]));
     bezier[valuesSize].points[1] += tgR * l1;
 
@@ -89,30 +87,28 @@ bool calculateSpline(const QList<ChartPoint2D> &values, QList<Segment> &bezier)
 void Interpolation(QList<SheduleElement> &chartData, QList<SheduleElement> &result)
 {
     QList<ChartPoint2D> charPoints;
-    QList<Segment> spline;
+    QList<FourPointsSegment> spline;
     ChartPoint2D p;
     for (int k = 0; k < chartData.size(); k++)
-    {
         charPoints.push_front(ChartPoint2D(chartData[k].time, chartData[k].velocity));
-    }
+
     calculateSpline(charPoints, spline);
-    qDebug() << "calculateSpline";
-    for (auto s : spline)
+
+    foreach (FourPointsSegment s, spline)
     {
         for (int i = 0; i < RESOLUTION; ++i)
         {
             s.calc((double)i / (double)RESOLUTION, p);
-            result.push_front(SheduleElement(p.x * 10, abs(p.y * 10)));
+            result.push_front(SheduleElement(p.x, p.y));
         }
     }
-//    for (int k = 0; k < result.size(); k++)
-//        qDebug() << k << result[k].velocity << result[k].time;
 }
 
 
 Schedule::Schedule():
     m_graphStartTime(0)
 {
+    m_interpolationPoints.reserve(SAMPLE_LEN * RESOLUTION);
     m_elems.push_front(SheduleElement (0, 0));
 }
 
@@ -122,7 +118,7 @@ void Schedule::addElem(quint64 speed)
     if (m_graphStartTime == 0)
         m_graphStartTime = newTime;
     m_elems.push_front(SheduleElement(newTime - m_graphStartTime, (qreal)speed));
-    if (m_elems.size() > 40)
+    if (m_elems.size() > SAMPLE_LEN)
         m_elems.pop_back();
 }
 
@@ -133,28 +129,29 @@ void Schedule::reset()
     m_graphStartTime = 0;
 }
 
-int Schedule::maxValue()
+qreal Schedule::maxValue()
 {
     if (size() == 0) {
         return 0;
     }
 
-    int maxVal = m_elems.begin()->velocity;
+    qreal maxVal = m_elems.begin()->velocity;
     QList<SheduleElement>::iterator ptr;
 
     for (ptr = m_elems.begin(); ptr != m_elems.end(); ptr++) {
         if (ptr->velocity > maxVal) maxVal = ptr->velocity;
     }
+    if (maxVal < 10) maxVal = 10;
     return maxVal;
 }
 
-qreal x_shift(int x, qreal width, qreal number_of_elem)
+qreal x_shift(qreal x, qreal width, qreal number_of_elem)
 {
     if (number_of_elem == 0) {
         number_of_elem = 1;
     }
 
-    int res = x * width / number_of_elem;
+    qreal res = x * width / number_of_elem;
     return res;
 }
 
@@ -163,7 +160,7 @@ qreal y_shift(qreal y, qreal height, qreal maxValue)
     if (maxValue == 0) {
         maxValue = 1;
     }
-    int res = height - y * height / maxValue;
+    qreal res = height - y * height / maxValue;
     return res;
 }
 
@@ -171,24 +168,21 @@ qreal y_shift(qreal y, qreal height, qreal maxValue)
 void Schedule::showChart(
         QGraphicsScene *scene, QPen pen, QColor color, int width, int height, qreal maxVal)
 {
-    QList<SheduleElement> itrp;
-    Interpolation(m_elems, itrp);
-    if (itrp.size() < 5)
+    m_interpolationPoints.clear();
+    Interpolation(m_elems, m_interpolationPoints);
+    if (m_interpolationPoints.size() < 2)
         return;
-    int size_of_chart = itrp.size();//size();
+    int size_of_chart = m_interpolationPoints.size();
     QPainterPath path = QPainterPath();
-    qDebug() << "QPainterPath path = QPainterPath();" <<                width <<
-            y_shift(itrp.begin()->velocity, height, maxVal);
     path.moveTo(
                 width,
-                y_shift(itrp.begin()->velocity, height, maxVal)
+                y_shift(m_interpolationPoints.begin()->velocity, height, maxVal)
                 );
-    int time_pos = size_of_chart - 2;
-    qDebug() << "int time_pos = size_of_chart - 2;    ";
-    for(int i = 1;i<itrp.size();i++)
+    qreal time_pos = size_of_chart - 2;
+    for(int i = 1;i<m_interpolationPoints.size();i++)
     {
-        int y = 0;
-        if (itrp[i].velocity > y) y = itrp[i].velocity;
+        qreal y = 0;
+        if (m_interpolationPoints[i].velocity > y) y = m_interpolationPoints[i].velocity;
 
         path.lineTo(
                     x_shift(time_pos, width, size_of_chart),
@@ -196,11 +190,9 @@ void Schedule::showChart(
         time_pos--;
     }
     time_pos = 1;
-    for(int i = itrp.size()-2;i>0;i--)
+    for(int i = m_interpolationPoints.size()-2;i>0;i--)
     {
-        int y = itrp[i].velocity;
-        if (itrp[i].velocity < y) y = itrp[i].velocity;
-
+        qreal y = m_interpolationPoints[i].velocity;
         path.lineTo(
                     x_shift(time_pos, width, size_of_chart),
                     y_shift(y, height, maxVal));

@@ -6,7 +6,7 @@
 #include "schedules.h"
 
 
-Schedules::Schedules() {}
+Schedules::Schedules(): m_maxValue(0.0) {}
 
 /// Set graphic styles.
 /// @param style Graphics styles.
@@ -112,19 +112,19 @@ void Schedules::draw_chart (QGraphicsScene *scene)
   if (out.size() < 2)
     return;
 
-  qreal maxValue = maxInt (inp.maxValue() * 10, out.maxValue() * 10);
+  m_maxValue = maxInt (inp.maxValue(), out.maxValue());
 
   inp.showChart (
     scene,
     QPen (QColor (m_colorChartDownload.rgba64()), mDepthChartDownload),
     QColor (mBackGroundmColorChartDownload->rgba64()),
-    m_sceneWidth, m_sceneHeight, maxValue);
+    m_sceneWidth, m_sceneHeight, m_maxValue);
 
   out.showChart (
     scene,
     QPen (QColor (m_colorChartUpload.rgba()), mDepthChartUpload),
     QColor (mBackGroundmColorChartUpload->rgba64()),
-    m_sceneWidth, m_sceneHeight, maxValue);
+    m_sceneWidth, m_sceneHeight, m_maxValue);
 }
 
 /// Convert color in string representation to rgba.

@@ -13,7 +13,7 @@
 
 #include <cmath>
 
-
+#define SAMPLE_LEN 40
 
 #define EPSILON 1.0e-5
 #define RESOLUTION 8
@@ -48,29 +48,29 @@ public:
     }
 };
 
-class Segment
+class FourPointsSegment
 {
 public:
     ChartPoint2D points[4];
-    Segment(ChartPoint2D p0, ChartPoint2D p1, ChartPoint2D p2, ChartPoint2D p3)
+    FourPointsSegment(ChartPoint2D p0, ChartPoint2D p1, ChartPoint2D p2, ChartPoint2D p3)
     {
         points[0] = p0;
         points[1] = p1;
         points[2] = p2;
         points[3] = p3;
     }
-    Segment(const Segment& segment)
+    FourPointsSegment(const FourPointsSegment& segment)
     {
         for (int k = 0; k < 4; k++)
             points[k] = segment.points[k];
     }
-    Segment &operator=(const Segment& segment)
+    FourPointsSegment &operator=(const FourPointsSegment& segment)
     {
         for (int k = 0; k < 4; k++)
             points[k] = segment.points[k];
         return *this;
     }
-    Segment &operator=(Segment&& segment)
+    FourPointsSegment &operator=(FourPointsSegment&& segment)
     {
         for (int k = 0; k < 4; k++)
             points[k] = segment.points[k];
@@ -96,6 +96,7 @@ public:
 class Schedule
 {
     QList<SheduleElement> m_elems;
+    QList<SheduleElement> m_interpolationPoints;
     quint64 m_graphStartTime;
 
 public:
@@ -103,7 +104,7 @@ public:
     void addElem(quint64 elem);
     int size() {return m_elems.size();}
     void reset();
-    int maxValue();
+    qreal maxValue();
     void showChart(QGraphicsScene *scene, QPen pen, QColor color, int width, int height, qreal maxVal);
 };
 

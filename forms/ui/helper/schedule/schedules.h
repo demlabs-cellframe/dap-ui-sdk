@@ -46,6 +46,8 @@ private:
 
     int m_sceneWidth;
     int m_sceneHeight;
+
+    qreal m_maxValue;
 public:
     int getWidth();
     int getHeight();
