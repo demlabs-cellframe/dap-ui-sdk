@@ -112,7 +112,7 @@ void Schedules::draw_chart (QGraphicsScene *scene)
   if (out.size() < 2)
     return;
 
-  int maxValue = maxInt (inp.maxValue(), out.maxValue());
+  int maxValue = maxInt (inp.maxValue() * 10, out.maxValue() * 10);
 
   inp.showChart (
     scene,

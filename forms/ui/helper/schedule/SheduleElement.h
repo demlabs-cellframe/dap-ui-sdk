@@ -6,9 +6,9 @@
 class SheduleElement
 {
 public:
-    time_t time;
+    qint64 time;
     int velocity;
-    SheduleElement(time_t t_time, int t_velocity) :
+    SheduleElement(qint64 t_time, int t_velocity) :
         time(t_time), velocity(t_velocity) { }
 };
 
