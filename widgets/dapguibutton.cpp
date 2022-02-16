@@ -125,6 +125,9 @@ DapGuiButton::DapGuiButton (QWidget *parent)
       if(!label)
         continue;
 
+      if (i.key() == "marginOnLink")
+        continue;
+
       connect (label, &DapGuiLabel::clicked,
                this, &DapGuiButton::clicked);
 #ifdef QT_DEBUG
