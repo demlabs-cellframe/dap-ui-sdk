@@ -65,7 +65,7 @@ DapCalendarForm
                         Label
                         {
                             id: calendarHeadText
-                            text: styleData.title.replace(' ', ', ')
+                            text: qsTr(styleData.title.replace(' ', ', '))
                             color:  dapNormalTextColor
                             horizontalAlignment: Text.AlignHCenter
                             font: dapCalendarFont
@@ -116,7 +116,7 @@ DapCalendarForm
                     color: dapCalendarBackgroundColor
                     Label
                     {
-                        text: dapCalendar.__locale.dayName(styleData.dayOfWeek, dapDayOfWeeksFormat)
+                        text: qsTr(dapCalendar.__locale.dayName(styleData.dayOfWeek, dapDayOfWeeksFormat))
                         anchors.centerIn: parent
                         color:  dapNormalTextColor
                         horizontalAlignment: Text.AlignHCenter
