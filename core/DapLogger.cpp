@@ -1,11 +1,10 @@
 #include <stdio.h>
+#include <QStandardPaths>
+#include <iostream>
 #include "dap_common.h"
 #include "dap_file_utils.h"
-
-#include <QStandardPaths>
 #include "DapLogger.h"
 #include "DapDataLocal.h"
-#include <iostream>
 #ifdef Q_OS_WIN
 #include "registry.h"
 #endif
@@ -15,8 +14,21 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
 {
     dap_set_log_tag_width(prefix_width);
     qInstallMessageHandler(messageHandler);
-
     m_appType = appType;
+#ifdef DAP_BRAND_LO
+    setPathToLog(defaultLogPath(DAP_BRAND_LO));
+#else
+    setPathToLog(defaultLogPath(DAP_BRAND));
+#endif
+    QDir dir(m_pathToLog);
+    if (!dir.exists()) {
+        dir.mkpath(".");
+        system((m_pathToLog + "chmod 666 ").toUtf8().data());
+    }
+    updateCurrentLogName();
+    setLogFile(m_currentLogName);
+    createChangerLogFiles();
+    clearOldLogs();
 }
 
 inline dap_log_level DapLogger::castQtMsgToDap(QtMsgType type)
@@ -42,9 +54,9 @@ void DapLogger::setLogLevel(dap_log_level ll)
     dap_log_level_set(ll);
 }
 
-void DapLogger::setLogFile(const QString& filePath)
+void DapLogger::setLogFile(const QString& fileName)
 {
-    qDebug() << "setLogFile : " << filePath;
+    QString filePath = getPathToLog() + "/" + fileName;
     dap_common_init(DAP_BRAND, qPrintable(filePath), qPrintable(getPathToLog()));
     DapDataLocal::instance()->setLogFilePath(filePath);
 }
@@ -63,7 +75,7 @@ void DapLogger::createChangerLogFiles()
     connect(&t, &QTimer::timeout, [&]{
         t.setInterval(24 * 3600 * 1000);
         this->updateCurrentLogName();
-        this->setLogFile(QString("%1/%2").arg(m_pathToLog).arg(m_currentLogName));
+        this->setLogFile(m_currentLogName);
         this->clearOldLogs();
     });
 }
@@ -135,9 +147,9 @@ void DapLogger::messageHandler(QtMsgType type,
         strcpy(prefixBuffer, fileName);
         sprintf(strrchr(prefixBuffer, '.'), ":%d", ctx.line);
 
-        _log_it(prefixBuffer, castQtMsgToDap(type), qUtf8Printable(msg));
+        _log_it(prefixBuffer, castQtMsgToDap(type), "%s", qUtf8Printable(msg));
     } else {
-        _log_it("\0", castQtMsgToDap(type), qUtf8Printable(msg));
+        _log_it("\0", castQtMsgToDap(type), "%s", qUtf8Printable(msg));
     }
     printf("%s\n",qUtf8Printable(msg));
 

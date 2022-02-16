@@ -15,6 +15,22 @@ Rectangle
     property Item dapContenetItemScreen
 
     anchors.fill: parent
+    color: currTheme.backgroundMainScreen
+    radius: 16 * pt
+    width: 678 * pt
+
+//    anchors
+//    {
+//        top: parent.top
+//        topMargin: 24 * pt
+//        right: parent.right
+//        rightMargin: 44 * pt
+//        left: parent.left
+//        leftMargin: 24 * pt
+//        bottom: parent.bottom
+//        bottomMargin: 20 * pt
+
+//    }
 
     // Install screen components
     Item 

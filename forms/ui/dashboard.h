@@ -8,7 +8,7 @@
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
-namespace Ui { class Connection;}
+namespace Ui { class Dashboard;}
 QT_END_NAMESPACE
 
 /****************************************//**
@@ -39,7 +39,7 @@ class Dashboard : public BaseForm
    *******************************************/
   /// @{
 private:
-  Ui::Connection *ui;
+  Ui::Dashboard *ui;
   QDateTime m_started;
   QTimer *m_updateTime;
   /// @}
@@ -60,7 +60,7 @@ public:
 signals:
   void sigSwitchToggle (bool checked);
   void sigServerClicked();
-  void sigDisconnectionRequested();
+  void sigConnectionStatusChangeRequested();
   /// @}
 
   /****************************************//**
@@ -92,10 +92,12 @@ public slots:
   void setUploadSpeed(QString a_text);
   /// set server information into button
   void setServerInfo(QString a_name, QString a_ip);
-  /// start disconnection
-  void slotDisconnectionRequested();
+  /// set error information
+  void slotErrorText (QString text);
   /// translate text
   void slotRetranslated();
+  void slotConnectionRequesteButtonPressed();
+//  void slotUpdateStatusIcon(bool a_switch);
 
 private slots:
   void _slotTimeUpdate();

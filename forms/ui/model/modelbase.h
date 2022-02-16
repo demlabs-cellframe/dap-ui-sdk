@@ -37,6 +37,7 @@ public:
   /// @{
 protected:
   void setupLayout();
+  void clearLayout(QLayout *layout);
   /// @}
 };
 

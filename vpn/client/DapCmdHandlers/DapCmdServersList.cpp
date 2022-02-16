@@ -13,19 +13,24 @@ DapCmdServersList::DapCmdServersList(QObject *parent)
 void DapCmdServersList::handle(const QJsonObject* params)
 {
     Q_UNUSED(params)
-    emit sendCurrent();
     auto reply = new DapNetworkReply();
     connect(reply, &DapNetworkReply::finished, this, [=] {
         QJsonParseError jsonErr;
         QJsonDocument jsonDoc = QJsonDocument::fromJson(reply->getReplyData(), &jsonErr);
         if (jsonDoc.isNull() || !jsonDoc.isArray()) {
             qCritical() << "Can't parse server response to JSON: "<< jsonErr.errorString() << " on position "<< jsonErr.offset;
-            emit nextCdb();
+            //emit nextCdb();
+            if (++DapDataLocal::instance()->m_cdbIter == DapDataLocal::instance()->cdbServersList().end()) {
+                DapDataLocal::instance()->m_cdbIter = DapDataLocal::instance()->cdbServersList().begin();
+            }
             sendSimpleError(-32001, "Bad response from server. Parse error");
         } else {
             auto arr = jsonDoc.array();
             if (arr.isEmpty()) {
-                emit nextCdb();
+                //emit nextCdb();
+                if (++DapDataLocal::instance()->m_cdbIter == DapDataLocal::instance()->cdbServersList().end()) {
+                    DapDataLocal::instance()->m_cdbIter = DapDataLocal::instance()->cdbServersList().begin();
+                }
                 sendSimpleError(-32003, "Empty nodelist, try another CDB...");
             } else {
                 QJsonObject obj;
@@ -33,8 +38,10 @@ void DapCmdServersList::handle(const QJsonObject* params)
                 sendCmd(&obj);
                 DapServerInfoList l;
                 if (DapServerInfo::fromJSON(obj.value("servers").toArray(), l))
-                    if (!l.isEmpty())
+                    if (!l.isEmpty()){
                         emit updateNodesList(l);
+                        emit sendCurrentServer();
+                    }
             }
         }
     });

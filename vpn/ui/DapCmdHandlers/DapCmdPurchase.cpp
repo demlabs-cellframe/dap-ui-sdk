@@ -9,6 +9,7 @@ DapCmdPurchase::DapCmdPurchase(QObject *parent):
 
 void DapCmdPurchase::requestVerify(const QString &packageName, const QString &productId, const QString &token)
 {
+    qDebug() << "Verify purchase id " << productId << ", token " << token;
     QJsonObject obj;
     obj["packageName"] = packageName;
     obj["productId"] = productId;
@@ -19,7 +20,7 @@ void DapCmdPurchase::requestVerify(const QString &packageName, const QString &pr
 void DapCmdPurchase::handleResult(const QJsonObject &result)
 {
     qDebug()<<"DapCmdPurchase::handleResult";
-    if (result.contains("S/M")) {
+    if (result.contains("S/N")) {
         QString key = result.value("S/N").toString();
         emit purchaseVerified(key);
     }

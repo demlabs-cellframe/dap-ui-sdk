@@ -533,7 +533,7 @@
 
 .cpxte-text-placeholder-light
 {
-  color: #9C9B9D;
+  color: #5C5B74;
 }
 
 .cpxte-text-light
@@ -619,11 +619,11 @@
 .swbg
 {
 	width: 246pt;
-	height: 126pt;
+	height: 160pt;
 	min-width: 246pt;
-	min-height: 126pt;
+	min-height: 160pt;
 	max-width: 246pt;
-	max-height: 126pt;
+	max-height: 160pt;
 }
 
 .sw-toggle
@@ -1486,9 +1486,9 @@
 
 .serin-bottom-content-spacer
 {
-	height: 44pt;
-	min-height: 44pt;
-	max-height: 44pt;
+	height: 75pt;
+	min-height: 75pt;
+	max-height: 75pt;
 }
 
 .serin-text-separator

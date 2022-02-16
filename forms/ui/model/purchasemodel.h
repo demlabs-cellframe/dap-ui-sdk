@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <QScrollArea>
 #include <QBoxLayout>
+#include "dapguibutton.h"
 
 /****************************************//**
  * @brief purchase model list widget
@@ -22,6 +23,7 @@ class PurchaseModel : public QScrollArea
   /// @{
 private:
   QVBoxLayout *lay;
+  QList<DapGuiButton *> buttons;
   /// @}
 
   /****************************************//**
@@ -38,7 +40,7 @@ public:
    *******************************************/
   /// @{
 public slots:
-  void slotSetup();
+  void slotSetup (QWidget *a_form);
   /// @}
 
   /****************************************//**

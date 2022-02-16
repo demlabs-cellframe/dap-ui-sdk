@@ -4,10 +4,13 @@ include (../quazip/quazip.pri)
 SOURCES += \
     $$PWD/DapBugReport.cpp \
     $$PWD/DapBugReportData.cpp \
+    $$PWD/DapBugReportHistory.cpp \
     $$PWD/DapDataLocal.cpp \
+    $$PWD/DapLocationInfo.cpp \
     $$PWD/DapLogHandler.cpp \
     $$PWD/DapNetworkAccessManager.cpp \
     $$PWD/DapNetworkReply.cpp \
+    $$PWD/DapPluginsPathControll.cpp \
     $$PWD/DapSerialKeyData.cpp \
     $$PWD/DapServersData.cpp \
     $$PWD/DapSession.cpp \
@@ -18,20 +21,20 @@ SOURCES += \
     $$PWD/DapConnectClient.cpp \
     $$PWD/DapHttpPing.cpp \
     $$PWD/DapServerInfo.cpp \
+    $$PWD/DapSpeed.cpp \
     $$PWD/DapServersLocalStorage.cpp \
     $$PWD/DapSignUpData.cpp
-
-equals(BUILD_VARIANT, "GooglePlay") {
-	SOURCES += $$PWD/DapShopManager.cpp
-}
 
 HEADERS += \
     $$PWD/DapBugReport.h \
     $$PWD/DapBugReportData.h \
+    $$PWD/DapBugReportHistory.h \
     $$PWD/DapDataLocal.h \
+    $$PWD/DapLocationInfo.h \
     $$PWD/DapLogHandler.h \
     $$PWD/DapNetworkAccessManager.h \
     $$PWD/DapNetworkReply.h \
+    $$PWD/DapPluginsPathControll.h \
     $$PWD/DapSerialKeyData.h \
     $$PWD/DapServersData.h \
     $$PWD/DapSession.h \
@@ -45,12 +48,9 @@ HEADERS += \
     $$PWD/DapConnectClient.h \
     $$PWD/DapHttpPing.h \
     $$PWD/DapServerInfo.h \
+    $$PWD/DapSpeed.h \
     $$PWD/DapServersLocalStorage.h \
     $$PWD/DataToUpdate.h
-
-equals(BUILD_VARIANT, "GooglePlay") {
-	HEADERS += $$PWD/DapShopManager.h
-}
 
 INCLUDEPATH += $$PWD
 

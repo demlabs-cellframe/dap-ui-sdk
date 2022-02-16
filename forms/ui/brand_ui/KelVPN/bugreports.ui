@@ -174,7 +174,7 @@
            <item>
             <widget class="DapGuiLabel" name="labelBugReports">
              <property name="text">
-              <string>Bug reports</string>
+              <string>Bug report</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
@@ -202,6 +202,9 @@
          </item>
          <item>
           <widget class="BugReportsModel" name="scrollArea">
+           <property name="styleSheet">
+            <string notr="true">background-color: rgba(0, 0, 0, 0);</string>
+           </property>
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
            </property>
@@ -289,12 +292,12 @@
          <item>
           <widget class="DapGuiLabel" name="btnAttachScreenshot">
            <property name="styleSheet">
-            <string notr="true">#btnAttachScreenshot{ 	font-family: 'Lato'; 
- 	color: #DA0B82; 
- 	font: 16px/19px; 
- 	font-weight: normal; 	font-style: normal; 	font-size: normal; 
- 	border: none; 
- 	background-color: rgba(0,0,0,0); }</string>
+            <string notr="true">#btnAttachScreenshot{ font-family: 'Lato'; 
+ color: #DA0B82; 
+ font: 16px/19px; 
+ font-weight: normal; font-style: normal; font-size: normal; 
+ border: none; 
+ background-color: rgba(0,0,0,0); }</string>
            </property>
            <property name="text">
             <string>Click here to attach a screenshot</string>
@@ -354,6 +357,17 @@
           </layout>
          </item>
          <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <item>
+            <widget class="DapGuiPushButton" name="btnCancel">
+             <property name="text">
+              <string>cancel</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
           <spacer name="verticalSpacer">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -377,22 +391,22 @@
  <customwidgets>
   <customwidget>
    <class>DapGuiPushButton</class>
-   <extends></extends>
+   <extends>QPushButton</extends>
    <header>dapguipushbutton.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiPlainTextEdit</class>
-   <extends></extends>
+   <extends>QWidget</extends>
    <header>dapguiplaintextedit.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiLabel</class>
-   <extends></extends>
+   <extends>QLabel</extends>
    <header>dapguilabel.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiWidget</class>
-   <extends></extends>
+   <extends>QWidget</extends>
    <header>dapguiwidget.h</header>
    <container>1</container>
   </customwidget>

@@ -1,41 +1,6 @@
 #include "DapServerInfo.h"
 
-DapServerInfo::countryMap DapServerInfo::m_countries = {
-    {"ENGLAND", DapServerLocation::ENGLAND},
-    {"FRANCE", DapServerLocation::FRANCE},
-    {"GERMANY", DapServerLocation::GERMANY},
-    {"USA", DapServerLocation::USA},
-    {"NETHERLANDS", DapServerLocation::NETHERLANDS},
-    {"RUSSIA", DapServerLocation::RUSSIA},
-    {"UKRAINE", DapServerLocation::UKRAINE},
-    {"UNKNOWN", DapServerLocation::UNKNOWN},
-    {"Netherlands", DapServerLocation::Netherlands},
-    {"Singapore", DapServerLocation::Singapore},
-    {"Germany", DapServerLocation::Germany}
-};
 
-DapServerInfo::countryMap2 DapServerInfo::m_countries2 = {
-    {DapServerLocation::ENGLAND, "ENGLAND", },
-    {DapServerLocation::FRANCE,"FRANCE" },
-    {DapServerLocation::GERMANY,"GERMANY" },
-    {DapServerLocation::USA,"USA" },
-    {DapServerLocation::NETHERLANDS,"NETHERLANDS" },
-    {DapServerLocation::RUSSIA,"RUSSIA" },
-    {DapServerLocation::UKRAINE,"UKRAINE" },
-    {DapServerLocation::UNKNOWN,"UNKNOWN"},
-    {DapServerLocation::Netherlands,"Netherlands" },
-    {DapServerLocation::Singapore,"Singapore" },
-    {DapServerLocation::Germany,"Germany"}
-};
-
-DapServerLocation DapServerInfo::stringToLocation(const QString& location) {
-    DapServerLocation v = m_countries.value(location.toUpper());
-    if (int(v) == 0) {
-        qWarning() << "Unknown location" << location;
-        return DapServerLocation::UNKNOWN;
-    }
-    return v;
-}
 
 bool operator==(const DapServerInfo& lhs, const DapServerInfo& rhs)
 {
@@ -75,20 +40,18 @@ bool DapServerInfo::fromJSON(const QJsonArray& jsonArr, DapServerInfoList& out)
     for (auto it = jsonArr.constBegin(); it != jsonArr.constEnd(); ++it)
     {
         const QJsonValue &val = *it;
-
         if(!val.isObject()) {
             qCritical() << "Error parse QJsonValue to QJsonObject";
             return false;
         }
-
         DapServerInfo dsi;
         if(fromJSON(val.toObject(), dsi) == false) {
-            return false;
+            continue;
         }
-
         out.append(std::move(dsi));
     }
-    return true;
+
+    return !out.isEmpty();
 }
 
 QJsonObject DapServerInfo::toJSON(const DapServerInfo& dsi)
@@ -99,7 +62,7 @@ QJsonObject DapServerInfo::toJSON(const DapServerInfo& dsi)
     obj["Port"] = dsi.port;
     obj["Name"] = dsi.name;
     obj["State"] = dsi.online;
-    obj["Location"] =  DapServerInfo::m_countries2[ dsi.location];
+    obj["Location"] = dsi.location;
     return obj;
 }
 
@@ -116,10 +79,10 @@ bool DapServerInfo::fromJSON(const QJsonObject& jsonObj, DapServerInfo& out)
     out.name = jsonObj["Name"].toString();
     out.online = jsonObj["State"].toString();
     if (out.name == "Auto"){
-     out.location = m_countries[ "UNKNOWN" ];
+        out.location = "UNKNOWN";
         return true;
     }
-    out.location = m_countries[ jsonObj["Location"].toString() ];
+    out.location = jsonObj["Location"].toString();
 
     return true;
 }

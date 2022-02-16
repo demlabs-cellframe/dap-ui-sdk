@@ -8,6 +8,7 @@
 #include <QPlainTextEdit>
 #include "baseform.h"
 #include "dapguiplaintexteditinterface.h"
+#include "DapDataLocal.h"
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
@@ -72,7 +73,7 @@ private:
   QMultiMap<Mode, QWidget *> m_map;
   /// testing radio map @see slotRadioTest
   QMap<QObject *, Mode> p_radioTestToMode;
-  bool _textHook;
+  bool _textHook, _spacer;
   /// @}
 
   /****************************************//**
@@ -112,6 +113,7 @@ signals:
 public slots:
   void slotSetMode (BugReports::Mode mode);
   void slotRetranslated();
+  void refreshHistoryList();
 private slots:
   void _slotRadioTest();
   void _slotTextChanged();

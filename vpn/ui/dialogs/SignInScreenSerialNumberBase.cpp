@@ -310,9 +310,9 @@ void SignInScreenSerialNumberBase::setActivated(bool a_activated)
         m_stt_serialKey->setInitialState(a_activated ? m_stt_serialKey_activated : m_stt_serialKey_unactivated);
 }
 
-void SignInScreenSerialNumberBase::setCurrentServerName(const QString &a_serverName)
+void SignInScreenSerialNumberBase::setCurrentServerName(const DapServerInfo *a_server)
 {
-    m_ui->cbbServer->setCurrentText(a_serverName);
+    m_ui->cbbServer->setCurrentText(a_server->name);
 }
 
 void SignInScreenSerialNumberBase::setSerialKey(const QString &a_serial)

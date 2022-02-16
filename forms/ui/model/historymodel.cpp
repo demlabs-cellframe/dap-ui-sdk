@@ -1,20 +1,14 @@
 /* INCLUDES */
 #include "historymodel.h"
+#include "DapDataLocal.h"
+#include <QApplication>
+#include <QClipboard>
+#include <QScrollBar>
 
 /* DEFS */
 struct _HistoryRecord
 {
   QString name;
-};
-
-/* VARS */
-static QList<_HistoryRecord> s_history =
-{
-  {"GTSF-WWRM-KLMWQ-OWWM"},
-  {"GTSF-WWRM-KLMWQ-OWWM"},
-  {"GTSF-WWRM-KLMWQ-OWWM"},
-  {"GTSF-WWRM-KLMWQ-OWWM"},
-  {"GTSF-WWRM-KLMWQ-OWWM"},
 };
 
 /********************************************
@@ -46,21 +40,20 @@ void HistoryModel::slotSetup()
       lay->removeWidget (oldItem);
       delete oldItem;
     }
+  clearLayout(lay);
   m_list.clear();
 
+#ifndef TestApp
   /* create new buttons */
-  foreach (auto &item, s_history)
+  foreach (auto &item, DapDataLocal::instance()->getHistorySerialKeyData())
     {
-      /* get data */
-      QString text = item.name;
-
       /* create item */
-      auto btn = new DapGuiButton;
+      DapGuiButton *btn = new DapGuiButton;
       m_list << btn;
 
       btn->setBtnStyle (DapGuiButton::IconMainSub);
 
-      btn->setMainText (text);
+      btn->setMainText (item);
       btn->setMainCssClass ("darkblue uppercase font16");
 
       btn->setSubText (" ");
@@ -70,12 +63,31 @@ void HistoryModel::slotSetup()
 
       btn->setSubCssClass ("history-icon ic_copy");
 
+      btn->setCursor(Qt::PointingHandCursor);
+
       btn->setCssStyle ("history-item");
+
+      connect(btn, &DapGuiButton::clicked, [btn](){
+          QApplication::clipboard()->setText(btn->mainText());
+      });
       lay->addWidget (btn);
     }
-
+#endif // TestApp
   QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
   lay->addItem (sp);
+}
+
+/********************************************
+ * OVERRIDE
+ *******************************************/
+
+bool HistoryModel::eventFilter(QObject *o, QEvent *e)
+{
+  // This works because QScrollArea::setWidget installs an eventFilter on the widget
+  if(o && o == widget() && e->type() == QEvent::Resize)
+    setMinimumWidth(widget()->minimumSizeHint().width() + verticalScrollBar()->width());
+
+  return QScrollArea::eventFilter(o, e);
 }
 
 /*-----------------------------------------*/

@@ -5,10 +5,10 @@ DapAlternativeServersContainer::DapAlternativeServersContainer(QObject *a_parent
 {
 }
 
-DapServerInfo DapAlternativeServersContainer::takeNext(DapServerLocation a_location)
+DapServerInfo DapAlternativeServersContainer::takeNext(const QString& a_location)
 {
     QList<DapServerInfo> serversList;
-    if (a_location == DapServerLocation::UNKNOWN)
+    if (a_location == "UNKNOWN")
     {
         if (m_servers.isEmpty())
             return {};

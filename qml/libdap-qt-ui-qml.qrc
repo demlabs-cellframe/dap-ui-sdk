@@ -30,5 +30,15 @@
         <file>widgets/DapCalendarForm.ui.qml</file>
         <file>widgets/DapMenuTabWidget.qml</file>
         <file>widgets/DapMenuTabWidgetForm.ui.qml</file>
+        <file>widgets/DapCheckBox.qml</file>
+        <file>widgets/DapCheckBoxForm.ui.qml</file>
+        <file>widgets/DapTextField.qml</file>
+        <file>widgets/DapComboBoxNew.qml</file>
+        <file>icons/arrow_down.svg</file>
+        <file>widgets/DapRectangleLitAndShaded.qml</file>
+        <file>widgets/DapSwitch.qml</file>
+        <file>icons/switch_off.png</file>
+        <file>icons/switch_on.png</file>
+        <file>widgets/DapImageLoader.qml</file>
     </qresource>
 </RCC>

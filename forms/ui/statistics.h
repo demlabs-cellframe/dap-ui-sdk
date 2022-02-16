@@ -6,9 +6,9 @@
 #include "baseform.h"
 #ifndef NEUROMORPHIC
 #include "../../ui/schedules.h"
-#else // TestApp
+#else // NEUROMORPHIC
 #include "ui/helper/schedule/schedules.h"
-#endif // TestApp
+#endif // NEUROMORPHIC
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
@@ -53,6 +53,7 @@ private:
   QDateTime m_started;
   QGraphicsScene *m_scene;
   QTimer *m_uptimeUpdateTimer;
+  QTimer *m_drawGraphTimer;
   /// @}
 
   /****************************************//**
@@ -75,9 +76,11 @@ public:
 
   quint64 downloadSpeed() const;
   void setDownloadSpeed (const quint64 &downloadSpeed);
+  void setDownloadSpeedString (const QString &downloadSpeed);
 
   quint64 uploadSpeed() const;
   void setUploadSpeed (const quint64 &uploadSpeed);
+  void setUploadSpeedString (const QString &uploadSpeed);
 
   quint64 bytesReceived() const;
   void setBytesReceived (const quint64 &bytesReceived);
@@ -103,7 +106,6 @@ public:
   QDateTime started() const;
   void setStarted (const QDateTime &started);
 
-  void updateGraph();
   void resetGraph();
 
   const QColor &colorBackground() const;
@@ -123,6 +125,7 @@ private:
   /// @{
 public slots:
   void slotRetranslated();
+  void updateGraph();
   /// @}
 };
 

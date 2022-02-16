@@ -41,7 +41,7 @@ win32 {
         HEADERS += $$PWD/DapServiceNativeWindows.h
         DEFINES += NTDDI_VERSION=0x06000000
         DEFINES += _WIN32_WINNT=0x0600
-        RC_ICONS = $$PWD/../../../brand/$${BRAND}/DapChainVpnGui/resources/pics/icon_app.ico
+        RC_ICONS = $$PWD/../../../DapChainVpnGui/resources/pics/icon_app.ico
 }
 
 darwin {
@@ -75,9 +75,9 @@ android {
         $$PWD/../../../brand/$$BRAND/os/android/src/com/$${BRAND}/$${BRAND}Service.java \
         $$PWD/../../../brand/$$BRAND/os/android/src/com/$${BRAND}/$${BRAND}ServiceNative.java \
         $$PWD/../../../brand/$$BRAND/os/android/gradlew.bat
-	equals(BUILD_VARIANT, "GooglePlay") {
-                DISTFILES += $$PWD/../../../brand/$$BRAND/os/android/src/com/$${BRAND}/InAppShop.java
-	}
+        #equals(BUILD_VARIANT, "GooglePlay") {
+        #        DISTFILES += $$PWD/../../../brand/$$BRAND/os/android/src/com/$${BRAND}/InAppShop.java
+        #}
 }
 
 

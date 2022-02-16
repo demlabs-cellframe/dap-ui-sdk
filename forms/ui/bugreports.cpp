@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <QScrollBar>
+#include <QScroller>
 
 /* VARS */
 static BugReports *__inst = nullptr;
@@ -19,14 +20,16 @@ const QString BugReports::SCREEN_NAME = "BugReports";
 BugReports::BugReports (QWidget *parent) :
   BaseForm (parent),
   ui (new Ui::BugReports),
-  movLoading (new QMovie (":/gui/ui/asset/Spinner.gif")),
-  _textHook (false)
+  movLoading (new QMovie (":/gui/asset/Spinner.gif")),
+  _textHook (false),
+  _spacer (true)
 {
-  qRegisterMetaType<Mode> ("Mode");
-
   /* setup */
   __inst  = this;
   ui->setupUi (this);
+
+  qRegisterMetaType<Mode> ("Mode");
+  QScroller::grabGesture(this->ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
 
   ui->editReport->setPlainText ("");
   ui->editReport->setCallbackTextEdit (_cbTextEdit);
@@ -51,6 +54,7 @@ BugReports::BugReports (QWidget *parent) :
   m_map.insert (Write,   ui->labelLetterAmount);
   m_map.insert (List,    ui->scrollArea);
   m_map.insert (Loading, ui->labelLoading);
+  m_map.insert (Loading, ui->btnCancel);
   m_map.insert (Result,  ui->lResult);
   m_map.insert (Result,  ui->btnResultBack);
 
@@ -70,6 +74,12 @@ BugReports::BugReports (QWidget *parent) :
            Qt::QueuedConnection);
   connect (ui->btnResultBack, &DapGuiPushButton::clicked,
            this, &BugReports::sigResultBack,
+           Qt::QueuedConnection);
+  connect (ui->btnCancel, &DapGuiPushButton::clicked,
+           this, &BugReports::sigResultBack,
+           Qt::QueuedConnection);
+  connect (ui->btnResultBack, &DapGuiPushButton::clicked,
+           this, &BugReports::sigReturn,
            Qt::QueuedConnection);
 
   connect (ui->btnReturn, &DapGuiPushButton::clicked,
@@ -150,9 +160,27 @@ void BugReports::slotSetMode (BugReports::Mode mode)
         w->setVisible (ns == 3);
     }
 
+  /* spacer */
+  if (mode == List)
+    {
+      if (_spacer)
+        {
+          ui->verticalLayout_3->takeAt (ui->verticalLayout_3->count()-1);
+          _spacer = false;
+        }
+    }
+  else
+    {
+      if (!_spacer)
+        {
+          ui->verticalLayout_3->addItem (ui->verticalSpacer);
+          _spacer = true;
+        }
+    }
+
   /* movie */
   int w   = ui->labelLoading->width();
-  movLoading->setFileName(":/gui/ui/asset/Spinner.gif");
+  movLoading->setFileName(":/gui/asset/Spinner.gif");
   movLoading->setScaledSize (QSize (w, w));
 
   qDebug() << __PRETTY_FUNCTION__ << "spinner width:" << w;
@@ -260,6 +288,10 @@ void BugReports::updateData (QString &a_text, int a_len)
   }, Qt::QueuedConnection);
 
   _textHook = false;
+}
+
+void BugReports::refreshHistoryList(){
+    QMetaObject::invokeMethod(ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
 }
 
 /*-----------------------------------------*/

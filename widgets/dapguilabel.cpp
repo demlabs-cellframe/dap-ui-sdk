@@ -31,6 +31,9 @@ QString DapGuiLabel::scaledPixmap() const
 
 void DapGuiLabel::setScaledPixmap (const QString &scaledPixmap)
 {
+  if (m_scaledPixmap == scaledPixmap)
+    return;
+
   m_scaledPixmap = scaledPixmap;
   setPixmap (scaledPixmap);
   _cache.size = QSize();

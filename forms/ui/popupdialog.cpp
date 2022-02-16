@@ -1,7 +1,8 @@
 /* INCLUDES */
 #include "popupdialog.h"
 #include "ui_popupdialog.h"
-
+#include <ui/helper/auxiliary/UiScaling.h>
+#include <QDebug>
 #include <QGraphicsBlurEffect>
 
 /********************************************
@@ -15,6 +16,18 @@ PopupDialog::PopupDialog (QWidget *parent) :
   m_shadow (new QWidget)
 {
   ui->setupUi (this);
+
+  /* get size */
+  auto ww = UiScaling::pointsToPixels (280, UiScaling::getNativDPI()),
+       hh = UiScaling::pointsToPixels (186, UiScaling::getNativDPI());
+
+  QSize sz(ww,hh);
+  setFixedSize (sz);
+  setMinimumSize (sz);
+  setMaximumSize (sz);
+
+  qDebug() << "PopupDialog::Construct size:" << sz;
+
 
   connect (ui->btnYes, &DapGuiLabel::clicked,
            this, &PopupDialog::sigYes,

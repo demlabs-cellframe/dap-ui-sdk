@@ -36,16 +36,16 @@
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
 
-const QString DapSession::URL_ENCRYPT       ("enc_init");
-const QString DapSession::URL_STREAM        ("stream");
-const QString DapSession::URL_DB            ("db");
-const QString DapSession::URL_CTL           ("stream_ctl");
-const QString DapSession::URL_DB_FILE       ("db_file");
-const QString DapSession::URL_SERVER_LIST   ("nodelist");
-const QString DapSession::URL_TX            ("tx");
-const QString DapSession::URL_BUG_REPORT    ("bugreport");
-const QString DapSession::URL_NEWS          ("news");
-const QString DapSession::URL_SIGN_UP       ("wp-json/dapvpn/v1/register/");
+const QString DapSession::URL_ENCRYPT               ("enc_init");
+const QString DapSession::URL_STREAM                ("stream");
+const QString DapSession::URL_DB                    ("db");
+const QString DapSession::URL_CTL                   ("stream_ctl");
+const QString DapSession::URL_DB_FILE               ("db_file");
+const QString DapSession::URL_SERVER_LIST           ("nodelist");
+const QString DapSession::URL_TX                    ("tx");
+const QString DapSession::URL_BUG_REPORT            ("bugreport");
+const QString DapSession::URL_NEWS                  ("news");
+const QString DapSession::URL_SIGN_UP               ("wp-json/dapvpn/v1/register/");
 #ifdef BUILD_VAR_GOOGLE
 const QString DapSession::URL_VERIFY_PURCHASE("verify_purchase");
 #endif
@@ -149,6 +149,13 @@ void DapSession::sendBugReport(const QByteArray &data)
     }
 }
 
+void DapSession::sendBugReportStatusRequest(const QByteArray &data)
+{
+    m_CDBaddress = *DapDataLocal::instance()->m_cdbIter;
+    m_CDBport = 80;
+    m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this, SLOT(answerBugReportsStatus()), QT_STRINGIFY(answerBugReportsStatusError), NULL, true);
+}
+
 void DapSession::sendSignUpRequest(const QString &host, const QString &email, const QString &password)
 {
     m_netSignUpReply = requestRawToSite(host, URL_SIGN_UP,
@@ -171,14 +178,12 @@ void DapSession::getNews()
         if(!jsonDoc.isNull()) {
             if(!jsonDoc.isArray()) {
                 qCritical() << "Error parse response. Must be array";
-                return;
             }
-            emit sigReceivedNewsMessage(jsonDoc);
         } else {
             qWarning() << "Server response:" << m_netNewsReply->getReplyData();
             qCritical() << "Can't parse server response to JSON: "<<jsonErr.errorString()<< " on position "<< jsonErr.offset ;
-            return;
         }
+        emit sigReceivedNewsMessage(jsonDoc);
     });
     DapConnectClient::instance()->request_GET(*DapDataLocal::instance()->m_cdbIter, 80, URL_NEWS, *m_netNewsReply);
 }
@@ -532,8 +537,67 @@ void DapSession::answerSignUp()
 
 void DapSession::answerBugReport()
 {
+    if (!m_netSendBugReportReply)
+        return;
     qInfo() << "Bugreport reply: " << m_netSendBugReportReply->getReplyData();
     emit receivedBugReportAnswer(QString::fromUtf8(m_netSendBugReportReply->getReplyData()));
+}
+
+void DapSession::errorResetSerialKey(const QString& error)
+{
+    qDebug() << "Reset serial key error: network error";
+    emit sigResetSerialKeyError (2, "Network error during the reset of the serial number");
+    return;
+}
+
+void DapSession::onResetSerialKey()
+{
+    if(m_netKeyActivateReply->getReplyData().size() <= 0 ) {
+        emit errorResetSerialKey("Wrong answer from server");
+        return;
+    }
+
+    QByteArray replyArr;
+    m_dapCryptCDB->decode(m_netKeyActivateReply->getReplyData(), replyArr, KeyRoleSession);
+    qDebug() << "Serial key reset reply: " << QString::fromUtf8(replyArr);
+
+    QString op_code = QString::fromUtf8(replyArr).left(4);
+
+    if (op_code == OP_CODE_GENERAL_ERR) {
+        emit sigResetSerialKeyError (1, "Unknown authorization error");
+        return;
+    } else if (op_code == OP_CODE_ALREADY_ACTIVATED) {
+        emit sigResetSerialKeyError (1, "Serial key already activated on another device");
+        return;
+    } else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
+        emit sigResetSerialKeyError (1, isSerial ? tr("Serial key not found in database") : "Login not found in database");
+        return;
+    } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRED) {
+        emit sigResetSerialKeyError (1, "Serial key expired");
+        return;
+    } else if (op_code == OP_CODE_CANT_CONNECTION_TO_DB) {
+        emit sigResetSerialKeyError (1, "Can't connect to database");
+        return;
+    } else if (op_code == OP_CODE_INCORRECT_SYM) {
+        emit sigResetSerialKeyError(1, "Incorrect symbols in request");
+        return;
+    }
+
+    emit sigSerialKeyReseted(tr("Serial key reset successfully"));
+}
+void DapSession::answerBugReportsStatus()
+{
+    if (!m_netBugReportsStatusReply)
+        return;
+    qInfo() << "Bugreport status reply: " << m_netBugReportsStatusReply->getReplyData();
+    emit receivedBugReportStatusAnswer(QString::fromUtf8(m_netBugReportsStatusReply->getReplyData()));
+}
+
+void DapSession::answerBugReportsStatusError(const QString& msg)
+{
+    if (msg.isEmpty())
+        return;
+    qInfo() << "Bugreport status reply error: " << msg;
 }
 
 void DapSession::clearCredentials()
@@ -601,15 +665,36 @@ DapNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const Q
     int buf64len = dap_enc_base64_encode(a_signed.constData(), a_signed.size(), buf64, DAP_ENC_DATA_TYPE_B64_URLSAFE);
     QByteArray a_signedB64(buf64, buf64len);
     QByteArray bData = QString(a_serial + " ").toLocal8Bit() + a_signedB64 + QString(" " + a_domain + " " + a_pkey).toLocal8Bit();
-    m_netKeyActivateReply = encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()), /*QT_STRINGIFY(errorAuthorization)*/ NULL);
+    m_netKeyActivateReply = encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()), QT_STRINGIFY(errorActivation));
     return m_netKeyActivateReply;
 }
+
+void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey) {
+    if (!m_dapCryptCDB) {
+        this->setDapUri(*DapDataLocal::instance()->m_cdbIter, 80);
+        auto *l_tempConn = new QMetaObject::Connection();
+        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, a_serial, a_domain, a_pkey, l_tempConn]{
+            preserveCDBSession();
+            m_netKeyActivateReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
+                                               URL_DB, "auth_deactivate", "serial",
+                                               SLOT(onResetSerialKey()), QT_STRINGIFY(errorResetSerialKey), true);
+            disconnect(*l_tempConn);
+            delete l_tempConn;
+        });
+        requestServerPublicKey();
+    } else {
+        m_netKeyActivateReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
+                                           URL_DB, "auth_deactivate", "serial",
+                                           SLOT(onResetSerialKey()), QT_STRINGIFY(errorResetSerialKey), true);
+    }
+}
+
 
 #ifdef BUILD_VAR_GOOGLE
 void DapSession::requestPurchaseVerify(const QJsonObject *params)
 {
     QJsonDocument jdoc(*params);
-    m_netPurchaseReply = encRequestRaw(jdoc.toJson(), URL_VERIFY_PURCHASE, QString(), QString(), SLOT(onPurchaseVerified()));
+    m_netPurchaseReply = encRequestRaw(jdoc.toJson(), URL_VERIFY_PURCHASE, QString(), QString(), SLOT(onPurchaseVerified()), NULL);
     if(m_netPurchaseReply == Q_NULLPTR) {
         qCritical() << "Can't send request";
         emit errorNetwork("Purchase verification error");

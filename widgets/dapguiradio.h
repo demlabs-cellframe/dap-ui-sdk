@@ -77,6 +77,7 @@ public:
   void setUncheckedCssClass (const QString &a_cssClass);
 
   bool checked() const;
+  void setIndicatorChecked(bool a_newChecked);
   void setChecked (bool a_newChecked);
 
   bool separator() const;

@@ -5,6 +5,7 @@
 #include <QAbstractListModel>
 
 #include "DapServerInfo.h"
+#include "DapLocationInfo.h"
 
 #define COUTRY_FLAG_ROLE (Qt::UserRole + 10)
 
@@ -16,7 +17,7 @@ public:
 
     static DapServersData *instance();
 
-    void addServer(DapServerLocation location, const QString& name,
+    void addServer(const QString& location, const QString& name,
                    const QString & address, quint16 port);
     void addServer(const DapServerInfo& dsi);
 
@@ -28,6 +29,7 @@ public:
     void clearServerList();
 
     QString currentServerName() const;
+    QString currentServerAdress() const;
 
     bool currentServerIsAuto() const;
 
@@ -44,6 +46,7 @@ public slots:
     void setCurrentServer(const DapServerInfo *a_server);
     void setCurrentServer(const QString &a_serverName);
     void setCurrentServer(int a_serverIndex);
+    void setCurrentServerNotSignal(int a_serverIndex);
     void setCurrentServerFromService(const DapServerInfo *a_server);
 
     void saveDatas() const;
@@ -53,6 +56,7 @@ signals:
     /// Signal emitted if server name has changed.
     /// @param serverName Server name.
     void currentServerNameChanged(const QString& serverName);
+    void currentServerNameChangedNotRequestChangingServer(const QString& serverName);
     void serverAdded(const DapServerInfo& dsi);
     void serversCleared();
 
@@ -67,7 +71,7 @@ private:
 
     int m_currentServerIndex = -1;
     QList<DapServerInfo> m_servers;
-    static const QStringList m_countries;
+    DapLocationInfo m_locationInfo;
     static QMap<QString, QString> m_countryMap;
 };
 

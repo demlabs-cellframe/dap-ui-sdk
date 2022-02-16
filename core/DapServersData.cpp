@@ -16,14 +16,11 @@ void DapServersData::addServer(const DapServerInfo& dsi) {
     int row = m_servers.count();
     insertRows(row, 1);
     setData(index(row, 0), QVariant::fromValue(dsi));
-
-    if (m_currentServerIndex == -1)
-        setCurrentServer(0);
-
+    m_locationInfo.addLocation(dsi.location);
     emit this->serverAdded(dsi);
 }
 
-void DapServersData::addServer(DapServerLocation location, const QString& name,
+void DapServersData::addServer(const QString& location, const QString& name,
                           const QString & address, quint16 port)
 {
     DapServerInfo ss;
@@ -41,7 +38,20 @@ void DapServersData::setCurrentServer(int a_serverIndex)
     Q_ASSERT(a_serverIndex < m_servers.count());
     m_currentServerIndex = a_serverIndex;
 
+    if (!this->currentServer())
+        return;
+
     emit currentServerNameChanged(this->currentServerName());
+}
+
+void DapServersData::setCurrentServerNotSignal(int a_serverIndex)
+{
+    if (m_currentServerIndex == a_serverIndex)
+        return;
+    Q_ASSERT(a_serverIndex < m_servers.count());
+    m_currentServerIndex = a_serverIndex;
+
+    emit currentServerNameChangedNotRequestChangingServer(this->currentServerName());
 }
 
 void DapServersData::setCurrentServer(const DapServerInfo *a_server)
@@ -61,7 +71,7 @@ void DapServersData::setCurrentServerFromService(const DapServerInfo *a_server)
         addServer(*a_server);
         index = m_servers.lastIndexOf(*a_server);
     }
-    setCurrentServer(index);
+    setCurrentServerNotSignal(index);
 }
 
 /// Set server name.
@@ -123,6 +133,12 @@ QString DapServersData::currentServerName() const
     return currentServer ? currentServer->name : "";
 }
 
+QString DapServersData::currentServerAdress() const
+{
+    const DapServerInfo* currentServer = this->currentServer();
+    return currentServer ? currentServer->address : "";
+}
+
 bool DapServersData::currentServerIsAuto() const
 {
     return this->currentServer()->isAuto();
@@ -133,20 +149,6 @@ int DapServersData::rowCount(const QModelIndex &parent) const
     Q_UNUSED(parent)
     return m_servers.count();
 }
-
-const QStringList DapServersData::m_countries = {
-    "", //UNKNOWN = 0,
-    "://country/GB.png", //ENGLAND,
-    "://country/FR.png", //FRANCE,
-    "://country/DE.png", //GERMANY,
-    "://country/US.png", //USA,
-    "://country/NL.png", //NETHERLANDS,
-    "://country/RU.png", //RUSSIA,
-    "://country/UA.png", //UKRAINE,
-    "://country/NL.png", //Netherlands,
-    "://country/SG.png", //Singapore,
-    "://country/DE.png", //Germany,
-};
 
 QMap<QString, QString> DapServersData::m_countryMap = {
     {"ANDORRA", "AD"},

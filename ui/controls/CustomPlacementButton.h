@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QEvent>
 #include <QLabel>
+#include <QToolTip>
 #include "StyledDropShadowEffect.h"
 #include <QFontMetrics>
 #include "CustomButtonAbstract.h"
@@ -115,6 +116,7 @@ protected:
     QLabel m_lbText;     ///<label with text
     QLabel m_lbAdditionalImage;
     QWidget m_wgtRightSpacing;        ///<label for right spacing
+    QToolTip *m_toolTip = nullptr;
 
 private:
     Qt::Alignment m_alignment = Qt::AlignJustify;
