@@ -107,11 +107,11 @@ void body (it &i)
 
           /* form an item */
           QssItem item;
-          qDebug() << "new item: " << names;
+         // qDebug() << "new item: " << names;
           for (auto it = lines.cbegin(), en = lines.cend(); it != en; it++)
             {
               auto value  = it->asVariant();
-              qDebug() << "field[" << it->field() << "]:[" << value << "]";
+             // qDebug() << "field[" << it->field() << "]:[" << value << "]";
               item.insert (it->field(), value);
             }
 
