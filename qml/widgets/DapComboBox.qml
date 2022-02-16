@@ -20,6 +20,7 @@ DapComboBoxForm
         ItemDelegate
         {
             width: parent.width
+            hoverEnabled: true
 
             //Adjusting the height of the line, taking into account that the second element from the end may be the last
             height:
@@ -94,6 +95,18 @@ DapComboBoxForm
                                                alignTextComboBox[0];
                                 onElTextChanged: textRow.elTextArray[index] = elText
 
+
+
+                                Text
+                                {
+                                    x: parent.width / 4 * 3 - width * 0.5
+                                    y: parent.height * 0.5 - height * 0.5
+                                    text: "Recommended"
+                                    font.pixelSize: 10
+                                    color: textColor
+                                    visible: fullText == recomendedText
+                                }
+
                                 Component.onCompleted:
                                 {
                                     if(rectangleTextComboBox.comboBoxIndex == rectangleTextComboBox.comboBoxCurrentIndex)
@@ -152,7 +165,7 @@ DapComboBoxForm
                             return bottomIntervalListElement
                         return intervalListElement
                     }
-                    color: hovered ? hilightColor : normalColor
+                    color: hovered ? currTheme.hilightColorComboBox : normalColor
                 }
             highlighted: parent.highlightedIndex === index
         }

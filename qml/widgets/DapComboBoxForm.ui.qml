@@ -18,7 +18,7 @@ ComboBox
     ///@detalis normalColor Item color in normal state.
     property string normalColor
     ///@detalis hilightColor Item color in selected state.
-    property string hilightColor
+//    property string hilightColor
     ///@detalis normalTopColor Top string color in normal state.
     property string normalTopColor
     ///@detalis hilightTopColor Top string color in selected state.
@@ -63,7 +63,7 @@ ComboBox
     ///@detalis fontComboBox Font setting combobox.
     property var fontComboBox: []
     ///@detalis colorTextComboBox Color text setting combobox: array [normalColorText, hilightColorText] for every role
-    property var colorTextComboBox: []
+    property var colorTextComboBox: [[currTheme.textColor, currTheme.hilightTextColorComboBox], [currTheme.buttonColorNormal, currTheme.buttonColorNormal]]
     ///@detalis colorMainTextComboBox Color mainline text setting combobox: array [normalTopColorText, hilightTopColorText] for every role
     property var colorMainTextComboBox: []
     ///@detalis elideTextComboBox Elide setting combobox.
@@ -86,6 +86,8 @@ ComboBox
     property string mainLineText
     ///@details isDefaultNeedToAppend Sign to add default data to the beginning of model
     property bool isDefaultNeedToAppend: false
+
+    property string recomendedText
 
     width: popup.visible ? widthPopupComboBoxActive : widthPopupComboBoxNormal
     height: popup.visible ? heightComboBoxActive : heightComboBoxNormal

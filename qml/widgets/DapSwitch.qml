@@ -16,7 +16,7 @@ Item {
 
     signal toggled()
 
-    property int leverMargin: 4
+    property int leverMargin: 0
 
     property int leverOffPosition: leverMargin
     property int leverOnPosition: width - lever.width - leverMargin
@@ -100,5 +100,6 @@ Item {
         anchors.fill: parent
         onClicked: toggle()
     }
+
 
 }
