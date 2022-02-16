@@ -6,9 +6,9 @@
 class SheduleElement
 {
 public:
-    time_t time;
-    int velocity;
-    SheduleElement(time_t t_time, int t_velocity) :
+    qreal time;
+    qreal velocity;
+    SheduleElement(qreal t_time, qreal t_velocity) :
         time(t_time), velocity(t_velocity) { }
 };
 
