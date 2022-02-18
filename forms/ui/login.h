@@ -111,6 +111,7 @@ public slots:
   void slotServerChooserActivate();
   /// translate contents
   void slotRetranslated();
+  void setServerInfo(QString a_name, QString a_ip);
 private slots:
   void _slotSerialChanged (const QString &a_serial);
   void _slotSerialEdited (const QString &a_serial);
