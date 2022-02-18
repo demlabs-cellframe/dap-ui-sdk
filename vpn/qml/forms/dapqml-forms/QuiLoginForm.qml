@@ -24,6 +24,11 @@ Item {
 
     signal sigSerialFillingIncorrect();
 
+    /* functions */
+    function setStatusMessage(a_message) {
+        loginErrorLabel.text    = a_message;
+    }
+
     /* W I P */
     Timer {
         interval: 500
@@ -50,6 +55,7 @@ Item {
 
     /* error label */
     DapQmlLabel {
+        id: loginErrorLabel
         qss: "login-error-label"
         wrapMode: Text.WordWrap
         text: "Temporary network problems, request will be handled as soon as the network connection is re-established"
