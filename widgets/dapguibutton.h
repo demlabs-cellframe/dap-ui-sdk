@@ -150,6 +150,9 @@ public:
   DapGuiLineEdit::cbFocusEvent inputFocusCallback() const;
   void setInputFocusCallback (const DapGuiLineEdit::cbFocusEvent &cb);
 
+  DapGuiLineEdit::cbKeyEvent callbackKeyEvent() const;
+  void setCallbackKeyEvent(DapGuiLineEdit::cbKeyEvent cb);
+
   bool link() const;
   void setLink (bool link);
 

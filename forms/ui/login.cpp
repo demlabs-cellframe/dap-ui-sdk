@@ -3,6 +3,7 @@
 #include "ui_login.h"
 #include "ui/chooseserver.h"
 #include <QDebug>
+#include <QRegExp>
 #include <QThread>
 
 /* DEFS */
@@ -38,6 +39,7 @@ Login::Login (QWidget *parent) :
   ui->btnChooseSerial->setInputMask (">NNNN-NNNN-NNNN-NNNN;_");
 #endif // Q_OS_ANDROID
 
+  ui->btnChooseSerial->setCallbackKeyEvent(_cbKeyEvent);
 //  ui->btnChooseSerial->setInputFocusCallback (cbSerialFocus);
 //#ifdef Q_OS_ANDROID
 //  ui->btnChooseSerial->setInputCallback (cbSerialText);
@@ -180,6 +182,36 @@ void Login::_slotSerialEdited (const QString &a_serial)
     emit textEditedAndCleaned();
   else
     emit sigSerialFillingIncorrect();
+}
+
+bool Login::_cbKeyEvent (DapGuiLineEdit *e, QKeyEvent *event)
+{
+    qDebug() << "--------------------" << e->text();
+    bool skipPress = true;
+    if ((event->key() == Qt::Key_Delete) || (event->key() == Qt::Key_Backspace) || (event->key() == Qt::Key_Left))
+    {
+        skipPress = false;
+    }
+    else
+    {
+        if ((event->key() == Qt::Key_Right) && (e->cursorPosition() < (e->text().remove ("-").length() + 1)))
+        {
+            skipPress = false;
+        }
+        else
+        {
+            // filtr
+            QString charFiltr = "1234567890QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm-";
+            foreach (auto ch, charFiltr)
+                if (ch==event->text())
+                {
+                    skipPress = false;
+                    break;
+                }
+        }
+    }
+//    qDebug() << "--------------------_cbKeyEvent" << e->cursorPosition() << event->key() << event->text();
+    return skipPress;
 }
 
 /*-----------------------------------------*/

@@ -88,6 +88,13 @@ void DapGuiLineEdit::keyPressEvent(QKeyEvent *event)
   QLineEdit::keyPressEvent (event);
 }
 
+void DapGuiLineEdit::mousePressEvent(QMouseEvent *event)
+{
+    QLineEdit::mousePressEvent(event);
+    qDebug() << __PRETTY_FUNCTION__ << cursorPosition();
+    setCursorPosition(0);
+}
+
 #ifdef Q_OS_ANDROID
 
 void DapGuiLineEdit::inputMethodEvent(QInputMethodEvent *e)

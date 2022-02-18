@@ -393,6 +393,20 @@ void DapGuiButton::setEdit(QWidget *newEdit) const
 }
 
 /****************************************//**
+ * @see DapGuiLineEdit::callbackKeyEvent
+ *******************************************/
+
+DapGuiLineEdit::cbKeyEvent DapGuiButton::callbackKeyEvent() const
+{
+    return ui->kelGuiLineEditMain->callbackKeyEvent();
+}
+
+void DapGuiButton::setCallbackKeyEvent(DapGuiLineEdit::cbKeyEvent cb)
+{
+    ui->kelGuiLineEditMain->setCallbackKeyEvent(cb);
+}
+
+/****************************************//**
  * @see DapGuiLineEdit::callbackTextEdit
  *******************************************/
 

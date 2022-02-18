@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QWidget>
+#include "dapguiplaintextedit.h"
 #include "dapguibutton.h"
 #include "baseform.h"
 
@@ -114,6 +115,8 @@ public slots:
 private slots:
   void _slotSerialChanged (const QString &a_serial);
   void _slotSerialEdited (const QString &a_serial);
+protected:
+  static bool _cbKeyEvent (DapGuiLineEdit *e, QKeyEvent *event);
   /// @}
 };
 
