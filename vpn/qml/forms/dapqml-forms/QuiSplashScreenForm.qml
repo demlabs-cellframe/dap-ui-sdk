@@ -9,6 +9,11 @@ Item {
     property string statusText: "Status message"
     property string versionText: "Version 7.0-5\nSeptember 10 2021"
 
+    /* funcs */
+    function setStatusText(a_message) {
+        statusText  = a_message;
+    }
+
     /* gradient background */
     Rectangle {
         id: rect
