@@ -15,23 +15,6 @@ Item {
         qss: "dialog-title"
     }
 
-    /* model */
-    ListModel {
-        id: pseudoListModel
-        ListElement {
-            name: "auto"
-        }
-        ListElement {
-            name: "USA"
-        }
-        ListElement {
-            name: "Finland"
-        }
-        ListElement {
-            name: "Germany"
-        }
-    }
-
     /* resizer */
     DapQmlRectangle {
         id: resizer
@@ -42,14 +25,13 @@ Item {
     /* listview */
     ListView {
         id: csListView
+        objectName: "chooseServerListView"
 
         x: (root.width - width) / 2
         y: title.y + title.height * 2
         width: root.width - 72
         height: root.height - y
         clip: true
-
-        model: pseudoListModel
 
         delegate: DapQmlRadioButton {
             text: model.name

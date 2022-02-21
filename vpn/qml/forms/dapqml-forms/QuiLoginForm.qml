@@ -29,6 +29,18 @@ Item {
         loginErrorLabel.text    = a_message;
     }
 
+    function setSerial(a_serial) {
+        btnEnterSerial.mainText = a_serial;
+    }
+
+    function setConnectionEnabled(a_value) {
+        btnConnect.enabled  = a_value;
+    }
+
+    function setKeyEnterEnabled(a_value) {
+        btnEnterSerial.visible  = a_value;
+    }
+
     /* W I P */
     Timer {
         interval: 500
@@ -97,6 +109,7 @@ Item {
         qss: "login-btn-serial-container"
         DapQmlButton {
             id: btnEnterSerial
+            objectName: "btnEnterSerial"
             property int maxCountChar: 16
             x: (parent.width - width) / 2
             z: 15
@@ -140,6 +153,7 @@ Item {
         qss: "login-connect-container"
         DapQmlPushButton {
             id: btnConnect
+            enabled: false
             qss: "login-connect"
             x: (parent.width - width) / 2
             z: 15
