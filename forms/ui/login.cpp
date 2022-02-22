@@ -164,6 +164,12 @@ void Login::slotServerChooserActivate()
   ui->btnChooseServer->setEnabled (true);
 }
 
+void Login::setServerInfo(QString a_name, QString a_ip)
+{
+    ui->btnChooseServer->setMainText(a_name);
+    ui->btnChooseServer->setSubText(a_ip);
+}
+
 void Login::slotRetranslated()
 {
   ui->btnChooseServer->setMainText (tr ("Auto select"));
