@@ -93,7 +93,8 @@ Login::Login (QWidget *parent) :
   connect (ui->btnChooseSerial, &DapGuiButton::textChanged,[this](const QString &a_serial)
   {
      QString t = a_serial;
-     t = t.remove("-").remove(" ").toUpper();
+     t = t.remove("-").toUpper();
+     t = t.remove(QRegExp("[^A-Z0-9]")),
      formatSerialKeyLine(t);
      ui->btnChooseSerial->textChangedSignalLock(true);
      ui->btnChooseSerial->insert(t);
@@ -255,26 +256,22 @@ bool Login::_cbKeyEvent (DapGuiLineEdit *e, QKeyEvent *event)
         return false;
     }
     // symbol filtr
-    QString charFiltr = "1234567890QWERTYUIOPASDFGHJKLZXCVBNM";
-    foreach (auto ch, charFiltr)
+    if (event->text().toUpper().contains(QRegExp("[A-Z0-9]")))
     {
-        if (QString(ch)==event->text().toUpper())
-        {
-            int insertPos = cursorPos;
-            QString t = e->text().remove("-").toUpper();
-            if (cursorPos > 4) insertPos -= 1;
-            if (cursorPos > 9) insertPos -= 1;
-            if (cursorPos > 14) insertPos -= 1;
-            t.insert(insertPos, event->text().toUpper());
-            formatSerialKeyLine(t);
-            e->clear();
-            e->insert(t);
-            if (cursorPos == 3) cursorPos = 5;
-            if (cursorPos == 8) cursorPos = 10;
-            if (cursorPos == 13) cursorPos = 15;
-            e->setCursorPosition(cursorPos+1);
-            return true;
-        }
+        int insertPos = cursorPos;
+        QString t = e->text().remove("-").toUpper();
+        if (cursorPos > 4) insertPos -= 1;
+        if (cursorPos > 9) insertPos -= 1;
+        if (cursorPos > 14) insertPos -= 1;
+        t.insert(insertPos, event->text().toUpper());
+        formatSerialKeyLine(t);
+        e->clear();
+        e->insert(t);
+        if (cursorPos == 3) cursorPos = 5;
+        if (cursorPos == 8) cursorPos = 10;
+        if (cursorPos == 13) cursorPos = 15;
+        e->setCursorPosition(cursorPos+1);
+        return true;
     }
     return true;
 }
