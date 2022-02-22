@@ -91,6 +91,7 @@ private:
   bool m_separator;       ///< bottom separator
   bool m_link;            ///< link button
   bool m_frame;           ///< show frame
+  bool m_textChangesSignalLock;
 
   QMultiMap<QString, QWidget *> m_widgets;    ///< categorized map for widget. used for abstract property control
   QList<QWidget *> _setMainTextWidgets;
@@ -144,11 +145,18 @@ public:
   DapGuiLineEdit *edit() const;
   void setEdit (QWidget *newEdit) const;
 
+  void setPlaceholderText(const QString &text);
+  void insert(const QString &text);
+  void textChangedSignalLock(bool lock);
+
   DapGuiLineEdit::cbTextEdit inputCallback() const;
   void setInputCallback (const DapGuiLineEdit::cbTextEdit &cb);
 
   DapGuiLineEdit::cbFocusEvent inputFocusCallback() const;
   void setInputFocusCallback (const DapGuiLineEdit::cbFocusEvent &cb);
+
+  DapGuiLineEdit::cbKeyEvent callbackKeyEvent() const;
+  void setCallbackKeyEvent(DapGuiLineEdit::cbKeyEvent cb);
 
   bool link() const;
   void setLink (bool link);
