@@ -97,7 +97,6 @@ public slots:
   /// @{
 protected:
   void keyPressEvent(QKeyEvent *event) override;
-  void mousePressEvent(QMouseEvent *event) override;
 #ifdef Q_OS_ANDROID
   void inputMethodEvent(QInputMethodEvent *e) override;
   void focusInEvent(QFocusEvent *e) override;

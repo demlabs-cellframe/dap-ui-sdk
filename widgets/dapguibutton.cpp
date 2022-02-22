@@ -79,6 +79,7 @@ DapGuiButton::DapGuiButton (QWidget *parent)
   , m_iconCssClass ("")
   , m_link (false)
   , m_frame (false)
+  , m_textChangesSignalLock(false)
   , m_lLink (new QLabel (this))
 {
   /* setup style */
@@ -139,8 +140,11 @@ DapGuiButton::DapGuiButton (QWidget *parent)
   _setSubTextWidgetsMain        = m_widgets.values ("textMain");
 
   /* signals */
-  connect (ui->kelGuiLineEditMain, &DapGuiLineEdit::textChanged,
-           this, &DapGuiButton::textChanged);
+  connect (ui->kelGuiLineEditMain, &DapGuiLineEdit::textChanged, [this](const QString& text)
+  {
+      if (!m_textChangesSignalLock)
+        emit DapGuiButton::textChanged(text);
+  });
   connect (ui->kelGuiLineEditMain, &DapGuiLineEdit::textEdited,
            this, &DapGuiButton::textEdited);
   connect (ui->kelGuiLineEditMain, &DapGuiLineEdit::textEdited,
@@ -571,6 +575,17 @@ void DapGuiButton::setupLabels()
     }
 }
 
+void DapGuiButton::setPlaceholderText(const QString &text)
+{
+    ui->kelGuiLineEditMain->setPlaceholderText(text);
+}
+
+void DapGuiButton::insert(const QString &text)
+{
+    ui->kelGuiLineEditMain->clear();
+    ui->kelGuiLineEditMain->insert(text);
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
@@ -601,6 +616,11 @@ void DapGuiButton::resizeEvent (QResizeEvent *ev)
   };
   m_lLink->move (pos);
   m_lLink->resize (s_linkWidth, s_linkWidth);
+}
+
+void DapGuiButton::textChangedSignalLock(bool lock)
+{
+    m_textChangesSignalLock = lock;
 }
 
 void DapGuiButton::_slotDebugInfo()
