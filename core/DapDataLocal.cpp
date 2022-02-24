@@ -142,8 +142,8 @@ void DapDataLocal::setPassword(const QString &a_password)
 
 void DapDataLocal::saveAuthorizationData()
 {
-    this->saveEncriptedSetting(TEXT_LOGIN     , this->login());
-    this->saveEncriptedSetting(TEXT_PASSWORD  , this->password());
+    this->saveEncryptedSetting(TEXT_LOGIN     , this->login());
+    this->saveEncryptedSetting(TEXT_PASSWORD  , this->password());
 }
 
 void DapDataLocal::saveSerialKeyData()
@@ -192,8 +192,8 @@ void DapDataLocal::loadAuthorizationDatas()
     }
 #endif
 
-    this->setLogin(getEncriptedSetting(TEXT_LOGIN).toString());
-    this->setPassword(getEncriptedSetting(TEXT_PASSWORD).toString());
+    this->setLogin(getEncryptedSetting(TEXT_LOGIN).toString());
+    this->setPassword(getEncryptedSetting(TEXT_PASSWORD).toString());
 
     if (m_serialKeyData)
         this->loadFromSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
@@ -231,38 +231,38 @@ QSettings* DapDataLocal::settings()
     return &s_settings;
 }
 
-QVariant DapDataLocal::getEncriptedSetting(const QString &a_setting)
+QVariant DapDataLocal::getEncryptedSetting(const QString &a_setting)
 {
     QByteArray outString;
-    this->loadEncriptedSettingString(a_setting, outString);
+    this->loadEncryptedSettingString(a_setting, outString);
     return QString(outString);
 }
 
-bool DapDataLocal::loadEncriptedSettingString(const QString &a_setting, QByteArray& a_outString)
+bool DapDataLocal::loadEncryptedSettingString(const QString &a_setting, QByteArray& a_outString)
 {
     QVariant varSettings = DapDataLocal::getSetting(a_setting);
 
     if (!varSettings.isValid() || !varSettings.canConvert<QByteArray>())
         return false;
 
-    QByteArray encriptedString = varSettings.toByteArray();
-    if (encriptedString.isEmpty())
+    QByteArray encryptedString = varSettings.toByteArray();
+    if (encryptedString.isEmpty())
     {
         a_outString = "";
         return true;
     }
-    secretKey->decode(encriptedString, a_outString);
+    secretKey->decode(encryptedString, a_outString);
 
     return true;
 }
 
 
-void DapDataLocal::saveEncriptedSetting(const QString &a_setting, const QVariant &a_value)
+void DapDataLocal::saveEncryptedSetting(const QString &a_setting, const QVariant &a_value)
 {
-    this->saveEncriptedSetting(a_setting, a_value.toByteArray());
+    this->saveEncryptedSetting(a_setting, a_value.toByteArray());
 }
 
-void DapDataLocal::saveEncriptedSetting(const QString &a_setting, const QByteArray &a_string)
+void DapDataLocal::saveEncryptedSetting(const QString &a_setting, const QByteArray &a_string)
 {
     QByteArray encodedString;
     secretKey->encode(a_string, encodedString);
