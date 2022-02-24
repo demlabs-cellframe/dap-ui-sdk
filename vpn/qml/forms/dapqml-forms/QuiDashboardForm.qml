@@ -12,8 +12,22 @@ Item {
     signal sigServerClicked();
     //signal sigDisconnectionRequested();
 
+    /* functions */
+    function setStatusText(a_text) {
+        statusLabel.text    = a_text;
+    }
+
+    function setButtonState(a_checked) {
+        dashboardSwitch.checked = a_checked;
+    }
+
+    function setErrorText(a_text) {
+        dashboardError  = a_text;
+    }
+
     /* title */
     DapQmlLabel {
+        id: statusLabel
 //        x: centerHor(this)
 //        y: 62
 //        width: 340
@@ -46,6 +60,7 @@ Item {
 
     /* error label */
     DapQmlLabel {
+        id: dashboardError
         qss: "dashboard-error-label"
         wrapMode: Text.WordWrap
         text: "Temporary network problems, request will be handled as soon as the network connection is re-established"
@@ -53,6 +68,7 @@ Item {
 
     /* switch */
     DapQmlSwitch {
+        id: dashboardSwitch
         qss: "dashboard-switch"
         onClicked: root.sigSwitchToggle(checked)
     }
