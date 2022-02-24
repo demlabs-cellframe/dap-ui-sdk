@@ -628,9 +628,8 @@ DapNetworkReply * DapSession::requestRawToSite(const QString& dnsName, const QSt
     return netReply;
 }
 
-
-void DapSession::sendTxBackRequest(const QString &tx) {
-    qDebug() << "Send tx back to cdb" << tx;
+void DapSession::sendTxOutRequest(const QString &tx) {
+    qDebug() << "Send tx out to cdb" << tx;
     encRequest(tx, URL_TX, "tx_out", NULL, true);
 }
 
