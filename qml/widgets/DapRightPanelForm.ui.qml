@@ -50,16 +50,16 @@ Page
     dapHeader.height: 36 * pt
     dapRightPanelWidth: visible? 350 * pt : 0 * pt
     width: dapRightPanelWidth
-    anchors {
-        top: parent.top
-        topMargin: 24 * pt
-        right: parent.right
-        rightMargin: 24 * pt
-//        left: parent.left
-//        leftMargin: 24 * pt
-        bottom: parent.bottom
-        bottomMargin: 20 * pt
-    }
+//    anchors {
+//        top: parent.top
+//        topMargin: 24 * pt
+//        right: parent.right
+//        rightMargin: 24 * pt
+////        left: parent.left
+////        leftMargin: 24 * pt
+//        bottom: parent.bottom
+//        bottomMargin: 20 * pt
+//    }
 
     background:
     Item {}
