@@ -267,25 +267,19 @@ void BugReports::updateData (QString &a_text, int a_len)
 
   /* check if limit reachced */
   if(a_text.length() <= MAX_LENGTH)
+  {
+    m_bugReportText = a_text;
     return;
+  }
 
   _textHook = true;
 
   /* fix text length */
-  int diff  = a_text.length() - MAX_LENGTH;
-  a_text.chop (diff);
-  m_edit->setPlainText (a_text);
-
-  /* kill focus */
-  ui->editReport->unfocus();
-  QGuiApplication::inputMethod()->hide();
-
-  /* fix cursor pos */
-  QMetaObject::invokeMethod(this, [=] () {
-      auto cur = m_edit->textCursor();
-      cur.movePosition (QTextCursor::End, QTextCursor::MoveAnchor);
-      m_edit->setTextCursor (cur);
-  }, Qt::QueuedConnection);
+  int position = m_edit->textCursor().position();
+  m_edit->setPlainText(m_bugReportText);
+  QTextCursor cur = m_edit->textCursor();
+  cur.setPosition(position-1);
+  m_edit->setTextCursor(cur);
 
   _textHook = false;
 }
