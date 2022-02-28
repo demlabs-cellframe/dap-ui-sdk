@@ -25,6 +25,27 @@ Item {
         dashboardError  = a_text;
     }
 
+    function setStatusIndicator(a_status) {
+        if (a_status)
+            indicator.qss = "dashboard-status-icon ic_online";
+        else
+            indicator.qss = "dashboard-status-icon ic_offline";
+    }
+
+    function setTimeText(a_text) {
+        statusTime.text = a_text;
+    }
+
+    function updateSpeedIndicators(a_downSpeed, a_upSpeed) {
+        speedDown.mainText  = a_downSpeed;
+        speedUp.mainText    = a_upSpeed;
+    }
+
+    function setServerInfo(a_name, a_ip) {
+        serverChoose.mainText   = a_name;
+        serverChoose.subText    = a_ip;
+    }
+
     /* title */
     DapQmlLabel {
         id: statusLabel
@@ -78,6 +99,7 @@ Item {
         id: speedContainer
 
         DapQmlButton {
+            id: speedDown
             Layout.fillWidth: true
             Layout.fillHeight: true
             mainText: "120 Mb/s"
@@ -87,6 +109,7 @@ Item {
         }
 
         DapQmlButton {
+            id: speedUp
             Layout.fillWidth: true
             Layout.fillHeight: true
             mainText: "34.7 Mb/s"
@@ -100,6 +123,7 @@ Item {
 
     /* change server button */
     DapQmlButton {
+        id: serverChoose
 //        x: 0//centerHor(this)
 //        y: 575
 //        width: 410
