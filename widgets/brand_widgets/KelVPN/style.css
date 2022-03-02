@@ -1113,7 +1113,7 @@
 
 .stat-frame
 {
-	border: 1px solid #000;
+  border: 1px solid transparent;
 
 	width: 360pt;
 	height: 162pt;
