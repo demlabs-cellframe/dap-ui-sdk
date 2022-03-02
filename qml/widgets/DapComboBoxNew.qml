@@ -128,6 +128,13 @@ ComboBox {
         implicitHeight: contentItem.implicitHeight
         padding: 1
 
+        scale: mainWindow.scale
+
+        Component.onCompleted:
+        {
+            print("DapComboBoxNew POPUP")
+        }
+
         contentItem: ListView {
             clip: true
             implicitHeight: contentHeight

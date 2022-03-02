@@ -179,8 +179,9 @@ ComboBox
                     DapCalendar
                     {
                         id: dapMinimumOfRangeCalendar
-                        x: parent.x
-                        y: parent.y + parent.height
+                        x: parent.x - width*(1/scale-1)*0.5
+                        y: parent.y - height - height*(1/scale-1)*0.5
+
                         dapLeftPadding: dapCalendars.dapLeftPadding
                         dapRightPadding: dapCalendars.dapRightPadding
                         dapTopPadding: dapCalendars.dapTopPadding
@@ -265,8 +266,10 @@ ComboBox
                     DapCalendar
                     {
                         id: dapMaximumOfRangeCalendar
-                        x: parent.x
-                        y: parent.y + parent.height
+
+                        x: parent.x - width*(1/scale-1)*0.5
+                        y: parent.y - height - height*(1/scale-1)*0.5
+
                         dapLeftPadding: dapCalendars.dapLeftPadding
                         dapRightPadding: dapCalendars.dapRightPadding
                         dapTopPadding: dapCalendars.dapTopPadding
@@ -306,9 +309,15 @@ ComboBox
         Popup
         {
             id: dapComboboxPopup
-            y: parent.height - 1
-            width: parent.width
+            x: -width*(1/scale-1)*0.5
+            y: dapComboBoxWithRange.height - height*(1/scale-1)*0.5
+            width: dapComboBoxWithRange.width
             padding: 0
+
+            parent: dapComboBoxWithRange
+
+            scale: mainWindow.scale
+
             contentItem:
                 ListView
                 {
@@ -323,11 +332,12 @@ ComboBox
                 Rectangle
                 {
                     width: background.width
-                    color: dapNormalColor
+                    color: "transparent"
                     Rectangle
                     {
                         id: contentCorner
                         anchors.fill: parent
+                        color: "transparent"
                     }
 
                     DropShadow

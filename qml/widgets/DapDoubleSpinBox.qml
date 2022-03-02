@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.4
 import QtQuick.Controls 2.2
 import QtGraphicalEffects 1.0
 
@@ -35,21 +35,33 @@ SpinBox {
         return Number.fromLocaleString(locale, text) * factor
     }
 
-    contentItem: TextInput {
-        z: 2
-        text: spinbox.textFromValue(spinbox.value, spinbox.locale)
+    contentItem:
+//        Item
+//        {
+//            anchors.fill: parent
+//            anchors.leftMargin: minusButton.width
+//            anchors.rightMargin: minusButton.width
+            TextInput {
+                z: 2
+//                anchors.fill: parent
+                anchors.top: spinbox.top
+                anchors.bottom: spinbox.bottom
+                height: spinbox.height
+//                width: spinbox.width
+                text: spinbox.textFromValue(spinbox.value, spinbox.locale)
 
-        font: spinbox.font
-        color: currTheme.textColor
-//        selectionColor: "#21be2b"
-//        selectedTextColor: "#ffffff"
-        horizontalAlignment: Qt.AlignHCenter
-        verticalAlignment: Qt.AlignVCenter
+                font: spinbox.font
+                color: currTheme.textColor
+            //        selectionColor: "#21be2b"
+            //        selectedTextColor: "#ffffff"
+                horizontalAlignment: Qt.AlignHCenter
+                verticalAlignment: Qt.AlignVCenter
 
-        readOnly: !spinbox.editable
-        validator: spinbox.validator
-        inputMethodHints: Qt.ImhFormattedNumbersOnly
-    }
+                readOnly: !spinbox.editable
+                validator: spinbox.validator
+                inputMethodHints: Qt.ImhFormattedNumbersOnly
+            }
+//        }
 
     up.indicator: Rectangle {
         x: spinbox.mirrored ? 0 : parent.width - width
@@ -60,6 +72,7 @@ SpinBox {
 
         Image {
             anchors.fill: parent
+            mipmap: true
             source: enabled ? spinbox.up.pressed ?
                                   "qrc:/icons/button_dark.png" :
                                   "qrc:/icons/button_on.png" :
@@ -71,7 +84,7 @@ SpinBox {
             font.pixelSize: spinbox.font.pixelSize * 3
             color: currTheme.textColor
             anchors.fill: parent
-            anchors.bottomMargin: 3
+            anchors.bottomMargin: 2
             fontSizeMode: Text.Fit
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -88,6 +101,7 @@ SpinBox {
 
         Image {
             anchors.fill: parent
+            mipmap: true
             source: enabled ? spinbox.down.pressed ?
                                   "qrc:/icons/button_dark.png" :
                                   "qrc:/icons/button_on.png" :
@@ -99,7 +113,7 @@ SpinBox {
             font.pixelSize: spinbox.font.pixelSize * 3
             color: currTheme.textColor
             anchors.fill: parent
-            anchors.bottomMargin: 3
+            anchors.bottomMargin: 2
             fontSizeMode: Text.Fit
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
