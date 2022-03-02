@@ -3,7 +3,18 @@ import QtQuick.Layouts 1.3
 import "qrc:/dapqml-widgets"
 
 Item {
+    id: root
+    /* vars */
     property string formName: "Statistics"
+
+    /* functions */
+    function updateIndicators(a_bytesReceived, a_bytesSent,
+                              a_packetsReceived, a_packetsSent,
+                              a_uploadSpeed, a_downloadSpeed,
+                              a_uploadSpeedString, a_downloadSpeedString)
+    {
+        stBytesRec.mainText;
+    }
 
     Rectangle {
         anchors.fill: parent
@@ -39,6 +50,7 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
 
                 DapQmlButton {
+                    id: stDownSpeed
                     width: 154
                     height: 99
 
@@ -54,6 +66,7 @@ Item {
                 }
 
                 DapQmlButton {
+                    id: stUpSpeed
                     width: 154
                     height: 99
 
@@ -69,6 +82,7 @@ Item {
                 }
 
                 DapQmlButton {
+                    id: stBytesRec
                     width: 154
                     height: 99
                     
@@ -84,6 +98,7 @@ Item {
                 }
 
                 DapQmlButton {
+                    id: stBytesSent
                     width: 154
                     height: 99
                     
@@ -99,6 +114,7 @@ Item {
                 }
 
                 DapQmlButton {
+                    id: stPacketsRec
                     width: 154
                     height: 99
                     
@@ -114,6 +130,7 @@ Item {
                 }
 
                 DapQmlButton {
+                    id: stPacketsSent
                     width: 154
                     height: 99
                     
@@ -129,6 +146,7 @@ Item {
                 }
 
                 DapQmlButton {
+                    id: stUptime
                     width: 154
                     height: 99
                     
@@ -144,6 +162,7 @@ Item {
                 }
 
                 DapQmlButton {
+                    id: stPing
                     width: 154
                     height: 99
                     

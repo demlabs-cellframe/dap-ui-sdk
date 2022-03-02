@@ -10,7 +10,7 @@ Item {
     /* signals */
     signal sigSwitchToggle (bool checked);
     signal sigServerClicked();
-    //signal sigDisconnectionRequested();
+    signal sigConnectionStatusChangeRequested();
 
     /* functions */
     function setStatusText(a_text) {
@@ -91,7 +91,7 @@ Item {
     DapQmlSwitch {
         id: dashboardSwitch
         qss: "dashboard-switch"
-        onClicked: root.sigSwitchToggle(checked)
+        onClicked: { root.sigSwitchToggle(checked); root.sigConnectionStatusChangeRequested(); }
     }
 
     /* speed */
