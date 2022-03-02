@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.4
 import QtQuick.Controls 2.2
 import QtGraphicalEffects 1.0
 
@@ -36,14 +36,18 @@ SpinBox {
     }
 
     contentItem:
-        Item
-        {
-            anchors.fill: parent
-            anchors.leftMargin: minusButton.width
-            anchors.rightMargin: minusButton.width
+//        Item
+//        {
+//            anchors.fill: parent
+//            anchors.leftMargin: minusButton.width
+//            anchors.rightMargin: minusButton.width
             TextInput {
                 z: 2
-                anchors.fill: parent
+//                anchors.fill: parent
+                anchors.top: spinbox.top
+                anchors.bottom: spinbox.bottom
+                height: spinbox.height
+//                width: spinbox.width
                 text: spinbox.textFromValue(spinbox.value, spinbox.locale)
 
                 font: spinbox.font
@@ -57,7 +61,7 @@ SpinBox {
                 validator: spinbox.validator
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
             }
-        }
+//        }
 
     up.indicator: Rectangle {
         x: spinbox.mirrored ? 0 : parent.width - width
@@ -66,10 +70,9 @@ SpinBox {
         color: "transparent"
         border.color: "transparent"
 
-        DapImageLoader {
+        Image {
             anchors.fill: parent
-            innerWidth: parent.width
-            innerHeight: parent.height
+            mipmap: true
             source: enabled ? spinbox.up.pressed ?
                                   "qrc:/icons/button_dark.png" :
                                   "qrc:/icons/button_on.png" :
@@ -81,7 +84,7 @@ SpinBox {
             font.pixelSize: spinbox.font.pixelSize * 3
             color: currTheme.textColor
             anchors.fill: parent
-            anchors.bottomMargin: 3
+            anchors.bottomMargin: 2
             fontSizeMode: Text.Fit
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -96,10 +99,9 @@ SpinBox {
         color: "transparent"
         border.color: "transparent"
 
-        DapImageLoader {
+        Image {
             anchors.fill: parent
-            innerWidth: parent.width
-            innerHeight: parent.height
+            mipmap: true
             source: enabled ? spinbox.down.pressed ?
                                   "qrc:/icons/button_dark.png" :
                                   "qrc:/icons/button_on.png" :
@@ -111,7 +113,7 @@ SpinBox {
             font.pixelSize: spinbox.font.pixelSize * 3
             color: currTheme.textColor
             anchors.fill: parent
-            anchors.bottomMargin: 3
+            anchors.bottomMargin: 2
             fontSizeMode: Text.Fit
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
