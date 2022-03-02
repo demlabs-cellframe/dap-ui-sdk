@@ -222,6 +222,7 @@ signals:
     void sigResetSerialKeyError(const int, const QString&);
 #ifdef BUILD_VAR_GOOGLE
     Q_INVOKABLE void purchaseResponseReceived(const QJsonDocument& responce);
+    void purchaseError(const QString&);
 #endif
 };
 
