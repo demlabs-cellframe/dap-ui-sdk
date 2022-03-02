@@ -164,7 +164,7 @@ void SerialInput::cbFocusEvent(DapGuiLineEdit *e, const Qt::FocusReason &reason)
   if (reason == Qt::MouseFocusReason)
     {
       e->setHideAnchor (false);
-      if (e->text() == "____-____-____-____")
+      if (e->text() == "____ ____ ____ ____")
         e->setText ("");
     }
 }
