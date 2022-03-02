@@ -67,6 +67,7 @@ Popup
 
     id: dapCalendarPopup
 
+    scale: mainWindow.scale
 
     background:
         Rectangle
@@ -75,6 +76,7 @@ Popup
             width: dapLeftPadding + dapRightPadding + 7 * dapDayWidth + 6 * dapDayLeftInterval
             height: dapTopPadding + dapBottomPadding + dapCalendar.__style.control.height
             color: currTheme.backgroundMainScreen
+
             Rectangle
             {
                 id: contentCorner
@@ -104,7 +106,5 @@ Popup
 
             frameVisible: false
         }
-
-
 }
 

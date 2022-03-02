@@ -1,5 +1,5 @@
-﻿import QtQuick 2.0
-import QtQuick.Controls 2.0
+﻿import QtQuick 2.4
+import QtQuick.Controls 2.5
 
 import QtGraphicalEffects 1.0
 
@@ -123,7 +123,7 @@ ComboBox
             anchors.fill: parent
             anchors.verticalCenter: parent.verticalCenter
             anchors.leftMargin: popup.visible ? sidePaddingActive : sidePaddingNormal
-             color: "transparent"
+            color: "transparent"
 
              Row
             {
@@ -165,13 +165,20 @@ ComboBox
 
     //Customize drop-down list with shadow effect
     popup: 
-        Popup 
+        Popup
         {
-            y: parent.height - 1
-            width: parent.width
+            id: popup
+            x: -width*(1/scale-1)*0.5
+            y: dapComboBox.height - height*(1/scale-1)*0.5
+            width: dapComboBox.width
             padding: 0
+
+            parent: dapComboBox
+
+            scale: mainWindow.scale
+
             contentItem:
-                ListView 
+                ListView
                 {
                     id: popupList
                     clip: true
@@ -179,19 +186,19 @@ ComboBox
                     model: dapComboBox.popup.visible ? dapComboBox.delegateModel : null
                     ScrollIndicator.vertical: ScrollIndicator {}
                 }
-    
-            background: 
+
+            background:
                 Rectangle
                 {
                     width: dapComboBox.background.width
-                    color: normalColor
-                    Rectangle 
+                    color: "transparent"
+                    Rectangle
                     {
                         id: contentCorner
                         anchors.fill: parent
-                        color: currTheme.buttonColorNormal
+                        color: "transparent"
                     }
-        
+
                     DropShadow
                     {
                         anchors.fill: parent
