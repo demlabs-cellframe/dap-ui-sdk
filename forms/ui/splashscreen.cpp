@@ -15,6 +15,11 @@ SplashScreen::SplashScreen (QWidget *parent) :
 
   auto version  = QString ("Version %1\n%2")
       .arg (DAP_VERSION, __DATE__);
+#ifdef FOOTER_LABEL_POWERED_BY
+  version += "\nPowered by Cellframe Network";
+#endif
+
+
   ui->lVersion->setText (version);
 }
 

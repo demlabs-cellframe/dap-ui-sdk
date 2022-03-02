@@ -45,10 +45,10 @@ Login::Login (QWidget *parent) :
   }
 #ifdef Q_OS_ANDROID
   ui->btnChooseSerial->setBtnStyle (DapGuiButton::TopMainBottomSub);
-  ui->btnChooseSerial->setMainText ("____-____-____-____");
+  ui->btnChooseSerial->setMainText ("____ ____ ____ ____");
 #else
   //ui->btnChooseSerial->setInputMask (">NNNN-NNNN-NNNN-NNNN;");
-  ui->btnChooseSerial->setPlaceholderText ("____-____-____-____");
+  ui->btnChooseSerial->setPlaceholderText ("____ ____ ____ ____");
 #endif // Q_OS_ANDROID
 
   ui->btnChooseSerial->setCallbackKeyEvent(_cbKeyEvent);
