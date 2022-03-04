@@ -60,22 +60,49 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="DapGuiWidget" name="kelGuiWidget_2" native="true">
-           <property name="cssStyle" stdset="0">
-            <string>nobackground</string>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
            </property>
-          </widget>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>248</height>
+            </size>
+           </property>
+          </spacer>
          </item>
          <item>
           <widget class="DapGuiWidget" name="widget" native="true">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>70</height>
+            </size>
+           </property>
            <property name="cssStyle" stdset="0">
             <string>nobackground</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
              <widget class="DapGuiLabel" name="lLogo">
+              <property name="minimumSize">
+               <size>
+                <width>270</width>
+                <height>70</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>270</width>
+                <height>70</height>
+               </size>
+              </property>
               <property name="styleSheet">
-               <string notr="true">#lLogo{ 	min-width: 230px; 	max-width: 230px; 	min-height: 59px; 	max-height: 59px; 	qproperty-scaledPixmap: url(:/gui/ui/asset/logo_kelvpn-white.png); 
+               <string notr="true">#lLogo{ 	min-width: 270px; 	max-width: 270px; 	min-height: 70px; 	max-height: 70px; 	qproperty-scaledPixmap: url(:/gui/ui/asset/logo_kelvpn-white.png); 
  	border: none; 
  	background-color: rgba(0,0,0,0); }</string>
               </property>
@@ -91,11 +118,20 @@
           </widget>
          </item>
          <item>
-          <widget class="DapGuiWidget" name="kelGuiWidget" native="true">
-           <property name="cssStyle" stdset="0">
-            <string>nobackground</string>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
            </property>
-          </widget>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>278</height>
+            </size>
+           </property>
+          </spacer>
          </item>
          <item>
           <widget class="DapGuiLabel" name="lStatus">
@@ -122,6 +158,22 @@
           </widget>
          </item>
          <item>
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>256</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
           <widget class="DapGuiLabel" name="lVersion">
            <property name="styleSheet">
             <string notr="true">#lVersion{ 	color: #FFFFFF; 
@@ -142,6 +194,22 @@ September 10 2021</string>
             <string>white font12 normal lato noborder nobackground</string>
            </property>
           </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>18</height>
+            </size>
+           </property>
+          </spacer>
          </item>
          <item>
           <widget class="DapGuiWidget" name="wLoadingHolder" native="true">

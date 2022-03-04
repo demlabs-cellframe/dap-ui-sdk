@@ -229,7 +229,7 @@ void SettingsModel::_updateLabels()
 
     _SItem{SI_TITLE,      {tr ("Support"), ""}, "settings_icon", defaultCb},
 
-    _SItem{SI_BUTTON,     {tr ("Send a bug report"), ""}, "settings_icon ic_send-report", cbBugSend},
+    _SItem{SI_BUTTON,     {tr ("Send bug report"), ""}, "settings_icon ic_send-report", cbBugSend},
     _SItem{SI_BUTTON,     {tr ("Telegram support bot"), ""}, "settings_icon ic_bot", cbTelegramBot},
 
     _SItem{SI_TITLE,      {tr ("Information"), ""}, "settings_icon", defaultCb},
