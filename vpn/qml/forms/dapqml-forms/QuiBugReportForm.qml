@@ -9,10 +9,33 @@ Item {
     property int mode: 0
     property string formName: "BugReport"
 
+    /* defs */
+    enum Mode
+    {
+        List,
+        Write,
+        Loading,
+        Result
+    }
+
     /* signals */
     signal sigSend()
     signal sigCancel();
     signal sigResultBack()
+
+    /* functions */
+    function setmode(a_mode) {
+        switch(a_mode) {
+        case QuiBugReportForm.Mode.List:
+        case QuiBugReportForm.Mode.Write:
+        case QuiBugReportForm.Mode.Loading:
+        case QuiBugReportForm.Mode.Result:
+        }
+    }
+
+    function setResultText(a_text) {
+        bugrepResult.text   = a_text;
+    }
 
     /* title */
     DapQmlDialogTitle {
@@ -161,6 +184,7 @@ Item {
 
         /* status text */
         DapQmlLabel {
+            id: bugrepResult
             qss: "bugrep-status"
             wrapMode: Text.WordWrap
             text: "Bug report # 368647 sent successfully"

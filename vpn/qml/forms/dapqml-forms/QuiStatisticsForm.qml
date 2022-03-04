@@ -13,7 +13,16 @@ Item {
                               a_uploadSpeed, a_downloadSpeed,
                               a_uploadSpeedString, a_downloadSpeedString)
     {
-        stBytesRec.mainText;
+        stBytesRec.mainText     = a_bytesReceived;
+        stBytesSent.mainText    = a_bytesSent;
+        stPacketsRec.mainText   = a_packetsReceived;
+        stPacketsSent.mainText  = a_packetsSent;
+        stDownSpeed.mainText    = a_downloadSpeedString;
+        stUpSpeed.mainText      = a_downloadSpeedString;
+    }
+
+    function setUptime (a_text) {
+        stUptime.mainText   = a_text;
     }
 
     Rectangle {

@@ -8,6 +8,11 @@ Item {
     /* signals */
     signal sigSelect(int index, string name);
 
+    /* functions */
+    function setCurrentIndex(a_index) {
+        csListView.currentIndex = a_index;
+    }
+
     /* title */
     DapQmlDialogTitle {
         id: title

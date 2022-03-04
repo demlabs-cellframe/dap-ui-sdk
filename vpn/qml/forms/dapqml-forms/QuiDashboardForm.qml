@@ -22,7 +22,7 @@ Item {
     }
 
     function setErrorText(a_text) {
-        dashboardError  = a_text;
+        dashboardError.text  = a_text;
     }
 
     function setStatusIndicator(a_status) {
