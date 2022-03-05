@@ -151,9 +151,23 @@ void DapSession::sendBugReport(const QByteArray &data)
 
 void DapSession::sendBugReportStatusRequest(const QByteArray &data)
 {
-    m_CDBaddress = *DapDataLocal::instance()->m_cdbIter;
-    m_CDBport = 80;
-    m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this, SLOT(answerBugReportsStatus()), QT_STRINGIFY(answerBugReportsStatusError), NULL, true);
+    if (!m_dapCryptCDB) {
+        this->setDapUri(*DapDataLocal::instance()->m_cdbIter, 80);
+        auto *l_tempConn = new QMetaObject::Connection();
+        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]{
+            preserveCDBSession();
+            m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this
+                                                               , SLOT(answerBugReportsStatus())
+                                                               , QT_STRINGIFY(answerBugReportsStatusError), NULL, true);
+            disconnect(*l_tempConn);
+            delete l_tempConn;
+        });
+        requestServerPublicKey();
+    } else {
+        m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this
+                                                           , SLOT(answerBugReportsStatus())
+                                                           , QT_STRINGIFY(answerBugReportsStatusError), NULL, true);
+    }
 }
 
 void DapSession::sendSignUpRequest(const QString &host, const QString &email, const QString &password)
@@ -528,10 +542,13 @@ void DapSession::answerSignUp()
 
 void DapSession::answerBugReport()
 {
-    if (!m_netSendBugReportReply)
+    auto reply = m_netSendBugReportReply->getReplyData();
+    if (reply.size() <= 0) {
+        qCritical() << "Wrong reply";
         return;
-    qInfo() << "Bugreport reply: " << m_netSendBugReportReply->getReplyData();
-    emit receivedBugReportAnswer(QString::fromUtf8(m_netSendBugReportReply->getReplyData()));
+    }
+    qInfo() << "Bugreport reply: " << reply;
+    emit receivedBugReportAnswer(QString::fromUtf8(reply));
 }
 
 void DapSession::errorResetSerialKey(const QString& error)

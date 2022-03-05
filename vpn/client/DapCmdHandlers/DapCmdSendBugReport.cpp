@@ -4,7 +4,11 @@
 DapCmdSendBugReport::DapCmdSendBugReport(QObject *parent)
     : DapCmdServiceAbstract (DapJsonCmdType::SEND_BUG_REPORT, parent)
 {
-
+    connect(this, &DapCmdSendBugReport::sigSendCmdBugReportAnswer, [=](const QString& number){
+        QJsonObject obj;
+        obj["bugreport_answer"] = number;
+        sendCmd(&obj);
+    });
 }
 
 DapCmdSendBugReport::~DapCmdSendBugReport()
@@ -15,12 +19,6 @@ DapCmdSendBugReport::~DapCmdSendBugReport()
 void DapCmdSendBugReport::handle(const QJsonObject *params)
 {
     Q_UNUSED(params);
-
-    connect(this, &DapCmdSendBugReport::sigSendCmdBugReportAnswer, [=](const QString& number){
-        QJsonObject obj;
-        obj["bugreport_answer"] = number;
-        sendCmd(&obj);
-    });
 
     QString serial = params->value("serial").toString();
     QString message = params->value("message").toString();
