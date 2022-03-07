@@ -21,8 +21,6 @@
         <file compress="1">asset/ic_send-report.png</file>
         <file compress="1">asset/ic_terms_policy.png</file>
         <file compress="1">asset/ic_theme.png</file>
-        <!--<file compress="1">data/terms.html</file>
-        <file compress="1">data/privacy_ru.html</file>
-        <file compress="1">data/privacy.html</file>-->
+        <file>asset/trash_icon.png</file>
     </qresource>
 </RCC>

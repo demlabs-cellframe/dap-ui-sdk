@@ -742,6 +742,11 @@
 	qproperty-scaledPixmap: url("://gui/asset/ic_copy.png");
 }
 
+.ic_trash
+{
+	qproperty-scaledPixmap: url("://gui/asset/trash_icon.png");
+}
+
 .ic_information_bug-report
 {
 	qproperty-scaledPixmap: url("://gui/asset/ic_information_bug-report.png");
