@@ -47,6 +47,8 @@ BugReports::BugReports (QWidget *parent) :
   QMetaObject::invokeMethod(ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
   //setText (movLoading->lastErrorString());
 
+  ui->btnSendReport->setEnabled(false);
+
   /* fill map */
   //m_map.insert (Write,   ui->btnAttachScreenshot);
   m_map.insert (Write,   ui->btnSendReport);
@@ -267,6 +269,8 @@ void BugReports::updateData (QString &a_text, int a_len)
     .arg (MAX_LENGTH));
   //ui->labelLetterAmount->repaint();
   //style()->polish (ui->labelLetterAmount);
+
+  ui->btnSendReport->setEnabled(!a_text.isEmpty());
 
   /* check if limit reachced */
   if(a_text.length() <= MAX_LENGTH)

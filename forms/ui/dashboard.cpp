@@ -97,7 +97,12 @@ void Dashboard::setConnectedTime(QString a_text)
 void Dashboard::setStatusIdicator(bool a_enabled /*= false*/)
 {
     ui->lStatusIconOn->setVisible (a_enabled);
+#ifndef DISABLE_CLOCK_WHEN_DISCONNECTED
     ui->lStatusIconOff->setVisible (!a_enabled);
+#else
+    ui->lStatusIconOff->setVisible (false);
+    ui->lUptime->setVisible(a_enabled);
+#endif
 
 //    ui->lStatusIcon->setChecked(a_authorized);
 }
