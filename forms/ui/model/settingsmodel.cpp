@@ -221,7 +221,7 @@ void SettingsModel::_updateLabels()
     _SItem{SI_SPACER,     {"", ""}, "2", defaultCb},
 
     _SItem{SI_BUTTONRED,  {tr ("Get a new licence key"), /*"265 days left"*/" "}, "settings_icon ic_renew", cbLicenceGet},
-    _SItem{SI_BUTTON,     {tr ("Reset licence key"), ""}, "settings_icon ic_key", cbLicenceReset},
+    _SItem{SI_BUTTON,     {tr ("Reset license key"), ""}, "settings_icon ic_key", cbLicenceReset},
     /* WIP */ /// _SItem{SI_LINK,       {tr ("Language"), ""}, "settings_icon ic_language", cbLanguage},
 #ifndef DISABLE_THEMES
     _SItem{SI_LINK,       {tr ("Color theme"), ""}, "settings_icon ic_theme", cbColorTheme},
