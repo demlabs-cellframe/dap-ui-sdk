@@ -1349,9 +1349,9 @@
 
 .history-top-content-spacer
 {
-	height: 50pt;
-	min-height: 50pt;
-	max-height: 50pt;
+  height: 20pt;
+  min-height: 20pt;
+  max-height: 20pt;
 }
 
 .history-title-text
