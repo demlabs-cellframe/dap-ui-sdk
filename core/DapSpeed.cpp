@@ -12,6 +12,7 @@ quint64 CurrentMillisecond()
 
 QString SpeedToString(quint64 a_speed)
 {
+#ifndef SPEED_AS_INTEGER
     if (a_speed >= 1E6)
     {
         double speed = a_speed/1E6;
@@ -32,6 +33,26 @@ QString SpeedToString(quint64 a_speed)
             digitCount = 1;
         return QString("%1 %2").arg(QString::number(speed, 'f', digitCount)).arg("kB/s");
     }
+#else
+    if (a_speed >= 1E6)
+    {
+        double speed = a_speed;
+        int digitCount = 0;
+        return QString("%1 %2").arg(QString::number(speed, 'f', digitCount)).arg("MB/s");
+    }
+    if (a_speed >= 1E3)
+    {
+        double speed = a_speed/1E3;
+        int digitCount = 0;
+        return QString("%1 %2").arg(QString::number(speed, 'f', digitCount)).arg("kB/s");
+    }
+    else
+    {
+        double speed = a_speed;
+        int digitCount = 0;
+        return QString("%1 %2").arg(QString::number(speed, 'f', digitCount)).arg("B/s");
+    }
+#endif
 }
 
 

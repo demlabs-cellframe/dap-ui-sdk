@@ -1,7 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file compress="1">fonts/Lato-Regular.ttf</file>
-        <file compress="1">fonts/Lato-Bold.ttf</file>
         <file compress="1">fonts/Roboto-Bold.ttf</file>
         <file compress="1">icons/button.png</file>
         <file compress="1">icons/link.png</file>
@@ -59,5 +57,6 @@
         <file compress="1">gfx/dark/ic_close_hover.png</file>
         <file compress="1">style.css</file>
         <file compress="1">theme.json</file>
+        <file>fonts/Jost-VariableFont_wght.ttf</file>
     </qresource>
 </RCC>
