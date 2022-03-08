@@ -37,6 +37,8 @@ Dashboard::Dashboard (QWidget *parent) :
            this, &Dashboard::sigServerClicked,
            Qt::QueuedConnection);
 
+  ui->btnServer->setBtnStyle(DapGuiButton::TopSubBottomMain);
+
   /* finish */
   slotSetDownUp (0, 0);
   setStatusIdicator(false);

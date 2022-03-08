@@ -11,7 +11,6 @@ SplashScreen::SplashScreen (QWidget *parent) :
   ui (new Ui::SplashScreen)
 {
   ui->setupUi (this);
-  ui->pLoading->setVisible (false);
 
   auto version  = QString ("Version %1\n%2")
       .arg (DAP_VERSION, __DATE__);

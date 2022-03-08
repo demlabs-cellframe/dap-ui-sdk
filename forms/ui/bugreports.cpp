@@ -187,8 +187,11 @@ void BugReports::slotSetMode (BugReports::Mode mode)
 
   qDebug() << __PRETTY_FUNCTION__ << "spinner width:" << w;
 
-  if (m_mode == Loading)
+  if (m_mode == Loading){
+    ui->lResult->setVisible(true);
+    ui->lResult->setText("Sending...");
     movLoading->start();
+  }
   else
     movLoading->stop();
 }
