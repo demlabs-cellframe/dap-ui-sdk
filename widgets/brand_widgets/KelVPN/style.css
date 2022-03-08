@@ -1261,6 +1261,13 @@
 	max-height: 160pt;
 }
 
+.bugrep-result-container
+{
+	height: 224pt;
+	min-height: 224pt;
+	max-height: 224pt;
+}
+
 /****************************************************
  * Purchase
  ***************************************************/

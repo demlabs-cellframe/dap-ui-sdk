@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>446</width>
-    <height>926</height>
+    <height>1200</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -250,7 +250,7 @@ color: rgb(238, 238, 236);</string>
               <x>0</x>
               <y>0</y>
               <width>390</width>
-              <height>68</height>
+              <height>265</height>
              </rect>
             </property>
             <property name="cssStyle">
@@ -260,68 +260,92 @@ color: rgb(238, 238, 236);</string>
           </widget>
          </item>
          <item>
-          <widget class="DapGuiPlainTextEdit" name="editReport">
-           <property name="placeholderText">
-            <string>Please describe the details of problem you faced. What actions did you take and what happened.</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="DapGuiLabel" name="lResult">
-           <property name="text">
-            <string>Bug report status</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
+          <widget class="DapGuiWidget" name="resultContainer">
            <property name="cssStyle">
-            <string>font18 lato normal darkblue noborder nobackground</string>
+            <string>bugrep-result-container</string>
            </property>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_7">
+              <item>
+               <widget class="DapGuiLabel" name="labelLoading">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="cssStyle">
+                 <string>bugrep-spinner noborder nobackground</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="DapGuiPlainTextEdit" name="editReport">
+              <property name="placeholderText">
+               <string>Please describe the details of problem you faced. What actions did you take and what happened.</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <spacer name="horizontalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="DapGuiLabel" name="labelLetterAmount">
+                <property name="text">
+                 <string>0/200</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="cssStyle">
+                 <string>font16 normal lato gray noborder nobackground</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="DapGuiLabel" name="lResult">
+              <property name="text">
+               <string>Bug report status</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="cssStyle">
+               <string>font18 lato normal darkblue noborder nobackground</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
-           <item>
-            <widget class="DapGuiLabel" name="labelLoading">
-             <property name="text">
-              <string/>
-             </property>
-             <property name="cssStyle">
-              <string>ic_spinner bugrep-spinner noborder nobackground</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="DapGuiLabel" name="labelLetterAmount">
-             <property name="text">
-              <string>0/200</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-             <property name="cssStyle">
-              <string>font16 normal lato gray noborder nobackground</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
          </item>
          <item>
           <widget class="DapGuiWidget" name="top_spacer_2">
