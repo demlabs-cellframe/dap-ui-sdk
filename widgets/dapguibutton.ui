@@ -32,7 +32,7 @@
    <item>
     <widget class="DapGuiWidget" name="DapGuiButtonBackground">
      <property name="styleSheet">
-      <string notr="true">#DapGuiButtonBackground{ 	background-color: rgba(0,0,0,0); }</string>
+      <string notr="true">#DapGuiButtonBackground{ background-color: rgba(0,0,0,0); }</string>
      </property>
      <property name="cssStyle">
       <string>nobackground</string>
@@ -290,6 +290,35 @@
             <set>Qt::AlignHCenter|Qt::AlignTop</set>
            </property>
           </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="DapGuiWidget" name="Style5">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="DapGuiLabel" name="DapGuiButtonIconLeft"/>
+         </item>
+         <item>
+          <widget class="DapGuiLabel" name="DapGuiButtonTextMid_2">
+           <property name="text">
+            <string>Main Text</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="DapGuiLabel" name="DapGuiButtonTextRight_2">
+           <property name="text">
+            <string>Sub Text</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="DapGuiLabel" name="DapGuiButtonIconRight"/>
          </item>
         </layout>
        </widget>

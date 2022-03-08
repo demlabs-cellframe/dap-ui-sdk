@@ -44,6 +44,11 @@ BugReports::BugReports (QWidget *parent) :
 
   ui->top_spacer_debug->setVisible (false);
   ui->btnAttachScreenshot->setVisible (false);
+  ui->attach_send_spacer->setVisible (false);
+  ui->dbglbl1->hide();
+  ui->dbglbl2->hide();
+  ui->dbglbl3->hide();
+  ui->lineEdit->hide();
   QMetaObject::invokeMethod(ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
   //setText (movLoading->lastErrorString());
 
@@ -66,6 +71,8 @@ BugReports::BugReports (QWidget *parent) :
   connect (ui->radioTestWrite, &QRadioButton::clicked,
            this, &BugReports::_slotRadioTest);
   connect (ui->radioTestLoading, &QRadioButton::clicked,
+           this, &BugReports::_slotRadioTest);
+  connect (ui->radioTestResult, &QRadioButton::clicked,
            this, &BugReports::_slotRadioTest);
 
   connect (ui->btnReturn, &DapGuiPushButton::clicked,
@@ -218,6 +225,7 @@ void BugReports::_slotRadioTest()
         {ui->radioTestList, List},
         {ui->radioTestWrite, Write},
         {ui->radioTestLoading, Loading},
+        {ui->radioTestResult, Result},
       };
     }
 

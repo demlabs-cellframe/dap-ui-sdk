@@ -49,6 +49,7 @@ public:
     LeftTopMainBottomSub, ///< left:left, top:main, bottom:sub
     IconMainSub,          ///< icon, main, sub
     EditTopMainBottomSub, ///< top:edit, bottom:sub
+    IconMainSubIcon,      ///< icon, main, sub, icon
   };
   Q_ENUM (ButtonStyle)
   /// @}
@@ -65,6 +66,7 @@ public:
   Q_PROPERTY (QString subCssClass     READ subCssClass  WRITE setSubCssClass)
   Q_PROPERTY (QString leftCssClass    READ leftCssClass WRITE setLeftCssClass)
   Q_PROPERTY (QString iconCssClass    READ iconCssClass WRITE setIconCssClass)
+  Q_PROPERTY (QString iconRightCssClass READ iconRightCssClass WRITE setIconRightCssClass)
   Q_PROPERTY (QString inputMask READ inputMask WRITE setInputMask)
   Q_PROPERTY (bool separator          READ separator    WRITE setSeparator)
   Q_PROPERTY (bool link               READ link         WRITE setLink)
@@ -87,6 +89,7 @@ private:
   QString m_subCssClass;  ///< css list for second label
   QString m_leftCssClass; ///< css list for left label
   QString m_iconCssClass; ///< css list for icon label
+  QString m_iconRightCssClass; ///< css list for right icon label
   QString m_inputMask;    ///< regexp for input field
   bool m_separator;       ///< bottom separator
   bool m_link;            ///< link button
@@ -139,6 +142,9 @@ public:
   QString iconCssClass() const;
   void setIconCssClass (const QString &iconCssClass);
 
+  QString iconRightCssClass() const;
+  void setIconRightCssClass (const QString &iconCssClass);
+
   QString inputMask() const;
   void setInputMask(const QString &inputMask);
 
@@ -190,6 +196,7 @@ public:
   /// @{
 signals:
   void clicked();                     ///< button is clicked
+  void rightIconClicked();            ///< right icon is clicked
   void textChanged(const QString &);  ///< text changed by user or programm. @see <a href="https://doc.qt.io/qt-5/qlineedit.html#textChanged" target="_blank">QLineEdit::textChanged</a>
   void textEdited(const QString &);   ///< text changed by user. @see <a href="https://doc.qt.io/qt-5/qlineedit.html#textEdited" target="_blank">QLineEdit::textEdited</a>
   /// @}
