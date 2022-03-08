@@ -135,6 +135,13 @@
                  </property>
                 </widget>
                </item>
+               <item>
+                <widget class="QRadioButton" name="radioTestResult">
+                 <property name="text">
+                  <string>Result</string>
+                 </property>
+                </widget>
+               </item>
               </layout>
              </widget>
             </item>
@@ -191,6 +198,17 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit">
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(92, 53, 102);
+color: rgb(238, 238, 236);</string>
+             </property>
+             <property name="text">
+              <string>et</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
          <item>
@@ -198,6 +216,15 @@
            <property name="cssStyle">
             <string>bugrep-top-input-spacer</string>
            </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_10">
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>top_input_spacer</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
          <item>
@@ -287,6 +314,15 @@
            <property name="cssStyle">
             <string>bugrep-top-spacer</string>
            </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item>
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>top_spacer_2</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
          <item>
@@ -318,6 +354,15 @@
            <property name="cssStyle">
             <string>bugrep-attach-send-spacer</string>
            </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_12">
+            <item>
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>attach_send_spacer</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
          <item>
