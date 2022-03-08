@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "splashscreen.h"
 #include "ui_splashscreen.h"
+#include <QDebug>
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -19,6 +20,31 @@ SplashScreen::SplashScreen (QWidget *parent) :
   version += "\nPowered by Cellframe Network";
 #endif
 
+//  auto lay  = ui->MainWidget->layout();
+//  for (auto i = 0, e = lay->count(); i < e; i++)
+//    {
+//      auto item   = lay->itemAt(i);
+//      auto widget = item->widget();
+//      auto spacer = item->spacerItem();
+//      auto size   = item->sizeHint();
+
+//      if (widget)
+//        {
+//          qDebug() << __FUNCTION__ << i << widget->objectName()
+//                   << ":" << widget->size() << size;
+//          continue;
+//        }
+
+//      if (spacer)
+//        {
+//          qDebug() << __FUNCTION__ << "spacer at:" << i
+//                   << ":" << size;
+//          continue;
+//        }
+
+//        qDebug() << __FUNCTION__ << "unknown item at:" << i
+//                 << ":" << size;
+//    }
 
   ui->lVersion->setText (version);
 }

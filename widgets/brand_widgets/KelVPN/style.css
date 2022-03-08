@@ -841,6 +841,40 @@
 	qproperty-scaledPixmap: url(:/gui/asset/logo_kelvpn-white.png);
 }
 
+.splashscreen_logo_container
+{
+	min-height: 59pt;
+	max-height: 59pt;
+}
+
+.splashscreen_spacer_top
+{
+	height: 160pt;
+	min-height: 160pt;
+	max-height: 224pt;
+}
+
+.splashscreen_spacer_mid
+{
+	height: 256pt;
+	min-height: 256pt;
+	max-height: 256pt;
+}
+
+.splashscreen_spacer_bottom
+{
+	height: 128pt;
+	min-height: 128pt;
+	max-height: 128pt;
+}
+
+.splashscreen_spacer_progressbar
+{
+	height: 64pt;
+	min-height: 64pt;
+	max-height: 64pt;
+}
+
 /****************************************************
  * Login
  ***************************************************/
