@@ -63,7 +63,7 @@ void BugReportsModel::slotSetup()
 
       btn->setSeparator (true);
       btn->setIconCssClass ("bugrep-icon ic_information_bug-report");
-      btn->setIconRightCssClass ("bugrep-icon ic_trash");
+      btn->setIconRightCssClass ("bugrep-icon-right ic_trash");
 
       btn->setSubCssClass ("gray font12 lato");
 

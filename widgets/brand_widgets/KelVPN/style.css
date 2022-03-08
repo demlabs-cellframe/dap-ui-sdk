@@ -1241,6 +1241,16 @@
 	max-height: 34pt;
 }
 
+.bugrep-icon-right
+{
+	width: 26pt;
+	height: 26pt;
+	min-width: 26pt;
+	min-height: 26pt;
+	max-width: 26pt;
+	max-height: 26pt;
+}
+
 .bugrep-spinner
 {
 	width: 160pt;
