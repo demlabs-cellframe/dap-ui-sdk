@@ -218,7 +218,7 @@ color: rgb(238, 238, 236);</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_10">
             <item>
-             <widget class="QLabel" name="label">
+             <widget class="QLabel" name="dbglbl1">
               <property name="text">
                <string>top_input_spacer</string>
               </property>
@@ -280,6 +280,20 @@ color: rgb(238, 238, 236);</string>
           </widget>
          </item>
          <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="DapGuiLabel" name="labelLoading">
+             <property name="text">
+              <string/>
+             </property>
+             <property name="cssStyle">
+              <string>ic_spinner bugrep-spinner noborder nobackground</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
             <spacer name="horizontalSpacer">
@@ -316,7 +330,7 @@ color: rgb(238, 238, 236);</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_11">
             <item>
-             <widget class="QLabel" name="label_2">
+             <widget class="QLabel" name="dbglbl2">
               <property name="text">
                <string>top_spacer_2</string>
               </property>
@@ -356,7 +370,7 @@ color: rgb(238, 238, 236);</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_12">
             <item>
-             <widget class="QLabel" name="label_3">
+             <widget class="QLabel" name="dbglbl3">
               <property name="text">
                <string>attach_send_spacer</string>
               </property>
@@ -371,20 +385,6 @@ color: rgb(238, 238, 236);</string>
             <widget class="DapGuiPushButton" name="btnSendReport">
              <property name="text">
               <string>send report</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
-           <item>
-            <widget class="DapGuiLabel" name="labelLoading">
-             <property name="text">
-              <string/>
-             </property>
-             <property name="cssStyle">
-              <string>ic_spinner bugrep-spinner noborder nobackground</string>
              </property>
             </widget>
            </item>

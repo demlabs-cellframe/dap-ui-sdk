@@ -42,8 +42,13 @@ BugReports::BugReports (QWidget *parent) :
   ui->labelLoading->setMovie (movLoading);
   //movLoading->start();
 
-  //ui->top_spacer_debug->setVisible (false);
+  ui->top_spacer_debug->setVisible (false);
   ui->btnAttachScreenshot->setVisible (false);
+  ui->attach_send_spacer->setVisible (false);
+  ui->dbglbl1->hide();
+  ui->dbglbl2->hide();
+  ui->dbglbl3->hide();
+  ui->lineEdit->hide();
   QMetaObject::invokeMethod(ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
   //setText (movLoading->lastErrorString());
 
