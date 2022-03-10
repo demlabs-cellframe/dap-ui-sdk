@@ -54,7 +54,7 @@ void BugReportsModel::slotSetup()
       auto btn = new DapGuiButton;
       m_list << btn;
 
-      btn->setBtnStyle (DapGuiButton::IconMainSub);
+      btn->setBtnStyle (DapGuiButton::IconMainSubIcon);
 
       btn->setMainText ("Report #" + item.number);
       btn->setMainCssClass ("darkblue lato font16");
@@ -63,15 +63,25 @@ void BugReportsModel::slotSetup()
 
       btn->setSeparator (true);
       btn->setIconCssClass ("bugrep-icon ic_information_bug-report");
+      btn->setIconRightCssClass ("bugrep-icon-right ic_trash");
 
       btn->setSubCssClass ("gray font12 lato");
 
       btn->setCssStyle ("bugrep-item");
       lay->addWidget (btn);
+
+      connect (btn, &DapGuiButton::rightIconClicked,
+               this, &BugReportsModel::slotTrashClicked);
     }
 #endif // TestApp
   QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
   lay->addItem (sp);
+}
+
+void BugReportsModel::slotTrashClicked(const QString &a_number)
+{
+  qDebug() << __FUNCTION__;
+  DapDataLocal::instance()->removeItemFromHistory(TEXT_BUGREPORT_HISTORY, a_number);
 }
 
 bool BugReportsModel::eventFilter(QObject *o, QEvent *e)

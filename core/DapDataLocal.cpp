@@ -173,6 +173,28 @@ void DapDataLocal::saveHistoryData(QString a_type, QString a_data)
     emit sigHistoryDataSaved();
 }
 
+void DapDataLocal::removeItemFromHistory(QString a_type, QString a_item){
+
+  if (a_item.isEmpty())
+    return;
+  QList<QString> m_tempHistoryDataList;
+  this->loadFromSettings(a_type, m_tempHistoryDataList);
+
+  a_item.remove(QRegExp("[^0-9]"));
+  QMutableListIterator<QString> it (m_tempHistoryDataList);
+  while(it.hasNext()) {
+    QString item = it.next();
+    if (item == a_item){
+      qDebug() << "remove " + item + " from " + a_type;
+      it.remove();
+    }
+  }
+
+  this->saveToSettings(a_type, m_tempHistoryDataList);
+
+  emit sigHistoryDataSaved();
+}
+
 QList<QString> DapDataLocal::getHistorySerialKeyData()
 {
     QList<QString> m_tempHistoryDataList;
