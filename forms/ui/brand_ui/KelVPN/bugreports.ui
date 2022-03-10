@@ -158,17 +158,17 @@
              <property name="style">
               <enum>DapGuiPushButton::Close</enum>
              </property>
-             <property name="custom">
+             <property name="custom" stdset="0">
               <url>
                <string>/gfx/light/ic_close.png</string>
               </url>
              </property>
-             <property name="customHover">
+             <property name="customHover" stdset="0">
               <url>
                <string>/gfx/light/ic_close_hover.png</string>
               </url>
              </property>
-             <property name="customPushed">
+             <property name="customPushed" stdset="0">
               <url>
                <string>/gfx/light/ic_close_hover.png</string>
               </url>
@@ -181,19 +181,19 @@
            <item>
             <widget class="DapGuiLabel" name="labelBugReports">
              <property name="text">
-              <string>Bug report</string>
+              <string>Bug reports</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
-             <property name="cssStyle">
+             <property name="cssStyle" stdset="0">
               <string>bugrep-title-text font24 darkblue lato normalbold noborder nobackground</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="DapGuiWidget" name="spacer_spacer">
-             <property name="cssStyle">
+            <widget class="DapGuiWidget" name="spacer_spacer" native="true">
+             <property name="cssStyle" stdset="0">
               <string>bugrep-close-btn nobackground</string>
              </property>
             </widget>
@@ -212,8 +212,8 @@ color: rgb(238, 238, 236);</string>
           </layout>
          </item>
          <item>
-          <widget class="DapGuiWidget" name="top_input_spacer">
-           <property name="cssStyle">
+          <widget class="DapGuiWidget" name="top_input_spacer" native="true">
+           <property name="cssStyle" stdset="0">
             <string>bugrep-top-input-spacer</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_10">
@@ -249,19 +249,19 @@ color: rgb(238, 238, 236);</string>
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>390</width>
-              <height>265</height>
+              <width>446</width>
+              <height>442</height>
              </rect>
             </property>
-            <property name="cssStyle">
+            <property name="cssStyle" stdset="0">
              <string>backgroundcolor</string>
             </property>
            </widget>
           </widget>
          </item>
          <item>
-          <widget class="DapGuiWidget" name="resultContainer">
-           <property name="cssStyle">
+          <widget class="DapGuiWidget" name="resultContainer" native="true">
+           <property name="cssStyle" stdset="0">
             <string>bugrep-result-container</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -287,7 +287,7 @@ color: rgb(238, 238, 236);</string>
                 <property name="text">
                  <string/>
                 </property>
-                <property name="cssStyle">
+                <property name="cssStyle" stdset="0">
                  <string>bugrep-spinner noborder nobackground</string>
                 </property>
                </widget>
@@ -295,8 +295,8 @@ color: rgb(238, 238, 236);</string>
              </layout>
             </item>
             <item>
-             <widget class="DapGuiPlainTextEdit" name="editReport">
-              <property name="placeholderText">
+             <widget class="DapGuiPlainTextEdit" name="editReport" native="true">
+              <property name="placeholderText" stdset="0">
                <string>Please describe the details of problem you faced. What actions did you take and what happened.</string>
               </property>
              </widget>
@@ -324,7 +324,7 @@ color: rgb(238, 238, 236);</string>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
-                <property name="cssStyle">
+                <property name="cssStyle" stdset="0">
                  <string>font16 normal lato gray noborder nobackground</string>
                 </property>
                </widget>
@@ -339,7 +339,7 @@ color: rgb(238, 238, 236);</string>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
               </property>
-              <property name="cssStyle">
+              <property name="cssStyle" stdset="0">
                <string>font18 lato normal darkblue noborder nobackground</string>
               </property>
              </widget>
@@ -348,8 +348,8 @@ color: rgb(238, 238, 236);</string>
           </widget>
          </item>
          <item>
-          <widget class="DapGuiWidget" name="top_spacer_2">
-           <property name="cssStyle">
+          <widget class="DapGuiWidget" name="top_spacer_2" native="true">
+           <property name="cssStyle" stdset="0">
             <string>bugrep-top-spacer</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_11">
@@ -379,7 +379,7 @@ color: rgb(238, 238, 236);</string>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
-           <property name="cssStyle">
+           <property name="cssStyle" stdset="0">
             <string>lato red font16 normal noborder nobackground</string>
            </property>
            <property name="flat" stdset="0">
@@ -388,8 +388,8 @@ color: rgb(238, 238, 236);</string>
           </widget>
          </item>
          <item>
-          <widget class="DapGuiWidget" name="attach_send_spacer">
-           <property name="cssStyle">
+          <widget class="DapGuiWidget" name="attach_send_spacer" native="true">
+           <property name="cssStyle" stdset="0">
             <string>bugrep-attach-send-spacer</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_12">
@@ -459,16 +459,6 @@ color: rgb(238, 238, 236);</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>DapGuiPushButton</class>
-   <extends>QPushButton</extends>
-   <header>dapguipushbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>DapGuiPlainTextEdit</class>
-   <extends>QWidget</extends>
-   <header>dapguiplaintextedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>DapGuiLabel</class>
    <extends>QLabel</extends>
    <header>dapguilabel.h</header>
@@ -478,6 +468,16 @@ color: rgb(238, 238, 236);</string>
    <extends>QWidget</extends>
    <header>dapguiwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DapGuiPushButton</class>
+   <extends>QPushButton</extends>
+   <header>dapguipushbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DapGuiPlainTextEdit</class>
+   <extends>QWidget</extends>
+   <header>dapguiplaintextedit.h</header>
   </customwidget>
   <customwidget>
    <class>BugReportsModel</class>

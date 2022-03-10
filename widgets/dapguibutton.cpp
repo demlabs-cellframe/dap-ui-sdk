@@ -161,8 +161,9 @@ DapGuiButton::DapGuiButton (QWidget *parent)
            this, &DapGuiButton::_slotTextEdited);
   connect (&__kgsm, &DapGuiStyleManager::forceStyleUpdate,
            this, &DapGuiButton::_slotStyleUpdate);
-  connect (ui->DapGuiButtonIconRight, &DapGuiLabel::clicked,
-           this, &DapGuiButton::rightIconClicked);
+  connect (ui->DapGuiButtonIconRight, &DapGuiLabel::clicked, [&](){
+    emit rightIconClicked(this->mainText());
+  });
 
   /* update style staff */
   _slotStyleUpdate();

@@ -41,7 +41,7 @@ public:
   /// @{
 public slots:
   void slotSetup();
-  void slotTrashClicked();
+  void slotTrashClicked(const QString &a_number);
   /// @}
 };
 

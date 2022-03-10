@@ -744,7 +744,7 @@
 
 .ic_trash
 {
-	qproperty-scaledPixmap: url("://gui/asset/trash_icon.png");
+  qproperty-scaledPixmap: url("://gui/asset/ic_trash.png");
 }
 
 .ic_information_bug-report
@@ -857,8 +857,8 @@
 .splashscreen_spacer_mid
 {
 	height: 256pt;
-	min-height: 256pt;
-	max-height: 256pt;
+  min-height: 230pt;
+  max-height: 230pt;
 }
 
 .splashscreen_spacer_bottom
@@ -870,9 +870,9 @@
 
 .splashscreen_spacer_progressbar
 {
-	height: 64pt;
-	min-height: 64pt;
-	max-height: 64pt;
+  height: 20pt;
+  min-height: 20pt;
+  max-height: 20pt;
 }
 
 /****************************************************
@@ -1231,6 +1231,16 @@
 	max-height: 64pt;
 }
 
+/*.bugrep-maintext
+{
+width: 23pt;
+height: 64pt;
+min-width: 23pt;
+min-height: 64pt;
+max-width: 23pt;
+max-height: 64pt;
+}*/
+
 .bugrep-icon
 {
 	width: 34pt;
@@ -1243,12 +1253,12 @@
 
 .bugrep-icon-right
 {
-	width: 26pt;
-	height: 26pt;
-	min-width: 26pt;
-	min-height: 26pt;
-	max-width: 26pt;
-	max-height: 26pt;
+  width: 18pt;
+  height: 18pt;
+  min-width: 18pt;
+  min-height: 18pt;
+  max-width: 18pt;
+  max-height: 18pt;
 }
 
 .bugrep-spinner

@@ -196,7 +196,7 @@ public:
   /// @{
 signals:
   void clicked();                     ///< button is clicked
-  void rightIconClicked();            ///< right icon is clicked
+  void rightIconClicked(const QString &);            ///< right icon is clicked
   void textChanged(const QString &);  ///< text changed by user or programm. @see <a href="https://doc.qt.io/qt-5/qlineedit.html#textChanged" target="_blank">QLineEdit::textChanged</a>
   void textEdited(const QString &);   ///< text changed by user. @see <a href="https://doc.qt.io/qt-5/qlineedit.html#textEdited" target="_blank">QLineEdit::textEdited</a>
   /// @}

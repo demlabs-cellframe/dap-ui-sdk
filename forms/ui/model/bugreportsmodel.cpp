@@ -78,9 +78,10 @@ void BugReportsModel::slotSetup()
   lay->addItem (sp);
 }
 
-void BugReportsModel::slotTrashClicked()
+void BugReportsModel::slotTrashClicked(const QString &a_number)
 {
   qDebug() << __FUNCTION__;
+  DapDataLocal::instance()->removeItemFromHistory(TEXT_BUGREPORT_HISTORY, a_number);
 }
 
 bool BugReportsModel::eventFilter(QObject *o, QEvent *e)
