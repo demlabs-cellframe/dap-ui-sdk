@@ -324,7 +324,11 @@
           </widget>
          </item>
          <item>
-          <widget class="DapGuiLabel" name="DapGuiButtonIconRight"/>
+          <widget class="DapGuiLabel" name="DapGuiButtonIconRight">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
