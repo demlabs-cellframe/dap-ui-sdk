@@ -112,4 +112,11 @@ DapTextForm
         deselect();
         text = elText;
     }
+
+    function updateText()
+    {
+        //Replace elide text by full text and select it
+        text = fullText;
+        text = elText;
+    }
 }
