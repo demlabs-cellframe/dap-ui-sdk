@@ -81,6 +81,7 @@ public:
 
     void saveHistoryData(QString a_type, QString a_data);
     QList<QString> getHistorySerialKeyData();
+    void removeItemFromHistory(QString a_type, QString a_item);
 
     static DapBugReportData *bugReportData();
     static DapServersData   *serversData();

@@ -742,6 +742,11 @@
 	qproperty-scaledPixmap: url("://gui/asset/ic_copy.png");
 }
 
+.ic_trash
+{
+  qproperty-scaledPixmap: url("://gui/asset/ic_trash.png");
+}
+
 .ic_information_bug-report
 {
 	qproperty-scaledPixmap: url("://gui/asset/ic_information_bug-report.png");
@@ -834,6 +839,40 @@
 	min-height: 59pt;
 	max-height: 59pt;
 	qproperty-scaledPixmap: url(:/gui/asset/logo_kelvpn-white.png);
+}
+
+.splashscreen_logo_container
+{
+	min-height: 59pt;
+	max-height: 59pt;
+}
+
+.splashscreen_spacer_top
+{
+	height: 160pt;
+	min-height: 160pt;
+	max-height: 224pt;
+}
+
+.splashscreen_spacer_mid
+{
+	height: 256pt;
+  min-height: 230pt;
+  max-height: 230pt;
+}
+
+.splashscreen_spacer_bottom
+{
+	height: 128pt;
+	min-height: 128pt;
+	max-height: 128pt;
+}
+
+.splashscreen_spacer_progressbar
+{
+  height: 20pt;
+  min-height: 20pt;
+  max-height: 20pt;
 }
 
 /****************************************************
@@ -1202,6 +1241,16 @@
 	max-height: 34pt;
 }
 
+.bugrep-icon-right
+{
+  width: 20pt;
+  height: 20pt;
+  min-width: 20pt;
+  min-height: 20pt;
+  max-width: 20pt;
+  max-height: 20pt;
+}
+
 .bugrep-spinner
 {
 	width: 160pt;
@@ -1210,6 +1259,13 @@
 	min-height: 160pt;
 	max-width: 160pt;
 	max-height: 160pt;
+}
+
+.bugrep-result-container
+{
+	height: 224pt;
+	min-height: 224pt;
+	max-height: 224pt;
 }
 
 /****************************************************

@@ -74,6 +74,7 @@ private:
   /// testing radio map @see slotRadioTest
   QMap<QObject *, Mode> p_radioTestToMode;
   bool _textHook, _spacer;
+  int spacerIndex;
   QString m_bugReportText;
   /// @}
 
