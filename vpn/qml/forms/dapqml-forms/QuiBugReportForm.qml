@@ -12,7 +12,6 @@ Item {
     /* defs */
     enum Mode
     {
-        List,
         Write,
         Loading,
         Result
@@ -26,7 +25,6 @@ Item {
     /* functions */
     function setmode(a_mode) {
         switch(a_mode) {
-        case QuiBugReportForm.Mode.List:
         case QuiBugReportForm.Mode.Write:
         case QuiBugReportForm.Mode.Loading:
         case QuiBugReportForm.Mode.Result:

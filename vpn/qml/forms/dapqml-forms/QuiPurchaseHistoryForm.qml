@@ -14,18 +14,18 @@ Item {
 
     /* model */
     ListModel {
-        id: reportModel
+        id: serialModel
         ListElement {
-            name: "GTSF-WWRM-KLMWQ-OWWM"
+            key: "GTSF-WWRM-KLMWQ-OWWM"
         }
         ListElement {
-            name: "GTSF-WWRM-KLMWQ-OWWM"
+            key: "GTSF-WWRM-KLMWQ-OWWM"
         }
         ListElement {
-            name: "GTSF-WWRM-KLMWQ-OWWM"
+            key: "GTSF-WWRM-KLMWQ-OWWM"
         }
         ListElement {
-            name: "GTSF-WWRM-KLMWQ-OWWM"
+            key: "GTSF-WWRM-KLMWQ-OWWM"
         }
     }
 
@@ -45,6 +45,7 @@ Item {
     /* listview */
     ListView {
         id: phListView
+        objectName: "purchaseHistoryListView"
 
         x: (root.width - width) / 2
         y: title.y + title.height * 2
@@ -52,11 +53,11 @@ Item {
         height: root.height - y
         clip: true
 
-        model: reportModel
+        model: serialModel
 
         delegate: DapQmlButton {
             buttonStyle: DapQmlButton.IconMainSub
-            mainText: model.name
+            mainText: model.key
             subText: ""
             mainQss: "ph-btn-label-main"
             subQss: "ic_copy"

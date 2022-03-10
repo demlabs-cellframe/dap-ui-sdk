@@ -60,6 +60,7 @@ Item {
     /* listview */
     ListView {
         id: csListView
+        objectName: "bugrepHistoryListView"
 
         x: (root.width - width) / 2
         y: title.y + title.height * 2

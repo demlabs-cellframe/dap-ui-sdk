@@ -14,8 +14,10 @@ RESOURCES += \
 
 HEADERS += \
     $$PWD/dapqml-model/dapqmlmodelbugreports.h \
+    $$PWD/dapqml-model/dapqmlmodelserialhistory.h \
     $$PWD/dapqml-model/dapqmlmodelsettings.h
 
 SOURCES += \
     $$PWD/dapqml-model/dapqmlmodelbugreports.cpp \
+    $$PWD/dapqml-model/dapqmlmodelserialhistory.cpp \
     $$PWD/dapqml-model/dapqmlmodelsettings.cpp
