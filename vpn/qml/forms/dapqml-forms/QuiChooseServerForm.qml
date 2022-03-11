@@ -44,6 +44,7 @@ Item {
             iconSize: resizer.height
             width: resizer.width
             height: resizer.height
+            checked: (model.index === csListView.currentIndex)
             onClicked: root.sigSelect (model.index, model.name)
         }
     }
