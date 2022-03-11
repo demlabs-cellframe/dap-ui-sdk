@@ -41,6 +41,10 @@ Item {
         btnEnterSerial.visible  = a_value;
     }
 
+    function setServer(a_name) {
+        btnChooseServer.mainText    = a_name;
+    }
+
     /* W I P */
     Timer {
         interval: 500

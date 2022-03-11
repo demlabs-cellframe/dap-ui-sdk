@@ -46,6 +46,11 @@ Rectangle {
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
 
+    MouseArea {
+        anchors.fill: root;
+        onClicked: root.clicked();
+    }
+
     /* user no background */
     color: "transparent"
 
@@ -135,6 +140,7 @@ Rectangle {
                 verticalAlign: Text.AlignVCenter
                 text: root.leftText
                 qss: root.leftQss
+                onClicked: root.clicked();
             }
 
             /* right side two labels */
@@ -154,6 +160,7 @@ Rectangle {
                     verticalAlign: root.subText.length > 0 ? Text.AlignBottom : Text.AlignVCenter
                     text: root.mainText
                     qss: root.mainQss
+                    onClicked: root.clicked();
                 }
 
                 /* sub text */
@@ -167,6 +174,7 @@ Rectangle {
                     verticalAlign: root.subText.length > 0 ? Text.AlignTop : Text.AlignVCenter
                     text: root.subText
                     qss: root.subQss
+                    onClicked: root.clicked();
                 }
 
             }
@@ -200,6 +208,7 @@ Rectangle {
                 verticalAlign: Text.AlignBottom
                 text: root.mainText
                 qss: root.mainQss
+                onClicked: root.clicked();
             }
 
             /* sub text */
@@ -213,6 +222,7 @@ Rectangle {
                 verticalAlign: Text.AlignTop
                 text: root.subText
                 qss: root.subQss
+                onClicked: root.clicked();
             }
 
         }
@@ -245,6 +255,7 @@ Rectangle {
                 verticalAlign: Text.AlignBottom
                 text: root.subText
                 qss: root.subQss
+                onClicked: root.clicked();
             }
 
             /* main text */
@@ -258,6 +269,7 @@ Rectangle {
                 verticalAlign: Text.AlignTop
                 text: root.mainText
                 qss: root.mainQss
+                onClicked: root.clicked();
             }
 
         }
@@ -313,6 +325,7 @@ Rectangle {
                 //verticalAlign: Text.AlignTop
                 text: root.subText
                 qss: root.subQss
+                onClicked: root.clicked();
             }
 
         }
@@ -344,6 +357,7 @@ Rectangle {
                 qss: root.icon
                 width: root.iconSize
                 height: root.iconSize
+                onClicked: root.clicked();
             }
 
             /* main text */
@@ -358,6 +372,7 @@ Rectangle {
                 text: root.mainText
                 qss: root.mainQss
                 clip: false
+                onClicked: root.clicked();
             }
 
             /* sub text */
@@ -373,6 +388,7 @@ Rectangle {
                 qss: root.subQss
                 clip: false
                 visible: text.length > 0
+                onClicked: root.clicked();
             }
         }
 
