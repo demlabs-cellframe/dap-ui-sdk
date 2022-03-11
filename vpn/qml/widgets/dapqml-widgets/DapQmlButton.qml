@@ -98,11 +98,11 @@ Rectangle {
     }
 
     /* background */
-    Image {
+    DapQmlLabel {
         anchors.fill: parent
         z: -1
         visible: root.frame
-        source: "qrc:/light/btn_server_bg.png"
+        qss: "btn-frame"
     }
 
     /* Top - Item, Bottom - Separator */

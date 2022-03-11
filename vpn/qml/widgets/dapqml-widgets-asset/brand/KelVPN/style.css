@@ -13,6 +13,11 @@
 	accent: "#F53172";
 	upload: "#5E31F5";
 	grid: "#211F46";
+	switch-bg-on: 				"qrc:/light/switch/bg_on.png";
+	switch-bg-off: 				"qrc:/light/switch/bg_off.png";
+	switch-toggle-on: 			"qrc:/light/switch/toggle_on.png";
+	switch-toggle-off: 			"qrc:/light/switch/toggle_off.png";
+	button-frame: 				"qrc:/light/btn_server_bg.png";
 	separator-left:             "qrc:/light/separator_left.png";
 	separator-mid:              "qrc:/light/separator_mid.png";
 	separator-right:            "qrc:/light/separator_right.png";
@@ -35,6 +40,11 @@
 	accent: "#FF22A2";
 	upload: "#9F83FF";
 	grid: "#211F46";
+	switch-bg-on: 				"qrc:/dark/switch/bg_on.png";
+	switch-bg-off: 				"qrc:/dark/switch/bg_off.png";
+	switch-toggle-on: 			"qrc:/dark/switch/toggle_on.png";
+	switch-toggle-off: 			"qrc:/dark/switch/toggle_off.png";
+	button-frame: 				"qrc:/dark/btn_server_bg.png";
 	separator-left:             "qrc:/dark/separator_left.png";
 	separator-mid:              "qrc:/dark/separator_mid.png";
 	separator-right:            "qrc:/dark/separator_right.png";
@@ -52,22 +62,29 @@
 
 .switch-bg-off
 {
-	qproperty-scaledPixmap: url("qrc:/light/switch/bg_off.png");
+	qproperty-scaledPixmap: "@switch-bg-off";
 }
 
 .switch-bg-on
 {
-	qproperty-scaledPixmap: url("qrc:/light/switch/bg_on.png");
+	qproperty-scaledPixmap: "@switch-bg-on";
 }
 
 .switch-toggle-off
 {
-	qproperty-scaledPixmap: url("qrc:/light/switch/toggle_off.png");
+	qproperty-scaledPixmap: "@switch-toggle-off";
 }
 
 .switch-toggle-on
 {
-	qproperty-scaledPixmap: url("qrc:/light/switch/toggle_on.png");
+	qproperty-scaledPixmap: "@switch-toggle-on";
+}
+
+
+
+.btn-frame
+{
+	qproperty-scaledPixmap: "@button-frame";
 }
 
 

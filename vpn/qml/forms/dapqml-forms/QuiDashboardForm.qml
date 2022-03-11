@@ -84,7 +84,7 @@ Item {
         id: dashboardError
         qss: "dashboard-error-label"
         wrapMode: Text.WordWrap
-        text: "Temporary network problems, request will be handled as soon as the network connection is re-established"
+        //text: "Temporary network problems, request will be handled as soon as the network connection is re-established"
     }
 
     /* switch */
@@ -102,7 +102,7 @@ Item {
             id: speedDown
             Layout.fillWidth: true
             Layout.fillHeight: true
-            mainText: "120 Mb/s"
+            mainText: "0.00 kB/s"
             subText: "DOWNLOAD"
             mainQss: "dashboard-speed-main"
             subQss: "dashboard-speed-sub"
@@ -112,7 +112,7 @@ Item {
             id: speedUp
             Layout.fillWidth: true
             Layout.fillHeight: true
-            mainText: "34.7 Mb/s"
+            mainText: "0.00 kB/s"
             subText: "UPLOAD"
             mainQss: "dashboard-speed-main"
             subQss: "dashboard-speed-sub"
