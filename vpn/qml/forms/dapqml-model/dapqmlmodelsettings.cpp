@@ -14,7 +14,7 @@ enum FieldId
 };
 
 /* LINKS */
-static void defaultCb () {}
+static void defaultCb() {}
 
 /* settings */
 static void cbLicenceGet();
@@ -35,7 +35,8 @@ static void cbVersion();
 
 /* VARS */
 static DapQmlModelSettings *__inst = nullptr;
-QList<DapQmlModelSettingsItem> s_items;
+static QList<DapQmlModelSettingsItem> s_items;
+static qint32 s_daysLabelIndex     = -1;
 
 static QMap<QString, FieldId> s_fieldIdMap =
 {
@@ -50,7 +51,7 @@ static QMap<QString, FieldId> s_fieldIdMap =
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-DapQmlModelSettings::DapQmlModelSettings(QObject *parent)
+DapQmlModelSettings::DapQmlModelSettings (QObject *parent)
   : QAbstractTableModel (parent)
 {
   /* vars */
@@ -74,13 +75,13 @@ DapQmlModelSettings *DapQmlModelSettings::instance()
   return __inst;
 }
 
-void DapQmlModelSettings::exec(int index)
+void DapQmlModelSettings::exec (int index)
 {
   if (index < 0 || index >= s_items.size())
     return;
 
-  auto cbv  = s_items.at(index).get("callback");
-  auto cb   = reinterpret_cast<ItemCB>(cbv.toULongLong());
+  auto cbv  = s_items.at (index).get ("callback");
+  auto cb   = reinterpret_cast<ItemCB> (cbv.toULongLong());
   cb();
 }
 
@@ -88,7 +89,7 @@ void DapQmlModelSettings::exec(int index)
  * OVERRIDE
  *******************************************/
 
-int DapQmlModelSettings::rowCount(const QModelIndex &parent) const
+int DapQmlModelSettings::rowCount (const QModelIndex &parent) const
 {
   if (parent.isValid())
     return 0;
@@ -96,7 +97,7 @@ int DapQmlModelSettings::rowCount(const QModelIndex &parent) const
   return s_items.size();
 }
 
-int DapQmlModelSettings::columnCount(const QModelIndex &parent) const
+int DapQmlModelSettings::columnCount (const QModelIndex &parent) const
 {
   if (parent.isValid())
     return 0;
@@ -104,7 +105,7 @@ int DapQmlModelSettings::columnCount(const QModelIndex &parent) const
   return 5;
 }
 
-QVariant DapQmlModelSettings::data(const QModelIndex &index, int role) const
+QVariant DapQmlModelSettings::data (const QModelIndex &index, int role) const
 {
   if (!index.isValid())
     return QVariant();
@@ -142,27 +143,59 @@ void DapQmlModelSettings::slotUpdateLabels()
 //    DapQmlModelSettingsItem{DapQmlModelSettings::StyleId(4),     "4", "", "1", defaultCb},
 
 //    DapQmlModelSettingsItem{SI_SPACER,     "", "", "1", defaultCb},
-    DapQmlModelSettingsItem{SI_TITLE/*TOP*/,   tr("Settings"), "", "settings_icon", defaultCb},
+    DapQmlModelSettingsItem{SI_TITLE/*TOP*/,   tr ("Settings"), "", "settings_icon", defaultCb},
 //    DapQmlModelSettingsItem{SI_SPACER,     "", "", "2", defaultCb},
 
-    DapQmlModelSettingsItem{SI_BUTTONRED,  tr("Get new licence key"), /*"265 days left"*/" ", "settings_icon ic_renew", cbLicenceGet},
-    DapQmlModelSettingsItem{SI_BUTTON,     tr("Reset licence key"), "", "settings_icon ic_key", cbLicenceReset},
-    DapQmlModelSettingsItem{SI_LINK,       tr("Language"), "", "settings_icon ic_language", cbLanguage},
-    DapQmlModelSettingsItem{SI_LINK,       tr("Color theme"), "", "settings_icon ic_theme", cbColorTheme},
+    DapQmlModelSettingsItem{SI_BUTTONRED,  tr ("Get new licence key"), /*"265 days left"*/" ", "settings_icon ic_renew", cbLicenceGet},
+    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key", cbLicenceReset},
+    DapQmlModelSettingsItem{SI_LINK,       tr ("Language"), "", "settings_icon ic_language", cbLanguage},
+    DapQmlModelSettingsItem{SI_LINK,       tr ("Color theme"), "", "settings_icon ic_theme", cbColorTheme},
 
-    DapQmlModelSettingsItem{SI_TITLE,      tr("Support"), "", "settings_icon", defaultCb},
+    DapQmlModelSettingsItem{SI_TITLE,      tr ("Support"), "", "settings_icon", defaultCb},
 
-    DapQmlModelSettingsItem{SI_BUTTON,     tr("Send a bug report"), "", "settings_icon ic_send-report", cbBugSend},
-    DapQmlModelSettingsItem{SI_BUTTON,     tr("Telegram support bot"), "", "settings_icon ic_bot", cbTelegramBot},
+    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Send a bug report"), "", "settings_icon ic_send-report", cbBugSend},
+    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Telegram support bot"), "", "settings_icon ic_bot", cbTelegramBot},
 
-    DapQmlModelSettingsItem{SI_TITLE,      tr("Information"), "", "settings_icon", defaultCb},
+    DapQmlModelSettingsItem{SI_TITLE,      tr ("Information"), "", "settings_icon", defaultCb},
 
     DapQmlModelSettingsItem{SI_LINK,       tr ("Bug Reports"), "", "settings_icon ic_information_bug-report", cbBugReport},
     DapQmlModelSettingsItem{SI_BUTTON,     tr ("Serial key history on this device"), "", "settings_icon ic_key-history", cbLicenceHistory},
-    DapQmlModelSettingsItem{SI_BUTTON,     tr("Terms of use"), "", "settings_icon ic_terms_policy", cbTermsOfUse},
-    DapQmlModelSettingsItem{SI_BUTTON,     tr("Privacy policy"), "", "settings_icon ic_terms_policy", cbPrivacyPolicy},
-    DapQmlModelSettingsItem{SI_BUTTONGRAY, tr("Version"), "@version", "settings_icon ic_version", cbVersion},
+    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Terms of use"), "", "settings_icon ic_terms_policy", cbTermsOfUse},
+    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Privacy policy"), "", "settings_icon ic_terms_policy", cbPrivacyPolicy},
+    DapQmlModelSettingsItem{SI_BUTTONGRAY, tr ("Version"), "@version", "settings_icon ic_version", cbVersion},
   };
+
+  qint32 index = 0;
+  for (auto i = s_items.cbegin(), e = s_items.cend(); i != e; i++, index++)
+    {
+      if (i->m_sid == SI_BUTTONRED)
+        {
+          s_daysLabelIndex  = index;
+          break;
+        }
+    }
+}
+
+void DapQmlModelSettings::slotSetDaysLeft (QString a_days)
+{
+  beginResetModel();
+  s_items[s_daysLabelIndex].m_textSub = a_days;
+  endResetModel();
+
+  emit dataChanged (
+    index (s_daysLabelIndex, 0),
+    index (s_daysLabelIndex, columnCount()));
+}
+
+void DapQmlModelSettings::slotResetDaysLeft()
+{
+  beginResetModel();
+  s_items[s_daysLabelIndex].m_textSub.clear();
+  endResetModel();
+
+  emit dataChanged (
+    index (s_daysLabelIndex, 0),
+    index (s_daysLabelIndex, columnCount()));
 }
 
 /********************************************
@@ -221,12 +254,12 @@ DapQmlModelSettingsItem::DapQmlModelSettingsItem (DapQmlModelSettingsItem &&src)
   setParent (src.parent());
 }
 
-DapQmlModelSettingsItem::DapQmlModelSettingsItem(
-    const DapQmlModelSettings::StyleId a_sid,
-    const QString a_textMain,
-    const QString a_textSub,
-    const QString a_icon,
-    const DapQmlModelSettings::ItemCB a_callback)
+DapQmlModelSettingsItem::DapQmlModelSettingsItem (
+  const DapQmlModelSettings::StyleId a_sid,
+  const QString a_textMain,
+  const QString a_textSub,
+  const QString a_icon,
+  const DapQmlModelSettings::ItemCB a_callback)
 {
   m_sid       = a_sid;
   m_textMain  = a_textMain;
@@ -266,12 +299,12 @@ QVariant DapQmlModelSettingsItem::get (const QString a_name) const
     case textMain:  return m_textMain;
     case textSub:   return m_textSub;
     case icon:      return m_icon;
-    case callback:  return reinterpret_cast<quint64> (reinterpret_cast<void*> (m_cb));
+    case callback:  return reinterpret_cast<quint64> (reinterpret_cast<void *> (m_cb));
     default: return QVariant();
     }
 }
 
-DapQmlModelSettingsItem &DapQmlModelSettingsItem::operator=(const DapQmlModelSettingsItem &src)
+DapQmlModelSettingsItem &DapQmlModelSettingsItem::operator= (const DapQmlModelSettingsItem &src)
 {
   m_sid       = src.m_sid;
   m_textMain  = src.m_textMain;
@@ -282,7 +315,7 @@ DapQmlModelSettingsItem &DapQmlModelSettingsItem::operator=(const DapQmlModelSet
   return *this;
 }
 
-DapQmlModelSettingsItem &DapQmlModelSettingsItem::operator=(DapQmlModelSettingsItem &&src)
+DapQmlModelSettingsItem &DapQmlModelSettingsItem::operator= (DapQmlModelSettingsItem &&src)
 {
   if (&src == this)
     return *this;

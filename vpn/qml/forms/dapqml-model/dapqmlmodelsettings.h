@@ -96,6 +96,8 @@ signals:
   /// @{
 public slots:
   void slotUpdateLabels();
+  void slotSetDaysLeft (QString a_days);
+  void slotResetDaysLeft();
   /// @}
 };
 
