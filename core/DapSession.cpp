@@ -365,9 +365,11 @@ void DapSession::onPurchaseVerified() {
         emit errorNetwork("Wrong answer from server");
         return;
     }
-    qInfo() << "Validation request replied";
+    QByteArray dByteArr;
+    m_dapCrypt->decode(m_netPurchaseReply->getReplyData(), dByteArr, KeyRoleSession);
+    qInfo() << "Validation request replied" << dByteArr;
     QJsonParseError jsonErr;
-    auto jsonDoc = QJsonDocument::fromJson(m_netPurchaseReply->getReplyData(), &jsonErr);
+    auto jsonDoc = QJsonDocument::fromJson(dByteArr, &jsonErr);
     if(jsonErr.error != QJsonParseError::NoError) {
         qCritical() << "Can't parse response, error" << jsonErr.errorString();
         emit errorNetwork("Can't parse response");
@@ -700,20 +702,19 @@ void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domai
 void DapSession::requestPurchaseVerify(const QJsonObject *params)
 {
     QJsonDocument jdoc(*params);
-    qInfo() << "Requesting verification: " << jdoc.toJson();
     if (!m_dapCryptCDB) {
         this->setDapUri(*DapDataLocal::instance()->m_cdbIter, 80);
         auto *l_tempConn = new QMetaObject::Connection();
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, jdoc, l_tempConn]{
             preserveCDBSession();
-            m_netPurchaseReply = encRequestRaw(jdoc.toJson(), URL_VERIFY_PURCHASE, QString(), QString()
+            m_netPurchaseReply = encRequestRaw(jdoc.toJson(), URL_VERIFY_PURCHASE, "", ""
                                                , SLOT(onPurchaseVerified()), NULL);
             disconnect(*l_tempConn);
             delete l_tempConn;
         });
         requestServerPublicKey();
     } else {
-        m_netPurchaseReply = encRequestRaw(jdoc.toJson(), URL_VERIFY_PURCHASE, QString(), QString()
+        m_netPurchaseReply = encRequestRaw(jdoc.toJson(), URL_VERIFY_PURCHASE, "", ""
                                            , SLOT(onPurchaseVerified()), NULL);
     }
 }

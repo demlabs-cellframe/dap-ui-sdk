@@ -7,7 +7,6 @@ DapCmdPurchase::DapCmdPurchase(QObject *parent)
 {
     connect(this, &DapCmdPurchase::purchaseVerified, [=](const QJsonDocument& result){
         QJsonObject obj = result.object();
-        qDebug() << "Reply " << result.toJson();
         sendCmd(&obj);
     });
 }

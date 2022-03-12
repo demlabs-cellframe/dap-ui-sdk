@@ -22,6 +22,7 @@ void DapCmdPurchase::handleResult(const QJsonObject &result)
     qDebug()<<"DapCmdPurchase::handleResult";
     if (result.contains("S/N")) {
         QString key = result.value("S/N").toString();
+        qInfo() << "We have purchased key" << key;
         emit purchaseVerified(key);
     }
 }
