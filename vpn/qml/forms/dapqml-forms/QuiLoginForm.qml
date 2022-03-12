@@ -104,6 +104,7 @@ Item {
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
             separator: true
+            link: true
             onClicked: root.sigChooseServer()
         }
     }
