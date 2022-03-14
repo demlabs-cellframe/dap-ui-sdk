@@ -1,6 +1,7 @@
 import QtQuick 2.4
 import QtQuick.Layouts 1.3
 import "qrc:/dapqml-widgets"
+import QmlSchedulePainter 1.0
 
 Item {
     id: root
@@ -46,12 +47,12 @@ Item {
                 qss: "stat-title"
             }
 
-            Rectangle {
+            QmlSchedulePainter {
+                objectName: "SchedulePainter"
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
                 width: 360
                 height: 162
-                color: "gray"
             }
 
             GridLayout {
