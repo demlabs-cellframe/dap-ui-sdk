@@ -3,6 +3,15 @@
 
 /* INCLUDES */
 #include <QLineEdit>
+#include <QDebug>
+
+#ifdef Q_OS_ANDROID
+#define USE_QLABEL
+#endif
+
+#ifdef USE_QLABEL
+#include <QLabel>
+#endif
 #include "style/dapguistylemanager.h"
 
 /****************************************//**
@@ -22,10 +31,16 @@
  * @date 18.09.2021
  * @author Mikhail Shilenko
  *******************************************/
-
+#ifdef USE_QLABEL
+class DapGuiLineEdit : public QLabel
+#else
 class DapGuiLineEdit : public QLineEdit
+#endif
 {
   Q_OBJECT
+#ifdef USE_QLABEL
+  Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged USER true)
+#endif
   DAPGUI_ENABLECSS
 
   /****************************************//**
@@ -36,6 +51,7 @@ public:
   typedef void (*cbTextEdit) (DapGuiLineEdit *e, QString &preedit, QString &commit, int from, int to);
   typedef void (*cbFocusEvent) (DapGuiLineEdit *e, const Qt::FocusReason &reason);
   typedef bool (*cbKeyEvent) (DapGuiLineEdit *e, QKeyEvent *event);
+  typedef bool (*cbInputMethodEvent) (DapGuiLineEdit *widget, QEvent *event);
   /// @}
 
   /****************************************//**
@@ -43,10 +59,12 @@ public:
    *******************************************/
   /// @{
 public:
+  cbInputMethodEvent m_callbackEvent; ///< called in event
   cbTextEdit m_callbackTextEdit;      ///< called in inputMethodEvent
   cbFocusEvent m_callbackFocusEvent;  ///< called in focusInEvent
   cbKeyEvent m_callbackKeyEvent;      ///< called in keyPressEvent
   bool m_hideAnchor;                  ///< hide's android anchors
+  QString commiting;
   /// @}
 
   /****************************************//**
@@ -70,8 +88,10 @@ public:
 
   cbKeyEvent callbackKeyEvent() const;
   void setCallbackKeyEvent(cbKeyEvent newCallbackKeyEvent);
-  /// @}
 
+  cbInputMethodEvent callbackEvent() const;
+  void setCallbackEvent(cbInputMethodEvent newCallbackInputMethodEvent);
+  /// @}
   /****************************************//**
    * @name SIGNALS
    *******************************************/
@@ -96,8 +116,10 @@ public slots:
    *******************************************/
   /// @{
 protected:
+#ifndef USE_QLABEL
   void keyPressEvent(QKeyEvent *event) override;
-#ifdef Q_OS_ANDROID
+#endif
+#ifdef Q_OS_ANDROID_UNUSED
   void inputMethodEvent(QInputMethodEvent *e) override;
   void focusInEvent(QFocusEvent *e) override;
 public:
@@ -105,6 +127,32 @@ public:
   Q_INVOKABLE QVariant inputMethodQuery(Qt::InputMethodQuery property, QVariant argument) const;
 #endif // Q_OS_ANDROID
   /// @}
+
+#ifdef USE_QLABEL
+public:
+  int cursorPosition()                  { return 0; }
+  void setCursorPosition(int position)  { Q_UNUSED(position) }
+  int selectionLength()                 { return 0; }
+  void insert(QString text)             { setText(text); }
+  int maxLength()                       { return 0; }
+  void setMaxLength(int lenght)         { Q_UNUSED(lenght) }
+  void setFrame(bool frame)             { Q_UNUSED(frame) }
+  void setInputMask(QString mask)       { Q_UNUSED(mask) }
+  void setPlaceholderText(QString text) { setText(text); }
+  void setText(QString a_text);
+
+signals:
+  void textChanged(QString text);
+  void textEdited(QString text);
+
+protected:
+  void keyPressEvent(QKeyEvent *event) override;
+  void mouseReleaseEvent(QMouseEvent *) override;
+  void leaveEvent(QEvent *) override;
+  void showEvent(QShowEvent *) override;
+  void inputMethodEvent(QInputMethodEvent *) override;
+#endif
+
 };
 
 /*-----------------------------------------*/
