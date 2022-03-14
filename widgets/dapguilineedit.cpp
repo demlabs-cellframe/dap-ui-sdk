@@ -20,10 +20,18 @@ void DapGuiLineEdit::setHideAnchor(bool newHideAnchor)
 }
 
 DapGuiLineEdit::DapGuiLineEdit (QWidget *parent)
+#ifdef USE_QLABEL
+  : QLabel(parent)
+  , m_callbackEvent(nullptr)
+#else
   : QLineEdit (parent)
+#endif
   , m_callbackTextEdit (nullptr)
   , m_callbackFocusEvent (nullptr)
   , m_callbackKeyEvent (nullptr)
+#ifdef USE_QLABEL
+  , commiting("")
+#endif
 {
 
 }
@@ -75,6 +83,7 @@ void DapGuiLineEdit::slotUnfocus()
  * OVERRIDE
  *******************************************/
 
+#ifndef USE_QLABEL
 void DapGuiLineEdit::keyPressEvent(QKeyEvent *event)
 {
   qDebug() << __PRETTY_FUNCTION__
@@ -87,8 +96,69 @@ void DapGuiLineEdit::keyPressEvent(QKeyEvent *event)
 
   QLineEdit::keyPressEvent (event);
 }
+#endif
 
-#ifdef Q_OS_ANDROID
+#ifdef USE_QLABEL
+
+void DapGuiLineEdit::setText(QString a_text)
+{
+    QLabel::setText(a_text);
+    emit textChanged(a_text);
+}
+
+void DapGuiLineEdit::keyPressEvent(QKeyEvent *event)
+{
+    if (m_callbackEvent)
+        if (m_callbackEvent (this, (QEvent*) event))
+            return;
+    QLabel::keyPressEvent(event);
+}
+
+void DapGuiLineEdit::leaveEvent(QEvent * event)
+{
+    if (m_callbackEvent)
+        if (m_callbackEvent (this, (QEvent*) event))
+            return;
+    QLabel::leaveEvent(event);
+}
+
+void DapGuiLineEdit::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (m_callbackEvent)
+        if (m_callbackEvent (this, (QEvent*) event))
+            return;
+    QLabel::mouseReleaseEvent(event);
+}
+
+void DapGuiLineEdit::inputMethodEvent(QInputMethodEvent *event)
+{
+    if (m_callbackEvent)
+        if (m_callbackEvent (this, (QEvent*) event))
+            return;
+    QLabel::inputMethodEvent(event);
+}
+
+void DapGuiLineEdit::showEvent(QShowEvent * event)
+{
+    if (m_callbackEvent)
+        if (m_callbackEvent (this, (QEvent*) event))
+            return;
+    QLabel::showEvent(event);
+}
+
+#endif
+
+void DapGuiLineEdit::setCallbackEvent(DapGuiLineEdit::cbInputMethodEvent cb)
+{
+   m_callbackEvent = cb;
+}
+
+DapGuiLineEdit::cbInputMethodEvent DapGuiLineEdit::callbackEvent() const
+{
+    return m_callbackEvent;
+}
+
+#ifdef Q_OS_ANDROID_UNUSED
 
 void DapGuiLineEdit::inputMethodEvent(QInputMethodEvent *e)
 {
