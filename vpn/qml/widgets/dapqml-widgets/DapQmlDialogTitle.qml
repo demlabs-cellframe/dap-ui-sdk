@@ -6,12 +6,14 @@ Item {
     id: root
     property string text: "Untitled"
     property string qss
+    property bool hideClose: false
 
     /* close button */
     DapQmlPushButton {
         inactive: "qrc:/light/ic_close.png"
         active: "qrc:/light/ic_close_hover.png"
         qss: "form-title-close-btn"
+        visible: hideClose === false
         onClicked: PageCtl.slotBackwardAuto()
     }
 

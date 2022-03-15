@@ -468,15 +468,48 @@
 .stat-item-main
 {
 	color: "@text";
-	font-size: 24;
 	font-weight: Font.Normal;
 }
 
 .stat-item-sub
 {
 	color: "#A4A3C0";
-	font-size: 12;
 	font-weight: Font.Normal;
+}
+
+.stat-graph
+{
+	scaled-rect: scaled(-1,146,360,147,false);
+}
+
+.stat-speed
+{
+	scaled-rect: scaled(nan,307,154,99,false);
+}
+
+.stat-bytes
+{
+	scaled-rect: scaled(nan,406,154,99,false);
+}
+
+.stat-packets
+{
+	scaled-rect: scaled(nan,505,154,99,false);
+}
+
+.stat-misc
+{
+	scaled-rect: scaled(nan,604,154,99,false);
+}
+
+.stat-scaler-ind
+{
+	scaled-rect: scaled(nan,nan,154,50,false,24);
+}
+
+.stat-scaler-sub
+{
+	scaled-rect: scaled(nan,nan,154,50,false,12);
 }
 
 /****************************************************
