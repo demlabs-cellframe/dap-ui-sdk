@@ -13,26 +13,26 @@ Item {
         qss: "dialog-title"
     }
 
-    /* model */
-    ListModel {
-        id: reportModel
-        ListElement {
-            name: "Report #1264"
-            state: "In developing"
-        }
-        ListElement {
-            name: "Report #1270"
-            state: "In developing"
-        }
-        ListElement {
-            name: "Report #3335"
-            state: "Resolved"
-        }
-        ListElement {
-            name: "Report #1264"
-            state: "Resolved"
-        }
-    }
+//    /* model */
+//    ListModel {
+//        id: reportModel
+//        ListElement {
+//            name: "Report #1264"
+//            state: "In developing"
+//        }
+//        ListElement {
+//            name: "Report #1270"
+//            state: "In developing"
+//        }
+//        ListElement {
+//            name: "Report #3335"
+//            state: "Resolved"
+//        }
+//        ListElement {
+//            name: "Report #1264"
+//            state: "Resolved"
+//        }
+//    }
 
     /* resizer */
     DapQmlRectangle {
@@ -73,7 +73,7 @@ Item {
             ["x", "y", "z", "width", "height"],
            this);
 
-        model: reportModel
+        //model: reportModel
 
         delegate: DapQmlButton {
             buttonStyle: DapQmlButton.IconMainSub

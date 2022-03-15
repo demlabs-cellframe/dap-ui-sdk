@@ -72,7 +72,7 @@ QVariant DapQmlModelBugReports::data(const QModelIndex &index, int role) const
   /* return value by type */
   switch (column)
     {
-    case C_NUMBER:  return item.number;
+    case C_NUMBER:  return "Report #" + item.number;
     case C_STATUS:  return item.status;
     }
 
@@ -83,8 +83,8 @@ QHash<int, QByteArray> DapQmlModelBugReports::roleNames() const
 {
   QHash<int, QByteArray> names;
 
-  names.insert (0, "number");
-  names.insert (1, "status");
+  names.insert (0, "name");
+  names.insert (1, "state");
 
   return names;
 }

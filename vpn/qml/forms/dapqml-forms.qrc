@@ -13,5 +13,6 @@
         <file>dapqml-forms/QuiChooseThemeForm.qml</file>
         <file>dapqml-forms/QuiBugReportHistoryForm.qml</file>
         <file>dapqml-forms/QuiPurchaseHistoryForm.qml</file>
+        <file>dapqml-forms/QuiDocumentViewer.qml</file>
     </qresource>
 </RCC>
