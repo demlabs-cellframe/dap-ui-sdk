@@ -161,6 +161,7 @@ qreal y_shift(qreal y, qreal height, qreal maxValue)
     if (maxValue == 0) {
         maxValue = 1;
     }
+    if (y < 0) return height - height / maxValue;
     qreal res = height - y * height / maxValue;
     return res;
 }
@@ -203,9 +204,9 @@ void Schedule::showChart(
     QPen a_pen = QPen(pen);
     a_pen.setJoinStyle(Qt::RoundJoin);
 #ifdef Q_OS_ANDROID
-    a_pen.setWidth(5);
+    a_pen.setWidth(3);
 #else
-    a_pen.setWidth(2);
+    a_pen.setWidth(1);
 #endif
     scene->addPath(path, a_pen, color);
 }
