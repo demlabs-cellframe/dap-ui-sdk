@@ -37,6 +37,7 @@ static void cbVersion();
 static DapQmlModelSettings *__inst = nullptr;
 static QList<DapQmlModelSettingsItem> s_items;
 static qint32 s_daysLabelIndex     = -1;
+static qint32 s_versionLabelIndex  = -1;
 
 static QMap<QString, FieldId> s_fieldIdMap =
 {
@@ -165,15 +166,20 @@ void DapQmlModelSettings::slotUpdateLabels()
     DapQmlModelSettingsItem{SI_BUTTONGRAY, tr ("Version"), "@version", "settings_icon ic_version", cbVersion},
   };
 
+  /* find indexes */
   qint32 index = 0;
   for (auto i = s_items.cbegin(), e = s_items.cend(); i != e; i++, index++)
     {
       if (i->m_sid == SI_BUTTONRED)
-        {
-          s_daysLabelIndex  = index;
-          break;
-        }
+        s_daysLabelIndex    = index;
+
+      if (i->m_sid == SI_BUTTONGRAY)
+        s_versionLabelIndex = index;
     }
+
+  /* set version */
+  if (s_versionLabelIndex != -1)
+    s_items[s_versionLabelIndex].m_textSub  = DAP_VERSION;
 }
 
 void DapQmlModelSettings::slotSetDaysLeft (QString a_days)

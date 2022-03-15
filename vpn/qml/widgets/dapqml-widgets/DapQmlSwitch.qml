@@ -40,6 +40,8 @@ Item {
         width: root.width - 24 * (root.width / 270)
         height: root.height - 48 * (root.height / 174)
         qss: "switch-bg-off"
+
+        onClicked: toggle()
     }
 
     /* toggler */
@@ -52,6 +54,7 @@ Item {
         height: root.height
         qss: "switch-toggle-off"
 
+        onClicked: toggle()
         Behavior on x { PropertyAnimation { duration: 250; easing.type: Easing.InQuad } }
     }
 

@@ -24,6 +24,7 @@ Item {
 
     /* functions */
     function setmode(a_mode) {
+        mode    = a_mode;
         switch(a_mode) {
         case QuiBugReportForm.Mode.Write:
         case QuiBugReportForm.Mode.Loading:
