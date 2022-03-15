@@ -290,6 +290,9 @@ void Statistics::setStarted (const QDateTime &started)
 
 void Statistics::updateGraph()
 {
+  m_scene->setSceneRect(QRectF(0,0, 500, 150));
+  ui->graphicsView->setRenderHint(QPainter::Antialiasing);
+  ui->graphicsView->fitInView(QRectF(0,0, 500, 150));
   schedules.draw_chart (m_scene);
   m_scene->update();
 }
