@@ -12,6 +12,7 @@
 /* DEFS */
 #define EXPECT_LENGTH (16)
 #define MAX_LENGTH (EXPECT_LENGTH + 3)
+#define EMPTY_KEY_STR ("____ ____ ____ ____")
 
 /* VARS */
 static SerialInput *__inst          = nullptr;
@@ -178,8 +179,8 @@ void SerialInput::cbFocusEvent(DapGuiLineEdit *e, const Qt::FocusReason &reason)
   if (reason == Qt::MouseFocusReason)
     {
       e->setHideAnchor (false);
-      if (e->text() == "____ ____ ____ ____")
-        e->setText ("");
+      if (e->text() == EMPTY_KEY_STR)
+        e->setText("");
     }
 }
 
@@ -225,6 +226,7 @@ void SerialInput::slotRetranslated()
 bool SerialInput::_cbInputMethodEvent(DapGuiLineEdit *label, QEvent *event)
 {
     int keyMaxLen = EXPECT_LENGTH;
+    QString empty = EMPTY_KEY_STR;
 
     if (event->type() == QEvent::InputMethod)
     {
@@ -233,7 +235,8 @@ bool SerialInput::_cbInputMethodEvent(DapGuiLineEdit *label, QEvent *event)
         QString c = Event->commitString();
 
         if (a.length()==0 && c.length()==0)
-            label->clear();
+            //label->clear();
+            label->setText(empty);
 
         a = a.remove("-").toUpper();
         a = a.remove(QRegExp("[^A-Z0-9]"));
@@ -249,10 +252,11 @@ bool SerialInput::_cbInputMethodEvent(DapGuiLineEdit *label, QEvent *event)
             QGuiApplication::inputMethod()->commit();
            }
            labelFormatSerialKeyLine(m);
+           if (m == "")
+               m = empty;
            label->setText(m);
            event->accept();
            return false;
-
         }
 
         if (c.length()>0)
@@ -262,6 +266,8 @@ bool SerialInput::_cbInputMethodEvent(DapGuiLineEdit *label, QEvent *event)
             if (label->commiting.length() > keyMaxLen)
             label->commiting.remove(keyMaxLen, label->commiting.length() - keyMaxLen);
             labelFormatSerialKeyLine(t);
+            if (t == "")
+                t = empty;
             label->setText(t);
             QGuiApplication::inputMethod()->commit();
             event->accept();
@@ -275,12 +281,15 @@ bool SerialInput::_cbInputMethodEvent(DapGuiLineEdit *label, QEvent *event)
         if (Event->key() == Qt::Key_Backspace)
         {
             if (label->commiting.length() == 0)
-                label->clear();
+                //label->clear();
+                label->setText(empty);
             else
             {
                 label->commiting = label->commiting.remove(label->commiting.length()-1, 1);
                 QString t  = label->commiting;
                 labelFormatSerialKeyLine(t);
+                if (t == "")
+                    t = empty;
                 label->setText(t);
                 event->accept();
                 return false;
@@ -310,16 +319,21 @@ bool SerialInput::_cbInputMethodEvent(DapGuiLineEdit *label, QEvent *event)
                labelFormatSerialKeyLine(t);
                label->setText(t);
             }
+            else
+            {
+                label->setText(empty);
+            }
         }
     }
 
     if (event->type() == QEvent::MouseButtonRelease)
     {
 //         QMouseEvent *Event = (QMouseEvent *)(event);
-         QGuiApplication::inputMethod()->show();
-         event->accept();
          label->setFocus();
-         return false;
+         QGuiApplication::inputMethod()->update(Qt::ImHints);
+         QGuiApplication::inputMethod()->show();
+//         event->accept();
+         return true;
     }
     return true;
 }
@@ -334,7 +348,6 @@ bool SerialInput::readFromBuffer()
             if( m->hasText() )
             {
                 QString buffer = m->text();
-                // QString buffer = "ehfj-mght-drgb-bbbb";
                 if (buffer.length() <= (keyMaxLen+3))
                 {
                     buffer = buffer.remove("-").toUpper();
