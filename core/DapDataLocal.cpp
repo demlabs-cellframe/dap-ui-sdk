@@ -160,6 +160,12 @@ void DapDataLocal::resetSerialKeyData()
     }
 }
 
+void DapDataLocal::savePendingSerialKey(QString a_serialkey)
+{
+    m_pendingSerialKey = a_serialkey;
+    this->saveToSettings(TEXT_PENDING_SERIAL_KEY, m_pendingSerialKey);
+}
+
 void DapDataLocal::saveHistoryData(QString a_type, QString a_data)
 {
     if (a_data.isEmpty())
@@ -219,6 +225,7 @@ void DapDataLocal::loadAuthorizationDatas()
 
     if (m_serialKeyData)
         this->loadFromSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
+    this->loadFromSettings(TEXT_PENDING_SERIAL_KEY, m_pendingSerialKey);
 }
 
 QSettings* DapDataLocal::settings()

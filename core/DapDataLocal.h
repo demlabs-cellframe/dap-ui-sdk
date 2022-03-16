@@ -21,6 +21,7 @@
 
 const QString TEXT_SERIAL_KEY           = "serialkey";
 const QString TEXT_SERIAL_KEY_HISTORY   = "serialkeyhistory";
+const QString TEXT_PENDING_SERIAL_KEY   = "pendingserialkey";
 const QString TEXT_BUGREPORT_HISTORY    = "bugreporthistory";
 const QString TEXT_LOGIN                = "login";
 const QString TEXT_PASSWORD             = "password";
@@ -79,6 +80,8 @@ public:
     void saveSerialKeyData();
     void resetSerialKeyData();
 
+    void savePendingSerialKey(QString a_serialkey);
+
     void saveHistoryData(QString a_type, QString a_data);
     QList<QString> getHistorySerialKeyData();
     void removeItemFromHistory(QString a_type, QString a_item);
@@ -86,6 +89,8 @@ public:
     static DapBugReportData *bugReportData();
     static DapServersData   *serversData();
     DapSerialKeyData* serialKeyData();
+
+    QString pendingSerialKey(){return m_pendingSerialKey;};
 
     DapBugReportHistory *bugReportHistory();
 
@@ -122,6 +127,7 @@ private:
 
     DapSerialKeyData* m_serialKeyData;
     QSet <QString> * m_serialKeyDataList;
+    QString m_pendingSerialKey;
 
     DapBugReportHistory* m_buReportHistory;
 };
