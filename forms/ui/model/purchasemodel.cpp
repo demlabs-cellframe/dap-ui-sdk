@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "purchasemodel.h"
 #include "../purchase.h"
+#include <QTimer>
 
 /* DEFS */
 
@@ -89,16 +90,22 @@ void PurchaseModel::slotSetup (QWidget *a_form)
     {
       auto it = buttons.begin();
 
-      connect (*it, &DapGuiButton::clicked, s_form,
-               [] { emit s_form->sigPurchase (Purchase::Key1month); });
+      connect (*it, &DapGuiButton::clicked, s_form, [] {
+          emit s_form->sigReturn();
+          QTimer::singleShot (350, [] { emit s_form->sigPurchase (Purchase::Key1month); });
+        });
       if (++it == buttons.end()) throw it;
 
-      connect (*it, &DapGuiButton::clicked, s_form,
-               [] { emit s_form->sigPurchase (Purchase::Key6months); });
+      connect (*it, &DapGuiButton::clicked, s_form, [] {
+          emit s_form->sigReturn();
+          QTimer::singleShot (350, [] { emit s_form->sigPurchase (Purchase::Key6months); });
+        });
       if (++it == buttons.end()) throw it;
 
-      connect (*it, &DapGuiButton::clicked, s_form,
-               [] { emit s_form->sigPurchase (Purchase::Key12months); });
+      connect (*it, &DapGuiButton::clicked, s_form, [] {
+          emit s_form->sigReturn();
+          QTimer::singleShot (350, [] { emit s_form->sigPurchase (Purchase::Key12months); });
+        });
       if (++it == buttons.end()) throw it;
     }
   catch (...) {}
