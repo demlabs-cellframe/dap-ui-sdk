@@ -79,11 +79,7 @@ void DapQmlStyle::windowResized(int a_width, int a_height)
 
 void DapQmlStyle::requestRedraw()
 {
-  if (s_globalSignal)
-    {
-      update();
-      emit s_globalSignal->redrawRequested();
-    }
+  sRequestRedraw();
 }
 
 double DapQmlStyle::centerHor (QObject *a_root, QObject *a_item)
@@ -131,6 +127,15 @@ void DapQmlStyle::setup(const QString &styleSheet)
 void DapQmlStyle::update()
 {
   Style::QssMap::setup (s_styleSheet);
+}
+
+void DapQmlStyle::sRequestRedraw()
+{
+  if (s_globalSignal)
+    {
+      update();
+      emit s_globalSignal->redrawRequested();
+    }
 }
 
 /********************************************

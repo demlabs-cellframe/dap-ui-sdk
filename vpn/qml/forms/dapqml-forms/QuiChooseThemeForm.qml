@@ -20,6 +20,17 @@ Item {
         backTimer.start();
     }
 
+    function updateChecks() {
+        var count           = csListView.count
+        for(var i = 0; i < count; i++) {
+            var entry       = csListView.itemAtIndex(i);
+            var entryName   = entry.radioName;
+            entry.checked   = themeModel.isCurrent (entryName);
+        }
+    }
+
+    Component.onCompleted: updateChecks()
+
     /* go back timer */
     Timer {
         id: backTimer
@@ -61,14 +72,16 @@ Item {
         model: themeModel
 
         delegate: DapQmlRadioButton {
+            property string radioName: model.name
             text: model.name + " Theme"
             separator: true
             iconSize: resizer.height
             width: resizer.width
             height: resizer.height
-            checked: themeModel.isCurrent (model.name)
+            //checked: themeModel.isCurrent (model.name)
             onClicked: {
                 root.sigSelect (model.index, model.name);
+                updateChecks();
             }
         }
     }}

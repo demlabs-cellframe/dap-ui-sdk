@@ -62,6 +62,7 @@ public:
 
   static void setup (const QString &styleSheet);
   static void update();
+  static void sRequestRedraw();
   /// @}
 
   /****************************************//**

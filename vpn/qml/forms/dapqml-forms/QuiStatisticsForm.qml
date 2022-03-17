@@ -206,6 +206,7 @@ Item {
     DapQmlButton {
         id: stPing
         x: rightColumnPos
+        visible: false
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub
         mainText: "34 ms"

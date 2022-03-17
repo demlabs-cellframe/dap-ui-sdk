@@ -6,7 +6,7 @@ namespace Style
 {
 
 /* VARS */
-static QHash<QString, QssLink> s_categories;
+static QMap<QString, QssLink> s_categories;
 static QString s_currentCategory  = "light";
 
 /* LINKS */
