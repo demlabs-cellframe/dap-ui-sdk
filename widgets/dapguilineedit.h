@@ -147,10 +147,12 @@ signals:
 
 protected:
   void keyPressEvent(QKeyEvent *event) override;
-  void mouseReleaseEvent(QMouseEvent *) override;
-  void leaveEvent(QEvent *) override;
-  void showEvent(QShowEvent *) override;
-  void inputMethodEvent(QInputMethodEvent *) override;
+  void mouseReleaseEvent(QMouseEvent *event) override;
+  void mousePressEvent(QMouseEvent *event) override;
+  void leaveEvent(QEvent *event) override;
+  void showEvent(QShowEvent *event) override;
+  void inputMethodEvent(QInputMethodEvent *event) override;
+  bool event(QEvent *event) override;
 #endif
 
 };
