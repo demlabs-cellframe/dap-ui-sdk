@@ -14,6 +14,9 @@ Item {
     /* functions */
     function setState(value) {
         checked = value;
+    }
+
+    function _setStyle() {
         bg.qss  = (!checked) ? "switch-bg-off" : "switch-bg-on";
         tgl.qss = (!checked) ? "switch-toggle-off" : "switch-toggle-on";
     }
@@ -30,6 +33,8 @@ Item {
     function centerVer(item) {
         return root.height / 2 - item.height / 2;
     }
+
+    onCheckedChanged: _setStyle()
 
     /* background */
     DapQmlLabel {
