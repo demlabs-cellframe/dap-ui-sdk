@@ -24,6 +24,7 @@ DapBusyIndicatorForm
                     width: busyPointWidth
                     height: busyPointHeight
                     radius: busyPointRounding
+                    color: busyIndicatorLightColor
                     opacity: 1
                     //Add possibility of color animation
                     Behavior on color
