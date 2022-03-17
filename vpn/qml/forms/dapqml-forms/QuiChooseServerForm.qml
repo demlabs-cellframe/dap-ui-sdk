@@ -4,6 +4,7 @@ import "qrc:/dapqml-widgets"
 Item {
     id: root
     property string formName: "ChooseServer"
+    property var items: new Array
 
     /* signals */
     signal sigSelect(int index, string name);
@@ -11,6 +12,13 @@ Item {
     /* functions */
     function setCurrentIndex(a_index) {
         csListView.currentIndex = a_index;
+
+        var count           = csListView.count
+        var current         = csListView.currentIndex;
+        for(var i = 0; i < count; i++) {
+            var entry       = csListView.itemAtIndex(i);
+            entry.checked   = (i === current)
+        }
     }
 
     /* title */
@@ -44,8 +52,8 @@ Item {
             iconSize: resizer.height
             width: resizer.width
             height: resizer.height
-            checked: (model.index === csListView.currentIndex)
             onClicked: root.sigSelect (model.index, model.name)
+            Component.onCompleted: { items.push(this); }
         }
     }
 }
