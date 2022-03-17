@@ -99,11 +99,14 @@ protected:
    *******************************************/
   /// @{
 private:
+  int maxMessageLength;
   void keyPressEvent(QKeyEvent *event) override;
 #ifdef Q_OS_ANDROID
   void inputMethodEvent(QInputMethodEvent *e) override;
   void focusInEvent(QFocusEvent *e) override;
   void focusOutEvent(QFocusEvent *e) override;
+signals:
+  void preeditChange(QString);
 #endif // Q_OS_ANDROID
   /// @}
 };
