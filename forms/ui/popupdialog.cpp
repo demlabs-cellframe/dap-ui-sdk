@@ -63,7 +63,7 @@ void PopupDialog::slotShow (
     const QString &a_title,
     const QString &a_description,
     const QString &a_btnYes,
-    const QString &a_btnNo)
+    const QString &a_btnNo /*= ""*/)
 {
   /* create blur effect */
   QGraphicsBlurEffect *p_blur = new QGraphicsBlurEffect;
@@ -89,6 +89,12 @@ void PopupDialog::slotShow (
   /* setup text */
   ui->lTitle->setText (a_title);
   ui->lDescription->setText (a_description);
+
+  if (a_btnNo.isEmpty()){
+    ui->btnNo->hide();
+    ui->spacer->hide();
+  }
+
   ui->btnYes->setText (a_btnYes);
   ui->btnNo->setText (a_btnNo);
 
