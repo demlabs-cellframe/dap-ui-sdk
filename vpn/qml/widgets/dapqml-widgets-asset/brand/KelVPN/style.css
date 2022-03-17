@@ -382,14 +382,9 @@
 	font-weight: Font.Normal;
 }
 
-.login-connect-container
-{
-	scaled-rect: scaled(-1,570,-1,90,true);
-}
-
 .login-connect
 {
-	scaled-rect: scaled(nan,nan,374,90,true,14);
+	scaled-rect: scaled(-1,570,374,90,true,14);
 }
 
 .login-obtain-container

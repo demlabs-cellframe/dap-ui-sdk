@@ -7,16 +7,13 @@ Button {
     id: root
     width: 374
     height: 90
+    opacity: enabled ? 1.0 : 0.25
 
     property string active: "qrc:/light/btn_bg_hover_active.png"
     property string inactive: "qrc:/light/btn_bg.png"
     property int fontSize: 14
     property string qss
-
-    function isStill()
-    {
-        return !root.hovered && !root.down && !root.checked;
-    }
+    property bool isActive: root.down ? true : (root.hovered ? true : (root.checked ? true : false))
 
     /* content */
     contentItem: Text {
@@ -35,7 +32,7 @@ Button {
     background: Image {
         anchors.fill: parent
         mipmap: true
-        source: !isStill() ? root.active : root.inactive
+        source: isActive ? root.active : root.inactive
     }
 
     DapQmlStyle { id: style; qss: root.qss; item: root }

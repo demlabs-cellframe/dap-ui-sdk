@@ -115,7 +115,7 @@ Item {
         DapQmlButton {
             id: btnEnterSerial
             objectName: "btnEnterSerial"
-            property int maxCountChar: 16
+            property int maxCountChar: 19
             x: (parent.width - width) / 2
             z: 15
             width: parent.width - 74
@@ -154,18 +154,14 @@ Item {
     }
 
     /* connect */
-    DapQmlRectangle {
-        qss: "login-connect-container"
-        DapQmlPushButton {
-            id: btnConnect
-            enabled: false
-            qss: "login-connect"
-            x: (parent.width - width) / 2
-            z: 15
+    DapQmlPushButton {
+        id: btnConnect
+        x: (parent.width - width) / 2
+        z: 15
+        qss: "login-connect"
 
-            text: qsTr("CONNECT")
-            onClicked: root.sigConnect()
-        }
+        text: qsTr("CONNECT")
+        onClicked: root.sigConnect()
     }
 
     /* obtain key */
