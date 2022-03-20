@@ -70,6 +70,12 @@ public:
    *******************************************/
   /// @{
 signals:
+  /**
+   * @brief redraw requested
+   * This signal is sent from static object
+   *
+   * To send this signal simply execute sRequestRedraw() or requestRedraw()
+   */
   void redrawRequested();
   void qssChanged();
   void itemChanged();

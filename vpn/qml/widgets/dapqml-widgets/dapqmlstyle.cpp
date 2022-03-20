@@ -144,6 +144,9 @@ void DapQmlStyle::sRequestRedraw()
 
 void DapQmlStyle::_applyStyle()
 {
+  /* send to local listeners */
+  emit redrawRequested();
+
   /* check ptr */
   if (m_item == nullptr)
     return;
