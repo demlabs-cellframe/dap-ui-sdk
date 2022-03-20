@@ -29,7 +29,7 @@ Item {
         property int fontSize: 12
         DapQmlStyle { item: scroll; qss: "dv-content"; }
 
-        Component.onCompleted: scroll.setHorizontalScrollBarEnabled (false);
+        //Component.onCompleted: scroll.setHorizontalScrollBarEnabled (false);
 
         Text {
             id: content
@@ -37,6 +37,8 @@ Item {
             font.pixelSize: scroll.fontSize
             textFormat: Text.RichText
             wrapMode: Text.Wrap
+
+            DapQmlStyle { item: content; qss: "dv-text"; }
         }
     }
 }

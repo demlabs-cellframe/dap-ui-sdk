@@ -19,6 +19,7 @@ Item {
     property int horizontalAlign: Text.AlignHCenter
     property int verticalAlign: Text.AlignVCenter
     property int wrapMode: Text.NoWrap
+    property int textFormat: Text.AutoText
 
     property real bottomPadding
     property real leftPadding
@@ -49,6 +50,7 @@ Item {
         text: root.text
         color: root.color
         wrapMode: root.wrapMode
+        textFormat: root.textFormat
 
         font {
             family: root.fontFamiliy
