@@ -53,23 +53,25 @@ Item {
 
             DapQmlStyle { id: style; qss: "bugrep-input"; item: input }
 
-            /* background image */
-            Image {
+            MouseArea {
+                id: mouseAreaInput
                 anchors.fill: input
-                source: "qrc:/light/report_bg.png"
+                cursorShape: Qt.IBeamCursor
+                enabled: false
+                onClicked: bugRepInputField.forceActiveFocus()
+            }
+
+            /* background image */
+            DapQmlLabel {
+                anchors.fill: input
+                qss: "bugrep-bg"
+                //source: "qrc:/light/report_bg.png"
 
                 Component.onCompleted: StyleDebugTree.describe (
                    "Bug rep image",
                     ["x", "y", "width", "height"],
                    this);
 
-                MouseArea {
-                    id: mouseAreaInput
-                    anchors.fill: input
-                    cursorShape: Qt.IBeamCursor
-                    enabled: false
-                    onClicked: bugRepInputField.forceActiveFocus()
-                }
             }
 
             /* input scrollarea */
@@ -144,7 +146,7 @@ Item {
 
         /* send button */
         DapQmlPushButton {
-            qss: "bugrep-send-btn"
+            qss: "bugrep-send-btn push-button"
             text: "SEND REPORT"
             onClicked: { root.mode = 1; root.sigSend(); }
         }
@@ -170,7 +172,7 @@ Item {
 
         /* cancel */
         DapQmlPushButton {
-            qss: "bugrep-send-btn"
+            qss: "bugrep-send-btn push-button"
             text: "CANCEL"
             onClicked: { root.mode = 2; root.sigCancel(); }
         }
@@ -191,7 +193,7 @@ Item {
 
         /* back */
         DapQmlPushButton {
-            qss: "bugrep-send-btn"
+            qss: "bugrep-send-btn push-button"
             text: "BACK"
             onClicked: { root.mode = 0; root.sigResultBack(); }
         }

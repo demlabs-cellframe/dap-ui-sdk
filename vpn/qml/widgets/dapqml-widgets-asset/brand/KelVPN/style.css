@@ -23,12 +23,15 @@
 	separator-left:             "qrc:/light/separator_left.png";
 	separator-mid:              "qrc:/light/separator_mid.png";
 	separator-right:            "qrc:/light/separator_right.png";
+	push-button-active: 		"qrc:/light/btn_bg_hover_active.png";
+	push-button-inactive: 		"qrc:/light/btn_bg.png";
 	footer-settings-active:     "qrc:/light/btn_settings_active.png";
 	footer-settings-inactive:   "qrc:/light/btn_settings.png";
 	footer-dashboard-active:    "qrc:/light/btn_connection_active.png";
 	footer-dashboard-inactive:  "qrc:/light/btn_connection.png";
 	footer-statistics-active:   "qrc:/light/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/light/btn_account.png";
+	bugrep-bg: 					"qrc:/light/report_bg.png";
 }
 
 .@dark
@@ -52,12 +55,15 @@
 	separator-left:             "qrc:/dark/separator_left.png";
 	separator-mid:              "qrc:/dark/separator_mid.png";
 	separator-right:            "qrc:/dark/separator_right.png";
+	push-button-active: 		"qrc:/dark/btn_bg_hover_active.png";
+	push-button-inactive: 		"qrc:/dark/btn_bg.png";
 	footer-settings-active:     "qrc:/dark/btn_settings_active.png";
 	footer-settings-inactive:   "qrc:/dark/btn_settings.png";
 	footer-dashboard-active:    "qrc:/dark/btn_connection_active.png";
 	footer-dashboard-inactive:  "qrc:/dark/btn_connection.png";
 	footer-statistics-active:   "qrc:/dark/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/dark/btn_account.png";
+	bugrep-bg: 					"qrc:/dark/report_bg.png";
 }
 
 /****************************************************
@@ -139,6 +145,14 @@
 .sep-right
 {
 	source: "@separator-right";
+}
+
+
+
+.push-button
+{
+	active: "@push-button-active";
+	inactive: "@push-button-inactive";
 }
 
 /****************************************************
@@ -630,6 +644,11 @@
 {
 	scaled-rect: scaled(112,241,200,104,false,18);
 	color: "@text";
+}
+
+.bugrep-bg
+{
+	qproperty-scaledPixmap: "@bugrep-bg";
 }
 
 /****************************************************
