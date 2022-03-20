@@ -53,16 +53,14 @@ Item {
 
             DapQmlStyle { id: style; qss: "bugrep-input"; item: input }
 
-            MouseArea {
-                id: mouseAreaInput
-                anchors.fill: input
-                cursorShape: Qt.IBeamCursor
-                enabled: false
-                onClicked: bugRepInputField.forceActiveFocus()
-            }
+            Component.onCompleted: StyleDebugTree.describe (
+               "Bug rep contanier",
+                ["x", "y", "width", "height"],
+               this);
 
             /* background image */
             DapQmlLabel {
+                id: inputbg
                 anchors.fill: input
                 qss: "bugrep-bg"
                 //source: "qrc:/light/report_bg.png"
@@ -71,15 +69,17 @@ Item {
                    "Bug rep image",
                     ["x", "y", "width", "height"],
                    this);
-
             }
 
             /* input scrollarea */
             ScrollView
             {
                 id: bugRepInput
+                x: (input.width - width) / 2
                 clip: true
                 contentWidth: bugRepInput.width
+                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                ScrollBar.vertical.policy: ScrollBar.AlwaysOn
 
                 DapQmlStyle { item: bugRepInput; qss: "bugrep-input-content"; }
 
@@ -88,14 +88,24 @@ Item {
                     ["x", "y", "width", "height"],
                    this);
 
+                MouseArea {
+                    id: mouseAreaInput
+                    anchors.fill: parent
+                    cursorShape: Qt.IBeamCursor
+                    enabled: true
+                    onClicked: bugRepInputField.forceActiveFocus()
+                }
+
                 /* input */
-                TextEdit {
+                TextArea {
                     id: bugRepInputField
                     anchors.fill: parent
                     clip: true
                     property int maximumLength: 200
                     property string previousText: text
                     wrapMode: TextEdit.Wrap
+
+                    DapQmlStyle { item: bugRepInputField; qss: "bugrep-input-textarea"; }
 
                     onTextChanged: {
                         if (text.length > maximumLength) {

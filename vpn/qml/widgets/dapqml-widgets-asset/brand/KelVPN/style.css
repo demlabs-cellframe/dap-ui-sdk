@@ -610,7 +610,7 @@
 
 .bugrep-input-content
 {
-	scaled-rect: scaled(-1,25,340,144,true,16);
+	scaled-rect: scaled(nan,25,340,144,true,16);
 }
 
 .bugrep-letter-counter
@@ -649,6 +649,12 @@
 .bugrep-bg
 {
 	qproperty-scaledPixmap: "@bugrep-bg";
+}
+
+.bugrep-input-textarea
+{
+	color: "@light-grey";
+	scaled-font: scaled(16);	
 }
 
 /****************************************************
