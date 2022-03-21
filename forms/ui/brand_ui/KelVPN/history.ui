@@ -153,6 +153,29 @@
           </widget>
          </item>
          <item>
+          <widget class="DapGuiLabel" name="noKeyLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>The license key usage history  on
+this device is empty.</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+           <property name="cssStyle" stdset="0">
+            <string>base-widget lato font24 darkblue normal noborder nobackground margin-bottom28</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="HistoryModel" name="scrollArea">
            <property name="styleSheet">
             <string notr="true">background: rgba(0,0,0,0);</string>

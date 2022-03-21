@@ -21,6 +21,12 @@ History::History (QWidget *parent) :
   connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &History::sigReturn,
            Qt::QueuedConnection);
+
+  connect (ui->scrollArea, &HistoryModel::filled, [=](int rowCount)
+  {
+    ui->scrollArea->setVisible(rowCount > 0);
+    ui->noKeyLabel->setVisible(rowCount == 0);
+  });
 }
 
 History::~History()
