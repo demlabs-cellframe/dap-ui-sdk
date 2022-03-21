@@ -8,13 +8,16 @@ Item {
     property string qss
     property bool hideClose: false
 
+    /* signals */
+    signal sigClose();
+
     /* close button */
     DapQmlPushButton {
         inactive: "qrc:/light/ic_close.png"
         active: "qrc:/light/ic_close_hover.png"
         qss: "form-title-close-btn"
         visible: hideClose === false
-        onClicked: PageCtl.slotBackwardAuto()
+        onClicked: { root.sigClose(); PageCtl.slotBackwardAuto(); }
     }
 
     /* label */

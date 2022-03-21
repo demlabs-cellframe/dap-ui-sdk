@@ -1,7 +1,7 @@
 import QtQuick 2.4
 import DapQmlStyle 1.0
 import QtQuick.Controls 2.12
-import StyleDebugTree 1.0
+//import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
 Item {
@@ -53,10 +53,10 @@ Item {
 
             DapQmlStyle { id: style; qss: "bugrep-input"; item: input }
 
-            Component.onCompleted: StyleDebugTree.describe (
-               "Bug rep contanier",
-                ["x", "y", "width", "height"],
-               this);
+//            Component.onCompleted: StyleDebugTree.describe (
+//               "Bug rep contanier",
+//                ["x", "y", "width", "height"],
+//               this);
 
             /* background image */
             DapQmlLabel {
@@ -65,10 +65,10 @@ Item {
                 qss: "bugrep-bg"
                 //source: "qrc:/light/report_bg.png"
 
-                Component.onCompleted: StyleDebugTree.describe (
-                   "Bug rep image",
-                    ["x", "y", "width", "height"],
-                   this);
+//                Component.onCompleted: StyleDebugTree.describe (
+//                   "Bug rep image",
+//                    ["x", "y", "width", "height"],
+//                   this);
             }
 
             /* input scrollarea */
@@ -83,22 +83,15 @@ Item {
 
                 DapQmlStyle { item: bugRepInput; qss: "bugrep-input-content"; }
 
-                Component.onCompleted: StyleDebugTree.describe (
-                   "Bug rep scrollview",
-                    ["x", "y", "width", "height"],
-                   this);
-
-                MouseArea {
-                    id: mouseAreaInput
-                    anchors.fill: parent
-                    cursorShape: Qt.IBeamCursor
-                    enabled: true
-                    onClicked: bugRepInputField.forceActiveFocus()
-                }
+//                Component.onCompleted: StyleDebugTree.describe (
+//                   "Bug rep scrollview",
+//                    ["x", "y", "width", "height"],
+//                   this);
 
                 /* input */
                 TextArea {
                     id: bugRepInputField
+                    objectName: "bugRepInputField"
                     anchors.fill: parent
                     clip: true
                     property int maximumLength: 200
@@ -122,11 +115,20 @@ Item {
                         letterAmount.text = text.length + "/200"
                     }
 
-                    Component.onCompleted: StyleDebugTree.describe (
-                       "Bug rep input",
-                        ["x", "y", "width", "height"],
-                       this);
+//                    Component.onCompleted: StyleDebugTree.describe (
+//                       "Bug rep input",
+//                        ["x", "y", "width", "height"],
+//                       this);
                 }
+            }
+
+            /* make clickable at all field size */
+            MouseArea {
+                id: mouseAreaInput
+                anchors.fill: bugRepInput
+                cursorShape: Qt.IBeamCursor
+                enabled: true
+                onClicked: bugRepInputField.forceActiveFocus()
             }
         }
 
@@ -145,6 +147,7 @@ Item {
             qss: "bugrep-attach-btn"
             text: "Click here to attach a screenshot"
             color: "#DA0B82"
+            visible: false
 
             MouseArea {
                 id: mouseArea
@@ -184,7 +187,7 @@ Item {
         DapQmlPushButton {
             qss: "bugrep-send-btn push-button"
             text: "CANCEL"
-            onClicked: { root.mode = 2; root.sigCancel(); }
+            onClicked: { root.mode = 0; root.sigCancel(); }
         }
     }
 
