@@ -102,6 +102,10 @@ void Dashboard::setStatusIdicator(bool a_enabled /*= false*/)
 #else
     ui->lStatusIconOff->setVisible (false);
     ui->lUptime->setVisible(a_enabled);
+    if (!a_enabled)
+        ui->lTitle->setCssStyle("conn-top-text-connected font24 darkblue normalbold lato noborder nobackground");
+    else
+        ui->lTitle->setCssStyle("conn-top-text-connected font24 red normalbold lato noborder nobackground");
 #endif
 
 //    ui->lStatusIcon->setChecked(a_authorized);
