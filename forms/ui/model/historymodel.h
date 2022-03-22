@@ -48,6 +48,9 @@ public slots:
 public:
   bool eventFilter(QObject *o, QEvent *e) override;
   /// @}
+
+signals:
+  void filled(int rowCount);
 };
 
 /*-----------------------------------------*/
