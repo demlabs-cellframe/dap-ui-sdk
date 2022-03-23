@@ -51,14 +51,29 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="DapGuiWidget" name="kelGuiWidget_2" native="true">
-        <property name="cssStyle" stdset="0">
-         <string>conn-top-spacer</string>
+       <spacer name="verticalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
-       </widget>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>30</height>
+         </size>
+        </property>
+       </spacer>
       </item>
       <item>
        <widget class="DapGuiLabel" name="lTitle">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="styleSheet">
          <string notr="true">#lTitle{ height: 28px; min-height: 28px; max-height: 28px; 
  font: 24px/29px; 
@@ -80,7 +95,41 @@
        </widget>
       </item>
       <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>17</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
        <widget class="DapGuiWidget" name="kelGuiWidget_5" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>22</height>
+         </size>
+        </property>
         <property name="cssStyle" stdset="0">
          <string>conn-top-text-time</string>
         </property>
@@ -247,22 +296,71 @@ Usualy unvisible by being empty</string>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <item>
-         <widget class="DapGuiSwitch" name="btnSwitch" native="true"/>
+         <widget class="DapGuiSwitch" name="btnSwitch" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>96</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>96</height>
+           </size>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
       <item>
-       <widget class="DapGuiWidget" name="kelGuiWidget_4" native="true">
-        <property name="cssStyle" stdset="0">
-         <string>conn-down-button-spacer</string>
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
-       </widget>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>64</height>
+         </size>
+        </property>
+       </spacer>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="DapGuiButton" name="lDownload" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>99</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>99</height>
+           </size>
+          </property>
           <property name="cssStyle" stdset="0">
            <string>conn-status-button</string>
           </property>
@@ -282,6 +380,24 @@ Usualy unvisible by being empty</string>
         </item>
         <item>
          <widget class="DapGuiButton" name="lUpload" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>99</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>99</height>
+           </size>
+          </property>
           <property name="cssStyle" stdset="0">
            <string>conn-status-button</string>
           </property>
@@ -306,10 +422,22 @@ Usualy unvisible by being empty</string>
         <item>
          <widget class="DapGuiButton" name="btnServer" native="true">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>96</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>96</height>
+           </size>
           </property>
           <property name="cssStyle" stdset="0">
            <string>conn-connectedto-button nobackground</string>
@@ -340,11 +468,20 @@ Usualy unvisible by being empty</string>
        </layout>
       </item>
       <item>
-       <widget class="DapGuiWidget" name="kelGuiWidget" native="true">
-        <property name="cssStyle" stdset="0">
-         <string>footer</string>
+       <spacer name="verticalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
-       </widget>
+        <property name="sizeType">
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>300</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>
@@ -352,16 +489,6 @@ Usualy unvisible by being empty</string>
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>DapGuiButton</class>
-   <extends>QWidget</extends>
-   <header>dapguibutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>DapGuiSwitch</class>
-   <extends>QWidget</extends>
-   <header>dapguiswitch.h</header>
-  </customwidget>
   <customwidget>
    <class>DapGuiLabel</class>
    <extends>QLabel</extends>
@@ -372,6 +499,16 @@ Usualy unvisible by being empty</string>
    <extends>QWidget</extends>
    <header>dapguiwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DapGuiButton</class>
+   <extends>QWidget</extends>
+   <header>dapguibutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DapGuiSwitch</class>
+   <extends>QWidget</extends>
+   <header>dapguiswitch.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
