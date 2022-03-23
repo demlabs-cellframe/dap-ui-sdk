@@ -366,7 +366,7 @@ void DapSession::onPurchaseVerified() {
         return;
     }
     QByteArray dByteArr;
-    m_dapCrypt->decode(m_netPurchaseReply->getReplyData(), dByteArr, KeyRoleSession);
+    m_dapCryptCDB->decode(m_netPurchaseReply->getReplyData(), dByteArr, KeyRoleSession);
     qInfo() << "Validation request replied" << dByteArr;
     QJsonParseError jsonErr;
     auto jsonDoc = QJsonDocument::fromJson(dByteArr, &jsonErr);
