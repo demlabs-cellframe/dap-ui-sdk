@@ -89,7 +89,7 @@ Item {
 //                   this);
 
                 /* input */
-                TextArea {
+                TextEdit {
                     id: bugRepInputField
                     objectName: "bugRepInputField"
                     anchors.fill: parent
