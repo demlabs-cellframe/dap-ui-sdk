@@ -750,12 +750,28 @@
 
 .ph-icn-resizer
 {
-	scaled-rect: scaled(nan,nan,30,30,true);
+	scaled-rect: scaled(nan,nan,32,32,true);
+}
+
+.ph-notice-resizer
+{
+	scaled-rect: scaled(nan,nan,363,75,true);
+}
+
+.ph-notice-spacer
+{
+	scaled-rect: scaled(nan,nan,363,34,true);
 }
 
 .ph-btn-label-main
 {
 	color: "@text";
+	scaled-font: scaled(16);	
+}
+
+.ph-label-notice
+{
+	color: "@label";
 	scaled-font: scaled(16);	
 }
 

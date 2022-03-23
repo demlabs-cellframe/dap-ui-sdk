@@ -12,23 +12,6 @@ Item {
         qss: "dialog-title"
     }
 
-    /* model */
-    ListModel {
-        id: serialModel
-        ListElement {
-            key: "GTSF-WWRM-KLMWQ-OWWM"
-        }
-        ListElement {
-            key: "GTSF-WWRM-KLMWQ-OWWM"
-        }
-        ListElement {
-            key: "GTSF-WWRM-KLMWQ-OWWM"
-        }
-        ListElement {
-            key: "GTSF-WWRM-KLMWQ-OWWM"
-        }
-    }
-
     /* resizer */
     DapQmlRectangle {
         id: resizer
@@ -42,6 +25,18 @@ Item {
         qss: "ph-icn-resizer"
     }
 
+    DapQmlRectangle {
+        id: noticeResizer
+        visible: false
+        qss: "ph-notice-resizer"
+    }
+
+    DapQmlRectangle {
+        id: noticeSpacer
+        visible: false
+        qss: "ph-notice-spacer"
+    }
+
     /* listview */
     ListView {
         id: phListView
@@ -50,22 +45,34 @@ Item {
         x: (root.width - width) / 2
         y: title.y + title.height * 2
         width: resizer.width // root.width - 72
-        height: root.height - y
+        height: root.height - y - notice.height
         clip: true
 
-        model: serialModel
-
         delegate: DapQmlButton {
-            buttonStyle: DapQmlButton.IconMainSub
+            buttonStyle: DapQmlButton.IconMainSubIcon
             mainText: model.key
-            subText: ""
+            subText: " "
             mainQss: "ph-btn-label-main"
-            subQss: "ic_copy"
+            subQss: ""
             icon: "ic_key-item"
+            iconRight: "ic_copy"
             separator: true
             iconSize: icnResizer.height
+            iconRightSize: icnResizer.height
             width: resizer.width
             height: resizer.height
         }
+    }
+
+    /* notice */
+    DapQmlLabel {
+        id: notice
+        x: (root.width - noticeResizer.width) / 2
+        y: root.height - noticeResizer.height - noticeSpacer.height
+        width: noticeResizer.width
+        height: noticeResizer.height
+        text: "The license key usage history is stored locally on this device. After reinstalling the system the key history will be unavailable."
+        wrapMode: Text.WordWrap
+        qss: "ph-label-notice"
     }
 }

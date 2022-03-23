@@ -54,13 +54,13 @@ QVariant DapQmlModelSerialHistory::data(const QModelIndex &index, int role) cons
     return QVariant();
 
   /* check boundaries */
-  auto list   = DapDataLocal::instance()->bugReportHistory()->getBugReportsList();
-  if (index.row() >= list->size())
+  auto list   = DapDataLocal::instance()->getHistorySerialKeyData();
+  if (index.row() >= list.size())
     return QVariant();
 
   /* return value */
-  auto item   = list->at (index.row());
-  return item.number;
+  auto item   = list.at (index.row());
+  return item;
 }
 
 QHash<int, QByteArray> DapQmlModelSerialHistory::roleNames() const

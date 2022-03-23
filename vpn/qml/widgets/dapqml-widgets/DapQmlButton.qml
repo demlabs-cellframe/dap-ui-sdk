@@ -8,6 +8,7 @@ Rectangle {
 
     /* signals */
     signal clicked();
+    signal rightClicked();
     signal textEdited();
     signal textChanged();
 
@@ -19,7 +20,8 @@ Rectangle {
         TopSubBottomMain,     ///< top:sub,  bottom:main
         LeftTopMainBottomSub, ///< left:left, top:main, bottom:sub
         IconMainSub,          ///< icon, main, sub
-        EditTopMainBottomSub  ///< top:edit, bottom:sub
+        EditTopMainBottomSub, ///< top:edit, bottom:sub
+        IconMainSubIcon       ///< icon, main, sub, icon
     }
 
     /* VARS */
@@ -33,7 +35,9 @@ Rectangle {
     property string leftQss: ""
     property string subQss: ""
     property string icon: ""
+    property string iconRight: ""
     property int iconSize: 34
+    property int iconRightSize: 34
     property int buttonStyle: DapQmlButton.Style.TopMainBottomSub
     property bool separator: false
     property bool link: false
@@ -43,6 +47,7 @@ Rectangle {
     property var labelSub
     property var labelLeft
     property var labelIcon
+    property var labelIconRight
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
 
@@ -82,6 +87,13 @@ Rectangle {
         {
             root.labelMain  = etmbsMain;
             root.labelSub   = etmbsSub;
+        }
+        else if(root.buttonStyle === DapQmlButton.Style.IconMainSubIcon)
+        {
+            root.labelMain      = imsiMain;
+            root.labelSub       = imsiSub;
+            root.labelIcon      = imsiIcon;
+            root.labelIconRight = imsiRightIcon;
         }
 
     }
@@ -389,6 +401,80 @@ Rectangle {
                 clip: false
                 visible: text.length > 0
                 onClicked: root.clicked();
+            }
+        }
+
+        /* IconMainSubIcon */
+        /* Three items by horiontal */
+        GridLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            columns: 4
+            visible: (root.buttonStyle === DapQmlButton.Style.IconMainSubIcon)
+
+            /* store references */
+            Component.onCompleted: {
+                if(visible)
+                {
+                    root.labelMain  = imsiMain;
+                    root.labelSub   = imsiSub;
+                    root.labelIcon  = imsiIcon;
+                }
+            }
+
+            /* icon */
+            DapQmlLabel {
+                id: imsiIcon
+                Layout.preferredWidth: root.iconSize
+                Layout.preferredHeight: root.iconSize
+
+                qss: root.icon
+                width: root.iconSize
+                height: root.iconSize
+                onClicked: root.clicked();
+            }
+
+            /* main text */
+            DapQmlLabel {
+                id: imsiMain
+                Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                horizontalAlign: Text.AlignLeft
+                verticalAlign: Text.AlignVCenter
+                text: root.mainText
+                qss: root.mainQss
+                clip: false
+                onClicked: root.clicked();
+            }
+
+            /* sub text */
+            DapQmlLabel {
+                id: imsiSub
+                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                Layout.fillWidth: text.length > 0
+                Layout.fillHeight: true
+
+                horizontalAlign: Text.AlignRight
+                verticalAlign: Text.AlignVCenter
+                text: root.subText
+                qss: root.subQss
+                clip: false
+                visible: text.length > 0
+                onClicked: root.clicked();
+            }
+
+            /* icon */
+            DapQmlLabel {
+                id: imsiRightIcon
+                Layout.preferredWidth: root.iconRightSize
+                Layout.preferredHeight: root.iconRightSize
+
+                qss: root.iconRight
+                width: root.iconRightSize
+                height: root.iconRightSize
+                onClicked: root.rightClicked();
             }
         }
 
