@@ -10,12 +10,6 @@
     <height>926</height>
    </rect>
   </property>
-  <property name="maximumSize">
-   <size>
-    <width>16777215</width>
-    <height>16777207</height>
-   </size>
-  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -61,7 +55,7 @@
         <property name="cssStyle" stdset="0">
          <string>window base-widget nobackground</string>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
+        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="147,39,150,1,160,70,30,310">
          <property name="spacing">
           <number>0</number>
          </property>
@@ -78,20 +72,14 @@
           <number>0</number>
          </property>
          <item>
-          <spacer name="verticalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
+          <widget class="DapGuiWidget" name="kelGuiWidget_2" native="true">
+           <property name="styleSheet">
+            <string notr="true">#kelGuiWidget_2{ height: 132px; min-height: 132px; max-height: 132px; background-color: rgba(0,0,0,0);}</string>
            </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
+           <property name="cssStyle" stdset="0">
+            <string>login-margin-connect-top</string>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>60</height>
-            </size>
-           </property>
-          </spacer>
+          </widget>
          </item>
          <item>
           <widget class="DapGuiWidget" name="widget" native="true">
@@ -116,24 +104,6 @@
             </property>
             <item>
              <widget class="DapGuiLabel" name="label">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>98</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>98</height>
-               </size>
-              </property>
               <property name="text">
                <string/>
               </property>
@@ -146,23 +116,27 @@
           </widget>
          </item>
          <item>
+          <widget class="DapGuiWidget" name="kelGuiWidget_4" native="true">
+           <property name="styleSheet">
+            <string notr="true">#kelGuiWidget_4{ height: 0px; min-height: 0px; max-height: 0px; background-color: rgba(0,0,0,0);}</string>
+           </property>
+           <property name="cssStyle" stdset="0">
+            <string>login-margin-bottom</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="DapGuiLabel" name="lStatus">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>130</height>
-            </size>
-           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>16777215</height>
+             <height>160</height>
             </size>
            </property>
            <property name="styleSheet">
@@ -265,24 +239,6 @@ Usualy unvisible by being empty</string>
                </item>
                <item>
                 <widget class="DapGuiButton" name="btnChooseSerial" native="true">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>29</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>29</height>
-                  </size>
-                 </property>
                  <property name="styleSheet">
                   <string notr="true"/>
                  </property>
@@ -461,17 +417,14 @@ Usualy unvisible by being empty</string>
           </widget>
          </item>
          <item>
-          <spacer name="verticalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
+          <widget class="DapGuiWidget" name="kelGuiWidget_3" native="true">
+           <property name="styleSheet">
+            <string notr="true">#kelGuiWidget_3{ height: 270px; min-height: 270px; max-height: 270px; background-color: rgba(0,0,0,0);}</string>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
+           <property name="cssStyle" stdset="0">
+            <string>footer</string>
            </property>
-          </spacer>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -483,6 +436,11 @@ Usualy unvisible by being empty</string>
  </widget>
  <customwidgets>
   <customwidget>
+   <class>DapGuiButton</class>
+   <extends>QWidget</extends>
+   <header>dapguibutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>DapGuiLabel</class>
    <extends>QLabel</extends>
    <header>dapguilabel.h</header>
@@ -492,11 +450,6 @@ Usualy unvisible by being empty</string>
    <extends>QWidget</extends>
    <header>dapguiwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>DapGuiButton</class>
-   <extends>QWidget</extends>
-   <header>dapguibutton.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiPushButton</class>
