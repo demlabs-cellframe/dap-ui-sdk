@@ -1,28 +1,51 @@
 import QtQuick 2.0
+import QtQml.Models 2.1
 import DapQmlStyle 1.0
-import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
 Item {
     id: root
     property string formName: "Purchase"
 
-    signal close()
+    /* defs */
+    enum Type
+    {
+        T_1_MONTH   = 0,
+        T_6_MONTHS  = 1,
+        T_1_YEAR    = 2
+    }
+
+    /* signals */
+    signal sig1month();
+    signal sig6months();
+    signal sig1year();
+
+    /* functions */
+    function btnClicked(itemId) {
+        switch(itemId) {
+        case QuiPurchaseForm.Type.T_1_MONTH:    root.sig1month(); break;
+        case QuiPurchaseForm.Type.T_6_MONTHS:   root.sig6months(); break;
+        case QuiPurchaseForm.Type.T_1_YEAR:     root.sig1year(); break;
+        }
+    }
 
     /* model */
     ListModel {
         id: purchaseListModel
         ListElement {
+            itemId: 0
             price: "$4.98"
             main: "1-month plan"
             sub: ""
         }
         ListElement {
+            itemId: 1
             price: "$26.88"
             main: "6-month plan"
             sub: "$4.48 per month"
         }
         ListElement {
+            itemId: 2
             price: "$35.88"
             main: "1-year plan"
             sub: "$2.99 per month"
@@ -41,10 +64,6 @@ Item {
         id: resizer
         visible: false
         qss: "purchase-btn-resizer"
-        Component.onCompleted: StyleDebugTree.describe (
-           "Purchase Resizer",
-            ["x", "y", "width", "height"],
-           this);
     }
 
     /* list */
@@ -56,57 +75,28 @@ Item {
         height: root.height - y
         clip: true
 
-        property string qss: "purchase-listview"
-        DapQmlStyle { qss: purchaseListView.qss; item: purchaseListView }
+        DapQmlStyle { qss: "purchase-listview"; item: purchaseListView }
 
         model: purchaseListModel
 
-        Component.onCompleted: StyleDebugTree.describe (
-           "Purchase Listview",
-            ["x", "y", "width", "height"],
-           this);
-
         delegate: DapQmlButton {
-            width: resizer.width // purchaseListView.width
-            height: resizer.height // 130
+            property int itemId: model.itemId
+
+            width: resizer.width
+            height: resizer.height
+
             buttonStyle: DapQmlButton.Style.LeftTopMainBottomSub
             frame: true
+
             leftText: model.price
             mainText: model.main
             subText: model.sub
+
             mainQss: "purchase-btn-label-main"
             subQss: "purchase-btn-label-sub"
             leftQss: "purchase-btn-label-left"
+
+            onClicked: btnClicked(model.itemId);
         }
     }
-
-//    DapQmlButton {
-//        x: 19
-//        y: 140
-//        width: 390
-//        height: 130
-//        leftText: "$4.98"
-//        mainText: "1-month plan"
-//        subText: ""
-//    }
-
-//    DapQmlButton {
-//        x: 19
-//        y: 290
-//        width: 390
-//        height: 130
-//        leftText: "$26.88"
-//        mainText: "6-month plan"
-//        subText: "$4.48 per month"
-//    }
-
-//    DapQmlButton {
-//        x: 19
-//        y: 440
-//        width: 390
-//        height: 130
-//        leftText: "$35.88"
-//        mainText: "1-year plan"
-//        subText: "$2.99 per month"
-//    }
 }

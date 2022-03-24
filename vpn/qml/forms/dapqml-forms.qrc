@@ -1,18 +1,18 @@
 <RCC>
     <qresource prefix="/">
-        <file>dapqml-forms/QuiStatisticsForm.qml</file>
-        <file>dapqml-forms/QuiLoginForm.qml</file>
-        <file>dapqml-forms/QuiFontTest.qml</file>
-        <file>dapqml-forms/QuiSettingsForm.qml</file>
-        <file>dapqml-forms/QuiSplashScreenForm.qml</file>
-        <file>dapqml-forms/QuiBugReportForm.qml</file>
-        <file>dapqml-forms/QuiDashboardForm.qml</file>
-        <file>dapqml-forms/QuiPurchaseForm.qml</file>
-        <file>dapqml-forms/QuiChooseServerForm.qml</file>
-        <file>dapqml-forms/QuiChooseLanguageForm.qml</file>
-        <file>dapqml-forms/QuiChooseThemeForm.qml</file>
-        <file>dapqml-forms/QuiBugReportHistoryForm.qml</file>
-        <file>dapqml-forms/QuiPurchaseHistoryForm.qml</file>
-        <file>dapqml-forms/QuiDocumentViewer.qml</file>
+        <file compress="1">dapqml-forms/QuiStatisticsForm.qml</file>
+        <file compress="1">dapqml-forms/QuiLoginForm.qml</file>
+        <file compress="1">dapqml-forms/QuiFontTest.qml</file>
+        <file compress="1">dapqml-forms/QuiSettingsForm.qml</file>
+        <file compress="1">dapqml-forms/QuiSplashScreenForm.qml</file>
+        <file compress="1">dapqml-forms/QuiBugReportForm.qml</file>
+        <file compress="1">dapqml-forms/QuiDashboardForm.qml</file>
+        <file compress="1">dapqml-forms/QuiPurchaseForm.qml</file>
+        <file compress="1">dapqml-forms/QuiChooseServerForm.qml</file>
+        <file compress="1">dapqml-forms/QuiChooseLanguageForm.qml</file>
+        <file compress="1">dapqml-forms/QuiChooseThemeForm.qml</file>
+        <file compress="1">dapqml-forms/QuiBugReportHistoryForm.qml</file>
+        <file compress="1">dapqml-forms/QuiPurchaseHistoryForm.qml</file>
+        <file compress="1">dapqml-forms/QuiDocumentViewer.qml</file>
     </qresource>
 </RCC>

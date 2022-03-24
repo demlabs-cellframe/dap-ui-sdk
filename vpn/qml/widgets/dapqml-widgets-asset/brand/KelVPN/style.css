@@ -32,6 +32,7 @@
 	footer-statistics-active:   "qrc:/light/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/light/btn_account.png";
 	bugrep-bg: 					"qrc:/light/report_bg.png";
+	login-logo: 				"qrc:/light/login-logo.png";
 }
 
 .@dark
@@ -64,6 +65,7 @@
 	footer-statistics-active:   "qrc:/dark/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/dark/btn_account.png";
 	bugrep-bg: 					"qrc:/dark/report_bg.png";
+	login-logo: 				"qrc:/dark/login-logo.png";
 }
 
 /****************************************************
@@ -352,7 +354,7 @@
 .login-logo
 {
 	scaled-rect: scaled(nan,nan,260,89,true);
-	qproperty-scaledPixmap: url("qrc:/light/login-logo.png");
+	qproperty-scaledPixmap: "@login-logo";
 }
 
 .login-error-label
