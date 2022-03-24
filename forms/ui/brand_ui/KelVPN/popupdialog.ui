@@ -30,8 +30,8 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="DapGuiWidget" name="kelGuiWidget" native="true">
-     <property name="cssStyle" stdset="0">
+    <widget class="DapGuiWidget" name="kelGuiWidget">
+     <property name="cssStyle">
       <string>backgroundcolor</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -58,7 +58,7 @@
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
-        <property name="cssStyle" stdset="0">
+        <property name="cssStyle">
          <string>darkblue lato font20 normal noborder nobackground noborder nobackground</string>
         </property>
        </widget>
@@ -72,14 +72,14 @@ key on your device. Are you sure?</string>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
-        <property name="cssStyle" stdset="0">
+        <property name="cssStyle">
          <string>gray font16 lato normal noborder nobackground</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="DapGuiWidget" name="spacer2" native="true">
-        <property name="cssStyle" stdset="0">
+       <widget class="DapGuiWidget" name="spacer2">
+        <property name="cssStyle">
          <string>nobackground</string>
         </property>
        </widget>
@@ -88,63 +88,33 @@ key on your device. Are you sure?</string>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="DapGuiLabel" name="btnYes">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>101</width>
-            <height>0</height>
-           </size>
-          </property>
           <property name="text">
            <string>YES</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
-          <property name="cssStyle" stdset="0">
+          <property name="cssStyle">
            <string>darkblue font14 lato normal noborder nobackground</string>
           </property>
          </widget>
         </item>
         <item>
-         <spacer name="spacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+         <widget class="DapGuiWidget" name="spacer">
+          <property name="cssStyle">
+           <string>nobackground</string>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
+         </widget>
         </item>
         <item>
          <widget class="DapGuiLabel" name="btnNo">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>101</width>
-            <height>0</height>
-           </size>
-          </property>
           <property name="text">
            <string>NO</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
-          <property name="cssStyle" stdset="0">
+          <property name="cssStyle">
            <string>darkblue font14 lato normal red noborder nobackground</string>
           </property>
          </widget>
