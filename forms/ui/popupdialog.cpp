@@ -92,7 +92,12 @@ void PopupDialog::slotShow (
 
   if (a_btnNo.isEmpty()){
     ui->btnNo->hide();
-//    ui->spacer->hide();
+    ui->spacer->hide();
+  }
+
+  if (a_btnYes.isEmpty()){
+    ui->btnYes->hide();
+    ui->spacer->hide();
   }
 
   ui->btnYes->setText (a_btnYes);

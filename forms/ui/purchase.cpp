@@ -31,4 +31,9 @@ Purchase::~Purchase()
   delete ui;
 }
 
+void Purchase::showEvent(QShowEvent *event)
+{
+    emit showSignal();
+}
+
 /*-----------------------------------------*/

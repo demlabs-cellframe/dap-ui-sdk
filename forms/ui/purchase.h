@@ -58,6 +58,8 @@ public:
   ~Purchase();
   /// @}
 
+  void	showEvent(QShowEvent *event) override;
+
   /****************************************//**
    * @name SIGNALS
    *******************************************/
@@ -65,6 +67,7 @@ public:
 signals:
   void sigReturn();
   void sigPurchase (Product a_product);
+  void showSignal();
   /// @}
 };
 
