@@ -13,27 +13,6 @@ Item {
         qss: "dialog-title"
     }
 
-//    /* model */
-//    ListModel {
-//        id: reportModel
-//        ListElement {
-//            name: "Report #1264"
-//            state: "In developing"
-//        }
-//        ListElement {
-//            name: "Report #1270"
-//            state: "In developing"
-//        }
-//        ListElement {
-//            name: "Report #3335"
-//            state: "Resolved"
-//        }
-//        ListElement {
-//            name: "Report #1264"
-//            state: "Resolved"
-//        }
-//    }
-
     /* resizer */
     DapQmlRectangle {
         id: resizer
@@ -76,16 +55,20 @@ Item {
         //model: reportModel
 
         delegate: DapQmlButton {
-            buttonStyle: DapQmlButton.IconMainSub
+            buttonStyle: DapQmlButton.IconMainSubIcon
             mainText: model.name
             subText: model.state
             mainQss: "brh-btn-label-main"
             subQss: "brh-btn-label-sub"
             icon: "ic_information_bug-report"
+            iconRight: "ic_trash"
             separator: true
             iconSize: icnResizer.height
+            iconRightSize: icnResizer.height
             width: resizer.width
             height: resizer.height
+
+            onRightClicked: console.log("right cliked")
 
             Component.onCompleted: {
                 StyleDebugTree.describe (

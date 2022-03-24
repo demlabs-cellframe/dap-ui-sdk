@@ -199,6 +199,11 @@
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_copy.png");
 }
 
+.ic_trash
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_trash.png");
+}
+
 .ic_information_bug-report
 {
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_information_bug-report.png");

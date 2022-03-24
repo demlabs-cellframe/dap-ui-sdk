@@ -18,5 +18,6 @@
         <file>dapqml-forms-asset/icon_offline.png</file>
         <file>dapqml-forms-asset/ic_copy.png</file>
         <file>dapqml-forms-asset/bg_dark-stripes.png</file>
+        <file>dapqml-forms-asset/ic_trash.png</file>
     </qresource>
 </RCC>
