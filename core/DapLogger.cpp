@@ -20,11 +20,6 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
 #else
     setPathToLog(defaultLogPath(DAP_BRAND));
 #endif
-    QDir dir(m_pathToLog);
-    if (!dir.exists()) {
-        dir.mkpath(".");
-        system(("chmod -R 666 " + m_pathToLog).toUtf8().data());
-    }
     updateCurrentLogName();
     setLogFile(m_currentLogName);
     createChangerLogFiles();
