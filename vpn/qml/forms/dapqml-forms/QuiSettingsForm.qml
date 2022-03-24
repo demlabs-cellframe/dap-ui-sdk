@@ -92,7 +92,7 @@ Item {
                     separator: isSep(model.sid)
                     qss: "sett-item"
                     mainQss: "sett-btn-lbl-main"
-                    subQss: "sett-btn-lbl-sub"
+                    subQss: model.sid !== QuiSettingsForm.StyleId.SI_BUTTONRED ? "sett-btn-lbl-sub" : "sett-btn-lbl-sub-red"
                     icon: model.icon
                     iconSize: resizer1.fontSize
                     MouseArea {

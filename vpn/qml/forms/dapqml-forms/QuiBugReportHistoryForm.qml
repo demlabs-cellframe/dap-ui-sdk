@@ -6,6 +6,9 @@ Item {
     id: root
     property string formName: "BugReportHistory"
 
+    /* signals */
+    signal sigTrashClicked(string name);
+
     /* title */
     DapQmlDialogTitle {
         id: title
@@ -55,6 +58,7 @@ Item {
         //model: reportModel
 
         delegate: DapQmlButton {
+            property string modelName: model.name
             buttonStyle: DapQmlButton.IconMainSubIcon
             mainText: model.name
             subText: model.state
@@ -68,7 +72,7 @@ Item {
             width: resizer.width
             height: resizer.height
 
-            onRightClicked: console.log("right cliked")
+            onRightClicked: sigTrashClicked(modelName)// console.log("right cliked")
 
             Component.onCompleted: {
                 StyleDebugTree.describe (

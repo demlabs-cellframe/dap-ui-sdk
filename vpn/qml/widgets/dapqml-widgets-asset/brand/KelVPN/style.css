@@ -459,9 +459,16 @@
 
 .sett-btn-lbl-sub
 {
-	color: "#A4A3C0";
+	color: "@light-grey";
 	scaled-font: scaled(16);	
 	font-weight: Font.Normal;
+}
+
+.sett-btn-lbl-sub-red
+{
+	color: "@brand";
+	scaled-font: scaled(16);	
+	font-weight: Font.Bold;
 }
 
 .sett-title-lbl-main
