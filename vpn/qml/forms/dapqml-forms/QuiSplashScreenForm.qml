@@ -6,12 +6,16 @@ Item {
     property string formName: "SplashScreen"
 
     property color mainColor: "#FFFFFF"
-    property string statusText: "Status message"
-    property string versionText: "Version 7.0-5\nSeptember 10 2021"
+    property string statusText: "Loading..."
+    property string versionText: "..."
 
     /* funcs */
     function setStatusText(a_message) {
         statusText  = a_message;
+    }
+
+    function setVersion(a_version) {
+        versionText = a_version;
     }
 
     /* gradient background */
