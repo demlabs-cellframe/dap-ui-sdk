@@ -38,12 +38,16 @@ QString SpeedToString(quint64 a_speed)
     {
         double speed = a_speed;
         int digitCount = 0;
+        if ((10 > speed) && (speed >= 0))
+            digitCount = 1;
         return QString("%1 %2").arg(QString::number(speed, 'f', digitCount)).arg("MB/s");
     }
     if (a_speed >= 1E3)
     {
         double speed = a_speed/1E3;
         int digitCount = 0;
+        if ((10 > speed) && (speed >= 0))
+            digitCount = 1;
         return QString("%1 %2").arg(QString::number(speed, 'f', digitCount)).arg("kB/s");
     }
     else
