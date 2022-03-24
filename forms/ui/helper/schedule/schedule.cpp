@@ -1,3 +1,4 @@
+#include <QtMath>
 #include "schedule.h"
 #include "DapSpeed.h"
 
@@ -33,21 +34,21 @@ bool calculateSpline(const QList<ChartPoint2D> &values, QList<FourPointsSegment>
         tgR = cur + next;
         tgR.normalize();
 
-        if (abs(values[i + 1].y - values[i].y) < EPSILON)
+        if (qFabs(values[i + 1].y - values[i].y) < EPSILON)
         {
             l1 = l2 = 0.0;
         }
         else
         {
             tmp = values[i + 1].x - values[i].x;
-            l1 = abs(tgL.x) > EPSILON ? tmp / (2.0 * tgL.x) : 1.0;
-            l2 = abs(tgR.x) > EPSILON ? tmp / (2.0 * tgR.x) : 1.0;
+            l1 = qFabs(tgL.x) > EPSILON ? tmp / (2.0 * tgL.x) : 1.0;
+            l2 = qFabs(tgR.x) > EPSILON ? tmp / (2.0 * tgR.x) : 1.0;
         }
 
-        if (abs(tgL.x) > EPSILON && abs(tgR.x) > EPSILON)
+        if (qFabs(tgL.x) > EPSILON && qFabs(tgR.x) > EPSILON)
         {
             tmp = tgL.y / tgL.x - tgR.y / tgR.x;
-            if (abs(tmp) > EPSILON)
+            if (qFabs(tmp) > EPSILON)
             {
                 x = (values[i + 1].y - tgR.y / tgR.x * values[i + 1].x - values[i].y + tgL.y / tgL.x * values[i].x) / tmp;
                 if (x > values[i].x && x < values[i + 1].x)
@@ -74,7 +75,7 @@ bool calculateSpline(const QList<ChartPoint2D> &values, QList<FourPointsSegment>
         bezier[i].points[2] -= tgR * l2;
     }
 
-    l1 = abs(tgL.x) > EPSILON ? (values[valuesSize + 1].x - values[valuesSize].x) / (2.0 * tgL.x) : 1.0;
+    l1 = qFabs(tgL.x) > EPSILON ? (values[valuesSize + 1].x - values[valuesSize].x) / (2.0 * tgL.x) : 1.0;
 
     bezier.push_back(FourPointsSegment(values[valuesSize], values[valuesSize],
                              values[valuesSize + 1], values[valuesSize + 1]));
@@ -160,6 +161,7 @@ qreal y_shift(qreal y, qreal height, qreal maxValue)
     if (maxValue == 0) {
         maxValue = 1;
     }
+    if (y < 0) return height - height / maxValue;
     qreal res = height - y * height / maxValue;
     return res;
 }
@@ -202,9 +204,9 @@ void Schedule::showChart(
     QPen a_pen = QPen(pen);
     a_pen.setJoinStyle(Qt::RoundJoin);
 #ifdef Q_OS_ANDROID
-    a_pen.setWidth(5);
+    a_pen.setWidth(3);
 #else
-    a_pen.setWidth(2);
+    a_pen.setWidth(1);
 #endif
     scene->addPath(path, a_pen, color);
 }

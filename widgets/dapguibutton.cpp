@@ -79,6 +79,7 @@ DapGuiButton::DapGuiButton (QWidget *parent)
   , m_iconCssClass ("")
   , m_link (false)
   , m_frame (false)
+  , m_textChangesSignalLock(false)
   , m_lLink (new QLabel (this))
 {
   /* setup style */
@@ -91,19 +92,24 @@ DapGuiButton::DapGuiButton (QWidget *parent)
   m_widgets.insert ("styledWidgets", ui->Style2);
   m_widgets.insert ("styledWidgets", ui->Style3);
   m_widgets.insert ("styledWidgets", ui->Style4);
+  m_widgets.insert ("styledWidgets", ui->Style5);
   m_widgets.insert ("textMain", ui->DapGuiButtonTextMain);
   m_widgets.insert ("textMain", ui->DapGuiButtonTextMain_2);
   m_widgets.insert ("textMain", ui->DapGuiButtonTextMain_3);
   m_widgets.insert ("textMid", ui->DapGuiButtonTextMid);
+  m_widgets.insert ("textMid", ui->DapGuiButtonTextMid_2);
   m_widgets.insert ("textEdit", ui->kelGuiLineEditMain);
   m_widgets.insert ("textSub", ui->DapGuiButtonTextSub);
   m_widgets.insert ("textSub", ui->DapGuiButtonTextSub_2);
   m_widgets.insert ("textSub", ui->DapGuiButtonTextSub_3);
   m_widgets.insert ("textSub", ui->DapGuiButtonTextSub_4);
   m_widgets.insert ("textRight", ui->DapGuiButtonTextRight);
+  m_widgets.insert ("textRight", ui->DapGuiButtonTextRight_2);
   m_widgets.insert ("marginOnLink", ui->DapGuiButtonTextRight);
   m_widgets.insert ("textLeft", ui->DapGuiButtonTextLeft);
   m_widgets.insert ("iconLeft", ui->DapGuiButtonIcon);
+  m_widgets.insert ("iconLeft", ui->DapGuiButtonIconLeft);
+  m_widgets.insert ("iconRight", ui->DapGuiButtonIconRight);
 
   /* prepare link icon */
 //  m_lLink->setPixmap (QPixmap ("://gfx/ic_arrow-right.png"));
@@ -125,6 +131,11 @@ DapGuiButton::DapGuiButton (QWidget *parent)
       if(!label)
         continue;
 
+      if (i.key() == "marginOnLink")
+        continue;
+      if (i.key() == "iconRight")
+        continue;
+
       connect (label, &DapGuiLabel::clicked,
                this, &DapGuiButton::clicked);
 #ifdef QT_DEBUG
@@ -139,14 +150,20 @@ DapGuiButton::DapGuiButton (QWidget *parent)
   _setSubTextWidgetsMain        = m_widgets.values ("textMain");
 
   /* signals */
-  connect (ui->kelGuiLineEditMain, &DapGuiLineEdit::textChanged,
-           this, &DapGuiButton::textChanged);
+  connect (ui->kelGuiLineEditMain, &DapGuiLineEdit::textChanged, [this](const QString& text)
+  {
+      if (!m_textChangesSignalLock)
+        emit DapGuiButton::textChanged(text);
+  });
   connect (ui->kelGuiLineEditMain, &DapGuiLineEdit::textEdited,
            this, &DapGuiButton::textEdited);
   connect (ui->kelGuiLineEditMain, &DapGuiLineEdit::textEdited,
            this, &DapGuiButton::_slotTextEdited);
   connect (&__kgsm, &DapGuiStyleManager::forceStyleUpdate,
            this, &DapGuiButton::_slotStyleUpdate);
+  connect (ui->DapGuiButtonIconRight, &DapGuiLabel::clicked, [&](){
+    emit rightIconClicked(this->mainText());
+  });
 
   /* update style staff */
   _slotStyleUpdate();
@@ -344,6 +361,24 @@ void DapGuiButton::setIconCssClass (const QString &iconCssClass)
 }
 
 /****************************************//**
+ * @property DapGuiButton::iconRightCssClass
+ * @brief css list for right icon label
+ * @see DapGuiStyleManager
+ * @accessors %iconRightCssClass(), %setIconRightCssClass()
+ *******************************************/
+
+QString DapGuiButton::iconRightCssClass() const
+{
+  return m_iconRightCssClass;
+}
+
+void DapGuiButton::setIconRightCssClass(const QString &iconCssClass)
+{
+  m_iconRightCssClass = iconCssClass;
+  setupLabels();
+}
+
+/****************************************//**
  * @property DapGuiButton::inputMask
  * @brief regexp for input field
  * @see <a href="https://doc.qt.io/qt-5/qlineedit.html#inputMask-prop" target="_blank">QLineEdit::inputMask</a>
@@ -390,6 +425,20 @@ void DapGuiButton::setEdit(QWidget *newEdit) const
   lay->addItem (subText);
 
   ui->kelGuiLineEditMain->hide();
+}
+
+/****************************************//**
+ * @see DapGuiLineEdit::callbackKeyEvent
+ *******************************************/
+
+DapGuiLineEdit::cbKeyEvent DapGuiButton::callbackKeyEvent() const
+{
+    return ui->kelGuiLineEditMain->callbackKeyEvent();
+}
+
+void DapGuiButton::setCallbackKeyEvent(DapGuiLineEdit::cbKeyEvent cb)
+{
+    ui->kelGuiLineEditMain->setCallbackKeyEvent(cb);
 }
 
 /****************************************//**
@@ -537,6 +586,7 @@ void DapGuiButton::setupLabels()
     {"textRight", subCssClass()   + " cwb_right"},
     {"textLeft",  leftCssClass()  + " cwb_left"},
     {"iconLeft",  iconCssClass()},
+    {"iconRight", iconRightCssClass()},
   };
 
   for (auto i = m_widgets.begin(), e = m_widgets.end(); i != e; i++)
@@ -555,6 +605,17 @@ void DapGuiButton::setupLabels()
             (*i)->setProperty("cssStyle", labelMap.value (i.key()));
         }
     }
+}
+
+void DapGuiButton::setPlaceholderText(const QString &text)
+{
+    ui->kelGuiLineEditMain->setPlaceholderText(text);
+}
+
+void DapGuiButton::insert(const QString &text)
+{
+    ui->kelGuiLineEditMain->clear();
+    ui->kelGuiLineEditMain->insert(text);
 }
 
 /********************************************
@@ -587,6 +648,11 @@ void DapGuiButton::resizeEvent (QResizeEvent *ev)
   };
   m_lLink->move (pos);
   m_lLink->resize (s_linkWidth, s_linkWidth);
+}
+
+void DapGuiButton::textChangedSignalLock(bool lock)
+{
+    m_textChangesSignalLock = lock;
 }
 
 void DapGuiButton::_slotDebugInfo()
@@ -623,6 +689,14 @@ void DapGuiButton::_slotDebugInfo()
       jobj["iconCssStyle"]      = QJsonObject{
         {"name", ui->DapGuiButtonIcon->cssStyle()},
         {"text", ui->DapGuiButtonIcon->styleSheet()},
+      };
+      jobj["iconLeftCssStyle"]      = QJsonObject{
+        {"name", ui->DapGuiButtonIconLeft->cssStyle()},
+        {"text", ui->DapGuiButtonIconLeft->styleSheet()},
+      };
+      jobj["iconRightCssStyle"]      = QJsonObject{
+        {"name", ui->DapGuiButtonIconRight->cssStyle()},
+        {"text", ui->DapGuiButtonIconRight->styleSheet()},
       };
 //      jobj["inputCssStyle"]      = QJsonObject{
 //        {"name", ui->kelGuiLineEditMain->cssStyle()},

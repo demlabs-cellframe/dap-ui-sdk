@@ -105,11 +105,7 @@ public slots:
     void sendBugReport(const QByteArray &data);
     void sendBugReportStatusRequest(const QByteArray &data);
     void getNews();
-
-//    void abortEncryptionInitRequest() { m_netEncryptReply->abort(); }
-//    void abortAuthorizeRequest()      { m_netAuthorizeReply->abort(); }
-//    void abortLogoutRequest()         { m_netLogoutReply->abort();  }
-    void sendTxBackRequest(const QString &tx);
+    void sendTxOutRequest(const QString &tx);
 #ifdef BUILD_VAR_GOOGLE
     void requestPurchaseVerify(const QJsonObject *params);
 #endif
@@ -225,7 +221,8 @@ signals:
     void sigSerialKeyReseted(const QString&);
     void sigResetSerialKeyError(const int, const QString&);
 #ifdef BUILD_VAR_GOOGLE
-    Q_INVOKABLE void purchaseResponseReceived(const QJsonDocument& responce);
+    Q_INVOKABLE void purchaseResponseReceived(const QJsonDocument& response);
+    void purchaseError(const QString&);
 #endif
 };
 

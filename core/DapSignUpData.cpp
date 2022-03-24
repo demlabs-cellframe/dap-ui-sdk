@@ -57,12 +57,12 @@ void DapSignUpData::setDataAnswer(const QString &a_data)
 
 void DapSignUpData::saveDatas() const
 {
-    DapDataLocal::instance()->saveEncriptedSetting(SETTINGS_TEXT_EMAIL  , this->email());
-    DapDataLocal::instance()->saveEncriptedSetting(SETTINGS_TEXT_PASSWORD, this->password());
+    DapDataLocal::instance()->saveEncryptedSetting(SETTINGS_TEXT_EMAIL  , this->email());
+    DapDataLocal::instance()->saveEncryptedSetting(SETTINGS_TEXT_PASSWORD, this->password());
 }
 
 void DapSignUpData::loadDatas()
 {
-    this->setEmail  (DapDataLocal::instance()->getEncriptedSetting(SETTINGS_TEXT_EMAIL).toString());
-    this->setPassword(DapDataLocal::instance()->getEncriptedSetting(SETTINGS_TEXT_PASSWORD).toString());
+    this->setEmail  (DapDataLocal::instance()->getEncryptedSetting(SETTINGS_TEXT_EMAIL).toString());
+    this->setPassword(DapDataLocal::instance()->getEncryptedSetting(SETTINGS_TEXT_PASSWORD).toString());
 }

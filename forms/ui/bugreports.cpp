@@ -22,7 +22,8 @@ BugReports::BugReports (QWidget *parent) :
   ui (new Ui::BugReports),
   movLoading (new QMovie (":/gui/asset/Spinner.gif")),
   _textHook (false),
-  _spacer (true)
+  _spacer (true),
+  spacerIndex (-1)
 {
   /* setup */
   __inst  = this;
@@ -44,16 +45,25 @@ BugReports::BugReports (QWidget *parent) :
 
   ui->top_spacer_debug->setVisible (false);
   ui->btnAttachScreenshot->setVisible (false);
+  ui->attach_send_spacer->setVisible (false);
+  ui->dbglbl1->hide();
+  ui->dbglbl2->hide();
+  ui->dbglbl3->hide();
+  ui->lineEdit->hide();
   QMetaObject::invokeMethod(ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
   //setText (movLoading->lastErrorString());
+
+  ui->btnSendReport->setEnabled(false);
 
   /* fill map */
   //m_map.insert (Write,   ui->btnAttachScreenshot);
   m_map.insert (Write,   ui->btnSendReport);
   m_map.insert (Write,   ui->editReport);
+  m_map.insert (Write,   ui->widgetLetterAmount);
   m_map.insert (Write,   ui->labelLetterAmount);
   m_map.insert (List,    ui->scrollArea);
   m_map.insert (Loading, ui->labelLoading);
+  m_map.insert (Loading, ui->widgetLoading);
   m_map.insert (Loading, ui->btnCancel);
   m_map.insert (Result,  ui->lResult);
   m_map.insert (Result,  ui->btnResultBack);
@@ -64,6 +74,8 @@ BugReports::BugReports (QWidget *parent) :
   connect (ui->radioTestWrite, &QRadioButton::clicked,
            this, &BugReports::_slotRadioTest);
   connect (ui->radioTestLoading, &QRadioButton::clicked,
+           this, &BugReports::_slotRadioTest);
+  connect (ui->radioTestResult, &QRadioButton::clicked,
            this, &BugReports::_slotRadioTest);
 
   connect (ui->btnReturn, &DapGuiPushButton::clicked,
@@ -165,18 +177,27 @@ void BugReports::slotSetMode (BugReports::Mode mode)
     {
       if (_spacer)
         {
-          ui->verticalLayout_3->takeAt (ui->verticalLayout_3->count()-1);
-          _spacer = false;
+          spacerIndex = ui->verticalLayout_3->indexOf (ui->verticalSpacer);
+          if (spacerIndex != -1)
+            {
+              ui->verticalLayout_3->takeAt (spacerIndex);
+              _spacer = false;
+            }
         }
     }
   else
     {
-      if (!_spacer)
+      if (!_spacer && spacerIndex != -1)
         {
-          ui->verticalLayout_3->addItem (ui->verticalSpacer);
+          ui->verticalLayout_3->insertItem (spacerIndex, ui->verticalSpacer);
           _spacer = true;
         }
     }
+
+  /* resultContainer show/hide */
+  ui->resultContainer->setVisible (m_mode != List);
+  ui->top_spacer_2->setVisible (m_mode != List);
+  ui->attach_send_spacer->setVisible (m_mode != List);
 
   /* movie */
   int w   = ui->labelLoading->width();
@@ -185,8 +206,11 @@ void BugReports::slotSetMode (BugReports::Mode mode)
 
   qDebug() << __PRETTY_FUNCTION__ << "spinner width:" << w;
 
-  if (m_mode == Loading)
+  if (m_mode == Loading){
+    ui->lResult->setVisible(true);
+    ui->lResult->setText("Sending...");
     movLoading->start();
+  }
   else
     movLoading->stop();
 }
@@ -213,6 +237,7 @@ void BugReports::_slotRadioTest()
         {ui->radioTestList, List},
         {ui->radioTestWrite, Write},
         {ui->radioTestLoading, Loading},
+        {ui->radioTestResult, Result},
       };
     }
 
@@ -265,27 +290,23 @@ void BugReports::updateData (QString &a_text, int a_len)
   //ui->labelLetterAmount->repaint();
   //style()->polish (ui->labelLetterAmount);
 
+  ui->btnSendReport->setEnabled(!a_text.isEmpty());
+
   /* check if limit reachced */
   if(a_text.length() <= MAX_LENGTH)
+  {
+    m_bugReportText = a_text;
     return;
+  }
 
   _textHook = true;
 
   /* fix text length */
-  int diff  = a_text.length() - MAX_LENGTH;
-  a_text.chop (diff);
-  m_edit->setPlainText (a_text);
-
-  /* kill focus */
-  ui->editReport->unfocus();
-  QGuiApplication::inputMethod()->hide();
-
-  /* fix cursor pos */
-  QMetaObject::invokeMethod(this, [=] () {
-      auto cur = m_edit->textCursor();
-      cur.movePosition (QTextCursor::End, QTextCursor::MoveAnchor);
-      m_edit->setTextCursor (cur);
-  }, Qt::QueuedConnection);
+  int position = m_edit->textCursor().position();
+  m_edit->setPlainText(m_bugReportText);
+  QTextCursor cur = m_edit->textCursor();
+  cur.setPosition(position-1);
+  m_edit->setTextCursor(cur);
 
   _textHook = false;
 }

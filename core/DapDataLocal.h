@@ -21,9 +21,11 @@
 
 const QString TEXT_SERIAL_KEY           = "serialkey";
 const QString TEXT_SERIAL_KEY_HISTORY   = "serialkeyhistory";
+const QString TEXT_PENDING_SERIAL_KEY   = "pendingserialkey";
 const QString TEXT_BUGREPORT_HISTORY    = "bugreporthistory";
 const QString TEXT_LOGIN                = "login";
 const QString TEXT_PASSWORD             = "password";
+const QString TEXT_TX_OUT               = "tx_out";
 
 class DapSerialKeyData;
 
@@ -62,10 +64,10 @@ public:
 
     QList<QString>::const_iterator m_cdbIter;
 
-    void saveEncriptedSetting(const QString &a_setting, const QVariant &a_value);
-    void saveEncriptedSetting(const QString &a_setting, const QByteArray &a_value);
-    QVariant getEncriptedSetting(const QString &a_setting);
-    bool loadEncriptedSettingString(const QString &a_setting, QByteArray& a_outString);
+    void saveEncryptedSetting(const QString &a_setting, const QVariant &a_value);
+    void saveEncryptedSetting(const QString &a_setting, const QByteArray &a_value);
+    QVariant getEncryptedSetting(const QString &a_setting);
+    bool loadEncryptedSettingString(const QString &a_setting, QByteArray& a_outString);
 
     template<typename T>
     void saveToSettings(const QString &a_setting, const T& a_value);
@@ -78,12 +80,17 @@ public:
     void saveSerialKeyData();
     void resetSerialKeyData();
 
+    void savePendingSerialKey(QString a_serialkey);
+
     void saveHistoryData(QString a_type, QString a_data);
     QList<QString> getHistorySerialKeyData();
+    void removeItemFromHistory(QString a_type, QString a_item);
 
     static DapBugReportData *bugReportData();
     static DapServersData   *serversData();
     DapSerialKeyData* serialKeyData();
+
+    QString pendingSerialKey(){return m_pendingSerialKey;};
 
     DapBugReportHistory *bugReportHistory();
 
@@ -120,6 +127,7 @@ private:
 
     DapSerialKeyData* m_serialKeyData;
     QSet <QString> * m_serialKeyDataList;
+    QString m_pendingSerialKey;
 
     DapBugReportHistory* m_buReportHistory;
 };
@@ -129,7 +137,7 @@ bool DapDataLocal::loadFromSettings(const QString &a_setting, T &a_value)
 {
     QByteArray stringFromSettings;
 
-    if (!this->loadEncriptedSettingString(a_setting, stringFromSettings))
+    if (!this->loadEncryptedSettingString(a_setting, stringFromSettings))
         return false;
 
     a_value = DapUtils::fromByteArray<T>(stringFromSettings);
@@ -139,5 +147,5 @@ bool DapDataLocal::loadFromSettings(const QString &a_setting, T &a_value)
 template<typename T>
 void DapDataLocal::saveToSettings(const QString &a_setting, const T &a_value)
 {
-    this->saveEncriptedSetting(a_setting, DapUtils::toByteArray(a_value));
+    this->saveEncryptedSetting(a_setting, DapUtils::toByteArray(a_value));
 }

@@ -9,6 +9,11 @@ DapCmdBugReportsStatus::DapCmdBugReportsStatus(QObject *parent)
 
 void DapCmdBugReportsStatus::bugReportsStatusRequest(QList<QString> a_bugReportsNumbersList)
 {
+    if (a_bugReportsNumbersList.isEmpty()){
+      qDebug() << "Empty bug-reports list";
+      return;
+    }
+
     QJsonObject obj;
     QString temp_string;
 

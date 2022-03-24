@@ -54,35 +54,51 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="DapGuiWidget" name="MainWidget">
-        <property name="cssStyle">
+       <widget class="DapGuiWidget" name="MainWidget" native="true">
+        <property name="cssStyle" stdset="0">
          <string>splashscreen_background</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="DapGuiWidget" name="kelGuiWidget_2">
-           <property name="cssStyle">
+          <widget class="DapGuiWidget" name="kelGuiWidget_2" native="true">
+           <property name="cssStyle" stdset="0">
             <string>nobackground</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="DapGuiWidget" name="widget">
-           <property name="cssStyle">
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>248</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="DapGuiWidget" name="widget" native="true">
+           <property name="cssStyle" stdset="0">
             <string>nobackground</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
              <widget class="DapGuiLabel" name="lLogo">
               <property name="styleSheet">
-               <string notr="true">#lLogo{ 	min-width: 230px; 	max-width: 230px; 	min-height: 59px; 	max-height: 59px; 	qproperty-scaledPixmap: url(:/gui/ui/asset/logo-vendeta-white.png); 
+               <string notr="true">#lLogo{ 	min-width: 220px; 	max-width: 220px; 	min-height: 59px; 	max-height: 59px; 	qproperty-scaledPixmap: url(:/gui/ui/asset/logo-vendeta-white.png); 
  	border: none; 
  	background-color: rgba(0,0,0,0); }</string>
               </property>
               <property name="text">
                <string/>
               </property>
-              <property name="cssStyle">
+              <property name="cssStyle" stdset="0">
                <string>splashscreen_logo noborder nobackground</string>
               </property>
              </widget>
@@ -91,19 +107,35 @@
           </widget>
          </item>
          <item>
-          <widget class="DapGuiWidget" name="kelGuiWidget">
-           <property name="cssStyle">
+          <widget class="DapGuiWidget" name="kelGuiWidget" native="true">
+           <property name="cssStyle" stdset="0">
             <string>nobackground</string>
            </property>
           </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>276</height>
+            </size>
+           </property>
+          </spacer>
          </item>
          <item>
           <widget class="DapGuiLabel" name="lStatus">
            <property name="styleSheet">
             <string notr="true">#lStatus{ 	color: #FFFFFF; 
  	font: 18px/22px; 
- 	font-weight: normal; 	font-style: normal; 	font-size: normal; 
- 	font-family: 'Lato'; 
+ 	font-weight: Regular; 	font-style: Regular; 	font-size: Regular; 
+ 	font-family: 'Jost'; 
  	border: none; 
  	background-color: rgba(0,0,0,0); }</string>
            </property>
@@ -113,10 +145,26 @@
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
-           <property name="cssStyle">
+           <property name="cssStyle" stdset="0">
             <string>white font18 normal lato noborder nobackground</string>
            </property>
           </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>233</height>
+            </size>
+           </property>
+          </spacer>
          </item>
          <item>
           <widget class="DapGuiLabel" name="lVersion">
@@ -124,8 +172,9 @@
             <string notr="true">#lVersion{ 	color: #FFFFFF; 
  	font: 12px/15px; 
  	font-weight: normal; 	font-style: normal; 	font-size: normal; 
- 	font-family: 'Lato'; 
+ 	font-family: 'Jost'; 
  	border: none; 
+	line-height: 60;
  	background-color: rgba(0,0,0,0); }</string>
            </property>
            <property name="text">
@@ -135,17 +184,33 @@ September 10 2021</string>
            <property name="alignment">
             <set>Qt::AlignBottom|Qt::AlignHCenter</set>
            </property>
-           <property name="cssStyle">
+           <property name="cssStyle" stdset="0">
             <string>white font12 normal lato noborder nobackground</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="DapGuiWidget" name="wLoadingHolder">
+          <spacer name="verticalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>18</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="DapGuiWidget" name="wLoadingHolder" native="true">
            <property name="styleSheet">
             <string notr="true">#wLoadingHolder{ 	background-color: rgba(0,0,0,0); }</string>
            </property>
-           <property name="cssStyle">
+           <property name="cssStyle" stdset="0">
             <string>nobackground</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -191,6 +256,22 @@ border-radius: 2px;
             </item>
            </layout>
           </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>8</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>

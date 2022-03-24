@@ -76,16 +76,16 @@
 
 .normalbold
 {
-	font-weight: bold;
+        font-weight: bold;
 	font-style: bold;
-	font-size: bold;
+        font-size: bold;
 }
 
 .bold
 {
-	font-weight: bold;
+        font-weight: bold;
 	font-style: bold;
-	font-size: bold;
+        font-size: bold;
 }
 
 /****************************************************
@@ -94,7 +94,7 @@
 
 .lato
 {
-	font-family: 'Lato';
+        font-family: 'Jost';
 }
 
 .roboto
@@ -544,7 +544,7 @@
   font-weight: normal;
   font-style: normal;
   font-size: normal;
-  font-family: 'Lato';
+  font-family: 'jost';
 }
 
 .cpxte-text-placeholder-dark
@@ -560,7 +560,7 @@
   font-weight: normal;
   font-style: normal;
   font-size: normal;
-  font-family: 'Lato';
+  font-family: 'jost';
 }
 
 .cpxte-dolder
@@ -1113,7 +1113,7 @@
 
 .stat-frame
 {
-	border: 1px solid #000;
+  border: 1px solid transparent;
 
 	width: 360pt;
 	height: 162pt;

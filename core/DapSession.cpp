@@ -151,9 +151,23 @@ void DapSession::sendBugReport(const QByteArray &data)
 
 void DapSession::sendBugReportStatusRequest(const QByteArray &data)
 {
-    m_CDBaddress = *DapDataLocal::instance()->m_cdbIter;
-    m_CDBport = 80;
-    m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this, SLOT(answerBugReportsStatus()), QT_STRINGIFY(answerBugReportsStatusError), NULL, true);
+    if (!m_dapCryptCDB) {
+        this->setDapUri(*DapDataLocal::instance()->m_cdbIter, 80);
+        auto *l_tempConn = new QMetaObject::Connection();
+        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]{
+            preserveCDBSession();
+            m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this
+                                                               , SLOT(answerBugReportsStatus())
+                                                               , QT_STRINGIFY(answerBugReportsStatusError), NULL, true);
+            disconnect(*l_tempConn);
+            delete l_tempConn;
+        });
+        requestServerPublicKey();
+    } else {
+        m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this
+                                                           , SLOT(answerBugReportsStatus())
+                                                           , QT_STRINGIFY(answerBugReportsStatusError), NULL, true);
+    }
 }
 
 void DapSession::sendSignUpRequest(const QString &host, const QString &email, const QString &password)
@@ -347,28 +361,21 @@ void DapSession::onKeyActivated() {
 
 #ifdef BUILD_VAR_GOOGLE
 void DapSession::onPurchaseVerified() {
-    if (m_netPurchaseReply && (m_netPurchaseReply->error() != 0)) {
-        qCritical() << m_netPurchaseReply->errorString();
-        emit errorNetwork("Purchase error, please report");
-        return;
-    }
-
     if(m_netPurchaseReply->getReplyData().size() <= 0) {
         emit errorNetwork("Wrong answer from server");
         return;
     }
-
-    qInfo() << "purchase verify request replied";
-    QByteArray arrData(m_netPurchaseReply->getReplyData());
+    QByteArray dByteArr;
+    m_dapCryptCDB->decode(m_netPurchaseReply->getReplyData(), dByteArr, KeyRoleSession);
+    qInfo() << "Validation request replied" << dByteArr;
     QJsonParseError jsonErr;
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(arrData, &jsonErr);
-
-    if(!jsonDoc.isNull()) {
-        emit purchaseResponseReceived(jsonDoc);
-    } else {
-        qWarning() << "Purchase responce is null" << arrData;
+    auto jsonDoc = QJsonDocument::fromJson(dByteArr, &jsonErr);
+    if(jsonErr.error != QJsonParseError::NoError) {
+        qCritical() << "Can't parse response, error" << jsonErr.errorString();
+        emit errorNetwork("Can't parse response");
         return;
     }
+    emit purchaseResponseReceived(jsonDoc);
 }
 #endif
 /**
@@ -537,17 +544,19 @@ void DapSession::answerSignUp()
 
 void DapSession::answerBugReport()
 {
-    if (!m_netSendBugReportReply)
+    auto reply = m_netSendBugReportReply->getReplyData();
+    if (reply.size() <= 0) {
+        qCritical() << "Wrong reply";
         return;
-    qInfo() << "Bugreport reply: " << m_netSendBugReportReply->getReplyData();
-    emit receivedBugReportAnswer(QString::fromUtf8(m_netSendBugReportReply->getReplyData()));
+    }
+    qInfo() << "Bugreport reply: " << reply;
+    emit receivedBugReportAnswer(QString::fromUtf8(reply));
 }
 
 void DapSession::errorResetSerialKey(const QString& error)
 {
     qDebug() << "Reset serial key error: network error";
-    emit sigResetSerialKeyError (2, "Network error during the reset of the serial number");
-    return;
+    emit sigResetSerialKeyError (2, "Reset error: " + error);
 }
 
 void DapSession::onResetSerialKey()
@@ -628,9 +637,8 @@ DapNetworkReply * DapSession::requestRawToSite(const QString& dnsName, const QSt
     return netReply;
 }
 
-
-void DapSession::sendTxBackRequest(const QString &tx) {
-    qDebug() << "Send tx back to cdb" << tx;
+void DapSession::sendTxOutRequest(const QString &tx) {
+    qDebug() << "Send tx out to cdb" << tx;
     encRequest(tx, URL_TX, "tx_out", NULL, true);
 }
 
@@ -694,11 +702,20 @@ void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domai
 void DapSession::requestPurchaseVerify(const QJsonObject *params)
 {
     QJsonDocument jdoc(*params);
-    m_netPurchaseReply = encRequestRaw(jdoc.toJson(), URL_VERIFY_PURCHASE, QString(), QString(), SLOT(onPurchaseVerified()), NULL);
-    if(m_netPurchaseReply == Q_NULLPTR) {
-        qCritical() << "Can't send request";
-        emit errorNetwork("Purchase verification error");
+    if (!m_dapCryptCDB) {
+        this->setDapUri(*DapDataLocal::instance()->m_cdbIter, 80);
+        auto *l_tempConn = new QMetaObject::Connection();
+        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, jdoc, l_tempConn]{
+            preserveCDBSession();
+            m_netPurchaseReply = encRequestRaw(jdoc.toJson(), URL_VERIFY_PURCHASE, "", ""
+                                               , SLOT(onPurchaseVerified()), NULL);
+            disconnect(*l_tempConn);
+            delete l_tempConn;
+        });
+        requestServerPublicKey();
+    } else {
+        m_netPurchaseReply = encRequestRaw(jdoc.toJson(), URL_VERIFY_PURCHASE, "", ""
+                                           , SLOT(onPurchaseVerified()), NULL);
     }
-    return;
 }
 #endif

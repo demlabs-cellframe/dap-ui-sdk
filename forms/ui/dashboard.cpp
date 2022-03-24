@@ -37,6 +37,8 @@ Dashboard::Dashboard (QWidget *parent) :
            this, &Dashboard::sigServerClicked,
            Qt::QueuedConnection);
 
+  ui->btnServer->setBtnStyle(DapGuiButton::TopSubBottomMain);
+
   /* finish */
   slotSetDownUp (0, 0);
   setStatusIdicator(false);
@@ -95,7 +97,16 @@ void Dashboard::setConnectedTime(QString a_text)
 void Dashboard::setStatusIdicator(bool a_enabled /*= false*/)
 {
     ui->lStatusIconOn->setVisible (a_enabled);
+#ifndef DISABLE_CLOCK_WHEN_DISCONNECTED
     ui->lStatusIconOff->setVisible (!a_enabled);
+#else
+    ui->lStatusIconOff->setVisible (false);
+    ui->lUptime->setVisible(a_enabled);
+    if (!a_enabled)
+        ui->lTitle->setCssStyle("conn-top-text-connected font24 darkblue normalbold lato noborder nobackground");
+    else
+        ui->lTitle->setCssStyle("conn-top-text-connected font24 red normalbold lato noborder nobackground");
+#endif
 
 //    ui->lStatusIcon->setChecked(a_authorized);
 }
