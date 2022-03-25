@@ -25,6 +25,8 @@ PopupDialog::PopupDialog (QWidget *parent) :
   setFixedSize (sz);
   setMinimumSize (sz);
   setMaximumSize (sz);
+  dafaultHeight = hh;
+  dafaultTextHeight = ui->lDescription->height();
 
   qDebug() << "PopupDialog::Construct size:" << sz;
 
@@ -102,6 +104,21 @@ void PopupDialog::slotShow (
 
   ui->btnYes->setText (a_btnYes);
   ui->btnNo->setText (a_btnNo);
+
+  /* text size */
+  int th = ui->lDescription->fontMetrics().boundingRect(QRect(0,0,100,100), 0, a_description).height();
+  if (th > dafaultTextHeight)
+  {
+      // increase window size
+      setMinimumHeight (dafaultHeight + th - dafaultTextHeight);
+      setMaximumHeight (dafaultHeight + th - dafaultTextHeight);
+  }
+  else
+  {
+      // default size
+      setMinimumHeight (dafaultHeight);
+      setMaximumHeight (dafaultHeight);
+  }
 
   /* display */
   show();
