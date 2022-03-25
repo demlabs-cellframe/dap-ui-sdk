@@ -1,7 +1,6 @@
 import QtQuick 2.4
 import DapQmlStyle 1.0
 import QtQuick.Controls 2.12
-//import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
 Item {
@@ -53,22 +52,11 @@ Item {
 
             DapQmlStyle { id: style; qss: "bugrep-input"; item: input }
 
-//            Component.onCompleted: StyleDebugTree.describe (
-//               "Bug rep contanier",
-//                ["x", "y", "width", "height"],
-//               this);
-
             /* background image */
             DapQmlLabel {
                 id: inputbg
                 anchors.fill: input
                 qss: "bugrep-bg"
-                //source: "qrc:/light/report_bg.png"
-
-//                Component.onCompleted: StyleDebugTree.describe (
-//                   "Bug rep image",
-//                    ["x", "y", "width", "height"],
-//                   this);
             }
 
             /* input scrollarea */
@@ -78,25 +66,22 @@ Item {
                 x: (input.width - width) / 2
                 clip: true
                 contentWidth: bugRepInput.width
+
                 ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
                 ScrollBar.vertical.policy: ScrollBar.AlwaysOn
 
                 DapQmlStyle { item: bugRepInput; qss: "bugrep-input-content"; }
-
-//                Component.onCompleted: StyleDebugTree.describe (
-//                   "Bug rep scrollview",
-//                    ["x", "y", "width", "height"],
-//                   this);
 
                 /* input */
                 TextEdit {
                     id: bugRepInputField
                     objectName: "bugRepInputField"
                     anchors.fill: parent
+                    wrapMode: TextEdit.Wrap
                     clip: true
+
                     property int maximumLength: 200
                     property string previousText: text
-                    wrapMode: TextEdit.Wrap
 
                     DapQmlStyle { item: bugRepInputField; qss: "bugrep-input-textarea"; }
 
@@ -114,11 +99,6 @@ Item {
 
                         letterAmount.text = text.length + "/200"
                     }
-
-//                    Component.onCompleted: StyleDebugTree.describe (
-//                       "Bug rep input",
-//                        ["x", "y", "width", "height"],
-//                       this);
                 }
             }
 

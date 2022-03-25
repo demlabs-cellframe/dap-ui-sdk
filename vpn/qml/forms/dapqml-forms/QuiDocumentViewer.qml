@@ -26,6 +26,7 @@ Item {
         id: scroll
         clip: true
         height: root.height - y
+        contentWidth: width
         property int fontSize: 12
         DapQmlStyle { item: scroll; qss: "dv-content"; }
 
