@@ -186,36 +186,20 @@ QString Cert::exportPKeyBase64()
 
 int Cert::exportPKeyToFile(const QString &a_path) {
     int res = -1;
-#ifndef ANDROID
     FILE *l_file = fopen(qPrintable(a_path), "wb");
     if (!l_file) {
         return 1;
     }
-#else
-    jint fd = QtAndroid::androidContext().callMethod<jint>("getKeyFd", "(I)I", 1);
-    if (fd <= 0)
-        return 1;
-#endif
     size_t buflen = 0;
     uint8_t *buf = dap_enc_key_serealize_pub_key(m_cert->enc_key, &buflen);
     if (!buf) {
-#ifdef ANDROID
-        close(fd);
-#endif
         return 2;
     }
-#ifndef ANDROID
     if (size_t l_ret = fwrite(buf, 1, buflen, l_file) == buflen) {
         res = 0;
         fflush(l_file);
     }
     fclose(l_file);
-#else
-    if (ssize_t l_ret = write(fd, buf, buflen) == (ssize_t)buflen) {
-        res = 0;
-    }
-    close(fd);
-#endif
     DAP_DELETE(buf);
     return res;
 }
@@ -230,37 +214,12 @@ QString Cert::pkeyHash() {
 }
 
 int Cert::importPKeyFromFile(const QString &a_path) {
-#ifdef ANDROID
-    jint l_file = QtAndroid::androidContext().callMethod<jint>("getKeyFd", "(I)I", 0);
-#else
     int l_file = open(qPrintable(a_path), O_RDONLY | O_BINARY);
-#endif
-    int ret = 0;
-    if (l_file <= 0) {
-        /* Legacy pkey import, will be deprecated on targeting API 30+ */
-#ifdef ANDROID
-        int _l_fd_old = open("/sdcard/KelvinVPN/public.key", O_RDWR | O_BINARY);
-        int l_fd_old = _l_fd_old > 0 ? _l_fd_old : open("/sdcard/" DAP_BRAND "/public.key", O_RDWR | O_BINARY);
-        if (l_fd_old > 0) {
-            qDebug() << "[Legacy] Importing old pkey";
-            l_file = l_fd_old;
-            ret = 3;
-        } else {
-            qDebug() << "[Legacy] No pkeys found";
-            return 1;
-        }
-#else
-        return 1;
-#endif
-    }
-
     struct stat statBuf;
     fstat(l_file, &statBuf);
     size_t l_len = statBuf.st_size;
     uint8_t buf[l_len];
     read(l_file, buf, l_len);
-    if (ret == 3)
-        ftruncate(l_file, 0);
     close(l_file);
 
     dap_enc_key_t *l_temp =  dap_enc_key_new(m_cert->enc_key->type);
@@ -270,7 +229,7 @@ int Cert::importPKeyFromFile(const QString &a_path) {
     }
     dap_enc_key_delete(l_temp);
     int desrl_res = dap_enc_key_deserealize_pub_key(key(), buf, l_len);
-    return ret == 3 ? ret : desrl_res;
+    return desrl_res;
 }
 
 
