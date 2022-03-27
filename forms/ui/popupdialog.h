@@ -32,6 +32,8 @@ class PopupDialog : public QWidget
 private:
   Ui::PopupDialog *ui;
   QWidget *m_parent, *m_shadow;
+  int dafaultHeight;
+  int dafaultTextHeight;
   /// @}
 
   /****************************************//**
