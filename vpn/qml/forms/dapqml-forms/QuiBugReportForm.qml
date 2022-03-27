@@ -1,6 +1,7 @@
 import QtQuick 2.4
 import DapQmlStyle 1.0
 import QtQuick.Controls 2.12
+import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
 Item {
@@ -35,6 +36,12 @@ Item {
         bugrepResult.text   = a_text;
     }
 
+    /* resizer */
+    DapQmlRectangle {
+        id: resizer
+        qss: "bugrep-input-content"
+    }
+
     /* title */
     DapQmlDialogTitle {
         text: "Bug report"
@@ -50,24 +57,55 @@ Item {
         Item {
             id: input
 
+            property real yy: (input.height - resizer.height) / 2
+
             DapQmlStyle { id: style; qss: "bugrep-input"; item: input }
 
             /* background image */
             DapQmlLabel {
                 id: inputbg
+                z: 1
                 anchors.fill: input
                 qss: "bugrep-bg"
+
+                /* placeholder */
+                DapQmlLabel {
+                    id: placeholder
+                    x: (input.width - width) / 2
+                    y: input.yy
+                    z: 2
+                    width: resizer.width
+                    height: resizer.height
+                    horizontalAlign: Text.AlignLeft
+                    verticalAlign: Text.AlignTop
+                    text: "Please describe the details of problem you faced. What actions did you take and what happened."
+                    qss: "bugrep-input-placeholder"
+                    wrapMode: TextEdit.Wrap
+                    visible: bugRepInputField.text.length == 0
+
+//                    Component.onCompleted: StyleDebugTree.describe (
+//                       "placeholder",
+//                        ["x", "y", "width", "height"],
+//                       this);
+                }
             }
 
             /* input scrollarea */
             Flickable {
                 id: bugRepInput
-                x: (input.width - width) / 2
+                x: (input.width - resizer.width) / 2
+                y: input.yy
+                z: 3
                 clip: true
                 contentWidth: width
                 contentHeight: calcContentHeight()
 
                 DapQmlStyle { item: bugRepInput; qss: "bugrep-input-content"; }
+
+//                Component.onCompleted: StyleDebugTree.describe (
+//                   "Flickable",
+//                    ["x", "y", "width", "height"],
+//                   this);
 
                 function ensureVisible(r) {
                     if (contentX >= r.x)
@@ -90,11 +128,16 @@ Item {
                 /* input */
                 TextEdit {
                     id: bugRepInputField
+                    z: 4
                     objectName: "bugRepInputField"
                     anchors.fill: parent
                     wrapMode: TextEdit.Wrap
                     clip: true
+                    font.pixelSize: fontSize
+                    font.weight: fontWeight
 
+                    property int fontSize: 16
+                    property int fontWeight: Font.Normal
                     property int maximumLength: 200
                     property string previousText: text
 

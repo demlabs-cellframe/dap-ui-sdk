@@ -624,7 +624,7 @@
 
 .bugrep-input-content
 {
-	scaled-rect: scaled(nan,25,340,144,true,16);
+	scaled-rect: scaled(nan,nan,316,120,true,16);
 }
 
 .bugrep-letter-counter
@@ -667,7 +667,13 @@
 
 .bugrep-input-textarea
 {
-	color: "@light-grey";
+	color: "@text";
+	scaled-font: scaled(16);	
+}
+
+.bugrep-input-placeholder
+{
+	color: "@label";
 	scaled-font: scaled(16);	
 }
 
