@@ -25,9 +25,14 @@ void DapCmdPurchase::handleResult(const QJsonObject &result)
         qInfo() << "We have purchased key" << key;
         emit purchaseVerified(key);
     }
+    else
+    {
+        emit purchaseError(QString(""));
+    }
 }
 
 void DapCmdPurchase::handleError(int code, const QString &message)
 {
-    qDebug() << code << ": " << message;
+    qDebug() <<"DapCmdPurchase::handleError" << " " << code << ": " << message;
+    emit purchaseError(message);
 }

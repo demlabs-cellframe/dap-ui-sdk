@@ -16,6 +16,7 @@ protected:
 
 signals:
     void purchaseVerified(const QString& key);//TODO
+    void purchaseError(const QString message);
 };
 
 #endif // DAPCMDPURCHASE_H
