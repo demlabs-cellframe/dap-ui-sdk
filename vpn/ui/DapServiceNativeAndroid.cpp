@@ -18,7 +18,7 @@ void DapServiceNativeAndroid::checkInstallation()
 {
     if (!QtAndroid::androidService().isValid()) {
         QAndroidIntent serviceIntent(QtAndroid::androidActivity().object(),
-                                     "com/KelVPN/KelVPNService");
+                                     "com/" DAP_BRAND "/" DAP_BRAND "Service");
         QtAndroid::androidActivity().callObjectMethod(
                     "startForegroundService",
                     "(Landroid/content/Intent;)Landroid/content/ComponentName;",
