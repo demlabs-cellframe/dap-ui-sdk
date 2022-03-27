@@ -60,17 +60,32 @@ Item {
             }
 
             /* input scrollarea */
-            ScrollView
-            {
+            Flickable {
                 id: bugRepInput
                 x: (input.width - width) / 2
                 clip: true
-                contentWidth: bugRepInput.width
-
-                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-                ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+                contentWidth: width
+                contentHeight: calcContentHeight()
 
                 DapQmlStyle { item: bugRepInput; qss: "bugrep-input-content"; }
+
+                function ensureVisible(r) {
+                    if (contentX >= r.x)
+                        contentX = r.x;
+                    else if (contentX+width <= r.x+r.width)
+                        contentX = r.x+r.width-width;
+                    if (contentY >= r.y)
+                        contentY = r.y;
+                    else if (contentY+height <= r.y+r.height)
+                        contentY = r.y+r.height-height;
+                }
+
+                function calcContentHeight() {
+                    if (bugRepInputField.paintedHeight < inputbg.height)
+                        return inputbg.height;
+                    else
+                        return bugRepInputField.paintedHeight;
+                }
 
                 /* input */
                 TextEdit {
@@ -84,6 +99,8 @@ Item {
                     property string previousText: text
 
                     DapQmlStyle { item: bugRepInputField; qss: "bugrep-input-textarea"; }
+
+                    onCursorRectangleChanged: bugRepInput.ensureVisible(cursorRectangle)
 
                     onTextChanged: {
                         if (text.length > maximumLength) {
@@ -100,15 +117,6 @@ Item {
                         letterAmount.text = text.length + "/200"
                     }
                 }
-            }
-
-            /* make clickable at all field size */
-            MouseArea {
-                id: mouseAreaInput
-                anchors.fill: bugRepInput
-                cursorShape: Qt.IBeamCursor
-                enabled: true
-                onClicked: bugRepInputField.forceActiveFocus()
             }
         }
 
