@@ -28,7 +28,7 @@ public:
 
     void reset();
 
-    const QDateTime & licenseTermTill();
+    const QDateTime & licenseTermTill() const;
     int daysLeft();
     QString daysLeftString();
 

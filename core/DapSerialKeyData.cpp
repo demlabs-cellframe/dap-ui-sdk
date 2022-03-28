@@ -48,7 +48,7 @@ void DapSerialKeyData::reset()
     this->setActivated(false);
 }
 
-const QDateTime &DapSerialKeyData::licenseTermTill()
+const QDateTime &DapSerialKeyData::licenseTermTill() const
 {
     return m_licenseTermTill;
 }
@@ -89,11 +89,13 @@ void DapSerialKeyData::operator=(const DapSerialKeyData &a_another)
 {
     this->setSerialKey(a_another.serialKey());
     this->setActivated(a_another.isActivated());
+    this->setLicenseTermTill(QString::number(a_another.licenseTermTill().toTime_t()));
 }
 
 QDataStream &operator<<(QDataStream &a_outStream, const DapSerialKeyData &a_serialKeyData)
 {
-    a_outStream << a_serialKeyData.serialKey() << DapUtils::toByteArray(a_serialKeyData.isActivated());
+    a_outStream << a_serialKeyData.serialKey() << DapUtils::toByteArray(a_serialKeyData.isActivated())
+                << QString::number(a_serialKeyData.licenseTermTill().toTime_t());
     return a_outStream;
 }
 
@@ -101,11 +103,13 @@ QDataStream &operator>>(QDataStream &a_inStream, DapSerialKeyData &a_serialKeyDa
 {
     QString serialKey;
     QByteArray isActivated;
+    QString licenseTermTill;
 
-    a_inStream >> serialKey >> isActivated;
+    a_inStream >> serialKey >> isActivated >> licenseTermTill;
 
     a_serialKeyData.setSerialKey(serialKey);
     a_serialKeyData.setActivated(DapUtils::fromByteArray<bool>(isActivated));
+    a_serialKeyData.setLicenseTermTill(licenseTermTill);
 
     return a_inStream;
 }
