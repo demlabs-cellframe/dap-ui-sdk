@@ -23,3 +23,8 @@ SOURCES += \
     $$PWD/dapqml-model/dapqmlmodelchooseserver.cpp \
     $$PWD/dapqml-model/dapqmlmodelserialhistory.cpp \
     $$PWD/dapqml-model/dapqmlmodelsettings.cpp
+
+DISTFILES += \
+    $$PWD/dapqml-forms/QuiBugReportForm.md \
+    $$PWD/dapqml-forms/QuiBugReportHistoryForm.md \
+    $$PWD/dapqml-forms/QuiChooseLanguageForm.md
