@@ -881,9 +881,9 @@
 
 .login-width
 {
-	width: 354pt;
-	min-width: 354pt;
-	max-width: 354pt;
+        width: 250pt;
+        min-width: 250pt;
+        max-width: 250pt;
 }
 
 .login_logo
@@ -927,9 +927,9 @@
 
 .login-error-message
 {
-	height: 40pt;
-	min-height: 40pt;
-	max-height: 40pt;
+        height: 90pt;
+        min-height: 90pt;
+        max-height: 90pt;
 }
 
 .login-margin-bottom
