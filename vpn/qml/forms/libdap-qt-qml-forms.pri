@@ -27,4 +27,14 @@ SOURCES += \
 DISTFILES += \
     $$PWD/dapqml-forms/QuiBugReportForm.md \
     $$PWD/dapqml-forms/QuiBugReportHistoryForm.md \
-    $$PWD/dapqml-forms/QuiChooseLanguageForm.md
+    $$PWD/dapqml-forms/QuiChooseLanguageForm.md \
+    $$PWD/dapqml-forms/QuiChooseServerForm.md \
+    $$PWD/dapqml-forms/QuiChooseThemeForm.md \
+    $$PWD/dapqml-forms/QuiDashboardForm.md \
+    $$PWD/dapqml-forms/QuiDocumentViewer.md \
+    $$PWD/dapqml-forms/QuiLoginForm.md \
+    $$PWD/dapqml-forms/QuiPurchaseForm.md \
+    $$PWD/dapqml-forms/QuiPurchaseHistoryForm.md \
+    $$PWD/dapqml-forms/QuiSettingsForm.md \
+    $$PWD/dapqml-forms/QuiSplashScreenForm.md \
+    $$PWD/dapqml-forms/QuiStatisticsForm.md
