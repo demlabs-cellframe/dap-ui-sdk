@@ -73,9 +73,6 @@
          </property>
          <item>
           <widget class="DapGuiWidget" name="kelGuiWidget_2" native="true">
-           <property name="styleSheet">
-            <string notr="true">#kelGuiWidget_2{ height: 132px; min-height: 132px; max-height: 132px; background-color: rgba(0,0,0,0);}</string>
-           </property>
            <property name="cssStyle" stdset="0">
             <string>login-margin-connect-top</string>
            </property>
@@ -127,18 +124,6 @@
          </item>
          <item>
           <widget class="DapGuiLabel" name="lStatus">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>160</height>
-            </size>
-           </property>
            <property name="styleSheet">
             <string notr="true">#lStatus{ font: 13px/18px; 
  color: #F53172; 
@@ -229,6 +214,9 @@ Usualy unvisible by being empty</string>
                  <property name="subCssClass" stdset="0">
                   <string>gray uppercase font12 lato nobackground noborder</string>
                  </property>
+                 <property name="leftCssClass" stdset="0">
+                  <string>darkblue normalbold font30 noborder</string>
+                 </property>
                  <property name="separator" stdset="0">
                   <bool>true</bool>
                  </property>
@@ -239,9 +227,6 @@ Usualy unvisible by being empty</string>
                </item>
                <item>
                 <widget class="DapGuiButton" name="btnChooseSerial" native="true">
-                 <property name="styleSheet">
-                  <string notr="true"/>
-                 </property>
                  <property name="cssStyle" stdset="0">
                   <string>cwb_height</string>
                  </property>
@@ -295,9 +280,6 @@ Usualy unvisible by being empty</string>
          </item>
          <item>
           <widget class="DapGuiWidget" name="widget_4" native="true">
-           <property name="styleSheet">
-            <string notr="true">#widget_4{ height: 80px; min-height: 80px; max-height: 80px; background-color: rgba(0,0,0,0);}</string>
-           </property>
            <property name="cssStyle" stdset="0">
             <string>nobackground</string>
            </property>
@@ -402,9 +384,6 @@ Usualy unvisible by being empty</string>
          </item>
          <item>
           <widget class="DapGuiWidget" name="kelGuiWidget_3" native="true">
-           <property name="styleSheet">
-            <string notr="true">#kelGuiWidget_3{ height: 270px; min-height: 270px; max-height: 270px; background-color: rgba(0,0,0,0);}</string>
-           </property>
            <property name="cssStyle" stdset="0">
             <string>footer</string>
            </property>
