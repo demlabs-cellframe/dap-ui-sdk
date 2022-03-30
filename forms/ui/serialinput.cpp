@@ -202,11 +202,15 @@ void SerialInput::cbTextEdit(DapGuiLineEdit *e, QString &preedit, QString &commi
 
 void SerialInput::slotSetSerial(const QString &a_serial)
 {
+  QString empty = EMPTY_KEY_STR;
   if(m_textChangeHook)
     return;
 
   m_textChangeHook = true;
-  m_input->setText (a_serial);
+  if (a_serial.length() == 0)
+    m_input->setText (empty);
+  else
+    m_input->setText (a_serial);
   m_textChangeHook = false;
 }
 
@@ -301,6 +305,13 @@ bool SerialInput::_cbInputMethodEvent(DapGuiLineEdit *label, QEvent *event)
             if (label->commiting.length() == keyMaxLen)
                 QGuiApplication::inputMethod()->hide();
         }
+        if (Event->key() == Qt::Key_V && readFromBuffer())
+         {
+             label->commiting = keyFromBuffer;
+             QString t = label->commiting;
+             labelFormatSerialKeyLine(t);
+             label->setText(t);
+         }
     }
 
     if (event->type() == QEvent::Leave)
@@ -326,6 +337,11 @@ bool SerialInput::_cbInputMethodEvent(DapGuiLineEdit *label, QEvent *event)
         }
     }
 
+    if (event->type() == QEvent::MouseButtonPress)
+    {
+        return false;
+    }
+
     if (event->type() == QEvent::MouseButtonRelease)
     {
 //         QMouseEvent *Event = (QMouseEvent *)(event);
@@ -345,7 +361,7 @@ bool SerialInput::readFromBuffer()
     {
         if( const QMimeData* m = c->mimeData() )
         {
-            if( m->hasText() )
+//            if( m->hasText())
             {
                 QString buffer = m->text();
                 if (buffer.length() <= (keyMaxLen+3))

@@ -35,7 +35,7 @@ DapGuiLineEdit::DapGuiLineEdit (QWidget *parent)
 {
 #ifdef USE_QLABEL
     setAttribute(Qt::WA_InputMethodEnabled);
-    setInputMethodHints(Qt::ImhSensitiveData | Qt::ImhNoEditMenu);
+    setInputMethodHints(Qt::ImhSensitiveData);
 #endif
 }
 
@@ -127,6 +127,9 @@ void DapGuiLineEdit::leaveEvent(QEvent * event)
 
 void DapGuiLineEdit::mousePressEvent(QMouseEvent *event)
 {
+    if (m_callbackEvent)
+        if (m_callbackEvent (this, (QEvent*) event))
+            return;
     QLabel::mousePressEvent(event);
 }
 
