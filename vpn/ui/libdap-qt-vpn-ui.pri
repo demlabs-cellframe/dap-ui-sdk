@@ -63,21 +63,21 @@ macos {
 
 
 android {
-    ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../../../brand/$$BRAND/os/android
 
-    DISTFILES += \
-        $$PWD/../../../brand/$$BRAND/os/android/gradle/wrapper/gradle-wrapper.jar \
-        $$PWD/../../../brand/$$BRAND/os/android/gradlew \
-        $$PWD/../../../brand/$$BRAND/os/android/res/values/libs.xml \
-        $$PWD/../../../brand/$$BRAND/os/android/build.gradle \
-        $$PWD/../../../brand/$$BRAND/os/android/gradle/wrapper/gradle-wrapper.properties \
-        $$PWD/../../../brand/$$BRAND/os/android/src/com/$${BRAND}/MainActivity.java \
-        $$PWD/../../../brand/$$BRAND/os/android/src/com/$${BRAND}/$${BRAND}Service.java \
-        $$PWD/../../../brand/$$BRAND/os/android/src/com/$${BRAND}/$${BRAND}ServiceNative.java \
-        $$PWD/../../../brand/$$BRAND/os/android/gradlew.bat
-        #equals(BUILD_VARIANT, "GooglePlay") {
-        #        DISTFILES += $$PWD/../../../brand/$$BRAND/os/android/src/com/$${BRAND}/InAppShop.java
-        #}
+    !lessThan(QT_MAJOR_VERSION, 5):!lessThan(QT_MINOR_VERSION, 14) {
+        ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../../../brand/$$BRAND/os/android
+    } else:equals(QT_MAJOR_VERSION, 5):equals(QT_MINOR_VERSION, 12) {
+        message("Legacy build")
+        ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../../../brand/$$BRAND/os/android/legacy
+    }
+
+DISTFILES += \
+        $$ANDROID_PACKAGE_SOURCE_DIR/*.* \
+        $$ANDROID_PACKAGE_SOURCE_DIR/src/com/$${BRAND}/*.java \
+        $$ANDROID_PACKAGE_SOURCE_DIR/gradle/wrapper/gradle-wrapper.jar \
+        $$ANDROID_PACKAGE_SOURCE_DIR/gradlew \
+        $$ANDROID_PACKAGE_SOURCE_DIR/res/values/libs.xml \
+        $$ANDROID_PACKAGE_SOURCE_DIR/gradle/wrapper/gradle-wrapper.properties \
 }
 
 
