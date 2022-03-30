@@ -44,7 +44,7 @@ public slots:
 private:
     QString m_serialKey;
     bool m_isActivated;
-    QDateTime m_licenseTermTill = QDateTime::currentDateTime();
+    QDateTime m_licenseTermTill = QDateTime::fromTime_t(0);
     QDateTime m_activatedDate = QDateTime::currentDateTime();
 };
 

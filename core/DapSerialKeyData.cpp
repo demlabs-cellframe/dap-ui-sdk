@@ -12,6 +12,7 @@ DapSerialKeyData::DapSerialKeyData(const DapSerialKeyData &a_another):QObject()
 {
     m_serialKey = a_another.serialKey();
     m_isActivated = a_another.isActivated();
+    m_licenseTermTill = a_another.licenseTermTill();
 }
 
 QString DapSerialKeyData::serialKey() const
@@ -64,14 +65,21 @@ int DapSerialKeyData::daysLeft()
 QString DapSerialKeyData::daysLeftString()
 {
     QString text;
-    int days = this->daysLeft();
-    switch (days) {
-        case -1:
-            return tr("Unlimited");
-        case 1:
-            return QString(QObject::tr("%1 day left")).arg(days);
-        default:
-            return QString(QObject::tr("%1 days left")).arg(days);
+    if (m_isActivated)
+    {
+        int days = this->daysLeft();
+        switch (days) {
+            case -1:
+                return tr("Unlimited");
+            case 1:
+                return QString(QObject::tr("%1 day left")).arg(days);
+            default:
+                return QString(QObject::tr("%1 days left")).arg(days);
+        }
+    }
+    else
+    {
+        return QString("");
     }
 }
 
