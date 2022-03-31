@@ -724,7 +724,7 @@ void DapGuiButton::_slotStyleUpdate()
   m_lLink->setStyleSheet (
     QString(
       "background-color: rgba(0,0,0,0);"
-      "border-image: url(\"://gfx/%1/ic_arrow-right.png\");"
+      "border-image: url(\"://%1/ic_arrow-right.png\");"
     ).arg (__kgsm.themeDir()));
 }
 

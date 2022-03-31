@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>light/ic_arrow-right.png</file>
+        <file>light/report_bg.png</file>
+        <file>light/separator_left.png</file>
+        <file>light/separator_mid.png</file>
+        <file>light/separator_right.png</file>
+        <file>light/btn_server_bg.png</file>
+        <file>dark/ic_arrow-right.png</file>
+        <file>dark/report_bg.png</file>
+        <file>dark/separator_left.png</file>
+        <file>dark/separator_mid.png</file>
+        <file>dark/separator_right.png</file>
+        <file>dark/btn_server_bg.png</file>
+    </qresource>
+</RCC>
