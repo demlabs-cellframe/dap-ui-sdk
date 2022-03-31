@@ -36,7 +36,7 @@ QString SpeedToString(quint64 a_speed)
 #else
     if (a_speed >= 1E6)
     {
-        double speed = a_speed;
+        double speed = a_speed/1E6;
         int digitCount = 0;
         if ((10 > speed) && (speed >= 0))
             digitCount = 1;
