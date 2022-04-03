@@ -315,7 +315,7 @@ Usualy unvisible by being empty</string>
            <string>conn-connectedto-button nobackground</string>
           </property>
           <property name="mainText" stdset="0">
-           <string></string>
+           <string>Auto</string>
           </property>
           <property name="subText" stdset="0">
            <string></string>
