@@ -8,6 +8,8 @@ Item {
     property color mainColor: "#FFFFFF"
     property string statusText: "Loading..."
     property string versionText: "..."
+    property string stripesPng: "qrc:/stripes.png"
+    property string logoPng: "qrc:/logo.png"
 
     /* funcs */
     function setStatusText(a_message) {
@@ -16,6 +18,11 @@ Item {
 
     function setVersion(a_version) {
         versionText = a_version;
+    }
+
+    function freeMem() {
+        stripesPng  = "";
+        logoPng     = "";
     }
 
     /* gradient background */
@@ -35,7 +42,7 @@ Item {
         z: 11
         anchors.fill: parent
         mipmap: true
-        source: "qrc:/stripes.png"
+        source: root.stripesPng
     }
 
     /* logo */
@@ -46,7 +53,7 @@ Item {
         width: 230
         height: 59
         mipmap: true
-        source: "qrc:/logo.png"
+        source: root.logoPng
     }
 
     /* status text */
