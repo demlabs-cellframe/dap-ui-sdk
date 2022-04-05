@@ -47,7 +47,6 @@ SpinBox {
                 anchors.top: spinbox.top
                 anchors.bottom: spinbox.bottom
                 height: spinbox.height
-//                width: spinbox.width
                 text: spinbox.textFromValue(spinbox.value, spinbox.locale)
 
                 font: spinbox.font
