@@ -306,9 +306,6 @@ Rectangle {
             /* main text */
             TextField {
                 id: etmbsMain
-                //Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                //Layout.fillWidth: true
-                //Layout.fillHeight: true
                 y: 0
                 width: etmbs.width
                 height: etmbs.height / 2
@@ -319,6 +316,27 @@ Rectangle {
                 //qss: root.mainQss
                 inputMask: root.inputMask
 
+                /* vars */
+                property string fontFamiliy: "Lato"
+                property int fontSize: 12
+                property int fontWeight: Font.Normal
+
+                /* style */
+                DapQmlStyle { qss: root.mainQss; item: etmbsMain }
+
+                /* background */
+                background: DapQmlRectangle {
+                    qss: "login-serialkey-input"
+                }
+
+                /* font config */
+                font {
+                    family: etmbsMain.fontFamiliy
+                    pixelSize: etmbsMain.fontSize
+                    weight: etmbsMain.fontWeight
+                }
+
+                /* signals */
                 onTextEdited: { root.mainText = text; root.textEdited(); }
                 onTextChanged: { root.mainText = text; root.textChanged(); }
             }

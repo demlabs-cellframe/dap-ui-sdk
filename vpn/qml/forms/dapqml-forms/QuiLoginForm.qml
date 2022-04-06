@@ -121,7 +121,7 @@ Item {
             width: parent.width - 74
 
             buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
-            //mainText: "____ ____ ____ ____"
+            mainText: ""
             subText: "SERIAL KEY"
             qss: "login-btn-serial"
             mainQss: "login-btn-main"

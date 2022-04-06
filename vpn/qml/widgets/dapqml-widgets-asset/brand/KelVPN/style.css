@@ -432,6 +432,15 @@
 	scaled-rect: scaled(nan,nan,160,nan,false);
 }
 
+.login-serialkey-input
+{
+	border-width: 1;
+	border-color: "@light-grey";
+	color: "@background";
+	radius: 5;
+	opacity: 0.2;
+}
+
 
 /****************************************************
  * Settings

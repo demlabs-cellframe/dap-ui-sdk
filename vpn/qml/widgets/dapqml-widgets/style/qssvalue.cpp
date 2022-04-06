@@ -284,11 +284,13 @@ QVariant QssValue::asVariant() const
     return m_value;
 
   /* link */
-  if (m_value.at (0) == '@' || m_value.at (1) == '@')
+  if (m_value.at (0) == '@'
+      || (m_value.size() > 1 && m_value.at (1) == '@'))
     return QssLink::get (QString (m_value).replace ('\"',""));
 
   /* color */
-  if (m_value.at (0) == '#' || m_value.at (1) == '#')
+  if (m_value.at (0) == '#'
+      || (m_value.size() > 1 && m_value.at (1) == '#'))
     return QColor (QString (m_value).replace ('\"',""));
 
   /* rgba */
