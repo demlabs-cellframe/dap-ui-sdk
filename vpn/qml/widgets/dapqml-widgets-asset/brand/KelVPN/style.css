@@ -628,12 +628,12 @@
 
 .bugrep-input
 {
-	scaled-rect: scaled(19,133,390,200,true,16);
+	scaled-rect: scaled(19,133,390,200,false,16);
 }
 
 .bugrep-input-content
 {
-	scaled-rect: scaled(nan,nan,316,120,true,16);
+	scaled-rect: scaled(nan,nan,316,120,false,16);
 }
 
 .bugrep-letter-counter
