@@ -4,6 +4,7 @@ import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 import StyleDebugTree 1.0
 import DapQmlStyle 1.0
+import DapQmlSerialKeyInput 1.0
 import "qrc:/dapqml-widgets"
 
 Item {
@@ -106,6 +107,18 @@ Item {
             separator: true
             link: true
             onClicked: root.sigChooseServer()
+        }
+    }
+
+    Rectangle {
+        x: (parent.width - width) / 2
+        y: 15
+        width: parent.width - 74
+        height: 64
+        color: "#333333"
+
+        DapQmlSerialKeyInput {
+            anchors.fill: parent
         }
     }
 
