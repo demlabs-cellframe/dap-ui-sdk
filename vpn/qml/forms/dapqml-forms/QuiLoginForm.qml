@@ -2,9 +2,9 @@ import QtQuick 2.4
 import QtQml 2.12
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
+import DapQmlSerialKeyInput 1.0
 import StyleDebugTree 1.0
 import DapQmlStyle 1.0
-import DapQmlSerialKeyInput 1.0
 import "qrc:/dapqml-widgets"
 
 Item {
@@ -70,6 +70,23 @@ Item {
         }
     }
 
+    TextField {
+        x: (parent.width - width) / 2
+        y: 15
+        width: parent.width - 74
+        height: 64
+        color: "#333333"
+        inputMethodHints: Qt.ImhSensitiveData
+
+        DapQmlSerialKeyInput {
+            //anchors.fill: parent
+            id: filter
+            objectName: "serialInputFilter"
+        }
+
+        Component.onCompleted: filter.setup(this)
+    }
+
     /* error label */
     DapQmlLabel {
         id: loginErrorLabel
@@ -107,18 +124,6 @@ Item {
             separator: true
             link: true
             onClicked: root.sigChooseServer()
-        }
-    }
-
-    Rectangle {
-        x: (parent.width - width) / 2
-        y: 15
-        width: parent.width - 74
-        height: 64
-        color: "#333333"
-
-        DapQmlSerialKeyInput {
-            anchors.fill: parent
         }
     }
 

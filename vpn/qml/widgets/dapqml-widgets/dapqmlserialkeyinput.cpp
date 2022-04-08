@@ -7,15 +7,41 @@
  *******************************************/
 
 DapQmlSerialKeyInput::DapQmlSerialKeyInput(QObject *a_parent)
-  : QQuickItem()
-  , m_callbackEvent (nullptr)
+  : m_callbackEvent (nullptr)
+  , m_qmlItem (nullptr)
 {
   Q_UNUSED (a_parent)
+  //setAcceptTouchEvents (true);
 }
 
 /********************************************
  * METHODS
  *******************************************/
+
+const QString &DapQmlSerialKeyInput::commiting() const
+{
+  return m_commiting;
+}
+
+void DapQmlSerialKeyInput::setCommiting(const QString &newCommiting)
+{
+  m_commiting = newCommiting;
+}
+
+QString DapQmlSerialKeyInput::text() const
+{
+  if (m_qmlItem == nullptr)
+    return QString();
+  return m_qmlItem->property("text").toString();
+}
+
+void DapQmlSerialKeyInput::setText(const QString &a_text)
+{
+  if (m_qmlItem == nullptr)
+    return;
+  m_qmlItem->setProperty ("text", a_text);
+  emit textChanged();
+}
 
 DapQmlSerialKeyInput::cbInputMethodEvent DapQmlSerialKeyInput::callbackEvent() const
 {
@@ -27,52 +53,33 @@ void DapQmlSerialKeyInput::setCallbackEvent(cbInputMethodEvent newCallbackInputM
   m_callbackEvent = newCallbackInputMethodEvent;
 }
 
-void DapQmlSerialKeyInput::touchEvent(QTouchEvent *event)
+void DapQmlSerialKeyInput::setup (QObject *a_qmlItem)
 {
-  if (m_callbackEvent)
-      if (m_callbackEvent (this, (QEvent*) event))
-          return;
-  return QQuickItem::touchEvent (event);
+  /* store */
+  m_qmlItem = a_qmlItem;
+
+  if (a_qmlItem)
+    {
+      /* setup filter */
+      a_qmlItem->installEventFilter (this);
+
+      /* connect signal on deletion */
+      connect (a_qmlItem, &QObject::destroyed, [=] { m_qmlItem = nullptr; } );
+    }
 }
 
-void DapQmlSerialKeyInput::keyPressEvent(QKeyEvent *event)
+void DapQmlSerialKeyInput::setFocus()
 {
-  if (m_callbackEvent)
-      if (m_callbackEvent (this, (QEvent*) event))
-          return;
-  return QQuickItem::keyPressEvent (event);
+  QMetaObject::invokeMethod (m_qmlItem, "forceActiveFocus");
 }
 
-void DapQmlSerialKeyInput::mouseReleaseEvent(QMouseEvent *event)
+bool DapQmlSerialKeyInput::eventFilter(QObject *watched, QEvent *event)
 {
+  Q_UNUSED(watched)
   if (m_callbackEvent)
-      if (m_callbackEvent (this, (QEvent*) event))
-          return;
-  return QQuickItem::mouseReleaseEvent (event);
+      if (!m_callbackEvent (this, (QEvent*) event))
+          return true;
+  return false; //QQuickItem::event (event);
 }
-
-void DapQmlSerialKeyInput::mousePressEvent(QMouseEvent *event)
-{
-  if (m_callbackEvent)
-      if (m_callbackEvent (this, (QEvent*) event))
-          return;
-  return QQuickItem::mousePressEvent (event);
-}
-
-void DapQmlSerialKeyInput::inputMethodEvent(QInputMethodEvent *event)
-{
-  if (m_callbackEvent)
-      if (m_callbackEvent (this, (QEvent*) event))
-          return;
-  return QQuickItem::inputMethodEvent (event);
-}
-
-//bool DapQmlSerialKeyInput::event(QEvent *event)
-//{
-//  if (m_callbackEvent)
-//      if (m_callbackEvent (this, (QEvent*) event))
-//          return;
-//  return QQuickItem::event (event);
-//}
 
 /*-----------------------------------------*/

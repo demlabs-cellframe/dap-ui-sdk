@@ -10,9 +10,16 @@
  * @author Mikhail Shilenko
  *******************************************/
 
-class DapQmlSerialKeyInput : public QQuickItem
+class DapQmlSerialKeyInput : public QObject
 {
   Q_OBJECT
+
+  /****************************************//**
+   * @name PROPERTIES
+   *******************************************/
+  /// @{
+  Q_PROPERTY (QString text READ text WRITE setText NOTIFY textChanged)
+  /// @}
 
   /****************************************//**
    * @name DEFS
@@ -28,6 +35,8 @@ public:
   /// @{
 protected:
   cbInputMethodEvent m_callbackEvent; ///< called at event
+  QString m_commiting;
+  QObject *m_qmlItem;
   /// @}
 
   /****************************************//**
@@ -39,19 +48,36 @@ public:
   /// @}
 
   /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void textChanged();
+  /// @}
+
+  /****************************************//**
    * @name METHODS
    *******************************************/
   /// @{
 public:
+  const QString &commiting() const;
+  void setCommiting(const QString &newCommiting);
+
+  QString text() const;
+  void setText (const QString &a_text);
+
   cbInputMethodEvent callbackEvent() const;
   void setCallbackEvent(cbInputMethodEvent newCallbackInputMethodEvent);
+  Q_INVOKABLE void setup (QObject *a_qmlItem);
+  Q_INVOKABLE void setFocus();
+  /// @}
+
+  /****************************************//**
+   * @name OVERRIDE
+   *******************************************/
+  /// @{
 protected:
-  void touchEvent(QTouchEvent *event) override;
-  void keyPressEvent(QKeyEvent *event) override;
-  void mouseReleaseEvent(QMouseEvent *event) override;
-  void mousePressEvent(QMouseEvent *event) override;
-  void inputMethodEvent(QInputMethodEvent *event) override;
-  //bool event(QEvent *event) override;
+  bool eventFilter(QObject *watched, QEvent *event) override;
   /// @}
 };
 
