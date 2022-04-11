@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "dapqmlserialkeyinput.h"
 #include <QDebug>
+#include <QApplication>
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -71,6 +72,17 @@ void DapQmlSerialKeyInput::setup (QObject *a_qmlItem)
 void DapQmlSerialKeyInput::setFocus()
 {
   QMetaObject::invokeMethod (m_qmlItem, "forceActiveFocus");
+}
+
+bool DapQmlSerialKeyInput::sendBackspaceEvent()
+{
+  if (m_qmlItem == nullptr)
+    return true;
+
+  QKeyEvent event (QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier);
+  QApplication::sendEvent(m_qmlItem, &event);
+
+  return false;
 }
 
 bool DapQmlSerialKeyInput::eventFilter(QObject *watched, QEvent *event)

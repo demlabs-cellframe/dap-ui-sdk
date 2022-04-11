@@ -70,6 +70,7 @@ public:
   void setCallbackEvent(cbInputMethodEvent newCallbackInputMethodEvent);
   Q_INVOKABLE void setup (QObject *a_qmlItem);
   Q_INVOKABLE void setFocus();
+  Q_INVOKABLE bool sendBackspaceEvent();
   /// @}
 
   /****************************************//**
