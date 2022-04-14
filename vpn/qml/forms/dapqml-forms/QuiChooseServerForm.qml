@@ -42,7 +42,7 @@ Item {
 
         x: (root.width - width) / 2
         y: title.y + title.height * 2
-        width: root.width - 72
+        width: resizer.width
         height: root.height - y
         clip: true
 
