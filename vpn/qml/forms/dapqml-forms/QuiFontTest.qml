@@ -7,18 +7,36 @@ Item {
     width: 428
     height: 926
     visible: true
+
+    property string fontFam: "Lato"
+    property int fontSize: 11
+
+//    FontLoader { source: "qrc:/fonts/Lato-Regular.ttf" }
+//    FontLoader { source: "qrc:/fonts/Lato-Bold.ttf" }
+
     Column {
         function wtext(weight) {
-            return "1 2 3 4 font.weight: Font." + weight
+            return "1 2 3 4 Aa Bb Cc Dd. font " + /*f.name +*/ " value: " + weight
         }
-        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.Thin       }
-        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.ExtraLight }
-        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.Light      }
-        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.Normal     }
-        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.Medium     }
-        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.DemiBold   }
-        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.Bold       }
-        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.ExtraBold  }
-        Text { text: parent.wtext(font.weight); font.family: 'Lato'; font.weight: Font.Black      }
+        Text { text: "--= weight =--"; font.family: fontFam; font.pointSize: fontSize; }
+        Text { text: parent.wtext(font.weight); font.family: fontFam; font.pointSize: fontSize; font.weight: Font.Thin      ; }
+        Text { text: parent.wtext(font.weight); font.family: fontFam; font.pointSize: fontSize; font.weight: Font.ExtraLight; }
+        Text { text: parent.wtext(font.weight); font.family: fontFam; font.pointSize: fontSize; font.weight: Font.Light     ; }
+        Text { text: parent.wtext(font.weight); font.family: fontFam; font.pointSize: fontSize; font.weight: Font.Normal    ; }
+        Text { text: parent.wtext(font.weight); font.family: fontFam; font.pointSize: fontSize; font.weight: Font.Medium    ; }
+        Text { text: parent.wtext(font.weight); font.family: fontFam; font.pointSize: fontSize; font.weight: Font.DemiBold  ; }
+        Text { text: parent.wtext(font.weight); font.family: fontFam; font.pointSize: fontSize; font.weight: Font.Bold      ; }
+        Text { text: parent.wtext(font.weight); font.family: fontFam; font.pointSize: fontSize; font.weight: Font.ExtraBold ; }
+        Text { text: parent.wtext(font.weight); font.family: fontFam; font.pointSize: fontSize; font.weight: Font.Black     ; }
+        Text { text: "--= styleName =--"; font.family: fontFam; font.pointSize: fontSize; }
+        Text { text: parent.wtext(font.styleName); font.family: fontFam; font.pointSize: fontSize; font.styleName: "Thin" }
+        Text { text: parent.wtext(font.styleName); font.family: fontFam; font.pointSize: fontSize; font.styleName: "ExtraLight" }
+        Text { text: parent.wtext(font.styleName); font.family: fontFam; font.pointSize: fontSize; font.styleName: "Light" }
+        Text { text: parent.wtext(font.styleName); font.family: fontFam; font.pointSize: fontSize; font.styleName: "Normal" }
+        Text { text: parent.wtext(font.styleName); font.family: fontFam; font.pointSize: fontSize; font.styleName: "Medium" }
+        Text { text: parent.wtext(font.styleName); font.family: fontFam; font.pointSize: fontSize; font.styleName: "DemiBold" }
+        Text { text: parent.wtext(font.styleName); font.family: fontFam; font.pointSize: fontSize; font.styleName: "Bold" }
+        Text { text: parent.wtext(font.styleName); font.family: fontFam; font.pointSize: fontSize; font.styleName: "ExtraBold" }
+        Text { text: parent.wtext(font.styleName); font.family: fontFam; font.pointSize: fontSize; font.styleName: "Black" }
     }
 }
