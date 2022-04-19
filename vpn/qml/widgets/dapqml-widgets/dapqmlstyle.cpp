@@ -6,7 +6,6 @@
 
 /* VARS */
 static DapQmlStyle *s_globalSignal  = nullptr;
-static QObject *s_window            = nullptr;
 static bool s_gsHook                = false;
 static QString s_styleSheet;
 static thread_local double s_screenWidth = 428, s_screenHeight = 926;
@@ -124,19 +123,6 @@ void DapQmlStyle::setup(const QString &styleSheet)
   update();
 }
 
-//void DapQmlStyle::windowInstall (QObject *a_window)
-//{
-//  s_window = a_window;
-
-//  auto ws = connect (s_window, SIGNAL (widthChanged()),
-//                    s_globalSignal, SLOT (_resizing()));
-//  auto hs = connect (s_window, SIGNAL (heightChanged()),
-//                    s_globalSignal, SLOT (_resizing()));
-
-//  if (!ws || !hs)
-//    qDebug() << __PRETTY_FUNCTION__ << "cannot connect window resizing signal to desired slot";
-//}
-
 void DapQmlStyle::update()
 {
   Style::QssMap::setup (s_styleSheet);
@@ -208,12 +194,5 @@ void DapQmlStyle::_resized(int a_width, int a_height)
   s_screenHeight  = a_height;
   _applyStyle();
 }
-
-//void DapQmlStyle::_resizing()
-//{
-//  int width   = s_window->property ("width").toInt();
-//  int height  = s_window->property ("height").toInt();
-//  emit s_globalSignal->resized (width, height);
-//}
 
 /*-----------------------------------------*/

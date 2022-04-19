@@ -90,7 +90,6 @@ signals:
 protected slots:
   void _applyStyle();
   void _resized (int a_width, int a_height);
-  //void _resizing();
   /// @}
 };
 
