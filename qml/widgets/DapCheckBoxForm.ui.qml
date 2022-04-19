@@ -4,8 +4,8 @@ import QtQuick.Controls 2.0
 CheckBox {
     id: customCheckBox
 
-    property string checkboxOn:""
-    property string checkboxOff:""
+    property string checkboxOn: "qrc:/resources/icons/BlackTheme/ic_checkbox_on.png"
+    property string checkboxOff: "qrc:/resources/icons/BlackTheme/ic_checkbox_off.png"
     ///@detalis textButton Text RadioButton.
     property alias nameCheckbox: nameButton.text
     ///@detalis fontText Font setting.
@@ -44,9 +44,9 @@ CheckBox {
             verticalAlignment: Text.AlignVCenter
             anchors.verticalCenter: parent.verticalCenter
 //            anchors.top: parent.top
-            color: "#3E3853"
+            color: nameTextColor
             horizontalAlignment: Text.AlignLeft
-            text: qsTr("template")
+            text: nameCheckbox
         }
 //    ///Indicator Options.
     indicator:
