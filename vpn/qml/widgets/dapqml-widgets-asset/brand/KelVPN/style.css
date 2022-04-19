@@ -157,6 +157,18 @@
 	inactive: "@push-button-inactive";
 }
 
+
+
+.radiobtn-resizer
+{
+	scaled-rect: scaled(nan,nan,392,64,false);
+}
+
+.radiobtn-spacer
+{
+	scaled-rect: scaled(nan,nan,392,20,false);
+}
+
 /****************************************************
  * Icons
  ***************************************************/
@@ -359,7 +371,7 @@
 
 .login-error-label
 {
-	scaled-rect: scaled(51,236,327,57,false,14);
+	scaled-rect: scaled(51,236,327,57,false,13);
 	color: "#F53172";
 }
 
@@ -409,7 +421,7 @@
 
 .login-connect
 {
-	scaled-rect: scaled(-1,570,374,90,true,14);
+	scaled-rect: scaled(-1,570,374,80,true,12);
 }
 
 .login-obtain-container
@@ -446,6 +458,11 @@
  * Settings
  ***************************************************/
 
+.sett-spacer
+{
+	scaled-rect: scaled(nan,nan,nan,20,false);
+}
+
 .sett-resizer1
 {
 	scaled-rect: scaled(nan,nan,nan,64,false,34);
@@ -453,7 +470,7 @@
 
 .sett-resizer2
 {
-	scaled-rect: scaled(nan,nan,nan,108,false);
+	scaled-rect: scaled(nan,nan,nan,116,false);
 }
 
 .sett-item
@@ -583,7 +600,7 @@
 
 .dashboard-switch
 {
-	scaled-rect: scaled(-1,220,270,174,true);
+	scaled-rect: scaled(-1,250,238,150,true);
 }
 
 .dashboard-speed-container
@@ -606,7 +623,7 @@
 
 .dashboard-server-container
 {
-	scaled-rect: scaled(-1,575,410,137,true);
+	scaled-rect: scaled(-1,558,390,130,true);
 }
 
 .dashboard-server-main
@@ -719,28 +736,28 @@
  * Choose Server
  ***************************************************/
 
-.chooseserver-btn-resizer
+/*,chooseserver-btn-resizer
 {
 	scaled-rect: scaled(nan,nan,392,64,false);
-}
+}*/
 
 /****************************************************
  * Choose Language
  ***************************************************/
 
-.chooselanguage-btn-resizer
+/*,chooselanguage-btn-resizer
 {
 	scaled-rect: scaled(nan,nan,392,64,false);
-}
+}*/
 
 /****************************************************
  * Choose Theme
  ***************************************************/
 
-.choosetheme-btn-resizer
+/*,choosetheme-btn-resizer
 {
 	scaled-rect: scaled(nan,nan,392,64,false);
-}
+}*/
 
 /****************************************************
  * Bug Report History

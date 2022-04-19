@@ -98,6 +98,24 @@ Rectangle {
 
     }
 
+    /* functions */
+
+    function _magickSpacer() {
+        return (0.074 * height);
+    }
+
+    function _magickWidth() {
+        return root.width;
+    }
+
+    function _magickHeight() {
+        return root.height / 2;
+    }
+
+    function _magickSubPos() {
+        return _magickHeight() + _magickSpacer();
+    }
+
     /* link */
     Image {
         x: root.width - (width * 3)
@@ -194,10 +212,9 @@ Rectangle {
 
         /* TopMainBottomSub */
         /* Two items by vertical */
-        GridLayout {
+        Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            columns: 1
             visible: (root.buttonStyle === DapQmlButton.Style.TopMainBottomSub)
 
             /* store references */
@@ -213,8 +230,8 @@ Rectangle {
             DapQmlLabel {
                 id: tmbsMain
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+                width: _magickWidth()
+                height: _magickHeight()
 
                 horizontalAlign: Text.AlignHCenter
                 verticalAlign: Text.AlignBottom
@@ -227,8 +244,9 @@ Rectangle {
             DapQmlLabel {
                 id: tmbsSub
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+                width: _magickWidth()
+                height: _magickHeight()
+                y: _magickSubPos()
 
                 horizontalAlign: Text.AlignHCenter
                 verticalAlign: Text.AlignTop
@@ -241,10 +259,9 @@ Rectangle {
 
         /* TopSubBottomMain */
         /* Two items by vertical */
-        GridLayout {
+        Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            columns: 1
             visible: (root.buttonStyle === DapQmlButton.Style.TopSubBottomMain)
 
             /* store references */
@@ -260,8 +277,8 @@ Rectangle {
             DapQmlLabel {
                 id: tsbmSub
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+                width: _magickWidth()
+                height: _magickHeight()
 
                 horizontalAlign: Text.AlignHCenter
                 verticalAlign: Text.AlignBottom
@@ -274,8 +291,9 @@ Rectangle {
             DapQmlLabel {
                 id: tsbmMain
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+                width: _magickWidth()
+                height: _magickHeight() - _magickSpacer() / 2
+                y: _magickHeight()
 
                 horizontalAlign: Text.AlignHCenter
                 verticalAlign: Text.AlignTop
@@ -306,12 +324,12 @@ Rectangle {
             /* main text */
             TextField {
                 id: etmbsMain
-                y: 0
-                width: etmbs.width
-                height: etmbs.height / 2
+                y: _magickSpacer()
+                width: _magickWidth()
+                height: _magickHeight() - _magickSpacer()
 
                 horizontalAlignment: Text.AlignHCenter
-                //verticalAlignment: Text.AlignBottom
+                verticalAlignment: Text.AlignBottom
                 text: root.mainText
                 //qss: root.mainQss
                 inputMask: root.inputMask
@@ -344,15 +362,12 @@ Rectangle {
             /* sub text */
             DapQmlLabel {
                 id: etmbsSub
-                //Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                //Layout.fillWidth: true
-                //Layout.fillHeight: true
-                y: etmbs.height / 2
-                width: etmbs.width
-                height: etmbs.height / 2
+                width: _magickWidth()
+                height: _magickHeight()
+                y: _magickSubPos()
 
                 horizontalAlign: Text.AlignHCenter
-                //verticalAlign: Text.AlignTop
+                verticalAlign: Text.AlignTop
                 text: root.subText
                 qss: root.subQss
                 onClicked: root.clicked();

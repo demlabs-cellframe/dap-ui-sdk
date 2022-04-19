@@ -20,6 +20,12 @@ Item {
     }
 
     DapQmlRectangle {
+        id: spacer
+        visible: false
+        qss: "radiobtn-spacer"
+    }
+
+    DapQmlRectangle {
         id: icnResizer
         visible: false
         qss: "ph-icn-resizer"
@@ -44,23 +50,29 @@ Item {
 
         x: (root.width - width) / 2
         y: title.y + title.height * 2
-        width: resizer.width // root.width - 72
+        width: resizer.width
         height: root.height - y - notice.height
         clip: true
 
-        delegate: DapQmlButton {
-            buttonStyle: DapQmlButton.IconMainSubIcon
-            mainText: model.key
-            subText: " "
-            mainQss: "ph-btn-label-main"
-            subQss: ""
-            icon: "ic_key-item"
-            iconRight: "ic_copy"
-            separator: true
-            iconSize: icnResizer.height
-            iconRightSize: icnResizer.height
+        delegate: Item {
             width: resizer.width
-            height: resizer.height
+            height: resizer.height + spacer.height
+
+            DapQmlButton {
+                buttonStyle: DapQmlButton.IconMainSubIcon
+                mainText: model.key
+                subText: " "
+                mainQss: "ph-btn-label-main"
+                subQss: ""
+                icon: "ic_key-item"
+                iconRight: "ic_copy"
+                separator: true
+                iconSize: icnResizer.height
+                iconRightSize: icnResizer.height
+                width: resizer.width
+                height: resizer.height
+                y: spacer.height / 2
+            }
         }
     }
 

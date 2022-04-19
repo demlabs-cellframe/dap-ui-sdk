@@ -56,7 +56,13 @@ Item {
     DapQmlRectangle {
         id: resizer
         visible: false
-        qss: "choosetheme-btn-resizer"
+        qss: "radiobtn-resizer"
+    }
+
+    DapQmlRectangle {
+        id: spacer
+        visible: false
+        qss: "radiobtn-spacer"
     }
 
     /* listview */
@@ -65,23 +71,30 @@ Item {
 
         x: (root.width - width) / 2
         y: title.y + title.height * 2
-        width: root.width - 72
+        width: resizer.width
         height: root.height - y
         clip: true
 
         model: themeModel
 
-        delegate: DapQmlRadioButton {
-            property string radioName: model.name
-            text: model.name + " Theme"
-            separator: true
-            iconSize: resizer.height
+        delegate: Item {
             width: resizer.width
-            height: resizer.height
-            //checked: themeModel.isCurrent (model.name)
-            onClicked: {
-                root.sigSelect (model.index, model.name);
-                updateChecks();
+            height: resizer.height + spacer.height
+            property string radioName: model.name
+            property bool checked: false
+
+            DapQmlRadioButton {
+                text: model.name + " Theme"
+                checked: parent.checked
+                separator: true
+                iconSize: resizer.height
+                width: resizer.width
+                height: resizer.height
+                y: spacer.height / 2
+                onClicked: {
+                    root.sigSelect (model.index, model.name);
+                    updateChecks();
+                }
             }
         }
     }}

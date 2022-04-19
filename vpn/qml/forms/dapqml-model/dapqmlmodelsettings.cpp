@@ -143,7 +143,7 @@ void DapQmlModelSettings::slotUpdateLabels()
 //    DapQmlModelSettingsItem{DapQmlModelSettings::StyleId(3),     "3", "", "1", defaultCb},
 //    DapQmlModelSettingsItem{DapQmlModelSettings::StyleId(4),     "4", "", "1", defaultCb},
 
-//    DapQmlModelSettingsItem{SI_SPACER,     "", "", "1", defaultCb},
+    DapQmlModelSettingsItem{SI_SPACER,     "", "", "1", defaultCb},
     DapQmlModelSettingsItem{SI_TITLE/*TOP*/,   tr ("Settings"), "", "settings_icon", defaultCb},
 //    DapQmlModelSettingsItem{SI_SPACER,     "", "", "2", defaultCb},
 

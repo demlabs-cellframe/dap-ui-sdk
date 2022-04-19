@@ -34,6 +34,16 @@ Item {
         return false;
     }
 
+    function calcHeight(sid) {
+
+        switch(sid) {
+        case QuiSettingsForm.StyleId.SI_TITLE: return resizer2.height;
+        case QuiSettingsForm.StyleId.SI_SPACER: return spacer.height;
+        }
+
+        return resizer1.height;
+    }
+
     Rectangle {
         id: settingsContainer
         anchors.fill: parent
@@ -59,25 +69,23 @@ Item {
                 visible: false
                 id: resizer1
                 qss: "sett-resizer1"
-//                Component.onCompleted: StyleDebugTree.describe (
-//                   "Settings Resizer 1",
-//                    ["x", "y", "width", "height"],
-//                   this);
             }
 
             DapQmlLabel {
                 visible: false
                 id: resizer2
                 qss: "sett-resizer2"
-//                Component.onCompleted: StyleDebugTree.describe (
-//                   "Settings Resizer 2",
-//                    ["x", "y", "width", "height"],
-//                   this);
+            }
+
+            DapQmlLabel {
+                visible: false
+                id: spacer
+                qss: "sett-spacer"
             }
 
             delegate: Item {
                 id: delegate
-                height: model.sid !== QuiSettingsForm.StyleId.SI_TITLE ? resizer1.height : resizer2.height
+                height: calcHeight (model.sid) //model.sid !== QuiSettingsForm.StyleId.SI_TITLE ? resizer1.height : resizer2.height
                 property int mySid: model.sid
                 property var settingsModel: settingsListView.model
 
