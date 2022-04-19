@@ -18,6 +18,7 @@ HEADERS += \
     $$PWD/dapqml-widgets/dapqmlserialkeyinput.h \
     $$PWD/dapqml-widgets/dapqmlstyle.h \
     $$PWD/dapqml-widgets/dapqmlthememodel.h \
+    $$PWD/dapqml-widgets/dapqmlwindow.h \
     $$PWD/dapqml-widgets/style/debug/styledebugitemdescriptor.h \
     $$PWD/dapqml-widgets/style/qssitem.h \
     $$PWD/dapqml-widgets/style/qsslink.h \
@@ -31,6 +32,7 @@ SOURCES += \
     $$PWD/dapqml-widgets/dapqmlserialkeyinput.cpp \
     $$PWD/dapqml-widgets/dapqmlstyle.cpp \
     $$PWD/dapqml-widgets/dapqmlthememodel.cpp \
+    $$PWD/dapqml-widgets/dapqmlwindow.cpp \
     $$PWD/dapqml-widgets/style/debug/styledebugitemdescriptor.cpp \
     $$PWD/dapqml-widgets/style/qssitem.cpp \
     $$PWD/dapqml-widgets/style/qsslink.cpp \

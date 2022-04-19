@@ -62,6 +62,7 @@ public:
 
   static void setup (const QString &styleSheet);
   static void update();
+  static void sWindowResized (int a_width, int a_height);
   static void sRequestRedraw();
   /// @}
 
@@ -89,6 +90,7 @@ signals:
 protected slots:
   void _applyStyle();
   void _resized (int a_width, int a_height);
+  //void _resizing();
   /// @}
 };
 
