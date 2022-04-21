@@ -2,6 +2,7 @@ import QtQuick 2.1
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 import DapQmlStyle 1.0
+import DapQmlSerialKeyInput 1.0
 
 Rectangle {
     id: root
@@ -332,7 +333,16 @@ Rectangle {
                 verticalAlignment: Text.AlignBottom
                 text: root.mainText
                 //qss: root.mainQss
-                inputMask: root.inputMask
+                //inputMask: root.inputMask
+                inputMethodHints: Qt.ImhSensitiveData
+
+                DapQmlSerialKeyInput {
+                    //anchors.fill: parent
+                    id: filter
+                    objectName: "serialInputFilter"
+                }
+
+                Component.onCompleted: filter.setup(this)
 
                 /* vars */
                 property string fontFamiliy: "Lato"

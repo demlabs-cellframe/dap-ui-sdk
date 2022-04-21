@@ -70,22 +70,22 @@ Item {
         }
     }
 
-    TextField {
-        x: (parent.width - width) / 2
-        y: 15
-        width: parent.width - 74
-        height: 64
-        color: "#333333"
-        inputMethodHints: Qt.ImhSensitiveData
+//    TextField {
+//        x: (parent.width - width) / 2
+//        y: 15
+//        width: parent.width - 74
+//        height: 64
+//        color: "#333333"
+//        inputMethodHints: Qt.ImhSensitiveData
 
-        DapQmlSerialKeyInput {
-            //anchors.fill: parent
-            id: filter
-            objectName: "serialInputFilter"
-        }
+//        DapQmlSerialKeyInput {
+//            //anchors.fill: parent
+//            id: filter
+//            objectName: "serialInputFilter"
+//        }
 
-        Component.onCompleted: filter.setup(this)
-    }
+//        Component.onCompleted: filter.setup(this)
+//    }
 
     /* error label */
     DapQmlLabel {

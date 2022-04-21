@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import QtGraphicalEffects 1.5
+import "qrc:/dapqml-widgets"
 
 Item {
     id: root
@@ -46,39 +47,31 @@ Item {
     }
 
     /* logo */
-    Image {
+    DapQmlLabel {
         x: parent.width / 2 - width / 2
         y: 248
         z: 12
         width: 230
         height: 59
-        mipmap: true
-        source: root.logoPng
+        qss: "splash-logo"
     }
 
     /* status text */
-    Text {
-        y: 585
+    DapQmlLabel {
+        qss: "splash-status"
         z: 12
         width: parent.width
-        horizontalAlignment: Text.AlignHCenter
         text: root.statusText
         color: root.mainColor
-        font.family: "Lato"
-        font.pixelSize: 18
-        font.weight: Font.Normal
     }
 
     /* version text */
-    Text {
-        y: parent.height - 31 - 32
+    DapQmlLabel {
+        qss: "splash-version"
+        y: parent.height - height
         z: 12
         width: parent.width
-        horizontalAlignment: Text.AlignHCenter
         text: root.versionText
         color: root.mainColor
-        font.family: "Lato"
-        font.pixelSize: 12
-        font.weight: Font.Normal
     }
 }

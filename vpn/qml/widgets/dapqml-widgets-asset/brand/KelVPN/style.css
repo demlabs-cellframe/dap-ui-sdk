@@ -355,6 +355,26 @@
 }
 
 /****************************************************
+ * Splashscreen
+ ***************************************************/
+
+.splash-logo
+{
+	scaled-rect: scaled(nan,240,276,76,true);
+	qproperty-scaledPixmap: "qrc:/logo.png";
+}
+
+.splash-status
+{
+	scaled-rect: scaled(-1,585,-1,64,false,18);
+}
+
+.splash-version
+{
+	scaled-rect: scaled(-1,nan,-1,96,false,12);
+}
+
+/****************************************************
  * Login
  ***************************************************/
 
@@ -682,7 +702,7 @@
 
 .bugrep-status
 {
-	scaled-rect: scaled(112,241,200,104,false,18);
+	scaled-rect: scaled(112,215,200,104,false,18);
 	color: "@text";
 }
 

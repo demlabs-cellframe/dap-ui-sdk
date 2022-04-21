@@ -171,11 +171,6 @@ void DapQmlStyle::_applyStyle()
           /* set scale */
           if (it.key() == "scaledRect" || it.key() == "scaledFont")
             {
-//              auto value  = it.value(); // .value<Style::Scaled> ();
-//              auto object = qvariant_cast<QObject*> (value);
-//              auto scaled = qobject_cast<Style::Scaled*> (object);
-//              if (scaled)
-//                scaled->adjust (m_item, s_screenWidth, s_screenHeight);
               auto scaled  = it.value().value<Style::Scaled> ();
               scaled.adjust (m_item, s_screenWidth, s_screenHeight);
               continue;
@@ -189,10 +184,12 @@ void DapQmlStyle::_applyStyle()
 
 void DapQmlStyle::_resized(int a_width, int a_height)
 {
-  //qDebug() << __PRETTY_FUNCTION__ << a_width << a_height;
   s_screenWidth   = a_width;
   s_screenHeight  = a_height;
   _applyStyle();
+
+  if (this != s_globalSignal)
+    emit resized (a_width, a_height);
 }
 
 /*-----------------------------------------*/
