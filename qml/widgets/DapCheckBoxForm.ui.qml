@@ -57,8 +57,7 @@ CheckBox {
             width: indicatorInnerSize
             height: indicatorInnerSize
             anchors.top: parent.top
-//            x: 0
-//            y: parent.height / 2 - height / 2
+            mipmap: true
             y: parent.height
             source: checked ? checkboxOn : checkboxOff
         }
