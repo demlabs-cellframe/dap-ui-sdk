@@ -47,6 +47,7 @@ CheckBox {
             color: nameTextColor
             horizontalAlignment: Text.AlignLeft
             text: nameCheckbox
+            font: mainFont.dapFont.regular14
         }
 //    ///Indicator Options.
     indicator:
