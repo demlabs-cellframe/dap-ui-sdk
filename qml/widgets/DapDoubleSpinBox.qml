@@ -5,6 +5,8 @@ import QtGraphicalEffects 1.0
 SpinBox {
     id: spinbox
 
+    property alias maxSym: textInput.maximumLength
+
     from: realFrom * factor
     to: realTo * factor
     value: defaultValue * factor
@@ -39,6 +41,7 @@ SpinBox {
 
         TextInput {
             z: 2
+            id:textInput
 
             anchors.top: spinbox.top
             anchors.bottom: spinbox.bottom
@@ -53,7 +56,7 @@ SpinBox {
             horizontalAlignment: Qt.AlignHCenter
             verticalAlignment: Qt.AlignVCenter
 
-            maximumLength: 6
+//            maximumLength: 4
 
 
             readOnly: !spinbox.editable
