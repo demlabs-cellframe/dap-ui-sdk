@@ -182,4 +182,21 @@ void MenuFooter::_startAnim()
   m_posAnim->start();
 }
 
+void MenuFooter::slotProgramSettingButtonPress()
+{
+    qDebug() << "slotProgramSettingButtonPress";
+    ui->btnSettings->toggle();
+}
+
+void MenuFooter::slotProgramStatisticButtonPress()
+{
+    qDebug() << "slotProgramStatisticButtonPress";
+    ui->btnAccaunt->toggle();
+}
+
+void MenuFooter::slotProgramMiddleButtonPress()
+{
+    ui->btnConnection->toggle();
+}
+
 /*-----------------------------------------*/

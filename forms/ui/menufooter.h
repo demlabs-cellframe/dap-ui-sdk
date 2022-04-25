@@ -101,6 +101,10 @@ public slots:
   void slotMoveToBottom();
   /// resize event
   void slotResizeEvent (QSize a_oldSize, QSize a_newSize);
+  /// program button press
+  void slotProgramSettingButtonPress();
+  void slotProgramStatisticButtonPress();
+  void slotProgramMiddleButtonPress();
 private slots:
   /// react on user interaction
   void slotButtonToggled (bool checked);
