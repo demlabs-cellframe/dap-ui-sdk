@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.4
 import QtQuick.Controls 2.0
 import QtGraphicalEffects 1.0
 RadioButton
@@ -51,10 +51,11 @@ RadioButton
         }
     ///Indicator Options.
     indicator:
-        DapImageLoader {
+        Image {
         anchors.verticalCenter: parent.verticalCenter
-        innerWidth: indicatorInnerSize
-        innerHeight: indicatorInnerSize
+        width: indicatorInnerSize
+        height: indicatorInnerSize
+        mipmap: true
 
         source: checked ? "qrc:/resources/icons/" + pathTheme + "/radio_btn_on.png" : "qrc:/resources/icons/" + pathTheme + "/radio_btn_off.png"
         visible: true
