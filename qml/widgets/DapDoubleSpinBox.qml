@@ -5,6 +5,8 @@ import QtGraphicalEffects 1.0
 SpinBox {
     id: spinbox
 
+    property alias maxSym: textInput.maximumLength
+
     from: realFrom * factor
     to: realTo * factor
     value: defaultValue * factor
@@ -36,32 +38,34 @@ SpinBox {
     }
 
     contentItem:
-//        Item
-//        {
-//            anchors.fill: parent
-//            anchors.leftMargin: minusButton.width
-//            anchors.rightMargin: minusButton.width
-            TextInput {
-                z: 2
-//                anchors.fill: parent
-                anchors.top: spinbox.top
-                anchors.bottom: spinbox.bottom
-                height: spinbox.height
-//                width: spinbox.width
-                text: spinbox.textFromValue(spinbox.value, spinbox.locale)
 
-                font: spinbox.font
-                color: currTheme.textColor
-            //        selectionColor: "#21be2b"
-            //        selectedTextColor: "#ffffff"
-                horizontalAlignment: Qt.AlignHCenter
-                verticalAlignment: Qt.AlignVCenter
+        TextInput {
+            z: 2
+            id:textInput
 
-                readOnly: !spinbox.editable
-                validator: spinbox.validator
-                inputMethodHints: Qt.ImhFormattedNumbersOnly
-            }
-//        }
+            anchors.top: spinbox.top
+            anchors.bottom: spinbox.bottom
+
+            height: spinbox.height
+            text: spinbox.textFromValue(spinbox.value, spinbox.locale)
+
+            font: spinbox.font
+            color: currTheme.textColor
+        //        selectionColor: "#21be2b"
+        //        selectedTextColor: "#ffffff"
+            horizontalAlignment: Qt.AlignHCenter
+            verticalAlignment: Qt.AlignVCenter
+
+//            maximumLength: 4
+
+
+            readOnly: !spinbox.editable
+//            readOnly: true
+            validator: spinbox.validator
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
+    }
+
+
 
     up.indicator: Rectangle {
         x: spinbox.mirrored ? 0 : parent.width - width
@@ -122,7 +126,7 @@ SpinBox {
 
 
     background: Rectangle {
-        implicitWidth: spinbox.width
+//        implicitWidth: spinbox.width
         color: "transparent"
     }
 }
