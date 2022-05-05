@@ -333,7 +333,7 @@ Rectangle {
                 verticalAlignment: Text.AlignBottom
                 text: root.mainText
                 //qss: root.mainQss
-                //inputMask: root.inputMask
+                inputMask: root.inputMask
                 inputMethodHints: Qt.ImhSensitiveData
 
                 DapQmlSerialKeyInput {
@@ -342,7 +342,10 @@ Rectangle {
                     objectName: "serialInputFilter"
                 }
 
-                Component.onCompleted: filter.setup(this)
+                Component.onCompleted: {
+                    if(root.buttonStyle === DapQmlButton.Style.EditTopMainBottomSub)
+                        filter.setup(this);
+                }
 
                 /* vars */
                 property string fontFamiliy: "Lato"

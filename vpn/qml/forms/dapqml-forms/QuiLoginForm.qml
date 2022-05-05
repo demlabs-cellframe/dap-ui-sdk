@@ -46,6 +46,10 @@ Item {
         btnChooseServer.mainText    = a_name;
     }
 
+    function setupInputMask() {
+        btnEnterSerial.inputMask    = ">NNNN-NNNN-NNNN-NNNN;_"
+    }
+
     /* W I P */
     Timer {
         interval: 500
@@ -130,6 +134,7 @@ Item {
     /* enter serial */
     DapQmlRectangle {
         qss: "login-btn-serial-container"
+
         DapQmlButton {
             id: btnEnterSerial
             objectName: "btnEnterSerial"
@@ -137,6 +142,12 @@ Item {
             x: (parent.width - width) / 2
             z: 15
             width: parent.width - 74
+            //height: parent.height
+
+//            Rectangle {
+//                color: "gray"
+//                anchors.fill: parent
+//            }
 
             buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
             mainText: ""
@@ -144,7 +155,7 @@ Item {
             qss: "login-btn-serial"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            inputMask: ">NNNN-NNNN-NNNN-NNNN;_"
+            //inputMask: ">NNNN-NNNN-NNNN-NNNN;_"
             separator: true
 
             onClicked: root.sigChooseSerial()

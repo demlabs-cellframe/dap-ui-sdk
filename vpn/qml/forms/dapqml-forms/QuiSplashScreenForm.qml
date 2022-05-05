@@ -4,7 +4,6 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
-    visible: opactiy > 0
     enabled: false
     property string formName: "SplashScreen"
 
