@@ -12,7 +12,6 @@
         <file>widgets/DapTopPanel.qml</file>
         <file>Device.qml</file>
         <file>widgets/DapRadioButton.qml</file>
-        <file>widgets/DapRadioButtonForm.ui.qml</file>
         <file>widgets/DapScrollView.qml</file>
         <file>widgets/DapScrollViewForm.ui.qml</file>
         <file>widgets/DapText.qml</file>
@@ -31,7 +30,6 @@
         <file>widgets/DapMenuTabWidget.qml</file>
         <file>widgets/DapMenuTabWidgetForm.ui.qml</file>
         <file>widgets/DapCheckBox.qml</file>
-        <file>widgets/DapCheckBoxForm.ui.qml</file>
         <file>widgets/DapTextField.qml</file>
         <file>widgets/DapComboBoxNew.qml</file>
         <file>icons/arrow_down.svg</file>
