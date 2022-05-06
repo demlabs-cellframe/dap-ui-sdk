@@ -170,16 +170,14 @@ Button
 
                 onPressed: {
                     if(dapButton.enabled){
-                        light.isPressed = true
-                        shadowAnim.start()
+                        shadowAnimPress.start()
                     }
                 }
 
                 onReleased: {
                     if(dapButton.enabled)
                     {
-                        light.isPressed = false
-                        shadowAnim.start()
+                        shadowAnimRelease.start()
 
                         if(control.containsMouse) dapButton.clicked()
                         else mouseExitedAnim.start()
@@ -216,10 +214,17 @@ Button
         spread: 0
 
         PropertyAnimation {
-            id: shadowAnim
+            id: shadowAnimPress
             target: light
             properties: "color"
-            to: light.isPressed? "#1F242F" : innerShadowColor
+            to: "#1F242F"
+            duration: 80
+        }
+        PropertyAnimation {
+            id: shadowAnimRelease
+            target: light
+            properties: "color"
+            to: innerShadowColor
             duration: 80
         }
     }
