@@ -27,6 +27,19 @@ Item {
         logoPng     = "";
     }
 
+    /* dummy's */
+    DapQmlLabel {
+        id: gradientColorTop
+        visible: false
+        qss: "splash-gradient-top"
+    }
+
+    DapQmlLabel {
+        id: gradientColorBottom
+        visible: false
+        qss: "splash-gradient-bottom"
+    }
+
     /* gradient background */
     Rectangle {
         id: rect
@@ -34,8 +47,8 @@ Item {
         anchors.fill: parent
 
         gradient: Gradient {
-            GradientStop { position: 0.0; color: "#E62CC7" }
-            GradientStop { position: 1.0; color: "#F53172" }
+            GradientStop { position: 0.0; color: gradientColorTop.color } //"#E62CC7" }
+            GradientStop { position: 1.0; color: gradientColorBottom.color } //"#F53172" }
         }
     }
 

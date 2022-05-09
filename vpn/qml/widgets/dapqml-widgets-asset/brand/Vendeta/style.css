@@ -388,6 +388,16 @@
 	scaled-rect: scaled(-1,nan,-1,96,false,12);
 }
 
+.splash-gradient-top
+{
+	color: "#01BFE8";
+}
+
+.splash-gradient-bottom
+{
+	color: "#0098CC";
+}
+
 /****************************************************
  * Login
  ***************************************************/
