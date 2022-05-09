@@ -69,6 +69,20 @@
 }
 
 /****************************************************
+ * Colors
+ ***************************************************/
+
+.c-label
+{
+	color: "@text";
+}
+
+.c-brand
+{
+	color: "@brand";
+}
+
+/****************************************************
  * Widgets
  ***************************************************/
 
@@ -295,33 +309,33 @@
 .popup-dialog
 {
 	scaled-rect: scaled(nan,nan,280,186,false);
-	color: "#FFFFFF";
+	color: "@background";
 }
 
 .popup-dalog-title
 {
 	scaled-rect: scaled(57,20,170,24,false,20);
-	color: "#000000";
+	color: "@text";
 	clip: false;
 }
 
 .popup-dalog-text
 {
 	scaled-rect: scaled(22,57,233,50,false,16);
-	color: "#676767";
+	color: "@label";
 	clip: false;
 }
 
 .popup-dalog-left
 {
 	scaled-rect: scaled(11,132,86,36,false,14);
-	color: "#000000";
+	color: "@text";
 }
 
 .popup-dalog-right
 {
 	scaled-rect: scaled(183,132,86,36,false,14);
-	color: "#D61F5D";
+	color: "@brand";
 }
 
 /****************************************************
@@ -392,7 +406,7 @@
 .login-error-label
 {
 	scaled-rect: scaled(51,236,327,57,false,13);
-	color: "#F53172";
+	color: "@error";
 }
 
 .login-separator-container
@@ -591,7 +605,7 @@
 
 .dashboard-title
 {
-	color: "#DA0B82";
+	color: "@brand";
 	scaled-rect: scaled(-1,62,-1,28,false,24);
 	font-weight: Font.Bold;
 }

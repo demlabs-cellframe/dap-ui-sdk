@@ -204,7 +204,7 @@ Item {
             width: parent.width / 2 - 2
             height: parent.height
             horizontalAlign: Text.AlignRight
-            qss: "login-obtain-font"
+            qss: "login-obtain-font c-label"
             onClicked: root.sigObtainNewKey()
 //          font.family: "Lato"
 //          font.pixelSize: 16
@@ -219,7 +219,7 @@ Item {
             width: parent.width / 2
             height: parent.height
             horizontalAlign: Text.AlignLeft
-            qss: "login-obtain-font"
+            qss: "login-obtain-font c-brand"
 //          font.family: "Lato"
 //          font.pixelSize: 16
 //          font.weight: Font.Normal

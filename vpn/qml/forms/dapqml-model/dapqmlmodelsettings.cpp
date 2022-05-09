@@ -150,7 +150,9 @@ void DapQmlModelSettings::slotUpdateLabels()
     DapQmlModelSettingsItem{SI_BUTTONRED,  tr ("Get new licence key"), /*"265 days left"*/" ", "settings_icon ic_renew", cbLicenceGet},
     DapQmlModelSettingsItem{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key", cbLicenceReset},
  // DapQmlModelSettingsItem{SI_LINK,       tr ("Language"), "", "settings_icon ic_language", cbLanguage},
+#ifndef DISABLE_THEMES
     DapQmlModelSettingsItem{SI_LINK,       tr ("Color theme"), "", "settings_icon ic_theme", cbColorTheme},
+#endif // DISABLE_THEMES
 
     DapQmlModelSettingsItem{SI_TITLE,      tr ("Support"), "", "settings_icon", defaultCb},
 
@@ -161,8 +163,10 @@ void DapQmlModelSettings::slotUpdateLabels()
 
     DapQmlModelSettingsItem{SI_LINK,       tr ("Bug Reports"), "", "settings_icon ic_information_bug-report", cbBugReport},
     DapQmlModelSettingsItem{SI_BUTTON,     tr ("Serial key history on this device"), "", "settings_icon ic_key-history", cbLicenceHistory},
+#ifndef DISABLE_TERMSOFUSE_AND_PRIVACYPOLICY
     DapQmlModelSettingsItem{SI_BUTTON,     tr ("Terms of use"), "", "settings_icon ic_terms_policy", cbTermsOfUse},
     DapQmlModelSettingsItem{SI_BUTTON,     tr ("Privacy policy"), "", "settings_icon ic_terms_policy", cbPrivacyPolicy},
+#endif // DISABLE_THEMES
     DapQmlModelSettingsItem{SI_BUTTONGRAY, tr ("Version"), "@version", "settings_icon ic_version", cbVersion},
   };
 
