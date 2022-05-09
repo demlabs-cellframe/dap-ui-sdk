@@ -171,6 +171,7 @@ Button
                 onPressed: {
                     if(dapButton.enabled){
                         shadowAnimPress.start()
+                        shadow.visible = false
                     }
                 }
 
@@ -178,6 +179,7 @@ Button
                     if(dapButton.enabled)
                     {
                         shadowAnimRelease.start()
+                        shadow.visible = true
 
                         if(control.containsMouse) dapButton.clicked()
                         else mouseExitedAnim.start()
@@ -209,7 +211,7 @@ Button
         samples: 32
         cached: true
         color: /*isPressed? "#1F242F" : */innerShadowColor
-        source: shadow
+        source: dapBackgroundButton
         visible: dapBackgroundButton.visible
         spread: 0
 
