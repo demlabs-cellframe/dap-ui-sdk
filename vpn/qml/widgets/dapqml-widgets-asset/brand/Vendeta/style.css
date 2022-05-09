@@ -1,0 +1,857 @@
+/****************************************************
+ * Themes
+ ***************************************************/
+
+.@light
+{
+	text: "#04004E";
+	background: "#F7F8FA";
+	label: "#5C5B74";
+	light-grey: "#A4A3C0";
+	error: "#F53172";
+	brand: "#DA0B82";
+	accent: "#F53172";
+	upload: "#5E31F5";
+	grid: "#211F46";
+	switch-bg-on: 				"qrc:/light/switch/bg_on.png";
+	switch-bg-off: 				"qrc:/light/switch/bg_off.png";
+	switch-toggle-on: 			"qrc:/light/switch/toggle_on.png";
+	switch-toggle-off: 			"qrc:/light/switch/toggle_off.png";
+	button-frame: 				"qrc:/light/btn_server_bg.png";
+	radio-on: 					"qrc:/light/radio_btn_on.png";
+	radio-off: 					"qrc:/light/radio_btn_off.png";
+	separator-left:             "qrc:/light/separator_left.png";
+	separator-mid:              "qrc:/light/separator_mid.png";
+	separator-right:            "qrc:/light/separator_right.png";
+	push-button-active: 		"qrc:/light/btn_bg_hover_active.png";
+	push-button-inactive: 		"qrc:/light/btn_bg.png";
+	footer-settings-active:     "qrc:/light/btn_settings_active.png";
+	footer-settings-inactive:   "qrc:/light/btn_settings.png";
+	footer-dashboard-active:    "qrc:/light/btn_connection_active.png";
+	footer-dashboard-inactive:  "qrc:/light/btn_connection.png";
+	footer-statistics-active:   "qrc:/light/btn_account_active.png";
+	footer-statistics-inactive: "qrc:/light/btn_account.png";
+	bugrep-bg: 					"qrc:/light/report_bg.png";
+	login-logo: 				"qrc:/light/login-logo.png";
+}
+
+.@dark
+{
+	text: "#FFFFFF";
+	background: "#2f2e42";
+	label: "#A4A3C0";
+	light-grey: "#A4A3C0";
+	error: "#F5FF00";
+	brand: "#DA0B82";
+	accent: "#FF22A2";
+	upload: "#9F83FF";
+	grid: "#211F46";
+	switch-bg-on: 				"qrc:/dark/switch/bg_on.png";
+	switch-bg-off: 				"qrc:/dark/switch/bg_off.png";
+	switch-toggle-on: 			"qrc:/dark/switch/toggle_on.png";
+	switch-toggle-off: 			"qrc:/dark/switch/toggle_off.png";
+	button-frame: 				"qrc:/dark/btn_server_bg.png";
+	radio-on: 					"qrc:/dark/radio_btn_on.png";
+	radio-off: 					"qrc:/dark/radio_btn_off.png";
+	separator-left:             "qrc:/dark/separator_left.png";
+	separator-mid:              "qrc:/dark/separator_mid.png";
+	separator-right:            "qrc:/dark/separator_right.png";
+	push-button-active: 		"qrc:/dark/btn_bg_hover_active.png";
+	push-button-inactive: 		"qrc:/dark/btn_bg.png";
+	footer-settings-active:     "qrc:/dark/btn_settings_active.png";
+	footer-settings-inactive:   "qrc:/dark/btn_settings.png";
+	footer-dashboard-active:    "qrc:/dark/btn_connection_active.png";
+	footer-dashboard-inactive:  "qrc:/dark/btn_connection.png";
+	footer-statistics-active:   "qrc:/dark/btn_account_active.png";
+	footer-statistics-inactive: "qrc:/dark/btn_account.png";
+	bugrep-bg: 					"qrc:/dark/report_bg.png";
+	login-logo: 				"qrc:/dark/login-logo.png";
+}
+
+/****************************************************
+ * Widgets
+ ***************************************************/
+
+.switch-bg-off
+{
+	qproperty-scaledPixmap: "@switch-bg-off";
+}
+
+.switch-bg-on
+{
+	qproperty-scaledPixmap: "@switch-bg-on";
+}
+
+.switch-toggle-off
+{
+	qproperty-scaledPixmap: "@switch-toggle-off";
+}
+
+.switch-toggle-on
+{
+	qproperty-scaledPixmap: "@switch-toggle-on";
+}
+
+
+
+.btn-frame
+{
+	qproperty-scaledPixmap: "@button-frame";
+}
+
+
+
+.radio-on
+{
+	qproperty-scaledPixmap: "@radio-on";
+}
+
+.radio-off
+{
+	qproperty-scaledPixmap: "@radio-off";
+}
+
+.radio-label
+{
+	color: "@text";
+	scaled-font: scaled(16);	
+	font-weight: Font.Normal;
+}
+
+
+
+
+.form-title-close-btn
+{
+	scaled-rect: scaled(0,0,28,28,true);
+}
+
+.form-title-label
+{
+	scaled-rect: scaled(39,0,282,28,false,24);
+	color: "@text";
+}
+
+
+
+.sep-left
+{
+	source: "@separator-left";
+}
+
+.sep-mid
+{
+	source: "@separator-mid";
+}
+
+.sep-right
+{
+	source: "@separator-right";
+}
+
+
+
+.push-button
+{
+	active: "@push-button-active";
+	inactive: "@push-button-inactive";
+}
+
+
+
+.radiobtn-resizer
+{
+	scaled-rect: scaled(nan,nan,392,64,false);
+}
+
+.radiobtn-spacer
+{
+	scaled-rect: scaled(nan,nan,392,20,false);
+}
+
+/****************************************************
+ * Icons
+ ***************************************************/
+
+.ic_renew
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_renew.png");
+}
+
+.ic_key
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_key.png");
+}
+
+.ic_key-item
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_key-item.png");
+}
+
+.ic_language
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_language.png");
+}
+
+.ic_send-report
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_send-report.png");
+}
+
+.ic_bot
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_bot.png");
+}
+
+.ic_close
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_close.png");
+}
+
+.ic_copy
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_copy.png");
+}
+
+.ic_trash
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_trash.png");
+}
+
+.ic_information_bug-report
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_information_bug-report.png");
+}
+
+.ic_key-history
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_key-history.png");
+}
+
+.ic_terms_policy
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_terms_policy.png");
+}
+
+.ic_terms_policy
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_terms_policy.png");
+}
+
+.ic_version
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_version.png");
+}
+
+.ic_theme
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_theme.png");
+}
+
+.ic_spinner
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/Spinner.gif");
+}
+
+.ic_online
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/icon_online.png");
+}
+
+.ic_offline
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/icon_offline.png");
+}
+
+
+/****************************************************
+ * Main window
+ ***************************************************/
+
+.content-frame
+{
+	scaled-rect: scaled(0,0,-1,754,false);
+}
+
+.content-background
+{
+	color: "@background";
+}
+
+/****************************************************
+ * Misc
+ ***************************************************/
+
+.dialog-title
+{
+	scaled-rect: scaled(34,62,360,28,false);
+	color: "@text";
+}
+
+/****************************************************
+ * Popup Dialog
+ ***************************************************/
+
+.popup-dialog
+{
+	scaled-rect: scaled(nan,nan,280,186,false);
+	color: "#FFFFFF";
+}
+
+.popup-dalog-title
+{
+	scaled-rect: scaled(57,20,170,24,false,20);
+	color: "#000000";
+	clip: false;
+}
+
+.popup-dalog-text
+{
+	scaled-rect: scaled(22,57,233,50,false,16);
+	color: "#676767";
+	clip: false;
+}
+
+.popup-dalog-left
+{
+	scaled-rect: scaled(11,132,86,36,false,14);
+	color: "#000000";
+}
+
+.popup-dalog-right
+{
+	scaled-rect: scaled(183,132,86,36,false,14);
+	color: "#D61F5D";
+}
+
+/****************************************************
+ * Footer
+ ***************************************************/
+
+.footer-frame
+{
+	scaled-rect: scaled(-1,0,-1,172,false);
+}
+
+.footer-btn-settings
+{
+	scaled-rect: scaled(19,0,130,130,true);
+	active: "@footer-settings-active";
+	inactive: "@footer-settings-inactive";
+}
+
+.footer-btn-dashboard
+{
+	scaled-rect: scaled(149,0,130,130,true);
+	active: "@footer-dashboard-active";
+	inactive: "@footer-dashboard-inactive";
+}
+
+.footer-btn-statistics
+{
+	scaled-rect: scaled(279,0,130,130,true);
+	active: "@footer-statistics-active";
+	inactive: "@footer-statistics-inactive";
+}
+
+/****************************************************
+ * Splashscreen
+ ***************************************************/
+
+.splash-logo
+{
+	scaled-rect: scaled(nan,240,276,76,true);
+	qproperty-scaledPixmap: "qrc:/logo.png";
+}
+
+.splash-status
+{
+	scaled-rect: scaled(-1,585,-1,64,false,18);
+}
+
+.splash-version
+{
+	scaled-rect: scaled(-1,nan,-1,96,false,12);
+}
+
+/****************************************************
+ * Login
+ ***************************************************/
+
+.login-logo-container
+{
+	scaled-rect: scaled(-1,117,-1,89,true);
+}
+
+.login-logo
+{
+	scaled-rect: scaled(nan,nan,260,89,true);
+	qproperty-scaledPixmap: "@login-logo";
+}
+
+.login-error-label
+{
+	scaled-rect: scaled(51,236,327,57,false,13);
+	color: "#F53172";
+}
+
+.login-separator-container
+{
+	scaled-rect: scaled(-1,291,-1,4,true);
+}
+
+.login-separator
+{
+	scaled-rect: scaled(nan,nan,nan,4,false);
+}
+
+.login-btn-server-container
+{
+	scaled-rect: scaled(-1,292,-1,108,true);
+}
+
+.login-btn-server
+{
+	scaled-rect: scaled(nan,nan,nan,108,false);
+}
+
+.login-btn-serial-container
+{
+	scaled-rect: scaled(-1,406,-1,108,true);
+}
+
+.login-btn-serial
+{
+	scaled-rect: scaled(nan,nan,nan,108,false);
+}
+
+.login-btn-main
+{
+	scaled-font: scaled(20);
+	color: "@text";
+	font-weight: Font.Bold;
+}
+
+.login-btn-sub
+{
+	scaled-font: scaled(12);
+	color: "#A4A3C0";
+	font-weight: Font.Normal;
+}
+
+.login-connect
+{
+	scaled-rect: scaled(-1,570,374,80,true,12);
+}
+
+.login-obtain-container
+{
+	scaled-rect: scaled(-1,675,-1,19,false);
+}
+
+.login-obtain-font
+{
+	scaled-font: scaled(16);	
+}
+
+.login-obtain-label
+{
+	scaled-rect: scaled(nan,nan,160,nan,false);
+}
+
+.login-obtain-link
+{
+	scaled-rect: scaled(nan,nan,160,nan,false);
+}
+
+.login-serialkey-input
+{
+	border-width: 1;
+	border-color: "@light-grey";
+	color: "@background";
+	radius: 5;
+	opacity: 0.2;
+}
+
+
+/****************************************************
+ * Settings
+ ***************************************************/
+
+.sett-spacer
+{
+	scaled-rect: scaled(nan,nan,nan,20,false);
+}
+
+.sett-resizer1
+{
+	scaled-rect: scaled(nan,nan,nan,64,false,34);
+}
+
+.sett-resizer2
+{
+	scaled-rect: scaled(nan,nan,nan,116,false);
+}
+
+.sett-item
+{
+	scaled-rect: scaled(nan,nan,nan,nan,false,34);
+}
+
+.sett-btn-lbl-main
+{
+	color: "@text";
+	scaled-font: scaled(16);	
+	font-weight: Font.Normal;
+}
+
+.sett-btn-lbl-sub
+{
+	color: "@light-grey";
+	scaled-font: scaled(16);	
+	font-weight: Font.Normal;
+}
+
+.sett-btn-lbl-sub-red
+{
+	color: "@brand";
+	scaled-font: scaled(16);	
+	font-weight: Font.Bold;
+}
+
+.sett-title-lbl-main
+{
+	color: "@text";
+	horizontal-align: Text.AlignHCenter;
+	scaled-rect: scaled(nan,nan,nan,nan,false,24);
+	font-weight: Font.Bold;
+}
+
+/****************************************************
+ * Statistics
+ ***************************************************/
+
+.stat-title
+{
+	color: "@text";
+	font-size: 24;
+	font-weight: Font.Bold;
+}
+
+.stat-item-main
+{
+	color: "@text";
+	font-weight: Font.Normal;
+}
+
+.stat-item-sub
+{
+	color: "#A4A3C0";
+	font-weight: Font.Normal;
+}
+
+.stat-graph
+{
+	scaled-rect: scaled(-1,146,360,147,false);
+}
+
+.stat-speed
+{
+	scaled-rect: scaled(nan,307,154,99,false);
+}
+
+.stat-bytes
+{
+	scaled-rect: scaled(nan,406,154,99,false);
+}
+
+.stat-packets
+{
+	scaled-rect: scaled(nan,505,154,99,false);
+}
+
+.stat-misc
+{
+	scaled-rect: scaled(nan,604,154,99,false);
+}
+
+.stat-scaler-ind
+{
+	scaled-rect: scaled(nan,nan,154,50,false,24);
+}
+
+.stat-scaler-sub
+{
+	scaled-rect: scaled(nan,nan,154,50,false,12);
+}
+
+/****************************************************
+ * Dashboard
+ ***************************************************/
+
+.dashboard-title
+{
+	color: "#DA0B82";
+	scaled-rect: scaled(-1,62,-1,28,false,24);
+	font-weight: Font.Bold;
+}
+
+.dashboard-status-container
+{
+	scaled-rect: scaled(-1,107,-1,22,true);
+}
+
+.dashboard-status-label
+{
+	color: "@text";
+	scaled-rect: scaled(nan,nan,108,22,true,18);
+}
+
+.dashboard-status-icon
+{
+	scaled-rect: scaled(nan,nan,5,5,true);
+}
+
+.dashboard-error-label
+{
+	scaled-rect: scaled(51,140,327,57,false,14);
+	color: "#F53172";
+}
+
+.dashboard-switch
+{
+	scaled-rect: scaled(-1,250,238,150,true);
+}
+
+.dashboard-speed-container
+{
+	scaled-rect: scaled(-1,471,-1,99,true);
+}
+
+.dashboard-speed-main
+{
+	color: "@text";
+	scaled-font: scaled(26);	
+	font-weight: Font.Bold;
+}
+
+.dashboard-speed-sub
+{
+	color: "#A4A3C0";
+	scaled-font: scaled(12);	
+}
+
+.dashboard-server-container
+{
+	scaled-rect: scaled(-1,558,390,130,true);
+}
+
+.dashboard-server-main
+{
+	color: "@text";
+	scaled-font: scaled(18);	
+	font-weight: Font.Bold;
+}
+
+.dashboard-server-sub
+{
+	color: "#A4A3C0";
+	scaled-font: scaled(15);	
+}
+
+/****************************************************
+ * Bug report
+ ***************************************************/
+
+.bugrep-input
+{
+	scaled-rect: scaled(19,133,390,200,false,16);
+}
+
+.bugrep-input-content
+{
+	scaled-rect: scaled(nan,nan,316,120,false,16);
+}
+
+.bugrep-letter-counter
+{
+	scaled-rect: scaled(291,333,100,19,false,16);
+}
+
+.bugrep-attach-btn
+{
+	scaled-rect: scaled(19,392,390,20,false,16);
+	color: "#DA0B82";
+}
+
+.bugrep-send-btn
+{
+	scaled-rect: scaled(27,441,374,80,true,14);
+}
+
+.bugrep-sending
+{
+	scaled-rect: scaled(164,120,100,20,false,16);
+	color: "#A4A3C0";
+}
+
+.bugrep-animation
+{
+	scaled-rect: scaled(134,194,160,160,true);
+}
+
+.bugrep-status
+{
+	scaled-rect: scaled(112,215,200,104,false,18);
+	color: "@text";
+}
+
+.bugrep-bg
+{
+	qproperty-scaledPixmap: "@bugrep-bg";
+}
+
+.bugrep-input-textarea
+{
+	color: "@text";
+	scaled-font: scaled(16);	
+}
+
+.bugrep-input-placeholder
+{
+	color: "@label";
+	scaled-font: scaled(16);	
+}
+
+/****************************************************
+ * Purchase
+ ***************************************************/
+
+.purchase-btn-resizer
+{
+	scaled-rect: scaled(nan,nan,390,130,true);
+	color: "@text";
+}
+
+.purchase-btn-label-main
+{
+	scaled-font: scaled(18);	
+	color: "@text";
+}
+
+.purchase-btn-label-sub
+{
+	scaled-font: scaled(15);	
+	color: "#A4A3C0";
+}
+
+.purchase-btn-label-left
+{
+	scaled-font: scaled(30);	
+	color: "@text";
+	font-weight: Font.Bold;
+}
+
+/****************************************************
+ * Choose Server
+ ***************************************************/
+
+/*,chooseserver-btn-resizer
+{
+	scaled-rect: scaled(nan,nan,392,64,false);
+}*/
+
+/****************************************************
+ * Choose Language
+ ***************************************************/
+
+/*,chooselanguage-btn-resizer
+{
+	scaled-rect: scaled(nan,nan,392,64,false);
+}*/
+
+/****************************************************
+ * Choose Theme
+ ***************************************************/
+
+/*,choosetheme-btn-resizer
+{
+	scaled-rect: scaled(nan,nan,392,64,false);
+}*/
+
+/****************************************************
+ * Bug Report History
+ ***************************************************/
+
+.brh-btn-resizer
+{
+	scaled-rect: scaled(nan,nan,363,64,false);
+}
+
+.brh-icn-resizer
+{
+	scaled-rect: scaled(nan,nan,30,30,true);
+}
+
+.brh-btn-label-main
+{
+	color: "@text";
+	scaled-font: scaled(16);	
+}
+
+.brh-btn-label-sub
+{
+	color: "@light-grey";
+	scaled-font: scaled(12);
+}
+
+/****************************************************
+ * Purchase History
+ ***************************************************/
+
+.ph-btn-resizer
+{
+	scaled-rect: scaled(nan,nan,363,64,false);
+}
+
+.ph-icn-resizer
+{
+	scaled-rect: scaled(nan,nan,32,32,true);
+}
+
+.ph-notice-resizer
+{
+	scaled-rect: scaled(nan,nan,363,75,true);
+}
+
+.ph-notice-spacer
+{
+	scaled-rect: scaled(nan,nan,363,34,true);
+}
+
+.ph-btn-label-main
+{
+	color: "@text";
+	scaled-font: scaled(16);	
+}
+
+.ph-label-notice
+{
+	color: "@label";
+	scaled-font: scaled(16);	
+}
+
+/****************************************************
+ * Document Viewer
+ ***************************************************/
+
+.dv-content
+{
+	scaled-rect: scaled(-1,144,363,nan,false,14);
+}
+
+.dv-text
+{
+	color: "@text";
+	scaled-font: scaled(14);
+}
