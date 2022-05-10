@@ -26,6 +26,7 @@ enum class DapJsonCmdType
     BUG_REPORTS_STATUS,
     SEND_SIGN_UP_REQUEST,
     REQUEST_PURCHASE_VERIFY,
+    CLIENT_INFO,
     UNKNOWN
 };
 
