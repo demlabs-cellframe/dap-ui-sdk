@@ -4,24 +4,24 @@ void DapCmdSystemTray::handle(const QJsonObject *params)
 {
     Q_UNUSED(params);
 
-    if(params->contains("clientShowInterface"))
+    if(params->contains("client_show_interface"))
     {
-        qDebug() << "Request for show interface" << params->value("clientShowInterface").toString();
-        if (params->value("clientShowInterface").toString() == "setting")
+        qDebug() << "Request for show interface" << params->value("client_show_interface").toString();
+        if (params->value("client_show_interface").toString() == "setting")
             emit showSettingInterface();
-        if (params->value("clientShowInterface").toString() == "statistic")
+        if (params->value("client_show_interface").toString() == "statistic")
             emit showStatisticInterface();
-        if (params->value("clientShowInterface").toString() == "login")
+        if (params->value("client_show_interface").toString() == "login")
             emit showLoginInterface();
-        if (params->value("clientShowInterface").toString() == "dashboard")
+        if (params->value("client_show_interface").toString() == "dashboard")
             emit showDashboardInterface();
-        if (params->value("clientShowInterface").toString() == "clientStarted")
+        if (params->value("client_show_interface").toString() == "client_started")
             emit clientFound();
-        if (params->value("clientShowInterface").toString() == "clientExited")
+        if (params->value("client_show_interface").toString() == "client_exited")
             emit clientClosed();
-        if (params->value("clientShowInterface").toString() == "apllication_quit")
+        if (params->value("client_show_interface").toString() == "apllication_quit")
             emit quitRequest();
-        if (params->value("clientShowInterface").toString() == "tray_application_running")
+        if (params->value("client_show_interface").toString() == "tray_application_running")
             emit trayApplicationFound();
     }
 }
@@ -56,21 +56,21 @@ void DapCmdSystemTray::sendShowInterface(const QString &interfaceName)
 {
     qDebug() << "cmd sendShowInterface" << interfaceName;
     QJsonObject response;
-    response["clientShowInterface"] = interfaceName;
+    response["client_show_interface"] = interfaceName;
     sendCmd(&response);
 }
 
 void DapCmdSystemTray::clientStarted()
 {
     QJsonObject response;
-    response["clientShowInterface"] = "clientStarted";
+    response["client_show_interface"] = "client_started";
     sendCmd(&response);
 }
 
 void DapCmdSystemTray::clientExited()
 {
     QJsonObject response;
-    response["clientShowInterface"] = "clientExited";
+    response["client_show_interface"] = "client_exited";
     sendCmd(&response);
 }
 

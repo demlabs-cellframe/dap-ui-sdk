@@ -3,7 +3,7 @@
 #include <QDebug>
 #include "DapSession.h"
 
-const QString DapCmdSystemTray::actionParam = "clientShowInterface";
+const QString DapCmdSystemTray::actionParam = "client_show_interface";
 
 DapCmdSystemTray::DapCmdSystemTray(QObject *parent)
     : DapCmdServiceAbstract(DapJsonCmdType::CLIENT_INFO, parent) {
@@ -22,7 +22,7 @@ DapCmdSystemTray::~DapCmdSystemTray()
 void DapCmdSystemTray::sendInterfaceRequest(QString interfaceName)
 {
     QJsonObject response;
-    response["clientShowInterface"] = interfaceName;
+    response["client_show_interface"] = interfaceName;
     sendCmd(&response);
 }
 
