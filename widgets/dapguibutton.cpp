@@ -643,7 +643,7 @@ void DapGuiButton::resizeEvent (QResizeEvent *ev)
   s_linkWidth = UiScaling::pointsToPixels (LINK_WIDTH, UiScaling::getNativDPI());
   auto sz     = ev->size();
   QPoint pos{
-    sz.width() - s_linkWidth*3,
+    sz.width() - int(s_linkWidth * 1.5 * (1 + m_frame)),
     (sz.height() - s_linkWidth) / 2
   };
   m_lLink->move (pos);
