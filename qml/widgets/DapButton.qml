@@ -169,7 +169,7 @@ Button
                 onExited: if(dapButton.enabled && !pressed)mouseExitedAnim.start()
 
                 onPressed: {
-                    if(dapButton.enabled){
+                    if(dapButton.enabled && dapButton.activeFrame){
                         shadowAnimPress.start()
                         shadow.visible = false
                     }
