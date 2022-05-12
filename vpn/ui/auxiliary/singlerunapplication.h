@@ -5,32 +5,6 @@
 #include <QSharedMemory>
 #include <QSystemSemaphore>
 
-//#ifdef Q_OS_WIN
-//#include "dap_common.h"
-//#include "registry.h"
-//bool checkSingleInstance()
-//{
-//  HANDLE hEvent = CreateEventA (nullptr, FALSE, FALSE, "Local\\" DAP_BRAND);
-//  if (!hEvent)
-//    {
-//      CloseHandle (hEvent);
-//      return false;
-//    }
-//  if (GetLastError() == ERROR_ALREADY_EXISTS)
-//    {
-//      CloseHandle (hEvent);
-//      hEvent = nullptr;
-//      return false;
-//    }
-//  return true;
-//}
-//#endif
-
-//#ifdef Q_OS_WIN
-//  if (!checkSingleInstance())
-//    return 0;
-//#endif
-
 class SingleRunApplication
 {
 public:
