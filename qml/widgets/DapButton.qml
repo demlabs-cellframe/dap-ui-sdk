@@ -169,17 +169,17 @@ Button
                 onExited: if(dapButton.enabled && !pressed)mouseExitedAnim.start()
 
                 onPressed: {
-                    if(dapButton.enabled){
-                        light.isPressed = true
-                        shadowAnim.start()
+                    if(dapButton.enabled && dapButton.activeFrame){
+                        shadowAnimPress.start()
+                        shadow.visible = false
                     }
                 }
 
                 onReleased: {
                     if(dapButton.enabled)
                     {
-                        light.isPressed = false
-                        shadowAnim.start()
+                        shadowAnimRelease.start()
+                        shadow.visible = true
 
                         if(control.containsMouse) dapButton.clicked()
                         else mouseExitedAnim.start()
@@ -211,15 +211,22 @@ Button
         samples: 32
         cached: true
         color: /*isPressed? "#1F242F" : */innerShadowColor
-        source: shadow
+        source: dapBackgroundButton
         visible: dapBackgroundButton.visible
         spread: 0
 
         PropertyAnimation {
-            id: shadowAnim
+            id: shadowAnimPress
             target: light
             properties: "color"
-            to: light.isPressed? "#1F242F" : innerShadowColor
+            to: "#1F242F"
+            duration: 80
+        }
+        PropertyAnimation {
+            id: shadowAnimRelease
+            target: light
+            properties: "color"
+            to: innerShadowColor
             duration: 80
         }
     }
