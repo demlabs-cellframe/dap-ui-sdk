@@ -211,22 +211,6 @@ void DapGuiStyleManager::forcedStyleUpdate()
   if(!style.contains("background"))
     style += "background-color: rgba(0,0,0,0);";
 
-  if(style.contains("font-letter-spacing"))
-  {
-      QString style1 = style.remove(" ");
-      int a = style1.indexOf(QRegExp("font-letter-spacing:([0-9]+[a-z]*);"));
-      int b = style1.indexOf(QRegExp(":"), a) + 1;
-      int c = style1.indexOf(QRegExp("pc;"), a); //reduction: p.c. (percent)%
-      bool ok;
-      double d = style1.mid(b, c-b).toDouble(&ok);
-      if (ok)
-      {
-        QFont font = m_widget->font();
-        font.setLetterSpacing(QFont::PercentageSpacing, d);
-        m_widget->setFont(font);
-      }
-  }
-
   QString s   =
     "#" + objName +
     "{" + style + "}";

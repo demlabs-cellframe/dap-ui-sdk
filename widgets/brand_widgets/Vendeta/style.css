@@ -79,6 +79,7 @@
         font-weight: bold;
 	font-style: bold;
         font-size: bold;
+        letter-spacing: 4pt;
 }
 
 .bold
@@ -86,6 +87,7 @@
         font-weight: bold;
 	font-style: bold;
         font-size: bold;
+        letter-spacing: 4pt;
 }
 
 /****************************************************
@@ -94,8 +96,7 @@
 
 .lato
 {
-        font-family: 'Jost';
-        font-letter-spacing: 105pc;
+        font-family: 'jost';
 }
 
 .roboto
