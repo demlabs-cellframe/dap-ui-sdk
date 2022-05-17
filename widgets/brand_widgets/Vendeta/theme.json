@@ -36,7 +36,9 @@
             {"name": "cpxte-holder",         "replace": "cpxte-holder-light"},
             {"name": "cpxte-spooser",        "replace": "cpxte-spooser-light"},
             {"name": "cpxte-text-placeholder","replace": "cpxte-text-placeholder-light"},
-            {"name": "cpxte-text",           "replace": "cpxte-text-light"}
+            {"name": "cpxte-text",           "replace": "cpxte-text-light"},
+
+            {"name": "graphics",            "replace": "graphics-light"}
         ]
     },
     {
@@ -76,7 +78,9 @@
             {"name": "cpxte-holder",         "replace": "cpxte-holder-dark"},
             {"name": "cpxte-spooser",        "replace": "cpxte-spooser-dark"},
             {"name": "cpxte-text-placeholder","replace": "cpxte-text-placeholder-dark"},
-            {"name": "cpxte-text",           "replace": "cpxte-text-dark"}
+            {"name": "cpxte-text",           "replace": "cpxte-text-dark"},
+
+            {"name": "graphics",            "replace": "graphics-dark"}            
         ]
     }
 ]
