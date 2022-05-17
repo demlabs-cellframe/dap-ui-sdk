@@ -38,13 +38,13 @@ MenuFooter::MenuFooter (QWidget *parent) :
   /* fill state map */
   m_statesMap =
   {
-    {ui->btnAccaunt,    BS_ACCAUNT},
+    {ui->btnAccount,    BS_ACCAUNT},
     {ui->btnSettings,   BS_SETTINGS},
     {ui->btnConnection, BS_CONNECTION},
   };
 
   /* signals */
-  connect (ui->btnAccaunt, &QPushButton::toggled,
+  connect (ui->btnAccount, &QPushButton::toggled,
            this, &MenuFooter::slotButtonToggled);
   connect (ui->btnSettings, &QPushButton::toggled,
            this, &MenuFooter::slotButtonToggled);
@@ -110,7 +110,7 @@ void MenuFooter::slotSetButtonState (MenuFooter::ButtonState state)
   /* setup buttons */
   ui->btnSettings->setChecked (m_state == BS_SETTINGS);
   ui->btnConnection->setChecked (m_state == BS_CONNECTION);
-  ui->btnAccaunt->setChecked (m_state == BS_ACCAUNT);
+  ui->btnAccount->setChecked (m_state == BS_ACCAUNT);
 
   m_lock = false;
 }
@@ -191,7 +191,7 @@ void MenuFooter::slotProgramSettingButtonPress()
 void MenuFooter::slotProgramStatisticButtonPress()
 {
     qDebug() << "slotProgramStatisticButtonPress";
-    ui->btnAccaunt->toggle();
+    ui->btnAccount->toggle();
 }
 
 void MenuFooter::slotProgramMiddleButtonPress()
