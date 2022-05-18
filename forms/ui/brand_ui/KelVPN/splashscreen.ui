@@ -89,11 +89,6 @@
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
              <widget class="DapGuiLabel" name="lLogo">
-              <property name="styleSheet">
-               <string notr="true">#lLogo{ min-width: 230px; max-width: 230px; min-height: 59px; max-height: 59px; qproperty-scaledPixmap: url(:/gui/asset/logo_kelvpn-white.png); 
- border: none; 
- background-color: rgba(0,0,0,0); }</string>
-              </property>
               <property name="text">
                <string/>
               </property>
@@ -114,14 +109,6 @@
          </item>
          <item>
           <widget class="DapGuiLabel" name="lStatus">
-           <property name="styleSheet">
-            <string notr="true">#lStatus{ color: #FFFFFF; 
- font: 18px/22px; 
- font-weight: normal; font-style: normal; font-size: normal; 
- font-family: 'Lato'; 
- border: none; 
- background-color: rgba(0,0,0,0); }</string>
-           </property>
            <property name="text">
             <string>Status message</string>
            </property>
@@ -142,14 +129,6 @@
          </item>
          <item>
           <widget class="DapGuiLabel" name="lVersion">
-           <property name="styleSheet">
-            <string notr="true">#lVersion{ color: #FFFFFF; 
- font: 12px/15px; 
- font-weight: normal; font-style: normal; font-size: normal; 
- font-family: 'Lato'; 
- border: none; 
- background-color: rgba(0,0,0,0); }</string>
-           </property>
            <property name="text">
             <string>Version 7.0-5
 September 10 2021</string>

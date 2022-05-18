@@ -827,6 +827,13 @@
 	border-image: url(:/gui/asset/bg_dark-stripes.png);
 }
 
+.splashscreen_top_spacer
+{
+  height: 248pt;
+  min-height: 248pt;
+  max-height: 248pt;
+}
+
 .splashscreen_logo
 {
 	min-width: 230pt;
@@ -834,6 +841,47 @@
 	min-height: 59pt;
 	max-height: 59pt;
   qproperty-scaledPixmap: url(:/gui/asset/logo-vendeta-white.png);
+}
+
+.splashscreen_logo_container
+{
+	min-height: 59pt;
+	max-height: 59pt;
+}
+
+.splashscreen_mid_status_spacer
+{
+  height: 278pt;
+  min-height: 278pt;
+  max-height: 278pt;
+}
+
+.splashscreen_bottom_status_spacer
+{
+  height: 256pt;
+  min-height: 256pt;
+  max-height: 256pt;
+}
+
+.status_spacer
+{
+  height: 40pt;
+  min-height: 40pt;
+  max-height: 40pt;
+}
+
+.bottom_spacer
+{
+  height: 20pt;
+  min-height: 20pt;
+  max-height: 20pt;
+}
+
+.splashscreen_bottom_spacer
+{
+  height: 31pt;
+  min-height: 31pt;
+  max-height: 31pt;
 }
 
 /****************************************************
