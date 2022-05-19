@@ -79,6 +79,7 @@
         font-weight: bold;
 	font-style: bold;
         font-size: bold;
+        letter-spacing: 4pt;
 }
 
 .bold
@@ -86,6 +87,7 @@
         font-weight: bold;
 	font-style: bold;
         font-size: bold;
+        letter-spacing: 4pt;
 }
 
 /****************************************************
@@ -94,7 +96,7 @@
 
 .lato
 {
-        font-family: 'Jost';
+        font-family: 'jost';
 }
 
 .roboto
@@ -544,7 +546,7 @@
   font-weight: normal;
   font-style: normal;
   font-size: normal;
-  font-family: 'jost';
+  font-family: 'Jost';
 }
 
 .cpxte-text-placeholder-dark
@@ -560,7 +562,7 @@
   font-weight: normal;
   font-style: normal;
   font-size: normal;
-  font-family: 'jost';
+  font-family: 'Jost';
 }
 
 .cpxte-dolder
@@ -1178,6 +1180,24 @@
 	max-height: 99pt;
 }
 
+.graphics
+{
+
+}
+
+.graphics-dark
+{
+        colorBackground: #f7f9fa;
+        colorChartDownload: #00DB8F;
+        colorChartUpload: #0098CC;
+}
+
+.graphics-light
+{
+        colorBackground: #f7f9fa;
+        colorChartDownload: #00DB8F;
+        colorChartUpload: #0098CC;
+}
 /****************************************************
  * Bug reports
  ***************************************************/

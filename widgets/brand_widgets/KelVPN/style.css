@@ -1182,7 +1182,24 @@
 	min-height: 99pt;
 	max-height: 99pt;
 }
+.graphics
+{
 
+}
+
+.graphics-dark
+{
+        colorBackground: #2f2e42;
+        colorChartDownload: #FF22A2;
+        colorChartUpload: #9F83FF;
+}
+
+.graphics-light
+{
+        colorBackground: #f7f8fa;
+        colorChartDownload: #D61F5D;
+        colorChartUpload: #2D1FD6;
+}
 /****************************************************
  * Bug reports
  ***************************************************/
