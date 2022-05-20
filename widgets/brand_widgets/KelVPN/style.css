@@ -832,6 +832,13 @@
 	border-image: url(:/gui/asset/bg_dark-stripes.png);
 }
 
+.splashscreen_top_spacer
+{
+  height: 248pt;
+  min-height: 248pt;
+  max-height: 248pt;
+}
+
 .splashscreen_logo
 {
 	min-width: 230pt;
@@ -847,32 +854,39 @@
 	max-height: 59pt;
 }
 
-.splashscreen_spacer_top
+.splashscreen_mid_status_spacer
 {
-	height: 160pt;
-	min-height: 160pt;
-	max-height: 224pt;
+  height: 278pt;
+  min-height: 278pt;
+  max-height: 278pt;
 }
 
-.splashscreen_spacer_mid
+.splashscreen_bottom_status_spacer
 {
-	height: 256pt;
-  min-height: 230pt;
-  max-height: 230pt;
+  height: 256pt;
+  min-height: 256pt;
+  max-height: 256pt;
 }
 
-.splashscreen_spacer_bottom
+.status_spacer
 {
-	height: 128pt;
-	min-height: 128pt;
-	max-height: 128pt;
+  height: 40pt;
+  min-height: 40pt;
+  max-height: 40pt;
 }
 
-.splashscreen_spacer_progressbar
+.bottom_spacer
 {
   height: 20pt;
   min-height: 20pt;
   max-height: 20pt;
+}
+
+.splashscreen_bottom_spacer
+{
+  height: 31pt;
+  min-height: 31pt;
+  max-height: 31pt;
 }
 
 /****************************************************
@@ -1168,7 +1182,24 @@
 	min-height: 99pt;
 	max-height: 99pt;
 }
+.graphics
+{
 
+}
+
+.graphics-dark
+{
+        colorBackground: #2f2e42;
+        colorChartDownload: #FF22A2;
+        colorChartUpload: #9F83FF;
+}
+
+.graphics-light
+{
+        colorBackground: #f7f8fa;
+        colorChartDownload: #D61F5D;
+        colorChartUpload: #2D1FD6;
+}
 /****************************************************
  * Bug reports
  ***************************************************/

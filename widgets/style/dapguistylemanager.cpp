@@ -113,13 +113,26 @@ void DapGuiStyleManager::setupTheme(
   const QJsonArray &themesArray,
   const QString &themeName)
 {
+  bool success = false;
+
   for (auto i = themesArray.constBegin(), e = themesArray.constEnd(); i != e; i++)
     {
       auto j = (*i).toObject();
-      if (j.value("name").toString() != themeName)
+
+      if (j.value("name").toString() != themeName
+          && j.value("dir").toString() != themeName)
         continue;
+
+      success = true;
       Gss().patch (j.value ("patch").toArray(), j.value ("dir").toString());
     }
+
+  if (!success)
+    {
+      auto j = (*themesArray.constBegin()).toObject();
+      Gss().patch (j.value ("patch").toArray(), j.value ("dir").toString());
+    }
+
   emit s_signal.forceStyleUpdate();
 }
 

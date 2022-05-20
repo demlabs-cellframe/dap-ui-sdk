@@ -22,7 +22,7 @@ struct _Licence
 /* VARS */
 static QList<_Licence> s_licences =
 {
-  {4.96,  0.00,  1,  LT_MONTH,  ""},
+  {4.98,  0.00,  1,  LT_MONTH,  ""},
   {26.88, 4.48,  6,  LT_MONTH,  "$4.48 per month"},
   {35.88, 2.99,  1,  LT_YEAR,   "$2.99 per month"},
 };
