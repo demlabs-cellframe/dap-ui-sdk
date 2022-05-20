@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import DapQmlModelSerialHistory 1.0
 import "qrc:/dapqml-widgets"
 
 Item {
@@ -74,6 +75,15 @@ Item {
                 y: spacer.height / 2
             }
         }
+    }
+
+    /* empty history annotation */
+    DapQmlLabel {
+        id: empotyHistory
+        visible: DapQmlModelSerialHistory.length() === 0
+        text: "The license key usage history on this device is empty."
+        wrapMode: Text.WordWrap
+        qss: "ph-label-empty-history"
     }
 
     /* notice */

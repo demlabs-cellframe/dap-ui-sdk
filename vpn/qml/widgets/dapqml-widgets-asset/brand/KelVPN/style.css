@@ -859,6 +859,12 @@
 	scaled-font: scaled(16);	
 }
 
+.ph-label-empty-history
+{
+	color: "@text";
+	scaled-rect: scaled(-1,-1,363,96,true,26);
+}
+
 .ph-label-notice
 {
 	color: "@label";

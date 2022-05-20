@@ -27,6 +27,18 @@ DapQmlModelSerialHistory *DapQmlModelSerialHistory::instance()
   return __inst;
 }
 
+QObject *DapQmlModelSerialHistory::singletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+  Q_UNUSED (engine)
+  Q_UNUSED (scriptEngine)
+  return DapQmlModelSerialHistory::instance();
+}
+
+int DapQmlModelSerialHistory::length() const
+{
+  return rowCount();
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/

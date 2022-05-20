@@ -3,6 +3,8 @@
 
 /* INCLUDES */
 #include <QAbstractTableModel>
+class QQmlEngine;
+class QJSEngine;
 
 /****************************************//**
  * @brief bug reports model list
@@ -29,6 +31,8 @@ public:
   /// @{
 public:
   static DapQmlModelSerialHistory *instance();
+  Q_INVOKABLE static QObject *singletonProvider (QQmlEngine *engine, QJSEngine *scriptEngine);
+  Q_INVOKABLE int length() const;
   /// @}
 
   /****************************************//**
