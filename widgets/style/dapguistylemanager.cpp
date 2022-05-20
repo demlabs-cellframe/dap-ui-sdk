@@ -120,7 +120,7 @@ void DapGuiStyleManager::setupTheme(
       auto j = (*i).toObject();
 
       if (j.value("name").toString() != themeName
-          && j.value("dir") != themeName)
+          && j.value("dir").toString() != themeName)
         continue;
 
       success = true;
