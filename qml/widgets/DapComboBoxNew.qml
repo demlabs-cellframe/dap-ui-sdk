@@ -25,11 +25,7 @@ ComboBox {
 //            contentItem: Text {
 //                text: modelData.name
 //                color: currTheme.textColor
-<<<<<<< HEAD
-//                font: _dapQuicksandFonts.dapMainFontTheme.dapFontQuicksandRegular16
-=======
-//                font: _dapQuicksandFonts.dapFont.regular16
->>>>>>> a9b1601b5b79d4fee7cd74271e87b8a462a0fbc9
+
 //                elide: Text.ElideRight
 //                verticalAlignment: Text.AlignVCenter
 //            }
