@@ -8,7 +8,7 @@ Item {
     height: 926
     visible: true
 
-    property string fontFam: "Lato"
+    property string fontFam: "Lato" // "Jost"
     property int fontSize: 11
 
 //    FontLoader { source: "qrc:/fonts/Lato-Regular.ttf" }

@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import DapQmlStyle 1.0
+import Brand 1.0
 
 Item {
     id: root
@@ -13,7 +14,7 @@ Item {
     property string text: ""
     property color color
     property string scaledPixmap: ""
-    property string fontFamiliy: "Lato"
+    property var fontFamiliy: Brand.fontName()
     property int fontSize: 12
     property int fontWeight: Font.Normal
     property int horizontalAlign: Text.AlignHCenter

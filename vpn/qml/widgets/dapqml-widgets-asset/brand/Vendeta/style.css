@@ -69,6 +69,15 @@
 }
 
 /****************************************************
+ * Font
+ ***************************************************/
+
+.font-brand
+{
+	qproperty-fontFamiliy: "Jost";
+}
+
+/****************************************************
  * Colors
  ***************************************************/
 
@@ -144,6 +153,7 @@
 {
 	scaled-rect: scaled(39,0,282,28,false,24);
 	color: "@text";
+	font-weight: Font.Medium;
 }
 
 
@@ -453,7 +463,7 @@
 {
 	scaled-font: scaled(20);
 	color: "@text";
-	font-weight: Font.Bold;
+	font-weight: Font.Medium;
 }
 
 .login-btn-sub
@@ -540,7 +550,7 @@
 {
 	color: "@brand";
 	scaled-font: scaled(16);	
-	font-weight: Font.Bold;
+	font-weight: Font.Medium;
 }
 
 .sett-title-lbl-main
@@ -548,7 +558,7 @@
 	color: "@text";
 	horizontal-align: Text.AlignHCenter;
 	scaled-rect: scaled(nan,nan,nan,nan,false,24);
-	font-weight: Font.Bold;
+	font-weight: Font.Medium;
 }
 
 /****************************************************
@@ -559,7 +569,7 @@
 {
 	color: "@text";
 	font-size: 24;
-	font-weight: Font.Bold;
+	font-weight: Font.Medium;
 }
 
 .stat-item-main
@@ -617,7 +627,7 @@
 {
 	color: "@brand";
 	scaled-rect: scaled(-1,62,-1,28,false,24);
-	font-weight: Font.Bold;
+	font-weight: Font.Medium;
 }
 
 .dashboard-status-container
@@ -656,7 +666,7 @@
 {
 	color: "@text";
 	scaled-font: scaled(26);	
-	font-weight: Font.Bold;
+	font-weight: Font.Medium;
 }
 
 .dashboard-speed-sub
@@ -674,7 +684,7 @@
 {
 	color: "@text";
 	scaled-font: scaled(18);	
-	font-weight: Font.Bold;
+	font-weight: Font.Medium;
 }
 
 .dashboard-server-sub
@@ -773,7 +783,7 @@
 {
 	scaled-font: scaled(30);	
 	color: "@text";
-	font-weight: Font.Bold;
+	font-weight: Font.Medium;
 }
 
 /****************************************************

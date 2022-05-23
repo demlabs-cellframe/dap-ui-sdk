@@ -15,6 +15,8 @@
         <file compress="1">fonts/Roboto-Bold.ttf</file>
         <file compress="1">fonts/Lato-Regular.ttf</file>
         <file compress="1">fonts/Lato-Bold.ttf</file>
+        <file compress="1">fonts/Jost-Regular.ttf</file>
+        <file compress="1">fonts/Jost-Medium.ttf</file>
         <file compress="1">stripes.png</file>
     </qresource>
 </RCC>

@@ -25,7 +25,6 @@ Item {
         qss: "form-title-label"
         text: root.text
         clip: false
-        fontWeight: Font.Bold
     }
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
