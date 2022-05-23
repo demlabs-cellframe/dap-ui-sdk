@@ -96,7 +96,7 @@ Item {
         id: loginErrorLabel
         qss: "login-error-label"
         wrapMode: Text.WordWrap
-        text: "Temporary network problems, request will be handled as soon as the network connection is re-established"
+        text: ""
     }
 
     /* top separator */
@@ -205,6 +205,7 @@ Item {
             height: parent.height
             horizontalAlign: Text.AlignRight
             qss: "login-obtain-font c-label"
+            mipmap: false
 //          font.family: "Lato"
 //          font.pixelSize: 16
 //          font.weight: Font.Normal

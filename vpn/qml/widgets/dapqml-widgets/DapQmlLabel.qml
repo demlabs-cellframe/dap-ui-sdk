@@ -20,6 +20,7 @@ Item {
     property int verticalAlign: Text.AlignVCenter
     property int wrapMode: Text.NoWrap
     property int textFormat: Text.AutoText
+    property bool mipmap: true
 
     property real bottomPadding
     property real leftPadding
@@ -31,7 +32,7 @@ Item {
         id: icon
         anchors.fill: root
         source: root.scaledPixmap
-        mipmap: true
+        mipmap: root.mipmap
     }
 
     Text {
