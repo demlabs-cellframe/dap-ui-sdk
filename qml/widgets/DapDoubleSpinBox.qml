@@ -5,6 +5,8 @@ import QtGraphicalEffects 1.0
 SpinBox {
     id: spinbox
 
+    property alias maxSym: textInput.maximumLength
+
     from: realFrom * factor
     to: realTo * factor
     value: defaultValue * factor
@@ -36,6 +38,7 @@ SpinBox {
     }
 
     contentItem:
+<<<<<<< HEAD
 //        Item
 //        {
 //            anchors.fill: parent
@@ -61,6 +64,36 @@ SpinBox {
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
             }
 //        }
+=======
+
+        TextInput {
+            z: 2
+            id:textInput
+
+            anchors.top: spinbox.top
+            anchors.bottom: spinbox.bottom
+
+            height: spinbox.height
+            text: spinbox.textFromValue(spinbox.value, spinbox.locale)
+
+            font: spinbox.font
+            color: currTheme.textColor
+        //        selectionColor: "#21be2b"
+        //        selectedTextColor: "#ffffff"
+            horizontalAlignment: Qt.AlignHCenter
+            verticalAlignment: Qt.AlignVCenter
+
+//            maximumLength: 4
+
+
+            readOnly: !spinbox.editable
+//            readOnly: true
+            validator: spinbox.validator
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
+    }
+
+
+>>>>>>> a9b1601b5b79d4fee7cd74271e87b8a462a0fbc9
 
     up.indicator: Rectangle {
         x: spinbox.mirrored ? 0 : parent.width - width
@@ -121,7 +154,7 @@ SpinBox {
 
 
     background: Rectangle {
-        implicitWidth: spinbox.width
+//        implicitWidth: spinbox.width
         color: "transparent"
     }
 }

@@ -72,30 +72,32 @@ Button
                     Gradient {
                         GradientStop
                         {
+                            id: grad1
                             position: 0;
                             color: dapButton.enabled ?
-                                   dapButton.hovered ? currTheme.buttonColorHoverPosition0 :
+//                                   dapButton.hovered ? currTheme.buttonColorHoverPosition0 :
                                                        currTheme.buttonColorNormalPosition0 :
                                                        currTheme.buttonColorNoActive
 
                         }
                         GradientStop
                         {
+                            id: grad2
                             position: 1;
                             color:  dapButton.enabled ?
-                                    dapButton.hovered ? currTheme.buttonColorHoverPosition1 :
+//                                    dapButton.hovered ? currTheme.buttonColorHoverPosition1 :
                                                         currTheme.buttonColorNormalPosition1 :
                                                         currTheme.buttonColorNoActive
 
                         }
                     }
             }
-
-            color: !dapButton.activeFrame? "transparent " :
-                                           dapButton.enabled ?
-                                           dapButton.hovered ? currTheme.buttonColorHover :
-                                                               currTheme.buttonColorNormal :
-                                                               currTheme.buttonColorNoActive
+            color: !dapButton.activeFrame? "transparent " : "#1F242F"
+//            color: !dapButton.activeFrame? "transparent " :
+//                                           dapButton.enabled ?
+//                                           dapButton.hovered ? currTheme.buttonColorHover :
+//                                                               currTheme.buttonColorNormal :
+//                                                               currTheme.buttonColorNoActive
 
             implicitWidth: widthButton
             implicitHeight: heightButton
@@ -126,6 +128,64 @@ Button
                 width: widthImageButton
                 height: heightImageButton
             }
+
+            ParallelAnimation {
+                id: mouseEnterAnim
+                PropertyAnimation {
+                    target: grad1
+                    properties: "color"
+                    to: currTheme.buttonColorHoverPosition0
+                    duration: 100
+                }
+                PropertyAnimation {
+                    target: grad2
+                    properties: "color"
+                    to: currTheme.buttonColorHoverPosition1
+                    duration: 100
+                }
+            }
+            ParallelAnimation {
+                id: mouseExitedAnim
+                PropertyAnimation {
+                    target: grad1
+                    properties: "color"
+                    to: currTheme.buttonColorNormalPosition0
+                    duration: 100
+                }
+                PropertyAnimation {
+                    target: grad2
+                    properties: "color"
+                    to: currTheme.buttonColorNormalPosition1
+                    duration: 100
+                }
+            }
+
+            MouseArea{
+                id: control
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onEntered: if(dapButton.enabled)mouseEnterAnim.start()
+                onExited: if(dapButton.enabled && !pressed)mouseExitedAnim.start()
+
+                onPressed: {
+                    if(dapButton.enabled && dapButton.activeFrame){
+                        shadowAnimPress.start()
+                        shadow.visible = false
+                    }
+                }
+
+                onReleased: {
+                    if(dapButton.enabled)
+                    {
+                        shadowAnimRelease.start()
+                        shadow.visible = true
+
+                        if(control.containsMouse) dapButton.clicked()
+                        else mouseExitedAnim.start()
+                    }
+                }
+            }
         }
     DropShadow {
         id:shadow
@@ -135,22 +195,39 @@ Button
         verticalOffset: 2
         radius: 8
         samples: 32
-        color: shadowColor
+//        color: shadowColor
+        color: "#1F242F"
         source: dapBackgroundButton
         smooth: true
         }
 
     InnerShadow {
+        property bool isPressed: false
         id: light
         anchors.fill: dapBackgroundButton
         horizontalOffset: 1
         verticalOffset: 1
         radius: 5
-        samples: 50
+        samples: 32
         cached: true
-        color: innerShadowColor
-        source: shadow
+        color: /*isPressed? "#1F242F" : */innerShadowColor
+        source: dapBackgroundButton
         visible: dapBackgroundButton.visible
         spread: 0
+
+        PropertyAnimation {
+            id: shadowAnimPress
+            target: light
+            properties: "color"
+            to: "#1F242F"
+            duration: 80
+        }
+        PropertyAnimation {
+            id: shadowAnimRelease
+            target: light
+            properties: "color"
+            to: innerShadowColor
+            duration: 80
+        }
     }
 }
