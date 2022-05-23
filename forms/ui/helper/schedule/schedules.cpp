@@ -102,12 +102,15 @@ void Schedules::draw_backgraund (QGraphicsScene *scene)
 qreal maxInt (qreal a, qreal b) {return a > b ? a : b;}
 
 
-void Schedules::draw_chart (QGraphicsScene *scene)
+void Schedules::draw_chart (QGraphicsScene *scene, bool diagramVisible)
 {
   m_sceneWidth  = scene->width();
   m_sceneHeight = scene->height();
   scene->clear();
   draw_backgraund (scene);
+
+  if (!diagramVisible)
+    return;
 
   if (out.size() < 2)
     return;
