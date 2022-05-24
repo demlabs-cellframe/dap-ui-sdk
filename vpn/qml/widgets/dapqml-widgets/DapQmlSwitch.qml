@@ -42,8 +42,8 @@ Item {
         x: centerHor(this)
         y: centerVer(this)
         z: 0
-        width: root.width - 24 * (root.width / 270)
-        height: root.height - 48 * (root.height / 174)
+        width: root.width - 12 * (root.width / 270)
+        height: root.height - 36 * (root.height / 174)
         qss: "switch-bg-off"
 
         onClicked: toggle()
@@ -52,7 +52,7 @@ Item {
     /* toggler */
     DapQmlLabel {
         id: tgl
-        x: (checked === false) ? (0) : (root.width - width)
+        x: (checked === false) ? (-12 * (root.width / 270)) : (root.width - width + 12 * (root.width / 270))
         y: 0
         z: 1
         width: root.height
