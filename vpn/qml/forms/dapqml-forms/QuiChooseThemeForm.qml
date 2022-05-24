@@ -7,6 +7,7 @@ import "qrc:/dapqml-widgets"
 Item {
     id: root
     property string formName: "ChooseTheme"
+    property var items: Array();
 
     /* signals */
     signal sigSelect(int index, string name);
@@ -23,7 +24,7 @@ Item {
     function updateChecks() {
         var count           = csListView.count
         for(var i = 0; i < count; i++) {
-            var entry       = csListView.itemAtIndex(i);
+            var entry       = items[i]; // csListView.itemAtIndex(i);
             var entryName   = entry.radioName;
             entry.checked   = themeModel.isCurrent (entryName);
         }
@@ -96,5 +97,7 @@ Item {
                     updateChecks();
                 }
             }
+
+            Component.onCompleted: items.push(this)
         }
     }}

@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.1
 import "qrc:/dapqml-widgets"
 
 Item {
@@ -8,17 +8,19 @@ Item {
 
     /* signals */
     signal sigSelect(int index, string name);
+//    signal sigCurrentInexChanged();
 
     /* functions */
     function setCurrentIndex(a_index) {
         csListView.currentIndex = a_index;
 
-        var count           = csListView.count
-        var current         = csListView.currentIndex;
-        for(var i = 0; i < count; i++) {
-            var entry       = csListView.itemAtIndex(i);
-            entry.checked   = (i === current)
-        }
+//        var count           = csListView.count
+//        var current         = csListView.currentIndex;
+//        for(var i = 0; i < count; i++) {
+//            var entry       = csListView.itemAtIndex(i);
+//            entry.checked   = (i === current)
+//        }
+//        root.sigCurrentInexChanged();
     }
 
     /* title */
@@ -58,8 +60,9 @@ Item {
             property bool checked: false
 
             DapQmlRadioButton {
+                property bool myIndex: model.index
                 text: model.name
-                checked: parent.checked
+                checked: csListView.currentIndex === model.index // parent.checked
                 separator: true
                 iconSize: resizer.height
                 width: resizer.width
