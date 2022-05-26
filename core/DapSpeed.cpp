@@ -98,7 +98,6 @@ void DapSpeed::setTraffic(quint64 bytes)
     }
     else
     {
-        //18446744073704365083 -5.18653e+06 0 5186533
         if (a_millisecond != m_millisecond && (qreal)a_millisecond - (qreal)m_millisecond > 100)
         {
             if ((qreal)bytes - (qreal)m_bytes > 0)
