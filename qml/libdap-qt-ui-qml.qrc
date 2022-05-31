@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>widgets/DapButton.qml</file>
         <file>widgets/DapComboBox.qml</file>
-        <file>widgets/DapComboBoxForm.ui.qml</file>
         <file>widgets/DapPanelForm.ui.qml</file>
         <file>widgets/DapRightPanel.qml</file>
         <file>widgets/DapRightPanelForm.ui.qml</file>
@@ -31,7 +30,6 @@
         <file>widgets/DapMenuTabWidgetForm.ui.qml</file>
         <file>widgets/DapCheckBox.qml</file>
         <file>widgets/DapTextField.qml</file>
-        <file>widgets/DapComboBoxNew.qml</file>
         <file>icons/arrow_down.svg</file>
         <file>widgets/DapRectangleLitAndShaded.qml</file>
         <file>widgets/DapSwitch.qml</file>

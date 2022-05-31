@@ -6,12 +6,12 @@ import QtGraphicalEffects 1.0
 ComboBox {
     id: control
 
-    implicitHeight: 45
+    implicitHeight: 45 * pt
 
-    leftPadding: 10
-    rightPadding: 10
+    leftPadding: 15 * pt
+    rightPadding: 10 * pt
 
-    property int maximumPopupHeight: 200
+    property int maximumPopupHeight: 200 * pt
 
     property string mainTextRole: "name"
     property string secondTextRole: "secondname"
@@ -32,14 +32,16 @@ ComboBox {
         RowLayout
         {
             anchors.fill: parent
-            anchors.leftMargin: 10
-            anchors.rightMargin: 10
+            anchors.leftMargin: parent.leftPadding
+            anchors.rightMargin: 20 * pt
 
             Text
             {
                 Layout.fillWidth: true
                 text: getModelData(index, mainTextRole)
-                color: currTheme.textColor
+                color: menuDelegate.highlighted ?
+                           currTheme.hilightTextColorComboBox :
+                           currTheme.textColor
                 font: control.font
                 elide: Text.ElideRight
                 verticalAlignment: Text.AlignVCenter
@@ -48,7 +50,9 @@ ComboBox {
             Text
             {
                 text: getModelData(index, secondTextRole)
-                color: currTheme.textColor
+                color: menuDelegate.highlighted ?
+                           currTheme.hilightTextColorComboBox :
+                           currTheme.textColor
                 font.family: control.font.family
                 font.pointSize: control.font.pointSize - 2
                 elide: Text.ElideRight
@@ -61,7 +65,7 @@ ComboBox {
         {
             anchors.fill: parent
             color: menuDelegate.highlighted ?
-                       currTheme.buttonColorHover :
+                       currTheme.hilightColorComboBox :
                        currTheme.backgroundMainScreen
         }
 
@@ -72,15 +76,15 @@ ComboBox {
     Image
     {
         id: canvas
-        width: 24
-        height: 24
+        width: 24 * pt
+        height: 24 * pt
         x: control.width - width - control.rightPadding
         y: control.topPadding + (control.availableHeight - height) / 2
 
         fillMode: Image.PreserveAspectFit
         source: "qrc:/resources/icons/" + pathTheme + "/icon_arrow_down.png"
 //        source: "qrc:/icon_arrow_down.png"
-        sourceSize.width: 24
+        sourceSize.width: 24 * pt
         rotation: control.popup.opened ? 180 : 0
 
         Behavior on rotation { NumberAnimation { duration: 200 } }
