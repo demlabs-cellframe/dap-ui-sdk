@@ -338,19 +338,19 @@
 
 .popup-dalog-left
 {
-	scaled-rect: scaled(11,132,86,36,false,14);
+	scaled-rect: scaled(11,nan,86,36,false,14);
 	color: "@text";
 }
 
 .popup-dalog-right
 {
-	scaled-rect: scaled(183,132,86,36,false,14);
+	scaled-rect: scaled(183,nan,86,36,false,14);
 	color: "@brand";
 }
 
 .popup-dalog-middle
 {
-	scaled-rect: scaled(-1,132,86,36,false,14);
+	scaled-rect: scaled(-1,nan,86,36,false,14);
 	color: "@brand";
 }
 
