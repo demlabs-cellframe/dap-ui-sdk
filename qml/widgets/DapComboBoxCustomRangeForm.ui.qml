@@ -129,12 +129,42 @@ ComboBox
 
     //Defining the background for the main line
     background:
+    Item
+    {
+        anchors.fill: parent
+
         Rectangle
         {
-            anchors.fill: parent
-            color: parent.popup.visible ? dapHilightTopColor : dapNormalTopColor
-            height: parent.height
+            id: backGrnd
+            width: parent.width
+            height: dapComboBoxWithRange.popup.visible ?
+                        parent.height + popupBackGrnd.height :
+                        parent.height
+
+            y: dapComboBoxWithRange.popup.visible &&
+               dapComboBoxWithRange.popup.y < 0 ?
+                 - popupBackGrnd.height :
+                 0
+
+            color: dapComboBoxWithRange.popup.visible ?
+                       dapHilightTopColor :
+                       dapNormalTopColor
         }
+
+        DropShadow
+        {
+            anchors.fill: backGrnd
+            horizontalOffset: currTheme.hOffset
+            verticalOffset: currTheme.vOffset
+            radius: currTheme.radiusShadow
+            color: currTheme.shadowColor
+            source: backGrnd
+            samples: 10
+            cached: true
+            visible: dapComboBoxWithRange.popup.visible
+        }
+
+    }
 
     //contentItem is setting by children
     contentItem:
@@ -331,36 +361,10 @@ ComboBox
             background:
                 Rectangle
                 {
-                    width: background.width
-                    color: "transparent"
-                    Rectangle
-                    {
-                        id: contentCorner
-                        anchors.fill: parent
-                        color: "transparent"
-                    }
-
-                    DropShadow
-                    {
-                        anchors.fill: parent
-                        source: contentCorner
-                        verticalOffset: 9 * pt
-                        samples: 13 * pt
-                        color: dapColorDropShadow
-                    }
+                    id: popupBackGrnd
+                    anchors.fill: parent
+                    color: currTheme.backgroundElements
                 }
         }
 
-        //Shadow effect for the top element.
-        DropShadow
-        {
-            anchors.fill: dapTopEffect ? parent : null
-            source: dapTopEffect ? background : null
-            verticalOffset: dapTopEffect ? 9 * pt : 0
-            samples: dapTopEffect ? 13 * pt : 0
-            color: dapTopEffect ?
-                       (popup.visible ? dapColorDropShadow : dapColorTopNormalDropShadow) :
-                       "#000000"
-            z: -1
-        }
     }

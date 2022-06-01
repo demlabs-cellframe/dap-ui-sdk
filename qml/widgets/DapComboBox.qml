@@ -115,7 +115,7 @@ ComboBox {
             height: control.popup.visible ?
                         parent.height + popupBackGrnd.height :
                         parent.height
-            y: control.popup.visible && control.popup.y < 0?
+            y: control.popup.visible && control.popup.y < 0 ?
                  - popupBackGrnd.height :
                  0
 
