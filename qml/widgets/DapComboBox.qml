@@ -9,7 +9,7 @@ ComboBox {
     implicitHeight: 45 * pt
 
     leftPadding: 15 * pt
-    rightPadding: 10 * pt
+    rightPadding: 15 * pt
 
     property int maximumPopupHeight: 200 * pt
 
@@ -54,7 +54,7 @@ ComboBox {
                            currTheme.hilightTextColorComboBox :
                            currTheme.textColor
                 font.family: control.font.family
-                font.pointSize: control.font.pointSize - 2
+                font.pointSize: control.font.pointSize - 3
                 elide: Text.ElideRight
                 verticalAlignment: Text.AlignVCenter
             }
@@ -99,7 +99,6 @@ ComboBox {
 
         text: control.displayText
         font: control.font
-//        color: currTheme.textColorGray
         color: control.popup.visible? currTheme.textColorGray : currTheme.textColor
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
@@ -114,18 +113,11 @@ ComboBox {
         {
             id: backGrnd
             border.width: 0
-            width: parent.width
-            height: control.popup.visible ?
-                        parent.height + popupBackGrnd.height :
-                        parent.height
-            y: control.popup.visible && control.popup.y < 0 ?
-                 - popupBackGrnd.height :
-                 0
+            anchors.fill: parent
 
             color: control.popup.visible ?
                        currTheme.backgroundMainScreen :
                        currTheme.backgroundElements
-//            radius: 4
         }
 
         DropShadow
@@ -163,10 +155,10 @@ ComboBox {
         implicitHeight: contentItem.implicitHeight + 3
             //+3 is needed to make ListView less moovable
 
-        topPadding: 0
+        topPadding: 1
         bottomPadding: 0
         leftPadding: 1
-        rightPadding:0
+        rightPadding: 1
 
         contentItem:
             ListView
@@ -192,9 +184,10 @@ ComboBox {
                 Rectangle
                 {
                     id: popupBackGrnd
-                    anchors.fill: parent
-                    color: currTheme.backgroundElements
                     border.width: 0
+                    anchors.fill: parent
+
+                    color: currTheme.backgroundElements
                 }
 
                 DropShadow
