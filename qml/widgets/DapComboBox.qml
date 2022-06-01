@@ -69,6 +69,7 @@ ComboBox {
                        currTheme.backgroundMainScreen
         }
 
+        hoverEnabled: true
         highlighted: control.highlightedIndex === index
     }
 
@@ -98,7 +99,8 @@ ComboBox {
 
         text: control.displayText
         font: control.font
-        color: currTheme.textColorGray
+//        color: currTheme.textColorGray
+        color: control.popup.visible? currTheme.textColorGray : currTheme.textColor
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
     }
@@ -111,6 +113,7 @@ ComboBox {
         Rectangle
         {
             id: backGrnd
+            border.width: 0
             width: parent.width
             height: control.popup.visible ?
                         parent.height + popupBackGrnd.height :
@@ -122,7 +125,7 @@ ComboBox {
             color: control.popup.visible ?
                        currTheme.backgroundMainScreen :
                        currTheme.backgroundElements
-            radius: 4
+//            radius: 4
         }
 
         DropShadow
@@ -137,6 +140,19 @@ ComboBox {
             cached: true
             visible: control.popup.visible
         }
+
+        InnerShadow {
+            anchors.fill: backGrnd
+            horizontalOffset: 1
+            verticalOffset: 1
+            radius: 1
+            samples: 10
+            cached: true
+            color: "#524D64"
+            source: backGrnd
+            spread: 0
+            visible: control.popup.visible
+        }
     }
 
     popup:
@@ -146,7 +162,11 @@ ComboBox {
         width: control.width
         implicitHeight: contentItem.implicitHeight + 3
             //+3 is needed to make ListView less moovable
-        padding: 1
+
+        topPadding: 0
+        bottomPadding: 0
+        leftPadding: 1
+        rightPadding:0
 
         contentItem:
             ListView
@@ -166,13 +186,40 @@ ComboBox {
             }
 
         background:
-        Rectangle
-        {
-            id: popupBackGrnd
-            anchors.fill: parent
+            Item{
+                anchors.fill: parent
 
-            color: currTheme.backgroundElements
-        }
+                Rectangle
+                {
+                    id: popupBackGrnd
+                    anchors.fill: parent
+                    color: currTheme.backgroundElements
+                    border.width: 0
+                }
+
+                DropShadow
+                {
+                    anchors.fill: popupBackGrnd
+                    horizontalOffset: currTheme.hOffset
+                    verticalOffset: currTheme.vOffset
+                    radius: currTheme.radiusShadow
+                    color: currTheme.shadowColor
+                    source: popupBackGrnd
+                    samples: 10
+                    cached: true
+                }
+
+                InnerShadow {
+                    anchors.fill: popupBackGrnd
+                    horizontalOffset: 1
+                    verticalOffset: 0
+                    radius: 1
+                    samples: 10
+                    cached: true
+                    color: "#524D64"
+                    source: popupBackGrnd
+                }
+            }
     }
 
     function getModelData(index, role)
