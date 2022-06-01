@@ -44,8 +44,9 @@ BugReports::BugReports (QWidget *parent) :
   //movLoading->start();
 
   ui->top_spacer_debug->setVisible (false);
-  ui->btnAttachScreenshot->setVisible (false);
-  ui->attach_send_spacer->setVisible (false);
+  ui->btnAttachScreenshot->setVisible (true);
+  ui->btnDetachScreenshot->setVisible (false);
+  ui->attach_send_spacer->setVisible (true);
   ui->dbglbl1->hide();
   ui->dbglbl2->hide();
   ui->dbglbl3->hide();
@@ -103,11 +104,18 @@ BugReports::BugReports (QWidget *parent) :
   connect (ui->btnResultBack, &DapGuiPushButton::clicked,
            this, &BugReports::_slotTextEditFinish,
            Qt::QueuedConnection);
+  connect (ui->btnAttachScreenshot, &DapGuiLabel::clicked,
+           this, &BugReports::attachImage,
+           Qt::QueuedConnection);
+  connect (ui->btnDetachScreenshot, &DapGuiLabel::clicked,
+           this, &BugReports::detachImage,
+           Qt::QueuedConnection);
 
   connect (m_edit, &QPlainTextEdit::textChanged,
            this, &BugReports::_slotTextChanged);
 
   /* finish setup */
+  ui->btnSendReport->setEnabledCustom (false);
   slotSetMode (Write);
 }
 
@@ -291,6 +299,7 @@ void BugReports::updateData (QString &a_text, int a_len)
   //style()->polish (ui->labelLetterAmount);
 
   ui->btnSendReport->setEnabled(!a_text.isEmpty());
+  ui->btnSendReport->setEnabledCustom (!a_text.isEmpty());
 
   /* check if limit reachced */
   if(a_text.length() <= MAX_LENGTH)
@@ -311,8 +320,23 @@ void BugReports::updateData (QString &a_text, int a_len)
   _textHook = false;
 }
 
-void BugReports::refreshHistoryList(){
+void BugReports::refreshHistoryList()
+{
     QMetaObject::invokeMethod(ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
+}
+
+void BugReports::showAttachScreenshotMessage(QString message)
+{
+    ui->btnAttachScreenshot->setText(message);
+    ui->btnAttachScreenshot->setVisible(true);
+    ui->btnDetachScreenshot->setVisible(false);
+}
+
+void BugReports::showDetachScreenshotMessage(QString message)
+{
+    ui->btnDetachScreenshot->setText(message);
+    ui->btnDetachScreenshot->setVisible(true);
+    ui->btnAttachScreenshot->setVisible(false);
 }
 
 /*-----------------------------------------*/

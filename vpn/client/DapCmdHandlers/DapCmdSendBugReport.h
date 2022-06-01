@@ -14,7 +14,7 @@ public:
     void handle(const QJsonObject *params) override;
 
 signals:
-    void sigBugReportSendRequest(const QString&, const QString&);
+    void sigBugReportSendRequest(const QString&, const QString&, const QString&);
     void sigSendCmdBugReportAnswer(const QString& number);
 };
 

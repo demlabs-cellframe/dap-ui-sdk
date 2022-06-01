@@ -106,6 +106,8 @@ signals:
   void sigReturn();
   void sigSend();
   void sigResultBack();
+  void attachImage();
+  void detachImage();
   /// @}
 
   /****************************************//**
@@ -116,6 +118,8 @@ public slots:
   void slotSetMode (BugReports::Mode mode);
   void slotRetranslated();
   void refreshHistoryList();
+  void showAttachScreenshotMessage(QString message);
+  void showDetachScreenshotMessage(QString message);
 private slots:
   void _slotRadioTest();
   void _slotTextChanged();
