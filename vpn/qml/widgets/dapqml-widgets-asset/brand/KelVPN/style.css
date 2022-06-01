@@ -773,6 +773,16 @@
 	color: "@text";
 }
 
+.purchase-btn-spacing
+{
+	scaled-rect: scaled(nan,nan,20,20,true);
+}
+
+.purchase-listview
+{
+	scaled-rect: scaled(nan,140,nan,nan,false);
+}
+
 .purchase-btn-label-main
 {
 	scaled-font: scaled(18);	

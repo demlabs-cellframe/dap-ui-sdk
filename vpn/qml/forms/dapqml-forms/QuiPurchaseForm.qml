@@ -66,14 +66,29 @@ Item {
         qss: "purchase-btn-resizer"
     }
 
+    /* spacing resizer */
+    DapQmlLabel {
+        id: resizerSpacing
+        visible: false
+        qss: "purchase-btn-spacing"
+    }
+
+    /* listview position */
+    DapQmlLabel {
+        id: resizerListView
+        visible: false
+        qss: "purchase-listview"
+    }
+
     /* list */
     ListView {
         id: purchaseListView
         x: (root.width - width) / 2
-        y: title.y + title.height * 2
+        y: resizerListView.y // title.y + title.height * 2
         width: resizer.width
         height: root.height - y
         clip: true
+        spacing: resizerSpacing.height
 
         DapQmlStyle { qss: "purchase-listview"; item: purchaseListView }
 
