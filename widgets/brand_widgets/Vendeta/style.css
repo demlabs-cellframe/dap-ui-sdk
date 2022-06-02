@@ -76,18 +76,16 @@
 
 .normalbold
 {
-        font-weight: bold;
-	font-style: bold;
-        font-size: bold;
-        letter-spacing: 4pt;
+        font-weight: medium;
+	font-style: medium;
+        font-size: medium;
 }
 
 .bold
 {
-        font-weight: bold;
-	font-style: bold;
-        font-size: bold;
-        letter-spacing: 4pt;
+        font-weight: medium;
+	font-style: medium;
+        font-size: medium;
 }
 
 /****************************************************
