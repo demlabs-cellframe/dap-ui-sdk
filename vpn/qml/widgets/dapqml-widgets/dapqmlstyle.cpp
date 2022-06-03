@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "dapqmlstyle.h"
 #include "style/qssmap.h"
+#include "style/qsslink.h"
 #include <QQmlProperty>
 #include <QDebug>
 
@@ -121,6 +122,11 @@ void DapQmlStyle::setup(const QString &styleSheet)
 {
   s_styleSheet  = styleSheet;
   update();
+}
+
+void DapQmlStyle::changeCategory(const QString &a_category)
+{
+  Style::QssLink::changeCategory (a_category);
 }
 
 void DapQmlStyle::update()
