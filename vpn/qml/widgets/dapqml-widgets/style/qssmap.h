@@ -11,6 +11,16 @@ class DapQmlStyle;
 namespace Style
 {
 
+/****************************************//**
+ * @brief QSS style map
+ *
+ * Contains style items parsed from QSS file
+ *
+ * @ingroup groupDapGuiStyleParser
+ * @date 05.06.2022
+ * @author Mikhail Shilenko
+ *******************************************/
+
 class QssMap
 {
   friend class ::DapQmlStyle;
@@ -22,8 +32,6 @@ class QssMap
 public:
   /// fill map with provided stylesheet
   static void setup (const QString &styleSheet);
-  /// apply style patch
-  static void patch (const QJsonArray &array, const QString &themeDir);
 
 protected:
   /// get single item

@@ -17,6 +17,17 @@ namespace Style
 typedef QHash<QString, QVariant> QssItemMap;
 /// @}
 
+/****************************************//**
+ * @brief QSS style item
+ *
+ * Represents style scope and provides
+ * it's values
+ *
+ * @ingroup groupDapGuiStyleParser
+ * @date 05.06.2022
+ * @author Mikhail Shilenko
+ *******************************************/
+
 class QssItem
 {
   /****************************************//**

@@ -10,6 +10,21 @@
 namespace Style
 {
 
+/****************************************//**
+ * @brief QSS style link item
+ *
+ * Represents link scope and provides
+ * it's values
+ *
+ * Used for themes.
+ *
+ * Link scope starts with \@ symbol (example: .@dark{} .@light{})
+ *
+ * @ingroup groupDapGuiStyleParser
+ * @date 05.06.2022
+ * @author Mikhail Shilenko
+ *******************************************/
+
 class QssLink
 {
   /****************************************//**

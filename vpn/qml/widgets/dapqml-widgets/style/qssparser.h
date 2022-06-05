@@ -8,6 +8,17 @@
 namespace Style
 {
 
+/****************************************//**
+ * @brief QSS style text parser
+ *
+ * Used to parse stylesheet text and store
+ * result into QssMap
+ *
+ * @ingroup groupDapGuiStyleParser
+ * @date 05.06.2022
+ * @author Mikhail Shilenko
+ *******************************************/
+
 class QssParser
 {
 public:

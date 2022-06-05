@@ -9,6 +9,18 @@
 namespace Style
 {
 
+/****************************************//**
+ * @brief QSS style item value
+ *
+ * Pair of value name and value itself
+ *
+ * Used to invoke QObject::setProperty(name, value)
+ *
+ * @ingroup groupDapGuiStyleParser
+ * @date 05.06.2022
+ * @author Mikhail Shilenko
+ *******************************************/
+
 class QssValue
 {
   /****************************************//**

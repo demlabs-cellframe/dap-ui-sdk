@@ -20,11 +20,6 @@ void QssMap::setup(const QString &styleSheet)
   QssParser::perform (styleSheet);
 }
 
-void QssMap::patch(const QJsonArray &array, const QString &themeDir)
-{
-
-}
-
 const QssItem *QssMap::item(const QString &a_name)
 {
   static const QssItem s_item;
