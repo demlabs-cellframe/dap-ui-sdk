@@ -67,7 +67,6 @@ class DapQmlStyle : public QObject
   /**
    * @brief List of qss styles joined by space
    * @accessors getQss(), setQss()
-   * @example "font-jost font-bold settings-title"
    */
   Q_PROPERTY (QString qss READ getQss WRITE setQss NOTIFY qssChanged)
 

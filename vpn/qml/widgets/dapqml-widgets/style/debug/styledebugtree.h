@@ -12,6 +12,17 @@
  *
  * Allows to dump information from qml items
  * and show it inside treeview
+ *
+ * Used only for debug purposes
+ *
+ * How to use:
+ * - Enable define ENABLE_FORM_DEBUG inside *.pro
+ * - Uncomment TreeView inside PageCtlDebug.qml
+ * - Describe your qml item (example: Component.onCompleted: StyleDebugTree.describe ("info label", ["x", "y", "width", "height"], this);)
+ * - When app is started debug form will appear
+ * - When qml items exist (or created), press "Redraw". It will refresh model content
+ * - When qml items state changed, press "Update" to refresh values inside debug tree
+ *
  * @ingroup groupDapGuiStyle
  * @date 17.01.2022
  * @author Mikhail Shilenko

@@ -10,6 +10,14 @@
  *
  * Keeps information about item and
  * provides values to a StyleDebugTree
+ *
+ * Used only for debug purposes
+ *
+ * @code
+ * // inside qml item
+ * Component.onCompleted: StyleDebugTree.describe ("info label", ["x", "y", "width", "height"], this);
+ * @endcode
+ *
  * @ingroup groupDapGuiStyle
  * @date 17.01.2022
  * @author Mikhail Shilenko

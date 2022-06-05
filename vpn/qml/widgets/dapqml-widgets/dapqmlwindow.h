@@ -6,6 +6,7 @@
 
 /****************************************//**
  * @brief application window
+ * @deprecated
  * @ingroup groupDapGuiStyle
  * @date 15.04.2021
  * @author Mikhail Shilenko
