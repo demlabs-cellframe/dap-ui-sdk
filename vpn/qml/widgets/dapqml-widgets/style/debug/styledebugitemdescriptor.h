@@ -32,6 +32,7 @@ class StyleDebugItemDescriptor : public QObject
    *******************************************/
   /// @{
 public:
+  /// pair of strings: name and value
   using Line = QPair<QString, QString>;
   /// @}
 
@@ -41,13 +42,13 @@ public:
   /// @{
 protected:
   /* INFORMATION */
-  QString m_name;
-  QStringList m_fields;
-  QObject *m_item;
-  QMetaObject::Connection m_conn;
+  QString m_name;                 ///< descriptor name
+  QStringList m_fields;           ///< values names to describe (requested by QObject::property(fieldName))
+  QObject *m_item;                ///< pointer to QML item
+  QMetaObject::Connection m_conn; ///< item destroy event connection. used to remove descriptor when QML item destroyed
 
   /* CACHED STORAGE */
-  QList<Line> m_fieldData;
+  QList<Line> m_fieldData;        ///< cached values requested from QML item. used to display inside tree
   /// @}
 
   /****************************************//**

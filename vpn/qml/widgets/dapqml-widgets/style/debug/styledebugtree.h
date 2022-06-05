@@ -8,7 +8,7 @@
 #include "styledebugitemdescriptor.h"
 
 /****************************************//**
- * @brief style debug tree
+ * @brief style debug tree model
  *
  * Allows to dump information from qml items
  * and show it inside treeview
@@ -94,11 +94,14 @@ public:
   Q_INVOKABLE static StyleDebugTree *instance();
   Q_INVOKABLE static QObject *singletonProvider (QQmlEngine *engine, QJSEngine *scriptEngine);
 
+  /// Create a descriptor based on item name, fileds and item pointer
   Q_INVOKABLE bool describe (QString a_name, QStringList a_fields, QObject *a_item);
+  /// Remove existing descriptor by name
   Q_INVOKABLE bool undescribe (QString a_name);
 
   /// update data inside descriptors
   Q_INVOKABLE void update();
+  /// reset model and create items from scratch
   Q_INVOKABLE void redraw();
   /// @}
 
