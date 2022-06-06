@@ -1,15 +1,37 @@
+/* INCLUDES */
+
 import QtQuick 2.15
 import DapQmlStyle 1.0
 import QtQuick.Controls 2.12
 import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
+/****************************************//**
+ * @brief Bug Report Form
+ * @ingroup groupDapQmlForms
+ *
+ * ### Structure
+ *
+ * Form is built using three separate Item's which only
+ * visible if desired mode is active.
+ *
+ * Button presses also change mode, so it is not necessary to call
+ * setmode function from outside of the form.
+ *
+ * Form contains resizer item for advanced styling technic.
+ *
+ * @date 06.06.22
+ * @author Mikhail Shilenko
+ *******************************************/
+
 Item {
     id: root
-    property int mode: 0
-    property string formName: "BugReport"
 
-    /* defs */
+    /****************************************//**
+     * @name DEFS
+     ********************************************/
+    /// @{
+
     enum Mode
     {
         Write,
@@ -17,12 +39,48 @@ Item {
         Result
     }
 
-    /* signals */
+    /// @}
+    /****************************************//**
+     * @name VARS
+     ********************************************/
+    /// @{
+
+    /// @brief current mode
+    ///
+    /// @see QuiBugReportForm.Mode
+    property int mode: 0
+    /// @brief form name
+    ///
+    /// Used to connect interface via Manager
+    property string formName: "BugReport"
+
+    /// @}
+    /****************************************//**
+     * @name SIGNALS
+     ********************************************/
+    /// @{
+
+    /// @brief button send clicked (report input)
     signal sigSend()
-    signal sigCancel();
+    /// @brief button cancel clicked (report sending)
+    signal sigCancel()
+    /// @brief button back clicked (report success\\error)
     signal sigResultBack()
 
-    /* functions */
+    /// @}
+    /****************************************//**
+     * @name FUNCTIONS
+     ********************************************/
+    /// @{
+
+    /// @brief set form mode
+    ///
+    /// Three modes available:
+    /// | name          | description |
+    /// | ------------- | ----------- |
+    /// | QuiBugReportForm.Mode.Write | report input screen |
+    /// | QuiBugReportForm.Mode.Loading | report is sending (spinner) |
+    /// | QuiBugReportForm.Mode.Result | report success\\error |
     function setmode(a_mode) {
         mode    = a_mode;
         switch(a_mode) {
@@ -32,23 +90,35 @@ Item {
         }
     }
 
+    /// @brief set report sending result text
     function setResultText(a_text) {
         bugrepResult.text   = a_text;
     }
 
-    /* resizer */
+    /// @}
+
+    /****************************************//**
+     * Resizers
+     ********************************************/
+
     DapQmlRectangle {
         id: resizer
         qss: "bugrep-input-content"
     }
 
-    /* title */
+    /****************************************//**
+     * Title
+     ********************************************/
+
     DapQmlDialogTitle {
         text: "Bug report"
         qss: "dialog-title"
     }
 
-    /* INPUT */
+    /****************************************//**
+     * Mode Input Item
+     ********************************************/
+
     Item {
         anchors.fill: parent
         visible: root.mode == 0
@@ -395,7 +465,10 @@ Item {
         }
     }
 
-    /* SENDING */
+    /****************************************//**
+     * Mode Sending Item
+     ********************************************/
+
     Item {
         anchors.fill: parent
         visible: root.mode == 1
@@ -421,7 +494,10 @@ Item {
         }
     }
 
-    /* STATUS */
+    /****************************************//**
+     * Mode Status Item
+     ********************************************/
+
     Item {
         anchors.fill: parent
         visible: root.mode == 2
@@ -442,3 +518,5 @@ Item {
         }
     }
 }
+
+/*-----------------------------------------*/

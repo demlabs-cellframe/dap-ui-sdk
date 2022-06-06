@@ -1,22 +1,62 @@
+/* INCLUDES */
+
 import QtQuick 2.0
 import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
+/****************************************//**
+ * @brief Bug Report History Form
+ * @ingroup groupDapQmlForms
+ *
+ * ### Structure
+ *
+ * Form is built using simple ListView with DapQmlButton as delegate
+ *
+ * Form contains 2 resizers:
+ * - For items
+ * - For icons
+ *
+ * @date 06.06.22
+ * @author Mikhail Shilenko
+ *******************************************/
+
 Item {
     id: root
+
+    /****************************************//**
+     * @name VARS
+     ********************************************/
+    /// @{
+
+    /// @brief form name
+    ///
+    /// Used to connect interface via Manager
     property string formName: "BugReportHistory"
 
-    /* signals */
+    /// @}
+    /****************************************//**
+     * @name SIGNALS
+     ********************************************/
+    /// @{
+
+    /// @brief item trash icon clicked
     signal sigTrashClicked(string name);
 
-    /* title */
+    /// @}
+    /****************************************//**
+     * Title
+     ********************************************/
+
     DapQmlDialogTitle {
         id: title
         text: "Bug reports"
         qss: "dialog-title"
     }
 
-    /* resizer */
+    /****************************************//**
+     * Resizers
+     ********************************************/
+
     DapQmlRectangle {
         id: resizer
         visible: false
@@ -35,7 +75,10 @@ Item {
         qss: "brh-icn-resizer"
     }
 
-    /* listview */
+    /****************************************//**
+     * Listview
+     ********************************************/
+
     ListView {
         id: csListView
         objectName: "bugrepHistoryListView"
@@ -91,3 +134,5 @@ Item {
         }
     }
 }
+
+/*-----------------------------------------*/

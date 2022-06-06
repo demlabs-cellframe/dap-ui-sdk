@@ -1,16 +1,57 @@
+/* INCLUDES */
+
 import QtQuick 2.1
 import "qrc:/dapqml-widgets"
 
+/****************************************//**
+ * @brief Choose Server Form
+ * @ingroup groupDapQmlForms
+ *
+ * ### Structure
+ *
+ * Form is built using simple ListView with DapQmlRadioButton as delegate
+ *
+ * Form contains resizer for ListView items
+ *
+ * @date 06.06.22
+ * @author Mikhail Shilenko
+ *******************************************/
+
 Item {
     id: root
+
+    /****************************************//**
+     * @name VARS
+     ********************************************/
+    /// @{
+
+    /// @brief form name
+    ///
+    /// Used to connect interface via Manager
     property string formName: "ChooseServer"
+
+    /// @brief items array
+    ///
+    /// Need to store all items
     property var items: new Array
 
-    /* signals */
+    /// @}
+    /****************************************//**
+     * @name SIGNALS
+     ********************************************/
+    /// @{
+
+    /// @brief item clicked
     signal sigSelect(int index, string name);
 //    signal sigCurrentInexChanged();
 
-    /* functions */
+    /// @}
+    /****************************************//**
+     * @name FUNCTIONS
+     ********************************************/
+    /// @{
+
+    /// @brief change current item index (int index)
     function setCurrentIndex(a_index) {
         csListView.currentIndex = a_index;
 
@@ -23,14 +64,21 @@ Item {
 //        root.sigCurrentInexChanged();
     }
 
-    /* title */
+    /// @}
+    /****************************************//**
+     * Title
+     ********************************************/
+
     DapQmlDialogTitle {
         id: title
         text: "Choose server"
         qss: "dialog-title"
     }
 
-    /* resizer */
+    /****************************************//**
+     * Resizers
+     ********************************************/
+
     DapQmlRectangle {
         id: resizer
         visible: false
@@ -43,7 +91,10 @@ Item {
         qss: "radiobtn-spacer"
     }
 
-    /* listview */
+    /****************************************//**
+     * Listview
+     ********************************************/
+
     ListView {
         id: csListView
         objectName: "chooseServerListView"
@@ -74,3 +125,5 @@ Item {
         }
     }
 }
+
+/*-----------------------------------------*/

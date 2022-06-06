@@ -1,21 +1,59 @@
+/* INCLUDES */
+
 import QtQuick 2.0
 import "qrc:/dapqml-widgets"
 
+/****************************************//**
+ * @brief Choose Language Form
+ * @ingroup groupDapQmlForms
+ *
+ * ### Structure
+ *
+ * Form is built using simple ListView with DapQmlRadioButton as delegate
+ *
+ * Form contains resizer for ListView items
+ *
+ * @date 06.06.22
+ * @author Mikhail Shilenko
+ *******************************************/
+
 Item {
     id: root
+
+    /****************************************//**
+     * @name VARS
+     ********************************************/
+    /// @{
+
+    /// @brief form name
+    ///
+    /// Used to connect interface via Manager
     property string formName: "ChooseLanguage"
 
-    /* signals */
+    /// @}
+    /****************************************//**
+     * @name SIGNALS
+     ********************************************/
+    /// @{
+
+    /// @brief item clicked
     signal sigSelect(int index, string name);
 
-    /* title */
+    /// @}
+    /****************************************//**
+     * Title
+     ********************************************/
+
     DapQmlDialogTitle {
         id: title
         text: "Language"
         qss: "dialog-title"
     }
 
-    /* model */
+    /****************************************//**
+     * Model
+     ********************************************/
+
     ListModel {
         id: pseudoListModel
         ListElement {
@@ -32,7 +70,10 @@ Item {
         }
     }
 
-    /* resizer */
+    /****************************************//**
+     * Resizers
+     ********************************************/
+
     DapQmlRectangle {
         id: resizer
         visible: false
@@ -45,8 +86,10 @@ Item {
         qss: "radiobtn-spacer"
     }
 
+    /****************************************//**
+     * Listview
+     ********************************************/
 
-    /* listview */
     ListView {
         id: csListView
 
@@ -76,3 +119,5 @@ Item {
         }
     }
 }
+
+/*-----------------------------------------*/

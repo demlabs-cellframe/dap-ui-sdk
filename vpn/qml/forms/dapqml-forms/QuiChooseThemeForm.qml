@@ -1,26 +1,70 @@
+/* INCLUDES */
+
 import QtQuick 2.0
 import DapQmlThemeModel 1.0
 import PageCtl 1.0
 import DapQmlStyle 1.0
 import "qrc:/dapqml-widgets"
 
+/****************************************//**
+ * @brief Choose Theme Form
+ * @ingroup groupDapQmlForms
+ *
+ * ### Structure
+ *
+ * Form is built using:
+ * -Theme model
+ * -Resizer for items
+ * -Listview with DapQmlRadioButton as delegate
+ *
+ * @date 06.06.22
+ * @author Mikhail Shilenko
+ *******************************************/
+
 Item {
     id: root
+
+    /****************************************//**
+     * @name VARS
+     ********************************************/
+    /// @{
+
+    /// @brief form name
+    ///
+    /// Used to connect interface via Manager
     property string formName: "ChooseTheme"
+
+    /// @brief items array
+    ///
+    /// Need to store all items
     property var items: Array();
 
-    /* signals */
-    signal sigSelect(int index, string name);
-
-    /* vars */
     DapQmlStyle { id: style }
 
-    /* methods */
+    /// @}
+    /****************************************//**
+     * @name SIGNALS
+     ********************************************/
+    /// @{
+
+    /// @brief item clicked
+    signal sigSelect(int index, string name);
+
+    /// @}
+    /****************************************//**
+     * @name FUNCTIONS
+     ********************************************/
+    /// @{
+
+    /// @brief request theme update ( DapQmlStyle.requestRedraw() ) and start return timer
     function updateState() {
         style.requestRedraw();
         backTimer.start();
     }
 
+    /// @brief item clicked
+    ///
+    /// This will prevent double checks and none checks
     function updateChecks() {
         var count           = csListView.count
         for(var i = 0; i < count; i++) {
@@ -32,7 +76,11 @@ Item {
 
     Component.onCompleted: updateChecks()
 
-    /* go back timer */
+    /// @}
+    /****************************************//**
+     * Timers
+     ********************************************/
+
     Timer {
         id: backTimer
         interval: 350
@@ -41,19 +89,28 @@ Item {
         onTriggered: PageCtl.slotBackwardAuto()
     }
 
-    /* title */
+    /****************************************//**
+     * Title
+     ********************************************/
+
     DapQmlDialogTitle {
         id: title
         text: "Language"
         qss: "dialog-title"
     }
 
-    /* model */
+    /****************************************//**
+     * Model
+     ********************************************/
+
     DapQmlThemeModel {
         id: themeModel
     }
 
-    /* resizer */
+    /****************************************//**
+     * Resizers
+     ********************************************/
+
     DapQmlRectangle {
         id: resizer
         visible: false
@@ -66,7 +123,10 @@ Item {
         qss: "radiobtn-spacer"
     }
 
-    /* listview */
+    /****************************************//**
+     * Listview
+     ********************************************/
+
     ListView {
         id: csListView
 
@@ -100,4 +160,7 @@ Item {
 
             Component.onCompleted: items.push(this)
         }
-    }}
+    }
+}
+
+/*-----------------------------------------*/
