@@ -1,15 +1,31 @@
+/* INCLUDES */
+
 import QtQuick 2.12
 import DapQmlStyle 1.0
 import Brand 1.0
+
+/****************************************//**
+ * @brief Dap QML Label Widget
+ * @ingroup groupDapQmlWidgets
+ * @note most of properties is related to text label item
+ *
+ * ### Structure
+ *
+ * Widget with text label or image
+ *
+ * @date 06.06.22
+ * @author Mikhail Shilenko
+ *******************************************/
 
 Item {
     id: root
     clip: true
 
-    /* signals */
-    signal clicked();
+    /****************************************//**
+     * @name VARS
+     ********************************************/
+    /// @{
 
-    /* VARS */
     property string qss
     property string text: ""
     property color color
@@ -29,12 +45,32 @@ Item {
     property real rightPadding
     property real topPadding
 
+    DapQmlStyle { id: style; qss: root.qss; item: root }
+
+    /// @}
+    /****************************************//**
+     * @name SIGNALS
+     ********************************************/
+    /// @{
+
+    /// @brief label clicked
+    signal clicked();
+
+    /// @}
+    /****************************************//**
+     * Image
+     ********************************************/
+
     Image {
         id: icon
         anchors.fill: root
         source: root.scaledPixmap
         mipmap: root.mipmap
     }
+
+    /****************************************//**
+     * Text label
+     ********************************************/
 
     Text {
         id: label
@@ -61,10 +97,14 @@ Item {
         }
     }
 
+    /****************************************//**
+     * Mouse area
+     ********************************************/
+
     MouseArea {
         anchors.fill: root
         onClicked: root.clicked()
     }
-
-    DapQmlStyle { id: style; qss: root.qss; item: root }
 }
+
+/*-----------------------------------------*/

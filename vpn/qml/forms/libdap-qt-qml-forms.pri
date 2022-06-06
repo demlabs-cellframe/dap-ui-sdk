@@ -13,7 +13,7 @@ RESOURCES += \
     $$PWD/dapqml-forms.qrc
 
 HEADERS += \
-    $$PWD/dapqml-forms/doc-group-QmlForms.h \
+    $$PWD/dapqml-forms/doc-group-qml-forms.h \
     $$PWD/dapqml-model/dapqmlmodelbugreports.h \
     $$PWD/dapqml-model/dapqmlmodelchooseserver.h \
     $$PWD/dapqml-model/dapqmlmodelserialhistory.h \

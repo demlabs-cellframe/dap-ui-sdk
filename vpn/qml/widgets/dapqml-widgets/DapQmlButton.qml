@@ -1,19 +1,48 @@
+/* INCLUDES */
+
 import QtQuick 2.1
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 import DapQmlStyle 1.0
 import DapQmlSerialKeyInput 1.0
 
+/****************************************//**
+ * @brief Dap QML Button Widget
+ * @ingroup groupDapQmlWidgets
+ *
+ * @note Doesn't have public functions
+ *
+ * ### Structure
+ *
+ * Widget is made by two (or more) labels
+ * stored inside item holder that can
+ * take shape of frame, can have separator
+ * at teh bottom and link icon at the right
+ *
+ * ### Modes
+ * | name | description |
+ * | ---- | ----------- |
+ * | TopMainBottomSub | top:main, bottom:sub |
+ * | TopSubBottomMain | top:sub,  bottom:main |
+ * | LeftTopMainBottomSub | left:left, top:main, bottom:sub |
+ * | IconMainSub | icon, main, sub |
+ * | EditTopMainBottomSub | top:edit, bottom:sub |
+ * | IconMainSubIcon | icon, main, sub, icon |
+ *
+ * @date 06.06.22
+ * @author Mikhail Shilenko
+ *******************************************/
+
 Rectangle {
     id: root
 
-    /* signals */
-    signal clicked();
-    signal rightClicked();
-    signal textEdited();
-    signal textChanged();
+    /* user no background */
+    color: "transparent"
 
-    /* DEFS */
+    /****************************************//**
+     * @name DEFS
+     ********************************************/
+    /// @{
 
     enum Style
     {
@@ -25,7 +54,11 @@ Rectangle {
         IconMainSubIcon       ///< icon, main, sub, icon
     }
 
-    /* VARS */
+    /// @}
+    /****************************************//**
+     * @name VARS
+     ********************************************/
+    /// @{
 
     property string mainText: "Main text"
     property string subText: "Sub text"
@@ -57,8 +90,29 @@ Rectangle {
         onClicked: root.clicked();
     }
 
-    /* user no background */
-    color: "transparent"
+    /// @}
+    /****************************************//**
+     * @name SIGNALS
+     ********************************************/
+    /// @{
+
+    /// @brief button clicked
+    signal clicked();
+
+    /// @brief right small button clicked
+    signal rightClicked();
+
+    /// @brief text field edited
+    signal textEdited();
+
+    /// @brief text field content changed
+    signal textChanged();
+
+    /// @}
+    /****************************************//**
+     * @name FUNCTIONS
+     ********************************************/
+    /// @{
 
     /* store references */
     Component.onCompleted: {
@@ -99,8 +153,6 @@ Rectangle {
 
     }
 
-    /* functions */
-
     function _magickSpacer() {
         return (0.074 * height);
     }
@@ -117,7 +169,11 @@ Rectangle {
         return _magickHeight() + _magickSpacer();
     }
 
-    /* link */
+    /// @}
+    /****************************************//**
+     * Link image
+     ********************************************/
+
     Image {
         x: root.width - (width * 3)
         y: (root.height - height) / 2
@@ -128,7 +184,10 @@ Rectangle {
         source: "qrc:/light/ic_arrow-right.png"
     }
 
-    /* background */
+    /****************************************//**
+     * Frame image
+     ********************************************/
+
     DapQmlLabel {
         anchors.fill: parent
         z: -1
@@ -136,7 +195,11 @@ Rectangle {
         qss: "btn-frame"
     }
 
-    /* Top - Item, Bottom - Separator */
+    /****************************************//**
+     *  Top   - Item
+     * Bottom - Separator
+     ********************************************/
+
     GridLayout {
         anchors.fill: parent;
         columns: 1
@@ -533,3 +596,5 @@ Rectangle {
     }
 
 }
+
+/*-----------------------------------------*/

@@ -20,6 +20,7 @@ HEADERS += \
     $$PWD/dapqml-widgets/dapqmlthememodel.h \
     $$PWD/dapqml-widgets/dapqmlwindow.h \
     $$PWD/dapqml-widgets/doc-group-dapqmlstyle.h \
+    $$PWD/dapqml-widgets/doc-group-qml-widgets.h \
     $$PWD/dapqml-widgets/style/debug/styledebugitemdescriptor.h \
     $$PWD/dapqml-widgets/style/qssitem.h \
     $$PWD/dapqml-widgets/style/qsslink.h \
