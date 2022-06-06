@@ -1,6 +1,18 @@
+/* INCLUDES */
+
 import QtQuick 2.4
 import QtQuick.Controls 2.5
 import "qrc:/dapqml-widgets"
+
+/****************************************//**
+ * @brief Font Test Form
+ * @ingroup groupDapQmlForms
+ *
+ * Used only for debug purposes
+ *
+ * @date 06.06.22
+ * @author Mikhail Shilenko
+ *******************************************/
 
 Item {
     id: window
@@ -40,3 +52,5 @@ Item {
         Text { text: parent.wtext(font.styleName); font.family: fontFam; font.pointSize: fontSize; font.styleName: "Black" }
     }
 }
+
+/*-----------------------------------------*/

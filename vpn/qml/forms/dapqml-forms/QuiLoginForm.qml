@@ -1,3 +1,5 @@
+/* INCLUDES */
+
 import QtQuick 2.4
 import QtQml 2.12
 import QtQuick.Controls 2.1
@@ -7,15 +9,57 @@ import StyleDebugTree 1.0
 import DapQmlStyle 1.0
 import "qrc:/dapqml-widgets"
 
+/****************************************//**
+ * @brief Login Form
+ * @ingroup groupDapQmlForms
+ *
+ * ### Structure
+ *
+ * Form is built using:
+ * - Logo
+ * - Error label
+ * - Choose server
+ * - Enter serial
+ * - Connect button
+ * - Obtain key link
+ *
+ * @date 06.06.22
+ * @author Mikhail Shilenko
+ *******************************************/
+
 Item {
     id: root
+
+    /****************************************//**
+     * @name VARS
+     ********************************************/
+    /// @{
+
+    /// @brief form name
+    ///
+    /// Used to connect interface via Manager
     property string formName: "Login"
 
-    /* signals */
+    /// @}
+    /****************************************//**
+     * @name SIGNALS
+     ********************************************/
+    /// @{
+
+    /// @brief choose server button clicked
     signal sigChooseServer();
+
+    /// @brief enter serial key clicked
     signal sigChooseSerial();
+
+    /// @brief connect button clicked
     signal sigConnect();
+
+    /// @brief buy serial clicked
     signal sigObtainNewKey();
+
+    /// @brief entered serial is incorerct
+    signal sigSerialFillingIncorrect();
 
     signal textEditedAndCleaned();
     signal textEditedAndFilledOut (string serial);
@@ -23,34 +67,47 @@ Item {
     signal textChangedAndCleaned();
     signal textChangedAndFilledOut (string serial);
 
-    signal sigSerialFillingIncorrect();
+    /// @}
+    /****************************************//**
+     * @name FUNCTIONS
+     ********************************************/
+    /// @{
 
-    /* functions */
+    /// @brief change error label text
     function setStatusMessage(a_message) {
         loginErrorLabel.text    = a_message;
     }
 
+    /// @brief change serial key button content
     function setSerial(a_serial) {
         btnEnterSerial.mainText = a_serial;
     }
 
+    /// @brief enable\\disable connect button
     function setConnectionEnabled(a_value) {
         btnConnect.enabled  = a_value;
     }
 
+    /// @brief show\\hide serial enter button
     function setKeyEnterEnabled(a_value) {
         btnEnterSerial.visible  = a_value;
     }
 
+    /// @brief change current chosen server name
     function setServer(a_name) {
         btnChooseServer.mainText    = a_name;
     }
 
+    /// @brief set input mask for serial input
     function setupInputMask() {
         btnEnterSerial.inputMask    = ">NNNN-NNNN-NNNN-NNNN;_"
     }
 
-    /* W I P */
+    /// @}
+    /****************************************//**
+     * Separator fix
+     ********************************************/
+
     Timer {
         interval: 500
         running: true
@@ -64,7 +121,10 @@ Item {
         }
     }
 
-    /* logo */
+    /****************************************//**
+     * Logo
+     ********************************************/
+
     DapQmlRectangle {
         qss: "login-logo-container"
         DapQmlLabel {
@@ -91,7 +151,10 @@ Item {
 //        Component.onCompleted: filter.setup(this)
 //    }
 
-    /* error label */
+    /****************************************//**
+     * Error label
+     ********************************************/
+
     DapQmlLabel {
         id: loginErrorLabel
         qss: "login-error-label"
@@ -99,7 +162,10 @@ Item {
         text: ""
     }
 
-    /* top separator */
+    /****************************************//**
+     * Top separator
+     ********************************************/
+
     DapQmlRectangle {
         qss: "login-separator-container"
         DapQmlSeparator {
@@ -110,7 +176,10 @@ Item {
         }
     }
 
-    /* choose server */
+    /****************************************//**
+     * Choose server
+     ********************************************/
+
     DapQmlRectangle {
         qss: "login-btn-server-container"
         DapQmlButton {
@@ -131,7 +200,10 @@ Item {
         }
     }
 
-    /* enter serial */
+    /****************************************//**
+     * Enter serial
+     ********************************************/
+
     DapQmlRectangle {
         qss: "login-btn-serial-container"
 
@@ -182,7 +254,10 @@ Item {
         }
     }
 
-    /* connect */
+    /****************************************//**
+     * Connect button
+     ********************************************/
+
     DapQmlPushButton {
         id: btnConnect
         x: (parent.width - width) / 2
@@ -193,7 +268,10 @@ Item {
         onClicked: root.sigConnect()
     }
 
-    /* obtain key */
+    /****************************************//**
+     * Obtain key link
+     ********************************************/
+
     DapQmlRectangle {
         qss: "login-obtain-container"
 
@@ -234,3 +312,5 @@ Item {
         }
     }
 }
+
+/*-----------------------------------------*/

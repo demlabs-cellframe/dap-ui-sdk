@@ -1,3 +1,5 @@
+/* INCLUDES */
+
 import QtQuick 2.4
 import QtQuick.Layouts 1.3
 //import DapQmlModelSettings 1.0
@@ -5,14 +7,31 @@ import StyleDebugTree 1.0
 //import SettingsInterface 1.0
 import "qrc:/dapqml-widgets"
 
+/****************************************//**
+ * @brief Settings Form
+ * @ingroup groupDapQmlForms
+ *
+ * ### Structure
+ *
+ * Form is built using ListView with DapQmlButton and DapQmlLabel as delegate
+ *
+ * Delegate choses when to display DapQmlButton or DapQmlLabel
+ *
+ * If DapQmlButton is clicked, delegate executes settingsModel.exec static method
+ *
+ * @date 06.06.22
+ * @author Mikhail Shilenko
+ *******************************************/
+
 Item {
     id: root
-    property string formName: "Settings"
     clip: true
-    //DapQmlModelSettings { id: settingsModel }
-    //SettingsInterface { id: settingsInterface; Component.onCompleted: setup(settingsModel); }
 
-    /* defs */
+    /****************************************//**
+     * @name DEFS
+     ********************************************/
+    /// @{
+
     enum StyleId
     {
       SI_TITLE,
@@ -24,7 +43,25 @@ Item {
       SI_SPACER
     }
 
-    /* methods */
+    /// @}
+    /****************************************//**
+     * @name VARS
+     ********************************************/
+    /// @{
+
+    /// @brief form name
+    ///
+    /// Used to connect interface via Manager
+    property string formName: "Settings"
+    //DapQmlModelSettings { id: settingsModel }
+    //SettingsInterface { id: settingsInterface; Component.onCompleted: setup(settingsModel); }
+
+    /// @}
+    /****************************************//**
+     * @name FUNCTIONS
+     ********************************************/
+    /// @{
+
     function isSep(sid) {
         if (sid === QuiSettingsForm.StyleId.SI_BUTTON
         || sid === QuiSettingsForm.StyleId.SI_BUTTONRED
@@ -44,6 +81,10 @@ Item {
         return resizer1.height;
     }
 
+    /****************************************//**
+     * Content
+     ********************************************/
+
     Rectangle {
         id: settingsContainer
         anchors.fill: parent
@@ -60,6 +101,10 @@ Item {
 
             clip: true
             //model: settingsModel
+
+            /****************************************//**
+             * Resizers
+             ********************************************/
 
             /* this item simulates resizing to give values:*/
             /* height1 -> item.height, */
@@ -82,6 +127,10 @@ Item {
                 id: spacer
                 qss: "sett-spacer"
             }
+
+            /****************************************//**
+             * Delegate
+             ********************************************/
 
             delegate: Item {
                 id: delegate
@@ -125,3 +174,5 @@ Item {
         }
     }
 }
+
+/*-----------------------------------------*/

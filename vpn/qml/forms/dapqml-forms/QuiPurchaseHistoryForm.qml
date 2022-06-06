@@ -1,19 +1,52 @@
+/* INCLUDES */
+
 import QtQuick 2.0
 import DapQmlModelSerialHistory 1.0
 import "qrc:/dapqml-widgets"
 
+/****************************************//**
+ * @brief Purchase History Form
+ * @ingroup groupDapQmlForms
+ *
+ * ### Structure
+ *
+ * Form is built using:
+ * - 4 resizers
+ * - ListView with DapQmlButton as delegate
+ * - Notice at the bottom of the form
+ *
+ * @date 06.06.22
+ * @author Mikhail Shilenko
+ *******************************************/
+
 Item {
     id: root
+
+    /****************************************//**
+     * @name VARS
+     ********************************************/
+    /// @{
+
+    /// @brief form name
+    ///
+    /// Used to connect interface via Manager
     property string formName: "PurchaseHistory"
 
-    /* title */
+    /// @}
+    /****************************************//**
+     * Title
+     ********************************************/
+
     DapQmlDialogTitle {
         id: title
         text: "History"
         qss: "dialog-title"
     }
 
-    /* resizer */
+    /****************************************//**
+     * Resizers
+     ********************************************/
+
     DapQmlRectangle {
         id: resizer
         visible: false
@@ -44,7 +77,10 @@ Item {
         qss: "ph-notice-spacer"
     }
 
-    /* listview */
+    /****************************************//**
+     * Listview
+     ********************************************/
+
     ListView {
         id: phListView
         objectName: "purchaseHistoryListView"
@@ -77,7 +113,10 @@ Item {
         }
     }
 
-    /* empty history annotation */
+    /****************************************//**
+     * Empty history annotaion
+     ********************************************/
+
     DapQmlLabel {
         id: empotyHistory
         visible: DapQmlModelSerialHistory.length() === 0
@@ -86,7 +125,10 @@ Item {
         qss: "ph-label-empty-history"
     }
 
-    /* notice */
+    /****************************************//**
+     * Notice
+     ********************************************/
+
     DapQmlLabel {
         id: notice
         x: (root.width - noticeResizer.width) / 2
@@ -98,3 +140,5 @@ Item {
         qss: "ph-label-notice"
     }
 }
+
+/*-----------------------------------------*/

@@ -1,26 +1,62 @@
+/* INCLUDES */
+
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import "qrc:/dapqml-widgets"
 import DapQmlStyle 1.0
 
+/****************************************//**
+ * @brief document Viewver Form
+ * @ingroup groupDapQmlForms
+ *
+ * ### Structure
+ *
+ * Form is built using ScrollView with Text item inside
+ *
+ * @date 06.06.22
+ * @author Mikhail Shilenko
+ *******************************************/
+
 Item {
     id: root
+
+    /****************************************//**
+     * @name VARS
+     ********************************************/
+    /// @{
+
+    /// @brief form name
+    ///
+    /// Used to connect interface via Manager
     property string formName: "DocumentViewer"
 
-    /* functions */
+    /// @}
+    /****************************************//**
+     * @name FUNCTIONS
+     ********************************************/
+    /// @{
+
+    /// @brief setup document
     function show(a_docName, a_docContent) {
         title.text      = a_docName;
         content.text    = a_docContent;
     }
 
-    /* title */
+    /// @}
+    /****************************************//**
+     * Title
+     ********************************************/
+
     DapQmlDialogTitle {
         id: title
         text: "Dialog title"
         qss: "dialog-title"
     }
 
-    /* input scrollarea */
+    /****************************************//**
+     * Content scrollarea
+     ********************************************/
+
     ScrollView
     {
         id: scroll
@@ -43,3 +79,5 @@ Item {
         }
     }
 }
+
+/*-----------------------------------------*/

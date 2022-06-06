@@ -1,17 +1,52 @@
+/* INCLUDES */
+
 import QtQuick 2.4
 import QtQuick.Layouts 1.3
 import "qrc:/dapqml-widgets"
 import QmlSchedulePainter 1.0
 import DapQmlStyle 1.0
 
+/****************************************//**
+ * @brief Statistics Form
+ * @ingroup groupDapQmlForms
+ *
+ * ### Structure
+ *
+ * Form is built using:
+ * - 2 resizers
+ * - Graph provided by QmlSchedulePainter
+ * - 2 rows of indicators
+ *
+ * @date 06.06.22
+ * @author Mikhail Shilenko
+ *******************************************/
+
 Item {
     id: root
-    /* vars */
+
+    /****************************************//**
+     * @name VARS
+     ********************************************/
+    /// @{
+
+    /// @brief form name
+    ///
+    /// Used to connect interface via Manager
     property string formName: "Statistics"
+
+    /// @brief coordinate for left row items (calculated on resize)
     property int leftColumnPos: 42
+
+    /// @brief coordinate for right row items (calculated on resize)
     property int rightColumnPos: 228
 
-    /* functions */
+    /// @}
+    /****************************************//**
+     * @name FUNCTIONS
+     ********************************************/
+    /// @{
+
+    /// @brief change all indicators text
     function updateIndicators(a_bytesReceived, a_bytesSent,
                               a_packetsReceived, a_packetsSent,
                               a_uploadSpeed, a_downloadSpeed,
@@ -25,17 +60,18 @@ Item {
         stUpSpeed.mainText      = a_downloadSpeedString;
     }
 
+    /// @brief change uptime label text
     function setUptime (a_text) {
         stUptime.mainText   = a_text;
     }
 
+    /// @brief resize font for provided DapQmlButton
     function resizeFont(a_btn) {
         a_btn.labelMain.fontSize  = fontScalerIndicator.fontSize;
         a_btn.labelSub.fontSize   = fontScalerSubLabel.fontSize;
     }
 
-    /* resize columns */
-
+    /// @brief calculate column positions
     function moveColumns() {
         leftColumnPos   = (root.width / 2 - fontScalerIndicator.width) / 2
         rightColumnPos  = (root.width / 2 - fontScalerIndicator.width) / 2 + root.width / 2
@@ -44,7 +80,10 @@ Item {
     onWidthChanged: moveColumns()
     onHeightChanged: moveColumns()
 
-    /* font scalers */
+    /// @}
+    /****************************************//**
+     * Resizers
+     ********************************************/
 
     DapQmlLabel {
         id: fontScalerIndicator
@@ -58,21 +97,30 @@ Item {
         qss: "stat-scaler-sub"
     }
 
-    /* title */
+    /****************************************//**
+     * Title
+     ********************************************/
+
     DapQmlDialogTitle {
         text: "Statistics"
         qss: "dialog-title"
         hideClose: true
     }
 
-    /* graph */
+    /****************************************//**
+     * Graph
+     ********************************************/
+
     QmlSchedulePainter {
         id: schedulePainter
         objectName: "SchedulePainter"
         DapQmlStyle { item: schedulePainter; qss: "stat-graph"; }
     }
 
-    /* setup font */
+    /****************************************//**
+     * Font resize event
+     ********************************************/
+
     Timer {
         interval: 500
         running: true
@@ -90,7 +138,9 @@ Item {
         }
     }
 
-    /* SPEED */
+    /****************************************//**
+     * Speed
+     ********************************************/
 
     DapQmlButton {
         id: stDownSpeed
@@ -122,7 +172,9 @@ Item {
         onHeightChanged: resizeFont(stUpSpeed);
     }
 
-    /* BYTES */
+    /****************************************//**
+     * Bytes
+     ********************************************/
 
     DapQmlButton {
         id: stBytesRec
@@ -154,7 +206,9 @@ Item {
         onHeightChanged: resizeFont(stBytesSent);
     }
 
-    /* PACKETS */
+    /****************************************//**
+     * Packets
+     ********************************************/
 
     DapQmlButton {
         id: stPacketsRec
@@ -186,7 +240,9 @@ Item {
         onHeightChanged: resizeFont(stPacketsSent);
     }
 
-    /* MISC */
+    /****************************************//**
+     * Misc
+     ********************************************/
 
     DapQmlButton {
         id: stUptime
@@ -220,3 +276,5 @@ Item {
     }
 
 }
+
+/*-----------------------------------------*/

@@ -1,13 +1,33 @@
+/* INCLUDES */
+
 import QtQuick 2.0
 import QtQml.Models 2.1
 import DapQmlStyle 1.0
 import "qrc:/dapqml-widgets"
 
+/****************************************//**
+ * @brief Purchase Form
+ * @ingroup groupDapQmlForms
+ *
+ * ### Structure
+ *
+ * Form is built using:
+ * - Model
+ * - Resizer
+ * - ListView with DapQmlButton as delegate
+ *
+ * @date 06.06.22
+ * @author Mikhail Shilenko
+ *******************************************/
+
 Item {
     id: root
-    property string formName: "Purchase"
 
-    /* defs */
+    /****************************************//**
+     * @name DEFS
+     ********************************************/
+    /// @{
+
     enum Type
     {
         T_1_MONTH   = 0,
@@ -15,12 +35,38 @@ Item {
         T_1_YEAR    = 2
     }
 
-    /* signals */
+    /// @}
+    /****************************************//**
+     * @name VARS
+     ********************************************/
+    /// @{
+
+    /// @brief form name
+    ///
+    /// Used to connect interface via Manager
+    property string formName: "Purchase"
+
+    /// @}
+    /****************************************//**
+     * @name SIGNALS
+     ********************************************/
+    /// @{
+
+    /// @brief 1 month plan clicked
     signal sig1month();
+
+    /// @brief 6 months plan clicked
     signal sig6months();
+
+    /// @brief 1 year plan clicked
     signal sig1year();
 
-    /* functions */
+    /// @}
+    /****************************************//**
+     * @name FUNCTIONS
+     ********************************************/
+    /// @{
+
     function btnClicked(itemId) {
         switch(itemId) {
         case QuiPurchaseForm.Type.T_1_MONTH:    root.sig1month(); break;
@@ -29,7 +75,11 @@ Item {
         }
     }
 
-    /* model */
+    /// @}
+    /****************************************//**
+     * Model
+     ********************************************/
+
     ListModel {
         id: purchaseListModel
         ListElement {
@@ -52,12 +102,19 @@ Item {
         }
     }
 
-    /* title */
+    /****************************************//**
+     * Title
+     ********************************************/
+
     DapQmlDialogTitle {
         id: title
         text: "Get a new license key"
         qss: "dialog-title"
     }
+
+    /****************************************//**
+     * Resizers
+     ********************************************/
 
     /* button resizer */
     DapQmlLabel {
@@ -80,7 +137,10 @@ Item {
         qss: "purchase-listview"
     }
 
-    /* list */
+    /****************************************//**
+     * Listview
+     ********************************************/
+
     ListView {
         id: purchaseListView
         x: (root.width - width) / 2
@@ -115,3 +175,5 @@ Item {
         }
     }
 }
+
+/*-----------------------------------------*/
