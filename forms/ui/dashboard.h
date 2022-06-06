@@ -86,6 +86,7 @@ public slots:
   void setStatusIdicator(bool a_enabled = false);
   /// turn on/off switch
   void setBtnSwitchChecked(bool a_authorized = true);
+  void setBtnSwitchEnabled(bool enabled);
   /// set download speed text
   void setDownloadSpeed(QString a_text);
   /// set upload speed text
