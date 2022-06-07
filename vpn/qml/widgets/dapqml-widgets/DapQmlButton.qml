@@ -1,6 +1,6 @@
 /* INCLUDES */
 
-import QtQuick 2.1
+import QtQuick 2.10
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 import DapQmlStyle 1.0
@@ -175,12 +175,13 @@ Rectangle {
      ********************************************/
 
     Image {
-        x: root.width - (width * 3)
+        x: root.width - (root.frame ? (width * 2.4) : (width * 2))
         y: (root.height - height) / 2
         z: 1
-        width: 22
-        height: 22
+        width: root.height / 5
+        height: root.height / 5
         visible: root.link
+        mipmap: true
         source: "qrc:/light/ic_arrow-right.png"
     }
 

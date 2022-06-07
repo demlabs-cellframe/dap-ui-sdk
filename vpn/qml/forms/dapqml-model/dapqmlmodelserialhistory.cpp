@@ -91,6 +91,29 @@ QHash<int, QByteArray> DapQmlModelSerialHistory::roleNames() const
 void DapQmlModelSerialHistory::slotSetup()
 {
   beginResetModel();
+//  *s_history  = QStringList{
+//      "keytest1",
+//      "keytest2",
+//      "keytest3",
+//      "keytest4",
+//      "keytest5",
+//      "keytest6",
+//      "keytest7",
+//      "keytest8",
+//      "keytest9",
+//      "keytest10",
+//      "keytest11",
+//      "keytest12",
+//      "keytest13",
+//      "keytest14",
+//      "keytest15",
+//      "keytest16",
+//      "keytest17",
+//      "keytest18",
+//      "keytest19",
+//      "keytest20",
+//      "keytest21",
+//  };
   *s_history  = DapDataLocal::instance()->getHistorySerialKeyData();
   endResetModel();
 }

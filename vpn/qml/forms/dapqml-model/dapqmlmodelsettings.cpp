@@ -183,7 +183,11 @@ void DapQmlModelSettings::slotUpdateLabels()
 
   /* set version */
   if (s_versionLabelIndex != -1)
-    s_items[s_versionLabelIndex].m_textSub  = DAP_VERSION;
+    {
+      auto version  = QString ("Version %1\n%2")
+          .arg (DAP_VERSION, __DATE__);
+      s_items[s_versionLabelIndex].m_textSub  = version;
+    }
 }
 
 void DapQmlModelSettings::slotSetDaysLeft (QString a_days)
