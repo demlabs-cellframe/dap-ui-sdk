@@ -135,7 +135,7 @@ Item {
             id: statusTime
             x: (parent.width - width) / 2
             horizontalAlign: Text.AlignLeft
-            text: "56:30:10"
+            text: "00 : 00 : 00"
             qss: "dashboard-status-label"
         }
     }
