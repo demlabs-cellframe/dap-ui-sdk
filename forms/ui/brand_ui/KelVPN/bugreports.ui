@@ -181,7 +181,7 @@
            <item>
             <widget class="DapGuiLabel" name="labelBugReports">
              <property name="text">
-              <string>Bug report</string>
+              <string>Bug reports</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>

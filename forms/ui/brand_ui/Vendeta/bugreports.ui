@@ -392,6 +392,30 @@ color: rgb(238, 238, 236);</string>
           </widget>
          </item>
          <item>
+          <widget class="DapGuiLabel" name="btnDetachScreenshot">
+           <property name="styleSheet">
+            <string notr="true">#btnDetachScreenshot{ font-family: 'Lato'; 
+ color: #DA0B82; 
+ font: 16px/19px; 
+ font-weight: normal; font-style: normal; font-size: normal; 
+ border: none; 
+ background-color: rgba(0,0,0,0); }</string>
+           </property>
+           <property name="text">
+            <string>Remove screenshot</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="cssStyle">
+            <string>lato red font16 normal noborder nobackground</string>
+           </property>
+           <property name="flat" stdset="0">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>         
+         <item>
           <widget class="DapGuiWidget" name="attach_send_spacer">
            <property name="cssStyle">
             <string>bugrep-attach-send-spacer</string>
