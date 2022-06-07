@@ -70,7 +70,7 @@ Item {
 
         Text {
             id: content
-            width: scroll.width
+            width: scroll.width - scroll.width / 16
             font.pixelSize: scroll.fontSize
             textFormat: Text.RichText
             wrapMode: Text.Wrap
