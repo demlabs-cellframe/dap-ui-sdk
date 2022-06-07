@@ -38,6 +38,8 @@ Item {
     property int wrapMode: Text.NoWrap
     property int textFormat: Text.AutoText
     property bool mipmap: true
+    property bool smooth: true
+    property bool antialiasing: false
 
     property real bottomPadding
     property real leftPadding
@@ -66,6 +68,8 @@ Item {
         anchors.fill: root
         source: root.scaledPixmap
         mipmap: root.mipmap
+        smooth: root.smooth
+        antialiasing: root.antialiasing
     }
 
     /****************************************//**

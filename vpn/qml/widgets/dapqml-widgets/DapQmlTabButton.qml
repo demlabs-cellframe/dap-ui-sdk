@@ -57,7 +57,9 @@ TabButton {
 
     Image {
         anchors.fill: parent
-        mipmap: true
+        //mipmap: true
+        //smooth: false
+        antialiasing: true
         source: !_isStill() ? root.active : root.inactive
     }
 }

@@ -181,6 +181,7 @@ Rectangle {
         width: root.height / 5
         height: root.height / 5
         visible: root.link
+        smooth: true
         mipmap: true
         source: "qrc:/light/ic_arrow-right.png"
     }
