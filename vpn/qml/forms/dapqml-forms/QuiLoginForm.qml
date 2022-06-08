@@ -100,7 +100,7 @@ Item {
 
     /// @brief set input mask for serial input
     function setupInputMask() {
-        btnEnterSerial.inputMask    = ">NNNN-NNNN-NNNN-NNNN;_"
+        //btnEnterSerial.inputMask    = ">NNNN-NNNN-NNNN-NNNN;_"
     }
 
     /// @}

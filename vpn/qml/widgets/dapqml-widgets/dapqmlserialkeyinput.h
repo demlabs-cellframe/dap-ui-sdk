@@ -66,6 +66,8 @@ public:
   QString text() const;
   void setText (const QString &a_text);
 
+  QObject *qmlItem() const;
+
   Q_INVOKABLE cbInputMethodEvent callbackEvent() const;
   Q_INVOKABLE void setCallbackEvent(cbInputMethodEvent newCallbackInputMethodEvent);
   Q_INVOKABLE void setup (QObject *a_qmlItem);

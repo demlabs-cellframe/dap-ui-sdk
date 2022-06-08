@@ -44,6 +44,11 @@ void DapQmlSerialKeyInput::setText(const QString &a_text)
   emit textChanged();
 }
 
+QObject *DapQmlSerialKeyInput::qmlItem() const
+{
+  return m_qmlItem;
+}
+
 DapQmlSerialKeyInput::cbInputMethodEvent DapQmlSerialKeyInput::callbackEvent() const
 {
   return m_callbackEvent;
