@@ -37,6 +37,9 @@ Item {
     /// Used to connect interface via Manager
     property string formName: "Dashboard"
 
+    /* this is used only for width calc function _calcStatusWidth */
+    DapQmlStyle { id: style }
+
     /// @}
     /****************************************//**
      * @name SIGNALS
@@ -81,6 +84,7 @@ Item {
             indicator.qss = "dashboard-status-icon ic_online";
         else
             indicator.qss = "dashboard-status-icon ic_offline";
+        statusContainer.visible = a_status;
     }
 
     /// @brief change connection time
@@ -100,6 +104,20 @@ Item {
         serverChoose.subText    = a_ip;
     }
 
+    /// @brief calc status width
+    function _calcStatusWidth() {
+        var size    = style.textOnScreenSize(statusTime);
+        var indWid  = indicator.width;
+        var width   = (size.width + indWid) * 0.8;
+        statusTime.width        = size.width;
+        statusContainer.width   = width;
+        return width;
+    }
+
+    Component.onCompleted: setStatusIndicator(false);
+    onWidthChanged:     _calcStatusWidth()
+    onHeightChanged:    _calcStatusWidth()
+
     /// @}
     /****************************************//**
      * Title
@@ -111,7 +129,7 @@ Item {
 //        y: 62
 //        width: 340
 //        height: 28
-        text: "VPN Connected"
+        text: "Disconnected"
         qss: "dashboard-title"
     }
 
@@ -121,22 +139,25 @@ Item {
 
     DapQmlRectangle {
         id: statusContainer
+        x: (parent.width - width) / 2
         qss: "dashboard-status-container"
+        width: _calcStatusWidth()
 
         DapQmlLabel {
             id: indicator
-            x: statusTime.x - width * 2
+            //x: statusTime.x - width * 2
             y: (statusContainer.height - height) / 2
-            horizontalAlign: Text.AlignRight
             qss: "dashboard-status-icon ic_online"
         }
 
         DapQmlLabel {
             id: statusTime
-            x: (parent.width - width) / 2
-            horizontalAlign: Text.AlignLeft
+            //x: (parent.width - width) / 2
+            x: parent.width - width
+            horizontalAlign: Text.AlignRight
             text: "00 : 00 : 00"
             qss: "dashboard-status-label"
+            onTextChanged: _calcStatusWidth()
         }
     }
 
@@ -172,7 +193,7 @@ Item {
             id: speedDown
             Layout.fillWidth: true
             Layout.fillHeight: true
-            mainText: "0.00 kB/s"
+            mainText: "0 kB/s"
             subText: "DOWNLOAD"
             mainQss: "dashboard-speed-main"
             subQss: "dashboard-speed-sub"
@@ -182,7 +203,7 @@ Item {
             id: speedUp
             Layout.fillWidth: true
             Layout.fillHeight: true
-            mainText: "0.00 kB/s"
+            mainText: "0 kB/s"
             subText: "UPLOAD"
             mainQss: "dashboard-speed-main"
             subQss: "dashboard-speed-sub"

@@ -125,6 +125,17 @@ public:
   /// @deprecated
   Q_INVOKABLE double centerVer (QObject *a_root, QObject *a_item);
 
+  /// @brief get text size based on font, rect and text properties
+  ///
+  /// This method requests properties from object:
+  /// - fontSize
+  /// - text
+  /// - x
+  /// - y
+  /// - width
+  /// - height
+  Q_INVOKABLE QSize textOnScreenSize (QObject *a_item);
+
   /// @brief install qss stylesheet text
   static void setup (const QString &styleSheet);
 

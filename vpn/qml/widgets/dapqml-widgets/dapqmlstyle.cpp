@@ -2,7 +2,10 @@
 #include "dapqmlstyle.h"
 #include "style/qssmap.h"
 #include "style/qsslink.h"
+#include "helper/brand.h"
 #include <QQmlProperty>
+#include <QRect>
+#include <QFontMetrics>
 #include <QDebug>
 
 /* VARS */
@@ -116,6 +119,32 @@ double DapQmlStyle::centerVer (QObject *a_root, QObject *a_item)
 
   /* calc result */
   return (height[0] / 2) - (height[1] / 2);
+}
+
+QSize DapQmlStyle::textOnScreenSize(QObject *a_item)
+{
+  /* check issues */
+  if (a_item == nullptr)
+    return QSize();
+
+  /* get qml iterm boundingRect, original font size and name and text */
+  auto fontSize = a_item->property ("fontSize").toInt();
+  auto text     = a_item->property ("text").toString();
+  auto fontRect = QRect(
+      a_item->property ("x").toInt(),
+      a_item->property ("y").toInt(),
+      a_item->property ("width").toInt(),
+      a_item->property ("height").toInt()
+    );
+  auto fontName = Brand::fontName();
+
+  /* setup font metrics */
+  QFont font (fontName, fontSize);
+  QFontMetrics fm (font);
+
+  /* get actual metrics */
+  auto rect = fm.boundingRect (fontRect, Qt::AlignVCenter | Qt::AlignHCenter, text);
+  return rect.size();
 }
 
 void DapQmlStyle::setup(const QString &styleSheet)

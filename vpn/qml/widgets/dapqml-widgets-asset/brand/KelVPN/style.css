@@ -638,7 +638,7 @@
 
 .dashboard-status-container
 {
-	scaled-rect: scaled(-1,107,-1,22,true);
+	scaled-rect: scaled(nan,107,nan,22,false);
 }
 
 .dashboard-status-label
