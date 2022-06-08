@@ -41,7 +41,7 @@
 
 .darkblue-light
 {
-	color: #04004E;
+	color: #374550;
 }
 
 .darkblue-dark
@@ -60,7 +60,7 @@
 
 .letterspace
 {
-	/*letter-spacing: 4pt;*/
+	/*letter-spacing: 1pt;*/
 }
 
 /****************************************************
@@ -76,18 +76,18 @@
 
 .normalbold
 {
-        font-weight: bold;
-	font-style: bold;
-        font-size: bold;
-        letter-spacing: 4pt;
+	font-weight: 500;
+	font-style: 500;
+	font-size: 500;
+	/*letter-spacing: 1pt;*/
 }
 
 .bold
 {
-        font-weight: bold;
-	font-style: bold;
-        font-size: bold;
-        letter-spacing: 4pt;
+	font-weight: 500;
+	font-style: 500;
+	font-size: 500;
+	/*letter-spacing: 1pt;*/
 }
 
 /****************************************************
@@ -96,7 +96,7 @@
 
 .lato
 {
-        font-family: 'jost';
+	font-family: 'jost';
 }
 
 .roboto
