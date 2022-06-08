@@ -74,7 +74,7 @@ RadioButton {
 
     DapQmlSeparator {
         x: (root.width - width) / 2
-        y: root.height - height
+        y: root.height// - height
         width: root.width - 32
         visible: root.separator
     }
