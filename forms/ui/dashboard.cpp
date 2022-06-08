@@ -15,6 +15,7 @@ Dashboard::Dashboard (QWidget *parent) :
 {
   /* setup ui */
   ui->setupUi (this);
+  ui->btnSwitch->setEnabled(false);
 
   /* setup timer */
   m_updateTime = new QTimer;
@@ -175,6 +176,11 @@ void Dashboard::slotErrorText (QString text)
 {
   ui->lStatus->setText (text);
   ui->lStatus->setCssStyle ("font13 red_error lato normal");
+}
+
+void Dashboard::setBtnSwitchEnabled(bool enabled)
+{
+    ui->btnSwitch->setEnabled(enabled);
 }
 
 /*-----------------------------------------*/
