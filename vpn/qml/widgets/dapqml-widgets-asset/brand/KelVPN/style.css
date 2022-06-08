@@ -852,6 +852,7 @@
 .brh-btn-label-sub
 {
 	color: "@light-grey";
+	horizontalAlign: Text.AlignLeft;
 	scaled-font: scaled(12);
 }
 

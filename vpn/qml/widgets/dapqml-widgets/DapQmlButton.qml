@@ -517,10 +517,9 @@ Rectangle {
 
         /* IconMainSubIcon */
         /* Three items by horiontal */
-        GridLayout {
+        Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            columns: 4
             visible: (root.buttonStyle === DapQmlButton.Style.IconMainSubIcon)
 
             /* store references */
@@ -536,21 +535,20 @@ Rectangle {
             /* icon */
             DapQmlLabel {
                 id: imsiIcon
-                Layout.preferredWidth: root.iconSize
-                Layout.preferredHeight: root.iconSize
-
-                qss: root.icon
+                y: (parent.height - height) / 2
                 width: root.iconSize
                 height: root.iconSize
+
+                qss: root.icon
                 onClicked: root.clicked();
             }
 
             /* main text */
             DapQmlLabel {
                 id: imsiMain
-                Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+                x: imsiIcon.width + imsiIcon.width / 4
+                width: contentWidth
+                height: parent.height
 
                 horizontalAlign: Text.AlignLeft
                 verticalAlign: Text.AlignVCenter
@@ -563,9 +561,9 @@ Rectangle {
             /* sub text */
             DapQmlLabel {
                 id: imsiSub
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                Layout.fillWidth: text.length > 0
-                Layout.fillHeight: true
+                x: imsiMain.x + imsiMain.width + imsiIcon.width / 2
+                width: parent.width - imsiIcon.width - imsiMain.width - imsiRightIcon.width
+                height: parent.height
 
                 horizontalAlign: Text.AlignRight
                 verticalAlign: Text.AlignVCenter
@@ -579,12 +577,12 @@ Rectangle {
             /* icon */
             DapQmlLabel {
                 id: imsiRightIcon
-                Layout.preferredWidth: root.iconRightSize
-                Layout.preferredHeight: root.iconRightSize
-
-                qss: root.iconRight
+                x: parent.width - width - imsiIcon.width / 4
+                y: (parent.height - height) / 2
                 width: root.iconRightSize
                 height: root.iconRightSize
+
+                qss: root.iconRight
                 onClicked: root.rightClicked();
             }
         }
