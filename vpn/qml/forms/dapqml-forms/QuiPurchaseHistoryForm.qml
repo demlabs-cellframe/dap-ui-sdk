@@ -109,6 +109,8 @@ Item {
                 width: resizer.width
                 height: resizer.height
                 y: spacer.height / 2
+
+                onRightClicked: clipboard.setText (model.key)
             }
         }
     }
