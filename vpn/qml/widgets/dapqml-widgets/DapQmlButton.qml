@@ -7,6 +7,7 @@ import Qt.labs.platform 1.1
 import DapQmlStyle 1.0
 import DapQmlSerialKeyInput 1.0
 import TextEditContextMenu 1.0
+import Scaling 1.0
 
 /****************************************//**
  * @brief Dap QML Button Widget
@@ -427,12 +428,14 @@ Rectangle {
                     anchors.fill: parent
                     acceptedButtons: Qt.RightButton
                     onClicked: {
-                        if (mouse.button === Qt.RightButton)
-                            contextMenu.open()
+                        if (Scaling.isDesktop())
+                            if (mouse.button === Qt.RightButton)
+                                contextMenu.open()
                     }
                     onPressAndHold: {
-                        if (mouse.source === Qt.MouseEventNotSynthesized)
-                            contextMenu.open()
+                        if (Scaling.isDesktop())
+                            if (mouse.source === Qt.MouseEventNotSynthesized)
+                                contextMenu.open()
                     }
                     Menu {
                         id: contextMenu
