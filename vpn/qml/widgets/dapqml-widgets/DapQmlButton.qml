@@ -3,8 +3,10 @@
 import QtQuick 2.10
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
+import Qt.labs.platform 1.1
 import DapQmlStyle 1.0
 import DapQmlSerialKeyInput 1.0
+import TextEditContextMenu 1.0
 
 /****************************************//**
  * @brief Dap QML Button Widget
@@ -414,6 +416,47 @@ Rectangle {
                     //anchors.fill: parent
                     id: filter
                     objectName: "serialInputFilter"
+                }
+
+                TextEditContextMenu {
+                    id: ctxMenu
+                    Component.onCompleted: setTextEditWidget(etmbsMain)
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.RightButton
+                    onClicked: {
+                        if (mouse.button === Qt.RightButton)
+                            contextMenu.open()
+                    }
+                    onPressAndHold: {
+                        if (mouse.source === Qt.MouseEventNotSynthesized)
+                            contextMenu.open()
+                    }
+                    Menu {
+                        id: contextMenu
+                        MenuItem {
+                            text: "Cut"
+                            shortcut: "Ctrl+X"
+                            onTriggered: ctxMenu.execCut();
+                        }
+                        MenuItem {
+                            text: "Copy"
+                            shortcut: "Ctrl+C"
+                            onTriggered: ctxMenu.execCopy();
+                        }
+                        MenuItem {
+                            text: "Paste"
+                            shortcut: "Ctrl+V"
+                            onTriggered: ctxMenu.execPaste();
+                        }
+                        MenuItem {
+                            text: "Delete"
+                            //shortcut: "Delete"
+                            onTriggered: ctxMenu.execDelete();
+                        }
+                    }
                 }
 
                 Component.onCompleted: {
