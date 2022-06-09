@@ -227,6 +227,8 @@ Item {
             qss: "login-btn-serial"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
+            placeHolderText: "____ ____ ____ ____"
+            placeHolderQss: "login-btn-main"
             //inputMask: ">NNNN-NNNN-NNNN-NNNN;_"
             separator: true
 

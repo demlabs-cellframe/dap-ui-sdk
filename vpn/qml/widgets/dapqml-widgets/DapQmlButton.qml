@@ -63,11 +63,13 @@ Rectangle {
     property string mainText: "Main text"
     property string subText: "Sub text"
     property string leftText: "Left text"
+    property string placeHolderText: ""
     property string inputMask
     property string qss: ""
     property string mainQss: ""
     property string leftQss: ""
     property string subQss: ""
+    property string placeHolderQss: ""
     property string icon: ""
     property string iconRight: ""
     property int iconSize: 34
@@ -400,6 +402,13 @@ Rectangle {
                 //qss: root.mainQss
                 inputMask: root.inputMask
                 inputMethodHints: Qt.ImhSensitiveData
+
+                DapQmlLabel {
+                    anchors.fill: etmbsMain
+                    enabled: false
+                    text: (root.mainText.length === 0 && etmbsMain.activeFocus === false) ? root.placeHolderText : ""
+                    qss: root.placeHolderQss
+                }
 
                 DapQmlSerialKeyInput {
                     //anchors.fill: parent
