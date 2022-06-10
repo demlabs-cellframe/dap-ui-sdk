@@ -71,6 +71,7 @@ signals:
 public slots:
   void slotRetranslated();
   void setSelectedServer(QString name);
+  void btnReturnVisible(bool visible);
   /// @}
 };
 
