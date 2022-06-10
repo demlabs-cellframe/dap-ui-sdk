@@ -2,6 +2,7 @@
 
 import QtQuick 2.12
 import DapQmlStyle 1.0
+import DapQmlImage 1.0
 import Brand 1.0
 
 /****************************************//**
@@ -66,13 +67,14 @@ Item {
      * Image
      ********************************************/
 
-    Image {
+    DapQmlImage {
         id: icon
         anchors.fill: root
-        source: root.scaledPixmap
-        mipmap: root.mipmap
-        smooth: root.smooth
-        antialiasing: root.antialiasing
+        //source: root.scaledPixmap
+        //mipmap: root.mipmap
+        //smooth: root.smooth
+        //antialiasing: root.antialiasing
+        scaledPixmap: root.scaledPixmap
     }
 
     /****************************************//**

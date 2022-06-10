@@ -160,17 +160,17 @@
 
 .sep-left
 {
-	source: "@separator-left";
+	qproperty-scaledPixmap: "@separator-left";
 }
 
 .sep-mid
 {
-	source: "@separator-mid";
+	qproperty-scaledPixmap: "@separator-mid";
 }
 
 .sep-right
 {
-	source: "@separator-right";
+	qproperty-scaledPixmap: "@separator-right";
 }
 
 

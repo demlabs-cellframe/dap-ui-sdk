@@ -2,6 +2,7 @@
 
 import QtQuick 2.12
 import QtGraphicalEffects 1.5
+import DapQmlImage 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -72,6 +73,13 @@ Item {
         logoPng     = "";
     }
 
+    Timer {
+        interval: 10
+        running: true
+        repeat: false
+        onTriggered: rect.z = 10
+    }
+
     /// @}
     /****************************************//**
      * Resizers
@@ -95,7 +103,7 @@ Item {
 
     Rectangle {
         id: rect
-        z: 10
+        z: 20
         anchors.fill: parent
 
         gradient: Gradient {
@@ -108,11 +116,10 @@ Item {
      * Stripes
      ********************************************/
 
-    Image {
+    DapQmlImage {
         z: 11
         anchors.fill: parent
-        mipmap: true
-        source: root.stripesPng
+        scaledPixmap: root.stripesPng
     }
 
     /****************************************//**

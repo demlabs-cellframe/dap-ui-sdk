@@ -5,6 +5,7 @@ import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 import Qt.labs.platform 1.1
 import DapQmlStyle 1.0
+import DapQmlImage 1.0
 import DapQmlSerialKeyInput 1.0
 import TextEditContextMenu 1.0
 import Scaling 1.0
@@ -179,16 +180,14 @@ Rectangle {
      * Link image
      ********************************************/
 
-    Image {
+    DapQmlImage {
         x: root.width - (root.frame ? (width * 2.4) : (width * 2))
         y: (root.height - height) / 2
         z: 1
         width: root.height / 5
         height: root.height / 5
         visible: root.link
-        smooth: true
-        mipmap: true
-        source: "qrc:/light/ic_arrow-right.png"
+        scaledPixmap: "qrc:/light/ic_arrow-right.png"
     }
 
     /****************************************//**
