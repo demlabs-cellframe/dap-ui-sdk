@@ -116,6 +116,7 @@ public slots:
   void slotSetMode (BugReports::Mode mode);
   void slotRetranslated();
   void refreshHistoryList();
+  void btnReturnVisible(bool visible);
 private slots:
   void _slotRadioTest();
   void _slotTextChanged();

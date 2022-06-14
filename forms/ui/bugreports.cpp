@@ -109,6 +109,7 @@ BugReports::BugReports (QWidget *parent) :
 
   /* finish setup */
   slotSetMode (Write);
+  btnReturnVisible(true);
 }
 
 BugReports::~BugReports()
@@ -311,8 +312,15 @@ void BugReports::updateData (QString &a_text, int a_len)
   _textHook = false;
 }
 
-void BugReports::refreshHistoryList(){
+void BugReports::refreshHistoryList()
+{
     QMetaObject::invokeMethod(ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
+}
+
+void BugReports::btnReturnVisible(bool visible)
+{
+    ui->btnReturn->setVisible(visible);
+    ui->kelGuiWidget_Left->setVisible(visible);
 }
 
 /*-----------------------------------------*/
