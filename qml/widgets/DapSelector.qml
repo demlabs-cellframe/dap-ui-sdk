@@ -7,11 +7,6 @@ Rectangle
 {
     id: selectorItem
 
-    property font font: Qt.font({
-                                    bold: false,
-                                    italic: false,
-                                    pixelSize: 14
-                                })
     property int itemBorder: 10
     property int viewerBorder: 4
     property int currentIndex: viewerItem.currentIndex
@@ -82,8 +77,8 @@ Rectangle
 
     width: viewerItem.width
 
-    border.color: "white"
-    color: "#404040"
+    border.color: currTheme.borderColor
+    color: currTheme.backgroundMainScreen
     radius: height * 0.5
 
     ListView
@@ -124,7 +119,6 @@ Rectangle
                             }
                         }
                 }
-
             }
 
 //        model: selectorModel
@@ -155,9 +149,8 @@ Rectangle
                             - itemBorder * 2 - viewerBorder * 2
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
-                    color: "white"
-//                    font.pointSize: 10
-                    font: selectorItem.font
+                    color: currTheme.textColor
+                    font: mainFont.dapFont.medium14
                     text: name
 
                     MouseArea {
