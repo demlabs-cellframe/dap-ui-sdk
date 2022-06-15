@@ -193,7 +193,7 @@ void DapQmlModelSettings::slotUpdateLabels()
 void DapQmlModelSettings::slotSetDaysLeft (QString a_days)
 {
   beginResetModel();
-  s_items[s_daysLabelIndex].m_textSub = a_days;
+  s_items[s_daysLabelIndex].m_textSub = (a_days.startsWith("-")) ? "expired" : a_days;
   endResetModel();
 
   emit dataChanged (
