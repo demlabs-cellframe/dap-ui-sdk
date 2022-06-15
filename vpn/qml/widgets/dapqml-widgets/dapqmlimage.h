@@ -16,7 +16,7 @@
  * @author Mikhail Shilenko
  *******************************************/
 
-class DapQmlImage : public QQuickPaintedItem
+class DapQmlImageItem : public QQuickPaintedItem
 {
   Q_OBJECT
 
@@ -56,7 +56,7 @@ protected:
    *******************************************/
   /// @{
 public:
-  explicit DapQmlImage (QQuickItem *parent = nullptr);
+  explicit DapQmlImageItem (QQuickItem *parent = nullptr);
 
   /// @}
 

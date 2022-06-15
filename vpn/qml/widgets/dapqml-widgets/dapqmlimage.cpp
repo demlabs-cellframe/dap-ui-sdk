@@ -6,7 +6,7 @@
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-DapQmlImage::DapQmlImage (QQuickItem *parent)
+DapQmlImageItem::DapQmlImageItem (QQuickItem *parent)
   : QQuickPaintedItem (parent)
 {
 
@@ -16,12 +16,12 @@ DapQmlImage::DapQmlImage (QQuickItem *parent)
  * METHODS
  *******************************************/
 
-QString DapQmlImage::scaledPixmap() const
+QString DapQmlImageItem::scaledPixmap() const
 {
   return m_scaledPixmap;
 }
 
-void DapQmlImage::setScaledPixmap (const QString &a_scaledPixmap)
+void DapQmlImageItem::setScaledPixmap (const QString &a_scaledPixmap)
 {
   if (m_scaledPixmap == a_scaledPixmap)
     return;
@@ -38,7 +38,7 @@ void DapQmlImage::setScaledPixmap (const QString &a_scaledPixmap)
  * OVERRIDE
  *******************************************/
 
-void DapQmlImage::paint (QPainter *a_painter)
+void DapQmlImageItem::paint (QPainter *a_painter)
 {
   /* check, if no pixmap provided */
   if (m_scaledPixmap.isEmpty())

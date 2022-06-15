@@ -4,7 +4,6 @@ import QtQuick 2.12
 import QtQuick.Controls 2.1
 import QtGraphicalEffects 1.5
 import DapQmlStyle 1.0
-import DapQmlImage 1.0
 
 /****************************************//**
  * @brief Dap QML Push Button Widget

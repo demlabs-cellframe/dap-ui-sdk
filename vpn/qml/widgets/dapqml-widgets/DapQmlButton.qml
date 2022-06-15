@@ -5,7 +5,6 @@ import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 import Qt.labs.platform 1.1
 import DapQmlStyle 1.0
-import DapQmlImage 1.0
 import DapQmlSerialKeyInput 1.0
 import TextEditContextMenu 1.0
 import Scaling 1.0
