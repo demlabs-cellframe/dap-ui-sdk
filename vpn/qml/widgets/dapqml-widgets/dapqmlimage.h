@@ -44,8 +44,9 @@ protected:
   /// scaled image cache
   struct
   {
-      QPixmap pixmap;
-      QSizeF size;
+    QString name;
+    QPixmap pixmap;
+    QSizeF size;
   } _cache;
 
   /// @}

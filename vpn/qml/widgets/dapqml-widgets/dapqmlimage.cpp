@@ -28,6 +28,7 @@ void DapQmlImage::setScaledPixmap (const QString &a_scaledPixmap)
 
   m_scaledPixmap  = a_scaledPixmap;
   _cache.size     = QSize();
+  _cache.name     = QString();
 
   emit sigScaledPixmapChanged();
   update();
@@ -43,13 +44,26 @@ void DapQmlImage::paint (QPainter *a_painter)
   if (m_scaledPixmap.isEmpty())
     return;
 
+//#ifdef ANDROID
+//  /* setup render options */
+//  a_painter->setRenderHint (QPainter::Antialiasing, true);
+//  a_painter->setRenderHint (QPainter::SmoothPixmapTransform, true);
+//#endif // ANDROID
+
   /* get size */
   auto content  = contentsBoundingRect().toAlignedRect();
   auto size     = content.size();
 
   /* check, if cache has needed size image */
-  if (_cache.size != size)
+  if (_cache.size != size || _cache.name != m_scaledPixmap)
     {
+//#ifdef ANDROID
+//      /* check if already loaded */
+//      if (!_cache.pixmap.isNull()
+//          && _cache.name == m_scaledPixmap)
+//        return a_painter->drawPixmap (content, _cache.pixmap);
+//#endif // ANDROID
+
       /* fix name */
       QString filename  = m_scaledPixmap;
       if (filename.startsWith("qrc:/"))
@@ -63,12 +77,20 @@ void DapQmlImage::paint (QPainter *a_painter)
           QPixmap image;
           image.loadFromData (file.readAll());
 
+//#ifndef ANDROID
           /* scale pixmap */
+          _cache.name   = m_scaledPixmap;
           _cache.size   = size;
           _cache.pixmap = image
               .scaled (size,
                        Qt::IgnoreAspectRatio,
                        Qt::SmoothTransformation);
+//#else // ANDROID
+//          /* store result */
+//          _cache.name   = m_scaledPixmap;
+//          _cache.size   = size;
+//          _cache.pixmap = image;
+//#endif // ANDROID
         }
     }
 
