@@ -4,6 +4,24 @@ import QtQuick 2.12
 import Scaling 1.0
 import DapQmlImageItem 1.0
 
+/****************************************//**
+ * @brief Dap QML Image Widget
+ * @ingroup groupDapQmlWidgets
+ *
+ * ### Structure
+ *
+ * Widget contains two variants of image:
+ * -DapQmlImageItem with custom scaling
+ * -standart Image item
+ *
+ * First is used on Desktop systems
+ *
+ * Second is only for Android
+ *
+ * @date 15.06.22
+ * @author Mikhail Shilenko
+ *******************************************/
+
 Item {
     id: root
     clip: true
