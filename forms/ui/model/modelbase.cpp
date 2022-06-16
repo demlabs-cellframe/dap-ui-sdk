@@ -32,6 +32,7 @@ void ModelBase::setupLayout()
           lay    = new QVBoxLayout (widget());
           lay->setMargin (0);
           lay->setSpacing (0);
+          lay->setAlignment(Qt::AlignTop);
           widget()->setLayout (lay);
           widget()->installEventFilter (this);
         }

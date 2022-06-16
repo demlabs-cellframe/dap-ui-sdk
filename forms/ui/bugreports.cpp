@@ -117,6 +117,7 @@ BugReports::BugReports (QWidget *parent) :
   /* finish setup */
   ui->btnSendReport->setEnabledCustom (false);
   slotSetMode (Write);
+  btnReturnVisible(true);
 }
 
 BugReports::~BugReports()
@@ -337,6 +338,12 @@ void BugReports::showDetachScreenshotMessage(QString message)
     ui->btnDetachScreenshot->setText(message);
     ui->btnDetachScreenshot->setVisible(true);
     ui->btnAttachScreenshot->setVisible(false);
+}
+
+void BugReports::btnReturnVisible(bool visible)
+{
+    ui->btnReturn->setVisible(visible);
+    ui->kelGuiWidget_Left->setVisible(visible);
 }
 
 /*-----------------------------------------*/

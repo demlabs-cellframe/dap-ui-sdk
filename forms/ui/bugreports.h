@@ -120,6 +120,7 @@ public slots:
   void refreshHistoryList();
   void showAttachScreenshotMessage(QString message);
   void showDetachScreenshotMessage(QString message);
+  void btnReturnVisible(bool visible);
 private slots:
   void _slotRadioTest();
   void _slotTextChanged();
