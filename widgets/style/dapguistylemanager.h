@@ -184,7 +184,7 @@ protected:
   static QStringList classList();
   /// get singleton signal instance
   static DapGuiStyleManager &_signal();
-  void setContextMenuStyle();
+  static void setContextMenuStyle();
 protected slots:
   void forcedStyleUpdate();
   /// @}
