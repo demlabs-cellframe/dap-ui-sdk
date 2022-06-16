@@ -54,7 +54,6 @@ bool DapBugReport::createZipDataBugReport(const QString &serial, const QString &
     if (zipFile.open(QIODevice::ReadOnly)){
         byteArrayZipFile = zipFile.readAll();
         qDebug() << "Bug-report byte array size: " << byteArrayZipFile.size();
-        return false;
         zipFile.remove();
         fileJsonData.remove();
     }
