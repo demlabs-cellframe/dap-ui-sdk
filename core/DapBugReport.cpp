@@ -44,7 +44,6 @@ bool DapBugReport::createZipDataBugReport(const QString &serial, const QString &
         }
     }
 
-//    if (!JlCompress::compressFiles("temp_bugReportZip.zip", fileList)){
     if (!DapZip::compressFiles("temp_bugReportZip.zip", fileList)){
         qDebug() << "Bug-report file not compress";
         return false;
