@@ -2,15 +2,6 @@
 #define PACKZIP_H
 #include "zipbase.h"
 
-/*!
- Disabling copy and move func.
- The compiler gives an error message.
-*/
-#define DISABLE_COPY_MOVE(T) \
-    T(const T&) = delete;\
-    T &operator=(const T&) = delete; \
-    T(T&&) = delete; \
-    T &operator=(T&&) = delete; \
 
 /*! Compress example:
 
@@ -21,6 +12,17 @@ zip.addFile("secondfiletoarchive.txt");
 zip.close();
 
 */
+
+
+/*!
+ Disabling copy and move.
+ The compiler gives an error message.
+*/
+#define DISABLE_COPY_MOVE(T) \
+    T(const T&) = delete;\
+    T &operator=(const T&) = delete; \
+    T(T&&) = delete; \
+    T &operator=(T&&) = delete; \
 
 
 namespace DapZip
@@ -94,9 +96,10 @@ namespace DapZip
         void addSymLink(const QString &fileName, const QString &destination);
 
         void close();
+
     private:
         PackZipPrivate *d;
-//        Disabling copy and move func.
+//        Disabling copy and move.
 //        The compiler gives an error message.
         DISABLE_COPY_MOVE(PackZip)
     };
