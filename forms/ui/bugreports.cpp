@@ -343,7 +343,7 @@ void BugReports::showDetachScreenshotMessage(QString message)
 void BugReports::btnReturnVisible(bool visible)
 {
     ui->btnReturn->setVisible(visible);
-    ui->kelGuiWidget_Left->setVisible(visible);
+    ui->kelGuiWidget_Left->setVisible(!visible);
 }
 
 /*-----------------------------------------*/
