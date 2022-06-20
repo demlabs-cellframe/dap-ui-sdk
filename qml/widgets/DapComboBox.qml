@@ -18,6 +18,10 @@ ComboBox {
 
     property string defaultText: qsTr("Undefined")
 
+    property bool vpnClientTokens: false
+
+    property var comboBoxVpnOrdersController
+
     displayText: currentIndex >= 0 ?
                      getModelData(currentIndex, mainTextRole) :
                      defaultText
@@ -28,6 +32,25 @@ ComboBox {
         id: menuDelegate
         width: control.width
 
+        Rectangle
+        {
+            width: 5
+            height: width
+            radius: height * 0.5
+            color: currTheme.hilightColorComboBox
+            x: 5
+            y: parent.height * 0.5 - height * 0.5
+            visible:
+            {
+                if (vpnClientTokens)
+                {
+                    if (comboBoxVpnOrdersController.isTokenInOrders(mainText.text))
+                        return true
+                }
+                return false
+            }
+        }
+
         contentItem:
         RowLayout
         {
@@ -37,6 +60,7 @@ ComboBox {
 
             Text
             {
+                id: mainText
                 Layout.fillWidth: true
                 text: getModelData(index, mainTextRole)
                 color: menuDelegate.highlighted ?
@@ -222,6 +246,6 @@ ComboBox {
         if (text === undefined)
             return ""
         else
-            return model.get(index)[role];
+            return text
     }
 }
