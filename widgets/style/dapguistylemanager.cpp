@@ -99,6 +99,27 @@ DapGuiStyleManager::~DapGuiStyleManager()
 
 }
 
+void DapGuiStyleManager::setContextMenuStyle()
+{
+    qApp->setStyleSheet(
+      "\n\n"
+      "QMenu::item{"
+      "background-color: rgb(255, 255, 255);"
+      "color: rgb(64, 64, 64);"
+      "}\n"
+      "QMenu::item:enabled {"
+      "background-color: rgb(255, 255, 255);"
+      "color: rgb(0, 0, 64);"
+      "}\n"
+      "QMenu::item:selected{"
+      "background-color: rgb(192, 192, 192);"
+      "color: rgb(0, 0, 64);"
+      "}\n"
+      "QMenu::separator{"
+      "background-color: rgb(192, 192, 192);"
+      "}\n");
+}
+
 /********************************************
  * STATIC METHODS
  *******************************************/
@@ -106,23 +127,7 @@ DapGuiStyleManager::~DapGuiStyleManager()
 void DapGuiStyleManager::setupGlobalStyleSheet (const QString &styleSheet)
 {
   Gss().set (styleSheet);
-  qApp->setStyleSheet(
-    "\n\n"
-    "QMenu::item{"
-    "background-color: rgb(255, 255, 255);"
-    "color: rgb(64, 64, 64);"
-    "}\n"
-    "QMenu::item:enabled {"
-    "background-color: rgb(255, 255, 255);"
-    "color: rgb(0, 0, 64);"
-    "}\n"
-    "QMenu::item:selected{"
-    "background-color: rgb(192, 192, 192);"
-    "color: rgb(0, 0, 64);"
-    "}\n"
-    "QMenu::separator{"
-    "background-color: rgb(192, 192, 192);"
-    "}\n");
+  setContextMenuStyle();
   emit s_signal.forceStyleUpdate();
 }
 
