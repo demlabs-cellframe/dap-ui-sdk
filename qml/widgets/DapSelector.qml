@@ -11,6 +11,7 @@ Rectangle
     property int viewerBorder: 4
     property int currentIndex: viewerItem.currentIndex
     property alias selectorModel: viewerItem.model
+    property alias selectorListView: viewerItem
 
     signal itemSelected()
 
