@@ -52,6 +52,7 @@ public:
 signals:
   void sigYes();
   void sigNo();
+  void sigOk();
   /// @}
 
   /****************************************//**

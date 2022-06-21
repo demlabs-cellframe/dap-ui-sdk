@@ -4,14 +4,21 @@
 #define DAP_VERSION ""
 #endif
 
+bool CheckFile(const QString path)
+{
+    QFileInfo check_file(path);
+    return check_file.exists() && check_file.isFile();
+}
+
 DapBugReport::DapBugReport()
 {
 
 }
 
-bool DapBugReport::createZipDataBugReport(const QString &serial, const QString &message, const QString &pkeyHash)
+bool DapBugReport::createZipDataBugReport(const QString &serial, const QString &message, const QString &attachFile, const QString &pkeyHash)
 {
     qDebug() << "DapBugReport::createZip";
+    qDebug() << "DapBugReport attachFile" << attachFile << CheckFile(attachFile);
 
     QFile fileJsonData("data.json");
     if(fileJsonData.open(QIODevice::WriteOnly | QIODevice::Text)){
@@ -21,6 +28,7 @@ bool DapBugReport::createZipDataBugReport(const QString &serial, const QString &
         obj["os"] = getSystemInfo();
         obj["message"] = message;
         obj["pKeyHash"] = pkeyHash;
+        obj["file_attached"] = (CheckFile(attachFile)) ? "YES" : "NO";
         QJsonDocument saveDoc(obj);
         fileJsonData.write(saveDoc.toJson());
         fileJsonData.close();
@@ -28,7 +36,7 @@ bool DapBugReport::createZipDataBugReport(const QString &serial, const QString &
 
     QFileInfo infoFileData(fileJsonData);
     QStringList fileList;
-    for (int i = 0; i < 3; i++){
+    for (int i = 0; i < 4; i++){
         QString path;
         switch (i) {
             case 0:
@@ -37,9 +45,10 @@ bool DapBugReport::createZipDataBugReport(const QString &serial, const QString &
                 path = QString(DapDataLocal::instance()->getLogFilePath()).replace("Service", "GUI"); break;
             case 2:
                 path = infoFileData.path() + "/" + infoFileData.fileName(); break;
+            case 3:
+                path = attachFile; break;
         }
-        QFileInfo check_file(path);
-        if (check_file.exists() && check_file.isFile()) {
+        if (CheckFile(path)) {
             fileList << path;
         }
     }
