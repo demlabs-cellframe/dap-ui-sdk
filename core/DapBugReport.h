@@ -10,7 +10,7 @@
 #include <QDir>
 #include <QSysInfo>
 #include "DapDataLocal.h"
-#include "JlCompress.h"
+#include "packzip.h"
 
 class DapBugReport
 {
