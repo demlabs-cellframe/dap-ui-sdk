@@ -183,4 +183,9 @@ void Dashboard::setBtnSwitchEnabled(bool enabled)
     ui->btnSwitch->setEnabled(enabled);
 }
 
+void Dashboard::setBtnServerEnabled(bool enabled)
+{
+    ui->btnServer->setEnabled(enabled);
+}
+
 /*-----------------------------------------*/

@@ -98,6 +98,8 @@ public slots:
   /// translate text
   void slotRetranslated();
   void slotConnectionRequesteButtonPressed();
+  /// btnServer Enabled
+  void setBtnServerEnabled(bool enabled);
 //  void slotUpdateStatusIcon(bool a_switch);
 
 private slots:
