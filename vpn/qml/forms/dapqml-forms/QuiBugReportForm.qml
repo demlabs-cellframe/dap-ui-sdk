@@ -243,7 +243,7 @@ Item {
                 text: "Please describe the details of problem you faced. What actions did you take and what happened."
                 qss: "bugrep-input-placeholder"
                 wrapMode: TextEdit.Wrap
-                visible: bugRepInputField.text.length == 0
+                visible: bugRepInputField.text.length == 0 && ((Scaling.isAndroid()) ? !bugRepInputField.activeFocus : true)
 
 //                    Component.onCompleted: StyleDebugTree.describe (
 //                       "placeholder",
@@ -317,6 +317,7 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         acceptedButtons: Qt.RightButton
+                        cursorShape: Qt.IBeamCursor
                         onClicked: {
                             if (Scaling.isDesktop())
                                 if (mouse.button === Qt.RightButton)
