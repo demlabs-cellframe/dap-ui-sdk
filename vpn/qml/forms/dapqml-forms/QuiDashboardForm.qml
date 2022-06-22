@@ -85,7 +85,7 @@ Item {
             indicator.qss = "dashboard-status-icon ic_online";
         else
             indicator.qss = "dashboard-status-icon ic_offline";
-        //statusContainer.visible = a_status;
+        statusContainer.visible = a_status;
     }
 
     /// @brief change connection time
@@ -125,7 +125,7 @@ Item {
     DapQmlRectangle {
         id: statusContainer
         qss: "dashboard-status-container"
-        width: parent.width // _calcStatusWidth()
+        width: parent.width
 
 //        Component.onCompleted: StyleDebugTree.describe (
 //           "statusContainer",
