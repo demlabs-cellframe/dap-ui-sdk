@@ -462,6 +462,8 @@ Item {
             qss: "bugrep-send-btn push-button"
             text: "SEND REPORT"
             onClicked: { root.mode = 1; root.sigSend(); }
+            enabled: bugRepInputField.length >= 3
+            opacity: 0.4 + 0.6 * enabled
         }
     }
 
