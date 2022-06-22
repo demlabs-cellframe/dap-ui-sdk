@@ -3,7 +3,10 @@
 import QtQuick 2.15
 import DapQmlStyle 1.0
 import QtQuick.Controls 2.12
+import Qt.labs.platform 1.1
 import StyleDebugTree 1.0
+import TextEditContextMenu 1.0
+import Scaling 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -290,6 +293,8 @@ Item {
                     objectName: "bugRepInputField"
                     anchors.fill: parent
                     wrapMode: TextEdit.Wrap
+                    persistentSelection: true
+                    selectByMouse: true
                     clip: true
                     font.pixelSize: fontSize
                     font.weight: fontWeight
@@ -300,6 +305,52 @@ Item {
                     property string previousText: text
 
                     DapQmlStyle { item: bugRepInputField; qss: "bugrep-input-textarea"; }
+
+                    TextEditContextMenu {
+                        id: ctxMenu
+                        Component.onCompleted: {
+                            setSerialInpoutMode(false);
+                            setTextEditWidget(bugRepInputField);
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        acceptedButtons: Qt.RightButton
+                        onClicked: {
+                            if (Scaling.isDesktop())
+                                if (mouse.button === Qt.RightButton)
+                                    contextMenu.open()
+                        }
+                        onPressAndHold: {
+                            if (Scaling.isDesktop())
+                                if (mouse.source === Qt.MouseEventNotSynthesized)
+                                    contextMenu.open()
+                        }
+                        Menu {
+                            id: contextMenu
+                            MenuItem {
+                                text: "Cut"
+                                shortcut: "Ctrl+X"
+                                onTriggered: ctxMenu.execCut();
+                            }
+                            MenuItem {
+                                text: "Copy"
+                                shortcut: "Ctrl+C"
+                                onTriggered: ctxMenu.execCopy();
+                            }
+                            MenuItem {
+                                text: "Paste"
+                                shortcut: "Ctrl+V"
+                                onTriggered: ctxMenu.execPaste();
+                            }
+                            MenuItem {
+                                text: "Delete"
+                                //shortcut: "Delete"
+                                onTriggered: ctxMenu.execDelete();
+                            }
+                        }
+                    }
 
                     onCursorRectangleChanged: bugRepInput.ensureVisible(cursorRectangle)
 
