@@ -156,12 +156,12 @@ void DapQmlModelSettings::slotUpdateLabels()
 
     DapQmlModelSettingsItem{SI_TITLE,      tr ("Support"), "", "settings_icon", defaultCb},
 
-    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Send a bug report"), "", "settings_icon ic_send-report", cbBugSend},
+    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Send bug report"), "", "settings_icon ic_send-report", cbBugSend},
     DapQmlModelSettingsItem{SI_BUTTON,     tr ("Telegram support bot"), "", "settings_icon ic_bot", cbTelegramBot},
 
     DapQmlModelSettingsItem{SI_TITLE,      tr ("Information"), "", "settings_icon", defaultCb},
 
-    DapQmlModelSettingsItem{SI_LINK,       tr ("Bug Reports"), "", "settings_icon ic_information_bug-report", cbBugReport},
+    DapQmlModelSettingsItem{SI_LINK,       tr ("Bug reports"), "", "settings_icon ic_information_bug-report", cbBugReport},
     DapQmlModelSettingsItem{SI_BUTTON,     tr ("Serial key history on this device"), "", "settings_icon ic_key-history", cbLicenceHistory},
 #ifndef DISABLE_TERMSOFUSE_AND_PRIVACYPOLICY
     DapQmlModelSettingsItem{SI_BUTTON,     tr ("Terms of use"), "", "settings_icon ic_terms_policy", cbTermsOfUse},
@@ -187,7 +187,7 @@ void DapQmlModelSettings::slotUpdateLabels()
   /* set version */
   if (s_versionLabelIndex != -1)
     {
-      auto version  = QString ("Version %1\n%2")
+      auto version  = QString ("%1 %2")
           .arg (DAP_VERSION, __DATE__);
       s_items[s_versionLabelIndex].m_textSub  = version;
     }
