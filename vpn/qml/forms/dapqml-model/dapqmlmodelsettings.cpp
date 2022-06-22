@@ -168,6 +168,9 @@ void DapQmlModelSettings::slotUpdateLabels()
     DapQmlModelSettingsItem{SI_BUTTON,     tr ("Privacy policy"), "", "settings_icon ic_terms_policy", cbPrivacyPolicy},
 #endif // DISABLE_THEMES
     DapQmlModelSettingsItem{SI_BUTTONGRAY, tr ("Version"), "@version", "settings_icon ic_version", cbVersion},
+
+    DapQmlModelSettingsItem{SI_TITLE,      "", "", "settings_icon", defaultCb},
+    DapQmlModelSettingsItem{SI_TITLE,      "", "", "settings_icon", defaultCb},
   };
 
   /* find indexes */
