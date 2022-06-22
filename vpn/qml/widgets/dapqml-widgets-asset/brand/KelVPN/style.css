@@ -638,13 +638,17 @@
 
 .dashboard-status-container
 {
-	scaled-rect: scaled(nan,107,nan,22,false);
+	scaled-rect: scaled(nan,107,-1,22,true);
+}
+
+.dashboard-status-label-scaler
+{
+	scaled-rect: scaled(nan,nan,107,22,true,18);
 }
 
 .dashboard-status-label
 {
 	color: "@text";
-	scaled-rect: scaled(nan,nan,108,22,true,18);
 }
 
 .dashboard-status-icon

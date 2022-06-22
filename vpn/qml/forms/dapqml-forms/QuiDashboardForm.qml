@@ -4,6 +4,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 import DapQmlStyle 1.0
+import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -38,7 +39,7 @@ Item {
     property string formName: "Dashboard"
 
     /* this is used only for width calc function _calcStatusWidth */
-    DapQmlStyle { id: style }
+    //DapQmlStyle { id: style }
 
     /// @}
     /****************************************//**
@@ -84,7 +85,7 @@ Item {
             indicator.qss = "dashboard-status-icon ic_online";
         else
             indicator.qss = "dashboard-status-icon ic_offline";
-        statusContainer.visible = a_status;
+        //statusContainer.visible = a_status;
     }
 
     /// @brief change connection time
@@ -104,19 +105,7 @@ Item {
         serverChoose.subText    = a_ip;
     }
 
-    /// @brief calc status width
-    function _calcStatusWidth() {
-        var size    = style.textOnScreenSize(statusTime);
-        var indWid  = indicator.width;
-        var width   = (size.width + indWid) * 0.8;
-        statusTime.width        = size.width;
-        statusContainer.width   = width;
-        return width;
-    }
-
     Component.onCompleted: setStatusIndicator(false);
-    onWidthChanged:     _calcStatusWidth()
-    onHeightChanged:    _calcStatusWidth()
 
     /// @}
     /****************************************//**
@@ -125,10 +114,6 @@ Item {
 
     DapQmlLabel {
         id: statusLabel
-//        x: centerHor(this)
-//        y: 62
-//        width: 340
-//        height: 28
         text: "Disconnected"
         qss: "dashboard-title"
     }
@@ -139,25 +124,54 @@ Item {
 
     DapQmlRectangle {
         id: statusContainer
-        x: (parent.width - width) / 2
         qss: "dashboard-status-container"
-        width: _calcStatusWidth()
+        width: parent.width // _calcStatusWidth()
+
+//        Component.onCompleted: StyleDebugTree.describe (
+//           "statusContainer",
+//            ["x", "y", "width", "height"],
+//           this);
 
         DapQmlLabel {
-            id: indicator
-            //x: statusTime.x - width * 2
-            y: (statusContainer.height - height) / 2
-            qss: "dashboard-status-icon ic_online"
+            id: statusTimeScaler
+            qss: "dashboard-status-label-scaler"
         }
 
-        DapQmlLabel {
-            id: statusTime
-            //x: (parent.width - width) / 2
-            x: parent.width - width
-            horizontalAlign: Text.AlignRight
-            text: "00 : 00 : 00"
-            qss: "dashboard-status-label"
-            onTextChanged: _calcStatusWidth()
+        Item{
+            x: (parent.width - width) / 2
+            width: indicator.width * 3 + statusTime.width
+            height: parent.height
+
+//            Component.onCompleted: StyleDebugTree.describe (
+//               "statusContainer Column Layout",
+//                ["x", "y", "width", "height"],
+//               this);
+
+            DapQmlLabel {
+                id: indicator
+                y: (statusContainer.height - height) / 2
+                qss: "dashboard-status-icon ic_online"
+
+//                Component.onCompleted: StyleDebugTree.describe (
+//                   "indicator",
+//                    ["x", "y", "width", "height"],
+//                   this);
+            }
+
+            DapQmlLabel {
+                id: statusTime
+                x: indicator.width * 3
+                width: contentWidth
+                height: parent.height
+                fontSize: statusTimeScaler.fontSize
+                text: "00 : 00 : 00"
+                qss: "dashboard-status-label"
+
+//                Component.onCompleted: StyleDebugTree.describe (
+//                   "statusTime",
+//                    ["x", "y", "width", "height"],
+//                   this);
+            }
         }
     }
 
