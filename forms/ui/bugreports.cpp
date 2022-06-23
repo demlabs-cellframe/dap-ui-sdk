@@ -82,6 +82,12 @@ BugReports::BugReports (QWidget *parent) :
   connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &BugReports::sigReturn,
            Qt::QueuedConnection);
+  connect (ui->btnReturn, &DapGuiPushButton::clicked,
+           this, [=](){
+                if (m_mode == Result)
+                    emit sigResultBack();
+           },
+           Qt::QueuedConnection);
   connect (ui->btnSendReport, &DapGuiPushButton::clicked,
            this, &BugReports::sigSend,
            Qt::QueuedConnection);
@@ -202,6 +208,12 @@ void BugReports::slotSetMode (BugReports::Mode mode)
           _spacer = true;
         }
     }
+
+  /* attach screen message */
+  if (mode == List || mode == Result)
+      hideAttachScreenshotMessage();
+  else
+      restoreAttachMessage();
 
   /* resultContainer show/hide */
   ui->resultContainer->setVisible (m_mode != List);
@@ -331,6 +343,7 @@ void BugReports::showAttachScreenshotMessage(QString message)
     ui->btnAttachScreenshot->setText(message);
     ui->btnAttachScreenshot->setVisible(true);
     ui->btnDetachScreenshot->setVisible(false);
+    ui->btnDummyScreenshot->setVisible(false);
 }
 
 void BugReports::showDetachScreenshotMessage(QString message)
@@ -338,6 +351,28 @@ void BugReports::showDetachScreenshotMessage(QString message)
     ui->btnDetachScreenshot->setText(message);
     ui->btnDetachScreenshot->setVisible(true);
     ui->btnAttachScreenshot->setVisible(false);
+    ui->btnDummyScreenshot->setVisible(false);
+}
+
+void BugReports::hideAttachScreenshotMessage()
+{
+    if (ui->btnDummyScreenshot->isHidden())
+    {
+        attachButtonVisibleState = (((uint)ui->btnAttachScreenshot->isHidden()) << 1)
+                                 + (((uint)ui->btnDetachScreenshot->isHidden()) << 0);
+        ui->btnDetachScreenshot->setVisible(false);
+        ui->btnAttachScreenshot->setVisible(false);
+        ui->btnDummyScreenshot->setVisible(true);
+    }
+}
+
+void BugReports::restoreAttachMessage()
+{
+    if (ui->btnDummyScreenshot->isHidden())
+        return;
+    ui->btnAttachScreenshot->setVisible(((attachButtonVisibleState >> 1) & 0x1) == 0);
+    ui->btnDetachScreenshot->setVisible(((attachButtonVisibleState >> 0) & 0x1) == 0);
+    ui->btnDummyScreenshot->setVisible(false);
 }
 
 void BugReports::btnReturnVisible(bool visible)
