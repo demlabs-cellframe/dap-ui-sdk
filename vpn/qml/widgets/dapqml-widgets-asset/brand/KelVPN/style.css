@@ -331,7 +331,7 @@
 
 .popup-dalog-text
 {
-	scaled-rect: scaled(22,57,233,50,false,16);
+	scaled-rect: scaled(nan,57,268,50,false,16);
 	color: "@label";
 	clip: false;
 }
