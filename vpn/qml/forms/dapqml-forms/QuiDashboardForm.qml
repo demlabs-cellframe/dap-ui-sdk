@@ -82,9 +82,15 @@ Item {
     /// @brief change color of small icon close to connection time
     function setStatusIndicator(a_status) {
         if (a_status)
-            indicator.qss = "dashboard-status-icon ic_online";
+        {
+            indicator.qss   = "dashboard-status-icon ic_online";
+            statusLabel.qss = "dashboard-title c-brand";
+        }
         else
-            indicator.qss = "dashboard-status-icon ic_offline";
+        {
+            indicator.qss   = "dashboard-status-icon ic_offline";
+            statusLabel.qss = "dashboard-title c-label";
+        }
         statusContainer.visible = a_status;
     }
 
@@ -115,7 +121,7 @@ Item {
     DapQmlLabel {
         id: statusLabel
         text: "Disconnected"
-        qss: "dashboard-title"
+        qss: "dashboard-title c-label"
     }
 
     /****************************************//**
