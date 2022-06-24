@@ -52,6 +52,11 @@ HEADERS += \
     $$PWD/DapServersLocalStorage.h \
     $$PWD/DataToUpdate.h
 
+equals(BUILD_VARIANT, "GooglePlay") {
+    SOURCES += $$PWD/DapShopManager.cpp
+    HEADERS += $$PWD/DapShopManager.h
+}
+
 INCLUDEPATH += $$PWD
 
 win32{
