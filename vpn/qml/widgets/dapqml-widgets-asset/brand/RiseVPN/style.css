@@ -74,7 +74,7 @@
 
 .font-brand
 {
-	qproperty-fontFamiliy: "Exo2";
+        qproperty-fontFamiliy: "Exo2";
 }
 
 /****************************************************
@@ -331,7 +331,7 @@
 
 .popup-dalog-text
 {
-	scaled-rect: scaled(22,57,233,50,false,16);
+	scaled-rect: scaled(nan,57,268,50,false,16);
 	color: "@label";
 	clip: false;
 }
@@ -548,7 +548,7 @@
 .sett-btn-lbl-sub
 {
 	color: "@light-grey";
-	scaled-font: scaled(16);	
+	scaled-font: scaled(12);	
 	font-weight: Font.Normal;
 }
 
@@ -638,13 +638,17 @@
 
 .dashboard-status-container
 {
-	scaled-rect: scaled(nan,107,nan,22,false);
+	scaled-rect: scaled(nan,107,-1,22,true);
+}
+
+.dashboard-status-label-scaler
+{
+	scaled-rect: scaled(nan,nan,107,22,true,18);
 }
 
 .dashboard-status-label
 {
 	color: "@text";
-	scaled-rect: scaled(nan,nan,108,22,true,18);
 }
 
 .dashboard-status-icon
@@ -872,7 +876,7 @@
 
 .ph-notice-resizer
 {
-	scaled-rect: scaled(nan,nan,363,75,true);
+	scaled-rect: scaled(nan,nan,353,75,true);
 }
 
 .ph-notice-spacer
