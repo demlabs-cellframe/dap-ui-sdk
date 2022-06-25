@@ -420,7 +420,7 @@
 
 .login-logo-container
 {
-	scaled-rect: scaled(-1,117,-1,89,true);
+	scaled-rect: scaled(-1,120,-1,89,true);
 }
 
 .login-logo
@@ -435,9 +435,14 @@
 	color: "@error";
 }
 
+.login-type-container
+{
+	scaled-rect: scaled(-1,229,354,72,false);
+}
+
 .login-separator-container
 {
-	scaled-rect: scaled(-1,291,-1,4,true);
+	scaled-rect: scaled(-1,315,-1,4,true);
 }
 
 .login-separator
@@ -447,7 +452,7 @@
 
 .login-btn-server-container
 {
-	scaled-rect: scaled(-1,292,-1,108,true);
+	scaled-rect: scaled(-1,316,-1,108,true);
 }
 
 .login-btn-server
@@ -457,7 +462,7 @@
 
 .login-btn-serial-container
 {
-	scaled-rect: scaled(-1,406,-1,108,true);
+	scaled-rect: scaled(-1,430,-1,108,true);
 }
 
 .login-btn-serial
@@ -481,12 +486,12 @@
 
 .login-connect
 {
-	scaled-rect: scaled(-1,570,374,80,true,12);
+	scaled-rect: scaled(-1,695,374,80,true,12);
 }
 
 .login-obtain-container
 {
-	scaled-rect: scaled(-1,675,-1,19,false);
+	scaled-rect: scaled(-1,801,-1,19,false);
 }
 
 .login-obtain-font

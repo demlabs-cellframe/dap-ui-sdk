@@ -7,6 +7,7 @@ import QtQuick.Layouts 1.3
 import DapQmlSerialKeyInput 1.0
 import StyleDebugTree 1.0
 import DapQmlStyle 1.0
+import Brand 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -160,6 +161,53 @@ Item {
         qss: "login-error-label"
         wrapMode: Text.WordWrap
         text: ""
+    }
+
+    /****************************************//**
+     * Login type select
+     ********************************************/
+
+    Component.onCompleted: StyleDebugTree.describe (
+       "login",
+        ["x", "y", "width", "height"],
+       this);
+
+    RowLayout {
+        id: loginTypeContainer
+        spacing: height / 3
+        clip: true
+        visible: Brand.name() === "RiseVPN"
+        DapQmlStyle { item: loginTypeContainer; qss: "login-type-container" }
+
+        Component.onCompleted: StyleDebugTree.describe (
+           "loginTypeContainer",
+            ["x", "y", "width", "height"],
+           this);
+
+        DapQmlRadioButton {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            text: "With password"
+            textPadding: indicator.width * 0.8
+
+            Component.onCompleted: StyleDebugTree.describe (
+               "With password",
+                ["x", "y", "width", "height"],
+               this);
+        }
+
+        DapQmlRadioButton {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            text: "With serial"
+            textPadding: indicator.width * 0.8
+            checked: true
+
+            Component.onCompleted: StyleDebugTree.describe (
+               "With serial",
+                ["x", "y", "width", "height"],
+               this);
+        }
     }
 
     /****************************************//**
