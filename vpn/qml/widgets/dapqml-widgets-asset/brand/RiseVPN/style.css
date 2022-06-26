@@ -10,8 +10,8 @@
 	light-grey: "#A4A3C0";
 	error: "#F53172";
 	brand: "#EC6A41";
-	accent: "#F53172";
-	upload: "#5E31F5";
+	accent: "#EC6A41";
+	upload: "#8CEC41";
 	grid: "#211F46";
 	switch-bg-on: 				"qrc:/light/switch/bg_on.png";
 	switch-bg-off: 				"qrc:/light/switch/bg_off.png";
@@ -43,8 +43,8 @@
 	light-grey: "#A4A3C0";
 	error: "#F5FF00";
 	brand: "#EC6A41";
-	accent: "#FF22A2";
-	upload: "#9F83FF";
+	accent: "#EC6A41";
+	upload: "#8CEC41";
 	grid: "#211F46";
 	switch-bg-on: 				"qrc:/dark/switch/bg_on.png";
 	switch-bg-off: 				"qrc:/dark/switch/bg_off.png";
@@ -406,12 +406,12 @@
 
 .splash-gradient-top
 {
-	color: "#E62CC7";
+	color: "#D8CF3B";
 }
 
 .splash-gradient-bottom
 {
-	color: "#F53172";
+	color: "#ED6641";
 }
 
 /****************************************************
