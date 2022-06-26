@@ -40,5 +40,6 @@
         <file>icons/button_dark.png</file>
         <file>icons/button_off.png</file>
         <file>icons/button_on.png</file>
+        <file>widgets/DapSelector.qml</file>
     </qresource>
 </RCC>
