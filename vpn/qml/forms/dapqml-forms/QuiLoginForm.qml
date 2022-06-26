@@ -62,6 +62,17 @@ Item {
         /// @brief show password contents
         property bool showPassword: false
 
+        function forgotLabel() {
+            return mode === QuiLoginForm.Mode.M_SERIAL
+                ? "Don't have a serial key?"
+                : "Forgot your password?"
+        }
+
+        function tapHereLabel() {
+            return mode === QuiLoginForm.Mode.M_SERIAL
+                ? "Tap here to obtain one"
+                : "Tap here to recover"
+        }
     }
 
     /// @}
@@ -379,7 +390,32 @@ Item {
             qss: "login-btn-password"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
+            editEchoMode: (internal.showPassword)
+                          ? TextInput.Normal
+                          : TextInput.Password
             separator: true
+        }
+
+        Button {
+            id: checkShowPassword
+            checkable: true
+            checked: false
+            icon {
+                source: (internal.showPassword)
+                        ? "qrc:/light/password-show.png"
+                        : "qrc:/light/password-hide.png"
+                color: "transparent"
+                width: checkShowPassword.width
+                height: checkShowPassword.height
+            }
+            background: Rectangle { color: "transparent" }
+            x: parent.width - width - (74 / 2)
+            y: (parent.height / 2 - height) / 2 + height / 12
+            z: 16
+            width: parent.height * 0.5
+            height: parent.height * 0.5
+
+            onCheckedChanged: internal.showPassword = checked
         }
     }
 
@@ -406,7 +442,7 @@ Item {
 
         DapQmlLabel {
             id: obtainLabel
-            text: "Don't have a serial key?"
+            text: internal.forgotLabel()
             color: "#5C5B74"
             width: parent.width / 2 - 2
             height: parent.height
@@ -421,7 +457,7 @@ Item {
         DapQmlLabel {
             id: obtainLinkLabel
             x: parent.width / 2 + 2
-            text: "Tap here to obtain one"
+            text: internal.tapHereLabel()
             color: "#DA0B82"
             width: parent.width / 2
             height: parent.height

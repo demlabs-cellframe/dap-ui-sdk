@@ -78,6 +78,7 @@ Rectangle {
     property int iconSize: 34
     property int iconRightSize: 34
     property int buttonStyle: DapQmlButton.Style.TopMainBottomSub
+    property int editEchoMode: TextInput.Normal
     property bool separator: false
     property bool link: false
     property bool frame: false
@@ -399,6 +400,7 @@ Rectangle {
 
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignBottom
+                echoMode: root.editEchoMode
                 text: root.mainText
                 //qss: root.mainQss
                 inputMask: root.inputMask

@@ -39,5 +39,7 @@
         <file compress="1">light/switch/toggle_off.png</file>
         <file compress="1">light/switch/bg_on.png</file>
         <file compress="1">light/switch/bg_off.png</file>
+        <file compress="1">light/password-hide.png</file>
+        <file compress="1">light/password-show.png</file>
     </qresource>
 </RCC>
