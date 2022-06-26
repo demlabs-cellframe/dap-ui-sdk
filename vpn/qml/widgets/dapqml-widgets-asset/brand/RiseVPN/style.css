@@ -460,6 +460,8 @@
 	scaled-rect: scaled(nan,nan,nan,108,false);
 }
 
+/* SERIAL MODE */
+
 .login-btn-serial-container
 {
 	scaled-rect: scaled(-1,430,-1,108,true);
@@ -469,6 +471,30 @@
 {
 	scaled-rect: scaled(nan,nan,nan,108,false);
 }
+
+/* PASSWORD MODE */
+
+.login-btn-email-container
+{
+	scaled-rect: scaled(-1,430,-1,108,true);
+}
+
+.login-btn-email
+{
+	scaled-rect: scaled(nan,nan,nan,108,false);
+}
+
+.login-btn-password-container
+{
+	scaled-rect: scaled(-1,544,-1,108,true);
+}
+
+.login-btn-password
+{
+	scaled-rect: scaled(nan,nan,nan,108,false);
+}
+
+/* --------------- */
 
 .login-btn-main
 {
@@ -491,7 +517,7 @@
 
 .login-obtain-container
 {
-	scaled-rect: scaled(-1,801,-1,19,false);
+	scaled-rect: scaled(-1,791,-1,19,false);
 }
 
 .login-obtain-font

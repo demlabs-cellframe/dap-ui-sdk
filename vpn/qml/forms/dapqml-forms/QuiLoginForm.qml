@@ -32,6 +32,18 @@ Item {
     id: root
 
     /****************************************//**
+     * @name DEFS
+     ********************************************/
+    /// @{
+
+    enum Mode
+    {
+        M_SERIAL,
+        M_PASSWORD
+    }
+
+    /// @}
+    /****************************************//**
      * @name VARS
      ********************************************/
     /// @{
@@ -40,6 +52,17 @@ Item {
     ///
     /// Used to connect interface via Manager
     property string formName: "Login"
+
+    /// @brief internal variables
+    property QtObject internal: QtObject {
+
+        /// @brief login mode
+        property int mode: QuiLoginForm.Mode.M_SERIAL
+
+        /// @brief show password contents
+        property bool showPassword: false
+
+    }
 
     /// @}
     /****************************************//**
@@ -167,10 +190,10 @@ Item {
      * Login type select
      ********************************************/
 
-    Component.onCompleted: StyleDebugTree.describe (
-       "login",
-        ["x", "y", "width", "height"],
-       this);
+//    Component.onCompleted: StyleDebugTree.describe (
+//       "login",
+//        ["x", "y", "width", "height"],
+//       this);
 
     RowLayout {
         id: loginTypeContainer
@@ -179,10 +202,10 @@ Item {
         visible: Brand.name() === "RiseVPN"
         DapQmlStyle { item: loginTypeContainer; qss: "login-type-container" }
 
-        Component.onCompleted: StyleDebugTree.describe (
-           "loginTypeContainer",
-            ["x", "y", "width", "height"],
-           this);
+//        Component.onCompleted: StyleDebugTree.describe (
+//           "loginTypeContainer",
+//            ["x", "y", "width", "height"],
+//           this);
 
         DapQmlRadioButton {
             Layout.fillWidth: true
@@ -190,10 +213,15 @@ Item {
             text: "With password"
             textPadding: indicator.width * 0.8
 
-            Component.onCompleted: StyleDebugTree.describe (
-               "With password",
-                ["x", "y", "width", "height"],
-               this);
+            onCheckedChanged: {
+                if (checked)
+                    internal.mode   = QuiLoginForm.Mode.M_PASSWORD;
+            }
+
+//            Component.onCompleted: StyleDebugTree.describe (
+//               "With password",
+//                ["x", "y", "width", "height"],
+//               this);
         }
 
         DapQmlRadioButton {
@@ -203,10 +231,15 @@ Item {
             textPadding: indicator.width * 0.8
             checked: true
 
-            Component.onCompleted: StyleDebugTree.describe (
-               "With serial",
-                ["x", "y", "width", "height"],
-               this);
+            onCheckedChanged: {
+                if (checked)
+                    internal.mode   = QuiLoginForm.Mode.M_SERIAL;
+            }
+
+//            Component.onCompleted: StyleDebugTree.describe (
+//               "With serial",
+//                ["x", "y", "width", "height"],
+//               this);
         }
     }
 
@@ -230,6 +263,7 @@ Item {
 
     DapQmlRectangle {
         qss: "login-btn-server-container"
+
         DapQmlButton {
             id: btnChooseServer
             x: (parent.width - width) / 2
@@ -254,6 +288,7 @@ Item {
 
     DapQmlRectangle {
         qss: "login-btn-serial-container"
+        visible: internal.mode === QuiLoginForm.Mode.M_SERIAL
 
         DapQmlButton {
             id: btnEnterSerial
@@ -301,6 +336,50 @@ Item {
                 else
                     root.sigSerialFillingIncorrect();
             }
+        }
+    }
+
+    /****************************************//**
+     * Enter e-mail & password
+     ********************************************/
+
+    DapQmlRectangle {
+        qss: "login-btn-email-container"
+        visible: internal.mode === QuiLoginForm.Mode.M_PASSWORD
+
+        DapQmlButton {
+            id: btnEnterEmail
+            x: (parent.width - width) / 2
+            z: 15
+            width: parent.width - 74
+
+            buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
+            mainText: ""
+            subText: "EMAIL"
+            qss: "login-btn-email"
+            mainQss: "login-btn-main"
+            subQss: "login-btn-sub"
+            separator: true
+        }
+    }
+
+    DapQmlRectangle {
+        qss: "login-btn-password-container"
+        visible: internal.mode === QuiLoginForm.Mode.M_PASSWORD
+
+        DapQmlButton {
+            id: btnEnterPassword
+            x: (parent.width - width) / 2
+            z: 15
+            width: parent.width - 74
+
+            buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
+            mainText: ""
+            subText: "PASSWORD"
+            qss: "login-btn-password"
+            mainQss: "login-btn-main"
+            subQss: "login-btn-sub"
+            separator: true
         }
     }
 
