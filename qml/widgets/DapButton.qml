@@ -114,7 +114,7 @@ Button
 
             color: !dapButton.activeFrame ?
                        "transparent" :
-                       gradientColorNormal0
+                       shadowColor
 
             implicitWidth: widthButton
             implicitHeight: heightButton
