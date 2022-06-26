@@ -194,7 +194,7 @@ Item {
         id: loginErrorLabel
         qss: "login-error-label"
         wrapMode: Text.WordWrap
-        text: ""
+        //text: "Temporary network problems, request will be handled as soon as the network connection is re-established"
     }
 
     /****************************************//**

@@ -4,12 +4,12 @@
 
 .@light
 {
-	text: "#04004E";
+	text: "#1F0E08";
 	background: "#F7F8FA";
 	label: "#5C5B74";
 	light-grey: "#A4A3C0";
 	error: "#F53172";
-	brand: "#DA0B82";
+	brand: "#EC6A41";
 	accent: "#F53172";
 	upload: "#5E31F5";
 	grid: "#211F46";
@@ -42,7 +42,7 @@
 	label: "#A4A3C0";
 	light-grey: "#A4A3C0";
 	error: "#F5FF00";
-	brand: "#DA0B82";
+	brand: "#EC6A41";
 	accent: "#FF22A2";
 	upload: "#9F83FF";
 	grid: "#211F46";
@@ -431,7 +431,7 @@
 
 .login-error-label
 {
-	scaled-rect: scaled(51,236,327,57,false,13);
+	scaled-rect: scaled(51,648,327,57,false,13);
 	color: "@error";
 }
 
