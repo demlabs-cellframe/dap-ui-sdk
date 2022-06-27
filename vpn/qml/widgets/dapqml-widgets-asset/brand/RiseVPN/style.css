@@ -4,68 +4,68 @@
 
 .@light
 {
-	text: "#1F0E08";
-	background: "#F7F8FA";
-	label: "#5C5B74";
-	light-grey: "#A4A3C0";
-	error: "#F53172";
-	brand: "#EC6A41";
-	accent: "#EC6A41";
-	upload: "#8CEC41";
-	grid: "#211F46";
-	switch-bg-on: 				"qrc:/light/switch/bg_on.png";
-	switch-bg-off: 				"qrc:/light/switch/bg_off.png";
-	switch-toggle-on: 			"qrc:/light/switch/toggle_on.png";
-	switch-toggle-off: 			"qrc:/light/switch/toggle_off.png";
-	button-frame: 				"qrc:/light/btn_server_bg.png";
-	radio-on: 					"qrc:/light/radio_btn_on.png";
-	radio-off: 					"qrc:/light/radio_btn_off.png";
-	separator-left:             "qrc:/light/separator_left.png";
-	separator-mid:              "qrc:/light/separator_mid.png";
-	separator-right:            "qrc:/light/separator_right.png";
-	push-button-active: 		"qrc:/light/btn_bg_hover_active.png";
-	push-button-inactive: 		"qrc:/light/btn_bg.png";
-	footer-settings-active:     "qrc:/light/btn_settings_active.png";
-	footer-settings-inactive:   "qrc:/light/btn_settings.png";
-	footer-dashboard-active:    "qrc:/light/btn_connection_active.png";
-	footer-dashboard-inactive:  "qrc:/light/btn_connection.png";
-	footer-statistics-active:   "qrc:/light/btn_account_active.png";
-	footer-statistics-inactive: "qrc:/light/btn_account.png";
-	bugrep-bg: 					"qrc:/light/report_bg.png";
-	login-logo: 				"qrc:/light/login-logo.png";
+    text: "#1F0E08";
+    background: "#F7F8FA";
+    label: "#5C5B74";
+    light-grey: "#A4A3C0";
+    error: "#F53172";
+    brand: "#EC6A41";
+    accent: "#EC6A41";
+    upload: "#8CEC41";
+    grid: "#211F46";
+    switch-bg-on:               "qrc:/light/switch/bg_on.png";
+    switch-bg-off:              "qrc:/light/switch/bg_off.png";
+    switch-toggle-on:         	"qrc:/light/switch/toggle_on.png";
+    switch-toggle-off:          "qrc:/light/switch/toggle_off.png";
+    button-frame:               "qrc:/light/btn_server_bg.png";
+    radio-on:                   "qrc:/light/radio_btn_on.png";
+    radio-off:                  "qrc:/light/radio_btn_off.png";
+    separator-left:       			"qrc:/light/separator_left.png";
+    separator-mid:              "qrc:/light/separator_mid.png";
+    separator-right:            "qrc:/light/separator_right.png";
+    push-button-active:         "qrc:/light/btn_bg_hover_active.png";
+    push-button-inactive:       "qrc:/light/btn_bg.png";
+    footer-settings-active:     "qrc:/light/btn_settings_active.png";
+    footer-settings-inactive:   "qrc:/light/btn_settings.png";
+    footer-dashboard-active:    "qrc:/light/btn_connection_active.png";
+    footer-dashboard-inactive:  "qrc:/light/btn_connection.png";
+    footer-statistics-active:   "qrc:/light/btn_account_active.png";
+    footer-statistics-inactive: "qrc:/light/btn_account.png";
+    bugrep-bg:                  "qrc:/light/report_bg.png";
+    login-logo:                 "qrc:/light/login-logo.png";
 }
 
 .@dark
 {
-	text: "#FFFFFF";
-	background: "#2f2e42";
-	label: "#A4A3C0";
-	light-grey: "#A4A3C0";
-	error: "#F5FF00";
-	brand: "#EC6A41";
-	accent: "#EC6A41";
-	upload: "#8CEC41";
-	grid: "#211F46";
-	switch-bg-on: 				"qrc:/dark/switch/bg_on.png";
-	switch-bg-off: 				"qrc:/dark/switch/bg_off.png";
-	switch-toggle-on: 			"qrc:/dark/switch/toggle_on.png";
-	switch-toggle-off: 			"qrc:/dark/switch/toggle_off.png";
-	button-frame: 				"qrc:/dark/btn_server_bg.png";
-	radio-on: 					"qrc:/dark/radio_btn_on.png";
-	radio-off: 					"qrc:/dark/radio_btn_off.png";
-	separator-left:             "qrc:/dark/separator_left.png";
-	separator-mid:              "qrc:/dark/separator_mid.png";
-	separator-right:            "qrc:/dark/separator_right.png";
-	push-button-active: 		"qrc:/dark/btn_bg_hover_active.png";
-	push-button-inactive: 		"qrc:/dark/btn_bg.png";
-	footer-settings-active:     "qrc:/dark/btn_settings_active.png";
-	footer-settings-inactive:   "qrc:/dark/btn_settings.png";
-	footer-dashboard-active:    "qrc:/dark/btn_connection_active.png";
-	footer-dashboard-inactive:  "qrc:/dark/btn_connection.png";
-	footer-statistics-active:   "qrc:/dark/btn_account_active.png";
-	footer-statistics-inactive: "qrc:/dark/btn_account.png";
-	bugrep-bg: 					"qrc:/dark/report_bg.png";
-	login-logo: 				"qrc:/dark/login-logo.png";
+    text: "#FFFFFF";
+    background: "#2f2e42";
+    label: "#A4A3C0";
+    light-grey: "#A4A3C0";
+    error: "#F5FF00";
+    brand: "#EC6A41";
+    accent: "#EC6A41";
+    upload: "#8CEC41";
+    grid: "#211F46";
+    switch-bg-on:               "qrc:/dark/switch/bg_on.png";
+    switch-bg-off:              "qrc:/dark/switch/bg_off.png";
+    switch-toggle-on:           "qrc:/dark/switch/toggle_on.png";
+    switch-toggle-off:          "qrc:/dark/switch/toggle_off.png";
+    button-frame:               "qrc:/dark/btn_server_bg.png";
+    radio-on:                   "qrc:/dark/radio_btn_on.png";
+    radio-off:                  "qrc:/dark/radio_btn_off.png";
+    separator-left:             "qrc:/dark/separator_left.png";
+    separator-mid:              "qrc:/dark/separator_mid.png";
+    separator-right:            "qrc:/dark/separator_right.png";
+    push-button-active:         "qrc:/dark/btn_bg_hover_active.png";
+    push-button-inactive:       "qrc:/dark/btn_bg.png";
+    footer-settings-active:     "qrc:/dark/btn_settings_active.png";
+    footer-settings-inactive:   "qrc:/dark/btn_settings.png";
+    footer-dashboard-active:    "qrc:/dark/btn_connection_active.png";
+    footer-dashboard-inactive:  "qrc:/dark/btn_connection.png";
+    footer-statistics-active:   "qrc:/dark/btn_account_active.png";
+    footer-statistics-inactive: "qrc:/dark/btn_account.png";
+    bugrep-bg:                  "qrc:/dark/report_bg.png";
+    login-logo:                 "qrc:/dark/login-logo.png";
 }
 
 /****************************************************
@@ -74,7 +74,7 @@
 
 .font-brand
 {
-        qproperty-fontFamiliy: "Exo2";
+    qproperty-fontFamiliy: "Exo2";
 }
 
 /****************************************************
@@ -83,12 +83,17 @@
 
 .c-label
 {
-	color: "@text";
+    color: "@text";
+}
+
+.c-grey
+{
+	color: "@light-grey";
 }
 
 .c-brand
 {
-	color: "@brand";
+    color: "@brand";
 }
 
 /****************************************************
@@ -97,48 +102,48 @@
 
 .switch-bg-off
 {
-	qproperty-scaledPixmap: "@switch-bg-off";
+    qproperty-scaledPixmap: "@switch-bg-off";
 }
 
 .switch-bg-on
 {
-	qproperty-scaledPixmap: "@switch-bg-on";
+    qproperty-scaledPixmap: "@switch-bg-on";
 }
 
 .switch-toggle-off
 {
-	qproperty-scaledPixmap: "@switch-toggle-off";
+    qproperty-scaledPixmap: "@switch-toggle-off";
 }
 
 .switch-toggle-on
 {
-	qproperty-scaledPixmap: "@switch-toggle-on";
+    qproperty-scaledPixmap: "@switch-toggle-on";
 }
 
 
 
 .btn-frame
 {
-	qproperty-scaledPixmap: "@button-frame";
+    qproperty-scaledPixmap: "@button-frame";
 }
 
 
 
 .radio-on
 {
-	qproperty-scaledPixmap: "@radio-on";
+    qproperty-scaledPixmap: "@radio-on";
 }
 
 .radio-off
 {
-	qproperty-scaledPixmap: "@radio-off";
+    qproperty-scaledPixmap: "@radio-off";
 }
 
 .radio-label
 {
-	color: "@text";
-	scaled-font: scaled(16);	
-	font-weight: Font.Normal;
+    color: "@text";
+    scaled-font: scaled(16);    
+    font-weight: Font.Normal;
 }
 
 
@@ -146,51 +151,51 @@
 
 .form-title-close-btn
 {
-	scaled-rect: scaled(0,0,28,28,true);
+    scaled-rect: scaled(0,0,28,28,true);
 }
 
 .form-title-label
 {
-	scaled-rect: scaled(39,0,282,28,false,24);
-	color: "@text";
-	font-weight: Font.Bold;
+    scaled-rect: scaled(39,0,282,28,false,24);
+    color: "@text";
+    font-weight: Font.Bold;
 }
 
 
 
 .sep-left
 {
-	qproperty-scaledPixmap: "@separator-left";
+    qproperty-scaledPixmap: "@separator-left";
 }
 
 .sep-mid
 {
-	qproperty-scaledPixmap: "@separator-mid";
+    qproperty-scaledPixmap: "@separator-mid";
 }
 
 .sep-right
 {
-	qproperty-scaledPixmap: "@separator-right";
+    qproperty-scaledPixmap: "@separator-right";
 }
 
 
 
 .push-button
 {
-	active: "@push-button-active";
-	inactive: "@push-button-inactive";
+    active: "@push-button-active";
+    inactive: "@push-button-inactive";
 }
 
 
 
 .radiobtn-resizer
 {
-	scaled-rect: scaled(nan,nan,392,64,false);
+    scaled-rect: scaled(nan,nan,392,64,false);
 }
 
 .radiobtn-spacer
 {
-	scaled-rect: scaled(nan,nan,392,20,false);
+    scaled-rect: scaled(nan,nan,392,20,false);
 }
 
 /****************************************************
@@ -199,92 +204,92 @@
 
 .ic_renew
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_renew.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_renew.png");
 }
 
 .ic_key
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_key.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_key.png");
 }
 
 .ic_key-item
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_key-item.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_key-item.png");
 }
 
 .ic_language
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_language.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_language.png");
 }
 
 .ic_send-report
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_send-report.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_send-report.png");
 }
 
 .ic_bot
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_bot.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_bot.png");
 }
 
 .ic_close
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_close.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_close.png");
 }
 
 .ic_copy
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_copy.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_copy.png");
 }
 
 .ic_trash
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_trash.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_trash.png");
 }
 
 .ic_information_bug-report
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_information_bug-report.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_information_bug-report.png");
 }
 
 .ic_key-history
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_key-history.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_key-history.png");
 }
 
 .ic_terms_policy
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_terms_policy.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_terms_policy.png");
 }
 
 .ic_terms_policy
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_terms_policy.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_terms_policy.png");
 }
 
 .ic_version
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_version.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_version.png");
 }
 
 .ic_theme
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_theme.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_theme.png");
 }
 
 .ic_spinner
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/Spinner.gif");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/Spinner.gif");
 }
 
 .ic_online
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/icon_online.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/icon_online.png");
 }
 
 .ic_offline
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/icon_offline.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/icon_offline.png");
 }
 
 
@@ -294,12 +299,12 @@
 
 .content-frame
 {
-	scaled-rect: scaled(0,0,-1,754,false);
+    scaled-rect: scaled(0,0,-1,754,false);
 }
 
 .content-background
 {
-	color: "@background";
+    color: "@background";
 }
 
 /****************************************************
@@ -308,8 +313,8 @@
 
 .dialog-title
 {
-	scaled-rect: scaled(34,62,360,28,false);
-	color: "@text";
+    scaled-rect: scaled(34,62,360,28,false);
+    color: "@text";
 }
 
 /****************************************************
@@ -318,40 +323,40 @@
 
 .popup-dialog
 {
-	scaled-rect: scaled(nan,nan,280,186,false);
-	color: "@background";
+    scaled-rect: scaled(nan,nan,280,186,false);
+    color: "@background";
 }
 
 .popup-dalog-title
 {
-	scaled-rect: scaled(57,20,170,24,false,20);
-	color: "@text";
-	clip: false;
+    scaled-rect: scaled(57,20,170,24,false,20);
+    color: "@text";
+    clip: false;
 }
 
 .popup-dalog-text
 {
-	scaled-rect: scaled(nan,57,268,50,false,16);
-	color: "@label";
-	clip: false;
+    scaled-rect: scaled(nan,57,268,50,false,16);
+    color: "@label";
+    clip: false;
 }
 
 .popup-dalog-left
 {
-	scaled-rect: scaled(11,nan,86,36,false,14);
-	color: "@text";
+    scaled-rect: scaled(11,nan,86,36,false,14);
+    color: "@text";
 }
 
 .popup-dalog-right
 {
-	scaled-rect: scaled(183,nan,86,36,false,14);
-	color: "@brand";
+    scaled-rect: scaled(183,nan,86,36,false,14);
+    color: "@brand";
 }
 
 .popup-dalog-middle
 {
-	scaled-rect: scaled(-1,nan,86,36,false,14);
-	color: "@brand";
+    scaled-rect: scaled(-1,nan,86,36,false,14);
+    color: "@brand";
 }
 
 /****************************************************
@@ -360,28 +365,28 @@
 
 .footer-frame
 {
-	scaled-rect: scaled(-1,0,-1,201,false);
+    scaled-rect: scaled(-1,0,-1,201,false);
 }
 
 .footer-btn-settings
 {
-	scaled-rect: scaled(19,0,130,130,true);
-	active: "@footer-settings-active";
-	inactive: "@footer-settings-inactive";
+    scaled-rect: scaled(19,0,130,130,true);
+    active: "@footer-settings-active";
+    inactive: "@footer-settings-inactive";
 }
 
 .footer-btn-dashboard
 {
-	scaled-rect: scaled(149,0,130,130,true);
-	active: "@footer-dashboard-active";
-	inactive: "@footer-dashboard-inactive";
+    scaled-rect: scaled(149,0,130,130,true);
+    active: "@footer-dashboard-active";
+    inactive: "@footer-dashboard-inactive";
 }
 
 .footer-btn-statistics
 {
-	scaled-rect: scaled(279,0,130,130,true);
-	active: "@footer-statistics-active";
-	inactive: "@footer-statistics-inactive";
+    scaled-rect: scaled(279,0,130,130,true);
+    active: "@footer-statistics-active";
+    inactive: "@footer-statistics-inactive";
 }
 
 /****************************************************
@@ -390,28 +395,28 @@
 
 .splash-logo
 {
-	scaled-rect: scaled(nan,240,276,76,true);
-	qproperty-scaledPixmap: "qrc:/logo.png";
+    scaled-rect: scaled(nan,240,276,76,true);
+    qproperty-scaledPixmap: "qrc:/logo.png";
 }
 
 .splash-status
 {
-	scaled-rect: scaled(-1,585,-1,64,false,18);
+    scaled-rect: scaled(-1,585,-1,64,false,18);
 }
 
 .splash-version
 {
-	scaled-rect: scaled(-1,nan,-1,96,false,12);
+    scaled-rect: scaled(-1,nan,-1,96,false,12);
 }
 
 .splash-gradient-top
 {
-	color: "#D8CF3B";
+    color: "#D8CF3B";
 }
 
 .splash-gradient-bottom
 {
-	color: "#ED6641";
+    color: "#ED6641";
 }
 
 /****************************************************
@@ -420,128 +425,128 @@
 
 .login-logo-container
 {
-	scaled-rect: scaled(-1,120,-1,89,true);
+    scaled-rect: scaled(-1,120,-1,89,true);
 }
 
 .login-logo
 {
-	scaled-rect: scaled(nan,nan,260,89,true);
-	qproperty-scaledPixmap: "@login-logo";
+    scaled-rect: scaled(nan,nan,260,89,true);
+    qproperty-scaledPixmap: "@login-logo";
 }
 
 .login-error-label
 {
-	scaled-rect: scaled(51,648,327,57,false,13);
-	color: "@error";
+    scaled-rect: scaled(51,648,327,57,false,13);
+    color: "@error";
 }
 
 .login-type-container
 {
-	scaled-rect: scaled(-1,229,354,72,false);
+    scaled-rect: scaled(-1,229,354,72,false);
 }
 
 .login-separator-container
 {
-	scaled-rect: scaled(-1,315,-1,4,true);
+    scaled-rect: scaled(-1,315,-1,4,true);
 }
 
 .login-separator
 {
-	scaled-rect: scaled(nan,nan,nan,4,false);
+    scaled-rect: scaled(nan,nan,nan,4,false);
 }
 
 .login-btn-server-container
 {
-	scaled-rect: scaled(-1,316,-1,108,true);
+    scaled-rect: scaled(-1,316,-1,108,true);
 }
 
 .login-btn-server
 {
-	scaled-rect: scaled(nan,nan,nan,108,false);
+    scaled-rect: scaled(nan,nan,nan,108,false);
 }
 
 /* SERIAL MODE */
 
 .login-btn-serial-container
 {
-	scaled-rect: scaled(-1,430,-1,108,true);
+    scaled-rect: scaled(-1,430,-1,108,true);
 }
 
 .login-btn-serial
 {
-	scaled-rect: scaled(nan,nan,nan,108,false);
+    scaled-rect: scaled(nan,nan,nan,108,false);
 }
 
 /* PASSWORD MODE */
 
 .login-btn-email-container
 {
-	scaled-rect: scaled(-1,430,-1,108,true);
+    scaled-rect: scaled(-1,430,-1,108,true);
 }
 
 .login-btn-email
 {
-	scaled-rect: scaled(nan,nan,nan,108,false);
+    scaled-rect: scaled(nan,nan,nan,108,false);
 }
 
 .login-btn-password-container
 {
-	scaled-rect: scaled(-1,544,-1,108,true);
+    scaled-rect: scaled(-1,544,-1,108,true);
 }
 
 .login-btn-password
 {
-	scaled-rect: scaled(nan,nan,nan,108,false);
+    scaled-rect: scaled(nan,nan,nan,108,false);
 }
 
 /* --------------- */
 
 .login-btn-main
 {
-	scaled-font: scaled(20);
-	color: "@text";
-	font-weight: Font.Bold;
+    scaled-font: scaled(20);
+    color: "@text";
+    font-weight: Font.Bold;
 }
 
 .login-btn-sub
 {
-	scaled-font: scaled(12);
-	color: "#A4A3C0";
-	font-weight: Font.Normal;
+    scaled-font: scaled(12);
+    color: "#A4A3C0";
+    font-weight: Font.Normal;
 }
 
 .login-connect
 {
-	scaled-rect: scaled(-1,695,374,80,true,12);
+    scaled-rect: scaled(-1,695,374,80,true,12);
 }
 
 .login-obtain-container
 {
-	scaled-rect: scaled(-1,791,-1,19,false);
+    scaled-rect: scaled(-1,791,-1,19,false);
 }
 
 .login-obtain-font
 {
-	scaled-font: scaled(16);	
+    scaled-font: scaled(16);    
 }
 
 .login-obtain-label
 {
-	scaled-rect: scaled(nan,nan,160,nan,false);
+    scaled-rect: scaled(nan,nan,160,nan,false);
 }
 
 .login-obtain-link
 {
-	scaled-rect: scaled(nan,nan,160,nan,false);
+    scaled-rect: scaled(nan,nan,160,nan,false);
 }
 
 .login-serialkey-input
 {
-	border-width: 1;
-	border-color: "@light-grey";
-	color: "@background";
-	radius: 5;
-	opacity: 0.2;
+    border-width: 1;
+    border-color: "@light-grey";
+    color: "@background";
+    radius: 5;
+    opacity: 0.2;
 }
 
 
@@ -551,51 +556,51 @@
 
 .sett-spacer
 {
-	scaled-rect: scaled(nan,nan,nan,20,false);
+    scaled-rect: scaled(nan,nan,nan,20,false);
 }
 
 .sett-resizer1
 {
-	scaled-rect: scaled(nan,nan,nan,64,false,34);
+    scaled-rect: scaled(nan,nan,nan,64,false,34);
 }
 
 .sett-resizer2
 {
-	scaled-rect: scaled(nan,nan,nan,116,false);
+    scaled-rect: scaled(nan,nan,nan,116,false);
 }
 
 .sett-item
 {
-	scaled-rect: scaled(nan,nan,nan,nan,false,34);
+    scaled-rect: scaled(nan,nan,nan,nan,false,34);
 }
 
 .sett-btn-lbl-main
 {
-	color: "@text";
-	scaled-font: scaled(16);	
-	font-weight: Font.Normal;
+    color: "@text";
+    scaled-font: scaled(16);    
+    font-weight: Font.Normal;
 }
 
 .sett-btn-lbl-sub
 {
-	color: "@light-grey";
-	scaled-font: scaled(12);	
-	font-weight: Font.Normal;
+    color: "@light-grey";
+    scaled-font: scaled(12);    
+    font-weight: Font.Normal;
 }
 
 .sett-btn-lbl-sub-red
 {
-	color: "@brand";
-	scaled-font: scaled(16);	
-	font-weight: Font.Bold;
+    color: "@brand";
+    scaled-font: scaled(16);    
+    font-weight: Font.Bold;
 }
 
 .sett-title-lbl-main
 {
-	color: "@text";
-	horizontal-align: Text.AlignHCenter;
-	scaled-rect: scaled(nan,nan,nan,nan,false,24);
-	font-weight: Font.Bold;
+    color: "@text";
+    horizontal-align: Text.AlignHCenter;
+    scaled-rect: scaled(nan,nan,nan,nan,false,24);
+    font-weight: Font.Bold;
 }
 
 /****************************************************
@@ -604,56 +609,56 @@
 
 .stat-title
 {
-	color: "@text";
-	font-size: 24;
-	font-weight: Font.Bold;
+    color: "@text";
+    font-size: 24;
+    font-weight: Font.Bold;
 }
 
 .stat-item-main
 {
-	color: "@text";
-	font-weight: Font.Normal;
+    color: "@text";
+    font-weight: Font.Normal;
 }
 
 .stat-item-sub
 {
-	color: "#A4A3C0";
-	font-weight: Font.Normal;
+    color: "#A4A3C0";
+    font-weight: Font.Normal;
 }
 
 .stat-graph
 {
-	scaled-rect: scaled(-1,146,360,147,false);
+    scaled-rect: scaled(-1,146,360,147,false);
 }
 
 .stat-speed
 {
-	scaled-rect: scaled(nan,307,154,99,false);
+    scaled-rect: scaled(nan,307,154,99,false);
 }
 
 .stat-bytes
 {
-	scaled-rect: scaled(nan,406,154,99,false);
+    scaled-rect: scaled(nan,406,154,99,false);
 }
 
 .stat-packets
 {
-	scaled-rect: scaled(nan,505,154,99,false);
+    scaled-rect: scaled(nan,505,154,99,false);
 }
 
 .stat-misc
 {
-	scaled-rect: scaled(nan,604,154,99,false);
+    scaled-rect: scaled(nan,604,154,99,false);
 }
 
 .stat-scaler-ind
 {
-	scaled-rect: scaled(nan,nan,154,50,false,24);
+    scaled-rect: scaled(nan,nan,154,50,false,24);
 }
 
 .stat-scaler-sub
 {
-	scaled-rect: scaled(nan,nan,154,50,false,12);
+    scaled-rect: scaled(nan,nan,154,50,false,12);
 }
 
 /****************************************************
@@ -662,76 +667,76 @@
 
 .dashboard-title
 {
-	color: "@brand";
-	scaled-rect: scaled(-1,62,-1,28,false,24);
-	font-weight: Font.Bold;
+    color: "@brand";
+    scaled-rect: scaled(-1,62,-1,28,false,24);
+    font-weight: Font.Bold;
 }
 
 .dashboard-status-container
 {
-	scaled-rect: scaled(nan,107,-1,22,true);
+    scaled-rect: scaled(nan,107,-1,22,true);
 }
 
 .dashboard-status-label-scaler
 {
-	scaled-rect: scaled(nan,nan,107,22,true,18);
+    scaled-rect: scaled(nan,nan,107,22,true,18);
 }
 
 .dashboard-status-label
 {
-	color: "@text";
+    color: "@text";
 }
 
 .dashboard-status-icon
 {
-	scaled-rect: scaled(nan,nan,5,5,true);
+    scaled-rect: scaled(nan,nan,5,5,true);
 }
 
 .dashboard-error-label
 {
-	scaled-rect: scaled(51,140,327,57,false,14);
-	color: "#F53172";
+    scaled-rect: scaled(51,140,327,57,false,14);
+    color: "#F53172";
 }
 
 .dashboard-switch
 {
-	scaled-rect: scaled(-1,250,238,150,true);
+    scaled-rect: scaled(-1,250,238,150,true);
 }
 
 .dashboard-speed-container
 {
-	scaled-rect: scaled(-1,471,357,99,true);
+    scaled-rect: scaled(-1,471,357,99,true);
 }
 
 .dashboard-speed-main
 {
-	color: "@text";
-	scaled-font: scaled(26);	
-	font-weight: Font.Bold;
+    color: "@text";
+    scaled-font: scaled(26);    
+    font-weight: Font.Bold;
 }
 
 .dashboard-speed-sub
 {
-	color: "#A4A3C0";
-	scaled-font: scaled(12);	
+    color: "#A4A3C0";
+    scaled-font: scaled(12);    
 }
 
 .dashboard-server-container
 {
-	scaled-rect: scaled(-1,558,390,130,true);
+    scaled-rect: scaled(-1,558,390,130,true);
 }
 
 .dashboard-server-main
 {
-	color: "@text";
-	scaled-font: scaled(18);	
-	font-weight: Font.Bold;
+    color: "@text";
+    scaled-font: scaled(18);    
+    font-weight: Font.Bold;
 }
 
 .dashboard-server-sub
 {
-	color: "#A4A3C0";
-	scaled-font: scaled(15);	
+    color: "#A4A3C0";
+    scaled-font: scaled(15);    
 }
 
 /****************************************************
@@ -740,62 +745,62 @@
 
 .bugrep-input
 {
-	scaled-rect: scaled(19,133,390,200,false,16);
+    scaled-rect: scaled(19,133,390,200,false,16);
 }
 
 .bugrep-input-content
 {
-	scaled-rect: scaled(nan,nan,316,120,false,16);
+    scaled-rect: scaled(nan,nan,316,120,false,16);
 }
 
 .bugrep-letter-counter
 {
-	scaled-rect: scaled(291,333,100,19,false,16);
+    scaled-rect: scaled(291,333,100,19,false,16);
 }
 
 .bugrep-attach-btn
 {
-	scaled-rect: scaled(19,392,390,20,false,16);
-	color: "#DA0B82";
+    scaled-rect: scaled(19,392,390,20,false,16);
+    color: "#DA0B82";
 }
 
 .bugrep-send-btn
 {
-	scaled-rect: scaled(27,441,374,80,true,14);
+    scaled-rect: scaled(27,441,374,80,true,14);
 }
 
 .bugrep-sending
 {
-	scaled-rect: scaled(164,120,100,20,false,16);
-	color: "#A4A3C0";
+    scaled-rect: scaled(164,120,100,20,false,16);
+    color: "#A4A3C0";
 }
 
 .bugrep-animation
 {
-	scaled-rect: scaled(134,194,160,160,true);
+    scaled-rect: scaled(134,194,160,160,true);
 }
 
 .bugrep-status
 {
-	scaled-rect: scaled(112,215,200,104,false,18);
-	color: "@text";
+    scaled-rect: scaled(112,215,200,104,false,18);
+    color: "@text";
 }
 
 .bugrep-bg
 {
-	qproperty-scaledPixmap: "@bugrep-bg";
+    qproperty-scaledPixmap: "@bugrep-bg";
 }
 
 .bugrep-input-textarea
 {
-	color: "@text";
-	scaled-font: scaled(16);	
+    color: "@text";
+    scaled-font: scaled(16);    
 }
 
 .bugrep-input-placeholder
 {
-	color: "@label";
-	scaled-font: scaled(16);	
+    color: "@label";
+    scaled-font: scaled(16);    
 }
 
 /****************************************************
@@ -804,37 +809,37 @@
 
 .purchase-btn-resizer
 {
-	scaled-rect: scaled(nan,nan,390,130,true);
-	color: "@text";
+    scaled-rect: scaled(nan,nan,390,130,true);
+    color: "@text";
 }
 
 .purchase-btn-spacing
 {
-	scaled-rect: scaled(nan,nan,20,20,true);
+    scaled-rect: scaled(nan,nan,20,20,true);
 }
 
 .purchase-listview
 {
-	scaled-rect: scaled(nan,140,nan,nan,false);
+    scaled-rect: scaled(nan,140,nan,nan,false);
 }
 
 .purchase-btn-label-main
 {
-	scaled-font: scaled(18);	
-	color: "@text";
+    scaled-font: scaled(18);    
+    color: "@text";
 }
 
 .purchase-btn-label-sub
 {
-	scaled-font: scaled(15);	
-	color: "#A4A3C0";
+    scaled-font: scaled(15);    
+    color: "#A4A3C0";
 }
 
 .purchase-btn-label-left
 {
-	scaled-font: scaled(30);	
-	color: "@text";
-	font-weight: Font.Bold;
+    scaled-font: scaled(30);    
+    color: "@text";
+    font-weight: Font.Bold;
 }
 
 /****************************************************
@@ -843,7 +848,7 @@
 
 /*,chooseserver-btn-resizer
 {
-	scaled-rect: scaled(nan,nan,392,64,false);
+    scaled-rect: scaled(nan,nan,392,64,false);
 }*/
 
 /****************************************************
@@ -852,7 +857,7 @@
 
 /*,chooselanguage-btn-resizer
 {
-	scaled-rect: scaled(nan,nan,392,64,false);
+    scaled-rect: scaled(nan,nan,392,64,false);
 }*/
 
 /****************************************************
@@ -861,7 +866,7 @@
 
 /*,choosetheme-btn-resizer
 {
-	scaled-rect: scaled(nan,nan,392,64,false);
+    scaled-rect: scaled(nan,nan,392,64,false);
 }*/
 
 /****************************************************
@@ -870,25 +875,25 @@
 
 .brh-btn-resizer
 {
-	scaled-rect: scaled(nan,nan,363,64,false);
+    scaled-rect: scaled(nan,nan,363,64,false);
 }
 
 .brh-icn-resizer
 {
-	scaled-rect: scaled(nan,nan,30,30,true);
+    scaled-rect: scaled(nan,nan,30,30,true);
 }
 
 .brh-btn-label-main
 {
-	color: "@text";
-	scaled-font: scaled(16);	
+    color: "@text";
+    scaled-font: scaled(16);    
 }
 
 .brh-btn-label-sub
 {
-	color: "@light-grey";
-	horizontalAlign: Text.AlignLeft;
-	scaled-font: scaled(12);
+    color: "@light-grey";
+    horizontalAlign: Text.AlignLeft;
+    scaled-font: scaled(12);
 }
 
 /****************************************************
@@ -897,40 +902,40 @@
 
 .ph-btn-resizer
 {
-	scaled-rect: scaled(nan,nan,363,64,false);
+    scaled-rect: scaled(nan,nan,363,64,false);
 }
 
 .ph-icn-resizer
 {
-	scaled-rect: scaled(nan,nan,32,32,true);
+    scaled-rect: scaled(nan,nan,32,32,true);
 }
 
 .ph-notice-resizer
 {
-	scaled-rect: scaled(nan,nan,353,75,true);
+    scaled-rect: scaled(nan,nan,353,75,true);
 }
 
 .ph-notice-spacer
 {
-	scaled-rect: scaled(nan,nan,363,34,true);
+    scaled-rect: scaled(nan,nan,363,34,true);
 }
 
 .ph-btn-label-main
 {
-	color: "@text";
-	scaled-font: scaled(16);	
+    color: "@text";
+    scaled-font: scaled(16);    
 }
 
 .ph-label-empty-history
 {
-	color: "@text";
-	scaled-rect: scaled(-1,-1,363,96,true,26);
+    color: "@text";
+    scaled-rect: scaled(-1,-1,363,96,true,26);
 }
 
 .ph-label-notice
 {
-	color: "@label";
-	scaled-font: scaled(16);	
+    color: "@label";
+    scaled-font: scaled(16);    
 }
 
 /****************************************************
@@ -939,11 +944,50 @@
 
 .dv-content
 {
-	scaled-rect: scaled(-1,144,363,nan,false,14);
+    scaled-rect: scaled(-1,144,363,nan,false,14);
 }
 
 .dv-text
 {
-	color: "@text";
-	scaled-font: scaled(14);
+    color: "@text";
+    scaled-font: scaled(14);
+}
+
+/****************************************************
+ * Reset password
+ ***************************************************/
+
+.passreset-description
+{
+    scaled-rect: scaled(-1,132,363,160,false,14);
+}
+
+.passreset-result-description
+{
+    scaled-rect: scaled(-1,168,363,64,false,18);
+}
+
+.passreset-separator
+{
+    scaled-rect: scaled(-1,362,363,4,false);
+}
+
+.passreset-email-input
+{
+    scaled-rect: scaled(-1,320,363,40,false,16);
+}
+
+.passreset-placeholder-in
+{
+    scaled-rect: scaled(-1,320,363,24,false,16);
+}
+
+.passreset-placeholder-out
+{
+    scaled-rect: scaled(-1,308,363,24,false,12);
+}
+
+.passreset-send-btn
+{
+    scaled-rect: scaled(-1,626,374,80,true,14);
 }

@@ -93,6 +93,9 @@ Item {
     /// @brief buy serial clicked
     signal sigObtainNewKey();
 
+    /// @brief start recovering password
+    signal sigRecoverPassword();
+
     /// @brief entered serial is incorerct
     signal sigSerialFillingIncorrect();
 
@@ -463,7 +466,9 @@ Item {
             height: parent.height
             horizontalAlign: Text.AlignLeft
             qss: "login-obtain-font c-brand"
-            onClicked: root.sigObtainNewKey()
+            onClicked: (internal.mode === QuiLoginForm.Mode.M_SERIAL)
+                       ? root.sigObtainNewKey()
+                       : root.sigRecoverPassword()
 //          font.family: "Lato"
 //          font.pixelSize: 16
 //          font.weight: Font.Normal

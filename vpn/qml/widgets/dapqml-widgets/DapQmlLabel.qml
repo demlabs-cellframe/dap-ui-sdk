@@ -46,6 +46,7 @@ Item {
     property real padding
     property real rightPadding
     property real topPadding
+    property real lineHeight
 
     property real contentWidth: label.contentWidth
     property real contentHeight: label.contentHeight
@@ -97,6 +98,7 @@ Item {
         color: root.color
         wrapMode: root.wrapMode
         textFormat: root.textFormat
+        lineHeight: root.lineHeight
 
         font {
             family: root.fontFamiliy
