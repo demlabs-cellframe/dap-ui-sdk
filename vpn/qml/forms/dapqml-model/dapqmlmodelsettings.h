@@ -70,13 +70,17 @@ public:
    *******************************************/
   /// @{
 signals:
+
+  void sigSetDaysLeft (QString days);
+  void sigResetDaysLeft();
+
+#ifndef BRAND_RISEVPN
+
   /* settings */
   void sigLicenceGet();
   void sigLicenceReset();
   void sigLanguage();
   void sigColorTheme();
-  void sigSetDaysLeft (QString days);
-  void sigResetDaysLeft();
 
   /* support */
   void sigBugSend();
@@ -88,6 +92,29 @@ signals:
   void sigTermsOfUse();
   void sigPrivacyPolicy();
   void sigVersion();
+
+#else // BRAND_RISEVPN
+
+  /* settings */
+  void sigSerialGet();
+  void sigSerialReset();
+  void sigLanguage();
+  void sigManageServers();
+  void sigCryptography();
+  void sigDarkTheme();
+
+  /* support */
+  void sigBugSend();
+  void sigTelegramBot();
+
+  /* info */
+  void sigBugReport();
+  void sigLicenceHistory();
+  void sigTermsOfUse();
+  void sigPrivacyPolicy();
+  void sigVersion();
+
+#endif // BRAND_RISEVPN
   /// @}
 
   /****************************************//**
