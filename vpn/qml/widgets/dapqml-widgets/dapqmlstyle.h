@@ -14,6 +14,16 @@
  * @section secDapQmlStyleQss QSS Rules
  * All qss classes and sections must start with dot symbol (.)
  *
+ * @section secDapQmlStyleCustom QSS Custom fields
+ * This class has customized fields support.
+ *
+ * Custom fields supported:
+ * | Name | Description |
+ * | ---- | ----------- |
+ * | qproperty-propertyName | replace "propertyName" with the name of QObject (or QML Item) property and styler will call setProperty with this name and provided value |
+ * | scaled-rect | custom class @ref Scaled is responsible for positioning and scaling items on screen. More information here: @ref Style::Scaled |
+ * | scaled-font | same as "scaled-rect" |
+ *
  * @section secDapQmlStyleThemes QSS Themes
  * DapQmlStyle also supports themes.
  *
