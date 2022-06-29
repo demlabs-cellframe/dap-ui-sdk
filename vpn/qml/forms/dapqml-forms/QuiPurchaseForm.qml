@@ -91,7 +91,7 @@ Item {
         ListElement {
             itemId: 1
             price: "$26.88"
-            main: "6-month plan"
+            main: "6-months plan"
             sub: "$4.48 per month"
         }
         ListElement {

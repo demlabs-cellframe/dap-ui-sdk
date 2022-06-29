@@ -7,6 +7,9 @@
  * Group contains classes that responsible to
  * provide different style features like QSS
  *
+ * To get more information check out main
+ * class @ref DapQmlStyle
+ *
  * @date 03.06.2022
  * @authors Mikhail Shilenko
  *******************************************/
