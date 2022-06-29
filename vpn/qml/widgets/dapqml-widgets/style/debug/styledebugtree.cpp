@@ -76,6 +76,12 @@ void StyleDebugTree::redraw()
 {
   beginResetModel();
   endResetModel();
+  emit emptyChanged();
+}
+
+bool StyleDebugTree::isEmpty()
+{
+  return rowCount() == 0;
 }
 
 /********************************************

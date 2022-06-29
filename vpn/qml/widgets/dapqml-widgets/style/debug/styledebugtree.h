@@ -17,10 +17,9 @@
  *
  * How to use:
  * - Enable define ENABLE_FORM_DEBUG inside *.pro
- * - Uncomment TreeView inside PageCtlDebug.qml
  * - Describe your qml item (example: Component.onCompleted: StyleDebugTree.describe ("info label", ["x", "y", "width", "height"], this);)
  * - When app is started debug form will appear
- * - When qml items exist (or created), press "Redraw". It will refresh model content
+ * - When qml items exist (or created), press "Reset". It will refresh model content
  * - When qml items state changed, press "Update" to refresh values inside debug tree
  *
  * @ingroup groupDapGuiStyle
@@ -33,6 +32,8 @@ class StyleDebugTree : public QAbstractItemModel
   Q_OBJECT
 
   friend class TreeItem;
+
+  Q_PROPERTY(bool empty READ isEmpty NOTIFY emptyChanged)
 
   /****************************************//**
    * @name DEFS
@@ -103,7 +104,12 @@ public:
   Q_INVOKABLE void update();
   /// reset model and create items from scratch
   Q_INVOKABLE void redraw();
+
+  Q_INVOKABLE bool isEmpty();
   /// @}
+
+signals:
+  void emptyChanged();
 
   /****************************************//**
    * @name OVERRIDE
