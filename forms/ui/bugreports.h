@@ -125,9 +125,12 @@ private slots:
   void _slotRadioTest();
   void _slotTextChanged();
   void _slotTextEditFinish();
+  void hideAttachScreenshotMessage();
+  void restoreAttachMessage();
 private:
   static bool _cbTextEdit (DapGuiPlainTextEditInterface *e, QString &preedit, QString &commit, int from, int to);
   void updateData (QString &a_text, int a_len);
+  uint  attachButtonVisibleState;
   /// @}
 };
 
