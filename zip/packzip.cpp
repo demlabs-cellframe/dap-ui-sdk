@@ -361,7 +361,7 @@ namespace DapZip
             zip.close();
             return false;
         }
-        for (QString file : fileList)
+        foreach (QString file , fileList)
         {
             zip.addFile(file);
             if (zip.status() == Status::FileOpenError)
