@@ -6,7 +6,7 @@ mac:LIBS += -framework AppKit
 
 INCLUDEPATH += $$PWD
 
-include(../config.pri)
+include(../../../../config.pri)
 
 RESOURCES += \
     $$PWD/dapqml-forms-asset/$$BRAND/dapqml-forms-asset.qrc \
