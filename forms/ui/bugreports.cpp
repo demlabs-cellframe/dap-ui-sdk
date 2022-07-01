@@ -44,8 +44,9 @@ BugReports::BugReports (QWidget *parent) :
   //movLoading->start();
 
   ui->top_spacer_debug->setVisible (false);
-  ui->btnAttachScreenshot->setVisible (false);
-  ui->attach_send_spacer->setVisible (false);
+  ui->btnAttachScreenshot->setVisible (true);
+  ui->btnDetachScreenshot->setVisible (false);
+  ui->attach_send_spacer->setVisible (true);
   ui->dbglbl1->hide();
   ui->dbglbl2->hide();
   ui->dbglbl3->hide();
@@ -81,6 +82,12 @@ BugReports::BugReports (QWidget *parent) :
   connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &BugReports::sigReturn,
            Qt::QueuedConnection);
+  connect (ui->btnReturn, &DapGuiPushButton::clicked,
+           this, [=](){
+                if (m_mode == Result)
+                    emit sigResultBack();
+           },
+           Qt::QueuedConnection);
   connect (ui->btnSendReport, &DapGuiPushButton::clicked,
            this, &BugReports::sigSend,
            Qt::QueuedConnection);
@@ -103,12 +110,20 @@ BugReports::BugReports (QWidget *parent) :
   connect (ui->btnResultBack, &DapGuiPushButton::clicked,
            this, &BugReports::_slotTextEditFinish,
            Qt::QueuedConnection);
+  connect (ui->btnAttachScreenshot, &DapGuiLabel::clicked,
+           this, &BugReports::attachImage,
+           Qt::QueuedConnection);
+  connect (ui->btnDetachScreenshot, &DapGuiLabel::clicked,
+           this, &BugReports::detachImage,
+           Qt::QueuedConnection);
 
   connect (m_edit, &QPlainTextEdit::textChanged,
            this, &BugReports::_slotTextChanged);
 
   /* finish setup */
+  ui->btnSendReport->setEnabledCustom (false);
   slotSetMode (Write);
+  btnReturnVisible(true);
 }
 
 BugReports::~BugReports()
@@ -193,6 +208,12 @@ void BugReports::slotSetMode (BugReports::Mode mode)
           _spacer = true;
         }
     }
+
+  /* attach screen message */
+  if (mode == List || mode == Result)
+      hideAttachScreenshotMessage();
+  else
+      restoreAttachMessage();
 
   /* resultContainer show/hide */
   ui->resultContainer->setVisible (m_mode != List);
@@ -291,6 +312,7 @@ void BugReports::updateData (QString &a_text, int a_len)
   //style()->polish (ui->labelLetterAmount);
 
   ui->btnSendReport->setEnabled(!a_text.isEmpty());
+  ui->btnSendReport->setEnabledCustom (!a_text.isEmpty());
 
   /* check if limit reachced */
   if(a_text.length() <= MAX_LENGTH)
@@ -311,8 +333,52 @@ void BugReports::updateData (QString &a_text, int a_len)
   _textHook = false;
 }
 
-void BugReports::refreshHistoryList(){
+void BugReports::refreshHistoryList()
+{
     QMetaObject::invokeMethod(ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
+}
+
+void BugReports::showAttachScreenshotMessage(QString message)
+{
+    ui->btnAttachScreenshot->setText(message);
+    ui->btnAttachScreenshot->setVisible(true);
+    ui->btnDetachScreenshot->setVisible(false);
+    ui->btnDummyScreenshot->setVisible(false);
+}
+
+void BugReports::showDetachScreenshotMessage(QString message)
+{
+    ui->btnDetachScreenshot->setText(message);
+    ui->btnDetachScreenshot->setVisible(true);
+    ui->btnAttachScreenshot->setVisible(false);
+    ui->btnDummyScreenshot->setVisible(false);
+}
+
+void BugReports::hideAttachScreenshotMessage()
+{
+    if (ui->btnDummyScreenshot->isHidden())
+    {
+        attachButtonVisibleState = (((uint)ui->btnAttachScreenshot->isHidden()) << 1)
+                                 + (((uint)ui->btnDetachScreenshot->isHidden()) << 0);
+        ui->btnDetachScreenshot->setVisible(false);
+        ui->btnAttachScreenshot->setVisible(false);
+        ui->btnDummyScreenshot->setVisible(true);
+    }
+}
+
+void BugReports::restoreAttachMessage()
+{
+    if (ui->btnDummyScreenshot->isHidden())
+        return;
+    ui->btnAttachScreenshot->setVisible(((attachButtonVisibleState >> 1) & 0x1) == 0);
+    ui->btnDetachScreenshot->setVisible(((attachButtonVisibleState >> 0) & 0x1) == 0);
+    ui->btnDummyScreenshot->setVisible(false);
+}
+
+void BugReports::btnReturnVisible(bool visible)
+{
+    ui->btnReturn->setVisible(visible);
+    ui->kelGuiWidget_Left->setVisible(!visible);
 }
 
 /*-----------------------------------------*/

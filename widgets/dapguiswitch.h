@@ -6,6 +6,7 @@
 #include "dapguiswitchstylemanager.h"
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
+#include <QGraphicsOpacityEffect>
 
 /* DEFS */
 namespace Ui { class DapGuiSwitch; };
@@ -57,6 +58,7 @@ private:
   QParallelAnimationGroup *m_animGroup;
   /// toggle animation
   QPropertyAnimation *m_animToggle;
+  QGraphicsOpacityEffect *m_opacityEffect;
   /// @}
 
   /****************************************//**
@@ -95,6 +97,7 @@ signals:
 public:
   void mousePressEvent (QMouseEvent *) override;
   void paintEvent (QPaintEvent *) override;
+  void setEnabled(bool enable);
   /// @}
 
   /****************************************//**

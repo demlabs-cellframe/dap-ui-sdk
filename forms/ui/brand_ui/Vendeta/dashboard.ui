@@ -309,10 +309,10 @@ Usualy unvisible by being empty</string>
            <string>conn-connectedto-button nobackground</string>
           </property>
           <property name="mainText" stdset="0">
-           <string>North America - Canada</string>
+           <string>Auto</string>
           </property>
           <property name="subText" stdset="0">
-           <string>231:532:531:20</string>
+           <string></string>
           </property>
           <property name="mainCssClass" stdset="0">
            <string>darkblue font18 normalbold</string>
