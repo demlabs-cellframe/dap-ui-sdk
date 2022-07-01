@@ -111,13 +111,13 @@
            <item>
             <widget class="DapGuiLabel" name="label">
              <property name="styleSheet">
-              <string notr="true">#label{ 	width: 282px; 	height: 28px; 	min-width: 282px; 	min-height: 28px; 	max-width: 282px; 	max-height: 28px; 
- 	font: 24px/29px; 
+              <string notr="true">#label{ width: 282px; height: 28px; min-width: 282px; min-height: 28px; max-width: 282px; max-height: 28px; 
+ font: 24px/29px; 
   
- 	font-family: 'Lato'; 
- 	font-weight: bold; 	font-style: bold; 	font-size: bold; 
- 	border: none; 
- 	background-color: rgba(0,0,0,0); }</string>
+ font-family: 'Lato'; 
+ font-weight: bold; font-style: bold; font-size: bold; 
+ border: none; 
+ background-color: rgba(0,0,0,0); }</string>
              </property>
              <property name="text">
               <string>Language</string>
@@ -177,17 +177,17 @@
  <customwidgets>
   <customwidget>
    <class>DapGuiPushButton</class>
-   <extends></extends>
+   <extends>QPushButton</extends>
    <header>dapguipushbutton.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiLabel</class>
-   <extends></extends>
+   <extends>QLabel</extends>
    <header>dapguilabel.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiWidget</class>
-   <extends></extends>
+   <extends>QWidget</extends>
    <header>dapguiwidget.h</header>
    <container>1</container>
   </customwidget>
