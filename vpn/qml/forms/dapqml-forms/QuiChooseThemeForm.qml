@@ -58,23 +58,15 @@ Item {
 
     /// @brief request theme update ( DapQmlStyle.requestRedraw() ) and start return timer
     function updateState() {
+        csListView.enabled = false;
         style.requestRedraw();
         backTimer.start();
     }
 
-    /// @brief item clicked
-    ///
-    /// This will prevent double checks and none checks
-    function updateChecks() {
-        var count           = csListView.count
-        for(var i = 0; i < count; i++) {
-            var entry       = items[i]; // csListView.itemAtIndex(i);
-            var entryName   = entry.radioName;
-            entry.checked   = themeModel.isCurrent (entryName);
-        }
+    /// @brief change current item index (int index)
+    function setCurrentIndex(a_index) {
+        csListView.currentIndex = a_index;
     }
-
-    Component.onCompleted: updateChecks()
 
     /// @}
     /****************************************//**
@@ -103,7 +95,7 @@ Item {
      * Model
      ********************************************/
 
-    DapQmlThemeModel {
+    property DapQmlThemeModel themeModel: DapQmlThemeModel {
         id: themeModel
     }
 
@@ -146,16 +138,13 @@ Item {
 
             DapQmlRadioButton {
                 text: model.name + " Theme"
-                checked: parent.checked
+                checked: csListView.currentIndex === model.index
                 separator: true
                 iconSize: resizer.height
                 width: resizer.width
                 height: resizer.height
                 y: spacer.height / 2
-                onClicked: {
-                    root.sigSelect (model.index, model.name);
-                    updateChecks();
-                }
+                onClicked: root.sigSelect (model.index, model.name);
             }
 
             Component.onCompleted: items.push(this)
