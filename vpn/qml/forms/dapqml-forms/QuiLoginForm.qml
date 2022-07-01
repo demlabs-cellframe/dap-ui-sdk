@@ -189,8 +189,8 @@ Item {
             width: parent.width - 74
 
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
-            mainText: "Auto select"
-            subText: "CHOOSING SERVER"
+            mainText: qsTr("Auto select") + lang.notifier
+            subText: qsTr("CHOOSING SERVER") + lang.notifier
             qss: "login-btn-server"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
@@ -223,7 +223,7 @@ Item {
 
             buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
             mainText: ""
-            subText: "SERIAL KEY"
+            subText: qsTr("SERIAL KEY") + lang.notifier
             qss: "login-btn-serial"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
@@ -266,7 +266,7 @@ Item {
         z: 15
         qss: "login-connect"
 
-        text: qsTr("CONNECT")
+        text: qsTr("CONNECT") + lang.notifier
         onClicked: root.sigConnect()
     }
 
@@ -279,7 +279,7 @@ Item {
 
         DapQmlLabel {
             id: obtainLabel
-            text: "Don't have a serial key?"
+            text: qsTr("Don't have a serial key?") + lang.notifier
             color: "#5C5B74"
             width: parent.width / 2 - 2
             height: parent.height
@@ -294,7 +294,7 @@ Item {
         DapQmlLabel {
             id: obtainLinkLabel
             x: parent.width / 2 + 2
-            text: "Tap here to obtain one"
+            text: qsTr("Tap here to obtain one") + lang.notifier
             color: "#DA0B82"
             width: parent.width / 2
             height: parent.height
