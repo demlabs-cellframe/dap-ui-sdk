@@ -156,17 +156,21 @@ void DapSession::sendBugReportStatusRequest(const QByteArray &data)
         auto *l_tempConn = new QMetaObject::Connection();
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]{
             preserveCDBSession();
-            m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this
+            /*m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this
                                                                , SLOT(answerBugReportsStatus())
-                                                               , QT_STRINGIFY(answerBugReportsStatusError), NULL, true);
+                                                               , QT_STRINGIFY(answerBugReportsStatusError), NULL, true);*/
+            m_netBugReportsStatusReply = encRequest("", URL_BUG_REPORT, "", "bugreports=" + data,
+                                                    SLOT(answerBugReportsStatus()), QT_STRINGIFY(answerBugReportsStatusError), true);
             disconnect(*l_tempConn);
             delete l_tempConn;
         });
         requestServerPublicKey();
     } else {
-        m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this
+        /*m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this
                                                            , SLOT(answerBugReportsStatus())
-                                                           , QT_STRINGIFY(answerBugReportsStatusError), NULL, true);
+                                                           , QT_STRINGIFY(answerBugReportsStatusError), NULL, true);*/
+        m_netBugReportsStatusReply = encRequest("", URL_BUG_REPORT, "", "bugreports=" + data,
+                                                SLOT(answerBugReportsStatus()), QT_STRINGIFY(answerBugReportsStatusError), true);
     }
 }
 
@@ -278,16 +282,20 @@ void DapSession::setUserAgent(const QString& userAgent)
 DapNetworkReply* DapSession::encRequest(const QString& reqData, const QString& url,
                           const QString& subUrl, const QString& query, QObject* obj, const char* slot, const char* slot_err, bool isCDB)
 {
-    QByteArray BAreqData = reqData.toLatin1();
-    QByteArray BAreqDataEnc;
+    DapCrypt *l_dapCrypt = isCDB ? m_dapCryptCDB : m_dapCrypt;
+    if (!l_dapCrypt) {
+        qCritical() << "Invalid key!";
+        return nullptr;
+    }
+    QByteArray BAreqData, BAreqDataEnc;
+    if (reqData.length()) { // It might be GET...
+        BAreqData = reqData.toLatin1();
+        l_dapCrypt->encode(BAreqData, BAreqDataEnc, KeyRoleSession);
+    }
     QByteArray BAsubUrlEncrypted;
     QByteArray BAqueryEncrypted;
     QByteArray subUrlByte = subUrl.toLatin1();
     QByteArray queryByte = query.toLatin1();
-    DapCrypt *l_dapCrypt = isCDB ? m_dapCryptCDB : m_dapCrypt;
-
-    l_dapCrypt->encode(BAreqData, BAreqDataEnc, KeyRoleSession);
-
     QString urlPath = url;
     if(subUrl.length()) {
         l_dapCrypt->encode(subUrlByte, BAsubUrlEncrypted, KeyRoleSession);
@@ -298,7 +306,7 @@ DapNetworkReply* DapSession::encRequest(const QString& reqData, const QString& u
         urlPath += "?" + BAqueryEncrypted.toBase64(QByteArray::Base64UrlEncoding);
     }
 
-    return _buildNetworkReplyReq(urlPath, obj, slot, slot_err, &BAreqDataEnc, isCDB);
+    return _buildNetworkReplyReq(urlPath, obj, slot, slot_err, BAreqDataEnc.length() ? &BAreqDataEnc : nullptr, isCDB);
 }
 
 DapNetworkReply* DapSession::encRequestRaw(const QByteArray& bData, const QString& url,
