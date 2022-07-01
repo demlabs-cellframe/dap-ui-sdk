@@ -1,20 +1,16 @@
-!CONFIG(neuromorphic) {
-include ( controls/controls.pri)
-include ( dialogs/dialogs.pri)
-}
-include ( auxiliary/auxiliary.pri)
-
 SOURCES += \
     $$PWD/DapServiceClient.cpp\
     $$PWD/DapServiceNativeAbstract.cpp\
     $$PWD/ServiceCtl.cpp\
-    $$PWD/usrmsg.cpp
+    $$PWD/singlerunapplication.cpp\
+    #$$PWD/usrmsg.cpp
 
 HEADERS  += \
     $$PWD/DapServiceClient.h\
     $$PWD/DapServiceNativeAbstract.h\
     $$PWD/ServiceCtl.h\
-    $$PWD/usrmsg.h
+    $$PWD/singlerunapplication.h\
+    #$$PWD/usrmsg.h
 
 INCLUDEPATH += $$PWD
 

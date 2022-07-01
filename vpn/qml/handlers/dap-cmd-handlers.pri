@@ -37,7 +37,8 @@ HEADERS += $$PWD/DapCmdLastConnectionData.h \
     $$PWD/DapCmdAuth.h \
     $$PWD/DapCmdServersList.h \
     $$PWD/DapCmdAndroidTunnel.h \
-    $$PWD/DapCmdSystemTray.h
+    $$PWD/DapCmdSystemTray.h \
+    $$PWD/vpnDefine.h
 
 equals(BUILD_VARIANT, "GooglePlay") {
 	HEADERS += $$PWD/DapCmdPurchase.h
