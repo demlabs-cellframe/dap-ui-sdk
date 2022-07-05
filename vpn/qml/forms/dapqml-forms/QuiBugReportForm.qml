@@ -114,7 +114,7 @@ Item {
      ********************************************/
 
     DapQmlDialogTitle {
-        text: "Bug report"
+        text: qsTr("Bug report") + lang.notifier
         qss: "dialog-title"
     }
 
@@ -240,7 +240,7 @@ Item {
                 height: resizer.height
                 horizontalAlign: Text.AlignLeft
                 verticalAlign: Text.AlignTop
-                text: "Please describe the details of problem you faced. What actions did you take and what happened."
+                text: qsTr("Please describe the details of problem you faced. What actions did you take and what happened.") + lang.notifier
                 qss: "bugrep-input-placeholder"
                 wrapMode: TextEdit.Wrap
                 visible: bugRepInputField.text.length == 0 && ((Scaling.isAndroid()) ? !bugRepInputField.activeFocus : true)
@@ -331,22 +331,22 @@ Item {
                         Menu {
                             id: contextMenu
                             MenuItem {
-                                text: "Cut"
+                                text: qsTr("Cut") + lang.notifier
                                 shortcut: "Ctrl+X"
                                 onTriggered: ctxMenu.execCut();
                             }
                             MenuItem {
-                                text: "Copy"
+                                text: qsTr("Copy") + lang.notifier
                                 shortcut: "Ctrl+C"
                                 onTriggered: ctxMenu.execCopy();
                             }
                             MenuItem {
-                                text: "Paste"
+                                text: qsTr("Paste") + lang.notifier
                                 shortcut: "Ctrl+V"
                                 onTriggered: ctxMenu.execPaste();
                             }
                             MenuItem {
-                                text: "Delete"
+                                text: qsTr("Delete") + lang.notifier
                                 //shortcut: "Delete"
                                 onTriggered: ctxMenu.execDelete();
                             }
@@ -497,7 +497,7 @@ Item {
         DapQmlLabel {
             id: attach
             qss: "bugrep-attach-btn"
-            text: "Click here to attach a screenshot"
+            text: qsTr("Click here to attach a screenshot") + lang.notifier
             color: "#DA0B82"
             visible: false
 
@@ -512,7 +512,7 @@ Item {
         /* send button */
         DapQmlPushButton {
             qss: "bugrep-send-btn push-button"
-            text: "SEND REPORT"
+            text: qsTr("SEND REPORT") + lang.notifier
             onClicked: { root.mode = 1; root.sigSend(); }
             enabled: bugRepInputField.length >= 3
             opacity: 0.4 + 0.6 * enabled
@@ -530,7 +530,7 @@ Item {
         /* info */
         DapQmlLabel {
             qss: "bugrep-sending"
-            text: "Sending..."
+            text: qsTr("Sending...") + lang.notifier
         }
 
         /* animated spinner */
@@ -543,7 +543,7 @@ Item {
         /* cancel */
         DapQmlPushButton {
             qss: "bugrep-send-btn push-button"
-            text: "CANCEL"
+            text: qsTr("CANCEL") + lang.notifier
             onClicked: { root.mode = 0; root.sigCancel(); }
         }
     }
@@ -567,7 +567,7 @@ Item {
         /* back */
         DapQmlPushButton {
             qss: "bugrep-send-btn push-button"
-            text: "BACK"
+            text: qsTr("BACK") + lang.notifier
             onClicked: { root.mode = 0; root.sigResultBack(); }
         }
     }

@@ -39,7 +39,7 @@ Item {
 
     DapQmlDialogTitle {
         id: title
-        text: "History"
+        text: qsTr("History") + lang.notifier
         qss: "dialog-title"
     }
 
@@ -122,7 +122,7 @@ Item {
     DapQmlLabel {
         id: empotyHistory
         visible: DapQmlModelSerialHistory.length() === 0
-        text: "The license key usage history on this device is empty."
+        text: qsTr("The license key usage history on this device is empty.") + lang.notifier
         wrapMode: Text.WordWrap
         qss: "ph-label-empty-history"
     }
@@ -137,7 +137,7 @@ Item {
         y: root.height - noticeResizer.height - noticeSpacer.height
         width: noticeResizer.width
         height: noticeResizer.height
-        text: "The license key usage history is stored locally on this device. After reinstalling the system the key history will be unavailable."
+        text: qsTr("The license key usage history is stored locally on this device. After reinstalling the system the key history will be unavailable.") + lang.notifier
         wrapMode: Text.WordWrap
         qss: "ph-label-notice"
     }

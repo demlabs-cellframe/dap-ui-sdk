@@ -63,6 +63,15 @@ Item {
         backTimer.start();
     }
 
+    /// @brief translated theme name
+    function themeName(a_name) {
+        if (a_name === "light")
+            return qsTr("Light Theme")
+        else if (a_name === "dark")
+            return qsTr("Dark Theme")
+        return "invalid";
+    }
+
     /// @brief change current item index (int index)
     function setCurrentIndex(a_index) {
         csListView.currentIndex = a_index;
@@ -87,7 +96,7 @@ Item {
 
     DapQmlDialogTitle {
         id: title
-        text: "Language"
+        text: qsTr("Language") + lang.notifier
         qss: "dialog-title"
     }
 
@@ -137,14 +146,14 @@ Item {
             property bool checked: false
 
             DapQmlRadioButton {
-                text: model.name + " Theme"
+                text: themeName(model.name) + lang.notifier // model.name + " Theme"
                 checked: csListView.currentIndex === model.index
                 separator: true
                 iconSize: resizer.height
                 width: resizer.width
                 height: resizer.height
                 y: spacer.height / 2
-                onClicked: root.sigSelect (model.index, model.name);
+                onClicked: root.sigSelect (model.index, radioName);
             }
 
             Component.onCompleted: items.push(this)

@@ -144,8 +144,8 @@ Item {
                     width: settingsListView.width
                     height: delegate.height
                     buttonStyle: DapQmlButton.Style.IconMainSub
-                    mainText: model.textMain
-                    subText: model.textSub
+                    mainText: model.textMain + lang.notifier
+                    subText: model.textSub + lang.notifier
                     separator: isSep(model.sid)
                     qss: "sett-item"
                     mainQss: "sett-btn-lbl-main"
@@ -163,7 +163,7 @@ Item {
                     visible: model.sid === QuiSettingsForm.StyleId.SI_TITLE
                     width: settingsListView.width
                     height: delegate.height
-                    text: model.textMain
+                    text: model.textMain + lang.notifier
                     qss: "sett-title-lbl-main"
                 }
 

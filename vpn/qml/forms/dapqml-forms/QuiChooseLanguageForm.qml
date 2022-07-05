@@ -57,7 +57,7 @@ Item {
 
     DapQmlDialogTitle {
         id: title
-        text: "Language"
+        text: qsTr("Language") + lang.notifier
         qss: "dialog-title"
     }
 

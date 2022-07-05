@@ -57,8 +57,8 @@ QVariant DapQmlThemeModel::data(const QModelIndex &index, int role) const
     return QVariant();
 
   auto item = m_themes.value (index.row());
-  if (item.length() > 1)
-    item    = item.at(0).toUpper() + item.mid(1);
+//  if (item.length() > 1)
+//    item    = item.at(0).toUpper() + item.mid(1);
 
   return item;
 }
