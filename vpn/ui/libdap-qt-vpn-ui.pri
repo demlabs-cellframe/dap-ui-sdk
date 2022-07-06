@@ -47,7 +47,7 @@ win32 {
 darwin {
         SOURCES += $$PWD/DapServiceNativeDarwin.cpp
         HEADERS += $$PWD/DapServiceNativeDarwin.h
-        ICON = resources/$$BRAND/pics/$${BRAND}.icns
+        ICON = $$PWD/../../../brand/$$BRAND/DapChainVpnGui/resources/pics/$${BRAND}.icns
 }
 
 ios{
