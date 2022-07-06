@@ -64,7 +64,7 @@ RadioButton
 
                 opacity: checked ? 1 : 0
 
-                source: "qrc:/resources/icons/" + pathTheme + "/radio_btn_on.png"
+                source: "qrc:/Resources/" + pathTheme + "/icons/other/radio_btn_on.png"
 
                 Behavior on opacity {
                     NumberAnimation {
@@ -80,7 +80,7 @@ RadioButton
 
                 opacity: checked ? 0 : 1
 
-                source: "qrc:/resources/icons/" + pathTheme + "/radio_btn_off.png"
+                source: "qrc:/Resources/" + pathTheme + "/icons/other/radio_btn_off.png"
 
                 Behavior on opacity {
                     NumberAnimation {
