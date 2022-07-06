@@ -39,7 +39,8 @@ QList<SettingsModel::_SItem> SettingsModel::s_items;
 static QMap<DapGuiButton*, ItemCB> s_btnCallbacks;
 static DapGuiButton* s_licenceKey;
 static DapGuiButton* s_version;
-static QString *s_versionText = nullptr;
+static QString *s_versionText   = nullptr;
+static QString *s_daysLeftText  = nullptr;
 
 /* VARS */
 static Settings *s_settings   = nullptr;
@@ -178,10 +179,30 @@ void SettingsModel::slotSetup()
     }
 }
 
-void SettingsModel::slotSetDaysLeft(QString days)
+void SettingsModel::slotSetDaysLeft (QString days)
 {
-  if (s_licenceKey)
-    s_licenceKey->setSubText (days);
+  if (!s_licenceKey)
+    return;
+
+  /* create buffer holder for version text */
+  if (s_daysLeftText == nullptr)
+    s_daysLeftText  = new QString;
+
+  /* if provided days is not empty */
+  if (!days.isEmpty())
+    {
+      /* store and display */
+      *s_daysLeftText = days;
+      s_licenceKey->setSubText (days);
+    }
+
+  /* if no days left text provided */
+  else
+    {
+      /* if version text is stored inside buffer holder */
+      if(s_daysLeftText && !s_daysLeftText->isEmpty())
+        s_licenceKey->setSubText (*s_daysLeftText);
+    }
 }
 
 void SettingsModel::slotResetDaysLeft()
@@ -215,8 +236,9 @@ void SettingsModel::slotRetranslate()
       button->setSubText (item.text[1]);
     }
 
-  /* update version */
+  /* update version and days left */
   setVersionText (QString());
+  slotSetDaysLeft (QString());
 }
 
 /********************************************
