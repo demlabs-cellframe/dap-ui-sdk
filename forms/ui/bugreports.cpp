@@ -17,20 +17,22 @@ static BugReports *__inst = nullptr;
 
 const QString BugReports::SCREEN_NAME = "BugReports";
 
-BugReports::BugReports (QWidget *parent) :
-  BaseForm (parent),
-  ui (new Ui::BugReports),
-  movLoading (new QMovie (":/gui/asset/Spinner.gif")),
-  _textHook (false),
-  _spacer (true),
-  spacerIndex (-1)
+BugReports::BugReports (QWidget *parent)
+  : BaseForm (parent)
+  , ui (new Ui::BugReports)
+  , movLoading (new QMovie (":/gui/asset/Spinner.gif"))
+  , _textHook (false)
+  , _spacer (true)
+  , spacerIndex (-1)
+  , m_attachButtonVisible (true)
+  , m_detachButtonVisible (false)
 {
   /* setup */
   __inst  = this;
   ui->setupUi (this);
 
   qRegisterMetaType<Mode> ("Mode");
-  QScroller::grabGesture(this->ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture (this->ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
 
   ui->editReport->setPlainText ("");
   ui->editReport->setCallbackTextEdit (_cbTextEdit);
@@ -51,10 +53,10 @@ BugReports::BugReports (QWidget *parent) :
   ui->dbglbl2->hide();
   ui->dbglbl3->hide();
   ui->lineEdit->hide();
-  QMetaObject::invokeMethod(ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
+  QMetaObject::invokeMethod (ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
   //setText (movLoading->lastErrorString());
 
-  ui->btnSendReport->setEnabled(false);
+  ui->btnSendReport->setEnabled (false);
 
   /* fill map */
   //m_map.insert (Write,   ui->btnAttachScreenshot);
@@ -83,11 +85,12 @@ BugReports::BugReports (QWidget *parent) :
            this, &BugReports::sigReturn,
            Qt::QueuedConnection);
   connect (ui->btnReturn, &DapGuiPushButton::clicked,
-           this, [=](){
-                if (m_mode == Result)
-                    emit sigResultBack();
-           },
-           Qt::QueuedConnection);
+           this, [ = ]()
+  {
+    if (m_mode == Result)
+      emit sigResultBack();
+  },
+  Qt::QueuedConnection);
   connect (ui->btnSendReport, &DapGuiPushButton::clicked,
            this, &BugReports::sigSend,
            Qt::QueuedConnection);
@@ -111,10 +114,10 @@ BugReports::BugReports (QWidget *parent) :
            this, &BugReports::_slotTextEditFinish,
            Qt::QueuedConnection);
   connect (ui->btnAttachScreenshot, &DapGuiLabel::clicked,
-           this, &BugReports::attachImage,
+           this, &BugReports::sigAttachImage,
            Qt::QueuedConnection);
   connect (ui->btnDetachScreenshot, &DapGuiLabel::clicked,
-           this, &BugReports::detachImage,
+           this, &BugReports::sigDetachImage,
            Qt::QueuedConnection);
 
   connect (m_edit, &QPlainTextEdit::textChanged,
@@ -123,7 +126,7 @@ BugReports::BugReports (QWidget *parent) :
   /* finish setup */
   ui->btnSendReport->setEnabledCustom (false);
   slotSetMode (Write);
-  btnReturnVisible(true);
+  btnReturnVisible (true);
 }
 
 BugReports::~BugReports()
@@ -146,12 +149,12 @@ QString BugReports::text() const
   return ui->editReport->plainText();
 }
 
-void BugReports::setText(const QString &a_text)
+void BugReports::setText (const QString &a_text)
 {
   ui->editReport->setPlainText (a_text);
 }
 
-void BugReports::setResultText(const QString &a_result)
+void BugReports::setResultText (const QString &a_result)
 {
   ui->lResult->setText (a_result);
 }
@@ -210,10 +213,14 @@ void BugReports::slotSetMode (BugReports::Mode mode)
     }
 
   /* attach screen message */
-  if (mode == List || mode == Result)
-      hideAttachScreenshotMessage();
+//  if (mode == List || mode == Result)
+//    hideAttachScreenshotMessage();
+//  else
+//    restoreAttachMessage();
+  if (mode == Write)
+    restoreAttachMessage();
   else
-      restoreAttachMessage();
+    hideAttachScreenshotMessage();
 
   /* resultContainer show/hide */
   ui->resultContainer->setVisible (m_mode != List);
@@ -222,16 +229,17 @@ void BugReports::slotSetMode (BugReports::Mode mode)
 
   /* movie */
   int w   = ui->labelLoading->width();
-  movLoading->setFileName(":/gui/asset/Spinner.gif");
+  movLoading->setFileName (":/gui/asset/Spinner.gif");
   movLoading->setScaledSize (QSize (w, w));
 
   qDebug() << __PRETTY_FUNCTION__ << "spinner width:" << w;
 
-  if (m_mode == Loading){
-    ui->lResult->setVisible(true);
-    ui->lResult->setText (tr ("Sending..."));
-    movLoading->start();
-  }
+  if (m_mode == Loading)
+    {
+      ui->lResult->setVisible (true);
+      ui->lResult->setText (tr ("Sending..."));
+      movLoading->start();
+    }
   else
     movLoading->stop();
 }
@@ -240,9 +248,9 @@ void BugReports::slotRetranslated()
 {
   ui->labelBugReports->setText (tr ("Bug reports"));
   ui->editReport
-      ->setPlaceholderText (
-        tr ("Please describe the details of problem you faced. "
-            "What actions did you take and what happened."));
+  ->setPlaceholderText (
+    tr ("Please describe the details of problem you faced. "
+        "What actions did you take and what happened."));
   ui->btnAttachScreenshot->setText (tr ("Click here to attach a screenshot"));
   ui->btnSendReport->setText (tr ("send report"));
   ui->btnResultBack->setText (tr ("back"));
@@ -278,14 +286,14 @@ void BugReports::_slotTextEditFinish()
 }
 
 bool BugReports::_cbTextEdit (
-    DapGuiPlainTextEditInterface *e,
-    QString &preedit,
-    QString &commit,
-    int from,
-    int to)
+  DapGuiPlainTextEditInterface *e,
+  QString &preedit,
+  QString &commit,
+  int from,
+  int to)
 {
-  Q_UNUSED(from)
-  Q_UNUSED(to)
+  Q_UNUSED (from)
+  Q_UNUSED (to)
 
   /* get length only */
   auto text = e->toPlainText() + preedit + commit;
@@ -299,86 +307,109 @@ bool BugReports::_cbTextEdit (
 
 void BugReports::updateData (QString &a_text, int a_len)
 {
-  if(_textHook)
+  if (_textHook)
     return;
 
   /* print length */
   auto len  = (a_len < MAX_LENGTH) ? a_len : MAX_LENGTH;
   ui->labelLetterAmount->setText (
-    QString("%1/%2")
+    QString ("%1/%2")
     .arg (len)
     .arg (MAX_LENGTH));
   //ui->labelLetterAmount->repaint();
   //style()->polish (ui->labelLetterAmount);
 
-  ui->btnSendReport->setEnabled(!a_text.isEmpty());
+  ui->btnSendReport->setEnabled (!a_text.isEmpty());
   ui->btnSendReport->setEnabledCustom (!a_text.isEmpty());
 
   /* check if limit reachced */
-  if(a_text.length() <= MAX_LENGTH)
-  {
-    m_bugReportText = a_text;
-    return;
-  }
+  if (a_text.length() <= MAX_LENGTH)
+    {
+      m_bugReportText = a_text;
+      return;
+    }
 
   _textHook = true;
 
   /* fix text length */
   int position = m_edit->textCursor().position();
-  m_edit->setPlainText(m_bugReportText);
+  m_edit->setPlainText (m_bugReportText);
   QTextCursor cur = m_edit->textCursor();
-  cur.setPosition(position-1);
-  m_edit->setTextCursor(cur);
+  cur.setPosition (position - 1);
+  m_edit->setTextCursor (cur);
 
   _textHook = false;
 }
 
 void BugReports::refreshHistoryList()
 {
-    QMetaObject::invokeMethod(ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
+  QMetaObject::invokeMethod (ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
 }
 
-void BugReports::showAttachScreenshotMessage(QString message)
+void BugReports::showAttachScreenshotMessage (QString a_message)
 {
-    ui->btnAttachScreenshot->setText(message);
-    ui->btnAttachScreenshot->setVisible(true);
-    ui->btnDetachScreenshot->setVisible(false);
-    ui->btnDummyScreenshot->setVisible(false);
+  /* update text label */
+  ui->btnAttachScreenshot->setText (a_message);
+
+  /* store visibility state */
+  m_attachButtonVisible = true;
+  m_detachButtonVisible = false;
+
+  /* check if hidden */
+  if (m_hiddenButton)
+    return;
+
+  /* setup visibility */
+  ui->btnAttachScreenshot->setVisible (true);
+  ui->btnDetachScreenshot->setVisible (false);
 }
 
-void BugReports::showDetachScreenshotMessage(QString message)
+void BugReports::showDetachScreenshotMessage (QString a_message)
 {
-    ui->btnDetachScreenshot->setText(message);
-    ui->btnDetachScreenshot->setVisible(true);
-    ui->btnAttachScreenshot->setVisible(false);
-    ui->btnDummyScreenshot->setVisible(false);
+  /* update text label */
+  ui->btnDetachScreenshot->setText (a_message);
+
+  /* store visibility state */
+  m_attachButtonVisible = false;
+  m_detachButtonVisible = true;
+
+  /* check if hidden */
+  if (m_hiddenButton)
+    return;
+
+  /* setup visibility */
+  ui->btnAttachScreenshot->setVisible (false);
+  ui->btnDetachScreenshot->setVisible (true);
 }
 
 void BugReports::hideAttachScreenshotMessage()
 {
-    if (ui->btnDummyScreenshot->isHidden())
-    {
-        attachButtonVisibleState = (((uint)ui->btnAttachScreenshot->isHidden()) << 1)
-                                 + (((uint)ui->btnDetachScreenshot->isHidden()) << 0);
-        ui->btnDetachScreenshot->setVisible(false);
-        ui->btnAttachScreenshot->setVisible(false);
-        ui->btnDummyScreenshot->setVisible(true);
-    }
+  /* update hidden flag */
+  m_hiddenButton = true;
+
+  /* store visibility state */
+  m_attachButtonVisible = ui->btnAttachScreenshot->isVisible();
+  m_detachButtonVisible = ui->btnDetachScreenshot->isVisible();
+
+  /* hide buttons */
+  ui->btnDetachScreenshot->hide();
+  ui->btnAttachScreenshot->hide();
 }
 
 void BugReports::restoreAttachMessage()
 {
-    if (ui->btnDummyScreenshot->isHidden())
-        return;
-    ui->btnAttachScreenshot->setVisible(((attachButtonVisibleState >> 1) & 0x1) == 0);
-    ui->btnDetachScreenshot->setVisible(((attachButtonVisibleState >> 0) & 0x1) == 0);
-    ui->btnDummyScreenshot->setVisible(false);
+  /* update hidden flag */
+  m_hiddenButton  = false;
+
+  /* restore visibility state */
+  ui->btnAttachScreenshot->setVisible (m_attachButtonVisible);
+  ui->btnDetachScreenshot->setVisible (m_detachButtonVisible);
 }
 
-void BugReports::btnReturnVisible(bool visible)
+void BugReports::btnReturnVisible (bool visible)
 {
-    ui->btnReturn->setVisible(visible);
-    ui->kelGuiWidget_Left->setVisible(!visible);
+  ui->btnReturn->setVisible (visible);
+  ui->kelGuiWidget_Left->setVisible (!visible);
 }
 
 /*-----------------------------------------*/
