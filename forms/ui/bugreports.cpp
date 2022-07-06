@@ -153,7 +153,7 @@ void BugReports::setText(const QString &a_text)
 
 void BugReports::setResultText(const QString &a_result)
 {
-  ui->lResult->setText(a_result);
+  ui->lResult->setText (a_result);
 }
 
 /********************************************
@@ -229,7 +229,7 @@ void BugReports::slotSetMode (BugReports::Mode mode)
 
   if (m_mode == Loading){
     ui->lResult->setVisible(true);
-    ui->lResult->setText("Sending...");
+    ui->lResult->setText (tr ("Sending..."));
     movLoading->start();
   }
   else
