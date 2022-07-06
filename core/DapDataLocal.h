@@ -29,24 +29,90 @@ const QString TEXT_TX_OUT               = "tx_out";
 
 class DapSerialKeyData;
 
+
+struct ConfigData
+{
+    QList<QString>  m_cdbServersList;
+    QString         m_networkDefault;
+    QString         m_urlSite;
+    QString         m_brandName;
+
+    void parseXML(const QString& a_fname);
+    QJsonObject             toJson();
+    void                    fromJson(QJsonObject* data);
+};
+
+
+class DapDataSettings : public QObject
+{
+    Q_OBJECT
+public:
+    DapDataSettings(): QObject() {}
+    static QJsonObject  toJson(QMap<QString, QVariant> a_data);
+    static QJsonArray   toJson(QStringList a_keys);
+    static QJsonValue   packItem(const QVariant& data);
+    static QVariant     unpackItem(const QJsonValue& data);
+    static bool         itemCompare(const QVariant& a, const QVariant& b);
+    virtual QVariant            getSetting (const QString& a_key) {}
+    virtual void                saveSetting(const QString& a_key, const QVariant& a_value) {}
+    virtual void                removeSetting(const QString& a_key) {}
+    virtual void                fromJson(QJsonObject* jdata) {}
+    virtual QJsonObject         toJson() {}
+};
+
+
+class DapDataSettingsMap : public DapDataSettings
+{
+    Q_OBJECT
+public:
+    DapDataSettingsMap(): DapDataSettings() {}
+    QVariant            getSetting (const QString& a_key) override;
+    void                saveSetting(const QString& a_key, const QVariant& a_value) override;
+    void                removeSetting(const QString& a_key) override;
+    void                fromJson(QJsonObject* jdata) override;
+    QJsonObject         toJson() override;
+signals:
+    void dataUpdated(const QMap<QString, QVariant> data);
+    void dataRemoved(const QStringList& keys);
+private:
+    QMap<QString, QVariant>  m_localData;
+};
+
+
+class DapDataSettingsLocal : public DapDataSettings
+{
+    Q_OBJECT
+public:
+    DapDataSettingsLocal(): DapDataSettings() {}
+    QVariant            getSetting (const QString& a_key) override;
+    void                saveSetting(const QString& a_key, const QVariant& a_value) override;
+    void                removeSetting(const QString& a_key) override;
+    QJsonObject         toJson() override;
+    QStringList         allKeys() {return settings()->allKeys();}
+private:
+    QSettings*          settings();
+};
+
+
+
 class DapDataLocal : public QObject
 {
-public:
     Q_OBJECT
+public:
     DapDataLocal();
     const QString ServerListName;
 
     QString     m_brandName;
     QString     logFilePath;
 
-    void parseXML(const QString& a_fname);
-
-    DapKey *secretKey = Q_NULLPTR;
+    DapKey *secretKey;
     void initSecretKey();
     QString getRandomString(int);
 
 public:
     static DapDataLocal* instance();
+    void importConfig(const ConfigData& data)    { config = data; }
+    void parseXML(const QString& a_fname);
 
     QString login() const;
 
@@ -55,12 +121,10 @@ public:
 
     QString password() const;
 
-    DataToUpdate& getDataToUpdate(){return m_dataToUpdate;}
-
-    const QList<QString> &cdbServersList() { return m_cdbServersList; }
-    const QString & networkDefault()       { return m_networkDefault; }
-    const QString & getUrlSite()           { return m_urlSite;        }
-    const QString & getBrandName()         { return m_brandName;      }
+    const QList<QString> &cdbServersList() { return config.m_cdbServersList; }
+    const QString & networkDefault()       { return config.m_networkDefault; }
+    const QString & getUrlSite()           { return config.m_urlSite;        }
+    const QString & getBrandName()         { return config.m_brandName;      }
 
     QList<QString>::const_iterator m_cdbIter;
 
@@ -93,11 +157,19 @@ public:
     QString pendingSerialKey(){return m_pendingSerialKey;};
 
     DapBugReportHistory *bugReportHistory();
+    DapDataSettings* settings(const QString& keyName);
 
 public slots:
     void setLogin(const QString &a_login);
     void setPassword(const QString &password);
     void saveAuthorizationData();
+    void configFromJson(QJsonObject* data)  { config.fromJson(data); }
+    void settingsFromJson(QJsonObject* data) {
+        m_service_settings->fromJson(data);
+        loadAuthorizationDatas();
+        m_loadAuthorizationDatas = true;
+    }
+
 signals:
     /// Signal emitted if login has changed.
     /// @param login Login.
@@ -105,31 +177,31 @@ signals:
     /// Signal emitted if password has changed.
     /// @param password Password.
     void passwordChanged(const QString& password);
-
     void licenseTermTillChanged(const QString &a_date);
-
     void sigHistoryDataSaved();
+    /// server data setting changed
+    void dataUpdated(const QMap<QString, QVariant> data);
+    void dataRemoved(const QStringList& keys);
 
 protected:
-    QList<QString>  m_cdbServersList;
-    QString         m_networkDefault;
-    QString         m_urlSite;
+    ConfigData config;
 
 private:
     void loadAuthorizationDatas();
-    static QSettings* settings();
+    bool m_loadAuthorizationDatas;
 
     QString m_login;      ///< Login.
     QString m_password;   ///< Password.
     QString m_serialKey;  ///< Serial key.
-
-    DataToUpdate m_dataToUpdate; ///data to update
 
     DapSerialKeyData* m_serialKeyData;
     QSet <QString> * m_serialKeyDataList;
     QString m_pendingSerialKey;
 
     DapBugReportHistory* m_buReportHistory;
+    QMap<QString, QVariant> m_settings;
+    DapDataSettingsLocal* m_local_settings;
+    DapDataSettingsMap* m_service_settings;
 };
 
 template<typename T>
