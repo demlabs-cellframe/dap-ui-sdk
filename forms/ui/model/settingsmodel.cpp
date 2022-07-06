@@ -184,25 +184,27 @@ void SettingsModel::slotSetDaysLeft (QString days)
   if (!s_licenceKey)
     return;
 
-  /* create buffer holder for version text */
-  if (s_daysLeftText == nullptr)
-    s_daysLeftText  = new QString;
+  s_licenceKey->setSubText (days);
 
-  /* if provided days is not empty */
-  if (!days.isEmpty())
-    {
-      /* store and display */
-      *s_daysLeftText = days;
-      s_licenceKey->setSubText (days);
-    }
+//  /* create buffer holder for version text */
+//  if (s_daysLeftText == nullptr)
+//    s_daysLeftText  = new QString;
 
-  /* if no days left text provided */
-  else
-    {
-      /* if version text is stored inside buffer holder */
-      if(s_daysLeftText && !s_daysLeftText->isEmpty())
-        s_licenceKey->setSubText (*s_daysLeftText);
-    }
+//  /* if provided days is not empty */
+//  if (!days.isEmpty())
+//    {
+//      /* store and display */
+//      *s_daysLeftText = days;
+//      s_licenceKey->setSubText (days);
+//    }
+
+//  /* if no days left text provided */
+//  else
+//    {
+//      /* if version text is stored inside buffer holder */
+//      if(s_daysLeftText && !s_daysLeftText->isEmpty())
+//        s_licenceKey->setSubText (*s_daysLeftText);
+//    }
 }
 
 void SettingsModel::slotResetDaysLeft()
