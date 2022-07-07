@@ -117,6 +117,7 @@ public:
 
 private:
   void _slotUpdateUptimeTime();
+  bool m_diagramVisible;
   /// @}
 
   /****************************************//**

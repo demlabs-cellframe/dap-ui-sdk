@@ -10,7 +10,7 @@
 #include <QDir>
 #include <QSysInfo>
 #include "DapDataLocal.h"
-#include "JlCompress.h"
+#include "packzip.h"
 
 class DapBugReport
 {
@@ -18,7 +18,7 @@ public:
     DapBugReport();
 
     QString getSystemInfo();
-    bool createZipDataBugReport(const QString &serial, const QString &message, const QString &pkeyHash);
+    bool createZipDataBugReport(const QString &serial, const QString &message, const QString &attachFile, const QString &pkeyHash);
     QByteArray getDataZipFile(){return byteArrayZipFile;}
 
 private:

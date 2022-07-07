@@ -70,11 +70,11 @@ QString DapSerialKeyData::daysLeftString()
         int days = this->daysLeft();
         switch (days) {
             case -1:
-                return tr("Unlimited");
+                return QObject::tr("Unlimited");
             case 1:
-                return QString(QObject::tr("%1 day left")).arg(days);
+                return QObject::tr("%1 day left").arg(days);
             default:
-                return QString(QObject::tr("%1 days left")).arg(days);
+                return QObject::tr("%1 days left").arg(days);
         }
     }
     else

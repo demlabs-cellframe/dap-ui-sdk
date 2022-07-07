@@ -39,6 +39,8 @@ QList<SettingsModel::_SItem> SettingsModel::s_items;
 static QMap<DapGuiButton*, ItemCB> s_btnCallbacks;
 static DapGuiButton* s_licenceKey;
 static DapGuiButton* s_version;
+static QString *s_versionText   = nullptr;
+static QString *s_daysLeftText  = nullptr;
 
 /* VARS */
 static Settings *s_settings   = nullptr;
@@ -85,9 +87,29 @@ void SettingsModel::setInterface(Settings *s)
 
 void SettingsModel::setVersionText(const QString &a_text)
 {
-  if(!s_version)
+  /* check if label is set */
+  if (!s_version)
     return;
-  s_version->setSubText (a_text);
+
+  /* create buffer holder for version text */
+  if (s_versionText == nullptr)
+    s_versionText = new QString();
+
+  /* if provided version is not empty */
+  if (!a_text.isEmpty())
+    {
+      /* store and display */
+      *s_versionText  = a_text;
+      s_version->setSubText (a_text);
+    }
+
+  /* if no version text provided */
+  else
+    {
+      /* if version text is stored inside buffer holder */
+      if(s_versionText && !s_versionText->isEmpty())
+        s_version->setSubText (*s_versionText);
+    }
 }
 
 /********************************************
@@ -157,10 +179,32 @@ void SettingsModel::slotSetup()
     }
 }
 
-void SettingsModel::slotSetDaysLeft(QString days)
+void SettingsModel::slotSetDaysLeft (QString days)
 {
-  if (s_licenceKey)
-    s_licenceKey->setSubText (days);
+  if (!s_licenceKey)
+    return;
+
+  s_licenceKey->setSubText (days);
+
+//  /* create buffer holder for version text */
+//  if (s_daysLeftText == nullptr)
+//    s_daysLeftText  = new QString;
+
+//  /* if provided days is not empty */
+//  if (!days.isEmpty())
+//    {
+//      /* store and display */
+//      *s_daysLeftText = days;
+//      s_licenceKey->setSubText (days);
+//    }
+
+//  /* if no days left text provided */
+//  else
+//    {
+//      /* if version text is stored inside buffer holder */
+//      if(s_daysLeftText && !s_daysLeftText->isEmpty())
+//        s_licenceKey->setSubText (*s_daysLeftText);
+//    }
 }
 
 void SettingsModel::slotResetDaysLeft()
@@ -193,6 +237,10 @@ void SettingsModel::slotRetranslate()
       button->setMainText (item.text[0]);
       button->setSubText (item.text[1]);
     }
+
+  /* update version and days left */
+  setVersionText (QString());
+  slotSetDaysLeft (QString());
 }
 
 /********************************************
@@ -222,7 +270,9 @@ void SettingsModel::_updateLabels()
 
     _SItem{SI_BUTTONRED,  {tr ("Get a new licence key"), /*"265 days left"*/" "}, "settings_icon ic_renew", cbLicenceGet},
     _SItem{SI_BUTTON,     {tr ("Reset license key"), ""}, "settings_icon ic_key", cbLicenceReset},
-    /* WIP */ /// _SItem{SI_LINK,       {tr ("Language"), ""}, "settings_icon ic_language", cbLanguage},
+#ifdef ENABLE_LANGUAGE_SUPPORT
+    _SItem{SI_LINK,       {tr ("Language"), ""}, "settings_icon ic_language", cbLanguage},
+#endif // ENABLE_LANGUAGE_SUPPORT
 #ifndef DISABLE_THEMES
     _SItem{SI_LINK,       {tr ("Color theme"), ""}, "settings_icon ic_theme", cbColorTheme},
 #endif // DISABLE_THEMES

@@ -24,7 +24,8 @@ Statistics::Statistics (QWidget *parent) :
   m_ping (0),
   m_scene (new QGraphicsScene),
   m_uptimeUpdateTimer (new QTimer),
-  m_drawGraphTimer(new QTimer)
+  m_drawGraphTimer(new QTimer),
+  m_diagramVisible(false)
 {
   /* setup ui */
   ui->setupUi (this);
@@ -281,9 +282,15 @@ void Statistics::setStarted (const QDateTime &started)
   m_started = started;
 
   if (!started.isNull())
+  {
     m_uptimeUpdateTimer->start();
+    m_diagramVisible = true;
+  }
   else
+  {
     m_uptimeUpdateTimer->stop();
+    m_diagramVisible = false;
+  }
 
   _slotUpdateUptimeTime();
 }
@@ -293,7 +300,7 @@ void Statistics::updateGraph()
   m_scene->setSceneRect(QRectF(0,0, 500, 150));
   ui->graphicsView->setRenderHint(QPainter::Antialiasing);
   ui->graphicsView->fitInView(QRectF(0,0, 500, 150));
-  schedules.draw_chart (m_scene);
+  schedules.draw_chart (m_scene, m_diagramVisible);
   m_scene->update();
 }
 

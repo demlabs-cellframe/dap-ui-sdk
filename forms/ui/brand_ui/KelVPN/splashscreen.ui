@@ -134,7 +134,7 @@
 September 10 2021</string>
            </property>
            <property name="alignment">
-            <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+            <set>Qt::AlignCenter</set>
            </property>
            <property name="cssStyle">
             <string>white font12 normal lato noborder nobackground</string>

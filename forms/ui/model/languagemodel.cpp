@@ -94,8 +94,8 @@ void LanguageModel::slotSetup()
                this, &LanguageModel::slotToggled);
     }
 
-  QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  lay->addItem (sp);
+//  QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+//  lay->addItem (sp);
 }
 
 void LanguageModel::slotToggled(bool checked)
