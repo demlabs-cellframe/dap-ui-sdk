@@ -384,6 +384,9 @@ void BugReports::showDetachScreenshotMessage (QString a_message)
 
 void BugReports::hideAttachScreenshotMessage()
 {
+  if (m_hiddenButton)
+    return;
+
   /* update hidden flag */
   m_hiddenButton = true;
 
@@ -398,6 +401,9 @@ void BugReports::hideAttachScreenshotMessage()
 
 void BugReports::restoreAttachMessage()
 {
+  if (!m_hiddenButton)
+    return;
+
   /* update hidden flag */
   m_hiddenButton  = false;
 
