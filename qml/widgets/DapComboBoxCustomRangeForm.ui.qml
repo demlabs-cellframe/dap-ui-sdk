@@ -232,10 +232,10 @@ ComboBox
                         dapNormalBackgroundColor: dapCalendars.dapNormalBackgroundColor
                         dapSelectedBackgroundColor: dapCalendars.dapSelectedBackgroundColor
                         dapDayOfWeeksFormat: dapCalendars.dapDayOfWeeksFormat
-                        dapPreviousYearButtonImage: dapCalendars.dapPreviousYearButtonImage
-                        dapPreviousMonthButtonImage: dapCalendars.dapPreviousMonthButtonImage
-                        dapNextMonthButtonImage: dapCalendars.dapNextMonthButtonImage
-                        dapNextYearButtonImage: dapCalendars.dapNextYearButtonImage
+                        dapClickMonthImage: dapCalendars.dapClickMonthImage
+                        dapClickYearImage: dapCalendars.dapClickYearImage
+
+
                         dapShadowColor: dapColorDropShadow
                         visible: false
                     }
@@ -320,10 +320,8 @@ ComboBox
                         dapNormalBackgroundColor: dapCalendars.dapNormalBackgroundColor
                         dapSelectedBackgroundColor: dapCalendars.dapSelectedBackgroundColor
                         dapDayOfWeeksFormat: dapCalendars.dapDayOfWeeksFormat
-                        dapPreviousYearButtonImage: dapCalendars.dapPreviousYearButtonImage
-                        dapPreviousMonthButtonImage: dapCalendars.dapPreviousMonthButtonImage
-                        dapNextMonthButtonImage: dapCalendars.dapNextMonthButtonImage
-                        dapNextYearButtonImage: dapCalendars.dapNextYearButtonImage
+                        dapClickMonthImage: dapCalendars.dapClickMonthImage
+                        dapClickYearImage: dapCalendars.dapClickYearImage
                         dapShadowColor: dapColorDropShadow
                         visible: false
                         dapMinimumDate: dapMinimumOfRangeCalendar.dapCalendar.selectedDate
