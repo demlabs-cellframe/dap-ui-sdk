@@ -1,6 +1,5 @@
 #include "DapCmdDataLocal.h"
 #include <QFile>
-#include <QDebug>
 #include "DapSession.h"
 
 const QString DapCmdDataLocal::actionParam = "data_local";
@@ -17,10 +16,7 @@ DapCmdDataLocal::~DapCmdDataLocal()
 
 }
 
-/**
- * @brief DapCmdConnect::sendCmdError
- * @param interfaceName
- */
+
 void DapCmdDataLocal::sendSettings(QJsonObject& metadata)
 {
     QJsonObject response;
@@ -31,17 +27,14 @@ void DapCmdDataLocal::sendSettings(QJsonObject& metadata)
 void DapCmdDataLocal::handle(const QJsonObject* params)
 {
     qDebug() << "DapCmdDataLocal::handle";
-    qDebug() << params->value(actionParam);
     if(params->value(actionParam) != QJsonValue::Undefined)
     {
         QJsonObject request = params->value(actionParam).toObject();
         if (request.value("get") != QJsonValue::Undefined)
         {
-            qDebug() << "get";
             QJsonObject dataRequest = request.value("get").toObject();
             if (dataRequest.value("all") != QJsonValue::Undefined)
             {
-                qDebug() << "metadata";
                 QJsonObject metadata;
                 ConfigData configData;
                 configData.parseXML(":/data.xml");
@@ -60,7 +53,6 @@ void DapCmdDataLocal::handle(const QJsonObject* params)
             {
                 QVariant value = saveData.value(key);
                 dapDataLocalSettings->saveSetting(key, value);
-                qDebug() << "save" << key << value;
             }
             metadata["status"] = "OK";
             sendSettings(metadata);
@@ -73,7 +65,6 @@ void DapCmdDataLocal::handle(const QJsonObject* params)
             foreach(const QJsonValue key, removeData)
             {
                 dapDataLocalSettings->removeSetting(key.toString());
-                qDebug() << "remove" << key;
             }
             metadata["status"] = "OK";
             sendSettings(metadata);

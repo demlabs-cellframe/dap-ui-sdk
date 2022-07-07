@@ -111,7 +111,6 @@ public:
 
 public:
     static DapDataLocal* instance();
-    void importConfig(const ConfigData& data)    { config = data; }
     void parseXML(const QString& a_fname);
 
     QString login() const;

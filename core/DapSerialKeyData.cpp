@@ -96,10 +96,7 @@ QString DapSerialKeyData::daysLeftString()
 
 void DapSerialKeyData::setLicenseTermTill(const QString &a_date)
 {
-//    if (!isActivated())
-//        return;
     QDateTime tempDate = QDateTime::fromTime_t(a_date.toUInt());
-    qDebug() << "DapSerialKeyData::setLicenseTermTill" << tempDate;
     if (this->m_licenseTermTill == tempDate)
         return;
     this->m_licenseTermTill = tempDate;

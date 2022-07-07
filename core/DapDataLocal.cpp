@@ -135,11 +135,6 @@ void ConfigData::fromJson(QJsonObject* data)
             continue;
         }
     }
-//    qDebug() << "ConfigFromJson" << m_cdbServersList;
-//    qDebug() << "ConfigFromJson" << m_networkDefault;
-//    qDebug() << "ConfigFromJson" << m_brandName;
-//    qDebug() << "ConfigFromJson" << m_urlSite;
-
 }
 
 
@@ -255,25 +250,17 @@ QSettings* DapDataSettingsLocal::settings()
 QVariant DapDataSettingsMap::getSetting(const QString &a_key)
 {
     if (m_localData.contains(a_key))
-    {
-        qDebug() << "-- getSetting" << a_key << m_localData[a_key];
         return m_localData[a_key];
-    }
     else
-    {
-        qDebug() << "-- getSetting" << a_key << QVariant();
         return QVariant();
-    }
 }
 
 void DapDataSettingsMap::saveSetting(const QString &a_key, const QVariant &a_value)
 {
     QMap<QString, QVariant> data;
     bool n_eaqual = !DapDataSettings::itemCompare(m_localData[a_key], a_value);
-    qDebug() << "--- saveSetting" << a_key << a_value << n_eaqual;
     if (n_eaqual)
     {
-        qDebug() << "---- emit save";
         m_localData[a_key] = a_value;
         data[a_key] = a_value;
         emit dataUpdated(data);

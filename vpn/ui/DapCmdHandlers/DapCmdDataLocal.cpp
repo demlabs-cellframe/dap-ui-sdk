@@ -10,7 +10,6 @@ void DapCmdDataLocal::handle(const QJsonObject *params)
     if(params->contains(actionParam))
     {
         qDebug() << "Local data ready";
-//        qDebug() << params->value(actionParam);
         QJsonObject jData = params->value(actionParam).toObject();
         if (jData.value("config") != QJsonValue::Undefined)
         {
@@ -28,26 +27,24 @@ void DapCmdDataLocal::handle(const QJsonObject *params)
 
 void DapCmdDataLocal::allDataRequest()
 {
-    qDebug() << "Request local data from service";
+    qDebug() << "Request gui data from service";
     QJsonObject response;
     QJsonObject get;
     QJsonObject all;
     all["all"] = true;
     get["get"] = all;
     response[actionParam] = get;
-    qDebug() << response;
     sendCmd(&response);
 }
 
 void DapCmdDataLocal::sendSaveRequest(QMap<QString, QVariant> data)
 {
     foreach (auto key, data.keys())
-        qDebug() << "send save request" << key << data[key];
+        qDebug() << "send save request" << key;
     QJsonObject response;
     QJsonObject save;
     save["save"] = DapDataSettings::toJson(data);
     response[actionParam] = save;
-    qDebug() << response;
     sendCmd(&response);
 }
 
