@@ -9,7 +9,6 @@ void DapCmdDataLocal::handle(const QJsonObject *params)
 
     if(params->contains(actionParam))
     {
-        qDebug() << "Local data ready";
         QJsonObject jData = params->value(actionParam).toObject();
         if (jData.value("config") != QJsonValue::Undefined)
         {
@@ -21,19 +20,20 @@ void DapCmdDataLocal::handle(const QJsonObject *params)
             QJsonObject jobj = jData.value("settings").toObject();
             DapDataLocal::instance()->settingsFromJson(&jobj);
         }
+        qDebug() << "Local data ready";
         emit dataReceived();
     }
 }
 
 void DapCmdDataLocal::allDataRequest()
 {
-    qDebug() << "Request gui data from service";
     QJsonObject response;
     QJsonObject get;
     QJsonObject all;
     all["all"] = true;
     get["get"] = all;
     response[actionParam] = get;
+    qDebug() << "Request settings data from service";
     sendCmd(&response);
 }
 

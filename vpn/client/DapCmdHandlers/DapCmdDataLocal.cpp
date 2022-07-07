@@ -26,7 +26,6 @@ void DapCmdDataLocal::sendSettings(QJsonObject& metadata)
 
 void DapCmdDataLocal::handle(const QJsonObject* params)
 {
-    qDebug() << "DapCmdDataLocal::handle";
     if(params->value(actionParam) != QJsonValue::Undefined)
     {
         QJsonObject request = params->value(actionParam).toObject();
@@ -41,6 +40,7 @@ void DapCmdDataLocal::handle(const QJsonObject* params)
                 metadata["config"] = configData.toJson();
                 metadata["settings"] = dapDataLocalSettings->toJson();
                 metadata["status"] = "OK";
+                qDebug() << "DapCmdDataLocal::handle send settings data to ui";
                 sendSettings(metadata);
                 return;
             }
@@ -55,6 +55,7 @@ void DapCmdDataLocal::handle(const QJsonObject* params)
                 dapDataLocalSettings->saveSetting(key, value);
             }
             metadata["status"] = "OK";
+            qDebug() << "DapCmdDataLocal::handle save to settings from ui";
             sendSettings(metadata);
             return;
         }
@@ -67,6 +68,7 @@ void DapCmdDataLocal::handle(const QJsonObject* params)
                 dapDataLocalSettings->removeSetting(key.toString());
             }
             metadata["status"] = "OK";
+            qDebug() << "DapCmdDataLocal::handle remove from settings";
             sendSettings(metadata);
             return;
         }
