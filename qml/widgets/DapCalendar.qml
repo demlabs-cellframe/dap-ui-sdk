@@ -42,7 +42,7 @@ DapCalendarForm
                             checkable: true
                             colorBackgroundNormal: dapCalendarBackgroundColor
                             colorBackgroundHover: colorBackgroundNormal
-                            normalImageButton: dapPreviousYearButtonImage
+                            normalImageButton: dapClickYearImage
                             hoverImageButton: normalImageButton
                             onClicked: control.showPreviousYear()
                         }
@@ -58,7 +58,7 @@ DapCalendarForm
                             checkable: true
                             colorBackgroundNormal: dapCalendarBackgroundColor
                             colorBackgroundHover: colorBackgroundNormal
-                            normalImageButton: dapPreviousMonthButtonImage
+                            normalImageButton: dapClickMonthImage
                             hoverImageButton: normalImageButton
                             onClicked: control.showPreviousMonth()
                         }
@@ -84,8 +84,9 @@ DapCalendarForm
                             checkable: true
                             colorBackgroundNormal: dapCalendarBackgroundColor
                             colorBackgroundHover: colorBackgroundNormal
-                            normalImageButton: dapNextMonthButtonImage
+                            normalImageButton: dapClickMonthImage
                             hoverImageButton: normalImageButton
+                            imageMirror: true
                             onClicked: control.showNextMonth()
                         }
                         DapButton
@@ -100,8 +101,9 @@ DapCalendarForm
                             checkable: true
                             colorBackgroundNormal: dapCalendarBackgroundColor
                             colorBackgroundHover: colorBackgroundNormal
-                            normalImageButton: dapNextYearButtonImage
+                            normalImageButton: dapClickYearImage
                             hoverImageButton: normalImageButton
+                            imageMirror: true
                             onClicked: control.showNextYear()
                         }
                     }

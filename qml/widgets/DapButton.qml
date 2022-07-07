@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.9
 import QtQuick.Controls 2.0
 import QtGraphicalEffects 1.0
 
@@ -48,6 +48,7 @@ Button
     property alias dapHorizontalAlignment: buttonText.horizontalAlignment
     ///@details button background radius
     property alias radius: dapBackgroundButton.radius
+    property alias imageMirror: img.mirror
 
     property string gradientColorNormal0 : "#f0f000"
     property string gradientColorNormal1 : "#f00000"
@@ -137,10 +138,12 @@ Button
             ///button picture
             Image
             {
+                id: img
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: indentImageLeftButton
                 source: dapButton.hovered ? hoverImageButton : normalImageButton
+                mipmap: true
                 width: widthImageButton
                 height: heightImageButton
             }
