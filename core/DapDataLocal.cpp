@@ -334,17 +334,25 @@ DapDataLocal::DapDataLocal()
     , m_service_settings(new DapDataSettingsMap())
 {
     qDebug() << "[DL] DapDataLocal Constructor";
-    connect(m_service_settings, &DapDataSettingsMap::dataUpdated,  this, &DapDataLocal::dataUpdated);
-    connect(m_service_settings, &DapDataSettingsMap::dataRemoved,  this, &DapDataLocal::dataRemoved);
-    parseXML(":/data.xml");
 //    initSecretKey();
 //    this->loadAuthorizationDatas();
 }
 
-void DapDataLocal::parseXML(const QString &a_fname)
+void DapDataLocal::initGuiData()
 {
-    config.parseXML(a_fname);
+    qDebug() << "[DL] DapDataLocal: init gui data";
+    connect(m_service_settings, &DapDataSettingsMap::dataUpdated,  this, &DapDataLocal::dataUpdated);
+    connect(m_service_settings, &DapDataSettingsMap::dataRemoved,  this, &DapDataLocal::dataRemoved);
+    m_keysForServerStorage << TEXT_SERIAL_KEY << TEXT_SERIAL_KEY_HISTORY << TEXT_PENDING_SERIAL_KEY
+                           << TEXT_BUGREPORT_HISTORY << TEXT_LOGIN << TEXT_PASSWORD << TEXT_TX_OUT;
 }
+
+void DapDataLocal::initServiceData()
+{
+    qDebug() << "[DL] DapDataLocal: init service data";
+    config.parseXML(":/data.xml");
+}
+
 
 /// Get login.
 /// @return Login.
@@ -512,10 +520,7 @@ void DapDataLocal::saveEncryptedSetting(const QString &a_setting, const QByteArr
 
 DapDataSettings* DapDataLocal::settings(const QString& keyName)
 {
-    QStringList service_keys;
-    service_keys << TEXT_SERIAL_KEY << TEXT_SERIAL_KEY_HISTORY << TEXT_PENDING_SERIAL_KEY
-                 << TEXT_BUGREPORT_HISTORY << TEXT_LOGIN << TEXT_PASSWORD << TEXT_TX_OUT;
-    if (service_keys.contains(keyName))
+    if (m_keysForServerStorage.contains(keyName))
         return m_service_settings;
     else
         return m_local_settings;
@@ -566,6 +571,7 @@ DapBugReportHistory * DapDataLocal::bugReportHistory()
 
 void DapDataLocal::initSecretKey()
 {
+    qDebug() << "[DL] initSecretKey";
     if (getSetting("key").toString().isEmpty())
     {
         saveSetting("key", getRandomString(40));

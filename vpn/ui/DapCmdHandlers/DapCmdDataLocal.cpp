@@ -40,7 +40,7 @@ void DapCmdDataLocal::allDataRequest()
 void DapCmdDataLocal::sendSaveRequest(QMap<QString, QVariant> data)
 {
     foreach (auto key, data.keys())
-        qDebug() << "send save request" << key;
+        qDebug() << "Send save request" << key;
     QJsonObject response;
     QJsonObject save;
     save["save"] = DapDataSettings::toJson(data);
@@ -51,7 +51,7 @@ void DapCmdDataLocal::sendSaveRequest(QMap<QString, QVariant> data)
 void DapCmdDataLocal::sendRemoveRequest(QStringList keys)
 {
     foreach (auto key, keys)
-        qDebug() << "send remove request" << key;
+        qDebug() << "Send remove request" << key;
     QJsonObject response;
     QJsonObject remove;
     remove["remove"] = DapDataSettings::toJson(keys);

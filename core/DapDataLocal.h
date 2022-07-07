@@ -100,6 +100,8 @@ class DapDataLocal : public QObject
     Q_OBJECT
 public:
     DapDataLocal();
+    void initGuiData();
+    void initServiceData();
     const QString ServerListName;
 
     QString     m_brandName;
@@ -111,8 +113,6 @@ public:
 
 public:
     static DapDataLocal* instance();
-    void parseXML(const QString& a_fname);
-
     QString login() const;
 
     void setLogFilePath(QString path){logFilePath = path;}
@@ -201,6 +201,8 @@ private:
     QMap<QString, QVariant> m_settings;
     DapDataSettingsLocal* m_local_settings;
     DapDataSettingsMap* m_service_settings;
+
+    QStringList m_keysForServerStorage;
 };
 
 template<typename T>
