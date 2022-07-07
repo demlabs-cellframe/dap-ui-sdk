@@ -179,12 +179,12 @@
             </widget>
            </item>
            <item>
-            <widget class="DapGuiWidget" name="kelGuiWidget_Left" native="true">
+            <widget class="DapGuiWidget" name="kelGuiWidget_Left">
              <property name="cssStyle">
               <string>cwpb_close</string>
              </property>
             </widget>
-           </item> 
+           </item>
            <item>
             <widget class="DapGuiLabel" name="labelBugReports">
              <property name="text">
@@ -257,7 +257,7 @@ color: rgb(238, 238, 236);</string>
               <x>0</x>
               <y>0</y>
               <width>390</width>
-              <height>163</height>
+              <height>137</height>
              </rect>
             </property>
             <property name="cssStyle">
@@ -422,30 +422,6 @@ color: rgb(238, 238, 236);</string>
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="DapGuiLabel" name="btnDummyScreenshot">
-           <property name="styleSheet">
-            <string notr="true">#btnDummyScreenshot{ font-family: 'Lato'; 
- color: #DA0B82; 
- font: 16px/19px; 
- font-weight: normal; font-style: normal; font-size: normal; 
- border: none; 
- background-color: rgba(0,0,0,0); }</string>
-           </property>
-           <property name="text">
-            <string></string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="cssStyle">
-            <string>lato red font16 normal noborder nobackground</string>
-           </property>
-           <property name="flat" stdset="0">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>          
          <item>
           <widget class="DapGuiWidget" name="attach_send_spacer">
            <property name="cssStyle">
