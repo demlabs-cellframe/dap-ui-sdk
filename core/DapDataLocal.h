@@ -27,6 +27,9 @@ const QString TEXT_LOGIN                = "login";
 const QString TEXT_PASSWORD             = "password";
 const QString TEXT_TX_OUT               = "tx_out";
 const QString TEXT_KEY                  = "key";
+const QString SETTING_LOCALE            = "language";
+const QString SETTING_SYS_LOCALE        = "SysLanguage";
+const QString SETTING_THEME             = "ColorTheme";
 
 class DapSerialKeyData;
 
@@ -138,7 +141,7 @@ private:
     void initSecretKey();
 public:
     QString getRandomString(int);
-    void updateSettingWithNewSecretKey();
+    void updateSettingWithServiceSecretKey();
     bool compareLocalAndServiceSecretKeys();
     bool isServiceSecretKeyEmpty();
     void saveLocalSecretKeyToService();

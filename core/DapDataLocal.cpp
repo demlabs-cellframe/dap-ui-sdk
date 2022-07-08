@@ -347,7 +347,6 @@ DapDataLocal::DapDataLocal()
 /// DapDataLocal class initialization on the gui side
 void DapDataLocal::initGuiData()
 {
-    qDebug() << "[DL] DapDataLocal: init gui data";
     // signal connection for send data to service
     connect(m_serviceSettings, &DapDataSettingsMap::dataUpdated,  this, &DapDataLocal::dataUpdated);
     // signal connection for send removed keys
@@ -356,14 +355,15 @@ void DapDataLocal::initGuiData()
     m_keysForServerStorage << TEXT_SERIAL_KEY << TEXT_SERIAL_KEY_HISTORY << TEXT_PENDING_SERIAL_KEY
                            << TEXT_BUGREPORT_HISTORY << TEXT_LOGIN << TEXT_PASSWORD << TEXT_TX_OUT
                            << TEXT_KEY;
+    qDebug() << "[DL] DapDataLocal: init gui data";
 }
 
 /// DapDataLocal class initialization on the service side
 void DapDataLocal::initServiceData()
 {
-    qDebug() << "[DL] DapDataLocal: init service data";
     // load configuration data from xml file
     config.parseXML(":/data.xml");
+    qDebug() << "[DL] DapDataLocal: init service data";
 }
 
 
@@ -474,11 +474,11 @@ QList<QString> DapDataLocal::getHistorySerialKeyData()
 void DapDataLocal::loadAuthorizationDatas()
 {
 #ifdef Q_OS_ANDROID
-    auto keys = m_local_settings->allKeys();
+    auto keys = m_localSettings->allKeys();
     if (keys.isEmpty()) {
         QSettings oldSettings;
         for (auto key : oldSettings.allKeys()) {
-            m_local_settings->saveSetting(key, oldSettings.value(key));
+            m_localSettings->saveSetting(key, oldSettings.value(key));
         }
     }
 #endif
@@ -608,15 +608,18 @@ QString DapDataLocal::getRandomString(int size)
    return randomString;
 }
 
-void DapDataLocal::updateSettingWithNewSecretKey()
+void DapDataLocal::updateSettingWithServiceSecretKey()
 {
-    QMap <QString, QVariant> data;
-    foreach(QString key, m_localSettings->allKeys())
-        data[key] = m_localSettings->getSetting(key);
+    QLocale::Language systemLanguage;
+    QLocale::Language savedLanguage;
+    QString ColorTheme = m_localSettings->getSetting(SETTING_THEME).toString();
+    loadFromSettings(SETTING_SYS_LOCALE, systemLanguage);
+    loadFromSettings(SETTING_LOCALE, savedLanguage);
     m_localSettings->saveSetting("key", m_serviceSettings->getSetting("key").toString());
     initSecretKey();
-    foreach(QString key, data.keys())
-        m_localSettings->saveSetting(key, data[key]);
+    m_localSettings->saveSetting(SETTING_THEME, ColorTheme);
+    saveToSettings(SETTING_SYS_LOCALE, systemLanguage);
+    saveToSettings(SETTING_LOCALE, savedLanguage);
 }
 
 bool DapDataLocal::compareLocalAndServiceSecretKeys()
