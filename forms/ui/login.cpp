@@ -177,7 +177,7 @@ void Login::slotRetranslated()
 
   ui->btnChooseSerial->setSubText (tr ("serial key"));
 
-  ui->btnConnect->setText (tr ("connect"));
+  ui->btnConnect->setText (QObject::tr ("connect"));
 
   ui->lDontHave->setText (tr ("Don't have a serial key?"));
   ui->btnObtainNewKey->setText (tr ("Tap here to obtain one"));
