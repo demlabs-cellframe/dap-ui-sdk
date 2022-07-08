@@ -404,6 +404,10 @@ void BugReports::restoreAttachMessage()
   /* update hidden flag */
   m_hiddenButton  = false;
 
+  /* minor visibility fix */
+  if (!(m_attachButtonVisible || m_detachButtonVisible))
+    m_attachButtonVisible = true;
+
   /* restore visibility state */
   ui->btnAttachScreenshot->setVisible (m_attachButtonVisible);
   ui->btnDetachScreenshot->setVisible (m_detachButtonVisible);
