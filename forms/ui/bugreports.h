@@ -121,8 +121,8 @@ public slots:
   void slotSetMode (BugReports::Mode mode);
   void slotRetranslated();
   void refreshHistoryList();
-  void showAttachScreenshotMessage (QString a_message);
-  void showDetachScreenshotMessage (QString a_message);
+  void showAttachScreenshot();
+  void showDetachScreenshot();
   void btnReturnVisible(bool visible);
 private slots:
   void _slotRadioTest();

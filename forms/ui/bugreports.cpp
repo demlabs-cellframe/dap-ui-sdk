@@ -254,6 +254,9 @@ void BugReports::slotRetranslated()
   ui->btnAttachScreenshot->setText (tr ("Click here to attach a screenshot"));
   ui->btnSendReport->setText (tr ("send report"));
   ui->btnResultBack->setText (tr ("back"));
+
+  ui->btnAttachScreenshot->setText (tr ("Click here to attach a screenshot"));
+  ui->btnDetachScreenshot->setText (tr ("Remove screenshot"));
 }
 
 void BugReports::_slotRadioTest()
@@ -346,11 +349,8 @@ void BugReports::refreshHistoryList()
   QMetaObject::invokeMethod (ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
 }
 
-void BugReports::showAttachScreenshotMessage (QString a_message)
+void BugReports::showAttachScreenshot()
 {
-  /* update text label */
-  ui->btnAttachScreenshot->setText (a_message);
-
   /* store visibility state */
   m_attachButtonVisible = true;
   m_detachButtonVisible = false;
@@ -364,11 +364,8 @@ void BugReports::showAttachScreenshotMessage (QString a_message)
   ui->btnDetachScreenshot->setVisible (false);
 }
 
-void BugReports::showDetachScreenshotMessage (QString a_message)
+void BugReports::showDetachScreenshot()
 {
-  /* update text label */
-  ui->btnDetachScreenshot->setText (a_message);
-
   /* store visibility state */
   m_attachButtonVisible = false;
   m_detachButtonVisible = true;
