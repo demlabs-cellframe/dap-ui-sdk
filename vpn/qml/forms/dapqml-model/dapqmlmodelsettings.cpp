@@ -1,5 +1,6 @@
 /* INCLUDES */
 #include "dapqmlmodelsettings.h"
+#include "helper/languagectl.h"
 
 /* DEFS */
 enum FieldId
@@ -62,6 +63,11 @@ DapQmlModelSettings::DapQmlModelSettings (QObject *parent)
 //  QMetaObject::invokeMethod (
 //        this, &DapQmlModelSettings::slotUpdateLabels,
 //        Qt::QueuedConnection);
+  connect (LanguageCtl::instance(), &LanguageCtl::languageChanged,
+           this, &DapQmlModelSettings::slotRetranslate,
+           Qt::QueuedConnection);
+
+  /* finish updating labels */
   slotUpdateLabels();
 }
 
@@ -84,6 +90,11 @@ void DapQmlModelSettings::exec (int index)
   auto cbv  = s_items.at (index).get ("callback");
   auto cb   = reinterpret_cast<ItemCB> (cbv.toULongLong());
   cb();
+}
+
+QString DapQmlModelSettings::notifier() const
+{
+  return "";
 }
 
 /********************************************
@@ -212,7 +223,13 @@ void DapQmlModelSettings::slotResetDaysLeft()
 
   emit dataChanged (
     index (s_daysLabelIndex, 0),
-    index (s_daysLabelIndex, columnCount()));
+        index (s_daysLabelIndex, columnCount()));
+}
+
+void DapQmlModelSettings::slotRetranslate()
+{
+  slotUpdateLabels();
+  emit languageChanged();
 }
 
 /********************************************

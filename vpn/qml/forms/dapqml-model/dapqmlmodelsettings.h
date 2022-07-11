@@ -16,6 +16,13 @@ class DapQmlModelSettings : public QAbstractTableModel
   Q_OBJECT
 
   /****************************************//**
+   * @name PROPERTIES
+   *******************************************/
+  /// @{
+  Q_PROPERTY (QString notifier READ notifier NOTIFY languageChanged)
+  /// @}
+
+  /****************************************//**
    * @name DEFS
    *******************************************/
   /// @{
@@ -51,6 +58,7 @@ public:
 public:
   static DapQmlModelSettings *instance();
   Q_INVOKABLE void exec(int index);
+  Q_INVOKABLE QString notifier() const;
   /// @}
 
   /****************************************//**
@@ -88,6 +96,9 @@ signals:
   void sigTermsOfUse();
   void sigPrivacyPolicy();
   void sigVersion();
+
+  /* retranslation */
+  void languageChanged();
   /// @}
 
   /****************************************//**
@@ -98,6 +109,8 @@ public slots:
   void slotUpdateLabels();
   void slotSetDaysLeft (QString a_days);
   void slotResetDaysLeft();
+protected slots:
+  void slotRetranslate();
   /// @}
 };
 

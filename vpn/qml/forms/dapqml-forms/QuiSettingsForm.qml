@@ -85,6 +85,25 @@ Item {
      * Content
      ********************************************/
 
+//    property string testText: "test"
+//    property int testIndex: 0
+//    Timer {
+//        interval: 1000
+//        running: true
+//        repeat: true
+//        onTriggered: {
+//            if(testIndex < 3)
+//                testIndex++
+//            else
+//                testIndex = 0;
+
+//            testText    = "test";
+
+//            for(let i = 0; i < testIndex; i++)
+//                testText += ".";
+//        }
+//    }
+
     Rectangle {
         id: settingsContainer
         anchors.fill: parent
@@ -140,12 +159,14 @@ Item {
 
                 DapQmlButton {
                     property int myIndex: model.index
+                    property string myText: model.textMain + settingsModel.notifier // + testText
+
                     visible: model.sid !== QuiSettingsForm.StyleId.SI_TITLE
                     width: settingsListView.width
                     height: delegate.height
                     buttonStyle: DapQmlButton.Style.IconMainSub
-                    mainText: model.textMain + lang.notifier
-                    subText: model.textSub + lang.notifier
+                    mainText: myText // model.textMain + settingsModel.notifier + testText
+                    subText: model.textSub + settingsModel.notifier
                     separator: isSep(model.sid)
                     qss: "sett-item"
                     mainQss: "sett-btn-lbl-main"
@@ -153,17 +174,20 @@ Item {
                     link: model.sid === QuiSettingsForm.StyleId.SI_LINK
                     icon: model.icon
                     iconSize: resizer1.fontSize
+
                     MouseArea {
                         anchors.fill: parent
                         onClicked: settingsModel.exec(parent.myIndex)
                     }
+
+                    onMyTextChanged: mainText = myText;
                 }
 
                 DapQmlLabel {
                     visible: model.sid === QuiSettingsForm.StyleId.SI_TITLE
                     width: settingsListView.width
                     height: delegate.height
-                    text: model.textMain + lang.notifier
+                    text: model.textMain + settingsModel.notifier // + testText
                     qss: "sett-title-lbl-main"
                 }
 
