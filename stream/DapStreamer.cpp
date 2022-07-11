@@ -213,7 +213,7 @@ void DapStreamer::sltStreamOpenCallback()
             if (m_streamSocket.waitForConnected(15000)) {
                 return;
             } else {
-                emit errorNetwork("Socket connection timeout");
+                emit errorNetwork (tr ("Socket connection timeout"));
             }
 //#endif
         } else {

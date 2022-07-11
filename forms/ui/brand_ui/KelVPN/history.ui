@@ -211,7 +211,7 @@ this device is empty.</string>
           </widget>
          </item>
          <item>
-          <widget class="DapGuiLabel" name="kelGuiLabel">
+          <widget class="DapGuiLabel" name="labelNotify">
            <property name="text">
             <string>The license key usage history is stored locally on this device. After reinstalling the system the key history will be unavailable.</string>
            </property>
