@@ -40,6 +40,11 @@ Item {
     /// Used to connect interface via Manager
     property string formName: "Login"
 
+    property QtObject internal: QtObject {
+        property bool changedServer: false
+        property string serverName: ""
+    }
+
     /// @}
     /****************************************//**
      * @name SIGNALS
@@ -95,7 +100,10 @@ Item {
 
     /// @brief change current chosen server name
     function setServer(a_name) {
-        btnChooseServer.mainText    = a_name;
+        internal.changedServer      = true;
+        internal.serverName         = a_name;
+        //btnChooseServer.mainText    = a_name;
+        btnChooseServer.updateServerName();
     }
 
     /// @brief set input mask for serial input
@@ -187,9 +195,10 @@ Item {
             x: (parent.width - width) / 2
             z: 15
             width: parent.width - 74
+            property string defaultServerName: qsTr("Auto select") + lang.notifier
 
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
-            mainText: qsTr("Auto select") + lang.notifier
+            mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
             subText: qsTr("CHOOSING SERVER") + lang.notifier
             qss: "login-btn-server"
             mainQss: "login-btn-main"
@@ -197,6 +206,14 @@ Item {
             separator: true
             link: true
             onClicked: root.sigChooseServer()
+
+            function updateServerName() {
+                mainText = (!internal.changedServer)
+                        ? (defaultServerName)
+                        : (internal.serverName)
+            }
+
+            onDefaultServerNameChanged: updateServerName()
         }
     }
 
