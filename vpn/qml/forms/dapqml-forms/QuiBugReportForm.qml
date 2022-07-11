@@ -57,6 +57,31 @@ Item {
     /// Used to connect interface via Manager
     property string formName: "BugReport"
 
+    /// @brief controler for attach button
+    property QtObject internal: QtObject {
+        property bool attachedImage: false;
+        property string textAttach: qsTr("Click here to attach a screenshot") + lang.notifier
+        property string textDetach: qsTr("Remove screenshot") + lang.notifier
+
+        function updateAttachButton() {
+            attach.text = (!attachedImage) ? textAttach : textDetach;
+        }
+
+        function attachClicked() {
+            var empty      = new String;
+            /* start file dialog */
+            if (!attachedImage)
+                fileDialog.open();
+            /* detach image */
+            else
+                root.sigImageSelected(empty);
+        }
+
+        onAttachedImageChanged: updateAttachButton()
+        onTextAttachChanged: updateAttachButton()
+        onTextDetachChanged: updateAttachButton()
+    }
+
     /// @}
     /****************************************//**
      * @name SIGNALS
@@ -69,6 +94,8 @@ Item {
     signal sigCancel()
     /// @brief button back clicked (report success\\error)
     signal sigResultBack()
+    /// @brief screenshot is selected
+    signal sigImageSelected(string a_filename);
 
     /// @}
     /****************************************//**
@@ -98,7 +125,53 @@ Item {
         bugrepResult.text   = a_text;
     }
 
+    /// @brief change attach button state on image selected
+    function attachedImage() {
+        internal.attachedImage  = true;
+    }
+
+    /// @brief change attach button state on report sended
+    function detachedImage() {
+        internal.attachedImage  = false;
+    }
+
+    /// @brief change attach button state on report sended
+    function finishedReport() {
+        detachedImage();
+    }
+
     /// @}
+
+    /****************************************//**
+     * Content
+     ********************************************/
+
+    /* FILE DIALOG */
+
+    FileDialog {
+        id: fileDialog
+        fileMode: FileDialog.OpenFile
+
+        property string titleName:      qsTr("Open screenshot") + lang.notifier;
+        property string filterImages:   qsTr("Images (*.png *.jpg, *.jpeg *.bmp *.PNG *.JPG, *.JPEG *.BMP)") + lang.notifier;
+        property string filterAllFiles: qsTr("All files (*.*)") + lang.notifier;
+
+        onAccepted: {
+            var result      = new String(currentFile);
+            root.sigImageSelected(result.slice(7));
+            fileDialog.close()
+        }
+
+        function updateNameFilters() {
+            title       = titleName;
+            nameFilters = [ filterImages, filterAllFiles ];
+        }
+
+        Component.onCompleted: updateNameFilters()
+        onFilterImagesChanged: updateNameFilters()
+        onFilterAllFilesChanged: updateNameFilters()
+        onTitleNameChanged: updateNameFilters()
+    }
 
     /****************************************//**
      * Resizers
@@ -497,15 +570,14 @@ Item {
         DapQmlLabel {
             id: attach
             qss: "bugrep-attach-btn"
-            text: qsTr("Click here to attach a screenshot") + lang.notifier
             color: "#DA0B82"
-            visible: false
 
             MouseArea {
                 id: mouseArea
                 anchors.fill: attach
                 cursorShape: Qt.PointingHandCursor
-                enabled: false
+                onClicked: root.internal.attachClicked()
+                Component.onCompleted: root.internal.updateAttachButton() // update label
             }
         }
 
