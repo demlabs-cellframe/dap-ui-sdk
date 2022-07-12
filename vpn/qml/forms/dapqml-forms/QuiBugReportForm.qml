@@ -569,8 +569,7 @@ Item {
         /* attach */
         DapQmlLabel {
             id: attach
-            qss: "bugrep-attach-btn"
-            color: "#DA0B82"
+            qss: "bugrep-attach-btn c-brand"
 
             MouseArea {
                 id: mouseArea
