@@ -1,11 +1,13 @@
 #include <QtDebug>
-
+#include <QProcess>
+#include <DapUtils.h>
 #include <unistd.h>
 
 #include "DapTunWorkerUnix.h"
 #include "DapTunUnixAbstract.h"
 
 DapTunUnixAbstract::DapTunUnixAbstract()
+    :DapTunAbstract()
 {
     qDebug() << "[DapTunUnixAbstract::DapTunUnixAbstract]";
     tunThread = new QThread();
@@ -104,3 +106,4 @@ void DapTunUnixAbstract::addNewUpstreamRoute(const QString &a_dest) {
     qDebug() << "Execute "<<run;
     ::system(run.toLatin1().constData());
 }
+
