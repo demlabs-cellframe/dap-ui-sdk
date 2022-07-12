@@ -25,6 +25,10 @@ namespace DapUtils
         stream >> value;
         return value;
     }
+
+    QString shellCmd(const QString& cmd, int waitMsecs = -1);
+    void shellCmdNoWait(const QString& cmd);
+
 };
 
 #endif // DAPUTILS_H
