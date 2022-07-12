@@ -6,8 +6,8 @@
 const QString cShellPath = "sh";
 const QString cShellPathArgs = "-c";
 #elif defined(DAP_OS_WINDOWS)
-const QString shellPath = "cmd.exe";
-const QString shellPathArgs = "/c";
+const QString cShellPath = "cmd.exe";
+const QString cShellPathArgs = "/c";
 #else
 #error "Not defined shell path on your platform"
 #endif
