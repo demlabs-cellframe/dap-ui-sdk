@@ -51,6 +51,8 @@ Item {
     property real contentWidth: label.contentWidth
     property real contentHeight: label.contentHeight
 
+    property Text label: label
+
     DapQmlStyle { id: style; qss: root.qss; item: root }
 
     /// @}

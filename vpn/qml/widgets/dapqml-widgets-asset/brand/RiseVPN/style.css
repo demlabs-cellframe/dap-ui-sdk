@@ -355,7 +355,7 @@
 
 .popup-dalog-middle
 {
-    scaled-rect: scaled(-1,nan,86,36,false,14);
+    scaled-rect: scaled(nan,nan,86,36,false,14);
     color: "@brand";
 }
 

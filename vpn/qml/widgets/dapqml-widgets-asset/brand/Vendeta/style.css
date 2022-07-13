@@ -86,6 +86,11 @@
 	color: "@text";
 }
 
+.c-grey
+{
+	color: "@light-grey";
+}
+
 .c-brand
 {
 	color: "@brand";
