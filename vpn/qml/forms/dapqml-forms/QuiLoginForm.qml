@@ -53,9 +53,11 @@ Item {
     /// Used to connect interface via Manager
     property string formName: "Login"
 
-<<<<<<< HEAD
     /// @brief internal variables
     property QtObject internal: QtObject {
+
+        property bool changedServer: false
+        property string serverName: ""
 
         /// @brief login mode
         property int mode: QuiLoginForm.Mode.M_SERIAL
@@ -74,11 +76,6 @@ Item {
                 ? "Tap here to obtain one"
                 : "Tap here to recover"
         }
-=======
-    property QtObject internal: QtObject {
-        property bool changedServer: false
-        property string serverName: ""
->>>>>>> refs/heads/features-6446
     }
 
     /// @}
