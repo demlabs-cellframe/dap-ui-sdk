@@ -57,6 +57,31 @@ Item {
     /// Used to connect interface via Manager
     property string formName: "BugReport"
 
+    /// @brief controler for attach button
+    property QtObject internal: QtObject {
+        property bool attachedImage: false;
+        property string textAttach: qsTr("Click here to attach a screenshot") + lang.notifier
+        property string textDetach: qsTr("Remove screenshot") + lang.notifier
+
+        function updateAttachButton() {
+            attach.text = (!attachedImage) ? textAttach : textDetach;
+        }
+
+        function attachClicked() {
+            var empty      = new String;
+            /* start file dialog */
+            if (!attachedImage)
+                fileDialog.open();
+            /* detach image */
+            else
+                root.sigImageSelected(empty);
+        }
+
+        onAttachedImageChanged: updateAttachButton()
+        onTextAttachChanged: updateAttachButton()
+        onTextDetachChanged: updateAttachButton()
+    }
+
     /// @}
     /****************************************//**
      * @name SIGNALS
@@ -69,6 +94,8 @@ Item {
     signal sigCancel()
     /// @brief button back clicked (report success\\error)
     signal sigResultBack()
+    /// @brief screenshot is selected
+    signal sigImageSelected(string a_filename);
 
     /// @}
     /****************************************//**
@@ -98,7 +125,53 @@ Item {
         bugrepResult.text   = a_text;
     }
 
+    /// @brief change attach button state on image selected
+    function attachedImage() {
+        internal.attachedImage  = true;
+    }
+
+    /// @brief change attach button state on report sended
+    function detachedImage() {
+        internal.attachedImage  = false;
+    }
+
+    /// @brief change attach button state on report sended
+    function finishedReport() {
+        detachedImage();
+    }
+
     /// @}
+
+    /****************************************//**
+     * Content
+     ********************************************/
+
+    /* FILE DIALOG */
+
+    FileDialog {
+        id: fileDialog
+        fileMode: FileDialog.OpenFile
+
+        property string titleName:      qsTr("Open screenshot") + lang.notifier;
+        property string filterImages:   qsTr("Images (*.png *.jpg, *.jpeg *.bmp *.PNG *.JPG, *.JPEG *.BMP)") + lang.notifier;
+        property string filterAllFiles: qsTr("All files (*.*)") + lang.notifier;
+
+        onAccepted: {
+            var result      = new String(currentFile);
+            root.sigImageSelected(result.slice(7));
+            fileDialog.close()
+        }
+
+        function updateNameFilters() {
+            title       = titleName;
+            nameFilters = [ filterImages, filterAllFiles ];
+        }
+
+        Component.onCompleted: updateNameFilters()
+        onFilterImagesChanged: updateNameFilters()
+        onFilterAllFilesChanged: updateNameFilters()
+        onTitleNameChanged: updateNameFilters()
+    }
 
     /****************************************//**
      * Resizers
@@ -114,7 +187,7 @@ Item {
      ********************************************/
 
     DapQmlDialogTitle {
-        text: "Bug report"
+        text: qsTr("Bug report") + lang.notifier
         qss: "dialog-title"
     }
 
@@ -240,7 +313,7 @@ Item {
                 height: resizer.height
                 horizontalAlign: Text.AlignLeft
                 verticalAlign: Text.AlignTop
-                text: "Please describe the details of problem you faced. What actions did you take and what happened."
+                text: qsTr("Please describe the details of problem you faced. What actions did you take and what happened.") + lang.notifier
                 qss: "bugrep-input-placeholder"
                 wrapMode: TextEdit.Wrap
                 visible: bugRepInputField.text.length == 0 && ((Scaling.isAndroid()) ? !bugRepInputField.activeFocus : true)
@@ -331,22 +404,22 @@ Item {
                         Menu {
                             id: contextMenu
                             MenuItem {
-                                text: "Cut"
+                                text: qsTr("Cut") + lang.notifier
                                 shortcut: "Ctrl+X"
                                 onTriggered: ctxMenu.execCut();
                             }
                             MenuItem {
-                                text: "Copy"
+                                text: qsTr("Copy") + lang.notifier
                                 shortcut: "Ctrl+C"
                                 onTriggered: ctxMenu.execCopy();
                             }
                             MenuItem {
-                                text: "Paste"
+                                text: qsTr("Paste") + lang.notifier
                                 shortcut: "Ctrl+V"
                                 onTriggered: ctxMenu.execPaste();
                             }
                             MenuItem {
-                                text: "Delete"
+                                text: qsTr("Delete") + lang.notifier
                                 //shortcut: "Delete"
                                 onTriggered: ctxMenu.execDelete();
                             }
@@ -496,23 +569,21 @@ Item {
         /* attach */
         DapQmlLabel {
             id: attach
-            qss: "bugrep-attach-btn"
-            text: "Click here to attach a screenshot"
-            color: "#DA0B82"
-            visible: false
+            qss: "bugrep-attach-btn c-brand"
 
             MouseArea {
                 id: mouseArea
                 anchors.fill: attach
                 cursorShape: Qt.PointingHandCursor
-                enabled: false
+                onClicked: root.internal.attachClicked()
+                Component.onCompleted: root.internal.updateAttachButton() // update label
             }
         }
 
         /* send button */
         DapQmlPushButton {
             qss: "bugrep-send-btn push-button"
-            text: "SEND REPORT"
+            text: qsTr("SEND REPORT") + lang.notifier
             onClicked: { root.mode = 1; root.sigSend(); }
             enabled: bugRepInputField.length >= 3
             opacity: 0.4 + 0.6 * enabled
@@ -530,7 +601,7 @@ Item {
         /* info */
         DapQmlLabel {
             qss: "bugrep-sending"
-            text: "Sending..."
+            text: qsTr("Sending...") + lang.notifier
         }
 
         /* animated spinner */
@@ -543,7 +614,7 @@ Item {
         /* cancel */
         DapQmlPushButton {
             qss: "bugrep-send-btn push-button"
-            text: "CANCEL"
+            text: qsTr("CANCEL") + lang.notifier
             onClicked: { root.mode = 0; root.sigCancel(); }
         }
     }
@@ -567,7 +638,7 @@ Item {
         /* back */
         DapQmlPushButton {
             qss: "bugrep-send-btn push-button"
-            text: "BACK"
+            text: qsTr("BACK") + lang.notifier
             onClicked: { root.mode = 0; root.sigResultBack(); }
         }
     }

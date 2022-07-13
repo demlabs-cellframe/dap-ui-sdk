@@ -108,7 +108,7 @@ Item {
 
     DapQmlDialogTitle {
         id: title
-        text: "Get a new license key"
+        text: qsTr("Get a new license key") + lang.notifier
         qss: "dialog-title"
     }
 

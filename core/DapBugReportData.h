@@ -35,6 +35,7 @@ private:
     QString m_email;
     QString m_message;
     QString m_lastSentNumber {}; //QString() - sending error
+    QString m_attachFile;
 
     const QString SETTINGS_TEXT_EMAIL   = "email";
     const QString SETTINGS_TEXT_MESSAGE = "message";

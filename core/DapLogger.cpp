@@ -149,7 +149,10 @@ void DapLogger::messageHandler(QtMsgType type,
 #endif
         fileName = (fileName == Q_NULLPTR ? ctx.file : fileName + 1);
         strcpy(prefixBuffer, fileName);
-        sprintf(strrchr(prefixBuffer, '.'), ":%d", ctx.line);
+        auto dest = strrchr(prefixBuffer, '.');
+        if (dest == nullptr)
+          dest    = prefixBuffer + strlen(prefixBuffer);
+        sprintf(dest, ":%d", ctx.line);
 
         _log_it(prefixBuffer, castQtMsgToDap(type), "%s", qUtf8Printable(msg));
     } else {

@@ -76,6 +76,9 @@ private:
   bool _textHook, _spacer;
   int spacerIndex;
   QString m_bugReportText;
+  bool m_attachButtonVisible,
+    m_detachButtonVisible,
+    m_hiddenButton;
   /// @}
 
   /****************************************//**
@@ -106,6 +109,8 @@ signals:
   void sigReturn();
   void sigSend();
   void sigResultBack();
+  void sigAttachImage();
+  void sigDetachImage();
   /// @}
 
   /****************************************//**
@@ -116,10 +121,15 @@ public slots:
   void slotSetMode (BugReports::Mode mode);
   void slotRetranslated();
   void refreshHistoryList();
+  void showAttachScreenshotMessage (QString a_message);
+  void showDetachScreenshotMessage (QString a_message);
+  void btnReturnVisible(bool visible);
 private slots:
   void _slotRadioTest();
   void _slotTextChanged();
   void _slotTextEditFinish();
+  void hideAttachScreenshotMessage();
+  void restoreAttachMessage();
 private:
   static bool _cbTextEdit (DapGuiPlainTextEditInterface *e, QString &preedit, QString &commit, int from, int to);
   void updateData (QString &a_text, int a_len);

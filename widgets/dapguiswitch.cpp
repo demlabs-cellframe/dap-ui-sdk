@@ -26,12 +26,16 @@ DapGuiSwitch::DapGuiSwitch (QWidget *parent)
   , m_checked (false)
   , m_toggleOnPos (TOGGLE_ON_POS)
   , m_animGroup (new QParallelAnimationGroup)
+  , m_opacityEffect (new QGraphicsOpacityEffect)
 {
   /* setup style */
   ui->setupUi (this);
   QMetaObject::invokeMethod(&__kgsm, &DapGuiSwitchStyleManager::forcedStyleUpdate, Qt::QueuedConnection);
   m_bgPos[0] = BG_POS;
   m_bgPos[1] = BG_POS * 2;
+
+  /* setup opacity */
+  setGraphicsEffect (m_opacityEffect);
 
   /* setup animation */
   m_animToggle = new QPropertyAnimation (ui->switch_toggle, "pos");
@@ -107,6 +111,9 @@ void DapGuiSwitch::setChecked(bool a_checked)
 
   /* move toggle */
   //ui->switch_toggle->move (m_checked ? m_toggleOnPos : 0, 0);
+
+  m_checked ? m_opacityEffect->setOpacity (0.4)
+            : m_opacityEffect->setOpacity (0.7);
 
   /* signal */
   emit stateChanged (m_checked);
@@ -217,6 +224,12 @@ void DapGuiSwitch::_debugInfoClipboard()
       qApp->clipboard()->setText (dump);
     }
 #endif // QT_DEBUG
+}
+
+void DapGuiSwitch::setEnabled(bool enable)
+{
+    QWidget::setEnabled(enable);
+    m_opacityEffect->setEnabled (!enable);
 }
 
 /*-----------------------------------------*/

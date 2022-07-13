@@ -834,9 +834,9 @@
 
 .splashscreen_top_spacer
 {
-  height: 248pt;
-  min-height: 248pt;
-  max-height: 248pt;
+  height: 228pt;
+  min-height: 228pt;
+  max-height: 228pt;
 }
 
 .splashscreen_logo
@@ -856,9 +856,9 @@
 
 .splashscreen_mid_status_spacer
 {
-  height: 278pt;
-  min-height: 278pt;
-  max-height: 278pt;
+  height: 248pt;
+  min-height: 248pt;
+  max-height: 248pt;
 }
 
 .splashscreen_bottom_status_spacer
@@ -884,9 +884,9 @@
 
 .splashscreen_bottom_spacer
 {
-  height: 31pt;
-  min-height: 31pt;
-  max-height: 31pt;
+  height: 61pt;
+  min-height: 91pt;
+  max-height: 91pt;
 }
 
 /****************************************************

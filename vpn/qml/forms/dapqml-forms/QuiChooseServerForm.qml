@@ -71,7 +71,7 @@ Item {
 
     DapQmlDialogTitle {
         id: title
-        text: "Choose server"
+        text: qsTr("Choose server") + lang.notifier
         qss: "dialog-title"
     }
 

@@ -37,6 +37,9 @@ PopupDialog::PopupDialog (QWidget *parent) :
   connect (ui->btnNo, &DapGuiLabel::clicked,
            this, &PopupDialog::sigNo,
            Qt::QueuedConnection);
+  connect (ui->btnYes, &DapGuiLabel::clicked,
+           this, &PopupDialog::sigOk,
+           Qt::QueuedConnection);
 
   connect (ui->btnYes, &DapGuiLabel::clicked,
            this, &PopupDialog::_slotButtonPress,

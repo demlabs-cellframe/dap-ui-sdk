@@ -1,5 +1,6 @@
 /* INCLUDES */
 #include "dapqmlmodelsettings.h"
+#include "helper/languagectl.h"
 
 /* DEFS */
 enum FieldId
@@ -42,6 +43,11 @@ DapQmlModelSettings::DapQmlModelSettings (QObject *parent)
 //  QMetaObject::invokeMethod (
 //        this, &DapQmlModelSettings::slotUpdateLabels,
 //        Qt::QueuedConnection);
+  connect (LanguageCtl::instance(), &LanguageCtl::languageChanged,
+           this, &DapQmlModelSettings::slotRetranslate,
+           Qt::QueuedConnection);
+
+  /* finish updating labels */
   slotUpdateLabels();
 }
 
@@ -64,6 +70,11 @@ void DapQmlModelSettings::exec (int index)
   auto cbv  = s_items.at (index).get ("callback");
   auto cb   = reinterpret_cast<ItemCB> (cbv.toULongLong());
   cb();
+}
+
+QString DapQmlModelSettings::notifier() const
+{
+  return "";
 }
 
 /********************************************
@@ -124,7 +135,7 @@ void DapQmlModelSettings::slotUpdateLabels()
 
     DapQmlModelSettingsItem{SI_BUTTONRED,  tr ("Get new licence key"), " ", "settings_icon ic_renew",                     [] { emit __inst->sigLicenceGet(); } },
     DapQmlModelSettingsItem{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key",                          [] { emit __inst->sigLicenceReset(); } },
- // DapQmlModelSettingsItem{SI_LINK,       tr ("Language"), "", "settings_icon ic_language",                              [] { emit __inst->sigLanguage(); } },
+    DapQmlModelSettingsItem{SI_LINK,       tr ("Language"), "", "settings_icon ic_language",                              [] { emit __inst->sigLanguage(); } },
 #ifndef DISABLE_THEMES
     DapQmlModelSettingsItem{SI_LINK,       tr ("Color theme"), "", "settings_icon ic_theme",                              [] { emit __inst->sigColorTheme(); } },
 #endif // DISABLE_THEMES
@@ -221,7 +232,13 @@ void DapQmlModelSettings::slotResetDaysLeft()
 
   emit dataChanged (
     index (s_daysLabelIndex, 0),
-    index (s_daysLabelIndex, columnCount()));
+        index (s_daysLabelIndex, columnCount()));
+}
+
+void DapQmlModelSettings::slotRetranslate()
+{
+  slotUpdateLabels();
+  emit languageChanged();
 }
 
 /********************************************
