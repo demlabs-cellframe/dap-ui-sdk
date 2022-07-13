@@ -169,7 +169,7 @@ void DapQmlModelSettings::slotUpdateLabels()
     DapQmlModelSettingsItem{SI_LINK,       tr ("Manage servers"), "", "settings_icon ic_language",                        [] { emit __inst->sigManageServers(); } },
     DapQmlModelSettingsItem{SI_LINK,       tr ("Cryptography"), "", "settings_icon ic_language",                          [] { emit __inst->sigCryptography(); } },
 #ifndef DISABLE_THEMES
-    DapQmlModelSettingsItem{SI_LINK,       tr ("Dark theme"), "", "settings_icon ic_theme",                               [] { emit __inst->sigDarkTheme(); } },
+    DapQmlModelSettingsItem{SI_CHECKBOX,   tr ("Dark theme"), "", "settings_icon ic_theme",                               [] { emit __inst->sigDarkTheme(); } },
 #endif // DISABLE_THEMES
 
     DapQmlModelSettingsItem{SI_TITLE,      tr ("Support"), "", "settings_icon",                                           []{} },

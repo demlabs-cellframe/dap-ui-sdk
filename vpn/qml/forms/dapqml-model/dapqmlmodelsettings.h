@@ -38,6 +38,7 @@ public:
     SI_BUTTONRED,
     SI_BUTTONGRAY,
     SI_LINK,
+    SI_CHECKBOX,
     SI_SPACER
   };
   Q_ENUM(StyleId)

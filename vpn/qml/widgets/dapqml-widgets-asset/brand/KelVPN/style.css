@@ -18,6 +18,8 @@
 	switch-toggle-on: 			"qrc:/light/switch/toggle_on.png";
 	switch-toggle-off: 			"qrc:/light/switch/toggle_off.png";
 	button-frame: 				"qrc:/light/btn_server_bg.png";
+    checkbox-on:                "qrc:/light/check_btn_on.png";
+    checkbox-off:               "qrc:/light/check_btn_off.png";
 	radio-on: 					"qrc:/light/radio_btn_on.png";
 	radio-off: 					"qrc:/light/radio_btn_off.png";
 	separator-left:             "qrc:/light/separator_left.png";
@@ -51,6 +53,8 @@
 	switch-toggle-on: 			"qrc:/dark/switch/toggle_on.png";
 	switch-toggle-off: 			"qrc:/dark/switch/toggle_off.png";
 	button-frame: 				"qrc:/dark/btn_server_bg.png";
+    checkbox-on:                "qrc:/dark/check_btn_on.png";
+    checkbox-off:               "qrc:/dark/check_btn_off.png";
 	radio-on: 					"qrc:/dark/radio_btn_on.png";
 	radio-off: 					"qrc:/dark/radio_btn_off.png";
 	separator-left:             "qrc:/dark/separator_left.png";
@@ -124,6 +128,16 @@
 
 
 
+.checkbox-on
+{
+    qproperty-scaledPixmap: "@checkbox-on";
+}
+
+.checkbox-off
+{
+    qproperty-scaledPixmap: "@checkbox-off";
+}
+
 .radio-on
 {
 	qproperty-scaledPixmap: "@radio-on";
@@ -140,7 +154,6 @@
 	scaled-font: scaled(16);	
 	font-weight: Font.Normal;
 }
-
 
 
 

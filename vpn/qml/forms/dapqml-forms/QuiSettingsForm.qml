@@ -40,6 +40,7 @@ Item {
       SI_BUTTONRED,
       SI_BUTTONGRAY,
       SI_LINK,
+      SI_CHECKBOX,
       SI_SPACER
     }
 
@@ -66,7 +67,8 @@ Item {
         if (sid === QuiSettingsForm.StyleId.SI_BUTTON
         || sid === QuiSettingsForm.StyleId.SI_BUTTONRED
         || sid === QuiSettingsForm.StyleId.SI_BUTTONGRAY
-        || sid === QuiSettingsForm.StyleId.SI_LINK)
+        || sid === QuiSettingsForm.StyleId.SI_LINK
+        || sid === QuiSettingsForm.StyleId.SI_CHECKBOX)
             return true;
         return false;
     }
@@ -118,7 +120,7 @@ Item {
             width: root.width - 72
             height: root.height
 
-            clip: true
+            clip: false
             //model: settingsModel
 
             /****************************************//**
@@ -172,12 +174,16 @@ Item {
                     mainQss: "sett-btn-lbl-main"
                     subQss: model.sid !== QuiSettingsForm.StyleId.SI_BUTTONRED ? "sett-btn-lbl-sub" : "sett-btn-lbl-sub-red"
                     link: model.sid === QuiSettingsForm.StyleId.SI_LINK
+                    checkbox: model.sid === QuiSettingsForm.SI_CHECKBOX
                     icon: model.icon
                     iconSize: resizer1.fontSize
 
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: settingsModel.exec(parent.myIndex)
+                        onClicked: {
+                            parent.clicked()
+                            settingsModel.exec(parent.myIndex)
+                        }
                     }
 
                     onMyTextChanged: mainText = myText;
