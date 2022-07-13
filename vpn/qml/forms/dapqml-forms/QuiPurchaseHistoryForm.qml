@@ -122,7 +122,7 @@ Item {
 
     DapQmlLabel {
         id: empotyHistory
-        //visible: DapQmlModelSerialHistory.length() === 0
+        visible: DapQmlModelSerialHistory.length() === 0
         text: qsTr("The license key usage history on this device is empty.") + lang.notifier
         wrapMode: Text.WordWrap
         qss: "ph-label-empty-history"
@@ -137,21 +137,21 @@ Item {
         x: (root.width - noticeResizer.width) / 2
         y: root.height - noticeResizer.height - noticeSpacer.height
         width: noticeResizer.width
-        height: noticeResizer.height * 2
+        height: noticeResizer.height
         text: qsTr("The license key usage history is stored locally on this device. After reinstalling the system the key history will be unavailable.") + lang.notifier
         wrapMode: Text.WordWrap
         qss: "ph-label-notice"
 
-        Component.onCompleted: {
-           StyleDebugTree.describe (
-               "ph notice",
-                ["x", "y", "width", "height", "contentWidth", "contentHeight"],
-               this);
-           StyleDebugTree.describe (
-               "ph notice label",
-                ["x", "y", "width", "height", "contentWidth", "contentHeight"],
-               notice.label);
-        }
+//        Component.onCompleted: {
+//           StyleDebugTree.describe (
+//               "ph notice",
+//                ["x", "y", "width", "height", "contentWidth", "contentHeight"],
+//               this);
+//           StyleDebugTree.describe (
+//               "ph notice label",
+//                ["x", "y", "width", "height", "contentWidth", "contentHeight"],
+//               notice.label);
+//        }
     }
 }
 

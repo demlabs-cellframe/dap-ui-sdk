@@ -67,14 +67,14 @@ Item {
 
         function forgotLabel() {
             return mode === QuiLoginForm.Mode.M_SERIAL
-                ? "Don't have a serial key?"
-                : "Forgot your password?"
+                ? qsTr("Don't have a serial key?")
+                : qsTr("Forgot your password?")
         }
 
         function tapHereLabel() {
             return mode === QuiLoginForm.Mode.M_SERIAL
-                ? "Tap here to obtain one"
-                : "Tap here to recover"
+                ? qsTr("Tap here to obtain one")
+                : qsTr("Tap here to recover")
         }
     }
 
@@ -460,11 +460,7 @@ Item {
 
         DapQmlLabel {
             id: obtainLabel
-<<<<<<< HEAD
-            text: internal.forgotLabel()
-=======
-            text: qsTr("Don't have a serial key?") + lang.notifier
->>>>>>> refs/heads/features-6446
+            text: internal.forgotLabel() + lang.notifier
             color: "#5C5B74"
             width: parent.width / 2 - 2
             height: parent.height
@@ -479,11 +475,7 @@ Item {
         DapQmlLabel {
             id: obtainLinkLabel
             x: parent.width / 2 + 2
-<<<<<<< HEAD
-            text: internal.tapHereLabel()
-=======
-            text: qsTr("Tap here to obtain one") + lang.notifier
->>>>>>> refs/heads/features-6446
+            text: internal.tapHereLabel() + lang.notifier
             color: "#DA0B82"
             width: parent.width / 2
             height: parent.height

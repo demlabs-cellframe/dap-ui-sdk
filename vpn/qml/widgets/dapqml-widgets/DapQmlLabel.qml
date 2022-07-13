@@ -46,7 +46,7 @@ Item {
     property real padding
     property real rightPadding
     property real topPadding
-    property real lineHeight
+    property real lineHeight: 1
 
     property real contentWidth: label.contentWidth
     property real contentHeight: label.contentHeight
