@@ -47,7 +47,6 @@ void BugReportsModel::slotSetup()
 
 #ifndef TestApp
   /* create new buttons */
-  DapDataLocal::instance()->bugReportHistory()->loadHistoryBugReportData();
   foreach (auto &item, *DapDataLocal::instance()->bugReportHistory()->getBugReportsList())
     {
       /* create item */
@@ -56,7 +55,7 @@ void BugReportsModel::slotSetup()
 
       btn->setBtnStyle (DapGuiButton::IconMainSubIcon);
 
-      btn->setMainText ("Report #" + item.number);
+      btn->setMainText (tr("Report #") + item.number);
       btn->setMainCssClass ("darkblue lato font16");
 
       btn->setSubText (item.status);
