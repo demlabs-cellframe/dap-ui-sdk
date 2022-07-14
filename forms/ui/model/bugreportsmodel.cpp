@@ -60,7 +60,7 @@ void BugReportsModel::slotSetup()
 
       btn->setSubText (item.status);
       btn->setSubCssClass ("gray font12 lato");
-      btn->setSubAlignment (Qt::AlignRight | Qt::AlignVCenter);
+      btn->setSubAlignment (Qt::AlignLeft | Qt::AlignVCenter);
 
       btn->setSeparator (true);
       btn->setIconCssClass ("bugrep-icon ic_information_bug-report");
