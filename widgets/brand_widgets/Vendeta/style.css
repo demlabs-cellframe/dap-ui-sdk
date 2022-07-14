@@ -744,6 +744,11 @@
 	qproperty-scaledPixmap: url("://gui/asset/ic_copy.png");
 }
 
+.ic_trash
+{
+  qproperty-scaledPixmap: url("://gui/asset/ic_trash.png");
+}
+
 .ic_information_bug-report
 {
 	qproperty-scaledPixmap: url("://gui/asset/ic_information_bug-report.png");
@@ -1268,6 +1273,16 @@
 	min-height: 34pt;
 	max-width: 34pt;
 	max-height: 34pt;
+}
+
+.bugrep-icon-right
+{
+  width: 22pt;
+  height: 22pt;
+  min-width: 22pt;
+  min-height: 22pt;
+  max-width: 22pt;
+  max-height: 22pt;
 }
 
 .bugrep-spinner
