@@ -28,7 +28,7 @@ class DapQmlModelSettings : public QAbstractTableModel
   /// @{
 public:
 
-  typedef void (*ItemCB) ();
+  typedef void (*ItemCB) (QObject *a_item);
 
   enum StyleId
   {
@@ -58,7 +58,7 @@ public:
   /// @{
 public:
   static DapQmlModelSettings *instance();
-  Q_INVOKABLE void exec(int index);
+  Q_INVOKABLE void exec (int a_index, QObject *a_item = nullptr);
   Q_INVOKABLE QString notifier() const;
   /// @}
 
@@ -110,7 +110,7 @@ signals:
   void sigLanguage();
   void sigManageServers();
   void sigCryptography();
-  void sigDarkTheme();
+  void sigDarkTheme (bool a_state);
 
   /* support */
   void sigBugSend();

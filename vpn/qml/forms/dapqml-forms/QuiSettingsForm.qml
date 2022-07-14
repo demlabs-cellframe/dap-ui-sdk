@@ -178,12 +178,20 @@ Item {
                     icon: model.icon
                     iconSize: resizer1.fontSize
 
+                    function buttonClicked(a_isButtonSignal) {
+                        if(!a_isButtonSignal)
+                            clicked();
+                        settingsModel.exec (myIndex, this);
+                    }
+
+                    onClicked: buttonClicked(true)
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: {
-                            parent.clicked()
-                            settingsModel.exec(parent.myIndex)
-                        }
+                        onClicked: parent.buttonClicked(false)
+//                        {
+//                            parent.clicked();
+//                            settingsModel.exec (parent.myIndex, parent);
+//                        }
                     }
 
                     onMyTextChanged: mainText = myText;

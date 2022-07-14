@@ -100,7 +100,10 @@ Rectangle {
 
     onClicked: {
         if (root.checkbox)
-            checkboxItem.toggle();
+        {
+            root.checked            = !root.checked;
+            checkboxItem.checked    = root.checked;
+        }
     }
 
 
@@ -224,9 +227,11 @@ Rectangle {
         visible: root.checkbox
         checked: root.checked
         qss: "btn-checkbox"
-        onToggled: {
-            root.checked    = a_state;
-        }
+//        onToggled: {
+//            //root.checked    = a_state;
+//            root.clicked();
+//        }
+        onClicked: root.clicked();
     }
 
     /****************************************//**

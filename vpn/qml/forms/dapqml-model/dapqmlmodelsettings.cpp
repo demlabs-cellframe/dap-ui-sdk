@@ -14,9 +14,11 @@ enum FieldId
   invalid
 };
 
+typedef DapQmlModelSettingsItem Item;
+
 /* VARS */
 static DapQmlModelSettings *__inst = nullptr;
-static QList<DapQmlModelSettingsItem> s_items;
+static QList<Item> s_items;
 static qint32 s_daysLabelIndex     = -1;
 static qint32 s_versionLabelIndex  = -1;
 
@@ -62,14 +64,14 @@ DapQmlModelSettings *DapQmlModelSettings::instance()
   return __inst;
 }
 
-void DapQmlModelSettings::exec (int index)
+void DapQmlModelSettings::exec (int a_index, QObject *a_item)
 {
-  if (index < 0 || index >= s_items.size())
+  if (a_index < 0 || a_index >= s_items.size())
     return;
 
-  auto cbv  = s_items.at (index).get ("callback");
+  auto cbv  = s_items.at (a_index).get ("callback");
   auto cb   = reinterpret_cast<ItemCB> (cbv.toULongLong());
-  cb();
+  cb (a_item);
 }
 
 QString DapQmlModelSettings::notifier() const
@@ -130,65 +132,65 @@ void DapQmlModelSettings::slotUpdateLabels()
   {
 #ifndef BRAND_RISEVPN
 
-    DapQmlModelSettingsItem{SI_SPACER,     "", "", "1",                                                                   []{} },
-    DapQmlModelSettingsItem{SI_TITLE,      tr ("Settings"), "", "settings_icon",                                          []{} },
+    Item{SI_SPACER,     "", "", "1",                                                                   [](QObject*){} },
+    Item{SI_TITLE,      tr ("Settings"), "", "settings_icon",                                          [](QObject*){} },
 
-    DapQmlModelSettingsItem{SI_BUTTONRED,  tr ("Get new licence key"), " ", "settings_icon ic_renew",                     [] { emit __inst->sigLicenceGet(); } },
-    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key",                          [] { emit __inst->sigLicenceReset(); } },
-    DapQmlModelSettingsItem{SI_LINK,       tr ("Language"), "", "settings_icon ic_language",                              [] { emit __inst->sigLanguage(); } },
+    Item{SI_BUTTONRED,  tr ("Get new licence key"), " ", "settings_icon ic_renew",                     [](QObject*) { emit __inst->sigLicenceGet(); } },
+    Item{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key",                          [](QObject*) { emit __inst->sigLicenceReset(); } },
+    Item{SI_LINK,       tr ("Language"), "", "settings_icon ic_language",                              [](QObject*) { emit __inst->sigLanguage(); } },
 #ifndef DISABLE_THEMES
-    DapQmlModelSettingsItem{SI_LINK,       tr ("Color theme"), "", "settings_icon ic_theme",                              [] { emit __inst->sigColorTheme(); } },
+    Item{SI_LINK,       tr ("Color theme"), "", "settings_icon ic_theme",                              [](QObject*) { emit __inst->sigColorTheme(); } },
 #endif // DISABLE_THEMES
 
-    DapQmlModelSettingsItem{SI_TITLE,      tr ("Support"), "", "settings_icon",                                           []{} },
+    Item{SI_TITLE,      tr ("Support"), "", "settings_icon",                                           [](QObject*){} },
 
-    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Send bug report"), "", "settings_icon ic_send-report",                    [] { emit __inst->sigBugSend(); } },
-    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Telegram support bot"), "", "settings_icon ic_bot",                       [] { emit __inst->sigTelegramBot(); } },
+    Item{SI_BUTTON,     tr ("Send bug report"), "", "settings_icon ic_send-report",                    [](QObject*) { emit __inst->sigBugSend(); } },
+    Item{SI_BUTTON,     tr ("Telegram support bot"), "", "settings_icon ic_bot",                       [](QObject*) { emit __inst->sigTelegramBot(); } },
 
-    DapQmlModelSettingsItem{SI_TITLE,      tr ("Information"), "", "settings_icon",                                       []{} },
+    Item{SI_TITLE,      tr ("Information"), "", "settings_icon",                                       [](QObject*){} },
 
-    DapQmlModelSettingsItem{SI_LINK,       tr ("Bug reports"), "", "settings_icon ic_information_bug-report",             [] { emit __inst->sigBugReport(); } },
-    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Serial key history on this device"), "", "settings_icon ic_key-history",  [] { emit __inst->sigLicenceHistory(); } },
+    Item{SI_LINK,       tr ("Bug reports"), "", "settings_icon ic_information_bug-report",             [](QObject*) { emit __inst->sigBugReport(); } },
+    Item{SI_BUTTON,     tr ("Serial key history on this device"), "", "settings_icon ic_key-history",  [](QObject*) { emit __inst->sigLicenceHistory(); } },
 #ifndef DISABLE_TERMSOFUSE_AND_PRIVACYPOLICY
-    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Terms of use"), "", "settings_icon ic_terms_policy",                      [] { emit __inst->sigTermsOfUse(); } },
-    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Privacy policy"), "", "settings_icon ic_terms_policy",                    [] { emit __inst->sigPrivacyPolicy(); } },
+    Item{SI_BUTTON,     tr ("Terms of use"), "", "settings_icon ic_terms_policy",                      [](QObject*) { emit __inst->sigTermsOfUse(); } },
+    Item{SI_BUTTON,     tr ("Privacy policy"), "", "settings_icon ic_terms_policy",                    [](QObject*) { emit __inst->sigPrivacyPolicy(); } },
 #endif // DISABLE_TERMSOFUSE_AND_PRIVACYPOLICY
-    DapQmlModelSettingsItem{SI_BUTTONGRAY, tr ("Version"), "@version", "settings_icon ic_version",                        [] { emit __inst->sigVersion(); } },
+    Item{SI_BUTTONGRAY, tr ("Version"), "@version", "settings_icon ic_version",                        [](QObject*) { emit __inst->sigVersion(); } },
 
-    DapQmlModelSettingsItem{SI_TITLE,      "", "", "settings_icon",                                                       []{} },
-    DapQmlModelSettingsItem{SI_TITLE,      "", "", "settings_icon",                                                       []{} },
+    Item{SI_TITLE,      "", "", "settings_icon",                                                       [](QObject*){} },
+    Item{SI_TITLE,      "", "", "settings_icon",                                                       [](QObject*){} },
 
 #else // BRAND_RISEVPN
 
-    DapQmlModelSettingsItem{SI_SPACER,     "", "", "1",                                                                   []{} },
-    DapQmlModelSettingsItem{SI_TITLE,      tr ("Settings"), "", "settings_icon",                                          []{} },
+    Item{SI_SPACER,     "", "", "1",                                                                   [](QObject*){} },
+    Item{SI_TITLE,      tr ("Settings"), "", "settings_icon",                                          [](QObject*){} },
 
-    DapQmlModelSettingsItem{SI_BUTTONRED,  tr ("Get new licence key"), " ", "settings_icon ic_renew",                     [] { emit __inst->sigSerialGet(); } },
-    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key",                          [] { emit __inst->sigSerialReset(); } },
-    DapQmlModelSettingsItem{SI_LINK,       tr ("Language"), "", "settings_icon ic_language",                              [] { emit __inst->sigLanguage(); } },
-    DapQmlModelSettingsItem{SI_LINK,       tr ("Manage servers"), "", "settings_icon ic_language",                        [] { emit __inst->sigManageServers(); } },
-    DapQmlModelSettingsItem{SI_LINK,       tr ("Cryptography"), "", "settings_icon ic_language",                          [] { emit __inst->sigCryptography(); } },
+    Item{SI_BUTTONRED,  tr ("Get new licence key"), " ", "settings_icon ic_renew",                     [](QObject*) { emit __inst->sigSerialGet(); } },
+    Item{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key",                          [](QObject*) { emit __inst->sigSerialReset(); } },
+    Item{SI_LINK,       tr ("Language"), "", "settings_icon ic_language",                              [](QObject*) { emit __inst->sigLanguage(); } },
+    Item{SI_LINK,       tr ("Manage servers"), "", "settings_icon ic_language",                        [](QObject*) { emit __inst->sigManageServers(); } },
+    Item{SI_LINK,       tr ("Cryptography"), "", "settings_icon ic_language",                          [](QObject*) { emit __inst->sigCryptography(); } },
 #ifndef DISABLE_THEMES
-    DapQmlModelSettingsItem{SI_CHECKBOX,   tr ("Dark theme"), "", "settings_icon ic_theme",                               [] { emit __inst->sigDarkTheme(); } },
+    Item{SI_CHECKBOX,   tr ("Dark theme"), "", "settings_icon ic_theme",                               [](QObject *a_item) { emit __inst->sigDarkTheme (a_item->property ("checked").toBool()); } },
 #endif // DISABLE_THEMES
 
-    DapQmlModelSettingsItem{SI_TITLE,      tr ("Support"), "", "settings_icon",                                           []{} },
+    Item{SI_TITLE,      tr ("Support"), "", "settings_icon",                                           [](QObject*){} },
 
-    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Send bug report"), "", "settings_icon ic_send-report",                    [] { emit __inst->sigBugSend(); } },
-    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Telegram support bot"), "", "settings_icon ic_bot",                       [] { emit __inst->sigTelegramBot(); } },
+    Item{SI_BUTTON,     tr ("Send bug report"), "", "settings_icon ic_send-report",                    [](QObject*) { emit __inst->sigBugSend(); } },
+    Item{SI_BUTTON,     tr ("Telegram support bot"), "", "settings_icon ic_bot",                       [](QObject*) { emit __inst->sigTelegramBot(); } },
 
-    DapQmlModelSettingsItem{SI_TITLE,      tr ("Information"), "", "settings_icon",                                       []{} },
+    Item{SI_TITLE,      tr ("Information"), "", "settings_icon",                                       [](QObject*){} },
 
-    DapQmlModelSettingsItem{SI_LINK,       tr ("Bug reports"), "", "settings_icon ic_information_bug-report",             [] { emit __inst->sigBugReport(); } },
-    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Serial key history on this device"), "", "settings_icon ic_key-history",  [] { emit __inst->sigLicenceHistory(); } },
+    Item{SI_LINK,       tr ("Bug reports"), "", "settings_icon ic_information_bug-report",             [](QObject*) { emit __inst->sigBugReport(); } },
+    Item{SI_BUTTON,     tr ("Serial key history on this device"), "", "settings_icon ic_key-history",  [](QObject*) { emit __inst->sigLicenceHistory(); } },
 #ifndef DISABLE_TERMSOFUSE_AND_PRIVACYPOLICY
-    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Terms of use"), "", "settings_icon ic_terms_policy",                      [] { emit __inst->sigTermsOfUse(); } },
-    DapQmlModelSettingsItem{SI_BUTTON,     tr ("Privacy policy"), "", "settings_icon ic_terms_policy",                    [] { emit __inst->sigPrivacyPolicy(); } },
+    Item{SI_BUTTON,     tr ("Terms of use"), "", "settings_icon ic_terms_policy",                      [](QObject*) { emit __inst->sigTermsOfUse(); } },
+    Item{SI_BUTTON,     tr ("Privacy policy"), "", "settings_icon ic_terms_policy",                    [](QObject*) { emit __inst->sigPrivacyPolicy(); } },
 #endif // DISABLE_TERMSOFUSE_AND_PRIVACYPOLICY
-    DapQmlModelSettingsItem{SI_BUTTONGRAY, tr ("Version"), "@version", "settings_icon ic_version",                        [] { emit __inst->sigVersion(); } },
+    Item{SI_BUTTONGRAY, tr ("Version"), "@version", "settings_icon ic_version",                        [](QObject*) { emit __inst->sigVersion(); } },
 
-    DapQmlModelSettingsItem{SI_TITLE,      "", "", "settings_icon",                                                       []{} },
-    DapQmlModelSettingsItem{SI_TITLE,      "", "", "settings_icon",                                                       []{} },
+    Item{SI_TITLE,      "", "", "settings_icon",                                                       [](QObject*){} },
+    Item{SI_TITLE,      "", "", "settings_icon",                                                       [](QObject*){} },
 
 #endif // BRAND_RISEVPN
   };
@@ -248,7 +250,7 @@ void DapQmlModelSettings::slotRetranslate()
 DapQmlModelSettingsItem::DapQmlModelSettingsItem()
   : QObject()
   , m_sid (DapQmlModelSettings::SI_TITLE)
-  , m_cb ([]{})
+  , m_cb ([](QObject*){})
 {
 
 }
