@@ -1463,10 +1463,10 @@
 
 .history-icon
 {
-	min-width: 60pt;
-	min-height: 60pt;
-	max-width: 60pt;
-	max-height: 60pt;
+  min-width: 40pt;
+  min-height: 40pt;
+  max-width: 40pt;
+  max-height: 40pt;
 }
 
 /****************************************************

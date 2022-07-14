@@ -564,6 +564,18 @@ void DapGuiButton::setMaxLength(const int &max)
   ui->kelGuiLineEditMain->setMaxLength (max);
 }
 
+void DapGuiButton::setMainAlignment(const Qt::Alignment &a_align)
+{
+  for (auto i = _setMainTextWidgets.begin(), e = _setMainTextWidgets.end(); i != e; i++)
+    (*i)->setProperty("alignment", QVariant::fromValue (a_align));
+}
+
+void DapGuiButton::setSubAlignment(const Qt::Alignment &a_align)
+{
+  for (auto i = _setSubTextWidgetsSubRight.begin(), e = _setSubTextWidgetsSubRight.end(); i != e; i++)
+    (*i)->setProperty("alignment", QVariant::fromValue (a_align));
+}
+
 void DapGuiButton::setupStyle()
 {
   //ui->DapGuiButtonBackground->setFrame (m_frame);

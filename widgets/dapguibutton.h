@@ -176,6 +176,9 @@ public:
   int maxLength() const;
   void setMaxLength (const int &max);
 
+  void setMainAlignment (const Qt::Alignment &a_align);
+  void setSubAlignment (const Qt::Alignment &a_align);
+
   void setupStyle();    ///< @brief update style sheet and repaint
   void setupLabels();   ///< @brief update label's css style property
   /// @}
