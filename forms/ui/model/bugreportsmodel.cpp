@@ -60,12 +60,12 @@ void BugReportsModel::slotSetup()
       btn->setMainCssClass ("darkblue lato font16");
 
       btn->setSubText (item.status);
+      btn->setSubCssClass ("gray font12 lato");
+      btn->setSubAlignment (Qt::AlignRight | Qt::AlignVCenter);
 
       btn->setSeparator (true);
       btn->setIconCssClass ("bugrep-icon ic_information_bug-report");
       btn->setIconRightCssClass ("bugrep-icon-right ic_trash");
-
-      btn->setSubCssClass ("gray font12 lato");
 
       btn->setCssStyle ("bugrep-item");
       lay->addWidget (btn);
