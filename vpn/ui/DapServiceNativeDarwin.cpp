@@ -50,6 +50,7 @@ void DapServiceNativeDarwin::installService()
     ::system(QString("/usr/bin/osascript -e 'set windowTitle to \"%1 requires priveledge access to initialize the secure channel\"\n do shell script \"%1\" with administrator privileges'")
              .arg(QString("sudo launchctl stop com.%2;"
                           "sudo launchctl unload -w /Library/LaunchDaemons/com.%2.plist;"
+                          "sudo rm /Library/LaunchDaemons/com.%2.plist;"
                           "sudo cp -f /Applications/%1.app/Contents/Resources/com.%2.plist /Library/LaunchDaemons/;"
                           "sudo chown root /Library/LaunchDaemons/com.%2.plist;"
                           "sudo chmod 600 /Library/LaunchDaemons/com.%2.plist;"
