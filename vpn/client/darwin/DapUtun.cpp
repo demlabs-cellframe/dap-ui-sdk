@@ -241,7 +241,7 @@ void DapUtun::onWorkerStarted()
         QString run = QString("route add -host %2 %1")
                 .arg(m_defaultGwOld).arg(upstreamAddress()) ;
         qDebug() << "Execute "<<run;
-        DapUtils::shellCmd(run);
+        ::system(run.toLatin1().constData());
     }
 
 
@@ -312,8 +312,19 @@ void DapUtun::onWorkerStarted()
 void DapUtun::tunDeviceDestroy()
 {
     DapTunUnixAbstract::tunDeviceDestroy();
+    // Delete upstream routes
+    if(!isLocalAddress(upstreamAddress()))
+    {
+        QString run = QString("route del -host %2 %1")
+                .arg(m_defaultGwOld).arg(upstreamAddress()) ;
+        qDebug() << "Execute "<<run;
+        ::system( run.toLatin1().constData() );
+    }
+
+    // Other routes connected with tunnel should be destroyed autimaticly
+
     // Restore default gateway
-    DapUtils::shellCmd ( QString("route add default %1").arg(m_defaultGwOld));
+    ::system ( QString("route add default %1").arg(m_defaultGwOld).toLatin1().constData());
     qInfo() << "Restored default route "<< m_defaultGwOld;
 }
 
