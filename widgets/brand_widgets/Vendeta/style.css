@@ -474,12 +474,12 @@
 
 .csep-height
 {
-	min-height: 4px;	max-height: 4px;
+	min-height: 4pt;	max-height: 4pt;
 }
 
 .csep-width
 {
-	min-width: 8px;		max-width: 8px; 
+	min-width: 8pt;		max-width: 8pt; 
 }
 
 .csep-left-light
@@ -984,6 +984,11 @@
 .login-input-border-dark
 {
 	border: 1pt solid #205B5C40;
+}
+
+.login-input-border-default
+{
+	border-width: 1px;
 }
 
 /****************************************************

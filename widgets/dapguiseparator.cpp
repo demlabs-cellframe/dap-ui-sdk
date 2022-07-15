@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "dapguiseparator.h"
 #include "ui_dapguiseparator.h"
+#include <ui/helper/auxiliary/UiScaling.h>
 #include <QStyleOption>
 #include <QPainter>
 
@@ -13,7 +14,8 @@ DapGuiSeparator::DapGuiSeparator (QWidget *parent)
   , ui (new Ui::DapGuiSeparatorUI)
 {
   ui->setupUi (this);
-  setMaximumHeight (4);
+  auto size = UiScaling::pointsToPixels (4, UiScaling::getNativDPI());
+  setMaximumHeight ((size >= 4) ? size : 4);
 }
 
 /********************************************
