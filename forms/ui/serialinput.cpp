@@ -47,8 +47,11 @@ SerialInput::SerialInput(QWidget *parent) :
 //  ui->btnSerial->setEdit (ui->customInputBorder);
   {
     auto style = ui->btnSerial->edit()->cssStyle();
+    auto bsize = UiScaling::pointsToPixels (1, UiScaling::getNativDPI());
     style.remove ("noborder");
     style.append (" login-input-border");
+    if (bsize < 1)
+      style.append (" login-input-border-default");
     ui->btnSerial->edit()->setCssStyle(style);
   }
 
