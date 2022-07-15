@@ -1006,3 +1006,24 @@
 {
     scaled-rect: scaled(-1,626,374,80,true,14);
 }
+
+/****************************************************
+ * Manage servers
+ ***************************************************/
+
+.manser-resizer1
+{
+    scaled-rect: scaled(nan,nan,nan,64,false,34);
+}
+
+.manser-item
+{
+    scaled-rect: scaled(nan,nan,nan,nan,false,34);
+}
+
+.manser-btn-lbl-main
+{
+    color: "@text";
+    scaled-font: scaled(16);    
+    font-weight: Font.Normal;
+}
