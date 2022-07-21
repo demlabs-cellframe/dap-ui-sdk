@@ -129,41 +129,23 @@
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <property name="spacing">
-         <number>0</number>
-        </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <widget class="DapGuiWidget" name="kelGuiWidget_2">
           <property name="cssStyle">
-           <string>nobackground</string>
+           <string>base-widget</string>
           </property>
           <layout class="QGridLayout" name="gridLayout">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <property name="spacing">
-            <number>0</number>
-           </property>
-           <item row="4" column="1">
-            <widget class="DapGuiButton" name="statPing">
+           <item row="0" column="0">
+            <widget class="DapGuiButton" name="statDownSp">
              <property name="cssStyle">
               <string>stat-info nobackground</string>
              </property>
              <property name="mainText">
-              <string>34 ms</string>
+              <string>10205 Mbps</string>
              </property>
              <property name="subText">
-              <string>ping</string>
+              <string>download speed</string>
              </property>
              <property name="mainCssClass">
               <string>darkblue normal font24 lato noborder nobackground</string>
@@ -176,73 +158,7 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
-            <widget class="DapGuiButton" name="statPackRec">
-             <property name="cssStyle">
-              <string>stat-info nobackground</string>
-             </property>
-             <property name="mainText">
-              <string>454 086</string>
-             </property>
-             <property name="subText">
-              <string>packets received</string>
-             </property>
-             <property name="mainCssClass">
-              <string>darkblue normal font24 lato noborder nobackground</string>
-             </property>
-             <property name="subCssClass">
-              <string>gray uppercase font12 lato noborder nobackground</string>
-             </property>
-             <property name="leftCssClass">
-              <string>darkblue normalbold font30 noborder nobackground</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="DapGuiButton" name="statPackSent">
-             <property name="cssStyle">
-              <string>stat-info nobackground</string>
-             </property>
-             <property name="mainText">
-              <string>4 086</string>
-             </property>
-             <property name="subText">
-              <string>packets sent</string>
-             </property>
-             <property name="mainCssClass">
-              <string>darkblue normal font24 lato noborder nobackground</string>
-             </property>
-             <property name="subCssClass">
-              <string>gray uppercase font12 lato noborder nobackground</string>
-             </property>
-             <property name="leftCssClass">
-              <string>darkblue normalbold font30 noborder nobackground</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="DapGuiButton" name="statUptime">
-             <property name="cssStyle">
-              <string>stat-info nobackground</string>
-             </property>
-             <property name="mainText">
-              <string>146:7:27</string>
-             </property>
-             <property name="subText">
-              <string>uptime</string>
-             </property>
-             <property name="mainCssClass">
-              <string>darkblue normal font24 lato noborder nobackground</string>
-             </property>
-             <property name="subCssClass">
-              <string>gray uppercase font12 lato noborder nobackground</string>
-             </property>
-             <property name="leftCssClass">
-              <string>darkblue normalbold font30 noborder nobackground</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
+           <item row="0" column="1">
             <widget class="DapGuiButton" name="statUpSp">
              <property name="cssStyle">
               <string>stat-info nobackground</string>
@@ -265,15 +181,15 @@
             </widget>
            </item>
            <item row="1" column="0">
-            <widget class="DapGuiButton" name="statDownSp">
+            <widget class="DapGuiButton" name="statBytesRec">
              <property name="cssStyle">
               <string>stat-info nobackground</string>
              </property>
              <property name="mainText">
-              <string>10205 Mbps</string>
+              <string>29 896 Gb</string>
              </property>
              <property name="subText">
-              <string>download speed</string>
+              <string>bytes received</string>
              </property>
              <property name="mainCssClass">
               <string>darkblue normal font24 lato noborder nobackground</string>
@@ -286,7 +202,7 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="1">
+           <item row="1" column="1">
             <widget class="DapGuiButton" name="statBytesSent">
              <property name="cssStyle">
               <string>stat-info nobackground</string>
@@ -309,15 +225,81 @@
             </widget>
            </item>
            <item row="2" column="0">
-            <widget class="DapGuiButton" name="statBytesRec">
+            <widget class="DapGuiButton" name="statPackRec">
              <property name="cssStyle">
               <string>stat-info nobackground</string>
              </property>
              <property name="mainText">
-              <string>29 896 Gb</string>
+              <string>454 086</string>
              </property>
              <property name="subText">
-              <string>bytes received</string>
+              <string>packets received</string>
+             </property>
+             <property name="mainCssClass">
+              <string>darkblue normal font24 lato noborder nobackground</string>
+             </property>
+             <property name="subCssClass">
+              <string>gray uppercase font12 lato noborder nobackground</string>
+             </property>
+             <property name="leftCssClass">
+              <string>darkblue normalbold font30 noborder nobackground</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="DapGuiButton" name="statPackSent">
+             <property name="cssStyle">
+              <string>stat-info nobackground</string>
+             </property>
+             <property name="mainText">
+              <string>4 086</string>
+             </property>
+             <property name="subText">
+              <string>packets sent</string>
+             </property>
+             <property name="mainCssClass">
+              <string>darkblue normal font24 lato noborder nobackground</string>
+             </property>
+             <property name="subCssClass">
+              <string>gray uppercase font12 lato noborder nobackground</string>
+             </property>
+             <property name="leftCssClass">
+              <string>darkblue normalbold font30 noborder nobackground</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="DapGuiButton" name="statUptime">
+             <property name="cssStyle">
+              <string>stat-info nobackground</string>
+             </property>
+             <property name="mainText">
+              <string>146:7:27</string>
+             </property>
+             <property name="subText">
+              <string>uptime</string>
+             </property>
+             <property name="mainCssClass">
+              <string>darkblue normal font24 lato noborder nobackground</string>
+             </property>
+             <property name="subCssClass">
+              <string>gray uppercase font12 lato noborder nobackground</string>
+             </property>
+             <property name="leftCssClass">
+              <string>darkblue normalbold font30 noborder nobackground</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="DapGuiButton" name="statPing">
+             <property name="cssStyle">
+              <string>stat-info nobackground</string>
+             </property>
+             <property name="mainText">
+              <string>34 ms</string>
+             </property>
+             <property name="subText">
+              <string>ping</string>
              </property>
              <property name="mainCssClass">
               <string>darkblue normal font24 lato noborder nobackground</string>

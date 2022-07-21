@@ -26,6 +26,22 @@ class Purchase : public BaseForm
   Q_OBJECT
 
   /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
+public:
+  enum Product
+  {
+    Undefined,
+
+    Key1month,
+    Key6months,
+    Key12months,
+  };
+  Q_ENUM(Product)
+  /// @}
+
+  /****************************************//**
    * @name VARS
    *******************************************/
   /// @{
@@ -48,6 +64,7 @@ public:
   /// @{
 signals:
   void sigReturn();
+  void sigPurchase (Product a_product);
   /// @}
 };
 

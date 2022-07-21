@@ -4,7 +4,11 @@
 DapCmdSendBugReport::DapCmdSendBugReport(QObject *parent)
     : DapCmdServiceAbstract (DapJsonCmdType::SEND_BUG_REPORT, parent)
 {
-
+    connect(this, &DapCmdSendBugReport::sigSendCmdBugReportAnswer, [=](const QString& number){
+        QJsonObject obj;
+        obj["bugreport_answer"] = number;
+        sendCmd(&obj);
+    });
 }
 
 DapCmdSendBugReport::~DapCmdSendBugReport()
@@ -16,19 +20,14 @@ void DapCmdSendBugReport::handle(const QJsonObject *params)
 {
     Q_UNUSED(params);
 
-    connect(this, &DapCmdSendBugReport::sigSendCmdBugReportAnswer, [=](const QString& number){
-        QJsonObject obj;
-        obj["bugreport_answer"] = number;
-        sendCmd(&obj);
-    });
-
     QString serial = params->value("serial").toString();
     QString message = params->value("message").toString();
+    QString attachFile = params->value("attach_file").toString();
     qDebug() << QString("Received bug-report request");
 
-    if (!serial.isNull() && !message.isNull()){
+    if (!serial.isNull() && !message.isNull() && !attachFile.isNull()){
 
-        emit sigBugReportSendRequest(serial, message);
+        emit sigBugReportSendRequest(serial, message, attachFile);
 
     } else {
         qWarning() << "Bad value" << *params;

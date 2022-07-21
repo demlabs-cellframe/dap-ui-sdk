@@ -21,7 +21,10 @@ QString DapPluginsPathControll::defaultPluginPath(const QString a_brand)
 #elif defined (Q_OS_WIN)
     return QString("%1/%2/dapps").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
-    static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod("getExtFilesDir", "()Ljava/lang/String;");
+    static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod(
+                "getExternalFilesDir"
+                , "(Ljava/lang/String;)Ljava/io/File;"
+                , QAndroidJniObject::fromString(QString("")).object());
     return QString("%1/dapps").arg(l_pathObj.toString());
 #endif
     return {};

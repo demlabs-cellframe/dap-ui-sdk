@@ -46,6 +46,8 @@ private:
 
     int m_sceneWidth;
     int m_sceneHeight;
+
+    qreal m_maxValue;
 public:
     int getWidth();
     int getHeight();
@@ -54,7 +56,7 @@ public:
     void addOut(quint64 elem);
     void reset();
 
-    void draw_chart(QGraphicsScene *scene);
+    void draw_chart(QGraphicsScene *scene, bool diagramVisible = true);
     Schedules();
     /// Set graphic styles.
     /// @param style Graphics styles.

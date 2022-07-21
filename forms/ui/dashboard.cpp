@@ -10,11 +10,12 @@
 
 Dashboard::Dashboard (QWidget *parent) :
   BaseForm (parent),
-  ui (new Ui::Connection),
+  ui (new Ui::Dashboard),
   m_started (QDateTime())
 {
   /* setup ui */
   ui->setupUi (this);
+  ui->btnSwitch->setEnabled(false);
 
   /* setup timer */
   m_updateTime = new QTimer;
@@ -36,6 +37,8 @@ Dashboard::Dashboard (QWidget *parent) :
   connect (ui->btnServer, &DapGuiButton::clicked,
            this, &Dashboard::sigServerClicked,
            Qt::QueuedConnection);
+
+  ui->btnServer->setBtnStyle(DapGuiButton::TopSubBottomMain);
 
   /* finish */
   slotSetDownUp (0, 0);
@@ -95,7 +98,16 @@ void Dashboard::setConnectedTime(QString a_text)
 void Dashboard::setStatusIdicator(bool a_enabled /*= false*/)
 {
     ui->lStatusIconOn->setVisible (a_enabled);
+#ifndef DISABLE_CLOCK_WHEN_DISCONNECTED
     ui->lStatusIconOff->setVisible (!a_enabled);
+#else
+    ui->lStatusIconOff->setVisible (false);
+    ui->lUptime->setVisible(a_enabled);
+    if (!a_enabled)
+        ui->lTitle->setCssStyle("conn-top-text-connected font24 darkblue normalbold lato noborder nobackground");
+    else
+        ui->lTitle->setCssStyle("conn-top-text-connected font24 red normalbold lato noborder nobackground");
+#endif
 
 //    ui->lStatusIcon->setChecked(a_authorized);
 }
@@ -158,5 +170,22 @@ void Dashboard::slotConnectionRequesteButtonPressed()
 ////        : "conn-status-icon ic_offline"
 ////      );
 //}
+
+//void Dashboard::slotErrorText (QString text, ErrorColor color)
+void Dashboard::slotErrorText (QString text)
+{
+  ui->lStatus->setText (text);
+  ui->lStatus->setCssStyle ("font13 red_error lato normal");
+}
+
+void Dashboard::setBtnSwitchEnabled(bool enabled)
+{
+    ui->btnSwitch->setEnabled(enabled);
+}
+
+void Dashboard::setBtnServerEnabled(bool enabled)
+{
+    ui->btnServer->setEnabled(enabled);
+}
 
 /*-----------------------------------------*/

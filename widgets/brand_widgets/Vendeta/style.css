@@ -41,7 +41,7 @@
 
 .darkblue-light
 {
-	color: #04004E;
+	color: #374550;
 }
 
 .darkblue-dark
@@ -60,7 +60,7 @@
 
 .letterspace
 {
-	/*letter-spacing: 4pt;*/
+	/*letter-spacing: 1pt;*/
 }
 
 /****************************************************
@@ -76,16 +76,18 @@
 
 .normalbold
 {
-	font-weight: bold;
-	font-style: bold;
-	font-size: bold;
+	font-weight: 500;
+	font-style: 500;
+	font-size: 500;
+	/*letter-spacing: 1pt;*/
 }
 
 .bold
 {
-	font-weight: bold;
-	font-style: bold;
-	font-size: bold;
+	font-weight: 500;
+	font-style: 500;
+	font-size: 500;
+	/*letter-spacing: 1pt;*/
 }
 
 /****************************************************
@@ -94,7 +96,7 @@
 
 .lato
 {
-	font-family: 'Lato';
+	font-family: 'jost';
 }
 
 .roboto
@@ -472,12 +474,12 @@
 
 .csep-height
 {
-	min-height: 4px;	max-height: 4px;
+	min-height: 4pt;	max-height: 4pt;
 }
 
 .csep-width
 {
-	min-width: 8px;		max-width: 8px; 
+	min-width: 8pt;		max-width: 8pt; 
 }
 
 .csep-left-light
@@ -544,7 +546,7 @@
   font-weight: normal;
   font-style: normal;
   font-size: normal;
-  font-family: 'Lato';
+  font-family: 'Jost';
 }
 
 .cpxte-text-placeholder-dark
@@ -560,7 +562,7 @@
   font-weight: normal;
   font-style: normal;
   font-size: normal;
-  font-family: 'Lato';
+  font-family: 'Jost';
 }
 
 .cpxte-dolder
@@ -619,11 +621,11 @@
 .swbg
 {
 	width: 246pt;
-	height: 126pt;
+	height: 160pt;
 	min-width: 246pt;
-	min-height: 126pt;
+	min-height: 160pt;
 	max-width: 246pt;
-	max-height: 126pt;
+	max-height: 160pt;
 }
 
 .sw-toggle
@@ -742,6 +744,11 @@
 	qproperty-scaledPixmap: url("://gui/asset/ic_copy.png");
 }
 
+.ic_trash
+{
+  qproperty-scaledPixmap: url("://gui/asset/ic_trash.png");
+}
+
 .ic_information_bug-report
 {
 	qproperty-scaledPixmap: url("://gui/asset/ic_information_bug-report.png");
@@ -827,6 +834,13 @@
 	border-image: url(:/gui/asset/bg_dark-stripes.png);
 }
 
+.splashscreen_top_spacer
+{
+  height: 248pt;
+  min-height: 228pt;
+  max-height: 228pt;
+}
+
 .splashscreen_logo
 {
 	min-width: 230pt;
@@ -834,6 +848,47 @@
 	min-height: 59pt;
 	max-height: 59pt;
   qproperty-scaledPixmap: url(:/gui/asset/logo-vendeta-white.png);
+}
+
+.splashscreen_logo_container
+{
+	min-height: 59pt;
+	max-height: 59pt;
+}
+
+.splashscreen_mid_status_spacer
+{
+  height: 248pt;
+  min-height: 248pt;
+  max-height: 248pt;
+}
+
+.splashscreen_bottom_status_spacer
+{
+  height: 256pt;
+  min-height: 256pt;
+  max-height: 256pt;
+}
+
+.status_spacer
+{
+  height: 40pt;
+  min-height: 40pt;
+  max-height: 40pt;
+}
+
+.bottom_spacer
+{
+  height: 20pt;
+  min-height: 20pt;
+  max-height: 20pt;
+}
+
+.splashscreen_bottom_spacer
+{
+  height: 61pt;
+  min-height: 91pt;
+  max-height: 91pt;
 }
 
 /****************************************************
@@ -923,12 +978,17 @@
 
 .login-input-border-light
 {
-	border: 1pt solid #A4A3C0;
+	border: 1pt solid #20A4A3C0;
 }
 
 .login-input-border-dark
 {
-	border: 1pt solid #5B5C40;
+	border: 1pt solid #205B5C40;
+}
+
+.login-input-border-default
+{
+	border-width: 1px;
 }
 
 /****************************************************
@@ -1113,7 +1173,7 @@
 
 .stat-frame
 {
-	border: 1px solid #000;
+  border: 1px solid transparent;
 
 	width: 360pt;
 	height: 162pt;
@@ -1130,6 +1190,24 @@
 	max-height: 99pt;
 }
 
+.graphics
+{
+
+}
+
+.graphics-dark
+{
+        colorBackground: #f7f9fa;
+        colorChartDownload: #00DB8F;
+        colorChartUpload: #0098CC;
+}
+
+.graphics-light
+{
+        colorBackground: #f7f9fa;
+        colorChartDownload: #00DB8F;
+        colorChartUpload: #0098CC;
+}
 /****************************************************
  * Bug reports
  ***************************************************/
@@ -1200,6 +1278,16 @@
 	min-height: 34pt;
 	max-width: 34pt;
 	max-height: 34pt;
+}
+
+.bugrep-icon-right
+{
+  width: 22pt;
+  height: 22pt;
+  min-width: 22pt;
+  min-height: 22pt;
+  max-width: 22pt;
+  max-height: 22pt;
 }
 
 .bugrep-spinner

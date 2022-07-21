@@ -1,7 +1,7 @@
 /* INCLUDES */
 #include "purchasemodel.h"
-
-#include "dapguibutton.h"
+#include "../purchase.h"
+#include <QTimer>
 
 /* DEFS */
 
@@ -22,10 +22,11 @@ struct _Licence
 /* VARS */
 static QList<_Licence> s_licences =
 {
-  {4.96,  0.00,  1,  LT_MONTH,  ""},
+  {4.98,  0.00,  1,  LT_MONTH,  ""},
   {26.88, 4.48,  6,  LT_MONTH,  "$4.48 per month"},
   {35.88, 2.99,  1,  LT_YEAR,   "$2.99 per month"},
 };
+static Purchase *s_form = nullptr;
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -47,9 +48,10 @@ PurchaseModel::~PurchaseModel()
  * PUBLIC SLOTS
  *******************************************/
 
-void PurchaseModel::slotSetup()
+void PurchaseModel::slotSetup (QWidget *a_form)
 {
   setupLayout();
+  s_form  = qobject_cast<Purchase*> (a_form);
 
   /* add every item */
   foreach (auto &item, s_licences)
@@ -64,7 +66,7 @@ void PurchaseModel::slotSetup()
           "%d-%s%s plan",
           item.length,
           item.type == LT_MONTH ? "month" : "year",
-          item.length > 0 ? "s" : "");
+          item.length > 1 ? "s" : "");
 
       /* setup new widget */
       btn->setBtnStyle (DapGuiButton::LeftTopMainBottomSub);
@@ -76,12 +78,37 @@ void PurchaseModel::slotSetup()
       btn->setSubCssClass ("font16 gray purchase-item-text-sub");
       btn->setCssStyle ("purchase-item");
       btn->setFrame (true);
-      //btn->setMaximumSize (357, 96);
-
 
       /* add into list */
       lay->addWidget (btn);
+      buttons.append (btn);
     }
+
+  /* signals */
+  if (s_form)
+    try
+    {
+      auto it = buttons.begin();
+
+      connect (*it, &DapGuiButton::clicked, s_form, [] {
+          emit s_form->sigReturn();
+          QTimer::singleShot (350, [] { emit s_form->sigPurchase (Purchase::Key1month); });
+        });
+      if (++it == buttons.end()) throw it;
+
+      connect (*it, &DapGuiButton::clicked, s_form, [] {
+          emit s_form->sigReturn();
+          QTimer::singleShot (350, [] { emit s_form->sigPurchase (Purchase::Key6months); });
+        });
+      if (++it == buttons.end()) throw it;
+
+      connect (*it, &DapGuiButton::clicked, s_form, [] {
+          emit s_form->sigReturn();
+          QTimer::singleShot (350, [] { emit s_form->sigPurchase (Purchase::Key12months); });
+        });
+      if (++it == buttons.end()) throw it;
+    }
+  catch (...) {}
 
   QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
   lay->addItem (sp);

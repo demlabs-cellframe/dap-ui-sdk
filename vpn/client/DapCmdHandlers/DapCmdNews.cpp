@@ -5,15 +5,7 @@
 DapCmdNews::DapCmdNews(QObject *parent)
     : DapCmdServiceAbstract(DapJsonCmdType::GET_NEWS, parent)
 {
-
-}
-
-void DapCmdNews::handle(const QJsonObject* params)
-{
-    Q_UNUSED(params);
-
     connect(this, &DapCmdNews::sigReceivedNewsMessage, [=](const QJsonDocument& news){
-
         auto arr = news.array();
         if (arr.isEmpty()) {
             sendSimpleError(-4563, "Empty news list");
@@ -23,7 +15,11 @@ void DapCmdNews::handle(const QJsonObject* params)
             sendCmd(&obj);
         }
     });
+}
 
+void DapCmdNews::handle(const QJsonObject* params)
+{
+    Q_UNUSED(params);
     //if (params->value("message").toString() == "news")
     emit getNews();
 }

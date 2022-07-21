@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <QScrollBar>
+#include <QScroller>
 
 /* VARS */
 static BugReports *__inst = nullptr;
@@ -16,17 +17,22 @@ static BugReports *__inst = nullptr;
 
 const QString BugReports::SCREEN_NAME = "BugReports";
 
-BugReports::BugReports (QWidget *parent) :
-  BaseForm (parent),
-  ui (new Ui::BugReports),
-  movLoading (new QMovie (":/gui/ui/asset/Spinner.gif")),
-  _textHook (false)
+BugReports::BugReports (QWidget *parent)
+  : BaseForm (parent)
+  , ui (new Ui::BugReports)
+  , movLoading (new QMovie (":/gui/asset/Spinner.gif"))
+  , _textHook (false)
+  , _spacer (true)
+  , spacerIndex (-1)
+  , m_attachButtonVisible (true)
+  , m_detachButtonVisible (false)
 {
-  qRegisterMetaType<Mode> ("Mode");
-
   /* setup */
   __inst  = this;
   ui->setupUi (this);
+
+  qRegisterMetaType<Mode> ("Mode");
+  QScroller::grabGesture (this->ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
 
   ui->editReport->setPlainText ("");
   ui->editReport->setCallbackTextEdit (_cbTextEdit);
@@ -40,17 +46,28 @@ BugReports::BugReports (QWidget *parent) :
   //movLoading->start();
 
   ui->top_spacer_debug->setVisible (false);
-  ui->btnAttachScreenshot->setVisible (false);
-  QMetaObject::invokeMethod(ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
+  ui->btnAttachScreenshot->setVisible (true);
+  ui->btnDetachScreenshot->setVisible (false);
+  ui->attach_send_spacer->setVisible (true);
+  ui->dbglbl1->hide();
+  ui->dbglbl2->hide();
+  ui->dbglbl3->hide();
+  ui->lineEdit->hide();
+  QMetaObject::invokeMethod (ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
   //setText (movLoading->lastErrorString());
+
+  ui->btnSendReport->setEnabled (false);
 
   /* fill map */
   //m_map.insert (Write,   ui->btnAttachScreenshot);
   m_map.insert (Write,   ui->btnSendReport);
   m_map.insert (Write,   ui->editReport);
+  m_map.insert (Write,   ui->widgetLetterAmount);
   m_map.insert (Write,   ui->labelLetterAmount);
   m_map.insert (List,    ui->scrollArea);
   m_map.insert (Loading, ui->labelLoading);
+  m_map.insert (Loading, ui->widgetLoading);
+  m_map.insert (Loading, ui->btnCancel);
   m_map.insert (Result,  ui->lResult);
   m_map.insert (Result,  ui->btnResultBack);
 
@@ -61,14 +78,26 @@ BugReports::BugReports (QWidget *parent) :
            this, &BugReports::_slotRadioTest);
   connect (ui->radioTestLoading, &QRadioButton::clicked,
            this, &BugReports::_slotRadioTest);
+  connect (ui->radioTestResult, &QRadioButton::clicked,
+           this, &BugReports::_slotRadioTest);
 
   connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &BugReports::sigReturn,
            Qt::QueuedConnection);
+  connect (ui->btnReturn, &DapGuiPushButton::clicked,
+           this, [ = ]()
+  {
+    if (m_mode == Result)
+      emit sigResultBack();
+  },
+  Qt::QueuedConnection);
   connect (ui->btnSendReport, &DapGuiPushButton::clicked,
            this, &BugReports::sigSend,
            Qt::QueuedConnection);
   connect (ui->btnResultBack, &DapGuiPushButton::clicked,
+           this, &BugReports::sigResultBack,
+           Qt::QueuedConnection);
+  connect (ui->btnCancel, &DapGuiPushButton::clicked,
            this, &BugReports::sigResultBack,
            Qt::QueuedConnection);
   connect (ui->btnResultBack, &DapGuiPushButton::clicked,
@@ -84,12 +113,20 @@ BugReports::BugReports (QWidget *parent) :
   connect (ui->btnResultBack, &DapGuiPushButton::clicked,
            this, &BugReports::_slotTextEditFinish,
            Qt::QueuedConnection);
+  connect (ui->btnAttachScreenshot, &DapGuiLabel::clicked,
+           this, &BugReports::sigAttachImage,
+           Qt::QueuedConnection);
+  connect (ui->btnDetachScreenshot, &DapGuiLabel::clicked,
+           this, &BugReports::sigDetachImage,
+           Qt::QueuedConnection);
 
   connect (m_edit, &QPlainTextEdit::textChanged,
            this, &BugReports::_slotTextChanged);
 
   /* finish setup */
+  ui->btnSendReport->setEnabledCustom (false);
   slotSetMode (Write);
+  btnReturnVisible (true);
 }
 
 BugReports::~BugReports()
@@ -112,14 +149,14 @@ QString BugReports::text() const
   return ui->editReport->plainText();
 }
 
-void BugReports::setText(const QString &a_text)
+void BugReports::setText (const QString &a_text)
 {
   ui->editReport->setPlainText (a_text);
 }
 
-void BugReports::setResultText(const QString &a_result)
+void BugReports::setResultText (const QString &a_result)
 {
-  ui->lResult->setText(a_result);
+  ui->lResult->setText (a_result);
 }
 
 /********************************************
@@ -153,15 +190,56 @@ void BugReports::slotSetMode (BugReports::Mode mode)
         w->setVisible (ns == 3);
     }
 
+  /* spacer */
+  if (mode == List)
+    {
+      if (_spacer)
+        {
+          spacerIndex = ui->verticalLayout_3->indexOf (ui->verticalSpacer);
+          if (spacerIndex != -1)
+            {
+              ui->verticalLayout_3->takeAt (spacerIndex);
+              _spacer = false;
+            }
+        }
+    }
+  else
+    {
+      if (!_spacer && spacerIndex != -1)
+        {
+          ui->verticalLayout_3->insertItem (spacerIndex, ui->verticalSpacer);
+          _spacer = true;
+        }
+    }
+
+  /* attach screen message */
+//  if (mode == List || mode == Result)
+//    hideAttachScreenshotMessage();
+//  else
+//    restoreAttachMessage();
+  if (mode == Write)
+    restoreAttachMessage();
+  else
+    hideAttachScreenshotMessage();
+
+  /* resultContainer show/hide */
+  ui->resultContainer->setVisible (m_mode != List);
+  ui->top_spacer_2->setVisible (m_mode != List);
+  ui->attach_send_spacer->setVisible (m_mode != List);
+
   /* movie */
   int w   = ui->labelLoading->width();
-  movLoading->setFileName(":/gui/ui/asset/Spinner.gif");
+  movLoading->setFileName (":/gui/asset/Spinner.gif");
   movLoading->setScaledSize (QSize (w, w));
 
   qDebug() << __PRETTY_FUNCTION__ << "spinner width:" << w;
 
   if (m_mode == Loading)
-    movLoading->start();
+    {
+      ui->lResult->setVisible (true);
+      ui->lResult->setText (tr ("Sending..."));
+      movLoading->start();
+    }
   else
     movLoading->stop();
 }
@@ -170,12 +248,15 @@ void BugReports::slotRetranslated()
 {
   ui->labelBugReports->setText (tr ("Bug reports"));
   ui->editReport
-      ->setPlaceholderText (
-        tr ("Please describe the details of problem you faced. "
-            "What actions did you take and what happened."));
+  ->setPlaceholderText (
+    tr ("Please describe the details of problem you faced. "
+        "What actions did you take and what happened."));
   ui->btnAttachScreenshot->setText (tr ("Click here to attach a screenshot"));
   ui->btnSendReport->setText (tr ("send report"));
   ui->btnResultBack->setText (tr ("back"));
+
+  ui->btnAttachScreenshot->setText (tr ("Click here to attach a screenshot"));
+  ui->btnDetachScreenshot->setText (tr ("Remove screenshot"));
 }
 
 void BugReports::_slotRadioTest()
@@ -188,6 +269,7 @@ void BugReports::_slotRadioTest()
         {ui->radioTestList, List},
         {ui->radioTestWrite, Write},
         {ui->radioTestLoading, Loading},
+        {ui->radioTestResult, Result},
       };
     }
 
@@ -207,14 +289,14 @@ void BugReports::_slotTextEditFinish()
 }
 
 bool BugReports::_cbTextEdit (
-    DapGuiPlainTextEditInterface *e,
-    QString &preedit,
-    QString &commit,
-    int from,
-    int to)
+  DapGuiPlainTextEditInterface *e,
+  QString &preedit,
+  QString &commit,
+  int from,
+  int to)
 {
-  Q_UNUSED(from)
-  Q_UNUSED(to)
+  Q_UNUSED (from)
+  Q_UNUSED (to)
 
   /* get length only */
   auto text = e->toPlainText() + preedit + commit;
@@ -228,41 +310,113 @@ bool BugReports::_cbTextEdit (
 
 void BugReports::updateData (QString &a_text, int a_len)
 {
-  if(_textHook)
+  if (_textHook)
     return;
 
   /* print length */
   auto len  = (a_len < MAX_LENGTH) ? a_len : MAX_LENGTH;
   ui->labelLetterAmount->setText (
-    QString("%1/%2")
+    QString ("%1/%2")
     .arg (len)
     .arg (MAX_LENGTH));
   //ui->labelLetterAmount->repaint();
   //style()->polish (ui->labelLetterAmount);
 
+  ui->btnSendReport->setEnabled (!a_text.isEmpty());
+  ui->btnSendReport->setEnabledCustom (!a_text.isEmpty());
+
   /* check if limit reachced */
-  if(a_text.length() <= MAX_LENGTH)
-    return;
+  if (a_text.length() <= MAX_LENGTH)
+    {
+      m_bugReportText = a_text;
+      return;
+    }
 
   _textHook = true;
 
   /* fix text length */
-  int diff  = a_text.length() - MAX_LENGTH;
-  a_text.chop (diff);
-  m_edit->setPlainText (a_text);
-
-  /* kill focus */
-  ui->editReport->unfocus();
-  QGuiApplication::inputMethod()->hide();
-
-  /* fix cursor pos */
-  QMetaObject::invokeMethod(this, [=] () {
-      auto cur = m_edit->textCursor();
-      cur.movePosition (QTextCursor::End, QTextCursor::MoveAnchor);
-      m_edit->setTextCursor (cur);
-  }, Qt::QueuedConnection);
+  int position = m_edit->textCursor().position();
+  m_edit->setPlainText (m_bugReportText);
+  QTextCursor cur = m_edit->textCursor();
+  cur.setPosition (position - 1);
+  m_edit->setTextCursor (cur);
 
   _textHook = false;
+}
+
+void BugReports::refreshHistoryList()
+{
+  QMetaObject::invokeMethod (ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
+}
+
+void BugReports::showAttachScreenshot()
+{
+  /* store visibility state */
+  m_attachButtonVisible = true;
+  m_detachButtonVisible = false;
+
+  /* check if hidden */
+  if (m_hiddenButton)
+    return;
+
+  /* setup visibility */
+  ui->btnAttachScreenshot->setVisible (true);
+  ui->btnDetachScreenshot->setVisible (false);
+}
+
+void BugReports::showDetachScreenshot()
+{
+  /* store visibility state */
+  m_attachButtonVisible = false;
+  m_detachButtonVisible = true;
+
+  /* check if hidden */
+  if (m_hiddenButton)
+    return;
+
+  /* setup visibility */
+  ui->btnAttachScreenshot->setVisible (false);
+  ui->btnDetachScreenshot->setVisible (true);
+}
+
+void BugReports::hideAttachScreenshotMessage()
+{
+  if (m_hiddenButton)
+    return;
+
+  /* update hidden flag */
+  m_hiddenButton = true;
+
+  /* store visibility state */
+  m_attachButtonVisible = ui->btnAttachScreenshot->isVisible();
+  m_detachButtonVisible = ui->btnDetachScreenshot->isVisible();
+
+  /* hide buttons */
+  ui->btnDetachScreenshot->hide();
+  ui->btnAttachScreenshot->hide();
+}
+
+void BugReports::restoreAttachMessage()
+{
+  if (!m_hiddenButton)
+    return;
+
+  /* update hidden flag */
+  m_hiddenButton  = false;
+
+  /* minor visibility fix */
+  if (!(m_attachButtonVisible || m_detachButtonVisible))
+    m_attachButtonVisible = true;
+
+  /* restore visibility state */
+  ui->btnAttachScreenshot->setVisible (m_attachButtonVisible);
+  ui->btnDetachScreenshot->setVisible (m_detachButtonVisible);
+}
+
+void BugReports::btnReturnVisible (bool visible)
+{
+  ui->btnReturn->setVisible (visible);
+  ui->kelGuiWidget_Left->setVisible (!visible);
 }
 
 /*-----------------------------------------*/

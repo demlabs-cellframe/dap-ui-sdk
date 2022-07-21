@@ -1,10 +1,12 @@
 SOURCES += \
+    $$PWD/DapCmdBugReportsStatus.cpp \
     $$PWD/DapCmdLastConnectionData.cpp \
     $$PWD/DapCmdNews.cpp \
     $$PWD/DapCmdPingServer.cpp \
     $$PWD/DapCmdSendBugReport.cpp \
     $$PWD/DapCmdSignUp.cpp \
     $$PWD/DapCmdResetSerialKey.cpp \
+    $$PWD/DapCmdSystemTray.cpp \
     $$PWD/DapCmdTunTap.cpp \
     $$PWD/DapCmdUserData.cpp \
     $$PWD/DapCmdAuth.cpp \
@@ -20,6 +22,7 @@ equals(BUILD_VARIANT, "GooglePlay") {
 }
 
 HEADERS += \
+    $$PWD/DapCmdBugReportsStatus.h \
     $$PWD/DapCmdLastConnectionData.h \
     $$PWD/DapCmdNews.h \
     $$PWD/DapCmdPingServer.h \
@@ -34,7 +37,8 @@ HEADERS += \
     $$PWD/DapCmdStats.h \
     $$PWD/DapCmdServersList.h \
     $$PWD/DapCmdServerData.h \
-    $$PWD/DapCmdAndroidTunnel.h
+    $$PWD/DapCmdAndroidTunnel.h \
+    $$PWD/DapCmdSystemTray.h
 
 equals(BUILD_VARIANT, "GooglePlay") {
 	HEADERS += $$PWD/DapCmdPurchase.h

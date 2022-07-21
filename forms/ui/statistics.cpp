@@ -23,7 +23,9 @@ Statistics::Statistics (QWidget *parent) :
   m_packetsSent (0),
   m_ping (0),
   m_scene (new QGraphicsScene),
-  m_uptimeUpdateTimer (new QTimer)
+  m_uptimeUpdateTimer (new QTimer),
+  m_drawGraphTimer(new QTimer),
+  m_diagramVisible(false)
 {
   /* setup ui */
   ui->setupUi (this);
@@ -32,6 +34,7 @@ Statistics::Statistics (QWidget *parent) :
   /* setup scene */
   ui->graphicsView->setScene (m_scene);
   ui->graphicsView->setForm (this);
+  ui->graphicsView->scale(0.965, 0.935);
   //ui->graphicsView->setBackgroundBrush(QBrush("#f7f8fa", Qt::SolidPattern));
 
   /* setup uptime timer */
@@ -46,9 +49,20 @@ Statistics::Statistics (QWidget *parent) :
 
   ui->graphicsView->updateG();
 
+  /* update graph timer */
+  m_drawGraphTimer->setInterval(500);
+  connect (m_drawGraphTimer, &QTimer::timeout, [&]
+  {
+      m_drawGraphTimer->stop();
+      updateGraph();
+      m_drawGraphTimer->start();
+  });
+
   /* signals */
   connect (m_uptimeUpdateTimer, &QTimer::timeout,
            this, &Statistics::_slotUpdateUptimeTime);
+
+  m_drawGraphTimer->start();
 }
 
 Statistics::~Statistics()
@@ -94,8 +108,8 @@ void Statistics::startImitatingSchedules()
     schedules.addOut (sent);
 
     /* setup random stats */
-    setDownloadSpeed (qrand() % (12 * 1024 * 1024));
-    setUploadSpeed (qrand() % (7 * 1024 * 1024));
+//    setDownloadSpeed (qrand() % (12 * 1024 * 1024));
+//    setUploadSpeed (qrand() % (7 * 1024 * 1024));
     addBytesReceived (downloadSpeed());
     addBytesSent (uploadSpeed());
     addPacketsReceived (1);
@@ -104,9 +118,6 @@ void Statistics::startImitatingSchedules()
 
     /* update uptime */
     ui->statUptime->setMainText (uptimeStr());
-
-    /* draw scene */
-    updateGraph();
   });
 
   /* start timer */
@@ -137,8 +148,12 @@ quint64 Statistics::downloadSpeed() const
 void Statistics::setDownloadSpeed (const quint64 &downloadSpeed)
 {
   m_downloadSpeed = downloadSpeed;
-  auto text       = TrafficStringHelper (m_downloadSpeed).asString(); //QString ("%1 Mbps").arg (m_downloadSpeed);
-  ui->statDownSp->setMainText (text);
+  schedules.addInp (m_downloadSpeed);
+}
+
+void Statistics::setDownloadSpeedString(const QString &downloadSpeed)
+{
+  ui->statDownSp->setMainText (downloadSpeed);
 }
 
 quint64 Statistics::uploadSpeed() const
@@ -149,9 +164,14 @@ quint64 Statistics::uploadSpeed() const
 void Statistics::setUploadSpeed (const quint64 &uploadSpeed)
 {
   m_uploadSpeed = uploadSpeed;
-  auto text       = TrafficStringHelper (m_uploadSpeed).asString(); //QString ("%1 Mbps").arg (m_uploadSpeed);
-  ui->statUpSp->setMainText (text);
+  schedules.addOut (m_uploadSpeed);
 }
+
+void Statistics::setUploadSpeedString(const QString &uploadSpeed)
+{
+  ui->statUpSp->setMainText (uploadSpeed);
+}
+
 
 quint64 Statistics::bytesReceived() const
 {
@@ -163,7 +183,6 @@ void Statistics::setBytesReceived (const quint64 &bytesReceived)
   m_bytesReceived = bytesReceived;
   auto text       = TrafficStringHelper (m_bytesReceived).asString(); //QString ("%1 Bytes").arg (m_bytesReceived);
   ui->statBytesRec->setMainText (text);
-  schedules.addInp (m_bytesReceived);
 }
 
 void Statistics::addBytesReceived (const quint64 &bytesReceived)
@@ -183,7 +202,6 @@ void Statistics::setBytesSent (const quint64 &bytesSent)
   m_bytesSent = bytesSent;
   auto text   = TrafficStringHelper (m_bytesSent).asString(); //QString ("%1 Bytes").arg (m_bytesSent);
   ui->statBytesSent->setMainText (text);
-  schedules.addOut (m_bytesSent);
 }
 
 void Statistics::addBytesSent (const quint64 &bytesSent)
@@ -264,16 +282,25 @@ void Statistics::setStarted (const QDateTime &started)
   m_started = started;
 
   if (!started.isNull())
+  {
     m_uptimeUpdateTimer->start();
+    m_diagramVisible = true;
+  }
   else
+  {
     m_uptimeUpdateTimer->stop();
+    m_diagramVisible = false;
+  }
 
   _slotUpdateUptimeTime();
 }
 
 void Statistics::updateGraph()
 {
-  schedules.draw_chart (m_scene);
+  m_scene->setSceneRect(QRectF(0,0, 500, 150));
+  ui->graphicsView->setRenderHint(QPainter::Antialiasing);
+  ui->graphicsView->fitInView(QRectF(0,0, 500, 150));
+  schedules.draw_chart (m_scene, m_diagramVisible);
   m_scene->update();
 }
 

@@ -14,6 +14,9 @@ public:
 
     DapSerialKeyData(const DapSerialKeyData& a_another);
     void operator=(const DapSerialKeyData& a_another);
+    bool operator==(const DapSerialKeyData& a_another){
+        return m_serialKey == a_another.m_serialKey;
+    }
 
     QString serialKey() const;
     void setSerialKey(const QString &a_serialKey);
@@ -21,9 +24,11 @@ public:
     bool isActivated() const;
     void setActivated(bool a_isActivated);
 
+    QDateTime activatedDate(){ return m_activatedDate;}
+
     void reset();
 
-    const QDateTime & licenseTermTill();
+    const QDateTime & licenseTermTill() const;
     int daysLeft();
     QString daysLeftString();
 
@@ -39,7 +44,8 @@ public slots:
 private:
     QString m_serialKey;
     bool m_isActivated;
-    QDateTime m_licenseTermTill = QDateTime::currentDateTime();
+    QDateTime m_licenseTermTill = QDateTime::fromTime_t(0);
+    QDateTime m_activatedDate = QDateTime::currentDateTime();
 };
 
 QDataStream &operator<<(QDataStream &a_outStream, const DapSerialKeyData &a_serialKeyData);

@@ -143,6 +143,7 @@ void DapShopManager::changeProductState(const QString &productId, DapShopManager
 
 //- статические функции - для вызовов из java -
 
+#ifdef Q_OS_ANDROID
 void DapShopManager::reportError(JNIEnv *env, jobject thiz, jstring error)
 {
     Q_UNUSED(thiz)
@@ -165,3 +166,4 @@ void DapShopManager::reportPurchase(JNIEnv *env, jobject thiz, jstring sku, jstr
     env->ReleaseStringUTFChars(sku, ptr1);
     env->ReleaseStringUTFChars(token, ptr2);
 }
+#endif

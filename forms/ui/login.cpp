@@ -2,7 +2,9 @@
 #include "login.h"
 #include "ui_login.h"
 #include "ui/chooseserver.h"
+#include <ui/helper/auxiliary/UiScaling.h>
 #include <QDebug>
+#include <QRegExp>
 #include <QThread>
 
 /* DEFS */
@@ -12,6 +14,17 @@
 /* VARS */
 static Login *__inst          = nullptr;
 static QString s_enteredSerial;
+
+void formatSerialKeyLine(QString &text)
+{
+    int textLength = text.length();
+    if (textLength >= 12)
+        text.insert(12, "-");
+    if (textLength >= 8)
+        text.insert(8, "-");
+    if (textLength >= 4)
+        text.insert(4, "-");
+}
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -27,17 +40,22 @@ Login::Login (QWidget *parent) :
   ui->btnChooseSerial->setMaxLength (MAX_LENGTH);
   {
     auto style = ui->btnChooseSerial->edit()->cssStyle();
+    auto bsize = UiScaling::pointsToPixels (1, UiScaling::getNativDPI());
     style.remove ("noborder");
     style.append (" login-input-border");
+    if (bsize < 1)
+      style.append (" login-input-border-default");
     ui->btnChooseSerial->edit()->setCssStyle(style);
   }
 #ifdef Q_OS_ANDROID
   ui->btnChooseSerial->setBtnStyle (DapGuiButton::TopMainBottomSub);
-  ui->btnChooseSerial->setMainText ("____-____-____-____");
+  ui->btnChooseSerial->setMainText ("____ ____ ____ ____");
 #else
-  ui->btnChooseSerial->setInputMask (">NNNN-NNNN-NNNN-NNNN;_");
+  //ui->btnChooseSerial->setInputMask (">NNNN-NNNN-NNNN-NNNN;");
+  ui->btnChooseSerial->setPlaceholderText ("____ ____ ____ ____");
 #endif // Q_OS_ANDROID
 
+  ui->btnChooseSerial->setCallbackKeyEvent(_cbKeyEvent);
 //  ui->btnChooseSerial->setInputFocusCallback (cbSerialFocus);
 //#ifdef Q_OS_ANDROID
 //  ui->btnChooseSerial->setInputCallback (cbSerialText);
@@ -76,10 +94,19 @@ Login::Login (QWidget *parent) :
 //          emit slotSerialFillingIncorrect();
 //  });
 
-  connect (ui->btnChooseSerial, &DapGuiButton::textChanged,
-           this, &Login::_slotSerialChanged);
-  connect (ui->btnChooseSerial, &DapGuiButton::textEdited,
-           this, &Login::_slotSerialEdited);
+  connect (ui->btnChooseSerial, &DapGuiButton::textChanged,[this](const QString &a_serial)
+  {
+     QString t = a_serial;
+     t = t.remove("-").toUpper();
+     t = t.remove(QRegExp("[^A-Z0-9]")),
+     formatSerialKeyLine(t);
+     ui->btnChooseSerial->textChangedSignalLock(true);
+     ui->btnChooseSerial->insert(t);
+     ui->btnChooseSerial->textChangedSignalLock(false);
+     _slotSerialChanged(a_serial);
+  });
+//  connect (ui->btnChooseSerial, &DapGuiButton::textEdited,
+//           this, &Login::_slotSerialEdited);
 }
 
 Login::~Login()
@@ -141,6 +168,12 @@ void Login::slotServerChooserActivate()
   ui->btnChooseServer->setEnabled (true);
 }
 
+void Login::setServerInfo(QString a_name, QString a_ip)
+{
+    ui->btnChooseServer->setMainText(a_name);
+    ui->btnChooseServer->setSubText(a_ip);
+}
+
 void Login::slotRetranslated()
 {
   ui->btnChooseServer->setMainText (tr ("Auto select"));
@@ -148,7 +181,7 @@ void Login::slotRetranslated()
 
   ui->btnChooseSerial->setSubText (tr ("serial key"));
 
-  ui->btnConnect->setText (tr ("connect"));
+  ui->btnConnect->setText (QObject::tr ("connect"));
 
   ui->lDontHave->setText (tr ("Don't have a serial key?"));
   ui->btnObtainNewKey->setText (tr ("Tap here to obtain one"));
@@ -170,16 +203,87 @@ void Login::_slotSerialChanged (const QString &a_serial)
 
 void Login::_slotSerialEdited (const QString &a_serial)
 {
-  Q_UNUSED (a_serial);
+//  Q_UNUSED (a_serial);
+//    qDebug () << __PRETTY_FUNCTION__ << a_serial;
+//  auto text = ui->btnChooseSerial->mainText().remove ("-");
 
-  auto text = ui->btnChooseSerial->mainText().remove ("-");
+//  if (text.count() == MAX_COUNT_CHAR)
+//    emit textEditedAndFilledOut (ui->btnChooseSerial->mainText());
+//  else if (text.isEmpty())
+//    emit textEditedAndCleaned();
+//  else
+//    emit sigSerialFillingIncorrect();
+}
 
-  if (text.count() == MAX_COUNT_CHAR)
-    emit textEditedAndFilledOut (ui->btnChooseSerial->mainText());
-  else if (text.isEmpty())
-    emit textEditedAndCleaned();
-  else
-    emit sigSerialFillingIncorrect();
+bool Login::_cbKeyEvent (DapGuiLineEdit *e, QKeyEvent *event)
+{
+    // delete selection
+    int cursorPos = e->cursorPosition();
+    if (((event->key() == Qt::Key_Delete) || (event->key() == Qt::Key_Backspace)) && e->hasSelectedText())
+    {
+        QString t = e->text();
+        t = t.remove(e->selectionStart(), e->selectionLength()).remove("-");
+        formatSerialKeyLine(t);
+        e->clear();
+        e->insert(t);
+        e->setCursorPosition(e->selectionStart());
+        return true;
+    }
+    // press del, delete one symbol
+    if (event->key() == Qt::Key_Delete)
+    {
+        QString t = e->text();
+        t.remove(cursorPos, 1).remove("-");
+        formatSerialKeyLine(t);
+        e->clear();
+        e->insert(t);
+        e->setCursorPosition(cursorPos);
+        return true;
+    }
+    // press Backspace, delete one symbol
+    if (event->key() == Qt::Key_Backspace)
+    {
+        QString t = e->text();
+        if (cursorPos > 0)
+        {
+            int removeSym = 1;
+            if ((t[t.length()-1] == "-") && (cursorPos==t.length()))
+                removeSym = 2;
+            t.remove(cursorPos-removeSym, removeSym).remove("-");
+            formatSerialKeyLine(t);
+            e->clear();
+            e->insert(t);
+            e->setCursorPosition(cursorPos);
+            return true;
+        }
+    }
+    // press Right or Left
+    if ((event->key() == Qt::Key_Right) || (event->key() == Qt::Key_Left) ||
+            (event->key() == Qt::Key_Home) || (event->key() == Qt::Key_End) ||
+            event->matches(QKeySequence::StandardKey::Paste) || event->matches(QKeySequence::StandardKey::Copy) ||
+            event->matches(QKeySequence::StandardKey::Undo) || event->matches(QKeySequence::StandardKey::Redo))
+    {
+        return false;
+    }
+    // symbol filtr
+    if (event->text().toUpper().contains(QRegExp("[A-Z0-9]")))
+    {
+        int insertPos = cursorPos;
+        QString t = e->text().remove("-").toUpper();
+        if (cursorPos > 4) insertPos -= 1;
+        if (cursorPos > 9) insertPos -= 1;
+        if (cursorPos > 14) insertPos -= 1;
+        t.insert(insertPos, event->text().toUpper());
+        formatSerialKeyLine(t);
+        e->clear();
+        e->insert(t);
+        if (cursorPos == 3) cursorPos = 5;
+        if (cursorPos == 8) cursorPos = 10;
+        if (cursorPos == 13) cursorPos = 15;
+        e->setCursorPosition(cursorPos+1);
+        return true;
+    }
+    return true;
 }
 
 /*-----------------------------------------*/

@@ -40,6 +40,17 @@ public:
 public slots:
   void slotSetup();
   /// @}
+
+  /****************************************//**
+   * @name OVERRIDE
+   *******************************************/
+  /// @{
+public:
+  bool eventFilter(QObject *o, QEvent *e) override;
+  /// @}
+
+signals:
+  void filled(int rowCount);
 };
 
 /*-----------------------------------------*/
