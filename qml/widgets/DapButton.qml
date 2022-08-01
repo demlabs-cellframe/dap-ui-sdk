@@ -1,10 +1,11 @@
-import QtQuick 2.0
+import QtQuick 2.9
 import QtQuick.Controls 2.0
 import QtGraphicalEffects 1.0
 
 Button
 {
-    hoverEnabled: true
+    id: dapButton
+
     ///@detalis heightButton Button height.
     property int heightButton
     ///@detalis widthButton Button width.
@@ -14,9 +15,9 @@ Button
     ///@detalis hoverImageButton The image on the Button is in the mouseover state.
     property string hoverImageButton
     ///@detalis widthImageButton Image width.
-    property int widthImageButton: 0 * pt
+    property int widthImageButton: 0
     ///@detalis heightImageButton Image height.
-    property int heightImageButton: 0 * pt
+    property int heightImageButton: 0
     ///@detalis indentImageLeftButton: Indentation of the image from the left edge.
     property int indentImageLeftButton
     ///@detalis colorBackgroundNormal Button background color in normal state.
@@ -47,15 +48,41 @@ Button
     property alias dapHorizontalAlignment: buttonText.horizontalAlignment
     ///@details button background radius
     property alias radius: dapBackgroundButton.radius
-    property string shadowColor : currTheme.buttonShadow
+    property alias imageMirror: img.mirror
+
+    property string gradientColorNormal0 : "#f0f000"
+    property string gradientColorNormal1 : "#f00000"
+    property string gradientColorHovered0 : "#f0f0a0"
+    property string gradientColorHovered1 : "#f000a0"
+
+    property string shadowColor : "#1F242F"
+//    property string shadowColor : currTheme.buttonShadow
     property string innerShadowColor : currTheme.buttonInnerShadow
+    property string innerShadowPressColor : "#1F242F"
+
     property bool activeFrame : true
 
+    property bool selected: true
 
-    id: dapButton
+    hoverEnabled: true
 
     ///@details empty default background
-    background: Item { id:background }
+    background: Item { id: background }
+
+    Component.onCompleted:
+    {
+        setButtonColors()
+    }
+
+    onEnabledChanged:
+    {
+        setButtonColors()
+    }
+
+    onSelectedChanged:
+    {
+        setButtonColors()
+    }
 
     contentItem:
         Rectangle
@@ -72,32 +99,23 @@ Button
                     Gradient {
                         GradientStop
                         {
-                            id: grad1
+                            id: grad0
                             position: 0;
-                            color: dapButton.enabled ?
-//                                   dapButton.hovered ? currTheme.buttonColorHoverPosition0 :
-                                                       currTheme.buttonColorNormalPosition0 :
-                                                       currTheme.buttonColorNoActive
-
+                            color: gradientColorNormal0
                         }
                         GradientStop
                         {
-                            id: grad2
+                            id: grad1
                             position: 1;
-                            color:  dapButton.enabled ?
-//                                    dapButton.hovered ? currTheme.buttonColorHoverPosition1 :
-                                                        currTheme.buttonColorNormalPosition1 :
-                                                        currTheme.buttonColorNoActive
+                            color: gradientColorNormal1
 
                         }
                     }
             }
-            color: !dapButton.activeFrame? "transparent " : "#1F242F"
-//            color: !dapButton.activeFrame? "transparent " :
-//                                           dapButton.enabled ?
-//                                           dapButton.hovered ? currTheme.buttonColorHover :
-//                                                               currTheme.buttonColorNormal :
-//                                                               currTheme.buttonColorNoActive
+
+            color: !dapButton.activeFrame ?
+                       "transparent" :
+                       shadowColor
 
             implicitWidth: widthButton
             implicitHeight: heightButton
@@ -120,11 +138,12 @@ Button
             ///button picture
             Image
             {
-                id: iconNewWallet
+                id: img
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: indentImageLeftButton
                 source: dapButton.hovered ? hoverImageButton : normalImageButton
+                mipmap: true
                 width: widthImageButton
                 height: heightImageButton
             }
@@ -132,30 +151,30 @@ Button
             ParallelAnimation {
                 id: mouseEnterAnim
                 PropertyAnimation {
-                    target: grad1
+                    target: grad0
                     properties: "color"
-                    to: currTheme.buttonColorHoverPosition0
+                    to: gradientColorHovered0
                     duration: 100
                 }
                 PropertyAnimation {
-                    target: grad2
+                    target: grad1
                     properties: "color"
-                    to: currTheme.buttonColorHoverPosition1
+                    to: gradientColorHovered1
                     duration: 100
                 }
             }
             ParallelAnimation {
                 id: mouseExitedAnim
                 PropertyAnimation {
-                    target: grad1
+                    target: grad0
                     properties: "color"
-                    to: currTheme.buttonColorNormalPosition0
+                    to: gradientColorNormal0
                     duration: 100
                 }
                 PropertyAnimation {
-                    target: grad2
+                    target: grad1
                     properties: "color"
-                    to: currTheme.buttonColorNormalPosition1
+                    to: gradientColorNormal1
                     duration: 100
                 }
             }
@@ -165,11 +184,16 @@ Button
                 anchors.fill: parent
                 hoverEnabled: true
 
-                onEntered: if(dapButton.enabled)mouseEnterAnim.start()
-                onExited: if(dapButton.enabled && !pressed)mouseExitedAnim.start()
+                onEntered:
+                    if(dapButton.enabled)
+                        mouseEnterAnim.start()
+                onExited:
+                    if(dapButton.enabled && !pressed)
+                        mouseExitedAnim.start()
 
                 onPressed: {
-                    if(dapButton.enabled && dapButton.activeFrame){
+                    if(dapButton.enabled && dapButton.activeFrame)
+                    {
                         shadowAnimPress.start()
                         shadow.visible = false
                     }
@@ -181,24 +205,24 @@ Button
                         shadowAnimRelease.start()
                         shadow.visible = true
 
-                        if(control.containsMouse) dapButton.clicked()
-                        else mouseExitedAnim.start()
+                        if (control.containsMouse)
+                            dapButton.clicked()
+                        else
+                            mouseExitedAnim.start()
                     }
                 }
             }
         }
     DropShadow {
-        id:shadow
-//                Layout.alignment: buttonSend
+        id: shadow
         anchors.fill: dapBackgroundButton
         horizontalOffset: 2
         verticalOffset: 2
         radius: 8
-        samples: 32
-//        color: shadowColor
-        color: "#1F242F"
+        samples: 10
+        cached: true
+        color: shadowColor
         source: dapBackgroundButton
-        smooth: true
         }
 
     InnerShadow {
@@ -208,18 +232,17 @@ Button
         horizontalOffset: 1
         verticalOffset: 1
         radius: 5
-        samples: 32
+        samples: 10
         cached: true
-        color: /*isPressed? "#1F242F" : */innerShadowColor
+        color: innerShadowColor
         source: dapBackgroundButton
         visible: dapBackgroundButton.visible
-        spread: 0
 
         PropertyAnimation {
             id: shadowAnimPress
             target: light
             properties: "color"
-            to: "#1F242F"
+            to: innerShadowPressColor
             duration: 80
         }
         PropertyAnimation {
@@ -228,6 +251,40 @@ Button
             properties: "color"
             to: innerShadowColor
             duration: 80
+        }
+    }
+
+    function setButtonColors()
+    {
+        if (dapButton.enabled)
+        {
+            if (selected)
+            {
+                gradientColorNormal0 = currTheme.buttonColorNormalPosition0
+                gradientColorNormal1 = currTheme.buttonColorNormalPosition1
+                gradientColorHovered0 = currTheme.buttonColorHoverPosition0
+                gradientColorHovered1 = currTheme.buttonColorHoverPosition1
+            }
+            else
+            {
+                gradientColorNormal0 = "#373A42"
+                gradientColorNormal1 = "#373A42"
+                gradientColorHovered0 = "#272A32"
+                gradientColorHovered1 = "#272A32"
+            }
+
+        }
+        else
+        {
+
+            gradientColorNormal0 = "#B3B1BC"
+            gradientColorNormal1 = "#B3B1BC"
+            gradientColorHovered0 = "#B3B1BC"
+            gradientColorHovered1 = "#B3B1BC"
+//            gradientColorNormal0 = currTheme.buttonColorNoActive
+//            gradientColorNormal1 = currTheme.buttonColorNoActive
+//            gradientColorHovered0 = currTheme.buttonColorNoActive
+//            gradientColorHovered1 = currTheme.buttonColorNoActive
         }
     }
 }

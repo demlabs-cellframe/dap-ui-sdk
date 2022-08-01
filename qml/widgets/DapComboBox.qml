@@ -83,7 +83,7 @@ ComboBox {
         y: control.topPadding + (control.availableHeight - height) / 2
 
         fillMode: Image.PreserveAspectFit
-        source: "qrc:/resources/icons/" + pathTheme + "/icon_arrow_down.png"
+        source: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrow_down.png"
 //        source: "qrc:/icon_arrow_down.png"
         sourceSize.width: 24 * pt
         rotation: control.popup.opened ? 180 : 0
