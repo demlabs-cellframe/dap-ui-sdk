@@ -39,7 +39,6 @@ Rectangle
 
             data: contentData
         }
-
     }
 
     InnerShadow
@@ -63,7 +62,6 @@ Rectangle
         verticalOffset: -1
         radius: 0
         samples: 10
-//        fast: true
         cached: true
         color: lightColor
         source: shadow

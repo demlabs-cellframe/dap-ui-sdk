@@ -33,6 +33,8 @@ CheckBox {
     ///@detalis indicatorInnerSize The size of the inner circle of the indicator.
     property int indicatorInnerSize
 
+    property var textFont: mainFont.dapFont.regular14
+
     ///Text Options.
     contentItem:
         Text
@@ -47,7 +49,7 @@ CheckBox {
             color: nameTextColor
             horizontalAlignment: Text.AlignLeft
             text: nameCheckbox
-            font: mainFont.dapFont.regular14
+            font: textFont
         }
 //    ///Indicator Options.
     indicator:
