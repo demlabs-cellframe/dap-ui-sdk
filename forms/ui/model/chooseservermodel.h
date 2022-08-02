@@ -5,6 +5,7 @@
 #include <QAbstractListModel>
 #include <dapguiradio.h>
 #include "modelbase.h"
+#include "DapServersData.h"
 
 /* DEFS */
 class ChooseServer;

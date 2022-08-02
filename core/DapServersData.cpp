@@ -150,6 +150,12 @@ int DapServersData::rowCount(const QModelIndex &parent) const
     return m_servers.count();
 }
 
+void DapServersData::packServerList()
+{
+  m_servers.clear();
+  m_servers << m_bestRegionServerList << m_pingServerList;
+}
+
 QMap<QString, QString> DapServersData::m_countryMap = {
     {"ANDORRA", "AD"},
     {"UNITED ARAB EMIRATES", "AE"},
@@ -395,6 +401,12 @@ QVariant DapServersData::data(const QModelIndex &index, int role) const
             return QString();
 
         return findInCountriesMap(si.name.toUpper());
+    }
+    case CONNECTION_QUALITY: {
+      return m_servers.at(index.row()).connection_quality;
+    }
+    case PING_ROLE: {
+      return m_servers.at(index.row()).ping;
     }
     default:
         break;

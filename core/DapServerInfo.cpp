@@ -4,7 +4,7 @@
 
 bool operator==(const DapServerInfo& lhs, const DapServerInfo& rhs)
 {
-    if( lhs.address == rhs.address && lhs.address6 == rhs.address6 && lhs.port == rhs.port) {
+    if (lhs.address == rhs.address && lhs.address6 == rhs.address6 && lhs.port == rhs.port) {
         return true;
     }
     return false;
@@ -48,6 +48,11 @@ bool DapServerInfo::fromJSON(const QJsonArray& jsonArr, DapServerInfoList& out)
         if(fromJSON(val.toObject(), dsi) == false) {
             continue;
         }
+
+        if (!dsi.name.contains(".")) {
+          continue;
+        }
+
         out.append(std::move(dsi));
     }
 
@@ -85,4 +90,67 @@ bool DapServerInfo::fromJSON(const QJsonObject& jsonObj, DapServerInfo& out)
     out.location = jsonObj["Location"].toString();
 
     return true;
+}
+
+void DapServerInfo::sortServerList(QList<DapServerInfo> &serverList)
+{
+    qSort(serverList.begin(), serverList.end());
+
+    QList<DapServerInfo> availableServerList, notAvailableServerList;
+
+    //unavailable at the end of the list
+    for (auto& server : serverList){
+
+      if (server.name == "Auto"){
+        notAvailableServerList.push_front(server);
+        continue;
+      }
+
+      if (server.ping == -1) {
+        availableServerList.push_back(server);
+      } else {
+        notAvailableServerList.push_back(server);
+      }
+    }
+
+    serverList.clear();
+    serverList = notAvailableServerList += availableServerList;
+}
+
+void DapServerInfo::addGeneralLocation(QList<DapServerInfo> &pingServerList, QList<DapServerInfo> &bestRegionServers)
+{
+  QSet <QString> general_location;
+
+  if (bestRegionServers.isEmpty()){
+
+    general_location << "Auto";
+
+    for (auto& server : pingServerList){
+      general_location << server.name.left(server.name.indexOf('.'));
+    }
+
+    for (auto& location : general_location){
+      DapServerInfo d_server;
+      if (location == "Auto")
+        d_server = pingServerList.at(0);
+      d_server.name = location;
+      bestRegionServers.push_back(d_server);
+    }
+  }
+
+  for (auto& region_server : bestRegionServers) {
+
+    for (auto server : pingServerList){
+
+      if ( region_server.name == server.name.left(server.name.indexOf('.')) ) {
+        QString tmp_name = region_server.name;
+        region_server = server;
+        region_server.name = tmp_name;
+        break;
+      }
+    }
+  }
+
+  DapServerInfo::sortServerList(bestRegionServers);
+
 }

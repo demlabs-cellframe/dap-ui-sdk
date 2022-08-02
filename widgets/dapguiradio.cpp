@@ -20,6 +20,8 @@ DapGuiRadioBase::DapGuiRadioBase (QWidget *parent)
   setCheckedCssClass ("crb_indicator crb_on");
   setUncheckedCssClass ("crb_indicator crb_off");
 
+  ui->indicator_quality->setVisible(false);
+
   /* signals */
   connect (ui->label, &DapGuiLabel::clicked,
            this, &DapGuiRadioBase::clicked);
@@ -27,6 +29,8 @@ DapGuiRadioBase::DapGuiRadioBase (QWidget *parent)
            this, &DapGuiRadioBase::clicked);
   connect (ui->indicator_unchecked, &DapGuiLabel::clicked,
            this, &DapGuiRadioBase::clicked);
+  connect (ui->indicator_quality, &DapGuiLabel::clicked,
+          this, &DapGuiRadioBase::clicked);
 }
 
 /********************************************
@@ -50,6 +54,50 @@ QString DapGuiRadioBase::text() const
 void DapGuiRadioBase::setText(const QString &a_text)
 {
   ui->label->setText (a_text);
+}
+
+DapServerInfo::connectionQuality DapGuiRadioBase::qulityIcon() const
+{
+  return m_connetion_quality;
+}
+
+void DapGuiRadioBase::setQulityIcon(const DapServerInfo::connectionQuality connetion_quality)
+{
+  m_connetion_quality = connetion_quality;
+
+  switch (connetion_quality) {
+    case DAP_CONNECTION_QUALITY::NO_CONNECTION:
+      setQualityCssClass("crb_indicator_connection crb_no_connection");
+      break;
+    case DAP_CONNECTION_QUALITY::FULL:
+      setQualityCssClass("crb_indicator_connection crb_full");
+      break;
+    case DAP_CONNECTION_QUALITY::ALMOST_FULL:
+      setQualityCssClass("crb_indicator_connection crb_almost_full");
+      break;
+    case DAP_CONNECTION_QUALITY::MIDDLE:
+      setQualityCssClass("crb_indicator_connection crb_middle");
+      break;
+    case DAP_CONNECTION_QUALITY::LOW:
+      setQualityCssClass("crb_indicator_connection crb_low");
+      break;
+    case DAP_CONNECTION_QUALITY::VERY_LOW:
+      setQualityCssClass("crb_indicator_connection crb_very_low");
+      break;
+
+    default:
+      setQualityCssClass("crb_indicator_connection crb_no_connection");
+      break;
+  }
+}
+
+void DapGuiRadioBase::setPingToolTip(const qint16 a_ping)
+{
+  if (a_ping == -1){
+    ui->indicator_quality->setToolTip("unavailable");
+    return;
+  }
+  ui->indicator_quality->setToolTip("ping - " + QString::number(a_ping) + "ms");
 }
 
 /****************************************//**
@@ -101,6 +149,25 @@ QString DapGuiRadioBase::uncheckedCssClass() const
 void DapGuiRadioBase::setUncheckedCssClass(const QString &a_cssClass)
 {
   ui->indicator_unchecked->setCssStyle (a_cssClass);
+}
+
+/****************************************//**
+ * @property DapGuiRadioBase::qualityCssClass
+ * @brief quality label's css style
+ * @note stored inside DapGuiLabel
+ * @accessors %qualityCssClass(), %setQualityCssClass()
+ *******************************************/
+
+
+QString DapGuiRadioBase::qualityCssClass() const
+{
+  return ui->indicator_quality->cssStyle();
+}
+
+void DapGuiRadioBase::setQualityCssClass(const QString &a_cssClass)
+{
+  ui->indicator_quality->setVisible(true);
+  ui->indicator_quality->setCssStyle (a_cssClass);
 }
 
 /****************************************//**
