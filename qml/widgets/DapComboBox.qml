@@ -18,6 +18,10 @@ ComboBox {
 
     property string defaultText: qsTr("Undefined")
 
+    property bool vpnClientTokens: false
+    property var comboBoxVpnOrdersController
+
+
     displayText: currentIndex >= 0 ?
                      getModelData(currentIndex, mainTextRole) :
                      defaultText
@@ -35,8 +39,29 @@ ComboBox {
             anchors.leftMargin: parent.leftPadding
             anchors.rightMargin: 20 * pt
 
+            Rectangle
+                        {
+                            width: 5 * pt
+                            height: width
+                            radius: height * 0.5
+                            color: currTheme.hilightColorComboBox
+                            x: 5 * pt
+                            y: parent.height * 0.5 - height * 0.5
+                            visible:
+                            {
+                                if (vpnClientTokens)
+                                {
+                                    if (comboBoxVpnOrdersController.isTokenInOrders(mainText.text))
+                                        return true
+                                }
+                                return false
+                            }
+                        }
+
+
             Text
             {
+                id: mainText
                 Layout.fillWidth: true
                 text: getModelData(index, mainTextRole)
                 color: menuDelegate.highlighted ?
@@ -83,7 +108,7 @@ ComboBox {
         y: control.topPadding + (control.availableHeight - height) / 2
 
         fillMode: Image.PreserveAspectFit
-        source: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrow_down.png"
+        source: "qrc:/resources/icons/BlackTheme/icon_arrow_down.png"
 //        source: "qrc:/icon_arrow_down.png"
         sourceSize.width: 24 * pt
         rotation: control.popup.opened ? 180 : 0
