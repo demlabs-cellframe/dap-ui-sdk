@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QWidget>
+#include <QLabel>
 #include "baseform.h"
 
 /* DEFS */
@@ -36,6 +37,9 @@ class ChooseTheme : public BaseForm
   /// @{
 private:
   Ui::ChooseTheme *ui;
+  QWidget *m_overlay;
+  QLabel *m_spinner;
+  QMovie *m_movie;
   /// @}
 
   /****************************************//**
@@ -53,6 +57,8 @@ public:
   /// @{
 public:
   ChooseThemeModel *model();
+  void showOverlay();
+  void hideOverlay();
   /// @}
 
   /****************************************//**

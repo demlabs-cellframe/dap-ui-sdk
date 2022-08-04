@@ -472,12 +472,12 @@
 
 .csep-height
 {
-	min-height: 4px;	max-height: 4px;
+	min-height: 4pt;	max-height: 4pt;
 }
 
 .csep-width
 {
-	min-width: 8px;		max-width: 8px; 
+	min-width: 8pt;		max-width: 8pt; 
 }
 
 .csep-left-light
@@ -533,7 +533,7 @@
 
 .cpxte-text-placeholder-light
 {
-  color: #9C9B9D;
+  color: #5C5B74;
 }
 
 .cpxte-text-light
@@ -619,11 +619,11 @@
 .swbg
 {
 	width: 246pt;
-	height: 126pt;
+	height: 160pt;
 	min-width: 246pt;
-	min-height: 126pt;
+	min-height: 160pt;
 	max-width: 246pt;
-	max-height: 126pt;
+	max-height: 160pt;
 }
 
 .sw-toggle
@@ -742,6 +742,11 @@
 	qproperty-scaledPixmap: url("://gui/asset/ic_copy.png");
 }
 
+.ic_trash
+{
+  qproperty-scaledPixmap: url("://gui/asset/ic_trash.png");
+}
+
 .ic_information_bug-report
 {
 	qproperty-scaledPixmap: url("://gui/asset/ic_information_bug-report.png");
@@ -827,6 +832,13 @@
 	border-image: url(:/gui/asset/bg_dark-stripes.png);
 }
 
+.splashscreen_top_spacer
+{
+  height: 228pt;
+  min-height: 228pt;
+  max-height: 228pt;
+}
+
 .splashscreen_logo
 {
 	min-width: 230pt;
@@ -834,6 +846,47 @@
 	min-height: 59pt;
 	max-height: 59pt;
 	qproperty-scaledPixmap: url(:/gui/asset/logo_kelvpn-white.png);
+}
+
+.splashscreen_logo_container
+{
+	min-height: 59pt;
+	max-height: 59pt;
+}
+
+.splashscreen_mid_status_spacer
+{
+  height: 248pt;
+  min-height: 248pt;
+  max-height: 248pt;
+}
+
+.splashscreen_bottom_status_spacer
+{
+  height: 256pt;
+  min-height: 256pt;
+  max-height: 256pt;
+}
+
+.status_spacer
+{
+  height: 40pt;
+  min-height: 40pt;
+  max-height: 40pt;
+}
+
+.bottom_spacer
+{
+  height: 20pt;
+  min-height: 20pt;
+  max-height: 20pt;
+}
+
+.splashscreen_bottom_spacer
+{
+  height: 61pt;
+  min-height: 91pt;
+  max-height: 91pt;
 }
 
 /****************************************************
@@ -923,12 +976,17 @@
 
 .login-input-border-light
 {
-	border: 1pt solid #A4A3C0;
+	border: 1pt solid #20A4A3C0;
 }
 
 .login-input-border-dark
 {
-	border: 1pt solid #5B5C40;
+	border: 1pt solid #205B5C40;
+}
+
+.login-input-border-default
+{
+	border-width: 1px;
 }
 
 /****************************************************
@@ -1113,7 +1171,7 @@
 
 .stat-frame
 {
-	border: 1px solid #000;
+  border: 1px solid transparent;
 
 	width: 360pt;
 	height: 162pt;
@@ -1129,7 +1187,24 @@
 	min-height: 99pt;
 	max-height: 99pt;
 }
+.graphics
+{
 
+}
+
+.graphics-dark
+{
+        colorBackground: #2f2e42;
+        colorChartDownload: #FF22A2;
+        colorChartUpload: #9F83FF;
+}
+
+.graphics-light
+{
+        colorBackground: #f7f8fa;
+        colorChartDownload: #D61F5D;
+        colorChartUpload: #2D1FD6;
+}
 /****************************************************
  * Bug reports
  ***************************************************/
@@ -1202,6 +1277,16 @@
 	max-height: 34pt;
 }
 
+.bugrep-icon-right
+{
+  width: 20pt;
+  height: 20pt;
+  min-width: 20pt;
+  min-height: 20pt;
+  max-width: 20pt;
+  max-height: 20pt;
+}
+
 .bugrep-spinner
 {
 	width: 160pt;
@@ -1210,6 +1295,13 @@
 	min-height: 160pt;
 	max-width: 160pt;
 	max-height: 160pt;
+}
+
+.bugrep-result-container
+{
+	height: 224pt;
+	min-height: 224pt;
+	max-height: 224pt;
 }
 
 /****************************************************
@@ -1349,9 +1441,9 @@
 
 .history-top-content-spacer
 {
-	height: 50pt;
-	min-height: 50pt;
-	max-height: 50pt;
+  height: 20pt;
+  min-height: 20pt;
+  max-height: 20pt;
 }
 
 .history-title-text
@@ -1376,10 +1468,10 @@
 
 .history-icon
 {
-	min-width: 60pt;
-	min-height: 60pt;
-	max-width: 60pt;
-	max-height: 60pt;
+  min-width: 40pt;
+  min-height: 40pt;
+  max-width: 40pt;
+  max-height: 40pt;
 }
 
 /****************************************************
@@ -1486,9 +1578,9 @@
 
 .serin-bottom-content-spacer
 {
-	height: 44pt;
-	min-height: 44pt;
-	max-height: 44pt;
+	height: 75pt;
+	min-height: 75pt;
+	max-height: 75pt;
 }
 
 .serin-text-separator

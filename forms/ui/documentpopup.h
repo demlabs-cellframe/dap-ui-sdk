@@ -57,6 +57,7 @@ private:
   QVBoxLayout *m_layout;
   Filter *m_filter;
   Type m_type;
+  bool m_updated;
   /// @}
 
   /****************************************//**
@@ -84,6 +85,7 @@ public slots:
   void slotShowTermsOfUse();
   void slotShowPrivacyPolicy();
   void slotRetranslated();
+  void slotUpdateContents();
   /// @}
 
   /****************************************//**

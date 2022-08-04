@@ -32,6 +32,7 @@ void ModelBase::setupLayout()
           lay    = new QVBoxLayout (widget());
           lay->setMargin (0);
           lay->setSpacing (0);
+          lay->setAlignment(Qt::AlignTop);
           widget()->setLayout (lay);
           widget()->installEventFilter (this);
         }
@@ -43,6 +44,13 @@ void ModelBase::setupLayout()
   /* no widget -> no model job */
   else
     return;
+}
+
+void ModelBase::clearLayout(QLayout *layout)
+{
+    QLayoutItem *item;
+    while ((item = layout->takeAt(0)))
+        delete item;
 }
 
 /*-----------------------------------------*/

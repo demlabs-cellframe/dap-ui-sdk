@@ -20,6 +20,11 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
 #else
     setPathToLog(defaultLogPath(DAP_BRAND));
 #endif
+    QDir dir(m_pathToLog);
+    if (!dir.exists()) {
+        dir.mkpath(".");
+        system((m_pathToLog + "chmod 667 ").toUtf8().data());
+    }
     updateCurrentLogName();
     setLogFile(m_currentLogName);
     createChangerLogFiles();
@@ -80,11 +85,15 @@ QString DapLogger::defaultLogPath(const QString a_brand)
 #if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
     return QString("/opt/%1/log").arg(a_brand).toLower();
 #elif defined(Q_OS_MACOS)
-    return QString("/Users/%1/Applications/Cellframe.app/Contents/Resources/var/log").arg(getenv("USER"));
+    return QString("/var/log/");
 #elif defined (Q_OS_WIN)
     return QString("%1/%2/log").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
-    static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod("getExtFilesDir", "()Ljava/lang/String;");
+    Q_UNUSED(a_brand);
+    static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod(
+                "getExternalFilesDir"
+                , "(Ljava/lang/String;)Ljava/io/File;"
+                , QAndroidJniObject::fromString(QString("")).object());
     return QString("%1/log").arg(l_pathObj.toString());
 #endif
     return {};

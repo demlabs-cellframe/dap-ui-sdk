@@ -135,6 +135,29 @@
           </widget>
          </item>
          <item>
+          <widget class="DapGuiLabel" name="noKeyLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>The license key usage history on
+this device is empty.</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+           <property name="cssStyle">
+            <string>base-widget lato font24 darkblue normal noborder nobackground margin-bottom28</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="HistoryModel" name="scrollArea">
            <property name="styleSheet">
             <string notr="true">background: rgba(0,0,0,0);</string>
@@ -142,17 +165,55 @@
            <property name="widgetResizable">
             <bool>true</bool>
            </property>
-           <widget class="QWidget" name="scrollAreaWidgetContents">
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+           </property>
+           <widget class="DapGuiWidget" name="scrollAreaWidgetContents">
             <property name="geometry">
              <rect>
               <x>0</x>
               <y>0</y>
               <width>388</width>
-              <height>807</height>
+              <height>357</height>
              </rect>
+            </property>
+            <property name="cssStyle">
+             <string>backgroundcolor</string>
             </property>
            </widget>
           </widget>
+         </item>
+         <item>
+          <widget class="DapGuiLabel" name="labelNotify">
+           <property name="text">
+            <string>The license key usage history is stored locally on this device. After reinstalling the system the key history will be unavailable.</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+           <property name="cssStyle">
+            <string>base-widget lato font16 gray_passive  noborder nobackground margin-bottom28</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>5</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>
@@ -165,17 +226,17 @@
  <customwidgets>
   <customwidget>
    <class>DapGuiPushButton</class>
-   <extends></extends>
+   <extends>QPushButton</extends>
    <header>dapguipushbutton.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiLabel</class>
-   <extends></extends>
+   <extends>QLabel</extends>
    <header>dapguilabel.h</header>
   </customwidget>
   <customwidget>
    <class>DapGuiWidget</class>
-   <extends></extends>
+   <extends>QWidget</extends>
    <header>dapguiwidget.h</header>
    <container>1</container>
   </customwidget>

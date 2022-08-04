@@ -57,6 +57,8 @@ private:
   void fixSerialKey (QString &a_serial) const;
   static void cbFocusEvent (DapGuiLineEdit *e, const Qt::FocusReason &reason);
   static void cbTextEdit (DapGuiLineEdit *e, QString &preedit, QString &commit, int from, int to);
+protected:
+  static bool _cbInputMethodEvent (DapGuiLineEdit *label, QEvent *event);
   /// @}
 
   /****************************************//**
@@ -76,6 +78,8 @@ public:
   void slotSetSerial (const QString &a_serial);
   void slotActiavted();
   void slotRetranslated();
+  static bool readFromBuffer();
+  static QString keyFromBuffer;
   /// @}
 };
 

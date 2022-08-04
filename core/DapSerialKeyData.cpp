@@ -12,6 +12,7 @@ DapSerialKeyData::DapSerialKeyData(const DapSerialKeyData &a_another):QObject()
 {
     m_serialKey = a_another.serialKey();
     m_isActivated = a_another.isActivated();
+    m_licenseTermTill = a_another.licenseTermTill();
 }
 
 QString DapSerialKeyData::serialKey() const
@@ -48,7 +49,7 @@ void DapSerialKeyData::reset()
     this->setActivated(false);
 }
 
-const QDateTime &DapSerialKeyData::licenseTermTill()
+const QDateTime &DapSerialKeyData::licenseTermTill() const
 {
     return m_licenseTermTill;
 }
@@ -64,14 +65,21 @@ int DapSerialKeyData::daysLeft()
 QString DapSerialKeyData::daysLeftString()
 {
     QString text;
-    int days = this->daysLeft();
-    switch (days) {
-        case -1:
-            return tr("Unlimited");
-        case 1:
-            return QString(QObject::tr("%1 day left")).arg(days);
-        default:
-            return QString(QObject::tr("%1 days left")).arg(days);
+    if (m_isActivated)
+    {
+        int days = this->daysLeft();
+        switch (days) {
+            case -1:
+                return QObject::tr("Unlimited");
+            case 1:
+                return QObject::tr("%1 day left").arg(days);
+            default:
+                return QObject::tr("%1 days left").arg(days);
+        }
+    }
+    else
+    {
+        return QString("");
     }
 }
 
@@ -89,11 +97,13 @@ void DapSerialKeyData::operator=(const DapSerialKeyData &a_another)
 {
     this->setSerialKey(a_another.serialKey());
     this->setActivated(a_another.isActivated());
+    this->setLicenseTermTill(QString::number(a_another.licenseTermTill().toTime_t()));
 }
 
 QDataStream &operator<<(QDataStream &a_outStream, const DapSerialKeyData &a_serialKeyData)
 {
-    a_outStream << a_serialKeyData.serialKey() << DapUtils::toByteArray(a_serialKeyData.isActivated());
+    a_outStream << a_serialKeyData.serialKey() << DapUtils::toByteArray(a_serialKeyData.isActivated())
+                << QString::number(a_serialKeyData.licenseTermTill().toTime_t());
     return a_outStream;
 }
 
@@ -101,11 +111,13 @@ QDataStream &operator>>(QDataStream &a_inStream, DapSerialKeyData &a_serialKeyDa
 {
     QString serialKey;
     QByteArray isActivated;
+    QString licenseTermTill;
 
-    a_inStream >> serialKey >> isActivated;
+    a_inStream >> serialKey >> isActivated >> licenseTermTill;
 
     a_serialKeyData.setSerialKey(serialKey);
     a_serialKeyData.setActivated(DapUtils::fromByteArray<bool>(isActivated));
+    a_serialKeyData.setLicenseTermTill(licenseTermTill);
 
     return a_inStream;
 }

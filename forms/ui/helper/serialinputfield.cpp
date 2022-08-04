@@ -23,7 +23,7 @@
 SerialInputField::SerialInputField(QWidget *parent)
   : QWidget(parent)
   , m_child (new QWidget(this))
-  , m_text ("____-____-____-____")
+  , m_text ("____ ____ ____ ____")
   , m_temp (m_text)
   , m_cursor (0)
   , m_focused (false)
@@ -46,7 +46,7 @@ void SerialInputField::setText(const QString &a_text)
   slotFixString ();
   m_cursor      = m_temp.length();
   {
-    QString tt = "____-____-____-____";
+    QString tt = "____ ____ ____ ____";
     tt.replace (0, m_temp.length(), m_temp);
     m_temp  = tt;
   }
@@ -219,7 +219,7 @@ void SerialInputField::inputMethodEvent(QInputMethodEvent *e)
   slotFixString();
   m_cursor      = m_temp.length();
   {
-    QString tt = "____-____-____-____";
+    QString tt = "____ ____ ____ ____";
     tt.replace (0, m_temp.length(), m_temp);
     m_temp  = tt;
   }
@@ -253,8 +253,8 @@ void SerialInputField::focusInEvent(QFocusEvent *e)
 {
   qDebug() << __PRETTY_FUNCTION__ << "reason:" << e->reason();
   m_focused = true;
-  m_text    = "____-____-____-____";
-  m_temp    = "____-____-____-____";
+  m_text    = "____ ____ ____ ____";
+  m_temp    = "____ ____ ____ ____";
   m_cursor  = 0;
   QGuiApplication::inputMethod()->show();
   repaint();

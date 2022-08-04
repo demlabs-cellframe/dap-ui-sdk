@@ -56,10 +56,10 @@ private:
 
 #ifdef Q_OS_ANDROID
     QAndroidJniObject m_store;
+#endif
     QString m_token;
     QString m_sku;
     QString m_lastError;
-#endif
 
     QMap<int, ProductState> m_products;
 };

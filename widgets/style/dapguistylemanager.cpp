@@ -6,7 +6,7 @@
 #include "stylesheetclassmap.h"
 #include "stylesheetclassparser.h"
 //#include <QClipboard>
-//#include <QApplication>
+#include <QApplication>
 #include <QJsonArray>
 #include <QJsonObject>
 
@@ -99,6 +99,27 @@ DapGuiStyleManager::~DapGuiStyleManager()
 
 }
 
+void DapGuiStyleManager::setContextMenuStyle()
+{
+    qApp->setStyleSheet(
+      "\n\n"
+      "QMenu::item{"
+      "background-color: rgb(255, 255, 255);"
+      "color: rgb(64, 64, 64);"
+      "}\n"
+      "QMenu::item:enabled {"
+      "background-color: rgb(255, 255, 255);"
+      "color: rgb(0, 0, 64);"
+      "}\n"
+      "QMenu::item:selected{"
+      "background-color: rgb(192, 192, 192);"
+      "color: rgb(0, 0, 64);"
+      "}\n"
+      "QMenu::separator{"
+      "background-color: rgb(192, 192, 192);"
+      "}\n");
+}
+
 /********************************************
  * STATIC METHODS
  *******************************************/
@@ -106,6 +127,7 @@ DapGuiStyleManager::~DapGuiStyleManager()
 void DapGuiStyleManager::setupGlobalStyleSheet (const QString &styleSheet)
 {
   Gss().set (styleSheet);
+  setContextMenuStyle();
   emit s_signal.forceStyleUpdate();
 }
 
@@ -113,13 +135,26 @@ void DapGuiStyleManager::setupTheme(
   const QJsonArray &themesArray,
   const QString &themeName)
 {
+  bool success = false;
+
   for (auto i = themesArray.constBegin(), e = themesArray.constEnd(); i != e; i++)
     {
       auto j = (*i).toObject();
-      if (j.value("name").toString() != themeName)
+
+      if (j.value("name").toString() != themeName
+          && j.value("dir") != themeName)
         continue;
+
+      success = true;
       Gss().patch (j.value ("patch").toArray(), j.value ("dir").toString());
     }
+
+  if (!success)
+    {
+      auto j = (*themesArray.constBegin()).toObject();
+      Gss().patch (j.value ("patch").toArray(), j.value ("dir").toString());
+    }
+
   emit s_signal.forceStyleUpdate();
 }
 
@@ -201,6 +236,9 @@ void DapGuiStyleManager::forcedStyleUpdate()
   QString s   =
     "#" + objName +
     "{" + style + "}";
+
+  if (s == m_widget->styleSheet())
+    return;
 
   m_widget->setStyleSheet (s);
 }

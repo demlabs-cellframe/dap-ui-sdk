@@ -10,8 +10,13 @@
 
 DapGuiPlainTextEditInterface::DapGuiPlainTextEditInterface (QWidget *parent)
   : QPlainTextEdit (parent)
+#ifdef Q_OS_ANDROID
+  , maxMessageLength (200)
+#endif
 {
-
+#ifdef Q_OS_ANDROID
+    setInputMethodHints(Qt::ImhSensitiveData);
+#endif
 }
 
 /********************************************
@@ -81,27 +86,37 @@ void DapGuiPlainTextEditInterface::keyPressEvent(QKeyEvent *event)
 
 void DapGuiPlainTextEditInterface::inputMethodEvent(QInputMethodEvent *e)
 {
-  /* callback */
-  if (m_callbackTextEdit /*&& !e->replacementLength()*/)
-    {
-      /* get entered strings */
-      QString preedit = e->preeditString();
-      QString commit  = e->commitString();
-#ifdef QT_DEBUG
-      qDebug() << __PRETTY_FUNCTION__ << "preedit:" << preedit << "commit" << commit;
-#endif // QT_DEBUG
-      if (m_callbackTextEdit (this, preedit, commit, e->replacementStart(), e->replacementLength()))
-        {
-          /* simulate event */
-          QInputMethodEvent newEvent (preedit, e->attributes());
-          newEvent.setCommitString (
-            commit,
-            e->replacementStart(),
-            e->replacementLength());
-          return QPlainTextEdit::inputMethodEvent (&newEvent);
-        }
-    }
-
+//  /* callback */
+//  if (m_callbackTextEdit /*&& !e->replacementLength()*/)
+//    {
+//      /* get entered strings */
+//      QString preedit = e->preeditString();
+//      QString commit  = e->commitString();
+//#ifdef QT_DEBUG
+//      qDebug() << __PRETTY_FUNCTION__ << "preedit:" << preedit << "commit" << commit;
+//#endif // QT_DEBUG
+//      if (m_callbackTextEdit (this, preedit, commit, e->replacementStart(), e->replacementLength()))
+//        {
+//          /* simulate event */
+//          QInputMethodEvent newEvent (preedit, e->attributes());
+//          newEvent.setCommitString (
+//            commit,
+//            e->replacementStart(),
+//            e->replacementLength());
+//          return QPlainTextEdit::inputMethodEvent (&newEvent);
+//        }
+//    }
+  QString preedit = e->preeditString();
+  if (preedit.length() > 0)
+      emit preeditChange(preedit);
+  int l = preedit.length() + toPlainText().length();
+  if (l >= maxMessageLength)
+  {
+      if (l == maxMessageLength)
+          QGuiApplication::inputMethod()->commit();
+      e->accept();
+      return;
+  }
   QPlainTextEdit::inputMethodEvent (e);
 }
 

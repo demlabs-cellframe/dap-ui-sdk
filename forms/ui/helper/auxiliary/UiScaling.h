@@ -13,7 +13,7 @@ public:
   static QSize pointsToPixels (const QSize &a_pointsSize);
   static float getNativDPI();
   static void setPseudoDPI (const float &pseudoDPI);
-
+  static QSize deviceResolution();
 
 private:
   inline static float aptToPt (float apt);

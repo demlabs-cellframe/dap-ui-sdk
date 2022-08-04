@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Connection</class>
- <widget class="QWidget" name="Connection">
+ <class>Dashboard</class>
+ <widget class="QWidget" name="Dashboard">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -30,11 +30,11 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="DapGuiWidget" name="Background">
-     <property name="cssStyle">
+    <widget class="DapGuiWidget" name="Background" native="true">
+     <property name="cssStyle" stdset="0">
       <string>backgroundcolor</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="30,28,39,165,133,111,32,143,255">
       <property name="spacing">
        <number>0</number>
       </property>
@@ -60,13 +60,13 @@
       <item>
        <widget class="DapGuiLabel" name="lTitle">
         <property name="styleSheet">
-         <string notr="true">#lTitle{ 	height: 28px; 	min-height: 28px; 	max-height: 28px; 
- 	font: 24px/29px; 
- 	color: #DA0B82; 
- 	font-weight: bold; 	font-style: bold; 	font-size: bold; 
- 	font-family: 'Lato'; 
- 	border: none; 
- 	background-color: rgba(0,0,0,0); }</string>
+         <string notr="true">#lTitle{ height: 28px; min-height: 28px; max-height: 28px; 
+ font: 24px/29px; 
+ color: #DA0B82; 
+ font-weight: bold; font-style: bold; font-size: bold; 
+ font-family: 'Lato'; 
+ border: none; 
+ background-color: rgba(0,0,0,0); }</string>
         </property>
         <property name="text">
          <string>VPN Connected</string>
@@ -115,14 +115,14 @@
          </item>
          <item>
           <widget class="DapGuiLabel" name="lStatusIconOn">
-           <property name="cssStyle">
+           <property name="cssStyle" stdset="0">
             <string>conn-status-icon ic_online noborder nobackground</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="DapGuiLabel" name="lStatusIconOff">
-           <property name="cssStyle">
+           <property name="cssStyle" stdset="0">
             <string>conn-status-icon ic_offline noborder nobackground</string>
            </property>
           </widget>
@@ -130,13 +130,13 @@
          <item>
           <widget class="DapGuiLabel" name="lUptime">
            <property name="styleSheet">
-            <string notr="true">#lUptime{ 	height: 22px; 	min-height: 22px; 	max-height: 22px; 
- 	font: 18px/22px; 
- 	font-weight: normal; 	font-style: normal; 	font-size: normal; 
- 	color: #04004E; 
- 	font-family: 'Lato'; 
- 	border: none; 
- 	background-color: rgba(0,0,0,0); }</string>
+            <string notr="true">#lUptime{ height: 22px; min-height: 22px; max-height: 22px; 
+ font: 18px/22px; 
+ font-weight: normal; font-style: normal; font-size: normal; 
+  
+ font-family: 'Lato'; 
+ border: none; 
+ background-color: rgba(0,0,0,0); }</string>
            </property>
            <property name="text">
             <string>56 : 30 : 10</string>
@@ -163,11 +163,87 @@
        </widget>
       </item>
       <item>
-       <widget class="DapGuiWidget" name="kelGuiWidget_3" native="true">
-        <property name="cssStyle" stdset="0">
-         <string>conn-mid-button-spacer</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>15</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="DapGuiLabel" name="lStatus">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>140</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">#lStatus{ font: 13px/18px; 
+ color: #F53172; 
+ font-family: 'Lato'; 
+ font-weight: normal; font-style: normal; font-size: normal; 
+ height: 40px; min-height: 40px; max-height: 40px; 
+ border: none; 
+ background-color: rgba(0,0,0,0); }</string>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="text">
+           <string>Error message box
+Usualy unvisible by being empty</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+          <property name="cssStyle" stdset="0">
+           <string>font13 red_error lato normal login-error-message noborder nobackground</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>15</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -197,7 +273,7 @@
            <string>download</string>
           </property>
           <property name="mainCssClass" stdset="0">
-           <string>darkblue bold font26 lato</string>
+           <string>darkblue font26 bold lato</string>
           </property>
           <property name="subCssClass" stdset="0">
            <string>gray uppercase font12 lato</string>
@@ -216,7 +292,7 @@
            <string>upload</string>
           </property>
           <property name="mainCssClass" stdset="0">
-           <string>darkblue normalbold font26 lato</string>
+           <string>darkblue font26 bold lato</string>
           </property>
           <property name="subCssClass" stdset="0">
            <string>gray uppercase font12 lato</string>
@@ -239,10 +315,10 @@
            <string>conn-connectedto-button nobackground</string>
           </property>
           <property name="mainText" stdset="0">
-           <string>Location</string>
+           <string>Auto</string>
           </property>
           <property name="subText" stdset="0">
-           <string>000:000:000:000:0000</string>
+           <string></string>
           </property>
           <property name="mainCssClass" stdset="0">
            <string>darkblue font18 normalbold</string>

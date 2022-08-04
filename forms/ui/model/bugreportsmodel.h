@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <dapguibutton.h>
 #include "modelbase.h"
+#include "DapDataLocal.h"
 
 /****************************************//**
  * @brief watch bugreports history list widget
@@ -31,6 +32,7 @@ private:
 public:
   explicit BugReportsModel (QWidget *parent = nullptr);
   ~BugReportsModel();
+  bool eventFilter(QObject *o, QEvent *e) override;
   /// @}
 
   /****************************************//**
@@ -39,6 +41,7 @@ public:
   /// @{
 public slots:
   void slotSetup();
+  void slotTrashClicked(const QString &a_number);
   /// @}
 };
 

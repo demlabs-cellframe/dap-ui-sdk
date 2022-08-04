@@ -85,12 +85,8 @@ void DapCmdNews::fillingListNews(const QJsonObject& jsonObj, QList<QMap<QString,
 
 
 void DapCmdNews::handleError(int code, const QString& message)
-{/*
+{
     Q_UNUSED(message)
-    if (code == -666) {
-        emit sigEmptyList(message);
-    } else if (code == -32002) {
-        emit sigErrorNetwork(message);
-    }
-    qWarning() << *m_errorObject;*/
+    qDebug() << "Error code: " + QString::number(code) + "Massage: " + message;
+    qWarning() << *m_errorObject;
 }

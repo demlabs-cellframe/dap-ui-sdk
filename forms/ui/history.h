@@ -49,6 +49,14 @@ signals:
   void sigReturn();
   /// @}
 
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
+public slots:
+  void refreshHistoryList();
+  void slotRetranslated();
+  /// @}
 };
 
 /*-----------------------------------------*/

@@ -57,6 +57,7 @@ public:
     static const QString URL_BUG_REPORT;
     static const QString URL_NEWS;
     static const QString URL_SIGN_UP;
+    static const QString URL_BUG_REPORTS_STATUS;
 #ifdef BUILD_VAR_GOOGLE
     static const QString URL_VERIFY_PURCHASE;
 #endif
@@ -102,12 +103,9 @@ public slots:
 
     void sendSignUpRequest(const QString &host, const QString &email, const QString &password);
     void sendBugReport(const QByteArray &data);
+    void sendBugReportStatusRequest(const QByteArray &data);
     void getNews();
-
-//    void abortEncryptionInitRequest() { m_netEncryptReply->abort(); }
-//    void abortAuthorizeRequest()      { m_netAuthorizeReply->abort(); }
-//    void abortLogoutRequest()         { m_netLogoutReply->abort();  }
-    void sendTxBackRequest(const QString &tx);
+    void sendTxOutRequest(const QString &tx);
 #ifdef BUILD_VAR_GOOGLE
     void requestPurchaseVerify(const QJsonObject *params);
 #endif
@@ -128,6 +126,7 @@ protected:
     DapNetworkReply * m_netKeyActivateReply;
     DapNetworkReply * m_netLogoutReply;
     DapNetworkReply * m_netSendBugReportReply;
+    DapNetworkReply * m_netBugReportsStatusReply;
     DapNetworkReply * m_netSignUpReply;
 #ifdef BUILD_VAR_GOOGLE
     DapNetworkReply * m_netPurchaseReply;
@@ -187,6 +186,8 @@ private slots:
 #endif
     void onLogout();
     void answerBugReport();
+    void answerBugReportsStatus();
+    Q_INVOKABLE void answerBugReportsStatusError(const QString& msg);
     void answerSignUp();
 
     void onResetSerialKey();
@@ -213,17 +214,16 @@ signals:
     void logouted();
 
     Q_INVOKABLE void receivedBugReportAnswer(const QString&);
+    Q_INVOKABLE void receivedBugReportStatusAnswer(const QString&);
     void sigSignUpAnswer(const QString& signUpAnswer);
     void sigReceivedNewsMessage(const QJsonDocument& news);
 
     void sigSerialKeyReseted(const QString&);
     void sigResetSerialKeyError(const int, const QString&);
 #ifdef BUILD_VAR_GOOGLE
-    void purchaseResponseReceived(const QJsonDocument& responce);
+    Q_INVOKABLE void purchaseResponseReceived(const QJsonDocument& response);
+    void purchaseError(const QString&);
 #endif
 };
-
-
-
 
 #endif // DAPSESSION_H

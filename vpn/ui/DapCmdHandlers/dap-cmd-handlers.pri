@@ -1,4 +1,5 @@
 SOURCES += \
+    $$PWD/DapCmdBugReportsStatus.cpp \
     $$PWD/DapCmdLastConnectionData.cpp \
     $$PWD/DapCmdNews.cpp \
     $$PWD/DapCmdPingServer.cpp \
@@ -13,13 +14,15 @@ SOURCES += \
     $$PWD/DapCmdConnect.cpp \
     $$PWD/DapCmdAuth.cpp \
     $$PWD/DapCmdServersList.cpp \
-    $$PWD/DapCmdAndroidTunnel.cpp
+    $$PWD/DapCmdAndroidTunnel.cpp \
+    $$PWD/DapCmdSystemTray.cpp
 
 equals(BUILD_VARIANT, "GooglePlay") {
 	SOURCES += $$PWD/DapCmdPurchase.cpp
 }
 
 HEADERS += $$PWD/DapCmdLastConnectionData.h \
+    $$PWD/DapCmdBugReportsStatus.h \
     $$PWD/DapCmdNews.h \
     $$PWD/DapCmdPingServer.h \
     $$PWD/DapCmdResetSeialKey.h \
@@ -33,7 +36,8 @@ HEADERS += $$PWD/DapCmdLastConnectionData.h \
     $$PWD/DapCmdConnect.h \
     $$PWD/DapCmdAuth.h \
     $$PWD/DapCmdServersList.h \
-    $$PWD/DapCmdAndroidTunnel.h
+    $$PWD/DapCmdAndroidTunnel.h \
+    $$PWD/DapCmdSystemTray.h
 
 equals(BUILD_VARIANT, "GooglePlay") {
 	HEADERS += $$PWD/DapCmdPurchase.h
