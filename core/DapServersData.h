@@ -72,6 +72,7 @@ private:
     int m_currentServerIndex = -1;
     QList<DapServerInfo> m_servers;
     DapLocationInfo m_locationInfo;
+public:
     static QMap<QString, QString> m_countryMap;
 };
 

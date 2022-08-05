@@ -1,29 +1,32 @@
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef COUNTRY_H
+#define COUNTRY_H
 
 /* INCLUDES */
 #include <QWidget>
+#include <QLabel>
 #include "baseform.h"
-#include "model/settingsmodel.h"
 
 /* DEFS */
 QT_BEGIN_NAMESPACE
-namespace Ui { class Settings; }
+namespace Ui { class Country; }
 QT_END_NAMESPACE
 
+class CountryModel;
+
 /****************************************//**
- * @brief ui/class for settings
+ * @brief ui/class for country list
  *
- * Uses model to display options.
+ * Container for country list.
  *
- * @note several options is temporeraly disabled
+ * Used CountryModel to control contents
+ *
+ * Sends sigSelect signal on server selection
  *
  * @ingroup groupUiClasses
- * @date 01.09.2021
- * @author Mikhail Shilenko
+ * @date 08.2022
  *******************************************/
 
-class Settings : public BaseForm
+class Country : public BaseForm
 {
   Q_OBJECT
 
@@ -32,7 +35,10 @@ class Settings : public BaseForm
    *******************************************/
   /// @{
 private:
-  Ui::Settings *ui;
+  Ui::Country *ui;
+  QWidget *m_overlay;
+  QLabel *m_spinner;
+  QMovie *m_movie;
   /// @}
 
   /****************************************//**
@@ -40,8 +46,8 @@ private:
    *******************************************/
   /// @{
 public:
-  explicit Settings (QWidget *parent = nullptr);
-  ~Settings();
+  explicit Country (QWidget *parent = nullptr);
+  ~Country();
   /// @}
 
   /****************************************//**
@@ -49,16 +55,9 @@ public:
    *******************************************/
   /// @{
 public:
-  SettingsModel *model();
-  /// @}
-
-  /****************************************//**
-   * @name SLOTS
-   *******************************************/
-  /// @{
-public slots:
-  void slotSetVersion (const QString &a_text);
-  void slotRetranslated();
+  CountryModel *model();
+  void showOverlay();
+  void hideOverlay();
   /// @}
 
   /****************************************//**
@@ -66,27 +65,19 @@ public slots:
    *******************************************/
   /// @{
 signals:
-  /* settings */
-  void sigLicenceGet();
-  void sigLicenceReset();
-  void sigLanguage();
-  void sigColorTheme();
-  void sigSetDaysLeft (QString days);
-  void sigResetDaysLeft();
-  void sigCountry();
+  void sigReturn();
+  void sigSelect(int index, QString name);
+  /// @}
 
-  /* support */
-  void sigBugSend();
-  void sigTelegramBot();
-
-  /* info */
-  void sigBugReport();
-  void sigLicenceHistory();
-  void sigTermsOfUse();
-  void sigPrivacyPolicy();
-  void sigVersion();
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
+public slots:
+  void slotRetranslated();
+  void slotSetCountry (const QString a_country);
   /// @}
 };
 
 /*-----------------------------------------*/
-#endif // SETTINGS_H
+#endif // COUNTRY_H
