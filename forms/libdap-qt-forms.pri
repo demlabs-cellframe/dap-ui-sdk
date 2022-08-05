@@ -8,6 +8,7 @@ SOURCES     += \
     $$PWD/ui/baseform.cpp \
     $$PWD/ui/bugreports.cpp \
     $$PWD/ui/chooseserver.cpp \
+    $$PWD/ui/country.cpp \
     $$PWD/ui/choosetheme.cpp \
     $$PWD/ui/dashboard.cpp \
     $$PWD/ui/documentpopup.cpp \
@@ -25,6 +26,7 @@ SOURCES     += \
     $$PWD/ui/menufooter.cpp \
     $$PWD/ui/model/bugreportsmodel.cpp \
     $$PWD/ui/model/chooseservermodel.cpp \
+    $$PWD/ui/model/countrymodel.cpp \
     $$PWD/ui/model/choosethememodel.cpp \
     $$PWD/ui/model/historymodel.cpp \
     $$PWD/ui/model/languagemodel.cpp \
@@ -43,6 +45,7 @@ HEADERS     += \
     $$PWD/ui/baseform.h \
     $$PWD/ui/bugreports.h \
     $$PWD/ui/chooseserver.h \
+    $$PWD/ui/country.h \
     $$PWD/ui/choosetheme.h \
     $$PWD/ui/dashboard.h \
     $$PWD/ui/docs.h \
@@ -64,6 +67,7 @@ HEADERS     += \
     $$PWD/ui/model/bugreportsmodel.h \
     $$PWD/ui/model/chooseservermodel.h \
     $$PWD/ui/model/choosethememodel.h \
+    $$PWD/ui/model/countrymodel.h \
     $$PWD/ui/model/historymodel.h \
     $$PWD/ui/model/languagemodel.h \
     $$PWD/ui/model/modelbase.h \
@@ -94,6 +98,7 @@ FORMS += \
     $$PWD/ui/brand_ui/$$BRAND/splashscreen.ui \
     $$PWD/ui/brand_ui/$$BRAND/statistics.ui \
     $$PWD/ui/brand_ui/$$BRAND/versionupdate.ui \
+    $$PWD/ui/brand_ui/$$BRAND/country.ui \
     $$PWD/ui/brand_ui/$$BRAND/choosetheme.ui
 
 RESOURCES += \

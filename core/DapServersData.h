@@ -85,6 +85,7 @@ private:
     QList<DapServerInfo> m_bestRegionServerList;
     QList<DapServerInfo> m_pingServerList;
     DapLocationInfo m_locationInfo;
+public:
     static QMap<QString, QString> m_countryMap;
 
     qint16 m_bestping = 0;

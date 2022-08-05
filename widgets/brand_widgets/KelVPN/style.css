@@ -812,6 +812,11 @@
 	qproperty-scaledPixmap: url("://gui/asset/ic_version.png");
 }
 
+.ic_country
+{
+        qproperty-scaledPixmap: url("://gui/asset/ic_location.png");
+}
+
 .ic_theme
 {
 	qproperty-scaledPixmap: url("://gui/asset/ic_theme.png");
