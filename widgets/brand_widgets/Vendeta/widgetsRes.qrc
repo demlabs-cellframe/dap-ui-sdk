@@ -59,5 +59,11 @@
         <file compress="1">theme.json</file>
         <file compress="1">fonts/Jost-Regular.ttf</file>
         <file compress="1">fonts/Jost-Medium.ttf</file>
+        <file>icons/no_connection.png</file>
+        <file>icons/middle.png</file>
+        <file>icons/low_2.png</file>
+        <file>icons/low.png</file>
+        <file>icons/full_2.png</file>
+        <file>icons/full.png</file>
     </qresource>
 </RCC>

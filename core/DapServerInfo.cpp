@@ -117,7 +117,7 @@ void DapServerInfo::sortServerList(QList<DapServerInfo> &serverList)
     serverList = notAvailableServerList += availableServerList;
 }
 
-void DapServerInfo::addGeneralLocation(QList<DapServerInfo> &pingServerList, QList<DapServerInfo> &bestRegionServers)
+void DapServerInfo::addGeneralLocation(QList<DapServerInfo> &pingServerList, QList<DapServerInfo> &bestRegionServers, const QString a_location)
 {
   QSet <QString> general_location;
 
@@ -131,8 +131,6 @@ void DapServerInfo::addGeneralLocation(QList<DapServerInfo> &pingServerList, QLi
 
     for (auto& location : general_location){
       DapServerInfo d_server;
-      if (location == "Auto")
-        d_server = pingServerList.at(0);
       d_server.name = location;
       bestRegionServers.push_back(d_server);
     }
@@ -153,4 +151,14 @@ void DapServerInfo::addGeneralLocation(QList<DapServerInfo> &pingServerList, QLi
 
   DapServerInfo::sortServerList(bestRegionServers);
 
+  for (auto& region_server : bestRegionServers) {
+    for (auto server : pingServerList){
+      if (region_server.name == "Auto" && server.location != a_location){
+        region_server = server;
+        region_server.name = "Auto";
+        bestRegionServers.move(bestRegionServers.indexOf(region_server), 0);
+        break;
+      }
+    }
+  }
 }
