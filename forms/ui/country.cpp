@@ -21,9 +21,10 @@ Country::Country (QWidget *parent) :
 {
   ui->setupUi (this);
 //  QScroller::grabGesture(this->ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
+//  ui->scrollArea->setVerticalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
 
 #ifndef Q_OS_ANDROID
-  ui->scrollArea->setVerticalScrollBarPolicy (Qt::ScrollBarAsNeeded);
+  ui->scrollArea->setVerticalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
 #else // Q_OS_ANDROID
   QScroller::grabGesture(this->ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
 #endif // Q_OS_ANDROID
