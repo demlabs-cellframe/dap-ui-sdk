@@ -20,7 +20,13 @@ Country::Country (QWidget *parent) :
   ui (new Ui::Country)
 {
   ui->setupUi (this);
+//  QScroller::grabGesture(this->ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
+
+#ifndef Q_OS_ANDROID
+  ui->scrollArea->setVerticalScrollBarPolicy (Qt::ScrollBarAsNeeded);
+#else // Q_OS_ANDROID
   QScroller::grabGesture(this->ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
+#endif // Q_OS_ANDROID
 
   /* setup overlay */
   int ww = UiScaling::pointsToPixels (160, UiScaling::getNativDPI());
