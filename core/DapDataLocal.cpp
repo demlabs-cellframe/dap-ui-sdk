@@ -19,18 +19,11 @@
 #include <sys/stat.h>
 #endif
 
-DapDataLocal::DapDataLocal()
-    : QObject()
-    , m_serialKeyData(new DapSerialKeyData(this))
-    , m_buReportHistory(new DapBugReportHistory(this))
-{
-    qDebug() << "[DL] DapDataLocal Constructor";
-    parseXML(":/data.xml");
-    initSecretKey();
-    this->loadAuthorizationDatas();
-}
 
-void DapDataLocal::parseXML(const QString& a_fname)
+
+/// ConfigData
+
+void ConfigData::parseXML(const QString& a_fname)
 {
     QFile file(a_fname);
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text)){
@@ -100,9 +93,279 @@ void DapDataLocal::parseXML(const QString& a_fname)
     DapDataLocal::serversData()->addServer("UNKNOWN", "local", "127.0.0.1",  8099);
 #endif
 
-
     delete sr;
 }
+
+QJsonObject ConfigData::toJson()
+{
+    QJsonObject xmlData;
+    QJsonArray cdbServersList;
+    foreach (QString server,  m_cdbServersList)
+        cdbServersList.push_back(server);
+    xmlData["cdb"] = cdbServersList;
+    xmlData["network-default"] = m_networkDefault;
+    xmlData["title"] = m_brandName;
+    xmlData["url_site"] = m_urlSite;
+    return xmlData;
+}
+
+void ConfigData::fromJson(QJsonObject* data)
+{
+    return;
+    foreach(QString key, data->keys())
+    {
+        if (key == "cdb" && data->value(key) !=QJsonValue::Undefined)
+        {
+            m_cdbServersList.clear();
+            foreach(QJsonValue server, data->value(key).toArray())
+                m_cdbServersList.append(server.toString());
+            continue;
+        }
+        if (key == "network-default" && data->value(key) !=QJsonValue::Undefined)
+        {
+            m_networkDefault = data->value(key).toString();
+            continue;
+        }
+        if (key == "title" && data->value(key) !=QJsonValue::Undefined)
+        {
+            m_brandName = data->value(key).toString();
+            continue;
+        }
+        if (key == "url_site" && data->value(key) !=QJsonValue::Undefined)
+        {
+            m_urlSite = data->value(key).toString();
+            continue;
+        }
+    }
+}
+
+
+/// DapDataSettings
+
+QJsonObject DapDataSettings::toJson(QMap<QString, QVariant> a_data)
+{
+    QJsonObject settingData;
+    foreach(const QString& key, a_data.keys())
+        settingData[key] = DapDataSettings::packItem(a_data[key]);
+    return settingData;
+}
+
+QJsonArray DapDataSettings::toJson(QStringList a_keys)
+{
+    QJsonArray settingKeys;
+    foreach(const QString& key, a_keys)
+        settingKeys.append(key);
+    return settingKeys;
+}
+
+QJsonValue DapDataSettings::packItem(const QVariant& data)
+{
+    QJsonValue jv;
+    if (data.isValid())
+    {
+        if (QString(data.typeName()) == "QByteArray")
+        {
+            // QByteArray to string
+            QJsonObject jo;
+            QByteArray ba = data.toByteArray();
+            QString s = ba.toHex();
+            jo["array"] = s;
+            jv = jo;
+        }
+        else
+            jv = QJsonValue::fromVariant(data);
+    }
+    else
+        jv = QJsonValue::fromVariant(QVariant());
+    return jv;
+}
+
+QVariant DapDataSettings::unpackItem(const QJsonValue& data)
+{
+    QVariant v;
+    if (data.isObject())
+    {
+        QJsonObject jo = data.toObject();
+        QString key = "array";
+        if (jo.contains(key))
+        {
+            // string to QVarinat(QByteArray)
+            QString sdata = jo.value(key).toString();
+            QByteArray ba(sdata.toStdString().c_str(), sdata.length());
+            v = QVariant(QByteArray::fromHex(ba.toStdString().c_str()));
+        }
+    }
+    else if (data.isNull() || data.isUndefined())
+        v = QVariant();
+    else
+        v = data.toVariant();
+    return v;
+}
+
+bool DapDataSettings::itemCompare(const QVariant& a, const QVariant& b)
+{
+    if (QString(a.typeName()) == QString(b.typeName()))
+    {
+        if (QString(a.typeName()) == "QByteArray")
+        {
+            return a.toByteArray().toHex() == b.toByteArray().toHex();
+        }
+        else
+            return a == b;
+    }
+    else
+        return false;
+}
+
+
+/// DapDataSettingsLocal
+
+QSettings* DapDataSettingsLocal::settings()
+{
+#ifdef Q_OS_ANDROID
+    static QString s_path = DapLogger::defaultLogPath(DAP_BRAND).chopped(3).append("settings.ini");
+
+    /* Legacy settings import, will be deprecated on targeting API 30+ */
+    int l_ofd = open(qPrintable(s_path), O_RDONLY);
+    if (l_ofd <= 0) {
+        int _l_fd = open("/sdcard/KelvinVPN/log/settings.ini", O_RDWR);
+        int l_fd = _l_fd > 0 ? _l_fd : open("/sdcard/" DAP_BRAND "/log/settings.ini", O_RDWR);
+        if (l_fd > 0) {
+            int l_ofd = open(qPrintable(s_path), O_CREAT | O_RDWR);
+            struct stat statBuf;
+            fstat(l_fd, &statBuf);
+            qInfo() << "Imported old settings [" << sendfile(l_ofd, l_fd, NULL, statBuf.st_size) << "] bytes";
+            ftruncate(l_fd, 0);
+            close(l_fd);
+            close(l_ofd);
+        } else {
+            qInfo() << "Old settings not found";
+        }
+    } else {
+        close(l_ofd);
+    }
+
+    static QSettings s_settings(s_path, QSettings::IniFormat);
+#else
+    static QSettings s_settings;
+#endif
+    return &s_settings;
+}
+
+QVariant DapDataSettingsLocal::getSetting(const QString &a_key)
+{
+    return settings()->value(a_key);
+}
+
+void DapDataSettingsLocal::saveSetting(const QString &a_key, const QVariant &a_value)
+{
+    settings()->setValue(a_key, a_value);
+    settings()->sync();
+}
+
+void DapDataSettingsLocal::removeSetting(const QString &a_key)
+{
+    settings()->remove(a_key);
+}
+
+QJsonObject DapDataSettingsLocal::toJson()
+{
+    QJsonObject settingData;
+    foreach(const QString& key, settings()->allKeys())
+        settingData[key] = DapDataSettings::packItem(getSetting(key));
+    return settingData;
+}
+
+
+
+QVariant DapDataSettingsMap::getSetting(const QString &a_key)
+{
+    if (m_localData.contains(a_key))
+        return m_localData[a_key];
+    else
+        return QVariant();
+}
+
+void DapDataSettingsMap::saveSetting(const QString &a_key, const QVariant &a_value)
+{
+    QMap<QString, QVariant> data;
+    bool n_eaqual = !DapDataSettings::itemCompare(m_localData[a_key], a_value);
+    // if m_localData[a_key] and a_value are different
+    if (n_eaqual)
+    {
+        // then save the new data and emit a signal
+        m_localData[a_key] = a_value;
+        data[a_key] = a_value;
+        emit dataUpdated(data);
+    }
+}
+
+void DapDataSettingsMap::removeSetting(const QString &a_key)
+{
+    QStringList keys;
+    m_localData.remove(a_key);
+    keys.append(a_key);
+    emit dataRemoved(keys);
+}
+
+
+QJsonObject DapDataSettingsMap::toJson()
+{
+    QJsonObject settingData;
+    foreach(const QString& key, m_localData.keys())
+        settingData[key] = DapDataSettings::packItem(getSetting(key));
+    return settingData;
+}
+
+
+void DapDataSettingsMap::fromJson(QJsonObject* jdata)
+{
+    foreach(const QString& key, jdata->keys())
+        if (jdata->value(key) != QJsonValue::Undefined)
+        {
+            m_localData[key] = DapDataSettings::unpackItem(jdata->value(key).toObject());
+        }
+}
+
+
+
+
+DapDataLocal::DapDataLocal()
+    : QObject()
+    , secretKey(Q_NULLPTR)
+    , m_loadAuthorizationDatas(false)
+    , m_serialKeyData(new DapSerialKeyData(this))
+    , m_buReportHistory(new DapBugReportHistory(this))
+    , m_localSettings(new DapDataSettingsLocal())
+    , m_serviceSettings(new DapDataSettingsMap())
+{
+    qDebug() << "[DL] DapDataLocal Constructor";
+//    initSecretKey();
+//    this->loadAuthorizationDatas();
+}
+
+/// DapDataLocal class initialization on the gui side
+void DapDataLocal::initGuiData()
+{
+    // signal connection for send data to service
+    connect(m_serviceSettings, &DapDataSettingsMap::dataUpdated,  this, &DapDataLocal::dataUpdated);
+    // signal connection for send removed keys
+    connect(m_serviceSettings, &DapDataSettingsMap::dataRemoved,  this, &DapDataLocal::dataRemoved);
+    // list of settings keys located on the service
+    m_keysForServerStorage << TEXT_SERIAL_KEY << TEXT_SERIAL_KEY_HISTORY << TEXT_PENDING_SERIAL_KEY
+                           << TEXT_BUGREPORT_HISTORY << TEXT_LOGIN << TEXT_PASSWORD << TEXT_TX_OUT
+                           << TEXT_KEY;
+    qDebug() << "[DL] DapDataLocal: init gui data";
+}
+
+/// DapDataLocal class initialization on the service side
+void DapDataLocal::initServiceData()
+{
+    // load configuration data from xml file
+    config.parseXML(":/data.xml");
+    qDebug() << "[DL] DapDataLocal: init service data";
+}
+
 
 /// Get login.
 /// @return Login.
@@ -211,11 +474,11 @@ QList<QString> DapDataLocal::getHistorySerialKeyData()
 void DapDataLocal::loadAuthorizationDatas()
 {
 #ifdef Q_OS_ANDROID
-    auto keys = settings()->allKeys();
+    auto keys = m_localSettings->allKeys();
     if (keys.isEmpty()) {
         QSettings oldSettings;
         for (auto key : oldSettings.allKeys()) {
-            settings()->setValue(key, oldSettings.value(key));
+            m_localSettings->saveSetting(key, oldSettings.value(key));
         }
     }
 #endif
@@ -226,38 +489,6 @@ void DapDataLocal::loadAuthorizationDatas()
     if (m_serialKeyData)
         this->loadFromSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
     this->loadFromSettings(TEXT_PENDING_SERIAL_KEY, m_pendingSerialKey);
-}
-
-QSettings* DapDataLocal::settings()
-{
-#ifdef Q_OS_ANDROID
-    static QString s_path = DapLogger::defaultLogPath(DAP_BRAND).chopped(3).append("settings.ini");
-
-    /* Legacy settings import, will be deprecated on targeting API 30+ */
-    int l_ofd = open(qPrintable(s_path), O_RDONLY);
-    if (l_ofd <= 0) {
-        int _l_fd = open("/sdcard/KelvinVPN/log/settings.ini", O_RDWR);
-        int l_fd = _l_fd > 0 ? _l_fd : open("/sdcard/" DAP_BRAND "/log/settings.ini", O_RDWR);
-        if (l_fd > 0) {
-            int l_ofd = open(qPrintable(s_path), O_CREAT | O_RDWR);
-            struct stat statBuf;
-            fstat(l_fd, &statBuf);
-            qInfo() << "Imported old settings [" << sendfile(l_ofd, l_fd, NULL, statBuf.st_size) << "] bytes";
-            ftruncate(l_fd, 0);
-            close(l_fd);
-            close(l_ofd);
-        } else {
-            qInfo() << "Old settings not found";
-        }
-    } else {
-        close(l_ofd);
-    }
-
-    static QSettings s_settings(s_path, QSettings::IniFormat);
-#else
-    static QSettings s_settings;
-#endif
-    return &s_settings;
 }
 
 QVariant DapDataLocal::getEncryptedSetting(const QString &a_setting)
@@ -280,6 +511,7 @@ bool DapDataLocal::loadEncryptedSettingString(const QString &a_setting, QByteArr
         a_outString = "";
         return true;
     }
+    if (secretKey == Q_NULLPTR) initSecretKey();
     secretKey->decode(encryptedString, a_outString);
 
     return true;
@@ -294,24 +526,35 @@ void DapDataLocal::saveEncryptedSetting(const QString &a_setting, const QVariant
 void DapDataLocal::saveEncryptedSetting(const QString &a_setting, const QByteArray &a_string)
 {
     QByteArray encodedString;
+    if (secretKey == Q_NULLPTR) initSecretKey();
     secretKey->encode(a_string, encodedString);
     DapDataLocal::saveSetting(a_setting, encodedString);
 }
 
+DapDataSettings* DapDataLocal::settings(const QString& keyName)
+{
+    if (m_keysForServerStorage.contains(keyName))
+        return m_serviceSettings;
+    else
+        return m_localSettings;
+}
+
 QVariant DapDataLocal::getSetting(const QString &a_setting)
 {
-    return settings()->value(a_setting);
+    DapDataSettings* settings = DapDataLocal::instance()->settings(a_setting);
+    return settings->getSetting(a_setting);
 }
 
 void DapDataLocal::saveSetting(const QString &a_setting, const QVariant &a_value)
 {
-    settings()->setValue(a_setting, a_value);
-    settings()->sync();
+    DapDataSettings* settings = DapDataLocal::instance()->settings(a_setting);
+    settings->saveSetting(a_setting, a_value);
 }
 
 void DapDataLocal::removeSetting(const QString &a_setting)
 {
-    settings()->remove(a_setting);
+    DapDataSettings* settings = DapDataLocal::instance()->settings(a_setting);
+    settings->removeSetting(a_setting);
 }
 
 DapBugReportData *DapDataLocal::bugReportData()
@@ -326,6 +569,11 @@ DapServersData *DapDataLocal::serversData()
 
 DapSerialKeyData *DapDataLocal::serialKeyData()
 {
+    if (!m_loadAuthorizationDatas)
+    {
+        loadAuthorizationDatas();
+        m_loadAuthorizationDatas = true;
+    }
     return m_serialKeyData;
 }
 
@@ -336,14 +584,14 @@ DapBugReportHistory * DapDataLocal::bugReportHistory()
 
 void DapDataLocal::initSecretKey()
 {
-    if (settings()->value("key").toString().isEmpty())
+    if (m_localSettings->getSetting("key").toString().isEmpty())
     {
-        settings()->setValue("key", getRandomString(40));
+        m_localSettings->saveSetting("key", getRandomString(40));
     }
     if (secretKey != nullptr) {
         delete secretKey;
     }
-    secretKey = new DapKey(DAP_ENC_KEY_TYPE_IAES, settings()->value("key").toString() + "SLKJGN234njg6vlkkNS3s5dfzkK5O54jhug3KUifw23");
+    secretKey = new DapKey(DAP_ENC_KEY_TYPE_IAES, m_localSettings->getSetting("key").toString() + "SLKJGN234njg6vlkkNS3s5dfzkK5O54jhug3KUifw23");
 }
 
 QString DapDataLocal::getRandomString(int size)
@@ -360,10 +608,37 @@ QString DapDataLocal::getRandomString(int size)
    return randomString;
 }
 
+void DapDataLocal::updateSettingWithServiceSecretKey()
+{
+    QLocale::Language systemLanguage;
+    QLocale::Language savedLanguage;
+    QString ColorTheme = m_localSettings->getSetting(SETTING_THEME).toString();
+    loadFromSettings(SETTING_SYS_LOCALE, systemLanguage);
+    loadFromSettings(SETTING_LOCALE, savedLanguage);
+    m_localSettings->saveSetting("key", m_serviceSettings->getSetting("key").toString());
+    initSecretKey();
+    m_localSettings->saveSetting(SETTING_THEME, ColorTheme);
+    saveToSettings(SETTING_SYS_LOCALE, systemLanguage);
+    saveToSettings(SETTING_LOCALE, savedLanguage);
+}
+
+bool DapDataLocal::compareLocalAndServiceSecretKeys()
+{
+    return m_localSettings->getSetting("key").toString() == m_serviceSettings->getSetting("key").toString();
+}
+
+bool DapDataLocal::isServiceSecretKeyEmpty()
+{
+    return m_serviceSettings->getSetting("key").toString().isEmpty() || m_serviceSettings->getSetting("key").toString().isNull();
+}
+
+void DapDataLocal::saveLocalSecretKeyToService()
+{
+    m_serviceSettings->saveSetting("key", m_localSettings->getSetting("key"));
+}
+
 DapDataLocal *DapDataLocal::instance()
 {
     static DapDataLocal s_instance;
     return &s_instance;
 }
-
-
