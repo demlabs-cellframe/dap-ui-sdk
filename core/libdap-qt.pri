@@ -1,6 +1,6 @@
 QT += core network xml
 #INCLUDEPATH += ../libdap/include ../libdap/src
-include (../quazip/quazip.pri)
+include (../zip/zip.pri)
 SOURCES += \
     $$PWD/DapBugReport.cpp \
     $$PWD/DapBugReportData.cpp \
