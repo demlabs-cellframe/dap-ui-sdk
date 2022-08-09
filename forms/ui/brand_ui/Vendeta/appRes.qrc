@@ -22,5 +22,6 @@
         <file compress="1">asset/logo-vendeta-color.png</file>
         <file compress="1">asset/logo-vendeta-color-dark.png</file>
         <file compress="1">asset/ic_trash.png</file>
+        <file compress="1">asset/ic_location.png</file>
     </qresource>
 </RCC>

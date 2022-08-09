@@ -18,6 +18,7 @@ static void defaultCb () {}
 /* settings */
 static void cbLicenceGet();
 static void cbLicenceReset();
+static void cbCountry();
 static void cbLanguage();
 static void cbColorTheme();
 
@@ -270,6 +271,7 @@ void SettingsModel::_updateLabels()
 
     _SItem{SI_BUTTONRED,  {tr ("Get a new licence key"), /*"265 days left"*/" "}, "settings_icon ic_renew", cbLicenceGet},
     _SItem{SI_BUTTON,     {tr ("Reset license key"), ""}, "settings_icon ic_key", cbLicenceReset},
+    _SItem{SI_LINK,       {tr ("Your country"), ""}, "settings_icon ic_country", cbCountry},
 #ifdef ENABLE_LANGUAGE_SUPPORT
     _SItem{SI_LINK,       {tr ("Language"), ""}, "settings_icon ic_language", cbLanguage},
 #endif // ENABLE_LANGUAGE_SUPPORT
@@ -315,6 +317,7 @@ void cbLicenceGet()     { emit s_settings->sigLicenceGet(); }
 void cbLicenceReset()   { emit s_settings->sigLicenceReset(); }
 void cbLanguage()       { emit s_settings->sigLanguage(); }
 void cbColorTheme()     { emit s_settings->sigColorTheme(); }
+void cbCountry()        { emit s_settings->sigCountry(); }
 
 /* support */
 void cbBugSend()        { emit s_settings->sigBugSend(); }

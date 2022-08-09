@@ -1,23 +1,21 @@
-#ifndef CHOOSESERVERMODEL_H
-#define CHOOSESERVERMODEL_H
+#ifndef COUNTRYMODEL_H
+#define COUNTRYMODEL_H
 
 /* INCLUDES */
-#include <QAbstractListModel>
+#include <QStringList>
 #include <dapguiradio.h>
 #include "modelbase.h"
-#include "DapServersData.h"
 
 /* DEFS */
-class ChooseServer;
+class Country;
 
 /****************************************//**
  * @brief choose server model list widget
  * @ingroup groupUiModels
- * @date 01.09.2021
- * @author Mikhail Shilenko
- *******************************************/
+ * @date 08.2022
+  *******************************************/
 
-class ChooseServerModel : public ModelBase
+class CountryModel : public ModelBase
 {
   Q_OBJECT
 
@@ -26,9 +24,9 @@ class ChooseServerModel : public ModelBase
    *******************************************/
   /// @{
 private:
-  QAbstractListModel *m_model;
-  ChooseServer *m_cs;
-  QList<DapGuiRadioBase*> m_list;
+  QStringList m_array;
+  Country *m_cs;
+  QList<DapGuiRadio*> m_list;
   bool _hook;
   int m_currentIndex;
   QString m_currentText;
@@ -39,8 +37,8 @@ private:
    *******************************************/
   /// @{
 public:
-  explicit ChooseServerModel (QWidget *parent = nullptr);
-  ~ChooseServerModel() override;
+  explicit CountryModel (QWidget *parent = nullptr);
+  ~CountryModel() override;
   /// @}
 
   /****************************************//**
@@ -50,8 +48,9 @@ public:
 public:
   /// set model into this widget
   /// @note old model will not be deleted
-  void setModel (QAbstractListModel *model, ChooseServer *cs);
-  QAbstractListModel *model() const;
+  void setCountryList (const QStringList &a_array, Country *a_cs);
+  void setCurrentCountry (const QString a_country);
+  const QStringList &array() const;
   /// @}
 
   /****************************************//**
@@ -60,14 +59,14 @@ public:
   /// @{
 public slots:
   void slotSetup();
-  void setSelectedItem(QString name);
+  void slotRetranslate();
 private slots:
-  /// radio button clicked
-  void slotToggled ();
+  /// radio button toggle
+  void slotToggled (bool checked);
   /// @}
 signals:
   void filled();
 };
 
 /*-----------------------------------------*/
-#endif // CHOOSESERVERMODEL_H
+#endif // COUNTRYMODEL_H

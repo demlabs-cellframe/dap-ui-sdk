@@ -422,10 +422,21 @@
 
 .crb_textstyle
 {
-	height: 60pt;
-	min-height: 60pt;
-	max-height: 60pt;
+    height: 60pt;
+    min-height: 60pt;
+    max-height: 60pt;
 }
+
+.crb_indicator_connection
+{
+    width: 30pt;
+    height: 30pt;
+    min-width: 30pt;
+    min-height: 30pt;
+    max-width: 30pt;
+    max-height: 30pt;
+}
+
 
 .crb_on
 {
@@ -455,6 +466,36 @@
 .crb_off-dark
 {
 	qproperty-scaledPixmap: url("://gfx/dark/radio_btn_off.png");
+}
+
+.crb_no_connection
+{
+  qproperty-scaledPixmap:  url("://icons/no_connection.png");
+}
+
+.crb_full
+{
+  qproperty-scaledPixmap:  url("://icons/full.png");
+}
+
+.crb_almost_full
+{
+  qproperty-scaledPixmap:  url("://icons/full_2.png");
+}
+
+.crb_middle
+{
+  qproperty-scaledPixmap:  url("://icons/middle.png");
+}
+
+.crb_low
+{
+  qproperty-scaledPixmap:  url("://icons/low.png");
+}
+
+.crb_very_low
+{
+  qproperty-scaledPixmap:  url("://icons/low_2.png");
 }
 
 .csep-left
@@ -772,6 +813,11 @@
 .ic_version
 {
 	qproperty-scaledPixmap: url("://gui/asset/ic_version.png");
+}
+
+.ic_country
+{
+        qproperty-scaledPixmap: url("://gui/asset/ic_location.png");
 }
 
 .ic_theme

@@ -185,6 +185,7 @@ protected:
   /// get singleton signal instance
   static DapGuiStyleManager &_signal();
   static void setContextMenuStyle();
+  static void setToolTipStyle();
 protected slots:
   void forcedStyleUpdate();
   /// @}

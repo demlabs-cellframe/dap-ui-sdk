@@ -120,6 +120,17 @@ void DapGuiStyleManager::setContextMenuStyle()
       "}\n");
 }
 
+void DapGuiStyleManager::setToolTipStyle()
+{
+  qApp->setStyleSheet(
+    "\n\n"
+    "QToolTip {"
+    "border: 0px solid black;"
+    "background-color: rgb(255, 255, 255);"
+    "color: rgb(255, 255, 255);"
+    "}\n");
+}
+
 /********************************************
  * STATIC METHODS
  *******************************************/
@@ -128,6 +139,7 @@ void DapGuiStyleManager::setupGlobalStyleSheet (const QString &styleSheet)
 {
   Gss().set (styleSheet);
   setContextMenuStyle();
+  setToolTipStyle();
   emit s_signal.forceStyleUpdate();
 }
 
