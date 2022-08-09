@@ -31,14 +31,25 @@ void DapSerialKeyData::setSerialKey(const QString &a_serialKey)
 
 bool DapSerialKeyData::isActivated() const
 {
+    if (m_serialKey.length() == 0)
+        return false;
     return m_isActivated;
 }
 
 void DapSerialKeyData::setActivated(bool a_isActivated)
 {
-    if (m_isActivated == a_isActivated)
-        return;
-    m_isActivated = a_isActivated;
+    if (m_serialKey.length() == 0)
+    {
+        if (m_isActivated == false)
+            return;
+        m_isActivated = false;
+    }
+    else
+    {
+        if (m_isActivated == a_isActivated)
+            return;
+        m_isActivated = a_isActivated;
+    }
 
     emit activationChanged(a_isActivated);
 }
@@ -65,7 +76,7 @@ int DapSerialKeyData::daysLeft()
 QString DapSerialKeyData::daysLeftString()
 {
     QString text;
-    if (m_isActivated)
+    if (isActivated())
     {
         int days = this->daysLeft();
         switch (days) {
@@ -89,7 +100,6 @@ void DapSerialKeyData::setLicenseTermTill(const QString &a_date)
     if (this->m_licenseTermTill == tempDate)
         return;
     this->m_licenseTermTill = tempDate;
-
     emit this->daysLeftStringChanged(this->daysLeftString());
 }
 
