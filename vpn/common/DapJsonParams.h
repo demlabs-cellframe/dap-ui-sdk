@@ -27,7 +27,6 @@ enum class DapJsonCmdType
     SEND_SIGN_UP_REQUEST,
     REQUEST_PURCHASE_VERIFY,
     CLIENT_INFO,
-    DATA_LOCAL,
     UNKNOWN
 };
 

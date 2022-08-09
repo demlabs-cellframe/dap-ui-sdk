@@ -26,127 +26,28 @@ const QString TEXT_BUGREPORT_HISTORY    = "bugreporthistory";
 const QString TEXT_LOGIN                = "login";
 const QString TEXT_PASSWORD             = "password";
 const QString TEXT_TX_OUT               = "tx_out";
-const QString TEXT_KEY                  = "key";
-const QString SETTING_LOCALE            = "language";
-const QString SETTING_SYS_LOCALE        = "SysLanguage";
-const QString SETTING_THEME             = "ColorTheme";
 
 class DapSerialKeyData;
 
-/// Configuration data loaded from xml
-struct ConfigData
-{
-    QList<QString>  m_cdbServersList;
-    QString         m_networkDefault;
-    QString         m_urlSite;
-    QString         m_brandName;
-    /// loading data from xml file
-    void parseXML(const QString& a_fname);
-    /// export configuration data from json object
-    /// used in conjunction with fromJson
-    QJsonObject             toJson();
-    /// import configuration data from json object
-    /// used in conjunction with toJson
-    void                    fromJson(QJsonObject* data);
-};
-
-/// settings control class
-class DapDataSettings : public QObject
-{
-    Q_OBJECT
-public:
-    DapDataSettings(): QObject() {}
-    /// map to json object, used to pack settning data to json
-    static QJsonObject  toJson(QMap<QString, QVariant> a_data);
-    /// key list to json object, used to pack key list to json
-    static QJsonArray   toJson(QStringList a_keys);
-    /// pack settings data to json value
-    /// used in conjunction with unpackItem
-    static QJsonValue   packItem(const QVariant& data);
-    /// unpack settings data from json value
-    /// used in conjunction with packItem
-    static QVariant     unpackItem(const QJsonValue& data);
-    /// compare settings data
-    static bool         itemCompare(const QVariant& a, const QVariant& b);
-    /// get settings data by key
-    virtual QVariant            getSetting (const QString& a_key) {}
-    /// save settings data
-    virtual void                saveSetting(const QString& a_key, const QVariant& a_value) {}
-    /// remove settings data by key
-    virtual void                removeSetting(const QString& a_key) {}
-    /// import setting data from json object
-    /// used in conjunction with toJson
-    virtual void                fromJson(QJsonObject* jdata) {}
-    /// export setting data from json object
-    /// used in conjunction with fromJson
-    virtual QJsonObject         toJson() {}
-};
-
-/// service settings control class
-class DapDataSettingsMap : public DapDataSettings
-{
-    Q_OBJECT
-public:
-    DapDataSettingsMap(): DapDataSettings() {}
-    QVariant            getSetting (const QString& a_key) override;
-    void                saveSetting(const QString& a_key, const QVariant& a_value) override;
-    void                removeSetting(const QString& a_key) override;
-    void                fromJson(QJsonObject* jdata) override;
-    QJsonObject         toJson() override;
-signals:
-    /// Signal emitted if setting changed
-    void dataUpdated(const QMap<QString, QVariant> data);
-    /// Signal emitted if setting key removed
-    void dataRemoved(const QStringList& keys);
-private:
-    QMap<QString, QVariant>  m_localData;
-};
-
-/// local settings control class
-class DapDataSettingsLocal : public DapDataSettings
-{
-    Q_OBJECT
-public:
-    DapDataSettingsLocal(): DapDataSettings() {}
-    QVariant            getSetting (const QString& a_key) override;
-    void                saveSetting(const QString& a_key, const QVariant& a_value) override;
-    void                removeSetting(const QString& a_key) override;
-    QJsonObject         toJson() override;
-    QStringList         allKeys() {return settings()->allKeys();}
-private:
-    QSettings*          settings();
-};
-
-
-
 class DapDataLocal : public QObject
 {
-    Q_OBJECT
 public:
+    Q_OBJECT
     DapDataLocal();
-    /// init DapDataLocal for gui
-    void initGuiData();
-    /// init DapDataLocal for service
-    void initServiceData();
-
-private:
     const QString ServerListName;
 
     QString     m_brandName;
     QString     logFilePath;
 
-    /// secretKey methods
-private:
-    DapKey *secretKey;
-    void initSecretKey();
-public:
-    QString getRandomString(int);
-    void updateSettingWithServiceSecretKey();
-    bool compareLocalAndServiceSecretKeys();
-    bool isServiceSecretKeyEmpty();
-    void saveLocalSecretKeyToService();
+    void parseXML(const QString& a_fname);
 
+    DapKey *secretKey = Q_NULLPTR;
+    void initSecretKey();
+    QString getRandomString(int);
+
+public:
     static DapDataLocal* instance();
+
     QString login() const;
 
     void setLogFilePath(QString path){logFilePath = path;}
@@ -154,10 +55,12 @@ public:
 
     QString password() const;
 
-    const QList<QString> &cdbServersList() { return config.m_cdbServersList; }
-    const QString & networkDefault()       { return config.m_networkDefault; }
-    const QString & getUrlSite()           { return config.m_urlSite;        }
-    const QString & getBrandName()         { return config.m_brandName;      }
+    DataToUpdate& getDataToUpdate(){return m_dataToUpdate;}
+
+    const QList<QString> &cdbServersList() { return m_cdbServersList; }
+    const QString & networkDefault()       { return m_networkDefault; }
+    const QString & getUrlSite()           { return m_urlSite;        }
+    const QString & getBrandName()         { return m_brandName;      }
 
     QList<QString>::const_iterator m_cdbIter;
 
@@ -190,22 +93,11 @@ public:
     QString pendingSerialKey(){return m_pendingSerialKey;};
 
     DapBugReportHistory *bugReportHistory();
-    /// returns a DapDataSettings pointer by key name
-    DapDataSettings* settings(const QString& keyName);
 
 public slots:
     void setLogin(const QString &a_login);
     void setPassword(const QString &password);
     void saveAuthorizationData();
-    /// load config data from json object, used to load from service
-    void configFromJson(QJsonObject* data)  { config.fromJson(data); }
-    /// load setting data from json object, used to load from service
-    void settingsFromJson(QJsonObject* data) {
-        m_serviceSettings->fromJson(data);
-        loadAuthorizationDatas();
-        m_loadAuthorizationDatas = true;
-    }
-
 signals:
     /// Signal emitted if login has changed.
     /// @param login Login.
@@ -213,34 +105,31 @@ signals:
     /// Signal emitted if password has changed.
     /// @param password Password.
     void passwordChanged(const QString& password);
+
     void licenseTermTillChanged(const QString &a_date);
+
     void sigHistoryDataSaved();
-    /// Signal emitted if setting changed
-    void dataUpdated(const QMap<QString, QVariant> data);
-    /// Signal emitted if setting key removed
-    void dataRemoved(const QStringList& keys);
 
 protected:
-    ConfigData config;
+    QList<QString>  m_cdbServersList;
+    QString         m_networkDefault;
+    QString         m_urlSite;
 
 private:
     void loadAuthorizationDatas();
-    bool m_loadAuthorizationDatas;
+    static QSettings* settings();
 
     QString m_login;      ///< Login.
     QString m_password;   ///< Password.
     QString m_serialKey;  ///< Serial key.
+
+    DataToUpdate m_dataToUpdate; ///data to update
 
     DapSerialKeyData* m_serialKeyData;
     QSet <QString> * m_serialKeyDataList;
     QString m_pendingSerialKey;
 
     DapBugReportHistory* m_buReportHistory;
-
-    DapDataSettingsLocal* m_localSettings;      /// local settings management class instance
-    DapDataSettingsMap* m_serviceSettings;      /// service settings management class instance
-
-    QStringList m_keysForServerStorage;         /// list of settings keys located on the service
 };
 
 template<typename T>
