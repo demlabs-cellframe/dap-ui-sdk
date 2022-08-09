@@ -108,7 +108,7 @@
            <item>
             <widget class="DapGuiLabel" name="label">
              <property name="text">
-              <string>Country</string>
+              <string>Your country</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>

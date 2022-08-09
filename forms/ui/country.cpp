@@ -105,7 +105,7 @@ void Country::hideOverlay()
 
 void Country::slotRetranslated()
 {
-  ui->label->setText (tr ("Country"));
+  ui->label->setText (tr ("Your country"));
   ui->scrollArea->slotRetranslate();
 }
 

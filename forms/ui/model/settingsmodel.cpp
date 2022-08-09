@@ -271,7 +271,7 @@ void SettingsModel::_updateLabels()
 
     _SItem{SI_BUTTONRED,  {tr ("Get a new licence key"), /*"265 days left"*/" "}, "settings_icon ic_renew", cbLicenceGet},
     _SItem{SI_BUTTON,     {tr ("Reset license key"), ""}, "settings_icon ic_key", cbLicenceReset},
-    _SItem{SI_LINK,       {tr ("Country"), ""}, "settings_icon ic_country", cbCountry},
+    _SItem{SI_LINK,       {tr ("Your country"), ""}, "settings_icon ic_country", cbCountry},
 #ifdef ENABLE_LANGUAGE_SUPPORT
     _SItem{SI_LINK,       {tr ("Language"), ""}, "settings_icon ic_language", cbLanguage},
 #endif // ENABLE_LANGUAGE_SUPPORT

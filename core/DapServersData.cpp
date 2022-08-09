@@ -321,7 +321,6 @@ QMap<QString, QString> DapServersData::m_countryMap = {
     {"Romania"                          , "RO"},
     {"Serbia"                           , "RS"},
     {"Russia"                           , "RU"},
-    {"Russian federation"               , "RU"},
     {"Rwanda"                           , "RW"},
     {"Saudi arabia"                     , "SA"},
     {"Solomon islands"                  , "SB"},
