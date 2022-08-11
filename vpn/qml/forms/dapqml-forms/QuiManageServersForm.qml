@@ -28,13 +28,39 @@ Item {
     /// @brief form name
     ///
     /// Used to connect interface via Manager
-    property string formName: "Settings"
+    property string formName: "Manage Servers"
 
     /// @}
     /****************************************//**
      * @name FUNCTIONS
      ********************************************/
     /// @{
+
+    /****************************************//**
+     * Title
+     ********************************************/
+
+    DapQmlDialogTitle {
+        id: title
+        text: qsTr("Manage Servers") + lang.notifier
+        qss: "dialog-title"
+    }
+
+    /****************************************//**
+     * Resizers
+     ********************************************/
+
+    DapQmlRectangle {
+        id: resizer
+        visible: false
+        qss: "radiobtn-resizer"
+    }
+
+    DapQmlRectangle {
+        id: spacer
+        visible: false
+        qss: "radiobtn-spacer"
+    }
 
     /****************************************//**
      * Content
@@ -49,12 +75,11 @@ Item {
             id: manserListView
             objectName: "manserListView"
 
-            x: 36
-            y: 0
-            width: root.width - 72
-            height: root.height
-
-            clip: false
+            x: (root.width - width) / 2
+            y: title.y + title.height * 2
+            width: resizer.width
+            height: root.height - y
+            clip: true
 
             /****************************************//**
              * Resizers
