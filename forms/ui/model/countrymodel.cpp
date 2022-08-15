@@ -67,6 +67,8 @@ void CountryModel::slotSetup()
   foreach (auto *oldItem, m_list)
     {
       lay->removeWidget (oldItem);
+      disconnect (oldItem, &DapGuiRadio::toggled,
+                  this, &CountryModel::slotToggled);
       delete oldItem;
     }
   m_list.clear();

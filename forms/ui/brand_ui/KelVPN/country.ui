@@ -127,13 +127,34 @@
            </item>
           </layout>
          </item>
-         <item>
-          <widget class="DapGuiWidget" name="kelGuiWidget_3">
-           <property name="cssStyle">
-            <string>choser-top-content-spacer</string>
-           </property>
-          </widget>
-         </item>
+        <item>
+        <widget class="DapGuiButton" name="btnCountryFilter" native="true">
+        <property name="cssStyle" stdset="0">
+        <string>cwb_height</string>
+        </property>
+        <property name="mainText" stdset="0">
+        <string>All</string>
+        </property>
+        <property name="subText" stdset="0">
+        <string>Country filter</string>
+        </property>
+        <property name="mainCssClass" stdset="0">
+        <string>darkblue font20 bold lato nobackground letterspace noborder</string>
+        </property>
+        <property name="subCssClass" stdset="0">
+        <string>gray uppercase font12 lato nobackground noborder</string>
+        </property>
+        <property name="leftCssClass" stdset="0">
+        <string>darkblue normalbold font30 noborder</string>
+        </property>
+        <property name="inputMask" stdset="0">
+        <string/>
+        </property>
+        <property name="separator" stdset="0">
+        <bool>true</bool>
+        </property>
+        </widget>
+        </item>         
          <item>
           <widget class="CountryModel" name="scrollArea">
            <property name="styleSheet">

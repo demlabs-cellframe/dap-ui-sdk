@@ -48,6 +48,16 @@ Country::Country (QWidget *parent) :
 
   m_movie   = new QMovie(":/gui/asset/Spinner.gif");
   m_spinner->setMovie (m_movie);
+  ui->btnCountryFilter->setBtnStyle (DapGuiButton::EditTopMainBottomSub);
+
+  connect (ui->btnCountryFilter, &DapGuiButton::textChanged,
+           this, [=](QString text) {
+      qDebug() << text;
+      ui->scrollArea->setCountryList(
+                  DapServersData::m_countryMap.keys().filter(
+                      text, Qt::CaseInsensitive),
+                  this);
+  });
 
 //  auto lay  = new QHBoxLayout;
 //  lay->addWidget (m_spinner);
