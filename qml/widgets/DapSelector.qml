@@ -7,7 +7,8 @@ Rectangle
 {
     id: selectorItem
 
-    property int itemBorder: 10
+    property int itemHorisontalBorder: 10
+    property int itemVerticalBorder: -2
     property int viewerBorder: 4
     property int currentIndex: viewerItem.currentIndex
     property alias selectorModel: viewerItem.model
@@ -15,68 +16,7 @@ Rectangle
 
     signal itemSelected()
 
-/*    ListModel {
-        id: selectorModel
-        ListElement {
-            name: "1m"
-        }
-        ListElement {
-            name: "5m"
-        }
-        ListElement {
-            name: "15m"
-        }
-        ListElement {
-            name: "30m"
-        }
-        ListElement {
-            name: "1h"
-        }
-        ListElement {
-            name: "4h"
-        }
-        ListElement {
-            name: "12h"
-        }
-        ListElement {
-            name: "24h"
-        }
-        ListElement {
-            name: "7D"
-        }
-        ListElement {
-            name: "14D"
-        }
-        ListElement {
-            name: "1M"
-        }
-        ListElement {
-            name: "3M"
-        }
-        ListElement {
-            name: "1Y"
-        }
-    }*/
-/*    ListModel {
-        id: selectorModel
-        ListElement {
-            name: "1 Day"
-        }
-        ListElement {
-            name: "1 Week"
-        }
-        ListElement {
-            name: "1 Month"
-        }
-        ListElement {
-            name: "3 Month"
-        }
-        ListElement {
-            name: "All"
-        }
-    }*/
-
-    width: viewerItem.width
+    implicitWidth: viewerItem.width
 
     border.color: currTheme.borderColor
     color: currTheme.backgroundMainScreen
@@ -91,11 +31,11 @@ Rectangle
         height: selectorItem.height
 //        clip: true
         orientation: ListView.Horizontal
+        interactive: false
 
         highlight:
             Rectangle
             {
-//                color: "lightsteelblue"
                 radius: height * 0.5
 
                 LinearGradient
@@ -116,55 +56,44 @@ Rectangle
                             {
                                 id: grad2
                                 position: 1;
-                                color:  currTheme.buttonColorNormalPosition1
+                                color: currTheme.buttonColorNormalPosition1
                             }
                         }
                 }
             }
 
-//        model: selectorModel
+        model: selectorModel
 
         delegate:
             Rectangle
             {
                 id: frameItem
-//                width: 40
-                width: childrenRect.width + itemBorder * 2
-                height: childrenRect.height + itemBorder * 2
+                width: textItem.width + itemHorisontalBorder * 2
+                height: selectorItem.height - viewerBorder * 2
 
                 color: "transparent"
-//                border.color: "dark gray"
-//                radius: height * 0.5
 
                 Text
                 {
                     id: textItem
-//                    anchors.centerIn: parent
-//                    x: itemBorder
-//                    y: itemBorder
-//                    height: selectorItem.height
-//                            - itemBorder * 2 - viewerBorder * 2
-                    x: itemBorder
-                    y: itemBorder
-                    height: selectorItem.height
-                            - itemBorder * 2 - viewerBorder * 2
+                    x: itemHorisontalBorder
+                    y: itemVerticalBorder
+                    height: frameItem.height
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     color: currTheme.textColor
                     font: mainFont.dapFont.medium14
                     text: name
 
-                    MouseArea {
-//                        anchors.fill: parent
-                        x: -itemBorder
-                        y: -itemBorder
-                        width: frameItem.width
-                        height: frameItem.height
+                }
 
-                        onClicked: {
-                            viewerItem.currentIndex = index
-                            itemSelected()
-                        }
+                MouseArea
+                {
+                    anchors.fill: parent
+
+                    onClicked: {
+                        viewerItem.currentIndex = index
+                        itemSelected()
                     }
                 }
             }
