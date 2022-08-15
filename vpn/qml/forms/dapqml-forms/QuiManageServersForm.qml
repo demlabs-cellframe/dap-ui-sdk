@@ -28,7 +28,7 @@ Item {
     /// @brief form name
     ///
     /// Used to connect interface via Manager
-    property string formName: "Manage Servers"
+    property string formName: "ManageServers"
 
     /// @}
     /****************************************//**
@@ -85,7 +85,7 @@ Item {
              * Resizers
              ********************************************/
 
-            DapQmlRectangle {
+            DapQmlLabel {
                 visible: false
                 id: resizer1
                 qss: "manser-resizer1"
@@ -99,12 +99,11 @@ Item {
                 id: delegate
 
                 property int myIndex: model.index
-                property int mySid: model.sid
 
-                width: settingsListView.width
+                width: manserListView.width
                 height: resizer1.height
                 buttonStyle: DapQmlButton.Style.IconMainSubIcon
-                mainText: model.textMain
+                mainText: model.name
                 subText: ""
                 separator: true
                 qss: "manser-item"

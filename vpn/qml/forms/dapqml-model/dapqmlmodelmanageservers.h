@@ -3,8 +3,10 @@
 
 /* INCLUDES */
 #include <QAbstractTableModel>
+#include <QSharedPointer>
 class QQmlEngine;
 class QJSEngine;
+class AbstractServerManager;
 
 /****************************************//**
  * @brief manage servers model list
@@ -33,6 +35,9 @@ public:
   static DapQmlModelManageServers *instance();
   Q_INVOKABLE static QObject *singletonProvider (QQmlEngine *engine, QJSEngine *scriptEngine);
   Q_INVOKABLE int length() const;
+  void installManager (QSharedPointer<AbstractServerManager> a_manager);
+
+  void fillDummyList();
   /// @}
 
   /****************************************//**

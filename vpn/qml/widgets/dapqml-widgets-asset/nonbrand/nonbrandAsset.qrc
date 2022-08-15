@@ -21,5 +21,6 @@
         <file compress="1">fonts/Exo2-Regular.ttf</file>
         <file compress="1">fonts/Blinker-SemiBold.ttf</file>
         <file compress="1">stripes.png</file>
+        <file>nonthemed/conn-icon.png</file>
     </qresource>
 </RCC>

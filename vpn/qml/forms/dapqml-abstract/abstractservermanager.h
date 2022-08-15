@@ -40,6 +40,19 @@ public:
     int ping;
     bool favorite;
   };
+
+  /// combined structure to ease iteration
+  struct ServerInfo : public Server, public State
+  {
+    ServerInfo (const Server &a_server, const State &a_state)
+    {
+      name      = a_server.name;
+      address   = a_server.address;
+      port      = a_server.port;
+      ping      = a_state.ping;
+      favorite  = a_state.favorite;
+    }
+  };
   /// @}
 
   /****************************************//**
@@ -48,7 +61,7 @@ public:
   /// @{
 public:
   AbstractServerManager() {};
-  virtual ~AbstractServerManager() = 0;
+  virtual ~AbstractServerManager() {};
   /// @}
 
   /****************************************//**
@@ -57,8 +70,9 @@ public:
   /// @{
 public:
   /// append server
-  void append (Server &&a_newServer)  { setServer (std::move (a_newServer)); }
-  QStringList servers() const         { return keys(); }
+  void append (Server &&a_newServer)            { setServer (std::move (a_newServer)); }
+  QStringList servers() const                   { return keys(); }
+  ServerInfo info (const QString &a_name) const { return ServerInfo { server (a_name), state (a_name) }; }
   /// @}
 
   /****************************************//**
@@ -79,20 +93,20 @@ public:
   /// remove server by name
   virtual void remove (const QString &a_name) = 0;
 
-  /// set specific server state
-  virtual void setState (const QString &a_name, State &&a_newState) = 0;
-
   /// request server state. otherwise will return static dummy item.
   virtual const State &state (const QString &a_name) const = 0;
 
+  /// set specific server state
+  virtual void setState (const QString &a_name, State &&a_newState) = 0;
+
   /// request servers keys
-  virtual QStringList keys() const = 0;
+  virtual const QStringList &keys() const = 0;
 
   /// request servers list size
   virtual int size() const = 0;
 
   /// request all favorite servers
-  virtual QStringList favorites() const = 0;
+  virtual const QStringList &favorites() const = 0;
   /// @}
 
   /****************************************//**
@@ -101,7 +115,10 @@ public:
   /// @{
 public:
   AbstractServerManager &operator<< (Server &&a_newServer)  { append (std::move (a_newServer)); return *this; }
-  const Server operator[] (const QString &a_name) const     { return server (a_name); }
+  const ServerInfo operator[] (const QString &a_name) const
+  {
+    return info (a_name);
+  }
   /// @}
 };
 
