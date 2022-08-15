@@ -13,6 +13,7 @@ RESOURCES += \
     $$PWD/dapqml-forms.qrc
 
 HEADERS += \
+    $$PWD/dapqml-abstract/abstractservermanager.h \
     $$PWD/dapqml-forms/doc-group-qml-forms.h \
     $$PWD/dapqml-model/dapqmlmodelbugreports.h \
     $$PWD/dapqml-model/dapqmlmodelchooseserver.h \
