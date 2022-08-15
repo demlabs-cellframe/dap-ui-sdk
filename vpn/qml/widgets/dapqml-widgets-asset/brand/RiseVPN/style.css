@@ -213,6 +213,29 @@
     scaled-rect: scaled(nan,nan,392,20,false);
 }
 
+
+
+.inputfield-separator
+{
+    scaled-rect: scaled(-1,362,363,4,false);
+}
+
+.inputfield-input
+{
+    scaled-rect: scaled(-1,320,363,40,false,16);
+}
+
+.inputfield-placeholder-in
+{
+    scaled-rect: scaled(-1,320,363,24,false,16);
+}
+
+.inputfield-placeholder-out
+{
+    scaled-rect: scaled(-1,308,363,24,false,12);
+}
+
+
 /****************************************************
  * Icons
  ***************************************************/
