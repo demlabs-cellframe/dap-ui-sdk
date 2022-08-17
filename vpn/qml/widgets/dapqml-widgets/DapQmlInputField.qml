@@ -105,7 +105,7 @@ Item {
         DapQmlStyle { item: inputField; qss: "inputfield-input" }
 
         onActiveFocusChanged: {
-            titleLabel.qss = activeFocus
+            titleLabel.qss = (activeFocus || text.length)
                     ? "inputfield-placeholder-out c-grey"
                     : "inputfield-placeholder-in c-grey";
         }

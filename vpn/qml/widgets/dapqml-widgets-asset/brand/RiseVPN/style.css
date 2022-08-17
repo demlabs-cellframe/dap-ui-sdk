@@ -1036,7 +1036,7 @@
 
 .manser-resizer-item
 {
-    scaled-rect: scaled(nan,nan,nan,64,false,34);
+    scaled-rect: scaled(nan,nan,363,64,false,34);
 }
 
 .manser-resizer-field
@@ -1050,6 +1050,32 @@
 }
 
 .manser-btn-lbl-main
+{
+    color: "@text";
+    scaled-font: scaled(16);    
+    font-weight: Font.Normal;
+}
+
+/****************************************************
+ * Cryptography
+ ***************************************************/
+
+.crypto-resizer-item
+{
+    scaled-rect: scaled(nan,nan,363,64,false,34);
+}
+
+.crypto-resizer-field
+{
+    scaled-rect: scaled(nan,nan,nan,48,false);
+}
+
+.crypto-item
+{
+    scaled-rect: scaled(nan,nan,nan,nan,false,34);
+}
+
+.crypto-btn-lbl-main
 {
     color: "@text";
     scaled-font: scaled(16);    
