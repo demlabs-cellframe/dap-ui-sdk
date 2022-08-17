@@ -2,55 +2,101 @@
 
 using namespace DapZip;
 
-//////////////////////////////  Reader
+
+void UnpackZipPrivate::scanFiles()
+{
+    if (!dirtyFileTree)
+        return;
+
+    if (! (device->isOpen() || device->open(QIODevice::ReadOnly))) {
+        status = FileOpenError;
+        return;
+    }
+
+    if ((device->openMode() & QIODevice::ReadOnly) == 0) { // only read the index from readable files.
+        status = FileReadError;
+        return;
+    }
+
+    dirtyFileTree = false;
+    uchar tmp[4];
+    device->read((char *)tmp, 4);
+    if (readUInt(tmp) != LocalFileHeaderSignature) {
+        qWarning("DapZip: not a zip file!");
+        return;
+    }
+
+    // find EndOfDirectory header
+    int i = 0;
+    int start_of_directory = -1;
+    int num_dir_entries = 0;
+    EndOfDirectory eod;
+    while (start_of_directory == -1) {
+        const int pos = device->size() - int(sizeof(EndOfDirectory)) - i;
+        if (pos < 0 || i > 65535) {
+            qWarning("DapZip: EndOfDirectory not found");
+            return;
+        }
+
+        device->seek(pos);
+        device->read((char *)&eod, sizeof(EndOfDirectory));
+        if (readUInt(eod.signature) == EndOfDirectorySignature)
+            break;
+        ++i;
+    }
+
+    // have the eod
+    start_of_directory = readUInt(eod.dir_start_offset);
+    num_dir_entries = readUShort(eod.num_dir_entries);
+    qDebug("start_of_directory at %d, num_dir_entries=%d", start_of_directory, num_dir_entries);
+    int comment_length = readUShort(eod.comment_length);
+    if (comment_length != i)
+        qWarning("DapZip: failed to parse zip file.");
+    comment = device->read(qMin(comment_length, i));
+
+
+    device->seek(start_of_directory);
+    for (i = 0; i < num_dir_entries; ++i) {
+        FileHeader header;
+        int read = device->read((char *) &header.h, sizeof(CentralFileHeader));
+        if (read < (int)sizeof(CentralFileHeader)) {
+            qWarning("DapZip: Failed to read complete header, index may be incomplete");
+            break;
+        }
+        if (readUInt(header.h.signature) != CentralFileHeaderSignature) {
+            qWarning("DapZip: invalid header signature, index may be incomplete");
+            break;
+        }
+
+        int l = readUShort(header.h.file_name_length);
+        header.file_name = device->read(l);
+        if (header.file_name.length() != l) {
+            qWarning("DapZip: Failed to read filename from zip index, index may be incomplete");
+            break;
+        }
+        l = readUShort(header.h.extra_field_length);
+        header.extra_field = device->read(l);
+        if (header.extra_field.length() != l) {
+            qWarning("DapZip: Failed to read extra field in zip file, skipping file, index may be incomplete");
+            break;
+        }
+        l = readUShort(header.h.file_comment_length);
+        header.file_comment = device->read(l);
+        if (header.file_comment.length() != l) {
+            qWarning("DapZip: Failed to read read file comment, index may be incomplete");
+            break;
+        }
+
+        qDebug("found file '%s'", header.file_name.data());
+        fileHeaders.append(header);
+    }
+}
+
 
 /*!
-    \class UnpackZip::FileInfo
-    \internal
-    Represents one entry in the zip table of contents.
-*/
+    UnpackZip
 
-/*!
-    \variable FileInfo::filePath
-    The full filepath inside the archive.
-*/
-
-/*!
-    \variable FileInfo::isDir
-    A boolean type indicating if the entry is a directory.
-*/
-
-/*!
-    \variable FileInfo::isFile
-    A boolean type, if it is one this entry is a file.
-*/
-
-/*!
-    \variable FileInfo::isSymLink
-    A boolean type, if it is one this entry is symbolic link.
-*/
-
-/*!
-    \variable FileInfo::permissions
-    A list of flags for the permissions of this entry.
-*/
-
-/*!
-    \variable FileInfo::crc
-    The calculated checksum as a crc type.
-*/
-
-/*!
-    \variable FileInfo::size
-    The total size of the unpacked content.
-*/
-
-/*!
-    \class UnpackZip
-    \internal
-    \since 4.5
-
-    \brief the UnpackZip class provides a way to inspect the contents of a zip
+    The UnpackZip class provides a way to inspect the contents of a zip
     archive and extract individual files from it.
 
     UnpackZip can be used to read a zip archive either from a file or from any
@@ -61,8 +107,8 @@ using namespace DapZip;
 */
 
 /*!
-    Create a new zip archive that operates on the \a fileName.  The file will be
-    opened with the \a mode.
+    Create a new zip archive that operates on the fileName.  The file will be
+    opened with the mode.
 */
 UnpackZip::UnpackZip(const QString &archive, QIODevice::OpenMode mode)
 {
@@ -89,7 +135,7 @@ UnpackZip::UnpackZip(const QString &archive, QIODevice::OpenMode mode)
 }
 
 /*!
-    Create a new zip archive that operates on the archive found in \a device.
+    Create a new zip archive that operates on the archive found in device.
     You have to open the device previous to calling the constructor and only a
     device that is readable will be scanned for zip filecontent.
  */
@@ -117,7 +163,7 @@ QIODevice* UnpackZip::device() const
 }
 
 /*!
-    Returns \c true if the user can read the file; otherwise returns \c false.
+    Returns true if the user can read the file; otherwise returns false.
 */
 bool UnpackZip::isReadable() const
 {
@@ -125,7 +171,7 @@ bool UnpackZip::isReadable() const
 }
 
 /*!
-    Returns \c true if the file exists; otherwise returns \c false.
+    Returns true if the file exists; otherwise returns false.
 */
 bool UnpackZip::exists() const
 {
@@ -162,16 +208,15 @@ int UnpackZip::count() const
 /*!
     Returns a FileInfo of an entry in the zipfile.
     The \a index is the index into the directory listing of the zipfile.
-    Returns an invalid FileInfo if \a index is out of boundaries.
-
-    \sa fileInfoList()
+    Returns an invalid FileInfo if index is out of boundaries.
 */
-UnpackZip::FileInfo UnpackZip::entryInfoAt(int index) const
+
+ZipFileInfo UnpackZip::entryInfoAt(int index) const
 {
     d->scanFiles();
     if (index >= 0 && index < d->fileHeaders.count())
         return d->fillFileInfo(index);
-    return UnpackZip::FileInfo();
+    return ZipFileInfo();
 }
 
 /*!
@@ -192,7 +237,7 @@ QByteArray UnpackZip::fileData(const QString &fileName) const
 
     ushort version_needed = readUShort(header.h.version_needed);
     if (version_needed > ZIP_VERSION) {
-        qWarning("QZip: .ZIP specification version %d implementationis needed to extract the data.", version_needed);
+        qWarning("DapZip: .ZIP specification version %d implementationis needed to extract the data.", version_needed);
         return QByteArray();
     }
 
@@ -212,7 +257,7 @@ QByteArray UnpackZip::fileData(const QString &fileName) const
     //qDebug("file=%s: compressed_size=%d, uncompressed_size=%d", fileName.toLocal8Bit().data(), compressed_size, uncompressed_size);
 
     if ((general_purpose_bits & Encrypted) != 0) {
-        qWarning("QZip: Unsupported encryption method is needed to extract the data.");
+        qWarning("DapZip: Unsupported encryption method is needed to extract the data.");
         return QByteArray();
     }
 
@@ -240,25 +285,25 @@ QByteArray UnpackZip::fileData(const QString &fileName) const
                     baunzip.resize(len);
                 break;
             case Z_MEM_ERROR:
-                qWarning("QZip: Z_MEM_ERROR: Not enough memory");
+                qWarning("DapZip: Z_MEM_ERROR: Not enough memory");
                 break;
             case Z_BUF_ERROR:
                 len *= 2;
                 break;
             case Z_DATA_ERROR:
-                qWarning("QZip: Z_DATA_ERROR: Input data is corrupted");
+                qWarning("DapZip: Z_DATA_ERROR: Input data is corrupted");
                 break;
             }
         } while (res == Z_BUF_ERROR);
         return baunzip;
     }
 
-    qWarning("QZip: Unsupported compression method %d is needed to extract the data.", compression_method);
+    qWarning("DapZip: Unsupported compression method %d is needed to extract the data.", compression_method);
     return QByteArray();
 }
 
 /*!
-    Extracts the full contents of the zip file into \a destinationDir on
+    Extracts the full contents of the zip file into destinationDir on
     the local filesystem.
     In case writing or linking a file fails, the extraction will be aborted.
 */
@@ -313,15 +358,13 @@ bool UnpackZip::extractAll(const QString &destinationDir) const
 }
 
 /*!
-    \enum UnpackZip::Status
-
     The following status values are possible:
 
-    \value NoError  No error occurred.
-    \value FileReadError    An error occurred when reading from the file.
-    \value FileOpenError    The file could not be opened.
-    \value FilePermissionsError The file could not be accessed.
-    \value FileError        Another file error occurred.
+    NoError  No error occurred.
+    FileReadError    An error occurred when reading from the file.
+    FileOpenError    The file could not be opened.
+    FilePermissionsError The file could not be accessed.
+    FileError        Another file error occurred.
 */
 
 /*!
@@ -340,3 +383,21 @@ void UnpackZip::close()
 {
     d->device->close();
 }
+
+namespace DapZip {
+    bool fileDecompression(const QString archiveFile, const QString &destinationDir)
+    {
+        UnpackZip zip(archiveFile);
+        if (zip.status() != Status::NoError)
+        {
+            qWarning() << "DapZip: open archive error";
+            zip.close();
+            return false;
+        }
+
+        QDir baseDir(destinationDir);
+        baseDir.mkpath(".");
+        return zip.extractAll(destinationDir);
+    }
+}
+

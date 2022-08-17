@@ -9,17 +9,27 @@ namespace DapZip {
 
     // NoError          No error occurred.
     // FileReadError    An error occurred when reading from the file.
+    // FileWriteError   An error occurred when writing to the file.
     // FileOpenError    The file could not be opened.
     // FilePermissionsError The file could not be accessed.
     // FileError        Another file error occurred.
     enum Status {
         NoError,
+        FileReadError,
         FileWriteError,
         FileOpenError,
         FilePermissionsError,
         FileError
     };
 
+    // FileInfo        Represents one entry in the zip table of contents.
+    // filePath        The full filepath inside the archive.
+    // isDir           A boolean type indicating if the entry is a directory.
+    // isFile          A boolean type, if it is one this entry is a file.
+    // isSymLink       A boolean type, if it is one this entry is symbolic link.
+    // permissions     A list of flags for the permissions of this entry.
+    // crc             The calculated checksum as a crc type.
+    // size            The total size of the unpacked content.
     struct ZipFileInfo
     {
         ZipFileInfo() noexcept

@@ -2,7 +2,7 @@
 #define PACKZIP_H
 #include "zipbase.h"
 
-/*! Compress example:
+/*! Compress example1:
 
 #include "packzip.h"
 DapZip::PackZip zip("archive.zip");
@@ -12,6 +12,13 @@ zip.close();
 
 */
 
+/*! Compress example2:
+
+#include "packzip.h";
+QStringList fileList << "firstfiletoarchive.txt" << "secondfiletoarchive.txt";
+DapZip::compressFiles("temp_bugReportZip.zip", fileList)
+
+*/
 
 namespace DapZip
 {

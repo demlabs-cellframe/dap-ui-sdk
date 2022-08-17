@@ -2,6 +2,22 @@
 #define UNPACKZIP_H
 #include "zipbase.h"
 
+/*! Extract example1:
+
+#include "unpackzip.h"
+DapZip::UnpackZip zip("archive.zip");
+zip.extractAll("archive");
+zip.close();
+
+*/
+
+/*! Extract example2:
+
+#include "unpackzip.h"
+DapZip::fileDecompression("archive.zip", "archive");
+*/
+
+
 namespace DapZip
 {
     class UnpackZip;
@@ -24,8 +40,7 @@ namespace DapZip
     {
     public:
         explicit UnpackZip(const QString &fileName, QIODevice::OpenMode mode = QIODevice::ReadOnly );
-
-        explicit UnpackZip(QIODevice *device);
+            explicit UnpackZip(QIODevice *device);
         ~UnpackZip();
 
         QIODevice* device() const;
@@ -48,6 +63,8 @@ namespace DapZip
         UnpackZipPrivate *d;
         DISABLE_COPY_MOVE(UnpackZip)
     };
+
+    bool fileDecompression(const QString archive, const QString &destinationDir);
 }
 
 #endif // UNPACKZIP_H
