@@ -137,10 +137,8 @@ void DapServerInfo::addGeneralLocation(QList<DapServerInfo> &pingServerList, QLi
   }
 
   for (auto& region_server : bestRegionServers) {
-
     for (auto server : pingServerList){
-
-      if ( region_server.name == server.name.left(server.name.indexOf('.')) ) {
+      if ( region_server.name == server.name.left(server.name.indexOf('.')) && server.location != a_location) {
         QString tmp_name = region_server.name;
         region_server = server;
         region_server.name = tmp_name;
