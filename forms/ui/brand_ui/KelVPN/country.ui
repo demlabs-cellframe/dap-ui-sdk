@@ -133,7 +133,7 @@
         <string>cwb_height</string>
         </property>
         <property name="mainText" stdset="0">
-        <string>All</string>
+        <string/>
         </property>
         <property name="subText" stdset="0">
         <string>Country filter</string>

@@ -95,11 +95,18 @@ void CountryModel::slotSetup()
                this, &CountryModel::slotToggled);
     }
 
-  QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  lay->addItem (sp);
+//  QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+//  lay->addItem (sp);
 
   if (!m_list.isEmpty())
     emit filled();
+}
+
+void CountryModel::viewFilter(QStringList showItems)
+{
+    QSet<QString> setA = QSet<QString>(showItems.begin(), showItems.end());
+    foreach (auto *item, m_list)
+        item->setVisible(setA.contains(item->text()));
 }
 
 void CountryModel::slotRetranslate()

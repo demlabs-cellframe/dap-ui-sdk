@@ -52,11 +52,9 @@ Country::Country (QWidget *parent) :
 
   connect (ui->btnCountryFilter, &DapGuiButton::textChanged,
            this, [=](QString text) {
-      qDebug() << text;
-      ui->scrollArea->setCountryList(
+      ui->scrollArea->viewFilter(
                   DapServersData::m_countryMap.keys().filter(
-                      text, Qt::CaseInsensitive),
-                  this);
+                      text, Qt::CaseInsensitive));
   });
 
 //  auto lay  = new QHBoxLayout;
