@@ -236,7 +236,7 @@ QByteArray UnpackZip::fileData(const QString &fileName) const
     FileHeader header = d->fileHeaders.at(i);
 
     ushort version_needed = readUShort(header.h.version_needed);
-    if (version_needed > ZIP_VERSION) {
+    if ((version_needed & 0x00FF) > ZIP_VERSION) {
         qWarning("DapZip: .ZIP specification version %d implementationis needed to extract the data.", version_needed);
         return QByteArray();
     }
