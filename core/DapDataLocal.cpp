@@ -25,7 +25,6 @@ DapDataLocal::DapDataLocal()
     , m_buReportHistory(new DapBugReportHistory(this))
 {
     qDebug() << "[DL] DapDataLocal Constructor";
-    qDebug() << settings()->fileName();
     parseXML(":/data.xml");
     initSecretKey();
     this->loadAuthorizationDatas();

@@ -11,7 +11,6 @@
 #include <QSysInfo>
 #include "DapDataLocal.h"
 #include "packzip.h"
-#include "unpackzip.h"
 
 class DapBugReport
 {
