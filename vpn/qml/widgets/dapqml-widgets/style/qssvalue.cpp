@@ -8,7 +8,7 @@
 #include <QMetaEnum>
 
 /* NAMESPACE */
-namespace Style
+namespace DapStyle
 {
 
 /* VARS */

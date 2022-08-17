@@ -8,7 +8,7 @@
 
 DapQmlThemeModel::DapQmlThemeModel(QObject *parent)
   : QAbstractTableModel (parent)
-  , m_themes (Style::QssLink::categories())
+  , m_themes (DapStyle::QssLink::categories())
 {
 
 }
@@ -19,7 +19,7 @@ DapQmlThemeModel::DapQmlThemeModel(QObject *parent)
 
 QString DapQmlThemeModel::currentCategory() const
 {
-  auto cc = Style::QssLink::currentCategory();
+  auto cc = DapStyle::QssLink::currentCategory();
   return cc.at(0).toUpper() + cc.mid(1);
 }
 

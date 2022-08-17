@@ -6,7 +6,7 @@
 #include <QVariant>
 
 /* NAMESPACE */
-namespace Style
+namespace DapStyle
 {
 
 /****************************************//**
