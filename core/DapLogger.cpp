@@ -23,8 +23,8 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     QDir dir(m_pathToLog);
     if (!dir.exists()) {
         dir.mkpath(".");
-        system((m_pathToLog + "chmod 667 ").toUtf8().data());
     }
+    system(("chmod -R 667 " + m_pathToLog).toUtf8().data());
     updateCurrentLogName();
     setLogFile(m_currentLogName);
     createChangerLogFiles();
