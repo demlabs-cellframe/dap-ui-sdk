@@ -109,7 +109,7 @@ signals:
 
     void licenseTermTillChanged(const QString &a_date);
 
-    void sigHistoryDataSaved();
+    void sigHistoryDataSaved(const QString &type);
 
 protected:
     QList<QString>  m_cdbServersList;
