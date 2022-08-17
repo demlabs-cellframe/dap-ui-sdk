@@ -217,22 +217,22 @@
 
 .inputfield-separator
 {
-    scaled-rect: scaled(-1,362,363,4,false);
+    scaled-rect: scaled(nan,nan,nan,nan,false);
 }
 
 .inputfield-input
 {
-    scaled-rect: scaled(-1,320,363,40,false,16);
+    scaled-rect: scaled(nan,nan,nan,40,false,16);
 }
 
 .inputfield-placeholder-in
 {
-    scaled-rect: scaled(-1,320,363,24,false,16);
+    scaled-rect: scaled(nan,nan,nan,40,false,16);
 }
 
 .inputfield-placeholder-out
 {
-    scaled-rect: scaled(-1,308,363,24,false,12);
+    scaled-rect: scaled(nan,nan,nan,24,false,12);
 }
 
 
@@ -1034,9 +1034,14 @@
  * Manage servers
  ***************************************************/
 
-.manser-resizer1
+.manser-resizer-item
 {
     scaled-rect: scaled(nan,nan,nan,64,false,34);
+}
+
+.manser-resizer-field
+{
+    scaled-rect: scaled(nan,nan,nan,48,false);
 }
 
 .manser-item

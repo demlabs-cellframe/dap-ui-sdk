@@ -61,6 +61,10 @@ Item {
      ********************************************/
 
     DapQmlSeparator {
+        id: separator
+        x: 0
+        y: root.height - height
+        width: root.width
         qss: "inputfield-separator"
     }
 
@@ -70,12 +74,13 @@ Item {
 
     DapQmlLabel {
         id: titleLabel
+        width: root.width
         horizontalAlign: Text.AlignLeft
         qss: "inputfield-placeholder-in c-grey"
         text: root.title
         property int duration: 0
-        Behavior on fontSize { PropertyAnimation { duration: titleLabel.duration } }
         Behavior on y { PropertyAnimation { duration: titleLabel.duration } }
+        Behavior on fontSize { PropertyAnimation { duration: titleLabel.duration } }
     }
 
     /****************************************//**
@@ -84,6 +89,7 @@ Item {
 
     TextField {
         id: inputField
+        width: root.width
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignBottom
         echoMode: TextInput.Normal
@@ -96,7 +102,7 @@ Item {
             weight: root.fontWeight
         }
 
-        DapQmlStyle { item: emailInput; qss: "inputfield-input" }
+        DapQmlStyle { item: inputField; qss: "inputfield-input" }
 
         onActiveFocusChanged: {
             titleLabel.qss = activeFocus
