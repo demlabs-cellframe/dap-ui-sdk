@@ -100,6 +100,11 @@
     color: "@brand";
 }
 
+.c-background
+{
+    color: "@background";
+}
+
 /****************************************************
  * Widgets
  ***************************************************/
@@ -233,6 +238,12 @@
 .inputfield-placeholder-out
 {
     scaled-rect: scaled(nan,nan,nan,24,false,12);
+}
+
+
+.menu-item-size
+{
+    scaled-rect: scaled(nan,nan,nan,nan,false,34);
 }
 
 

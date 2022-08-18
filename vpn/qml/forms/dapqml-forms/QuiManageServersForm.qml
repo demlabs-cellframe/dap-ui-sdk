@@ -233,38 +233,12 @@ Item {
 
                     onClicked: moreBtnMenu.popup();
 
-                    Menu {
+                    DapQmlMenu {
                         id: moreBtnMenu
-                        padding: delegate.iconSize / 3
 
-                        delegate: MenuItem {
-                            id: menuDelegate
-                            contentItem: Text {
-                                text: menuDelegate.text
-                                color: resizeField.color
-                            }
-                        }
-
+                        /* actions */
                         Action { text: "Edit"; }
                         Action { text: "Delete" }
-
-                        Connections {
-                            target: resizeField
-                            function onColorChanged(mouse) { moreBtnMenu.updateColors(); }
-                        }
-                        Connections {
-                            target: resizerItem
-                            function onColorChanged(mouse) { moreBtnMenu.updateColors(); }
-                        }
-
-                        signal sigUpdateColor();
-
-                        function updateColors() {
-                            /* change colors */
-                            background.color            = resizerItem.color;
-                            moreBtnMenu.sigUpdateColor(); // moreBtnMenuDelegate.color   = resizeField.color;
-                            // console.log(`bgcolor: ${resizerItem.color}, textcolor: ${resizeField.color}`);
-                        }
                     }
                 }
 
