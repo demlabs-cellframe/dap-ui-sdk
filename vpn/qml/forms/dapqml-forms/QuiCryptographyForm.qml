@@ -46,9 +46,15 @@ Item {
             let list = (mode === QuiCryptographyForm.Mode.M_LIST);
             let info = (mode === QuiCryptographyForm.Mode.M_INFO);
             let gen  = (mode === QuiCryptographyForm.Mode.M_GENERATE);
+
+            /* display only required page */
             pageList.visible        = list;
             pageInfo.visible        = info;
             pageGenerate.visible    = gen;
+
+            /* show cancel and accept buttons when mode is not list */
+            acceptBtn.visible       = info | gen;
+            cancelBtn.visible       = info | gen;
         }
     }
 
@@ -130,6 +136,27 @@ Item {
             id: title
             text: qsTr("Cryptohraphy") + lang.notifier
             qss: "dialog-title"
+
+            /* settings button */
+            DapQmlPushButton {
+                id: settingsBtn
+                qss: "crypto-settings-btn"
+
+                x: parent.width - width
+                y: (parent.height - height) / 2
+                z: 16
+
+                onClicked: settingsBtnMenu.popup();
+
+                DapQmlMenu {
+                    id: settingsBtnMenu
+
+                    /* actions */
+                    Action { text: "Restart server"; }
+                    Action { text: "Generate certificate"; onTriggered: root.setMode (QuiCryptographyForm.Mode.M_GENERATE) }
+                    Action { text: "Export public key" }
+                }
+            }
         }
 
         /****************************************//**
@@ -165,17 +192,44 @@ Item {
 
                 property int myIndex: model.index
 
-                width: manserListView.width
+                width: cryptoListView.width
                 height: resizerItem.height
                 buttonStyle: DapQmlButton.Style.IconMainSubIcon
-                mainText: model.name
-                subText: ""
+                mainText: model.display
+                subText: "public key"
                 separator: true
                 qss: "crypto-item"
                 mainQss: "crypto-btn-lbl-main"
-                //subQss: "manser-btn-lbl-sub"
-                icon: model.icon
-                iconSize: resizerItem.fontSize
+                subQss: "crypto-btn-lbl-sub"
+                iconSize: 0
+
+                /* more button */
+                Button {
+                    id: moreBtn
+                    icon {
+                        source: "qrc:/nonthemed/more.png"
+                        color: "transparent"
+                        width: moreBtn.width
+                        height: moreBtn.height
+                    }
+                    background: Rectangle { color: "transparent" }
+
+                    x: parent.width - width
+                    y: (parent.height - height) / 2 - height / 8
+                    z: 16
+                    width: resizerItem.fontSize * 1.25
+                    height: resizerItem.fontSize * 1.25
+
+                    onClicked: moreBtnMenu.popup();
+
+                    DapQmlMenu {
+                        id: moreBtnMenu
+
+                        /* actions */
+                        Action { text: "Copy fingerprint" }
+                        Action { text: "Info"; onTriggered: root.setMode (QuiCryptographyForm.Mode.M_INFO) }
+                    }
+                }
 
                 function buttonClicked(a_isButtonSignal) {
                     if(!a_isButtonSignal)
@@ -192,6 +246,34 @@ Item {
             }
         }
     } // List
+
+    /****************************************//**
+     * Title Buttons
+     ********************************************/
+
+    /* accept button */
+    DapQmlPushButton {
+        id: acceptBtn
+        qss: "crypto-accept-btn"
+
+        x: title.x + title.width - width
+        y: title.y + (title.height - height) / 2
+        z: 16
+
+        onClicked: root.setMode (QuiCryptographyForm.Mode.M_LIST)
+    }
+
+    /* cancel button */
+    DapQmlPushButton {
+        id: cancelBtn
+        qss: "crypto-cancel-btn"
+
+        x: title.x
+        y: title.y + (title.height - height) / 2
+        z: 16
+
+        onClicked: root.setMode (QuiCryptographyForm.Mode.M_LIST)
+    }
 
     /****************************************//**
      *

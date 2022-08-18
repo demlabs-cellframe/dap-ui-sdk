@@ -1160,3 +1160,31 @@
     scaled-font: scaled(16);    
     font-weight: Font.Normal;
 }
+
+.crypto-btn-lbl-sub
+{
+    color: "@light-grey";
+    horizontalAlign: Text.AlignRight;
+    scaled-font: scaled(12);
+}
+
+.crypto-settings-btn
+{
+    scaled-rect: scaled(nan,nan,28,28,true);
+    active: "@btn-settings-hover";
+    inactive: "@btn-settings";
+}
+
+.crypto-accept-btn
+{
+    scaled-rect: scaled(nan,nan,28,28,true);
+    active: "@btn-accept-hover";
+    inactive: "@btn-accept";
+}
+
+.crypto-cancel-btn
+{
+    scaled-rect: scaled(nan,nan,28,28,true);
+    active: "@btn-close-hover";
+    inactive: "@btn-close";
+}
