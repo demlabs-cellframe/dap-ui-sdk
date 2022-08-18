@@ -142,6 +142,28 @@ Item {
             id: title
             text: qsTr("Manage Servers") + lang.notifier
             qss: "dialog-title"
+
+            /* settings button */
+            DapQmlPushButton {
+                id: settingsBtn
+                qss: "manser-settings-btn"
+
+                x: parent.width - width
+                y: (parent.height - height) / 2
+                z: 16
+
+                onClicked: settingsBtnMenu.popup();
+
+                DapQmlMenu {
+                    id: settingsBtnMenu
+
+                    /* actions */
+                    Action { text: "Restart server"; }
+                    Action { text: "Add new" }
+                    Action { text: "Import list" }
+                    Action { text: "Export list" }
+                }
+            }
         }
 
         /****************************************//**

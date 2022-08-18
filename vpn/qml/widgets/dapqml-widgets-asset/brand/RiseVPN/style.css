@@ -35,6 +35,14 @@
     footer-statistics-inactive: "qrc:/light/btn_account.png";
     bugrep-bg:                  "qrc:/light/report_bg.png";
     login-logo:                 "qrc:/light/login-logo.png";
+    btn-settings:               "qrc:/light/ic_settings.png";
+    btn-settings-hover:         "qrc:/light/ic_settings_hover.png";
+    btn-accept:                 "qrc:/light/ic_accept.png";
+    btn-accept-hover:           "qrc:/light/ic_accept_hover.png";
+    btn-edit:                   "qrc:/light/ic_edit.png";
+    btn-edit-hover:             "qrc:/light/ic_edit_hover.png";
+    btn-close:                  "qrc:/light/ic_close.png";
+    btn-close-hover:            "qrc:/light/ic_close_hover.png";
 }
 
 .@dark
@@ -70,6 +78,14 @@
     footer-statistics-inactive: "qrc:/dark/btn_account.png";
     bugrep-bg:                  "qrc:/dark/report_bg.png";
     login-logo:                 "qrc:/dark/login-logo.png";
+    btn-settings:               "qrc:/dark/ic_settings.png";
+    btn-settings-hover:         "qrc:/dark/ic_settings_hover.png";
+    btn-accept:                 "qrc:/dark/ic_accept.png";
+    btn-accept-hover:           "qrc:/dark/ic_accept_hover.png";
+    btn-edit:                   "qrc:/dark/ic_edit.png";
+    btn-edit-hover:             "qrc:/dark/ic_edit_hover.png";
+    btn-close:                  "qrc:/dark/ic_close.png";
+    btn-close-hover:            "qrc:/dark/ic_close_hover.png";
 }
 
 /****************************************************
@@ -1096,6 +1112,13 @@
     color: "@text";
     scaled-font: scaled(16);    
     font-weight: Font.Normal;
+}
+
+.manser-settings-btn
+{
+    scaled-rect: scaled(nan,nan,28,28,true);
+    active: "@btn-settings-hover";
+    inactive: "@btn-settings";
 }
 
 /****************************************************
