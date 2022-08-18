@@ -49,6 +49,15 @@ Country::Country (QWidget *parent) :
   m_movie   = new QMovie(":/gui/asset/Spinner.gif");
   m_spinner->setMovie (m_movie);
   ui->btnCountryFilter->setBtnStyle (DapGuiButton::EditTopMainBottomSub);
+  auto style = ui->btnCountryFilter->edit()->cssStyle();
+  auto bsize = UiScaling::pointsToPixels (1, UiScaling::getNativDPI());
+  style.remove ("noborder");
+  style.append (" login-input-border");
+  if (bsize < 1)
+    style.append (" login-input-border-default");
+  ui->btnCountryFilter->edit()->setCssStyle(style);
+
+
 
   connect (ui->btnCountryFilter, &DapGuiButton::textChanged,
            this, [=](QString text) {
@@ -56,10 +65,6 @@ Country::Country (QWidget *parent) :
                   DapServersData::m_countryMap.keys().filter(
                       text, Qt::CaseInsensitive));
   });
-
-//  auto lay  = new QHBoxLayout;
-//  lay->addWidget (m_spinner);
-//  m_overlay->setLayout (lay);
 
   /* movie */
   //m_movie->setFileName(":/gui/asset/Spinner.gif");
