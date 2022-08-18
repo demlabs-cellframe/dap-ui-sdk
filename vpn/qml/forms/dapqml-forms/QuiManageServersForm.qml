@@ -115,6 +115,7 @@ Item {
         id: resizeField
         visible: false
         qss: "manser-resizer-field"
+        //onColorChanged: console.log(`resizeField >> bgcolor: ${resizerItem.color}, textcolor: ${resizeField.color}`);
     }
 
     DapQmlLabel {
@@ -165,6 +166,7 @@ Item {
                 visible: false
                 id: resizerItem
                 qss: "manser-resizer-item"
+                //onColorChanged: console.log(`resizerItem >> bgcolor: ${resizerItem.color}, textcolor: ${resizeField.color}`);
             }
 
             /****************************************//**
@@ -188,6 +190,84 @@ Item {
                 icon: model.icon
                 iconSize: resizerItem.fontSize
 
+                /* icon favorite */
+                Button {
+                    id: checkFavorite
+                    checkable: true
+                    checked: model.favorite
+                    icon {
+                        source: (checkFavorite.checked)
+                                ? "qrc:/nonthemed/star-checked.png"
+                                : "qrc:/nonthemed/star-unchecked.png"
+                        color: "transparent"
+                        width: checkFavorite.width
+                        height: checkFavorite.height
+                    }
+                    background: Rectangle { color: "transparent" }
+
+                    x: parent.width - width * 2// - (74 / 2)
+                    y: (parent.height - height) / 2 - height / 8
+                    z: 16
+                    width: parent.iconSize * 1.25
+                    height: parent.iconSize * 1.25
+
+                    //onCheckedChanged: internal.showPassword = checked
+                }
+
+                /* more button */
+                Button {
+                    id: moreBtn
+                    icon {
+                        source: "qrc:/nonthemed/more.png"
+                        color: "transparent"
+                        width: moreBtn.width
+                        height: moreBtn.height
+                    }
+                    background: Rectangle { color: "transparent" }
+
+                    x: parent.width - width
+                    y: (parent.height - height) / 2 - height / 8
+                    z: 16
+                    width: parent.iconSize * 1.25
+                    height: parent.iconSize * 1.25
+
+                    onClicked: moreBtnMenu.popup();
+
+                    Menu {
+                        id: moreBtnMenu
+                        padding: delegate.iconSize / 3
+
+                        delegate: MenuItem {
+                            id: menuDelegate
+                            contentItem: Text {
+                                text: menuDelegate.text
+                                color: resizeField.color
+                            }
+                        }
+
+                        Action { text: "Edit"; }
+                        Action { text: "Delete" }
+
+                        Connections {
+                            target: resizeField
+                            function onColorChanged(mouse) { moreBtnMenu.updateColors(); }
+                        }
+                        Connections {
+                            target: resizerItem
+                            function onColorChanged(mouse) { moreBtnMenu.updateColors(); }
+                        }
+
+                        signal sigUpdateColor();
+
+                        function updateColors() {
+                            /* change colors */
+                            background.color            = resizerItem.color;
+                            moreBtnMenu.sigUpdateColor(); // moreBtnMenuDelegate.color   = resizeField.color;
+                            // console.log(`bgcolor: ${resizerItem.color}, textcolor: ${resizeField.color}`);
+                        }
+                    }
+                }
+
                 function buttonClicked(a_isButtonSignal) {
                     if(!a_isButtonSignal)
                         clicked();
@@ -200,6 +280,12 @@ Item {
                     anchors.fill: parent
                     onClicked: parent.buttonClicked(false)
                 }
+
+//                Component.onCompleted: if (myIndex === 0)
+//                    StyleDebugTree.describe (
+//                        "manser-item",
+//                        ["x", "y", "width", "height", "icon", "iconSize"],
+//                        this);
             }
         }
     } // List

@@ -1,6 +1,8 @@
 /* INCLUDES */
 #include "dapqmlmodelmanageservers.h"
 #include "dapqml-abstract/abstractservermanager.h"
+#include <QImage>
+#include <QDebug>
 #include <array>
 
 /* DEFS */
@@ -112,10 +114,13 @@ QVariant DapQmlModelManageServers::data (const QModelIndex &index, int role) con
     {
 
     case 0: // icon
-      return "qrc:/nonthemed/conn-icon.png";
+      return "ic_conn-4";
 
     case 1: // name
       return list.at (index.row());
+
+    case 2: // favorite
+      return index.row() == 1; // dummy check
 
     }
 
@@ -128,6 +133,7 @@ QHash<int, QByteArray> DapQmlModelManageServers::roleNames() const
 
   names.insert (0, "icon");
   names.insert (1, "name");
+  names.insert (2, "favorite");
 
   return names;
 }

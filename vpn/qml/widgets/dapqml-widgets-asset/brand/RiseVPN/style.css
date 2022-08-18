@@ -330,6 +330,35 @@
     qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/icon_offline.png");
 }
 
+.ic_conn-0
+{
+    qproperty-scaledPixmap: url("qrc:/nonthemed/conn-icon-0.png");
+}
+
+.ic_conn-1
+{
+    qproperty-scaledPixmap: url("qrc:/nonthemed/conn-icon-1.png");
+}
+
+.ic_conn-2
+{
+    qproperty-scaledPixmap: url("qrc:/nonthemed/conn-icon-2.png");
+}
+
+.ic_conn-3
+{
+    qproperty-scaledPixmap: url("qrc:/nonthemed/conn-icon-3.png");
+}
+
+.ic_conn-4
+{
+    qproperty-scaledPixmap: url("qrc:/nonthemed/conn-icon-4.png");
+}
+
+.ic_conn-5
+{
+    qproperty-scaledPixmap: url("qrc:/nonthemed/conn-icon-5.png");
+}
 
 /****************************************************
  * Main window
@@ -1037,11 +1066,13 @@
 .manser-resizer-item
 {
     scaled-rect: scaled(nan,nan,363,64,false,34);
+    color: "@background";
 }
 
 .manser-resizer-field
 {
     scaled-rect: scaled(nan,nan,nan,48,false);
+    color: "@text";
 }
 
 .manser-item

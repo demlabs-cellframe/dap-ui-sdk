@@ -420,8 +420,8 @@ Item {
             checked: false
             icon {
                 source: (internal.showPassword)
-                        ? "qrc:/light/password-show.png"
-                        : "qrc:/light/password-hide.png"
+                        ? "qrc:/nonthemed/password-show.png"
+                        : "qrc:/nonthemed/password-hide.png"
                 color: "transparent"
                 width: checkShowPassword.width
                 height: checkShowPassword.height
