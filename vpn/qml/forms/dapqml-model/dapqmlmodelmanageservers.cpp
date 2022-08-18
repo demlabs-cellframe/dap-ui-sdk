@@ -114,7 +114,7 @@ QVariant DapQmlModelManageServers::data (const QModelIndex &index, int role) con
     {
 
     case 0: // icon
-      return "ic_conn-4";
+      return QString ("ic_conn-%1").arg (index.row() % 6);//"ic_conn-4";
 
     case 1: // name
       return list.at (index.row());

@@ -50,9 +50,13 @@ Item {
             let list = (mode === QuiManageServersForm.Mode.M_LIST);
             let edit = (mode === QuiManageServersForm.Mode.M_EDIT);
             let add  = (mode === QuiManageServersForm.Mode.M_ADD);
+
+            /* display only required page */
             pageList.visible    = list;
             pageEdit.visible    = edit;
             pageAdd.visible     = add;
+
+            /* both "edit" and "add" fields are the same */
             inputFields.visible = edit | add;
         }
     }
@@ -159,7 +163,7 @@ Item {
 
                     /* actions */
                     Action { text: "Restart server"; }
-                    Action { text: "Add new" }
+                    Action { text: "Add new"; onTriggered: root.setMode (QuiManageServersForm.Mode.M_ADD) }
                     Action { text: "Import list" }
                     Action { text: "Export list" }
                 }
@@ -259,7 +263,7 @@ Item {
                         id: moreBtnMenu
 
                         /* actions */
-                        Action { text: "Edit"; }
+                        Action { text: "Edit"; onTriggered: root.setMode (QuiManageServersForm.Mode.M_EDIT) }
                         Action { text: "Delete" }
                     }
                 }
@@ -295,6 +299,34 @@ Item {
     Item {
         id: inputFields
         anchors.fill: parent
+
+        /****************************************//**
+         * Title Buttons
+         ********************************************/
+
+        /* accept button */
+        DapQmlPushButton {
+            id: acceptBtn
+            qss: "manser-accept-btn"
+
+            x: title.x + title.width - width
+            y: title.y + (title.height - height) / 2
+            z: 16
+
+            onClicked: root.setMode (QuiManageServersForm.Mode.M_LIST)
+        }
+
+        /* cancel button */
+        DapQmlPushButton {
+            id: cancelBtn
+            qss: "manser-cancel-btn"
+
+            x: title.x
+            y: title.y + (title.height - height) / 2
+            z: 16
+
+            onClicked: root.setMode (QuiManageServersForm.Mode.M_LIST)
+        }
 
         /****************************************//**
          * Title Input
@@ -357,6 +389,7 @@ Item {
         DapQmlDialogTitle {
             text: qsTr("Edit server") + lang.notifier
             qss: "dialog-title"
+            hideClose: true
         }
 
     } // Edit
@@ -378,6 +411,7 @@ Item {
         DapQmlDialogTitle {
             text: qsTr("Add a new server") + lang.notifier
             qss: "dialog-title"
+            hideClose: true
         }
     } // Add
 }
