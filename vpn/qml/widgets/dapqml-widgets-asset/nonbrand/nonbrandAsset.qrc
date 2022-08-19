@@ -29,5 +29,7 @@
         <file compress="1">nonthemed/conn-icon-5.png</file>
         <file compress="1">nonthemed/password-hide.png</file>
         <file compress="1">nonthemed/password-show.png</file>
+        <file compress="1">nonthemed/arrow-up.png</file>
+        <file compress="1">nonthemed/arrow-down.png</file>
     </qresource>
 </RCC>

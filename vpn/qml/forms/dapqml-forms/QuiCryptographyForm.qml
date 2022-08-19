@@ -361,14 +361,19 @@ Item {
          * Gen Signature
          ********************************************/
 
-        DapQmlInputField {
+        DapQmlCombobox {
             id: inputGenSignature
             x: (root.width - width) / 2
             y: _pos(0) // title.y + title.height * 2
+            z: 2
             width: resizerItem.width
             height: resizeField.height
-            clip: true
             title: "Signature Type"
+
+            Action { text: "Tesla" }
+            Action { text: "Bliss" }
+            Action { text: "Picnic" }
+            Action { text: "Crystal-Dylithium" }
         }
 
         /****************************************//**

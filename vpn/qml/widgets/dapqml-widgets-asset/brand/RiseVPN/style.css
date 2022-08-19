@@ -263,6 +263,49 @@
 }
 
 
+.combobox-separator
+{
+    scaled-rect: scaled(nan,nan,nan,nan,false);
+}
+
+.combobox-arrow
+{
+    scaled-rect: scaled(nan,nan,20,20,true);
+}
+
+.combobox-arrow-up
+{
+    qproperty-scaledPixmap: url("qrc:/nonthemed/arrow-up.png");
+}
+
+.combobox-arrow-down
+{
+    qproperty-scaledPixmap: url("qrc:/nonthemed/arrow-down.png");
+}
+
+.combobox-placeholder-in
+{
+    scaled-rect: scaled(nan,nan,nan,40,false,16);
+}
+
+.combobox-placeholder-out
+{
+    scaled-rect: scaled(nan,nan,nan,24,false,12);
+}
+
+.combobox-border-color
+{
+    qproperty-borderColor: "@text";
+}
+
+.combobox-item
+{
+    scaled-rect: scaled(nan,nan,nan,36,false,16);
+    qproperty-backgroundColor: "@background";
+    qproperty-hoverBackgroundColor: "@brand";
+}
+
+
 /****************************************************
  * Icons
  ***************************************************/
