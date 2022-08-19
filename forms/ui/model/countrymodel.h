@@ -60,6 +60,7 @@ public:
 public slots:
   void slotSetup();
   void slotRetranslate();
+  void viewFilter(QStringList showItems);
 private slots:
   /// radio button toggle
   void slotToggled (bool checked);

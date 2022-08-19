@@ -48,10 +48,22 @@ Country::Country (QWidget *parent) :
 
   m_movie   = new QMovie(":/gui/asset/Spinner.gif");
   m_spinner->setMovie (m_movie);
+  ui->btnCountryFilter->setBtnStyle (DapGuiButton::EditTopMainBottomSub);
+  auto style = ui->btnCountryFilter->edit()->cssStyle();
+  auto bsize = UiScaling::pointsToPixels (1, UiScaling::getNativDPI());
+  style.remove ("noborder");
+  style.append (" login-input-border");
+  if (bsize < 1)
+    style.append (" login-input-border-default");
+  ui->btnCountryFilter->edit()->setCssStyle(style);
+  ui->btnCountryFilter->edit()->setFocusPolicy(Qt::StrongFocus);
 
-//  auto lay  = new QHBoxLayout;
-//  lay->addWidget (m_spinner);
-//  m_overlay->setLayout (lay);
+  connect (ui->btnCountryFilter, &DapGuiButton::textChanged,
+           this, [=](QString text) {
+      ui->scrollArea->viewFilter(
+                  DapServersData::m_countryMap.keys().filter(
+                      text, Qt::CaseInsensitive));
+  });
 
   /* movie */
   //m_movie->setFileName(":/gui/asset/Spinner.gif");
@@ -112,6 +124,16 @@ void Country::slotRetranslated()
 void Country::slotSetCountry(const QString a_country)
 {
   ui->scrollArea->setCurrentCountry (a_country);
+}
+
+void Country::showEvent(QShowEvent *event)
+{
+    Q_UNUSED(event)
+//  show active widget
+//  qDebug() << "Country::showEvent" << qApp->focusWidget();
+    QTimer::singleShot(600, [=](){
+        ui->btnCountryFilter->edit()->setFocus (Qt::OtherFocusReason);
+    });
 }
 
 /*-----------------------------------------*/

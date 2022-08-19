@@ -77,6 +77,8 @@ public slots:
   void slotRetranslated();
   void slotSetCountry (const QString a_country);
   /// @}
+protected:
+    void showEvent(QShowEvent *event) override;
 };
 
 /*-----------------------------------------*/
