@@ -20,7 +20,7 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     if (!dir.exists()) {
         dir.mkpath(".");
     }
-    system(("chmod 667 " + m_pathToLog).toUtf8().data());
+    system(("chmod 667 $(find " + m_pathToLog + " -type d)").toUtf8().data());
     updateCurrentLogName();
     setLogFile(m_currentLogName);
     createChangerLogFiles();
@@ -81,7 +81,7 @@ QString DapLogger::defaultLogPath(const QString a_brand)
 #if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
     return QString("/opt/%1/log").arg(a_brand).toLower();
 #elif defined(Q_OS_MACOS)
-    return QString("/var/log/%1").arg(a_brand).toLower();
+    return QString("/var/log");
 #elif defined (Q_OS_WIN)
     return QString("%1/%2/log").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
