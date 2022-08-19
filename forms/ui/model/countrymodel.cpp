@@ -104,7 +104,7 @@ void CountryModel::slotSetup()
 
 void CountryModel::viewFilter(QStringList showItems)
 {
-    QSet<QString> setA = QSet<QString>(showItems.begin(), showItems.end());
+    QSet<QString> setA = showItems.toSet();
     foreach (auto *item, m_list)
         item->setVisible(setA.contains(item->text()));
 }

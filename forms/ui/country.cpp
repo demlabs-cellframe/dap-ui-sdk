@@ -49,6 +49,7 @@ Country::Country (QWidget *parent) :
   m_movie   = new QMovie(":/gui/asset/Spinner.gif");
   m_spinner->setMovie (m_movie);
   ui->btnCountryFilter->setBtnStyle (DapGuiButton::EditTopMainBottomSub);
+  ui->btnCountryFilter->edit()->setFocusPolicy(Qt::StrongFocus);
 
   connect (ui->btnCountryFilter, &DapGuiButton::textChanged,
            this, [=](QString text) {
@@ -120,6 +121,16 @@ void Country::slotRetranslated()
 void Country::slotSetCountry(const QString a_country)
 {
   ui->scrollArea->setCurrentCountry (a_country);
+}
+
+void Country::showEvent(QShowEvent *event)
+{
+    Q_UNUSED(event)
+//  show active widget
+//  qDebug() << "Country::showEvent" << qApp->focusWidget();
+    QTimer::singleShot(600, [=](){
+        ui->btnCountryFilter->edit()->setFocus (Qt::OtherFocusReason);
+    });
 }
 
 /*-----------------------------------------*/
