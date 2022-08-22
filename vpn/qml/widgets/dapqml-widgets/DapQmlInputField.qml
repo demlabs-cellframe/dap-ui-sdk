@@ -29,9 +29,15 @@ Item {
 
     property string qss
     property string title: ""
+    property string value: inputField.text
     property var fontFamiliy: Brand.fontName()
     property int fontSize: 12
     property int fontWeight: Font.Normal
+
+    onValueChanged: {
+        inputField.text = value;
+        _updateTitlePos();
+    }
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
 
@@ -54,6 +60,22 @@ Item {
 
     /// @brief label clicked
     //signal clicked();
+
+    /// @}
+    /****************************************//**
+     * @name FUNCTIONS
+     ********************************************/
+    /// @{
+
+    function clear() {
+        value = '';
+    }
+
+    function _updateTitlePos() {
+        titleLabel.qss = (inputField.activeFocus || inputField.text.length)
+                ? "inputfield-placeholder-out c-grey"
+                : "inputfield-placeholder-in c-grey";
+    }
 
     /// @}
     /****************************************//**
@@ -104,11 +126,7 @@ Item {
 
         DapQmlStyle { item: inputField; qss: "inputfield-input" }
 
-        onActiveFocusChanged: {
-            titleLabel.qss = (activeFocus || text.length)
-                    ? "inputfield-placeholder-out c-grey"
-                    : "inputfield-placeholder-in c-grey";
-        }
+        onActiveFocusChanged: root._updateTitlePos()
     }
 }
 

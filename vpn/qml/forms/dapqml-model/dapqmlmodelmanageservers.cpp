@@ -64,9 +64,65 @@ void DapQmlModelManageServers::installManager (QSharedPointer<AbstractServerMana
   s_manager = a_manager;
 }
 
+static void parseServerData (const QVariant &a_data, /* out */ AbstractServerManager::Server &a_server)
+{
+  auto value        = a_data.toMap();
+  a_server.name     = value["name"].toString();
+  a_server.address  = value["address"].toString();
+  a_server.port     = value["port"].toInt();
+}
+
+void DapQmlModelManageServers::add (const QVariant &a_data)
+{
+  /* check if manager installed */
+  if (s_manager.isNull())
+    return;
+
+  /* get new server info */
+  AbstractServerManager::Server newServer;
+  parseServerData (a_data, newServer);
+
+  /* store result */
+  s_manager->append (std::move (newServer));
+}
+
+void DapQmlModelManageServers::edit (int a_index, const QVariant &a_data)
+{
+  /* check if manager installed */
+  if (s_manager.isNull())
+    return;
+
+  /* check boundaries */
+  auto list   = s_manager->keys();
+  if (a_index >= list.size())
+    return;
+
+  /* get source item */
+  QString name = list.at (a_index);
+  AbstractServerManager::Server item = s_manager->server (name);
+
+  /* modify data */
+  parseServerData (a_data, item);
+
+  /* store result */
+  s_manager->setServer (name, std::move (item));
+}
+
+void DapQmlModelManageServers::refreshContent()
+{
+  beginResetModel();
+  endResetModel();
+}
+
+QVariant DapQmlModelManageServers::value (int a_index, const QString &a_name)
+{
+  return data (index (a_index, 0), roleNames().key (a_name.toUtf8()));
+}
+
 void DapQmlModelManageServers::fillDummyList()
 {
 #ifdef ENABLE_SERVERS_DUMMY
+  /* check if manager installed */
   if (s_manager.isNull())
     return;
 
@@ -84,6 +140,7 @@ int DapQmlModelManageServers::rowCount (const QModelIndex &parent) const
   if (parent.isValid())
     return 0;
 
+  /* check if manager installed */
   if (s_manager.isNull())
     return 0;
 
@@ -100,6 +157,10 @@ int DapQmlModelManageServers::columnCount (const QModelIndex &parent) const
 
 QVariant DapQmlModelManageServers::data (const QModelIndex &index, int role) const
 {
+  /* check if manager installed */
+  if (s_manager.isNull())
+    return QVariant();
+
   /* check index */
   if (!index.isValid())
     return QVariant();
@@ -122,6 +183,18 @@ QVariant DapQmlModelManageServers::data (const QModelIndex &index, int role) con
     case 2: // favorite
       return index.row() == 1; // dummy check
 
+    case 3: // address
+      {
+        const auto &server = s_manager->server (list.at (index.row()));
+        return server.address;
+      }
+
+    case 4: // port
+      {
+        const auto &server = s_manager->server (list.at (index.row()));
+        return server.port;
+      }
+
     }
 
   return QVariant();
@@ -134,6 +207,8 @@ QHash<int, QByteArray> DapQmlModelManageServers::roleNames() const
   names.insert (0, "icon");
   names.insert (1, "name");
   names.insert (2, "favorite");
+  names.insert (3, "address");
+  names.insert (4, "port");
 
   return names;
 }
@@ -144,31 +219,7 @@ QHash<int, QByteArray> DapQmlModelManageServers::roleNames() const
 
 void DapQmlModelManageServers::slotSetup()
 {
-  beginResetModel();
-//  *s_servers  = QStringList{
-//      "keytest1",
-//      "keytest2",
-//      "keytest3",
-//      "keytest4",
-//      "keytest5",
-//      "keytest6",
-//      "keytest7",
-//      "keytest8",
-//      "keytest9",
-//      "keytest10",
-//      "keytest11",
-//      "keytest12",
-//      "keytest13",
-//      "keytest14",
-//      "keytest15",
-//      "keytest16",
-//      "keytest17",
-//      "keytest18",
-//      "keytest19",
-//      "keytest20",
-//      "keytest21",
-//  };
-  endResetModel();
+
 }
 
 /*-----------------------------------------*/

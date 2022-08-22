@@ -41,8 +41,24 @@ Item {
     /// @brief controls form mode by aplying visibility rules
     property QtObject modeCtl: QtObject {
         property int mode: QuiManageServersForm.Mode.M_LIST
+        property int lastIndex: -1
 
-        function setMode(a_newMode) {
+        function switchToList() {
+            setMode (QuiManageServersForm.Mode.M_LIST);
+        }
+
+        function switchToEdit (a_index) {
+            lastIndex   = a_index;
+            fill (a_index);
+            setMode (QuiManageServersForm.Mode.M_EDIT);
+        }
+
+        function switchToAdd() {
+            clearFields();
+            setMode (QuiManageServersForm.Mode.M_ADD);
+        }
+
+        function setMode (a_newMode) {
             /* store new mode */
             mode        = a_newMode;
 
@@ -59,6 +75,35 @@ Item {
             /* both "edit" and "add" fields are the same */
             inputFields.visible = edit | add;
         }
+
+        function clearFields() {
+            inputTitle.clear();
+            inputAddress.clear();
+            inputPort.clear();
+        }
+
+        function fill (a_index) {
+            let model   = manserListView.model;
+
+            if (a_index < 0 || a_index >= model.length || a_index === undefined)
+                return;
+
+            inputTitle.value      = model.value (a_index, "name");
+            inputAddress.value    = model.value (a_index, "address");
+            inputPort.value       = model.value (a_index, "port");
+        }
+
+        function applyChanges() {
+            /* get field values */
+            let name    = inputTitle.value;
+            let address = inputAddress.value;
+            let port    = Number (inputPort.value);
+
+            /* store result & update model */
+            let model   = manserListView.model;
+            model.edit (lastIndex, {name:name, address:address, port:port});
+            model.refreshContent();
+        }
     }
 
     /// @}
@@ -73,11 +118,23 @@ Item {
     }
 
     /// @brief set new mode
-    function setMode(a_newMode) {
-        modeCtl.setMode(a_newMode);
+    function setMode (a_newMode, a_data) {
+
+        switch(a_newMode)
+        {
+        case QuiManageServersForm.Mode.M_LIST:  modeCtl.switchToList(); break;
+        case QuiManageServersForm.Mode.M_EDIT:  modeCtl.switchToEdit (a_data); break;
+        case QuiManageServersForm.Mode.M_ADD:   modeCtl.switchToAdd(); break;
+        }
+
+        // modeCtl.setMode(a_newMode);
     }
 
-    function _pos(a_index) {
+    function applyChanges() {
+        modeCtl.applyChanges();
+    }
+
+    function _pos (a_index) {
         return title.y + (title.height * 2.4) + (resizerItem.height * a_index);
     }
 
@@ -250,6 +307,7 @@ Item {
                         height: moreBtn.height
                     }
                     background: Rectangle { color: "transparent" }
+                    property int myIndex: parent.myIndex
 
                     x: parent.width - width
                     y: (parent.height - height) / 2 - height / 8
@@ -261,9 +319,10 @@ Item {
 
                     DapQmlMenu {
                         id: moreBtnMenu
+                        property int myIndex: parent.myIndex
 
                         /* actions */
-                        Action { text: "Edit"; onTriggered: root.setMode (QuiManageServersForm.Mode.M_EDIT) }
+                        Action { text: "Edit"; onTriggered: root.setMode (QuiManageServersForm.Mode.M_EDIT, myIndex) }
                         Action { text: "Delete" }
                     }
                 }
@@ -313,7 +372,10 @@ Item {
             y: title.y + (title.height - height) / 2
             z: 16
 
-            onClicked: root.setMode (QuiManageServersForm.Mode.M_LIST)
+            onClicked: {
+                root.applyChanges();
+                root.setMode (QuiManageServersForm.Mode.M_LIST)
+            }
         }
 
         /* cancel button */
