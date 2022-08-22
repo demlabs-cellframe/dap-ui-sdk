@@ -293,6 +293,11 @@
     scaled-rect: scaled(nan,nan,nan,24,false,12);
 }
 
+.combobox-text
+{
+    scaled-rect: scaled(nan,nan,nan,40,false,16);
+}
+
 .combobox-border-color
 {
     qproperty-borderColor: "@text";

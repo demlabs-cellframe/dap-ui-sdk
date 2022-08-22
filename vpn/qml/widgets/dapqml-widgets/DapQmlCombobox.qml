@@ -32,15 +32,12 @@ Item {
     property string title: ""
     property var items: []
     property int currentItem: -1
-    property var fontFamiliy: Brand.fontName()
-    property int fontSize: 12
-    property int fontWeight: Font.Normal
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
 
     property QtObject internal: QtObject {
         property bool menuOpen: false
-        property int padding: resizer.fontSize
+        property int padding: resizer.fontSize / 2
         property real preferHeight: root.height * 8
     }
 
@@ -78,11 +75,32 @@ Item {
 
                 /* send into model */
                 model.append({"text":item.text});
+
+                /* change current */
+                if (root.currentItem === -1)
+                    root.currentItem = 0;
             }
         }
     }
 
+    function _currentUpdated() {
+        let before = titleLabel.qss;
+
+        titleLabel.qss =
+            (root.currentItem !== -1)
+            ? "combobox-placeholder-out c-grey"
+            : "combobox-placeholder-in c-grey";
+
+        itemLabel.text =
+            (root.currentItem !== -1)
+            ? root.items[root.currentItem].text
+            : "";
+
+        //console.log(`tl index (${root.currentItem}) before (${before}) after (${titleLabel.qss})`);
+    }
+
     Component.onCompleted: _updateContent()
+    onCurrentItemChanged: _currentUpdated()
 
     /// @}
     /****************************************//**
@@ -129,12 +147,27 @@ Item {
     DapQmlLabel {
         id: titleLabel
         width: root.width
+        height: root.height
         horizontalAlign: Text.AlignLeft
         qss: "combobox-placeholder-in c-grey"
         text: root.title
         property int duration: 0
         Behavior on y { PropertyAnimation { duration: titleLabel.duration } }
         Behavior on fontSize { PropertyAnimation { duration: titleLabel.duration } }
+    }
+
+    /****************************************//**
+     * Current text
+     ********************************************/
+
+    DapQmlLabel {
+        id: itemLabel
+        width: root.width
+        height: root.height
+        horizontalAlign: Text.AlignLeft
+        verticalAlign: Text.AlignBottom
+        qss: "combobox-text c-label"
+        //text: (root.currentItem === -1) ? "" : root.items[root.currentItem].text
     }
 
     /****************************************//**
@@ -170,7 +203,7 @@ Item {
 
     DapQmlRectangle {
         x: -root.internal.padding
-        y: -root.internal.padding
+        //y: -root.internal.padding
         z: 15
         width: root.width + root.internal.padding * 2
         height: model.actualHeight()
@@ -190,9 +223,9 @@ Item {
     ListView {
         id: listviewItems
         x: -root.internal.padding+1
-        //y: -root.internal.padding
+        //y: -root.internal.padding/2
         //x: 1 // root.internal.padding
-        //y: root.internal.padding
+        y: root.internal.padding
         z: 16
         visible: internal.menuOpen
         width: root.width - 2 + root.internal.padding * 2
@@ -200,6 +233,7 @@ Item {
         model: model // root.items
 
         delegate: Button {
+            property int myIndex: model.index
             width: listviewItems.width
             height: resizer.height
             text: model.text
@@ -218,7 +252,10 @@ Item {
                 color: hovered ? resizer.hoverBackgroundColor : resizer.backgroundColor
             }
 
-            onClicked: internal.menuOpen = false
+            onClicked: {
+                root.currentItem    = myIndex;
+                internal.menuOpen   = false
+            }
         }
 
         Component.onCompleted: StyleDebugTree.describe (
