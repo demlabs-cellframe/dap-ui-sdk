@@ -42,5 +42,6 @@
         <file>icons/button_on.png</file>
         <file>widgets/DapSelector.qml</file>
         <file>widgets/DapSelectorSwitch.qml</file>
+        <file>widgets/DapPopupInfo.qml</file>
     </qresource>
 </RCC>
