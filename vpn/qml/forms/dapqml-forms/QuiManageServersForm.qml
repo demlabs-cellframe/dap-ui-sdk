@@ -93,6 +93,27 @@ Item {
             inputPort.value       = model.value (a_index, "port");
         }
 
+        function addNewServer() {
+            /* get field values */
+            let name    = inputTitle.value;
+            let address = inputAddress.value;
+            let port    = Number (inputPort.value);
+
+            /* store result & update model */
+            let model   = manserListView.model;
+            model.add ({name:name, address:address, port:port});
+            model.refreshContent();
+        }
+
+        function removeServer (a_index) {
+            lastIndex   = a_index;
+
+            /* perform removing & update model */
+            let model   = manserListView.model;
+            model.remove (lastIndex);
+            model.refreshContent();
+        }
+
         function applyChanges() {
             /* get field values */
             let name    = inputTitle.value;
@@ -130,8 +151,20 @@ Item {
         // modeCtl.setMode(a_newMode);
     }
 
+    function addNewServer() {
+        modeCtl.addNewServer();
+    }
+
+    function removeServer (a_index) {
+        modeCtl.removeServer (a_index);
+    }
+
     function applyChanges() {
-        modeCtl.applyChanges();
+        if (modeCtl.mode === QuiManageServersForm.Mode.M_ADD)
+            modeCtl.addNewServer();
+        else
+        if (modeCtl.mode === QuiManageServersForm.Mode.M_EDIT)
+            modeCtl.applyChanges();
     }
 
     function _pos (a_index) {
@@ -322,8 +355,8 @@ Item {
                         property int myIndex: parent.myIndex
 
                         /* actions */
-                        Action { text: "Edit"; onTriggered: root.setMode (QuiManageServersForm.Mode.M_EDIT, myIndex) }
-                        Action { text: "Delete" }
+                        Action { text: "Edit";      onTriggered: root.setMode (QuiManageServersForm.Mode.M_EDIT, myIndex) }
+                        Action { text: "Delete";    onTriggered: root.removeServer (myIndex); }
                     }
                 }
 

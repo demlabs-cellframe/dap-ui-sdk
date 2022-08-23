@@ -127,6 +127,7 @@ Item {
         DapQmlStyle { item: inputField; qss: "inputfield-input" }
 
         onActiveFocusChanged: root._updateTitlePos()
+        onTextEdited: root.value = text
     }
 }
 

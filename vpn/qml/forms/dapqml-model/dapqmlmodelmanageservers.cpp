@@ -108,6 +108,22 @@ void DapQmlModelManageServers::edit (int a_index, const QVariant &a_data)
   s_manager->setServer (name, std::move (item));
 }
 
+void DapQmlModelManageServers::remove(int a_index)
+{
+  /* check if manager installed */
+  if (s_manager.isNull())
+    return;
+
+  /* check boundaries */
+  auto list   = s_manager->keys();
+  if (a_index >= list.size())
+    return;
+
+  /* perform removing */
+  auto name   = list.at (a_index);
+  s_manager->remove (name);
+}
+
 void DapQmlModelManageServers::refreshContent()
 {
   beginResetModel();

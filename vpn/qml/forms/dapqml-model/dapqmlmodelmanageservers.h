@@ -38,6 +38,7 @@ public:
   void installManager (QSharedPointer<AbstractServerManager> a_manager);
   Q_INVOKABLE void add (const QVariant &a_data);
   Q_INVOKABLE void edit (int a_index, const QVariant &a_data);
+  Q_INVOKABLE void remove (int a_index);
   Q_INVOKABLE void refreshContent();
   Q_INVOKABLE QVariant value (int a_index, const QString &a_name);
 
