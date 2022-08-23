@@ -189,20 +189,20 @@ Item {
      *
      ********************************************/
 
-    Button {
-        x: 4; y: 4; z: 10; width: 64; height: 28; text: "list"
-        onClicked: root.setMode (QuiManageServersForm.Mode.M_LIST)
-    }
+//    Button {
+//        x: 4; y: 4; z: 10; width: 64; height: 28; text: "list"
+//        onClicked: root.setMode (QuiManageServersForm.Mode.M_LIST)
+//    }
 
-    Button {
-        x: 4+72; y: 4; z: 10; width: 64; height: 28; text: "edit"
-        onClicked: root.setMode (QuiManageServersForm.Mode.M_EDIT)
-    }
+//    Button {
+//        x: 4+72; y: 4; z: 10; width: 64; height: 28; text: "edit"
+//        onClicked: root.setMode (QuiManageServersForm.Mode.M_EDIT)
+//    }
 
-    Button {
-        x: 4+144; y: 4; z: 10; width: 64; height: 28; text: "add"
-        onClicked: root.setMode (QuiManageServersForm.Mode.M_ADD)
-    }
+//    Button {
+//        x: 4+144; y: 4; z: 10; width: 64; height: 28; text: "add"
+//        onClicked: root.setMode (QuiManageServersForm.Mode.M_ADD)
+//    }
 
     /****************************************//**
      * Resizers
@@ -372,9 +372,9 @@ Item {
                 }
 
                 function buttonClicked(a_isButtonSignal) {
-                    if(!a_isButtonSignal)
-                        clicked();
-                    model.exec (myIndex, this);
+                    // if(!a_isButtonSignal)
+                    //     clicked();
+                    // model.exec (myIndex, this);
                 }
 
                 onClicked: buttonClicked(true)

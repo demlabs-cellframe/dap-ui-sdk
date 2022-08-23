@@ -87,20 +87,20 @@ Item {
      *
      ********************************************/
 
-    Button {
-        x: 4; y: 4; z: 10; width: 64; height: 28; text: "list"
-        onClicked: root.setMode (QuiCryptographyForm.Mode.M_LIST)
-    }
+//    Button {
+//        x: 4; y: 4; z: 10; width: 64; height: 28; text: "list"
+//        onClicked: root.setMode (QuiCryptographyForm.Mode.M_LIST)
+//    }
 
-    Button {
-        x: 4+72; y: 4; z: 10; width: 64; height: 28; text: "info"
-        onClicked: root.setMode (QuiCryptographyForm.Mode.M_INFO)
-    }
+//    Button {
+//        x: 4+72; y: 4; z: 10; width: 64; height: 28; text: "info"
+//        onClicked: root.setMode (QuiCryptographyForm.Mode.M_INFO)
+//    }
 
-    Button {
-        x: 4+144; y: 4; z: 10; width: 64; height: 28; text: "gen"
-        onClicked: root.setMode (QuiCryptographyForm.Mode.M_GENERATE)
-    }
+//    Button {
+//        x: 4+144; y: 4; z: 10; width: 64; height: 28; text: "gen"
+//        onClicked: root.setMode (QuiCryptographyForm.Mode.M_GENERATE)
+//    }
 
     /****************************************//**
      * Resizers
@@ -232,9 +232,9 @@ Item {
                 }
 
                 function buttonClicked(a_isButtonSignal) {
-                    if(!a_isButtonSignal)
-                        clicked();
-                    model.exec (myIndex, this);
+                    // if(!a_isButtonSignal)
+                    //     clicked();
+                    // model.exec (myIndex, this);
                 }
 
                 onClicked: buttonClicked(true)
