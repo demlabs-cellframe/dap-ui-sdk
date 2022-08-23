@@ -74,6 +74,7 @@ signals:
   void sigLicenceGet();
   void sigLicenceReset();
   void sigLanguage();
+  void sigCountry();
   void sigColorTheme();
   void sigSetDaysLeft (QString days);
   void sigResetDaysLeft();

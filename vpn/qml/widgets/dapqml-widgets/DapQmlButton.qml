@@ -174,6 +174,11 @@ Rectangle {
         return _magickHeight() + _magickSpacer();
     }
 
+    function setFocus() {
+        etmbsMain.forceActiveFocus();
+        console.log("setFocus")
+    }
+
     /// @}
     /****************************************//**
      * Link image

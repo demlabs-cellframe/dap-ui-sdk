@@ -21,7 +21,7 @@ import DapQmlStyle 1.0
 RadioButton {
     id: root
     text: ""
-    checked: false
+    checked: true
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
 
@@ -41,6 +41,9 @@ RadioButton {
 
     /// @brief enable\\disable separator
     property bool separator: false
+
+    ///
+    property int modelIndex: -1
 
     /// @}
     /****************************************//**
