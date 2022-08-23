@@ -30,6 +30,7 @@ Item {
     property string qss
     property string title: ""
     property string value: inputField.text
+    property string inputMask
     property var fontFamiliy: Brand.fontName()
     property int fontSize: 12
     property int fontWeight: Font.Normal
@@ -114,7 +115,10 @@ Item {
         width: root.width
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignBottom
+        persistentSelection: true
+        selectByMouse: true
         echoMode: TextInput.Normal
+        inputMask: root.inputMask
         background: Rectangle { color: "transparent" }
 
         /* font config */

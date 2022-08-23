@@ -17,12 +17,12 @@ static QSharedPointer<AbstractServerManager> s_manager;
 static std::array<AbstractServerManager::Server, 6> dummyServers =
 //static AbstractServerManager::Server dummyServers[] =
 {
-  AbstractServerManager::Server{ "AP-1 (South America, USA)",      "18.184.32.170",    443 },
-  { "AP-2 (Ireland, Europe)",         "18.184.32.170",    443 },
-  { "AP-3 (Seoul, Asia)",             "18.184.32.170",    443 },
-  { "AP-4 (Frankfurt, Europe)",       "18.184.32.170",    443 },
-  { "AP-5 (South Africa, Sao Paulo)", "18.184.32.170",    443 },
-  { "AP-6 (Ireland, Europe)",         "18.184.32.170",    443 },
+  AbstractServerManager::Server{ "AP-1 (South America, USA)",      "18.184.32.170",    443, false },
+  { "AP-2 (Ireland, Europe)",         "18.184.32.170",    443, true },
+  { "AP-3 (Seoul, Asia)",             "18.184.32.170",    443, false },
+  { "AP-4 (Frankfurt, Europe)",       "18.184.32.170",    443, true },
+  { "AP-5 (South Africa, Sao Paulo)", "18.184.32.170",    443, true },
+  { "AP-6 (Ireland, Europe)",         "18.184.32.170",    443, false },
 };
 #endif
 
@@ -64,12 +64,30 @@ void DapQmlModelManageServers::installManager (QSharedPointer<AbstractServerMana
   s_manager = a_manager;
 }
 
+#define _parseField(map,item,name,conversion) \
+  if (map.contains (#name)) \
+    item.name     = map[#name].conversion();
+
 static void parseServerData (const QVariant &a_data, /* out */ AbstractServerManager::Server &a_server)
 {
   auto value        = a_data.toMap();
-  a_server.name     = value["name"].toString();
-  a_server.address  = value["address"].toString();
-  a_server.port     = value["port"].toInt();
+
+  _parseField (value, a_server, name, toString);
+  _parseField (value, a_server, address, toString);
+  _parseField (value, a_server, port, toInt);
+  _parseField (value, a_server, favorite, toBool);
+
+//  if (value.contains ("name"))
+//    a_server.name     = value["name"].toString();
+
+//  if (value.contains ("address"))
+//    a_server.address  = value["address"].toString();
+
+//  if (value.contains ("port"))
+//    a_server.port     = value["port"].toInt();
+
+//  if (value.contains ("favorite"))
+//    a_server.favorite = value["favorite"].toBool();
 }
 
 void DapQmlModelManageServers::add (const QVariant &a_data)
@@ -108,7 +126,7 @@ void DapQmlModelManageServers::edit (int a_index, const QVariant &a_data)
   s_manager->setServer (name, std::move (item));
 }
 
-void DapQmlModelManageServers::remove(int a_index)
+void DapQmlModelManageServers::remove (int a_index)
 {
   /* check if manager installed */
   if (s_manager.isNull())
@@ -197,19 +215,22 @@ QVariant DapQmlModelManageServers::data (const QModelIndex &index, int role) con
       return list.at (index.row());
 
     case 2: // favorite
-      return index.row() == 1; // dummy check
+    {
+      const auto &server = s_manager->server (list.at (index.row()));
+      return server.favorite;
+    }
 
     case 3: // address
-      {
-        const auto &server = s_manager->server (list.at (index.row()));
-        return server.address;
-      }
+    {
+      const auto &server = s_manager->server (list.at (index.row()));
+      return server.address;
+    }
 
     case 4: // port
-      {
-        const auto &server = s_manager->server (list.at (index.row()));
-        return server.port;
-      }
+    {
+      const auto &server = s_manager->server (list.at (index.row()));
+      return server.port;
+    }
 
     }
 

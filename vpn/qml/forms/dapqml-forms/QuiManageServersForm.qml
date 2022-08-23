@@ -95,13 +95,14 @@ Item {
 
         function addNewServer() {
             /* get field values */
+            let model   = manserListView.model;
             let name    = inputTitle.value;
             let address = inputAddress.value;
             let port    = Number (inputPort.value);
+            let fave    = false;
 
             /* store result & update model */
-            let model   = manserListView.model;
-            model.add ({name:name, address:address, port:port});
+            model.add ({name:name, address:address, port:port, favorite:fave});
             model.refreshContent();
         }
 
@@ -116,12 +117,13 @@ Item {
 
         function applyChanges() {
             /* get field values */
+            let model   = manserListView.model;
             let name    = inputTitle.value;
             let address = inputAddress.value;
             let port    = Number (inputPort.value);
+            //let fave    = model.value (lastIndex, "favorite");
 
             /* store result & update model */
-            let model   = manserListView.model;
             model.edit (lastIndex, {name:name, address:address, port:port});
             model.refreshContent();
         }
@@ -165,6 +167,13 @@ Item {
         else
         if (modeCtl.mode === QuiManageServersForm.Mode.M_EDIT)
             modeCtl.applyChanges();
+    }
+
+    function switchFave(a_index) {
+        let model   = manserListView.model;
+        let fave    = !model.value (a_index, "favorite");
+        model.edit (a_index, {favorite:fave});
+        model.refreshContent();
     }
 
     function _pos (a_index) {
@@ -320,6 +329,7 @@ Item {
                         height: checkFavorite.height
                     }
                     background: Rectangle { color: "transparent" }
+                    property int myIndex: parent.myIndex
 
                     x: parent.width - width * 2// - (74 / 2)
                     y: (parent.height - height) / 2 - height / 8
@@ -327,7 +337,8 @@ Item {
                     width: parent.iconSize * 1.25
                     height: parent.iconSize * 1.25
 
-                    //onCheckedChanged: internal.showPassword = checked
+                    onClicked: root.switchFave (myIndex)
+                    //onCheckedChanged: root.switchFave (myIndex)
                 }
 
                 /* more button */
@@ -449,6 +460,7 @@ Item {
             height: resizeField.height
             clip: true
             title: "Address"
+            inputMask: "000.000.000.000"
         }
 
         /****************************************//**
@@ -463,6 +475,7 @@ Item {
             height: resizeField.height
             clip: true
             title: "Port"
+            inputMask: "00000"
         }
 
     }

@@ -32,13 +32,13 @@ public:
     QString name;
     QString address;
     int port;
+    bool favorite;
   };
 
   /// Server state struct
   struct State
   {
     int ping;
-    bool favorite;
   };
 
   /// combined structure to ease iteration
@@ -49,8 +49,8 @@ public:
       name      = a_server.name;
       address   = a_server.address;
       port      = a_server.port;
+      favorite  = a_server.favorite;
       ping      = a_state.ping;
-      favorite  = a_state.favorite;
     }
   };
   /// @}
