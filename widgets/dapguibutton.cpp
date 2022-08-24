@@ -93,16 +93,19 @@ DapGuiButton::DapGuiButton (QWidget *parent)
   m_widgets.insert ("styledWidgets", ui->Style3);
   m_widgets.insert ("styledWidgets", ui->Style4);
   m_widgets.insert ("styledWidgets", ui->Style5);
+  m_widgets.insert ("styledWidgets", ui->Style6);
   m_widgets.insert ("textMain", ui->DapGuiButtonTextMain);
   m_widgets.insert ("textMain", ui->DapGuiButtonTextMain_2);
   m_widgets.insert ("textMain", ui->DapGuiButtonTextMain_3);
   m_widgets.insert ("textMid", ui->DapGuiButtonTextMid);
   m_widgets.insert ("textMid", ui->DapGuiButtonTextMid_2);
   m_widgets.insert ("textEdit", ui->kelGuiLineEditMain);
+  m_widgets.insert ("textEdit", ui->kelGuiLineEditMainNative);
   m_widgets.insert ("textSub", ui->DapGuiButtonTextSub);
   m_widgets.insert ("textSub", ui->DapGuiButtonTextSub_2);
   m_widgets.insert ("textSub", ui->DapGuiButtonTextSub_3);
   m_widgets.insert ("textSub", ui->DapGuiButtonTextSub_4);
+  m_widgets.insert ("textSub", ui->DapGuiButtonTextSub_46);
   m_widgets.insert ("textRight", ui->DapGuiButtonTextRight);
   m_widgets.insert ("textRight", ui->DapGuiButtonTextRight_2);
   m_widgets.insert ("marginOnLink", ui->DapGuiButtonTextRight);
@@ -159,6 +162,19 @@ DapGuiButton::DapGuiButton (QWidget *parent)
            this, &DapGuiButton::textEdited);
   connect (ui->kelGuiLineEditMain, &DapGuiLineEdit::textEdited,
            this, &DapGuiButton::_slotTextEdited);
+
+
+  connect (ui->kelGuiLineEditMainNative, &DapGuiLineEditNative::textChanged, [this](const QString& text)
+  {
+      if (!m_textChangesSignalLock)
+        emit DapGuiButton::textChanged(text);
+  });
+  connect (ui->kelGuiLineEditMainNative, &DapGuiLineEditNative::textEdited,
+           this, &DapGuiButton::textEdited);
+  connect (ui->kelGuiLineEditMainNative, &DapGuiLineEditNative::textEdited,
+           this, &DapGuiButton::_slotTextEdited);
+
+
   connect (&__kgsm, &DapGuiStyleManager::forceStyleUpdate,
            this, &DapGuiButton::_slotStyleUpdate);
   connect (ui->DapGuiButtonIconRight, &DapGuiLabel::clicked, [&](){
@@ -206,6 +222,8 @@ void DapGuiButton::setBtnStyle (const ButtonStyle &style)
   std::reverse (array.begin(), array.end());
   for (auto j = array.begin(), e = array.end(); j != e; i++, j++)
     (*j)->setVisible (i == int (m_btnStyle));
+//  ui->kelGuiLineEditMain->setVisible(tmp_style == ButtonStyle::EditTopMainBottomSub);
+//  ui->kelGuiLineEditMainPrivate->setVisible(tmp_style == ButtonStyle::EditTopMainBottomSubPrivate);
 }
 
 /****************************************//**
@@ -404,7 +422,12 @@ void DapGuiButton::setInputMask(const QString &inputMask)
 
 DapGuiLineEdit *DapGuiButton::edit() const
 {
-  return ui->kelGuiLineEditMain;
+    return ui->kelGuiLineEditMain;
+}
+
+DapGuiLineEditNative *DapGuiButton::editNative() const
+{
+    return ui->kelGuiLineEditMainNative;
 }
 
 /****************************************//**

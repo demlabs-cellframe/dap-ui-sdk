@@ -26,7 +26,7 @@ bool DapGuiLineEditPlugin::isInitialized() const
 
 QWidget *DapGuiLineEditPlugin::createWidget (QWidget *parent)
 {
-  return new DapGuiLineEdit (parent);
+  return new DapGuiSerialKeyLineEdit (parent);
 }
 
 QString DapGuiLineEditPlugin::name() const

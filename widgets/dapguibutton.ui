@@ -290,10 +290,51 @@
             <set>Qt::AlignHCenter|Qt::AlignTop</set>
            </property>
           </widget>
-         </item>
+         </item>         
         </layout>
        </widget>
       </item>
+      <item>
+       <widget class="DapGuiWidget" name="Style6" native="true">
+        <property name="cssStyle" stdset="0">
+         <string>nobackground</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_56">
+         <item>
+          <widget class="DapGuiLineEditNative" name="kelGuiLineEditMainNative">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="inputMask">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Main Text</string>
+           </property>
+           <property name="frame">
+            <bool>false</bool>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="DapGuiLabel" name="DapGuiButtonTextSub_46">
+           <property name="text">
+            <string>Sub Text</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignHCenter|Qt::AlignTop</set>
+           </property>
+          </widget>
+         </item>         
+        </layout>
+       </widget>
+      </item>      
       <item>
        <widget class="DapGuiWidget" name="Style5" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -365,6 +406,11 @@
    <extends>QLineEdit</extends>
    <header>dapguilineedit.h</header>
   </customwidget>
+  <customwidget>
+   <class>DapGuiLineEditNative</class>
+   <extends>QLineEdit</extends>
+   <header>dapguilineeditnative.h</header>
+  </customwidget>  
   <customwidget>
    <class>DapGuiLabel</class>
    <extends>QLabel</extends>

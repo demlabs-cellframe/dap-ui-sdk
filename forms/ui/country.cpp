@@ -48,15 +48,16 @@ Country::Country (QWidget *parent) :
 
   m_movie   = new QMovie(":/gui/asset/Spinner.gif");
   m_spinner->setMovie (m_movie);
-  ui->btnCountryFilter->setBtnStyle (DapGuiButton::EditTopMainBottomSub);
-  auto style = ui->btnCountryFilter->edit()->cssStyle();
+  ui->btnCountryFilter->setBtnStyle (DapGuiButton::EditTopMainBottomSubPrivate);
+  auto style = ui->btnCountryFilter->editNative()->cssStyle();
   auto bsize = UiScaling::pointsToPixels (1, UiScaling::getNativDPI());
   style.remove ("noborder");
   style.append (" login-input-border");
   if (bsize < 1)
     style.append (" login-input-border-default");
-  ui->btnCountryFilter->edit()->setCssStyle(style);
-  ui->btnCountryFilter->edit()->setFocusPolicy(Qt::StrongFocus);
+  ui->btnCountryFilter->editNative()->setCssStyle(style);
+  ui->btnCountryFilter->editNative()->setFocusPolicy(Qt::StrongFocus);
+  ui->btnCountryFilter->editNative()->setInputMethodHints(Qt::ImhSensitiveData);
 
   connect (ui->btnCountryFilter, &DapGuiButton::textChanged,
            this, [=](QString text) {
@@ -132,7 +133,7 @@ void Country::showEvent(QShowEvent *event)
 //  show active widget
 //  qDebug() << "Country::showEvent" << qApp->focusWidget();
     QTimer::singleShot(600, [=](){
-        ui->btnCountryFilter->edit()->setFocus (Qt::OtherFocusReason);
+        ui->btnCountryFilter->editNative()->setFocus (Qt::OtherFocusReason);
     });
 }
 
