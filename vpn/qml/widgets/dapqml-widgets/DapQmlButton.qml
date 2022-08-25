@@ -407,6 +407,7 @@ Rectangle {
                 text: root.mainText
                 //qss: root.mainQss
                 inputMask: root.inputMask
+                // android virtual keyboard
                 inputMethodHints: Qt.ImhSensitiveData
 
                 DapQmlLabel {

@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QAbstractTableModel>
+#include <QSortFilterProxyModel>
 
 /****************************************//**
  * @brief themes model list
@@ -54,6 +55,22 @@ public:
   QHash<int, QByteArray> roleNames() const override;
   /// @}
 };
+
+
+class DapQmlCountrySortFilterProxyModel : public QSortFilterProxyModel
+{
+  Q_OBJECT
+public:
+  explicit DapQmlCountrySortFilterProxyModel(QObject *parent = nullptr);
+  Q_INVOKABLE void updateCheckedIndex();
+  Q_INVOKABLE void setRowFilter(QString str);
+protected:
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
+private:
+    QString m_filter;
+    DapQmlCountryModel * m_model;
+};
+
 
 /*-----------------------------------------*/
 #endif // DAPQMLCOUNTRYMODEL_H

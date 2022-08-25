@@ -2,6 +2,7 @@
 
 import QtQuick 2.0
 import DapQmlCountryModel 1.0
+import DapQmlCountrySortFilterProxyModel 1.0
 import PageCtl 1.0
 import DapQmlStyle 1.0
 import "qrc:/dapqml-widgets"
@@ -91,7 +92,8 @@ Item {
      * Model
      ********************************************/
 
-    DapQmlCountryModel {
+//    DapQmlCountryModel {
+    DapQmlCountrySortFilterProxyModel{
         id: countryModel
     }
 
@@ -142,24 +144,12 @@ Item {
 
 //            onClicked: root.sigChooseSerial()
         onTextChanged: {
-            var text    = mainText;
-
-            if (text.length == maxCountChar)
-                root.textChangedAndFilledOut (mainText);
-            else if (text.length == 0)
-                root.textChangedAndCleaned();
-            else
-                root.sigSerialFillingIncorrect();
+            countryModel.setRowFilter(mainText);
+            console.log(mainText);
         }
         onTextEdited: {
-            var text    = mainText;
-
-            if (text.length == maxCountChar)
-                root.textEditedAndFilledOut (mainText);
-            else if (text.length == 0)
-                root.textEditedAndCleaned();
-            else
-                root.sigSerialFillingIncorrect();
+            countryModel.setRowFilter(mainText);
+            console.log(mainText);
         }
     }
 

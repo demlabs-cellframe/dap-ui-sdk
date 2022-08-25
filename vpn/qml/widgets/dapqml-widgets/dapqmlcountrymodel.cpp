@@ -89,4 +89,34 @@ QHash<int, QByteArray> DapQmlCountryModel::roleNames() const
   return names;
 }
 
+
+
+DapQmlCountrySortFilterProxyModel::DapQmlCountrySortFilterProxyModel(QObject *parent)
+    : QSortFilterProxyModel(parent)
+    , m_filter("")
+    , m_model(new DapQmlCountryModel(parent))
+{
+    setSourceModel(m_model);
+}
+
+void DapQmlCountrySortFilterProxyModel::updateCheckedIndex()
+{
+    DapQmlCountryModel* model = (DapQmlCountryModel*) sourceModel();
+    model->updateCheckedIndex();
+}
+
+void DapQmlCountrySortFilterProxyModel::setRowFilter(QString str)
+{
+    m_filter = str;
+    invalidateFilter();
+}
+
+bool DapQmlCountrySortFilterProxyModel::filterAcceptsRow(
+        int sourceRow, const QModelIndex &sourceParent) const
+{
+    QModelIndex index0 = sourceModel()->index(sourceRow, 0, sourceParent);
+    return (sourceModel()->data(index0, 0).toString().contains(m_filter, Qt::CaseInsensitive));
+}
+
+
 /*-----------------------------------------*/
