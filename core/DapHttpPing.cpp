@@ -1,10 +1,22 @@
 #include "DapHttpPing.h"
-#include "DapConnectClient.h"
 #include <QElapsedTimer>
 
-DapHttpPingNetworkReply* DapHttpPing::sendRequest(const QString& host, quint16 port)
+void DapHttpPing::sendRequest(const QString& host, quint16 port)
 {
-    DapNetworkReply *networkReply =  new DapNetworkReply;
-    DapConnectClient::instance()->request_GET(host, port, "server-info/version", *networkReply);
-//    return new DapHttpPingNetworkReply(networkReply, host, port);
+  DapNetworkReply *networkReply =  new DapNetworkReply;
+
+  QElapsedTimer *timer = new QElapsedTimer;
+  timer->start();
+
+  DapConnectClient::instance()->request_GET( host, port, "", *networkReply );
+
+  connect( networkReply, &DapNetworkReply::finished, this, [=] {
+
+    if ( networkReply->error() == QNetworkReply::NetworkError::NoError ) {
+      emit sigResponse(timer->elapsed());
+    } else {
+      emit sigNetworkError(networkReply->errorString());
+    }
+    delete timer;
+  });
 }
