@@ -29,6 +29,7 @@ static QMap<DapGuiPushButton::Style, _KgpbItem> s_presets =
   //{DapGuiPushButton::Radio,       {"://gfx/%1/radio_btn_off.png",  "://gfx/%1/radio_btn_on.png",          "://gfx/%1/radio_btn_on.png",         "cwpb_radio"}},
   {DapGuiPushButton::Switch,      {"://gfx/%1/switch_off.png",     "://gfx/%1/switch.png",                "://gfx/%1/switch.png",                "cwpb_switch"}},
   {DapGuiPushButton::Close,       {"://gfx/%1/ic_close.png",       "://gfx/%1/ic_close_hover.png",        "://gfx/%1/ic_close_hover.png",        "cwpb_close"}},
+  {DapGuiPushButton::FilterClear, {"://gfx/%1/btn_filter_clear.png","://gfx/%1/btn_filter_clear_hover.png",        "://gfx/%1/ic_close_hover.png", "cwpb_close"}},
 };
 
 /********************************************

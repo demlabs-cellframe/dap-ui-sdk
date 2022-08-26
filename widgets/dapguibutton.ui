@@ -299,7 +299,29 @@
         <property name="cssStyle" stdset="0">
          <string>nobackground</string>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_56">
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <property name="spacing">
+          <number>10</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="DapGuiLabel" name="DapGuiButtonIcon_61">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
          <item>
           <widget class="DapGuiLineEditNative" name="kelGuiLineEditMainNative">
            <property name="sizePolicy">
@@ -322,16 +344,6 @@
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="DapGuiLabel" name="DapGuiButtonTextSub_46">
-           <property name="text">
-            <string>Sub Text</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignHCenter|Qt::AlignTop</set>
-           </property>
-          </widget>
-         </item>         
         </layout>
        </widget>
       </item>      
@@ -422,6 +434,11 @@
    <header>dapguiwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>DapGuiPushButton</class>
+   <extends>QWidget</extends>
+   <header>dapguipushbutton.h</header>
+  </customwidget>  
  </customwidgets>
  <resources/>
  <connections/>

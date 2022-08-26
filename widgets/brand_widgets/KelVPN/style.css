@@ -37,8 +37,6 @@
 	color: rgba(0,0,0,0);
 }
 
-
-
 .darkblue-light
 {
 	color: #04004E;
@@ -55,7 +53,7 @@
 
 .uppercase
 {
-	text-transform: uppercase;
+        text-transform: uppercase;
 }
 
 .letterspace
@@ -333,9 +331,9 @@
 
 .cwb_height
 {
-	height: 108pt;
-	min-height: 108pt;
-	max-height: 108pt;
+        height: 108pt;
+        min-height: 108pt;
+        max-height: 108pt;
 }
 
 .cwb_top
@@ -837,6 +835,11 @@
 	qproperty-scaledPixmap: url("://gui/asset/icon_offline.png");
 }
 
+.ic_filter_clear
+{
+        qproperty-scaledPixmap: url("://icons/filter.png");
+}
+
 /****************************************************
  * Menu Footer
  ***************************************************/
@@ -1031,7 +1034,7 @@
 
 .login-input-border-default
 {
-	border-width: 1px;
+        border-width: 1px;
 }
 
 /****************************************************

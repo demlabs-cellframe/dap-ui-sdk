@@ -105,13 +105,13 @@ DapGuiButton::DapGuiButton (QWidget *parent)
   m_widgets.insert ("textSub", ui->DapGuiButtonTextSub_2);
   m_widgets.insert ("textSub", ui->DapGuiButtonTextSub_3);
   m_widgets.insert ("textSub", ui->DapGuiButtonTextSub_4);
-  m_widgets.insert ("textSub", ui->DapGuiButtonTextSub_46);
   m_widgets.insert ("textRight", ui->DapGuiButtonTextRight);
   m_widgets.insert ("textRight", ui->DapGuiButtonTextRight_2);
   m_widgets.insert ("marginOnLink", ui->DapGuiButtonTextRight);
   m_widgets.insert ("textLeft", ui->DapGuiButtonTextLeft);
   m_widgets.insert ("iconLeft", ui->DapGuiButtonIcon);
   m_widgets.insert ("iconLeft", ui->DapGuiButtonIconLeft);
+  m_widgets.insert ("iconLeft", ui->DapGuiButtonIcon_61);
   m_widgets.insert ("iconRight", ui->DapGuiButtonIconRight);
 
   /* prepare link icon */

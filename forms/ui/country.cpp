@@ -9,6 +9,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QMovie>
+//#include <QAction>
 #include "DapDataLocal.h"
 
 /********************************************
@@ -28,6 +29,7 @@ Country::Country (QWidget *parent) :
 #else // Q_OS_ANDROID
   QScroller::grabGesture(this->ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
 #endif // Q_OS_ANDROID
+  ui->btnClear->setVisible(false);
 
   /* setup overlay */
   int ww = UiScaling::pointsToPixels (160, UiScaling::getNativDPI());
@@ -49,22 +51,20 @@ Country::Country (QWidget *parent) :
   m_movie   = new QMovie(":/gui/asset/Spinner.gif");
   m_spinner->setMovie (m_movie);
   ui->btnCountryFilter->setBtnStyle (DapGuiButton::EditTopMainBottomSubPrivate);
-  auto style = ui->btnCountryFilter->editNative()->cssStyle();
-  auto bsize = UiScaling::pointsToPixels (1, UiScaling::getNativDPI());
-  style.remove ("noborder");
-  style.append (" login-input-border");
-  if (bsize < 1)
-    style.append (" login-input-border-default");
-  ui->btnCountryFilter->editNative()->setCssStyle(style);
+//  auto style = ui->btnCountryFilter->cssStyle();
+//  auto bsize = UiScaling::pointsToPixels (1, UiScaling::getNativDPI());
+//  style.remove ("noborder");
+//  style.append (" login-input-border");
+//  if (bsize < 1)
+//    style.append (" login-input-border-default");
+//  ui->btnCountryFilter->setCssStyle(style);
+
+
   ui->btnCountryFilter->editNative()->setFocusPolicy(Qt::StrongFocus);
   ui->btnCountryFilter->editNative()->setInputMethodHints(Qt::ImhSensitiveData);
-
-  connect (ui->btnCountryFilter, &DapGuiButton::textChanged,
-           this, [=](QString text) {
-      ui->scrollArea->viewFilter(
-                  DapServersData::m_countryMap.keys().filter(
-                      text, Qt::CaseInsensitive));
-  });
+  ui->btnCountryFilter->editNative()->setAlignment(Qt::AlignLeft);
+  ui->btnCountryFilter->setIconCssClass ("cwpb_close ic_filter_clear");
+  ui->btnCountryFilter->setSeparator(false);
 
   /* movie */
   //m_movie->setFileName(":/gui/asset/Spinner.gif");
@@ -78,6 +78,18 @@ Country::Country (QWidget *parent) :
   connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &Country::sigReturn,
            Qt::QueuedConnection);
+
+  connect(ui->btnClear, &DapGuiPushButton::clicked, this, [=](){
+      ui->btnCountryFilter->editNative()->setText("");
+  });
+
+  connect (ui->btnCountryFilter, &DapGuiButton::textChanged,
+           this, [=](QString text) {
+      ui->scrollArea->viewFilter(
+                  DapServersData::m_countryMap.keys().filter(
+                      text, Qt::CaseInsensitive));
+      ui->btnClear->setVisible(ui->btnCountryFilter->editNative()->text().length() > 0);
+  });
 }
 
 Country::~Country()
@@ -131,7 +143,6 @@ void Country::showEvent(QShowEvent *event)
 {
     Q_UNUSED(event)
 //  show active widget
-//  qDebug() << "Country::showEvent" << qApp->focusWidget();
     QTimer::singleShot(600, [=](){
         ui->btnCountryFilter->editNative()->setFocus (Qt::OtherFocusReason);
     });
