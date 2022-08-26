@@ -176,7 +176,7 @@ void DapDataLocal::saveHistoryData(QString a_type, QString a_data)
         m_tempHistoryDataList.prepend(a_data);
     this->saveToSettings(a_type, m_tempHistoryDataList);
 
-    emit sigHistoryDataSaved();
+    emit sigHistoryDataSaved(a_type);
 }
 
 void DapDataLocal::removeItemFromHistory(QString a_type, QString a_item){
@@ -198,7 +198,7 @@ void DapDataLocal::removeItemFromHistory(QString a_type, QString a_item){
 
   this->saveToSettings(a_type, m_tempHistoryDataList);
 
-  emit sigHistoryDataSaved();
+  emit sigHistoryDataSaved(a_type);
 }
 
 QList<QString> DapDataLocal::getHistorySerialKeyData()
