@@ -128,15 +128,22 @@
           </layout>
          </item>
          <item>
+          <widget class="DapGuiWidget" name="kelGuiWidget_11">
+           <property name="cssStyle">
+            <string>ch-country-filter-space</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="DapGuiWidget" name="backgroundCountryFilter" native="true">
            <property name="cssStyle">
-            <string>ch-country-filter-border nobackground</string>
+            <string>ch-country-filter-border cwb_top cwb_bottom nobackground</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayoutFilter">
             <item>
              <widget class="DapGuiButton" name="btnCountryFilter" native="true">
               <property name="cssStyle" stdset="0">
-               <string>cwb_height</string>
+               <string>ch-country-filter</string>
               </property>
               <property name="mainText" stdset="0">
                <string/>
@@ -182,11 +189,18 @@
                </url>
               </property>
               <property name="cssStyle" stdset="0">
-               <string>cwpb_close</string>
+               <string>ch-country-filter-button</string>
               </property>
              </widget>
             </item>
            </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="DapGuiWidget" name="kelGuiWidget_12">
+           <property name="cssStyle">
+            <string>ch-country-filter-space</string>
+           </property>
           </widget>
          </item>
          <item>

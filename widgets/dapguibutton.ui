@@ -290,7 +290,7 @@
             <set>Qt::AlignHCenter|Qt::AlignTop</set>
            </property>
           </widget>
-         </item>         
+         </item>
         </layout>
        </widget>
       </item>
@@ -317,6 +317,9 @@
          </property>
          <item>
           <widget class="DapGuiLabel" name="DapGuiButtonIcon_61">
+           <property name="cssStyle" stdset="0">
+            <string>ch-country-filter-button</string>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -346,7 +349,7 @@
          </item>
         </layout>
        </widget>
-      </item>      
+      </item>
       <item>
        <widget class="DapGuiWidget" name="Style5" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -422,7 +425,7 @@
    <class>DapGuiLineEditNative</class>
    <extends>QLineEdit</extends>
    <header>dapguilineeditnative.h</header>
-  </customwidget>  
+  </customwidget>
   <customwidget>
    <class>DapGuiLabel</class>
    <extends>QLabel</extends>
@@ -438,7 +441,7 @@
    <class>DapGuiPushButton</class>
    <extends>QWidget</extends>
    <header>dapguipushbutton.h</header>
-  </customwidget>  
+  </customwidget>
  </customwidgets>
  <resources/>
  <connections/>
