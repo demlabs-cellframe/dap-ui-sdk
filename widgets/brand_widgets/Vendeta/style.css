@@ -1631,3 +1631,12 @@
 	min-width: 14pt;
 	max-width: 14pt;
 }
+
+/****************************************************
+ * Choose Country
+ ***************************************************/
+
+.ch-country-filter-border
+{
+	border: 2pt solid gray;
+}
