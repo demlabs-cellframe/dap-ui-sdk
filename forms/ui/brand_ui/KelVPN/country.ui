@@ -72,6 +72,13 @@
           <number>0</number>
          </property>
          <item>
+          <widget class="DapGuiWidget" name="kelGuiWidget_2">
+           <property name="cssStyle">
+            <string>choser-top-spacer</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
             <widget class="DapGuiPushButton" name="btnReturn">
