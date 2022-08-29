@@ -65,7 +65,6 @@ Item {
         radius: 16
         color: currTheme.backgroundElements
 
-
         Text
         {
             id: textItem

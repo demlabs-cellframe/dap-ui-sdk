@@ -43,5 +43,7 @@
         <file>widgets/DapSelector.qml</file>
         <file>widgets/DapSelectorSwitch.qml</file>
         <file>widgets/DapPopupInfo.qml</file>
+        <file>widgets/DapCopyButton.qml</file>
+        <file>widgets/DapBigNumberText.qml</file>
     </qresource>
 </RCC>
