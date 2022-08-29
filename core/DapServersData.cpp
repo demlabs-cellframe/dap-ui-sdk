@@ -225,7 +225,7 @@ QMap<QString, QString> DapServersData::m_countryMap = {
     {"Micronesia"                       , "FM"},
     {"France"                           , "FR"},
     {"Gabon"                            , "GA"},
-    {"United kingdom"                   , "GB"},
+    {"United kingdom"                   , "UK"},
     {"England"                          , "GB"},
     {"Grenada"                          , "GD"},
     {"Georgia"                          , "GE"},
