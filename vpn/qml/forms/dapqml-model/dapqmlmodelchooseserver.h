@@ -29,6 +29,7 @@ protected:
   /// @{
 public:
   static DapQmlModelChooseServer *instance();
+  void refresh();
   /// @}
 
   /****************************************//**

@@ -27,6 +27,12 @@ DapQmlModelChooseServer *DapQmlModelChooseServer::instance()
   return __inst;
 }
 
+void DapQmlModelChooseServer::refresh()
+{
+  beginResetModel();
+  endResetModel();
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
