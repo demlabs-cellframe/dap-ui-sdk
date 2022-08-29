@@ -6,10 +6,12 @@ LIBS += -lz
 
 SOURCES += \
         $$PWD/packzip.cpp \
+        $$PWD/unpackzip.cpp \
         $$PWD/zipbase.cpp
 
 HEADERS += \
     $$PWD/packzip.h \
+    $$PWD/unpackzip.h \
     $$PWD/zipbase.h \
     $$PWD/zipdef.h
 
