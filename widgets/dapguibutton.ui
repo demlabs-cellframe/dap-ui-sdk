@@ -295,6 +295,62 @@
        </widget>
       </item>
       <item>
+       <widget class="DapGuiWidget" name="Style6" native="true">
+        <property name="cssStyle" stdset="0">
+         <string>nobackground</string>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <property name="spacing">
+          <number>10</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="DapGuiLabel" name="DapGuiButtonIcon_61">
+           <property name="cssStyle" stdset="0">
+            <string>ch-country-filter-button</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="DapGuiLineEditNative" name="kelGuiLineEditMainNative">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="inputMask">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Main Text</string>
+           </property>
+           <property name="frame">
+            <bool>false</bool>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
        <widget class="DapGuiWidget" name="Style5" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
@@ -366,6 +422,11 @@
    <header>dapguilineedit.h</header>
   </customwidget>
   <customwidget>
+   <class>DapGuiLineEditNative</class>
+   <extends>QLineEdit</extends>
+   <header>dapguilineeditnative.h</header>
+  </customwidget>
+  <customwidget>
    <class>DapGuiLabel</class>
    <extends>QLabel</extends>
    <header>dapguilabel.h</header>
@@ -375,6 +436,11 @@
    <extends>QWidget</extends>
    <header>dapguiwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DapGuiPushButton</class>
+   <extends>QWidget</extends>
+   <header>dapguipushbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

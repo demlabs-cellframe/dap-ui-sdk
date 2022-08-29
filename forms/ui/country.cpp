@@ -9,6 +9,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QMovie>
+//#include <QAction>
 #include "DapDataLocal.h"
 
 /********************************************
@@ -28,6 +29,7 @@ Country::Country (QWidget *parent) :
 #else // Q_OS_ANDROID
   QScroller::grabGesture(this->ui->scrollArea->viewport(), QScroller::LeftMouseButtonGesture);
 #endif // Q_OS_ANDROID
+  ui->btnClear->setVisible(false);
 
   /* setup overlay */
   int ww = UiScaling::pointsToPixels (160, UiScaling::getNativDPI());
@@ -48,10 +50,20 @@ Country::Country (QWidget *parent) :
 
   m_movie   = new QMovie(":/gui/asset/Spinner.gif");
   m_spinner->setMovie (m_movie);
+  ui->btnCountryFilter->setBtnStyle (DapGuiButton::EditTopMainBottomSubPrivate);
+//  auto style = ui->btnCountryFilter->cssStyle();
+//  auto bsize = UiScaling::pointsToPixels (1, UiScaling::getNativDPI());
+//  style.remove ("noborder");
+//  style.append (" login-input-border");
+//  if (bsize < 1)
+//    style.append (" login-input-border-default");
+//  ui->btnCountryFilter->setCssStyle(style);
 
-//  auto lay  = new QHBoxLayout;
-//  lay->addWidget (m_spinner);
-//  m_overlay->setLayout (lay);
+
+  ui->btnCountryFilter->editNative()->setFocusPolicy(Qt::StrongFocus);
+  ui->btnCountryFilter->editNative()->setInputMethodHints(Qt::ImhSensitiveData);
+  ui->btnCountryFilter->editNative()->setAlignment(Qt::AlignLeft);
+  ui->btnCountryFilter->setIconCssClass ("ch-country-filter-button ic_filter_clear");
 
   /* movie */
   //m_movie->setFileName(":/gui/asset/Spinner.gif");
@@ -65,6 +77,18 @@ Country::Country (QWidget *parent) :
   connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &Country::sigReturn,
            Qt::QueuedConnection);
+
+  connect(ui->btnClear, &DapGuiPushButton::clicked, this, [=](){
+      ui->btnCountryFilter->editNative()->setText("");
+  });
+
+  connect (ui->btnCountryFilter, &DapGuiButton::textChanged,
+           this, [=](QString text) {
+      ui->scrollArea->viewFilter(
+                  DapServersData::m_countryMap.keys().filter(
+                      text, Qt::CaseInsensitive));
+      ui->btnClear->setVisible(ui->btnCountryFilter->editNative()->text().length() > 0);
+  });
 }
 
 Country::~Country()
@@ -112,6 +136,15 @@ void Country::slotRetranslated()
 void Country::slotSetCountry(const QString a_country)
 {
   ui->scrollArea->setCurrentCountry (a_country);
+}
+
+void Country::showEvent(QShowEvent *event)
+{
+    Q_UNUSED(event)
+//  show active widget
+    QTimer::singleShot(600, [=](){
+        ui->btnCountryFilter->editNative()->setFocus (Qt::OtherFocusReason);
+    });
 }
 
 /*-----------------------------------------*/

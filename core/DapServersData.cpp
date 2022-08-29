@@ -159,7 +159,7 @@ void DapServersData::packServerList()
 QMap<QString, QString> DapServersData::m_countryMap = {
     {"Andorra"                          , "AD"},
     {"United arab emirates"             , "AE"},
-    {"Afganistan"                       , "AF"},
+    {"Afghanistan"                      , "AF"},
     {"Antigua and barbuda"              , "AG"},
     {"Anguilla"                         , "AI"},
     {"Albania"                          , "AL"},

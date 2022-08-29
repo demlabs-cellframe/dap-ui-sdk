@@ -48,6 +48,7 @@ public:
     Switch,
     Close,
     Custom,
+    FilterClear
   };
   Q_ENUM (Style)
   /// @}

@@ -37,8 +37,6 @@
 	color: rgba(0,0,0,0);
 }
 
-
-
 .darkblue-light
 {
 	color: #04004E;
@@ -55,7 +53,7 @@
 
 .uppercase
 {
-	text-transform: uppercase;
+        text-transform: uppercase;
 }
 
 .letterspace
@@ -333,9 +331,9 @@
 
 .cwb_height
 {
-	height: 108pt;
-	min-height: 108pt;
-	max-height: 108pt;
+        height: 108pt;
+        min-height: 108pt;
+        max-height: 108pt;
 }
 
 .cwb_top
@@ -836,7 +834,6 @@
 {
 	qproperty-scaledPixmap: url("://gui/asset/icon_offline.png");
 }
-
 /****************************************************
  * Menu Footer
  ***************************************************/
@@ -1031,7 +1028,7 @@
 
 .login-input-border-default
 {
-	border-width: 1px;
+        border-width: 1px;
 }
 
 /****************************************************
@@ -1633,4 +1630,43 @@
 	width: 14pt;
 	min-width: 14pt;
 	max-width: 14pt;
+}
+
+/****************************************************
+ * Choose Country
+ ***************************************************/
+
+.ch-country-filter-border
+{
+        border: 1pt solid #20A4A3C0;
+        border-radius: 5pt;
+}
+
+.ch-country-filter
+{
+        height: 24pt;
+        min-height: 24pt;
+        max-height: 24pt;
+}
+
+.ch-country-filter-space
+{
+        height: 28pt;
+        min-height: 28pt;
+        max-height: 28pt;
+}
+
+.ch-country-filter-button
+{
+        width: 20pt;
+        height: 20pt;
+        min-width: 20pt;
+        min-height: 20pt;
+        max-width: 20pt;
+        max-height: 20pt;
+}
+
+.ic_filter_clear
+{
+        qproperty-scaledPixmap: url("://icons/filter.png");
 }

@@ -67,6 +67,8 @@ void CountryModel::slotSetup()
   foreach (auto *oldItem, m_list)
     {
       lay->removeWidget (oldItem);
+      disconnect (oldItem, &DapGuiRadio::toggled,
+                  this, &CountryModel::slotToggled);
       delete oldItem;
     }
   m_list.clear();
@@ -93,11 +95,18 @@ void CountryModel::slotSetup()
                this, &CountryModel::slotToggled);
     }
 
-  QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  lay->addItem (sp);
+//  QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+//  lay->addItem (sp);
 
   if (!m_list.isEmpty())
     emit filled();
+}
+
+void CountryModel::viewFilter(QStringList showItems)
+{
+    QSet<QString> setA = showItems.toSet();
+    foreach (auto *item, m_list)
+        item->setVisible(setA.contains(item->text()));
 }
 
 void CountryModel::slotRetranslate()
