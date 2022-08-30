@@ -38,9 +38,8 @@ public:
    *******************************************/
   /// @{
 public:
-//  Q_INVOKABLE QString currentCategory() const;
-  Q_INVOKABLE bool isCurrent (const QString &a_name) const;
   Q_INVOKABLE void updateCheckedIndex();
+  Q_INVOKABLE static bool countryExist();
   /// @}
 
   /****************************************//**

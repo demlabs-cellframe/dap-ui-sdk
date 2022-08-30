@@ -26,7 +26,7 @@ const QString TEXT_BUGREPORT_HISTORY    = "bugreporthistory";
 const QString TEXT_LOGIN                = "login";
 const QString TEXT_PASSWORD             = "password";
 const QString TEXT_TX_OUT               = "tx_out";
-const QString SETTING_COUNTRY           = "Country_code";
+const QString COUNTRY_NAME              = "Country_code";
 
 class DapSerialKeyData;
 

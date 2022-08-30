@@ -35,6 +35,7 @@ Item {
     /// Used to connect interface via Manager
     property string formName: "ChooseCountry"
     property int currentIndex: -1;
+    property int filterXPosition: 37
 
     DapQmlStyle { id: style }
 
@@ -55,12 +56,16 @@ Item {
 
     function updateState() {
         backTimer.start();
-        console.log("updateState")
     }
 
     function updateChecks() {
         countryModel.updateCheckedIndex();
-        countryFilterLine.setFocus();
+        setFocusTimer.start();
+    }
+
+    function countryExist() {
+        console.log("countryModel.countryExist();", countryModel.countryExist());
+        return countryModel.countryExist();
     }
 
     Component.onCompleted: updateChecks()
@@ -71,8 +76,16 @@ Item {
      ********************************************/
 
     Timer {
+        id: setFocusTimer
+        interval: 500
+        running: false
+        repeat: false
+        onTriggered: {countryFilterLine.setFocus();}
+    }
+
+    Timer {
         id: backTimer
-        interval: 3050
+        interval: 30
         running: false
         repeat: false
         onTriggered: PageCtl.slotBackwardAuto()
@@ -107,49 +120,52 @@ Item {
         qss: "radiobtn-resizer"
     }
 
-    Loader {
-        id: performanceLoader
+    DapQmlRectangle {
+        id: countryFilterField
+        x: root.filterXPosition
+        y: title.y + title.height * 2
+        height: 32
+        width: parent.width - 70
+        qss: "ch-country-filter-border"
+//        Rectangle {
+//            color: "gray"
+//            anchors.fill: parent
+//        }
+        DapQmlLineEdit {
+            id: countryFilterLine
+            objectName: "countryFilterLine"
+            x: 2
+            y: 2
+            z: 15
+            height: parent.height - 4
+            width: parent.width - lineEditlIconRight.width
+            focus: true
 
-        Connections {
-//            target: root
-            onVisibleChanged: {
-                console.log("onVisibleChanged")
+            mainText: ""
+            mainQss: "ch-country-filter-text"
+            iconLeft: "ic_country_filter"
+            onTextChanged: {
+                countryModel.setRowFilter(mainText);
+            }
+            onTextEdited: {
+                countryModel.setRowFilter(mainText);
             }
         }
-    }
 
-    DapQmlButton {
-        id: countryFilterLine
-        objectName: "countryFilterLine"
-        x: (parent.width - width) / 2
-        y: title.y + title.height * 2
-        z: 15
-        width: parent.width - 74
-        focus: true
-        //height: parent.height
-
-//            Rectangle {
-//                color: "gray"
-//                anchors.fill: parent
-//            }
-
-        buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
-        mainText: ""
-        subText: "COUNTRY FILTER"
-        qss: "login-btn-serial"
-        mainQss: "login-btn-main"
-        subQss: "login-btn-sub"
-        placeHolderQss: "login-btn-main"
-        separator: true
-
-//            onClicked: root.sigChooseSerial()
-        onTextChanged: {
-            countryModel.setRowFilter(mainText);
-            console.log(mainText);
-        }
-        onTextEdited: {
-            countryModel.setRowFilter(mainText);
-            console.log(mainText);
+        DapQmlPushButton {
+            id: lineEditlIconRight
+            x: parent.width - width
+            y: parent.height/2 - height/2
+            z: 15
+            height: 28
+            width: 28
+            inactive: "qrc:/light/btn_filter_clear.png"
+            active: "qrc:/light/btn_filter_clear_hover.png"
+            visible: true
+            onClicked: {
+                countryFilterLine.mainText = "";
+                countryFilterLine.setFocus();
+            }
         }
     }
 
@@ -167,7 +183,7 @@ Item {
         id: csListView
 
         x: (root.width - width) / 2
-        y: title.y + title.height * 2 + countryFilterLine.height
+        y: title.y + title.height * 2 + countryFilterField.height
         width: resizer.width
         height: root.height - y
         clip: true

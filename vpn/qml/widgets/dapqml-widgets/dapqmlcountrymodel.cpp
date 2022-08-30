@@ -19,16 +19,9 @@ DapQmlCountryModel::DapQmlCountryModel(QObject *parent)
 /********************************************
  * METHODS
  *******************************************/
-bool DapQmlCountryModel::isCurrent(const QString &a_name) const
-{
-//  auto countryCode = DapDataLocal::instance()->getSetting (SETTING_COUNTRY).toString();
-//  return DapServersData::m_countryMap[a_name] == countryCode;
-  return false;
-}
-
 void DapQmlCountryModel::updateCheckedIndex()
 {
-    auto country = DapDataLocal::instance()->getSetting (SETTING_COUNTRY).toString();
+    auto country = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
     for (int k = 0; k < m_Countries.size(); k++)
         if (index(k, 0).data(0) == country)
         {
@@ -38,6 +31,12 @@ void DapQmlCountryModel::updateCheckedIndex()
             emit dataChanged(index(k, 0), index(k, 0));
             break;
         }
+}
+
+bool DapQmlCountryModel::countryExist()
+{
+    auto country = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
+    return !country .isNull() && !country.isEmpty();
 }
 
 /********************************************

@@ -54,7 +54,8 @@ Rectangle {
         LeftTopMainBottomSub, ///< left:left, top:main, bottom:sub
         IconMainSub,          ///< icon, main, sub
         EditTopMainBottomSub, ///< top:edit, bottom:sub
-        IconMainSubIcon       ///< icon, main, sub, icon
+        IconMainSubIcon,      ///< icon, main, sub, icon
+        EditLine              ///< icon, main, icon
     }
 
     /// @}
@@ -77,6 +78,7 @@ Rectangle {
     property string iconRight: ""
     property int iconSize: 34
     property int iconRightSize: 34
+    property int iconLineEditSize: 20
     property int buttonStyle: DapQmlButton.Style.TopMainBottomSub
     property bool separator: false
     property bool link: false
@@ -155,7 +157,12 @@ Rectangle {
             root.labelIcon      = imsiIcon;
             root.labelIconRight = imsiRightIcon;
         }
-
+        else if(root.buttonStyle === DapQmlButton.Style.EditLine)
+        {
+            root.labelMain          = lineEditField;
+            root.labelIcon          = lineEditIcon;
+//            root.labelIconRight     = lineEditlIconRight;
+        }
     }
 
     function _magickSpacer() {
@@ -643,6 +650,129 @@ Rectangle {
 
                 qss: root.iconRight
                 onClicked: root.rightClicked();
+            }
+        }
+
+        /* Line edit */
+        Item {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            visible: (root.buttonStyle === DapQmlButton.Style.EditLine)
+            function workHeight() { return height - 4; }
+
+            /* store references */
+            Component.onCompleted: {
+                if(visible)
+                {
+                    root.labelMain          = lineEditField;
+                    root.labelIcon          = lineEditIcon;
+                }
+            }
+
+            DapQmlLabel {
+                id: lineEditIcon
+                x: 3
+                y: lineEditField.y
+                width: root.iconLineEditSize
+                height: root.iconLineEditSize
+
+                qss: root.iconRight
+                scaledPixmap: "qrc:/light/ic_close_hover.png"
+                onClicked: root.rightClicked();
+            }
+
+            /* main text */
+            TextField {
+                id: lineEditField
+                y: (root.height - height) / 2
+                x: lineEditIcon.width + 3
+                width: parent.width - lineEditIcon.width
+                height: parent.height
+
+                //                Rectangle {
+                //                    color: "gray"
+                //                    anchors.fill: parent
+                //                }
+
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignBottom
+                text: root.mainText
+                //qss: root.mainQss
+                inputMask: root.inputMask
+                // android virtual keyboard
+                inputMethodHints: Qt.ImhSensitiveData
+
+                TextEditContextMenu {
+                    id: lineEditMenu
+                    Component.onCompleted: setTextEditWidget(lineEditField)
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.RightButton
+                    onClicked: {
+                        if (Scaling.isDesktop())
+                            if (mouse.button === Qt.RightButton)
+                                contextMenu.open()
+                    }
+                    onPressAndHold: {
+                        if (Scaling.isDesktop())
+                            if (mouse.source === Qt.MouseEventNotSynthesized)
+                                contextMenu.open()
+                    }
+                    Menu {
+                        id: lineEditContextMenu
+                        MenuItem {
+                            text: "Cut"
+                            shortcut: "Ctrl+X"
+                            onTriggered: lineEditMenu.execCut();
+                        }
+                        MenuItem {
+                            text: "Copy"
+                            shortcut: "Ctrl+C"
+                            onTriggered: lineEditMenu.execCopy();
+                        }
+                        MenuItem {
+                            text: "Paste"
+                            shortcut: "Ctrl+V"
+                            onTriggered: lineEditMenu.execPaste();
+                        }
+                        MenuItem {
+                            text: "Delete"
+                            //shortcut: "Delete"
+                            onTriggered: lineEditMenu.execDelete();
+                        }
+                    }
+                }
+
+                Component.onCompleted: {
+                    if(root.buttonStyle === DapQmlButton.Style.EditTopMainBottomSub)
+                        filter.setup(this);
+                }
+
+                /* vars */
+                property string fontFamiliy: "Lato"
+                property int fontSize: 14
+                property int fontWeight: Font.Normal
+
+                /* style */
+                DapQmlStyle { qss: root.mainQss; item: lineEditField }
+
+                /* background */
+                background: DapQmlRectangle {
+                    qss: "ch-country-filter"
+                }
+
+                /* font config */
+                font {
+                    family: lineEditField.fontFamiliy
+                    pixelSize: lineEditField.fontSize
+                    weight: lineEditField.fontWeight
+                }
+
+                /* signals */
+                onTextEdited: { root.mainText = text; root.textEdited(); }
+                onTextChanged: { root.mainText = text; root.textChanged(); }
             }
         }
 

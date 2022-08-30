@@ -150,7 +150,7 @@ void DapQmlModelSettings::slotUpdateLabels()
 
     DapQmlModelSettingsItem{SI_BUTTONRED,  tr ("Get new licence key"), /*"265 days left"*/" ", "settings_icon ic_renew", cbLicenceGet},
     DapQmlModelSettingsItem{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key", cbLicenceReset},
-    DapQmlModelSettingsItem{SI_LINK,       tr ("Country"), "", "settings_icon ic_country", cbCountry},
+    DapQmlModelSettingsItem{SI_LINK,       tr ("Country"), "", "settings_icon ic_location", cbCountry},
  // DapQmlModelSettingsItem{SI_LINK,       tr ("Language"), "", "settings_icon ic_language", cbLanguage},
 #ifndef DISABLE_THEMES
     DapQmlModelSettingsItem{SI_LINK,       tr ("Color theme"), "", "settings_icon ic_theme", cbColorTheme},

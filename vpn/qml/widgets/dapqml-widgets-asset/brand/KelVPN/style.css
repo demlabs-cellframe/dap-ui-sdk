@@ -916,3 +916,34 @@
 	color: "@text";
 	scaled-font: scaled(14);
 }
+
+/****************************************************
+ * Choose Country
+ ***************************************************/
+
+.ic_location
+{
+        qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_location.png");
+}
+
+.ic_country_filter
+{
+        qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/filter.png");
+}
+
+.ch-country-filter-border
+{
+        border-width: 1;
+        border-color: "@light-grey";
+        radius: 5;
+}
+
+.ch-country-filter
+{
+        color: "@background";
+}
+
+.ch-country-filter-text
+{
+        color: "@text";
+}
