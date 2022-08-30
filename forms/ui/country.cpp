@@ -62,7 +62,7 @@ Country::Country (QWidget *parent) :
 
   ui->btnCountryFilter->editNative()->setFocusPolicy(Qt::StrongFocus);
   ui->btnCountryFilter->editNative()->setInputMethodHints(Qt::ImhSensitiveData);
-  ui->btnCountryFilter->editNative()->setAlignment(Qt::AlignLeft);
+  ui->btnCountryFilter->editNative()->setAlignment(Qt::AlignLeft | Qt::AlignTop);
   ui->btnCountryFilter->setIconCssClass ("ch-country-filter-button ic_filter_clear");
 
   /* movie */

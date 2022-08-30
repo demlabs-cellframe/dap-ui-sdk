@@ -1644,9 +1644,9 @@
 
 .ch-country-filter
 {
-        height: 24pt;
-        min-height: 24pt;
-        max-height: 24pt;
+        height: 30pt;
+        min-height: 30pt;
+        max-height: 30pt;
 }
 
 .ch-country-filter-space
@@ -1658,12 +1658,12 @@
 
 .ch-country-filter-button
 {
-        width: 20pt;
-        height: 20pt;
-        min-width: 20pt;
-        min-height: 20pt;
-        max-width: 20pt;
-        max-height: 20pt;
+        width: 24pt;
+        height: 24pt;
+        min-width: 24pt;
+        min-height: 24pt;
+        max-width: 24pt;
+        max-height: 24pt;
 }
 
 .ic_filter_clear
