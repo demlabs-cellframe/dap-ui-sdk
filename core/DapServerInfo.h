@@ -53,7 +53,7 @@ public:
     static bool fromJSON(const QJsonArray& jsonArr, DapServerInfoList& out);
     static bool fromJSON(const QJsonObject& jsonObj, DapServerInfo& out);
     static void sortServerList(QList<DapServerInfo> &serverList);
-    static void addGeneralLocation(QList<DapServerInfo> &serverList, QList<DapServerInfo> &generalServerList, QString base_location);
+    static void addGeneralLocation(QList<DapServerInfo> &serverList, QList<DapServerInfo> &generalServerList, const QString base_location, const QString base_location_code);
 
     static QJsonObject toJSON(const DapServerInfo& dsi);
 
