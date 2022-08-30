@@ -111,7 +111,10 @@ Item {
             property bool checked: false
 
             DapQmlRadioButton {
-                property bool myIndex: model.index
+                property int myIndex: model.index
+                property int ping: model.ping
+                property int quality: model.connectionQuality
+
                 text: model.name
                 checked: csListView.currentIndex === model.index // parent.checked
                 separator: true
@@ -119,6 +122,11 @@ Item {
                 width: resizer.width
                 height: resizer.height
                 y: spacer.height / 2
+
+                Text {
+                    text: `index [${parent.myIndex}] ping [${parent.ping}] quality [${parent.quality}]`
+                }
+
                 onClicked: root.sigSelect (model.index, model.name)
                 Component.onCompleted: { items.push(this); }
             }
