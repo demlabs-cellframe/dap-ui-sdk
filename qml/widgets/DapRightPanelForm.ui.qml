@@ -37,28 +37,28 @@ Page
     DapButton
     {
         id: buttonClose
-        height: 20 * pt
-        width: 20 * pt
-        heightImageButton: 10 * pt
-        widthImageButton: 10 * pt
+        height: 20 
+        width: 20 
+        heightImageButton: 10 
+        widthImageButton: 10 
         activeFrame: false
         normalImageButton: "qrc:/resources/icons/"+pathTheme+"/close_icon.png"
         hoverImageButton:  "qrc:/resources/icons/"+pathTheme+"/close_icon_hover.png"
     }
 
     //Header height
-    dapHeader.height: 36 * pt
-    dapRightPanelWidth: visible? 350 * pt : 0 * pt
+    dapHeader.height: 36 
+    dapRightPanelWidth: visible? 350  : 0 
     width: dapRightPanelWidth
     anchors {
         top: parent.top
-        topMargin: 24 * pt
+        topMargin: 24 
         right: parent.right
-        rightMargin: 24 * pt
+        rightMargin: 24 
 //        left: parent.left
-//        leftMargin: 24 * pt
+//        leftMargin: 24 
         bottom: parent.bottom
-        bottomMargin: 20 * pt
+        bottomMargin: 20 
     }
 
     background:

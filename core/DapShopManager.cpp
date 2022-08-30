@@ -146,7 +146,7 @@ void DapShopManager::changeProductState(const QString &productId, DapShopManager
 void DapShopManager::reportError(JNIEnv *env, jobject thiz, jstring error)
 {
     Q_UNUSED(thiz)
-    const char* ptr = env->GetStringUTFChars(error, 0);
+    const charr = env->GetStringUTFChars(error, 0);
     QString str = QString(ptr);
     QString s = QString("[IN-APP STORE] Error: ").append(str);
     qDebug() << s;
@@ -157,9 +157,9 @@ void DapShopManager::reportError(JNIEnv *env, jobject thiz, jstring error)
 void DapShopManager::reportPurchase(JNIEnv *env, jobject thiz, jstring sku, jstring token)
 {
     Q_UNUSED(thiz)
-    const char* ptr1 = env->GetStringUTFChars(sku, 0);
+    const charr1 = env->GetStringUTFChars(sku, 0);
     QString strSku = ptr1;
-    const char* ptr2 = env->GetStringUTFChars(token, 0);
+    const charr2 = env->GetStringUTFChars(token, 0);
     QString strToken = ptr2;
     DapShopManager::instance()->requestPurchase(strSku, strToken);
     env->ReleaseStringUTFChars(sku, ptr1);

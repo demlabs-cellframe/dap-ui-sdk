@@ -94,8 +94,8 @@ Popup
             {
                 anchors.fill: parent
                 source: contentCorner
-                verticalOffset: 9 * pt
-                samples: 13 * pt
+                verticalOffset: 9 
+                samples: 13 
                 color: dapShadowColor
             }
         }

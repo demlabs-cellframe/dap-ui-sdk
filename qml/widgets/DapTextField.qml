@@ -15,7 +15,7 @@ TextField {
             background:
                 Rectangle
                 {
-                    radius: borderRadius * pt
+                    radius: borderRadius 
                     border.width: borderWidth
                     border.color: currTheme.borderColor
                     color: currTheme.backgroundElements

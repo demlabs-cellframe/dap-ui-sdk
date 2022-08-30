@@ -7,10 +7,10 @@ Rectangle
     property alias source: loader.source
     property alias sourceComponent: loader.sourceComponent
 
-    x: 0 * pt
+    x: 0 
     anchors.left: parent.left
-//    radius: 8 * pt
-    height: 60 * pt
+//    radius: 8 
+    height: 60 
     width: parent.width
 //    color: "#070023"
 
