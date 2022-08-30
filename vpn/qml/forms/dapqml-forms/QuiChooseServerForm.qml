@@ -115,7 +115,7 @@ Item {
                 property int ping: model.ping
                 property int quality: model.connectionQuality
 
-                text: model.name
+                text: model.name + csListView.model.hook
                 checked: csListView.currentIndex === model.index // parent.checked
                 separator: true
                 iconSize: resizer.height
@@ -123,8 +123,18 @@ Item {
                 height: resizer.height
                 y: spacer.height / 2
 
-                Text {
-                    text: `index [${parent.myIndex}] ping [${parent.ping}] quality [${parent.quality}]`
+                // for debug purposes - uncomment 'Text' below
+//                Text {
+//                    text: `${model.name} >> ping [${parent.ping}] quality [${parent.quality}]` + csListView.model.hook
+//                }
+
+                DapQmlLabel {
+                    property int quality: (parent.quality === 0) ? (0) : (6 - parent.quality)
+                    x: parent.width - (width * 1.35)
+                    y: (parent.height - height) / 2
+                    width: resizer.height * 0.75
+                    height: resizer.height * 0.75
+                    qss: `ic_conn-${quality}` + csListView.model.hook
                 }
 
                 onClicked: root.sigSelect (model.index, model.name)

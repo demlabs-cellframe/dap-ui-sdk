@@ -16,6 +16,13 @@ class DapQmlModelChooseServer : public QAbstractListModel
   Q_OBJECT
 
   /****************************************//**
+   * @name PROPERTIES
+   *******************************************/
+  /// @{
+  Q_PROPERTY (QString hook READ hook NOTIFY sigRefresh)
+  /// @}
+
+  /****************************************//**
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
@@ -29,6 +36,9 @@ protected:
   /// @{
 public:
   static DapQmlModelChooseServer *instance();
+
+  /// this basicaly provides update feature for QML variable fields
+  Q_INVOKABLE QString hook();
   void refresh();
   /// @}
 
@@ -42,6 +52,14 @@ public:
   QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
   QHash<int, QByteArray> roleNames() const override;
 //  Q_INVOKABLE QVariant value (int a_row, const QString &a_name);
+  /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void sigRefresh();
   /// @}
 };
 

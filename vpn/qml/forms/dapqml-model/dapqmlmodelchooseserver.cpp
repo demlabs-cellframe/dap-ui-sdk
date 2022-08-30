@@ -35,10 +35,16 @@ DapQmlModelChooseServer *DapQmlModelChooseServer::instance()
   return __inst;
 }
 
+QString DapQmlModelChooseServer::hook()
+{
+  return QString();
+}
+
 void DapQmlModelChooseServer::refresh()
 {
-  beginResetModel();
-  endResetModel();
+//  beginResetModel();
+//  endResetModel();
+  emit sigRefresh();
 }
 
 /********************************************
