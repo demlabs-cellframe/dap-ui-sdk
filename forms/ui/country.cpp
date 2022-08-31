@@ -132,7 +132,7 @@ void Country::slotRetranslated()
 {
   ui->label->setText (tr ("Your country"));
   ui->scrollArea->slotRetranslate();
-  ui->labelNotify->setText (tr ("This selection will exclude your country from automatic server selection."));
+  ui->labelNotify->setText (tr ("This selection will exclude your country from\nautomatic server selection."));
 }
 
 void Country::slotSetCountry(const QString a_country)

@@ -232,7 +232,8 @@
          <item>
           <widget class="DapGuiLabel" name="labelNotify">
            <property name="text">
-            <string>This selection will exclude your country from automatic server selection.</string>
+            <string>This selection will exclude your country from
+            automatic server selection.</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
