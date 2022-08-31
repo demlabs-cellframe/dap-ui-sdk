@@ -89,6 +89,7 @@ Country::Country (QWidget *parent) :
                       text, Qt::CaseInsensitive));
       ui->btnClear->setVisible(ui->btnCountryFilter->editNative()->text().length() > 0);
   });
+
 }
 
 Country::~Country()
@@ -131,6 +132,7 @@ void Country::slotRetranslated()
 {
   ui->label->setText (tr ("Your country"));
   ui->scrollArea->slotRetranslate();
+  ui->labelNotify->setText (tr ("TODO!!! The license key usage history is stored locally on this device. After reinstalling the system the key history will be unavailable."));
 }
 
 void Country::slotSetCountry(const QString a_country)
