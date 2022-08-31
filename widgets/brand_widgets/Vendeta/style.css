@@ -1683,3 +1683,8 @@
 {
         qproperty-scaledPixmap: url("://icons/filter.png");
 }
+
+.margin-top
+{
+        margin-top: 28pt;
+}
