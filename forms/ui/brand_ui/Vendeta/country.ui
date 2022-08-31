@@ -229,6 +229,22 @@
            </widget>
           </widget>
          </item>
+         <item>
+          <widget class="DapGuiLabel" name="labelNotify">
+           <property name="text">
+            <string>This selection will exclude your country from automatic server selection.</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+           <property name="cssStyle" stdset="0">
+            <string>base-widget lato font16 gray_passive  noborder nobackground margin-bottom28 margin-top</string>
+           </property>
+          </widget>
+         </item>         
         </layout>
        </widget>
       </item>
