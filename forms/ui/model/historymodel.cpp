@@ -102,7 +102,7 @@ _ButtonClickAnimation::_ButtonClickAnimation (DapGuiButton *a_button)
   , m_timer (new QTimer (this))
   , m_button (a_button)
 {
-  m_timer->setInterval (500);
+  m_timer->setInterval (100);
   m_timer->setSingleShot (true);
   connect (m_button, &DapGuiButton::clicked,
            this, &_ButtonClickAnimation::slotStart);

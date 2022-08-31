@@ -132,7 +132,7 @@ void Country::slotRetranslated()
 {
   ui->label->setText (tr ("Your country"));
   ui->scrollArea->slotRetranslate();
-  ui->labelNotify->setText (tr ("TODO!!! The license key usage history is stored locally on this device. After reinstalling the system the key history will be unavailable."));
+  ui->labelNotify->setText (tr ("This selection will exclude your country from automatic server selection."));
 }
 
 void Country::slotSetCountry(const QString a_country)
