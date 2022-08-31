@@ -5,6 +5,7 @@
 #include <QtGlobal>
 #include <QString>
 #include <QStringList>
+#include "DapServerInfo.h"
 
 /****************************************//**
  * @brief abstract server manager
@@ -70,9 +71,10 @@ public:
   /// @{
 public:
   /// append server
-  void append (Server &&a_newServer)            { setServer (std::move (a_newServer)); }
-  QStringList servers() const                   { return keys(); }
-  ServerInfo info (const QString &a_name) const { return ServerInfo { server (a_name), state (a_name) }; }
+  void append (Server &&a_newServer)              { setServer (std::move (a_newServer)); }
+  void append (const DapServerInfo &a_newServer)  { setServer (Server {a_newServer.name, a_newServer.address, a_newServer.port, false}); }
+  QStringList servers() const                     { return keys(); }
+  ServerInfo info (const QString &a_name) const   { return ServerInfo { server (a_name), state (a_name) }; }
   /// @}
 
   /****************************************//**
@@ -114,7 +116,8 @@ public:
    *******************************************/
   /// @{
 public:
-  AbstractServerManager &operator<< (Server &&a_newServer)  { append (std::move (a_newServer)); return *this; }
+  AbstractServerManager &operator<< (Server &&a_newServer)              { append (std::move (a_newServer)); return *this; }
+  AbstractServerManager &operator<< (const DapServerInfo &a_newServer)  { append (a_newServer); return *this; }
   const ServerInfo operator[] (const QString &a_name) const
   {
     return info (a_name);

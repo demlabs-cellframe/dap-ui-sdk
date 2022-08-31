@@ -22,6 +22,7 @@ public:
     void addServer(const DapServerInfo& dsi);
 
     QList<DapServerInfo>& servers(){return m_servers;}
+    const QList<DapServerInfo>& servers() const {return m_servers;}
 
     const DapServerInfo* currentServer() const;
     int serversCount() const;
