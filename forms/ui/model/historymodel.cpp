@@ -61,7 +61,7 @@ void HistoryModel::slotSetup()
       btn->setSeparator (true);
       btn->setIconCssClass ("history-icon ic_key-item");
 
-      btn->setSubCssClass ("history-icon ic_copy");
+      btn->setSubCssClass ("history-icon-pixmap"); //ic_copy");
 
       btn->setCursor(Qt::PointingHandCursor);
 
