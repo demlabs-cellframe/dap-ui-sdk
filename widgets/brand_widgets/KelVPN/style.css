@@ -1510,10 +1510,19 @@
 
 .history-icon
 {
+	min-width: 40pt;
+	min-height: 40pt;
+	max-width: 40pt;
+	max-height: 40pt;
+}
+
+.history-icon-pixmap
+{
   min-width: 40pt;
   min-height: 40pt;
   max-width: 40pt;
   max-height: 40pt;
+	qproperty-scaledPixmapEx: "://gui/asset/ic_copy.png|://gui/asset/ic_copy.png|://gui/asset/ic_copy_pressed.png";
 }
 
 /****************************************************
