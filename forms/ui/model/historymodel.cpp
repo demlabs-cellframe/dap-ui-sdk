@@ -1,9 +1,11 @@
 /* INCLUDES */
 #include "historymodel.h"
 #include "DapDataLocal.h"
+#include <dapguibutton.h>
 #include <QApplication>
 #include <QClipboard>
 #include <QScrollBar>
+#include <QTimer>
 
 /* DEFS */
 struct _HistoryRecord
@@ -61,11 +63,13 @@ void HistoryModel::slotSetup()
       btn->setSeparator (true);
       btn->setIconCssClass ("history-icon ic_key-item");
 
-      btn->setSubCssClass ("history-icon-pixmap"); //ic_copy");
+      btn->setSubCssClass ("history-icon-pixmap ic_copy");
 
       btn->setCursor(Qt::PointingHandCursor);
 
       btn->setCssStyle ("history-item");
+
+      new _ButtonClickAnimation (btn);
 
       connect(btn, &DapGuiButton::clicked, [btn](){
           QApplication::clipboard()->setText(btn->mainText());
@@ -89,6 +93,34 @@ bool HistoryModel::eventFilter(QObject *o, QEvent *e)
     setMinimumWidth(widget()->minimumSizeHint().width() + verticalScrollBar()->width());
 
   return QScrollArea::eventFilter(o, e);
+}
+
+/*-----------------------------------------*/
+
+_ButtonClickAnimation::_ButtonClickAnimation (DapGuiButton *a_button)
+  : QObject (a_button)
+  , m_timer (new QTimer (this))
+  , m_button (a_button)
+{
+  m_timer->setInterval (500);
+  m_timer->setSingleShot (true);
+  connect (m_button, &DapGuiButton::clicked,
+           this, &_ButtonClickAnimation::slotStart);
+  connect (m_timer.get(), &QTimer::timeout,
+           this, &_ButtonClickAnimation::slotFinish);
+}
+
+void _ButtonClickAnimation::slotStart()
+{
+  if (m_button)
+    m_button->setSubCssClass ("history-icon-pixmap ic_copy_pressed");
+  m_timer->start();
+}
+
+void _ButtonClickAnimation::slotFinish()
+{
+  if (m_button)
+    m_button->setSubCssClass ("history-icon-pixmap ic_copy");
 }
 
 /*-----------------------------------------*/
