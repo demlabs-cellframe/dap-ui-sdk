@@ -66,6 +66,12 @@ Item {
     }
 
     DapQmlRectangle {
+        id: icnCpyResizer
+        visible: false
+        qss: "ph-icn-cpy-resizer"
+    }
+
+    DapQmlRectangle {
         id: noticeResizer
         visible: false
         qss: "ph-notice-resizer"
@@ -105,12 +111,40 @@ Item {
                 iconRight: "ic_copy"
                 separator: true
                 iconSize: icnResizer.height
-                iconRightSize: icnResizer.height
+                iconRightSize: icnCpyResizer.height
                 width: resizer.width
                 height: resizer.height
                 y: spacer.height / 2
 
-                onRightClicked: clipboard.setText (model.key)
+                signal sigStartAnimation();
+
+//                property QtObject animationCtl: QtObject {
+//                    property var target: parent
+//                    property string boi: target.mainText
+//                    property Timer timer: Timer {
+//                        interval: 500
+//                        running: false
+//                        repeat: false
+//                        onTriggered: parent.finish()
+//                    }
+
+//                    function start() {
+//                        target.iconRight    = "ic_copy_pressed";
+//                        timer.start();
+//                    }
+
+//                    function finish() {
+//                        target.iconRight    = "ic_copy";
+//                    }
+//                }
+
+                onRightClicked: {
+                    clipboard.setText (model.key);
+                    // animationCtl.start();
+                    sigStartAnimation();
+                }
+
+                Component.onCompleted: phListView.model.attachAnimation(this)
             }
         }
     }

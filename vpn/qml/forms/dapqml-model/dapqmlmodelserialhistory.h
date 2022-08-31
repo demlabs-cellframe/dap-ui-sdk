@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QAbstractTableModel>
+#include <QTimer>
 class QQmlEngine;
 class QJSEngine;
 
@@ -33,6 +34,7 @@ public:
   static DapQmlModelSerialHistory *instance();
   Q_INVOKABLE static QObject *singletonProvider (QQmlEngine *engine, QJSEngine *scriptEngine);
   Q_INVOKABLE int length() const;
+  Q_INVOKABLE void attachAnimation (QObject *a_copyButton);
   /// @}
 
   /****************************************//**
@@ -54,6 +56,19 @@ public:
 public slots:
   void slotSetup();
   /// @}
+};
+
+class _DapQmlModelSerialHistoryCopyButtonAnimation : public QObject
+{
+  Q_OBJECT
+  QScopedPointer<QTimer> m_timer;
+
+public:
+  _DapQmlModelSerialHistoryCopyButtonAnimation (QObject *a_copyButton);
+
+protected slots:
+  void slotStart();
+  void slotFinish();
 };
 
 /*-----------------------------------------*/
