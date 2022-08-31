@@ -785,6 +785,11 @@
 	qproperty-scaledPixmap: url("://gui/asset/ic_copy.png");
 }
 
+.ic_copy_pressed
+{
+	qproperty-scaledPixmap: url("://gui/asset/ic_copy_pressed.png");
+}
+
 .ic_trash
 {
   qproperty-scaledPixmap: url("://gui/asset/ic_trash.png");
@@ -1522,7 +1527,6 @@
   min-height: 40pt;
   max-width: 40pt;
   max-height: 40pt;
-	qproperty-scaledPixmapEx: "://gui/asset/ic_copy.png|://gui/asset/ic_copy.png|://gui/asset/ic_copy_pressed.png";
 }
 
 /****************************************************
