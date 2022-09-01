@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QAbstractTableModel>
+#include "dapqml-abstract/abstractservermanager.h"
 
 /****************************************//**
  * @brief servers model list
@@ -14,6 +15,8 @@
 class DapQmlModelChooseServer : public QAbstractListModel
 {
   Q_OBJECT
+
+  QSharedPointer<AbstractServerManager> m_serverManager;
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
@@ -29,6 +32,7 @@ protected:
   /// @{
 public:
   static DapQmlModelChooseServer *instance();
+  void setServerManager (QSharedPointer<AbstractServerManager> a_serverManager);
   /// @}
 
   /****************************************//**

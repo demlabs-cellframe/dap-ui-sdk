@@ -27,13 +27,20 @@ DapQmlModelChooseServer *DapQmlModelChooseServer::instance()
   return __inst;
 }
 
+void DapQmlModelChooseServer::setServerManager(QSharedPointer<AbstractServerManager> a_serverManager)
+{
+  m_serverManager = a_serverManager;
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
 
 int DapQmlModelChooseServer::rowCount(const QModelIndex &parent) const
 {
-  return DapServersData::instance()->rowCount (parent);
+  if (m_serverManager.isNull())
+    return DapServersData::instance()->rowCount (parent);
+  return m_serverManager->size();
 }
 
 QVariant DapQmlModelChooseServer::data(const QModelIndex &index, int role) const
@@ -41,7 +48,14 @@ QVariant DapQmlModelChooseServer::data(const QModelIndex &index, int role) const
   if (role != 0)
     return QVariant();
 
-  return DapServersData::instance()->data (index, Qt::DisplayRole);
+  if (m_serverManager.isNull())
+    return DapServersData::instance()->data (index, Qt::DisplayRole);
+
+  auto keys   = m_serverManager->keys();
+  if (index.row() >= keys.size())
+    return QVariant();
+
+  return m_serverManager->server (keys.at (index.row())).name;
 }
 
 QHash<int, QByteArray> DapQmlModelChooseServer::roleNames() const
