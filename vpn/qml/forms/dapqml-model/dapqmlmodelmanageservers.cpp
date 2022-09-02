@@ -19,10 +19,10 @@ static std::array<AbstractServerManager::Server, 6> dummyServers =
 {
   AbstractServerManager::Server{ "AP-1 (South America, USA)",      "18.184.32.170",    443, false },
   { "AP-2 (Ireland, Europe)",         "18.184.32.170",    443, true },
-  { "AP-3 (Seoul, Asia)",             "18.184.32.170",    443, false },
-  { "AP-4 (Frankfurt, Europe)",       "18.184.32.170",    443, true },
-  { "AP-5 (South Africa, Sao Paulo)", "18.184.32.170",    443, true },
-  { "AP-6 (Ireland, Europe)",         "18.184.32.170",    443, false },
+  { "AP-3 (Seoul, Asia)",             "18.184.32.171",    443, false },
+  { "AP-4 (Frankfurt, Europe)",       "18.184.32.172",    443, true },
+  { "AP-5 (South Africa, Sao Paulo)", "18.184.32.173",    443, true },
+  { "AP-6 (Ireland, Europe)",         "18.184.32.174",    443, false },
 };
 #endif
 
@@ -111,19 +111,17 @@ void DapQmlModelManageServers::edit (int a_index, const QVariant &a_data)
     return;
 
   /* check boundaries */
-  auto list   = s_manager->keys();
-  if (a_index >= list.size())
+  if (a_index >= s_manager->size())
     return;
 
   /* get source item */
-  QString name = list.at (a_index);
-  AbstractServerManager::Server item = s_manager->server (name);
+  AbstractServerManager::Server item = s_manager->server (a_index);
 
   /* modify data */
   parseServerData (a_data, item);
 
   /* store result */
-  s_manager->setServer (name, std::move (item));
+  s_manager->setServer (a_index, std::move (item));
 }
 
 void DapQmlModelManageServers::remove (int a_index)
@@ -133,13 +131,11 @@ void DapQmlModelManageServers::remove (int a_index)
     return;
 
   /* check boundaries */
-  auto list   = s_manager->keys();
-  if (a_index >= list.size())
+  if (a_index >= s_manager->size())
     return;
 
   /* perform removing */
-  auto name   = list.at (a_index);
-  s_manager->remove (name);
+  s_manager->remove (a_index);
 }
 
 void DapQmlModelManageServers::refreshContent()
@@ -200,8 +196,7 @@ QVariant DapQmlModelManageServers::data (const QModelIndex &index, int role) con
     return QVariant();
 
   /* check boundaries */
-  auto list   = s_manager->keys();
-  if (index.row() >= list.size())
+  if (index.row() >= s_manager->size())
     return QVariant();
 
   /* return value */
@@ -212,23 +207,27 @@ QVariant DapQmlModelManageServers::data (const QModelIndex &index, int role) con
       return QString ("ic_conn-%1").arg (index.row() % 6);//"ic_conn-4";
 
     case 1: // name
-      return list.at (index.row());
+      {
+        const auto &server = s_manager->server (index.row());
+        return server.name;
+      }
+     // return list.at (index.row());
 
     case 2: // favorite
     {
-      const auto &server = s_manager->server (list.at (index.row()));
+      const auto &server = s_manager->server (index.row());
       return server.favorite;
     }
 
     case 3: // address
     {
-      const auto &server = s_manager->server (list.at (index.row()));
+      const auto &server = s_manager->server (index.row());
       return server.address;
     }
 
     case 4: // port
     {
-      const auto &server = s_manager->server (list.at (index.row()));
+      const auto &server = s_manager->server (index.row());
       return server.port;
     }
 

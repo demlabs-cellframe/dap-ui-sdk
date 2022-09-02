@@ -71,10 +71,10 @@ public:
   /// @{
 public:
   /// append server
-  void append (Server &&a_newServer)              { setServer (std::move (a_newServer)); }
-  void append (const DapServerInfo &a_newServer)  { setServer (Server {a_newServer.name, a_newServer.address, a_newServer.port, false}); }
-  QStringList servers() const                     { return keys(); }
-  ServerInfo info (const QString &a_name) const   { return ServerInfo { server (a_name), state (a_name) }; }
+//  void append (Server &&a_newServer)              { setServer (std::move (a_newServer)); }
+//  void append (const DapServerInfo &a_newServer)  { append (Server {a_newServer.name, a_newServer.address, a_newServer.port, false}); }
+  ServerInfo info (int a_index) const             { return ServerInfo { server (a_index), state (a_index) }; }
+//  ServerInfo info (const QString &a_ip) const     { return ServerInfo { server (a_ip), state (a_ip) }; }
   /// @}
 
   /****************************************//**
@@ -82,27 +82,35 @@ public:
    *******************************************/
   /// @{
 public:
-  /// request const instance of server. otherwise will return static dummy item.
-  virtual const Server &server (const QString &a_name) const = 0;
+  /// request const instance of server
+  virtual const Server &server (int a_index) const = 0;
 
-  /// set or replace server
-  virtual void setServer (const QString &a_name, Server &&a_newServer) = 0;
+  /// request const instance of server
+  virtual const Server &server (const QString &a_ip, bool *a_ok = nullptr) const = 0;
 
-  /// same as append server
-  /// @note will replace server with the same name
+  /// replace server
+  virtual void setServer (int a_index, Server &&a_newServer) = 0;
+
+  /// replace server
   virtual void setServer (Server &&a_newServer) = 0;
 
-  /// remove server by name
-  virtual void remove (const QString &a_name) = 0;
+  /// append new server
+  virtual void append (Server &&a_newServer) = 0;
+
+  /// remove server
+  virtual void remove (int a_index) = 0;
+
+  /// get index of a_ip. otherwise returns -1
+  virtual int indexOf (const QString &a_ip) const = 0;
+
+  /// request server state
+  virtual const State &state (int a_index) const = 0;
 
   /// request server state. otherwise will return static dummy item.
-  virtual const State &state (const QString &a_name) const = 0;
+  virtual const State &state (const QString &a_ip, bool *a_ok = nullptr) const = 0;
 
   /// set specific server state
-  virtual void setState (const QString &a_name, State &&a_newState) = 0;
-
-  /// request servers keys
-  virtual const QStringList &keys() const = 0;
+  virtual void setState (const QString &a_ip, State &&a_newState) = 0;
 
   /// request servers list size
   virtual int size() const = 0;
@@ -117,10 +125,10 @@ public:
   /// @{
 public:
   AbstractServerManager &operator<< (Server &&a_newServer)              { append (std::move (a_newServer)); return *this; }
-  AbstractServerManager &operator<< (const DapServerInfo &a_newServer)  { append (a_newServer); return *this; }
-  const ServerInfo operator[] (const QString &a_name) const
+//  AbstractServerManager &operator<< (const DapServerInfo &a_newServer)  { append (a_newServer); return *this; }
+  const ServerInfo operator[] (int a_index) const
   {
-    return info (a_name);
+    return info (a_index);
   }
   /// @}
 };

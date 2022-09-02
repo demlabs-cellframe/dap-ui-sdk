@@ -51,11 +51,10 @@ QVariant DapQmlModelChooseServer::data(const QModelIndex &index, int role) const
   if (m_serverManager.isNull())
     return DapServersData::instance()->data (index, Qt::DisplayRole);
 
-  auto keys   = m_serverManager->keys();
-  if (index.row() >= keys.size())
+  if (index.row() >= m_serverManager->size())
     return QVariant();
 
-  return m_serverManager->server (keys.at (index.row())).name;
+  return m_serverManager->server (index.row()).name;
 }
 
 QHash<int, QByteArray> DapQmlModelChooseServer::roleNames() const
