@@ -200,6 +200,7 @@ QVariant DapQmlModelManageServers::data (const QModelIndex &index, int role) con
     return QVariant();
 
   /* return value */
+  const auto &server = s_manager->server (index.row());
   switch (role)
     {
 
@@ -207,29 +208,16 @@ QVariant DapQmlModelManageServers::data (const QModelIndex &index, int role) con
       return QString ("ic_conn-%1").arg (index.row() % 6);//"ic_conn-4";
 
     case 1: // name
-      {
-        const auto &server = s_manager->server (index.row());
-        return server.name;
-      }
-     // return list.at (index.row());
+      return server.name;
 
     case 2: // favorite
-    {
-      const auto &server = s_manager->server (index.row());
       return server.favorite;
-    }
 
     case 3: // address
-    {
-      const auto &server = s_manager->server (index.row());
       return server.address;
-    }
 
     case 4: // port
-    {
-      const auto &server = s_manager->server (index.row());
       return server.port;
-    }
 
     }
 
