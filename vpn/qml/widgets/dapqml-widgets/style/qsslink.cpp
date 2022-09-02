@@ -2,7 +2,7 @@
 #include "qsslink.h"
 
 /* NAMESPACE */
-namespace Style
+namespace DapStyle
 {
 
 /* VARS */

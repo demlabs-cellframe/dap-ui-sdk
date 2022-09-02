@@ -1,7 +1,7 @@
 #include "qssitem.h"
 
 /* NAMESPACE */
-namespace Style
+namespace DapStyle
 {
 
 /********************************************

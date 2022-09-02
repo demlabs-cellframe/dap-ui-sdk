@@ -1,6 +1,6 @@
 /* INCLUDES */
 
-import QtQuick 2.15
+import QtQuick 2.12
 import DapQmlStyle 1.0
 import QtQuick.Controls 2.12
 import Qt.labs.platform 1.1
@@ -119,6 +119,142 @@ Item {
     }
 
     /****************************************//**
+     * Frame renderer
+     *
+     * @note uncomment to generate proper image file
+     *
+     * @warning dont forget to comment this, after
+     * image is rendered into file. you dont need this to render every time, only once during development
+     ********************************************/
+
+//    Component.onCompleted: {
+//        /* update dimensions */
+//        temporalRenderer.width  = 64*3;
+//        temporalRenderer.height = 64*3;
+
+//        /* save result to image */
+//        temporalRenderer.grabToImage(function(result){
+//            result.saveToFile("/tmp/temporalRenderer.png");  // "C:/temporalRenderer.png");
+//        });
+
+//        /* print warning */
+//        console.log("BugReport image is rendered into file!"
+//                    +" If you see this message that means renderer is exists"
+//                    +" when it must not. It is only used to generate image source"
+//                    +" during development. You should not see this message.");
+
+//        /* hide this element */
+//        temporalRenderer.visible = false;
+//    }
+
+//    Item {
+//        id: temporalRenderer
+
+//        property real sideSize:     64
+//        property size size:         Qt.size (390, 200)
+//        property size cornerSize:   Qt.size (sideSize, sideSize)
+//        property real maxX:         390 - sideSize
+//        property real maxY:         200 - sideSize
+//        property real midWidth:     width - 64*2
+//        property real midHeight:    height - 64*2
+
+//        Image {
+//            id: sideTop
+//            x: temporalRenderer.x + parent.sideSize
+//            y: temporalRenderer.y
+//            width: temporalRenderer.width - cornerLeftTop.width - cornerRightTop.width;
+//            height: parent.sideSize;
+//            sourceSize: parent.size
+//            sourceClipRect: Qt.rect(parent.sideSize, 0, parent.sideSize, parent.sideSize)
+//            source: inputFiller.scaledPixmap; mipmap: true
+//        }
+
+//        Image {
+//            id: sideLeft
+//            x: temporalRenderer.x
+//            y: temporalRenderer.y + parent.sideSize
+//            width: parent.sideSize;
+//            height: temporalRenderer.height - cornerLeftTop.height - cornerLeftBottom.height;
+//            sourceSize: parent.size
+//            sourceClipRect: Qt.rect(0, parent.sideSize, parent.sideSize, parent.sideSize)
+//            source: inputFiller.scaledPixmap; mipmap: true
+//        }
+
+//        Image {
+//            id: sideBottom
+//            x: temporalRenderer.x + parent.sideSize
+//            y: temporalRenderer.y + temporalRenderer.height - height
+//            width: temporalRenderer.width - cornerLeftBottom.width - cornerRightBottom.width;
+//            height: parent.sideSize;
+//            sourceSize: parent.size
+//            sourceClipRect: Qt.rect(parent.sideSize, parent.maxY, parent.sideSize, parent.sideSize)
+//            source: inputFiller.scaledPixmap; mipmap: true
+//        }
+
+//        Image {
+//            id: sideRight
+//            x: temporalRenderer.x + temporalRenderer.width - width
+//            y: temporalRenderer.y + parent.sideSize
+//            width: parent.sideSize;
+//            height: temporalRenderer.height - cornerRightTop.height - cornerRightBottom.height;
+//            sourceSize: parent.size
+//            sourceClipRect: Qt.rect(parent.maxX, parent.sideSize, parent.sideSize, parent.sideSize)
+//            source: inputFiller.scaledPixmap; mipmap: true
+//        }
+
+//        Image {
+//            id: midFill
+//            x: temporalRenderer.x + cornerLeftTop.width
+//            y: temporalRenderer.y + cornerLeftTop.height
+//            width: temporalRenderer.width - cornerLeftTop.width - cornerRightTop.width;
+//            height: temporalRenderer.height - cornerLeftTop.height - cornerLeftBottom.height;
+//            sourceSize: parent.size
+//            sourceClipRect: Qt.rect(parent.sideSize, parent.sideSize, parent.sideSize, parent.sideSize)
+//            source: inputFiller.scaledPixmap; mipmap: true
+//        }
+
+//        Image {
+//            id: cornerLeftTop
+//            x: temporalRenderer.x
+//            y: temporalRenderer.y
+//            width: parent.sideSize; height: parent.sideSize;
+//            sourceSize: parent.size
+//            sourceClipRect: Qt.rect(0, 0, parent.sideSize, parent.sideSize)
+//            source: inputFiller.scaledPixmap; mipmap: true
+//        }
+
+//        Image {
+//            id: cornerRightTop
+//            x: temporalRenderer.width - parent.sideSize
+//            y: temporalRenderer.y
+//            width: parent.sideSize; height: parent.sideSize;
+//            sourceSize: parent.size
+//            sourceClipRect: Qt.rect(sourceSize.width - width, 0, parent.sideSize, parent.sideSize)
+//            source: inputFiller.scaledPixmap; mipmap: true
+//        }
+
+//        Image {
+//            id: cornerLeftBottom
+//            x: temporalRenderer.x
+//            y: temporalRenderer.height - parent.sideSize
+//            width: parent.sideSize; height: parent.sideSize;
+//            sourceSize: parent.size
+//            sourceClipRect: Qt.rect(0, sourceSize.height - height, parent.sideSize, parent.sideSize)
+//            source: inputFiller.scaledPixmap; mipmap: true
+//        }
+
+//        Image {
+//            id: cornerRightBottom
+//            x: temporalRenderer.width - parent.sideSize
+//            y: temporalRenderer.height - parent.sideSize
+//            width: parent.sideSize; height: parent.sideSize;
+//            sourceSize: parent.size
+//            sourceClipRect: Qt.rect(sourceSize.width - width, sourceSize.height - height, parent.sideSize, parent.sideSize)
+//            source: inputFiller.scaledPixmap; mipmap: true
+//        }
+//    }
+
+    /****************************************//**
      * Mode Input Item
      ********************************************/
 
@@ -146,88 +282,15 @@ Item {
 
             /* corner images */
 
-            Image {
-                id: sideTop
-                x: inputFiller.x + cornerLeftTop.width
-                y: inputFiller.y
-                width: inputFiller.width - cornerLeftTop.width - cornerRightTop.width;
-                height: 64;
-                sourceSize.width: 390; sourceSize.height: 200;
-                sourceClipRect: Qt.rect(163, 0, 64, 64)
-                source: inputFiller.scaledPixmap; mipmap: true
-            }
-
-            Image {
-                id: sideLeft
-                x: inputFiller.x
-                y: inputFiller.y + cornerLeftTop.height
-                width: 64;
-                height: inputFiller.height - cornerLeftTop.height - cornerLeftBottom.height;
-                sourceSize.width: 390; sourceSize.height: 200;
-                sourceClipRect: Qt.rect(0, 68, 64, 64)
-                source: inputFiller.scaledPixmap; mipmap: true
-            }
-
-            Image {
-                id: sideBottom
-                x: inputFiller.x + cornerLeftBottom.width
-                y: inputFiller.y + inputFiller.height - height
-                width: inputFiller.width - cornerLeftBottom.width - cornerRightBottom.width;
-                height: 64;
-                sourceSize.width: 390; sourceSize.height: 200;
-                sourceClipRect: Qt.rect(163, 136, 64, 64)
-                source: inputFiller.scaledPixmap; mipmap: true
-            }
-
-            Image {
-                id: sideRight
-                x: inputFiller.x + inputFiller.width - width
-                y: inputFiller.y + cornerRightTop.height
-                width: 64;
-                height: inputFiller.height - cornerRightTop.height - cornerRightBottom.height;
-                sourceSize.width: 390; sourceSize.height: 200;
-                sourceClipRect: Qt.rect(326, 68, 64, 64)
-                source: inputFiller.scaledPixmap; mipmap: true
-            }
-
-            Image {
-                id: cornerLeftTop
+            BorderImage {
                 x: inputFiller.x
                 y: inputFiller.y
-                width: 64; height: 64;
-                sourceSize.width: 390; sourceSize.height: 200;
-                sourceClipRect: Qt.rect(0, 0, 64, 64)
-                source: inputFiller.scaledPixmap; mipmap: true
-            }
-
-            Image {
-                id: cornerRightTop
-                x: inputFiller.width - width
-                y: inputFiller.y
-                width: 64; height: 64;
-                sourceSize.width: 390; sourceSize.height: 200;
-                sourceClipRect: Qt.rect(sourceSize.width - width, 0, 64, 64)
-                source: inputFiller.scaledPixmap; mipmap: true
-            }
-
-            Image {
-                id: cornerLeftBottom
-                x: inputFiller.x
-                y: inputFiller.height - height
-                width: 64; height: 64;
-                sourceSize.width: 390; sourceSize.height: 200;
-                sourceClipRect: Qt.rect(0, sourceSize.height - height, 64, 64)
-                source: inputFiller.scaledPixmap; mipmap: true
-            }
-
-            Image {
-                id: cornerRightBottom
-                x: inputFiller.width - width
-                y: inputFiller.height - height
-                width: 64; height: 64;
-                sourceSize.width: 390; sourceSize.height: 200;
-                sourceClipRect: Qt.rect(sourceSize.width - width, sourceSize.height - height, 64, 64)
-                source: inputFiller.scaledPixmap; mipmap: true
+                width: inputFiller.width
+                height: inputFiller.height
+                border { left: 64; top: 64; right: 64; bottom: 64 }
+                horizontalTileMode: BorderImage.Stretch
+                verticalTileMode: BorderImage.Stretch
+                source: inputFiller.scaledPixmap
             }
 
             /* placeholder */

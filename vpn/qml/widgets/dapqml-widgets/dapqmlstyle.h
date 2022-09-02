@@ -102,7 +102,7 @@ protected:
    * @brief Class instance responsible to scaling features
    * Usualy needed to resize item based on window/screen size
    */
-  Style::Scaled m_scaled;
+  DapStyle::Scaled m_scaled;
   /// @}
 
   /****************************************//**

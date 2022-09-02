@@ -8,7 +8,7 @@
 #include <QDebug>
 
 /* NAMESPACE */
-namespace Style
+namespace DapStyle
 {
 
 /* DEFS */
@@ -19,7 +19,7 @@ typedef void (*callback) (it &i);
 static void none (it &i);
 static void naming (it &i);
 static void body (it &i);
-extern QHash<QString, Style::QssItem> s_map;
+extern QHash<QString, DapStyle::QssItem> s_map;
 
 /* VARS */
 static QStringList names;

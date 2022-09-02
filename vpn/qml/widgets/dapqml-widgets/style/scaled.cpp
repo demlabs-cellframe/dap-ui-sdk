@@ -4,7 +4,7 @@
 #include <QQmlProperty>
 
 /* NAMESPACE */
-namespace Style
+namespace DapStyle
 {
 
 /********************************************

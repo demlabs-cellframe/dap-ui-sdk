@@ -155,12 +155,12 @@ void DapQmlStyle::setup(const QString &styleSheet)
 
 void DapQmlStyle::changeCategory(const QString &a_category)
 {
-  Style::QssLink::changeCategory (a_category);
+  DapStyle::QssLink::changeCategory (a_category);
 }
 
 void DapQmlStyle::update()
 {
-  Style::QssMap::setup (s_styleSheet);
+  DapStyle::QssMap::setup (s_styleSheet);
 }
 
 void DapQmlStyle::sWindowResized(int a_width, int a_height)
@@ -192,7 +192,7 @@ void DapQmlStyle::_applyStyle()
     return;
 
   /* get items by style list */
-  auto items  = Style::QssMap::items (m_qss);
+  auto items  = DapStyle::QssMap::items (m_qss);
 
   /* cycle thru all items */
   for (auto i = items.cbegin(), e = items.cend(); i != e; i++)
@@ -206,7 +206,7 @@ void DapQmlStyle::_applyStyle()
           /* set scale */
           if (it.key() == "scaledRect" || it.key() == "scaledFont")
             {
-              auto scaled  = it.value().value<Style::Scaled> ();
+              auto scaled  = it.value().value<DapStyle::Scaled> ();
               scaled.adjust (m_item, s_screenWidth, s_screenHeight);
               continue;
             }
