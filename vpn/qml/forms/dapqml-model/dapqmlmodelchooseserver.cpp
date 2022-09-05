@@ -29,7 +29,7 @@ DapQmlModelChooseServer *DapQmlModelChooseServer::instance()
 
 void DapQmlModelChooseServer::setServerManager(QSharedPointer<AbstractServerManager> a_serverManager)
 {
-  m_serverManager = a_serverManager;
+  //m_serverManager = a_serverManager;
 }
 
 /********************************************

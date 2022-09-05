@@ -119,6 +119,9 @@ public:
 
   /// request all favorite servers
   virtual const QStringList &favorites() const = 0;
+
+  /// sync & update manager data
+  virtual void update() const = 0;
   /// @}
 
   /****************************************//**

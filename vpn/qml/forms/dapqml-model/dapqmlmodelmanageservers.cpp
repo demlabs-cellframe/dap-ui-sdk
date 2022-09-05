@@ -18,12 +18,12 @@ static std::array<AbstractServerManager::Server, 6> dummyServers =
 //static AbstractServerManager::Server dummyServers[] =
 {
   AbstractServerManager::Server
-  { "AP-1 (South America, USA)",      "18.184.32.170",    "", 443, false },
-  { "AP-2 (Ireland, Europe)",         "18.184.32.170",    "", 443, true },
-  { "AP-3 (Seoul, Asia)",             "18.184.32.171",    "", 443, false },
-  { "AP-4 (Frankfurt, Europe)",       "18.184.32.172",    "", 443, true },
-  { "AP-5 (South Africa, Sao Paulo)", "18.184.32.173",    "", 443, true },
-  { "AP-6 (Ireland, Europe)",         "18.184.32.174",    "", 443, false },
+  { "AP-1.(South America, USA)",      "", "18.184.32.170",    443, false },
+  { "AP-2.(Ireland, Europe)",         "", "18.184.32.170",    443, true },
+  { "AP-3.(Seoul, Asia)",             "", "18.184.32.171",    443, false },
+  { "AP-4.(Frankfurt, Europe)",       "", "18.184.32.172",    443, true },
+  { "AP-5.(South Africa, Sao Paulo)", "", "18.184.32.173",    443, true },
+  { "AP-6.(Ireland, Europe)",         "", "18.184.32.174",    443, false },
 };
 #endif
 
@@ -102,8 +102,9 @@ void DapQmlModelManageServers::add (const QVariant &a_data)
   AbstractServerManager::Server newServer;
   parseServerData (a_data, newServer);
 
-  /* store result */
+  /* store result and update */
   s_manager->append (std::move (newServer));
+  s_manager->update();
 }
 
 void DapQmlModelManageServers::edit (int a_index, const QVariant &a_data)
@@ -124,6 +125,7 @@ void DapQmlModelManageServers::edit (int a_index, const QVariant &a_data)
 
   /* store result */
   s_manager->setServer (a_index, std::move (item));
+  s_manager->update();
 }
 
 void DapQmlModelManageServers::remove (int a_index)
@@ -138,6 +140,7 @@ void DapQmlModelManageServers::remove (int a_index)
 
   /* perform removing */
   s_manager->remove (a_index);
+  s_manager->update();
 }
 
 void DapQmlModelManageServers::refreshContent()
@@ -154,12 +157,20 @@ QVariant DapQmlModelManageServers::value (int a_index, const QString &a_name)
 void DapQmlModelManageServers::fillDummyList()
 {
 #ifdef ENABLE_SERVERS_DUMMY
+  /* checks, if already filled */
+  static bool already = false;
+  if (already)
+    return;
+  already = true;
+
   /* check if manager installed */
   if (s_manager.isNull())
     return;
 
   for (auto &it : dummyServers)
     s_manager->append (std::move (it));
+
+  s_manager->update();
 #endif // ENABLE_SERVERS_DUMMY
 }
 
