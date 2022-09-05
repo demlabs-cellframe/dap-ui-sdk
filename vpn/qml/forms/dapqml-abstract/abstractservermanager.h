@@ -31,6 +31,7 @@ public:
   struct Server
   {
     QString name;
+    QString location;
     QString address;
     int port;
     bool favorite;
@@ -48,6 +49,7 @@ public:
     ServerInfo (const Server &a_server, const State &a_state)
     {
       name      = a_server.name;
+      location  = a_server.location;
       address   = a_server.address;
       port      = a_server.port;
       favorite  = a_server.favorite;

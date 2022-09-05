@@ -17,12 +17,13 @@ static QSharedPointer<AbstractServerManager> s_manager;
 static std::array<AbstractServerManager::Server, 6> dummyServers =
 //static AbstractServerManager::Server dummyServers[] =
 {
-  AbstractServerManager::Server{ "AP-1 (South America, USA)",      "18.184.32.170",    443, false },
-  { "AP-2 (Ireland, Europe)",         "18.184.32.170",    443, true },
-  { "AP-3 (Seoul, Asia)",             "18.184.32.171",    443, false },
-  { "AP-4 (Frankfurt, Europe)",       "18.184.32.172",    443, true },
-  { "AP-5 (South Africa, Sao Paulo)", "18.184.32.173",    443, true },
-  { "AP-6 (Ireland, Europe)",         "18.184.32.174",    443, false },
+  AbstractServerManager::Server
+  { "AP-1 (South America, USA)",      "18.184.32.170",    "", 443, false },
+  { "AP-2 (Ireland, Europe)",         "18.184.32.170",    "", 443, true },
+  { "AP-3 (Seoul, Asia)",             "18.184.32.171",    "", 443, false },
+  { "AP-4 (Frankfurt, Europe)",       "18.184.32.172",    "", 443, true },
+  { "AP-5 (South Africa, Sao Paulo)", "18.184.32.173",    "", 443, true },
+  { "AP-6 (Ireland, Europe)",         "18.184.32.174",    "", 443, false },
 };
 #endif
 
@@ -73,6 +74,7 @@ static void parseServerData (const QVariant &a_data, /* out */ AbstractServerMan
   auto value        = a_data.toMap();
 
   _parseField (value, a_server, name, toString);
+  _parseField (value, a_server, location, toString);
   _parseField (value, a_server, address, toString);
   _parseField (value, a_server, port, toInt);
   _parseField (value, a_server, favorite, toBool);
