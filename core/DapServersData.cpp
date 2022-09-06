@@ -402,7 +402,7 @@ QVariant DapServersData::data(const QModelIndex &index, int role) const
         return findInCountriesMap(si.name.toUpper());
     }
     case CONNECTION_QUALITY: {
-      return m_servers.at(index.row()).connection_quality;
+      return int (m_servers.at(index.row()).connection_quality);
     }
     case PING_ROLE: {
       return m_servers.at(index.row()).ping;

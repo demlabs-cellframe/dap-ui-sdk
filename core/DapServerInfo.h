@@ -16,7 +16,7 @@ class DapServerInfo
 {
 public:
 
-    enum connectionQuality {
+    enum class ConnectionQuality {
       NO_CONNECTION = 0,
       FULL,
       ALMOST_FULL,
@@ -44,7 +44,7 @@ public:
     QString location;
     QString online;
     int ping = -1;
-    connectionQuality connection_quality = NO_CONNECTION;
+    ConnectionQuality connection_quality = ConnectionQuality::NO_CONNECTION;
 
     bool isAuto() const;
     bool isValid() const;
@@ -66,10 +66,17 @@ public:
         return out;
     }
 
-    void setPing(const quint16 a_ping){
-      ping = a_ping;}
-    void setConnetionQulity(int a_connection_quality){
-      connection_quality = DAP_CONNECTION_QUALITY(a_connection_quality);
+    void setPing (const quint16 a_ping)
+    {
+      ping = a_ping;
+    }
+
+    void setConnetionQulity (int a_connection_quality)
+    {
+      connection_quality =
+          (a_connection_quality >= int (ConnectionQuality::NO_CONNECTION))
+          ? ConnectionQuality (a_connection_quality)
+          : ConnectionQuality::NO_CONNECTION;
     }
 
 private:
