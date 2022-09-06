@@ -3,10 +3,12 @@
 #include "../settings.h"
 
 #include "dapguibutton.h"
+#include "DapDataLocal.h"
 #include <QUrl>
 #include <QBoxLayout>
 #include <QEvent>
 #include <QScrollBar>
+#include <QTimer>
 
 /* DEFS */
 typedef QString TextStyle;
@@ -40,6 +42,7 @@ QList<SettingsModel::_SItem> SettingsModel::s_items;
 static QMap<DapGuiButton*, ItemCB> s_btnCallbacks;
 static DapGuiButton* s_licenceKey;
 static DapGuiButton* s_version;
+static DapGuiButton* s_country;
 static QString *s_versionText   = nullptr;
 static QString *s_daysLeftText  = nullptr;
 
@@ -64,7 +67,7 @@ SettingsModel::SettingsModel (QWidget *parent)
     {SI_BUTTON,     {"darkblue font16 lato normal",  "darkblue font16 lato normal"}},
     {SI_BUTTONRED,  {"darkblue font16 lato normal",  "red font16 lato bold"}},
     {SI_BUTTONGRAY, {"darkblue font16 lato normal",  "darkblue gray font16 lato"}},
-    {SI_LINK,       {"darkblue font16 lato normal",  ""}},
+    {SI_LINK,       {"darkblue font16 lato normal",  "darkblue font16 lato normal margin-rightLink"}},
     {SI_SPACER,     {"",  ""}},
   };
 
@@ -170,6 +173,8 @@ void SettingsModel::slotSetup()
         s_licenceKey = btn;
       if (item.text[1] == "@version")
         s_version = btn;
+      if (item.text[1] == "@country")
+        s_country = btn;
 
       /* connect signal */
       connect (btn, &DapGuiButton::clicked,
@@ -257,6 +262,16 @@ bool SettingsModel::eventFilter(QObject *o, QEvent *e)
   return QScrollArea::eventFilter(o, e);
 }
 
+void SettingsModel::showEvent(QShowEvent *event)
+{
+    Q_UNUSED(event)
+    QTimer::singleShot(100, [=](){
+        QString base_location = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
+        QString code = DapServersData::m_countryMap[base_location];
+        s_country->setSubText (code);
+    });
+}
+
 /********************************************
  * PRIVATE METHODS
  *******************************************/
@@ -271,7 +286,7 @@ void SettingsModel::_updateLabels()
 
     _SItem{SI_BUTTONRED,  {tr ("Get a new licence key"), /*"265 days left"*/" "}, "settings_icon ic_renew", cbLicenceGet},
     _SItem{SI_BUTTON,     {tr ("Reset license key"), ""}, "settings_icon ic_key", cbLicenceReset},
-    _SItem{SI_LINK,       {tr ("Your country"), ""}, "settings_icon ic_country", cbCountry},
+    _SItem{SI_LINK,       {tr ("Your country"), "@country"}, "settings_icon ic_country", cbCountry},
 #ifdef ENABLE_LANGUAGE_SUPPORT
     _SItem{SI_LINK,       {tr ("Language"), ""}, "settings_icon ic_language", cbLanguage},
 #endif // ENABLE_LANGUAGE_SUPPORT

@@ -38,6 +38,7 @@ private:
     SI_BUTTONRED,
     SI_BUTTONGRAY,
     SI_LINK,
+    SI_LABELLINK,
     SI_SPACER
   };
 
@@ -113,6 +114,7 @@ protected:
       QString &a_description,
       QString &a_btnYes,
       QString &a_btnNo);
+  void showEvent(QShowEvent *event) override;
   /// @}
 };
 
