@@ -22,7 +22,11 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
         qDebug() << "dir not exists";
         dir.mkpath(".");
     }
+#if defined(Q_OS_ANDROID)
+    system((m_pathToLog + "chmod 667 ").toUtf8().data());
+#else
     system(("chmod 667 $(find " + m_pathToLog + " -type d)").toUtf8().data());
+#endif
     updateCurrentLogName();
     setLogFile(m_currentLogName);
     createChangerLogFiles();
