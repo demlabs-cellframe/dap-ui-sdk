@@ -2,6 +2,14 @@
 #include "dapqmlmodelchooseserver.h"
 #include "DapServersData.h"
 
+/* DEFS */
+enum Role
+{
+  ping,
+  name,
+  connectionQuality
+};
+
 /* VARS */
 static DapQmlModelChooseServer *__inst = nullptr;
 
@@ -32,6 +40,18 @@ void DapQmlModelChooseServer::setServerManager(QSharedPointer<AbstractServerMana
   //m_serverManager = a_serverManager;
 }
 
+QString DapQmlModelChooseServer::hook()
+{
+  return QString();
+}
+
+void DapQmlModelChooseServer::refresh()
+{
+//  beginResetModel();
+//  endResetModel();
+  emit sigRefresh();
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
@@ -45,25 +65,46 @@ int DapQmlModelChooseServer::rowCount(const QModelIndex &parent) const
 
 QVariant DapQmlModelChooseServer::data(const QModelIndex &index, int role) const
 {
-  if (role != 0)
-    return QVariant();
+  auto *serversData = DapServersData::instance();
 
-  if (m_serverManager.isNull())
-    return DapServersData::instance()->data (index, Qt::DisplayRole);
+  switch (role)
+    {
+    case Role::name:
+      if (m_serverManager.isNull())
+        return DapServersData::instance()->data (index, Qt::DisplayRole);
 
-  if (index.row() >= m_serverManager->size())
-    return QVariant();
+      if (index.row() >= m_serverManager->size())
+        return QVariant();
 
-  return m_serverManager->server (index.row()).name;
+      return m_serverManager->server (index.row()).name;
+
+    case Role::ping:
+        return serversData->data (index, PING_ROLE);
+
+    case Role::connectionQuality:
+      return serversData->data (index, CONNECTION_QUALITY).toInt();
+    }
+
+  return QVariant();
 }
 
 QHash<int, QByteArray> DapQmlModelChooseServer::roleNames() const
 {
   QHash<int, QByteArray> names;
 
-  names.insert (0, "name");
+  names.insert (Role::name,               "name");
+  names.insert (Role::ping,               "ping");
+  names.insert (Role::connectionQuality,  "connectionQuality");
 
   return names;
 }
+
+//QVariant DapQmlModelChooseServer::value(int a_row, const QString &a_name)
+//{
+//  auto roles  = roleNames();
+//  int role    = roles.key (a_name.toUtf8());
+//  auto index  = this->index (a_row);
+//  return data (index, role);
+//}
 
 /*-----------------------------------------*/

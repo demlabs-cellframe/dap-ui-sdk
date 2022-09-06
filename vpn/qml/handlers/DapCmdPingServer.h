@@ -14,6 +14,7 @@ public:
     explicit DapCmdPingServer(QObject *parent = nullptr);
     void sendPingCmd(const QString& host, quint16 port);
 signals:
+    void sigPingReceived(QString, quint16, quint16);
 
 public slots:
 };

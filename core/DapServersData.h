@@ -8,6 +8,8 @@
 #include "DapLocationInfo.h"
 
 #define COUTRY_FLAG_ROLE (Qt::UserRole + 10)
+#define CONNECTION_QUALITY (Qt::UserRole + 11)
+#define PING_ROLE (Qt::UserRole + 12)
 
 class DapServersData: public QAbstractListModel
 {
@@ -21,8 +23,12 @@ public:
                    const QString & address, quint16 port);
     void addServer(const DapServerInfo& dsi);
 
+    void packServerList();
+
     QList<DapServerInfo>& servers(){return m_servers;}
     const QList<DapServerInfo>& servers() const {return m_servers;}
+    QList<DapServerInfo>& bestRegionServers(){return m_bestRegionServerList;}
+    QList<DapServerInfo>& pingServerList(){return m_pingServerList;}
 
     const DapServerInfo* currentServer() const;
     int serversCount() const;
@@ -42,6 +48,11 @@ public:
     bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex()) Q_DECL_OVERRIDE;
     bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex()) Q_DECL_OVERRIDE;
     QMap<int, QVariant> itemData(const QModelIndex &index) const Q_DECL_OVERRIDE;
+
+    void setBestPing(qint16 a_ping) {m_bestping = a_ping;}
+    qint16 getBestPing () {return m_bestping;}
+    void setWorstPing(qint16 a_ping) {m_worstping = a_ping;}
+    qint16 getWorstPing () {return m_worstping;}
 
 public slots:
     void setCurrentServer(const DapServerInfo *a_server);
@@ -72,8 +83,14 @@ private:
 
     int m_currentServerIndex = -1;
     QList<DapServerInfo> m_servers;
+    QList<DapServerInfo> m_bestRegionServerList;
+    QList<DapServerInfo> m_pingServerList;
     DapLocationInfo m_locationInfo;
+public:
     static QMap<QString, QString> m_countryMap;
+
+    qint16 m_bestping = 0;
+    qint16 m_worstping = 0;
 };
 
 #endif // DAPSERVERSDATA_H
