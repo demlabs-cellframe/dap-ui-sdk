@@ -17,6 +17,7 @@ Item
 
     property int currentIndex: -1
     property string currentText: displayText
+    property int count: popupListView.model.count
 
     property bool popupVisible: false
 
