@@ -228,11 +228,16 @@ QVariant DapQmlModelManageServers::data (const QModelIndex &index, int role) con
 
   /* return value */
   const auto &server = s_manager->server (index.row());
+  const auto &state  = s_manager->state (server.address);
   switch (role)
     {
 
     case 0: // icon
-      return QString ("ic_conn-%1").arg (index.row() % 6);//"ic_conn-4";
+      {
+        int quality = (state.connectionQuality == 0) ? (0) : (6 - state.connectionQuality);
+        return QString ("ic_conn-%1").arg (quality);
+      }
+      //return QString ("ic_conn-%1").arg (index.row() % 6);//"ic_conn-4";
 
     case 1: // name
       return server.name;
