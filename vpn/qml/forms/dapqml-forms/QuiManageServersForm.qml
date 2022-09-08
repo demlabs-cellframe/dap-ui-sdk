@@ -107,14 +107,14 @@ Item {
             model.refreshContent();
         }
 
-        function removeServer (a_index) {
-            lastIndex   = a_index;
+//        function removeServer (a_index) {
+//            lastIndex   = a_index;
 
-            /* perform removing & update model */
-            let model   = manserListView.model;
-            model.remove (lastIndex);
-            model.refreshContent();
-        }
+//            /* perform removing & update model */
+//            let model   = manserListView.model;
+//            model.remove (lastIndex);
+//            model.refreshContent();
+//        }
 
         function applyChanges() {
             /* get field values */
@@ -129,6 +129,15 @@ Item {
             model.refreshContent();
         }
     }
+
+    /// @}
+    /****************************************//**
+     * @name SIGNALS
+     ********************************************/
+    /// @{
+
+    /// @brief remove server menu clicked
+    signal sigRemove(int a_index);
 
     /// @}
     /****************************************//**
@@ -159,7 +168,8 @@ Item {
     }
 
     function removeServer (a_index) {
-        modeCtl.removeServer (a_index);
+        root.sigRemove (a_index);
+        //modeCtl.removeServer (a_index);
     }
 
     function applyChanges() {
