@@ -4,6 +4,7 @@ import QtQuick 2.4
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.12
 //import DapQmlModelSettings 1.0
+import Qt.labs.platform 1.1
 import StyleDebugTree 1.0
 //import SettingsInterface 1.0
 import "qrc:/dapqml-widgets"
@@ -176,6 +177,20 @@ Item {
         model.refreshContent();
     }
 
+    function doImport() {
+        if (manserListView.model === undefined)
+            return;
+        fileDialog.updateMode (FileDialog.OpenFile);
+        fileDialog.open();
+    }
+
+    function doExport() {
+        if (manserListView.model === undefined)
+            return;
+        fileDialog.updateMode (FileDialog.SaveFile);
+        fileDialog.open();
+    }
+
     function _pos (a_index) {
         return title.y + (title.height * 2.4) + (resizerItem.height * a_index);
     }
@@ -203,6 +218,48 @@ Item {
 //        x: 4+144; y: 4; z: 10; width: 64; height: 28; text: "add"
 //        onClicked: root.setMode (QuiManageServersForm.Mode.M_ADD)
 //    }
+
+    /****************************************//**
+     * Import/Export dialog
+     ********************************************/
+
+    FileDialog {
+        id: fileDialog
+
+        property string titleName;
+        property string filterImages:   qsTr("Json files (*.json)") + lang.notifier;
+        property string filterAllFiles: qsTr("All files (*.*)") + lang.notifier;
+
+        onAccepted: {
+            var result      = new String (currentFile);
+            var filename    = result.slice(7);
+
+            if (fileMode === FileDialog.OpenFile)
+            {
+                manserListView.model.doImport (filename);
+                manserListView.model.refreshContent();
+            }
+            else
+            if (fileMode === FileDialog.SaveFile)
+                manserListView.model.doExport (filename);
+
+            fileDialog.close()
+        }
+
+        function updateMode (a_newMode) {
+            /* save mode */
+            fileMode        = a_newMode;
+
+            /* update title based on new mode */
+            titleName       = (fileMode === FileDialog.OpenFile)
+            ? qsTr("Open JSON") + lang.notifier
+            : qsTr("Save JSON") + lang.notifier;
+
+            /* complete */
+            fileDialog.title       = titleName;
+            fileDialog.nameFilters = [ filterImages, filterAllFiles ];
+        }
+    }
 
     /****************************************//**
      * Resizers
@@ -263,8 +320,8 @@ Item {
                     /* actions */
                     Action { text: "Restart server"; }
                     Action { text: "Add new"; onTriggered: root.setMode (QuiManageServersForm.Mode.M_ADD) }
-                    Action { text: "Import list" }
-                    Action { text: "Export list" }
+                    Action { text: "Import list"; onTriggered: root.doImport(); }
+                    Action { text: "Export list"; onTriggered: root.doExport(); }
                 }
             }
         }

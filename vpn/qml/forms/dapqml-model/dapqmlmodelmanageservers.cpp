@@ -154,6 +154,20 @@ QVariant DapQmlModelManageServers::value (int a_index, const QString &a_name)
   return data (index (a_index, 0), roleNames().key (a_name.toUtf8()));
 }
 
+void DapQmlModelManageServers::doImport (const QString &a_filename)
+{
+  if (s_manager.isNull())
+    return;
+  s_manager->doImport (a_filename);
+}
+
+void DapQmlModelManageServers::doExport (const QString &a_filename) const
+{
+  if (s_manager.isNull())
+    return;
+  s_manager->doExport (a_filename);
+}
+
 void DapQmlModelManageServers::fillDummyList()
 {
 #ifdef ENABLE_SERVERS_DUMMY

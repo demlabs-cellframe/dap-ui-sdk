@@ -122,6 +122,9 @@ public:
 
   /// sync & update manager data
   virtual void update() const = 0;
+
+  virtual void doImport (const QString &a_filename) = 0;
+  virtual void doExport (const QString &a_filename) const = 0;
   /// @}
 
   /****************************************//**
