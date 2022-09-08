@@ -8,7 +8,7 @@
 /* DEFS */
 
 /// create servers dummy list
-#define ENABLE_SERVERS_DUMMY
+//#define ENABLE_SERVERS_DUMMY
 
 /* VARS */
 static QSharedPointer<AbstractServerManager> s_manager;
