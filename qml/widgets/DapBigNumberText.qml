@@ -98,7 +98,7 @@ Item
 
     function getOutText()
     {
-        print("getOutText", fullNumber, fullNumber.length)
+//        print("getOutText", fullNumber, fullNumber.length)
         print(fullNumber.includes("."))
 
         if (outSymbols >= fullNumber.length ||

@@ -32,6 +32,28 @@ Item
 
     property color backgroundColor: currTheme.backgroundElements
 
+    onModelChanged:
+    {
+        print("DapCustomComboBox", "onModelChanged",
+              "popupListView.currentIndex", popupListView.currentIndex)
+
+        if (popupListView.currentIndex < 0)
+            displayText = getModelData(0, mainTextRole)
+        else
+            displayText = getModelData(popupListView.currentIndex, mainTextRole)
+    }
+
+    onCountChanged:
+    {
+        print("DapCustomComboBox", "onCountChanged",
+              "popupListView.currentIndex", popupListView.currentIndex)
+
+        if (popupListView.currentIndex < 0)
+            displayText = getModelData(0, mainTextRole)
+        else
+            displayText = getModelData(popupListView.currentIndex, mainTextRole)
+    }
+
     Rectangle
     {
         id: background
@@ -44,6 +66,7 @@ Item
 
         Text
         {
+            id: mainTextItem
             x: 0
             y: 0
             padding: mainItem.padding
@@ -113,9 +136,16 @@ Item
     {
         id: mouseArea
         anchors.fill: parent
+        hoverEnabled: true
         onPressed:
         {
             popupVisible = !popupVisible
+
+            popup.visible = popupVisible
+
+//            print("DapCustomComboBox", "mouseArea",
+//                  "popupVisible", popupVisible)
+
             if (popupVisible)
             {
                 popupListView.positionViewAtIndex(
@@ -128,7 +158,7 @@ Item
     {
         id: popup
 
-        visible: popupVisible
+//        visible: popupVisible
 
         scale: mainWindow.scale
 
@@ -142,6 +172,17 @@ Item
         height: popupBackground.height
 
         padding: 0
+
+        onVisibleChanged:
+        {
+//            print("DapCustomComboBox", "onVisibleChanged",
+//                  "visible", visible,
+//                  "popupVisible", popupVisible)
+
+            if (!mouseArea.containsMouse &&
+                visible === false && popupVisible === true)
+                popupVisible = false
+        }
 
         Rectangle
         {
@@ -227,7 +268,8 @@ Item
                         onClicked:
                         {
                             popupListView.currentIndex = index
-                            popupVisible = false
+                            popup.visible = false
+//                            popupVisible = false
                         }
                     }
 
@@ -271,135 +313,6 @@ Item
         }
     }
 
-
-
-
-
-/*    popup:
-    Popup
-    {
-        y: mainItem.height - 1
-        width: mainItem.width
-//        implicitHeight: listView.implicitHeight + 3
-        implicitHeight: listView.implicitHeight
-            //+3 is needed to make ListView less moovable
-
-        padding: 0
-
-//        topPadding: 1
-//        bottomPadding: 0
-//        leftPadding: 1
-//        rightPadding: 1
-
-        contentItem:
-            ListView
-            {
-                id: listView
-                implicitHeight:
-                    contentHeight < maximumPopupHeight ?
-                        contentHeight : maximumPopupHeight
-
-                clip: true
-
-                model: popupVisible ?
-                           mainItem.delegateModel : null
-                currentIndex: mainItem.highlightedIndex
-
-//                interactive: false
-
-                ScrollIndicator.vertical: ScrollIndicator { }
-            }
-
-        background:
-            Item{
-                anchors.fill: parent
-
-                Rectangle
-                {
-                    id: popupBackGrnd
-                    border.width: 0
-                    anchors.fill: parent
-
-                    color: currTheme.backgroundElements
-                }
-
-                DropShadow
-                {
-                    anchors.fill: popupBackGrnd
-                    horizontalOffset: currTheme.hOffset
-                    verticalOffset: currTheme.vOffset
-                    radius: currTheme.radiusShadow
-                    color: currTheme.shadowColor
-                    source: popupBackGrnd
-                    samples: 10
-                    cached: true
-                }
-
-                InnerShadow {
-                    anchors.fill: popupBackGrnd
-                    horizontalOffset: 1
-                    verticalOffset: 0
-                    radius: 1
-                    samples: 10
-                    cached: true
-                    color: "#524D64"
-                    source: popupBackGrnd
-                }
-            }
-    }
-
-    delegate:
-    ItemDelegate
-    {
-        id: menuDelegate
-        width: mainItem.width
-
-        contentItem:
-        RowLayout
-        {
-            anchors.fill: parent
-            anchors.leftMargin: parent.leftPadding
-            anchors.rightMargin: 20
-
-            Text
-            {
-                Layout.fillWidth: true
-                text: getModelData(index, mainTextRole)
-                color: menuDelegate.highlighted ?
-                           currTheme.hilightTextColorComboBox :
-                           currTheme.textColor
-                font: mainItem.font
-                elide: Text.ElideRight
-                verticalAlignment: Text.AlignVCenter
-            }
-
-            Text
-            {
-                text: getModelData(index, secondTextRole)
-                color: menuDelegate.highlighted ?
-                           currTheme.hilightTextColorComboBox :
-                           currTheme.textColor
-                font.family: mainItem.font.family
-                font.pointSize: mainItem.font.pointSize - 3
-                elide: Text.ElideRight
-                verticalAlignment: Text.AlignVCenter
-            }
-        }
-
-        background:
-        Rectangle
-        {
-            anchors.fill: parent
-            color: menuDelegate.highlighted ?
-                       currTheme.hilightColorComboBox :
-                       currTheme.backgroundMainScreen
-        }
-
-        hoverEnabled: true
-        highlighted: mainItem.highlightedIndex === index
-    }*/
-
-
     function getModelData(index, role)
     {
         var text = model.get(index)[role]
@@ -407,6 +320,6 @@ Item
         if (text === undefined)
             return ""
         else
-            return model.get(index)[role];
+            return text;
     }
 }
