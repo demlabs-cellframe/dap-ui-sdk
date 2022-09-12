@@ -27,6 +27,16 @@ class AbstractServerManager
    *******************************************/
   /// @{
 public:
+  /// server type
+  enum class ServerType
+  {
+    INVALID,    ///< dummy invalid
+    AUTO,       ///< auto suggestion
+    NODE,       ///< provided by node
+    NODEHIDDEN, ///< provided by node, but deleted by user
+    USER        ///< created by user
+  };
+
   /// Server info struct
   struct Server
   {
@@ -34,6 +44,7 @@ public:
     QString location;
     QString address;
     int port;
+    ServerType type;
     bool favorite;
   };
 
@@ -53,6 +64,7 @@ public:
       location          = a_server.location;
       address           = a_server.address;
       port              = a_server.port;
+      type              = a_server.type;
       favorite          = a_server.favorite;
       ping              = a_state.ping;
       connectionQuality  = a_state.connectionQuality;
