@@ -37,13 +37,11 @@ win32 {
         HEADERS += $$PWD/DapServiceNativeWindows.h
         DEFINES += NTDDI_VERSION=0x06000000
         DEFINES += _WIN32_WINNT=0x0600
-        RC_ICONS = $$PWD/../../../brand/$$BRAND/DapChainVpnGui/resources/pics/icon_app.ico
 }
 
 darwin {
         SOURCES += $$PWD/DapServiceNativeDarwin.cpp
         HEADERS += $$PWD/DapServiceNativeDarwin.h
-        ICON = resources/$$BRAND/pics/$${BRAND}.icns
 }
 
 ios{
