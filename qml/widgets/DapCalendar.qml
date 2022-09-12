@@ -144,7 +144,7 @@ DapCalendarForm
                                        (styleData.date.getFullYear() === new Date(Date.now()).getFullYear())) ?
                                           dapSelectedBackgroundColor :
                                           (styleData.selected ? dapSelectedBackgroundColor : dapNormalBackgroundColor)
-                        border.width: 1 * pt
+                        border.width: 1 
                         color: styleData.selected ? dapSelectedBackgroundColor : dapNormalBackgroundColor
 
                         Label
