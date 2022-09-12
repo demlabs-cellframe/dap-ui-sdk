@@ -55,6 +55,7 @@ Item {
     }
 
 
+    //Background
     Rectangle
     {
         id: rectItem
@@ -65,28 +66,7 @@ Item {
         radius: 16
         color: currTheme.backgroundElements
 
-        Text
-        {
-            id: textItem
-            x: borderWidth+5
-            y: borderWidth-2
-            height: commonHeight
-            font: mainFont.dapFont.medium14
-            color: currTheme.textColor
-            verticalAlignment: Qt.AlignVCenter
 
-            text: infoText
-        }
-
-        DapImageLoader
-        {
-            id: imageItem
-            x: borderWidth+5+spacing+textItem.width
-            y: borderWidth
-            innerWidth: commonHeight
-            innerHeight: commonHeight
-            source: iconPath
-        }
     }
 
     DropShadow
@@ -100,6 +80,34 @@ Item {
         cached: true
         color: currTheme.shadowColor
         source: rectItem
+    }
+
+    RowLayout
+    {
+        anchors.fill: rectItem
+        anchors.leftMargin: 13
+        anchors.rightMargin: 13
+
+        Text
+        {
+            Layout.alignment: Qt.AlignLeft
+
+            id: textItem
+            height: commonHeight
+            font: mainFont.dapFont.medium14
+            color: currTheme.textColor
+            verticalAlignment: Qt.AlignVCenter
+            text: infoText
+        }
+        DapImageLoader
+        {
+            Layout.alignment: Qt.AlignRight
+
+            id: imageItem
+            innerWidth: commonHeight
+            innerHeight: commonHeight
+            source: iconPath
+        }
     }
 
     function showInfo(x_pos, y_pos, text, image)
