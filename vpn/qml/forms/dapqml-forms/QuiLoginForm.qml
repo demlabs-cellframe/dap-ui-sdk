@@ -39,7 +39,8 @@ Item {
     enum Mode
     {
         M_SERIAL,
-        M_PASSWORD
+        M_PASSWORD,
+        M_CERT
     }
 
     /// @}
@@ -90,8 +91,14 @@ Item {
     /// @brief enter serial key clicked
     signal sigChooseSerial();
 
-    /// @brief connect button clicked
-    signal sigConnect();
+    /// @brief connection by serial requested
+    signal sigConnectBySerial();
+
+    /// @brief connection by login & password requested
+    signal sigConnectByPassword();
+
+    /// @brief connection by certificate requested
+    signal sigConnectByCert();
 
     /// @brief buy serial clicked
     signal sigObtainNewKey();
@@ -378,6 +385,7 @@ Item {
 
         DapQmlButton {
             id: btnEnterEmail
+            objectName: "btnEnterEmail"
             x: (parent.width - width) / 2
             z: 15
             width: parent.width - 74
@@ -398,6 +406,7 @@ Item {
 
         DapQmlButton {
             id: btnEnterPassword
+            objectName: "btnEnterPassword"
             x: (parent.width - width) / 2
             z: 15
             width: parent.width - 74
@@ -448,7 +457,16 @@ Item {
         qss: "login-connect"
 
         text: qsTr("CONNECT") + lang.notifier
-        onClicked: root.sigConnect()
+        onClicked: {
+            if (internal.mode === QuiLoginForm.Mode.M_SERIAL)
+                root.sigConnectBySerial();
+            else
+            if (internal.mode === QuiLoginForm.Mode.M_PASSWORD)
+                root.sigConnectByPassword();
+            else
+            if (internal.mode === QuiLoginForm.Mode.M_CERT)
+                root.sigConnectByCert();
+        }
     }
 
     /****************************************//**
