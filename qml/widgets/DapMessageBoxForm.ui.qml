@@ -39,7 +39,7 @@ Rectangle
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 44 * pt
+        height: 44 
         color: currTheme.backgroundMainScreen
         radius: currTheme.radiusRectangle
 
@@ -49,8 +49,8 @@ Rectangle
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.leftMargin: 30 * pt
-            anchors.rightMargin: 30 * pt
+            anchors.leftMargin: 30 
+            anchors.rightMargin: 30 
             font: fontMessage
             color: currTheme.textColor
         }
@@ -63,7 +63,7 @@ Rectangle
                 left: parent.left
                 right: parent.right
             }
-            height: 10 * pt
+            height: 10 
             color: currTheme.backgroundMainScreen
         }
     }
@@ -75,11 +75,11 @@ Rectangle
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        anchors.topMargin: 20 * pt
-        anchors.leftMargin: 15 * pt
-        anchors.rightMargin: 15 * pt
-        anchors.bottomMargin: 32 * pt
-        height: 172 * pt
+        anchors.topMargin: 20 
+        anchors.leftMargin: 15 
+        anchors.rightMargin: 15 
+        anchors.bottomMargin: 32 
+        height: 172 
         color: currTheme.backgroundElements
 
         Text
@@ -98,8 +98,8 @@ Rectangle
             anchors.top: contentText.bottom
             anchors.left: parent.left
             anchors.right: parent.right
-            height: 30 * pt
-            anchors.topMargin: 20 * pt
+            height: 30 
+            anchors.topMargin: 20 
             visible: false
             font: fontMessage
             clip:true
@@ -123,7 +123,7 @@ Rectangle
                     right: parent.right
                     top: parent.bottom
                 }
-                height: 1 * pt
+                height: 1 
                 color: currTheme.borderColor
             }
         }
@@ -131,8 +131,8 @@ Rectangle
         DapButton
         {
             id: buttonBack
-            widthButton: 78 * pt
-            heightButton: 36 * pt
+            widthButton: 78 
+            heightButton: 36 
             anchors.left: parent.left
             anchors.bottom: parent.bottom
             textButton: qsTr("Back")
@@ -144,8 +144,8 @@ Rectangle
         DapButton
         {
             id: buttonOk
-            widthButton: 78 * pt
-            heightButton: 36 * pt
+            widthButton: 78 
+            heightButton: 36 
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             textButton: qsTr("Ok")

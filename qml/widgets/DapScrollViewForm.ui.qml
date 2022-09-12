@@ -32,7 +32,7 @@ MouseArea
     property bool mouseAtArrow
 
     id: dapScrollButton
-    width: 36 * pt
+    width: 36 
     height: width
 
     hoverEnabled: true

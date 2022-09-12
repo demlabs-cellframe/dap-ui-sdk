@@ -6,12 +6,12 @@ import QtGraphicalEffects 1.0
 ComboBox {
     id: control
 
-    implicitHeight: 45 * pt
+    implicitHeight: 45 
 
-    leftPadding: 15 * pt
-    rightPadding: 15 * pt
+    leftPadding: 15 
+    rightPadding: 15 
 
-    property int maximumPopupHeight: 200 * pt
+    property int maximumPopupHeight: 200 
 
     property string mainTextRole: "name"
     property string secondTextRole: "secondname"
@@ -33,7 +33,7 @@ ComboBox {
         {
             anchors.fill: parent
             anchors.leftMargin: parent.leftPadding
-            anchors.rightMargin: 20 * pt
+            anchors.rightMargin: 20 
 
             Text
             {
@@ -77,15 +77,15 @@ ComboBox {
     Image
     {
         id: canvas
-        width: 24 * pt
-        height: 24 * pt
+        width: 24 
+        height: 24 
         x: control.width - width - control.rightPadding
         y: control.topPadding + (control.availableHeight - height) / 2
 
         fillMode: Image.PreserveAspectFit
         source: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrow_down.png"
 //        source: "qrc:/icon_arrow_down.png"
-        sourceSize.width: 24 * pt
+        sourceSize.width: 24 
         rotation: control.popup.opened ? 180 : 0
 
         Behavior on rotation { NumberAnimation { duration: 200 } }

@@ -54,7 +54,7 @@ MouseArea
             {
                 scrollDirectionUp = true;
                 //Cause MouseArea get all mouse event this string is need to flick listView
-                viewData.flick(0, wheel.angleDelta.y * 3 * pt);
+                viewData.flick(0, wheel.angleDelta.y * 3 );
             }
             else
                 scrollDirectionUp = false;
@@ -66,7 +66,7 @@ MouseArea
             {
                 scrollDirectionUp = false;
                 //Cause MouseArea get all mouse event this string is need to flick listView
-                viewData.flick(0, wheel.angleDelta.y * 3 * pt);
+                viewData.flick(0, wheel.angleDelta.y * 3 );
             }
             else
                 scrollDirectionUp = true;

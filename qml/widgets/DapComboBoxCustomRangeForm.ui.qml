@@ -129,13 +129,16 @@ ComboBox
 
     //Defining the background for the main line
     background:
-    Item
+    Rectangle
     {
         anchors.fill: parent
+        color: "transparent"
+        radius: 4
 
         Rectangle
         {
             id: backGrnd
+            radius: 4
             width: parent.width
             height: dapComboBoxWithRange.popup.visible ?
                         parent.height + popupBackGrnd.height :
@@ -362,6 +365,7 @@ ComboBox
                     id: popupBackGrnd
                     anchors.fill: parent
                     color: currTheme.backgroundElements
+                    radius: 4
                 }
         }
 

@@ -64,61 +64,23 @@ SpinBox {
             inputMethodHints: Qt.ImhFormattedNumbersOnly
     }
 
-    up.indicator: Rectangle {
+    up.indicator: DapButton {
         x: spinbox.mirrored ? 0 : parent.width - width
         width: spinbox.height
         height: spinbox.height
-        color: "transparent"
-        border.color: "transparent"
-
-        Image {
-            anchors.fill: parent
-            mipmap: true
-            source: enabled ? spinbox.up.pressed ?
-                                  "qrc:/icons/button_dark.png" :
-                                  "qrc:/icons/button_on.png" :
-                                  "qrc:/icons/button_off.png"
-        }
-
-        Text {
-            text: "+"
-            font.pixelSize: spinbox.font.pixelSize * 3
-            color: currTheme.textColor
-            anchors.fill: parent
-            anchors.bottomMargin: 2
-            fontSizeMode: Text.Fit
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-        }
+        textButton: "+"
+        horizontalAligmentText: Qt.AlignHCenter
+        onClicked: spinbox.increase()
     }
 
-    down.indicator: Rectangle {
+    down.indicator: DapButton {
         id: minusButton
         x: spinbox.mirrored ? parent.width - width : 0
         width: spinbox.height
         height: spinbox.height
-        color: "transparent"
-        border.color: "transparent"
-
-        Image {
-            anchors.fill: parent
-            mipmap: true
-            source: enabled ? spinbox.down.pressed ?
-                                  "qrc:/icons/button_dark.png" :
-                                  "qrc:/icons/button_on.png" :
-                                  "qrc:/icons/button_off.png"
-        }
-
-        Text {
-            text: "–"
-            font.pixelSize: spinbox.font.pixelSize * 3
-            color: currTheme.textColor
-            anchors.fill: parent
-            anchors.bottomMargin: 2
-            fontSizeMode: Text.Fit
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-        }
+        textButton: "-"
+        horizontalAligmentText: Qt.AlignHCenter
+        onClicked: spinbox.decrease()
     }
 
 

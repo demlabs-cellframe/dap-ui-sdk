@@ -16,19 +16,19 @@ Rectangle
 
     anchors.fill: parent
     color: currTheme.backgroundMainScreen
-    radius: 16 * pt
-    width: 678 * pt
+    radius: 16 
+    width: 678 
 
 //    anchors
 //    {
 //        top: parent.top
-//        topMargin: 24 * pt
+//        topMargin: 24 
 //        right: parent.right
-//        rightMargin: 44 * pt
+//        rightMargin: 44 
 //        left: parent.left
-//        leftMargin: 24 * pt
+//        leftMargin: 24 
 //        bottom: parent.bottom
-//        bottomMargin: 20 * pt
+//        bottomMargin: 20 
 
 //    }
 
