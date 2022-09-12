@@ -39,6 +39,11 @@ int DapQmlModelSerialHistory::length() const
   return rowCount();
 }
 
+void DapQmlModelSerialHistory::attachAnimation(QObject *a_copyButton)
+{
+  new _DapQmlModelSerialHistoryCopyButtonAnimation (a_copyButton);
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
@@ -119,3 +124,29 @@ void DapQmlModelSerialHistory::slotSetup()
 }
 
 /*-----------------------------------------*/
+
+_DapQmlModelSerialHistoryCopyButtonAnimation::_DapQmlModelSerialHistoryCopyButtonAnimation (QObject *a_copyButton)
+  : QObject (a_copyButton)
+  , m_timer (new QTimer (this))
+{
+  m_timer->setInterval (500);
+  m_timer->setSingleShot (true);
+
+  connect (a_copyButton, SIGNAL (sigStartAnimation()),
+           this, SLOT (slotStart()));
+  connect (m_timer.get(), &QTimer::timeout,
+           this, &_DapQmlModelSerialHistoryCopyButtonAnimation::slotFinish);
+}
+
+void _DapQmlModelSerialHistoryCopyButtonAnimation::slotStart()
+{
+  if (parent())
+    parent()->setProperty ("iconRight", QString ("ic_copy_pressed"));
+  m_timer->start();
+}
+
+void _DapQmlModelSerialHistoryCopyButtonAnimation::slotFinish()
+{
+  if (parent())
+    parent()->setProperty ("iconRight", QString ("ic_copy"));
+}

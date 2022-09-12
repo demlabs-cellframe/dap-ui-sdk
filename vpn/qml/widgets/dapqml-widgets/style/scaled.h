@@ -5,7 +5,7 @@
 #include <QObject>
 
 /* NAMESPACE */
-namespace Style
+namespace DapStyle
 {
 
 /****************************************//**
@@ -155,7 +155,7 @@ public:
 /*-----------------------------------------*/
 }
 
-Q_DECLARE_METATYPE(Style::Scaled)
+Q_DECLARE_METATYPE(DapStyle::Scaled)
 
 /*-----------------------------------------*/
 #endif // SCALED_H

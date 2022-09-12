@@ -5,7 +5,7 @@
 #include <QString>
 
 /* NAMESPACE */
-namespace Style
+namespace DapStyle
 {
 
 /****************************************//**

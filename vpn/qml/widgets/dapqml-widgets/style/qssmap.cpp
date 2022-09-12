@@ -4,11 +4,11 @@
 #include <QMutex>
 
 /* NAMESPACE */
-namespace Style
+namespace DapStyle
 {
 
 /* VARS */
-QHash<QString, Style::QssItem> s_map;
+QHash<QString, DapStyle::QssItem> s_map;
 static QMutex m_mapMutex;
 
 /********************************************
