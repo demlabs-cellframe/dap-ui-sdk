@@ -158,14 +158,14 @@ void DapQmlModelManageServers::doImport (const QString &a_filename)
 {
   if (s_manager.isNull())
     return;
-  s_manager->doImport (a_filename);
+  s_manager->importFromFile (a_filename);
 }
 
 void DapQmlModelManageServers::doExport (const QString &a_filename) const
 {
   if (s_manager.isNull())
     return;
-  s_manager->doExport (a_filename);
+  s_manager->exportToFile (a_filename);
 }
 
 void DapQmlModelManageServers::fillDummyList()

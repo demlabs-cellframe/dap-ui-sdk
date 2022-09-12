@@ -132,13 +132,13 @@ public:
   virtual int size() const = 0;
 
   /// request all favorite servers
-  virtual const QStringList &favorites() const = 0;
+  virtual const QList<QString> &favorites() const = 0;
 
   /// sync & update manager data
   virtual void update() const = 0;
 
-  virtual void doImport (const QString &a_filename) = 0;
-  virtual void doExport (const QString &a_filename) const = 0;
+  virtual void importFromFile (const QString &a_filename) = 0;
+  virtual void exportToFile (const QString &a_filename) const = 0;
   /// @}
 
   /****************************************//**
