@@ -33,7 +33,7 @@ public:
     INVALID,    ///< dummy invalid
     AUTO,       ///< auto suggestion
     NODE,       ///< provided by node
-    NODEHIDDEN, ///< provided by node, but deleted by user
+    HIDDEN,     ///< hidden server by node
     USER        ///< created by user
   };
 
