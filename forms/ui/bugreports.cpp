@@ -126,7 +126,6 @@ BugReports::BugReports (QWidget *parent)
   /* finish setup */
   ui->btnSendReport->setEnabledCustom (false);
   slotSetMode (Write);
-  btnReturnVisible (true);
 }
 
 BugReports::~BugReports()
@@ -412,11 +411,4 @@ void BugReports::restoreAttachMessage()
   ui->btnAttachScreenshot->setVisible (m_attachButtonVisible);
   ui->btnDetachScreenshot->setVisible (m_detachButtonVisible);
 }
-
-void BugReports::btnReturnVisible (bool visible)
-{
-  ui->btnReturn->setVisible (visible);
-  ui->kelGuiWidget_Left->setVisible (!visible);
-}
-
 /*-----------------------------------------*/

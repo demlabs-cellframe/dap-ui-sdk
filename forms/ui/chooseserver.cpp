@@ -26,7 +26,6 @@ ChooseServer::ChooseServer (QWidget *parent) :
   connect (ui->btnReturn, &DapGuiPushButton::clicked,
            this, &ChooseServer::sigReturn,
            Qt::QueuedConnection);
-  btnReturnVisible(true);
 }
 
 ChooseServer::~ChooseServer()
@@ -56,13 +55,4 @@ void ChooseServer::setSelectedServer(QString name)
 {
     ui->scrollArea->setSelectedItem(name);
 }
-
-void ChooseServer::btnReturnVisible(bool visible)
-{
-    // This function is needed because the btnReturn button is moved
-    // when using widget blur.
-    ui->btnReturn->setVisible(visible);
-    ui->kelGuiWidget_Left->setVisible(!visible);
-}
-
 /*-----------------------------------------*/

@@ -46,7 +46,7 @@ DapGuiPushButton::DapGuiPushButton (QWidget *parent)
   setStyle (m_style);
 
   /* setup opacity */
-  m_opacityEffect->setOpacity (1);
+  m_opacityEffect->setOpacity (0.99);
   m_opacityEffect->setEnabled (true);
   setGraphicsEffect (m_opacityEffect);
   setAutoFillBackground (true);
@@ -145,12 +145,12 @@ void DapGuiPushButton::setEnabledCustom(bool value)
 
 bool DapGuiPushButton::opacity() const
 {
-  return m_opacityEffect->opacity() == 1;
+  return m_opacityEffect->opacity() > 0.95;
 }
 
 void DapGuiPushButton::setOpacity(bool value)
 {
-  m_opacityEffect->setOpacity (value ? 1 : 0.2);
+  m_opacityEffect->setOpacity (value ? 0.99 : 0.2);
 }
 
 /****************************************//**
