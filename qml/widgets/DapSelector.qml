@@ -76,8 +76,10 @@ Rectangle
                 Text
                 {
                     id: textItem
-                    x: itemHorisontalBorder
-                    y: itemVerticalBorder
+//                    x: itemHorisontalBorder
+//                    y: itemVerticalBorder
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
                     height: frameItem.height
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter

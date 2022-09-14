@@ -9,6 +9,7 @@ Item
 
     implicitHeight: 45
 
+    property int rightMarginIndicator: 16
     property int maximumPopupHeight: 200
     property int padding: 15
     property int spacing: 15
@@ -64,42 +65,42 @@ Item
                    currTheme.backgroundMainScreen :
                    backgroundColor
 
-        Text
+        RowLayout
         {
-            id: mainTextItem
-            x: 0
-            y: 0
-            padding: mainItem.padding
-            width: mainItem.width - indicator.width - mainItem.padding
-            height: mainItem.height
+            anchors.fill: parent
+            anchors.leftMargin: 16
+            anchors.rightMargin: rightMarginIndicator
 
-            text: mainItem.displayText
-            font: mainItem.font
-            color: popupVisible ?
-                       currTheme.textColorGray : currTheme.textColor
-            verticalAlignment: Text.AlignVCenter
-            elide: Text.ElideRight
-        }
-
-        Image
-        {
-            id: indicator
-            width: 24
-            height: 24
-            x: mainItem.width - width - padding
-            y: (mainItem.height - height)*0.5
-
-            fillMode: Image.PreserveAspectFit
-            source: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrow_down.png"
-//            source: "qrc:/icon_arrow_down.png"
-            sourceSize.width: 24
-            rotation: popupVisible ? 180 : 0
-
-            Behavior on rotation
+            Text
             {
-                NumberAnimation
+                id: mainTextItem
+                Layout.fillWidth: true
+
+                text: mainItem.displayText
+                font: mainItem.font
+                color: popupVisible ?
+                           currTheme.textColorGray : currTheme.textColor
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+            }
+
+            Image
+            {
+                id: indicator
+                width: 24
+                height: 24
+
+                fillMode: Image.PreserveAspectFit
+                source: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrow_down.png"
+                sourceSize.width: 24
+                rotation: popupVisible ? 180 : 0
+
+                Behavior on rotation
                 {
-                    duration: 200
+                    NumberAnimation
+                    {
+                        duration: 200
+                    }
                 }
             }
         }
@@ -265,16 +266,24 @@ Item
                     MouseArea
                     {
                         anchors.fill: parent
+                        hoverEnabled: true
                         onClicked:
                         {
                             popupListView.currentIndex = index
                             popup.visible = false
 //                            popupVisible = false
                         }
+
+                        onEntered: {
+                                menuDelegate.highlighted = true
+                        }
+                        onExited: {
+                                menuDelegate.highlighted = false
+                        }
                     }
 
-                    hoverEnabled: true
-                    highlighted: popupListView.currentIndex === index
+//                    hoverEnabled: true
+//                    highlighted: popupListView.currentIndex === index
                 }
 
                 onCurrentIndexChanged:

@@ -16,13 +16,28 @@ Item {
     property int spacing: 10
     property int commonHeight: 20
 
+    property real startX: dapMainWindow.width
+    property real stopX: dapMainWindow.width - (popup.width + 24)
+
     width: rectItem.width
     height: rectItem.height
+
+    y: 84
 
     z: 100
 
     opacity: 0
     visible: false
+
+    NumberAnimation{
+        id:showAnim
+        target: popup
+        property: "x"
+        from: startX
+        to: stopX
+        duration: 200
+        running: false
+    }
 
     Behavior on opacity {
         NumberAnimation {
@@ -59,22 +74,31 @@ Item {
     Rectangle
     {
         id: rectItem
-        width: borderWidth*2+5 + spacing + textItem.width + imageItem.width
-        height: borderWidth*2+commonHeight
-        border.width: 1
-        border.color: currTheme.lineSeparatorColor
+        width: 168
+        height: 48
         radius: 16
         color: currTheme.backgroundElements
+    }
 
-
+    DropShadow {
+        anchors.fill: rectItem
+        source: rectItem
+        color: currTheme.reflection
+        horizontalOffset: -1
+        verticalOffset: -1
+        radius: 0
+        samples: 0
+        opacity: 1
+        fast: true
+        cached: true
     }
 
     DropShadow
     {
         id: shadow
         anchors.fill: rectItem
-        horizontalOffset: 2
-        verticalOffset: 2
+        horizontalOffset: 5
+        verticalOffset: 5
         radius: 8
         samples: 10
         cached: true
@@ -85,28 +109,28 @@ Item {
     RowLayout
     {
         anchors.fill: rectItem
-        anchors.leftMargin: 13
-        anchors.rightMargin: 13
+        anchors.leftMargin: 16
+//        anchors.rightMargin: 16
+        spacing: 10
+
+        DapImageLoader
+        {
+            Layout.alignment: Qt.AlignLeft
+            id: imageItem
+            innerWidth: commonHeight
+            innerHeight: commonHeight
+            source: iconPath
+        }
 
         Text
         {
-            Layout.alignment: Qt.AlignLeft
-
+//            Layout.alignment: Qt.AlignRight
             id: textItem
             height: commonHeight
             font: mainFont.dapFont.medium14
             color: currTheme.textColor
             verticalAlignment: Qt.AlignVCenter
             text: infoText
-        }
-        DapImageLoader
-        {
-            Layout.alignment: Qt.AlignRight
-
-            id: imageItem
-            innerWidth: commonHeight
-            innerHeight: commonHeight
-            source: iconPath
         }
     }
 
@@ -116,8 +140,7 @@ Item {
         hideTimer.stop()
         opacityAnim.stop()
 
-        x = x_pos
-        y = y_pos
+        showAnim.start()
 
         infoText = text
         iconPath = image
