@@ -99,6 +99,8 @@ public slots:
   void slotUpdateLabels();
   void slotSetDaysLeft (QString a_days);
   void slotResetDaysLeft();
+private:
+  QString getCurrentCountryName() const;
   /// @}
 };
 

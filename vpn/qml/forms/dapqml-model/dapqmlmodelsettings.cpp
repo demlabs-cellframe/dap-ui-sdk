@@ -1,5 +1,6 @@
 /* INCLUDES */
 #include "dapqmlmodelsettings.h"
+#include "DapDataLocal.h"
 
 /* DEFS */
 enum FieldId
@@ -39,6 +40,7 @@ static DapQmlModelSettings *__inst = nullptr;
 static QList<DapQmlModelSettingsItem> s_items;
 static qint32 s_daysLabelIndex     = -1;
 static qint32 s_versionLabelIndex  = -1;
+static qint32 s_countryIndex     = -1;
 
 static QMap<QString, FieldId> s_fieldIdMap =
 {
@@ -112,9 +114,12 @@ QVariant DapQmlModelSettings::data (const QModelIndex &index, int role) const
   if (!index.isValid())
     return QVariant();
 
-  auto field  = s_fieldIdMap.key (FieldId (role));
+  auto field = s_fieldIdMap.key (FieldId (role));
   if (field.isEmpty())
     return QVariant();
+
+  if (index.row() == s_countryIndex && field == "textSub")
+      s_items[index.row()].m_textSub = getCurrentCountryName();
 
   auto item  = s_items.value (index.row());
   return item.get (field);
@@ -150,7 +155,7 @@ void DapQmlModelSettings::slotUpdateLabels()
 
     DapQmlModelSettingsItem{SI_BUTTONRED,  tr ("Get new licence key"), /*"265 days left"*/" ", "settings_icon ic_renew", cbLicenceGet},
     DapQmlModelSettingsItem{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key", cbLicenceReset},
-    DapQmlModelSettingsItem{SI_LINK,       tr ("Country"), "", "settings_icon ic_location", cbCountry},
+    DapQmlModelSettingsItem{SI_LINK,       tr ("Country"), "@country", "settings_icon ic_location", cbCountry},
  // DapQmlModelSettingsItem{SI_LINK,       tr ("Language"), "", "settings_icon ic_language", cbLanguage},
 #ifndef DISABLE_THEMES
     DapQmlModelSettingsItem{SI_LINK,       tr ("Color theme"), "", "settings_icon ic_theme", cbColorTheme},
@@ -184,6 +189,12 @@ void DapQmlModelSettings::slotUpdateLabels()
 
       if (i->m_sid == SI_BUTTONGRAY)
         s_versionLabelIndex = index;
+
+      if (i->m_textSub == "@country")
+      {
+          s_countryIndex    = index;
+          s_items[s_countryIndex].m_textSub = "";
+      }
     }
 
   /* set version */
@@ -216,6 +227,14 @@ void DapQmlModelSettings::slotResetDaysLeft()
     index (s_daysLabelIndex, 0),
     index (s_daysLabelIndex, columnCount()));
 }
+
+QString DapQmlModelSettings::getCurrentCountryName() const
+{
+    QString base_location = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
+    QString code = DapServersData::m_countryMap[base_location];
+    return code;
+}
+
 
 /********************************************
  * STATIC FUNCTIONS

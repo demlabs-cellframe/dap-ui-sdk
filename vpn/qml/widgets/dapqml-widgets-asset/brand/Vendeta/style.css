@@ -559,6 +559,13 @@
 	font-weight: Font.Medium;
 }
 
+.sett-btn-lbl-sub-link
+{
+        color: "@light-grey";
+        scaled-font: scaled(16);
+        font-weight: Font.Normal;
+}
+
 .sett-title-lbl-main
 {
 	color: "@text";
