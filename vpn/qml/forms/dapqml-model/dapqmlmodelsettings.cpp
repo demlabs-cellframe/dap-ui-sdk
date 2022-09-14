@@ -137,7 +137,9 @@ void DapQmlModelSettings::slotUpdateLabels()
 
     Item{SI_BUTTONRED,  tr ("Get new licence key"), " ", "settings_icon ic_renew",                     [](QObject*) { emit __inst->sigLicenceGet(); } },
     Item{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key",                          [](QObject*) { emit __inst->sigLicenceReset(); } },
+#ifndef BRAND_KELVPN
     Item{SI_LINK,       tr ("Language"), "", "settings_icon ic_language",                              [](QObject*) { emit __inst->sigLanguage(); } },
+#endif // BRAND_KELVPN
 #ifndef DISABLE_THEMES
     Item{SI_LINK,       tr ("Color theme"), "", "settings_icon ic_theme",                              [](QObject*) { emit __inst->sigColorTheme(); } },
 #endif // DISABLE_THEMES
