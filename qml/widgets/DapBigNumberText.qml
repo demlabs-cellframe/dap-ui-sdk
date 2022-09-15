@@ -24,6 +24,8 @@ Item
     property font textFont: mainFont.dapFont.medium12
     property string textColor: currTheme.textColor
 
+    property alias textElement: text
+
     QMLClipboard{
         id: clipboard
     }

@@ -33,6 +33,8 @@ Item
 
     property color backgroundColor: currTheme.backgroundElements
 
+    signal itemSelected(var index)
+
     onModelChanged:
     {
         print("DapCustomComboBox", "onModelChanged",
@@ -216,23 +218,27 @@ Item
                     ScrollIndicator { }
 
                 delegate:
-                ItemDelegate
+                Rectangle
                 {
                     id: menuDelegate
                     width: mainItem.width
+                    height: 40
 
-                    contentItem:
+                    color: area.containsMouse ?
+                               currTheme.hilightColorComboBox :
+                               currTheme.backgroundMainScreen
+
                     RowLayout
                     {
                         anchors.fill: parent
-                        anchors.leftMargin: parent.leftPadding
-                        anchors.rightMargin: 20
+                        anchors.leftMargin: 16
+                        anchors.rightMargin: 16
 
                         Text
                         {
                             Layout.fillWidth: true
                             text: getModelData(index, mainTextRole)
-                            color: menuDelegate.highlighted ?
+                            color: area.containsMouse ?
                                        currTheme.hilightTextColorComboBox :
                                        currTheme.textColor
                             font: mainItem.font
@@ -243,10 +249,9 @@ Item
                         Text
                         {
                             text: getModelData(index, secondTextRole)
-                            color: menuDelegate.highlighted ?
+                            color: area.containsMouse ?
                                        currTheme.hilightTextColorComboBox :
                                        currTheme.textColor
-        //                    font: mainItem.font
                             font.family: mainItem.font.family
                             font.pointSize: mainItem.font.pointSize - 3
                             elide: Text.ElideRight
@@ -254,36 +259,18 @@ Item
                         }
                     }
 
-                    background:
-                    Rectangle
-                    {
-                        anchors.fill: parent
-                        color: menuDelegate.highlighted ?
-                                   currTheme.hilightColorComboBox :
-                                   currTheme.backgroundMainScreen
-                    }
-
                     MouseArea
                     {
+                        id: area
                         anchors.fill: parent
                         hoverEnabled: true
                         onClicked:
                         {
                             popupListView.currentIndex = index
                             popup.visible = false
-//                            popupVisible = false
-                        }
-
-                        onEntered: {
-                                menuDelegate.highlighted = true
-                        }
-                        onExited: {
-                                menuDelegate.highlighted = false
+                            itemSelected(index)
                         }
                     }
-
-//                    hoverEnabled: true
-//                    highlighted: popupListView.currentIndex === index
                 }
 
                 onCurrentIndexChanged:
@@ -330,5 +317,12 @@ Item
             return ""
         else
             return text;
+    }
+
+    function setCurrentIndex(index)
+    {
+        popupListView.currentIndex = index
+        mainItem.currentIndex = index
+//        currentIndex = index
     }
 }
