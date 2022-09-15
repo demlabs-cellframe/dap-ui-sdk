@@ -1,21 +1,27 @@
 import QtQuick 2.4
+import QtQml 2.12
 import QtQuick.Controls 2.4
 import "qrc:/widgets"
+import QtGraphicalEffects 1.0
 
 import qmlclipboard 1.0
 
 Item
 {
     id: bigNumber
-    width: text.width + button.width + spacing
 
     property string fullNumber: "123.456789012345689"
     property int outSymbols: 10
     property int spacing: 10
     property bool showToolTip: true
+    property bool alwaysHoverShow: false
     property bool copyButtonVisible: true
+    property bool isAutoOutText: false
 
-    property font textFont: mainFont.dapFont.medium14
+    property alias horizontalAlign: text.horizontalAlignment
+    property alias verticalAlign: text.verticalAlignment
+
+    property font textFont: mainFont.dapFont.medium12
     property string textColor: currTheme.textColor
 
     QMLClipboard{
@@ -24,27 +30,38 @@ Item
 
     Component.onCompleted:
     {
-        getOutText()
+        if(!isAutoOutText)
+        {
+            width = text.width + button.width + spacing
+            getOutText()
+        }
     }
 
     onFullNumberChanged:
     {
-        getOutText()
+        if(!isAutoOutText)
+        {
+            width = text.width + button.width + spacing
+            getOutText()
+        }
     }
 
     onOutSymbolsChanged:
     {
-        getOutText()
+        if(!isAutoOutText)
+            getOutText()
     }
 
     Text
     {
         id: text
-        height: bigNumber.height
+//        height: bigNumber.height
+        anchors.fill: parent
         font: textFont
         color: textColor
-        text: ""
-        verticalAlignment: Qt.AlignBottom
+        text: isAutoOutText ? fullNumber : ""
+        verticalAlignment: Qt.AlignVCenter
+        elide: isAutoOutText ? Text.ElideMiddle: Text.ElideNone
 
         MouseArea
         {
@@ -55,25 +72,16 @@ Item
 
             hoverEnabled: true
 
-            ToolTip {
+            DapCustomToolTip{
                 id: tooltip
                 parent: area
-                visible: area.containsMouse
-                text: fullNumber
-
-                contentItem:
-                Text
+                visible: !isAutoOutText && area.containsMouse ? true : alwaysHoverShow && area.containsMouse ? true : area.containsMouse ?  text.implicitWidth > text.width ? true : false : false
+                contentText: fullNumber
+                onVisibleChanged: /*console.log(text.y, bigNumber.y, y)*/
                 {
-                    color: currTheme.textColor
-                    text: tooltip.text
-                }
-
-                background:
-                Rectangle
-                {
-                    border.color: currTheme.borderColor
-                    radius: height*0.5
-                    color: currTheme.backgroundElements
+                    if(!isAutoOutText)
+                        x = outSymbols/2 - text.implicitWidth/2
+                    updatePos()
                 }
             }
         }

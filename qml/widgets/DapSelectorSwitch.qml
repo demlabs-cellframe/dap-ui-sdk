@@ -32,7 +32,7 @@ Rectangle
     {
         id: firstItem
         x: viewerBorder
-        y: viewerBorder
+        anchors.verticalCenter: parent.verticalCenter
         z: 1
         color: "transparent"
         radius: height * 0.5
@@ -43,7 +43,7 @@ Rectangle
         {
             id: firstText
             x: itemHorisontalBorder
-            y: itemVerticalBorder
+            anchors.verticalCenter: parent.verticalCenter
             height: firstItem.height
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -58,7 +58,7 @@ Rectangle
     {
         id: secondItem
         x: viewerBorder + firstItem.width
-        y: viewerBorder
+        anchors.verticalCenter: parent.verticalCenter
         z: 1
         color: "transparent"
         radius: height * 0.5
@@ -69,7 +69,7 @@ Rectangle
         {
             id: secondText
             x: itemHorisontalBorder
-            y: itemVerticalBorder
+            anchors.verticalCenter: parent.verticalCenter
             height: secondItem.height
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
