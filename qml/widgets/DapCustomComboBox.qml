@@ -32,6 +32,8 @@ Item
 
     property color backgroundColor: currTheme.backgroundElements
 
+    signal itemSelected(var index)
+
     onModelChanged:
     {
         print("DapCustomComboBox", "onModelChanged",
@@ -270,6 +272,8 @@ Item
                             popupListView.currentIndex = index
                             popup.visible = false
 //                            popupVisible = false
+
+                            itemSelected(index)
                         }
                     }
 
@@ -321,5 +325,12 @@ Item
             return ""
         else
             return text;
+    }
+
+    function setCurrentIndex(index)
+    {
+        popupListView.currentIndex = index
+        mainItem.currentIndex = index
+//        currentIndex = index
     }
 }
