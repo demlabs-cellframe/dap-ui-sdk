@@ -65,19 +65,20 @@ void DapQmlModelManageServers::installManager (QSharedPointer<AbstractServerMana
   s_manager = a_manager;
 }
 
-#define _parseField(map,item,name,conversion) \
+#define _parseField(map,item,name,conversion,typecast) \
   if (map.contains (#name)) \
-    item.name     = map[#name].conversion();
+    item.name     = typecast(map[#name].conversion());
 
 static void parseServerData (const QVariant &a_data, /* out */ AbstractServerManager::Server &a_server)
 {
   auto value        = a_data.toMap();
 
-  _parseField (value, a_server, name, toString);
-  _parseField (value, a_server, location, toString);
-  _parseField (value, a_server, address, toString);
-  _parseField (value, a_server, port, toInt);
-  _parseField (value, a_server, favorite, toBool);
+  _parseField (value, a_server, name, toString,);
+  _parseField (value, a_server, location, toString,);
+  _parseField (value, a_server, address, toString,);
+  _parseField (value, a_server, port, toInt,);
+  a_server.type = AbstractServerManager::ServerType::USER; // _parseField (value, a_server, type, toInt, AbstractServerManager::ServerType);
+  _parseField (value, a_server, favorite, toBool,);
 
 //  if (value.contains ("name"))
 //    a_server.name     = value["name"].toString();
