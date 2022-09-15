@@ -33,7 +33,7 @@
     footer-dashboard-inactive:  "qrc:/light/btn_connection.png";
     footer-statistics-active:   "qrc:/light/btn_account_active.png";
     footer-statistics-inactive: "qrc:/light/btn_account.png";
-    bugrep-bg:                  "qrc:/light/report_bg.png";
+    bugrep-bg:                  "qrc:/light/report_bg_border.png";
     login-logo:                 "qrc:/light/login-logo.png";
     btn-settings:               "qrc:/light/ic_settings.png";
     btn-settings-hover:         "qrc:/light/ic_settings_hover.png";
@@ -76,7 +76,7 @@
     footer-dashboard-inactive:  "qrc:/dark/btn_connection.png";
     footer-statistics-active:   "qrc:/dark/btn_account_active.png";
     footer-statistics-inactive: "qrc:/dark/btn_account.png";
-    bugrep-bg:                  "qrc:/dark/report_bg.png";
+    bugrep-bg:                  "qrc:/dark/report_bg_border.png";
     login-logo:                 "qrc:/dark/login-logo.png";
     btn-settings:               "qrc:/dark/ic_settings.png";
     btn-settings-hover:         "qrc:/dark/ic_settings_hover.png";

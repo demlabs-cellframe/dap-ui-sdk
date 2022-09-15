@@ -137,7 +137,7 @@ void DapQmlModelSettings::slotUpdateLabels()
 
     Item{SI_BUTTONRED,  tr ("Get new licence key"), " ", "settings_icon ic_renew",                     [](QObject*) { emit __inst->sigLicenceGet(); } },
     Item{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key",                          [](QObject*) { emit __inst->sigLicenceReset(); } },
-#ifndef BRAND_KELVPN
+#ifndef DISABLE_SETTINGS_LANGUAGE
     Item{SI_LINK,       tr ("Language"), "", "settings_icon ic_language",                              [](QObject*) { emit __inst->sigLanguage(); } },
 #endif // BRAND_KELVPN
 #ifndef DISABLE_THEMES
@@ -169,7 +169,9 @@ void DapQmlModelSettings::slotUpdateLabels()
 
     Item{SI_BUTTONRED,  tr ("Get new licence key"), " ", "settings_icon ic_renew",                     [](QObject*) { emit __inst->sigSerialGet(); } },
     Item{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key",                          [](QObject*) { emit __inst->sigSerialReset(); } },
+#ifndef DISABLE_SETTINGS_LANGUAGE
     Item{SI_LINK,       tr ("Language"), "", "settings_icon ic_language",                              [](QObject*) { emit __inst->sigLanguage(); } },
+#endif // DISABLE_SETTINGS_LANGUAGE
     Item{SI_LINK,       tr ("Manage servers"), "", "settings_icon ic_language",                        [](QObject*) { emit __inst->sigManageServers(); } },
     Item{SI_LINK,       tr ("Cryptography"), "", "settings_icon ic_language",                          [](QObject*) { emit __inst->sigCryptography(); } },
 #ifndef DISABLE_THEMES
