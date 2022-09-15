@@ -201,6 +201,12 @@ Item {
         fileDialog.open();
     }
 
+    function clear() {
+        let model   = manserListView.model;
+        model.clear();
+        model.refreshContent();
+    }
+
     function _pos (a_index) {
         return title.y + (title.height * 2.4) + (resizerItem.height * a_index);
     }
@@ -329,9 +335,10 @@ Item {
 
                     /* actions */
                     Action { text: "Restart server"; }
-                    Action { text: "Add new"; onTriggered: root.setMode (QuiManageServersForm.Mode.M_ADD) }
-                    Action { text: "Import list"; onTriggered: root.doImport(); }
-                    Action { text: "Export list"; onTriggered: root.doExport(); }
+                    Action { text: "Add new";       onTriggered: root.setMode (QuiManageServersForm.Mode.M_ADD) }
+                    Action { text: "Import list";   onTriggered: root.doImport(); }
+                    Action { text: "Export list";   onTriggered: root.doExport(); }
+                    Action { text: "DBG Clear";     onTriggered: root.clear(); }
                 }
             }
         }

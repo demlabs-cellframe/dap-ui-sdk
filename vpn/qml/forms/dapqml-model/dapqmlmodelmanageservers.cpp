@@ -154,11 +154,22 @@ QVariant DapQmlModelManageServers::value (int a_index, const QString &a_name)
   return data (index (a_index, 0), roleNames().key (a_name.toUtf8()));
 }
 
+void DapQmlModelManageServers::clear()
+{
+  if (s_manager.isNull())
+    return;
+
+  while (s_manager->size())
+    s_manager->remove (s_manager->size() - 1);
+  s_manager->update();
+}
+
 void DapQmlModelManageServers::doImport (const QString &a_filename)
 {
   if (s_manager.isNull())
     return;
   s_manager->importFromFile (a_filename);
+  s_manager->update();
 }
 
 void DapQmlModelManageServers::doExport (const QString &a_filename) const

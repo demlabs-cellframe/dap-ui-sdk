@@ -41,6 +41,7 @@ public:
   Q_INVOKABLE void remove (int a_index);
   Q_INVOKABLE void refreshContent();
   Q_INVOKABLE QVariant value (int a_index, const QString &a_name);
+  Q_INVOKABLE void clear();
   Q_INVOKABLE void doImport (const QString &a_filename);
   Q_INVOKABLE void doExport (const QString &a_filename) const;
 
