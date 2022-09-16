@@ -97,7 +97,7 @@ void DapDataLocal::parseXML(const QString& a_fname)
     }
     file.close();
 #ifdef  QT_DEBUG
-    DapDataLocal::serversData()->addServer("UNKNOWN", "local", "127.0.0.1",  8099);
+    DapDataLocal::serversData()->addServer ("UNKNOWN", "local", "127.0.0.1", 8099, false, false);
 #endif
 
 

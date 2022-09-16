@@ -20,15 +20,24 @@ void DapServersData::addServer(const DapServerInfo& dsi) {
     emit this->serverAdded(dsi);
 }
 
-void DapServersData::addServer(const QString& location, const QString& name,
-                          const QString & address, quint16 port)
+void DapServersData::addServer(
+    const QString& location,
+    const QString& name,
+    const QString& address,
+    quint16 port,
+    bool flagAuto,
+    bool flagUserDefined)
 {
-    DapServerInfo ss;
-    ss.name = name;
-    ss.location = location;
-    ss.address = address;
-    ss.port = port;
-    addServer(std::move(ss));
+    DapServerInfo item;
+
+    item.name     = name;
+    item.location = location;
+    item.address  = address;
+    item.port     = port;
+    item.flagAuto = flagAuto;
+    item.flagUser = flagUserDefined;
+
+    addServer (std::move (item));
 }
 
 void DapServersData::setCurrentServer(int a_serverIndex)

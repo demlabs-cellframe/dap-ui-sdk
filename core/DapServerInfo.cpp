@@ -22,7 +22,12 @@ bool DapServerInfo::_isJsonValid(const QJsonObject& obj)
 
 bool DapServerInfo::isAuto() const
 {
-    return (this->name == "Auto");
+  return flagAuto; // return (this->name == "Auto");
+}
+
+bool DapServerInfo::isUserDefined() const
+{
+  return flagUser;
 }
 
 bool DapServerInfo::isOnline() const
@@ -78,16 +83,20 @@ bool DapServerInfo::fromJSON(const QJsonObject& jsonObj, DapServerInfo& out)
         return false;
     }
 
-    out.address = jsonObj["Address"].toString();
-    out.address6 = jsonObj["Address6"].toString();
-    out.port = quint16(jsonObj["Port"].toInt());
-    out.name = jsonObj["Name"].toString();
-    out.online = jsonObj["State"].toString();
-    if (out.name == "Auto"){
+    out.address   = jsonObj["Address"].toString();
+    out.address6  = jsonObj["Address6"].toString();
+    out.port      = quint16(jsonObj["Port"].toInt());
+    out.name      = jsonObj["Name"].toString();
+    out.online    = jsonObj["State"].toString();
+
+    out.flagAuto  = !out.name.contains('.');
+    out.flagUser   = false;
+
+    if (out.flagAuto){ // (out.name == "Auto"){
         out.location = "UNKNOWN";
         return true;
     }
-    out.location = jsonObj["Location"].toString();
+    out.location  = jsonObj["Location"].toString();
 
     return true;
 }

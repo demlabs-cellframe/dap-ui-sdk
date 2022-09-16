@@ -25,16 +25,28 @@ public:
       VERY_LOW
     };
 
-    DapServerInfo(){}
-    DapServerInfo(const DapServerInfo&cp) {
-        address     = cp.address;
-        address6    = cp.address6;
-        port        = cp.port;
-        name        = cp.name;
-        location    = cp.location;
-        online      = cp.online;
-        ping        = cp.ping;
-        connection_quality = cp.connection_quality;
+    DapServerInfo () {}
+    DapServerInfo (const DapServerInfo &a_src) {
+        address     = a_src.address;
+        address6    = a_src.address6;
+        port        = a_src.port;
+        name        = a_src.name;
+        location    = a_src.location;
+        online      = a_src.online;
+        ping        = a_src.ping;
+        connection_quality = a_src.connection_quality;
+        _flags      = a_src._flags;
+    }
+    DapServerInfo (DapServerInfo &&a_src) {
+      address     = std::move (a_src.address);
+      address6    = std::move (a_src.address6);
+      port        = a_src.port;
+      name        = std::move (a_src.name);
+      location    = std::move (a_src.location);
+      online      = std::move (a_src.online);
+      ping        = a_src.ping;
+      connection_quality = a_src.connection_quality;
+      _flags      = a_src._flags;
     }
 
     QString address;
@@ -45,8 +57,16 @@ public:
     QString online;
     int ping = -1;
     ConnectionQuality connection_quality = ConnectionQuality::NO_CONNECTION;
+    union {
+      quint32 _flags = 0;   // flags bits combined
+      struct {
+        bool flagAuto : 1;  // auto server
+        bool flagUser : 1;  // user defined server
+      };
+    };
 
     bool isAuto() const;
+    bool isUserDefined() const;
     bool isValid() const;
     bool isOnline() const;
 
@@ -61,8 +81,15 @@ public:
     friend bool operator>(const DapServerInfo& lhs, const DapServerInfo& rhs) { return lhs.ping > rhs.ping; }
     friend bool operator<(const DapServerInfo& lhs, const DapServerInfo& rhs) { return lhs.ping < rhs.ping; }
     friend QDebug operator<< (QDebug out, const DapServerInfo &dsi) {
-      out <<  endl << " name: " << dsi.name << " location: "
-          << dsi.location << " address: " << dsi.address <<  ":" << dsi.port << " state: " << dsi.online << " ping: " << dsi.ping;
+        out <<  endl
+            << " name: " << dsi.name
+            << " location: " << dsi.location
+            << " address: " << dsi.address
+            <<  ":" << dsi.port
+            << " state: " << dsi.online
+            << " ping: " << dsi.ping
+            << " flags: auto " << dsi.flagAuto
+            << " userdef " << dsi.flagUser;
         return out;
     }
 
@@ -77,6 +104,34 @@ public:
           (a_connection_quality >= int (ConnectionQuality::NO_CONNECTION))
           ? ConnectionQuality (a_connection_quality)
           : ConnectionQuality::NO_CONNECTION;
+    }
+
+    DapServerInfo &operator= (const DapServerInfo &a_src)
+    {
+      address     = a_src.address;
+      address6    = a_src.address6;
+      port        = a_src.port;
+      name        = a_src.name;
+      location    = a_src.location;
+      online      = a_src.online;
+      ping        = a_src.ping;
+      connection_quality = a_src.connection_quality;
+      _flags      = a_src._flags;
+      return *this;
+    }
+
+    DapServerInfo &operator= (DapServerInfo &&a_src)
+    {
+      address     = std::move (a_src.address);
+      address6    = std::move (a_src.address6);
+      port        = a_src.port;
+      name        = std::move (a_src.name);
+      location    = std::move (a_src.location);
+      online      = std::move (a_src.online);
+      ping        = a_src.ping;
+      connection_quality = a_src.connection_quality;
+      _flags      = a_src._flags;
+      return *this;
     }
 
 private:
