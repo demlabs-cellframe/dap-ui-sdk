@@ -338,7 +338,7 @@ Item {
                     Action { text: "Add new";       onTriggered: root.setMode (QuiManageServersForm.Mode.M_ADD) }
                     Action { text: "Import list";   onTriggered: root.doImport(); }
                     Action { text: "Export list";   onTriggered: root.doExport(); }
-                    Action { text: "DBG Clear";     onTriggered: root.clear(); }
+                    //Action { text: "DBG Clear";     onTriggered: root.clear(); }
                 }
             }
         }
