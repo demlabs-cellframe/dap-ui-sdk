@@ -11,6 +11,7 @@
 
 DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     : QObject(parent)
+    , m_day(QDateTime::currentDateTime().toString("dd"))
 {
     dap_set_log_tag_width(prefix_width);
     qInstallMessageHandler(messageHandler);
@@ -66,17 +67,13 @@ void DapLogger::setLogFile(const QString& fileName)
 
 void DapLogger::createChangerLogFiles()
 {
-    auto then = QDateTime::currentDateTime();
-    auto setTime = QTime::fromString("00:00", "hh:mm");
-    if(then.time() > setTime){
-        then = then.addDays(1);
-    }
-    then.setTime(setTime);
-
-    auto diff = QDateTime::currentDateTime().msecsTo(then);
-    t.start(diff);
+    int timerInterval = 30 * 1000;
+    t.start(timerInterval);
     connect(&t, &QTimer::timeout, [&]{
-        t.setInterval(24 * 3600 * 1000);
+        QString currentDay = QDateTime::currentDateTime().toString("dd");
+        if (currentDay == m_day)
+            return;
+        m_day = currentDay;
         this->updateCurrentLogName();
         this->setLogFile(m_currentLogName);
         this->clearOldLogs();

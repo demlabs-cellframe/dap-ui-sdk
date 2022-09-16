@@ -45,6 +45,7 @@ private:
     QString m_pathToLog;
     QString m_currentLogName;
     QString m_appType;
+    QString m_day;
 };
 
 #endif // DAPLOGGER_H
