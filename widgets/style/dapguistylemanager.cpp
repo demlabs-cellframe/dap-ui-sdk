@@ -117,18 +117,13 @@ void DapGuiStyleManager::setContextMenuStyle()
       "}\n"
       "QMenu::separator{"
       "background-color: rgb(192, 192, 192);"
+      "}\n"
+      "\n\n"
+      "QToolTip {"
+      "border: 0px solid black;"
+      "background-color: rgb(255, 255, 255);"
+      "color: rgb(255, 255, 255);"
       "}\n");
-}
-
-void DapGuiStyleManager::setToolTipStyle()
-{
-  qApp->setStyleSheet(
-    "\n\n"
-    "QToolTip {"
-    "border: 0px solid black;"
-    "background-color: rgb(255, 255, 255);"
-    "color: rgb(255, 255, 255);"
-    "}\n");
 }
 
 /********************************************
@@ -139,7 +134,6 @@ void DapGuiStyleManager::setupGlobalStyleSheet (const QString &styleSheet)
 {
   Gss().set (styleSheet);
   setContextMenuStyle();
-  setToolTipStyle();
   emit s_signal.forceStyleUpdate();
 }
 
