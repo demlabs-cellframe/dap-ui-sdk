@@ -123,7 +123,6 @@ public slots:
   void refreshHistoryList();
   void showAttachScreenshot();
   void showDetachScreenshot();
-  void btnReturnVisible(bool visible);
 private slots:
   void _slotRadioTest();
   void _slotTextChanged();
