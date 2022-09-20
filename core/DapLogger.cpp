@@ -9,10 +9,13 @@
 #include "registry.h"
 #endif
 
+static DapLogger* m_instance = nullptr;
+
 DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     : QObject(parent)
     , m_day(QDateTime::currentDateTime().toString("dd"))
 {
+    m_instance = this;
     dap_set_log_tag_width(prefix_width);
     qInstallMessageHandler(messageHandler);
     m_appType = appType;
@@ -32,6 +35,14 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     setLogFile(m_currentLogName);
     createChangerLogFiles();
     clearOldLogs();
+    connect(DapLogger::instance(), &DapLogger::sigMessageHandler,
+            this, &DapLogger::updateCurrentLogName);
+
+}
+
+DapLogger* DapLogger::instance()
+{
+    return m_instance;
 }
 
 inline dap_log_level DapLogger::castQtMsgToDap(QtMsgType type)
@@ -67,17 +78,20 @@ void DapLogger::setLogFile(const QString& fileName)
 
 void DapLogger::createChangerLogFiles()
 {
-    int timerInterval = 30 * 1000;
+    int timerInterval = 8 * 60 * 1000;
     t.start(timerInterval);
-    connect(&t, &QTimer::timeout, [&]{
-        QString currentDay = QDateTime::currentDateTime().toString("dd");
-        if (currentDay == m_day)
-            return;
-        m_day = currentDay;
-        this->updateCurrentLogName();
-        this->setLogFile(m_currentLogName);
-        this->clearOldLogs();
-    });
+    connect(&t, &QTimer::timeout, this, &DapLogger::updateLogFiles);
+}
+
+void DapLogger::updateLogFiles()
+{
+    QString currentDay = QDateTime::currentDateTime().toString("dd");
+    if (currentDay == m_day)
+        return;
+    m_day = currentDay;
+    this->updateCurrentLogName();
+    this->setLogFile(m_currentLogName);
+    this->clearOldLogs();
 }
 
 QString DapLogger::defaultLogPath(const QString a_brand)
@@ -137,6 +151,14 @@ void DapLogger::clearOldLogs()
 void DapLogger::messageHandler(QtMsgType type,
                                const QMessageLogContext &ctx,
                                const QString & msg)
+{
+    emit DapLogger::instance()->sigMessageHandler();
+    writeMessage(type, ctx, msg);
+}
+
+void DapLogger::writeMessage(QtMsgType type,
+                             const QMessageLogContext &ctx,
+                             const QString & msg)
 {
     if(ctx.file) {
         char prefixBuffer[128];
