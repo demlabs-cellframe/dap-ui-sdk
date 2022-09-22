@@ -87,7 +87,7 @@ Item {
         horizontalAlign: Text.AlignLeft
         lineHeight: (fontSize / 14) * 1.7
         visible: root.mode === QuiResetPassword.Mode.M_INPUT
-        qss: "passreset-description"
+        qss: "passreset-description c-label"
         text: "Enter the email address you used when you joined and\n"
               + "we’ll send you instructions to reset your password.\n"
               + "\n"
@@ -100,7 +100,7 @@ Item {
         id: resultDescription
         lineHeight: (fontSize / 14) * 1.7
         visible: root.mode === QuiResetPassword.Mode.M_FINISHED
-        qss: "passreset-result-description"
+        qss: "passreset-result-description c-label"
         text: "Password reset instructions sent\n"
               + "successfully! Check your email."
     }
