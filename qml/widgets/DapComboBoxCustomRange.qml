@@ -101,7 +101,7 @@ DapComboBoxCustomRangeForm
         }
         else
         {
-            if(textAt(currentIndex).indexOf("custom") !== -1)
+            if(textAt(currentIndex).indexOf("Custom") !== -1)
             {
                 dapIsRange = true;
             }
@@ -212,8 +212,4 @@ DapComboBoxCustomRangeForm
         else
             return text1;
     }
-
-
-
-
 }

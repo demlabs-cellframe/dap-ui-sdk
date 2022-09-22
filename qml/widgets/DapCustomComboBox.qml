@@ -89,13 +89,9 @@ Item
             Image
             {
                 id: indicator
-                width: 24
-                height: 24
-
-                fillMode: Image.PreserveAspectFit
-                source: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrow_down.png"
-                sourceSize.width: 24
+                source: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrowDown.svg"
                 rotation: popupVisible ? 180 : 0
+                mipmap: true
 
                 Behavior on rotation
                 {
@@ -311,6 +307,9 @@ Item
 
     function getModelData(index, role)
     {
+        if(count <= 0)
+            return ""
+
         var text = model.get(index)[role]
 
         if (text === undefined)

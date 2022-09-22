@@ -25,7 +25,6 @@ Item
     property string textColor: currTheme.textColor
 
     property alias textElement: text
-
     QMLClipboard{
         id: clipboard
     }
@@ -92,8 +91,11 @@ Item
     DapCopyButton
     {
         id: button
-        x: text.width + spacing
-        y: (bigNumber.height - button.height)*0.5
+        anchors.verticalCenter: parent.verticalCenter
+//        anchors.left: text.right
+//        anchors.leftMargin: spacing + 10
+        x: text.implicitWidth + spacing
+//        y: (bigNumber.height - button.height)*0.5
         visible: copyButtonVisible
 
         popupText: qsTr("Number copied")
@@ -105,6 +107,8 @@ Item
             clipboard.setText(fullNumber)
         }
     }
+
+
 
     function getOutText()
     {
