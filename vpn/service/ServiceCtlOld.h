@@ -1,18 +1,18 @@
-#ifndef SERVICECTL_H
-#define SERVICECTL_H
+#ifndef SERVICECTLOLD_H
+#define SERVICECTLOLD_H
 
 #include "DapServiceClient.h"
 #include <QMap>
 #include <DapJsonCmdController.h>
 
-class ServiceCtl;
+class ServiceCtlOld;
 
 class QTimer;
-class ServiceCtl : public DapServiceClient
+class ServiceCtlOld : public DapServiceClient
 {
     Q_OBJECT
 public:
-    ServiceCtl(DapJsonCmdController* controller, QObject *parent = Q_NULLPTR);
+    ServiceCtlOld(DapJsonCmdController* controller, QObject *parent = Q_NULLPTR);
     bool tapStatus = false;
 
     bool startService();
@@ -30,4 +30,4 @@ private:
     bool bInsurerConnect = false;
 };
 
-#endif // SERVICECTL_H
+#endif // SERVICECTLOLD_H

@@ -1,14 +1,14 @@
 SOURCES += \
     $$PWD/DapServiceClient.cpp\
     $$PWD/DapServiceNativeAbstract.cpp\
-    $$PWD/ServiceCtl.cpp\
+    $$PWD/ServiceCtlOld.cpp \
     $$PWD/singlerunapplication.cpp\
     #$$PWD/usrmsg.cpp
 
 HEADERS  += \
     $$PWD/DapServiceClient.h\
     $$PWD/DapServiceNativeAbstract.h\
-    $$PWD/ServiceCtl.h\
+    $$PWD/ServiceCtlOld.h \
     $$PWD/singlerunapplication.h\
     #$$PWD/usrmsg.h
 

@@ -148,7 +148,7 @@ Item {
             weight: emailInput.fontWeight
         }
 
-        DapQmlStyle { item: emailInput; qss: "passreset-email-input" }
+        DapQmlStyle { item: emailInput; qss: "passreset-email-input c-label" }
 
         onActiveFocusChanged: {
             placeholder.qss = activeFocus

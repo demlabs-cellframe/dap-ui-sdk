@@ -5,10 +5,10 @@
 #include <QtAndroid>
 #include <QtAndroidExtras/QAndroidJniObject>
 #endif
-#include "ServiceCtl.h"
+#include "ServiceCtlOld.h"
 #include "dap_common.h"
 
-ServiceCtl::ServiceCtl(DapJsonCmdController* controller, QObject *parent)
+ServiceCtlOld::ServiceCtlOld(DapJsonCmdController* controller, QObject *parent)
     : DapServiceClient("DAP_SERVICE_NAME", parent), m_controller(controller)
 {
     Q_ASSERT(controller);
@@ -16,11 +16,11 @@ ServiceCtl::ServiceCtl(DapJsonCmdController* controller, QObject *parent)
     connect(m_controller, &DapJsonCmdController::sendDapCmd,
             this, &DapServiceClient::sendCmd);
 
-    connect(this,&ServiceCtl::ctlConnected, [=]{
+    connect(this,&ServiceCtlOld::ctlConnected, [=]{
         qInfo() << "[ServiceCtl] Connected to ctl socket,request for status";
     });
     
-    connect(this,&ServiceCtl::ctlDisconnected, [=]
+    connect(this,&ServiceCtlOld::ctlDisconnected, [=]
     {
         qInfo() << "[ServiceCtl] Disconnected from backend";
         bInsurerConnect = true;
@@ -29,7 +29,7 @@ ServiceCtl::ServiceCtl(DapJsonCmdController* controller, QObject *parent)
     });
 }
 
-bool ServiceCtl::startService(){
+bool ServiceCtlOld::startService(){
     qDebug() << "[ServiceCtl] startService()";
     
     int ret = -1; //Bad result on default
@@ -58,7 +58,7 @@ bool ServiceCtl::startService(){
     return false;
 }
 
-void ServiceCtl::procCmdController(const QByteArray &a_cmd)
+void ServiceCtlOld::procCmdController(const QByteArray &a_cmd)
 {
     m_controller->handleCmd(a_cmd);
 }

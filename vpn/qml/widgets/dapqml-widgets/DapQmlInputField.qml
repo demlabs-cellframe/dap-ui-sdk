@@ -128,7 +128,7 @@ Item {
             weight: root.fontWeight
         }
 
-        DapQmlStyle { item: inputField; qss: "inputfield-input" }
+        DapQmlStyle { item: inputField; qss: "inputfield-input c-label" }
 
         onActiveFocusChanged: root._updateTitlePos()
         onTextEdited: root.value = text

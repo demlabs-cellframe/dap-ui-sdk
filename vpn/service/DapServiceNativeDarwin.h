@@ -1,5 +1,6 @@
 #pragma once
 
+#include <qglobal.h>
 #ifdef Q_OS_MACOS
 #include <Security/Authorization.h>
 #include <Security/AuthorizationTags.h>
