@@ -35,6 +35,12 @@
     footer-statistics-inactive: "qrc:/light/btn_account.png";
     bugrep-bg:                  "qrc:/light/report_bg_border.png";
     login-logo:                 "qrc:/light/login-logo.png";
+    login-mode-btn-cert-unchecked:      "qrc:/light/auth/auth-cert.png";
+    login-mode-btn-cert-checked:        "qrc:/light/auth/auth-cert-pressed.png";
+    login-mode-btn-loginpass-unchecked: "qrc:/light/auth/auth-loginpass.png";
+    login-mode-btn-loginpass-checked:   "qrc:/light/auth/auth-loginpass-pressed.png";
+    login-mode-btn-serial-unchecked:    "qrc:/light/auth/auth-serial.png";
+    login-mode-btn-serial-checked:      "qrc:/light/auth/auth-serial-pressed.png";
     btn-settings:               "qrc:/light/ic_settings.png";
     btn-settings-hover:         "qrc:/light/ic_settings_hover.png";
     btn-accept:                 "qrc:/light/ic_accept.png";
@@ -78,6 +84,12 @@
     footer-statistics-inactive: "qrc:/dark/btn_account.png";
     bugrep-bg:                  "qrc:/dark/report_bg_border.png";
     login-logo:                 "qrc:/dark/login-logo.png";
+    login-mode-btn-cert-unchecked:      "qrc:/light/auth/auth-cert.png";
+    login-mode-btn-cert-checked:        "qrc:/light/auth/auth-cert-pressed.png";
+    login-mode-btn-loginpass-unchecked: "qrc:/light/auth/auth-loginpass.png";
+    login-mode-btn-loginpass-checked:   "qrc:/light/auth/auth-loginpass-pressed.png";
+    login-mode-btn-serial-unchecked:    "qrc:/light/auth/auth-serial.png";
+    login-mode-btn-serial-checked:      "qrc:/light/auth/auth-serial-pressed.png";
     btn-settings:               "qrc:/dark/ic_settings.png";
     btn-settings-hover:         "qrc:/dark/ic_settings_hover.png";
     btn-accept:                 "qrc:/dark/ic_accept.png";
@@ -578,18 +590,18 @@
 
 .login-error-label
 {
-    scaled-rect: scaled(51,648,327,57,false,13);
+    scaled-rect: scaled(51,72,327,57,false,13);
     color: "@error";
 }
 
 .login-type-container
 {
-    scaled-rect: scaled(-1,229,354,72,false);
+    scaled-rect: scaled(nan,533,nan,130,false);
 }
 
 .login-separator-container
 {
-    scaled-rect: scaled(-1,315,-1,4,true);
+    scaled-rect: scaled(-1,43,-1,4,true);
 }
 
 .login-separator
@@ -599,7 +611,7 @@
 
 .login-btn-server-container
 {
-    scaled-rect: scaled(-1,316,-1,108,true);
+    scaled-rect: scaled(-1,43,-1,108,true);
 }
 
 .login-btn-server
@@ -607,11 +619,44 @@
     scaled-rect: scaled(nan,nan,nan,108,false);
 }
 
+.login-btn-cert-container3
+{
+    scaled-rect: scaled(-1,271,-1,108,true);
+}
+
+.login-btn-cert-container2
+{
+    scaled-rect: scaled(-1,157,-1,108,true);
+}
+
+.login-btn-cert
+{
+    scaled-rect: scaled(nan,nan,nan,108,false);
+}
+
+.login-typename-label
+{
+    scaled-rect: scaled(-1,nan,-1,24,false,20);
+    font-weight: Font.Bold;
+}
+
+/* SPACE CALC */
+
+.login-space-for3rows
+{
+    scaled-rect: scaled(nan,127,nan,nan,false);
+}
+
+.login-space-for2rows
+{
+    scaled-rect: scaled(nan,213,nan,nan,false);
+}
+
 /* SERIAL MODE */
 
 .login-btn-serial-container
 {
-    scaled-rect: scaled(-1,430,-1,108,true);
+    scaled-rect: scaled(-1,157,-1,108,true);
 }
 
 .login-btn-serial
@@ -623,7 +668,7 @@
 
 .login-btn-email-container
 {
-    scaled-rect: scaled(-1,430,-1,108,true);
+    scaled-rect: scaled(-1,157,-1,108,true);
 }
 
 .login-btn-email
@@ -633,7 +678,7 @@
 
 .login-btn-password-container
 {
-    scaled-rect: scaled(-1,544,-1,108,true);
+    scaled-rect: scaled(-1,271,-1,108,true);
 }
 
 .login-btn-password
@@ -691,6 +736,26 @@
     opacity: 0.2;
 }
 
+.login-mode-btn-cert
+{
+    scaled-rect: scaled(19,0,130,130,true);
+    active: "@login-mode-btn-cert-checked";
+    inactive: "@login-mode-btn-cert-unchecked";
+}
+
+.login-mode-btn-serial
+{
+    scaled-rect: scaled(149,0,130,130,true);
+    active: "@login-mode-btn-serial-checked";
+    inactive: "@login-mode-btn-serial-unchecked";
+}
+
+.login-mode-btn-loginpass
+{
+    scaled-rect: scaled(279,0,130,130,true);
+    active: "@login-mode-btn-loginpass-checked";
+    inactive: "@login-mode-btn-loginpass-unchecked";
+}
 
 /****************************************************
  * Settings
