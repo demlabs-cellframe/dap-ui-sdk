@@ -252,6 +252,7 @@ void BugReports::slotRetranslated()
         "What actions did you take and what happened."));
   ui->btnAttachScreenshot->setText (tr ("Click here to attach a screenshot"));
   ui->btnSendReport->setText (tr ("send report"));
+  ui->btnCancel->setText (tr ("cancel"));
   ui->btnResultBack->setText (tr ("back"));
 
   ui->btnAttachScreenshot->setText (tr ("Click here to attach a screenshot"));
