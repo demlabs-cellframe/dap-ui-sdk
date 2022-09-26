@@ -42,9 +42,7 @@ public:
     void setAppType(QString type){m_appType = type;}
     void clearOldLogs();
     static void setLogLevel(dap_log_level ll);
-    void createChangerLogFiles();
 private:
-    QTimer t;
     QString m_pathToLog;
     QString m_currentLogName;
     QString m_appType;

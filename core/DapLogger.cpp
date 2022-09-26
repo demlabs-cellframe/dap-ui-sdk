@@ -33,7 +33,6 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
 #endif
     updateCurrentLogName();
     setLogFile(m_currentLogName);
-    createChangerLogFiles();
     clearOldLogs();
     connect(DapLogger::instance(), &DapLogger::sigMessageHandler,
             this, &DapLogger::updateCurrentLogName);
@@ -74,13 +73,6 @@ void DapLogger::setLogFile(const QString& fileName)
     QString filePath = getPathToLog() + "/" + fileName;
     dap_common_init(DAP_BRAND, qPrintable(filePath), qPrintable(getPathToLog()));
     DapDataLocal::instance()->setLogFilePath(filePath);
-}
-
-void DapLogger::createChangerLogFiles()
-{
-    int timerInterval = 8 * 60 * 1000;
-    t.start(timerInterval);
-    connect(&t, &QTimer::timeout, this, &DapLogger::updateLogFiles);
 }
 
 void DapLogger::updateLogFiles()
