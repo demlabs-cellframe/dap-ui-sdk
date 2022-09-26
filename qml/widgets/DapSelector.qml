@@ -1,5 +1,5 @@
-import QtQuick 2.4
-import QtQuick.Controls 2.4
+import QtQuick 2.12
+import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 
@@ -33,10 +33,33 @@ Rectangle
         orientation: ListView.Horizontal
         interactive: false
 
+//        onCurrentItemChanged:
+//        {
+//            print("onCurrentItemChanged", model.get(currentIndex).color)
+//            gradColor = model.get(currentIndex).color
+////            hl.color = model.get(currentIndex).color
+//        }
+
         highlight:
             Rectangle
             {
+                id: hl
                 radius: height * 0.5
+
+                property var gradColor:
+                    viewerItem.model.get(viewerItem.currentIndex).color
+
+//                color: gradColor
+
+//                onWidthChanged:
+//                {
+//                    print("onColorChanged", gradColor, color)
+//                }
+
+
+//                color: (model.get(currentIndex).color === undefined ?
+//                           currTheme.buttonColorNormalPosition0 :
+//                           model.get(currentIndex).color)
 
                 LinearGradient
                 {
@@ -49,14 +72,18 @@ Rectangle
                             GradientStop
                             {
                                 id: grad1
-                                position: 0;
-                                color: currTheme.buttonColorNormalPosition0
+                                position: 0
+                                color: gradColor === undefined ?
+                                           currTheme.buttonColorNormalPosition0 :
+                                           gradColor
                             }
                             GradientStop
                             {
                                 id: grad2
-                                position: 1;
-                                color: currTheme.buttonColorNormalPosition1
+                                position: 1
+                                color: gradColor === undefined ?
+                                           currTheme.buttonColorNormalPosition1 :
+                                           gradColor
                             }
                         }
                 }
@@ -83,6 +110,7 @@ Rectangle
                     height: frameItem.height
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
+                    bottomPadding: 4
                     color: currTheme.textColor
                     font: mainFont.dapFont.medium14
                     text: name

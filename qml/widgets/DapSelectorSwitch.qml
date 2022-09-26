@@ -1,5 +1,5 @@
-import QtQuick 2.4
-import QtQuick.Controls 2.4
+import QtQuick 2.12
+import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 
@@ -45,6 +45,7 @@ Rectangle
             x: itemHorisontalBorder
             anchors.verticalCenter: parent.verticalCenter
             height: firstItem.height
+            bottomPadding: 2
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             color: currTheme.textColor
@@ -71,6 +72,7 @@ Rectangle
             x: itemHorisontalBorder
             anchors.verticalCenter: parent.verticalCenter
             height: secondItem.height
+            bottomPadding: 2
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             color: currTheme.textColor
@@ -155,6 +157,24 @@ Rectangle
             properties: "width"
             to: secondItem.width
             duration: animDuration
+        }
+    }
+
+    function setSelected(position)
+    {
+        if (position === "first")
+        {
+            firstSelected = true
+            selectedRect.color = firstColor
+            selectedRect.x = firstItem.x
+            selectedRect.width = firstItem.width
+        }
+        else
+        {
+            firstSelected = false
+            selectedRect.color = secondColor
+            selectedRect.x = secondItem.x
+            selectedRect.width = secondItem.width
         }
     }
 
