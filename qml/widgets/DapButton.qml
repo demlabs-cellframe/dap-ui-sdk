@@ -138,7 +138,7 @@ Button
                 anchors.fill: parent
                 verticalAlignment: Qt.AlignVCenter
                 horizontalAlignment: Qt.AlignRight
-                bottomPadding: 2
+                bottomPadding: OS_WIN_FLAG ? 2 : 0
                 anchors.rightMargin: indentTextRight
                 color: currTheme.textColor
                 text: qsTr(textButton)

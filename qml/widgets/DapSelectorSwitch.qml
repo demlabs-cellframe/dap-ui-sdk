@@ -45,7 +45,7 @@ Rectangle
             x: itemHorisontalBorder
             anchors.verticalCenter: parent.verticalCenter
             height: firstItem.height
-            bottomPadding: 2
+            bottomPadding: OS_WIN_FLAG ? 2 : 0
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             color: currTheme.textColor
@@ -72,7 +72,7 @@ Rectangle
             x: itemHorisontalBorder
             anchors.verticalCenter: parent.verticalCenter
             height: secondItem.height
-            bottomPadding: 2
+            bottomPadding: OS_WIN_FLAG ? 2 : 0
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             color: currTheme.textColor
