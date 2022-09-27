@@ -310,6 +310,9 @@ Item
         if(count <= 0)
             return ""
 
+        if (model.get(index) === undefined)
+            return ""
+
         var text = model.get(index)[role]
 
         if (text === undefined)
