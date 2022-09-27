@@ -27,6 +27,9 @@ Item {
     width: 270
     height: 174
 
+    opacity: 0.5
+    enabled: false
+
     DapQmlStyle { id: style; qss: root.qss; item: root }
 
     /****************************************//**
@@ -65,6 +68,11 @@ Item {
     function toggle() {
         setState(!checked);
         root.clicked();
+    }
+
+    function setEnable(value) {
+        root.enabled = value;
+        root.opacity = (value)? 1.0: 0.5;
     }
 
     /// @brief change style based on checkbox state

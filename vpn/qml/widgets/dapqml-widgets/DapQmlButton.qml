@@ -131,6 +131,11 @@ Rectangle {
      ********************************************/
     /// @{
 
+    function setEnable(value) {
+        root.enabled = value;
+        root.opacity = (value)? 1.0: 0.5;
+    }
+
     /* store references */
     Component.onCompleted: {
         if(root.buttonStyle === DapQmlButton.Style.LeftTopMainBottomSub)
