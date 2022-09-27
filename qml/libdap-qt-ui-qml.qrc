@@ -47,5 +47,6 @@
         <file>widgets/DapBigNumberText.qml</file>
         <file>widgets/DapCustomComboBox.qml</file>
         <file>widgets/DapCustomToolTip.qml</file>
+        <file>widgets/DapBigText.qml</file>
     </qresource>
 </RCC>

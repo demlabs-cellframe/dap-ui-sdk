@@ -19,7 +19,6 @@ Item
     property bool showToolTip: true
     property bool alwaysHoverShow: false
     property bool copyButtonVisible: true
-    property bool isAutoOutText: false
 
     property alias horizontalAlign: textItem.horizontalAlignment
     property alias verticalAlign: textItem.verticalAlignment
@@ -35,21 +34,14 @@ Item
 
     Component.onCompleted:
     {
-//        print("DapBigNumberText Component.onCompleted", fullNumber)
-        if(!isAutoOutText)
-        {
 //            width = textItem.width + button.width + spacing
-            getOutText()
-        }
+        getOutText()
     }
 
     onFullNumberChanged:
     {
-        if(!isAutoOutText)
-        {
 //            width = textItem.width + button.width + spacing
-            getOutText()
-        }
+        getOutText()
     }
 
 /*    onOutSymbolsChanged:
@@ -76,14 +68,14 @@ Item
         {
             id: textItem
             Layout.alignment: Qt.AlignVCenter
+//            Layout.fillWidth: true
             height: bigNumber.height
 //            anchors.fill: parent
             font: textFont
             color: textColor
-            text: isAutoOutText ? fullNumber : ""
+            text: ""
 //            text: fullNumber
             verticalAlignment: Qt.AlignVCenter
-//            elide: isAutoOutText ? Text.ElideMiddle: Text.ElideNone
 
             MouseArea
             {
@@ -97,19 +89,11 @@ Item
                 DapCustomToolTip{
                     id: tooltip
                     parent: area
-                    visible: !isAutoOutText && area.containsMouse ?
-                                 true :
-                                 alwaysHoverShow && area.containsMouse ?
-                                     true :
-                                     area.containsMouse ?
-                                         textItem.implicitWidth > textItem.width ?
-                                             true :
-                                             false : false
+                    visible: area.containsMouse
                     contentText: fullNumber
                     onVisibleChanged: /*console.log(text.y, bigNumber.y, y)*/
                     {
-                        if(!isAutoOutText)
-                            x = outSymbols/2 - textItem.implicitWidth/2
+//                        x = outSymbols/2 - textItem.implicitWidth/2
                         updatePos()
                     }
                 }
