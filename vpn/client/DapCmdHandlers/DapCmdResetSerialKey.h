@@ -7,8 +7,7 @@ class DapCmdResetSerialKey : public DapCmdServiceAbstract
 {
     Q_OBJECT
 public:
-    DapCmdResetSerialKey(QObject *parent = nullptr)
-        : DapCmdServiceAbstract (DapJsonCmdType::SEND_RESET_SERIAL_KEY_REQUEST, parent) {};
+    DapCmdResetSerialKey(QObject *parent = nullptr);
     ~DapCmdResetSerialKey() override {};
 
     void handle(const QJsonObject *params) override;

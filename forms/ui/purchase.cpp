@@ -12,8 +12,13 @@ Purchase::Purchase (QWidget *parent) :
   BaseForm (parent),
   ui (new Ui::Purchase)
 {
+  qRegisterMetaType<Product> ("Product");
   ui->setupUi (this);
-  QTimer::singleShot (0, ui->scrollArea, &PurchaseModel::slotSetup);
+  QMetaObject::invokeMethod (
+    ui->scrollArea,
+    "slotSetup",
+    Qt::QueuedConnection,
+    Q_ARG (QWidget*,this));
 
   /* signals */
   connect (ui->btnReturn, &DapGuiPushButton::clicked,

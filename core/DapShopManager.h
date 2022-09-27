@@ -15,7 +15,7 @@ class DapShopManager : public QObject
     Q_OBJECT
 
 public:
-    enum Products { PRODUCT_UNDEFINED, PRODUCT_1MONTH_KEY, PRODUCT_6MONTHS_KEY, PRODUCT_YEAR_KEY, PRODUCT_COUNT};
+    enum Products { PRODUCT_UNDEFINED_KEY, PRODUCT_1MONTH_KEY, PRODUCT_6MONTHS_KEY, PRODUCT_YEAR_KEY, PRODUCT_COUNT};
     enum ProductState { STATE_UNAVAILABLE, STATE_AVAILABLE, STATE_PURCHASED };
     static const QStringList m_productNames;
 
@@ -56,10 +56,10 @@ private:
 
 #ifdef Q_OS_ANDROID
     QAndroidJniObject m_store;
+#endif
     QString m_token;
     QString m_sku;
     QString m_lastError;
-#endif
 
     QMap<int, ProductState> m_products;
 };

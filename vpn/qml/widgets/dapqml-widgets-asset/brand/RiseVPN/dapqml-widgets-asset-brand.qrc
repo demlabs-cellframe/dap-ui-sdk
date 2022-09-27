@@ -1,0 +1,58 @@
+<RCC>
+    <qresource prefix="/">
+        <file compress="1">logo.png</file>
+        <file compress="1">dark/radio_btn_on.png</file>
+        <file compress="1">dark/radio_btn_off.png</file>
+        <file compress="1">dark/check_btn_on.png</file>
+        <file compress="1">dark/check_btn_off.png</file>
+        <file compress="1">dark/btn_settings_active.png</file>
+        <file compress="1">dark/btn_settings.png</file>
+        <file compress="1">dark/btn_connection_active.png</file>
+        <file compress="1">dark/btn_connection.png</file>
+        <file compress="1">dark/btn_bg_hover_active.png</file>
+        <file compress="1">dark/btn_bg.png</file>
+        <file compress="1">dark/btn_account_active.png</file>
+        <file compress="1">dark/btn_account.png</file>
+        <file compress="1">dark/login-logo.png</file>
+        <file compress="1">dark/ic_close_hover.png</file>
+        <file compress="1">dark/ic_close.png</file>
+        <file compress="1">dark/ic_accept_hover.png</file>
+        <file compress="1">dark/ic_accept.png</file>
+        <file compress="1">dark/ic_edit_hover.png</file>
+        <file compress="1">dark/ic_edit.png</file>
+        <file compress="1">dark/ic_settings_hover.png</file>
+        <file compress="1">dark/ic_settings.png</file>
+        <file compress="1">dark/switch/toggle_on.png</file>
+        <file compress="1">dark/switch/toggle_off.png</file>
+        <file compress="1">dark/switch/bg_on.png</file>
+        <file compress="1">dark/switch/bg_off.png</file>
+        <file compress="1">light/login-logo.png</file>
+        <file compress="1">light/radio_btn_on.png</file>
+        <file compress="1">light/radio_btn_off.png</file>
+        <file compress="1">light/ic_close_hover.png</file>
+        <file compress="1">light/ic_close.png</file>
+        <file compress="1">light/ic_accept_hover.png</file>
+        <file compress="1">light/ic_accept.png</file>
+        <file compress="1">light/ic_edit_hover.png</file>
+        <file compress="1">light/ic_edit.png</file>
+        <file compress="1">light/ic_settings_hover.png</file>
+        <file compress="1">light/ic_settings.png</file>
+        <file compress="1">light/check_btn_on.png</file>
+        <file compress="1">light/check_btn_off.png</file>
+        <file compress="1">light/btn_settings_active.png</file>
+        <file compress="1">light/btn_settings.png</file>
+        <file compress="1">light/btn_connection_active.png</file>
+        <file compress="1">light/btn_connection.png</file>
+        <file compress="1">light/btn_bg_hover_active.png</file>
+        <file compress="1">light/btn_bg.png</file>
+        <file compress="1">light/btn_account_active.png</file>
+        <file compress="1">light/btn_account.png</file>
+        <file compress="1">light/switch/toggle_on.png</file>
+        <file compress="1">light/switch/toggle_off.png</file>
+        <file compress="1">light/switch/bg_on.png</file>
+        <file compress="1">light/switch/bg_off.png</file>
+        <file>nonthemed/star-checked.png</file>
+        <file>nonthemed/star-unchecked.png</file>
+        <file>nonthemed/more.png</file>
+    </qresource>
+</RCC>

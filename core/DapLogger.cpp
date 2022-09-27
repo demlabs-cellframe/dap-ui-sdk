@@ -20,6 +20,11 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
 #else
     setPathToLog(defaultLogPath(DAP_BRAND));
 #endif
+    QDir dir(m_pathToLog);
+    if (!dir.exists()) {
+        dir.mkpath(".");
+        system(("chmod -R 667 " + m_pathToLog).toUtf8().data());
+    }
     updateCurrentLogName();
     setLogFile(m_currentLogName);
     createChangerLogFiles();
@@ -84,7 +89,11 @@ QString DapLogger::defaultLogPath(const QString a_brand)
 #elif defined (Q_OS_WIN)
     return QString("%1/%2/log").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
-    static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod("getExtFilesDir", "()Ljava/lang/String;");
+    Q_UNUSED(a_brand);
+    static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod(
+                "getExternalFilesDir"
+                , "(Ljava/lang/String;)Ljava/io/File;"
+                , QAndroidJniObject::fromString(QString("")).object());
     return QString("%1/log").arg(l_pathObj.toString());
 #endif
     return {};
@@ -140,7 +149,10 @@ void DapLogger::messageHandler(QtMsgType type,
 #endif
         fileName = (fileName == Q_NULLPTR ? ctx.file : fileName + 1);
         strcpy(prefixBuffer, fileName);
-        sprintf(strrchr(prefixBuffer, '.'), ":%d", ctx.line);
+        auto dest = strrchr(prefixBuffer, '.');
+        if (dest == nullptr)
+          dest    = prefixBuffer + strlen(prefixBuffer);
+        sprintf(dest, ":%d", ctx.line);
 
         _log_it(prefixBuffer, castQtMsgToDap(type), "%s", qUtf8Printable(msg));
     } else {

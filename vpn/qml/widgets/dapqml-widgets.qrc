@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/">
+        <file compress="1">dapqml-widgets/DapQmlTabButton.qml</file>
+        <file compress="1">dapqml-widgets/DapQmlSeparator.qml</file>
+        <file compress="1">dapqml-widgets/DapQmlPushButton.qml</file>
+        <file compress="1">dapqml-widgets/DapQmlLabel.qml</file>
+        <file compress="1">dapqml-widgets/DapQmlButton.qml</file>
+        <file compress="1">dapqml-widgets/DapQmlSwitch.qml</file>
+        <file compress="1">dapqml-widgets/DapQmlRectangle.qml</file>
+        <file compress="1">dapqml-widgets/DapQmlDialogTitle.qml</file>
+        <file compress="1">dapqml-widgets/DapQmlRadioButton.qml</file>
+        <file compress="1">dapqml-widgets/DapQmlCheckbox.qml</file>
+        <file>dapqml-widgets/DapQmlImage.qml</file>
+        <file>dapqml-widgets/DapQmlInputField.qml</file>
+        <file>dapqml-widgets/DapQmlMenu.qml</file>
+        <file>dapqml-widgets/DapQmlCombobox.qml</file>
+    </qresource>
+</RCC>

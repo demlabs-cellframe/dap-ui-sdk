@@ -46,7 +46,7 @@ void DapLocationInfo::addLocation(const QString& location, const QString& pictur
     QString a_location = location.toUpper();
     if (a_location == "")
     {
-        qWarning() << "Unknown location" << location;
+        //qWarning() << "Unknown location" << location;
         a_location = UNKNOWNLOCATION;
     }
     if (!m_location.contains(a_location))

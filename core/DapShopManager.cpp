@@ -22,7 +22,7 @@ DapShopManager::DapShopManager(QObject *parent) : QObject(parent)
 {
 #ifdef Q_OS_ANDROID
     qDebug()<<"[IN-APP STORE] DapShopManager";
-    for (int i = PRODUCT_UNDEFINED + 1; i < PRODUCT_COUNT; i++) {
+    for (int i = PRODUCT_UNDEFINED_KEY + 1; i < PRODUCT_COUNT; i++) {
         m_products[i] = STATE_AVAILABLE;
     }
 
@@ -97,7 +97,7 @@ void DapShopManager::doPurchase(DapShopManager::Products product)
 DapShopManager::ProductState DapShopManager::getProdustState(DapShopManager::Products product) const
 {
     ProductState state = STATE_UNAVAILABLE;
-    if (product > PRODUCT_UNDEFINED && product < PRODUCT_COUNT)
+    if (product > PRODUCT_UNDEFINED_KEY && product < PRODUCT_COUNT)
         state = m_products[product];
     return state;
 }
@@ -143,6 +143,7 @@ void DapShopManager::changeProductState(const QString &productId, DapShopManager
 
 //- статические функции - для вызовов из java -
 
+#ifdef Q_OS_ANDROID
 void DapShopManager::reportError(JNIEnv *env, jobject thiz, jstring error)
 {
     Q_UNUSED(thiz)
@@ -166,3 +167,4 @@ void DapShopManager::reportPurchase(JNIEnv *env, jobject thiz, jstring sku, jstr
     env->ReleaseStringUTFChars(token, ptr2);
 }
 
+#endif

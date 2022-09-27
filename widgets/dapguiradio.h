@@ -23,7 +23,7 @@ namespace Ui { class DapGuiRadioButtonUI; };
  * @author Mikhail Shilenko
  *******************************************/
 
-class DapGuiRadio : public QWidget
+class DapGuiRadioBase : public QWidget
 {
   Q_OBJECT
   DAPGUI_ENABLECSS
@@ -56,7 +56,7 @@ private:
    *******************************************/
   /// @{
 public:
-  explicit DapGuiRadio (QWidget *parent = nullptr);
+  explicit DapGuiRadioBase (QWidget *parent = nullptr);
   /// @}
 
   /****************************************//**
@@ -97,9 +97,23 @@ signals:
    * @name SLOTS
    *******************************************/
   /// @{
-private slots:
+public slots:
   void _slotClicked();
   /// @}
+};
+
+
+
+class DapGuiRadio : public DapGuiRadioBase
+{
+  Q_OBJECT
+public:
+  explicit DapGuiRadio (QWidget *parent = nullptr)
+        : DapGuiRadioBase(parent)
+    {
+        connect (this, &DapGuiRadio::clicked,
+                 this, &DapGuiRadioBase::_slotClicked);
+    }
 };
 
 /*-----------------------------------------*/

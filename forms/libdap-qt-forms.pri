@@ -49,6 +49,7 @@ HEADERS     += \
     $$PWD/ui/documentpopup.h \
     $$PWD/ui/helper/auxiliary/AppStyleSheetHandler.h \
     $$PWD/ui/helper/auxiliary/UiScaling.h \
+    $$PWD/ui/helper/document.h \
     $$PWD/ui/helper/gradientwidget.h \
     $$PWD/ui/helper/schedule/SheduleElement.h \
     $$PWD/ui/helper/schedule/schedule.h \

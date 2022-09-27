@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QDateTime>
 #include <QtMath>
-
+#include "DapSpeed.h"
 #include "DapServerInfo.h"
 
 class DapServerConnectionInfo : public QObject
@@ -20,9 +20,10 @@ public:
     quint64 bytesSent       () const;
     quint64 packetsReceived () const;
     quint64 packetsSent     () const;
-    QString uploadSpeed   () const;
-    QString downloadSpeed () const;
-
+    quint64 uploadSpeed     () const;
+    quint64 downloadSpeed   () const;
+    QString uploadSpeedString     () const;
+    QString downloadSpeedString   () const;
 
     const DapServerInfo *serverInfo() const;
     void setServerInfo(const DapServerInfo &serverInfo);
@@ -44,8 +45,10 @@ signals:
                       quint64 a_bytesSent,
                       quint64 a_packetsReceived,
                       quint64 a_packetsSent,
-                      QString a_uploadSpeed,
-                      QString a_downloadSpeed);
+                      quint64 a_uploadSpeed,
+                      quint64 a_downloadSpeed,
+                      QString a_uploadSpeedString,
+                      QString a_downloadSpeedString);
 
 private:
     QDateTime   m_startTime {};
@@ -54,8 +57,8 @@ private:
     quint64 m_bytesSent       = 0;
     quint64 m_packetsReceived = 0;
     quint64 m_packetsSent     = 0;
-    QString m_uploadSpeed     = "0 bps";
-    QString m_downloadSpeed   = "0 bps";
+    DapSpeed   m_uploadSpeed;
+    DapSpeed   m_downloadSpeed;
 
     DapServerInfo m_serverInfo;
 
