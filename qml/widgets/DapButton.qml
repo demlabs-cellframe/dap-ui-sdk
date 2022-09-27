@@ -50,10 +50,18 @@ Button
     property alias radius: dapBackgroundButton.radius
     property alias imageMirror: img.mirror
 
-    property string gradientColorNormal0 : "#f0f000"
-    property string gradientColorNormal1 : "#f00000"
-    property string gradientColorHovered0 : "#f0f0a0"
-    property string gradientColorHovered1 : "#f000a0"
+    property string gradientColorNormal0: "#f0f000"
+    property string gradientColorNormal1: "#f00000"
+    property string gradientColorHovered0: "#f0f0a0"
+    property string gradientColorHovered1: "#f000a0"
+
+    property string defaultColorNormal0: currTheme.buttonColorNormalPosition0
+    property string defaultColorNormal1: currTheme.buttonColorNormalPosition1
+    property string defaultColorHovered0: currTheme.buttonColorHoverPosition0
+    property string defaultColorHovered1: currTheme.buttonColorHoverPosition1
+    property string defaultColorUnselectedNormal: "#373A42"
+    property string defaultColorUnselectedHovered: "#272A32"
+    property string defaultColorDisabled: "#B3B1BC"
 
     property string shadowColor : "#1F242F"
 //    property string shadowColor : currTheme.buttonShadow
@@ -261,27 +269,27 @@ Button
         {
             if (selected)
             {
-                gradientColorNormal0 = currTheme.buttonColorNormalPosition0
-                gradientColorNormal1 = currTheme.buttonColorNormalPosition1
-                gradientColorHovered0 = currTheme.buttonColorHoverPosition0
-                gradientColorHovered1 = currTheme.buttonColorHoverPosition1
+                gradientColorNormal0 = defaultColorNormal0
+                gradientColorNormal1 = defaultColorNormal1
+                gradientColorHovered0 = defaultColorHovered0
+                gradientColorHovered1 = defaultColorHovered1
             }
             else
             {
-                gradientColorNormal0 = "#373A42"
-                gradientColorNormal1 = "#373A42"
-                gradientColorHovered0 = "#272A32"
-                gradientColorHovered1 = "#272A32"
+                gradientColorNormal0 = defaultColorUnselectedNormal
+                gradientColorNormal1 = defaultColorUnselectedNormal
+                gradientColorHovered0 = defaultColorUnselectedHovered
+                gradientColorHovered1 = defaultColorUnselectedHovered
             }
 
         }
         else
         {
 
-            gradientColorNormal0 = "#B3B1BC"
-            gradientColorNormal1 = "#B3B1BC"
-            gradientColorHovered0 = "#B3B1BC"
-            gradientColorHovered1 = "#B3B1BC"
+            gradientColorNormal0 = defaultColorDisabled
+            gradientColorNormal1 = defaultColorDisabled
+            gradientColorHovered0 = defaultColorDisabled
+            gradientColorHovered1 = defaultColorDisabled
 //            gradientColorNormal0 = currTheme.buttonColorNoActive
 //            gradientColorNormal1 = currTheme.buttonColorNoActive
 //            gradientColorHovered0 = currTheme.buttonColorNoActive
