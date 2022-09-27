@@ -83,6 +83,7 @@ Rectangle
                     height: frameItem.height
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
+                    bottomPadding: OS_WIN_FLAG ? 4 : 0
                     color: currTheme.textColor
                     font: mainFont.dapFont.medium14
                     text: name
