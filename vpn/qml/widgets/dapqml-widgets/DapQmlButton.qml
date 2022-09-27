@@ -1,7 +1,7 @@
 /* INCLUDES */
 
 import QtQuick 2.10
-import QtQuick.Controls 2.1
+import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.3
 import Qt.labs.platform 1.1
 import DapQmlStyle 1.0
@@ -470,24 +470,30 @@ Rectangle {
                             if (mouse.source === Qt.MouseEventNotSynthesized)
                                 contextMenu.open()
                     }
-                    Menu {
+                    DapQmlMenu {
                         id: contextMenu
-                        MenuItem {
+                        shortcuts: [
+                            "Ctrl+X",
+                            "Ctrl+C",
+                            "Ctrl+V",
+                            ""
+                        ]
+                        Action {
                             text: "Cut"
                             shortcut: "Ctrl+X"
                             onTriggered: ctxMenu.execCut();
                         }
-                        MenuItem {
+                        Action {
                             text: "Copy"
                             shortcut: "Ctrl+C"
                             onTriggered: ctxMenu.execCopy();
                         }
-                        MenuItem {
+                        Action {
                             text: "Paste"
                             shortcut: "Ctrl+V"
                             onTriggered: ctxMenu.execPaste();
                         }
-                        MenuItem {
+                        Action {
                             text: "Delete"
                             //shortcut: "Delete"
                             onTriggered: ctxMenu.execDelete();
