@@ -68,6 +68,12 @@ Item {
     /// @brief "switch server" button clicked
     signal sigServerClicked();
 
+    /// @brief "switch server" button clicked
+    signal sigMultiServerEnterClicked();
+
+    /// @brief "switch server" button clicked
+    signal sigMultiServerEndClicked();
+
     /// @brief will be sended on Switch clicked after sigSwitchToggle
     signal sigConnectionStatusChangeRequested();
 
@@ -122,6 +128,18 @@ Item {
     function setServerInfo(a_name, a_ip) {
         serverChoose.mainText   = a_name;
         serverChoose.subText    = a_ip;
+    }
+
+    /// @brief change "switch server" button text
+    function setMultiServerEnter(a_name, a_ip) {
+        serverMultiChooseEnter.mainText = a_ip;
+        serverMultiChooseEnter.subText  = a_name;
+    }
+
+    /// @brief change "switch server" button text
+    function setMultiServerEnd(a_name, a_ip) {
+        serverMultiChooseEnd.mainText   = a_ip;
+        serverMultiChooseEnd.subText    = a_name;
     }
 
     Component.onCompleted: setStatusIndicator(false);
@@ -293,7 +311,7 @@ Item {
         subQss: "dashboard-server-main"
         bottomQss: "dashboard-server-bottom"
         qss: "dashboard-server-container"
-        onClicked: root.sigServerClicked()
+        onClicked: root.sigMultiServerEnterClicked()
     }
 
     DashboardServerButton {
@@ -306,7 +324,7 @@ Item {
         subQss: "dashboard-server-main"
         bottomQss: "dashboard-server-bottom"
         qss: "dashboard-server-container2"
-        onClicked: root.sigServerClicked()
+        onClicked: root.sigMultiServerEndClicked()
     }
 }
 
