@@ -5,6 +5,8 @@ import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 import DapQmlStyle 1.0
 import StyleDebugTree 1.0
+import Brand 1.0
+import "qrc:/"
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -28,6 +30,12 @@ import "qrc:/dapqml-widgets"
 Item {
     id: root
 
+    enum Mode
+    {
+      M_REGULAR,
+      M_MULTIHOP
+    }
+
     /****************************************//**
      * @name VARS
      ********************************************/
@@ -40,6 +48,11 @@ Item {
 
     /* this is used only for width calc function _calcStatusWidth */
     //DapQmlStyle { id: style }
+
+    property QtObject internal: QtObject {
+        property int mode: QuiDashboardForm.Mode.M_REGULAR
+        property bool modeEnabled: Brand.name() !== "RiseVPN"
+    }
 
     /// @}
     /****************************************//**
@@ -189,7 +202,7 @@ Item {
         id: dashboardError
         qss: "dashboard-error-label"
         wrapMode: Text.WordWrap
-        //text: "Temporary network problems, request will be handled as soon as the network connection is re-established"
+        text: "Temporary network problems, request will be handled as soon as the network connection is re-established"
     }
 
     /****************************************//**
@@ -233,15 +246,31 @@ Item {
     }
 
     /****************************************//**
+     * Mode select
+     ********************************************/
+
+    DapQmlLabel {
+        id: modeChoose
+        visible: root.internal.modeEnabled
+        text: (root.internal.mode !== QuiDashboardForm.Mode.M_REGULAR)
+            ? qsTr("USE REGULAR VPN") + lang.notifier
+            : qsTr("USE MULTI-HOP") + lang.notifier
+        qss: "dashboard-mode-select"
+        onClicked: {
+            if (root.internal.mode !== QuiDashboardForm.Mode.M_REGULAR)
+                root.internal.mode  = QuiDashboardForm.Mode.M_REGULAR;
+            else
+                root.internal.mode  = QuiDashboardForm.Mode.M_MULTIHOP;
+        }
+    }
+
+    /****************************************//**
      * Change server button
      ********************************************/
 
     DapQmlButton {
         id: serverChoose
-//        x: 0//centerHor(this)
-//        y: 575
-//        width: 410
-//        height: 137
+        visible: root.internal.mode !== QuiDashboardForm.Mode.M_MULTIHOP
         link: true
         frame: true
 
@@ -251,6 +280,32 @@ Item {
         mainQss: "dashboard-server-main"
         subQss: "dashboard-server-sub"
         qss: "dashboard-server-container"
+        onClicked: root.sigServerClicked()
+    }
+
+    DashboardServerButton {
+        id: serverMultiChooseEnter
+        visible: root.internal.mode === QuiDashboardForm.Mode.M_MULTIHOP
+        mainText: qsTr("CHOOSING SERVER") + lang.notifier
+        subText: qsTr("Auto") + lang.notifier
+        bottomText: qsTr("End point") + lang.notifier
+        mainQss: "dashboard-server-sub"
+        subQss: "dashboard-server-main"
+        bottomQss: "dashboard-server-bottom"
+        qss: "dashboard-server-container"
+        onClicked: root.sigServerClicked()
+    }
+
+    DashboardServerButton {
+        id: serverMultiChooseEnd
+        visible: root.internal.mode === QuiDashboardForm.Mode.M_MULTIHOP
+        mainText: qsTr("CHOOSING SERVER") + lang.notifier
+        subText: qsTr("Auto") + lang.notifier
+        bottomText: qsTr("End point") + lang.notifier
+        mainQss: "dashboard-server-sub"
+        subQss: "dashboard-server-main"
+        bottomQss: "dashboard-server-bottom"
+        qss: "dashboard-server-container2"
         onClicked: root.sigServerClicked()
     }
 }

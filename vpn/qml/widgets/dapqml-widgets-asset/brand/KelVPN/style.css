@@ -722,12 +722,12 @@
 
 .dashboard-switch
 {
-	scaled-rect: scaled(-1,250,238,150,true);
+	scaled-rect: scaled(-1,180,238,150,true);
 }
 
 .dashboard-speed-container
 {
-	scaled-rect: scaled(-1,471,357,99,true);
+	scaled-rect: scaled(-1,320,357,99,true);
 }
 
 .dashboard-speed-main
@@ -745,7 +745,12 @@
 
 .dashboard-server-container
 {
-	scaled-rect: scaled(-1,558,390,130,true);
+	scaled-rect: scaled(-1,479,390,130,true);
+}
+
+.dashboard-server-container2
+{
+	scaled-rect: scaled(-1,595,390,130,true);
 }
 
 .dashboard-server-main
@@ -759,6 +764,18 @@
 {
 	color: "#A4A3C0";
 	scaled-font: scaled(15);	
+}
+
+.dashboard-server-bottom
+{
+	color: "@brand";
+	scaled-font: scaled(15);	
+}
+
+.dashboard-mode-select
+{
+	color: "@brand";
+	scaled-rect: scaled(-1,449,-1,40,false,16);
 }
 
 /****************************************************
