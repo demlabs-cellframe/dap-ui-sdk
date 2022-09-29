@@ -51,13 +51,19 @@ Popup
     ///@details dapCalendar To set style for all elements of calendar
     property alias dapCalendar: dapCalendar
     ///@details dapPreviousYearButtonImage Image for button "PreviousYear"
-    property string dapPreviousYearButtonImage
-    ///@details dapPreviousMonthButtonImage Image for button "PreviousMonth"
-    property string dapPreviousMonthButtonImage
-    ///@details dapNextMonthButtonImage Image for button "NextMonth"
-    property string dapNextMonthButtonImage
-    ///@details dapNextYearButtonImage Image for button "NextYear"
-    property string dapNextYearButtonImage
+//    property string dapPreviousYearButtonImage
+//    ///@details dapPreviousMonthButtonImage Image for button "PreviousMonth"
+//    property string dapPreviousMonthButtonImage
+//    ///@details dapNextMonthButtonImage Image for button "NextMonth"
+//    property string dapNextMonthButtonImage
+//    ///@details dapNextYearButtonImage Image for button "NextYear"
+//    property string dapNextYearButtonImage
+
+
+    property string dapClickMonthImage
+    property string dapClickYearImage
+
+
     ///@details dapCalendarResult String to save selected date in selected format
     property string dapCalendarResult: ""
     ///@details dapCalendarResultFormat Displaying format of date (see https://doc.qt.io/qt-5.9/qml-qtqml-qt.html#formatDateTime-method to set another)
@@ -67,6 +73,7 @@ Popup
 
     id: dapCalendarPopup
 
+    scale: mainWindow.scale
 
     background:
         Rectangle
@@ -75,6 +82,7 @@ Popup
             width: dapLeftPadding + dapRightPadding + 7 * dapDayWidth + 6 * dapDayLeftInterval
             height: dapTopPadding + dapBottomPadding + dapCalendar.__style.control.height
             color: currTheme.backgroundMainScreen
+
             Rectangle
             {
                 id: contentCorner
@@ -86,8 +94,8 @@ Popup
             {
                 anchors.fill: parent
                 source: contentCorner
-                verticalOffset: 9 * pt
-                samples: 13 * pt
+                verticalOffset: 9 
+                samples: 13 
                 color: dapShadowColor
             }
         }
@@ -104,7 +112,5 @@ Popup
 
             frameVisible: false
         }
-
-
 }
 

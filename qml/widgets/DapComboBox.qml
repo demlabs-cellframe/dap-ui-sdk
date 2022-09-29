@@ -1,184 +1,227 @@
-import QtQuick 2.4
-import QtQuick.Controls 2.0
+import QtQuick 2.12
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.12
+import QtGraphicalEffects 1.0
 
-DapComboBoxForm
-{
-//    Component.onCompleted:
-//    {
-//        if(model.count > 0)
-//        {
-//            if(isDefaultNeedToAppend && getModelData(0, comboBoxTextRole[0]) !== mainLineText)
-//            {
-//                model.insert(0, {});
-//                model.setProperty(0, comboBoxTextRole[0], mainLineText);
-//                currentIndex = 0;
-//            }
-//        }
-//    }
+ComboBox {
+    id: control
+
+    implicitHeight: 45 
+
+    leftPadding: 15 
+    rightPadding: 15 
+
+    property int maximumPopupHeight: 200 
+
+    property string mainTextRole: "name"
+    property string secondTextRole: "secondname"
+
+    property string defaultText: qsTr("Undefined")
+
+    displayText: currentIndex >= 0 ?
+                     getModelData(currentIndex, mainTextRole) :
+                     defaultText
 
     delegate:
-        ItemDelegate
-        {
-            width: parent.width
-
-            //Adjusting the height of the line, taking into account that the second element from the end may be the last
-            height:
-                {
-                    if(index != currentIndex)
-                    {
-                        if(index == (count - 2))
-                        {
-                            if(index+1 == currentIndex)
-                                return heightListElement + bottomIntervalListElement
-                            else
-                                return heightListElement + intervalListElement
-                        }
-                        if (index == count - 1)
-                            return heightListElement + bottomIntervalListElement
-                        return heightListElement + intervalListElement
-                    }
-                    else return 0
-                }
-
-            //Text item
-            contentItem:
-                Rectangle
-                {
-                    id: rectangleTextComboBox
-                    anchors.fill: parent
-                    anchors.topMargin: paddingTopItemDelegate
-                    anchors.leftMargin: popup.visible ? sidePaddingActive : sidePaddingNormal
-                    anchors.rightMargin: popup.visible ? sidePaddingActive : sidePaddingNormal
-                    color: "transparent"
-
-                    property int comboBoxIndex: index
-                    property int comboBoxCurrentIndex: currentIndex
-
-                    FontMetrics
-                    {
-                        id: comboBoxFontMetric
-                    }
-
-                    Row
-                    {
-                        id: textRow
-                        width: rectangleTextComboBox.width - ((index != currentIndex) ?
-                                                                  endRowPadding :
-                                                                  (indicatorWidth + indicatorLeftInterval)
-                                                              )
-                        height: rectangleTextComboBox.height
-                        spacing: roleInterval
-                        property var elTextArray: []
-
-                        Repeater
-                        {
-                            id: textRepeater
-                            model: comboBoxTextRole.length
-
-                            DapText
-                            {
-                                id: textComboBoxDelegate
-                                width: (textRow.width - roleInterval * (comboBoxTextRole.length - 1)) / comboBoxTextRole.length
-                                enabled: false
-                                fontDapText: (fontComboBox.length > index) ?
-                                                 fontComboBox[index] :
-                                                 fontComboBox[0];
-                                textColor: hovered ? colorTextComboBox[index][1] : colorTextComboBox[index][0]
-                                fullText: getModelData(rectangleTextComboBox.comboBoxIndex, comboBoxTextRole[index])?
-                                              getModelData(rectangleTextComboBox.comboBoxIndex, comboBoxTextRole[index]):""
-                                textElide: (elideTextComboBox.length > index) ?
-                                               elideTextComboBox[index] :
-                                               elideTextComboBox[0];
-                                horizontalAlignment: (alignTextComboBox.length > index) ?
-                                               alignTextComboBox[index] :
-                                               alignTextComboBox[0];
-                                onElTextChanged: textRow.elTextArray[index] = elText
-
-                                Component.onCompleted:
-                                {
-                                    if(rectangleTextComboBox.comboBoxIndex == rectangleTextComboBox.comboBoxCurrentIndex)
-                                    {
-
-                                        var tmp = mainRow;
-                                        tmp[index] = elText;
-                                        mainRow = tmp;
-
-                                        if(index == 0)
-                                        {
-                                            comboBoxFontMetric.font = (fontComboBox.length > index) ?
-                                                      fontComboBox[index] :
-                                                      fontComboBox[0];
-                                            mainLineText = comboBoxFontMetric.elidedText(fullText, Text.ElideRight, rectangleTextComboBox.width, Qt.TextShowMnemonic);
-                                        }
-                                    }
-                                }
-
-                            }
-
-                        }
-
-                    }
-                    Component.onCompleted:
-                    {
-                        if(rectangleTextComboBox.comboBoxCurrentIndex !== -1)
-                            updateMainRow(comboBoxFontMetric, rectangleTextComboBox.comboBoxIndex, rectangleTextComboBox.comboBoxCurrentIndex, textRow.elTextArray, (widthPopupComboBoxNormal - indicatorWidth - indicatorLeftInterval));
-
-                    }
-                    onComboBoxCurrentIndexChanged:
-                    {
-                        if(rectangleTextComboBox.comboBoxCurrentIndex !== -1)
-                            updateMainRow(comboBoxFontMetric, rectangleTextComboBox.comboBoxIndex, rectangleTextComboBox.comboBoxCurrentIndex, textRow.elTextArray, rectangleTextComboBox.width);
-
-                    }
-                }
-
-
-
-            //Indent from the bottom edge or the next line that will not stand out when you hover over the mouse
-            background:
-                Rectangle
-                {
-                    anchors.fill: parent
-                    anchors.bottomMargin:
-                    {
-                        if(index == count - 2)
-                        {
-                            if(index+1 == currentIndex)
-                                return bottomIntervalListElement
-                            else
-                                return intervalListElement
-                        }
-                        if (index == count - 1)
-                            return bottomIntervalListElement
-                        return intervalListElement
-                    }
-                    color: hovered ? hilightColor : normalColor
-                }
-            highlighted: parent.highlightedIndex === index
-        }
-
-
-    function getModelData(rowIndex, modelRole)
+    ItemDelegate
     {
-        return model.get(rowIndex)[modelRole];
-    }
+        id: menuDelegate
+        width: control.width
 
-
-    function updateMainRow(fm, cbIndex, cbCurrentIndex, elTextArray, width)
-    {
-        if(cbIndex === cbCurrentIndex)
+        contentItem:
+        RowLayout
         {
-            mainRow = elTextArray;
-            for(var i = 0; i < comboBoxTextRole.length; i++)
+            anchors.fill: parent
+            anchors.leftMargin: parent.leftPadding
+            anchors.rightMargin: 20 
+
+            Text
             {
-                fm.font = (fontComboBox.length > i) ?
-                            fontComboBox[i] :
-                            fontComboBox[0];
+                Layout.fillWidth: true
+                text: getModelData(index, mainTextRole)
+                color: menuDelegate.highlighted ?
+                           currTheme.hilightTextColorComboBox :
+                           currTheme.textColor
+                font: control.font
+                elide: Text.ElideRight
+                verticalAlignment: Text.AlignVCenter
+            }
 
-                if(i == 0)
-                    mainLineText = fm.elidedText(getModelData(cbCurrentIndex, comboBoxTextRole[0]), Text.ElideRight, width, Qt.TextShowMnemonic);
+            Text
+            {
+                text: getModelData(index, secondTextRole)
+                color: menuDelegate.highlighted ?
+                           currTheme.hilightTextColorComboBox :
+                           currTheme.textColor
+                font.family: control.font.family
+                font.pointSize: control.font.pointSize - 3
+                elide: Text.ElideRight
+                verticalAlignment: Text.AlignVCenter
             }
         }
+
+        background:
+        Rectangle
+        {
+            anchors.fill: parent
+            color: menuDelegate.highlighted ?
+                       currTheme.hilightColorComboBox :
+                       currTheme.backgroundMainScreen
+        }
+
+        hoverEnabled: true
+        highlighted: control.highlightedIndex === index
     }
 
+    indicator:
+    Image
+    {
+        id: canvas
+        width: 24 
+        height: 24 
+        x: control.width - width - control.rightPadding
+        y: control.topPadding + (control.availableHeight - height) / 2
+
+        fillMode: Image.PreserveAspectFit
+        source: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrow_down.png"
+//        source: "qrc:/icon_arrow_down.png"
+        sourceSize.width: 24 
+        rotation: control.popup.opened ? 180 : 0
+
+        Behavior on rotation { NumberAnimation { duration: 200 } }
+    }
+
+    contentItem:
+    Text
+    {
+        leftPadding: 0
+        rightPadding: control.indicator.width + control.spacing
+
+        text: control.displayText
+        font: control.font
+        color: control.popup.visible? currTheme.textColorGray : currTheme.textColor
+        verticalAlignment: Text.AlignVCenter
+        elide: Text.ElideRight
+    }
+
+    background:
+    Item
+    {
+        anchors.fill: parent
+
+        Rectangle
+        {
+            id: backGrnd
+            border.width: 0
+            anchors.fill: parent
+
+            color: control.popup.visible ?
+                       currTheme.backgroundMainScreen :
+                       currTheme.backgroundElements
+        }
+
+        DropShadow
+        {
+            anchors.fill: backGrnd
+            horizontalOffset: currTheme.hOffset
+            verticalOffset: currTheme.vOffset
+            radius: currTheme.radiusShadow
+            color: currTheme.shadowColor
+            source: backGrnd
+            samples: 10
+            cached: true
+            visible: control.popup.visible
+        }
+
+        InnerShadow {
+            anchors.fill: backGrnd
+            horizontalOffset: 1
+            verticalOffset: 1
+            radius: 1
+            samples: 10
+            cached: true
+            color: "#524D64"
+            source: backGrnd
+            spread: 0
+            visible: control.popup.visible
+        }
+    }
+
+    popup:
+    Popup
+    {
+        y: control.height - 1
+        width: control.width
+        implicitHeight: contentItem.implicitHeight + 3
+            //+3 is needed to make ListView less moovable
+
+        topPadding: 1
+        bottomPadding: 0
+        leftPadding: 1
+        rightPadding: 1
+
+        contentItem:
+            ListView
+            {
+                id: listView
+                implicitHeight:
+                    contentHeight < maximumPopupHeight ?
+                        contentHeight : maximumPopupHeight
+
+                clip: true
+
+                model: control.popup.visible ?
+                           control.delegateModel : null
+                currentIndex: control.highlightedIndex
+
+                ScrollIndicator.vertical: ScrollIndicator { }
+            }
+
+        background:
+            Item{
+                anchors.fill: parent
+
+                Rectangle
+                {
+                    id: popupBackGrnd
+                    border.width: 0
+                    anchors.fill: parent
+
+                    color: currTheme.backgroundElements
+                }
+
+                DropShadow
+                {
+                    anchors.fill: popupBackGrnd
+                    horizontalOffset: currTheme.hOffset
+                    verticalOffset: currTheme.vOffset
+                    radius: currTheme.radiusShadow
+                    color: currTheme.shadowColor
+                    source: popupBackGrnd
+                    samples: 10
+                    cached: true
+                }
+
+                InnerShadow {
+                    anchors.fill: popupBackGrnd
+                    horizontalOffset: 1
+                    verticalOffset: 0
+                    radius: 1
+                    samples: 10
+                    cached: true
+                    color: "#524D64"
+                    source: popupBackGrnd
+                }
+            }
+    }
+
+    function getModelData(index, role)
+    {
+        var text = model.get(index)[role]
+
+        if (text === undefined)
+            return ""
+        else
+            return model.get(index)[role];
+    }
 }

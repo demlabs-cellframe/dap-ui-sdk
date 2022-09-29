@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>widgets/DapButton.qml</file>
         <file>widgets/DapComboBox.qml</file>
-        <file>widgets/DapComboBoxForm.ui.qml</file>
         <file>widgets/DapPanelForm.ui.qml</file>
         <file>widgets/DapRightPanel.qml</file>
         <file>widgets/DapRightPanelForm.ui.qml</file>
@@ -12,7 +11,6 @@
         <file>widgets/DapTopPanel.qml</file>
         <file>Device.qml</file>
         <file>widgets/DapRadioButton.qml</file>
-        <file>widgets/DapRadioButtonForm.ui.qml</file>
         <file>widgets/DapScrollView.qml</file>
         <file>widgets/DapScrollViewForm.ui.qml</file>
         <file>widgets/DapText.qml</file>
@@ -31,14 +29,24 @@
         <file>widgets/DapMenuTabWidget.qml</file>
         <file>widgets/DapMenuTabWidgetForm.ui.qml</file>
         <file>widgets/DapCheckBox.qml</file>
-        <file>widgets/DapCheckBoxForm.ui.qml</file>
         <file>widgets/DapTextField.qml</file>
-        <file>widgets/DapComboBoxNew.qml</file>
         <file>icons/arrow_down.svg</file>
         <file>widgets/DapRectangleLitAndShaded.qml</file>
         <file>widgets/DapSwitch.qml</file>
         <file>icons/switch_off.png</file>
         <file>icons/switch_on.png</file>
         <file>widgets/DapImageLoader.qml</file>
+        <file>widgets/DapDoubleSpinBox.qml</file>
+        <file>icons/button_dark.png</file>
+        <file>icons/button_off.png</file>
+        <file>icons/button_on.png</file>
+        <file>widgets/DapSelector.qml</file>
+        <file>widgets/DapSelectorSwitch.qml</file>
+        <file>widgets/DapPopupInfo.qml</file>
+        <file>widgets/DapCopyButton.qml</file>
+        <file>widgets/DapBigNumberText.qml</file>
+        <file>widgets/DapCustomComboBox.qml</file>
+        <file>widgets/DapCustomToolTip.qml</file>
+        <file>widgets/DapBigText.qml</file>
     </qresource>
 </RCC>
