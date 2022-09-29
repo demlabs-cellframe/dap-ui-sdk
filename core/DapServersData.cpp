@@ -464,3 +464,19 @@ QMap<int, QVariant> DapServersData::itemData(const QModelIndex &index) const
     map[COUTRY_FLAG_ROLE] = data(index, COUTRY_FLAG_ROLE);
     return map;
 }
+
+int DapServersData::indexOf (const DapServerInfo *a_info) const
+{
+  int index = 0;
+
+  for (auto i = m_servers.cbegin(), e = m_servers.cend(); i != e; i++)
+    {
+      if (i->name       == a_info->name)
+        if (i->address  == a_info->address)
+          if (i->port   == a_info->port)
+            return index;
+      index++;
+    }
+
+  return -1;
+}

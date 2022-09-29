@@ -49,6 +49,8 @@ public:
     bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex()) Q_DECL_OVERRIDE;
     QMap<int, QVariant> itemData(const QModelIndex &index) const Q_DECL_OVERRIDE;
 
+    int indexOf (const DapServerInfo *a_info) const;
+
     void setBestPing(qint16 a_ping) {m_bestping = a_ping;}
     qint16 getBestPing () {return m_bestping;}
     void setWorstPing(qint16 a_ping) {m_worstping = a_ping;}
