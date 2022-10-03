@@ -132,12 +132,12 @@ void DapQmlModelSettings::slotUpdateLabels()
   {
 #ifndef BRAND_RISEVPN
 
-    DapQmlModelSettingsItem{SI_SPACER,     "", "", "1", defaultCb},
-    DapQmlModelSettingsItem{SI_TITLE/*TOP*/,   tr ("Settings"), "", "settings_icon", defaultCb},
-//    DapQmlModelSettingsItem{SI_SPACER,     "", "", "2", defaultCb},
+    Item{SI_SPACER,     "", "", "1",                                                                   [](QObject*){} },
+    Item{SI_TITLE,      tr ("Settings"), "", "settings_icon",                                          [](QObject*){} },
 
     Item{SI_BUTTONRED,  tr ("Get new licence key"), " ", "settings_icon ic_renew",                     [](QObject*) { emit __inst->sigLicenceGet(); } },
     Item{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key",                          [](QObject*) { emit __inst->sigLicenceReset(); } },
+
 #ifndef DISABLE_SETTINGS_LANGUAGE
     Item{SI_LINK,       tr ("Language"), "", "settings_icon ic_language",                              [](QObject*) { emit __inst->sigLanguage(); } },
 #endif // BRAND_KELVPN
