@@ -41,7 +41,8 @@ Item
               "popupListView.currentIndex", popupListView.currentIndex)
 
         if (popupListView.currentIndex < 0)
-            displayText = getModelData(0, mainTextRole)
+//            displayText = getModelData(0, mainTextRole)
+            displayText = defaultText
         else
             displayText = getModelData(popupListView.currentIndex, mainTextRole)
     }

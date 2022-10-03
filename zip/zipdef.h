@@ -1,6 +1,13 @@
 #ifndef ZIPDEF_H
 #define ZIPDEF_H
 
+// ZIP File Format Specification
+//
+// https://github.com/cthackers/adm-zip/blob/master/APPNOTE.md
+// or
+// https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT
+
+
 #include <QtCore>
 
 // Zip standard version for archives handled by this API

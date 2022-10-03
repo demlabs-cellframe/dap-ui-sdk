@@ -2,6 +2,7 @@
 #include "login.h"
 #include "ui_login.h"
 #include "ui/chooseserver.h"
+#include <ui/helper/auxiliary/UiScaling.h>
 #include <QDebug>
 #include <QRegExp>
 #include <QThread>
@@ -39,8 +40,11 @@ Login::Login (QWidget *parent) :
   ui->btnChooseSerial->setMaxLength (MAX_LENGTH);
   {
     auto style = ui->btnChooseSerial->edit()->cssStyle();
+    auto bsize = UiScaling::pointsToPixels (1, UiScaling::getNativDPI());
     style.remove ("noborder");
     style.append (" login-input-border");
+    if (bsize < 1)
+      style.append (" login-input-border-default");
     ui->btnChooseSerial->edit()->setCssStyle(style);
   }
 #ifdef Q_OS_ANDROID
@@ -177,7 +181,7 @@ void Login::slotRetranslated()
 
   ui->btnChooseSerial->setSubText (tr ("serial key"));
 
-  ui->btnConnect->setText (tr ("connect"));
+  ui->btnConnect->setText (QObject::tr ("connect"));
 
   ui->lDontHave->setText (tr ("Don't have a serial key?"));
   ui->btnObtainNewKey->setText (tr ("Tap here to obtain one"));

@@ -106,13 +106,6 @@
             </widget>
            </item>
            <item>
-            <widget class="DapGuiWidget" name="kelGuiWidget_Left" native="true">
-             <property name="cssStyle">
-              <string>cwpb_close</string>
-             </property>
-            </widget>
-           </item>            
-           <item>
             <widget class="DapGuiLabel" name="label">
              <property name="text">
               <string>Choose server</string>

@@ -29,6 +29,7 @@ static QMap<DapGuiPushButton::Style, _KgpbItem> s_presets =
   //{DapGuiPushButton::Radio,       {"://gfx/%1/radio_btn_off.png",  "://gfx/%1/radio_btn_on.png",          "://gfx/%1/radio_btn_on.png",         "cwpb_radio"}},
   {DapGuiPushButton::Switch,      {"://gfx/%1/switch_off.png",     "://gfx/%1/switch.png",                "://gfx/%1/switch.png",                "cwpb_switch"}},
   {DapGuiPushButton::Close,       {"://gfx/%1/ic_close.png",       "://gfx/%1/ic_close_hover.png",        "://gfx/%1/ic_close_hover.png",        "cwpb_close"}},
+  {DapGuiPushButton::FilterClear, {"://gfx/%1/btn_filter_clear.png","://gfx/%1/btn_filter_clear_hover.png",        "://gfx/%1/ic_close_hover.png", "cwpb_close"}},
 };
 
 /********************************************
@@ -45,7 +46,7 @@ DapGuiPushButton::DapGuiPushButton (QWidget *parent)
   setStyle (m_style);
 
   /* setup opacity */
-  m_opacityEffect->setOpacity (1);
+  m_opacityEffect->setOpacity (0.99);
   m_opacityEffect->setEnabled (true);
   setGraphicsEffect (m_opacityEffect);
   setAutoFillBackground (true);
@@ -144,12 +145,12 @@ void DapGuiPushButton::setEnabledCustom(bool value)
 
 bool DapGuiPushButton::opacity() const
 {
-  return m_opacityEffect->opacity() == 1;
+  return m_opacityEffect->opacity() > 0.95;
 }
 
 void DapGuiPushButton::setOpacity(bool value)
 {
-  m_opacityEffect->setOpacity (value ? 1 : 0.2);
+  m_opacityEffect->setOpacity (value ? 0.99 : 0.2);
 }
 
 /****************************************//**

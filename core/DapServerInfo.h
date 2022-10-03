@@ -15,7 +15,6 @@ using DapServerInfoList = QVector<DapServerInfo>;
 class DapServerInfo
 {
 public:
-
     enum class ConnectionQuality {
       NO_CONNECTION = 0,
       FULL,

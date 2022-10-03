@@ -36,7 +36,14 @@ History::~History()
 
 void History::refreshHistoryList()
 {
-    QMetaObject::invokeMethod(ui->scrollArea, &HistoryModel::slotSetup, Qt::QueuedConnection);
+  QMetaObject::invokeMethod(ui->scrollArea, &HistoryModel::slotSetup, Qt::QueuedConnection);
+}
+
+void History::slotRetranslated()
+{
+  ui->labelTitle->setText (tr ("History"));
+  ui->noKeyLabel->setText (tr ("The license key usage history on\nthis device is empty."));
+  ui->labelNotify->setText (tr ("The license key usage history is stored locally on this device. After reinstalling the system the key history will be unavailable."));
 }
 
 /*-----------------------------------------*/
