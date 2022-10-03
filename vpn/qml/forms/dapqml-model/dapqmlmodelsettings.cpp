@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "dapqmlmodelsettings.h"
 #include "helper/languagectl.h"
+#include "DapDataLocal.h"
 
 /* DEFS */
 enum FieldId
@@ -21,6 +22,7 @@ static DapQmlModelSettings *__inst = nullptr;
 static QList<Item> s_items;
 static qint32 s_daysLabelIndex     = -1;
 static qint32 s_versionLabelIndex  = -1;
+static qint32 s_countryIndex     = -1;
 
 static QMap<QString, FieldId> s_fieldIdMap =
 {
@@ -104,9 +106,12 @@ QVariant DapQmlModelSettings::data (const QModelIndex &index, int role) const
   if (!index.isValid())
     return QVariant();
 
-  auto field  = s_fieldIdMap.key (FieldId (role));
+  auto field = s_fieldIdMap.key (FieldId (role));
   if (field.isEmpty())
     return QVariant();
+
+  if (index.row() == s_countryIndex && field == "textSub")
+      s_items[index.row()].m_textSub = getCurrentCountryName();
 
   auto item  = s_items.value (index.row());
   return item.get (field);
@@ -137,7 +142,7 @@ void DapQmlModelSettings::slotUpdateLabels()
 
     Item{SI_BUTTONRED,  tr ("Get new licence key"), " ", "settings_icon ic_renew",                     [](QObject*) { emit __inst->sigLicenceGet(); } },
     Item{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key",                          [](QObject*) { emit __inst->sigLicenceReset(); } },
-
+    Item{SI_LINK,       tr ("Country"), "@country", "settings_icon ic_location",                       [](QObject*) { emit __inst->sigCountry(); } },
 #ifndef DISABLE_SETTINGS_LANGUAGE
     Item{SI_LINK,       tr ("Language"), "", "settings_icon ic_language",                              [](QObject*) { emit __inst->sigLanguage(); } },
 #endif // BRAND_KELVPN
@@ -209,6 +214,12 @@ void DapQmlModelSettings::slotUpdateLabels()
 
       if (i->m_sid == SI_BUTTONGRAY)
         s_versionLabelIndex = index;
+
+      if (i->m_textSub == "@country")
+      {
+          s_countryIndex    = index;
+          s_items[s_countryIndex].m_textSub = "";
+      }
     }
 
   /* set version */
@@ -246,6 +257,13 @@ void DapQmlModelSettings::slotRetranslate()
 {
   slotUpdateLabels();
   emit languageChanged();
+}
+
+QString DapQmlModelSettings::getCurrentCountryName() const
+{
+    QString base_location = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
+    QString code = DapServersData::m_countryMap[base_location];
+    return code;
 }
 
 /********************************************

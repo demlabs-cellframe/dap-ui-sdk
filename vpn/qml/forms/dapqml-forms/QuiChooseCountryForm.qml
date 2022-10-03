@@ -185,7 +185,7 @@ Item {
         x: (root.width - width) / 2
         y: title.y + title.height * 2 + countryFilterField.height
         width: resizer.width
-        height: root.height - y
+        height: root.height - y - noticeResizer.height - noticeSpacer.height
         clip: true
 
         model: countryModel
@@ -214,6 +214,33 @@ Item {
         onCurrentIndexChanged: {
             root.updateChecks();
         }
+    }
+
+    /****************************************//**
+     * Notice
+     ********************************************/
+
+    DapQmlRectangle {
+        id: noticeResizer
+        visible: false
+        qss: "ph-notice-resizer"
+    }
+
+    DapQmlRectangle {
+        id: noticeSpacer
+        visible: false
+        qss: "ph-notice-spacer"
+    }
+
+    DapQmlLabel {
+        id: notice
+        x: (root.width - noticeResizer.width) / 2
+        y: root.height - noticeResizer.height - noticeSpacer.height
+        width: noticeResizer.width
+        height: noticeResizer.height
+        text: "This selection will exclude your country from automatic server selection."
+        wrapMode: Text.WordWrap
+        qss: "ph-label-notice"
     }
 }
 

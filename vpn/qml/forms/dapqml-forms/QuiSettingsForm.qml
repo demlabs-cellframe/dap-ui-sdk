@@ -172,7 +172,10 @@ Item {
                     separator: isSep(model.sid)
                     qss: "sett-item"
                     mainQss: "sett-btn-lbl-main"
-                    subQss: model.sid !== QuiSettingsForm.StyleId.SI_BUTTONRED ? "sett-btn-lbl-sub" : "sett-btn-lbl-sub-red"
+                    subQss: {
+                        model.sid === QuiSettingsForm.StyleId.SI_LINK ? "sett-btn-lbl-sub-link" :
+                        model.sid !== QuiSettingsForm.StyleId.SI_BUTTONRED ? "sett-btn-lbl-sub" : "sett-btn-lbl-sub-red"
+                    }
                     link: model.sid === QuiSettingsForm.StyleId.SI_LINK
                     checkbox: model.sid === QuiSettingsForm.SI_CHECKBOX
                     icon: model.icon

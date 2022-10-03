@@ -204,12 +204,13 @@ Rectangle {
      ********************************************/
 
     DapQmlImage {
+        id: linkImage
         x: root.width - (root.frame ? (width * 2.4) : (width * 2))
         y: (root.height - height) / 2
         z: 1
         width: root.height / 5
         height: root.height / 5
-        visible: root.link
+        visible: root.link && root.buttonStyle !== DapQmlButton.Style.IconMainSub
         scaledPixmap: "qrc:/light/ic_arrow-right.png"
     }
 
@@ -556,10 +557,10 @@ Rectangle {
 
         /* IconMainSub */
         /* Three items by horiontal */
-        GridLayout {
+        RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            columns: 3
+            Layout.rightMargin: root.link ? root.iconRightSize : 0
             visible: (root.buttonStyle === DapQmlButton.Style.IconMainSub)
 
             /* store references */
@@ -613,6 +614,22 @@ Rectangle {
                 clip: false
                 visible: text.length > 0
                 onClicked: root.clicked();
+            }
+            DapQmlImage {
+                id: linkImage1
+                x: root.width - (root.frame ? (width * 2.4) : (width * 2))
+                y: imsMain.y + imsMain.height / 2 - width / 2
+                z: 1
+                width: root.height / 4
+                height: root.height / 4
+                visible: root.link
+                scaledPixmap: "qrc:/light/ic_arrow-right.png"
+
+//                Rectangle {
+//                    color: "blue"
+//                    anchors.fill: parent
+//                    opacity: 0.3
+//                }
             }
         }
 
