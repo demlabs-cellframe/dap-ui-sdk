@@ -251,7 +251,7 @@ void DapQmlModelSettings::menuConstructor(QSet<QString> menuItems)
   // create menu items list
   s_items.clear();
   foreach(QString itemName, menuItemsList)
-      foreach(Item item, _s_items)
+      foreach(Item item, s_settingsItemsList)
           if (item.m_itemType == itemName)
           {
               s_items.append(item);
