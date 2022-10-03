@@ -102,7 +102,7 @@ Item {
      ********************************************/
 
     DapQmlDialogTitle {
-        text: "Statistics"
+        text: qsTr("Statistics") + lang.notifier
         qss: "dialog-title"
         hideClose: true
     }
@@ -148,7 +148,7 @@ Item {
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub
         mainText: "10 205 Mbps"
-        subText: "DOWNLOAD SPEED"
+        subText: qsTr("DOWNLOAD SPEED") + lang.notifier
         mainQss: "stat-item-main"
         subQss: "stat-item-sub"
         qss: "stat-speed"
@@ -163,7 +163,7 @@ Item {
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub
         mainText: "20 896 Mbps"
-        subText: "UPLOAD SPEED"
+        subText: qsTr("UPLOAD SPEED") + lang.notifier
         mainQss: "stat-item-main"
         subQss: "stat-item-sub"
         qss: "stat-speed"
@@ -182,7 +182,7 @@ Item {
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub
         mainText: "29 896 Gb"
-        subText: "BYTES RECEIVED"
+        subText: qsTr("BYTES RECEIVED") + lang.notifier
         mainQss: "stat-item-main"
         subQss: "stat-item-sub"
         qss: "stat-bytes"
@@ -197,7 +197,7 @@ Item {
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub
         mainText: "20 896 Mb"
-        subText: "BYTES SENT"
+        subText: qsTr("BYTES SENT") + lang.notifier
         mainQss: "stat-item-main"
         subQss: "stat-item-sub"
         qss: "stat-bytes"
@@ -216,7 +216,7 @@ Item {
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub
         mainText: "454 086"
-        subText: "PACKETS RECEIVED"
+        subText: qsTr("PACKETS RECEIVED") + lang.notifier
         mainQss: "stat-item-main"
         subQss: "stat-item-sub"
         qss: "stat-packets"
@@ -231,7 +231,7 @@ Item {
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub
         mainText: "4 086"
-        subText: "PACKETS SENT"
+        subText: qsTr("PACKETS SENT") + lang.notifier
         mainQss: "stat-item-main"
         subQss: "stat-item-sub"
         qss: "stat-packets"
@@ -250,7 +250,7 @@ Item {
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub
         mainText: "146:7:27"
-        subText: "UPTIME"
+        subText: qsTr("UPTIME") + lang.notifier
         mainQss: "stat-item-main"
         subQss: "stat-item-sub"
         qss: "stat-misc"
@@ -266,7 +266,7 @@ Item {
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub
         mainText: "34 ms"
-        subText: "PING"
+        subText: qsTr("PING") + lang.notifier
         mainQss: "stat-item-main"
         subQss: "stat-item-sub"
         qss: "stat-misc"

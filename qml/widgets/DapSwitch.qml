@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.4
 import QtGraphicalEffects 1.0
 
 Item {
@@ -16,7 +16,7 @@ Item {
 
     signal toggled()
 
-    property int leverMargin: 4
+    property int leverMargin: 0
 
     property int leverOffPosition: leverMargin
     property int leverOnPosition: width - lever.width - leverMargin
@@ -68,11 +68,12 @@ Item {
         visible: background.visible
     }
 
-    DapImageLoader{
+    Image{
         id:lever
         x: leverOffPosition; y: leverMargin
-        innerWidth: background.height - leverMargin*2
-        innerHeight: background.height - leverMargin*2
+        width: background.height - leverMargin*2
+        height: background.height - leverMargin*2
+        mipmap: true
         source: imageOff
     }
 
@@ -100,5 +101,6 @@ Item {
         anchors.fill: parent
         onClicked: toggle()
     }
+
 
 }

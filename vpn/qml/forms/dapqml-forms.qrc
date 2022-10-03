@@ -15,5 +15,8 @@
         <file compress="1">dapqml-forms/QuiBugReportHistoryForm.qml</file>
         <file compress="1">dapqml-forms/QuiPurchaseHistoryForm.qml</file>
         <file compress="1">dapqml-forms/QuiDocumentViewer.qml</file>
+        <file compress="1">dapqml-forms/QuiResetPassword.qml</file>
+        <file compress="1">dapqml-forms/QuiManageServersForm.qml</file>
+        <file>dapqml-forms/QuiCryptographyForm.qml</file>
     </qresource>
 </RCC>

@@ -5,6 +5,7 @@
 #include <QAbstractListModel>
 #include <dapguiradio.h>
 #include "modelbase.h"
+#include "DapServersData.h"
 
 /* DEFS */
 class ChooseServer;
@@ -27,7 +28,7 @@ class ChooseServerModel : public ModelBase
 private:
   QAbstractListModel *m_model;
   ChooseServer *m_cs;
-  QList<DapGuiRadio*> m_list;
+  QList<DapGuiRadioBase*> m_list;
   bool _hook;
   int m_currentIndex;
   QString m_currentText;
@@ -61,8 +62,8 @@ public slots:
   void slotSetup();
   void setSelectedItem(QString name);
 private slots:
-  /// radio button toggle
-  void slotToggled (bool checked);
+  /// radio button clicked
+  void slotToggled ();
   /// @}
 signals:
   void filled();

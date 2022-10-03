@@ -1,9 +1,11 @@
-import QtQuick 2.0
+import QtQuick 2.9
 import QtQuick.Controls 2.0
 import QtGraphicalEffects 1.0
 
 Button
 {
+    id: dapButton
+
     ///@detalis heightButton Button height.
     property int heightButton
     ///@detalis widthButton Button width.
@@ -13,9 +15,9 @@ Button
     ///@detalis hoverImageButton The image on the Button is in the mouseover state.
     property string hoverImageButton
     ///@detalis widthImageButton Image width.
-    property int widthImageButton: 0 * pt
+    property int widthImageButton: 0
     ///@detalis heightImageButton Image height.
-    property int heightImageButton: 0 * pt
+    property int heightImageButton: 0
     ///@detalis indentImageLeftButton: Indentation of the image from the left edge.
     property int indentImageLeftButton
     ///@detalis colorBackgroundNormal Button background color in normal state.
@@ -46,14 +48,49 @@ Button
     property alias dapHorizontalAlignment: buttonText.horizontalAlignment
     ///@details button background radius
     property alias radius: dapBackgroundButton.radius
-    property string shadowColor : "#2A2C33"
+    property alias imageMirror: img.mirror
+
+    property string gradientColorNormal0: "#f0f000"
+    property string gradientColorNormal1: "#f00000"
+    property string gradientColorHovered0: "#f0f0a0"
+    property string gradientColorHovered1: "#f000a0"
+
+    property string defaultColorNormal0: currTheme.buttonColorNormalPosition0
+    property string defaultColorNormal1: currTheme.buttonColorNormalPosition1
+    property string defaultColorHovered0: currTheme.buttonColorHoverPosition0
+    property string defaultColorHovered1: currTheme.buttonColorHoverPosition1
+    property string defaultColorUnselectedNormal: "#373A42"
+    property string defaultColorUnselectedHovered: "#272A32"
+    property string defaultColorDisabled: "#B3B1BC"
+
+    property string shadowColor : "#1F242F"
+//    property string shadowColor : currTheme.buttonShadow
+    property string innerShadowColor : currTheme.buttonInnerShadow
+    property string innerShadowPressColor : "#1F242F"
+
     property bool activeFrame : true
 
+    property bool selected: true
 
-    id: dapButton
+    hoverEnabled: true
 
     ///@details empty default background
-    background: Item { id:background }
+    background: Item { id: background }
+
+    Component.onCompleted:
+    {
+        setButtonColors()
+    }
+
+    onEnabledChanged:
+    {
+        setButtonColors()
+    }
+
+    onSelectedChanged:
+    {
+        setButtonColors()
+    }
 
     contentItem:
         Rectangle
@@ -70,36 +107,29 @@ Button
                     Gradient {
                         GradientStop
                         {
+                            id: grad0
                             position: 0;
-                            color: dapButton.enabled ?
-                                   dapButton.hovered ? currTheme.buttonColorHoverPosition0 :
-                                                       currTheme.buttonColorNormalPosition0 :
-                                                       currTheme.buttonColorNoActive
-
+                            color: gradientColorNormal0
                         }
                         GradientStop
                         {
+                            id: grad1
                             position: 1;
-                            color:  dapButton.enabled ?
-                                    dapButton.hovered ? currTheme.buttonColorHoverPosition1 :
-                                                        currTheme.buttonColorNormalPosition1 :
-                                                        currTheme.buttonColorNoActive
+                            color: gradientColorNormal1
 
                         }
                     }
             }
 
-            color: !dapButton.activeFrame? "transparent " :
-                                           dapButton.enabled ?
-                                           dapButton.hovered ? currTheme.buttonColorHover :
-                                                               currTheme.buttonColorNormal :
-                                                               currTheme.buttonColorNoActive
+            color: !dapButton.activeFrame ?
+                       "transparent" :
+                       shadowColor
 
             implicitWidth: widthButton
             implicitHeight: heightButton
             border.color: borderColorButton
             border.width: borderWidthButton
-            radius: dapButton.enabled  ? currTheme.radiusButton : currTheme.radiusRectangle
+            radius: currTheme.radiusButton
 
             ///button text
             Text
@@ -108,6 +138,7 @@ Button
                 anchors.fill: parent
                 verticalAlignment: Qt.AlignVCenter
                 horizontalAlignment: Qt.AlignRight
+                bottomPadding: OS_WIN_FLAG ? 2 : 0
                 anchors.rightMargin: indentTextRight
                 color: currTheme.textColor
                 text: qsTr(textButton)
@@ -116,53 +147,153 @@ Button
             ///button picture
             Image
             {
-                id: iconNewWallet
+                id: img
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: indentImageLeftButton
                 source: dapButton.hovered ? hoverImageButton : normalImageButton
+                mipmap: true
                 width: widthImageButton
                 height: heightImageButton
             }
+
+            ParallelAnimation {
+                id: mouseEnterAnim
+                PropertyAnimation {
+                    target: grad0
+                    properties: "color"
+                    to: gradientColorHovered0
+                    duration: 100
+                }
+                PropertyAnimation {
+                    target: grad1
+                    properties: "color"
+                    to: gradientColorHovered1
+                    duration: 100
+                }
+            }
+            ParallelAnimation {
+                id: mouseExitedAnim
+                PropertyAnimation {
+                    target: grad0
+                    properties: "color"
+                    to: gradientColorNormal0
+                    duration: 100
+                }
+                PropertyAnimation {
+                    target: grad1
+                    properties: "color"
+                    to: gradientColorNormal1
+                    duration: 100
+                }
+            }
+
+            MouseArea{
+                id: control
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onEntered:
+                    if(dapButton.enabled)
+                        mouseEnterAnim.start()
+                onExited:
+                    if(dapButton.enabled && !pressed)
+                        mouseExitedAnim.start()
+
+                onPressed: {
+                    if(dapButton.enabled && dapButton.activeFrame)
+                    {
+                        shadowAnimPress.start()
+                        shadow.visible = false
+                    }
+                }
+
+                onReleased: {
+                    if(dapButton.enabled)
+                    {
+                        shadowAnimRelease.start()
+                        shadow.visible = true
+
+                        if (control.containsMouse)
+                            dapButton.clicked()
+                        else
+                            mouseExitedAnim.start()
+                    }
+                }
+            }
         }
     DropShadow {
-//                Layout.alignment: buttonSend
+        id: shadow
         anchors.fill: dapBackgroundButton
         horizontalOffset: 2
         verticalOffset: 2
-        radius: 10
-        samples: 32
+        radius: 8
+        samples: 10
+        cached: true
         color: shadowColor
         source: dapBackgroundButton
-        smooth: true
         }
 
-//    function getColor(position)
-//    {
-//        var rcv_color
+    InnerShadow {
+        property bool isPressed: false
+        id: light
+        anchors.fill: dapBackgroundButton
+        horizontalOffset: 1
+        verticalOffset: 1
+        radius: 5
+        samples: 10
+        cached: true
+        color: innerShadowColor
+        source: dapBackgroundButton
+        visible: dapBackgroundButton.visible
 
-//        if(position === 0)
-//            rcv_color = !dapButton.activeFrame? "transparent " :
-//                            dapButton.enabled ?
-//                            dapButton.hovered ? currTheme.buttonColorHoverPosition0 :
-//                                                currTheme.buttonColorNormalPosition0 :
-//                                                currTheme.buttonColorNoActive
-//        else if(position === 1)
-//            rcv_color = !dapButton.activeFrame? "transparent " :
-//                            dapButton.enabled ?
-//                            dapButton.hovered ? currTheme.buttonColorHoverPosition1 :
-//                                                currTheme.buttonColorNormalPosition1 :
-//                                                currTheme.buttonColorNoActive
+        PropertyAnimation {
+            id: shadowAnimPress
+            target: light
+            properties: "color"
+            to: innerShadowPressColor
+            duration: 80
+        }
+        PropertyAnimation {
+            id: shadowAnimRelease
+            target: light
+            properties: "color"
+            to: innerShadowColor
+            duration: 80
+        }
+    }
 
-//        else
-//            rcv_color = !dapButton.activeFrame? "transparent " :
-//                               dapButton.enabled ?
-//                               dapButton.hovered ? currTheme.buttonColorHover :
-//                                                   currTheme.buttonColorNormal :
-//                                                   currTheme.buttonColorNoActive
+    function setButtonColors()
+    {
+        if (dapButton.enabled)
+        {
+            if (selected)
+            {
+                gradientColorNormal0 = defaultColorNormal0
+                gradientColorNormal1 = defaultColorNormal1
+                gradientColorHovered0 = defaultColorHovered0
+                gradientColorHovered1 = defaultColorHovered1
+            }
+            else
+            {
+                gradientColorNormal0 = defaultColorUnselectedNormal
+                gradientColorNormal1 = defaultColorUnselectedNormal
+                gradientColorHovered0 = defaultColorUnselectedHovered
+                gradientColorHovered1 = defaultColorUnselectedHovered
+            }
 
-//        return rcv_color
-//    }
+        }
+        else
+        {
 
-
+            gradientColorNormal0 = defaultColorDisabled
+            gradientColorNormal1 = defaultColorDisabled
+            gradientColorHovered0 = defaultColorDisabled
+            gradientColorHovered1 = defaultColorDisabled
+//            gradientColorNormal0 = currTheme.buttonColorNoActive
+//            gradientColorNormal1 = currTheme.buttonColorNoActive
+//            gradientColorHovered0 = currTheme.buttonColorNoActive
+//            gradientColorHovered1 = currTheme.buttonColorNoActive
+        }
+    }
 }

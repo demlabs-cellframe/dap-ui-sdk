@@ -166,4 +166,5 @@ void DapShopManager::reportPurchase(JNIEnv *env, jobject thiz, jstring sku, jstr
     env->ReleaseStringUTFChars(sku, ptr1);
     env->ReleaseStringUTFChars(token, ptr2);
 }
+
 #endif

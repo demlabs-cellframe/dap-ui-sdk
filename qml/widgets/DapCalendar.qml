@@ -42,7 +42,7 @@ DapCalendarForm
                             checkable: true
                             colorBackgroundNormal: dapCalendarBackgroundColor
                             colorBackgroundHover: colorBackgroundNormal
-                            normalImageButton: dapPreviousYearButtonImage
+                            normalImageButton: dapClickYearImage
                             hoverImageButton: normalImageButton
                             onClicked: control.showPreviousYear()
                         }
@@ -58,14 +58,14 @@ DapCalendarForm
                             checkable: true
                             colorBackgroundNormal: dapCalendarBackgroundColor
                             colorBackgroundHover: colorBackgroundNormal
-                            normalImageButton: dapPreviousMonthButtonImage
+                            normalImageButton: dapClickMonthImage
                             hoverImageButton: normalImageButton
                             onClicked: control.showPreviousMonth()
                         }
                         Label
                         {
                             id: calendarHeadText
-                            text: styleData.title.replace(' ', ', ')
+                            text: qsTr(styleData.title.replace(' ', ', '))
                             color:  dapNormalTextColor
                             horizontalAlignment: Text.AlignHCenter
                             font: dapCalendarFont
@@ -84,8 +84,9 @@ DapCalendarForm
                             checkable: true
                             colorBackgroundNormal: dapCalendarBackgroundColor
                             colorBackgroundHover: colorBackgroundNormal
-                            normalImageButton: dapNextMonthButtonImage
+                            normalImageButton: dapClickMonthImage
                             hoverImageButton: normalImageButton
+                            imageMirror: true
                             onClicked: control.showNextMonth()
                         }
                         DapButton
@@ -100,8 +101,9 @@ DapCalendarForm
                             checkable: true
                             colorBackgroundNormal: dapCalendarBackgroundColor
                             colorBackgroundHover: colorBackgroundNormal
-                            normalImageButton: dapNextYearButtonImage
+                            normalImageButton: dapClickYearImage
                             hoverImageButton: normalImageButton
+                            imageMirror: true
                             onClicked: control.showNextYear()
                         }
                     }
@@ -116,7 +118,7 @@ DapCalendarForm
                     color: dapCalendarBackgroundColor
                     Label
                     {
-                        text: dapCalendar.__locale.dayName(styleData.dayOfWeek, dapDayOfWeeksFormat)
+                        text: qsTr(dapCalendar.__locale.dayName(styleData.dayOfWeek, dapDayOfWeeksFormat))
                         anchors.centerIn: parent
                         color:  dapNormalTextColor
                         horizontalAlignment: Text.AlignHCenter
@@ -142,7 +144,7 @@ DapCalendarForm
                                        (styleData.date.getFullYear() === new Date(Date.now()).getFullYear())) ?
                                           dapSelectedBackgroundColor :
                                           (styleData.selected ? dapSelectedBackgroundColor : dapNormalBackgroundColor)
-                        border.width: 1 * pt
+                        border.width: 1 
                         color: styleData.selected ? dapSelectedBackgroundColor : dapNormalBackgroundColor
 
                         Label

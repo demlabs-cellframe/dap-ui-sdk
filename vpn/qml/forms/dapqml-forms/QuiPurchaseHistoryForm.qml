@@ -2,6 +2,7 @@
 
 import QtQuick 2.0
 import DapQmlModelSerialHistory 1.0
+import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -39,7 +40,7 @@ Item {
 
     DapQmlDialogTitle {
         id: title
-        text: "History"
+        text: qsTr("History") + lang.notifier
         qss: "dialog-title"
     }
 
@@ -63,6 +64,12 @@ Item {
         id: icnResizer
         visible: false
         qss: "ph-icn-resizer"
+    }
+
+    DapQmlRectangle {
+        id: icnCpyResizer
+        visible: false
+        qss: "ph-icn-cpy-resizer"
     }
 
     DapQmlRectangle {
@@ -105,12 +112,40 @@ Item {
                 iconRight: "ic_copy"
                 separator: true
                 iconSize: icnResizer.height
-                iconRightSize: icnResizer.height
+                iconRightSize: icnCpyResizer.height
                 width: resizer.width
                 height: resizer.height
                 y: spacer.height / 2
 
-                onRightClicked: clipboard.setText (model.key)
+                signal sigStartAnimation();
+
+//                property QtObject animationCtl: QtObject {
+//                    property var target: parent
+//                    property string boi: target.mainText
+//                    property Timer timer: Timer {
+//                        interval: 500
+//                        running: false
+//                        repeat: false
+//                        onTriggered: parent.finish()
+//                    }
+
+//                    function start() {
+//                        target.iconRight    = "ic_copy_pressed";
+//                        timer.start();
+//                    }
+
+//                    function finish() {
+//                        target.iconRight    = "ic_copy";
+//                    }
+//                }
+
+                onRightClicked: {
+                    clipboard.setText (model.key);
+                    // animationCtl.start();
+                    sigStartAnimation();
+                }
+
+                Component.onCompleted: phListView.model.attachAnimation(this)
             }
         }
     }
@@ -122,7 +157,7 @@ Item {
     DapQmlLabel {
         id: empotyHistory
         visible: DapQmlModelSerialHistory.length() === 0
-        text: "The license key usage history on this device is empty."
+        text: qsTr("The license key usage history on this device is empty.") + lang.notifier
         wrapMode: Text.WordWrap
         qss: "ph-label-empty-history"
     }
@@ -137,9 +172,20 @@ Item {
         y: root.height - noticeResizer.height - noticeSpacer.height
         width: noticeResizer.width
         height: noticeResizer.height
-        text: "The license key usage history is stored locally on this device. After reinstalling the system the key history will be unavailable."
+        text: qsTr("The license key usage history is stored locally on this device. After reinstalling the system the key history will be unavailable.") + lang.notifier
         wrapMode: Text.WordWrap
         qss: "ph-label-notice"
+
+//        Component.onCompleted: {
+//           StyleDebugTree.describe (
+//               "ph notice",
+//                ["x", "y", "width", "height", "contentWidth", "contentHeight"],
+//               this);
+//           StyleDebugTree.describe (
+//               "ph notice label",
+//                ["x", "y", "width", "height", "contentWidth", "contentHeight"],
+//               notice.label);
+//        }
     }
 }
 

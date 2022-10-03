@@ -80,9 +80,12 @@ Rectangle {
     property int iconRightSize: 34
     property int iconLineEditSize: 20
     property int buttonStyle: DapQmlButton.Style.TopMainBottomSub
+    property int editEchoMode: TextInput.Normal
     property bool separator: false
     property bool link: false
     property bool frame: false
+    property bool checkbox: false
+    property bool checked: false
 
     property var labelMain
     property var labelSub
@@ -94,8 +97,17 @@ Rectangle {
 
     MouseArea {
         anchors.fill: root;
-        onClicked: root.clicked();
+        onClicked: root.clicked()
     }
+
+    onClicked: {
+        if (root.checkbox)
+        {
+            root.checked            = !root.checked;
+            checkboxItem.checked    = root.checked;
+        }
+    }
+
 
     /// @}
     /****************************************//**
@@ -210,6 +222,28 @@ Rectangle {
         z: -1
         visible: root.frame
         qss: "btn-frame"
+    }
+
+    /****************************************//**
+     * Checkbox
+     ********************************************/
+
+    DapQmlCheckbox {
+        id: checkboxItem
+        x: root.width - width + (width * 0.2)
+        y: (root.height - height) / 2 - (height * 0.05)
+        z: 1
+        width: root.height
+        height: root.height
+        iconSize: root.height
+        visible: root.checkbox
+        checked: root.checked
+        qss: "btn-checkbox"
+//        onToggled: {
+//            //root.checked    = a_state;
+//            root.clicked();
+//        }
+        onClicked: root.clicked();
     }
 
     /****************************************//**
@@ -411,6 +445,7 @@ Rectangle {
 
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignBottom
+                echoMode: root.editEchoMode
                 text: root.mainText
                 //qss: root.mainQss
                 inputMask: root.inputMask

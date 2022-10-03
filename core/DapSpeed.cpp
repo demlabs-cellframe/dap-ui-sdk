@@ -34,6 +34,14 @@ QString SpeedToString(quint64 a_speed)
         return QString("%1 %2").arg(QString::number(speed, 'f', digitCount)).arg("kB/s");
     }
 #else
+    if (a_speed >= 1E9)
+    {
+        double speed = a_speed/1E9;
+        int digitCount = 0;
+        if ((10 > speed) && (speed >= 0))
+            digitCount = 1;
+        return QString("%1 %2").arg(QString::number(speed, 'f', digitCount)).arg("GB/s");
+    }
     if (a_speed >= 1E6)
     {
         double speed = a_speed/1E6;
@@ -90,10 +98,15 @@ void DapSpeed::setTraffic(quint64 bytes)
     }
     else
     {
-        if (a_millisecond != m_millisecond && (a_millisecond - m_millisecond > 100))
+        if (a_millisecond != m_millisecond && (qreal)a_millisecond - (qreal)m_millisecond > 100)
         {
-            double dtime = (a_millisecond - m_millisecond) * 1E-3;
-            m_speed = (bytes - m_bytes)/dtime;
+            if ((qreal)bytes - (qreal)m_bytes > 0)
+            {
+                double dtime = (a_millisecond - m_millisecond) * 1E-3;
+                m_speed = (bytes - m_bytes)/dtime;
+            }
+            else
+                m_speed = 0;
         }
     }
     m_millisecond = a_millisecond;

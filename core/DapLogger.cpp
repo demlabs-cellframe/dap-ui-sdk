@@ -15,16 +15,19 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     dap_set_log_tag_width(prefix_width);
     qInstallMessageHandler(messageHandler);
     m_appType = appType;
-#ifdef DAP_BRAND_LO
-    setPathToLog(defaultLogPath(DAP_BRAND_LO));
-#else
+    qDebug() << appType;
     setPathToLog(defaultLogPath(DAP_BRAND));
-#endif
     QDir dir(m_pathToLog);
     if (!dir.exists()) {
+        qDebug() << "dir not exists";
         dir.mkpath(".");
         system(("chmod -R 667 " + m_pathToLog).toUtf8().data());
     }
+#if defined(Q_OS_ANDROID)
+    system((m_pathToLog + "chmod 667 ").toUtf8().data());
+#else
+    system(("chmod 667 $(find " + m_pathToLog + " -type d)").toUtf8().data());
+#endif
     updateCurrentLogName();
     setLogFile(m_currentLogName);
     createChangerLogFiles();
@@ -56,6 +59,7 @@ void DapLogger::setLogLevel(dap_log_level ll)
 
 void DapLogger::setLogFile(const QString& fileName)
 {
+    qDebug() << "setLogFile: " + fileName;
     QString filePath = getPathToLog() + "/" + fileName;
     dap_common_init(DAP_BRAND, qPrintable(filePath), qPrintable(getPathToLog()));
     DapDataLocal::instance()->setLogFilePath(filePath);
@@ -85,7 +89,7 @@ QString DapLogger::defaultLogPath(const QString a_brand)
 #if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
     return QString("/opt/%1/log").arg(a_brand).toLower();
 #elif defined(Q_OS_MACOS)
-    return QString("/var/log/");
+    return QString("/Users/%1/Applications/Cellframe.app/Contents/Resources/var/log").arg(getenv("USER"));
 #elif defined (Q_OS_WIN)
     return QString("%1/%2/log").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
@@ -149,7 +153,10 @@ void DapLogger::messageHandler(QtMsgType type,
 #endif
         fileName = (fileName == Q_NULLPTR ? ctx.file : fileName + 1);
         strcpy(prefixBuffer, fileName);
-        sprintf(strrchr(prefixBuffer, '.'), ":%d", ctx.line);
+        auto dest = strrchr(prefixBuffer, '.');
+        if (dest == nullptr)
+          dest    = prefixBuffer + strlen(prefixBuffer);
+        sprintf(dest, ":%d", ctx.line);
 
         _log_it(prefixBuffer, castQtMsgToDap(type), "%s", qUtf8Printable(msg));
     } else {

@@ -41,33 +41,24 @@ Item {
 
     /// @}
     /****************************************//**
+     * @name FUNCTIONS
+     ********************************************/
+    /// @{
+
+    /// @brief change current item index (int index)
+    function setCurrentIndex(a_index) {
+        csListView.currentIndex = a_index;
+    }
+
+    /// @}
+    /****************************************//**
      * Title
      ********************************************/
 
     DapQmlDialogTitle {
         id: title
-        text: "Language"
+        text: qsTr("Language") + lang.notifier
         qss: "dialog-title"
-    }
-
-    /****************************************//**
-     * Model
-     ********************************************/
-
-    ListModel {
-        id: pseudoListModel
-        ListElement {
-            name: "English"
-        }
-        ListElement {
-            name: "Russian"
-        }
-        ListElement {
-            name: "Українська"
-        }
-        ListElement {
-            name: "中文"
-        }
     }
 
     /****************************************//**
@@ -92,6 +83,7 @@ Item {
 
     ListView {
         id: csListView
+        objectName: "chooseLanguageListView"
 
         x: (root.width - width) / 2
         y: title.y + title.height * 2
@@ -99,22 +91,22 @@ Item {
         height: root.height - y
         clip: true
 
-        model: pseudoListModel
+        model: lang.model()
+
 
         delegate: Item {
             width: resizer.width
             height: resizer.height + spacer.height
-            property bool checked: false
 
             DapQmlRadioButton {
-                text: model.name
-                checked: parent.checked
+                text: model.display
+                checked: csListView.currentIndex === model.index
                 separator: true
                 iconSize: resizer.height
                 width: resizer.width
                 height: resizer.height
                 y: spacer.height / 2
-                onClicked: root.sigSelect (model.index, model.name)
+                onClicked: root.sigSelect (model.index, model.display)
             }
         }
     }

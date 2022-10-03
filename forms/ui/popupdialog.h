@@ -32,8 +32,8 @@ class PopupDialog : public QWidget
 private:
   Ui::PopupDialog *ui;
   QWidget *m_parent, *m_shadow;
-  int dafaultHeight;
-  int dafaultTextHeight;
+  int defaultHeight;
+  int defaultTextHeight;
   /// @}
 
   /****************************************//**
@@ -46,12 +46,21 @@ public:
   /// @}
 
   /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+protected:
+  void _adjustHeight (const QString &a_decription);
+  /// @}
+
+  /****************************************//**
    * @name SIGNALS
    *******************************************/
   /// @{
 signals:
   void sigYes();
   void sigNo();
+  void sigOk();
   /// @}
 
   /****************************************//**

@@ -49,7 +49,7 @@ Item {
 
     DapQmlDialogTitle {
         id: title
-        text: "Bug reports"
+        text: qsTr("Bug reports") + lang.notifier
         qss: "dialog-title"
     }
 

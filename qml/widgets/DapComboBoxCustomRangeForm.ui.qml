@@ -129,12 +129,45 @@ ComboBox
 
     //Defining the background for the main line
     background:
+    Rectangle
+    {
+        anchors.fill: parent
+        color: "transparent"
+        radius: 4
+
         Rectangle
         {
-            anchors.fill: parent
-            color: parent.popup.visible ? dapHilightTopColor : dapNormalTopColor
-            height: parent.height
+            id: backGrnd
+            radius: 4
+            width: parent.width
+            height: dapComboBoxWithRange.popup.visible ?
+                        parent.height + popupBackGrnd.height :
+                        parent.height
+
+            y: dapComboBoxWithRange.popup.visible &&
+               dapComboBoxWithRange.popup.y < 0 ?
+                 - popupBackGrnd.height :
+                 0
+
+            color: dapComboBoxWithRange.popup.visible ?
+                       dapHilightTopColor :
+                       dapNormalTopColor
         }
+
+        DropShadow
+        {
+            anchors.fill: backGrnd
+            horizontalOffset: currTheme.hOffset
+            verticalOffset: currTheme.vOffset
+            radius: currTheme.radiusShadow
+            color: currTheme.shadowColor
+            source: backGrnd
+            samples: 10
+            cached: true
+            visible: dapComboBoxWithRange.popup.visible
+        }
+
+    }
 
     //contentItem is setting by children
     contentItem:
@@ -179,8 +212,9 @@ ComboBox
                     DapCalendar
                     {
                         id: dapMinimumOfRangeCalendar
-                        x: parent.x
-                        y: parent.y + parent.height
+                        x: parent.x - width*(1/scale-1)*0.5
+                        y: parent.y - height - height*(1/scale-1)*0.5
+
                         dapLeftPadding: dapCalendars.dapLeftPadding
                         dapRightPadding: dapCalendars.dapRightPadding
                         dapTopPadding: dapCalendars.dapTopPadding
@@ -201,10 +235,10 @@ ComboBox
                         dapNormalBackgroundColor: dapCalendars.dapNormalBackgroundColor
                         dapSelectedBackgroundColor: dapCalendars.dapSelectedBackgroundColor
                         dapDayOfWeeksFormat: dapCalendars.dapDayOfWeeksFormat
-                        dapPreviousYearButtonImage: dapCalendars.dapPreviousYearButtonImage
-                        dapPreviousMonthButtonImage: dapCalendars.dapPreviousMonthButtonImage
-                        dapNextMonthButtonImage: dapCalendars.dapNextMonthButtonImage
-                        dapNextYearButtonImage: dapCalendars.dapNextYearButtonImage
+                        dapClickMonthImage: dapCalendars.dapClickMonthImage
+                        dapClickYearImage: dapCalendars.dapClickYearImage
+
+
                         dapShadowColor: dapColorDropShadow
                         visible: false
                     }
@@ -265,8 +299,10 @@ ComboBox
                     DapCalendar
                     {
                         id: dapMaximumOfRangeCalendar
-                        x: parent.x
-                        y: parent.y + parent.height
+
+                        x: parent.x - width*(1/scale-1)*0.5
+                        y: parent.y - height - height*(1/scale-1)*0.5
+
                         dapLeftPadding: dapCalendars.dapLeftPadding
                         dapRightPadding: dapCalendars.dapRightPadding
                         dapTopPadding: dapCalendars.dapTopPadding
@@ -287,10 +323,8 @@ ComboBox
                         dapNormalBackgroundColor: dapCalendars.dapNormalBackgroundColor
                         dapSelectedBackgroundColor: dapCalendars.dapSelectedBackgroundColor
                         dapDayOfWeeksFormat: dapCalendars.dapDayOfWeeksFormat
-                        dapPreviousYearButtonImage: dapCalendars.dapPreviousYearButtonImage
-                        dapPreviousMonthButtonImage: dapCalendars.dapPreviousMonthButtonImage
-                        dapNextMonthButtonImage: dapCalendars.dapNextMonthButtonImage
-                        dapNextYearButtonImage: dapCalendars.dapNextYearButtonImage
+                        dapClickMonthImage: dapCalendars.dapClickMonthImage
+                        dapClickYearImage: dapCalendars.dapClickYearImage
                         dapShadowColor: dapColorDropShadow
                         visible: false
                         dapMinimumDate: dapMinimumOfRangeCalendar.dapCalendar.selectedDate
@@ -306,9 +340,15 @@ ComboBox
         Popup
         {
             id: dapComboboxPopup
-            y: parent.height - 1
-            width: parent.width
+            x: -width*(1/scale-1)*0.5
+            y: dapComboBoxWithRange.height - height*(1/scale-1)*0.5
+            width: dapComboBoxWithRange.width
             padding: 0
+
+            parent: dapComboBoxWithRange
+
+            scale: mainWindow.scale
+
             contentItem:
                 ListView
                 {
@@ -322,35 +362,11 @@ ComboBox
             background:
                 Rectangle
                 {
-                    width: background.width
-                    color: dapNormalColor
-                    Rectangle
-                    {
-                        id: contentCorner
-                        anchors.fill: parent
-                    }
-
-                    DropShadow
-                    {
-                        anchors.fill: parent
-                        source: contentCorner
-                        verticalOffset: 9 * pt
-                        samples: 13 * pt
-                        color: dapColorDropShadow
-                    }
+                    id: popupBackGrnd
+                    anchors.fill: parent
+                    color: currTheme.backgroundElements
+                    radius: 4
                 }
         }
 
-        //Shadow effect for the top element.
-        DropShadow
-        {
-            anchors.fill: dapTopEffect ? parent : null
-            source: dapTopEffect ? background : null
-            verticalOffset: dapTopEffect ? 9 * pt : 0
-            samples: dapTopEffect ? 13 * pt : 0
-            color: dapTopEffect ?
-                       (popup.visible ? dapColorDropShadow : dapColorTopNormalDropShadow) :
-                       "#000000"
-            z: -1
-        }
     }

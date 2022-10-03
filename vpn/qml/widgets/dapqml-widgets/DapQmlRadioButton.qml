@@ -42,8 +42,8 @@ RadioButton {
     /// @brief enable\\disable separator
     property bool separator: false
 
-    ///
-    property int modelIndex: -1
+    /// @brief padding between icon and text label
+    property real textPadding: root.indicator.width + root.spacing
 
     /// @}
     /****************************************//**
@@ -62,7 +62,7 @@ RadioButton {
      ********************************************/
 
     contentItem: DapQmlLabel {
-        leftPadding: root.indicator.width + root.spacing
+        leftPadding: textPadding // root.indicator.width + root.spacing
         horizontalAlign: Text.AlignLeft
         verticalAlign: Text.AlignVCenter
         text: root.text

@@ -73,6 +73,7 @@ signals:
   void sigColorTheme();
   void sigSetDaysLeft (QString days);
   void sigResetDaysLeft();
+  void sigCountry();
 
   /* support */
   void sigBugSend();

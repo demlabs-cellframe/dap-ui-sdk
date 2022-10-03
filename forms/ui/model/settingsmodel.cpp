@@ -3,10 +3,12 @@
 #include "../settings.h"
 
 #include "dapguibutton.h"
+#include "DapDataLocal.h"
 #include <QUrl>
 #include <QBoxLayout>
 #include <QEvent>
 #include <QScrollBar>
+#include <QTimer>
 
 /* DEFS */
 typedef QString TextStyle;
@@ -18,6 +20,7 @@ static void defaultCb () {}
 /* settings */
 static void cbLicenceGet();
 static void cbLicenceReset();
+static void cbCountry();
 static void cbLanguage();
 static void cbColorTheme();
 
@@ -39,6 +42,9 @@ QList<SettingsModel::_SItem> SettingsModel::s_items;
 static QMap<DapGuiButton*, ItemCB> s_btnCallbacks;
 static DapGuiButton* s_licenceKey;
 static DapGuiButton* s_version;
+static DapGuiButton* s_country;
+static QString *s_versionText   = nullptr;
+static QString *s_daysLeftText  = nullptr;
 
 /* VARS */
 static Settings *s_settings   = nullptr;
@@ -61,7 +67,7 @@ SettingsModel::SettingsModel (QWidget *parent)
     {SI_BUTTON,     {"darkblue font16 lato normal",  "darkblue font16 lato normal"}},
     {SI_BUTTONRED,  {"darkblue font16 lato normal",  "red font16 lato bold"}},
     {SI_BUTTONGRAY, {"darkblue font16 lato normal",  "darkblue gray font16 lato"}},
-    {SI_LINK,       {"darkblue font16 lato normal",  ""}},
+    {SI_LINK,       {"darkblue font16 lato normal",  "darkblue font16 lato normal margin-rightLink"}},
     {SI_SPACER,     {"",  ""}},
   };
 
@@ -85,9 +91,29 @@ void SettingsModel::setInterface(Settings *s)
 
 void SettingsModel::setVersionText(const QString &a_text)
 {
-  if(!s_version)
+  /* check if label is set */
+  if (!s_version)
     return;
-  s_version->setSubText (a_text);
+
+  /* create buffer holder for version text */
+  if (s_versionText == nullptr)
+    s_versionText = new QString();
+
+  /* if provided version is not empty */
+  if (!a_text.isEmpty())
+    {
+      /* store and display */
+      *s_versionText  = a_text;
+      s_version->setSubText (a_text);
+    }
+
+  /* if no version text provided */
+  else
+    {
+      /* if version text is stored inside buffer holder */
+      if(s_versionText && !s_versionText->isEmpty())
+        s_version->setSubText (*s_versionText);
+    }
 }
 
 /********************************************
@@ -147,6 +173,8 @@ void SettingsModel::slotSetup()
         s_licenceKey = btn;
       if (item.text[1] == "@version")
         s_version = btn;
+      if (item.text[1] == "@country")
+        s_country = btn;
 
       /* connect signal */
       connect (btn, &DapGuiButton::clicked,
@@ -157,10 +185,32 @@ void SettingsModel::slotSetup()
     }
 }
 
-void SettingsModel::slotSetDaysLeft(QString days)
+void SettingsModel::slotSetDaysLeft (QString days)
 {
-  if (s_licenceKey)
-    s_licenceKey->setSubText (days);
+  if (!s_licenceKey)
+    return;
+
+  s_licenceKey->setSubText (days);
+
+//  /* create buffer holder for version text */
+//  if (s_daysLeftText == nullptr)
+//    s_daysLeftText  = new QString;
+
+//  /* if provided days is not empty */
+//  if (!days.isEmpty())
+//    {
+//      /* store and display */
+//      *s_daysLeftText = days;
+//      s_licenceKey->setSubText (days);
+//    }
+
+//  /* if no days left text provided */
+//  else
+//    {
+//      /* if version text is stored inside buffer holder */
+//      if(s_daysLeftText && !s_daysLeftText->isEmpty())
+//        s_licenceKey->setSubText (*s_daysLeftText);
+//    }
 }
 
 void SettingsModel::slotResetDaysLeft()
@@ -193,6 +243,10 @@ void SettingsModel::slotRetranslate()
       button->setMainText (item.text[0]);
       button->setSubText (item.text[1]);
     }
+
+  /* update version and days left */
+  setVersionText (QString());
+  slotSetDaysLeft (QString());
 }
 
 /********************************************
@@ -206,6 +260,16 @@ bool SettingsModel::eventFilter(QObject *o, QEvent *e)
     setMinimumWidth(widget()->minimumSizeHint().width() + verticalScrollBar()->width());
 
   return QScrollArea::eventFilter(o, e);
+}
+
+void SettingsModel::showEvent(QShowEvent *event)
+{
+    Q_UNUSED(event)
+    QTimer::singleShot(100, [=](){
+        QString base_location = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
+        QString code = DapServersData::m_countryMap[base_location];
+        s_country->setSubText (code);
+    });
 }
 
 /********************************************
@@ -222,7 +286,10 @@ void SettingsModel::_updateLabels()
 
     _SItem{SI_BUTTONRED,  {tr ("Get a new licence key"), /*"265 days left"*/" "}, "settings_icon ic_renew", cbLicenceGet},
     _SItem{SI_BUTTON,     {tr ("Reset license key"), ""}, "settings_icon ic_key", cbLicenceReset},
-    /* WIP */ /// _SItem{SI_LINK,       {tr ("Language"), ""}, "settings_icon ic_language", cbLanguage},
+    _SItem{SI_LINK,       {tr ("Your country"), "@country"}, "settings_icon ic_country", cbCountry},
+#ifdef ENABLE_LANGUAGE_SUPPORT
+    _SItem{SI_LINK,       {tr ("Language"), ""}, "settings_icon ic_language", cbLanguage},
+#endif // ENABLE_LANGUAGE_SUPPORT
 #ifndef DISABLE_THEMES
     _SItem{SI_LINK,       {tr ("Color theme"), ""}, "settings_icon ic_theme", cbColorTheme},
 #endif // DISABLE_THEMES
@@ -265,6 +332,7 @@ void cbLicenceGet()     { emit s_settings->sigLicenceGet(); }
 void cbLicenceReset()   { emit s_settings->sigLicenceReset(); }
 void cbLanguage()       { emit s_settings->sigLanguage(); }
 void cbColorTheme()     { emit s_settings->sigColorTheme(); }
+void cbCountry()        { emit s_settings->sigCountry(); }
 
 /* support */
 void cbBugSend()        { emit s_settings->sigBugSend(); }

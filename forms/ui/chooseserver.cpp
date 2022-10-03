@@ -55,5 +55,4 @@ void ChooseServer::setSelectedServer(QString name)
 {
     ui->scrollArea->setSelectedItem(name);
 }
-
 /*-----------------------------------------*/

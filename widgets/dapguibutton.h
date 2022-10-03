@@ -9,6 +9,7 @@
 #include <QMap>
 #include "style/dapguistylemanager.h"
 #include "dapguilineedit.h"
+#include "dapguilineeditnative.h"
 #include <memory>
 
 /* DEFS */
@@ -50,6 +51,7 @@ public:
     IconMainSub,          ///< icon, main, sub
     EditTopMainBottomSub, ///< top:edit, bottom:sub
     IconMainSubIcon,      ///< icon, main, sub, icon
+    EditTopMainBottomSubPrivate, ///< top:edit, bottom:sub
   };
   Q_ENUM (ButtonStyle)
   /// @}
@@ -151,6 +153,8 @@ public:
   DapGuiLineEdit *edit() const;
   void setEdit (QWidget *newEdit) const;
 
+  DapGuiLineEditNative *editNative() const;
+
   void setPlaceholderText(const QString &text);
   void insert(const QString &text);
   void textChangedSignalLock(bool lock);
@@ -175,6 +179,9 @@ public:
 
   int maxLength() const;
   void setMaxLength (const int &max);
+
+  void setMainAlignment (const Qt::Alignment &a_align);
+  void setSubAlignment (const Qt::Alignment &a_align);
 
   void setupStyle();    ///< @brief update style sheet and repaint
   void setupLabels();   ///< @brief update label's css style property

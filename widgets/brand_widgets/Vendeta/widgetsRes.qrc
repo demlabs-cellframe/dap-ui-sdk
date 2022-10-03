@@ -31,6 +31,8 @@
         <file compress="1">gfx/light/btn_server_bg.png</file>
         <file compress="1">gfx/light/ic_close.png</file>
         <file compress="1">gfx/light/ic_close_hover.png</file>
+        <file compress="1">gfx/light/btn_filter_clear.png</file>                
+        <file compress="1">gfx/light/btn_filter_clear_hover.png</file>            
         <file compress="1">gfx/dark/btn_bg.png</file>
         <file compress="1">gfx/dark/btn_bg_hover_active.png</file>
         <file compress="1">gfx/dark/check_btn_off.png</file>
@@ -55,8 +57,18 @@
         <file compress="1">gfx/dark/btn_server_bg.png</file>
         <file compress="1">gfx/dark/ic_close.png</file>
         <file compress="1">gfx/dark/ic_close_hover.png</file>
+        <file compress="1">gfx/dark/btn_filter_clear.png</file>                
+        <file compress="1">gfx/dark/btn_filter_clear_hover.png</file>        
         <file compress="1">style.css</file>
         <file compress="1">theme.json</file>
-        <file>fonts/Jost-VariableFont_wght.ttf</file>
+        <file compress="1">fonts/Jost-Regular.ttf</file>
+        <file compress="1">fonts/Jost-Medium.ttf</file>
+        <file>icons/no_connection.png</file>
+        <file>icons/middle.png</file>
+        <file>icons/low_2.png</file>
+        <file>icons/low.png</file>
+        <file>icons/full_2.png</file>
+        <file>icons/full.png</file>
+        <file>icons/filter.png</file>        
     </qresource>
 </RCC>

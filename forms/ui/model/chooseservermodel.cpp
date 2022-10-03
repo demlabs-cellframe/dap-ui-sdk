@@ -66,30 +66,34 @@ void ChooseServerModel::slotSetup()
     {
       /* get data */
       QString text = m_model->data (m_model->index (i)).toString();
+      DapServerInfo::connectionQuality connectionQuality = DapServerInfo::connectionQuality(m_model->data (m_model->index (i), CONNECTION_QUALITY).toInt());
+      qint16 ping = m_model->data (m_model->index (i), PING_ROLE).toInt();
 
       /* create item */
-      auto item = new DapGuiRadio;
+      auto item = new DapGuiRadioBase;
       m_list << item;
 
       /* setup */
       item->setText (text);
+      item->setQulityIcon(connectionQuality);
+      item->setPingToolTip(ping);
       item->setSeparator (i + 1 < size);
       item->setCssStyle ("choser-item");
       lay->addWidget (item);
 
       /* signals */
-      connect (item, &DapGuiRadio::toggled,
+      connect (item, &DapGuiRadioBase::clicked,
                this, &ChooseServerModel::slotToggled);
     }
 
-  QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  lay->addItem (sp);
+  //QSpacerItem *sp = new QSpacerItem (20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  //lay->addItem (sp);
 
   if (!m_list.isEmpty())
     emit filled();
 }
 
-void ChooseServerModel::slotToggled(bool checked)
+void ChooseServerModel::slotToggled()
 {
 //  if(_hook)
 //    {
@@ -98,8 +102,8 @@ void ChooseServerModel::slotToggled(bool checked)
 //    }
 
   /* get sender radio */
-  auto s = qobject_cast<DapGuiRadio*> (sender());
-  if (!s || checked == false)
+  auto s  = qobject_cast<DapGuiRadioBase*> (sender());
+  if (!s)
     return;
 
   /* get it's index */
@@ -110,12 +114,8 @@ void ChooseServerModel::slotToggled(bool checked)
   /* get current server */
   m_currentText = s->text();
 
-  /* show selection and select */
-  QTimer::singleShot(300, [&]
-  {
-    /* send selection event signal */
-    emit m_cs->sigSelect (m_currentIndex, m_currentText);
-  });
+  /* send selection event signal */
+  emit m_cs->sigSelect (m_currentIndex, m_currentText);
 }
 
 void ChooseServerModel::setSelectedItem(QString name)

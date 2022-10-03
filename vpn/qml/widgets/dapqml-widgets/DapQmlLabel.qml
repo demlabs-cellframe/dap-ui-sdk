@@ -46,9 +46,12 @@ Item {
     property real padding
     property real rightPadding
     property real topPadding
+    property real lineHeight: 1
 
     property real contentWidth: label.contentWidth
     property real contentHeight: label.contentHeight
+
+    property Text label: label
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
 
@@ -97,6 +100,7 @@ Item {
         color: root.color
         wrapMode: root.wrapMode
         textFormat: root.textFormat
+        lineHeight: root.lineHeight
 
         font {
             family: root.fontFamiliy

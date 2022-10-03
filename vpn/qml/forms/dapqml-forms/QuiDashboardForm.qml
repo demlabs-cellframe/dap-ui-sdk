@@ -214,7 +214,7 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             mainText: "0 kB/s"
-            subText: "DOWNLOAD"
+            subText: qsTr("DOWNLOAD") + lang.notifier
             mainQss: "dashboard-speed-main"
             subQss: "dashboard-speed-sub"
         }
@@ -224,7 +224,7 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             mainText: "0 kB/s"
-            subText: "UPLOAD"
+            subText: qsTr("UPLOAD") + lang.notifier
             mainQss: "dashboard-speed-main"
             subQss: "dashboard-speed-sub"
         }
@@ -246,8 +246,8 @@ Item {
         frame: true
 
         buttonStyle: DapQmlButton.TopSubBottomMain
-        mainText: "North America - Canada"
-        subText: "231:532:531:20"
+        mainText: qsTr("Auto") + lang.notifier
+        subText: qsTr("CHOOSING SERVER") + lang.notifier
         mainQss: "dashboard-server-main"
         subQss: "dashboard-server-sub"
         qss: "dashboard-server-container"

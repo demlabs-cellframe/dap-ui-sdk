@@ -18,6 +18,8 @@
 	switch-toggle-on: 			"qrc:/light/switch/toggle_on.png";
 	switch-toggle-off: 			"qrc:/light/switch/toggle_off.png";
 	button-frame: 				"qrc:/light/btn_server_bg.png";
+    checkbox-on:                "qrc:/light/check_btn_on.png";
+    checkbox-off:               "qrc:/light/check_btn_off.png";
 	radio-on: 					"qrc:/light/radio_btn_on.png";
 	radio-off: 					"qrc:/light/radio_btn_off.png";
 	separator-left:             "qrc:/light/separator_left.png";
@@ -51,6 +53,8 @@
 	switch-toggle-on: 			"qrc:/dark/switch/toggle_on.png";
 	switch-toggle-off: 			"qrc:/dark/switch/toggle_off.png";
 	button-frame: 				"qrc:/dark/btn_server_bg.png";
+    checkbox-on:                "qrc:/dark/check_btn_on.png";
+    checkbox-off:               "qrc:/dark/check_btn_off.png";
 	radio-on: 					"qrc:/dark/radio_btn_on.png";
 	radio-off: 					"qrc:/dark/radio_btn_off.png";
 	separator-left:             "qrc:/dark/separator_left.png";
@@ -124,6 +128,16 @@
 
 
 
+.checkbox-on
+{
+    qproperty-scaledPixmap: "@checkbox-on";
+}
+
+.checkbox-off
+{
+    qproperty-scaledPixmap: "@checkbox-off";
+}
+
 .radio-on
 {
 	qproperty-scaledPixmap: "@radio-on";
@@ -140,7 +154,6 @@
 	scaled-font: scaled(16);	
 	font-weight: Font.Normal;
 }
-
 
 
 
@@ -237,6 +250,11 @@
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_copy.png");
 }
 
+.ic_copy_pressed
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_copy_pressed.png");
+}
+
 .ic_trash
 {
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_trash.png");
@@ -287,6 +305,35 @@
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/icon_offline.png");
 }
 
+.ic_conn-0
+{
+    qproperty-scaledPixmap: url("qrc:/nonthemed/conn-icon-0.png");
+}
+
+.ic_conn-1
+{
+    qproperty-scaledPixmap: url("qrc:/nonthemed/conn-icon-1.png");
+}
+
+.ic_conn-2
+{
+    qproperty-scaledPixmap: url("qrc:/nonthemed/conn-icon-2.png");
+}
+
+.ic_conn-3
+{
+    qproperty-scaledPixmap: url("qrc:/nonthemed/conn-icon-3.png");
+}
+
+.ic_conn-4
+{
+    qproperty-scaledPixmap: url("qrc:/nonthemed/conn-icon-4.png");
+}
+
+.ic_conn-5
+{
+    qproperty-scaledPixmap: url("qrc:/nonthemed/conn-icon-5.png");
+}
 
 /****************************************************
  * Main window
@@ -350,7 +397,7 @@
 
 .popup-dalog-middle
 {
-	scaled-rect: scaled(-1,nan,86,36,false,14);
+	scaled-rect: scaled(nan,nan,86,36,false,14);
 	color: "@brand";
 }
 
@@ -871,7 +918,12 @@
 
 .ph-icn-resizer
 {
-	scaled-rect: scaled(nan,nan,32,32,true);
+	scaled-rect: scaled(nan,nan,56,56,true);
+}
+
+.ph-icn-cpy-resizer
+{
+	scaled-rect: scaled(nan,nan,40,40,true);
 }
 
 .ph-notice-resizer

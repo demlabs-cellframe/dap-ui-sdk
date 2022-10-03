@@ -16,12 +16,19 @@ class DapQmlModelSettings : public QAbstractTableModel
   Q_OBJECT
 
   /****************************************//**
+   * @name PROPERTIES
+   *******************************************/
+  /// @{
+  Q_PROPERTY (QString notifier READ notifier NOTIFY languageChanged)
+  /// @}
+
+  /****************************************//**
    * @name DEFS
    *******************************************/
   /// @{
 public:
 
-  typedef void (*ItemCB) ();
+  typedef void (*ItemCB) (QObject *a_item);
 
   enum StyleId
   {
@@ -31,6 +38,7 @@ public:
     SI_BUTTONRED,
     SI_BUTTONGRAY,
     SI_LINK,
+    SI_CHECKBOX,
     SI_SPACER
   };
   Q_ENUM(StyleId)
@@ -50,7 +58,8 @@ public:
   /// @{
 public:
   static DapQmlModelSettings *instance();
-  Q_INVOKABLE void exec(int index);
+  Q_INVOKABLE void exec (int a_index, QObject *a_item = nullptr);
+  Q_INVOKABLE QString notifier() const;
   /// @}
 
   /****************************************//**
@@ -70,14 +79,18 @@ public:
    *******************************************/
   /// @{
 signals:
+
+  void sigSetDaysLeft (QString days);
+  void sigResetDaysLeft();
+
+#ifndef BRAND_RISEVPN
+
   /* settings */
   void sigLicenceGet();
   void sigLicenceReset();
   void sigLanguage();
   void sigCountry();
   void sigColorTheme();
-  void sigSetDaysLeft (QString days);
-  void sigResetDaysLeft();
 
   /* support */
   void sigBugSend();
@@ -89,6 +102,32 @@ signals:
   void sigTermsOfUse();
   void sigPrivacyPolicy();
   void sigVersion();
+
+#else // BRAND_RISEVPN
+
+  /* settings */
+  void sigSerialGet();
+  void sigSerialReset();
+  void sigLanguage();
+  void sigManageServers();
+  void sigCryptography();
+  void sigDarkTheme (bool a_state);
+
+  /* support */
+  void sigBugSend();
+  void sigTelegramBot();
+
+  /* info */
+  void sigBugReport();
+  void sigLicenceHistory();
+  void sigTermsOfUse();
+  void sigPrivacyPolicy();
+  void sigVersion();
+
+#endif // BRAND_RISEVPN
+
+  /* retranslation */
+  void languageChanged();
   /// @}
 
   /****************************************//**
@@ -99,6 +138,8 @@ public slots:
   void slotUpdateLabels();
   void slotSetDaysLeft (QString a_days);
   void slotResetDaysLeft();
+protected slots:
+  void slotRetranslate();
   /// @}
 };
 
