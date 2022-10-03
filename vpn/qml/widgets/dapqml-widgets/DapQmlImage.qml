@@ -4,6 +4,7 @@ import QtQuick 2.12
 import Scaling 1.0
 import DapQmlImageItem 1.0
 
+
 /****************************************//**
  * @brief Dap QML Image Widget
  * @ingroup groupDapQmlWidgets

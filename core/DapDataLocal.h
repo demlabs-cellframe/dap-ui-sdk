@@ -27,8 +27,10 @@ const QString TEXT_LOGIN                = "login";
 const QString TEXT_PASSWORD             = "password";
 const QString TEXT_TX_OUT               = "tx_out";
 const QString SETTING_COUNTRY           = "Country_code";
+const QString SETTING_AUTHORIZATION     = "authorization";
 
 class DapSerialKeyData;
+enum class Authorization;
 
 class DapDataLocal : public QObject
 {
@@ -95,6 +97,9 @@ public:
 
     DapBugReportHistory *bugReportHistory();
 
+    Authorization authorizationType();
+    void setAuthorizationType(Authorization type);
+
 public slots:
     void setLogin(const QString &a_login);
     void setPassword(const QString &password);
@@ -150,3 +155,10 @@ void DapDataLocal::saveToSettings(const QString &a_setting, const T &a_value)
 {
     this->saveEncryptedSetting(a_setting, DapUtils::toByteArray(a_value));
 }
+
+enum class Authorization
+{
+    account,
+    serialKey,
+    certificate
+};

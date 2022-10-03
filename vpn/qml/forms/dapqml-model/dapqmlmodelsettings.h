@@ -10,6 +10,8 @@
  * @date 27.12.2021
  * @author Mikhail Shilenko
  *******************************************/
+class DapQmlModelSettingsItem;
+typedef DapQmlModelSettingsItem Item;
 
 class DapQmlModelSettings : public QAbstractTableModel
 {
@@ -140,6 +142,10 @@ public slots:
 protected slots:
   void slotRetranslate();
   /// @}
+private:
+  void _buildMenuItemsList();
+  QList<Item> s_items;
+  void menuConstructor(QSet<QString> menuItems);
 };
 
 class DapQmlModelSettingsItem : public QObject
@@ -152,6 +158,8 @@ class DapQmlModelSettingsItem : public QObject
   QString m_textMain;
   QString m_textSub;
   QString m_icon;
+  /*item menu attribute*/
+  QString m_itemType;
   DapQmlModelSettings::ItemCB m_cb;
 
 public:
@@ -163,6 +171,7 @@ public:
       const QString a_textMain,
       const QString a_textSub,
       const QString a_icon,
+      const QString a_itemType,
       const DapQmlModelSettings::ItemCB a_callback);
 
   Q_INVOKABLE void set (const QString a_name, const QVariant a_value);

@@ -114,6 +114,7 @@ Item {
      ********************************************/
 
     MouseArea {
+        id: ma
         anchors.fill: root
         onClicked: root.clicked()
     }

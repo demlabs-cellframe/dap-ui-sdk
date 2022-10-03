@@ -124,7 +124,7 @@ Item {
         qss: "switch-toggle-off"
 
         onClicked: toggle()
-        Behavior on x { PropertyAnimation { duration: 250; easing.type: Easing.InQuad } }
+        Behavior on x { PropertyAnimation { duration: 125; easing.type: Easing.InQuad } }
     }
 
     /****************************************//**

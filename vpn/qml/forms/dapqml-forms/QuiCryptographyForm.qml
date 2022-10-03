@@ -192,7 +192,7 @@ Item {
 
                 property int myIndex: model.index
 
-                width: cryptoListView.width
+                width: cryptoListView.width - moreBtn.width / 2
                 height: resizerItem.height
                 buttonStyle: DapQmlButton.Style.IconMainSubIcon
                 mainText: model.display
@@ -202,6 +202,7 @@ Item {
                 mainQss: "crypto-btn-lbl-main"
                 subQss: "crypto-btn-lbl-sub"
                 iconSize: 0
+                mainTextOffsetX: moreBtn.width / 2
 
                 /* more button */
                 Button {
@@ -214,7 +215,7 @@ Item {
                     }
                     background: Rectangle { color: "transparent" }
 
-                    x: parent.width - width
+                    x: parent.width - width * 1 / 2
                     y: (parent.height - height) / 2 - height / 8
                     z: 16
                     width: resizerItem.fontSize * 1.25
