@@ -245,12 +245,12 @@
 
 .frame-light
 {
-	border-image: url("://gfx/light/btn_server_bg.png");
+	border-image: url(:/light/btn_server_bg.png);
 }
 
 .frame-dark
 {
-	border-image: url("://gfx/dark/btn_server_bg.png");
+	border-image: url(:/dark/btn_server_bg.png);
 }
 
 /****************************************************
@@ -525,32 +525,32 @@
 
 .csep-left-light
 {
-	qproperty-scaledPixmap: url(:/gfx/light/separator_left.png);
+	qproperty-scaledPixmap: url(:/light/separator_left.png);
 }
 
 .csep-mid-light
 {
-	qproperty-scaledPixmap: url(:/gfx/light/separator_mid.png);
+	qproperty-scaledPixmap: url(:/light/separator_mid.png);
 }
 
 .csep-right-light
 {
-	qproperty-scaledPixmap: url(:/gfx/light/separator_right.png);
+	qproperty-scaledPixmap: url(:/light/separator_right.png);
 }
 
 .csep-left-dark
 {
-	qproperty-scaledPixmap: url(:/gfx/dark/separator_left.png);
+	qproperty-scaledPixmap: url(:/dark/separator_left.png);
 }
 
 .csep-mid-dark
 {
-	qproperty-scaledPixmap: url(:/gfx/dark/separator_mid.png);
+	qproperty-scaledPixmap: url(:/dark/separator_mid.png);
 }
 
 .csep-right-dark
 {
-	qproperty-scaledPixmap: url(:/gfx/dark/separator_right.png);
+	qproperty-scaledPixmap: url(:/dark/separator_right.png);
 }
 
 
@@ -571,7 +571,7 @@
 
 .cpxte-spooser
 {
-  qproperty-scaledPixmap: url(:/gfx/dark/report_bg.png);
+  qproperty-scaledPixmap: url(:/dark/report_bg.png);
 }
 
 .cpxte-text-placeholder-light
@@ -633,12 +633,12 @@
 
 .cpxte-spooser-light
 {
-  qproperty-scaledPixmap: url(:/gfx/light/report_bg.png);
+  qproperty-scaledPixmap: url(:/light/report_bg.png);
 }
 
 .cpxte-spooser-dark
 {
-  qproperty-scaledPixmap: url(:/gfx/dark/report_bg.png);
+  qproperty-scaledPixmap: url(:/dark/report_bg.png);
 }
 
 

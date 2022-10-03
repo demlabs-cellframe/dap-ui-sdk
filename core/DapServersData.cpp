@@ -159,7 +159,7 @@ void DapServersData::packServerList()
 QMap<QString, QString> DapServersData::m_countryMap = {
     {"Andorra"                          , "AD"},
     {"United arab emirates"             , "AE"},
-    {"Afghanistan"                      , "AF"},
+    {"Afganistan"                       , "AF"},
     {"Antigua and barbuda"              , "AG"},
     {"Anguilla"                         , "AI"},
     {"Albania"                          , "AL"},
@@ -225,7 +225,7 @@ QMap<QString, QString> DapServersData::m_countryMap = {
     {"Micronesia"                       , "FM"},
     {"France"                           , "FR"},
     {"Gabon"                            , "GA"},
-    {"United kingdom"                   , "UK"},
+    {"United kingdom"                   , "GB"},
     {"England"                          , "GB"},
     {"Grenada"                          , "GD"},
     {"Georgia"                          , "GE"},
@@ -402,7 +402,7 @@ QVariant DapServersData::data(const QModelIndex &index, int role) const
         return findInCountriesMap(si.name.toUpper());
     }
     case CONNECTION_QUALITY: {
-      return m_servers.at(index.row()).connection_quality;
+      return int (m_servers.at(index.row()).connection_quality);
     }
     case PING_ROLE: {
       return m_servers.at(index.row()).ping;

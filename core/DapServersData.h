@@ -26,6 +26,7 @@ public:
     void packServerList();
 
     QList<DapServerInfo>& servers(){return m_servers;}
+    const QList<DapServerInfo>& servers() const {return m_servers;}
     QList<DapServerInfo>& bestRegionServers(){return m_bestRegionServerList;}
     QList<DapServerInfo>& pingServerList(){return m_pingServerList;}
 

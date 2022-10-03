@@ -50,7 +50,8 @@ FORMS +=  \
 }
 
 RESOURCES += \
-    $$PWD/brand_widgets/$$BRAND/widgetsRes.qrc
+    $$PWD/brand_widgets/$$BRAND/widgetsRes.qrc \
+    $$PWD/nonbrand_widgets/widgetsNonBrandRes.qrc
 
 DISTFILES += \
     $$PWD/DoxyLayout.xml \

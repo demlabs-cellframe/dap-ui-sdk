@@ -21,8 +21,5 @@
         <file compress="1">asset/ic_terms_policy.png</file>
         <file compress="1">asset/ic_theme.png</file>
         <file compress="1">asset/ic_trash.png</file>
-        <file compress="1">asset/ic_location.png</file>        
-        <file compress="1">asset/ic_copy.png</file>
-        <file compress="1">asset/ic_copy_pressed.png</file>
     </qresource>
 </RCC>

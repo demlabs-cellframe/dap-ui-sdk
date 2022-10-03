@@ -1,0 +1,35 @@
+<RCC>
+    <qresource prefix="/">
+        <file compress="1">light/ic_arrow-right.png</file>
+        <file compress="1">light/report_bg.png</file>
+        <file compress="1">light/report_bg_border.png</file>
+        <file compress="1">light/separator_left.png</file>
+        <file compress="1">light/separator_mid.png</file>
+        <file compress="1">light/separator_right.png</file>
+        <file compress="1">light/btn_server_bg.png</file>
+        <file compress="1">dark/ic_arrow-right.png</file>
+        <file compress="1">dark/report_bg_border.png</file>
+        <file compress="1">dark/separator_left.png</file>
+        <file compress="1">dark/separator_mid.png</file>
+        <file compress="1">dark/separator_right.png</file>
+        <file compress="1">dark/btn_server_bg.png</file>
+        <file compress="1">fonts/Roboto-Bold.ttf</file>
+        <file compress="1">fonts/Lato-Regular.ttf</file>
+        <file compress="1">fonts/Lato-Bold.ttf</file>
+        <file compress="1">fonts/Jost-Regular.ttf</file>
+        <file compress="1">fonts/Jost-Medium.ttf</file>
+        <file compress="1">fonts/Exo2-Regular.ttf</file>
+        <file compress="1">fonts/Blinker-SemiBold.ttf</file>
+        <file compress="1">stripes.png</file>
+        <file compress="1">nonthemed/conn-icon-0.png</file>
+        <file compress="1">nonthemed/conn-icon-1.png</file>
+        <file compress="1">nonthemed/conn-icon-2.png</file>
+        <file compress="1">nonthemed/conn-icon-3.png</file>
+        <file compress="1">nonthemed/conn-icon-4.png</file>
+        <file compress="1">nonthemed/conn-icon-5.png</file>
+        <file compress="1">nonthemed/password-hide.png</file>
+        <file compress="1">nonthemed/password-show.png</file>
+        <file compress="1">nonthemed/arrow-up.png</file>
+        <file compress="1">nonthemed/arrow-down.png</file>
+    </qresource>
+</RCC>
