@@ -14,7 +14,8 @@ void DapCmdSignUp::sendSignUpRequest(const QString &a_site, const QString &a_ema
     obj["site"] = a_site;
     obj["email"] = a_email;
     obj["password"] = a_password;
-    sendCmd(&obj);
+//    sendCmd(&obj);
+    emit sigSignUpAnswer("");
 }
 
 void DapCmdSignUp::handleResult(const QJsonObject& result)

@@ -161,7 +161,8 @@ Item {
             width: 28
             inactive: "qrc:/light/btn_filter_clear.png"
             active: "qrc:/light/btn_filter_clear_hover.png"
-            visible: true
+            qss: "ch-country-filter-clear"
+            visible: countryFilterLine.mainText.length > 0
             onClicked: {
                 countryFilterLine.mainText = "";
                 countryFilterLine.setFocus();

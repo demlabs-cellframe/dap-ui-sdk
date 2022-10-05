@@ -32,7 +32,7 @@ Item {
     property string value: inputField.text
     property string inputMask
     property var fontFamiliy: Brand.fontName()
-    property int fontSize: 12
+    property int fontSize: 14
     property int fontWeight: Font.Normal
 
     onValueChanged: {
@@ -76,6 +76,9 @@ Item {
         titleLabel.qss = (inputField.activeFocus || inputField.text.length)
                 ? "inputfield-placeholder-out c-grey"
                 : "inputfield-placeholder-in c-grey";
+        titleLabel.y = (inputField.activeFocus || inputField.text.length)
+                ? 0
+                : 7;
     }
 
     /// @}
@@ -98,6 +101,7 @@ Item {
     DapQmlLabel {
         id: titleLabel
         width: root.width
+        y: 7
         horizontalAlign: Text.AlignLeft
         qss: "inputfield-placeholder-in c-grey"
         text: root.title
@@ -113,6 +117,7 @@ Item {
     TextField {
         id: inputField
         width: root.width
+        y: 7
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignBottom
         persistentSelection: true

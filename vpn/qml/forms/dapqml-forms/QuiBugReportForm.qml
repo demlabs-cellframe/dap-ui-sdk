@@ -464,7 +464,7 @@ Item {
                                 if (mouse.source === Qt.MouseEventNotSynthesized)
                                     contextMenu.open()
                         }
-                        Menu {
+                        Controls.Menu {
                             id: contextMenu
                             MenuItem {
                                 text: qsTr("Cut") + lang.notifier

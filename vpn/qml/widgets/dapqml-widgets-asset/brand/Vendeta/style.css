@@ -167,6 +167,9 @@
 .form-title-close-btn
 {
 	scaled-rect: scaled(0,0,28,28,true);
+        active: "@btn-close-hover";
+        inactive: "@btn-close";
+
 }
 
 .form-title-label
@@ -1012,4 +1015,10 @@
 .ch-country-filter-text
 {
         color: "@text";
+}
+
+.ch-country-filter-clear
+{
+        inactive: "@country-filter-clear-hover";
+        active: "@country-filter-clear";
 }

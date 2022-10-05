@@ -93,6 +93,8 @@ Rectangle {
     property var labelIcon
     property var labelIconRight
 
+    property int mainTextOffsetX: 0
+
     DapQmlStyle { id: style; qss: root.qss; item: root }
 
     MouseArea {
@@ -132,6 +134,11 @@ Rectangle {
      * @name FUNCTIONS
      ********************************************/
     /// @{
+
+    function setEnable(value) {
+        root.enabled = value;
+        root.opacity = (value)? 1.0: 0.5;
+    }
 
     /* store references */
     Component.onCompleted: {
@@ -664,7 +671,8 @@ Rectangle {
             /* main text */
             DapQmlLabel {
                 id: imsiMain
-                x: imsiIcon.width + imsiIcon.width / 4
+                x: (imsiIcon.width > 0) ? imsiIcon.width + imsiIcon.width / 4
+                                        : root.mainTextOffsetX
                 width: contentWidth
                 height: parent.height
 
