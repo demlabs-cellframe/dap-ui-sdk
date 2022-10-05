@@ -205,7 +205,6 @@ Item {
                 width: resizer.width
                 height: resizer.height
                 y: spacer.height / 2
-                modelIndex: model.index
                 onClicked: {
                     root.sigSelect (model.index, model.name);
                     csListView.currentIndex = model.index;

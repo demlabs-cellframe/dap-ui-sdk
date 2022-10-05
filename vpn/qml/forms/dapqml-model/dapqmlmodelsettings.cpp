@@ -108,10 +108,6 @@ QVariant DapQmlModelSettings::data (const QModelIndex &index, int role) const
   if (field.isEmpty())
     return QVariant();
 
-//  if (index.row() == s_countryIndex && field == "textSub")
-////      qDebug() << "-----------" << getCurrentCountryName();
-//      //s_items[index.row()].set("textSub", getCurrentCountryName());
-
   auto item  = s_items.value (index.row());
   return item.get (field);
 }

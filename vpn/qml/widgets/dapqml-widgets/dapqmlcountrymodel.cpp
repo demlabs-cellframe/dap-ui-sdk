@@ -12,7 +12,6 @@ DapQmlCountryModel::DapQmlCountryModel(QObject *parent)
   , m_Countries (DapServersData::m_countryMap.keys())
   , m_checkedIndex(-1)
 {
-    qDebug() << "DapQmlCountryModel::DapQmlCountryModel" << DapServersData::m_countryMap.keys().size();
     updateCheckedIndex();
 }
 
@@ -35,8 +34,12 @@ void DapQmlCountryModel::updateCheckedIndex()
 
 bool DapQmlCountryModel::countryExist()
 {
+#ifndef BRAND_RISEVPN
     auto country = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
-    return !country .isNull() && !country.isEmpty();
+    return !country.isNull() && !country.isEmpty();
+#else
+    return true;
+#endif
 }
 
 /********************************************

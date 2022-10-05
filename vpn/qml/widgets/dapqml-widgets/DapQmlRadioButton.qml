@@ -21,7 +21,7 @@ import DapQmlStyle 1.0
 RadioButton {
     id: root
     text: ""
-    checked: true
+    checked: false
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
 
@@ -45,8 +45,6 @@ RadioButton {
     /// @brief padding between icon and text label
     property real textPadding: root.indicator.width + root.spacing
 
-    ///
-    property int modelIndex: -1
 
 
     /// @}
