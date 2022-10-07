@@ -164,7 +164,7 @@ void DapQmlModelSettings::_buildMenuItemsList()
 
       Item{SI_BUTTONRED,  tr ("Get new licence key"), " ", "settings_icon ic_renew", "get_new_licence_key",               [](QObject*) { emit __inst->sigSerialGet(); } },
       Item{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key", "reset_licence_key",                      [](QObject*) { emit __inst->sigSerialReset(); } },
-      Item{SI_BUTTONRED,  tr ("Logout"), " ", "settings_icon ic_renew", "logout",                                         [](QObject*) { emit __inst->sigSerialReset(); } },
+      Item{SI_BUTTONRED,  tr ("Logout"), " ", "settings_icon ic_renew", "logout",                                         [](QObject*) { emit __inst->sigLogout(); } },
   #ifndef DISABLE_SETTINGS_LANGUAGE
       Item{SI_LINK,       tr ("Language"), "", "settings_icon ic_language", "language",                                           [](QObject*) { emit __inst->sigLanguage(); } },
   #endif // DISABLE_SETTINGS_LANGUAGE

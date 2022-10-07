@@ -110,6 +110,7 @@ signals:
   /* settings */
   void sigSerialGet();
   void sigSerialReset();
+  void sigLogout();
   void sigLanguage();
   void sigManageServers();
   void sigCryptography();
