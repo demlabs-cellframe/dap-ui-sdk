@@ -29,8 +29,11 @@ private:
       m_pathToLog = path; }
     void updateCurrentLogName();
     void setLogFile(const QString&);
+    void updateLogFiles();
+    static void writeMessage(QtMsgType type, const QMessageLogContext &ctx, const QString & msg);
 public:
     explicit DapLogger(QObject *parent = nullptr, QString appType = "", size_t prefix_width = 10);
+    static DapLogger* instance();
     QString getPathToLog(){ return m_pathToLog; }
     static QString defaultLogPath(const QString a_brand);
     static QString currentLogFileName(const QString a_brand, const QString a_appType);
@@ -39,12 +42,13 @@ public:
     void setAppType(QString type){m_appType = type;}
     void clearOldLogs();
     static void setLogLevel(dap_log_level ll);
-    void createChangerLogFiles();
 private:
-    QTimer t;
     QString m_pathToLog;
     QString m_currentLogName;
     QString m_appType;
+    QString m_day;
+signals:
+    void sigMessageHandler();
 };
 
 #endif // DAPLOGGER_H
