@@ -464,24 +464,31 @@ Item {
                                 if (mouse.source === Qt.MouseEventNotSynthesized)
                                     contextMenu.open()
                         }
-                        Controls.Menu {
+                        DapQmlMenu {
                             id: contextMenu
-                            MenuItem {
+                            shortcuts: [
+                                "Ctrl+X",
+                                "Ctrl+C",
+                                "Ctrl+V",
+                                ""
+                            ]
+                            Action {
                                 text: qsTr("Cut") + lang.notifier
                                 shortcut: "Ctrl+X"
                                 onTriggered: ctxMenu.execCut();
+                                Component.onCompleted: console.log(shortcut)
                             }
-                            MenuItem {
+                            Action {
                                 text: qsTr("Copy") + lang.notifier
                                 shortcut: "Ctrl+C"
                                 onTriggered: ctxMenu.execCopy();
                             }
-                            MenuItem {
+                            Action {
                                 text: qsTr("Paste") + lang.notifier
                                 shortcut: "Ctrl+V"
                                 onTriggered: ctxMenu.execPaste();
                             }
-                            MenuItem {
+                            Action {
                                 text: qsTr("Delete") + lang.notifier
                                 //shortcut: "Delete"
                                 onTriggered: ctxMenu.execDelete();
