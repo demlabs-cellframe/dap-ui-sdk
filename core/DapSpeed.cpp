@@ -63,7 +63,7 @@ QString SpeedToString(quint64 a_speed)
         double speed = a_speed;
         int digitCount = 0;
         if (speed < 1E-2)
-            speed = 0.0;
+            return QString("0 B/s");
         return QString("%1 %2").arg(QString::number(speed, 'f', digitCount)).arg("B/s");
     }
 #endif

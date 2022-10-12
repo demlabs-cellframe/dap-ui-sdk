@@ -45,6 +45,8 @@ RadioButton {
     /// @brief padding between icon and text label
     property real textPadding: root.indicator.width + root.spacing
 
+
+
     /// @}
     /****************************************//**
      * Icon image / Indicator / Checkbox
