@@ -570,6 +570,17 @@
 	opacity: 0.2;
 }
 
+/* SPACE CALC */
+
+.login-space-for3rows
+{
+    scaled-rect: scaled(nan,0,nan,nan,false);
+}
+
+.login-space-for2rows
+{
+    scaled-rect: scaled(nan,0,nan,nan,false);
+}
 
 /****************************************************
  * Settings

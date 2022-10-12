@@ -14,5 +14,6 @@
         <file>dapqml-widgets/DapQmlInputField.qml</file>
         <file>dapqml-widgets/DapQmlMenu.qml</file>
         <file>dapqml-widgets/DapQmlCombobox.qml</file>
+        <file>dapqml-widgets/DapQmlDummy.qml</file>
     </qresource>
 </RCC>

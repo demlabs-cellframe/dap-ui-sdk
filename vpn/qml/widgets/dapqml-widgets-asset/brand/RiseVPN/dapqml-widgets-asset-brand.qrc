@@ -51,8 +51,14 @@
         <file compress="1">light/switch/toggle_off.png</file>
         <file compress="1">light/switch/bg_on.png</file>
         <file compress="1">light/switch/bg_off.png</file>
-        <file>nonthemed/star-checked.png</file>
-        <file>nonthemed/star-unchecked.png</file>
-        <file>nonthemed/more.png</file>
+        <file compress="1">nonthemed/star-checked.png</file>
+        <file compress="1">nonthemed/star-unchecked.png</file>
+        <file compress="1">nonthemed/more.png</file>
+        <file compress="1">light/auth/auth-cert.png</file>
+        <file compress="1">light/auth/auth-cert-pressed.png</file>
+        <file compress="1">light/auth/auth-loginpass.png</file>
+        <file compress="1">light/auth/auth-loginpass-pressed.png</file>
+        <file compress="1">light/auth/auth-serial.png</file>
+        <file compress="1">light/auth/auth-serial-pressed.png</file>
     </qresource>
 </RCC>
