@@ -510,7 +510,7 @@ Item {
             x: (root.width - width) / 2
             y: _pos(0) // title.y + title.height * 2
             width: resizerItem.width
-            height: resizeField.height
+            height: resizeField.height * 1.2
             clip: true
             title: "Title"
         }
@@ -524,10 +524,10 @@ Item {
             x: (root.width - width) / 2
             y: _pos(1) // inputTitle.y + resizerItem.height
             width: resizerItem.width
-            height: resizeField.height
+            height: resizeField.height * 1.2
             clip: true
             title: "Address"
-            inputMask: "000.000.000.000"
+//            inputMask: "000.000.000.000"
         }
 
         /****************************************//**
@@ -539,10 +539,10 @@ Item {
             x: (root.width - width) / 2
             y: _pos(2) // inputAddress.y + resizerItem.height
             width: resizerItem.width
-            height: resizeField.height
+            height: resizeField.height * 1.2
             clip: true
             title: "Port"
-            inputMask: "00000"
+//            inputMask: "00000"
         }
 
     }
