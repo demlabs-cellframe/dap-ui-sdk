@@ -15,16 +15,19 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     dap_set_log_tag_width(prefix_width);
     qInstallMessageHandler(messageHandler);
     m_appType = appType;
-#ifdef DAP_BRAND_LO
-    setPathToLog(defaultLogPath(DAP_BRAND_LO));
-#else
+    qDebug() << appType;
     setPathToLog(defaultLogPath(DAP_BRAND));
-#endif
     QDir dir(m_pathToLog);
     if (!dir.exists()) {
+        qDebug() << "dir not exists";
         dir.mkpath(".");
         system(("chmod -R 667 " + m_pathToLog).toUtf8().data());
     }
+#if defined(Q_OS_ANDROID)
+    system((m_pathToLog + "chmod 667 ").toUtf8().data());
+#else
+    system(("chmod 667 $(find " + m_pathToLog + " -type d)").toUtf8().data());
+#endif
     updateCurrentLogName();
     setLogFile(m_currentLogName);
     createChangerLogFiles();
@@ -56,6 +59,7 @@ void DapLogger::setLogLevel(dap_log_level ll)
 
 void DapLogger::setLogFile(const QString& fileName)
 {
+    qDebug() << "setLogFile: " + fileName;
     QString filePath = getPathToLog() + "/" + fileName;
     dap_common_init(DAP_BRAND, qPrintable(filePath), qPrintable(getPathToLog()));
     DapDataLocal::instance()->setLogFilePath(filePath);

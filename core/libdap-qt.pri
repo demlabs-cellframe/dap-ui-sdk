@@ -24,7 +24,8 @@ SOURCES += \
     $$PWD/DapServerInfo.cpp \
     $$PWD/DapSpeed.cpp \
     $$PWD/DapServersLocalStorage.cpp \
-    $$PWD/DapSignUpData.cpp
+    $$PWD/DapSignUpData.cpp \
+    $$PWD/DapUtils.cpp
 
 HEADERS += \
     $$PWD/DapBugReport.h \

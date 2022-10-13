@@ -66,6 +66,8 @@ void ChooseServerModel::slotSetup()
     {
       /* get data */
       QString text = m_model->data (m_model->index (i)).toString();
+      DapServerInfo::connectionQuality connectionQuality = DapServerInfo::connectionQuality(m_model->data (m_model->index (i), CONNECTION_QUALITY).toInt());
+      qint16 ping = m_model->data (m_model->index (i), PING_ROLE).toInt();
 
       /* create item */
       auto item = new DapGuiRadioBase;
@@ -73,6 +75,8 @@ void ChooseServerModel::slotSetup()
 
       /* setup */
       item->setText (text);
+      item->setQulityIcon(connectionQuality);
+      item->setPingToolTip(ping);
       item->setSeparator (i + 1 < size);
       item->setCssStyle ("choser-item");
       lay->addWidget (item);

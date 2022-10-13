@@ -179,13 +179,6 @@
             </widget>
            </item>
            <item>
-            <widget class="DapGuiWidget" name="kelGuiWidget_Left">
-             <property name="cssStyle">
-              <string>cwpb_close</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="DapGuiLabel" name="labelBugReports">
              <property name="text">
               <string>Bug reports</string>

@@ -126,7 +126,6 @@ BugReports::BugReports (QWidget *parent)
   /* finish setup */
   ui->btnSendReport->setEnabledCustom (false);
   slotSetMode (Write);
-  btnReturnVisible (true);
 }
 
 BugReports::~BugReports()
@@ -253,7 +252,11 @@ void BugReports::slotRetranslated()
         "What actions did you take and what happened."));
   ui->btnAttachScreenshot->setText (tr ("Click here to attach a screenshot"));
   ui->btnSendReport->setText (tr ("send report"));
+  ui->btnCancel->setText (tr ("cancel"));
   ui->btnResultBack->setText (tr ("back"));
+
+  ui->btnAttachScreenshot->setText (tr ("Click here to attach a screenshot"));
+  ui->btnDetachScreenshot->setText (tr ("Remove screenshot"));
 }
 
 void BugReports::_slotRadioTest()
@@ -346,11 +349,8 @@ void BugReports::refreshHistoryList()
   QMetaObject::invokeMethod (ui->scrollArea, &BugReportsModel::slotSetup, Qt::QueuedConnection);
 }
 
-void BugReports::showAttachScreenshotMessage (QString a_message)
+void BugReports::showAttachScreenshot()
 {
-  /* update text label */
-  ui->btnAttachScreenshot->setText (a_message);
-
   /* store visibility state */
   m_attachButtonVisible = true;
   m_detachButtonVisible = false;
@@ -364,11 +364,8 @@ void BugReports::showAttachScreenshotMessage (QString a_message)
   ui->btnDetachScreenshot->setVisible (false);
 }
 
-void BugReports::showDetachScreenshotMessage (QString a_message)
+void BugReports::showDetachScreenshot()
 {
-  /* update text label */
-  ui->btnDetachScreenshot->setText (a_message);
-
   /* store visibility state */
   m_attachButtonVisible = false;
   m_detachButtonVisible = true;
@@ -407,15 +404,12 @@ void BugReports::restoreAttachMessage()
   /* update hidden flag */
   m_hiddenButton  = false;
 
+  /* minor visibility fix */
+  if (!(m_attachButtonVisible || m_detachButtonVisible))
+    m_attachButtonVisible = true;
+
   /* restore visibility state */
   ui->btnAttachScreenshot->setVisible (m_attachButtonVisible);
   ui->btnDetachScreenshot->setVisible (m_detachButtonVisible);
 }
-
-void BugReports::btnReturnVisible (bool visible)
-{
-  ui->btnReturn->setVisible (visible);
-  ui->kelGuiWidget_Left->setVisible (!visible);
-}
-
 /*-----------------------------------------*/

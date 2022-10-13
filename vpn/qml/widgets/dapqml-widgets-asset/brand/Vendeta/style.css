@@ -100,6 +100,11 @@
 	color: "@brand";
 }
 
+.c-background
+{
+    color: "@background";
+}
+
 /****************************************************
  * Widgets
  ***************************************************/
@@ -167,6 +172,9 @@
 .form-title-close-btn
 {
 	scaled-rect: scaled(0,0,28,28,true);
+        active: "@btn-close-hover";
+        inactive: "@btn-close";
+
 }
 
 .form-title-label
@@ -567,6 +575,17 @@
 	opacity: 0.2;
 }
 
+/* SPACE CALC */
+
+.login-space-for3rows
+{
+    scaled-rect: scaled(nan,0,nan,nan,false);
+}
+
+.login-space-for2rows
+{
+    scaled-rect: scaled(nan,0,nan,nan,false);
+}
 
 /****************************************************
  * Settings
@@ -611,6 +630,13 @@
 	color: "@brand";
 	scaled-font: scaled(16);	
 	font-weight: Font.Medium;
+}
+
+.sett-btn-lbl-sub-link
+{
+        color: "@light-grey";
+        scaled-font: scaled(16);
+        font-weight: Font.Normal;
 }
 
 .sett-title-lbl-main
@@ -974,4 +1000,41 @@
 {
 	color: "@text";
 	scaled-font: scaled(14);
+}
+
+/****************************************************
+ * Choose Country
+ ***************************************************/
+
+.ic_location
+{
+        qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_location.png");
+}
+
+.ic_country_filter
+{
+        qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/filter.png");
+}
+
+.ch-country-filter-border
+{
+        border-width: 1;
+        border-color: "@light-grey";
+        radius: 5;
+}
+
+.ch-country-filter
+{
+        color: "@background";
+}
+
+.ch-country-filter-text
+{
+        color: "@text";
+}
+
+.ch-country-filter-clear
+{
+        inactive: "@country-filter-clear-hover";
+        active: "@country-filter-clear";
 }

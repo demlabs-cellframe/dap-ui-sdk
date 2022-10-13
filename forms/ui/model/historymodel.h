@@ -2,8 +2,12 @@
 #define HISTORYMODEL_H
 
 /* INCLUDES */
-#include <dapguibutton.h>
+//#include <dapguibutton.h>
 #include "modelbase.h"
+#include <QTimer>
+
+/* DEFS */
+class DapGuiButton;
 
 /****************************************//**
  * @brief watch licence history list widget
@@ -51,6 +55,22 @@ public:
 
 signals:
   void filled(int rowCount);
+};
+
+/// button animation
+class _ButtonClickAnimation : public QObject
+{
+  Q_OBJECT
+
+  QScopedPointer<QTimer> m_timer;
+  DapGuiButton *m_button;
+
+public:
+  _ButtonClickAnimation (DapGuiButton *a_button);
+
+public slots:
+  void slotStart();
+  void slotFinish();
 };
 
 /*-----------------------------------------*/

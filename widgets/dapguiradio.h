@@ -4,6 +4,10 @@
 /* INCLUDES */
 #include <QWidget>
 #include "dapguiradiostylemanager.h"
+#include "DapServersData.h"
+
+#include "QToolTip"
+#include "QMouseEvent"
 
 /* DEFS */
 namespace Ui { class DapGuiRadioButtonUI; };
@@ -49,6 +53,7 @@ private:
   Ui::DapGuiRadioButtonUI *ui;
   bool m_checked;
   bool m_separator;
+  DapServerInfo::connectionQuality m_connetion_quality = DapServerInfo::connectionQuality::NO_CONNECTION;
   /// @}
 
   /****************************************//**
@@ -67,6 +72,11 @@ public:
   QString text() const;
   void setText (const QString &a_text);
 
+  DapServerInfo::connectionQuality qulityIcon() const;
+  void setQulityIcon(const DapServerInfo::connectionQuality connetion_quality);
+
+  void setPingToolTip(const qint16 a_ping);
+
   QString textCssClass() const;
   void setTextCssClass (const QString &a_cssClass);
 
@@ -75,6 +85,9 @@ public:
 
   QString uncheckedCssClass() const;
   void setUncheckedCssClass (const QString &a_cssClass);
+
+  QString qualityCssClass() const;
+  void setQualityCssClass(const QString &a_cssClass);
 
   bool checked() const;
   void setIndicatorChecked(bool a_newChecked);

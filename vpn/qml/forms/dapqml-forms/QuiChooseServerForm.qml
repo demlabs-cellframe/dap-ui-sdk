@@ -1,6 +1,7 @@
 /* INCLUDES */
 
 import QtQuick 2.1
+import QtQuick.Controls 2.12
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -135,6 +136,22 @@ Item {
                     width: resizer.height * 0.75
                     height: resizer.height * 0.75
                     qss: `ic_conn-${quality}` + csListView.model.hook
+                    ToolTip {
+                        id: id_tooltip
+                        contentItem: Text{
+                            color: "#21be2b"
+                            text: "ping " + ping + " ms"
+                        }
+                        background: Rectangle {
+                            border.color: "#21be2b"
+                        }
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onEntered: id_tooltip.visible = true
+                        onExited: id_tooltip.visible = false
+                    }
                 }
 
                 onClicked: root.sigSelect (model.index, model.name)

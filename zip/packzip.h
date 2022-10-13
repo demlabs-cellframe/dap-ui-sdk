@@ -2,17 +2,7 @@
 #define PACKZIP_H
 #include "zipbase.h"
 
-/*!
- Disabling copy and move func.
- The compiler gives an error message.
-*/
-#define DISABLE_COPY_MOVE(T) \
-    T(const T&) = delete;\
-    T &operator=(const T&) = delete; \
-    T(T&&) = delete; \
-    T &operator=(T&&) = delete; \
-
-/*! Compress example:
+/*! Compress example1:
 
 #include "packzip.h"
 DapZip::PackZip zip("archive.zip");
@@ -22,6 +12,13 @@ zip.close();
 
 */
 
+/*! Compress example2:
+
+#include "packzip.h";
+QStringList fileList << "firstfiletoarchive.txt" << "secondfiletoarchive.txt";
+DapZip::compressFiles("temp_bugReportZip.zip", fileList)
+
+*/
 
 namespace DapZip
 {
@@ -33,19 +30,6 @@ namespace DapZip
         AlwaysCompress,
         NeverCompress,
         AutoCompress
-    };
-
-    // NoError          No error occurred.
-    // FileReadError    An error occurred when reading from the file.
-    // FileOpenError    The file could not be opened.
-    // FilePermissionsError The file could not be accessed.
-    // FileError        Another file error occurred.
-    enum Status {
-        NoError,
-        FileWriteError,
-        FileOpenError,
-        FilePermissionsError,
-        FileError
     };
 
     class PackZipPrivate : public ZipBase

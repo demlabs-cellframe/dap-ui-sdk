@@ -37,8 +37,6 @@
 	color: rgba(0,0,0,0);
 }
 
-
-
 .darkblue-light
 {
 	color: #04004E;
@@ -55,7 +53,7 @@
 
 .uppercase
 {
-	text-transform: uppercase;
+        text-transform: uppercase;
 }
 
 .letterspace
@@ -333,9 +331,9 @@
 
 .cwb_height
 {
-	height: 108pt;
-	min-height: 108pt;
-	max-height: 108pt;
+        height: 108pt;
+        min-height: 108pt;
+        max-height: 108pt;
 }
 
 .cwb_top
@@ -420,9 +418,19 @@
 
 .crb_textstyle
 {
-	height: 60pt;
-	min-height: 60pt;
-	max-height: 60pt;
+    height: 60pt;
+    min-height: 60pt;
+    max-height: 60pt;
+}
+
+.crb_indicator_connection
+{
+    width: 30pt;
+    height: 30pt;
+    min-width: 30pt;
+    min-height: 30pt;
+    max-width: 30pt;
+    max-height: 30pt;
 }
 
 .crb_on
@@ -455,6 +463,36 @@
 	qproperty-scaledPixmap: url("://gfx/dark/radio_btn_off.png");
 }
 
+.crb_no_connection
+{
+  qproperty-scaledPixmap:  url("://icons/no_connection.png");
+}
+
+.crb_full
+{
+  qproperty-scaledPixmap:  url("://icons/full.png");
+}
+
+.crb_almost_full
+{
+  qproperty-scaledPixmap:  url("://icons/full_2.png");
+}
+
+.crb_middle
+{
+  qproperty-scaledPixmap:  url("://icons/middle.png");
+}
+
+.crb_low
+{
+  qproperty-scaledPixmap:  url("://icons/low.png");
+}
+
+.crb_very_low
+{
+  qproperty-scaledPixmap:  url("://icons/low_2.png");
+}
+
 .csep-left
 {
 
@@ -472,12 +510,12 @@
 
 .csep-height
 {
-	min-height: 4px;	max-height: 4px;
+	min-height: 4pt;	max-height: 4pt;
 }
 
 .csep-width
 {
-	min-width: 8px;		max-width: 8px; 
+	min-width: 8pt;		max-width: 8pt; 
 }
 
 .csep-left-light
@@ -742,6 +780,11 @@
 	qproperty-scaledPixmap: url("://gui/asset/ic_copy.png");
 }
 
+.ic_copy_pressed
+{
+	qproperty-scaledPixmap: url("://gui/asset/ic_copy_pressed.png");
+}
+
 .ic_trash
 {
   qproperty-scaledPixmap: url("://gui/asset/ic_trash.png");
@@ -772,6 +815,11 @@
 	qproperty-scaledPixmap: url("://gui/asset/ic_version.png");
 }
 
+.ic_country
+{
+        qproperty-scaledPixmap: url("://gui/asset/ic_location.png");
+}
+
 .ic_theme
 {
 	qproperty-scaledPixmap: url("://gui/asset/ic_theme.png");
@@ -791,7 +839,6 @@
 {
 	qproperty-scaledPixmap: url("://gui/asset/icon_offline.png");
 }
-
 /****************************************************
  * Menu Footer
  ***************************************************/
@@ -982,6 +1029,11 @@
 .login-input-border-dark
 {
 	border: 1pt solid #205B5C40;
+}
+
+.login-input-border-default
+{
+        border-width: 1px;
 }
 
 /****************************************************
@@ -1463,10 +1515,18 @@
 
 .history-icon
 {
-	min-width: 60pt;
-	min-height: 60pt;
-	max-width: 60pt;
-	max-height: 60pt;
+	min-width: 40pt;
+	min-height: 40pt;
+	max-width: 40pt;
+	max-height: 40pt;
+}
+
+.history-icon-pixmap
+{
+  min-width: 40pt;
+  min-height: 40pt;
+  max-width: 40pt;
+  max-height: 40pt;
 }
 
 /****************************************************
@@ -1583,4 +1643,52 @@
 	width: 14pt;
 	min-width: 14pt;
 	max-width: 14pt;
+}
+
+/****************************************************
+ * Choose Country
+ ***************************************************/
+
+.ch-country-filter-border
+{
+        border: 1pt solid #20A4A3C0;
+        border-radius: 5pt;
+}
+
+.ch-country-filter
+{
+        height: 30pt;
+        min-height: 30pt;
+        max-height: 30pt;
+}
+
+.ch-country-filter-space
+{
+        height: 28pt;
+        min-height: 28pt;
+        max-height: 28pt;
+}
+
+.ch-country-filter-button
+{
+        width: 24pt;
+        height: 24pt;
+        min-width: 24pt;
+        min-height: 24pt;
+        max-width: 24pt;
+        max-height: 24pt;
+}
+
+.ic_filter_clear
+{
+        qproperty-scaledPixmap: url("://icons/filter.png");
+}
+
+.margin-top
+{
+        margin-top: 28pt;
+}
+.margin-rightLink
+{
+        margin-right: 32pt;
 }

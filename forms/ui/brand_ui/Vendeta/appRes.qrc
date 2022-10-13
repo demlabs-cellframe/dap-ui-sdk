@@ -6,6 +6,7 @@
         <file compress="1">asset/icon_online.png</file>
         <file compress="1">asset/icon_offline.png</file>
         <file compress="1">asset/ic_copy.png</file>
+        <file compress="1">asset/ic_copy_pressed.png</file>
         <file compress="1">asset/Spinner.gif</file>
         <file compress="1">asset/ic_bot.png</file>
         <file compress="1">asset/ic_information_bug-report.png</file>
@@ -21,5 +22,7 @@
         <file compress="1">asset/logo-vendeta-white.png</file>
         <file compress="1">asset/logo-vendeta-color.png</file>
         <file compress="1">asset/logo-vendeta-color-dark.png</file>
+        <file compress="1">asset/ic_trash.png</file>
+        <file compress="1">asset/ic_location.png</file>
     </qresource>
 </RCC>

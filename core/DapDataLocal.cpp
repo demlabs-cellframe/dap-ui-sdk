@@ -176,7 +176,7 @@ void DapDataLocal::saveHistoryData(QString a_type, QString a_data)
         m_tempHistoryDataList.prepend(a_data);
     this->saveToSettings(a_type, m_tempHistoryDataList);
 
-    emit sigHistoryDataSaved();
+    emit sigHistoryDataSaved(a_type);
 }
 
 void DapDataLocal::removeItemFromHistory(QString a_type, QString a_item){
@@ -198,7 +198,7 @@ void DapDataLocal::removeItemFromHistory(QString a_type, QString a_item){
 
   this->saveToSettings(a_type, m_tempHistoryDataList);
 
-  emit sigHistoryDataSaved();
+  emit sigHistoryDataSaved(a_type);
 }
 
 QList<QString> DapDataLocal::getHistorySerialKeyData()
@@ -358,6 +358,38 @@ QString DapDataLocal::getRandomString(int size)
        randomString.append(nextChar);
    }
    return randomString;
+}
+
+Authorization DapDataLocal::authorizationType()
+{
+    auto auth = DapDataLocal::instance()->getSetting (SETTING_AUTHORIZATION).toString();
+    if (auth == "serialKey")
+        return Authorization::serialKey;
+    if (auth == "account")
+        return Authorization::account;
+    if (auth == "certificate")
+        return Authorization::certificate;
+#ifdef BRAND_RISEVPN
+    // default value
+    return Authorization::undefined;
+#else
+    // default value
+    return Authorization::account;
+#endif
+}
+
+void DapDataLocal::setAuthorizationType(Authorization type)
+{
+    QString auth;
+    if (type == Authorization::serialKey)
+        auth = "serialKey";
+    if (type == Authorization::account)
+        auth = "account";
+    if (type == Authorization::certificate)
+        auth = "certificate";
+    if (type == Authorization::undefined)
+        auth = "";
+    DapDataLocal::instance()->saveSetting (SETTING_AUTHORIZATION, auth);
 }
 
 DapDataLocal *DapDataLocal::instance()

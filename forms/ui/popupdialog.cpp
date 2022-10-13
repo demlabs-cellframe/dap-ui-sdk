@@ -21,12 +21,12 @@ PopupDialog::PopupDialog (QWidget *parent) :
   auto ww = UiScaling::pointsToPixels (280, UiScaling::getNativDPI()),
        hh = UiScaling::pointsToPixels (186, UiScaling::getNativDPI());
 
-  QSize sz(ww,hh);
+  QSize sz (ww,hh);
   setFixedSize (sz);
   setMinimumSize (sz);
   setMaximumSize (sz);
-  dafaultHeight = hh;
-  dafaultTextHeight = ui->lDescription->height();
+  defaultHeight     = hh;
+  defaultTextHeight = ui->lDescription->height();
 
   qDebug() << "PopupDialog::Construct size:" << sz;
 
@@ -58,6 +58,40 @@ PopupDialog::~PopupDialog()
   delete ui;
 }
 
+/********************************************
+ * METHODS
+ *******************************************/
+
+void PopupDialog::_adjustHeight (const QString &a_decription)
+{
+  /* get item boundingRect, original font size and name */
+  auto fontSize = ui->lDescription->font().pointSize();
+  auto fontRect = QRect(
+      ui->lDescription->property ("x").toInt(),
+      ui->lDescription->property ("y").toInt(),
+      ui->lDescription->property ("width").toInt(),
+      ui->lDescription->property ("height").toInt()
+    );
+  auto fontName = ui->lDescription->font().family();
+
+  /* setup font metrics */
+  QFont font (fontName, fontSize);
+  QFontMetrics fm (font);
+
+  /* get actual metrics */
+  auto rect = fm.boundingRect(
+    fontRect,
+    Qt::AlignVCenter | Qt::AlignHCenter,
+    a_decription);
+
+  /* calc and store result */
+  auto metricsHeight  =
+      (rect.height() > fontRect.height())
+      ? (fontRect.height())
+      : (0);
+  setMinimumHeight (defaultHeight + metricsHeight);
+  setMaximumHeight (defaultHeight + metricsHeight);
+}
 
 /********************************************
  * SLOTS
@@ -109,19 +143,20 @@ void PopupDialog::slotShow (
   ui->btnNo->setText (a_btnNo);
 
   /* text size */
-  int th = ui->lDescription->fontMetrics().boundingRect(QRect(0,0,100,100), 0, a_description).height();
-  if (th > dafaultTextHeight)
-  {
-      // increase window size
-      setMinimumHeight (dafaultHeight + th - dafaultTextHeight);
-      setMaximumHeight (dafaultHeight + th - dafaultTextHeight);
-  }
-  else
-  {
-      // default size
-      setMinimumHeight (dafaultHeight);
-      setMaximumHeight (dafaultHeight);
-  }
+//  int th = ui->lDescription->fontMetrics().boundingRect(QRect(0,0,100,100), 0, a_description).height();
+//  if (th > dafaultTextHeight)
+//  {
+//      // increase window size
+//      setMinimumHeight (dafaultHeight + th - dafaultTextHeight);
+//      setMaximumHeight (dafaultHeight + th - dafaultTextHeight);
+//  }
+//  else
+//  {
+//      // default size
+//      setMinimumHeight (dafaultHeight);
+//      setMaximumHeight (dafaultHeight);
+//  }
+  _adjustHeight (a_description);
 
   /* display */
   show();

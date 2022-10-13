@@ -24,7 +24,9 @@ class DapLogger : public QObject
 private:
     static void messageHandler(QtMsgType type, const QMessageLogContext &ctx, const QString & msg);
     inline static dap_log_level castQtMsgToDap(QtMsgType type);
-    void setPathToLog(QString path){ m_pathToLog = path; }
+    void setPathToLog(QString path){
+      qDebug() << path;
+      m_pathToLog = path; }
     void updateCurrentLogName();
     void setLogFile(const QString&);
 public:
