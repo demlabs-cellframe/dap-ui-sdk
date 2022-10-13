@@ -15,7 +15,8 @@ SOURCES += \
     $$PWD/DapCmdStats.cpp \
     $$PWD/DapCmdServersList.cpp \
     $$PWD/DapCmdServerData.cpp \
-    $$PWD/DapCmdAndroidTunnel.cpp
+    $$PWD/DapCmdAndroidTunnel.cpp \
+    $$PWD/DapCmdNode.cpp
     
 equals(BUILD_VARIANT, "GooglePlay") {
 	SOURCES += $$PWD/DapCmdPurchase.cpp
@@ -38,7 +39,8 @@ HEADERS += \
     $$PWD/DapCmdServersList.h \
     $$PWD/DapCmdServerData.h \
     $$PWD/DapCmdAndroidTunnel.h \
-    $$PWD/DapCmdSystemTray.h
+    $$PWD/DapCmdSystemTray.h \
+    $$PWD/DapCmdNode.h
 
 equals(BUILD_VARIANT, "GooglePlay") {
 	HEADERS += $$PWD/DapCmdPurchase.h
