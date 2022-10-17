@@ -169,6 +169,7 @@ void DapQmlModelSettings::_buildMenuItemsList()
       Item{SI_LINK,       tr ("Language"), "", "settings_icon ic_language", "language",                                           [](QObject*) { emit __inst->sigLanguage(); } },
   #endif // DISABLE_SETTINGS_LANGUAGE
       Item{SI_LINK,       tr ("Manage servers"), "", "settings_icon ic_language", "manage_servers",                       [](QObject*) { emit __inst->sigManageServers(); } },
+      Item{SI_LINK,       tr ("Manage CDB"), "", "settings_icon ic_language", "manage_cdb",                               [](QObject*) { emit __inst->sigManageCDB(); } },
       Item{SI_LINK,       tr ("Cryptography"), "", "settings_icon ic_language", "cryptography",                           [](QObject*) { emit __inst->sigCryptography(); } },
   #ifndef DISABLE_THEMES
       Item{SI_CHECKBOX,   tr ("Dark theme"), "", "settings_icon ic_theme", "dark_themes",                                 [](QObject *a_item) { emit __inst->sigDarkTheme (a_item->property ("checked").toBool()); } },
@@ -223,7 +224,7 @@ void DapQmlModelSettings::menuConstructor(QSet<QString> menuItems)
   "language" <<
 #endif // DISABLE_SETTINGS_LANGUAGE
   if (menuItems.contains("use_manage_servers"))
-    menuItemsList << "manage_servers" << "cryptography";
+    menuItemsList << "manage_servers" << "mancdb" << "cryptography";
   // ohter themes
 #ifndef DISABLE_THEMES
   if (menuItems.contains("use_dark_themes"))

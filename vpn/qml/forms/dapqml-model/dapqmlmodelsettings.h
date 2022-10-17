@@ -113,6 +113,7 @@ signals:
   void sigLogout();
   void sigLanguage();
   void sigManageServers();
+  void sigManageCDB();
   void sigCryptography();
   void sigDarkTheme (bool a_state);
 
