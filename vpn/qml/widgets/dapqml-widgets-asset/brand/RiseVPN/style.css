@@ -1249,6 +1249,55 @@
 }
 
 /****************************************************
+ * Manage CDB
+ ***************************************************/
+
+.mancdb-resizer-item
+{
+    scaled-rect: scaled(nan,nan,363,64,false,34);
+    color: "@background";
+}
+
+.mancdb-resizer-field
+{
+    scaled-rect: scaled(nan,nan,nan,48,false);
+    color: "@text";
+}
+
+.mancdb-item
+{
+    scaled-rect: scaled(nan,nan,nan,nan,false,34);
+}
+
+.mancdb-btn-lbl-main
+{
+    color: "@text";
+    scaled-font: scaled(16);    
+    font-weight: Font.Normal;
+}
+
+.mancdb-settings-btn
+{
+    scaled-rect: scaled(nan,nan,28,28,true);
+    active: "@btn-settings-hover";
+    inactive: "@btn-settings";
+}
+
+.mancdb-accept-btn
+{
+    scaled-rect: scaled(nan,nan,28,28,true);
+    active: "@btn-accept-hover";
+    inactive: "@btn-accept";
+}
+
+.mancdb-cancel-btn
+{
+    scaled-rect: scaled(nan,nan,28,28,true);
+    active: "@btn-close-hover";
+    inactive: "@btn-close";
+}
+
+/****************************************************
  * Cryptography
  ***************************************************/
 
