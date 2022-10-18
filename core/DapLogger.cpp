@@ -15,7 +15,8 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     dap_set_log_tag_width(prefix_width);
     qInstallMessageHandler(messageHandler);
     m_appType = appType;
-    qDebug() << appType;
+    qDebug() << "App: " DAP_BRAND " " DAP_VERSION " " + appType;
+    qDebug() << systemInfo();
     setPathToLog(defaultLogPath(DAP_BRAND));
     QDir dir(m_pathToLog);
     if (!dir.exists()) {
@@ -166,4 +167,16 @@ void DapLogger::messageHandler(QtMsgType type,
 
     std::cerr.flush();
     std::cout.flush();
+}
+
+QString DapLogger::systemInfo()
+{
+    return "Kernel: " + QSysInfo::kernelType()
+           + " " + QSysInfo::kernelVersion()
+           + " Product: " +   QSysInfo::productType()
+           + " Version: " +   QSysInfo::productVersion()
+           + " (" + QSysInfo::prettyProductName() + ") "
+           + " Cpu architecture build: " +   QSysInfo::buildCpuArchitecture()
+           + " Current: " +  QSysInfo::currentCpuArchitecture()
+           + " Machine host name: " +  QSysInfo::machineHostName();
 }
