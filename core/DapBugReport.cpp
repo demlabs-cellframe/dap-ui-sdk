@@ -53,12 +53,13 @@ bool DapBugReport::createZipDataBugReport(const QString &serial, const QString &
         }
     }
 
-    if (!DapZip::compressFiles("temp_bugReportZip.zip", fileList)){
+    QString bugReportPath = QDir::tempPath() + QDir::separator() + "temp_bugReportZip.zip";
+    if (!DapZip::compressFiles(bugReportPath, fileList)){
         qDebug() << "Bug-report file not compress";
         return false;
     }
 
-    QFile zipFile("temp_bugReportZip.zip");
+    QFile zipFile(bugReportPath);
     if (zipFile.open(QIODevice::ReadOnly)){
         byteArrayZipFile = zipFile.readAll();
         qDebug() << "Bug-report byte array size: " << byteArrayZipFile.size();
