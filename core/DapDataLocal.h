@@ -123,6 +123,7 @@ protected:
 
 private:
     void loadAuthorizationDatas();
+    void _syncCdbWithSettings();
     static QSettings* settings();
 
     QString m_login;      ///< Login.

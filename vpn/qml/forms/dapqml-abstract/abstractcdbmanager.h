@@ -31,7 +31,7 @@ public:
   };
 
   typedef QList<Server>::const_iterator ConstIterator;
-  typedef QList<Server>::iterator Iterator;
+  typedef QList<Server>::iterator       Iterator;
   /// @}
 
  /****************************************//**
@@ -74,6 +74,10 @@ public:
   virtual Iterator erase (Iterator a_begin, Iterator a_end) = 0;
   virtual int size() = 0;
   virtual Server value (int a_pos) = 0;
+
+  virtual void update() = 0;
+  virtual void doImport (const QString &a_filename) = 0;
+  virtual void doExport (const QString &a_filename) const = 0;
   /// @}
 };
 

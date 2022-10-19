@@ -10,7 +10,6 @@
 
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
-#include "DapLogger.h"
 
 #ifdef DAP_OS_ANDROID
 #include <sys/sendfile.h>
@@ -28,6 +27,7 @@ DapDataLocal::DapDataLocal()
     parseXML(":/data.xml");
     initSecretKey();
     this->loadAuthorizationDatas();
+    _syncCdbWithSettings();
 }
 
 void DapDataLocal::parseXML(const QString& a_fname)
@@ -226,6 +226,73 @@ void DapDataLocal::loadAuthorizationDatas()
     if (m_serialKeyData)
         this->loadFromSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
     this->loadFromSettings(TEXT_PENDING_SERIAL_KEY, m_pendingSerialKey);
+}
+
+void DapDataLocal::_syncCdbWithSettings()
+{
+  /* vars */
+  static const QString SETTING_CDB { "cdb" };
+
+  /* ------- */
+  /* lambdas */
+  /* ------- */
+
+  auto storeIntoSettings = [=] () {
+      /* check if empty */
+      if (m_cdbServersList.isEmpty())
+        return;
+
+      qDebug() << "DapDataLocal::_syncCdbWithSettings::storeIntoSettings";
+
+      /* convert to string list */
+      QStringList list;
+      for (const auto &cdb : qAsConst (m_cdbServersList))
+        list << cdb;
+
+      /* join and save */
+      saveSetting (SETTING_CDB, list.join(','));
+    };
+
+  /* ------- */
+
+  auto readFromSettings = [=] (const QVariant &a_cdbs) {
+      /* parse */
+      QStringList list  = a_cdbs.toString().split(',');
+
+      qDebug() << "DapDataLocal::_syncCdbWithSettings::readFromSettings : " << list;
+
+      /* check if empty */
+      if (list.isEmpty())
+        {
+          qDebug() << __PRETTY_FUNCTION__
+                   << "cdb list from settings is empty or cannot be parsed:"
+                   << a_cdbs;
+          return;
+        }
+
+      /* clear old and store new */
+      m_cdbServersList.clear();
+
+      for (const auto &cdb : qAsConst(list))
+        m_cdbServersList << cdb;
+
+      /* update iterator */
+      m_cdbIter = m_cdbServersList.constBegin();
+    };
+
+  /* ------- */
+
+
+
+  /* get from settings */
+  auto cdbCfg = getSetting (SETTING_CDB);
+
+  /* if not found, store cdb's from built-in list (if not empty) */
+  if (!cdbCfg.isValid())
+    return storeIntoSettings();
+
+  /* if found, replace built-in cdb's with list provided from settings */
+  readFromSettings (cdbCfg);
 }
 
 QSettings* DapDataLocal::settings()

@@ -100,10 +100,9 @@ Item {
             let name    = inputTitle.value;
             let address = inputAddress.value;
             let port    = Number (inputPort.value);
-            let fave    = false;
 
             /* store result & update model */
-            model.add ({name:name, address:address, port:port, favorite:fave});
+            model.add ({name:name, address:address, port:port});
             model.refreshContent();
         }
 
@@ -122,7 +121,6 @@ Item {
             let name    = inputTitle.value;
             let address = inputAddress.value;
             let port    = Number (inputPort.value);
-            //let fave    = model.value (lastIndex, "favorite");
 
             /* store result & update model */
             model.edit (lastIndex, {name:name, address:address, port:port});
@@ -178,13 +176,6 @@ Item {
         else
         if (modeCtl.mode === QuiManageCdbForm.Mode.M_EDIT)
             modeCtl.applyChanges();
-    }
-
-    function switchFave(a_index) {
-        let model   = mancdbListView.model;
-        let fave    = !model.value (a_index, "favorite");
-        model.edit (a_index, {favorite:fave});
-        model.refreshContent();
     }
 
     function doImport() {
@@ -379,34 +370,8 @@ Item {
                 qss: "mancdb-item"
                 mainQss: "mancdb-btn-lbl-main"
                 //subQss: "mancdb-btn-lbl-sub"
-                icon: model.icon
+                //icon: model.icon
                 iconSize: resizerItem.fontSize
-
-                /* icon favorite */
-                Button {
-                    id: checkFavorite
-                    checkable: true
-                    checked: model.favorite
-                    icon {
-                        source: (checkFavorite.checked)
-                                ? "qrc:/nonthemed/star-checked.png"
-                                : "qrc:/nonthemed/star-unchecked.png"
-                        color: "transparent"
-                        width: checkFavorite.width
-                        height: checkFavorite.height
-                    }
-                    background: Rectangle { color: "transparent" }
-                    property int myIndex: parent.myIndex
-
-                    x: parent.width - width * 2// - (74 / 2)
-                    y: (parent.height - height) / 2 - height / 8
-                    z: 16
-                    width: parent.iconSize * 1.25
-                    height: parent.iconSize * 1.25
-
-                    onClicked: root.switchFave (myIndex)
-                    //onCheckedChanged: root.switchFave (myIndex)
-                }
 
                 /* more button */
                 Button {
