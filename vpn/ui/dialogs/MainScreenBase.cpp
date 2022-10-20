@@ -244,7 +244,7 @@ MainScreenBase::IndicatorsUnits MainScreenBase::indicatorUnits() const
 
 void MainScreenBase::setCurrentServer(const DapServerInfo *a_currentServer)
 {
-    qDebug() << "MainScreen::setCurrentServer:" << a_currentServer;
+    qDebug() << "MainScreen::setCurrentServer: " << a_currentServer;
     if (!a_currentServer || m_currentServer == a_currentServer->name)
         return;
     m_currentServer = a_currentServer->name;
@@ -255,7 +255,7 @@ void MainScreenBase::setCurrentServer(const DapServerInfo *a_currentServer)
 
 void MainScreenBase::setCurrentServerAdress(const QString &a_currentServerAdress)
 {
-    qDebug() << "MainScreen::setCurrentServerAderss:" << a_currentServerAdress;
+    qDebug() << "MainScreen::setCurrentServerAderss: " << a_currentServerAdress;
     if (m_currentServerAdress == a_currentServerAdress)
         return;
     m_currentServerAdress = a_currentServerAdress;

@@ -119,7 +119,7 @@ void DapStreamer::streamOpen(const QString& subUrl, const QString& query)
         streamClose();
     }
     qDebug() << "Stream open SubUrl = " << subUrl;
-    qDebug() << "Stream open query =" << query;
+    qDebug() << "Stream open query = " << query;
     m_streamID.clear();
     m_network_reply = m_session->streamOpenRequest(subUrl, query, this, SLOT(sltStreamOpenCallback()), QT_STRINGIFY(errorNetwork));
 }
@@ -198,7 +198,7 @@ void DapStreamer::sltStreamOpenCallback()
     QString streamServKey = str_list.at(1);
 
     if(!m_streamID.isEmpty()) {
-        qDebug() << "Stream id:" << m_streamID;
+        qDebug() << "Stream id: " << m_streamID;
         qDebug()  << "[DapConnectStream] Stream server key for client requests: "
                   << streamServKey;
 

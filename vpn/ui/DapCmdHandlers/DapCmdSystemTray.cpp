@@ -6,7 +6,7 @@ void DapCmdSystemTray::handle(const QJsonObject *params)
 
     if(params->contains("client_show_interface"))
     {
-        qDebug() << "Request for show interface" << params->value("client_show_interface").toString();
+        qDebug() << "Request for show interface " << params->value("client_show_interface").toString();
         if (params->value("client_show_interface").toString() == "setting")
             emit showSettingInterface();
         if (params->value("client_show_interface").toString() == "statistic")
@@ -54,7 +54,7 @@ void DapCmdSystemTray::apllicationQuitRequest()
 /// @param address Server address.
 void DapCmdSystemTray::sendShowInterface(const QString &interfaceName)
 {
-    qDebug() << "cmd sendShowInterface" << interfaceName;
+    qDebug() << "cmd sendShowInterface " << interfaceName;
     QJsonObject response;
     response["client_show_interface"] = interfaceName;
     sendCmd(&response);

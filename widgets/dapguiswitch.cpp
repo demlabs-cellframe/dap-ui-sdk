@@ -145,7 +145,7 @@ void DapGuiSwitch::paintEvent(QPaintEvent *)
   opt.state |= QStyle::State_Enabled;
 
   auto state  = opt.state;
-  qDebug() << state;
+//  qDebug() << state;
 
   QPainter p (this);
   style()->drawPrimitive (QStyle::PE_Widget, &opt, &p, this);

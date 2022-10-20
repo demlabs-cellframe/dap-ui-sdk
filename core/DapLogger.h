@@ -47,6 +47,7 @@ private:
     QString m_currentLogName;
     QString m_appType;
     QString m_day;
+    QString systemInfo();
 signals:
     void sigMessageHandler();
 };
