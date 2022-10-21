@@ -6,19 +6,19 @@
 #include <QString>
 
 /****************************************//**
- * @brief abstract cryptography
+ * @brief abstract certificate
  *
  * Allows to use template method to display
- * and cryptography
+ * and certificate
  *
  * @ingroup groupUiModels
  * @date 23.08.2022
  * @author Mikhail Shilenko
  *******************************************/
 
-class AbstractCryptography
+class AbstractCertificate
 {
-  Q_DISABLE_COPY_MOVE(AbstractCryptography)
+  Q_DISABLE_COPY_MOVE(AbstractCertificate)
 
   /****************************************//**
    * @name DEFS
@@ -38,8 +38,8 @@ public:
    *******************************************/
   /// @{
 public:
-  AbstractCryptography() {}
-  virtual ~AbstractCryptography() {}
+  AbstractCertificate() {}
+  virtual ~AbstractCertificate() {}
   /// @}
 
   /****************************************//**
@@ -81,7 +81,7 @@ public:
    *******************************************/
   /// @{
 public:
-  AbstractCryptography &operator<< (Crypto &&a_newCrypto)  { append (std::move (a_newCrypto)); return *this; }
+  AbstractCertificate &operator<< (Crypto &&a_newCrypto)  { append (std::move (a_newCrypto)); return *this; }
   const Crypto operator[] (const QString &a_name) const
   {
     return server (a_name);
