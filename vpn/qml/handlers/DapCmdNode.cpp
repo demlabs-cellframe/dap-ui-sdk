@@ -1,7 +1,7 @@
 
 #include "DapCmdNode.h"
 
-const QString DapCmdNode::actionParam = "node_info";
+const QString DapCmdNode::actionParam = "node_data";
 void DapCmdNode::handle(const QJsonObject *params)
 {
     Q_UNUSED(params);
@@ -35,16 +35,34 @@ void DapCmdNode::handle(const QJsonObject *params)
     }
 }
 
-void DapCmdNode::sendNodeInfoRequest()
+void DapCmdNode::startCheckNode()
 {
-    QJsonObject response;
-    response[DapCmdNode::actionParam] = "request";
-    sendCmd(&response);
+    QJsonObject checkNode;
+    checkNode["check_node_request"] = true;
+    sendRequest(checkNode);
 }
 
-void DapCmdNode::sendNodeInfoRequestStop()
+void DapCmdNode::stopCheckNode()
 {
-    QJsonObject response;
-    response[DapCmdNode::actionParam] = "stop";
-    sendCmd(&response);
+    QJsonObject checkNode;
+    checkNode["check_node_request"] = false;
+    sendRequest(checkNode);
+}
+
+void DapCmdNode::condTxCreate(QString tokenName, QString walletName, QString certName, qreal value)
+{
+    QJsonObject condTx;
+    condTx["token_name"] = tokenName;
+    condTx["wallet_name"] = walletName;
+    condTx["cert_name"] = certName;
+    condTx["value"] = value;
+    sendRequest(condTx);
+}
+
+
+void DapCmdNode::sendRequest(const QJsonObject &data)
+{
+    QJsonObject request;
+    request[DapCmdNode::actionParam] = data;
+    sendCmd(&request);
 }

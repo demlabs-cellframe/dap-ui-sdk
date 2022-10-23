@@ -30,10 +30,17 @@ const QString  DapNode::WEB3_URL      ("localhost");
 const quint16  DapNode::WEB3_PORT     (8045);
 
 
+#define SIGERROR (QNetworkReply::NetworkError::UnknownServerError + 1)
+//"method\=\S*\&{1}"
+
 DapNode:: DapNode(QObject * obj, int requestTimeout) :
-    QObject(obj), m_requestTimeout(requestTimeout)
+    QObject(obj), m_requestTimeout(requestTimeout),
+    m_networkReply(nullptr),
+    m_networkRequest(QString()),
+    m_stateMachine(new NodeConnectStateMachine)
 {
     m_httpClient = new DapNetworkAccessManager();
+    initStates();
 }
 
 
@@ -49,34 +56,75 @@ void DapNode::request_GET(const QString& host,  quint16 port, const QString & ur
 }
 
 
-void DapNode::requestWalletsListStop()
+void DapNode::stopCheckingNodeRequest()
 {
 
 }
 
 
-void DapNode::requestWalletsList()
+void DapNode::startCheckingNodeRequest()
 {
 
 }
 
+void DapNode::sendRequest(QString request)
+{
+    if (!m_networkRequest.isNull())
+        return;
+    if (m_networkReply == nullptr)
+    {
+        m_networkReply =  new DapNetworkReply;
+        connect( m_networkReply, &DapNetworkReply::finished, this, [=] {
+            responseProcessing(m_networkReply->error(), m_networkReply->errorString());
+            m_networkRequest = QString();
+        });
+        connect( m_networkReply, &DapNetworkReply::sigError, this, [=] {
+            responseProcessing(SIGERROR);
+            m_networkRequest = QString();
+        });
+    }
+    // send request
+    request_GET(WEB3_URL, WEB3_PORT, request, *m_networkReply);
+}
+
+void DapNode::responseProcessing(const int error, const QString errorString)
+{
+    // check dashboard reply
+    if (m_networkRequest == "")
+    {
+    }
+    // connect reply
+    if (m_networkRequest.contains("?method=Connect"))
+    {
+        if (error == QNetworkReply::NetworkError::NoError)
+            connectReply();
+        else if (error == SIGERROR)
+            replyError(DapNodeErrors::NetworkReplyConnectError, errorString);
+        else
+            replyError(DapNodeErrors::NetworkReplyFinishedConnectError, errorString);
+    }
+    // wallets list reply
+    if (m_networkRequest.contains("?method=GetWallets&id"))
+    {
+        if (error == QNetworkReply::NetworkError::NoError)
+            walletsListReply();
+        else if (error == SIGERROR)
+            replyError(DapNodeErrors::NetworkReplyWalletsError,errorString);
+        else
+            replyError(DapNodeErrors::NetworkReplyFinishedWalletsError, errorString);
+    }
+    //
+}
+
+
+void DapNode::cellframeDashboardTest()
+{
+    sendRequest("");
+}
 
 void DapNode::connectRequest()
 {
-    DapNetworkReply *networkReply =  new DapNetworkReply;
-    request_GET(WEB3_URL, WEB3_PORT, "?method=Connect", *networkReply );
-    connect( networkReply, &DapNetworkReply::finished, this, [=] {
-      if ( networkReply->error() == QNetworkReply::NetworkError::NoError ) {
-//        emit sigResponse(timer->elapsed());
-          connectReply();
-      } else {
-          replyError(DapNodeErrors::NetworkReplyFinishedConnectError, networkReply->errorString());
-      }
-    });
-    connect( networkReply, &DapNetworkReply::sigError, this, [=] {
-        replyError(DapNodeErrors::NetworkReplyConnectError, networkReply->errorString());
-    });
-    m_connectReply = networkReply;
+    sendRequest("?method=Connect");
 }
 
 
@@ -89,21 +137,18 @@ void DapNode::connectReply()
     }
     qInfo() << "Connect reply message: " << reply;
     parseReplyConnect(reply);
-    DapNetworkReply *networkReply =  new DapNetworkReply;
+}
+
+void DapNode::walletsRequest()
+{
     QString requesString = QString("?method=GetWallets&id=%1").arg(m_connectId);
-    request_GET(WEB3_URL, WEB3_PORT, requesString, *networkReply);
-    connect( networkReply, &DapNetworkReply::finished, this, [=] {
-      if ( networkReply->error() == QNetworkReply::NetworkError::NoError ) {
-//        emit sigResponse(timer->elapsed());
-          walletsListReply();
-      } else {
-          replyError(DapNodeErrors::NetworkReplyFinishedWalletsError, networkReply->errorString());
-      }
-    });
-    connect( networkReply, &DapNetworkReply::sigError, this, [=] {
-        replyError(DapNodeErrors::NetworkReplyWalletsError, networkReply->errorString());
-    });
-    m_walletsListReply = networkReply;
+    sendRequest(requesString);
+}
+
+
+void DapNode::cellframeDashboardReply()
+{
+    emit nodeFound();
 }
 
 
@@ -121,14 +166,14 @@ void DapNode::walletsListReply()
 
 void DapNode::parseReplyConnect(const QString replyData)
 {
-// connect reply example
-//    "{"
-//    "    \"data\": {"
-//    "        \"id\": \"0xCD33094D27F8ACEBBCC90B31467E119DD2CD8B0581CEC007B126CB6BAC34CB1E\""
-//    "    },"
-//    "    \"errorMsg\": \"\","
-//    "    \"status\": \"ok\""
-//    "}";
+    // connect reply example
+    //    "{"
+    //    "    \"data\": {"
+    //    "        \"id\": \"0xCD33094D27F8ACEBBCC90B31467E119DD2CD8B0581CEC007B126CB6BAC34CB1E\""
+    //    "    },"
+    //    "    \"errorMsg\": \"\","
+    //    "    \"status\": \"ok\""
+    //    "}";
     parseJsonError(replyData.toUtf8());
     if (jsonError())
         return;
@@ -148,15 +193,15 @@ void DapNode::parseReplyConnect(const QString replyData)
 
 void DapNode::parseReplyWallets(const QString replyData)
 {
-// wallets reply exmple
-//    "{"
-//    "    \"data\": ["
-//    "        \"CELLTestWallet\","
-//    "        \"walletCELL\""
-//    "    ],"
-//    "    \"errorMsg\": \"\","
-//    "    \"status\": \"ok\""
-//    "}";
+    // wallets reply exmple
+    //    "{"
+    //    "    \"data\": ["
+    //    "        \"CELLTestWallet\","
+    //    "        \"walletCELL\""
+    //    "    ],"
+    //    "    \"errorMsg\": \"\","
+    //    "    \"status\": \"ok\""
+    //    "}";
     parseJsonError(replyData.toUtf8());
     if (jsonError())
         return;
@@ -213,13 +258,32 @@ void DapNode::parseJsonError(QString replyData)
 }
 
 
+void DapNode::initStates()
+{
+    // node search  initialState -> startCheckingNode
+    m_stateMachine->initialState.addTransition(this, &DapNode::startCheckingNode,
+                                               &m_stateMachine->checkFound);
+    // node found, connect request
+    m_stateMachine->checkFound.addTransition(this, &DapNode::nodeFound,
+                                             &m_stateMachine->connectToNode);
+    // connected, wallets list request
+    m_stateMachine->connectToNode.addTransition(this, &DapNode::nodeConnected,
+                                                &m_stateMachine->nodeGetWallets);
+
+
+    connect(&m_stateMachine->checkFound, &QState::entered, this, &DapNode::cellframeDashboardTest);
+    connect(&m_stateMachine->connectToNode, &QState::entered, this, &DapNode::connectRequest);
+    connect(&m_stateMachine->nodeGetWallets, &QState::entered, this, &DapNode::walletsRequest);
+
+}
+
+
 void DapNode::replyError(DapNodeErrors errorType, const QString errorString)
 {
     qDebug() << "Getting wallets error" << DapNodeErrorCode(errorType) << errorString;
     emit sigError(DapNodeErrorCode(errorType),
                   errorString);
 }
-
 
 int DapNodeErrorCode(DapNodeErrors errorType)
 {

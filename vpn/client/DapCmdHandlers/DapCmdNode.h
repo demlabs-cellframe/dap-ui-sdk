@@ -19,8 +19,10 @@ public slots:
     void sendNodeInfo(QStringList walletsList);
     void sendError(int code, QString errorMessage);
 signals:
-    void nodeInfoRequest();
-    void nodeInfoRequestStop();
+    void startCheckingNode();
+    void stopCheckingNode();
+    void dataWalletRequest();
+    void condTxCreateRequest(QString tokenName, QString walletName, QString certName, qreal value);
 };
 
 #endif // DAPCMDNODEHANDLER_H

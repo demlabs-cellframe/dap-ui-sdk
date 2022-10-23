@@ -32,8 +32,9 @@ public:
     /// @param params Command parameters.
     void handle(const QJsonObject* params) override;
 
-    void sendNodeInfoRequest();
-    void sendNodeInfoRequestStop();
+    void startCheckNode();
+    void stopCheckNode();
+    void condTxCreate(QString tokenName, QString walletName, QString certName, qreal value);
 
     bool error() { return m_hasError; }
 
@@ -43,6 +44,7 @@ signals:
 
 private:
     void sendShowInterface(const QString &interfaceName);
+    void sendRequest(const QJsonObject &data);
 };
 
 #endif // DAPCMDNODEHANDLER_H

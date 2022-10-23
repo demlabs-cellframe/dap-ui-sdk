@@ -3,7 +3,7 @@
 #include <QDebug>
 #include "DapSession.h"
 
-const QString DapCmdNode::actionParam = "node_info";
+const QString DapCmdNode::actionParam = "node_data";
 
 DapCmdNode::DapCmdNode(QObject *parent)
     : DapCmdServiceAbstract(DapJsonCmdType::NODE_INFO, parent)
@@ -41,12 +41,27 @@ void DapCmdNode::sendNodeInfo(QStringList walletsList)
 
 void DapCmdNode::handle(const QJsonObject* params)
 {
-    if(params->value(actionParam) != QJsonValue::Undefined)
+    if(params->value(actionParam) != QJsonValue::Undefined && params->value(actionParam).isObject())
     {
-        if (params->value(actionParam).toString() == "request")
-            emit nodeInfoRequest();
-        if (params->value(actionParam).toString() == "stop")
-            emit nodeInfoRequestStop();
-        return;
+        QJsonObject nodeCmd = params->value(actionParam).toObject();
+        // start checking the operation of the node
+        if (nodeCmd["check_node_request"].isBool() && nodeCmd["check_node_request"].toBool())
+            emit startCheckingNode();
+        // data wallet request
+        if (nodeCmd["data_wallet_request"].isBool() && nodeCmd["data_wallet_request"].toBool())
+            emit dataWalletRequest();
+        // stop checking the operation of the node
+        if (nodeCmd["check_node_request"].isBool() && !nodeCmd["check_node_request"].toBool())
+            emit stopCheckingNode();
+        // creating a conditional transaction cmd
+        if (nodeCmd["cond_tx_create"].isObject())
+        {
+            QJsonObject tx = nodeCmd["cond_tx_create"].toObject();
+            QString tokenName   = tx["token_name"].toString();
+            QString walletName  = tx["wallet_name"].toString();
+            QString certName    = tx["cert_name"].toString();
+            qreal value         = tx["value"].toDouble();
+            emit condTxCreateRequest(tokenName, walletName, certName, value);
+        }
     }
 }
