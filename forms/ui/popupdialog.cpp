@@ -28,7 +28,7 @@ PopupDialog::PopupDialog (QWidget *parent) :
   defaultHeight     = hh;
   defaultTextHeight = ui->lDescription->height();
 
-  qDebug() << "PopupDialog::Construct size:" << sz;
+  qDebug() << "PopupDialog::Construct size: " << sz;
 
 
   connect (ui->btnYes, &DapGuiLabel::clicked,

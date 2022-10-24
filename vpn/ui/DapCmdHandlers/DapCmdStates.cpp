@@ -116,10 +116,10 @@ void DapCmdStates::handleResult(const QJsonObject& result) {
     (this->*stateCallbacks[stateName])(state);
 
     if(allStatesIsTrue()) {
-        qDebug() << "emit AllStatesIsTrue signal";
+        qDebug() << "State is CONNECTED (AllStatesIsTrue signal)";
         emit sigAllIndicatorStatesIsTrue();
     } else if(allStatesIsFalse()) {
-        qDebug() << "emit sigAllStatesIsFalse signal";
+        qDebug() << "State is DISCONNECTED (AllStatesIsFalse signal)";
         emit sigAllIndicatorStatesIsFalse();
     }
 }

@@ -174,7 +174,7 @@ void DapUtun::saveCurrentConnectionInterfaceData()
 {
 
     m_lastUsedConnectionDevice = this->getInternetInterface();
-    qDebug() << "Current internet interface "<< m_lastUsedConnectionDevice;
+    qDebug() << "Current internet interface " << m_lastUsedConnectionDevice;
     QString result = DapUtils::shellCmd(QString("networksetup -listnetworkserviceorder | grep 'Hardware Port' | grep %1").arg(m_lastUsedConnectionDevice));
 
     QStringList res1 = result.split(":"); // Break down answer by Hardware port: and Device
@@ -192,7 +192,7 @@ void DapUtun::saveCurrentConnectionInterfaceData()
     }
 
     m_lastUsedConnectionName = res2[0].trimmed();
-    qDebug() << "Current internet connection name" << m_lastUsedConnectionName;
+    qDebug() << "Current internet connection name: " << m_lastUsedConnectionName;
 
     result = DapUtils::shellCmd(QString("networksetup -getinfo \"%1\" | grep Router").arg(m_lastUsedConnectionName));
     QStringList res3 =result.split("\n", QString::SkipEmptyParts);

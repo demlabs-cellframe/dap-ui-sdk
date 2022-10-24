@@ -17,7 +17,7 @@ const QString DapCmdUserData::addressParam =
 void DapCmdUserData::handleResult(const QJsonObject& result)
 {
     if(result.contains("license_term_till")) {
-        qDebug() << "license_term_till " << result.value("license_term_till").toString();
+        qDebug() << "License term till: " << result.value("license_term_till").toString() + " - UnixTime";
         emit sigtLicenseTermTill(result.value("license_term_till").toString());
         return;
     }

@@ -478,8 +478,10 @@ void DapSession::onAuthorize()
                     qDebug() << "ts_active_till: " << DapDataLocal::instance()->serialKeyData()->licenseTermTill().toTime_t();
                 } else {
                     m_userInform[m_xmlStreamReader.name().toString()] = m_xmlStreamReader.readElementText();
-                    qDebug() << "Add user information: " << m_xmlStreamReader.name().toString()
-                             << m_userInform[m_xmlStreamReader.name().toString()];
+                    if (m_xmlStreamReader.name().toString() != "serial")
+                        qDebug() << "Add user information: " << m_xmlStreamReader.name().toString() << m_userInform[m_xmlStreamReader.name().toString()];
+                    else
+                        qDebug() << "Add user information: " << m_xmlStreamReader.name().toString() << " is hidden";
                 }
             }
             isAuth = true;
