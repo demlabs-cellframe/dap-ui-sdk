@@ -182,7 +182,7 @@ Item {
                     iconSize: resizer1.fontSize
 
                     function buttonClicked(a_isButtonSignal) {
-                        if(!a_isButtonSignal)
+                        if(a_isButtonSignal === true)
                             clicked();
                         settingsModel.exec (myIndex, this);
                     }
