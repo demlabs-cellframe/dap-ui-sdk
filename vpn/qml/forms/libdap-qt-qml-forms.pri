@@ -13,7 +13,7 @@ RESOURCES += \
     $$PWD/dapqml-forms.qrc
 
 HEADERS += \
-    $$PWD/dapqml-abstract/abstractcryptography.h \
+    $$PWD/dapqml-abstract/abstractcertificate.h \
     $$PWD/dapqml-abstract/abstractservermanager.h \
     $$PWD/dapqml-forms/doc-group-qml-forms.h \
     $$PWD/dapqml-model/dapqmlmodelbugreports.h \

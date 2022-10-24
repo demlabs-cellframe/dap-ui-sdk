@@ -347,6 +347,11 @@
     qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_language.png");
 }
 
+.ic_certificate
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_certificate.png");
+}
+
 .ic_send-report
 {
     qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_send-report.png");
@@ -1249,7 +1254,7 @@
 }
 
 /****************************************************
- * Cryptography
+ * Certificate
  ***************************************************/
 
 .crypto-resizer-item
