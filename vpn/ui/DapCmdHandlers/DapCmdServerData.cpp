@@ -8,27 +8,27 @@ void DapCmdServerData::handle(const QJsonObject *params)
     DapServerInfo dsi;
 
     if(params->contains("address")) {
-        qDebug() << "address" << params->value("address").toString();
+        qDebug() << "address: " << params->value("address").toString();
         dsi.address = params->value("address").toString();
     }
     if(params->contains("address6")) {
-        qDebug() << "address6" << params->value("address6").toString();
+        qDebug() << "address6: " << params->value("address6").toString();
         dsi.address6 = params->value("address6").toString();
     }
     if(params->contains("port")) {
-        qDebug() << "port" << params->value("port").toString();
+        qDebug() << "port: " << params->value("port").toString();
         dsi.port = params->value("port").toInt();
     }
     if(params->contains("name")) {
-        qDebug() << "name" << params->value("name").toString();
+        qDebug() << "name: " << params->value("name").toString();
         dsi.name = params->value("name").toString();
     }
     if(params->contains("location")) {
-        qDebug() << "location" << params->value("location").toString();
+        qDebug() << "location: " << params->value("location").toString();
         dsi.location = params->value("location").toString();
     }
     if (params->contains("state")) {
-        qDebug() << "state" << params->value("location").toString();
+        qDebug() << "state: " << params->value("location").toString();
         dsi.online = params->value("state").toString();
     }
 

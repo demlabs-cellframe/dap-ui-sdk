@@ -21,7 +21,7 @@ DapServersLocalStorage::DapServersLocalStorage(QObject *parent,
     }
 
     _serversListFilePath = QDir(dataLocation).filePath(fileName);
-    qDebug() << "Servers list file path:" << _serversListFilePath;
+    qDebug() << "Servers list file path: " << _serversListFilePath;
 
     if( QFileInfo::exists(_serversListFilePath) )
         _loadServers();
@@ -148,7 +148,7 @@ int DapServersLocalStorage::_loadServers()
     dServerInfo.name="local";
     addServer(dServerInfo);
 #endif
-    qDebug() << "Loaded" << _jsonServersListArr.size() <<
+    qDebug() << "Loaded " << _jsonServersListArr.size() <<
                 (_jsonServersListArr.size() == 1 ? "server" : "servers");
     return 0;
 }
@@ -156,7 +156,7 @@ int DapServersLocalStorage::_loadServers()
 int DapServersLocalStorage::addServer(const DapServerInfo& server)
 {
     if(isServerExists(server) == true) {
-        qDebug() << server << "already exists";
+        qDebug() << server << " already exists";
         return 21;
     }
 

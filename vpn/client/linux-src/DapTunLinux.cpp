@@ -138,8 +138,8 @@ void DapTunLinux::saveCurrentConnectionInterfaceData()
     m_lastUsedConnectionName = res[0];
     m_lastUsedConnectionDevice = res[1];
 
-    qDebug() << "DeviceName name:" << m_lastUsedConnectionDevice
-             << "Interface Name:" << m_lastUsedConnectionName;
+    qDebug() << "DeviceName name: " << m_lastUsedConnectionDevice
+             << "Interface Name: " << m_lastUsedConnectionName;
 
 }
 

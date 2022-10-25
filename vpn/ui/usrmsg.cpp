@@ -12,7 +12,7 @@ bool UsrMsg::isEmpty()
 QString UsrMsg::get_dashboard_user_MSG()
 {
     QString str = *elems.begin();
-    qDebug() << "[UsrMsg::get_dashboard_user_MSG]" << str;
+    qDebug() << "[UsrMsg::get_dashboard_user_MSG] " << str;
     elems.pop_front();
     return str;
 }

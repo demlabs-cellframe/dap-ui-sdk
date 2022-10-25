@@ -18,7 +18,7 @@ DapBugReport::DapBugReport()
 bool DapBugReport::createZipDataBugReport(const QString &serial, const QString &message, const QString &attachFile, const QString &pkeyHash)
 {
     qDebug() << "DapBugReport::createZip";
-    qDebug() << "DapBugReport attachFile" << attachFile << CheckFile(attachFile);
+    qDebug() << "DapBugReport attachFile " << attachFile << " is " << CheckFile(attachFile);
 
     QFile fileJsonData("data.json");
     if(fileJsonData.open(QIODevice::WriteOnly | QIODevice::Text)){

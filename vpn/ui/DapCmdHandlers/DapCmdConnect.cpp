@@ -32,7 +32,7 @@ void DapCmdConnect::sendCmdDisconnect()
 
 void DapCmdConnect::handleResult(const QJsonObject& result)
 {
-    qDebug() << "handleResult";
+    qDebug() << "Connect cmd handle result";
     if(!result.contains("message")) {
         qWarning() << "Not found mandatory parameter!";
         return;
@@ -42,7 +42,7 @@ void DapCmdConnect::handleResult(const QJsonObject& result)
 
 void DapCmdConnect::handleError(int code, const QString& message)
 {
-    qDebug() << "handleError";
+    qDebug() << "Connect cmd handle error";
 //    Q_UNUSED(code);
     qWarning() << *m_errorObject;
     // Сode: -10 (the hash of the conditional transaction) is temporarily ignored.
