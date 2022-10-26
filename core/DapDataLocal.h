@@ -100,6 +100,8 @@ public:
     Authorization authorizationType();
     void setAuthorizationType(Authorization type);
 
+    void updateCdbList (const QStringList &a_newCdbList);
+
 public slots:
     void setLogin(const QString &a_login);
     void setPassword(const QString &password);

@@ -261,23 +261,25 @@ void DapDataLocal::_syncCdbWithSettings()
 
       qDebug() << "DapDataLocal::_syncCdbWithSettings::readFromSettings : " << list;
 
-      /* check if empty */
-      if (list.isEmpty())
-        {
-          qDebug() << __PRETTY_FUNCTION__
-                   << "cdb list from settings is empty or cannot be parsed:"
-                   << a_cdbs;
-          return;
-        }
+      // ! MOVED TO -> updateCdbList
+//      /* check if empty */
+//      if (list.isEmpty())
+//        {
+//          qDebug() << __PRETTY_FUNCTION__
+//                   << "cdb list from settings is empty or cannot be parsed:"
+//                   << a_cdbs;
+//          return;
+//        }
 
-      /* clear old and store new */
-      m_cdbServersList.clear();
+//      /* clear old and store new */
+//      m_cdbServersList.clear();
 
-      for (const auto &cdb : qAsConst(list))
-        m_cdbServersList << cdb;
+//      for (const auto &cdb : qAsConst(list))
+//        m_cdbServersList << cdb;
 
-      /* update iterator */
-      m_cdbIter = m_cdbServersList.constBegin();
+//      /* update iterator */
+//      m_cdbIter = m_cdbServersList.constBegin();
+      updateCdbList (list);
     };
 
   /* ------- */
@@ -457,6 +459,27 @@ void DapDataLocal::setAuthorizationType(Authorization type)
     if (type == Authorization::undefined)
         auth = "";
     DapDataLocal::instance()->saveSetting (SETTING_AUTHORIZATION, auth);
+}
+
+void DapDataLocal::updateCdbList (const QStringList &a_newCdbList)
+{
+  /* check if empty */
+  if (a_newCdbList.isEmpty())
+    {
+      qDebug() << __PRETTY_FUNCTION__
+               << "empty list provided:"
+               << a_newCdbList;
+      return;
+    }
+
+  /* clear old and store new */
+  m_cdbServersList.clear();
+
+  for (const auto &cdb : qAsConst(a_newCdbList))
+    m_cdbServersList << cdb;
+
+  /* update iterator */
+  m_cdbIter = m_cdbServersList.constBegin();
 }
 
 DapDataLocal *DapDataLocal::instance()
