@@ -57,7 +57,14 @@ TabButton {
 
     DapQmlImage {
         anchors.fill: parent
-        scaledPixmap: !_isStill() ? root.active : root.inactive
+        visible: _isStill()
+        scaledPixmap: root.inactive
+    }
+
+    DapQmlImage {
+        anchors.fill: parent
+        visible: !_isStill()
+        scaledPixmap: root.active
     }
 }
 
