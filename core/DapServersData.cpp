@@ -384,6 +384,18 @@ const QString DapServersData::findInCountriesMap(const QString& string) {
     return code.isEmpty()? code: "://country/" + code + ".png";
 }
 
+QModelIndex DapServersData::indexOf(QVariant serverData, int role)
+{
+    if (role == Qt::DisplayRole)
+        for (int k = 0; k < m_servers.size(); k++)
+        {
+            QModelIndex dataIndex = index(k);
+            if (data(dataIndex, Qt::DisplayRole).toString().toUpper() == serverData.toString().toUpper())
+                return dataIndex;
+        }
+    return QModelIndex();
+}
+
 QVariant DapServersData::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())

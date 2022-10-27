@@ -7,7 +7,8 @@ enum Role
 {
   ping,
   name,
-  connectionQuality
+  connectionQuality,
+  checked
 };
 
 /* VARS */
@@ -19,6 +20,8 @@ static DapQmlModelChooseServer *__inst = nullptr;
 
 DapQmlModelChooseServer::DapQmlModelChooseServer (QObject *parent)
   : QAbstractListModel (parent)
+  , m_currentServer("")
+  , m_previousServer("")
 {
   /* vars */
   __inst  = this;
@@ -83,9 +86,32 @@ QVariant DapQmlModelChooseServer::data(const QModelIndex &index, int role) const
 
     case Role::connectionQuality:
       return serversData->data (index, CONNECTION_QUALITY).toInt();
+
+    case Role::checked:
+      return DapServersData::instance()->data (index, Qt::DisplayRole) == m_currentServer;
     }
 
   return QVariant();
+}
+
+/// set checked item
+void DapQmlModelChooseServer::setCheckedServer(QString name)
+{
+  int oldIndex = -1;
+  QModelIndex i = DapServersData::instance()->indexOf(m_currentServer);
+  if (i.isValid())
+    oldIndex = i.row();
+  m_previousServer = m_currentServer;
+  m_currentServer = name;
+  i = DapServersData::instance()->indexOf(m_currentServer);
+  if (i.isValid())
+  {
+    // set unchecked item
+    if (oldIndex >= 0)
+      emit dataChanged(index(oldIndex, 0), index(oldIndex, 0));
+    // set checked item
+    emit dataChanged(index(i.row(), 0), index(i.row(), 0));
+  }
 }
 
 QHash<int, QByteArray> DapQmlModelChooseServer::roleNames() const
@@ -95,16 +121,8 @@ QHash<int, QByteArray> DapQmlModelChooseServer::roleNames() const
   names.insert (Role::name,               "name");
   names.insert (Role::ping,               "ping");
   names.insert (Role::connectionQuality,  "connectionQuality");
+  names.insert (Role::checked,            "checked");
 
   return names;
 }
-
-//QVariant DapQmlModelChooseServer::value(int a_row, const QString &a_name)
-//{
-//  auto roles  = roleNames();
-//  int role    = roles.key (a_name.toUtf8());
-//  auto index  = this->index (a_row);
-//  return data (index, role);
-//}
-
 /*-----------------------------------------*/

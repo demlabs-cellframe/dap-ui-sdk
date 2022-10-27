@@ -688,6 +688,7 @@ Rectangle {
                 qss: root.mainQss
                 clip: false
                 onClicked: root.clicked();
+
             }
 
             /* sub text */
@@ -704,6 +705,7 @@ Rectangle {
                 clip: false
                 visible: text.length > 0
                 onClicked: root.clicked();
+
             }
 
             /* icon */
@@ -716,6 +718,7 @@ Rectangle {
 
                 qss: root.iconRight
                 onClicked: root.rightClicked();
+
             }
         }
 
