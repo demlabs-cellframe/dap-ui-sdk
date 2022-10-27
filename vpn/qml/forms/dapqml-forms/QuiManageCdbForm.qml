@@ -30,7 +30,7 @@ Item {
     /// @brief form name
     ///
     /// Used to connect interface via Manager
-    property string formName: "ManageCDB"
+    property string formName: "ManageCdb"
 
     enum Mode
     {
@@ -78,9 +78,7 @@ Item {
         }
 
         function clearFields() {
-            inputTitle.clear();
             inputAddress.clear();
-            inputPort.clear();
         }
 
         function fill (a_index) {
@@ -89,20 +87,16 @@ Item {
             if (a_index < 0 || a_index >= model.length || a_index === undefined)
                 return;
 
-            inputTitle.value      = model.value (a_index, "name");
-            inputAddress.value    = model.value (a_index, "address");
-            inputPort.value       = model.value (a_index, "port");
+            inputAddress.value    = model.value (a_index, "server");
         }
 
         function addNewServer() {
             /* get field values */
             let model   = mancdbListView.model;
-            let name    = inputTitle.value;
             let address = inputAddress.value;
-            let port    = Number (inputPort.value);
 
             /* store result & update model */
-            model.add ({name:name, address:address, port:port});
+            model.add ({server:address});
             model.refreshContent();
         }
 
@@ -118,12 +112,10 @@ Item {
         function applyChanges() {
             /* get field values */
             let model   = mancdbListView.model;
-            let name    = inputTitle.value;
             let address = inputAddress.value;
-            let port    = Number (inputPort.value);
 
             /* store result & update model */
-            model.edit (lastIndex, {name:name, address:address, port:port});
+            model.edit (lastIndex, {server:address});
             model.refreshContent();
         }
     }
@@ -301,7 +293,7 @@ Item {
 
         DapQmlDialogTitle {
             id: title
-            text: qsTr("Manage Servers") + lang.notifier
+            text: qsTr("Manage CDB") + lang.notifier
             qss: "dialog-title"
 
             /* settings button */
@@ -319,7 +311,6 @@ Item {
                     id: settingsBtnMenu
 
                     /* actions */
-                    Action { text: "Restart server"; }
                     Action { text: "Add new"; onTriggered: root.setMode (QuiManageCdbForm.Mode.M_ADD) }
                     Action { text: "Import list"; onTriggered: root.doImport(); }
                     Action { text: "Export list"; onTriggered: root.doExport(); }
@@ -371,7 +362,7 @@ Item {
                 mainQss: "mancdb-btn-lbl-main"
                 //subQss: "mancdb-btn-lbl-sub"
                 //icon: model.icon
-                iconSize: resizerItem.fontSize
+                iconSize: resizerItem.fontSize / 3 // resizerItem.fontSize
 
                 /* more button */
                 Button {
@@ -388,8 +379,8 @@ Item {
                     x: parent.width - width
                     y: (parent.height - height) / 2 - height / 8
                     z: 16
-                    width: parent.iconSize * 1.25
-                    height: parent.iconSize * 1.25
+                    width: resizerItem.fontSize * 1.25
+                    height: resizerItem.fontSize * 1.25
 
                     onClicked: moreBtnMenu.popup();
 
@@ -467,49 +458,19 @@ Item {
         }
 
         /****************************************//**
-         * Title Input
-         ********************************************/
-
-        DapQmlInputField {
-            id: inputTitle
-            x: (root.width - width) / 2
-            y: _pos(0) // title.y + title.height * 2
-            width: resizerItem.width
-            height: resizeField.height
-            clip: true
-            title: "Title"
-        }
-
-        /****************************************//**
          * Adress Input
          ********************************************/
 
         DapQmlInputField {
             id: inputAddress
             x: (root.width - width) / 2
-            y: _pos(1) // inputTitle.y + resizerItem.height
+            y: _pos(0) // title.y + title.height * 2
             width: resizerItem.width
             height: resizeField.height
             clip: true
             title: "Address"
             inputMask: "000.000.000.000"
         }
-
-        /****************************************//**
-         * Port Input
-         ********************************************/
-
-        DapQmlInputField {
-            id: inputPort
-            x: (root.width - width) / 2
-            y: _pos(2) // inputAddress.y + resizerItem.height
-            width: resizerItem.width
-            height: resizeField.height
-            clip: true
-            title: "Port"
-            inputMask: "00000"
-        }
-
     }
 
     /****************************************//**

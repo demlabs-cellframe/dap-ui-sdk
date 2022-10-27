@@ -4,6 +4,7 @@
 
 /* VARS */
 static QSharedPointer<AbstractCdbManager> s_manager;
+static const QString FIELD_SERVER {"server"};
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -42,17 +43,11 @@ int DapQmlModelManageCdb::length() const
   return rowCount();
 }
 
-#define _parseField(map,item,name,conversion) \
-  if (map.contains (#name)) \
-    item.name     = map[#name].conversion();
-
 inline void parseServerData (const QVariant &a_data, /* out */ AbstractCdbManager::Server &a_server)
 {
-  auto value        = a_data.toMap();
-
-  _parseField (value, a_server, name, toString);
-  _parseField (value, a_server, address, toString);
-  _parseField (value, a_server, port, toInt);
+  auto value  = a_data.toMap();
+  if (value.contains (FIELD_SERVER))
+    a_server  = AbstractCdbManager::Server (value[FIELD_SERVER].toString());
 }
 
 void DapQmlModelManageCdb::add (const QVariant &a_data)
@@ -117,6 +112,20 @@ QVariant DapQmlModelManageCdb::value (int a_index, const QString &a_name)
   return data (index (a_index, 0), roleNames().key (a_name.toUtf8()));
 }
 
+void DapQmlModelManageCdb::doImport(const QString &a_filename)
+{
+  if (s_manager.isNull())
+    return;
+  s_manager->doImport (a_filename);
+}
+
+void DapQmlModelManageCdb::doExport(const QString &a_filename) const
+{
+  if (s_manager.isNull())
+    return;
+  s_manager->doExport (a_filename);
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
@@ -161,13 +170,7 @@ QVariant DapQmlModelManageCdb::data (const QModelIndex &index, int role) const
     {
 
     case 0: // name
-      return itemIndex->name;
-
-    case 1: // address
-      return itemIndex->address;
-
-    case 2: // port
-      return itemIndex->port;
+      return QString (*itemIndex);
 
     }
 
@@ -181,8 +184,6 @@ QHash<int, QByteArray> DapQmlModelManageCdb::roleNames() const
   if (names.isEmpty())
     {
       names.insert (0, "name");
-      names.insert (1, "address");
-      names.insert (2, "port");
     }
 
   return names;

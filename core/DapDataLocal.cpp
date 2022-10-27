@@ -233,68 +233,16 @@ void DapDataLocal::_syncCdbWithSettings()
   /* vars */
   static const QString SETTING_CDB { "cdb" };
 
-  /* ------- */
-  /* lambdas */
-  /* ------- */
-
-  auto storeIntoSettings = [=] () {
-      /* check if empty */
-      if (m_cdbServersList.isEmpty())
-        return;
-
-      qDebug() << "DapDataLocal::_syncCdbWithSettings::storeIntoSettings";
-
-      /* convert to string list */
-      QStringList list;
-      for (const auto &cdb : qAsConst (m_cdbServersList))
-        list << cdb;
-
-      /* join and save */
-      saveSetting (SETTING_CDB, list.join(','));
-    };
-
-  /* ------- */
-
-  auto readFromSettings = [=] (const QVariant &a_cdbs) {
-      /* parse */
-      QStringList list  = a_cdbs.toString().split(',');
-
-      qDebug() << "DapDataLocal::_syncCdbWithSettings::readFromSettings : " << list;
-
-      // ! MOVED TO -> updateCdbList
-//      /* check if empty */
-//      if (list.isEmpty())
-//        {
-//          qDebug() << __PRETTY_FUNCTION__
-//                   << "cdb list from settings is empty or cannot be parsed:"
-//                   << a_cdbs;
-//          return;
-//        }
-
-//      /* clear old and store new */
-//      m_cdbServersList.clear();
-
-//      for (const auto &cdb : qAsConst(list))
-//        m_cdbServersList << cdb;
-
-//      /* update iterator */
-//      m_cdbIter = m_cdbServersList.constBegin();
-      updateCdbList (list);
-    };
-
-  /* ------- */
-
-
-
   /* get from settings */
   auto cdbCfg = getSetting (SETTING_CDB);
 
   /* if not found, store cdb's from built-in list (if not empty) */
   if (!cdbCfg.isValid())
-    return storeIntoSettings();
+    return;
 
   /* if found, replace built-in cdb's with list provided from settings */
-  readFromSettings (cdbCfg);
+  QStringList list  = QString::fromLatin1 (QByteArray::fromBase64 (cdbCfg.toByteArray())).split(',');
+  updateCdbList (list);
 }
 
 QSettings* DapDataLocal::settings()
@@ -463,15 +411,6 @@ void DapDataLocal::setAuthorizationType(Authorization type)
 
 void DapDataLocal::updateCdbList (const QStringList &a_newCdbList)
 {
-  /* check if empty */
-  if (a_newCdbList.isEmpty())
-    {
-      qDebug() << __PRETTY_FUNCTION__
-               << "empty list provided:"
-               << a_newCdbList;
-      return;
-    }
-
   /* clear old and store new */
   m_cdbServersList.clear();
 

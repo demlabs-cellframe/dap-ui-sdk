@@ -96,7 +96,7 @@ void DapCmdCdbCtl::handle (const QJsonObject *a_params)
 
         auto data = DapDataLocal::instance();
         data->updateCdbList (list);
-        data->saveSetting (SETTING_CDB, cdbs);
+        data->saveSetting (SETTING_CDB, cdbs.toLatin1().toBase64());
       } break;
 
     };

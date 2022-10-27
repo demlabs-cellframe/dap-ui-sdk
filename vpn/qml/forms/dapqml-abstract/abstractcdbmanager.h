@@ -22,14 +22,7 @@ class AbstractCdbManager
    *******************************************/
   /// @{
 public:
-  /// Server info struct
-  struct Server
-  {
-    QString name;
-    QString address;
-    int port;
-  };
-
+  typedef QString                       Server;
   typedef QList<Server>::const_iterator ConstIterator;
   typedef QList<Server>::iterator       Iterator;
   /// @}
