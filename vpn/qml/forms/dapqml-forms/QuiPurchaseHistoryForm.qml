@@ -107,7 +107,7 @@ Item {
                 mainText: model.key
                 subText: " "
                 mainQss: "ph-btn-label-main"
-                subQss: ""
+                subQss: "ph-btn-label-main"
                 icon: "ic_key-item"
                 iconRight: "ic_copy"
                 separator: true
@@ -119,25 +119,25 @@ Item {
 
                 signal sigStartAnimation();
 
-//                property QtObject animationCtl: QtObject {
-//                    property var target: parent
-//                    property string boi: target.mainText
-//                    property Timer timer: Timer {
-//                        interval: 500
-//                        running: false
-//                        repeat: false
-//                        onTriggered: parent.finish()
-//                    }
+                property QtObject animationCtl: QtObject {
+                    property var target: parent
+                    property string boi: target.mainText
+                    property Timer timer: Timer {
+                        interval: 500
+                        running: false
+                        repeat: false
+                        onTriggered: parent.finish()
+                    }
 
-//                    function start() {
-//                        target.iconRight    = "ic_copy_pressed";
-//                        timer.start();
-//                    }
+                    function start() {
+                        target.iconRight    = "ic_copy_pressed";
+                        timer.start();
+                    }
 
-//                    function finish() {
-//                        target.iconRight    = "ic_copy";
-//                    }
-//                }
+                    function finish() {
+                        target.iconRight    = "ic_copy";
+                    }
+                }
 
                 onRightClicked: {
                     clipboard.setText (model.key);

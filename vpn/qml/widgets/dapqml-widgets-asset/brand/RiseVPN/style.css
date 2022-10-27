@@ -372,6 +372,11 @@
     qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_copy.png");
 }
 
+.ic_copy_pressed
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_copy_pressed.png");
+}
+
 .ic_trash
 {
     qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_trash.png");
@@ -1118,6 +1123,11 @@
 }
 
 .ph-icn-resizer
+{
+    scaled-rect: scaled(nan,nan,32,32,true);
+}
+
+.ph-icn-cpy-resizer
 {
     scaled-rect: scaled(nan,nan,32,32,true);
 }
