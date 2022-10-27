@@ -90,7 +90,7 @@ void DapLogger::updateLogFiles()
 QString DapLogger::defaultLogPath(const QString a_brand)
 {
 #if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
-    return QString("/opt/%1/log").arg(a_brand).toLower();
+    return QString("/var/log/%1").arg(a_brand).toLower();
 #elif defined(Q_OS_MACOS)
     return QString("/var/log");
 #elif defined (Q_OS_WIN)
