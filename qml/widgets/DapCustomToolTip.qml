@@ -7,6 +7,7 @@ ToolTip {
     id: root
     signal updatePos()
 
+    property alias bottomRect: bottomRect
     property font textFont: mainFont.dapFont.medium12
     property string textColor: currTheme.textColor
     property string contentText
