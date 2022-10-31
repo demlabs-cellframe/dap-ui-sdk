@@ -9,7 +9,10 @@ Image {
     property string indicatorSrcHover: "qrc:/Resources/BlackTheme/icons/other/ic_infoGray.svg"
     property string contentText: ""
     property alias toolTip: toolTip
+    property alias text: text
     property font textFont: mainFont.dapFont.medium12
+
+    signal clicked()
 
 
     mipmap: true
@@ -20,6 +23,7 @@ Image {
         id: area
         anchors.fill: parent
         hoverEnabled: true
+        onClicked: parent.clicked()
     }
 
     ToolTip{
@@ -35,12 +39,14 @@ Image {
             anchors.margins: 8
             Text
             {
+                id: text
                 anchors.fill: parent
                 color: currTheme.textColor
                 text: contentText
                 font: textFont
                 horizontalAlignment: Qt.AlignHCenter
                 wrapMode: Text.WordWrap
+                verticalAlignment: Qt.AlignVCenter
             }
         }
 
