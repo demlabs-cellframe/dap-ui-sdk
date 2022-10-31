@@ -48,25 +48,6 @@ Item {
 
     /// @}
     /****************************************//**
-     * @name FUNCTIONS
-     ********************************************/
-    /// @{
-
-    /// @brief change current item index (int index)
-    function setCurrentIndex(a_index) {
-        csListView.currentIndex = a_index;
-
-//        var count           = csListView.count
-//        var current         = csListView.currentIndex;
-//        for(var i = 0; i < count; i++) {
-//            var entry       = csListView.itemAtIndex(i);
-//            entry.checked   = (i === current)
-//        }
-//        root.sigCurrentInexChanged();
-    }
-
-    /// @}
-    /****************************************//**
      * Title
      ********************************************/
 
@@ -112,12 +93,11 @@ Item {
             property bool checked: false
 
             DapQmlRadioButton {
-                property int myIndex: model.index
                 property int ping: model.ping
                 property int quality: model.connectionQuality
 
                 text: model.name + csListView.model.hook
-                checked: csListView.currentIndex === model.index // parent.checked
+                checked: model.checked
                 separator: true
                 iconSize: resizer.height
                 width: resizer.width

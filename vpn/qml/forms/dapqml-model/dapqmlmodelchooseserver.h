@@ -44,6 +44,10 @@ public:
   /// this basicaly provides update feature for QML variable fields
   Q_INVOKABLE QString hook();
   void refresh();
+  /// Set current server name
+  void setCheckedServer(QString name);
+  /// Return previous server name which was before setCheckedServer
+  QString previousServer() { return m_previousServer; }
   /// @}
 
   /****************************************//**
@@ -65,6 +69,11 @@ public:
 signals:
   void sigRefresh();
   /// @}
+private:
+  /// Current server name
+  QString m_currentServer;
+  /// This name is used to undo changes
+  QString m_previousServer;
 };
 
 /*-----------------------------------------*/

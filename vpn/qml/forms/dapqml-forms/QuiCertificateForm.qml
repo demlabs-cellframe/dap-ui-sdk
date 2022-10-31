@@ -5,7 +5,7 @@ import QtQuick.Controls 2.12
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
- * @brief Cryptography Form
+ * @brief Certificate Form
  * @ingroup groupDapQmlForms
  *
  * @date 17.07.22
@@ -25,7 +25,7 @@ Item {
     /// @brief form name
     ///
     /// Used to connect interface via Manager
-    property string formName: "Cryptography"
+    property string formName: "Certificate"
 
     enum Mode
     {
@@ -36,16 +36,16 @@ Item {
 
     /// @brief controls form mode by aplying visibility rules
     property QtObject modeCtl: QtObject {
-        property int mode: QuiCryptographyForm.Mode.M_LIST
+        property int mode: QuiCertificateForm.Mode.M_LIST
 
         function setMode(a_newMode) {
             /* store new mode */
             mode        = a_newMode;
 
             /* apply visibility */
-            let list = (mode === QuiCryptographyForm.Mode.M_LIST);
-            let info = (mode === QuiCryptographyForm.Mode.M_INFO);
-            let gen  = (mode === QuiCryptographyForm.Mode.M_GENERATE);
+            let list = (mode === QuiCertificateForm.Mode.M_LIST);
+            let info = (mode === QuiCertificateForm.Mode.M_INFO);
+            let gen  = (mode === QuiCertificateForm.Mode.M_GENERATE);
 
             /* display only required page */
             pageList.visible        = list;
@@ -78,7 +78,7 @@ Item {
         return title.y + (title.height * 2.4) + (resizerItem.height * a_index);
     }
 
-    Component.onCompleted: setMode (QuiCryptographyForm.Mode.M_LIST)
+    Component.onCompleted: setMode (QuiCertificateForm.Mode.M_LIST)
 
     /// @}
     /****************************************//**
@@ -89,17 +89,17 @@ Item {
 
 //    Button {
 //        x: 4; y: 4; z: 10; width: 64; height: 28; text: "list"
-//        onClicked: root.setMode (QuiCryptographyForm.Mode.M_LIST)
+//        onClicked: root.setMode (QuiCertificateForm.Mode.M_LIST)
 //    }
 
 //    Button {
 //        x: 4+72; y: 4; z: 10; width: 64; height: 28; text: "info"
-//        onClicked: root.setMode (QuiCryptographyForm.Mode.M_INFO)
+//        onClicked: root.setMode (QuiCertificateForm.Mode.M_INFO)
 //    }
 
 //    Button {
 //        x: 4+144; y: 4; z: 10; width: 64; height: 28; text: "gen"
-//        onClicked: root.setMode (QuiCryptographyForm.Mode.M_GENERATE)
+//        onClicked: root.setMode (QuiCertificateForm.Mode.M_GENERATE)
 //    }
 
     /****************************************//**
@@ -134,7 +134,7 @@ Item {
 
         DapQmlDialogTitle {
             id: title
-            text: qsTr("Cryptohraphy") + lang.notifier
+            text: qsTr("Certificate") + lang.notifier
             qss: "dialog-title"
 
             /* settings button */
@@ -153,7 +153,7 @@ Item {
 
                     /* actions */
                     Action { text: "Restart server"; }
-                    Action { text: "Generate certificate"; onTriggered: root.setMode (QuiCryptographyForm.Mode.M_GENERATE) }
+                    Action { text: "Generate certificate"; onTriggered: root.setMode (QuiCertificateForm.Mode.M_GENERATE) }
                     Action { text: "Export public key" }
                 }
             }
@@ -228,7 +228,7 @@ Item {
 
                         /* actions */
                         Action { text: "Copy fingerprint" }
-                        Action { text: "Info"; onTriggered: root.setMode (QuiCryptographyForm.Mode.M_INFO) }
+                        Action { text: "Info"; onTriggered: root.setMode (QuiCertificateForm.Mode.M_INFO) }
                     }
                 }
 
@@ -261,7 +261,7 @@ Item {
         y: title.y + (title.height - height) / 2
         z: 16
 
-        onClicked: root.setMode (QuiCryptographyForm.Mode.M_LIST)
+        onClicked: root.setMode (QuiCertificateForm.Mode.M_LIST)
     }
 
     /* cancel button */
@@ -273,7 +273,7 @@ Item {
         y: title.y + (title.height - height) / 2
         z: 16
 
-        onClicked: root.setMode (QuiCryptographyForm.Mode.M_LIST)
+        onClicked: root.setMode (QuiCertificateForm.Mode.M_LIST)
     }
 
     /****************************************//**

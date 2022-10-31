@@ -53,6 +53,7 @@ public:
     qint16 getBestPing () {return m_bestping;}
     void setWorstPing(qint16 a_ping) {m_worstping = a_ping;}
     qint16 getWorstPing () {return m_worstping;}
+    QModelIndex indexOf(QVariant serverData, int role = Qt::DisplayRole);
 
 public slots:
     void setCurrentServer(const DapServerInfo *a_server);

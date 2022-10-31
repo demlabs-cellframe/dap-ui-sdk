@@ -347,6 +347,11 @@
     qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_language.png");
 }
 
+.ic_certificate
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_certificate.png");
+}
+
 .ic_send-report
 {
     qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_send-report.png");
@@ -365,6 +370,11 @@
 .ic_copy
 {
     qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_copy.png");
+}
+
+.ic_copy_pressed
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_copy_pressed.png");
 }
 
 .ic_trash
@@ -1117,6 +1127,11 @@
     scaled-rect: scaled(nan,nan,32,32,true);
 }
 
+.ph-icn-cpy-resizer
+{
+    scaled-rect: scaled(nan,nan,32,32,true);
+}
+
 .ph-notice-resizer
 {
     scaled-rect: scaled(nan,nan,353,75,true);
@@ -1249,7 +1264,7 @@
 }
 
 /****************************************************
- * Cryptography
+ * Certificate
  ***************************************************/
 
 .crypto-resizer-item
