@@ -18,29 +18,29 @@
 static SerialInput *__inst          = nullptr;
 QString SerialInput::keyFromBuffer  = "";
 
-void labelFormatSerialKeyLine(QString &text)
+void labelFormatSerialKeyLine (QString &text)
 {
-    int textLength = text.length();
-    if (textLength > 12)
-        text.insert(12, "-");
-    if (textLength > 8)
-        text.insert(8, "-");
-    if (textLength > 4)
-        text.insert(4, "-");
+  int textLength = text.length();
+  if (textLength > 12)
+    text.insert (12, "-");
+  if (textLength > 8)
+    text.insert (8, "-");
+  if (textLength > 4)
+    text.insert (4, "-");
 }
 
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-SerialInput::SerialInput(QWidget *parent) :
-  QWidget(parent),
-  ui(new Ui::SerialInput),
+SerialInput::SerialInput (QWidget *parent) :
+  QWidget (parent),
+  ui (new Ui::SerialInput),
   m_textChangeHook (false)
 {
   /* setup ui */
   __inst  = this;
-  ui->setupUi(this);
+  ui->setupUi (this);
   ui->editSerial->hide();
   ui->customInputBorder->hide();
 //  ui->MainWidget->layout()->removeWidget (ui->customInputBorder);
@@ -52,13 +52,13 @@ SerialInput::SerialInput(QWidget *parent) :
     style.append (" login-input-border");
     if (bsize < 1)
       style.append (" login-input-border-default");
-    ui->btnSerial->edit()->setCssStyle(style);
+    ui->btnSerial->edit()->setCssStyle (style);
   }
 
   /* store input ptr */
   m_input = ui->btnSerial->edit(); // ui->customInput;
   m_input->setText ("");
-  m_input->setCallbackEvent(_cbInputMethodEvent);
+  m_input->setCallbackEvent (_cbInputMethodEvent);
   // m_input->setHideAnchor (true); // this will hide anchor for no reason
   m_input->setCallbackFocusEvent (cbFocusEvent);
   // m_input->setCallbackTextEdit (cbTextEdit); // this will mess the input
@@ -122,7 +122,7 @@ QString SerialInput::serialKey() const
   return serial;
 }
 
-void SerialInput::fixSerialKey(QString &a_serial) const
+void SerialInput::fixSerialKey (QString &a_serial) const
 {
   /* get copy */
   auto text   = a_serial.toUpper();
@@ -134,39 +134,39 @@ void SerialInput::fixSerialKey(QString &a_serial) const
 
   /* fix letters */
 repeat:
-    /* start counter */
-    int j = 0;
+  /* start counter */
+  int j = 0;
 
-    /* run thru cycle */
-    for (auto i = text.cbegin(), e = text.cend(); i != e; i++, j++)
-      {
-        QChar k = *i;
-
-        /* ignore minus */
-        if ((k == '-')
-            && (j == 4 || j == 9 || j == 14))
-            continue;
-
-        /* fix symbols */
-        if ((k < QChar ('0' /*0x30*/))
-            || ((k > QChar ('9' /*0x39*/)) && (k < QChar ('A' /*0x41*/)))
-            || (k > QChar ('Z' /*0x5A*/)))
-          {
-            /* remove and restart cycle */
-            text.remove (j, 1);
-            goto repeat;
-          }
-        }
-
+  /* run thru cycle */
+  for (auto i = text.cbegin(), e = text.cend(); i != e; i++, j++)
     {
-      /* insert separator */
-      if (text.length() >= 5 && text.at (4) != '-')
-        text.insert (4, '-');
-      if (text.length() >= 10 && text.at (9) != '-')
-        text.insert (9, '-');
-      if (text.length() >= 15 && text.at (14) != '-')
-        text.insert (14, '-');
+      QChar k = *i;
+
+      /* ignore minus */
+      if ((k == '-')
+          && (j == 4 || j == 9 || j == 14))
+        continue;
+
+      /* fix symbols */
+      if ((k < QChar ('0' /*0x30*/))
+          || ((k > QChar ('9' /*0x39*/)) && (k < QChar ('A' /*0x41*/)))
+          || (k > QChar ('Z' /*0x5A*/)))
+        {
+          /* remove and restart cycle */
+          text.remove (j, 1);
+          goto repeat;
+        }
     }
+
+  {
+    /* insert separator */
+    if (text.length() >= 5 && text.at (4) != '-')
+      text.insert (4, '-');
+    if (text.length() >= 10 && text.at (9) != '-')
+      text.insert (9, '-');
+    if (text.length() >= 15 && text.at (14) != '-')
+      text.insert (14, '-');
+  }
 
   /* check if limit reachced */
   m_input->setText (text);
@@ -177,20 +177,20 @@ repeat:
     }
 }
 
-void SerialInput::cbFocusEvent(DapGuiLineEdit *e, const Qt::FocusReason &reason)
+void SerialInput::cbFocusEvent (DapGuiLineEdit *e, const Qt::FocusReason &reason)
 {
   if (reason == Qt::MouseFocusReason)
     {
       e->setHideAnchor (false);
       if (e->text() == EMPTY_KEY_STR)
-        e->setText("");
+        e->setText ("");
     }
 }
 
-void SerialInput::cbTextEdit(DapGuiLineEdit *e, QString &preedit, QString &commit, int from, int to)
+void SerialInput::cbTextEdit (DapGuiLineEdit *e, QString &preedit, QString &commit, int from, int to)
 {
-  Q_UNUSED(from)
-  Q_UNUSED(to)
+  Q_UNUSED (from)
+  Q_UNUSED (to)
   int len   = e->text().length() + preedit.length() + commit.length();
   if (len >= MAX_LENGTH)
     {
@@ -203,10 +203,10 @@ void SerialInput::cbTextEdit(DapGuiLineEdit *e, QString &preedit, QString &commi
  * SLOTS
  *******************************************/
 
-void SerialInput::slotSetSerial(const QString &a_serial)
+void SerialInput::slotSetSerial (const QString &a_serial)
 {
   QString empty = EMPTY_KEY_STR;
-  if(m_textChangeHook)
+  if (m_textChangeHook)
     return;
 
   m_textChangeHook = true;
@@ -230,156 +230,184 @@ void SerialInput::slotRetranslated()
 }
 
 
-bool SerialInput::_cbInputMethodEvent(DapGuiLineEdit *label, QEvent *event)
+bool SerialInput::_cbInputMethodEvent (DapGuiLineEdit *label, QEvent *event)
 {
-    int keyMaxLen = EXPECT_LENGTH;
-    QString empty = EMPTY_KEY_STR;
+  int keyMaxLen = EXPECT_LENGTH;
+  QString empty = EMPTY_KEY_STR;
 
-    if (event->type() == QEvent::InputMethod)
+  if (event->type() == QEvent::InputMethod)
     {
-        QInputMethodEvent *Event = (QInputMethodEvent *)(event);
-        QString a = Event->preeditString();
-        QString c = Event->commitString();
+      QInputMethodEvent *Event = (QInputMethodEvent *) (event);
+      QString a = Event->preeditString();
+      QString c = Event->commitString();
 
-        if (a.length()==0 && c.length()==0)
+      //qDebug() << ("input:a:" + a + ":c:" + c);
+
+      if (a.length() == 0 && c.length() == 0)
+        //label->clear();
+        label->setText (empty);
+
+      a = a.remove ("-").toUpper();
+      a = a.remove (QRegExp ("[^A-Z0-9]"));
+      c = c.remove ("-").toUpper();
+      c = c.remove (QRegExp ("[^A-Z0-9]"));
+
+      if (a.length() > 0)
+        {
+          QString m = label->commiting + a;
+          if (m.length() >= keyMaxLen)
+            {
+              m.remove (keyMaxLen, m.length() - keyMaxLen);
+              QGuiApplication::inputMethod()->commit();
+            }
+          labelFormatSerialKeyLine (m);
+          if (m == "")
+            m = empty;
+          label->setText (m);
+          event->accept();
+          return false;
+        }
+
+      if (c.length() > 0)
+        {
+          label->commiting += c;
+          QString t = label->commiting;
+          if (label->commiting.length() > keyMaxLen)
+            label->commiting.remove (keyMaxLen, label->commiting.length() - keyMaxLen);
+          labelFormatSerialKeyLine (t);
+          if (t == "")
+            t = empty;
+          label->setText (t);
+          QGuiApplication::inputMethod()->commit();
+          event->accept();
+          return false;
+        }
+    }
+
+  if (event->type() == QEvent::KeyPress)
+    {
+      QKeyEvent *Event  = (QKeyEvent *) (event);
+      auto key          = Event->key();
+      //qDebug() << "input:keypress:" << key;
+
+      if (key == Qt::Key_Backspace)
+        {
+          if (label->commiting.length() == 0)
             //label->clear();
-            label->setText(empty);
-
-        a = a.remove("-").toUpper();
-        a = a.remove(QRegExp("[^A-Z0-9]"));
-        c = c.remove("-").toUpper();
-        c = c.remove(QRegExp("[^A-Z0-9]"));
-
-        if (a.length()>0)
-        {
-           QString m = label->commiting + a;
-           if (m.length() >= keyMaxLen)
-           {
-            m.remove(keyMaxLen, m.length() - keyMaxLen);
-            QGuiApplication::inputMethod()->commit();
-           }
-           labelFormatSerialKeyLine(m);
-           if (m == "")
-               m = empty;
-           label->setText(m);
-           event->accept();
-           return false;
-        }
-
-        if (c.length()>0)
-        {
-            label->commiting += c;
-            QString t = label->commiting;
-            if (label->commiting.length() > keyMaxLen)
-            label->commiting.remove(keyMaxLen, label->commiting.length() - keyMaxLen);
-            labelFormatSerialKeyLine(t);
-            if (t == "")
+            label->setText (empty);
+          else
+            {
+              label->commiting = label->commiting.remove (label->commiting.length() - 1, 1);
+              QString t  = label->commiting;
+              labelFormatSerialKeyLine (t);
+              if (t == "")
                 t = empty;
-            label->setText(t);
-            QGuiApplication::inputMethod()->commit();
-            event->accept();
-            return false;
-        }
-    }
-
-    if (event->type() == QEvent::KeyPress)
-    {
-        QKeyEvent *Event = (QKeyEvent *)(event);
-        if (Event->key() == Qt::Key_Backspace)
-        {
-            if (label->commiting.length() == 0)
-                //label->clear();
-                label->setText(empty);
-            else
-            {
-                label->commiting = label->commiting.remove(label->commiting.length()-1, 1);
-                QString t  = label->commiting;
-                labelFormatSerialKeyLine(t);
-                if (t == "")
-                    t = empty;
-                label->setText(t);
-                event->accept();
-                return false;
+              label->setText (t);
+              event->accept();
+              return false;
             }
         }
-        if (Event->key() == Qt::Key_Return)
+
+      if (key == Qt::Key_Return)
         {
-            QGuiApplication::inputMethod()->commit();
-            if (label->commiting.length() == keyMaxLen)
-                QGuiApplication::inputMethod()->hide();
+          QGuiApplication::inputMethod()->commit();
+          if (label->commiting.length() == keyMaxLen)
+            QGuiApplication::inputMethod()->hide();
         }
-        if (Event->key() == Qt::Key_V && readFromBuffer())
-         {
-             label->commiting = keyFromBuffer;
-             QString t = label->commiting;
-             labelFormatSerialKeyLine(t);
-             label->setText(t);
-         }
-    }
 
-    if (event->type() == QEvent::Leave)
-    {
-        QGuiApplication::inputMethod()->hide();
-    }
-
-    if (event->type() == QEvent::Show)
-    {
-        if (label->commiting.length() == 0)
+      if (key == Qt::Key_V && readFromBuffer())
         {
-            if (readFromBuffer())
+          label->commiting = keyFromBuffer;
+          QString t = label->commiting;
+          labelFormatSerialKeyLine (t);
+          label->setText (t);
+        }
+
+      if (key >= Qt::Key_0 && key <= Qt::Key_9)
+        {
+          QChar a   = char ('0' + (key - Qt::Key_0));
+          label->commiting += a;
+          QString t = label->commiting;
+
+          //qDebug() << QString ("input:keypress:number:a:") + a + ":key:" + key + ":t:" + t;
+
+          if (label->commiting.length() > keyMaxLen)
+            label->commiting.remove (keyMaxLen, label->commiting.length() - keyMaxLen);
+
+          labelFormatSerialKeyLine (t);
+          if (t == "")
+            t = empty;
+          label->setText (t);
+          QGuiApplication::inputMethod()->commit();
+          event->accept();
+          return false;
+        }
+    }
+
+  if (event->type() == QEvent::Leave)
+    {
+      QGuiApplication::inputMethod()->hide();
+      //qDebug() << "input:leave";
+    }
+
+  if (event->type() == QEvent::Show)
+    {
+      if (label->commiting.length() == 0)
+        {
+          if (readFromBuffer())
             {
-               label->commiting = keyFromBuffer;
-               QString t = label->commiting;
-               labelFormatSerialKeyLine(t);
-               label->setText(t);
+              label->commiting = keyFromBuffer;
+              QString t = label->commiting;
+              labelFormatSerialKeyLine (t);
+              label->setText (t);
             }
-            else
+          else
             {
-                label->setText(empty);
+              label->setText (empty);
             }
         }
     }
 
-    if (event->type() == QEvent::MouseButtonPress)
+  if (event->type() == QEvent::MouseButtonPress)
     {
-        return false;
+      return false;
     }
 
-    if (event->type() == QEvent::MouseButtonRelease)
+  if (event->type() == QEvent::MouseButtonRelease)
     {
 //         QMouseEvent *Event = (QMouseEvent *)(event);
-         label->setFocus();
-         QGuiApplication::inputMethod()->update(Qt::ImHints);
-         QGuiApplication::inputMethod()->show();
+      label->setFocus();
+      QGuiApplication::inputMethod()->update (Qt::ImHints);
+      QGuiApplication::inputMethod()->show();
 //         event->accept();
-         return true;
+      return true;
     }
-    return true;
+  return true;
 }
 
 bool SerialInput::readFromBuffer()
 {
-    int keyMaxLen = EXPECT_LENGTH;
-    if( QClipboard* c = QApplication::clipboard() )
+  int keyMaxLen = EXPECT_LENGTH;
+  if (QClipboard *c = QApplication::clipboard())
     {
-        if( const QMimeData* m = c->mimeData() )
+      if (const QMimeData *m = c->mimeData())
         {
 //            if( m->hasText())
-            {
-                QString buffer = m->text();
-                if (buffer.length() <= (keyMaxLen+3))
-                {
-                    buffer = buffer.remove("-").toUpper();
-                    buffer = buffer.remove(QRegExp("[^A-Z0-9]"));
-                    if (buffer.length() == keyMaxLen)
-                    {
-                        keyFromBuffer =  buffer;
-                        return true;
-                    }
-                }
-            }
+          {
+            QString buffer = m->text();
+            if (buffer.length() <= (keyMaxLen + 3))
+              {
+                buffer = buffer.remove ("-").toUpper();
+                buffer = buffer.remove (QRegExp ("[^A-Z0-9]"));
+                if (buffer.length() == keyMaxLen)
+                  {
+                    keyFromBuffer =  buffer;
+                    return true;
+                  }
+              }
+          }
         }
     }
-    return false;
+  return false;
 }
 /*-----------------------------------------*/
