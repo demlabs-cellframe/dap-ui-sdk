@@ -40,7 +40,8 @@ Item {
     {
         M_SERIAL,
         M_PASSWORD,
-        M_CERT
+        M_CERT,
+        M_NoCBD
     }
 
     /// @}
