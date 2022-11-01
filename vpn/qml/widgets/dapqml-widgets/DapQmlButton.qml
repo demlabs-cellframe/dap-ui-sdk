@@ -570,7 +570,7 @@ Rectangle {
 
         /* IconMainSub */
         /* Three items by horiontal */
-        RowLayout {
+        Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.rightMargin: root.link ? root.iconRightSize : 0
@@ -589,21 +589,21 @@ Rectangle {
             /* icon */
             DapQmlLabel {
                 id: imsIcon
-                Layout.preferredWidth: root.iconSize
-                Layout.preferredHeight: root.iconSize
-
-                qss: root.icon
+                y: (parent.height - height) / 2
                 width: root.iconSize
                 height: root.iconSize
+
+                qss: root.icon
                 onClicked: root.clicked();
             }
 
             /* main text */
             DapQmlLabel {
                 id: imsMain
-                Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+                x: (imsIcon.width > 0) ? imsIcon.width + imsIcon.width / 4
+                                       : root.mainTextOffsetX
+                width: contentWidth
+                height: parent.height
 
                 horizontalAlign: Text.AlignLeft
                 verticalAlign: Text.AlignVCenter
@@ -616,9 +616,9 @@ Rectangle {
             /* sub text */
             DapQmlLabel {
                 id: imsSub
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                Layout.fillWidth: text.length > 0
-                Layout.fillHeight: true
+                x: imsMain.x + imsMain.width + imsIcon.width / 2
+                width: parent.width - imsIcon.width - imsMain.width - linkImage1.minus
+                height: parent.height
 
                 horizontalAlign: Text.AlignRight
                 verticalAlign: Text.AlignVCenter
@@ -628,9 +628,12 @@ Rectangle {
                 visible: text.length > 0
                 onClicked: root.clicked();
             }
+
             DapQmlImage {
+                property real minus: (root.frame ? (width * 2.4) : (width * 2))
+
                 id: linkImage1
-                x: root.width - (root.frame ? (width * 2.4) : (width * 2))
+                x: root.width - minus
                 y: imsMain.y + imsMain.height / 2 - width / 2
                 z: 1
                 width: root.height / 4
