@@ -5,12 +5,14 @@ import QtQuick.Layouts 1.2
 import QtGraphicalEffects 1.0
 
 Image {
-    property string indicatorSrcNormal: "qrc:/Resources/BlackTheme/icons/other/ic_infoGray.svg"
-    property string indicatorSrcHover: "qrc:/Resources/BlackTheme/icons/other/ic_infoGray.svg"
+    property string indicatorSrcNormal: "qrc:/Resources/"+ pathTheme +"/icons/other/ic_infoGray.svg"
+    property string indicatorSrcHover: "qrc:/Resources/"+ pathTheme +"/icons/other/ic_infoGray.svg"
     property string contentText: ""
     property alias toolTip: toolTip
     property alias text: text
+    property alias mouseArea: area
     property font textFont: mainFont.dapFont.medium12
+
 
     signal clicked()
 
