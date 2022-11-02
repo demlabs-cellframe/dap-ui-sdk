@@ -2,6 +2,7 @@
 #include "DapCmdSystemTray.h"
 
 #include <QMetaEnum>
+#include <QJsonArray>
 
 /* VARS */
 static QMetaEnum *typeEnum        = nullptr;
@@ -48,6 +49,11 @@ void DapCmdSystemTray::handle (const QJsonObject *params)
         case RequestType::client_exited:              emit clientClosed();            break;
         case RequestType::apllication_quit:           emit quitRequest();             break;
         case RequestType::tray_application_running:   emit trayApplicationFound();    break;
+        case RequestType::change_server:
+          {
+            QJsonArray args = params->value (actionValue).toArray();
+            emit changeServer (args[0].toString(), args[1].toString());
+          } break;
         }
     }
 }
@@ -76,12 +82,13 @@ void DapCmdSystemTray::sendShowDashboardInterface()
   sendShowInterface (RequestType::dashboard);
 }
 
-void DapCmdSystemTray::sendChangeServer(const QString &a_newServer)
+void DapCmdSystemTray::sendChangeServer (const QString &a_serverName, const QString &a_serverAddress)
 {
-  sendShowInterface (RequestType::change_server);
+  qDebug() << QString ("cmd sendChangeServer name[%1],ip[%2]").arg (a_serverName, a_serverAddress);
+  auto name = typeEnum->valueToKey (int (RequestType::change_server));
   QJsonObject response = {
-    {actionParam, int (RequestType::change_server)},
-    {actionParam, int (RequestType::change_server)},
+    {actionParam, name},
+    {actionValue, QJsonArray {a_serverName, a_serverAddress}},
   };
   sendCmd (&response);
 }

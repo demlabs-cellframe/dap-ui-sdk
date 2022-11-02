@@ -75,7 +75,7 @@ public:
   void sendShowStatisticInterface();
   void sendShowLoginInterface();
   void sendShowDashboardInterface();
-  void sendChangeServer (const QString &a_newServer);
+  void sendChangeServer (const QString &a_serverName, const QString &a_serverAddress);
   void clientStarted();
   void trayApplicationStarted();
   void clientExited();
@@ -93,6 +93,7 @@ signals:
   void showStatisticInterface();
   void showLoginInterface();
   void showDashboardInterface();
+  void changeServer (QString a_serverName, QString a_serverAddress);
   void trayApplicationFound();
   void clientFound();
   void clientClosed();
