@@ -1,7 +1,7 @@
 /* INCLUDES */
 
 import QtQuick 2.10
-import QtQuick.Controls 2.1
+import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.3
 import Qt.labs.platform 1.1
 import DapQmlStyle 1.0
@@ -54,7 +54,8 @@ Rectangle {
         LeftTopMainBottomSub, ///< left:left, top:main, bottom:sub
         IconMainSub,          ///< icon, main, sub
         EditTopMainBottomSub, ///< top:edit, bottom:sub
-        IconMainSubIcon       ///< icon, main, sub, icon
+        IconMainSubIcon,      ///< icon, main, sub, icon
+        EditLine              ///< icon, main, icon
     }
 
     /// @}
@@ -77,6 +78,7 @@ Rectangle {
     property string iconRight: ""
     property int iconSize: 34
     property int iconRightSize: 34
+    property int iconLineEditSize: 20
     property int buttonStyle: DapQmlButton.Style.TopMainBottomSub
     property int editEchoMode: TextInput.Normal
     property bool separator: false
@@ -90,6 +92,8 @@ Rectangle {
     property var labelLeft
     property var labelIcon
     property var labelIconRight
+
+    property int mainTextOffsetX: 0
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
 
@@ -131,6 +135,11 @@ Rectangle {
      ********************************************/
     /// @{
 
+    function setEnable(value) {
+        root.enabled = value;
+        root.opacity = (value)? 1.0: 0.5;
+    }
+
     /* store references */
     Component.onCompleted: {
         if(root.buttonStyle === DapQmlButton.Style.LeftTopMainBottomSub)
@@ -167,7 +176,12 @@ Rectangle {
             root.labelIcon      = imsiIcon;
             root.labelIconRight = imsiRightIcon;
         }
-
+        else if(root.buttonStyle === DapQmlButton.Style.EditLine)
+        {
+            root.labelMain          = lineEditField;
+            root.labelIcon          = lineEditIcon;
+//            root.labelIconRight     = lineEditlIconRight;
+        }
     }
 
     function _magickSpacer() {
@@ -186,18 +200,24 @@ Rectangle {
         return _magickHeight() + _magickSpacer();
     }
 
+    function setFocus() {
+        etmbsMain.forceActiveFocus();
+        console.log("setFocus")
+    }
+
     /// @}
     /****************************************//**
      * Link image
      ********************************************/
 
     DapQmlImage {
+        id: linkImage
         x: root.width - (root.frame ? (width * 2.4) : (width * 2))
         y: (root.height - height) / 2
         z: 1
         width: root.height / 5
         height: root.height / 5
-        visible: root.link
+        visible: root.link && root.buttonStyle !== DapQmlButton.Style.IconMainSub
         scaledPixmap: "qrc:/light/ic_arrow-right.png"
     }
 
@@ -437,6 +457,7 @@ Rectangle {
                 text: root.mainText
                 //qss: root.mainQss
                 inputMask: root.inputMask
+                // android virtual keyboard
                 inputMethodHints: Qt.ImhSensitiveData
 
                 DapQmlLabel {
@@ -470,24 +491,30 @@ Rectangle {
                             if (mouse.source === Qt.MouseEventNotSynthesized)
                                 contextMenu.open()
                     }
-                    Menu {
+                    DapQmlMenu {
                         id: contextMenu
-                        MenuItem {
+                        shortcuts: [
+                            "Ctrl+X",
+                            "Ctrl+C",
+                            "Ctrl+V",
+                            ""
+                        ]
+                        Action {
                             text: "Cut"
                             shortcut: "Ctrl+X"
                             onTriggered: ctxMenu.execCut();
                         }
-                        MenuItem {
+                        Action {
                             text: "Copy"
                             shortcut: "Ctrl+C"
                             onTriggered: ctxMenu.execCopy();
                         }
-                        MenuItem {
+                        Action {
                             text: "Paste"
                             shortcut: "Ctrl+V"
                             onTriggered: ctxMenu.execPaste();
                         }
-                        MenuItem {
+                        Action {
                             text: "Delete"
                             //shortcut: "Delete"
                             onTriggered: ctxMenu.execDelete();
@@ -543,10 +570,10 @@ Rectangle {
 
         /* IconMainSub */
         /* Three items by horiontal */
-        GridLayout {
+        RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            columns: 3
+            Layout.rightMargin: root.link ? root.iconRightSize : 0
             visible: (root.buttonStyle === DapQmlButton.Style.IconMainSub)
 
             /* store references */
@@ -601,6 +628,22 @@ Rectangle {
                 visible: text.length > 0
                 onClicked: root.clicked();
             }
+            DapQmlImage {
+                id: linkImage1
+                x: root.width - (root.frame ? (width * 2.4) : (width * 2))
+                y: imsMain.y + imsMain.height / 2 - width / 2
+                z: 1
+                width: root.height / 4
+                height: root.height / 4
+                visible: root.link
+                scaledPixmap: "qrc:/light/ic_arrow-right.png"
+
+//                Rectangle {
+//                    color: "blue"
+//                    anchors.fill: parent
+//                    opacity: 0.3
+//                }
+            }
         }
 
         /* IconMainSubIcon */
@@ -634,7 +677,8 @@ Rectangle {
             /* main text */
             DapQmlLabel {
                 id: imsiMain
-                x: imsiIcon.width + imsiIcon.width / 4
+                x: (imsiIcon.width > 0) ? imsiIcon.width + imsiIcon.width / 4
+                                        : root.mainTextOffsetX
                 width: contentWidth
                 height: parent.height
 
@@ -644,6 +688,7 @@ Rectangle {
                 qss: root.mainQss
                 clip: false
                 onClicked: root.clicked();
+
             }
 
             /* sub text */
@@ -660,6 +705,7 @@ Rectangle {
                 clip: false
                 visible: text.length > 0
                 onClicked: root.clicked();
+
             }
 
             /* icon */
@@ -672,6 +718,130 @@ Rectangle {
 
                 qss: root.iconRight
                 onClicked: root.rightClicked();
+
+            }
+        }
+
+        /* Line edit */
+        Item {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            visible: (root.buttonStyle === DapQmlButton.Style.EditLine)
+            function workHeight() { return height - 4; }
+
+            /* store references */
+            Component.onCompleted: {
+                if(visible)
+                {
+                    root.labelMain          = lineEditField;
+                    root.labelIcon          = lineEditIcon;
+                }
+            }
+
+            DapQmlLabel {
+                id: lineEditIcon
+                x: 3
+                y: lineEditField.y
+                width: root.iconLineEditSize
+                height: root.iconLineEditSize
+
+                qss: root.iconRight
+                scaledPixmap: "qrc:/light/ic_close_hover.png"
+                onClicked: root.rightClicked();
+            }
+
+            /* main text */
+            TextField {
+                id: lineEditField
+                y: (root.height - height) / 2
+                x: lineEditIcon.width + 3
+                width: parent.width - lineEditIcon.width
+                height: parent.height
+
+                //                Rectangle {
+                //                    color: "gray"
+                //                    anchors.fill: parent
+                //                }
+
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignBottom
+                text: root.mainText
+                //qss: root.mainQss
+                inputMask: root.inputMask
+                // android virtual keyboard
+                inputMethodHints: Qt.ImhSensitiveData
+
+                TextEditContextMenu {
+                    id: lineEditMenu
+                    Component.onCompleted: setTextEditWidget(lineEditField)
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.RightButton
+                    onClicked: {
+                        if (Scaling.isDesktop())
+                            if (mouse.button === Qt.RightButton)
+                                contextMenu.open()
+                    }
+                    onPressAndHold: {
+                        if (Scaling.isDesktop())
+                            if (mouse.source === Qt.MouseEventNotSynthesized)
+                                contextMenu.open()
+                    }
+                    Menu {
+                        id: lineEditContextMenu
+                        MenuItem {
+                            text: "Cut"
+                            shortcut: "Ctrl+X"
+                            onTriggered: lineEditMenu.execCut();
+                        }
+                        MenuItem {
+                            text: "Copy"
+                            shortcut: "Ctrl+C"
+                            onTriggered: lineEditMenu.execCopy();
+                        }
+                        MenuItem {
+                            text: "Paste"
+                            shortcut: "Ctrl+V"
+                            onTriggered: lineEditMenu.execPaste();
+                        }
+                        MenuItem {
+                            text: "Delete"
+                            //shortcut: "Delete"
+                            onTriggered: lineEditMenu.execDelete();
+                        }
+                    }
+                }
+
+                Component.onCompleted: {
+                    if(root.buttonStyle === DapQmlButton.Style.EditTopMainBottomSub)
+                        filter.setup(this);
+                }
+
+                /* vars */
+                property string fontFamiliy: "Lato"
+                property int fontSize: 14
+                property int fontWeight: Font.Normal
+
+                /* style */
+                DapQmlStyle { qss: root.mainQss; item: lineEditField }
+
+                /* background */
+                background: DapQmlRectangle {
+                    qss: "ch-country-filter"
+                }
+
+                /* font config */
+                font {
+                    family: lineEditField.fontFamiliy
+                    pixelSize: lineEditField.fontSize
+                    weight: lineEditField.fontWeight
+                }
+
+                /* signals */
+                onTextEdited: { root.mainText = text; root.textEdited(); }
+                onTextChanged: { root.mainText = text; root.textChanged(); }
             }
         }
 

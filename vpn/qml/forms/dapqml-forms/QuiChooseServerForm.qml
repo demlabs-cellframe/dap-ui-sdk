@@ -1,6 +1,7 @@
 /* INCLUDES */
 
 import QtQuick 2.1
+import QtQuick.Controls 2.12
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -44,25 +45,6 @@ Item {
     /// @brief item clicked
     signal sigSelect(int index, string name);
 //    signal sigCurrentInexChanged();
-
-    /// @}
-    /****************************************//**
-     * @name FUNCTIONS
-     ********************************************/
-    /// @{
-
-    /// @brief change current item index (int index)
-    function setCurrentIndex(a_index) {
-        csListView.currentIndex = a_index;
-
-//        var count           = csListView.count
-//        var current         = csListView.currentIndex;
-//        for(var i = 0; i < count; i++) {
-//            var entry       = csListView.itemAtIndex(i);
-//            entry.checked   = (i === current)
-//        }
-//        root.sigCurrentInexChanged();
-    }
 
     /// @}
     /****************************************//**
@@ -111,12 +93,11 @@ Item {
             property bool checked: false
 
             DapQmlRadioButton {
-                property int myIndex: model.index
                 property int ping: model.ping
                 property int quality: model.connectionQuality
 
                 text: model.name + csListView.model.hook
-                checked: csListView.currentIndex === model.index // parent.checked
+                checked: model.checked
                 separator: true
                 iconSize: resizer.height
                 width: resizer.width
@@ -135,6 +116,22 @@ Item {
                     width: resizer.height * 0.75
                     height: resizer.height * 0.75
                     qss: `ic_conn-${quality}` + csListView.model.hook
+                    ToolTip {
+                        id: id_tooltip
+                        contentItem: Text{
+                            color: "#21be2b"
+                            text: "ping " + ping + " ms"
+                        }
+                        background: Rectangle {
+                            border.color: "#21be2b"
+                        }
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onEntered: id_tooltip.visible = true
+                        onExited: id_tooltip.visible = false
+                    }
                 }
 
                 onClicked: root.sigSelect (model.index, model.name)

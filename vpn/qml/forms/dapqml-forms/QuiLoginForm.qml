@@ -58,7 +58,9 @@ Item {
     property QtObject internal: QtObject {
 
         property bool changedServer: false
+        property bool changedCert:   false
         property string serverName: ""
+        property string certName:   ""
 
         /// @brief login mode
         property int mode: QuiLoginForm.Mode.M_SERIAL
@@ -87,6 +89,9 @@ Item {
 
     /// @brief choose server button clicked
     signal sigChooseServer();
+
+    /// @brief choose certificate button clicked
+    signal sigChooseCert();
 
     /// @brief enter serial key clicked
     signal sigChooseSerial();
@@ -178,29 +183,13 @@ Item {
 
     DapQmlRectangle {
         qss: "login-logo-container"
+        visible: Brand.name() !== "RiseVPN"
         DapQmlLabel {
             x: (parent.width - width) / 2
             z: 15
             qss: "login-logo"
         }
     }
-
-//    TextField {
-//        x: (parent.width - width) / 2
-//        y: 15
-//        width: parent.width - 74
-//        height: 64
-//        color: "#333333"
-//        inputMethodHints: Qt.ImhSensitiveData
-
-//        DapQmlSerialKeyInput {
-//            //anchors.fill: parent
-//            id: filter
-//            objectName: "serialInputFilter"
-//        }
-
-//        Component.onCompleted: filter.setup(this)
-//    }
 
     /****************************************//**
      * Error label
@@ -217,70 +206,104 @@ Item {
      * Login type select
      ********************************************/
 
-//    Component.onCompleted: StyleDebugTree.describe (
-//       "login",
-//        ["x", "y", "width", "height"],
-//       this);
-
-    RowLayout {
+    Rectangle {
         id: loginTypeContainer
-        spacing: height / 3
+        width: root.width
+        color: "transparent"
         clip: true
         visible: Brand.name() === "RiseVPN"
         DapQmlStyle { item: loginTypeContainer; qss: "login-type-container" }
 
-//        Component.onCompleted: StyleDebugTree.describe (
-//           "loginTypeContainer",
-//            ["x", "y", "width", "height"],
-//           this);
-
-        DapQmlRadioButton {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: "With password"
-            textPadding: indicator.width * 0.8
-
-            onCheckedChanged: {
-                if (checked)
-                    internal.mode   = QuiLoginForm.Mode.M_PASSWORD;
-            }
-
-//            Component.onCompleted: StyleDebugTree.describe (
-//               "With password",
-//                ["x", "y", "width", "height"],
-//               this);
+        function update() {
+            tabCert.checked         = internal.mode === QuiLoginForm.Mode.M_CERT;
+            tabSerial.checked       = internal.mode === QuiLoginForm.Mode.M_SERIAL;
+            tabLoginPass.checked    = internal.mode === QuiLoginForm.Mode.M_PASSWORD;
         }
 
-        DapQmlRadioButton {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            text: "With serial"
-            textPadding: indicator.width * 0.8
-            checked: true
-
-            onCheckedChanged: {
-                if (checked)
-                    internal.mode   = QuiLoginForm.Mode.M_SERIAL;
-            }
-
-//            Component.onCompleted: StyleDebugTree.describe (
-//               "With serial",
-//                ["x", "y", "width", "height"],
-//               this);
+        DapQmlTabButton {
+            id: tabCert
+            qss: "login-mode-btn-cert"
+            checked:    internal.mode === QuiLoginForm.Mode.M_CERT
+            onClicked:  { internal.mode   = QuiLoginForm.Mode.M_CERT; loginTypeContainer.update(); }
         }
+
+        DapQmlTabButton {
+            id: tabSerial
+            qss: "login-mode-btn-serial"
+            checked:    internal.mode === QuiLoginForm.Mode.M_SERIAL
+            onClicked:  { internal.mode   = QuiLoginForm.Mode.M_SERIAL; loginTypeContainer.update(); }
+        }
+
+        DapQmlTabButton {
+            id: tabLoginPass
+            qss: "login-mode-btn-loginpass"
+            checked:    internal.mode === QuiLoginForm.Mode.M_PASSWORD
+            onClicked:  { internal.mode   = QuiLoginForm.Mode.M_PASSWORD; loginTypeContainer.update(); }
+        }
+    }
+
+    /****************************************//**
+     * Top spacer
+     ********************************************/
+
+    DapQmlDummy {
+        id: loginSpacer
+        qss: (internal.mode === QuiLoginForm.Mode.M_CERT) ? "login-space-for2rows" : "login-space-for3rows"
+        Component.onCompleted: StyleDebugTree.describe (
+           "loginSpacer",
+            ["x", "y", "width", "height"],
+           this);
     }
 
     /****************************************//**
      * Top separator
      ********************************************/
 
+    DapQmlLabel {
+        property string textCert:       qsTr("Standart Certificate") + lang.notifier
+        property string textSerial:     qsTr("Serial + HW based DAP Cert") + lang.notifier
+        property string textLoginPass:  qsTr("Login + Password") + lang.notifier
+
+        id: loginTypeName
+        y: loginSpacer.y
+        width:       loginTypeNamePlacer.width
+        height:      loginTypeNamePlacer.height
+        fontSize:    loginTypeNamePlacer.fontSize
+        fontFamiliy: loginTypeNamePlacer.fontFamiliy
+        fontWeight:  loginTypeNamePlacer.fontWeight
+        color:       loginTypeNamePlacer.color
+        visible: Brand.name() === "RiseVPN"
+        wrapMode: Text.WordWrap
+        text: (internal.mode === QuiLoginForm.Mode.M_CERT)
+              ? textCert
+              : (internal.mode === QuiLoginForm.Mode.M_SERIAL)
+                ? textSerial
+                : textLoginPass
+
+        DapQmlDummy {
+            property var fontFamiliy
+            property int fontSize
+            property int fontWeight
+            property color color
+            id: loginTypeNamePlacer
+            qss: "login-typename-label font-brand c-grey"
+        }
+    }
+
     DapQmlRectangle {
-        qss: "login-separator-container"
+        x: loginSepsPlacer.x
+        y: loginSpacer.y + loginSepsPlacer.y
+        width: loginSepsPlacer.width
+        height: loginSepsPlacer.height
         DapQmlSeparator {
             x: (parent.width - width) / 2
             z: 15
             width: parent.width - 74
             qss: "login-separator"
+        }
+        DapQmlDummy {
+            id: loginSepsPlacer
+            qss: "login-separator-container"
         }
     }
 
@@ -289,7 +312,10 @@ Item {
      ********************************************/
 
     DapQmlRectangle {
-        qss: "login-btn-server-container"
+        x:      loginServerPlacer.x
+        y:      loginSpacer.y + loginServerPlacer.y
+        width:  loginServerPlacer.width
+        height: loginServerPlacer.height
 
         DapQmlButton {
             id: btnChooseServer
@@ -316,6 +342,10 @@ Item {
 
             onDefaultServerNameChanged: updateServerName()
         }
+        DapQmlDummy {
+            id: loginServerPlacer
+            qss: "login-btn-server-container"
+        }
     }
 
     /****************************************//**
@@ -323,7 +353,10 @@ Item {
      ********************************************/
 
     DapQmlRectangle {
-        qss: "login-btn-serial-container"
+        x:      loginSerialPlacer.x
+        y:      loginSpacer.y + loginSerialPlacer.y
+        width:  loginSerialPlacer.width
+        height: loginSerialPlacer.height
         visible: internal.mode === QuiLoginForm.Mode.M_SERIAL
 
         DapQmlButton {
@@ -373,6 +406,10 @@ Item {
                     root.sigSerialFillingIncorrect();
             }
         }
+        DapQmlDummy {
+            id: loginSerialPlacer
+            qss: "login-btn-serial-container"
+        }
     }
 
     /****************************************//**
@@ -380,7 +417,10 @@ Item {
      ********************************************/
 
     DapQmlRectangle {
-        qss: "login-btn-email-container"
+        x:      loginEmailPlacer.x
+        y:      loginSpacer.y + loginEmailPlacer.y
+        width:  loginEmailPlacer.width
+        height: loginEmailPlacer.height
         visible: internal.mode === QuiLoginForm.Mode.M_PASSWORD
 
         DapQmlButton {
@@ -398,10 +438,17 @@ Item {
             subQss: "login-btn-sub"
             separator: true
         }
+        DapQmlDummy {
+            id: loginEmailPlacer
+            qss: "login-btn-email-container"
+        }
     }
 
     DapQmlRectangle {
-        qss: "login-btn-password-container"
+        x:      loginPasswordPlacer.x
+        y:      loginSpacer.y + loginPasswordPlacer.y
+        width:  loginPasswordPlacer.width
+        height: loginPasswordPlacer.height
         visible: internal.mode === QuiLoginForm.Mode.M_PASSWORD
 
         DapQmlButton {
@@ -443,6 +490,54 @@ Item {
             height: parent.height * 0.5
 
             onCheckedChanged: internal.showPassword = checked
+        }
+        DapQmlDummy {
+            id: loginPasswordPlacer
+            qss: "login-btn-password-container"
+        }
+    }
+
+    /****************************************//**
+     * Choose cert
+     ********************************************/
+
+    DapQmlRectangle {
+        x:      loginChooseCertPlacer.x
+        y:      loginSpacer.y + loginChooseCertPlacer.y
+        width:  loginChooseCertPlacer.width
+        height: loginChooseCertPlacer.height
+        visible: internal.mode !== QuiLoginForm.Mode.M_PASSWORD
+
+        DapQmlButton {
+            id: btnChooseCert
+            x: (parent.width - width) / 2
+            z: 15
+            width: parent.width - 74
+            property string defaultCertName: "Certificate 5" // qsTr() + lang.notifier
+
+            buttonStyle: DapQmlButton.Style.TopMainBottomSub
+            mainText: (!internal.changedCert) ? (defaultCertName) : (internal.certName)
+            subText: qsTr("CHOOSING CERTIFICATE") + lang.notifier
+            qss: "login-btn-cert"
+            mainQss: "login-btn-main"
+            subQss: "login-btn-sub"
+            separator: true
+            link: true
+            onClicked: root.sigChooseCert()
+
+            function updateCertName() {
+                mainText = (!internal.changedCert)
+                        ? (defaultCertName)
+                        : (internal.certName)
+            }
+
+            onDefaultCertNameChanged: updateCertName()
+        }
+        DapQmlDummy {
+            id: loginChooseCertPlacer
+            qss: (internal.mode === QuiLoginForm.Mode.M_CERT)
+                ? "login-btn-cert-container2"
+                : "login-btn-cert-container3"
         }
     }
 

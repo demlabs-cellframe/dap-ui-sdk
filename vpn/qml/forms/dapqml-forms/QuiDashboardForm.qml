@@ -79,6 +79,14 @@ Item {
         dashboardError.text  = a_text;
     }
 
+    function setServerChooseEnable(value) {
+        serverChoose.setEnable(value);
+    }
+
+    function setSwitchButtonEnable(value) {
+        dashboardSwitch.setEnable(value);
+    }
+
     /// @brief change color of small icon close to connection time
     function setStatusIndicator(a_status) {
         if (a_status)
@@ -170,7 +178,7 @@ Item {
                 width: contentWidth
                 height: parent.height
                 fontSize: statusTimeScaler.fontSize
-                text: "00 : 00 : 00"
+                text: "00:00:00"
                 qss: "dashboard-status-label"
 
 //                Component.onCompleted: StyleDebugTree.describe (
@@ -213,7 +221,7 @@ Item {
             id: speedDown
             Layout.fillWidth: true
             Layout.fillHeight: true
-            mainText: "0 kB/s"
+            mainText: "0 B/s"
             subText: qsTr("DOWNLOAD") + lang.notifier
             mainQss: "dashboard-speed-main"
             subQss: "dashboard-speed-sub"
@@ -223,7 +231,7 @@ Item {
             id: speedUp
             Layout.fillWidth: true
             Layout.fillHeight: true
-            mainText: "0 kB/s"
+            mainText: "0 B/s"
             subText: qsTr("UPLOAD") + lang.notifier
             mainQss: "dashboard-speed-main"
             subQss: "dashboard-speed-sub"

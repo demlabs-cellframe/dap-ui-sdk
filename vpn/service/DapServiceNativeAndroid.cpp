@@ -20,7 +20,7 @@ void DapServiceNativeAndroid::checkInstallation()
         QAndroidIntent serviceIntent(QtAndroid::androidActivity().object(),
                                      "com/" DAP_BRAND "/" DAP_BRAND "Service");
 
-        QString method_name = "startForegrouService";
+        QString method_name = "startService";
         
         if (QtAndroid::androidSdkVersion() < 26)
         {

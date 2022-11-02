@@ -13,10 +13,11 @@ RESOURCES += \
     $$PWD/dapqml-forms.qrc
 
 HEADERS += \
-    $$PWD/dapqml-abstract/abstractcryptography.h \
+    $$PWD/dapqml-abstract/abstractcertificate.h \
     $$PWD/dapqml-abstract/abstractservermanager.h \
     $$PWD/dapqml-forms/doc-group-qml-forms.h \
     $$PWD/dapqml-model/dapqmlmodelbugreports.h \
+    $$PWD/dapqml-model/dapqmlmodelchoosecert.h \
     $$PWD/dapqml-model/dapqmlmodelchooseserver.h \
     $$PWD/dapqml-model/dapqmlmodelmanageservers.h \
     $$PWD/dapqml-model/dapqmlmodelserialhistory.h \
@@ -24,6 +25,7 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/dapqml-model/dapqmlmodelbugreports.cpp \
+    $$PWD/dapqml-model/dapqmlmodelchoosecert.cpp \
     $$PWD/dapqml-model/dapqmlmodelchooseserver.cpp \
     $$PWD/dapqml-model/dapqmlmodelmanageservers.cpp \
     $$PWD/dapqml-model/dapqmlmodelserialhistory.cpp \
