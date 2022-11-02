@@ -41,6 +41,7 @@ public:
     client_exited,
     apllication_quit,
     tray_application_running,
+    change_server,
   };
   Q_ENUM(RequestType)
   /// @}
@@ -74,6 +75,7 @@ public:
   void sendShowStatisticInterface();
   void sendShowLoginInterface();
   void sendShowDashboardInterface();
+  void sendChangeServer (const QString &a_newServer);
   void clientStarted();
   void trayApplicationStarted();
   void clientExited();

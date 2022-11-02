@@ -5,7 +5,8 @@
 
 /* VARS */
 static QMetaEnum *typeEnum        = nullptr;
-static const QString actionParam  = "client_show_interface";
+static const QString actionParam  = "action";
+static const QString actionValue  = "value";
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -73,6 +74,16 @@ void DapCmdSystemTray::sendShowLoginInterface()
 void DapCmdSystemTray::sendShowDashboardInterface()
 {
   sendShowInterface (RequestType::dashboard);
+}
+
+void DapCmdSystemTray::sendChangeServer(const QString &a_newServer)
+{
+  sendShowInterface (RequestType::change_server);
+  QJsonObject response = {
+    {actionParam, int (RequestType::change_server)},
+    {actionParam, int (RequestType::change_server)},
+  };
+  sendCmd (&response);
 }
 
 void DapCmdSystemTray::apllicationQuitRequest()

@@ -39,7 +39,7 @@ public:
    *******************************************/
   /// @{
 public slots:
-  void sendInterfaceRequest (QString interfaceName);
+//  void sendInterfaceRequest (QString interfaceName);
   /// @}
 
   /****************************************//**
@@ -47,7 +47,7 @@ public slots:
    *******************************************/
   /// @{
 signals:
-  void interfaceRequest (QString interfaceName);
+//  void interfaceRequest (QString interfaceName);
   /// @}
 };
 
