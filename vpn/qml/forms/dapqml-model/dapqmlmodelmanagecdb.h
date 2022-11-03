@@ -35,6 +35,7 @@ public:
   Q_INVOKABLE void add (const QVariant &a_data);
   Q_INVOKABLE void edit (int a_index, const QVariant &a_data);
   Q_INVOKABLE void remove (int a_index);
+  Q_INVOKABLE void move (int a_firstIndex, int a_secondIndex);
   Q_INVOKABLE void refreshContent();
   Q_INVOKABLE QVariant value (int a_index, const QString &a_name);
   Q_INVOKABLE void doImport (const QString &a_filename);

@@ -101,6 +101,16 @@ void DapQmlModelManageCdb::remove (int a_index)
   s_manager->update();
 }
 
+void DapQmlModelManageCdb::move(int a_firstIndex, int a_secondIndex)
+{
+  /* check if manager installed */
+  if (s_manager.isNull())
+    return;
+
+  /* perform moving */
+  s_manager->move (a_firstIndex, a_secondIndex);
+}
+
 void DapQmlModelManageCdb::refreshContent()
 {
   beginResetModel();

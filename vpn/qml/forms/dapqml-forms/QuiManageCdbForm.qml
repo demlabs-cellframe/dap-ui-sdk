@@ -261,13 +261,13 @@ Item {
     DapQmlRectangle {
         id: resizer
         visible: false
-        qss: "radiobtn-resizer"
+        qss: "radiobtn-resizer c-grey"
     }
 
     DapQmlLabel {
         id: resizeField
         visible: false
-        qss: "mancdb-resizer-field"
+        qss: "mancdb-resizer-field c-brand"
         //onColorChanged: console.log(`resizeField >> bgcolor: ${resizerItem.color}, textcolor: ${resizeField.color}`);
     }
 
@@ -326,11 +326,26 @@ Item {
             id: mancdbListView
             objectName: "mancdbListView"
 
+            property int dragItemIndex: -1
+            property int dropItemIndex: -1
+
             x: (root.width - width) / 2
             y: title.y + title.height * 2
             width: resizerItem.width
             height: root.height - y
             clip: true
+
+            function dropItem() {
+                console.log (`dropItem ${dragItemIndex} to ${parent.myIndex}`);
+
+                let model  = mancdbListView.model;
+
+                model.move (dragItemIndex, dropItemIndex);
+                model.refreshContent();
+
+                dragItemIndex   = -1;
+                dropItemIndex   = -1;
+            }
 
             /****************************************//**
              * Resizers
@@ -339,7 +354,7 @@ Item {
             DapQmlLabel {
                 visible: false
                 id: resizerItem
-                qss: "mancdb-resizer-item"
+                qss: "mancdb-resizer-item c-background"
                 //onColorChanged: console.log(`resizerItem >> bgcolor: ${resizerItem.color}, textcolor: ${resizeField.color}`);
             }
 
@@ -349,21 +364,49 @@ Item {
 
             delegate: Item {
                 id: delegateItem
-                width: delegate.width
-                height: delegate.height
+                width: mancdbListView.width
+                height: resizerItem.height
 
+                /* highlight drop area */
+                Rectangle {
+                    id: dropArea
+                    width: mancdbListView.width
+                    height: resizerItem.height
+                    z: 15
+
+                    //property bool somethingOnTop: false
+                    property int myIndex: model.index
+
+                    color: resizeField.color
+                    radius: 6
+                    opacity: (mancdbListView.dropItemIndex === myIndex) ? 0.5 : 0
+
+                    DropArea {
+                        anchors.fill: parent
+                        onEntered: {
+                            console.log (`somethingOnTop [${mancdbListView.dragItemIndex},${parent.myIndex}]`);
+                            //parent.somethingOnTop = true;
+                            mancdbListView.dropItemIndex = parent.myIndex;
+                        }
+                        onExited: {
+                            console.log (`!somethingOnTop [${mancdbListView.dragItemIndex},${parent.myIndex}]`);
+                            //parent.somethingOnTop = false;
+                        }
+                    }
+                }
+
+                /* dragable item */
                 Rectangle {
                     id: dragRect
+                    z: 20
 
-                    width: delegate.width
-                    height: delegate.height
+                    width: mancdbListView.width + mouseArea.drag.active * 20
+                    height: resizerItem.height + mouseArea.drag.active * 4
 
-                    color: "transparent"
-                    border.color: "black"
+                    color: (mouseArea.drag.active) ? resizerItem.color : "transparent"
+                    border.color: resizer.color
                     border.width: mouseArea.drag.active // 1
                     radius: 6
-
-                    property int dragItemIndex: index
 
                     states: [
                         State {
@@ -392,6 +435,7 @@ Item {
                         property int ping: 109 // model.ping
                         property int quality: 4 // model.connectionQuality
 
+                        x: mouseArea.drag.active * 10
                         width: mancdbListView.width
                         height: resizerItem.height
                         buttonStyle: DapQmlButton.Style.IconMainSubIcon
@@ -410,7 +454,7 @@ Item {
                             width: resizerItem.fontSize * 0.75
                             height: resizerItem.fontSize * 0.75
                             qss: "mancdb-btn-lbl-main c-background"
-                            text: myIndex
+                            text: (mouseArea.drag.active) ? "?" : (parent.myIndex + 1)
                         }
 
                         /* connection quality */
@@ -426,7 +470,7 @@ Item {
                                 id: id_tooltip
                                 contentItem: Text{
                                     color: "#21be2b"
-                                    text: "ping " + ping + " ms"
+                                    text: "ping " + parent.ping + " ms"
                                 }
                                 background: Rectangle {
                                     border.color: "#21be2b"
@@ -471,7 +515,9 @@ Item {
 
                                 drag.onActiveChanged: {
                                     if (mouseArea.drag.active) {
-                                        dragRect.dragItemIndex = index;
+                                        mancdbListView.dragItemIndex = index;
+                                    } else {
+                                        mancdbListView.dropItem();
                                     }
                                 }
                             }
@@ -488,17 +534,9 @@ Item {
         //                    }
                         }
 
-                        function buttonClicked(a_isButtonSignal) {
-                            // if(!a_isButtonSignal)
-                            //     clicked();
-                            // model.exec (myIndex, this);
-                        }
-
-                        onClicked: buttonClicked(true)
-
                         MouseArea {
                             anchors.fill: parent
-                            onClicked: parent.buttonClicked(false)
+                            onClicked: root.setMode (QuiManageCdbForm.Mode.M_EDIT, parent.myIndex)
                         }
 
     //                Component.onCompleted: if (myIndex === 0)
