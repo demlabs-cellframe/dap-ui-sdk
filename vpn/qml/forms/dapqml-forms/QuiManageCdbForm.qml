@@ -347,71 +347,167 @@ Item {
              * Delegate
              ********************************************/
 
-            delegate: DapQmlButton {
-                id: delegate
+            delegate: Item {
+                id: delegateItem
+                width: delegate.width
+                height: delegate.height
 
-                property int myIndex: model.index
+                Rectangle {
+                    id: dragRect
 
-                width: mancdbListView.width
-                height: resizerItem.height
-                buttonStyle: DapQmlButton.Style.IconMainSubIcon
-                mainText: model.name
-                subText: ""
-                separator: true
-                qss: "mancdb-item"
-                mainQss: "mancdb-btn-lbl-main"
-                //subQss: "mancdb-btn-lbl-sub"
-                //icon: model.icon
-                iconSize: resizerItem.fontSize / 3 // resizerItem.fontSize
+                    width: delegate.width
+                    height: delegate.height
 
-                /* more button */
-                Button {
-                    id: moreBtn
-                    icon {
-                        source: "qrc:/nonthemed/more.png"
-                        color: "transparent"
-                        width: moreBtn.width
-                        height: moreBtn.height
+                    color: "transparent"
+                    border.color: "black"
+                    border.width: mouseArea.drag.active // 1
+                    radius: 6
+
+                    property int dragItemIndex: index
+
+                    states: [
+                        State {
+                            when: dragRect.Drag.active
+                            ParentChange {
+                                target: dragRect
+                                parent: root
+                            }
+
+                            AnchorChanges {
+                                target: dragRect
+                                anchors.horizontalCenter: undefined
+                                anchors.verticalCenter: undefined
+                            }
+                        }
+                    ]
+
+                    Drag.active: mouseArea.drag.active
+                    Drag.hotSpot.x: dragRect.width / 2
+                    Drag.hotSpot.y: dragRect.height / 2
+
+                    DapQmlButton {
+                        id: delegate
+
+                        property int myIndex: model.index
+                        property int ping: 109 // model.ping
+                        property int quality: 4 // model.connectionQuality
+
+                        width: mancdbListView.width
+                        height: resizerItem.height
+                        buttonStyle: DapQmlButton.Style.IconMainSubIcon
+                        mainText: model.name
+                        subText: ""
+                        separator: true
+                        qss: "mancdb-item"
+                        mainQss: "mancdb-btn-lbl-main"
+                        //subQss: "mancdb-btn-lbl-sub"
+                        icon: "ic_cdb-index-icon"
+                        iconSize: resizerItem.fontSize * 0.75
+
+                        /* index */
+                        DapQmlLabel {
+                            y: (parent.height - height) / 2 - height * 0.25
+                            width: resizerItem.fontSize * 0.75
+                            height: resizerItem.fontSize * 0.75
+                            qss: "mancdb-btn-lbl-main c-background"
+                            text: myIndex
+                        }
+
+                        /* connection quality */
+                        DapQmlLabel {
+                            property int quality: (parent.quality === 0) ? (0) : (6 - parent.quality)
+                            x: parent.width - (width * 1.35) - moreBtn.width
+                            y: (parent.height - height) / 2
+                            width: resizer.height * 0.5
+                            height: resizer.height * 0.5
+                            qss: `ic_conn-${quality}`
+
+                            ToolTip {
+                                id: id_tooltip
+                                contentItem: Text{
+                                    color: "#21be2b"
+                                    text: "ping " + ping + " ms"
+                                }
+                                background: Rectangle {
+                                    border.color: "#21be2b"
+                                }
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onEntered: id_tooltip.visible = true
+                                onExited: id_tooltip.visible = false
+                            }
+                        }
+
+                        /* more button */
+                        Button {
+                            id: moreBtn
+                            icon {
+                                source: "qrc:/nonthemed/drag-drop-icon.png"
+                                color: "transparent"
+                                width: moreBtn.width
+                                height: moreBtn.height
+                            }
+                            background: Rectangle {
+                                color: "transparent"
+                                border.color: "black"
+                                border.width: 1
+                                radius: 6
+                            }
+                            property int myIndex: parent.myIndex
+
+                            x: parent.width - width
+                            y: (parent.height - height) / 2 - height / 8
+                            z: 16
+                            width: resizerItem.fontSize * 1.25
+                            height: resizerItem.fontSize * 1.25
+
+                            MouseArea {
+                                id: mouseArea
+                                anchors.fill: parent
+                                drag.target: dragRect
+
+                                drag.onActiveChanged: {
+                                    if (mouseArea.drag.active) {
+                                        dragRect.dragItemIndex = index;
+                                    }
+                                }
+                            }
+
+        //                    onClicked: moreBtnMenu.popup();
+
+        //                    DapQmlMenu {
+        //                        id: moreBtnMenu
+        //                        property int myIndex: parent.myIndex
+
+        //                        /* actions */
+        //                        Action { text: "Edit";      onTriggered: root.setMode (QuiManageCdbForm.Mode.M_EDIT, myIndex) }
+        //                        Action { text: "Delete";    onTriggered: root.removeServer (myIndex); }
+        //                    }
+                        }
+
+                        function buttonClicked(a_isButtonSignal) {
+                            // if(!a_isButtonSignal)
+                            //     clicked();
+                            // model.exec (myIndex, this);
+                        }
+
+                        onClicked: buttonClicked(true)
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: parent.buttonClicked(false)
+                        }
+
+    //                Component.onCompleted: if (myIndex === 0)
+    //                    StyleDebugTree.describe (
+    //                        "mancdb-item",
+    //                        ["x", "y", "width", "height", "icon", "iconSize"],
+    //                        this);
                     }
-                    background: Rectangle { color: "transparent" }
-                    property int myIndex: parent.myIndex
-
-                    x: parent.width - width
-                    y: (parent.height - height) / 2 - height / 8
-                    z: 16
-                    width: resizerItem.fontSize * 1.25
-                    height: resizerItem.fontSize * 1.25
-
-                    onClicked: moreBtnMenu.popup();
-
-                    DapQmlMenu {
-                        id: moreBtnMenu
-                        property int myIndex: parent.myIndex
-
-                        /* actions */
-                        Action { text: "Edit";      onTriggered: root.setMode (QuiManageCdbForm.Mode.M_EDIT, myIndex) }
-                        Action { text: "Delete";    onTriggered: root.removeServer (myIndex); }
-                    }
                 }
-
-                function buttonClicked(a_isButtonSignal) {
-                    // if(!a_isButtonSignal)
-                    //     clicked();
-                    // model.exec (myIndex, this);
-                }
-
-                onClicked: buttonClicked(true)
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: parent.buttonClicked(false)
-                }
-
-//                Component.onCompleted: if (myIndex === 0)
-//                    StyleDebugTree.describe (
-//                        "mancdb-item",
-//                        ["x", "y", "width", "height", "icon", "iconSize"],
-//                        this);
             }
         }
     } // List

@@ -447,6 +447,11 @@
     qproperty-scaledPixmap: url("qrc:/nonthemed/conn-icon-5.png");
 }
 
+.ic_cdb-index-icon
+{
+    qproperty-scaledPixmap: url("qrc:/nonthemed/cdb-index-icon.png");
+}
+
 /****************************************************
  * Main window
  ***************************************************/
