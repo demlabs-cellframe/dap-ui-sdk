@@ -69,12 +69,12 @@ Item {
 
         function attachClicked() {
             var empty      = new String;
-            /* start file dialog */
             if (!attachedImage)
-                fileDialog.open();
-            /* detach image */
+                /* start a file selection dialog */
+                root.sigShowAttachImageDialog();
             else
-                root.sigImageSelected(empty);
+                /* detach image */
+                root.sigDetachImage();
         }
 
         onAttachedImageChanged: updateAttachButton()
@@ -96,6 +96,10 @@ Item {
     signal sigResultBack()
     /// @brief screenshot is selected
     signal sigImageSelected(string a_filename);
+    /// @brief button attachImage clicked
+    signal sigShowAttachImageDialog();
+    /// @brief button detachImage clicked
+    signal sigDetachImage();
 
     /// @}
     /****************************************//**
@@ -123,6 +127,11 @@ Item {
     /// @brief set report sending result text
     function setResultText(a_text) {
         bugrepResult.text   = a_text;
+    }
+
+    function showAttachImageDialog(a)
+    {
+        fileDialog.open();
     }
 
     /// @brief change attach button state on image selected
