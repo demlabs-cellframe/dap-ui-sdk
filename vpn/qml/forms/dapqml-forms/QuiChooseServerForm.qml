@@ -118,12 +118,13 @@ Item {
                     qss: `ic_conn-${quality}` + csListView.model.hook
                     ToolTip {
                         id: id_tooltip
+                        opacity : 0.70
                         contentItem: Text{
-                            color: "#21be2b"
-                            text: "ping " + ping + " ms"
+                            color: "#404040"
+                            text: (ping > -1) ? "ping " + ping + " ms" : "unavailable"
                         }
                         background: Rectangle {
-                            border.color: "#21be2b"
+                            border.color: "#404040"
                         }
                     }
                     MouseArea {
