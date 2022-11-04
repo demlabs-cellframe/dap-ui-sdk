@@ -21,7 +21,8 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     QDir dir(m_pathToLog);
     if (!dir.exists()) {
         qDebug() << "dir not exists";
-        dir.mkpath(".");
+        if (dir.mkpath(m_pathToLog) == false)
+          qDebug() << "unable to create dir";
         system(("chmod -R 667 " + m_pathToLog).toUtf8().data());
     }
 #if defined(Q_OS_ANDROID)
