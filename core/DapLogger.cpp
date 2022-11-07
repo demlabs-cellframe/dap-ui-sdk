@@ -91,7 +91,7 @@ QString DapLogger::defaultLogPath(const QString a_brand)
 #if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
     return QString("/var/log/%1").arg(a_brand).toLower();
 #elif defined(Q_OS_MACOS)
-    return QString("/Users/%1/Applications/Cellframe.app/Contents/Resources/var/log").arg(getenv("USER"));
+    return QString("/var/log/%1").arg(a_brand).toLower();
 #elif defined (Q_OS_WIN)
     return QString("%1/%2/log").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
