@@ -328,6 +328,7 @@ Item {
 
             property int dragItemIndex: -1
             property int dropItemIndex: -1
+            property bool dragIsActive: false
 
             x: (root.width - width) / 2
             y: title.y + title.height * 2
@@ -336,7 +337,9 @@ Item {
             clip: true
 
             function dropItem() {
-                console.log (`dropItem ${dragItemIndex} to ${parent.myIndex}`);
+                console.log (`dropItem ${dragItemIndex} to ${dropItemIndex}`);
+
+                placeholder.parent  = mancdbListView;
 
                 let model  = mancdbListView.model;
 
@@ -356,6 +359,73 @@ Item {
                 id: resizerItem
                 qss: "mancdb-resizer-item c-background"
                 //onColorChanged: console.log(`resizerItem >> bgcolor: ${resizerItem.color}, textcolor: ${resizeField.color}`);
+            }
+
+            /****************************************//**
+             * Placeholder
+             ********************************************/
+
+            DapQmlButton {
+                id: placeholder
+
+                property int myIndex
+                property int ping
+                property int quality
+
+                visible: mancdbListView.dragIsActive
+                width: mancdbListView.width
+                height: resizerItem.height
+                subText: ""
+                buttonStyle: DapQmlButton.Style.IconMainSubIcon
+                separator: true
+                qss: "mancdb-item"
+                mainQss: "mancdb-btn-lbl-main"
+                //subQss: "mancdb-btn-lbl-sub"
+                icon: "ic_cdb-index-icon"
+                iconSize: resizerItem.fontSize * 0.75
+
+                /* index */
+                DapQmlLabel {
+                    y: (parent.height - height) / 2 - height * 0.25
+                    width: resizerItem.fontSize * 0.75
+                    height: resizerItem.fontSize * 0.75
+                    qss: "mancdb-btn-lbl-main c-background"
+                    text: parent.myIndex + 1
+                }
+
+                /* connection quality */
+                DapQmlLabel {
+                    property int quality: (parent.quality === 0) ? (0) : (6 - parent.quality)
+                    x: parent.width - (width * 1.35) - placeholderMoreBtn.width
+                    y: (parent.height - height) / 2
+                    width: resizer.height * 0.5
+                    height: resizer.height * 0.5
+                    qss: `ic_conn-${quality}`
+                }
+
+                /* more button */
+                Button {
+                    id: placeholderMoreBtn
+                    icon {
+                        source: "qrc:/nonthemed/drag-drop-icon.png"
+                        color: "transparent"
+                        width: placeholderMoreBtn.width
+                        height: placeholderMoreBtn.height
+                    }
+                    background: Rectangle {
+                        color: "transparent"
+                        border.color: "black"
+                        border.width: 1
+                        radius: 6
+                    }
+                    property int myIndex: parent.myIndex
+
+                    x: parent.width - width
+                    y: (parent.height - height) / 2 - height / 8
+                    z: 16
+                    width: resizerItem.fontSize * 1.25
+                    height: resizerItem.fontSize * 1.25
+                }
             }
 
             /****************************************//**
@@ -379,7 +449,7 @@ Item {
 
                     color: resizeField.color
                     radius: 6
-                    opacity: (mancdbListView.dropItemIndex === myIndex) ? 0.5 : 0
+                    opacity: (mancdbListView.dropItemIndex === myIndex) ? 0.25 : 0
 
                     DropArea {
                         anchors.fill: parent
@@ -387,6 +457,7 @@ Item {
                             console.log (`somethingOnTop [${mancdbListView.dragItemIndex},${parent.myIndex}]`);
                             //parent.somethingOnTop = true;
                             mancdbListView.dropItemIndex = parent.myIndex;
+                            mancdbListView.model.setMoveFilter(mancdbListView.dragItemIndex, parent.myIndex);
                         }
                         onExited: {
                             console.log (`!somethingOnTop [${mancdbListView.dragItemIndex},${parent.myIndex}]`);
@@ -431,16 +502,32 @@ Item {
                     DapQmlButton {
                         id: delegate
 
-                        property int myIndex: model.index
-                        property int ping: 109 // model.ping
-                        property int quality: 4 // model.connectionQuality
+                        property int myIndex: model.index// + mancdbListView.model.notifyInt
+                        property int ping: 109 + mancdbListView.model.notifyInt // model.ping
+                        property int quality: 4 + mancdbListView.model.notifyInt // model.connectionQuality
+
+                        property int counter: 0
+
+                        function count() {
+                            counter++;
+                            mainText = `${mancdbListView.model.value(myIndex,"name")}`;
+                            console.log(`counted: ${myIndex}:${counter}:${mainText}`);
+                            return counter;
+                        }
+
+//                        function label() {
+//                            let newLabel    = mancdbListView.model.value (myIndex,"name")
+//                                + mancdbListView.model.notifyString;
+//                            console.log(`counted: ${myIndex}:${counter}:${mainText}:${newLabel}`);
+//                            return newLabel
+//                        }
 
                         x: mouseArea.drag.active * 10
                         width: mancdbListView.width
                         height: resizerItem.height
                         buttonStyle: DapQmlButton.Style.IconMainSubIcon
-                        mainText: model.name
-                        subText: ""
+                        mainText: "" // /*model.name*/ label() + mancdbListView.model.notifyString
+                        subText: count()// + mancdbListView.model.notifyString
                         separator: true
                         qss: "mancdb-item"
                         mainQss: "mancdb-btn-lbl-main"
@@ -514,36 +601,35 @@ Item {
                                 drag.target: dragRect
 
                                 drag.onActiveChanged: {
+                                    mancdbListView.dragIsActive  = mouseArea.drag.active;
+
                                     if (mouseArea.drag.active) {
+                                        /* store info */
                                         mancdbListView.dragItemIndex = index;
+
+                                        /* fill placeholder */
+                                        placeholder.myIndex     = delegate.myIndex;
+                                        placeholder.ping        = delegate.ping;
+                                        placeholder.quality     = delegate.quality;
+                                        placeholder.mainText    = delegate.mainText;
+
+                                        /* move placeholder */
+                                        placeholder.parent  = delegateItem;
                                     } else {
+                                        /* perform droping */
                                         mancdbListView.dropItem();
+
+                                        /* move placeholder */
+                                        //placeholder.parent  = mancdbListView; // moved into mancdbListView.dropItem()
                                     }
                                 }
                             }
-
-        //                    onClicked: moreBtnMenu.popup();
-
-        //                    DapQmlMenu {
-        //                        id: moreBtnMenu
-        //                        property int myIndex: parent.myIndex
-
-        //                        /* actions */
-        //                        Action { text: "Edit";      onTriggered: root.setMode (QuiManageCdbForm.Mode.M_EDIT, myIndex) }
-        //                        Action { text: "Delete";    onTriggered: root.removeServer (myIndex); }
-        //                    }
                         }
 
                         MouseArea {
                             anchors.fill: parent
                             onClicked: root.setMode (QuiManageCdbForm.Mode.M_EDIT, parent.myIndex)
                         }
-
-    //                Component.onCompleted: if (myIndex === 0)
-    //                    StyleDebugTree.describe (
-    //                        "mancdb-item",
-    //                        ["x", "y", "width", "height", "icon", "iconSize"],
-    //                        this);
                     }
                 }
             }

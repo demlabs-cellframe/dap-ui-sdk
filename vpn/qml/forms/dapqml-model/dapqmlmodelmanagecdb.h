@@ -14,6 +14,9 @@ class DapQmlModelManageCdb : public QAbstractTableModel
 {
   Q_OBJECT
 
+  Q_PROPERTY(int notifyInt READ notifyInt NOTIFY sigMoveFilterChanged)
+  Q_PROPERTY(QString notifyString READ notifyString NOTIFY sigMoveFilterChanged)
+
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
@@ -40,6 +43,11 @@ public:
   Q_INVOKABLE QVariant value (int a_index, const QString &a_name);
   Q_INVOKABLE void doImport (const QString &a_filename);
   Q_INVOKABLE void doExport (const QString &a_filename) const;
+
+  Q_INVOKABLE void setMoveFilter (int a_from, int a_to);
+
+  Q_INVOKABLE int notifyInt() { return 0; }
+  Q_INVOKABLE QString notifyString() { return QString(); }
   /// @}
 
   /****************************************//**
@@ -52,6 +60,15 @@ public:
 
   QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
   QHash<int, QByteArray> roleNames() const override;
+  /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void sigSetMoveFilter (int a_from, int a_to);
+  void sigMoveFilterChanged();
   /// @}
 
   /****************************************//**

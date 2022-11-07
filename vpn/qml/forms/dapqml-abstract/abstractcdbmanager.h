@@ -56,7 +56,7 @@ public:
   virtual bool contains (const QString &a_address) const = 0;
   virtual ConstIterator cfind (const QString &a_address) const = 0;
   virtual Iterator find (const QString &a_address) = 0;
-  virtual ConstIterator cindex (int a_pos) = 0;
+  virtual ConstIterator cindex (int a_pos) const = 0;
   virtual Iterator index (int a_pos) = 0;
 
   virtual ConstIterator cbegin() const = 0;
@@ -65,7 +65,7 @@ public:
   virtual Iterator end() = 0;
   virtual Iterator erase (Iterator a_pos) = 0;
   virtual Iterator erase (Iterator a_begin, Iterator a_end) = 0;
-  virtual int size() = 0;
+  virtual int size() const = 0;
   virtual Server value (int a_pos) = 0;
 
   virtual void update() = 0;

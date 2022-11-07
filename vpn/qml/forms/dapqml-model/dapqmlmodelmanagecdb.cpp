@@ -136,6 +136,13 @@ void DapQmlModelManageCdb::doExport(const QString &a_filename) const
   s_manager->doExport (a_filename);
 }
 
+void DapQmlModelManageCdb::setMoveFilter (int a_from, int a_to)
+{
+  if (s_manager.isNull())
+    return;
+  emit sigSetMoveFilter (a_from, a_to);
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
