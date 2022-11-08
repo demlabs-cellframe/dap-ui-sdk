@@ -9,6 +9,7 @@
 class QQmlEngine;
 class QJSEngine;
 class AbstractCdbManager;
+class DapQmlModelManageCdbRowsCtl;
 
 class DapQmlModelManageCdb : public QAbstractTableModel
 {
@@ -16,6 +17,14 @@ class DapQmlModelManageCdb : public QAbstractTableModel
 
   Q_PROPERTY(int notifyInt READ notifyInt NOTIFY sigMoveFilterChanged)
   Q_PROPERTY(QString notifyString READ notifyString NOTIFY sigMoveFilterChanged)
+
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
+private:
+  DapQmlModelManageCdbRowsCtl *d;
+  /// @}
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
@@ -48,6 +57,7 @@ public:
 
   Q_INVOKABLE int notifyInt() { return 0; }
   Q_INVOKABLE QString notifyString() { return QString(); }
+  Q_INVOKABLE void regRow (QObject *a_row);
   /// @}
 
   /****************************************//**

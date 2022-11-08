@@ -371,6 +371,7 @@ Item {
                 property int myIndex
                 property int ping
                 property int quality
+                property bool isDragged: false
 
                 visible: mancdbListView.dragIsActive
                 width: mancdbListView.width
@@ -505,29 +506,16 @@ Item {
                         property int myIndex: model.index// + mancdbListView.model.notifyInt
                         property int ping: 109 + mancdbListView.model.notifyInt // model.ping
                         property int quality: 4 + mancdbListView.model.notifyInt // model.connectionQuality
+                        property bool isDragged: mouseArea.drag.active
 
-                        property int counter: 0
-
-                        function count() {
-                            counter++;
-                            mainText = `${mancdbListView.model.value(myIndex,"name")}`;
-                            console.log(`counted: ${myIndex}:${counter}:${mainText}`);
-                            return counter;
-                        }
-
-//                        function label() {
-//                            let newLabel    = mancdbListView.model.value (myIndex,"name")
-//                                + mancdbListView.model.notifyString;
-//                            console.log(`counted: ${myIndex}:${counter}:${mainText}:${newLabel}`);
-//                            return newLabel
-//                        }
+                        Component.onCompleted: mancdbListView.model.regRow (this)
 
                         x: mouseArea.drag.active * 10
                         width: mancdbListView.width
                         height: resizerItem.height
                         buttonStyle: DapQmlButton.Style.IconMainSubIcon
-                        mainText: "" // /*model.name*/ label() + mancdbListView.model.notifyString
-                        subText: count()// + mancdbListView.model.notifyString
+                        mainText: model.name + mancdbListView.model.notifyString
+                        subText: "" //count()// + mancdbListView.model.notifyString
                         separator: true
                         qss: "mancdb-item"
                         mainQss: "mancdb-btn-lbl-main"
@@ -612,6 +600,9 @@ Item {
                                         placeholder.ping        = delegate.ping;
                                         placeholder.quality     = delegate.quality;
                                         placeholder.mainText    = delegate.mainText;
+
+                                        /* register placeholder */
+                                        mancdbListView.model.regRow (placeholder)
 
                                         /* move placeholder */
                                         placeholder.parent  = delegateItem;

@@ -6,12 +6,67 @@
 static QSharedPointer<AbstractCdbManager> s_manager;
 static const QString FIELD_SERVER {"server"};
 
+/* DEFS */
+class DapQmlModelManageCdbRowsCtl
+{
+  struct Row
+  {
+    QObject *object;
+    QMetaObject::Connection connections[2];
+  };
+
+  QMap<QObject *, Row> rows;
+  DapQmlModelManageCdb *model;
+public:
+  DapQmlModelManageCdbRowsCtl (DapQmlModelManageCdb *a_model)
+    : model (a_model) {}
+
+  void append (QObject *a_row)
+  {
+    /* check if already here */
+    if (rows.contains (a_row))
+      return;
+
+    /* connect to update */
+    auto conn1  = QObject::connect (model, &DapQmlModelManageCdb::sigMoveFilterChanged,
+                                    a_row, [a_row, this]()
+      {
+        if (a_row->property ("isDragged").toBool())
+          return;
+
+        auto index  = a_row->property ("myIndex").toInt();
+        auto label  = model->value (index, "name");
+        a_row->setProperty ("mainText", label);
+      });
+
+    /* connect to destroy */
+    auto conn2  = QObject::connect (a_row, &QObject::destroyed,
+                                    a_row, [a_row, this]()
+      {
+        remove (a_row);
+      });
+
+    /* store */
+    rows.insert (a_row,
+                 Row {a_row, {conn1, conn2}});
+  }
+
+  void remove (QObject *a_row)
+  {
+    auto &it  = rows[a_row];
+    QObject::disconnect (it.connections[0]);
+    QObject::disconnect (it.connections[1]);
+    rows.remove (a_row);
+  }
+};
+
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
 DapQmlModelManageCdb::DapQmlModelManageCdb()
   : QAbstractTableModel()
+  , d (new DapQmlModelManageCdbRowsCtl (this))
 {
 
 }
@@ -141,6 +196,11 @@ void DapQmlModelManageCdb::setMoveFilter (int a_from, int a_to)
   if (s_manager.isNull())
     return;
   emit sigSetMoveFilter (a_from, a_to);
+}
+
+void DapQmlModelManageCdb::regRow(QObject *a_row)
+{
+  d->append (a_row);
 }
 
 /********************************************
