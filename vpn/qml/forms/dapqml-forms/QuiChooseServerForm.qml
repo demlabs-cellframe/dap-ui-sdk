@@ -93,11 +93,11 @@ Item {
             property bool checked: false
 
             DapQmlRadioButton {
-                property int ping: model.ping
-                property int quality: model.connectionQuality
+                property int ping: model.ping + csListView.model.hookInt
+                property int quality: model.connectionQuality + csListView.model.hookInt
 
                 text: model.name + csListView.model.hook
-                checked: model.checked
+                checked: model.checked + csListView.model.hookInt
                 separator: true
                 iconSize: resizer.height
                 width: resizer.width
