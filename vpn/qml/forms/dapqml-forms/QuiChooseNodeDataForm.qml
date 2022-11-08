@@ -19,22 +19,20 @@ import "qrc:/dapqml-widgets"
  *******************************************/
 
 Item {
-    id: root
+    id: nodeDataForm
 
     /****************************************//**
      * @name VARS
      ********************************************/
     /// @{
 
-    /// @brief form name
-    ///
-    /// Used to connect interface via Manager
-    property string formName: "ChooseServer"
+//    /// @brief items array
+//    ///
+//    /// Need to store all items
+//    property var items: new Array
 
-    /// @brief items array
-    ///
-    /// Need to store all items
-    property var items: new Array
+    property string title: "SET TITLE!!!"
+    property QtObject dataModel: null
 
     /// @}
     /****************************************//**
@@ -53,7 +51,8 @@ Item {
 
     DapQmlDialogTitle {
         id: title
-        text: qsTr("Choose server") + lang.notifier
+//        text: title + lang.notifier
+        text: nodeDataForm.title
         qss: "dialog-title"
     }
 
@@ -79,7 +78,12 @@ Item {
 
     ListView {
         id: csListView
-        objectName: "chooseServerListView"
+
+//        x: (root.width - width) / 2
+//        y: title.y + title.height * 2 + countryFilterField.height
+//        width: resizer.width
+//        height: root.height - y - noticeResizer.height - noticeSpacer.height
+//        clip: true
 
         x: (root.width - width) / 2
         y: title.y + title.height * 2
@@ -87,56 +91,30 @@ Item {
         height: root.height - y
         clip: true
 
+        model: nodeDataForm.dataModel
+
         delegate: Item {
             width: resizer.width
             height: resizer.height + spacer.height
+            property string radioName: model.name
             property bool checked: false
 
             DapQmlRadioButton {
-                property int ping: model.ping
-                property int quality: model.connectionQuality
-
-                text: model.name + csListView.model.hook
+                text: model.name
                 checked: model.checked
                 separator: true
                 iconSize: resizer.height
                 width: resizer.width
                 height: resizer.height
                 y: spacer.height / 2
-
-                // for debug purposes - uncomment 'Text' below
-//                Text {
-//                    text: `${model.name} >> ping [${parent.ping}] quality [${parent.quality}]` + csListView.model.hook
-//                }
-
-                DapQmlLabel {
-                    property int quality: (parent.quality === 0) ? (0) : (6 - parent.quality)
-                    x: parent.width - (width * 1.35)
-                    y: (parent.height - height) / 2
-                    width: resizer.height * 0.75
-                    height: resizer.height * 0.75
-                    qss: `ic_conn-${quality}` + csListView.model.hook
-                    ToolTip {
-                        id: id_tooltip
-                        contentItem: Text{
-                            color: "#21be2b"
-                            text: "ping " + ping + " ms"
-                        }
-                        background: Rectangle {
-                            border.color: "#21be2b"
-                        }
-                    }
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        onEntered: id_tooltip.visible = true
-                        onExited: id_tooltip.visible = false
-                    }
+                onClicked: {
+//                    root.sigSelect (model.index, model.name);
+//                    csListView.currentIndex = model.index;
                 }
-
-                onClicked: root.sigSelect (model.index, model.name)
-                Component.onCompleted: { items.push(this); }
             }
+        }
+        onCurrentIndexChanged: {
+//            root.updateChecks();
         }
     }
 }

@@ -32,14 +32,16 @@ public:
     /// @param params Command parameters.
     void handle(const QJsonObject* params) override;
 
-    void startCheckNode();
+    void startNodeDetection();
     void stopCheckNode();
     void condTxCreate(QString tokenName, QString walletName, QString certName, qreal value);
 
     bool error() { return m_hasError; }
 
 signals:
+    void nodeDetected();
     void walletsList(QStringList list);
+    void networksList(QStringList list);
     void nodeError(int code, QString errorMessage);
 
 private:

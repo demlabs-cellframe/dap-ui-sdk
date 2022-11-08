@@ -48,52 +48,59 @@ public:
     { init(); }
     void start() { nodeConnectMachine.start();}
     QState initialState;
-    QState checkFound;
-    QState nodeNotFound;
-    QState connectToNode;
+    QState nodeDetection;
+    QState nodeNotDetected;
+    QState nodeConnection;
+    QState nodeNotConnected;
+    QState nodeGetStatus;
     QState nodeGetWallets;
+    QState nodeGetNetworks;
     QState nodeGetDataWallet;
     QState nodeCondTxCreate;
 private:
     QStateMachine nodeConnectMachine;
     void init(){
         nodeConnectMachine.addState(&initialState);
-        nodeConnectMachine.addState(&checkFound);
-        nodeConnectMachine.addState(&nodeNotFound);
-        nodeConnectMachine.addState(&connectToNode);
+        nodeConnectMachine.addState(&nodeDetection);
+        nodeConnectMachine.addState(&nodeNotDetected);
+        nodeConnectMachine.addState(&nodeConnection);
+        nodeConnectMachine.addState(&nodeNotConnected);
+        nodeConnectMachine.addState(&nodeGetStatus);
         nodeConnectMachine.addState(&nodeGetWallets);
+        nodeConnectMachine.addState(&nodeGetNetworks);
         nodeConnectMachine.addState(&nodeGetDataWallet);
         nodeConnectMachine.addState(&nodeCondTxCreate);
         nodeConnectMachine.setInitialState(&initialState);
+        qDebug() << "nodeConnectMachine::init";
     }
 };
 
 enum class DapNodeErrors
 {
-    NetworkReplyFinishedConnectError,
     NetworkReplyConnectError,
-    NetworkReplyFinishedWalletsError,
+    NetworkReplyStatusError,
     NetworkReplyWalletsError,
+    NetworkReplyNetworksListError,
     NetworkWrongReplyError,
     TimerElapsed,
     JsonError,
     StatusError
 };
 
-int DapNodeErrorCode(DapNodeErrors);
+int DapNodeErrorCode(DapNodeErrors, const bool httpFinished);
 
 class DapNode : public QObject
 {
     Q_OBJECT
 private:
-    static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
     const int m_requestTimeout;
     DapNetworkAccessManager * m_httpClient;
     // cellframe dashboard connect id
     QString m_connectId;
     // wallets list
     QStringList m_walletsList;
-    //
+    // network list
+    QStringList m_networksList;
     DapNetworkReply *m_networkReply;
     QString m_networkRequest;
     //
@@ -102,55 +109,67 @@ private:
     NodeConnectStateMachine *m_stateMachine;
 
 public:
+    static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
     static const QString WEB3_URL;
     static const quint16 WEB3_PORT;
 
     DapNode(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
     ~DapNode();
+    void start();
 
 private:
     void request_GET(const QString& host,  quint16 port,
                      const QString & urlPath, DapNetworkReply &a_netReply,
                      const QString &headers = "", bool ssl = false);
-    bool jsonError() { return m_parseJsonError = true; }
+    bool jsonError() { return m_parseJsonError; }
     void initStates();
-    void responseProcessing(const int error, const QString errorString = "");
+    void responseProcessing(const int error, const QString errorString = "", const bool httpFinished = true);
 
 
 public slots:
     void startCheckingNodeRequest();
     void stopCheckingNodeRequest();
 
-protected:
-    DapNetworkReply *m_cellframeDashboardTestReply;
-    DapNetworkReply *m_connectReply;
-    DapNetworkReply *m_walletsListReply;
 
 private slots:
     void sendRequest(QString request);
-    void cellframeDashboardTest();
-    void cellframeDashboardReply();
-    void connectRequest();
+    void nodeDetectedRequest();
+    void nodeConnectionRequest();
     void connectReply();
+    void nodeStatusRequest();
+    void nodeStatusReply();
     void walletsRequest();
     void walletsListReply();
-    void replyError(DapNodeErrors errorType, const QString errorString = QString(""));
+    void networksRequest();
+    void networksListReply();
+    void replyError(DapNodeErrors errorType, const QString errorString = QString(""), const bool httpFinished = true);
     void parseReplyConnect(const QString replyData);
+    void parseReplyNetworks(const QString replyData);
     void parseReplyWallets(const QString replyData);
     void parseJsonError(QString replyData);
 signals:
     // -------- output signals --------
     void sigReceivedWalletsList(QStringList);
+    void sigReceivedNetworksList(QStringList);
     void sigError(int errorCode, QString errorMessage);
+    void sigNodeDetected();
     // --- external (input) signals ---
-    void startCheckingNode();
-    void stopCheckingNode();
+    void startNodeDetection();
+    void stopNodeDetection();
     void dataWalletRequest();
     void condTxCreateRequest(QString tokenName, QString walletName, QString certName, qreal value);
     // ------- internal signals --------
-    void nodeFound();
-    void nodeConnected();
-
+    void errorDetect();
+    void nodeDetected();
+    void nodeNotDetected();
+    void repeatNodeDetection();
+    void nodeNotConnected();
+    void repeatNodeConnection();
+    void connectionIdReceived();
+    void walletsReceived();
+    void networksReceived();
+    void checkNodeStatus();
+    void statusOk();
 
 };
 

@@ -38,7 +38,8 @@ public:
    *******************************************/
   /// @{
 public:
-  Q_INVOKABLE void updateCheckedIndex(QString checkedName);
+  Q_INVOKABLE void updateCheckedIndex(const QString& checkedName);
+  void fill(const QStringList &rowsData);
   /// @}
 
   /****************************************//**

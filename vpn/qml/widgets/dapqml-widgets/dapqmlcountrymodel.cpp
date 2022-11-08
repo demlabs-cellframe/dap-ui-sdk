@@ -13,6 +13,7 @@ DapQmlCountryModel::DapQmlCountryModel(QObject *parent)
   , m_checkedIndex(-1)
 {
     updateCheckedIndex();
+    qDebug() << "+++++++++++++++++++++++" << "Constructor DapQmlCountryModel";
 }
 
 /********************************************

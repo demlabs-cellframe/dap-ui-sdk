@@ -1,5 +1,10 @@
 
 #include "DapCmdNode.h"
+#include <QDebug>
+
+#define DEBUGINFO qDebug()<<"-----<<<-----"
+
+// ui side
 
 const QString DapCmdNode::actionParam = "node_data";
 void DapCmdNode::handle(const QJsonObject *params)
@@ -8,12 +13,13 @@ void DapCmdNode::handle(const QJsonObject *params)
 
     if(params->contains(DapCmdNode::actionParam))
     {
-        qDebug() << "Node info" << params->value(DapCmdNode::actionParam).toString();
+        DEBUGINFO << "Node info" << *params << params->value(DapCmdNode::actionParam) << params->value(DapCmdNode::actionParam).isObject();
         if (params->value(DapCmdNode::actionParam).isObject())
         {
             QJsonObject nodeData = params->value(DapCmdNode::actionParam).toObject();
-            if (nodeData["satus"] == "ok")
+            if (nodeData["status"].toString() == QString("ok"))
             {
+                DEBUGINFO << "status ok";
                 m_hasError = false;
                 if (nodeData["wallets"].isArray())
                 {
@@ -21,7 +27,25 @@ void DapCmdNode::handle(const QJsonObject *params)
                     QStringList stringList;
                     foreach( QVariant vItem, array )
                         stringList << vItem.toString();
+                    DEBUGINFO << "wallets" << stringList;
                     emit walletsList(stringList);
+                    return;
+                }
+                if (nodeData["networks"].isArray())
+                {
+                    QJsonArray array = nodeData["networks"].toArray();
+                    QStringList stringList;
+                    foreach( QVariant vItem, array )
+                        stringList << vItem.toString();
+                    DEBUGINFO << "networks" << stringList;
+                    emit networksList(stringList);
+                    return;
+                }
+                if (nodeData["node_detected"].isBool() && nodeData["node_detected"].toBool())
+                {
+                    DEBUGINFO << "node detected";
+                    emit nodeDetected();
+                    return;
                 }
             }
             else
@@ -30,22 +54,23 @@ void DapCmdNode::handle(const QJsonObject *params)
                 QString errorMessage = nodeData["error_message"].toString();
                 int errorCode = nodeData["error_code"].toInt();
                 emit nodeError(errorCode, errorMessage);
+                return;
             }
         }
     }
 }
 
-void DapCmdNode::startCheckNode()
+void DapCmdNode::startNodeDetection()
 {
     QJsonObject checkNode;
-    checkNode["check_node_request"] = true;
+    checkNode["start_node_detection"] = true;
     sendRequest(checkNode);
 }
 
 void DapCmdNode::stopCheckNode()
 {
     QJsonObject checkNode;
-    checkNode["check_node_request"] = false;
+    checkNode["start_node_detection"] = false;
     sendRequest(checkNode);
 }
 

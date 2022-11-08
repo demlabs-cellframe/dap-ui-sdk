@@ -20,7 +20,6 @@
         <file compress="1">dapqml-forms/QuiCertificateForm.qml</file>
         <file compress="1">dapqml-forms/QuiChooseCertificate.qml</file>
         <file>dapqml-forms/QuiChooseNodeDataForm.qml</file>
-        <file>dapqml-forms/QuiChooseCountryFormPrivate.qml</file>
         <file>dapqml-forms/QuiChooseWallet.qml</file>
         <file>dapqml-forms/QuiChooseNetwork.qml</file>
         <file>dapqml-forms/QuiChooseToken.qml</file>

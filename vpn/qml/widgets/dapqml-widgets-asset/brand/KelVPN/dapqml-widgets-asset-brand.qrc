@@ -21,7 +21,11 @@
         <file compress="1">dark/switch/bg_on.png</file>
         <file compress="1">dark/switch/bg_off.png</file>
         <file compress="1">dark/btn_filter_clear.png</file>
-        <file compress="1">dark/btn_filter_clear_hover.png</file>           
+        <file compress="1">dark/btn_filter_clear_hover.png</file>
+        <file>dark/key_inactive.png</file>
+        <file>dark/key.png</file>
+        <file>dark/wallet_inactive.png</file>
+        <file>dark/wallet.png</file>
         <file compress="1">light/login-logo.png</file>
         <file compress="1">light/radio_btn_on.png</file>
         <file compress="1">light/radio_btn_off.png</file>
@@ -42,6 +46,10 @@
         <file compress="1">light/switch/bg_on.png</file>
         <file compress="1">light/switch/bg_off.png</file>
         <file compress="1">light/btn_filter_clear.png</file>
-        <file compress="1">light/btn_filter_clear_hover.png</file>        
+        <file compress="1">light/btn_filter_clear_hover.png</file>
+        <file>light/key_inactive.png</file>
+        <file>light/key.png</file>
+        <file>light/wallet_inactive.png</file>
+        <file>light/wallet.png</file>
     </qresource>
 </RCC>

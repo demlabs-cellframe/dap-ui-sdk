@@ -39,8 +39,10 @@ Item {
     enum Mode
     {
         M_SERIAL,
+//        use in RiseVPN
         M_PASSWORD,
         M_CERT,
+//        use with 'cellfarameDetected'
         M_NoCBD
     }
 
@@ -65,6 +67,9 @@ Item {
 
         /// @brief login mode
         property int mode: QuiLoginForm.Mode.M_SERIAL
+
+        /// @brief kel cellframe dashdoard use
+        property bool cellfarameDetected: false
 
         /// @brief show password contents
         property bool showPassword: false
@@ -96,6 +101,9 @@ Item {
 
     /// @brief enter serial key clicked
     signal sigChooseSerial();
+
+    /// @brief enter serial key clicked
+    signal sigChooseWallet();
 
     /// @brief connection by serial requested
     signal sigConnectBySerial();
@@ -160,6 +168,13 @@ Item {
         //btnEnterSerial.inputMask    = ">NNNN-NNNN-NNNN-NNNN;_"
     }
 
+    /// @briefset found cellframe dashboard
+    function cellfarameDashboardDetected() {
+        console.log("++++++++++++++++++++++++++++++++++++++++++")
+        internal.cellfarameDetected = true;
+        loginTypeKelContainer.update();
+    }
+
     /// @}
     /****************************************//**
      * Separator fix
@@ -204,7 +219,7 @@ Item {
     }
 
     /****************************************//**
-     * Login type select
+     * Login type select for RiseVPN
      ********************************************/
 
     Rectangle {
@@ -240,6 +255,38 @@ Item {
             qss: "login-mode-btn-loginpass"
             checked:    internal.mode === QuiLoginForm.Mode.M_PASSWORD
             onClicked:  { internal.mode   = QuiLoginForm.Mode.M_PASSWORD; loginTypeContainer.update(); }
+        }
+    }
+
+    /****************************************//**
+     * KelVPN login type select for NoCBD
+     ********************************************/
+
+    Rectangle {
+        id: loginTypeKelContainer
+        width: root.width
+        color: "transparent"
+        clip: true
+        visible: Brand.name() === "KelVPN" && internal.cellfarameDetected
+        DapQmlStyle { item: loginTypeKelContainer; qss: "login-type-container" }
+
+        function update() {
+            tabSerial1.checked = internal.mode === QuiLoginForm.Mode.M_SERIAL;
+            tabCell.checked    = internal.mode === QuiLoginForm.Mode.M_NoCBD;
+        }
+
+        DapQmlTabButton {
+            id: tabSerial1
+            qss: "login-mode-btn-serial-cell"
+            checked:    internal.mode === QuiLoginForm.Mode.M_SERIAL
+            onClicked:  { internal.mode = QuiLoginForm.Mode.M_SERIAL; loginTypeKelContainer.update(); }
+        }
+
+        DapQmlTabButton {
+            id: tabCell
+            qss: "login-mode-btn-cell"
+            checked:    internal.mode === QuiLoginForm.Mode.M_NoCBD
+            onClicked:  { internal.mode = QuiLoginForm.Mode.M_NoCBD; loginTypeKelContainer.update(); }
         }
     }
 
@@ -309,6 +356,90 @@ Item {
     }
 
     /****************************************//**
+     * Choose wallet for NoCBD
+     ********************************************/
+
+    DapQmlRectangle {
+        x:      loginWalletPlacer.x
+        y:      loginSpacer.y + loginWalletPlacer.y
+        width:  loginWalletPlacer.width
+        height: loginWalletPlacer.height
+        visible: internal.mode === QuiLoginForm.Mode.M_NoCBD && internal.cellfarameDetected
+
+        DapQmlButton {
+            id: btnChooseWallet
+            x: (parent.width - width) / 2
+            z: 15
+            width: parent.width - 74
+            property string defaultServerName: qsTr("Auto select") + lang.notifier
+
+            buttonStyle: DapQmlButton.Style.TopMainBottomSub
+            mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
+            subText: qsTr("CHOOSING SERVER") + lang.notifier
+            qss: "login-btn-server-cell"
+            mainQss: "login-btn-main"
+            subQss: "login-btn-sub"
+            separator: true
+            link: true
+            onClicked: root.sigChooseWallet()
+
+            function updateServerName() {
+                mainText = (!internal.changedServer)
+                        ? (defaultServerName)
+                        : (internal.serverName)
+            }
+
+            onDefaultServerNameChanged: updateServerName()
+        }
+        DapQmlDummy {
+            id: loginWalletPlacer
+            qss: "login-btn-wallet-container"
+        }
+    }
+
+    /****************************************//**
+     * Choose cell for NoCBD
+     ********************************************/
+
+    DapQmlRectangle {
+        x:      loginCellPlacer.x
+        y:      loginSpacer.y + loginCellPlacer.y
+        width:  loginCellPlacer.width
+        height: loginCellPlacer.height
+        visible: internal.mode === QuiLoginForm.Mode.M_NoCBD && internal.cellfarameDetected
+
+        DapQmlButton {
+            id: btnChooseCell
+            x: (parent.width - width) / 2
+            z: 15
+            width: parent.width - 74
+            property string defaultServerName: qsTr("Auto select") + lang.notifier
+
+            buttonStyle: DapQmlButton.Style.TopMainBottomSub
+            mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
+            subText: qsTr("CHOOSING SERVER") + lang.notifier
+            qss: "login-btn-server-cell"
+            mainQss: "login-btn-main"
+            subQss: "login-btn-sub"
+            separator: true
+            link: true
+            onClicked: root.sigChooseServer()
+
+            function updateServerName() {
+                mainText = (!internal.changedServer)
+                        ? (defaultServerName)
+                        : (internal.serverName)
+            }
+
+            onDefaultServerNameChanged: updateServerName()
+        }
+        DapQmlDummy {
+            id: loginCellPlacer
+            qss: "login-btn-cell-container"
+        }
+    }
+
+    /****************************************//**
      * Choose server
      ********************************************/
 
@@ -328,7 +459,11 @@ Item {
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
             mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
             subText: qsTr("CHOOSING SERVER") + lang.notifier
-            qss: "login-btn-server"
+            qss: internal.mode !== QuiLoginForm.Mode.M_NoCBD
+//                 NoCBD mode
+                 ? "login-btn-server"
+//                 serial login
+                 : "login-btn-server-cell"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
             separator: true
@@ -345,7 +480,11 @@ Item {
         }
         DapQmlDummy {
             id: loginServerPlacer
-            qss: "login-btn-server-container"
+            qss: internal.mode !== QuiLoginForm.Mode.M_NoCBD
+//               NoCBD mode
+                 ? "login-btn-server-container"
+//               serial login
+                 : "login-btn-cell-server-container"
         }
     }
 

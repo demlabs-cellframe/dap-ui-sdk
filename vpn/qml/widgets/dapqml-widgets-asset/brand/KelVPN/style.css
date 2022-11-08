@@ -13,32 +13,36 @@
 	accent: "#F53172";
 	upload: "#5E31F5";
 	grid: "#211F46";
-        switch-bg-on:               "qrc:/light/switch/bg_on.png";
-        switch-bg-off:              "qrc:/light/switch/bg_off.png";
-        switch-toggle-on:           "qrc:/light/switch/toggle_on.png";
-        switch-toggle-off:          "qrc:/light/switch/toggle_off.png";
-        button-frame:               "qrc:/light/btn_server_bg.png";
-        checkbox-on:                "qrc:/light/check_btn_on.png";
-        checkbox-off:               "qrc:/light/check_btn_off.png";
-        radio-on:                   "qrc:/light/radio_btn_on.png";
-        radio-off:                  "qrc:/light/radio_btn_off.png";
-	separator-left:             "qrc:/light/separator_left.png";
-	separator-mid:              "qrc:/light/separator_mid.png";
-	separator-right:            "qrc:/light/separator_right.png";
-        push-button-active:         "qrc:/light/btn_bg_hover_active.png";
-        push-button-inactive:       "qrc:/light/btn_bg.png";
-	footer-settings-active:     "qrc:/light/btn_settings_active.png";
-	footer-settings-inactive:   "qrc:/light/btn_settings.png";
-	footer-dashboard-active:    "qrc:/light/btn_connection_active.png";
-	footer-dashboard-inactive:  "qrc:/light/btn_connection.png";
-	footer-statistics-active:   "qrc:/light/btn_account_active.png";
-	footer-statistics-inactive: "qrc:/light/btn_account.png";
-        bugrep-bg:                  "qrc:/light/report_bg_border.png";
-        login-logo:                 "qrc:/light/login-logo.png";
-        btn-close:                  "qrc:/light/ic_close.png";
-        btn-close-hover:            "qrc:/light/ic_close_hover.png";
-        country-filter-clear:       "qrc:/light/btn_filter_clear.png"
-        country-filter-clear-hover: "qrc:/light/btn_filter_clear_hover.png"
+        switch-bg-on:                 "qrc:/light/switch/bg_on.png";
+        switch-bg-off:                "qrc:/light/switch/bg_off.png";
+        switch-toggle-on:             "qrc:/light/switch/toggle_on.png";
+        switch-toggle-off:            "qrc:/light/switch/toggle_off.png";
+        button-frame:                 "qrc:/light/btn_server_bg.png";
+        checkbox-on:                  "qrc:/light/check_btn_on.png";
+        checkbox-off:                 "qrc:/light/check_btn_off.png";
+        radio-on:                     "qrc:/light/radio_btn_on.png";
+        radio-off:                    "qrc:/light/radio_btn_off.png";
+        separator-left:               "qrc:/light/separator_left.png";
+        separator-mid:                "qrc:/light/separator_mid.png";
+        separator-right:              "qrc:/light/separator_right.png";
+        push-button-active:           "qrc:/light/btn_bg_hover_active.png";
+        push-button-inactive:         "qrc:/light/btn_bg.png";
+        footer-settings-active:       "qrc:/light/btn_settings_active.png";
+        footer-settings-inactive:     "qrc:/light/btn_settings.png";
+        footer-dashboard-active:      "qrc:/light/btn_connection_active.png";
+        footer-dashboard-inactive:    "qrc:/light/btn_connection.png";
+        footer-statistics-active:     "qrc:/light/btn_account_active.png";
+        footer-statistics-inactive:   "qrc:/light/btn_account.png";
+        bugrep-bg:                    "qrc:/light/report_bg_border.png";
+        login-logo:                   "qrc:/light/login-logo.png";
+        btn-close:                    "qrc:/light/ic_close.png";
+        btn-close-hover:              "qrc:/light/ic_close_hover.png";
+        country-filter-clear:         "qrc:/light/btn_filter_clear.png";
+        country-filter-clear-hover:   "qrc:/light/btn_filter_clear_hover.png";
+        login-mode-btn-serial-active:   "qrc:/light/key.png";
+        login-mode-btn-serial-inactive: "qrc:/light/key_inactive.png";
+        login-mode-btn-cell-active:     "qrc:/light/wallet.png";
+        login-mode-btn-cell-inactive:   "qrc:/light/wallet_inactive.png";
 }
 
 .@dark
@@ -52,32 +56,36 @@
 	accent: "#FF22A2";
 	upload: "#9F83FF";
 	grid: "#211F46";
-        switch-bg-on:               "qrc:/dark/switch/bg_on.png";
-        switch-bg-off:              "qrc:/dark/switch/bg_off.png";
-        switch-toggle-on:           "qrc:/dark/switch/toggle_on.png";
-        switch-toggle-off:          "qrc:/dark/switch/toggle_off.png";
-        button-frame:               "qrc:/dark/btn_server_bg.png";
-        checkbox-on:                "qrc:/dark/check_btn_on.png";
-        checkbox-off:               "qrc:/dark/check_btn_off.png";
-        radio-on:                   "qrc:/dark/radio_btn_on.png";
-        radio-off:                  "qrc:/dark/radio_btn_off.png";
-	separator-left:             "qrc:/dark/separator_left.png";
-	separator-mid:              "qrc:/dark/separator_mid.png";
-	separator-right:            "qrc:/dark/separator_right.png";
-        push-button-active:         "qrc:/dark/btn_bg_hover_active.png";
-        push-button-inactive:       "qrc:/dark/btn_bg.png";
-	footer-settings-active:     "qrc:/dark/btn_settings_active.png";
-	footer-settings-inactive:   "qrc:/dark/btn_settings.png";
-	footer-dashboard-active:    "qrc:/dark/btn_connection_active.png";
-	footer-dashboard-inactive:  "qrc:/dark/btn_connection.png";
-	footer-statistics-active:   "qrc:/dark/btn_account_active.png";
-	footer-statistics-inactive: "qrc:/dark/btn_account.png";
-        bugrep-bg:                  "qrc:/dark/report_bg_border.png";
-        login-logo:                 "qrc:/dark/login-logo.png";
-        btn-close:                  "qrc:/dark/ic_close.png";
-        btn-close-hover:            "qrc:/dark/ic_close_hover.png";
-        country-filter-clear:       "qrc:/dark/btn_filter_clear.png"
-        country-filter-clear-hover: "qrc:/dark/btn_filter_clear_hover.png"
+        switch-bg-on:                 "qrc:/dark/switch/bg_on.png";
+        switch-bg-off:                "qrc:/dark/switch/bg_off.png";
+        switch-toggle-on:             "qrc:/dark/switch/toggle_on.png";
+        switch-toggle-off:            "qrc:/dark/switch/toggle_off.png";
+        button-frame:                 "qrc:/dark/btn_server_bg.png";
+        checkbox-on:                  "qrc:/dark/check_btn_on.png";
+        checkbox-off:                 "qrc:/dark/check_btn_off.png";
+        radio-on:                     "qrc:/dark/radio_btn_on.png";
+        radio-off:                    "qrc:/dark/radio_btn_off.png";
+        separator-left:               "qrc:/dark/separator_left.png";
+        separator-mid:                "qrc:/dark/separator_mid.png";
+        separator-right:              "qrc:/dark/separator_right.png";
+        push-button-active:           "qrc:/dark/btn_bg_hover_active.png";
+        push-button-inactive:         "qrc:/dark/btn_bg.png";
+        footer-settings-active:       "qrc:/dark/btn_settings_active.png";
+        footer-settings-inactive:     "qrc:/dark/btn_settings.png";
+        footer-dashboard-active:      "qrc:/dark/btn_connection_active.png";
+        footer-dashboard-inactive:    "qrc:/dark/btn_connection.png";
+        footer-statistics-active:     "qrc:/dark/btn_account_active.png";
+        footer-statistics-inactive:   "qrc:/dark/btn_account.png";
+        bugrep-bg:                    "qrc:/dark/report_bg_border.png";
+        login-logo:                   "qrc:/dark/login-logo.png";
+        btn-close:                    "qrc:/dark/ic_close.png";
+        btn-close-hover:              "qrc:/dark/ic_close_hover.png";
+        country-filter-clear:         "qrc:/dark/btn_filter_clear.png";
+        country-filter-clear-hover:   "qrc:/dark/btn_filter_clear_hover.png";
+        login-mode-btn-serial-active:   "qrc:/dark/key.png";
+        login-mode-btn-serial-inactive: "qrc:/dark/key_inactive.png";
+        login-mode-btn-cell-active:     "qrc:/dark/wallet.png";
+        login-mode-btn-cell-inactive:   "qrc:/dark/wallet_inactive.png";
 }
 
 /****************************************************
@@ -521,6 +529,44 @@
 .login-btn-server
 {
 	scaled-rect: scaled(nan,nan,nan,108,false);
+}
+
+.login-btn-wallet-container
+{
+        scaled-rect: scaled(-1,252,-1,78,true);
+}
+
+.login-btn-cell-container
+{
+        scaled-rect: scaled(-1,332,-1,78,true);
+}
+
+.login-btn-cell-server-container
+{
+        scaled-rect: scaled(-1,412,-1,78,true);
+}
+.login-btn-server-cell
+{
+        scaled-rect: scaled(nan,nan,nan,78,false);
+}
+
+.login-type-container
+{
+        scaled-rect: scaled(nan,502,nan,108,false);
+}
+
+.login-mode-btn-serial-cell
+{
+        scaled-rect: scaled(36,22,162,64,true);
+        active: "@login-mode-btn-serial-active";
+        inactive: "@login-mode-btn-serial-inactive";
+}
+
+.login-mode-btn-cell
+{
+        scaled-rect: scaled(232,22,162,64,true);
+        active: "@login-mode-btn-cell-active";
+        inactive: "@login-mode-btn-cell-inactive";
 }
 
 .login-btn-serial-container

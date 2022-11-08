@@ -1,6 +1,11 @@
 /* INCLUDES */
 #include "dapqmlnodedatamodel.h"
 #include "style/qsslink.h"
+#include <QDebug>
+
+#define RoleName (Qt::UserRole + 1)
+#define RoleChecked (Qt::UserRole + 2)
+
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -17,7 +22,7 @@ DapQmlNodeDataModel::DapQmlNodeDataModel(QObject *parent)
 /********************************************
  * METHODS
  *******************************************/
-void DapQmlNodeDataModel::updateCheckedIndex(QString checkedName)
+void DapQmlNodeDataModel::updateCheckedIndex(const QString& checkedName)
 {
     for (int k = 0; k < m_nodeData.size(); k++)
         if (index(k, 0).data(0) == checkedName)
@@ -28,6 +33,15 @@ void DapQmlNodeDataModel::updateCheckedIndex(QString checkedName)
             emit dataChanged(index(k, 0), index(k, 0));
             break;
         }
+}
+
+void DapQmlNodeDataModel::fill(const QStringList &rowsData)
+{
+    qDebug() << "fill model" << rowsData;
+    beginResetModel();
+    m_nodeData = rowsData;
+    endResetModel();
+    emit dataChanged(index(0, 0), index(m_nodeData.length(), 1));
 }
 
 /********************************************
@@ -52,17 +66,18 @@ int DapQmlNodeDataModel::columnCount(const QModelIndex &parent) const
 
 QVariant DapQmlNodeDataModel::data(const QModelIndex &index, int role) const
 {
-  if (!index.isValid() || !(role == 0 || role == 1))
+  if (!index.isValid() || !(role == RoleName || role == RoleChecked))
     return QVariant();
 
+
   auto item = m_nodeData.value (index.row());
-  if (role == 0)
+  if (role == RoleName)
   {
     if (item.length() > 1)
       item = item.at(0).toUpper() + item.mid(1);
     return item;
   }
-  if (role == 1)
+  if (role == RoleChecked)
   {
     return index.row() == m_checkedIndex;
   }
@@ -73,8 +88,8 @@ QHash<int, QByteArray> DapQmlNodeDataModel::roleNames() const
 {
   QHash<int, QByteArray> names;
 
-  names[0] = "name";
-  names[1] = "checked";
+  names[RoleName]       = "name";
+  names[RoleChecked]    = "checked";
 
   return names;
 }
