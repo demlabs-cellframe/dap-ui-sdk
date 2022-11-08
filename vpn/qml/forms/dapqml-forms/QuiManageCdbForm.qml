@@ -337,7 +337,7 @@ Item {
             clip: true
 
             function dropItem() {
-                console.log (`dropItem ${dragItemIndex} to ${dropItemIndex}`);
+                // console.log (`dropItem ${dragItemIndex} to ${dropItemIndex}`);
 
                 placeholder.parent  = mancdbListView;
 
@@ -455,13 +455,13 @@ Item {
                     DropArea {
                         anchors.fill: parent
                         onEntered: {
-                            console.log (`somethingOnTop [${mancdbListView.dragItemIndex},${parent.myIndex}]`);
+                            // console.log (`somethingOnTop [${mancdbListView.dragItemIndex},${parent.myIndex}]`);
                             //parent.somethingOnTop = true;
                             mancdbListView.dropItemIndex = parent.myIndex;
                             mancdbListView.model.setMoveFilter(mancdbListView.dragItemIndex, parent.myIndex);
                         }
                         onExited: {
-                            console.log (`!somethingOnTop [${mancdbListView.dragItemIndex},${parent.myIndex}]`);
+                            // console.log (`!somethingOnTop [${mancdbListView.dragItemIndex},${parent.myIndex}]`);
                             //parent.somethingOnTop = false;
                         }
                     }
@@ -470,6 +470,7 @@ Item {
                 /* dragable item */
                 Rectangle {
                     id: dragRect
+                    x: (mouseArea.drag.active) ? mancdbListView.x : 0
                     z: 20
 
                     width: mancdbListView.width + mouseArea.drag.active * 20

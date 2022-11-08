@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "dapqmlmodelmanagecdb.h"
 #include "dapqml-abstract/abstractcdbmanager.h"
+#include <QDebug>
 
 /* VARS */
 static QSharedPointer<AbstractCdbManager> s_manager;
@@ -37,6 +38,8 @@ public:
         auto index  = a_row->property ("myIndex").toInt();
         auto label  = model->value (index, "name");
         a_row->setProperty ("mainText", label);
+
+        //qDebug() << QString ("changed row:%1:%2").arg (index).arg (label.toString());
       });
 
     /* connect to destroy */
