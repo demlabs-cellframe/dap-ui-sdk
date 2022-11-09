@@ -329,6 +329,7 @@ Item {
             property int dragItemIndex: -1
             property int dropItemIndex: -1
             property bool dragIsActive: false
+            property Rectangle draggedRectangle
 
             x: (root.width - width) / 2
             y: title.y + title.height * 2
@@ -348,6 +349,7 @@ Item {
 
                 dragItemIndex   = -1;
                 dropItemIndex   = -1;
+                dragIsActive    = false;
             }
 
             /****************************************//**
@@ -415,9 +417,9 @@ Item {
                     }
                     background: Rectangle {
                         color: "transparent"
-                        border.color: "black"
-                        border.width: 1
-                        radius: 6
+//                        border.color: "black"
+//                        border.width: 1
+//                        radius: 6
                     }
                     property int myIndex: parent.myIndex
 
@@ -427,6 +429,66 @@ Item {
                     width: resizerItem.fontSize * 1.25
                     height: resizerItem.fontSize * 1.25
                 }
+            }
+
+            /****************************************//**
+             * Centered dragged item
+             ********************************************/
+
+            Rectangle {
+                id: graggedItem
+                y: (mancdbListView.dragIsActive)
+                   ? (mancdbListView.draggedRectangle.y - mancdbListView.y)
+                   : 0
+                z: 20
+                visible: mancdbListView.dragIsActive
+
+                width: mancdbListView.width
+                height: resizerItem.height
+
+                color: resizerItem.color
+                border.color: resizer.color
+                border.width: 1
+                radius: 6
+
+                function setMainText(a_text) {
+                    graggedItemLabel.text   = a_text;
+                }
+
+                /* icon */
+                DapQmlLabel {
+                    y: (parent.height - height) / 2
+                    z: 21
+                    width: resizerItem.fontSize * 0.725
+                    height: resizerItem.fontSize * 0.725
+                    qss: "ic_cdb-index-icon"
+                }
+
+                /* index */
+                DapQmlLabel {
+                    y: (parent.height - height) / 2
+                    z: 22
+                    width: resizerItem.fontSize * 0.725
+                    height: resizerItem.fontSize * 0.725
+                    qss: "mancdb-btn-lbl-main c-background"
+                    text: mancdbListView.dropItemIndex + 1
+                }
+
+                /* label */
+                DapQmlLabel {
+                    id: graggedItemLabel
+                    x: resizerItem.fontSize * 0.9
+                    z: 23
+                    width: parent.width - x
+                    height: parent.height
+                    text: ""
+                    horizontalAlign: Text.AlignLeft
+                    qss: "mancdb-btn-lbl-main"
+                }
+            }
+
+            Rectangle {
+                id: dummyRectangle
             }
 
             /****************************************//**
@@ -457,7 +519,7 @@ Item {
                         onEntered: {
                             // console.log (`somethingOnTop [${mancdbListView.dragItemIndex},${parent.myIndex}]`);
                             //parent.somethingOnTop = true;
-                            mancdbListView.dropItemIndex = parent.myIndex;
+                            mancdbListView.dropItemIndex    = parent.myIndex;
                             mancdbListView.model.setMoveFilter(mancdbListView.dragItemIndex, parent.myIndex);
                         }
                         onExited: {
@@ -472,6 +534,7 @@ Item {
                     id: dragRect
                     x: (mouseArea.drag.active) ? mancdbListView.x : 0
                     z: 20
+                    opacity: (!mouseArea.drag.active) ? 1 : 0
 
                     width: mancdbListView.width + mouseArea.drag.active * 20
                     height: resizerItem.height + mouseArea.drag.active * 4
@@ -572,17 +635,17 @@ Item {
                             }
                             background: Rectangle {
                                 color: "transparent"
-                                border.color: "black"
-                                border.width: 1
-                                radius: 6
+//                                border.color: "black"
+//                                border.width: 1
+//                                radius: 6
                             }
                             property int myIndex: parent.myIndex
 
                             x: parent.width - width
                             y: (parent.height - height) / 2 - height / 8
                             z: 16
-                            width: resizerItem.fontSize * 1.25
-                            height: resizerItem.fontSize * 1.25
+                            width: resizerItem.fontSize * 1.125
+                            height: resizerItem.fontSize * 1.125
 
                             MouseArea {
                                 id: mouseArea
@@ -590,11 +653,11 @@ Item {
                                 drag.target: dragRect
 
                                 drag.onActiveChanged: {
-                                    mancdbListView.dragIsActive  = mouseArea.drag.active;
-
                                     if (mouseArea.drag.active) {
                                         /* store info */
-                                        mancdbListView.dragItemIndex = index;
+                                        mancdbListView.dragItemIndex    = index;
+                                        mancdbListView.draggedRectangle = dragRect;
+                                        graggedItem.setMainText (delegate.mainText);
 
                                         /* fill placeholder */
                                         placeholder.myIndex     = delegate.myIndex;
@@ -607,7 +670,11 @@ Item {
 
                                         /* move placeholder */
                                         placeholder.parent  = delegateItem;
+
+                                        mancdbListView.dragIsActive = true;
                                     } else {
+                                        mancdbListView.draggedRectangle = dummyRectangle;
+
                                         /* perform droping */
                                         mancdbListView.dropItem();
 

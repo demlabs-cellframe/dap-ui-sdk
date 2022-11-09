@@ -10,6 +10,7 @@
 
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
+#include "DapLogger.h"
 
 #ifdef DAP_OS_ANDROID
 #include <sys/sendfile.h>
