@@ -512,7 +512,7 @@ Item {
 
                     color: resizeField.color
                     radius: 6
-                    opacity: (mancdbListView.dropItemIndex === myIndex) ? 0.25 : 0
+                    opacity: (mancdbListView.dragIsActive && mancdbListView.dropItemIndex === myIndex) ? 0.25 : 0
 
                     DropArea {
                         anchors.fill: parent
