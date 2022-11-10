@@ -91,7 +91,7 @@ void DapServersData::setCurrentServer(const QString &a_serverName)
         this->setCurrentServer(-1);
     }
 
-    qFatal("There is no server with name %s", qPrintable(a_serverName));
+//    qFatal("There is no server with name %s", qPrintable(a_serverName));
 }
 
 void DapServersData::saveDatas() const
