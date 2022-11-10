@@ -44,8 +44,8 @@ public:
   void installManager (QSharedPointer<AbstractCdbManager> a_manager);
 
   Q_INVOKABLE int length() const;
-  Q_INVOKABLE void add (const QVariant &a_data);
-  Q_INVOKABLE void edit (int a_index, const QVariant &a_data);
+  Q_INVOKABLE bool add (const QVariant &a_data);
+  Q_INVOKABLE bool edit (int a_index, const QVariant &a_data);
   Q_INVOKABLE void remove (int a_index);
   Q_INVOKABLE void move (int a_firstIndex, int a_secondIndex);
   Q_INVOKABLE void refreshContent();
@@ -79,6 +79,7 @@ public:
 signals:
   void sigSetMoveFilter (int a_from, int a_to);
   void sigMoveFilterChanged();
+  void sigError (QString a_errorText);
   /// @}
 
   /****************************************//**

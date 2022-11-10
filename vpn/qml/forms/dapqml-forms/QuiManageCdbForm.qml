@@ -44,6 +44,13 @@ Item {
         property int mode: QuiManageCdbForm.Mode.M_LIST
         property int lastIndex: -1
 
+        property RegExpValidator validatorAddress: RegExpValidator {
+            regExp: /(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/
+        }
+        property RegExpValidator validatorPort: RegExpValidator {
+            regExp: /^(0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/
+        }
+
         function switchToList() {
             setMode (QuiManageCdbForm.Mode.M_LIST);
         }
@@ -99,8 +106,10 @@ Item {
             let port    = inputPort.value;
 
             /* store result & update model */
-            model.add ({server:address,port:port});
-            model.refreshContent();
+            let result  = model.add ({server:address,port:port});
+            if (result)
+                model.refreshContent();
+            return result;
         }
 
 //        function removeServer (a_index) {
@@ -119,10 +128,23 @@ Item {
             let port    = inputPort.value;
 
             /* store result & update model */
-            model.edit (lastIndex, {server:address,port:port});
-            model.refreshContent();
+            let result  = model.edit (lastIndex, {server:address,port:port});
+            if (result)
+                model.refreshContent();
+            return result;
         }
     }
+
+    Timer {
+        interval: 250
+        running: true
+        repeat: false
+        onTriggered: {
+            inputAddress.validator  = modeCtl.validatorAddress;
+            inputPort.validator     = modeCtl.validatorPort;
+        }
+    }
+
 
     /// @}
     /****************************************//**
@@ -154,7 +176,7 @@ Item {
         case QuiManageCdbForm.Mode.M_ADD:   modeCtl.switchToAdd(); break;
         }
 
-        // modeCtl.setMode(a_newMode);
+        slotSetErrorText ("");
     }
 
     function addNewServer() {
@@ -166,12 +188,20 @@ Item {
         //modeCtl.removeServer (a_index);
     }
 
+    function slotFinishRemove() {
+        setMode (QuiManageCdbForm.Mode.M_LIST);
+    }
+
+    function slotSetErrorText (a_text) {
+        errorLabel.text = a_text;
+    }
+
     function applyChanges() {
         if (modeCtl.mode === QuiManageCdbForm.Mode.M_ADD)
-            modeCtl.addNewServer();
+            return modeCtl.addNewServer();
         else
         if (modeCtl.mode === QuiManageCdbForm.Mode.M_EDIT)
-            modeCtl.applyChanges();
+            return modeCtl.applyChanges();
     }
 
     function doImport() {
@@ -723,8 +753,8 @@ Item {
             z: 16
 
             onClicked: {
-                root.applyChanges();
-                root.setMode (QuiManageCdbForm.Mode.M_LIST)
+                if (root.applyChanges())
+                    root.setMode (QuiManageCdbForm.Mode.M_LIST)
             }
         }
 
@@ -741,6 +771,15 @@ Item {
         }
 
         /****************************************//**
+         * Error label
+         ********************************************/
+
+        DapQmlLabel {
+            id: errorLabel
+            qss: "mancdb-error-label c-error"
+        }
+
+        /****************************************//**
          * Adress Input
          ********************************************/
 
@@ -752,7 +791,7 @@ Item {
             height: resizeField.height
             clip: true
             title: "Address"
-            inputMask: "000.000.000.000"
+            //inputMask: "000.000.000.000"
         }
 
         /****************************************//**
@@ -767,6 +806,28 @@ Item {
             height: resizeField.height
             clip: true
             title: "Port"
+        }
+
+        /****************************************//**
+         * Remove button
+         ********************************************/
+
+        DapQmlLabel {
+            id: btnRemove
+            y: _pos(2) + height * 3
+            text: qsTr("Remove server") + lang.notifier
+            visible: root.modeCtl.mode === QuiManageCdbForm.Mode.M_EDIT
+            qss: "manser-remove-btn c-brand"
+
+            MouseArea {
+                id: btnRemoveMouseArea
+                anchors.fill: btnRemove
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    removeServer (root.modeCtl.lastIndex);
+                    //root.setMode (QuiManageCdbForm.Mode.M_LIST)
+                }
+            }
         }
     }
 

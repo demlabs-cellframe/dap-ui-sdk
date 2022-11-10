@@ -2,6 +2,7 @@
 #include "dapqmlmodelmanagecdb.h"
 #include "dapqml-abstract/abstractcdbmanager.h"
 #include <QDebug>
+#include <QRegExpValidator>
 
 /* VARS */
 static QSharedPointer<AbstractCdbManager> s_manager;
@@ -102,50 +103,106 @@ int DapQmlModelManageCdb::length() const
   return rowCount();
 }
 
-inline void parseServerData (const QVariant &a_data, /* out */ AbstractCdbManager::CdbServer &a_server)
+static bool parseServerData (DapQmlModelManageCdb *a_model, const QVariant &a_data, /* out */ AbstractCdbManager::CdbServer &a_server)
 {
+  AbstractCdbManager::CdbServer item;
+
+  /* get value */
   auto value  = a_data.toMap();
+
+  /* parse */
   if (value.contains (FIELD_SERVER))
-    a_server  = AbstractCdbManager::CdbServer{
+    item = AbstractCdbManager::CdbServer{
         value[FIELD_SERVER].toString(),
         value[FIELD_PORT].toInt()
       };
+
+  /* validate */
+  bool isValid  = false;
+  {
+    /* reg exps & validators */
+    static QRegExp rx [2] = {
+      QRegExp {"(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])"},
+      QRegExp {"^(0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"},
+    };
+
+    static QRegExpValidator v1{rx[0]};
+    static QRegExpValidator v2{rx[1]};
+
+    /* values */
+    int pos       = 0;
+    auto portName = value[FIELD_PORT].toString();
+
+    /* validation results */
+    QValidator::State result[2] = {
+      v1.validate (item.address, pos),
+      v2.validate (portName, pos),
+    };
+
+    /* final result */
+    isValid = QValidator::Acceptable == result[0]
+        && QValidator::Acceptable == result[1];
+
+    /* error notify */
+    if (QValidator::Acceptable != result[0]
+        && QValidator::Acceptable != result[1])
+      emit a_model->sigError ("invalid address and port");
+
+    else if (QValidator::Acceptable != result[0])
+      emit a_model->sigError ("invalid address");
+
+    else if (QValidator::Acceptable != result[1])
+      emit a_model->sigError ("invalid port");
+
+  }
+
+  /* store result */
+  if (isValid)
+    a_server    = item;
+
+  return isValid;
 }
 
-void DapQmlModelManageCdb::add (const QVariant &a_data)
+bool DapQmlModelManageCdb::add (const QVariant &a_data)
 {
   /* check if manager installed */
   if (s_manager.isNull())
-    return;
+    return false;
 
   /* get new server info */
   AbstractCdbManager::CdbServer newServer;
-  parseServerData (a_data, newServer);
+  if (!parseServerData (this, a_data, newServer))
+    return false;
 
   /* store result and update */
   s_manager->append (std::move (newServer));
   s_manager->update();
+
+  return true;
 }
 
-void DapQmlModelManageCdb::edit (int a_index, const QVariant &a_data)
+bool DapQmlModelManageCdb::edit (int a_index, const QVariant &a_data)
 {
   /* check if manager installed */
   if (s_manager.isNull())
-    return;
+    return false;
 
   /* check boundaries */
   if (a_index >= s_manager->size())
-    return;
+    return false;
 
   /* get source item */
   auto itemIndex = s_manager->index (a_index);
 
   /* modify data */
-  parseServerData (a_data, *itemIndex);
+  if (!parseServerData (this, a_data, *itemIndex))
+    return false;
 
   /* store result */
   //s_manager->setServer (a_index, std::move (itemIndex));
   s_manager->update();
+
+  return true;
 }
 
 void DapQmlModelManageCdb::remove (int a_index)
