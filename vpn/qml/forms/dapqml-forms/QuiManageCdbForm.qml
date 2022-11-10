@@ -79,6 +79,7 @@ Item {
 
         function clearFields() {
             inputAddress.clear();
+            inputPort.clear();
         }
 
         function fill (a_index) {
@@ -87,16 +88,18 @@ Item {
             if (a_index < 0 || a_index >= model.length || a_index === undefined)
                 return;
 
-            inputAddress.value    = model.value (a_index, "server");
+            inputAddress.value  = model.value (a_index, "server");
+            inputPort.value     = model.value (a_index, "port");
         }
 
         function addNewServer() {
             /* get field values */
             let model   = mancdbListView.model;
             let address = inputAddress.value;
+            let port    = inputPort.value;
 
             /* store result & update model */
-            model.add ({server:address});
+            model.add ({server:address,port:port});
             model.refreshContent();
         }
 
@@ -113,9 +116,10 @@ Item {
             /* get field values */
             let model   = mancdbListView.model;
             let address = inputAddress.value;
+            let port    = inputPort.value;
 
             /* store result & update model */
-            model.edit (lastIndex, {server:address});
+            model.edit (lastIndex, {server:address,port:port});
             model.refreshContent();
         }
     }
@@ -749,6 +753,20 @@ Item {
             clip: true
             title: "Address"
             inputMask: "000.000.000.000"
+        }
+
+        /****************************************//**
+         * Port Input
+         ********************************************/
+
+        DapQmlInputField {
+            id: inputPort
+            x: (root.width - width) / 2
+            y: _pos(1) // title.y + title.height * 2
+            width: resizerItem.width
+            height: resizeField.height
+            clip: true
+            title: "Port"
         }
     }
 

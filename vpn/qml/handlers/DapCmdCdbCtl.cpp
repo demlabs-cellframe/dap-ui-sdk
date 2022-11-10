@@ -57,11 +57,12 @@ void DapCmdCdbCtl::sendCmdGetList()
 void DapCmdCdbCtl::_updateCmds (const QJsonValue &a_value)
 {
   /* get actual list and update */
-  auto cdbs = a_value.toString();
-  auto list = cdbs.split(',');
+  auto src  = a_value.toString();
+  auto list = src.split(',');
+  auto cdbs = DapCdbServerList::toServers (list);
 
   auto data = DapDataLocal::instance();
-  data->updateCdbList (list);
+  data->updateCdbList (cdbs);
 
   emit sigCdbList();
 }

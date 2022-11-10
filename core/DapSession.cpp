@@ -133,7 +133,8 @@ DapNetworkReply* DapSession::requestServerPublicKey()
 void DapSession::sendBugReport(const QByteArray &data)
 {
     if (!m_dapCryptCDB) {
-        this->setDapUri(*DapDataLocal::instance()->m_cdbIter, 80);
+        auto it = DapDataLocal::instance()->m_cdbIter;
+        this->setDapUri (it->address, it->port); //80);
         auto *l_tempConn = new QMetaObject::Connection();
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]{
             preserveCDBSession();
@@ -152,7 +153,8 @@ void DapSession::sendBugReport(const QByteArray &data)
 void DapSession::sendBugReportStatusRequest(const QByteArray &data)
 {
     if (!m_dapCryptCDB) {
-        this->setDapUri(*DapDataLocal::instance()->m_cdbIter, 80);
+        auto it = DapDataLocal::instance()->m_cdbIter;
+        this->setDapUri (it->address, it->port); //80);
         auto *l_tempConn = new QMetaObject::Connection();
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]{
             preserveCDBSession();
@@ -203,7 +205,8 @@ void DapSession::getNews()
         }
         emit sigReceivedNewsMessage(jsonDoc);
     });
-    DapConnectClient::instance()->request_GET(*DapDataLocal::instance()->m_cdbIter, 80, URL_NEWS, *m_netNewsReply);
+    auto it = DapDataLocal::instance()->m_cdbIter;
+    DapConnectClient::instance()->request_GET (it->address, it->port, URL_NEWS, *m_netNewsReply);
 }
 
 /**
@@ -687,7 +690,8 @@ DapNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const Q
 
 void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey) {
     if (!m_dapCryptCDB) {
-        this->setDapUri(*DapDataLocal::instance()->m_cdbIter, 80);
+        auto it = DapDataLocal::instance()->m_cdbIter;
+        this->setDapUri (it->address, it->port);//80);
         auto *l_tempConn = new QMetaObject::Connection();
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, a_serial, a_domain, a_pkey, l_tempConn]{
             preserveCDBSession();

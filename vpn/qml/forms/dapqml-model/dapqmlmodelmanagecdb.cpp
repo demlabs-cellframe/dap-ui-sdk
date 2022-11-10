@@ -6,6 +6,7 @@
 /* VARS */
 static QSharedPointer<AbstractCdbManager> s_manager;
 static const QString FIELD_SERVER {"server"};
+static const QString FIELD_PORT   {"port"};
 
 /* DEFS */
 class DapQmlModelManageCdbRowsCtl
@@ -101,11 +102,14 @@ int DapQmlModelManageCdb::length() const
   return rowCount();
 }
 
-inline void parseServerData (const QVariant &a_data, /* out */ AbstractCdbManager::Server &a_server)
+inline void parseServerData (const QVariant &a_data, /* out */ AbstractCdbManager::CdbServer &a_server)
 {
   auto value  = a_data.toMap();
   if (value.contains (FIELD_SERVER))
-    a_server  = AbstractCdbManager::Server (value[FIELD_SERVER].toString());
+    a_server  = AbstractCdbManager::CdbServer{
+        value[FIELD_SERVER].toString(),
+        value[FIELD_PORT].toInt()
+      };
 }
 
 void DapQmlModelManageCdb::add (const QVariant &a_data)
@@ -115,7 +119,7 @@ void DapQmlModelManageCdb::add (const QVariant &a_data)
     return;
 
   /* get new server info */
-  AbstractCdbManager::Server newServer;
+  AbstractCdbManager::CdbServer newServer;
   parseServerData (a_data, newServer);
 
   /* store result and update */
@@ -250,7 +254,9 @@ QVariant DapQmlModelManageCdb::data (const QModelIndex &index, int role) const
     {
 
     case 0: // name
-      return QString (*itemIndex);
+      return itemIndex->address;
+    case 1: // port
+      return itemIndex->port;
 
     }
 
@@ -264,6 +270,7 @@ QHash<int, QByteArray> DapQmlModelManageCdb::roleNames() const
   if (names.isEmpty())
     {
       names.insert (0, "name");
+      names.insert (1, "port");
     }
 
   return names;

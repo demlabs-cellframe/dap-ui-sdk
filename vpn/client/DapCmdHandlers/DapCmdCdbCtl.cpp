@@ -68,7 +68,7 @@ void DapCmdCdbCtl::handle (const QJsonObject *a_params)
         QStringList result;
 
         for (const auto &item : list)
-          result << item;
+          result << item.toString();
 
         /* join and send */
         sendCmdGetList (result.join (','));
@@ -91,12 +91,13 @@ void DapCmdCdbCtl::handle (const QJsonObject *a_params)
           }
 
         /* get actual list and update */
-        auto cdbs = cdb.toString();
-        auto list = cdbs.split(',');
+        auto src  = cdb.toString();
+        auto list = src.split(',');
+        auto cdbs = DapCdbServerList::toServers (list);
 
         auto data = DapDataLocal::instance();
-        data->updateCdbList (list);
-        data->saveSetting (SETTING_CDB, cdbs.toLatin1().toBase64());
+        data->updateCdbList (cdbs);
+        data->saveSetting (SETTING_CDB, src.toLatin1().toBase64());
       } break;
 
     };
