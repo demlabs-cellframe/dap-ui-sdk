@@ -62,6 +62,7 @@ public:
   static DapQmlModelSettings *instance();
   Q_INVOKABLE void exec (int a_index, QObject *a_item = nullptr);
   Q_INVOKABLE QString notifier() const;
+  Q_INVOKABLE QVariant value (int a_index, const QString &a_fieldName) const;
   /// @}
 
   /****************************************//**
@@ -150,7 +151,6 @@ protected slots:
   /// @}
 private:
   void _buildMenuItemsList();
-  QList<Item> s_items;
   void menuConstructor(QSet<QString> menuItems);
 };
 

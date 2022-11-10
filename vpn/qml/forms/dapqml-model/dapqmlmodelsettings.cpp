@@ -17,7 +17,7 @@ enum FieldId
 
 /* VARS */
 static DapQmlModelSettings *__inst = nullptr;
-static QList<Item> s_settingsItemsList;
+static QList<Item> s_items;
 static qint32 s_daysLabelIndex     = -1;
 static qint32 s_versionLabelIndex  = -1;
 static qint32 s_countryIndex     = -1;
@@ -79,6 +79,13 @@ QString DapQmlModelSettings::notifier() const
   return "";
 }
 
+QVariant DapQmlModelSettings::value(int a_index, const QString &a_fieldName) const
+{
+  auto valueId  = s_fieldIdMap.value (a_fieldName, textMain);
+  auto result   = data (index (a_index, 0), valueId);
+  return result;
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
@@ -125,7 +132,7 @@ QHash<int, QByteArray> DapQmlModelSettings::roleNames() const
 
 void DapQmlModelSettings::_buildMenuItemsList()
 {
-    s_settingsItemsList =
+    s_items =
     {
 #ifndef BRAND_RISEVPN
       Item{SI_SPACER,     "", "", "1", "",                                                                   [](QObject*){} },
@@ -205,7 +212,7 @@ void DapQmlModelSettings::menuConstructor(QSet<QString> menuItems)
   _buildMenuItemsList();
 #ifndef BRAND_RISEVPN
   Q_UNUSED(menuItems)
-  foreach(Item item, s_settingsItemsList)
+  foreach(Item item, s_items)
           s_items.append(item);
 #else
   QStringList menuItemsList;
@@ -252,7 +259,7 @@ void DapQmlModelSettings::menuConstructor(QSet<QString> menuItems)
   // create menu items list
   s_items.clear();
   foreach(QString itemName, menuItemsList)
-      foreach(Item item, s_settingsItemsList)
+      foreach(Item item, s_items)
           if (item.m_itemType == itemName)
           {
               s_items.append(item);
