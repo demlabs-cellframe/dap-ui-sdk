@@ -57,6 +57,20 @@ Item {
     //DapQmlModelSettings { id: settingsModel }
     //SettingsInterface { id: settingsInterface; Component.onCompleted: setup(settingsModel); }
 
+    property QtObject internal: QtObject {
+        property var items: new Array();
+
+        function appendItem (item) {
+            items.push (item);
+        }
+
+        function removeItem (item) {
+            var index = items.indexOf(item);
+            if (index > -1)
+                items.splice(index, 1);
+        }
+    }
+
     /// @}
     /****************************************//**
      * @name FUNCTIONS
@@ -200,6 +214,9 @@ Item {
                     }
 
                     onMyTextChanged: mainText = myText;
+
+                    Component.onCompleted: root.internal.appendItem (this)
+                    Component.onDestruction: root.internal.removeItem (this)
                 }
 
                 DapQmlLabel {
