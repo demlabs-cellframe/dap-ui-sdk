@@ -23,6 +23,7 @@ class DapQmlModelChooseServer : public QAbstractListModel
    *******************************************/
   /// @{
   Q_PROPERTY (QString hook READ hook NOTIFY sigRefresh)
+  Q_PROPERTY (int hookInt READ hookInt NOTIFY sigRefresh)
   /// @}
 
   /****************************************//**
@@ -43,6 +44,7 @@ public:
 
   /// this basicaly provides update feature for QML variable fields
   Q_INVOKABLE QString hook();
+  Q_INVOKABLE int hookInt();
   void refresh();
   /// Set current server name
   void setCheckedServer(QString name);
