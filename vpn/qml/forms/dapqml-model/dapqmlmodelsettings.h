@@ -75,6 +75,9 @@ public:
 
   QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
   QHash<int, QByteArray> roleNames() const override;
+private:
+  void _buildMenuItemsList();
+  void _updateMenuContent (const QSet<QString> &a_filterKeywords);
   /// @}
 
   /****************************************//**
@@ -139,7 +142,7 @@ signals:
    *******************************************/
   /// @{
 public slots:
-  void slotUpdateLabels();
+  void slotUpdateLabels (bool a_forced);
   void slotSetDaysLeft (QString a_days);
   void slotResetDaysLeft();
   void slotCountryChange();
@@ -149,9 +152,6 @@ private:
 protected slots:
   void slotRetranslate();
   /// @}
-private:
-  void _buildMenuItemsList();
-  void menuConstructor(QSet<QString> menuItems);
 };
 
 class DapQmlModelSettingsItem : public QObject
