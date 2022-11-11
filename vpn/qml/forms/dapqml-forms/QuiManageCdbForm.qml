@@ -86,7 +86,7 @@ Item {
 
         function clearFields() {
             inputAddress.clear();
-            inputPort.clear();
+            inputPort.value = 80; //.clear();
         }
 
         function fill (a_index) {
