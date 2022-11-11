@@ -432,7 +432,7 @@ Item {
 
                 /* connection quality */
                 DapQmlLabel {
-                    property int quality: (parent.quality === 0) ? (0) : (6 - parent.quality)
+                    property int quality: (parent.quality === -1) ? (0) : (5 - parent.quality)
                     x: parent.width - (width * 1.35) - placeholderMoreBtn.width
                     y: (parent.height - height) / 2
                     width: resizer.height * 0.5
@@ -446,8 +446,8 @@ Item {
                     icon {
                         source: "qrc:/nonthemed/drag-drop-icon.png"
                         color: "transparent"
-                        width: placeholderMoreBtn.width
-                        height: placeholderMoreBtn.height
+                        width: placeholderMoreBtn.width * 0.8
+                        height: placeholderMoreBtn.height * 0.8
                     }
                     background: Rectangle {
                         color: "transparent"
@@ -655,7 +655,7 @@ Item {
                                 id: id_tooltip
                                 contentItem: Text{
                                     color: "#21be2b"
-                                    text: "ping " + parent.ping + " ms"
+                                    text: ((delegate.ping === -1) ? "unavailable" : `ping ${delegate.ping} ms`) + mancdbListView.model.notifyString
                                 }
                                 background: Rectangle {
                                     border.color: "#21be2b"
@@ -676,8 +676,8 @@ Item {
                             icon {
                                 source: "qrc:/nonthemed/drag-drop-icon.png"
                                 color: "transparent"
-                                width: moreBtn.width
-                                height: moreBtn.height
+                                width: moreBtn.width * 0.8
+                                height: moreBtn.height * 0.8
                             }
                             background: Rectangle {
                                 color: "transparent"
@@ -690,8 +690,8 @@ Item {
                             x: parent.width - width
                             y: (parent.height - height) / 2 - height / 8
                             z: 16
-                            width: resizerItem.fontSize * 1.125
-                            height: resizerItem.fontSize * 1.125
+                            width: resizerItem.fontSize * 1.25
+                            height: resizerItem.fontSize * 1.25
 
                             MouseArea {
                                 id: mouseArea

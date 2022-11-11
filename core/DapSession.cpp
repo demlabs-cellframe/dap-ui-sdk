@@ -715,7 +715,8 @@ void DapSession::requestPurchaseVerify(const QJsonObject *params)
 {
     QJsonDocument jdoc(*params);
     if (!m_dapCryptCDB) {
-        this->setDapUri(*DapDataLocal::instance()->m_cdbIter, 80);
+        auto it = DapDataLocal::instance()->m_cdbIter;
+        this->setDapUri(it->address, it->port);
         auto *l_tempConn = new QMetaObject::Connection();
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, jdoc, l_tempConn]{
             preserveCDBSession();
