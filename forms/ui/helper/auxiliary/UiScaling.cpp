@@ -78,7 +78,7 @@ float UiScaling::getNativDPI()
   XRROutputInfo *outInfo;
   XRRCrtcInfo *crtc_info;
 
-  dpy = XOpenDisplay (":0");
+  dpy = XOpenDisplay (NULL);
   screen = XRRGetScreenResources (dpy, DefaultRootWindow (dpy));
   crtc_info = XRRGetCrtcInfo (dpy, screen, screen->crtcs[0]); //0 to get the first monitor
   outInfo = XRRGetOutputInfo (dpy, screen, *crtc_info->outputs);
