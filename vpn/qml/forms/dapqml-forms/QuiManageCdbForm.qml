@@ -602,9 +602,21 @@ Item {
                         id: delegate
 
                         property int myIndex: model.index// + mancdbListView.model.notifyInt
-                        property int ping: 109 + mancdbListView.model.notifyInt // model.ping
-                        property int quality: 4 + mancdbListView.model.notifyInt // model.connectionQuality
+                        property int ping: model.ping + mancdbListView.model.notifyInt
+                        property int quality: calcConnectionQuality() + mancdbListView.model.notifyInt
                         property bool isDragged: mouseArea.drag.active
+
+                        function calcConnectionQuality() {
+                            let a = (ping === -1) ? -1 : ping / 400;
+                            //let b = a;
+
+                            if (a > 5)
+                                a = 5;
+
+                            quality = a;
+
+                            //console.log (`cdb item:${model.name}~${quality}|${a}|${ping}`);
+                        }
 
                         Component.onCompleted: mancdbListView.model.regRow (this)
 
@@ -632,7 +644,7 @@ Item {
 
                         /* connection quality */
                         DapQmlLabel {
-                            property int quality: (parent.quality === 0) ? (0) : (6 - parent.quality)
+                            property int quality: (parent.quality === -1) ? (0) : (5 - parent.quality)
                             x: parent.width - (width * 1.35) - moreBtn.width
                             y: (parent.height - height) / 2
                             width: resizer.height * 0.5

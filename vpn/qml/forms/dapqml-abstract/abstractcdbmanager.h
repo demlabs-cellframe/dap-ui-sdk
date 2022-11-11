@@ -26,6 +26,7 @@ public:
   {
     QString address;
     int port;
+    int ping;
   };
 
   typedef QList<CdbServer>::const_iterator  ConstIterator;

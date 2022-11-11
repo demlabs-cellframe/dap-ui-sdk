@@ -15,6 +15,8 @@ class DapQmlModelManageCdb : public QAbstractTableModel
 {
   Q_OBJECT
 
+  friend class DapQmlModelManageCdbRowsCtl;
+
   Q_PROPERTY(int notifyInt READ notifyInt NOTIFY sigMoveFilterChanged)
   Q_PROPERTY(QString notifyString READ notifyString NOTIFY sigMoveFilterChanged)
 
@@ -88,6 +90,10 @@ signals:
   /// @{
 public slots:
   void slotSetup();
+
+protected slots:
+  void _slotReceivedPing (const QString &a_address, quint16 a_port, quint16 a_ping);
+  void _slotUpdatePingsTimeout();
   /// @}
 };
 

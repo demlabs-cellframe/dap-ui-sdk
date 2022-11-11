@@ -1,13 +1,17 @@
 /* INCLUDES */
 #include "dapqmlmodelmanagecdb.h"
 #include "dapqml-abstract/abstractcdbmanager.h"
+#include "helper/pingctl.h"
+
 #include <QDebug>
+#include <QTimer>
 #include <QRegExpValidator>
 
 /* VARS */
 static QSharedPointer<AbstractCdbManager> s_manager;
 static const QString FIELD_SERVER {"server"};
 static const QString FIELD_PORT   {"port"};
+static const QString FIELD_PING   {"ping"};
 
 /* DEFS */
 class DapQmlModelManageCdbRowsCtl
@@ -20,9 +24,18 @@ class DapQmlModelManageCdbRowsCtl
 
   QMap<QObject *, Row> rows;
   DapQmlModelManageCdb *model;
+  QTimer *pingUpdateTimer;
 public:
   DapQmlModelManageCdbRowsCtl (DapQmlModelManageCdb *a_model)
-    : model (a_model) {}
+    : model (a_model)
+    , pingUpdateTimer (new QTimer)
+  {
+    pingUpdateTimer->setSingleShot (true);
+    pingUpdateTimer->setInterval (500);
+
+    QObject::connect (pingUpdateTimer, &QTimer::timeout,
+                      a_model, &DapQmlModelManageCdb::_slotUpdatePingsTimeout);
+  }
 
   void append (QObject *a_row)
   {
@@ -63,6 +76,11 @@ public:
     QObject::disconnect (it.connections[1]);
     rows.remove (a_row);
   }
+
+  void restartTimeout()
+  {
+    pingUpdateTimer->start();
+  }
 };
 
 /********************************************
@@ -73,7 +91,10 @@ DapQmlModelManageCdb::DapQmlModelManageCdb()
   : QAbstractTableModel()
   , d (new DapQmlModelManageCdbRowsCtl (this))
 {
-
+  auto pingCtl = PingCtl::instance();
+  connect (pingCtl, &PingCtl::sigReceivedPing,
+           this, &DapQmlModelManageCdb::_slotReceivedPing,
+           Qt::QueuedConnection);
 }
 
 /********************************************
@@ -114,7 +135,8 @@ static bool parseServerData (DapQmlModelManageCdb *a_model, const QVariant &a_da
   if (value.contains (FIELD_SERVER))
     item = AbstractCdbManager::CdbServer{
         value[FIELD_SERVER].toString(),
-        value[FIELD_PORT].toInt()
+        value[FIELD_PORT].toInt(),
+        a_server.ping
       };
 
   /* validate */
@@ -170,13 +192,14 @@ bool DapQmlModelManageCdb::add (const QVariant &a_data)
     return false;
 
   /* get new server info */
-  AbstractCdbManager::CdbServer newServer;
+  AbstractCdbManager::CdbServer newServer {QString(), 0, -1};
   if (!parseServerData (this, a_data, newServer))
     return false;
 
   /* store result and update */
   s_manager->append (std::move (newServer));
   s_manager->update();
+  QMetaObject::invokeMethod (this, "slotSetup", Qt::QueuedConnection);
 
   return true;
 }
@@ -201,6 +224,7 @@ bool DapQmlModelManageCdb::edit (int a_index, const QVariant &a_data)
   /* store result */
   //s_manager->setServer (a_index, std::move (itemIndex));
   s_manager->update();
+  QMetaObject::invokeMethod (this, "slotSetup", Qt::QueuedConnection);
 
   return true;
 }
@@ -314,6 +338,8 @@ QVariant DapQmlModelManageCdb::data (const QModelIndex &index, int role) const
       return itemIndex->address;
     case 1: // port
       return itemIndex->port;
+    case 2: // ping
+      return itemIndex->ping;
 
     }
 
@@ -328,6 +354,7 @@ QHash<int, QByteArray> DapQmlModelManageCdb::roleNames() const
     {
       names.insert (0, "name");
       names.insert (1, "port");
+      names.insert (2, "ping");
     }
 
   return names;
@@ -339,7 +366,38 @@ QHash<int, QByteArray> DapQmlModelManageCdb::roleNames() const
 
 void DapQmlModelManageCdb::slotSetup()
 {
-  /* nothing for now */
+  if (s_manager.isNull())
+    return;
+
+  /* request pings */
+  auto pingCtl = PingCtl::instance();
+  for (auto it = s_manager->cbegin(), en = s_manager->cend(); it != en; it++)
+    pingCtl->slotRequestPing (it->address, it->port);
+}
+
+void DapQmlModelManageCdb::_slotReceivedPing (const QString &a_address, quint16 a_port, quint16 a_ping)
+{
+  Q_UNUSED(a_port)
+
+  if (s_manager.isNull())
+    return;
+
+  /* find */
+  auto index  = s_manager->find (a_address);
+  if (index == s_manager->end())
+    return;
+
+  /* store ping */
+  qint16 ping = qint16 (a_ping);
+  index->ping = ping;
+
+  /* start or restart ping timer */
+  d->restartTimeout();
+}
+
+void DapQmlModelManageCdb::_slotUpdatePingsTimeout()
+{
+  refreshContent();
 }
 
 /*-----------------------------------------*/
