@@ -187,8 +187,8 @@ void DapQmlModelSettings::_buildMenuItemsList()
  #ifndef DISABLE_SETTINGS_LANGUAGE
       Item{SI_LINK,       tr ("Language"), "", "settings_icon ic_language", "language",                                           [](QObject*) { emit __inst->sigLanguage(); } },
  #endif // DISABLE_SETTINGS_LANGUAGE
-      Item{SI_LINK,       tr ("Manage servers"), "", "settings_icon ic_language", "manage_servers",                       [](QObject*) { emit __inst->sigManageServers(); } },
-      Item{SI_LINK,       tr ("Manage CDB"), "", "settings_icon ic_language", "manage_cdb",                               [](QObject*) { emit __inst->sigManageCDB(); } },
+      Item{SI_LINK,       tr ("Manage CDB"), "", "settings_icon ic_cdb-manager", "manage_cdb",                            [](QObject*) { emit __inst->sigManageCDB(); } },
+      Item{SI_LINK,       tr ("Manage servers"), "", "settings_icon ic_server-manager", "manage_servers",                 [](QObject*) { emit __inst->sigManageServers(); } },
       Item{SI_LINK,       tr ("Certificate"), "", "settings_icon ic_certificate", "certificate",                          [](QObject*) { emit __inst->sigCertificate(); } },
   #ifndef DISABLE_THEMES
       Item{SI_CHECKBOX,   tr ("Dark theme"), "", "settings_icon ic_theme", "dark_themes",                                 [](QObject *a_item) { emit __inst->sigDarkTheme (a_item->property ("checked").toBool()); } },

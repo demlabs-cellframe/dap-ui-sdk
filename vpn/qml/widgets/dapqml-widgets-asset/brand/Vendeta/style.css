@@ -245,6 +245,21 @@
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_language.png");
 }
 
+.ic_certificate
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_certificate.png");
+}
+
+.ic_cdb-manager
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_cdb-manager.png");
+}
+
+.ic_server-manager
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_server-manager.png");
+}
+
 .ic_send-report
 {
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_send-report.png");

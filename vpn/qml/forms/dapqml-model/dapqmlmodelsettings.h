@@ -116,8 +116,8 @@ signals:
   void sigSerialReset();
   void sigLogout();
   void sigLanguage();
-  void sigManageServers();
   void sigManageCDB();
+  void sigManageServers();
   void sigCertificate();
   void sigDarkTheme (bool a_state);
 
