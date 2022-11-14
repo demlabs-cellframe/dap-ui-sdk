@@ -217,6 +217,28 @@
 
 
 
+.inputfield-separator
+{
+    scaled-rect: scaled(nan,nan,nan,nan,false);
+}
+
+.inputfield-input
+{
+    scaled-rect: scaled(nan,nan,nan,40,false,16);
+}
+
+.inputfield-placeholder-in
+{
+    scaled-rect: scaled(nan,nan,nan,40,false,16);
+}
+
+.inputfield-placeholder-out
+{
+    scaled-rect: scaled(nan,nan,nan,24,false,12);
+}
+
+
+
 .radiobtn-resizer
 {
 	scaled-rect: scaled(nan,nan,392,64,false);
@@ -808,15 +830,20 @@
 	scaled-rect: scaled(291,333,100,19,false,16);
 }
 
+.bugrep-input-email
+{
+	scaled-rect: scaled(nan,380,316,48,false);
+}
+
 .bugrep-attach-btn
 {
-	scaled-rect: scaled(19,392,390,20,false,16);
+	scaled-rect: scaled(19,448,390,20,false,16);
 	color: "#DA0B82";
 }
 
 .bugrep-send-btn
 {
-	scaled-rect: scaled(27,441,374,80,true,14);
+	scaled-rect: scaled(27,492,374,80,true,14);
 }
 
 .bugrep-sending

@@ -645,6 +645,15 @@ Item {
             horizontalAlign: Text.AlignRight
         }
 
+        /* e-mail */
+        DapQmlInputField {
+            id: inputEmail
+            x: (parent.width - width) / 2
+            qss: "bugrep-input-email"
+            clip: true
+            title: "E-mail"
+        }
+
         /* attach */
         DapQmlLabel {
             id: attach
