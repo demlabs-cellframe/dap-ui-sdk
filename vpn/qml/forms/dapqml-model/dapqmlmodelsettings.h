@@ -62,6 +62,7 @@ public:
   static DapQmlModelSettings *instance();
   Q_INVOKABLE void exec (int a_index, QObject *a_item = nullptr);
   Q_INVOKABLE QString notifier() const;
+  Q_INVOKABLE QVariant value (int a_index, const QString &a_fieldName) const;
   /// @}
 
   /****************************************//**
@@ -74,6 +75,9 @@ public:
 
   QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
   QHash<int, QByteArray> roleNames() const override;
+private:
+  void _buildMenuItemsList();
+  void _updateMenuContent (const QSet<QString> &a_filterKeywords);
   /// @}
 
   /****************************************//**
@@ -114,7 +118,7 @@ signals:
   void sigLanguage();
   void sigManageServers();
   void sigManageCDB();
-  void sigCryptography();
+  void sigCertificate();
   void sigDarkTheme (bool a_state);
 
   /* support */
@@ -139,7 +143,7 @@ signals:
    *******************************************/
   /// @{
 public slots:
-  void slotUpdateLabels();
+  void slotUpdateLabels (bool a_forced);
   void slotSetDaysLeft (QString a_days);
   void slotResetDaysLeft();
   void slotCountryChange();
@@ -149,10 +153,6 @@ private:
 protected slots:
   void slotRetranslate();
   /// @}
-private:
-  void _buildMenuItemsList();
-  QList<Item> s_items;
-  void menuConstructor(QSet<QString> menuItems);
 };
 
 class DapQmlModelSettingsItem : public QObject

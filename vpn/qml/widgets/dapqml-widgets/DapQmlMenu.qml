@@ -63,7 +63,7 @@ Menu {
             }
             Text {
                 anchors.fill: parent
-                horizontalAlignment: Text.Text.AlignRight
+                horizontalAlignment: Text.AlignRight
                 //text: menuDelegate.sequence // menuDelegate.shortcut
                 font: colorLabel.label.font
                 color: colorGray.color

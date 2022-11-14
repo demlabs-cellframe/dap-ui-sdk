@@ -18,7 +18,7 @@
         <file compress="1">dapqml-forms/QuiResetPassword.qml</file>
         <file compress="1">dapqml-forms/QuiManageServersForm.qml</file>
         <file compress="1">dapqml-forms/QuiManageCdbForm.qml</file>
-        <file compress="1">dapqml-forms/QuiCryptographyForm.qml</file>
+        <file compress="1">dapqml-forms/QuiCertificateForm.qml</file>
         <file compress="1">dapqml-forms/QuiChooseCertificate.qml</file>
     </qresource>
 </RCC>

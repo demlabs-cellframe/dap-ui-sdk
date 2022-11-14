@@ -4,6 +4,17 @@
 #include "DapDataLocal.h"
 
 /* DEFS */
+
+/* turn this on, to see settings filter prints */
+//#define PRINT_ITEMS_FILTER_RESULT
+
+#ifdef PRINT_ITEMS_FILTER_RESULT
+#define PRINT_ITEM(a,b,c) printInfo (a, b, c);
+#else // PRINT_ITEMS_FILTER_RESULT
+#define PRINT_ITEM(a,b,c)
+#endif // PRINT_ITEMS_FILTER_RESULT
+
+
 enum FieldId
 {
   sid,
@@ -17,7 +28,8 @@ enum FieldId
 
 /* VARS */
 static DapQmlModelSettings *__inst = nullptr;
-static QList<Item> s_settingsItemsList;
+static QList<Item> s_items;
+static QSet<QString> s_lastFilterKeywords;
 static qint32 s_daysLabelIndex     = -1;
 static qint32 s_versionLabelIndex  = -1;
 static qint32 s_countryIndex     = -1;
@@ -50,7 +62,7 @@ DapQmlModelSettings::DapQmlModelSettings (QObject *parent)
            Qt::QueuedConnection);
 
   /* finish updating labels */
-  slotUpdateLabels();
+  slotUpdateLabels (true);
 }
 
 /********************************************
@@ -77,6 +89,13 @@ void DapQmlModelSettings::exec (int a_index, QObject *a_item)
 QString DapQmlModelSettings::notifier() const
 {
   return "";
+}
+
+QVariant DapQmlModelSettings::value(int a_index, const QString &a_fieldName) const
+{
+  auto valueId  = s_fieldIdMap.value (a_fieldName, textMain);
+  auto result   = data (index (a_index, 0), valueId);
+  return result;
 }
 
 /********************************************
@@ -125,7 +144,7 @@ QHash<int, QByteArray> DapQmlModelSettings::roleNames() const
 
 void DapQmlModelSettings::_buildMenuItemsList()
 {
-    s_settingsItemsList =
+    s_items =
     {
 #ifndef BRAND_RISEVPN
       Item{SI_SPACER,     "", "", "1", "",                                                                   [](QObject*){} },
@@ -133,7 +152,7 @@ void DapQmlModelSettings::_buildMenuItemsList()
 
       Item{SI_BUTTONRED,  tr ("Get new licence key"), " ", "settings_icon ic_renew", "get_new_licence_key",  [](QObject*) { emit __inst->sigLicenceGet(); } },
       Item{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key", "reset_licence_key",         [](QObject*) { emit __inst->sigLicenceReset(); } },
-      Item{SI_LINK,       tr ("Country"), "", "settings_icon ic_location", "country",                        [](QObject*) { emit __inst->sigCountry(); } },
+      Item{SI_LINK,       tr ("Your country"), "", "settings_icon ic_location", "country",                   [](QObject*) { emit __inst->sigCountry(); } },
   #ifndef DISABLE_SETTINGS_LANGUAGE
       Item{SI_LINK,       tr ("Language"), "", "settings_icon ic_language", "language",                      [](QObject*) { emit __inst->sigLanguage(); } },
   #endif // BRAND_KELVPN
@@ -162,15 +181,15 @@ void DapQmlModelSettings::_buildMenuItemsList()
       Item{SI_SPACER,     "", "", "1", "spacer",                                                                          [](QObject*){} },
       Item{SI_TITLE,      tr ("Settings"), "", "settings_icon", "settings",                                               [](QObject*){} },
 
-      Item{SI_BUTTONRED,  tr ("Get new licence key"), " ", "settings_icon ic_renew", "get_new_licence_key",               [](QObject*) { emit __inst->sigSerialGet(); } },
+      //Item{SI_BUTTONRED,  tr ("Get new licence key"), " ", "settings_icon ic_renew", "get_new_licence_key",               [](QObject*) { emit __inst->sigSerialGet(); } },
       Item{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key", "reset_licence_key",                      [](QObject*) { emit __inst->sigSerialReset(); } },
       Item{SI_BUTTONRED,  tr ("Logout"), " ", "settings_icon ic_renew", "logout",                                         [](QObject*) { emit __inst->sigLogout(); } },
-  #ifndef DISABLE_SETTINGS_LANGUAGE
+ #ifndef DISABLE_SETTINGS_LANGUAGE
       Item{SI_LINK,       tr ("Language"), "", "settings_icon ic_language", "language",                                           [](QObject*) { emit __inst->sigLanguage(); } },
-  #endif // DISABLE_SETTINGS_LANGUAGE
+ #endif // DISABLE_SETTINGS_LANGUAGE
       Item{SI_LINK,       tr ("Manage servers"), "", "settings_icon ic_language", "manage_servers",                       [](QObject*) { emit __inst->sigManageServers(); } },
       Item{SI_LINK,       tr ("Manage CDB"), "", "settings_icon ic_language", "manage_cdb",                               [](QObject*) { emit __inst->sigManageCDB(); } },
-      Item{SI_LINK,       tr ("Cryptography"), "", "settings_icon ic_language", "cryptography",                           [](QObject*) { emit __inst->sigCryptography(); } },
+      Item{SI_LINK,       tr ("Certificate"), "", "settings_icon ic_certificate", "certificate",                          [](QObject*) { emit __inst->sigCertificate(); } },
   #ifndef DISABLE_THEMES
       Item{SI_CHECKBOX,   tr ("Dark theme"), "", "settings_icon ic_theme", "dark_themes",                                 [](QObject *a_item) { emit __inst->sigDarkTheme (a_item->property ("checked").toBool()); } },
   #endif // DISABLE_THEMES
@@ -178,7 +197,7 @@ void DapQmlModelSettings::_buildMenuItemsList()
       Item{SI_TITLE,      tr ("Support"), "", "settings_icon", "support",                                                 [](QObject*){} },
 
       Item{SI_BUTTON,     tr ("Send bug report"), "", "settings_icon ic_send-report", "send_bug_report",                  [](QObject*) { emit __inst->sigBugSend(); } },
-      Item{SI_BUTTON,     tr ("Telegram support bot"), "", "settings_icon ic_bot", "telegram_support_bot",                [](QObject*) { emit __inst->sigTelegramBot(); } },
+      //Item{SI_BUTTON,     tr ("Telegram support bot"), "", "settings_icon ic_bot", "telegram_support_bot",                [](QObject*) { emit __inst->sigTelegramBot(); } },
 
       Item{SI_TITLE,      tr ("Information"), "", "settings_icon", "information",                                         [](QObject*){} },
 
@@ -196,83 +215,121 @@ void DapQmlModelSettings::_buildMenuItemsList()
     };
 }
 
+// menu filter
+void DapQmlModelSettings::_updateMenuContent (const QSet<QString> &a_filterKeywords)
+{
+  if (s_lastFilterKeywords == a_filterKeywords)
+    return;
+  s_lastFilterKeywords  = a_filterKeywords;
+
+  _buildMenuItemsList();
+
+#ifdef BRAND_RISEVPN
+  /* conditional value definition */
+  auto conditionalValue = [a_filterKeywords] (const char *a_condition, const char *a_value) -> const char *
+    {
+      if (a_filterKeywords.contains (a_condition))
+        return a_value;
+      return "";
+    };
+
+  /* collect keywords */
+  QSet<QString> keywords = {
+    /* ----- */
+    /* title */
+    /* ----- */
+
+    "spacer",
+    "settings",
+
+    /* use licence key */
+    //conditionalValue ("use_licence_key", "get_new_licence_key"),
+    conditionalValue ("use_licence_key", "reset_licence_key"),
+
+    /* use login */
+    conditionalValue ("use_login", "logout"),
+    "language",
+    conditionalValue ("use_manage_servers", "manage_servers"),
+    conditionalValue ("use_manage_servers", "certificate"),
+
+    /* themes */
+    "dark_themes",
+
+
+    /* ----- */
+    /* title */
+    /* ----- */
+    "support",
+
+    /* support */
+    "send_bug_report",
+    "telegram_support_bot",
+
+
+    /* ----- */
+    /* title */
+    /* ----- */
+    "information",
+
+    /* lists */
+    "bug_reports",
+    conditionalValue ("use_licence_key", "skey_history"),
+
+    /* tersm & poliies */
+#ifndef DISABLE_TERMSOFUSE_AND_PRIVACYPOLICY
+    "terms_of_use",
+    "privacy_policy",
+#endif // DISABLE_TERMSOFUSE_AND_PRIVACYPOLICY
+
+    /* version */
+    "release_version",
+    "title_a",
+    "title_b"
+  };
+
+#ifdef PRINT_ITEMS_FILTER_RESULT
+  auto printInfo = [] (const Item &a_item, const char *a_text, const char *a_funcName)
+    {
+      qDebug() << a_funcName
+               << QString ("%1: %2, \"%3\"")
+                  .arg (a_text, a_item.m_itemType, a_item.m_textMain);
+    };
+#endif // PRINT_ITEMS_FILTER_RESULT
+
+  /* remove items which keyword is missing */
+  for (auto it = s_items.begin(); it != s_items.end(); it++)
+    {
+      auto &item  = *it;
+      if (keywords.contains (item.m_itemType))
+        {
+          PRINT_ITEM (item, "saved item", __PRETTY_FUNCTION__);
+          continue;
+        }
+
+      PRINT_ITEM (item, "erased item", __PRETTY_FUNCTION__);
+      s_items.erase (it);
+      // it--;
+    }
+#endif
+}
+
 /********************************************
  * SLOTS
  *******************************************/
 
-// menu filter
-void DapQmlModelSettings::menuConstructor(QSet<QString> menuItems)
+void DapQmlModelSettings::slotUpdateLabels (bool a_forced)
 {
-  _buildMenuItemsList();
-#ifndef BRAND_RISEVPN
-  Q_UNUSED(menuItems)
-  foreach(Item item, s_settingsItemsList)
-          s_items.append(item);
-#else
-  QStringList menuItemsList;
-  // base menu
-  menuItemsList << "spacer";
-  menuItemsList << "settings";
-  // use licence key
-  if (menuItems.contains("use_licence_key"))
-    menuItemsList << "get_new_licence_key" << "reset_licence_key";
-  // use login
-  if (menuItems.contains("use_login"))
-    menuItemsList << "logout";
-  // language
-#ifndef DISABLE_SETTINGS_LANGUAGE
-  "language" <<
-#endif // DISABLE_SETTINGS_LANGUAGE
-  if (menuItems.contains("use_manage_servers"))
-    menuItemsList << "manage_servers" << "mancdb" << "cryptography";
-  // ohter themes
-#ifndef DISABLE_THEMES
-  if (menuItems.contains("use_dark_themes"))
-    menuItemsList << "dark_themes";
-#endif // DISABLE_THEMES
-  // base menu
-  menuItemsList << "support";
-  menuItemsList << "send_bug_report";
-  // telegram support but
-  if (menuItems.contains("use_telegram_suport_bot"))
-    menuItemsList << "telegram_support_bot";
-  menuItemsList << "information";
-  menuItemsList << "bug_reports";
-  // serial key history
-  if (menuItems.contains("use_licence_key"))
-    menuItemsList << "skey_history";
-  // term of use and privacy policy
-#ifndef DISABLE_TERMSOFUSE_AND_PRIVACYPOLICY
-  menuItemsList << "terms_of_use";
-  menuItemsList << "privacy_policy";
-#endif // DISABLE_TERMSOFUSE_AND_PRIVACYPOLICY
-  // relese version
-  menuItemsList << "release_version";
-  menuItemsList << "title_a" << "title_b";
+  if (a_forced)
+    s_lastFilterKeywords = {"__dummy_items__", "__to_fill_settings__"};
 
-  // create menu items list
-  s_items.clear();
-  foreach(QString itemName, menuItemsList)
-      foreach(Item item, s_settingsItemsList)
-          if (item.m_itemType == itemName)
-          {
-              s_items.append(item);
-              break;
-          }
-#endif
-}
-
-void DapQmlModelSettings::slotUpdateLabels()
-{
-    _buildMenuItemsList();
-    auto authType = DapDataLocal::instance()->authorizationType();
-    if (authType == Authorization::account)
-        menuConstructor(QSet<QString>() << "use_manage_servers" << "use_login");
-    if (authType == Authorization::serialKey)
-        menuConstructor(QSet<QString>() << "use_manage_servers" << "use_licence_key");
-    if (authType == Authorization::undefined)
-        menuConstructor(QSet<QString>() << "use_licence_key");
-
+  auto authType = DapDataLocal::instance()->authorizationType();
+  switch (authType)
+    {
+    case Authorization::account:    _updateMenuContent ({"use_manage_servers", "use_login"}); break;
+    case Authorization::serialKey:  _updateMenuContent ({"use_manage_servers", "use_licence_key"}); break;
+    case Authorization::undefined:  _updateMenuContent ({}); break;
+    default:break;
+    }
 
   /* find indexes */
   qint32 index = 0;
@@ -281,13 +338,11 @@ void DapQmlModelSettings::slotUpdateLabels()
       if (i->m_itemType == "get_new_licence_key")
         s_daysLabelIndex    = index;
 
-      if (i->m_itemType == "release_version")
+      else if (i->m_itemType == "release_version")
         s_versionLabelIndex = index;
 
-      if (i->m_itemType == "country")
-      {
-          s_countryIndex    = index;
-      }
+      else if (i->m_itemType == "country")
+        s_countryIndex      = index;
     }
 
   /* set version */
@@ -298,6 +353,7 @@ void DapQmlModelSettings::slotUpdateLabels()
       s_items[s_versionLabelIndex].m_textSub  = version;
     }
 
+  /* update country label name */
   if (s_countryIndex != -1)
     {
       s_items[s_countryIndex].m_textSub = getCurrentCountryCode();
@@ -308,7 +364,7 @@ void DapQmlModelSettings::slotUpdateLabels()
 void DapQmlModelSettings::slotUpdateItemsList()
 {
     beginResetModel();
-    slotUpdateLabels();
+    slotUpdateLabels (false);
     endResetModel();
 
     emit dataChanged (
@@ -357,7 +413,7 @@ void DapQmlModelSettings::slotCountryChange()
 
 void DapQmlModelSettings::slotRetranslate()
 {
-  slotUpdateLabels();
+  slotUpdateLabels (true);
   emit languageChanged();
 }
 

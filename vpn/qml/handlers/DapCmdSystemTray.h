@@ -10,46 +10,96 @@
 #ifndef DAPCMDSYSTEMTRAYHANDLER_H
 #define DAPCMDSYSTEMTRAYHANDLER_H
 
+/* INCLUDES */
+#include "DapCmdServiceAbstract.h"
+
 #include <QObject>
 #include <QJsonValue>
 
-#include "DapCmdServiceAbstract.h"
+/****************************************//**
+ * @brief
+ * @date
+ * @author
+ *******************************************/
 
 class DapCmdSystemTray: public DapCmdServiceAbstract
 {
-    Q_OBJECT
+  Q_OBJECT
+
+  /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
 public:
-    DapCmdSystemTray(QObject *parent = nullptr) :
-        DapCmdServiceAbstract(DapJsonCmdType::CLIENT_INFO, parent) {
-    }
-    /// Virtual destructor.
-    virtual ~DapCmdSystemTray() override { }
-    /// Process command.
-    /// @param params Command parameters.
-    void handle(const QJsonObject* params) override;
+  enum class RequestType
+  {
+    setting,
+    statistic,
+    login,
+    dashboard,
+    client_started,
+    client_exited,
+    apllication_quit,
+    tray_application_running,
+    change_server,
+  };
+  Q_ENUM(RequestType)
+  /// @}
 
-    /// @param address Server address.
-    void sendShowSettingInterface();
-    void sendShowStatisticInterface();
-    void sendShowLoginInterface();
-    void sendShowDashboardInterface();
-    void clientStarted();
-    void trayApplicationStarted();
-    void clientExited();
-    void apllicationQuitRequest();
+  /****************************************//**
+   * @name CONSTRUCT/DESTRUCT
+   *******************************************/
+  /// @{
+public:
+  DapCmdSystemTray (QObject *parent = nullptr);
+  virtual ~DapCmdSystemTray() override;
+  /// @}
 
-signals:
-    void showSettingInterface();
-    void showStatisticInterface();
-    void showLoginInterface();
-    void showDashboardInterface();
-    void trayApplicationFound();
-    void clientFound();
-    void clientClosed();
-    void quitRequest();
+  /****************************************//**
+   * @name OVERRIDE
+   *******************************************/
+  /// @{
+public:
+  /// Process command.
+  /// @param params Command parameters.
+  void handle (const QJsonObject *params) override;
+  /// @}
 
+  /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  /// @param address Server address.
+  void sendShowSettingInterface();
+  void sendShowStatisticInterface();
+  void sendShowLoginInterface();
+  void sendShowDashboardInterface();
+  void sendChangeServer (const QString &a_serverName, const QString &a_serverAddress);
+  void clientStarted();
+  void trayApplicationStarted();
+  void clientExited();
+  void apllicationQuitRequest();
 private:
-    void sendShowInterface(const QString &interfaceName);
+  void sendShowInterface (const RequestType &a_type);
+  /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void showSettingInterface();
+  void showStatisticInterface();
+  void showLoginInterface();
+  void showDashboardInterface();
+  void changeServer (QString a_serverName, QString a_serverAddress);
+  void trayApplicationFound();
+  void clientFound();
+  void clientClosed();
+  void quitRequest();
+  /// @}
 };
 
+/*-----------------------------------------*/
 #endif // DAPCMDSYSTEMTRAYHANDLER_H
