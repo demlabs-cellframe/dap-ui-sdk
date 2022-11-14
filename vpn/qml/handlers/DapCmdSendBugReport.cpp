@@ -6,12 +6,19 @@ DapCmdSendBugReport::DapCmdSendBugReport(QObject *parent)
 
 }
 
-void DapCmdSendBugReport::sendBugReport(const QString &a_message, const QString &a_serial /*= ""*/, const QString &attachFile)
+void DapCmdSendBugReport::sendBugReport(
+    const QString &a_message,
+    const QString &a_serial,
+    const QString &attachFile,
+    const QString &a_emailAddress)
 {
-    QJsonObject obj;
-    obj["serial"] = a_serial;
-    obj["message"] = a_message;
-    obj["attach_file"] = attachFile;
+    QJsonObject obj =
+    {
+      {"attach_file", attachFile},
+      {"email", a_emailAddress},
+      {"message", a_message},
+      {"serial", a_serial},
+    };
     sendCmd(&obj);
 }
 
