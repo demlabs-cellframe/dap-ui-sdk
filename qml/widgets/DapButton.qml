@@ -50,23 +50,31 @@ Button
     property alias radius: dapBackgroundButton.radius
     property alias imageMirror: img.mirror
 
-    property string gradientColorNormal0: "#f0f000"
-    property string gradientColorNormal1: "#f00000"
-    property string gradientColorHovered0: "#f0f0a0"
-    property string gradientColorHovered1: "#f000a0"
+    property color gradientColorNormal0: "#f0f000"
+    property color gradientColorNormal1: "#f00000"
+    property color gradientColorHovered0: "#f0f0a0"
+    property color gradientColorHovered1: "#f000a0"
 
-    property string defaultColorNormal0: currTheme.buttonColorNormalPosition0
-    property string defaultColorNormal1: currTheme.buttonColorNormalPosition1
-    property string defaultColorHovered0: currTheme.buttonColorHoverPosition0
-    property string defaultColorHovered1: currTheme.buttonColorHoverPosition1
-    property string defaultColorUnselectedNormal: "#373A42"
-    property string defaultColorUnselectedHovered: "#272A32"
-    property string defaultColorDisabled: "#B3B1BC"
+    property color defaultColorNormal0: currTheme.buttonColorNormalPosition0
+    property color defaultColorNormal1: currTheme.buttonColorNormalPosition1
+    property color defaultColorHovered0: currTheme.buttonColorHoverPosition0
+    property color defaultColorHovered1: currTheme.buttonColorHoverPosition1
+    property color defaultColorUnselectedNormal: "#373A42"
+    property color defaultColorUnselectedHovered: "#272A32"
+    property color defaultColorDisabled: "#B3B1BC"
 
-    property string shadowColor : "#1F242F"
+    property color defaultColor: shadowColor
+
+    property color shadowColor : "#1F242F"
 //    property string shadowColor : currTheme.buttonShadow
-    property string innerShadowColor : currTheme.buttonInnerShadow
-    property string innerShadowPressColor : "#1F242F"
+    property color innerShadowColor : currTheme.buttonInnerShadow
+    property color innerShadowPressColor : "#1F242F"
+
+    property double opacityDropShadow: 1.0
+    property double opacityInnerShadow: 1.0
+
+    property alias dropShadow: shadow
+    property alias innerShadow: light
 
     property bool activeFrame : true
 
@@ -123,7 +131,7 @@ Button
 
             color: !dapButton.activeFrame ?
                        "transparent" :
-                       shadowColor
+                       defaultColor
 
             implicitWidth: widthButton
             implicitHeight: heightButton
@@ -231,6 +239,7 @@ Button
         samples: 10
         cached: true
         color: shadowColor
+        opacity: opacityDropShadow
         source: dapBackgroundButton
         }
 
@@ -244,6 +253,7 @@ Button
         samples: 10
         cached: true
         color: innerShadowColor
+        opacity: opacityInnerShadow
         source: dapBackgroundButton
         visible: dapBackgroundButton.visible
 
