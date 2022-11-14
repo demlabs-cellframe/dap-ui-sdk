@@ -96,7 +96,7 @@ Item {
 
     DapQmlDialogTitle {
         id: title
-        text: qsTr("Language") + lang.notifier
+        text: qsTr("Color theme") + lang.notifier
         qss: "dialog-title"
     }
 
