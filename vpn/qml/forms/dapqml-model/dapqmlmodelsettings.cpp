@@ -250,6 +250,7 @@ void DapQmlModelSettings::_updateMenuContent (const QSet<QString> &a_filterKeywo
     conditionalValue ("use_login", "logout"),
     "language",
     conditionalValue ("use_manage_servers", "manage_servers"),
+    conditionalValue ("use_manage_servers", "manage_cdb"),
     conditionalValue ("use_manage_servers", "certificate"),
 
     /* themes */
