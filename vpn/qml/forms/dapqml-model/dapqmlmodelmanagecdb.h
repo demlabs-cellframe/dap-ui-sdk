@@ -60,6 +60,10 @@ public:
   Q_INVOKABLE int notifyInt() { return 0; }
   Q_INVOKABLE QString notifyString() { return QString(); }
   Q_INVOKABLE void regRow (QObject *a_row);
+  Q_INVOKABLE void regWindow (QObject *a_window);
+
+  Q_INVOKABLE void updateRows();
+  Q_INVOKABLE int checkDrop (const QPoint &a_point);
   /// @}
 
   /****************************************//**

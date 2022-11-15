@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <QRegExpValidator>
+#include <QRect>
 
 /* VARS */
 static QSharedPointer<AbstractCdbManager> s_manager;
@@ -25,10 +26,12 @@ class DapQmlModelManageCdbRowsCtl
   QMap<QObject *, Row> rows;
   DapQmlModelManageCdb *model;
   QTimer *pingUpdateTimer;
+  QObject *window;
 public:
   DapQmlModelManageCdbRowsCtl (DapQmlModelManageCdb *a_model)
     : model (a_model)
     , pingUpdateTimer (new QTimer)
+    , window (nullptr)
   {
     pingUpdateTimer->setSingleShot (true);
     pingUpdateTimer->setInterval (500);
@@ -77,9 +80,54 @@ public:
     rows.remove (a_row);
   }
 
+  void appendWindow (QObject *a_window)
+  {
+    window  = a_window;
+
+    QObject::connect (a_window, &QObject::destroyed,
+                      a_window, [a_window, this]()
+      {
+        remove (a_window);
+      });
+  }
+
   void restartTimeout()
   {
     pingUpdateTimer->start();
+  }
+
+  void updateRows()
+  {
+    QMetaObject::invokeMethod (window, "_fillGlobal");
+    for (auto &row : rows)
+      QMetaObject::invokeMethod (row.object, "updatePositions");
+  }
+
+  int checkDrop (const QPoint &a_point)
+  {
+    if (window == nullptr)
+      return -1;
+
+//    int windowX = window->property ("globalX").toInt();
+//    int windowY = window->property ("globalY").toInt();
+
+    for (auto &row : rows)
+      {
+        auto *object  = row.object;
+        int index     = object->property ("myIndex").toInt();
+
+        QRect rect {
+          object->property ("globalX").toInt(),
+          object->property ("globalY").toInt(),
+          object->property ("width").toInt(),
+          object->property ("height").toInt(),
+        };
+
+        if (rect.contains (a_point))
+          return index;
+      }
+
+    return -1;
   }
 };
 
@@ -289,6 +337,21 @@ void DapQmlModelManageCdb::setMoveFilter (int a_from, int a_to)
 void DapQmlModelManageCdb::regRow(QObject *a_row)
 {
   d->append (a_row);
+}
+
+void DapQmlModelManageCdb::regWindow(QObject *a_window)
+{
+  d->appendWindow (a_window);
+}
+
+void DapQmlModelManageCdb::updateRows()
+{
+  d->updateRows();
+}
+
+int DapQmlModelManageCdb::checkDrop (const QPoint &a_point)
+{
+  return d->checkDrop (a_point);
 }
 
 /********************************************
