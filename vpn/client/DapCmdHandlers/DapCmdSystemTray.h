@@ -1,24 +1,55 @@
 #ifndef DAPCMDSYSTEMTRAYHANDLER_H
 #define DAPCMDSYSTEMTRAYHANDLER_H
 
+/* INCLUDES */
+#include "DapCmdServiceAbstract.h"
+
 #include <QObject>
 #include <QJsonObject>
-#include "DapCmdServiceAbstract.h"
+
+/****************************************//**
+ * @brief
+ * @date
+ * @author
+ *******************************************/
 
 class DapCmdSystemTray : public DapCmdServiceAbstract
 {
-    Q_OBJECT
-private:
-    static const QString actionParam;
-public:
-    explicit DapCmdSystemTray(QObject *parent = nullptr);
-    virtual ~DapCmdSystemTray() override;
+  Q_OBJECT
 
-    void handle(const QJsonObject* params) override;
+  /****************************************//**
+   * @name CONSTRUCT/DESTRUCT
+   *******************************************/
+  /// @{
+public:
+  explicit DapCmdSystemTray (QObject *parent = nullptr);
+  virtual ~DapCmdSystemTray() override;
+  /// @}
+
+  /****************************************//**
+   * @name OVERRIDE
+   *******************************************/
+  /// @{
+public:
+  void handle (const QJsonObject* params) override;
+  /// @}
+
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
 public slots:
-    void sendInterfaceRequest(QString interfaceName);
+//  void sendInterfaceRequest (QString interfaceName);
+  /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
 signals:
-    void interfaceRequest(QString interfaceName);
+//  void interfaceRequest (QString interfaceName);
+  /// @}
 };
 
+/*-----------------------------------------*/
 #endif // DAPCMDSYSTEMTRAYHANDLER_H
