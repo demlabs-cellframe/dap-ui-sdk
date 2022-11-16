@@ -139,6 +139,7 @@ Item {
 
     property int globalX
     property int globalY
+    property int dropIndex
 
     Timer {
         interval: 250
@@ -152,51 +153,54 @@ Item {
 
     DragAndDropCtl {
         id: dragAndDrop
+        objectName: "dragAndDrop"
 
-        property var begin
-        property var current
-        property bool isInitial: false
-        property int dragIndex: -1
-        property int dropIndex: -1
+//        property var begin
+//        property var current
+//        property bool isInitial: false
+//        property int dragIndex: -1
+//        property int dropIndex: -1
 
-        onSigBegin: {
-            isInitial   = true;
-            begin       = a_begin;
-            //console.log (`DragAndDropCtl::onSigBegin`);
-        }
+//        onSigBegin: {
+//            isInitial   = true;
+//            begin       = a_begin;
+//            //console.log (`DragAndDropCtl::onSigBegin`);
+//        }
 
-        onSigUpdate: {
-            isInitial   = false;
-            begin       = a_begin;
-            current     = a_current;
-            //console.log (`DragAndDropCtl::onSigUpdate`);
+//        onSigUpdate: {
+//            isInitial   = false;
+//            begin       = a_begin;
+//            current     = a_current;
+//            //console.log (`DragAndDropCtl::onSigUpdate`);
 
-            let newDropIndex   = mancdbListView.model.checkDrop (current);
-            if (newDropIndex !== -1 && newDropIndex !== dropIndex)
-            {
-                dropIndex   = newDropIndex;
-                mancdbListView.model.setMoveFilter (dragIndex, dropIndex);
-                //console.log (`DragAndDropCtl::onSigUpdate newDropIndex ${newDropIndex}`);
-            }
-        }
+//            let newDropIndex   = mancdbListView.model.checkDrop (current);
+//            if (newDropIndex !== -1 && newDropIndex !== dropIndex)
+//            {
+//                dropIndex   = newDropIndex;
+//                mancdbListView.model.setMoveFilter (dragIndex, dropIndex);
+//                //console.log (`DragAndDropCtl::onSigUpdate newDropIndex ${newDropIndex}`);
+//            }
+//        }
 
-        onSigEnd: {
-            isInitial   = false;
-            begin       = a_begin;
-            current     = a_end;
-            //console.log (`DragAndDropCtl::onSigEnd`);
+//        onSigEnd: {
+//            isInitial   = false;
+//            begin       = a_begin;
+//            current     = a_end;
+//            //console.log (`DragAndDropCtl::onSigEnd`);
 
-            /* if drag is active */
-            if ((dragAndDrop.dragIndex !== -1) && (dragAndDrop.dropIndex !== -1))
-            {
-                //console.log (`drop ${dragAndDrop.dragIndex} to ${dragAndDrop.dropIndex}`);
-                mancdbListView.model.move (dragAndDrop.dragIndex, dragAndDrop.dropIndex);
-                //mancdbListView.model.refreshContent();
-            }
+//            /* if drag is active */
+//            if ((dragAndDrop.dragIndex !== -1) && (dragAndDrop.dropIndex !== -1))
+//            {
+//                dragAndDrop.dragIndex = -1;
+//                dragAndDrop.dropIndex = -1;
+//                //console.log (`drop ${dragAndDrop.dragIndex} to ${dragAndDrop.dropIndex}`);
+//                mancdbListView.model.move (dragAndDrop.dragIndex, dragAndDrop.dropIndex);
+//                //mancdbListView.model.refreshContent();
+//            }
 
-            /* reactivate interacting */
-            mancdbListView.interactive  = true;
-        }
+//            /* reactivate interacting */
+//            //mancdbListView.interactive  = true;
+//        }
     }
 
 
@@ -208,6 +212,10 @@ Item {
 
     /// @brief remove server menu clicked
     signal sigRemove(int a_index);
+
+    signal sigDragButtonPressed (int a_index, int a_quality, string a_label);
+    signal sigDragButtonEntered();
+    signal sigDragButtonExited();
 
     /// @}
     /****************************************//**
@@ -427,7 +435,7 @@ Item {
         ListView {
             id: mancdbListView
             objectName: "mancdbListView"
-            interactive: true
+            //interactive: true
 
             property int dragItemIndex: -1
             property int dropItemIndex: -1
@@ -470,11 +478,12 @@ Item {
 
             Rectangle {
                 id: graggedItem
-                y: (dragAndDrop.dragActive)
-                   ? (dragAndDrop.calcDragPos (mancdbListView.x, mancdbListView.y).y)
-                   : 0
+                objectName: "draggedItem"
+//                y: (dragAndDrop.dragActive)
+//                   ? (dragAndDrop.calcDragPos (mancdbListView.x, mancdbListView.y).y)
+//                   : 0
                 z: 20
-                visible: dragAndDrop.dragActive
+//                visible: dragAndDrop.dragActive
 
                 width: mancdbListView.width
                 height: resizerItem.height
@@ -488,6 +497,19 @@ Item {
                     graggedItemLabel.text   = a_text;
                 }
 
+                function setIndex(a_index) {
+                    graggedItemIndexLabel.text  = a_index + 1;
+                }
+
+                function setQuality(a_quality) {
+                    graggedItemConnQualityIndicator.quality =
+                        ((a_quality === -1) ? (0) : (5 - a_quality));
+                }
+
+                function calc() {
+                    return height / 2;
+                }
+
                 /* icon */
                 DapQmlLabel {
                     y: (parent.height - height) / 2
@@ -499,12 +521,46 @@ Item {
 
                 /* index */
                 DapQmlLabel {
+                    id: graggedItemIndexLabel
                     y: (parent.height - height) / 2
                     z: 22
                     width: resizerItem.fontSize * 0.725
                     height: resizerItem.fontSize * 0.725
                     qss: "mancdb-btn-lbl-main c-background"
                     text: dragAndDrop.dropIndex + 1
+                }
+
+                /* connection quality */
+                DapQmlLabel {
+                    id: graggedItemConnQualityIndicator
+                    property int quality
+                    x: parent.width - (width * 1.35) - graggedItemMoreBtn.width
+                    y: (parent.height - height) / 2
+                    width: resizer.height * 0.5
+                    height: resizer.height * 0.5
+                    qss: `ic_conn-${quality}`
+                }
+
+                Button {
+                    id: graggedItemMoreBtn
+                    icon {
+                        source: "qrc:/nonthemed/drag-drop-icon.png"
+                        color: "transparent"
+                        width: graggedItemMoreBtn.width * 0.8
+                        height: graggedItemMoreBtn.height * 0.8
+                    }
+                    background: Rectangle {
+                        color: "transparent"
+//                        border.color: "black"
+//                        border.width: 1
+//                        radius: 6
+                    }
+
+                    x: parent.width - width
+                    y: (parent.height - height) / 2 - height / 8
+                    z: 16
+                    width: resizerItem.fontSize * 1.25
+                    height: resizerItem.fontSize * 1.25
                 }
 
                 /* label */
@@ -520,6 +576,7 @@ Item {
                 }
             }
 
+
             /****************************************//**
              * Delegate
              ********************************************/
@@ -528,7 +585,7 @@ Item {
                 id: delegateItem
                 width: mancdbListView.width
                 height: resizerItem.height
-                opacity: (dragAndDrop.dragActive && dragAndDrop.dropIndex === myIndex) ? 0 : 1
+                opacity: (graggedItem.visible && root.dropIndex === myIndex) ? 0 : 1
 
                 property int myIndex: model.index
 
@@ -638,9 +695,9 @@ Item {
                         }
                         background: Rectangle {
                             color: "transparent"
-                                border.color: "black"
-                                border.width: 1
-                                radius: 6
+//                            border.color: "black"
+//                            border.width: 1
+//                            radius: 6
                         }
 
                         property int myIndex
@@ -657,23 +714,27 @@ Item {
                             id: mouseArea
                             anchors.fill: parent
                             //drag.target: moreBtn
+                            hoverEnabled: true
+                            onEntered: root.sigDragButtonEntered()
+                            onExited: root.sigDragButtonExited()
                             onPressed: {
-                                /* check if this item clicked */
-                                if (dragAndDrop.isInitial)
-                                {
-                                    /* store index */
-                                    dragAndDrop.dragIndex       = parent.myIndex;
+                                root.sigDragButtonPressed (parent.myIndex, delegate.quality, delegate.mainText);
+//                                /* check if this item clicked */
+//                                if (dragAndDrop.isInitial)
+//                                {
+//                                    /* store index */
+//                                    dragAndDrop.dragIndex       = parent.myIndex;
 
-                                    /* update global positions */
-                                    mancdbListView.model.updateRows();
+//                                    /* update global positions */
+//                                    mancdbListView.model.updateRows();
 
-                                    /* setup dragged item content */
-                                    graggedItem.setMainText (delegate.mainText);
+//                                    /* setup dragged item content */
+//                                    graggedItem.setMainText (delegate.mainText);
 
-                                    /* deactivate interacting */
-                                    mancdbListView.interactive  = false;
-                                    //console.log (`register drag for index ${parent.myIndex}`);
-                                }
+//                                    /* deactivate interacting */
+//                                    //mancdbListView.interactive  = false;
+//                                    //console.log (`register drag for index ${parent.myIndex}`);
+//                                }
                             }
 
 //                            drag.onActiveChanged: {
