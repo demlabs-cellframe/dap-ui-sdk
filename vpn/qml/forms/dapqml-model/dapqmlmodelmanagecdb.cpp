@@ -56,6 +56,7 @@ public:
         auto index  = a_row->property ("myIndex").toInt();
         auto label  = model->value (index, "name");
         a_row->setProperty ("mainText", label);
+        QMetaObject::invokeMethod (a_row, "updateValues");
 
         //qDebug() << QString ("changed row:%1:%2").arg (index).arg (label.toString());
       });
@@ -84,10 +85,10 @@ public:
   {
     window  = a_window;
 
-    QObject::connect (a_window, &QObject::destroyed,
-                      a_window, [a_window, this]()
+    QObject::connect (window, &QObject::destroyed,
+                      window, [this]()
       {
-        remove (a_window);
+        window  = nullptr;
       });
   }
 
@@ -245,8 +246,10 @@ bool DapQmlModelManageCdb::add (const QVariant &a_data)
     return false;
 
   /* store result and update */
+  beginInsertRows (QModelIndex(), s_manager->size(), s_manager->size());
   s_manager->append (std::move (newServer));
   s_manager->update();
+  endInsertRows();
   QMetaObject::invokeMethod (this, "slotSetup", Qt::QueuedConnection);
 
   return true;
@@ -288,18 +291,24 @@ void DapQmlModelManageCdb::remove (int a_index)
     return;
 
   /* perform removing */
+  beginRemoveRows (QModelIndex(), a_index, a_index);
   s_manager->removeAt (a_index);
   s_manager->update();
+  endRemoveRows();
 }
 
-void DapQmlModelManageCdb::move(int a_firstIndex, int a_secondIndex)
+void DapQmlModelManageCdb::move (int a_firstIndex, int a_secondIndex)
 {
   /* check if manager installed */
-  if (s_manager.isNull())
+  if (s_manager.isNull() || a_firstIndex == a_secondIndex)
     return;
 
   /* perform moving */
+//  auto moveIndex  = index (a_firstIndex, 0);
+//  beginMoveRows (QModelIndex(), a_firstIndex, a_firstIndex, QModelIndex(), a_secondIndex);
   s_manager->move (a_firstIndex, a_secondIndex);
+//  endMoveRows();
+  emit sigMoveFilterChanged();
 }
 
 void DapQmlModelManageCdb::refreshContent()
@@ -331,7 +340,11 @@ void DapQmlModelManageCdb::setMoveFilter (int a_from, int a_to)
 {
   if (s_manager.isNull())
     return;
+
+  //auto moveIndex  = createIndex (a_from, 0);
+  //beginMoveRows (moveIndex, a_from, a_from, moveIndex, a_to);
   emit sigSetMoveFilter (a_from, a_to);
+  //endMoveRows();
 }
 
 void DapQmlModelManageCdb::regRow(QObject *a_row)
@@ -460,7 +473,8 @@ void DapQmlModelManageCdb::_slotReceivedPing (const QString &a_address, quint16 
 
 void DapQmlModelManageCdb::_slotUpdatePingsTimeout()
 {
-  refreshContent();
+  // refreshContent();
+  emit sigMoveFilterChanged();
 }
 
 /*-----------------------------------------*/

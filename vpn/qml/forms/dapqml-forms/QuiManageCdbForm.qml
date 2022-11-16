@@ -176,7 +176,7 @@ Item {
             {
                 dropIndex   = newDropIndex;
                 mancdbListView.model.setMoveFilter (dragIndex, dropIndex);
-                console.log (`DragAndDropCtl::onSigUpdate newDropIndex ${newDropIndex}`);
+                //console.log (`DragAndDropCtl::onSigUpdate newDropIndex ${newDropIndex}`);
             }
         }
 
@@ -189,9 +189,9 @@ Item {
             /* if drag is active */
             if ((dragAndDrop.dragIndex !== -1) && (dragAndDrop.dropIndex !== -1))
             {
-                console.log (`drop ${dragAndDrop.dragIndex} to ${dragAndDrop.dropIndex}`);
+                //console.log (`drop ${dragAndDrop.dragIndex} to ${dragAndDrop.dropIndex}`);
                 mancdbListView.model.move (dragAndDrop.dragIndex, dragAndDrop.dropIndex);
-                mancdbListView.model.refreshContent();
+                //mancdbListView.model.refreshContent();
             }
 
             /* reactivate interacting */
@@ -468,61 +468,57 @@ Item {
              * Centered dragged item
              ********************************************/
 
-//            Rectangle {
-//                id: graggedItem
-//                y: (dragAndDrop.dragActive)
-//                   ? (dragAndDrop.calcDragPos (mancdbListView.x, mancdbListView.y).y())
-//                   : 0
-//                z: 20
-//                visible: dragAndDrop.dragActive
+            Rectangle {
+                id: graggedItem
+                y: (dragAndDrop.dragActive)
+                   ? (dragAndDrop.calcDragPos (mancdbListView.x, mancdbListView.y).y)
+                   : 0
+                z: 20
+                visible: dragAndDrop.dragActive
 
-//                width: mancdbListView.width
-//                height: resizerItem.height
+                width: mancdbListView.width
+                height: resizerItem.height
 
-//                color: resizerItem.color
-//                border.color: resizer.color
-//                border.width: 1
-//                radius: 6
+                color: resizerItem.color
+                border.color: resizer.color
+                border.width: 1
+                radius: 6
 
-//                function setMainText(a_text) {
-//                    graggedItemLabel.text   = a_text;
-//                }
+                function setMainText(a_text) {
+                    graggedItemLabel.text   = a_text;
+                }
 
-//                /* icon */
-//                DapQmlLabel {
-//                    y: (parent.height - height) / 2
-//                    z: 21
-//                    width: resizerItem.fontSize * 0.725
-//                    height: resizerItem.fontSize * 0.725
-//                    qss: "ic_cdb-index-icon"
-//                }
+                /* icon */
+                DapQmlLabel {
+                    y: (parent.height - height) / 2
+                    z: 21
+                    width: resizerItem.fontSize * 0.725
+                    height: resizerItem.fontSize * 0.725
+                    qss: "ic_cdb-index-icon"
+                }
 
-//                /* index */
-//                DapQmlLabel {
-//                    y: (parent.height - height) / 2
-//                    z: 22
-//                    width: resizerItem.fontSize * 0.725
-//                    height: resizerItem.fontSize * 0.725
-//                    qss: "mancdb-btn-lbl-main c-background"
-//                    text: mancdbListView.dropItemIndex + 1
-//                }
+                /* index */
+                DapQmlLabel {
+                    y: (parent.height - height) / 2
+                    z: 22
+                    width: resizerItem.fontSize * 0.725
+                    height: resizerItem.fontSize * 0.725
+                    qss: "mancdb-btn-lbl-main c-background"
+                    text: dragAndDrop.dropIndex + 1
+                }
 
-//                /* label */
-//                DapQmlLabel {
-//                    id: graggedItemLabel
-//                    x: resizerItem.fontSize * 0.9
-//                    z: 23
-//                    width: parent.width - x
-//                    height: parent.height
-//                    text: ""
-//                    horizontalAlign: Text.AlignLeft
-//                    qss: "mancdb-btn-lbl-main"
-//                }
-//            }
-
-//            Rectangle {
-//                id: dummyRectangle
-//            }
+                /* label */
+                DapQmlLabel {
+                    id: graggedItemLabel
+                    x: resizerItem.fontSize * 0.9
+                    z: 23
+                    width: parent.width - x
+                    height: parent.height
+                    text: ""
+                    horizontalAlign: Text.AlignLeft
+                    qss: "mancdb-btn-lbl-main"
+                }
+            }
 
             /****************************************//**
              * Delegate
@@ -532,25 +528,9 @@ Item {
                 id: delegateItem
                 width: mancdbListView.width
                 height: resizerItem.height
+                opacity: (dragAndDrop.dragActive && dragAndDrop.dropIndex === myIndex) ? 0 : 1
 
                 property int myIndex: model.index
-
-                DropArea {
-                    anchors.fill: parent
-                    onEntered: {
-                        console.log(`dragged over ${parent.myIndex}`);
-
-                        /* if drag is active */
-                        if ((dragAndDrop.dragActive) && (dragAndDrop.dragIndex !== -1))
-                        {
-                            dragAndDrop.dropIndex   = parent.myIndex;
-                            console.log (`entered item ${parent.myIndex}`);
-                            let dragIndex           = dragAndDrop.dragIndex;
-                            let dropIndex           = dragAndDrop.dropIndex;
-                            mancdbListView.model.setMoveFilter (dragIndex, dropIndex);
-                        }
-                    }
-                }
 
                 DapQmlButton {
                     id: delegate
@@ -563,6 +543,11 @@ Item {
 
                     Component.onCompleted: mancdbListView.model.regRow (this);
 
+                    function updateValues() {
+                        ping        = model.ping;
+                        calcConnectionQuality();
+                    }
+
                     function calcConnectionQuality() {
                         let a = (ping === -1) ? -1 : ping / 400;
                         //let b = a;
@@ -573,6 +558,7 @@ Item {
                         quality = a;
 
                         //console.log (`cdb item:${model.name}~${quality}|${a}|${ping}`);
+                        return quality;
                     }
 
                     function updatePositions() {
@@ -610,12 +596,17 @@ Item {
 
                     /* connection quality */
                     DapQmlLabel {
-                        property int quality: (parent.quality === -1) ? (0) : (5 - parent.quality)
+                        id: connQualityIndicator
+                        property int quality: ((parent.quality === -1) ? (0) : (5 - parent.quality)) + mancdbListView.model.notifyInt
                         x: parent.width - (width * 1.35) - moreBtn.width
                         y: (parent.height - height) / 2
                         width: resizer.height * 0.5
                         height: resizer.height * 0.5
                         qss: `ic_conn-${quality}`
+
+//                        function updateValues() {
+//                            quality = ((parent.quality === -1) ? (0) : (5 - parent.quality));
+//                        }
 
                         ToolTip {
                             id: id_tooltip
@@ -676,9 +667,12 @@ Item {
                                     /* update global positions */
                                     mancdbListView.model.updateRows();
 
+                                    /* setup dragged item content */
+                                    graggedItem.setMainText (delegate.mainText);
+
                                     /* deactivate interacting */
                                     mancdbListView.interactive  = false;
-                                    console.log (`register drag for index ${parent.myIndex}`);
+                                    //console.log (`register drag for index ${parent.myIndex}`);
                                 }
                             }
 
