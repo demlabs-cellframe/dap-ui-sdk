@@ -154,53 +154,6 @@ Item {
     DragAndDropCtl {
         id: dragAndDrop
         objectName: "dragAndDrop"
-
-//        property var begin
-//        property var current
-//        property bool isInitial: false
-//        property int dragIndex: -1
-//        property int dropIndex: -1
-
-//        onSigBegin: {
-//            isInitial   = true;
-//            begin       = a_begin;
-//            //console.log (`DragAndDropCtl::onSigBegin`);
-//        }
-
-//        onSigUpdate: {
-//            isInitial   = false;
-//            begin       = a_begin;
-//            current     = a_current;
-//            //console.log (`DragAndDropCtl::onSigUpdate`);
-
-//            let newDropIndex   = mancdbListView.model.checkDrop (current);
-//            if (newDropIndex !== -1 && newDropIndex !== dropIndex)
-//            {
-//                dropIndex   = newDropIndex;
-//                mancdbListView.model.setMoveFilter (dragIndex, dropIndex);
-//                //console.log (`DragAndDropCtl::onSigUpdate newDropIndex ${newDropIndex}`);
-//            }
-//        }
-
-//        onSigEnd: {
-//            isInitial   = false;
-//            begin       = a_begin;
-//            current     = a_end;
-//            //console.log (`DragAndDropCtl::onSigEnd`);
-
-//            /* if drag is active */
-//            if ((dragAndDrop.dragIndex !== -1) && (dragAndDrop.dropIndex !== -1))
-//            {
-//                dragAndDrop.dragIndex = -1;
-//                dragAndDrop.dropIndex = -1;
-//                //console.log (`drop ${dragAndDrop.dragIndex} to ${dragAndDrop.dropIndex}`);
-//                mancdbListView.model.move (dragAndDrop.dragIndex, dragAndDrop.dropIndex);
-//                //mancdbListView.model.refreshContent();
-//            }
-
-//            /* reactivate interacting */
-//            //mancdbListView.interactive  = true;
-//        }
     }
 
 
@@ -479,11 +432,7 @@ Item {
             Rectangle {
                 id: graggedItem
                 objectName: "draggedItem"
-//                y: (dragAndDrop.dragActive)
-//                   ? (dragAndDrop.calcDragPos (mancdbListView.x, mancdbListView.y).y)
-//                   : 0
                 z: 20
-//                visible: dragAndDrop.dragActive
 
                 width: mancdbListView.width
                 height: resizerItem.height
@@ -661,10 +610,6 @@ Item {
                         height: resizer.height * 0.5
                         qss: `ic_conn-${quality}`
 
-//                        function updateValues() {
-//                            quality = ((parent.quality === -1) ? (0) : (5 - parent.quality));
-//                        }
-
                         ToolTip {
                             id: id_tooltip
                             contentItem: Text{
@@ -713,70 +658,16 @@ Item {
                         MouseArea {
                             id: mouseArea
                             anchors.fill: parent
-                            //drag.target: moreBtn
                             hoverEnabled: true
                             onEntered: root.sigDragButtonEntered()
                             onExited: root.sigDragButtonExited()
-                            onPressed: {
-                                root.sigDragButtonPressed (parent.myIndex, delegate.quality, delegate.mainText);
-//                                /* check if this item clicked */
-//                                if (dragAndDrop.isInitial)
-//                                {
-//                                    /* store index */
-//                                    dragAndDrop.dragIndex       = parent.myIndex;
-
-//                                    /* update global positions */
-//                                    mancdbListView.model.updateRows();
-
-//                                    /* setup dragged item content */
-//                                    graggedItem.setMainText (delegate.mainText);
-
-//                                    /* deactivate interacting */
-//                                    //mancdbListView.interactive  = false;
-//                                    //console.log (`register drag for index ${parent.myIndex}`);
-//                                }
-                            }
-
-//                            drag.onActiveChanged: {
-//                                if (mouseArea.drag.active) {
-//                                    console.log (`activated drag`);
-//                                    /* store info */
-//                                    mancdbListView.dragItemIndex    = index;
-//                                    mancdbListView.draggedRectangle = dragRect;
-//                                    graggedItem.setMainText (delegate.mainText);
-
-//                                    /* fill placeholder */
-//                                    placeholder.myIndex     = delegate.myIndex;
-//                                    placeholder.ping        = delegate.ping;
-//                                    placeholder.quality     = delegate.quality;
-//                                    placeholder.mainText    = delegate.mainText;
-
-//                                    /* register placeholder */
-//                                    mancdbListView.model.regRow (placeholder)
-
-//                                    /* move placeholder */
-//                                    placeholder.parent  = delegateItem;
-
-//                                    mancdbListView.dragIsActive = true;
-//                                } else {
-//                                    console.log (`deactivated drag`);
-//                                    //mancdbListView.draggedRectangle = dummyRectangle;
-
-//                                    /* perform droping */
-//                                    mancdbListView.dropItem();
-
-//                                    /* move placeholder */
-//                                    //placeholder.parent  = mancdbListView; // moved into mancdbListView.dropItem()
-//                                }
-//                            }
+                            onPressed: root.sigDragButtonPressed (parent.myIndex, delegate.quality, delegate.mainText);
                         }
                     }
 
                     MouseArea {
                         anchors.fill: parent
-                        //hoverEnabled: true
                         onClicked: root.setMode (QuiManageCdbForm.Mode.M_EDIT, parent.myIndex)
-                        //onEntered: console.log (`entered to ${parent.myIndex}`);
                     }
                 }
             }
