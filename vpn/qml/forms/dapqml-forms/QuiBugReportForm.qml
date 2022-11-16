@@ -664,7 +664,7 @@ Item {
             qss: "bugrep-send-btn push-button"
             text: qsTr("SEND REPORT") + lang.notifier
             onClicked: { root.mode = 1; root.sigSend(); }
-            enabled: bugRepInputField.length >= 3
+            enabled: bugRepInputField.length >= 1
             opacity: 0.4 + 0.6 * enabled
         }
     }
