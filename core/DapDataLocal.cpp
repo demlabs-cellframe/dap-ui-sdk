@@ -10,6 +10,7 @@
 
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
+#include "DapSerialKeyHistory.h"
 #include "DapLogger.h"
 
 #ifdef DAP_OS_ANDROID
@@ -20,9 +21,10 @@
 #endif
 
 DapDataLocal::DapDataLocal()
-    : QObject()
-    , m_serialKeyData(new DapSerialKeyData(this))
-    , m_buReportHistory(new DapBugReportHistory(this))
+  : QObject()
+  , m_serialKeyData(new DapSerialKeyData (this))
+  , m_bugReportHistory(new DapBugReportHistory (this))
+  , m_serialKeyHistory (new DapSerialKeyHistory (this))
 {
     qDebug() << "[DL] DapDataLocal Constructor";
     parseXML(":/data.xml");
@@ -166,47 +168,47 @@ void DapDataLocal::savePendingSerialKey(QString a_serialkey)
     this->saveToSettings(TEXT_PENDING_SERIAL_KEY, m_pendingSerialKey);
 }
 
-void DapDataLocal::saveHistoryData(QString a_type, QString a_data)
-{
-    if (a_data.isEmpty())
-        return;
-    QList<QString> m_tempHistoryDataList;
-    this->loadFromSettings(a_type, m_tempHistoryDataList);
-    if (!m_tempHistoryDataList.contains(a_data))
-        m_tempHistoryDataList.prepend(a_data);
-    this->saveToSettings(a_type, m_tempHistoryDataList);
+//void DapDataLocal::saveHistoryData(QString a_type, QString a_data)
+//{
+//    if (a_data.isEmpty())
+//        return;
+//    QList<QString> m_tempHistoryDataList;
+//    this->loadFromSettings(a_type, m_tempHistoryDataList);
+//    if (!m_tempHistoryDataList.contains(a_data))
+//        m_tempHistoryDataList.prepend(a_data);
+//    this->saveToSettings(a_type, m_tempHistoryDataList);
 
-    emit sigHistoryDataSaved(a_type);
-}
+//    emit sigHistoryDataSaved(a_type);
+//}
 
-void DapDataLocal::removeItemFromHistory(QString a_type, QString a_item){
+//void DapDataLocal::removeItemFromHistory(QString a_type, QString a_item){
 
-  if (a_item.isEmpty())
-    return;
-  QList<QString> m_tempHistoryDataList;
-  this->loadFromSettings(a_type, m_tempHistoryDataList);
+//  if (a_item.isEmpty())
+//    return;
+//  QList<QString> m_tempHistoryDataList;
+//  this->loadFromSettings(a_type, m_tempHistoryDataList);
 
-  a_item.remove(QRegExp("[^0-9]"));
-  QMutableListIterator<QString> it (m_tempHistoryDataList);
-  while(it.hasNext()) {
-    QString item = it.next();
-    if (item == a_item){
-      qDebug() << "remove " + item + " from " + a_type;
-      it.remove();
-    }
-  }
+//  a_item.remove(QRegExp("[^0-9]"));
+//  QMutableListIterator<QString> it (m_tempHistoryDataList);
+//  while(it.hasNext()) {
+//    QString item = it.next();
+//    if (item == a_item){
+//      qDebug() << "remove " + item + " from " + a_type;
+//      it.remove();
+//    }
+//  }
 
-  this->saveToSettings(a_type, m_tempHistoryDataList);
+//  this->saveToSettings(a_type, m_tempHistoryDataList);
 
-  emit sigHistoryDataSaved(a_type);
-}
+//  emit sigHistoryDataSaved(a_type);
+//}
 
-QList<QString> DapDataLocal::getHistorySerialKeyData()
-{
-    QList<QString> m_tempHistoryDataList;
-    this->loadFromSettings(TEXT_SERIAL_KEY_HISTORY, m_tempHistoryDataList);
-    return m_tempHistoryDataList;
-}
+//QList<QString> DapDataLocal::getHistorySerialKeyData()
+//{
+//    QList<QString> m_tempHistoryDataList;
+//    this->loadFromSettings(TEXT_SERIAL_KEY_HISTORY, m_tempHistoryDataList);
+//    return m_tempHistoryDataList;
+//}
 
 void DapDataLocal::loadAuthorizationDatas()
 {
@@ -331,7 +333,12 @@ DapSerialKeyData *DapDataLocal::serialKeyData()
 
 DapBugReportHistory * DapDataLocal::bugReportHistory()
 {
-    return m_buReportHistory;
+  return m_bugReportHistory;
+}
+
+DapSerialKeyHistory *DapDataLocal::serialKeyHistory()
+{
+  return m_serialKeyHistory;
 }
 
 void DapDataLocal::initSecretKey()

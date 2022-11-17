@@ -43,7 +43,7 @@ int DapQmlModelBugReports::rowCount(const QModelIndex &parent) const
   if (parent.isValid())
     return 0;
 
-  return DapDataLocal::instance()->bugReportHistory()->getBugReportsList()->size();
+  return DapDataLocal::instance()->bugReportHistory()->size();
 }
 
 int DapQmlModelBugReports::columnCount(const QModelIndex &parent) const
@@ -61,18 +61,19 @@ QVariant DapQmlModelBugReports::data(const QModelIndex &index, int role) const
     return QVariant();
 
   /* check boundaries */
-  auto list   = DapDataLocal::instance()->bugReportHistory()->getBugReportsList();
-  if (index.row() >= list->size())
+  const auto &list  = DapDataLocal::instance()->bugReportHistory()->list();
+  int size          = list.size();
+  if (index.row() >= size)
     return QVariant();
 
   /* variables */
   auto column = Column (role);
-  auto item   = list->at (index.row());
+  const auto &item   = list[size - index.row() - 1];
 
   /* return value by type */
   switch (column)
     {
-    case C_NUMBER:  return "Report #" + item.number;
+    case C_NUMBER:  return "Report #" + item.asString();
     case C_STATUS:  return item.status;
     }
 
@@ -81,12 +82,26 @@ QVariant DapQmlModelBugReports::data(const QModelIndex &index, int role) const
 
 QHash<int, QByteArray> DapQmlModelBugReports::roleNames() const
 {
-  QHash<int, QByteArray> names;
+  static QHash<int, QByteArray> names;
 
-  names.insert (0, "name");
-  names.insert (1, "state");
+  if (names.isEmpty())
+    {
+      names.insert (0, "name");
+      names.insert (1, "state");
+    }
 
   return names;
+}
+
+QVariant DapQmlModelBugReports::value (int a_index, const QString &a_name) const
+{
+  auto roles  = roleNames();
+  int id      = roles.key (a_name.toUtf8());
+
+  if (id == -1)
+    return QVariant();
+
+  return data (index (a_index, 0), id);
 }
 
 /********************************************
@@ -96,7 +111,7 @@ QHash<int, QByteArray> DapQmlModelBugReports::roleNames() const
 void DapQmlModelBugReports::slotSetup()
 {
   beginResetModel();
-  DapDataLocal::instance()->bugReportHistory()->loadHistoryBugReportData();
+  DapDataLocal::instance()->bugReportHistory()->load();
   endResetModel();
 }
 

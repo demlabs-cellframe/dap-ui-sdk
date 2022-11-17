@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "dapqmlmodelserialhistory.h"
 #include "DapDataLocal.h"
+#include "DapSerialKeyHistory.h"
 
 /* VARS */
 static DapQmlModelSerialHistory *__inst = nullptr;
@@ -71,12 +72,12 @@ QVariant DapQmlModelSerialHistory::data(const QModelIndex &index, int role) cons
     return QVariant();
 
   /* check boundaries */
-  auto list   = DapDataLocal::instance()->getHistorySerialKeyData();
+  auto &list   = *DapDataLocal::instance()->serialKeyHistory();
   if (index.row() >= list.size())
     return QVariant();
 
   /* return value */
-  auto item   = list.at (index.row());
+  auto item   = list[index.row()];
   return item;
 }
 
@@ -96,6 +97,7 @@ QHash<int, QByteArray> DapQmlModelSerialHistory::roleNames() const
 void DapQmlModelSerialHistory::slotSetup()
 {
   beginResetModel();
+
 //  *s_history  = QStringList{
 //      "keytest1",
 //      "keytest2",
@@ -119,7 +121,11 @@ void DapQmlModelSerialHistory::slotSetup()
 //      "keytest20",
 //      "keytest21",
 //  };
-  *s_history  = DapDataLocal::instance()->getHistorySerialKeyData();
+
+  auto history  = DapDataLocal::instance()->serialKeyHistory();
+  history->load();
+
+  *s_history  = history->list();
   endResetModel();
 }
 

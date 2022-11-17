@@ -1,48 +1,94 @@
 #ifndef DAPBUGREPORTHISTORY_H
 #define DAPBUGREPORTHISTORY_H
 
+/* INCLUDES */
 #include <QObject>
+#include <QMap>
 
-struct _BugReportInfo
+/* DEFS */
+struct DapBugReportHistoryItem
 {
-    QString number;
-    QString status;
-
-    _BugReportInfo(QString a_number, QString a_status){
-        number = a_number;
-        status = a_status;
-    };
-
-    _BugReportInfo& operator = (const _BugReportInfo &s)
-    {
-        status = s.status;
-        number = s.number;
-        return (*this);
-    }
+  int number;
+  QString status;
+  QString asString() const { return QString().asprintf ("%05d", number); }
 };
+
+/****************************************//**
+ * @brief bug reports history
+ * @date 17.11.2022
+ * @author Mikhail Shilenko
+ *******************************************/
 
 class DapBugReportHistory : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
+
+  /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
 public:
-    DapBugReportHistory(QObject *parent = nullptr);
+  /// @}
 
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
+private:
+  QMap<int, DapBugReportHistoryItem> m_items;
+  /// @}
 
-    QList<_BugReportInfo> *getBugReportsList();
-    QList<QString> getBugReportStringList();
+  /****************************************//**
+   * @name CONSTRUCT/DESTRUCT
+   *******************************************/
+  /// @{
+public:
+  DapBugReportHistory (QObject *a_parent = nullptr);
+  /// @}
 
-    void loadHistoryBugReportData();
-    void setBugReportsList(QList<_BugReportInfo>*);
-    QList<_BugReportInfo> bugReportsList(){
-        return *m_bugReportsList;
-    }
-    QList<QString> bugReportInfoListToStringList(QList<_BugReportInfo>*);
-protected:
+  /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  const QList<DapBugReportHistoryItem> &list() const;
+  int size() const;
+  DapBugReportHistoryItem &value (int a_index);
+  const DapBugReportHistoryItem &value (int a_index) const;
+  void remove (int a_index);
+  void load();
+  void save();
+  /// @}
 
-    QList<_BugReportInfo> *m_bugReportsList;
-
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
 signals:
-    void bugReportListLoaded(QList<QString> a_bugReportsNumbersList);
+  void sigBugReportListLoaded();
+  void sigUpdateReportsStatusError();
+  void sigUpdateReportsStatusSuccess();
+  void sigNewReport();
+  /// @}
+
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
+public slots:
+  void slotUpdateReportsStatus (const QString &a_json);
+  void slotNewReport (const QString &a_reportNumber);
+  /// @}
+
+  /****************************************//**
+   * @name OPERATORS
+   *******************************************/
+  /// @{
+public:
+  DapBugReportHistoryItem &operator[] (int a_index)               { return value (a_index); }
+  const DapBugReportHistoryItem &operator[] (int a_index) const   { return value (a_index); }
+  /// @}
 };
 
+/*-----------------------------------------*/
 #endif // DAPBUGREPORTHISTORY_H

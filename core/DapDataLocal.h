@@ -31,6 +31,7 @@ const QString SETTING_AUTHORIZATION     = "authorization";
 
 class DapSerialKeyData;
 enum class Authorization;
+class DapSerialKeyHistory;
 
 class DapDataLocal : public QObject
 {
@@ -85,9 +86,9 @@ public:
 
     void savePendingSerialKey(QString a_serialkey);
 
-    void saveHistoryData(QString a_type, QString a_data);
-    QList<QString> getHistorySerialKeyData();
-    void removeItemFromHistory(QString a_type, QString a_item);
+    //void saveHistoryData(QString a_type, QString a_data);
+    //QList<QString> getHistorySerialKeyData();
+    //void removeItemFromHistory(QString a_type, QString a_item);
 
     static DapBugReportData *bugReportData();
     static DapServersData   *serversData();
@@ -96,6 +97,7 @@ public:
     QString pendingSerialKey(){return m_pendingSerialKey;};
 
     DapBugReportHistory *bugReportHistory();
+    DapSerialKeyHistory *serialKeyHistory();
 
     Authorization authorizationType();
     void setAuthorizationType(Authorization type);
@@ -114,7 +116,7 @@ signals:
 
     void licenseTermTillChanged(const QString &a_date);
 
-    void sigHistoryDataSaved(const QString &type);
+    //void sigHistoryDataSaved(const QString &type);
 
 protected:
     QList<QString>  m_cdbServersList;
@@ -135,7 +137,8 @@ private:
     QSet <QString> * m_serialKeyDataList;
     QString m_pendingSerialKey;
 
-    DapBugReportHistory* m_buReportHistory;
+    DapBugReportHistory *m_bugReportHistory;
+    DapSerialKeyHistory *m_serialKeyHistory;
 };
 
 template<typename T>

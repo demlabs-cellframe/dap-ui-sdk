@@ -1,7 +1,7 @@
 /* INCLUDES */
 
 import QtQuick 2.0
-import StyleDebugTree 1.0
+//import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -89,10 +89,10 @@ Item {
         height: root.height - y
         clip: true
 
-        Component.onCompleted: StyleDebugTree.describe (
-           "listview",
-            ["x", "y", "z", "width", "height"],
-           this);
+//        Component.onCompleted: StyleDebugTree.describe (
+//           "listview",
+//            ["x", "y", "z", "width", "height"],
+//           this);
 
         //model: reportModel
 
@@ -118,18 +118,18 @@ Item {
 
                 onRightClicked: sigTrashClicked(modelName)// console.log("right cliked")
 
-                Component.onCompleted: {
-                    StyleDebugTree.describe (
-                        "Report sub " + model.index,
-                        ["x", "y", "z", "width", "height",
-                         "color", "horizontalAlign", "verticalAlign",
-                         "leftPadding", "rightPadding"],
-                        this.labelSub);
-                    StyleDebugTree.describe (
-                        "Report item " + model.index,
-                        ["x", "y", "z", "width", "height", "iconSize"],
-                        this);
-                }
+//                Component.onCompleted: {
+//                    StyleDebugTree.describe (
+//                        "Report sub " + model.index,
+//                        ["x", "y", "z", "width", "height",
+//                         "color", "horizontalAlign", "verticalAlign",
+//                         "leftPadding", "rightPadding"],
+//                        this.labelSub);
+//                    StyleDebugTree.describe (
+//                        "Report item " + model.index,
+//                        ["x", "y", "z", "width", "height", "iconSize"],
+//                        this);
+//                }
             }
         }
     }
