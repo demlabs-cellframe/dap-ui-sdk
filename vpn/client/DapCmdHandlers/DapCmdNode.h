@@ -17,16 +17,17 @@ public:
 
     void handle(const QJsonObject* params) override;
 public slots:
-    void sendWalletsList(QStringList walletsList);
-    void sendNetworksList(QStringList walletsList);
-    void sendError(int code, QString errorMessage);
+    void sendWalletsList(const QStringList& walletsList);
+    void sendNetworksList(const QStringList& walletsList);
+    void sendWalletsData(const QJsonObject& walletsData);
+    void sendError(int code, const QString& errorMessage);
     void sendNodeDetected();
     void setNodeDetected();
 signals:
     void startNodeDetection();
     void stopNodeDetection();
     void dataWalletRequest();
-    void condTxCreateRequest(QString tokenName, QString walletName, QString certName, qreal value);
+    void condTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
 };
 
 #endif // DAPCMDNODEHANDLER_H

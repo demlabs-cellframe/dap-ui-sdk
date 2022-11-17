@@ -43,7 +43,7 @@ Item {
         M_PASSWORD,
         M_CERT,
 //        use with 'cellfarameDetected'
-        M_NoCBD
+        M_WALLET
     }
 
     /// @}
@@ -102,8 +102,11 @@ Item {
     /// @brief enter serial key clicked
     signal sigChooseSerial();
 
-    /// @brief enter serial key clicked
+    /// @brief enter wallet key clicked
     signal sigChooseWallet();
+
+    /// @brief enter maxprice key clicked
+    signal sigChooseMaxPrice
 
     /// @brief connection by serial requested
     signal sigConnectBySerial();
@@ -163,14 +166,23 @@ Item {
         btnChooseServer.updateServerName();
     }
 
+    /// @brief set wallet for noCBD
+    function setWallet(a_wallet) {
+        btnChooseWallet.mainText = a_wallet;
+    }
+
+    /// @brief set network|token for noCBD
+    function setNetworkAndToken(a_data){
+        btnChooseWallet.subText = a_data;
+    }
+
     /// @brief set input mask for serial input
     function setupInputMask() {
         //btnEnterSerial.inputMask    = ">NNNN-NNNN-NNNN-NNNN;_"
     }
 
     /// @briefset found cellframe dashboard
-    function cellfarameDashboardDetected() {
-        console.log("++++++++++++++++++++++++++++++++++++++++++")
+    function cellfarameDashboardDetected(datected) {
         internal.cellfarameDetected = true;
         loginTypeKelContainer.update();
     }
@@ -269,24 +281,32 @@ Item {
         clip: true
         visible: Brand.name() === "KelVPN" && internal.cellfarameDetected
         DapQmlStyle { item: loginTypeKelContainer; qss: "login-type-container" }
+//        Rectangle {
+//            color: "yellow"
+//            anchors.fill: parent
+//        }
 
         function update() {
             tabSerial1.checked = internal.mode === QuiLoginForm.Mode.M_SERIAL;
-            tabCell.checked    = internal.mode === QuiLoginForm.Mode.M_NoCBD;
+            tabCell.checked    = internal.mode === QuiLoginForm.Mode.M_WALLET;
         }
 
         DapQmlTabButton {
             id: tabSerial1
-            qss: "login-mode-btn-serial-cell"
+            qss: "login-mode-btn-serial-nocbd"
             checked:    internal.mode === QuiLoginForm.Mode.M_SERIAL
             onClicked:  { internal.mode = QuiLoginForm.Mode.M_SERIAL; loginTypeKelContainer.update(); }
         }
 
         DapQmlTabButton {
+//            Rectangle {
+//                color: "blue"
+//                anchors.fill: parent
+//            }
             id: tabCell
-            qss: "login-mode-btn-cell"
-            checked:    internal.mode === QuiLoginForm.Mode.M_NoCBD
-            onClicked:  { internal.mode = QuiLoginForm.Mode.M_NoCBD; loginTypeKelContainer.update(); }
+            qss: "login-mode-btn-nocbd"
+            checked:    internal.mode === QuiLoginForm.Mode.M_WALLET
+            onClicked:  { internal.mode = QuiLoginForm.Mode.M_WALLET; loginTypeKelContainer.update(); }
         }
     }
 
@@ -351,7 +371,15 @@ Item {
         }
         DapQmlDummy {
             id: loginSepsPlacer
-            qss: "login-separator-container"
+            qss:Brand.name() === "KelVPN" && internal.cellfarameDetected
+//               NoCBD mode
+                 ? internal.mode === QuiLoginForm.Mode.M_WALLET
+//               wallet
+                 ? "login-nocbd-wallet-separator-container"
+//               serial login
+                 : "login-nocbd-skey-separator-container"
+//               other
+                 : "login-separator-container"
         }
     }
 
@@ -364,7 +392,7 @@ Item {
         y:      loginSpacer.y + loginWalletPlacer.y
         width:  loginWalletPlacer.width
         height: loginWalletPlacer.height
-        visible: internal.mode === QuiLoginForm.Mode.M_NoCBD && internal.cellfarameDetected
+        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected
 
         DapQmlButton {
             id: btnChooseWallet
@@ -376,7 +404,7 @@ Item {
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
             mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
             subText: qsTr("CHOOSING SERVER") + lang.notifier
-            qss: "login-btn-server-cell"
+            qss: "login-btn-server-nocbd"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
             separator: true
@@ -398,7 +426,7 @@ Item {
     }
 
     /****************************************//**
-     * Choose cell for NoCBD
+     * Choose MAX PRICE for NoCBD
      ********************************************/
 
     DapQmlRectangle {
@@ -406,7 +434,7 @@ Item {
         y:      loginSpacer.y + loginCellPlacer.y
         width:  loginCellPlacer.width
         height: loginCellPlacer.height
-        visible: internal.mode === QuiLoginForm.Mode.M_NoCBD && internal.cellfarameDetected
+        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected
 
         DapQmlButton {
             id: btnChooseCell
@@ -417,13 +445,13 @@ Item {
 
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
             mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
-            subText: qsTr("CHOOSING SERVER") + lang.notifier
-            qss: "login-btn-server-cell"
+            subText: qsTr("MAX PRICE") + lang.notifier
+            qss: "login-btn-server-nocbd"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
             separator: true
             link: true
-            onClicked: root.sigChooseServer()
+            onClicked: root.sigChooseMaxPrice()
 
             function updateServerName() {
                 mainText = (!internal.changedServer)
@@ -435,7 +463,7 @@ Item {
         }
         DapQmlDummy {
             id: loginCellPlacer
-            qss: "login-btn-cell-container"
+            qss: "login-btn-maxprice-container"
         }
     }
 
@@ -449,6 +477,11 @@ Item {
         width:  loginServerPlacer.width
         height: loginServerPlacer.height
 
+//                            Rectangle {
+//                                color: "green"
+//                                anchors.fill: parent
+//                            }
+
         DapQmlButton {
             id: btnChooseServer
             x: (parent.width - width) / 2
@@ -459,11 +492,12 @@ Item {
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
             mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
             subText: qsTr("CHOOSING SERVER") + lang.notifier
-            qss: internal.mode !== QuiLoginForm.Mode.M_NoCBD
+            qss: internal.mode !== QuiLoginForm.Mode.M_WALLET
 //                 NoCBD mode
                  ? "login-btn-server"
 //                 serial login
-                 : "login-btn-server-cell"
+                 : "login-btn-server-nocbd"
+//            qss: "login-btn-server"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
             separator: true
@@ -479,12 +513,18 @@ Item {
             onDefaultServerNameChanged: updateServerName()
         }
         DapQmlDummy {
+
             id: loginServerPlacer
-            qss: internal.mode !== QuiLoginForm.Mode.M_NoCBD
+            qss: Brand.name() === "KelVPN" && internal.cellfarameDetected
 //               NoCBD mode
-                 ? "login-btn-server-container"
+                 ? internal.mode === QuiLoginForm.Mode.M_WALLET
+//               wallet
+                 ? "login-btn-nocbd-wallet-server-container"
 //               serial login
-                 : "login-btn-cell-server-container"
+                 : "login-btn-nocbd-skey-server-container"
+//               other
+                 : "login-btn-server-container"
+
         }
     }
 
@@ -507,11 +547,6 @@ Item {
             z: 15
             width: parent.width - 74
             //height: parent.height
-
-//            Rectangle {
-//                color: "gray"
-//                anchors.fill: parent
-//            }
 
             buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
             mainText: ""
@@ -548,7 +583,11 @@ Item {
         }
         DapQmlDummy {
             id: loginSerialPlacer
-            qss: "login-btn-serial-container"
+            qss: Brand.name() === "KelVPN" && internal.cellfarameDetected
+//                 NoCBD mode
+                 ? "login-btn-serial-container-nocbd"
+//                 serial login
+                 : "login-btn-serial-container"
         }
     }
 
@@ -689,7 +728,11 @@ Item {
         id: btnConnect
         x: (parent.width - width) / 2
         z: 15
-        qss: "login-connect"
+        qss: Brand.name() === "KelVPN" && internal.cellfarameDetected
+//                 NoCBD mode
+             ? "login-connect-nocbd-mode"
+//                 serial login
+             : "login-connect"
 
         text: qsTr("CONNECT") + lang.notifier
         onClicked: {
@@ -709,7 +752,15 @@ Item {
      ********************************************/
 
     DapQmlRectangle {
-        qss: "login-obtain-container"
+//                    Rectangle {
+//                        color: "green"
+//                        anchors.fill: parent
+//                    }
+        qss: Brand.name() === "KelVPN" && internal.cellfarameDetected
+//                 NoCBD mode
+             ? "login-obtain-container-mocbd-mode"
+//                 serial login
+             : "login-obtain-container"
 
         DapQmlLabel {
             id: obtainLabel

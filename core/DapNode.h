@@ -107,6 +107,7 @@ private:
     bool m_parseJsonError;
     // state machine
     NodeConnectStateMachine *m_stateMachine;
+    QJsonObject m_walletsData;
 
 public:
     static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
@@ -129,7 +130,7 @@ private:
 public slots:
     void startCheckingNodeRequest();
     void stopCheckingNodeRequest();
-
+    void slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
 
 private slots:
     void sendRequest(QString request);
@@ -142,22 +143,27 @@ private slots:
     void walletsListReply();
     void networksRequest();
     void networksListReply();
+    void walletDataRequest();
+    void dataWalletReply();
     void replyError(DapNodeErrors errorType, const QString errorString = QString(""), const bool httpFinished = true);
     void parseReplyConnect(const QString replyData);
     void parseReplyNetworks(const QString replyData);
     void parseReplyWallets(const QString replyData);
+    void parseDataWallet(const QString replyData);
     void parseJsonError(QString replyData);
+
 signals:
     // -------- output signals --------
     void sigReceivedWalletsList(QStringList);
     void sigReceivedNetworksList(QStringList);
     void sigError(int errorCode, QString errorMessage);
     void sigNodeDetected();
+    void walletsDataReady(QJsonObject);
     // --- external (input) signals ---
     void startNodeDetection();
     void stopNodeDetection();
     void dataWalletRequest();
-    void condTxCreateRequest(QString tokenName, QString walletName, QString certName, qreal value);
+    void condTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
     // ------- internal signals --------
     void errorDetect();
     void nodeDetected();
@@ -170,7 +176,62 @@ signals:
     void networksReceived();
     void checkNodeStatus();
     void statusOk();
+    void walletListIsEmpty();
 
 };
+
+
+
+//{
+//"data": [
+//    {
+//        "address": "mWNv7A43YnqRHCWVJG2zobGRUWepgMs5b2K2Hq4w7QePxDXoy1VArS2vhdyAxp5cSR1Q2qUYQDkYQs4uFxr7TP3WnJzzTWa2iGFdDDv7",
+//        "network": "mileena",
+//        "tokens": [
+//            {
+//                "balance": "0",
+//                "datoshi": "0",
+//                "tokenName": "0"
+//            }
+//        ]
+//    },
+//    {
+//        "address": "mJUUJk6Yk2gBSTjcDvqqLvGTgcNFZeZbCmrD3Mb1QycVPZmZcUVmH9WW8aLixh6M7XfzLWYGbSGSGwMSV6PiVwcLnbjZvoAfmQEfqEsN",
+//        "network": "subzero",
+//        "tokens": [
+//            {
+//                "balance": "0",
+//                "datoshi": "0",
+//                "tokenName": "0"
+//            }
+//        ]
+//    },
+//    {
+//        "address": "Rj7J7MiX2bWy8sNyaJdTGtjsUzwUbDHsfT3EnKN4Nhcmcf2bRxgx5GoXxgR6q3YDu8s64PGvbbHhh21jSgns6tjTXy6ADf4ga1XdnJnk",
+//        "network": "Backbone",
+//        "tokens": [
+//            {
+//                "balance": "0",
+//                "datoshi": "0",
+//                "tokenName": "0"
+//            }
+//        ]
+//    },
+//    {
+//        "address": "iDAeSXFFiwH2LyhqupWKEHqfCbSQFvTXoPm4bU9VyboenWTxeviL5AjVo54dXCbGctryNgFiV91UcD8hmMaNChgyGuQusikS5W9dUYGA",
+//        "network": "kelvpn-minkowski",
+//        "tokens": [
+//            {
+//                "balance": "0",
+//                "datoshi": "0",
+//                "tokenName": "0"
+//            }
+//        ]
+//    }
+//],
+//"errorMsg": "",
+//"status": "ok"
+//}
+
 
 #endif // DAPNODE_H

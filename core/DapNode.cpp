@@ -123,7 +123,6 @@ void DapNode::responseProcessing(const int error, const QString errorString, con
             replyError(DapNodeErrors::NetworkReplyWalletsError,errorString, httpFinished);
         return;
     }
-    //
     // networks list reply
     if (networkRequest.contains("method=GetNetworks"))
     {
@@ -132,6 +131,16 @@ void DapNode::responseProcessing(const int error, const QString errorString, con
         else
             replyError(DapNodeErrors::NetworkReplyNetworksListError,errorString, httpFinished);
         return;
+    }
+    // data wallets reply
+    if (networkRequest.contains("method=GetDataWallet"))
+    {
+        if (error == QNetworkReply::NetworkError::NoError)
+            dataWalletReply();
+        else
+            replyError(DapNodeErrors::NetworkReplyNetworksListError,errorString, httpFinished);
+        return;
+
     }
 }
 
@@ -181,7 +190,7 @@ void DapNode::nodeStatusReply()
 
 void DapNode::walletsRequest()
 {
-    // http://127.0.0.1:8045/?method=GetWallets&id=
+    //http://127.0.0.1:8045/?method=GetWallets&id=0x7D6878E27691240294BE6DE326F56FD1344087024F0FBBEA98B4A04321D21F73
     QString requesString = QString("?method=GetWallets&id=%1").arg(m_connectId);
     sendRequest(requesString);
 }
@@ -213,6 +222,18 @@ void DapNode::networksListReply()
         return;
     }
     parseReplyNetworks(reply);
+}
+
+
+void DapNode::dataWalletReply()
+{
+    auto reply = m_networkReply->getReplyData();
+    qInfo() << "reply message: " << reply;
+    if (reply.size() <= 0) {
+        replyError(DapNodeErrors::NetworkWrongReplyError, "Wrong reply nnetworks");
+        return;
+    }
+    parseDataWallet(reply);
 }
 
 
@@ -293,17 +314,49 @@ void DapNode::parseReplyNetworks(const QString replyData)
     if (doc["data"].isArray())
     {
         // wallets
-        m_walletsList.clear();
+        m_networksList.clear();
         QJsonArray dataArray = doc["data"].toArray();
         for (auto i = dataArray.cbegin(), e = dataArray.cend(); i != e; i++)
             if (i->isString())
-                m_walletsList << i->toString();
+                m_networksList << i->toString();
         DEBUGINFO << "Networks list: " << m_walletsList;
-        emit sigReceivedNetworksList(m_walletsList);
+        emit sigReceivedNetworksList(m_networksList);
         emit networksReceived();
     }
 }
 
+void DapNode::walletDataRequest()
+{
+    DEBUGINFO << "walletDataRequest" << m_walletsList;
+    if (m_walletsList.size() > 0)
+    {
+        QString requesString = QString("?method=GetDataWallet&id=%1&walletName=%2")
+                .arg(m_connectId)
+                .arg(m_walletsList[0]);
+        sendRequest(requesString);
+    }
+    else
+    {
+        emit walletsDataReady(m_walletsData);
+        emit walletListIsEmpty();
+    }
+}
+
+void DapNode::parseDataWallet(const QString replyData)
+{
+    DEBUGINFO << "walletDataReply" << replyData;
+    parseJsonError(replyData.toUtf8());
+    if (jsonError())
+        return;
+    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+    if (doc["data"].isArray())
+    {
+        // wallet data
+        m_walletsData[m_walletsList[0]] = doc["data"];
+        m_walletsList.pop_front();
+        walletDataRequest();
+    }
+}
 
 void DapNode::parseJsonError(QString replyData)
 {
@@ -384,7 +437,6 @@ void DapNode::initStates()
     // node status ok -> initialState
     m_stateMachine->nodeGetStatus.addTransition(this, &DapNode::statusOk,
                                              &m_stateMachine->nodeGetWallets);
-
     //
     m_stateMachine->nodeGetWallets.addTransition(this, &DapNode::walletsReceived,
                                                  &m_stateMachine->nodeGetNetworks);
@@ -393,10 +445,16 @@ void DapNode::initStates()
                                                  &m_stateMachine->initialState);
     //
     m_stateMachine->nodeGetNetworks.addTransition(this, &DapNode::networksReceived,
-                                                 &m_stateMachine->initialState);
+                                                 &m_stateMachine->nodeGetDataWallet);
     //
     m_stateMachine->nodeGetNetworks.addTransition(this, &DapNode::errorDetect,
                                                  &m_stateMachine->initialState);
+
+    m_stateMachine->nodeGetDataWallet.addTransition(this, &DapNode::walletListIsEmpty,
+                                                    &m_stateMachine->initialState);
+
+    m_stateMachine->nodeGetDataWallet.addTransition(this, &DapNode::errorDetect,
+                                                    &m_stateMachine->initialState);
 
     //
     //
@@ -427,16 +485,46 @@ void DapNode::initStates()
             emit repeatNodeConnection();
         });
     });
+
     connect(&m_stateMachine->nodeDetection,  &QState::entered, this, &DapNode::nodeDetectedRequest);
     connect(&m_stateMachine->nodeConnection, &QState::entered, this, &DapNode::nodeConnectionRequest);
     connect(&m_stateMachine->nodeGetStatus,  &QState::entered, this, &DapNode::nodeStatusRequest);
     connect(&m_stateMachine->nodeGetWallets, &QState::entered, this, &DapNode::walletsRequest);
     connect(&m_stateMachine->nodeGetNetworks, &QState::entered, this, &DapNode::networksRequest);
 
+    connect (&m_stateMachine->nodeGetDataWallet, &QState::entered, this, [=](){
+        m_walletsData = QJsonObject();
+        walletDataRequest();
+    });
+
     // node detected signal
     connect(this, &DapNode::nodeDetected, this, &DapNode::sigNodeDetected);
     connect(this, &DapNode::checkNodeStatus, this, &DapNode::sigNodeDetected);
 
+    // create conditional transaction
+    connect(this, &DapNode::condTxCreateRequest, this, &DapNode::slotCondTxCreateRequest);
+
+}
+
+void DapNode::slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit)
+{
+    qDebug() << "uuuuuuuuuuuuuuuuuuuuuuuu" << walletName << networkName << tokenName << value << unit;
+    QString requesString = QString("http://127.0.0.1:8045/?method=CondTxCreate&"
+                "id=%1&net=%2&"
+                "tokenName=%3&"
+                "walletName=%4&"
+                "certName=%5&"
+                "value=%6&"
+                "unit=%7&"
+                "srv_uid=1")
+            .arg(m_connectId)
+            .arg(networkName)
+            .arg(tokenName)
+            .arg(walletName)
+            .arg("rslCert01_public") // TODO
+            .arg(value)
+            .arg(unit);
+    sendRequest(requesString);
 }
 
 

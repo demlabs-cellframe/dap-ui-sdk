@@ -1,4 +1,8 @@
 /****************************************************
+ * QSS scaled is described in scaled.h
+ ***************************************************/
+
+/****************************************************
  * Themes
  ***************************************************/
 
@@ -41,8 +45,8 @@
         country-filter-clear-hover:   "qrc:/light/btn_filter_clear_hover.png";
         login-mode-btn-serial-active:   "qrc:/light/key.png";
         login-mode-btn-serial-inactive: "qrc:/light/key_inactive.png";
-        login-mode-btn-cell-active:     "qrc:/light/wallet.png";
-        login-mode-btn-cell-inactive:   "qrc:/light/wallet_inactive.png";
+        login-mode-btn-nocbd-active:    "qrc:/light/wallet.png";
+        login-mode-btn-nocbd-inactive:  "qrc:/light/wallet_inactive.png";
 }
 
 .@dark
@@ -84,8 +88,8 @@
         country-filter-clear-hover:   "qrc:/dark/btn_filter_clear_hover.png";
         login-mode-btn-serial-active:   "qrc:/dark/key.png";
         login-mode-btn-serial-inactive: "qrc:/dark/key_inactive.png";
-        login-mode-btn-cell-active:     "qrc:/dark/wallet.png";
-        login-mode-btn-cell-inactive:   "qrc:/dark/wallet_inactive.png";
+        login-mode-btn-nocbd-active:    "qrc:/dark/wallet.png";
+        login-mode-btn-nocbd-inactive:  "qrc:/dark/wallet_inactive.png";
 }
 
 /****************************************************
@@ -233,6 +237,11 @@
 .radiobtn-spacer
 {
 	scaled-rect: scaled(nan,nan,392,20,false);
+}
+
+.radiobtn-resizer-note
+{
+        scaled-rect: scaled(nan,nan,370,64,false);
 }
 
 /****************************************************
@@ -516,6 +525,21 @@
 	scaled-rect: scaled(-1,291,-1,4,true);
 }
 
+.login-nocbd-wallet-separator-container
+{
+        scaled-rect: scaled(-1,210,-1,4,true);
+}
+
+.login-nocbd-skey-separator-container
+{
+        scaled-rect: scaled(-1,221,-1,4,true);
+}
+
+.overview-separator-container
+{
+        scaled-rect: scaled(-1,134,-1,4,true);
+}
+
 .login-separator
 {
 	scaled-rect: scaled(nan,nan,nan,4,false);
@@ -533,19 +557,50 @@
 
 .login-btn-wallet-container
 {
-        scaled-rect: scaled(-1,252,-1,78,true);
+        scaled-rect: scaled(-1,219,-1,76,true);
 }
 
-.login-btn-cell-container
+.overview-btn-wallet-container
 {
-        scaled-rect: scaled(-1,332,-1,78,true);
+        scaled-rect: scaled(-1,134,-1,108,true);
 }
 
-.login-btn-cell-server-container
+.overview-btn-network-container
 {
-        scaled-rect: scaled(-1,412,-1,78,true);
+        scaled-rect: scaled(-1,244,-1,108,true);
 }
-.login-btn-server-cell
+
+.overview-btn-cell-container
+{
+        scaled-rect: scaled(-1,354,-1,108,true);
+}
+
+.overview-btn-maxprice-container
+{
+        scaled-rect: scaled(-1,464,-1,108,true);
+}
+
+.overview-btn-confirm
+{
+        scaled-rect: scaled(-1,737,374,80,true,12);
+}
+
+.login-btn-maxprice-container
+{
+        scaled-rect: scaled(-1,310,-1,76,true);
+}
+
+.login-btn-nocbd-skey-server-container
+{
+        scaled-rect: scaled(-1,360,-1,78,true);
+}
+
+.login-btn-nocbd-wallet-server-container
+{
+        scaled-rect: scaled(-1,400,-1,76,true);
+}
+
+.login-btn-server-nocbd
 {
         scaled-rect: scaled(nan,nan,nan,78,false);
 }
@@ -555,23 +610,28 @@
         scaled-rect: scaled(nan,502,nan,108,false);
 }
 
-.login-mode-btn-serial-cell
+.login-mode-btn-serial-nocbd
 {
-        scaled-rect: scaled(36,22,162,64,true);
+        scaled-rect: scaled(19,0,195,98,false);
         active: "@login-mode-btn-serial-active";
         inactive: "@login-mode-btn-serial-inactive";
 }
 
-.login-mode-btn-cell
+.login-mode-btn-nocbd
 {
-        scaled-rect: scaled(232,22,162,64,true);
-        active: "@login-mode-btn-cell-active";
-        inactive: "@login-mode-btn-cell-inactive";
+        scaled-rect: scaled(214,0,195,98,false);
+        active: "@login-mode-btn-nocbd-active";
+        inactive: "@login-mode-btn-nocbd-inactive";
 }
 
 .login-btn-serial-container
 {
 	scaled-rect: scaled(-1,406,-1,108,true);
+}
+
+.login-btn-serial-container-nocbd
+{
+        scaled-rect: scaled(-1,250,-1,108,true);
 }
 
 .login-btn-serial
@@ -598,9 +658,19 @@
 	scaled-rect: scaled(-1,570,374,80,true,12);
 }
 
+.login-connect-nocbd-mode
+{
+        scaled-rect: scaled(-1,611,374,80,true,12);
+}
+
 .login-obtain-container
 {
 	scaled-rect: scaled(-1,675,-1,19,false);
+}
+
+.login-obtain-container-mocbd-mode
+{
+        scaled-rect: scaled(-1,705,-1,19,false);
 }
 
 .login-obtain-font

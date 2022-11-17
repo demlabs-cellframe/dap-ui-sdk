@@ -37,7 +37,7 @@ void DapCmdNode::sendNodeDetected()
     sendCmd(&response);
 }
 
-void DapCmdNode::sendError(int code, QString messageError)
+void DapCmdNode::sendError(int code, const QString& messageError)
 {
     QJsonObject response;
     QJsonObject nodeInfo;
@@ -48,14 +48,14 @@ void DapCmdNode::sendError(int code, QString messageError)
     sendCmd(&response);
 }
 
-void DapCmdNode::sendWalletsList(QStringList walletsList)
+void DapCmdNode::sendWalletsList(const QStringList& walletsList)
 {
     QJsonObject response;
     QJsonObject nodeInfo;
     QJsonArray jsonWalletsList;
     jsonWalletsList.fromStringList(walletsList);
     nodeInfo["status"] = "ok";
-    foreach (QString data, walletsList)
+    for (const QString& data: walletsList)
         jsonWalletsList.append(data);
     nodeInfo["wallets"] = jsonWalletsList;
     response[DapCmdNode::actionParam] = nodeInfo;
@@ -63,19 +63,30 @@ void DapCmdNode::sendWalletsList(QStringList walletsList)
     DEBUGINFO << "sendWalletsList" << walletsList << response;
 }
 
-void DapCmdNode::sendNetworksList(QStringList walletsList)
+void DapCmdNode::sendNetworksList(const QStringList& walletsList)
 {
     QJsonObject response;
     QJsonObject nodeInfo;
     QJsonArray jsonWalletsList;
     jsonWalletsList.fromStringList(walletsList);
     nodeInfo["status"] = "ok";
-    foreach (QString data, walletsList)
+    for (const QString& data: walletsList)
         jsonWalletsList.append(data);
     nodeInfo["networks"] = jsonWalletsList;
     response[DapCmdNode::actionParam] = nodeInfo;
     sendCmd(&response);
     DEBUGINFO << "sendNetworksList" << walletsList << response;
+}
+
+void DapCmdNode::sendWalletsData(const QJsonObject& a_walletsData)
+{
+    QJsonObject response;
+    QJsonObject walletsData;
+    walletsData["wallets_data"] = a_walletsData;
+    walletsData["status"] = "ok";
+    response[DapCmdNode::actionParam] = walletsData;
+    sendCmd(&response);
+    DEBUGINFO << "sendWalletsData" << response;
 }
 
 void DapCmdNode::handle(const QJsonObject* params)
@@ -96,11 +107,13 @@ void DapCmdNode::handle(const QJsonObject* params)
         if (nodeCmd["cond_tx_create"].isObject())
         {
             QJsonObject tx = nodeCmd["cond_tx_create"].toObject();
-            QString tokenName   = tx["token_name"].toString();
             QString walletName  = tx["wallet_name"].toString();
-            QString certName    = tx["cert_name"].toString();
-            qreal value         = tx["value"].toDouble();
-            emit condTxCreateRequest(tokenName, walletName, certName, value);
+            QString networkName = tx["network_name"].toString();
+            QString tokenName   = tx["token_name"].toString();
+//            QString certName    = tx["cert_name"].toString();
+            QString value         = tx["value"].toString();
+            QString unit          = tx["unit"].toString();
+            emit condTxCreateRequest(walletName, networkName, tokenName, value, unit);
         }
         if (nodeCmd["node_detected_check"].isBool() && nodeCmd["node_detected_check"].toBool())
             sendNodeDetected();

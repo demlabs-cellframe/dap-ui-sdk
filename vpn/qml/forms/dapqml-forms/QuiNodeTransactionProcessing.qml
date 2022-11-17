@@ -3,24 +3,21 @@ import DapQmlNodeDataModel 1.0
 
 Item {
 
-    id: root
-
     /// @brief form name
     ///
     /// Used to connect interface via Manager
-    property string formName: "ChooseToken"
+    property string formName: "NodeTransactionProcessing"
 
     /// @brief item clicked
     signal sigSelect(int index, string name);
 
-    property DapQmlNodeDataModel tokenModel: DapQmlNodeDataModel {
+    property DapQmlNodeDataModel walletModel: DapQmlNodeDataModel {
       id: dataModel
     }
 
     QuiChooseNodeDataForm {
        dataModel: dataModel
-       title:  qsTr("Choose token")
-       onSigSelect: root.sigSelect(name);
+       title:  qsTr("Transaction processing")
     }
 
 }

@@ -21,7 +21,8 @@ class DapQmlNodeDataModel : public QAbstractTableModel
    *******************************************/
   /// @{
 protected:
-  QStringList m_nodeData;
+  QList<QStringList> m_nodeData;
+  QStringList m_subTextData;
   int         m_checkedIndex;
   /// @}
 
@@ -40,6 +41,7 @@ public:
 public:
   Q_INVOKABLE void updateCheckedIndex(const QString& checkedName);
   void fill(const QStringList &rowsData);
+  void fill(const QMap<QString, QString> &rowsData);
   /// @}
 
   /****************************************//**

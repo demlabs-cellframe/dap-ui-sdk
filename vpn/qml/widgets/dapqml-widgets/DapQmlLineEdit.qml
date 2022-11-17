@@ -90,7 +90,7 @@ Rectangle {
         x: y
         width: root.iconLineEditSize
         height: root.iconLineEditSize
-
+        visible: (root.iconLeft === "") ? false : true
         qss: root.iconLeft
         scaledPixmap: "qrc:/light/ic_close_hover.png"
         onClicked: root.rightClicked();
@@ -100,8 +100,13 @@ Rectangle {
     TextField {
         id: lineEditField
         y: (root.height - height) / 2
-        x: lineEditIcon.width + lineEditIcon.x
-        width: parent.width - lineEditIcon.width
+        x: (lineEditIcon.visible === true)
+           ? lineEditIcon.width + lineEditIcon.x
+           : 0
+        width: (lineEditIcon.visible === true)
+            ? parent.width - lineEditIcon.width
+            : parent.width
+
         height: parent.height
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignBottom

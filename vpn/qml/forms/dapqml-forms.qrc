@@ -23,5 +23,10 @@
         <file>dapqml-forms/QuiChooseWallet.qml</file>
         <file>dapqml-forms/QuiChooseNetwork.qml</file>
         <file>dapqml-forms/QuiChooseToken.qml</file>
+        <file>dapqml-forms/QuiNodeTransactionProcessing.qml</file>
+        <file>dapqml-forms/QuiNodeTransactionOverview.qml</file>
+        <file>dapqml-forms/QuiNodeOverview.qml</file>
+        <file>dapqml-forms/QuiNodeMaxPrice.qml</file>
+        <file>dapqml-forms/QuiNodeOverviewBase.qml</file>
     </qresource>
 </RCC>

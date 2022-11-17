@@ -4,7 +4,8 @@
 #include <QDebug>
 
 #define RoleName (Qt::UserRole + 1)
-#define RoleChecked (Qt::UserRole + 2)
+#define RoleSubText (Qt::UserRole + 2)
+#define RoleChecked (Qt::UserRole + 3)
 
 
 /********************************************
@@ -13,7 +14,6 @@
 
 DapQmlNodeDataModel::DapQmlNodeDataModel(QObject *parent)
   : QAbstractTableModel (parent)
-  , m_nodeData (QStringList())
   , m_checkedIndex(-1)
 {
     updateCheckedIndex("");
@@ -25,7 +25,7 @@ DapQmlNodeDataModel::DapQmlNodeDataModel(QObject *parent)
 void DapQmlNodeDataModel::updateCheckedIndex(const QString& checkedName)
 {
     for (int k = 0; k < m_nodeData.size(); k++)
-        if (index(k, 0).data(0) == checkedName)
+        if (index(k, 0).data(RoleName) == checkedName)
         {
             int oldIndex = m_checkedIndex;
             m_checkedIndex = k;
@@ -35,11 +35,23 @@ void DapQmlNodeDataModel::updateCheckedIndex(const QString& checkedName)
         }
 }
 
+
 void DapQmlNodeDataModel::fill(const QStringList &rowsData)
 {
     qDebug() << "fill model" << rowsData;
     beginResetModel();
-    m_nodeData = rowsData;
+    for (const auto& item : rowsData)
+        m_nodeData << (QStringList() << item << "");
+    endResetModel();
+    emit dataChanged(index(0, 0), index(m_nodeData.length(), 1));
+}
+
+void DapQmlNodeDataModel::fill(const QMap<QString, QString> &rowsData)
+{
+    qDebug() << "fill model" << rowsData;
+    beginResetModel();
+    for (const auto& key : rowsData.keys())
+        m_nodeData << (QStringList() << key << rowsData.value(key));
     endResetModel();
     emit dataChanged(index(0, 0), index(m_nodeData.length(), 1));
 }
@@ -66,16 +78,23 @@ int DapQmlNodeDataModel::columnCount(const QModelIndex &parent) const
 
 QVariant DapQmlNodeDataModel::data(const QModelIndex &index, int role) const
 {
-  if (!index.isValid() || !(role == RoleName || role == RoleChecked))
+  if (!index.isValid() ||
+      !(role == RoleName || role == RoleSubText || role == RoleChecked))
     return QVariant();
 
 
-  auto item = m_nodeData.value (index.row());
+  QStringList item = m_nodeData.value(index.row());
   if (role == RoleName)
   {
     if (item.length() > 1)
-      item = item.at(0).toUpper() + item.mid(1);
-    return item;
+        return item.at(0);
+    return "";
+  }
+  if (role == RoleSubText)
+  {
+    if (item.length() > 1)
+        return item.at(1);
+    return "";
   }
   if (role == RoleChecked)
   {
@@ -89,6 +108,7 @@ QHash<int, QByteArray> DapQmlNodeDataModel::roleNames() const
   QHash<int, QByteArray> names;
 
   names[RoleName]       = "name";
+  names[RoleSubText]    = "subText";
   names[RoleChecked]    = "checked";
 
   return names;

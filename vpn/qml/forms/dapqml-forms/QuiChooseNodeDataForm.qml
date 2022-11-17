@@ -15,7 +15,7 @@ import "qrc:/dapqml-widgets"
  * Form contains resizer for ListView items
  *
  * @date 06.06.22
- * @author Mikhail Shilenko
+ * @author Stanislav
  *******************************************/
 
 Item {
@@ -41,8 +41,7 @@ Item {
     /// @{
 
     /// @brief item clicked
-    signal sigSelect(int index, string name);
-//    signal sigCurrentInexChanged();
+    signal sigSelect(name: string);
 
     /// @}
     /****************************************//**
@@ -78,13 +77,6 @@ Item {
 
     ListView {
         id: csListView
-
-//        x: (root.width - width) / 2
-//        y: title.y + title.height * 2 + countryFilterField.height
-//        width: resizer.width
-//        height: root.height - y - noticeResizer.height - noticeSpacer.height
-//        clip: true
-
         x: (root.width - width) / 2
         y: title.y + title.height * 2
         width: resizer.width
@@ -107,14 +99,23 @@ Item {
                 width: resizer.width
                 height: resizer.height
                 y: spacer.height / 2
-                onClicked: {
-//                    root.sigSelect (model.index, model.name);
-//                    csListView.currentIndex = model.index;
+                onClicked: nodeDataForm.sigSelect (model.name);
+
+                DapQmlLabel {
+                    horizontalAlign: Text.AlignRight
+                    verticalAlign: Text.AlignVCenter
+                    text: model.subText
+                    qss: "radiobtn-resizer-note"
+                    height: resizer.height
+                    width: resizer.width
+                    clip: false
+                    onClicked: { root.toggle(); root.clicked(); }
                 }
             }
+
         }
         onCurrentIndexChanged: {
-//            root.updateChecks();
+
         }
     }
 }
