@@ -21,6 +21,14 @@ DapQmlModelBugReports::DapQmlModelBugReports(QObject *parent)
 {
   /* vars */
   __inst  = this;
+
+  /* signals */
+  auto history  = DapDataLocal::instance()->bugReportHistory();
+
+  connect (history, &DapBugReportHistory::sigNewReport,
+           this, &DapQmlModelBugReports::_slotNewReport);
+  connect (history, &DapBugReportHistory::sigRemoved,
+           this, &DapQmlModelBugReports::_slotRemoved);
 }
 
 /********************************************
@@ -110,9 +118,26 @@ QVariant DapQmlModelBugReports::value (int a_index, const QString &a_name) const
 
 void DapQmlModelBugReports::slotSetup()
 {
-  beginResetModel();
-  DapDataLocal::instance()->bugReportHistory()->load();
-  endResetModel();
+  auto history  = DapDataLocal::instance()->bugReportHistory();
+
+  if (history->isEmpty())
+    {
+      beginResetModel();
+      DapDataLocal::instance()->bugReportHistory()->load();
+      endResetModel();
+    }
+}
+
+void DapQmlModelBugReports::_slotNewReport (int a_index)
+{
+  beginInsertRows (QModelIndex(), a_index, a_index);
+  endInsertRows();
+}
+
+void DapQmlModelBugReports::_slotRemoved (int a_index)
+{
+  beginRemoveRows (QModelIndex(), a_index, a_index);
+  endRemoveRows();
 }
 
 /*-----------------------------------------*/

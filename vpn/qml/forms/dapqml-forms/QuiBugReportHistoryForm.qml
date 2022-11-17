@@ -40,7 +40,7 @@ Item {
     /// @{
 
     /// @brief item trash icon clicked
-    signal sigTrashClicked(string name);
+    signal sigTrashClicked(int index, string name);
 
     /// @}
     /****************************************//**
@@ -102,6 +102,7 @@ Item {
 
             DapQmlButton {
                 property string modelName: model.name
+                property int myIndex: model.index
                 buttonStyle: DapQmlButton.IconMainSubIcon
                 mainText: model.name
                 subText: model.state
@@ -116,7 +117,7 @@ Item {
                 height: resizer.height
                 y: spacer.height / 2
 
-                onRightClicked: sigTrashClicked(modelName)// console.log("right cliked")
+                onRightClicked: root.sigTrashClicked (myIndex, modelName)// console.log("right cliked")
 
 //                Component.onCompleted: {
 //                    StyleDebugTree.describe (

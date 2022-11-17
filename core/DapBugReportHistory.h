@@ -53,9 +53,10 @@ public:
 public:
   const QList<DapBugReportHistoryItem> &list() const;
   int size() const;
-  DapBugReportHistoryItem &value (int a_index);
-  const DapBugReportHistoryItem &value (int a_index) const;
-  void remove (int a_index);
+  bool isEmpty() const { return size() == 0; }
+  DapBugReportHistoryItem &value (int a_id);
+  const DapBugReportHistoryItem &value (int a_id) const;
+  void remove (int a_id, int a_index);
   void load();
   void save();
   /// @}
@@ -68,7 +69,8 @@ signals:
   void sigBugReportListLoaded();
   void sigUpdateReportsStatusError();
   void sigUpdateReportsStatusSuccess();
-  void sigNewReport();
+  void sigNewReport (int a_index);
+  void sigRemoved (int a_index);
   /// @}
 
   /****************************************//**
@@ -85,8 +87,8 @@ public slots:
    *******************************************/
   /// @{
 public:
-  DapBugReportHistoryItem &operator[] (int a_index)               { return value (a_index); }
-  const DapBugReportHistoryItem &operator[] (int a_index) const   { return value (a_index); }
+  DapBugReportHistoryItem &operator[] (int a_id)               { return value (a_id); }
+  const DapBugReportHistoryItem &operator[] (int a_id) const   { return value (a_id); }
   /// @}
 };
 

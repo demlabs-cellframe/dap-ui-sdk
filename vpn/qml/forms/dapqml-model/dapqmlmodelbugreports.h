@@ -52,6 +52,9 @@ public:
   /// @{
 public slots:
   void slotSetup();
+protected:
+  void _slotNewReport (int a_index);
+  void _slotRemoved (int a_index);
   /// @}
 };
 

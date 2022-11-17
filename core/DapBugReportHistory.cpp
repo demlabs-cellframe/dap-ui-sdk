@@ -71,24 +71,25 @@ int DapBugReportHistory::size() const
   return m_items.size();
 }
 
-DapBugReportHistoryItem &DapBugReportHistory::value (int a_index)
+DapBugReportHistoryItem &DapBugReportHistory::value (int a_id)
 {
   static DapBugReportHistoryItem dummy;
 
-  if (!m_items.contains(a_index))
+  if (!m_items.contains(a_id))
     return dummy = DapBugReportHistoryItem();
 
-  return m_items[a_index];
+  return m_items[a_id];
 }
 
-const DapBugReportHistoryItem &DapBugReportHistory::value (int a_index) const
+const DapBugReportHistoryItem &DapBugReportHistory::value (int a_id) const
 {
-  return ((DapBugReportHistory*)this)->value (a_index);
+  return ((DapBugReportHistory*)this)->value (a_id);
 }
 
-void DapBugReportHistory::remove (int a_index)
+void DapBugReportHistory::remove (int a_id, int a_index)
 {
-  m_items.remove (a_index);
+  m_items.remove (a_id);
+  sigRemoved (a_index);
   save();
 };
 
@@ -188,7 +189,7 @@ void DapBugReportHistory::slotNewReport (const QString &a_reportNumber)
   save();
 
   /* notify */
-  emit sigNewReport();
+  emit sigNewReport (m_items.size() - 1);
 }
 
 /*-----------------------------------------*/
