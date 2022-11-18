@@ -121,7 +121,6 @@ Item {
 
                 property QtObject animationCtl: QtObject {
                     property var target: parent
-                    property string boi: target.mainText
                     property Timer timer: Timer {
                         interval: 500
                         running: false

@@ -115,7 +115,7 @@ int DapQmlModelSettings::columnCount (const QModelIndex &parent) const
   if (parent.isValid())
     return 0;
 
-  return 5;
+  return s_fieldIdMap.size();
 }
 
 QVariant DapQmlModelSettings::data (const QModelIndex &index, int role) const
@@ -362,52 +362,45 @@ void DapQmlModelSettings::slotUpdateLabels (bool a_forced)
 
 void DapQmlModelSettings::slotUpdateItemsList()
 {
-    beginResetModel();
-    slotUpdateLabels (false);
-    endResetModel();
-
-    emit dataChanged (
-      index (s_daysLabelIndex, 0),
-      index (s_daysLabelIndex, columnCount()));
+  beginResetModel();
+  slotUpdateLabels (false);
+  endResetModel();
 }
 
 void DapQmlModelSettings::slotSetDaysLeft (QString a_days)
 {
   if (s_daysLabelIndex == -1)
     return;
-  beginResetModel();
+
   s_items[s_daysLabelIndex].m_textSub = (a_days.startsWith("-")) ? "expired" : a_days;
-  endResetModel();
 
   emit dataChanged (
     index (s_daysLabelIndex, 0),
-    index (s_daysLabelIndex, columnCount()));
+    index (s_daysLabelIndex, columnCount (index (s_daysLabelIndex, 0))));
 }
 
 void DapQmlModelSettings::slotResetDaysLeft()
 {
   if (s_daysLabelIndex == -1)
     return;
-  beginResetModel();
+
   s_items[s_daysLabelIndex].m_textSub.clear();
-  endResetModel();
 
   emit dataChanged (
     index (s_daysLabelIndex, 0),
-        index (s_daysLabelIndex, columnCount()));
+    index (s_daysLabelIndex, columnCount (index (s_daysLabelIndex, 0))));
 }
 
 void DapQmlModelSettings::slotCountryChange()
 {
-    if (s_countryIndex == -1)
-      return;
-    beginResetModel();
-    s_items[s_countryIndex].m_textSub = getCurrentCountryCode();
-    endResetModel();
+  if (s_countryIndex == -1)
+    return;
 
-    emit dataChanged (
-      index (s_daysLabelIndex, 0),
-          index (s_daysLabelIndex, columnCount()));
+  s_items[s_countryIndex].m_textSub = getCurrentCountryCode();
+
+  emit dataChanged (
+    index (s_countryIndex, 0),
+    index (s_countryIndex, columnCount (index (s_countryIndex, 0))));
 }
 
 void DapQmlModelSettings::slotRetranslate()
