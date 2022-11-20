@@ -46,17 +46,19 @@ class NodeConnectStateMachine
 public:
     explicit NodeConnectStateMachine()
     { init(); }
-    void start() { nodeConnectMachine.start();}
+    void start() { nodeConnectMachine.start(); }
     QState initialState;
     QState nodeDetection;
     QState nodeNotDetected;
     QState nodeConnection;
     QState nodeNotConnected;
     QState nodeGetStatus;
-    QState nodeGetWallets;
-    QState nodeGetNetworks;
-    QState nodeGetDataWallet;
-    QState nodeCondTxCreate;
+    QState getWallets;
+    QState getNetworks;
+    QState getDataWallet;
+    QState condTxCreate;
+    QState ledgerTxHashRequest;
+    QState ledgerTxHashEmpty;
 private:
     QStateMachine nodeConnectMachine;
     void init(){
@@ -66,10 +68,11 @@ private:
         nodeConnectMachine.addState(&nodeConnection);
         nodeConnectMachine.addState(&nodeNotConnected);
         nodeConnectMachine.addState(&nodeGetStatus);
-        nodeConnectMachine.addState(&nodeGetWallets);
-        nodeConnectMachine.addState(&nodeGetNetworks);
-        nodeConnectMachine.addState(&nodeGetDataWallet);
-        nodeConnectMachine.addState(&nodeCondTxCreate);
+        nodeConnectMachine.addState(&getWallets);
+        nodeConnectMachine.addState(&getNetworks);
+        nodeConnectMachine.addState(&getDataWallet);
+        nodeConnectMachine.addState(&condTxCreate);
+        nodeConnectMachine.addState(&ledgerTxHashRequest);
         nodeConnectMachine.setInitialState(&initialState);
         qDebug() << "nodeConnectMachine::init";
     }
@@ -97,6 +100,12 @@ private:
     DapNetworkAccessManager * m_httpClient;
     // cellframe dashboard connect id
     QString m_connectId;
+    QString m_selectedNetwork;
+    QString m_tokenName;
+    QString m_walletName;
+    QString m_value;
+    QString m_unit;
+    QString m_transactionHash;
     // wallets list
     QStringList m_walletsList;
     // network list
@@ -106,7 +115,7 @@ private:
     //
     bool m_parseJsonError;
     // state machine
-    NodeConnectStateMachine *m_stateMachine;
+    NodeConnectStateMachine *m_stm;
     QJsonObject m_walletsData;
 
 public:
@@ -123,9 +132,14 @@ private:
                      const QString & urlPath, DapNetworkReply &a_netReply,
                      const QString &headers = "", bool ssl = false);
     bool jsonError() { return m_parseJsonError; }
+    void initTransitions();
     void initStates();
     void responseProcessing(const int error, const QString errorString = "", const bool httpFinished = true);
 
+
+    void responseParsing(const int error, DapNodeErrors errorType, const QString errorString, const bool httpFinished,
+                DapNodeErrors getReplyDataError, QString messageReplyDataError,
+                void(DapNode::*parseMethod)(const QString&));
 
 public slots:
     void startCheckingNodeRequest();
@@ -138,27 +152,30 @@ private slots:
     void nodeConnectionRequest();
     void connectReply();
     void nodeStatusRequest();
-    void nodeStatusReply();
     void walletsRequest();
-    void walletsListReply();
     void networksRequest();
-    void networksListReply();
     void walletDataRequest();
-    void dataWalletReply();
-    void replyError(DapNodeErrors errorType, const QString errorString = QString(""), const bool httpFinished = true);
-    void parseReplyConnect(const QString replyData);
-    void parseReplyNetworks(const QString replyData);
-    void parseReplyWallets(const QString replyData);
-    void parseDataWallet(const QString replyData);
+    void condTxCreateRequest();
+    void getLedgerTxHashRequest();
+    void nodeStatusOkReply(const QString& replyData);
+    void parseReplyConnect(const QString& replyData);
+    void parseReplyNetworks(const QString& replyData);
+    void parseReplyWallets(const QString& replyData);
+    void parseDataWallet(const QString& replyData);
+    void parseCondTxCreateReply(const QString& replyData);
+    void parseLedgerReply(const QString& replyData);
     void parseJsonError(QString replyData);
+    void replyError(DapNodeErrors errorType, const QString errorString = QString(""), const bool httpFinished = true);
 
 signals:
     // -------- output signals --------
+    void sigError(int errorCode, QString errorMessage);
     void sigReceivedWalletsList(QStringList);
     void sigReceivedNetworksList(QStringList);
-    void sigError(int errorCode, QString errorMessage);
     void sigNodeDetected();
-    void walletsDataReady(QJsonObject);
+    void sigWalletsDataReady(QJsonObject);
+    void sigCondTxCreateSuccess();
+    void sigLedgerContainHash();
     // --- external (input) signals ---
     void startNodeDetection();
     void stopNodeDetection();
