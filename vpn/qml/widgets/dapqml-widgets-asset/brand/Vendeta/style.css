@@ -189,16 +189,19 @@
 .sep-left
 {
 	qproperty-scaledPixmap: "@separator-left";
+	scaled-rect: scaled(nan,nan,8,4,false);
 }
 
 .sep-mid
 {
 	qproperty-scaledPixmap: "@separator-mid";
+	scaled-rect: scaled(nan,nan,nan,4,false);
 }
 
 .sep-right
 {
 	qproperty-scaledPixmap: "@separator-right";
+	scaled-rect: scaled(nan,nan,8,4,false);
 }
 
 
@@ -357,6 +360,11 @@
 .content-frame
 {
 	scaled-rect: scaled(0,0,-1,754,false);
+}
+
+.content-mid
+{
+	scaled-rect: scaled(-1,nan,356,nan,false);
 }
 
 .content-background

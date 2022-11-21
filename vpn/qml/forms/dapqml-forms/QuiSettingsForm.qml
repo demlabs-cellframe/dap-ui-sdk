@@ -98,6 +98,15 @@ Item {
     }
 
     /****************************************//**
+     * Resizer
+     ********************************************/
+
+    DapQmlDummy {
+        id: contentRect
+        qss: "content-mid"
+    }
+
+    /****************************************//**
      * Content
      ********************************************/
 
@@ -129,9 +138,9 @@ Item {
             id: settingsListView
             objectName: "settingsListView"
 
-            x: 36
+            x: contentRect.x
             y: 0
-            width: root.width - 72
+            width: contentRect.width // root.width - 72
             height: root.height
 
             clip: false
