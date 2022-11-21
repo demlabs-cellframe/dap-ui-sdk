@@ -836,7 +836,7 @@ Rectangle {
 
                 /* background */
                 background: DapQmlRectangle {
-                    qss: "ch-country-filter"
+                    qss: "c-background"
                 }
 
                 /* font config */

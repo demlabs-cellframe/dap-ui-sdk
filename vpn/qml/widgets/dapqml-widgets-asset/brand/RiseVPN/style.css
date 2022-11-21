@@ -197,9 +197,18 @@
 
 
 
+.line-edit-icon
+{
+    scaled-rect: scaled(nan,nan,20,20,true);
+}
+
+
+
 .form-title-close-btn
 {
     scaled-rect: scaled(0,0,28,28,true);
+    inactive: "@btn-close";
+    active: "@btn-close-hover";
 }
 
 .form-title-label
@@ -420,6 +429,16 @@
     qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/Spinner.gif");
 }
 
+.ic_location
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_location.png");
+}
+
+.ic_country_filter
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_filter.png");
+}
+
 .ic_online
 {
     qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/icon_online.png");
@@ -537,7 +556,7 @@
 
 .footer-frame
 {
-    scaled-rect: scaled(-1,0,-1,201,false);
+    scaled-rect: scaled(nan,nan,-1,201,false);
 }
 
 .footer-btn-settings
@@ -1330,4 +1349,28 @@
     scaled-rect: scaled(nan,nan,28,28,true);
     active: "@btn-close-hover";
     inactive: "@btn-close";
+}
+
+/****************************************************
+ * Choose Country
+ ***************************************************/
+
+.ch-country-filter-border
+{
+    border-width: 1;
+    border-color: "@light-grey";
+    radius: 5;
+    scaled-rect: scaled(-1,nan,363,48,false);
+}
+
+.ch-country-filter-text
+{
+    color: "@text";
+    scaled-font: scaled(16);
+}
+
+.ch-country-filter-clear
+{
+    qproperty-inactive: "@btn-close";
+    qproperty-active: "@btn-close-hover";
 }

@@ -13,32 +13,32 @@
 	accent: "#F53172";
 	upload: "#5E31F5";
 	grid: "#211F46";
-        switch-bg-on:               "qrc:/light/switch/bg_on.png";
-        switch-bg-off:              "qrc:/light/switch/bg_off.png";
-        switch-toggle-on:           "qrc:/light/switch/toggle_on.png";
-        switch-toggle-off:          "qrc:/light/switch/toggle_off.png";
-        button-frame:               "qrc:/light/btn_server_bg.png";
-        checkbox-on:                "qrc:/light/check_btn_on.png";
-        checkbox-off:               "qrc:/light/check_btn_off.png";
-        radio-on:                   "qrc:/light/radio_btn_on.png";
-        radio-off:                  "qrc:/light/radio_btn_off.png";
+	switch-bg-on:               "qrc:/light/switch/bg_on.png";
+	switch-bg-off:              "qrc:/light/switch/bg_off.png";
+	switch-toggle-on:           "qrc:/light/switch/toggle_on.png";
+	switch-toggle-off:          "qrc:/light/switch/toggle_off.png";
+	button-frame:               "qrc:/light/btn_server_bg.png";
+	checkbox-on:                "qrc:/light/check_btn_on.png";
+	checkbox-off:               "qrc:/light/check_btn_off.png";
+	radio-on:                   "qrc:/light/radio_btn_on.png";
+	radio-off:                  "qrc:/light/radio_btn_off.png";
 	separator-left:             "qrc:/light/separator_left.png";
 	separator-mid:              "qrc:/light/separator_mid.png";
 	separator-right:            "qrc:/light/separator_right.png";
-        push-button-active:         "qrc:/light/btn_bg_hover_active.png";
-        push-button-inactive:       "qrc:/light/btn_bg.png";
+	push-button-active:         "qrc:/light/btn_bg_hover_active.png";
+	push-button-inactive:       "qrc:/light/btn_bg.png";
 	footer-settings-active:     "qrc:/light/btn_settings_active.png";
 	footer-settings-inactive:   "qrc:/light/btn_settings.png";
 	footer-dashboard-active:    "qrc:/light/btn_connection_active.png";
 	footer-dashboard-inactive:  "qrc:/light/btn_connection.png";
 	footer-statistics-active:   "qrc:/light/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/light/btn_account.png";
-        bugrep-bg:                  "qrc:/light/report_bg_border.png";
-        login-logo:                 "qrc:/light/login-logo.png";
-        btn-close:                  "qrc:/light/ic_close.png";
-        btn-close-hover:            "qrc:/light/ic_close_hover.png";
-        country-filter-clear:       "qrc:/light/btn_filter_clear.png"
-        country-filter-clear-hover: "qrc:/light/btn_filter_clear_hover.png"
+	bugrep-bg:                  "qrc:/light/report_bg_border.png";
+	login-logo:                 "qrc:/light/login-logo.png";
+	btn-close:                  "qrc:/light/ic_close.png";
+	btn-close-hover:            "qrc:/light/ic_close_hover.png";
+	country-filter-clear:       "qrc:/light/btn_filter_clear.png"
+	country-filter-clear-hover: "qrc:/light/btn_filter_clear_hover.png"
 }
 
 .@dark
@@ -52,32 +52,32 @@
 	accent: "#FF22A2";
 	upload: "#9F83FF";
 	grid: "#211F46";
-        switch-bg-on:               "qrc:/dark/switch/bg_on.png";
-        switch-bg-off:              "qrc:/dark/switch/bg_off.png";
-        switch-toggle-on:           "qrc:/dark/switch/toggle_on.png";
-        switch-toggle-off:          "qrc:/dark/switch/toggle_off.png";
-        button-frame:               "qrc:/dark/btn_server_bg.png";
-        checkbox-on:                "qrc:/dark/check_btn_on.png";
-        checkbox-off:               "qrc:/dark/check_btn_off.png";
-        radio-on:                   "qrc:/dark/radio_btn_on.png";
-        radio-off:                  "qrc:/dark/radio_btn_off.png";
+	switch-bg-on:               "qrc:/dark/switch/bg_on.png";
+	switch-bg-off:              "qrc:/dark/switch/bg_off.png";
+	switch-toggle-on:           "qrc:/dark/switch/toggle_on.png";
+	switch-toggle-off:          "qrc:/dark/switch/toggle_off.png";
+	button-frame:               "qrc:/dark/btn_server_bg.png";
+	checkbox-on:                "qrc:/dark/check_btn_on.png";
+	checkbox-off:               "qrc:/dark/check_btn_off.png";
+	radio-on:                   "qrc:/dark/radio_btn_on.png";
+	radio-off:                  "qrc:/dark/radio_btn_off.png";
 	separator-left:             "qrc:/dark/separator_left.png";
 	separator-mid:              "qrc:/dark/separator_mid.png";
 	separator-right:            "qrc:/dark/separator_right.png";
-        push-button-active:         "qrc:/dark/btn_bg_hover_active.png";
-        push-button-inactive:       "qrc:/dark/btn_bg.png";
+	push-button-active:         "qrc:/dark/btn_bg_hover_active.png";
+	push-button-inactive:       "qrc:/dark/btn_bg.png";
 	footer-settings-active:     "qrc:/dark/btn_settings_active.png";
 	footer-settings-inactive:   "qrc:/dark/btn_settings.png";
 	footer-dashboard-active:    "qrc:/dark/btn_connection_active.png";
 	footer-dashboard-inactive:  "qrc:/dark/btn_connection.png";
 	footer-statistics-active:   "qrc:/dark/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/dark/btn_account.png";
-        bugrep-bg:                  "qrc:/dark/report_bg_border.png";
-        login-logo:                 "qrc:/dark/login-logo.png";
-        btn-close:                  "qrc:/dark/ic_close.png";
-        btn-close-hover:            "qrc:/dark/ic_close_hover.png";
-        country-filter-clear:       "qrc:/dark/btn_filter_clear.png"
-        country-filter-clear-hover: "qrc:/dark/btn_filter_clear_hover.png"
+	bugrep-bg:                  "qrc:/dark/report_bg_border.png";
+	login-logo:                 "qrc:/dark/login-logo.png";
+	btn-close:                  "qrc:/dark/ic_close.png";
+	btn-close-hover:            "qrc:/dark/ic_close_hover.png";
+	country-filter-clear:       "qrc:/dark/btn_filter_clear.png"
+	country-filter-clear-hover: "qrc:/dark/btn_filter_clear_hover.png"
 }
 
 /****************************************************
@@ -175,12 +175,18 @@
 
 
 
+.line-edit-icon
+{
+	scaled-rect: scaled(nan,nan,20,20,true);
+}
+
+
+
 .form-title-close-btn
 {
 	scaled-rect: scaled(0,0,28,28,true);
-        active: "@btn-close-hover";
-        inactive: "@btn-close";
-
+	active: "@btn-close-hover";
+	inactive: "@btn-close";
 }
 
 .form-title-label
@@ -317,6 +323,16 @@
 .ic_spinner
 {
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/Spinner.gif");
+}
+
+.ic_location
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_location.png");
+}
+
+.ic_country_filter
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_filter.png");
 }
 
 .ic_online
@@ -1020,35 +1036,22 @@
  * Choose Country
  ***************************************************/
 
-.ic_location
-{
-        qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_location.png");
-}
-
-.ic_country_filter
-{
-        qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/filter.png");
-}
-
 .ch-country-filter-border
 {
-        border-width: 1;
-        border-color: "@light-grey";
-        radius: 5;
-}
-
-.ch-country-filter
-{
-        color: "@background";
+	border-width: 1;
+	border-color: "@light-grey";
+	radius: 5;
+    scaled-rect: scaled(-1,nan,363,48,false);
 }
 
 .ch-country-filter-text
 {
-        color: "@text";
+	color: "@text";
+	scaled-font: scaled(14);
 }
 
 .ch-country-filter-clear
 {
-        inactive: "@country-filter-clear-hover";
-        active: "@country-filter-clear";
+	qproperty-inactive: "@btn-close";
+	qproperty-active: "@btn-close-hover";
 }

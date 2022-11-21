@@ -35,6 +35,8 @@
 	footer-statistics-inactive: "qrc:/light/btn_account.png";
 	bugrep-bg: 					"qrc:/light/report_bg_border.png";
 	login-logo: 				"qrc:/light/login-logo.png";
+	btn-close:                  "qrc:/light/ic_close.png";
+	btn-close-hover:            "qrc:/light/ic_close_hover.png";
 }
 
 .@dark
@@ -70,6 +72,8 @@
 	footer-statistics-inactive: "qrc:/dark/btn_account.png";
 	bugrep-bg: 					"qrc:/dark/report_bg_border.png";
 	login-logo: 				"qrc:/dark/login-logo.png";
+	btn-close:                  "qrc:/dark/ic_close.png";
+	btn-close-hover:            "qrc:/dark/ic_close_hover.png";
 }
 
 /****************************************************
@@ -169,12 +173,18 @@
 
 
 
+.line-edit-icon
+{
+	scaled-rect: scaled(nan,nan,20,20,true);
+}
+
+
+
 .form-title-close-btn
 {
 	scaled-rect: scaled(0,0,28,28,true);
-        active: "@btn-close-hover";
-        inactive: "@btn-close";
-
+	active: "@btn-close-hover";
+	inactive: "@btn-close";
 }
 
 .form-title-label
@@ -313,6 +323,16 @@
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/Spinner.gif");
 }
 
+.ic_location
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_location.png");
+}
+
+.ic_country_filter
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_filter.png");
+}
+
 .ic_online
 {
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/icon_online.png");
@@ -430,7 +450,7 @@
 
 .footer-frame
 {
-	scaled-rect: scaled(-1,0,-1,201,false);
+	scaled-rect: scaled(nan,nan,-1,201,false);
 }
 
 .footer-btn-settings
@@ -1014,35 +1034,22 @@
  * Choose Country
  ***************************************************/
 
-.ic_location
-{
-        qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_location.png");
-}
-
-.ic_country_filter
-{
-        qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/filter.png");
-}
-
 .ch-country-filter-border
 {
-        border-width: 1;
-        border-color: "@light-grey";
-        radius: 5;
-}
-
-.ch-country-filter
-{
-        color: "@background";
+	border-width: 1;
+	border-color: "@light-grey";
+	radius: 5;
+    scaled-rect: scaled(-1,nan,363,48,false);
 }
 
 .ch-country-filter-text
 {
-        color: "@text";
+	color: "@text";
+	scaled-font: scaled(14);
 }
 
 .ch-country-filter-clear
 {
-        inactive: "@country-filter-clear-hover";
-        active: "@country-filter-clear";
+	qproperty-inactive: "@btn-close";
+	qproperty-active: "@btn-close-hover";
 }
