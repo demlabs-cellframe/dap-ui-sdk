@@ -436,7 +436,7 @@
 
 .footer-frame
 {
-	scaled-rect: scaled(-1,0,-1,201,false);
+	scaled-rect: scaled(nan,nan,-1,201,false);
 }
 
 .footer-btn-settings
