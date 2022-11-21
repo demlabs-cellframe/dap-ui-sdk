@@ -2,7 +2,7 @@
 #include "DapCmdNode.h"
 #include <QDebug>
 
-#define DEBUGINFO qDebug()<<"----U<<<-----"
+#define DEBUGINFO qDebug()<<"--->UiCMD<---"
 
 // ui side
 
@@ -58,6 +58,13 @@ void DapCmdNode::handle(const QJsonObject *params)
                 {
                     DEBUGINFO << "node detected";
                     emit nodeDetected();
+                    return;
+                }
+                // transaction hash in ledger
+                if (nodeData["transaction_hash_in_ledger"].isBool() && nodeData["transaction_hash_in_ledger"].toBool())
+                {
+                    DEBUGINFO << "transaction hash in ledger";
+                    emit transactionHashInledger();
                     return;
                 }
             }

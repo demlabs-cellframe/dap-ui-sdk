@@ -127,6 +127,7 @@ signals:
     void tokensInfo(QMap<QString, QVariant> data);
     void tokenAmount(QString token, QString amount);
     void nodeError(int code, QString errorMessage);
+    void transactionHashInledger();
 //    void dataWallets(WalletsData* walletsData);
 
 private:

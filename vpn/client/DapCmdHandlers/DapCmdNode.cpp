@@ -4,7 +4,7 @@
 #include "DapSession.h"
 
 // client, service side
-#define DEBUGINFO qDebug()<<"-----<<<<<---"
+#define DEBUGINFO qDebug()<<"--->SrvCMD<---"
 
 const QString DapCmdNode::actionParam = "node_data";
 
@@ -87,6 +87,17 @@ void DapCmdNode::sendWalletsData(const QJsonObject& a_walletsData)
     response[DapCmdNode::actionParam] = walletsData;
     sendCmd(&response);
     DEBUGINFO << "sendWalletsData" << response;
+}
+
+void DapCmdNode::sendTransactionInLedger()
+{
+    QJsonObject response;
+    QJsonObject nodeInfo;
+    nodeInfo["status"] = "ok";
+    nodeInfo["transaction_hash_in_ledger"] = true;
+    response[DapCmdNode::actionParam] = nodeInfo;
+    sendCmd(&response);
+    DEBUGINFO << "sendTransactionInLedger";
 }
 
 void DapCmdNode::handle(const QJsonObject* params)
