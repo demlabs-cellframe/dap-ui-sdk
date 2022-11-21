@@ -364,7 +364,7 @@
 
 .content-mid
 {
-	scaled-rect: scaled(-1,nan,356,nan,false);
+	scaled-rect: scaled(-1,nan,363,nan,false);
 }
 
 .content-background
@@ -642,9 +642,9 @@
 
 .sett-btn-lbl-sub-link
 {
-        color: "@light-grey";
-        scaled-font: scaled(16);
-        font-weight: Font.Normal;
+	color: "@light-grey";
+	scaled-font: scaled(16);
+	font-weight: Font.Normal;
 }
 
 .sett-title-lbl-main
