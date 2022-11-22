@@ -26,16 +26,12 @@ Item
 
     property string mainTextRole: "name"
     property string secondTextRole: "secondname"
-    property string imageRole: "status"
 
     property string defaultText: qsTr("Undefined")
 
     property string displayText: defaultText
 
     property color backgroundColor: currTheme.backgroundElements
-
-    property string enabledIcon:""
-    property string disabledIcon:""
 
     signal itemSelected(var index)
 
@@ -257,16 +253,6 @@ Item
                             font.pointSize: mainItem.font.pointSize - 3
                             elide: Text.ElideRight
                             verticalAlignment: Text.AlignVCenter
-                        }
-
-                        Image{
-                            property var data: getModelData(index, imageRole)
-                            id: statusIcon
-                            visible: data === "" ? false : true
-                            // wallets combobox
-                            source: data === "Active" ? enabledIcon : disabledIcon
-                            mipmap: true
-
                         }
                     }
 
