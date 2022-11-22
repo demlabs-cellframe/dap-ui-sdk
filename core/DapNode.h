@@ -37,6 +37,7 @@
 #include "DapNetworkReply.h"
 
 #include "DapCmdNode.h"
+#include "DapNodeWeb3.h"
 
 #include <QStateMachine>
 #include <QState>
@@ -79,69 +80,55 @@ private:
     }
 };
 
-enum class DapNodeErrors
-{
-    NetworkReplyConnectError,
-    NetworkReplyStatusError,
-    NetworkReplyWalletsError,
-    NetworkReplyNetworksListError,
-    NetworkWrongReplyError,
-    TimerElapsed,
-    JsonError,
-    StatusError
-};
-
 int DapNodeErrorCode(DapNodeErrors, const bool httpFinished);
 
 class DapNode : public QObject
 {
     Q_OBJECT
 private:
-    const int m_requestTimeout;
-    DapNetworkAccessManager * m_httpClient;
+//    const int m_requestTimeout;
+    DapNodeWeb3* web3;
     // cellframe dashboard connect id
-    QString m_connectId;
-    QString m_selectedNetwork;
+    // user selected data
+    // transaction network name
+    QString m_networkName;
+    // transaction token name
     QString m_tokenName;
+    // transaction srtificate name
     QString m_sertificateName;
+    // transaction wallet name
     QString m_walletName;
+    // transaction value
     QString m_value;
+    // transaction unit
     QString m_unit;
+    // transaction hash
     QString m_transactionHash;
     // wallets list
     QStringList m_walletsList;
     // network list
     QStringList m_networksList;
-    DapNetworkReply *m_networkReply;
-    QString m_networkRequest;
-    //
-    bool m_parseJsonError;
     // state machine
     NodeConnectStateMachine *m_stm;
+    //wallets data
     QJsonObject m_walletsData;
 
 public:
     static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
     static const QString WEB3_URL;
     static const quint16 WEB3_PORT;
+    static const qint32 NODE_DETECT_REQUEST_REPEAT_PERIOD;
+    static const qint32 NODE_CONNECT_REQUEST_REPEAT_PERIOD;
+    static const qint32 LEDGER_REQUEST_REPEAT_PERIOD;
 
     DapNode(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
     ~DapNode();
     void start();
 
 private:
-    void request_GET(const QString& host,  quint16 port,
-                     const QString & urlPath, DapNetworkReply &a_netReply,
-                     const QString &headers = "", bool ssl = false);
-    bool jsonError() { return m_parseJsonError; }
     void initTransitions();
     void initStates();
-    void responseProcessing(const int error, const QString errorString = "", const bool httpFinished = true);
-
-
-    void responseParsing(const int error, DapNodeErrors errorType, const QString errorString, const bool httpFinished,
-                DapNodeErrors getReplyDataError, QString messageReplyDataError,
-                void(DapNode::*parseMethod)(const QString&));
+    void initWeb3Connections();
 
 public slots:
     void startCheckingNodeRequest();
@@ -149,25 +136,8 @@ public slots:
     void slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
 
 private slots:
-    void sendRequest(QString request);
-    void nodeDetectedRequest();
-    void nodeConnectionRequest();
-    void connectReply();
-    void nodeStatusRequest();
-    void walletsRequest();
-    void networksRequest();
     void walletDataRequest();
-    void condTxCreateRequest();
-    void getLedgerTxHashRequest();
-    void nodeStatusOkReply(const QString& replyData);
-    void parseReplyConnect(const QString& replyData);
-    void parseReplyNetworks(const QString& replyData);
-    void parseReplyWallets(const QString& replyData);
-    void parseDataWallet(const QString& replyData);
-    void parseCondTxCreateReply(const QString& replyData);
-    void parseLedgerReply(const QString& replyData);
-    void parseJsonError(QString replyData);
-    void replyError(DapNodeErrors errorType, const QString errorString = QString(""), const bool httpFinished = true);
+    void parseDataWallet(const QJsonArray walletData);
 
 signals:
     // -------- output signals --------
@@ -176,83 +146,19 @@ signals:
     void sigReceivedNetworksList(QStringList);
     void sigNodeDetected();
     void sigWalletsDataReady(QJsonObject);
-    void sigCondTxCreateSuccess();
     void sigLedgerContainHash();
-    // --- external (input) signals ---
-    void uiStartNodeDetection();
-    void uiStopNodeDetection();
-    void dataWalletRequest();
-    void uiCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
+//    void sigCondTxCreateSuccess();
     // ------- internal signals --------
-    void errorDetect();
-    void nodeDetected();
-    void nodeNotDetected();
+    void uiStartNodeDetection();
+    void errorDetected();
     void repeatNodeDetection();
-    void nodeNotConnected();
     void repeatNodeConnection();
     void repeatReadLedger();
-    void connectionIdReceived();
     void walletsReceived();
     void networksReceived();
-    void checkNodeStatus();
     void sigCondTxCreateRequest();
-    void statusOk();
     void walletListIsEmpty();
 
 };
-
-
-
-//{
-//"data": [
-//    {
-//        "address": "mWNv7A43YnqRHCWVJG2zobGRUWepgMs5b2K2Hq4w7QePxDXoy1VArS2vhdyAxp5cSR1Q2qUYQDkYQs4uFxr7TP3WnJzzTWa2iGFdDDv7",
-//        "network": "mileena",
-//        "tokens": [
-//            {
-//                "balance": "0",
-//                "datoshi": "0",
-//                "tokenName": "0"
-//            }
-//        ]
-//    },
-//    {
-//        "address": "mJUUJk6Yk2gBSTjcDvqqLvGTgcNFZeZbCmrD3Mb1QycVPZmZcUVmH9WW8aLixh6M7XfzLWYGbSGSGwMSV6PiVwcLnbjZvoAfmQEfqEsN",
-//        "network": "subzero",
-//        "tokens": [
-//            {
-//                "balance": "0",
-//                "datoshi": "0",
-//                "tokenName": "0"
-//            }
-//        ]
-//    },
-//    {
-//        "address": "Rj7J7MiX2bWy8sNyaJdTGtjsUzwUbDHsfT3EnKN4Nhcmcf2bRxgx5GoXxgR6q3YDu8s64PGvbbHhh21jSgns6tjTXy6ADf4ga1XdnJnk",
-//        "network": "Backbone",
-//        "tokens": [
-//            {
-//                "balance": "0",
-//                "datoshi": "0",
-//                "tokenName": "0"
-//            }
-//        ]
-//    },
-//    {
-//        "address": "iDAeSXFFiwH2LyhqupWKEHqfCbSQFvTXoPm4bU9VyboenWTxeviL5AjVo54dXCbGctryNgFiV91UcD8hmMaNChgyGuQusikS5W9dUYGA",
-//        "network": "kelvpn-minkowski",
-//        "tokens": [
-//            {
-//                "balance": "0",
-//                "datoshi": "0",
-//                "tokenName": "0"
-//            }
-//        ]
-//    }
-//],
-//"errorMsg": "",
-//"status": "ok"
-//}
-
 
 #endif // DAPNODE_H

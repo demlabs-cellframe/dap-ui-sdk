@@ -68,8 +68,11 @@ Item {
         /// @brief login mode
         property int mode: QuiLoginForm.Mode.M_SERIAL
 
-        /// @brief kel cellframe dashdoard use
+        /// @brief kel cellframe dashdoard detected
         property bool cellfarameDetected: false
+
+        /// @brief kel transaction processing for NoCBD
+        property bool transactionProcessing: true
 
         /// @brief show password contents
         property bool showPassword: false
@@ -176,6 +179,20 @@ Item {
         btnChooseWallet.subText = a_data;
     }
 
+    /// @brief set transaction processing flag for noCBD
+    function setTransactionProcessing(a_data){
+        internal.transactionProcessing = a_data;
+    }
+
+    function setTransactionWalletNetwork(row2) {
+        transactionProcessingWalletData.text = row2
+    }
+
+    function setTransactionAmount(row3) {
+        transactionProcessingAmount.text = row3
+    }
+
+
     /// @brief set input mask for serial input
     function setupInputMask() {
         //btnEnterSerial.inputMask    = ">NNNN-NNNN-NNNN-NNNN;_"
@@ -271,7 +288,7 @@ Item {
     }
 
     /****************************************//**
-     * KelVPN login type select for NoCBD
+     * KelVPN login type select for NoCBD (SERIAL, WALLET)
      ********************************************/
 
     Rectangle {
@@ -392,7 +409,7 @@ Item {
         y:      loginSpacer.y + loginWalletPlacer.y
         width:  loginWalletPlacer.width
         height: loginWalletPlacer.height
-        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected
+        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && !internal.transactionProcessing
 
         DapQmlButton {
             id: btnChooseWallet
@@ -434,14 +451,14 @@ Item {
         y:      loginSpacer.y + loginCellPlacer.y
         width:  loginCellPlacer.width
         height: loginCellPlacer.height
-        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected
+        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && !internal.transactionProcessing
 
         DapQmlButton {
             id: btnChooseCell
             x: (parent.width - width) / 2
             z: 15
             width: parent.width - 74
-            property string defaultServerName: qsTr("Auto select") + lang.notifier
+            property string defaultServerName: qsTr("100") + lang.notifier
 
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
             mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
@@ -476,11 +493,7 @@ Item {
         y:      loginSpacer.y + loginServerPlacer.y
         width:  loginServerPlacer.width
         height: loginServerPlacer.height
-
-//                            Rectangle {
-//                                color: "green"
-//                                anchors.fill: parent
-//                            }
+        visible:!(Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && internal.transactionProcessing)
 
         DapQmlButton {
             id: btnChooseServer
@@ -526,6 +539,33 @@ Item {
                  : "login-btn-server-container"
 
         }
+    }
+    /****************************************//**
+     * Transaction processing label
+     ********************************************/
+    DapQmlLabel {
+        id: transactionProcessingLabel
+        qss: "login-transaction-processing-label-nocbd"
+        text: "Transaction is in progress"
+        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && internal.transactionProcessing
+    }
+    DapQmlLabel {
+        id: transactionProcessingWalletData
+        qss: "login-transaction-processing-wallet-data-label-nocbd"
+        text: "BackBone - WalletName"
+        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && internal.transactionProcessing
+    }
+    DapQmlLabel {
+        id: transactionProcessingAmount
+        qss: "login-transaction-processing-amount-label-nocbd"
+        text: "Amount: 100 CELL"
+        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && internal.transactionProcessing
+    }
+    DapQmlLabel {
+        id: transactionProcessingStatus
+        qss: "login-transaction-processing-status-label-nocbd"
+        text: "Current status: In mempool"
+        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && internal.transactionProcessing
     }
 
     /****************************************//**
@@ -752,10 +792,6 @@ Item {
      ********************************************/
 
     DapQmlRectangle {
-//                    Rectangle {
-//                        color: "green"
-//                        anchors.fill: parent
-//                    }
         qss: Brand.name() === "KelVPN" && internal.cellfarameDetected
 //                 NoCBD mode
              ? "login-obtain-container-mocbd-mode"

@@ -1,4 +1,4 @@
-#include "DapNode.h"
+#include "DapNodeWeb3.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QProcess>
@@ -7,57 +7,36 @@
 #include <QDebug>
 
 
-//#define SIGERROR (QNetworkReply::NetworkError::UnknownServerError + 1)
 #define SIGERROR (110)
-#define NODE_DETECT_REQUEST_REPEAT_PERIOD (DapNode::DEFAULT_REQUEST_TIMEOUT)
-#define NODE_CONNECT_REQUEST_REPEAT_PERIOD (500)
-#define LEDGER_REQUEST_REPEAT_PERIOD (10000)
-#define DEBUGINFO qDebug()<<"--->SrvNode<---"
+#define DEBUGINFO qDebug()<<"--->Web3<---"
 
-const QString  DapNode::WEB3_URL      ("localhost");
-const quint16  DapNode::WEB3_PORT     (8045);
+const QString  DapNodeWeb3::WEB3_URL      ("localhost");
+const quint16  DapNodeWeb3::WEB3_PORT     (8045);
 
 
-//"method\=\S*\&{1}"
-
-DapNode:: DapNode(QObject * obj, int requestTimeout) :
-    QObject(obj), m_requestTimeout(requestTimeout),
+DapNodeWeb3:: DapNodeWeb3(QObject * obj, int requestTimeout) :
+    QObject(obj),
+    m_requestTimeout(requestTimeout),
     m_connectId(QString()),
     m_networkReply(nullptr),
-    m_networkRequest(QString()),
-    m_stm(new NodeConnectStateMachine)
+    m_networkRequest(QString())
 {
     m_httpClient = new DapNetworkAccessManager();
-    initTransitions();
-    initStates();
 }
 
 
-DapNode::~ DapNode()
+DapNodeWeb3::~ DapNodeWeb3()
 {
 }
 
-
-void DapNode::request_GET(const QString& host,  quint16 port, const QString & urlPath,
+void DapNodeWeb3::request_GET(const QString& host,  quint16 port, const QString & urlPath,
                            DapNetworkReply &a_netReply, const QString& headers, bool ssl)
 {
+    Q_UNUSED(ssl)
     m_httpClient->requestHttp_GET(host, port, urlPath, headers, a_netReply);
 }
 
-
-void DapNode::stopCheckingNodeRequest()
-{
-
-}
-
-
-void DapNode::startCheckingNodeRequest()
-{
-    DEBUGINFO << "startCheckingNodeRequest";
-    emit uiStartNodeDetection();
-}
-
-void DapNode::sendRequest(QString request)
+void DapNodeWeb3::sendRequest(QString request)
 {
     m_networkReply =  new DapNetworkReply;
     connect( m_networkReply, &DapNetworkReply::finished, this, [=] {
@@ -71,14 +50,13 @@ void DapNode::sendRequest(QString request)
     request_GET(WEB3_URL, WEB3_PORT, request, *m_networkReply);
 }
 
-void DapNode::responseProcessing(const int error, const QString errorString, const bool httpFinished)
+void DapNodeWeb3::responseProcessing(const int error, const QString errorString, const bool httpFinished)
 {
     // local network request
     QString networkRequest(m_networkRequest);
     // reset m_networkRequest
     m_networkRequest = QString();
     // debug info
-//    DEBUGINFO << "responseProcessing" << error << errorString << networkRequest;
     // node connection reply
     if (networkRequest == "")
     {
@@ -112,7 +90,7 @@ void DapNode::responseProcessing(const int error, const QString errorString, con
     {
         responseParsing(error, DapNodeErrors::NetworkReplyStatusError, errorString, httpFinished,
                DapNodeErrors::NetworkReplyStatusError, "Wrong reply status",
-                        &DapNode::nodeStatusOkReply);
+                        &DapNodeWeb3::nodeStatusOkReply);
         return;
     }
     // wallets list reply
@@ -120,7 +98,7 @@ void DapNode::responseProcessing(const int error, const QString errorString, con
     {
         responseParsing(error, DapNodeErrors::NetworkReplyWalletsError, errorString, httpFinished,
                DapNodeErrors::NetworkWrongReplyError, "Wrong reply networks",
-               &DapNode::parseReplyWallets);
+               &DapNodeWeb3::parseReplyWallets);
         return;
     }
     // networks list reply
@@ -128,7 +106,7 @@ void DapNode::responseProcessing(const int error, const QString errorString, con
     {
         responseParsing(error, DapNodeErrors::NetworkReplyNetworksListError, errorString, httpFinished,
                DapNodeErrors::NetworkWrongReplyError, "Wrong reply nnetworks",
-               &DapNode::parseReplyNetworks);
+               &DapNodeWeb3::parseReplyNetworks);
         return;
     }
     // data wallets reply
@@ -136,7 +114,7 @@ void DapNode::responseProcessing(const int error, const QString errorString, con
     {
         responseParsing(error, DapNodeErrors::NetworkReplyNetworksListError, errorString, httpFinished,
                DapNodeErrors::NetworkWrongReplyError, "Wrong reply nnetworks",
-               &DapNode::parseDataWallet);
+               &DapNodeWeb3::parseDataWallet);
         return;
 
     }
@@ -145,7 +123,7 @@ void DapNode::responseProcessing(const int error, const QString errorString, con
     {
         responseParsing(error, DapNodeErrors::NetworkReplyNetworksListError, errorString, httpFinished,
                DapNodeErrors::NetworkWrongReplyError, "Wrong reply nnetworks",
-               &DapNode::parseCondTxCreateReply);
+               &DapNodeWeb3::parseCondTxCreateReply);
         return;
     }
     // ledger reply
@@ -153,27 +131,27 @@ void DapNode::responseProcessing(const int error, const QString errorString, con
     {
         responseParsing(error, DapNodeErrors::NetworkReplyNetworksListError, errorString, httpFinished,
                DapNodeErrors::NetworkWrongReplyError, "Wrong reply ledger",
-               &DapNode::parseLedgerReply);
+               &DapNodeWeb3::parseLedgerReply);
         return;
     }
 
 }
 
 
-void DapNode::nodeDetectedRequest()
+void DapNodeWeb3::nodeDetectedRequest()
 {
     DEBUGINFO << "sendRequest(\"\")";
     sendRequest("");
 }
 
-void DapNode::nodeConnectionRequest()
+void DapNodeWeb3::nodeConnectionRequest()
 {
     // http://127.0.0.1:8045/?method=Connect
     sendRequest("?method=Connect");
 }
 
 
-void DapNode::connectReply()
+void DapNodeWeb3::connectReply()
 {
     DEBUGINFO << "connectReply()";
     m_networkReply->getReplyData();
@@ -186,9 +164,9 @@ void DapNode::connectReply()
     parseReplyConnect(reply);
 }
 
-void DapNode::responseParsing(const int error, DapNodeErrors errorType, const QString errorString, const bool httpFinished,
+void DapNodeWeb3::responseParsing(const int error, DapNodeErrors errorType, const QString errorString, const bool httpFinished,
                      DapNodeErrors getReplyDataError, QString messageReplyDataError,
-                     void(DapNode::*parseMethod)(const QString&))
+                     void(DapNodeWeb3::*parseMethod)(const QString&))
 {
     if (error == QNetworkReply::NetworkError::NoError)
     {
@@ -209,32 +187,32 @@ void DapNode::responseParsing(const int error, DapNodeErrors errorType, const QS
     }
 }
 
-void DapNode::nodeStatusRequest()
+void DapNodeWeb3::nodeStatusRequest()
 {
     QString requesString = QString("?method=GetNodeStatus&id=%1").arg(m_connectId);
     sendRequest(requesString);
 }
 
-void DapNode::nodeStatusOkReply(const QString& replyData)
+void DapNodeWeb3::nodeStatusOkReply(const QString& replyData)
 {
     Q_UNUSED(replyData)
     emit statusOk();
 }
 
-void DapNode::walletsRequest()
+void DapNodeWeb3::walletsRequest()
 {
     //http://127.0.0.1:8045/?method=GetWallets&id=0x7D6878E27691240294BE6DE326F56FD1344087024F0FBBEA98B4A04321D21F73
     QString requesString = QString("?method=GetWallets&id=%1").arg(m_connectId);
     sendRequest(requesString);
 }
 
-void DapNode::networksRequest()
+void DapNodeWeb3::networksRequest()
 {
     QString requesString = QString("?method=GetNetworks&id=%1").arg(m_connectId);
     sendRequest(requesString);
 }
 
-void DapNode::parseReplyConnect(const QString& replyData)
+void DapNodeWeb3::parseReplyConnect(const QString& replyData)
 {
     // connect reply example
     //    "{"
@@ -256,14 +234,14 @@ void DapNode::parseReplyConnect(const QString& replyData)
         if (data["id"].isString())
         {
             m_connectId = data["id"].toString();
-            emit connectionIdReceived();
+            emit connectionIdReceived(m_connectId);
             DEBUGINFO << "[data][id]" << m_connectId;
         }
     }
 }
 
 
-void DapNode::parseReplyWallets(const QString& replyData)
+void DapNodeWeb3::parseReplyWallets(const QString& replyData)
 {
     // wallets reply exmple
     //    "{"
@@ -288,12 +266,11 @@ void DapNode::parseReplyWallets(const QString& replyData)
                 m_walletsList << i->toString();
         DEBUGINFO << "Wallets list: " << m_walletsList;
         emit sigReceivedWalletsList(m_walletsList);
-        emit walletsReceived();
     }
 }
 
 
-void DapNode::parseReplyNetworks(const QString& replyData)
+void DapNodeWeb3::parseReplyNetworks(const QString& replyData)
 {
     // networks reply exmple
     //    "{"
@@ -318,30 +295,20 @@ void DapNode::parseReplyNetworks(const QString& replyData)
                 m_networksList << i->toString();
         DEBUGINFO << "Networks list: " << m_walletsList;
         emit sigReceivedNetworksList(m_networksList);
-        emit networksReceived();
     }
 }
 
-void DapNode::walletDataRequest()
+void DapNodeWeb3::walletDataRequest(const QString& walletName)
 {
-    DEBUGINFO << "walletDataRequest" << m_walletsList;
-    if (m_walletsList.size() > 0)
-    {
-        QString requesString = QString("?method=GetDataWallet&id=%1&walletName=%2")
-                .arg(m_connectId)
-                .arg(m_walletsList[0]);
-        sendRequest(requesString);
-    }
-    else
-    {
-        emit sigWalletsDataReady(m_walletsData);
-        emit walletListIsEmpty();
-    }
+    QString requesString = QString("?method=GetDataWallet&id=%1&walletName=%2")
+            .arg(m_connectId)
+            .arg(walletName);
+    sendRequest(requesString);
 }
 
-void DapNode::parseDataWallet(const QString& replyData)
+void DapNodeWeb3::parseDataWallet(const QString& replyData)
 {
-    DEBUGINFO << "walletDataReply" << replyData;
+//    DEBUGINFO << "walletDataReply" << replyData;
     parseJsonError(replyData.toUtf8());
     if (jsonError())
         return;
@@ -349,13 +316,12 @@ void DapNode::parseDataWallet(const QString& replyData)
     if (doc["data"].isArray())
     {
         // wallet data
-        m_walletsData[m_walletsList[0]] = doc["data"];
-        m_walletsList.pop_front();
-        walletDataRequest();
+        DEBUGINFO << "walletDataReply" << doc["data"].toArray();
+        emit sigWalletDataReady(doc["data"].toArray());
     }
 }
 
-void DapNode::parseJsonError(QString replyData)
+void DapNodeWeb3::parseJsonError(QString replyData)
 {
     // reply exmple
     //    "{ ... "
@@ -395,165 +361,8 @@ void DapNode::parseJsonError(QString replyData)
     }
 }
 
-
-void DapNode::initTransitions()
+void DapNodeWeb3::condTxCreateRequest(QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit)
 {
-    DEBUGINFO << "initStates";
-    // node search  initialState -> startCheckingNode
-    m_stm->initialState.addTransition(this, &DapNode::uiStartNodeDetection,
-    &m_stm->nodeDetection);
-
-    // node detection -> node detected
-    m_stm->nodeDetection.addTransition(this, &DapNode::nodeDetected,
-    &m_stm->nodeConnection);
-    // node detection -> node detected
-    m_stm->nodeDetection.addTransition(this, &DapNode::checkNodeStatus,
-    &m_stm->nodeGetStatus);
-    // node detection -> get node status
-    m_stm->nodeDetection.addTransition(this, &DapNode::nodeNotDetected,
-    &m_stm->nodeNotDetected);
-
-    // node not detected -> node detection, repeat detection
-    m_stm->nodeNotDetected.addTransition(this, &DapNode::repeatNodeDetection,
-    &m_stm->nodeDetection);
-
-    // node connection -> node connected, wallets list request
-    m_stm->nodeConnection.addTransition(this, &DapNode::connectionIdReceived,
-    &m_stm->nodeGetStatus);
-    // node connection -> node not connected, repeat connection
-    m_stm->nodeConnection.addTransition(this, &DapNode::nodeNotConnected,
-    &m_stm->nodeNotConnected);
-
-    // node not connected -> node connection, repeat connection
-    m_stm->nodeNotConnected.addTransition(this, &DapNode::repeatNodeConnection,
-    &m_stm->nodeConnection);
-
-    // node status !ok -> nodeGetWallets
-    m_stm->nodeGetStatus.addTransition(this, &DapNode::errorDetect,
-    &m_stm->initialState);
-    // node status ok -> initialState
-    m_stm->nodeGetStatus.addTransition(this, &DapNode::statusOk,
-    &m_stm->getWallets);
-    //
-    m_stm->getWallets.addTransition(this, &DapNode::walletsReceived,
-    &m_stm->getNetworks);
-    //
-    m_stm->getWallets.addTransition(this, &DapNode::errorDetect,
-    &m_stm->initialState);
-    //
-    m_stm->getNetworks.addTransition(this, &DapNode::networksReceived,
-    &m_stm->getDataWallet);
-    //
-    m_stm->getNetworks.addTransition(this, &DapNode::errorDetect,
-    &m_stm->initialState);
-
-    m_stm->getDataWallet.addTransition(this, &DapNode::walletListIsEmpty,
-    &m_stm->initialState);
-
-    m_stm->getDataWallet.addTransition(this, &DapNode::errorDetect,
-    &m_stm->initialState);
-    //
-    /***************************************
-    * transaction workflow
-    ***************************************/
-    // to conditional tx create
-    m_stm->initialState.addTransition(this, &DapNode::sigCondTxCreateRequest,
-    &m_stm->condTxCreate);
-    // to check ledger if create successfuly
-    m_stm->condTxCreate.addTransition(this, &DapNode::sigCondTxCreateSuccess,
-    &m_stm->ledgerTxHashRequest);
-    // to ledger empty
-    m_stm->ledgerTxHashRequest.addTransition(this, &DapNode::errorDetect,
-    &m_stm->ledgerTxHashEmpty);
-    // to init state
-    m_stm->ledgerTxHashRequest.addTransition(this, &DapNode::sigLedgerContainHash,
-    &m_stm->initialState);
-    // to init state if error
-    m_stm->ledgerTxHashEmpty.addTransition(this, &DapNode::repeatReadLedger,
-    &m_stm->ledgerTxHashRequest);
-}
-
-
-void DapNode::initStates()
-{
-    // initial state
-    connect(&m_stm->initialState, &QState::entered, this, [=](){
-        DEBUGINFO << "&initialState, &QState::entered";
-        // autostart node detection
-//        startCheckingNodeRequest();
-    });
-    // node detection
-    connect(&m_stm->nodeDetection, &QState::entered, this, [=](){
-        DEBUGINFO  << "&nodeDetection, &QState::entered";
-    });
-    // node detected
-    connect(&m_stm->nodeNotDetected, &QState::entered, this, [=](){
-        DEBUGINFO  << "&nodeNotDetected, &QState::entered";
-        QTimer::singleShot(NODE_DETECT_REQUEST_REPEAT_PERIOD, [=](){
-            emit repeatNodeDetection();
-        });
-    });
-    //
-    connect(&m_stm->nodeConnection, &QState::entered, this, [=](){
-        DEBUGINFO  << "&nodeConnection, &QState::entered";
-    });
-    // node connected
-    connect(&m_stm->nodeNotConnected, &QState::entered, this, [=](){
-        DEBUGINFO  << "&nodeNotConnected, &QState::entered";
-        QTimer::singleShot(NODE_CONNECT_REQUEST_REPEAT_PERIOD, [=](){
-            emit repeatNodeConnection();
-        });
-    });
-    // node detection request
-    connect(&m_stm->nodeDetection,  &QState::entered, this, &DapNode::nodeDetectedRequest);
-    // connection request
-    connect(&m_stm->nodeConnection, &QState::entered, this, &DapNode::nodeConnectionRequest);
-    // get node status
-    connect(&m_stm->nodeGetStatus,  &QState::entered, this, &DapNode::nodeStatusRequest);
-    // get wallets
-    connect(&m_stm->getWallets, &QState::entered, this, &DapNode::walletsRequest);
-    // get networks
-    connect(&m_stm->getNetworks, &QState::entered, this, &DapNode::networksRequest);
-    // get wallets data
-    connect (&m_stm->getDataWallet, &QState::entered, this, [=](){
-        m_walletsData = QJsonObject();
-        walletDataRequest();
-    });
-    // create conditional transaction
-    connect(&m_stm->condTxCreate, &QState::entered, this, &DapNode::condTxCreateRequest);
-    // check ledger
-    connect(&m_stm->ledgerTxHashRequest, &QState::entered, this, &DapNode::getLedgerTxHashRequest);
-    connect(&m_stm->ledgerTxHashEmpty, &QState::entered, this, [=](){
-        DEBUGINFO  << "&ledgerTxHashEmpty, &QState::entered";
-        QTimer::singleShot(LEDGER_REQUEST_REPEAT_PERIOD, [=](){
-            DEBUGINFO  << "&singleShotledgerTxHashEmpty";
-            emit repeatReadLedger();
-        });
-    });
-    // node detected signal
-    connect(this, &DapNode::nodeDetected, this, &DapNode::sigNodeDetected);
-    connect(this, &DapNode::checkNodeStatus, this, &DapNode::sigNodeDetected);
-
-    // create conditional transaction
-    connect(this, &DapNode::uiCondTxCreateRequest, this, &DapNode::slotCondTxCreateRequest);
-
-}
-
-void DapNode::slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit)
-{
-    qDebug() << "uuuuuuuuuuuuuuuuuuuuuuuu" << walletName << networkName << tokenName << value << unit;
-    m_walletName = walletName;
-    m_selectedNetwork = networkName;
-    m_tokenName = tokenName;
-    m_value = value;
-    m_unit =unit;
-    m_sertificateName = QString("rslCert01_public"); // TODO
-    emit sigCondTxCreateRequest();
-}
-
-void DapNode::condTxCreateRequest()
-{
-    qDebug() << "llllllllllllllllllllllll" << m_walletName << m_selectedNetwork << m_tokenName << m_value << m_unit;
     QString requesString = QString("http://127.0.0.1:8045/?method=CondTxCreate&"
                 "id=%1&"
                 "net=%2&"
@@ -564,17 +373,16 @@ void DapNode::condTxCreateRequest()
                 "unit=%7&"
                 "srv_uid=1")
             .arg(m_connectId)
-            .arg(m_selectedNetwork)
-            .arg(m_tokenName)
-            .arg(m_walletName)
-            .arg(m_sertificateName)
-            .arg(m_value)
-            .arg(m_unit);
+            .arg(networkName)
+            .arg(tokenName)
+            .arg(walletName)
+            .arg(sertificateName)
+            .arg(value)
+            .arg(unit);
     sendRequest(requesString);
 }
 
-
-void DapNode::parseCondTxCreateReply(const QString& replyData)
+void DapNodeWeb3::parseCondTxCreateReply(const QString& replyData)
 {
 //    {
 //        "data": {
@@ -597,17 +405,17 @@ void DapNode::parseCondTxCreateReply(const QString& replyData)
     }
 }
 
-void DapNode::getLedgerTxHashRequest()
+void DapNodeWeb3::getLedgerTxHashRequest()
 {
     QString requesString = QString("http://127.0.0.1:8045/?method=GetLedgerTxHash&"
                 "id=%1&hashTx=%2&net=%3")
             .arg(m_connectId)
             .arg(m_transactionHash)
-            .arg(m_selectedNetwork);
+            .arg(m_networkName);
     sendRequest(requesString);
 }
 
-void DapNode::parseLedgerReply(const QString& replyData)
+void DapNodeWeb3::parseLedgerReply(const QString& replyData)
 {
 //    {
 //        "data": {
@@ -623,20 +431,12 @@ void DapNode::parseLedgerReply(const QString& replyData)
     emit sigLedgerContainHash();
 }
 
-void DapNode::replyError(DapNodeErrors errorType, const QString errorString, const bool httpFinished)
+void DapNodeWeb3::replyError(DapNodeErrors errorType, const QString errorString, const bool httpFinished)
 {
     DEBUGINFO  << "Reply error" << DapNodeErrorCode(errorType, httpFinished) << errorString;
-    emit errorDetect();
     emit sigError(DapNodeErrorCode(errorType, httpFinished),
                   errorString);
 }
-
-void DapNode::start()
-{
-    DEBUGINFO  << "start DapNode";
-    m_stm->start();
-}
-
 
 int DapNodeErrorCode(DapNodeErrors errorType, const bool httpFinished)
 {

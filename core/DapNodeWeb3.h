@@ -18,8 +18,8 @@
     along with any DAP based project.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DAPNODE_H
-#define DAPNODE_H
+#ifndef DAPNODEWEB3_H
+#define DAPNODEWEB3_H
 
 #include <QCoreApplication>
 #include <QString>
@@ -36,49 +36,6 @@
 #include "DapNetworkAccessManager.h"
 #include "DapNetworkReply.h"
 
-#include "DapCmdNode.h"
-
-#include <QStateMachine>
-#include <QState>
-
-class NodeConnectStateMachine
-{
-public:
-    explicit NodeConnectStateMachine()
-    { init(); }
-    void start() { nodeConnectMachine.start(); }
-    QState initialState;
-    QState nodeDetection;
-    QState nodeNotDetected;
-    QState nodeConnection;
-    QState nodeNotConnected;
-    QState nodeGetStatus;
-    QState getWallets;
-    QState getNetworks;
-    QState getDataWallet;
-    QState condTxCreate;
-    QState ledgerTxHashRequest;
-    QState ledgerTxHashEmpty;
-private:
-    QStateMachine nodeConnectMachine;
-    void init(){
-        nodeConnectMachine.addState(&initialState);
-        nodeConnectMachine.addState(&nodeDetection);
-        nodeConnectMachine.addState(&nodeNotDetected);
-        nodeConnectMachine.addState(&nodeConnection);
-        nodeConnectMachine.addState(&nodeNotConnected);
-        nodeConnectMachine.addState(&nodeGetStatus);
-        nodeConnectMachine.addState(&getWallets);
-        nodeConnectMachine.addState(&getNetworks);
-        nodeConnectMachine.addState(&getDataWallet);
-        nodeConnectMachine.addState(&condTxCreate);
-        nodeConnectMachine.addState(&ledgerTxHashRequest);
-        nodeConnectMachine.addState(&ledgerTxHashEmpty);
-        nodeConnectMachine.setInitialState(&initialState);
-        qDebug() << "nodeConnectMachine::init";
-    }
-};
-
 enum class DapNodeErrors
 {
     NetworkReplyConnectError,
@@ -93,31 +50,29 @@ enum class DapNodeErrors
 
 int DapNodeErrorCode(DapNodeErrors, const bool httpFinished);
 
-class DapNode : public QObject
+class DapNodeWeb3 : public QObject
 {
     Q_OBJECT
 private:
     const int m_requestTimeout;
+    // http access manager
     DapNetworkAccessManager * m_httpClient;
     // cellframe dashboard connect id
     QString m_connectId;
-    QString m_selectedNetwork;
-    QString m_tokenName;
-    QString m_sertificateName;
-    QString m_walletName;
-    QString m_value;
-    QString m_unit;
+    // transaction network name
+    QString m_networkName;
+    // transaction hash
     QString m_transactionHash;
     // wallets list
     QStringList m_walletsList;
     // network list
     QStringList m_networksList;
+    // reply data
     DapNetworkReply *m_networkReply;
+    // network request string
     QString m_networkRequest;
     //
     bool m_parseJsonError;
-    // state machine
-    NodeConnectStateMachine *m_stm;
     QJsonObject m_walletsData;
 
 public:
@@ -125,40 +80,40 @@ public:
     static const QString WEB3_URL;
     static const quint16 WEB3_PORT;
 
-    DapNode(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
-    ~DapNode();
-    void start();
+    DapNodeWeb3(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
+    ~DapNodeWeb3();
+    QString connectedId() { return m_connectId; }
 
 private:
     void request_GET(const QString& host,  quint16 port,
                      const QString & urlPath, DapNetworkReply &a_netReply,
                      const QString &headers = "", bool ssl = false);
     bool jsonError() { return m_parseJsonError; }
-    void initTransitions();
-    void initStates();
     void responseProcessing(const int error, const QString errorString = "", const bool httpFinished = true);
-
 
     void responseParsing(const int error, DapNodeErrors errorType, const QString errorString, const bool httpFinished,
                 DapNodeErrors getReplyDataError, QString messageReplyDataError,
-                void(DapNode::*parseMethod)(const QString&));
+                void(DapNodeWeb3::*parseMethod)(const QString&));
 
 public slots:
-    void startCheckingNodeRequest();
-    void stopCheckingNodeRequest();
-    void slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
-
-private slots:
-    void sendRequest(QString request);
+    // requests
     void nodeDetectedRequest();
     void nodeConnectionRequest();
     void connectReply();
     void nodeStatusRequest();
     void walletsRequest();
     void networksRequest();
-    void walletDataRequest();
-    void condTxCreateRequest();
+    void walletDataRequest(const QString& walletName);
+    void condTxCreateRequest(QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit);
     void getLedgerTxHashRequest();
+
+
+private slots:
+    // send request string
+    void sendRequest(QString request);
+    // reply error
+    void replyError(DapNodeErrors errorType, const QString errorString = QString(""), const bool httpFinished = true);
+    // reply
     void nodeStatusOkReply(const QString& replyData);
     void parseReplyConnect(const QString& replyData);
     void parseReplyNetworks(const QString& replyData);
@@ -167,38 +122,21 @@ private slots:
     void parseCondTxCreateReply(const QString& replyData);
     void parseLedgerReply(const QString& replyData);
     void parseJsonError(QString replyData);
-    void replyError(DapNodeErrors errorType, const QString errorString = QString(""), const bool httpFinished = true);
 
 signals:
     // -------- output signals --------
     void sigError(int errorCode, QString errorMessage);
     void sigReceivedWalletsList(QStringList);
     void sigReceivedNetworksList(QStringList);
-    void sigNodeDetected();
-    void sigWalletsDataReady(QJsonObject);
+    void sigWalletDataReady(QJsonArray);
     void sigCondTxCreateSuccess();
     void sigLedgerContainHash();
-    // --- external (input) signals ---
-    void uiStartNodeDetection();
-    void uiStopNodeDetection();
-    void dataWalletRequest();
-    void uiCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
-    // ------- internal signals --------
-    void errorDetect();
+    void connectionIdReceived(QString connectionId);
+    void statusOk();
     void nodeDetected();
     void nodeNotDetected();
-    void repeatNodeDetection();
     void nodeNotConnected();
-    void repeatNodeConnection();
-    void repeatReadLedger();
-    void connectionIdReceived();
-    void walletsReceived();
-    void networksReceived();
     void checkNodeStatus();
-    void sigCondTxCreateRequest();
-    void statusOk();
-    void walletListIsEmpty();
-
 };
 
 
@@ -255,4 +193,4 @@ signals:
 //}
 
 
-#endif // DAPNODE_H
+#endif // DAPNODEWEB3_H
