@@ -149,6 +149,7 @@ void DapLogger::messageHandler(QtMsgType type,
                                const QString & msg)
 {
     emit DapLogger::instance()->sigMessageHandler();
+    DapLogger::instance()->updateLogFiles();
     writeMessage(type, ctx, msg);
 }
 
