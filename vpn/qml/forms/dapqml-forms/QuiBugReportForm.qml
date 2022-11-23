@@ -29,6 +29,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    clip: true
 
     /****************************************//**
      * @name DEFS
@@ -80,14 +81,6 @@ Item {
         onAttachedImageChanged: updateAttachButton()
         onTextAttachChanged: updateAttachButton()
         onTextDetachChanged: updateAttachButton()
-    }
-
-    /* some weird shit is here */
-    Timer {
-        interval: 75
-        running: true
-        repeat: false
-        onTriggered: titleLabel.visible = true
     }
 
     /// @}
@@ -204,8 +197,6 @@ Item {
      ********************************************/
 
     DapQmlDialogTitle {
-        id: titleLabel
-        visible: false
         text: qsTr("Bug report") + lang.notifier
         qss: "dialog-title"
     }

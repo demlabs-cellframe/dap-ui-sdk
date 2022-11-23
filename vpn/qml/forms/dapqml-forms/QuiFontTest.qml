@@ -17,6 +17,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: window
+    clip: true
     width: 428
     height: 926
     visible: true
