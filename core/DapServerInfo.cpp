@@ -71,6 +71,32 @@ QJsonObject DapServerInfo::toJSON(const DapServerInfo& dsi)
     return obj;
 }
 
+DapServerInfo &DapServerInfo::operator= (const DapServerInfo &a_src)
+{
+  address   = a_src.address;
+  address6  = a_src.address6;
+  port      = a_src.port;
+  name      = a_src.name;
+  location  = a_src.location;
+  online    = a_src.online;
+  ping      = a_src.ping;
+  connection_quality  = a_src.connection_quality;
+  return *this;
+}
+
+DapServerInfo &DapServerInfo::operator= (DapServerInfo &&a_src)
+{
+  address   = std::move (a_src.address);
+  address6  = std::move (a_src.address6);
+  port      = a_src.port;
+  name      = std::move (a_src.name);
+  location  = std::move (a_src.location);
+  online    = std::move (a_src.online);
+  ping      = a_src.ping;
+  connection_quality  = a_src.connection_quality;
+  return *this;
+}
+
 bool DapServerInfo::fromJSON(const QJsonObject& jsonObj, DapServerInfo& out)
 {
     if(_isJsonValid(jsonObj) == false) {
