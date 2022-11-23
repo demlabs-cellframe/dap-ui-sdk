@@ -82,6 +82,14 @@ Item {
         onTextDetachChanged: updateAttachButton()
     }
 
+    /* some weird shit is here */
+    Timer {
+        interval: 75
+        running: true
+        repeat: false
+        onTriggered: titleLabel.visible = true
+    }
+
     /// @}
     /****************************************//**
      * @name SIGNALS
@@ -196,6 +204,8 @@ Item {
      ********************************************/
 
     DapQmlDialogTitle {
+        id: titleLabel
+        visible: false
         text: qsTr("Bug report") + lang.notifier
         qss: "dialog-title"
     }

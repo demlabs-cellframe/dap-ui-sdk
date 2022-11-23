@@ -28,7 +28,7 @@ Item {
     property string text: "Untitled"
 
     /// @brief qss style
-    property string qss
+    property string qss: "dialog-title"
 
     /// @brief hide close button
     property bool hideClose: false
