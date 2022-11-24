@@ -663,7 +663,7 @@ Item {
         DapQmlPushButton {
             qss: "bugrep-send-btn push-button"
             text: qsTr("SEND REPORT") + lang.notifier
-            onClicked: { root.mode = 1; root.sigSend(); }
+            onClicked: { root.sigSend(); root.mode = 1; }
             enabled: bugRepInputField.length >= 1
             opacity: 0.4 + 0.6 * enabled
         }
@@ -694,7 +694,7 @@ Item {
         DapQmlPushButton {
             qss: "bugrep-send-btn push-button"
             text: qsTr("CANCEL") + lang.notifier
-            onClicked: { root.mode = 0; root.sigCancel(); }
+            onClicked: { root.sigCancel(); root.mode = 0; }
         }
     }
 
@@ -718,7 +718,7 @@ Item {
         DapQmlPushButton {
             qss: "bugrep-send-btn push-button"
             text: qsTr("BACK") + lang.notifier
-            onClicked: { root.mode = 0; root.sigResultBack(); }
+            onClicked: { root.sigResultBack(); root.mode = 0; }
         }
     }
 }
