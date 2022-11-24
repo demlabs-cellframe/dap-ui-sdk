@@ -257,7 +257,7 @@ Item {
     }
 
     /****************************************//**
-     * Top separator
+     * Top mode name
      ********************************************/
 
     DapQmlLabel {
@@ -290,6 +290,10 @@ Item {
             qss: "login-typename-label font-brand c-grey"
         }
     }
+
+    /****************************************//**
+     * Top separator
+     ********************************************/
 
     DapQmlRectangle {
         x: loginSepsPlacer.x
@@ -507,7 +511,7 @@ Item {
         y:      loginSpacer.y + loginChooseCertPlacer.y
         width:  loginChooseCertPlacer.width
         height: loginChooseCertPlacer.height
-        visible: internal.mode !== QuiLoginForm.Mode.M_PASSWORD
+        visible: internal.mode !== QuiLoginForm.Mode.M_PASSWORD && Brand.name() === "RiseVPN"
 
         DapQmlButton {
             id: btnChooseCert
