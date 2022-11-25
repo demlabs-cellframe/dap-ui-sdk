@@ -16,6 +16,8 @@ Item
 
     property alias model: popupListView.model
 
+    property string indicatorSource: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrowDown.svg"
+
     property int currentIndex: -1
     property string currentText: displayText
     property int count: popupListView.model.count
@@ -90,7 +92,7 @@ Item
             Image
             {
                 id: indicator
-                source: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrowDown.svg"
+                source: indicatorSource
                 rotation: popupVisible ? 180 : 0
                 mipmap: true
 

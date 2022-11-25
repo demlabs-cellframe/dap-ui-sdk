@@ -11,6 +11,8 @@ Rectangle
     property int itemVerticalBorder: -2
     property int viewerBorder: 4
     property int currentIndex: viewerItem.currentIndex
+    property font textFont: mainFont.dapFont.medium14
+    property color textColor: currTheme.textColor
     property alias selectorModel: viewerItem.model
     property alias selectorListView: viewerItem
 
@@ -111,8 +113,8 @@ Rectangle
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     bottomPadding: OS_WIN_FLAG ? 4 : 0
-                    color: currTheme.textColor
-                    font: mainFont.dapFont.medium14
+                    color: textColor
+                    font: textFont
                     text: name
 
                 }

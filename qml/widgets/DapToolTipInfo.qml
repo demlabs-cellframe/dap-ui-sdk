@@ -13,9 +13,7 @@ Image {
     property alias mouseArea: area
     property font textFont: mainFont.dapFont.medium12
 
-
     signal clicked()
-
 
     mipmap: true
 
