@@ -2,6 +2,7 @@
 
 import QtQuick 2.12
 import QtGraphicalEffects 1.5
+import Brand 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -23,7 +24,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
-    enabled: false
+    enabled: true
 
     /****************************************//**
      * @name VARS
@@ -49,6 +50,9 @@ Item {
 
     /// @brief logo filename
     property string logoPng: "qrc:/logo.png"
+
+    ///
+    signal sigShowCdbManager();
 
     /// @}
     /****************************************//**
@@ -132,6 +136,27 @@ Item {
         width: 230
         height: 59
         qss: "splash-logo"
+    }
+
+    /****************************************//**
+     * Text hyperlink
+     ********************************************/
+    DapQmlLabel {
+        visible: root.enabled
+        qss: "splash-hyperlink"
+        z: 12
+        width: parent.width
+        text: qsTr("Tap here to show cdb management")
+        color: root.mainColor
+        onClicked: {
+            root.sigShowCdbManager()
+        }
+        MouseArea {
+            id: mouseArea
+            anchors.fill: parent
+            cursorShape: Qt.PointingHandCursor
+            enabled: false
+        }
     }
 
     /****************************************//**
