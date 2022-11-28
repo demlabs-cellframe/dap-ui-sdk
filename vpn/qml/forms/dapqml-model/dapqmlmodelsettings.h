@@ -63,6 +63,10 @@ public:
   Q_INVOKABLE void exec (int a_index, QObject *a_item = nullptr);
   Q_INVOKABLE QString notifier() const;
   Q_INVOKABLE QVariant value (int a_index, const QString &a_fieldName) const;
+private:
+  void _buildMenuItemsList();
+  void _updateMenuContent (const QSet<QString> &a_filterKeywords);
+  QString getCurrentCountryCode() const;
   /// @}
 
   /****************************************//**
@@ -75,9 +79,6 @@ public:
 
   QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
   QHash<int, QByteArray> roleNames() const override;
-private:
-  void _buildMenuItemsList();
-  void _updateMenuContent (const QSet<QString> &a_filterKeywords);
   /// @}
 
   /****************************************//**
@@ -147,8 +148,6 @@ public slots:
   void slotResetDaysLeft();
   void slotCountryChange();
   void slotUpdateItemsList();
-private:
-  QString getCurrentCountryCode() const;
 protected slots:
   void slotRetranslate();
   /// @}

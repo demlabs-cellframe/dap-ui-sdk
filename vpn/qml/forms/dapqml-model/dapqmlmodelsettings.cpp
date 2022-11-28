@@ -2,6 +2,7 @@
 #include "dapqmlmodelsettings.h"
 #include "helper/languagectl.h"
 #include "DapDataLocal.h"
+#include "DapSerialKeyData.h"
 
 /* DEFS */
 
@@ -33,6 +34,7 @@ static QSet<QString> s_lastFilterKeywords;
 static qint32 s_daysLabelIndex     = -1;
 static qint32 s_versionLabelIndex  = -1;
 static qint32 s_countryIndex     = -1;
+static QString s_daysLeftString;
 
 static QMap<QString, FieldId> s_fieldIdMap =
 {
@@ -372,7 +374,12 @@ void DapQmlModelSettings::slotSetDaysLeft (QString a_days)
   if (s_daysLabelIndex == -1)
     return;
 
-  s_items[s_daysLabelIndex].m_textSub = (a_days.startsWith("-")) ? "expired" : a_days;
+  if (a_days == "$")
+    a_days  = DapDataLocal::instance()->serialKeyData()->daysLeftString();
+
+  s_daysLeftString = (a_days.startsWith("-")) ? "expired" : a_days;
+
+  s_items[s_daysLabelIndex].m_textSub = s_daysLeftString;
 
   emit dataChanged (
     index (s_daysLabelIndex, 0),
@@ -406,6 +413,7 @@ void DapQmlModelSettings::slotCountryChange()
 void DapQmlModelSettings::slotRetranslate()
 {
   slotUpdateLabels (true);
+  slotSetDaysLeft ("$");
   emit languageChanged();
 }
 
