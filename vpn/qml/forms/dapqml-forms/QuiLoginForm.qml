@@ -70,15 +70,25 @@ Item {
         property bool showPassword: false
 
         function forgotLabel() {
+//   First variant for Rise
+//            return mode === QuiLoginForm.Mode.M_SERIAL
+//                ? qsTr("Don't have a serial key?")
+//                : qsTr("Forgot your password?")
             return mode === QuiLoginForm.Mode.M_SERIAL
                 ? qsTr("Don't have a serial key?")
-                : qsTr("Forgot your password?")
+                : qsTr("")
+
         }
 
         function tapHereLabel() {
-            return mode === QuiLoginForm.Mode.M_SERIAL
+//   First variant for Rise
+//            return mode === QuiLoginForm.Mode.M_SERIAL
+//                ? qsTr("Tap here to obtain one")
+//                : qsTr("Tap here to recover")
+            return Brand.name() !== "RiseVPN"
                 ? qsTr("Tap here to obtain one")
-                : qsTr("Tap here to recover")
+                : qsTr("Tap here to show cdb management")
+
         }
     }
 
@@ -114,6 +124,9 @@ Item {
 
     /// @brief entered serial is incorerct
     signal sigSerialFillingIncorrect();
+
+    /// @brief show server manager
+    signal sigShowCdbManager();
 
     signal textEditedAndCleaned();
     signal textEditedAndFilledOut (string serial);
@@ -585,6 +598,7 @@ Item {
             horizontalAlign: Text.AlignRight
             qss: "login-obtain-font c-label"
             mipmap: false
+            visible: Brand.name() !== "RiseVPN"
 //          font.family: "Lato"
 //          font.pixelSize: 16
 //          font.weight: Font.Normal
@@ -592,16 +606,30 @@ Item {
 
         DapQmlLabel {
             id: obtainLinkLabel
-            x: parent.width / 2 + 2
+//     First variant for Rise
+//            x: parent.width / 2 + 2
+            x: Brand.name() !== "RiseVPN" ? parent.width / 2 + 2 : 0
             text: internal.tapHereLabel() + lang.notifier
             color: "#DA0B82"
-            width: parent.width / 2
+//     First variant for Rise
+//            width: parent.width / 2
+            width: Brand.name() !== "RiseVPN" ? parent.width / 2 : parent.width
             height: parent.height
-            horizontalAlign: Text.AlignLeft
-            qss: "login-obtain-font c-brand"
-            onClicked: (internal.mode === QuiLoginForm.Mode.M_SERIAL)
+//     First variant for Rise
+//            horizontalAlign: Text.AlignLeft
+            horizontalAlign:  Brand.name() !== "RiseVPN" ? Text.AlignLeft : Text.AlignCenter
+            qss: Brand.name() !== "RiseVPN"
+                     ? "login-obtain-font c-brand"
+                     : "login-obtain-font c-brand"
+            onClicked: {
+//     First variant for Rise
+//                (internal.mode === QuiLoginForm.Mode.M_SERIAL)
+//                       ? root.sigObtainNewKey()
+//                       : root.sigRecoverPassword()
+                Brand.name() !== "RiseVPN"
                        ? root.sigObtainNewKey()
-                       : root.sigRecoverPassword()
+                       : root.sigShowCdbManager()
+            }
 //          font.family: "Lato"
 //          font.pixelSize: 16
 //          font.weight: Font.Normal
