@@ -156,7 +156,7 @@ void DapServersData::packServerList()
   m_servers << m_bestRegionServerList << m_pingServerList;
 }
 
-QMap<QString, QString> DapServersData::m_countryMap = {
+const QMap<QString, QString> DapServersData::m_countryMap = {
     {"Andorra"                          , "AD"},
     {"United arab emirates"             , "AE"},
     {"Afganistan"                       , "AF"},
@@ -370,7 +370,7 @@ QMap<QString, QString> DapServersData::m_countryMap = {
     {"Yemen"                            , "YE"},
     {"South africa"                     , "ZA"},
     {"Zambia"                           , "ZM"},
-    {"Zimbabwe"                         , "ZW"},
+    {"Zimbabwe"                         , "ZW"}
 };
 const QString DapServersData::findInCountriesMap(const QString& string) {
     QStringList list = string.split(".", QString::SkipEmptyParts);

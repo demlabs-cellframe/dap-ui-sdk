@@ -423,7 +423,9 @@ QString DapQmlModelSettings::getCurrentCountryCode() const
 {
 
     QString base_location = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
-    QString code = DapServersData::m_countryMap[base_location];
+    QString code = "";
+    if (DapServersData::m_countryMap.contains(base_location))
+        QString code = DapServersData::m_countryMap[base_location];
     return code;
 }
 

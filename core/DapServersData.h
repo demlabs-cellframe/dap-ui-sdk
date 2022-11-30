@@ -90,7 +90,7 @@ private:
     QList<DapServerInfo> m_pingServerList;
     DapLocationInfo m_locationInfo;
 public:
-    static QMap<QString, QString> m_countryMap;
+    const static QMap<QString, QString> m_countryMap;
 
     qint16 m_bestping = 0;
     qint16 m_worstping = 0;
