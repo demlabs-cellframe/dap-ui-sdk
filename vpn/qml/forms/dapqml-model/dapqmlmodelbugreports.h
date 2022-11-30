@@ -29,6 +29,7 @@ public:
   /// @{
 public:
   static DapQmlModelBugReports *instance();
+  QString hook() { return QString(); }
   /// @}
 
   /****************************************//**
@@ -41,6 +42,8 @@ public:
 
   QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
   QHash<int, QByteArray> roleNames() const override;
+
+  Q_INVOKABLE QVariant value (int a_index, const QString &a_name) const;
   /// @}
 
   /****************************************//**
@@ -49,6 +52,9 @@ public:
   /// @{
 public slots:
   void slotSetup();
+protected:
+  void _slotNewReport (int a_index);
+  void _slotRemoved (int a_index);
   /// @}
 };
 

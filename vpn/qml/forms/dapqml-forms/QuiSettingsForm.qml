@@ -57,6 +57,20 @@ Item {
     //DapQmlModelSettings { id: settingsModel }
     //SettingsInterface { id: settingsInterface; Component.onCompleted: setup(settingsModel); }
 
+    property QtObject internal: QtObject {
+        property var items: new Array();
+
+        function appendItem (item) {
+            items.push (item);
+        }
+
+        function removeItem (item) {
+            var index = items.indexOf(item);
+            if (index > -1)
+                items.splice(index, 1);
+        }
+    }
+
     /// @}
     /****************************************//**
      * @name FUNCTIONS
@@ -81,6 +95,15 @@ Item {
         }
 
         return resizer1.height;
+    }
+
+    /****************************************//**
+     * Resizer
+     ********************************************/
+
+    DapQmlDummy {
+        id: contentRect
+        qss: "content-mid"
     }
 
     /****************************************//**
@@ -115,9 +138,9 @@ Item {
             id: settingsListView
             objectName: "settingsListView"
 
-            x: 36
+            x: contentRect.x
             y: 0
-            width: root.width - 72
+            width: contentRect.width // root.width - 72
             height: root.height
 
             clip: false
@@ -174,7 +197,7 @@ Item {
                     mainQss: "sett-btn-lbl-main"
                     subQss: {
                         model.sid === QuiSettingsForm.StyleId.SI_LINK ? "sett-btn-lbl-sub-link" :
-                        model.sid !== QuiSettingsForm.StyleId.SI_BUTTONRED ? "sett-btn-lbl-sub" : "sett-btn-lbl-sub-red"
+                        model.sid === QuiSettingsForm.StyleId.SI_BUTTONRED ? "sett-btn-lbl-sub-red" : "sett-btn-lbl-sub"
                     }
                     link: model.sid === QuiSettingsForm.StyleId.SI_LINK
                     checkbox: model.sid === QuiSettingsForm.SI_CHECKBOX
@@ -200,6 +223,9 @@ Item {
                     }
 
                     onMyTextChanged: mainText = myText;
+
+                    Component.onCompleted: root.internal.appendItem (this)
+                    Component.onDestruction: root.internal.removeItem (this)
                 }
 
                 DapQmlLabel {

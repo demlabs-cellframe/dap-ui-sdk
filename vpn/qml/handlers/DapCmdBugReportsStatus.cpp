@@ -1,40 +1,42 @@
 #include "DapCmdBugReportsStatus.h"
+#include "DapBugReportHistory.h"
 
-DapCmdBugReportsStatus::DapCmdBugReportsStatus(QObject *parent)
-    : DapCmdClientAbstract(DapJsonCmdType::BUG_REPORTS_STATUS, parent)
+DapCmdBugReportsStatus::DapCmdBugReportsStatus (QObject *parent)
+  : DapCmdClientAbstract (DapJsonCmdType::BUG_REPORTS_STATUS, parent)
 {
 
 }
 
 
-void DapCmdBugReportsStatus::bugReportsStatusRequest(QList<QString> a_bugReportsNumbersList)
+void DapCmdBugReportsStatus::bugReportsStatusRequest (QList<DapBugReportHistoryItem> a_bugReportsList)
 {
-    if (a_bugReportsNumbersList.isEmpty()){
+  if (a_bugReportsList.isEmpty())
+    {
       qDebug() << "Empty bug-reports list";
       return;
     }
 
-    QJsonObject obj;
-    QString temp_string;
+  QStringList list;
+  for (const auto &item : a_bugReportsList)
+    list << item.asString();
 
-    for (auto item : a_bugReportsNumbersList){
-        temp_string += item + ",";
-    }
-    temp_string.chop(1);
+  QJsonObject obj
+  {
+    {"bug_reports_numbers_list", list.join (',')}
+  };
 
-    obj["bug_reports_numbers_list"] = temp_string;
-    sendCmd(&obj);
+  sendCmd (&obj);
 }
 
-void DapCmdBugReportsStatus::handleResult(const QJsonObject& result)
+void DapCmdBugReportsStatus::handleResult (const QJsonObject &result)
 {
-    QString request = result.value("bug_reports_numbers_list_answer").toString();
-    qDebug() << "Bug-reports status answer: " << request;
-    emit sigBugReportStatusAnswer(request);
+  QString request = result.value ("bug_reports_numbers_list_answer").toString();
+  qDebug() << "Bug-reports status answer: " << request;
+  emit sigBugReportStatusAnswer (request);
 }
 
-void DapCmdBugReportsStatus::handleError(int code, const QString& message)
+void DapCmdBugReportsStatus::handleError (int code, const QString &message)
 {
-    Q_UNUSED(code); Q_UNUSED(message);
-    qWarning() << *m_errorObject;
+  Q_UNUSED (code); Q_UNUSED (message);
+  qWarning() << *m_errorObject;
 }

@@ -10,6 +10,7 @@
 
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
+#include "DapSerialKeyHistory.h"
 #include "DapLogger.h"
 
 #ifdef DAP_OS_ANDROID
@@ -20,14 +21,16 @@
 #endif
 
 DapDataLocal::DapDataLocal()
-    : QObject()
-    , m_serialKeyData(new DapSerialKeyData(this))
-    , m_buReportHistory(new DapBugReportHistory(this))
+  : QObject()
+  , m_serialKeyData(new DapSerialKeyData (this))
+  , m_bugReportHistory(new DapBugReportHistory (this))
+  , m_serialKeyHistory (new DapSerialKeyHistory (this))
 {
     qDebug() << "[DL] DapDataLocal Constructor";
     parseXML(":/data.xml");
     initSecretKey();
     this->loadAuthorizationDatas();
+    _syncCdbWithSettings();
 }
 
 void DapDataLocal::parseXML(const QString& a_fname)
@@ -77,8 +80,8 @@ void DapDataLocal::parseXML(const QString& a_fname)
                         }
                     }
                 }else if( sr->name() == "cdb"){
-                    m_cdbServersList.push_back(sr->readElementText());
-                    qInfo() << "Add CDB address: " << m_cdbServersList.back();
+                    m_cdbServersList.push_back (DapCdbServer::serverFromString (sr->readElementText()));
+                    qInfo() << "Add CDB address: " << m_cdbServersList.back().address;
                 }else if( sr->name() == "network-default"){
                     m_networkDefault = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
@@ -166,47 +169,47 @@ void DapDataLocal::savePendingSerialKey(QString a_serialkey)
     this->saveToSettings(TEXT_PENDING_SERIAL_KEY, m_pendingSerialKey);
 }
 
-void DapDataLocal::saveHistoryData(QString a_type, QString a_data)
-{
-    if (a_data.isEmpty())
-        return;
-    QList<QString> m_tempHistoryDataList;
-    this->loadFromSettings(a_type, m_tempHistoryDataList);
-    if (!m_tempHistoryDataList.contains(a_data))
-        m_tempHistoryDataList.prepend(a_data);
-    this->saveToSettings(a_type, m_tempHistoryDataList);
+//void DapDataLocal::saveHistoryData(QString a_type, QString a_data)
+//{
+//    if (a_data.isEmpty())
+//        return;
+//    QList<QString> m_tempHistoryDataList;
+//    this->loadFromSettings(a_type, m_tempHistoryDataList);
+//    if (!m_tempHistoryDataList.contains(a_data))
+//        m_tempHistoryDataList.prepend(a_data);
+//    this->saveToSettings(a_type, m_tempHistoryDataList);
 
-    emit sigHistoryDataSaved(a_type);
-}
+//    emit sigHistoryDataSaved(a_type);
+//}
 
-void DapDataLocal::removeItemFromHistory(QString a_type, QString a_item){
+//void DapDataLocal::removeItemFromHistory(QString a_type, QString a_item){
 
-  if (a_item.isEmpty())
-    return;
-  QList<QString> m_tempHistoryDataList;
-  this->loadFromSettings(a_type, m_tempHistoryDataList);
+//  if (a_item.isEmpty())
+//    return;
+//  QList<QString> m_tempHistoryDataList;
+//  this->loadFromSettings(a_type, m_tempHistoryDataList);
 
-  a_item.remove(QRegExp("[^0-9]"));
-  QMutableListIterator<QString> it (m_tempHistoryDataList);
-  while(it.hasNext()) {
-    QString item = it.next();
-    if (item == a_item){
-      qDebug() << "remove " + item + " from " + a_type;
-      it.remove();
-    }
-  }
+//  a_item.remove(QRegExp("[^0-9]"));
+//  QMutableListIterator<QString> it (m_tempHistoryDataList);
+//  while(it.hasNext()) {
+//    QString item = it.next();
+//    if (item == a_item){
+//      qDebug() << "remove " + item + " from " + a_type;
+//      it.remove();
+//    }
+//  }
 
-  this->saveToSettings(a_type, m_tempHistoryDataList);
+//  this->saveToSettings(a_type, m_tempHistoryDataList);
 
-  emit sigHistoryDataSaved(a_type);
-}
+//  emit sigHistoryDataSaved(a_type);
+//}
 
-QList<QString> DapDataLocal::getHistorySerialKeyData()
-{
-    QList<QString> m_tempHistoryDataList;
-    this->loadFromSettings(TEXT_SERIAL_KEY_HISTORY, m_tempHistoryDataList);
-    return m_tempHistoryDataList;
-}
+//QList<QString> DapDataLocal::getHistorySerialKeyData()
+//{
+//    QList<QString> m_tempHistoryDataList;
+//    this->loadFromSettings(TEXT_SERIAL_KEY_HISTORY, m_tempHistoryDataList);
+//    return m_tempHistoryDataList;
+//}
 
 void DapDataLocal::loadAuthorizationDatas()
 {
@@ -226,6 +229,24 @@ void DapDataLocal::loadAuthorizationDatas()
     if (m_serialKeyData)
         this->loadFromSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
     this->loadFromSettings(TEXT_PENDING_SERIAL_KEY, m_pendingSerialKey);
+}
+
+void DapDataLocal::_syncCdbWithSettings()
+{
+  /* vars */
+  static const QString SETTING_CDB { "cdb" };
+
+  /* get from settings */
+  auto cdbCfg = getSetting (SETTING_CDB);
+
+  /* if not found, store cdb's from built-in list (if not empty) */
+  if (!cdbCfg.isValid())
+    return;
+
+  /* if found, replace built-in cdb's with list provided from settings */
+  auto list   = QString::fromLatin1 (QByteArray::fromBase64 (cdbCfg.toByteArray())).split(',');
+  auto result = DapCdbServerList::toServers (list);
+  updateCdbList (result);
 }
 
 QSettings* DapDataLocal::settings()
@@ -331,7 +352,12 @@ DapSerialKeyData *DapDataLocal::serialKeyData()
 
 DapBugReportHistory * DapDataLocal::bugReportHistory()
 {
-    return m_buReportHistory;
+  return m_bugReportHistory;
+}
+
+DapSerialKeyHistory *DapDataLocal::serialKeyHistory()
+{
+  return m_serialKeyHistory;
 }
 
 void DapDataLocal::initSecretKey()
@@ -392,6 +418,18 @@ void DapDataLocal::setAuthorizationType(Authorization type)
     DapDataLocal::instance()->saveSetting (SETTING_AUTHORIZATION, auth);
 }
 
+void DapDataLocal::updateCdbList (const DapCdbServerList &a_newCdbList)
+{
+  /* clear old and store new */
+  m_cdbServersList.clear();
+
+  for (const auto &cdb : qAsConst(a_newCdbList))
+    m_cdbServersList << cdb;
+
+  /* update iterator */
+  m_cdbIter = m_cdbServersList.constBegin();
+}
+
 DapDataLocal *DapDataLocal::instance()
 {
     static DapDataLocal s_instance;
@@ -399,3 +437,40 @@ DapDataLocal *DapDataLocal::instance()
 }
 
 
+
+QString DapCdbServer::toString() const
+{
+  return QString ("%1:%2").arg (address).arg (port);
+}
+
+void DapCdbServer::fromString(const QString &a_src)
+{
+  auto source = a_src.split (':');
+  address     = source.constFirst();
+  port        = source.constLast().toInt();
+  if (port == 0)
+    port = 80;
+}
+
+DapCdbServer DapCdbServer::serverFromString(const QString &a_src)
+{
+  DapCdbServer result;
+  result.fromString (a_src);
+  return result;
+}
+
+DapCdbServerList DapCdbServerList::toServers(const QStringList &a_src)
+{
+  DapCdbServerList result;
+  for (const auto &item : a_src)
+    result << DapCdbServer::serverFromString (item);
+  return result;
+}
+
+QStringList DapCdbServerList::toStrings(const DapCdbServerList &a_servers)
+{
+  QStringList result;
+  for (const auto &item : a_servers)
+    result << item.toString();
+  return result;
+}

@@ -20,6 +20,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    clip: true
 
     /****************************************//**
      * @name VARS
@@ -93,11 +94,11 @@ Item {
             property bool checked: false
 
             DapQmlRadioButton {
-                property int ping: model.ping
-                property int quality: model.connectionQuality
+                property int ping: model.ping + csListView.model.hookInt
+                property int quality: model.connectionQuality + csListView.model.hookInt
 
                 text: model.name + csListView.model.hook
-                checked: model.checked
+                checked: model.checked + csListView.model.hookInt
                 separator: true
                 iconSize: resizer.height
                 width: resizer.width
@@ -113,17 +114,18 @@ Item {
                     property int quality: (parent.quality === 0) ? (0) : (6 - parent.quality)
                     x: parent.width - (width * 1.35)
                     y: (parent.height - height) / 2
-                    width: resizer.height * 0.75
-                    height: resizer.height * 0.75
+                    width: resizer.height * 0.5
+                    height: resizer.height * 0.5
                     qss: `ic_conn-${quality}` + csListView.model.hook
                     ToolTip {
                         id: id_tooltip
+                        opacity : 0.70
                         contentItem: Text{
-                            color: "#21be2b"
-                            text: "ping " + ping + " ms"
+                            color: "#404040"
+                            text: (ping > -1) ? "ping " + ping + " ms" : "unavailable"
                         }
                         background: Rectangle {
-                            border.color: "#21be2b"
+                            border.color: "#404040"
                         }
                     }
                     MouseArea {

@@ -21,6 +21,7 @@ QMap<DapJsonCmdType, QString> DapCmdAbstract::cmdString = {
     {DapJsonCmdType::SEND_RESET_SERIAL_KEY_REQUEST, "request reset license key"},
     {DapJsonCmdType::REQUEST_PURCHASE_VERIFY, "verify purchase"}, // it won't hurt in default build variant
     {DapJsonCmdType::CLIENT_INFO, "client info"},
+    {DapJsonCmdType::CDB_CTL, "cdb list"},
     {DapJsonCmdType::NODE_INFO, "node info"}
 };
 

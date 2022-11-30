@@ -7,6 +7,7 @@ import Qt.labs.platform 1.1
 import DapQmlStyle 1.0
 import DapQmlSerialKeyInput 1.0
 import TextEditContextMenu 1.0
+import Brand 1.0
 import Scaling 1.0
 
 /****************************************//**
@@ -35,9 +36,7 @@ Rectangle {
     property string placeHolderText: ""
     property string qss: ""
     property string mainQss: ""
-    property string icon: ""
-    property string iconLeft: ""
-    property int iconLineEditSize: 20
+    property string iconQss: ""
     property bool link: false
 
     property var labelMain
@@ -56,8 +55,8 @@ Rectangle {
      ********************************************/
     /// @{
 
-    /// @brief right small button clicked
-    signal rightClicked();
+    /// @brief icon clicked
+    signal iconClicked();
 
     /// @brief text field edited
     signal textEdited();
@@ -76,43 +75,53 @@ Rectangle {
         console.log("setFocus")
     }
 
-
-    /* Line edit */
-
     Component.onCompleted: {
         root.labelMain          = lineEditField;
         root.labelIcon          = lineEditIcon;
     }
 
+    /// @}
+    /****************************************//**
+     * @name CONTENT
+     ********************************************/
+
+    /* icon */
     DapQmlLabel {
         id: lineEditIcon
-        y: (root.height - height) / 2
         x: y
-        width: root.iconLineEditSize
-        height: root.iconLineEditSize
-        visible: (root.iconLeft === "") ? false : true
-        qss: root.iconLeft
-        scaledPixmap: "qrc:/light/ic_close_hover.png"
-        onClicked: root.rightClicked();
+        y: (root.height - height) / 2 + height * 0.1
+        qss: "line-edit-icon " + root.iconQss
+
+        onClicked: root.iconClicked();
     }
 
-    /* main text */
+    /* text edit field */
     TextField {
         id: lineEditField
+        x: lineEditIcon.width + lineEditIcon.x * 1.5
         y: (root.height - height) / 2
-        x: (lineEditIcon.visible === true)
-           ? lineEditIcon.width + lineEditIcon.x
-           : 0
-        width: (lineEditIcon.visible === true)
-            ? parent.width - lineEditIcon.width
-            : parent.width
-
-        height: parent.height
+        width: parent.width - x * 1.25
+        height: parent.height * 0.75
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignBottom
         text: root.mainText
+        background: Rectangle { color: "transparent" }
         // android virtual keyboard
         inputMethodHints: Qt.ImhSensitiveData
+
+        /* placeholder */
+        DapQmlLabel {
+            id: placeholderLabel
+            x: height * 0.25
+            width: parent.width
+            height: parent.height * 0.85
+            horizontalAlign: Text.AlignLeft
+            verticalAlign: Text.AlignBottom
+            text: root.placeHolderText
+            qss: "ch-country-filter-text c-grey"
+            enabled: false
+            visible: lineEditField.text.length === 0
+        }
 
         TextEditContextMenu {
             id: lineEditMenu
@@ -158,17 +167,12 @@ Rectangle {
         }
 
         /* vars */
-        property string fontFamiliy: "Lato"
+        property var fontFamiliy: Brand.fontName()
         property int fontSize: 14
         property int fontWeight: Font.Normal
 
         /* style */
         DapQmlStyle { qss: root.mainQss; item: lineEditField }
-
-        /* background */
-        background: DapQmlRectangle {
-            qss: "ch-country-filter"
-        }
 
         /* font config */
         font {

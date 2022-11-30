@@ -5,6 +5,7 @@ import DapQmlCountryModel 1.0
 import DapQmlCountrySortFilterProxyModel 1.0
 import PageCtl 1.0
 import DapQmlStyle 1.0
+import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -24,6 +25,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    clip: true
 
     /****************************************//**
      * @name VARS
@@ -35,7 +37,6 @@ Item {
     /// Used to connect interface via Manager
     property string formName: "ChooseCountry"
     property int currentIndex: -1;
-    property int filterXPosition: 37
 
     DapQmlStyle { id: style }
 
@@ -121,29 +122,50 @@ Item {
     }
 
     DapQmlRectangle {
+        id: spacer
+        visible: false
+        qss: "radiobtn-spacer"
+    }
+
+    /****************************************//**
+     * Search field
+     ********************************************/
+
+    DapQmlRectangle {
         id: countryFilterField
-        x: root.filterXPosition
+        x: (parent.width - width) / 2
         y: title.y + title.height * 2
-        height: 32
-        width: parent.width - 70
+        //height: 32
+        width: resizer.width // parent.width - 70
         qss: "ch-country-filter-border"
-//        Rectangle {
-//            color: "gray"
-//            anchors.fill: parent
-//        }
+
+        property real innerSize: height * 0.875
+
+        Component.onCompleted: StyleDebugTree.describe (
+           "countryFilterField",
+            ["x", "y", "z", "width", "height"],
+           this);
+
         DapQmlLineEdit {
             id: countryFilterLine
             objectName: "countryFilterLine"
-            x: 2
-            y: 2
+            x: parent.height * 0.0625
+            //y: (parent.height - height) / 2
             z: 15
-            height: parent.height - 4
-            width: parent.width - lineEditlIconRight.width
+            height: countryFilterField.innerSize // parent.height - 4
+            width: parent.width - lineEditlIconRight.width * 1.5
             focus: true
 
             mainText: ""
             mainQss: "ch-country-filter-text"
-            iconLeft: "ic_country_filter"
+            iconQss: "ic_country_filter"
+            placeHolderText: "Search country"
+
+            Component.onCompleted: StyleDebugTree.describe (
+               "countryFilterLine",
+                ["x", "y", "z", "width", "height"],
+               this);
+
             onTextChanged: {
                 countryModel.setRowFilter(mainText);
             }
@@ -154,26 +176,25 @@ Item {
 
         DapQmlPushButton {
             id: lineEditlIconRight
-            x: parent.width - width
-            y: parent.height/2 - height/2
+            x: parent.width - width - y
+            y: (parent.height - height) / 2
             z: 15
-            height: 28
-            width: 28
-            inactive: "qrc:/light/btn_filter_clear.png"
-            active: "qrc:/light/btn_filter_clear_hover.png"
-            qss: "ch-country-filter-clear"
+            height: countryFilterField.innerSize * 0.5
+            width: countryFilterField.innerSize * 0.5
             visible: countryFilterLine.mainText.length > 0
+
+            qss: "ch-country-filter-clear"
+
+            Component.onCompleted: StyleDebugTree.describe (
+               "lineEditlIconRight",
+                ["x", "y", "z", "width", "height", "active", "inactive"],
+               this);
+
             onClicked: {
                 countryFilterLine.mainText = "";
                 countryFilterLine.setFocus();
             }
         }
-    }
-
-    DapQmlRectangle {
-        id: spacer
-        visible: false
-        qss: "radiobtn-spacer"
     }
 
     /****************************************//**

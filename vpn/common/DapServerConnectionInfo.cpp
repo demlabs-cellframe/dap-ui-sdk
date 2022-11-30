@@ -89,7 +89,7 @@ const DapServerInfo* DapServerConnectionInfo::serverInfo() const
     return &m_serverInfo;
 }
 
-void DapServerConnectionInfo::setServerInfo(const DapServerInfo &serverInfo)
+void DapServerConnectionInfo::setServerInfo (const DapServerInfo &serverInfo)
 {
     m_serverInfo = serverInfo;
 }

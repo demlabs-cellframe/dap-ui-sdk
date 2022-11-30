@@ -62,6 +62,11 @@ public:
   static DapQmlModelSettings *instance();
   Q_INVOKABLE void exec (int a_index, QObject *a_item = nullptr);
   Q_INVOKABLE QString notifier() const;
+  Q_INVOKABLE QVariant value (int a_index, const QString &a_fieldName) const;
+private:
+  void _buildMenuItemsList();
+  void _updateMenuContent (const QSet<QString> &a_filterKeywords);
+  QString getCurrentCountryCode() const;
   /// @}
 
   /****************************************//**
@@ -112,6 +117,7 @@ signals:
   void sigSerialReset();
   void sigLogout();
   void sigLanguage();
+  void sigManageCDB();
   void sigManageServers();
   void sigCertificate();
   void sigDarkTheme (bool a_state);
@@ -138,20 +144,14 @@ signals:
    *******************************************/
   /// @{
 public slots:
-  void slotUpdateLabels();
+  void slotUpdateLabels (bool a_forced);
   void slotSetDaysLeft (QString a_days);
   void slotResetDaysLeft();
   void slotCountryChange();
   void slotUpdateItemsList();
-private:
-  QString getCurrentCountryCode() const;
 protected slots:
   void slotRetranslate();
   /// @}
-private:
-  void _buildMenuItemsList();
-  QList<Item> s_items;
-  void menuConstructor(QSet<QString> menuItems);
 };
 
 class DapQmlModelSettingsItem : public QObject

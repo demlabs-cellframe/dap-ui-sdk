@@ -48,6 +48,11 @@ QString DapQmlModelChooseServer::hook()
   return QString();
 }
 
+int DapQmlModelChooseServer::hookInt()
+{
+  return 0;
+}
+
 void DapQmlModelChooseServer::refresh()
 {
 //  beginResetModel();

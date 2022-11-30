@@ -27,6 +27,7 @@ enum class DapJsonCmdType
     SEND_SIGN_UP_REQUEST,
     REQUEST_PURCHASE_VERIFY,
     CLIENT_INFO,
+    CDB_CTL,
     NODE_INFO,
     UNKNOWN
 };
@@ -38,7 +39,7 @@ public:
         VALUE, STATE_NAME, READ_BYTES, WRITE_BYTES,
         MESSAGE, ADDRESS, PORT, USER, PASSWORD, DISCONNECT,
         READ_PACKAGE, WRITE_PACKAGE, LAST_CONNECTION, GATEWAY, UPSTREAM_SOCKET,
-        ACTION, HOST
+        ACTION, HOST, CDB
     };
     static const QString& toString(Params p);
     static Params fromString(QString &param);

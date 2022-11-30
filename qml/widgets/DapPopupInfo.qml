@@ -110,7 +110,7 @@ Item {
     {
         anchors.fill: rectItem
         anchors.leftMargin: 16
-//        anchors.rightMargin: 16
+        anchors.rightMargin: 16
         spacing: 10
 
         DapImageLoader
@@ -134,11 +134,18 @@ Item {
         }
     }
 
-    function showInfo(x_pos, y_pos, text, image)
+    function showInfo(width, height, x_pos, y_pos, text, image)
     {
+        if(width)
+        {
+            rectItem.width = width
+            stopX = dapMainWindow.width - (popup.width + 24)
+        }
+        if(height)
+            rectItem.height = height
+
         showTimer.stop()
         hideTimer.stop()
-        opacityAnim.stop()
 
         showAnim.start()
 

@@ -133,6 +133,11 @@
     color: "@background";
 }
 
+.c-error
+{
+    color: "@error";
+}
+
 /****************************************************
  * Widgets
  ***************************************************/
@@ -197,9 +202,18 @@
 
 
 
+.line-edit-icon
+{
+    scaled-rect: scaled(nan,nan,20,20,true);
+}
+
+
+
 .form-title-close-btn
 {
     scaled-rect: scaled(0,0,28,28,true);
+    inactive: "@btn-close";
+    active: "@btn-close-hover";
 }
 
 .form-title-label
@@ -214,16 +228,19 @@
 .sep-left
 {
     qproperty-scaledPixmap: "@separator-left";
+    scaled-rect: scaled(nan,nan,8,4,false);
 }
 
 .sep-mid
 {
     qproperty-scaledPixmap: "@separator-mid";
+    scaled-rect: scaled(nan,nan,nan,4,false);
 }
 
 .sep-right
 {
     qproperty-scaledPixmap: "@separator-right";
+    scaled-rect: scaled(nan,nan,8,4,false);
 }
 
 
@@ -352,6 +369,16 @@
     qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_certificate.png");
 }
 
+.ic_cdb-manager
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_cdb-manager.png");
+}
+
+.ic_server-manager
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_server-manager.png");
+}
+
 .ic_send-report
 {
     qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_send-report.png");
@@ -417,6 +444,16 @@
     qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/Spinner.gif");
 }
 
+.ic_location
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_location.png");
+}
+
+.ic_country_filter
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_filter.png");
+}
+
 .ic_online
 {
     qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/icon_online.png");
@@ -457,6 +494,11 @@
     qproperty-scaledPixmap: url("qrc:/nonthemed/conn-icon-5.png");
 }
 
+.ic_cdb-index-icon
+{
+    qproperty-scaledPixmap: url("qrc:/nonthemed/cdb-index-icon.png");
+}
+
 /****************************************************
  * Main window
  ***************************************************/
@@ -464,6 +506,11 @@
 .content-frame
 {
     scaled-rect: scaled(0,0,-1,754,false);
+}
+
+.content-mid
+{
+    scaled-rect: scaled(-1,nan,363,nan,false);
 }
 
 .content-background
@@ -529,7 +576,7 @@
 
 .footer-frame
 {
-    scaled-rect: scaled(-1,0,-1,201,false);
+    scaled-rect: scaled(nan,nan,-1,201,false);
 }
 
 .footer-btn-settings
@@ -810,6 +857,13 @@
     color: "@brand";
     scaled-font: scaled(16);    
     font-weight: Font.Bold;
+}
+
+.sett-btn-lbl-sub-link
+{
+    color: "@light-grey";
+    scaled-font: scaled(16);
+    font-weight: Font.Normal;
 }
 
 .sett-title-lbl-main
@@ -1263,6 +1317,65 @@
     inactive: "@btn-close";
 }
 
+.manser-remove-btn
+{
+    scaled-rect: scaled(19,nan,390,20,false,16);
+}
+
+.mancdb-error-label
+{
+    scaled-rect: scaled(-1,96,-1,20,false,16);
+}
+
+/****************************************************
+ * Manage CDB
+ ***************************************************/
+
+.mancdb-resizer-item
+{
+    scaled-rect: scaled(nan,nan,363,64,false,34);
+    color: "@background";
+}
+
+.mancdb-resizer-field
+{
+    scaled-rect: scaled(nan,nan,nan,48,false);
+    color: "@text";
+}
+
+.mancdb-item
+{
+    scaled-rect: scaled(nan,nan,nan,nan,false,34);
+}
+
+.mancdb-btn-lbl-main
+{
+    color: "@text";
+    scaled-font: scaled(16);    
+    font-weight: Font.Normal;
+}
+
+.mancdb-settings-btn
+{
+    scaled-rect: scaled(nan,nan,28,28,true);
+    active: "@btn-settings-hover";
+    inactive: "@btn-settings";
+}
+
+.mancdb-accept-btn
+{
+    scaled-rect: scaled(nan,nan,28,28,true);
+    active: "@btn-accept-hover";
+    inactive: "@btn-accept";
+}
+
+.mancdb-cancel-btn
+{
+    scaled-rect: scaled(nan,nan,28,28,true);
+    active: "@btn-close-hover";
+    inactive: "@btn-close";
+}
+
 /****************************************************
  * Certificate
  ***************************************************/
@@ -1315,4 +1428,28 @@
     scaled-rect: scaled(nan,nan,28,28,true);
     active: "@btn-close-hover";
     inactive: "@btn-close";
+}
+
+/****************************************************
+ * Choose Country
+ ***************************************************/
+
+.ch-country-filter-border
+{
+    border-width: 1;
+    border-color: "@light-grey";
+    radius: 5;
+    scaled-rect: scaled(-1,nan,363,48,false);
+}
+
+.ch-country-filter-text
+{
+    color: "@text";
+    scaled-font: scaled(16);
+}
+
+.ch-country-filter-clear
+{
+    qproperty-inactive: "@btn-close";
+    qproperty-active: "@btn-close-hover";
 }

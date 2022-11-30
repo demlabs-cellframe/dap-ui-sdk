@@ -23,6 +23,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    clip: true
     enabled: false
 
     /****************************************//**

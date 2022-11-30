@@ -30,6 +30,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    clip: true
 
     /****************************************//**
      * @name DEFS
@@ -228,7 +229,7 @@ Item {
 
     DapQmlRectangle {
         qss: "login-logo-container"
-        visible: Brand.name() !== "RiseVPN"
+        visible: Brand.isEnterprise() === false
         DapQmlLabel {
             x: (parent.width - width) / 2
             z: 15
@@ -256,7 +257,7 @@ Item {
         width: root.width
         color: "transparent"
         clip: true
-        visible: Brand.name() === "RiseVPN"
+        visible: Brand.isEnterprise() === true
         DapQmlStyle { item: loginTypeContainer; qss: "login-type-container" }
 
         function update() {
@@ -341,7 +342,7 @@ Item {
     }
 
     /****************************************//**
-     * Top separator
+     * Top mode name
      ********************************************/
 
     DapQmlLabel {
@@ -357,7 +358,7 @@ Item {
         fontFamiliy: loginTypeNamePlacer.fontFamiliy
         fontWeight:  loginTypeNamePlacer.fontWeight
         color:       loginTypeNamePlacer.color
-        visible: Brand.name() === "RiseVPN"
+        visible: Brand.isEnterprise() === true
         wrapMode: Text.WordWrap
         text: (internal.mode === QuiLoginForm.Mode.M_CERT)
               ? textCert
@@ -374,6 +375,10 @@ Item {
             qss: "login-typename-label font-brand c-grey"
         }
     }
+
+    /****************************************//**
+     * Top separator
+     ********************************************/
 
     DapQmlRectangle {
         x: loginSepsPlacer.x
@@ -725,7 +730,7 @@ Item {
         y:      loginSpacer.y + loginChooseCertPlacer.y
         width:  loginChooseCertPlacer.width
         height: loginChooseCertPlacer.height
-        visible: internal.mode !== QuiLoginForm.Mode.M_PASSWORD
+        visible: internal.mode !== QuiLoginForm.Mode.M_PASSWORD && Brand.isEnterprise() === true
 
         DapQmlButton {
             id: btnChooseCert

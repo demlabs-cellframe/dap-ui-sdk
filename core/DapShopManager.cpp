@@ -9,9 +9,10 @@
 
 // The product ID
 const QStringList DapShopManager::m_productNames = {
-    QStringLiteral("android.demlabs.kelvpn_1"),
-    QStringLiteral("android.demlabs.kelvpn_6"),
-    QStringLiteral("android.demlabs.kelvpn_12")
+    "Undefined",
+    PLAN_1M,
+    PLAN_6M,
+    PLAN_12M
 };
 
 void DapShopManager::setupConnections()
@@ -64,13 +65,13 @@ void DapShopManager::doPurchase(DapShopManager::Products product)
     switch (product)
     {
     case PRODUCT_1MONTH_KEY:
-        index = 0;
-        break;
-    case PRODUCT_6MONTHS_KEY:
         index = 1;
         break;
-    case PRODUCT_YEAR_KEY:
+    case PRODUCT_6MONTHS_KEY:
         index = 2;
+        break;
+    case PRODUCT_YEAR_KEY:
+        index = 3;
         break;
     default: // unknown product
         break;
@@ -89,9 +90,22 @@ void DapShopManager::doPurchase(DapShopManager::Products product)
     m_sku = m_productNames[index];
 
 #ifdef Q_OS_ANDROID
-    m_store.callMethod<jint>("launchBilling", "(Ljava/lang/String;)I",
-                             QAndroidJniObject::fromString(m_productNames[index]).object<jstring>());
+#ifdef BUILD_VAR_GOOGLE
+    /*---- Purchase BUILD_VAR_GOOGLE----*/
+    qInfo() << "Payment response" << m_productNames[index] << index;
+    jint res = QtAndroid::androidActivity()
+            .callMethod<jint>("launchBilling"
+            ,"(Ljava/lang/String;)I"
+            ,QAndroidJniObject::fromString(m_productNames[index]).object<jstring>());
+//    jint res = m_store.callMethod<jint>("launchBilling", "(Ljava/lang/String;)I",
+//                             QAndroidJniObject::fromString(m_productNames[index]).object<jstring>());
+    qInfo() << "Payment response code: " << res;
+#else
+    QString url = DAP_LICENCE_URL;
+    QDesktopServices::openUrl(QUrl(url));
 #endif
+#endif
+
 }
 
 DapShopManager::ProductState DapShopManager::getProdustState(DapShopManager::Products product) const
