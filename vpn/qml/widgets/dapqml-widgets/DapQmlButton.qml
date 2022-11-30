@@ -452,7 +452,7 @@ Rectangle {
                 height: _magickHeight() - _magickSpacer()
 
                 horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignBottom
+                verticalAlignment: Text.AlignVCenter
                 echoMode: root.editEchoMode
                 text: root.mainText
                 //qss: root.mainQss
