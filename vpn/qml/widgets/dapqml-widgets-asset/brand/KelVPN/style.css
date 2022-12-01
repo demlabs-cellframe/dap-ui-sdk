@@ -41,8 +41,8 @@
 	login-logo:                 "qrc:/light/login-logo.png";
 	btn-close:                  "qrc:/light/ic_close.png";
 	btn-close-hover:            "qrc:/light/ic_close_hover.png";
-	country-filter-clear:       "qrc:/light/btn_filter_clear.png"
-	country-filter-clear-hover: "qrc:/light/btn_filter_clear_hover.png"
+        country-filter-clear:       "qrc:/light/btn_filter_clear.png";
+        country-filter-clear-hover: "qrc:/light/btn_filter_clear_hover.png";
         login-mode-btn-serial-active:   "qrc:/light/key.png";
         login-mode-btn-serial-inactive: "qrc:/light/key_inactive.png";
         login-mode-btn-nocbd-active:    "qrc:/light/wallet.png";
@@ -84,8 +84,8 @@
     login-logo:                 "qrc:/dark/login-logo.png";
     btn-close:                  "qrc:/dark/ic_close.png";
     btn-close-hover:            "qrc:/dark/ic_close_hover.png";
-    country-filter-clear:       "qrc:/dark/btn_filter_clear.png"
-    country-filter-clear-hover: "qrc:/dark/btn_filter_clear_hover.png"
+    country-filter-clear:       "qrc:/dark/btn_filter_clear.png";
+    country-filter-clear-hover: "qrc:/dark/btn_filter_clear_hover.png";
         login-mode-btn-serial-active:   "qrc:/dark/key.png";
         login-mode-btn-serial-inactive: "qrc:/dark/key_inactive.png";
         login-mode-btn-nocbd-active:    "qrc:/dark/wallet.png";

@@ -104,6 +104,8 @@ public slots:
     void walletsRequest();
     void networksRequest();
     void walletDataRequest(const QString& walletName);
+    void getCertificates();
+    void createCertificate(const QString& certType, const QString& certName);
     void condTxCreateRequest(QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit);
     void getLedgerTxHashRequest();
 
@@ -119,6 +121,8 @@ private slots:
     void parseReplyNetworks(const QString& replyData);
     void parseReplyWallets(const QString& replyData);
     void parseDataWallet(const QString& replyData);
+    void parseCertificates(const QString& replyData);
+    void parseCreateCertificate(const QString& replyData);
     void parseCondTxCreateReply(const QString& replyData);
     void parseLedgerReply(const QString& replyData);
     void parseJsonError(QString replyData);
@@ -129,6 +133,8 @@ signals:
     void sigReceivedWalletsList(QStringList);
     void sigReceivedNetworksList(QStringList);
     void sigWalletDataReady(QJsonArray);
+    void sigReceivedCertificatestList(QStringList);
+    void sigCreatedCertificate(QString);
     void sigCondTxCreateSuccess();
     void sigLedgerContainHash();
     void connectionIdReceived(QString connectionId);

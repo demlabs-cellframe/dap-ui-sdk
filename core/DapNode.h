@@ -48,6 +48,7 @@ public:
     explicit NodeConnectStateMachine()
     { init(); }
     void start() { nodeConnectMachine.start(); }
+    ///
     QState initialState;
     QState nodeDetection;
     QState nodeNotDetected;
@@ -60,6 +61,9 @@ public:
     QState condTxCreate;
     QState ledgerTxHashRequest;
     QState ledgerTxHashEmpty;
+    QState createCertificate;
+    QState checkTransactionCertificate;
+    QState createTransactionCertificate;
 private:
     QStateMachine nodeConnectMachine;
     void init(){
@@ -75,6 +79,9 @@ private:
         nodeConnectMachine.addState(&condTxCreate);
         nodeConnectMachine.addState(&ledgerTxHashRequest);
         nodeConnectMachine.addState(&ledgerTxHashEmpty);
+        nodeConnectMachine.addState(&createCertificate);
+        nodeConnectMachine.addState(&checkTransactionCertificate);
+        nodeConnectMachine.addState(&createTransactionCertificate);
         nodeConnectMachine.setInitialState(&initialState);
         qDebug() << "nodeConnectMachine::init";
     }
@@ -94,8 +101,8 @@ private:
     QString m_networkName;
     // transaction token name
     QString m_tokenName;
-    // transaction srtificate name
-    QString m_sertificateName;
+    // transaction certificate name
+    QString m_certificateName;
     // transaction wallet name
     QString m_walletName;
     // transaction value
@@ -126,9 +133,11 @@ public:
     void start();
 
 private:
-    void initTransitions();
-    void initStates();
+    void initStmTransitions();
+    void initStmStates();
     void initWeb3Connections();
+
+    bool nodeDetected;
 
 public slots:
     void startCheckingNodeRequest();
@@ -158,6 +167,10 @@ signals:
     void networksReceived();
     void sigCondTxCreateRequest();
     void walletListIsEmpty();
+    void checkCertificate();
+    void createCertificate();
+    void certificateExist();
+    void certificateNotFound();
 
 };
 

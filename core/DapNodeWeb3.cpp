@@ -118,6 +118,22 @@ void DapNodeWeb3::responseProcessing(const int error, const QString errorString,
         return;
 
     }
+    // get sertificates
+    if (networkRequest.contains("method=GetCertificates"))
+    {
+        responseParsing(error, DapNodeErrors::NetworkReplyNetworksListError, errorString, httpFinished,
+               DapNodeErrors::NetworkWrongReplyError, "Wrong reply nnetworks",
+               &DapNodeWeb3::parseCertificates);
+        return;
+    }
+    // create certificate
+    if (networkRequest.contains("method=CreateCertificate"))
+    {
+        responseParsing(error, DapNodeErrors::NetworkReplyNetworksListError, errorString, httpFinished,
+               DapNodeErrors::NetworkWrongReplyError, "Wrong reply nnetworks",
+               &DapNodeWeb3::parseCreateCertificate);
+        return;
+    }
     // create cond transaction reply
     if (networkRequest.contains("method=CondTxCreate"))
     {
@@ -134,7 +150,6 @@ void DapNodeWeb3::responseProcessing(const int error, const QString errorString,
                &DapNodeWeb3::parseLedgerReply);
         return;
     }
-
 }
 
 
@@ -361,6 +376,59 @@ void DapNodeWeb3::parseJsonError(QString replyData)
     }
 }
 
+void DapNodeWeb3::parseCertificates(const QString& replyData)
+{
+//    {
+//        "data": [
+//            "node-addr-Backbone",
+//            "node-addr-kelvpn-minkowski",
+//            "node-addr-mileena",
+//            "node-addr-subzero"
+//            "cert01_public"
+//        ],
+//        "errorMsg": "",
+//        "status": "ok"
+//    }
+    parseJsonError(replyData.toUtf8());
+    if (jsonError())
+        return;
+    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+    if (doc["data"].isArray())
+    {
+        // certificates
+       QStringList certificates;
+        QJsonArray dataArray = doc["data"].toArray();
+        for (auto i = dataArray.cbegin(), e = dataArray.cend(); i != e; i++)
+            if (i->isString())
+                certificates << i->toString();
+        DEBUGINFO << "Certificates: " << certificates;
+        emit sigReceivedCertificatestList(certificates);
+    }
+}
+
+void DapNodeWeb3::parseCreateCertificate(const QString& replyData)
+{
+//    {
+//        "data": {
+//            "name": "rslCert02",
+//            "type": "sig_dil"
+//        },
+//        "errorMsg": "",
+//        "status": "ok"
+//    }
+    parseJsonError(replyData.toUtf8());
+    if (jsonError())
+        return;
+    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+    if (doc["data"].isObject() && doc["data"].toObject()["name"].isString())
+    {
+        // get hash
+        QString certificate = doc["data"].toObject()["name"].toString();
+        emit sigCreatedCertificate(certificate);
+    }
+}
+
+
 void DapNodeWeb3::condTxCreateRequest(QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit)
 {
     QString requesString = QString("http://127.0.0.1:8045/?method=CondTxCreate&"
@@ -379,6 +447,26 @@ void DapNodeWeb3::condTxCreateRequest(QString walletName, QString networkName, Q
             .arg(sertificateName)
             .arg(value)
             .arg(unit);
+    sendRequest(requesString);
+}
+
+void DapNodeWeb3::createCertificate(const QString& certType, const QString& certName)
+{
+    QString requesString = QString("http://127.0.0.1:8045/?method=CreateCertificate&"
+                "id=%1&"
+                "certType=%2&"
+                "certName=%3&")
+            .arg(m_connectId)
+            .arg(certType)
+            .arg(certName);
+    sendRequest(requesString);
+}
+
+void DapNodeWeb3::getCertificates()
+{
+    QString requesString = QString("http://127.0.0.1:8045/?method=GetCertificates&"
+                "id=%1&")
+            .arg(m_connectId);
     sendRequest(requesString);
 }
 

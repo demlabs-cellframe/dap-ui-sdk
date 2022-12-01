@@ -73,7 +73,8 @@ Item {
         property bool cellfarameDetected: false
 
         /// @brief kel transaction processing for NoCBD
-        property bool transactionProcessing: true
+        property bool transactionProcessing: false
+        property bool waitingForApproval: false
 
         /// @brief show password contents
         property bool showPassword: false
@@ -173,6 +174,7 @@ Item {
     /// @brief set wallet for noCBD
     function setWallet(a_wallet) {
         btnChooseWallet.mainText = a_wallet;
+        internal.waitingForApproval = false
     }
 
     /// @brief set network|token for noCBD
@@ -183,6 +185,8 @@ Item {
     /// @brief set transaction processing flag for noCBD
     function setTransactionProcessing(a_data){
         internal.transactionProcessing = a_data;
+        transactionProcessingLabel.visible = true
+        transactionProcessingLabel.text = "Transaction is in progress"
     }
 
     function setTransactionWalletNetwork(row2) {
@@ -202,6 +206,8 @@ Item {
     /// @briefset found cellframe dashboard
     function cellfarameDashboardDetected(datected) {
         internal.cellfarameDetected = true;
+        internal.waitingForApproval = true
+        transactionProcessingLabel.text = "Waiting for approval"
         loginTypeKelContainer.update();
     }
 
@@ -414,7 +420,9 @@ Item {
         y:      loginSpacer.y + loginWalletPlacer.y
         width:  loginWalletPlacer.width
         height: loginWalletPlacer.height
-        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && !internal.transactionProcessing
+        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET
+                 && internal.cellfarameDetected
+                 && !internal.transactionProcessing && !internal.waitingForApproval
 
         DapQmlButton {
             id: btnChooseWallet
@@ -452,11 +460,14 @@ Item {
      ********************************************/
 
     DapQmlRectangle {
+        id:     maxPrice
         x:      loginCellPlacer.x
         y:      loginSpacer.y + loginCellPlacer.y
         width:  loginCellPlacer.width
         height: loginCellPlacer.height
-        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && !internal.transactionProcessing
+        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET
+                 && internal.cellfarameDetected
+                 && !internal.transactionProcessing && !internal.waitingForApproval
 
         DapQmlButton {
             id: btnChooseCell
@@ -498,7 +509,15 @@ Item {
         y:      loginSpacer.y + loginServerPlacer.y
         width:  loginServerPlacer.width
         height: loginServerPlacer.height
-        visible:!(Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && internal.transactionProcessing)
+        visible: {
+            if (Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET) {
+                return internal.cellfarameDetected
+                        && (!internal.transactionProcessing && !internal.waitingForApproval)
+            }
+            else {
+                return true;
+            }
+        }
 
         DapQmlButton {
             id: btnChooseServer
@@ -515,7 +534,6 @@ Item {
                  ? "login-btn-server"
 //                 serial login
                  : "login-btn-server-nocbd"
-//            qss: "login-btn-server"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
             separator: true
@@ -551,8 +569,10 @@ Item {
     DapQmlLabel {
         id: transactionProcessingLabel
         qss: "login-transaction-processing-label-nocbd"
-        text: "Transaction is in progress"
-        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && internal.transactionProcessing
+        text: "<<< Message >>>"
+        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET
+                 && internal.cellfarameDetected
+                 && (internal.transactionProcessing || internal.waitingForApproval)
     }
     DapQmlLabel {
         id: transactionProcessingWalletData
