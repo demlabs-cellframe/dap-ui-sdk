@@ -385,7 +385,7 @@ void DapQmlModelSettings::slotSetDaysLeft (QString a_days)
 
   emit dataChanged (
     index (s_daysLabelIndex, 0),
-    index (s_daysLabelIndex, columnCount (index (s_daysLabelIndex, 0))));
+    index (s_daysLabelIndex, columnCount (index (s_daysLabelIndex, 3))));
 }
 
 void DapQmlModelSettings::slotResetDaysLeft()
@@ -397,7 +397,7 @@ void DapQmlModelSettings::slotResetDaysLeft()
 
   emit dataChanged (
     index (s_daysLabelIndex, 0),
-    index (s_daysLabelIndex, columnCount (index (s_daysLabelIndex, 0))));
+    index (s_daysLabelIndex, columnCount (index (s_daysLabelIndex, 3))));
 }
 
 void DapQmlModelSettings::slotCountryChange()
@@ -409,7 +409,7 @@ void DapQmlModelSettings::slotCountryChange()
 
   emit dataChanged (
     index (s_countryIndex, 0),
-    index (s_countryIndex, columnCount (index (s_countryIndex, 0))));
+    index (s_countryIndex, columnCount (index (s_countryIndex, 3))));
 }
 
 void DapQmlModelSettings::slotRetranslate()
@@ -421,12 +421,8 @@ void DapQmlModelSettings::slotRetranslate()
 
 QString DapQmlModelSettings::getCurrentCountryCode() const
 {
-
-    QString base_location = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
-    QString code = "";
-    if (DapServersData::m_countryMap.contains(base_location))
-        QString code = DapServersData::m_countryMap[base_location];
-    return code;
+  QString base_location = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
+  return DapServersData::m_countryMap.value (base_location, QString());
 }
 
 /********************************************
