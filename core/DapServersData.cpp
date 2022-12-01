@@ -81,8 +81,8 @@ void DapServersData::setCurrentServer(const QString &a_serverName)
             setCurrentServer(i);
             return;
         }
-        this->setCurrentServer(-1);
     }
+    this->setCurrentServer(-1);
 
 //    qFatal("There is no server with name %s", qPrintable(a_serverName));
 }
@@ -97,7 +97,8 @@ bool DapServersData::_setCurrentServerByIndex(int a_serverIndex)
   Q_ASSERT (a_serverIndex >= 0 && a_serverIndex < m_servers.count());
 
   auto &targetServer  = m_servers[a_serverIndex];
-  if (m_currentServer == targetServer)
+  if (m_currentServer.name == targetServer.name
+      && m_currentServer == targetServer)
     return false;
 
   m_currentServer     = targetServer;
