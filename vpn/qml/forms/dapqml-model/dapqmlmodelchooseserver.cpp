@@ -93,7 +93,11 @@ QVariant DapQmlModelChooseServer::data(const QModelIndex &index, int role) const
       return serversData->data (index, CONNECTION_QUALITY).toInt();
 
     case Role::checked:
-      return DapServersData::instance()->data (index, Qt::DisplayRole) == m_currentServer;
+        const auto &currentServer   = serversData->currentServer();
+        const auto name             = serversData->data (index, Qt::DisplayRole).toString();
+        const auto address          = serversData->data (index, ADDRESS_ROLE).toString();
+        return (currentServer.name == name
+                && currentServer.address == address);
     }
 
   return QVariant();
