@@ -93,30 +93,52 @@ QVariant DapQmlModelChooseServer::data(const QModelIndex &index, int role) const
       return serversData->data (index, CONNECTION_QUALITY).toInt();
 
     case Role::checked:
-      return DapServersData::instance()->data (index, Qt::DisplayRole) == m_currentServer;
+        const auto &currentServer   = serversData->currentServer();
+        const auto name             = serversData->data (index, Qt::DisplayRole).toString();
+        const auto address          = serversData->data (index, ADDRESS_ROLE).toString();
+        return (currentServer.name == name
+                && currentServer.address == address);
     }
 
   return QVariant();
 }
 
-/// set checked item
-void DapQmlModelChooseServer::setCheckedServer(QString name)
+void DapQmlModelChooseServer::setCurrentServerByName (const QString &a_name)
 {
-  int oldIndex = -1;
-  QModelIndex i = DapServersData::instance()->indexOf(m_currentServer);
-  if (i.isValid())
-    oldIndex = i.row();
-  m_previousServer = m_currentServer;
-  m_currentServer = name;
-  i = DapServersData::instance()->indexOf(m_currentServer);
-  if (i.isValid())
-  {
-    // set unchecked item
-    if (oldIndex >= 0)
-      emit dataChanged(index(oldIndex, 0), index(oldIndex, 0));
-    // set checked item
-    emit dataChanged(index(i.row(), 0), index(i.row(), 0));
-  }
+  /* variables */
+  auto *serversData   = DapServersData::instance();
+  const auto &servers = serversData->servers();
+
+  /* lambdas */
+  auto indexOf = [servers] (const QString &a_serverName) -> int {
+
+      int index = 0;
+      for (const auto &server : servers)
+        {
+          if (server.name == a_serverName)
+            return index;
+          index++;
+        }
+
+      return -1;
+    };
+
+  /* store changes */
+  m_previousServer  = m_currentServer;
+  m_currentServer   = a_name;
+
+  /* get indexes */
+  int currentIndex  = indexOf (m_currentServer);
+  int lastIndex     = indexOf (m_previousServer);
+
+  /* update current server */
+  serversData->setCurrentServer (currentIndex);
+
+  /* send update notifies */
+  if (lastIndex != -1 && lastIndex != currentIndex)
+    emit dataChanged (index (lastIndex, 0),     index (lastIndex, 0));
+  if (currentIndex != -1)
+    emit dataChanged (index (currentIndex, 0),  index (currentIndex, 0));
 }
 
 QHash<int, QByteArray> DapQmlModelChooseServer::roleNames() const

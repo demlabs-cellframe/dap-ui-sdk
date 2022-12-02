@@ -10,6 +10,7 @@
 #define COUTRY_FLAG_ROLE (Qt::UserRole + 10)
 #define CONNECTION_QUALITY (Qt::UserRole + 11)
 #define PING_ROLE (Qt::UserRole + 12)
+#define ADDRESS_ROLE (Qt::UserRole + 13)
 
 class DapServersData: public QAbstractListModel
 {
