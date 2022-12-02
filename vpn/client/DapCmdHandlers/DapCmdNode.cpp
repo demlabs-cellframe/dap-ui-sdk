@@ -89,6 +89,17 @@ void DapCmdNode::sendWalletsData(const QJsonObject& a_walletsData)
     DEBUGINFO << "sendWalletsData" << response;
 }
 
+void DapCmdNode::sendTransactionInMempool()
+{
+    QJsonObject response;
+    QJsonObject nodeInfo;
+    nodeInfo["status"] = "ok";
+    nodeInfo["transaction_hash_in_mempool"] = true;
+    response[DapCmdNode::actionParam] = nodeInfo;
+    sendCmd(&response);
+    DEBUGINFO << "sendTransactionInMempool";
+}
+
 void DapCmdNode::sendTransactionInLedger()
 {
     QJsonObject response;

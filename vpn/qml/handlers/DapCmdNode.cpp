@@ -60,6 +60,13 @@ void DapCmdNode::handle(const QJsonObject *params)
                     emit nodeDetected();
                     return;
                 }
+                // transaction hash in mempool
+                if (nodeData["transaction_hash_in_mempool"].isBool() && nodeData["transaction_hash_in_mempool"].toBool())
+                {
+                    DEBUGINFO << "transaction hash in mempool";
+                    emit transactionHashInMempool();
+                    return;
+                }
                 // transaction hash in ledger
                 if (nodeData["transaction_hash_in_ledger"].isBool() && nodeData["transaction_hash_in_ledger"].toBool())
                 {

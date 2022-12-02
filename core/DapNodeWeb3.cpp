@@ -274,13 +274,13 @@ void DapNodeWeb3::parseReplyWallets(const QString& replyData)
     if (doc["data"].isArray())
     {
         // wallets
-        m_walletsList.clear();
+        QStringList walletsList;
         QJsonArray dataArray = doc["data"].toArray();
         for (auto i = dataArray.cbegin(), e = dataArray.cend(); i != e; i++)
             if (i->isString())
-                m_walletsList << i->toString();
-        DEBUGINFO << "Wallets list: " << m_walletsList;
-        emit sigReceivedWalletsList(m_walletsList);
+                walletsList << i->toString();
+        DEBUGINFO << "Wallets list: " << walletsList;
+        emit sigReceivedWalletsList(walletsList);
     }
 }
 
@@ -303,13 +303,13 @@ void DapNodeWeb3::parseReplyNetworks(const QString& replyData)
     if (doc["data"].isArray())
     {
         // wallets
-        m_networksList.clear();
+        QStringList networksList;
         QJsonArray dataArray = doc["data"].toArray();
         for (auto i = dataArray.cbegin(), e = dataArray.cend(); i != e; i++)
             if (i->isString())
-                m_networksList << i->toString();
-        DEBUGINFO << "Networks list: " << m_walletsList;
-        emit sigReceivedNetworksList(m_networksList);
+                networksList << i->toString();
+        DEBUGINFO << "Networks list: " << networksList;
+        emit sigReceivedNetworksList(networksList);
     }
 }
 
@@ -487,19 +487,18 @@ void DapNodeWeb3::parseCondTxCreateReply(const QString& replyData)
     if (doc["data"].isObject() && doc["data"].toObject()["hash"].isString())
     {
         // get hash
-        m_transactionHash = doc["data"].toObject()["hash"].toString();
-        m_transactionHash = "0x" + m_transactionHash;
-        emit sigCondTxCreateSuccess();
+        QString transactionHash = "0x" + doc["data"].toObject()["hash"].toString();
+        emit sigCondTxCreateSuccess(transactionHash);
     }
 }
 
-void DapNodeWeb3::getLedgerTxHashRequest()
+void DapNodeWeb3::getLedgerTxHashRequest(QString transactionHash, QString networkName)
 {
     QString requesString = QString("http://127.0.0.1:8045/?method=GetLedgerTxHash&"
                 "id=%1&hashTx=%2&net=%3")
             .arg(m_connectId)
-            .arg(m_transactionHash)
-            .arg(m_networkName);
+            .arg(transactionHash)
+            .arg(networkName);
     sendRequest(requesString);
 }
 

@@ -59,21 +59,12 @@ private:
     DapNetworkAccessManager * m_httpClient;
     // cellframe dashboard connect id
     QString m_connectId;
-    // transaction network name
-    QString m_networkName;
-    // transaction hash
-    QString m_transactionHash;
-    // wallets list
-    QStringList m_walletsList;
-    // network list
-    QStringList m_networksList;
     // reply data
     DapNetworkReply *m_networkReply;
     // network request string
     QString m_networkRequest;
     //
     bool m_parseJsonError;
-    QJsonObject m_walletsData;
 
 public:
     static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
@@ -107,7 +98,7 @@ public slots:
     void getCertificates();
     void createCertificate(const QString& certType, const QString& certName);
     void condTxCreateRequest(QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit);
-    void getLedgerTxHashRequest();
+    void getLedgerTxHashRequest(QString transactionHash, QString networkName);
 
 
 private slots:
@@ -135,7 +126,7 @@ signals:
     void sigWalletDataReady(QJsonArray);
     void sigReceivedCertificatestList(QStringList);
     void sigCreatedCertificate(QString);
-    void sigCondTxCreateSuccess();
+    void sigCondTxCreateSuccess(QString hash);
     void sigLedgerContainHash();
     void connectionIdReceived(QString connectionId);
     void statusOk();

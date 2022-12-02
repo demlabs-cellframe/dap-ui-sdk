@@ -59,6 +59,8 @@ public:
     QState getNetworks;
     QState getDataWallet;
     QState condTxCreate;
+    QState mempoolTxHashRequest;
+    QState mempoolTxHashEmpty;
     QState ledgerTxHashRequest;
     QState ledgerTxHashEmpty;
     QState createCertificate;
@@ -77,6 +79,8 @@ private:
         nodeConnectMachine.addState(&getNetworks);
         nodeConnectMachine.addState(&getDataWallet);
         nodeConnectMachine.addState(&condTxCreate);
+        nodeConnectMachine.addState(&mempoolTxHashRequest);
+        nodeConnectMachine.addState(&mempoolTxHashEmpty);
         nodeConnectMachine.addState(&ledgerTxHashRequest);
         nodeConnectMachine.addState(&ledgerTxHashEmpty);
         nodeConnectMachine.addState(&createCertificate);
@@ -155,13 +159,15 @@ signals:
     void sigReceivedNetworksList(QStringList);
     void sigNodeDetected();
     void sigWalletsDataReady(QJsonObject);
+    void sigMempoolContainHash();
     void sigLedgerContainHash();
-//    void sigCondTxCreateSuccess();
+    void sigCondTxCreateSuccess();
     // ------- internal signals --------
     void uiStartNodeDetection();
     void errorDetected();
     void repeatNodeDetection();
     void repeatNodeConnection();
+    void repeatReadMempool();
     void repeatReadLedger();
     void walletsReceived();
     void networksReceived();

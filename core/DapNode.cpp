@@ -127,7 +127,7 @@ void DapNode::initStmTransitions()
     m_stm->createTransactionCertificate.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
     // to check ledger if create successfuly
-    m_stm->condTxCreate.addTransition(web3, &DapNodeWeb3::sigCondTxCreateSuccess,
+    m_stm->condTxCreate.addTransition(this, &DapNode::sigCondTxCreateSuccess,
     &m_stm->ledgerTxHashRequest);
     // to ledger empty
     m_stm->ledgerTxHashRequest.addTransition(this, &DapNode::errorDetected,
@@ -207,7 +207,9 @@ void DapNode::initStmStates()
                         m_unit);
     });
     // check ledger
-    connect(&m_stm->ledgerTxHashRequest, &QState::entered, web3, &DapNodeWeb3::getLedgerTxHashRequest);
+    connect(&m_stm->ledgerTxHashRequest, &QState::entered, this, [=](){
+        emit web3->getLedgerTxHashRequest(m_transactionHash, m_networkName);
+    });
     connect(&m_stm->ledgerTxHashEmpty, &QState::entered, this, [=](){
         DEBUGINFO  << "&ledgerTxHashEmpty, &QState::entered";
         QTimer::singleShot(LEDGER_REQUEST_REPEAT_PERIOD, [=](){
@@ -253,6 +255,12 @@ void DapNode::initWeb3Connections()
     connect(web3, &DapNodeWeb3::sigCreatedCertificate, this, [=](QString certName){
         if (certName == m_certificateName) emit certificateExist();
     });
+    //
+    connect(web3, &DapNodeWeb3::sigCondTxCreateSuccess, this, [=](QString hash){
+       DEBUGINFO  << "&sigCondTxCreateSuccess" << hash;
+       m_transactionHash = hash;
+       emit sigCondTxCreateSuccess();
+    });
 }
 
 void DapNode::slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit)
@@ -262,7 +270,7 @@ void DapNode::slotCondTxCreateRequest(QString walletName, QString networkName, Q
     m_tokenName = tokenName;
     m_value = value;
     m_unit =unit;
-    m_certificateName = QString("rslCert01_public"); // TODO
+//    m_certificateName = QString("rslCert01_public"); // TODO
     emit sigCondTxCreateRequest();
 }
 

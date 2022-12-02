@@ -23,6 +23,7 @@ public slots:
     void sendError(int code, const QString& errorMessage);
     void sendNodeDetected();
     void setNodeDetected();
+    void sendTransactionInMempool();
     void sendTransactionInLedger();
 signals:
     void startNodeDetection();
