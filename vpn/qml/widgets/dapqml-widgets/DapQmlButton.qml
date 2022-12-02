@@ -129,6 +129,9 @@ Rectangle {
     /// @brief text field content changed
     signal textChanged();
 
+    /// @brief enter key pressed while text field is in focus
+    signal textAccepted();
+
     /// @}
     /****************************************//**
      * @name FUNCTIONS
@@ -548,8 +551,9 @@ Rectangle {
                 }
 
                 /* signals */
-                onTextEdited: { root.mainText = text; root.textEdited(); }
+                onTextEdited:  { root.mainText = text; root.textEdited(); }
                 onTextChanged: { root.mainText = text; root.textChanged(); }
+                onAccepted:    { root.textAccepted(); }
             }
 
             /* sub text */
