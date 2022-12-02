@@ -47,7 +47,7 @@ public:
   Q_INVOKABLE int hookInt();
   void refresh();
   /// Set current server name
-  void setCheckedServer(QString name);
+  void setCurrentServerByName (const QString &a_name);
   /// Return previous server name which was before setCheckedServer
   QString previousServer() { return m_previousServer; }
   /// @}
