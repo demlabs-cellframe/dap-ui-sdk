@@ -184,9 +184,19 @@ Item {
 
     /// @brief set transaction processing flag for noCBD
     function setTransactionProcessing(a_data){
-        internal.transactionProcessing = a_data;
-        transactionProcessingLabel.visible = true
-        transactionProcessingLabel.text = "Transaction is in progress"
+        console.log("setTransactionProcessing", a_data)
+        if (a_data === true) {
+            internal.transactionProcessing = a_data;
+            internal.waitingForApproval = false;
+            transactionProcessingLabel.text = "Transaction is in progress"
+            loginTypeKelContainer.update();
+            console.log("----- setTransactionProcessing", transactionProcessingLabel.text)
+        } else {
+            transactionProcessingLabel.text = "Transaction is in progress"
+            internal.transactionProcessing = a_data;
+            internal.waitingForApproval = false;
+            console.log("--- setTransactionProcessing", transactionProcessingLabel.text)
+        }
     }
 
     function setTransactionWalletNetwork(row2) {
@@ -197,17 +207,17 @@ Item {
         transactionProcessingAmount.text = row3
     }
 
-
     /// @brief set input mask for serial input
     function setupInputMask() {
         //btnEnterSerial.inputMask    = ">NNNN-NNNN-NNNN-NNNN;_"
     }
 
     /// @briefset found cellframe dashboard
-    function cellfarameDashboardDetected(datected) {
-        internal.cellfarameDetected = true;
+    function cellfarameDashboardDetected(detected) {
+        console.log("cellfarameDashboardDetected", detected);
+        internal.cellfarameDetected =  Brand.name() === "KelVPN";
         internal.waitingForApproval = true
-        transactionProcessingLabel.text = "Waiting for approval"
+        transactionProcessingLabel.text = "Waiting for approval ___ "
         loginTypeKelContainer.update();
     }
 
@@ -420,8 +430,7 @@ Item {
         y:      loginSpacer.y + loginWalletPlacer.y
         width:  loginWalletPlacer.width
         height: loginWalletPlacer.height
-        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET
-                 && internal.cellfarameDetected
+        visible: internal.cellfarameDetected && internal.mode === QuiLoginForm.Mode.M_WALLET
                  && !internal.transactionProcessing && !internal.waitingForApproval
 
         DapQmlButton {

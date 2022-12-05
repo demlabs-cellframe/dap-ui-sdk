@@ -21,7 +21,6 @@ const qint32   DapNode::LEDGER_REQUEST_REPEAT_PERIOD        (5000);
 DapNode:: DapNode(QObject * obj, int requestTimeout) :
     QObject(obj),
 //    m_requestTimeout(requestTimeout),
-    m_certificateName("node-addr-kelvpn-minkowski"),
     m_stm(new NodeConnectStateMachine)
 {
     web3 = new DapNodeWeb3();
@@ -35,6 +34,16 @@ DapNode::~ DapNode()
 {
 }
 
+// transaction certificate name
+QString DapNode::certificateName(const QString& access) const
+{
+    const QString private_certificateName("node-addr-kelvpn-minkowski-cert");
+    const QString public_certificateName = private_certificateName + "_public";
+    if (access == "private")
+        return private_certificateName;
+    // if (access == "public")
+    return public_certificateName;
+}
 
 void DapNode::stopCheckingNodeRequest()
 {
@@ -48,7 +57,18 @@ void DapNode::startCheckingNodeRequest()
     if (m_stm->initialState.active())
         emit uiStartNodeDetection();
     else
-        if (nodeDetected) emit sigNodeDetected();
+    {
+        if (m_stm->ledgerTxHashRequest.active() || m_stm->ledgerTxHashEmpty.active())
+        {
+            emit sigMempoolContainHash();
+            return;
+        }
+        if (nodeDetected)
+        {
+            emit sigNodeDetected();
+            return;
+        }
+    }
 }
 
 void DapNode::initStmTransitions()
@@ -86,27 +106,35 @@ void DapNode::initStmTransitions()
     // node status !ok -> nodeGetWallets
     m_stm->nodeGetStatus.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
+
     // node status ok -> initialState
     m_stm->nodeGetStatus.addTransition(web3, &DapNodeWeb3::statusOk,
     &m_stm->getWallets);
+
     // get wallets -> wallets received
     m_stm->getWallets.addTransition(this, &DapNode::walletsReceived,
     &m_stm->getNetworks);
+
     // get wallets -> init state
     m_stm->getWallets.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
+
     // get networks -> networks received
     m_stm->getNetworks.addTransition(this, &DapNode::networksReceived,
     &m_stm->getDataWallet);
+
     // get networks -> init state
     m_stm->getNetworks.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
+
     //
     m_stm->getDataWallet.addTransition(this, &DapNode::walletListIsEmpty,
     &m_stm->initialState);
+
     //
     m_stm->getDataWallet.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
+
     //
     /***************************************
     * transaction workflow
@@ -126,9 +154,18 @@ void DapNode::initStmTransitions()
     // Return to initial state
     m_stm->createTransactionCertificate.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
-    // to check ledger if create successfuly
+    // to check mempool if create successfuly
     m_stm->condTxCreate.addTransition(this, &DapNode::sigCondTxCreateSuccess,
+    &m_stm->mempoolTxHashRequest);
+    // to mempool empty
+    m_stm->mempoolTxHashRequest.addTransition(this, &DapNode::errorDetected,
+    &m_stm->mempoolTxHashEmpty);
+    // to check ledger if hash in mempool
+    m_stm->mempoolTxHashRequest.addTransition(this, &DapNode::sigMempoolContainHash,
     &m_stm->ledgerTxHashRequest);
+    // to check mempool
+    m_stm->mempoolTxHashEmpty.addTransition(this, &DapNode::repeatReadMempool,
+    &m_stm->mempoolTxHashRequest);
     // to ledger empty
     m_stm->ledgerTxHashRequest.addTransition(this, &DapNode::errorDetected,
     &m_stm->ledgerTxHashEmpty);
@@ -194,19 +231,24 @@ void DapNode::initStmStates()
     connect (&m_stm->checkTransactionCertificate, &QState::entered, web3, &DapNodeWeb3::getCertificates);
     // certificate create
     connect (&m_stm->createTransactionCertificate, &QState::entered, [=](){
-        web3->createCertificate("CertificateKELVPN", "sig_dil");
+        // only private certificates can be created
+        web3->createCertificate("sig_dil", certificateName("private"));
     });
     // create conditional transaction
     connect(&m_stm->condTxCreate, &QState::entered, this, [=](){
             web3->DapNodeWeb3::condTxCreateRequest(
                         m_walletName,
                         m_networkName,
-                        m_certificateName,
+                        certificateName("public"),
                         m_tokenName,
                         m_value,
                         m_unit);
     });
-    // check ledger
+    // mempool check
+    connect(&m_stm->mempoolTxHashRequest, &QState::entered, this, [=](){
+        emit web3->getMempoolTxHashRequest(m_transactionHash, m_networkName);
+    });
+    // ledger check
     connect(&m_stm->ledgerTxHashRequest, &QState::entered, this, [=](){
         emit web3->getLedgerTxHashRequest(m_transactionHash, m_networkName);
     });
@@ -243,17 +285,19 @@ void DapNode::initWeb3Connections()
     });
     // get wallet data
     connect(web3, &DapNodeWeb3::sigWalletDataReady, this, &DapNode::parseDataWallet);
+    // mempool contain transaction hash
+    connect(web3, &DapNodeWeb3::sigMempoolContainHash, this, &DapNode::sigMempoolContainHash);
     // ledger contain transaction hash
     connect(web3, &DapNodeWeb3::sigLedgerContainHash, this, &DapNode::sigLedgerContainHash);
     // check m_certificateName certificates list
     connect(web3, &DapNodeWeb3::sigReceivedCertificatestList, this, [=](QStringList certList){
-        if (certList.contains(m_certificateName)) emit certificateExist();
+        if (certList.contains(certificateName("public"))) emit certificateExist();
         // Certificate is not found
         else emit certificateNotFound();
     });
     // check m_certificateName after certificate create
     connect(web3, &DapNodeWeb3::sigCreatedCertificate, this, [=](QString certName){
-        if (certName == m_certificateName) emit certificateExist();
+        if (certName == certificateName("public")) emit certificateExist();
     });
     //
     connect(web3, &DapNodeWeb3::sigCondTxCreateSuccess, this, [=](QString hash){
@@ -261,6 +305,7 @@ void DapNode::initWeb3Connections()
        m_transactionHash = hash;
        emit sigCondTxCreateSuccess();
     });
+
 }
 
 void DapNode::slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit)
@@ -270,7 +315,6 @@ void DapNode::slotCondTxCreateRequest(QString walletName, QString networkName, Q
     m_tokenName = tokenName;
     m_value = value;
     m_unit =unit;
-//    m_certificateName = QString("rslCert01_public"); // TODO
     emit sigCondTxCreateRequest();
 }
 

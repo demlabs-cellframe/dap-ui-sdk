@@ -105,8 +105,6 @@ private:
     QString m_networkName;
     // transaction token name
     QString m_tokenName;
-    // transaction certificate name
-    QString m_certificateName;
     // transaction wallet name
     QString m_walletName;
     // transaction value
@@ -142,6 +140,9 @@ private:
     void initWeb3Connections();
 
     bool nodeDetected;
+    // transaction certificate name
+    QString certificateName(const QString& access = "public") const;
+
 
 public slots:
     void startCheckingNodeRequest();

@@ -103,7 +103,6 @@ void DapCmdNode::stopCheckNode()
 
 void DapCmdNode::condTxCreate()
 {
-    qDebug() << "aaaaaaaaaaaaaaaaaaaaaaaaaa";
     QJsonObject condTx;
     condTx["wallet_name"] = m_selectedWalletName;
     condTx["network_name"] = m_selectedNetworkName;

@@ -98,6 +98,7 @@ public slots:
     void getCertificates();
     void createCertificate(const QString& certType, const QString& certName);
     void condTxCreateRequest(QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit);
+    void getMempoolTxHashRequest(QString transactionHash, QString networkName);
     void getLedgerTxHashRequest(QString transactionHash, QString networkName);
 
 
@@ -116,6 +117,7 @@ private slots:
     void parseCreateCertificate(const QString& replyData);
     void parseCondTxCreateReply(const QString& replyData);
     void parseLedgerReply(const QString& replyData);
+    void parseMempoolReply(const QString& replyData);
     void parseJsonError(QString replyData);
 
 signals:
@@ -127,6 +129,7 @@ signals:
     void sigReceivedCertificatestList(QStringList);
     void sigCreatedCertificate(QString);
     void sigCondTxCreateSuccess(QString hash);
+    void sigMempoolContainHash();
     void sigLedgerContainHash();
     void connectionIdReceived(QString connectionId);
     void statusOk();

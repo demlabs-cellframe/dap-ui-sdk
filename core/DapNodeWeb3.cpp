@@ -142,6 +142,14 @@ void DapNodeWeb3::responseProcessing(const int error, const QString errorString,
                &DapNodeWeb3::parseCondTxCreateReply);
         return;
     }
+    //
+    if (networkRequest.contains("method=GetMempoolTxHash"))
+    {
+        responseParsing(error, DapNodeErrors::NetworkReplyNetworksListError, errorString, httpFinished,
+               DapNodeErrors::NetworkWrongReplyError, "Wrong reply mempool",
+               &DapNodeWeb3::parseMempoolReply);
+        return;
+    }
     // ledger reply
     if (networkRequest.contains("method=GetLedgerTxHash"))
     {
@@ -455,18 +463,22 @@ void DapNodeWeb3::createCertificate(const QString& certType, const QString& cert
     QString requesString = QString("http://127.0.0.1:8045/?method=CreateCertificate&"
                 "id=%1&"
                 "certType=%2&"
-                "certName=%3&")
+                "certName=%3&"
+                "categoryCert=%4")
             .arg(m_connectId)
             .arg(certType)
-            .arg(certName);
+            .arg(certName)
+            .arg("public");
     sendRequest(requesString);
 }
 
 void DapNodeWeb3::getCertificates()
 {
     QString requesString = QString("http://127.0.0.1:8045/?method=GetCertificates&"
-                "id=%1&")
-            .arg(m_connectId);
+                "id=%1&"
+                "categoryCert=%2")
+            .arg(m_connectId)
+            .arg("public");
     sendRequest(requesString);
 }
 
@@ -492,6 +504,16 @@ void DapNodeWeb3::parseCondTxCreateReply(const QString& replyData)
     }
 }
 
+void DapNodeWeb3::getMempoolTxHashRequest(QString transactionHash, QString networkName)
+{
+    QString requesString = QString("http://127.0.0.1:8045/?method=GetMempoolTxHash&"
+                "id=%1&net=%2&hashTx=%3")
+            .arg(m_connectId)
+            .arg(networkName)
+            .arg(transactionHash);
+    sendRequest(requesString);
+}
+
 void DapNodeWeb3::getLedgerTxHashRequest(QString transactionHash, QString networkName)
 {
     QString requesString = QString("http://127.0.0.1:8045/?method=GetLedgerTxHash&"
@@ -500,6 +522,22 @@ void DapNodeWeb3::getLedgerTxHashRequest(QString transactionHash, QString networ
             .arg(transactionHash)
             .arg(networkName);
     sendRequest(requesString);
+}
+
+void DapNodeWeb3::parseMempoolReply(const QString& replyData)
+{
+//    {
+//        "data": {
+//            "string": "transaction: hash: 0x385A0652191C419AB7C09907D84EB1779DC0EF6EC55C952D02EA871325B2A80C\n TS Created: Wed Nov 16 22:42:18 2022\n Token ticker: tKEL\n Items:\n IN:\nTx_prev_hash: 0x62C0CDEB24CFDE8ED40367CB180AE0C660DC4E47318698C91B26CD4942D9F30F\n Tx_out_prev_idx: 1\n OUT COND:\n Header:\n ts_expires: never\n value: 0.000000000000000001 (1)\n subtype: DAP_CHAIN_TX_OUT_COND_SUBTYPE_SRV_PAY\n unit: 0x00000003\n uid: 0x0000000000000001\n pkey: 0xD304A59B5C0A0A95149A2B34F77270E40ACBEBCCBC9536099928DBDB8DF3882C\n max price: 0.0 (0) \n OUT:\n Value: 989.899999999999999988 (989899999999999999988)\n Address: iDAeSXFFiwH2LyhquYZn7ce7wydGX8QUDRmCW1CKsMDDRRMvAA9CvRooswfp91fEz8hSqH6XxCysMWSxGUZGQSB9FXdUuMfgvWxgwKK7\nSignature: \nType: sig_dil\nPublic key hash: 0xAC75D1E675BB182FE1A5171BD50B6833C50BD29AC06A75491CCF7F411D53CB80\nPublic key size: 1196\nSignature size: 2096\n\n\r\n\n"
+//        },
+//        "errorMsg": "",
+//        "status": "ok"
+//    }
+    DEBUGINFO << "parseMempoolReply" << replyData;
+    parseJsonError(replyData.toUtf8());
+    if (jsonError())
+        return;
+    emit sigMempoolContainHash();
 }
 
 void DapNodeWeb3::parseLedgerReply(const QString& replyData)
