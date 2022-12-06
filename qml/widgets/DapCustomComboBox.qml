@@ -10,9 +10,9 @@ Item
     implicitHeight: 45
 
     property int rightMarginIndicator: 16
+    property int leftMarginText: 16
+    property int rightMarginText: 16
     property int maximumPopupHeight: 200
-    property int padding: 15
-    property int spacing: 15
 
     property alias model: popupListView.model
 
@@ -39,7 +39,7 @@ Item
 
     onModelChanged:
     {
-        print("DapCustomComboBox", "onModelChanged",
+        console.log("DapCustomComboBox", "onModelChanged",
               "popupListView.currentIndex", popupListView.currentIndex)
 
         if (popupListView.currentIndex < 0)
@@ -51,7 +51,7 @@ Item
 
     onCountChanged:
     {
-        print("DapCustomComboBox", "onCountChanged",
+        console.log("DapCustomComboBox", "onCountChanged",
               "popupListView.currentIndex", popupListView.currentIndex)
 
         if (popupListView.currentIndex < 0)
@@ -73,7 +73,7 @@ Item
         RowLayout
         {
             anchors.fill: parent
-            anchors.leftMargin: 16
+            anchors.leftMargin: leftMarginText
             anchors.rightMargin: rightMarginIndicator
 
             Text
@@ -230,8 +230,8 @@ Item
                     RowLayout
                     {
                         anchors.fill: parent
-                        anchors.leftMargin: 16
-                        anchors.rightMargin: 16
+                        anchors.leftMargin: leftMarginText
+                        anchors.rightMargin: rightMarginText
 
                         Text
                         {
