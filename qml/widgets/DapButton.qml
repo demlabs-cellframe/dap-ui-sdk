@@ -80,6 +80,10 @@ Button
 
     property bool selected: true
 
+    //Blocked interactive in list view if pressed and unlock if released
+    property bool listInteractivFlagDisabled: false
+    property Item parentList
+
     hoverEnabled: true
 
     ///@details empty default background
@@ -211,6 +215,8 @@ Button
                 onPressed: {
                     if(dapButton.enabled && dapButton.activeFrame)
                     {
+                        if(listInteractivFlagDisabled)
+                            parentList.interactive = false
                         shadowAnimPress.start()
                         shadow.visible = false
                     }
@@ -221,6 +227,9 @@ Button
                     {
                         shadowAnimRelease.start()
                         shadow.visible = true
+
+                        if(listInteractivFlagDisabled)
+                            parentList.interactive = true
 
                         if (control.containsMouse)
                             dapButton.clicked()
