@@ -120,7 +120,96 @@ Item {
         serverChoose.subText    = a_ip;
     }
 
+    function setTickerMessage(a_message, a_url) {
+        console.log(a_message)
+        internal.tickerMessage      = a_message;
+        internal.tickerUrl         = a_url;
+        //tickerLabel.updateTickerMessage()
+    }
+
     Component.onCompleted: setStatusIndicator(false);
+
+    /****************************************//**
+        * Ticker
+        ********************************************/
+
+       DapQmlRectangle {
+           id: ticker
+           objectName: "ticker"
+           qss: "ticker"
+           width: root.width
+           visible: false
+
+           DapQmlRectangle {
+               id: tickerLableRect
+               objectName: "tickerLableRect"
+               qss: "ticker_lable_rect"
+               visible: true
+               anchors.left: parent.left
+
+               DapQmlLabel {
+                   id: tickerLabel
+                   objectName: "tickerLabel"
+                   width: contentWidth
+                   qss: "ticker_label"
+                   text: internal.tickerMessage
+                   z: 2
+                   horizontalAlign: Text.AlignHCenter
+                   mipmap: false
+
+                   NumberAnimation  {
+                       id: tickerAnimation
+                       objectName: "tickerAnimation"
+                       target: tickerLabel
+                       properties: "x"
+                       from: tickerLableRect.width
+                       duration: 10000
+                       loops: Animation.Infinite
+                   }
+               }
+
+               MouseArea {
+                   anchors.fill: tickerLableRect
+                   z : 3
+                   cursorShape: Qt.PointingHandCursor
+                   onClicked: root.tickerClicked()
+               }
+
+               DapQmlRectangle {
+                   id: tickerLabelBackgraund
+                   qss: "ticker_label_backgraund"
+                   anchors.fill: parent
+               }
+           }
+
+           DapQmlRectangle {
+               id: tickerCloseRect
+               qss: "ticker_close_rect"
+               visible: true
+               anchors.right: parent.right
+
+               DapQmlPushButton {
+                   id: tickerCloseButton
+                   x: parent.width - width - y
+                   y: (parent.height - height) / 2
+                   z: 14
+
+                   height: 24
+                   width: 24
+                   qss: "ticker_close_button"
+
+                   onClicked: {
+                       ticker.visible = false;
+                   }
+               }
+
+               DapQmlRectangle {
+                   id: tickerCloseBackground
+                   qss: "ticker_label_backgraund"
+                   anchors.fill: parent
+               }
+           }
+       }
 
     /// @}
     /****************************************//**

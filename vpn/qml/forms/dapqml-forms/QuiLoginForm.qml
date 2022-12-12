@@ -183,8 +183,7 @@ Item {
     }
 
     function tickerClicked() {
-        tickerLabel.text = "open url open url open url open url open url open url "
-
+        Qt.openUrlExternally(internal.tickerUrl);
     }
 
     /// @}
@@ -215,7 +214,7 @@ Item {
            objectName: "ticker"
            qss: "ticker"
            width: root.width
-           visible: false
+           visible: true
 
            DapQmlRectangle {
                id: tickerLableRect
@@ -234,31 +233,21 @@ Item {
                    horizontalAlign: Text.AlignHCenter
                    mipmap: false
 
-
                    NumberAnimation  {
                        id: tickerAnimation
                        objectName: "tickerAnimation"
                        target: tickerLabel
                        properties: "x"
                        from: tickerLableRect.width
-                       //to: (-tickerLableRect.width - tickerLabel.contentWidth)
                        duration: 10000
                        loops: Animation.Infinite
-                       //running: true
                    }
-
-//                   function updateTickerMessage() {
-//                       let dest = -tickerLableRect.width - tickerLabel.contentWidth
-//                       text = internal.tickerMessage
-//                       ticker.visible = true
-//                       tickerAnimation.to = dest//-tickerLableRect.width - tickerLabel.contentWidth
-//                       tickerAnimation.start();
-//                   }
                }
 
                MouseArea {
                    anchors.fill: tickerLableRect
                    z : 3
+                   cursorShape: Qt.PointingHandCursor
                    onClicked: root.tickerClicked()
                }
 
