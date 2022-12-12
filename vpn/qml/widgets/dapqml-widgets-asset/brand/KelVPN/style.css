@@ -36,7 +36,9 @@
 	bugrep-bg:                  "qrc:/light/report_bg_border.png";
 	login-logo:                 "qrc:/light/login-logo.png";
 	btn-close:                  "qrc:/light/ic_close.png";
-	btn-close-hover:            "qrc:/light/ic_close_hover.png";
+        btn-close-hover:            "qrc:/light/ic_close_hover.png";
+        btn-ticker-close:           "qrc:/light/ic_ticker_close.png";
+        btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
 	country-filter-clear:       "qrc:/light/btn_filter_clear.png"
 	country-filter-clear-hover: "qrc:/light/btn_filter_clear_hover.png"
 }
@@ -1074,6 +1076,46 @@
 	scaled-font: scaled(14);
 }
 
+/****************************************************
+* Ticker
+***************************************************/
+
+.ticker_close_button
+{
+    qproperty-inactive: "@btn-ticker-close";
+    qproperty-active: "@btn-ticker-close-hover";
+}
+
+.ticker
+{
+    scaled-rect: scaled(-1,0,-1,36,false);
+}
+
+.ticker_lable_rect
+{
+    scaled-rect: scaled(-1,0,-1,36,false);
+}
+
+.ticker_label
+{
+    scaled-rect: scaled(-1,0,-1,36,false);
+    color: "#FFFFFF";
+}
+
+.ticker_label_backgraund{
+    scaled-rect: scaled(-1,0,-1,36,false);
+    color: "#A4A3C0";
+}
+
+.ticker_close_rect
+{
+    scaled-rect: scaled(-1,0,36,36,false);
+}
+
+.ticker_close_background{
+    scaled-rect: scaled(-1,0,-1,36,false);
+    color: "#A4A3C0";
+}
 /****************************************************
  * Choose Country
  ***************************************************/

@@ -62,6 +62,8 @@ Item {
         property bool changedCert:   false
         property string serverName: ""
         property string certName:   ""
+        property string tickerMessage:   ""
+        property string tickerUrl:   ""
 
         /// @brief login mode
         property int mode: QuiLoginForm.Mode.M_SERIAL
@@ -168,9 +170,21 @@ Item {
         btnChooseServer.updateServerName();
     }
 
+    function setTickerMessage(a_message, a_url) {
+        console.log(a_message)
+        internal.tickerMessage      = a_message;
+        internal.tickerUrl         = a_url;
+        tickerLabel.updateTickerMessage()
+    }
+
     /// @brief set input mask for serial input
     function setupInputMask() {
         //btnEnterSerial.inputMask    = ">NNNN-NNNN-NNNN-NNNN;_"
+    }
+
+    function tickerClicked() {
+        tickerLabel.text = "open url open url open url open url open url open url "
+
     }
 
     /// @}
@@ -190,6 +204,91 @@ Item {
             btnEnterSerial.separator    = true;
         }
     }
+
+
+    /****************************************//**
+        * Ticker
+        ********************************************/
+
+       DapQmlRectangle {
+           id: ticker
+           qss: "ticker"
+           width: root.width
+           visible: false
+
+           DapQmlRectangle {
+               id: tickerLableRect
+               qss: "ticker_lable_rect"
+               visible: true
+               anchors.left: parent.left
+
+               DapQmlLabel {
+                   id: tickerLabel
+                   qss: "ticker_label"
+                   text: internal.tickerMessage
+                   z: 2
+                   horizontalAlign: Text.AlignHCenter
+                   mipmap: false
+
+
+                   NumberAnimation on x {
+                       id: tickerAnimation
+                       from: parent.width
+                       to: -1*(parent.width + tickerLabel.width)
+                       duration: 10000
+                       loops: Animation.Infinite
+                       running: true
+                   }
+
+                   function updateTickerMessage() {
+                       text = internal.tickerMessage
+                       ticker.visible = true
+                       tickerAnimation.to = -1*(parent.width + tickerLabel.width)
+                       tickerAnimation.running = true
+                   }
+               }
+
+               MouseArea {
+                   anchors.fill: tickerLableRect
+                   z : 3
+                   onClicked: root.tickerClicked()
+               }
+
+               DapQmlRectangle {
+                   id: tickerLabelBackgraund
+                   qss: "ticker_label_backgraund"
+                   anchors.fill: parent
+               }
+           }
+
+           DapQmlRectangle {
+               id: tickerCloseRect
+               qss: "ticker_close_rect"
+               visible: true
+               anchors.right: parent.right
+
+               DapQmlPushButton {
+                   id: tickerCloseButton
+                   x: parent.width - width - y
+                   y: (parent.height - height) / 2
+                   z: 14
+
+                   height: 24
+                   width: 24
+                   qss: "ticker_close_button"
+
+                   onClicked: {
+                       ticker.visible = false;
+                   }
+               }
+
+               DapQmlRectangle {
+                   id: tickerCloseBackground
+                   qss: "ticker_label_backgraund"
+                   anchors.fill: parent
+               }
+           }
+       }
 
     /****************************************//**
      * Logo

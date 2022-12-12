@@ -17,15 +17,32 @@ void DapCmdNews::sendingGetNewsRequest()
 
 void DapCmdNews::handleResult(const QJsonObject& result)
 {
+
+
     if(result.value("news_list").isArray()) {
         QList<QMap<QString, QString>> listNews;
 
-        if (fromJSON(result.value("news_list").toArray(), &listNews))
-        {
-            emit sigGotNews(listNews);
-        } else {
-            qCritical() << "Error parse response from service";
-        }
+        QJsonArray jsonObj = result.value("news_list").toArray();
+
+        foreach (const QJsonValue & val, jsonObj)
+            if (val.toObject().value("type").toString() == "update"){
+
+                if (fromJSON(val.toObject().value("update_arr").toArray(), &listNews))
+                {
+                    emit sigGotUpdateNews(listNews);
+                } else {
+                    qCritical() << "Error parse response from service";
+                }
+            } else if (val.toObject().value("type").toString() == "for_ticker")
+            {
+                QString test1 = val.toObject().value("message").toString();
+                QString test2 = val.toObject().value("url").toString();
+                emit sigGotTickerNews(val.toObject().value("message").toString(),
+                                      val.toObject().value("url").toString());
+            }
+
+
+
     } else {
         qCritical() << "Bad response from service";
     }
@@ -42,22 +59,13 @@ bool DapCmdNews::fromJSON(const QJsonArray& jsonArr, QList<QMap<QString, QString
         }
 
         QJsonObject jsonObj = val.toObject();
-        QMap<QString, QString> temp;
-
-        if (jsonObj["target_os"].isArray()){
-            QJsonArray target_os = jsonObj["target_os"].toArray();
-            for (int i = 0; i < target_os.size(); i++){
-                if (target_os[i].toString() == Utils::getOSName()){
-                    fillingListNews(jsonObj, listNews);
-                }
-            }
-        } else {
-            if (jsonObj["target_os"].toString() == "any" || jsonObj["target_os"].toString() == Utils::getOSName()){
+        QJsonValue target_os = jsonObj.value("target_os");
+            if (target_os == Utils::getOSName()){
                 fillingListNews(jsonObj, listNews);
             }
-        }
     }
-    return true;
+
+    return !listNews->isEmpty();
 }
 
 void DapCmdNews::fillingListNews(const QJsonObject& jsonObj, QList<QMap<QString, QString>>* listNews)
@@ -71,15 +79,6 @@ void DapCmdNews::fillingListNews(const QJsonObject& jsonObj, QList<QMap<QString,
                           {"url",     jsonObj["url"].toString()}
                         });
 
-    } else if (jsonObj["type"].toString() == "news"){
-
-       listNews->append({
-                          {"type",    jsonObj["type"].toString()},
-                          {"message", jsonObj["message"].toString()}
-                        });
-
-    } else {
-        qInfo() << "News does not match known types";
     }
 }
 
