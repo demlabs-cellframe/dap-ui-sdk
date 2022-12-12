@@ -14,6 +14,8 @@ Item
     property int padding: 15
     property int spacing: 15
 
+    property int bgRadius: 0
+
     property alias model: popupListView.model
 
     property int currentIndex: -1
@@ -63,6 +65,7 @@ Item
         id: background
         border.width: 0
         anchors.fill: parent
+        radius: bgRadius
 
         color: popupVisible ?
                    currTheme.backgroundMainScreen :
