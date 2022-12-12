@@ -14,6 +14,8 @@ Item
     property int rightMarginText: 16
     property int maximumPopupHeight: 200
 
+    property int bgRadius: 0
+
     property alias model: popupListView.model
 
     property string indicatorSource: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrowDown.svg"
@@ -65,6 +67,7 @@ Item
         id: background
         border.width: 0
         anchors.fill: parent
+        radius: bgRadius
 
         color: popupVisible ?
                    currTheme.backgroundMainScreen :
