@@ -174,7 +174,7 @@ Item {
         console.log(a_message)
         internal.tickerMessage      = a_message;
         internal.tickerUrl         = a_url;
-        tickerLabel.updateTickerMessage()
+        //tickerLabel.updateTickerMessage()
     }
 
     /// @brief set input mask for serial input
@@ -212,18 +212,22 @@ Item {
 
        DapQmlRectangle {
            id: ticker
+           objectName: "ticker"
            qss: "ticker"
            width: root.width
            visible: false
 
            DapQmlRectangle {
                id: tickerLableRect
+               objectName: "tickerLableRect"
                qss: "ticker_lable_rect"
                visible: true
                anchors.left: parent.left
 
                DapQmlLabel {
                    id: tickerLabel
+                   objectName: "tickerLabel"
+                   width: contentWidth
                    qss: "ticker_label"
                    text: internal.tickerMessage
                    z: 2
@@ -231,21 +235,25 @@ Item {
                    mipmap: false
 
 
-                   NumberAnimation on x {
+                   NumberAnimation  {
                        id: tickerAnimation
-                       from: parent.width
-                       to: -1*(parent.width + tickerLabel.width)
+                       objectName: "tickerAnimation"
+                       target: tickerLabel
+                       properties: "x"
+                       from: tickerLableRect.width
+                       //to: (-tickerLableRect.width - tickerLabel.contentWidth)
                        duration: 10000
                        loops: Animation.Infinite
-                       running: true
+                       //running: true
                    }
 
-                   function updateTickerMessage() {
-                       text = internal.tickerMessage
-                       ticker.visible = true
-                       tickerAnimation.to = -1*(parent.width + tickerLabel.width)
-                       tickerAnimation.running = true
-                   }
+//                   function updateTickerMessage() {
+//                       let dest = -tickerLableRect.width - tickerLabel.contentWidth
+//                       text = internal.tickerMessage
+//                       ticker.visible = true
+//                       tickerAnimation.to = dest//-tickerLableRect.width - tickerLabel.contentWidth
+//                       tickerAnimation.start();
+//                   }
                }
 
                MouseArea {

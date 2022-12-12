@@ -1098,7 +1098,7 @@
 
 .ticker_label
 {
-    scaled-rect: scaled(-1,0,-1,36,false);
+    scaled-rect: scaled(nan,0,nan,36,false);
     color: "#FFFFFF";
 }
 
