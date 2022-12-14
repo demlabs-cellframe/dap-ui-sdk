@@ -62,8 +62,6 @@ Item {
         property bool changedCert:   false
         property string serverName: ""
         property string certName:   ""
-        property string tickerMessage:   ""
-        property string tickerUrl:   ""
 
         /// @brief login mode
         property int mode: QuiLoginForm.Mode.M_SERIAL
@@ -171,19 +169,13 @@ Item {
     }
 
     function setTickerMessage(a_message, a_url) {
-        console.log(a_message)
-        internal.tickerMessage      = a_message;
-        internal.tickerUrl         = a_url;
-        //tickerLabel.updateTickerMessage()
+        tickerLabel.text = a_message;
+        ticker.tickerUrl = a_url;
     }
 
     /// @brief set input mask for serial input
     function setupInputMask() {
         //btnEnterSerial.inputMask    = ">NNNN-NNNN-NNNN-NNNN;_"
-    }
-
-    function tickerClicked() {
-        Qt.openUrlExternally(internal.tickerUrl);
     }
 
     /// @}
@@ -215,6 +207,27 @@ Item {
            qss: "ticker"
            width: root.width
            visible: true
+
+           property string tickerUrl:   ""
+           property bool tickerIsHidden: false
+
+           function showTicker() {
+               hideAnimation.from = -1 * ticker.height
+               hideAnimation.to = 0
+               hideAnimation.running = true
+               tickerShowRect.visible = false
+           }
+
+           function hideTicker() {
+               hideAnimation.from = 0
+               hideAnimation.to = -1 * ticker.height
+               hideAnimation.running = true
+               tickerShowRect.visible = true
+           }
+
+           function tickerClicked() {
+               Qt.openUrlExternally(ticker.tickerUrl);
+           }
 
            DapQmlRectangle {
                id: tickerLableRect
@@ -248,7 +261,7 @@ Item {
                    anchors.fill: tickerLableRect
                    z : 3
                    cursorShape: Qt.PointingHandCursor
-                   onClicked: root.tickerClicked()
+                   onClicked: ticker.tickerClicked()
                }
 
                DapQmlRectangle {
@@ -275,7 +288,7 @@ Item {
                    qss: "ticker_close_button"
 
                    onClicked: {
-                       ticker.visible = false;
+                       ticker.hideTicker()
                    }
                }
 
@@ -283,6 +296,37 @@ Item {
                    id: tickerCloseBackground
                    qss: "ticker_label_backgraund"
                    anchors.fill: parent
+               }
+           }
+
+           NumberAnimation {
+               id: hideAnimation
+               objectName: "tickerHideAnimation"
+               target: ticker
+               properties: "y"
+               duration: 200
+               running: false
+           }
+       }
+
+       DapQmlRectangle {
+           id: tickerShowRect
+           qss: "ticker_show_rect"
+           visible: false
+           anchors.right: parent.right
+
+           DapQmlPushButton {
+               id: tickerShowButton
+               x: parent.width - width - y
+               y: (parent.height - height) / 2
+               z: 1
+
+               height: 24
+               width: 24
+               qss: "ticker_show_button"
+
+               onClicked: {
+                   ticker.showTicker()
                }
            }
        }

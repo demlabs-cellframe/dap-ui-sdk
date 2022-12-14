@@ -35,8 +35,6 @@ void DapCmdNews::handleResult(const QJsonObject& result)
                 }
             } else if (val.toObject().value("type").toString() == "for_ticker")
             {
-                QString test1 = val.toObject().value("message").toString();
-                QString test2 = val.toObject().value("url").toString();
                 emit sigGotTickerNews(val.toObject().value("message").toString(),
                                       val.toObject().value("url").toString());
             }

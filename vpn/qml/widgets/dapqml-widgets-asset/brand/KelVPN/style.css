@@ -39,6 +39,12 @@
         btn-close-hover:            "qrc:/light/ic_close_hover.png";
         btn-ticker-close:           "qrc:/light/ic_ticker_close.png";
         btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
+
+        btn-ticker-hide:           "qrc:/light/ic_ticker_hide.png";
+        btn-ticker-hide-hover:     "qrc:/light/ic_ticker_hide_hover.png";
+        btn-ticker-show:           "qrc:/light/ic_ticker_show.png";
+        btn-ticker-show-hover:     "qrc:/light/ic_ticker_show_hover.png";
+
 	country-filter-clear:       "qrc:/light/btn_filter_clear.png"
 	country-filter-clear-hover: "qrc:/light/btn_filter_clear_hover.png"
 }
@@ -1082,8 +1088,14 @@
 
 .ticker_close_button
 {
-    qproperty-inactive: "@btn-ticker-close";
-    qproperty-active: "@btn-ticker-close-hover";
+    qproperty-inactive: "@btn-ticker-hide";
+    qproperty-active: "@btn-ticker-hide-hover";
+}
+
+.ticker_show_button
+{
+    qproperty-inactive: "@btn-ticker-show";
+    qproperty-active: "@btn-ticker-show-hover";
 }
 
 .ticker
@@ -1108,6 +1120,11 @@
 }
 
 .ticker_close_rect
+{
+    scaled-rect: scaled(-1,0,36,36,false);
+}
+
+.ticker_show_rect
 {
     scaled-rect: scaled(-1,0,36,36,false);
 }
