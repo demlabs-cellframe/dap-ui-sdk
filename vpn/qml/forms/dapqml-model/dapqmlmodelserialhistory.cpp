@@ -135,7 +135,7 @@ _DapQmlModelSerialHistoryCopyButtonAnimation::_DapQmlModelSerialHistoryCopyButto
   : QObject (a_copyButton)
   , m_timer (new QTimer (this))
 {
-  m_timer->setInterval (500);
+  m_timer->setInterval (100);
   m_timer->setSingleShot (true);
 
   connect (a_copyButton, SIGNAL (sigStartAnimation()),

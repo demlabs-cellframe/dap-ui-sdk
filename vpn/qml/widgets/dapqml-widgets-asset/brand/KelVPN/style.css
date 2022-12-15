@@ -1088,8 +1088,8 @@
 
 .ticker_close_button
 {
-    qproperty-inactive: "@btn-ticker-hide";
-    qproperty-active: "@btn-ticker-hide-hover";
+    qproperty-inactive: "@btn-ticker-close";
+    qproperty-active: "@btn-ticker-close-hover";
 }
 
 .ticker_show_button

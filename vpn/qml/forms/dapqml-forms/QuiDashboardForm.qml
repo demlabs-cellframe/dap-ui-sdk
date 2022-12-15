@@ -147,14 +147,12 @@ Item {
                hideAnimation.from = -1 * ticker.height
                hideAnimation.to = 0
                hideAnimation.running = true
-               tickerShowRect.visible = false
            }
 
            function hideTicker() {
                hideAnimation.from = 0
                hideAnimation.to = -1 * ticker.height
                hideAnimation.running = true
-               tickerShowRect.visible = true
            }
 
            function tickerClicked() {
@@ -236,30 +234,8 @@ Item {
                objectName: "tickerHideAnimation"
                target: ticker
                properties: "y"
-               duration: 200
+               duration: 100
                running: false
-           }
-       }
-
-       DapQmlRectangle {
-           id: tickerShowRect
-           qss: "ticker_show_rect"
-           visible: false
-           anchors.right: parent.right
-
-           DapQmlPushButton {
-               id: tickerShowButton
-               x: parent.width - width - y
-               y: (parent.height - height) / 2
-               z: 1
-
-               height: 24
-               width: 24
-               qss: "ticker_show_button"
-
-               onClicked: {
-                   ticker.showTicker()
-               }
            }
        }
 
