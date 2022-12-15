@@ -21,6 +21,6 @@
         <file compress="1">dapqml-forms-asset/bg_dark-stripes.png</file>
         <file compress="1">dapqml-forms-asset/ic_trash.png</file>
         <file compress="1">dapqml-forms-asset/ic_location.png</file>
-        <file compress="1">dapqml-forms-asset/filter.png</file>        
+        <file compress="1">dapqml-forms-asset/ic_filter.png</file>
     </qresource>
 </RCC>

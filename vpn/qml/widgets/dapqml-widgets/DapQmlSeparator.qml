@@ -41,8 +41,6 @@ Rectangle {
     DapQmlImage {
         id: sep1
         x: 0
-        width: 8
-        height: 4
 
         DapQmlStyle { item: sep1; qss: "sep-left"; }
     }
@@ -53,9 +51,8 @@ Rectangle {
 
     DapQmlImage {
         id: sep2
-        x: 8
-        width: root.width - 16
-        height: 4
+        x: sep1.width
+        width: root.width - sep1.width - sep3.width
 
         DapQmlStyle { item: sep2; qss: "sep-mid"; }
     }
@@ -67,8 +64,6 @@ Rectangle {
     DapQmlImage {
         id: sep3
         x: root.width - width
-        width: 8
-        height: 4
 
         DapQmlStyle { item: sep3; qss: "sep-right"; }
     }

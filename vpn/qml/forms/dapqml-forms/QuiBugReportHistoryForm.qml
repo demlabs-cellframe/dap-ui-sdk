@@ -1,7 +1,7 @@
 /* INCLUDES */
 
 import QtQuick 2.0
-import StyleDebugTree 1.0
+//import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -22,6 +22,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    clip: true
 
     /****************************************//**
      * @name VARS
@@ -40,7 +41,7 @@ Item {
     /// @{
 
     /// @brief item trash icon clicked
-    signal sigTrashClicked(string name);
+    signal sigTrashClicked(int index, string name);
 
     /// @}
     /****************************************//**
@@ -89,10 +90,10 @@ Item {
         height: root.height - y
         clip: true
 
-        Component.onCompleted: StyleDebugTree.describe (
-           "listview",
-            ["x", "y", "z", "width", "height"],
-           this);
+//        Component.onCompleted: StyleDebugTree.describe (
+//           "listview",
+//            ["x", "y", "z", "width", "height"],
+//           this);
 
         //model: reportModel
 
@@ -102,6 +103,7 @@ Item {
 
             DapQmlButton {
                 property string modelName: model.name
+                property int myIndex: model.index
                 buttonStyle: DapQmlButton.IconMainSubIcon
                 mainText: model.name
                 subText: model.state
@@ -116,20 +118,20 @@ Item {
                 height: resizer.height
                 y: spacer.height / 2
 
-                onRightClicked: sigTrashClicked(modelName)// console.log("right cliked")
+                onRightClicked: root.sigTrashClicked (myIndex, modelName)// console.log("right cliked")
 
-                Component.onCompleted: {
-                    StyleDebugTree.describe (
-                        "Report sub " + model.index,
-                        ["x", "y", "z", "width", "height",
-                         "color", "horizontalAlign", "verticalAlign",
-                         "leftPadding", "rightPadding"],
-                        this.labelSub);
-                    StyleDebugTree.describe (
-                        "Report item " + model.index,
-                        ["x", "y", "z", "width", "height", "iconSize"],
-                        this);
-                }
+//                Component.onCompleted: {
+//                    StyleDebugTree.describe (
+//                        "Report sub " + model.index,
+//                        ["x", "y", "z", "width", "height",
+//                         "color", "horizontalAlign", "verticalAlign",
+//                         "leftPadding", "rightPadding"],
+//                        this.labelSub);
+//                    StyleDebugTree.describe (
+//                        "Report item " + model.index,
+//                        ["x", "y", "z", "width", "height", "iconSize"],
+//                        this);
+//                }
             }
         }
     }
