@@ -36,7 +36,9 @@
 	bugrep-bg: 					"qrc:/light/report_bg_border.png";
 	login-logo: 				"qrc:/light/login-logo.png";
 	btn-close:                  "qrc:/light/ic_close.png";
-	btn-close-hover:            "qrc:/light/ic_close_hover.png";
+        btn-close-hover:            "qrc:/light/ic_close_hover.png";
+        btn-ticker-close:           "qrc:/light/ic_ticker_close.png";
+        btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
 }
 
 .@dark
@@ -73,7 +75,9 @@
 	bugrep-bg: 					"qrc:/dark/report_bg_border.png";
 	login-logo: 				"qrc:/dark/login-logo.png";
 	btn-close:                  "qrc:/dark/ic_close.png";
-	btn-close-hover:            "qrc:/dark/ic_close_hover.png";
+        btn-close-hover:            "qrc:/dark/ic_close_hover.png";
+        btn-ticker-close:           "qrc:/dark/ic_ticker_close.png";
+        btn-ticker-close-hover:     "qrc:/dark/ic_ticker_close_hover.png";
 }
 
 /****************************************************
@@ -1012,7 +1016,57 @@
 	scaled-rect: scaled(nan,nan,363,34,true);
 }
 
-.ph-btn-label-main
+.ph-btn-label-main/****************************************************
+* Ticker
+***************************************************/
+
+.ticker_close_button
+{
+    qproperty-inactive: "@btn-ticker-close";
+    qproperty-active: "@btn-ticker-close-hover";
+}
+
+.ticker_show_button
+{
+    qproperty-inactive: "@btn-ticker-show";
+    qproperty-active: "@btn-ticker-show-hover";
+}
+
+.ticker
+{
+    scaled-rect: scaled(-1,0,-1,36,false);
+}
+
+.ticker_lable_rect
+{
+    scaled-rect: scaled(-1,0,-1,36,false);
+}
+
+.ticker_label
+{
+    scaled-rect: scaled(nan,0,nan,36,false);
+    color: "#FFFFFF";
+}
+
+.ticker_label_backgraund{
+    scaled-rect: scaled(-1,0,-1,36,false);
+    color: "#A4A3C0";
+}
+
+.ticker_close_rect
+{
+    scaled-rect: scaled(-1,0,36,36,false);
+}
+
+.ticker_show_rect
+{
+    scaled-rect: scaled(-1,0,36,36,false);
+}
+
+.ticker_close_background{
+    scaled-rect: scaled(-1,0,-1,36,false);
+    color: "#A4A3C0";
+}
 {
 	color: "@text";
 	scaled-font: scaled(16);	
@@ -1043,6 +1097,58 @@
 {
 	color: "@text";
 	scaled-font: scaled(14);
+}
+
+/****************************************************
+* Ticker
+***************************************************/
+
+.ticker_close_button
+{
+    qproperty-inactive: "@btn-ticker-close";
+    qproperty-active: "@btn-ticker-close-hover";
+}
+
+.ticker_show_button
+{
+    qproperty-inactive: "@btn-ticker-show";
+    qproperty-active: "@btn-ticker-show-hover";
+}
+
+.ticker
+{
+    scaled-rect: scaled(-1,0,-1,36,false);
+}
+
+.ticker_lable_rect
+{
+    scaled-rect: scaled(-1,0,-1,36,false);
+}
+
+.ticker_label
+{
+    scaled-rect: scaled(nan,0,nan,36,false);
+    color: "#FFFFFF";
+}
+
+.ticker_label_backgraund{
+    scaled-rect: scaled(-1,0,-1,36,false);
+    color: "#A4A3C0";
+}
+
+.ticker_close_rect
+{
+    scaled-rect: scaled(-1,0,36,36,false);
+}
+
+.ticker_show_rect
+{
+    scaled-rect: scaled(-1,0,36,36,false);
+}
+
+.ticker_close_background{
+    scaled-rect: scaled(-1,0,-1,36,false);
+    color: "#A4A3C0";
 }
 
 /****************************************************

@@ -49,5 +49,7 @@
         <file>light/ic_ticker_hide.png</file>
         <file>light/ic_ticker_show_hover.png</file>
         <file>light/ic_ticker_hide_hover.png</file>
+        <file>dark/ic_ticker_close_hover.png</file>
+        <file>dark/ic_ticker_close.png</file>
     </qresource>
 </RCC>

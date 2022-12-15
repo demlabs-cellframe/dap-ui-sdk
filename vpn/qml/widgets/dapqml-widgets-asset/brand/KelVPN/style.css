@@ -86,6 +86,8 @@
     btn-close-hover:            "qrc:/dark/ic_close_hover.png";
     country-filter-clear:       "qrc:/dark/btn_filter_clear.png"
     country-filter-clear-hover: "qrc:/dark/btn_filter_clear_hover.png"
+    btn-ticker-close:           "qrc:/dark/ic_ticker_close.png";
+    btn-ticker-close-hover:     "qrc:/dark/ic_ticker_close_hover.png";
 }
 
 /****************************************************
