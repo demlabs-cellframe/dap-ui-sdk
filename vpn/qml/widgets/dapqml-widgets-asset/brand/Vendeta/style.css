@@ -1133,7 +1133,7 @@
 
 .ticker_label_backgraund{
     scaled-rect: scaled(-1,0,-1,36,false);
-    color: "#A4A3C0";
+    color: "#87ACB8";
 }
 
 .ticker_close_rect
@@ -1148,7 +1148,7 @@
 
 .ticker_close_background{
     scaled-rect: scaled(-1,0,-1,36,false);
-    color: "#A4A3C0";
+    color: "#87ACB8";
 }
 
 /****************************************************
