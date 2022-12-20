@@ -209,13 +209,13 @@ Item {
 
                DapQmlPushButton {
                    id: tickerCloseButton
+                   qss: "ticker_close_button"
                    x: parent.width - width - y
                    y: (parent.height - height) / 2
                    z: 14
 
                    height: 24
                    width: 24
-                   qss: "ticker_close_button"
 
                    onClicked: {
                        ticker.hideTicker()

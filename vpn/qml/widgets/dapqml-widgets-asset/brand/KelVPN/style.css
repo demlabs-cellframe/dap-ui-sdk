@@ -37,16 +37,10 @@
 	login-logo:                 "qrc:/light/login-logo.png";
 	btn-close:                  "qrc:/light/ic_close.png";
         btn-close-hover:            "qrc:/light/ic_close_hover.png";
-        btn-ticker-close:           "qrc:/light/ic_ticker_close.png";
-        btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
-
-        btn-ticker-hide:           "qrc:/light/ic_ticker_hide.png";
-        btn-ticker-hide-hover:     "qrc:/light/ic_ticker_hide_hover.png";
-        btn-ticker-show:           "qrc:/light/ic_ticker_show.png";
-        btn-ticker-show-hover:     "qrc:/light/ic_ticker_show_hover.png";
-
 	country-filter-clear:       "qrc:/light/btn_filter_clear.png"
 	country-filter-clear-hover: "qrc:/light/btn_filter_clear_hover.png"
+        btn-ticker-close:           "qrc:/light/ic_ticker_close.png";
+        btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
 }
 
 .@dark
@@ -84,8 +78,8 @@
     login-logo:                 "qrc:/dark/login-logo.png";
     btn-close:                  "qrc:/dark/ic_close.png";
     btn-close-hover:            "qrc:/dark/ic_close_hover.png";
-    country-filter-clear:       "qrc:/dark/btn_filter_clear.png"
-    country-filter-clear-hover: "qrc:/dark/btn_filter_clear_hover.png"
+    country-filter-clear:       "qrc:/dark/btn_filter_clear.png";
+    country-filter-clear-hover: "qrc:/dark/btn_filter_clear_hover.png";
     btn-ticker-close:           "qrc:/dark/ic_ticker_close.png";
     btn-ticker-close-hover:     "qrc:/dark/ic_ticker_close_hover.png";
 }
@@ -1092,12 +1086,6 @@
 {
     qproperty-inactive: "@btn-ticker-close";
     qproperty-active: "@btn-ticker-close-hover";
-}
-
-.ticker_show_button
-{
-    qproperty-inactive: "@btn-ticker-show";
-    qproperty-active: "@btn-ticker-show-hover";
 }
 
 .ticker
