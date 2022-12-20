@@ -11,6 +11,7 @@ Rectangle
     property int itemVerticalBorder: -2
     property int viewerBorder: 4
     property int currentIndex: viewerItem.currentIndex
+    property int defaultIndex: 0
     property font textFont: mainFont.dapFont.medium14
     property color textColor: currTheme.textColor
     property alias selectorModel: viewerItem.model
@@ -34,6 +35,8 @@ Rectangle
 //        clip: true
         orientation: ListView.Horizontal
         interactive: false
+
+        currentIndex: defaultIndex
 
 //        onCurrentItemChanged:
 //        {
