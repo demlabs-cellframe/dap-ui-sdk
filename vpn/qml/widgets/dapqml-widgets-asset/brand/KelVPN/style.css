@@ -37,8 +37,8 @@
 	login-logo:                 "qrc:/light/login-logo.png";
 	btn-close:                  "qrc:/light/ic_close.png";
         btn-close-hover:            "qrc:/light/ic_close_hover.png";
-	country-filter-clear:       "qrc:/light/btn_filter_clear.png"
-	country-filter-clear-hover: "qrc:/light/btn_filter_clear_hover.png"
+        country-filter-clear:       "qrc:/light/btn_filter_clear.png";
+        country-filter-clear-hover: "qrc:/light/btn_filter_clear_hover.png";
         btn-ticker-close:           "qrc:/light/ic_ticker_close.png";
         btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
 }
