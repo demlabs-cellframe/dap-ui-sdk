@@ -307,6 +307,82 @@ Item {
            }
        }
 
+   /****************************************//**
+    * Update notification
+    ********************************************/
+
+    DapQmlRectangle {
+
+        id: updateNotificationRect
+        qss: "update_notification_rect"
+        z:30
+        radius: 13
+        visible: true
+
+        function showUpdateNotification() {
+            hideAnimationUpdateNotification.from = -1 * (40 + updateNotificationRect.height)
+            hideAnimationUpdateNotification.to = 40
+            hideAnimationUpdateNotification.running = true
+        }
+
+        function hideUpdateNotification() {
+            hideAnimationUpdateNotification.from = 40
+            hideAnimationUpdateNotification.to = -1 * (40 + updateNotificationRect.height)
+            hideAnimationUpdateNotification.running = true
+        }
+
+        DapQmlLabel {
+            id: updateNotificationLabel
+            qss: "update_notification_label"
+            text: "New version available"
+            height: contentHeight
+            width: contentWidth
+            horizontalAlign: Text.AlignHCenter
+        }
+
+        DapQmlPushButton {
+            id: updateNotificationCloseButton
+            x: parent.width - width - 14
+            y: 10
+            z: 14
+
+            height: 20
+            width: 20
+            qss: "update_notification_close_button"
+
+            onClicked: {
+                updateNotificationRect.hideUpdateNotification()
+            }
+        }
+
+        DapQmlLabel {
+            id: updateNotificationButton
+            qss: "update_notification_button"
+            text: "Update"
+            height: contentHeight
+            width: contentWidth
+            horizontalAlign: Text.AlignHCenter
+
+            MouseArea {
+                anchors.fill: updateNotificationButton
+                z : 3
+                cursorShape: Qt.PointingHandCursor
+//                onClicked: ticker.tickerClicked()
+            }
+        }
+
+        NumberAnimation {
+            id: hideAnimationUpdateNotification
+            objectName: "hideAnimationUpdateNotification"
+            target: updateNotificationRect
+            properties: "y"
+            duration: 100
+            running: false
+        }
+    }
+
+
+
     /****************************************//**
      * Logo
      ********************************************/
