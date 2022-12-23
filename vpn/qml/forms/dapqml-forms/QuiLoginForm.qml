@@ -134,6 +134,8 @@ Item {
     signal textChangedAndCleaned();
     signal textChangedAndFilledOut (string serial);
 
+    signal sigStartUpdate();
+
     /// @}
     /****************************************//**
      * @name FUNCTIONS
@@ -171,6 +173,11 @@ Item {
     function setTickerMessage(a_message, a_url) {
         tickerLabel.text = a_message;
         ticker.tickerUrl = a_url;
+        ticker.showTicker()
+    }
+
+    function showUpdateNotification(a_message) {
+        updateNotificationRect.showUpdateNotification()
     }
 
     /// @brief set input mask for serial input
@@ -209,18 +216,21 @@ Item {
            visible: false
 
            property string tickerUrl:   ""
-           property bool tickerIsHidden: false
+           property bool tickerIsHidden: true
 
            function showTicker() {
                hideAnimation.from = -1 * ticker.height
                hideAnimation.to = 0
                hideAnimation.running = true
+               tickerIsHidden = false
            }
 
            function hideTicker() {
                hideAnimation.from = 0
                hideAnimation.to = -1 * ticker.height
                hideAnimation.running = true
+               ticker.tickerIsHidden = true
+               updateNotificationRect.moveAfterHideTicker()
            }
 
            function tickerClicked() {
@@ -318,16 +328,31 @@ Item {
         z:30
         radius: 13
         visible: true
+        opacity: 0
 
         function showUpdateNotification() {
-            hideAnimationUpdateNotification.from = -1 * (40 + updateNotificationRect.height)
-            hideAnimationUpdateNotification.to = 40
+            hideAnimationUpdateNotification.from = ticker.tickerIsHidden ? 0 : 15
+            hideAnimationUpdateNotification.to = ticker.tickerIsHidden ? 15 : 35
             hideAnimationUpdateNotification.running = true
+
+            hideAnimationUpdateNotificationOpacity.from = 0
+            hideAnimationUpdateNotificationOpacity.to = 1
+            hideAnimationUpdateNotificationOpacity.running = true
         }
 
         function hideUpdateNotification() {
-            hideAnimationUpdateNotification.from = 40
-            hideAnimationUpdateNotification.to = -1 * (40 + updateNotificationRect.height)
+            hideAnimationUpdateNotification.from = ticker.tickerIsHidden ? 15 : 35
+            hideAnimationUpdateNotification.to = ticker.tickerIsHidden ? 0 : 15
+            hideAnimationUpdateNotification.running = true
+
+            hideAnimationUpdateNotificationOpacity.from = 1
+            hideAnimationUpdateNotificationOpacity.to = 0
+            hideAnimationUpdateNotificationOpacity.running = true
+        }
+
+        function moveAfterHideTicker() {
+            hideAnimationUpdateNotification.from = 35
+            hideAnimationUpdateNotification.to = 15
             hideAnimationUpdateNotification.running = true
         }
 
@@ -367,7 +392,7 @@ Item {
                 anchors.fill: updateNotificationButton
                 z : 3
                 cursorShape: Qt.PointingHandCursor
-//                onClicked: ticker.tickerClicked()
+                onClicked: root.sigStartUpdate()
             }
         }
 
@@ -376,6 +401,13 @@ Item {
             objectName: "hideAnimationUpdateNotification"
             target: updateNotificationRect
             properties: "y"
+            duration: 100
+            running: false
+        }
+
+        OpacityAnimator on opacity{
+            id: hideAnimationUpdateNotificationOpacity
+            target: updateNotificationRect
             duration: 100
             running: false
         }
