@@ -12,6 +12,7 @@ void DapNetworkAccessManager::requestHttp_POST(const QString &address, const uin
     bRunning = true;
     dap_client_http_request(nullptr, qPrintable(address), port, "POST", "text/plain", qPrintable(urlPath), body.constData(), static_cast<size_t>(body.size()), nullptr,
                             &DapNetworkAccessManager::responseCallback, &DapNetworkAccessManager::responseCallbackError,
+                            &DapNetworkAccessManager::responseProgressCallback,
                                    &netReply, headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
 }
 
@@ -20,7 +21,7 @@ void DapNetworkAccessManager::requestHttp_GET(const QString &address, const uint
     qDebug() << "Dap Client HTTP Requested - GET: " << urlPath ;
     bRunning = true;
     dap_client_http_request(nullptr, qPrintable(address), port, "GET", "text/plain", qPrintable(urlPath), nullptr, 0, nullptr,
-                            &DapNetworkAccessManager::responseCallback, &DapNetworkAccessManager::responseCallbackError, &netReply,
+                            &DapNetworkAccessManager::responseCallback, &DapNetworkAccessManager::responseCallbackError, &DapNetworkAccessManager::responseProgressCallback, &netReply,
                                    headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
 }
 
@@ -60,4 +61,13 @@ void DapNetworkAccessManager::responseCallbackError(int a_err_code, void * a_obj
 #endif*/
     emit reply->sigError();
     reply->deleteLater();
+}
+
+void DapNetworkAccessManager::responseProgressCallback(size_t a_response_size, size_t a_content_length, void * a_obj)
+{
+    DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
+    qDebug() << "Dap Client HTTP Progress update: response received, size=" << a_response_size;
+    reply->setContentLength(a_content_length);
+    reply->setResponseSize(a_response_size);
+    emit reply->progressUpdate(a_response_size);
 }
