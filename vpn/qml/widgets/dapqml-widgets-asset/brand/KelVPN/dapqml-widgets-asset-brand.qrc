@@ -45,11 +45,11 @@
         <file compress="1">light/btn_filter_clear_hover.png</file>
         <file>light/ic_ticker_close_hover.png</file>
         <file>light/ic_ticker_close.png</file>
-        <file>light/ic_ticker_show.png</file>
-        <file>light/ic_ticker_hide.png</file>
-        <file>light/ic_ticker_show_hover.png</file>
-        <file>light/ic_ticker_hide_hover.png</file>
         <file>dark/ic_ticker_close_hover.png</file>
         <file>dark/ic_ticker_close.png</file>
+        <file>light/ic_close_update.png</file>
+        <file>light/ic_close_update_hover.png</file>
+        <file>dark/ic_close_update_hover.png</file>
+        <file>dark/ic_close_update.png</file>
     </qresource>
 </RCC>
