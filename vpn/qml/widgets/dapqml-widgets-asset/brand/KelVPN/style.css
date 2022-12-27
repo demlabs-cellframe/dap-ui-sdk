@@ -1182,3 +1182,36 @@
 	qproperty-inactive: "@btn-close";
 	qproperty-active: "@btn-close-hover";
 }
+
+
+/****************************************************
+ * Update
+ ***************************************************/
+
+.overview-btn-confirm-ttt
+{
+        scaled-rect: scaled(-1,278,200,200,true,12);
+        color: "@text";
+}
+.overview-separator-container
+{
+        scaled-rect: scaled(-1,134,-1,4,true);
+}
+.overview-btn-confirm
+{
+        scaled-rect: scaled(-1,737,374,80,true,12);
+}
+.form-title-label-ttt
+{
+        scaled-rect: scaled(100,94,nan,nan,false,40);
+        color: "@text";
+        font-weight: Font.Bold;
+        horizontal-align: Text.AlignHCenter;
+}
+.form-title-label-nnn
+{
+        scaled-rect: scaled(100,122,nan,nan,false,12);
+        color: "@light-grey";
+        font-weight: Font.Bold;
+        horizontal-align: Text.AlignHCenter;
+}

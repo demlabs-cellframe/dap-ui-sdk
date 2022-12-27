@@ -1,4 +1,5 @@
-import QtQuick 2.0
+import QtQuick 2.11
+import QtQuick.Shapes 1.4
 import "qrc:/dapqml-widgets"
 
 Item {
@@ -11,6 +12,9 @@ Item {
     property bool link: false
     property bool cellEnabled: false
     property bool buttonActive: false
+    property int    progressVolume: 0
+    property string progressString: "100%"
+    property string progressInfo: "0/0"
 
     signal buttonClicked()
 
@@ -41,6 +45,79 @@ Item {
     }
 
     /****************************************//**
+     * Progress circle
+     ********************************************/
+
+    DapQmlRectangle {
+        x: progressCircle.x
+        y: progressCircle.y
+        width: progressCircle.width
+        height: progressCircle.height
+        Shape {
+            anchors.fill: parent
+            // multisample, decide based on your scene settings
+            layer.enabled: true
+            layer.samples: 4
+
+            ShapePath {
+                fillColor: "transparent"
+                //strokeColor: progressCircle.color
+                strokeColor: "#A4A3C0"
+                strokeWidth: progressCircle.strokeWidth
+                capStyle: ShapePath.FlatCap
+
+                PathAngleArc {
+                    centerX: progressCircle.width/2
+                    centerY: progressCircle.height/2
+                    radiusX: progressCircle.width/2 - progressCircle.strokeWidth
+                    radiusY: progressCircle.height/2 - progressCircle.strokeWidth
+                    startAngle: 0
+                    sweepAngle: 360
+                }
+            }
+        }
+        Shape {
+            anchors.fill: parent
+            // multisample, decide based on your scene settings
+            layer.enabled: true
+            layer.samples: 4
+
+            ShapePath {
+                fillColor: "transparent"
+                //strokeColor: progressCircle.color
+                strokeColor: "#E60778"
+                strokeWidth: progressCircle.strokeWidth
+                capStyle: ShapePath.RoundCap
+
+                PathAngleArc {
+                    centerX: progressCircle.width/2
+                    centerY: progressCircle.height/2
+                    radiusX: progressCircle.width/2 - progressCircle.strokeWidth
+                    radiusY: progressCircle.height/2 - progressCircle.strokeWidth
+                    startAngle: 0 - 90
+                    sweepAngle: root.progressVolume * 360 / 100
+                }
+            }
+        }
+        DapQmlLabel {
+            qss: "form-title-label-ttt"
+            text: root.progressString
+            clip: false
+        }
+        DapQmlLabel {
+            qss: "form-title-label-nnn"
+            text: root.progressInfo
+            clip: false
+        }
+        DapQmlDummy {
+            id: progressCircle
+            qss: "overview-btn-confirm-ttt"
+            property string color: "red"
+            property int strokeWidth: 8
+        }
+    }
+
+    /****************************************//**
      * Connect button
      ********************************************/
 
@@ -49,7 +126,7 @@ Item {
         x: (parent.width - width) / 2
         z: 15
         qss: "overview-btn-confirm"
-        text: qsTr("CONFIRM") + lang.notifier
+        text: qsTr("CLOSE") + lang.notifier
         onClicked: root.buttonClicked()
         enabled: buttonActive
     }

@@ -9,30 +9,26 @@ Item {
     /// @brief form name
     ///
     /// Used to connect interface via Manager
-    property string formName: "NodeConfirm"
-    property string titleString: qsTr("Node")
+    property string formName: "UpdateProgress"
+    property string titleString: qsTr("Updating")
     property bool buttonActive: true
 
     /// @brief item clicked
-    signal walletClicked()
-    signal networkClicked()
-    signal tokenClicked()
     signal buttonClicked()
 
-
-    function setWallet(walletName)
+    function setProgressString(progress)
     {
-        overview.setWallet(walletName)
+        overview.progressString = progress
     }
 
-    function setNetwork(networkName)
+    function setProgressVolume(progress)
     {
-        overview.setNetwork(networkName)
+        overview.progressVolume = progress
     }
 
-    function setToken(tokenName)
+    function setProgressInfo(infoRow)
     {
-        overview.setToken(tokenName)
+        overview.progressInfo = infoRow
     }
 
     function setSetConfirmButtonActive(active)
@@ -50,14 +46,11 @@ Item {
         qss: "dialog-title"
     }
 
-    QuiNodeOverviewBase {
+    QuiCircleProgressBase {
         id: overview
         // form name
         formName: root.formName
         // buttons clicked
-        onWalletClicked: root.walletClicked()
-        onNetworkClicked: root.networkClicked()
-        onTokenClicked: root.tokenClicked()
         onButtonClicked: root.buttonClicked()
         // button enable
         buttonActive: false//root.buttonActive

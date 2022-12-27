@@ -21,14 +21,14 @@ DapDownload * DapDownload::instance()
 
 void DapDownload::startDownload(const QString& a_url)
 {
-    QString url = "https://pub.kelvpn.com/linux/master/KelVPN-7.3-22-amd64.deb";
+    m_networkRequest = a_url;
     sendRequest();
 }
 
 void DapDownload::sendRequest()
 {
     QNetworkRequest request;
-    m_networkRequest = "https://pub.kelvpn.com/linux/master/KelVPN-7.3-22-amd64.deb";
+    // example m_networkRequest = "https://pub.kelvpn.com/linux/master/KelVPN-7.3-22-amd64.deb";
     m_downloadFileName = "/tmp/KelVPN-7.3-22-amd64.deb";
     request.setUrl(QUrl(m_networkRequest));
     m_networkReply = m_httpClient->get(request);
@@ -42,7 +42,6 @@ void DapDownload::sendRequest()
 //        emit downloadError(m_networkReply->errorString());
     }));
     connect( m_networkReply, &QNetworkReply::readyRead, this, [=]() {
-        qInfo() << "Data ready" << m_networkReply->size();
         QFile* m_file = new QFile(m_downloadFileName);
         if(m_file->open(QIODevice::WriteOnly | QIODevice::Append))
         {
@@ -57,7 +56,7 @@ void DapDownload::sendRequest()
     });
     connect( m_networkReply, &QNetworkReply::downloadProgress, this, [=](quint64 load, quint64 total) {
         qInfo() << "Download progress" << load/total;
-        emit downloadProgress(load/total);
+        emit downloadProgress(load, total);
     });
     // send request
     qInfo() << "Download started" << m_networkRequest;

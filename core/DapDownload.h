@@ -45,7 +45,7 @@ private:
 
 signals:
     void fileSaved(QString path);
-    void downloadProgress(qreal progress);
+    void downloadProgress(qint64 load, qint64 total);
     void downloadError(QString error);
 };
 

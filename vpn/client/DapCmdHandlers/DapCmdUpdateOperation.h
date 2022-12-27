@@ -11,10 +11,13 @@ class DapCmdUpdateOperation: public DapCmdServiceAbstract
 {
     Q_OBJECT
 public:
-    DapCmdUpdateOperation(QObject *parent = nullptr) :
-        DapCmdServiceAbstract(DapJsonCmdType::GET_USER_DATA, parent) { }
+    DapCmdUpdateOperation(QObject *parent = nullptr);
+    virtual ~DapCmdUpdateOperation() override {}
+
+    void handle(const QJsonObject *params) override;
+
 public slots:
-    void setDownloadProgress(qreal progress);
+    void setDownloadProgress(quint64 load, quint64 total);
 signals:
     void startDownload(QString url);
     void startUpdate();
