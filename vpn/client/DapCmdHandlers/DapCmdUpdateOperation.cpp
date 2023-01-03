@@ -20,8 +20,5 @@ void DapCmdUpdateOperation::handle(const QJsonObject *params)
     if (params->value("start_download") != QJsonValue::Undefined)
         emit startDownload(params->value("start_download").toString());
     if (params->value("start_update") != QJsonValue::Undefined)
-    {
-        qDebug() << "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr";
         emit startUpdate();
-    }
 }

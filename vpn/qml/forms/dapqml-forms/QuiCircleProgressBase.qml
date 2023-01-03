@@ -15,6 +15,7 @@ Item {
     property int    progressVolume: 0
     property string progressString: "100%"
     property string progressInfo: "0/0"
+    property string buttonText: "CLOSE"
 
     signal buttonClicked()
 
@@ -40,7 +41,7 @@ Item {
         }
         DapQmlDummy {
             id: loginSepsPlacer
-            qss: "overview-separator-container"
+            qss: "progress-circle-separator-container"
         }
     }
 
@@ -100,18 +101,18 @@ Item {
             }
         }
         DapQmlLabel {
-            qss: "form-title-label-ttt"
+            qss: "progress-circle-percent"
             text: root.progressString
             clip: false
         }
         DapQmlLabel {
-            qss: "form-title-label-nnn"
+            qss: "progress-circle-mbytes"
             text: root.progressInfo
             clip: false
         }
         DapQmlDummy {
             id: progressCircle
-            qss: "overview-btn-confirm-ttt"
+            qss: "progress-circle-arc"
             property string color: "red"
             property int strokeWidth: 8
         }
@@ -125,8 +126,8 @@ Item {
         id: btnConfirn
         x: (parent.width - width) / 2
         z: 15
-        qss: "overview-btn-confirm"
-        text: qsTr("CLOSE") + lang.notifier
+        qss: "progress-circle-btn-confirm"
+        text: root.buttonText
         onClicked: root.buttonClicked()
         enabled: buttonActive
     }

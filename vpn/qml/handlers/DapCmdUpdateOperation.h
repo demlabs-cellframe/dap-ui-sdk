@@ -23,11 +23,16 @@ protected:
     void handleError(int code, const QString& message) override;
 
 public slots:
-    void startDownload(QString url);
+    void startDownload();
+    void setDownloadUrl(QString url);
+    void startDownloadUrl(QString url);
     void startUpadte();
 
 signals:
     void downloadProgress(qint64 load, qint64 total);
+
+private:
+    QString m_dowmloadUrl;
 };
 
 #endif // DAPCMDUPDATEOPERATION_H

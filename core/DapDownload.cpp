@@ -1,6 +1,7 @@
 #include "DapDownload.h"
 #include <QSaveFile>
 #include <QFile>
+#include <QDir>
 
 const quint16  DapDownload::DefaultPort     (80);
 static DapDownload *__inst = nullptr;
@@ -29,7 +30,12 @@ void DapDownload::sendRequest()
 {
     QNetworkRequest request;
     // example m_networkRequest = "https://pub.kelvpn.com/linux/master/KelVPN-7.3-22-amd64.deb";
-    m_downloadFileName = "/tmp/KelVPN-7.3-22-amd64.deb";
+    m_downloadFileName = QDir::tempPath() + QDir::separator() +  "KelVPN-update.deb";
+
+    // remove file if exist
+    if (QFile::exists(m_downloadFileName))
+        QFile::remove(m_downloadFileName);
+
     request.setUrl(QUrl(m_networkRequest));
     m_networkReply = m_httpClient->get(request);
 
@@ -55,9 +61,14 @@ void DapDownload::sendRequest()
         }
     });
     connect( m_networkReply, &QNetworkReply::downloadProgress, this, [=](quint64 load, quint64 total) {
-        qInfo() << "Download progress" << load/total;
         emit downloadProgress(load, total);
     });
     // send request
     qInfo() << "Download started" << m_networkRequest;
+}
+
+
+QString& DapDownload::downloadFileName()
+{
+    return m_downloadFileName;
 }

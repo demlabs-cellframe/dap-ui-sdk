@@ -4,7 +4,17 @@
 #include <QMap>
 
 
-void DapCmdUpdateOperation::startDownload(QString url)
+void DapCmdUpdateOperation::setDownloadUrl(QString url)
+{
+    m_dowmloadUrl = url;
+}
+
+void DapCmdUpdateOperation::startDownload()
+{
+    startDownloadUrl(m_dowmloadUrl);
+}
+
+void DapCmdUpdateOperation::startDownloadUrl(QString url)
 {
     QJsonObject response;
     response["start_download"] = url;
@@ -33,11 +43,7 @@ void DapCmdUpdateOperation::handleResult(const QJsonObject& result)
         if (!ok)
             qCritical() << "Bad response from service" << "total key";
         if (totalSize != 0)
-        {
-            qDebug() << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv" << loadSize << totalSize;
             emit downloadProgress(loadSize, totalSize);
-        }
-
     } else {
         qCritical() << "Bad response from service";
     }

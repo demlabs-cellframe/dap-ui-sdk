@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import DapQmlStyle 1.0
+import PageCtl 1.0
 import "qrc:/dapqml-widgets"
 
 Item {
@@ -10,7 +11,7 @@ Item {
     ///
     /// Used to connect interface via Manager
     property string formName: "UpdateProgress"
-    property string titleString: qsTr("Updating")
+    property string titleString: qsTr("Loading")
     property bool buttonActive: true
 
     /// @brief item clicked
@@ -36,6 +37,12 @@ Item {
         overview.buttonActive = active
     }
 
+    function buttonUpdateClicked()
+    {
+        root.buttonClicked()
+        PageCtl.slotBackwardAuto();
+    }
+
     /****************************************//**
      * Title
      ********************************************/
@@ -51,11 +58,13 @@ Item {
         // form name
         formName: root.formName
         // buttons clicked
-        onButtonClicked: root.buttonClicked()
+        onButtonClicked: root.buttonUpdateClicked()
         // button enable
         buttonActive: false//root.buttonActive
         // arrows on buttons
         link: true
+        // button text
+        buttonText: qsTr("UPDATE") + lang.notifier
     }
 
 }

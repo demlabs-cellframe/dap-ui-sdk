@@ -31,7 +31,7 @@ public:
 public:
     DapDownload(QObject * obj = Q_NULLPTR);
     static DapDownload* instance();
-
+    QString& downloadFileName();
 
 public slots:
     void startDownload(const QString& url);
