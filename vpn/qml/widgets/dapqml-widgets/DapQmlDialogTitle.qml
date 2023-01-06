@@ -28,7 +28,7 @@ Item {
     property string text: "Untitled"
 
     /// @brief qss style
-    property string qss
+    property string qss: "dialog-title"
 
     /// @brief hide close button
     property bool hideClose: false
@@ -50,8 +50,6 @@ Item {
      ********************************************/
 
     DapQmlPushButton {
-        inactive: "qrc:/light/ic_close.png"
-        active: "qrc:/light/ic_close_hover.png"
         qss: "form-title-close-btn"
         visible: hideClose === false
         onClicked: { root.sigClose(); PageCtl.slotBackwardAuto(); }

@@ -98,6 +98,15 @@ Item {
     }
 
     /****************************************//**
+     * Resizer
+     ********************************************/
+
+    DapQmlDummy {
+        id: contentRect
+        qss: "content-mid"
+    }
+
+    /****************************************//**
      * Content
      ********************************************/
 
@@ -129,9 +138,9 @@ Item {
             id: settingsListView
             objectName: "settingsListView"
 
-            x: 36
+            x: contentRect.x
             y: 0
-            width: root.width - 72
+            width: contentRect.width // root.width - 72
             height: root.height
 
             clip: false
@@ -188,7 +197,7 @@ Item {
                     mainQss: "sett-btn-lbl-main"
                     subQss: {
                         model.sid === QuiSettingsForm.StyleId.SI_LINK ? "sett-btn-lbl-sub-link" :
-                        model.sid !== QuiSettingsForm.StyleId.SI_BUTTONRED ? "sett-btn-lbl-sub" : "sett-btn-lbl-sub-red"
+                        model.sid === QuiSettingsForm.StyleId.SI_BUTTONRED ? "sett-btn-lbl-sub-red" : "sett-btn-lbl-sub"
                     }
                     link: model.sid === QuiSettingsForm.StyleId.SI_LINK
                     checkbox: model.sid === QuiSettingsForm.SI_CHECKBOX

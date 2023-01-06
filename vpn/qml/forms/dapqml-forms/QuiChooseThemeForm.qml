@@ -23,6 +23,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    clip: true
 
     /****************************************//**
      * @name VARS
@@ -96,7 +97,7 @@ Item {
 
     DapQmlDialogTitle {
         id: title
-        text: qsTr("Language") + lang.notifier
+        text: qsTr("Color theme") + lang.notifier
         qss: "dialog-title"
     }
 

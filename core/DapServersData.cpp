@@ -28,40 +28,33 @@ void DapServersData::addServer(const QString& location, const QString& name,
     ss.location = location;
     ss.address = address;
     ss.port = port;
-    addServer(std::move(ss));
+    addServer (std::move(ss));
 }
 
-void DapServersData::setCurrentServer(int a_serverIndex)
+void DapServersData::setCurrentServer (int a_serverIndex)
 {
-    if (m_currentServerIndex == a_serverIndex)
-        return;
-    Q_ASSERT(a_serverIndex < m_servers.count());
-    m_currentServerIndex = a_serverIndex;
-
-    if (!this->currentServer())
+    if (!_setCurrentServerByIndex (a_serverIndex))
         return;
 
-    emit currentServerNameChanged(this->currentServerName());
+    emit currentServerNameChanged (this->currentServerName());
 }
 
-void DapServersData::setCurrentServerNotSignal(int a_serverIndex)
+void DapServersData::setCurrentServerNotSignal (int a_serverIndex)
 {
-    if (m_currentServerIndex == a_serverIndex)
-        return;
-    Q_ASSERT(a_serverIndex < m_servers.count());
-    m_currentServerIndex = a_serverIndex;
+  if (!_setCurrentServerByIndex (a_serverIndex))
+      return;
 
-    emit currentServerNameChangedNotRequestChangingServer(this->currentServerName());
+    emit currentServerNameChangedNotRequestChangingServer (this->currentServerName());
 }
 
-void DapServersData::setCurrentServer(const DapServerInfo *a_server)
+void DapServersData::setCurrentServer (const DapServerInfo *a_server)
 {
     qDebug() << "Selecting the current server: " << (a_server ? a_server->name : "null");
 
-    setCurrentServer(m_servers.lastIndexOf(*a_server));
+    setCurrentServer (m_servers.lastIndexOf(*a_server));
 }
 
-void DapServersData::setCurrentServerFromService(const DapServerInfo *a_server)
+void DapServersData::setCurrentServerFromService (const DapServerInfo *a_server)
 {
     qDebug() << "Selecting the current server received from the service: " << (a_server ? a_server->name : "null");
 
@@ -99,17 +92,26 @@ void DapServersData::saveDatas() const
 
 }
 
+bool DapServersData::_setCurrentServerByIndex(int a_serverIndex)
+{
+  Q_ASSERT (a_serverIndex >= 0 && a_serverIndex < m_servers.count());
+
+  auto &targetServer  = m_servers[a_serverIndex];
+  if (m_currentServer == targetServer)
+    return false;
+
+  m_currentServer     = targetServer;
+  return true;
+}
+
 void DapServersData::loadDatas()
 {
 
 }
 
-const DapServerInfo *DapServersData::currentServer() const
+const DapServerInfo &DapServersData::currentServer() const
 {
-    if (m_currentServerIndex < 0 || m_currentServerIndex >= this->serversCount())
-        return nullptr;
-
-    return &m_servers.at(this->m_currentServerIndex);
+    return m_currentServer;
 }
 
 int DapServersData::serversCount() const
@@ -129,19 +131,17 @@ void DapServersData::clearServerList()
 /// @return Server name.
 QString DapServersData::currentServerName() const
 {
-    const DapServerInfo* currentServer = this->currentServer();
-    return currentServer ? currentServer->name : "";
+    return DapServersData::currentServer().name;
 }
 
 QString DapServersData::currentServerAdress() const
 {
-    const DapServerInfo* currentServer = this->currentServer();
-    return currentServer ? currentServer->address : "";
+    return DapServersData::currentServer().address;
 }
 
 bool DapServersData::currentServerIsAuto() const
 {
-    return this->currentServer()->isAuto();
+    return DapServersData::currentServer().isAuto();
 }
 
 int DapServersData::rowCount(const QModelIndex &parent) const
@@ -156,7 +156,7 @@ void DapServersData::packServerList()
   m_servers << m_bestRegionServerList << m_pingServerList;
 }
 
-QMap<QString, QString> DapServersData::m_countryMap = {
+const QMap<QString, QString> DapServersData::m_countryMap = {
     {"Andorra"                          , "AD"},
     {"United arab emirates"             , "AE"},
     {"Afganistan"                       , "AF"},
@@ -370,7 +370,7 @@ QMap<QString, QString> DapServersData::m_countryMap = {
     {"Yemen"                            , "YE"},
     {"South africa"                     , "ZA"},
     {"Zambia"                           , "ZM"},
-    {"Zimbabwe"                         , "ZW"},
+    {"Zimbabwe"                         , "ZW"}
 };
 const QString DapServersData::findInCountriesMap(const QString& string) {
     QStringList list = string.split(".", QString::SkipEmptyParts);

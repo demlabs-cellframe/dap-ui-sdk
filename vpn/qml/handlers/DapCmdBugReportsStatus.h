@@ -4,6 +4,8 @@
 #include <QObject>
 #include "DapCmdClientAbstract.h"
 
+struct DapBugReportHistoryItem;
+
 class DapCmdBugReportsStatus : public DapCmdClientAbstract
 {
     Q_OBJECT
@@ -11,7 +13,7 @@ public:
     explicit DapCmdBugReportsStatus(QObject *parent = nullptr);
     virtual ~DapCmdBugReportsStatus() override { }
 
-    void bugReportsStatusRequest(QList<QString> a_bugReportsNumbersList);
+    void bugReportsStatusRequest (QList<DapBugReportHistoryItem> a_bugReportsList);
 
 protected:
     void handleResult(const QJsonObject& result) override;
