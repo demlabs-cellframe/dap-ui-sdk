@@ -2,6 +2,7 @@
 #include <QSaveFile>
 #include <QFile>
 #include <QDir>
+#include <QtAndroid>
 
 const quint16  DapDownload::DefaultPort     (80);
 static DapDownload *__inst = nullptr;
@@ -29,8 +30,17 @@ void DapDownload::startDownload(const QString& a_url)
 void DapDownload::sendRequest()
 {
     QNetworkRequest request;
-    // example m_networkRequest = "https://pub.kelvpn.com/linux/master/KelVPN-7.3-22-amd64.deb";
+    // example m_networkRequest = "https://pub.kelvpn.com/linux/latest/KelVPN-7.3-xxx-amd64.deb";
+#ifdef Q_OS_ANDROID
+    static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod(
+                "getExternalFilesDir"
+                , "(Ljava/lang/String;)Ljava/io/File;"
+                , QAndroidJniObject::fromString(QString("")).object());
+    m_downloadFileName = QString("%1/%2").arg(l_pathObj.toString()).arg("KelVPN-update.apk");
+#else
     m_downloadFileName = QDir::tempPath() + QDir::separator() +  "KelVPN-update.deb";
+#endif
+
 
     // remove file if exist
     if (QFile::exists(m_downloadFileName))
