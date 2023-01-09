@@ -14,8 +14,6 @@ Item
     property int rightMarginText: 16
     property int maximumPopupHeight: 200
 
-    property int bgRadius: 0
-
     property alias model: popupListView.model
 
     property string indicatorSource: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrowDown.svg"
@@ -65,13 +63,13 @@ Item
     Rectangle
     {
         id: background
-        border.width: 0
         anchors.fill: parent
-        radius: bgRadius
 
-        color: popupVisible ?
-                   currTheme.backgroundMainScreen :
-                   backgroundColor
+//        color: popupVisible ?
+//                   currTheme.backgroundMainScreen :
+//                   backgroundColor
+
+        color: backgroundColor
 
         RowLayout
         {
@@ -123,19 +121,19 @@ Item
         cached: true
     }
 
-    InnerShadow
-    {
-        visible: popupVisible
-        anchors.fill: background
-        horizontalOffset: 1
-        verticalOffset: 1
-        radius: 1
-        samples: 10
-        cached: true
-        color: "#524D64"
-        source: background
-        spread: 0
-    }
+//    InnerShadow
+//    {
+//        visible: popupVisible
+//        anchors.fill: background
+//        horizontalOffset: 1
+//        verticalOffset: 1
+//        radius: 1
+//        samples: 10
+//        cached: true
+//        color: "#524D64"
+//        source: background
+//        spread: 0
+//    }
 
     MouseArea
     {
@@ -228,7 +226,7 @@ Item
 
                     color: area.containsMouse ?
                                currTheme.hilightColorComboBox :
-                               currTheme.backgroundMainScreen
+                               currTheme.backgroundElements
 
                     RowLayout
                     {
@@ -298,17 +296,17 @@ Item
             cached: true
         }
 
-        InnerShadow {
-            visible: popupVisible
-            anchors.fill: popupBackground
-            horizontalOffset: 1
-            verticalOffset: 0
-            radius: 1
-            samples: 10
-            cached: true
-            color: "#524D64"
-            source: popupBackground
-        }
+//        InnerShadow {
+//            visible: popupVisible
+//            anchors.fill: popupBackground
+//            horizontalOffset: 1
+//            verticalOffset: 0
+//            radius: 1
+//            samples: 10
+//            cached: true
+//            color: "#524D64"
+//            source: popupBackground
+//        }
     }
 
     function getModelData(index, role)

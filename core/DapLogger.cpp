@@ -9,9 +9,13 @@
 #include "registry.h"
 #endif
 
+static DapLogger* m_instance = nullptr;
+
 DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     : QObject(parent)
+    , m_day(QDateTime::currentDateTime().toString("dd"))
 {
+    m_instance = this;
     dap_set_log_tag_width(prefix_width);
     qInstallMessageHandler(messageHandler);
     m_appType = appType;
@@ -24,6 +28,7 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
         if (dir.mkpath(m_pathToLog) == false)
           qDebug() << "unable to create dir";
         system(("chmod -R 667 " + m_pathToLog).toUtf8().data());
+
     }
 #if defined(Q_OS_ANDROID)
     system((m_pathToLog + "chmod 667 ").toUtf8().data());
@@ -32,8 +37,15 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
 #endif
     updateCurrentLogName();
     setLogFile(m_currentLogName);
-    createChangerLogFiles();
     clearOldLogs();
+    connect(DapLogger::instance(), &DapLogger::sigMessageHandler,
+            this, &DapLogger::updateCurrentLogName);
+
+}
+
+DapLogger* DapLogger::instance()
+{
+    return m_instance;
 }
 
 inline dap_log_level DapLogger::castQtMsgToDap(QtMsgType type)
@@ -67,23 +79,15 @@ void DapLogger::setLogFile(const QString& fileName)
     DapDataLocal::instance()->setLogFilePath(filePath);
 }
 
-void DapLogger::createChangerLogFiles()
+void DapLogger::updateLogFiles()
 {
-    auto then = QDateTime::currentDateTime();
-    auto setTime = QTime::fromString("00:00", "hh:mm");
-    if(then.time() > setTime){
-        then = then.addDays(1);
-    }
-    then.setTime(setTime);
-
-    auto diff = QDateTime::currentDateTime().msecsTo(then);
-    t.start(diff);
-    connect(&t, &QTimer::timeout, [&]{
-        t.setInterval(24 * 3600 * 1000);
-        this->updateCurrentLogName();
-        this->setLogFile(m_currentLogName);
-        this->clearOldLogs();
-    });
+    QString currentDay = QDateTime::currentDateTime().toString("dd");
+    if (currentDay == m_day)
+        return;
+    m_day = currentDay;
+    this->updateCurrentLogName();
+    this->setLogFile(m_currentLogName);
+    this->clearOldLogs();
 }
 
 QString DapLogger::defaultLogPath(const QString a_brand)
@@ -143,6 +147,15 @@ void DapLogger::clearOldLogs()
 void DapLogger::messageHandler(QtMsgType type,
                                const QMessageLogContext &ctx,
                                const QString & msg)
+{
+    emit DapLogger::instance()->sigMessageHandler();
+    DapLogger::instance()->updateLogFiles();
+    writeMessage(type, ctx, msg);
+}
+
+void DapLogger::writeMessage(QtMsgType type,
+                             const QMessageLogContext &ctx,
+                             const QString & msg)
 {
     if(ctx.file) {
         char prefixBuffer[128];

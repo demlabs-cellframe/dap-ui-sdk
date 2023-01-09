@@ -64,6 +64,8 @@ public:
           << dsi.location << " address: " << dsi.address <<  ":" << dsi.port << " state: " << dsi.online << " ping: " << dsi.ping;
         return out;
     }
+    DapServerInfo &operator= (const DapServerInfo &a_src);
+    DapServerInfo &operator= (DapServerInfo &&a_src);
 
     void setPing (const quint16 a_ping)
     {

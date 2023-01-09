@@ -34,6 +34,7 @@ Item {
     property var fontFamiliy: Brand.fontName()
     property int fontSize: 14
     property int fontWeight: Font.Normal
+    property var validator
 
     onValueChanged: {
         inputField.text = value;
@@ -52,6 +53,12 @@ Item {
             titleLabel.duration = 250
         }
     }
+
+    Component.onCompleted: {
+        if (root.validator !== undefined)
+            inputField.state = "hasValidator";
+    }
+    onValidatorChanged: inputField.state = "hasValidator";
 
     /// @}
     /****************************************//**
@@ -125,6 +132,17 @@ Item {
         echoMode: TextInput.Normal
         inputMask: root.inputMask
         background: Rectangle { color: "transparent" }
+        //validator: root.validator
+        states: [
+            State {
+                name: "hasValidator"
+                PropertyChanges {
+                    target: inputField
+                    validator: root.validator
+                }
+            }
+
+        ]
 
         /* font config */
         font {

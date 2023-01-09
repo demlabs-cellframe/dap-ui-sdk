@@ -50,5 +50,6 @@ void DapCmdServersList::handle(const QJsonObject* params)
         emit nextCdb();
         sendSimpleError(reply->error(), reply->errorString());
     });
-    DapConnectClient::instance()->request_GET(*DapDataLocal::instance()->m_cdbIter, 80, "nodelist", *reply);
+    auto it = DapDataLocal::instance()->m_cdbIter;
+    DapConnectClient::instance()->request_GET (it->address, it->port, "nodelist", *reply);
 }

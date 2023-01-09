@@ -63,7 +63,8 @@ ToolTip {
 
             Connections{
                 target: root
-                function onUpdatePos(){
+
+                function onUpdatePos (){
                     if(root.y < 0)
                     {
                         bottomRect.anchors.top = backgroundToolTip.bottom
