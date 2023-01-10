@@ -34,6 +34,7 @@
 	footer-statistics-active:   "qrc:/light/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/light/btn_account.png";
 	bugrep-bg:                  "qrc:/light/report_bg_border.png";
+        contact-bugrep-bg:          "qrc:/light/contact_report_bg_border.png";
 	login-logo:                 "qrc:/light/login-logo.png";
 	btn-close:                  "qrc:/light/ic_close.png";
 	btn-close-hover:            "qrc:/light/ic_close_hover.png";
@@ -854,9 +855,20 @@
  * Bug report
  ***************************************************/
 
+.bugrep-contact-input
+{
+        scaled-rect: scaled(32,150,370,80,false,16);
+}
+
+.bugrep-contact-input-content
+{
+        scaled-rect: scaled(nan,nan,316,32,false,16);
+}
+
+
 .bugrep-input
 {
-	scaled-rect: scaled(19,133,390,200,false,16);
+        scaled-rect: scaled(19,215,390,200,false,16);
 }
 
 .bugrep-input-content
@@ -866,7 +878,7 @@
 
 .bugrep-letter-counter
 {
-	scaled-rect: scaled(291,333,100,19,false,16);
+        scaled-rect: scaled(283,410,100,19,false,16);
 }
 
 .bugrep-input-email
@@ -905,6 +917,11 @@
 .bugrep-bg
 {
 	qproperty-scaledPixmap: "@bugrep-bg";
+}
+
+.contact-bugrep-bg
+{
+        qproperty-scaledPixmap: "@contact-bugrep-bg";
 }
 
 .bugrep-input-textarea
