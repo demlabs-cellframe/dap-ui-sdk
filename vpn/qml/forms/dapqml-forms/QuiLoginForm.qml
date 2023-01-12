@@ -173,6 +173,19 @@ Item {
         //btnEnterSerial.inputMask    = ">NNNN-NNNN-NNNN-NNNN;_"
     }
 
+    function beginConnection() {
+        if (btnConnect.enabled === false)
+            return;
+        if (internal.mode === QuiLoginForm.Mode.M_SERIAL)
+            root.sigConnectBySerial();
+        else
+        if (internal.mode === QuiLoginForm.Mode.M_PASSWORD)
+            root.sigConnectByPassword();
+        else
+        if (internal.mode === QuiLoginForm.Mode.M_CERT)
+            root.sigConnectByCert();
+    }
+
     /// @}
     /****************************************//**
      * Separator fix
@@ -403,6 +416,7 @@ Item {
             separator: true
 
             onClicked: root.sigChooseSerial()
+            onTextAccepted: root.beginConnection()
             onTextChanged: {
                 var text    = mainText;
 
@@ -570,16 +584,7 @@ Item {
         qss: "login-connect"
 
         text: qsTr("CONNECT") + lang.notifier
-        onClicked: {
-            if (internal.mode === QuiLoginForm.Mode.M_SERIAL)
-                root.sigConnectBySerial();
-            else
-            if (internal.mode === QuiLoginForm.Mode.M_PASSWORD)
-                root.sigConnectByPassword();
-            else
-            if (internal.mode === QuiLoginForm.Mode.M_CERT)
-                root.sigConnectByCert();
-        }
+        onClicked: root.beginConnection()
     }
 
     /****************************************//**
