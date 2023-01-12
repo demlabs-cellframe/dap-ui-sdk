@@ -34,5 +34,6 @@
         <file compress="1">nonthemed/arrow-up.png</file>
         <file compress="1">nonthemed/arrow-down.png</file>
         <file>light/contact_report_bg_border.png</file>
+        <file>dark/contact_report_bg_border.png</file>
     </qresource>
 </RCC>
