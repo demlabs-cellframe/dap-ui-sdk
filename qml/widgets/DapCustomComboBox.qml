@@ -16,6 +16,8 @@ Item
 
     property int bgRadius: 0
 
+    property bool topOrientation: false
+
     property alias model: popupListView.model
 
     property string indicatorSource: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrowDown.svg"
@@ -117,7 +119,8 @@ Item
         visible: popupVisible
         anchors.fill: background
         horizontalOffset: currTheme.hOffset
-        verticalOffset: currTheme.vOffset
+        verticalOffset: topOrientation ?
+                            - currTheme.vOffset : currTheme.vOffset
         radius: currTheme.radiusShadow
         color: currTheme.shadowColor
         source: background
@@ -174,6 +177,7 @@ Item
 
         x: -width*(1/scale-1)*0.5
         y: mainItem.height - height*(1/scale-1)*0.5
+           - (topOrientation ? height + background.height : 0)
 
         width: popupBackground.width
         height: popupBackground.height
@@ -292,7 +296,8 @@ Item
             visible: popupVisible
             anchors.fill: popupBackground
             horizontalOffset: currTheme.hOffset
-            verticalOffset: currTheme.vOffset
+            verticalOffset: topOrientation ?
+                                - currTheme.vOffset : currTheme.vOffset
             radius: currTheme.radiusShadow
             color: currTheme.shadowColor
             source: popupBackground
