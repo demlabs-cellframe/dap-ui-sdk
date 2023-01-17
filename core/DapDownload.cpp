@@ -44,11 +44,11 @@ void DapDownload::sendRequest()
 
     connect( m_networkReply, &QNetworkReply::finished, this, [=] {
         QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
-        qInfo() << "Download finished" << reply->error();
+        qDebug() << "Download finished" << reply->error();
         m_downloading = false;
     });
     connect( m_networkReply, SIGNAL(error), this, SLOT([=](QNetworkReply::NetworkError networkErr) {
-        qInfo() << "Download error:" << networkErr;
+        qDebug() << "Download error:" << networkErr;
 //        emit downloadError(m_networkReply->errorString());
         m_downloading = false;
     }));
