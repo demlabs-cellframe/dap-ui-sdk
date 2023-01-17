@@ -42,6 +42,7 @@ private:
 //                     const QString &headers = "", bool ssl = false);
 //    void parseUrl(const QString& url);
     void sendRequest();
+    bool m_downloading;
 
 signals:
     void fileSaved(QString path);
