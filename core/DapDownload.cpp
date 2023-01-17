@@ -2,6 +2,7 @@
 #include <QSaveFile>
 #include <QFile>
 #include <QDir>
+#include <QDebug>
 
 const quint16  DapDownload::DefaultPort     (80);
 static DapDownload *__inst = nullptr;
@@ -45,12 +46,12 @@ void DapDownload::sendRequest()
     connect( m_networkReply, &QNetworkReply::finished, this, [=] {
 //        QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
 //        qDebug() << "Download finished" << reply->error();
-        qDebug() << "Download finished";
+//        qDebug() << "Download finished";
         m_downloading = false;
     });
     connect( m_networkReply, SIGNAL(error), this, SLOT([=](QNetworkReply::NetworkError networkErr) {
 //        qDebug() << "Download error:" << networkErr;
-        qDebug() << "Download error:";
+//        qDebug() << "Download error:";
 //        emit downloadError(m_networkReply->errorString());
         m_downloading = false;
     }));
@@ -71,7 +72,7 @@ void DapDownload::sendRequest()
         emit downloadProgress(load, total);
     });
     // send request
-    qDebug() << "Download started" << m_networkRequest << "to" << m_downloadFileName;
+//    qDebug() << "Download started" << m_networkRequest << "to" << m_downloadFileName;
 }
 
 
