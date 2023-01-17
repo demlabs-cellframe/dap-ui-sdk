@@ -34,25 +34,27 @@ void DapDownload::sendRequest()
 {
     m_downloading = true;
     QNetworkRequest request;
-//  todo set name for windows, macos
+//  todo set name for macos
+#ifdef Q_OS_LINUX
     m_downloadFileName = QDir::tempPath() + QDir::separator() +  "KelVPN-update.deb";
+#endif
+#ifdef Q_OS_WIN
+    m_downloadFileName = QDir::tempPath() + QDir::separator() +  "KelVPN-installer.exe";
+#endif
+
     // remove file if exist
     if (QFile::exists(m_downloadFileName))
         QFile::remove(m_downloadFileName);
-
+    // send request
     request.setUrl(QUrl(m_networkRequest));
     m_networkReply = m_httpClient->get(request);
-
     connect( m_networkReply, &QNetworkReply::finished, this, [=] {
         QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
         qDebug() << "Download finished" << reply->error();
-//        qDebug() << "Download finished";
         m_downloading = false;
     });
     connect( m_networkReply, SIGNAL(error), this, SLOT([=](QNetworkReply::NetworkError networkErr) {
         qDebug() << "Download error:" << networkErr;
-//        qDebug() << "Download error:";
-//        emit downloadError(m_networkReply->errorString());
         m_downloading = false;
     }));
     connect( m_networkReply, &QNetworkReply::readyRead, this, [=]() {
@@ -71,7 +73,6 @@ void DapDownload::sendRequest()
     connect( m_networkReply, &QNetworkReply::downloadProgress, this, [=](quint64 load, quint64 total) {
         emit downloadProgress(load, total);
     });
-    // send request
     qDebug() << "Download started" << m_networkRequest << "to" << m_downloadFileName;
 }
 
