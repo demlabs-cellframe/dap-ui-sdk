@@ -43,12 +43,14 @@ void DapDownload::sendRequest()
     m_networkReply = m_httpClient->get(request);
 
     connect( m_networkReply, &QNetworkReply::finished, this, [=] {
-        QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
-        qDebug() << "Download finished" << reply->error();
+//        QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
+//        qDebug() << "Download finished" << reply->error();
+        qDebug() << "Download finished";
         m_downloading = false;
     });
     connect( m_networkReply, SIGNAL(error), this, SLOT([=](QNetworkReply::NetworkError networkErr) {
-        qDebug() << "Download error:" << networkErr;
+//        qDebug() << "Download error:" << networkErr;
+        qDebug() << "Download error:";
 //        emit downloadError(m_networkReply->errorString());
         m_downloading = false;
     }));
@@ -69,7 +71,7 @@ void DapDownload::sendRequest()
         emit downloadProgress(load, total);
     });
     // send request
-    qInfo() << "Download started" << m_networkRequest << "to" << m_downloadFileName;
+    qDebug() << "Download started" << m_networkRequest << "to" << m_downloadFileName;
 }
 
 
