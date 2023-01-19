@@ -27,12 +27,12 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
         qDebug() << "dir not exists";
         if (dir.mkpath(m_pathToLog) == false)
           qDebug() << "unable to create dir";
+#ifndef Q_OS_ANDROID
         system(("chmod -R 667 " + m_pathToLog).toUtf8().data());
+#endif
 
     }
-#if defined(Q_OS_ANDROID)
-    system((m_pathToLog + "chmod 667 ").toUtf8().data());
-#else
+#ifndef Q_OS_ANDROID
     system(("chmod 667 $(find " + m_pathToLog + " -type d)").toUtf8().data());
 #endif
     updateCurrentLogName();
@@ -101,9 +101,8 @@ QString DapLogger::defaultLogPath(const QString a_brand)
 #elif defined Q_OS_ANDROID
     Q_UNUSED(a_brand);
     static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod(
-                "getExternalFilesDir"
-                , "(Ljava/lang/String;)Ljava/io/File;"
-                , QAndroidJniObject::fromString(QString("")).object());
+                    "getFilesDir"
+                    , "()Ljava/io/File;");
     return QString("%1/log").arg(l_pathObj.toString());
 #endif
     return {};
