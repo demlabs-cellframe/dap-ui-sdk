@@ -53,4 +53,5 @@ void DapCmdUpdateOperation::handleError(int code, const QString& message)
 {
     Q_UNUSED(code); Q_UNUSED(message);
     qWarning() << *m_errorObject;
+    emit downloadError(message);
 }

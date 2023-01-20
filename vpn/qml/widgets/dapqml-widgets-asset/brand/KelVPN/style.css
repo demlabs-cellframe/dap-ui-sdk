@@ -1212,6 +1212,12 @@
 {
         scaled-rect: scaled(100,122,nan,nan,false,12);
         color: "@light-grey";
-        font-weight: Font.Bold;
+        horizontal-align: Text.AlignHCenter;
+}
+
+.progress-message
+{
+        scaled-rect: scaled(-1,500,354,nan,false,19);
+        color: "@text";
         horizontal-align: Text.AlignHCenter;
 }

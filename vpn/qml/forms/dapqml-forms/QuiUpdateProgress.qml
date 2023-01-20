@@ -37,10 +37,30 @@ Item {
         overview.buttonActive = active
     }
 
+    function setSetConfirmButtonText(text)
+    {
+        overview.buttonText = text
+    }
+
     function buttonUpdateClicked()
     {
         root.buttonClicked()
         PageCtl.slotBackwardAuto();
+    }
+
+    function messageVisible(visible)
+    {
+        overview.messageVisible = visible
+    }
+
+    function message(text)
+    {
+        overview.message = text
+    }
+
+    function setTitleText(text)
+    {
+        root.titleString = text
     }
 
     /****************************************//**
@@ -63,8 +83,6 @@ Item {
         buttonActive: false//root.buttonActive
         // arrows on buttons
         link: true
-        // button text
-        buttonText: qsTr("UPDATE") + lang.notifier
     }
 
 }

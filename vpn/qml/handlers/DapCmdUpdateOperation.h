@@ -30,6 +30,7 @@ public slots:
 
 signals:
     void downloadProgress(qint64 load, qint64 total);
+    void downloadError(QString message);
 
 private:
     QString m_dowmloadUrl;

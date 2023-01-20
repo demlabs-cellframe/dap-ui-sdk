@@ -47,7 +47,7 @@ private:
 signals:
     void fileSaved(QString path);
     void downloadProgress(qint64 load, qint64 total);
-    void downloadError(QString error);
+    void downloadError(int code, QString error);
 };
 
 #endif // DAPDOWNLOAD_H

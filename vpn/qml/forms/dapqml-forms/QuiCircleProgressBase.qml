@@ -16,6 +16,8 @@ Item {
     property string progressString: "100%"
     property string progressInfo: "0/0"
     property string buttonText: "CLOSE"
+    property string message: "Update completed successfully!"
+    property bool messageVisible: false
 
     signal buttonClicked()
 
@@ -116,6 +118,17 @@ Item {
             property string color: "red"
             property int strokeWidth: 8
         }
+    }
+
+    /****************************************//**
+     * message
+     ********************************************/
+
+    DapQmlLabel {
+        qss: "progress-message"
+        visible: root.messageVisible
+        text: root.message
+        clip: false
     }
 
     /****************************************//**
