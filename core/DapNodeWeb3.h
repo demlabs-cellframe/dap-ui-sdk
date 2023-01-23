@@ -36,19 +36,19 @@
 #include "DapNetworkAccessManager.h"
 #include "DapNetworkReply.h"
 
-enum class DapNodeErrors
+
+//int DapNodeErrorCode(DapNodeErrors, const bool httpFinished);
+class DapNodeWeb3;
+
+struct ReplyMethod
 {
-    NetworkReplyConnectError,
-    NetworkReplyStatusError,
-    NetworkReplyWalletsError,
-    NetworkReplyNetworksListError,
-    NetworkWrongReplyError,
-    TimerElapsed,
-    JsonError,
-    StatusError
+    QString request;
+    void(DapNodeWeb3::*parseMethod)(const QString&, int baseErrorCode);
+    void(DapNodeWeb3::*replyError)(int error);
+    QString wrongReplyText;
+    int baseErrorCode;
 };
 
-int DapNodeErrorCode(DapNodeErrors, const bool httpFinished);
 
 class DapNodeWeb3 : public QObject
 {
@@ -82,15 +82,17 @@ private:
     bool jsonError() { return m_parseJsonError; }
     void responseProcessing(const int error, const QString errorString = "", const bool httpFinished = true);
 
-    void responseParsing(const int error, DapNodeErrors errorType, const QString errorString, const bool httpFinished,
-                DapNodeErrors getReplyDataError, QString messageReplyDataError,
-                void(DapNodeWeb3::*parseMethod)(const QString&));
+    void responseParsing(const int error, const QString wrongReplyerrorString, const bool httpFinished,
+                         int errorCode, QString messageReplyDataError,
+                         void(DapNodeWeb3::*parseMethod)(const QString&, int baseErrorCode),
+                         void(DapNodeWeb3::*responceError)(int code));
+
+    static const QList<ReplyMethod> replyItems;
 
 public slots:
     // requests
     void nodeDetectedRequest();
     void nodeConnectionRequest();
-    void connectReply();
     void nodeStatusRequest();
     void walletsRequest();
     void networksRequest();
@@ -106,19 +108,21 @@ private slots:
     // send request string
     void sendRequest(QString request);
     // reply error
-    void replyError(DapNodeErrors errorType, const QString errorString = QString(""), const bool httpFinished = true);
-    // reply
-    void nodeStatusOkReply(const QString& replyData);
-    void parseReplyConnect(const QString& replyData);
-    void parseReplyNetworks(const QString& replyData);
-    void parseReplyWallets(const QString& replyData);
-    void parseDataWallet(const QString& replyData);
-    void parseCertificates(const QString& replyData);
-    void parseCreateCertificate(const QString& replyData);
-    void parseCondTxCreateReply(const QString& replyData);
-    void parseLedgerReply(const QString& replyData);
-    void parseMempoolReply(const QString& replyData);
-    void parseJsonError(QString replyData);
+    void replyError(int errorCode, const QString errorString);
+    // response processing
+    void parseReplyConnect(const QString& replyData, int baseErrorCode);
+    void nodeStatusOkReply(const QString& replyData, int baseErrorCode);
+    void parseReplyNetworks(const QString& replyData, int baseErrorCode);
+    void parseReplyWallets(const QString& replyData, int baseErrorCode);
+    void parseDataWallet(const QString& replyData, int baseErrorCode);
+    void parseCertificates(const QString& replyData, int baseErrorCode);
+    void parseCreateCertificate(const QString& replyData, int baseErrorCode);
+    void parseCondTxCreateReply(const QString& replyData, int baseErrorCode);
+    void parseLedgerReply(const QString& replyData, int baseErrorCode);
+    void parseMempoolReply(const QString& replyData, int baseErrorCode);
+    void parseJsonError(QString replyData, int baseErrorCode);
+    //
+    void replyConnectError(int code);
 
 signals:
     // -------- output signals --------
@@ -138,59 +142,5 @@ signals:
     void nodeNotConnected();
     void checkNodeStatus();
 };
-
-
-
-//{
-//"data": [
-//    {
-//        "address": "mWNv7A43YnqRHCWVJG2zobGRUWepgMs5b2K2Hq4w7QePxDXoy1VArS2vhdyAxp5cSR1Q2qUYQDkYQs4uFxr7TP3WnJzzTWa2iGFdDDv7",
-//        "network": "mileena",
-//        "tokens": [
-//            {
-//                "balance": "0",
-//                "datoshi": "0",
-//                "tokenName": "0"
-//            }
-//        ]
-//    },
-//    {
-//        "address": "mJUUJk6Yk2gBSTjcDvqqLvGTgcNFZeZbCmrD3Mb1QycVPZmZcUVmH9WW8aLixh6M7XfzLWYGbSGSGwMSV6PiVwcLnbjZvoAfmQEfqEsN",
-//        "network": "subzero",
-//        "tokens": [
-//            {
-//                "balance": "0",
-//                "datoshi": "0",
-//                "tokenName": "0"
-//            }
-//        ]
-//    },
-//    {
-//        "address": "Rj7J7MiX2bWy8sNyaJdTGtjsUzwUbDHsfT3EnKN4Nhcmcf2bRxgx5GoXxgR6q3YDu8s64PGvbbHhh21jSgns6tjTXy6ADf4ga1XdnJnk",
-//        "network": "Backbone",
-//        "tokens": [
-//            {
-//                "balance": "0",
-//                "datoshi": "0",
-//                "tokenName": "0"
-//            }
-//        ]
-//    },
-//    {
-//        "address": "iDAeSXFFiwH2LyhqupWKEHqfCbSQFvTXoPm4bU9VyboenWTxeviL5AjVo54dXCbGctryNgFiV91UcD8hmMaNChgyGuQusikS5W9dUYGA",
-//        "network": "kelvpn-minkowski",
-//        "tokens": [
-//            {
-//                "balance": "0",
-//                "datoshi": "0",
-//                "tokenName": "0"
-//            }
-//        ]
-//    }
-//],
-//"errorMsg": "",
-//"status": "ok"
-//}
-
 
 #endif // DAPNODEWEB3_H

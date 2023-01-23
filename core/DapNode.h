@@ -47,7 +47,14 @@ class NodeConnectStateMachine
 public:
     explicit NodeConnectStateMachine()
     { init(); }
-    void start() { nodeConnectMachine.start(); }
+    void start() {
+        nodeConnectMachine.start();
+        commandState.start();
+    }
+    ///
+    QState waitingCommand;
+    QState gettingWalletsData;
+    QState transactionProcessingt;
     ///
     QState initialState;
     QState nodeDetection;
@@ -67,8 +74,14 @@ public:
     QState checkTransactionCertificate;
     QState createTransactionCertificate;
 private:
+    QStateMachine commandState;
     QStateMachine nodeConnectMachine;
     void init(){
+        commandState.addState(&waitingCommand);
+        commandState.addState(&gettingWalletsData);
+        commandState.addState(&transactionProcessingt);
+        commandState.setInitialState(&waitingCommand);
+        //
         nodeConnectMachine.addState(&initialState);
         nodeConnectMachine.addState(&nodeDetection);
         nodeConnectMachine.addState(&nodeNotDetected);
@@ -90,8 +103,6 @@ private:
         qDebug() << "nodeConnectMachine::init";
     }
 };
-
-int DapNodeErrorCode(DapNodeErrors, const bool httpFinished);
 
 class DapNode : public QObject
 {
@@ -138,6 +149,7 @@ private:
     void initStmTransitions();
     void initStmStates();
     void initWeb3Connections();
+    void initCommandsStm();
 
     bool nodeDetected;
     // transaction certificate name
@@ -164,6 +176,10 @@ signals:
     void sigLedgerContainHash();
     void sigCondTxCreateSuccess();
     // ------- internal signals --------
+    void waitingCommand();
+    void transactionProcessing();
+    void gettingWalletsData();
+    //
     void uiStartNodeDetection();
     void errorDetected();
     void repeatNodeDetection();

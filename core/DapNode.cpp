@@ -27,6 +27,7 @@ DapNode:: DapNode(QObject * obj, int requestTimeout) :
     initWeb3Connections();
     initStmTransitions();
     initStmStates();
+    initCommandsStm();
 }
 
 
@@ -71,11 +72,26 @@ void DapNode::startCheckingNodeRequest()
     }
 }
 
+void DapNode::initCommandsStm()
+{
+    m_stm->waitingCommand.addTransition(this, &DapNode::uiStartNodeDetection,
+    &m_stm->gettingWalletsData);
+    m_stm->waitingCommand.addTransition(this, &DapNode::sigCondTxCreateRequest,
+    &m_stm->transactionProcessingt);
+
+    m_stm->gettingWalletsData.addTransition(this, &DapNode::waitingCommand,
+    &m_stm->waitingCommand);
+    m_stm->transactionProcessingt.addTransition(this, &DapNode::waitingCommand,
+    &m_stm->waitingCommand);
+}
+
 void DapNode::initStmTransitions()
 {
     DEBUGINFO << "initStates";
     // node search  initialState -> startCheckingNode
     m_stm->initialState.addTransition(this, &DapNode::uiStartNodeDetection,
+    &m_stm->nodeDetection);
+    m_stm->initialState.addTransition(this, &DapNode::sigCondTxCreateRequest,
     &m_stm->nodeDetection);
 
     // node detection -> node detected
@@ -108,8 +124,13 @@ void DapNode::initStmTransitions()
     &m_stm->initialState);
 
     // node status ok -> initialState
-    m_stm->nodeGetStatus.addTransition(web3, &DapNodeWeb3::statusOk,
+    m_stm->nodeGetStatus.addTransition(this, &DapNode::gettingWalletsData,
     &m_stm->getWallets);
+//    m_stm->nodeGetStatus.addTransition(web3, &DapNodeWeb3::statusOk,
+//    &m_stm->getWallets);
+
+    m_stm->nodeGetStatus.addTransition(this, &DapNode::transactionProcessing,
+    &m_stm->checkTransactionCertificate);
 
     // get wallets -> wallets received
     m_stm->getWallets.addTransition(this, &DapNode::walletsReceived,
@@ -140,8 +161,8 @@ void DapNode::initStmTransitions()
     * transaction workflow
     ***************************************/
     // Transition to conditional transaction create
-    m_stm->initialState.addTransition(this, &DapNode::sigCondTxCreateRequest,
-    &m_stm->checkTransactionCertificate);
+//    m_stm->initialState.addTransition(this, &DapNode::sigCondTxCreateRequest,
+//    &m_stm->checkTransactionCertificate);
     // Transition to check certificate
     m_stm->checkTransactionCertificate.addTransition(this, &DapNode::certificateExist,
     &m_stm->condTxCreate);
@@ -186,6 +207,7 @@ void DapNode::initStmStates()
     // initial state
     connect(&m_stm->initialState, &QState::entered, this, [=](){
         DEBUGINFO << "&initialState, &QState::entered";
+        emit waitingCommand();
         // autostart node detection
         // startCheckingNodeRequest();
     });
@@ -266,6 +288,11 @@ void DapNode::initWeb3Connections()
     // node detected signal
     connect(web3, &DapNodeWeb3::nodeDetected, this, &DapNode::sigNodeDetected);
     connect(web3, &DapNodeWeb3::checkNodeStatus, this, &DapNode::sigNodeDetected);
+    connect(web3, &DapNodeWeb3::statusOk, [=](){
+        DEBUGINFO  << "DapNodeWeb3::statusOk hhhhhhhhhhhhhhhhhhhhhhhhh";
+        if (m_stm->transactionProcessingt.active()) emit transactionProcessing();
+        if (m_stm->gettingWalletsData.active()) emit gettingWalletsData();
+    });
 
     // web3 wallets received
     connect(web3, &DapNodeWeb3::sigReceivedWalletsList, this, [=](QStringList wallets){

@@ -201,10 +201,12 @@ Item {
 
     function setTransactionWalletNetwork(row2) {
         transactionProcessingWalletData.text = row2
+        console.log("ffffffffffffffffffffffff", transactionProcessingWalletData.text)
     }
 
     function setTransactionAmount(row3) {
         transactionProcessingAmount.text = row3
+        console.log("tttttttttttttttttttttttt", transactionProcessingAmount.text)
     }
 
     /// @brief set input mask for serial input
@@ -217,7 +219,7 @@ Item {
         console.log("cellfarameDashboardDetected", detected);
         internal.cellfarameDetected =  Brand.name() === "KelVPN";
         internal.waitingForApproval = true
-        transactionProcessingLabel.text = "Waiting for approval ___ "
+        transactionProcessingLabel.text = "Waiting for approval"
         loginTypeKelContainer.update();
     }
 
