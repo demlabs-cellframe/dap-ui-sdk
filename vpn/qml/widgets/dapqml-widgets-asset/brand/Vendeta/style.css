@@ -34,6 +34,7 @@
 	footer-statistics-active:   "qrc:/light/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/light/btn_account.png";
 	bugrep-bg: 					"qrc:/light/report_bg_border.png";
+        contact-bugrep-bg:          "qrc:/light/contact_report_bg_border.png";
 	login-logo: 				"qrc:/light/login-logo.png";
 	btn-close:                  "qrc:/light/ic_close.png";
 	btn-close-hover:            "qrc:/light/ic_close_hover.png";
@@ -71,6 +72,7 @@
 	footer-statistics-active:   "qrc:/dark/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/dark/btn_account.png";
 	bugrep-bg: 					"qrc:/dark/report_bg_border.png";
+        contact-bugrep-bg:          "qrc:/dark/contact_report_bg_border.png";
 	login-logo: 				"qrc:/dark/login-logo.png";
 	btn-close:                  "qrc:/dark/ic_close.png";
 	btn-close-hover:            "qrc:/dark/ic_close_hover.png";
@@ -830,9 +832,19 @@
  * Bug report
  ***************************************************/
 
+.bugrep-contact-input
+{
+        scaled-rect: scaled(32,150,370,80,false,16);
+}
+
+.bugrep-contact-input-content
+{
+        scaled-rect: scaled(nan,nan,316,32,false,16);
+}
+
 .bugrep-input
 {
-	scaled-rect: scaled(19,133,390,200,false,16);
+        scaled-rect: scaled(19,215,390,200,false,16);
 }
 
 .bugrep-input-content
@@ -842,18 +854,18 @@
 
 .bugrep-letter-counter
 {
-	scaled-rect: scaled(291,333,100,19,false,16);
+        scaled-rect: scaled(283,410,100,19,false,16);
 }
 
 .bugrep-attach-btn
 {
-	scaled-rect: scaled(19,392,390,20,false,16);
+        scaled-rect: scaled(19,450,390,20,false,16);
 	color: "#DA0B82";
 }
 
 .bugrep-send-btn
 {
-	scaled-rect: scaled(27,441,374,80,true,14);
+        scaled-rect: scaled(27,499,374,80,true,14);
 }
 
 .bugrep-sending
@@ -876,6 +888,11 @@
 .bugrep-bg
 {
 	qproperty-scaledPixmap: "@bugrep-bg";
+}
+
+.contact-bugrep-bg
+{
+        qproperty-scaledPixmap: "@contact-bugrep-bg";
 }
 
 .bugrep-input-textarea
