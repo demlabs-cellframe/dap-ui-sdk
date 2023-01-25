@@ -10,6 +10,7 @@ SOURCES += \
     $$PWD/DapCmdStats.cpp \
     $$PWD/DapCmdTunTap.cpp \
     $$PWD/DapCmdServerData.cpp \
+    $$PWD/DapCmdUpdateOperation.cpp \
     $$PWD/DapCmdUserData.cpp \
     $$PWD/DapCmdStates.cpp \
     $$PWD/DapCmdConnect.cpp \
@@ -33,6 +34,7 @@ HEADERS += $$PWD/DapCmdLastConnectionData.h \
     $$PWD/DapCmdStats.h \
     $$PWD/DapCmdTunTap.h \
     $$PWD/DapCmdServerData.h \
+    $$PWD/DapCmdUpdateOperation.h \
     $$PWD/DapCmdUserData.h \
     $$PWD/DapCmdStates.h \
     $$PWD/DapCmdConnect.h \

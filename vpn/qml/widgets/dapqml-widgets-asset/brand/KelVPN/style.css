@@ -6,6 +6,7 @@
 {
 	text: "#04004E";
 	background: "#F7F8FA";
+        update-background: "#FFFFFF";
 	label: "#5C5B74";
 	light-grey: "#A4A3C0";
 	error: "#F53172";
@@ -37,15 +38,20 @@
         contact-bugrep-bg:          "qrc:/light/contact_report_bg_border.png";
 	login-logo:                 "qrc:/light/login-logo.png";
 	btn-close:                  "qrc:/light/ic_close.png";
-	btn-close-hover:            "qrc:/light/ic_close_hover.png";
-	country-filter-clear:       "qrc:/light/btn_filter_clear.png"
-	country-filter-clear-hover: "qrc:/light/btn_filter_clear_hover.png"
+        btn-close-hover:            "qrc:/light/ic_close_hover.png";
+        country-filter-clear:       "qrc:/light/btn_filter_clear.png";
+        country-filter-clear-hover: "qrc:/light/btn_filter_clear_hover.png";
+        btn-ticker-close:           "qrc:/light/ic_ticker_close.png";
+        btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
+        btn-update-notification-close:          "qrc:/light/ic_close_update.png";
+        btn-update-notification-close-hover:    "qrc:/light/ic_close_update_hover.png";
 }
 
 .@dark
 {
 	text: "#FFFFFF";
 	background: "#2f2e42";
+        update-background: "#37354D";
 	label: "#A4A3C0";
 	light-grey: "#A4A3C0";
 	error: "#F5FF00";
@@ -78,8 +84,12 @@
     login-logo:                 "qrc:/dark/login-logo.png";
     btn-close:                  "qrc:/dark/ic_close.png";
     btn-close-hover:            "qrc:/dark/ic_close_hover.png";
-    country-filter-clear:       "qrc:/dark/btn_filter_clear.png"
-    country-filter-clear-hover: "qrc:/dark/btn_filter_clear_hover.png"
+    country-filter-clear:       "qrc:/dark/btn_filter_clear.png";
+    country-filter-clear-hover: "qrc:/dark/btn_filter_clear_hover.png";
+    btn-ticker-close:           "qrc:/dark/ic_ticker_close.png";
+    btn-ticker-close-hover:     "qrc:/dark/ic_ticker_close_hover.png";
+    btn-update-notification-close:          "qrc:/dark/ic_close_update.png";
+    btn-update-notification-close-hover:    "qrc:/dark/ic_close_update_hover.png";
 }
 
 /****************************************************
@@ -1093,6 +1103,81 @@
 }
 
 /****************************************************
+* Ticker
+***************************************************/
+
+.ticker_close_button
+{
+    qproperty-inactive: "@btn-ticker-close";
+    qproperty-active: "@btn-ticker-close-hover";
+}
+
+.ticker
+{
+    scaled-rect: scaled(-1,0,-1,36,false);
+}
+
+.ticker_lable_rect
+{
+    scaled-rect: scaled(-1,0,-1,36,false);
+}
+
+.ticker_label
+{
+    scaled-rect: scaled(nan,0,nan,36,false);
+    color: "#FFFFFF";
+}
+
+.ticker_label_backgraund{
+    scaled-rect: scaled(-1,0,-1,36,false);
+    color: "#A4A3C0";
+}
+
+.ticker_close_rect
+{
+    scaled-rect: scaled(-1,0,36,36,false);
+}
+
+.ticker_show_rect
+{
+    scaled-rect: scaled(-1,0,36,36,false);
+}
+
+.ticker_close_background{
+    scaled-rect: scaled(-1,0,-1,36,false);
+    color: "#A4A3C0";
+}
+
+/****************************************************
+ * Update
+ ***************************************************/
+
+.update_notification_rect
+{
+    scaled-rect: scaled(-1,40,356,78,false);
+    color: "@update-background";
+}
+
+.update_notification_label
+{
+    scaled-rect: scaled(112,13,nan,nan,false,18);
+    color: "@text";
+}
+
+.update_notification_button
+{
+    scaled-rect: scaled(155,45,nan,nan,false,18);
+    color: "@brand";
+}
+
+.update_notification_close_button
+{
+    qproperty-inactive: "@btn-update-notification-close";
+    qproperty-active: "@btn-update-notification-close-hover";
+}
+
+
+/****************************************************
  * Choose Country
  ***************************************************/
 
@@ -1114,4 +1199,43 @@
 {
 	qproperty-inactive: "@btn-close";
 	qproperty-active: "@btn-close-hover";
+}
+
+
+/****************************************************
+ * Update
+ ***************************************************/
+
+.progress-circle-arc
+{
+        scaled-rect: scaled(-1,278,200,200,true,12);
+        color: "@text";
+}
+.progress-circle-separator-container
+{
+        scaled-rect: scaled(-1,134,-1,4,true);
+}
+.progress-circle-btn-confirm
+{
+        scaled-rect: scaled(-1,737,374,80,true,12);
+}
+.progress-circle-percent
+{
+        scaled-rect: scaled(100,94,nan,nan,false,40);
+        color: "@text";
+        font-weight: Font.Bold;
+        horizontal-align: Text.AlignHCenter;
+}
+.progress-circle-mbytes
+{
+        scaled-rect: scaled(100,122,nan,nan,false,12);
+        color: "@light-grey";
+        horizontal-align: Text.AlignHCenter;
+}
+
+.progress-message
+{
+        scaled-rect: scaled(-1,500,354,nan,false,19);
+        color: "@text";
+        horizontal-align: Text.AlignHCenter;
 }
