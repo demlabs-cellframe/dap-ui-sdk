@@ -947,6 +947,34 @@
 	scaled-font: scaled(16);	
 }
 
+.bugrep-agreement-frame
+{
+	color: "@background";
+	scaled-rect: scaled(-1,nan,-1,828,false);
+}
+
+.bugrep-agreement-pos
+{
+	scaled-rect: scaled(nan,98,nan,nan,false);
+}
+
+.bugrep-agreement-title
+{
+	color: "@text";
+	scaled-rect: scaled(-1,16,-1,24,false,20);
+}
+
+.bugrep-agreement-size
+{
+	scaled-rect: scaled(nan,68,354,624,false,15);
+}
+
+.bugrep-agreement-text
+{
+	color: "@text";
+	scaled-rect: scaled(-1,nan,354,680,false,15);
+}
+
 /****************************************************
  * Purchase
  ***************************************************/

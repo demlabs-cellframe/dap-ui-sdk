@@ -63,6 +63,7 @@ Item {
         property bool attachedImage: false;
         property string textAttach: qsTr("Click here to attach a screenshot") + lang.notifier
         property string textDetach: qsTr("Remove screenshot") + lang.notifier
+        property bool showAnAgreement: true
 
         function updateAttachButton() {
             attach.text = (!attachedImage) ? textAttach : textDetach;
@@ -341,6 +342,68 @@ Item {
 //            source: inputFiller.scaledPixmap; mipmap: true
 //        }
 //    }
+
+    /****************************************//**
+     * Agreement
+     ********************************************/
+
+    DapQmlRectangle {
+        y: 0
+        z: 8
+        qss: "bugrep-agreement-frame"
+
+        Behavior on y { PropertyAnimation { duration: 250 } }
+
+        DapQmlRectangle {
+            id: agreementPos
+            qss: "bugrep-agreement-pos"
+        }
+
+        DapQmlRectangle {
+            id: agreementSize
+            qss: "bugrep-agreement-size"
+        }
+
+        DapQmlLabel {
+            text: "Rules title"
+            qss: "bugrep-agreement-title"
+        }
+
+        Flickable {
+            x: (root.width - agreementSize.width) / 2
+            clip: true
+            width: agreementSize.width
+            height: agreementSize.height
+            contentWidth: agreementText.width
+            contentHeight: agreementText.height
+
+            DapQmlLabel {
+                id: agreementText
+                text: "We collect no user data during normal use of the app. However, in cases when a user sends a bug report, we will receive some data. We do this to allow our developers to replicate and examine your issue, and to ensure that it has been resolved. The data we receive is used only for troubleshooting purposes.
+
+    If you agree with these terms, our developers will receive the following information:
+
+    1. Information about your device type, including display
+    2. System information
+    3. Logs in the folder / paths to logs in your system
+    4. Access to your gallery/images, if you attach an image to the bug report
+    5. Your email, if you decided to provide it for further feedback
+    6. The unique license key
+    7. Your app version
+
+    If you agree to these conditions, please press “I agree.”
+
+    If you are not comfortable with these conditions for bug reports, you can go to the KelVPN Official telegram group to report any problems you might have to the group. There you may be asked to provide some additional information, like in the list above, to help us precisely identify the issue."
+                qss: "bugrep-agreement-text"
+            }
+        }
+
+        Component.onCompleted: {
+            y   = (root.internal.showAnAgreement)
+                   ? agreementPos.y
+                   : root.height;
+        }
+    }
 
     /****************************************//**
      * Mode Input Item
