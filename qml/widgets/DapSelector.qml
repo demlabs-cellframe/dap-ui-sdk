@@ -17,6 +17,10 @@ Rectangle
     property alias selectorModel: viewerItem.model
     property alias selectorListView: viewerItem
 
+    property bool itemWidthEnabled: false
+
+    property int itemWidth
+
     signal itemSelected()
 
     implicitWidth: viewerItem.width
@@ -100,7 +104,8 @@ Rectangle
             Rectangle
             {
                 id: frameItem
-                width: textItem.width + itemHorisontalBorder * 2
+                width: itemWidthEnabled ? itemWidth + itemHorisontalBorder * 2
+                                        : textItem.width + itemHorisontalBorder * 2
                 height: selectorItem.height - viewerBorder * 2
 
                 color: "transparent"
