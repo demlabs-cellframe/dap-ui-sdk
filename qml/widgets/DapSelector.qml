@@ -50,53 +50,42 @@ Rectangle
 //        }
 
         highlight:
-            Rectangle
-            {
-                id: hl
+        Item {
+            property var gradColor:
+                viewerItem.model.get(viewerItem.currentIndex).color
+
+            /* mask source */
+            Rectangle {
+                id: contenMask
+                anchors.fill: parent
                 radius: height * 0.5
+                visible: false
+            }
+            /* mask */
+            OpacityMask {
+                anchors.fill: content
+                source: content
+                maskSource: contenMask
+            }
+            Canvas{
+                id: content
+                anchors.fill: parent
+                opacity: 0
+                onPaint: {
+                    var ctx = getContext("2d")
 
-                property var gradColor:
-                    viewerItem.model.get(viewerItem.currentIndex).color
-
-//                color: gradColor
-
-//                onWidthChanged:
-//                {
-//                    print("onColorChanged", gradColor, color)
-//                }
-
-
-//                color: (model.get(currentIndex).color === undefined ?
-//                           currTheme.buttonColorNormalPosition0 :
-//                           model.get(currentIndex).color)
-
-                LinearGradient
-                {
-                    anchors.fill: parent
-                    source: parent
-                    start: Qt.point(0,parent.height/2)
-                    end: Qt.point(parent.width,parent.height/2)
-                    gradient:
-                        Gradient {
-                            GradientStop
-                            {
-                                id: grad1
-                                position: 0
-                                color: gradColor === undefined ?
-                                           currTheme.buttonColorNormalPosition0 :
-                                           gradColor
-                            }
-                            GradientStop
-                            {
-                                id: grad2
-                                position: 1
-                                color: gradColor === undefined ?
-                                           currTheme.buttonColorNormalPosition1 :
-                                           gradColor
-                            }
-                        }
+                    var gradient = ctx.createLinearGradient(0,parent.height/2,parent.width,parent.height/2)
+                    gradient.addColorStop(0, gradColor === undefined ?
+                                              currTheme.buttonColorNormalPosition0 :
+                                              gradColor)
+                    gradient.addColorStop(1, gradColor === undefined ?
+                                              currTheme.buttonColorNormalPosition1 :
+                                              gradColor)
+                    ctx.fillStyle = gradient
+                    ctx.fillRect(0,0,parent.width,parent.height)
                 }
             }
+        }
 
         model: selectorModel
 
