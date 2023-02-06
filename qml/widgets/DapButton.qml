@@ -65,10 +65,10 @@ Button
 
     property color defaultColor: shadowColor
 
-    property color shadowColor : "#0B0A0D"
+    property color shadowColor : "#1F242F"
 //    property string shadowColor : currTheme.buttonShadow
     property color innerShadowColor : currTheme.buttonInnerShadow
-    property color innerShadowPressColor : "#F1E7FF"
+    property color innerShadowPressColor : "#1F242F"
 
     property double opacityDropShadow: 0.44
     property double opacityInnerShadow: 0.3
@@ -213,6 +213,7 @@ Button
                     duration: 100
                 }
             }
+
 
             MouseArea{
                 id: control
