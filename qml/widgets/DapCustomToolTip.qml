@@ -11,12 +11,13 @@ ToolTip {
     property font textFont: mainFont.dapFont.medium12
     property string textColor: currTheme.textColor
     property string contentText
+    property alias backgroundToolTip: backgroundToolTip
     scale: mainWindow.scale
 
     contentItem:
     Text
     {
-        color: currTheme.textColor
+        color: textColor
         text: contentText
         font: textFont
     }
@@ -98,6 +99,7 @@ ToolTip {
             radius: 10
             samples: 20
             opacity: 1
+            visible: bottomRect.visible
         }
         DropShadow {
             id: shadow2
@@ -112,6 +114,7 @@ ToolTip {
             opacity: 1
             fast: true
             cached: true
+            visible: bottomRect.visible
         }
 
         Rectangle{
@@ -120,6 +123,7 @@ ToolTip {
             anchors.right: backgroundToolTip.right
             height: bottomRect.height/2
             color: backgroundToolTip.color
+            visible: bottomRect.visible
         }
     }
 }
