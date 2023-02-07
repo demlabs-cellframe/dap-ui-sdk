@@ -65,10 +65,10 @@ Button
 
     property color defaultColor: shadowColor
 
-    property color shadowColor : "#0B0A0D"
+    property color shadowColor : "#1F242F"
 //    property string shadowColor : currTheme.buttonShadow
     property color innerShadowColor : currTheme.buttonInnerShadow
-    property color innerShadowPressColor : "#F1E7FF"
+    property color innerShadowPressColor : "#1F242F"
 
     property double opacityDropShadow: 0.44
     property double opacityInnerShadow: 0.3
@@ -107,30 +107,44 @@ Button
     contentItem:
         Rectangle
         {
+            property color grad0: gradientColorNormal0
+            property color grad1: gradientColorNormal1
             id: dapBackgroundButton
             anchors.fill: parent
-            LinearGradient
-            {
-                anchors.fill: parent
-                source: parent
-                start: Qt.point(0,parent.height/2)
-                end: Qt.point(parent.width,parent.height/2)
-                gradient:
-                    Gradient {
-                        GradientStop
-                        {
-                            id: grad0
-                            position: 0;
-                            color: gradientColorNormal0
-                        }
-                        GradientStop
-                        {
-                            id: grad1
-                            position: 1;
-                            color: gradientColorNormal1
 
-                        }
-                    }
+            /* mask source */
+            Rectangle {
+                id: contenMask
+                anchors.fill: parent
+                radius: currTheme.radiusButton
+                visible: false
+            }
+            /* mask */
+            OpacityMask {
+                anchors.fill: content
+                source: content
+                maskSource: contenMask
+            }
+            Canvas{
+                id: content
+                anchors.fill: parent
+                opacity: 0
+                onPaint: {
+                    var ctx = getContext("2d")
+
+                    var gradient = ctx.createLinearGradient(0,parent.height/2,parent.width,parent.height/2)
+                    gradient.addColorStop(0, dapBackgroundButton.grad0)
+                    gradient.addColorStop(1, dapBackgroundButton.grad1)
+
+                    ctx.fillStyle = gradient
+                    ctx.fillRect(0,0,parent.width,parent.height)
+                }
+            }
+            onGrad0Changed: {
+                content.requestPaint()
+            }
+            onGrad1Changed: {
+                content.requestPaint()
             }
 
             color: !dapButton.activeFrame ?
@@ -172,14 +186,14 @@ Button
             ParallelAnimation {
                 id: mouseEnterAnim
                 PropertyAnimation {
-                    target: grad0
-                    properties: "color"
+                    target: dapBackgroundButton
+                    properties: "grad0"
                     to: gradientColorHovered0
                     duration: 100
                 }
                 PropertyAnimation {
-                    target: grad1
-                    properties: "color"
+                    target: dapBackgroundButton
+                    properties: "grad1"
                     to: gradientColorHovered1
                     duration: 100
                 }
@@ -187,18 +201,19 @@ Button
             ParallelAnimation {
                 id: mouseExitedAnim
                 PropertyAnimation {
-                    target: grad0
-                    properties: "color"
+                    target: dapBackgroundButton
+                    properties: "grad0"
                     to: gradientColorNormal0
                     duration: 100
                 }
                 PropertyAnimation {
-                    target: grad1
-                    properties: "color"
+                    target: dapBackgroundButton
+                    properties: "grad1"
                     to: gradientColorNormal1
                     duration: 100
                 }
             }
+
 
             MouseArea{
                 id: control
