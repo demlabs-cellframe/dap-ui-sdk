@@ -20,6 +20,7 @@ bool DapBugReport::createZipDataBugReport(const QString &serial, const QString &
     qDebug() << "DapBugReport::createZip";
     qDebug() << "DapBugReport attachFile" << attachFile << CheckFile(attachFile);
 
+    QString dataJsonFilePath = QDir::tempPath() + QDir::separator() + "data.json";
     QFile fileJsonData("data.json");
     if(fileJsonData.open(QIODevice::WriteOnly | QIODevice::Text)){
         QJsonObject obj;
@@ -32,6 +33,10 @@ bool DapBugReport::createZipDataBugReport(const QString &serial, const QString &
         QJsonDocument saveDoc(obj);
         fileJsonData.write(saveDoc.toJson());
         fileJsonData.close();
+    }
+    else
+    {
+        qWarning() << "Can not create the data.json file for bug-report";
     }
 
     QFileInfo infoFileData(fileJsonData);
@@ -55,7 +60,7 @@ bool DapBugReport::createZipDataBugReport(const QString &serial, const QString &
 
     QString bugReportPath = QDir::tempPath() + QDir::separator() + "temp_bugReportZip.zip";
     if (!DapZip::compressFiles(bugReportPath, fileList)){
-        qDebug() << "Bug-report file not compress";
+        qWarning() << "Bug-report file not compress";
         return false;
     }
 
