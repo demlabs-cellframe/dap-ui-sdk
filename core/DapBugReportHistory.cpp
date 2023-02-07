@@ -41,7 +41,8 @@ inline void legacyLoad (QMap<int, DapBugReportHistoryItem> &a_items)
   for (const auto &number : qAsConst(list))
     {
       auto item = DapBugReportHistoryItem { number.toInt(), STATUS_UNKNOWN };
-      a_items.insert (item.number, std::move (item));
+      if (item.number)
+        a_items.insert (item.number, std::move (item));
     }
 }
 
@@ -111,7 +112,8 @@ void DapBugReportHistory::load()
       for (const auto &obj : qAsConst (array))
         {
           auto item = jsonToItem (obj.toObject());
-          m_items.insert (item.number, std::move (item));
+          if (item.number)
+            m_items.insert (item.number, std::move (item));
         }
     }
   /* or do legacy load instead */
@@ -164,7 +166,8 @@ void DapBugReportHistory::slotUpdateReportsStatus (const QString &a_json)
           auto jsItem     = item.toObject();
           auto bugreport  = jsItem.value ("bugreport").toString().toInt();
           auto status     = jsItem.value ("current_status").toString();
-          m_items.insert (bugreport, { bugreport, status.replace ('_', ' ') });
+          if (bugreport)
+            m_items.insert (bugreport, { bugreport, status.replace ('_', ' ') });
         }
 
       save();
@@ -178,6 +181,9 @@ void DapBugReportHistory::slotUpdateReportsStatus (const QString &a_json)
 void DapBugReportHistory::slotNewReport (const QString &a_reportNumber)
 {
   int number  = a_reportNumber.toInt();
+
+  if (!number)
+    return;
 
   /* check if already exists */
   for (const auto &item : qAsConst(m_items))
