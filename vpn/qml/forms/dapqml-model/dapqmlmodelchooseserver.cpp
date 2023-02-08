@@ -2,6 +2,8 @@
 #include "dapqmlmodelchooseserver.h"
 #include "DapServersData.h"
 
+#include <QTimer>
+
 /* DEFS */
 enum Role
 {
@@ -25,6 +27,14 @@ DapQmlModelChooseServer::DapQmlModelChooseServer (QObject *parent)
 {
   /* vars */
   __inst  = this;
+
+  QTimer::singleShot (500, [this] {
+      auto *serversData         = DapServersData::instance();
+      const auto &currentServer = serversData->currentServer();
+      const auto name           = currentServer.name;
+      if (m_currentServer.isEmpty())
+        m_currentServer         = name;
+    });
 }
 
 /********************************************
@@ -93,9 +103,9 @@ QVariant DapQmlModelChooseServer::data(const QModelIndex &index, int role) const
       return serversData->data (index, CONNECTION_QUALITY).toInt();
 
     case Role::checked:
-        const auto &currentServer   = serversData->currentServer();
-        const auto name             = serversData->data (index, Qt::DisplayRole).toString();
-        const auto address          = serversData->data (index, ADDRESS_ROLE).toString();
+        const auto &currentServer = serversData->currentServer();
+        const auto name           = serversData->data (index, Qt::DisplayRole).toString();
+        const auto address        = serversData->data (index, ADDRESS_ROLE).toString();
         return (currentServer.name == name
                 && currentServer.address == address);
     }
@@ -130,6 +140,11 @@ void DapQmlModelChooseServer::setCurrentServerByName (const QString &a_name)
   /* get indexes */
   int currentIndex  = indexOf (m_currentServer);
   int lastIndex     = indexOf (m_previousServer);
+
+//  qDebug() << __PRETTY_FUNCTION__
+//           << "current:" << currentIndex
+//           << ",last:" << lastIndex
+//           << ",names:" << m_currentServer << m_previousServer;
 
   /* update current server */
   serversData->setCurrentServer (currentIndex);
