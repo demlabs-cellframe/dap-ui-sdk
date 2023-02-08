@@ -809,6 +809,11 @@ Item {
 
         text: qsTr("CONNECT") + lang.notifier
         onClicked: root.beginConnection()
+
+//        Component.onCompleted: StyleDebugTree.describe (
+//           "login-connect",
+//            ["x", "y", "width", "height"],
+//           this);
     }
 
     /****************************************//**

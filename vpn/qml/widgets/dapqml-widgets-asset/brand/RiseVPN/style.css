@@ -766,7 +766,7 @@
 
 .login-connect
 {
-    scaled-rect: scaled(-1,695,374,80,true,12);
+    scaled-rect: scaled(nan,695,374,80,true,12);
 }
 
 .login-obtain-container
