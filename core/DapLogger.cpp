@@ -19,9 +19,9 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     dap_set_log_tag_width(prefix_width);
     qInstallMessageHandler(messageHandler);
     m_appType = appType;
-    qDebug() << "App: " DAP_BRAND " " DAP_VERSION " " + appType;
+    qDebug() << "App: " BRAND_STRING " " DAP_VERSION " " + appType;
     qDebug() << systemInfo();
-    setPathToLog(defaultLogPath(DAP_BRAND));
+    setPathToLog(defaultLogPath(BRAND_STRING));
     QDir dir(m_pathToLog);
     if (!dir.exists()) {
         qDebug() << "dir not exists";
@@ -75,7 +75,7 @@ void DapLogger::setLogFile(const QString& fileName)
 {
     qDebug() << "setLogFile: " + fileName;
     QString filePath = getPathToLog() + "/" + fileName;
-    dap_common_init(DAP_BRAND, qPrintable(filePath), qPrintable(getPathToLog()));
+    dap_common_init(BRAND_STRING, qPrintable(filePath), qPrintable(getPathToLog()));
     DapDataLocal::instance()->setLogFilePath(filePath);
 }
 
@@ -97,7 +97,7 @@ QString DapLogger::defaultLogPath(const QString a_brand)
 #elif defined(Q_OS_MACOS)
     return QString("/var/log/%1").arg(a_brand).toLower();
 #elif defined (Q_OS_WIN)
-    return QString("%1/%2/log").arg(regWGetUsrPath()).arg(DAP_BRAND);
+    return QString("%1/%2/log").arg(regWGetUsrPath()).arg(BRAND_STRING);
 #elif defined Q_OS_ANDROID
     Q_UNUSED(a_brand);
     static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod(
@@ -121,7 +121,7 @@ QString DapLogger::currentLogFilePath(const QString a_brand, const QString a_app
 
 void DapLogger::updateCurrentLogName()
 {
-    m_currentLogName = DapLogger::currentLogFileName(DAP_BRAND, m_appType);
+    m_currentLogName = DapLogger::currentLogFileName(BRAND_STRING, m_appType);
 }
 
 

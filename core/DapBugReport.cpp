@@ -24,7 +24,7 @@ bool DapBugReport::createZipDataBugReport(const QString &serial, const QString &
     if(fileJsonData.open(QIODevice::WriteOnly | QIODevice::Text)){
         QJsonObject obj;
         obj["sn"] = serial;
-        obj["version_app"] = DAP_BRAND " " DAP_VERSION;
+        obj["version_app"] = BRAND_STRING " " DAP_VERSION;
         obj["os"] = getSystemInfo();
         obj["message"] = message;
         obj["pKeyHash"] = pkeyHash;

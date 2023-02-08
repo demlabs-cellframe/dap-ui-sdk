@@ -252,13 +252,13 @@ void DapDataLocal::_syncCdbWithSettings()
 QSettings* DapDataLocal::settings()
 {
 #ifdef Q_OS_ANDROID
-    static QString s_path = DapLogger::defaultLogPath(DAP_BRAND).chopped(3).append("settings.ini");
+    static QString s_path = DapLogger::defaultLogPath(BRAND_STRING).chopped(3).append("settings.ini");
 
     /* Legacy settings import, will be deprecated on targeting API 30+ */
     int l_ofd = open(qPrintable(s_path), O_RDONLY);
     if (l_ofd <= 0) {
         int _l_fd = open("/sdcard/KelvinVPN/log/settings.ini", O_RDWR);
-        int l_fd = _l_fd > 0 ? _l_fd : open("/sdcard/" DAP_BRAND "/log/settings.ini", O_RDWR);
+        int l_fd = _l_fd > 0 ? _l_fd : open("/sdcard/" BRAND_STRING "/log/settings.ini", O_RDWR);
         if (l_fd > 0) {
             int l_ofd = open(qPrintable(s_path), O_CREAT | O_RDWR);
             struct stat statBuf;

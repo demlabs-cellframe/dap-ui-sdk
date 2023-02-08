@@ -19,7 +19,7 @@ QString DapPluginsPathControll::defaultPluginPath(const QString a_brand)
 #elif defined(Q_OS_MACOS)
     return QString("/tmp/cellframe-dashboard_dapps");
 #elif defined (Q_OS_WIN)
-    return QString("%1/%2/dapps").arg(regWGetUsrPath()).arg(DAP_BRAND);
+    return QString("%1/%2/dapps").arg(regWGetUsrPath()).arg(BRAND_STRING);
 #elif defined Q_OS_ANDROID
     static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod(
                 "getExternalFilesDir"
