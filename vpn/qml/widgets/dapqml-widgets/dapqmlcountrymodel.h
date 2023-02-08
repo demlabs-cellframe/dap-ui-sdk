@@ -62,7 +62,7 @@ class DapQmlCountrySortFilterProxyModel : public QSortFilterProxyModel
 public:
   explicit DapQmlCountrySortFilterProxyModel(QObject *parent = nullptr);
   Q_INVOKABLE void updateCheckedIndex();
-  Q_INVOKABLE void setRowFilter(QString str);
+  Q_INVOKABLE void setRowFilter (const QString &a_filter);
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
 private:

@@ -1,5 +1,6 @@
 import QtQuick 2.11
 import QtQuick.Shapes 1.4
+import QtGraphicalEffects 1.12
 import "qrc:/dapqml-widgets"
 
 Item {
@@ -56,8 +57,11 @@ Item {
         y: progressCircle.y
         width: progressCircle.width
         height: progressCircle.height
+
         Shape {
+            id: outerLine
             anchors.fill: parent
+            visible: false
             // multisample, decide based on your scene settings
             layer.enabled: true
             layer.samples: 4
@@ -65,7 +69,7 @@ Item {
             ShapePath {
                 fillColor: "transparent"
                 //strokeColor: progressCircle.color
-                strokeColor: "#A4A3C0"
+                strokeColor: "white"//"#A4A3C0"
                 strokeWidth: progressCircle.strokeWidth
                 capStyle: ShapePath.FlatCap
 
@@ -79,7 +83,20 @@ Item {
                 }
             }
         }
+
+        InnerShadow {
+            anchors.fill: outerLine
+            radius: 10
+            samples: 16
+            horizontalOffset: 3
+            verticalOffset: 3
+            color: "black"
+            opacity: 0.2
+            source: outerLine
+        }
+
         Shape {
+            id: innerLine
             anchors.fill: parent
             // multisample, decide based on your scene settings
             layer.enabled: true
