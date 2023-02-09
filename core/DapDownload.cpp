@@ -41,6 +41,9 @@ void DapDownload::sendRequest()
 #ifdef Q_OS_WIN
     m_downloadFileName = QDir::tempPath() + QDir::separator() +  "KelVPN-installer.exe";
 #endif
+#ifdef Q_OS_MACOS
+    m_downloadFileName = QDir::tempPath() + QDir::separator() +  "KelVPN-installer.pkg";
+#endif
 
     // remove file if exist
     if (QFile::exists(m_downloadFileName))

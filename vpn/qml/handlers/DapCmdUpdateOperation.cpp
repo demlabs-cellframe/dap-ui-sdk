@@ -36,7 +36,6 @@ void DapCmdUpdateOperation::handleResult(const QJsonObject& result)
         qint64 totalSize = 1;
         bool ok;
         loadSize = result.value("load").toString().toInt(&ok);
-        qDebug() << loadSize;
         if (!ok)
             qCritical() << "Bad response from service" << "load key";
         totalSize = result.value("total").toString().toInt(&ok);
