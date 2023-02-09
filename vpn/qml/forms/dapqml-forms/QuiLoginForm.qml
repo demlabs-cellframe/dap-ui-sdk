@@ -30,6 +30,7 @@ import "qrc:/dapqml-widgets"
 
 Item {
     id: root
+    clip: true
 
     /****************************************//**
      * @name DEFS
@@ -69,15 +70,25 @@ Item {
         property bool showPassword: false
 
         function forgotLabel() {
+//   First variant for Rise
+//            return mode === QuiLoginForm.Mode.M_SERIAL
+//                ? qsTr("Don't have a serial key?")
+//                : qsTr("Forgot your password?")
             return mode === QuiLoginForm.Mode.M_SERIAL
                 ? qsTr("Don't have a serial key?")
-                : qsTr("Forgot your password?")
+                : qsTr("")
+
         }
 
         function tapHereLabel() {
-            return mode === QuiLoginForm.Mode.M_SERIAL
+//   First variant for Rise
+//            return mode === QuiLoginForm.Mode.M_SERIAL
+//                ? qsTr("Tap here to obtain one")
+//                : qsTr("Tap here to recover")
+            return Brand.name() !== "RiseVPN"
                 ? qsTr("Tap here to obtain one")
-                : qsTr("Tap here to recover")
+                : qsTr("Tap here to show cdb management")
+
         }
     }
 
@@ -114,11 +125,16 @@ Item {
     /// @brief entered serial is incorerct
     signal sigSerialFillingIncorrect();
 
+    /// @brief show server manager
+    signal sigShowCdbManager();
+
     signal textEditedAndCleaned();
     signal textEditedAndFilledOut (string serial);
 
     signal textChangedAndCleaned();
     signal textChangedAndFilledOut (string serial);
+
+    signal sigStartUpdate();
 
     /// @}
     /****************************************//**
@@ -154,9 +170,32 @@ Item {
         btnChooseServer.updateServerName();
     }
 
+    function setTickerMessage(a_message, a_url) {
+        tickerLabel.text = a_message;
+        ticker.tickerUrl = a_url;
+        ticker.showTicker()
+    }
+
+    function showUpdateNotification(a_message) {
+        updateNotificationRect.showUpdateNotification()
+    }
+
     /// @brief set input mask for serial input
     function setupInputMask() {
         //btnEnterSerial.inputMask    = ">NNNN-NNNN-NNNN-NNNN;_"
+    }
+
+    function beginConnection() {
+        if (btnConnect.enabled === false)
+            return;
+        if (internal.mode === QuiLoginForm.Mode.M_SERIAL)
+            root.sigConnectBySerial();
+        else
+        if (internal.mode === QuiLoginForm.Mode.M_PASSWORD)
+            root.sigConnectByPassword();
+        else
+        if (internal.mode === QuiLoginForm.Mode.M_CERT)
+            root.sigConnectByCert();
     }
 
     /// @}
@@ -177,13 +216,225 @@ Item {
         }
     }
 
+
+    /****************************************//**
+        * Ticker
+        ********************************************/
+
+       DapQmlRectangle {
+           id: ticker
+           objectName: "ticker"
+           qss: "ticker"
+           width: root.width
+           visible: false
+
+           property string tickerUrl:   ""
+           property bool tickerIsHidden: true
+
+           function showTicker() {
+               hideAnimation.from = -1 * ticker.height
+               hideAnimation.to = 0
+               hideAnimation.running = true
+               tickerIsHidden = false
+           }
+
+           function hideTicker() {
+               hideAnimation.from = 0
+               hideAnimation.to = -1 * ticker.height
+               hideAnimation.running = true
+               ticker.tickerIsHidden = true
+               updateNotificationRect.moveAfterHideTicker()
+           }
+
+           function tickerClicked() {
+               Qt.openUrlExternally(ticker.tickerUrl);
+           }
+
+           DapQmlRectangle {
+               id: tickerLableRect
+               objectName: "tickerLableRect"
+               qss: "ticker_lable_rect"
+               visible: true
+               anchors.left: parent.left
+
+               DapQmlLabel {
+                   id: tickerLabel
+                   objectName: "tickerLabel"
+                   width: contentWidth
+                   qss: "ticker_label"
+                   text: internal.tickerMessage
+                   z: 2
+                   horizontalAlign: Text.AlignHCenter
+                   mipmap: false
+
+                   NumberAnimation  {
+                       id: tickerAnimation
+                       objectName: "tickerAnimation"
+                       target: tickerLabel
+                       properties: "x"
+                       from: tickerLableRect.width
+                       duration: 10000
+                       loops: Animation.Infinite
+                   }
+               }
+
+               MouseArea {
+                   anchors.fill: tickerLableRect
+                   z : 3
+                   cursorShape: Qt.PointingHandCursor
+                   onClicked: ticker.tickerClicked()
+               }
+
+               DapQmlRectangle {
+                   id: tickerLabelBackgraund
+                   qss: "ticker_label_backgraund"
+                   anchors.fill: parent
+               }
+           }
+
+           DapQmlRectangle {
+               id: tickerCloseRect
+               qss: "ticker_close_rect"
+               visible: true
+               anchors.right: parent.right
+
+               DapQmlPushButton {
+                   id: tickerCloseButton
+                   x: parent.width - width - y
+                   y: (parent.height - height) / 2
+                   z: 14
+
+                   height: 24
+                   width: 24
+                   qss: "ticker_close_button"
+
+                   onClicked: {
+                       ticker.hideTicker()
+                   }
+               }
+
+               DapQmlRectangle {
+                   id: tickerCloseBackground
+                   qss: "ticker_label_backgraund"
+                   anchors.fill: parent
+               }
+           }
+
+           NumberAnimation {
+               id: hideAnimation
+               objectName: "tickerHideAnimation"
+               target: ticker
+               properties: "y"
+               duration: 100
+               running: false
+           }
+       }
+
+   /****************************************//**
+    * Update notification
+    ********************************************/
+
+    DapQmlRectangle {
+
+        id: updateNotificationRect
+        qss: "update_notification_rect"
+        z:30
+        radius: 13
+        visible: true
+        opacity: 0
+
+        function showUpdateNotification() {
+            hideAnimationUpdateNotification.from = ticker.tickerIsHidden ? 0 : 15
+            hideAnimationUpdateNotification.to = ticker.tickerIsHidden ? 15 : 35
+            hideAnimationUpdateNotification.running = true
+
+            hideAnimationUpdateNotificationOpacity.from = 0
+            hideAnimationUpdateNotificationOpacity.to = 1
+            hideAnimationUpdateNotificationOpacity.running = true
+        }
+
+        function hideUpdateNotification() {
+            hideAnimationUpdateNotification.from = ticker.tickerIsHidden ? 15 : 35
+            hideAnimationUpdateNotification.to = ticker.tickerIsHidden ? 0 : 15
+            hideAnimationUpdateNotification.running = true
+
+            hideAnimationUpdateNotificationOpacity.from = 1
+            hideAnimationUpdateNotificationOpacity.to = 0
+            hideAnimationUpdateNotificationOpacity.running = true
+        }
+
+        function moveAfterHideTicker() {
+            hideAnimationUpdateNotification.from = 35
+            hideAnimationUpdateNotification.to = 15
+            hideAnimationUpdateNotification.running = true
+        }
+
+        DapQmlLabel {
+            id: updateNotificationLabel
+            qss: "update_notification_label"
+            text: "New version available"
+            height: contentHeight
+            width: contentWidth
+            horizontalAlign: Text.AlignHCenter
+        }
+
+        DapQmlPushButton {
+            id: updateNotificationCloseButton
+            x: parent.width - width - 14
+            y: 10
+            z: 14
+
+            height: 20
+            width: 20
+            qss: "update_notification_close_button"
+
+            onClicked: {
+                updateNotificationRect.hideUpdateNotification()
+            }
+        }
+
+        DapQmlLabel {
+            id: updateNotificationButton
+            qss: "update_notification_button"
+            text: "Update"
+            height: contentHeight
+            width: contentWidth
+            horizontalAlign: Text.AlignHCenter
+
+            MouseArea {
+                anchors.fill: updateNotificationButton
+                z : 3
+                cursorShape: Qt.PointingHandCursor
+                onClicked: root.sigStartUpdate()
+            }
+        }
+
+        NumberAnimation {
+            id: hideAnimationUpdateNotification
+            objectName: "hideAnimationUpdateNotification"
+            target: updateNotificationRect
+            properties: "y"
+            duration: 100
+            running: false
+        }
+
+        OpacityAnimator on opacity{
+            id: hideAnimationUpdateNotificationOpacity
+            target: updateNotificationRect
+            duration: 100
+            running: false
+        }
+    }
+
+
+
     /****************************************//**
      * Logo
      ********************************************/
 
     DapQmlRectangle {
         qss: "login-logo-container"
-        visible: Brand.name() !== "RiseVPN"
+        visible: Brand.isEnterprise() === false
         DapQmlLabel {
             x: (parent.width - width) / 2
             z: 15
@@ -211,7 +462,7 @@ Item {
         width: root.width
         color: "transparent"
         clip: true
-        visible: Brand.name() === "RiseVPN"
+        visible: Brand.isEnterprise() === true
         DapQmlStyle { item: loginTypeContainer; qss: "login-type-container" }
 
         function update() {
@@ -256,7 +507,7 @@ Item {
     }
 
     /****************************************//**
-     * Top separator
+     * Top mode name
      ********************************************/
 
     DapQmlLabel {
@@ -272,7 +523,7 @@ Item {
         fontFamiliy: loginTypeNamePlacer.fontFamiliy
         fontWeight:  loginTypeNamePlacer.fontWeight
         color:       loginTypeNamePlacer.color
-        visible: Brand.name() === "RiseVPN"
+        visible: Brand.isEnterprise() === true
         wrapMode: Text.WordWrap
         text: (internal.mode === QuiLoginForm.Mode.M_CERT)
               ? textCert
@@ -289,6 +540,10 @@ Item {
             qss: "login-typename-label font-brand c-grey"
         }
     }
+
+    /****************************************//**
+     * Top separator
+     ********************************************/
 
     DapQmlRectangle {
         x: loginSepsPlacer.x
@@ -385,6 +640,7 @@ Item {
             separator: true
 
             onClicked: root.sigChooseSerial()
+            onTextAccepted: root.beginConnection()
             onTextChanged: {
                 var text    = mainText;
 
@@ -506,7 +762,7 @@ Item {
         y:      loginSpacer.y + loginChooseCertPlacer.y
         width:  loginChooseCertPlacer.width
         height: loginChooseCertPlacer.height
-        visible: internal.mode !== QuiLoginForm.Mode.M_PASSWORD
+        visible: internal.mode !== QuiLoginForm.Mode.M_PASSWORD && Brand.isEnterprise() === true
 
         DapQmlButton {
             id: btnChooseCert
@@ -552,16 +808,12 @@ Item {
         qss: "login-connect"
 
         text: qsTr("CONNECT") + lang.notifier
-        onClicked: {
-            if (internal.mode === QuiLoginForm.Mode.M_SERIAL)
-                root.sigConnectBySerial();
-            else
-            if (internal.mode === QuiLoginForm.Mode.M_PASSWORD)
-                root.sigConnectByPassword();
-            else
-            if (internal.mode === QuiLoginForm.Mode.M_CERT)
-                root.sigConnectByCert();
-        }
+        onClicked: root.beginConnection()
+
+//        Component.onCompleted: StyleDebugTree.describe (
+//           "login-connect",
+//            ["x", "y", "width", "height"],
+//           this);
     }
 
     /****************************************//**
@@ -580,6 +832,7 @@ Item {
             horizontalAlign: Text.AlignRight
             qss: "login-obtain-font c-label"
             mipmap: false
+            visible: Brand.name() !== "RiseVPN"
 //          font.family: "Lato"
 //          font.pixelSize: 16
 //          font.weight: Font.Normal
@@ -587,16 +840,30 @@ Item {
 
         DapQmlLabel {
             id: obtainLinkLabel
-            x: parent.width / 2 + 2
+//     First variant for Rise
+//            x: parent.width / 2 + 2
+            x: Brand.name() !== "RiseVPN" ? parent.width / 2 + 2 : 0
             text: internal.tapHereLabel() + lang.notifier
             color: "#DA0B82"
-            width: parent.width / 2
+//     First variant for Rise
+//            width: parent.width / 2
+            width: Brand.name() !== "RiseVPN" ? parent.width / 2 : parent.width
             height: parent.height
-            horizontalAlign: Text.AlignLeft
-            qss: "login-obtain-font c-brand"
-            onClicked: (internal.mode === QuiLoginForm.Mode.M_SERIAL)
+//     First variant for Rise
+//            horizontalAlign: Text.AlignLeft
+            horizontalAlign:  Brand.name() !== "RiseVPN" ? Text.AlignLeft : Text.AlignCenter
+            qss: Brand.name() !== "RiseVPN"
+                     ? "login-obtain-font c-brand"
+                     : "login-obtain-font c-brand"
+            onClicked: {
+//     First variant for Rise
+//                (internal.mode === QuiLoginForm.Mode.M_SERIAL)
+//                       ? root.sigObtainNewKey()
+//                       : root.sigRecoverPassword()
+                Brand.name() !== "RiseVPN"
                        ? root.sigObtainNewKey()
-                       : root.sigRecoverPassword()
+                       : root.sigShowCdbManager()
+            }
 //          font.family: "Lato"
 //          font.pixelSize: 16
 //          font.weight: Font.Normal

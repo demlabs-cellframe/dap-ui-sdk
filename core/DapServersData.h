@@ -10,6 +10,7 @@
 #define COUTRY_FLAG_ROLE (Qt::UserRole + 10)
 #define CONNECTION_QUALITY (Qt::UserRole + 11)
 #define PING_ROLE (Qt::UserRole + 12)
+#define ADDRESS_ROLE (Qt::UserRole + 13)
 
 class DapServersData: public QAbstractListModel
 {
@@ -30,7 +31,7 @@ public:
     QList<DapServerInfo>& bestRegionServers(){return m_bestRegionServerList;}
     QList<DapServerInfo>& pingServerList(){return m_pingServerList;}
 
-    const DapServerInfo* currentServer() const;
+    const DapServerInfo &currentServer() const;
     int serversCount() const;
 
     void clearServerList();
@@ -63,6 +64,8 @@ public slots:
     void setCurrentServerFromService(const DapServerInfo *a_server);
 
     void saveDatas() const;
+protected:
+    bool _setCurrentServerByIndex (int a_serverIndex);
 
 signals:
 
@@ -80,15 +83,15 @@ private:
     const QString CURRENT_SERVER_NAME_SETTING   = "email";
     const QString CURRENT_SERVER_ADDRESS_SETTING = "message";
 
- //   DapServerInfo* m_currentServer = nullptr;
+    DapServerInfo m_currentServer;
 
-    int m_currentServerIndex = -1;
+    //int m_currentServerIndex = -1;
     QList<DapServerInfo> m_servers;
     QList<DapServerInfo> m_bestRegionServerList;
     QList<DapServerInfo> m_pingServerList;
     DapLocationInfo m_locationInfo;
 public:
-    static QMap<QString, QString> m_countryMap;
+    const static QMap<QString, QString> m_countryMap;
 
     qint16 m_bestping = 0;
     qint16 m_worstping = 0;

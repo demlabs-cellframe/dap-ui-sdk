@@ -21,15 +21,19 @@
         <file compress="1">fonts/Exo2-Regular.ttf</file>
         <file compress="1">fonts/Blinker-SemiBold.ttf</file>
         <file compress="1">stripes.png</file>
+        <file compress="1">nonthemed/cdb-index-icon.png</file>
         <file compress="1">nonthemed/conn-icon-0.png</file>
         <file compress="1">nonthemed/conn-icon-1.png</file>
         <file compress="1">nonthemed/conn-icon-2.png</file>
         <file compress="1">nonthemed/conn-icon-3.png</file>
         <file compress="1">nonthemed/conn-icon-4.png</file>
         <file compress="1">nonthemed/conn-icon-5.png</file>
+        <file compress="1">nonthemed/drag-drop-icon.png</file>
         <file compress="1">nonthemed/password-hide.png</file>
         <file compress="1">nonthemed/password-show.png</file>
         <file compress="1">nonthemed/arrow-up.png</file>
         <file compress="1">nonthemed/arrow-down.png</file>
+        <file>light/contact_report_bg_border.png</file>
+        <file>dark/contact_report_bg_border.png</file>
     </qresource>
 </RCC>

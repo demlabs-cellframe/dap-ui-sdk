@@ -129,6 +129,9 @@ Rectangle {
     /// @brief text field content changed
     signal textChanged();
 
+    /// @brief enter key pressed while text field is in focus
+    signal textAccepted();
+
     /// @}
     /****************************************//**
      * @name FUNCTIONS
@@ -452,7 +455,7 @@ Rectangle {
                 height: _magickHeight() - _magickSpacer()
 
                 horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignBottom
+                verticalAlignment: Text.AlignVCenter
                 echoMode: root.editEchoMode
                 text: root.mainText
                 //qss: root.mainQss
@@ -548,8 +551,9 @@ Rectangle {
                 }
 
                 /* signals */
-                onTextEdited: { root.mainText = text; root.textEdited(); }
+                onTextEdited:  { root.mainText = text; root.textEdited(); }
                 onTextChanged: { root.mainText = text; root.textChanged(); }
+                onAccepted:    { root.textAccepted(); }
             }
 
             /* sub text */
@@ -616,8 +620,10 @@ Rectangle {
             /* sub text */
             DapQmlLabel {
                 id: imsSub
-                x: imsMain.x + imsMain.width + imsIcon.width / 2
-                width: parent.width - imsIcon.width - imsMain.width - linkImage1.minus
+                x: imsMain.x + imsMain.width
+                width: (root.link)
+                    ? (root.width - imsIcon.width - imsMain.width - (2 * linkImage1.minus))
+                    : (parent.width - imsIcon.width - imsMain.width - linkImage1.minus)
                 height: parent.height
 
                 horizontalAlign: Text.AlignRight
@@ -630,7 +636,9 @@ Rectangle {
             }
 
             DapQmlImage {
-                property real minus: (root.frame ? (width * 2.4) : (width * 2))
+                property real minus: (root.frame ? (width * 1.4) : (width))
+
+                onWidthChanged: minus = (root.frame ? (width * 1.4) : (width))
 
                 id: linkImage1
                 x: root.width - minus
@@ -832,7 +840,7 @@ Rectangle {
 
                 /* background */
                 background: DapQmlRectangle {
-                    qss: "ch-country-filter"
+                    qss: "c-background"
                 }
 
                 /* font config */

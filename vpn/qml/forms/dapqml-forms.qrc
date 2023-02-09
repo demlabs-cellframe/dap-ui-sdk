@@ -11,13 +11,17 @@
         <file compress="1">dapqml-forms/QuiChooseServerForm.qml</file>
         <file compress="1">dapqml-forms/QuiChooseLanguageForm.qml</file>
         <file compress="1">dapqml-forms/QuiChooseThemeForm.qml</file>
-        <file compress="1">dapqml-forms/QuiChooseCountryForm.qml</file>        
+        <file compress="1">dapqml-forms/QuiChooseCountryForm.qml</file>
         <file compress="1">dapqml-forms/QuiBugReportHistoryForm.qml</file>
         <file compress="1">dapqml-forms/QuiPurchaseHistoryForm.qml</file>
         <file compress="1">dapqml-forms/QuiDocumentViewer.qml</file>
         <file compress="1">dapqml-forms/QuiResetPassword.qml</file>
         <file compress="1">dapqml-forms/QuiManageServersForm.qml</file>
+        <file compress="1">dapqml-forms/QuiManageCdbForm.qml</file>
         <file compress="1">dapqml-forms/QuiCertificateForm.qml</file>
         <file compress="1">dapqml-forms/QuiChooseCertificate.qml</file>
+        <file compress="1">dapqml-forms/QuiCdbSwitchingForm.qml</file>
+        <file compress="1">dapqml-forms/QuiCircleProgressBase.qml</file>
+        <file compress="1">dapqml-forms/QuiUpdateProgress.qml</file>
     </qresource>
 </RCC>

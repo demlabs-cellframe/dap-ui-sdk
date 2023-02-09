@@ -18,10 +18,11 @@ public:
   virtual ~DapCmdSendBugReport() override { }
 
 public:
-  void sendBugReport (
+  void sendBugReport(
     const QString &a_message,
     const QString &a_serial = "",
-    const QString &a_attachFile = "");
+    const QString &a_attachFile = "",
+    const QString &a_emailAddress = "");
   void cancelBugReport();
 
 protected:

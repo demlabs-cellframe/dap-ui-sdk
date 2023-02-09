@@ -30,6 +30,7 @@ DapDataLocal::DapDataLocal()
     parseXML(":/data.xml");
     initSecretKey();
     this->loadAuthorizationDatas();
+    _syncCdbWithSettings();
 }
 
 void DapDataLocal::parseXML(const QString& a_fname)
@@ -79,8 +80,8 @@ void DapDataLocal::parseXML(const QString& a_fname)
                         }
                     }
                 }else if( sr->name() == "cdb"){
-                    m_cdbServersList.push_back(sr->readElementText());
-                    qInfo() << "Add CDB address: " << m_cdbServersList.back();
+                    m_cdbServersList.push_back (DapCdbServer::serverFromString (sr->readElementText()));
+                    qInfo() << "Add CDB address: " << m_cdbServersList.back().address;
                 }else if( sr->name() == "network-default"){
                     m_networkDefault = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
@@ -228,6 +229,24 @@ void DapDataLocal::loadAuthorizationDatas()
     if (m_serialKeyData)
         this->loadFromSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
     this->loadFromSettings(TEXT_PENDING_SERIAL_KEY, m_pendingSerialKey);
+}
+
+void DapDataLocal::_syncCdbWithSettings()
+{
+  /* vars */
+  static const QString SETTING_CDB { "cdb" };
+
+  /* get from settings */
+  auto cdbCfg = getSetting (SETTING_CDB);
+
+  /* if not found, store cdb's from built-in list (if not empty) */
+  if (!cdbCfg.isValid())
+    return;
+
+  /* if found, replace built-in cdb's with list provided from settings */
+  auto list   = QString::fromLatin1 (QByteArray::fromBase64 (cdbCfg.toByteArray())).split(',');
+  auto result = DapCdbServerList::toServers (list);
+  updateCdbList (result);
 }
 
 QSettings* DapDataLocal::settings()
@@ -399,6 +418,18 @@ void DapDataLocal::setAuthorizationType(Authorization type)
     DapDataLocal::instance()->saveSetting (SETTING_AUTHORIZATION, auth);
 }
 
+void DapDataLocal::updateCdbList (const DapCdbServerList &a_newCdbList)
+{
+  /* clear old and store new */
+  m_cdbServersList.clear();
+
+  for (const auto &cdb : qAsConst(a_newCdbList))
+    m_cdbServersList << cdb;
+
+  /* update iterator */
+  m_cdbIter = m_cdbServersList.constBegin();
+}
+
 DapDataLocal *DapDataLocal::instance()
 {
     static DapDataLocal s_instance;
@@ -406,3 +437,40 @@ DapDataLocal *DapDataLocal::instance()
 }
 
 
+
+QString DapCdbServer::toString() const
+{
+  return QString ("%1:%2").arg (address).arg (port);
+}
+
+void DapCdbServer::fromString(const QString &a_src)
+{
+  auto source = a_src.split (':');
+  address     = source.constFirst();
+  port        = source.constLast().toInt();
+  if (port == 0)
+    port = 80;
+}
+
+DapCdbServer DapCdbServer::serverFromString(const QString &a_src)
+{
+  DapCdbServer result;
+  result.fromString (a_src);
+  return result;
+}
+
+DapCdbServerList DapCdbServerList::toServers(const QStringList &a_src)
+{
+  DapCdbServerList result;
+  for (const auto &item : a_src)
+    result << DapCdbServer::serverFromString (item);
+  return result;
+}
+
+QStringList DapCdbServerList::toStrings(const DapCdbServerList &a_servers)
+{
+  QStringList result;
+  for (const auto &item : a_servers)
+    result << item.toString();
+  return result;
+}

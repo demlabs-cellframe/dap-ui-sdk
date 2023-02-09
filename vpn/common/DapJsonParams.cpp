@@ -27,7 +27,9 @@ QMap<DapJsonCmdType, QVector<Params>> DapJsonParams::availableParams {
     {DapJsonCmdType::CREATE_ANDROID_TUNNEL, {Params::ADDRESS, Params::GATEWAY, Params::UPSTREAM_SOCKET}},
     // Get data about the last connection
     {DapJsonCmdType::TAP_DRIVER, {Params::VALUE}},
-    {DapJsonCmdType::PING_SERVER, {Params::HOST, Params::PORT}}
+    {DapJsonCmdType::PING_SERVER, {Params::HOST, Params::PORT}},
+    // Get/Set cdb servers list
+    {DapJsonCmdType::CDB_CTL, {Params::CDB, Params::VALUE}},
 };
 
 bool DapJsonParams::isParamsAvailable(const DapJsonCmdType& cmd, const Params& p)
@@ -64,7 +66,8 @@ const QString& DapJsonParams::toString(Params p) {
         {WRITE_PACKAGE, "write_package"},
         {LAST_CONNECTION, "last_connection"},
         {GATEWAY, "gateway"},
-        {UPSTREAM_SOCKET, "upstream_socket"}
+        {UPSTREAM_SOCKET, "upstream_socket"},
+        {CDB, "cdb"},
     };
 
     if (!paramsName.contains(p)) {

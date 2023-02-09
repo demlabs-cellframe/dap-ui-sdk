@@ -23,6 +23,7 @@ import DapQmlStyle 1.0
 
 Item {
     id: root
+    clip: true
 
     /****************************************//**
      * @name VARS

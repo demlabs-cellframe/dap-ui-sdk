@@ -34,7 +34,12 @@
 	footer-statistics-active:   "qrc:/light/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/light/btn_account.png";
 	bugrep-bg: 					"qrc:/light/report_bg_border.png";
+        contact-bugrep-bg:          "qrc:/light/contact_report_bg_border.png";
 	login-logo: 				"qrc:/light/login-logo.png";
+	btn-close:                  "qrc:/light/ic_close.png";
+        btn-close-hover:            "qrc:/light/ic_close_hover.png";
+        btn-ticker-close:           "qrc:/light/ic_ticker_close.png";
+        btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
 }
 
 .@dark
@@ -69,7 +74,12 @@
 	footer-statistics-active:   "qrc:/dark/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/dark/btn_account.png";
 	bugrep-bg: 					"qrc:/dark/report_bg_border.png";
+        contact-bugrep-bg:          "qrc:/dark/contact_report_bg_border.png";
 	login-logo: 				"qrc:/dark/login-logo.png";
+	btn-close:                  "qrc:/dark/ic_close.png";
+        btn-close-hover:            "qrc:/dark/ic_close_hover.png";
+        btn-ticker-close:           "qrc:/dark/ic_ticker_close.png";
+        btn-ticker-close-hover:     "qrc:/dark/ic_ticker_close_hover.png";
 }
 
 /****************************************************
@@ -169,12 +179,18 @@
 
 
 
+.line-edit-icon
+{
+	scaled-rect: scaled(nan,nan,20,20,true);
+}
+
+
+
 .form-title-close-btn
 {
 	scaled-rect: scaled(0,0,28,28,true);
-        active: "@btn-close-hover";
-        inactive: "@btn-close";
-
+	active: "@btn-close-hover";
+	inactive: "@btn-close";
 }
 
 .form-title-label
@@ -189,16 +205,19 @@
 .sep-left
 {
 	qproperty-scaledPixmap: "@separator-left";
+	scaled-rect: scaled(nan,nan,8,4,false);
 }
 
 .sep-mid
 {
 	qproperty-scaledPixmap: "@separator-mid";
+	scaled-rect: scaled(nan,nan,nan,4,false);
 }
 
 .sep-right
 {
 	qproperty-scaledPixmap: "@separator-right";
+	scaled-rect: scaled(nan,nan,8,4,false);
 }
 
 
@@ -243,6 +262,21 @@
 .ic_language
 {
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_language.png");
+}
+
+.ic_certificate
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_certificate.png");
+}
+
+.ic_cdb-manager
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_cdb-manager.png");
+}
+
+.ic_server-manager
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_server-manager.png");
 }
 
 .ic_send-report
@@ -310,6 +344,16 @@
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/Spinner.gif");
 }
 
+.ic_location
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_location.png");
+}
+
+.ic_country_filter
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_filter.png");
+}
+
 .ic_online
 {
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/icon_online.png");
@@ -357,6 +401,11 @@
 .content-frame
 {
 	scaled-rect: scaled(0,0,-1,754,false);
+}
+
+.content-mid
+{
+	scaled-rect: scaled(-1,nan,363,nan,false);
 }
 
 .content-background
@@ -422,7 +471,7 @@
 
 .footer-frame
 {
-	scaled-rect: scaled(-1,0,-1,201,false);
+	scaled-rect: scaled(nan,nan,-1,201,false);
 }
 
 .footer-btn-settings
@@ -543,7 +592,7 @@
 
 .login-connect
 {
-	scaled-rect: scaled(-1,570,374,80,true,12);
+	scaled-rect: scaled(nan,570,374,80,true,12);
 }
 
 .login-obtain-container
@@ -634,9 +683,9 @@
 
 .sett-btn-lbl-sub-link
 {
-        color: "@light-grey";
-        scaled-font: scaled(16);
-        font-weight: Font.Normal;
+	color: "@light-grey";
+	scaled-font: scaled(16);
+	font-weight: Font.Normal;
 }
 
 .sett-title-lbl-main
@@ -787,9 +836,19 @@
  * Bug report
  ***************************************************/
 
+.bugrep-contact-input
+{
+        scaled-rect: scaled(32,150,370,80,false,16);
+}
+
+.bugrep-contact-input-content
+{
+        scaled-rect: scaled(nan,nan,316,32,false,16);
+}
+
 .bugrep-input
 {
-	scaled-rect: scaled(19,133,390,200,false,16);
+        scaled-rect: scaled(19,215,390,200,false,16);
 }
 
 .bugrep-input-content
@@ -799,18 +858,18 @@
 
 .bugrep-letter-counter
 {
-	scaled-rect: scaled(291,333,100,19,false,16);
+        scaled-rect: scaled(283,410,100,19,false,16);
 }
 
 .bugrep-attach-btn
 {
-	scaled-rect: scaled(19,392,390,20,false,16);
+        scaled-rect: scaled(19,450,390,20,false,16);
 	color: "#DA0B82";
 }
 
 .bugrep-send-btn
 {
-	scaled-rect: scaled(27,441,374,80,true,14);
+        scaled-rect: scaled(27,499,374,80,true,14);
 }
 
 .bugrep-sending
@@ -833,6 +892,11 @@
 .bugrep-bg
 {
 	qproperty-scaledPixmap: "@bugrep-bg";
+}
+
+.contact-bugrep-bg
+{
+        qproperty-scaledPixmap: "@contact-bugrep-bg";
 }
 
 .bugrep-input-textarea
@@ -969,7 +1033,57 @@
 	scaled-rect: scaled(nan,nan,363,34,true);
 }
 
-.ph-btn-label-main
+.ph-btn-label-main/****************************************************
+* Ticker
+***************************************************/
+
+.ticker_close_button
+{
+    qproperty-inactive: "@btn-ticker-close";
+    qproperty-active: "@btn-ticker-close-hover";
+}
+
+.ticker_show_button
+{
+    qproperty-inactive: "@btn-ticker-show";
+    qproperty-active: "@btn-ticker-show-hover";
+}
+
+.ticker
+{
+    scaled-rect: scaled(-1,0,-1,36,false);
+}
+
+.ticker_lable_rect
+{
+    scaled-rect: scaled(-1,0,-1,36,false);
+}
+
+.ticker_label
+{
+    scaled-rect: scaled(nan,0,nan,36,false);
+    color: "#FFFFFF";
+}
+
+.ticker_label_backgraund{
+    scaled-rect: scaled(-1,0,-1,36,false);
+    color: "#A4A3C0";
+}
+
+.ticker_close_rect
+{
+    scaled-rect: scaled(-1,0,36,36,false);
+}
+
+.ticker_show_rect
+{
+    scaled-rect: scaled(-1,0,36,36,false);
+}
+
+.ticker_close_background{
+    scaled-rect: scaled(-1,0,-1,36,false);
+    color: "#A4A3C0";
+}
 {
 	color: "@text";
 	scaled-font: scaled(16);	
@@ -1003,38 +1117,77 @@
 }
 
 /****************************************************
+* Ticker
+***************************************************/
+
+.ticker_close_button
+{
+    qproperty-inactive: "@btn-ticker-close";
+    qproperty-active: "@btn-ticker-close-hover";
+}
+
+.ticker_show_button
+{
+    qproperty-inactive: "@btn-ticker-show";
+    qproperty-active: "@btn-ticker-show-hover";
+}
+
+.ticker
+{
+    scaled-rect: scaled(-1,0,-1,36,false);
+}
+
+.ticker_lable_rect
+{
+    scaled-rect: scaled(-1,0,-1,36,false);
+}
+
+.ticker_label
+{
+    scaled-rect: scaled(nan,0,nan,36,false);
+    color: "#FFFFFF";
+}
+
+.ticker_label_backgraund{
+    scaled-rect: scaled(-1,0,-1,36,false);
+    color: "#87ACB8";
+}
+
+.ticker_close_rect
+{
+    scaled-rect: scaled(-1,0,36,36,false);
+}
+
+.ticker_show_rect
+{
+    scaled-rect: scaled(-1,0,36,36,false);
+}
+
+.ticker_close_background{
+    scaled-rect: scaled(-1,0,-1,36,false);
+    color: "#87ACB8";
+}
+
+/****************************************************
  * Choose Country
  ***************************************************/
 
-.ic_location
-{
-        qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_location.png");
-}
-
-.ic_country_filter
-{
-        qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/filter.png");
-}
-
 .ch-country-filter-border
 {
-        border-width: 1;
-        border-color: "@light-grey";
-        radius: 5;
-}
-
-.ch-country-filter
-{
-        color: "@background";
+	border-width: 1;
+	border-color: "@light-grey";
+	radius: 5;
+    scaled-rect: scaled(-1,nan,363,48,false);
 }
 
 .ch-country-filter-text
 {
-        color: "@text";
+	color: "@text";
+	scaled-font: scaled(14);
 }
 
 .ch-country-filter-clear
 {
-        inactive: "@country-filter-clear-hover";
-        active: "@country-filter-clear";
+	qproperty-inactive: "@btn-close";
+	qproperty-active: "@btn-close-hover";
 }

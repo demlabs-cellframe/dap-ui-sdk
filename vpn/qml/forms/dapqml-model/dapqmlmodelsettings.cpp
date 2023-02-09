@@ -2,6 +2,7 @@
 #include "dapqmlmodelsettings.h"
 #include "helper/languagectl.h"
 #include "DapDataLocal.h"
+#include "DapSerialKeyData.h"
 
 /* DEFS */
 
@@ -33,6 +34,7 @@ static QSet<QString> s_lastFilterKeywords;
 static qint32 s_daysLabelIndex     = -1;
 static qint32 s_versionLabelIndex  = -1;
 static qint32 s_countryIndex     = -1;
+static QString s_daysLeftString;
 
 static QMap<QString, FieldId> s_fieldIdMap =
 {
@@ -187,7 +189,8 @@ void DapQmlModelSettings::_buildMenuItemsList()
  #ifndef DISABLE_SETTINGS_LANGUAGE
       Item{SI_LINK,       tr ("Language"), "", "settings_icon ic_language", "language",                                           [](QObject*) { emit __inst->sigLanguage(); } },
  #endif // DISABLE_SETTINGS_LANGUAGE
-      Item{SI_LINK,       tr ("Manage servers"), "", "settings_icon ic_language", "manage_servers",                       [](QObject*) { emit __inst->sigManageServers(); } },
+      Item{SI_LINK,       tr ("Manage CDB"), "", "settings_icon ic_cdb-manager", "manage_cdb",                            [](QObject*) { emit __inst->sigManageCDB(); } },
+      Item{SI_LINK,       tr ("Manage servers"), "", "settings_icon ic_server-manager", "manage_servers",                 [](QObject*) { emit __inst->sigManageServers(); } },
       Item{SI_LINK,       tr ("Certificate"), "", "settings_icon ic_certificate", "certificate",                          [](QObject*) { emit __inst->sigCertificate(); } },
   #ifndef DISABLE_THEMES
       Item{SI_CHECKBOX,   tr ("Dark theme"), "", "settings_icon ic_theme", "dark_themes",                                 [](QObject *a_item) { emit __inst->sigDarkTheme (a_item->property ("checked").toBool()); } },
@@ -249,6 +252,7 @@ void DapQmlModelSettings::_updateMenuContent (const QSet<QString> &a_filterKeywo
     conditionalValue ("use_login", "logout"),
     "language",
     conditionalValue ("use_manage_servers", "manage_servers"),
+    conditionalValue ("use_manage_servers", "manage_cdb"),
     conditionalValue ("use_manage_servers", "certificate"),
 
     /* themes */
@@ -372,11 +376,16 @@ void DapQmlModelSettings::slotSetDaysLeft (QString a_days)
   if (s_daysLabelIndex == -1)
     return;
 
-  s_items[s_daysLabelIndex].m_textSub = (a_days.startsWith("-")) ? "expired" : a_days;
+  if (a_days == "$")
+    a_days  = DapDataLocal::instance()->serialKeyData()->daysLeftString();
+
+  s_daysLeftString = (a_days.startsWith("-")) ? "expired" : a_days;
+
+  s_items[s_daysLabelIndex].m_textSub = s_daysLeftString;
 
   emit dataChanged (
     index (s_daysLabelIndex, 0),
-    index (s_daysLabelIndex, columnCount (index (s_daysLabelIndex, 0))));
+    index (s_daysLabelIndex, columnCount (index (s_daysLabelIndex, 3))));
 }
 
 void DapQmlModelSettings::slotResetDaysLeft()
@@ -388,7 +397,7 @@ void DapQmlModelSettings::slotResetDaysLeft()
 
   emit dataChanged (
     index (s_daysLabelIndex, 0),
-    index (s_daysLabelIndex, columnCount (index (s_daysLabelIndex, 0))));
+    index (s_daysLabelIndex, columnCount (index (s_daysLabelIndex, 3))));
 }
 
 void DapQmlModelSettings::slotCountryChange()
@@ -400,21 +409,20 @@ void DapQmlModelSettings::slotCountryChange()
 
   emit dataChanged (
     index (s_countryIndex, 0),
-    index (s_countryIndex, columnCount (index (s_countryIndex, 0))));
+    index (s_countryIndex, columnCount (index (s_countryIndex, 3))));
 }
 
 void DapQmlModelSettings::slotRetranslate()
 {
   slotUpdateLabels (true);
+  slotSetDaysLeft ("$");
   emit languageChanged();
 }
 
 QString DapQmlModelSettings::getCurrentCountryCode() const
 {
-
-    QString base_location = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
-    QString code = DapServersData::m_countryMap[base_location];
-    return code;
+  QString base_location = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
+  return DapServersData::m_countryMap.value (base_location, QString());
 }
 
 /********************************************
