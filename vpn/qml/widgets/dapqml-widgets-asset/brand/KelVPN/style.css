@@ -1118,14 +1118,21 @@
 	scaled-rect: scaled(nan,nan,nan,68,false);
 }
 
+.faq-item-spacer
+{
+	scaled-rect: scaled(nan,nan,nan,26,false);
+}
+
 .faq-item-label
 {
 	scaled-font: scaled(16);
+	font-weight: Font.Bold;
 }
 
 .faq-item-text
 {
-	scaled-rect: scaled(nan,50,nan,nan,false,16);
+	scaled-font: scaled(16);
+	color: "@label";
 }
 
 .faq-plus-btn
@@ -1133,6 +1140,13 @@
 	scaled-rect: scaled(nan,nan,32,32,true);
     qproperty-inactive: "@btn-plus";
     qproperty-active: "@btn-plus";
+}
+
+.faq-close-btn
+{
+	scaled-rect: scaled(nan,nan,32,32,true);
+    qproperty-inactive: "@btn-close";
+    qproperty-active: "@btn-close";
 }
 
 /****************************************************

@@ -51,5 +51,7 @@
         <file>light/ic_close_update_hover.png</file>
         <file>dark/ic_close_update_hover.png</file>
         <file>dark/ic_close_update.png</file>
+        <file>dark/ic_plus.png</file>
+        <file>light/ic_plus.png</file>
     </qresource>
 </RCC>
