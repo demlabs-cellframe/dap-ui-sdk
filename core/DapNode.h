@@ -1,23 +1,3 @@
-/*
- Copyright (c) 2017-2018 (c) Project "DeM Labs Inc" https://github.com/demlabsinc
-  All rights reserved.
-
- This file is part of DAP (Deus Applications Prototypes) the open source project
-
-    DAP (Deus Applicaions Prototypes) is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    DAP is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with any DAP based project.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 #ifndef DAPNODE_H
 #define DAPNODE_H
 
@@ -54,7 +34,8 @@ public:
     ///
     QState waitingCommand;
     QState gettingWalletsData;
-    QState transactionProcessingt;
+    QState transactionProcessing;
+    QState gettingOrderList;
     ///
     QState initialState;
     QState nodeDetection;
@@ -73,13 +54,15 @@ public:
     QState createCertificate;
     QState checkTransactionCertificate;
     QState createTransactionCertificate;
+    QState getOrderList;
 private:
     QStateMachine commandState;
     QStateMachine nodeConnectMachine;
     void init(){
         commandState.addState(&waitingCommand);
         commandState.addState(&gettingWalletsData);
-        commandState.addState(&transactionProcessingt);
+        commandState.addState(&transactionProcessing);
+        commandState.addState(&gettingOrderList);
         commandState.setInitialState(&waitingCommand);
         //
         nodeConnectMachine.addState(&initialState);
@@ -99,6 +82,7 @@ private:
         nodeConnectMachine.addState(&createCertificate);
         nodeConnectMachine.addState(&checkTransactionCertificate);
         nodeConnectMachine.addState(&createTransactionCertificate);
+        nodeConnectMachine.addState(&getOrderList);
         nodeConnectMachine.setInitialState(&initialState);
         qDebug() << "nodeConnectMachine::init";
     }
@@ -132,6 +116,9 @@ private:
     NodeConnectStateMachine *m_stm;
     //wallets data
     QJsonObject m_walletsData;
+    // orders request
+    QString m_minPrice;
+    QString m_maxPrice;
 
 public:
     static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
@@ -160,6 +147,7 @@ public slots:
     void startCheckingNodeRequest();
     void stopCheckingNodeRequest();
     void slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
+    void slotGetOrdersList(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
 
 private slots:
     void walletDataRequest();
@@ -172,6 +160,7 @@ signals:
     void sigReceivedNetworksList(QStringList);
     void sigNodeDetected();
     void sigWalletsDataReady(QJsonObject);
+    void sigOrderListReady(QJsonArray);
     void sigMempoolContainHash();
     void sigLedgerContainHash();
     void sigCondTxCreateSuccess();
@@ -179,6 +168,7 @@ signals:
     void waitingCommand();
     void transactionProcessing();
     void gettingWalletsData();
+    void sigGettingOrderList();
     //
     void uiStartNodeDetection();
     void errorDetected();
@@ -187,8 +177,10 @@ signals:
     void repeatReadMempool();
     void repeatReadLedger();
     void walletsReceived();
+    void sigOrderListReceived();
     void networksReceived();
     void sigCondTxCreateRequest();
+    void sigGetOrderListRequest();
     void walletListIsEmpty();
     void checkCertificate();
     void createCertificate();

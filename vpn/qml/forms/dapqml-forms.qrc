@@ -28,6 +28,9 @@
         <file>dapqml-forms/QuiNodeTransactionOverview.qml</file>
         <file>dapqml-forms/QuiNodeOverview.qml</file>
         <file>dapqml-forms/QuiNodeMaxPrice.qml</file>
+        <file>dapqml-forms/QuiNodeChooseUnit.qml</file>
         <file>dapqml-forms/QuiNodeOverviewBase.qml</file>
+        <file>dapqml-forms/QuiNodeSearchOrders.qml</file>
+        <file>dapqml-forms/QuiNodeChooseOrder.qml</file>
     </qresource>
 </RCC>

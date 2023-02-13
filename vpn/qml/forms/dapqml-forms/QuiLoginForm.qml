@@ -101,6 +101,9 @@ Item {
     /// @brief choose server button clicked
     signal sigChooseServer();
 
+    /// @brief search orders button clicked
+    signal sigSearchOrders()
+
     /// @brief choose certificate button clicked
     signal sigChooseCert();
 
@@ -190,23 +193,19 @@ Item {
             internal.waitingForApproval = false;
             transactionProcessingLabel.text = "Transaction is in progress"
             loginTypeKelContainer.update();
-            console.log("----- setTransactionProcessing", transactionProcessingLabel.text)
         } else {
             transactionProcessingLabel.text = "Transaction is in progress"
             internal.transactionProcessing = a_data;
             internal.waitingForApproval = false;
-            console.log("--- setTransactionProcessing", transactionProcessingLabel.text)
         }
     }
 
     function setTransactionWalletNetwork(row2) {
         transactionProcessingWalletData.text = row2
-        console.log("ffffffffffffffffffffffff", transactionProcessingWalletData.text)
     }
 
     function setTransactionAmount(row3) {
         transactionProcessingAmount.text = row3
-        console.log("tttttttttttttttttttttttt", transactionProcessingAmount.text)
     }
 
     /// @brief set input mask for serial input
@@ -415,7 +414,8 @@ Item {
 //               NoCBD mode
                  ? internal.mode === QuiLoginForm.Mode.M_WALLET
 //               wallet
-                 ? "login-nocbd-wallet-separator-container"
+//                 ? "login-nocbd-wallet-separator-container"
+                 ? "login-nocbd-skey-separator-container"
 //               serial login
                  : "login-nocbd-skey-separator-container"
 //               other
@@ -445,7 +445,8 @@ Item {
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
             mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
             subText: qsTr("CHOOSING SERVER") + lang.notifier
-            qss: "login-btn-server-nocbd"
+//            qss: "login-btn-server-nocbd"
+            qss: "login-btn-server"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
             separator: true
@@ -470,46 +471,46 @@ Item {
      * Choose MAX PRICE for NoCBD
      ********************************************/
 
-    DapQmlRectangle {
-        id:     maxPrice
-        x:      loginCellPlacer.x
-        y:      loginSpacer.y + loginCellPlacer.y
-        width:  loginCellPlacer.width
-        height: loginCellPlacer.height
-        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET
-                 && internal.cellfarameDetected
-                 && !internal.transactionProcessing && !internal.waitingForApproval
+//    DapQmlRectangle {
+//        id:     maxPrice
+//        x:      loginCellPlacer.x
+//        y:      loginSpacer.y + loginCellPlacer.y
+//        width:  loginCellPlacer.width
+//        height: loginCellPlacer.height
+//        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET
+//                 && internal.cellfarameDetected
+//                 && !internal.transactionProcessing && !internal.waitingForApproval
 
-        DapQmlButton {
-            id: btnChooseCell
-            x: (parent.width - width) / 2
-            z: 15
-            width: parent.width - 74
-            property string defaultServerName: qsTr("100") + lang.notifier
+//        DapQmlButton {
+//            id: btnChooseCell
+//            x: (parent.width - width) / 2
+//            z: 15
+//            width: parent.width - 74
+//            property string defaultServerName: qsTr("100") + lang.notifier
 
-            buttonStyle: DapQmlButton.Style.TopMainBottomSub
-            mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
-            subText: qsTr("MAX PRICE") + lang.notifier
-            qss: "login-btn-server-nocbd"
-            mainQss: "login-btn-main"
-            subQss: "login-btn-sub"
-            separator: true
-            link: true
-            onClicked: root.sigChooseMaxPrice()
+//            buttonStyle: DapQmlButton.Style.TopMainBottomSub
+//            mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
+//            subText: qsTr("MAX PRICE") + lang.notifier
+//            qss: "login-btn-server-nocbd"
+//            mainQss: "login-btn-main"
+//            subQss: "login-btn-sub"
+//            separator: true
+//            link: true
+//            onClicked: root.sigChooseMaxPrice()
 
-            function updateServerName() {
-                mainText = (!internal.changedServer)
-                        ? (defaultServerName)
-                        : (internal.serverName)
-            }
+//            function updateServerName() {
+//                mainText = (!internal.changedServer)
+//                        ? (defaultServerName)
+//                        : (internal.serverName)
+//            }
 
-            onDefaultServerNameChanged: updateServerName()
-        }
-        DapQmlDummy {
-            id: loginCellPlacer
-            qss: "login-btn-maxprice-container"
-        }
-    }
+//            onDefaultServerNameChanged: updateServerName()
+//        }
+//        DapQmlDummy {
+//            id: loginCellPlacer
+//            qss: "login-btn-maxprice-container"
+//        }
+//    }
 
     /****************************************//**
      * Choose server
@@ -535,21 +536,28 @@ Item {
             x: (parent.width - width) / 2
             z: 15
             width: parent.width - 74
-            property string defaultServerName: qsTr("Auto select") + lang.notifier
-
+            property string defaultServerName: internal.mode !== QuiLoginForm.Mode.M_WALLET
+                                               ? qsTr("Auto select") + lang.notifier
+                                               : qsTr("Order") + lang.notifier
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
             mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
-            subText: qsTr("CHOOSING SERVER") + lang.notifier
+            subText: internal.mode !== QuiLoginForm.Mode.M_WALLET
+                     ? qsTr("CHOOSING SERVER") + lang.notifier
+                     : qsTr("SEARCH ORDERS") + lang.notifier
             qss: internal.mode !== QuiLoginForm.Mode.M_WALLET
 //                 NoCBD mode
+//                 ? "login-btn-server"
                  ? "login-btn-server"
 //                 serial login
-                 : "login-btn-server-nocbd"
+//                 : "login-btn-server-nocbd"
+                 : "login-btn-server"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
             separator: true
             link: true
-            onClicked: root.sigChooseServer()
+            onClicked: internal.mode !== QuiLoginForm.Mode.M_WALLET
+                        ? root.sigChooseServer()
+                        : root.sigSearchOrders()
 
             function updateServerName() {
                 mainText = (!internal.changedServer)
@@ -566,7 +574,8 @@ Item {
 //               NoCBD mode
                  ? internal.mode === QuiLoginForm.Mode.M_WALLET
 //               wallet
-                 ? "login-btn-nocbd-wallet-server-container"
+                 //? "login-btn-nocbd-wallet-server-container"
+                 ? "login-btn-nocbd-skey-server-container"
 //               serial login
                  : "login-btn-nocbd-skey-server-container"
 //               other

@@ -24,7 +24,7 @@ const QList<ReplyMethod> DapNodeWeb3::replyItems = {
     {"method=GetNetworks",          &DapNodeWeb3::parseReplyNetworks,       nullptr, "Wrong reply when get networks list", 400000},
     // data wallets reply
     {"method=GetDataWallet",        &DapNodeWeb3::parseDataWallet,          nullptr, "Wrong reply when get data wallets", 500000},
-    // get sertificates
+    // get certificates
     {"method=GetCertificates",      &DapNodeWeb3::parseCertificates,        nullptr, "Wrong reply when get certificates", 600000},
     // create certificate
     {"method=CreateCertificate",    &DapNodeWeb3::parseCreateCertificate,   nullptr, "Wrong reply when create certificates", 700000},
@@ -34,6 +34,8 @@ const QList<ReplyMethod> DapNodeWeb3::replyItems = {
     {"method=GetMempoolTxHash",     &DapNodeWeb3::parseMempoolReply,        nullptr, "Wrong reply when get mempool transaction hash", 900000},
     // check ledger
     {"method=GetLedgerTxHash",      &DapNodeWeb3::parseLedgerReply,         nullptr, "Wrong reply when get ledger transaction hash", 1000000},
+    // get orders
+    {"method=GetOrdersList",        &DapNodeWeb3::parseOrderList,           nullptr, "Wrong reply when get orders list", 1100000},
 };
 
 
@@ -253,6 +255,26 @@ void DapNodeWeb3::getLedgerTxHashRequest(QString transactionHash, QString networ
     sendRequest(requesString);
 }
 
+void DapNodeWeb3::getOrdersListRequest(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit)
+{
+    QString requesString = QString("?method=GetOrdersList&"
+//                "id=%1&direction=%2&srv_uid=1")
+                "id=%1&srv_uid=1")
+            .arg(m_connectId)
+            .arg("buy");
+    if (!networkName.isEmpty())
+        requesString += QString("&net=%1").arg(networkName);
+    if (!tokenName.isEmpty())
+        requesString += QString("&tokenName=%1").arg(tokenName);
+    if (!minPrice.isEmpty())
+        requesString += QString("&price_min=%1").arg(minPrice);
+    if (!maxPrice.isEmpty())
+        requesString += QString("&price_max=%1").arg(maxPrice);
+    if (!unit.isEmpty())
+        requesString += QString("&unit=%1").arg(unit);
+    sendRequest(requesString);
+}
+
 void DapNodeWeb3::parseReplyConnect(const QString& replyData, int baseErrorCode)
 {
     // connect reply example
@@ -281,10 +303,9 @@ void DapNodeWeb3::parseReplyConnect(const QString& replyData, int baseErrorCode)
     }
 }
 
-
 void DapNodeWeb3::parseReplyWallets(const QString& replyData, int baseErrorCode)
 {
-    // wallets reply exmple
+    // wallets reply example
     //    "{"
     //    "    \"data\": ["
     //    "        \"CELLTestWallet\","
@@ -313,7 +334,7 @@ void DapNodeWeb3::parseReplyWallets(const QString& replyData, int baseErrorCode)
 
 void DapNodeWeb3::parseReplyNetworks(const QString& replyData, int baseErrorCode)
 {
-    // networks reply exmple
+    // networks reply example
     //    "{"
     //    "    \"data\": ["
     //    "        \"CELLTestWallet\","
@@ -487,9 +508,43 @@ void DapNodeWeb3::parseLedgerReply(const QString& replyData, int baseErrorCode)
     emit sigLedgerContainHash();
 }
 
+void DapNodeWeb3::parseOrderList(const QString& replyData, int baseErrorCode)
+{
+    //{
+    //"data": [
+    //  {
+    //      "direction": "SERV_DIR_SELL",
+    //      "ext": "0x000000000000000000000000000000000000000000000000240000000000000000000000000000006D744B454C0000000000000000000000",
+    //      "hash": " 0x2E525744B43AC4A0CB1A4E0BFBAE2A34C180F04A6CCEC7997C5BFCF28A574E8C",
+    //      "node_addr": "7FFE::CBAC::8085::BBBA",
+    //      "node_location": "None-None",
+    //      "price": "0.00000000000000001(10)",
+    //      "srv_uid": "0x0000000000000002",
+    //      "tx_cond_hash": "0x1D05D1EB49B89AF54C8BD13281E823C161806AD2098ECC02A3B1CA4878990988",
+    //      "version": "3"
+    //  },
+    //    ...
+    //    ...
+    //],
+    //"errorMsg": "",
+    //"status": "ok"
+    //}
+//    DEBUGINFO << "orderListReply" << replyData;
+    parseJsonError(replyData.toUtf8(), baseErrorCode);
+    if (jsonError())
+        return;
+    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+    if (doc["data"].isArray())
+    {
+        // wallet data
+        DEBUGINFO << "orderListReply" << doc["data"].toArray();
+        emit sigOrderList(doc["data"].toArray());
+    }
+}
+
 void DapNodeWeb3::parseJsonError(QString replyData, int baseErrorCode)
 {
-    // reply exmple
+    // reply example
     //    "{ ... "
     //    "    \"errorMsg\": \"\","
     //    "    \"status\": \"ok\""

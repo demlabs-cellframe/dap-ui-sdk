@@ -74,6 +74,13 @@ void DapCmdNode::handle(const QJsonObject *params)
                     emit transactionHashInledger();
                     return;
                 }
+                if (nodeData["order_list"].isArray())
+                {
+                    DEBUGINFO << "order list";
+                    m_orderListData.setData(nodeData["order_list"].toArray());
+                    emit orderList(m_orderListData.orders());
+                    return;
+                }
             }
             else
             {
@@ -115,6 +122,18 @@ void DapCmdNode::condTxCreate()
     sendRequest(jObject);
 }
 
+void DapCmdNode::startSearchOrders()
+{
+    QJsonObject searchOrders;
+    searchOrders["network_name"] = m_selectedNetworkName;
+    searchOrders["token_name"] = m_selectedTokenName;
+    searchOrders["unit"] = m_unit;
+    searchOrders["min_price"] = m_minPrice;
+    searchOrders["max_price"] = m_maxPrice;
+    QJsonObject jObject;
+    jObject["search_orders"] = searchOrders;
+    sendRequest(jObject);
+}
 
 void DapCmdNode::sendRequest(const QJsonObject &data)
 {
@@ -146,4 +165,9 @@ void DapCmdNode::chooseToken(QString token)
 void DapCmdNode::setValue(QString value)
 {
     m_value = value;
+}
+
+void DapCmdNode::setUnit(QString value)
+{
+    m_unit = value;
 }

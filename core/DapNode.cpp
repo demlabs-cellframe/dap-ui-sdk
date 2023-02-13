@@ -77,12 +77,17 @@ void DapNode::initCommandsStm()
     m_stm->waitingCommand.addTransition(this, &DapNode::uiStartNodeDetection,
     &m_stm->gettingWalletsData);
     m_stm->waitingCommand.addTransition(this, &DapNode::sigCondTxCreateRequest,
-    &m_stm->transactionProcessingt);
+    &m_stm->transactionProcessing);
+    m_stm->waitingCommand.addTransition(this, &DapNode::sigGetOrderListRequest,
+    &m_stm->gettingOrderList);
 
     m_stm->gettingWalletsData.addTransition(this, &DapNode::waitingCommand,
     &m_stm->waitingCommand);
-    m_stm->transactionProcessingt.addTransition(this, &DapNode::waitingCommand,
+    m_stm->transactionProcessing.addTransition(this, &DapNode::waitingCommand,
     &m_stm->waitingCommand);
+    m_stm->gettingOrderList.addTransition(this, &DapNode::waitingCommand,
+    &m_stm->waitingCommand);
+
 }
 
 void DapNode::initStmTransitions()
@@ -92,6 +97,8 @@ void DapNode::initStmTransitions()
     m_stm->initialState.addTransition(this, &DapNode::uiStartNodeDetection,
     &m_stm->nodeDetection);
     m_stm->initialState.addTransition(this, &DapNode::sigCondTxCreateRequest,
+    &m_stm->nodeDetection);
+    m_stm->initialState.addTransition(this, &DapNode::sigGetOrderListRequest,
     &m_stm->nodeDetection);
 
     // node detection -> node detected
@@ -123,7 +130,7 @@ void DapNode::initStmTransitions()
     m_stm->nodeGetStatus.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
 
-    // node status ok -> initialState
+    // node status ok -> getWallets
     m_stm->nodeGetStatus.addTransition(this, &DapNode::gettingWalletsData,
     &m_stm->getWallets);
 //    m_stm->nodeGetStatus.addTransition(web3, &DapNodeWeb3::statusOk,
@@ -199,6 +206,17 @@ void DapNode::initStmTransitions()
     // to create certificate
     m_stm->initialState.addTransition(this, &DapNode::sigCondTxCreateRequest,
     &m_stm->condTxCreate);
+
+    //
+    // getting order list
+    // node status ok -> getWallets
+    m_stm->nodeGetStatus.addTransition(this, &DapNode::sigGettingOrderList,
+    &m_stm->getOrderList);
+    // getOrderList -> initialState
+    m_stm->getOrderList.addTransition(this, &DapNode::sigOrderListReceived,
+    &m_stm->initialState);
+    m_stm->getOrderList.addTransition(this, &DapNode::errorDetected,
+    &m_stm->initialState);
 
 }
 
@@ -281,6 +299,18 @@ void DapNode::initStmStates()
             emit repeatReadLedger();
         });
     });
+
+    // get orders list
+    connect(&m_stm->getOrderList, &QState::entered, this, [=](){
+        qInfo() << "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu" << m_networkName;
+        web3->DapNodeWeb3::getOrdersListRequest(
+                    m_networkName,
+//                    m_tokenName,
+//                    m_minPrice,
+//                    m_maxPrice,
+//                    m_unit);
+                    "", "", "", "");
+    });
 }
 
 void DapNode::initWeb3Connections()
@@ -290,8 +320,9 @@ void DapNode::initWeb3Connections()
     connect(web3, &DapNodeWeb3::checkNodeStatus, this, &DapNode::sigNodeDetected);
     connect(web3, &DapNodeWeb3::statusOk, [=](){
         DEBUGINFO  << "DapNodeWeb3::statusOk hhhhhhhhhhhhhhhhhhhhhhhhh";
-        if (m_stm->transactionProcessingt.active()) emit transactionProcessing();
+        if (m_stm->transactionProcessing.active()) emit transactionProcessing();
         if (m_stm->gettingWalletsData.active()) emit gettingWalletsData();
+        if (m_stm->gettingOrderList.active()) emit sigGettingOrderList();
     });
 
     // web3 wallets received
@@ -332,6 +363,11 @@ void DapNode::initWeb3Connections()
        m_transactionHash = hash;
        emit sigCondTxCreateSuccess();
     });
+    // order list ready
+    connect(web3, &DapNodeWeb3::sigOrderList, this, [=](QJsonArray) {
+        emit sigOrderListReceived();
+    });
+    connect(web3, &DapNodeWeb3::sigOrderList, this, &DapNode::sigOrderListReady);
 
 }
 
@@ -341,8 +377,18 @@ void DapNode::slotCondTxCreateRequest(QString walletName, QString networkName, Q
     m_networkName = networkName;
     m_tokenName = tokenName;
     m_value = value;
-    m_unit =unit;
+    m_unit = unit;
     emit sigCondTxCreateRequest();
+}
+
+void DapNode::slotGetOrdersList(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit)
+{
+    m_networkName = networkName;
+    m_tokenName = tokenName;
+    m_minPrice = minPrice;
+    m_maxPrice = maxPrice;
+    m_unit = unit;
+    emit sigGetOrderListRequest();
 }
 
 void DapNode::walletDataRequest()

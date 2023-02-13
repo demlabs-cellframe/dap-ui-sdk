@@ -60,7 +60,7 @@ void DapCmdNode::sendWalletsList(const QStringList& walletsList)
     nodeInfo["wallets"] = jsonWalletsList;
     response[DapCmdNode::actionParam] = nodeInfo;
     sendCmd(&response);
-    DEBUGINFO << "sendWalletsList" << walletsList << response;
+    DEBUGINFO << "sendWalletsList";
 }
 
 void DapCmdNode::sendNetworksList(const QStringList& walletsList)
@@ -75,7 +75,7 @@ void DapCmdNode::sendNetworksList(const QStringList& walletsList)
     nodeInfo["networks"] = jsonWalletsList;
     response[DapCmdNode::actionParam] = nodeInfo;
     sendCmd(&response);
-    DEBUGINFO << "sendNetworksList" << walletsList << response;
+    DEBUGINFO << "sendNetworksList";
 }
 
 void DapCmdNode::sendWalletsData(const QJsonObject& a_walletsData)
@@ -86,7 +86,18 @@ void DapCmdNode::sendWalletsData(const QJsonObject& a_walletsData)
     walletsData["status"] = "ok";
     response[DapCmdNode::actionParam] = walletsData;
     sendCmd(&response);
-    DEBUGINFO << "sendWalletsData" << response;
+    DEBUGINFO << "sendWalletsData";
+}
+
+void DapCmdNode::sendOrderList(const QJsonArray& orderList)
+{
+    QJsonObject response;
+    QJsonObject orderListData;
+    orderListData["order_list"] = orderList;
+    orderListData["status"] = "ok";
+    response[DapCmdNode::actionParam] = orderListData;
+    sendCmd(&response);
+    DEBUGINFO << "sendOrderList";
 }
 
 void DapCmdNode::sendTransactionInMempool()
@@ -125,6 +136,17 @@ void DapCmdNode::handle(const QJsonObject* params)
         // stop checking the operation of the node
         if (nodeCmd["start_node_detection"].isBool() && !nodeCmd["start_node_detection"].toBool())
             emit stopNodeDetection();
+        // order list request
+        if (nodeCmd["orders_request"].isObject())
+        {
+            QJsonObject tx = nodeCmd["cond_tx_create"].toObject();
+            QString networkName = tx["network_name"].toString();
+            QString tokenName   = tx["token_name"].toString();
+            QString minPrice    = tx["min_price"].toString();
+            QString maxPrice    = tx["max_price"].toString();
+            QString unit          = tx["unit"].toString();
+            emit orderListRequest(networkName, tokenName, minPrice, maxPrice, unit);
+        }
         // creating a conditional transaction cmd
         if (nodeCmd["cond_tx_create"].isObject())
         {
@@ -136,6 +158,17 @@ void DapCmdNode::handle(const QJsonObject* params)
             QString value         = tx["value"].toString();
             QString unit          = tx["unit"].toString();
             emit condTxCreateRequest(walletName, networkName, tokenName, value, unit);
+        }
+        // start search orders
+        if (nodeCmd["search_orders"].isObject())
+        {
+            QJsonObject so = nodeCmd["search_orders"].toObject();
+            QString networkName = so["network_name"].toString();
+            QString tokenName   = so["token_name"].toString();
+            QString unit        = so["unit"].toString();
+            QString maxPrice    = so["min_price"].toString();
+            QString minPrice    = so["max_price"].toString();
+            emit orderListRequest(networkName, tokenName, unit, maxPrice, minPrice);
         }
         if (nodeCmd["node_detected_check"].isBool() && nodeCmd["node_detected_check"].toBool())
             sendNodeDetected();

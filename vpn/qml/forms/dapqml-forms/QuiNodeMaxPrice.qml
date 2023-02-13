@@ -41,9 +41,9 @@ Item {
         id: countryFilterField
         x: 25
         y: title.y + title.height * 2
-        height: 32
-        width: parent.width - 70
-        qss: "ch-country-filter-border"
+//        height: 32
+//        width: parent.width - 70
+        qss: "priceCount-amount"
 
         DapQmlLineEdit {
             id: countryFilterLine
@@ -56,7 +56,7 @@ Item {
             focus: true
 
             mainText: ""
-            mainQss: "ch-country-filter-text"
+            mainQss: "priceCount-text"
             onTextChanged: {
                 root.textChanged(mainText)
             }
@@ -89,8 +89,8 @@ Item {
 
     DapQmlLabel {
         id: tokenAmount
-        qss: "bugrep-letter-counter"
-        text: "0/200"
+        qss: "priceCount-total"
+        text: "0.0000"
         color: "#A4A3C0"
         horizontalAlign: Text.AlignHCenter
     }

@@ -16,6 +16,49 @@
 
 #include "DapCmdServiceAbstract.h"
 
+class OrderListData
+{
+    QJsonArray m_orderListData;
+
+public:
+    void setData(const QJsonArray& a_orderListData)
+    {
+        m_orderListData = a_orderListData;
+        toListMap();
+    }
+//    const QList<QMap<QString, QString>>& orders()
+    QMap<QString, QVariant>& orders()
+    {
+        return m_orders;
+    }
+private:
+//    QList<QMap<QString, QString>> m_orders;
+//    void toListMap()
+//    {
+//        foreach(const QJsonValue& item, m_orderListData)
+//        {
+//            QMap<QString, QString> itemDataAsMap;
+//            QJsonObject joItem = item.toObject();
+//            foreach(const QString& item_key, joItem.keys())
+//                itemDataAsMap[item_key] = joItem[item_key].toString();
+//            m_orders.push_back(itemDataAsMap);
+//        }
+//    }
+    QMap<QString, QVariant> m_orders;
+    void toListMap()
+    {
+        foreach(const QJsonValue& item, m_orderListData)
+        {
+            QJsonObject joItem = item.toObject();
+            QString key = joItem["hash"].toString().right(5);
+            QSet<QString> aSet;
+            aSet.insert(joItem["price"].toString());
+            m_orders[key].setValue(aSet);
+        }
+    }
+};
+
+
 class WalletsData
 {
     QJsonObject m_walletsData;
@@ -34,12 +77,12 @@ public:
     QMap<QString, QVariant> walletsWithTokens()
     {
         QMap<QString, QVariant> walletsWithTokenName;
-        foreach (auto walletName, m_walletsData.keys())
+        foreach (const auto& walletName, m_walletsData.keys())
         {
             QSet<QString> aSet;
             QJsonArray walletData = m_walletsData[walletName].toArray();
-            foreach(auto item, walletData)
-                foreach (auto token, item.toObject().value("tokens").toArray())
+            foreach(const auto& item, walletData)
+                foreach (const auto& token, item.toObject().value("tokens").toArray())
                     aSet.insert(token.toObject().value("tokenName").toString());
             aSet.remove("0");
             walletsWithTokenName[walletName].setValue(aSet);
@@ -51,7 +94,7 @@ public:
     {
         QStringList networks;
         QJsonArray walletData = m_walletsData[wallet].toArray();
-        foreach(auto item, walletData)
+        foreach(const auto& item, walletData)
             networks.append(item.toObject().value("network").toString());
         return networks;
     }
@@ -60,11 +103,11 @@ public:
     {
         QMap<QString, QVariant> networkWithTokenName;
         QJsonArray walletData = m_walletsData[walletName].toArray();
-        foreach(auto item, walletData)
+        foreach(const auto& item, walletData)
         {
             QSet<QString> aSet;
             QString networkName = item.toObject().value("network").toString();
-            foreach (auto token, item.toObject().value("tokens").toArray())
+            foreach (const auto& token, item.toObject().value("tokens").toArray())
                 aSet.insert(token.toObject().value("tokenName").toString());
             aSet.remove("0");
             networkWithTokenName[networkName].setValue(aSet);
@@ -76,9 +119,9 @@ public:
     {
         QMap<QString, QVariant> tokens;
         QJsonArray walletData = m_walletsData[wallet].toArray();
-        foreach(auto item, walletData)
+        foreach(const auto& item, walletData)
             if (network == item.toObject().value("network").toString())
-                foreach(auto item, item.toObject().value("tokens").toArray())
+                foreach(const auto& item, item.toObject().value("tokens").toArray())
                     tokens[item.toObject().value("tokenName").toString()]
                             = item.toObject().value("balance").toString();
         if (tokens.contains("0"))
@@ -96,6 +139,7 @@ private:
     static const QString actionParam;
     bool m_hasError;
     WalletsData  m_dataWallet;
+    OrderListData m_orderListData;
 
 public:
     DapCmdNode(QObject *parent = nullptr) :
@@ -118,13 +162,16 @@ public slots:
     void chooseWallet(QString wallet);
     void chooseToken(QString token);
     void setValue(QString value);
+    void setUnit(QString unit);
     void condTxCreate();
+    void startSearchOrders();
 
 signals:
     void nodeDetected();
     void walletsList(QMap<QString, QVariant> data);
     void networksList(QMap<QString, QVariant> data);
     void tokensInfo(QMap<QString, QVariant> data);
+    void orderList(QMap<QString, QVariant> data);
     void tokenAmount(QString token, QString amount);
     void nodeError(int code, QString errorMessage);
     void transactionHashInMempool();
@@ -138,8 +185,9 @@ private:
     QString m_selectedNetworkName;
     QString m_selectedTokenName;
     QString m_value;
-    // TODO
-    QString m_unit = "day";
+    QString m_unit;
+    QString m_maxPrice;
+    QString m_minPrice;
 };
 
 #endif // DAPCMDNODEHANDLER_H

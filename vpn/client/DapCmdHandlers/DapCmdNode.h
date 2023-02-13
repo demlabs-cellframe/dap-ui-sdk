@@ -25,10 +25,12 @@ public slots:
     void setNodeDetected();
     void sendTransactionInMempool();
     void sendTransactionInLedger();
+    void sendOrderList(const QJsonArray& orderList);
 signals:
     void startNodeDetection();
     void stopNodeDetection();
     void dataWalletRequest();
+    void orderListRequest(QString networkName, QString tokenName, QString unit, QString maxPrice, QString minPrice);
     void condTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
 };
 

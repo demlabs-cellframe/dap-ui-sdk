@@ -642,7 +642,7 @@
 
 .login-btn-wallet-container
 {
-        scaled-rect: scaled(-1,219,-1,76,true);
+        scaled-rect: scaled(-1,249,-1,76,true);
 }
 
 .overview-btn-wallet-container
@@ -1236,4 +1236,80 @@
 {
 	qproperty-inactive: "@btn-close";
 	qproperty-active: "@btn-close-hover";
+}
+
+/****************************************************
+ * Search orders
+ ***************************************************/
+
+.searchorders-btn-unit-container
+{
+        scaled-rect: scaled(-1,132,-1,64,true);
+}
+
+.searchorders-btn-maxunit-container
+{
+        scaled-rect: scaled(-1,216,-1,64,true);
+}
+
+.searchorders-btn-minunit-container
+{
+        scaled-rect: scaled(-1,300,-1,64,true);
+}
+
+.searchorders-btn-maxprice-container
+{
+        scaled-rect: scaled(-1,384,-1,64,true);
+}
+
+.searchorders-btn-minprice-container
+{
+        scaled-rect: scaled(-1,468,-1,64,true);
+}
+
+.searchorders-btn-confirm
+{
+        scaled-rect: scaled(-1,737,374,80,true,12);
+}
+
+.searchorders-btn-item
+{
+        scaled-rect: scaled(nan,nan,nan,108,false);
+}
+
+.searchorders-btn-main
+{
+        scaled-font: scaled(20);
+        color: "@text";
+        font-weight: Font.Normal;
+}
+
+.searchorders-btn-sub
+{
+        scaled-font: scaled(12);
+        color: "#A4A3C0";
+        font-weight: Font.Normal;
+}
+
+/****************************************************
+ * Price
+ ***************************************************/
+
+.priceCount-total
+{
+        scaled-rect: scaled(-1,274,-1,19,false,18);
+}
+
+.priceCount-amount
+{
+        border-width: 1;
+        border-color: "@light-grey";
+        radius: 5;
+        scaled-rect: scaled(-1,177,363,80,false);
+}
+
+.priceCount-text
+{
+        color: "@text";
+        scaled-font: scaled(20);
 }
