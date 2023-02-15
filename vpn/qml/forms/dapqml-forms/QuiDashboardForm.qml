@@ -137,212 +137,212 @@ Item {
     Component.onCompleted: setStatusIndicator(false);
 
     /****************************************//**
-        * Ticker
-        ********************************************/
+    * Ticker
+    ********************************************/
+
+   DapQmlRectangle {
+       id: ticker
+       objectName: "ticker"
+       qss: "ticker"
+       width: root.width
+       visible: false
+
+       property string tickerUrl:   ""
+       property bool tickerIsHidden: true
+
+       function showTicker() {
+           hideAnimation.from = -1 * ticker.height
+           hideAnimation.to = 0
+           hideAnimation.running = true
+           tickerIsHidden = false
+       }
+
+       function hideTicker() {
+           hideAnimation.from = 0
+           hideAnimation.to = -1 * ticker.height
+           hideAnimation.running = true
+           ticker.tickerIsHidden = true
+           updateNotificationRect.moveAfterHideTicker()
+       }
+
+       function tickerClicked() {
+           Qt.openUrlExternally(ticker.tickerUrl);
+       }
 
        DapQmlRectangle {
-           id: ticker
-           objectName: "ticker"
-           qss: "ticker"
-           width: root.width
-           visible: false
+           id: tickerLableRect
+           objectName: "tickerLableRect"
+           qss: "ticker-lable-rect"
+           visible: true
+           anchors.left: parent.left
 
-           property string tickerUrl:   ""
-           property bool tickerIsHidden: true
+           DapQmlLabel {
+               id: tickerLabel
+               objectName: "tickerLabel"
+               width: contentWidth
+               qss: "ticker-label"
+               text: tickerMessage
+               z: 2
+               horizontalAlign: Text.AlignHCenter
+               mipmap: false
 
-           function showTicker() {
-               hideAnimation.from = -1 * ticker.height
-               hideAnimation.to = 0
-               hideAnimation.running = true
-               tickerIsHidden = false
+               NumberAnimation  {
+                   id: tickerAnimation
+                   objectName: "tickerAnimation"
+                   target: tickerLabel
+                   properties: "x"
+                   from: tickerLableRect.width
+                   duration: 10000
+                   loops: Animation.Infinite
+               }
            }
 
-           function hideTicker() {
-               hideAnimation.from = 0
-               hideAnimation.to = -1 * ticker.height
-               hideAnimation.running = true
-               ticker.tickerIsHidden = true
-               updateNotificationRect.moveAfterHideTicker()
-           }
-
-           function tickerClicked() {
-               Qt.openUrlExternally(ticker.tickerUrl);
-           }
-
-           DapQmlRectangle {
-               id: tickerLableRect
-               objectName: "tickerLableRect"
-               qss: "ticker-lable-rect"
-               visible: true
-               anchors.left: parent.left
-
-               DapQmlLabel {
-                   id: tickerLabel
-                   objectName: "tickerLabel"
-                   width: contentWidth
-                   qss: "ticker-label"
-                   text: tickerMessage
-                   z: 2
-                   horizontalAlign: Text.AlignHCenter
-                   mipmap: false
-
-                   NumberAnimation  {
-                       id: tickerAnimation
-                       objectName: "tickerAnimation"
-                       target: tickerLabel
-                       properties: "x"
-                       from: tickerLableRect.width
-                       duration: 10000
-                       loops: Animation.Infinite
-                   }
-               }
-
-               MouseArea {
-                   anchors.fill: tickerLableRect
-                   z : 3
-                   cursorShape: Qt.PointingHandCursor
-                   onClicked: ticker.tickerClicked()
-               }
-
-               DapQmlRectangle {
-                   id: tickerLabelBackgraund
-                   qss: "ticker-label-background"
-                   anchors.fill: parent
-               }
+           MouseArea {
+               anchors.fill: tickerLableRect
+               z : 3
+               cursorShape: Qt.PointingHandCursor
+               onClicked: ticker.tickerClicked()
            }
 
            DapQmlRectangle {
-               id: tickerCloseRect
-               qss: "ticker-close-rect"
-               visible: true
-               anchors.right: parent.right
-
-               DapQmlPushButton {
-                   id: tickerCloseButton
-                   qss: "ticker-close-button"
-                   x: parent.width - width - y
-                   y: (parent.height - height) / 2
-                   z: 14
-
-                   onClicked: {
-                       ticker.hideTicker()
-                   }
-               }
-
-               DapQmlRectangle {
-                   id: tickerCloseBackground
-                   qss: "ticker-label-background"
-                   anchors.fill: parent
-               }
-           }
-
-           NumberAnimation {
-               id: hideAnimation
-               objectName: "tickerHideAnimation"
-               target: ticker
-               properties: "y"
-               duration: 100
-               running: false
+               id: tickerLabelBackgraund
+               qss: "ticker-label-background"
+               anchors.fill: parent
            }
        }
 
-       /****************************************//**
-        * Update notification
-        ********************************************/
+       DapQmlRectangle {
+           id: tickerCloseRect
+           qss: "ticker-close-rect"
+           visible: true
+           anchors.right: parent.right
 
-        DapQmlRectangle {
-            id: updateNotificationRect
-            qss: "update-notification-rect"
-            z:30
-            radius: 13
-            visible: true
-            opacity: 0
+           DapQmlPushButton {
+               id: tickerCloseButton
+               qss: "ticker-close-button"
+               x: parent.width - width - y
+               y: (parent.height - height) / 2
+               z: 14
 
-            function showUpdateNotification() {
-                hideAnimationUpdateNotification.from    = ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y
-                hideAnimationUpdateNotification.to      = ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y
-                hideAnimationUpdateNotification.running = true
+               onClicked: {
+                   ticker.hideTicker()
+               }
+           }
 
-                hideAnimationUpdateNotificationOpacity.from     = 0
-                hideAnimationUpdateNotificationOpacity.to       = 1
-                hideAnimationUpdateNotificationOpacity.running  = true
-            }
+           DapQmlRectangle {
+               id: tickerCloseBackground
+               qss: "ticker-label-background"
+               anchors.fill: parent
+           }
+       }
 
-            function hideUpdateNotification() {
-                hideAnimationUpdateNotification.from    = ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y
-                hideAnimationUpdateNotification.to      = ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y
-                hideAnimationUpdateNotification.running = true
+       NumberAnimation {
+           id: hideAnimation
+           objectName: "tickerHideAnimation"
+           target: ticker
+           properties: "y"
+           duration: 100
+           running: false
+       }
+   }
 
-                hideAnimationUpdateNotificationOpacity.from     = 1
-                hideAnimationUpdateNotificationOpacity.to       = 0
-                hideAnimationUpdateNotificationOpacity.running  = true
-            }
+   /****************************************//**
+    * Update notification
+    ********************************************/
 
-            function moveAfterHideTicker() {
-                hideAnimationUpdateNotification.from    = updNotPosTickerOn.y // 35
-                hideAnimationUpdateNotification.to      = updNotPosTickerOff.y
-                hideAnimationUpdateNotification.running = true
-            }
+    DapQmlRectangle {
+        id: updateNotificationRect
+        qss: "update-notification-rect"
+        z:30
+        radius: 13
+        visible: true
+        opacity: 0
 
-            DapQmlDummy { id: updNotPosTickerOn;  qss: "update-notification-pos-ticker-on"  }
-            DapQmlDummy { id: updNotPosTickerOff; qss: "update-notification-pos-ticker-off" }
+        function showUpdateNotification() {
+            hideAnimationUpdateNotification.from    = ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y
+            hideAnimationUpdateNotification.to      = ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y
+            hideAnimationUpdateNotification.running = true
 
-            /* text */
-            DapQmlLabel {
-                id: updateNotificationLabel
-                qss: "update-notification-label"
-                text: "New version available"
-                height: contentHeight
-                width: contentWidth
-                horizontalAlign: Text.AlignHCenter
-            }
+            hideAnimationUpdateNotificationOpacity.from     = 0
+            hideAnimationUpdateNotificationOpacity.to       = 1
+            hideAnimationUpdateNotificationOpacity.running  = true
+        }
 
-            /* close button */
-            DapQmlPushButton {
-                id: updateNotificationCloseButton
-                x: parent.width - width - (y * 1.4)
-                z: 14
+        function hideUpdateNotification() {
+            hideAnimationUpdateNotification.from    = ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y
+            hideAnimationUpdateNotification.to      = ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y
+            hideAnimationUpdateNotification.running = true
 
-                qss: "update-notification-close-button"
+            hideAnimationUpdateNotificationOpacity.from     = 1
+            hideAnimationUpdateNotificationOpacity.to       = 0
+            hideAnimationUpdateNotificationOpacity.running  = true
+        }
 
-                onClicked: updateNotificationRect.hideUpdateNotification()
-            }
+        function moveAfterHideTicker() {
+            hideAnimationUpdateNotification.from    = updNotPosTickerOn.y // 35
+            hideAnimationUpdateNotification.to      = updNotPosTickerOff.y
+            hideAnimationUpdateNotification.running = true
+        }
 
-            /* update button */
-            DapQmlLabel {
-                id: updateNotificationButton
-                qss: "update-notification-button"
-                text: "Update"
-                height: contentHeight
-                width: contentWidth
-                horizontalAlign: Text.AlignHCenter
+        DapQmlDummy { id: updNotPosTickerOn;  qss: "update-notification-pos-ticker-on"  }
+        DapQmlDummy { id: updNotPosTickerOff; qss: "update-notification-pos-ticker-off" }
 
-                MouseArea {
-                    anchors.fill: updateNotificationButton
-                    z : 3
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: root.sigStartUpdate()
-                }
-            }
+        /* text */
+        DapQmlLabel {
+            id: updateNotificationLabel
+            qss: "update-notification-label"
+            text: "New version available"
+            height: contentHeight
+            width: contentWidth
+            horizontalAlign: Text.AlignHCenter
+        }
 
-            /* animations */
+        /* close button */
+        DapQmlPushButton {
+            id: updateNotificationCloseButton
+            x: parent.width - width - (y * 1.4)
+            z: 14
 
-            NumberAnimation {
-                id: hideAnimationUpdateNotification
-                objectName: "hideAnimationUpdateNotification"
-                target: updateNotificationRect
-                properties: "y"
-                duration: 100
-                running: false
-            }
+            qss: "update-notification-close-button"
 
-            OpacityAnimator on opacity{
-                id: hideAnimationUpdateNotificationOpacity
-                target: updateNotificationRect
-                duration: 100
-                running: false
+            onClicked: updateNotificationRect.hideUpdateNotification()
+        }
+
+        /* update button */
+        DapQmlLabel {
+            id: updateNotificationButton
+            qss: "update-notification-button"
+            text: "Update"
+            height: contentHeight
+            width: contentWidth
+            horizontalAlign: Text.AlignHCenter
+
+            MouseArea {
+                anchors.fill: updateNotificationButton
+                z : 3
+                cursorShape: Qt.PointingHandCursor
+                onClicked: root.sigStartUpdate()
             }
         }
+
+        /* animations */
+
+        NumberAnimation {
+            id: hideAnimationUpdateNotification
+            objectName: "hideAnimationUpdateNotification"
+            target: updateNotificationRect
+            properties: "y"
+            duration: 100
+            running: false
+        }
+
+        OpacityAnimator on opacity{
+            id: hideAnimationUpdateNotificationOpacity
+            target: updateNotificationRect
+            duration: 100
+            running: false
+        }
+    }
 
 
     /// @}
