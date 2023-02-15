@@ -32,15 +32,14 @@ class DapServerList : public QAbstractListModel
 public:
   enum FieldId
   {
-    Name    = Qt::DisplayRole,
-    Country = Qt::UserRole + 10,
-    Quality,
-    Ping,
-    Address,
-    Port,
+    name    = Qt::DisplayRole,
+    country = Qt::UserRole + 10,
+    quality,
+    ping,
+    address,
+    port,
   };
 
-  typedef QList<DapServerInfo> DapServerInfoList;
   typedef DapServerInfoList::iterator iterator;
   typedef DapServerInfoList::const_iterator const_iterator;
   /// @}
@@ -70,7 +69,9 @@ public:
   static DapServerList *instance();
 
   int append (const DapServerInfo &a_server);
+  int append (DapServerInfo &&a_server);
   void insert (int a_index, const DapServerInfo &a_server);
+  void insert (int a_index, DapServerInfo &&a_server);
   void remove (int a_index);
   int size() const;
   bool empty() const;
@@ -96,6 +97,17 @@ public:
 public:
   int rowCount (const QModelIndex &parent) const Q_DECL_OVERRIDE;
   QVariant data (const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
+  /// @}
+
+  /****************************************//**
+   * @name OPERATORS
+   *******************************************/
+  /// @{
+public:
+  DapServerInfo &operator[](int a_index);
+  const DapServerInfo &operator[](int a_index) const;
+  DapServerList &operator<<(const DapServerInfo &a_server);
+  DapServerList &operator<<(DapServerInfo &&a_server);
   /// @}
 
   /****************************************//**
