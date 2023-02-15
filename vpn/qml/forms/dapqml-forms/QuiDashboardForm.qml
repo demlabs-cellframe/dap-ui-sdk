@@ -172,7 +172,7 @@ Item {
            DapQmlRectangle {
                id: tickerLableRect
                objectName: "tickerLableRect"
-               qss: "ticker_lable_rect"
+               qss: "ticker-lable-rect"
                visible: true
                anchors.left: parent.left
 
@@ -180,7 +180,7 @@ Item {
                    id: tickerLabel
                    objectName: "tickerLabel"
                    width: contentWidth
-                   qss: "ticker_label"
+                   qss: "ticker-label"
                    text: tickerMessage
                    z: 2
                    horizontalAlign: Text.AlignHCenter
@@ -206,26 +206,23 @@ Item {
 
                DapQmlRectangle {
                    id: tickerLabelBackgraund
-                   qss: "ticker_label_backgraund"
+                   qss: "ticker-label-background"
                    anchors.fill: parent
                }
            }
 
            DapQmlRectangle {
                id: tickerCloseRect
-               qss: "ticker_close_rect"
+               qss: "ticker-close-rect"
                visible: true
                anchors.right: parent.right
 
                DapQmlPushButton {
                    id: tickerCloseButton
-                   qss: "ticker_close_button"
+                   qss: "ticker-close-button"
                    x: parent.width - width - y
                    y: (parent.height - height) / 2
                    z: 14
-
-                   height: 24
-                   width: 24
 
                    onClicked: {
                        ticker.hideTicker()
@@ -234,7 +231,7 @@ Item {
 
                DapQmlRectangle {
                    id: tickerCloseBackground
-                   qss: "ticker_label_backgraund"
+                   qss: "ticker-label-background"
                    anchors.fill: parent
                }
            }
@@ -254,67 +251,67 @@ Item {
         ********************************************/
 
         DapQmlRectangle {
-
             id: updateNotificationRect
-            qss: "update_notification_rect"
+            qss: "update-notification-rect"
             z:30
             radius: 13
             visible: true
             opacity: 0
 
             function showUpdateNotification() {
-                hideAnimationUpdateNotification.from = ticker.tickerIsHidden ? 0 : 15
-                hideAnimationUpdateNotification.to = ticker.tickerIsHidden ? 15 : 38
+                hideAnimationUpdateNotification.from    = ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y
+                hideAnimationUpdateNotification.to      = ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y
                 hideAnimationUpdateNotification.running = true
 
-                hideAnimationUpdateNotificationOpacity.from = 0
-                hideAnimationUpdateNotificationOpacity.to = 1
-                hideAnimationUpdateNotificationOpacity.running = true
+                hideAnimationUpdateNotificationOpacity.from     = 0
+                hideAnimationUpdateNotificationOpacity.to       = 1
+                hideAnimationUpdateNotificationOpacity.running  = true
             }
 
             function hideUpdateNotification() {
-                hideAnimationUpdateNotification.from = ticker.tickerIsHidden ? 15 : 38
-                hideAnimationUpdateNotification.to = ticker.tickerIsHidden ? 0 : 15
+                hideAnimationUpdateNotification.from    = ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y
+                hideAnimationUpdateNotification.to      = ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y
                 hideAnimationUpdateNotification.running = true
 
-                hideAnimationUpdateNotificationOpacity.from = 1
-                hideAnimationUpdateNotificationOpacity.to = 0
-                hideAnimationUpdateNotificationOpacity.running = true
+                hideAnimationUpdateNotificationOpacity.from     = 1
+                hideAnimationUpdateNotificationOpacity.to       = 0
+                hideAnimationUpdateNotificationOpacity.running  = true
             }
 
             function moveAfterHideTicker() {
-                hideAnimationUpdateNotification.from = 35
-                hideAnimationUpdateNotification.to = 15
+                hideAnimationUpdateNotification.from    = updNotPosTickerOn.y // 35
+                hideAnimationUpdateNotification.to      = updNotPosTickerOff.y
                 hideAnimationUpdateNotification.running = true
             }
 
+            DapQmlDummy { id: updNotPosTickerOn;  qss: "update-notification-pos-ticker-on"  }
+            DapQmlDummy { id: updNotPosTickerOff; qss: "update-notification-pos-ticker-off" }
+
+            /* text */
             DapQmlLabel {
                 id: updateNotificationLabel
-                qss: "update_notification_label"
+                qss: "update-notification-label"
                 text: "New version available"
                 height: contentHeight
                 width: contentWidth
                 horizontalAlign: Text.AlignHCenter
             }
 
+            /* close button */
             DapQmlPushButton {
                 id: updateNotificationCloseButton
-                x: parent.width - width - 14
-                y: 10
+                x: parent.width - width - (y * 1.4)
                 z: 14
 
-                height: 20
-                width: 20
-                qss: "update_notification_close_button"
+                qss: "update-notification-close-button"
 
-                onClicked: {
-                    updateNotificationRect.hideUpdateNotification()
-                }
+                onClicked: updateNotificationRect.hideUpdateNotification()
             }
 
+            /* update button */
             DapQmlLabel {
                 id: updateNotificationButton
-                qss: "update_notification_button"
+                qss: "update-notification-button"
                 text: "Update"
                 height: contentHeight
                 width: contentWidth
@@ -327,6 +324,8 @@ Item {
                     onClicked: root.sigStartUpdate()
                 }
             }
+
+            /* animations */
 
             NumberAnimation {
                 id: hideAnimationUpdateNotification
