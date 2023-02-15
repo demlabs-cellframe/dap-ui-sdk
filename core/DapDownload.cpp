@@ -39,10 +39,10 @@ void DapDownload::sendRequest()
     m_downloadFileName = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.deb"); // example KelVPN-installer.deb
 #endif
 #ifdef Q_OS_WIN
-    m_downloadFileName = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.exe") // example "KelVPN-installer.exe";
+    m_downloadFileName = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.exe"); // example "KelVPN-installer.exe"
 #endif
 #ifdef Q_OS_MACOS
-    m_downloadFileName = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.pkg") // example "KelVPN-installer.pkg";
+    m_downloadFileName = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.pkg"); // example "KelVPN-installer.pkg"
 #endif
 
     // remove file if exist

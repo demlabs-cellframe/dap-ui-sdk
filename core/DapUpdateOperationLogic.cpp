@@ -91,10 +91,10 @@ QString DapUpdateOperationLogic::downloadFileName()
     return QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.deb"); // example KelVPN-installer.deb
 #endif
 #ifdef Q_OS_WIN
-    return QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.exe") // example "KelVPN-installer.exe";
+    return QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.exe"); // example "KelVPN-installer.exe"
 #endif
 #ifdef Q_OS_MACOS
-    return QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.pkg") // example "KelVPN-installer.pkg";
+    return QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.pkg"); // example "KelVPN-installer.pkg"
 #endif
 }
 
