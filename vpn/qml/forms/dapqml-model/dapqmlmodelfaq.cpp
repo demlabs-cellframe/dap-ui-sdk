@@ -19,16 +19,29 @@ static DapQmlModelFaq *__inst = nullptr;
 static const QVector<Item> s_items =
 {
   {
-    "Question",
-    "Is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived"
+    "Q: I have an issue using KelVPN. How can I get help?",
+    "A: Please send a report using the in-app \"Send bug report\" feature. Describe as much of the details as possible and leave an email address for us to contact you. If you don’t want to give your email address also you can reach out for technical assistance on Telegram using the KelVPN Support Bot (<a href=\"https://t.me/kelvpn_tech_support_bot\">https://t.me/kelvpn_tech_support_bot</a>). In some cases, the tech support specialist may ask you to send a bug report to discover the issue."
   },
   {
-    "Question",
-    "Is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived"
+    "Q: Is it possible to use one key on multiple devices?",
+    "A: At the moment, one license key allows the user to use the VPN service on one device. However, if you need to switch to another device, you just need to reset the serial key on the “Settings” page. After you reset the serial key, the expiration time for your subscription freezes for until you switch to another device. This allows users to input the same serial key on another device without wasting any subscription time.<br>"
+    "An upcoming feature will offer the possibility of using one key on three devices without the resetting while also freezing the expiration timer."
   },
   {
-    "Question",
-    "Is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived"
+    "Q: Is the output in KelVPN IP addresses resident or stored on the server?",
+    "A: In the current testnet, the addresses are not residential. NoCBD mode is under development at the moment. Soon users will have the opportunity to use KelVPN in a decentralized or normal mode as they wish."
+  },
+  {
+    "Q: When will KelVPN be available on Playstore or F-Droid?",
+    "A: The team is working on publishing KelVPN on Google Play. You can see this in the current roadmap. Stay tuned for updates!"
+  },
+  {
+    "Q: Is there a free trial?",
+    "A: No, not at the moment. The 3-day trial period feature is under development and its release is on our nearest development roadmap."
+  },
+  {
+    "Q: I don't have access to the device where I used KelVPN last time. How can I reset my license key without it?",
+    "A: Right now, the only way to reset it is through our support team. Resetting and restoring keys using a seed phrase is one of the upcoming features on our development roadmap."
   },
 };
 

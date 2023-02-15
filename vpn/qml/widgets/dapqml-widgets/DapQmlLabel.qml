@@ -40,6 +40,7 @@ Item {
     property bool mipmap: true
     property bool smooth: true
     property bool antialiasing: false
+    property bool disableClicking: false
 
     property real bottomPadding
     property real leftPadding
@@ -102,6 +103,8 @@ Item {
         textFormat: root.textFormat
         lineHeight: root.lineHeight
 
+        onLinkActivated: Qt.openUrlExternally(link)
+
         font {
             family: root.fontFamiliy
             pixelSize: root.fontSize
@@ -115,6 +118,7 @@ Item {
 
     MouseArea {
         anchors.fill: root
+        enabled: !root.disableClicking
         onClicked: root.clicked()
     }
 }

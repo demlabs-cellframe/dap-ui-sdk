@@ -73,9 +73,10 @@ Item {
         Item {
             clip: true
             width: listview.width
-            height: faqItemSizer.height + faqItemSep.height + (opened ? contentHeight : 0)
+            height: (labelHeight > faqItemSizer.height ? labelHeight : faqItemSizer.height) + faqItemSep.height + (opened ? contentHeight : 0)
 
             property bool opened: false
+            property real labelHeight: faqItemLabel.height
             property real contentHeight: faqItemContent.height + faqItemSpacer.height
 
             Behavior on height { PropertyAnimation { duration: root.internal.finished ? 250 : 0 } }
@@ -83,9 +84,11 @@ Item {
             /* title */
             DapQmlLabel {
                 id: faqItemLabel
+                y: (faqItemSizer.height - height) / 2
                 width: parent.width - faqItemPlusBtn.width
-                height: faqItemSizer.height
+                height: contentHeight // faqItemSizer.height
                 horizontalAlign: Text.AlignLeft
+                wrapMode: Text.WordWrap
                 qss: "faq-item-label c-label"
                 text: model.question //"Question"
             }
@@ -107,6 +110,7 @@ Item {
                 lineHeight: 1.5
                 horizontalAlign: Text.AlignLeft
                 wrapMode: Text.WordWrap
+                disableClicking: true
                 qss: "faq-item-text"
                 text: model.answer  // "Is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived"
             }
@@ -118,7 +122,8 @@ Item {
             }
 
             MouseArea {
-                anchors.fill: parent
+                width: parent.width
+                height: faqItemSizer.height + faqItemSep.height
                 onClicked: parent.opened = !parent.opened;
             }
         }
