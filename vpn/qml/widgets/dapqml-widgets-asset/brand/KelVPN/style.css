@@ -1106,76 +1106,78 @@
 * Ticker
 ***************************************************/
 
-.ticker_close_button
+.ticker-close-button
 {
+    scaled-rect: scaled(nan,nan,24,24,true);
     qproperty-inactive: "@btn-ticker-close";
     qproperty-active: "@btn-ticker-close-hover";
 }
 
 .ticker
 {
-    scaled-rect: scaled(-1,0,-1,36,false);
+    scaled-rect: scaled(-1,nan,-1,36,false);
 }
 
-.ticker_lable_rect
+.ticker-lable-rect
 {
-    scaled-rect: scaled(-1,0,-1,36,false);
+    scaled-rect: scaled(nan,nan,-1,36,false);
 }
 
-.ticker_label
+.ticker-label
 {
-    scaled-rect: scaled(nan,0,nan,36,false);
+    scaled-rect: scaled(nan,nan,nan,36,false,14);
     color: "#FFFFFF";
 }
 
-.ticker_label_backgraund{
-    scaled-rect: scaled(-1,0,-1,36,false);
+.ticker-label-background
+{
+    scaled-rect: scaled(nan,nan,-1,36,false);
     color: "#A4A3C0";
 }
 
-.ticker_close_rect
+.ticker-close-rect
 {
-    scaled-rect: scaled(-1,0,36,36,false);
-}
-
-.ticker_show_rect
-{
-    scaled-rect: scaled(-1,0,36,36,false);
-}
-
-.ticker_close_background{
-    scaled-rect: scaled(-1,0,-1,36,false);
-    color: "#A4A3C0";
+    scaled-rect: scaled(nan,nan,36,36,true);
 }
 
 /****************************************************
  * Update
  ***************************************************/
 
-.update_notification_rect
+.update-notification-rect
 {
     scaled-rect: scaled(-1,40,356,78,false);
     color: "@update-background";
 }
 
-.update_notification_label
+.update-notification-label
 {
     scaled-rect: scaled(112,13,nan,nan,false,18);
     color: "@text";
 }
 
-.update_notification_button
+.update-notification-button
 {
     scaled-rect: scaled(155,45,nan,nan,false,18);
     color: "@brand";
 }
 
-.update_notification_close_button
+.update-notification-close-button
 {
+    scaled-rect: scaled(nan,10,24,24,true);
     qproperty-inactive: "@btn-update-notification-close";
     qproperty-active: "@btn-update-notification-close-hover";
 }
 
+.update-notification-pos-ticker-on
+{
+    scaled-rect: scaled(nan,38,nan,nan,false);
+}
+
+.update-notification-pos-ticker-off
+{
+    scaled-rect: scaled(nan,15,nan,nan,false);
+}
 
 /****************************************************
  * Choose Country
