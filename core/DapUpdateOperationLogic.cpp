@@ -74,13 +74,13 @@ QString DapUpdateOperationLogic::updateApp()
     updateAgent = qApp->applicationDirPath() + QDir::separator() + ".." + QDir::separator() + "DapChainVpnUpdateApp";
 #endif
 #ifdef Q_OS_LINUX
-    return updateAgent + QDir::separator() + "Update";
+    return updateAgent + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update");
 #endif
 #ifdef Q_OS_WIN
-    return updateAgent + QDir::separator() + "Update.exe";
+    return updateAgent + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update.exe");
 #endif
 #ifdef Q_OS_MACOS
-    return updateAgent + QDir::separator() + "Update.app";
+    return updateAgent + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update.app");
 #endif
 }
 
@@ -88,13 +88,13 @@ QString DapUpdateOperationLogic::updateApp()
 QString DapUpdateOperationLogic::downloadFileName()
 {
 #ifdef Q_OS_LINUX
-    return QDir::tempPath() + QDir::separator() +  "KelVPN-update.deb";
+    return QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.deb"); // example KelVPN-installer.deb
 #endif
 #ifdef Q_OS_WIN
-    return QDir::tempPath() + QDir::separator() +  "KelVPN-installer.exe";
+    return QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.exe") // example "KelVPN-installer.exe";
 #endif
 #ifdef Q_OS_MACOS
-    return QDir::tempPath() + QDir::separator() +  "KelVPN-installer.pkg";
+    return QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.pkg") // example "KelVPN-installer.pkg";
 #endif
 }
 
