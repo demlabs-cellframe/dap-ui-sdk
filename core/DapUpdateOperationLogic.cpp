@@ -124,6 +124,7 @@ QString DapUpdateOperationLogic::applicationDirPath()
     CFRelease(macPath);
     QString filePath = QString(pathPtr);
     QString applicationDirPath = filePath.left(filePath.lastIndexOf("/"));
+    applicationDirPath += QString("/%1.app/Contents/MacOS").arg(DAP_BRAND);
     return applicationDirPath;
 #else
     return qApp->applicationDirPath();
