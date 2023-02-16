@@ -30,15 +30,6 @@ class DapServerList : public QAbstractListModel
    *******************************************/
   /// @{
 public:
-  enum FieldId
-  {
-    name    = Qt::DisplayRole,
-    country = Qt::UserRole + 10,
-    quality,
-    ping,
-    address,
-    port,
-  };
 
   typedef DapServerInfoList::iterator iterator;
   typedef DapServerInfoList::const_iterator const_iterator;
@@ -85,6 +76,8 @@ public:
   const DapServerInfo &last() const;
   const DapServerInfo &at (int a_index) const;
   DapServerInfo value (int a_index) const;
+  /// return server item copy as QVariantMap
+  Q_INVOKABLE QVariant qValue (int a_index) const;
 
   int current() const;
   void setCurrent (int a_index);

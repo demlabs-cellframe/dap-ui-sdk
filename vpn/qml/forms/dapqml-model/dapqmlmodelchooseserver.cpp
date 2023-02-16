@@ -31,7 +31,7 @@ DapQmlModelChooseServer::DapQmlModelChooseServer (QObject *parent)
   QTimer::singleShot (500, [this] {
       auto *serversData         = DapServersData::instance();
       const auto &currentServer = serversData->currentServer();
-      const auto name           = currentServer.name;
+      const auto name           = currentServer.name();
       if (m_currentServer.isEmpty())
         m_currentServer         = name;
     });
@@ -106,8 +106,8 @@ QVariant DapQmlModelChooseServer::data(const QModelIndex &index, int role) const
         const auto &currentServer = serversData->currentServer();
         const auto name           = serversData->data (index, Qt::DisplayRole).toString();
         const auto address        = serversData->data (index, ADDRESS_ROLE).toString();
-        return (currentServer.name == name
-                && currentServer.address == address);
+        return (currentServer.name() == name
+                && currentServer.address() == address);
     }
 
   return QVariant();
@@ -125,7 +125,7 @@ void DapQmlModelChooseServer::setCurrentServerByName (const QString &a_name)
       int index = 0;
       for (const auto &server : servers)
         {
-          if (server.name == a_serverName)
+          if (server.name() == a_serverName)
             return index;
           index++;
         }

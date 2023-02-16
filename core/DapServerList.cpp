@@ -344,6 +344,11 @@ DapServerInfo DapServerList::value (int a_index) const
   return at (a_index);
 }
 
+QVariant DapServerList::qValue (int a_index) const
+{
+
+}
+
 int DapServerList::current() const
 {
   return m_current;
@@ -377,25 +382,14 @@ QVariant DapServerList::data (const QModelIndex &index, int role) const
   auto &item    = at (index.row());
   auto country  = [item]
   {
-    if (item.name.isEmpty())
+    if (item.name().isEmpty())
       return QString();
 
-    return _findInCountriesMap (item.name.toUpper());
+    return _findInCountriesMap (item.name().toUpper());
   };
 
   /* get value */
-  switch (FieldId (role))
-    {
-    case FieldId::name:     return item.name;
-    case FieldId::country:  return country();
-    case FieldId::quality:  return int (item.connection_quality);
-    case FieldId::ping:     return item.ping;
-    case FieldId::address:  return item.address;
-    case FieldId::port:     return item.port;
-    }
-
-  /* return default value */
-  return QVariant();
+  return item.value (role);
 }
 
 /********************************************

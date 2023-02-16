@@ -51,9 +51,9 @@ void DapDataLocal::parseXML(const QString& a_fname)
                             DapServerInfo item;
                             while ( sr->readNextStartElement() ){
                                 if(sr->name() == "name"){
-                                    item.name=sr->readElementText();
+                                    item.setName (sr->readElementText());
                                 } else if (sr->name() == "address") {
-                                    item.address=sr->readElementText();
+                                    item.setAddress (sr->readElementText());
                                 } else if( sr->name() == "port") {
                                     bool ok;
                                     quint16 port = quint16(sr->readElementText().toInt(&ok));
@@ -61,18 +61,18 @@ void DapDataLocal::parseXML(const QString& a_fname)
                                         throw std::runtime_error("Can't cast port to int "
                                                                  "from XML file");
                                     }
-                                    item.port = port;
+                                    item.setPort (port);
                                 } else if(sr->name() == "location") {
-                                    item.location = sr->readElementText();
+                                    item.setLocation (sr->readElementText());
                                 } else if (sr->name() == "state") {
-                                    item.online = sr->readElementText();
+                                    item.setOnline (sr->readElementText());
                                 }
                                 else {
                                     qWarning() << "[DL] Inside tag 'server': Unknown tag "<<sr->name();
                                     sr->skipCurrentElement();
                                 }
                             }
-                            qDebug() << "[DL] Server "<<item.name<<" added";
+                            qDebug() << "[DL] Server "<<item.name()<<" added";
                             DapDataLocal::serversData()->addServer(item);
                         }else{
                             qDebug() << "[DL] Inside tag 'servers': unknown tag "<<sr->name();
