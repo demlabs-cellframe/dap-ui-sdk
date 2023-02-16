@@ -22,29 +22,24 @@ DapDownload * DapDownload::instance()
     return __inst;
 }
 
-void DapDownload::startDownload(const QString& a_url)
+void DapDownload::startDownload(const QString& a_url, const QString& a_pack)
 {
     if (m_downloading)
         return;
     m_networkRequest = a_url;
+    m_downloadFileName = a_pack;
     sendRequest();
 }
 
 void DapDownload::sendRequest()
 {
-    m_downloading = true;
     QNetworkRequest request;
+    if (m_downloadFileName.isEmpty()) {
 //  todo set name for macos
-#ifdef Q_OS_LINUX
-    m_downloadFileName = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.deb"); // example KelVPN-installer.deb
-#endif
-#ifdef Q_OS_WIN
-    m_downloadFileName = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.exe"); // example "KelVPN-installer.exe"
-#endif
-#ifdef Q_OS_MACOS
-    m_downloadFileName = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("-update.pkg"); // example "KelVPN-installer.pkg"
-#endif
-
+        qWarning() << "Upload file name not set";
+        return;
+    }
+    m_downloading = true;
     // remove file if exist
     if (QFile::exists(m_downloadFileName))
         QFile::remove(m_downloadFileName);
@@ -53,16 +48,19 @@ void DapDownload::sendRequest()
     m_networkReply = m_httpClient->get(request);
     connect( m_networkReply, &QNetworkReply::finished, this, [=] {
         QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
-        qDebug() << "Download finished" << reply->error();
+        qWarning() << "Download finished" << reply->error();
         m_downloading = false;
         if (reply->error() != QNetworkReply::NetworkError::NoError)
             emit downloadError(reply->error(), tr("Download ended with an error"));
     });
     connect( m_networkReply, SIGNAL(error), this, SLOT([=](QNetworkReply::NetworkError networkErr) {
-        qDebug() << "Download error:" << networkErr;
+        qInfo() << "Download end:" << networkErr;
         m_downloading = false;
         if (reply->error() != QNetworkReply::NetworkError::NoError)
+        {
+            qWarning() << "Download error:" << networkErr;
             emit downloadError(reply->error(), "Download ended with an error");
+        }
     }));
     connect( m_networkReply, &QNetworkReply::readyRead, this, [=]() {
         QFile* m_file = new QFile(m_downloadFileName);
@@ -80,7 +78,7 @@ void DapDownload::sendRequest()
     connect( m_networkReply, &QNetworkReply::downloadProgress, this, [=](quint64 load, quint64 total) {
         emit downloadProgress(load, total);
     });
-    qDebug() << "Download started" << m_networkRequest << "to" << m_downloadFileName;
+    qInfo() << "Download started" << m_networkRequest << "to" << m_downloadFileName;
 }
 
 

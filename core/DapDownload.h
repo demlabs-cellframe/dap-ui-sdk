@@ -34,7 +34,7 @@ public:
     QString& downloadFileName();
 
 public slots:
-    void startDownload(const QString& url);
+    void startDownload(const QString& url, const QString& pack);
 
 private:
 //    void request_GET(const QString& host,  quint16 port,
