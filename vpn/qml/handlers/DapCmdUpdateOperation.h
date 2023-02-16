@@ -25,7 +25,8 @@ protected:
 public slots:
     void startDownload();
     void setDownloadUrl(QString url);
-    void startDownloadUrl(QString url);
+    void setDownloadPack(QString pack);
+    void startDownloadUrl(QString url, QString path);
     void startUpadte();
 
 signals:
@@ -34,6 +35,7 @@ signals:
 
 private:
     QString m_dowmloadUrl;
+    QString m_dowmloadPack;
 };
 
 #endif // DAPCMDUPDATEOPERATION_H
