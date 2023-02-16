@@ -24,12 +24,12 @@ static const QVector<Item> s_items =
   },
   {
     "Q: Is it possible to use one key on multiple devices?",
-    "A: At the moment, one license key allows the user to use the VPN service on one device. However, if you need to switch to another device, you just need to reset the serial key on the “Settings” page. After you reset the serial key, the expiration time for your subscription freezes for until you switch to another device. This allows users to input the same serial key on another device without wasting any subscription time.<br>"
+    "A: At the moment, one license key allows the user to use the VPN service on one device. However, if you need to switch to another device, you just need to reset the serial key on the “Settings” page. After you reset the serial key, the expiration time for your subscription freezes for until you switch to another device. This allows users to input the same serial key on another device without wasting any subscription time.<br><br>"
     "An upcoming feature will offer the possibility of using one key on three devices without the resetting while also freezing the expiration timer."
   },
   {
-    "Q: Is the output in KelVPN IP addresses resident or stored on the server?",
-    "A: In the current testnet, the addresses are not residential. NoCBD mode is under development at the moment. Soon users will have the opportunity to use KelVPN in a decentralized or normal mode as they wish."
+    "Q: Are the IP addresses output by KelVPN residential or stored on the server?",
+    "A: In the current testnet, the addresses used are not residential (do not belong to the users of the network). NoCBD mode is under development. When it is deployed, users will have the opportunity to use KelVPN in a decentralized mode, utilizing residential addresses offered by other users. Or they can continue to use normal mode, as they wish."
   },
   {
     "Q: When will KelVPN be available on Playstore or F-Droid?",

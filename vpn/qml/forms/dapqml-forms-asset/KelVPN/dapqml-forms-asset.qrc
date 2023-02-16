@@ -22,5 +22,6 @@
         <file compress="1">dapqml-forms-asset/ic_trash.png</file>
         <file compress="1">dapqml-forms-asset/ic_location.png</file>
         <file compress="1">dapqml-forms-asset/ic_filter.png</file>
+        <file>dapqml-forms-asset/ic_faq.png</file>
     </qresource>
 </RCC>

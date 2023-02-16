@@ -331,6 +331,11 @@
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_information_bug-report.png");
 }
 
+.ic_faq
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_faq.png");
+}
+
 .ic_key-history
 {
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_key-history.png");
