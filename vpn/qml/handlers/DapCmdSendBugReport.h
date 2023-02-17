@@ -22,7 +22,7 @@ public:
     const QString &a_message,
     const QString &a_serial = "",
     const QString &a_attachFile = "",
-    const QString &a_emailAddress = "");
+    const QString &a_contactAddress = "");
   void cancelBugReport();
 
 protected:

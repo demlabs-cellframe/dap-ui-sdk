@@ -11,7 +11,7 @@ void DapCmdSendBugReport::sendBugReport(
     const QString &a_message,
     const QString &a_serial,
     const QString &attachFile,
-    const QString &a_emailAddress)
+    const QString &a_contactAddress)
 {
   /* set flag */
   m_waitingForResponse  = true;
@@ -20,7 +20,7 @@ void DapCmdSendBugReport::sendBugReport(
   QJsonObject obj =
   {
     {"attach_file", attachFile},
-    {"email", a_emailAddress},
+    {"contact_address", a_contactAddress},
     {"message", a_message},
     {"serial", a_serial},
   };
