@@ -113,7 +113,8 @@ QString DapUpdateOperationLogic::currentApplication()
     return applicationDirPath() + QDir::separator() + QString("%1.exe").arg(DAP_BRAND);
 #endif
 #ifdef Q_OS_MAC
-    return applicationDirPath() + QDir::separator() + QString("%1.app").arg(DAP_BRAND);
+    return applicationDirPath() + QDir::separator() + pathInsideMacOSPack(DAP_BRAND)
+            + QDir::separator() + QString("%1").arg(DAP_BRAND);
 #endif
 }
 
