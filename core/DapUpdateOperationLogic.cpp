@@ -58,7 +58,7 @@ void DapUpdateOperationLogic::startUpdate()
     if (!detached)
         qInfo() << "Failed to start update agent application";
     else
-        qInfo() << "Start update agent application" << updateApp();
+        qInfo() << "Start update agent application" << updateApp() << downloadFileName() << currentApplication();
     myProcess->close();
     delete myProcess;
 //#else
