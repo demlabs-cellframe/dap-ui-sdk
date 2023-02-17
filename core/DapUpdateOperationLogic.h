@@ -21,6 +21,7 @@ public:
     static QString downloadFileName();
     static QString applicationDirPath();
     static QString pathInsideMacOSPack(QString pachName);
+    static bool fileCopy(QString source, QString dest);
 
 
 protected:

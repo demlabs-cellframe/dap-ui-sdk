@@ -53,7 +53,9 @@ void DapUpdateOperationLogic::startUpdate()
     detached = myProcess->startDetached("cmd.exe", QStringList() << "/C" << updateApp() << "-p" << downloadFileName() << "-a" << currentApplication());
 #endif
 #ifdef Q_OS_MACOS
-    detached = myProcess->startDetached(updateApp(), QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
+    QString copyUpdateApp = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update");
+    fileCopy(updateApp(), copyUpdateApp);
+    detached = myProcess->startDetached(copyUpdateApp, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
 #endif
     if (!detached)
         qInfo() << "Failed to start update agent application";
@@ -141,3 +143,9 @@ QString DapUpdateOperationLogic::pathInsideMacOSPack(QString packName)
     return QString("/%1.app/Contents/MacOS").arg(packName);
 }
 
+bool DapUpdateOperationLogic::fileCopy(QString source, QString dest)
+{
+    if (QFile::exists(dest))
+        QFile::remove(dest);
+    return QFile::copy(source, dest);
+}
