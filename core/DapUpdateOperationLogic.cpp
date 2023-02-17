@@ -46,21 +46,22 @@ void DapUpdateOperationLogic::startUpdate()
     // start detached process
     QProcess *myProcess = new QProcess();
     bool detached = false;
+    QString updateAppPath = updateApp();
 #ifdef Q_OS_LINUX
-    detached = myProcess->startDetached(updateApp(), QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
+    detached = myProcess->startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
 #endif
 #ifdef Q_OS_WIN
-    detached = myProcess->startDetached("cmd.exe", QStringList() << "/C" << updateApp() << "-p" << downloadFileName() << "-a" << currentApplication());
+    detached = myProcess->startDetached("cmd.exe", QStringList() << "/C" << updateAppPath << "-p" << downloadFileName() << "-a" << currentApplication());
 #endif
 #ifdef Q_OS_MACOS
-    //QString copyUpdateApp = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update");
-    //fileCopy(updateApp(), copyUpdateApp);
-    detached = myProcess->startDetached(updateApp(), QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
+    updateAppPath = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update");
+    fileCopy(updateApp(), updateAppPath);
+    detached = myProcess->startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
 #endif
     if (!detached)
-        qInfo() << "Failed to start update agent application";
+        qWarning() << "Failed to start update agent application" << updateAppPath;
     else
-        qInfo() << "Start update agent application" << updateApp() << downloadFileName() << currentApplication();
+        qInfo() << "Start update agent application" << updateAppPath << downloadFileName() << currentApplication();
     myProcess->close();
     delete myProcess;
 //#else
