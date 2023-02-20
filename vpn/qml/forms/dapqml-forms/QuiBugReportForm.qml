@@ -9,6 +9,7 @@ import StyleDebugTree 1.0
 import TextEditContextMenu 1.0
 import Brand 1.0
 import Scaling 1.0
+import PageCtl 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -292,8 +293,9 @@ Item {
         DapQmlPushButton {
             qss: "bugrep-agreement-title-close-btn"
             onClicked: {
-                root.internal.showAnAgreement = false;
-                agreementFrame.updatePosition();
+                PageCtl.slotBackwardAuto();
+                //root.internal.showAnAgreement = false;
+                //agreementFrame.updatePosition();
             }
         }
 
