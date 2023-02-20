@@ -23,5 +23,6 @@
         <file compress="1">dapqml-forms/QuiCdbSwitchingForm.qml</file>
         <file compress="1">dapqml-forms/QuiCircleProgressBase.qml</file>
         <file compress="1">dapqml-forms/QuiUpdateProgress.qml</file>
+        <file>dapqml-forms/QuiFaqForm.qml</file>
     </qresource>
 </RCC>

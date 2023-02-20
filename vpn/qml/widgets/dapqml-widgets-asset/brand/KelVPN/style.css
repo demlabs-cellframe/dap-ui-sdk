@@ -6,7 +6,7 @@
 {
 	text: "#04004E";
 	background: "#F7F8FA";
-        update-background: "#FFFFFF";
+	update-background: "#FFFFFF";
 	label: "#5C5B74";
 	light-grey: "#A4A3C0";
 	error: "#F53172";
@@ -35,23 +35,24 @@
 	footer-statistics-active:   "qrc:/light/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/light/btn_account.png";
 	bugrep-bg:                  "qrc:/light/report_bg_border.png";
-        contact-bugrep-bg:          "qrc:/light/contact_report_bg_border.png";
+	contact-bugrep-bg:          "qrc:/light/contact_report_bg_border.png";
 	login-logo:                 "qrc:/light/login-logo.png";
+	btn-plus:                   "qrc:/light/ic_plus.png";
 	btn-close:                  "qrc:/light/ic_close.png";
-        btn-close-hover:            "qrc:/light/ic_close_hover.png";
-        country-filter-clear:       "qrc:/light/btn_filter_clear.png";
-        country-filter-clear-hover: "qrc:/light/btn_filter_clear_hover.png";
-        btn-ticker-close:           "qrc:/light/ic_ticker_close.png";
-        btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
-        btn-update-notification-close:          "qrc:/light/ic_close_update.png";
-        btn-update-notification-close-hover:    "qrc:/light/ic_close_update_hover.png";
+	btn-close-hover:            "qrc:/light/ic_close_hover.png";
+	country-filter-clear:       "qrc:/light/btn_filter_clear.png";
+	country-filter-clear-hover: "qrc:/light/btn_filter_clear_hover.png";
+	btn-ticker-close:           "qrc:/light/ic_ticker_close.png";
+	btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
+	btn-update-notification-close:          "qrc:/light/ic_close_update.png";
+	btn-update-notification-close-hover:    "qrc:/light/ic_close_update_hover.png";
 }
 
 .@dark
 {
 	text: "#FFFFFF";
 	background: "#2f2e42";
-        update-background: "#37354D";
+	update-background: "#37354D";
 	label: "#A4A3C0";
 	light-grey: "#A4A3C0";
 	error: "#F5FF00";
@@ -82,7 +83,8 @@
     bugrep-bg:                  "qrc:/dark/report_bg_border.png";
     contact-bugrep-bg:          "qrc:/dark/contact_report_bg_border.png";
     login-logo:                 "qrc:/dark/login-logo.png";
-    btn-close:                  "qrc:/dark/ic_close.png";
+    btn-plus:                   "qrc:/dark/ic_plus.png";
+	btn-close:                  "qrc:/dark/ic_close.png";
     btn-close-hover:            "qrc:/dark/ic_close_hover.png";
     country-filter-clear:       "qrc:/dark/btn_filter_clear.png";
     country-filter-clear-hover: "qrc:/dark/btn_filter_clear_hover.png";
@@ -327,6 +329,11 @@
 .ic_information_bug-report
 {
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_information_bug-report.png");
+}
+
+.ic_faq
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_faq.png");
 }
 
 .ic_key-history
@@ -1100,6 +1107,51 @@
 {
 	color: "@text";
 	scaled-font: scaled(14);
+}
+
+/****************************************************
+ * FAQ
+ ***************************************************/
+
+.faq-content
+{
+	scaled-rect: scaled(-1,144,363,nan,false,14);
+}
+
+.faq-item
+{
+	scaled-rect: scaled(nan,nan,nan,68,false);
+}
+
+.faq-item-spacer
+{
+	scaled-rect: scaled(nan,nan,nan,26,false);
+}
+
+.faq-item-label
+{
+	scaled-font: scaled(16);
+	font-weight: Font.Bold;
+}
+
+.faq-item-text
+{
+	scaled-font: scaled(16);
+	color: "@label";
+}
+
+.faq-plus-btn
+{
+	scaled-rect: scaled(nan,nan,32,32,true);
+    qproperty-inactive: "@btn-plus";
+    qproperty-active: "@btn-plus";
+}
+
+.faq-close-btn
+{
+	scaled-rect: scaled(nan,nan,32,32,true);
+    qproperty-inactive: "@btn-close";
+    qproperty-active: "@btn-close";
 }
 
 /****************************************************
