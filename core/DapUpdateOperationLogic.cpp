@@ -52,7 +52,7 @@ void DapUpdateOperationLogic::startUpdate()
 #endif
 #ifdef Q_OS_WIN
     //detached = myProcess->startDetached("cmd.exe", QStringList() << "/C" << updateAppPath << "-p" << downloadFileName() << "-a" << currentApplication());
-    detached = myProcess->startDetached(updateAppPath << "-p" << downloadFileName() << "-a" << currentApplication());
+    detached = myProcess->startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
 #endif
 #ifdef Q_OS_MACOS
     updateAppPath = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update");
