@@ -62,6 +62,7 @@ void DapUpdateOperationLogic::startUpdate()
         qWarning() << "Failed to start update agent application" << updateAppPath;
     else
         qInfo() << "Start update agent application" << updateAppPath << downloadFileName() << currentApplication();
+    qInfo() << QString("cmd.exe /C \"%1\" -p %2 -a %3").arg(updateAppPath).arg(downloadFileName()).arg(currentApplication());
     myProcess->close();
     delete myProcess;
 //#else
