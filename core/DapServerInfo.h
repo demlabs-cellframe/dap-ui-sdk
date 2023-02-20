@@ -77,7 +77,7 @@ public:
   static QJsonObject toJSON (const DapServerInfo &dsi);
   static void sortServerList (QList<DapServerInfo> &serverList);
   static void addGeneralLocation (
-    QList<DapServerInfo> &serverList,
+    const QList<DapServerInfo> &serverList,
     QList<DapServerInfo> &generalServerList,
     QString base_location);
 

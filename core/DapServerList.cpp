@@ -298,6 +298,11 @@ bool DapServerList::empty() const
   return m_list.empty();
 }
 
+int DapServerList::indexOf (const DapServerInfo &a_item) const
+{
+  return m_list.indexOf (a_item);
+}
+
 void DapServerList::erase (DapServerList::iterator it)
 {
   m_list.erase (it);
@@ -373,6 +378,42 @@ void DapServerList::setCurrent (int a_index)
 const DapServerInfo &DapServerList::currentServer() const
 {
   return at (current());
+}
+
+void DapServerList::move (int a_source, int a_dest)
+{
+  m_list.move (a_source, a_dest);
+}
+
+void DapServerList::sort()
+{
+  DapServerInfoList availableServerList, notAvailableServerList;
+
+  beginResetModel();
+
+  {
+    qSort (m_list.begin(), m_list.end());
+
+    /* unavailable at the end of the list */
+    for (auto &server : m_list)
+      {
+        //      if (server.m_name == "Auto")
+        //        {
+        //          notAvailableServerList.push_front (server);
+        //          continue;
+        //        }
+
+        if (server.ping() == -1)
+          availableServerList.push_back (server);
+        else
+          notAvailableServerList.push_back (server);
+      }
+
+    m_list.clear();
+    m_list = notAvailableServerList += availableServerList;
+  }
+
+  endResetModel();
 }
 
 /********************************************

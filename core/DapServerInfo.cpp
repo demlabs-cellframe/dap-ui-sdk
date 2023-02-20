@@ -160,7 +160,7 @@ void DapServerInfo::sortServerList (QList<DapServerInfo> &serverList)
 }
 
 void DapServerInfo::addGeneralLocation (
-  QList<DapServerInfo> &pingServerList,
+  const QList<DapServerInfo> &pingServerList,
   QList<DapServerInfo> &bestRegionServers,
   const QString a_location)
 {

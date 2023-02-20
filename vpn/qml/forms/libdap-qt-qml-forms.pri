@@ -17,6 +17,7 @@ HEADERS += \
     $$PWD/dapqml-abstract/abstractcertificate.h \
     $$PWD/dapqml-abstract/abstractservermanager.h \
     $$PWD/dapqml-forms/doc-group-qml-forms.h \
+    $$PWD/dapqml-model/chooseserver/autoservermodel.h \
     $$PWD/dapqml-model/dapqmlmodelbugreports.h \
     $$PWD/dapqml-model/dapqmlmodelchoosecert.h \
     $$PWD/dapqml-model/dapqmlmodelchooseserver.h \
@@ -26,6 +27,7 @@ HEADERS += \
     $$PWD/dapqml-model/dapqmlmodelsettings.h
 
 SOURCES += \
+    $$PWD/dapqml-model/chooseserver/autoservermodel.cpp \
     $$PWD/dapqml-model/dapqmlmodelbugreports.cpp \
     $$PWD/dapqml-model/dapqmlmodelchoosecert.cpp \
     $$PWD/dapqml-model/dapqmlmodelchooseserver.cpp \

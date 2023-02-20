@@ -48,7 +48,7 @@ protected:
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
-protected:
+public:
   DapServerList();
   /// @}
 
@@ -67,6 +67,7 @@ public:
   int size() const;
   bool empty() const;
   bool isEmpty() { return empty(); }
+  int indexOf (const DapServerInfo &a_item) const;
   void erase (iterator it);
   iterator begin();
   const_iterator begin() const;
@@ -84,6 +85,11 @@ public:
   int current() const;
   void setCurrent (int a_index);
   const DapServerInfo &currentServer() const;
+
+  void move (int a_source, int a_dest);
+
+  /// sort servers list by ping */
+  void sort();
   /// @}
 
   /****************************************//**
