@@ -18,7 +18,11 @@ void DapCmdUpdateOperation::setDownloadProgress(quint64 load, quint64 total)
 void DapCmdUpdateOperation::handle(const QJsonObject *params)
 {
     if (params->value("start_download") != QJsonValue::Undefined)
-        emit startDownload(params->value("start_download").toString());
+    {
+        QJsonObject downloadInfo = params->value("start_download").toObject();
+        emit startDownload(downloadInfo.value("url").toString(),
+                           downloadInfo.value("pack").toString());
+    }
     if (params->value("start_update") != QJsonValue::Undefined)
         emit startUpdate();
 }

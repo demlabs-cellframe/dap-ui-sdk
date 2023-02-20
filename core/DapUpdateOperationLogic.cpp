@@ -42,27 +42,34 @@ void DapUpdateOperationLogic::startDownload()
 void DapUpdateOperationLogic::startUpdate()
 {
     qInfo() << "Start update process";
-#ifndef Q_OS_MACOS
+//#ifndef Q_OS_MACOS
     // start detached process
     QProcess *myProcess = new QProcess();
     bool detached = false;
+    QString updateAppPath = updateApp();
 #ifdef Q_OS_LINUX
-    detached = myProcess->startDetached(updateApp(), QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
-#else
-    detached = myProcess->startDetached("cmd.exe", QStringList() << "/C" << updateApp() << "-p" << downloadFileName() << "-a" << currentApplication());
+    detached = myProcess->startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
+#endif
+#ifdef Q_OS_WIN
+    detached = myProcess->startDetached("cmd.exe", QStringList() << "/C" << updateAppPath << "-p" << downloadFileName() << "-a" << currentApplication());
+#endif
+#ifdef Q_OS_MACOS
+    updateAppPath = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update");
+    fileCopy(updateApp(), updateAppPath);
+    detached = myProcess->startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
 #endif
     if (!detached)
-        qInfo() << "Failed to start update agent application";
+        qWarning() << "Failed to start update agent application" << updateAppPath;
     else
-        qInfo() << "Start update agent application" << updateApp();
+        qInfo() << "Start update agent application" << updateAppPath << downloadFileName() << currentApplication();
     myProcess->close();
     delete myProcess;
-#else
-    // start process for macos
-    ::system(QString("open %1 --args -p %2 -a %3;")
-                  .arg(updateApp()).arg(downloadFileName()).arg(currentApplication()).toLatin1().constData() );
-    qInfo() << "Start update agent application" << updateApp() << downloadFileName() << currentApplication();
-#endif
+//#else
+//    // start process for macos
+//    ::system(QString("open %1 --args -p %2 -a %3;")
+//                  .arg(updateApp()).arg(downloadFileName()).arg(currentApplication()).toLatin1().constData() );
+//    qInfo() << "Start update agent application" << updateApp() << downloadFileName() << currentApplication();
+//#endif
 }
 #endif
 
@@ -80,7 +87,8 @@ QString DapUpdateOperationLogic::updateApp()
     return updateAgent + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update.exe");
 #endif
 #ifdef Q_OS_MACOS
-    return updateAgent + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update.app");
+    return updateAgent + QDir::separator() + pathInsideMacOSPack(DAP_BRAND)
+            + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update");
 #endif
 }
 
@@ -108,7 +116,8 @@ QString DapUpdateOperationLogic::currentApplication()
     return applicationDirPath() + QDir::separator() + QString("%1.exe").arg(DAP_BRAND);
 #endif
 #ifdef Q_OS_MAC
-    return applicationDirPath() + QDir::separator() + QString("%1.app").arg(DAP_BRAND);
+    return applicationDirPath() + pathInsideMacOSPack(DAP_BRAND)
+            + QDir::separator() + QString("%1").arg(DAP_BRAND);
 #endif
 }
 
@@ -124,10 +133,20 @@ QString DapUpdateOperationLogic::applicationDirPath()
     CFRelease(macPath);
     QString filePath = QString(pathPtr);
     QString applicationDirPath = filePath.left(filePath.lastIndexOf("/"));
-    applicationDirPath += QString("/%1.app/Contents/MacOS").arg(DAP_BRAND);
     return applicationDirPath;
 #else
     return qApp->applicationDirPath();
 #endif
 }
 
+QString DapUpdateOperationLogic::pathInsideMacOSPack(QString packName)
+{
+    return QString("/%1.app/Contents/MacOS").arg(packName);
+}
+
+bool DapUpdateOperationLogic::fileCopy(QString source, QString dest)
+{
+    if (QFile::exists(dest))
+        QFile::remove(dest);
+    return QFile::copy(source, dest);
+}

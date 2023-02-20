@@ -17,13 +17,16 @@ public:
 #ifndef Q_OS_ANDROID
     void startUpdate();
 #endif
+    static QString currentApplication();
+    static QString downloadFileName();
+    static QString applicationDirPath();
+    static QString pathInsideMacOSPack(QString pachName);
+    static bool fileCopy(QString source, QString dest);
+
+
 protected:
     bool m_downloadError;
     QString updateApp();
-    QString currentApplication();
-    QString downloadFileName();
-    QString applicationDirPath();
-
 };
 
 #endif // DAPUPDATEOPERATIONLOGIC_H

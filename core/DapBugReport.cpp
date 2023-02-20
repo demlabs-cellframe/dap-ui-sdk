@@ -21,7 +21,7 @@ bool DapBugReport::createZipDataBugReport(const QString &serial, const QString &
     qDebug() << "DapBugReport attachFile" << attachFile << CheckFile(attachFile);
 
     QString dataJsonFilePath = QDir::tempPath() + QDir::separator() + "data.json";
-    QFile fileJsonData("data.json");
+    QFile fileJsonData(dataJsonFilePath);
     if(fileJsonData.open(QIODevice::WriteOnly | QIODevice::Text)){
         QJsonObject obj;
         obj["sn"] = serial;

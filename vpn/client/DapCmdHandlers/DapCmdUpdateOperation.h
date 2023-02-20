@@ -19,7 +19,7 @@ public:
 public slots:
     void setDownloadProgress(quint64 load, quint64 total);
 signals:
-    void startDownload(QString url);
+    void startDownload(QString url, QString path);
     void startUpdate();
 };
 
