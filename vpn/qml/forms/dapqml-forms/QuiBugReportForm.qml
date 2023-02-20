@@ -7,6 +7,7 @@ import QtGraphicalEffects 1.0
 import Qt.labs.platform 1.1
 import StyleDebugTree 1.0
 import TextEditContextMenu 1.0
+import Brand 1.0
 import Scaling 1.0
 import "qrc:/dapqml-widgets"
 
@@ -64,7 +65,7 @@ Item {
         property bool attachedImage: false;
         property string textAttach: qsTr("Click here to attach a screenshot") + lang.notifier
         property string textDetach: qsTr("Remove screenshot") + lang.notifier
-        property bool showAnAgreement: true
+        property bool showAnAgreement: Brand.isGooglePlayBuild()
 
         function updateAttachButton() {
             attach.text = (!attachedImage) ? textAttach : textDetach;
