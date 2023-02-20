@@ -954,6 +954,58 @@
 	scaled-font: scaled(16);	
 }
 
+.bugrep-agreement-frame
+{
+	color: "@background";
+	radius: 25;
+	scaled-rect: scaled(nan,nan,-1,860,false);
+}
+
+.bugrep-agreement-pos
+{
+	scaled-rect: scaled(nan,98,nan,nan,false);
+}
+
+.bugrep-agreement-title
+{
+	color: "@text";
+	font-weight: Font.Bold;
+	scaled-rect: scaled(-1,16,-1,24,false,20);
+}
+
+.bugrep-agreement-title-close-btn
+{
+	scaled-rect: scaled(382,18,28,28,true);
+	active: "@btn-close-hover";
+	inactive: "@btn-close";
+}
+
+.bugrep-agreement-size
+{
+	scaled-rect: scaled(nan,68,354,636,false,15);
+}
+
+.bugrep-agreement-text
+{
+	color: "@text";
+	scaled-rect: scaled(nan,nan,354,680,false,15);
+}
+
+.bugrep-agreement-text-pos
+{
+	scaled-rect: scaled(nan,68,nan,nan,false);
+}
+
+.bugrep-agreement-line-pos
+{
+	scaled-rect: scaled(nan,704,nan,nan,false);
+}
+
+.bugrep-agreement-button
+{
+	scaled-rect: scaled(nan,726,374,80,false);
+}
+
 /****************************************************
  * Purchase
  ***************************************************/
