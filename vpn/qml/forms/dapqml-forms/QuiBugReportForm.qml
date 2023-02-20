@@ -65,7 +65,7 @@ Item {
         property bool attachedImage: false;
         property string textAttach: qsTr("Click here to attach a screenshot") + lang.notifier
         property string textDetach: qsTr("Remove screenshot") + lang.notifier
-        property bool showAnAgreement: Brand.isGooglePlayBuild()
+        property bool showAnAgreement: false//Brand.isGooglePlayBuild()
 
         function updateAttachButton() {
             attach.text = (!attachedImage) ? textAttach : textDetach;
@@ -104,6 +104,8 @@ Item {
     signal sigShowAttachImageDialog();
     /// @brief button detachImage clicked
     signal sigDetachImage();
+    /// @brief user checked the agreement
+    signal sigAgreementChecked();
 
     /// @}
     /****************************************//**
@@ -151,6 +153,11 @@ Item {
     /// @brief change attach button state on report sended
     function finishedReport() {
         detachedImage();
+    }
+
+    /// @brief show agreement notification
+    function setAgreementCheck(a_value) {
+        root.internal.showAnAgreement   = a_value;
     }
 
     /// @}
@@ -341,6 +348,7 @@ Item {
             onClicked: {
                 root.internal.showAnAgreement = false;
                 agreementFrame.updatePosition();
+                root.sigAgreementChecked();
             }
         }
     }
