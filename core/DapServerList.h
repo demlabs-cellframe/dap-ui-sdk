@@ -69,8 +69,10 @@ public:
   bool isEmpty() { return empty(); }
   void erase (iterator it);
   iterator begin();
+  const_iterator begin() const;
   const_iterator cbegin() const;
   iterator end();
+  const_iterator end() const;
   const_iterator cend() const;
   const DapServerInfo &first() const;
   const DapServerInfo &last() const;
@@ -81,6 +83,7 @@ public:
 
   int current() const;
   void setCurrent (int a_index);
+  const DapServerInfo &currentServer() const;
   /// @}
 
   /****************************************//**

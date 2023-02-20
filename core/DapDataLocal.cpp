@@ -73,7 +73,7 @@ void DapDataLocal::parseXML(const QString& a_fname)
                                 }
                             }
                             qDebug() << "[DL] Server "<<item.name()<<" added";
-                            DapDataLocal::serversData()->addServer(item);
+                            DapServerList::instance()->append (std::move (item));
                         }else{
                             qDebug() << "[DL] Inside tag 'servers': unknown tag "<<sr->name();
                             sr->skipCurrentElement();
@@ -100,7 +100,7 @@ void DapDataLocal::parseXML(const QString& a_fname)
     }
     file.close();
 #ifdef  QT_DEBUG
-    DapDataLocal::serversData()->addServer("UNKNOWN", "local", "127.0.0.1",  8099);
+    DapServerList::instance()->append (DapServerInfo {"UNKNOWN", "local", "127.0.0.1",  8099});
 #endif
 
 
@@ -338,11 +338,6 @@ void DapDataLocal::removeSetting(const QString &a_setting)
 DapBugReportData *DapDataLocal::bugReportData()
 {
     return DapBugReportData::instance();
-}
-
-DapServersData *DapDataLocal::serversData()
-{
-    return DapServersData::instance();
 }
 
 DapSerialKeyData *DapDataLocal::serialKeyData()

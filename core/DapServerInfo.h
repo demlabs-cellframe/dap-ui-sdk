@@ -59,6 +59,12 @@ public:
   DapServerInfo();
   DapServerInfo (const DapServerInfo &a_src);
   DapServerInfo (DapServerInfo &&a_src);
+  DapServerInfo (
+    QString a_location,
+    QString a_name,
+    QString a_address,
+    quint16 a_port
+  );
   /// @}
 
   /****************************************//**
@@ -71,33 +77,33 @@ public:
   static QJsonObject toJSON (const DapServerInfo &dsi);
   static void sortServerList (QList<DapServerInfo> &serverList);
   static void addGeneralLocation (
-      QList<DapServerInfo> &serverList,
-      QList<DapServerInfo> &generalServerList,
-      QString base_location);
+    QList<DapServerInfo> &serverList,
+    QList<DapServerInfo> &generalServerList,
+    QString base_location);
 
   const QString &address() const;
-  void    setAddress(const QString &address);
+  void    setAddress (const QString &address);
 
   const QString &address6() const;
-  void    setAddress6(const QString &address6);
+  void    setAddress6 (const QString &address6);
 
   quint16 port() const;
-  void    setPort(const quint16 &port);
+  void    setPort (const quint16 &port);
 
   const QString &name() const;
-  void    setName(const QString &name);
+  void    setName (const QString &name);
 
   const QString &location() const;
-  void    setLocation(const QString &location);
+  void    setLocation (const QString &location);
 
   const QString &online() const;
-  void    setOnline(const QString &online);
+  void    setOnline (const QString &online);
 
   int     ping() const;
-  void    setPing(int ping);
+  void    setPing (int ping);
 
   ConnectionQuality connQuality() const;
-  void setConnQuality(const ConnectionQuality &connQuality);
+  void setConnQuality (const ConnectionQuality &connQuality);
 
   bool isAuto() const;
   bool isValid() const;
@@ -155,7 +161,7 @@ public:
     ping,
     connQuality,
   };
-  Q_ENUM(FieldId)
+  Q_ENUM (FieldId)
   /// @}
 
   /****************************************//**

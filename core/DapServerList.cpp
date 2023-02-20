@@ -309,6 +309,11 @@ DapServerList::iterator DapServerList::begin()
   return m_list.begin();
 }
 
+DapServerList::const_iterator DapServerList::begin() const
+{
+  return cbegin();
+}
+
 DapServerList::const_iterator DapServerList::cbegin() const
 {
   return m_list.cbegin();
@@ -317,6 +322,11 @@ DapServerList::const_iterator DapServerList::cbegin() const
 DapServerList::iterator DapServerList::end()
 {
   return m_list.end();
+}
+
+DapServerList::const_iterator DapServerList::end() const
+{
+  return cend();
 }
 
 DapServerList::const_iterator DapServerList::cend() const
@@ -346,7 +356,7 @@ DapServerInfo DapServerList::value (int a_index) const
 
 QVariant DapServerList::qValue (int a_index) const
 {
-
+  return DapServerType (m_list.at (a_index)).asVariantMap();
 }
 
 int DapServerList::current() const
@@ -358,6 +368,11 @@ void DapServerList::setCurrent (int a_index)
 {
   m_current = a_index;
   emit currentChanged();
+}
+
+const DapServerInfo &DapServerList::currentServer() const
+{
+  return at (current());
 }
 
 /********************************************

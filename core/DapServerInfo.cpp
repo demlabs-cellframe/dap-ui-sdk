@@ -47,6 +47,21 @@ DapServerInfo::DapServerInfo (DapServerInfo &&a_src)
   m_connQuality = a_src.m_connQuality;
 }
 
+DapServerInfo::DapServerInfo (
+  QString a_location,
+  QString a_name,
+  QString a_address,
+  quint16 a_port)
+  : m_address (a_address)
+  , m_port (a_port)
+  , m_name (a_name)
+  , m_location (a_location)
+  , m_ping (-1)
+  , m_connQuality (ConnectionQuality::NO_CONNECTION)
+{
+
+}
+
 /********************************************
  * METHODS
  *******************************************/
@@ -144,10 +159,10 @@ void DapServerInfo::sortServerList (QList<DapServerInfo> &serverList)
   serverList = notAvailableServerList += availableServerList;
 }
 
-void DapServerInfo::addGeneralLocation(
-    QList<DapServerInfo> &pingServerList,
-    QList<DapServerInfo> &bestRegionServers,
-    const QString a_location)
+void DapServerInfo::addGeneralLocation (
+  QList<DapServerInfo> &pingServerList,
+  QList<DapServerInfo> &bestRegionServers,
+  const QString a_location)
 {
   QSet <QString> general_location;
 
@@ -204,7 +219,7 @@ const QString &DapServerInfo::address() const
   return m_address;
 }
 
-void DapServerInfo::setAddress(const QString &address)
+void DapServerInfo::setAddress (const QString &address)
 {
   m_address = address;
 }
@@ -214,7 +229,7 @@ const QString &DapServerInfo::address6() const
   return m_address6;
 }
 
-void DapServerInfo::setAddress6(const QString &address6)
+void DapServerInfo::setAddress6 (const QString &address6)
 {
   m_address6 = address6;
 }
@@ -224,7 +239,7 @@ quint16 DapServerInfo::port() const
   return m_port;
 }
 
-void DapServerInfo::setPort(const quint16 &port)
+void DapServerInfo::setPort (const quint16 &port)
 {
   m_port = port;
 }
@@ -234,7 +249,7 @@ const QString &DapServerInfo::name() const
   return m_name;
 }
 
-void DapServerInfo::setName(const QString &name)
+void DapServerInfo::setName (const QString &name)
 {
   m_name = name;
 }
@@ -244,7 +259,7 @@ const QString &DapServerInfo::location() const
   return m_location;
 }
 
-void DapServerInfo::setLocation(const QString &location)
+void DapServerInfo::setLocation (const QString &location)
 {
   m_location = location;
 }
@@ -254,7 +269,7 @@ const QString &DapServerInfo::online() const
   return m_online;
 }
 
-void DapServerInfo::setOnline(const QString &online)
+void DapServerInfo::setOnline (const QString &online)
 {
   m_online = online;
 }
@@ -264,7 +279,7 @@ int DapServerInfo::ping() const
   return m_ping;
 }
 
-void DapServerInfo::setPing(int ping)
+void DapServerInfo::setPing (int ping)
 {
   m_ping = ping;
 }
@@ -274,7 +289,7 @@ DapServerInfo::ConnectionQuality DapServerInfo::connQuality() const
   return m_connQuality;
 }
 
-void DapServerInfo::setConnQuality(const ConnectionQuality &connQuality)
+void DapServerInfo::setConnQuality (const ConnectionQuality &connQuality)
 {
   m_connQuality =
     (int (connQuality) >= int (ConnectionQuality::NO_CONNECTION))
