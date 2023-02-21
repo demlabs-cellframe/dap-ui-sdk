@@ -66,7 +66,7 @@ Item {
         property bool attachedImage: false;
         property string textAttach: qsTr("Click here to attach a screenshot") + lang.notifier
         property string textDetach: qsTr("Remove screenshot") + lang.notifier
-        property bool showAnAgreement: false//Brand.isGooglePlayBuild()
+        property bool showAnAgreement: Brand.isGooglePlayBuild()
 
         function updateAttachButton() {
             attach.text = (!attachedImage) ? textAttach : textDetach;
