@@ -260,7 +260,7 @@ Item {
          visible: true
          opacity: 0
 
-         property bool hidden: false
+         property bool hidden: true
 
          Behavior on y { PropertyAnimation { duration: 100 }}
          Behavior on opacity { PropertyAnimation { duration: 100 }}
@@ -281,6 +281,7 @@ Item {
              y = hidden
                  ? (ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y)
                  : (ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y)
+             statusContainer._updatePos();
          }
 
          DapQmlDummy { id: updNotPosTickerOn;  qss: "update-notification-pos-ticker-on"  }
@@ -342,13 +343,25 @@ Item {
 
     DapQmlRectangle {
         id: statusContainer
+        y: statusPositioner.y
         qss: "dashboard-status-container"
         width: parent.width
+
+        Behavior on y { PropertyAnimation { duration: 100 }}
+
+        function _updatePos() {
+            y = statusPositioner.y + (updateNotificationRect.hidden ? 0 : statusContainer.height);
+        }
 
 //        Component.onCompleted: StyleDebugTree.describe (
 //           "statusContainer",
 //            ["x", "y", "width", "height"],
 //           this);
+
+        DapQmlDummy {
+            id: statusPositioner
+            qss: "dashboard-status-container-pos"
+        }
 
         DapQmlLabel {
             id: statusTimeScaler

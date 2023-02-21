@@ -804,7 +804,12 @@
 
 .dashboard-status-container
 {
-	scaled-rect: scaled(nan,107,-1,22,true);
+	scaled-rect: scaled(nan,nan,-1,22,true);
+}
+
+.dashboard-status-container-pos
+{
+	scaled-rect: scaled(nan,107,nan,nan,nan);
 }
 
 .dashboard-status-label-scaler
