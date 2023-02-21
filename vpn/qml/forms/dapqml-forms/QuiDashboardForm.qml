@@ -266,12 +266,14 @@ Item {
          Behavior on opacity { PropertyAnimation { duration: 100 }}
 
          function showUpdateNotification() {
+             updateNotificationButton.visible = true;
              hidden     = false;
              opacity    = 1;
              _updatePos();
          }
 
          function hideUpdateNotification() {
+             updateNotificationButton.visible = false;
              hidden     = true;
              opacity    = 0;
              _updatePos();
