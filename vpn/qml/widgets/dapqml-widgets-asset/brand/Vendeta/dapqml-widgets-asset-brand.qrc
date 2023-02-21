@@ -47,5 +47,7 @@
         <file>light/ic_ticker_close.png</file>
         <file>dark/ic_ticker_close_hover.png</file>
         <file>dark/ic_ticker_close.png</file>
+        <file>light/ic_plus.png</file>
+        <file>dark/ic_plus.png</file>
     </qresource>
 </RCC>
