@@ -4,8 +4,9 @@ import QtGraphicalEffects 1.12
 import "qrc:/dapqml-widgets"
 
 Item {
-
     id: root
+    clip: true
+
     /// @brief form name
     ///
     /// Used to connect interface via Manager

@@ -4,8 +4,8 @@ import PageCtl 1.0
 import "qrc:/dapqml-widgets"
 
 Item {
-
     id: root
+    clip: true
 
     /// @brief form name
     ///
@@ -75,6 +75,8 @@ Item {
 
     QuiCircleProgressBase {
         id: overview
+        anchors.fill: parent
+
         // form name
         formName: root.formName
         // buttons clicked
