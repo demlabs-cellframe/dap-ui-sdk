@@ -339,6 +339,13 @@ Item {
         qss: "dashboard-title c-label"
     }
 
+//    DapQmlLabel {
+//        width: contentWidth
+//        height: contentHeight
+//        text: "choose server"
+//        onClicked: root.sigServerClicked()
+//    }
+
     /****************************************//**
      * Status
      ********************************************/
