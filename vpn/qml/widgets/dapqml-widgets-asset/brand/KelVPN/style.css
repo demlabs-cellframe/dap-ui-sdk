@@ -1314,34 +1314,46 @@
 
 .progress-circle-arc
 {
-        scaled-rect: scaled(-1,278,200,200,true,12);
-        color: "@text";
+	scaled-rect: scaled(-1,278,200,200,true,12);
+	color: "@text";
 }
+
 .progress-circle-separator-container
 {
-        scaled-rect: scaled(-1,134,-1,4,true);
+	scaled-rect: scaled(-1,134,-1,4,true);
 }
+
 .progress-circle-btn-confirm
 {
-        scaled-rect: scaled(-1,737,374,80,true,12);
+	scaled-rect: scaled(-1,737,374,80,true,12);
 }
+
+.progress-circle-info
+{
+	scaled-rect: scaled(nan,nan,128,64,true);
+}
+
 .progress-circle-percent
 {
-        scaled-rect: scaled(100,94,nan,nan,false,40);
-        color: "@text";
-        font-weight: Font.Bold;
-        horizontal-align: Text.AlignHCenter;
+	scaled-font: scaled(40);
+	color: "@text";
+	font-weight: Font.Bold;
 }
+
 .progress-circle-mbytes
 {
-        scaled-rect: scaled(100,122,nan,nan,false,12);
-        color: "@light-grey";
-        horizontal-align: Text.AlignHCenter;
+	scaled-font: scaled(12);
+	color: "@light-grey";
+}
+
+.progress-circle-spacing
+{
+	scaled-rect: scaled(nan,nan,nan,8,false);
 }
 
 .progress-message
 {
-        scaled-rect: scaled(-1,500,354,nan,false,19);
-        color: "@text";
-        horizontal-align: Text.AlignHCenter;
+	scaled-rect: scaled(-1,500,354,nan,false,19);
+	color: "@text";
+	horizontal-align: Text.AlignHCenter;
 }
