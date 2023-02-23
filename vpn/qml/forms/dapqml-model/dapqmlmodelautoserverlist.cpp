@@ -1,17 +1,17 @@
 /* INCLUDES */
-#include "autoservermodel.h"
+#include "dapqmlmodelautoserverlist.h"
 
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-AutoServerModel::AutoServerModel ()
+DapQmlModelAutoServerList::DapQmlModelAutoServerList ()
   : _serverList (*DapServerList::instance())
 {
 
 }
 
-AutoServerModel::AutoServerModel (DapServerList &a_serverList)
+DapQmlModelAutoServerList::DapQmlModelAutoServerList (DapServerList &a_serverList)
   : _serverList (a_serverList)
 {
 
@@ -21,13 +21,13 @@ AutoServerModel::AutoServerModel (DapServerList &a_serverList)
  * METHODS
  *******************************************/
 
-void AutoServerModel::setLocation (const QString &a_location)
+void DapQmlModelAutoServerList::setLocation (const QString &a_location)
 {
   _location = a_location;
   update();
 }
 
-void AutoServerModel::update()
+void DapQmlModelAutoServerList::update()
 {
   QSet <QString> generalLocation;
 
@@ -87,12 +87,12 @@ void AutoServerModel::update()
  * OVERRIDE
  *******************************************/
 
-int AutoServerModel::rowCount (const QModelIndex &parent) const
+int DapQmlModelAutoServerList::rowCount (const QModelIndex &parent) const
 {
   return _autoServers.rowCount (parent);
 }
 
-QVariant AutoServerModel::data (const QModelIndex &index, int role) const
+QVariant DapQmlModelAutoServerList::data (const QModelIndex &index, int role) const
 {
   return _autoServers.data (index, role);
 }

@@ -1,5 +1,5 @@
-#ifndef AUTOSERVERMODEL_H
-#define AUTOSERVERMODEL_H
+#ifndef DAPQMLMODELAUTOSERVERLIST_H
+#define DAPQMLMODELAUTOSERVERLIST_H
 
 /* INCLUDES */
 #include <QAbstractTableModel>
@@ -12,7 +12,7 @@
  * @author Mikhail Shilenko
  *******************************************/
 
-class AutoServerModel : public QAbstractListModel
+class DapQmlModelAutoServerList : public QAbstractListModel
 {
   Q_OBJECT
 
@@ -33,9 +33,9 @@ protected:
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
-protected:
-  AutoServerModel();
-  AutoServerModel (DapServerList &a_serverList);
+public:
+  DapQmlModelAutoServerList();
+  DapQmlModelAutoServerList (DapServerList &a_serverList);
   /// @}
 
   /****************************************//**
@@ -62,4 +62,4 @@ public:
 };
 
 /*-----------------------------------------*/
-#endif // AUTOSERVERMODEL_H
+#endif // DAPQMLMODELAUTOSERVERLIST_H
