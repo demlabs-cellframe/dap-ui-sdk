@@ -87,9 +87,10 @@ public:
   const DapServerInfo &currentServer() const;
 
   void move (int a_source, int a_dest);
+  void clear();
 
   /// sort servers list by ping */
-  void sort();
+  void sortByPing();
   /// @}
 
   /****************************************//**

@@ -94,7 +94,7 @@ QVariant DapQmlModelChooseServer::data(const QModelIndex &index, int role) const
       if (index.row() >= m_serverManager->size())
         return QVariant();
 
-      return m_serverManager->server (index.row()).name;
+      return m_serverManager->server (index.row()).name();
 
     case Role::ping:
         return serverList->data (index, DapServerType::FieldId::ping);

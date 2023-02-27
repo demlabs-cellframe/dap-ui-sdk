@@ -3,6 +3,7 @@
 
 /* INCLUDES */
 #include <QAbstractTableModel>
+#include "DapServerInfo.h"
 
 /* DEFS */
 class AbstractServerListModelBridge;
@@ -23,11 +24,21 @@ class DapQmlModelFullServerList : public QAbstractListModel
   Q_OBJECT
 
   /****************************************//**
+   * @name PROPERTIES
+   *******************************************/
+  /// @{
+  Q_PROPERTY (int current READ current WRITE setCurrent NOTIFY currentChanged)
+  Q_PROPERTY (int size READ size NOTIFY sizeChanged)
+  /// @}
+
+  /****************************************//**
    * @name VARS
    *******************************************/
   /// @{
   AbstractServerListModelBridge *m_bridge;
   QHash<int, QByteArray> _roleNamesMap;
+  int m_current;
+  QVector<QMetaObject::Connection> _conn;
   struct
   {
     int autoServer;
@@ -40,7 +51,7 @@ class DapQmlModelFullServerList : public QAbstractListModel
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
-public:
+protected:
   DapQmlModelFullServerList();
   /// @}
 
@@ -49,9 +60,14 @@ public:
    *******************************************/
   /// @{
 public:
+  static DapQmlModelFullServerList *instance();
   const AbstractServerListModelBridge *bridge() const;
   void setBridge (AbstractServerListModelBridge *a_newBridge);
+  Q_INVOKABLE int size() const;
+  Q_INVOKABLE int current() const;
+  Q_INVOKABLE void setCurrent (int a_newCurrentServer);
   Q_INVOKABLE QVariant value (int a_row, const QString &a_name);
+  const DapServerInfo &at (int a_index) const;
 protected:
   void _getSizes();
   void _getRoles();
@@ -66,6 +82,15 @@ public:
   int rowCount (const QModelIndex &parent = QModelIndex()) const override;
   QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
   QHash<int, QByteArray> roleNames() const override;
+  /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void currentChanged();
+  void sizeChanged();
   /// @}
 };
 

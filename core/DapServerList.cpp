@@ -385,7 +385,14 @@ void DapServerList::move (int a_source, int a_dest)
   m_list.move (a_source, a_dest);
 }
 
-void DapServerList::sort()
+void DapServerList::clear()
+{
+  beginResetModel();
+  m_list.clear();
+  endResetModel();
+}
+
+void DapServerList::sortByPing()
 {
   DapServerInfoList availableServerList, notAvailableServerList;
 

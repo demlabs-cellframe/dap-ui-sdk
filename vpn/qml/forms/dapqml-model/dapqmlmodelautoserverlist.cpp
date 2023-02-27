@@ -8,13 +8,13 @@
 DapQmlModelAutoServerList::DapQmlModelAutoServerList ()
   : _serverList (*DapServerList::instance())
 {
-
+  connect (&_serverList, &QAbstractItemModel::modelReset, this, [this] { update(); });
 }
 
 DapQmlModelAutoServerList::DapQmlModelAutoServerList (DapServerList &a_serverList)
   : _serverList (a_serverList)
 {
-
+  connect (&_serverList, &QAbstractItemModel::modelReset, this, [this] { update(); });
 }
 
 /********************************************
@@ -30,6 +30,8 @@ void DapQmlModelAutoServerList::setLocation (const QString &a_location)
 void DapQmlModelAutoServerList::update()
 {
   QSet <QString> generalLocation;
+
+  beginResetModel();
 
   /* add general auto servers */
   if (_autoServers.isEmpty())
@@ -64,7 +66,7 @@ void DapQmlModelAutoServerList::update()
     }
 
   /* sort result list */
-  _autoServers.sort();
+  _autoServers.sortByPing();
 
   /* top "Auto" server */
   for (auto &region_server : _autoServers)
@@ -81,6 +83,13 @@ void DapQmlModelAutoServerList::update()
             }
         }
     }
+
+  endResetModel();
+}
+
+const DapServerInfo &DapQmlModelAutoServerList::at(int a_index) const
+{
+  return _autoServers.at (a_index);
 }
 
 /********************************************

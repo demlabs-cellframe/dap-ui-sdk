@@ -10,28 +10,87 @@
  *******************************************/
 
 DapQmlModelFullServerList::DapQmlModelFullServerList()
-  : m_bridge (AbstractServerListModelBridge::getDefaultBridge())
+  : m_bridge (nullptr)
+  , m_current (0)
 {
-  _getSizes();
-  _getRoles();
+  setBridge (AbstractServerListModelBridge::getDefaultBridge());
 }
 
 /********************************************
  * METHODS
  *******************************************/
 
+DapQmlModelFullServerList *DapQmlModelFullServerList::instance()
+{
+  static DapQmlModelFullServerList i;
+  return &i;
+}
+
 const AbstractServerListModelBridge *DapQmlModelFullServerList::bridge() const
 {
   return m_bridge;
 }
 
-void DapQmlModelFullServerList::setBridge(AbstractServerListModelBridge *a_newBridge)
+void DapQmlModelFullServerList::setBridge (AbstractServerListModelBridge *a_newBridge)
 {
+  /* variables */
+  auto updateLambda     = [this]
+    {
+      beginResetModel();
+      _getSizes();
+      endResetModel();
+    };
+  auto &autoServerList  = a_newBridge->autoServerList();
+  auto &serverList      = a_newBridge->serverList();
+
+  /* setup */
   beginResetModel();
-  m_bridge  = a_newBridge;
-  _getSizes();
-  _getRoles();
+  {
+    if (m_bridge)
+      delete m_bridge;
+
+    m_bridge  = a_newBridge;
+    _getSizes();
+    _getRoles();
+  }
   endResetModel();
+
+  /* clear connections */
+  for (auto &conn : _conn)
+    disconnect (conn);
+  _conn.clear();
+
+  /* create connections */
+  _conn << connect (&autoServerList, &QAbstractItemModel::rowsInserted, updateLambda);
+  _conn << connect (&autoServerList, &QAbstractItemModel::rowsRemoved,  updateLambda);
+  _conn << connect (&autoServerList, &QAbstractItemModel::modelReset,   updateLambda);
+  _conn << connect (&serverList,     &QAbstractItemModel::rowsInserted, updateLambda);
+  _conn << connect (&serverList,     &QAbstractItemModel::rowsRemoved,  updateLambda);
+  _conn << connect (&serverList,     &QAbstractItemModel::modelReset,   updateLambda);
+}
+
+int DapQmlModelFullServerList::size() const
+{
+  return _size.full;
+}
+
+int DapQmlModelFullServerList::current() const
+{
+  return m_current;
+}
+
+void DapQmlModelFullServerList::setCurrent (int a_newCurrent)
+{
+//  int old       = m_current;
+//  m_current     = a_newCurrent;
+
+//  auto oldIndex = index (old, 0);
+//  auto newIndex = index (m_current, 0);
+//  emit dataChanged (oldIndex, oldIndex);
+//  emit dataChanged (newIndex, newIndex);
+
+  m_current   = a_newCurrent;
+  emit currentChanged();
 }
 
 QVariant DapQmlModelFullServerList::value (int a_row, const QString &a_name)
@@ -42,6 +101,20 @@ QVariant DapQmlModelFullServerList::value (int a_row, const QString &a_name)
     return QVariant();
 
   return data (index (a_row, 0), fieldId);
+}
+
+const DapServerInfo &DapQmlModelFullServerList::at (int a_index) const
+{
+  auto &autoServerList  = m_bridge->autoServerList();
+  auto &serverList      = m_bridge->serverList();
+
+  /* if auto server boundaries */
+  if (a_index < _size.autoServer)
+    return autoServerList.at (a_index);
+
+  /* server boundaries */
+  int newIndexValue     = a_index - _size.autoServer;
+  return serverList.at (newIndexValue);
 }
 
 void DapQmlModelFullServerList::_getSizes()
@@ -85,8 +158,10 @@ const QHash<int, QByteArray> &DapQmlModelFullServerList::_baseRoleNames()
 
 int DapQmlModelFullServerList::rowCount (const QModelIndex &parent) const
 {
-  return m_bridge->serverList()     .rowCount (parent)
-       + m_bridge->autoServerList() .rowCount (parent);
+  Q_UNUSED (parent)
+//  return m_bridge->serverList()     .rowCount (parent)
+//       + m_bridge->autoServerList() .rowCount (parent);
+  return _size.full;
 }
 
 QVariant DapQmlModelFullServerList::data (const QModelIndex &index, int role) const

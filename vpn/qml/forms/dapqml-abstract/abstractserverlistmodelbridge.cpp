@@ -10,7 +10,7 @@ class DeafultserverListModelBridge : public AbstractServerListModelBridge
 public:
   DeafultserverListModelBridge()
     : m_serverList (DapServerList::instance())
-    , m_autoServerList (new DapQmlModelAutoServerList (*m_serverList))
+    , m_autoServerList (new DapQmlModelAutoServerList)
   {
 
   }
