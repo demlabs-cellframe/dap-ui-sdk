@@ -324,6 +324,7 @@ Item {
                 horizontalAlign: Text.AlignLeft
                 verticalAlign: Text.AlignTop
                 lineHeight: 1.25
+                disableClicking: true
                 qss: "bugrep-agreement-text"
 //                Component.onCompleted:
 //                    StyleDebugTree.describe (
