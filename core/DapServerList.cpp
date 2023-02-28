@@ -1,20 +1,7 @@
 /* INCLUDES */
 #include "DapServerList.h"
 
-/********************************************
- * CONSTRUCT/DESTRUCT
- *******************************************/
-
-DapServerList::DapServerList()
-  : m_current (0)
-{
-
-}
-
-/********************************************
- * METHODS
- *******************************************/
-
+/* FUNCTIONS */
 static const QHash<QString, QString> s_countryMap =
 {
   {"Andorra", "AD"},
@@ -248,6 +235,26 @@ static const QString _findInCountriesMap (const QString &string)
          : "://country/" + code + ".png";
 }
 
+/********************************************
+ * CONSTRUCT/DESTRUCT
+ *******************************************/
+
+DapServerList::DapServerList()
+  : m_current (0)
+{
+
+}
+
+DapServerList::~DapServerList()
+{
+
+}
+
+/********************************************
+ * METHODS
+ *******************************************/
+
+
 DapServerList *DapServerList::instance()
 {
   static DapServerList i;
@@ -276,7 +283,7 @@ void DapServerList::insert (int a_index, const DapServerInfo &a_server)
   emit sizeChanged();
 }
 
-void DapServerList::insert(int a_index, DapServerInfo &&a_server)
+void DapServerList::insert (int a_index, DapServerInfo &&a_server)
 {
   m_list.insert (a_index, std::move (a_server));
   emit sizeChanged();
@@ -303,38 +310,38 @@ int DapServerList::indexOf (const DapServerInfo &a_item) const
   return m_list.indexOf (a_item);
 }
 
-void DapServerList::erase (DapServerList::iterator it)
+void DapServerList::erase (DapServerList::Iterator it)
 {
   m_list.erase (it);
   emit sizeChanged();
 }
 
-DapServerList::iterator DapServerList::begin()
+DapServerList::Iterator DapServerList::begin()
 {
   return m_list.begin();
 }
 
-DapServerList::const_iterator DapServerList::begin() const
+DapServerList::ConstIterator DapServerList::begin() const
 {
   return cbegin();
 }
 
-DapServerList::const_iterator DapServerList::cbegin() const
+DapServerList::ConstIterator DapServerList::cbegin() const
 {
   return m_list.cbegin();
 }
 
-DapServerList::iterator DapServerList::end()
+DapServerList::Iterator DapServerList::end()
 {
   return m_list.end();
 }
 
-DapServerList::const_iterator DapServerList::end() const
+DapServerList::ConstIterator DapServerList::end() const
 {
   return cend();
 }
 
-DapServerList::const_iterator DapServerList::cend() const
+DapServerList::ConstIterator DapServerList::cend() const
 {
   return m_list.cend();
 }
@@ -480,5 +487,56 @@ DapServerList &DapServerList::operator<< (DapServerInfo &&a_server)
   append (std::move (a_server));
   return *this;
 }
+
+/*-----------------------------------------*/
+
+DapSortedServerListIterator::DapSortedServerListIterator() : p (nullptr), i() {}
+DapSortedServerListIterator::DapSortedServerListIterator (DapSortedServerListIterator::Iterator n, DapSortedServerList *p) : p (p), i (n) {}
+DapSortedServerListIterator::DapSortedServerListIterator (const DapSortedServerListIterator &o): p (o.p), i (o.i) {}
+DapServerInfo &DapSortedServerListIterator::operator*()        { return (*p) [*i]; }
+DapServerInfo *DapSortedServerListIterator::operator->()       { return & (*p) [*i]; }
+DapServerInfo &DapSortedServerListIterator::operator[] (int j) { return (*p) [*i + j]; }
+bool DapSortedServerListIterator::operator== (const DapSortedServerListIterator &o) const      { return i == o.i; }
+bool DapSortedServerListIterator::operator!= (const DapSortedServerListIterator &o) const      { return i != o.i; }
+bool DapSortedServerListIterator::operator< (const DapSortedServerListIterator &other) const   { return *i < *other.i; }
+bool DapSortedServerListIterator::operator<= (const DapSortedServerListIterator &other) const  { return *i <= *other.i; }
+bool DapSortedServerListIterator::operator> (const DapSortedServerListIterator &other) const   { return *i > *other.i; }
+bool DapSortedServerListIterator::operator>= (const DapSortedServerListIterator &other) const  { return *i >= *other.i; }
+DapSortedServerListIterator DapSortedServerListIterator::operator++ (int) { DapSortedServerListIterator n (i, p); ++i; return n; }
+DapSortedServerListIterator DapSortedServerListIterator::operator-- (int) { DapSortedServerListIterator n (i, p); i--; return n; }
+DapSortedServerListIterator &DapSortedServerListIterator::operator+= (int j)     { i += j; return *this; }
+DapSortedServerListIterator &DapSortedServerListIterator::operator-= (int j)     { i -= j; return *this; }
+int DapSortedServerListIterator::operator- (DapSortedServerListIterator j) const { return *i - *j.i; }
+DapSortedServerListIterator::operator DapServerInfo *()                          { return operator->(); }
+DapSortedServerListIterator DapSortedServerListIterator::operator- (int j) const { return DapSortedServerListIterator (i - j, p); }
+DapSortedServerListIterator DapSortedServerListIterator::operator+ (int j) const { return DapSortedServerListIterator (i + j, p); }
+DapSortedServerListIterator &DapSortedServerListIterator::operator--()           { i--; return *this; }
+DapSortedServerListIterator &DapSortedServerListIterator::operator++()           { ++i; return *this; }
+
+/*-----------------------------------------*/
+
+DapSortedServerListConstIterator::DapSortedServerListConstIterator() : p (nullptr), i() {}
+DapSortedServerListConstIterator::DapSortedServerListConstIterator (DapSortedServerListConstIterator::ConstIterator n, DapSortedServerList *p) : p (p), i (n) {}
+DapSortedServerListConstIterator::DapSortedServerListConstIterator (const DapSortedServerListConstIterator &o): p (o.p), i (o.i) {}
+DapSortedServerListConstIterator::DapSortedServerListConstIterator (const DapSortedServerListIterator &o): p (o.p), i (o.i) {}
+const DapServerInfo &DapSortedServerListConstIterator::operator*() const        { return p->at (*i); }
+const DapServerInfo *DapSortedServerListConstIterator::operator->() const       { return &p->at (*i); }
+const DapServerInfo &DapSortedServerListConstIterator::operator[] (int j) const { return p->at (*i + j); }
+bool DapSortedServerListConstIterator::operator== (const DapSortedServerListConstIterator &o) const     { return i == o.i; }
+bool DapSortedServerListConstIterator::operator!= (const DapSortedServerListConstIterator &o) const     { return i != o.i; }
+bool DapSortedServerListConstIterator::operator< (const DapSortedServerListConstIterator &other) const  { return *i < *other.i; }
+bool DapSortedServerListConstIterator::operator<= (const DapSortedServerListConstIterator &other) const { return *i <= *other.i; }
+bool DapSortedServerListConstIterator::operator> (const DapSortedServerListConstIterator &other) const  { return *i > *other.i; }
+bool DapSortedServerListConstIterator::operator>= (const DapSortedServerListConstIterator &other) const { return *i >= *other.i; }
+DapSortedServerListConstIterator DapSortedServerListConstIterator::operator++ (int)         { DapSortedServerListConstIterator n (i, p); ++i; return n; }
+DapSortedServerListConstIterator DapSortedServerListConstIterator::operator-- (int)         { DapSortedServerListConstIterator n (i, p); i--; return n; }
+DapSortedServerListConstIterator &DapSortedServerListConstIterator::operator+= (int j)      { i += j; return *this; }
+DapSortedServerListConstIterator &DapSortedServerListConstIterator::operator-= (int j)      { i -= j; return *this; }
+int DapSortedServerListConstIterator::operator- (DapSortedServerListConstIterator j) const  { return *i - *j.i; }
+DapSortedServerListConstIterator::operator const DapServerInfo *() const                    { return operator->(); }
+DapSortedServerListConstIterator DapSortedServerListConstIterator::operator- (int j) const  { return DapSortedServerListConstIterator (i - j, p); }
+DapSortedServerListConstIterator DapSortedServerListConstIterator::operator+ (int j) const  { return DapSortedServerListConstIterator (i + j, p); }
+DapSortedServerListConstIterator &DapSortedServerListConstIterator::operator--()            { i--; return *this; }
+DapSortedServerListConstIterator &DapSortedServerListConstIterator::operator++()            { ++i; return *this; }
 
 /*-----------------------------------------*/
