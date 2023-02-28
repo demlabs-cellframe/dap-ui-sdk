@@ -40,8 +40,15 @@ void DapQmlModelFullServerList::setBridge (AbstractServerListModelBridge *a_newB
       _getSizes();
       endResetModel();
     };
-  auto &autoServerList  = a_newBridge->autoServerList();
-  auto &serverList      = a_newBridge->serverList();
+  auto autoServerList  = a_newBridge->autoServerList();
+  union
+  {
+    DapAbstractServerList *_abstractServerList;
+    DapServerList *_serverList;
+    DapSortedServerList *_sortedServerList;
+  };
+
+  _abstractServerList      = a_newBridge->serverList();
 
   /* setup */
   beginResetModel();
@@ -61,12 +68,22 @@ void DapQmlModelFullServerList::setBridge (AbstractServerListModelBridge *a_newB
   _conn.clear();
 
   /* create connections */
-  _conn << connect (&autoServerList, &QAbstractItemModel::rowsInserted, updateLambda);
-  _conn << connect (&autoServerList, &QAbstractItemModel::rowsRemoved,  updateLambda);
-  _conn << connect (&autoServerList, &QAbstractItemModel::modelReset,   updateLambda);
-  _conn << connect (&serverList,     &QAbstractItemModel::rowsInserted, updateLambda);
-  _conn << connect (&serverList,     &QAbstractItemModel::rowsRemoved,  updateLambda);
-  _conn << connect (&serverList,     &QAbstractItemModel::modelReset,   updateLambda);
+  _conn << connect (autoServerList,   &QAbstractItemModel::rowsInserted, updateLambda);
+  _conn << connect (autoServerList,   &QAbstractItemModel::rowsRemoved,  updateLambda);
+  _conn << connect (autoServerList,   &QAbstractItemModel::modelReset,   updateLambda);
+
+  if (_abstractServerList->type() == DapAbstractServerList::Type::ServerList)
+    {
+      _conn << connect (_serverList,  &QAbstractItemModel::rowsInserted, updateLambda);
+      _conn << connect (_serverList,  &QAbstractItemModel::rowsRemoved,  updateLambda);
+      _conn << connect (_serverList,  &QAbstractItemModel::modelReset,   updateLambda);
+    }
+  else if (_abstractServerList->type() == DapAbstractServerList::Type::SortedServerList)
+    {
+      _conn << connect (_sortedServerList,  &QAbstractItemModel::rowsInserted, updateLambda);
+      _conn << connect (_sortedServerList,  &QAbstractItemModel::rowsRemoved,  updateLambda);
+      _conn << connect (_sortedServerList,  &QAbstractItemModel::modelReset,   updateLambda);
+    }
 }
 
 int DapQmlModelFullServerList::size() const
@@ -105,8 +122,8 @@ QVariant DapQmlModelFullServerList::value (int a_row, const QString &a_name)
 
 const DapServerInfo &DapQmlModelFullServerList::at (int a_index) const
 {
-  auto &autoServerList  = m_bridge->autoServerList();
-  auto &serverList      = m_bridge->serverList();
+  auto autoServerList  = m_bridge->autoServerList();
+  auto serverList      = m_bridge->serverList();
 
   /* if auto server boundaries */
   if (a_index < _size.autoServer)

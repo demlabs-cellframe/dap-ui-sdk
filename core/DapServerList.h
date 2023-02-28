@@ -14,39 +14,48 @@ class DapSortedServerList;
 /****************************************//**
  * @brief abstract server list model
  * @ingroup groupUiModels
- * @date 11.03.2021
+ * @date 28.03.2021
+ * @author Mikhail Shilenko
+ *******************************************/
+
+class DapAbstractServerList
+{
+public:
+  enum Type
+  {
+    Invalid,
+    ServerList,
+    SortedServerList,
+  };
+protected:
+  Type m_type;
+public:
+  DapAbstractServerList() : m_type (Type::Invalid) {}
+  DapAbstractServerList (Type a_type) : m_type (a_type) {}
+
+  Type type() { return m_type; }
+
+  template<class T>
+  T *as() { return dynamic_cast<T*> (this); }
+};
+
+/****************************************//**
+ * @brief abstract server list template
+ * @ingroup groupUiModels
+ * @date 28.03.2021
  * @author Mikhail Shilenko
  *******************************************/
 
 template<class Iterator, class ConstIterator>
-class DapAbstractServerList
+class DapAbstractServerListTemplate
 {
-  Q_OBJECT
-
-  /****************************************//**
-   * @name PROPERTIES
-   *******************************************/
-  /// @{
-  Q_PROPERTY (int current READ current WRITE setCurrent NOTIFY currentChanged)
-  Q_PROPERTY (int size READ size NOTIFY sizeChanged)
-  /// @}
-
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
 public:
-  DapAbstractServerList() {}
-  virtual ~DapAbstractServerList() = 0;
-  /// @}
-
-  /****************************************//**
-   * @name SIGNALS
-   *******************************************/
-  /// @{
-signals:
-  void currentChanged();
-  void sizeChanged();
+  DapAbstractServerListTemplate() {}
+  virtual ~DapAbstractServerListTemplate() = 0;
   /// @}
 
   /****************************************//**
@@ -82,7 +91,6 @@ public:
   virtual void setCurrent (int a_index) = 0;
   virtual const DapServerInfo &currentServer() const = 0;
 
-  virtual void move (int a_source, int a_dest) = 0;
   virtual void clear() = 0;
   /// @}
 
@@ -91,25 +99,34 @@ public:
    *******************************************/
   /// @{
 public:
-  DapServerInfo &operator[] (int a_index)                { return at (a_index); }
-  const DapServerInfo &operator[] (int a_index) const    { return at (a_index); }
-  DapAbstractServerList &operator<< (const DapServerInfo &a_server)  { append (a_server); return *this; }
-  DapAbstractServerList &operator<< (DapServerInfo &&a_server)       { append (std::move (a_server)); return *this; }
+  inline DapServerInfo &operator[] (int a_index)                { return at (a_index); }
+  inline const DapServerInfo &operator[] (int a_index) const    { return at (a_index); }
+  inline DapAbstractServerListTemplate &operator<< (const DapServerInfo &a_server)  { append (a_server); return *this; }
+  inline DapAbstractServerListTemplate &operator<< (DapServerInfo &&a_server)       { append (std::move (a_server)); return *this; }
   /// @}
 };
 
 /****************************************//**
  * @brief server list model
  * @ingroup groupUiModels
- * @date 11.03.2021
+ * @date 28.03.2021
  * @author Mikhail Shilenko
  *******************************************/
 
 class DapServerList
-  : public QAbstractListModel
-  , public DapAbstractServerList<DapServerInfoList::iterator, DapServerInfoList::const_iterator>
+  : public DapAbstractServerList
+  , public QAbstractListModel
+  , public DapAbstractServerListTemplate<DapServerInfoList::iterator, DapServerInfoList::const_iterator>
 {
   Q_OBJECT
+
+  /****************************************//**
+   * @name PROPERTIES
+   *******************************************/
+  /// @{
+  Q_PROPERTY (int current READ current WRITE setCurrent NOTIFY currentChanged)
+  Q_PROPERTY (int size READ size NOTIFY sizeChanged)
+  /// @}
 
   /****************************************//**
    * @name DEFS
@@ -136,6 +153,15 @@ protected:
 public:
   DapServerList();
   ~DapServerList() override;
+  /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void currentChanged();
+  void sizeChanged();
   /// @}
 
   /****************************************//**
@@ -171,7 +197,7 @@ public:
   void setCurrent (int a_index) override;
   const DapServerInfo &currentServer() const override;
 
-  void move (int a_source, int a_dest) override;
+  void move (int a_source, int a_dest);
   void clear() override;
   /// @}
 
@@ -196,10 +222,19 @@ public:
   /// @}
 };
 
+/****************************************//**
+ * @brief sorted server list iterator
+ * @ingroup groupUiModels
+ * @date 28.03.2021
+ * @author Mikhail Shilenko
+ *******************************************/
+
 class DapSortedServerListIterator
 {
   friend class DapSortedServerListConstIterator;
+public:
   typedef QLinkedList<int>::iterator Iterator;
+protected:
   DapSortedServerList *p;
   Iterator i;
 public:
@@ -223,20 +258,32 @@ public:
   DapSortedServerListIterator &operator-= (int j);
   DapSortedServerListIterator operator+ (int j) const;
   DapSortedServerListIterator operator- (int j) const;
-  friend DapSortedServerListIterator operator+ (int j, DapSortedServerListIterator k) { return k + j; }
+  friend inline DapSortedServerListIterator operator+ (int j, DapSortedServerListIterator k) { return k + j; }
   int operator- (DapSortedServerListIterator j) const;
   operator DapServerInfo *();
+  operator int() const;
+  operator Iterator() const;
+  bool isNull() const;
 };
+
+/****************************************//**
+ * @brief sorted server list const iterator
+ * @ingroup groupUiModels
+ * @date 28.03.2021
+ * @author Mikhail Shilenko
+ *******************************************/
 
 class DapSortedServerListConstIterator
 {
   friend class DapSortedServerListIterator;
+public:
   typedef QLinkedList<int>::const_iterator ConstIterator;
-  DapSortedServerList *p;
+protected:
+  const DapSortedServerList *p;
   ConstIterator i;
 public:
   DapSortedServerListConstIterator();
-  DapSortedServerListConstIterator (ConstIterator n, DapSortedServerList *p);
+  DapSortedServerListConstIterator (ConstIterator n, const DapSortedServerList *p);
   DapSortedServerListConstIterator (const DapSortedServerListConstIterator &o);
   explicit DapSortedServerListConstIterator (const DapSortedServerListIterator &o);
   const DapServerInfo &operator*() const;
@@ -256,23 +303,35 @@ public:
   DapSortedServerListConstIterator &operator-= (int j);
   DapSortedServerListConstIterator operator+ (int j) const;
   DapSortedServerListConstIterator operator- (int j) const;
-  friend DapSortedServerListConstIterator operator+ (int j, DapSortedServerListConstIterator k) { return k + j; }
+  friend inline DapSortedServerListConstIterator operator+ (int j, DapSortedServerListConstIterator k) { return k + j; }
   int operator- (DapSortedServerListConstIterator j) const;
   operator const DapServerInfo *() const;
+  operator int() const;
+  operator ConstIterator() const;
+  bool isNull() const;
 };
 
 /****************************************//**
  * @brief sorted server list model
  * @ingroup groupUiModels
- * @date 11.03.2021
+ * @date 28.03.2021
  * @author Mikhail Shilenko
  *******************************************/
 
 class DapSortedServerList
-  : public QAbstractListModel
-  , public DapAbstractServerList<DapSortedServerListIterator, DapSortedServerListConstIterator>
+  : public DapAbstractServerList
+  , public QAbstractListModel
+  , public DapAbstractServerListTemplate<DapSortedServerListIterator, DapSortedServerListConstIterator>
 {
   Q_OBJECT
+
+  /****************************************//**
+   * @name PROPERTIES
+   *******************************************/
+  /// @{
+  Q_PROPERTY (int current READ current WRITE setCurrent NOTIFY currentChanged)
+  Q_PROPERTY (int size READ size NOTIFY sizeChanged)
+  /// @}
 
   /****************************************//**
    * @name DEFS
@@ -288,7 +347,7 @@ protected:
    *******************************************/
   /// @{
 protected:
-  DapServerList m_list;
+  DapServerList _list;
   QLinkedList<int> _sortedIndexes;
   /// @}
 
@@ -299,6 +358,15 @@ protected:
 public:
   DapSortedServerList();
   ~DapSortedServerList() override;
+  /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void currentChanged();
+  void sizeChanged();
   /// @}
 
   /****************************************//**
@@ -325,6 +393,7 @@ public:
   ConstIterator cend() const override;
   const DapServerInfo &first() const override;
   const DapServerInfo &last() const override;
+  DapServerInfo &at (int a_index) override;
   const DapServerInfo &at (int a_index) const override;
   DapServerInfo value (int a_index) const override;
   Q_INVOKABLE QVariant qValue (int a_index) const override;
@@ -333,11 +402,14 @@ public:
   void setCurrent (int a_index) override;
   const DapServerInfo &currentServer() const override;
 
-  void move (int a_source, int a_dest) override;
   void clear() override;
-
-  /// sort servers list by ping */
-  void sortByPing();
+  inline void update() { _sort(); }
+  inline operator DapServerList *() { return &_list; }
+protected:
+  void _sort();
+  void _appendServerIndex (const DapServerInfo &a_server, int a_index);
+  void _increaseAllIndexes (int a_index);
+  void _decreaseAllIndexes (int a_index);
   /// @}
 
   /****************************************//**
@@ -356,8 +428,8 @@ public:
 public:
   DapServerInfo &operator[] (int a_index);
   const DapServerInfo &operator[] (int a_index) const;
-  DapServerList &operator<< (const DapServerInfo &a_server);
-  DapServerList &operator<< (DapServerInfo &&a_server);
+  DapSortedServerList &operator<< (const DapServerInfo &a_server);
+  DapSortedServerList &operator<< (DapServerInfo &&a_server);
   /// @}
 };
 

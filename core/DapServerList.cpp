@@ -235,12 +235,21 @@ static const QString _findInCountriesMap (const QString &string)
          : "://country/" + code + ".png";
 }
 
+
+/**##########################################
+ *
+ * DapServerList
+ *
+ ##########################################*/
+
+
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
 DapServerList::DapServerList()
-  : m_current (0)
+  : DapAbstractServerList (DapAbstractServerList::Type::ServerList)
+  , m_current (0)
 {
 
 }
@@ -253,7 +262,6 @@ DapServerList::~DapServerList()
 /********************************************
  * METHODS
  *******************************************/
-
 
 DapServerList *DapServerList::instance()
 {
@@ -399,36 +407,36 @@ void DapServerList::clear()
   endResetModel();
 }
 
-void DapServerList::sortByPing()
-{
-  DapServerInfoList availableServerList, notAvailableServerList;
+//void DapServerList::sortByPing()
+//{
+//  DapServerInfoList availableServerList, notAvailableServerList;
 
-  beginResetModel();
+//  beginResetModel();
 
-  {
-    qSort (m_list.begin(), m_list.end());
+//  {
+//    qSort (m_list.begin(), m_list.end());
 
-    /* unavailable at the end of the list */
-    for (auto &server : m_list)
-      {
-        //      if (server.m_name == "Auto")
-        //        {
-        //          notAvailableServerList.push_front (server);
-        //          continue;
-        //        }
+//    /* unavailable at the end of the list */
+//    for (auto &server : m_list)
+//      {
+//        //      if (server.m_name == "Auto")
+//        //        {
+//        //          notAvailableServerList.push_front (server);
+//        //          continue;
+//        //        }
 
-        if (server.ping() == -1)
-          availableServerList.push_back (server);
-        else
-          notAvailableServerList.push_back (server);
-      }
+//        if (server.ping() == -1)
+//          availableServerList.push_back (server);
+//        else
+//          notAvailableServerList.push_back (server);
+//      }
 
-    m_list.clear();
-    m_list = notAvailableServerList += availableServerList;
-  }
+//    m_list.clear();
+//    m_list = notAvailableServerList += availableServerList;
+//  }
 
-  endResetModel();
-}
+//  endResetModel();
+//}
 
 /********************************************
  * OVERRIDE
@@ -490,6 +498,16 @@ DapServerList &DapServerList::operator<< (DapServerInfo &&a_server)
 
 /*-----------------------------------------*/
 
+
+
+/**##########################################
+ *
+ * DapSortedServerList
+ *
+ ##########################################*/
+
+/*-----------------------------------------*/
+
 DapSortedServerListIterator::DapSortedServerListIterator() : p (nullptr), i() {}
 DapSortedServerListIterator::DapSortedServerListIterator (DapSortedServerListIterator::Iterator n, DapSortedServerList *p) : p (p), i (n) {}
 DapSortedServerListIterator::DapSortedServerListIterator (const DapSortedServerListIterator &o): p (o.p), i (o.i) {}
@@ -508,15 +526,18 @@ DapSortedServerListIterator &DapSortedServerListIterator::operator+= (int j)    
 DapSortedServerListIterator &DapSortedServerListIterator::operator-= (int j)     { i -= j; return *this; }
 int DapSortedServerListIterator::operator- (DapSortedServerListIterator j) const { return *i - *j.i; }
 DapSortedServerListIterator::operator DapServerInfo *()                          { return operator->(); }
+DapSortedServerListIterator::operator int() const                                { return *i; }
+DapSortedServerListIterator::operator Iterator() const                           { return i; }
 DapSortedServerListIterator DapSortedServerListIterator::operator- (int j) const { return DapSortedServerListIterator (i - j, p); }
 DapSortedServerListIterator DapSortedServerListIterator::operator+ (int j) const { return DapSortedServerListIterator (i + j, p); }
 DapSortedServerListIterator &DapSortedServerListIterator::operator--()           { i--; return *this; }
 DapSortedServerListIterator &DapSortedServerListIterator::operator++()           { ++i; return *this; }
+bool DapSortedServerListIterator::isNull() const                                 { return p == nullptr; }
 
 /*-----------------------------------------*/
 
 DapSortedServerListConstIterator::DapSortedServerListConstIterator() : p (nullptr), i() {}
-DapSortedServerListConstIterator::DapSortedServerListConstIterator (DapSortedServerListConstIterator::ConstIterator n, DapSortedServerList *p) : p (p), i (n) {}
+DapSortedServerListConstIterator::DapSortedServerListConstIterator (DapSortedServerListConstIterator::ConstIterator n, const DapSortedServerList *p) : p (p), i (n) {}
 DapSortedServerListConstIterator::DapSortedServerListConstIterator (const DapSortedServerListConstIterator &o): p (o.p), i (o.i) {}
 DapSortedServerListConstIterator::DapSortedServerListConstIterator (const DapSortedServerListIterator &o): p (o.p), i (o.i) {}
 const DapServerInfo &DapSortedServerListConstIterator::operator*() const        { return p->at (*i); }
@@ -534,9 +555,325 @@ DapSortedServerListConstIterator &DapSortedServerListConstIterator::operator+= (
 DapSortedServerListConstIterator &DapSortedServerListConstIterator::operator-= (int j)      { i -= j; return *this; }
 int DapSortedServerListConstIterator::operator- (DapSortedServerListConstIterator j) const  { return *i - *j.i; }
 DapSortedServerListConstIterator::operator const DapServerInfo *() const                    { return operator->(); }
+DapSortedServerListConstIterator::operator int() const                                      { return *i; }
+DapSortedServerListConstIterator::operator ConstIterator() const                            { return i; }
 DapSortedServerListConstIterator DapSortedServerListConstIterator::operator- (int j) const  { return DapSortedServerListConstIterator (i - j, p); }
 DapSortedServerListConstIterator DapSortedServerListConstIterator::operator+ (int j) const  { return DapSortedServerListConstIterator (i + j, p); }
 DapSortedServerListConstIterator &DapSortedServerListConstIterator::operator--()            { i--; return *this; }
 DapSortedServerListConstIterator &DapSortedServerListConstIterator::operator++()            { ++i; return *this; }
+bool DapSortedServerListConstIterator::isNull() const                                       { return p == nullptr; }
+
+/*-----------------------------------------*/
+
+/********************************************
+ * CONSTRUCT/DESTRUCT
+ *******************************************/
+
+DapSortedServerList::DapSortedServerList()
+  : DapAbstractServerList (DapAbstractServerList::Type::SortedServerList)
+{
+  //_sort();
+}
+
+DapSortedServerList::~DapSortedServerList()
+{
+
+}
+
+/********************************************
+ * METHODS
+ *******************************************/
+
+DapSortedServerList *DapSortedServerList::instance()
+{
+  static DapSortedServerList i;
+  return &i;
+}
+
+int DapSortedServerList::append (const DapServerInfo &a_server)
+{
+  /* append new item index */
+  int result  = _list.size();
+  _appendServerIndex (a_server, result);
+
+  /* store new item */
+  _list.append (a_server);
+  emit sizeChanged();
+  return result;
+}
+
+int DapSortedServerList::append (DapServerInfo &&a_server)
+{
+  /* append new item index */
+  int result  = _list.size();
+  _appendServerIndex (a_server, result);
+
+  /* store new item */
+  _list.append (std::move (a_server));
+  emit sizeChanged();
+  return result;
+}
+
+void DapSortedServerList::insert (int a_index, const DapServerInfo &a_server)
+{
+  _increaseAllIndexes (a_index);
+  _list.insert (a_index, a_server);
+  _appendServerIndex (a_server, a_index);
+  emit sizeChanged();
+}
+
+void DapSortedServerList::insert (int a_index, DapServerInfo &&a_server)
+{
+  _increaseAllIndexes (a_index);
+  _list.insert (a_index, std::move (a_server));
+  _appendServerIndex (a_server, a_index);
+  emit sizeChanged();
+}
+
+void DapSortedServerList::remove (int a_index)
+{
+  _decreaseAllIndexes (a_index);
+  _list.remove (a_index);
+  emit sizeChanged();
+}
+
+int DapSortedServerList::size() const
+{
+  return _sortedIndexes.size();
+}
+
+bool DapSortedServerList::empty() const
+{
+  return _sortedIndexes.isEmpty();
+}
+
+int DapSortedServerList::indexOf (const DapServerInfo &a_item) const
+{
+  int index = 0;
+  for (auto i = begin(), e = end(); i != e; i++, index++)
+    if (*i == a_item)
+      return index;
+  return -1;
+}
+
+void DapSortedServerList::erase (DapSortedServerList::Iterator it)
+{
+  int actualIndex = it;
+  _decreaseAllIndexes (actualIndex);
+  _list.remove (actualIndex);
+  emit sizeChanged();
+}
+
+DapSortedServerList::Iterator DapSortedServerList::begin()
+{
+  return Iterator (_sortedIndexes.begin(), this);
+}
+
+DapSortedServerList::ConstIterator DapSortedServerList::begin() const
+{
+  return ConstIterator (_sortedIndexes.begin(), this);
+}
+
+DapSortedServerList::ConstIterator DapSortedServerList::cbegin() const
+{
+  return ConstIterator (_sortedIndexes.cbegin(), this);
+}
+
+DapSortedServerList::Iterator DapSortedServerList::end()
+{
+  return Iterator (_sortedIndexes.end(), this);
+}
+
+DapSortedServerList::ConstIterator DapSortedServerList::end() const
+{
+  return ConstIterator (_sortedIndexes.end(), this);
+}
+
+DapSortedServerList::ConstIterator DapSortedServerList::cend() const
+{
+  return ConstIterator (_sortedIndexes.cend(), this);
+}
+
+const DapServerInfo &DapSortedServerList::first() const
+{
+  return *begin();
+}
+
+const DapServerInfo &DapSortedServerList::last() const
+{
+  return *(--end());
+}
+
+DapServerInfo &DapSortedServerList::at (int a_index)
+{
+  return *(begin() + a_index);
+}
+
+DapServerInfo DapSortedServerList::value (int a_index) const
+{
+  return *(begin() + a_index);
+}
+
+QVariant DapSortedServerList::qValue (int a_index) const
+{
+  return DapServerType (at (a_index)).asVariantMap();
+}
+
+int DapSortedServerList::current() const
+{
+  return _list.current();
+}
+
+void DapSortedServerList::setCurrent (int a_index)
+{
+  _list.setCurrent (a_index);
+  emit currentChanged();
+}
+
+const DapServerInfo &DapSortedServerList::currentServer() const
+{
+  return at (_list.current());
+}
+
+//void DapSortedServerList::move (int a_source, int a_dest)
+//{
+
+//}
+
+void DapSortedServerList::clear()
+{
+  beginResetModel();
+
+  _list.clear();
+  _sortedIndexes.clear();
+
+  endResetModel();
+}
+
+void DapSortedServerList::_sort()
+{
+  /* defs */
+  struct Item
+  {
+    int index;
+    int ping;
+    bool operator< (const Item &o) const { return ping < o.ping; }
+  };
+
+  /* collect all indexes */
+  QVector<Item> items (size());
+  QVector<Item> unavItems (size());
+  int index = 0;
+  for (const auto &server : _list)
+    {
+      if (server.ping() != -1)
+        items << Item {index++, server.ping()};
+      else
+        unavItems << Item {index++, server.ping()};
+    }
+
+  beginResetModel();
+
+  /* sort by ping */
+  std::sort (items.begin(), items.end());
+
+  /* combine result */
+  items += unavItems;
+
+  /* store result */
+  _sortedIndexes.clear();
+  for (const auto &item : qAsConst(items))
+    _sortedIndexes << item.index;
+
+  endResetModel();
+}
+
+void DapSortedServerList::_appendServerIndex(const DapServerInfo &a_server, int a_index)
+{
+  /* insert ping to sort list */
+  if (a_server.ping() != -1)
+    {
+      for (auto l = begin(), i = l + 1, e = end(); i != e; i++, l++)
+        {
+          if (i->ping() > a_server.ping())
+            _sortedIndexes.insert (l, a_index);
+        }
+    }
+  else
+    _sortedIndexes.append (a_index);
+}
+
+// 1234567
+// 123+4567
+// 12344567
+// 12345678
+void DapSortedServerList::_increaseAllIndexes (int a_index)
+{
+  for (auto i = begin(), e = end(); i != e; i++)
+    if (int (i) >= a_index)
+      (*DapSortedServerListIterator::Iterator (i))++;
+}
+
+// 1234567
+// 123-567
+// 123567
+// 123456
+void DapSortedServerList::_decreaseAllIndexes (int a_index)
+{
+  for (auto i = begin(), e = end(); i != e; i++)
+    {
+      /* decrease */
+      if (int (i) > a_index)
+        (*DapSortedServerListIterator::Iterator (i))--;
+
+      /* remove if same */
+      else if (int (i) == a_index)
+        {
+          auto c = i--;
+          _sortedIndexes.erase (c);
+        }
+    }
+}
+
+/********************************************
+ * OVERRIDE
+ *******************************************/
+
+int DapSortedServerList::rowCount (const QModelIndex &parent) const
+{
+  return _list.rowCount (parent);
+}
+
+QVariant DapSortedServerList::data (const QModelIndex &index, int role) const
+{
+  int actualIndex = begin() + index.row();
+  return _list.data (_list.index (actualIndex, index.column(), index.parent()), role);
+}
+
+/********************************************
+ * OPERATORS
+ *******************************************/
+
+DapServerInfo &DapSortedServerList::operator[] (int a_index)
+{
+  return _list[begin() + a_index];
+}
+
+const DapServerInfo &DapSortedServerList::operator[] (int a_index) const
+{
+  return _list[begin() + a_index];
+}
+
+DapSortedServerList &DapSortedServerList::operator<< (const DapServerInfo &a_server)
+{
+  append (a_server);
+  return *this;
+}
+
+DapSortedServerList &DapSortedServerList::operator<< (DapServerInfo &&a_server)
+{
+  append (std::move (a_server));
+  return *this;
+}
 
 /*-----------------------------------------*/

@@ -17,12 +17,25 @@ class DapQmlModelAutoServerList : public QAbstractListModel
   Q_OBJECT
 
   /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
+  typedef DapAbstractServerList::Type Type;
+  /// @}
+
+  /****************************************//**
    * @name VARS
    *******************************************/
   /// @{
 protected:
   /// link to global servers list
-  DapServerList &_serverList;
+  union
+  {
+    DapAbstractServerList *_abstractServerList;
+    DapServerList *_serverList;
+    DapSortedServerList *_sortedServerList;
+  };
+  Type _listType;
   /// auto servers list
   DapServerList _autoServers;
   /// general location
@@ -35,7 +48,7 @@ protected:
   /// @{
 public:
   DapQmlModelAutoServerList();
-  DapQmlModelAutoServerList (DapServerList &a_serverList);
+  DapQmlModelAutoServerList (DapAbstractServerList *a_serverList);
   /// @}
 
   /****************************************//**
