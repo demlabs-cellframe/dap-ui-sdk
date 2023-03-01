@@ -212,8 +212,8 @@ ComboBox
                     DapCalendar
                     {
                         id: dapMinimumOfRangeCalendar
-                        x: parent.x - width*(1/scale-1)*0.5
-                        y: parent.y - height - height*(1/scale-1)*0.5
+                        x: parent.x - width*0.5
+                        y: parent.y - height - height*0.5
 
                         dapLeftPadding: dapCalendars.dapLeftPadding
                         dapRightPadding: dapCalendars.dapRightPadding
@@ -300,8 +300,8 @@ ComboBox
                     {
                         id: dapMaximumOfRangeCalendar
 
-                        x: parent.x - width*(1/scale-1)*0.5
-                        y: parent.y - height - height*(1/scale-1)*0.5
+                        x: parent.x - width*0.5
+                        y: parent.y - height - height*0.5
 
                         dapLeftPadding: dapCalendars.dapLeftPadding
                         dapRightPadding: dapCalendars.dapRightPadding
@@ -340,14 +340,12 @@ ComboBox
         Popup
         {
             id: dapComboboxPopup
-            x: -width*(1/scale-1)*0.5
-            y: dapComboBoxWithRange.height - height*(1/scale-1)*0.5
+            x: 0
+            y: dapComboBoxWithRange.height
             width: dapComboBoxWithRange.width
             padding: 0
 
             parent: dapComboBoxWithRange
-
-            scale: mainWindow.scale
 
             contentItem:
                 ListView

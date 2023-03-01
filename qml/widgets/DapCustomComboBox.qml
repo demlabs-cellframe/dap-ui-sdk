@@ -170,13 +170,11 @@ Item
 
 //        visible: popupVisible
 
-        scale: mainWindow.scale
-
 //        x: 0
 //        y: mainItem.height
 
-        x: -width*(1/scale-1)*0.5
-        y: mainItem.height - height*(1/scale-1)*0.5
+        x: 0
+        y: mainItem.height
            - (topOrientation ? height + background.height : 0)
 
         width: popupBackground.width
