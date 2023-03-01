@@ -116,7 +116,7 @@ Button
             Rectangle {
                 id: contenMask
                 anchors.fill: parent
-                radius: currTheme.radiusButton
+                radius: dapBackgroundButton.radius
                 visible: false
             }
             /* mask */
