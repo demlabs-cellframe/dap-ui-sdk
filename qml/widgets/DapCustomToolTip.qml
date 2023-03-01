@@ -12,7 +12,6 @@ ToolTip {
     property string textColor: currTheme.textColor
     property string contentText
     property alias backgroundToolTip: backgroundToolTip
-    scale: mainWindow.scale
 
     contentItem:
     Text
