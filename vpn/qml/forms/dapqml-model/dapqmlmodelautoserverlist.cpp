@@ -7,22 +7,17 @@
 
 DapQmlModelAutoServerList::DapQmlModelAutoServerList ()
   : _abstractServerList (DapServerList::instance())
+  , _abstractServerListModel (_abstractServerList->as<QAbstractListModel>())
 {
-  connect (_serverList, &QAbstractItemModel::modelReset, this, [this] { update(); });
+  connect (_abstractServerListModel, &QAbstractItemModel::modelReset, this, [this] { update(); });
 }
 
 DapQmlModelAutoServerList::DapQmlModelAutoServerList (DapAbstractServerList *a_serverList)
   : _abstractServerList (a_serverList)
+  , _abstractServerListModel (_abstractServerList->as<QAbstractListModel>())
   , _listType (_abstractServerList->type())
 {
-  if (_listType == Type::ServerList)
-    connect (_serverList,       &QAbstractItemModel::modelReset, this, [this] { update(); });
-
-  else if (_listType == Type::SortedServerList)
-    connect (_sortedServerList, &QAbstractItemModel::modelReset, this, [this] { update(); });
-
-  else
-    qFatal(__PRETTY_FUNCTION__);
+  connect (_abstractServerListModel, &QAbstractItemModel::modelReset, this, [this] { update(); });
 }
 
 /********************************************
@@ -87,8 +82,8 @@ void DapQmlModelAutoServerList::update()
 
       switch (_listType)
         {
-        case Type::ServerList:        _collectGeneralLocations (*_serverList, generalLocation);
-        case Type::SortedServerList:  _collectGeneralLocations (*_sortedServerList, generalLocation);
+        case Type::ServerList:        _collectGeneralLocations (*_abstractServerList->as<DapServerList>(), generalLocation);
+        case Type::SortedServerList:  _collectGeneralLocations (*_abstractServerList->as<DapSortedServerList>(), generalLocation);
         default:
           _autoServers.clear();
           endResetModel();
@@ -111,8 +106,8 @@ void DapQmlModelAutoServerList::update()
     {
       switch (_listType)
         {
-        case Type::ServerList:        _fillAutoServerData (*_serverList, regionServer, _location);
-        case Type::SortedServerList:  _fillAutoServerData (*_sortedServerList, regionServer, _location);
+        case Type::ServerList:        _fillAutoServerData (*_abstractServerList->as<DapServerList>(), regionServer, _location);
+        case Type::SortedServerList:  _fillAutoServerData (*_abstractServerList->as<DapSortedServerList>(), regionServer, _location);
         default:
           endResetModel();
           return;
@@ -143,8 +138,8 @@ void DapQmlModelAutoServerList::update()
 
       switch (_listType)
         {
-        case Type::ServerList:        _bringAutoserverUp (*_serverList, _autoServers, regionServer, _location);
-        case Type::SortedServerList:  _bringAutoserverUp (*_sortedServerList, _autoServers, regionServer, _location);
+        case Type::ServerList:        _bringAutoserverUp (*_abstractServerList->as<DapServerList>(), _autoServers, regionServer, _location);
+        case Type::SortedServerList:  _bringAutoserverUp (*_abstractServerList->as<DapSortedServerList>(), _autoServers, regionServer, _location);
         default:
           _autoServers.clear();
           endResetModel();

@@ -2,7 +2,7 @@
 #define DAPQMLMODELAUTOSERVERLIST_H
 
 /* INCLUDES */
-#include <QAbstractTableModel>
+#include <QAbstractListModel>
 #include "DapServerList.h"
 
 /****************************************//**
@@ -29,12 +29,8 @@ class DapQmlModelAutoServerList : public QAbstractListModel
   /// @{
 protected:
   /// link to global servers list
-  union
-  {
-    DapAbstractServerList *_abstractServerList;
-    DapServerList *_serverList;
-    DapSortedServerList *_sortedServerList;
-  };
+  DapAbstractServerList *_abstractServerList;
+  QAbstractListModel *_abstractServerListModel;
   Type _listType;
   /// auto servers list
   DapServerList _autoServers;

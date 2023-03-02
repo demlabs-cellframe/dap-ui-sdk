@@ -2,7 +2,7 @@
 #define DAPQMLMODELFULLSERVERLIST_H
 
 /* INCLUDES */
-#include <QAbstractTableModel>
+#include <QAbstractListModel>
 #include "DapServerInfo.h"
 
 /* DEFS */
@@ -71,7 +71,6 @@ public:
 protected:
   void _getSizes();
   void _getRoles();
-  static const QHash<int, QByteArray> &_baseRoleNames();
   /// @}
 
   /****************************************//**

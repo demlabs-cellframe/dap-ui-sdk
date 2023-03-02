@@ -3,7 +3,6 @@
 #include "dapqml-abstract/abstractserverlistmodelbridge.h"
 #include "DapServerInfo.h"
 
-#include <QMetaEnum>
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -41,14 +40,9 @@ void DapQmlModelFullServerList::setBridge (AbstractServerListModelBridge *a_newB
       endResetModel();
     };
   auto autoServerList  = a_newBridge->autoServerList();
-  union
-  {
-    DapAbstractServerList *_abstractServerList;
-    DapServerList *_serverList;
-    DapSortedServerList *_sortedServerList;
-  };
 
-  _abstractServerList      = a_newBridge->serverList();
+  DapAbstractServerList *abstractServerList = a_newBridge->serverList();
+  QAbstractListModel *itemModel = abstractServerList->as<QAbstractListModel>();
 
   /* setup */
   beginResetModel();
@@ -71,19 +65,9 @@ void DapQmlModelFullServerList::setBridge (AbstractServerListModelBridge *a_newB
   _conn << connect (autoServerList,   &QAbstractItemModel::rowsInserted, updateLambda);
   _conn << connect (autoServerList,   &QAbstractItemModel::rowsRemoved,  updateLambda);
   _conn << connect (autoServerList,   &QAbstractItemModel::modelReset,   updateLambda);
-
-  if (_abstractServerList->type() == DapAbstractServerList::Type::ServerList)
-    {
-      _conn << connect (_serverList,  &QAbstractItemModel::rowsInserted, updateLambda);
-      _conn << connect (_serverList,  &QAbstractItemModel::rowsRemoved,  updateLambda);
-      _conn << connect (_serverList,  &QAbstractItemModel::modelReset,   updateLambda);
-    }
-  else if (_abstractServerList->type() == DapAbstractServerList::Type::SortedServerList)
-    {
-      _conn << connect (_sortedServerList,  &QAbstractItemModel::rowsInserted, updateLambda);
-      _conn << connect (_sortedServerList,  &QAbstractItemModel::rowsRemoved,  updateLambda);
-      _conn << connect (_sortedServerList,  &QAbstractItemModel::modelReset,   updateLambda);
-    }
+  _conn << connect (itemModel,        &QAbstractItemModel::rowsInserted, updateLambda);
+  _conn << connect (itemModel,        &QAbstractItemModel::rowsRemoved,  updateLambda);
+  _conn << connect (itemModel,        &QAbstractItemModel::modelReset,   updateLambda);
 }
 
 int DapQmlModelFullServerList::size() const
@@ -127,46 +111,29 @@ const DapServerInfo &DapQmlModelFullServerList::at (int a_index) const
 
   /* if auto server boundaries */
   if (a_index < _size.autoServer)
-    return autoServerList.at (a_index);
+    return autoServerList->at (a_index);
 
   /* server boundaries */
   int newIndexValue     = a_index - _size.autoServer;
-  return serverList.at (newIndexValue);
+  return serverList->at (newIndexValue);
 }
 
 void DapQmlModelFullServerList::_getSizes()
 {
-  auto &autoServerList  = m_bridge->autoServerList();
-  auto &serverList      = m_bridge->serverList();
-  _size.autoServer      = autoServerList.rowCount (QModelIndex());
-  _size.server          = serverList.rowCount (QModelIndex());
+  auto autoServerList  = m_bridge->autoServerList();
+  auto serverList      = m_bridge->serverList()->as<QAbstractListModel>();
+  _size.autoServer      = autoServerList->rowCount (QModelIndex());
+  _size.server          = serverList->rowCount (QModelIndex());
   _size.full            = _size.autoServer + _size.server;
 }
 
 void DapQmlModelFullServerList::_getRoles()
 {
-  _roleNamesMap       = _baseRoleNames();
+  _roleNamesMap       = DapServerList::serverRoleNames();
   const auto &custom  =  m_bridge->customRoleNames();
 
   for (auto i = custom.begin(), e = custom.end(); i != e; i++)
     _roleNamesMap.insert (i.key(), i.value());
-}
-
-const QHash<int, QByteArray> &DapQmlModelFullServerList::_baseRoleNames()
-{
-  static QHash<int, QByteArray> result;
-
-  if (result.isEmpty())
-    {
-      int enumIndex  = DapServerType::staticMetaObject.indexOfEnumerator ("FieldId");
-      auto metaEnum  = DapServerType::staticMetaObject.enumerator (enumIndex);
-      int enumSize   = metaEnum.keyCount();
-
-      for (int i = 0; i < enumSize; i++)
-        result.insert (metaEnum.value (i), metaEnum.key (i));
-    }
-
-  return result;
 }
 
 /********************************************
@@ -183,8 +150,8 @@ int DapQmlModelFullServerList::rowCount (const QModelIndex &parent) const
 
 QVariant DapQmlModelFullServerList::data (const QModelIndex &index, int role) const
 {
-  auto &autoServerList  = m_bridge->autoServerList();
-  auto &serverList      = m_bridge->serverList();
+  auto autoServerList   = m_bridge->autoServerList();
+  auto serverList       = m_bridge->serverList()->as<QAbstractListModel>();
   auto &customRoleNames = m_bridge->customRoleNames();
 
   /* check boundaries */
@@ -197,12 +164,12 @@ QVariant DapQmlModelFullServerList::data (const QModelIndex &index, int role) co
 
   /* if auto server boundaries */
   if (index.row() < _size.autoServer)
-    return autoServerList.data (index, role);
+    return autoServerList->data (index, role);
 
   /* server boundaries */
   int newIndexValue     = index.row() - _size.autoServer;
   QModelIndex newIndex  = QAbstractListModel::index (newIndexValue, index.column(), index.parent());
-  return serverList.data (newIndex, role);
+  return serverList->data (newIndex, role);
 }
 
 QHash<int, QByteArray> DapQmlModelFullServerList::roleNames() const

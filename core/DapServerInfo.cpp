@@ -23,6 +23,14 @@ DapServerInfo::DapServerInfo()
 
 }
 
+DapServerInfo::DapServerInfo(const QJsonObject &a_src)
+  : m_port (0)
+  , m_ping (-1)
+  , m_connQuality (ConnectionQuality::NO_CONNECTION)
+{
+  fromJSON (a_src, *this);
+}
+
 DapServerInfo::DapServerInfo (const DapServerInfo &a_src)
 {
   m_address     = a_src.m_address;

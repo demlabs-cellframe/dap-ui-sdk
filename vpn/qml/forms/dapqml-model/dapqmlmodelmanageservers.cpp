@@ -1,6 +1,5 @@
 /* INCLUDES */
 #include "dapqmlmodelmanageservers.h"
-#include "dapqml-abstract/abstractservermanager.h"
 #include <QImage>
 #include <QDebug>
 #include <array>
@@ -11,7 +10,6 @@
 //#define ENABLE_SERVERS_DUMMY
 
 /* VARS */
-static QSharedPointer<AbstractServerManager> s_manager;
 
 #ifdef ENABLE_SERVERS_DUMMY
 static std::array<AbstractServerManager::Server, 6> dummyServers =
@@ -48,35 +46,23 @@ DapQmlModelManageServers *DapQmlModelManageServers::instance()
   return __inst;
 }
 
-QObject *DapQmlModelManageServers::singletonProvider (QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-  Q_UNUSED (engine)
-  Q_UNUSED (scriptEngine)
-  return DapQmlModelManageServers::instance();
-}
-
 int DapQmlModelManageServers::length() const
 {
   return rowCount();
 }
 
-void DapQmlModelManageServers::installManager (QSharedPointer<AbstractServerManager> a_manager)
-{
-  s_manager = a_manager;
-}
-
 #define _parseField(map,item,name,conversion) \
   if (map.contains (#name)) \
-    item.name     = map[#name].conversion();
+    item.name (map[#name].conversion());
 
-static void parseServerData (const QVariant &a_data, /* out */ AbstractServerManager::Server &a_server)
+static void parseServerData (const QVariant &a_data, /* out */ DapServerInfo &a_server)
 {
   auto value        = a_data.toMap();
 
-  _parseField (value, a_server, name, toString);
-  _parseField (value, a_server, location, toString);
-  _parseField (value, a_server, address, toString);
-  _parseField (value, a_server, port, toInt);
+  _parseField (value, a_server, setName, toString);
+  _parseField (value, a_server, setLocation, toString);
+  _parseField (value, a_server, setAddress, toString);
+  _parseField (value, a_server, setPort, toInt);
   _parseField (value, a_server, favorite, toBool);
 
 //  if (value.contains ("name"))

@@ -2,7 +2,7 @@
 #define DAPSERVERLIST_H
 
 /* INCLUDES */
-#include <QAbstractTableModel>
+#include <QAbstractListModel>
 #include <QLinkedList>
 
 #include "DapServerInfo.h"
@@ -20,6 +20,10 @@ class DapSortedServerList;
 
 class DapAbstractServerList
 {
+  /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
 public:
   enum Type
   {
@@ -27,35 +31,24 @@ public:
     ServerList,
     SortedServerList,
   };
+  /// @}
+
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
 protected:
   Type m_type;
-public:
-  DapAbstractServerList() : m_type (Type::Invalid) {}
-  DapAbstractServerList (Type a_type) : m_type (a_type) {}
+  /// @}
 
-  Type type() { return m_type; }
-
-  template<class T>
-  T *as() { return dynamic_cast<T*> (this); }
-};
-
-/****************************************//**
- * @brief abstract server list template
- * @ingroup groupUiModels
- * @date 28.03.2021
- * @author Mikhail Shilenko
- *******************************************/
-
-template<class Iterator, class ConstIterator>
-class DapAbstractServerListTemplate
-{
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
 public:
-  DapAbstractServerListTemplate() {}
-  virtual ~DapAbstractServerListTemplate() = 0;
+  DapAbstractServerList() : m_type (Type::Invalid) {}
+  DapAbstractServerList (Type a_type) : m_type (a_type) {}
+  virtual ~DapAbstractServerList() {}
   /// @}
 
   /****************************************//**
@@ -63,6 +56,8 @@ public:
    *******************************************/
   /// @{
 public:
+  Type type() { return m_type; }
+
   virtual int append (const DapServerInfo &a_server) = 0;
   virtual int append (DapServerInfo &&a_server) = 0;
   virtual void insert (int a_index, const DapServerInfo &a_server) = 0;
@@ -72,13 +67,7 @@ public:
   virtual bool empty() const = 0;
   inline bool isEmpty() { return empty(); }
   virtual int indexOf (const DapServerInfo &a_item) const = 0;
-  virtual void erase (Iterator it) = 0;
-  virtual Iterator begin() = 0;
-  virtual ConstIterator begin() const = 0;
-  virtual ConstIterator cbegin() const = 0;
-  virtual Iterator end() = 0;
-  virtual ConstIterator end() const = 0;
-  virtual ConstIterator cend() const = 0;
+
   virtual const DapServerInfo &first() const = 0;
   virtual const DapServerInfo &last() const = 0;
   virtual DapServerInfo &at (int a_index) = 0;
@@ -92,6 +81,11 @@ public:
   virtual const DapServerInfo &currentServer() const = 0;
 
   virtual void clear() = 0;
+
+  template<class T>
+  T *as() { return dynamic_cast<T*> (this); }
+
+  static const QHash<int, QByteArray> &serverRoleNames();
   /// @}
 
   /****************************************//**
@@ -101,8 +95,8 @@ public:
 public:
   inline DapServerInfo &operator[] (int a_index)                { return at (a_index); }
   inline const DapServerInfo &operator[] (int a_index) const    { return at (a_index); }
-  inline DapAbstractServerListTemplate &operator<< (const DapServerInfo &a_server)  { append (a_server); return *this; }
-  inline DapAbstractServerListTemplate &operator<< (DapServerInfo &&a_server)       { append (std::move (a_server)); return *this; }
+  inline DapAbstractServerList &operator<< (const DapServerInfo &a_server)  { append (a_server); return *this; }
+  inline DapAbstractServerList &operator<< (DapServerInfo &&a_server)       { append (std::move (a_server)); return *this; }
   /// @}
 };
 
@@ -116,7 +110,6 @@ public:
 class DapServerList
   : public DapAbstractServerList
   , public QAbstractListModel
-  , public DapAbstractServerListTemplate<DapServerInfoList::iterator, DapServerInfoList::const_iterator>
 {
   Q_OBJECT
 
@@ -179,13 +172,13 @@ public:
   int size() const override;
   bool empty() const override;
   int indexOf (const DapServerInfo &a_item) const override;
-  void erase (Iterator it) override;
-  Iterator begin() override;
-  ConstIterator begin() const override;
-  ConstIterator cbegin() const override;
-  Iterator end() override;
-  ConstIterator end() const override;
-  ConstIterator cend() const override;
+  void erase (Iterator it);
+  Iterator begin();
+  ConstIterator begin() const;
+  ConstIterator cbegin() const;
+  Iterator end();
+  ConstIterator end() const;
+  ConstIterator cend() const;
   const DapServerInfo &first() const override;
   const DapServerInfo &last() const override;
   DapServerInfo &at (int a_index) override;
@@ -208,6 +201,7 @@ public:
 public:
   int rowCount (const QModelIndex &parent) const Q_DECL_OVERRIDE;
   QVariant data (const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
+  QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
   /// @}
 
   /****************************************//**
@@ -321,7 +315,6 @@ public:
 class DapSortedServerList
   : public DapAbstractServerList
   , public QAbstractListModel
-  , public DapAbstractServerListTemplate<DapSortedServerListIterator, DapSortedServerListConstIterator>
 {
   Q_OBJECT
 
@@ -384,13 +377,13 @@ public:
   int size() const override;
   bool empty() const override;
   int indexOf (const DapServerInfo &a_item) const override;
-  void erase (Iterator it) override;
-  Iterator begin() override;
-  ConstIterator begin() const override;
-  ConstIterator cbegin() const override;
-  Iterator end() override;
-  ConstIterator end() const override;
-  ConstIterator cend() const override;
+  void erase (Iterator it);
+  Iterator begin();
+  ConstIterator begin() const;
+  ConstIterator cbegin() const;
+  Iterator end();
+  ConstIterator end() const;
+  ConstIterator cend() const;
   const DapServerInfo &first() const override;
   const DapServerInfo &last() const override;
   DapServerInfo &at (int a_index) override;

@@ -57,6 +57,7 @@ protected:
   /// @{
 public:
   DapServerInfo();
+  DapServerInfo (const QJsonObject &a_src);
   DapServerInfo (const DapServerInfo &a_src);
   DapServerInfo (DapServerInfo &&a_src);
   DapServerInfo (

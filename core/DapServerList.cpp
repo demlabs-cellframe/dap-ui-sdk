@@ -1,6 +1,8 @@
 /* INCLUDES */
 #include "DapServerList.h"
 
+#include <QMetaEnum>
+
 /* FUNCTIONS */
 static const QHash<QString, QString> s_countryMap =
 {
@@ -470,6 +472,11 @@ QVariant DapServerList::data (const QModelIndex &index, int role) const
   return item.value (role);
 }
 
+QHash<int, QByteArray> DapServerList::roleNames() const
+{
+
+}
+
 /********************************************
  * OPERATORS
  *******************************************/
@@ -874,6 +881,25 @@ DapSortedServerList &DapSortedServerList::operator<< (DapServerInfo &&a_server)
 {
   append (std::move (a_server));
   return *this;
+}
+
+/*-----------------------------------------*/
+
+const QHash<int, QByteArray> &DapAbstractServerList::serverRoleNames()
+{
+  static QHash<int, QByteArray> result;
+
+  if (result.isEmpty())
+    {
+      int enumIndex  = DapServerType::staticMetaObject.indexOfEnumerator ("FieldId");
+      auto metaEnum  = DapServerType::staticMetaObject.enumerator (enumIndex);
+      int enumSize   = metaEnum.keyCount();
+
+      for (int i = 0; i < enumSize; i++)
+        result.insert (metaEnum.value (i), metaEnum.key (i));
+    }
+
+  return result;
 }
 
 /*-----------------------------------------*/
