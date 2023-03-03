@@ -14,8 +14,8 @@ public:
   {
 
   }
-  DapAbstractServerList *serverList()         { return m_serverList; }
-  DapQmlModelAutoServerList *autoServerList() { return m_autoServerList; }
+  DapAbstractServerList *serverList() const         { return m_serverList; }
+  DapQmlModelAutoServerList *autoServerList() const { return m_autoServerList; }
 };
 
 /********************************************

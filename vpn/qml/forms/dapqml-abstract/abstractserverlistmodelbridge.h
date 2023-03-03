@@ -42,9 +42,9 @@ public:
   /// @{
 public:
   /// get proper server list
-  virtual DapAbstractServerList *serverList() = 0;
+  virtual DapAbstractServerList *serverList() const = 0;
   /// get proper auto server list
-  virtual DapQmlModelAutoServerList *autoServerList() = 0;
+  virtual DapQmlModelAutoServerList *autoServerList() const = 0;
   /// handle custom data
   /// @note to setup handling define customRoleNames
   virtual QVariant customData (const QModelIndex &a_index, int a_role, int a_sizeAuto, int a_size) const;
