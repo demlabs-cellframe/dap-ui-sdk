@@ -36,6 +36,7 @@
 	bugrep-bg: 					"qrc:/light/report_bg_border.png";
         contact-bugrep-bg:          "qrc:/light/contact_report_bg_border.png";
 	login-logo: 				"qrc:/light/login-logo.png";
+	btn-plus:                   "qrc:/light/ic_plus.png";
 	btn-close:                  "qrc:/light/ic_close.png";
         btn-close-hover:            "qrc:/light/ic_close_hover.png";
         btn-ticker-close:           "qrc:/light/ic_ticker_close.png";
@@ -76,6 +77,7 @@
 	bugrep-bg: 					"qrc:/dark/report_bg_border.png";
         contact-bugrep-bg:          "qrc:/dark/contact_report_bg_border.png";
 	login-logo: 				"qrc:/dark/login-logo.png";
+    btn-plus:                   "qrc:/dark/ic_plus.png";
 	btn-close:                  "qrc:/dark/ic_close.png";
         btn-close-hover:            "qrc:/dark/ic_close_hover.png";
         btn-ticker-close:           "qrc:/dark/ic_ticker_close.png";
@@ -312,6 +314,11 @@
 .ic_information_bug-report
 {
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_information_bug-report.png");
+}
+
+.ic_faq
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_faq.png");
 }
 
 .ic_key-history
@@ -767,7 +774,12 @@
 
 .dashboard-status-container
 {
-	scaled-rect: scaled(nan,107,nan,22,false);
+	scaled-rect: scaled(nan,nan,nan,22,false);
+}
+
+.dashboard-status-container-pos
+{
+	scaled-rect: scaled(nan,107,nan,nan,nan);
 }
 
 .dashboard-status-label-scaler
@@ -1033,57 +1045,12 @@
 	scaled-rect: scaled(nan,nan,363,34,true);
 }
 
-.ph-btn-label-main/****************************************************
-* Ticker
-***************************************************/
-
-.ticker_close_button
+.ph-notice-spacer
 {
-    qproperty-inactive: "@btn-ticker-close";
-    qproperty-active: "@btn-ticker-close-hover";
+	scaled-rect: scaled(nan,nan,363,34,true);
 }
 
-.ticker_show_button
-{
-    qproperty-inactive: "@btn-ticker-show";
-    qproperty-active: "@btn-ticker-show-hover";
-}
-
-.ticker
-{
-    scaled-rect: scaled(-1,0,-1,36,false);
-}
-
-.ticker_lable_rect
-{
-    scaled-rect: scaled(-1,0,-1,36,false);
-}
-
-.ticker_label
-{
-    scaled-rect: scaled(nan,0,nan,36,false);
-    color: "#FFFFFF";
-}
-
-.ticker_label_backgraund{
-    scaled-rect: scaled(-1,0,-1,36,false);
-    color: "#A4A3C0";
-}
-
-.ticker_close_rect
-{
-    scaled-rect: scaled(-1,0,36,36,false);
-}
-
-.ticker_show_rect
-{
-    scaled-rect: scaled(-1,0,36,36,false);
-}
-
-.ticker_close_background{
-    scaled-rect: scaled(-1,0,-1,36,false);
-    color: "#A4A3C0";
-}
+.ph-btn-label-main
 {
 	color: "@text";
 	scaled-font: scaled(16);	
@@ -1117,55 +1084,86 @@
 }
 
 /****************************************************
+ * FAQ
+ ***************************************************/
+
+.faq-content
+{
+	scaled-rect: scaled(-1,144,363,nan,false,14);
+}
+
+.faq-item
+{
+	scaled-rect: scaled(nan,nan,nan,68,false);
+}
+
+.faq-item-spacer
+{
+	scaled-rect: scaled(nan,nan,nan,26,false);
+}
+
+.faq-item-label
+{
+	scaled-font: scaled(16);
+	font-weight: Font.Bold;
+}
+
+.faq-item-text
+{
+	scaled-font: scaled(16);
+	color: "@label";
+}
+
+.faq-plus-btn
+{
+	scaled-rect: scaled(nan,nan,32,32,true);
+    qproperty-inactive: "@btn-plus";
+    qproperty-active: "@btn-plus";
+}
+
+.faq-close-btn
+{
+	scaled-rect: scaled(nan,nan,32,32,true);
+    qproperty-inactive: "@btn-close";
+    qproperty-active: "@btn-close";
+}
+
+/****************************************************
 * Ticker
 ***************************************************/
 
-.ticker_close_button
+.ticker-close-button
 {
+    scaled-rect: scaled(nan,nan,24,24,true);
     qproperty-inactive: "@btn-ticker-close";
     qproperty-active: "@btn-ticker-close-hover";
 }
 
-.ticker_show_button
-{
-    qproperty-inactive: "@btn-ticker-show";
-    qproperty-active: "@btn-ticker-show-hover";
-}
-
 .ticker
 {
-    scaled-rect: scaled(-1,0,-1,36,false);
+    scaled-rect: scaled(-1,nan,-1,36,false);
 }
 
-.ticker_lable_rect
+.ticker-lable-rect
 {
-    scaled-rect: scaled(-1,0,-1,36,false);
+    scaled-rect: scaled(nan,nan,-1,36,false);
 }
 
-.ticker_label
+.ticker-label
 {
-    scaled-rect: scaled(nan,0,nan,36,false);
+    scaled-rect: scaled(nan,nan,nan,36,false,14);
     color: "#FFFFFF";
 }
 
-.ticker_label_backgraund{
-    scaled-rect: scaled(-1,0,-1,36,false);
-    color: "#87ACB8";
-}
-
-.ticker_close_rect
+.ticker-label-background
 {
-    scaled-rect: scaled(-1,0,36,36,false);
+    scaled-rect: scaled(nan,nan,-1,36,false);
+    color: "#A4A3C0";
 }
 
-.ticker_show_rect
+.ticker-close-rect
 {
-    scaled-rect: scaled(-1,0,36,36,false);
-}
-
-.ticker_close_background{
-    scaled-rect: scaled(-1,0,-1,36,false);
-    color: "#87ACB8";
+    scaled-rect: scaled(nan,nan,36,36,true);
 }
 
 /****************************************************

@@ -263,7 +263,8 @@ Rectangle {
      ********************************************/
 
     GridLayout {
-        anchors.fill: parent;
+        width: parent.width
+        height: parent.height - separator.visible * separator.height
         columns: 1
 
         /* LeftTopMainBottomSub */
@@ -855,13 +856,15 @@ Rectangle {
                 onTextChanged: { root.mainText = text; root.textChanged(); }
             }
         }
+    }
 
-        /* bottom item */
-        DapQmlSeparator {
-            Layout.fillWidth: true
-            width: root.width
-            visible: root.separator
-        }
+    /* bottom item */
+    DapQmlSeparator {
+        id: separator
+        //Layout.fillWidth: true
+        y: parent.height - height
+        width: root.width
+        visible: root.separator
     }
 
 }

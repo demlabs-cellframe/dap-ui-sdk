@@ -105,6 +105,7 @@ signals:
 
   /* info */
   void sigBugReport();
+  void sigFaq();
   void sigLicenceHistory();
   void sigTermsOfUse();
   void sigPrivacyPolicy();
@@ -128,6 +129,7 @@ signals:
 
   /* info */
   void sigBugReport();
+  void sigFaq();
   void sigLicenceHistory();
   void sigTermsOfUse();
   void sigPrivacyPolicy();

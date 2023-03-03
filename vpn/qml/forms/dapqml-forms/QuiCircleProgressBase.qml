@@ -1,11 +1,14 @@
 import QtQuick 2.11
 import QtQuick.Shapes 1.4
+import QtQuick.Layouts 1.4
 import QtGraphicalEffects 1.12
+import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
 Item {
-
     id: root
+    clip: true
+
     /// @brief form name
     ///
     /// Used to connect interface via Manager
@@ -25,27 +28,6 @@ Item {
     function setSetConfirmButtonActive(active)
     {
         btnConfirn.enabled = active
-    }
-
-    /****************************************//**
-     * Top separator
-     ********************************************/
-
-    DapQmlRectangle {
-        x: loginSepsPlacer.x
-        y: loginSepsPlacer.y
-        width: loginSepsPlacer.width
-        height: loginSepsPlacer.height
-        DapQmlSeparator {
-            x: (parent.width - width) / 2
-            z: 15
-            width: parent.width - 74
-            qss: "login-separator"
-        }
-        DapQmlDummy {
-            id: loginSepsPlacer
-            qss: "progress-circle-separator-container"
-        }
     }
 
     /****************************************//**
@@ -119,16 +101,49 @@ Item {
                 }
             }
         }
-        DapQmlLabel {
-            qss: "progress-circle-percent"
-            text: root.progressString
-            clip: false
+
+        DapQmlRectangle {
+            id: progressInfo
+            x: (parent.width - width) / 2
+            y: (parent.height - height) / 2
+            qss: "progress-circle-info"
+
+            DapQmlDummy {
+                id: progressCircleSpacing
+                qss: "progress-circle-spacing"
+                onHeightChanged: progressInfoColumnLayout.spacing = height
+            }
+
+            ColumnLayout {
+                id: progressInfoColumnLayout
+                anchors.fill: parent
+                spacing: progressCircleSpacing.height
+
+                Component.onCompleted:
+                    StyleDebugTree.describe (
+                       "progress-circle-ColumnLayout",
+                        ["x", "y", "width", "height", "spacing"],
+                       this);
+
+                DapQmlLabel {
+                    id: progressInfoPercent
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: contentHeight
+
+                    qss: "progress-circle-percent"
+                    text: root.progressString
+                }
+
+                DapQmlLabel {
+                    id: progressInfoMbytes
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: contentHeight
+                    qss: "progress-circle-mbytes"
+                    text: root.progressInfo
+                }
+            }
         }
-        DapQmlLabel {
-            qss: "progress-circle-mbytes"
-            text: root.progressInfo
-            clip: false
-        }
+
         DapQmlDummy {
             id: progressCircle
             qss: "progress-circle-arc"

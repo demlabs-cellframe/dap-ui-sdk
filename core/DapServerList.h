@@ -67,6 +67,8 @@ public:
   virtual bool empty() const = 0;
   inline bool isEmpty() { return empty(); }
   virtual int indexOf (const DapServerInfo &a_item) const = 0;
+  virtual int indexOfName (const QString &a_name) const = 0;
+  virtual int indexOfAddress (const QString &a_address) const = 0;
 
   virtual const DapServerInfo &first() const = 0;
   virtual const DapServerInfo &last() const = 0;
@@ -86,6 +88,7 @@ public:
   T *as() { return dynamic_cast<T*> (this); }
 
   static const QHash<int, QByteArray> &serverRoleNames();
+  static const QHash<QString, QString> &countryMap();
   /// @}
 
   /****************************************//**
@@ -172,6 +175,8 @@ public:
   int size() const override;
   bool empty() const override;
   int indexOf (const DapServerInfo &a_item) const override;
+  int indexOfName (const QString &a_name) const override;
+  int indexOfAddress (const QString &a_address) const override;
   void erase (Iterator it);
   Iterator begin();
   ConstIterator begin() const;
@@ -377,6 +382,8 @@ public:
   int size() const override;
   bool empty() const override;
   int indexOf (const DapServerInfo &a_item) const override;
+  int indexOfName (const QString &a_name) const override;
+  int indexOfAddress (const QString &a_address) const override;
   void erase (Iterator it);
   Iterator begin();
   ConstIterator begin() const;

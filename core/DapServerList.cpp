@@ -320,6 +320,30 @@ int DapServerList::indexOf (const DapServerInfo &a_item) const
   return m_list.indexOf (a_item);
 }
 
+int DapServerList::indexOfName (const QString &a_name) const
+{
+  int index = 0;
+  for (auto &server : m_list)
+    {
+      if (server.name() == a_name)
+        return index;
+      index++;
+    }
+  return -1;
+}
+
+int DapServerList::indexOfAddress (const QString &a_address) const
+{
+  int index = 0;
+  for (auto &server : m_list)
+    {
+      if (server.address() == a_address)
+        return index;
+      index++;
+    }
+  return -1;
+}
+
 void DapServerList::erase (DapServerList::Iterator it)
 {
   m_list.erase (it);
@@ -663,6 +687,24 @@ int DapSortedServerList::indexOf (const DapServerInfo &a_item) const
   return -1;
 }
 
+int DapSortedServerList::indexOfName(const QString &a_name) const
+{
+  int index = 0;
+  for (auto i = begin(), e = end(); i != e; i++, index++)
+    if (i->name() == a_name)
+      return index;
+  return -1;
+}
+
+int DapSortedServerList::indexOfAddress(const QString &a_address) const
+{
+  int index = 0;
+  for (auto i = begin(), e = end(); i != e; i++, index++)
+    if (i->address() == a_address)
+      return index;
+  return -1;
+}
+
 void DapSortedServerList::erase (DapSortedServerList::Iterator it)
 {
   int actualIndex = it;
@@ -900,6 +942,11 @@ const QHash<int, QByteArray> &DapAbstractServerList::serverRoleNames()
     }
 
   return result;
+}
+
+const QHash<QString, QString> &DapAbstractServerList::countryMap()
+{
+  return s_countryMap;
 }
 
 /*-----------------------------------------*/

@@ -9,15 +9,23 @@ void DapCmdUpdateOperation::setDownloadUrl(QString url)
     m_dowmloadUrl = url;
 }
 
-void DapCmdUpdateOperation::startDownload()
+void DapCmdUpdateOperation::setDownloadPack(QString pack)
 {
-    startDownloadUrl(m_dowmloadUrl);
+    m_dowmloadPack = pack;
 }
 
-void DapCmdUpdateOperation::startDownloadUrl(QString url)
+void DapCmdUpdateOperation::startDownload()
+{
+    startDownloadUrl(m_dowmloadUrl, m_dowmloadPack);
+}
+
+void DapCmdUpdateOperation::startDownloadUrl(QString url, QString pack)
 {
     QJsonObject response;
-    response["start_download"] = url;
+    QJsonObject downloadInfo;
+    downloadInfo["url"] = url;
+    downloadInfo["pack"] = pack;
+    response["start_download"] = downloadInfo;
     sendCmd(&response);
 }
 
