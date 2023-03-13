@@ -14,9 +14,9 @@ Button
     property string normalImageButton
     ///@detalis hoverImageButton The image on the Button is in the mouseover state.
     property string hoverImageButton
-    ///@detalis widthImageButton Image width.
+    ///@detalis widthImageButton DapImageRender width.
     property int widthImageButton: 0
-    ///@detalis heightImageButton Image height.
+    ///@detalis heightImageButton DapImageRender height.
     property int heightImageButton: 0
     ///@detalis indentImageLeftButton: Indentation of the image from the left edge.
     property int indentImageLeftButton
@@ -171,14 +171,13 @@ Button
             }
 
             ///button picture
-            Image
+            DapImageRender
             {
                 id: img
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: indentImageLeftButton
                 source: dapButton.hovered ? hoverImageButton : normalImageButton
-                mipmap: true
                 width: widthImageButton
                 height: heightImageButton
             }

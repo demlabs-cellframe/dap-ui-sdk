@@ -117,7 +117,7 @@ ComboBox
 
     //Icon icon near the text (arrow)
     indicator:
-        Image
+        DapImageRender
         {
             source: parent.popup.visible ? dapIndicatorImageActive : dapIndicatorImageNormal
             width: dapIndicatorWidth
