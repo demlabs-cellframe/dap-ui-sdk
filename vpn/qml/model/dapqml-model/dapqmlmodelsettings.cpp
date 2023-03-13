@@ -424,7 +424,7 @@ void DapQmlModelSettings::slotRetranslate()
 QString DapQmlModelSettings::getCurrentCountryCode() const
 {
   QString base_location = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
-  return DapServersData::m_countryMap.value (base_location, QString());
+  return DapAbstractServerList::countryMap().value (base_location, QString()); // DapServersData::m_countryMap.value (base_location, QString());
 }
 
 /********************************************

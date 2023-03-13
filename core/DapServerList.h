@@ -111,8 +111,8 @@ public:
  *******************************************/
 
 class DapServerList
-  : public DapAbstractServerList
-  , public QAbstractListModel
+  : public QAbstractListModel
+  , public DapAbstractServerList
 {
   Q_OBJECT
 
@@ -318,8 +318,8 @@ public:
  *******************************************/
 
 class DapSortedServerList
-  : public DapAbstractServerList
-  , public QAbstractListModel
+  : public QAbstractListModel
+  , public DapAbstractServerList
 {
   Q_OBJECT
 

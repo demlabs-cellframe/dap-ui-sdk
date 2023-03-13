@@ -390,6 +390,11 @@ const DapServerInfo &DapServerList::last() const
   return m_list.last();
 }
 
+DapServerInfo &DapServerList::at (int a_index)
+{
+  return m_list [a_index];
+}
+
 const DapServerInfo &DapServerList::at (int a_index) const
 {
   return m_list.at (a_index);
@@ -498,7 +503,7 @@ QVariant DapServerList::data (const QModelIndex &index, int role) const
 
 QHash<int, QByteArray> DapServerList::roleNames() const
 {
-
+  return DapAbstractServerList::serverRoleNames();
 }
 
 /********************************************
@@ -754,6 +759,11 @@ const DapServerInfo &DapSortedServerList::last() const
 }
 
 DapServerInfo &DapSortedServerList::at (int a_index)
+{
+  return *(begin() + a_index);
+}
+
+const DapServerInfo &DapSortedServerList::at (int a_index) const
 {
   return *(begin() + a_index);
 }
