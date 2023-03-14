@@ -696,7 +696,7 @@ int DapSortedServerList::indexOf (const DapServerInfo &a_item) const
   return -1;
 }
 
-int DapSortedServerList::indexOfName(const QString &a_name) const
+int DapSortedServerList::indexOfName (const QString &a_name) const
 {
   int index = 0;
   for (auto i = begin(), e = end(); i != e; i++, index++)
@@ -705,7 +705,7 @@ int DapSortedServerList::indexOfName(const QString &a_name) const
   return -1;
 }
 
-int DapSortedServerList::indexOfAddress(const QString &a_address) const
+int DapSortedServerList::indexOfAddress (const QString &a_address) const
 {
   int index = 0;
   for (auto i = begin(), e = end(); i != e; i++, index++)
@@ -759,22 +759,22 @@ const DapServerInfo &DapSortedServerList::first() const
 
 const DapServerInfo &DapSortedServerList::last() const
 {
-  return *(--end());
+  return * (--end());
 }
 
 DapServerInfo &DapSortedServerList::at (int a_index)
 {
-  return operator[](a_index);//*(begin() + a_index);
+  return operator[] (a_index); //*(begin() + a_index);
 }
 
 const DapServerInfo &DapSortedServerList::at (int a_index) const
 {
-  return operator[](a_index);//*(begin() + a_index);
+  return operator[] (a_index); //*(begin() + a_index);
 }
 
 DapServerInfo DapSortedServerList::value (int a_index) const
 {
-  return operator[](a_index);//*(begin() + a_index);
+  return operator[] (a_index); //*(begin() + a_index);
 }
 
 QVariant DapSortedServerList::qValue (int a_index) const
@@ -845,25 +845,26 @@ void DapSortedServerList::_sort()
 
   /* store result */
   _sortedIndexes.clear();
-  for (const auto &item : qAsConst(items))
+  for (const auto &item : qAsConst (items))
     _sortedIndexes << item.index;
 
   endResetModel();
 }
 
-void DapSortedServerList::_appendServerIndex(const DapServerInfo &a_server, int a_index)
+void DapSortedServerList::_appendServerIndex (const DapServerInfo &a_server, int a_index)
 {
   /* insert ping to sort list */
-  if (a_server.ping() != -1)
-    {
-      for (auto l = begin(), i = l + 1, e = end(); i != e; i++, l++)
-        {
-          if (i->ping() > a_server.ping())
-            _sortedIndexes.insert (l, a_index);
-        }
-    }
-  else
-    _sortedIndexes.append (a_index);
+  if (a_server.ping() == -1)
+    return _sortedIndexes.append (a_index);
+
+  for (auto i = begin(), e = end(); i != e; i++)
+    if (i->ping() > a_server.ping())
+      {
+        _sortedIndexes.insert (i, a_index);
+        return;
+      }
+
+  _sortedIndexes.append (a_index);
 }
 
 // 1234567
