@@ -251,7 +251,7 @@ static const QString _findInCountriesMap (const QString &string)
 
 DapServerList::DapServerList()
   : DapAbstractServerList (DapAbstractServerList::Type::ServerList)
-  , m_current (0)
+  , m_current (-1)
 {
 
 }
@@ -423,6 +423,10 @@ void DapServerList::setCurrent (int a_index)
 
 const DapServerInfo &DapServerList::currentServer() const
 {
+  static DapServerInfo dummy;
+  if (current() < 0
+      || current() >= size())
+    return dummy;
   return at (current());
 }
 
@@ -760,17 +764,17 @@ const DapServerInfo &DapSortedServerList::last() const
 
 DapServerInfo &DapSortedServerList::at (int a_index)
 {
-  return *(begin() + a_index);
+  return operator[](a_index);//*(begin() + a_index);
 }
 
 const DapServerInfo &DapSortedServerList::at (int a_index) const
 {
-  return *(begin() + a_index);
+  return operator[](a_index);//*(begin() + a_index);
 }
 
 DapServerInfo DapSortedServerList::value (int a_index) const
 {
-  return *(begin() + a_index);
+  return operator[](a_index);//*(begin() + a_index);
 }
 
 QVariant DapSortedServerList::qValue (int a_index) const

@@ -166,6 +166,15 @@ const DapServerInfo &DapQmlModelAutoServerList::at (int a_index) const
   return _autoServers.at (a_index);
 }
 
+int DapQmlModelAutoServerList::indexOfName (const QString &a_name) const
+{
+  int index = 0;
+  for (auto i = _autoServers.cbegin(), e = _autoServers.cend(); i != e; i++, index++)
+    if (i->name() == a_name)
+      return index;
+  return -1;
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/

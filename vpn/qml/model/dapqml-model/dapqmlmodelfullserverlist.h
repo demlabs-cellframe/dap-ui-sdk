@@ -62,12 +62,15 @@ protected:
 public:
   static DapQmlModelFullServerList *instance();
   const AbstractServerListModelBridge *bridge() const;
+  /// @note will delete old bridge, if set
   void setBridge (AbstractServerListModelBridge *a_newBridge);
   Q_INVOKABLE int size() const;
   Q_INVOKABLE int current() const;
   Q_INVOKABLE void setCurrent (int a_newCurrentServer);
   Q_INVOKABLE QVariant value (int a_row, const QString &a_name);
+  const DapServerInfo &currentServer() const;
   const DapServerInfo &at (int a_index) const;
+  int indexOfName (const QString &a_name) const;
 protected:
   void _getSizes();
   void _getRoles();

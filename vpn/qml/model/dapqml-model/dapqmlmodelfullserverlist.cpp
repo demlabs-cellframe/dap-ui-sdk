@@ -104,6 +104,14 @@ QVariant DapQmlModelFullServerList::value (int a_row, const QString &a_name)
   return data (index (a_row, 0), fieldId);
 }
 
+const DapServerInfo &DapQmlModelFullServerList::currentServer() const
+{
+  static DapServerInfo dummy;
+  if (current() == -1)
+    return dummy;
+  return at (current());
+}
+
 const DapServerInfo &DapQmlModelFullServerList::at (int a_index) const
 {
   auto autoServerList  = m_bridge->autoServerList();
@@ -116,6 +124,22 @@ const DapServerInfo &DapQmlModelFullServerList::at (int a_index) const
   /* server boundaries */
   int newIndexValue     = a_index - _size.autoServer;
   return serverList->at (newIndexValue);
+}
+
+int DapQmlModelFullServerList::indexOfName (const QString &a_name) const
+{
+  auto autoServerList  = m_bridge->autoServerList();
+  auto serverList      = m_bridge->serverList();
+
+  int result  = autoServerList->indexOfName (a_name);
+  if (result != -1)
+    return result;
+
+  result      = serverList->indexOfName (a_name);
+  if (result != -1)
+    return result - _size.autoServer;
+
+  return -1;
 }
 
 void DapQmlModelFullServerList::_getSizes()

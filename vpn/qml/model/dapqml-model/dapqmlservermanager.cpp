@@ -140,6 +140,9 @@ void DapQmlServerManager::setEnabled (bool a_enable)
       delete s_serverListBridge;
       delete s_customServers;
       delete s_saveDelay;
+
+      if (s_serverListBridge)
+        DapQmlModelFullServerList::instance()->setBridge (AbstractServerListModelBridge::getDefaultBridge());
     }
 
   /* invoke delayed loading and bridging */
@@ -160,7 +163,13 @@ void DapQmlServerManager::setEnabled (bool a_enable)
 void DapQmlServerManager::importServers (const DapServerInfoList *a_servers)
 {
   if (!enabled())
-    return;
+    {
+      auto serverList = DapQmlModelFullServerList::instance()->bridge()->serverList();
+      for (const auto &server : *a_servers)
+        if (-1 == serverList->indexOfAddress (server.address()))
+          serverList->append (server);
+      return;
+    }
 
   for (auto i = a_servers->begin(), e = a_servers->end(); i != e; i++)
     if (!s_customServers->contains (i->address()))

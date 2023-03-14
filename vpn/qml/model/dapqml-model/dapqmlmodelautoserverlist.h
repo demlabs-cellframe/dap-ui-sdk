@@ -59,6 +59,7 @@ public:
   /// @note if location is not set, use @ref setLocation method which will also invoke this method, so there is no need to call this method after calling @ref setLocation
   Q_INVOKABLE void update();
   const DapServerInfo &at (int a_index) const;
+  int indexOfName (const QString &a_name) const;
   /// @}
 
   /****************************************//**
