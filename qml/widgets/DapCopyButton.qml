@@ -41,7 +41,7 @@ Item
                         dapMainWindow.width*0.5,
                         8,
                         popupText,
-                        "qrc:/Resources/" + pathTheme + "/icons/other/check_icon.png")
+                        "qrc:/Resources/" + pathTheme + "/icons/other/Verified.svg")
 
             copyClicked()
         }
