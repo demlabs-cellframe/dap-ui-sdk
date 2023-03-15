@@ -656,17 +656,17 @@ int DapSortedServerList::append (DapServerInfo &&a_server)
 
 void DapSortedServerList::insert (int a_index, const DapServerInfo &a_server)
 {
-  _increaseAllIndexes (a_index);
-  _list.insert (a_index, a_server);
-  _appendServerIndex (a_server, a_index);
+  int newIndex  = _list.size();
+  _sortedIndexes.insert (_sortedIndexes.begin() + a_index, newIndex);
+  _list.append (a_server);
   emit sizeChanged();
 }
 
 void DapSortedServerList::insert (int a_index, DapServerInfo &&a_server)
 {
-  _increaseAllIndexes (a_index);
-  _list.insert (a_index, std::move (a_server));
-  _appendServerIndex (a_server, a_index);
+  int newIndex  = _list.size();
+  _sortedIndexes.insert (_sortedIndexes.begin() + a_index, newIndex);
+  _list.append (std::move (a_server));
   emit sizeChanged();
 }
 
@@ -889,6 +889,11 @@ void DapSortedServerList::update (const QList<int> &a_indexes)
       beginMoveRows (dummyIndex, *oldIt, *oldIt, dummyIndex, *newIt);
       endMoveRows();
     }
+}
+
+const QLinkedList<int> &DapSortedServerList::getSortedIndexes() const
+{
+  return _sortedIndexes;
 }
 
 void DapSortedServerList::_sort()

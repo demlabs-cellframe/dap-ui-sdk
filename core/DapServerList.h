@@ -414,6 +414,8 @@ public:
   inline void update() { _sort(); }
   /// sort only provided indexes
   void update (const QList<int> &a_indexes);
+  /// get sorted items indexes
+  const QLinkedList<int> &getSortedIndexes() const;
 
   inline operator const DapServerList &() const     { return _list; }
   inline operator const DapServerInfoList &() const { return _list; }
