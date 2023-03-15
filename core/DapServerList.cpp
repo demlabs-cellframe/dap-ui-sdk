@@ -551,9 +551,9 @@ DapServerList &DapServerList::operator<< (DapServerInfo &&a_server)
 DapSortedServerListIterator::DapSortedServerListIterator() : p (nullptr), i() {}
 DapSortedServerListIterator::DapSortedServerListIterator (DapSortedServerListIterator::Iterator n, DapSortedServerList *p) : p (p), i (n) {}
 DapSortedServerListIterator::DapSortedServerListIterator (const DapSortedServerListIterator &o): p (o.p), i (o.i) {}
-DapServerInfo &DapSortedServerListIterator::operator*()        { return (*p) [*i]; }
-DapServerInfo *DapSortedServerListIterator::operator->()       { return & (*p) [*i]; }
-DapServerInfo &DapSortedServerListIterator::operator[] (int j) { return (*p) [*i + j]; }
+DapServerInfo &DapSortedServerListIterator::operator*()        { return p->_list [*i]; }
+DapServerInfo *DapSortedServerListIterator::operator->()       { return & (p->_list) [*i]; }
+DapServerInfo &DapSortedServerListIterator::operator[] (int j) { return p->_list [*i + j]; }
 bool DapSortedServerListIterator::operator== (const DapSortedServerListIterator &o) const      { return i == o.i; }
 bool DapSortedServerListIterator::operator!= (const DapSortedServerListIterator &o) const      { return i != o.i; }
 bool DapSortedServerListIterator::operator< (const DapSortedServerListIterator &other) const   { return *i < *other.i; }
@@ -580,9 +580,9 @@ DapSortedServerListConstIterator::DapSortedServerListConstIterator() : p (nullpt
 DapSortedServerListConstIterator::DapSortedServerListConstIterator (DapSortedServerListConstIterator::ConstIterator n, const DapSortedServerList *p) : p (p), i (n) {}
 DapSortedServerListConstIterator::DapSortedServerListConstIterator (const DapSortedServerListConstIterator &o): p (o.p), i (o.i) {}
 DapSortedServerListConstIterator::DapSortedServerListConstIterator (const DapSortedServerListIterator &o): p (o.p), i (o.i) {}
-const DapServerInfo &DapSortedServerListConstIterator::operator*() const        { return p->at (*i); }
-const DapServerInfo *DapSortedServerListConstIterator::operator->() const       { return &p->at (*i); }
-const DapServerInfo &DapSortedServerListConstIterator::operator[] (int j) const { return p->at (*i + j); }
+const DapServerInfo &DapSortedServerListConstIterator::operator*() const        { return p->_list [*i]; }
+const DapServerInfo *DapSortedServerListConstIterator::operator->() const       { return &p->_list [*i]; }
+const DapServerInfo &DapSortedServerListConstIterator::operator[] (int j) const { return p->_list [*i + j]; }
 bool DapSortedServerListConstIterator::operator== (const DapSortedServerListConstIterator &o) const     { return i == o.i; }
 bool DapSortedServerListConstIterator::operator!= (const DapSortedServerListConstIterator &o) const     { return i != o.i; }
 bool DapSortedServerListConstIterator::operator< (const DapSortedServerListConstIterator &other) const  { return *i < *other.i; }
@@ -858,11 +858,14 @@ void DapSortedServerList::_appendServerIndex (const DapServerInfo &a_server, int
     return _sortedIndexes.append (a_index);
 
   for (auto i = begin(), e = end(); i != e; i++)
-    if (i->ping() > a_server.ping())
-      {
-        _sortedIndexes.insert (i, a_index);
-        return;
-      }
+    {
+      auto &item = *i;
+      if (item.ping() > a_server.ping())
+        {
+          _sortedIndexes.insert (i, a_index);
+          return;
+        }
+    }
 
   _sortedIndexes.append (a_index);
 }

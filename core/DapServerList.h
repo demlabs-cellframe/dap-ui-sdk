@@ -323,6 +323,9 @@ class DapSortedServerList
 {
   Q_OBJECT
 
+  friend class DapSortedServerListIterator;
+  friend class DapSortedServerListConstIterator;
+
   /****************************************//**
    * @name PROPERTIES
    *******************************************/
