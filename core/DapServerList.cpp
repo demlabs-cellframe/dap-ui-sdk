@@ -813,61 +813,158 @@ void DapSortedServerList::clear()
   endResetModel();
 }
 
+void DapSortedServerList::update (const QList<int> &a_indexes)
+{
+//  /* copy indexes */
+//  QList<int> sortedIndexes;
+//  for (int v : qAsConst (_sortedIndexes))
+//    sortedIndexes << v;
+
+////  /* get actual indexes */
+////  QList<int> actualIndexes;
+////  for (int index : a_indexes)
+////    actualIndexes << sortedIndexes.at (index);
+
+//  /* sort every index */
+//  QModelIndex dummyIndex;
+//  for (auto i = a_indexes.cbegin(), e = a_indexes.cend(); i != e; i++)
+//    {
+//      /* vars */
+//      auto it       = _sortedIndexes.begin();
+//      int index     = *i;               // get index from sorted list
+//      auto pos      = it + index;       // calc pos inside chain
+//      int old       = *pos;             // store old server index
+//      auto &server  = _list.at (old);   // get server pointed by sorted chain
+
+//      /* take index from chain */
+//      _sortedIndexes.erase (pos);       // erase chain item
+
+//      /* insert to proper place */
+//      int newIndex  = _appendServerIndex (server, old);
+
+//      /* signal about rows moving */
+//      if (newIndex != old)
+//        {
+//          beginMoveRows (dummyIndex, index, index, dummyIndex, newIndex);
+//          endMoveRows();
+//        }
+//    }
+
+  /* sort provided list */
+  QList<int> indexes  = a_indexes;
+  qSort (indexes);
+
+  /* take indexes from chain */
+  QList<int> takenIndexes;
+  for (auto i = indexes.crbegin(), e = indexes.crend(); i != e; i++)
+    {
+      /* calc iterator */
+      auto pos  = _sortedIndexes.begin() + *i;
+
+      /* store value */
+      takenIndexes << *pos;
+
+      /* take from chain */
+      _sortedIndexes.erase (pos);
+    }
+
+  /* insert to proper places */
+  for (auto i = takenIndexes.cbegin(), e = takenIndexes.cend(); i != e; i++)
+    {
+      auto &server  = _list[*i];
+      _appendServerIndex (server, *i);
+    }
+
+  /* collect new indexes */
+  QList<int> newIndexes;
+  for (int takenIndex : qAsConst (takenIndexes))
+    newIndexes << indexOf (_list[takenIndex]);
+
+  /* send moving signals */
+  auto oldIt  = takenIndexes.cbegin();
+  auto newIt  = newIndexes.cbegin();
+  QModelIndex dummyIndex;
+  for (int i = 0; i < takenIndexes.size(); i++, oldIt++, newIt++)
+    {
+      beginMoveRows (dummyIndex, *oldIt, *oldIt, dummyIndex, *newIt);
+      endMoveRows();
+    }
+}
+
 void DapSortedServerList::_sort()
 {
-  /* defs */
-  struct Item
-  {
-    int index;
-    int ping;
-    bool operator< (const Item &o) const { return ping < o.ping; }
-  };
+//  /* defs */
+//  struct Item
+//  {
+//    int index;
+//    int ping;
+//    bool operator< (const Item &o) const { return ping < o.ping; }
+//  };
 
-  /* collect all indexes */
-  QVector<Item> items (size());
-  QVector<Item> unavItems (size());
-  int index = 0;
-  for (const auto &server : _list)
-    {
-      if (server.ping() != -1)
-        items << Item {index++, server.ping()};
-      else
-        unavItems << Item {index++, server.ping()};
-    }
+//  /* collect all indexes */
+//  QVector<Item> items (size());
+//  QVector<Item> unavItems (size());
+//  int index = 0;
+//  for (const auto &server : _list)
+//    {
+//      if (server.ping() != -1)
+//        items << Item {index++, server.ping()};
+//      else
+//        unavItems << Item {index++, server.ping()};
+//    }
+
+//  beginResetModel();
+
+//  /* sort by ping */
+//  std::sort (items.begin(), items.end());
+
+//  /* combine result */
+//  items += unavItems;
+
+//  /* store result */
+//  _sortedIndexes.clear();
+//  for (const auto &item : qAsConst (items))
+//    _sortedIndexes << item.index;
+
+//  endResetModel();
 
   beginResetModel();
 
-  /* sort by ping */
-  std::sort (items.begin(), items.end());
-
-  /* combine result */
-  items += unavItems;
-
-  /* store result */
+  int index = 0;
   _sortedIndexes.clear();
-  for (const auto &item : qAsConst (items))
-    _sortedIndexes << item.index;
+  for (auto i = _list.cbegin(), e = _list.cend(); i != e; i++, index++)
+    _appendServerIndex (*i, index);
 
   endResetModel();
 }
 
-void DapSortedServerList::_appendServerIndex (const DapServerInfo &a_server, int a_index)
+int DapSortedServerList::_appendServerIndex (const DapServerInfo &a_server, int a_index)
 {
-  /* insert ping to sort list */
-  if (a_server.ping() == -1)
-    return _sortedIndexes.append (a_index);
+  /* lambdas */
+  auto appendToEnd = [this](int a_index) -> int
+    {
+      _sortedIndexes.append (a_index);
+      return _sortedIndexes.size() - 1;
+    };
 
-  for (auto i = begin(), e = end(); i != e; i++)
+  /* add non ping at the end */
+  if (a_server.ping() == -1)
+    return appendToEnd (a_index);
+
+  /* insert ping to proper place */
+  int pos = 0;
+  for (auto i = begin(), e = end(); i != e; i++, pos++)
     {
       auto &item = *i;
       if (item.ping() > a_server.ping())
         {
           _sortedIndexes.insert (i, a_index);
-          return;
+          return pos;
         }
     }
 
-  _sortedIndexes.append (a_index);
+  /* place not found, store to the end */
+  return appendToEnd (a_index);
 }
 
 // 1234567

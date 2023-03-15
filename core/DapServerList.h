@@ -116,6 +116,8 @@ class DapServerList
 {
   Q_OBJECT
 
+  friend class DapSortedServerList;
+
   /****************************************//**
    * @name PROPERTIES
    *******************************************/
@@ -197,6 +199,8 @@ public:
 
   void move (int a_source, int a_dest);
   void clear() override;
+
+  inline operator const DapServerInfoList &() const { return m_list; }
   /// @}
 
   /****************************************//**
@@ -406,11 +410,16 @@ public:
   const DapServerInfo &currentServer() const override;
 
   void clear() override;
+  /// sort all items from scratch
   inline void update() { _sort(); }
-  inline operator DapServerList *() { return &_list; }
+  /// sort only provided indexes
+  void update (const QList<int> &a_indexes);
+
+  inline operator const DapServerList &() const     { return _list; }
+  inline operator const DapServerInfoList &() const { return _list; }
 protected:
   void _sort();
-  void _appendServerIndex (const DapServerInfo &a_server, int a_index);
+  int _appendServerIndex (const DapServerInfo &a_server, int a_index);
   void _increaseAllIndexes (int a_index);
   void _decreaseAllIndexes (int a_index);
   /// @}
