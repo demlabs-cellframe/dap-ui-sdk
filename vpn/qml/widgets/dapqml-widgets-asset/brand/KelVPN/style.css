@@ -306,6 +306,11 @@
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_bot.png");
 }
 
+.ic_share_log
+{
+        qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_share_log.png");
+}
+
 .ic_close
 {
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_close.png");
@@ -918,6 +923,11 @@
 .bugrep-send-btn
 {
 	scaled-rect: scaled(27,492,374,80,true,14);
+}
+
+.bugrep-share-btn
+{
+        scaled-rect: scaled(27,592,374,80,true,14);
 }
 
 .bugrep-sending

@@ -76,6 +76,7 @@ void DapLogger::setLogFile(const QString& fileName)
     qDebug() << "setLogFile: " + fileName;
     QString filePath = getPathToLog() + "/" + fileName;
     dap_common_init(DAP_BRAND, qPrintable(filePath), qPrintable(getPathToLog()));
+    DapDataLocal::instance()->setLogPath(getPathToLog());
     DapDataLocal::instance()->setLogFilePath(filePath);
 }
 

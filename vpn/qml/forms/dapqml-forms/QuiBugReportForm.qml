@@ -95,6 +95,8 @@ Item {
 
     /// @brief button send clicked (report input)
     signal sigSend()
+    /// @brief button share clicked (report input)
+    signal sigShare()
     /// @brief button cancel clicked (report sending)
     signal sigCancel()
     /// @brief button back clicked (report success\\error)
@@ -902,6 +904,15 @@ Item {
                 text: qsTr("SEND REPORT") + lang.notifier
                 onClicked: { root.mode = 1; root.sigSend(); }
                 enabled: bugRepInputField.length >= 1
+                opacity: 0.4 + 0.6 * enabled
+            }
+
+            /* share button */
+            DapQmlPushButton {
+                qss: "bugrep-share-btn push-button"
+                text: qsTr("SHARE REPORT") + lang.notifier
+                onClicked: { root.sigShare(); }
+                enabled: true
                 opacity: 0.4 + 0.6 * enabled
             }
         }

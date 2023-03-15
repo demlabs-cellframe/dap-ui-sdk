@@ -102,6 +102,7 @@ signals:
   /* support */
   void sigBugSend();
   void sigTelegramBot();
+  void sigShareLog();
 
   /* info */
   void sigBugReport();

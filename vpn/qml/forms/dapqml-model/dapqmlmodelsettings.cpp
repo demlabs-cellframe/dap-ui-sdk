@@ -166,6 +166,7 @@ void DapQmlModelSettings::_buildMenuItemsList()
 
       Item{SI_BUTTON,     tr ("Send bug report"), "", "settings_icon ic_send-report", "send_bug_report",     [](QObject*) { emit __inst->sigBugSend(); } },
       Item{SI_BUTTON,     tr ("Telegram support bot"), "", "settings_icon ic_bot", "telegram_support_bot",   [](QObject*) { emit __inst->sigTelegramBot(); } },
+      Item{SI_BUTTON,     tr ("Share logs"), "", "settings_icon ic_share_log", "share_logs",                 [](QObject*) { emit __inst->sigShareLog(); } },
 
       Item{SI_TITLE,      tr ("Information"), "", "settings_icon", "information",                            [](QObject*){} },
 
