@@ -672,8 +672,9 @@ void DapSortedServerList::insert (int a_index, DapServerInfo &&a_server)
 
 void DapSortedServerList::remove (int a_index)
 {
-  _decreaseAllIndexes (a_index);
-  _list.remove (a_index);
+  int removeIndex = *(_sortedIndexes.begin() + a_index);
+  _decreaseAllIndexes (removeIndex);
+  _list.remove (removeIndex);
   emit sizeChanged();
 }
 
@@ -989,16 +990,17 @@ void DapSortedServerList::_increaseAllIndexes (int a_index)
 // 123456
 void DapSortedServerList::_decreaseAllIndexes (int a_index)
 {
-  for (auto i = begin(), e = end(); i != e; i++)
+  for (auto i = _sortedIndexes.begin(), e = _sortedIndexes.end(); i != e; i++)
     {
       /* decrease */
-      if (int (i) > a_index)
-        (*DapSortedServerListIterator::Iterator (i))--;
+      if (*i > a_index)
+        *i = *i - 1;
 
       /* remove if same */
-      else if (int (i) == a_index)
+      else if (*i == a_index)
         {
-          auto c = i--;
+          auto c = i;
+          i--;
           _sortedIndexes.erase (c);
         }
     }
