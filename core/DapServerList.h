@@ -204,6 +204,9 @@ public:
   void clear() override;
 
   inline operator DapServerInfoList () const { return m_list; }
+protected:
+  int _iteratorIndex (Iterator &a_it);
+  int _iteratorIndex (ConstIterator &a_it);
   /// @}
 
   /****************************************//**

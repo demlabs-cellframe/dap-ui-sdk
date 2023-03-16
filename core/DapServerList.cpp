@@ -295,7 +295,14 @@ DapServerList *DapServerList::instance()
 int DapServerList::append (const DapServerInfo &a_server)
 {
   int result  = size();
-  m_list.append (a_server);
+
+  QModelIndex dummyIndex;
+  beginInsertRows (dummyIndex, result, result);
+  {
+    m_list.append (a_server);
+  }
+  endInsertRows();
+
   emit sizeChanged();
   return result;
 }
@@ -303,26 +310,51 @@ int DapServerList::append (const DapServerInfo &a_server)
 int DapServerList::append (DapServerInfo &&a_server)
 {
   int result  = size();
-  m_list.append (std::move (a_server));
+
+  QModelIndex dummyIndex;
+  beginInsertRows (dummyIndex, result, result);
+  {
+    m_list.append (std::move (a_server));
+  }
+  endInsertRows();
+
   emit sizeChanged();
   return result;
 }
 
 void DapServerList::insert (int a_index, const DapServerInfo &a_server)
 {
-  m_list.insert (a_index, a_server);
+  QModelIndex dummyIndex;
+  beginInsertRows (dummyIndex, a_index, a_index);
+  {
+    m_list.insert (a_index, a_server);
+  }
+  endInsertRows();
+
   emit sizeChanged();
 }
 
 void DapServerList::insert (int a_index, DapServerInfo &&a_server)
 {
-  m_list.insert (a_index, std::move (a_server));
+  QModelIndex dummyIndex;
+  beginInsertRows (dummyIndex, a_index, a_index);
+  {
+    m_list.insert (a_index, std::move (a_server));
+  }
+  endInsertRows();
+
   emit sizeChanged();
 }
 
 void DapServerList::remove (int a_index)
 {
-  m_list.removeAt (a_index);
+  QModelIndex dummyIndex;
+  beginRemoveRows (dummyIndex, a_index, a_index);
+  {
+    m_list.removeAt (a_index);
+  }
+  endRemoveRows();
+
   emit sizeChanged();
 }
 
@@ -367,7 +399,15 @@ int DapServerList::indexOfAddress (const QString &a_address) const
 
 void DapServerList::erase (DapServerList::Iterator it)
 {
-  m_list.erase (it);
+  int sortedIndex = _iteratorIndex (it);
+
+  QModelIndex dummyIndex;
+  beginRemoveRows (dummyIndex, sortedIndex, sortedIndex);
+  {
+    m_list.erase (it);
+  }
+  endRemoveRows();
+
   emit sizeChanged();
 }
 
@@ -453,14 +493,39 @@ const DapServerInfo &DapServerList::currentServer() const
 
 void DapServerList::move (int a_source, int a_dest)
 {
-  m_list.move (a_source, a_dest);
+  QModelIndex dummyIndex;
+  beginMoveRows (dummyIndex, a_source, a_source, dummyIndex, a_dest);
+  {
+    m_list.move (a_source, a_dest);
+  }
+  endMoveRows();
 }
 
 void DapServerList::clear()
 {
   beginResetModel();
+
   m_list.clear();
+
   endResetModel();
+}
+
+int DapServerList::_iteratorIndex(DapServerList::Iterator &a_it)
+{
+  int sortedIndex = 0;
+  for (auto i = cbegin(), e = cend(); i != e; i++, sortedIndex++)
+    if (i == a_it)
+      break;
+  return (sortedIndex < size()) ? sortedIndex : -1;
+}
+
+int DapServerList::_iteratorIndex(DapServerList::ConstIterator &a_it)
+{
+  int sortedIndex = 0;
+  for (auto i = cbegin(), e = cend(); i != e; i++, sortedIndex++)
+    if (i == a_it)
+      break;
+  return (sortedIndex < size()) ? sortedIndex : -1;
 }
 
 //void DapServerList::sortByPing()
@@ -684,10 +749,18 @@ int DapSortedServerList::append (const DapServerInfo &a_server)
 {
   /* append new item index */
   int result  = _list.size();
-  _appendServerIndex (a_server, result);
 
-  /* store new item */
-  _list.append (a_server);
+  QModelIndex dummyIndex;
+  beginInsertRows (dummyIndex, result, result);
+  {
+    /* fix indexes */
+    _appendServerIndex (a_server, result);
+
+    /* store new item */
+    _list.append (a_server);
+  }
+  endInsertRows();
+
   emit sizeChanged();
   return result;
 }
@@ -696,10 +769,18 @@ int DapSortedServerList::append (DapServerInfo &&a_server)
 {
   /* append new item index */
   int result  = _list.size();
-  _appendServerIndex (a_server, result);
 
-  /* store new item */
-  _list.append (std::move (a_server));
+  QModelIndex dummyIndex;
+  beginInsertRows (dummyIndex, result, result);
+  {
+    /* fix indexes */
+    _appendServerIndex (a_server, result);
+
+    /* store new item */
+    _list.append (std::move (a_server));
+  }
+  endInsertRows();
+
   emit sizeChanged();
   return result;
 }
@@ -707,27 +788,48 @@ int DapSortedServerList::append (DapServerInfo &&a_server)
 void DapSortedServerList::insert (int a_index, const DapServerInfo &a_server)
 {
   int newIndex  = _list.size();
-  _sortedIndexes.insert (_sortedIndexes.begin() + a_index, newIndex);
-  _list.append (a_server);
-  _fixCurrent (a_index, Inserted);
+
+  QModelIndex dummyIndex;
+  beginInsertRows (dummyIndex, a_index, a_index);
+  {
+    _sortedIndexes.insert (_sortedIndexes.begin() + a_index, newIndex);
+    _list.append (a_server);
+    _fixCurrent (a_index, Inserted);
+  }
+  endInsertRows();
+
   emit sizeChanged();
 }
 
 void DapSortedServerList::insert (int a_index, DapServerInfo &&a_server)
 {
   int newIndex  = _list.size();
-  _sortedIndexes.insert (_sortedIndexes.begin() + a_index, newIndex);
-  _list.append (std::move (a_server));
-  _fixCurrent (a_index, Inserted);
+
+  QModelIndex dummyIndex;
+  beginInsertRows (dummyIndex, a_index, a_index);
+  {
+    _sortedIndexes.insert (_sortedIndexes.begin() + a_index, newIndex);
+    _list.append (std::move (a_server));
+    _fixCurrent (a_index, Inserted);
+  }
+  endInsertRows();
+
   emit sizeChanged();
 }
 
 void DapSortedServerList::remove (int a_index)
 {
   int removeIndex = * (_sortedIndexes.begin() + a_index);
-  _decreaseAllIndexes (removeIndex);
-  _list.remove (removeIndex);
-  _fixCurrent (a_index, Removed);
+
+  QModelIndex dummyIndex;
+  beginRemoveRows (dummyIndex, a_index, a_index);
+  {
+    _decreaseAllIndexes (removeIndex);
+    _list.remove (removeIndex);
+    _fixCurrent (a_index, Removed);
+  }
+  endRemoveRows();
+
   emit sizeChanged();
 }
 
@@ -772,10 +874,17 @@ void DapSortedServerList::erase (DapSortedServerList::Iterator it)
 {
   int actualIndex = it,
       sortedIndex = _iteratorIndex (it);
-  _decreaseAllIndexes (actualIndex);
-  _list.remove (actualIndex);
-  if (sortedIndex != -1)
-    _fixCurrent (sortedIndex, Removed);
+
+  QModelIndex dummyIndex;
+  beginRemoveRows (dummyIndex, sortedIndex, sortedIndex);
+  {
+    _decreaseAllIndexes (actualIndex);
+    _list.remove (actualIndex);
+    if (sortedIndex != -1)
+      _fixCurrent (sortedIndex, Removed);
+  }
+  endRemoveRows();
+
   emit sizeChanged();
 }
 
@@ -852,6 +961,10 @@ void DapSortedServerList::setCurrent (int a_index)
 
 const DapServerInfo &DapSortedServerList::currentServer() const
 {
+  static const DapServerInfo dummy;
+  if (current() < 0
+      || current() >= size())
+    return dummy;
   return at (_list.current());
 }
 
@@ -872,41 +985,6 @@ void DapSortedServerList::clear()
 
 void DapSortedServerList::update (const QList<int> &a_indexes)
 {
-//  /* copy indexes */
-//  QList<int> sortedIndexes;
-//  for (int v : qAsConst (_sortedIndexes))
-//    sortedIndexes << v;
-
-////  /* get actual indexes */
-////  QList<int> actualIndexes;
-////  for (int index : a_indexes)
-////    actualIndexes << sortedIndexes.at (index);
-
-//  /* sort every index */
-//  QModelIndex dummyIndex;
-//  for (auto i = a_indexes.cbegin(), e = a_indexes.cend(); i != e; i++)
-//    {
-//      /* vars */
-//      auto it       = _sortedIndexes.begin();
-//      int index     = *i;               // get index from sorted list
-//      auto pos      = it + index;       // calc pos inside chain
-//      int old       = *pos;             // store old server index
-//      auto &server  = _list.at (old);   // get server pointed by sorted chain
-
-//      /* take index from chain */
-//      _sortedIndexes.erase (pos);       // erase chain item
-
-//      /* insert to proper place */
-//      int newIndex  = _appendServerIndex (server, old);
-
-//      /* signal about rows moving */
-//      if (newIndex != old)
-//        {
-//          beginMoveRows (dummyIndex, index, index, dummyIndex, newIndex);
-//          endMoveRows();
-//        }
-//    }
-
   /* sort provided list */
   QList<int> indexes  = a_indexes;
   qSort (indexes);
