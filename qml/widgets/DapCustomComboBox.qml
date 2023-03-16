@@ -77,6 +77,8 @@ Item
 
         color: backgroundColor
 
+//        color: "green"
+
         RowLayout
         {
             anchors.fill: parent
@@ -125,6 +127,7 @@ Item
         source: background
         samples: 10
         cached: true
+        opacity: 0.42
     }
 
 //    InnerShadow
@@ -300,6 +303,7 @@ Item
             source: popupBackground
             samples: 10
             cached: true
+            opacity: 0.42
         }
 
 //        InnerShadow {
