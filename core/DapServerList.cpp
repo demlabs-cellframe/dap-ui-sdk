@@ -256,6 +256,27 @@ DapServerList::DapServerList()
 
 }
 
+DapServerList::DapServerList (const DapServerInfoList &a_src)
+  : DapAbstractServerList (DapAbstractServerList::Type::ServerList)
+  , m_current (-1)
+{
+  operator = (a_src);
+}
+
+DapServerList::DapServerList (const DapServerList &a_src)
+  : DapAbstractServerList (DapAbstractServerList::Type::ServerList)
+  , m_current (-1)
+{
+  operator = (a_src);
+}
+
+DapServerList::DapServerList (DapServerList &&a_src)
+  : DapAbstractServerList (DapAbstractServerList::Type::ServerList)
+  , m_current (-1)
+{
+  operator = (std::move (a_src));
+}
+
 DapServerList::~DapServerList()
 {
 
@@ -517,6 +538,35 @@ QHash<int, QByteArray> DapServerList::roleNames() const
 DapServerInfo &DapServerList::operator[] (int a_index)
 {
   return m_list[a_index];
+}
+
+DapServerList &DapServerList::operator = (const DapServerInfoList &a_src)
+{
+  m_list  = a_src;
+  return *this;
+}
+
+DapServerList &DapServerList::operator = (const DapServerList &a_src)
+{
+  if (this == &a_src)
+    return *this;
+
+  m_list    = a_src.m_list;
+  m_current = a_src.m_current;
+
+  return *this;
+}
+
+DapServerList &DapServerList::operator = (DapServerList &&a_src)
+{
+  if (this == &a_src)
+    return *this;
+
+  m_list    = std::move (a_src.m_list);
+  m_current = a_src.m_current;
+
+  a_src.m_current = -1;
+  return *this;
 }
 
 const DapServerInfo &DapServerList::operator[] (int a_index) const
@@ -897,43 +947,28 @@ const QLinkedList<int> &DapSortedServerList::getSortedIndexes() const
   return _sortedIndexes;
 }
 
+DapSortedServerList::operator DapServerInfoList () const
+{
+  DapServerInfoList result;
+
+  for (auto i = begin(), e = end(); i != e; i++)
+    result << *i;
+
+  return result;
+}
+
+DapSortedServerList::operator DapServerList () const
+{
+  DapServerList result;
+
+  for (auto i = begin(), e = end(); i != e; i++)
+    result << *i;
+
+  return result;
+}
+
 void DapSortedServerList::_sort()
 {
-//  /* defs */
-//  struct Item
-//  {
-//    int index;
-//    int ping;
-//    bool operator< (const Item &o) const { return ping < o.ping; }
-//  };
-
-//  /* collect all indexes */
-//  QVector<Item> items (size());
-//  QVector<Item> unavItems (size());
-//  int index = 0;
-//  for (const auto &server : _list)
-//    {
-//      if (server.ping() != -1)
-//        items << Item {index++, server.ping()};
-//      else
-//        unavItems << Item {index++, server.ping()};
-//    }
-
-//  beginResetModel();
-
-//  /* sort by ping */
-//  std::sort (items.begin(), items.end());
-
-//  /* combine result */
-//  items += unavItems;
-
-//  /* store result */
-//  _sortedIndexes.clear();
-//  for (const auto &item : qAsConst (items))
-//    _sortedIndexes << item.index;
-
-//  endResetModel();
-
   beginResetModel();
 
   int index = 0;

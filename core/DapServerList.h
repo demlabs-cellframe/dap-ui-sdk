@@ -150,6 +150,9 @@ protected:
   /// @{
 public:
   DapServerList();
+  DapServerList (const DapServerInfoList &a_src);
+  DapServerList (const DapServerList &a_src);
+  DapServerList (DapServerList &&a_src);
   ~DapServerList() override;
   /// @}
 
@@ -200,7 +203,7 @@ public:
   void move (int a_source, int a_dest);
   void clear() override;
 
-  inline operator const DapServerInfoList &() const { return m_list; }
+  inline operator DapServerInfoList () const { return m_list; }
   /// @}
 
   /****************************************//**
@@ -220,6 +223,9 @@ public:
 public:
   DapServerInfo &operator[] (int a_index);
   const DapServerInfo &operator[] (int a_index) const;
+  DapServerList& operator = (const DapServerInfoList &a_src);
+  DapServerList& operator = (const DapServerList &a_src);
+  DapServerList& operator = (DapServerList &&a_src);
   DapServerList &operator<< (const DapServerInfo &a_server);
   DapServerList &operator<< (DapServerInfo &&a_server);
   /// @}
@@ -417,8 +423,8 @@ public:
   /// get sorted items indexes
   const QLinkedList<int> &getSortedIndexes() const;
 
-  inline operator const DapServerList &() const     { return _list; }
-  inline operator const DapServerInfoList &() const { return _list; }
+  operator DapServerList () const;
+  operator DapServerInfoList () const;
 protected:
   void _sort();
   int _appendServerIndex (const DapServerInfo &a_server, int a_index);
