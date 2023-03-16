@@ -351,6 +351,7 @@ class DapSortedServerList
 protected:
   typedef DapSortedServerListIterator Iterator;
   typedef DapSortedServerListConstIterator ConstIterator;
+  enum OperationType { Inserted, Removed };
   /// @}
 
   /****************************************//**
@@ -430,6 +431,9 @@ protected:
   int _appendServerIndex (const DapServerInfo &a_server, int a_index);
   void _increaseAllIndexes (int a_index);
   void _decreaseAllIndexes (int a_index);
+  void _fixCurrent (int a_index, OperationType a_operationType);
+  int _iteratorIndex (Iterator &a_it);
+  int _iteratorIndex (ConstIterator &a_it);
   /// @}
 
   /****************************************//**

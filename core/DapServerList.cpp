@@ -709,6 +709,7 @@ void DapSortedServerList::insert (int a_index, const DapServerInfo &a_server)
   int newIndex  = _list.size();
   _sortedIndexes.insert (_sortedIndexes.begin() + a_index, newIndex);
   _list.append (a_server);
+  _fixCurrent (a_index, Inserted);
   emit sizeChanged();
 }
 
@@ -717,14 +718,16 @@ void DapSortedServerList::insert (int a_index, DapServerInfo &&a_server)
   int newIndex  = _list.size();
   _sortedIndexes.insert (_sortedIndexes.begin() + a_index, newIndex);
   _list.append (std::move (a_server));
+  _fixCurrent (a_index, Inserted);
   emit sizeChanged();
 }
 
 void DapSortedServerList::remove (int a_index)
 {
-  int removeIndex = *(_sortedIndexes.begin() + a_index);
+  int removeIndex = * (_sortedIndexes.begin() + a_index);
   _decreaseAllIndexes (removeIndex);
   _list.remove (removeIndex);
+  _fixCurrent (a_index, Removed);
   emit sizeChanged();
 }
 
@@ -767,9 +770,12 @@ int DapSortedServerList::indexOfAddress (const QString &a_address) const
 
 void DapSortedServerList::erase (DapSortedServerList::Iterator it)
 {
-  int actualIndex = it;
+  int actualIndex = it,
+      sortedIndex = _iteratorIndex (it);
   _decreaseAllIndexes (actualIndex);
   _list.remove (actualIndex);
+  if (sortedIndex != -1)
+    _fixCurrent (sortedIndex, Removed);
   emit sizeChanged();
 }
 
@@ -947,7 +953,7 @@ const QLinkedList<int> &DapSortedServerList::getSortedIndexes() const
   return _sortedIndexes;
 }
 
-DapSortedServerList::operator DapServerInfoList () const
+DapSortedServerList::operator DapServerInfoList() const
 {
   DapServerInfoList result;
 
@@ -957,7 +963,7 @@ DapSortedServerList::operator DapServerInfoList () const
   return result;
 }
 
-DapSortedServerList::operator DapServerList () const
+DapSortedServerList::operator DapServerList() const
 {
   DapServerList result;
 
@@ -982,11 +988,11 @@ void DapSortedServerList::_sort()
 int DapSortedServerList::_appendServerIndex (const DapServerInfo &a_server, int a_index)
 {
   /* lambdas */
-  auto appendToEnd = [this](int a_index) -> int
-    {
-      _sortedIndexes.append (a_index);
-      return _sortedIndexes.size() - 1;
-    };
+  auto appendToEnd = [this] (int a_index) -> int
+  {
+    _sortedIndexes.append (a_index);
+    return _sortedIndexes.size() - 1;
+  };
 
   /* add non ping at the end */
   if (a_server.ping() == -1)
@@ -1039,6 +1045,44 @@ void DapSortedServerList::_decreaseAllIndexes (int a_index)
           _sortedIndexes.erase (c);
         }
     }
+}
+
+void DapSortedServerList::_fixCurrent (int a_index, DapSortedServerList::OperationType a_operationType)
+{
+  /* when lower or equal */
+  {
+    int magic[2] =
+    {
+      1, // Inserted
+      -1 // Removed
+    };
+
+    if (a_index <= _list.current())
+      _list.setCurrent (_list.current() + magic[a_operationType]);
+  }
+
+  /* when current bigger and it's removing */
+  if (a_operationType == Removed)
+    if (_list.current() >= _list.size())
+      _list.setCurrent (_list.size() - 1);
+}
+
+int DapSortedServerList::_iteratorIndex (DapSortedServerList::Iterator &a_it)
+{
+  int actualIndex = a_it, sortedIndex = 0;
+  for (auto i = _sortedIndexes.cbegin(), e = _sortedIndexes.cend(); i != e; i++, sortedIndex++)
+    if (*i == actualIndex)
+      break;
+  return (sortedIndex < _sortedIndexes.size()) ? sortedIndex : -1;
+}
+
+int DapSortedServerList::_iteratorIndex (DapSortedServerList::ConstIterator &a_it)
+{
+  int actualIndex = a_it, sortedIndex = 0;
+  for (auto i = _sortedIndexes.cbegin(), e = _sortedIndexes.cend(); i != e; i++, sortedIndex++)
+    if (*i == actualIndex)
+      break;
+  return (sortedIndex < _sortedIndexes.size()) ? sortedIndex : -1;
 }
 
 /********************************************
