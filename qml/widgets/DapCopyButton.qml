@@ -17,12 +17,11 @@ Item
 
     signal copyClicked()
 
-    Image
+    DapImageRender
     {
         id:networkAddressCopyButtonImage
         width: parent.width
         height: parent.height
-        mipmap: true
         source: mouseArea.containsMouse ? "qrc:/Resources/" + pathTheme + "/icons/other/copy_hover.svg":
                                           "qrc:/Resources/" + pathTheme + "/icons/other/copy.svg"
 //        source: mouseArea.containsMouse ? "qrc:/resources/icons/other/copy_hover.svg":
@@ -42,7 +41,7 @@ Item
                         dapMainWindow.width*0.5,
                         8,
                         popupText,
-                        "qrc:/Resources/" + pathTheme + "/icons/other/check_icon.png")
+                        "qrc:/Resources/" + pathTheme + "/icons/other/Verified.svg")
 
             copyClicked()
         }

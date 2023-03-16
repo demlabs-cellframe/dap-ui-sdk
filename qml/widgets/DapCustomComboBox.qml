@@ -96,12 +96,11 @@ Item
                 elide: Text.ElideRight
             }
 
-            Image
+            DapImageRender
             {
                 id: indicator
                 source: indicatorSource
                 rotation: popupVisible ? 180 : 0
-                mipmap: true
 
                 Behavior on rotation
                 {

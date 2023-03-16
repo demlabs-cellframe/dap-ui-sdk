@@ -57,11 +57,10 @@ CheckBox {
             height: indicatorInnerSize
             anchors.top: parent.top
 
-            Image {
+            DapImageRender {
                 width: indicatorInnerSize
                 height: indicatorInnerSize
                 anchors.top: parent.top
-                mipmap: true
                 y: parent.height
 
                 opacity: checked ? 1 : 0
@@ -74,11 +73,10 @@ CheckBox {
                     }
                 }
             }
-            Image {
+            DapImageRender {
                 width: indicatorInnerSize
                 height: indicatorInnerSize
                 anchors.top: parent.top
-                mipmap: true
                 y: parent.height
 
                 opacity: checked ? 0 : 1
