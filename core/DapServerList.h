@@ -273,8 +273,8 @@ public:
   friend inline DapSortedServerListIterator operator+ (int j, DapSortedServerListIterator k) { return k + j; }
   int operator- (DapSortedServerListIterator j) const;
   operator DapServerInfo *();
-  operator int() const;
   operator Iterator() const;
+  int internalIndex() const;
   bool isNull() const;
 };
 
@@ -318,8 +318,8 @@ public:
   friend inline DapSortedServerListConstIterator operator+ (int j, DapSortedServerListConstIterator k) { return k + j; }
   int operator- (DapSortedServerListConstIterator j) const;
   operator const DapServerInfo *() const;
-  operator int() const;
   operator ConstIterator() const;
+  int internalIndex() const;
   bool isNull() const;
 };
 

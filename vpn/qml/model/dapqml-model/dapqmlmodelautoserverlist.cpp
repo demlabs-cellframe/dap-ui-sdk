@@ -6,18 +6,17 @@
  *******************************************/
 
 DapQmlModelAutoServerList::DapQmlModelAutoServerList ()
-  : _abstractServerList (DapServerList::instance())
-  , _abstractServerListModel (_abstractServerList->as<QAbstractListModel>())
+  : _serverList (DapSortedServerList::instance())
 {
-  connect (_abstractServerListModel, &QAbstractItemModel::modelReset, this, [this] { update(); });
+  _reset();
+  _connectSignals();
 }
 
-DapQmlModelAutoServerList::DapQmlModelAutoServerList (DapAbstractServerList *a_serverList)
-  : _abstractServerList (a_serverList)
-  , _abstractServerListModel (_abstractServerList->as<QAbstractListModel>())
-  , _listType (_abstractServerList->type())
+DapQmlModelAutoServerList::DapQmlModelAutoServerList (DapSortedServerList *a_serverList)
+  : _serverList (a_serverList)
 {
-  connect (_abstractServerListModel, &QAbstractItemModel::modelReset, this, [this] { update(); });
+  _reset();
+  _connectSignals();
 }
 
 /********************************************
@@ -26,153 +25,153 @@ DapQmlModelAutoServerList::DapQmlModelAutoServerList (DapAbstractServerList *a_s
 
 void DapQmlModelAutoServerList::setLocation (const QString &a_location)
 {
-  _location = a_location;
-  update();
+  _userLocation = a_location;
 }
 
-template<class T>
-void _collectGeneralLocations (T &a_list, QSet <QString> &a_dest)
+void DapQmlModelAutoServerList::_connectSignals()
 {
-  for (auto &server : a_list)
-    a_dest << server.name().left (server.name().indexOf ('.'));
+  connect (_serverList, &QAbstractListModel::rowsInserted,  this, &DapQmlModelAutoServerList::_slotRowsInserted);
+  connect (_serverList, &QAbstractListModel::rowsMoved,     this, &DapQmlModelAutoServerList::_slotRowsMoved);
+  connect (_serverList, &QAbstractListModel::rowsRemoved,   this, &DapQmlModelAutoServerList::_slotRowsRemoved);
+  connect (_serverList, &QAbstractListModel::modelReset,    this, &DapQmlModelAutoServerList::_slotModelReset);
+  connect (_serverList, &QAbstractListModel::dataChanged,   this, &DapQmlModelAutoServerList::_slotDataChanged);
+  connect (_serverList, &QAbstractListModel::layoutChanged, this, &DapQmlModelAutoServerList::_slotLayoutChanged);
 }
 
-template<class T>
-void _fillAutoServerData (T &a_list, DapServerInfo &a_regionServer, const QString &a_location)
+void DapQmlModelAutoServerList::_reset()
 {
-  for (const auto &server : a_list)
-    {
-      if (a_regionServer.name() == server.name().left (server.name().indexOf ('.'))
-          && server.location() != a_location)
-        {
-          QString tmp  = a_regionServer.name();
-          a_regionServer = server;
-          a_regionServer.setName (tmp);
-          break;
-        }
-    }
-}
+//  /* add all locations */
+//  _allLocations.clear();
+//  for (const auto &server : *_serverList)
+//    _allLocations << server.name().left (server.name().indexOf('.'));
 
-template<class T>
-bool _bringAutoserverUp (T &a_list, DapServerList &a_autoServers, DapServerInfo &a_regionServer, const QString &a_location)
-{
-  for (const auto &server : a_list)
-    {
-      if (server.location() != a_location)
-        {
-          a_regionServer = server;
-          a_regionServer.setName ("Auto");
-          a_autoServers.move (a_autoServers.indexOf (a_regionServer), 0);
-          return true;
-        }
-    }
-  return false;
-}
+//  /* collect best servers */
+//  DapServerInfo bestServer;
+//  _autoServers.clear();
+//  for (const auto &location : qAsConst (_allLocations))
+//    {
+//      /* find first */
+//      for (const auto &server : *_serverList)
+//        {
+//          /* store best region server */
+//          if (location == _userLocation)
+//            {
+//              bestServer  = server;
+//              bestServer.setName ("Auto");
+//            }
 
-void DapQmlModelAutoServerList::update()
-{
-  QSet <QString> generalLocation;
+//          /* add basic auto server */
+//          if (server.name().startsWith (location))
+//            {
+//              DapServerInfo item  = server;
+//              item.setName (location);
+//              _autoServers << std::move (item);
+//              goto _resetCollectContinue;
+//            }
+//        }
+
+//_resetCollectContinue:
+//      continue;
+//    }
+
+//  /* check if best region exists */
+//  if (bestServer.address().isEmpty())
+//    {
+//      bestServer  = _autoServers.first();
+//      bestServer.setName ("Auto");
+//    }
+
+//  /* insert to the beginning */
+//  _autoServers.insert (_autoServers.begin(), bestServer);
 
   beginResetModel();
-
-  /* add general auto servers */
-  if (_autoServers.isEmpty())
-    {
-      generalLocation << "Auto";
-
-      switch (_listType)
-        {
-        case Type::ServerList:        _collectGeneralLocations (*_abstractServerList->as<DapServerList>(), generalLocation);
-        case Type::SortedServerList:  _collectGeneralLocations (*_abstractServerList->as<DapSortedServerList>(), generalLocation);
-        default:
-          _autoServers.clear();
-          endResetModel();
-          return;
-        }
-
-//      for (auto &server : _serverList)
-//        generalLocation << server.name().left (server.name().indexOf ('.'));
-
-      for (auto &location : qAsConst (generalLocation))
-        {
-          DapServerInfo item;
-          item.setName (location);
-          _autoServers.append (item);
-        }
-    }
-
-  /* fill auto servers data */
-  for (auto &regionServer : _autoServers)
-    {
-      switch (_listType)
-        {
-        case Type::ServerList:        _fillAutoServerData (*_abstractServerList->as<DapServerList>(), regionServer, _location);
-        case Type::SortedServerList:  _fillAutoServerData (*_abstractServerList->as<DapSortedServerList>(), regionServer, _location);
-        default:
-          endResetModel();
-          return;
-        }
-
-//      for (const auto &server : _serverList)
-//        {
-//          if (regionServer.name() == server.name().left (server.name().indexOf ('.'))
-//              && server.location() != _location)
-//            {
-//              QString tmp  = regionServer.name();
-//              regionServer = server;
-//              regionServer.setName (tmp);
-//              break;
-//            }
-//        }
-    }
-
-  /* sort result list */
-  //_autoServers.sortByPing();
-  qSort (_autoServers);
-
-  /* top "Auto" server */
-  for (auto &regionServer : _autoServers)
-    {
-      if (regionServer.name() != "Auto")
-        continue;
-
-      switch (_listType)
-        {
-        case Type::ServerList:        _bringAutoserverUp (*_abstractServerList->as<DapServerList>(), _autoServers, regionServer, _location);
-        case Type::SortedServerList:  _bringAutoserverUp (*_abstractServerList->as<DapSortedServerList>(), _autoServers, regionServer, _location);
-        default:
-          _autoServers.clear();
-          endResetModel();
-          return;
-        }
-
-//      for (const auto &server : _serverList)
-//        {
-//          if (server.location() != _location)
-//            {
-//              regionServer = server;
-//              regionServer.setName ("Auto");
-//              _autoServers.move (_autoServers.indexOf (regionServer), 0);
-//              break;
-//            }
-//        }
-    }
-
+  _collectLocations (_serverList);
+  _buildUpAutoList (&_autoServers);
   endResetModel();
 }
 
-const DapServerInfo &DapQmlModelAutoServerList::at (int a_index) const
+void DapQmlModelAutoServerList::_collectLocations (DapSortedServerList *a_list)
 {
-  return _autoServers.at (a_index);
+  _allLocations.clear();
+  for (const auto &server : *a_list)
+    _allLocations << server.name().left (server.name().indexOf('.'));
 }
 
-int DapQmlModelAutoServerList::indexOfName (const QString &a_name) const
+void DapQmlModelAutoServerList::_buildUpAutoList (DapSortedServerList *a_dest)
 {
-  int index = 0;
-  for (auto i = _autoServers.cbegin(), e = _autoServers.cend(); i != e; i++, index++)
-    if (i->name() == a_name)
-      return index;
-  return -1;
+  DapServerInfo bestServer;
+  a_dest->clear();
+  for (const auto &location : qAsConst (_allLocations))
+    {
+      /* find first */
+      for (const auto &server : *_serverList)
+        {
+          /* store best region server */
+          if (location == _userLocation)
+            {
+              bestServer  = server;
+              bestServer.setName ("Auto");
+            }
+
+          /* add basic auto server */
+          if (server.name().startsWith (location))
+            {
+              DapServerInfo item  = server;
+              item.setName (location);
+              *a_dest << std::move (item);
+              goto _resetCollectContinue;
+            }
+        }
+
+_resetCollectContinue:
+      continue;
+    }
+
+  /* check if best region exists */
+  if (bestServer.address().isEmpty()
+      && !a_dest->isEmpty())
+    {
+      bestServer  = a_dest->first();
+      bestServer.setName ("Auto");
+    }
+
+  /* insert to the beginning */
+  if (!bestServer.address().isEmpty())
+    a_dest->insert (0, bestServer);
+}
+
+/********************************************
+ * SLOTS
+ *******************************************/
+
+void DapQmlModelAutoServerList::_slotRowsInserted (const QModelIndex &, int, int)
+{
+  _reset();
+}
+
+void DapQmlModelAutoServerList::_slotRowsMoved (const QModelIndex &, int, int, const QModelIndex &, int)
+{
+  _reset();
+}
+
+void DapQmlModelAutoServerList::_slotRowsRemoved (const QModelIndex &, int, int)
+{
+  _reset();
+}
+
+void DapQmlModelAutoServerList::_slotModelReset()
+{
+  _reset();
+}
+
+void DapQmlModelAutoServerList::_slotDataChanged (const QModelIndex &, const QModelIndex &, const QVector<int> &)
+{
+  _reset();
+}
+
+void DapQmlModelAutoServerList::_slotLayoutChanged (const QList<QPersistentModelIndex> &, QAbstractItemModel::LayoutChangeHint)
+{
+  _reset();
 }
 
 /********************************************

@@ -17,25 +17,18 @@ class DapQmlModelAutoServerList : public QAbstractListModel
   Q_OBJECT
 
   /****************************************//**
-   * @name DEFS
-   *******************************************/
-  /// @{
-  typedef DapAbstractServerList::Type Type;
-  /// @}
-
-  /****************************************//**
    * @name VARS
    *******************************************/
   /// @{
 protected:
   /// link to global servers list
-  DapAbstractServerList *_abstractServerList;
-  QAbstractListModel *_abstractServerListModel;
-  Type _listType;
+  DapSortedServerList *_serverList;
   /// auto servers list
-  DapServerList _autoServers;
+  DapSortedServerList _autoServers;
   /// general location
-  QString _location;
+  QString _userLocation;
+  /// available locations
+  QSet<QString> _allLocations;
   /// @}
 
   /****************************************//**
@@ -44,7 +37,7 @@ protected:
   /// @{
 public:
   DapQmlModelAutoServerList();
-  DapQmlModelAutoServerList (DapAbstractServerList *a_serverList);
+  DapQmlModelAutoServerList (DapSortedServerList *a_serverList);
   /// @}
 
   /****************************************//**
@@ -53,13 +46,26 @@ public:
   /// @{
 public:
   /// set general location
-  /// @note will call @ref update
-  Q_INVOKABLE void setLocation (const QString &a_location);
-  /// update auto servers list based on information from attached server list
-  /// @note if location is not set, use @ref setLocation method which will also invoke this method, so there is no need to call this method after calling @ref setLocation
-  Q_INVOKABLE void update();
-  const DapServerInfo &at (int a_index) const;
-  int indexOfName (const QString &a_name) const;
+  void setLocation (const QString &a_location);
+  const DapSortedServerList &getList() const { return _autoServers; };
+protected:
+  void _connectSignals();
+  void _reset();
+  void _collectLocations (DapSortedServerList *a_list);
+  void _buildUpAutoList (DapSortedServerList *a_dest);
+  /// @}
+
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
+protected slots:
+  void _slotRowsInserted (const QModelIndex &, int start, int end);
+  void _slotRowsMoved (const QModelIndex &, int sourceStart, int sourceEnd, const QModelIndex &, int destinationRow);
+  void _slotRowsRemoved (const QModelIndex &, int first, int last);
+  void _slotModelReset();
+  void _slotDataChanged (const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
+  void _slotLayoutChanged (const QList<QPersistentModelIndex> &parents, QAbstractItemModel::LayoutChangeHint hint);
   /// @}
 
   /****************************************//**

@@ -42,7 +42,7 @@ public:
   /// @{
 public:
   /// get proper server list
-  virtual DapAbstractServerList *serverList() const = 0;
+  virtual DapSortedServerList *serverList() const = 0;
   /// get proper auto server list
   virtual DapQmlModelAutoServerList *autoServerList() const = 0;
   /// handle custom data

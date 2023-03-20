@@ -5,7 +5,7 @@
 
 class DeafultserverListModelBridge : public AbstractServerListModelBridge
 {
-  DapAbstractServerList *m_serverList;
+  DapSortedServerList *m_serverList;
   DapQmlModelAutoServerList *m_autoServerList;
 public:
   DeafultserverListModelBridge()
@@ -14,7 +14,7 @@ public:
   {
 
   }
-  DapAbstractServerList *serverList() const         { return m_serverList; }
+  DapSortedServerList *serverList() const           { return m_serverList; }
   DapQmlModelAutoServerList *autoServerList() const { return m_autoServerList; }
 };
 

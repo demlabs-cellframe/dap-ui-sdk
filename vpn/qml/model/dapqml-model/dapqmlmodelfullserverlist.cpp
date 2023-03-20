@@ -119,7 +119,7 @@ const DapServerInfo &DapQmlModelFullServerList::at (int a_index) const
 
   /* if auto server boundaries */
   if (a_index < _size.autoServer)
-    return autoServerList->at (a_index);
+    return autoServerList->getList().at (a_index);
 
   /* server boundaries */
   int newIndexValue     = a_index - _size.autoServer;
@@ -131,7 +131,7 @@ int DapQmlModelFullServerList::indexOfName (const QString &a_name) const
   auto autoServerList  = m_bridge->autoServerList();
   auto serverList      = m_bridge->serverList();
 
-  int result  = autoServerList->indexOfName (a_name);
+  int result  = autoServerList->getList().indexOfName (a_name);
   if (result != -1)
     return result;
 

@@ -681,8 +681,8 @@ DapSortedServerListIterator &DapSortedServerListIterator::operator+= (int j)    
 DapSortedServerListIterator &DapSortedServerListIterator::operator-= (int j)     { i -= j; return *this; }
 int DapSortedServerListIterator::operator- (DapSortedServerListIterator j) const { return *i - *j.i; }
 DapSortedServerListIterator::operator DapServerInfo *()                          { return operator->(); }
-DapSortedServerListIterator::operator int() const                                { return *i; }
 DapSortedServerListIterator::operator Iterator() const                           { return i; }
+int DapSortedServerListIterator::internalIndex() const                           { return *i; }
 DapSortedServerListIterator DapSortedServerListIterator::operator- (int j) const { return DapSortedServerListIterator (i - j, p); }
 DapSortedServerListIterator DapSortedServerListIterator::operator+ (int j) const { return DapSortedServerListIterator (i + j, p); }
 DapSortedServerListIterator &DapSortedServerListIterator::operator--()           { i--; return *this; }
@@ -710,8 +710,8 @@ DapSortedServerListConstIterator &DapSortedServerListConstIterator::operator+= (
 DapSortedServerListConstIterator &DapSortedServerListConstIterator::operator-= (int j)      { i -= j; return *this; }
 int DapSortedServerListConstIterator::operator- (DapSortedServerListConstIterator j) const  { return *i - *j.i; }
 DapSortedServerListConstIterator::operator const DapServerInfo *() const                    { return operator->(); }
-DapSortedServerListConstIterator::operator int() const                                      { return *i; }
 DapSortedServerListConstIterator::operator ConstIterator() const                            { return i; }
+int DapSortedServerListConstIterator::internalIndex() const                                 { return *i; }
 DapSortedServerListConstIterator DapSortedServerListConstIterator::operator- (int j) const  { return DapSortedServerListConstIterator (i - j, p); }
 DapSortedServerListConstIterator DapSortedServerListConstIterator::operator+ (int j) const  { return DapSortedServerListConstIterator (i + j, p); }
 DapSortedServerListConstIterator &DapSortedServerListConstIterator::operator--()            { i--; return *this; }
@@ -872,7 +872,7 @@ int DapSortedServerList::indexOfAddress (const QString &a_address) const
 
 void DapSortedServerList::erase (DapSortedServerList::Iterator it)
 {
-  int actualIndex = it,
+  int actualIndex = it.internalIndex(),
       sortedIndex = _iteratorIndex (it);
 
   QModelIndex dummyIndex;
@@ -1099,7 +1099,7 @@ int DapSortedServerList::_appendServerIndex (const DapServerInfo &a_server, int 
 void DapSortedServerList::_increaseAllIndexes (int a_index)
 {
   for (auto i = begin(), e = end(); i != e; i++)
-    if (int (i) >= a_index)
+    if (i.internalIndex() >= a_index)
       (*DapSortedServerListIterator::Iterator (i))++;
 }
 
@@ -1147,7 +1147,7 @@ void DapSortedServerList::_fixCurrent (int a_index, DapSortedServerList::Operati
 
 int DapSortedServerList::_iteratorIndex (DapSortedServerList::Iterator &a_it)
 {
-  int actualIndex = a_it, sortedIndex = 0;
+  int actualIndex = a_it.internalIndex(), sortedIndex = 0;
   for (auto i = _sortedIndexes.cbegin(), e = _sortedIndexes.cend(); i != e; i++, sortedIndex++)
     if (*i == actualIndex)
       break;
@@ -1156,7 +1156,7 @@ int DapSortedServerList::_iteratorIndex (DapSortedServerList::Iterator &a_it)
 
 int DapSortedServerList::_iteratorIndex (DapSortedServerList::ConstIterator &a_it)
 {
-  int actualIndex = a_it, sortedIndex = 0;
+  int actualIndex = a_it.internalIndex(), sortedIndex = 0;
   for (auto i = _sortedIndexes.cbegin(), e = _sortedIndexes.cend(); i != e; i++, sortedIndex++)
     if (*i == actualIndex)
       break;
@@ -1174,7 +1174,8 @@ int DapSortedServerList::rowCount (const QModelIndex &parent) const
 
 QVariant DapSortedServerList::data (const QModelIndex &index, int role) const
 {
-  int actualIndex = begin() + index.row();
+  auto it         = begin() + index.row();
+  int actualIndex = it.internalIndex();
   return _list.data (_list.index (actualIndex, index.column(), index.parent()), role);
 }
 
@@ -1184,12 +1185,14 @@ QVariant DapSortedServerList::data (const QModelIndex &index, int role) const
 
 DapServerInfo &DapSortedServerList::operator[] (int a_index)
 {
-  return _list[begin() + a_index];
+  auto it = begin() + a_index;
+  return _list[it.internalIndex()];
 }
 
 const DapServerInfo &DapSortedServerList::operator[] (int a_index) const
 {
-  return _list[begin() + a_index];
+  auto it = begin() + a_index;
+  return _list[it.internalIndex()];
 }
 
 DapSortedServerList &DapSortedServerList::operator<< (const DapServerInfo &a_server)

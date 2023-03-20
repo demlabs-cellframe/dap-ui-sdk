@@ -23,7 +23,7 @@ public:
   ServerListModelBridge();
   ~ServerListModelBridge() override;
 
-  DapAbstractServerList *serverList() const override;
+  DapSortedServerList *serverList() const override;
   DapQmlModelAutoServerList *autoServerList() const override;
   QVariant customData (const QModelIndex &a_index, int a_role, int a_sizeAuto, int a_size) const override;
   const QHash<int, QByteArray> &customRoleNames() const override;
@@ -305,7 +305,7 @@ void DapQmlServerManager::save()
 
 ServerListModelBridge::ServerListModelBridge()                            {}
 ServerListModelBridge::~ServerListModelBridge()                           {}
-DapAbstractServerList *ServerListModelBridge::serverList() const          { return dynamic_cast<DapAbstractServerList*> (s_servers); }
+DapSortedServerList *ServerListModelBridge::serverList() const            { return s_servers; }
 DapQmlModelAutoServerList *ServerListModelBridge::autoServerList() const  { return s_autoServers; }
 
 QVariant ServerListModelBridge::customData (const QModelIndex &a_index, int a_role, int a_sizeAuto, int a_size) const
