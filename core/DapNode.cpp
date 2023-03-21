@@ -54,7 +54,7 @@ void DapNode::stopCheckingNodeRequest()
 
 void DapNode::startCheckingNodeRequest()
 {
-    DEBUGINFO << "startCheckingNodeRequest";
+//    DEBUGINFO << "startCheckingNodeRequest";
     if (m_stm->initialState.active())
         emit uiStartNodeDetection();
     else
@@ -190,7 +190,8 @@ void DapNode::initStmTransitions()
     &m_stm->mempoolTxHashEmpty);
     // to check ledger if hash in mempool
     m_stm->mempoolTxHashRequest.addTransition(this, &DapNode::sigMempoolContainHash,
-    &m_stm->ledgerTxHashRequest);
+    &m_stm->initialState);
+//    &m_stm->ledgerTxHashRequest);
     // to check mempool
     m_stm->mempoolTxHashEmpty.addTransition(this, &DapNode::repeatReadMempool,
     &m_stm->mempoolTxHashRequest);
@@ -288,6 +289,13 @@ void DapNode::initStmStates()
     connect(&m_stm->mempoolTxHashRequest, &QState::entered, this, [=](){
         emit web3->getMempoolTxHashRequest(m_transactionHash, m_networkName);
     });
+    connect(&m_stm->mempoolTxHashEmpty, &QState::entered, this, [=](){
+        DEBUGINFO  << "&mempoolTxHashEmpty, &QState::entered";
+        QTimer::singleShot(LEDGER_REQUEST_REPEAT_PERIOD, [=](){
+            DEBUGINFO  << "&singleShotledgerTxHashEmpty";
+            emit repeatReadMempool();
+        });
+    });
     // ledger check
     connect(&m_stm->ledgerTxHashRequest, &QState::entered, this, [=](){
         emit web3->getLedgerTxHashRequest(m_transactionHash, m_networkName);
@@ -302,14 +310,12 @@ void DapNode::initStmStates()
 
     // get orders list
     connect(&m_stm->getOrderList, &QState::entered, this, [=](){
-        qInfo() << "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu" << m_networkName;
         web3->DapNodeWeb3::getOrdersListRequest(
                     m_networkName,
-//                    m_tokenName,
-//                    m_minPrice,
-//                    m_maxPrice,
-//                    m_unit);
-                    "", "", "", "");
+                    m_tokenName,
+                    m_minPrice,
+                    m_maxPrice,
+                    m_unit);
     });
 }
 
@@ -319,7 +325,6 @@ void DapNode::initWeb3Connections()
     connect(web3, &DapNodeWeb3::nodeDetected, this, &DapNode::sigNodeDetected);
     connect(web3, &DapNodeWeb3::checkNodeStatus, this, &DapNode::sigNodeDetected);
     connect(web3, &DapNodeWeb3::statusOk, [=](){
-        DEBUGINFO  << "DapNodeWeb3::statusOk hhhhhhhhhhhhhhhhhhhhhhhhh";
         if (m_stm->transactionProcessing.active()) emit transactionProcessing();
         if (m_stm->gettingWalletsData.active()) emit gettingWalletsData();
         if (m_stm->gettingOrderList.active()) emit sigGettingOrderList();
@@ -361,7 +366,7 @@ void DapNode::initWeb3Connections()
     connect(web3, &DapNodeWeb3::sigCondTxCreateSuccess, this, [=](QString hash){
        DEBUGINFO  << "&sigCondTxCreateSuccess" << hash;
        m_transactionHash = hash;
-       emit sigCondTxCreateSuccess();
+       emit sigCondTxCreateSuccess(m_transactionHash);
     });
     // order list ready
     connect(web3, &DapNodeWeb3::sigOrderList, this, [=](QJsonArray) {
@@ -412,6 +417,11 @@ void DapNode::parseDataWallet(const QJsonArray walletData)
     m_walletsData[m_walletsList[0]] = walletData;
     m_walletsList.pop_front();
     walletDataRequest();
+}
+
+QString DapNode::txCondHash()
+{
+    return m_transactionHash;
 }
 
 

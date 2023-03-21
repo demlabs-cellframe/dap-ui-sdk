@@ -41,6 +41,7 @@ public:
 public:
   Q_INVOKABLE void updateCheckedIndex(const QString& checkedName);
   void fill(const QStringList &rowsData);
+  void fill(const QList<QStringList> &rowsData);
   void fill(const QMap<QString, QString> &rowsData);
   /// @}
 

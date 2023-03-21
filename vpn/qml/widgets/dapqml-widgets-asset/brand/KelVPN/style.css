@@ -1313,3 +1313,8 @@
         color: "@text";
         scaled-font: scaled(20);
 }
+
+.priceCount-btn-confirm
+{
+        scaled-rect: scaled(-1,340,374,80,true,12);
+}

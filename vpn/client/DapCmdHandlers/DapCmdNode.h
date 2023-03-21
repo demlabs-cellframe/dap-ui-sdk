@@ -26,12 +26,15 @@ public slots:
     void sendTransactionInMempool();
     void sendTransactionInLedger();
     void sendOrderList(const QJsonArray& orderList);
+    void sendReceipInfo(qint32 utype, qint64 uid, qint64 units, qint64 value);
 signals:
     void startNodeDetection();
     void stopNodeDetection();
     void dataWalletRequest();
     void orderListRequest(QString networkName, QString tokenName, QString unit, QString maxPrice, QString minPrice);
     void condTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
+    void receiptSigned();
+    void connectByOrder(QString netId, QString txCondHash, QString token, QString srvUid, QString address, uint16_t port);
 };
 
 #endif // DAPCMDNODEHANDLER_H

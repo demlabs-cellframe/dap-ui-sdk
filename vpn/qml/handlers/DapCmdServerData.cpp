@@ -41,5 +41,15 @@ void DapCmdServerData::sendServerData(const QString &address, quint16 a_port)
     QJsonObject response;
     response["address"] = address;
     response["port"] = a_port;
+    response["connect_mode"] = "useCDB";
+    sendCmd(&response);
+}
+
+void DapCmdServerData::sendOrderData(const QString &address, quint16 a_port)
+{
+    QJsonObject response;
+    response["address"] = address;
+    response["port"] = a_port;
+    response["connect_mode"] = "noCDB";
     sendCmd(&response);
 }

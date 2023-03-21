@@ -6,6 +6,7 @@
 #define RoleName (Qt::UserRole + 1)
 #define RoleSubText (Qt::UserRole + 2)
 #define RoleChecked (Qt::UserRole + 3)
+#define RoleHash (Qt::UserRole + 4)
 
 
 /********************************************
@@ -25,7 +26,7 @@ DapQmlNodeDataModel::DapQmlNodeDataModel(QObject *parent)
 void DapQmlNodeDataModel::updateCheckedIndex(const QString& checkedName)
 {
     for (int k = 0; k < m_nodeData.size(); k++)
-        if (index(k, 0).data(RoleName) == checkedName)
+        if (index(k, 0).data(RoleHash) == checkedName)
         {
             int oldIndex = m_checkedIndex;
             m_checkedIndex = k;
@@ -35,13 +36,22 @@ void DapQmlNodeDataModel::updateCheckedIndex(const QString& checkedName)
         }
 }
 
+void DapQmlNodeDataModel::fill(const QList<QStringList> &rowsData)
+{
+    qDebug() << "fill model" << rowsData;
+    beginResetModel();
+    for (const auto& item : rowsData)
+        m_nodeData << (QStringList() << item[0] << item[1] << item[2]);
+    endResetModel();
+    emit dataChanged(index(0, 0), index(m_nodeData.length(), 1));
+}
 
 void DapQmlNodeDataModel::fill(const QStringList &rowsData)
 {
     qDebug() << "fill model" << rowsData;
     beginResetModel();
     for (const auto& item : rowsData)
-        m_nodeData << (QStringList() << item << "");
+        m_nodeData << (QStringList() << item << item << "");
     endResetModel();
     emit dataChanged(index(0, 0), index(m_nodeData.length(), 1));
 }
@@ -51,7 +61,7 @@ void DapQmlNodeDataModel::fill(const QMap<QString, QString> &rowsData)
     qDebug() << "fill model" << rowsData;
     beginResetModel();
     for (const auto& key : rowsData.keys())
-        m_nodeData << (QStringList() << key << rowsData.value(key));
+        m_nodeData << (QStringList() << key << key << rowsData.value(key));
     endResetModel();
     emit dataChanged(index(0, 0), index(m_nodeData.length(), 1));
 }
@@ -79,7 +89,7 @@ int DapQmlNodeDataModel::columnCount(const QModelIndex &parent) const
 QVariant DapQmlNodeDataModel::data(const QModelIndex &index, int role) const
 {
   if (!index.isValid() ||
-      !(role == RoleName || role == RoleSubText || role == RoleChecked))
+      !(role == RoleName || role == RoleSubText || role == RoleChecked || role == RoleHash))
     return QVariant();
 
 
@@ -87,18 +97,24 @@ QVariant DapQmlNodeDataModel::data(const QModelIndex &index, int role) const
   if (role == RoleName)
   {
     if (item.length() > 1)
-        return item.at(0);
+        return item.at(1);
     return "";
   }
   if (role == RoleSubText)
   {
-    if (item.length() > 1)
-        return item.at(1);
+    if (item.length() > 2)
+        return item.at(2);
     return "";
   }
   if (role == RoleChecked)
   {
     return index.row() == m_checkedIndex;
+  }
+  if (role == RoleHash)
+  {
+    if (item.length() > 1)
+        return item.at(0);
+    return "";
   }
   return QVariant();
 }
@@ -106,11 +122,10 @@ QVariant DapQmlNodeDataModel::data(const QModelIndex &index, int role) const
 QHash<int, QByteArray> DapQmlNodeDataModel::roleNames() const
 {
   QHash<int, QByteArray> names;
-
   names[RoleName]       = "name";
   names[RoleSubText]    = "subText";
   names[RoleChecked]    = "checked";
-
+  names[RoleHash]       = "hash";
   return names;
 }
 

@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import PageCtl 1.0
 import DapQmlNodeDataModel 1.0
 
 Item {
@@ -13,6 +14,14 @@ Item {
     /// @brief item clicked
     signal sigSelect(name: string);
 
+    Timer {
+        id: backTimer
+        interval: 100
+        running: false
+        repeat: false
+        onTriggered: PageCtl.slotBackwardAuto()
+    }
+
     property DapQmlNodeDataModel walletModel: DapQmlNodeDataModel {
       id: dataModel
     }
@@ -20,7 +29,10 @@ Item {
     QuiChooseNodeDataForm {
        dataModel: dataModel
        title:  qsTr("Choose wallets")
-       onSigSelect: root.sigSelect(name);
+       onSigSelect: {
+           root.sigSelect(name);
+           backTimer.start();
+       }
     }
 
 }

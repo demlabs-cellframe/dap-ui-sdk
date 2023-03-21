@@ -58,6 +58,7 @@ void DapNodeWeb3::request_GET(const QString& host,  quint16 port, const QString 
                            DapNetworkReply &a_netReply, const QString& headers, bool ssl)
 {
     Q_UNUSED(ssl)
+//    qDebug() << urlPath;
     m_httpClient->requestHttp_GET(host, port, urlPath, headers, a_netReply);
 }
 
@@ -114,7 +115,7 @@ void DapNodeWeb3::responseProcessing(const int error, const QString errorString,
 
 void DapNodeWeb3::nodeDetectedRequest()
 {
-    DEBUGINFO << "sendRequest(\"\")";
+    //DEBUGINFO << "sendRequest(\"\")";
     sendRequest("");
 }
 
@@ -258,10 +259,9 @@ void DapNodeWeb3::getLedgerTxHashRequest(QString transactionHash, QString networ
 void DapNodeWeb3::getOrdersListRequest(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit)
 {
     QString requesString = QString("?method=GetOrdersList&"
-//                "id=%1&direction=%2&srv_uid=1")
-                "id=%1&srv_uid=1")
+            "id=%1&direction=%2&srv_uid=1")
             .arg(m_connectId)
-            .arg("buy");
+            .arg("sell");
     if (!networkName.isEmpty())
         requesString += QString("&net=%1").arg(networkName);
     if (!tokenName.isEmpty())
@@ -289,7 +289,7 @@ void DapNodeWeb3::parseReplyConnect(const QString& replyData, int baseErrorCode)
     if (jsonError())
         return;
     QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
-    DEBUGINFO << "parseReplyConnect" << replyData << doc;
+    //DEBUGINFO << "parseReplyConnect" << replyData << doc;
     if (doc["data"].isObject())
     {
         QJsonObject data = doc["data"].toObject();
@@ -298,7 +298,7 @@ void DapNodeWeb3::parseReplyConnect(const QString& replyData, int baseErrorCode)
         {
             m_connectId = data["id"].toString();
             emit connectionIdReceived(m_connectId);
-            DEBUGINFO << "[data][id]" << m_connectId;
+            //DEBUGINFO << "[data][id]" << m_connectId;
         }
     }
 }
@@ -326,7 +326,7 @@ void DapNodeWeb3::parseReplyWallets(const QString& replyData, int baseErrorCode)
         for (auto i = dataArray.cbegin(), e = dataArray.cend(); i != e; i++)
             if (i->isString())
                 walletsList << i->toString();
-        DEBUGINFO << "Wallets list: " << walletsList;
+        //DEBUGINFO << "Wallets list: " << walletsList;
         emit sigReceivedWalletsList(walletsList);
     }
 }
@@ -355,7 +355,7 @@ void DapNodeWeb3::parseReplyNetworks(const QString& replyData, int baseErrorCode
         for (auto i = dataArray.cbegin(), e = dataArray.cend(); i != e; i++)
             if (i->isString())
                 networksList << i->toString();
-        DEBUGINFO << "Networks list: " << networksList;
+//        DEBUGINFO << "Networks list: " << networksList;
         emit sigReceivedNetworksList(networksList);
     }
 }
@@ -397,7 +397,7 @@ void DapNodeWeb3::parseDataWallet(const QString& replyData, int baseErrorCode)
     if (doc["data"].isArray())
     {
         // wallet data
-        DEBUGINFO << "walletDataReply" << doc["data"].toArray();
+//        DEBUGINFO << "walletDataReply" << doc["data"].toArray();
         emit sigWalletDataReady(doc["data"].toArray());
     }
 }
@@ -427,7 +427,7 @@ void DapNodeWeb3::parseCertificates(const QString& replyData, int baseErrorCode)
         for (auto i = dataArray.cbegin(), e = dataArray.cend(); i != e; i++)
             if (i->isString())
                 certificates << i->toString();
-        DEBUGINFO << "Certificates: " << certificates;
+//        DEBUGINFO << "Certificates: " << certificates;
         emit sigReceivedCertificatestList(certificates);
     }
 }
@@ -485,7 +485,7 @@ void DapNodeWeb3::parseMempoolReply(const QString& replyData, int baseErrorCode)
     //        "errorMsg": "",
     //        "status": "ok"
     //    }
-    DEBUGINFO << "parseMempoolReply" << replyData;
+//    DEBUGINFO << "parseMempoolReply" << replyData;
     parseJsonError(replyData.toUtf8(), baseErrorCode);
     if (jsonError())
         return;
@@ -501,7 +501,7 @@ void DapNodeWeb3::parseLedgerReply(const QString& replyData, int baseErrorCode)
     //        "errorMsg": "",
     //        "status": "ok"
     //    }
-    DEBUGINFO << "parseLedgerReply" << replyData;
+//    DEBUGINFO << "parseLedgerReply" << replyData;
     parseJsonError(replyData.toUtf8(), baseErrorCode);
     if (jsonError())
         return;
@@ -537,7 +537,7 @@ void DapNodeWeb3::parseOrderList(const QString& replyData, int baseErrorCode)
     if (doc["data"].isArray())
     {
         // wallet data
-        DEBUGINFO << "orderListReply" << doc["data"].toArray();
+//        DEBUGINFO << "orderListReply" << doc["data"].toArray();
         emit sigOrderList(doc["data"].toArray());
     }
 }
@@ -551,7 +551,6 @@ void DapNodeWeb3::parseJsonError(QString replyData, int baseErrorCode)
     //    "}";
     m_parseJsonError = false;
     QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
-//    DEBUGINFO << "parseJsonError" << doc;
     if(doc.isNull())
     {
         replyError(baseErrorCode + 30000,  "Unable to parse json data");
@@ -560,7 +559,7 @@ void DapNodeWeb3::parseJsonError(QString replyData, int baseErrorCode)
     }
     else
     {
-        DEBUGINFO << "parseJsonError status" << doc["status"] << doc["status"].toString();
+//        DEBUGINFO << "parseJsonError status" << doc["status"] << doc["status"].toString();
         if (doc["status"].isString() && doc["status"].toString() != "ok")
         {
             if (doc["errorMsg"].isString())
@@ -576,7 +575,7 @@ void DapNodeWeb3::parseJsonError(QString replyData, int baseErrorCode)
         else
         {
             // "status": "ok"
-            DEBUGINFO << "status ok";
+//            DEBUGINFO << "status ok";
             return;
         }
     }

@@ -3,7 +3,7 @@
 import QtQuick 2.12
 import DapQmlStyle 1.0
 import QtQuick.Controls 2.12
-import Qt.labs.platform 1.1
+import Qt.labs.platform 1.0
 import StyleDebugTree 1.0
 import TextEditContextMenu 1.0
 import Scaling 1.0

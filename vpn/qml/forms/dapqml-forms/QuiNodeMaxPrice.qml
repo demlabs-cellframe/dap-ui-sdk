@@ -45,14 +45,14 @@ Item {
 //        width: parent.width - 70
         qss: "priceCount-amount"
 
-        DapQmlLineEdit {
+        DapQmlLineEdit2 {
             id: countryFilterLine
             objectName: "countryFilterLine"
             x: 2
             y: 2
             z: 15
             height: parent.height - 4
-            width: parent.width - lineEditlIconRight.width
+            width: parent.width - 20
             focus: true
 
             mainText: ""
@@ -62,23 +62,6 @@ Item {
             }
             onTextEdited: {
                 root.textChanged(mainText)
-            }
-        }
-
-        DapQmlPushButton {
-            id: lineEditlIconRight
-            x: parent.width - width
-            y: parent.height/2 - height/2
-            z: 15
-            height: 28
-            width: 28
-            inactive: "qrc:/light/btn_filter_clear.png"
-            active: "qrc:/light/btn_filter_clear_hover.png"
-            qss: "ch-country-filter-clear"
-            visible: countryFilterLine.mainText.length > 0
-            onClicked: {
-                countryFilterLine.mainText = "";
-                countryFilterLine.setFocus();
             }
         }
     }
@@ -104,7 +87,7 @@ Item {
         id: confirm
         x: (parent.width - width) / 2
         z: 15
-        qss: "overview-btn-confirm"
+        qss: "priceCount-btn-confirm"
         text: qsTr("CONFIRM") + lang.notifier
         onClicked: root.buttonClicked()
         enabled: false

@@ -17,6 +17,7 @@ Item {
     signal walletClicked()
     signal networkClicked()
     signal tokenClicked()
+    signal cellClicked()
     signal buttonClicked()
 
 
@@ -33,6 +34,11 @@ Item {
     function setToken(tokenName)
     {
         overview.setToken(tokenName)
+    }
+
+    function setTokenCount(tokenCount)
+    {
+        overview.setTokenCount(tokenCount)
     }
 
     function setSetConfirmButtonActive(active)
@@ -58,9 +64,11 @@ Item {
         onWalletClicked: root.walletClicked()
         onNetworkClicked: root.networkClicked()
         onTokenClicked: root.tokenClicked()
+        onCellClicked: root.cellClicked()
         onButtonClicked: root.buttonClicked()
         // button enable
         buttonActive: false//root.buttonActive
+        cellEnabled: true
         // arrows on buttons
         link: true
     }

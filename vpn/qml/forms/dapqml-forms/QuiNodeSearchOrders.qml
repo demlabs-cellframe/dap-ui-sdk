@@ -18,14 +18,19 @@ Item {
     signal maxPriceClicked()
     signal searchClicked()
 
-    function setNetwork(networkName)
+    function setUnit(unit)
     {
-        btnChooseNetwork.mainText = networkName
+        btnChooseUnit.mainText = unit
     }
 
-    function setToken(tokenName)
+    function setMaxUnit(unitCount)
     {
-        btnChooseCell.mainText = tokenName
+        btnMaxUnit.mainText = unitCount
+    }
+
+    function setMinUnit(unitCount)
+    {
+        btnMinUnit.mainText = unitCount
     }
 
     function setMaxPrice(tokenCount)
@@ -166,7 +171,7 @@ Item {
             width: parent.width - 74
 
             buttonStyle: DapQmlButton.Style.LeftTopSubBottomMain
-            mainText: qsTr("NOT SET") + lang.notifier
+            mainText: qsTr("-") + lang.notifier
             subText: qsTr("MAX UNIT") + lang.notifier
             qss: "searchorders-btn-item"
             mainQss: "searchorders-btn-main"
@@ -199,7 +204,7 @@ Item {
             width: parent.width - 74
 
             buttonStyle: DapQmlButton.Style.LeftTopSubBottomMain
-            mainText: qsTr("NOT SET") + lang.notifier
+            mainText: qsTr("-") + lang.notifier
             subText: qsTr("MIN UNIT") + lang.notifier
             qss: "searchorders-btn-item"
             mainQss: "searchorders-btn-main"
@@ -231,7 +236,7 @@ Item {
             width: parent.width - 74
 
             buttonStyle: DapQmlButton.Style.LeftTopSubBottomMain
-            mainText: qsTr("NOT SET") + lang.notifier
+            mainText: qsTr("-") + lang.notifier
             subText: qsTr("MAX PRICE TOKEN") + lang.notifier
             qss: "searchorders-btn-item"
             mainQss: "searchorders-btn-main"
@@ -264,7 +269,7 @@ Item {
             width: parent.width - 74
 
             buttonStyle: DapQmlButton.Style.LeftTopSubBottomMain
-            mainText: qsTr("NOT SET") + lang.notifier
+            mainText: qsTr("-") + lang.notifier
             subText: qsTr("MIN PRICE TOKEN") + lang.notifier
             qss: "searchorders-btn-item"
             mainQss: "searchorders-btn-main"

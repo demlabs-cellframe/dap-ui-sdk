@@ -23,6 +23,16 @@ void DapCmdConnect::sendCmdConnect(const QString& a_addr, quint16 a_port,
     sendCmd(&obj);
 }
 
+void DapCmdConnect::sendCmdConnectByOrder(const QString& a_addr)
+{
+    QJsonObject obj;
+    obj["action"] = "ConnectByOrder";
+    obj["address"] = a_addr;
+
+    obj["port"] = 80;
+    sendCmd(&obj);
+}
+
 void DapCmdConnect::sendCmdDisconnect()
 {
     QJsonObject obj;

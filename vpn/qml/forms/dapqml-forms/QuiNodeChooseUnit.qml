@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import PageCtl 1.0
 import DapQmlNodeDataModel 1.0
 
 Item {
@@ -10,6 +11,14 @@ Item {
     /// Used to connect interface via Manager
     property string formName: "ChooseUnit"
 
+    Timer {
+        id: backTimer
+        interval: 100
+        running: false
+        repeat: false
+        onTriggered: PageCtl.slotBackwardAuto()
+    }
+
     /// @brief item clicked
     signal sigSelect(name: string);
 
@@ -20,7 +29,10 @@ Item {
     QuiChooseNodeDataForm {
        dataModel: dataModel
        title:  qsTr("Choose unit")
-       onSigSelect: root.sigSelect(name);
+       onSigSelect: {
+           root.sigSelect(name);
+           backTimer.start();
+       }
     }
 
 }

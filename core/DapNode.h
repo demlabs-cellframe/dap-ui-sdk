@@ -131,6 +131,7 @@ public:
     DapNode(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
     ~DapNode();
     void start();
+    QString txCondHash();
 
 private:
     void initStmTransitions();
@@ -163,7 +164,7 @@ signals:
     void sigOrderListReady(QJsonArray);
     void sigMempoolContainHash();
     void sigLedgerContainHash();
-    void sigCondTxCreateSuccess();
+    void sigCondTxCreateSuccess(QString hash);
     // ------- internal signals --------
     void waitingCommand();
     void transactionProcessing();

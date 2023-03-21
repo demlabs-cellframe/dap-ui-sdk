@@ -6,8 +6,6 @@
 // client, service side
 #define DEBUGINFO qDebug()<<"--->SrvCMD<---"
 
-const QString DapCmdNode::actionParam = "node_data";
-
 DapCmdNode::DapCmdNode(QObject *parent)
     : DapCmdServiceAbstract(DapJsonCmdType::NODE_INFO, parent),
       m_nodeDetected(false)
@@ -30,10 +28,7 @@ void DapCmdNode::setNodeDetected()
 void DapCmdNode::sendNodeDetected()
 {
     QJsonObject response;
-    QJsonObject nodeInfo;
-    nodeInfo["status"] = "ok";
-    nodeInfo["node_detected"] = m_nodeDetected;
-    response[DapCmdNode::actionParam] = nodeInfo;
+    response["node_detected"] = m_nodeDetected;
     sendCmd(&response);
 }
 
@@ -41,24 +36,20 @@ void DapCmdNode::sendError(int code, const QString& messageError)
 {
     QJsonObject response;
     QJsonObject nodeInfo;
-    nodeInfo["status"] = "error";
-    nodeInfo["error_message"] = messageError;
-    nodeInfo["error_code"] = code;
-    response[DapCmdNode::actionParam] = nodeInfo;
+    nodeInfo["message"] = messageError;
+    nodeInfo["code"] = code;
+    response["error"] = nodeInfo;
     sendCmd(&response);
 }
 
 void DapCmdNode::sendWalletsList(const QStringList& walletsList)
 {
     QJsonObject response;
-    QJsonObject nodeInfo;
     QJsonArray jsonWalletsList;
     jsonWalletsList.fromStringList(walletsList);
-    nodeInfo["status"] = "ok";
     for (const QString& data: walletsList)
         jsonWalletsList.append(data);
-    nodeInfo["wallets"] = jsonWalletsList;
-    response[DapCmdNode::actionParam] = nodeInfo;
+    response["wallets"] = jsonWalletsList;
     sendCmd(&response);
     DEBUGINFO << "sendWalletsList";
 }
@@ -66,14 +57,11 @@ void DapCmdNode::sendWalletsList(const QStringList& walletsList)
 void DapCmdNode::sendNetworksList(const QStringList& walletsList)
 {
     QJsonObject response;
-    QJsonObject nodeInfo;
     QJsonArray jsonWalletsList;
     jsonWalletsList.fromStringList(walletsList);
-    nodeInfo["status"] = "ok";
     for (const QString& data: walletsList)
         jsonWalletsList.append(data);
-    nodeInfo["networks"] = jsonWalletsList;
-    response[DapCmdNode::actionParam] = nodeInfo;
+    response["networks"] = jsonWalletsList;
     sendCmd(&response);
     DEBUGINFO << "sendNetworksList";
 }
@@ -81,10 +69,7 @@ void DapCmdNode::sendNetworksList(const QStringList& walletsList)
 void DapCmdNode::sendWalletsData(const QJsonObject& a_walletsData)
 {
     QJsonObject response;
-    QJsonObject walletsData;
-    walletsData["wallets_data"] = a_walletsData;
-    walletsData["status"] = "ok";
-    response[DapCmdNode::actionParam] = walletsData;
+    response["wallets_data"] = a_walletsData;
     sendCmd(&response);
     DEBUGINFO << "sendWalletsData";
 }
@@ -92,10 +77,7 @@ void DapCmdNode::sendWalletsData(const QJsonObject& a_walletsData)
 void DapCmdNode::sendOrderList(const QJsonArray& orderList)
 {
     QJsonObject response;
-    QJsonObject orderListData;
-    orderListData["order_list"] = orderList;
-    orderListData["status"] = "ok";
-    response[DapCmdNode::actionParam] = orderListData;
+    response["order_list"] = orderList;
     sendCmd(&response);
     DEBUGINFO << "sendOrderList";
 }
@@ -103,10 +85,7 @@ void DapCmdNode::sendOrderList(const QJsonArray& orderList)
 void DapCmdNode::sendTransactionInMempool()
 {
     QJsonObject response;
-    QJsonObject nodeInfo;
-    nodeInfo["status"] = "ok";
-    nodeInfo["transaction_hash_in_mempool"] = true;
-    response[DapCmdNode::actionParam] = nodeInfo;
+    response["transaction_hash_in_mempool"] = true;
     sendCmd(&response);
     DEBUGINFO << "sendTransactionInMempool";
 }
@@ -114,63 +93,94 @@ void DapCmdNode::sendTransactionInMempool()
 void DapCmdNode::sendTransactionInLedger()
 {
     QJsonObject response;
-    QJsonObject nodeInfo;
-    nodeInfo["status"] = "ok";
-    nodeInfo["transaction_hash_in_ledger"] = true;
-    response[DapCmdNode::actionParam] = nodeInfo;
+    response["transaction_hash_in_ledger"] = true;
     sendCmd(&response);
     DEBUGINFO << "sendTransactionInLedger";
 }
 
+void DapCmdNode::sendReceipInfo(qint32 utype, qint64 uid, qint64 units, qint64 value)
+{
+    QJsonObject response;
+    QJsonObject info;
+    info["utype"] = utype;
+    info["uid"] = uid;
+    info["units"] = units;
+    info["value"] = value;
+    response["receipt_info"] = info;
+    sendCmd(&response);
+    DEBUGINFO << "sendReceipInfo";
+}
+
 void DapCmdNode::handle(const QJsonObject* params)
 {
-    if(params->value(actionParam) != QJsonValue::Undefined && params->value(actionParam).isObject())
+    if (params->value("start_node_detection").isBool() && params->value("start_node_detection").toBool())
+        emit startNodeDetection();
+    // data wallet request
+    if (params->value("data_wallet_request").isBool() && params->value("data_wallet_request").toBool())
+        emit dataWalletRequest();
+    // stop checking the operation of the node
+    if (params->value("start_node_detection").isBool() && !params->value("start_node_detection").toBool())
+        emit stopNodeDetection();
+    // order list request
+    if (params->value("orders_request").isObject())
     {
-        QJsonObject nodeCmd = params->value(actionParam).toObject();
-        // start checking the operation of the node
-        if (nodeCmd["start_node_detection"].isBool() && nodeCmd["start_node_detection"].toBool())
-            emit startNodeDetection();
-        // data wallet request
-        if (nodeCmd["data_wallet_request"].isBool() && nodeCmd["data_wallet_request"].toBool())
-            emit dataWalletRequest();
-        // stop checking the operation of the node
-        if (nodeCmd["start_node_detection"].isBool() && !nodeCmd["start_node_detection"].toBool())
-            emit stopNodeDetection();
-        // order list request
-        if (nodeCmd["orders_request"].isObject())
-        {
-            QJsonObject tx = nodeCmd["cond_tx_create"].toObject();
-            QString networkName = tx["network_name"].toString();
-            QString tokenName   = tx["token_name"].toString();
-            QString minPrice    = tx["min_price"].toString();
-            QString maxPrice    = tx["max_price"].toString();
-            QString unit          = tx["unit"].toString();
-            emit orderListRequest(networkName, tokenName, minPrice, maxPrice, unit);
-        }
-        // creating a conditional transaction cmd
-        if (nodeCmd["cond_tx_create"].isObject())
-        {
-            QJsonObject tx = nodeCmd["cond_tx_create"].toObject();
-            QString walletName  = tx["wallet_name"].toString();
-            QString networkName = tx["network_name"].toString();
-            QString tokenName   = tx["token_name"].toString();
+        QJsonObject tx = params->value("cond_tx_create").toObject();
+        QString networkName = tx["network_name"].toString();
+        QString tokenName   = tx["token_name"].toString();
+        QString minPrice    = tx["min_price"].toString();
+        QString maxPrice    = tx["max_price"].toString();
+        QString unit          = tx["unit"].toString();
+        emit orderListRequest(networkName, tokenName, minPrice, maxPrice, unit);
+    }
+    // creating a conditional transaction cmd
+    if (params->value("cond_tx_create").isObject())
+    {
+        QJsonObject tx = params->value("cond_tx_create").toObject();
+        QString walletName  = tx["wallet_name"].toString();
+        QString networkName = tx["network_name"].toString();
+        QString tokenName   = tx["token_name"].toString();
 //            QString certName    = tx["cert_name"].toString();
-            QString value         = tx["value"].toString();
-            QString unit          = tx["unit"].toString();
-            emit condTxCreateRequest(walletName, networkName, tokenName, value, unit);
-        }
-        // start search orders
-        if (nodeCmd["search_orders"].isObject())
-        {
-            QJsonObject so = nodeCmd["search_orders"].toObject();
-            QString networkName = so["network_name"].toString();
-            QString tokenName   = so["token_name"].toString();
-            QString unit        = so["unit"].toString();
-            QString maxPrice    = so["min_price"].toString();
-            QString minPrice    = so["max_price"].toString();
-            emit orderListRequest(networkName, tokenName, unit, maxPrice, minPrice);
-        }
-        if (nodeCmd["node_detected_check"].isBool() && nodeCmd["node_detected_check"].toBool())
-            sendNodeDetected();
+        QString value         = tx["value"].toString();
+        QString unit          = tx["unit"].toString();
+        emit condTxCreateRequest(walletName, networkName, tokenName, value, unit);
+    }
+    // start search orders
+    if (params->value("search_orders").isObject())
+    {
+        QJsonObject so = params->value("search_orders").toObject();
+        QString networkName = so["network_name"].toString();
+        QString tokenName   = so["token_name"].toString();
+        QString unit        = so["unit"].toString();
+        QString maxPrice    = so["min_price"].toString();
+        QString minPrice    = so["max_price"].toString();
+        emit orderListRequest(networkName, tokenName, unit, maxPrice, minPrice);
+    }
+    if (params->value("node_detected_check").isBool() && params->value("node_detected_check").toBool())
+        sendNodeDetected();
+    if (params->value("receipt_signed").isBool() && params->value("receipt_signed").toBool())
+        emit receiptSigned();
+    if (params->value("start_connect_by_order").isObject())
+    {
+        QJsonObject oi = params->value("start_connect_by_order").toObject();
+        //                == Order 0xD9A5C15D30A42615398AB7D3080FDEBCCD74FA3BB2E191F76EAC994326B45AA9 ==
+        //                  version:          3
+        //                  direction:        SERV_DIR_SELL
+        //              V   srv_uid:          0x0000000000000001
+        //                  price:            0.000000000000000002 (2)
+        //                  price_unit:       DAY
+        //                  node_addr:        58C0::CA70::6D11::1DCA
+        //                  node_location:    Europe - Russia_2_1
+        //              V   tx_cond_hash:     0x0000000000000000000000000000000000000000000000000000000000000000
+        //                  ext:              0x52025275737369615F325F3100
+        QString netId        = oi["net_id"].toString();
+        QString txCondHash   = oi["tx_cond_hash"].toString();
+        QString token        = oi["token"].toString();
+        QString srvUid       = oi["srv_uid"].toString();
+        QString address      = oi["node_ip"].toString();
+//            QString address      = oi["node_addr"].toString();
+        uint16_t port        = 80;
+        if (!oi["port"].isNull())
+            port             = oi["port"].toInt();
+        emit connectByOrder(netId, txCondHash, token, srvUid, address, port);
     }
 }

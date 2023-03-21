@@ -125,6 +125,11 @@ Item {
     /// @brief connection by certificate requested
     signal sigConnectByCert();
 
+    /// @brief connection by order requested
+    signal sigConnectByOrder();
+
+    signal sigStartCondTransation();
+
     /// @brief buy serial clicked
     signal sigObtainNewKey();
 
@@ -139,6 +144,8 @@ Item {
 
     signal textChangedAndCleaned();
     signal textChangedAndFilledOut (string serial);
+
+    signal walletSelected(bool selected);
 
     /// @}
     /****************************************//**
@@ -174,10 +181,18 @@ Item {
         btnChooseServer.updateServerName();
     }
 
+    function setOrderLocation(location ) {
+        btnChooseServer.mainText    = location;
+    }
+    function setOrderAddr(addr) {
+        btnChooseServer.subText     = addr;
+    }
+
+
     /// @brief set wallet for noCBD
     function setWallet(a_wallet) {
         btnChooseWallet.mainText = a_wallet;
-        internal.waitingForApproval = false
+        //internal.waitingForApproval = false
     }
 
     /// @brief set network|token for noCBD
@@ -187,17 +202,18 @@ Item {
 
     /// @brief set transaction processing flag for noCBD
     function setTransactionProcessing(a_data){
-        console.log("setTransactionProcessing", a_data)
-        if (a_data === true) {
-            internal.transactionProcessing = a_data;
-            internal.waitingForApproval = false;
-            transactionProcessingLabel.text = "Transaction is in progress"
-            loginTypeKelContainer.update();
-        } else {
-            transactionProcessingLabel.text = "Transaction is in progress"
-            internal.transactionProcessing = a_data;
-            internal.waitingForApproval = false;
-        }
+        internal.transactionProcessing = true;
+        loginInfoLabel.text = "Transaction is in progress"
+//        if (a_data === true) {
+//            internal.transactionProcessing = a_data;
+//            //internal.waitingForApproval = false;
+//            loginInfoLabel.text = "Transaction is in progress"
+//            loginTypeKelContainer.update();
+//        } else {
+//            loginInfoLabel.text = "Transaction is in progress"
+//            internal.transactionProcessing = a_data;
+//            //internal.waitingForApproval = false;
+//        }
     }
 
     function setTransactionWalletNetwork(row2) {
@@ -215,10 +231,23 @@ Item {
 
     /// @briefset found cellframe dashboard
     function cellfarameDashboardDetected(detected) {
-        console.log("cellfarameDashboardDetected", detected);
         internal.cellfarameDetected =  Brand.name() === "KelVPN";
-        internal.waitingForApproval = true
-        transactionProcessingLabel.text = "Waiting for approval"
+        if (internal.waitingForApproval)
+            loginInfoLabel.text = "Waiting for approval"
+        loginTypeKelContainer.update();
+    }
+
+    function setWaitingForApproval(approval) {
+        internal.waitingForApproval = approval
+        if (internal.waitingForApproval)
+            loginInfoLabel.text = "Waiting for approval"
+    }
+
+    function setWalletSeleted(selected)
+    {
+        if (!selected)
+            return
+        internal.mode = QuiLoginForm.Mode.M_WALLET;
         loginTypeKelContainer.update();
     }
 
@@ -294,7 +323,11 @@ Item {
             id: tabSerial
             qss: "login-mode-btn-serial"
             checked:    internal.mode === QuiLoginForm.Mode.M_SERIAL
-            onClicked:  { internal.mode   = QuiLoginForm.Mode.M_SERIAL; loginTypeContainer.update(); }
+            onClicked:  {
+                internal.mode   = QuiLoginForm.Mode.M_SERIAL;
+                root.walletSelected(internal.mode === QuiLoginForm.Mode.M_WALLET);
+                loginTypeContainer.update();
+            }
         }
 
         DapQmlTabButton {
@@ -330,7 +363,11 @@ Item {
             id: tabSerial1
             qss: "login-mode-btn-serial-nocbd"
             checked:    internal.mode === QuiLoginForm.Mode.M_SERIAL
-            onClicked:  { internal.mode = QuiLoginForm.Mode.M_SERIAL; loginTypeKelContainer.update(); }
+            onClicked:  {
+                internal.mode = QuiLoginForm.Mode.M_SERIAL;
+                loginTypeKelContainer.update();
+                root.walletSelected(internal.mode === QuiLoginForm.Mode.M_WALLET);
+            }
         }
 
         DapQmlTabButton {
@@ -341,7 +378,10 @@ Item {
             id: tabCell
             qss: "login-mode-btn-nocbd"
             checked:    internal.mode === QuiLoginForm.Mode.M_WALLET
-            onClicked:  { internal.mode = QuiLoginForm.Mode.M_WALLET; loginTypeKelContainer.update(); }
+            onClicked:  { internal.mode = QuiLoginForm.Mode.M_WALLET;
+                loginTypeKelContainer.update();
+                root.walletSelected(internal.mode === QuiLoginForm.Mode.M_WALLET);
+            }
         }
     }
 
@@ -433,7 +473,7 @@ Item {
         width:  loginWalletPlacer.width
         height: loginWalletPlacer.height
         visible: internal.cellfarameDetected && internal.mode === QuiLoginForm.Mode.M_WALLET
-                 && !internal.transactionProcessing && !internal.waitingForApproval
+                 && !(internal.transactionProcessing || internal.waitingForApproval)
 
         DapQmlButton {
             id: btnChooseWallet
@@ -587,7 +627,7 @@ Item {
      * Transaction processing label
      ********************************************/
     DapQmlLabel {
-        id: transactionProcessingLabel
+        id: loginInfoLabel
         qss: "login-transaction-processing-label-nocbd"
         text: "<<< Message >>>"
         visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET
@@ -818,8 +858,11 @@ Item {
              ? "login-connect-nocbd-mode"
 //                 serial login
              : "login-connect"
-
-        text: qsTr("CONNECT") + lang.notifier
+        text: Brand.name() === "KelVPN" && internal.cellfarameDetected
+        //                 NoCBD mode
+                     ? qsTr("CONTINUE") + lang.notifier
+        //                 serial login
+                     : qsTr("CONNECT") + lang.notifier
         onClicked: {
             if (internal.mode === QuiLoginForm.Mode.M_SERIAL)
                 root.sigConnectBySerial();
@@ -829,6 +872,13 @@ Item {
             else
             if (internal.mode === QuiLoginForm.Mode.M_CERT)
                 root.sigConnectByCert();
+            else
+            if (internal.mode === QuiLoginForm.Mode.M_WALLET) {
+                if (internal.transactionProcessing === false)
+                    root.sigStartCondTransation()
+                else
+                    root.sigConnectByOrder();
+            }
         }
     }
 

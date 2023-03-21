@@ -23,6 +23,7 @@ Item {
             title.text = titleOverview
             processingItem.visible = false
             overview.visible = true
+            overview.buttonActive = true
         }
         else
         {

@@ -33,6 +33,7 @@ Item {
 
     property string title: "SET TITLE!!!"
     property QtObject dataModel: null
+    property string viewType: "default"
 
     /// @}
     /****************************************//**
@@ -92,6 +93,7 @@ Item {
             property bool checked: false
 
             DapQmlRadioButton {
+                id: redioButton
                 text: model.name
                 checked: model.checked
                 separator: true
@@ -99,14 +101,14 @@ Item {
                 width: resizer.width
                 height: resizer.height
                 y: spacer.height / 2
-                onClicked: nodeDataForm.sigSelect (model.name);
+                onClicked: nodeDataForm.sigSelect (model.hash);
 
                 DapQmlLabel {
-                    horizontalAlign: Text.AlignRight
-                    verticalAlign: Text.AlignVCenter
+                    horizontalAlign: (viewType=="orderView") ? Text.AlignLeft : Text.AlignRight
+                    verticalAlign: (viewType=="orderView") ? Text.AlignBottom : Text.AlignVCenter
                     text: model.subText
+                    leftPadding: redioButton.textPadding
                     qss: "radiobtn-resizer-note"
-                    height: resizer.height
                     width: resizer.width
                     clip: false
                     onClicked: { root.toggle(); root.clicked(); }

@@ -204,7 +204,7 @@ Item {
             x: (parent.width - width) / 2
             z: 15
             width: parent.width - 74
-            property string defaultServerName: qsTr("Auto select") + lang.notifier
+            property string defaultServerName: qsTr("-") + lang.notifier
 
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
             mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
