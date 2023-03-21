@@ -48,7 +48,7 @@ void DapQmlModelFullServerList::setBridge (AbstractServerListModelBridge *a_newB
   /* setup */
   beginResetModel();
   {
-    if (m_bridge)
+    if (m_bridge && m_bridge != AbstractServerListModelBridge::getDefaultBridge())
       delete m_bridge;
 
     m_bridge  = a_newBridge;
@@ -158,7 +158,7 @@ int DapQmlModelFullServerList::indexOfName (const QString &a_name) const
 
   result      = serverList->indexOfName (a_name);
   if (result != -1)
-    return result - _size.autoServer;
+    return result + _size.autoServer;
 
   return -1;
 }

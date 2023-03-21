@@ -148,6 +148,8 @@ Q_DECLARE_METATYPE (DapServerInfoPtr)
 
 class DapServerType : public QObject, public DapServerInfo
 {
+  Q_OBJECT
+
   /****************************************//**
    * @name DEFS
    *******************************************/

@@ -131,33 +131,39 @@ bool DapQmlServerManager::enabled() const
 void DapQmlServerManager::setEnabled (bool a_enable)
 {
   s_enabled = a_enable;
+  auto setup = [this]
+    {
+      s_servers           = s_enabled ? new DapSortedServerList                   : nullptr;
+      s_autoServers       = s_enabled ? new DapQmlModelAutoServerList (s_servers) : nullptr;
+      s_serverListBridge  = s_enabled ? new ServerListModelBridge                 : nullptr;
+      s_customServers     = s_enabled ? new CustomServerDataMap                   : nullptr;
+      s_saveDelay         = s_enabled ? new ManageServersSaveDelay (*this)        : nullptr;
+    };
 
   /* clear memory */
   if (!s_enabled)
     {
       delete s_servers;
       delete s_autoServers;
-      delete s_serverListBridge;
+      //delete s_serverListBridge; // DapQmlModelFullServerList is responsible for deleting this object
       delete s_customServers;
       delete s_saveDelay;
 
       if (s_serverListBridge)
         DapQmlModelFullServerList::instance()->setBridge (AbstractServerListModelBridge::getDefaultBridge());
+
+      setup();
     }
 
   /* invoke delayed loading and bridging */
   else
-    QTimer::singleShot (5000, this, [this]
+    //QTimer::singleShot (5000, this, [this]
      {
+        setup();
         load();
         DapQmlModelFullServerList::instance()->setBridge (s_serverListBridge);
-      });
+     }//);
 
-  s_servers           = s_enabled ? new DapSortedServerList                   : nullptr;
-  s_autoServers       = s_enabled ? new DapQmlModelAutoServerList (s_servers) : nullptr;
-  s_serverListBridge  = s_enabled ? new ServerListModelBridge                 : nullptr;
-  s_customServers     = s_enabled ? new CustomServerDataMap                   : nullptr;
-  s_saveDelay         = s_enabled ? new ManageServersSaveDelay (*this)        : nullptr;
 }
 
 void DapQmlServerManager::importServers (const DapServerInfoList *a_servers)
