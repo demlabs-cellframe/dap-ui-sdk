@@ -32,6 +32,44 @@ class DapQmlModelFullServerList : public QAbstractListModel
   /// @}
 
   /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
+public:
+  class ConstIterator
+  {
+  protected:
+    const DapQmlModelFullServerList *p;
+    int i;
+  public:
+    ConstIterator();
+    ConstIterator (int n, const DapQmlModelFullServerList *p);
+    ConstIterator (const ConstIterator &o);
+    const DapServerInfo &operator*() const;
+    const DapServerInfo *operator->() const;
+    const DapServerInfo &operator[] (int j) const;
+    bool operator== (const ConstIterator &o) const;
+    bool operator!= (const ConstIterator &o) const;
+    bool operator< (const ConstIterator &other) const;
+    bool operator<= (const ConstIterator &other) const;
+    bool operator> (const ConstIterator &other) const;
+    bool operator>= (const ConstIterator &other) const;
+    ConstIterator &operator++();
+    ConstIterator operator++ (int);
+    ConstIterator &operator--();
+    ConstIterator operator-- (int);
+    ConstIterator &operator+= (int j);
+    ConstIterator &operator-= (int j);
+    ConstIterator operator+ (int j) const;
+    ConstIterator operator- (int j) const;
+    friend inline ConstIterator operator+ (int j, ConstIterator k) { return k + j; }
+    int operator- (ConstIterator j) const;
+    operator const DapServerInfo *() const;
+    int internalIndex() const;
+  };
+  /// @}
+
+  /****************************************//**
    * @name VARS
    *******************************************/
   /// @{
@@ -70,10 +108,13 @@ public:
   Q_INVOKABLE QVariant value (int a_row, const QString &a_name);
   const DapServerInfo &currentServer() const;
   const DapServerInfo &at (int a_index) const;
+  ConstIterator begin() const;
+  ConstIterator end() const;
   int indexOfName (const QString &a_name) const;
 protected:
   void _getSizes();
   void _getRoles();
+  void _getCurrent();
   /// @}
 
   /****************************************//**

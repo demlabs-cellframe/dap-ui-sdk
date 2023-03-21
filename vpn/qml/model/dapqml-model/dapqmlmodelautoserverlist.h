@@ -29,6 +29,8 @@ protected:
   QString _userLocation;
   /// available locations
   QSet<QString> _allLocations;
+  /// current server
+  int m_current;
   /// @}
 
   /****************************************//**
@@ -48,11 +50,14 @@ public:
   /// set general location
   void setLocation (const QString &a_location);
   const DapSortedServerList &getList() const { return _autoServers; };
+  int current() const;
+  void setCurrent (int a_newCurrent);
 protected:
   void _connectSignals();
   void _reset();
   void _collectLocations (DapSortedServerList *a_list);
   void _buildUpAutoList (DapSortedServerList *a_dest);
+  void _updateCurrent (QString &a_oldCurrentName);
   /// @}
 
   /****************************************//**

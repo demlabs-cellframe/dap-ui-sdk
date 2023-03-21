@@ -985,45 +985,68 @@ void DapSortedServerList::clear()
 
 void DapSortedServerList::update (const QList<int> &a_indexes)
 {
-  /* sort provided list */
-  QList<int> indexes  = a_indexes;
-  qSort (indexes);
-
-  /* take indexes from chain */
-  QList<int> takenIndexes;
-  for (auto i = indexes.crbegin(), e = indexes.crend(); i != e; i++)
-    {
-      /* calc iterator */
-      auto pos  = _sortedIndexes.begin() + *i;
-
-      /* store value */
-      takenIndexes << *pos;
-
-      /* take from chain */
-      _sortedIndexes.erase (pos);
-    }
-
-  /* insert to proper places */
-  for (auto i = takenIndexes.cbegin(), e = takenIndexes.cend(); i != e; i++)
-    {
-      auto &server  = _list[*i];
-      _appendServerIndex (server, *i);
-    }
-
-  /* collect new indexes */
-  QList<int> newIndexes;
-  for (int takenIndex : qAsConst (takenIndexes))
-    newIndexes << indexOf (_list[takenIndex]);
-
-  /* send moving signals */
-  auto oldIt  = takenIndexes.cbegin();
-  auto newIt  = newIndexes.cbegin();
   QModelIndex dummyIndex;
-  for (int i = 0; i < takenIndexes.size(); i++, oldIt++, newIt++)
+  for (auto i : a_indexes)
     {
-      beginMoveRows (dummyIndex, *oldIt, *oldIt, dummyIndex, *newIt);
-      endMoveRows();
+      auto it       = _sortedIndexes.begin() + i;
+      auto &server  = _list[*it];
+
+      beginRemoveRows (dummyIndex, i, i);
+      _sortedIndexes.erase (it);
+      endRemoveRows();
+
+      auto pos      = _appendServerIndex (server, *it);
+      beginInsertRows (dummyIndex, pos, pos);
+      endInsertRows();
+
+//      if (i != pos)
+//        {
+//          beginMoveRows (dummyIndex, i, i, dummyIndex, pos);
+//          endMoveRows();
+//        }
     }
+
+//  /* sort provided list */
+//  QList<int> indexes  = a_indexes;
+//  qSort (indexes);
+
+//  /* take indexes from chain */
+//  QList<int> takenIndexes;
+//  for (auto i = indexes.crbegin(), e = indexes.crend(); i != e; i++)
+//    {
+//      /* calc iterator */
+//      auto pos  = _sortedIndexes.begin() + *i;
+
+//      /* store value */
+//      takenIndexes << *pos;
+
+//      /* take from chain */
+//      _sortedIndexes.erase (pos);
+//    }
+
+//  /* insert to proper places */
+//  for (auto i = takenIndexes.cbegin(), e = takenIndexes.cend(); i != e; i++)
+//    {
+//      auto &server  = _list[*i];
+//      _appendServerIndex (server, *i);
+//    }
+
+//  /* collect new indexes */
+//  QList<int> newIndexes;
+//  for (int takenIndex : qAsConst (takenIndexes))
+//    newIndexes << indexOf (_list[takenIndex]);
+
+//  /* send moving signals */
+//  auto oldIt  = takenIndexes.cbegin();
+//  auto newIt  = newIndexes.cbegin();
+//  QModelIndex dummyIndex;
+//  for (int i = 0; i < takenIndexes.size(); i++, oldIt++, newIt++)
+//    {
+//      if (*oldIt == *newIt)
+//        continue;
+//      beginMoveRows (dummyIndex, *oldIt, *oldIt, dummyIndex, *newIt);
+//      endMoveRows();
+//    }
 }
 
 const QLinkedList<int> &DapSortedServerList::getSortedIndexes() const

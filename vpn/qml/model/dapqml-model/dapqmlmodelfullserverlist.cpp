@@ -34,15 +34,16 @@ void DapQmlModelFullServerList::setBridge (AbstractServerListModelBridge *a_newB
 {
   /* variables */
   auto updateLambda     = [this]
-    {
-      beginResetModel();
-      _getSizes();
-      endResetModel();
-    };
+  {
+    beginResetModel();
+    _getSizes();
+    _getCurrent();
+    endResetModel();
+  };
   auto autoServerList  = a_newBridge->autoServerList();
 
   DapAbstractServerList *abstractServerList = a_newBridge->serverList();
-  QAbstractListModel *itemModel = abstractServerList->as<QAbstractListModel>();
+//  QAbstractListModel *itemModel = abstractServerList->as<QAbstractListModel>();
 
   /* setup */
   beginResetModel();
@@ -65,9 +66,9 @@ void DapQmlModelFullServerList::setBridge (AbstractServerListModelBridge *a_newB
   _conn << connect (autoServerList,   &QAbstractItemModel::rowsInserted, updateLambda);
   _conn << connect (autoServerList,   &QAbstractItemModel::rowsRemoved,  updateLambda);
   _conn << connect (autoServerList,   &QAbstractItemModel::modelReset,   updateLambda);
-  _conn << connect (itemModel,        &QAbstractItemModel::rowsInserted, updateLambda);
-  _conn << connect (itemModel,        &QAbstractItemModel::rowsRemoved,  updateLambda);
-  _conn << connect (itemModel,        &QAbstractItemModel::modelReset,   updateLambda);
+//  _conn << connect (itemModel,        &QAbstractItemModel::rowsInserted, updateLambda);
+//  _conn << connect (itemModel,        &QAbstractItemModel::rowsRemoved,  updateLambda);
+//  _conn << connect (itemModel,        &QAbstractItemModel::modelReset,   updateLambda);
 }
 
 int DapQmlModelFullServerList::size() const
@@ -89,8 +90,18 @@ void DapQmlModelFullServerList::setCurrent (int a_newCurrent)
 //  auto newIndex = index (m_current, 0);
 //  emit dataChanged (oldIndex, oldIndex);
 //  emit dataChanged (newIndex, newIndex);
+  if (m_current == a_newCurrent
+      || a_newCurrent >= _size.full)
+    return;
+
+  auto autoServerList = m_bridge->autoServerList();
+  auto serverList      = m_bridge->serverList();
 
   m_current   = a_newCurrent;
+
+  autoServerList->setCurrent ((m_current < _size.autoServer)  ? m_current : -1);
+  serverList->setCurrent     ((m_current >= _size.autoServer) ? m_current - _size.autoServer : -1);
+
   emit currentChanged();
 }
 
@@ -126,6 +137,16 @@ const DapServerInfo &DapQmlModelFullServerList::at (int a_index) const
   return serverList->at (newIndexValue);
 }
 
+DapQmlModelFullServerList::ConstIterator DapQmlModelFullServerList::begin() const
+{
+  return ConstIterator (0, this);
+}
+
+DapQmlModelFullServerList::ConstIterator DapQmlModelFullServerList::end() const
+{
+  return ConstIterator (size(), this);
+}
+
 int DapQmlModelFullServerList::indexOfName (const QString &a_name) const
 {
   auto autoServerList  = m_bridge->autoServerList();
@@ -158,6 +179,21 @@ void DapQmlModelFullServerList::_getRoles()
 
   for (auto i = custom.begin(), e = custom.end(); i != e; i++)
     _roleNamesMap.insert (i.key(), i.value());
+}
+
+void DapQmlModelFullServerList::_getCurrent()
+{
+  auto autoServerList  = m_bridge->autoServerList();
+  auto serverList      = m_bridge->serverList();
+
+  if (autoServerList->current() == -1)
+    {
+      if (serverList->current() == -1)
+        return setCurrent (-1);
+      return setCurrent (serverList->current() + _size.autoServer);
+    }
+
+  setCurrent (autoServerList->current());
 }
 
 /********************************************
@@ -200,5 +236,31 @@ QHash<int, QByteArray> DapQmlModelFullServerList::roleNames() const
 {
   return _roleNamesMap;
 }
+
+/*-----------------------------------------*/
+
+DapQmlModelFullServerList::ConstIterator::ConstIterator() : p (nullptr), i(0) {}
+DapQmlModelFullServerList::ConstIterator::ConstIterator (int n, const DapQmlModelFullServerList *p) : p (p), i (n) {}
+DapQmlModelFullServerList::ConstIterator::ConstIterator (const DapQmlModelFullServerList::ConstIterator &o) : p (o.p), i (o.i) {}
+const DapServerInfo &DapQmlModelFullServerList::ConstIterator::operator*() const        { return p->at (i); }
+const DapServerInfo *DapQmlModelFullServerList::ConstIterator::operator->() const       { return &p->at (i); }
+const DapServerInfo &DapQmlModelFullServerList::ConstIterator::operator[] (int j) const { return p->at (i + j); }
+bool DapQmlModelFullServerList::ConstIterator::operator== (const DapQmlModelFullServerList::ConstIterator &o) const     { return i == o.i; }
+bool DapQmlModelFullServerList::ConstIterator::operator!= (const DapQmlModelFullServerList::ConstIterator &o) const     { return i != o.i; }
+bool DapQmlModelFullServerList::ConstIterator::operator< (const DapQmlModelFullServerList::ConstIterator &other) const  { return i < other.i; }
+bool DapQmlModelFullServerList::ConstIterator::operator<= (const DapQmlModelFullServerList::ConstIterator &other) const { return i <= other.i; }
+bool DapQmlModelFullServerList::ConstIterator::operator> (const DapQmlModelFullServerList::ConstIterator &other) const  { return i < other.i; }
+bool DapQmlModelFullServerList::ConstIterator::operator>= (const DapQmlModelFullServerList::ConstIterator &other) const { return i >= other.i; }
+DapQmlModelFullServerList::ConstIterator DapQmlModelFullServerList::ConstIterator::operator++ (int)         { ConstIterator n (i, p); ++i; return n; }
+DapQmlModelFullServerList::ConstIterator DapQmlModelFullServerList::ConstIterator::operator-- (int)         { ConstIterator n (i, p); i--; return n; }
+DapQmlModelFullServerList::ConstIterator &DapQmlModelFullServerList::ConstIterator::operator+= (int j)      { i += j; return *this; }
+DapQmlModelFullServerList::ConstIterator &DapQmlModelFullServerList::ConstIterator::operator-= (int j)      { i -= j; return *this; }
+int DapQmlModelFullServerList::ConstIterator::operator- (ConstIterator j) const                             { return i - j.i; }
+DapQmlModelFullServerList::ConstIterator::operator const DapServerInfo *() const                            { return operator->(); }
+int DapQmlModelFullServerList::ConstIterator::internalIndex() const                                         { return i; }
+DapQmlModelFullServerList::ConstIterator DapQmlModelFullServerList::ConstIterator::operator- (int j) const  { return ConstIterator (i - j, p); }
+DapQmlModelFullServerList::ConstIterator DapQmlModelFullServerList::ConstIterator::operator+ (int j) const  { return ConstIterator (i + j, p); }
+DapQmlModelFullServerList::ConstIterator &DapQmlModelFullServerList::ConstIterator::operator--()    { i--; return *this; }
+DapQmlModelFullServerList::ConstIterator &DapQmlModelFullServerList::ConstIterator::operator++()    { i++; return *this; }
 
 /*-----------------------------------------*/

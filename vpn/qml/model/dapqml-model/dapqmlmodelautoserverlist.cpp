@@ -7,6 +7,7 @@
 
 DapQmlModelAutoServerList::DapQmlModelAutoServerList ()
   : _serverList (DapSortedServerList::instance())
+  , m_current (-1)
 {
   _reset();
   _connectSignals();
@@ -14,6 +15,7 @@ DapQmlModelAutoServerList::DapQmlModelAutoServerList ()
 
 DapQmlModelAutoServerList::DapQmlModelAutoServerList (DapSortedServerList *a_serverList)
   : _serverList (a_serverList)
+  , m_current (-1)
 {
   _reset();
   _connectSignals();
@@ -26,6 +28,16 @@ DapQmlModelAutoServerList::DapQmlModelAutoServerList (DapSortedServerList *a_ser
 void DapQmlModelAutoServerList::setLocation (const QString &a_location)
 {
   _userLocation = a_location;
+}
+
+int DapQmlModelAutoServerList::current() const
+{
+  return m_current;
+}
+
+void DapQmlModelAutoServerList::setCurrent (int a_newCurrent)
+{
+  m_current = a_newCurrent;
 }
 
 void DapQmlModelAutoServerList::_connectSignals()
@@ -84,9 +96,14 @@ void DapQmlModelAutoServerList::_reset()
 //  /* insert to the beginning */
 //  _autoServers.insert (_autoServers.begin(), bestServer);
 
+  QString oldCurrentName;
+  if (m_current != -1)
+    oldCurrentName  = _autoServers.at (m_current).name();
+
   beginResetModel();
   _collectLocations (_serverList);
   _buildUpAutoList (&_autoServers);
+  _updateCurrent (oldCurrentName);
   endResetModel();
 }
 
@@ -138,6 +155,22 @@ _resetCollectContinue:
   /* insert to the beginning */
   if (!bestServer.address().isEmpty())
     a_dest->insert (0, bestServer);
+}
+
+void DapQmlModelAutoServerList::_updateCurrent (QString &a_oldCurrentName)
+{
+  int newCurrent = -1, index = 0;
+
+  for (auto i = _autoServers.cbegin(), e = _autoServers.cend(); i != e; i++, index++)
+    {
+      if (i->name() != a_oldCurrentName)
+        continue;
+
+      newCurrent  = index;
+      break;
+    }
+
+  setCurrent (newCurrent);
 }
 
 /********************************************
