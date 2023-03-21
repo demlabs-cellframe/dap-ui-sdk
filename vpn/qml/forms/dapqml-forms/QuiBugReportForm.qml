@@ -907,14 +907,14 @@ Item {
                 opacity: 0.4 + 0.6 * enabled
             }
 
-            /* share button */
-            DapQmlPushButton {
-                qss: "bugrep-share-btn push-button"
-                text: qsTr("SHARE REPORT") + lang.notifier
-                onClicked: { root.sigShare(); }
-                enabled: true
-                opacity: 0.4 + 0.6 * enabled
-            }
+//            /* share button */
+//            DapQmlPushButton {
+//                qss: "bugrep-share-btn push-button"
+//                text: qsTr("SHARE REPORT") + lang.notifier
+//                onClicked: { root.sigShare(); }
+//                enabled: true
+//                opacity: 0.4 + 0.6 * enabled
+//            }
         }
 
         /****************************************//**
