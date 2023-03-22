@@ -478,6 +478,9 @@ int DapServerList::current() const
 
 void DapServerList::setCurrent (int a_index)
 {
+  if (m_current == a_index)
+    return;
+
   m_current = a_index;
   emit currentChanged();
 }
@@ -955,6 +958,9 @@ int DapSortedServerList::current() const
 
 void DapSortedServerList::setCurrent (int a_index)
 {
+  if (_list.current() == a_index)
+    return;
+
   _list.setCurrent (a_index);
   emit currentChanged();
 }

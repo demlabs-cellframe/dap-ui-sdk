@@ -1,6 +1,6 @@
 /* INCLUDES */
 #include "dapqmlmodelchooseserver.h"
-#include "DapServerList.h"
+#include "dapqmlmodelfullserverlist.h"
 
 #include <QTimer>
 
@@ -29,7 +29,7 @@ DapQmlModelChooseServer::DapQmlModelChooseServer (QObject *parent)
   __inst  = this;
 
   QTimer::singleShot (500, [this] {
-      auto *serverList          = DapServerList::instance();
+      auto *serverList          = DapQmlModelFullServerList::instance();
       const auto &currentServer = serverList->currentServer();
       const auto name           = currentServer.name();
       if (m_currentServer.isEmpty())
@@ -77,13 +77,13 @@ void DapQmlModelChooseServer::refresh()
 int DapQmlModelChooseServer::rowCount(const QModelIndex &parent) const
 {
   if (m_serverManager.isNull())
-    return DapServerList::instance()->rowCount (parent);
+    return DapQmlModelFullServerList::instance()->rowCount (parent);
   return m_serverManager->size();
 }
 
 QVariant DapQmlModelChooseServer::data(const QModelIndex &index, int role) const
 {
-  auto *serverList = DapServerList::instance();
+  auto *serverList = DapQmlModelFullServerList::instance();
 
   switch (role)
     {
@@ -116,7 +116,7 @@ QVariant DapQmlModelChooseServer::data(const QModelIndex &index, int role) const
 void DapQmlModelChooseServer::setCurrentServerByName (const QString &a_name)
 {
   /* variables */
-  auto *serverList = DapServerList::instance();
+  auto *serverList = DapQmlModelFullServerList::instance();
 
   /* lambdas */
   auto indexOf = [serverList] (const QString &a_serverName) -> int {
