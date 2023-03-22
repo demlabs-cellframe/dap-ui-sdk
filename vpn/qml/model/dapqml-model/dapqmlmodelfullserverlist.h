@@ -67,6 +67,29 @@ public:
     operator const DapServerInfo *() const;
     int internalIndex() const;
   };
+
+  class Index
+  {
+    int _value;
+    int _autoSize;
+    bool _isAuto;
+
+  public:
+    Index();
+    Index (int a_value, int a_autoSize, bool a_isAuto);
+    Index (const Index &a_src);
+
+    /// will return auto index, if auto or sorted index, if not auto
+    int internal() const;
+    /// will return full list index
+    int value() const;
+    bool isAuto() const;
+    bool isSorted() const;
+
+    /// @see value
+    operator int();
+  };
+
   /// @}
 
   /****************************************//**
@@ -110,7 +133,7 @@ public:
   const DapServerInfo &at (int a_index) const;
   ConstIterator begin() const;
   ConstIterator end() const;
-  int indexOfName (const QString &a_name) const;
+  Index indexOfName (const QString &a_name) const;
 protected:
   void _getSizes();
   void _getRoles();

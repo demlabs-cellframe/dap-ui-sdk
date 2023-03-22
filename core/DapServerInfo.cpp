@@ -137,6 +137,11 @@ QJsonObject DapServerInfo::toJSON (const DapServerInfo &dsi)
   return obj;
 }
 
+QJsonObject DapServerInfo::toJSON() const
+{
+  return toJSON (*this);
+}
+
 void DapServerInfo::sortServerList (QList<DapServerInfo> &serverList)
 {
   qSort (serverList.begin(), serverList.end());
@@ -429,6 +434,12 @@ static QMap<DapServerType::FieldId, QString> _metaEnumToMap (const char *a_name,
 {
   QMap<DapServerType::FieldId, QString> result;
 
+//  for (int i = 0; i < a_metaObject.enumeratorCount(); i++)
+//    {
+//      auto name = a_metaObject.enumerator (i).enumName();
+//      qDebug() << name;
+//    }
+
   int enumIndex  = a_metaObject.indexOfEnumerator (a_name);
   auto metaEnum  = a_metaObject.enumerator (enumIndex);
   int enumSize   = metaEnum.keyCount();
@@ -441,7 +452,7 @@ static QMap<DapServerType::FieldId, QString> _metaEnumToMap (const char *a_name,
 
 QVariant DapServerType::asVariantMap() const
 {
-  static auto fieldMap  = _metaEnumToMap ("FieldId", staticQtMetaObject);
+  static auto fieldMap  = _metaEnumToMap ("FieldId", DapServerType::staticMetaObject);
 
   QVariantMap result;
 

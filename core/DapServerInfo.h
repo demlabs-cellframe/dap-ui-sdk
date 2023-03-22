@@ -76,6 +76,7 @@ public:
   static bool fromJSON (const QJsonArray &jsonArr, DapServerInfoList &out);
   static bool fromJSON (const QJsonObject &jsonObj, DapServerInfo &out);
   static QJsonObject toJSON (const DapServerInfo &dsi);
+  QJsonObject toJSON() const;
   /// @deprecated
   static void sortServerList (QList<DapServerInfo> &serverList);
   /// @deprecated

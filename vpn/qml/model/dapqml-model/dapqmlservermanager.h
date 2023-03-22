@@ -71,6 +71,9 @@ public:
   void load();
   /// to config
   void save();
+
+protected:
+  void _hardReset();
   /// @}
 };
 

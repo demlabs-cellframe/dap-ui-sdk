@@ -100,7 +100,7 @@ void DapQmlModelFullServerList::setCurrent (int a_newCurrent)
   m_current   = a_newCurrent;
 
   autoServerList->setCurrent ((m_current < _size.autoServer)  ? m_current : -1);
-  serverList->setCurrent     ((m_current >= _size.autoServer) ? m_current - _size.autoServer : -1);
+  serverList->setCurrent ((m_current >= _size.autoServer) ? m_current - _size.autoServer : -1);
 
   emit currentChanged();
 }
@@ -147,20 +147,20 @@ DapQmlModelFullServerList::ConstIterator DapQmlModelFullServerList::end() const
   return ConstIterator (size(), this);
 }
 
-int DapQmlModelFullServerList::indexOfName (const QString &a_name) const
+DapQmlModelFullServerList::Index DapQmlModelFullServerList::indexOfName (const QString &a_name) const
 {
   auto autoServerList  = m_bridge->autoServerList();
   auto serverList      = m_bridge->serverList();
 
   int result  = autoServerList->getList().indexOfName (a_name);
   if (result != -1)
-    return result;
+    return Index (result, _size.autoServer, true);
 
   result      = serverList->indexOfName (a_name);
   if (result != -1)
-    return result + _size.autoServer;
+    return Index (result + _size.autoServer, _size.autoServer, false);
 
-  return -1;
+  return Index();
 }
 
 void DapQmlModelFullServerList::_getSizes()
@@ -239,7 +239,7 @@ QHash<int, QByteArray> DapQmlModelFullServerList::roleNames() const
 
 /*-----------------------------------------*/
 
-DapQmlModelFullServerList::ConstIterator::ConstIterator() : p (nullptr), i(0) {}
+DapQmlModelFullServerList::ConstIterator::ConstIterator() : p (nullptr), i (0) {}
 DapQmlModelFullServerList::ConstIterator::ConstIterator (int n, const DapQmlModelFullServerList *p) : p (p), i (n) {}
 DapQmlModelFullServerList::ConstIterator::ConstIterator (const DapQmlModelFullServerList::ConstIterator &o) : p (o.p), i (o.i) {}
 const DapServerInfo &DapQmlModelFullServerList::ConstIterator::operator*() const        { return p->at (i); }
@@ -262,5 +262,55 @@ DapQmlModelFullServerList::ConstIterator DapQmlModelFullServerList::ConstIterato
 DapQmlModelFullServerList::ConstIterator DapQmlModelFullServerList::ConstIterator::operator+ (int j) const  { return ConstIterator (i + j, p); }
 DapQmlModelFullServerList::ConstIterator &DapQmlModelFullServerList::ConstIterator::operator--()    { i--; return *this; }
 DapQmlModelFullServerList::ConstIterator &DapQmlModelFullServerList::ConstIterator::operator++()    { i++; return *this; }
+
+/*-----------------------------------------*/
+
+DapQmlModelFullServerList::Index::Index()
+  : _value (-1)
+  , _autoSize (-1)
+  , _isAuto (false)
+{
+
+}
+
+DapQmlModelFullServerList::Index::Index (int a_value, int a_autoSize, bool a_isAuto)
+  : _value (a_value)
+  , _autoSize (a_autoSize)
+  , _isAuto (a_isAuto)
+{
+
+}
+
+DapQmlModelFullServerList::Index::Index (const DapQmlModelFullServerList::Index &a_src)
+{
+  _value    = a_src._value;
+  _autoSize = a_src._autoSize;
+  _isAuto   = a_src._isAuto;
+}
+
+int DapQmlModelFullServerList::Index::internal() const
+{
+  return (!_isAuto ? _value - _autoSize : _value);
+}
+
+int DapQmlModelFullServerList::Index::value() const
+{
+  return _value;
+}
+
+bool DapQmlModelFullServerList::Index::isAuto() const
+{
+  return _isAuto;
+}
+
+bool DapQmlModelFullServerList::Index::isSorted() const
+{
+  return !_isAuto;
+}
+
+DapQmlModelFullServerList::Index::operator int()
+{
+  return value();
+}
 
 /*-----------------------------------------*/
