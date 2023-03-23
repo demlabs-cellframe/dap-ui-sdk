@@ -1082,12 +1082,56 @@ DapSortedServerList::operator DapServerList() const
 
 void DapSortedServerList::_sort()
 {
+//  auto printServers = [this] (const char *a_name, int a_current, int a_newCurrent = -1)
+//    {
+//      QStringList names, indexes;
+//      QString currentName = currentServer().name();
+
+//      for (auto &server : qAsConst (_list))
+//        names << server.name();
+
+//      for (auto index : qAsConst (_sortedIndexes))
+//        indexes << QString::number (index);
+
+//      qDebug() << a_name
+//               << ((a_newCurrent == -1)
+//                  ? QString ("Current: %1 - %2").arg (currentName).arg (a_current)
+//                  : QString ("Current: %1 - %2 -> %3").arg (currentName).arg (a_current).arg (a_newCurrent));
+//      qDebug() << a_name << QString ("Names:   %1").arg (names.join(','));
+//      qDebug() << a_name << QString ("Indexes: %1").arg (indexes.join(','));
+//    };
+
   beginResetModel();
 
-  int index = 0;
+  int index = 0,
+      current = (this->current() != -1) ? *(_sortedIndexes.begin() + this->current()) : -1,
+      newCurrent = current;
+
+//  printServers (__PRETTY_FUNCTION__, current);
+
+  /* sort */
   _sortedIndexes.clear();
   for (auto i = _list.cbegin(), e = _list.cend(); i != e; i++, index++)
     _appendServerIndex (*i, index);
+
+  /* find current */
+  index = 0;
+  if (current != -1)
+    {
+      for (auto j = _sortedIndexes.cbegin(), k = _sortedIndexes.cend(); j != k; j++, index++)
+        {
+          if (*j == current)
+            {
+              newCurrent = index;
+              break;
+            }
+        }
+    }
+
+  if (newCurrent != current)
+    setCurrent (newCurrent);
+
+//  printServers (__PRETTY_FUNCTION__, current, newCurrent);
 
   endResetModel();
 }
