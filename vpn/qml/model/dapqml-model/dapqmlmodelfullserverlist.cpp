@@ -166,7 +166,7 @@ DapQmlModelFullServerList::Index DapQmlModelFullServerList::indexOfName (const Q
 void DapQmlModelFullServerList::_getSizes()
 {
   auto autoServerList  = m_bridge->autoServerList();
-  auto serverList      = m_bridge->serverList()->as<QAbstractListModel>();
+  auto serverList      = m_bridge->serverList();
   _size.autoServer      = autoServerList->rowCount (QModelIndex());
   _size.server          = serverList->rowCount (QModelIndex());
   _size.full            = _size.autoServer + _size.server;

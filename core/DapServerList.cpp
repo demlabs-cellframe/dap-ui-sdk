@@ -565,9 +565,8 @@ int DapServerList::_iteratorIndex(DapServerList::ConstIterator &a_it)
  * OVERRIDE
  *******************************************/
 
-int DapServerList::rowCount (const QModelIndex &parent) const
+int DapServerList::rowCount (const QModelIndex &) const
 {
-  Q_UNUSED (parent)
   return m_list.size();
 }
 
@@ -1238,9 +1237,9 @@ int DapSortedServerList::_iteratorIndex (DapSortedServerList::ConstIterator &a_i
  * OVERRIDE
  *******************************************/
 
-int DapSortedServerList::rowCount (const QModelIndex &parent) const
+int DapSortedServerList::rowCount (const QModelIndex &) const
 {
-  return _list.rowCount (parent);
+  return size();
 }
 
 QVariant DapSortedServerList::data (const QModelIndex &index, int role) const

@@ -247,6 +247,9 @@ void DapQmlServerManager::replace (int a_index, const QVariant &a_data)
       s_customServers->remove (addressCopy);
       s_customServers->insert (server.address(), copy);
     }
+
+  auto index  = s_servers->index (a_index);
+  emit s_servers->dataChanged (index, index);
 }
 
 void DapQmlServerManager::remove (int a_index)

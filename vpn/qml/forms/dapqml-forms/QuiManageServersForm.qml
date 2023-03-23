@@ -104,8 +104,8 @@ Item {
             let fave    = false;
 
             /* store result & update model */
-            model.add ({name:name, address:address, port:port, favorite:fave});
-            model.refreshContent();
+            modeCtl.manageServers.slotAdd ({name:name, address:address, port:port, favorite:fave});
+            //model.refreshContent();
         }
 
 //        function removeServer (a_index) {
@@ -126,8 +126,8 @@ Item {
             //let fave    = model.value (lastIndex, "favorite");
 
             /* store result & update model */
-            model.edit (lastIndex, {name:name, address:address, port:port});
-            model.refreshContent();
+            modeCtl.manageServers.slotEdit (lastIndex, {name:name, address:address, port:port});
+            //model.refreshContent();
         }
     }
 
@@ -186,7 +186,7 @@ Item {
         let fave    = !model.value (a_index, "favorite");
         //model.edit (a_index, {favorite:fave});
         modeCtl.manageServers.slotEdit (a_index, {favorite:fave});
-        model.refreshContent();
+        //model.refreshContent();
     }
 
     function doImport() {
