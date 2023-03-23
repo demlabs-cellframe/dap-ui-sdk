@@ -105,7 +105,7 @@ void DapQmlModelFullServerList::setCurrent (int a_newCurrent)
   emit currentChanged();
 }
 
-QVariant DapQmlModelFullServerList::value (int a_row, const QString &a_name)
+QVariant DapQmlModelFullServerList::value (int a_row, const QString &a_name) const
 {
   int fieldId = _roleNamesMap.key (a_name.toUtf8(), -1);
 
@@ -118,7 +118,7 @@ QVariant DapQmlModelFullServerList::value (int a_row, const QString &a_name)
 const DapServerInfo &DapQmlModelFullServerList::currentServer() const
 {
   static DapServerInfo dummy;
-  if (current() == -1)
+  if (current() == -1 || size() == 0)
     return dummy;
   return at (current());
 }

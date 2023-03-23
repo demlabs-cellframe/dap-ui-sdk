@@ -96,6 +96,7 @@ public:
    * @name VARS
    *******************************************/
   /// @{
+protected:
   AbstractServerListModelBridge *m_bridge;
   QHash<int, QByteArray> _roleNamesMap;
   int m_current;
@@ -128,7 +129,7 @@ public:
   Q_INVOKABLE int size() const;
   Q_INVOKABLE int current() const;
   Q_INVOKABLE void setCurrent (int a_newCurrentServer);
-  Q_INVOKABLE QVariant value (int a_row, const QString &a_name);
+  Q_INVOKABLE QVariant value (int a_row, const QString &a_name) const;
   const DapServerInfo &currentServer() const;
   const DapServerInfo &at (int a_index) const;
   ConstIterator begin() const;

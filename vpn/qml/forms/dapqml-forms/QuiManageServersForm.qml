@@ -43,6 +43,7 @@ Item {
     property QtObject modeCtl: QtObject {
         property int mode: QuiManageServersForm.Mode.M_LIST
         property int lastIndex: -1
+        property var manageServers
 
         function switchToList() {
             setMode (QuiManageServersForm.Mode.M_LIST);
@@ -183,7 +184,8 @@ Item {
     function switchFave(a_index) {
         let model   = manserListView.model;
         let fave    = !model.value (a_index, "favorite");
-        model.edit (a_index, {favorite:fave});
+        //model.edit (a_index, {favorite:fave});
+        modeCtl.manageServers.slotEdit (a_index, {favorite:fave});
         model.refreshContent();
     }
 
@@ -199,6 +201,10 @@ Item {
             return;
         fileDialog.updateMode (FileDialog.SaveFile);
         fileDialog.open();
+    }
+
+    function setManageServers(a_ms) {
+        modeCtl.manageServers   = a_ms;
     }
 
     function _pos (a_index) {
@@ -379,7 +385,7 @@ Item {
                 qss: "manser-item"
                 mainQss: "manser-btn-lbl-main"
                 //subQss: "manser-btn-lbl-sub"
-                icon: model.icon
+                icon: "ic_conn-" + ((model.connQuality === 0) ? (0) : (6 - model.connQuality))//model.icon
                 iconSize: resizerItem.fontSize
 
                 /* icon favorite */

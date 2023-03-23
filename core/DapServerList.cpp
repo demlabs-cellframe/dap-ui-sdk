@@ -488,8 +488,7 @@ void DapServerList::setCurrent (int a_index)
 const DapServerInfo &DapServerList::currentServer() const
 {
   static DapServerInfo dummy;
-  if (current() < 0
-      || current() >= size())
+  if (current() < 0 || current() >= size() || size() == 0)
     return dummy;
   return at (current());
 }
@@ -968,8 +967,7 @@ void DapSortedServerList::setCurrent (int a_index)
 const DapServerInfo &DapSortedServerList::currentServer() const
 {
   static const DapServerInfo dummy;
-  if (current() < 0
-      || current() >= size())
+  if (current() < 0 || current() >= size() || size() == 0)
     return dummy;
   return at (_list.current());
 }
@@ -1250,6 +1248,11 @@ QVariant DapSortedServerList::data (const QModelIndex &index, int role) const
   auto it         = begin() + index.row();
   int actualIndex = it.internalIndex();
   return _list.data (_list.index (actualIndex, index.column(), index.parent()), role);
+}
+
+QHash<int, QByteArray> DapSortedServerList::roleNames() const
+{
+  return DapAbstractServerList::serverRoleNames();
 }
 
 /********************************************
