@@ -33,6 +33,7 @@ private:
     static void writeMessage(QtMsgType type, const QMessageLogContext &ctx, const QString & msg);
 public:
     explicit DapLogger(QObject *parent = nullptr, QString appType = "", size_t prefix_width = 10);
+    ~DapLogger();
     static DapLogger* instance();
     QString getPathToLog(){ return m_pathToLog; }
     static QString defaultLogPath(const QString a_brand);
@@ -48,6 +49,7 @@ private:
     QString m_appType;
     QString m_day;
     QString systemInfo();
+    bool isLoggerStarted{false};
 signals:
     void sigMessageHandler();
 };

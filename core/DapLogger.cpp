@@ -43,6 +43,11 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
 
 }
 
+DapLogger::~DapLogger()
+{
+    dap_common_deinit();
+}
+
 DapLogger* DapLogger::instance()
 {
     return m_instance;
@@ -73,11 +78,15 @@ void DapLogger::setLogLevel(dap_log_level ll)
 
 void DapLogger::setLogFile(const QString& fileName)
 {
+    if(isLoggerStarted)
+        dap_common_deinit();
+
     qDebug() << "setLogFile: " + fileName;
     QString filePath = getPathToLog() + "/" + fileName;
     dap_common_init(DAP_BRAND, qPrintable(filePath), qPrintable(getPathToLog()));
     DapDataLocal::instance()->setLogPath(getPathToLog());
     DapDataLocal::instance()->setLogFilePath(filePath);
+    isLoggerStarted = true;
 }
 
 void DapLogger::updateLogFiles()
