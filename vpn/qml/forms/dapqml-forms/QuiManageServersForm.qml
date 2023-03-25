@@ -140,6 +140,9 @@ Item {
     /// @brief remove server menu clicked
     signal sigRemove(int a_index);
 
+    signal sigSaveTo(string a_filename);
+    signal sigLoadFrom(string a_filename);
+
     /// @}
     /****************************************//**
      * @name FUNCTIONS
@@ -203,6 +206,10 @@ Item {
         fileDialog.open();
     }
 
+    function returnToList() {
+        root.setMode (QuiManageServersForm.Mode.M_LIST);
+    }
+
     function setManageServers(a_ms) {
         modeCtl.manageServers   = a_ms;
     }
@@ -251,13 +258,10 @@ Item {
             var filename    = result.slice(7);
 
             if (fileMode === FileDialog.OpenFile)
-            {
-                manserListView.model.doImport (filename);
-                manserListView.model.refreshContent();
-            }
+                root.sigLoadFrom (filename);//manserListView.model.slotLoadFrom (filename);
             else
             if (fileMode === FileDialog.SaveFile)
-                manserListView.model.doExport (filename);
+                root.sigSaveTo (filename);//manserListView.model.slotSaveTo (filename);
 
             fileDialog.close()
         }
@@ -491,7 +495,7 @@ Item {
 
             onClicked: {
                 root.applyChanges();
-                root.setMode (QuiManageServersForm.Mode.M_LIST)
+                //root.setMode (QuiManageServersForm.Mode.M_LIST)
             }
         }
 

@@ -12,6 +12,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QFile>
 
 /* DEFS */
 typedef QString ServerAddress;
@@ -211,45 +212,94 @@ static void parseServerData(
   _parseFieldSingle (value, a_custom, favorite, setFavorite, toBool);
 }
 
-void DapQmlServerManager::append (const QVariant &a_data)
+bool DapQmlServerManager::append (const QVariant &a_data)
 {
   if (!enabled())
-    return;
+    return false;
 
   /* fill classes with data */
   DapServerInfo server;
-  CustomServerData custom;
-  parseServerData (a_data, server, custom);
-  custom.setCustom (true); // new item marked as custom
+  CustomServerData data;
+  parseServerData (a_data, server, data);
+  data.setCustom (true); // new item marked as custom
+
+  /* check if already exists */
+  if (s_customServers->contains (data.address()))
+    return false;
 
   /* store result */
-  s_customServers->insert (custom.address(), std::move (custom));
+  s_customServers->insert (data.address(), std::move (data));
   s_servers->append (std::move (server));
+
+  SAVE();
+
+  return true;
 }
 
-void DapQmlServerManager::replace (int a_index, const QVariant &a_data)
+bool DapQmlServerManager::replace (int a_index, const QVariant &a_data)
 {
-  if (!enabled()
-      || a_index >= s_servers->size())
-    return;
+  if (!enabled() || a_index >= s_servers->size())
+    return false;
 
-  /* fill classes with data */
-  DapServerInfo &server     = s_servers->at (a_index);
-  CustomServerData &custom  = (*s_customServers) [server.address()];
+  /* copy and parse */
+  DapServerInfo server      = s_servers->at (a_index);
+  CustomServerData data     = (*s_customServers) [server.address()];
   ServerAddress addressCopy = server.address();
-  parseServerData (a_data, server, custom);
+  parseServerData (a_data, server, data);
 
-  if (server.address() != addressCopy)
+  /* rules */
+  bool isChangedAddress     = server.address() != addressCopy;
+  bool isServerCustom       = data.custom();
+
+  /****************************************
+   * Custom Data
+   ***************************************/
+
+  /* if user changed the address */
+  if (isChangedAddress)
     {
-      CustomServerData copy = custom;
-      copy.setAddress (server.address());
+      /* break if new adrress already set */
+      if (s_customServers->contains (data.address())
+          && !s_customServers->value (data.address()).deleted())
+        return false;
 
-      s_customServers->remove (addressCopy);
-      s_customServers->insert (server.address(), copy);
+      /* if custom server -> replace */
+      if (isServerCustom)
+        {
+          /* connect address */
+          data.setAddress (server.address());
+
+          /* remove old key */
+          s_customServers->remove (addressCopy);
+
+          /* add new key */
+          s_customServers->insert (data.address(), std::move (data));
+        }
+
+      /* if not custom -> hide */
+      else
+        {
+          /* hide */
+          remove (a_index);
+
+          /* create new */
+          data.setCustom (true);
+          s_customServers->insert (data.address(), std::move (data));
+        }
     }
+
+  /****************************************
+   * Server Data
+   ***************************************/
+
+  /* update server data */
+  s_servers->at (a_index) = server;
+
+  SAVE();
 
   auto index  = s_servers->index (a_index);
   emit s_servers->dataChanged (index, index);
+  return true;
 }
 
 void DapQmlServerManager::remove (int a_index)
@@ -280,7 +330,11 @@ void DapQmlServerManager::fave (int a_index)
   ServerAddress address = s_servers->at (a_index).address();
   auto &removeData      = (*s_customServers)[address];
   removeData.setFavorite (!removeData.favorite());
+
   SAVE();
+
+  auto index  = s_servers->index (a_index);
+  emit s_servers->dataChanged (index, index);
 }
 
 const DapServerInfo &DapQmlServerManager::at (int a_index) const
@@ -298,11 +352,86 @@ void DapQmlServerManager::load()
   if (!enabled())
     return;
 
+  auto jarr = DapDataLocal::instance()->getSetting (SETTING_SERVERS).toJsonArray();
+  _fromJson (jarr);
+}
+
+void DapQmlServerManager::save()
+{
+  if (!enabled())
+    return;
+
+  QJsonArray jarr;
+  _toJson (jarr);
+
+  DapDataLocal::instance()->saveSetting (SETTING_SERVERS, jarr);
+}
+
+void DapQmlServerManager::saveTo (const QString &a_filename) const
+{
+  if (!enabled())
+    return;
+
+  QJsonArray jarr;
+  _toJson (jarr);
+
+  QJsonDocument doc (jarr);
+  auto data = doc.toJson();
+  QFile file (a_filename);
+  file.open (QIODevice::WriteOnly | QIODevice::Truncate);
+  file.write (data);
+}
+
+void DapQmlServerManager::loadFrom (const QString &a_filename)
+{
+  if (!enabled())
+    return;
+
+  QFile file (a_filename);
+  file.open (QIODevice::ReadOnly);
+  auto data = file.readAll();
+
+  auto doc  = QJsonDocument::fromJson (data);
+  _fromJson (doc.array());
+}
+
+void DapQmlServerManager::_hardReset()
+{
+  s_servers->clear();
+  s_customServers->clear();
+  save();
+}
+
+void DapQmlServerManager::_toJson (QJsonArray &a_dest) const
+{
+  QStringList keys  = s_customServers->keys();
+  for (const auto &server : qAsConst (*s_servers))
+    {
+      auto custom = s_customServers->value (server.address());
+      auto jobj   = server.toJSON();
+
+      keys.removeOne (server.address());
+
+      jobj.insert ("custom", custom.toJson());
+      a_dest << jobj;
+    }
+
+  for (const auto &customAddress : qAsConst (keys))
+    {
+      QJsonObject jobj;
+      auto custom = s_customServers->value (customAddress);
+
+      jobj.insert ("custom", custom.toJson());
+      a_dest << jobj;
+    }
+}
+
+void DapQmlServerManager::_fromJson (const QJsonArray &a_src) const
+{
   s_servers->clear();
   s_customServers->clear();
 
-  auto jarr = DapDataLocal::instance()->getSetting (SETTING_SERVERS).toJsonArray();
-  for (auto i = jarr.cbegin(), e = jarr.cend(); i != e; i++)
+  for (auto i = a_src.cbegin(), e = a_src.cend(); i != e; i++)
     {
       auto jobj = i->toObject();
 
@@ -332,45 +461,12 @@ void DapQmlServerManager::load()
     }
 }
 
-void DapQmlServerManager::save()
+bool DapQmlServerManager::_isServerWithAlreadyExists(const QString &a_address) const
 {
-  if (!enabled())
-    return;
-
-  QJsonArray jarr;
-  QStringList keys  = s_customServers->keys();
   for (const auto &server : qAsConst (*s_servers))
-    {
-      auto custom = s_customServers->value (server.address());
-      auto jobj   = server.toJSON();
-
-      keys.removeOne (server.address());
-
-      jobj.insert ("custom", custom.toJson());
-      jarr << jobj;
-    }
-
-  for (const auto &customAddress : qAsConst (keys))
-    {
-      QJsonObject jobj;
-      auto custom = s_customServers->value (customAddress);
-
-      jobj.insert ("custom", custom.toJson());
-      jarr << jobj;
-    }
-
-//  QJsonArray jarr;
-//  for (const auto &item : qAsConst (*s_customServers))
-//    jarr << item.toJson();
-
-  DapDataLocal::instance()->saveSetting (SETTING_SERVERS, jarr);
-}
-
-void DapQmlServerManager::_hardReset()
-{
-  s_servers->clear();
-  s_customServers->clear();
-  save();
+    if (server.address() == a_address)
+      return true;
+  return false;
 }
 
 /*-----------------------------------------*/

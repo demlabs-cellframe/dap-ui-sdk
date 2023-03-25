@@ -55,9 +55,11 @@ public:
   /// import new servers from node db
   void importServers (const DapServerInfoList *a_servers);
   /// create new server
-  void append (const QVariant &a_data);
+  /// @return false - if address already exists
+  bool append(const QVariant &a_data);
   /// replace (edit) old server with new one
-  void replace (int a_index, const QVariant &a_data);
+  /// @return false - if address already exists or if index is invalid
+  bool replace (int a_index, const QVariant &a_data);
   /// remove server by index
   void remove (int a_index);
   /// switch server favorite state
@@ -72,8 +74,14 @@ public:
   /// to config
   void save();
 
+  void saveTo (const QString &a_filename) const;
+  void loadFrom (const QString &a_filename);
+
 protected:
   void _hardReset();
+  void _toJson (QJsonArray &a_dest) const;
+  void _fromJson (const QJsonArray &a_src) const;
+  bool _isServerWithAlreadyExists (const QString &a_address) const;
   /// @}
 };
 
