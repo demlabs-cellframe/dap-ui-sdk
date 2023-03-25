@@ -211,7 +211,7 @@ int DapQmlModelFullServerList::rowCount (const QModelIndex &parent) const
 QVariant DapQmlModelFullServerList::data (const QModelIndex &index, int role) const
 {
   auto autoServerList   = m_bridge->autoServerList();
-  auto serverList       = m_bridge->serverList()->as<QAbstractListModel>();
+  auto serverList       = m_bridge->serverList();
   auto &customRoleNames = m_bridge->customRoleNames();
 
   /* check boundaries */

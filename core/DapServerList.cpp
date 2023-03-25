@@ -250,29 +250,25 @@ static const QString _findInCountriesMap (const QString &string)
  *******************************************/
 
 DapServerList::DapServerList()
-  : DapAbstractServerList (DapAbstractServerList::Type::ServerList)
-  , m_current (-1)
+  : m_current (-1)
 {
 
 }
 
 DapServerList::DapServerList (const DapServerInfoList &a_src)
-  : DapAbstractServerList (DapAbstractServerList::Type::ServerList)
-  , m_current (-1)
+  : m_current (-1)
 {
   operator = (a_src);
 }
 
 DapServerList::DapServerList (const DapServerList &a_src)
-  : DapAbstractServerList (DapAbstractServerList::Type::ServerList)
-  , m_current (-1)
+  : m_current (-1)
 {
   operator = (a_src);
 }
 
 DapServerList::DapServerList (DapServerList &&a_src)
-  : DapAbstractServerList (DapAbstractServerList::Type::ServerList)
-  , m_current (-1)
+  : m_current (-1)
 {
   operator = (std::move (a_src));
 }
@@ -726,7 +722,6 @@ bool DapSortedServerListConstIterator::isNull() const                           
  *******************************************/
 
 DapSortedServerList::DapSortedServerList()
-  : DapAbstractServerList (DapAbstractServerList::Type::SortedServerList)
 {
   //_sort();
 }
