@@ -133,13 +133,13 @@ void DapQmlServerManager::setEnabled (bool a_enable)
 {
   s_enabled = a_enable;
   auto setup = [this]
-    {
-      s_servers           = s_enabled ? new DapSortedServerList                   : nullptr;
-      s_autoServers       = s_enabled ? new DapQmlModelAutoServerList (s_servers) : nullptr;
-      s_serverListBridge  = s_enabled ? new ServerListModelBridge                 : nullptr;
-      s_customServers     = s_enabled ? new CustomServerDataMap                   : nullptr;
-      s_saveDelay         = s_enabled ? new ManageServersSaveDelay (*this)        : nullptr;
-    };
+  {
+    s_servers           = s_enabled ? new DapSortedServerList                   : nullptr;
+    s_autoServers       = s_enabled ? new DapQmlModelAutoServerList (s_servers) : nullptr;
+    s_serverListBridge  = s_enabled ? new ServerListModelBridge                 : nullptr;
+    s_customServers     = s_enabled ? new CustomServerDataMap                   : nullptr;
+    s_saveDelay         = s_enabled ? new ManageServersSaveDelay (*this)        : nullptr;
+  };
 
   /* clear memory */
   if (!s_enabled)
@@ -159,11 +159,11 @@ void DapQmlServerManager::setEnabled (bool a_enable)
   /* invoke delayed loading and bridging */
   else
     //QTimer::singleShot (5000, this, [this]
-     {
-        setup();
-        load();
-        DapQmlModelFullServerList::instance()->setBridge (s_serverListBridge);
-     }//);
+    {
+      setup();
+      load();
+      DapQmlModelFullServerList::instance()->setBridge (s_serverListBridge);
+    }//);
 
 }
 
@@ -198,7 +198,7 @@ void DapQmlServerManager::importServers (const DapServerInfoList *a_servers)
       item2.set (val); \
     }
 
-static void parseServerData(
+static void parseServerData (
   /* in  */ const QVariant &a_data,
   /* out */ DapServerInfo &a_server,
   /* out */ CustomServerData &a_custom)
@@ -224,8 +224,14 @@ bool DapQmlServerManager::append (const QVariant &a_data)
   data.setCustom (true); // new item marked as custom
 
   /* check if already exists */
-  if (s_customServers->contains (data.address()))
+  if (s_customServers->contains (data.address())
+      && !s_customServers->value (data.address()).deleted())
     return false;
+
+  /* change server kind */
+  if (s_customServers->contains (data.address())
+      && s_customServers->value (data.address()).deleted())
+    data.setCustom (false);
 
   /* store result */
   s_customServers->insert (data.address(), std::move (data));
@@ -263,28 +269,46 @@ bool DapQmlServerManager::replace (int a_index, const QVariant &a_data)
           && !s_customServers->value (data.address()).deleted())
         return false;
 
-      /* if custom server -> replace */
-      if (isServerCustom)
+      /* change server kind */
+      if (s_customServers->contains (data.address())
+          && s_customServers->value (data.address()).deleted())
         {
+          /* change to not custom */
+          data.setCustom (false);
+
           /* connect address */
           data.setAddress (server.address());
 
-          /* remove old key */
-          s_customServers->remove (addressCopy);
-
-          /* add new key */
+          /* replace key */
           s_customServers->insert (data.address(), std::move (data));
         }
 
-      /* if not custom -> hide */
+      /* if pure custom */
       else
         {
-          /* hide */
-          remove (a_index);
+          /* if custom server -> replace */
+          if (isServerCustom)
+            {
+              /* connect address */
+              data.setAddress (server.address());
 
-          /* create new */
-          data.setCustom (true);
-          s_customServers->insert (data.address(), std::move (data));
+              /* remove old key */
+              s_customServers->remove (addressCopy);
+
+              /* add new key */
+              s_customServers->insert (data.address(), std::move (data));
+            }
+
+          /* if not custom -> hide */
+          else
+            {
+              /* hide */
+              remove (a_index);
+
+              /* create new */
+              data.setCustom (true);
+              s_customServers->insert (data.address(), std::move (data));
+            }
         }
     }
 
@@ -461,7 +485,7 @@ void DapQmlServerManager::_fromJson (const QJsonArray &a_src) const
     }
 }
 
-bool DapQmlServerManager::_isServerWithAlreadyExists(const QString &a_address) const
+bool DapQmlServerManager::_isServerWithAlreadyExists (const QString &a_address) const
 {
   for (const auto &server : qAsConst (*s_servers))
     if (server.address() == a_address)
@@ -557,8 +581,8 @@ CustomServerData::CustomServerData (const DapServerInfo &a_src)
   , m_deleted (false)
   , m_custom (false)
 {
-  setAddress  (a_src.address());
-  setPort     (a_src.port());
+  setAddress (a_src.address());
+  setPort (a_src.port());
 }
 
 CustomServerData::CustomServerData (const CustomServerData &a_src)
@@ -603,22 +627,22 @@ QJsonObject CustomServerData::toJson() const
 
 void CustomServerData::fromJson (const QJsonObject &a_src)
 {
-  setAddress  (a_src.value ("address")  .toString());
-  setPort     (a_src.value ("port")     .toInt());
+  setAddress (a_src.value ("address")  .toString());
+  setPort (a_src.value ("port")     .toInt());
   setFavorite (a_src.value ("favorite") .toBool());
-  setDeleted  (a_src.value ("deleted")  .toBool());
-  setCustom   (a_src.value ("custom")   .toBool());
+  setDeleted (a_src.value ("deleted")  .toBool());
+  setCustom (a_src.value ("custom")   .toBool());
 }
 
 CustomServerData &CustomServerData::operator= (const CustomServerData &a_src)
 {
   if (&a_src != this)
     {
-      setAddress  (a_src.address());
-      setPort     (a_src.port());
+      setAddress (a_src.address());
+      setPort (a_src.port());
       setFavorite (a_src.favorite());
-      setDeleted  (a_src.deleted());
-      setCustom   (a_src.custom());
+      setDeleted (a_src.deleted());
+      setCustom (a_src.custom());
     }
   return *this;
 }
@@ -628,10 +652,10 @@ CustomServerData &CustomServerData::operator= (CustomServerData &&a_src)
   if (&a_src != this)
     {
       m_address   = std::move (a_src.m_address);
-      setPort     (a_src.port());
+      setPort (a_src.port());
       setFavorite (a_src.favorite());
-      setDeleted  (a_src.deleted());
-      setCustom   (a_src.custom());
+      setDeleted (a_src.deleted());
+      setCustom (a_src.custom());
     }
   return *this;
 }
