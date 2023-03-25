@@ -52,50 +52,6 @@ void DapQmlModelAutoServerList::_connectSignals()
 
 void DapQmlModelAutoServerList::_reset()
 {
-//  /* add all locations */
-//  _allLocations.clear();
-//  for (const auto &server : *_serverList)
-//    _allLocations << server.name().left (server.name().indexOf('.'));
-
-//  /* collect best servers */
-//  DapServerInfo bestServer;
-//  _autoServers.clear();
-//  for (const auto &location : qAsConst (_allLocations))
-//    {
-//      /* find first */
-//      for (const auto &server : *_serverList)
-//        {
-//          /* store best region server */
-//          if (location == _userLocation)
-//            {
-//              bestServer  = server;
-//              bestServer.setName ("Auto");
-//            }
-
-//          /* add basic auto server */
-//          if (server.name().startsWith (location))
-//            {
-//              DapServerInfo item  = server;
-//              item.setName (location);
-//              _autoServers << std::move (item);
-//              goto _resetCollectContinue;
-//            }
-//        }
-
-//_resetCollectContinue:
-//      continue;
-//    }
-
-//  /* check if best region exists */
-//  if (bestServer.address().isEmpty())
-//    {
-//      bestServer  = _autoServers.first();
-//      bestServer.setName ("Auto");
-//    }
-
-//  /* insert to the beginning */
-//  _autoServers.insert (_autoServers.begin(), bestServer);
-
   QString oldCurrentName;
   if (m_current != -1)
     oldCurrentName  = _autoServers.at (m_current).name();
@@ -123,16 +79,17 @@ void DapQmlModelAutoServerList::_buildUpAutoList (DapSortedServerList *a_dest)
       /* find first */
       for (const auto &server : *_serverList)
         {
-          /* store best region server */
-          if (location == _userLocation)
-            {
-              bestServer  = server;
-              bestServer.setName ("Auto");
-            }
-
           /* add basic auto server */
           if (server.name().startsWith (location))
             {
+              /* store best region server */
+              if (location == _userLocation)
+                {
+                  bestServer  = server;
+                  bestServer.setName ("Auto");
+                }
+
+              /* store */
               DapServerInfo item  = server;
               item.setName (location);
               *a_dest << std::move (item);

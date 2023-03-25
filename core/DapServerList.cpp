@@ -743,18 +743,14 @@ DapSortedServerList *DapSortedServerList::instance()
 
 int DapSortedServerList::append (const DapServerInfo &a_server)
 {
-  /* append new item index */
-  int result  = _list.size();
-
   QModelIndex dummyIndex;
-  beginInsertRows (dummyIndex, result, result);
-  {
-    /* fix indexes */
-    _appendServerIndex (a_server, result);
 
-    /* store new item */
-    _list.append (a_server);
-  }
+  /* insert to a proper index */
+  int result = _appendServerIndex (a_server, _list.size());
+  _list.append (a_server);
+
+  /* signal */
+  beginInsertRows (dummyIndex, result, result);
   endInsertRows();
 
   emit sizeChanged();
@@ -763,18 +759,13 @@ int DapSortedServerList::append (const DapServerInfo &a_server)
 
 int DapSortedServerList::append (DapServerInfo &&a_server)
 {
-  /* append new item index */
-  int result  = _list.size();
-
   QModelIndex dummyIndex;
-  beginInsertRows (dummyIndex, result, result);
-  {
-    /* fix indexes */
-    _appendServerIndex (a_server, result);
 
-    /* store new item */
-    _list.append (std::move (a_server));
-  }
+  /* insert to a proper index */
+  int result = _appendServerIndex (a_server, _list.size());
+  _list.append (std::move (a_server));
+
+  beginInsertRows (dummyIndex, result, result);
   endInsertRows();
 
   emit sizeChanged();
