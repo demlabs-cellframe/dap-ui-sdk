@@ -189,7 +189,7 @@ void DapQmlModelFullServerList::_getCurrent()
   if (autoServerList->current() == -1)
     {
       if (serverList->current() == -1)
-        return setCurrent (-1);
+        return setCurrent (0);
       return setCurrent (serverList->current() + _size.autoServer);
     }
 

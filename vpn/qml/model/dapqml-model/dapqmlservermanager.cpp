@@ -306,13 +306,29 @@ void DapQmlServerManager::load()
     {
       auto jobj = i->toObject();
 
-      if (!jobj.contains("Name"))
-        continue;
+      /* only custom */
+      if (!jobj.contains ("Name"))
+        {
+          if (!jobj.contains ("custom"))
+            continue;
 
+          /* parse and store */
+          CustomServerData item (jobj.value ("custom").toObject());
+          if (!item.address().isEmpty())
+            s_customServers->insert (item.address(), item);
+          continue;
+        }
+
+      /* parse */
       DapServerInfo server (jobj);
       CustomServerData item (jobj.value ("custom").toObject());
-      s_servers->append (std::move (server));
-      s_customServers->insert (item.address(), item);
+
+      /* store */
+      if (!item.address().isEmpty() && !server.address().isEmpty())
+        {
+          s_servers->append (std::move (server));
+          s_customServers->insert (item.address(), item);
+        }
     }
 }
 
@@ -322,10 +338,23 @@ void DapQmlServerManager::save()
     return;
 
   QJsonArray jarr;
+  QStringList keys  = s_customServers->keys();
   for (const auto &server : qAsConst (*s_servers))
     {
       auto custom = s_customServers->value (server.address());
       auto jobj   = server.toJSON();
+
+      keys.removeOne (server.address());
+
+      jobj.insert ("custom", custom.toJson());
+      jarr << jobj;
+    }
+
+  for (const auto &customAddress : qAsConst (keys))
+    {
+      QJsonObject jobj;
+      auto custom = s_customServers->value (customAddress);
+
       jobj.insert ("custom", custom.toJson());
       jarr << jobj;
     }
