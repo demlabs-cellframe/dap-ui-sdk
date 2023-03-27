@@ -745,31 +745,71 @@ int DapSortedServerList::append (const DapServerInfo &a_server)
 {
   QModelIndex dummyIndex;
 
-  /* insert to a proper index */
-  int result = _appendServerIndex (a_server, _list.size());
-  _list.append (a_server);
+////  /* insert to a proper index */
+////  int result = _appendServerIndex (a_server, _list.size());
+////  _list.append (a_server);
 
-  /* signal */
-  beginInsertRows (dummyIndex, result, result);
+////  /* signal */
+////  beginInsertRows (dummyIndex, result, result);
+////  endInsertRows();
+
+//  /* figure out a proper place */
+//  int result = _beginInsertServer (a_server);//_appendServerIndex (a_server, _list.size());
+
+//  /* perform inserting */
+//  beginInsertRows (dummyIndex, result, result);
+//  {
+//    _list.append (a_server);
+//    _endInsertServer (_list.size() - 1, result);
+//  }
+//  endInsertRows();
+
+  /* start insert operation */
+  InsertServerOperation isop (*this, _sortedIndexes, a_server, _list.size());
+
+  /* perform appending */
+  beginInsertRows (dummyIndex, isop, isop);
+  _list.append (a_server);
+  isop.finish();
   endInsertRows();
 
   emit sizeChanged();
-  return result;
+  return isop;
 }
 
 int DapSortedServerList::append (DapServerInfo &&a_server)
 {
   QModelIndex dummyIndex;
 
-  /* insert to a proper index */
-  int result = _appendServerIndex (a_server, _list.size());
-  _list.append (std::move (a_server));
+////  /* insert to a proper index */
+////  int result = _appendServerIndex (a_server, _list.size());
+////  _list.append (std::move (a_server));
 
-  beginInsertRows (dummyIndex, result, result);
+////  beginInsertRows (dummyIndex, result, result);
+////  endInsertRows();
+
+//  /* figure out a proper place */
+//  int result = _beginInsertServer (a_server);//_appendServerIndex (a_server, _list.size());
+
+//  /* perform inserting */
+//  beginInsertRows (dummyIndex, result, result);
+//  {
+//    _list.append (std::move (a_server));
+//    _endInsertServer (_list.size() - 1, result);
+//  }
+//  endInsertRows();
+
+  /* start insert operation */
+  InsertServerOperation isop (*this, _sortedIndexes, a_server, _list.size());
+
+  /* perform appending */
+  beginInsertRows (dummyIndex, isop, isop);
+  _list.append (std::move (a_server));
+  isop.finish();
   endInsertRows();
 
   emit sizeChanged();
-  return result;
+  return isop;
 }
 
 void DapSortedServerList::insert (int a_index, const DapServerInfo &a_server)
@@ -984,8 +1024,23 @@ void DapSortedServerList::update (const QList<int> &a_indexes)
       _sortedIndexes.erase (it);
       endRemoveRows();
 
-      auto pos      = _appendServerIndex (server, *it);
-      beginInsertRows (dummyIndex, pos, pos);
+//      auto pos      = _appendServerIndex (server, *it);
+//      beginInsertRows (dummyIndex, pos, pos);
+//      endInsertRows();
+
+//      auto pos      = _beginInsertServer (server);//_appendServerIndex (server, *it);
+//      beginInsertRows (dummyIndex, pos, pos);
+//      {
+//        _endInsertServer (*it, pos);
+//      }
+//      endInsertRows();
+
+      /* start insert operation */
+      InsertServerOperation isop (*this, _sortedIndexes, server, *it);
+
+      /* perform inserting */
+      beginInsertRows (dummyIndex, isop, isop);
+      isop.finish();
       endInsertRows();
 
 //      if (i != pos)
@@ -1095,7 +1150,11 @@ void DapSortedServerList::_sort()
   /* sort */
   _sortedIndexes.clear();
   for (auto i = _list.cbegin(), e = _list.cend(); i != e; i++, index++)
-    _appendServerIndex (*i, index);
+    {
+//      int pos = _beginInsertServer (*i);//_appendServerIndex (*i, index);
+//      _endInsertServer (index, pos);
+      InsertServerOperation (*this, _sortedIndexes, *i, index);
+    }
 
   /* find current */
   index = 0;
@@ -1119,34 +1178,63 @@ void DapSortedServerList::_sort()
   endResetModel();
 }
 
-int DapSortedServerList::_appendServerIndex (const DapServerInfo &a_server, int a_index)
-{
-  /* lambdas */
-  auto appendToEnd = [this] (int a_index) -> int
-  {
-    _sortedIndexes.append (a_index);
-    return _sortedIndexes.size() - 1;
-  };
+////int DapSortedServerList::_appendServerIndex (const DapServerInfo &a_server, int a_index)
+////{
+////  /* lambdas */
+////  auto appendToEnd = [this] (int a_index) -> int
+////  {
+////    _sortedIndexes.append (a_index);
+////    return _sortedIndexes.size() - 1;
+////  };
 
-  /* add non ping at the end */
-  if (a_server.ping() == -1)
-    return appendToEnd (a_index);
+////  /* add non ping at the end */
+////  if (a_server.ping() == -1)
+////    return appendToEnd (a_index);
 
-  /* insert ping to proper place */
-  int pos = 0;
-  for (auto i = begin(), e = end(); i != e; i++, pos++)
-    {
-      auto &item = *i;
-      if (item.ping() > a_server.ping())
-        {
-          _sortedIndexes.insert (i, a_index);
-          return pos;
-        }
-    }
+////  /* insert ping to proper place */
+////  int pos = 0;
+////  for (auto i = begin(), e = end(); i != e; i++, pos++)
+////    {
+////      auto &item = *i;
+////      if (item.ping() > a_server.ping())
+////        {
+////          _sortedIndexes.insert (i, a_index);
+////          return pos;
+////        }
+////    }
 
-  /* place not found, store to the end */
-  return appendToEnd (a_index);
-}
+////  /* place not found, store to the end */
+////  return appendToEnd (a_index);
+////}
+
+//int DapSortedServerList::_beginInsertServer (const DapServerInfo &a_server) const
+//{
+//  /* lambdas */
+//  auto appendToEnd = [this] { return _sortedIndexes.size() - 1; };
+
+//  /* add non ping at the end */
+//  if (a_server.ping() == -1)
+//    return appendToEnd();
+
+//  /* insert ping to proper place */
+//  int pos = 0;
+//  for (auto i = begin(), e = end(); i != e; i++, pos++)
+//    {
+//      auto &item = *i;
+//      if (item.ping() > a_server.ping())
+//        return pos;
+//    }
+
+//  /* place not found, store to the end */
+//  return appendToEnd();
+//}
+
+//void DapSortedServerList::_endInsertServer (int a_index, int a_dest)
+//{
+//  if (a_dest == -1)
+//    return _sortedIndexes.append (a_index);
+//  _sortedIndexes.insert (begin() + a_dest, a_index);
+//}
 
 // 1234567
 // 123+4567
@@ -1290,6 +1378,64 @@ const QHash<int, QByteArray> &DapAbstractServerList::serverRoleNames()
 const QHash<QString, QString> &DapAbstractServerList::countryMap()
 {
   return s_countryMap;
+}
+
+/*-----------------------------------------*/
+
+DapSortedServerList::InsertServerOperation::InsertServerOperation (DapSortedServerList &a_list, QLinkedList<int> &a_sortedIndexes, const DapServerInfo &a_server, int a_insertedIndex)
+  : _list (a_list)
+  , _sortedIndexes (a_sortedIndexes)
+  , _insertedIndex (a_insertedIndex)
+  , _destination (-1)
+  , _finished (false)
+{
+  /* lambdas */
+  auto appendToEnd = [this] { return _sortedIndexes.size() - 1; };
+
+  /* add non ping at the end */
+  if (a_server.ping() == -1)
+    {
+      _destination = appendToEnd();
+      return;
+    }
+
+  /* insert ping to proper place */
+  int pos = 0;
+  for (auto i = _list.begin(), e = _list.end(); i != e; i++, pos++)
+    {
+      auto &item = *i;
+      if (item.ping() > a_server.ping())
+        {
+          _destination  = pos;
+          return;
+        }
+    }
+
+  /* place not found, store to the end */
+  _destination = appendToEnd();
+}
+
+DapSortedServerList::InsertServerOperation::~InsertServerOperation()
+{
+  finish();
+}
+
+void DapSortedServerList::InsertServerOperation::finish()
+{
+  if (_finished)
+    return;
+
+  if (_destination == -1)
+    _sortedIndexes.append (_insertedIndex);
+  else
+    _sortedIndexes.insert (_list.begin() + _destination, _insertedIndex);
+
+  _finished = true;
+}
+
+DapSortedServerList::InsertServerOperation::operator int() const
+{
+  return _destination == -1 ? 0 : _destination;
 }
 
 /*-----------------------------------------*/

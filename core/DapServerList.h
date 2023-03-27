@@ -283,6 +283,21 @@ protected:
   typedef DapSortedServerListIterator Iterator;
   typedef DapSortedServerListConstIterator ConstIterator;
   enum OperationType { Inserted, Removed };
+
+  class InsertServerOperation
+  {
+    DapSortedServerList &_list;
+    QLinkedList<int> &_sortedIndexes;
+    int _insertedIndex;
+    int _destination;
+    bool _finished;
+  public:
+    InsertServerOperation (DapSortedServerList &a_list, QLinkedList<int> &a_sortedIndexes, const DapServerInfo &a_server, int a_insertedIndex);
+    ~InsertServerOperation(); ///< will call finish
+    void finish();
+    operator int() const;
+  };
+
   /// @}
 
   /****************************************//**
@@ -360,7 +375,12 @@ public:
   operator DapServerInfoList () const;
 protected:
   void _sort();
-  int _appendServerIndex (const DapServerInfo &a_server, int a_index);
+  // int _appendServerIndex (const DapServerInfo &a_server, int a_index);
+//  /// figure out where is the place for provided server
+//  /// @return index where to put server, or -1 if you should append it to the end
+//  int _beginInsertServer (const DapServerInfo &a_server) const;
+//  /// finish by inserting or appending provided server
+//  void _endInsertServer (int a_index, int a_dest);
   void _increaseAllIndexes (int a_index);
   void _decreaseAllIndexes (int a_index);
   void _fixCurrent (int a_index, OperationType a_operationType);
