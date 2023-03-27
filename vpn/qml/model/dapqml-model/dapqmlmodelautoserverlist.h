@@ -17,6 +17,42 @@ class DapQmlModelAutoServerList : public QAbstractListModel
   Q_OBJECT
 
   /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
+  class Location
+  {
+    QString m_name;
+    int m_index;
+  public:
+    explicit Location (const QString &a_src);
+    explicit Location (const Location &a_src);
+    explicit Location (Location &&a_src);
+
+    const QString &name() const;
+    void setName (const QString &a_name);
+
+    int index() const;
+    void setIndex (int a_index);
+
+    operator const QString&() const;
+    operator int() const;
+
+    Location &operator = (const QString &a_src);
+    Location &operator = (const Location &a_src);
+    Location &operator = (Location &&a_src);
+
+    bool operator == (const QString &o) const;
+    bool operator == (const Location &o) const;
+    bool operator != (const Location &o) const;
+    bool operator < (const Location &other) const;
+    bool operator <= (const Location &other) const;
+    bool operator > (const Location &other) const;
+    bool operator >= (const Location &other) const;
+  };
+  /// @}
+
+  /****************************************//**
    * @name VARS
    *******************************************/
   /// @{
@@ -28,7 +64,7 @@ protected:
   /// general location
   QString _userLocation;
   /// available locations
-  QSet<QString> _allLocations;
+  QList<Location> _allLocations;
   /// current server
   int m_current;
   /// @}
@@ -58,6 +94,13 @@ protected:
   void _collectLocations (DapSortedServerList *a_list);
   void _buildUpAutoList (DapSortedServerList *a_dest);
   void _updateCurrent (QString &a_oldCurrentName);
+  int _autoServerIndex (const QString &a_name) const;
+  DapServerInfo *_autoServerByName (const QString &a_name, int *a_destIndex = nullptr);
+  int _locationIndex (const QString &a_location) const;
+  Location *_locationByName (const QString &a_location, int *a_destIndex = nullptr);
+  bool _containsLocation (const QString &a_location) const;
+  void _increaseLocationIndexes (int a_index);
+  void _decreaseLocationIndexes (int a_index);
   /// @}
 
   /****************************************//**
@@ -65,7 +108,7 @@ protected:
    *******************************************/
   /// @{
 protected slots:
-  void _slotRowsInserted (const QModelIndex &, int start, int end);
+  void _slotRowsInserted (const QModelIndex &, int first, int last);
   void _slotRowsMoved (const QModelIndex &, int sourceStart, int sourceEnd, const QModelIndex &, int destinationRow);
   void _slotRowsRemoved (const QModelIndex &, int first, int last);
   void _slotModelReset();
