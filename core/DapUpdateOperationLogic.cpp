@@ -57,8 +57,8 @@ void DapUpdateOperationLogic::startUpdate()
     //    examples:
     //    Powershell Start cmd.exe -ArgumentList “/k”,”fsutil”,”volume”,”diskfree”,”c:” -Verb Runas
     //    Powershell Start cmd.exe -Verb Runas
-        QString psArgs = (QStringList() <<  "\"-p\"" << QString("\"%1\"").arg(downloadFileName()) << "\"-a\"" << QString("\"%1\"").arg(currentApplication())).join(",");
-        detached = myProcess->startDetached("Powershell", QStringList() << "Start" << updateAppPath << "-ArgumentList" << psArgs << "-Verb" << "Runas");
+        QString psArgs = (QStringList() <<  "\"-p\"" << QString("\"%1\"").arg(downloadFileName().replace(" ", "` ")) << "\"-a\"" << QString("\"%1\"").arg(currentApplication().replace(" ", "` "))).join(",");
+        detached = myProcess->startDetached("Powershell", QStringList() << "Start" << updateAppPath.replace(" ", "` ") << "-ArgumentList" << psArgs << "-Verb" << "Runas");
         qInfo() << QString("%1 %2").arg("Powershell").arg((QStringList() << "Start" << updateAppPath << "-ArgumentList" << psArgs << "-Verb" << "Runas").join(" "));
 #endif
 #ifdef Q_OS_MACOS
