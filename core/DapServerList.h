@@ -291,6 +291,11 @@ protected:
     int _insertedIndex;
     int _destination;
     bool _finished;
+    enum
+    {
+      Insert,
+      Append,
+    } _result;
   public:
     InsertServerOperation (DapSortedServerList &a_list, QLinkedList<int> &a_sortedIndexes, const DapServerInfo &a_server, int a_insertedIndex);
     ~InsertServerOperation(); ///< will call finish

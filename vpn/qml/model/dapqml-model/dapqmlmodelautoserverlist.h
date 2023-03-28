@@ -102,7 +102,7 @@ protected:
   bool _containsLocation (const QString &a_location) const;
   void _increaseLocationIndexes (int a_index);
   void _decreaseLocationIndexes (int a_index);
-  void _updateAutoServer (const DapServerInfo &a_server, const Location &a_location);
+  void _updateAutoServer (const DapServerInfo &a_server, int a_serverIndex, const Location &a_location);
   QString _serverLocation (const DapServerInfo &a_server) const;
   /// @}
 

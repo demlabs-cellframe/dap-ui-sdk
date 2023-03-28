@@ -1388,9 +1388,14 @@ DapSortedServerList::InsertServerOperation::InsertServerOperation (DapSortedServ
   , _insertedIndex (a_insertedIndex)
   , _destination (-1)
   , _finished (false)
+  , _result (Insert)
 {
   /* lambdas */
-  auto appendToEnd = [this] { return _sortedIndexes.size() - 1; };
+  auto appendToEnd = [this]
+    {
+      _result = Append;
+      return _sortedIndexes.size();
+    };
 
   /* add non ping at the end */
   if (a_server.ping() == -1)
@@ -1425,17 +1430,23 @@ void DapSortedServerList::InsertServerOperation::finish()
   if (_finished)
     return;
 
-  if (_destination == -1)
-    _sortedIndexes.append (_insertedIndex);
-  else
-    _sortedIndexes.insert (_list.begin() + _destination, _insertedIndex);
+  switch (_result)
+    {
+    case Insert: _sortedIndexes.insert (_list.begin() + _destination, _insertedIndex); break;
+    case Append: _sortedIndexes.append (_insertedIndex); break;
+    }
+
+//  if (_destination == -1)
+//    _sortedIndexes.append (_insertedIndex);
+//  else
+//    _sortedIndexes.insert (_list.begin() + _destination, _insertedIndex);
 
   _finished = true;
 }
 
 DapSortedServerList::InsertServerOperation::operator int() const
 {
-  return _destination == -1 ? 0 : _destination;
+  return _destination;//_destination == -1 ? 0 : _destination;
 }
 
 /*-----------------------------------------*/
