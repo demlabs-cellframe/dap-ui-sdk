@@ -235,7 +235,7 @@ void DapQmlModelAutoServerList::_increaseLocationIndexes (int a_index)
 
 void DapQmlModelAutoServerList::_decreaseLocationIndexes (int a_index)
 {
-  for (auto i = _allLocations.begin(), e = _allLocations.end(); i != e; i++)
+  for (auto i = _allLocations.begin(); i != _allLocations.end(); i++)
     {
       /* decrease */
       if (*i > a_index)
@@ -245,7 +245,8 @@ void DapQmlModelAutoServerList::_decreaseLocationIndexes (int a_index)
       else if (*i == a_index)
         {
           auto c = i;
-          i--;
+          if (i != _allLocations.begin())
+            i--;
           _allLocations.erase (c);
         }
     }
@@ -266,9 +267,19 @@ void DapQmlModelAutoServerList::_updateAutoServer (const DapServerInfo &a_server
       return _autoServers[0];
     };
 
+  auto getAutoLocation  = [this] () -> Location&
+    {
+      if (_allLocations.isEmpty() || _allLocations.first().name() != "Auto")
+        {
+          Location newLoc {"Auto", -1};
+          _allLocations.insert (0, std::move (newLoc));
+        }
+      return _allLocations[0];
+    };
+
   /* vars */
   DapServerInfo &autoServer = getAutoServer();
-  Location &autoLocation    = _allLocations[0];
+  Location &autoLocation    = getAutoLocation();
 
 #ifdef QT_DEBUG
   if (autoServer.name() != "Auto")
@@ -399,7 +410,6 @@ void DapQmlModelAutoServerList::_slotRowsInserted (const QModelIndex &, int firs
         _autoServers.remove (oldIndex);
         endRemoveRows();
 
-
         /* add new */
 //        int newIndex;
 //        {
@@ -437,7 +447,7 @@ void DapQmlModelAutoServerList::_slotRowsInserted (const QModelIndex &, int firs
         _increaseLocationIndexes (i);
 
         /* update location index */
-        location->setIndex (newIndex);
+        location->setIndex (i);
 
         /* update */
         _updateAutoServer (server, i, *location);
@@ -495,12 +505,12 @@ void DapQmlModelAutoServerList::_slotRowsAboutToRemoved (const QModelIndex &, in
    * +update current
    */
 
-  auto isMoreThanOneLocationLeft = [this] (const Location &a_location)
+  auto isMoreThanOneLocationLeft = [this] (const QString &a_locationName)
     {
       bool found = false;
       for (auto i = _serverList->cbegin(), e = _serverList->cend(); i != e; i++)
         {
-          if (_serverLocation (*i) != a_location)
+          if (_serverLocation (*i) != a_locationName)
             continue;
 
           if (!found)
@@ -525,7 +535,7 @@ void DapQmlModelAutoServerList::_slotRowsAboutToRemoved (const QModelIndex &, in
 
       /* flags */
       bool removedAuto      = (autoServer) ? autoServer->address() == server.address() : false;
-      bool lastAuto         = isMoreThanOneLocationLeft (*location);
+      bool lastAuto         = isMoreThanOneLocationLeft (locationName);
 
       /* if not last, update to most best */
       if (removedAuto && !lastAuto && autoServer)

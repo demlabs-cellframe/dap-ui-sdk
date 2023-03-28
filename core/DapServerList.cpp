@@ -1253,7 +1253,7 @@ void DapSortedServerList::_increaseAllIndexes (int a_index)
 // 123456
 void DapSortedServerList::_decreaseAllIndexes (int a_index)
 {
-  for (auto i = _sortedIndexes.begin(), e = _sortedIndexes.end(); i != e; i++)
+  for (auto i = _sortedIndexes.begin(); i != _sortedIndexes.end(); i++)
     {
       /* decrease */
       if (*i > a_index)
@@ -1263,6 +1263,7 @@ void DapSortedServerList::_decreaseAllIndexes (int a_index)
       else if (*i == a_index)
         {
           auto c = i;
+          //if (i != _sortedIndexes.begin())
           i--;
           _sortedIndexes.erase (c);
         }

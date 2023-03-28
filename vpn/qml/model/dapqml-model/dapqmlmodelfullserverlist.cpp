@@ -40,10 +40,8 @@ void DapQmlModelFullServerList::setBridge (AbstractServerListModelBridge *a_newB
     _getCurrent();
     endResetModel();
   };
-  auto autoServerList  = a_newBridge->autoServerList();
-
-  DapAbstractServerList *abstractServerList = a_newBridge->serverList();
-//  QAbstractListModel *itemModel = abstractServerList->as<QAbstractListModel>();
+  auto autoServerList   = a_newBridge->autoServerList();
+  auto serverList       = a_newBridge->serverList();
 
   /* setup */
   beginResetModel();
@@ -66,9 +64,9 @@ void DapQmlModelFullServerList::setBridge (AbstractServerListModelBridge *a_newB
   _conn << connect (autoServerList,   &QAbstractItemModel::rowsInserted, updateLambda);
   _conn << connect (autoServerList,   &QAbstractItemModel::rowsRemoved,  updateLambda);
   _conn << connect (autoServerList,   &QAbstractItemModel::modelReset,   updateLambda);
-//  _conn << connect (itemModel,        &QAbstractItemModel::rowsInserted, updateLambda);
-//  _conn << connect (itemModel,        &QAbstractItemModel::rowsRemoved,  updateLambda);
-//  _conn << connect (itemModel,        &QAbstractItemModel::modelReset,   updateLambda);
+  _conn << connect (serverList,       &QAbstractItemModel::rowsInserted, updateLambda);
+  _conn << connect (serverList,       &QAbstractItemModel::rowsRemoved,  updateLambda);
+  _conn << connect (serverList,       &QAbstractItemModel::modelReset,   updateLambda);
 }
 
 int DapQmlModelFullServerList::size() const
