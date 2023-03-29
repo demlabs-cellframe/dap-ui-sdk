@@ -535,7 +535,7 @@ void DapQmlModelAutoServerList::_slotRowsAboutToRemoved (const QModelIndex &, in
 
       /* flags */
       bool removedAuto      = (autoServer) ? autoServer->address() == server.address() : false;
-      bool lastAuto         = isMoreThanOneLocationLeft (locationName);
+      bool lastAuto         = !isMoreThanOneLocationLeft (locationName);
 
       /* if not last, update to most best */
       if (removedAuto && !lastAuto && autoServer)
@@ -584,7 +584,7 @@ void DapQmlModelAutoServerList::_slotRowsAboutToRemoved (const QModelIndex &, in
           endRemoveRows();
 
           /* update */
-          _updateAutoServer (server, autoIndex, *location);
+          //_updateAutoServer (server, autoIndex, *location);
           _updateCurrent();
 
           continue;
