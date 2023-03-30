@@ -48,6 +48,7 @@ private:
     QString m_appType;
     QString m_day;
     QString systemInfo();
+    bool isLoggerStarted{false};
 signals:
     void sigMessageHandler();
 };
