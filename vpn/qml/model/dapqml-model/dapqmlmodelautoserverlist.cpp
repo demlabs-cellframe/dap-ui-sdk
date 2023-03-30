@@ -238,17 +238,17 @@ void DapQmlModelAutoServerList::_decreaseLocationIndexes (int a_index)
   for (auto i = _allLocations.begin(); i != _allLocations.end(); i++)
     {
       /* decrease */
-      if (*i > a_index)
+      if (*i >= a_index)
         i->setIndex (i->index() - 1);
 
-      /* remove if same */
-      else if (*i == a_index)
-        {
-          auto c = i;
-          if (i != _allLocations.begin())
-            i--;
-          _allLocations.erase (c);
-        }
+//      /* remove if same */
+//      else if (*i == a_index)
+//        {
+//          auto c = i;
+//          if (i != _allLocations.begin())
+//            i--;
+//          _allLocations.erase (c);
+//        }
     }
 }
 
@@ -289,8 +289,8 @@ void DapQmlModelAutoServerList::_updateAutoServer (const DapServerInfo &a_server
 #endif // QT_DEBUG
 
   /* if user location */
-  if (a_location == _userLocation
-    && (autoServer.ping() > a_server.ping() || autoServer.ping() == -1))
+  if (a_location == _userLocation)
+    //&& (autoServer.ping() > a_server.ping() || autoServer.ping() == -1))
     {
       autoServer  = a_server;
       autoServer.setName ("Auto");
@@ -310,13 +310,60 @@ void DapQmlModelAutoServerList::_updateAutoServer (const DapServerInfo &a_server
 
       emit dataChanged (index (0), index (0));
       return;
+  }
+}
+
+void DapQmlModelAutoServerList::_updateAutoServer (const DapServerInfo &a_server)
+{
+  /* reset auto server */
+  DapServerInfo *autoServer = _autoServerByName ("Auto");
+  *autoServer = DapServerInfo (QString(), "Auto", QString(), 0);
+  autoServer->setPing (9999);
+
+  /* get server location */
+  Location *autoLoc = _locationByName ("Auto");
+
+  /* find the best suitable server */
+  int index = 0;
+  for (auto i = _serverList->cbegin(), e = _serverList->cend(); i != e; i++, index++)
+    {
+      if (i->ping() != -1
+          && i->ping() < autoServer->ping()
+          && i->address() != a_server.address())
+        {
+          *autoServer = *i;
+          autoServer->setName ("Auto");
+          autoLoc->setIndex (index);
+          return;
+        }
     }
+
+  if (autoServer->ping() == 9999)
+    autoServer->setPing (-1);
 }
 
 QString DapQmlModelAutoServerList::_serverLocation (const DapServerInfo &a_server) const
 {
   int length = a_server.name().indexOf('.');
   return a_server.name().left (length);
+}
+
+int DapQmlModelAutoServerList::_appendNewAutoServer(DapServerInfo &&a_server)
+{
+  /* attach lambdas */
+  _QMetatDisconnector _begin = connect (&_autoServers, &QAbstractListModel::rowsAboutToBeInserted,
+                                        this, [this] (const QModelIndex &parent, int first, int last)
+    {
+      beginInsertRows (parent, first, last);
+    });
+  _QMetatDisconnector _end = connect (&_autoServers, &QAbstractListModel::rowsInserted,
+                                      this, [this] (const QModelIndex &, int, int)
+    {
+      endInsertRows();
+    });
+
+  /* perform */
+  return _autoServers.append (std::move (a_server));
 }
 
 /********************************************
@@ -332,24 +379,6 @@ void DapQmlModelAutoServerList::_slotRowsInserted (const QModelIndex &, int firs
    * +update Auto server when needed
    * +update current
    */
-
-  auto appendNewAutoServer = [this] (DapServerInfo &&a_server) -> int
-    {
-      /* attach lambdas */
-      _QMetatDisconnector _begin = connect (&_autoServers, &QAbstractListModel::rowsAboutToBeInserted,
-                                            this, [this] (const QModelIndex &parent, int first, int last)
-        {
-          beginInsertRows (parent, first, last);
-        });
-      _QMetatDisconnector _end = connect (&_autoServers, &QAbstractListModel::rowsInserted,
-                                          this, [this] (const QModelIndex &, int, int)
-        {
-          endInsertRows();
-        });
-
-      /* perform */
-      return _autoServers.append (std::move (a_server));
-    };
 
   QModelIndex dummy;
   for (int i = first; i <= last; i++)
@@ -373,7 +402,7 @@ void DapQmlModelAutoServerList::_slotRowsInserted (const QModelIndex &, int firs
         item.setName (locationName);
 
         /* store */
-        int index = appendNewAutoServer (std::move (item));//_autoServers.append (std::move (item));
+        int index = _appendNewAutoServer (std::move (item));//_autoServers.append (std::move (item));
 
         /* increase indexes */
         _increaseLocationIndexes (i);
@@ -411,25 +440,7 @@ void DapQmlModelAutoServerList::_slotRowsInserted (const QModelIndex &, int firs
         endRemoveRows();
 
         /* add new */
-//        int newIndex;
-//        {
-//          /* attach lambdas */
-//          _QMetatDisconnector _begin = connect (&_autoServers, &QAbstractListModel::rowsAboutToBeInserted,
-//                                                this, [this] (const QModelIndex &parent, int first, int last)
-//            {
-//              beginInsertRows (parent, first, last);
-//            });
-//          _QMetatDisconnector _end = connect (&_autoServers, &QAbstractListModel::rowsInserted,
-//                                              this, [this] (const QModelIndex &, int, int)
-//            {
-//              endInsertRows();
-//            });
-
-//          newIndex  = _autoServers.append (std::move (item));
-//          //beginInsertRows (dummy, newIndex, newIndex);
-//          //endInsertRows();
-//        }
-        int newIndex  = appendNewAutoServer (std::move (item));//_autoServers.append (std::move (item));
+        /*int newIndex  = */_appendNewAutoServer (std::move (item));//_autoServers.append (std::move (item));
 
         /* check if auto is moved */
         if (_autoServers.first().name() != "Auto")
@@ -489,9 +500,102 @@ void DapQmlModelAutoServerList::_slotRowsInserted (const QModelIndex &, int firs
   //_reset();
 }
 
-void DapQmlModelAutoServerList::_slotRowsMoved (const QModelIndex &, int, int, const QModelIndex &, int)
+void DapQmlModelAutoServerList::_slotRowsMoved (const QModelIndex &, int first, int last, const QModelIndex &, int dest)
 {
-  _reset();
+  /*
+   * -check first moved ping
+   * -check last moved ping
+   *
+   * +update Auto server when needed
+   * +update current
+   */
+
+  /* collect end result idnexes */
+  QList<int> indexes;
+  for (int i = first; i <= last; i++)
+    indexes << dest + i;
+  indexes << first;
+
+  /* check all indexes data */
+  QModelIndex dummy;
+  QSet<QString> updatedServers;
+  for (const auto index : qAsConst (indexes))
+    {
+      /* get inserted server */
+      const DapServerInfo &server = qAsConst (_serverList)->at (index);
+
+      /* vars */
+      //int locationIndex;
+      QString locationName  = _serverLocation (server);
+      Location *location    = _locationByName (locationName);//, &locationIndex);
+
+#ifdef QT_DEBUG
+      if (location == nullptr)
+        qFatal ("%s Location not found! \"%s\"", __PRETTY_FUNCTION__, locationName.toUtf8().data());
+#endif // QT_DEBUG
+
+      /* update location server */
+      for (const auto &bestServer : qAsConst (*_serverList))
+        {
+          /* skip update, if it is still actual */
+          if (bestServer.address() == server.address())
+            goto _slotRowsMovedContinue;
+
+          /* vars */
+          auto bestServerLocation = _serverLocation (bestServer);
+
+          /* skip servers that is already updated */
+          if (updatedServers.contains (bestServerLocation))
+            continue;
+
+          /* skip other locations */
+          if (bestServerLocation != locationName)
+            continue;
+
+          /* store the name of the updated server */
+          updatedServers << locationName;
+
+          /* update auto server */
+          int autoIndex   = _autoServerIndex (locationName);
+          DapServerInfo item = bestServer;
+          item.setName (locationName);
+
+#ifdef QT_DEBUG
+          if (autoIndex == -1)
+            qFatal ("%s Auto server not found! \"%s\"", __PRETTY_FUNCTION__, locationName.toUtf8().data());
+#endif // QT_DEBUG
+
+          /* replace old auto server with sorting applied */
+          beginRemoveRows (dummy, autoIndex, autoIndex);
+          _autoServers.remove (autoIndex);
+          endRemoveRows();
+
+          /*int newIndex  = */_appendNewAutoServer (std::move (item));//_autoServers.append (std::move (item));
+
+          /* check if auto is moved */
+          if (_autoServers.first().name() != "Auto")
+            {
+              /* move back to the beginning */
+              int autoIndex;
+              DapServerInfo autoServerCopy = *_autoServerByName ("Auto", &autoIndex);
+              beginMoveRows (dummy, autoIndex, autoIndex, dummy, 0);
+              _autoServers.remove (autoIndex);
+              _autoServers.insert (0, autoServerCopy);
+              endMoveRows();
+            }
+
+          /* update location index */
+          location->setIndex (index);
+
+          /* update */
+          _updateAutoServer (server, index, *location);
+          _updateCurrent();
+        }
+_slotRowsMovedContinue:
+      continue;
+    }
+
+  //_reset();
 }
 
 void DapQmlModelAutoServerList::_slotRowsAboutToRemoved (const QModelIndex &, int first, int last)
@@ -528,9 +632,9 @@ void DapQmlModelAutoServerList::_slotRowsAboutToRemoved (const QModelIndex &, in
       const DapServerInfo &server = qAsConst (_serverList)->at (i);
 
       /* vars */
-      int autoIndex;//int locationIndex;
+      int autoIndex, locationIndex;
       QString locationName      = _serverLocation (server);
-      Location *location        = _locationByName (locationName);//, &locationIndex);
+      Location *location        = _locationByName (locationName, &locationIndex);
       DapServerInfo *autoServer = _autoServerByName (locationName, &autoIndex);
 
       /* flags */
@@ -563,7 +667,10 @@ void DapQmlModelAutoServerList::_slotRowsAboutToRemoved (const QModelIndex &, in
               /* update */
               emit dataChanged (index (newIndex), index (newIndex));
 
-              _updateAutoServer (*i, newIndex, *location);
+              if (_userLocation.isEmpty())
+                _updateAutoServer (server);
+              else
+                _updateAutoServer (*i, newIndex, *location);
               _updateCurrent();
 
               break;
@@ -581,10 +688,12 @@ void DapQmlModelAutoServerList::_slotRowsAboutToRemoved (const QModelIndex &, in
           /* remove */
           beginRemoveRows (dummy, autoIndex, autoIndex);
           _autoServers.remove (autoIndex);
+          _allLocations.removeAt (locationIndex);
           endRemoveRows();
 
           /* update */
-          //_updateAutoServer (server, autoIndex, *location);
+          if (locationName == _userLocation || _userLocation.isEmpty())
+            _updateAutoServer (server);
           _updateCurrent();
 
           continue;
@@ -595,6 +704,9 @@ void DapQmlModelAutoServerList::_slotRowsAboutToRemoved (const QModelIndex &, in
         {
           /* decrease indexes */
           _decreaseLocationIndexes (i);
+
+          /* update */
+          _updateCurrent();
 
           continue;
         }

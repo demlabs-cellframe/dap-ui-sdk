@@ -1015,82 +1015,36 @@ void DapSortedServerList::clear()
 void DapSortedServerList::update (const QList<int> &a_indexes)
 {
   QModelIndex dummyIndex;
-  for (auto i : a_indexes)
-    {
-      auto it       = _sortedIndexes.begin() + i;
-      auto &server  = _list[*it];
+  QList<int> sortedIndexes = a_indexes;
+  QList<int> actualIndexes;
 
-      beginRemoveRows (dummyIndex, i, i);
+  /* resort */
+  qSort (sortedIndexes);
+
+  /* take items from list */
+  for (auto i = sortedIndexes.crbegin(), e = sortedIndexes.crend(); i != e ; i++)
+    {
+      auto it = _sortedIndexes.begin() + *i;
+      actualIndexes << *it;
+
+      beginRemoveRows (dummyIndex, *i, *i);
       _sortedIndexes.erase (it);
       endRemoveRows();
+    }
 
-//      auto pos      = _appendServerIndex (server, *it);
-//      beginInsertRows (dummyIndex, pos, pos);
-//      endInsertRows();
-
-//      auto pos      = _beginInsertServer (server);//_appendServerIndex (server, *it);
-//      beginInsertRows (dummyIndex, pos, pos);
-//      {
-//        _endInsertServer (*it, pos);
-//      }
-//      endInsertRows();
+  /* insert to a proper place */
+  for (const auto i : qAsConst (actualIndexes))
+    {
+      auto &server  = _list[i];
 
       /* start insert operation */
-      InsertServerOperation isop (*this, _sortedIndexes, server, *it);
+      InsertServerOperation isop (*this, _sortedIndexes, server, i);
 
       /* perform inserting */
       beginInsertRows (dummyIndex, isop, isop);
       isop.finish();
       endInsertRows();
-
-//      if (i != pos)
-//        {
-//          beginMoveRows (dummyIndex, i, i, dummyIndex, pos);
-//          endMoveRows();
-//        }
     }
-
-//  /* sort provided list */
-//  QList<int> indexes  = a_indexes;
-//  qSort (indexes);
-
-//  /* take indexes from chain */
-//  QList<int> takenIndexes;
-//  for (auto i = indexes.crbegin(), e = indexes.crend(); i != e; i++)
-//    {
-//      /* calc iterator */
-//      auto pos  = _sortedIndexes.begin() + *i;
-
-//      /* store value */
-//      takenIndexes << *pos;
-
-//      /* take from chain */
-//      _sortedIndexes.erase (pos);
-//    }
-
-//  /* insert to proper places */
-//  for (auto i = takenIndexes.cbegin(), e = takenIndexes.cend(); i != e; i++)
-//    {
-//      auto &server  = _list[*i];
-//      _appendServerIndex (server, *i);
-//    }
-
-//  /* collect new indexes */
-//  QList<int> newIndexes;
-//  for (int takenIndex : qAsConst (takenIndexes))
-//    newIndexes << indexOf (_list[takenIndex]);
-
-//  /* send moving signals */
-//  auto oldIt  = takenIndexes.cbegin();
-//  auto newIt  = newIndexes.cbegin();
-//  QModelIndex dummyIndex;
-//  for (int i = 0; i < takenIndexes.size(); i++, oldIt++, newIt++)
-//    {
-//      if (*oldIt == *newIt)
-//        continue;
-//      beginMoveRows (dummyIndex, *oldIt, *oldIt, dummyIndex, *newIt);
-//      endMoveRows();
-//    }
 }
 
 const QLinkedList<int> &DapSortedServerList::getSortedIndexes() const
@@ -1383,7 +1337,11 @@ const QHash<QString, QString> &DapAbstractServerList::countryMap()
 
 /*-----------------------------------------*/
 
-DapSortedServerList::InsertServerOperation::InsertServerOperation (DapSortedServerList &a_list, QLinkedList<int> &a_sortedIndexes, const DapServerInfo &a_server, int a_insertedIndex)
+DapSortedServerList::InsertServerOperation::InsertServerOperation (
+    DapSortedServerList &a_list,
+    QLinkedList<int> &a_sortedIndexes,
+    const DapServerInfo &a_server,
+    int a_insertedIndex)
   : _list (a_list)
   , _sortedIndexes (a_sortedIndexes)
   , _insertedIndex (a_insertedIndex)

@@ -63,9 +63,11 @@ void DapQmlModelFullServerList::setBridge (AbstractServerListModelBridge *a_newB
   /* create connections */
   _conn << connect (autoServerList,   &QAbstractItemModel::rowsInserted, updateLambda);
   _conn << connect (autoServerList,   &QAbstractItemModel::rowsRemoved,  updateLambda);
+  _conn << connect (autoServerList,   &QAbstractItemModel::rowsMoved,    updateLambda);
   _conn << connect (autoServerList,   &QAbstractItemModel::modelReset,   updateLambda);
   _conn << connect (serverList,       &QAbstractItemModel::rowsInserted, updateLambda);
   _conn << connect (serverList,       &QAbstractItemModel::rowsRemoved,  updateLambda);
+  _conn << connect (serverList,       &QAbstractItemModel::rowsMoved,    updateLambda);
   _conn << connect (serverList,       &QAbstractItemModel::modelReset,   updateLambda);
 }
 
