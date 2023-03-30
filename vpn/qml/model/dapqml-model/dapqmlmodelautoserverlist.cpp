@@ -18,6 +18,7 @@ public:
 DapQmlModelAutoServerList::DapQmlModelAutoServerList()
   : _serverList (DapSortedServerList::instance())
   , m_current (-1)
+  , _currentUpdater (QString(), this)
 {
   _reset();
   _connectSignals();
@@ -26,6 +27,7 @@ DapQmlModelAutoServerList::DapQmlModelAutoServerList()
 DapQmlModelAutoServerList::DapQmlModelAutoServerList (DapSortedServerList *a_serverList)
   : _serverList (a_serverList)
   , m_current (-1)
+  , _currentUpdater (QString(), this)
 {
   _reset();
   _connectSignals();
@@ -52,10 +54,12 @@ void DapQmlModelAutoServerList::setCurrent (int a_newCurrent)
 
 void DapQmlModelAutoServerList::_connectSignals()
 {
+  connect (_serverList, &QAbstractListModel::rowsAboutToBeInserted, this, &DapQmlModelAutoServerList::_slotRowsAboutToBeInserted);
   connect (_serverList, &QAbstractListModel::rowsInserted,          this, &DapQmlModelAutoServerList::_slotRowsInserted);
+  connect (_serverList, &QAbstractListModel::rowsAboutToBeMoved,    this, &DapQmlModelAutoServerList::_slotRowsAboutToBeMoved);
   connect (_serverList, &QAbstractListModel::rowsMoved,             this, &DapQmlModelAutoServerList::_slotRowsMoved);
   connect (_serverList, &QAbstractListModel::rowsAboutToBeRemoved,  this, &DapQmlModelAutoServerList::_slotRowsAboutToRemoved);
-  //connect (_serverList, &QAbstractListModel::rowsRemoved,           this, &DapQmlModelAutoServerList::_slotRowsRemoved);
+  connect (_serverList, &QAbstractListModel::rowsRemoved,           this, &DapQmlModelAutoServerList::_slotRowsRemoved);
   connect (_serverList, &QAbstractListModel::modelReset,            this, &DapQmlModelAutoServerList::_slotModelReset);
   connect (_serverList, &QAbstractListModel::dataChanged,           this, &DapQmlModelAutoServerList::_slotDataChanged);
   connect (_serverList, &QAbstractListModel::layoutChanged,         this, &DapQmlModelAutoServerList::_slotLayoutChanged);
@@ -70,7 +74,7 @@ void DapQmlModelAutoServerList::_reset()
   beginResetModel();
   _collectLocations (_serverList);
   _buildUpAutoList (&_autoServers);
-  _updateCurrent (oldCurrentName);
+  _currentUpdater.update (oldCurrentName);//_updateCurrent (oldCurrentName);
   endResetModel();
 }
 
@@ -144,32 +148,32 @@ _resetCollectContinue:
     }
 }
 
-void DapQmlModelAutoServerList::_updateCurrent (QString &a_oldCurrentName)
-{
-  if (a_oldCurrentName.isEmpty())
-    return;
+//void DapQmlModelAutoServerList::_updateCurrent (QString &a_oldCurrentName)
+//{
+//  if (a_oldCurrentName.isEmpty())
+//    return;
 
-  int newCurrent = -1, index = 0;
+//  int newCurrent = -1, index = 0;
 
-  for (auto i = _autoServers.cbegin(), e = _autoServers.cend(); i != e; i++, index++)
-    {
-      if (i->name() != a_oldCurrentName)
-        continue;
+//  for (auto i = _autoServers.cbegin(), e = _autoServers.cend(); i != e; i++, index++)
+//    {
+//      if (i->name() != a_oldCurrentName)
+//        continue;
 
-      newCurrent  = index;
-      break;
-    }
+//      newCurrent  = index;
+//      break;
+//    }
 
-  setCurrent (newCurrent);
-}
+//  setCurrent (newCurrent);
+//}
 
-void DapQmlModelAutoServerList::_updateCurrent()
-{
-  QString oldCurrentName;
-  if (m_current != -1)
-    oldCurrentName  = _autoServers.at (m_current).name();
-  _updateCurrent (oldCurrentName);
-}
+//void DapQmlModelAutoServerList::_updateCurrent()
+//{
+//  QString oldCurrentName;
+//  if (m_current != -1)
+//    oldCurrentName  = _autoServers.at (m_current).name();
+//  _updateCurrent (oldCurrentName);
+//}
 
 int DapQmlModelAutoServerList::_autoServerIndex (const QString &a_name) const
 {
@@ -370,6 +374,13 @@ int DapQmlModelAutoServerList::_appendNewAutoServer(DapServerInfo &&a_server)
  * SLOTS
  *******************************************/
 
+void DapQmlModelAutoServerList::_slotRowsAboutToBeInserted (const QModelIndex &, int, int)
+{
+  /* update current */
+  if (m_current != -1)
+    _currentUpdater.set (_autoServers.at (m_current).name());
+}
+
 void DapQmlModelAutoServerList::_slotRowsInserted (const QModelIndex &, int first, int last)
 {
   /*
@@ -379,6 +390,35 @@ void DapQmlModelAutoServerList::_slotRowsInserted (const QModelIndex &, int firs
    * +update Auto server when needed
    * +update current
    */
+
+  auto moveAutoServerToTheBeginning = [this]
+    {
+      QModelIndex dummy;
+
+      /* get "Auto server pointer */
+      int autoIndex;
+      DapServerInfo *autoServerPtr  = _autoServerByName ("Auto", &autoIndex);
+
+      /* check if exists */
+      if (autoServerPtr == nullptr)
+        {
+          /* add auto server */
+          beginInsertRows (dummy, 0, 0);
+          _autoServers.insert (0, DapServerInfo (QString(), "Auto", QString(), 0));
+          endInsertRows();
+        }
+
+      /* move back to the beginning */
+      else
+        if (autoIndex != 0)
+          {
+            DapServerInfo autoServerCopy = *autoServerPtr;
+            beginMoveRows (dummy, autoIndex, autoIndex, dummy, 0);
+            _autoServers.remove (autoIndex);
+            _autoServers.insert (0, autoServerCopy);
+            endMoveRows();
+          }
+    };
 
   QModelIndex dummy;
   for (int i = first; i <= last; i++)
@@ -404,6 +444,9 @@ void DapQmlModelAutoServerList::_slotRowsInserted (const QModelIndex &, int firs
         /* store */
         int index = _appendNewAutoServer (std::move (item));//_autoServers.append (std::move (item));
 
+        /* fix "Auto" server pos */
+        moveAutoServerToTheBeginning();
+
         /* increase indexes */
         _increaseLocationIndexes (i);
 
@@ -415,13 +458,13 @@ void DapQmlModelAutoServerList::_slotRowsInserted (const QModelIndex &, int firs
         endInsertRows();
 
         _updateAutoServer (server, i, newLoc);
-        _updateCurrent();
+        _currentUpdater.update();//_updateCurrent();
 
         continue;
       }
 
     /* if index is the same, changes has to be made */
-    if (location->index() == i)
+    if (location->index() >= i)
       {
         /* new server */
         DapServerInfo item  = server;
@@ -442,17 +485,8 @@ void DapQmlModelAutoServerList::_slotRowsInserted (const QModelIndex &, int firs
         /* add new */
         /*int newIndex  = */_appendNewAutoServer (std::move (item));//_autoServers.append (std::move (item));
 
-        /* check if auto is moved */
-        if (_autoServers.first().name() != "Auto")
-          {
-            /* move back to the beginning */
-            int autoIndex;
-            DapServerInfo autoServerCopy = *_autoServerByName ("Auto", &autoIndex);
-            beginMoveRows (dummy, autoIndex, autoIndex, dummy, 0);
-            _autoServers.remove (autoIndex);
-            _autoServers.insert (0, autoServerCopy);
-            endMoveRows();
-          }
+        /* fix "Auto" server pos */
+        moveAutoServerToTheBeginning();
 
         /* increase indexes */
         _increaseLocationIndexes (i);
@@ -462,42 +496,23 @@ void DapQmlModelAutoServerList::_slotRowsInserted (const QModelIndex &, int firs
 
         /* update */
         _updateAutoServer (server, i, *location);
-        _updateCurrent();
+        _currentUpdater.update();//_updateCurrent();
 
         continue;
       }
 
     /* update location index */
     _increaseLocationIndexes (i);
-
-//    /* if index is the same, changes has to be made */
-//    if (location->index() == i)
-//      {
-//        /* get auto server */
-//        int serverIndex;
-//        DapServerInfo *autoServer  = _autoServerByName (*location, &serverIndex);
-
-//#ifdef QT_DEBUG
-//        if (autoServer == nullptr)
-//          qFatal ("%s Location is not presented inside auto server list! \"%s\"", __PRETTY_FUNCTION__, locationName.toUtf8().data());
-//#endif // QT_DEBUG
-
-//        /* update auto server */
-//        *autoServer   = server;
-//        autoServer->setName (locationName);
-
-//        /* update location index */
-//        location->setIndex (i);
-
-//        /* increase indexes */
-//        _increaseLocationIndexes (i);
-
-//        /* update */
-//        emit dataChanged (index (serverIndex), index (serverIndex));
-//      }
   }
 
   //_reset();
+}
+
+void DapQmlModelAutoServerList::_slotRowsAboutToBeMoved (const QModelIndex &, int, int, const QModelIndex &, int)
+{
+  /* update current */
+  if (m_current != -1)
+    _currentUpdater.set (_autoServers.at (m_current).name());
 }
 
 void DapQmlModelAutoServerList::_slotRowsMoved (const QModelIndex &, int first, int last, const QModelIndex &, int dest)
@@ -589,7 +604,7 @@ void DapQmlModelAutoServerList::_slotRowsMoved (const QModelIndex &, int first, 
 
           /* update */
           _updateAutoServer (server, index, *location);
-          _updateCurrent();
+          _currentUpdater.update();//_updateCurrent();
         }
 _slotRowsMovedContinue:
       continue;
@@ -671,7 +686,10 @@ void DapQmlModelAutoServerList::_slotRowsAboutToRemoved (const QModelIndex &, in
                 _updateAutoServer (server);
               else
                 _updateAutoServer (*i, newIndex, *location);
-              _updateCurrent();
+
+              if (m_current != -1)
+                _currentUpdater.set (_autoServers.at (m_current).name());
+              //_updateCurrent();
 
               break;
             }
@@ -682,6 +700,10 @@ void DapQmlModelAutoServerList::_slotRowsAboutToRemoved (const QModelIndex &, in
       /* if last auto is removed */
       if (removedAuto && lastAuto)
         {
+          /* update */
+          if (m_current != -1)
+            _currentUpdater.set (_autoServers.at (m_current).name());
+
           /* decrease indexes */
           _decreaseLocationIndexes (i);
 
@@ -694,7 +716,6 @@ void DapQmlModelAutoServerList::_slotRowsAboutToRemoved (const QModelIndex &, in
           /* update */
           if (locationName == _userLocation || _userLocation.isEmpty())
             _updateAutoServer (server);
-          _updateCurrent();
 
           continue;
         }
@@ -706,7 +727,9 @@ void DapQmlModelAutoServerList::_slotRowsAboutToRemoved (const QModelIndex &, in
           _decreaseLocationIndexes (i);
 
           /* update */
-          _updateCurrent();
+          if (m_current != -1)
+            _currentUpdater.set (_autoServers.at (m_current).name());
+          //_updateCurrent();
 
           continue;
         }
@@ -721,6 +744,9 @@ void DapQmlModelAutoServerList::_slotRowsAboutToRemoved (const QModelIndex &, in
 
 void DapQmlModelAutoServerList::_slotRowsRemoved (const QModelIndex &, int, int)
 {
+  /* update current */
+  _currentUpdater.update();
+
   //_reset();
 }
 
@@ -865,6 +891,29 @@ bool DapQmlModelAutoServerList::Location::operator > (const DapQmlModelAutoServe
 bool DapQmlModelAutoServerList::Location::operator >= (const DapQmlModelAutoServerList::Location &other) const
 {
   return m_index >= other.m_index;
+}
+
+/*-----------------------------------------*/
+
+void DapQmlModelAutoServerList::_CurrentUpdater::update()
+{
+  if (_oldName.isEmpty())
+    return;
+
+  int newCurrent = -1, index = 0;
+  auto &_autoServers  = _parent->_autoServers;
+
+  for (auto i = _autoServers.cbegin(), e = _autoServers.cend(); i != e; i++, index++)
+    {
+      if (i->name() != _oldName)
+        continue;
+
+      newCurrent  = index;
+      break;
+    }
+
+  _parent->setCurrent (newCurrent);
+  _oldName.clear();
 }
 
 /*-----------------------------------------*/

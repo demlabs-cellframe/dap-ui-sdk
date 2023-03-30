@@ -16,6 +16,8 @@ class DapQmlModelAutoServerList : public QAbstractListModel
 {
   Q_OBJECT
 
+  friend class _CurrentUpdater;
+
   /****************************************//**
    * @name DEFS
    *******************************************/
@@ -50,6 +52,22 @@ class DapQmlModelAutoServerList : public QAbstractListModel
     bool operator > (const Location &other) const;
     bool operator >= (const Location &other) const;
   };
+
+protected:
+  class _CurrentUpdater
+  {
+    QString _oldName;
+    DapQmlModelAutoServerList *_parent;
+  public:
+    _CurrentUpdater (const _CurrentUpdater &a_src) : _oldName (a_src._oldName), _parent (a_src._parent) {}
+    _CurrentUpdater (_CurrentUpdater &&a_src) : _oldName (std::move (a_src._oldName)), _parent (a_src._parent) {}
+    _CurrentUpdater (const QString &a_name, DapQmlModelAutoServerList *a_parent) : _oldName (a_name), _parent (a_parent) {}
+    ~_CurrentUpdater() { update(); }
+    void set (const QString &a_value) { _oldName = a_value; }
+    void update (const QString &a_value) { _oldName = a_value; update(); }
+    void update();
+  };
+
   /// @}
 
   /****************************************//**
@@ -67,6 +85,8 @@ protected:
   QList<Location> _allLocations;
   /// current server
   int m_current;
+  /// controls current update routine
+  _CurrentUpdater _currentUpdater;
   /// @}
 
   /****************************************//**
@@ -93,8 +113,8 @@ protected:
   void _reset();
   void _collectLocations (DapSortedServerList *a_list);
   void _buildUpAutoList (DapSortedServerList *a_dest);
-  void _updateCurrent (QString &a_oldCurrentName);
-  void _updateCurrent();
+//  void _updateCurrent (QString &a_oldCurrentName);
+//  void _updateCurrent();
   int _autoServerIndex (const QString &a_name) const;
   DapServerInfo *_autoServerByName (const QString &a_name, int *a_destIndex = nullptr);
   int _locationIndex (const QString &a_location) const;
@@ -113,7 +133,9 @@ protected:
    *******************************************/
   /// @{
 protected slots:
+  void _slotRowsAboutToBeInserted (const QModelIndex &, int first, int last);
   void _slotRowsInserted (const QModelIndex &, int first, int last);
+  void _slotRowsAboutToBeMoved (const QModelIndex &, int sourceStart, int sourceEnd, const QModelIndex &, int destinationRow);
   void _slotRowsMoved (const QModelIndex &, int sourceStart, int sourceEnd, const QModelIndex &, int destinationRow);
   void _slotRowsAboutToRemoved (const QModelIndex &, int first, int last);
   void _slotRowsRemoved (const QModelIndex &, int first, int last);
