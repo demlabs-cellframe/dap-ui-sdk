@@ -43,11 +43,6 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
 
 }
 
-DapLogger::~DapLogger()
-{
-    dap_common_deinit();
-}
-
 DapLogger* DapLogger::instance()
 {
     return m_instance;
