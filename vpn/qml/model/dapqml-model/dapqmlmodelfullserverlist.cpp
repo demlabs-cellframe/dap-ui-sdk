@@ -33,13 +33,13 @@ const AbstractServerListModelBridge *DapQmlModelFullServerList::bridge() const
 void DapQmlModelFullServerList::setBridge (AbstractServerListModelBridge *a_newBridge)
 {
   /* variables */
-  auto updateLambda     = [this]
-  {
-    beginResetModel();
-    _getSizes();
-    _getCurrent();
-    endResetModel();
-  };
+//  auto updateLambda     = [this]
+//  {
+//    beginResetModel();
+//    _getSizes();
+//    _getCurrent();
+//    endResetModel();
+//  };
   auto autoServerList   = a_newBridge->autoServerList();
   auto serverList       = a_newBridge->serverList();
 
@@ -56,19 +56,19 @@ void DapQmlModelFullServerList::setBridge (AbstractServerListModelBridge *a_newB
   endResetModel();
 
   /* clear connections */
-  for (auto &conn : _conn)
-    disconnect (conn);
-  _conn.clear();
+  _detach();
 
   /* create connections */
-  _conn << connect (autoServerList,   &QAbstractItemModel::rowsInserted, updateLambda);
-  _conn << connect (autoServerList,   &QAbstractItemModel::rowsRemoved,  updateLambda);
-  _conn << connect (autoServerList,   &QAbstractItemModel::rowsMoved,    updateLambda);
-  _conn << connect (autoServerList,   &QAbstractItemModel::modelReset,   updateLambda);
-  _conn << connect (serverList,       &QAbstractItemModel::rowsInserted, updateLambda);
-  _conn << connect (serverList,       &QAbstractItemModel::rowsRemoved,  updateLambda);
-  _conn << connect (serverList,       &QAbstractItemModel::rowsMoved,    updateLambda);
-  _conn << connect (serverList,       &QAbstractItemModel::modelReset,   updateLambda);
+//  _conn << connect (autoServerList,   &QAbstractItemModel::rowsInserted, updateLambda);
+//  _conn << connect (autoServerList,   &QAbstractItemModel::rowsRemoved,  updateLambda);
+//  _conn << connect (autoServerList,   &QAbstractItemModel::rowsMoved,    updateLambda);
+//  _conn << connect (autoServerList,   &QAbstractItemModel::modelReset,   updateLambda);
+//  _conn << connect (serverList,       &QAbstractItemModel::rowsInserted, updateLambda);
+//  _conn << connect (serverList,       &QAbstractItemModel::rowsRemoved,  updateLambda);
+//  _conn << connect (serverList,       &QAbstractItemModel::rowsMoved,    updateLambda);
+//  _conn << connect (serverList,       &QAbstractItemModel::modelReset,   updateLambda);
+  _attach (autoServerList);
+  _attach (serverList);
 }
 
 int DapQmlModelFullServerList::size() const
@@ -196,6 +196,36 @@ void DapQmlModelFullServerList::_getCurrent()
   setCurrent (autoServerList->current());
 }
 
+DapQmlModelFullServerList::SenderType DapQmlModelFullServerList::_getSenderType() const
+{
+  auto *sender = QObject::sender();
+  if (sender == bridge()->autoServerList())
+    return Auto;
+  else if (sender == bridge()->serverList())
+    return List;
+  return Invalid;
+}
+
+void DapQmlModelFullServerList::_attach (QAbstractListModel *a_model)
+{
+  _conn << QObject::connect (a_model,   &QAbstractListModel::rowsAboutToBeInserted,  this, &DapQmlModelFullServerList::rowsAboutToBeInserted);
+  _conn << QObject::connect (a_model,   &QAbstractListModel::rowsInserted,           this, &DapQmlModelFullServerList::rowsInserted);
+  _conn << QObject::connect (a_model,   &QAbstractListModel::rowsAboutToBeMoved,     this, &DapQmlModelFullServerList::rowsAboutToBeMoved);
+  _conn << QObject::connect (a_model,   &QAbstractListModel::rowsMoved,              this, &DapQmlModelFullServerList::rowsMoved);
+  _conn << QObject::connect (a_model,   &QAbstractListModel::rowsAboutToBeRemoved,   this, &DapQmlModelFullServerList::rowsAboutToBeRemoved);
+  _conn << QObject::connect (a_model,   &QAbstractListModel::rowsRemoved,            this, &DapQmlModelFullServerList::rowsRemoved);
+  _conn << QObject::connect (a_model,   &QAbstractListModel::modelAboutToBeReset,    this, &DapQmlModelFullServerList::modelAboutToBeReset);
+  _conn << QObject::connect (a_model,   &QAbstractListModel::modelReset,             this, &DapQmlModelFullServerList::modelReset);
+  _conn << QObject::connect (a_model,   &QAbstractListModel::dataChanged,            this, &DapQmlModelFullServerList::dataChanged);
+}
+
+void DapQmlModelFullServerList::_detach()
+{
+  for (auto &conn : _conn)
+    QObject::disconnect (conn);
+  _conn.clear();
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
@@ -235,6 +265,134 @@ QVariant DapQmlModelFullServerList::data (const QModelIndex &index, int role) co
 QHash<int, QByteArray> DapQmlModelFullServerList::roleNames() const
 {
   return _roleNamesMap;
+}
+
+/********************************************
+ * SLOTS
+ *******************************************/
+
+void DapQmlModelFullServerList::rowsAboutToBeInserted (const QModelIndex &, int start, int end)
+{
+  /* vars */
+  SenderType type = _getSenderType();
+
+  /* check issue */
+  if (type == Invalid)
+    return;
+
+  /* fix indexes */
+  if (type == List)
+    {
+      start -= _size.autoServer;
+      end   -= _size.autoServer;
+    }
+
+  /* initiate update */
+  beginInsertRows (QModelIndex(), start, end);
+}
+
+void DapQmlModelFullServerList::rowsInserted (const QModelIndex &, int, int)
+{
+  _getSizes();
+  _getCurrent();
+  endInsertRows();
+}
+
+void DapQmlModelFullServerList::rowsAboutToBeMoved (const QModelIndex &, int first, int last, const QModelIndex &, int dest)
+{
+  /* vars */
+  SenderType type = _getSenderType();
+
+  /* check issue */
+  if (type == Invalid)
+    return;
+
+  /* fix indexes */
+  if (type == List)
+    {
+      first -= _size.autoServer;
+      last  -= _size.autoServer;
+      dest  -= _size.autoServer;
+    }
+
+  /* initiate update */
+  QModelIndex dummy;
+  beginMoveRows (dummy, first, last, dummy, dest);
+}
+
+void DapQmlModelFullServerList::rowsMoved (const QModelIndex &, int, int, const QModelIndex &, int)
+{
+  _getSizes();
+  _getCurrent();
+  endMoveRows();
+}
+
+void DapQmlModelFullServerList::rowsAboutToBeRemoved (const QModelIndex &, int first, int last)
+{
+  /* vars */
+  SenderType type = _getSenderType();
+
+  /* check issue */
+  if (type == Invalid)
+    return;
+
+  /* fix indexes */
+  if (type == List)
+    {
+      first -= _size.autoServer;
+      last  -= _size.autoServer;
+    }
+
+  /* initiate update */
+  beginRemoveRows (QModelIndex(), first, last);
+}
+
+void DapQmlModelFullServerList::rowsRemoved (const QModelIndex &, int, int)
+{
+  _getSizes();
+  _getCurrent();
+  endRemoveRows();
+}
+
+void DapQmlModelFullServerList::modelAboutToBeReset()
+{
+  beginResetModel();
+}
+
+void DapQmlModelFullServerList::modelReset()
+{
+  _getSizes();
+  _getCurrent();
+  endResetModel();
+}
+
+void DapQmlModelFullServerList::dataChanged (const QModelIndex &a_topLeft, const QModelIndex &a_bottomRight, const QVector<int> &roles)
+{
+  /* vars */
+  SenderType type         = _getSenderType();
+  QModelIndex topLeft, bottomRight;
+
+  /* check issue */
+  if (type == Invalid)
+    return;
+
+  _getSizes();
+  _getCurrent();
+
+  /* fix indexes */
+  if (type == List)
+    {
+      topLeft     = index (a_topLeft.row()      - _size.autoServer, a_topLeft.column());
+      bottomRight = index (a_bottomRight.row()  - _size.autoServer, a_bottomRight.column());
+    }
+  else
+    {
+      topLeft     = index (a_topLeft.row(),     a_topLeft.column());
+      bottomRight = index (a_bottomRight.row(), a_bottomRight.column());
+    }
+
+  /* initiate update */
+  emit QAbstractListModel::dataChanged (topLeft, bottomRight, roles);
 }
 
 /*-----------------------------------------*/

@@ -23,6 +23,8 @@ class DapQmlModelFullServerList : public QAbstractListModel
 {
   Q_OBJECT
 
+  friend class _RowsUpdater;
+
   /****************************************//**
    * @name PROPERTIES
    *******************************************/
@@ -90,6 +92,13 @@ public:
     operator int();
   };
 
+protected:
+  enum SenderType
+  {
+    Invalid,
+    Auto,
+    List,
+  };
   /// @}
 
   /****************************************//**
@@ -139,6 +148,9 @@ protected:
   void _getSizes();
   void _getRoles();
   void _getCurrent();
+  SenderType _getSenderType() const;
+  void _attach (QAbstractListModel *a_model);
+  void _detach();
   /// @}
 
   /****************************************//**
@@ -158,6 +170,22 @@ public:
 signals:
   void currentChanged();
   void sizeChanged();
+  /// @}
+
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
+protected slots:
+  void rowsAboutToBeInserted (const QModelIndex &, int start, int end);
+  void rowsInserted (const QModelIndex &, int start, int end);
+  void rowsAboutToBeMoved (const QModelIndex &, int first, int last, const QModelIndex &, int dest);
+  void rowsMoved (const QModelIndex &, int first, int last, const QModelIndex &, int dest);
+  void rowsAboutToBeRemoved (const QModelIndex &, int first, int last);
+  void rowsRemoved (const QModelIndex &, int first, int last);
+  void modelAboutToBeReset ();
+  void modelReset ();
+  void dataChanged (const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
   /// @}
 };
 

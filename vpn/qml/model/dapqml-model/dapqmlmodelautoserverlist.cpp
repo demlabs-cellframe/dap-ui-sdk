@@ -757,12 +757,12 @@ void DapQmlModelAutoServerList::_slotModelReset()
 
 void DapQmlModelAutoServerList::_slotDataChanged (const QModelIndex &, const QModelIndex &, const QVector<int> &)
 {
-  _reset();
+  //_reset();
 }
 
 void DapQmlModelAutoServerList::_slotLayoutChanged (const QList<QPersistentModelIndex> &, QAbstractItemModel::LayoutChangeHint)
 {
-  _reset();
+  //_reset();
 }
 
 /********************************************
