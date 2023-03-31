@@ -82,7 +82,11 @@ void DapQmlModelAutoServerList::_collectLocations (DapSortedServerList *a_list)
 {
   _allLocations.clear();
   for (const auto &server : *a_list)
-    _allLocations << Location (_serverLocation (server));
+    {
+      auto locName  = _serverLocation (server);
+      if (_locationByName (locName) == nullptr)
+      _allLocations << Location (locName);
+    }
   _allLocations.insert (0, Location ("Auto"));
 }
 

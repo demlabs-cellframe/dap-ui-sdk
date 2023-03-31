@@ -283,8 +283,8 @@ void DapQmlModelFullServerList::rowsAboutToBeInserted (const QModelIndex &, int 
   /* fix indexes */
   if (type == List)
     {
-      start -= _size.autoServer;
-      end   -= _size.autoServer;
+      start += _size.autoServer;
+      end   += _size.autoServer;
     }
 
   /* initiate update */
@@ -310,9 +310,9 @@ void DapQmlModelFullServerList::rowsAboutToBeMoved (const QModelIndex &, int fir
   /* fix indexes */
   if (type == List)
     {
-      first -= _size.autoServer;
-      last  -= _size.autoServer;
-      dest  -= _size.autoServer;
+      first += _size.autoServer;
+      last  += _size.autoServer;
+      dest  += _size.autoServer;
     }
 
   /* initiate update */
@@ -339,8 +339,8 @@ void DapQmlModelFullServerList::rowsAboutToBeRemoved (const QModelIndex &, int f
   /* fix indexes */
   if (type == List)
     {
-      first -= _size.autoServer;
-      last  -= _size.autoServer;
+      first += _size.autoServer;
+      last  += _size.autoServer;
     }
 
   /* initiate update */
@@ -382,8 +382,8 @@ void DapQmlModelFullServerList::dataChanged (const QModelIndex &a_topLeft, const
   /* fix indexes */
   if (type == List)
     {
-      topLeft     = index (a_topLeft.row()      - _size.autoServer, a_topLeft.column());
-      bottomRight = index (a_bottomRight.row()  - _size.autoServer, a_bottomRight.column());
+      topLeft     = index (a_topLeft.row()      + _size.autoServer, a_topLeft.column());
+      bottomRight = index (a_bottomRight.row()  + _size.autoServer, a_bottomRight.column());
     }
   else
     {
