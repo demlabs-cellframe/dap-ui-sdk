@@ -4,16 +4,16 @@
 
 .@light
 {
-	text: "#04004E";
-	background: "#F7F8FA";
+	text: "#1E1E1E";
+	background: "#FFFFFF";
 	update-background: "#FFFFFF";
-	label: "#5C5B74";
-	light-grey: "#A4A3C0";
-	error: "#F53172";
-	brand: "#DA0B82";
-	accent: "#F53172";
+	label: "#5A5A5A";
+	light-grey: "#A9A9B0";
+	error: "#F47A54";
+	brand: "#F45480";
+	accent: "#FD4E75";
 	upload: "#5E31F5";
-	grid: "#211F46";
+	grid: "#FFFFFF";
     switch-bg-on:               "qrc:/light/switch/bg_on.png";
     switch-bg-off:              "qrc:/light/switch/bg_off.png";
     switch-toggle-on:           "qrc:/light/switch/toggle_on.png";
