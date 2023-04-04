@@ -521,178 +521,202 @@ Item {
             anchors.fill: parent
             visible: root.mode == 0
 
-
             /* contact input */
-            Item {
-                id: inputContact
-                property real yy: (inputContact.height - contactResizer.height) / 2
-                DapQmlStyle { qss: "bugrep-contact-input"; item: inputContact }
+            BorderImage {
+                id: inputContactBorder
+                property string scaledPixmap
 
-                /* corner images rectangle */
-                DapQmlRectangle {
-                    id: inputContactFiller
-                    visible: false
-                    anchors.fill: inputContact
-                    color: "transparent"
-                    borderWidth: 2
-                    borderColor: "EEEEEE"
-                    qss: "contact-bugrep-bg"
-                    property string scaledPixmap: ""
+                DapQmlStyle { qss: "bugrep-input-contact bugrep-bg-75"; item: inputContactBorder }
+
+                border { left: 25; top: 25; right: 25; bottom: 25 }
+                horizontalTileMode: BorderImage.Stretch
+                verticalTileMode: BorderImage.Stretch
+                source: scaledPixmap
+
+                DapQmlLineEdit {
+                    id: contactInputField
+                    objectName: "contactInputField"
+                    anchors.centerIn: parent
+                    iconQss: "null-size null-pos"
+                    placeholderQss: "bugrep-input-placeholder"
+                    qss: "bugrep-input-contact-content"
+
+                    placeHolderText: qsTr("Email/ Telegram/Phone number to contact you") + lang.notifier
+                    mainText: ""
                 }
-
-                /* corner images */
-
-                BorderImage {
-                    x: inputContactFiller.x
-                    y: inputContactFiller.y
-                    width: inputContactFiller.width
-                    height: inputContactFiller.height
-                    border { left: 25; top: 25; right: 25; bottom: 25 }
-                    horizontalTileMode: BorderImage.Stretch
-                    verticalTileMode: BorderImage.Stretch
-                    source: inputContactFiller.scaledPixmap
-                }
-
-                /* placeholder */
-                DapQmlLabel {
-                    id: placeholderContact
-                    x: (inputContact.width - width) / 2
-                    y: inputContact.yy
-                    z: 2
-                    width: contactResizer.width
-                    height: contactResizer.height
-                    horizontalAlign: Text.AlignLeft
-                    verticalAlign: Text.AlignTop
-                    text: qsTr("Email/ Telegram/Phone number to contact you") + lang.notifier
-                    qss: "bugrep-input-placeholder"
-                    wrapMode: TextEdit.Wrap
-                    visible: contactInputField.text.length == 0 && ((Scaling.isAndroid()) ? !contactInputField.activeFocus : true)
-
-                }
-
-
-                /* input scrollarea */
-                Flickable {
-                    id: contactInput
-                    x: (inputContact.width - contactResizer.width) / 2
-                    y: inputContact.yy
-                    z: 3
-                    clip: true
-                    contentWidth: width
-                    contentHeight: calcContentHeight()
-
-                    DapQmlStyle { item: contactInput; qss: "bugrep-contact-input-content"; }
-
-                    function ensureVisible(r) {
-                        if (contentX >= r.x)
-                            contentX = r.x;
-                        else if (contentX+width <= r.x+r.width)
-                            contentX = r.x+r.width-width;
-                        if (contentY >= r.y)
-                            contentY = r.y;
-                        else if (contentY+height <= r.y+r.height)
-                            contentY = r.y+r.height-height;
-                    }
-
-                    function calcContentHeight() {
-                        if (contactInputField.paintedHeight < inputContactFiller.height)
-                            return inputContactFiller.height;
-                        else
-                            return contactInputField.paintedHeight;
-                    }
-
-                    /* input */
-                    TextEdit {
-                        id: contactInputField
-                        z: 4
-                        objectName: "contactInputField"
-                        anchors.fill: parent
-                        wrapMode: TextEdit.Wrap
-                        persistentSelection: true
-                        selectByMouse: true
-                        clip: true
-                        font.pixelSize: fontSize
-                        font.weight: fontWeight
-
-                        property int fontSize: 16
-                        property int fontWeight: Font.Normal
-                        property int maximumLength: 200
-                        property string previousContactText: text
-
-                        DapQmlStyle { item: contactInputField; qss: "bugrep-input-textarea"; }
-
-                        TextEditContextMenu {
-                            id: ctxContactMenu
-                            Component.onCompleted: {
-                                setSerialInpoutMode(false);
-                                setTextEditWidget(contactInputField);
-                            }
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            acceptedButtons: Qt.RightButton
-                            cursorShape: Qt.IBeamCursor
-                            onClicked: {
-                                if (Scaling.isDesktop())
-                                    if (mouse.button === Qt.RightButton)
-                                        contextContactMenu.open()
-                            }
-                            onPressAndHold: {
-                                if (Scaling.isDesktop())
-                                    if (mouse.source === Qt.MouseEventNotSynthesized)
-                                        contextContactMenu.open()
-                            }
-                            DapQmlMenu {
-                                id: contextContactMenu
-                                shortcuts: [
-                                    "Ctrl+X",
-                                    "Ctrl+C",
-                                    "Ctrl+V",
-                                    ""
-                                ]
-                                Action {
-                                    text: qsTr("Cut") + lang.notifier
-                                    shortcut: "Ctrl+X"
-                                    onTriggered: ctxContactMenu.execCut();
-                                    Component.onCompleted: console.log(shortcut)
-                                }
-                                Action {
-                                    text: qsTr("Copy") + lang.notifier
-                                    shortcut: "Ctrl+C"
-                                    onTriggered: ctxContactMenu.execCopy();
-                                }
-                                Action {
-                                    text: qsTr("Paste") + lang.notifier
-                                    shortcut: "Ctrl+V"
-                                    onTriggered: ctxContactMenu.execPaste();
-                                }
-                                Action {
-                                    text: qsTr("Delete") + lang.notifier
-                                    onTriggered: ctxContactMenu.execDelete();
-                                }
-                            }
-                        }
-
-                        onCursorRectangleChanged: contactInput.ensureVisible(cursorRectangle)
-
-                        onTextChanged: {
-                            if (text.length > maximumLength) {
-                                var cursor = cursorPosition;
-                                text = previousText;
-                                if (cursor > text.length) {
-                                    cursorPosition = text.length;
-                                } else {
-                                    cursorPosition = cursor-1;
-                                }
-                            }
-                            previousContactText = text
-
-                        }
-                    }
-                }
-
             }
+
+
+//            Item {
+//                id: inputContact
+//                property real yy: (inputContact.height - contactResizer.height) / 2
+//                DapQmlStyle { qss: "bugrep-contact-input"; item: inputContact }
+
+//                /* corner images rectangle */
+//                DapQmlRectangle {
+//                    id: inputContactFiller
+//                    visible: false
+//                    anchors.fill: inputContact
+//                    color: "transparent"
+//                    borderWidth: 2
+//                    borderColor: "EEEEEE"
+//                    qss: "contact-bugrep-bg"
+//                    property string scaledPixmap: ""
+//                }
+
+//                /* corner images */
+
+//                BorderImage {
+//                    x: inputContactFiller.x
+//                    y: inputContactFiller.y
+//                    width: inputContactFiller.width
+//                    height: inputContactFiller.height
+//                    border { left: 25; top: 25; right: 25; bottom: 25 }
+//                    horizontalTileMode: BorderImage.Stretch
+//                    verticalTileMode: BorderImage.Stretch
+//                    source: inputContactFiller.scaledPixmap
+//                }
+
+//                /* placeholder */
+//                DapQmlLabel {
+//                    id: placeholderContact
+//                    x: (inputContact.width - width) / 2
+//                    y: inputContact.yy
+//                    z: 2
+//                    width: contactResizer.width
+//                    height: contactResizer.height
+//                    horizontalAlign: Text.AlignLeft
+//                    verticalAlign: Text.AlignTop
+//                    text: qsTr("Email/ Telegram/Phone number to contact you") + lang.notifier
+//                    qss: "bugrep-input-placeholder"
+//                    wrapMode: TextEdit.Wrap
+//                    visible: contactInputField.text.length == 0 && ((Scaling.isAndroid()) ? !contactInputField.activeFocus : true)
+
+//                }
+
+
+//                /* input scrollarea */
+//                Flickable {
+//                    id: contactInput
+//                    x: (inputContact.width - contactResizer.width) / 2
+//                    y: inputContact.yy
+//                    z: 3
+//                    clip: true
+//                    contentWidth: width
+//                    contentHeight: calcContentHeight()
+
+//                    DapQmlStyle { item: contactInput; qss: "bugrep-contact-input-content"; }
+
+//                    function ensureVisible(r) {
+//                        if (contentX >= r.x)
+//                            contentX = r.x;
+//                        else if (contentX+width <= r.x+r.width)
+//                            contentX = r.x+r.width-width;
+//                        if (contentY >= r.y)
+//                            contentY = r.y;
+//                        else if (contentY+height <= r.y+r.height)
+//                            contentY = r.y+r.height-height;
+//                    }
+
+//                    function calcContentHeight() {
+//                        if (contactInputField.paintedHeight < inputContactFiller.height)
+//                            return inputContactFiller.height;
+//                        else
+//                            return contactInputField.paintedHeight;
+//                    }
+
+//                    /* input */
+//                    TextEdit {
+//                        id: contactInputField
+//                        z: 4
+//                        objectName: "contactInputField"
+//                        anchors.fill: parent
+//                        wrapMode: TextEdit.Wrap
+//                        persistentSelection: true
+//                        selectByMouse: true
+//                        clip: true
+//                        font.pixelSize: fontSize
+//                        font.weight: fontWeight
+
+//                        property int fontSize: 16
+//                        property int fontWeight: Font.Normal
+//                        property int maximumLength: 200
+//                        property string previousContactText: text
+
+//                        DapQmlStyle { item: contactInputField; qss: "bugrep-input-textarea"; }
+
+//                        TextEditContextMenu {
+//                            id: ctxContactMenu
+//                            Component.onCompleted: {
+//                                setSerialInpoutMode(false);
+//                                setTextEditWidget(contactInputField);
+//                            }
+//                        }
+
+//                        MouseArea {
+//                            anchors.fill: parent
+//                            acceptedButtons: Qt.RightButton
+//                            cursorShape: Qt.IBeamCursor
+//                            onClicked: {
+//                                if (Scaling.isDesktop())
+//                                    if (mouse.button === Qt.RightButton)
+//                                        contextContactMenu.open()
+//                            }
+//                            onPressAndHold: {
+//                                if (Scaling.isDesktop())
+//                                    if (mouse.source === Qt.MouseEventNotSynthesized)
+//                                        contextContactMenu.open()
+//                            }
+//                            DapQmlMenu {
+//                                id: contextContactMenu
+//                                shortcuts: [
+//                                    "Ctrl+X",
+//                                    "Ctrl+C",
+//                                    "Ctrl+V",
+//                                    ""
+//                                ]
+//                                Action {
+//                                    text: qsTr("Cut") + lang.notifier
+//                                    shortcut: "Ctrl+X"
+//                                    onTriggered: ctxContactMenu.execCut();
+//                                    Component.onCompleted: console.log(shortcut)
+//                                }
+//                                Action {
+//                                    text: qsTr("Copy") + lang.notifier
+//                                    shortcut: "Ctrl+C"
+//                                    onTriggered: ctxContactMenu.execCopy();
+//                                }
+//                                Action {
+//                                    text: qsTr("Paste") + lang.notifier
+//                                    shortcut: "Ctrl+V"
+//                                    onTriggered: ctxContactMenu.execPaste();
+//                                }
+//                                Action {
+//                                    text: qsTr("Delete") + lang.notifier
+//                                    onTriggered: ctxContactMenu.execDelete();
+//                                }
+//                            }
+//                        }
+
+//                        onCursorRectangleChanged: contactInput.ensureVisible(cursorRectangle)
+
+//                        onTextChanged: {
+//                            if (text.length > maximumLength) {
+//                                var cursor = cursorPosition;
+//                                text = previousText;
+//                                if (cursor > text.length) {
+//                                    cursorPosition = text.length;
+//                                } else {
+//                                    cursorPosition = cursor-1;
+//                                }
+//                            }
+//                            previousContactText = text
+
+//                        }
+//                    }
+//                }
+
+//            }
 
             /* text input */
             Item {

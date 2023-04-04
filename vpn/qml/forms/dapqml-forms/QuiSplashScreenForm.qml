@@ -37,9 +37,6 @@ Item {
     /// Used to connect interface via Manager
     property string formName: "SplashScreen"
 
-    /// @brief text color
-    property color mainColor: "#FFFFFF"
-
     /// @brief default status text
     property string statusText: "Loading..."
 
@@ -51,6 +48,12 @@ Item {
 
     /// @brief logo filename
     property string logoPng: "qrc:/logo.png"
+
+    /// @}
+    /****************************************//**
+     * @name SIGNALS
+     ********************************************/
+    /// @{
 
     ///
     signal sigShowCdbManager();
@@ -77,12 +80,12 @@ Item {
         logoPng     = "";
     }
 
-    Timer {
-        interval: 10
-        running: true
-        repeat: false
-        onTriggered: rect.z = 10
-    }
+//    Timer {
+//        interval: 10
+//        running: true
+//        repeat: false
+//        onTriggered: rect.z = 10
+//    }
 
     /// @}
     /****************************************//**
@@ -101,30 +104,46 @@ Item {
         qss: "splash-gradient-bottom"
     }
 
+    DapQmlLabel {
+        id: splashSettings
+        visible: false
+        qss: "c-text"
+    }
+
+    /****************************************//**
+     * Background
+     ********************************************/
+
+    DapQmlRectangle {
+        anchors.fill: parent
+        z: 10
+        qss: "c-background"
+    }
+
     /****************************************//**
      * Gradient background
      ********************************************/
 
-    Rectangle {
-        id: rect
-        z: 20
-        anchors.fill: parent
+//    Rectangle {
+//        id: rect
+//        z: 20
+//        anchors.fill: parent
 
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: gradientColorTop.color } //"#E62CC7" }
-            GradientStop { position: 1.0; color: gradientColorBottom.color } //"#F53172" }
-        }
-    }
+//        gradient: Gradient {
+//            GradientStop { position: 0.0; color: gradientColorTop.color } //"#E62CC7" }
+//            GradientStop { position: 1.0; color: gradientColorBottom.color } //"#F53172" }
+//        }
+//    }
 
     /****************************************//**
      * Stripes
      ********************************************/
 
-    DapQmlImage {
-        z: 11
-        anchors.fill: parent
-        scaledPixmap: root.stripesPng
-    }
+//    DapQmlImage {
+//        z: 11
+//        anchors.fill: parent
+//        scaledPixmap: root.stripesPng
+//    }
 
     /****************************************//**
      * Logo
@@ -132,23 +151,21 @@ Item {
 
     DapQmlLabel {
         x: parent.width / 2 - width / 2
-        y: 248
         z: 12
-        width: 230
-        height: 59
         qss: "splash-logo"
     }
 
     /****************************************//**
      * Text hyperlink
      ********************************************/
+
     DapQmlLabel {
         visible: root.enabled
         qss: "splash-hyperlink"
         z: 12
         width: parent.width
         text: qsTr("Tap here to show cdb management")
-        color: root.mainColor
+        color: splashSettings.color
         onClicked: {
             root.sigShowCdbManager()
         }
@@ -169,7 +186,7 @@ Item {
         z: 12
         width: parent.width
         text: root.statusText
-        color: root.mainColor
+        color: splashSettings.color
     }
 
     /****************************************//**
@@ -182,7 +199,7 @@ Item {
         z: 12
         width: parent.width
         text: root.versionText
-        color: root.mainColor
+        color: splashSettings.color
     }
 }
 
