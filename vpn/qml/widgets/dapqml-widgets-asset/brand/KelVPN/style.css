@@ -48,20 +48,36 @@
 	btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
 	btn-update-notification-close:          "qrc:/light/ic_close_update.png";
 	btn-update-notification-close-hover:    "qrc:/light/ic_close_update_hover.png";
+
+    ic-renew:                   "qrc:/dapqml-forms-asset/light/ic_renew.png";
+    ic-key:                     "qrc:/dapqml-forms-asset/light/ic_key.png";
+    ic-location:                "qrc:/dapqml-forms-asset/light/ic_location.png";
+    ic-language:                "qrc:/dapqml-forms-asset/light/ic_language.png";
+    ic-theme:                   "qrc:/dapqml-forms-asset/light/ic_theme.png";
+    ic-send-report:             "qrc:/dapqml-forms-asset/light/ic_send-report.png";
+    ic-bot:                     "qrc:/dapqml-forms-asset/light/ic_bot.png";
+    ic-share-report:            "qrc:/dapqml-forms-asset/light/ic_share_log.png";
+    ic-info-bug-report:         "qrc:/dapqml-forms-asset/light/ic_information_bug-report.png";
+    ic-faq:                     "qrc:/dapqml-forms-asset/light/ic_faq.png";
+    ic-key-history:             "qrc:/dapqml-forms-asset/light/ic_key-history.png";
+    ic-terms-policy:            "qrc:/dapqml-forms-asset/light/ic_terms_policy.png";
+    ic-version:                 "qrc:/dapqml-forms-asset/light/ic_version.png";
+    ic-report-item:             "qrc:/dapqml-forms-asset/light/ic_report-item.png";
+    ic-key-item:                "qrc:/dapqml-forms-asset/light/ic_key-item.png";
 }
 
 .@dark
 {
 	text: "#FFFFFF";
-	background: "#2f2e42";
+	background: "#1E1E1E";
 	update-background: "#37354D";
-	label: "#A4A3C0";
-	light-grey: "#A4A3C0";
-	error: "#F5FF00";
-	brand: "#DA0B82";
-	accent: "#FF22A2";
+	label: "#A9A9B0";
+	light-grey: "#F7F7F7";
+	error: "#F47A54";
+	brand: "#F45480";
+	accent: "#FD4E75";
 	upload: "#9F83FF";
-	grid: "#211F46";
+	grid: "#3F3F3F";
     switch-bg-on:               "qrc:/dark/switch/bg_on.png";
     switch-bg-off:              "qrc:/dark/switch/bg_off.png";
     switch-toggle-on:           "qrc:/dark/switch/toggle_on.png";
@@ -96,6 +112,22 @@
     btn-ticker-close-hover:     "qrc:/dark/ic_ticker_close_hover.png";
     btn-update-notification-close:          "qrc:/dark/ic_close_update.png";
     btn-update-notification-close-hover:    "qrc:/dark/ic_close_update_hover.png";
+
+    ic-renew:                   "qrc:/dapqml-forms-asset/dark/ic_renew.png";
+    ic-key:                     "qrc:/dapqml-forms-asset/dark/ic_key.png";
+    ic-location:                "qrc:/dapqml-forms-asset/dark/ic_location.png";
+    ic-language:                "qrc:/dapqml-forms-asset/dark/ic_language.png";
+    ic-theme:                   "qrc:/dapqml-forms-asset/dark/ic_theme.png";
+    ic-send-report:             "qrc:/dapqml-forms-asset/dark/ic_send-report.png";
+    ic-bot:                     "qrc:/dapqml-forms-asset/dark/ic_bot.png";
+    ic-share-report:            "qrc:/dapqml-forms-asset/dark/ic_share_log.png";
+    ic-info-bug-report:         "qrc:/dapqml-forms-asset/dark/ic_information_bug-report.png";
+    ic-faq:                     "qrc:/dapqml-forms-asset/dark/ic_faq.png";
+    ic-key-history:             "qrc:/dapqml-forms-asset/dark/ic_key-history.png";
+    ic-terms-policy:            "qrc:/dapqml-forms-asset/dark/ic_terms_policy.png";
+    ic-version:                 "qrc:/dapqml-forms-asset/dark/ic_version.png";
+    ic-report-item:             "qrc:/dapqml-forms-asset/dark/ic_report-item.png";
+    ic-key-item:                "qrc:/dapqml-forms-asset/dark/ic_key-item.png";
 }
 
 /****************************************************
@@ -293,38 +325,82 @@
 
 .ic_renew
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_renew.png");
+	qproperty-scaledPixmap: "@ic-renew";
 }
 
 .ic_key
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_key.png");
+	qproperty-scaledPixmap: "@ic-key";
 }
 
-.ic_key-item
+.ic_location
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_key-item.png");
+    qproperty-scaledPixmap: "@ic-location";
 }
 
 .ic_language
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_language.png");
+    qproperty-scaledPixmap: "@ic-language";
+}
+
+.ic_theme
+{
+    qproperty-scaledPixmap: "@ic-theme";
 }
 
 .ic_send-report
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_send-report.png");
+    qproperty-scaledPixmap: "@ic-send-report";
 }
 
 .ic_bot
 {
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_bot.png");
+    qproperty-scaledPixmap: "@ic-bot";
 }
 
 .ic_share_log
 {
-        qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_share_log.png");
+    qproperty-scaledPixmap: "@ic-share-report";
 }
+
+.ic_information_bug-report
+{
+    qproperty-scaledPixmap: "@ic-info-bug-report";
+}
+
+.ic_faq
+{
+    qproperty-scaledPixmap: "@ic-faq";
+}
+
+.ic_key-history
+{
+    qproperty-scaledPixmap: "@ic-key-history";
+}
+
+.ic_terms_policy
+{
+    qproperty-scaledPixmap: "@ic-terms-policy";
+}
+
+.ic_version
+{
+    qproperty-scaledPixmap: "@ic-version";
+}
+
+.ic_report-item
+{
+    qproperty-scaledPixmap: "@ic-report-item";
+}
+
+.ic_key-item
+{
+	qproperty-scaledPixmap: "@ic-key-item";
+}
+
+
+
+
 
 .ic_close
 {
@@ -346,41 +422,6 @@
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_trash.png");
 }
 
-.ic_information_bug-report
-{
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_information_bug-report.png");
-}
-
-.ic_faq
-{
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_faq.png");
-}
-
-.ic_key-history
-{
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_key-history.png");
-}
-
-.ic_terms_policy
-{
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_terms_policy.png");
-}
-
-.ic_terms_policy
-{
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_terms_policy.png");
-}
-
-.ic_version
-{
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_version.png");
-}
-
-.ic_theme
-{
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_theme.png");
-}
-
 .ic_certificate
 {
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_certificate.png");
@@ -399,11 +440,6 @@
 .ic_spinner
 {
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/Spinner.gif");
-}
-
-.ic_location
-{
-	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_location.png");
 }
 
 .ic_country_filter
