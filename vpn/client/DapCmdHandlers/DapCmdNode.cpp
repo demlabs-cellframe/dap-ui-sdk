@@ -8,7 +8,8 @@
 
 DapCmdNode::DapCmdNode(QObject *parent)
     : DapCmdServiceAbstract(DapJsonCmdType::NODE_INFO, parent),
-      m_nodeDetected(false)
+      m_nodeDetected(false),
+      m_nocdbMode(false)
 {
 
 }
@@ -23,6 +24,13 @@ void DapCmdNode::setNodeDetected()
     DEBUGINFO << "slot setNodeDetected";
     m_nodeDetected = true;
     sendNodeDetected();
+}
+
+void DapCmdNode::sendNoCdbMode()
+{
+    QJsonObject response;
+    response["nocdb_mode"] = m_nocdbMode;
+    sendCmd(&response);
 }
 
 void DapCmdNode::sendNodeDetected()
@@ -98,23 +106,25 @@ void DapCmdNode::sendTransactionInLedger()
     DEBUGINFO << "sendTransactionInLedger";
 }
 
-void DapCmdNode::sendReceipInfo(qint32 utype, qint64 uid, qint64 units, qint64 value)
+void DapCmdNode::sendSigningInfo(qint32 utype, qint64 uid, qint64 units, QString price)
 {
     QJsonObject response;
     QJsonObject info;
     info["utype"] = utype;
     info["uid"] = uid;
-    info["units"] = units;
-    info["value"] = value;
-    response["receipt_info"] = info;
+    info["units"] = QString::number(units);
+    info["value"] = price;
+    response["signing_info"] = info;
     sendCmd(&response);
-    DEBUGINFO << "sendReceipInfo";
+    DEBUGINFO << "sendSigningInfo" << utype << QString::number(units) << price;
 }
 
 void DapCmdNode::handle(const QJsonObject* params)
 {
     if (params->value("start_node_detection").isBool() && params->value("start_node_detection").toBool())
         emit startNodeDetection();
+    if (params->value("nocdb_mode_request").isBool())
+        sendNoCdbMode();
     // data wallet request
     if (params->value("data_wallet_request").isBool() && params->value("data_wallet_request").toBool())
         emit dataWalletRequest();
@@ -157,8 +167,8 @@ void DapCmdNode::handle(const QJsonObject* params)
     }
     if (params->value("node_detected_check").isBool() && params->value("node_detected_check").toBool())
         sendNodeDetected();
-    if (params->value("receipt_signed").isBool() && params->value("receipt_signed").toBool())
-        emit receiptSigned();
+    if (params->value("check_signed").isBool() && params->value("check_signed").toBool())
+        emit checkSigned();
     if (params->value("start_connect_by_order").isObject())
     {
         QJsonObject oi = params->value("start_connect_by_order").toObject();
@@ -181,6 +191,7 @@ void DapCmdNode::handle(const QJsonObject* params)
         uint16_t port        = 80;
         if (!oi["port"].isNull())
             port             = oi["port"].toInt();
+        m_nocdbMode = true;
         emit connectByOrder(netId, txCondHash, token, srvUid, address, port);
     }
 }

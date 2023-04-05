@@ -24,13 +24,27 @@ Item {
             processingItem.visible = false
             overview.visible = true
             overview.buttonActive = true
+            overview.cellEnabled = true
+            overview.recieptView = false
         }
-        else
+        if (mode === 2)
         {
             title.text = titleProcessing
             processingItem.visible = true
             overview.visible = false
+            overview.cellEnabled = true
+            overview.recieptView = false
         }
+        if (mode === 3)
+        {
+            title.text = titleOverview
+            processingItem.visible = false
+            overview.visible = true
+            overview.buttonActive = true
+            overview.cellEnabled = false
+            overview.recieptView = true
+        }
+
     }
 
     function setWallet(walletName)
@@ -53,6 +67,21 @@ Item {
         overview.setTokenCount(tokenCount)
     }
 
+    function setUnit(unit)
+    {
+        overview.setUnit(unit)
+    }
+
+    function setPrice(price)
+    {
+        overview.setPrice(price)
+    }
+
+    function setServer(server)
+    {
+        overview.setServer(server)
+    }
+
     /****************************************//**
      * Title
      ********************************************/
@@ -70,7 +99,7 @@ Item {
         // button enable
         buttonActive: true
         //
-        cellEnabled: true
+        //cellEnabled: true
         // arrows on buttons
         link: false
         onButtonClicked: { root.sigConfirm() }

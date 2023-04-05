@@ -10,6 +10,7 @@ Item {
     property string formName: ""
     property bool link: false
     property bool cellEnabled: false
+    property bool recieptView: false
     property bool buttonActive: false
 
     signal walletClicked()
@@ -36,6 +37,21 @@ Item {
     function setTokenCount(tokenCount)
     {
         btnMaxPrice.mainText = tokenCount
+    }
+
+    function setServer(server)
+    {
+        btnServer.mainText = server
+    }
+
+    function setUnit(unit)
+    {
+        btnUnit.mainText = unit
+    }
+
+    function setPrice(price)
+    {
+        btnPrice.mainText = price
     }
 
     function setSetConfirmButtonActive(active)
@@ -69,6 +85,7 @@ Item {
      ********************************************/
 
     DapQmlRectangle {
+        id:     walletField
         x:      walletPlacer.x
         y:      walletPlacer.y
         width:  walletPlacer.width
@@ -111,6 +128,7 @@ Item {
      ********************************************/
 
     DapQmlRectangle {
+        id:     networkField
         x:      networkPlacer.x
         y:      networkPlacer.y
         width:  networkPlacer.width
@@ -152,10 +170,12 @@ Item {
      ********************************************/
 
     DapQmlRectangle {
+        id:     cellField
         x:      cellPlacer.x
         y:      cellPlacer.y
         width:  cellPlacer.width
         height: cellPlacer.height
+        visible: !root.recieptView
 
         DapQmlButton {
             id: btnChooseCell
@@ -193,6 +213,7 @@ Item {
      ********************************************/
 
     DapQmlRectangle {
+        id:     maxPriceField
         x:      maxpricePlacer.x
         y:      maxpricePlacer.y
         width:  maxpricePlacer.width
@@ -231,6 +252,136 @@ Item {
     }
 
     /****************************************//**
+     * server
+     ********************************************/
+
+    DapQmlRectangle {
+        id:     serverField
+        x:      serverPlacer.x
+        y:      serverPlacer.y
+        width:  serverPlacer.width
+        height: serverPlacer.height
+        visible: root.recieptView
+
+        DapQmlButton {
+            id: btnServer
+            x: (parent.width - width) / 2
+            z: 15
+            width: parent.width - 74
+            property string defaultServerName: qsTr("-") + lang.notifier
+
+            buttonStyle: DapQmlButton.Style.TopMainBottomSub
+            mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
+            subText: qsTr("SERVER") + lang.notifier
+            qss: "login-btn-server"
+            mainQss: "login-btn-main"
+            subQss: "login-btn-sub"
+            separator: true
+            link: root.link
+            onClicked: root.cellClicked()
+
+            function updateServerName() {
+                mainText = (!internal.changedServer)
+                        ? (defaultServerName)
+                        : (internal.serverName)
+            }
+
+            onDefaultServerNameChanged: updateServerName()
+        }
+        DapQmlDummy {
+            id: serverPlacer
+            qss: "overview-btn-server-container"
+        }
+    }
+
+    /****************************************//**
+     * unit
+     ********************************************/
+
+    DapQmlRectangle {
+        id:     unitField
+        x:      unitPlacer.x
+        y:      unitPlacer.y
+        width:  unitPlacer.width
+        height: unitPlacer.height
+        visible: root.recieptView
+
+        DapQmlButton {
+            id: btnUnit
+            x: (parent.width - width) / 2
+            z: 15
+            width: parent.width - 74
+            property string defaultServerName: qsTr("-") + lang.notifier
+
+            buttonStyle: DapQmlButton.Style.TopMainBottomSub
+            mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
+            subText: qsTr("UNIT") + lang.notifier
+            qss: "login-btn-server"
+            mainQss: "login-btn-main"
+            subQss: "login-btn-sub"
+            separator: true
+            link: root.link
+            onClicked: root.cellClicked()
+
+            function updateServerName() {
+                mainText = (!internal.changedServer)
+                        ? (defaultServerName)
+                        : (internal.serverName)
+            }
+
+            onDefaultServerNameChanged: updateServerName()
+        }
+        DapQmlDummy {
+            id: unitPlacer
+            qss: "overview-btn-unit-container"
+        }
+    }
+
+    /****************************************//**
+     * price
+     ********************************************/
+
+    DapQmlRectangle {
+        id:     priceField
+        x:      pricePlacer.x
+        y:      pricePlacer.y
+        width:  pricePlacer.width
+        height: pricePlacer.height
+        visible: root.recieptView
+
+        DapQmlButton {
+            id: btnPrice
+            x: (parent.width - width) / 2
+            z: 15
+            width: parent.width - 74
+            property string defaultServerName: qsTr("-") + lang.notifier
+
+            buttonStyle: DapQmlButton.Style.TopMainBottomSub
+            mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
+            subText: qsTr("PRICE") + lang.notifier
+            qss: "login-btn-server"
+            mainQss: "login-btn-main"
+            subQss: "login-btn-sub"
+            separator: true
+            link: root.link
+            onClicked: root.cellClicked()
+
+            function updateServerName() {
+                mainText = (!internal.changedServer)
+                        ? (defaultServerName)
+                        : (internal.serverName)
+            }
+
+            onDefaultServerNameChanged: updateServerName()
+        }
+        DapQmlDummy {
+            id: pricePlacer
+            qss: "overview-btn-price-container"
+        }
+    }
+
+
+    /****************************************//**
      * Connect button
      ********************************************/
 
@@ -241,7 +392,7 @@ Item {
         qss: "overview-btn-confirm"
         text: qsTr("CONFIRM") + lang.notifier
         onClicked: root.buttonClicked()
-        enabled: buttonActive
+        enabled: root.buttonActive
     }
 
 }

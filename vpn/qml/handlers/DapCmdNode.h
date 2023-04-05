@@ -202,6 +202,7 @@ public:
 
     void startNodeDetection();
     void stopCheckNode();
+    void noCdbModeRequest();
 
     bool error() { return m_hasError; }
     WalletsData* nodeInfo() { return &m_dataWallet; }
@@ -216,7 +217,7 @@ public slots:
     void condTxCreate();
     void startSearchOrders();
     QStringList orderData(QString hash);
-    void receiptSigned();
+    void checkSigned();
     void startConnectByOrder();
 
 signals:
@@ -229,9 +230,9 @@ signals:
     void nodeError(int code, QString errorMessage);
     void transactionHashInMempool();
     void transactionHashInledger();
-    void receiptReceived();
 //    void dataWallets(WalletsData* walletsData);
     void continueEnable(bool);
+    void signingReceived(qint32 utype, qint64 uid, QString units, QString value);
 
 private:
     void sendShowInterface(const QString &interfaceName);

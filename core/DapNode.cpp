@@ -36,7 +36,7 @@ DapNode::~ DapNode()
 }
 
 // transaction certificate name
-QString DapNode::certificateName(const QString& access) const
+QString DapNode::certificateName(const QString& access)
 {
     const QString private_certificateName("node-addr-kelvpn-minkowski-cert");
     const QString public_certificateName = private_certificateName + "_public";

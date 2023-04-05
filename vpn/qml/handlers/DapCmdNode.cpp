@@ -69,16 +69,15 @@ void DapCmdNode::handleResult(const QJsonObject& params)
         emit orderList(m_orderListData.orders());
         return;
     }
-    if (params.value("receipt_info").isObject())
+    if (params.value("signing_info").isObject())
     {
-        DEBUGINFO << "receipt received";
-        QJsonObject info = params.value("receipt_info").toObject();
-        qint32 utype = params.value("utype").toInt();
-        qint64 uid = params.value("uid").toInt();
-        qint64 units = params.value("units").toInt();
-        qint64 value = params.value("value").toInt();
-        // TODO noCDB
-//                    emit receiptReceived(utype, uid, units, value);
+        QJsonObject info = params.value("signing_info").toObject();
+        qint32 utype = info.value("utype").toInt();
+        qint64 uid = info.value("uid").toInt();
+        QString units = info.value("units").toString();
+        QString value = info.value("value").toString();
+        DEBUGINFO << "signing_info received" << units << value;
+        emit signingReceived(utype, uid, units, value);
         return;
     }
 }
@@ -118,6 +117,13 @@ void DapCmdNode::stopCheckNode()
     sendCmd(&checkNode);
 }
 
+void DapCmdNode::noCdbModeRequest()
+{
+    QJsonObject checkNode;
+    checkNode["nocdb_mode_request"] = true;
+    sendCmd(&checkNode);
+}
+
 void DapCmdNode::condTxCreate()
 {
     QJsonObject condTx;
@@ -147,10 +153,11 @@ void DapCmdNode::startSearchOrders()
     sendCmd(&jObject);
 }
 
-void DapCmdNode::receiptSigned()
+void DapCmdNode::checkSigned()
 {
+    qDebug() << "check signed";
     QJsonObject checkNode;
-    checkNode["receipt_signed"] = true;
+    checkNode["check_signed"] = true;
     sendCmd(&checkNode);
 }
 
@@ -160,7 +167,7 @@ void DapCmdNode::startConnectByOrder()
     QJsonObject connectData = m_orderListData.orderInfo(m_orderHash);
     connectData["net_id"] = "0x000000000000AAAA"; // TODO get from network list
     connectData["token"] = m_selectedTokenName;
-    connectData["node_ip"] = "164.92.175.30";
+    connectData["node_ip"] = "164.92.175.30"; // TODO get from order
     jObject["start_connect_by_order"] = connectData;
     sendCmd(&jObject);
 }

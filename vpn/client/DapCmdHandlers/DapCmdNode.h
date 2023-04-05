@@ -11,11 +11,14 @@ class DapCmdNode : public DapCmdServiceAbstract
 private:
     static const QString actionParam;
     bool   m_nodeDetected;
+    bool   m_nocdbMode;
+    void   sendNoCdbMode();
 public:
     explicit DapCmdNode(QObject *parent = nullptr);
     virtual ~DapCmdNode() override;
 
     void handle(const QJsonObject* params) override;
+    bool nocdbMode() { return m_nocdbMode; }
 public slots:
     void sendWalletsList(const QStringList& walletsList);
     void sendNetworksList(const QStringList& walletsList);
@@ -26,14 +29,14 @@ public slots:
     void sendTransactionInMempool();
     void sendTransactionInLedger();
     void sendOrderList(const QJsonArray& orderList);
-    void sendReceipInfo(qint32 utype, qint64 uid, qint64 units, qint64 value);
+    void sendSigningInfo(qint32 utype, qint64 uid, qint64 units, QString price);
 signals:
     void startNodeDetection();
     void stopNodeDetection();
     void dataWalletRequest();
     void orderListRequest(QString networkName, QString tokenName, QString unit, QString maxPrice, QString minPrice);
     void condTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
-    void receiptSigned();
+    void checkSigned();
     void connectByOrder(QString netId, QString txCondHash, QString token, QString srvUid, QString address, uint16_t port);
 };
 

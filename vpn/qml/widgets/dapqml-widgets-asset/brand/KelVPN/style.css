@@ -645,31 +645,6 @@
         scaled-rect: scaled(-1,249,-1,76,true);
 }
 
-.overview-btn-wallet-container
-{
-        scaled-rect: scaled(-1,134,-1,108,true);
-}
-
-.overview-btn-network-container
-{
-        scaled-rect: scaled(-1,244,-1,108,true);
-}
-
-.overview-btn-cell-container
-{
-        scaled-rect: scaled(-1,354,-1,108,true);
-}
-
-.overview-btn-maxprice-container
-{
-        scaled-rect: scaled(-1,464,-1,108,true);
-}
-
-.overview-btn-confirm
-{
-        scaled-rect: scaled(-1,737,374,80,true,12);
-}
-
 .login-btn-maxprice-container
 {
         scaled-rect: scaled(-1,310,-1,76,true);
@@ -792,6 +767,50 @@
 .login-space-for2rows
 {
     scaled-rect: scaled(nan,0,nan,nan,false);
+}
+
+/****************************************************
+ * Transaction
+ ***************************************************/
+
+.overview-btn-wallet-container
+{
+        scaled-rect: scaled(-1,134,-1,108,true);
+}
+
+.overview-btn-network-container
+{
+        scaled-rect: scaled(-1,244,-1,108,true);
+}
+
+.overview-btn-cell-container
+{
+        scaled-rect: scaled(-1,354,-1,108,true);
+}
+
+.overview-btn-server-container
+{
+        scaled-rect: scaled(-1,354,-1,108,true);
+}
+
+.overview-btn-maxprice-container
+{
+        scaled-rect: scaled(-1,464,-1,108,true);
+}
+
+.overview-btn-unit-container
+{
+        scaled-rect: scaled(-1,464,-1,108,true);
+}
+
+.overview-btn-price-container
+{
+        scaled-rect: scaled(-1,564,-1,108,true);
+}
+
+.overview-btn-confirm
+{
+        scaled-rect: scaled(-1,737,374,80,true,12);
 }
 
 /****************************************************

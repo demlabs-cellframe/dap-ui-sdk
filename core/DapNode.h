@@ -132,6 +132,7 @@ public:
     ~DapNode();
     void start();
     QString txCondHash();
+    static QString certificateName(const QString& access = "public");
 
 private:
     void initStmTransitions();
@@ -141,7 +142,6 @@ private:
 
     bool nodeDetected;
     // transaction certificate name
-    QString certificateName(const QString& access = "public") const;
 
 
 public slots:
