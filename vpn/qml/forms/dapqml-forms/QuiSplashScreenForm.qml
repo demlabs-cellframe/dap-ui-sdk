@@ -161,7 +161,7 @@ Item {
 
     DapQmlLabel {
         visible: root.enabled
-        qss: "splash-hyperlink"
+        qss: "splash-hyperlink c-label"
         z: 12
         width: parent.width
         text: qsTr("Tap here to show cdb management")
@@ -182,7 +182,7 @@ Item {
      ********************************************/
 
     DapQmlLabel {
-        qss: "splash-status"
+        qss: "splash-status c-label"
         z: 12
         width: parent.width
         text: root.statusText
@@ -194,7 +194,7 @@ Item {
      ********************************************/
 
     DapQmlLabel {
-        qss: "splash-version"
+        qss: "splash-version c-label"
         y: parent.height - height
         z: 12
         width: parent.width
