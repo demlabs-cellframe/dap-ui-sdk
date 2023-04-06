@@ -34,13 +34,15 @@
 	footer-statistics-active:   "qrc:/light/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/light/btn_account.png";
 	bugrep-bg: 					"qrc:/light/report_bg_border.png";
-        contact-bugrep-bg:          "qrc:/light/contact_report_bg_border.png";
+	bugrep-bg-75:               "qrc:/light/report_bg_border_75.png";
+	contact-bugrep-bg:          "qrc:/light/contact_report_bg_border.png";
 	login-logo: 				"qrc:/light/login-logo.png";
+	splash-logo:				"qrc:/light/logo.png";
 	btn-plus:                   "qrc:/light/ic_plus.png";
 	btn-close:                  "qrc:/light/ic_close.png";
-        btn-close-hover:            "qrc:/light/ic_close_hover.png";
-        btn-ticker-close:           "qrc:/light/ic_ticker_close.png";
-        btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
+	btn-close-hover:            "qrc:/light/ic_close_hover.png";
+	btn-ticker-close:           "qrc:/light/ic_ticker_close.png";
+	btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
 }
 
 .@dark
@@ -75,13 +77,15 @@
 	footer-statistics-active:   "qrc:/dark/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/dark/btn_account.png";
 	bugrep-bg: 					"qrc:/dark/report_bg_border.png";
-        contact-bugrep-bg:          "qrc:/dark/contact_report_bg_border.png";
+	bugrep-bg-75:               "qrc:/dark/report_bg_border_75.png";
+	contact-bugrep-bg:          "qrc:/dark/contact_report_bg_border.png";
 	login-logo: 				"qrc:/dark/login-logo.png";
+	splash-logo:				"qrc:/dark/logo.png";
     btn-plus:                   "qrc:/dark/ic_plus.png";
 	btn-close:                  "qrc:/dark/ic_close.png";
-        btn-close-hover:            "qrc:/dark/ic_close_hover.png";
-        btn-ticker-close:           "qrc:/dark/ic_ticker_close.png";
-        btn-ticker-close-hover:     "qrc:/dark/ic_ticker_close_hover.png";
+	btn-close-hover:            "qrc:/dark/ic_close_hover.png";
+	btn-ticker-close:           "qrc:/dark/ic_ticker_close.png";
+	btn-ticker-close-hover:     "qrc:/dark/ic_ticker_close_hover.png";
 }
 
 /****************************************************
@@ -240,6 +244,18 @@
 .radiobtn-spacer
 {
 	scaled-rect: scaled(nan,nan,392,20,false);
+}
+
+
+
+.null-size
+{
+	scaled-rect: scaled(nan,nan,0,0,false);
+}
+
+.null-pos
+{
+	scaled-rect: scaled(0,0,nan,nan,false);
 }
 
 /****************************************************
@@ -514,7 +530,7 @@
 .splash-logo
 {
 	scaled-rect: scaled(nan,240,276,76,true);
-	qproperty-scaledPixmap: "qrc:/logo.png";
+	qproperty-scaledPixmap: "@splash-logo";
 }
 
 .splash-status
@@ -873,14 +889,24 @@
 	scaled-rect: scaled(nan,nan,316,120,false,16);
 }
 
+.bugrep-input-contact
+{
+	scaled-rect: scaled(32,150,364,80,false,16);
+}
+
+.bugrep-input-contact-content
+{
+	scaled-rect: scaled(nan,nan,332,44,false,16);
+}
+
 .bugrep-letter-counter
 {
-        scaled-rect: scaled(283,410,100,19,false,16);
+	scaled-rect: scaled(283,410,100,19,false,16);
 }
 
 .bugrep-attach-btn
 {
-        scaled-rect: scaled(19,450,390,20,false,16);
+	scaled-rect: scaled(19,450,390,20,false,16);
 	color: "#DA0B82";
 }
 
@@ -918,7 +944,12 @@
 
 .contact-bugrep-bg
 {
-        qproperty-scaledPixmap: "@contact-bugrep-bg";
+	qproperty-scaledPixmap: "@contact-bugrep-bg";
+}
+
+.bugrep-bg-75
+{
+	qproperty-scaledPixmap: "@bugrep-bg-75";
 }
 
 .bugrep-input-textarea
