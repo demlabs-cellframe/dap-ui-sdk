@@ -7,12 +7,16 @@
         <file compress="1">light/separator_mid.png</file>
         <file compress="1">light/separator_right.png</file>
         <file compress="1">light/btn_server_bg.png</file>
+        <file compress="1">light/contact_report_bg_border.png</file>
+        <file compress="1">light/report_bg_border_75.png</file>
         <file compress="1">dark/ic_arrow-right.png</file>
         <file compress="1">dark/report_bg_border.png</file>
         <file compress="1">dark/separator_left.png</file>
         <file compress="1">dark/separator_mid.png</file>
         <file compress="1">dark/separator_right.png</file>
         <file compress="1">dark/btn_server_bg.png</file>
+        <file compress="1">dark/contact_report_bg_border.png</file>
+        <file compress="1">dark/report_bg_border_75.png</file>
         <file compress="1">fonts/Roboto-Bold.ttf</file>
         <file compress="1">fonts/Lato-Regular.ttf</file>
         <file compress="1">fonts/Lato-Bold.ttf</file>
@@ -33,8 +37,5 @@
         <file compress="1">nonthemed/password-show.png</file>
         <file compress="1">nonthemed/arrow-up.png</file>
         <file compress="1">nonthemed/arrow-down.png</file>
-        <file>light/contact_report_bg_border.png</file>
-        <file>dark/contact_report_bg_border.png</file>
-        <file>light/report_bg_border_75.png</file>
     </qresource>
 </RCC>
