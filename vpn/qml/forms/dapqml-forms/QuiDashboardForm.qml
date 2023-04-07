@@ -253,14 +253,15 @@ Item {
          id: updateNotificationRect
          qss: "update-notification-rect"
          y: hidden
-            ? (ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y)
-            : (ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y)
+            ? (statusLabel.y + statusLabel.height) //(ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y)
+            : (statusLabel.y + statusLabel.height + updNotPosTickerOff.y) //(ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y)
          z: 30
          radius: 13
          visible: true
          opacity: 0
 
          property bool hidden: true
+         //property real titlePos: statusLabel.y + statusLabel.height
 
          Behavior on y { PropertyAnimation { duration: 100 }}
          Behavior on opacity { PropertyAnimation { duration: 100 }}
@@ -281,8 +282,8 @@ Item {
 
          function _updatePos() {
              y = hidden
-                 ? (ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y)
-                 : (ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y)
+                 ? (statusLabel.y + statusLabel.height) //(ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y)
+                 : (statusLabel.y + statusLabel.height + updNotPosTickerOff.y) //(ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y)
              statusContainer._updatePos();
          }
 

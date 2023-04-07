@@ -43,16 +43,25 @@ RadioButton {
     property bool separator: false
 
     /// @brief padding between icon and text label
-    property real textPadding: root.indicator.width + root.spacing
+    //property real textPadding: radioIndicator.width + root.spacing
 
+    indicator: Item {}
+    contentItem: Item {}
 
+    property QtObject internal : QtObject {
+        property real padding: 0//root.width / 20
+        property real width: root.width - root.internal.padding * 2
+    }
 
     /// @}
     /****************************************//**
      * Icon image / Indicator / Checkbox
      ********************************************/
 
-    indicator: DapQmlLabel {
+    //indicator: DapQmlLabel {
+    DapQmlLabel {
+        id: radioIndicator
+        x: internal.padding
         qss: root.checked ? "radio-on" : "radio-off"
         width: root.iconSize
         height: root.iconSize
@@ -63,13 +72,16 @@ RadioButton {
      * Text label
      ********************************************/
 
-    contentItem: DapQmlLabel {
-        leftPadding: textPadding // root.indicator.width + root.spacing
+    //contentItem: DapQmlLabel {
+    DapQmlLabel {
+        x: internal.padding + radioIndicator.width + root.spacing
+        width: internal.width - radioIndicator.width - root.spacing
+        height: radioIndicator.height
+        //leftPadding: textPadding // root.indicator.width + root.spacing
         horizontalAlign: Text.AlignLeft
         verticalAlign: Text.AlignVCenter
         text: root.text
         qss: root.textQss
-        clip: false
         onClicked: { root.toggle(); root.clicked(); }
     }
 
@@ -80,7 +92,7 @@ RadioButton {
     DapQmlSeparator {
         x: (root.width - width) / 2
         y: root.height// - height
-        width: root.width - 32
+        width: root.width
         visible: root.separator
     }
 }
