@@ -51,8 +51,8 @@ Rectangle {
 
     DapQmlImage {
         id: sep2
-        x: sep1.width
-        width: root.width - sep1.width - sep3.width
+        x: sep1.width - 2
+        width: root.width - sep1.width - sep3.width + 4
 
         DapQmlStyle { item: sep2; qss: "sep-mid"; }
     }

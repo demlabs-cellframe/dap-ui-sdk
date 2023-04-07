@@ -1,17 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file compress="1">dapqml-forms-asset/ic_version.png</file>
-        <file compress="1">dapqml-forms-asset/ic_theme.png</file>
-        <file compress="1">dapqml-forms-asset/ic_terms_policy.png</file>
-        <file compress="1">dapqml-forms-asset/ic_send-report.png</file>
-        <file compress="1">dapqml-forms-asset/ic_report-item.png</file>
-        <file compress="1">dapqml-forms-asset/ic_renew.png</file>
-        <file compress="1">dapqml-forms-asset/ic_language.png</file>
-        <file compress="1">dapqml-forms-asset/ic_key-item.png</file>
-        <file compress="1">dapqml-forms-asset/ic_key-history.png</file>
-        <file compress="1">dapqml-forms-asset/ic_key.png</file>
-        <file compress="1">dapqml-forms-asset/ic_information_bug-report.png</file>
-        <file compress="1">dapqml-forms-asset/ic_bot.png</file>
         <file compress="1">dapqml-forms-asset/Spinner.gif</file>
         <file compress="1">dapqml-forms-asset/logo.png</file>
         <file compress="1">dapqml-forms-asset/icon_online.png</file>
@@ -20,9 +8,36 @@
         <file compress="1">dapqml-forms-asset/ic_copy_pressed.png</file>
         <file compress="1">dapqml-forms-asset/bg_dark-stripes.png</file>
         <file compress="1">dapqml-forms-asset/ic_trash.png</file>
-        <file compress="1">dapqml-forms-asset/ic_location.png</file>
         <file compress="1">dapqml-forms-asset/ic_filter.png</file>
-        <file>dapqml-forms-asset/ic_faq.png</file>
-        <file>dapqml-forms-asset/ic_share_log.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_renew.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_key.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_location.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_language.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_theme.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_send-report.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_bot.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_share_log.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_information_bug-report.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_faq.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_key-history.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_terms_policy.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_version.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_report-item.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_key-item.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_renew.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_key.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_location.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_language.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_theme.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_send-report.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_bot.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_share_log.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_information_bug-report.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_faq.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_key-history.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_terms_policy.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_version.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_report-item.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_key-item.png</file>
     </qresource>
 </RCC>

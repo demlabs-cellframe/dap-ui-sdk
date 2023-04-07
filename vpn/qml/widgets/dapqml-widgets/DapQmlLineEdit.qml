@@ -3,6 +3,7 @@
 import QtQuick 2.10
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
+import QtQuick.Controls 2.12
 import Qt.labs.platform 1.1
 import DapQmlStyle 1.0
 import DapQmlSerialKeyInput 1.0
@@ -37,6 +38,7 @@ Rectangle {
     property string qss: ""
     property string mainQss: ""
     property string iconQss: ""
+    property string placeholderQss: ""
     property bool link: false
 
     property var labelMain
@@ -108,6 +110,7 @@ Rectangle {
         background: Rectangle { color: "transparent" }
         // android virtual keyboard
         inputMethodHints: Qt.ImhSensitiveData
+        selectByMouse: true
 
         /* placeholder */
         DapQmlLabel {
@@ -118,48 +121,84 @@ Rectangle {
             horizontalAlign: Text.AlignLeft
             verticalAlign: Text.AlignBottom
             text: root.placeHolderText
-            qss: "ch-country-filter-text c-grey"
+            qss: "ch-country-filter-text c-grey " + root.placeholderQss
             enabled: false
             visible: lineEditField.text.length === 0
         }
 
         TextEditContextMenu {
             id: lineEditMenu
-            Component.onCompleted: setTextEditWidget(lineEditField)
+            Component.onCompleted: {
+                setSerialInpoutMode(false);
+                setTextEditWidget(lineEditField);
+            }
         }
 
         MouseArea {
             anchors.fill: parent
             acceptedButtons: Qt.RightButton
+            cursorShape: Qt.IBeamCursor
             onClicked: {
                 if (Scaling.isDesktop())
                     if (mouse.button === Qt.RightButton)
-                        contextMenu.open()
+                        lineEditContextMenu.open()//contextMenu.open()
             }
             onPressAndHold: {
                 if (Scaling.isDesktop())
                     if (mouse.source === Qt.MouseEventNotSynthesized)
-                        contextMenu.open()
+                        lineEditContextMenu.open()//contextMenu.open()
             }
-            Menu {
+
+//            Menu {
+//                id: lineEditContextMenu
+//                MenuItem {
+//                    text: "Cut"
+//                    shortcut: "Ctrl+X"
+//                    onTriggered: lineEditMenu.execCut();
+//                }
+//                MenuItem {
+//                    text: "Copy"
+//                    shortcut: "Ctrl+C"
+//                    onTriggered: lineEditMenu.execCopy();
+//                }
+//                MenuItem {
+//                    text: "Paste"
+//                    shortcut: "Ctrl+V"
+//                    onTriggered: lineEditMenu.execPaste();
+//                }
+//                MenuItem {
+//                    text: "Delete"
+//                    //shortcut: "Delete"
+//                    onTriggered: lineEditMenu.execDelete();
+//                }
+//            }
+
+            DapQmlMenu {
                 id: lineEditContextMenu
-                MenuItem {
-                    text: "Cut"
+                shortcuts: [
+                    "Ctrl+X",
+                    "Ctrl+C",
+                    "Ctrl+V",
+                    ""
+                ]
+                Action {
+                    text: qsTr("Cut") + lang.notifier
                     shortcut: "Ctrl+X"
                     onTriggered: lineEditMenu.execCut();
+                    Component.onCompleted: console.log(shortcut)
                 }
-                MenuItem {
-                    text: "Copy"
+                Action {
+                    text: qsTr("Copy") + lang.notifier
                     shortcut: "Ctrl+C"
                     onTriggered: lineEditMenu.execCopy();
                 }
-                MenuItem {
-                    text: "Paste"
+                Action {
+                    text: qsTr("Paste") + lang.notifier
                     shortcut: "Ctrl+V"
                     onTriggered: lineEditMenu.execPaste();
                 }
-                MenuItem {
-                    text: "Delete"
+                Action {
+                    text: qsTr("Delete") + lang.notifier
                     //shortcut: "Delete"
                     onTriggered: lineEditMenu.execDelete();
                 }

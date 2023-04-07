@@ -221,7 +221,8 @@ Rectangle {
         width: root.height / 5
         height: root.height / 5
         visible: root.link && root.buttonStyle !== DapQmlButton.Style.IconMainSub
-        scaledPixmap: "qrc:/light/ic_arrow-right.png"
+        //scaledPixmap: "qrc:/light/ic_arrow-right.png"
+        DapQmlStyle { qss: "btn-arrow"; item: linkImage }
     }
 
     /****************************************//**
@@ -648,7 +649,8 @@ Rectangle {
                 width: root.height / 4
                 height: root.height / 4
                 visible: root.link
-                scaledPixmap: "qrc:/light/ic_arrow-right.png"
+                //scaledPixmap: "qrc:/light/ic_arrow-right.png"
+                DapQmlStyle { qss: "btn-arrow"; item: linkImage1 }
 
 //                Rectangle {
 //                    color: "blue"
