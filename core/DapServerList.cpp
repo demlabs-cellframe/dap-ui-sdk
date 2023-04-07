@@ -1235,13 +1235,35 @@ void DapSortedServerList::_fixCurrent (int a_index, DapSortedServerList::Operati
     };
 
     if (a_index <= _list.current())
-      _list.setCurrent (_list.current() + magic[a_operationType]);
+      {
+#ifdef QT_DEBUG
+        qDebug("%s : %s + lower or equal : old [n:%s,i:%d] new [i:%d]",
+               "DapSortedServerList::_fixCurrent",
+               (a_operationType == OperationType::Inserted ? "insert" : "remove"),
+               currentServer().name().toUtf8().data(),
+               _list.current(),
+               _list.current() + magic[a_operationType]);
+#endif // QT_DEBUG
+        _list.setCurrent (_list.current() + magic[a_operationType]);
+      }
   }
 
   /* when current bigger and it's removing */
   if (a_operationType == Removed)
-    if (_list.current() >= _list.size())
-      _list.setCurrent (_list.size() - 1);
+    {
+      if (_list.current() >= _list.size())
+        {
+#ifdef QT_DEBUG
+          qDebug("%s : %s + bigger or equal the size : old [n:%s,i:%d] new [i:%d]",
+                 "DapSortedServerList::_fixCurrent",
+                 (a_operationType == OperationType::Inserted ? "insert" : "remove"),
+                 currentServer().name().toUtf8().data(),
+                 _list.current(),
+                 _list.size() -1);
+#endif // QT_DEBUG
+          _list.setCurrent (_list.size() - 1);
+        }
+    }
 }
 
 int DapSortedServerList::_iteratorIndex (DapSortedServerList::Iterator &a_it)

@@ -904,7 +904,7 @@ void DapQmlModelAutoServerList::_CurrentUpdater::update()
   if (_oldName.isEmpty())
     return;
 
-  int newCurrent = -1, index = 0;
+  int newCurrent = -1, index = 0, oldCurrent = _parent->current();
   auto &_autoServers  = _parent->_autoServers;
 
   for (auto i = _autoServers.cbegin(), e = _autoServers.cend(); i != e; i++, index++)
@@ -917,6 +917,15 @@ void DapQmlModelAutoServerList::_CurrentUpdater::update()
     }
 
   _parent->setCurrent (newCurrent);
+
+#ifdef QT_DEBUG
+  qDebug("%s : old [n:%s,i:%d] new [i:%d]",
+         "DapQmlModelAutoServerList::_CurrentUpdater::update",
+         _oldName.toUtf8().data(),
+         oldCurrent,
+         newCurrent);
+#endif // QT_DEBUG
+
   _oldName.clear();
 }
 
