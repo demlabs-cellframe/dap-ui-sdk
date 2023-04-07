@@ -17,7 +17,7 @@ Item
     property alias verticalAlign: textItem.verticalAlignment
 
     property font textFont: mainFont.dapFont.medium12
-    property string textColor: currTheme.textColor
+    property string textColor: currTheme.white
 
     property alias textElement: textItem
 

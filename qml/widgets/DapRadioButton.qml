@@ -45,7 +45,7 @@ RadioButton
             anchors.leftMargin: customRadioButton.indicator.width + spaceIndicatorText
             verticalAlignment: Text.AlignVCenter
             anchors.verticalCenter: parent.verticalCenter
-            color: currTheme.textColor
+            color: currTheme.white
             horizontalAlignment: Text.AlignLeft
             text: qsTr("template")
         }
