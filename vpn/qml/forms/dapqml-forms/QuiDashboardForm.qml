@@ -182,6 +182,7 @@ Item {
             visible: true
             anchors.left: parent.left
 
+            /* text */
             DapQmlLabel {
                 id: tickerLabel
                 objectName: "tickerLabel"

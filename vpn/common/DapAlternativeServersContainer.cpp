@@ -25,7 +25,7 @@ DapServerInfo DapAlternativeServersContainer::takeNext(const QString& a_location
     int randomIndex = qrand() % serversList.size();
 
     DapServerInfo randomServer = serversList.value(randomIndex);
-    m_servers.remove(randomServer.location, randomServer);
+    m_servers.remove(randomServer.location(), randomServer);
     return randomServer;
 }
 
@@ -33,9 +33,9 @@ void DapAlternativeServersContainer::refill(const QList<DapServerInfo> &a_server
 {
     for(const DapServerInfo& currentServer: a_serversList)
     {
-        if (currentServer.isAuto() || this->hasAddress(currentServer.address))
+        if (currentServer.isAuto() || this->hasAddress(currentServer.address()))
             continue;
-        m_servers.insertMulti(currentServer.location, currentServer);
+        m_servers.insertMulti(currentServer.location(), currentServer);
     }
 }
 
@@ -43,7 +43,7 @@ bool DapAlternativeServersContainer::hasAddress(const QString &a_address)
 {
     for (const DapServerInfo& currentServer: m_servers)
     {
-        if (currentServer.address == a_address)
+        if (currentServer.address() == a_address)
             return true;
     }
     return false;
