@@ -16,7 +16,16 @@ class DapQmlModelChooseServer : public QAbstractListModel
 {
   Q_OBJECT
 
-  QSharedPointer<AbstractServerManager> m_serverManager;
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
+  //QSharedPointer<AbstractServerManager> m_serverManager;
+  /// Current server name
+  QString m_currentServer;
+  /// This name is used to undo changes
+  QString m_previousServer;
+  /// @}
 
   /****************************************//**
    * @name PROPERTIES
@@ -24,6 +33,7 @@ class DapQmlModelChooseServer : public QAbstractListModel
   /// @{
   Q_PROPERTY (QString hook READ hook NOTIFY sigRefresh)
   Q_PROPERTY (int hookInt READ hookInt NOTIFY sigRefresh)
+  Q_PROPERTY (int current READ current WRITE setCurrent NOTIFY currentChanged)
   /// @}
 
   /****************************************//**
@@ -40,12 +50,14 @@ protected:
   /// @{
 public:
   static DapQmlModelChooseServer *instance();
-  void setServerManager (QSharedPointer<AbstractServerManager> a_serverManager);
+  //void setServerManager (QSharedPointer<AbstractServerManager> a_serverManager);
 
   /// this basicaly provides update feature for QML variable fields
   Q_INVOKABLE QString hook();
   Q_INVOKABLE int hookInt();
   void refresh();
+  Q_INVOKABLE int current() const;
+  Q_INVOKABLE void setCurrent (int a_newCurrentServer);
   /// Set current server name
   void setCurrentServerByName (const QString &a_name);
   /// Return previous server name which was before setCheckedServer
@@ -70,12 +82,8 @@ public:
   /// @{
 signals:
   void sigRefresh();
+  void currentChanged();
   /// @}
-private:
-  /// Current server name
-  QString m_currentServer;
-  /// This name is used to undo changes
-  QString m_previousServer;
 };
 
 /*-----------------------------------------*/

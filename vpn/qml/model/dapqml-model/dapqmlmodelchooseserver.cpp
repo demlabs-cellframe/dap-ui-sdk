@@ -22,19 +22,23 @@ static DapQmlModelChooseServer *__inst = nullptr;
 
 DapQmlModelChooseServer::DapQmlModelChooseServer (QObject *parent)
   : QAbstractListModel (parent)
-  , m_currentServer("")
-  , m_previousServer("")
+  , m_currentServer ("")
+  , m_previousServer ("")
 {
   /* vars */
   __inst  = this;
 
-  QTimer::singleShot (500, [this] {
-      auto *serverList          = DapQmlModelFullServerList::instance();
-      const auto &currentServer = serverList->currentServer();
-      const auto name           = currentServer.name();
-      if (m_currentServer.isEmpty())
-        m_currentServer         = name;
-    });
+  connect (DapQmlModelFullServerList::instance(), &DapQmlModelFullServerList::currentChanged,
+           this, &DapQmlModelChooseServer::currentChanged);
+
+  QTimer::singleShot (500, [this]
+  {
+    auto *serverList          = DapQmlModelFullServerList::instance();
+    const auto &currentServer = serverList->currentServer();
+    const auto name           = currentServer.name();
+    if (m_currentServer.isEmpty())
+      m_currentServer         = name;
+  });
 }
 
 /********************************************
@@ -48,10 +52,10 @@ DapQmlModelChooseServer *DapQmlModelChooseServer::instance()
   return __inst;
 }
 
-void DapQmlModelChooseServer::setServerManager(QSharedPointer<AbstractServerManager> a_serverManager)
-{
-  //m_serverManager = a_serverManager;
-}
+//void DapQmlModelChooseServer::setServerManager(QSharedPointer<AbstractServerManager> a_serverManager)
+//{
+//  //m_serverManager = a_serverManager;
+//}
 
 QString DapQmlModelChooseServer::hook()
 {
@@ -70,44 +74,54 @@ void DapQmlModelChooseServer::refresh()
   emit sigRefresh();
 }
 
+int DapQmlModelChooseServer::current() const
+{
+  return DapQmlModelFullServerList::instance()->current();
+}
+
+void DapQmlModelChooseServer::setCurrent (int a_newCurrentServer)
+{
+  DapQmlModelFullServerList::instance()->setCurrent (a_newCurrentServer);
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
 
-int DapQmlModelChooseServer::rowCount(const QModelIndex &parent) const
+int DapQmlModelChooseServer::rowCount (const QModelIndex &parent) const
 {
-  if (m_serverManager.isNull())
-    return DapQmlModelFullServerList::instance()->rowCount (parent);
-  return m_serverManager->size();
+  //if (m_serverManager.isNull())
+  return DapQmlModelFullServerList::instance()->rowCount (parent);
+  //return m_serverManager->size();
 }
 
-QVariant DapQmlModelChooseServer::data(const QModelIndex &index, int role) const
+QVariant DapQmlModelChooseServer::data (const QModelIndex &index, int role) const
 {
   auto *serverList = DapQmlModelFullServerList::instance();
 
   switch (role)
     {
     case Role::name:
-      if (m_serverManager.isNull())
-        return serverList->data (index, DapServerType::FieldId::name);
+      //if (m_serverManager.isNull())
+      return serverList->data (index, DapServerType::FieldId::name);
 
-      if (index.row() >= m_serverManager->size())
-        return QVariant();
+//      if (index.row() >= m_serverManager->size())
+//        return QVariant();
 
-      return m_serverManager->server (index.row()).name();
+//      return m_serverManager->server (index.row()).name();
 
     case Role::ping:
-        return serverList->data (index, DapServerType::FieldId::ping);
+      return serverList->data (index, DapServerType::FieldId::ping);
 
     case Role::connectionQuality:
       return serverList->data (index, DapServerType::FieldId::connQuality).toInt();
 
     case Role::checked:
-        const auto &currentServer = serverList->currentServer();
-        const auto name           = serverList->data (index, Qt::DisplayRole).toString();
-        const auto address        = serverList->data (index, DapServerType::FieldId::address).toString();
-        return (currentServer.name() == name
-                && currentServer.address() == address);
+      const auto &currentServer = serverList->currentServer();
+      const auto name           = serverList->data (index, Qt::DisplayRole).toString();
+      const auto address        = serverList->data (index, DapServerType::FieldId::address).toString();
+      return (currentServer.name() == name
+              && currentServer.address() == address);
     }
 
   return QVariant();
@@ -119,18 +133,19 @@ void DapQmlModelChooseServer::setCurrentServerByName (const QString &a_name)
   auto *serverList = DapQmlModelFullServerList::instance();
 
   /* lambdas */
-  auto indexOf = [serverList] (const QString &a_serverName) -> int {
+  auto indexOf = [serverList] (const QString & a_serverName) -> int
+  {
 
-      int index = 0;
-      for (const auto &server : qAsConst (*serverList))
-        {
-          if (server.name() == a_serverName)
-            return index;
-          index++;
-        }
+    int index = 0;
+    for (const auto &server : qAsConst (*serverList))
+      {
+        if (server.name() == a_serverName)
+          return index;
+        index++;
+      }
 
-      return -1;
-    };
+    return -1;
+  };
 
   /* store changes */
   m_previousServer  = m_currentServer;
