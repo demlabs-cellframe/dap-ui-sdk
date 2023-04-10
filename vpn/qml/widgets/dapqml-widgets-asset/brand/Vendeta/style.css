@@ -1133,7 +1133,7 @@
 
 .faq-close-btn
 {
-	scaled-rect: scaled(nan,nan,32,32,true);
+	scaled-rect: scaled(nan,nan,25,25,true);
     qproperty-inactive: "@btn-close";
     qproperty-active: "@btn-close";
 }
