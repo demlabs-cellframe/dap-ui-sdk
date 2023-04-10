@@ -163,6 +163,20 @@ Item {
         root.internal.showAnAgreement   = a_value;
     }
 
+    function updateSendButtonState() {
+        let data    = bugRepInputField.text;
+        let simple  = true;
+        for (var i = 0; i < data.length; i++)
+        {
+            if (data.charAt(i) === ' ')
+                continue;
+            simple = false;
+            break;
+        }
+
+        btnSend.enabled = !simple;
+    }
+
     /// @}
 
     /****************************************//**
@@ -895,6 +909,7 @@ Item {
                             previousText = text
 
                             letterAmount.text = text.length + "/200"
+                            root.updateSendButtonState();
                         }
                     }
                 }
@@ -925,10 +940,11 @@ Item {
 
             /* send button */
             DapQmlPushButton {
+                id: btnSend
                 qss: "bugrep-send-btn push-button"
                 text: qsTr("SEND REPORT") + lang.notifier
                 onClicked: { root.mode = 1; root.sigSend(); }
-                enabled: bugRepInputField.length >= 1
+                enabled: false // bugRepInputField.length >= 1
                 opacity: 0.4 + 0.6 * enabled
             }
 
