@@ -104,21 +104,25 @@ DapQmlCountrySortFilterProxyModel::DapQmlCountrySortFilterProxyModel(QObject *pa
 
 void DapQmlCountrySortFilterProxyModel::updateCheckedIndex()
 {
-    DapQmlCountryModel* model = (DapQmlCountryModel*) sourceModel();
-    model->updateCheckedIndex();
+//    DapQmlCountryModel* model = (DapQmlCountryModel*) sourceModel();
+//    model->updateCheckedIndex();
+  m_model->updateCheckedIndex();
 }
 
-void DapQmlCountrySortFilterProxyModel::setRowFilter(QString str)
+void DapQmlCountrySortFilterProxyModel::setRowFilter (const QString &a_filter)
 {
-    m_filter = str;
+    m_filter = a_filter;
     invalidateFilter();
 }
 
 bool DapQmlCountrySortFilterProxyModel::filterAcceptsRow(
         int sourceRow, const QModelIndex &sourceParent) const
 {
-    QModelIndex index0 = sourceModel()->index(sourceRow, 0, sourceParent);
-    return (sourceModel()->data(index0, 0).toString().contains(m_filter, Qt::CaseInsensitive));
+    //QModelIndex index0 = sourceModel()->index(sourceRow, 0, sourceParent);
+    //return (sourceModel()->data(index0, 0).toString().startsWith(m_filter, Qt::CaseInsensitive));
+  auto index  = m_model->index (sourceRow, 0, sourceParent);
+  auto name   = m_model->data (index, 0).toString();
+  return name.startsWith (m_filter, Qt::CaseInsensitive);
 }
 
 

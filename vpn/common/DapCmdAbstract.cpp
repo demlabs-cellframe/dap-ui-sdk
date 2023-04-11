@@ -22,7 +22,8 @@ QMap<DapJsonCmdType, QString> DapCmdAbstract::cmdString = {
     {DapJsonCmdType::REQUEST_PURCHASE_VERIFY, "verify purchase"}, // it won't hurt in default build variant
     {DapJsonCmdType::CLIENT_INFO, "client info"},
     {DapJsonCmdType::CDB_CTL, "cdb list"},
-    {DapJsonCmdType::NODE_INFO, "node info"}
+    {DapJsonCmdType::NODE_INFO, "node info"},
+    {DapJsonCmdType::UPDATE_OPERATION, "update operation"},
 };
 
 void DapCmdAbstract::sendCmd(const QJsonObject * obj)

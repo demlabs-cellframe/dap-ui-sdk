@@ -6,6 +6,7 @@ SOURCES += \
     $$PWD/DapBugReportData.cpp \
     $$PWD/DapBugReportHistory.cpp \
     $$PWD/DapDataLocal.cpp \
+    $$PWD/DapDownload.cpp \
     $$PWD/DapLocationInfo.cpp \
     $$PWD/DapLogHandler.cpp \
     $$PWD/DapNetworkAccessManager.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
     $$PWD/DapSpeed.cpp \
     $$PWD/DapServersLocalStorage.cpp \
     $$PWD/DapSignUpData.cpp \
+    $$PWD/DapUpdateOperationLogic.cpp \
     $$PWD/DapUtils.cpp
 
 HEADERS += \
@@ -34,6 +36,7 @@ HEADERS += \
     $$PWD/DapBugReportData.h \
     $$PWD/DapBugReportHistory.h \
     $$PWD/DapDataLocal.h \
+    $$PWD/DapDownload.h \
     $$PWD/DapLocationInfo.h \
     $$PWD/DapLogHandler.h \
     $$PWD/DapNetworkAccessManager.h \
@@ -47,6 +50,7 @@ HEADERS += \
     $$PWD/DapSession.h \
     $$PWD/DapCrypt.h \
     $$PWD/DapSignUpData.h \
+    $$PWD/DapUpdateOperationLogic.h \
     $$PWD/DapUtils.h \
     $$PWD/InterfaceDapKey.h \
     $$PWD/DapKeyMsrln.h \

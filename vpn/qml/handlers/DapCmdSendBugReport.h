@@ -6,30 +6,31 @@
 
 #include "DapCmdClientAbstract.h"
 
-
-class DapCmdSendBugReport: public DapCmdClientAbstract
+class DapCmdSendBugReport : public DapCmdClientAbstract
 {
-    Q_OBJECT
-    QString email;
-    QString message;
-
-protected:
-    void handleResult(const QJsonObject& result) override;
-    void handleError(int code, const QString& message) override;
+  Q_OBJECT
+  QString m_email;
+  QString m_message;
+  bool m_waitingForResponse;
 
 public:
+  explicit DapCmdSendBugReport (QObject *a_parent = nullptr);
+  virtual ~DapCmdSendBugReport() override { }
 
-    explicit DapCmdSendBugReport(QObject *parent = nullptr);
-    virtual ~DapCmdSendBugReport() override { }
+public:
+  void sendBugReport(
+    const QString &a_message,
+    const QString &a_serial = "",
+    const QString &a_attachFile = "",
+    const QString &a_contactAddress = "");
+  void cancelBugReport();
 
-    void sendBugReport(
-      const QString &a_message,
-      const QString &a_serial = "",
-      const QString &a_attachFile = "",
-      const QString &a_emailAddress = "");
+protected:
+  void handleResult (const QJsonObject& a_result) override;
+  void handleError (int, const QString&) override;
+
 signals:
-    void sigBugReportSent(const QString& bugReportNumber);
+  void sigBugReportSent (const QString& a_bugReportNumber);
 };
-
 
 #endif // DAPCMDSENDBUGREPORT_H

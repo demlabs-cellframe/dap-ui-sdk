@@ -195,7 +195,8 @@ void DapSession::getNews()
     connect(m_netNewsReply, &DapNetworkReply::finished, this, [=]() {
         qInfo() << "News received";
         QJsonParseError jsonErr;
-        QJsonDocument jsonDoc = QJsonDocument::fromJson(m_netNewsReply->getReplyData(), &jsonErr);
+        QByteArray replay = m_netNewsReply->getReplyData();
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(replay.left(replay.lastIndexOf("} ]")+3), &jsonErr);
         if(!jsonDoc.isNull()) {
             if(!jsonDoc.isArray()) {
                 qCritical() << "Error parse response. Must be array";

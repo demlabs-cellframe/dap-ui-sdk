@@ -20,17 +20,21 @@
         <file compress="1">dapqml-forms/QuiManageCdbForm.qml</file>
         <file compress="1">dapqml-forms/QuiCertificateForm.qml</file>
         <file compress="1">dapqml-forms/QuiChooseCertificate.qml</file>
-        <file>dapqml-forms/QuiChooseNodeDataForm.qml</file>
-        <file>dapqml-forms/QuiChooseWallet.qml</file>
-        <file>dapqml-forms/QuiChooseNetwork.qml</file>
-        <file>dapqml-forms/QuiChooseToken.qml</file>
-        <file>dapqml-forms/QuiNodeTransactionProcessing.qml</file>
-        <file>dapqml-forms/QuiNodeTransactionOverview.qml</file>
-        <file>dapqml-forms/QuiNodeOverview.qml</file>
-        <file>dapqml-forms/QuiNodeMaxPrice.qml</file>
-        <file>dapqml-forms/QuiNodeChooseUnit.qml</file>
-        <file>dapqml-forms/QuiNodeOverviewBase.qml</file>
-        <file>dapqml-forms/QuiNodeSearchOrders.qml</file>
-        <file>dapqml-forms/QuiNodeChooseOrder.qml</file>
+        <file compress="1">dapqml-forms/QuiCdbSwitchingForm.qml</file>
+        <file compress="1">dapqml-forms/QuiCircleProgressBase.qml</file>
+        <file compress="1">dapqml-forms/QuiUpdateProgress.qml</file>
+        <file compress="1">dapqml-forms/QuiFaqForm.qml</file>
+        <file compress="1">dapqml-forms/QuiChooseNodeDataForm.qml</file>
+        <file compress="1">dapqml-forms/QuiChooseWallet.qml</file>
+        <file compress="1">dapqml-forms/QuiChooseNetwork.qml</file>
+        <file compress="1">dapqml-forms/QuiChooseToken.qml</file>
+        <file compress="1">dapqml-forms/QuiNodeTransactionProcessing.qml</file>
+        <file compress="1">dapqml-forms/QuiNodeTransactionOverview.qml</file>
+        <file compress="1">dapqml-forms/QuiNodeOverview.qml</file>
+        <file compress="1">dapqml-forms/QuiNodeMaxPrice.qml</file>
+        <file compress="1">dapqml-forms/QuiNodeChooseUnit.qml</file>
+        <file compress="1">dapqml-forms/QuiNodeOverviewBase.qml</file>
+        <file compress="1">dapqml-forms/QuiNodeSearchOrders.qml</file>
+        <file compress="1">dapqml-forms/QuiNodeChooseOrder.qml</file>
     </qresource>
 </RCC>

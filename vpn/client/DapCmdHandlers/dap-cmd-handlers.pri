@@ -9,6 +9,7 @@ SOURCES += \
     $$PWD/DapCmdResetSerialKey.cpp \
     $$PWD/DapCmdSystemTray.cpp \
     $$PWD/DapCmdTunTap.cpp \
+    $$PWD/DapCmdUpdateOperation.cpp \
     $$PWD/DapCmdUserData.cpp \
     $$PWD/DapCmdAuth.cpp \
     $$PWD/DapCmdConnect.cpp \
@@ -33,6 +34,7 @@ HEADERS += \
     $$PWD/DapCmdSignUp.h \
     $$PWD/DapCmdResetSerialKey.h \
     $$PWD/DapCmdTunTap.h \
+    $$PWD/DapCmdUpdateOperation.h \
     $$PWD/DapCmdUserData.h \
     $$PWD/DapCmdConnect.h \
     $$PWD/DapCmdAuth.h \

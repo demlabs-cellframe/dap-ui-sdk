@@ -75,6 +75,7 @@ Item {
             font.pixelSize: scroll.fontSize
             textFormat: Text.RichText
             wrapMode: Text.Wrap
+            lineHeight: 1.5
 
             DapQmlStyle { item: content; qss: "dv-text"; }
         }

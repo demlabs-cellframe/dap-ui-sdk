@@ -10,6 +10,7 @@
 #define COUTRY_FLAG_ROLE (Qt::UserRole + 10)
 #define CONNECTION_QUALITY (Qt::UserRole + 11)
 #define PING_ROLE (Qt::UserRole + 12)
+#define ADDRESS_ROLE (Qt::UserRole + 13)
 
 class DapServersData: public QAbstractListModel
 {
@@ -90,7 +91,7 @@ private:
     QList<DapServerInfo> m_pingServerList;
     DapLocationInfo m_locationInfo;
 public:
-    static QMap<QString, QString> m_countryMap;
+    const static QMap<QString, QString> m_countryMap;
 
     qint16 m_bestping = 0;
     qint16 m_worstping = 0;

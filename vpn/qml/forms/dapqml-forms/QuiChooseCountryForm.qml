@@ -150,7 +150,7 @@ Item {
             id: countryFilterLine
             objectName: "countryFilterLine"
             x: parent.height * 0.0625
-            //y: (parent.height - height) / 2
+            y: (parent.height - height) / 2
             z: 15
             height: countryFilterField.innerSize // parent.height - 4
             width: parent.width - lineEditlIconRight.width * 1.5
