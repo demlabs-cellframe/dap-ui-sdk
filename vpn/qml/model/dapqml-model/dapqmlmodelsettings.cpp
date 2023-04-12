@@ -171,7 +171,9 @@ void DapQmlModelSettings::_buildMenuItemsList()
       Item{SI_TITLE,      tr ("Information"), "", "settings_icon", "information",                            [](QObject*){} },
 
       Item{SI_LINK,       tr ("Bug reports"), "", "settings_icon ic_information_bug-report", "bug_reports",  [](QObject*) { emit __inst->sigBugReport(); } },
+  #ifndef BRAND_VENDETA
       Item{SI_LINK,       tr ("FAQ"), "", "ic_faq", "faq",                                                   [](QObject*) { emit __inst->sigFaq(); } },
+  #endif // BRAND_VENDETA
       Item{SI_BUTTON,     tr ("Serial key history on this device"), "", "settings_icon ic_key-history", "skey_history",  [](QObject*) { emit __inst->sigLicenceHistory(); } },
   #ifndef DISABLE_TERMSOFUSE_AND_PRIVACYPOLICY
       Item{SI_BUTTON,     tr ("Terms of use"), "", "settings_icon ic_terms_policy", "terms_of_use",          [](QObject*) { emit __inst->sigTermsOfUse(); } },
@@ -181,7 +183,7 @@ void DapQmlModelSettings::_buildMenuItemsList()
 
       Item{SI_TITLE,      "", "", "settings_icon", "title_a",                                                [](QObject*){} },
       Item{SI_TITLE,      "", "", "settings_icon", "title_b",                                                [](QObject*){} },
-#else
+#else // BRAND_RISEVPN
       Item{SI_SPACER,     "", "", "1", "spacer",                                                                          [](QObject*){} },
       Item{SI_TITLE,      tr ("Settings"), "", "settings_icon", "settings",                                               [](QObject*){} },
 
