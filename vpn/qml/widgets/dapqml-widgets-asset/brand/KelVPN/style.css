@@ -71,7 +71,7 @@
 {
 	text: "#FFFFFF";
 	background: "#1E1E1E";
-	update-background: "#37354D";
+	update-background: "#333333";
 	label: "#A9A9B0";
 	light-grey: "#F7F7F7";
 	error: "#F47A54";
@@ -312,7 +312,7 @@
 
 .radiobtn-spacer
 {
-	scaled-rect: scaled(nan,nan,392,20,false);
+	scaled-rect: scaled(nan,nan,392,2,false);
 }
 
 
