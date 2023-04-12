@@ -293,7 +293,7 @@ Item {
         id: btnConfirn
         x: (parent.width - width) / 2
         z: 15
-        qss: "overview-btn-confirm"
+        qss: "overview-btn-confirm push-button"
         text: qsTr("CONFIRM") + lang.notifier
         onClicked: root.searchClicked()
         enabled: buttonActive

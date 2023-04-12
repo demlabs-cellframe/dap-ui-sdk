@@ -594,9 +594,10 @@ Rectangle {
                 DapQmlStyle { qss: root.mainQss; item: etmbsMain }
 
                 /* background */
-                background: DapQmlRectangle {
-                    qss: "login-serialkey-input"
-                }
+                background: Item {}
+//                background: DapQmlRectangle {
+//                    qss: "login-serialkey-input"
+//                }
 
                 /* font config */
                 font {
@@ -609,6 +610,15 @@ Rectangle {
                 onTextEdited:  { root.mainText = text; root.textEdited(); }
                 onTextChanged: { root.mainText = text; root.textChanged(); }
                 onAccepted:    { root.textAccepted(); }
+            }
+
+            /* separator */
+            DapQmlRectangle {
+                x: (parent.width - width) / 2
+                y: (parent.height - height) / 2
+                width: parent.width * 0.856741573
+                //height: 1
+                qss: "login-separator-color"
             }
 
             /* sub text */

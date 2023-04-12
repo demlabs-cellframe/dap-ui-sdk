@@ -293,18 +293,18 @@ Item {
      * Separator fix
      ********************************************/
 
-    Timer {
-        interval: 500
-        running: true
-        repeat: false
-        onTriggered: {
-//            calcWidth                   = centerWidth();
-            btnChooseServer.separator   = false;
-            btnEnterSerial.separator    = false;
-            btnChooseServer.separator   = true;
-            btnEnterSerial.separator    = true;
-        }
-    }
+//    Timer {
+//        interval: 500
+//        running: true
+//        repeat: false
+//        onTriggered: {
+////            calcWidth                   = centerWidth();
+//            btnChooseServer.separator   = false;
+//            btnEnterSerial.separator    = false;
+//            btnChooseServer.separator   = true;
+//            btnEnterSerial.separator    = true;
+//        }
+//    }
 
 
     /****************************************//**
@@ -660,35 +660,35 @@ Item {
         }
     }
 
-    /****************************************//**
-     * Top separator
-     ********************************************/
+//    /****************************************//**
+//     * Top separator
+//     ********************************************/
 
-    DapQmlRectangle {
-        x: loginSepsPlacer.x
-        y: loginSpacer.y + loginSepsPlacer.y
-        width: loginSepsPlacer.width
-        height: loginSepsPlacer.height
-        DapQmlSeparator {
-            x: (parent.width - width) / 2
-            z: 15
-            width: parent.width - 74
-            qss: "login-separator"
-        }
-        DapQmlDummy {
-            id: loginSepsPlacer
-            qss:Brand.name() === "KelVPN" && internal.cellfarameDetected
-//               NoCBD mode
-                 ? internal.mode === QuiLoginForm.Mode.M_WALLET
-//               wallet
-//                 ? "login-nocbd-wallet-separator-container"
-                 ? "login-nocbd-skey-separator-container"
-//               serial login
-                 : "login-nocbd-skey-separator-container"
-//               other
-                 : "login-separator-container"
-        }
-    }
+//    DapQmlRectangle {
+//        x: loginSepsPlacer.x
+//        y: loginSpacer.y + loginSepsPlacer.y
+//        width: loginSepsPlacer.width
+//        height: loginSepsPlacer.height
+//        DapQmlSeparator {
+//            x: (parent.width - width) / 2
+//            z: 15
+//            width: parent.width - 74
+//            qss: "login-separator"
+//        }
+//        DapQmlDummy {
+//            id: loginSepsPlacer
+//            qss:Brand.name() === "KelVPN" && internal.cellfarameDetected
+////               NoCBD mode
+//                 ? internal.mode === QuiLoginForm.Mode.M_WALLET
+////               wallet
+////                 ? "login-nocbd-wallet-separator-container"
+//                 ? "login-nocbd-skey-separator-container"
+////               serial login
+//                 : "login-nocbd-skey-separator-container"
+////               other
+//                 : "login-separator-container"
+//        }
+//    }
 
     /****************************************//**
      * Choose wallet for NoCBD
@@ -706,7 +706,7 @@ Item {
             id: btnChooseWallet
             x: (parent.width - width) / 2
             z: 15
-            width: parent.width - 74
+            width: parent.width
             property string defaultServerName: qsTr("Auto select") + lang.notifier
 
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
@@ -716,7 +716,7 @@ Item {
             qss: "login-btn-server"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            separator: true
+            frame: true
             link: true
             onClicked: root.sigChooseWallet()
 
@@ -802,7 +802,7 @@ Item {
             id: btnChooseServer
             x: (parent.width - width) / 2
             z: 15
-            width: parent.width - 74
+            width: parent.width
             property string defaultServerName: internal.mode !== QuiLoginForm.Mode.M_WALLET
                                                ? qsTr("Auto select") + lang.notifier
                                                : qsTr("Order") + lang.notifier
@@ -820,7 +820,7 @@ Item {
                  : "login-btn-server"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            separator: true
+            frame: true
             link: true
             onClicked: internal.mode !== QuiLoginForm.Mode.M_WALLET
                         ? root.sigChooseServer()
@@ -897,7 +897,7 @@ Item {
             property int maxCountChar: 19
             x: (parent.width - width) / 2
             z: 15
-            width: parent.width - 74
+            width: parent.width
             //height: parent.height
 
             buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
@@ -909,7 +909,7 @@ Item {
             placeHolderText: "____ ____ ____ ____"
             placeHolderQss: "login-btn-main"
             //inputMask: ">NNNN-NNNN-NNNN-NNNN;_"
-            separator: true
+            frame: true //separator: true
 
             onClicked: root.sigChooseSerial()
             onTextAccepted: root.beginConnection()
@@ -960,7 +960,7 @@ Item {
             objectName: "btnEnterEmail"
             x: (parent.width - width) / 2
             z: 15
-            width: parent.width - 74
+            width: parent.width
 
             buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
             mainText: ""
@@ -968,7 +968,7 @@ Item {
             qss: "login-btn-email"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            separator: true
+            frame: true //separator: true
         }
         DapQmlDummy {
             id: loginEmailPlacer
@@ -988,7 +988,7 @@ Item {
             objectName: "btnEnterPassword"
             x: (parent.width - width) / 2
             z: 15
-            width: parent.width - 74
+            width: parent.width
 
             buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
             mainText: ""
@@ -999,7 +999,7 @@ Item {
             editEchoMode: (internal.showPassword)
                           ? TextInput.Normal
                           : TextInput.Password
-            separator: true
+            frame: true //separator: true
         }
 
         Button {
@@ -1044,7 +1044,7 @@ Item {
             id: btnChooseCert
             x: (parent.width - width) / 2
             z: 15
-            width: parent.width - 74
+            width: parent.width
             property string defaultCertName: "Certificate 5" // qsTr() + lang.notifier
 
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
@@ -1053,7 +1053,7 @@ Item {
             qss: "login-btn-cert"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            separator: true
+            frame: true //separator: true
             link: true
             onClicked: root.sigChooseCert()
 
@@ -1083,9 +1083,9 @@ Item {
         z: 15
         qss: Brand.name() === "KelVPN" && internal.cellfarameDetected
 //                 NoCBD mode
-             ? "login-connect-nocbd-mode"
+             ? "login-connect-nocbd-mode push-button"
 //                 serial login
-             : "login-connect"
+             : "login-connect push-button"
         text: Brand.name() === "KelVPN" && internal.cellfarameDetected
         //                 NoCBD mode
                      ? qsTr("CONTINUE") + lang.notifier

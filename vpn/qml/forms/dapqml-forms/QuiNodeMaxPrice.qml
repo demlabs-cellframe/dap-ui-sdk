@@ -87,7 +87,7 @@ Item {
         id: confirm
         x: (parent.width - width) / 2
         z: 15
-        qss: "priceCount-btn-confirm"
+        qss: "priceCount-btn-confirm push-button"
         text: qsTr("CONFIRM") + lang.notifier
         onClicked: root.buttonClicked()
         enabled: false
