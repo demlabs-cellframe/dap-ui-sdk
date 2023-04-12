@@ -107,7 +107,7 @@ Item {
                     horizontalAlign: (viewType=="orderView") ? Text.AlignLeft : Text.AlignRight
                     verticalAlign: (viewType=="orderView") ? Text.AlignBottom : Text.AlignVCenter
                     text: model.subText
-                    leftPadding: redioButton.textPadding
+                    //leftPadding: redioButton.textPadding
                     qss: "radiobtn-resizer-note"
                     width: resizer.width
                     clip: false

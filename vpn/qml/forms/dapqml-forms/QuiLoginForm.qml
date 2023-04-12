@@ -1081,7 +1081,6 @@ Item {
         id: btnConnect
         x: (parent.width - width) / 2
         z: 15
-<<<<<<< HEAD
         qss: Brand.name() === "KelVPN" && internal.cellfarameDetected
 //                 NoCBD mode
              ? "login-connect-nocbd-mode"
@@ -1109,17 +1108,6 @@ Item {
                     root.sigConnectByOrder();
             }
         }
-=======
-        qss: "login-connect"
-
-        text: qsTr("CONNECT") + lang.notifier
-        onClicked: root.beginConnection()
-
-//        Component.onCompleted: StyleDebugTree.describe (
-//           "login-connect",
-//            ["x", "y", "width", "height"],
-//           this);
->>>>>>> refs/heads/features-8432
     }
 
     /****************************************//**

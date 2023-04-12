@@ -755,14 +755,14 @@
 
 .login-mode-btn-serial-nocbd
 {
-        scaled-rect: scaled(19,0,195,98,false);
+        scaled-rect: scaled(36,0,170,64,false);
         active: "@login-mode-btn-serial-active";
         inactive: "@login-mode-btn-serial-inactive";
 }
 
 .login-mode-btn-nocbd
 {
-        scaled-rect: scaled(214,0,195,98,false);
+        scaled-rect: scaled(222,0,170,64,false);
         active: "@login-mode-btn-nocbd-active";
         inactive: "@login-mode-btn-nocbd-inactive";
 }

@@ -68,6 +68,8 @@ Item {
 
     /// @brief resize font for provided DapQmlButton
     function resizeFont(a_btn) {
+        if (typeof a_btn.labelMain === 'undefined')
+            return;
         a_btn.labelMain.fontSize  = fontScalerIndicator.fontSize;
         a_btn.labelSub.fontSize   = fontScalerSubLabel.fontSize;
     }
