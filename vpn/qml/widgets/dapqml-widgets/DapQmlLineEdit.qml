@@ -46,10 +46,10 @@ Rectangle {
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
 
-    MouseArea {
-        anchors.fill: root;
-        onClicked: root.clicked();
-    }
+//    MouseArea {
+//        anchors.fill: root;
+//        onClicked: root.clicked();
+//    }
 
     /// @}
     /****************************************//**
