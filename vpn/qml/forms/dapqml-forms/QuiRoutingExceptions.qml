@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
 import "qrc:/dapqml-widgets"
 import DapQmlStyle 1.0
+import DapQmlModelRoutingExceptions 1.0
 
 /****************************************//**
  * @brief Routing Exceptions Form
@@ -42,6 +43,16 @@ Item {
 
     property QtObject internal: QtObject {
         property int type: QuiRoutingExceptions.APPS
+    }
+
+    DapQmlModelRoutingExceptions {
+        id: modelApp
+        mode: DapQmlModelRoutingExceptions.APPS
+    }
+
+    DapQmlModelRoutingExceptions {
+        id: modelRoutes
+        mode: DapQmlModelRoutingExceptions.ROUTES
     }
 
     /// @}
@@ -108,8 +119,12 @@ Item {
         id: delegateApp
 
         DapQmlButton {
-            anchors.fill: parent
-            mainText: "app"
+            width: listviewApps.width
+            qss: "rouexc-content-item"
+            buttonStyle: DapQmlButton.Style.IconMainSubIcon
+            mainText: model.name
+            subText: ""
+            //onHeightChanged: console.log (`index ${model.index} s ${width}*${height}`);
         }
     }
 
@@ -117,8 +132,13 @@ Item {
         id: delegateRoute
 
         DapQmlButton {
-            anchors.fill: parent
-            mainText: "route"
+            width: listviewRoutes.width
+            qss: "rouexc-content-item"
+            buttonStyle: DapQmlButton.Style.TopMainBottomSub
+            mainText: model.address
+            subText: model.description
+            mainQss: "text-align-left rouexc-content-item-main"
+            subQss: "text-align-left rouexc-content-item-sub"
         }
     }
 
@@ -167,7 +187,7 @@ Item {
         DapQmlStyle { item: listviewApps; qss: "rouexc-tab-content"; }
 
         delegate: delegateApp
-        model: [1,2,3,4]
+        model: modelApp
     }
 
     ListView {
@@ -179,7 +199,7 @@ Item {
         DapQmlStyle { item: listviewRoutes; qss: "rouexc-tab-content"; }
 
         delegate: delegateRoute
-        model: [1,2,3,4,5,6,7]
+        model: modelRoutes
     }
 }
 

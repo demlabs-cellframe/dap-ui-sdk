@@ -166,6 +166,25 @@
 }
 
 /****************************************************
+ * Aligns
+ ***************************************************/
+
+.text-align-left
+{
+    horizontal-align: Text.AlignLeft;
+}
+
+.text-align-center
+{
+    horizontal-align: Text.AlignHCenter;
+}
+
+.text-align-right
+{
+    horizontal-align: Text.AlignRight;
+}
+
+/****************************************************
  * Widgets
  ***************************************************/
 
@@ -1487,5 +1506,20 @@
 
 .rouexc-tab-content
 {
-    scaled-rect: scaled(nan,nan,-1,648,false);
+    scaled-rect: scaled(-1,132,392,648,false);
+}
+
+.rouexc-content-item
+{
+    scaled-rect: scaled(nan,nan,nan,65,false);
+}
+
+.rouexc-content-item-main
+{
+    color: "@text";
+}
+
+.rouexc-content-item-sub
+{
+    color: "@label";
 }

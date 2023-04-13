@@ -82,7 +82,7 @@ public:
   Q_INVOKABLE void insert (int a_index, App &&a_app);
   Q_INVOKABLE void insert (int a_index, const Route &a_route);
   Q_INVOKABLE void insert (int a_index, Route &&a_route);
-  Q_INVOKABLE void appendJson (int a_index, const QVariant &a_value);
+  Q_INVOKABLE void insertJson (int a_index, const QVariant &a_value);
 
   Q_INVOKABLE const App &app (int a_index) const;
   Q_INVOKABLE const Route &route (int a_index) const;

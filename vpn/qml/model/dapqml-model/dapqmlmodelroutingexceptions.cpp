@@ -74,7 +74,9 @@ static const QHash<Field, QByteArray> s_allRoles =
 /* FUNCS */
 
 static App toApp (const QJsonObject &a_src);
+static App toApp (const QVariantMap &a_src);
 static Route toRoute (const QJsonObject &a_src);
+static Route toRoute (const QVariantMap &a_src);
 static QJsonObject toJson (const App &a_src);
 static QJsonObject toJson (const Route &a_src);
 
@@ -124,6 +126,21 @@ void DapQmlModelRoutingExceptions::setMode (int a_newMode)
     case ROUTES:  _model  = new DqmreRoutes; break;
     }
 
+  if (s_apps.isEmpty())
+    {
+      append(App{"TestApp1",""});
+      append(App{"TestApp2",""});
+      append(App{"TestApp3",""});
+    }
+
+  if (s_routes.isEmpty())
+    {
+      append(Route{"TestRoute1","127.0.0.1"});
+      append(Route{"TestRoute2","127.0.0.2"});
+      append(Route{"TestRoute3","127.0.0.3"});
+      append(Route{"TestRoute4","127.0.0.4"});
+    }
+
   emit sigModeChanged();
 }
 
@@ -166,21 +183,22 @@ void DapQmlModelRoutingExceptions::append (DapQmlModelRoutingExceptions::Route &
 void DapQmlModelRoutingExceptions::appendJson (const QVariant &a_value)
 {
   /* get json */
-  QJsonObject jobj  = a_value.toJsonObject();
+  QVariantMap vmap  = a_value.toMap();
+  //QJsonObject jobj  = a_value.toJsonObject();
 
   /* decide which mode this json refer to */
   Mode _mode  = NONE;
-  if (jobj.contains ("name"))
+  if (vmap.contains ("name"))
     _mode = APPS;
-  else if (jobj.contains ("address"))
+  else if (vmap.contains ("address"))
     _mode = ROUTES;
 
   /* act to mode */
   switch (_mode)
     {
     case NONE: return;
-    case APPS:    append (toApp (jobj));   break;
-    case ROUTES:  append (toRoute (jobj)); break;
+    case APPS:    append (toApp (vmap));   break;
+    case ROUTES:  append (toRoute (vmap)); break;
     }
 }
 
@@ -220,24 +238,25 @@ void DapQmlModelRoutingExceptions::insert (int a_index, DapQmlModelRoutingExcept
   endInsertRows();
 }
 
-void DapQmlModelRoutingExceptions::appendJson (int a_index, const QVariant &a_value)
+void DapQmlModelRoutingExceptions::insertJson (int a_index, const QVariant &a_value)
 {
   /* get json */
-  QJsonObject jobj  = a_value.toJsonObject();
+  QVariantMap vmap  = a_value.toMap();
+  //QJsonObject jobj  = a_value.toJsonObject();
 
   /* decide which mode this json refer to */
   Mode _mode  = NONE;
-  if (jobj.contains ("name"))
+  if (vmap.contains ("name"))
     _mode = APPS;
-  else if (jobj.contains ("address"))
+  else if (vmap.contains ("address"))
     _mode = ROUTES;
 
   /* act to mode */
   switch (_mode)
     {
     case NONE: return;
-    case APPS:    insert (a_index, toApp (jobj));   break;
-    case ROUTES:  insert (a_index, toRoute (jobj)); break;
+    case APPS:    insert (a_index, toApp (vmap));   break;
+    case ROUTES:  insert (a_index, toRoute (vmap)); break;
     }
 }
 
@@ -347,7 +366,25 @@ App toApp (const QJsonObject &a_src)
   };
 }
 
+App toApp (const QVariantMap &a_src)
+{
+  return App
+  {
+    a_src.value ("name").toString(),
+    a_src.value ("icon").toString(),
+  };
+}
+
 Route toRoute (const QJsonObject &a_src)
+{
+  return Route
+  {
+    a_src.value ("address").toString(),
+    a_src.value ("description").toString(),
+  };
+}
+
+Route toRoute (const QVariantMap &a_src)
 {
   return Route
   {
