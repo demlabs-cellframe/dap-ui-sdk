@@ -98,7 +98,7 @@ Item {
                 property int quality: model.connectionQuality + csListView.model.hookInt
 
                 text: model.name + csListView.model.hook
-                checked: model.checked + csListView.model.hookInt
+                checked: csListView.model.current === model.index //model.checked + csListView.model.hookInt
                 separator: true
                 iconSize: resizer.height
                 width: resizer.width

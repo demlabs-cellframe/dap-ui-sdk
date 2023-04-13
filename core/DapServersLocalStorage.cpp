@@ -47,7 +47,8 @@ int DapServersLocalStorage::_rewriteJsonFile()
 int DapServersLocalStorage::removeServer(const QString& address, const quint16 port)
 {
     DapServerInfo s;
-    s.address = address; s.port = port;
+    s.setAddress (address);
+    s.setPort (port);
     int rc = removeServer(s);
     if(rc == 0) emit changed();
     return rc;
@@ -143,9 +144,9 @@ int DapServersLocalStorage::_loadServers()
     
 #ifdef  QT_DEBUG
     DapServerInfo dServerInfo;
-    dServerInfo.address="127.0.0.1";
-    dServerInfo.port=8099;
-    dServerInfo.name="local";
+    dServerInfo.setAddress ("127.0.0.1");
+    dServerInfo.setPort (8099);
+    dServerInfo.setName ("local");
     addServer(dServerInfo);
 #endif
     qDebug() << "Loaded" << _jsonServersListArr.size() <<

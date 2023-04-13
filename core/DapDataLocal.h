@@ -11,7 +11,7 @@
 #include "DapServerInfo.h"
 #include "DapKeyCommon.h"
 #include "DapBugReportData.h"
-#include "DapServersData.h"
+#include "DapServerList.h"
 #include "DapBugReportHistory.h"
 #include "DapSignUpData.h"
 #include "DapUtils.h"
@@ -117,7 +117,6 @@ public:
     //void removeItemFromHistory(QString a_type, QString a_item);
 
     static DapBugReportData *bugReportData();
-    static DapServersData   *serversData();
     DapSerialKeyData* serialKeyData();
 
     QString pendingSerialKey(){return m_pendingSerialKey;};

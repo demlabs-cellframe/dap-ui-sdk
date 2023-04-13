@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "dapqmlcountrymodel.h"
 #include "style/qsslink.h"
+#include "DapServerList.h"
 #include "DapDataLocal.h"
 
 /********************************************
@@ -9,8 +10,8 @@
 
 DapQmlCountryModel::DapQmlCountryModel(QObject *parent)
   : QAbstractTableModel (parent)
-  , m_Countries (DapServersData::m_countryMap.keys())
-  , m_checkedIndex(-1)
+  , m_Countries (DapAbstractServerList::countryMap().keys())
+  , m_checkedIndex (-1)
 {
     updateCheckedIndex();
 }
@@ -18,6 +19,7 @@ DapQmlCountryModel::DapQmlCountryModel(QObject *parent)
 /********************************************
  * METHODS
  *******************************************/
+
 void DapQmlCountryModel::updateCheckedIndex()
 {
     auto country = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();

@@ -43,6 +43,7 @@ Item {
     property QtObject modeCtl: QtObject {
         property int mode: QuiManageServersForm.Mode.M_LIST
         property int lastIndex: -1
+        property var manageServers
 
         function switchToList() {
             setMode (QuiManageServersForm.Mode.M_LIST);
@@ -103,8 +104,8 @@ Item {
             let fave    = false;
 
             /* store result & update model */
-            model.add ({name:name, address:address, port:port, favorite:fave});
-            model.refreshContent();
+            modeCtl.manageServers.slotAdd ({name:name, address:address, port:port, favorite:fave});
+            //model.refreshContent();
         }
 
 //        function removeServer (a_index) {
@@ -125,8 +126,8 @@ Item {
             //let fave    = model.value (lastIndex, "favorite");
 
             /* store result & update model */
-            model.edit (lastIndex, {name:name, address:address, port:port});
-            model.refreshContent();
+            modeCtl.manageServers.slotEdit (lastIndex, {name:name, address:address, port:port});
+            //model.refreshContent();
         }
     }
 
@@ -138,6 +139,9 @@ Item {
 
     /// @brief remove server menu clicked
     signal sigRemove(int a_index);
+
+    signal sigSaveTo(string a_filename);
+    signal sigLoadFrom(string a_filename);
 
     /// @}
     /****************************************//**
@@ -183,8 +187,9 @@ Item {
     function switchFave(a_index) {
         let model   = manserListView.model;
         let fave    = !model.value (a_index, "favorite");
-        model.edit (a_index, {favorite:fave});
-        model.refreshContent();
+        //model.edit (a_index, {favorite:fave});
+        modeCtl.manageServers.slotEdit (a_index, {favorite:fave});
+        //model.refreshContent();
     }
 
     function doImport() {
@@ -199,6 +204,14 @@ Item {
             return;
         fileDialog.updateMode (FileDialog.SaveFile);
         fileDialog.open();
+    }
+
+    function returnToList() {
+        root.setMode (QuiManageServersForm.Mode.M_LIST);
+    }
+
+    function setManageServers(a_ms) {
+        modeCtl.manageServers   = a_ms;
     }
 
     function _pos (a_index) {
@@ -245,13 +258,10 @@ Item {
             var filename    = result.slice(7);
 
             if (fileMode === FileDialog.OpenFile)
-            {
-                manserListView.model.doImport (filename);
-                manserListView.model.refreshContent();
-            }
+                root.sigLoadFrom (filename);//manserListView.model.slotLoadFrom (filename);
             else
             if (fileMode === FileDialog.SaveFile)
-                manserListView.model.doExport (filename);
+                root.sigSaveTo (filename);//manserListView.model.slotSaveTo (filename);
 
             fileDialog.close()
         }
@@ -379,7 +389,7 @@ Item {
                 qss: "manser-item"
                 mainQss: "manser-btn-lbl-main"
                 //subQss: "manser-btn-lbl-sub"
-                icon: model.icon
+                icon: "ic_conn-" + ((model.connQuality === 0) ? (0) : (6 - model.connQuality))//model.icon
                 iconSize: resizerItem.fontSize
 
                 /* icon favorite */
@@ -485,7 +495,7 @@ Item {
 
             onClicked: {
                 root.applyChanges();
-                root.setMode (QuiManageServersForm.Mode.M_LIST)
+                //root.setMode (QuiManageServersForm.Mode.M_LIST)
             }
         }
 

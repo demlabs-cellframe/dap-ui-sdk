@@ -14,11 +14,11 @@ void DapCmdServerData::handle(const QJsonObject *params)
 void DapCmdServerData::sendServerInfo(const DapServerInfo &server)
 {
     QJsonObject obj;
-    obj["address"]     = server.address;
-    obj["address6"]    = server.address6;
-    obj["port"]        = server.port;
-    obj["name"]        = server.name;
-    obj["location"]    = server.location;
-    obj["online"]      = server.online;
+    obj["address"]     = server.address();
+    obj["address6"]    = server.address6();
+    obj["port"]        = server.port();
+    obj["name"]        = server.name();
+    obj["location"]    = server.location();
+    obj["online"]      = server.online();
     sendCmd(&obj);
 }

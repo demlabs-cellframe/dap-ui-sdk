@@ -166,7 +166,8 @@ Item {
         }
 
         function tickerClicked() {
-            Qt.openUrlExternally(ticker.tickerUrl);
+            if (!ticker.tickerIsHidden)
+                Qt.openUrlExternally(ticker.tickerUrl);
         }
 
         function _updateTickerAnim() {
@@ -182,6 +183,7 @@ Item {
             visible: true
             anchors.left: parent.left
 
+            /* text */
             DapQmlLabel {
                 id: tickerLabel
                 objectName: "tickerLabel"
@@ -323,6 +325,7 @@ Item {
              MouseArea {
                  anchors.fill: updateNotificationButton
                  z : 3
+                 enabled: updateNotificationRect.opacity !== 0
                  cursorShape: Qt.PointingHandCursor
                  onClicked: root.sigStartUpdate()
              }
