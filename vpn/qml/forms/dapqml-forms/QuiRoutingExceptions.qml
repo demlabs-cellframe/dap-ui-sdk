@@ -79,6 +79,7 @@ Item {
     DapQmlDummy { id: rouexcTabPos;    qss: "rouexc-tab-postion" }
     DapQmlDummy { id: rouexcTabSize;   qss: "rouexc-tab-idle" }
     DapQmlDummy { id: rouexcTabSpace;  qss: "rouexc-tab-spacing" }
+    DapQmlDummy { id: rouexcItemIcon;  qss: "rouexc-content-item-icon" }
 
     /****************************************//**
      * Components
@@ -125,20 +126,60 @@ Item {
             mainText: model.name
             subText: ""
             //onHeightChanged: console.log (`index ${model.index} s ${width}*${height}`);
+
+//            Rectangle {
+//                anchors.fill: parent
+//                color: "green"
+//            }
+
+            /* icon */
+            DapQmlLabel {
+                x: width * 0.4375
+                y: (parent.height - height) / 2
+                scaledPixmap: model.icon
+                disableClicking: true
+                qss: "rouexc-content-item-icon"
+            }
+
+            /* close button */
+            DapQmlLabel {
+                x: parent.width - (width * 1.4375)
+                y: (parent.height - height) / 2
+                qss: "rouexc-content-item-btn-close"
+
+                onClicked: console.log (`clicked ${model.index}`);
+            }
         }
     }
 
     Component {
         id: delegateRoute
 
-        DapQmlButton {
+        DapQmlRectangle {
             width: listviewRoutes.width
             qss: "rouexc-content-item"
-            buttonStyle: DapQmlButton.Style.TopMainBottomSub
-            mainText: model.address
-            subText: model.description
-            mainQss: "text-align-left rouexc-content-item-main"
-            subQss: "text-align-left rouexc-content-item-sub"
+
+            DapQmlButton {
+                x: rouexcItemIcon.width * 0.4375
+                width: parent.width - x
+                height: parent.height
+                buttonStyle: DapQmlButton.Style.TopMainBottomSub
+                mainText: model.address
+                subText: model.description
+                mainQss: "text-align-left rouexc-content-item-main"
+                subQss: "text-align-left rouexc-content-item-sub"
+
+                onHeightChanged: console.log (`index ${model.index} p ${x}x${y} s ${width}*${height}`);
+
+                /* close button */
+                DapQmlLabel {
+                    x: parent.width - (width * 1.4375)
+                    y: (parent.height - height) / 2
+                    qss: "rouexc-content-item-btn-close"
+
+                    onClicked: console.log (`clicked ${model.index}`);
+                }
+            }
         }
     }
 

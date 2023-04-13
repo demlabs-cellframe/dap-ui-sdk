@@ -49,6 +49,7 @@
 	btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
 	btn-update-notification-close:          "qrc:/light/ic_close_update.png";
 	btn-update-notification-close-hover:    "qrc:/light/ic_close_update_hover.png";
+    rouexc-close:               "qrc:/light/rouexc-close.png";
 
     ic-renew:                   "qrc:/dapqml-forms-asset/light/ic_renew.png";
     ic-key:                     "qrc:/dapqml-forms-asset/light/ic_key.png";
@@ -114,6 +115,7 @@
     btn-ticker-close-hover:     "qrc:/dark/ic_ticker_close_hover.png";
     btn-update-notification-close:          "qrc:/dark/ic_close_update.png";
     btn-update-notification-close-hover:    "qrc:/dark/ic_close_update_hover.png";
+    rouexc-close:               "qrc:/dark/rouexc-close.png";
 
     ic-renew:                   "qrc:/dapqml-forms-asset/dark/ic_renew.png";
     ic-key:                     "qrc:/dapqml-forms-asset/dark/ic_key.png";
@@ -1514,6 +1516,11 @@
     scaled-rect: scaled(nan,nan,nan,65,false);
 }
 
+.rouexc-content-item-icon
+{
+    scaled-rect: scaled(nan,nan,32,32,true);
+}
+
 .rouexc-content-item-main
 {
     color: "@text";
@@ -1522,4 +1529,10 @@
 .rouexc-content-item-sub
 {
     color: "@label";
+}
+
+.rouexc-content-item-btn-close
+{
+    scaled-rect: scaled(nan,nan,32,32,true);
+    qproperty-scaledPixmap: "@rouexc-close";
 }

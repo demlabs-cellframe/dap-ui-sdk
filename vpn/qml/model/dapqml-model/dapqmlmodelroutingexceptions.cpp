@@ -128,9 +128,9 @@ void DapQmlModelRoutingExceptions::setMode (int a_newMode)
 
   if (s_apps.isEmpty())
     {
-      append(App{"TestApp1",""});
-      append(App{"TestApp2",""});
-      append(App{"TestApp3",""});
+      append(App{"TestApp1","qrc:/nonthemed/conn-icon-3.png"});
+      append(App{"TestApp2","qrc:/nonthemed/conn-icon-4.png"});
+      append(App{"TestApp3","qrc:/nonthemed/conn-icon-5.png"});
     }
 
   if (s_routes.isEmpty())
