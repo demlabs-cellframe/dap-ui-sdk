@@ -24,5 +24,6 @@
         <file compress="1">dapqml-forms/QuiCircleProgressBase.qml</file>
         <file compress="1">dapqml-forms/QuiUpdateProgress.qml</file>
         <file compress="1">dapqml-forms/QuiFaqForm.qml</file>
+        <file>dapqml-forms/QuiRoutingExceptions.qml</file>
     </qresource>
 </RCC>
