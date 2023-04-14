@@ -141,8 +141,7 @@ void DapCmdNode::condTxCreate()
 void DapCmdNode::startSearchOrders()
 {
     QJsonObject searchOrders;
-    qDebug() << "uuuuuuuuuuuuuuuuuuuuu startSearchOrders" << m_selectedNetworkName
-             << m_selectedTokenName << m_unit << m_minPrice << m_maxPrice;
+    qDebug() << "startSearchOrders" << m_selectedNetworkName << m_selectedTokenName << m_unit << m_minPrice << m_maxPrice;
     searchOrders["network_name"] = m_selectedNetworkName;
     searchOrders["token_name"] = m_selectedTokenName;
     searchOrders["unit"] = m_unit;
@@ -203,6 +202,7 @@ void DapCmdNode::setValue(QString value)
 void DapCmdNode::setUnit(QString value)
 {
     m_unit = value;
+    m_orderListData.setUnit(m_unit);
     emit continueEnable(checkContinue());
 }
 
@@ -215,6 +215,16 @@ void DapCmdNode::chooseOrder(QString hash)
 {
     m_orderHash = hash;
     emit continueEnable(checkContinue());
+}
+
+void DapCmdNode::setMaxValueUnit(QString price)
+{
+    m_maxPrice = price;
+}
+
+void DapCmdNode::setMinValueUnit(QString price)
+{
+    m_minPrice = price;
 }
 
 bool DapCmdNode::checkContinue()

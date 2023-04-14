@@ -34,7 +34,7 @@ signals:
     void startNodeDetection();
     void stopNodeDetection();
     void dataWalletRequest();
-    void orderListRequest(QString networkName, QString tokenName, QString unit, QString maxPrice, QString minPrice);
+    void orderListRequest(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
     void condTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
     void checkSigned();
     void connectByOrder(QString netId, QString txCondHash, QString token, QString srvUid, QString address, uint16_t port);
