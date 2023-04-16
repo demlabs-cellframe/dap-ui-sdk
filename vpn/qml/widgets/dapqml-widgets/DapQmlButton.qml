@@ -130,6 +130,9 @@ Rectangle {
     /// @brief text field content changed
     signal textChanged();
 
+    /// @brief enter key pressed while text field is in focus
+    signal textAccepted();
+
     /// @}
     /****************************************//**
      * @name FUNCTIONS
@@ -225,7 +228,8 @@ Rectangle {
         width: root.height / 5
         height: root.height / 5
         visible: root.link && root.buttonStyle !== DapQmlButton.Style.IconMainSub
-        scaledPixmap: "qrc:/light/ic_arrow-right.png"
+        //scaledPixmap: "qrc:/light/ic_arrow-right.png"
+        DapQmlStyle { qss: "btn-arrow"; item: linkImage }
     }
 
     /****************************************//**
@@ -267,7 +271,8 @@ Rectangle {
      ********************************************/
 
     GridLayout {
-        anchors.fill: parent;
+        width: parent.width
+        height: parent.height - separator.visible * separator.height
         columns: 1
 
         /* LeftTopMainBottomSub */
@@ -505,7 +510,7 @@ Rectangle {
                 height: _magickHeight() - _magickSpacer()
 
                 horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignBottom
+                verticalAlignment: Text.AlignVCenter
                 echoMode: root.editEchoMode
                 text: root.mainText
                 //qss: root.mainQss
@@ -589,9 +594,10 @@ Rectangle {
                 DapQmlStyle { qss: root.mainQss; item: etmbsMain }
 
                 /* background */
-                background: DapQmlRectangle {
-                    qss: "login-serialkey-input"
-                }
+                background: Item {}
+//                background: DapQmlRectangle {
+//                    qss: "login-serialkey-input"
+//                }
 
                 /* font config */
                 font {
@@ -601,8 +607,18 @@ Rectangle {
                 }
 
                 /* signals */
-                onTextEdited: { root.mainText = text; root.textEdited(); }
+                onTextEdited:  { root.mainText = text; root.textEdited(); }
                 onTextChanged: { root.mainText = text; root.textChanged(); }
+                onAccepted:    { root.textAccepted(); }
+            }
+
+            /* separator */
+            DapQmlRectangle {
+                x: (parent.width - width) / 2
+                y: (parent.height - height) / 2
+                width: parent.width * 0.856741573
+                //height: 1
+                qss: "login-separator-color"
             }
 
             /* sub text */
@@ -696,7 +712,8 @@ Rectangle {
                 width: root.height / 4
                 height: root.height / 4
                 visible: root.link
-                scaledPixmap: "qrc:/light/ic_arrow-right.png"
+                //scaledPixmap: "qrc:/light/ic_arrow-right.png"
+                DapQmlStyle { qss: "btn-arrow"; item: linkImage1 }
 
 //                Rectangle {
 //                    color: "blue"
@@ -904,13 +921,15 @@ Rectangle {
                 onTextChanged: { root.mainText = text; root.textChanged(); }
             }
         }
+    }
 
-        /* bottom item */
-        DapQmlSeparator {
-            Layout.fillWidth: true
-            width: root.width
-            visible: root.separator
-        }
+    /* bottom item */
+    DapQmlSeparator {
+        id: separator
+        //Layout.fillWidth: true
+        y: parent.height - height
+        width: root.width
+        visible: root.separator
     }
 
 }

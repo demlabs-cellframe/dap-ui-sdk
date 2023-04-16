@@ -35,6 +35,16 @@ public:
     QString address;
     int port;
     bool favorite;
+
+    bool operator == (const Server &a_item)
+    {
+      bool byName     = name      == a_item.name;
+      bool byLocation = location  == a_item.location;
+      bool byAddress  = address   == a_item.address;
+      bool byPort     = port      == a_item.port;
+      //bool byFavorite = favorite  == a_item.favorite;
+      return byName && byLocation && byAddress && byPort /*&& byFavorite*/;
+    }
   };
 
   /// Server state struct

@@ -102,9 +102,11 @@ signals:
   /* support */
   void sigBugSend();
   void sigTelegramBot();
+  void sigShareLog();
 
   /* info */
   void sigBugReport();
+  void sigFaq();
   void sigLicenceHistory();
   void sigTermsOfUse();
   void sigPrivacyPolicy();
@@ -128,6 +130,7 @@ signals:
 
   /* info */
   void sigBugReport();
+  void sigFaq();
   void sigLicenceHistory();
   void sigTermsOfUse();
   void sigPrivacyPolicy();

@@ -74,5 +74,8 @@ DISTFILES += \
         $$ANDROID_PACKAGE_SOURCE_DIR/gradle/wrapper/gradle-wrapper.properties \
 }
 
+DISTFILES += \
+    $$PWD/../../../brand/KelVPN/os/android/res/xml/provider_paths.xml
+
 
 

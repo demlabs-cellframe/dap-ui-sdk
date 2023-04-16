@@ -29,6 +29,7 @@ enum class DapJsonCmdType
     CLIENT_INFO,
     CDB_CTL,
     NODE_INFO,
+    UPDATE_OPERATION,
     UNKNOWN
 };
 

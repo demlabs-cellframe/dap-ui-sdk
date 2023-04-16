@@ -20,7 +20,7 @@ import DapQmlStyle 1.0
 Rectangle {
     id: root
     width: 354
-    height: 4
+    height: sep1.height
     color: "transparent"
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
@@ -51,8 +51,8 @@ Rectangle {
 
     DapQmlImage {
         id: sep2
-        x: sep1.width
-        width: root.width - sep1.width - sep3.width
+        x: sep1.width - 2
+        width: root.width - sep1.width - sep3.width + 4
 
         DapQmlStyle { item: sep2; qss: "sep-mid"; }
     }

@@ -51,7 +51,7 @@ namespace Utils
         #if defined(Q_OS_ANDROID)
         return QLatin1String("android");
         #elif defined(Q_OS_MACOS)
-        return QLatin1String("macos");
+        return QLatin1String("mac");
         #elif defined(Q_OS_WIN)
         return QLatin1String("windows");
         #elif defined(Q_OS_IOS)

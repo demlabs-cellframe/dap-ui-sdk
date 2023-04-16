@@ -1,5 +1,7 @@
 /* INCLUDES */
 #include "dapqmlimage.h"
+#include "helper/scaling.h"
+
 #include <QPainter>
 
 /********************************************
@@ -54,6 +56,16 @@ void DapQmlImageItem::paint (QPainter *a_painter)
   auto content  = contentsBoundingRect().toAlignedRect();
   auto size     = content.size();
 
+  /* calc actual size */
+  //auto actualDpi  = Scaling::getPhysicalDPI();
+  auto scaleMul = Scaling::getDevicePixelRatio();
+  size  = QSize {
+      static_cast<int> (size.width() * scaleMul),
+      static_cast<int> (size.height() * scaleMul),
+      //static_cast<int> (Scaling::pointsToPixels (size.width(), actualDpi)),
+      //static_cast<int> (Scaling::pointsToPixels (size.height(), actualDpi))
+  };
+
   /* check, if cache has needed size image */
   if (_cache.size != size || _cache.name != m_scaledPixmap)
     {
@@ -63,6 +75,8 @@ void DapQmlImageItem::paint (QPainter *a_painter)
 //          && _cache.name == m_scaledPixmap)
 //        return a_painter->drawPixmap (content, _cache.pixmap);
 //#endif // ANDROID
+
+//      qDebug() << __PRETTY_FUNCTION__ << "size:" << size << content.size();// << "dpi:" << actualDpi;
 
       /* fix name */
       QString filename  = m_scaledPixmap;

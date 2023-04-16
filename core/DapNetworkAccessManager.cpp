@@ -61,3 +61,12 @@ void DapNetworkAccessManager::responseCallbackError(int a_err_code, void * a_obj
     emit reply->sigError();
     reply->deleteLater();
 }
+
+void DapNetworkAccessManager::responseProgressCallback(size_t a_response_size, size_t a_content_length, void * a_obj)
+{
+    DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
+    qDebug() << "Dap Client HTTP Progress update: response received, size=" << a_response_size;
+    reply->setContentLength(a_content_length);
+    reply->setResponseSize(a_response_size);
+    emit reply->progressUpdate(a_response_size);
+}

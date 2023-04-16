@@ -15,14 +15,14 @@
     grid: "#211F46";
     switch-bg-on:               "qrc:/light/switch/bg_on.png";
     switch-bg-off:              "qrc:/light/switch/bg_off.png";
-    switch-toggle-on:         	"qrc:/light/switch/toggle_on.png";
+    switch-toggle-on:           "qrc:/light/switch/toggle_on.png";
     switch-toggle-off:          "qrc:/light/switch/toggle_off.png";
     button-frame:               "qrc:/light/btn_server_bg.png";
     checkbox-on:                "qrc:/light/check_btn_on.png";
     checkbox-off:               "qrc:/light/check_btn_off.png";
     radio-on:                   "qrc:/light/radio_btn_on.png";
     radio-off:                  "qrc:/light/radio_btn_off.png";
-    separator-left:       	"qrc:/light/separator_left.png";
+    separator-left:             "qrc:/light/separator_left.png";
     separator-mid:              "qrc:/light/separator_mid.png";
     separator-right:            "qrc:/light/separator_right.png";
     push-button-active:         "qrc:/light/btn_bg_hover_active.png";
@@ -34,7 +34,9 @@
     footer-statistics-active:   "qrc:/light/btn_account_active.png";
     footer-statistics-inactive: "qrc:/light/btn_account.png";
     bugrep-bg:                  "qrc:/light/report_bg_border.png";
+    bugrep-bg-75:               "qrc:/light/report_bg_border_75.png";
     login-logo:                 "qrc:/light/login-logo.png";
+    splash-logo:                "qrc:/light/logo.png";
     login-mode-btn-cert-unchecked:      "qrc:/light/auth/auth-cert.png";
     login-mode-btn-cert-checked:        "qrc:/light/auth/auth-cert-pressed.png";
     login-mode-btn-loginpass-unchecked: "qrc:/light/auth/auth-loginpass.png";
@@ -83,7 +85,9 @@
     footer-statistics-active:   "qrc:/dark/btn_account_active.png";
     footer-statistics-inactive: "qrc:/dark/btn_account.png";
     bugrep-bg:                  "qrc:/dark/report_bg_border.png";
+    bugrep-bg-75:               "qrc:/dark/report_bg_border_75.png";
     login-logo:                 "qrc:/dark/login-logo.png";
+    splash-logo:                "qrc:/dark/logo.png";
     login-mode-btn-cert-unchecked:      "qrc:/light/auth/auth-cert.png";
     login-mode-btn-cert-checked:        "qrc:/light/auth/auth-cert-pressed.png";
     login-mode-btn-loginpass-unchecked: "qrc:/light/auth/auth-loginpass.png";
@@ -120,7 +124,7 @@
 
 .c-grey
 {
-	color: "@light-grey";
+    color: "@light-grey";
 }
 
 .c-brand
@@ -339,6 +343,17 @@
     qproperty-hoverBackgroundColor: "@brand";
 }
 
+
+
+.null-size
+{
+    scaled-rect: scaled(nan,nan,0,0,false);
+}
+
+.null-pos
+{
+    scaled-rect: scaled(0,0,nan,nan,false);
+}
 
 /****************************************************
  * Icons
@@ -607,7 +622,7 @@
 .splash-logo
 {
     scaled-rect: scaled(nan,240,276,76,true);
-    qproperty-scaledPixmap: "qrc:/logo.png";
+    qproperty-scaledPixmap: "@splash-logo";
 }
 
 .splash-status
@@ -628,6 +643,11 @@
 .splash-gradient-bottom
 {
     color: "#ED6641";
+}
+
+.splash-hyperlink
+{
+    scaled-rect: scaled(-1,791,-1,64,false,18);
 }
 
 /****************************************************
@@ -761,7 +781,7 @@
 
 .login-connect
 {
-    scaled-rect: scaled(-1,695,374,80,true,12);
+    scaled-rect: scaled(nan,695,374,80,true,12);
 }
 
 .login-obtain-container

@@ -18,7 +18,8 @@ protected:
     bool fromJSON(const QJsonArray& jsonArr, QList<QMap<QString, QString>> *listNews);
     void fillingListNews(const QJsonObject& jsonObj, QList<QMap<QString, QString>>* listNews);
 signals:
-    void sigGotNews(QList<QMap<QString, QString>>);
+    void sigGotUpdateNews(QList<QMap<QString, QString>>);
+    void sigGotTickerNews(const QString& message, const QString& url);
 
 };
 

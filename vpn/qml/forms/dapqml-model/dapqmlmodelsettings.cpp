@@ -166,10 +166,12 @@ void DapQmlModelSettings::_buildMenuItemsList()
 
       Item{SI_BUTTON,     tr ("Send bug report"), "", "settings_icon ic_send-report", "send_bug_report",     [](QObject*) { emit __inst->sigBugSend(); } },
       Item{SI_BUTTON,     tr ("Telegram support bot"), "", "settings_icon ic_bot", "telegram_support_bot",   [](QObject*) { emit __inst->sigTelegramBot(); } },
+      Item{SI_BUTTON,     tr ("Share logs"), "", "settings_icon ic_share_log", "share_logs",                 [](QObject*) { emit __inst->sigShareLog(); } },
 
       Item{SI_TITLE,      tr ("Information"), "", "settings_icon", "information",                            [](QObject*){} },
 
       Item{SI_LINK,       tr ("Bug reports"), "", "settings_icon ic_information_bug-report", "bug_reports",  [](QObject*) { emit __inst->sigBugReport(); } },
+      Item{SI_LINK,       tr ("FAQ"), "", "ic_faq", "faq",                                                   [](QObject*) { emit __inst->sigFaq(); } },
       Item{SI_BUTTON,     tr ("Serial key history on this device"), "", "settings_icon ic_key-history", "skey_history",  [](QObject*) { emit __inst->sigLicenceHistory(); } },
   #ifndef DISABLE_TERMSOFUSE_AND_PRIVACYPOLICY
       Item{SI_BUTTON,     tr ("Terms of use"), "", "settings_icon ic_terms_policy", "terms_of_use",          [](QObject*) { emit __inst->sigTermsOfUse(); } },
@@ -204,6 +206,7 @@ void DapQmlModelSettings::_buildMenuItemsList()
       Item{SI_TITLE,      tr ("Information"), "", "settings_icon", "information",                                         [](QObject*){} },
 
       Item{SI_LINK,       tr ("Bug reports"), "", "settings_icon ic_information_bug-report", "bug_reports",               [](QObject*) { emit __inst->sigBugReport(); } },
+      Item{SI_LINK,       tr ("FAQ"), "", "ic_faq", "faq",                                                   [](QObject*) { emit __inst->sigFaq(); } },
       Item{SI_BUTTON,     tr ("Serial key history on this device"), "", "settings_icon ic_key-history", "skey_history",   [](QObject*) { emit __inst->sigLicenceHistory(); } },
   #ifndef DISABLE_TERMSOFUSE_AND_PRIVACYPOLICY
       Item{SI_BUTTON,     tr ("Terms of use"), "", "settings_icon ic_terms_policy", "terms_of_use",                       [](QObject*) { emit __inst->sigTermsOfUse(); } },
@@ -385,7 +388,7 @@ void DapQmlModelSettings::slotSetDaysLeft (QString a_days)
 
   emit dataChanged (
     index (s_daysLabelIndex, 0),
-    index (s_daysLabelIndex, columnCount (index (s_daysLabelIndex, 0))));
+    index (s_daysLabelIndex, columnCount (index (s_daysLabelIndex, 3))));
 }
 
 void DapQmlModelSettings::slotResetDaysLeft()
@@ -397,7 +400,7 @@ void DapQmlModelSettings::slotResetDaysLeft()
 
   emit dataChanged (
     index (s_daysLabelIndex, 0),
-    index (s_daysLabelIndex, columnCount (index (s_daysLabelIndex, 0))));
+    index (s_daysLabelIndex, columnCount (index (s_daysLabelIndex, 3))));
 }
 
 void DapQmlModelSettings::slotCountryChange()
@@ -409,7 +412,7 @@ void DapQmlModelSettings::slotCountryChange()
 
   emit dataChanged (
     index (s_countryIndex, 0),
-    index (s_countryIndex, columnCount (index (s_countryIndex, 0))));
+    index (s_countryIndex, columnCount (index (s_countryIndex, 3))));
 }
 
 void DapQmlModelSettings::slotRetranslate()
@@ -421,10 +424,8 @@ void DapQmlModelSettings::slotRetranslate()
 
 QString DapQmlModelSettings::getCurrentCountryCode() const
 {
-
-    QString base_location = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
-    QString code = DapServersData::m_countryMap[base_location];
-    return code;
+  QString base_location = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
+  return DapServersData::m_countryMap.value (base_location, QString());
 }
 
 /********************************************
