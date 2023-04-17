@@ -1536,3 +1536,119 @@
     scaled-rect: scaled(nan,nan,32,32,true);
     qproperty-scaledPixmap: "@rouexc-close";
 }
+
+.rouexc-popup-content-apps
+{
+    scaled-rect: scaled(nan,nan,356,660,false);
+    radius: 8;
+}
+
+.rouexc-popup-content-routes
+{
+    scaled-rect: scaled(nan,nan,356,337,true);
+    radius: 8;
+}
+
+.rouexc-btn-add
+{
+    scaled-rect: scaled(360,64,32,32,true);
+    qproperty-inactive: "@btn-plus";
+    qproperty-active: "@btn-plus";
+}
+
+.rouexc-title-label
+{
+    scaled-rect: scaled(nan,nan,276,nan,false,20);
+    color: "@text";
+    font-weight: Font.Bold;
+}
+
+.rouexc-title-separator
+{
+    scaled-rect: scaled(nan,64,-1,1,false);
+}
+
+.rouexc-content-item-btn-close
+{
+    scaled-rect: scaled(306,nan,32,32,true);
+    qproperty-inactive: "@btn-minus";
+    qproperty-active: "@btn-minus";
+}
+
+.rouexc-popup-bottom-separator
+{
+    scaled-rect: scaled(nan,nan,-1,1,false);
+}
+
+.rouexc-popup-btn
+{
+    scaled-rect: scaled(nan,nan,147,48,true);
+    color: "@light-grey";
+    radius: 13;
+}
+
+.rouexc-popup-btn-label
+{
+    scaled-font: scaled(18);
+    color: "@text";
+}
+
+.rouexc-popup-btn-second
+{
+    scaled-rect: scaled(nan,nan,147,48,true);
+    color: "@accent";
+    radius: 13;
+}
+
+.rouexc-popup-btn-label-second
+{
+    scaled-font: scaled(18);
+    color: "@background";
+}
+
+.rouexc-popup-bottom-size
+{
+    scaled-rect: scaled(nan,nan,nan,72,false);
+}
+
+.rouexc-popup-apps-content
+{
+    scaled-rect: scaled(nan,nan,324,nan,false);
+}
+
+.rouexc-route-input-field
+{
+    scaled-rect: scaled(nan,nan,308,56,true,16);
+    color: "@light-grey";
+    radius: 8;
+}
+
+.rouexc-route-input-field-size
+{
+    scaled-rect: scaled(nan,nan,308,48,true);
+}
+
+.rouexc-route-address
+{
+    scaled-rect: scaled(nan,89,nan,nan,false,16);
+}
+
+.rouexc-route-description
+{
+    scaled-rect: scaled(nan,160,nan,nan,false,16);
+}
+
+.rouexc-route-input-field-font
+{
+    scaled-font: scaled(16);
+}
+
+.rouexc-route-input-field-placeholder
+{
+    color: "@label";
+}
+
+.rouexc-route-input-margin
+{
+    scaled-rect: scaled(4,nan,nan,nan,false);
+}
