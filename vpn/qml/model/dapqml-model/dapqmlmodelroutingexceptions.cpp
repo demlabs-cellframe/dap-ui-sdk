@@ -15,6 +15,7 @@
 
 typedef DapQmlModelRoutingExceptions::App App;
 typedef DapQmlModelRoutingExceptions::Route Route;
+typedef DapQmlModelRoutingExceptions::Field Field;
 
 // base class with refresh method added
 
@@ -81,18 +82,6 @@ public:
   int rowCount (const QModelIndex &parent = QModelIndex()) const override;
   QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
   QHash<int, QByteArray> roleNames() const override;
-};
-
-enum Field
-{
-  invalid       = Qt::UserRole + 10,
-  appName       = Qt::DisplayRole,
-  packageName   = Qt::UserRole + 20,
-  checked,
-  icon          = Qt::DecorationRole,
-
-  address       = Qt::UserRole + 30,
-  description,
 };
 
 /* VARS */

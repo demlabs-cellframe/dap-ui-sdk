@@ -34,6 +34,19 @@ public:
   };
   Q_ENUMS (Mode)
 
+  enum Field
+  {
+    invalid       = Qt::UserRole + 10,
+    appName       = Qt::DisplayRole,
+    packageName   = Qt::UserRole + 20,
+    checked,
+    icon          = Qt::DecorationRole,
+
+    address       = Qt::UserRole + 30,
+    description,
+  };
+  Q_ENUMS (Field)
+
   struct App
   {
     QString packageName, appName;

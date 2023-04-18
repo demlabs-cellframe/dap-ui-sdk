@@ -49,17 +49,17 @@ Item {
 
     DapQmlModelRoutingExceptions {
         id: modelApp
-        mode: DapQmlModelRoutingExceptions.APPS
+        mode: DapQmlModelRoutingExceptions.CHECKED_APPS
     }
 
     DapQmlModelRoutingExceptions {
         id: modelRoutes
-        mode: DapQmlModelRoutingExceptions.ROUTES
+        mode: DapQmlModelRoutingExceptions.ALL_ROUTES
     }
 
     DapQmlModelRoutingExceptions {
         id: modelCheckedApp
-        mode: DapQmlModelRoutingExceptions.CHECKEDAPPS
+        mode: DapQmlModelRoutingExceptions.SORTED_APPS
     }
 
     /// @}
