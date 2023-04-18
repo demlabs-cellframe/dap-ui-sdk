@@ -11,6 +11,7 @@ SOURCES += \
     $$PWD/DapLogHandler.cpp \
     $$PWD/DapNetworkAccessManager.cpp \
     $$PWD/DapNetworkReply.cpp \
+    $$PWD/DapPackageList.cpp \
     $$PWD/DapPluginsPathControll.cpp \
     $$PWD/DapSerialKeyData.cpp \
     $$PWD/DapSerialKeyHistory.cpp \

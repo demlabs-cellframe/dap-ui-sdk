@@ -25,6 +25,7 @@ DapDataLocal::DapDataLocal()
   , m_serialKeyData(new DapSerialKeyData (this))
   , m_bugReportHistory(new DapBugReportHistory (this))
   , m_serialKeyHistory (new DapSerialKeyHistory (this))
+  , m_packageList(new QSet<QString>)
 {
     qDebug() << "[DL] DapDataLocal Constructor";
     parseXML(":/data.xml");
@@ -359,6 +360,17 @@ DapSerialKeyHistory *DapDataLocal::serialKeyHistory()
 {
   return m_serialKeyHistory;
 }
+
+QSet<QString> *DapDataLocal::packageList()
+{
+  return m_packageList;
+}
+
+QMap<QString, QMap<QString, QImage>> *DapDataLocal::appList()
+{
+  return m_appList;
+}
+
 
 void DapDataLocal::initSecretKey()
 {

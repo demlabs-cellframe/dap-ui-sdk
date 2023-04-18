@@ -23,6 +23,7 @@ const QString TEXT_SERIAL_KEY           = "serialkey";
 const QString TEXT_SERIAL_KEY_HISTORY   = "serialkeyhistory";
 const QString TEXT_PENDING_SERIAL_KEY   = "pendingserialkey";
 const QString TEXT_BUGREPORT_HISTORY    = "bugreporthistory";
+const QString EXCLUDE_FROM_ROUTING_LIST = "excludefromroutinglist";
 const QString TEXT_LOGIN                = "login";
 const QString TEXT_PASSWORD             = "password";
 const QString TEXT_TX_OUT               = "tx_out";
@@ -125,6 +126,9 @@ public:
     DapBugReportHistory *bugReportHistory();
     DapSerialKeyHistory *serialKeyHistory();
 
+    QSet<QString> *packageList();
+    QMap<QString, QMap<QString, QImage>> *appList();
+
     Authorization authorizationType();
     void setAuthorizationType(Authorization type);
 
@@ -168,6 +172,9 @@ private:
 
     DapBugReportHistory *m_bugReportHistory;
     DapSerialKeyHistory *m_serialKeyHistory;
+
+    QSet<QString> *m_packageList;
+    QMap<QString, QMap<QString, QImage>> *m_appList;
 };
 
 template<typename T>
