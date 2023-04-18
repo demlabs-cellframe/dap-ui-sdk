@@ -452,39 +452,39 @@ void DapQmlModelRoutingExceptions::updateAllLists()
     model->refresh();
 }
 
-void DapQmlModelRoutingExceptions::save() const
-{
-  QJsonArray /*japps, */jroutes;
+//void DapQmlModelRoutingExceptions::save() const
+//{
+//  QJsonArray /*japps, */jroutes;
 
-  //for (const auto &app : qAsConst(s_apps))
-  //  japps << toJson (app);
+//  //for (const auto &app : qAsConst(s_apps))
+//  //  japps << toJson (app);
 
-  for (const auto &route : qAsConst(s_routes))
-    jroutes << toJson (route);
+//  for (const auto &route : qAsConst(s_routes))
+//    jroutes << toJson (route);
 
-  QJsonObject jobj =
-  {
-    //{"apps", japps},
-    {"routes", jroutes},
-  };
+//  QJsonObject jobj =
+//  {
+//    //{"apps", japps},
+//    {"routes", jroutes},
+//  };
 
-  DapDataLocal::instance()->saveSetting (SETTING_ROUTING_EXCEPTIONS, jobj);
-}
+//  DapDataLocal::instance()->saveSetting (SETTING_ROUTING_EXCEPTIONS, jobj);
+//}
 
-void DapQmlModelRoutingExceptions::load()
-{
-  auto jobj     = DapDataLocal::instance()->getSetting (SETTING_ROUTING_EXCEPTIONS).toJsonObject();
-  auto //japps    = jobj.value ("apps").toArray(),
-       jroutes  = jobj.value ("routes").toArray();
+//void DapQmlModelRoutingExceptions::load()
+//{
+//  auto jobj     = DapDataLocal::instance()->getSetting (SETTING_ROUTING_EXCEPTIONS).toJsonObject();
+//  auto //japps    = jobj.value ("apps").toArray(),
+//       jroutes  = jobj.value ("routes").toArray();
 
-  clearRoutes(); // clear();
+//  clearRoutes(); // clear();
 
-//  for (const auto &app : qAsConst (japps))
-//    append (toApp (app.toObject()));
+////  for (const auto &app : qAsConst (japps))
+////    append (toApp (app.toObject()));
 
-  for (const auto &route : qAsConst (jroutes))
-    append (toRoute (route.toObject()));
-}
+//  for (const auto &route : qAsConst (jroutes))
+//    append (toRoute (route.toObject()));
+//}
 
 void DapQmlModelRoutingExceptions::clear()
 {
@@ -730,12 +730,11 @@ QVariant DqmreApps::data (const QModelIndex &index, int role) const
 
   switch (field)
     {
-    case packageName: return s_apps.at (index.row()).packageName;
-    case appName:     return s_apps.at (index.row()).appName;
-    case icon:        return s_apps.at (index.row()).icon;
-    case checked:     return s_apps.at (index.row()).checked;
+    case Field::packageName: return s_apps.at (index.row()).packageName;
+    case Field::appName:     return s_apps.at (index.row()).appName;
+    case Field::icon:        return s_apps.at (index.row()).icon;
+    case Field::checked:     return s_apps.at (index.row()).checked;
 
-    case invalid:
     default:
       return QVariant();
     }
@@ -772,10 +771,9 @@ QVariant DqmreRoutes::data (const QModelIndex &index, int role) const
 
   switch (field)
     {
-    case address:       return s_routes.at (index.row()).address;
-    case description:   return s_routes.at (index.row()).description;
+    case Field::address:       return s_routes.at (index.row()).address;
+    case Field::description:   return s_routes.at (index.row()).description;
 
-    case invalid:
     default:
       return QVariant();
     }
@@ -812,12 +810,11 @@ QVariant DqmreCheckedApps::data (const QModelIndex &index, int role) const
 
   switch (field)
     {
-    case packageName: return s_checkedApps.at (index.row()).packageName;
-    case appName:     return s_checkedApps.at (index.row()).appName;
-    case icon:        return s_checkedApps.at (index.row()).icon;
-    case checked:     return s_checkedApps.at (index.row()).checked;
+    case Field::packageName: return s_checkedApps.at (index.row()).packageName;
+    case Field::appName:     return s_checkedApps.at (index.row()).appName;
+    case Field::icon:        return s_checkedApps.at (index.row()).icon;
+    case Field::checked:     return s_checkedApps.at (index.row()).checked;
 
-    case invalid:
     default:
       return QVariant();
     }
@@ -854,10 +851,10 @@ QVariant DqmreSortedApps::data (const QModelIndex &index, int role) const
 
   switch (field)
     {
-    case packageName: return s_sortedApps.at (index.row()).packageName;
-    case appName:     return s_sortedApps.at (index.row()).appName;
-    case icon:        return s_sortedApps.at (index.row()).icon;
-    case checked:     return s_sortedApps.at (index.row()).checked;
+    case Field::packageName: return s_sortedApps.at (index.row()).packageName;
+    case Field::appName:     return s_sortedApps.at (index.row()).appName;
+    case Field::icon:        return s_sortedApps.at (index.row()).icon;
+    case Field::checked:     return s_sortedApps.at (index.row()).checked;
 
     default:
       return QVariant();

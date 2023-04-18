@@ -127,10 +127,10 @@ public:
 
   /// refresh checked and sorted models
   Q_INVOKABLE void updateAllLists();
-  /// save routes
-  Q_INVOKABLE void save() const;
-  /// load routes
-  Q_INVOKABLE void load();
+//  /// save routes
+//  Q_INVOKABLE void save() const;
+//  /// load routes
+//  Q_INVOKABLE void load();
   /// remove everything
   Q_INVOKABLE void clear();
   /// remove all apps
@@ -172,6 +172,9 @@ signals:
  * Example:
  * > packageName    = "CoolPackageName.pak"
  * > image id name  = "CoolPackageName.pak.png"
+ *
+ * cpp: engine->addImageProvider ("DapQmlModelRoutingExceptionsImageProvider", new DapQmlModelRoutingExceptionsImageProvider);
+ * qml: scaledPixmap: "image://DapQmlModelRoutingExceptionsImageProvider/" + model.packageName + ".png"
  *
  * @ingroup groupUiModels
  * @date 18.04.2023
