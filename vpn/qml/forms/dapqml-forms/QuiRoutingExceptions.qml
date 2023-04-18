@@ -57,6 +57,11 @@ Item {
         mode: DapQmlModelRoutingExceptions.ROUTES
     }
 
+    DapQmlModelRoutingExceptions {
+        id: modelCheckedApp
+        mode: DapQmlModelRoutingExceptions.CHECKEDAPPS
+    }
+
     /// @}
     /****************************************//**
      * @name FUNCTIONS
@@ -173,7 +178,7 @@ Item {
             DapQmlLabel {
                 x: width * 0.4375
                 y: (parent.height - height) / 2
-                scaledPixmap: model.icon
+                scaledPixmap: "image://DapQmlModelRoutingExceptionsImageProvider/" + model.packageName + ".png"
                 disableClicking: true
                 qss: "rouexc-content-item-icon"
             }
@@ -465,7 +470,7 @@ Item {
                 DapQmlDummy { id: listviewPopupAppsSizer; qss: "rouexc-popup-apps-content"; }
 
                 delegate: delegateApp
-                model: modelApp
+                model: modelCheckedApp
             }
 
             /* bottom buttons */
