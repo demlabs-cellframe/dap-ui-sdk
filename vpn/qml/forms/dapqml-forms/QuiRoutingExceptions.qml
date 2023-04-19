@@ -165,7 +165,7 @@ Item {
             width: listviewApps.width
             qss: "rouexc-content-item"
             buttonStyle: DapQmlButton.Style.IconMainSubIcon
-            mainText: model.name
+            mainText: model.appName
             subText: ""
             //onHeightChanged: console.log (`index ${model.index} s ${width}*${height}`);
 
