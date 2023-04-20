@@ -81,7 +81,7 @@ protected:
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
-protected:
+public:
   explicit DapQmlModelRoutingExceptions();
   /// @}
 
@@ -107,24 +107,33 @@ public:
 
   Q_INVOKABLE void replace (int a_index, const App &a_app);
   Q_INVOKABLE void replace (int a_index, App &&a_app);
+  Q_INVOKABLE void replaceSorted (int a_index, const App &a_app);
+  Q_INVOKABLE void replaceSorted (int a_index, App &&a_app);
   Q_INVOKABLE void replace (int a_index, const Route &a_route);
   Q_INVOKABLE void replace (int a_index, Route &&a_route);
   Q_INVOKABLE void replaceJson (int a_index, const QVariant &a_value);
 
   Q_INVOKABLE const App &app (int a_index) const;
+  Q_INVOKABLE const App &appSorted (int a_index) const;
   Q_INVOKABLE const Route &route (int a_index) const;
   Q_INVOKABLE QVariant appJson (int a_index) const;
   Q_INVOKABLE QVariant routeJson (int a_index) const;
+
+  Q_INVOKABLE int indexOfChecked (int a_index) const;
+  Q_INVOKABLE int indexOfSorted (int a_index) const;
 
   Q_INVOKABLE int appSize() const;
   Q_INVOKABLE int routeSize() const;
 
   Q_INVOKABLE void removeApp (int a_index);
+  Q_INVOKABLE void removeAppFromChecked (int a_index);
   Q_INVOKABLE void removeRoute (int a_index);
 
   Q_INVOKABLE void moveApp (int a_from, int a_to);
   Q_INVOKABLE void moveRoute (int a_from, int a_to);
 
+  /// refresh checked and sorted models
+  Q_INVOKABLE void sortAndUpdateAllLists();
   /// refresh checked and sorted models
   Q_INVOKABLE void updateAllLists();
 //  /// save routes

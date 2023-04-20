@@ -1531,7 +1531,7 @@
     color: "@label";
 }
 
-.rouexc-content-item-btn-close
+.rouexc-content-app-btn-close
 {
     scaled-rect: scaled(nan,nan,32,32,true);
     qproperty-scaledPixmap: "@rouexc-close";
@@ -1547,6 +1547,17 @@
 {
     scaled-rect: scaled(nan,nan,356,337,true);
     radius: 8;
+}
+
+.rouexc-popup-app-checkbox
+{
+    scaled-rect: scaled(nan,nan,60,60,true);
+    qproperty-scaledPixmap: "@checkbox-off";
+}
+
+.rouexc-popup-app-checkbox-checked
+{
+    qproperty-scaledPixmap: "@checkbox-on";
 }
 
 .rouexc-btn-add
@@ -1651,4 +1662,16 @@
 .rouexc-route-input-margin
 {
     scaled-rect: scaled(4,nan,nan,nan,false);
+}
+
+.rouexc-spinner
+{
+	scaled-rect: scaled(nan,nan,160,160,true);
+}
+
+.rouexc-spinner-bg
+{
+	scaled-rect: scaled(nan,nan,200,200,true);
+	color: "@background";
+	radius: 16;
 }

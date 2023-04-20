@@ -220,6 +220,12 @@ void DapQmlModelRoutingExceptions::setMode (int a_newMode)
     default: break;
     }
 
+  /* signals */
+  connect (_model, &QAbstractListModel::modelAboutToBeReset,
+           this, &QAbstractListModel::modelAboutToBeReset);
+  connect (_model, &QAbstractListModel::modelReset,
+           this, &QAbstractListModel::modelReset);
+
 #ifdef TEST_MODE
   if (s_apps.isEmpty())
     {
@@ -385,6 +391,48 @@ void DapQmlModelRoutingExceptions::replace (int a_index, DapQmlModelRoutingExcep
   _sortCheckedApps();
 }
 
+void DapQmlModelRoutingExceptions::replaceSorted (int a_index, const DapQmlModelRoutingExceptions::App &a_app)
+{
+  int index = 0;
+  for (auto i = s_apps.begin(), e = s_apps.end(); i != e; i++, index++)
+    {
+      if (i->packageName == a_app.packageName)
+        {
+          *i = a_app;
+          break;
+        }
+    }
+
+  if (index >= s_apps.size())
+    return;
+
+  s_iconMap[a_app.packageName + ".png"] = a_app.icon;
+  s_sortedApps[a_index] = a_app;
+  auto changedIndex = this->index (a_index);
+  emit dataChanged (changedIndex, changedIndex);
+}
+
+void DapQmlModelRoutingExceptions::replaceSorted (int a_index, DapQmlModelRoutingExceptions::App &&a_app)
+{
+  int index = 0;
+  for (auto i = s_apps.begin(), e = s_apps.end(); i != e; i++, index++)
+    {
+      if (i->packageName == a_app.packageName)
+        {
+          *i = a_app;
+          break;
+        }
+    }
+
+  if (index >= s_apps.size())
+    return;
+
+  s_iconMap[a_app.packageName + ".png"] = a_app.icon;
+  s_sortedApps[a_index] = std::move (a_app);
+  auto changedIndex = this->index (a_index);
+  emit dataChanged (changedIndex, changedIndex);
+}
+
 void DapQmlModelRoutingExceptions::replace (int a_index, const DapQmlModelRoutingExceptions::Route &a_route)
 {
   s_routes[a_index] = a_route;
@@ -427,6 +475,11 @@ const DapQmlModelRoutingExceptions::App &DapQmlModelRoutingExceptions::app (int 
   return s_apps.at (a_index);
 }
 
+const DapQmlModelRoutingExceptions::App &DapQmlModelRoutingExceptions::appSorted (int a_index) const
+{
+  return s_sortedApps.at (a_index);
+}
+
 const DapQmlModelRoutingExceptions::Route &DapQmlModelRoutingExceptions::route (int a_index) const
 {
   return s_routes.at (a_index);
@@ -440,6 +493,26 @@ QVariant DapQmlModelRoutingExceptions::appJson (int a_index) const
 QVariant DapQmlModelRoutingExceptions::routeJson (int a_index) const
 {
   return toJson (s_routes.at (a_index));
+}
+
+int DapQmlModelRoutingExceptions::indexOfChecked (int a_index) const
+{
+  App &app  = s_checkedApps[a_index];
+  int result = 0;
+  for (auto i = s_apps.cbegin(), e = s_apps.cend(); i != e; i++, result++)
+    if (i->packageName == app.packageName)
+      return result;
+  return -1;
+}
+
+int DapQmlModelRoutingExceptions::indexOfSorted (int a_index) const
+{
+  App &app  = s_sortedApps[a_index];
+  int result = 0;
+  for (auto i = s_apps.cbegin(), e = s_apps.cend(); i != e; i++, result++)
+    if (i->packageName == app.packageName)
+      return result;
+  return -1;
 }
 
 int DapQmlModelRoutingExceptions::appSize() const
@@ -457,6 +530,19 @@ void DapQmlModelRoutingExceptions::removeApp (int a_index)
   beginRemoveRows (QModelIndex(), a_index, a_index);
   s_iconMap.remove (s_apps.at (a_index).packageName + ".png");
   s_apps.removeAt (a_index);
+  endRemoveRows();
+
+  _sortCheckedApps();
+}
+
+void DapQmlModelRoutingExceptions::removeAppFromChecked(int a_index)
+{
+  int index = indexOfChecked (a_index);
+
+  beginRemoveRows (QModelIndex(), a_index, a_index);
+  App &app      = s_apps[index];
+  app.checked   = false;
+  s_apps[index] = app;
   endRemoveRows();
 
   _sortCheckedApps();
@@ -483,6 +569,11 @@ void DapQmlModelRoutingExceptions::moveRoute (int a_from, int a_to)
   beginMoveRows (dummy, a_from, a_from, dummy, a_to);
   s_routes.move (a_from, a_to);
   endMoveRows();
+}
+
+void DapQmlModelRoutingExceptions::sortAndUpdateAllLists()
+{
+  _sortCheckedApps();
 }
 
 void DapQmlModelRoutingExceptions::updateAllLists()
@@ -569,10 +660,10 @@ void DapQmlModelRoutingExceptions::_appendCheckedApp (int a_index, bool a_combin
   bool checked  = app.checked;
 
   /* remove from old list */
-  if (checked)
-    removeFrom (s_uncheckedApps, app);
-  else
-    removeFrom (s_checkedApps, app);
+  //if (checked)
+  removeFrom (s_uncheckedApps, app);
+  //else
+  removeFrom (s_checkedApps, app);
 
   /* append to desired list */
   if (checked)
@@ -728,6 +819,20 @@ RefreshingListModelBase::~RefreshingListModelBase()
 
 void RefreshingListModelBase::refresh()
 {
+  const char *name = "unknown";
+  if (dynamic_cast<DqmreApps*>(this))
+    name  = "DqmreApps";
+  else
+    if (dynamic_cast<DqmreRoutes*>(this))
+      name  = "DqmreRoutes";
+    else
+      if (dynamic_cast<DqmreCheckedApps*>(this))
+        name  = "DqmreCheckedApps";
+      else
+        if (dynamic_cast<DqmreSortedApps*>(this))
+          name  = "DqmreSortedApps";
+  qDebug() << __PRETTY_FUNCTION__ << "Mode:" << name;
+
   beginResetModel();
   endResetModel();
 }

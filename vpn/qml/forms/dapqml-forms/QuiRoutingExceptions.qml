@@ -45,22 +45,22 @@ Item {
     property QtObject internal: QtObject {
         property int type: QuiRoutingExceptions.APPS
         property bool popup: false
+        property bool spinner: false
     }
 
-    DapQmlModelRoutingExceptions {
-        id: modelApp
-        mode: DapQmlModelRoutingExceptions.CHECKED_APPS
-    }
+    /// @}
+    /****************************************//**
+     * @name SIGNALS
+     ********************************************/
+    /// @{
 
-    DapQmlModelRoutingExceptions {
-        id: modelRoutes
-        mode: DapQmlModelRoutingExceptions.ALL_ROUTES
-    }
+    signal sigPopupCancel();
+    signal sigPopupAppSave();
+    signal sigPopupRouteAdd(string a_ip, string a_description);
 
-    DapQmlModelRoutingExceptions {
-        id: modelCheckedApp
-        mode: DapQmlModelRoutingExceptions.SORTED_APPS
-    }
+    signal sigAppRemove(int a_index, string a_name);
+    signal sigPopupAppCheckboxClicked(int a_index, string a_name);
+    signal sigRouteRemove(int a_index, string a_ip);
 
     /// @}
     /****************************************//**
@@ -68,22 +68,28 @@ Item {
      ********************************************/
     /// @{
 
+    function showSpinner(a_show) {
+        root.internal.popup     = a_show;
+        root.internal.spinner   = a_show;
+    }
+
     function _popupBottomButtonClicked(isSecond) {
         if(root.internal.type === QuiRoutingExceptions.APPS)
         {
             if (!isSecond)
-                console.log("_popupBottomButtonClicked > apps > first");
+                root.sigPopupCancel(); // console.log("_popupBottomButtonClicked > apps > first");
             else
-                console.log("_popupBottomButtonClicked > apps > second");
+                root.sigPopupAppSave(); // console.log("_popupBottomButtonClicked > apps > second");
         }
         else
             if(root.internal.type === QuiRoutingExceptions.ROUTES)
             {
                 if (!isSecond)
-                    console.log("_popupBottomButtonClicked > routes > first");
+                    root.sigPopupCancel(); // console.log("_popupBottomButtonClicked > routes > first");
                 else
-                    console.log("_popupBottomButtonClicked > routes > second");
+                    root.sigPopupRouteAdd(rouexcAddressInput.mainText, rouexcDescriptionInput.mainText); // console.log("_popupBottomButtonClicked > routes > second");
             }
+        root.internal.popup = false;
     }
 
     /// @}
@@ -167,12 +173,6 @@ Item {
             buttonStyle: DapQmlButton.Style.IconMainSubIcon
             mainText: model.appName
             subText: ""
-            //onHeightChanged: console.log (`index ${model.index} s ${width}*${height}`);
-
-//            Rectangle {
-//                anchors.fill: parent
-//                color: "green"
-//            }
 
             /* icon */
             DapQmlLabel {
@@ -187,9 +187,52 @@ Item {
             DapQmlLabel {
                 x: parent.width - (width * 1.4375)
                 y: (parent.height - height) / 2
-                qss: "rouexc-content-item-btn-close"
+                qss: "rouexc-content-app-btn-close"
 
-                onClicked: console.log (`clicked ${model.index}`);
+                onClicked: root.sigAppRemove (model.index, model.packageName); //console.log (`clicked ${model.index}`);
+                //onHeightChanged: console.log(`delegateApp ${x},${y} ${width}x${height} :${scaledPixmap}`);
+            }
+
+            /* separator */
+            DapQmlSeparator {
+                y: parent.height - height
+                width: parent.width
+            }
+        }
+    }
+
+    Component {
+        id: delegateAppCheck
+
+        DapQmlButton {
+            width: listviewPopupApps.width
+            qss: "rouexc-content-item"
+            buttonStyle: DapQmlButton.Style.IconMainSubIcon
+            mainText: model.appName
+            subText: ""
+
+            /* icon */
+            DapQmlLabel {
+                x: width * 0.4375
+                y: (parent.height - height) / 2
+                scaledPixmap: "image://DapQmlModelRoutingExceptionsImageProvider/" + model.packageName + ".png"
+                disableClicking: true
+                qss: "rouexc-content-item-icon"
+            }
+
+            /* checkbox button */
+            DapQmlLabel {
+                x: parent.width - (width * 0.675 * 1.4375)
+                y: (parent.height - height) / 2
+                qss: "rouexc-popup-app-checkbox" + (model.checked ? " rouexc-popup-app-checkbox-checked" : "")
+
+                onClicked: root.sigPopupAppCheckboxClicked (model.index, model.packageName); //console.log (`clicked ${model.index}`);
+            }
+
+            /* separator */
+            DapQmlSeparator {
+                y: parent.height - height
+                width: parent.width
             }
         }
     }
@@ -215,9 +258,9 @@ Item {
                 DapQmlLabel {
                     x: parent.width - (width * 1.4375)
                     y: (parent.height - height) / 2
-                    qss: "rouexc-content-item-btn-close"
+                    qss: "rouexc-content-app-btn-close"
 
-                    onClicked: console.log (`clicked ${model.index}`);
+                    onClicked: root.sigRouteRemove(model.index, model.address); // console.log (`clicked ${model.index}`);
                 }
             }
         }
@@ -244,7 +287,10 @@ Item {
                 id: popupDialogTitleCloseBtn
                 y: (parent.height - height) / 2
                 qss: "rouexc-content-item-btn-close"
-                onClicked: root.internal.popup = false
+                onClicked: {
+                    root.sigPopupCancel();
+                    root.internal.popup = false;
+                }
             }
 
             /* bottom */
@@ -350,7 +396,11 @@ Item {
             id: rouexcBtnAdd
             qss: "rouexc-btn-add"
 
-            onClicked: root.internal.popup = true
+            onClicked: {
+                rouexcAddressInput.mainText     = "";
+                rouexcDescriptionInput.mainText = "";
+                root.internal.popup             = true
+            }
         }
 
         /****************************************//**
@@ -398,7 +448,7 @@ Item {
             DapQmlStyle { item: listviewApps; qss: "rouexc-tab-content"; }
 
             delegate: delegateApp
-            model: modelApp
+            //model: modelApp
         }
 
         ListView {
@@ -410,7 +460,7 @@ Item {
             DapQmlStyle { item: listviewRoutes; qss: "rouexc-tab-content"; }
 
             delegate: delegateRoute
-            model: modelRoutes
+            //model: modelRoutes
         }
 
         /*-----------------------------------------*/
@@ -430,12 +480,30 @@ Item {
         visible: root.internal.popup
     }
 
+    /* popup spinner */
+    DapQmlRectangle {
+        anchors.centerIn: parent
+        z: 60
+        qss: "rouexc-spinner-bg"
+        visible: root.internal.popup & root.internal.spinner
+
+        AnimatedImage {
+            id: spinnerAnim
+            anchors.centerIn: parent
+            source: scaledPixmap
+
+            property string scaledPixmap
+
+            DapQmlStyle { item: spinnerAnim; qss: "rouexc-spinner ic_spinner" }
+        }
+    }
+
     /* popup dialog content */
     DapQmlRectangle {
         x: (parent.width - width) / 2
         y: (parent.height - height) / 2
         z: 60
-        visible: root.internal.popup
+        visible: root.internal.popup & !root.internal.spinner
         qss: root.internal.type === QuiRoutingExceptions.APPS
              ? "c-background rouexc-popup-content-apps"
              : "c-background rouexc-popup-content-routes"
@@ -469,8 +537,8 @@ Item {
 
                 DapQmlDummy { id: listviewPopupAppsSizer; qss: "rouexc-popup-apps-content"; }
 
-                delegate: delegateApp
-                model: modelCheckedApp
+                delegate: delegateAppCheck
+                //model: modelCheckedApp
             }
 
             /* bottom buttons */
@@ -506,6 +574,7 @@ Item {
                 qss: "rouexc-route-address rouexc-route-input-field"
 
                 DapQmlLineEdit {
+                    id: rouexcAddressInput
                     qss: "rouexc-route-input-field-size"
                     mainQss: "rouexc-route-input-field-font c-label"
                     iconQss: "null-size null-pos rouexc-route-input-margin"
@@ -522,6 +591,7 @@ Item {
                 qss: "rouexc-route-description rouexc-route-input-field"
 
                 DapQmlLineEdit {
+                    id: rouexcDescriptionInput
                     qss: "rouexc-route-input-field-size"
                     mainQss: "rouexc-route-input-field-font c-label"
                     iconQss: "null-size null-pos rouexc-route-input-margin"
