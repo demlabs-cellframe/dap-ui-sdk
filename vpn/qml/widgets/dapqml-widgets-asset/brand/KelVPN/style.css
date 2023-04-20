@@ -9,6 +9,7 @@
 	update-background: "#FFFFFF";
 	label: "#5A5A5A";
 	light-grey: "#F7F7F7";
+	input-field: "#F7F7F7";
 	error: "#F47A54";
 	brand: "#F45480";
 	accent: "#FD4E75";
@@ -75,6 +76,7 @@
 	update-background: "#333333";
 	label: "#A9A9B0";
 	light-grey: "#F7F7F7";
+	input-field: "#333333";
 	error: "#F47A54";
 	brand: "#F45480";
 	accent: "#FD4E75";
@@ -1486,7 +1488,7 @@
 .rouexc-tab-idle
 {
     scaled-rect: scaled(nan,nan,170,64,true);
-    color: "@light-grey";
+    color: "@update-background";
     radius: 13;
 }
 
@@ -1581,7 +1583,7 @@
 
 .rouexc-content-item-btn-close
 {
-    scaled-rect: scaled(306,nan,32,32,true);
+    scaled-rect: scaled(298,nan,40,40,true);
     qproperty-inactive: "@btn-minus";
     qproperty-active: "@btn-minus";
 }
@@ -1601,7 +1603,7 @@
 .rouexc-popup-btn-label
 {
     scaled-font: scaled(18);
-    color: "@text";
+    color: "#1f1f1f";
 }
 
 .rouexc-popup-btn-second
@@ -1614,7 +1616,7 @@
 .rouexc-popup-btn-label-second
 {
     scaled-font: scaled(18);
-    color: "@background";
+    color: "#ffffff";
 }
 
 .rouexc-popup-bottom-size
@@ -1630,7 +1632,7 @@
 .rouexc-route-input-field
 {
     scaled-rect: scaled(nan,nan,308,56,true,16);
-    color: "@light-grey";
+    color: "@input-field";
     radius: 8;
 }
 

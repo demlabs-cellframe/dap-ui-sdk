@@ -152,7 +152,7 @@ Item {
                 anchors.centerIn: parent
                 width: contentWidth
                 height: contentHeight
-                qss: (!parent.isSecond) ? "rouexc-popup-btn-label" : "rouexc-popup-btn-label-second"
+                qss: (!parent.parent.isSecond) ? "rouexc-popup-btn-label" : "rouexc-popup-btn-label-second"
                 disableClicking: true
                 text: parent.parent.name // "APPS"
             }
@@ -169,6 +169,7 @@ Item {
 
         DapQmlButton {
             width: listviewApps.width
+            mainQss: "c-label"
             qss: "rouexc-content-item"
             buttonStyle: DapQmlButton.Style.IconMainSubIcon
             mainText: model.appName
@@ -206,6 +207,7 @@ Item {
 
         DapQmlButton {
             width: listviewPopupApps.width
+            mainQss: "c-label"
             qss: "rouexc-content-item"
             buttonStyle: DapQmlButton.Style.IconMainSubIcon
             mainText: model.appName
@@ -262,6 +264,12 @@ Item {
 
                     onClicked: root.sigRouteRemove(model.index, model.address); // console.log (`clicked ${model.index}`);
                 }
+            }
+
+            /* separator */
+            DapQmlSeparator {
+                y: parent.height - height
+                width: parent.width
             }
         }
     }
