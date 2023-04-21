@@ -34,6 +34,8 @@ public:
     }
     int size(){return packageListSize;}
     void addAppRoutingExceptionsList(DapRoutingExceptionsListApp item);
+    QList<DapRoutingExceptionsListApp> apps() const;
+    QList<DapRoutingExceptionsListRoute> routes() const;
 
     void load();
     void save();

@@ -11,7 +11,7 @@
 
 /* DEFS */
 
-#define TEST_MODE
+//#define TEST_MODE
 
 typedef DapQmlModelRoutingExceptions::App App;
 typedef DapQmlModelRoutingExceptions::Route Route;

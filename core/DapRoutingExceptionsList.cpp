@@ -42,7 +42,17 @@ void DapRoutingExceptionsList::addPackageInfo(QString packageName, QString appNa
 
 void DapRoutingExceptionsList::addAppRoutingExceptionsList(DapRoutingExceptionsListApp item)
 {
-    m_routingExceptionsPackList.insert(m_routingExceptionsPackList.size(), item);
+  m_routingExceptionsPackList.insert(m_routingExceptionsPackList.size(), item);
+}
+
+QList<DapRoutingExceptionsListApp> DapRoutingExceptionsList::apps() const
+{
+  return m_packageList.values();
+}
+
+QList<DapRoutingExceptionsListRoute> DapRoutingExceptionsList::routes() const
+{
+  return QList<DapRoutingExceptionsListRoute>(); // TODO
 }
 
 void DapRoutingExceptionsList::save()

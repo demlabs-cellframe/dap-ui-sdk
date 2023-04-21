@@ -55,6 +55,7 @@
     ic-renew:                   "qrc:/dapqml-forms-asset/light/ic_renew.png";
     ic-key:                     "qrc:/dapqml-forms-asset/light/ic_key.png";
     ic-location:                "qrc:/dapqml-forms-asset/light/ic_location.png";
+    ic-route:                   "qrc:/dapqml-forms-asset/light/ic_route.png";
     ic-language:                "qrc:/dapqml-forms-asset/light/ic_language.png";
     ic-theme:                   "qrc:/dapqml-forms-asset/light/ic_theme.png";
     ic-send-report:             "qrc:/dapqml-forms-asset/light/ic_send-report.png";
@@ -122,6 +123,7 @@
     ic-renew:                   "qrc:/dapqml-forms-asset/dark/ic_renew.png";
     ic-key:                     "qrc:/dapqml-forms-asset/dark/ic_key.png";
     ic-location:                "qrc:/dapqml-forms-asset/dark/ic_location.png";
+    ic-route:                   "qrc:/dapqml-forms-asset/dark/ic_route.png";
     ic-language:                "qrc:/dapqml-forms-asset/dark/ic_language.png";
     ic-theme:                   "qrc:/dapqml-forms-asset/dark/ic_theme.png";
     ic-send-report:             "qrc:/dapqml-forms-asset/dark/ic_send-report.png";
@@ -367,6 +369,11 @@
 .ic_location
 {
     qproperty-scaledPixmap: "@ic-location";
+}
+
+.ic_route
+{
+    qproperty-scaledPixmap: "@ic-route";
 }
 
 .ic_language

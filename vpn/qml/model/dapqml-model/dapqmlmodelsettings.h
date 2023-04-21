@@ -97,6 +97,7 @@ signals:
   void sigLicenceReset();
   void sigLanguage();
   void sigCountry();
+  void sigRouExc();
   void sigColorTheme();
 
   /* support */
