@@ -25,6 +25,7 @@ DapDataLocal::DapDataLocal()
   , m_serialKeyData(new DapSerialKeyData (this))
   , m_bugReportHistory(new DapBugReportHistory (this))
   , m_serialKeyHistory (new DapSerialKeyHistory (this))
+  , m_routingExceptionsList(new DapRoutingExceptionsList(this))
 {
     qDebug() << "[DL] DapDataLocal Constructor";
     parseXML(":/data.xml");
@@ -353,6 +354,11 @@ DapBugReportHistory * DapDataLocal::bugReportHistory()
 DapSerialKeyHistory *DapDataLocal::serialKeyHistory()
 {
   return m_serialKeyHistory;
+}
+
+DapRoutingExceptionsList *DapDataLocal::routingExceptionsList()
+{
+  return m_routingExceptionsList;
 }
 
 void DapDataLocal::initSecretKey()

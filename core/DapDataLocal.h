@@ -16,6 +16,7 @@
 #include "DapSignUpData.h"
 #include "DapUtils.h"
 #include "DataToUpdate.h"
+#include "DapRoutingExceptionsList.h"
 
 #define SERVER_LIST_FILE "vpn-servers.xml"
 
@@ -23,6 +24,7 @@ const QString TEXT_SERIAL_KEY           = "serialkey";
 const QString TEXT_SERIAL_KEY_HISTORY   = "serialkeyhistory";
 const QString TEXT_PENDING_SERIAL_KEY   = "pendingserialkey";
 const QString TEXT_BUGREPORT_HISTORY    = "bugreporthistory";
+const QString ROUTING_EXCEPTIONS_LIST   = "routingexceptionslist";
 const QString TEXT_LOGIN                = "login";
 const QString TEXT_PASSWORD             = "password";
 const QString TEXT_TX_OUT               = "tx_out";
@@ -124,6 +126,8 @@ public:
     DapBugReportHistory *bugReportHistory();
     DapSerialKeyHistory *serialKeyHistory();
 
+    DapRoutingExceptionsList *routingExceptionsList();
+
     Authorization authorizationType();
     void setAuthorizationType(Authorization type);
 
@@ -167,6 +171,8 @@ private:
 
     DapBugReportHistory *m_bugReportHistory;
     DapSerialKeyHistory *m_serialKeyHistory;
+
+    DapRoutingExceptionsList *m_routingExceptionsList;
 };
 
 template<typename T>
