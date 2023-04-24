@@ -84,6 +84,27 @@ public:
   QHash<int, QByteArray> roleNames() const override;
 };
 
+// icon container
+
+class AppIcon : public QByteArray
+{
+public:
+  AppIcon() : QByteArray() {}
+  AppIcon (const QByteArray &a_src) : QByteArray (a_src) {}
+  AppIcon (QByteArray &&a_src) : QByteArray (std::move (a_src)) {}
+  AppIcon (const QString &a_src) : QByteArray (a_src.toUtf8()) {}
+  //AppIcon (QString &&a_src) : QByteArray (std::move (a_src.toUtf8())) {}
+  AppIcon (const AppIcon &a_src) : QByteArray (a_src) {}
+  AppIcon (AppIcon &&a_src) : QByteArray (std::move (a_src)) {}
+  operator QImage() const;
+  AppIcon &operator = (const QByteArray &a_src) { QByteArray::operator = (a_src); return *this; }
+  AppIcon &operator = (const QString &a_src)    { QByteArray::operator = (a_src.toUtf8()); return *this; }
+  AppIcon &operator = (const AppIcon &a_src)    { QByteArray::operator = (a_src); return *this; }
+  AppIcon &operator = (QByteArray &&a_src) { QByteArray::operator = (std::move (a_src)); return *this; }
+  //AppIcon &operator = (QString &&a_src)    { QByteArray::operator = (std::move (a_src.toUtf8())); return *this; }
+  AppIcon &operator = (AppIcon &&a_src)    { QByteArray::operator = (std::move (a_src)); return *this; }
+};
+
 /* VARS */
 
 static const QString SETTING_ROUTING_EXCEPTIONS {"RoutingExceptions"};
@@ -93,7 +114,7 @@ static QList<App> s_apps;
 // all routes list
 static QList<Route> s_routes;
 // apps icons map
-static QMap<QString, QImage> s_iconMap;
+static QMap<QString, AppIcon> s_iconMap;
 // only checked apps
 static QList<App> s_checkedApps;
 // only unchecked apps
@@ -165,10 +186,13 @@ static const QList<DummyApp> s_dummyApps =
 
 static App toApp (const QJsonObject &a_src);
 static App toApp (const QVariantMap &a_src);
+static QString getIcon (const QJsonObject &a_src);
+static QString getIcon (const QVariantMap &a_src);
 static Route toRoute (const QJsonObject &a_src);
 static Route toRoute (const QVariantMap &a_src);
 static QJsonObject toJson (const App &a_src);
 static QJsonObject toJson (const Route &a_src);
+static QImage getAppIcon (const QString &a_packageName);
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -257,20 +281,20 @@ void DapQmlModelRoutingExceptions::setMode (int a_newMode)
   emit sigModeChanged();
 }
 
-void DapQmlModelRoutingExceptions::append (const DapQmlModelRoutingExceptions::App &a_app)
+void DapQmlModelRoutingExceptions::append (const DapQmlModelRoutingExceptions::App &a_app, const QString &a_icon)
 {
   beginInsertRows (QModelIndex(), s_apps.size(), s_apps.size());
-  s_iconMap[a_app.packageName + ".png"] = a_app.icon;
+  s_iconMap[a_app.packageName + ".png"] = AppIcon (a_icon);
   s_apps.append (a_app);
   endInsertRows();
 
   _appendCheckedApp (s_apps.size() - 1);
 }
 
-void DapQmlModelRoutingExceptions::append (DapQmlModelRoutingExceptions::App &&a_app)
+void DapQmlModelRoutingExceptions::append (DapQmlModelRoutingExceptions::App &&a_app, QString &&a_icon)
 {
   beginInsertRows (QModelIndex(), s_apps.size(), s_apps.size());
-  s_iconMap[a_app.packageName + ".png"] = a_app.icon;
+  s_iconMap[a_app.packageName + ".png"] = std::move (a_icon);
   s_apps.append (std::move (a_app));
   endInsertRows();
 
@@ -308,26 +332,32 @@ void DapQmlModelRoutingExceptions::appendJson (const QVariant &a_value)
   switch (_mode)
     {
     case NONE: return;
-    case ALL_APPS:    append (toApp (vmap));   break;
+    case ALL_APPS:    append (toApp (vmap), getIcon (vmap));   break;
     case ALL_ROUTES:  append (toRoute (vmap)); break;
     default: break;
     }
 }
 
-void DapQmlModelRoutingExceptions::insert (int a_index, const DapQmlModelRoutingExceptions::App &a_app)
+void DapQmlModelRoutingExceptions::appendQuietly (DapQmlModelRoutingExceptions::App &&a_app, const char *a_icon)
+{
+  s_iconMap[a_app.packageName + ".png"] = QString (a_icon);
+  s_apps.append (std::move (a_app));
+}
+
+void DapQmlModelRoutingExceptions::insert (int a_index, const DapQmlModelRoutingExceptions::App &a_app, const QString &a_icon)
 {
   beginInsertRows (QModelIndex(), a_index, a_index);
-  s_iconMap[a_app.packageName + ".png"] = a_app.icon;
+  s_iconMap[a_app.packageName + ".png"] = a_icon;
   s_apps.insert (a_index, a_app);
   endInsertRows();
 
   _sortCheckedApps();
 }
 
-void DapQmlModelRoutingExceptions::insert (int a_index, DapQmlModelRoutingExceptions::App &&a_app)
+void DapQmlModelRoutingExceptions::insert (int a_index, DapQmlModelRoutingExceptions::App &&a_app, QString &&a_icon)
 {
   beginInsertRows (QModelIndex(), a_index, a_index);
-  s_iconMap[a_app.packageName + ".png"] = a_app.icon;
+  s_iconMap[a_app.packageName + ".png"] = std::move (a_icon);
   s_apps.insert (a_index, std::move (a_app));
   endInsertRows();
 
@@ -365,15 +395,16 @@ void DapQmlModelRoutingExceptions::insertJson (int a_index, const QVariant &a_va
   switch (_mode)
     {
     case NONE: return;
-    case ALL_APPS:    insert (a_index, toApp (vmap));   break;
+    case ALL_APPS:    insert (a_index, toApp (vmap), getIcon (vmap));   break;
     case ALL_ROUTES:  insert (a_index, toRoute (vmap)); break;
     default: break;
     }
 }
 
-void DapQmlModelRoutingExceptions::replace (int a_index, const DapQmlModelRoutingExceptions::App &a_app)
+void DapQmlModelRoutingExceptions::replace (int a_index, const DapQmlModelRoutingExceptions::App &a_app, const QString &a_icon)
 {
-  s_iconMap[a_app.packageName + ".png"] = a_app.icon;
+  if (!a_icon.isNull())
+    s_iconMap[a_app.packageName + ".png"] = a_icon;
   s_apps[a_index] = a_app;
   auto changedIndex = index (a_index);
   emit dataChanged (changedIndex, changedIndex);
@@ -381,9 +412,10 @@ void DapQmlModelRoutingExceptions::replace (int a_index, const DapQmlModelRoutin
   _sortCheckedApps();
 }
 
-void DapQmlModelRoutingExceptions::replace (int a_index, DapQmlModelRoutingExceptions::App &&a_app)
+void DapQmlModelRoutingExceptions::replace (int a_index, DapQmlModelRoutingExceptions::App &&a_app, const QString &a_icon)
 {
-  s_iconMap[a_app.packageName + ".png"] = a_app.icon;
+  if (!a_icon.isNull())
+    s_iconMap[a_app.packageName + ".png"] = a_icon;
   s_apps[a_index] = std::move (a_app);
   auto changedIndex = index (a_index);
   emit dataChanged (changedIndex, changedIndex);
@@ -391,7 +423,7 @@ void DapQmlModelRoutingExceptions::replace (int a_index, DapQmlModelRoutingExcep
   _sortCheckedApps();
 }
 
-void DapQmlModelRoutingExceptions::replaceSorted (int a_index, const DapQmlModelRoutingExceptions::App &a_app)
+void DapQmlModelRoutingExceptions::replaceSorted (int a_index, const DapQmlModelRoutingExceptions::App &a_app, const QString &a_icon)
 {
   int index = 0;
   for (auto i = s_apps.begin(), e = s_apps.end(); i != e; i++, index++)
@@ -406,13 +438,14 @@ void DapQmlModelRoutingExceptions::replaceSorted (int a_index, const DapQmlModel
   if (index >= s_apps.size())
     return;
 
-  s_iconMap[a_app.packageName + ".png"] = a_app.icon;
+  if (!a_icon.isNull())
+    s_iconMap[a_app.packageName + ".png"] = a_icon;
   s_sortedApps[a_index] = a_app;
   auto changedIndex = this->index (a_index);
   emit dataChanged (changedIndex, changedIndex);
 }
 
-void DapQmlModelRoutingExceptions::replaceSorted (int a_index, DapQmlModelRoutingExceptions::App &&a_app)
+void DapQmlModelRoutingExceptions::replaceSorted (int a_index, DapQmlModelRoutingExceptions::App &&a_app, const QString &a_icon)
 {
   int index = 0;
   for (auto i = s_apps.begin(), e = s_apps.end(); i != e; i++, index++)
@@ -427,7 +460,8 @@ void DapQmlModelRoutingExceptions::replaceSorted (int a_index, DapQmlModelRoutin
   if (index >= s_apps.size())
     return;
 
-  s_iconMap[a_app.packageName + ".png"] = a_app.icon;
+  if (!a_icon.isNull())
+    s_iconMap[a_app.packageName + ".png"] = a_icon;
   s_sortedApps[a_index] = std::move (a_app);
   auto changedIndex = this->index (a_index);
   emit dataChanged (changedIndex, changedIndex);
@@ -478,6 +512,11 @@ const DapQmlModelRoutingExceptions::App &DapQmlModelRoutingExceptions::app (int 
 const DapQmlModelRoutingExceptions::App &DapQmlModelRoutingExceptions::appSorted (int a_index) const
 {
   return s_sortedApps.at (a_index);
+}
+
+const QImage &DapQmlModelRoutingExceptions::appIcon (const QString &a_packageName) const
+{
+  return getAppIcon (a_packageName);
 }
 
 const DapQmlModelRoutingExceptions::Route &DapQmlModelRoutingExceptions::route (int a_index) const
@@ -732,32 +771,40 @@ QHash<int, QByteArray> DapQmlModelRoutingExceptions::roleNames() const
 
 App toApp (const QJsonObject &a_src)
 {
-  QImage icn;
-  QByteArray icnSrc (a_src.value ("icon").toString().toUtf8());
-  icn.loadFromData (QByteArray::fromBase64 (icnSrc));
-
   return App
   {
     a_src.value ("packageName").toString(),
     a_src.value ("appName").toString(),
     a_src.value ("checked").toBool(),
-    icn
   };
 }
 
 App toApp (const QVariantMap &a_src)
 {
-  QImage icn;
-  QByteArray icnSrc (a_src.value ("icon").toString().toUtf8());
-  icn.loadFromData (QByteArray::fromBase64 (icnSrc));
-
   return App
   {
     a_src.value ("packageName").toString(),
     a_src.value ("appName").toString(),
     a_src.value ("checked").toBool(),
-    icn
   };
+}
+
+QString getIcon (const QJsonObject &a_src)
+{
+//  QImage icn;
+//  QByteArray icnSrc (a_src.value ("icon").toString().toUtf8());
+//  icn.loadFromData (QByteArray::fromBase64 (icnSrc));
+//  return icn;
+  return a_src.value ("icon").toString();
+}
+
+QString getIcon (const QVariantMap &a_src)
+{
+//  QImage icn;
+//  QByteArray icnSrc (a_src.value ("icon").toString().toUtf8());
+//  icn.loadFromData (QByteArray::fromBase64 (icnSrc));
+//  return icn;
+  return a_src.value ("icon").toString();
 }
 
 Route toRoute (const QJsonObject &a_src)
@@ -782,7 +829,8 @@ QJsonObject toJson (const App &a_src)
 {
   QBuffer buf;
   buf.open (QIODevice::WriteOnly);
-  a_src.icon.save (&buf, "PNG");
+  auto icnSrc  = getAppIcon (a_src.packageName);
+  icnSrc.save (&buf, "PNG");
 
   QString icn = buf.readAll().toBase64();
 
@@ -802,6 +850,19 @@ QJsonObject toJson (const Route &a_src)
     { "address",     a_src.address },
     { "description", a_src.description },
   };
+}
+
+QImage getAppIcon(const QString &a_packageName)
+{
+  static QImage dummy;
+  QString id  = (a_packageName.endsWith (".png")) ? a_packageName : a_packageName + ".png";
+  if (!s_iconMap.contains (id))
+    return dummy;
+//  return s_iconMap [id];
+
+  QImage icn;
+  icn.loadFromData (QByteArray::fromBase64 (s_iconMap [id]));
+  return icn;
 }
 
 /*-----------------------------------------*/
@@ -876,7 +937,7 @@ QVariant DqmreApps::data (const QModelIndex &index, int role) const
     {
     case Field::packageName: return s_apps.at (index.row()).packageName;
     case Field::appName:     return s_apps.at (index.row()).appName;
-    case Field::icon:        return s_apps.at (index.row()).icon;
+    case Field::icon:        return getAppIcon (s_apps.at (index.row()).packageName); // s_apps.at (index.row()).icon;
     case Field::checked:     return s_apps.at (index.row()).checked;
 
     default:
@@ -956,7 +1017,7 @@ QVariant DqmreCheckedApps::data (const QModelIndex &index, int role) const
     {
     case Field::packageName: return s_checkedApps.at (index.row()).packageName;
     case Field::appName:     return s_checkedApps.at (index.row()).appName;
-    case Field::icon:        return s_checkedApps.at (index.row()).icon;
+    case Field::icon:        return getAppIcon (s_checkedApps.at (index.row()).packageName); // s_checkedApps.at (index.row()).icon;
     case Field::checked:     return s_checkedApps.at (index.row()).checked;
 
     default:
@@ -997,7 +1058,7 @@ QVariant DqmreSortedApps::data (const QModelIndex &index, int role) const
     {
     case Field::packageName: return s_sortedApps.at (index.row()).packageName;
     case Field::appName:     return s_sortedApps.at (index.row()).appName;
-    case Field::icon:        return s_sortedApps.at (index.row()).icon;
+    case Field::icon:        return getAppIcon (s_sortedApps.at (index.row()).packageName); // s_sortedApps.at (index.row()).icon;
     case Field::checked:     return s_sortedApps.at (index.row()).checked;
 
     default:
@@ -1026,7 +1087,7 @@ DapQmlModelRoutingExceptionsImageProvider *DapQmlModelRoutingExceptionsImageProv
 
 QImage DapQmlModelRoutingExceptionsImageProvider::requestImage (const QString &id, QSize *size, const QSize &requestedSize)
 {
-  QImage result = s_iconMap.value (id);
+  QImage result = getAppIcon (id);
 
   if (size)
     *size = QSize (result.width(), result.height());
@@ -1041,6 +1102,13 @@ QImage DapQmlModelRoutingExceptionsImageProvider::requestImage (const QString &i
 QPixmap DapQmlModelRoutingExceptionsImageProvider::requestPixmap (const QString &id, QSize *size, const QSize &requestedSize)
 {
   return QPixmap::fromImage (requestImage (id, size, requestedSize));
+}
+
+/*-----------------------------------------*/
+
+AppIcon::operator QImage() const
+{
+  return getAppIcon (*this);
 }
 
 /*-----------------------------------------*/

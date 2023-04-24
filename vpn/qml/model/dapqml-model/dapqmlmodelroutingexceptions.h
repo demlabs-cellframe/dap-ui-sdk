@@ -51,7 +51,6 @@ public:
   {
     QString packageName, appName;
     bool checked;
-    QImage icon;
   };
 
   struct Route
@@ -93,28 +92,30 @@ public:
   Q_INVOKABLE int mode() const;
   Q_INVOKABLE void setMode (int a_newMode);
 
-  Q_INVOKABLE void append (const App &a_app);
-  Q_INVOKABLE void append (App &&a_app);
+  Q_INVOKABLE void append (const App &a_app, const QString &a_icon);
+  Q_INVOKABLE void append (App &&a_app, QString &&a_icon);
   Q_INVOKABLE void append (const Route &a_route);
   Q_INVOKABLE void append (Route &&a_route);
   Q_INVOKABLE void appendJson (const QVariant &a_value);
+  void appendQuietly (App &&a_app, const char *a_icon);
 
-  Q_INVOKABLE void insert (int a_index, const App &a_app);
-  Q_INVOKABLE void insert (int a_index, App &&a_app);
+  Q_INVOKABLE void insert (int a_index, const App &a_app, const QString &a_icon);
+  Q_INVOKABLE void insert (int a_index, App &&a_app, QString &&a_icon);
   Q_INVOKABLE void insert (int a_index, const Route &a_route);
   Q_INVOKABLE void insert (int a_index, Route &&a_route);
   Q_INVOKABLE void insertJson (int a_index, const QVariant &a_value);
 
-  Q_INVOKABLE void replace (int a_index, const App &a_app);
-  Q_INVOKABLE void replace (int a_index, App &&a_app);
-  Q_INVOKABLE void replaceSorted (int a_index, const App &a_app);
-  Q_INVOKABLE void replaceSorted (int a_index, App &&a_app);
+  Q_INVOKABLE void replace (int a_index, const App &a_app, const QString &a_icon = QString());
+  Q_INVOKABLE void replace (int a_index, App &&a_app, const QString &a_icon = QString());
+  Q_INVOKABLE void replaceSorted (int a_index, const App &a_app, const QString &a_icon = QString());
+  Q_INVOKABLE void replaceSorted (int a_index, App &&a_app, const QString &a_icon = QString());
   Q_INVOKABLE void replace (int a_index, const Route &a_route);
   Q_INVOKABLE void replace (int a_index, Route &&a_route);
   Q_INVOKABLE void replaceJson (int a_index, const QVariant &a_value);
 
   Q_INVOKABLE const App &app (int a_index) const;
   Q_INVOKABLE const App &appSorted (int a_index) const;
+  Q_INVOKABLE const QImage &appIcon (const QString &a_packageName) const;
   Q_INVOKABLE const Route &route (int a_index) const;
   Q_INVOKABLE QVariant appJson (int a_index) const;
   Q_INVOKABLE QVariant routeJson (int a_index) const;

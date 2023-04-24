@@ -1,57 +1,88 @@
 #ifndef DAPROUTINGEXCEPTIONSLIST_H
 #define DAPROUTINGEXCEPTIONSLIST_H
 
+/* INCLUDES */
 #include <QObject>
-#include <QMap>
+#include <QList>
 
-/* DEFS */
-struct DapRoutingExceptionsListApp
-{
-    DapRoutingExceptionsListApp(QString name, QString lable, QString icon){
-        m_packageName = name;
-        m_appName = lable;
-        m_icon = icon;
-    }
-
-    QString m_packageName, m_appName, m_icon;
-    bool checked;
-};
-
-struct DapRoutingExceptionsListRoute
-{
-  QString address, description;
-};
+/****************************************//**
+ * @brief Routing Exceptions List
+ *******************************************/
 
 class DapRoutingExceptionsList : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
+
+  /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
 public:
-    explicit DapRoutingExceptionsList(QObject *parent = nullptr);
+  struct App
+  {
+    QString packageName, appName, icon;
+    bool checked;
+  };
 
-    void clearList();
-    void setSize(int a_size){
-        packageListSize = a_size;
-    }
-    int size(){return packageListSize;}
-    void addAppRoutingExceptionsList(DapRoutingExceptionsListApp item);
-    QList<DapRoutingExceptionsListApp> apps() const;
-    QList<DapRoutingExceptionsListRoute> routes() const;
+  struct Route
+  {
+    QString address, description;
+  };
+  /// @}
 
-    void load();
-    void save();
-
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
 private:
-    int packageListSize;
-    QMap<int, DapRoutingExceptionsListApp> m_packageList;
-    QMap<int, DapRoutingExceptionsListApp> m_routingExceptionsPackList;
+  int m_packageListSize;
+  QList<App> m_packageList;
+  QList<App> m_routingExceptionsPackList;
+  /// @}
 
+  /****************************************//**
+   * @name CONSTRUCT/DESTRUCT
+   *******************************************/
+  /// @{
+public:
+  explicit DapRoutingExceptionsList (QObject *parent = nullptr);
+  /// @}
+
+  /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  int size();
+  void setSize (int a_size);
+
+  const QList<App> &apps() const;
+  const QList<Route> &routes() const;
+
+  void clearList();
+  void load();
+  void save();
+  /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
 signals:
-    void sigRoutingExceptionsListLoaded();
-    void sigRoutingExceptionsListFilled();
-    void sigGetPackgeInfo(QString package_name);
-public slots:
-    void addPackageInfo(QString packageName, QString appName, QString icon);
+  void sigRoutingExceptionsListLoaded();
+  void sigRoutingExceptionsListFilled();
+  void sigGetPackgeInfo (QString a_packageName);
+  /// @}
 
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
+public slots:
+  void slotAddPackageInfo (const QString &a_packageName, const QString &appName, const QString &a_icon);
+  void slotAddAppRoutingExceptionsList (const App &a_item);
+  /// @}
 };
 
+/*-----------------------------------------*/
 #endif // DAPROUTINGEXCEPTIONSLIST_H

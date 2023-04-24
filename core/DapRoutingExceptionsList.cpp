@@ -1,58 +1,71 @@
+/* INCLUDES */
 #include "DapRoutingExceptionsList.h"
 #include <QJsonArray>
 #include <QJsonObject>
 
 #include "DapDataLocal.h"
 
-inline QJsonObject itemToJson (const DapRoutingExceptionsListApp &a_src)
+/* FUNCS */
+
+inline QJsonObject itemToJson (const DapRoutingExceptionsList::App &a_src)
 {
   return QJsonObject
   {
-    {"name", a_src.m_packageName}
+    {"name", a_src.packageName}
   };
 }
 
-inline DapRoutingExceptionsListApp jsonToItem (const QJsonObject &a_src)
+inline DapRoutingExceptionsList::App jsonToItem (const QJsonObject &a_src)
 {
-  return DapRoutingExceptionsListApp
+  return DapRoutingExceptionsList::App
   {
     a_src.value ("name").toString(),
     QString(),
-    QString()
+    QString(),
+    false
   };
 }
 
 
-DapRoutingExceptionsList::DapRoutingExceptionsList(QObject *parent)
-    : QObject{parent}
+/********************************************
+ * CONSTRUCT/DESTRUCT
+ *******************************************/
+
+DapRoutingExceptionsList::DapRoutingExceptionsList (QObject *parent)
+  : QObject{parent}
+  , m_packageListSize (-1)
 {
 
 }
 
 void DapRoutingExceptionsList::clearList()
 {
-    m_packageList.clear();
+  m_packageList.clear();
 }
 
-void DapRoutingExceptionsList::addPackageInfo(QString packageName, QString appName, QString icon){
-    m_packageList.insert(m_packageList.size(), DapRoutingExceptionsListApp(packageName, appName, icon));
-    if (m_packageList.size() >= packageListSize)
-        emit sigRoutingExceptionsListFilled();
-}
+/********************************************
+ * METHODS
+ *******************************************/
 
-void DapRoutingExceptionsList::addAppRoutingExceptionsList(DapRoutingExceptionsListApp item)
+int DapRoutingExceptionsList::size()
 {
-  m_routingExceptionsPackList.insert(m_routingExceptionsPackList.size(), item);
+  return m_packageListSize;
 }
 
-QList<DapRoutingExceptionsListApp> DapRoutingExceptionsList::apps() const
+void DapRoutingExceptionsList::setSize (int a_size)
 {
-  return m_packageList.values();
+  m_packageListSize = a_size;
 }
 
-QList<DapRoutingExceptionsListRoute> DapRoutingExceptionsList::routes() const
+const QList<DapRoutingExceptionsList::App> &DapRoutingExceptionsList::apps() const
 {
-  return QList<DapRoutingExceptionsListRoute>(); // TODO
+  return m_packageList;
+}
+
+const QList<DapRoutingExceptionsList::Route> &DapRoutingExceptionsList::routes() const
+{
+  static QList<DapRoutingExceptionsList::Route> i; // TODO
+  return i;
 }
 
 void DapRoutingExceptionsList::save()
@@ -82,7 +95,7 @@ void DapRoutingExceptionsList::load()
       for (const auto &obj : qAsConst (array))
         {
           auto item = jsonToItem (obj.toObject());
-            addAppRoutingExceptionsList(std::move (item));
+          slotAddAppRoutingExceptionsList (std::move (item));
         }
     }
 
@@ -91,3 +104,22 @@ void DapRoutingExceptionsList::load()
   while (array.size())
     array.takeAt (array.size() - 1);
 }
+
+/********************************************
+ * SLOTS
+ *******************************************/
+
+void DapRoutingExceptionsList::slotAddPackageInfo (const QString &a_packageName, const QString &appName, const QString &a_icon)
+{
+  m_packageList << App {a_packageName, appName, a_icon, false};
+
+  if (m_packageList.size() >= m_packageListSize)
+    emit sigRoutingExceptionsListFilled();
+}
+
+void DapRoutingExceptionsList::slotAddAppRoutingExceptionsList (const App &a_item)
+{
+  m_routingExceptionsPackList << a_item;
+}
+
+/*-----------------------------------------*/
