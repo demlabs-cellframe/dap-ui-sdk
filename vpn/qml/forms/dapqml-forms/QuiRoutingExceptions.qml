@@ -224,7 +224,7 @@ Item {
             Text {
                 x: rouexcContentItemMain.x
                 y: (parent.height - height) / 2
-                width: rouexcContentItemMain.width// - x
+                width: rouexcContentItemMain.width - x - delegateAppCheckCheckBox.width
                 height: contentHeight
                 color: rouexcContentItemMain.color
                 text: model.appName
@@ -238,6 +238,7 @@ Item {
 
             /* checkbox */
             DapQmlLabel {
+                id: delegateAppCheckCheckBox
                 x: parent.width - (width * 0.675 * 1.4375)
                 y: (parent.height - height) / 2
                 width: rouexcPopupAppCheckbox.width
