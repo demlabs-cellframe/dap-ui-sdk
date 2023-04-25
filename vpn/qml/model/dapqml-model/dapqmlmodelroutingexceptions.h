@@ -97,7 +97,7 @@ public:
   Q_INVOKABLE void append (const Route &a_route);
   Q_INVOKABLE void append (Route &&a_route);
   Q_INVOKABLE void appendJson (const QVariant &a_value);
-  void appendQuietly (App &&a_app, const char *a_icon);
+  void appendQuietly (App &&a_app, QString &&a_icon);
 
   Q_INVOKABLE void insert (int a_index, const App &a_app, const QString &a_icon);
   Q_INVOKABLE void insert (int a_index, App &&a_app, QString &&a_icon);

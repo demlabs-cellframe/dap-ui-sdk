@@ -338,9 +338,9 @@ void DapQmlModelRoutingExceptions::appendJson (const QVariant &a_value)
     }
 }
 
-void DapQmlModelRoutingExceptions::appendQuietly (DapQmlModelRoutingExceptions::App &&a_app, const char *a_icon)
+void DapQmlModelRoutingExceptions::appendQuietly (DapQmlModelRoutingExceptions::App &&a_app, QString &&a_icon)
 {
-  s_iconMap[a_app.packageName + ".png"] = QString (a_icon);
+  s_iconMap[a_app.packageName + ".png"] = std::move (a_icon);
   s_apps.append (std::move (a_app));
 }
 
