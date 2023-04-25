@@ -1558,6 +1558,11 @@
     radius: 8;
 }
 
+.rouexc-popup-app-item-label-pos
+{
+    scaled-rect: scaled(56,nan,nan,nan,false,16);
+}
+
 .rouexc-popup-app-checkbox
 {
     scaled-rect: scaled(nan,nan,60,60,true);

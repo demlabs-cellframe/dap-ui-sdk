@@ -147,6 +147,8 @@ public:
   Q_INVOKABLE void clearApps();
   /// remove all routes
   Q_INVOKABLE void clearRoutes();
+
+  static bool isTestMode();
 protected:
   void _appendCheckedApp (int a_index, bool a_combine = true);
   void _removeCheckedApp (int a_index);

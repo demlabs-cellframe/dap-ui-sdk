@@ -255,10 +255,10 @@ void DapQmlModelRoutingExceptions::setMode (int a_newMode)
     {
       for (const auto &dummyApp : s_dummyApps)
         {
-          QImage icn;
-          QByteArray icnSrc (dummyApp.icon.toUtf8());
-          icn.loadFromData (QByteArray::fromBase64 (icnSrc));
-          append (App {dummyApp.pname, dummyApp.aname, dummyApp.checked, icn});
+//          QImage icn;
+//          QByteArray icnSrc (dummyApp.icon.toUtf8());
+//          icn.loadFromData (QByteArray::fromBase64 (icnSrc));
+          append (App {dummyApp.pname, dummyApp.aname, dummyApp.checked}, std::move (dummyApp.icon));
         }
 //      append (App{"TestApp1", "qrc:/nonthemed/conn-icon-3.png", false, QImage()});
 //      append (App{"TestApp2", "qrc:/nonthemed/conn-icon-4.png", true,  QImage()});
@@ -679,6 +679,15 @@ void DapQmlModelRoutingExceptions::clearRoutes()
 {
   s_routes.clear();
   updateAllLists();
+}
+
+bool DapQmlModelRoutingExceptions::isTestMode()
+{
+#ifdef TEST_MODE
+  return true;
+#else // TEST_MODE
+  return false;
+#endif // TEST_MODE
 }
 
 static void removeFrom (QList<App> &a_list, const App &a_app)

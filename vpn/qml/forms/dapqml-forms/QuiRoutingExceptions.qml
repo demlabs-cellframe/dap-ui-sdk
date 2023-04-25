@@ -6,6 +6,7 @@ import QtQuick.Controls 2.12
 import QtGraphicalEffects 1.0
 import "qrc:/dapqml-widgets"
 import DapQmlStyle 1.0
+import Brand 1.0
 import DapQmlModelRoutingExceptions 1.0
 
 /****************************************//**
@@ -205,30 +206,44 @@ Item {
     Component {
         id: delegateAppCheck
 
-        DapQmlButton {
+        Item {
             width: listviewPopupApps.width
-            mainQss: "c-label"
-            qss: "rouexc-content-item"
-            buttonStyle: DapQmlButton.Style.IconMainSubIcon
-            mainText: model.appName
-            subText: ""
+            height: rouexcContentItem.height
 
             /* icon */
             DapQmlLabel {
                 x: width * 0.4375
                 y: (parent.height - height) / 2
+                width: rouexcContentItemIcon.width
+                height: rouexcContentItemIcon.height
                 scaledPixmap: "image://DapQmlModelRoutingExceptionsImageProvider/" + model.packageName + ".png"
                 disableClicking: true
-                qss: "rouexc-content-item-icon"
             }
 
-            /* checkbox button */
+            /* label */
+            Text {
+                x: rouexcContentItemMain.x
+                y: (parent.height - height) / 2
+                width: rouexcContentItemMain.width// - x
+                height: contentHeight
+                color: rouexcContentItemMain.color
+                text: model.appName
+
+                font {
+                    family: Brand.fontName()
+                    pixelSize: rouexcContentItemMain.fontSize
+                    weight: Font.Normal
+                }
+            }
+
+            /* checkbox */
             DapQmlLabel {
                 x: parent.width - (width * 0.675 * 1.4375)
                 y: (parent.height - height) / 2
-                qss: "rouexc-popup-app-checkbox" + (model.checked ? " rouexc-popup-app-checkbox-checked" : "")
-
-                onClicked: root.sigPopupAppCheckboxClicked (model.index, model.packageName); //console.log (`clicked ${model.index}`);
+                width: rouexcPopupAppCheckbox.width
+                height: rouexcPopupAppCheckbox.height
+                scaledPixmap: !model.checked ? rouexcPopupAppCheckbox.scaledPixmap : rouexcPopupAppCheckboxChecked.scaledPixmap
+                onClicked: root.sigPopupAppCheckboxClicked (model.index, model.packageName);
             }
 
             /* separator */
@@ -237,6 +252,39 @@ Item {
                 width: parent.width
             }
         }
+
+//        DapQmlButton {
+//            width: listviewPopupApps.width
+//            mainQss: "c-label"
+//            qss: "rouexc-content-item"
+//            buttonStyle: DapQmlButton.Style.IconMainSubIcon
+//            mainText: model.appName
+//            subText: ""
+
+//            /* icon */
+//            DapQmlLabel {
+//                x: width * 0.4375
+//                y: (parent.height - height) / 2
+//                scaledPixmap: "image://DapQmlModelRoutingExceptionsImageProvider/" + model.packageName + ".png"
+//                disableClicking: true
+//                qss: "rouexc-content-item-icon"
+//            }
+
+//            /* checkbox button */
+//            DapQmlLabel {
+//                x: parent.width - (width * 0.675 * 1.4375)
+//                y: (parent.height - height) / 2
+//                qss: "rouexc-popup-app-checkbox" + (model.checked ? " rouexc-popup-app-checkbox-checked" : "")
+
+//                onClicked: root.sigPopupAppCheckboxClicked (model.index, model.packageName); //console.log (`clicked ${model.index}`);
+//            }
+
+//            /* separator */
+//            DapQmlSeparator {
+//                y: parent.height - height
+//                width: parent.width
+//            }
+//        }
     }
 
     Component {
@@ -543,10 +591,25 @@ Item {
                 height: popupAppsBottom.y - y
                 clip: true
 
-                DapQmlDummy { id: listviewPopupAppsSizer; qss: "rouexc-popup-apps-content"; }
+                DapQmlDummy { id: listviewPopupAppsSizer;           qss: "rouexc-popup-apps-content"; }
+                DapQmlDummy { id: rouexcContentItem;                qss: "rouexc-content-item" }
+                DapQmlDummy { id: rouexcContentItemIcon;            qss: "rouexc-content-item-icon" }
+                DapQmlDummy { id: rouexcPopupAppCheckbox;           qss: "rouexc-popup-app-checkbox";               property string scaledPixmap }
+                DapQmlDummy { id: rouexcPopupAppCheckboxChecked;    qss: "rouexc-popup-app-checkbox-checked";       property string scaledPixmap }
+                DapQmlDummy { id: rouexcContentItemMain;            qss: "rouexc-popup-app-item-label-pos c-label"; property color color; property int fontSize }
 
                 delegate: delegateAppCheck
                 //model: modelCheckedApp
+
+//                delegate: Text {
+//                    text: model.appName
+//                }
+
+//                delegate: Image {
+//                    width: 64
+//                    height: 64
+//                    source: "image://DapQmlModelRoutingExceptionsImageProvider/" + model.packageName + ".png"
+//                }
             }
 
             /* bottom buttons */
