@@ -156,7 +156,9 @@ void DapQmlModelSettings::_buildMenuItemsList()
       Item{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key", "reset_licence_key",         [](QObject*) { emit __inst->sigLicenceReset(); } },
       Item{SI_LINK,       tr ("Your country"), "", "settings_icon ic_location", "country",                   [](QObject*) { emit __inst->sigCountry(); } },
   #ifdef BRAND_KELVPN
+  #ifdef Q_OS_ANDROID
       Item{SI_LINK,       tr ("Routing Exceptions"), "", "settings_icon ic_route", "rouexc",                 [](QObject*) { emit __inst->sigRouExc(); } },
+  #endif // Q_OS_ANDROID
   #endif // BRAND_KELVPN
   #ifndef DISABLE_SETTINGS_LANGUAGE
       Item{SI_LINK,       tr ("Language"), "", "settings_icon ic_language", "language",                      [](QObject*) { emit __inst->sigLanguage(); } },

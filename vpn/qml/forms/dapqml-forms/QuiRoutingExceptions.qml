@@ -55,6 +55,9 @@ Item {
      ********************************************/
     /// @{
 
+    signal sigTabChanged(int a_tabIndex);
+    signal sigPopupOpen();
+
     signal sigPopupCancel();
     signal sigPopupAppSave();
     signal sigPopupRouteAdd(string a_ip, string a_description);
@@ -72,6 +75,10 @@ Item {
     function showSpinner(a_show) {
         root.internal.popup     = a_show;
         root.internal.spinner   = a_show;
+    }
+
+    function enableRoutes(a_enable) {
+        tabsContainer.visible   = a_enable;
     }
 
     function _popupBottomButtonClicked(isSecond) {
@@ -133,7 +140,10 @@ Item {
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: root.internal.type = parent.parent.tabType
+                onClicked: {
+                    root.internal.type = parent.parent.tabType;
+                    root.sigTabChanged (parent.parent.tabType);
+                }
             }
         }
     }
@@ -457,6 +467,7 @@ Item {
                 rouexcAddressInput.mainText     = "";
                 rouexcDescriptionInput.mainText = "";
                 root.internal.popup             = true
+                root.sigPopupOpen();
             }
         }
 
@@ -464,11 +475,25 @@ Item {
          * Tab buttons
          ********************************************/
 
-        DapQmlSeparator {
+        DapQmlDummy {
+            id: separatorPos
             qss: "rouexc-tab-separator"
+
+            property real calcPos: tabsContainer.visible
+                                   ? y
+                                   : y + tabsContainer.height
+        }
+
+        DapQmlSeparator {
+            x: (parent.width - width) / 2
+            y: separatorPos.calcPos
+            width: separatorPos.width
+            height: separatorPos.height
+            //qss: "rouexc-tab-separator"
         }
 
         RowLayout {
+            id: tabsContainer
             x: (parent.width - width) / 2
             y: rouexcTabPos.y
             width: rouexcTabSize.width * 2 + spacing
@@ -496,13 +521,26 @@ Item {
          * Tab content
          ********************************************/
 
+        DapQmlDummy {
+            id: listviewSizer
+            qss: "rouexc-tab-content"
+
+            property real calcHeight: tabsContainer.visible
+                                      ? height
+                                      : height + tabsContainer.height
+        }
+
         ListView {
             id: listviewApps
             objectName: "listviewApps"
+            x: (parent.width - width) / 2
+            y: listviewSizer.y
+            width: listviewSizer.width
+            height: listviewSizer.calcHeight
             visible: root.internal.type === QuiRoutingExceptions.APPS
             clip: true
 
-            DapQmlStyle { item: listviewApps; qss: "rouexc-tab-content"; }
+            //DapQmlStyle { item: listviewApps; qss: "rouexc-tab-content"; }
 
             delegate: delegateApp
             //model: modelApp
@@ -511,10 +549,14 @@ Item {
         ListView {
             id: listviewRoutes
             objectName: "listviewRoutes"
+            x: (parent.width - width) / 2
+            y: listviewSizer.y
+            width: listviewSizer.width
+            height: listviewSizer.calcHeight
             visible: root.internal.type === QuiRoutingExceptions.ROUTES
             clip: true
 
-            DapQmlStyle { item: listviewRoutes; qss: "rouexc-tab-content"; }
+            //DapQmlStyle { item: listviewRoutes; qss: "rouexc-tab-content"; }
 
             delegate: delegateRoute
             //model: modelRoutes
