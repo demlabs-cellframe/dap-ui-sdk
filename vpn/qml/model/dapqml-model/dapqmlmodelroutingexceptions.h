@@ -137,10 +137,10 @@ public:
   Q_INVOKABLE void sortAndUpdateAllLists();
   /// refresh checked and sorted models
   Q_INVOKABLE void updateAllLists();
-//  /// save routes
-//  Q_INVOKABLE void save() const;
-//  /// load routes
-//  Q_INVOKABLE void load();
+  /// save routes
+  Q_INVOKABLE void save() const;
+  /// load routes
+  Q_INVOKABLE void load();
   /// remove everything
   Q_INVOKABLE void clear();
   /// remove all apps
@@ -153,6 +153,8 @@ protected:
   void _appendCheckedApp (int a_index, bool a_combine = true);
   void _removeCheckedApp (int a_index);
   void _sortCheckedApps();
+
+  void _clearBeforeLoad();
   /// @}
 
   /****************************************//**

@@ -12,7 +12,6 @@ SOURCES += \
     $$PWD/DapNetworkAccessManager.cpp \
     $$PWD/DapNetworkReply.cpp \
     $$PWD/DapPluginsPathControll.cpp \
-    $$PWD/DapRoutingExceptionsList.cpp \
     $$PWD/DapSerialKeyData.cpp \
     $$PWD/DapSerialKeyHistory.cpp \
     $$PWD/DapServerList.cpp \
@@ -42,7 +41,6 @@ HEADERS += \
     $$PWD/DapNetworkAccessManager.h \
     $$PWD/DapNetworkReply.h \
     $$PWD/DapPluginsPathControll.h \
-    $$PWD/DapRoutingExceptionsList.h \
     $$PWD/DapSerialKeyData.h \
     $$PWD/DapSerialKeyHistory.h \
     $$PWD/DapServerList.h \

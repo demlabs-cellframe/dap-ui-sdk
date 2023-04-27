@@ -16,7 +16,6 @@
 #include "DapSignUpData.h"
 #include "DapUtils.h"
 #include "DataToUpdate.h"
-#include "DapRoutingExceptionsList.h"
 
 #define SERVER_LIST_FILE "vpn-servers.xml"
 
@@ -126,8 +125,6 @@ public:
     DapBugReportHistory *bugReportHistory();
     DapSerialKeyHistory *serialKeyHistory();
 
-    DapRoutingExceptionsList *routingExceptionsList();
-
     Authorization authorizationType();
     void setAuthorizationType(Authorization type);
 
@@ -171,8 +168,6 @@ private:
 
     DapBugReportHistory *m_bugReportHistory;
     DapSerialKeyHistory *m_serialKeyHistory;
-
-    DapRoutingExceptionsList *m_routingExceptionsList;
 };
 
 template<typename T>

@@ -50,7 +50,7 @@ public:
 
 // routes model
 
-class DqmreRoutes : public RefreshingListModelBase
+class DqmreRoutes : public RefreshingListModel
 {
 public:
   DqmreRoutes();
@@ -107,7 +107,7 @@ public:
 
 /* VARS */
 
-static const QString SETTING_ROUTING_EXCEPTIONS {"RoutingExceptions"};
+//static const QString SETTING_ROUTING_EXCEPTIONS {"RoutingExceptions"};
 
 // all apps list
 static QList<App> s_apps;
@@ -574,7 +574,7 @@ void DapQmlModelRoutingExceptions::removeApp (int a_index)
   _sortCheckedApps();
 }
 
-void DapQmlModelRoutingExceptions::removeAppFromChecked(int a_index)
+void DapQmlModelRoutingExceptions::removeAppFromChecked (int a_index)
 {
   int index = indexOfChecked (a_index);
 
@@ -619,6 +619,114 @@ void DapQmlModelRoutingExceptions::updateAllLists()
 {
   for (auto *model : qAsConst (s_models))
     model->refresh();
+}
+
+void DapQmlModelRoutingExceptions::save() const
+{
+  /* var */
+  QJsonArray japps, jroutes;
+
+  /* collect checked apps and their names */
+  for (const auto &app : qAsConst (s_checkedApps))
+    japps << toJson (app);
+
+  /* collect routes */
+  for (const auto &route : qAsConst (s_routes))
+    jroutes << toJson (route);
+
+  /* store */
+  QJsonObject jobj =
+  {
+    {"apps", japps},
+    {"routes", jroutes},
+  };
+
+  DapDataLocal::instance()->saveSetting (ROUTING_EXCEPTIONS_LIST, jobj);
+
+  /* clear data */
+  while (japps.erase (japps.begin())     != japps.end());
+  while (jroutes.erase (jroutes.begin()) != jroutes.end());
+}
+
+void DapQmlModelRoutingExceptions::load()
+{
+  /* defs */
+  struct AppBlob
+  {
+    App app;
+    AppIcon icon;
+  };
+
+  /* vars */
+  QJsonArray japps, jroutes;
+  QMap<QString, AppBlob> appMap; // used to easily search app of checked app
+  int index = 0;
+
+  /* fill */
+  {
+    auto jobj = DapDataLocal::instance()->getSetting (ROUTING_EXCEPTIONS_LIST).toJsonObject();
+    japps     = jobj.value ("apps").toArray();
+    jroutes   = jobj.value ("routes").toArray();
+  }
+
+  /* prepare to fill */
+  _clearBeforeLoad();
+
+  /* load checked apps */
+//  for (const auto &app : qAsConst (japps))
+//    {
+//      s_checkedApps.append (toApp (app.toObject()));
+//      _appendCheckedApp (s_apps.size() - 1);
+//    }
+
+  /* collect app names */
+  for (const auto &japp : qAsConst (japps))
+    {
+      auto jobj = japp.toObject();
+      auto app  = toApp (jobj);
+      auto key  = app.packageName;
+      appMap.insert (
+        key,
+        AppBlob
+        {
+          std::move (app),
+          jobj.value ("icon").toString()
+        });
+      // appNames << japp.toObject().value ("packageName").toString();
+    }
+
+  /* check existing apps */
+  for (auto j = s_apps.begin(), k = s_apps.end(); j != k; j++, index++)
+    {
+      auto &item  = *j;
+      if (appMap.contains (item.packageName))
+        {
+          item.checked = true;
+          appMap.remove (item.packageName);
+        }
+      _appendCheckedApp (index, false);
+    }
+
+  /* add missing apps */
+  for (auto &blob : appMap)
+    {
+      blob.app.checked  = true;
+      appendQuietly (std::move (blob.app),
+                     std::move (blob.icon));
+      _appendCheckedApp (s_apps.size() - 1, false);
+    }
+
+  /* load routes */
+  for (const auto &route : qAsConst (jroutes))
+    append (toRoute (route.toObject()));
+
+  /* combine new list */
+  s_sortedApps  = s_checkedApps + s_uncheckedApps;
+  updateAllLists();
+
+  /* clear data */
+  while (japps.erase (japps.begin())     != japps.end());
+  while (jroutes.erase (jroutes.begin()) != jroutes.end());
 }
 
 //void DapQmlModelRoutingExceptions::save() const
@@ -751,6 +859,21 @@ void DapQmlModelRoutingExceptions::_sortCheckedApps()
   updateAllLists();
 }
 
+void DapQmlModelRoutingExceptions::_clearBeforeLoad()
+{
+  //s_apps.clear();
+  //s_iconMap.clear();
+  s_checkedApps.clear();
+  s_uncheckedApps.clear();
+  s_sortedApps.clear();
+  s_routes.clear();
+
+  updateAllLists();
+
+  for (auto *model : qAsConst (s_baseModels))
+    model->refresh();
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
@@ -836,18 +959,20 @@ Route toRoute (const QVariantMap &a_src)
 
 QJsonObject toJson (const App &a_src)
 {
-  QBuffer buf;
-  buf.open (QIODevice::WriteOnly);
-  auto icnSrc  = getAppIcon (a_src.packageName);
-  icnSrc.save (&buf, "PNG");
+//  QBuffer buf;
+//  buf.open (QIODevice::WriteOnly);
+//  auto icnSrc  = getAppIcon (a_src.packageName);
+//  icnSrc.save (&buf, "PNG");
 
-  QString icn = buf.readAll().toBase64();
+//  QString icn = buf.readAll().toBase64();
+
+  QString id  = (a_src.packageName.endsWith (".png")) ? a_src.packageName : a_src.packageName + ".png";
 
   return QJsonObject
   {
     { "packageName", a_src.packageName },
     { "appName", a_src.appName },
-    { "icon", icn },
+    { "icon", s_iconMap.value (id).data() },
     { "checked", a_src.checked },
   };
 }
@@ -861,7 +986,7 @@ QJsonObject toJson (const Route &a_src)
   };
 }
 
-QImage getAppIcon(const QString &a_packageName)
+QImage getAppIcon (const QString &a_packageName)
 {
   static QImage dummy;
   QString id  = (a_packageName.endsWith (".png")) ? a_packageName : a_packageName + ".png";
@@ -870,13 +995,14 @@ QImage getAppIcon(const QString &a_packageName)
 //  return s_iconMap [id];
 
   QImage icn;
+  QString iconBase64 = s_iconMap [id];
   icn.loadFromData (QByteArray::fromBase64 (s_iconMap [id]));
   return icn;
 }
 
 /*-----------------------------------------*/
 
-RefreshingListModelBase::RefreshingListModelBase(QObject *parent)
+RefreshingListModelBase::RefreshingListModelBase (QObject *parent)
   : QAbstractListModel (parent)
 {
 
@@ -890,17 +1016,14 @@ RefreshingListModelBase::~RefreshingListModelBase()
 void RefreshingListModelBase::refresh()
 {
   const char *name = "unknown";
-  if (dynamic_cast<DqmreApps*>(this))
+  if (dynamic_cast<DqmreApps *> (this))
     name  = "DqmreApps";
-  else
-    if (dynamic_cast<DqmreRoutes*>(this))
-      name  = "DqmreRoutes";
-    else
-      if (dynamic_cast<DqmreCheckedApps*>(this))
-        name  = "DqmreCheckedApps";
-      else
-        if (dynamic_cast<DqmreSortedApps*>(this))
-          name  = "DqmreSortedApps";
+  else if (dynamic_cast<DqmreRoutes *> (this))
+    name  = "DqmreRoutes";
+  else if (dynamic_cast<DqmreCheckedApps *> (this))
+    name  = "DqmreCheckedApps";
+  else if (dynamic_cast<DqmreSortedApps *> (this))
+    name  = "DqmreSortedApps";
   qDebug() << __PRETTY_FUNCTION__ << "Mode:" << name;
 
   beginResetModel();
@@ -1097,6 +1220,8 @@ DapQmlModelRoutingExceptionsImageProvider *DapQmlModelRoutingExceptionsImageProv
 QImage DapQmlModelRoutingExceptionsImageProvider::requestImage (const QString &id, QSize *size, const QSize &requestedSize)
 {
   QImage result = getAppIcon (id);
+
+  auto type = result.format();
 
   if (size)
     *size = QSize (result.width(), result.height());

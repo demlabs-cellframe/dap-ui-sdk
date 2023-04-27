@@ -77,6 +77,10 @@ Item {
         root.internal.spinner   = a_show;
     }
 
+    function onlyHideSpinner() {
+        root.internal.spinner   = false;
+    }
+
     function enableRoutes(a_enable) {
         tabsContainer.visible   = a_enable;
     }
