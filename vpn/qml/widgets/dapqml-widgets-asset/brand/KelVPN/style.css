@@ -10,6 +10,7 @@
 	label: "#5A5A5A";
 	light-grey: "#F7F7F7";
 	input-field: "#F7F7F7";
+	input-placeholder: "#A9A9B0";
 	error: "#F47A54";
 	brand: "#F45480";
 	accent: "#FD4E75";
@@ -78,6 +79,7 @@
 	label: "#A9A9B0";
 	light-grey: "#F7F7F7";
 	input-field: "#333333";
+	input-placeholder: "#A9A9B0";
 	error: "#F47A54";
 	brand: "#F45480";
 	accent: "#FD4E75";
@@ -1560,7 +1562,7 @@
 
 .rouexc-popup-app-item-label-pos
 {
-    scaled-rect: scaled(56,nan,nan,nan,false,16);
+    scaled-rect: scaled(56,nan,230,nan,false,16);
 }
 
 .rouexc-popup-app-checkbox
@@ -1638,7 +1640,7 @@
 
 .rouexc-popup-apps-content
 {
-    scaled-rect: scaled(nan,nan,324,nan,false);
+    scaled-rect: scaled(nan,141,324,nan,false);
 }
 
 .rouexc-route-input-field
@@ -1688,4 +1690,17 @@
 	scaled-rect: scaled(nan,nan,200,200,true);
 	color: "@background";
 	radius: 16;
+}
+
+.rouexc-popup-app-search
+{
+	scaled-rect: scaled(nan,81,324,48,false);
+	color: "@input-field";
+	radius: 8;
+}
+
+.rouexc-popup-app-search-input
+{
+	scaled-font: scaled(16);
+	color: "@input-placeholder";
 }

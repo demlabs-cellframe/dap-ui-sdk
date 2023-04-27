@@ -5,6 +5,7 @@
 #include <QAbstractTableModel>
 #include <QImage>
 #include <QQuickImageProvider>
+#include <QSortFilterProxyModel>
 
 /****************************************//**
  * @brief Routing Exceptions model
@@ -220,6 +221,45 @@ public:
 public:
   QImage requestImage (const QString &id, QSize *size, const QSize &requestedSize) override;
   QPixmap requestPixmap (const QString &id, QSize *size, const QSize &requestedSize) override;
+  /// @}
+};
+
+class DapQmlModelRoutingExceptionsFilterProxy : public QSortFilterProxyModel
+{
+  Q_OBJECT
+
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
+protected:
+  QString _filter;
+  QAbstractListModel *_model;
+  /// @}
+
+  /****************************************//**
+   * @name CONSTRUCT/DESTRUCT
+   *******************************************/
+  /// @{
+public:
+  explicit DapQmlModelRoutingExceptionsFilterProxy (QObject *parent = nullptr);
+  /// @}
+
+  /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  void setModel (QAbstractListModel *a_model);
+  Q_INVOKABLE void setFilter (const QString &a_filter);
+  /// @}
+
+  /****************************************//**
+   * @name OVERRIDE
+   *******************************************/
+  /// @{
+protected:
+  bool filterAcceptsRow (int sourceRow, const QModelIndex &sourceParent) const override;
   /// @}
 };
 

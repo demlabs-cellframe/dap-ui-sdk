@@ -1060,6 +1060,9 @@ int DqmreApps::rowCount (const QModelIndex &) const
 
 QVariant DqmreApps::data (const QModelIndex &index, int role) const
 {
+  if (index.row() < 0 || index.row() >= s_apps.size())
+    return QVariant();
+
   Field field = Field (role);
 
   if (!s_allRoles.contains (field))
@@ -1101,6 +1104,9 @@ int DqmreRoutes::rowCount (const QModelIndex &) const
 
 QVariant DqmreRoutes::data (const QModelIndex &index, int role) const
 {
+  if (index.row() < 0 || index.row() >= s_routes.size())
+    return QVariant();
+
   Field field = Field (role);
 
   if (!s_allRoles.contains (field))
@@ -1140,6 +1146,9 @@ int DqmreCheckedApps::rowCount (const QModelIndex &) const
 
 QVariant DqmreCheckedApps::data (const QModelIndex &index, int role) const
 {
+  if (index.row() < 0 || index.row() >= s_checkedApps.size())
+    return QVariant();
+
   Field field = Field (role);
 
   if (!s_allRoles.contains (field))
@@ -1181,6 +1190,9 @@ int DqmreSortedApps::rowCount (const QModelIndex &) const
 
 QVariant DqmreSortedApps::data (const QModelIndex &index, int role) const
 {
+  if (index.row() < 0 || index.row() >= s_sortedApps.size())
+    return QVariant();
+
   Field field = Field (role);
 
   if (!s_allRoles.contains (field))
@@ -1243,6 +1255,33 @@ QPixmap DapQmlModelRoutingExceptionsImageProvider::requestPixmap (const QString 
 AppIcon::operator QImage() const
 {
   return getAppIcon (*this);
+}
+
+/*-----------------------------------------*/
+
+DapQmlModelRoutingExceptionsFilterProxy::DapQmlModelRoutingExceptionsFilterProxy (QObject *parent)
+  : QSortFilterProxyModel (parent)
+{
+
+}
+
+void DapQmlModelRoutingExceptionsFilterProxy::setModel (QAbstractListModel *a_model)
+{
+  _model  = a_model;
+  setSourceModel (a_model);
+}
+
+void DapQmlModelRoutingExceptionsFilterProxy::setFilter (const QString &a_filter)
+{
+  _filter = a_filter;
+  invalidateFilter();
+}
+
+bool DapQmlModelRoutingExceptionsFilterProxy::filterAcceptsRow (int sourceRow, const QModelIndex &sourceParent) const
+{
+  auto index  = _model->index (sourceRow, 0, sourceParent);
+  auto name   = _model->data (index, int (Field::appName)).toString();
+  return name.startsWith (_filter, Qt::CaseInsensitive);
 }
 
 /*-----------------------------------------*/

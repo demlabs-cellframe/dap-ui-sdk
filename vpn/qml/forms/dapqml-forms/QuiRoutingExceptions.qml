@@ -57,6 +57,7 @@ Item {
 
     signal sigTabChanged(int a_tabIndex);
     signal sigPopupOpen();
+    signal sigPopupAppSearchFilterEdited(string a_filter);
 
     signal sigPopupCancel();
     signal sigPopupAppSave();
@@ -628,12 +629,35 @@ Item {
                 sourceComponent: popupDialogTitle
             }
 
+            /* search */
+            DapQmlRectangle {
+                id: popupAppsSearchContainer
+                x: (parent.width - width) / 2
+                qss: "rouexc-popup-app-search"
+
+                DapQmlLineEdit {
+                    id: popupAppsSearch
+                    objectName: "popupAppsSearch"
+                    anchors.fill: parent
+                    focus: true
+
+                    mainQss: "rouexc-popup-app-search-input c-label"
+                    placeholderQss: "rouexc-popup-app-search-input"
+                    iconQss: "ic_country_filter"
+
+                    mainText: ""
+                    placeHolderText: "Search application"
+
+                    onTextEdited: root.sigPopupAppSearchFilterEdited(mainText)
+                }
+            }
+
             /* list */
             ListView {
                 id: listviewPopupApps
                 objectName: "listviewPopupApps"
                 x: (parent.width - width) / 2
-                y: popupAppsTitle.height
+                y: listviewPopupAppsSizer.y
                 width: listviewPopupAppsSizer.width
                 height: popupAppsBottom.y - y
                 clip: true
