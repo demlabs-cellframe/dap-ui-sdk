@@ -789,6 +789,14 @@ void DapQmlModelRoutingExceptions::clearRoutes()
   updateAllLists();
 }
 
+QStringList DapQmlModelRoutingExceptions::getCheckedPackageList()
+{
+    QStringList _list;
+    for (auto item : s_checkedApps)
+        _list.push_front(item.packageName);
+    return _list;
+}
+
 bool DapQmlModelRoutingExceptions::isTestMode()
 {
 #ifdef TEST_MODE

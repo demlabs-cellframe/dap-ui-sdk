@@ -149,6 +149,8 @@ public:
   /// remove all routes
   Q_INVOKABLE void clearRoutes();
 
+  static QStringList getCheckedPackageList();
+
   static bool isTestMode();
 protected:
   void _appendCheckedApp (int a_index, bool a_combine = true);
