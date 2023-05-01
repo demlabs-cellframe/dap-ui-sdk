@@ -159,8 +159,8 @@ QString &&formatSerialKey (QString &&a_value)
                    << "internal issue! provided key is not formated and has invalid length:"
                    << a_value.size();
 
-      a_value.insert (0xE, '-');
-      a_value.insert (0x9, '-');
+      a_value.insert (0xC, '-');
+      a_value.insert (0x8, '-');
       a_value.insert (0x4, '-');
     }
 
