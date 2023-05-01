@@ -127,6 +127,8 @@ void DapQmlModelSerialHistory::slotSetup()
 
   *s_history  = history->list();
   endResetModel();
+
+  qDebug() << __PRETTY_FUNCTION__ << s_history->join (',').toUtf8().toBase64();
 }
 
 /*-----------------------------------------*/
@@ -156,3 +158,5 @@ void _DapQmlModelSerialHistoryCopyButtonAnimation::slotFinish()
   if (parent())
     parent()->setProperty ("iconRight", QString ("ic_copy"));
 }
+
+/*-----------------------------------------*/
