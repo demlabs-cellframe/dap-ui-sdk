@@ -127,8 +127,6 @@ void DapQmlModelSerialHistory::slotSetup()
 
   *s_history  = history->list();
   endResetModel();
-
-  qDebug() << __PRETTY_FUNCTION__ << s_history->join (',').toUtf8().toBase64();
 }
 
 /*-----------------------------------------*/
