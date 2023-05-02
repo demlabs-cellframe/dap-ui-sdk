@@ -13,6 +13,10 @@ class DapSortedServerList;
 
 /****************************************//**
  * @brief abstract server list model
+ *
+ * Basiacly just a bunch of static methods.
+ * Nothing special.
+ *
  * @ingroup groupUiModels
  * @date 28.03.2021
  * @author Mikhail Shilenko
@@ -32,6 +36,12 @@ public:
 
 /****************************************//**
  * @brief server list model
+ *
+ * Wrapper and also a model for DapServerInfoList
+ *
+ * Instance can be controled by user, but also
+ * provides singleton instance
+ *
  * @ingroup groupUiModels
  * @date 28.03.2021
  * @author Mikhail Shilenko
@@ -97,6 +107,7 @@ signals:
    *******************************************/
   /// @{
 public:
+  /// get pointer to singleton instance
   static DapServerList *instance();
 
   int append (const DapServerInfo &a_server);
@@ -108,7 +119,9 @@ public:
   bool empty() const;
   inline bool isEmpty() const { return empty(); }
   int indexOf (const DapServerInfo &a_item) const;
+  /// search an item with provided name value
   int indexOfName (const QString &a_name) const;
+  /// search an item with provided address value
   int indexOfAddress (const QString &a_address) const;
   void erase (Iterator it);
   Iterator begin();
@@ -122,19 +135,26 @@ public:
   DapServerInfo &at (int a_index);
   const DapServerInfo &at (int a_index) const;
   DapServerInfo value (int a_index) const;
+  /// same as @ref value but can be accessed from QML
   Q_INVOKABLE QVariant qValue (int a_index) const;
 
   int current() const;
   void setCurrent (int a_index);
+  /**
+   * @brief get current server
+   * @note if current is not set, will return a dummy instance
+   */
   const DapServerInfo &currentServer() const;
 
   void move (int a_source, int a_dest);
   void clear();
 
-  inline operator DapServerInfoList () const { return m_list; }
+  inline operator DapServerInfoList() const { return m_list; }
 protected:
-  int _iteratorIndex (Iterator &a_it);
-  int _iteratorIndex (ConstIterator &a_it);
+  /// search for iterator to return ints index
+  int _iteratorIndex (Iterator &a_it) const;
+  /// search for iterator to return ints index
+  int _iteratorIndex (ConstIterator &a_it) const;
   /// @}
 
   /****************************************//**
@@ -154,9 +174,9 @@ public:
 public:
   DapServerInfo &operator[] (int a_index);
   const DapServerInfo &operator[] (int a_index) const;
-  DapServerList& operator = (const DapServerInfoList &a_src);
-  DapServerList& operator = (const DapServerList &a_src);
-  DapServerList& operator = (DapServerList &&a_src);
+  DapServerList &operator = (const DapServerInfoList &a_src);
+  DapServerList &operator = (const DapServerList &a_src);
+  DapServerList &operator = (DapServerList &&a_src);
   DapServerList &operator<< (const DapServerInfo &a_server);
   DapServerList &operator<< (DapServerInfo &&a_server);
   /// @}
@@ -164,6 +184,13 @@ public:
 
 /****************************************//**
  * @brief sorted server list iterator
+ *
+ * Used to iterate items inside sorted server list
+ *
+ * Wrapps iterator object of indexes linked list.
+ *
+ * Allows to request items and their indexes
+ *
  * @ingroup groupUiModels
  * @date 28.03.2021
  * @author Mikhail Shilenko
@@ -208,6 +235,13 @@ public:
 
 /****************************************//**
  * @brief sorted server list const iterator
+ *
+ * Used to iterate items inside sorted server list
+ *
+ * Wrapps iterator object of indexes linked list.
+ *
+ * Allows to request items and their indexes
+ *
  * @ingroup groupUiModels
  * @date 28.03.2021
  * @author Mikhail Shilenko
@@ -253,6 +287,15 @@ public:
 
 /****************************************//**
  * @brief sorted server list model
+ *
+ * Wrapper and also a model for DapServerList.
+ *
+ * Used to store DapServerInfo instances
+ * sorted by their ping value.
+ *
+ * Most of methods from this class mirrors
+ * methods from @ref DapServerList
+ *
  * @ingroup groupUiModels
  * @date 28.03.2021
  * @author Mikhail Shilenko
@@ -283,26 +326,6 @@ protected:
   typedef DapSortedServerListIterator Iterator;
   typedef DapSortedServerListConstIterator ConstIterator;
   enum OperationType { Inserted, Removed };
-
-  class InsertServerOperation
-  {
-    DapSortedServerList &_list;
-    QLinkedList<int> &_sortedIndexes;
-    int _insertedIndex;
-    int _destination;
-    bool _finished;
-    enum
-    {
-      Insert,
-      Append,
-    } _result;
-  public:
-    InsertServerOperation (DapSortedServerList &a_list, QLinkedList<int> &a_sortedIndexes, const DapServerInfo &a_server, int a_insertedIndex);
-    ~InsertServerOperation(); ///< will call finish
-    void finish();
-    operator int() const;
-  };
-
   /// @}
 
   /****************************************//**
@@ -310,7 +333,9 @@ protected:
    *******************************************/
   /// @{
 protected:
+  /// unsorted list
   DapServerList _list;
+  /// sorted indexes that points to items from unsorted list
   QLinkedList<int> _sortedIndexes;
   /// @}
 
@@ -337,6 +362,7 @@ signals:
    *******************************************/
   /// @{
 public:
+  /// get pointer to singleton instance
   static DapSortedServerList *instance();
 
   int append (const DapServerInfo &a_server);
@@ -348,7 +374,9 @@ public:
   bool empty() const;
   inline bool isEmpty() const { return empty(); }
   int indexOf (const DapServerInfo &a_item) const;
+  /// search an item with provided name value
   int indexOfName (const QString &a_name) const;
+  /// search an item with provided address value
   int indexOfAddress (const QString &a_address) const;
   void erase (Iterator it);
   Iterator begin();
@@ -362,10 +390,15 @@ public:
   DapServerInfo &at (int a_index);
   const DapServerInfo &at (int a_index) const;
   DapServerInfo value (int a_index) const;
+  /// same as @ref value but can be accessed from QML
   Q_INVOKABLE QVariant qValue (int a_index) const;
 
   int current() const;
   void setCurrent (int a_index);
+  /**
+   * @brief get current server
+   * @note if current is not set, will return a dummy instance
+   */
   const DapServerInfo &currentServer() const;
 
   void clear();
@@ -376,8 +409,8 @@ public:
   /// get sorted items indexes
   const QLinkedList<int> &getSortedIndexes() const;
 
-  operator DapServerList () const;
-  operator DapServerInfoList () const;
+  operator DapServerList() const;
+  operator DapServerInfoList() const;
 protected:
   void _sort();
   // int _appendServerIndex (const DapServerInfo &a_server, int a_index);
