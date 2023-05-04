@@ -131,7 +131,7 @@ public:
   friend bool operator< (const DapServerInfo &lhs, const DapServerInfo &rhs) { return lhs.m_ping < rhs.m_ping; }
   friend QDebug operator<< (QDebug out, const DapServerInfo &dsi)
   {
-    out <<  Qt::endl << " name: " << dsi.m_name << " location: "
+    out <<  endl << " name: " << dsi.m_name << " location: "
         << dsi.m_location << " address: " << dsi.m_address <<  ":" << dsi.m_port << " state: " << dsi.m_online << " ping: " << dsi.m_ping;
     return out;
   }

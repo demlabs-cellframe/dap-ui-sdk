@@ -150,6 +150,7 @@ public:
   Q_INVOKABLE void clearRoutes();
 
   static QStringList getCheckedPackageList();
+  static QStringList getRoutingList();
 
   static bool isTestMode();
 protected:

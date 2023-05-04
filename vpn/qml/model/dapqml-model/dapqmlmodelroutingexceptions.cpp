@@ -797,6 +797,16 @@ QStringList DapQmlModelRoutingExceptions::getCheckedPackageList()
     return _list;
 }
 
+QStringList DapQmlModelRoutingExceptions::getRoutingList()
+{
+    QStringList _list;
+    for (auto item : s_routes)
+        _list.push_front(item.address);
+    return _list;
+}
+
+
+
 bool DapQmlModelRoutingExceptions::isTestMode()
 {
 #ifdef TEST_MODE
