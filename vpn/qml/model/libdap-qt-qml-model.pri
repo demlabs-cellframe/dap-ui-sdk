@@ -21,7 +21,8 @@ HEADERS += \
     $$PWD/dapqml-model/dapqmlmodelfaq.h \
     $$PWD/dapqml-model/dapqmlmodelroutingexceptions.h \
     $$PWD/dapqml-model/dapqmlmodelserialhistory.h \
-    $$PWD/dapqml-model/dapqmlservermanager.h
+    $$PWD/dapqml-model/dapqmlservermanager.h \
+    $$PWD/dapqml-model/doc/doc-server-lists-and-models.h
 
 SOURCES += \
     $$PWD/dapqml-abstract/abstractserverlistmodelbridge.cpp \
