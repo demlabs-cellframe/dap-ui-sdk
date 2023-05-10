@@ -1,0 +1,6 @@
+*pro.user
+*.o
+*.obj
+.DS_Store
+docs*
+html*

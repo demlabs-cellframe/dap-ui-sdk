@@ -84,6 +84,53 @@ void DapQmlModelChooseServer::setCurrent (int a_newCurrentServer)
   DapQmlModelFullServerList::instance()->setCurrent (a_newCurrentServer);
 }
 
+void DapQmlModelChooseServer::setCurrentServerByName (const QString &a_name)
+{
+  /* variables */
+  auto *serverList = DapQmlModelFullServerList::instance();
+
+  /* lambdas */
+  auto indexOf = [serverList] (const QString & a_serverName) -> int
+  {
+      int index = 0;
+      for (const auto &server : qAsConst (*serverList))
+      {
+          if (server.name() == a_serverName)
+              return index;
+          index++;
+      }
+
+      return -1;
+  };
+
+  /* store changes */
+  m_previousServer  = m_currentServer;
+  m_currentServer   = a_name;
+
+  /* get indexes */
+  int currentIndex  = indexOf (m_currentServer);
+  int lastIndex     = indexOf (m_previousServer);
+
+  //  qDebug() << __PRETTY_FUNCTION__
+  //           << "current:" << currentIndex
+  //           << ",last:" << lastIndex
+  //           << ",names:" << m_currentServer << m_previousServer;
+
+  /* update current server */
+  serverList->setCurrent (currentIndex);
+
+  /* send update notifies */
+  if (lastIndex != -1 && lastIndex != currentIndex)
+    emit dataChanged (index (lastIndex, 0),     index (lastIndex, 0));
+  if (currentIndex != -1)
+    emit dataChanged (index (currentIndex, 0),  index (currentIndex, 0));
+}
+
+QString DapQmlModelChooseServer::previousServer()
+{
+  return m_previousServer;
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
@@ -125,49 +172,6 @@ QVariant DapQmlModelChooseServer::data (const QModelIndex &index, int role) cons
     }
 
   return QVariant();
-}
-
-void DapQmlModelChooseServer::setCurrentServerByName (const QString &a_name)
-{
-  /* variables */
-  auto *serverList = DapQmlModelFullServerList::instance();
-
-  /* lambdas */
-  auto indexOf = [serverList] (const QString & a_serverName) -> int
-  {
-
-    int index = 0;
-    for (const auto &server : qAsConst (*serverList))
-      {
-        if (server.name() == a_serverName)
-          return index;
-        index++;
-      }
-
-    return -1;
-  };
-
-  /* store changes */
-  m_previousServer  = m_currentServer;
-  m_currentServer   = a_name;
-
-  /* get indexes */
-  int currentIndex  = indexOf (m_currentServer);
-  int lastIndex     = indexOf (m_previousServer);
-
-//  qDebug() << __PRETTY_FUNCTION__
-//           << "current:" << currentIndex
-//           << ",last:" << lastIndex
-//           << ",names:" << m_currentServer << m_previousServer;
-
-  /* update current server */
-  serverList->setCurrent (currentIndex);
-
-  /* send update notifies */
-  if (lastIndex != -1 && lastIndex != currentIndex)
-    emit dataChanged (index (lastIndex, 0),     index (lastIndex, 0));
-  if (currentIndex != -1)
-    emit dataChanged (index (currentIndex, 0),  index (currentIndex, 0));
 }
 
 QHash<int, QByteArray> DapQmlModelChooseServer::roleNames() const

@@ -6,7 +6,14 @@
 #include "DapServerList.h"
 
 /****************************************//**
- * @brief servers model list
+ * @brief auto servers model list
+ *
+ * Builds a server list based on
+ * general locations provided by data from
+ * installed server list
+ *
+ * Reacts on installed server list changes
+ *
  * @ingroup groupUiModels
  * @date 11.03.2021
  * @author Mikhail Shilenko
@@ -22,6 +29,8 @@ class DapQmlModelAutoServerList : public QAbstractListModel
    * @name DEFS
    *******************************************/
   /// @{
+protected:
+
   class Location
   {
     QString m_name;
@@ -53,7 +62,6 @@ class DapQmlModelAutoServerList : public QAbstractListModel
     bool operator >= (const Location &other) const;
   };
 
-protected:
   class _CurrentUpdater
   {
     QString _oldName;
@@ -103,7 +111,7 @@ public:
    *******************************************/
   /// @{
 public:
-  /// set general location
+  /// set user general location
   void setLocation (const QString &a_location);
   const DapSortedServerList &getList() const { return _autoServers; };
   int current() const;

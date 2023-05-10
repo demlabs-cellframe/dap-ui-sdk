@@ -237,6 +237,27 @@ static const QString _findInCountriesMap (const QString &string)
          : "://country/" + code + ".png";
 }
 
+/* DEFS */
+
+class InsertServerOperation
+{
+  DapSortedServerList &_list;
+  QLinkedList<int> &_sortedIndexes;
+  int _insertedIndex;
+  int _destination;
+  bool _finished;
+  enum
+  {
+      Insert,
+      Append,
+  } _result;
+  public:
+  InsertServerOperation (DapSortedServerList &a_list, QLinkedList<int> &a_sortedIndexes, const DapServerInfo &a_server, int a_insertedIndex);
+  ~InsertServerOperation(); ///< will call finish
+  void finish();
+  operator int() const;
+};
+
 
 /**##########################################
  *
@@ -508,7 +529,7 @@ void DapServerList::clear()
   endResetModel();
 }
 
-int DapServerList::_iteratorIndex(DapServerList::Iterator &a_it)
+int DapServerList::_iteratorIndex (DapServerList::Iterator &a_it) const
 {
   int sortedIndex = 0;
   for (auto i = cbegin(), e = cend(); i != e; i++, sortedIndex++)
@@ -517,7 +538,7 @@ int DapServerList::_iteratorIndex(DapServerList::Iterator &a_it)
   return (sortedIndex < size()) ? sortedIndex : -1;
 }
 
-int DapServerList::_iteratorIndex(DapServerList::ConstIterator &a_it)
+int DapServerList::_iteratorIndex (DapServerList::ConstIterator &a_it) const
 {
   int sortedIndex = 0;
   for (auto i = cbegin(), e = cend(); i != e; i++, sortedIndex++)
@@ -1096,7 +1117,7 @@ void DapSortedServerList::_sort()
   beginResetModel();
 
   int index = 0,
-      current = (this->current() != -1) ? *(_sortedIndexes.begin() + this->current()) : -1,
+      current = (this->current() != -1) ? * (_sortedIndexes.begin() + this->current()) : -1,
       newCurrent = current;
 
 //  printServers (__PRETTY_FUNCTION__, current);
@@ -1237,12 +1258,12 @@ void DapSortedServerList::_fixCurrent (int a_index, DapSortedServerList::Operati
     if (a_index <= _list.current())
       {
 #ifdef QT_DEBUG
-        qDebug("%s : %s + lower or equal : old [n:%s,i:%d] new [i:%d]",
-               "DapSortedServerList::_fixCurrent",
-               (a_operationType == OperationType::Inserted ? "insert" : "remove"),
-               currentServer().name().toUtf8().data(),
-               _list.current(),
-               _list.current() + magic[a_operationType]);
+        qDebug ("%s : %s + lower or equal : old [n:%s,i:%d] new [i:%d]",
+                "DapSortedServerList::_fixCurrent",
+                (a_operationType == OperationType::Inserted ? "insert" : "remove"),
+                currentServer().name().toUtf8().data(),
+                _list.current(),
+                _list.current() + magic[a_operationType]);
 #endif // QT_DEBUG
         _list.setCurrent (_list.current() + magic[a_operationType]);
       }
@@ -1254,12 +1275,12 @@ void DapSortedServerList::_fixCurrent (int a_index, DapSortedServerList::Operati
       if (_list.current() >= _list.size())
         {
 #ifdef QT_DEBUG
-          qDebug("%s : %s + bigger or equal the size : old [n:%s,i:%d] new [i:%d]",
-                 "DapSortedServerList::_fixCurrent",
-                 (a_operationType == OperationType::Inserted ? "insert" : "remove"),
-                 currentServer().name().toUtf8().data(),
-                 _list.current(),
-                 _list.size() -1);
+          qDebug ("%s : %s + bigger or equal the size : old [n:%s,i:%d] new [i:%d]",
+                  "DapSortedServerList::_fixCurrent",
+                  (a_operationType == OperationType::Inserted ? "insert" : "remove"),
+                  currentServer().name().toUtf8().data(),
+                  _list.current(),
+                  _list.size() - 1);
 #endif // QT_DEBUG
           _list.setCurrent (_list.size() - 1);
         }
@@ -1359,11 +1380,11 @@ const QHash<QString, QString> &DapAbstractServerList::countryMap()
 
 /*-----------------------------------------*/
 
-DapSortedServerList::InsertServerOperation::InsertServerOperation (
-    DapSortedServerList &a_list,
-    QLinkedList<int> &a_sortedIndexes,
-    const DapServerInfo &a_server,
-    int a_insertedIndex)
+InsertServerOperation::InsertServerOperation (
+  DapSortedServerList &a_list,
+  QLinkedList<int> &a_sortedIndexes,
+  const DapServerInfo &a_server,
+  int a_insertedIndex)
   : _list (a_list)
   , _sortedIndexes (a_sortedIndexes)
   , _insertedIndex (a_insertedIndex)
@@ -1373,10 +1394,10 @@ DapSortedServerList::InsertServerOperation::InsertServerOperation (
 {
   /* lambdas */
   auto appendToEnd = [this]
-    {
-      _result = Append;
-      return _sortedIndexes.size();
-    };
+  {
+    _result = Append;
+    return _sortedIndexes.size();
+  };
 
   /* add non ping at the end */
   if (a_server.ping() == -1)
@@ -1401,12 +1422,12 @@ DapSortedServerList::InsertServerOperation::InsertServerOperation (
   _destination = appendToEnd();
 }
 
-DapSortedServerList::InsertServerOperation::~InsertServerOperation()
+InsertServerOperation::~InsertServerOperation()
 {
   finish();
 }
 
-void DapSortedServerList::InsertServerOperation::finish()
+void InsertServerOperation::finish()
 {
   if (_finished)
     return;
@@ -1425,7 +1446,7 @@ void DapSortedServerList::InsertServerOperation::finish()
   _finished = true;
 }
 
-DapSortedServerList::InsertServerOperation::operator int() const
+InsertServerOperation::operator int() const
 {
   return _destination;//_destination == -1 ? 0 : _destination;
 }
