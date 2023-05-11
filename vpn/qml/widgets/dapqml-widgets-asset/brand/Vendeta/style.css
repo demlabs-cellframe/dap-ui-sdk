@@ -13,6 +13,7 @@
 	accent: "#00B5DB";
 	upload: "#0098CC";
 	grid: "#F4F7F9";
+    separator-color: "#E6E6E6";
 	switch-bg-on: 				"qrc:/light/switch/bg_on.png";
 	switch-bg-off: 				"qrc:/light/switch/bg_off.png";
 	switch-toggle-on: 			"qrc:/light/switch/toggle_on.png";
@@ -56,6 +57,7 @@
 	accent: "#FF22A2";
 	upload: "#9F83FF";
 	grid: "#211F46";
+	separator-color: "#3F3F3F";
 	switch-bg-on: 				"qrc:/dark/switch/bg_on.png";
 	switch-bg-off: 				"qrc:/dark/switch/bg_off.png";
 	switch-toggle-on: 			"qrc:/dark/switch/toggle_on.png";
@@ -208,22 +210,23 @@
 
 
 
+.sep-rect {
+	scaled-rect: scaled(nan,nan,8,4,false);
+}
+
 .sep-left
 {
 	qproperty-scaledPixmap: "@separator-left";
-	scaled-rect: scaled(nan,nan,8,4,false);
 }
 
 .sep-mid
 {
 	qproperty-scaledPixmap: "@separator-mid";
-	scaled-rect: scaled(nan,nan,nan,4,false);
 }
 
 .sep-right
 {
 	qproperty-scaledPixmap: "@separator-right";
-	scaled-rect: scaled(nan,nan,8,4,false);
 }
 
 
@@ -680,6 +683,12 @@
 .login-space-for2rows
 {
     scaled-rect: scaled(nan,0,nan,nan,false);
+}
+
+.login-separator-color
+{
+    color: "@separator-color";
+    scaled-rect: scaled(nan,nan,nan,1,false);
 }
 
 /****************************************************
