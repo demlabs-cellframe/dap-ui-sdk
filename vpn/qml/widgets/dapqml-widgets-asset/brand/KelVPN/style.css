@@ -32,6 +32,7 @@
 	separator-right:            "qrc:/light/separator_right.png";
     push-button-active:         "qrc:/light/btn_bg_hover_active.png";
     push-button-inactive:       "qrc:/light/btn_bg.png";
+    push-button-disabled:       "qrc:/light/btn_bg_disabled.png";
 	footer-settings-active:     "qrc:/light/btn_settings_active.png";
 	footer-settings-inactive:   "qrc:/light/btn_settings.png";
 	footer-dashboard-active:    "qrc:/light/btn_connection_active.png";
@@ -102,6 +103,7 @@
 	separator-right:            "qrc:/dark/separator_right.png";
     push-button-active:         "qrc:/dark/btn_bg_hover_active.png";
     push-button-inactive:       "qrc:/dark/btn_bg.png";
+    push-button-disabled:       "qrc:/dark/btn_bg_disabled.png";
 	footer-settings-active:     "qrc:/dark/btn_settings_active.png";
 	footer-settings-inactive:   "qrc:/dark/btn_settings.png";
 	footer-dashboard-active:    "qrc:/dark/btn_connection_active.png";
@@ -309,6 +311,8 @@
 {
 	active: "@push-button-active";
 	inactive: "@push-button-inactive";
+	disabled: "@push-button-disabled";
+	scaled-font: scaled(16);
 }
 
 

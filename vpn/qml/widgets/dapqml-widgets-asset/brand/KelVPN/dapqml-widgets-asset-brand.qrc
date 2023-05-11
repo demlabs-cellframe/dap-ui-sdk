@@ -11,6 +11,7 @@
         <file compress="1">dark/btn_connection.png</file>
         <file compress="1">dark/btn_bg_hover_active.png</file>
         <file compress="1">dark/btn_bg.png</file>
+        <file compress="1">dark/btn_bg_disabled.png</file>
         <file compress="1">dark/btn_account_active.png</file>
         <file compress="1">dark/btn_account.png</file>
         <file compress="1">dark/login-logo.png</file>
@@ -51,6 +52,7 @@
         <file compress="1">light/btn_connection.png</file>
         <file compress="1">light/btn_bg_hover_active.png</file>
         <file compress="1">light/btn_bg.png</file>
+        <file compress="1">light/btn_bg_disabled.png</file>
         <file compress="1">light/btn_account_active.png</file>
         <file compress="1">light/btn_account.png</file>
         <file compress="1">light/switch/toggle_on.png</file>
