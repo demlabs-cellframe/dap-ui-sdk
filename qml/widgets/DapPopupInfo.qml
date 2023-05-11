@@ -77,7 +77,7 @@ Item {
         width: 168
         height: 48
         radius: 16
-        color: currTheme.backgroundElements
+        color: currTheme.secondaryBackground
     }
 
     DropShadow {
@@ -128,7 +128,7 @@ Item {
             id: textItem
             height: commonHeight
             font: mainFont.dapFont.medium14
-            color: currTheme.textColor
+            color: currTheme.white
             verticalAlignment: Qt.AlignVCenter
             text: infoText
         }

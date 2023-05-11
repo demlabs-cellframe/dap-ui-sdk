@@ -50,23 +50,23 @@ Button
     property alias radius: dapBackgroundButton.radius
     property alias imageMirror: img.mirror
 
-    property string gradientColorNormal0: "#f0f000"
-    property string gradientColorNormal1: "#f00000"
-    property string gradientColorHovered0: "#f0f0a0"
-    property string gradientColorHovered1: "#f000a0"
+    property color gradientColorNormal0: "#f0f000"
+    property color gradientColorNormal1: "#f00000"
+    property color gradientColorHovered0: "#f0f0a0"
+    property color gradientColorHovered1: "#f000a0"
 
-    property string defaultColorNormal0: currTheme.buttonColorNormalPosition0
-    property string defaultColorNormal1: currTheme.buttonColorNormalPosition1
-    property string defaultColorHovered0: currTheme.buttonColorHoverPosition0
-    property string defaultColorHovered1: currTheme.buttonColorHoverPosition1
-    property string defaultColorUnselectedNormal: "#373A42"
-    property string defaultColorUnselectedHovered: "#272A32"
-    property string defaultColorDisabled: "#B3B1BC"
+    property color defaultColorNormal0: currTheme.mainButtonColorNormal0
+    property color defaultColorNormal1: currTheme.mainButtonColorNormal1
+    property color defaultColorHovered0: currTheme.mainButtonColorHover0
+    property color defaultColorHovered1: currTheme.mainButtonColorHover1
+    property color defaultColorUnselectedNormal: currTheme.secondaryButtonColor
+    property color defaultColorUnselectedHovered: "#272A32"
+    property color defaultColorDisabled: currTheme.gray
 
-    property string shadowColor : "#1F242F"
+    property color shadowColor : currTheme.mainButtonShadow
 //    property string shadowColor : currTheme.buttonShadow
-    property string innerShadowColor : currTheme.buttonInnerShadow
-    property string innerShadowPressColor : "#1F242F"
+    property color innerShadowColor : currTheme.buttonsShadowInner
+    property color innerShadowPressColor : "#1F242F"
 
     property bool activeFrame : true
 
@@ -140,7 +140,7 @@ Button
                 horizontalAlignment: Qt.AlignRight
                 bottomPadding: OS_WIN_FLAG ? 2 : 0
                 anchors.rightMargin: indentTextRight
-                color: currTheme.textColor
+                color: currTheme.white
                 text: qsTr(textButton)
             }
 
@@ -227,10 +227,11 @@ Button
         anchors.fill: dapBackgroundButton
         horizontalOffset: 2
         verticalOffset: 2
-        radius: 8
+        radius: 7
         samples: 10
         cached: true
         color: shadowColor
+        opacity: 0.44
         source: dapBackgroundButton
         }
 
@@ -240,10 +241,11 @@ Button
         anchors.fill: dapBackgroundButton
         horizontalOffset: 1
         verticalOffset: 1
-        radius: 5
+        radius: 4
         samples: 10
         cached: true
         color: innerShadowColor
+        opacity: 0.3
         source: dapBackgroundButton
         visible: dapBackgroundButton.visible
 
@@ -278,8 +280,8 @@ Button
             {
                 gradientColorNormal0 = defaultColorUnselectedNormal
                 gradientColorNormal1 = defaultColorUnselectedNormal
-                gradientColorHovered0 = defaultColorUnselectedHovered
-                gradientColorHovered1 = defaultColorUnselectedHovered
+                gradientColorHovered0 = defaultColorHovered0
+                gradientColorHovered1 = defaultColorHovered1
             }
 
         }

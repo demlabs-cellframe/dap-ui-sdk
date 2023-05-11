@@ -18,8 +18,8 @@ Rectangle
 
     implicitWidth: viewerItem.width
 
-    border.color: currTheme.borderColor
-    color: currTheme.backgroundMainScreen
+    border.color: currTheme.input
+    color: currTheme.mainBackground
     radius: height * 0.5
 
     ListView
@@ -74,7 +74,7 @@ Rectangle
                                 id: grad1
                                 position: 0
                                 color: gradColor === undefined ?
-                                           currTheme.buttonColorNormalPosition0 :
+                                           currTheme.mainButtonColorNormal0 :
                                            gradColor
                             }
                             GradientStop
@@ -82,7 +82,7 @@ Rectangle
                                 id: grad2
                                 position: 1
                                 color: gradColor === undefined ?
-                                           currTheme.buttonColorNormalPosition1 :
+                                           currTheme.mainButtonColorNormal1 :
                                            gradColor
                             }
                         }
@@ -111,7 +111,7 @@ Rectangle
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     bottomPadding: OS_WIN_FLAG ? 4 : 0
-                    color: currTheme.textColor
+                    color: currTheme.white
                     font: mainFont.dapFont.medium14
                     text: name
 
