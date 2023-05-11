@@ -4,6 +4,7 @@ import QtQuick 2.4
 import QtQuick.Layouts 1.3
 //import DapQmlModelSettings 1.0
 import StyleDebugTree 1.0
+import DapQmlStyle 1.0
 //import SettingsInterface 1.0
 import "qrc:/dapqml-widgets"
 
@@ -138,13 +139,14 @@ Item {
             id: settingsListView
             objectName: "settingsListView"
 
-            x: contentRect.x
+            x: (parent.width - width) / 2 //contentRect.x
             y: 0
-            width: contentRect.width // root.width - 72
+            width: listviewSizer.width ? listviewSizer.width : contentRect.width // root.width - 72
             height: root.height
 
             clip: false
             //model: settingsModel
+
 
             /****************************************//**
              * Resizers
@@ -172,13 +174,20 @@ Item {
                 qss: "sett-spacer"
             }
 
+            DapQmlDummy {
+                id: listviewSizer
+                qss: "sett-content";
+            }
+
             /****************************************//**
              * Delegate
              ********************************************/
 
             delegate: Item {
                 id: delegate
+                width: settingsListView.width
                 height: calcHeight (model.sid) //model.sid !== QuiSettingsForm.StyleId.SI_TITLE ? resizer1.height : resizer2.height
+
                 property int mySid: model.sid
                 property var settingsModel: settingsListView.model
 
@@ -187,7 +196,8 @@ Item {
                     property string myText: model.textMain + settingsModel.notifier // + testText
 
                     visible: model.sid !== QuiSettingsForm.StyleId.SI_TITLE
-                    width: settingsListView.width
+                    x: (parent.width - width) / 2
+                    width: contentRect.width // settingsListView.width
                     height: delegate.height
                     buttonStyle: DapQmlButton.Style.IconMainSub
                     mainText: myText // model.textMain + settingsModel.notifier + testText
@@ -226,6 +236,12 @@ Item {
 
                     Component.onCompleted: root.internal.appendItem (this)
                     Component.onDestruction: root.internal.removeItem (this)
+                }
+
+                DapQmlSeparator {
+                    anchors.bottom: parent.bottom
+                    width: parent.width
+                    visible: model.sid !== QuiSettingsForm.StyleId.SI_TITLE && isSep(model.sid)
                 }
 
                 DapQmlLabel {

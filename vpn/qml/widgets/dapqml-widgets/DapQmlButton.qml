@@ -55,7 +55,8 @@ Rectangle {
         IconMainSub,          ///< icon, main, sub
         EditTopMainBottomSub, ///< top:edit, bottom:sub
         IconMainSubIcon,      ///< icon, main, sub, icon
-        EditLine              ///< icon, main, icon
+        EditLine,             ///< icon, main, icon
+        LeftTopSubBottomMain  ///< left:left, top:sub, bottom:main
     }
 
     /// @}
@@ -161,6 +162,11 @@ Rectangle {
             root.labelMain  = tsbmMain;
             root.labelSub   = tsbmSub;
         }
+        else if(root.buttonStyle === DapQmlButton.Style.LeftTopSubBottomMain)
+        {
+            root.labelMain  = ltsbmMain;
+            root.labelSub   = ltsbmSub;
+        }
         else if(root.buttonStyle === DapQmlButton.Style.IconMainSub)
         {
             root.labelMain  = imsMain;
@@ -216,7 +222,8 @@ Rectangle {
     DapQmlImage {
         id: linkImage
         x: root.width - (root.frame ? (width * 2.4) : (width * 2))
-        y: (root.height - height) / 2
+        y: root.buttonStyle !== DapQmlButton.Style.LeftTopSubBottomMain
+           ? (root.height - height) / 2 : ltsbmMain.y
         z: 1
         width: root.height / 5
         height: root.height / 5
@@ -432,6 +439,52 @@ Rectangle {
 
         }
 
+        /* LeftTopSubBottomMain */
+        /* Two items by vertical */
+        Item {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            visible: (root.buttonStyle === DapQmlButton.Style.LeftTopSubBottomMain)
+
+            /* store references */
+            Component.onCompleted: {
+                if(visible)
+                {
+                    root.labelMain  = ltsbmMain;
+                    root.labelSub   = ltsbmSub;
+                }
+            }
+
+            /* sub text */
+            DapQmlLabel {
+                id: ltsbmSub
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                width: _magickWidth()
+                height: _magickHeight()
+
+                horizontalAlign: Text.AlignLeft
+                verticalAlign: Text.AlignBottom
+                text: root.subText
+                qss: root.subQss
+                onClicked: root.clicked();
+            }
+
+            /* main text */
+            DapQmlLabel {
+                id: ltsbmMain
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                width: _magickWidth()
+                height: _magickHeight() - _magickSpacer() / 2
+                y: _magickHeight()
+
+                horizontalAlign: Text.AlignLeft
+                verticalAlign: Text.AlignTop
+                text: root.mainText
+                qss: root.mainQss
+                onClicked: root.clicked();
+            }
+        }
+
         /* EditTopMainBottomSub */
         /* Two items by vertical with editable text field */
         Item {
@@ -541,9 +594,10 @@ Rectangle {
                 DapQmlStyle { qss: root.mainQss; item: etmbsMain }
 
                 /* background */
-                background: DapQmlRectangle {
-                    qss: "login-serialkey-input"
-                }
+                background: Item {}
+//                background: DapQmlRectangle {
+//                    qss: "login-serialkey-input"
+//                }
 
                 /* font config */
                 font {
@@ -556,6 +610,15 @@ Rectangle {
                 onTextEdited:  { root.mainText = text; root.textEdited(); }
                 onTextChanged: { root.mainText = text; root.textChanged(); }
                 onAccepted:    { root.textAccepted(); }
+            }
+
+            /* separator */
+            DapQmlRectangle {
+                x: (parent.width - width) / 2
+                y: (parent.height - height) / 2
+                width: parent.width * 0.856741573
+                //height: 1
+                qss: "login-separator-color"
             }
 
             /* sub text */

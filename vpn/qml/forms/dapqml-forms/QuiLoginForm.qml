@@ -200,24 +200,6 @@ Item {
 
     /// @}
     /****************************************//**
-     * Separator fix
-     ********************************************/
-
-    Timer {
-        interval: 500
-        running: true
-        repeat: false
-        onTriggered: {
-//            calcWidth                   = centerWidth();
-            btnChooseServer.separator   = false;
-            btnEnterSerial.separator    = false;
-            btnChooseServer.separator   = true;
-            btnEnterSerial.separator    = true;
-        }
-    }
-
-
-    /****************************************//**
      * Ticker
      ********************************************/
 
@@ -520,27 +502,6 @@ Item {
     }
 
     /****************************************//**
-     * Top separator
-     ********************************************/
-
-    DapQmlRectangle {
-        x: loginSepsPlacer.x
-        y: loginSpacer.y + loginSepsPlacer.y
-        width: loginSepsPlacer.width
-        height: loginSepsPlacer.height
-        DapQmlSeparator {
-            x: (parent.width - width) / 2
-            z: 15
-            width: parent.width - 74
-            qss: "login-separator"
-        }
-        DapQmlDummy {
-            id: loginSepsPlacer
-            qss: "login-separator-container"
-        }
-    }
-
-    /****************************************//**
      * Choose server
      ********************************************/
 
@@ -563,7 +524,7 @@ Item {
             qss: "login-btn-server"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            separator: true
+            frame: true
             link: true
             onClicked: root.sigChooseServer()
 
@@ -615,7 +576,7 @@ Item {
             placeHolderText: "____ ____ ____ ____"
             placeHolderQss: "login-btn-main"
             //inputMask: ">NNNN-NNNN-NNNN-NNNN;_"
-            separator: true
+            frame: true
 
             onClicked: root.sigChooseSerial()
             onTextAccepted: root.beginConnection()
@@ -670,8 +631,9 @@ Item {
             qss: "login-btn-email"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            separator: true
+            frame: true
         }
+
         DapQmlDummy {
             id: loginEmailPlacer
             qss: "login-btn-email-container"
@@ -701,7 +663,7 @@ Item {
             editEchoMode: (internal.showPassword)
                           ? TextInput.Normal
                           : TextInput.Password
-            separator: true
+            frame: true
         }
 
         Button {
@@ -725,6 +687,7 @@ Item {
 
             onCheckedChanged: internal.showPassword = checked
         }
+
         DapQmlDummy {
             id: loginPasswordPlacer
             qss: "login-btn-password-container"
@@ -755,7 +718,7 @@ Item {
             qss: "login-btn-cert"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            separator: true
+            frame: true
             link: true
             onClicked: root.sigChooseCert()
 
