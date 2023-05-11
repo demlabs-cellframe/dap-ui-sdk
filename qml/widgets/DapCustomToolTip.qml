@@ -9,14 +9,14 @@ ToolTip {
 
     property alias bottomRect: bottomRect
     property font textFont: mainFont.dapFont.medium12
-    property string textColor: currTheme.textColor
+    property string textColor: currTheme.white
     property string contentText
     scale: mainWindow.scale
 
     contentItem:
     Text
     {
-        color: currTheme.textColor
+        color: textColor
         text: contentText
         font: textFont
     }
@@ -27,7 +27,7 @@ ToolTip {
             id: backgroundToolTip
             anchors.fill: parent
             radius: 4
-            color: currTheme.backgroundMainScreen
+            color: currTheme.mainBackground
         }
         DropShadow {
             anchors.fill: backgroundToolTip
