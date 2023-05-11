@@ -1025,6 +1025,13 @@
 	scaled-rect: scaled(19,215,390,200,false,16);
 }
 
+.bugrep-input-bg
+{
+	scaled-rect: scaled(36,232,356,160,false,16);
+	radius: 8;
+	color: "@input-field";
+}
+
 .bugrep-input-content
 {
 	scaled-rect: scaled(nan,nan,316,120,false,16);
@@ -1032,7 +1039,9 @@
 
 .bugrep-input-contact
 {
-	scaled-rect: scaled(32,150,364,80,false,16);
+	scaled-rect: scaled(36,152,356,56,false,16);
+	radius: 8;
+	color: "@input-field";
 }
 
 .bugrep-input-contact-content
