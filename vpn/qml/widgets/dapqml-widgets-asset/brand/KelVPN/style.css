@@ -716,7 +716,7 @@
 
 .login-btn-server-container
 {
-	scaled-rect: scaled(-1,292,-1,108,true);
+	scaled-rect: scaled(-1,414,-1,108,true);
 }
 
 .login-btn-server
@@ -726,7 +726,7 @@
 
 .login-btn-serial-container
 {
-	scaled-rect: scaled(-1,414,-1,108,true);
+	scaled-rect: scaled(-1,292,-1,108,true);
 }
 
 .login-btn-serial
