@@ -41,7 +41,7 @@ Item {
 
     DapQmlDialogTitle {
         id: title
-        text: qsTr("History") + lang.notifier
+        text: qsTr("Serial key history") + lang.notifier
         qss: "dialog-title"
     }
 

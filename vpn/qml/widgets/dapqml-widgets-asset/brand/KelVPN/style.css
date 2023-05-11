@@ -8,7 +8,7 @@
 	background: "#FFFFFF";
 	update-background: "#FFFFFF";
 	label: "#5A5A5A";
-	light-grey: "#F7F7F7";
+        light-grey: "#A9A9B0";
 	input-field: "#F7F7F7";
 	input-placeholder: "#A9A9B0";
 	error: "#F47A54";
@@ -1226,12 +1226,12 @@
 
 .ph-icn-resizer
 {
-	scaled-rect: scaled(nan,nan,56,56,true);
+        scaled-rect: scaled(nan,nan,30,30,true);
 }
 
 .ph-icn-cpy-resizer
 {
-	scaled-rect: scaled(nan,nan,40,40,true);
+        scaled-rect: scaled(nan,nan,30,30,true);
 }
 
 .ph-notice-resizer
