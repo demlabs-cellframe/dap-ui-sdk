@@ -475,21 +475,39 @@
 	clip: false;
 }
 
-.popup-dalog-left
+.popup-dalog-left-button
 {
-	scaled-rect: scaled(11,nan,86,36,false,14);
+	scaled-rect: scaled(11,nan,86,36,false);
+	color: "@background";
+}
+
+.popup-dalog-left-label
+{
+	scaled-font: scaled(14);
 	color: "@text";
 }
 
-.popup-dalog-right
+.popup-dalog-right-button
 {
-	scaled-rect: scaled(183,nan,86,36,false,14);
+	scaled-rect: scaled(183,nan,86,36,false);
+	color: "@background";
+}
+
+.popup-dalog-right-label
+{
+	scaled-font: scaled(14);
 	color: "@brand";
 }
 
-.popup-dalog-middle
+.popup-dalog-middle-button
 {
-	scaled-rect: scaled(nan,nan,86,36,false,14);
+	scaled-rect: scaled(nan,nan,86,36,false);
+	color: "@background";
+}
+
+.popup-dalog-middle-label
+{
+	scaled-font: scaled(14);
 	color: "@brand";
 }
 
