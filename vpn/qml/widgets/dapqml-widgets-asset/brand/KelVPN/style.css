@@ -562,40 +562,62 @@
 
 .popup-dialog
 {
-	scaled-rect: scaled(nan,nan,280,186,false);
+	scaled-rect: scaled(nan,nan,280,232,false);
 	color: "@background";
+	radius: 8;
 }
 
 .popup-dalog-title
 {
-	scaled-rect: scaled(57,20,170,24,false,20);
+	scaled-rect: scaled(nan,24,200,24,false,20);
 	color: "@text";
 	clip: false;
 }
 
 .popup-dalog-text
 {
-	scaled-rect: scaled(nan,57,268,50,false,16);
+	scaled-rect: scaled(nan,56,268,72,false,16);
 	color: "@label";
 	clip: false;
 }
 
-.popup-dalog-left
+.popup-dalog-left-button
 {
-	scaled-rect: scaled(11,nan,86,36,false,14);
-	color: "@text";
+	scaled-rect: scaled(24,nan,110,48,false);
+	color: "@light-grey";
+	radius: 8;
 }
 
-.popup-dalog-right
+.popup-dalog-left-label
 {
-	scaled-rect: scaled(183,nan,86,36,false,14);
-	color: "@brand";
+	scaled-font: scaled(16);
+	color: "#1E1E1E";
 }
 
-.popup-dalog-middle
+.popup-dalog-right-button
 {
-	scaled-rect: scaled(nan,nan,86,36,false,14);
+	scaled-rect: scaled(146,nan,110,48,false);
 	color: "@brand";
+	radius: 8;
+}
+
+.popup-dalog-right-label
+{
+	scaled-font: scaled(16);
+	color: "#FFFFFF";
+}
+
+.popup-dalog-middle-button
+{
+	scaled-rect: scaled(nan,nan,110,48,false);
+	color: "@light-grey";
+	radius: 8;
+}
+
+.popup-dalog-middle-label
+{
+	scaled-font: scaled(16);
+	color: "#1E1E1E";
 }
 
 /****************************************************
