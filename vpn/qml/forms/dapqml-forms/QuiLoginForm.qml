@@ -62,6 +62,7 @@ Item {
         property bool changedCert:   false
         property string serverName: ""
         property string certName:   ""
+        property bool legacyStyle: Brand.name() !== "KelVPN"
 
         /// @brief login mode
         property int mode: QuiLoginForm.Mode.M_SERIAL
@@ -502,6 +503,30 @@ Item {
     }
 
     /****************************************//**
+     * Top separator
+     ********************************************/
+
+    DapQmlRectangle {
+        x: loginSepsPlacer.x
+        y: loginSpacer.y + loginSepsPlacer.y
+        width: loginSepsPlacer.width
+        height: loginSepsPlacer.height
+        visible: root.internal.legacyStyle
+
+        DapQmlSeparator {
+            x: (parent.width - width) / 2
+            z: 15
+            width: parent.width - 74
+            qss: "login-separator"
+        }
+
+        DapQmlDummy {
+            id: loginSepsPlacer
+            qss: "login-separator-container"
+        }
+    }
+
+    /****************************************//**
      * Choose server
      ********************************************/
 
@@ -524,7 +549,8 @@ Item {
             qss: "login-btn-server"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            frame: true
+            separator: root.internal.legacyStyle
+            frame: !root.internal.legacyStyle // true
             link: true
             onClicked: root.sigChooseServer()
 
@@ -576,7 +602,8 @@ Item {
             placeHolderText: "____ ____ ____ ____"
             placeHolderQss: "login-btn-main"
             //inputMask: ">NNNN-NNNN-NNNN-NNNN;_"
-            frame: true
+            separator: root.internal.legacyStyle
+            frame: !root.internal.legacyStyle // true
 
             onClicked: root.sigChooseSerial()
             onTextAccepted: root.beginConnection()
@@ -631,7 +658,8 @@ Item {
             qss: "login-btn-email"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            frame: true
+            separator: root.internal.legacyStyle
+            frame: !root.internal.legacyStyle // true
         }
 
         DapQmlDummy {
@@ -663,7 +691,8 @@ Item {
             editEchoMode: (internal.showPassword)
                           ? TextInput.Normal
                           : TextInput.Password
-            frame: true
+            separator: root.internal.legacyStyle
+            frame: !root.internal.legacyStyle // true
         }
 
         Button {
@@ -718,7 +747,8 @@ Item {
             qss: "login-btn-cert"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            frame: true
+            separator: root.internal.legacyStyle
+            frame: !root.internal.legacyStyle // true
             link: true
             onClicked: root.sigChooseCert()
 
