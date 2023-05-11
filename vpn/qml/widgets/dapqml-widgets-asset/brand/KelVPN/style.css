@@ -16,6 +16,7 @@
 	accent: "#FD4E75";
 	upload: "#5E31F5";
 	grid: "#FFFFFF";
+    separator-color: "#E6E6E6";
     switch-bg-on:               "qrc:/light/switch/bg_on.png";
     switch-bg-off:              "qrc:/light/switch/bg_off.png";
     switch-toggle-on:           "qrc:/light/switch/toggle_on.png";
@@ -85,6 +86,7 @@
 	accent: "#FD4E75";
 	upload: "#9F83FF";
 	grid: "#3F3F3F";
+	separator-color: "#3F3F3F";
     switch-bg-on:               "qrc:/dark/switch/bg_on.png";
     switch-bg-off:              "qrc:/dark/switch/bg_off.png";
     switch-toggle-on:           "qrc:/dark/switch/toggle_on.png";
@@ -282,22 +284,23 @@
 
 
 
+.sep-rect {
+	scaled-rect: scaled(nan,nan,8,1,false);
+}
+
 .sep-left
 {
 	qproperty-scaledPixmap: "@separator-left";
-	scaled-rect: scaled(nan,nan,8,4,false);
 }
 
 .sep-mid
 {
 	qproperty-scaledPixmap: "@separator-mid";
-	scaled-rect: scaled(nan,nan,nan,4,false);
 }
 
 .sep-right
 {
 	qproperty-scaledPixmap: "@separator-right";
-	scaled-rect: scaled(nan,nan,8,4,false);
 }
 
 
@@ -723,7 +726,7 @@
 
 .login-btn-serial-container
 {
-	scaled-rect: scaled(-1,406,-1,108,true);
+	scaled-rect: scaled(-1,414,-1,108,true);
 }
 
 .login-btn-serial
@@ -791,9 +794,19 @@
     scaled-rect: scaled(nan,0,nan,nan,false);
 }
 
+.login-separator-color
+{
+    color: "@separator-color";
+    scaled-rect: scaled(nan,nan,nan,1,false);
+}
+
 /****************************************************
  * Settings
  ***************************************************/
+
+.sett-content {
+	scaled-rect: scaled(nan,nan,392,nan,false);
+}
 
 .sett-spacer
 {
