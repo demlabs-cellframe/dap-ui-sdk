@@ -6,10 +6,10 @@
 #include <QSortFilterProxyModel>
 
 /****************************************//**
- * @brief themes model list
+ * @brief country list model
  * @ingroup groupUiModels
- * @date 08.2022
- * @author
+ * @date 12.05.2023
+ * @author Mikhail Shilenko
  *******************************************/
 
 class DapQmlCountryModel : public QAbstractTableModel
@@ -21,7 +21,7 @@ class DapQmlCountryModel : public QAbstractTableModel
    *******************************************/
   /// @{
 protected:
-  QStringList m_Countries;
+  QStringList m_countries;
   int         m_checkedIndex;
   /// @}
 
@@ -30,7 +30,7 @@ protected:
    *******************************************/
   /// @{
 public:
-  explicit DapQmlCountryModel(QObject *parent = nullptr);
+  explicit DapQmlCountryModel (QObject *parent = nullptr);
   /// @}
 
   /****************************************//**
@@ -55,21 +55,47 @@ public:
   /// @}
 };
 
+/****************************************//**
+ * @brief sorted & filtered version of country list model
+ * @ingroup groupUiModels
+ * @date 12.05.2023
+ * @author Mikhail Shilenko
+ *******************************************/
 
 class DapQmlCountrySortFilterProxyModel : public QSortFilterProxyModel
 {
   Q_OBJECT
+
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
+protected:
+  QString m_filter;
+  DapQmlCountryModel *m_model;
+  /// @}
+
+  /****************************************//**
+   * @name CONSTRUCT/DESTRUCT
+   *******************************************/
+  /// @{
 public:
-  explicit DapQmlCountrySortFilterProxyModel(QObject *parent = nullptr);
+  explicit DapQmlCountrySortFilterProxyModel (QObject *parent = nullptr);
+  ~DapQmlCountrySortFilterProxyModel();
+  /// @}
+
+  /****************************************//**
+   * @name METHODS
+   *******************************************/
+    /// @{
+public:
   Q_INVOKABLE void updateCheckedIndex();
   Q_INVOKABLE void setRowFilter (const QString &a_filter);
-protected:
-    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
-private:
-    QString m_filter;
-    DapQmlCountryModel * m_model;
-};
 
+protected:
+  bool filterAcceptsRow (int sourceRow, const QModelIndex &sourceParent) const override;
+  /// @}
+};
 
 /*-----------------------------------------*/
 #endif // DAPQMLCOUNTRYMODEL_H

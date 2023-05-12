@@ -1454,8 +1454,7 @@
 
 .ch-country-filter-border
 {
-	border-width: 1;
-	border-color: "@light-grey";
+	color: "@input-field";
 	radius: 5;
     scaled-rect: scaled(-1,nan,363,48,false);
 }
@@ -1472,6 +1471,10 @@
 	qproperty-active: "@btn-close-hover";
 }
 
+.ch-country-listview
+{
+	scaled-rect: scaled(-1,204,392,602,false);
+}
 
 /****************************************************
  * Update
