@@ -1081,13 +1081,13 @@
 
 .bugrep-sending
 {
-	scaled-rect: scaled(164,120,100,20,false,16);
+	scaled-rect: scaled(-1,507,-1,24,false,16);
 	color: "#A4A3C0";
 }
 
 .bugrep-animation
 {
-	scaled-rect: scaled(134,194,160,160,true);
+	scaled-rect: scaled(170,395,88,88,true);
 }
 
 .bugrep-status

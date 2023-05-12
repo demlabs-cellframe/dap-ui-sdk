@@ -3,6 +3,7 @@
 import QtQuick 2.12
 import DapQmlStyle 1.0
 import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
 import Qt.labs.platform 1.1
 import StyleDebugTree 1.0
@@ -63,6 +64,7 @@ Item {
 
     /// @brief controler for attach button
     property QtObject internal: QtObject {
+        property bool debugMode: false
         property bool attachedImage: false;
         property string textAttach: qsTr("Click here to attach a screenshot") + lang.notifier
         property string textDetach: qsTr("Remove screenshot") + lang.notifier
@@ -468,6 +470,42 @@ Item {
         }
 
         /****************************************//**
+         * Form Debug
+         ********************************************/
+
+        RowLayout {
+            visible: root.internal.debugMode
+            spacing: 8
+
+            DapQmlLabel {
+                width: contentWidth
+                height: contentHeight
+                text: "Mode Debug: "
+            }
+
+            DapQmlLabel {
+                width: contentWidth
+                height: contentHeight
+                text: "Write"
+                onClicked: root.setmode (QuiBugReportForm.Mode.Write)
+            }
+
+            DapQmlLabel {
+                width: contentWidth
+                height: contentHeight
+                text: "Loading"
+                onClicked: root.setmode (QuiBugReportForm.Mode.Loading)
+            }
+
+            DapQmlLabel {
+                width: contentWidth
+                height: contentHeight
+                text: "Result"
+                onClicked: root.setmode (QuiBugReportForm.Mode.Result)
+            }
+        }
+
+        /****************************************//**
          * Mode Input Item
          ********************************************/
 
@@ -722,12 +760,12 @@ Item {
                 DapQmlStyle { qss: "bugrep-animation"; item: animation }
             }
 
-            /* cancel */
-            DapQmlPushButton {
-                qss: "bugrep-send-btn push-button"
-                text: qsTr("CANCEL") + lang.notifier
-                onClicked: { root.mode = 0; root.sigCancel(); }
-            }
+//            /* cancel */
+//            DapQmlPushButton {
+//                qss: "bugrep-send-btn push-button"
+//                text: qsTr("CANCEL") + lang.notifier
+//                onClicked: { root.mode = 0; root.sigCancel(); }
+//            }
         }
 
         /****************************************//**
