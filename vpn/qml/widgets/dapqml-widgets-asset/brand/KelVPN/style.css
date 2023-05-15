@@ -17,6 +17,7 @@
 	upload: "#5E31F5";
 	grid: "#FFFFFF";
     separator-color: "#E6E6E6";
+    sett-hover-background: "#F7F7F7";
     switch-bg-on:               "qrc:/light/switch/bg_on.png";
     switch-bg-off:              "qrc:/light/switch/bg_off.png";
     switch-toggle-on:           "qrc:/light/switch/toggle_on.png";
@@ -88,6 +89,7 @@
 	upload: "#9F83FF";
 	grid: "#3F3F3F";
 	separator-color: "#3F3F3F";
+    sett-hover-background: "#5A5A5A";
     switch-bg-on:               "qrc:/dark/switch/bg_on.png";
     switch-bg-off:              "qrc:/dark/switch/bg_off.png";
     switch-toggle-on:           "qrc:/dark/switch/toggle_on.png";
@@ -808,7 +810,8 @@
  * Settings
  ***************************************************/
 
-.sett-content {
+.sett-content
+{
 	scaled-rect: scaled(nan,nan,392,nan,false);
 }
 
@@ -868,6 +871,11 @@
 	font-weight: Font.Bold;
 }
 
+.sett-btn-hover-bg
+{
+	color: "@sett-hover-background";
+}
+
 /****************************************************
  * Statistics
  ***************************************************/
@@ -893,37 +901,38 @@
 
 .stat-graph
 {
-	scaled-rect: scaled(-1,146,360,147,false);
+	scaled-rect: scaled(-1,144,356,176,false);
 }
 
 .stat-speed
 {
-	scaled-rect: scaled(nan,307,154,99,false);
+	scaled-rect: scaled(nan,336,154,99,false);
 }
 
 .stat-bytes
 {
-	scaled-rect: scaled(nan,406,154,99,false);
+	scaled-rect: scaled(nan,436,154,99,false);
 }
 
 .stat-packets
 {
-	scaled-rect: scaled(nan,505,154,99,false);
+	scaled-rect: scaled(nan,536,154,99,false);
 }
 
 .stat-misc
 {
-	scaled-rect: scaled(nan,604,154,99,false);
+	scaled-rect: scaled(nan,636,154,99,false);
 }
 
 .stat-scaler-ind
 {
-	scaled-rect: scaled(nan,nan,154,50,false,24);
+	scaled-rect: scaled(nan,nan,170,100,false,24);
+	font-weight: Font.DemiBold;
 }
 
 .stat-scaler-sub
 {
-	scaled-rect: scaled(nan,nan,154,50,false,12);
+	scaled-rect: scaled(nan,nan,nan,nan,false,12);
 }
 
 /****************************************************
@@ -1081,13 +1090,13 @@
 
 .bugrep-sending
 {
-	scaled-rect: scaled(164,120,100,20,false,16);
+	scaled-rect: scaled(-1,507,-1,24,false,16);
 	color: "#A4A3C0";
 }
 
 .bugrep-animation
 {
-	scaled-rect: scaled(134,194,160,160,true);
+	scaled-rect: scaled(170,395,88,88,true);
 }
 
 .bugrep-status
@@ -1267,6 +1276,11 @@
  * Purchase History
  ***************************************************/
 
+.ph-content
+{
+	scaled-rect: scaled(nan,nan,392,nan,false);
+}
+
 .ph-btn-resizer
 {
 	scaled-rect: scaled(nan,nan,363,64,false);
@@ -1365,9 +1379,9 @@
 
 .faq-close-btn
 {
-	scaled-rect: scaled(nan,nan,25,25,true);
-    qproperty-inactive: "@btn-close";
-    qproperty-active: "@btn-close";
+	scaled-rect: scaled(nan,nan,32,32,true);
+    qproperty-inactive: "@btn-minus";
+    qproperty-active: "@btn-minus";
 }
 
 /****************************************************
@@ -1453,8 +1467,7 @@
 
 .ch-country-filter-border
 {
-	border-width: 1;
-	border-color: "@light-grey";
+	color: "@input-field";
 	radius: 5;
     scaled-rect: scaled(-1,nan,363,48,false);
 }
@@ -1471,6 +1484,10 @@
 	qproperty-active: "@btn-close-hover";
 }
 
+.ch-country-listview
+{
+	scaled-rect: scaled(-1,204,392,602,false);
+}
 
 /****************************************************
  * Update

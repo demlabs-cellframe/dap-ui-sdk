@@ -183,13 +183,9 @@ Item {
     Component {
         id: delegateApp
 
-        DapQmlButton {
+        Item {
             width: listviewApps.width
-            mainQss: "c-label"
-            qss: "rouexc-content-item"
-            buttonStyle: DapQmlButton.Style.IconMainSubIcon
-            mainText: model.appName
-            subText: ""
+            height: rouexcContentItem.height
 
             /* icon */
             DapQmlLabel {
@@ -200,8 +196,26 @@ Item {
                 qss: "rouexc-content-item-icon"
             }
 
+            /* label */
+            Text {
+                x: rouexcContentItemMain.x
+                y: (parent.height - height) / 2
+                width: parent.width - x * 1.25 - delegateAppCloseBtn.width * 1.25
+                height: contentHeight
+                color: rouexcContentItemMain.color
+                text: model.appName
+                clip: true
+
+                font {
+                    family: Brand.fontName()
+                    pixelSize: rouexcContentItemMain.fontSize
+                    weight: Font.Normal
+                }
+            }
+
             /* close button */
             DapQmlLabel {
+                id: delegateAppCloseBtn
                 x: parent.width - (width * 1.4375)
                 y: (parent.height - height) / 2
                 qss: "rouexc-content-app-btn-close"
@@ -239,10 +253,11 @@ Item {
             Text {
                 x: rouexcContentItemMain.x
                 y: (parent.height - height) / 2
-                width: rouexcContentItemMain.width - x - delegateAppCheckCheckBox.width
+                width: parent.width - x - delegateAppCheckCheckBox.width
                 height: contentHeight
                 color: rouexcContentItemMain.color
                 text: model.appName
+                clip: true
 
                 font {
                     family: Brand.fontName()

@@ -2,7 +2,8 @@
 
 import QtQuick 2.0
 import DapQmlModelSerialHistory 1.0
-import StyleDebugTree 1.0
+import Brand 1.0
+//import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -41,8 +42,11 @@ Item {
 
     DapQmlDialogTitle {
         id: title
-        text: qsTr("Serial key history") + lang.notifier
+        text: Brand.legacyStyle() ? legacyTitleText : titleText
         qss: "dialog-title"
+
+        property string legacyTitleText: qsTr("History") + lang.notifier
+        property string titleText: qsTr("Serial key history") + lang.notifier
     }
 
     /****************************************//**
@@ -85,6 +89,11 @@ Item {
         qss: "ph-notice-spacer"
     }
 
+    DapQmlDummy {
+        id: contentRect
+        qss: "content-mid"
+    }
+
     /****************************************//**
      * Listview
      ********************************************/
@@ -95,28 +104,35 @@ Item {
 
         x: (root.width - width) / 2
         y: title.y + title.height * 2
-        width: resizer.width
+        width: listviewSizer.width ? listviewSizer.width : resizer.width // root.width - 72
+        //width: resizer.width
         height: root.height - y - noticeResizer.height - noticeSpacer.height
         clip: true
 
+        DapQmlDummy {
+            id: listviewSizer
+            qss: "ph-content";
+        }
+
         delegate: Item {
-            width: resizer.width
+            width: phListView.width
             height: resizer.height + spacer.height
 
             DapQmlButton {
+                x: (parent.width - width) / 2
+                y: spacer.height / 2
+                z: 50
+                width: contentRect.width // resizer.width
+                height: resizer.height
                 buttonStyle: DapQmlButton.IconMainSubIcon
                 mainText: model.key
                 subText: " "
                 mainQss: "ph-btn-label-main"
                 subQss: "ph-btn-label-main"
-                icon: "ic_key-item"
+                icon: Brand.legacyStyle() ? "ic_key-item" : "null-size null-pos"
                 iconRight: "ic_copy"
-                separator: true
                 iconSize: icnResizer.height
                 iconRightSize: icnCpyResizer.height
-                width: resizer.width
-                height: resizer.height
-                y: spacer.height / 2
 
                 signal sigStartAnimation();
 
@@ -147,6 +163,13 @@ Item {
 
                 Component.onCompleted: phListView.model.attachAnimation(this)
             }
+
+            DapQmlSeparator {
+                anchors.bottom: parent.bottom
+                z: 40
+                width: parent.width
+            }
+
         }
     }
 

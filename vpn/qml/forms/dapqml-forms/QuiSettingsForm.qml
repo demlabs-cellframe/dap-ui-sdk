@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.3
 //import DapQmlModelSettings 1.0
 import StyleDebugTree 1.0
 import DapQmlStyle 1.0
+import Brand 1.0
 //import SettingsInterface 1.0
 import "qrc:/dapqml-widgets"
 
@@ -190,6 +191,7 @@ Item {
 
                 property int mySid: model.sid
                 property var settingsModel: settingsListView.model
+                property bool hovered: false
 
                 DapQmlButton {
                     property int myIndex: model.index
@@ -197,6 +199,7 @@ Item {
 
                     visible: model.sid !== QuiSettingsForm.StyleId.SI_TITLE
                     x: (parent.width - width) / 2
+                    z: 50
                     width: contentRect.width // settingsListView.width
                     height: delegate.height
                     buttonStyle: DapQmlButton.Style.IconMainSub
@@ -213,6 +216,9 @@ Item {
                     checkbox: model.sid === QuiSettingsForm.SI_CHECKBOX
                     icon: model.icon
                     iconSize: resizer1.fontSize
+                    mouseArea.hoverEnabled: true
+                    mouseArea.onEntered: delegate.hovered   = true
+                    mouseArea.onExited:  delegate.hovered   = false
 
                     function buttonClicked(a_isButtonSignal) {
                         if(a_isButtonSignal === false)
@@ -240,11 +246,21 @@ Item {
 
                 DapQmlSeparator {
                     anchors.bottom: parent.bottom
+                    z: 40
                     width: parent.width
                     visible: model.sid !== QuiSettingsForm.StyleId.SI_TITLE && isSep(model.sid)
                 }
 
+                DapQmlRectangle {
+                    anchors.fill: parent
+                    z: 10
+                    visible: !Brand.legacyStyle()
+                    qss: delegate.hovered ? "sett-btn-hover-bg" : "c-background"
+                    Behavior on color { PropertyAnimation { duration: 150 } }
+                }
+
                 DapQmlLabel {
+                    z: 40
                     visible: model.sid === QuiSettingsForm.StyleId.SI_TITLE
                     width: settingsListView.width
                     height: delegate.height

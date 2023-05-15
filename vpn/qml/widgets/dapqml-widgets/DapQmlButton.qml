@@ -95,10 +95,12 @@ Rectangle {
     property var labelIconRight
 
     property int mainTextOffsetX: 0
+    property alias mouseArea: mouseArea
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: root;
         onClicked: root.clicked()
     }
