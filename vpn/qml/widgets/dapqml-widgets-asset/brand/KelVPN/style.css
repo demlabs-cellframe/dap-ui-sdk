@@ -810,7 +810,8 @@
  * Settings
  ***************************************************/
 
-.sett-content {
+.sett-content
+{
 	scaled-rect: scaled(nan,nan,392,nan,false);
 }
 
@@ -1274,6 +1275,11 @@
 /****************************************************
  * Purchase History
  ***************************************************/
+
+.ph-content
+{
+	scaled-rect: scaled(nan,nan,392,nan,false);
+}
 
 .ph-btn-resizer
 {
