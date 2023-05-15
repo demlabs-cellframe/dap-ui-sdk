@@ -17,6 +17,7 @@
 	upload: "#5E31F5";
 	grid: "#FFFFFF";
     separator-color: "#E6E6E6";
+    sett-hover-background: "#F7F7F7";
     switch-bg-on:               "qrc:/light/switch/bg_on.png";
     switch-bg-off:              "qrc:/light/switch/bg_off.png";
     switch-toggle-on:           "qrc:/light/switch/toggle_on.png";
@@ -88,6 +89,7 @@
 	upload: "#9F83FF";
 	grid: "#3F3F3F";
 	separator-color: "#3F3F3F";
+    sett-hover-background: "#5A5A5A";
     switch-bg-on:               "qrc:/dark/switch/bg_on.png";
     switch-bg-off:              "qrc:/dark/switch/bg_off.png";
     switch-toggle-on:           "qrc:/dark/switch/toggle_on.png";
@@ -866,6 +868,11 @@
 	horizontal-align: Text.AlignHCenter;
 	scaled-rect: scaled(nan,nan,nan,nan,false,24);
 	font-weight: Font.Bold;
+}
+
+.sett-btn-hover-bg
+{
+	color: "@sett-hover-background";
 }
 
 /****************************************************
