@@ -110,10 +110,21 @@ Item {
      * Sizers
      ********************************************/
 
-    DapQmlDummy { id: rouexcTabPos;    qss: "rouexc-tab-postion" }
-    DapQmlDummy { id: rouexcTabSize;   qss: "rouexc-tab-idle" }
-    DapQmlDummy { id: rouexcTabSpace;  qss: "rouexc-tab-spacing" }
-    DapQmlDummy { id: rouexcItemIcon;  qss: "rouexc-content-item-icon" }
+    DapQmlDummy { id: rouexcTabPos;     qss: "rouexc-tab-postion" }
+    DapQmlDummy { id: rouexcTabSize;    qss: "rouexc-tab-idle" }
+    DapQmlDummy { id: rouexcTabSpace;   qss: "rouexc-tab-spacing" }
+    DapQmlDummy { id: rouexcItemIcon;   qss: "rouexc-content-item-icon" }
+    DapQmlDummy { id: rouexcPopupTitle; qss: "rouexc-title-container" }
+
+    DapQmlDummy {
+        id: popupDialogTitleCloseButtonDummy
+
+        property string inactive
+        property string active
+
+        qss: "rouexc-content-item-btn-close"
+    }
+
 
     /****************************************//**
      * Components
@@ -205,6 +216,7 @@ Item {
                 color: rouexcContentItemMain.color
                 text: model.appName
                 clip: true
+                elide: Text.ElideRight
 
                 font {
                     family: Brand.fontName()
@@ -258,6 +270,7 @@ Item {
                 color: rouexcContentItemMain.color
                 text: model.appName
                 clip: true
+                elide: Text.ElideRight
 
                 font {
                     family: Brand.fontName()
@@ -357,32 +370,45 @@ Item {
         id: popupDialogTitle
 
         Item {
-            width: parent.width
-            height: popupDialogTitleBottom.y
+            anchors.fill: parent
 
-            /* title */
-            DapQmlLabel {
-                y: (parent.height - height) / 2
-                height: contentHeight
-                qss: "rouexc-title-label"
-                text: parent.parent.name
-                clip: false
-            }
+            RowLayout {
+                anchors.fill: parent
 
-            /* close button */
-            DapQmlPushButton {
-                id: popupDialogTitleCloseBtn
-                y: (parent.height - height) / 2
-                qss: "rouexc-content-item-btn-close"
-                onClicked: {
-                    root.sigPopupCancel();
-                    root.internal.popup = false;
+                /* title */
+                DapQmlLabel {
+                    Layout.leftMargin: rouexcPopupTitle.x
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    horizontalAlign: Qt.AlignLeft
+                    qss: "rouexc-title-label"
+                    text: parent.parent.parent.name
+                    clip: true
+                }
+
+                /* close button */
+                DapQmlPushButton {
+                    Layout.rightMargin: rouexcPopupTitle.x * 0.875
+                    Layout.preferredWidth: popupDialogTitleCloseButtonDummy.width
+                    Layout.preferredHeight: popupDialogTitleCloseButtonDummy.height
+                    Layout.alignment: Qt.AlignVCenter
+
+                    inactive: popupDialogTitleCloseButtonDummy.inactive
+                    active: popupDialogTitleCloseButtonDummy.active
+
+                    onClicked: {
+                        root.sigPopupCancel();
+                        root.internal.popup = false;
+                    }
                 }
             }
+
 
             /* bottom */
             DapQmlSeparator {
                 id: popupDialogTitleBottom
+                anchors.bottom: parent.bottom
                 qss: "rouexc-title-separator"
             }
         }
@@ -619,6 +645,7 @@ Item {
 
     /* popup dialog content */
     DapQmlRectangle {
+        id: popupDialogContentBG
         x: (parent.width - width) / 2
         y: (parent.height - height) / 2
         z: 60
@@ -638,8 +665,8 @@ Item {
 
             /* title */
             Loader {
-                id: popupAppsTitle
                 width: parent.width
+                height: rouexcPopupTitle.height
                 property string name: "Exception management"
                 sourceComponent: popupDialogTitle
             }
@@ -721,6 +748,7 @@ Item {
             /* title */
             Loader {
                 width: parent.width
+                height: rouexcPopupTitle.height
                 property string name: "Exception management"
                 sourceComponent: popupDialogTitle
             }

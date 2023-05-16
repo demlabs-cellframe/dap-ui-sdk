@@ -51,6 +51,7 @@ Item {
 
     property real contentWidth: label.contentWidth
     property real contentHeight: label.contentHeight
+    property alias elide: label.elide
 
     property Text label: label
 
