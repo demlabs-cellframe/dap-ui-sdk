@@ -1650,19 +1650,24 @@
 
 .rouexc-title-label
 {
-    scaled-rect: scaled(nan,nan,276,nan,false,20);
+    scaled-font: scaled(20);
     color: "@text";
     font-weight: Font.Bold;
 }
 
 .rouexc-title-separator
 {
-    scaled-rect: scaled(nan,64,-1,1,false);
+    scaled-rect: scaled(nan,nan,-1,1,false);
+}
+
+.rouexc-title-container
+{
+    scaled-rect: scaled(24,nan,nan,64,false);
 }
 
 .rouexc-content-item-btn-close
 {
-    scaled-rect: scaled(298,nan,40,40,true);
+    scaled-rect: scaled(nan,nan,40,40,true);
     qproperty-inactive: "@btn-minus";
     qproperty-active: "@btn-minus";
 }
