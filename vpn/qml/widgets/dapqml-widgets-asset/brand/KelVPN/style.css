@@ -844,7 +844,7 @@
 
 .sett-btn-lbl-sub
 {
-	color: "@light-grey";
+	color: "@input-placeholder";
 	scaled-font: scaled(12);	
 	font-weight: Font.Normal;
 }
@@ -858,7 +858,7 @@
 
 .sett-btn-lbl-sub-link
 {
-	color: "@light-grey";
+	color: "@input-placeholder";
 	scaled-font: scaled(16);
 	font-weight: Font.Normal;
 }

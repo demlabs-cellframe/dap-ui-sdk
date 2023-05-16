@@ -16,6 +16,7 @@ HEADERS += \
     $$PWD/dapqml-model/dapqmlmodelautoserverlist.h \
     $$PWD/dapqml-model/dapqmlmodelbugreports.h \
     $$PWD/dapqml-model/dapqmlmodelchoosecert.h \
+    $$PWD/dapqml-model/dapqmlmodelchoosecountry.h \
     $$PWD/dapqml-model/dapqmlmodelchooseserver.h \
     $$PWD/dapqml-model/dapqmlmodelfullserverlist.h \
     $$PWD/dapqml-model/dapqmlmodelfaq.h \
@@ -29,6 +30,7 @@ SOURCES += \
     $$PWD/dapqml-model/dapqmlmodelautoserverlist.cpp \
     $$PWD/dapqml-model/dapqmlmodelbugreports.cpp \
     $$PWD/dapqml-model/dapqmlmodelchoosecert.cpp \
+    $$PWD/dapqml-model/dapqmlmodelchoosecountry.cpp \
     $$PWD/dapqml-model/dapqmlmodelchooseserver.cpp \
     $$PWD/dapqml-model/dapqmlmodelfullserverlist.cpp \
     $$PWD/dapqml-model/dapqmlmodelfaq.cpp \

@@ -18,7 +18,6 @@ HEADERS += \
     $$PWD/dapqml-widgets/dapqmlimage.h \
     $$PWD/dapqml-widgets/dapqmlserialkeyinput.h \
     $$PWD/dapqml-widgets/dapqmlstyle.h \
-    $$PWD/dapqml-widgets/dapqmlcountrymodel.h \
     $$PWD/dapqml-widgets/dapqmlthememodel.h \
     $$PWD/dapqml-widgets/dapqmlwindow.h \
     $$PWD/dapqml-widgets/doc-group-dapqmlstyle.h \
@@ -36,7 +35,6 @@ SOURCES += \
     $$PWD/dapqml-widgets/dapqmlimage.cpp \
     $$PWD/dapqml-widgets/dapqmlserialkeyinput.cpp \
     $$PWD/dapqml-widgets/dapqmlstyle.cpp \
-    $$PWD/dapqml-widgets/dapqmlcountrymodel.cpp \
     $$PWD/dapqml-widgets/dapqmlthememodel.cpp \
     $$PWD/dapqml-widgets/dapqmlwindow.cpp \
     $$PWD/dapqml-widgets/style/debug/styledebugitemdescriptor.cpp \
