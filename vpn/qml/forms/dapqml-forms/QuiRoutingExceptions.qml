@@ -216,6 +216,7 @@ Item {
                 color: rouexcContentItemMain.color
                 text: model.appName
                 clip: true
+                elide: Text.ElideRight
 
                 font {
                     family: Brand.fontName()
@@ -269,6 +270,7 @@ Item {
                 color: rouexcContentItemMain.color
                 text: model.appName
                 clip: true
+                elide: Text.ElideRight
 
                 font {
                     family: Brand.fontName()
