@@ -1757,9 +1757,33 @@
 
 .rouexc-spinner-bg
 {
-	scaled-rect: scaled(nan,nan,200,200,true);
+	scaled-rect: scaled(nan,nan,244,244,true);
 	color: "@background";
 	radius: 16;
+}
+
+.rouexc-spinner-arc-container
+{
+	scaled-rect: scaled(nan,nan,244,200,true);
+}
+
+.rouexc-spinner-arc
+{
+	scaled-rect: scaled(nan,nan,136,136,true);
+	qproperty-outer: "@light-grey";
+	qproperty-inner: "@brand";
+}
+
+.rouexc-spinner-label
+{
+	scaled-rect: scaled(nan,180,244,24,false,16);
+	color: "@input-placeholder";
+}
+
+.rouexc-spinner-percentage
+{
+	scaled-font: scaled(24);
+	font-weight: Font.Bold;
 }
 
 .rouexc-popup-app-search

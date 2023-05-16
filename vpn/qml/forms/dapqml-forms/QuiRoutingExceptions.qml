@@ -1,6 +1,7 @@
 /* INCLUDES */
 
-import QtQuick 2.0
+import QtQuick 2.11
+import QtQuick.Shapes 1.4
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
 import QtGraphicalEffects 1.0
@@ -42,6 +43,8 @@ Item {
     ///
     /// Used to connect interface via Manager
     property string formName: "RoutingExceptions"
+
+    property real loadingListPercent: 0
 
     property QtObject internal: QtObject {
         property int type: QuiRoutingExceptions.APPS
@@ -632,15 +635,122 @@ Item {
         qss: "rouexc-spinner-bg"
         visible: root.internal.popup & root.internal.spinner
 
-        AnimatedImage {
-            id: spinnerAnim
-            anchors.centerIn: parent
-            source: scaledPixmap
+//        AnimatedImage {
+//            id: spinnerAnim
+//            anchors.centerIn: parent
+//            source: scaledPixmap
 
-            property string scaledPixmap
+//            property string scaledPixmap
 
-            DapQmlStyle { item: spinnerAnim; qss: "rouexc-spinner ic_spinner" }
+//            DapQmlStyle { item: spinnerAnim; qss: "rouexc-spinner ic_spinner" }
+//        }
+
+        DapQmlLabel {
+            x: (parent.width - width) / 2
+            qss: "rouexc-spinner-label"
+            text: qsTr("Loading apps list...") + lang.notifier
         }
+
+        DapQmlRectangle {
+            anchors.top: parent.top
+            qss: "rouexc-spinner-arc-container"
+
+            DapQmlDummy {
+                id: progressCircle
+                qss: "rouexc-spinner-arc"
+                property string outer
+                property string inner
+                property int strokeWidth: 10
+            }
+
+            DapQmlDummy {
+                id: rouexcSpinner
+                qss: "rouexc-spinner"
+
+//                property real start
+//                property real sweep
+
+//                PropertyAnimation on start {
+//                    loops: Animation.Infinite
+//                    from: 0
+//                    to: 360
+//                    duration: 1250
+//                }
+
+//                PropertyAnimation on sweep {
+//                    loops: Animation.Infinite
+//                    from: 0
+//                    to: 360
+//                    duration: 1250
+//                }
+            }
+
+            DapQmlLabel {
+                anchors.centerIn: parent
+                width: contentWidth
+                height: contentHeight
+                qss: "rouexc-spinner-percentage"
+                text: `${Math.floor(root.loadingListPercent)}%`
+            }
+
+            Shape {
+                id: outerLine
+                anchors.centerIn: parent
+                z: 50
+                width: progressCircle.width
+                height: progressCircle.height
+                // multisample, decide based on your scene settings
+                layer.enabled: true
+                layer.samples: 6
+
+
+                ShapePath {
+                    fillColor: "transparent"
+                    //strokeColor: progressCircle.color
+                    strokeColor: progressCircle.outer
+                    strokeWidth: progressCircle.strokeWidth
+                    capStyle: ShapePath.FlatCap
+
+                    PathAngleArc {
+                        centerX: progressCircle.width/2
+                        centerY: progressCircle.height/2
+                        radiusX: progressCircle.width/2 - progressCircle.strokeWidth
+                        radiusY: progressCircle.height/2 - progressCircle.strokeWidth
+                        startAngle: 0
+                        sweepAngle: 360
+                    }
+                }
+            }
+
+            Shape {
+                id: innerLine
+                anchors.centerIn: parent
+                z: 60
+                width: progressCircle.width
+                height: progressCircle.height
+                // multisample, decide based on your scene settings
+                layer.enabled: true
+                layer.samples: 6
+
+                ShapePath {
+                    fillColor: "transparent"
+                    //strokeColor: progressCircle.color
+                    strokeColor: progressCircle.inner
+                    strokeWidth: progressCircle.strokeWidth
+                    capStyle: ShapePath.RoundCap
+
+                    PathAngleArc {
+                        centerX: progressCircle.width/2
+                        centerY: progressCircle.height/2
+                        radiusX: progressCircle.width/2 - progressCircle.strokeWidth
+                        radiusY: progressCircle.height/2 - progressCircle.strokeWidth
+                        startAngle: 0 - 90 //root.loadingListPercent === 0 ? rouexcSpinner.start - 90 : 0 - 90
+                        sweepAngle: root.loadingListPercent * 360 / 100 //root.loadingListPercent === 0 ? rouexcSpinner.start : root.loadingListPercent * 360 / 100
+                    }
+                }
+            }
+        }
+
     }
 
     /* popup dialog content */
