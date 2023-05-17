@@ -93,12 +93,20 @@ void DapQmlModelChooseCountry::setCurrent (int newCurrent)
   if (newCurrent >= 0
       && newCurrent <= _indexes.size())
   {
-    int sortedIndex = _indexes.value (newCurrent);
-    if (m_current == sortedIndex)
+    int newSortedIndex = _indexes.value (newCurrent);
+    int oldSortedIndex = m_current;
+    if (m_current == newSortedIndex)
       return;
 
-    m_current = sortedIndex;
+    int oldCurrent  = _indexes.indexOf (oldSortedIndex);
+    m_current       = newSortedIndex;
     emit currentChanged();
+
+    auto oldIndex = index (oldCurrent);
+    auto newIndex = index (newCurrent);
+    emit dataChanged (oldIndex, oldIndex);
+    emit dataChanged (newIndex, newIndex);
+
     return;
   }
 
@@ -111,7 +119,7 @@ void DapQmlModelChooseCountry::setCurrent (const QString &a_name)
   int index = _list.indexOf (a_name);
   if (index == -1)
     return;
-  setCurrent (index);
+  setCurrent (_indexes.indexOf (index));
 }
 
 void DapQmlModelChooseCountry::_applyFiltering()

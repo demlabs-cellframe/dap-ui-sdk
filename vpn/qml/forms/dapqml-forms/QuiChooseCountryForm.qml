@@ -185,8 +185,6 @@ Item {
         delegate: Item {
             width: resizer.width
             height: resizer.height + spacer.height
-            property string radioName: model.name
-            property bool checked: false
 
             DapQmlRadioButton {
                 text: model.name
@@ -198,7 +196,6 @@ Item {
                 y: spacer.height / 2
                 onClicked: {
                     root.sigSelect (model.index, model.name);
-                    csListView.currentIndex = model.index;
                 }
             }
         }
