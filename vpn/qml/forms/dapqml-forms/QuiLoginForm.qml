@@ -493,7 +493,7 @@ Item {
                 : textLoginPass
 
         DapQmlDummy {
-            property var fontFamiliy
+            property string fontFamiliy
             property int fontSize
             property int fontWeight
             property color color

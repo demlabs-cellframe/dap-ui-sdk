@@ -39,7 +39,11 @@ DapQmlModelAutoServerList::DapQmlModelAutoServerList (DapSortedServerList *a_ser
 
 void DapQmlModelAutoServerList::setLocation (const QString &a_location)
 {
+  if (_userLocation == a_location)
+    return;
+
   _userLocation = a_location;
+  _reset();
 }
 
 int DapQmlModelAutoServerList::current() const
@@ -103,16 +107,18 @@ void DapQmlModelAutoServerList::_buildUpAutoList (DapSortedServerList *a_dest)
       int serverIndex = 0;
       for (auto i = _serverList->cbegin(), e = _serverList->cend(); i != e; i++, serverIndex++)
         {
+          auto serverName = i->name();
           /* add basic auto server */
-          if (i->name().startsWith (location))
+          if (serverName.startsWith (location)
+              && !serverName.contains (_userLocation))
             {
-              /* store best region server */
-              if (location == _userLocation)
-                {
-                  bestServer      = *i;
-                  bestServerIndex = serverIndex;
-                  bestServer.setName ("Auto");
-                }
+//              /* store best region server */
+//              if (location == _userLocation)
+//                {
+//                  bestServer      = *i;
+//                  bestServerIndex = serverIndex;
+//                  bestServer.setName ("Auto");
+//                }
 
               /* store */
               DapServerInfo item  = *i;
@@ -296,28 +302,45 @@ void DapQmlModelAutoServerList::_updateAutoServer (const DapServerInfo &a_server
     qFatal ("%s Auto location is not first!", __PRETTY_FUNCTION__);
 #endif // QT_DEBUG
 
-  /* if user location */
-  if (a_location == _userLocation)
-    //&& (autoServer.ping() > a_server.ping() || autoServer.ping() == -1))
-    {
-      autoServer  = a_server;
-      autoServer.setName ("Auto");
-      autoLocation.setIndex (a_serverIndex);
+//  /* if user location */
+//  if (a_location == _userLocation)
+//    //&& (autoServer.ping() > a_server.ping() || autoServer.ping() == -1))
+//    {
+//      autoServer  = a_server;
+//      autoServer.setName ("Auto");
+//      autoLocation.setIndex (a_serverIndex);
 
-      emit dataChanged (index (0), index (0));
-      return;
+//      emit dataChanged (index (0), index (0));
+//      return;
+//    }
+
+//  /* check auto value */
+//  if (_userLocation.isEmpty()
+//    && (autoServer.ping() > _serverList->first().ping() || autoServer.ping() == -1))
+//    {
+//      autoServer  = _serverList->first();
+//      autoServer.setName ("Auto");
+//      autoLocation.setIndex (0);
+
+//      emit dataChanged (index (0), index (0));
+//      return;
+//  }
+
+  /* set best auto server */
+  for (const auto &server : qAsConst (*_serverList))
+  {
+    if (server.name().contains (_userLocation))
+      continue;
+
+    if (autoServer.ping() > server.ping() || autoServer.ping() == -1)
+      {
+        autoServer  = server;
+        autoServer.setName ("Auto");
+        autoLocation.setIndex (0);
+
+        emit dataChanged (index (0), index (0));
+        return;
     }
-
-  /* check auto value */
-  if (_userLocation.isEmpty()
-    && (autoServer.ping() > _serverList->first().ping() || autoServer.ping() == -1))
-    {
-      autoServer  = _serverList->first();
-      autoServer.setName ("Auto");
-      autoLocation.setIndex (0);
-
-      emit dataChanged (index (0), index (0));
-      return;
   }
 }
 
@@ -335,6 +358,9 @@ void DapQmlModelAutoServerList::_updateAutoServer (const DapServerInfo &a_server
   int index = 0;
   for (auto i = _serverList->cbegin(), e = _serverList->cend(); i != e; i++, index++)
     {
+      if (i->name().contains (_userLocation))
+        continue;
+
       if (i->ping() != -1
           && i->ping() < autoServer->ping()
           && i->address() != a_server.address())
@@ -429,6 +455,10 @@ void DapQmlModelAutoServerList::_slotRowsInserted (const QModelIndex &, int firs
   {
     /* get inserted server */
     const DapServerInfo &server = qAsConst (_serverList)->at (i);
+
+    /* ignore user location ones */
+    if (server.name().contains (_userLocation))
+      continue;
 
     /* vars */
     //int locationIndex;
@@ -543,6 +573,10 @@ void DapQmlModelAutoServerList::_slotRowsMoved (const QModelIndex &, int first, 
       /* get inserted server */
       const DapServerInfo &server = qAsConst (_serverList)->at (index);
 
+      /* ignore user location ones */
+      if (server.name().contains (_userLocation))
+        continue;
+
       /* vars */
       //int locationIndex;
       QString locationName  = _serverLocation (server);
@@ -649,6 +683,10 @@ void DapQmlModelAutoServerList::_slotRowsAboutToRemoved (const QModelIndex &, in
     {
       /* get inserted server */
       const DapServerInfo &server = qAsConst (_serverList)->at (i);
+
+      /* ignore user location ones */
+      if (server.name().contains (_userLocation))
+        continue;
 
       /* vars */
       int autoIndex, locationIndex;
