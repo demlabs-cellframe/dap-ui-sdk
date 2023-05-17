@@ -364,7 +364,7 @@ ComboBox
                 {
                     id: popupBackGrnd
                     anchors.fill: parent
-                    color: currTheme.backgroundElements
+                    color: currTheme.secondaryBackground
                     radius: 4
                 }
         }

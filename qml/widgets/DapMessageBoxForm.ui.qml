@@ -20,7 +20,7 @@ Rectangle
     ///@details fontButtonText Font setting.
     property font fontButtonText
     color: currTheme.backgroundElements
-    radius: currTheme.radiusRectangle
+    radius: currTheme.frameRadius
 
     layer.enabled: true
     layer.effect:
@@ -41,7 +41,7 @@ Rectangle
         anchors.right: parent.right
         height: 44 
         color: currTheme.backgroundMainScreen
-        radius: currTheme.radiusRectangle
+        radius: currTheme.frameRadius
 
         Text
         {

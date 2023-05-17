@@ -25,7 +25,7 @@ Rectangle
         id:blockRadius
         width: parent.radius
         color: currTheme.backgroundPanel
-        height: control.height - (currTheme.radiusRectangle-5*pt)
+        height: control.height - (currTheme.frameRadius-5*pt)
         anchors.top: control.top
         anchors.left: control.left
         radius: 1
@@ -35,7 +35,7 @@ Rectangle
 //    Rectangle{
 //        width: 2
 //        color: currTheme.reflection
-//        height: control.height - (currTheme.radiusRectangle-5*pt)
+//        height: control.height - (currTheme.frameRadius-5*pt)
 //        anchors.top: control.top
 //        anchors.left: control.left
 
