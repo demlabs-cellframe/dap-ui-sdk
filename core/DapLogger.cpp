@@ -38,8 +38,8 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     updateCurrentLogName();
     setLogFile(m_currentLogName);
     clearOldLogs();
-    connect(DapLogger::instance(), &DapLogger::sigMessageHandler,
-            this, &DapLogger::updateCurrentLogName);
+//    connect(DapLogger::instance(), &DapLogger::sigMessageHandler,
+//            this, &DapLogger::updateCurrentLogName);
 
     auto then = QDateTime::currentDateTime();
     auto setTime = QTime::fromString("00:00", "hh:mm");
@@ -53,6 +53,7 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     QTimer::singleShot(diff, [this]{
         auto t = new QTimer(QCoreApplication::instance());
         connect(t, &QTimer::timeout, [this]{
+            DapLogger::instance()->updateCurrentLogName();
             DapLogger::instance()->updateLogFiles();
         });
         t->start(24 * 3600 * 1000);
@@ -165,7 +166,7 @@ void DapLogger::messageHandler(QtMsgType type,
                                const QMessageLogContext &ctx,
                                const QString & msg)
 {
-    emit DapLogger::instance()->sigMessageHandler();
+//    emit DapLogger::instance()->sigMessageHandler();
     writeMessage(type, ctx, msg);
 }
 
