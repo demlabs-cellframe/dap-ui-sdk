@@ -30,7 +30,7 @@ Item {
     property string text: ""
     property color color
     property string scaledPixmap: ""
-    property var fontFamiliy: Brand.fontName()
+    property string fontFamiliy: Brand.fontName()
     property int fontSize: 12
     property int fontWeight: Font.Normal
     property int horizontalAlign: Text.AlignHCenter

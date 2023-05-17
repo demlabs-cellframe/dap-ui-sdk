@@ -83,30 +83,31 @@ int DapQmlModelFullServerList::current() const
 
 void DapQmlModelFullServerList::setCurrent (int a_newCurrent)
 {
-//  int old       = m_current;
-//  m_current     = a_newCurrent;
+  /* checks */
+  if (a_newCurrent != -2)
+    if (m_current == a_newCurrent
+        || a_newCurrent >= _size.full)
+      return;
 
-//  auto oldIndex = index (old, 0);
-//  auto newIndex = index (m_current, 0);
-//  emit dataChanged (oldIndex, oldIndex);
-//  emit dataChanged (newIndex, newIndex);
-  if (m_current == a_newCurrent
-      || a_newCurrent >= _size.full)
-    return;
+  /* reapply auto server */
+  if (a_newCurrent == -2)
+  {
+    if (m_current < _size.autoServer)
+      a_newCurrent  = m_current;
+    else
+      return;
+  }
 
   auto autoServerList = m_bridge->autoServerList();
   auto serverList     = m_bridge->serverList();
-#ifdef QT_DEBUG
   auto oldCurrent     = m_current;
   auto oldName        = currentServer().name().toUtf8();
-#endif // QT_DEBUG
 
   m_current   = a_newCurrent;
 
   autoServerList->setCurrent ((m_current < _size.autoServer)  ? m_current : -1);
   serverList->setCurrent ((m_current >= _size.autoServer) ? m_current - _size.autoServer : -1);
 
-#ifdef QT_DEBUG
   qDebug("%s : old [n:%s,i:%d] new [n:%s,i:%d,a:%d,s:%d]",
          "DapQmlModelFullServerList::setCurrent",
          oldName.data(),
@@ -116,7 +117,6 @@ void DapQmlModelFullServerList::setCurrent (int a_newCurrent)
          m_current,
          autoServerList->current(),
          serverList->current());
-#endif // QT_DEBUG
 
   emit currentChanged();
 }

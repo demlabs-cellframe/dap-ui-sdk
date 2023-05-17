@@ -137,6 +137,7 @@ public:
   void setBridge (AbstractServerListModelBridge *a_newBridge);
   Q_INVOKABLE int size() const;
   Q_INVOKABLE int current() const;
+  /// @note set a_newCurrentServer to -2 to reapply current auto server if selected any
   Q_INVOKABLE void setCurrent (int a_newCurrentServer);
   Q_INVOKABLE QVariant value (int a_row, const QString &a_name) const;
   const DapServerInfo &currentServer() const;
