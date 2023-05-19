@@ -54,6 +54,12 @@ int DapQmlModelAutoServerList::current() const
 void DapQmlModelAutoServerList::setCurrent (int a_newCurrent)
 {
   m_current = a_newCurrent;
+  _autoServers.setCurrent (a_newCurrent);
+}
+
+QPair<DapQmlModelAutoServerList::IndexData, DapQmlModelAutoServerList::IndexData> DapQmlModelAutoServerList::sortIndexData() const
+{
+  return _autoServers.sortIndexData();
 }
 
 void DapQmlModelAutoServerList::_connectSignals()

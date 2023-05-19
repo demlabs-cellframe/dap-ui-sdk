@@ -76,6 +76,8 @@ protected:
     void update();
   };
 
+  typedef DapSortedServerList::IndexData IndexData;
+
   /// @}
 
   /****************************************//**
@@ -116,6 +118,7 @@ public:
   const DapSortedServerList &getList() const { return _autoServers; };
   int current() const;
   void setCurrent (int a_newCurrent);
+  QPair<IndexData, IndexData> sortIndexData() const;
 protected:
   void _connectSignals();
   void _reset();

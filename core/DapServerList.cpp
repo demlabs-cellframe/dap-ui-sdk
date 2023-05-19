@@ -1006,8 +1006,24 @@ void DapSortedServerList::setCurrent (int a_index)
   if (_list.current() == a_index)
     return;
 
+  /* vars */
+  IndexData oldData, newData;
+
+  /* store old index data */
+  oldData.index = current();
+  if (current() != -1)
+    oldData.name  = currentServer().name();
+
   _list.setCurrent (a_index);
   emit currentChanged();
+
+  /* store new index data */
+  newData.index = a_index;
+  if (a_index != -1)
+    newData.name  = currentServer().name();
+
+  /* save */
+  m_sortIndexData = { std::move (oldData), std::move (newData) };
 }
 
 const DapServerInfo &DapSortedServerList::currentServer() const
@@ -1073,6 +1089,11 @@ const QLinkedList<int> &DapSortedServerList::getSortedIndexes() const
   return _sortedIndexes;
 }
 
+QPair<DapSortedServerList::IndexData, DapSortedServerList::IndexData> DapSortedServerList::sortIndexData() const
+{
+  return m_sortIndexData;
+}
+
 DapSortedServerList::operator DapServerInfoList() const
 {
   DapServerInfoList result;
@@ -1120,6 +1141,14 @@ void DapSortedServerList::_sort()
       current = (this->current() != -1) ? * (_sortedIndexes.begin() + this->current()) : -1,
       newCurrent = current;
 
+  /* vars */
+  IndexData oldData, newData;
+
+  /* store old index data */
+  oldData.index = current;
+  if (current != -1)
+    oldData.name  = currentServer().name();
+
 //  printServers (__PRETTY_FUNCTION__, current);
 
   /* sort */
@@ -1145,8 +1174,16 @@ void DapSortedServerList::_sort()
         }
     }
 
-  if (newCurrent != current)
-    setCurrent (newCurrent);
+  //if (newCurrent != current)
+  setCurrent (newCurrent);
+
+  /* store new index data */
+  newData.index = newCurrent;
+  if (newCurrent != -1)
+    newData.name  = currentServer().name();
+
+  /* save */
+  m_sortIndexData = { std::move (oldData), std::move (newData) };
 
 //  printServers (__PRETTY_FUNCTION__, current, newCurrent);
 

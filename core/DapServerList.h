@@ -326,6 +326,12 @@ protected:
   typedef DapSortedServerListIterator Iterator;
   typedef DapSortedServerListConstIterator ConstIterator;
   enum OperationType { Inserted, Removed };
+public:
+  struct IndexData
+  {
+    int index;
+    QString name;
+  };
   /// @}
 
   /****************************************//**
@@ -337,6 +343,8 @@ protected:
   DapServerList _list;
   /// sorted indexes that points to items from unsorted list
   QLinkedList<int> _sortedIndexes;
+  /// used for debug purposes
+  QPair<IndexData, IndexData> m_sortIndexData;
   /// @}
 
   /****************************************//**
@@ -408,6 +416,7 @@ public:
   void update (const QList<int> &a_indexes);
   /// get sorted items indexes
   const QLinkedList<int> &getSortedIndexes() const;
+  QPair<IndexData, IndexData> sortIndexData() const;
 
   operator DapServerList() const;
   operator DapServerInfoList() const;
