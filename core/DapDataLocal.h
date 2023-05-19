@@ -29,6 +29,7 @@ const QString TEXT_PASSWORD             = "password";
 const QString TEXT_TX_OUT               = "tx_out";
 const QString COUNTRY_NAME              = "Country_code";
 const QString SETTING_AUTHORIZATION     = "authorization";
+const QString LAST_SELECTED_SERVER      = "lastSelectedServer";
 
 class DapSerialKeyData;
 enum class Authorization;

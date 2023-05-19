@@ -135,6 +135,13 @@ void DapQmlModelFullServerList::setCurrent (int a_newCurrent)
   emit currentChanged();
 }
 
+bool DapQmlModelFullServerList::isCurrentAuto() const
+{
+  if (m_current < 0)
+    return false;
+  return m_current < _size.autoServer;
+}
+
 QVariant DapQmlModelFullServerList::value (int a_row, const QString &a_name) const
 {
   int fieldId = _roleNamesMap.key (a_name.toUtf8(), -1);
