@@ -134,6 +134,7 @@ protected:
   void _updateAutoServer (const DapServerInfo &a_server);
   QString _serverLocation (const DapServerInfo &a_server) const;
   int _appendNewAutoServer (DapServerInfo &&a_server);
+  bool _containsUserLocation (const QString &a_value) const;
   /// @}
 
   /****************************************//**

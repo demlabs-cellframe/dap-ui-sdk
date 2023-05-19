@@ -10,7 +10,7 @@
 
 DapQmlModelFullServerList::DapQmlModelFullServerList()
   : m_bridge (nullptr)
-  , m_current (0)
+  , m_current (-1)
 {
   setBridge (AbstractServerListModelBridge::getDefaultBridge());
 }
@@ -46,7 +46,9 @@ void DapQmlModelFullServerList::setBridge (AbstractServerListModelBridge *a_newB
   /* setup */
   beginResetModel();
   {
-    if (m_bridge && m_bridge != AbstractServerListModelBridge::getDefaultBridge())
+    if (m_bridge
+        && m_bridge != a_newBridge
+        && m_bridge != AbstractServerListModelBridge::getDefaultBridge())
       delete m_bridge;
 
     m_bridge  = a_newBridge;
@@ -177,6 +179,11 @@ DapQmlModelFullServerList::Index DapQmlModelFullServerList::indexOfName (const Q
     return Index (result + _size.autoServer, _size.autoServer, false);
 
   return Index();
+}
+
+void DapQmlModelFullServerList::refresh()
+{
+  setBridge (m_bridge);
 }
 
 void DapQmlModelFullServerList::_getSizes()
