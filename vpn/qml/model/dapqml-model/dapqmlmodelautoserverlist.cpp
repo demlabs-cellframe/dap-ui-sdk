@@ -110,7 +110,7 @@ void DapQmlModelAutoServerList::_buildUpAutoList (DapSortedServerList *a_dest)
           auto serverName = i->name();
           /* add basic auto server */
           if (serverName.startsWith (location)
-              && !serverName.contains (_userLocation))
+              && !_containsUserLocation (serverName)) // !serverName.contains (_userLocation))
             {
 //              /* store best region server */
 //              if (location == _userLocation)
@@ -329,7 +329,7 @@ void DapQmlModelAutoServerList::_updateAutoServer (const DapServerInfo &a_server
   /* set best auto server */
   for (const auto &server : qAsConst (*_serverList))
   {
-    if (server.name().contains (_userLocation))
+    if (_containsUserLocation (server.name()))
       continue;
 
     if (autoServer.ping() > server.ping() || autoServer.ping() == -1)
@@ -358,7 +358,7 @@ void DapQmlModelAutoServerList::_updateAutoServer (const DapServerInfo &a_server
   int index = 0;
   for (auto i = _serverList->cbegin(), e = _serverList->cend(); i != e; i++, index++)
     {
-      if (i->name().contains (_userLocation))
+      if (_containsUserLocation (i->name()))
         continue;
 
       if (i->ping() != -1
@@ -398,6 +398,13 @@ int DapQmlModelAutoServerList::_appendNewAutoServer(DapServerInfo &&a_server)
 
   /* perform */
   return _autoServers.append (std::move (a_server));
+}
+
+bool DapQmlModelAutoServerList::_containsUserLocation(const QString &a_value) const
+{
+  if (_userLocation.isEmpty())
+    return false;
+  return a_value.contains (_userLocation);
 }
 
 /********************************************
@@ -457,7 +464,7 @@ void DapQmlModelAutoServerList::_slotRowsInserted (const QModelIndex &, int firs
     const DapServerInfo &server = qAsConst (_serverList)->at (i);
 
     /* ignore user location ones */
-    if (server.name().contains (_userLocation))
+    if (_containsUserLocation (server.name()))
       continue;
 
     /* vars */
@@ -574,7 +581,7 @@ void DapQmlModelAutoServerList::_slotRowsMoved (const QModelIndex &, int first, 
       const DapServerInfo &server = qAsConst (_serverList)->at (index);
 
       /* ignore user location ones */
-      if (server.name().contains (_userLocation))
+      if (_containsUserLocation (server.name()))
         continue;
 
       /* vars */
@@ -685,7 +692,7 @@ void DapQmlModelAutoServerList::_slotRowsAboutToRemoved (const QModelIndex &, in
       const DapServerInfo &server = qAsConst (_serverList)->at (i);
 
       /* ignore user location ones */
-      if (server.name().contains (_userLocation))
+      if (_containsUserLocation (server.name()))
         continue;
 
       /* vars */

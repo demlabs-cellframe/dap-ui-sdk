@@ -145,6 +145,7 @@ public:
   ConstIterator begin() const;
   ConstIterator end() const;
   Index indexOfName (const QString &a_name) const;
+  void refresh();
 protected:
   void _getSizes();
   void _getRoles();
