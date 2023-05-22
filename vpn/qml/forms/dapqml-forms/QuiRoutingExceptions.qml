@@ -585,7 +585,7 @@ Item {
             x: (parent.width - width) / 2
             y: listviewSizer.y
             width: listviewSizer.width
-            height: listviewSizer.calcHeight
+            height: listviewSizer.calcHeight - tabContentMessage.height
             visible: root.internal.type === QuiRoutingExceptions.APPS
             clip: true
 
@@ -609,6 +609,25 @@ Item {
 
             delegate: delegateRoute
             //model: modelRoutes
+        }
+
+//        DapQmlSeparator {
+//            anchors.top: listviewApps.bottom
+//            anchors.left: listviewApps.left
+//            width: listviewApps.width
+//        }
+
+        DapQmlLabel {
+            id: tabContentMessage
+            anchors.top: listviewApps.bottom
+            anchors.left: listviewApps.left
+            width: listviewApps.width
+            horizontalAlign: Text.AlignHCenter
+            verticalAlign: Text.AlignVCenter
+            wrapMode: Text.WordWrap
+            visible: root.internal.type === QuiRoutingExceptions.APPS
+            qss: "rouexc-tab-content-message c-grey"
+            text: qsTr("After adding the application, you need to restart KelVPN") + lang.notifier
         }
 
         /*-----------------------------------------*/
