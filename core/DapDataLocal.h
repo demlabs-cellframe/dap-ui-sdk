@@ -11,7 +11,7 @@
 #include "DapServerInfo.h"
 #include "DapKeyCommon.h"
 #include "DapBugReportData.h"
-#include "DapServersData.h"
+#include "DapServerList.h"
 #include "DapBugReportHistory.h"
 #include "DapSignUpData.h"
 #include "DapUtils.h"
@@ -23,11 +23,13 @@ const QString TEXT_SERIAL_KEY           = "serialkey";
 const QString TEXT_SERIAL_KEY_HISTORY   = "serialkeyhistory";
 const QString TEXT_PENDING_SERIAL_KEY   = "pendingserialkey";
 const QString TEXT_BUGREPORT_HISTORY    = "bugreporthistory";
+const QString ROUTING_EXCEPTIONS_LIST   = "routingexceptionslist";
 const QString TEXT_LOGIN                = "login";
 const QString TEXT_PASSWORD             = "password";
 const QString TEXT_TX_OUT               = "tx_out";
 const QString COUNTRY_NAME              = "Country_code";
 const QString SETTING_AUTHORIZATION     = "authorization";
+const QString LAST_SELECTED_SERVER      = "lastSelectedServer";
 
 class DapSerialKeyData;
 enum class Authorization;
@@ -117,7 +119,6 @@ public:
     //void removeItemFromHistory(QString a_type, QString a_item);
 
     static DapBugReportData *bugReportData();
-    static DapServersData   *serversData();
     DapSerialKeyData* serialKeyData();
 
     QString pendingSerialKey(){return m_pendingSerialKey;};

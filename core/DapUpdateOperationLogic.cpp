@@ -51,8 +51,15 @@ void DapUpdateOperationLogic::startUpdate()
     detached = myProcess->startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
 #endif
 #ifdef Q_OS_WIN
-    //detached = myProcess->startDetached("cmd.exe", QStringList() << "/C" << updateAppPath << "-p" << downloadFileName() << "-a" << currentApplication());
-    detached = myProcess->startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
+    updateAppPath = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update.exe");
+    fileCopy(updateApp(), updateAppPath);
+    //    detached = myProcess->startDetached(updateAppPath, QStringList() << "-p" << downloadFileName() << "-a" << currentApplication());
+    //    examples:
+    //    Powershell Start cmd.exe -ArgumentList “/k”,”fsutil”,”volume”,”diskfree”,”c:” -Verb Runas
+    //    Powershell Start cmd.exe -Verb Runas
+        QString psArgs = (QStringList() <<  "\"-p\"" << QString("\"%1\"").arg(downloadFileName().replace(" ", "` ")) << "\"-a\"" << QString("\"%1\"").arg(currentApplication().replace(" ", "` "))).join(",");
+        detached = myProcess->startDetached("Powershell", QStringList() << "Start" << updateAppPath.replace(" ", "` ") << "-ArgumentList" << psArgs << "-Verb" << "Runas");
+        qInfo() << QString("%1 %2").arg("Powershell").arg((QStringList() << "Start" << updateAppPath << "-ArgumentList" << psArgs << "-Verb" << "Runas").join(" "));
 #endif
 #ifdef Q_OS_MACOS
     updateAppPath = QDir::tempPath() + QDir::separator() + QString("%1%2").arg(DAP_BRAND).arg("Update");
@@ -63,7 +70,6 @@ void DapUpdateOperationLogic::startUpdate()
         qWarning() << "Failed to start update agent application" << updateAppPath;
     else
         qInfo() << "Start update agent application" << updateAppPath << downloadFileName() << currentApplication();
-    qInfo() << QString("cmd.exe /C \"%1\" -p %2 -a %3").arg(updateAppPath).arg(downloadFileName()).arg(currentApplication());
     myProcess->close();
     delete myProcess;
 //#else

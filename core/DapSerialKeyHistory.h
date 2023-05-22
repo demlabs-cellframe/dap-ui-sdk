@@ -4,9 +4,6 @@
 /* INCLUDES */
 #include <QObject>
 
-/* DEFS */
-typedef QString DapSerialKeyHistoryItem;
-
 /****************************************//**
  * @brief serial key history
  * @date 17.11.2022
@@ -18,11 +15,19 @@ class DapSerialKeyHistory : public QObject
   Q_OBJECT
 
   /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
+private:
+  class DapSerialKeyHistoryData;
+  /// @}
+
+  /****************************************//**
    * @name VARS
    *******************************************/
   /// @{
 private:
-  QList<DapSerialKeyHistoryItem> m_list;
+  DapSerialKeyHistoryData *_d;
   /// @}
 
   /****************************************//**
@@ -30,7 +35,8 @@ private:
    *******************************************/
   /// @{
 public:
-  explicit DapSerialKeyHistory(QObject *parent = nullptr);
+  explicit DapSerialKeyHistory (QObject *parent = nullptr);
+  ~DapSerialKeyHistory();
   /// @}
 
   /****************************************//**
@@ -38,10 +44,9 @@ public:
    *******************************************/
   /// @{
 public:
-  const QList<DapSerialKeyHistoryItem> &list() const;
+  const QStringList &list() const;
   int size() const;
-  DapSerialKeyHistoryItem &value (int a_index);
-  const DapSerialKeyHistoryItem &value (int a_index) const;
+  QString value (int a_index) const;
   void load();
   void save();
   /// @}
@@ -67,8 +72,7 @@ public slots:
    *******************************************/
   /// @{
 public:
-  DapSerialKeyHistoryItem &operator[] (int a_index)             { return value (a_index); }
-  const DapSerialKeyHistoryItem &operator[] (int a_index) const { return value (a_index); }
+  QString operator[] (int a_index) const { return value (a_index); }
   /// @}
 };
 

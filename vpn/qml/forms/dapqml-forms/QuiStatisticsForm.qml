@@ -68,8 +68,13 @@ Item {
 
     /// @brief resize font for provided DapQmlButton
     function resizeFont(a_btn) {
-        a_btn.labelMain.fontSize  = fontScalerIndicator.fontSize;
-        a_btn.labelSub.fontSize   = fontScalerSubLabel.fontSize;
+        if (a_btn === undefined
+            || a_btn.labelMain === undefined
+            || a_btn.labelSub === undefined)
+            return;
+        a_btn.labelMain.fontSize    = fontScalerIndicator.fontSize;
+        a_btn.labelMain.fontWeight  = fontScalerIndicator.fontWeight;
+        a_btn.labelSub.fontSize     = fontScalerSubLabel.fontSize;
     }
 
     /// @brief calculate column positions

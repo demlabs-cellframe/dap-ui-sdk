@@ -33,39 +33,46 @@ Rectangle {
     /// @brief widget qss style
     property string qss
 
+    DapQmlDummy {
+        id: sizer
+        qss: "sep-rect"
+    }
+
     /// @}
     /****************************************//**
      * Left corner image
      ********************************************/
 
-    DapQmlImage {
+    DapQmlLabel {
         id: sep1
         x: 0
-
-        DapQmlStyle { item: sep1; qss: "sep-left"; }
+        width: sizer.width
+        height: sizer.height > 1 ? sizer.height : 1
+        qss: "sep-left"
     }
 
     /****************************************//**
      * Middle stretched image
      ********************************************/
 
-    DapQmlImage {
+    DapQmlLabel {
         id: sep2
-        x: sep1.width
-        width: root.width - sep1.width - sep3.width
-
-        DapQmlStyle { item: sep2; qss: "sep-mid"; }
+        x: sep1.width - 2
+        width: root.width - sep1.width - sep3.width + 4
+        height: sizer.height > 1 ? sizer.height : 1
+        qss: "sep-mid"
     }
 
     /****************************************//**
      * Right corner image
      ********************************************/
 
-    DapQmlImage {
+    DapQmlLabel {
         id: sep3
         x: root.width - width
-
-        DapQmlStyle { item: sep3; qss: "sep-right"; }
+        width: sizer.width
+        height: sizer.height > 1 ? sizer.height : 1
+        qss: "sep-right"
     }
 }
 

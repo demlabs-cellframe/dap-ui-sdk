@@ -1,91 +1,192 @@
 #ifndef DAPSERVERINFO_H
 #define DAPSERVERINFO_H
 
+/* INCLUDES */
 #include <QString>
-#include <QMap>
 #include <QDebug>
 #include <QJsonArray>
 #include <QJsonObject>
 
+/* DEFS */
 class DapServerInfo;
 using DapServerInfoList = QVector<DapServerInfo>;
 
-#define DAP_CONNECTION_QUALITY DapServerInfo::connectionQuality
+//#define DAP_CONNECTION_QUALITY DapServerInfo::ConnectionQuality
+
+/****************************************//**
+ * @brief Dap Server Info
+ *******************************************/
 
 class DapServerInfo
 {
+  /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
 public:
-    enum class ConnectionQuality {
-      NO_CONNECTION = 0,
-      FULL,
-      ALMOST_FULL,
-      MIDDLE,
-      LOW,
-      VERY_LOW
-    };
+  enum class ConnectionQuality : qint16
+  {
+    INVALID = -1,
+    NO_CONNECTION,
+    FULL,
+    ALMOST_FULL,
+    MIDDLE,
+    LOW,
+    VERY_LOW
+  };
+  /// @}
 
-    DapServerInfo(){}
-    DapServerInfo(const DapServerInfo&cp) {
-        address     = cp.address;
-        address6    = cp.address6;
-        port        = cp.port;
-        name        = cp.name;
-        location    = cp.location;
-        online      = cp.online;
-        ping        = cp.ping;
-        connection_quality = cp.connection_quality;
-    }
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
+protected:
+  QString m_address;
+  QString m_address6;
+  quint16 m_port;
+  QString m_name;
+  QString m_location;
+  QString m_online;
+  int m_ping;
+  ConnectionQuality m_connQuality;
+  /// @}
 
-    QString address;
-    QString address6;
-    quint16 port = 0;
-    QString name;
-    QString location;
-    QString online;
-    int ping = -1;
-    ConnectionQuality connection_quality = ConnectionQuality::NO_CONNECTION;
+  /****************************************//**
+   * @name CONSTRUCT/DESTRUCT
+   *******************************************/
+  /// @{
+public:
+  DapServerInfo();
+  DapServerInfo (const QJsonObject &a_src);
+  DapServerInfo (const DapServerInfo &a_src);
+  DapServerInfo (DapServerInfo &&a_src);
+  DapServerInfo (
+    QString a_location,
+    QString a_name,
+    QString a_address,
+    quint16 a_port
+  );
+  /// @}
 
-    bool isAuto() const;
-    bool isValid() const;
-    bool isOnline() const;
+  /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  static bool fromJSON (const QJsonArray &jsonArr, DapServerInfoList &out);
+  static bool fromJSON (const QJsonObject &jsonObj, DapServerInfo &out);
+  static QJsonObject toJSON (const DapServerInfo &dsi);
+  QJsonObject toJSON() const;
+  /// @deprecated
+  static void sortServerList (QList<DapServerInfo> &serverList);
+  /// @deprecated
+  static void addGeneralLocation (
+    const QList<DapServerInfo> &serverList,
+    QList<DapServerInfo> &generalServerList,
+    QString base_location);
 
-    static bool fromJSON(const QJsonArray& jsonArr, DapServerInfoList& out);
-    static bool fromJSON(const QJsonObject& jsonObj, DapServerInfo& out);
-    static void sortServerList(QList<DapServerInfo> &serverList);
-    static void addGeneralLocation(QList<DapServerInfo> &serverList, QList<DapServerInfo> &generalServerList, QString base_location);
+  const QString &address() const;
+  void    setAddress (const QString &address);
 
-    static QJsonObject toJSON(const DapServerInfo& dsi);
+  const QString &address6() const;
+  void    setAddress6 (const QString &address6);
 
-    friend bool operator==(const DapServerInfo& lhs, const DapServerInfo& rhs);
-    friend bool operator>(const DapServerInfo& lhs, const DapServerInfo& rhs) { return lhs.ping > rhs.ping; }
-    friend bool operator<(const DapServerInfo& lhs, const DapServerInfo& rhs) { return lhs.ping < rhs.ping; }
-    friend QDebug operator<< (QDebug out, const DapServerInfo &dsi) {
-      out <<  endl << " name: " << dsi.name << " location: "
-          << dsi.location << " address: " << dsi.address <<  ":" << dsi.port << " state: " << dsi.online << " ping: " << dsi.ping;
-        return out;
-    }
-    DapServerInfo &operator= (const DapServerInfo &a_src);
-    DapServerInfo &operator= (DapServerInfo &&a_src);
+  quint16 port() const;
+  void    setPort (const quint16 &port);
 
-    void setPing (const quint16 a_ping)
-    {
-      ping = a_ping;
-    }
+  const QString &name() const;
+  void    setName (const QString &name);
 
-    void setConnetionQulity (int a_connection_quality)
-    {
-      connection_quality =
-          (a_connection_quality >= int (ConnectionQuality::NO_CONNECTION))
-          ? ConnectionQuality (a_connection_quality)
-          : ConnectionQuality::NO_CONNECTION;
-    }
+  const QString &location() const;
+  void    setLocation (const QString &location);
+
+  const QString &online() const;
+  void    setOnline (const QString &online);
+
+  int     ping() const;
+  void    setPing (int ping);
+
+  ConnectionQuality connQuality() const;
+  void setConnQuality (const ConnectionQuality &connQuality);
+
+  bool isAuto() const;
+  bool isValid() const;
+  bool isOnline() const;
+
+  QVariant value (int a_fieldId) const;
 
 private:
-    static bool _isJsonValid(const QJsonObject& obj);
+  static bool _isJsonValid (const QJsonObject &obj);
+  /// @}
+
+  /****************************************//**
+   * @name OPERATORS
+   *******************************************/
+  /// @{
+public:
+  DapServerInfo &operator= (const DapServerInfo &a_src);
+  DapServerInfo &operator= (DapServerInfo &&a_src);
+  friend bool operator== (const DapServerInfo &lhs, const DapServerInfo &rhs);
+  friend bool operator> (const DapServerInfo &lhs, const DapServerInfo &rhs) { return lhs.m_ping > rhs.m_ping; }
+  friend bool operator< (const DapServerInfo &lhs, const DapServerInfo &rhs) { return lhs.m_ping < rhs.m_ping; }
+  friend QDebug operator<< (QDebug out, const DapServerInfo &dsi)
+  {
+    out <<  Qt::endl << " name: " << dsi.m_name << " location: "
+        << dsi.m_location << " address: " << dsi.m_address <<  ":" << dsi.m_port << " state: " << dsi.m_online << " ping: " << dsi.m_ping;
+    return out;
+  }
 };
 
-Q_DECLARE_METATYPE(DapServerInfo)
-typedef DapServerInfo* DapServerInfoPtr;
-Q_DECLARE_METATYPE(DapServerInfoPtr)
+Q_DECLARE_METATYPE (DapServerInfo)
+typedef DapServerInfo *DapServerInfoPtr;
+Q_DECLARE_METATYPE (DapServerInfoPtr)
 
+/****************************************//**
+ * @brief Dap Server Info Type
+ *
+ * Used to describe type to high level (QML)
+ *******************************************/
+
+class DapServerType : public QObject, public DapServerInfo
+{
+  Q_OBJECT
+
+  /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
+public:
+  enum FieldId : quint16
+  {
+    name    = Qt::DisplayRole,
+    address = Qt::UserRole,
+    address6,
+    port,
+    location,
+    online,
+    ping,
+    connQuality,
+  };
+  Q_ENUM (FieldId)
+  /// @}
+
+  /****************************************//**
+   * @name CONSTRUCT/DESTRUCT
+   *******************************************/
+  /// @{
+public:
+  DapServerType();
+  DapServerType (const DapServerInfo &a_src);
+  DapServerType (DapServerType &&a_src);
+  /// @}
+
+  /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+  QVariant asVariantMap() const;
+  /// @}
+};
+
+/*-----------------------------------------*/
 #endif // DAPSERVERINFO_H

@@ -4,6 +4,8 @@ import QtQuick 2.4
 import QtQuick.Layouts 1.3
 //import DapQmlModelSettings 1.0
 import StyleDebugTree 1.0
+import DapQmlStyle 1.0
+import Brand 1.0
 //import SettingsInterface 1.0
 import "qrc:/dapqml-widgets"
 
@@ -138,13 +140,14 @@ Item {
             id: settingsListView
             objectName: "settingsListView"
 
-            x: contentRect.x
+            x: (parent.width - width) / 2 //contentRect.x
             y: 0
-            width: contentRect.width // root.width - 72
+            width: listviewSizer.width ? listviewSizer.width : contentRect.width // root.width - 72
             height: root.height
 
             clip: false
             //model: settingsModel
+
 
             /****************************************//**
              * Resizers
@@ -172,22 +175,32 @@ Item {
                 qss: "sett-spacer"
             }
 
+            DapQmlDummy {
+                id: listviewSizer
+                qss: "sett-content";
+            }
+
             /****************************************//**
              * Delegate
              ********************************************/
 
             delegate: Item {
                 id: delegate
+                width: settingsListView.width
                 height: calcHeight (model.sid) //model.sid !== QuiSettingsForm.StyleId.SI_TITLE ? resizer1.height : resizer2.height
+
                 property int mySid: model.sid
                 property var settingsModel: settingsListView.model
+                property bool hovered: false
 
                 DapQmlButton {
                     property int myIndex: model.index
                     property string myText: model.textMain + settingsModel.notifier // + testText
 
                     visible: model.sid !== QuiSettingsForm.StyleId.SI_TITLE
-                    width: settingsListView.width
+                    x: (parent.width - width) / 2
+                    z: 50
+                    width: contentRect.width // settingsListView.width
                     height: delegate.height
                     buttonStyle: DapQmlButton.Style.IconMainSub
                     mainText: myText // model.textMain + settingsModel.notifier + testText
@@ -203,6 +216,9 @@ Item {
                     checkbox: model.sid === QuiSettingsForm.SI_CHECKBOX
                     icon: model.icon
                     iconSize: resizer1.fontSize
+                    mouseArea.hoverEnabled: true
+                    mouseArea.onEntered: delegate.hovered   = true
+                    mouseArea.onExited:  delegate.hovered   = false
 
                     function buttonClicked(a_isButtonSignal) {
                         if(a_isButtonSignal === false)
@@ -228,7 +244,23 @@ Item {
                     Component.onDestruction: root.internal.removeItem (this)
                 }
 
+                DapQmlSeparator {
+                    anchors.bottom: parent.bottom
+                    z: 40
+                    width: parent.width
+                    visible: model.sid !== QuiSettingsForm.StyleId.SI_TITLE && isSep(model.sid)
+                }
+
+                DapQmlRectangle {
+                    anchors.fill: parent
+                    z: 10
+                    visible: !Brand.legacyStyle()
+                    qss: delegate.hovered ? "sett-btn-hover-bg" : "c-background"
+                    Behavior on color { PropertyAnimation { duration: 150 } }
+                }
+
                 DapQmlLabel {
+                    z: 40
                     visible: model.sid === QuiSettingsForm.StyleId.SI_TITLE
                     width: settingsListView.width
                     height: delegate.height

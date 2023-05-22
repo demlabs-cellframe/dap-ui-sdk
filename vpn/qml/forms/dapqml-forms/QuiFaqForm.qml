@@ -96,9 +96,11 @@ Item {
             /* plus button */
             DapQmlPushButton {
                 id: faqItemPlusBtn
-                x: parent.width - width
+                x: parent.width - faqItemPlusBtnStyle.width + ((faqItemPlusBtnStyle.width - width) / 2)
                 y: (faqItemSizer.height - height) / 2
                 qss: parent.opened ? "faq-close-btn" : "faq-plus-btn"
+
+                DapQmlDummy { id: faqItemPlusBtnStyle; qss: "faq-close-btn" }
             }
 
             /* content */

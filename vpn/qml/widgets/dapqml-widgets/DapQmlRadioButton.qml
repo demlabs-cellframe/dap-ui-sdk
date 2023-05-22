@@ -18,12 +18,16 @@ import DapQmlStyle 1.0
  * @author Mikhail Shilenko
  *******************************************/
 
-RadioButton {
+Item {
     id: root
-    text: ""
-    checked: false
+    property string text
+    property bool checked: false
+
+    signal clicked();
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
+
+    onTextChanged: label.text   = root.text
 
     /****************************************//**
      * @name VARS
@@ -43,34 +47,44 @@ RadioButton {
     property bool separator: false
 
     /// @brief padding between icon and text label
-    property real textPadding: root.indicator.width + root.spacing
+    //property real textPadding: radioIndicator.width + root.spacing
 
-
-
-    /// @}
-    /****************************************//**
-     * Icon image / Indicator / Checkbox
-     ********************************************/
-
-    indicator: DapQmlLabel {
-        qss: root.checked ? "radio-on" : "radio-off"
-        width: root.iconSize
-        height: root.iconSize
-        onClicked: { root.toggle(); root.clicked(); }
+    property QtObject internal : QtObject {
+        property real padding: 0//root.width / 20
+        property real width: root.width - root.internal.padding * 2
     }
 
-    /****************************************//**
-     * Text label
-     ********************************************/
+    /// @}
 
-    contentItem: DapQmlLabel {
-        leftPadding: textPadding // root.indicator.width + root.spacing
-        horizontalAlign: Text.AlignLeft
-        verticalAlign: Text.AlignVCenter
-        text: root.text
-        qss: root.textQss
-        clip: false
-        onClicked: { root.toggle(); root.clicked(); }
+    RowLayout {
+        anchors.fill: parent
+        anchors.leftMargin: height * 0.125
+        anchors.rightMargin: height * 0.125
+
+        /****************************************//**
+         * Icon image / Indicator / Checkbox
+         ********************************************/
+
+        DapQmlLabel {
+            id: radioIndicator
+            Layout.preferredWidth: root.iconSize
+            Layout.preferredHeight: root.iconSize
+            qss: root.checked ? "radio-on" : "radio-off"
+        }
+
+        /****************************************//**
+         * Text label
+         ********************************************/
+
+        DapQmlLabel {
+            id: label
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            horizontalAlign: Text.AlignLeft
+            verticalAlign: Text.AlignVCenter
+            text: root.text
+            qss: root.textQss
+        }
     }
 
     /****************************************//**
@@ -78,10 +92,18 @@ RadioButton {
      ********************************************/
 
     DapQmlSeparator {
-        x: (root.width - width) / 2
-        y: root.height// - height
-        width: root.width - 32
+        anchors.bottom: parent.bottom
+        width: root.width
         visible: root.separator
+    }
+
+    /****************************************//**
+     * Clickable
+     ********************************************/
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: root.clicked()//root.checked = !root.checked
     }
 }
 

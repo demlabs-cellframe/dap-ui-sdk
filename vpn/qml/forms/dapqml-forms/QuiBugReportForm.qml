@@ -3,6 +3,7 @@
 import QtQuick 2.12
 import DapQmlStyle 1.0
 import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
 import Qt.labs.platform 1.1
 import StyleDebugTree 1.0
@@ -63,6 +64,7 @@ Item {
 
     /// @brief controler for attach button
     property QtObject internal: QtObject {
+        property bool debugMode: false
         property bool attachedImage: false;
         property string textAttach: qsTr("Click here to attach a screenshot") + lang.notifier
         property string textDetach: qsTr("Remove screenshot") + lang.notifier
@@ -161,6 +163,97 @@ Item {
     /// @brief show agreement notification
     function setAgreementCheck(a_value) {
         root.internal.showAnAgreement   = a_value;
+    }
+
+    function updateSendButtonState() {
+        let data    = bugRepInputField.text;
+        let simple  = true;
+        for (var i = 0; i < data.length; i++)
+        {
+            if (data.charAt(i) === ' ')
+                continue;
+            simple = false;
+            break;
+        }
+
+        btnSend.enabled = !simple;
+    }
+
+    /// @}
+    /****************************************//**
+     * @name COMPONENTS
+     ********************************************/
+    /// @{
+
+    Component {
+        id: inputLegacy
+
+        BorderImage {
+            id: inputContactBorder
+            property string scaledPixmap
+
+            DapQmlStyle { qss: "bugrep-input-contact bugrep-bg-75"; item: inputContactBorder }
+
+            border { left: 25; top: 25; right: 25; bottom: 25 }
+            horizontalTileMode: BorderImage.Stretch
+            verticalTileMode: BorderImage.Stretch
+            source: scaledPixmap
+
+            DapQmlLineEdit {
+                id: contactInputField
+                objectName: "contactInputField"
+                anchors.centerIn: parent
+                mainQss: "bugrep-input-textarea"
+                iconQss: "null-size null-pos"
+                placeholderQss: "bugrep-input-placeholder"
+                qss: "bugrep-input-contact-content"
+
+                placeHolderText: qsTr("Email/ Telegram/Phone number to contact you") + lang.notifier
+                mainText: ""
+            }
+        }
+    }
+
+    Component {
+        id: inputModern
+
+        DapQmlRectangle {
+            qss: "bugrep-input-contact"
+
+            DapQmlLineEdit {
+                id: contactInputField
+                objectName: "contactInputField"
+                anchors.centerIn: parent
+                mainQss: "bugrep-input-textarea"
+                iconQss: "null-size null-pos"
+                placeholderQss: "bugrep-input-placeholder"
+                qss: "bugrep-input-contact-content"
+
+                placeHolderText: qsTr("Email/ Telegram/Phone number to contact you") + lang.notifier
+                mainText: ""
+            }
+        }
+    }
+
+    Component {
+        id: reportBackgroundLegacy
+
+        BorderImage {
+            id: reportBackgroundLegacyBorderImage
+            border { left: 64; top: 64; right: 64; bottom: 64 }
+            horizontalTileMode: BorderImage.Stretch
+            verticalTileMode: BorderImage.Stretch
+            source: inputFiller.scaledPixmap
+            DapQmlStyle { qss: "bugrep-input"; item: reportBackgroundLegacyBorderImage }
+        }
+    }
+
+    Component {
+        id: reportBackgroundModern
+
+        DapQmlRectangle {
+            qss: "bugrep-input-bg"
+        }
     }
 
     /// @}
@@ -377,141 +470,40 @@ Item {
         }
 
         /****************************************//**
-         * Frame renderer
-         *
-         * @note uncomment to generate proper image file
-         *
-         * @warning dont forget to comment this, after
-         * image is rendered into file. you dont need this to render every time, only once during development
+         * Form Debug
          ********************************************/
 
-    //    Component.onCompleted: {
-    //        /* update dimensions */
-    //        temporalRenderer.width  = 64*3;
-    //        temporalRenderer.height = 64*3;
+        RowLayout {
+            visible: root.internal.debugMode
+            spacing: 8
 
-    //        /* save result to image */
-    //        temporalRenderer.grabToImage(function(result){
-    //            result.saveToFile("/tmp/temporalRenderer.png");  // "C:/temporalRenderer.png");
-    //        });
+            DapQmlLabel {
+                width: contentWidth
+                height: contentHeight
+                text: "Mode Debug: "
+            }
 
-    //        /* print warning */
-    //        console.log("BugReport image is rendered into file!"
-    //                    +" If you see this message that means renderer is exists"
-    //                    +" when it must not. It is only used to generate image source"
-    //                    +" during development. You should not see this message.");
+            DapQmlLabel {
+                width: contentWidth
+                height: contentHeight
+                text: "Write"
+                onClicked: root.setmode (QuiBugReportForm.Mode.Write)
+            }
 
-    //        /* hide this element */
-    //        temporalRenderer.visible = false;
-    //    }
+            DapQmlLabel {
+                width: contentWidth
+                height: contentHeight
+                text: "Loading"
+                onClicked: root.setmode (QuiBugReportForm.Mode.Loading)
+            }
 
-    //    Item {
-    //        id: temporalRenderer
-
-    //        property real sideSize:     64
-    //        property size size:         Qt.size (390, 200)
-    //        property size cornerSize:   Qt.size (sideSize, sideSize)
-    //        property real maxX:         390 - sideSize
-    //        property real maxY:         200 - sideSize
-    //        property real midWidth:     width - 64*2
-    //        property real midHeight:    height - 64*2
-
-    //        Image {
-    //            id: sideTop
-    //            x: temporalRenderer.x + parent.sideSize
-    //            y: temporalRenderer.y
-    //            width: temporalRenderer.width - cornerLeftTop.width - cornerRightTop.width;
-    //            height: parent.sideSize;
-    //            sourceSize: parent.size
-    //            sourceClipRect: Qt.rect(parent.sideSize, 0, parent.sideSize, parent.sideSize)
-    //            source: inputFiller.scaledPixmap; mipmap: true
-    //        }
-
-    //        Image {
-    //            id: sideLeft
-    //            x: temporalRenderer.x
-    //            y: temporalRenderer.y + parent.sideSize
-    //            width: parent.sideSize;
-    //            height: temporalRenderer.height - cornerLeftTop.height - cornerLeftBottom.height;
-    //            sourceSize: parent.size
-    //            sourceClipRect: Qt.rect(0, parent.sideSize, parent.sideSize, parent.sideSize)
-    //            source: inputFiller.scaledPixmap; mipmap: true
-    //        }
-
-    //        Image {
-    //            id: sideBottom
-    //            x: temporalRenderer.x + parent.sideSize
-    //            y: temporalRenderer.y + temporalRenderer.height - height
-    //            width: temporalRenderer.width - cornerLeftBottom.width - cornerRightBottom.width;
-    //            height: parent.sideSize;
-    //            sourceSize: parent.size
-    //            sourceClipRect: Qt.rect(parent.sideSize, parent.maxY, parent.sideSize, parent.sideSize)
-    //            source: inputFiller.scaledPixmap; mipmap: true
-    //        }
-
-    //        Image {
-    //            id: sideRight
-    //            x: temporalRenderer.x + temporalRenderer.width - width
-    //            y: temporalRenderer.y + parent.sideSize
-    //            width: parent.sideSize;
-    //            height: temporalRenderer.height - cornerRightTop.height - cornerRightBottom.height;
-    //            sourceSize: parent.size
-    //            sourceClipRect: Qt.rect(parent.maxX, parent.sideSize, parent.sideSize, parent.sideSize)
-    //            source: inputFiller.scaledPixmap; mipmap: true
-    //        }
-
-    //        Image {
-    //            id: midFill
-    //            x: temporalRenderer.x + cornerLeftTop.width
-    //            y: temporalRenderer.y + cornerLeftTop.height
-    //            width: temporalRenderer.width - cornerLeftTop.width - cornerRightTop.width;
-    //            height: temporalRenderer.height - cornerLeftTop.height - cornerLeftBottom.height;
-    //            sourceSize: parent.size
-    //            sourceClipRect: Qt.rect(parent.sideSize, parent.sideSize, parent.sideSize, parent.sideSize)
-    //            source: inputFiller.scaledPixmap; mipmap: true
-    //        }
-
-    //        Image {
-    //            id: cornerLeftTop
-    //            x: temporalRenderer.x
-    //            y: temporalRenderer.y
-    //            width: parent.sideSize; height: parent.sideSize;
-    //            sourceSize: parent.size
-    //            sourceClipRect: Qt.rect(0, 0, parent.sideSize, parent.sideSize)
-    //            source: inputFiller.scaledPixmap; mipmap: true
-    //        }
-
-    //        Image {
-    //            id: cornerRightTop
-    //            x: temporalRenderer.width - parent.sideSize
-    //            y: temporalRenderer.y
-    //            width: parent.sideSize; height: parent.sideSize;
-    //            sourceSize: parent.size
-    //            sourceClipRect: Qt.rect(sourceSize.width - width, 0, parent.sideSize, parent.sideSize)
-    //            source: inputFiller.scaledPixmap; mipmap: true
-    //        }
-
-    //        Image {
-    //            id: cornerLeftBottom
-    //            x: temporalRenderer.x
-    //            y: temporalRenderer.height - parent.sideSize
-    //            width: parent.sideSize; height: parent.sideSize;
-    //            sourceSize: parent.size
-    //            sourceClipRect: Qt.rect(0, sourceSize.height - height, parent.sideSize, parent.sideSize)
-    //            source: inputFiller.scaledPixmap; mipmap: true
-    //        }
-
-    //        Image {
-    //            id: cornerRightBottom
-    //            x: temporalRenderer.width - parent.sideSize
-    //            y: temporalRenderer.height - parent.sideSize
-    //            width: parent.sideSize; height: parent.sideSize;
-    //            sourceSize: parent.size
-    //            sourceClipRect: Qt.rect(sourceSize.width - width, sourceSize.height - height, parent.sideSize, parent.sideSize)
-    //            source: inputFiller.scaledPixmap; mipmap: true
-    //        }
-    //    }
-
+            DapQmlLabel {
+                width: contentWidth
+                height: contentHeight
+                text: "Result"
+                onClicked: root.setmode (QuiBugReportForm.Mode.Result)
+            }
+        }
 
         /****************************************//**
          * Mode Input Item
@@ -521,182 +513,23 @@ Item {
             anchors.fill: parent
             visible: root.mode == 0
 
-
             /* contact input */
-            Item {
-                id: inputContact
-                property real yy: (inputContact.height - contactResizer.height) / 2
-                DapQmlStyle { qss: "bugrep-contact-input"; item: inputContact }
 
-                /* corner images rectangle */
-                DapQmlRectangle {
-                    id: inputContactFiller
-                    visible: false
-                    anchors.fill: inputContact
-                    color: "transparent"
-                    borderWidth: 2
-                    borderColor: "EEEEEE"
-                    qss: "contact-bugrep-bg"
-                    property string scaledPixmap: ""
-                }
+            Loader {
+                anchors.fill: parent
+                sourceComponent: Brand.legacyStyle() ? inputLegacy : inputModern
+            }
 
-                /* corner images */
+            /* corner images */
 
-                BorderImage {
-                    x: inputContactFiller.x
-                    y: inputContactFiller.y
-                    width: inputContactFiller.width
-                    height: inputContactFiller.height
-                    border { left: 25; top: 25; right: 25; bottom: 25 }
-                    horizontalTileMode: BorderImage.Stretch
-                    verticalTileMode: BorderImage.Stretch
-                    source: inputContactFiller.scaledPixmap
-                }
-
-                /* placeholder */
-                DapQmlLabel {
-                    id: placeholderContact
-                    x: (inputContact.width - width) / 2
-                    y: inputContact.yy
-                    z: 2
-                    width: contactResizer.width
-                    height: contactResizer.height
-                    horizontalAlign: Text.AlignLeft
-                    verticalAlign: Text.AlignTop
-                    text: qsTr("Email/ Telegram/Phone number to contact you") + lang.notifier
-                    qss: "bugrep-input-placeholder"
-                    wrapMode: TextEdit.Wrap
-                    visible: contactInputField.text.length == 0 && ((Scaling.isAndroid()) ? !contactInputField.activeFocus : true)
-
-                }
-
-
-                /* input scrollarea */
-                Flickable {
-                    id: contactInput
-                    x: (inputContact.width - contactResizer.width) / 2
-                    y: inputContact.yy
-                    z: 3
-                    clip: true
-                    contentWidth: width
-                    contentHeight: calcContentHeight()
-
-                    DapQmlStyle { item: contactInput; qss: "bugrep-contact-input-content"; }
-
-                    function ensureVisible(r) {
-                        if (contentX >= r.x)
-                            contentX = r.x;
-                        else if (contentX+width <= r.x+r.width)
-                            contentX = r.x+r.width-width;
-                        if (contentY >= r.y)
-                            contentY = r.y;
-                        else if (contentY+height <= r.y+r.height)
-                            contentY = r.y+r.height-height;
-                    }
-
-                    function calcContentHeight() {
-                        if (contactInputField.paintedHeight < inputContactFiller.height)
-                            return inputContactFiller.height;
-                        else
-                            return contactInputField.paintedHeight;
-                    }
-
-                    /* input */
-                    TextEdit {
-                        id: contactInputField
-                        z: 4
-                        objectName: "contactInputField"
-                        anchors.fill: parent
-                        wrapMode: TextEdit.Wrap
-                        persistentSelection: true
-                        selectByMouse: true
-                        clip: true
-                        font.pixelSize: fontSize
-                        font.weight: fontWeight
-
-                        property int fontSize: 16
-                        property int fontWeight: Font.Normal
-                        property int maximumLength: 200
-                        property string previousContactText: text
-
-                        DapQmlStyle { item: contactInputField; qss: "bugrep-input-textarea"; }
-
-                        TextEditContextMenu {
-                            id: ctxContactMenu
-                            Component.onCompleted: {
-                                setSerialInpoutMode(false);
-                                setTextEditWidget(contactInputField);
-                            }
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            acceptedButtons: Qt.RightButton
-                            cursorShape: Qt.IBeamCursor
-                            onClicked: {
-                                if (Scaling.isDesktop())
-                                    if (mouse.button === Qt.RightButton)
-                                        contextContactMenu.open()
-                            }
-                            onPressAndHold: {
-                                if (Scaling.isDesktop())
-                                    if (mouse.source === Qt.MouseEventNotSynthesized)
-                                        contextContactMenu.open()
-                            }
-                            DapQmlMenu {
-                                id: contextContactMenu
-                                shortcuts: [
-                                    "Ctrl+X",
-                                    "Ctrl+C",
-                                    "Ctrl+V",
-                                    ""
-                                ]
-                                Action {
-                                    text: qsTr("Cut") + lang.notifier
-                                    shortcut: "Ctrl+X"
-                                    onTriggered: ctxContactMenu.execCut();
-                                    Component.onCompleted: console.log(shortcut)
-                                }
-                                Action {
-                                    text: qsTr("Copy") + lang.notifier
-                                    shortcut: "Ctrl+C"
-                                    onTriggered: ctxContactMenu.execCopy();
-                                }
-                                Action {
-                                    text: qsTr("Paste") + lang.notifier
-                                    shortcut: "Ctrl+V"
-                                    onTriggered: ctxContactMenu.execPaste();
-                                }
-                                Action {
-                                    text: qsTr("Delete") + lang.notifier
-                                    onTriggered: ctxContactMenu.execDelete();
-                                }
-                            }
-                        }
-
-                        onCursorRectangleChanged: contactInput.ensureVisible(cursorRectangle)
-
-                        onTextChanged: {
-                            if (text.length > maximumLength) {
-                                var cursor = cursorPosition;
-                                text = previousText;
-                                if (cursor > text.length) {
-                                    cursorPosition = text.length;
-                                } else {
-                                    cursorPosition = cursor-1;
-                                }
-                            }
-                            previousContactText = text
-
-                        }
-                    }
-                }
-
+            Loader {
+                sourceComponent: Brand.legacyStyle() ? reportBackgroundLegacy : reportBackgroundModern
             }
 
             /* text input */
             Item {
                 id: input
+                z: 1
                 property real yy: (input.height - resizer.height) / 2
                 DapQmlStyle { qss: "bugrep-input"; item: input }
 
@@ -710,19 +543,6 @@ Item {
                     borderColor: "EEEEEE"
                     qss: "bugrep-bg"
                     property string scaledPixmap: ""
-                }
-
-                /* corner images */
-
-                BorderImage {
-                    x: inputFiller.x
-                    y: inputFiller.y
-                    width: inputFiller.width
-                    height: inputFiller.height
-                    border { left: 64; top: 64; right: 64; bottom: 64 }
-                    horizontalTileMode: BorderImage.Stretch
-                    verticalTileMode: BorderImage.Stretch
-                    source: inputFiller.scaledPixmap
                 }
 
                 /* placeholder */
@@ -870,6 +690,7 @@ Item {
                             previousText = text
 
                             letterAmount.text = text.length + "/200"
+                            root.updateSendButtonState();
                         }
                     }
                 }
@@ -900,10 +721,11 @@ Item {
 
             /* send button */
             DapQmlPushButton {
+                id: btnSend
                 qss: "bugrep-send-btn push-button"
                 text: qsTr("SEND REPORT") + lang.notifier
                 onClicked: { root.mode = 1; root.sigSend(); }
-                enabled: bugRepInputField.length >= 1
+                enabled: false // bugRepInputField.length >= 1
                 opacity: 0.4 + 0.6 * enabled
             }
 
@@ -938,12 +760,12 @@ Item {
                 DapQmlStyle { qss: "bugrep-animation"; item: animation }
             }
 
-            /* cancel */
-            DapQmlPushButton {
-                qss: "bugrep-send-btn push-button"
-                text: qsTr("CANCEL") + lang.notifier
-                onClicked: { root.mode = 0; root.sigCancel(); }
-            }
+//            /* cancel */
+//            DapQmlPushButton {
+//                qss: "bugrep-send-btn push-button"
+//                text: qsTr("CANCEL") + lang.notifier
+//                onClicked: { root.mode = 0; root.sigCancel(); }
+//            }
         }
 
         /****************************************//**
