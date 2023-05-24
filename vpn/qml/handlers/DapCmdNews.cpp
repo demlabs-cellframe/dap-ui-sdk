@@ -39,9 +39,6 @@ void DapCmdNews::handleResult(const QJsonObject& result)
                                       val.toObject().value("url").toString());
             }
 
-        emit sigGotTickerNews("TEST",
-                              "https://pub.kelvpn.com/windows/master/KelVPN-7.5-8-installer.exe");
-
 
 
     } else {
