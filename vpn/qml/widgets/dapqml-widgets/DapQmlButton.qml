@@ -129,6 +129,9 @@ Rectangle {
     /// @brief text field content changed
     signal textChanged();
 
+    /// @brief enter key pressed while text field is in focus
+    signal textAccepted();
+
     /// @}
     /****************************************//**
      * @name FUNCTIONS
@@ -260,7 +263,8 @@ Rectangle {
      ********************************************/
 
     GridLayout {
-        anchors.fill: parent;
+        width: parent.width
+        height: parent.height - separator.visible * separator.height
         columns: 1
 
         /* LeftTopMainBottomSub */
@@ -548,8 +552,9 @@ Rectangle {
                 }
 
                 /* signals */
-                onTextEdited: { root.mainText = text; root.textEdited(); }
+                onTextEdited:  { root.mainText = text; root.textEdited(); }
                 onTextChanged: { root.mainText = text; root.textChanged(); }
+                onAccepted:    { root.textAccepted(); }
             }
 
             /* sub text */
@@ -851,13 +856,15 @@ Rectangle {
                 onTextChanged: { root.mainText = text; root.textChanged(); }
             }
         }
+    }
 
-        /* bottom item */
-        DapQmlSeparator {
-            Layout.fillWidth: true
-            width: root.width
-            visible: root.separator
-        }
+    /* bottom item */
+    DapQmlSeparator {
+        id: separator
+        //Layout.fillWidth: true
+        y: parent.height - height
+        width: root.width
+        visible: root.separator
     }
 
 }

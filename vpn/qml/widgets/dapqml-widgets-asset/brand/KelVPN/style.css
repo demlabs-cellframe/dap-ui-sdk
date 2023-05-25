@@ -6,6 +6,7 @@
 {
 	text: "#04004E";
 	background: "#F7F8FA";
+	update-background: "#FFFFFF";
 	label: "#5C5B74";
 	light-grey: "#A4A3C0";
 	error: "#F53172";
@@ -34,17 +35,24 @@
 	footer-statistics-active:   "qrc:/light/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/light/btn_account.png";
 	bugrep-bg:                  "qrc:/light/report_bg_border.png";
+	contact-bugrep-bg:          "qrc:/light/contact_report_bg_border.png";
 	login-logo:                 "qrc:/light/login-logo.png";
+	btn-plus:                   "qrc:/light/ic_plus.png";
 	btn-close:                  "qrc:/light/ic_close.png";
 	btn-close-hover:            "qrc:/light/ic_close_hover.png";
-	country-filter-clear:       "qrc:/light/btn_filter_clear.png"
-	country-filter-clear-hover: "qrc:/light/btn_filter_clear_hover.png"
+	country-filter-clear:       "qrc:/light/btn_filter_clear.png";
+	country-filter-clear-hover: "qrc:/light/btn_filter_clear_hover.png";
+	btn-ticker-close:           "qrc:/light/ic_ticker_close.png";
+	btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
+	btn-update-notification-close:          "qrc:/light/ic_close_update.png";
+	btn-update-notification-close-hover:    "qrc:/light/ic_close_update_hover.png";
 }
 
 .@dark
 {
 	text: "#FFFFFF";
 	background: "#2f2e42";
+	update-background: "#37354D";
 	label: "#A4A3C0";
 	light-grey: "#A4A3C0";
 	error: "#F5FF00";
@@ -73,11 +81,17 @@
 	footer-statistics-active:   "qrc:/dark/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/dark/btn_account.png";
     bugrep-bg:                  "qrc:/dark/report_bg_border.png";
+    contact-bugrep-bg:          "qrc:/dark/contact_report_bg_border.png";
     login-logo:                 "qrc:/dark/login-logo.png";
-    btn-close:                  "qrc:/dark/ic_close.png";
+    btn-plus:                   "qrc:/dark/ic_plus.png";
+	btn-close:                  "qrc:/dark/ic_close.png";
     btn-close-hover:            "qrc:/dark/ic_close_hover.png";
-    country-filter-clear:       "qrc:/dark/btn_filter_clear.png"
-    country-filter-clear-hover: "qrc:/dark/btn_filter_clear_hover.png"
+    country-filter-clear:       "qrc:/dark/btn_filter_clear.png";
+    country-filter-clear-hover: "qrc:/dark/btn_filter_clear_hover.png";
+    btn-ticker-close:           "qrc:/dark/ic_ticker_close.png";
+    btn-ticker-close-hover:     "qrc:/dark/ic_ticker_close_hover.png";
+    btn-update-notification-close:          "qrc:/dark/ic_close_update.png";
+    btn-update-notification-close-hover:    "qrc:/dark/ic_close_update_hover.png";
 }
 
 /****************************************************
@@ -292,6 +306,11 @@
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_bot.png");
 }
 
+.ic_share_log
+{
+        qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_share_log.png");
+}
+
 .ic_close
 {
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_close.png");
@@ -315,6 +334,11 @@
 .ic_information_bug-report
 {
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_information_bug-report.png");
+}
+
+.ic_faq
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_faq.png");
 }
 
 .ic_key-history
@@ -610,7 +634,7 @@
 
 .login-connect
 {
-	scaled-rect: scaled(-1,570,374,80,true,12);
+	scaled-rect: scaled(nan,570,374,80,true,12);
 }
 
 .login-obtain-container
@@ -785,7 +809,12 @@
 
 .dashboard-status-container
 {
-	scaled-rect: scaled(nan,107,-1,22,true);
+	scaled-rect: scaled(nan,nan,-1,22,true);
+}
+
+.dashboard-status-container-pos
+{
+	scaled-rect: scaled(nan,107,nan,nan,nan);
 }
 
 .dashboard-status-label-scaler
@@ -854,9 +883,20 @@
  * Bug report
  ***************************************************/
 
+.bugrep-contact-input
+{
+        scaled-rect: scaled(32,150,370,80,false,16);
+}
+
+.bugrep-contact-input-content
+{
+        scaled-rect: scaled(nan,nan,316,32,false,16);
+}
+
+
 .bugrep-input
 {
-	scaled-rect: scaled(19,133,390,200,false,16);
+        scaled-rect: scaled(19,215,390,200,false,16);
 }
 
 .bugrep-input-content
@@ -866,7 +906,7 @@
 
 .bugrep-letter-counter
 {
-	scaled-rect: scaled(291,333,100,19,false,16);
+        scaled-rect: scaled(283,410,100,19,false,16);
 }
 
 .bugrep-input-email
@@ -883,6 +923,11 @@
 .bugrep-send-btn
 {
 	scaled-rect: scaled(27,492,374,80,true,14);
+}
+
+.bugrep-share-btn
+{
+        scaled-rect: scaled(27,592,374,80,true,14);
 }
 
 .bugrep-sending
@@ -907,6 +952,11 @@
 	qproperty-scaledPixmap: "@bugrep-bg";
 }
 
+.contact-bugrep-bg
+{
+        qproperty-scaledPixmap: "@contact-bugrep-bg";
+}
+
 .bugrep-input-textarea
 {
 	color: "@text";
@@ -917,6 +967,58 @@
 {
 	color: "@label";
 	scaled-font: scaled(16);	
+}
+
+.bugrep-agreement-frame
+{
+	color: "@background";
+	radius: 25;
+	scaled-rect: scaled(nan,nan,-1,860,false);
+}
+
+.bugrep-agreement-pos
+{
+	scaled-rect: scaled(nan,98,nan,nan,false);
+}
+
+.bugrep-agreement-title
+{
+	color: "@text";
+	font-weight: Font.Bold;
+	scaled-rect: scaled(-1,16,-1,24,false,20);
+}
+
+.bugrep-agreement-title-close-btn
+{
+	scaled-rect: scaled(382,18,28,28,true);
+	active: "@btn-close-hover";
+	inactive: "@btn-close";
+}
+
+.bugrep-agreement-size
+{
+	scaled-rect: scaled(nan,68,354,636,false,15);
+}
+
+.bugrep-agreement-text
+{
+	color: "@text";
+	scaled-rect: scaled(nan,nan,354,680,false,15);
+}
+
+.bugrep-agreement-text-pos
+{
+	scaled-rect: scaled(nan,68,nan,nan,false);
+}
+
+.bugrep-agreement-line-pos
+{
+	scaled-rect: scaled(nan,704,nan,nan,false);
+}
+
+.bugrep-agreement-button
+{
+	scaled-rect: scaled(nan,726,374,80,false);
 }
 
 /****************************************************
@@ -1075,6 +1177,128 @@
 }
 
 /****************************************************
+ * FAQ
+ ***************************************************/
+
+.faq-content
+{
+	scaled-rect: scaled(-1,144,363,nan,false,14);
+}
+
+.faq-item
+{
+	scaled-rect: scaled(nan,nan,nan,68,false);
+}
+
+.faq-item-spacer
+{
+	scaled-rect: scaled(nan,nan,nan,26,false);
+}
+
+.faq-item-label
+{
+	scaled-font: scaled(16);
+	font-weight: Font.Bold;
+}
+
+.faq-item-text
+{
+	scaled-font: scaled(16);
+	color: "@label";
+}
+
+.faq-plus-btn
+{
+	scaled-rect: scaled(nan,nan,32,32,true);
+    qproperty-inactive: "@btn-plus";
+    qproperty-active: "@btn-plus";
+}
+
+.faq-close-btn
+{
+	scaled-rect: scaled(nan,nan,32,32,true);
+    qproperty-inactive: "@btn-close";
+    qproperty-active: "@btn-close";
+}
+
+/****************************************************
+* Ticker
+***************************************************/
+
+.ticker-close-button
+{
+    scaled-rect: scaled(nan,nan,24,24,true);
+    qproperty-inactive: "@btn-ticker-close";
+    qproperty-active: "@btn-ticker-close-hover";
+}
+
+.ticker
+{
+    scaled-rect: scaled(-1,nan,-1,36,false);
+}
+
+.ticker-lable-rect
+{
+    scaled-rect: scaled(nan,nan,-1,36,false);
+}
+
+.ticker-label
+{
+    scaled-rect: scaled(nan,nan,nan,36,false,14);
+    color: "#FFFFFF";
+}
+
+.ticker-label-background
+{
+    scaled-rect: scaled(nan,nan,-1,36,false);
+    color: "#A4A3C0";
+}
+
+.ticker-close-rect
+{
+    scaled-rect: scaled(nan,nan,36,36,true);
+}
+
+/****************************************************
+ * Update
+ ***************************************************/
+
+.update-notification-rect
+{
+    scaled-rect: scaled(-1,40,356,78,false);
+    color: "@update-background";
+}
+
+.update-notification-label
+{
+    scaled-rect: scaled(112,13,nan,nan,false,18);
+    color: "@text";
+}
+
+.update-notification-button
+{
+    scaled-rect: scaled(155,45,nan,nan,false,18);
+    color: "@brand";
+}
+
+.update-notification-close-button
+{
+    scaled-rect: scaled(nan,10,24,24,true);
+    qproperty-inactive: "@btn-update-notification-close";
+    qproperty-active: "@btn-update-notification-close-hover";
+}
+
+.update-notification-pos-ticker-on
+{
+    scaled-rect: scaled(nan,38,nan,nan,false);
+}
+
+.update-notification-pos-ticker-off
+{
+    scaled-rect: scaled(nan,15,nan,nan,false);
+}
+
+/****************************************************
  * Choose Country
  ***************************************************/
 
@@ -1096,4 +1320,55 @@
 {
 	qproperty-inactive: "@btn-close";
 	qproperty-active: "@btn-close-hover";
+}
+
+
+/****************************************************
+ * Update
+ ***************************************************/
+
+.progress-circle-arc
+{
+	scaled-rect: scaled(-1,278,200,200,true,12);
+	color: "@text";
+}
+
+.progress-circle-separator-container
+{
+	scaled-rect: scaled(-1,134,-1,4,true);
+}
+
+.progress-circle-btn-confirm
+{
+	scaled-rect: scaled(-1,737,374,80,true,12);
+}
+
+.progress-circle-info
+{
+	scaled-rect: scaled(nan,nan,128,64,true);
+}
+
+.progress-circle-percent
+{
+	scaled-font: scaled(40);
+	color: "@text";
+	font-weight: Font.Bold;
+}
+
+.progress-circle-mbytes
+{
+	scaled-font: scaled(12);
+	color: "@light-grey";
+}
+
+.progress-circle-spacing
+{
+	scaled-rect: scaled(nan,nan,nan,8,false);
+}
+
+.progress-message
+{
+	scaled-rect: scaled(-1,500,354,nan,false,19);
+	color: "@text";
+	horizontal-align: Text.AlignHCenter;
 }

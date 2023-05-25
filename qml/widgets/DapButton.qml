@@ -27,9 +27,9 @@ Button
     ///@detalis textButton Text button.
     property string textButton
     ///@detalis colorButtonTextNormal Button text color in normal state.
-    property string colorButtonTextNormal
+    property string colorButtonTextNormal: currTheme.white
     ///@detalis colorButtonTextHover Button text color in hover state.
-    property string colorButtonTextHover
+    property string colorButtonTextHover: currTheme.white
     ///@detalis indentTextRight: Indentation of the text from the right edge.
     property int indentTextRight
     ///@detalis fontButton Font setting.
@@ -55,19 +55,19 @@ Button
     property color gradientColorHovered0: "#f0f0a0"
     property color gradientColorHovered1: "#f000a0"
 
-    property color defaultColorNormal0: currTheme.buttonColorNormalPosition0
-    property color defaultColorNormal1: currTheme.buttonColorNormalPosition1
-    property color defaultColorHovered0: currTheme.buttonColorHoverPosition0
-    property color defaultColorHovered1: currTheme.buttonColorHoverPosition1
-    property color defaultColorUnselectedNormal: "#373A42"
+    property color defaultColorNormal0: currTheme.mainButtonColorNormal0
+    property color defaultColorNormal1: currTheme.mainButtonColorNormal1
+    property color defaultColorHovered0: currTheme.mainButtonColorHover0
+    property color defaultColorHovered1: currTheme.mainButtonColorHover1
+    property color defaultColorUnselectedNormal: currTheme.secondaryButtonColor
     property color defaultColorUnselectedHovered: "#272A32"
-    property color defaultColorDisabled: "#B3B1BC"
+    property color defaultColorDisabled: currTheme.gray
 
     property color defaultColor: shadowColor
 
-    property color shadowColor : "#1F242F"
+    property color shadowColor : currTheme.mainButtonShadow
 //    property string shadowColor : currTheme.buttonShadow
-    property color innerShadowColor : currTheme.buttonInnerShadow
+    property color innerShadowColor : currTheme.buttonsShadowInner
     property color innerShadowPressColor : "#1F242F"
 
     property double opacityDropShadow: 0.44
@@ -166,7 +166,7 @@ Button
                 horizontalAlignment: Qt.AlignRight
                 bottomPadding: OS_WIN_FLAG ? 2 : 0
                 anchors.rightMargin: indentTextRight
-                color: currTheme.textColor
+                color: control.containsMouse ? colorButtonTextHover : colorButtonTextNormal
                 text: qsTr(textButton)
             }
 
@@ -258,7 +258,7 @@ Button
         anchors.fill: dapBackgroundButton
         horizontalOffset: 2
         verticalOffset: 2
-        radius: 8
+        radius: 7
         samples: 10
         cached: true
         color: shadowColor
@@ -272,7 +272,7 @@ Button
         anchors.fill: dapBackgroundButton
         horizontalOffset: 1
         verticalOffset: 1
-        radius: 5
+        radius: 4
         samples: 10
         cached: true
         color: innerShadowColor
@@ -311,8 +311,8 @@ Button
             {
                 gradientColorNormal0 = defaultColorUnselectedNormal
                 gradientColorNormal1 = defaultColorUnselectedNormal
-                gradientColorHovered0 = defaultColorUnselectedHovered
-                gradientColorHovered1 = defaultColorUnselectedHovered
+                gradientColorHovered0 = defaultColorHovered0
+                gradientColorHovered1 = defaultColorHovered1
             }
 
         }

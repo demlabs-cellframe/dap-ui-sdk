@@ -28,6 +28,7 @@ enum class DapJsonCmdType
     REQUEST_PURCHASE_VERIFY,
     CLIENT_INFO,
     CDB_CTL,
+    UPDATE_OPERATION,
     UNKNOWN
 };
 

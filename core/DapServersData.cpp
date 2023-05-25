@@ -81,8 +81,8 @@ void DapServersData::setCurrentServer(const QString &a_serverName)
             setCurrentServer(i);
             return;
         }
-        this->setCurrentServer(-1);
     }
+    this->setCurrentServer(-1);
 
 //    qFatal("There is no server with name %s", qPrintable(a_serverName));
 }
@@ -97,7 +97,8 @@ bool DapServersData::_setCurrentServerByIndex(int a_serverIndex)
   Q_ASSERT (a_serverIndex >= 0 && a_serverIndex < m_servers.count());
 
   auto &targetServer  = m_servers[a_serverIndex];
-  if (m_currentServer == targetServer)
+  if (m_currentServer.name == targetServer.name
+      && m_currentServer == targetServer)
     return false;
 
   m_currentServer     = targetServer;
@@ -400,27 +401,35 @@ QVariant DapServersData::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
+
     if (index.row() >= m_servers.size())
         return QVariant();
 
-    switch (role) {
-    case Qt::DisplayRole:
-        return m_servers.at(index.row()).name;
-    case COUTRY_FLAG_ROLE: {
-        auto si = m_servers.at(index.row());
-        if (si.name.isEmpty())
-            return QString();
+    switch (role)
+    {
+        case Qt::DisplayRole:
+            return m_servers.at (index.row()).name;
 
-        return findInCountriesMap(si.name.toUpper());
-    }
-    case CONNECTION_QUALITY: {
-      return int (m_servers.at(index.row()).connection_quality);
-    }
-    case PING_ROLE: {
-      return m_servers.at(index.row()).ping;
-    }
-    default:
-        break;
+        case COUTRY_FLAG_ROLE:
+            {
+                auto si = m_servers.at (index.row());
+                if (si.name.isEmpty())
+                    return QString();
+
+                return findInCountriesMap (si.name.toUpper());
+            }
+
+        case CONNECTION_QUALITY:
+            return int (m_servers.at (index.row()).connection_quality);
+
+        case PING_ROLE:
+            return m_servers.at (index.row()).ping;
+
+        case ADDRESS_ROLE:
+            return m_servers.at (index.row()).address;
+
+        default:
+            break;
     }
 
     return QVariant();

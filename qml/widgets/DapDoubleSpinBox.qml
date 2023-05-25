@@ -53,7 +53,7 @@ SpinBox {
             text: spinbox.textFromValue(spinbox.value, spinbox.locale)
 
             font: spinbox.font
-            color: currTheme.textColor
+            color: currTheme.white
         //        selectionColor: "#21be2b"
         //        selectedTextColor: "#ffffff"
             horizontalAlignment: Qt.AlignHCenter

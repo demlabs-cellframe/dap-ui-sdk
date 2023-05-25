@@ -34,9 +34,13 @@
 	footer-statistics-active:   "qrc:/light/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/light/btn_account.png";
 	bugrep-bg: 					"qrc:/light/report_bg_border.png";
+        contact-bugrep-bg:          "qrc:/light/contact_report_bg_border.png";
 	login-logo: 				"qrc:/light/login-logo.png";
+	btn-plus:                   "qrc:/light/ic_plus.png";
 	btn-close:                  "qrc:/light/ic_close.png";
-	btn-close-hover:            "qrc:/light/ic_close_hover.png";
+        btn-close-hover:            "qrc:/light/ic_close_hover.png";
+        btn-ticker-close:           "qrc:/light/ic_ticker_close.png";
+        btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
 }
 
 .@dark
@@ -71,9 +75,13 @@
 	footer-statistics-active:   "qrc:/dark/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/dark/btn_account.png";
 	bugrep-bg: 					"qrc:/dark/report_bg_border.png";
+        contact-bugrep-bg:          "qrc:/dark/contact_report_bg_border.png";
 	login-logo: 				"qrc:/dark/login-logo.png";
+    btn-plus:                   "qrc:/dark/ic_plus.png";
 	btn-close:                  "qrc:/dark/ic_close.png";
-	btn-close-hover:            "qrc:/dark/ic_close_hover.png";
+        btn-close-hover:            "qrc:/dark/ic_close_hover.png";
+        btn-ticker-close:           "qrc:/dark/ic_ticker_close.png";
+        btn-ticker-close-hover:     "qrc:/dark/ic_ticker_close_hover.png";
 }
 
 /****************************************************
@@ -283,6 +291,11 @@
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_bot.png");
 }
 
+.ic_share_log
+{
+        qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_share_log.png");
+}
+
 .ic_close
 {
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_close.png");
@@ -306,6 +319,11 @@
 .ic_information_bug-report
 {
 	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_information_bug-report.png");
+}
+
+.ic_faq
+{
+	qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_faq.png");
 }
 
 .ic_key-history
@@ -586,7 +604,7 @@
 
 .login-connect
 {
-	scaled-rect: scaled(-1,570,374,80,true,12);
+	scaled-rect: scaled(nan,570,374,80,true,12);
 }
 
 .login-obtain-container
@@ -761,7 +779,12 @@
 
 .dashboard-status-container
 {
-	scaled-rect: scaled(nan,107,nan,22,false);
+	scaled-rect: scaled(nan,nan,nan,22,false);
+}
+
+.dashboard-status-container-pos
+{
+	scaled-rect: scaled(nan,107,nan,nan,nan);
 }
 
 .dashboard-status-label-scaler
@@ -830,9 +853,19 @@
  * Bug report
  ***************************************************/
 
+.bugrep-contact-input
+{
+        scaled-rect: scaled(32,150,370,80,false,16);
+}
+
+.bugrep-contact-input-content
+{
+        scaled-rect: scaled(nan,nan,316,32,false,16);
+}
+
 .bugrep-input
 {
-	scaled-rect: scaled(19,133,390,200,false,16);
+        scaled-rect: scaled(19,215,390,200,false,16);
 }
 
 .bugrep-input-content
@@ -842,18 +875,23 @@
 
 .bugrep-letter-counter
 {
-	scaled-rect: scaled(291,333,100,19,false,16);
+        scaled-rect: scaled(283,410,100,19,false,16);
 }
 
 .bugrep-attach-btn
 {
-	scaled-rect: scaled(19,392,390,20,false,16);
+        scaled-rect: scaled(19,450,390,20,false,16);
 	color: "#DA0B82";
 }
 
 .bugrep-send-btn
 {
-	scaled-rect: scaled(27,441,374,80,true,14);
+        scaled-rect: scaled(27,499,374,80,true,14);
+}
+
+.bugrep-share-btn
+{
+        scaled-rect: scaled(27,592,374,80,true,14);
 }
 
 .bugrep-sending
@@ -876,6 +914,11 @@
 .bugrep-bg
 {
 	qproperty-scaledPixmap: "@bugrep-bg";
+}
+
+.contact-bugrep-bg
+{
+        qproperty-scaledPixmap: "@contact-bugrep-bg";
 }
 
 .bugrep-input-textarea
@@ -1012,6 +1055,11 @@
 	scaled-rect: scaled(nan,nan,363,34,true);
 }
 
+.ph-notice-spacer
+{
+	scaled-rect: scaled(nan,nan,363,34,true);
+}
+
 .ph-btn-label-main
 {
 	color: "@text";
@@ -1043,6 +1091,89 @@
 {
 	color: "@text";
 	scaled-font: scaled(14);
+}
+
+/****************************************************
+ * FAQ
+ ***************************************************/
+
+.faq-content
+{
+	scaled-rect: scaled(-1,144,363,nan,false,14);
+}
+
+.faq-item
+{
+	scaled-rect: scaled(nan,nan,nan,68,false);
+}
+
+.faq-item-spacer
+{
+	scaled-rect: scaled(nan,nan,nan,26,false);
+}
+
+.faq-item-label
+{
+	scaled-font: scaled(16);
+	font-weight: Font.Bold;
+}
+
+.faq-item-text
+{
+	scaled-font: scaled(16);
+	color: "@label";
+}
+
+.faq-plus-btn
+{
+	scaled-rect: scaled(nan,nan,32,32,true);
+    qproperty-inactive: "@btn-plus";
+    qproperty-active: "@btn-plus";
+}
+
+.faq-close-btn
+{
+	scaled-rect: scaled(nan,nan,32,32,true);
+    qproperty-inactive: "@btn-close";
+    qproperty-active: "@btn-close";
+}
+
+/****************************************************
+* Ticker
+***************************************************/
+
+.ticker-close-button
+{
+    scaled-rect: scaled(nan,nan,24,24,true);
+    qproperty-inactive: "@btn-ticker-close";
+    qproperty-active: "@btn-ticker-close-hover";
+}
+
+.ticker
+{
+    scaled-rect: scaled(-1,nan,-1,36,false);
+}
+
+.ticker-lable-rect
+{
+    scaled-rect: scaled(nan,nan,-1,36,false);
+}
+
+.ticker-label
+{
+    scaled-rect: scaled(nan,nan,nan,36,false,14);
+    color: "#FFFFFF";
+}
+
+.ticker-label-background
+{
+    scaled-rect: scaled(nan,nan,-1,36,false);
+    color: "#A4A3C0";
+}
+
+.ticker-close-rect
+{
+    scaled-rect: scaled(nan,nan,36,36,true);
 }
 
 /****************************************************

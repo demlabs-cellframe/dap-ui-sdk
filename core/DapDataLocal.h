@@ -64,6 +64,7 @@ public:
 
     QString     m_brandName;
     QString     logFilePath;
+    QString     m_logPath;
 
     void parseXML(const QString& a_fname);
 
@@ -78,6 +79,9 @@ public:
 
     void setLogFilePath(QString path){logFilePath = path;}
     QString getLogFilePath(){return logFilePath;}
+    void setLogPath(QString path){m_logPath = path;}
+    QString getLogPath(){return m_logPath;}
+
 
     QString password() const;
 

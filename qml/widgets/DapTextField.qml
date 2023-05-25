@@ -13,12 +13,12 @@ TextField {
     property int borderWidth:0
     property int borderRadius:0
 
-    property string selectColor: "#AABCDE"
-    property string selectTextColor: "#2E3138"
-    property string borderColor: currTheme.borderColor
-    property string backgroundColor: currTheme.backgroundElements
-    property string placeholderColor: currTheme.placeHolderTextColor
-    property string textColor: currTheme.textColor
+    property string selectColor: currTheme.inputActive
+    property string selectTextColor: currTheme.mainBackground
+    property string borderColor: currTheme.input
+    property string backgroundColor: currTheme.secondaryBackground
+    property string placeholderColor: currTheme.gray
+    property string textColor: currTheme.white
 
     property bool indicatorVisible: false
     property string indicatorSourceEnabled: ""

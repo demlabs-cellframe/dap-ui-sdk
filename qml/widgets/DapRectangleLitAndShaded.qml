@@ -39,7 +39,6 @@ Rectangle
 
             data: contentData
         }
-
     }
 
     InnerShadow

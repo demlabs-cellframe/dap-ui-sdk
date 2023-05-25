@@ -13,7 +13,7 @@ Rectangle
     property int currentIndex: viewerItem.currentIndex
     property int defaultIndex: 0
     property font textFont: mainFont.dapFont.medium14
-    property color textColor: currTheme.textColor
+    property color textColor: currTheme.white
     property alias selectorModel: viewerItem.model
     property alias selectorListView: viewerItem
 
@@ -25,8 +25,8 @@ Rectangle
 
     implicitWidth: viewerItem.width
 
-    border.color: currTheme.borderColor
-    color: currTheme.backgroundMainScreen
+    border.color: currTheme.input
+    color: currTheme.mainBackground
     radius: height * 0.5
 
     ListView
@@ -76,10 +76,10 @@ Rectangle
 
                     var gradient = ctx.createLinearGradient(0,parent.height/2,parent.width,parent.height/2)
                     gradient.addColorStop(0, gradColor === undefined ?
-                                              currTheme.buttonColorNormalPosition0 :
+                                              currTheme.mainButtonColorNormal0 :
                                               gradColor)
                     gradient.addColorStop(1, gradColor === undefined ?
-                                              currTheme.buttonColorNormalPosition1 :
+                                              currTheme.mainButtonColorNormal1 :
                                               gradColor)
                     ctx.fillStyle = gradient
                     ctx.fillRect(0,0,parent.width,parent.height)
