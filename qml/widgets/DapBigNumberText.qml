@@ -113,8 +113,6 @@ Item
 
             onCopyClicked:
             {
-//                print("copyButtonClicked", fullNumber)
-
                 clipboard.setText(fullNumber)
             }
         }
@@ -126,6 +124,13 @@ Item
 
     }
 
+//    Connections{
+//        target: translator
+//        function onLanguageChanged()
+//        {
+//            button.popupText = qsTr("Number copied")
+//        }
+//    }
 
     function getOutText()
     {
