@@ -10,11 +10,17 @@ Item
     implicitHeight: 45
 
     property int rightMarginIndicator: 16
+    property int leftMarginText: 16
+    property int rightMarginText: 16
     property int maximumPopupHeight: 200
-    property int padding: 15
-    property int spacing: 15
+
+    property int bgRadius: 0
+
+    property bool topOrientation: false
 
     property alias model: popupListView.model
+
+    property string indicatorSource: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrowDown.svg"
 
     property int currentIndex: -1
     property string currentText: displayText
@@ -26,7 +32,6 @@ Item
 
     property string mainTextRole: "name"
     property string secondTextRole: "secondname"
-    property string imageRole: "status"
 
     property string defaultText: qsTr("Undefined")
 
@@ -34,14 +39,11 @@ Item
 
     property color backgroundColor: currTheme.mainBackground
 
-    property string enabledIcon:""
-    property string disabledIcon:""
-
     signal itemSelected(var index)
 
     onModelChanged:
     {
-        print("DapCustomComboBox", "onModelChanged",
+        console.log("DapCustomComboBox", "onModelChanged",
               "popupListView.currentIndex", popupListView.currentIndex)
 
         if (popupListView.currentIndex < 0)
@@ -53,7 +55,7 @@ Item
 
     onCountChanged:
     {
-        print("DapCustomComboBox", "onCountChanged",
+        console.log("DapCustomComboBox", "onCountChanged",
               "popupListView.currentIndex", popupListView.currentIndex)
 
         if (popupListView.currentIndex < 0)
@@ -65,17 +67,16 @@ Item
     Rectangle
     {
         id: background
-        border.width: 0
         anchors.fill: parent
 
+        radius: bgRadius
         color: popupVisible ?
-                   currTheme.mainBackground :
+                   currTheme.secondaryBackground :
                    backgroundColor
-
         RowLayout
         {
             anchors.fill: parent
-            anchors.leftMargin: 16
+            anchors.leftMargin: leftMarginText
             anchors.rightMargin: rightMarginIndicator
 
             Text
@@ -91,12 +92,11 @@ Item
                 elide: Text.ElideRight
             }
 
-            Image
+            DapImageRender
             {
                 id: indicator
-                source: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrowDown.svg"
+                source: indicatorSource
                 rotation: popupVisible ? 180 : 0
-                mipmap: true
 
                 Behavior on rotation
                 {
@@ -114,27 +114,29 @@ Item
         visible: popupVisible
         anchors.fill: background
         horizontalOffset: currTheme.hOffset
-        verticalOffset: currTheme.vOffset
+        verticalOffset: topOrientation ?
+                            - currTheme.vOffset : currTheme.vOffset
         radius: currTheme.radiusShadow
         color: currTheme.shadowColor
         source: background
         samples: 10
         cached: true
+        opacity: 0.42
     }
 
-    InnerShadow
-    {
-        visible: popupVisible
-        anchors.fill: background
-        horizontalOffset: 1
-        verticalOffset: 1
-        radius: 1
-        samples: 10
-        cached: true
-        color: "#524D64"
-        source: background
-        spread: 0
-    }
+//    InnerShadow
+//    {
+//        visible: popupVisible
+//        anchors.fill: background
+//        horizontalOffset: 1
+//        verticalOffset: 1
+//        radius: 1
+//        samples: 10
+//        cached: true
+//        color: "#524D64"
+//        source: background
+//        spread: 0
+//    }
 
     MouseArea
     {
@@ -164,13 +166,12 @@ Item
 
 //        visible: popupVisible
 
-        scale: mainWindow.scale
-
 //        x: 0
 //        y: mainItem.height
 
-        x: -width*(1/scale-1)*0.5
-        y: mainItem.height - height*(1/scale-1)*0.5
+        x: 0
+        y: mainItem.height
+           - (topOrientation ? height + background.height : 0)
 
         width: popupBackground.width
         height: popupBackground.height
@@ -197,8 +198,8 @@ Item
 
             color: currTheme.mainBackground
 
-            border.width: 1
-            border.color: currTheme.mainBackground
+//            border.width: 1
+//            border.color: currTheme.mainBackground
 
             ListView
             {
@@ -227,13 +228,13 @@ Item
 
                     color: area.containsMouse ?
                                currTheme.lime :
-                               currTheme.mainBackground
+                               currTheme.secondaryBackground
 
                     RowLayout
                     {
                         anchors.fill: parent
-                        anchors.leftMargin: 16
-                        anchors.rightMargin: 16
+                        anchors.leftMargin: leftMarginText
+                        anchors.rightMargin: rightMarginText
 
                         Text
                         {
@@ -257,16 +258,6 @@ Item
                             font.pointSize: mainItem.font.pointSize - 3
                             elide: Text.ElideRight
                             verticalAlignment: Text.AlignVCenter
-                        }
-
-                        Image{
-                            property var data: getModelData(index, imageRole)
-                            id: statusIcon
-                            visible: data === "" ? false : true
-                            // wallets combobox
-                            source: data === "Active" ? enabledIcon : disabledIcon
-                            mipmap: true
-
                         }
                     }
 
@@ -299,25 +290,27 @@ Item
             visible: popupVisible
             anchors.fill: popupBackground
             horizontalOffset: currTheme.hOffset
-            verticalOffset: currTheme.vOffset
+            verticalOffset: topOrientation ?
+                                - currTheme.vOffset : currTheme.vOffset
             radius: currTheme.radiusShadow
             color: currTheme.shadowColor
             source: popupBackground
             samples: 10
             cached: true
+            opacity: 0.42
         }
 
-        InnerShadow {
-            visible: popupVisible
-            anchors.fill: popupBackground
-            horizontalOffset: 1
-            verticalOffset: 0
-            radius: 1
-            samples: 10
-            cached: true
-            color: "#524D64"
-            source: popupBackground
-        }
+//        InnerShadow {
+//            visible: popupVisible
+//            anchors.fill: popupBackground
+//            horizontalOffset: 1
+//            verticalOffset: 0
+//            radius: 1
+//            samples: 10
+//            cached: true
+//            color: "#524D64"
+//            source: popupBackground
+//        }
     }
 
     function getModelData(index, role)

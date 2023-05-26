@@ -73,8 +73,6 @@ Popup
 
     id: dapCalendarPopup
 
-    scale: mainWindow.scale
-
     background:
         Rectangle
         {

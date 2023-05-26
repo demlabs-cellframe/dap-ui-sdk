@@ -14,9 +14,9 @@ Button
     property string normalImageButton
     ///@detalis hoverImageButton The image on the Button is in the mouseover state.
     property string hoverImageButton
-    ///@detalis widthImageButton Image width.
+    ///@detalis widthImageButton DapImageRender width.
     property int widthImageButton: 0
-    ///@detalis heightImageButton Image height.
+    ///@detalis heightImageButton DapImageRender height.
     property int heightImageButton: 0
     ///@detalis indentImageLeftButton: Indentation of the image from the left edge.
     property int indentImageLeftButton
@@ -27,9 +27,9 @@ Button
     ///@detalis textButton Text button.
     property string textButton
     ///@detalis colorButtonTextNormal Button text color in normal state.
-    property string colorButtonTextNormal
+    property string colorButtonTextNormal: currTheme.white
     ///@detalis colorButtonTextHover Button text color in hover state.
-    property string colorButtonTextHover
+    property string colorButtonTextHover: currTheme.white
     ///@detalis indentTextRight: Indentation of the text from the right edge.
     property int indentTextRight
     ///@detalis fontButton Font setting.
@@ -63,14 +63,26 @@ Button
     property color defaultColorUnselectedHovered: "#272A32"
     property color defaultColorDisabled: currTheme.gray
 
+    property color defaultColor: shadowColor
+
     property color shadowColor : currTheme.mainButtonShadow
 //    property string shadowColor : currTheme.buttonShadow
     property color innerShadowColor : currTheme.buttonsShadowInner
     property color innerShadowPressColor : "#1F242F"
 
+    property double opacityDropShadow: 0.44
+    property double opacityInnerShadow: 0.3
+
+    property alias dropShadow: shadow
+    property alias innerShadow: light
+
     property bool activeFrame : true
 
     property bool selected: true
+
+    //Blocked interactive in list view if pressed and unlock if released
+    property bool listInteractivFlagDisabled: false
+    property Item parentList
 
     hoverEnabled: true
 
@@ -95,35 +107,49 @@ Button
     contentItem:
         Rectangle
         {
+            property color grad0: gradientColorNormal0
+            property color grad1: gradientColorNormal1
             id: dapBackgroundButton
             anchors.fill: parent
-            LinearGradient
-            {
-                anchors.fill: parent
-                source: parent
-                start: Qt.point(0,parent.height/2)
-                end: Qt.point(parent.width,parent.height/2)
-                gradient:
-                    Gradient {
-                        GradientStop
-                        {
-                            id: grad0
-                            position: 0;
-                            color: gradientColorNormal0
-                        }
-                        GradientStop
-                        {
-                            id: grad1
-                            position: 1;
-                            color: gradientColorNormal1
 
-                        }
-                    }
+            /* mask source */
+            Rectangle {
+                id: contenMask
+                anchors.fill: parent
+                radius: dapBackgroundButton.radius
+                visible: false
+            }
+            /* mask */
+            OpacityMask {
+                anchors.fill: content
+                source: content
+                maskSource: contenMask
+            }
+            Canvas{
+                id: content
+                anchors.fill: parent
+                opacity: 0
+                onPaint: {
+                    var ctx = getContext("2d")
+
+                    var gradient = ctx.createLinearGradient(0,parent.height/2,parent.width,parent.height/2)
+                    gradient.addColorStop(0, dapBackgroundButton.grad0)
+                    gradient.addColorStop(1, dapBackgroundButton.grad1)
+
+                    ctx.fillStyle = gradient
+                    ctx.fillRect(0,0,parent.width,parent.height)
+                }
+            }
+            onGrad0Changed: {
+                content.requestPaint()
+            }
+            onGrad1Changed: {
+                content.requestPaint()
             }
 
             color: !dapButton.activeFrame ?
                        "transparent" :
-                       shadowColor
+                       defaultColor
 
             implicitWidth: widthButton
             implicitHeight: heightButton
@@ -140,19 +166,18 @@ Button
                 horizontalAlignment: Qt.AlignRight
                 bottomPadding: OS_WIN_FLAG ? 2 : 0
                 anchors.rightMargin: indentTextRight
-                color: currTheme.white
+                color: control.containsMouse ? colorButtonTextHover : colorButtonTextNormal
                 text: qsTr(textButton)
             }
 
             ///button picture
-            Image
+            DapImageRender
             {
                 id: img
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: indentImageLeftButton
                 source: dapButton.hovered ? hoverImageButton : normalImageButton
-                mipmap: true
                 width: widthImageButton
                 height: heightImageButton
             }
@@ -160,14 +185,14 @@ Button
             ParallelAnimation {
                 id: mouseEnterAnim
                 PropertyAnimation {
-                    target: grad0
-                    properties: "color"
+                    target: dapBackgroundButton
+                    properties: "grad0"
                     to: gradientColorHovered0
                     duration: 100
                 }
                 PropertyAnimation {
-                    target: grad1
-                    properties: "color"
+                    target: dapBackgroundButton
+                    properties: "grad1"
                     to: gradientColorHovered1
                     duration: 100
                 }
@@ -175,18 +200,19 @@ Button
             ParallelAnimation {
                 id: mouseExitedAnim
                 PropertyAnimation {
-                    target: grad0
-                    properties: "color"
+                    target: dapBackgroundButton
+                    properties: "grad0"
                     to: gradientColorNormal0
                     duration: 100
                 }
                 PropertyAnimation {
-                    target: grad1
-                    properties: "color"
+                    target: dapBackgroundButton
+                    properties: "grad1"
                     to: gradientColorNormal1
                     duration: 100
                 }
             }
+
 
             MouseArea{
                 id: control
@@ -203,6 +229,8 @@ Button
                 onPressed: {
                     if(dapButton.enabled && dapButton.activeFrame)
                     {
+                        if(listInteractivFlagDisabled)
+                            parentList.interactive = false
                         shadowAnimPress.start()
                         shadow.visible = false
                     }
@@ -213,6 +241,9 @@ Button
                     {
                         shadowAnimRelease.start()
                         shadow.visible = true
+
+                        if(listInteractivFlagDisabled)
+                            parentList.interactive = true
 
                         if (control.containsMouse)
                             dapButton.clicked()
@@ -231,7 +262,7 @@ Button
         samples: 10
         cached: true
         color: shadowColor
-        opacity: 0.44
+        opacity: opacityDropShadow
         source: dapBackgroundButton
         }
 
@@ -245,7 +276,7 @@ Button
         samples: 10
         cached: true
         color: innerShadowColor
-        opacity: 0.3
+        opacity: opacityInnerShadow
         source: dapBackgroundButton
         visible: dapBackgroundButton.visible
 

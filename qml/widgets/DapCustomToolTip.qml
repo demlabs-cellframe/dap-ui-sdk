@@ -11,7 +11,7 @@ ToolTip {
     property font textFont: mainFont.dapFont.medium12
     property string textColor: currTheme.white
     property string contentText
-    scale: mainWindow.scale
+    property alias backgroundToolTip: backgroundToolTip
 
     contentItem:
     Text
@@ -63,6 +63,7 @@ ToolTip {
 
             Connections{
                 target: root
+
                 function onUpdatePos (){
                     if(root.y < 0)
                     {
@@ -97,6 +98,7 @@ ToolTip {
             radius: 10
             samples: 20
             opacity: 1
+            visible: bottomRect.visible
         }
         DropShadow {
             id: shadow2
@@ -111,6 +113,7 @@ ToolTip {
             opacity: 1
             fast: true
             cached: true
+            visible: bottomRect.visible
         }
 
         Rectangle{
@@ -119,6 +122,7 @@ ToolTip {
             anchors.right: backgroundToolTip.right
             height: bottomRect.height/2
             color: backgroundToolTip.color
+            visible: bottomRect.visible
         }
     }
 }

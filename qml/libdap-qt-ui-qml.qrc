@@ -49,5 +49,6 @@
         <file>widgets/DapCustomToolTip.qml</file>
         <file>widgets/DapBigText.qml</file>
         <file>widgets/DapToolTipInfo.qml</file>
+        <file>widgets/DapImageRender.qml</file>
     </qresource>
 </RCC>

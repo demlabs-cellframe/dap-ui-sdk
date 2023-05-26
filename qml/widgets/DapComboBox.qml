@@ -74,7 +74,7 @@ ComboBox {
     }
 
     indicator:
-    Image
+    DapImageRender
     {
         id: canvas
         width: 24 

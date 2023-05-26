@@ -13,13 +13,20 @@ Image {
     property alias mouseArea: area
     property font textFont: mainFont.dapFont.medium12
 
-
     signal clicked()
 
-
-    mipmap: true
+//    mipmap: true
 
     source: area.containsMouse ? indicatorSrcHover : indicatorSrcNormal
+
+    sourceSize: Qt.size( img.sourceSize.width, img.sourceSize.height )
+
+    Image {
+        id: img
+        source: parent.source
+        width: 0
+        height: 0
+    }
 
     MouseArea{
         id: area
