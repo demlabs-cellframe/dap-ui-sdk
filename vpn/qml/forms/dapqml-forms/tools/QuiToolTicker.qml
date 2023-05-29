@@ -20,11 +20,20 @@ DapQmlRectangle {
      ********************************************/
     /// @{
 
-    property string tickerMessage
-    property string tickerUrl
-    property bool tickerIsHidden: true
+    property bool tickerVisible: TickerUpdateCtl.tickerVisible
+
+    /// @}
+    /****************************************//**
+     * @name SIGNALS
+     ********************************************/
+    /// @{
 
     Behavior on y { PropertyAnimation { duration: 100 }}
+
+    onTickerVisibleChanged: {
+        if (tickerVisible)
+            showTicker();
+    }
 
     /// @}
     /****************************************//**
@@ -34,17 +43,17 @@ DapQmlRectangle {
 
     function showTicker() {
         y = 0;
-        tickerIsHidden = false;
+        visible = true;
     }
 
     function hideTicker() {
         y = -1 * height;
-        tickerIsHidden = true;
+        TickerUpdateCtl.tickerVisible = false;
     }
 
     function tickerClicked() {
-        if (!tickerIsHidden)
-            Qt.openUrlExternally (tickerUrl);
+        if (TickerUpdateCtl.tickerVisible)
+            Qt.openUrlExternally (TickerUpdateCtl.tickerUrl);
     }
 
     function _updateTickerAnim() {
@@ -61,7 +70,6 @@ DapQmlRectangle {
 
     DapQmlRectangle {
         id: tickerLableRect
-        objectName: "tickerLableRect"
         qss: "ticker-lable-rect"
         visible: true
         anchors.left: parent.left
@@ -69,10 +77,9 @@ DapQmlRectangle {
         /* text */
         DapQmlLabel {
             id: tickerLabel
-            objectName: "tickerLabel"
             width: contentWidth
             qss: "ticker-label"
-            text: tickerMessage
+            text: TickerUpdateCtl.tickerMessage
             z: 2
             horizontalAlign: Text.AlignHCenter
             mipmap: false
@@ -81,7 +88,6 @@ DapQmlRectangle {
 
             NumberAnimation  {
                 id: tickerAnimation
-                objectName: "tickerAnimation"
                 target: tickerLabel
                 properties: "x"
                 running: false
