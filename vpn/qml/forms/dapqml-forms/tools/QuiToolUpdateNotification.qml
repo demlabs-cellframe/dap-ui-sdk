@@ -12,44 +12,83 @@ import "qrc:/dapqml-widgets"
 DapQmlRectangle {
     id: root
     qss: "update-notification-rect"
-    y: hidden
-       ? (statusLabel.y + statusLabel.height)
-       : (statusLabel.y + statusLabel.height + updNotPosTickerOff.y)
+    y: dashboardStatusLabelBottom === 0
+       ? loginPos
+       : dashboardPos
     z: 30
     radius: 13
-    visible: true
+    visible: opacity > 0
     opacity: 0
 
-    property string updateMessage
-    property bool hidden: true
+    /****************************************//**
+     * @name VARS
+     ********************************************/
+    /// @{
+
+    property string updateMessage // TickerUpdateCtl.updateMessage
     //property real titlePos: statusLabel.y + statusLabel.height
+
+    property real showingUpdate: TickerUpdateCtl.updateVisible
+    property real loginPos: !TickerUpdateCtl.updateVisible
+                            ? (!TickerUpdateCtl.tickerVisible ? 0 : updNotPosTickerOff.y)
+                            : (!TickerUpdateCtl.tickerVisible ? updNotPosTickerOff.y : updNotPosTickerOn.y)
+    property real dashboardPos: !TickerUpdateCtl.updateVisible
+                                ? (dashboardStatusLabelBottom)
+                                : (dashboardStatusLabelBottom + updNotPosTickerOff.y)
+    property real dashboardStatusLabelBottom // (statusLabel.y + statusLabel.height)
+
+    /// @}
+    /****************************************//**
+     * @name SIGNALS
+     ********************************************/
+    /// @{
+
+    signal sigStartUpdate();
+    signal sigVisibilityUpdated();
 
     Behavior on y { PropertyAnimation { duration: 100 }}
     Behavior on opacity { PropertyAnimation { duration: 100 }}
 
+    onShowingUpdateChanged: showUpdateNotification()
+
+    /// @}
+    /****************************************//**
+     * @name FUNCTIONS
+     ********************************************/
+    /// @{
+
     function showUpdateNotification() {
         updateNotificationButton.visible = true;
-        hidden     = false;
         opacity    = 1;
         _updatePos();
     }
 
     function hideUpdateNotification() {
         updateNotificationButton.visible = false;
-        hidden     = true;
         opacity    = 0;
         _updatePos();
     }
 
     function _updatePos() {
-        y = hidden
-            ? (statusLabel.y + statusLabel.height)
-            : (statusLabel.y + statusLabel.height + updNotPosTickerOff.y)
-        statusContainer._updatePos();
+        y = dashboardStatusLabelBottom === 0
+            ? loginPos
+            : dashboardPos
+        root.sigVisibilityUpdated() // statusContainer._updatePos();
     }
+
+    /// @}
+    /****************************************//**
+     * Sizers
+     ********************************************/
+    /// @{
 
     DapQmlDummy { id: updNotPosTickerOn;  qss: "update-notification-pos-ticker-on"  }
     DapQmlDummy { id: updNotPosTickerOff; qss: "update-notification-pos-ticker-off" }
+
+    /// @}
+    /****************************************//**
+     * Content
+     ********************************************/
 
     /* text */
     DapQmlLabel {
