@@ -338,8 +338,11 @@ Item {
 
     QuiToolTicker {}
     QuiToolUpdateNotification {
-        dashboardStatusLabelBottom: statusLabel.y + statusLabel.height
-        onSigVisibilityUpdated: statusContainer._updatePos()
+        id: updNot
+        isDashobard: true
+        //dashboardStatusLabelBottom: statusLabel.y + statusLabel.height
+        //onSigVisibilityUpdated: statusContainer._updatePos()
+        onSigStartUpdate: root.sigStartUpdate()
     }
 
     /****************************************//**
@@ -366,14 +369,11 @@ Item {
     DapQmlRectangle {
         id: statusContainer
         y: statusPositioner.y
+        //y: TickerUpdateCtl.dashStatConPos // statusPositioner.y + (!TickerUpdateCtl.updateVisible ? 0 : statusContainer.height);
         qss: "dashboard-status-container"
         width: parent.width
 
         Behavior on y { PropertyAnimation { duration: 100 }}
-
-        function _updatePos() {
-            y = statusPositioner.y + (!TickerUpdateCtl.updateVisible ? 0 : statusContainer.height);
-        }
 
 //        Component.onCompleted: StyleDebugTree.describe (
 //           "statusContainer",
@@ -434,7 +434,9 @@ Item {
 
     DapQmlLabel {
         id: dashboardError
+        y: TickerUpdateCtl.dashErrorPos
         qss: "dashboard-error-label"
+        Behavior on y { PropertyAnimation { duration: 100 }}
         wrapMode: Text.WordWrap
         //text: "Temporary network problems, request will be handled as soon as the network connection is re-established"
     }

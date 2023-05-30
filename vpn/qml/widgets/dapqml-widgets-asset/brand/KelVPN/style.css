@@ -973,8 +973,13 @@
 
 .dashboard-error-label
 {
-	scaled-rect: scaled(51,140,327,57,false,14);
+	scaled-rect: scaled(51,nan,327,57,false,14);
 	color: "#F53172";
+}
+
+.dashboard-error-label-pos
+{
+	scaled-rect: scaled(nan,140,nan,nan,false);
 }
 
 .dashboard-switch
@@ -1428,7 +1433,7 @@
 
 .update-notification-rect
 {
-    scaled-rect: scaled(-1,40,356,78,false);
+    scaled-rect: scaled(-1,nan,356,78,false);
     color: "@update-background";
 }
 

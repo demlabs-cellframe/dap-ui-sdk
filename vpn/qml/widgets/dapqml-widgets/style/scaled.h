@@ -141,6 +141,14 @@ public:
   void setType(Type newType);
 
   void adjust (QObject *a_item, double a_screenWidth, double a_screenHeight) const;
+  void calcAdjusted(
+    double a_screenWidth,
+    double a_screenHeight,
+    double &a_x,
+    double &a_y,
+    double &a_width,
+    double &a_height,
+    double &a_fontSize) const;
   /// @}
 
   /****************************************//**
