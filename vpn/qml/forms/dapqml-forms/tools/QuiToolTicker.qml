@@ -1,6 +1,7 @@
 /* INCLUDES */
 
 import QtQuick 2.15
+import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -11,9 +12,10 @@ import "qrc:/dapqml-widgets"
 
 DapQmlRectangle {
     id: root
-    y: -1 * height
+    //y: -1 * height
+    y: TickerUpdateCtl.tickerPos
     qss: "ticker"
-    visible: false
+    visible: true
 
     /****************************************//**
      * @name VARS
@@ -42,12 +44,12 @@ DapQmlRectangle {
     /// @{
 
     function showTicker() {
-        y = 0;
-        visible = true;
+        //y = 0;
+        //visible = true;
     }
 
     function hideTicker() {
-        y = -1 * height;
+        //y = -1 * height;
         TickerUpdateCtl.tickerVisible = false;
     }
 
@@ -56,11 +58,12 @@ DapQmlRectangle {
             Qt.openUrlExternally (TickerUpdateCtl.tickerUrl);
     }
 
-    function _updateTickerAnim() {
-        tickerAnimation.from    = tickerLableRect.width;
-        tickerAnimation.to      = 0 - tickerLabel.contentWidth;
-        tickerAnimation.running = true;
-    }
+//    function _updateTickerAnim() {
+//        tickerAnimation.from    = tickerLableRect.width;
+//        tickerAnimation.to      = 0 - tickerLabel.contentWidth;
+//        tickerAnimation.running = true;
+//    }
+
     /// @}
     /****************************************//**
      * @name CONTENT
@@ -74,6 +77,9 @@ DapQmlRectangle {
         visible: true
         anchors.left: parent.left
 
+        onWidthChanged: tickerLabel.updateAnimation()
+        Component.onCompleted: tickerLabel.updateAnimation()
+
         /* text */
         DapQmlLabel {
             id: tickerLabel
@@ -84,15 +90,32 @@ DapQmlRectangle {
             horizontalAlign: Text.AlignHCenter
             mipmap: false
 
-            onWidthChanged: _updateTickerAnim()
+            onWidthChanged: updateAnimation()
+            Component.onCompleted: updateAnimation()
+
+            function updateAnimation() {
+                TickerUpdateCtl.updateAnimation (tickerLableRect.width, contentWidth) // _updateTickerAnim()
+            }
+
+//            Component.onCompleted: StyleDebugTree.describe (
+//               "tickerLabel",
+//                ["x", "y", "width", "height", "contentWidth", "text"],
+//               this);
 
             NumberAnimation  {
                 id: tickerAnimation
                 target: tickerLabel
                 properties: "x"
-                running: false
                 duration: 10000
                 loops: Animation.Infinite
+                from: TickerUpdateCtl.animBegin
+                to: TickerUpdateCtl.animEnd
+                running: TickerUpdateCtl.animRunning
+
+//                Component.onCompleted: StyleDebugTree.describe (
+//                   "tickerAnimation",
+//                    ["from", "to", "running"],
+//                   this);
             }
         }
 

@@ -1,6 +1,7 @@
 /* INCLUDES */
 
 import QtQuick 2.15
+import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -12,9 +13,12 @@ import "qrc:/dapqml-widgets"
 DapQmlRectangle {
     id: root
     qss: "update-notification-rect"
-    y: dashboardStatusLabelBottom === 0
-       ? loginPos
-       : dashboardPos
+//    y: !isDashobard
+//       ? TickerUpdateCtl.loginUpdNotPos
+//       : TickerUpdateCtl.dashUpdNotPos
+//    y: dashboardStatusLabelBottom === 0
+//       ? loginPos
+//       : dashboardPos
     z: 30
     radius: 13
     visible: opacity > 0
@@ -25,17 +29,31 @@ DapQmlRectangle {
      ********************************************/
     /// @{
 
+    property bool isDashobard: false
     property string updateMessage // TickerUpdateCtl.updateMessage
     //property real titlePos: statusLabel.y + statusLabel.height
 
-    property real showingUpdate: TickerUpdateCtl.updateVisible
-    property real loginPos: !TickerUpdateCtl.updateVisible
-                            ? (!TickerUpdateCtl.tickerVisible ? 0 : updNotPosTickerOff.y)
-                            : (!TickerUpdateCtl.tickerVisible ? updNotPosTickerOff.y : updNotPosTickerOn.y)
-    property real dashboardPos: !TickerUpdateCtl.updateVisible
-                                ? (dashboardStatusLabelBottom)
-                                : (dashboardStatusLabelBottom + updNotPosTickerOff.y)
-    property real dashboardStatusLabelBottom // (statusLabel.y + statusLabel.height)
+    property bool showingTicker: TickerUpdateCtl.tickerVisible
+    property bool showingUpdate: TickerUpdateCtl.updateVisible
+//    property real loginPos: !TickerUpdateCtl.updateVisible
+//                            ? (!TickerUpdateCtl.tickerVisible ? 0 : updNotPosTickerOff.y)
+//                            : (!TickerUpdateCtl.tickerVisible ? updNotPosTickerOff.y : updNotPosTickerOn.y)
+//    property real dashboardPos: !TickerUpdateCtl.updateVisible
+//                                ? (dashboardStatusLabelBottom + updNotPosTickerOn.y)
+//                                : (dashboardStatusLabelBottom + updNotPosTickerOff.y)
+//    property real dashboardStatusLabelBottom // (statusLabel.y + statusLabel.height)
+
+    state: "onLogin"
+    states: [
+        State {
+            name: "onLogin"
+            PropertyChanges { target: root; y: TickerUpdateCtl.loginUpdNotPos }
+        },
+        State {
+            name: "onDashboard"
+            PropertyChanges { target: root; y: TickerUpdateCtl.dashUpdNotPos }
+        }
+    ]
 
     /// @}
     /****************************************//**
@@ -44,12 +62,37 @@ DapQmlRectangle {
     /// @{
 
     signal sigStartUpdate();
-    signal sigVisibilityUpdated();
 
     Behavior on y { PropertyAnimation { duration: 100 }}
     Behavior on opacity { PropertyAnimation { duration: 100 }}
 
-    onShowingUpdateChanged: showUpdateNotification()
+    onShowingUpdateChanged: {
+        if (showingUpdate)
+            showUpdateNotification();
+        else
+            hideUpdateNotification();
+//        _updatePos();
+    }
+//    onShowingTickerChanged: _updatePos()
+//    onLoginPosChanged: _updatePos()
+//    onDashboardPosChanged: _updatePos()
+//    onDashboardStatusLabelBottomChanged: _updatePos()
+
+    onIsDashobardChanged: {
+        state = !isDashobard ? "onLogin" : "onDashboard"
+        //console.log (`new updnot state: ${state} , ${y}|${TickerUpdateCtl.loginUpdNotPos}|${TickerUpdateCtl.dashUpdNotPos}`);
+    }
+
+    //onYChanged: console.log (`updnot[${isDashobard}] y: ${y}|${TickerUpdateCtl.loginUpdNotPos}|${TickerUpdateCtl.dashUpdNotPos}`)
+
+    onOpacityChanged:
+        if (opacity < 0.1)
+            TickerUpdateCtl.updateVisible = false
+
+    Component.onCompleted: StyleDebugTree.describe (
+       "upd-not" + isDashobard,
+        ["x", "y", "width", "height", "showingUpdate", "loginPos", "dashboardPos", "dashboardStatusLabelBottom"],
+       this);
 
     /// @}
     /****************************************//**
@@ -58,23 +101,19 @@ DapQmlRectangle {
     /// @{
 
     function showUpdateNotification() {
-        updateNotificationButton.visible = true;
         opacity    = 1;
-        _updatePos();
     }
 
     function hideUpdateNotification() {
-        updateNotificationButton.visible = false;
         opacity    = 0;
-        _updatePos();
     }
 
-    function _updatePos() {
-        y = dashboardStatusLabelBottom === 0
-            ? loginPos
-            : dashboardPos
-        root.sigVisibilityUpdated() // statusContainer._updatePos();
-    }
+//    function _updatePos() {
+//        y = dashboardStatusLabelBottom === 0
+//            ? loginPos
+//            : dashboardPos
+////        root.sigVisibilityUpdated() // statusContainer._updatePos();
+//    }
 
     /// @}
     /****************************************//**
