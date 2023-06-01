@@ -30,6 +30,13 @@ void DapCmdConnect::sendCmdDisconnect()
     sendCmd(&obj);
 }
 
+void DapCmdConnect::sendCmdRestartService()
+{
+    QJsonObject obj;
+    obj["action"] = "RestartService";
+    sendCmd(&obj);
+}
+
 void DapCmdConnect::handleResult(const QJsonObject& result)
 {
     qDebug() << "handleResult";

@@ -158,6 +158,7 @@ protected:
   void _sortCheckedApps();
 
   void _clearBeforeLoad();
+  void _delayedSave() const;
   /// @}
 
   /****************************************//**
@@ -176,6 +177,7 @@ public:
   /// @{
 signals:
   void sigModeChanged();
+  void sigAppSaved();
   /// @}
 };
 

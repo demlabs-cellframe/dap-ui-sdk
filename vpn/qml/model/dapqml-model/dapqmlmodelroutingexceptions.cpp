@@ -6,6 +6,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QTimer>
 
 #include "DapDataLocal.h"
 
@@ -623,29 +624,20 @@ void DapQmlModelRoutingExceptions::updateAllLists()
 
 void DapQmlModelRoutingExceptions::save() const
 {
-  /* var */
-  QJsonArray japps, jroutes;
+  static QTimer *s_delayedSaveTimer = nullptr;
 
-  /* collect checked apps and their names */
-  for (const auto &app : qAsConst (s_checkedApps))
-    japps << toJson (app);
-
-  /* collect routes */
-  for (const auto &route : qAsConst (s_routes))
-    jroutes << toJson (route);
-
-  /* store */
-  QJsonObject jobj =
+  /* init delayed save timer */
+  if (s_delayedSaveTimer == nullptr)
   {
-    {"apps", japps},
-    {"routes", jroutes},
-  };
+    s_delayedSaveTimer  = new QTimer;
+    s_delayedSaveTimer->setSingleShot (true);
+    s_delayedSaveTimer->setInterval (2000);
+    connect (s_delayedSaveTimer, &QTimer::timeout,
+             this, [this] { _delayedSave(); });
+  }
 
-  DapDataLocal::instance()->saveSetting (ROUTING_EXCEPTIONS_LIST, jobj);
-
-  /* clear data */
-  while (japps.erase (japps.begin())     != japps.end());
-  while (jroutes.erase (jroutes.begin()) != jroutes.end());
+  /* start/restart the timer */
+  s_delayedSaveTimer->start();
 }
 
 void DapQmlModelRoutingExceptions::load()
@@ -880,6 +872,33 @@ void DapQmlModelRoutingExceptions::_clearBeforeLoad()
 
   for (auto *model : qAsConst (s_baseModels))
     model->refresh();
+}
+
+void DapQmlModelRoutingExceptions::_delayedSave() const
+{
+  /* var */
+  QJsonArray japps, jroutes;
+
+  /* collect checked apps and their names */
+  for (const auto &app : qAsConst (s_checkedApps))
+    japps << toJson (app);
+
+  /* collect routes */
+  for (const auto &route : qAsConst (s_routes))
+    jroutes << toJson (route);
+
+  /* store */
+  QJsonObject jobj =
+  {
+    {"apps", japps},
+    {"routes", jroutes},
+  };
+
+  DapDataLocal::instance()->saveSetting (ROUTING_EXCEPTIONS_LIST, jobj);
+
+  /* clear data */
+  while (japps.erase (japps.begin())     != japps.end());
+  while (jroutes.erase (jroutes.begin()) != jroutes.end());
 }
 
 /********************************************

@@ -55,6 +55,10 @@ void DapCmdConnect::handle(const QJsonObject* params) {
         if(params->value(actionParam).toString() == "Disconnect") {
             emit sigDisconnect();
             return;
+        } else if (params->value(actionParam).toString() == "RestartService"){
+            qDebug() << "DapCmdConnect::RestartService signal";
+            emit sigRestartService();
+            return;
         }
     }
 

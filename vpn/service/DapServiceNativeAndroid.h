@@ -8,6 +8,7 @@ class DapServiceNativeAndroid : public DapServiceNativeAbstract
 public:
     DapServiceNativeAndroid();
     void restartService() override;
+    void stopService();
     void checkInstallation() override;
 };
 

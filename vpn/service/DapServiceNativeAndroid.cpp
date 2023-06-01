@@ -12,6 +12,15 @@ DapServiceNativeAndroid::DapServiceNativeAndroid()
 
 void DapServiceNativeAndroid::restartService()
 {
+    stopService();
+    QTimer::singleShot(500, [ = ] {
+        checkInstallation();
+    });
+}
+
+void DapServiceNativeAndroid::stopService()
+{
+    QtAndroid::androidActivity().callMethod<void> ("stopVPNService", "()V");
 }
 
 void DapServiceNativeAndroid::checkInstallation()
