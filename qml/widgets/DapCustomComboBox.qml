@@ -32,7 +32,9 @@ Item
 
     property string displayText: defaultText
 
-    property color backgroundColor: currTheme.mainBackground
+    property color backgroundColorNormal: currTheme.mainBackground
+    property color backgroundColorShow: currTheme.mainBackground
+    property alias background: background
 
     property string enabledIcon:""
     property string disabledIcon:""
@@ -69,8 +71,8 @@ Item
         anchors.fill: parent
 
         color: popupVisible ?
-                   currTheme.mainBackground :
-                   backgroundColor
+                   backgroundColorNormal :
+                   backgroundColorShow
 
         RowLayout
         {
