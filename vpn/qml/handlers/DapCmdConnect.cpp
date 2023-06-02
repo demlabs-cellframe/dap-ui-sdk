@@ -30,10 +30,13 @@ void DapCmdConnect::sendCmdDisconnect()
     sendCmd(&obj);
 }
 
-void DapCmdConnect::sendCmdRestartService()
+void DapCmdConnect::sendCmdRestartService(bool if_running)
 {
     QJsonObject obj;
-    obj["action"] = "RestartService";
+    if (if_running)
+        obj["action"] = "RestartServiceIfRunning";
+    else
+        obj["action"] = "RestartService";
     sendCmd(&obj);
 }
 

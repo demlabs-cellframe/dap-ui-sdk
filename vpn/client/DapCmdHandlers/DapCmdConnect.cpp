@@ -51,13 +51,28 @@ void DapCmdConnect::sendCmdError(const QString errorMsg)
 }
 
 void DapCmdConnect::handle(const QJsonObject* params) {
-    if(params->value(actionParam) != QJsonValue::Undefined) { //this is disconnect request
-        if(params->value(actionParam).toString() == "Disconnect") {
+    if(params->value(actionParam) != QJsonValue::Undefined) 
+    { 
+        //this is disconnect request
+        QString req = params->value(actionParam).toString();
+        if(req == "Disconnect") 
+        {
+            qDebug() << "DapCmdConnect::Disconnect signal";
             emit sigDisconnect();
             return;
-        } else if (params->value(actionParam).toString() == "RestartService"){
+        } 
+        
+        if (req == "RestartService")
+        {
             qDebug() << "DapCmdConnect::RestartService signal";
-            emit sigRestartService();
+            emit sigRestartService(false);
+            return;
+        }
+
+        if (req == "RestartServiceIfRunning")
+        {
+            qDebug() << "DapCmdConnect::RestartServiceIfRunning signal";
+            emit sigRestartService(true);
             return;
         }
     }

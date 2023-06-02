@@ -4,6 +4,7 @@
 #include <QtAndroid>
 
 #include "DapServiceNativeAndroid.h"
+#include <QTimer>
 
 DapServiceNativeAndroid::DapServiceNativeAndroid()
 {

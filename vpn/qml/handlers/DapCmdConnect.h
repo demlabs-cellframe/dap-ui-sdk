@@ -16,7 +16,7 @@ public slots:
 
 
     void sendCmdDisconnect();
-    void sendCmdRestartService();
+    void sendCmdRestartService(bool if_running = false);
 protected:
     void handleResult(const QJsonObject& result) override;
     void handleError(int code, const QString& message) override;

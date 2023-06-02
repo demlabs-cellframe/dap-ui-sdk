@@ -24,7 +24,7 @@ signals:
 
     void sigConnectNoAuth(const QString& address, uint16_t port);
     void sigDisconnect();
-    void sigRestartService();
+    void sigRestartService(bool if_runnning);
 };
 
 #endif // DAPCMDCONNHANDLER_H
