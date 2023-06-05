@@ -2,6 +2,7 @@
 
 import QtQuick 2.0
 import DapQmlStyle 1.0
+import QtGraphicalEffects 1.12
 
 /****************************************//**
  * @brief Dap QML Switch Widget
@@ -160,7 +161,7 @@ Item {
 
     function setEnable(value) {
         root.enabled = value;
-        bg.opacity = (value)? 1.0: 0.5;
+        desaturateEffect.desaturation = 0.5 * (!value);
     }
 
     /// @brief change style based on checkbox state
@@ -183,66 +184,87 @@ Item {
 
     /// @}
     /****************************************//**
-     * Background frame
+     * Content
      ********************************************/
 
-    DapQmlLabel {
-        id: bg
-        x: _centerHor(this)
-        y: _centerVer(this)
-        z: 0
-        width: root.width - 12 * (root.width / 270)
-        height: root.height - 36 * (root.height / 174)
-        qss: "switch-bg-off"
+    Item {
+        id: content
+        anchors.fill: parent
+        visible: false
 
-        //onClicked: toggle()
+        /****************************************//**
+         * Background frame
+         ********************************************/
+
+        DapQmlLabel {
+            id: bg
+            x: _centerHor(this)
+            y: _centerVer(this)
+            z: 0
+            width: root.width - 12 * (root.width / 270)
+            height: root.height - 36 * (root.height / 174)
+            qss: "switch-bg-off"
+
+            //onClicked: toggle()
+        }
+
+        /****************************************//**
+         * Toggle
+         ********************************************/
+
+        DapQmlLabel {
+            id: tgl
+            //x: (checked === false) ? (-12 * (root.width / 270)) : (root.width - width + 12 * (root.width / 270))
+            x: {
+                if (root.internal.dragging)
+                {
+                    if (isLeftReached)
+                        return minPos;
+                    if (isRightReached)
+                        return maxPos;
+                    return draggingPos
+                }
+                return finalPos;
+            }
+
+            y: 0
+            z: 1
+            width: root.height
+            height: root.height
+            qss: "switch-toggle-off"
+
+            property real finalPos:         (checked === false) ? minPos : maxPos
+            property real draggingPos:      root.internal.pos2 - (width / 2)
+            property real minPos:           (-12 * (root.width / 270))
+            property real maxPos:           (root.width - width + 12 * (root.width / 270))
+            property bool isLeftReached:    draggingPos <= minPos
+            property bool isRightReached:   draggingPos >= maxPos
+            property bool draggingState:    root.internal.pos2 >= root.width / 2
+
+            //onClicked: toggle()
+
+            Behavior on x {
+                PropertyAnimation {
+                    duration: root.internal.draggingAnim ? 0 : 125
+                    easing.type: Easing.InQuad
+                }
+            }
+        }
     }
 
     /****************************************//**
-     * Toggle
+     * Saturation effect
      ********************************************/
 
-    DapQmlLabel {
-        id: tgl
-        //x: (checked === false) ? (-12 * (root.width / 270)) : (root.width - width + 12 * (root.width / 270))
-        x: {
-            if (root.internal.dragging)
-            {
-                if (isLeftReached)
-                    return minPos;
-                if (isRightReached)
-                    return maxPos;
-                return draggingPos
-            }
-            return finalPos;
-        }
-
-        y: 0
-        z: 1
-        width: root.height
-        height: root.height
-        qss: "switch-toggle-off"
-
-        property real finalPos:         (checked === false) ? minPos : maxPos
-        property real draggingPos:      root.internal.pos2 - (width / 2)
-        property real minPos:           (-12 * (root.width / 270))
-        property real maxPos:           (root.width - width + 12 * (root.width / 270))
-        property bool isLeftReached:    draggingPos <= minPos
-        property bool isRightReached:   draggingPos >= maxPos
-        property bool draggingState:    root.internal.pos2 >= root.width / 2
-
-        //onClicked: toggle()
-
-        Behavior on x {
-            PropertyAnimation {
-                duration: root.internal.draggingAnim ? 0 : 125
-                easing.type: Easing.InQuad
-            }
-        }
+    Desaturate {
+        id: desaturateEffect
+        anchors.fill: content
+        source: content
+        desaturation: root.enable ? 0 : 0.4
     }
 
     /****************************************//**
-     * Mouce area
+     * Mouse area
      ********************************************/
 
 //    MouseArea {
