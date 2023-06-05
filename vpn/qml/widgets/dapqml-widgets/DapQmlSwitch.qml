@@ -27,7 +27,7 @@ Item {
     width: 270
     height: 174
 
-    opacity: 0.5
+    //opacity: 0.5
     enabled: false
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
@@ -43,6 +43,94 @@ Item {
 
     /// @brief widget qss style
     property string qss
+
+    property QtObject internal: QtObject {
+        property bool dragging: false
+        property bool draggingAnim: false
+        property bool draggingState: tgl.draggingState
+        property real pos1
+        property real pos2
+        property real diff: pos2 - pos1
+        property real draggingStartDistance: 6
+
+        function _begin() {
+            pos1            = point.x;
+            pos2            = point.x;
+            dragging        = false;
+            draggingAnim    = false;
+
+            //console.log(`SWITCH drag begin: ${pos1}|${pos2}|${diff}|${dragging}|${draggingState}`);
+        }
+
+        function _move() {
+            /* store value */
+            pos2 = point.x;
+
+            /* check for dragging */
+            if (diff > 0)
+            {
+                if (diff > draggingStartDistance)
+                {
+                    dragging        = true;
+                    draggingAnim    = true;
+                }
+            }
+            if (diff < 0)
+            {
+                if (diff < -draggingStartDistance)
+                {
+                    dragging        = true;
+                    draggingAnim    = true;
+                }
+            }
+
+            //console.log(`SWITCH drag move: ${pos1}|${pos2}|${diff}|${dragging}|${draggingState}`);
+        }
+
+        function _end() {
+            /* turn off anim */
+            draggingAnim    = false;
+
+            /* not dragging */
+            if (!dragging)
+                _toggle();
+
+            /* on left side */
+            if (!draggingState)
+                _turnOff();
+
+            /* on right side */
+            else
+                _turnOn();
+
+            dragging    = false;
+
+            //console.log(`SWITCH drag end: ${pos1}|${pos2}|${diff}|${dragging}|${draggingState}`);
+        }
+
+        function _turnOff() {
+            if (root.checked === false)
+                return;
+
+            root.setState(false);
+            //root.clicked();
+            //console.log(`SWITCH drag turnOff`);
+        }
+
+        function _turnOn() {
+            if (root.checked === true)
+                return;
+
+            root.setState(true);
+            //root.clicked();
+            //console.log(`SWITCH drag turnOn`);
+        }
+
+        function _toggle() {
+            root.toggle();
+            //console.log(`SWITCH drag toggle`);
+        }
+    }
 
     /// @}
     /****************************************//**
@@ -72,7 +160,7 @@ Item {
 
     function setEnable(value) {
         root.enabled = value;
-        root.opacity = (value)? 1.0: 0.5;
+        bg.opacity = (value)? 1.0: 0.5;
     }
 
     /// @brief change style based on checkbox state
@@ -107,7 +195,7 @@ Item {
         height: root.height - 36 * (root.height / 174)
         qss: "switch-bg-off"
 
-        onClicked: toggle()
+        //onClicked: toggle()
     }
 
     /****************************************//**
@@ -116,24 +204,70 @@ Item {
 
     DapQmlLabel {
         id: tgl
-        x: (checked === false) ? (-12 * (root.width / 270)) : (root.width - width + 12 * (root.width / 270))
+        //x: (checked === false) ? (-12 * (root.width / 270)) : (root.width - width + 12 * (root.width / 270))
+        x: {
+            if (root.internal.dragging)
+            {
+                if (isLeftReached)
+                    return minPos;
+                if (isRightReached)
+                    return maxPos;
+                return draggingPos
+            }
+            return finalPos;
+        }
+
         y: 0
         z: 1
         width: root.height
         height: root.height
         qss: "switch-toggle-off"
 
-        onClicked: toggle()
-        Behavior on x { PropertyAnimation { duration: 125; easing.type: Easing.InQuad } }
+        property real finalPos:         (checked === false) ? minPos : maxPos
+        property real draggingPos:      root.internal.pos2 - (width / 2)
+        property real minPos:           (-12 * (root.width / 270))
+        property real maxPos:           (root.width - width + 12 * (root.width / 270))
+        property bool isLeftReached:    draggingPos <= minPos
+        property bool isRightReached:   draggingPos >= maxPos
+        property bool draggingState:    root.internal.pos2 >= root.width / 2
+
+        //onClicked: toggle()
+
+        Behavior on x {
+            PropertyAnimation {
+                duration: root.internal.draggingAnim ? 0 : 125
+                easing.type: Easing.InQuad
+            }
+        }
     }
 
     /****************************************//**
      * Mouce area
      ********************************************/
 
-    MouseArea {
+//    MouseArea {
+//        anchors.fill: parent
+//        onClicked: toggle()
+//    }
+    MultiPointTouchArea {
+        id: draggingSpace
         anchors.fill: parent
-        onClicked: toggle()
+        z: 10
+        touchPoints: [
+            TouchPoint {
+                id: point
+                onXChanged: root.internal._move()
+            }
+        ]
+        onPressed:  internal._begin() // console.log(`switch pressed`);
+        onReleased: internal._end()   // console.log(`switch released`);
+
+//        Rectangle {
+//            width: 30; height: 30
+//            color: "green"
+//            x: point.x
+//            y: point.y
+//        }
     }
 }
 
