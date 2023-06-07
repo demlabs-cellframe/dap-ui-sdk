@@ -107,7 +107,7 @@ public slots:
     void sendBugReportStatusRequest(const QByteArray &data);
     void getNews();
     void sendTxOutRequest(const QString &tx);
-    void sendNewTxCondRequest(AString &data);
+    void sendNewTxCondRequest(QString &data);
 
 #ifdef BUILD_VAR_GOOGLE
     void requestPurchaseVerify(const QJsonObject *params);
