@@ -822,40 +822,6 @@ void DapQmlModelRoutingExceptions::load()
   while (jroutes.erase (jroutes.begin()) != jroutes.end());
 }
 
-//void DapQmlModelRoutingExceptions::save() const
-//{
-//  QJsonArray /*japps, */jroutes;
-
-//  //for (const auto &app : qAsConst(s_apps))
-//  //  japps << toJson (app);
-
-//  for (const auto &route : qAsConst(s_routes))
-//    jroutes << toJson (route);
-
-//  QJsonObject jobj =
-//  {
-//    //{"apps", japps},
-//    {"routes", jroutes},
-//  };
-
-//  DapDataLocal::instance()->saveSetting (SETTING_ROUTING_EXCEPTIONS, jobj);
-//}
-
-//void DapQmlModelRoutingExceptions::load()
-//{
-//  auto jobj     = DapDataLocal::instance()->getSetting (SETTING_ROUTING_EXCEPTIONS).toJsonObject();
-//  auto //japps    = jobj.value ("apps").toArray(),
-//       jroutes  = jobj.value ("routes").toArray();
-
-//  clearRoutes(); // clear();
-
-////  for (const auto &app : qAsConst (japps))
-////    append (toApp (app.toObject()));
-
-//  for (const auto &route : qAsConst (jroutes))
-//    append (toRoute (route.toObject()));
-//}
-
 void DapQmlModelRoutingExceptions::clear()
 {
   clearApps();
@@ -1475,9 +1441,17 @@ void DapQmlModelRoutingExceptionsFilterProxy::setModel (QAbstractListModel *a_mo
   setSourceModel (a_model);
 }
 
+const QString &DapQmlModelRoutingExceptionsFilterProxy::filter() const
+{
+  return m_filter;
+}
+
 void DapQmlModelRoutingExceptionsFilterProxy::setFilter (const QString &a_filter)
 {
-  _filter = a_filter;
+  if (m_filter == a_filter)
+    return;
+
+  m_filter = a_filter;
   invalidateFilter();
 }
 
@@ -1485,7 +1459,7 @@ bool DapQmlModelRoutingExceptionsFilterProxy::filterAcceptsRow (int sourceRow, c
 {
   auto index  = _model->index (sourceRow, 0, sourceParent);
   auto name   = _model->data (index, int (Field::appName)).toString();
-  return name.startsWith (_filter, Qt::CaseInsensitive);
+  return name.startsWith (m_filter, Qt::CaseInsensitive);
 }
 
 /*-----------------------------------------*/

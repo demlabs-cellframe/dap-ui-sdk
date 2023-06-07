@@ -60,6 +60,7 @@ Item {
     /// @{
 
     signal sigTabChanged(int a_tabIndex);
+    signal sigModeChanged(bool a_includedList);
     signal sigPopupOpen();
     signal sigPopupAppSearchFilterEdited(string a_filter);
 
@@ -92,6 +93,7 @@ Item {
 
     function _switchAppsMode() {
         root.internal.inc = !root.internal.inc;
+        root.sigModeChanged (root.internal.inc);
     }
 
     function _popupBottomButtonClicked(isSecond) {
@@ -134,6 +136,12 @@ Item {
         qss: "rouexc-content-item-btn-close"
     }
 
+    DapQmlDummy { id: listviewPopupAppsSizer;           qss: "rouexc-popup-apps-content"; }
+    DapQmlDummy { id: rouexcContentItem;                qss: "rouexc-content-item" }
+    DapQmlDummy { id: rouexcContentItemIcon;            qss: "rouexc-content-item-icon" }
+    DapQmlDummy { id: rouexcPopupAppCheckbox;           qss: "rouexc-popup-app-checkbox";               property string scaledPixmap }
+    DapQmlDummy { id: rouexcPopupAppCheckboxChecked;    qss: "rouexc-popup-app-checkbox-checked";       property string scaledPixmap }
+    DapQmlDummy { id: rouexcContentItemMain;            qss: "rouexc-popup-app-item-label-pos c-label"; property color color; property int fontSize }
 
     /****************************************//**
      * Components
@@ -290,7 +298,7 @@ Item {
         id: delegateAppCheck
 
         Item {
-            width: listviewPopupApps.width
+            width: listviewPopupAppsSizer.width
             height: rouexcContentItem.height
 
             /* icon */
@@ -340,7 +348,7 @@ Item {
         }
 
 //        DapQmlButton {
-//            width: listviewPopupApps.width
+//            width: listviewPopupAppsSizer.width
 //            mainQss: "c-label"
 //            qss: "rouexc-content-item"
 //            buttonStyle: DapQmlButton.Style.IconMainSubIcon
@@ -881,35 +889,32 @@ Item {
                 }
             }
 
-            /* list */
+            /* list exc */
             ListView {
-                id: listviewPopupApps
-                objectName: "listviewPopupApps"
+                id: listviewPopupAppsExc
+                objectName: "listviewPopupAppsExc"
                 x: (parent.width - width) / 2
                 y: listviewPopupAppsSizer.y
                 width: listviewPopupAppsSizer.width
                 height: popupAppsBottom.y - y
+                visible: root.internal.inc === false
                 clip: true
 
-                DapQmlDummy { id: listviewPopupAppsSizer;           qss: "rouexc-popup-apps-content"; }
-                DapQmlDummy { id: rouexcContentItem;                qss: "rouexc-content-item" }
-                DapQmlDummy { id: rouexcContentItemIcon;            qss: "rouexc-content-item-icon" }
-                DapQmlDummy { id: rouexcPopupAppCheckbox;           qss: "rouexc-popup-app-checkbox";               property string scaledPixmap }
-                DapQmlDummy { id: rouexcPopupAppCheckboxChecked;    qss: "rouexc-popup-app-checkbox-checked";       property string scaledPixmap }
-                DapQmlDummy { id: rouexcContentItemMain;            qss: "rouexc-popup-app-item-label-pos c-label"; property color color; property int fontSize }
+                delegate: delegateAppCheck
+            }
+
+            /* list inc */
+            ListView {
+                id: listviewPopupAppsInc
+                objectName: "listviewPopupAppsInc"
+                x: (parent.width - width) / 2
+                y: listviewPopupAppsSizer.y
+                width: listviewPopupAppsSizer.width
+                height: popupAppsBottom.y - y
+                visible: root.internal.inc === true
+                clip: true
 
                 delegate: delegateAppCheck
-                //model: modelCheckedApp
-
-//                delegate: Text {
-//                    text: model.appName
-//                }
-
-//                delegate: Image {
-//                    width: 64
-//                    height: 64
-//                    source: "image://DapQmlModelRoutingExceptionsImageProvider/" + model.packageName + ".png"
-//                }
             }
 
             /* bottom buttons */

@@ -260,7 +260,7 @@ class DapQmlModelRoutingExceptionsFilterProxy : public QSortFilterProxyModel
    *******************************************/
   /// @{
 protected:
-  QString _filter;
+  QString m_filter;
   QAbstractListModel *_model;
   /// @}
 
@@ -278,6 +278,7 @@ public:
   /// @{
 public:
   void setModel (QAbstractListModel *a_model);
+  Q_INVOKABLE const QString &filter() const;
   Q_INVOKABLE void setFilter (const QString &a_filter);
   /// @}
 
