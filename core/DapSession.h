@@ -107,7 +107,7 @@ public slots:
     void sendBugReportStatusRequest(const QByteArray &data);
     void getNews();
     void sendTxOutRequest(const QString &tx);
-    void sendNewTxCondRequest(const QByteArray &data);
+    void sendNewTxCondRequest(AString &data);
 
 #ifdef BUILD_VAR_GOOGLE
     void requestPurchaseVerify(const QJsonObject *params);
@@ -192,7 +192,7 @@ private slots:
     void answerBugReportsStatus();
     Q_INVOKABLE void answerBugReportsStatusError(const QString& msg);
     void answerSignUp();
-    void onNewTxCond();
+    void onNewTxCond(QString &data);
     void onResetSerialKey();
     void errorResetSerialKey(const QString&);
 
@@ -215,7 +215,7 @@ signals:
     void usrDataChanged(const QString &addr, ushort port);
     void logoutRequested();
     void logouted();
-    void newTxCondReceived(const QString &);
+    void newTxCondReceived(QString &);
 
     Q_INVOKABLE void receivedBugReportAnswer(const QString&);
     Q_INVOKABLE void receivedBugReportStatusAnswer(const QString&);
@@ -224,6 +224,7 @@ signals:
 
     void sigSerialKeyReseted(const QString&);
     void sigResetSerialKeyError(const int, const QString&);
+    void sigNewTxReceived(QString&);
 #ifdef BUILD_VAR_GOOGLE
     Q_INVOKABLE void purchaseResponseReceived(const QJsonDocument& response);
     void purchaseError(const QString&);
