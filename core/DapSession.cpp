@@ -537,6 +537,12 @@ void DapSession::onLogout() {
     qInfo() << "Logouted";
 }
 
+void DapSession::onNewTxCond(){
+    qInfo() << "Received new tx cond";
+
+    emit ;
+}
+
 void DapSession::answerSignUp()
 {
     qInfo() << "answerSignUp";
@@ -654,6 +660,13 @@ void DapSession::sendTxOutRequest(const QString &tx) {
     encRequest(tx, URL_TX, "tx_out", NULL, true);
 }
 
+void DapSession::sendNewTxCondRequest(const QByteArray &data){
+    qDebug() << "Send new tx cond request to cdb";
+    // TODO make request with serial and pkey
+
+
+    encRequest(NULL, URL_DB, "new_tx_cond", NULL, SLOT(onNewTxCond()), NULL, true);
+}
 /**
  * @brief DapSession::authorize
  * @param user

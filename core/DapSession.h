@@ -54,6 +54,7 @@ public:
     static const QString URL_DB_FILE;
     static const QString URL_SERVER_LIST;
     static const QString URL_TX;
+    static const QString URL_NEW_TX;
     static const QString URL_BUG_REPORT;
     static const QString URL_NEWS;
     static const QString URL_SIGN_UP;
@@ -106,6 +107,8 @@ public slots:
     void sendBugReportStatusRequest(const QByteArray &data);
     void getNews();
     void sendTxOutRequest(const QString &tx);
+    void sendNewTxCondRequest(const QByteArray &data);
+
 #ifdef BUILD_VAR_GOOGLE
     void requestPurchaseVerify(const QJsonObject *params);
 #endif
@@ -189,7 +192,7 @@ private slots:
     void answerBugReportsStatus();
     Q_INVOKABLE void answerBugReportsStatusError(const QString& msg);
     void answerSignUp();
-
+    void onNewTxCond();
     void onResetSerialKey();
     void errorResetSerialKey(const QString&);
 
@@ -212,6 +215,7 @@ signals:
     void usrDataChanged(const QString &addr, ushort port);
     void logoutRequested();
     void logouted();
+    void newTxCondReceived(const QString &);
 
     Q_INVOKABLE void receivedBugReportAnswer(const QString&);
     Q_INVOKABLE void receivedBugReportStatusAnswer(const QString&);
