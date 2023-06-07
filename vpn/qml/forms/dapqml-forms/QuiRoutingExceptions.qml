@@ -50,6 +50,7 @@ Item {
         property int type: QuiRoutingExceptions.APPS
         property bool popup: false
         property bool spinner: false
+        property bool inc: false
     }
 
     /// @}
@@ -89,6 +90,10 @@ Item {
         tabsContainer.visible   = a_enable;
     }
 
+    function _switchAppsMode() {
+        root.internal.inc = !root.internal.inc;
+    }
+
     function _popupBottomButtonClicked(isSecond) {
         if(root.internal.type === QuiRoutingExceptions.APPS)
         {
@@ -118,6 +123,7 @@ Item {
     DapQmlDummy { id: rouexcTabSpace;   qss: "rouexc-tab-spacing" }
     DapQmlDummy { id: rouexcItemIcon;   qss: "rouexc-content-item-icon" }
     DapQmlDummy { id: rouexcPopupTitle; qss: "rouexc-title-container" }
+    DapQmlDummy { id: rouexcAppModeSw;  qss: "rouexc-tab-content-app-mode-switch-container" }
 
     DapQmlDummy {
         id: popupDialogTitleCloseButtonDummy
@@ -195,10 +201,43 @@ Item {
     }
 
     Component {
+        id: switchModeButton
+
+        // property string name
+        // property var callback
+
+        DapQmlRectangle {
+            qss: "rouexc-tab-content-app-mode-switch"
+
+            DapQmlRectangle {
+                anchors.fill: parent
+                color: "#F45480"
+                opacity: 0.05
+                radius: height / 8
+            }
+
+            DapQmlLabel {
+                anchors.centerIn: parent
+                width: contentWidth
+                height: contentHeight
+                color: "#F45480"
+                disableClicking: true
+                text: parent.parent.name // "APPS"
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: parent.parent.callback()
+            }
+        }
+
+    }
+
+    Component {
         id: delegateApp
 
         Item {
-            width: listviewApps.width
+            width: listviewAppsExc.width
             height: rouexcContentItem.height
 
             /* icon */
@@ -535,6 +574,31 @@ Item {
 
         DapQmlSeparator {
             x: (parent.width - width) / 2
+            y: separatorPos.calcPos - rouexcAppModeSw.height
+            width: rouexcAppModeSw.width
+            height: separatorPos.height
+            visible: root.internal.type === QuiRoutingExceptions.APPS
+            //qss: "rouexc-tab-content-app-mode-switch-container"
+        }
+
+        Item {
+            y: separatorPos.calcPos - rouexcAppModeSw.height + 1
+            width: rouexcAppModeSw.width
+            height: rouexcAppModeSw.height - 1
+            visible: root.internal.type === QuiRoutingExceptions.APPS
+
+            Loader {
+                anchors.centerIn: parent
+                property string name: root.internal.inc
+                                      ? "SWITCH TO inclusion in routing"
+                                      : "SWITCH TO Routing exceptions"
+                property var callback: function() {_switchAppsMode();}
+                sourceComponent: switchModeButton
+            }
+        }
+
+        DapQmlSeparator {
+            x: (parent.width - width) / 2
             y: separatorPos.calcPos
             width: separatorPos.width
             height: separatorPos.height
@@ -579,20 +643,33 @@ Item {
                                       : height + tabsContainer.height
         }
 
-        ListView {
-            id: listviewApps
-            objectName: "listviewApps"
+        Item {
+            id: listviewAppsContainer
             x: (parent.width - width) / 2
             y: listviewSizer.y
             width: listviewSizer.width
-            height: listviewSizer.calcHeight - tabContentMessage.height
+            height: listviewSizer.calcHeight - rouexcAppModeSw.height
             visible: root.internal.type === QuiRoutingExceptions.APPS
-            clip: true
 
-            //DapQmlStyle { item: listviewApps; qss: "rouexc-tab-content"; }
+            ListView {
+                id: listviewAppsExc
+                anchors.fill: parent
+                objectName: "listviewAppsExc"
+                visible: root.internal.inc === false
+                clip: true
 
-            delegate: delegateApp
-            //model: modelApp
+                delegate: delegateApp
+            }
+
+            ListView {
+                id: listviewAppsInc
+                objectName: "listviewAppsInc"
+                anchors.fill: parent
+                visible: root.internal.inc === true
+                clip: true
+
+                delegate: delegateApp
+            }
         }
 
         ListView {
@@ -609,25 +686,6 @@ Item {
 
             delegate: delegateRoute
             //model: modelRoutes
-        }
-
-//        DapQmlSeparator {
-//            anchors.top: listviewApps.bottom
-//            anchors.left: listviewApps.left
-//            width: listviewApps.width
-//        }
-
-        DapQmlLabel {
-            id: tabContentMessage
-            anchors.top: listviewApps.bottom
-            anchors.left: listviewApps.left
-            width: listviewApps.width
-            horizontalAlign: Text.AlignHCenter
-            verticalAlign: Text.AlignVCenter
-            wrapMode: Text.WordWrap
-            visible: root.internal.type === QuiRoutingExceptions.APPS
-            qss: "rouexc-tab-content-message c-grey"
-            text: qsTr("After adding the application, you need to restart KelVPN") + lang.notifier
         }
 
         /*-----------------------------------------*/
