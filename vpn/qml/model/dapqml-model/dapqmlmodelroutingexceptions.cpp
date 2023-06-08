@@ -6,6 +6,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QTimer>
 
 #include "DapDataLocal.h"
 
@@ -1003,6 +1004,33 @@ void DapQmlModelRoutingExceptions::_clearBeforeLoad()
 
   for (auto *model : qAsConst (s_baseModels))
     model->refresh();
+}
+
+void DapQmlModelRoutingExceptions::_delayedSave() const
+{
+  /* var */
+  QJsonArray japps, jroutes;
+
+  /* collect checked apps and their names */
+  for (const auto &app : qAsConst (s_checkedApps))
+    japps << toJson (app);
+
+  /* collect routes */
+  for (const auto &route : qAsConst (s_routes))
+    jroutes << toJson (route);
+
+  /* store */
+  QJsonObject jobj =
+  {
+    {"apps", japps},
+    {"routes", jroutes},
+  };
+
+  DapDataLocal::instance()->saveSetting (ROUTING_EXCEPTIONS_LIST, jobj);
+
+  /* clear data */
+  while (japps.erase (japps.begin())     != japps.end());
+  while (jroutes.erase (jroutes.begin()) != jroutes.end());
 }
 
 /********************************************

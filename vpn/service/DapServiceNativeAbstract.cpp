@@ -11,7 +11,7 @@ DapServiceNativeAbstract::DapServiceNativeAbstract(){}
  */
 void DapServiceNativeAbstract::init()
 {
-    qInfo()<<"::init";
+    qInfo() << "DapServiceNativeAbstract :: init()";
     checkInstallation();
 }
 
