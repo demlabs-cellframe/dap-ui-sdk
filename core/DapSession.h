@@ -107,7 +107,7 @@ public slots:
     void sendBugReportStatusRequest(const QByteArray &data);
     void getNews();
     void sendTxOutRequest(const QString &tx);
-    void sendNewTxCondRequest(QString &data);
+    DapNetworkReply *  sendNewTxCondRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey);
 
 #ifdef BUILD_VAR_GOOGLE
     void requestPurchaseVerify(const QJsonObject *params);
@@ -126,6 +126,7 @@ protected:
 
     DapNetworkReply * m_netEncryptReply;
     DapNetworkReply * m_netAuthorizeReply;
+    DapNetworkReply * m_netNewTxReply;
     DapNetworkReply * m_netKeyActivateReply;
     DapNetworkReply * m_netLogoutReply;
     DapNetworkReply * m_netSendBugReportReply;
@@ -192,7 +193,7 @@ private slots:
     void answerBugReportsStatus();
     Q_INVOKABLE void answerBugReportsStatusError(const QString& msg);
     void answerSignUp();
-    void onNewTxCond(QString &data);
+    void onNewTxCond();
     void onResetSerialKey();
     void errorResetSerialKey(const QString&);
 
@@ -224,7 +225,7 @@ signals:
 
     void sigSerialKeyReseted(const QString&);
     void sigResetSerialKeyError(const int, const QString&);
-    void sigNewTxReceived(QString&);
+    void sigNewTxReceived();
 #ifdef BUILD_VAR_GOOGLE
     Q_INVOKABLE void purchaseResponseReceived(const QJsonDocument& response);
     void purchaseError(const QString&);
