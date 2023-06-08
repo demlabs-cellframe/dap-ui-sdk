@@ -537,11 +537,54 @@ void DapSession::onLogout() {
     qInfo() << "Logouted";
 }
 
-void DapSession::onNewTxCond(QString &data){
-    qInfo() << "Received new tx cond";
-    // TODO get hash from string
-    m_cdbAuthTxCond =
-    emit sigNewTxReceived(data);
+void DapSession::onNewTxCond(){
+    qDebug() << "Received new tx cond";
+//    m_cdbAuthTxCond =
+    if(m_netNewTxReply->getReplyData().size() <= 0)
+    {
+//        emit errorAuthorization (tr ("Wrong answer from server"));
+        return;
+    }
+
+    QByteArray dByteArr;
+    m_dapCrypt->decode(m_netNewTxReply->getReplyData(), dByteArr, KeyRoleSession);
+
+    QXmlStreamReader m_xmlStreamReader;
+    m_xmlStreamReader.addData(dByteArr);
+
+    bool isCookie = false;
+    bool isAuth = false;
+    QString SRname;
+    while(m_xmlStreamReader.readNextStartElement())
+    {
+        qDebug() << " name = " << m_xmlStreamReader.name();
+        if (m_xmlStreamReader.name() == "auth_info") {
+            while(m_xmlStreamReader.readNextStartElement()) {
+                qDebug() << " auth_info = " << m_xmlStreamReader.name();
+                if (m_xmlStreamReader.name() == "tx_cond_tpl") {
+                    while(m_xmlStreamReader.readNextStartElement()) {
+                        qDebug() << " tx_cond_tpl: " << m_xmlStreamReader.name();
+                        if (m_xmlStreamReader.name() == "net") {
+                            m_cdbAuthNet = m_xmlStreamReader.readElementText();
+                            qDebug() << "m_srvNet: " << m_cdbAuthNet;
+                        } else if (m_xmlStreamReader.name() == "token") {
+                             m_cdbAuthToken = m_xmlStreamReader.readElementText();
+                            qDebug() << "m_srvToken: " << m_cdbAuthToken;
+                        } else if (m_xmlStreamReader.name() == "tx_cond") {
+                             m_cdbAuthTxCond = m_xmlStreamReader.readElementText();
+                            qDebug() << "m_srvTxCond: " << m_cdbAuthTxCond;
+                        } else {
+                            qWarning() <<"Unknown element" << m_xmlStreamReader.readElementText();
+                        }
+                    }
+                }
+            }
+        } else {
+            m_xmlStreamReader.skipCurrentElement();
+        }
+    }
+
+    emit sigNewTxReceived();
 }
 
 void DapSession::answerSignUp()
@@ -661,10 +704,11 @@ void DapSession::sendTxOutRequest(const QString &tx) {
     encRequest(tx, URL_TX, "tx_out", NULL, true);
 }
 
-void DapSession::sendNewTxCondRequest(const QString &data){
+DapNetworkReply *  DapSession::sendNewTxCondRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey){
     qDebug() << "Send new tx cond request to cdb";
-    // TODO make request with serial and pkey
-    encRequest(data, URL_DB, "new_tx_cond", NULL, SLOT(onNewTxCond()), NULL, true);
+    m_netNewTxReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
+                                 URL_DB, "new_tx_cond", NULL, SLOT(onNewTxCond()), NULL, true);
+    return m_netNewTxReply;
 }
 /**
  * @brief DapSession::authorize
