@@ -72,6 +72,8 @@ public:
 
   struct AppsContainer
   {
+    // mode copy
+    Mode mode;
     // only checked apps
     QList<App> checkedApps;
     // only unchecked apps

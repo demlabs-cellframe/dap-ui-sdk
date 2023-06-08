@@ -16,6 +16,7 @@
 typedef DapQmlModelRoutingExceptions::App App;
 typedef DapQmlModelRoutingExceptions::Route Route;
 typedef DapQmlModelRoutingExceptions::Field Field;
+typedef DapQmlModelRoutingExceptions::Mode Mode;
 typedef DapQmlModelRoutingExceptions::AppsContainer AppsContainer;
 
 // base class with refresh method added
@@ -124,7 +125,8 @@ static QMap<QString, AppIcon> s_iconMap;
 //static QList<App> s_uncheckedApps;
 //// sorted apps : checked at top, unchecked at the bottom
 //static QList<App> s_sortedApps;
-static AppsContainer s_excluded, s_included;
+static AppsContainer s_excluded {Mode::EXC_CHECKED_APPS, {}, {}, {}},
+                     s_included {Mode::INC_CHECKED_APPS, {}, {}, {}};
 
 // models to update
 static QList<RefreshingListModel *>     s_models;
@@ -1322,7 +1324,7 @@ QVariant DqmreCheckedApps::data (const QModelIndex &index, int role) const
     case Field::appName:     return _container->checkedApps.at (index.row()).appName;
     case Field::icon:        return getAppIcon (_container->checkedApps.at (index.row()).packageName); // s_checkedApps.at (index.row()).icon;
     case Field::checked:
-      return (_container == &s_excluded) // oh boi
+      return (_container->mode == Mode::EXC_CHECKED_APPS)
              ? _container->checkedApps.at (index.row()).checked.excluded
              : _container->checkedApps.at (index.row()).checked.included;
 
@@ -1371,7 +1373,7 @@ QVariant DqmreSortedApps::data (const QModelIndex &index, int role) const
     case Field::appName:     return _container->sortedApps.at (index.row()).appName;
     case Field::icon:        return getAppIcon (_container->sortedApps.at (index.row()).packageName); // s_sortedApps.at (index.row()).icon;
     case Field::checked:
-      return (_container == &s_excluded) // oh boi
+      return (_container->mode == Mode::EXC_CHECKED_APPS)
              ? _container->sortedApps.at (index.row()).checked.excluded
              : _container->sortedApps.at (index.row()).checked.included;
 

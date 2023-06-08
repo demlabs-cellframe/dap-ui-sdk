@@ -112,7 +112,9 @@ Item {
                 else
                     root.sigPopupRouteAdd(rouexcAddressInput.mainText, rouexcDescriptionInput.mainText); // console.log("_popupBottomButtonClicked > routes > second");
             }
-        root.internal.popup = false;
+
+        root.internal.popup         = false;
+        popupAppsSearch.mainText    = "";
     }
 
     /// @}
@@ -336,14 +338,23 @@ Item {
                 y: (parent.height - height) / 2
                 width: rouexcPopupAppCheckbox.width
                 height: rouexcPopupAppCheckbox.height
-                scaledPixmap: !model.checked ? rouexcPopupAppCheckbox.scaledPixmap : rouexcPopupAppCheckboxChecked.scaledPixmap
-                onClicked: root.sigPopupAppCheckboxClicked (model.index, model.packageName);
+                property bool checked: model.checked
+                scaledPixmap: !checked ? rouexcPopupAppCheckbox.scaledPixmap : rouexcPopupAppCheckboxChecked.scaledPixmap
+                function clickEd() {
+                    root.sigPopupAppCheckboxClicked (model.index, model.packageName);
+                    checked = !checked;
+                }
             }
 
             /* separator */
             DapQmlSeparator {
                 y: parent.height - height
                 width: parent.width
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: delegateAppCheckCheckBox.clickEd()
             }
         }
 
@@ -597,9 +608,9 @@ Item {
 
             Loader {
                 anchors.centerIn: parent
-                property string name: root.internal.inc
-                                      ? "SWITCH TO inclusion in routing"
-                                      : "SWITCH TO Routing exceptions"
+                property string name: !root.internal.inc
+                                      ? qsTr("SWITCH TO Inclusion in routing")
+                                      : qsTr("SWITCH TO Routing exceptions")
                 property var callback: function() {_switchAppsMode();}
                 sourceComponent: switchModeButton
             }
@@ -774,7 +785,7 @@ Item {
                 anchors.centerIn: parent
                 width: contentWidth
                 height: contentHeight
-                qss: "rouexc-spinner-percentage"
+                qss: "rouexc-spinner-percentage c-label"
                 text: `${Math.floor(root.loadingListPercent)}%`
             }
 
