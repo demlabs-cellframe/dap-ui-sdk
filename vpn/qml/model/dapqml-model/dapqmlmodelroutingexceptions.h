@@ -185,7 +185,7 @@ protected:
   void _sortCheckedApps();
 
   void _clearBeforeLoad();
-  void _delayedSave() const;
+//  void _delayedSave() const;
   /// @}
 
   /****************************************//**
