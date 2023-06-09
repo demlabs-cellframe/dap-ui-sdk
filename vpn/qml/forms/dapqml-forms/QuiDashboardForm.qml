@@ -50,15 +50,10 @@ Item {
     /// @{
 
     /// @brief switch toggled
-    ///
-    /// Will be sended before sigConnectionStatusChangeRequested
     signal sigSwitchToggle (bool checked);
 
     /// @brief "switch server" button clicked
     signal sigServerClicked();
-
-    /// @brief will be sended on Switch clicked after sigSwitchToggle
-    signal sigConnectionStatusChangeRequested();
 
     signal sigStartUpdate();
 
@@ -448,7 +443,8 @@ Item {
     DapQmlSwitch {
         id: dashboardSwitch
         qss: "dashboard-switch"
-        onClicked: { root.sigSwitchToggle(checked); root.sigConnectionStatusChangeRequested(); }
+        onClicked: root.sigSwitchToggle(checked)
+        onCheckedChanged: root.sigSwitchToggle(checked)
     }
 
     /****************************************//**
