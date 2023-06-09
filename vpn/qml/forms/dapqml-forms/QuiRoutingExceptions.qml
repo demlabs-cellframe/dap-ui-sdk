@@ -91,6 +91,10 @@ Item {
         tabsContainer.visible   = a_enable;
     }
 
+    function setMode(a_includedMode) {
+        root.internal.inc = a_includedMode;
+    }
+
     function _switchAppsMode() {
         root.internal.inc = !root.internal.inc;
         root.sigModeChanged (root.internal.inc);
@@ -558,7 +562,9 @@ Item {
 
         DapQmlDialogTitle {
             id: title
-            text: "Routing Exceptions"
+            text: root.internal.inc
+                  ? "Inclusion in routing"
+                  : "Routing Exceptions"
             qss: "dialog-title"
         }
 
@@ -609,8 +615,8 @@ Item {
             Loader {
                 anchors.centerIn: parent
                 property string name: !root.internal.inc
-                                      ? qsTr("SWITCH TO Inclusion in routing")
-                                      : qsTr("SWITCH TO Routing exceptions")
+                                      ? qsTr("SWITCH TO INCLUSION IN ROUTING")
+                                      : qsTr("SWITCH TO ROUTING EXCEPTIONS")
                 property var callback: function() {_switchAppsMode();}
                 sourceComponent: switchModeButton
             }
