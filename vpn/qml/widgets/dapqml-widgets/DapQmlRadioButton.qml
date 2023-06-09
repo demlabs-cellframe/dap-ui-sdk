@@ -4,6 +4,7 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.3
 import DapQmlStyle 1.0
+import Brand 1.0
 
 /****************************************//**
  * @brief Dap QML Radio Button Widget
@@ -65,26 +66,63 @@ Item {
          * Icon image / Indicator / Checkbox
          ********************************************/
 
-        DapQmlLabel {
-            id: radioIndicator
+//        DapQmlLabel {
+//            id: radioIndicator
+//            Layout.preferredWidth: root.iconSize
+//            Layout.preferredHeight: root.iconSize
+//            qss: root.checked ? "radio-on" : "radio-off"
+//        }
+
+        Item {
             Layout.preferredWidth: root.iconSize
             Layout.preferredHeight: root.iconSize
-            qss: root.checked ? "radio-on" : "radio-off"
+
+            DapQmlImage {
+                id: checkboxOn
+                anchors.fill: parent
+                visible: root.checked
+                DapQmlStyle { item: checkboxOn; qss: "radio-on" }
+            }
+
+            DapQmlImage {
+                id: checkboxOff
+                anchors.fill: parent
+                visible: !root.checked
+                DapQmlStyle { item: checkboxOff; qss: "radio-off" }
+            }
         }
+
 
         /****************************************//**
          * Text label
          ********************************************/
 
-        DapQmlLabel {
+        Text {
             id: label
             Layout.fillWidth: true
             Layout.fillHeight: true
-            horizontalAlign: Text.AlignLeft
-            verticalAlign: Text.AlignVCenter
+            horizontalAlignment: Text.AlignLeft
+            verticalAlignment: Text.AlignVCenter
             text: root.text
-            qss: root.textQss
+            font {
+                family: Brand.fontName()
+                pixelSize: fontSize
+                weight: fontWeight
+            }
+            property int fontSize: 16
+            property int fontWeight: Font.Normal
+            DapQmlStyle { item: label; qss: root.textQss }
         }
+
+//        DapQmlLabel {
+//            id: label
+//            Layout.fillWidth: true
+//            Layout.fillHeight: true
+//            horizontalAlign: Text.AlignLeft
+//            verticalAlign: Text.AlignVCenter
+//            text: root.text
+//            qss: root.textQss
+//        }
     }
 
     /****************************************//**
