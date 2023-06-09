@@ -613,6 +613,7 @@ Item {
                         clip: true
                         font.pixelSize: fontSize
                         font.weight: fontWeight
+                        inputMethodHints: Qt.ImhSensitiveData
 
                         property int fontSize: 16
                         property int fontWeight: Font.Normal
