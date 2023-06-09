@@ -859,7 +859,7 @@ void DapQmlModelRoutingExceptions::clearRoutes()
 QStringList DapQmlModelRoutingExceptions::getIncludedCheckedPackageList()
 {
   QStringList _list;
-  for (const auto &item : qAsConst(s_excluded.checkedApps))
+  for (const auto &item : qAsConst(s_included.checkedApps))
     _list.push_front(item.packageName);
   return _list;
 }
@@ -867,7 +867,7 @@ QStringList DapQmlModelRoutingExceptions::getIncludedCheckedPackageList()
 QStringList DapQmlModelRoutingExceptions::getExcludedCheckedPackageList()
 {
   QStringList _list;
-  for (const auto &item : qAsConst(s_included.checkedApps))
+  for (const auto &item : qAsConst(s_excluded.checkedApps))
     _list.push_front(item.packageName);
   return _list;
 }
