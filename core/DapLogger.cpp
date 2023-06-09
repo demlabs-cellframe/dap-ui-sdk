@@ -9,6 +9,11 @@
 #include "registry.h"
 #endif
 
+#ifdef Q_OS_ANDROID
+#include <QAndroidService>
+#include <android/log.h>
+#endif
+
 static DapLogger* m_instance = nullptr;
 
 DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
@@ -167,11 +172,42 @@ void DapLogger::clearOldLogs()
 }
 
 void DapLogger::messageHandler(QtMsgType type,
-                               const QMessageLogContext &ctx,
+                               const QMessageLogContext &context,
                                const QString & msg)
 {
-//    emit DapLogger::instance()->sigMessageHandler();
-    writeMessage(type, ctx, msg);
+   #ifdef Q_OS_ANDROID
+  QString report=msg;
+  if (context.file && !QString(context.file).isEmpty()) {
+    report+=" in file ";
+    report+=QString(context.file);
+    report+=" line ";
+    report+=QString::number(context.line);
+  }
+  if (context.function && !QString(context.function).isEmpty()) {
+    report+=+" function ";
+    report+=QString(context.function);
+  }
+  const char*const local=report.toLocal8Bit().constData();
+  switch (type) {
+  case QtDebugMsg:
+    __android_log_write(ANDROID_LOG_DEBUG,DAP_BRAND,local);
+    break;
+  case QtInfoMsg:
+    __android_log_write(ANDROID_LOG_INFO,DAP_BRAND,local);
+    break;
+  case QtWarningMsg:
+    __android_log_write(ANDROID_LOG_WARN,DAP_BRAND,local);
+    break;
+  case QtCriticalMsg:
+    __android_log_write(ANDROID_LOG_ERROR,DAP_BRAND,local);
+    break;
+  case QtFatalMsg:
+  default:
+    __android_log_write(ANDROID_LOG_FATAL,DAP_BRAND,local);
+    abort();    
+  }
+  #endif
+    writeMessage(type, context, msg);
 }
 
 void DapLogger::writeMessage(QtMsgType type,

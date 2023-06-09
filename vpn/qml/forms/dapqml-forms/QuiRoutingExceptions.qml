@@ -50,6 +50,7 @@ Item {
         property int type: QuiRoutingExceptions.APPS
         property bool popup: false
         property bool spinner: false
+        property bool inc: false
     }
 
     /// @}
@@ -59,6 +60,7 @@ Item {
     /// @{
 
     signal sigTabChanged(int a_tabIndex);
+    signal sigModeChanged(bool a_includedList);
     signal sigPopupOpen();
     signal sigPopupAppSearchFilterEdited(string a_filter);
 
@@ -89,6 +91,15 @@ Item {
         tabsContainer.visible   = a_enable;
     }
 
+    function setMode(a_includedMode) {
+        root.internal.inc = a_includedMode;
+    }
+
+    function _switchAppsMode() {
+        root.internal.inc = !root.internal.inc;
+        root.sigModeChanged (root.internal.inc);
+    }
+
     function _popupBottomButtonClicked(isSecond) {
         if(root.internal.type === QuiRoutingExceptions.APPS)
         {
@@ -105,7 +116,9 @@ Item {
                 else
                     root.sigPopupRouteAdd(rouexcAddressInput.mainText, rouexcDescriptionInput.mainText); // console.log("_popupBottomButtonClicked > routes > second");
             }
-        root.internal.popup = false;
+
+        root.internal.popup         = false;
+        popupAppsSearch.mainText    = "";
     }
 
     /// @}
@@ -118,6 +131,7 @@ Item {
     DapQmlDummy { id: rouexcTabSpace;   qss: "rouexc-tab-spacing" }
     DapQmlDummy { id: rouexcItemIcon;   qss: "rouexc-content-item-icon" }
     DapQmlDummy { id: rouexcPopupTitle; qss: "rouexc-title-container" }
+    DapQmlDummy { id: rouexcAppModeSw;  qss: "rouexc-tab-content-app-mode-switch-container" }
 
     DapQmlDummy {
         id: popupDialogTitleCloseButtonDummy
@@ -128,6 +142,12 @@ Item {
         qss: "rouexc-content-item-btn-close"
     }
 
+    DapQmlDummy { id: listviewPopupAppsSizer;           qss: "rouexc-popup-apps-content"; }
+    DapQmlDummy { id: rouexcContentItem;                qss: "rouexc-content-item" }
+    DapQmlDummy { id: rouexcContentItemIcon;            qss: "rouexc-content-item-icon" }
+    DapQmlDummy { id: rouexcPopupAppCheckbox;           qss: "rouexc-popup-app-checkbox";               property string scaledPixmap }
+    DapQmlDummy { id: rouexcPopupAppCheckboxChecked;    qss: "rouexc-popup-app-checkbox-checked";       property string scaledPixmap }
+    DapQmlDummy { id: rouexcContentItemMain;            qss: "rouexc-popup-app-item-label-pos c-label"; property color color; property int fontSize }
 
     /****************************************//**
      * Components
@@ -195,10 +215,43 @@ Item {
     }
 
     Component {
+        id: switchModeButton
+
+        // property string name
+        // property var callback
+
+        DapQmlRectangle {
+            qss: "rouexc-tab-content-app-mode-switch"
+
+            DapQmlRectangle {
+                anchors.fill: parent
+                color: "#F45480"
+                opacity: 0.05
+                radius: height / 8
+            }
+
+            DapQmlLabel {
+                anchors.centerIn: parent
+                width: contentWidth
+                height: contentHeight
+                color: "#F45480"
+                disableClicking: true
+                text: parent.parent.name // "APPS"
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: parent.parent.callback()
+            }
+        }
+
+    }
+
+    Component {
         id: delegateApp
 
         Item {
-            width: listviewApps.width
+            width: listviewAppsExc.width
             height: rouexcContentItem.height
 
             /* icon */
@@ -251,7 +304,7 @@ Item {
         id: delegateAppCheck
 
         Item {
-            width: listviewPopupApps.width
+            width: listviewPopupAppsSizer.width
             height: rouexcContentItem.height
 
             /* icon */
@@ -289,8 +342,12 @@ Item {
                 y: (parent.height - height) / 2
                 width: rouexcPopupAppCheckbox.width
                 height: rouexcPopupAppCheckbox.height
-                scaledPixmap: !model.checked ? rouexcPopupAppCheckbox.scaledPixmap : rouexcPopupAppCheckboxChecked.scaledPixmap
-                onClicked: root.sigPopupAppCheckboxClicked (model.index, model.packageName);
+                property bool checked: model.checked
+                scaledPixmap: !checked ? rouexcPopupAppCheckbox.scaledPixmap : rouexcPopupAppCheckboxChecked.scaledPixmap
+                function clickEd() {
+                    root.sigPopupAppCheckboxClicked (model.index, model.packageName);
+                    checked = !checked;
+                }
             }
 
             /* separator */
@@ -298,10 +355,15 @@ Item {
                 y: parent.height - height
                 width: parent.width
             }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: delegateAppCheckCheckBox.clickEd()
+            }
         }
 
 //        DapQmlButton {
-//            width: listviewPopupApps.width
+//            width: listviewPopupAppsSizer.width
 //            mainQss: "c-label"
 //            qss: "rouexc-content-item"
 //            buttonStyle: DapQmlButton.Style.IconMainSubIcon
@@ -500,7 +562,9 @@ Item {
 
         DapQmlDialogTitle {
             id: title
-            text: "Routing Exceptions"
+            text: root.internal.inc
+                  ? "Inclusion in routing"
+                  : "Routing Exceptions"
             qss: "dialog-title"
         }
 
@@ -531,6 +595,31 @@ Item {
             property real calcPos: tabsContainer.visible
                                    ? y
                                    : y + tabsContainer.height
+        }
+
+        DapQmlSeparator {
+            x: (parent.width - width) / 2
+            y: separatorPos.calcPos - rouexcAppModeSw.height
+            width: rouexcAppModeSw.width
+            height: separatorPos.height
+            visible: root.internal.type === QuiRoutingExceptions.APPS
+            //qss: "rouexc-tab-content-app-mode-switch-container"
+        }
+
+        Item {
+            y: separatorPos.calcPos - rouexcAppModeSw.height + 1
+            width: rouexcAppModeSw.width
+            height: rouexcAppModeSw.height - 1
+            visible: root.internal.type === QuiRoutingExceptions.APPS
+
+            Loader {
+                anchors.centerIn: parent
+                property string name: !root.internal.inc
+                                      ? qsTr("SWITCH TO INCLUSION IN ROUTING")
+                                      : qsTr("SWITCH TO ROUTING EXCEPTIONS")
+                property var callback: function() {_switchAppsMode();}
+                sourceComponent: switchModeButton
+            }
         }
 
         DapQmlSeparator {
@@ -579,20 +668,33 @@ Item {
                                       : height + tabsContainer.height
         }
 
-        ListView {
-            id: listviewApps
-            objectName: "listviewApps"
+        Item {
+            id: listviewAppsContainer
             x: (parent.width - width) / 2
             y: listviewSizer.y
             width: listviewSizer.width
-            height: listviewSizer.calcHeight - tabContentMessage.height
+            height: listviewSizer.calcHeight - rouexcAppModeSw.height
             visible: root.internal.type === QuiRoutingExceptions.APPS
-            clip: true
 
-            //DapQmlStyle { item: listviewApps; qss: "rouexc-tab-content"; }
+            ListView {
+                id: listviewAppsExc
+                anchors.fill: parent
+                objectName: "listviewAppsExc"
+                visible: root.internal.inc === false
+                clip: true
 
-            delegate: delegateApp
-            //model: modelApp
+                delegate: delegateApp
+            }
+
+            ListView {
+                id: listviewAppsInc
+                objectName: "listviewAppsInc"
+                anchors.fill: parent
+                visible: root.internal.inc === true
+                clip: true
+
+                delegate: delegateApp
+            }
         }
 
         ListView {
@@ -609,25 +711,6 @@ Item {
 
             delegate: delegateRoute
             //model: modelRoutes
-        }
-
-//        DapQmlSeparator {
-//            anchors.top: listviewApps.bottom
-//            anchors.left: listviewApps.left
-//            width: listviewApps.width
-//        }
-
-        DapQmlLabel {
-            id: tabContentMessage
-            anchors.top: listviewApps.bottom
-            anchors.left: listviewApps.left
-            width: listviewApps.width
-            horizontalAlign: Text.AlignHCenter
-            verticalAlign: Text.AlignVCenter
-            wrapMode: Text.WordWrap
-            visible: root.internal.type === QuiRoutingExceptions.APPS
-            qss: "rouexc-tab-content-message c-grey"
-            text: qsTr("After adding the application, you need to restart KelVPN") + lang.notifier
         }
 
         /*-----------------------------------------*/
@@ -708,7 +791,7 @@ Item {
                 anchors.centerIn: parent
                 width: contentWidth
                 height: contentHeight
-                qss: "rouexc-spinner-percentage"
+                qss: "rouexc-spinner-percentage c-label"
                 text: `${Math.floor(root.loadingListPercent)}%`
             }
 
@@ -823,35 +906,32 @@ Item {
                 }
             }
 
-            /* list */
+            /* list exc */
             ListView {
-                id: listviewPopupApps
-                objectName: "listviewPopupApps"
+                id: listviewPopupAppsExc
+                objectName: "listviewPopupAppsExc"
                 x: (parent.width - width) / 2
                 y: listviewPopupAppsSizer.y
                 width: listviewPopupAppsSizer.width
                 height: popupAppsBottom.y - y
+                visible: root.internal.inc === false
                 clip: true
 
-                DapQmlDummy { id: listviewPopupAppsSizer;           qss: "rouexc-popup-apps-content"; }
-                DapQmlDummy { id: rouexcContentItem;                qss: "rouexc-content-item" }
-                DapQmlDummy { id: rouexcContentItemIcon;            qss: "rouexc-content-item-icon" }
-                DapQmlDummy { id: rouexcPopupAppCheckbox;           qss: "rouexc-popup-app-checkbox";               property string scaledPixmap }
-                DapQmlDummy { id: rouexcPopupAppCheckboxChecked;    qss: "rouexc-popup-app-checkbox-checked";       property string scaledPixmap }
-                DapQmlDummy { id: rouexcContentItemMain;            qss: "rouexc-popup-app-item-label-pos c-label"; property color color; property int fontSize }
+                delegate: delegateAppCheck
+            }
+
+            /* list inc */
+            ListView {
+                id: listviewPopupAppsInc
+                objectName: "listviewPopupAppsInc"
+                x: (parent.width - width) / 2
+                y: listviewPopupAppsSizer.y
+                width: listviewPopupAppsSizer.width
+                height: popupAppsBottom.y - y
+                visible: root.internal.inc === true
+                clip: true
 
                 delegate: delegateAppCheck
-                //model: modelCheckedApp
-
-//                delegate: Text {
-//                    text: model.appName
-//                }
-
-//                delegate: Image {
-//                    width: 64
-//                    height: 64
-//                    source: "image://DapQmlModelRoutingExceptionsImageProvider/" + model.packageName + ".png"
-//                }
             }
 
             /* bottom buttons */

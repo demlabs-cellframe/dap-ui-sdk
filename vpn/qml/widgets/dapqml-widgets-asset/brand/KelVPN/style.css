@@ -1592,9 +1592,14 @@
     scaled-rect: scaled(-1,132,392,648,false);
 }
 
-.rouexc-tab-content-message
+.rouexc-tab-content-app-mode-switch
 {
-    scaled-rect: scaled(nan,nan,nan,56,false,16);
+    scaled-rect: scaled(nan,nan,356,48,false);
+}
+
+.rouexc-tab-content-app-mode-switch-container
+{
+    scaled-rect: scaled(nan,nan,-1,72,false);
 }
 
 .rouexc-content-item

@@ -26,14 +26,21 @@ public:
   enum Mode
   {
     NONE,
-    CHECKED_APPS  = 0x1,
-    SORTED_APPS   = 0x2,
-    ALL_APPS      = CHECKED_APPS | SORTED_APPS,
-    ALL_ROUTES    = 0x4,
 
-    _ALL          = 0x7
+    EXC_CHECKED_APPS,
+    INC_CHECKED_APPS,
+    EXC_SORTED_APPS,
+    INC_SORTED_APPS,
+
+    /* apps */
+    ALL_APPS,
+
+    /* routes */
+    ALL_ROUTES,
+
+    _SIZE,
   };
-  Q_ENUMS (Mode)
+  Q_ENUM (Mode)
 
   enum Field
   {
@@ -46,17 +53,33 @@ public:
     address       = Qt::UserRole + 30,
     description,
   };
-  Q_ENUMS (Field)
+  Q_ENUM (Field)
 
   struct App
   {
     QString packageName, appName;
-    bool checked;
+    struct
+    {
+      bool included;
+      bool excluded;
+    } checked;
   };
 
   struct Route
   {
     QString address, description;
+  };
+
+  struct AppsContainer
+  {
+    // mode copy
+    Mode mode;
+    // only checked apps
+    QList<App> checkedApps;
+    // only unchecked apps
+    QList<App> uncheckedApps;
+    // sorted apps : checked at top, unchecked at the bottom
+    QList<App> sortedApps;
   };
 
   /// @}
@@ -75,6 +98,7 @@ public:
 protected:
   Mode m_mode;
   QAbstractListModel *_model;
+  AppsContainer *_container;
   /// @}
 
   /****************************************//**
@@ -149,15 +173,19 @@ public:
   /// remove all routes
   Q_INVOKABLE void clearRoutes();
 
-  static QStringList getCheckedPackageList();
+  static QStringList getIncludedCheckedPackageList();
+  static QStringList getExcludedCheckedPackageList();
 
+  Q_INVOKABLE bool isExcludedList() const;
+  Q_INVOKABLE bool isIncludedList() const;
   static bool isTestMode();
 protected:
   void _appendCheckedApp (int a_index, bool a_combine = true);
-  void _removeCheckedApp (int a_index);
+//  void _removeCheckedApp (int a_index);
   void _sortCheckedApps();
 
   void _clearBeforeLoad();
+//  void _delayedSave() const;
   /// @}
 
   /****************************************//**
@@ -176,6 +204,7 @@ public:
   /// @{
 signals:
   void sigModeChanged();
+  void sigAppSaved();
   /// @}
 };
 
@@ -235,7 +264,7 @@ class DapQmlModelRoutingExceptionsFilterProxy : public QSortFilterProxyModel
    *******************************************/
   /// @{
 protected:
-  QString _filter;
+  QString m_filter;
   QAbstractListModel *_model;
   /// @}
 
@@ -253,6 +282,7 @@ public:
   /// @{
 public:
   void setModel (QAbstractListModel *a_model);
+  Q_INVOKABLE const QString &filter() const;
   Q_INVOKABLE void setFilter (const QString &a_filter);
   /// @}
 
