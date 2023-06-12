@@ -707,7 +707,7 @@ void DapSession::sendTxOutRequest(const QString &tx) {
 DapNetworkReply *  DapSession::sendNewTxCondRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey){
     qDebug() << "Send new tx cond request to cdb";
     m_netNewTxReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
-                                 URL_DB, "new_tx_cond", NULL, SLOT(onNewTxCond()), NULL, true);
+                                 URL_DB, "new_tx_cond", "serial", SLOT(onNewTxCond()), NULL, true);
     return m_netNewTxReply;
 }
 /**
