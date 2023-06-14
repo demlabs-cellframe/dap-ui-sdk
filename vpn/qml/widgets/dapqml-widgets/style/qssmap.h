@@ -35,11 +35,11 @@ public:
 
 protected:
   /// get single item
-  static const DapStyle::QssItem *item (const QString &a_name);
+  static DapStyle::QssItem *item (const QString &a_name);
   /// get items with names separated by space ' ' symbol
-  static QList<const DapStyle::QssItem*> items (const QString &a_names);
+  static QList<DapStyle::QssItem*> items (const QString &a_names);
   /// get items with names
-  static QList<const DapStyle::QssItem*> items (const QStringList &a_names);
+  static QList<DapStyle::QssItem*> items (const QStringList &a_names);
   /// @}
 };
 
