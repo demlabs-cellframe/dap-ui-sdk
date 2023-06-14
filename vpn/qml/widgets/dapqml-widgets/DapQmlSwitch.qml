@@ -60,7 +60,7 @@ Item {
             dragging        = false;
             draggingAnim    = false;
 
-            //console.log(`SWITCH drag begin: ${pos1}|${pos2}|${diff}|${dragging}|${draggingState}`);
+            console.log(`SWITCH drag begin: ${pos1.toFixed(0)}|${pos2.toFixed(0)}|${diff.toFixed(0)}|${dragging}|${draggingState}`);
         }
 
         function _move() {
@@ -85,7 +85,7 @@ Item {
                 }
             }
 
-            //console.log(`SWITCH drag move: ${pos1}|${pos2}|${diff}|${dragging}|${draggingState}`);
+            console.log(`SWITCH drag move: ${pos1.toFixed(0)}|${pos2.toFixed(0)}|${diff.toFixed(0)}|${dragging}|${draggingState}`);
         }
 
         function _end() {
@@ -106,7 +106,7 @@ Item {
 
             dragging    = false;
 
-            //console.log(`SWITCH drag end: ${pos1}|${pos2}|${diff}|${dragging}|${draggingState}`);
+            console.log(`SWITCH drag end: ${pos1.toFixed(0)}|${pos2.toFixed(0)}|${diff.toFixed(0)}|${dragging}|${draggingState}`);
         }
 
         function _turnOff() {
@@ -115,7 +115,7 @@ Item {
 
             root.setState(false);
             //root.clicked();
-            //console.log(`SWITCH drag turnOff`);
+            console.log(`SWITCH drag turnOff`);
         }
 
         function _turnOn() {
@@ -124,12 +124,12 @@ Item {
 
             root.setState(true);
             //root.clicked();
-            //console.log(`SWITCH drag turnOn`);
+            console.log(`SWITCH drag turnOn`);
         }
 
         function _toggle() {
             root.toggle();
-            //console.log(`SWITCH drag toggle`);
+            console.log(`SWITCH drag toggle`);
         }
     }
 
