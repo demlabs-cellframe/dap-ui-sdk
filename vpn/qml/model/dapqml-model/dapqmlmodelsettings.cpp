@@ -31,9 +31,12 @@ enum FieldId
 static DapQmlModelSettings *__inst = nullptr;
 static QList<Item> s_items;
 static QSet<QString> s_lastFilterKeywords;
-static qint32 s_daysLabelIndex     = -1;
-static qint32 s_versionLabelIndex  = -1;
-static qint32 s_countryIndex     = -1;
+
+static qint32 s_daysLabelIndex    = -1;
+static qint32 s_rouExcIndex       = -1;
+static qint32 s_countryIndex      = -1;
+static qint32 s_versionLabelIndex = -1;
+
 static QString s_daysLeftString;
 
 static QMap<QString, FieldId> s_fieldIdMap =
@@ -348,8 +351,11 @@ void DapQmlModelSettings::slotUpdateLabels (bool a_forced)
   qint32 index = 0;
   for (auto i = s_items.cbegin(), e = s_items.cend(); i != e; i++, index++)
     {
-      if (i->m_itemType == "get_new_licence_key")
+      if (i->m_itemType      == "get_new_licence_key")
         s_daysLabelIndex    = index;
+
+      else if (i->m_itemType == "rouexc")
+        s_rouExcIndex       = index;
 
       else if (i->m_itemType == "release_version")
         s_versionLabelIndex = index;
@@ -372,6 +378,8 @@ void DapQmlModelSettings::slotUpdateLabels (bool a_forced)
       s_items[s_countryIndex].m_textSub = getCurrentCountryCode();
     }
 
+  /* update rouexc label text */
+  slotRouExcModeUpdated();
 }
 
 void DapQmlModelSettings::slotUpdateItemsList()
@@ -379,6 +387,23 @@ void DapQmlModelSettings::slotUpdateItemsList()
   beginResetModel();
   slotUpdateLabels (false);
   endResetModel();
+}
+
+void DapQmlModelSettings::slotRouExcModeUpdated()
+{
+  if (s_rouExcIndex == -1)
+    return;
+
+  bool includedMode = DapDataLocal::getSetting (SETTING_ROUEXC_MODE).toBool();
+
+  s_items[s_rouExcIndex].m_textMain =
+      !includedMode
+      ? "Routing Exceptions"
+      : "Inclusion in Routing";
+
+  emit dataChanged (
+    index (s_rouExcIndex, 0),
+    index (s_rouExcIndex, columnCount (index (s_rouExcIndex, 3))));
 }
 
 void DapQmlModelSettings::slotSetDaysLeft (QString a_days)

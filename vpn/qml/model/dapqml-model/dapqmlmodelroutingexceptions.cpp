@@ -6,6 +6,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QTimer>
 
 #include "DapDataLocal.h"
 
@@ -16,6 +17,8 @@
 typedef DapQmlModelRoutingExceptions::App App;
 typedef DapQmlModelRoutingExceptions::Route Route;
 typedef DapQmlModelRoutingExceptions::Field Field;
+typedef DapQmlModelRoutingExceptions::Mode Mode;
+typedef DapQmlModelRoutingExceptions::AppsContainer AppsContainer;
 
 // base class with refresh method added
 
@@ -64,20 +67,22 @@ public:
 
 class DqmreCheckedApps : public RefreshingListModel
 {
+  AppsContainer *_container;
 public:
-  DqmreCheckedApps();
+  DqmreCheckedApps (AppsContainer *a_container);
   ~DqmreCheckedApps();
   int rowCount (const QModelIndex &parent = QModelIndex()) const override;
   QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
   QHash<int, QByteArray> roleNames() const override;
 };
 
-// checked apps model
+// sorted apps model
 
 class DqmreSortedApps : public RefreshingListModel
 {
+  AppsContainer *_container;
 public:
-  DqmreSortedApps();
+  DqmreSortedApps (AppsContainer *a_container);
   ~DqmreSortedApps();
   int rowCount (const QModelIndex &parent = QModelIndex()) const override;
   QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -115,12 +120,14 @@ static QList<App> s_apps;
 static QList<Route> s_routes;
 // apps icons map
 static QMap<QString, AppIcon> s_iconMap;
-// only checked apps
-static QList<App> s_checkedApps;
-// only unchecked apps
-static QList<App> s_uncheckedApps;
-// sorted apps : checked at top, unchecked at the bottom
-static QList<App> s_sortedApps;
+//// only checked apps
+//static QList<App> s_checkedApps;
+//// only unchecked apps
+//static QList<App> s_uncheckedApps;
+//// sorted apps : checked at top, unchecked at the bottom
+//static QList<App> s_sortedApps;
+static AppsContainer s_excluded {Mode::EXC_CHECKED_APPS, {}, {}, {}},
+                     s_included {Mode::INC_CHECKED_APPS, {}, {}, {}};
 
 // models to update
 static QList<RefreshingListModel *>     s_models;
@@ -201,6 +208,7 @@ static QImage getAppIcon (const QString &a_packageName);
 DapQmlModelRoutingExceptions::DapQmlModelRoutingExceptions()
   : m_mode (NONE)
   , _model (nullptr)
+  , _container (nullptr)
 {
 
 }
@@ -218,7 +226,7 @@ void DapQmlModelRoutingExceptions::setMode (int a_newMode)
 {
   /* checks */
   if (m_mode == a_newMode
-      || ! (a_newMode & _ALL))
+      || a_newMode >= _SIZE)
     return;
 
   beginResetModel();
@@ -231,16 +239,38 @@ void DapQmlModelRoutingExceptions::setMode (int a_newMode)
     delete _model;
 
   /* clear */
-  _model  = nullptr;
+  _model      = nullptr;
+  _container  = nullptr;
+
+  /* set container */
+  switch (m_mode)
+  {
+    case EXC_CHECKED_APPS:
+    case EXC_SORTED_APPS:
+      _container  = &s_excluded;
+      break;
+    case INC_CHECKED_APPS:
+    case INC_SORTED_APPS:
+      _container  = &s_included;
+      break;
+    default:
+      break;
+  }
 
   /* set new model based on new mode */
   switch (m_mode)
     {
     case NONE: return;
-    case CHECKED_APPS:    _model  = new DqmreCheckedApps; break;
-    case SORTED_APPS:     _model  = new DqmreSortedApps;  break;
-    case ALL_APPS:        _model  = new DqmreApps;        break;
-    case ALL_ROUTES:      _model  = new DqmreRoutes;      break;
+    case EXC_CHECKED_APPS:
+    case INC_CHECKED_APPS:
+      _model  = new DqmreCheckedApps (_container);
+      break;
+    case EXC_SORTED_APPS:
+    case INC_SORTED_APPS:
+      _model  = new DqmreSortedApps  (_container);
+      break;
+    case ALL_APPS:          _model  = new DqmreApps;        break;
+    case ALL_ROUTES:        _model  = new DqmreRoutes;      break;
     default: break;
     }
 
@@ -425,6 +455,9 @@ void DapQmlModelRoutingExceptions::replace (int a_index, DapQmlModelRoutingExcep
 
 void DapQmlModelRoutingExceptions::replaceSorted (int a_index, const DapQmlModelRoutingExceptions::App &a_app, const QString &a_icon)
 {
+  if (_container == nullptr)
+    return;
+
   int index = 0;
   for (auto i = s_apps.begin(), e = s_apps.end(); i != e; i++, index++)
     {
@@ -440,13 +473,16 @@ void DapQmlModelRoutingExceptions::replaceSorted (int a_index, const DapQmlModel
 
   if (!a_icon.isNull())
     s_iconMap[a_app.packageName + ".png"] = a_icon;
-  s_sortedApps[a_index] = a_app;
+  _container->sortedApps[a_index] = a_app;
   auto changedIndex = this->index (a_index);
   emit dataChanged (changedIndex, changedIndex);
 }
 
 void DapQmlModelRoutingExceptions::replaceSorted (int a_index, DapQmlModelRoutingExceptions::App &&a_app, const QString &a_icon)
 {
+  if (_container == nullptr)
+    return;
+
   int index = 0;
   for (auto i = s_apps.begin(), e = s_apps.end(); i != e; i++, index++)
     {
@@ -462,7 +498,7 @@ void DapQmlModelRoutingExceptions::replaceSorted (int a_index, DapQmlModelRoutin
 
   if (!a_icon.isNull())
     s_iconMap[a_app.packageName + ".png"] = a_icon;
-  s_sortedApps[a_index] = std::move (a_app);
+  _container->sortedApps[a_index] = std::move (a_app);
   auto changedIndex = this->index (a_index);
   emit dataChanged (changedIndex, changedIndex);
 }
@@ -511,12 +547,17 @@ const DapQmlModelRoutingExceptions::App &DapQmlModelRoutingExceptions::app (int 
 
 const DapQmlModelRoutingExceptions::App &DapQmlModelRoutingExceptions::appSorted (int a_index) const
 {
-  return s_sortedApps.at (a_index);
+  static App dummy;
+  return (_container)
+         ? _container->sortedApps.at (a_index)
+         : dummy;
 }
 
 const QImage &DapQmlModelRoutingExceptions::appIcon (const QString &a_packageName) const
 {
-  return getAppIcon (a_packageName);
+  static QImage result;
+  result  = getAppIcon (a_packageName);
+  return result;
 }
 
 const DapQmlModelRoutingExceptions::Route &DapQmlModelRoutingExceptions::route (int a_index) const
@@ -536,7 +577,10 @@ QVariant DapQmlModelRoutingExceptions::routeJson (int a_index) const
 
 int DapQmlModelRoutingExceptions::indexOfChecked (int a_index) const
 {
-  App &app  = s_checkedApps[a_index];
+  if (_container == nullptr)
+    return -1;
+
+  App &app  = _container->checkedApps[a_index];
   int result = 0;
   for (auto i = s_apps.cbegin(), e = s_apps.cend(); i != e; i++, result++)
     if (i->packageName == app.packageName)
@@ -546,7 +590,10 @@ int DapQmlModelRoutingExceptions::indexOfChecked (int a_index) const
 
 int DapQmlModelRoutingExceptions::indexOfSorted (int a_index) const
 {
-  App &app  = s_sortedApps[a_index];
+  if (_container == nullptr)
+    return -1;
+
+  App &app  = _container->sortedApps[a_index];
   int result = 0;
   for (auto i = s_apps.cbegin(), e = s_apps.cend(); i != e; i++, result++)
     if (i->packageName == app.packageName)
@@ -580,7 +627,10 @@ void DapQmlModelRoutingExceptions::removeAppFromChecked (int a_index)
 
   beginRemoveRows (QModelIndex(), a_index, a_index);
   App &app      = s_apps[index];
-  app.checked   = false;
+  if (isExcludedList())
+    app.checked.excluded  = false;
+  else
+    app.checked.included  = false;
   s_apps[index] = app;
   endRemoveRows();
 
@@ -624,11 +674,13 @@ void DapQmlModelRoutingExceptions::updateAllLists()
 void DapQmlModelRoutingExceptions::save() const
 {
   /* var */
-  QJsonArray japps, jroutes;
+  QJsonArray jExApps, jInApps, jroutes;
 
-  /* collect checked apps and their names */
-  for (const auto &app : qAsConst (s_checkedApps))
-    japps << toJson (app);
+  /* collect checked apps and their content */
+  for (const auto &app : qAsConst (s_excluded.checkedApps))
+    jExApps << toJson (app);
+  for (const auto &app : qAsConst (s_included.checkedApps))
+    jInApps << toJson (app);
 
   /* collect routes */
   for (const auto &route : qAsConst (s_routes))
@@ -637,14 +689,16 @@ void DapQmlModelRoutingExceptions::save() const
   /* store */
   QJsonObject jobj =
   {
-    {"apps", japps},
+    {"exApps", jExApps},
+    {"inApps", jInApps},
     {"routes", jroutes},
   };
 
   DapDataLocal::instance()->saveSetting (ROUTING_EXCEPTIONS_LIST, jobj);
 
   /* clear data */
-  while (japps.erase (japps.begin())     != japps.end());
+  while (jExApps.erase (jExApps.begin()) != jExApps.end());
+  while (jInApps.erase (jInApps.begin()) != jInApps.end());
   while (jroutes.erase (jroutes.begin()) != jroutes.end());
 }
 
@@ -658,110 +712,118 @@ void DapQmlModelRoutingExceptions::load()
   };
 
   /* vars */
-  QJsonArray japps, jroutes;
-  QMap<QString, AppBlob> appMap; // used to easily search app of checked app
+  QJsonArray jExApps, jInApps, jroutes;
+  // used to easily search app of checked app
+  QMap<QString, AppBlob> exAppMap;
+  QMap<QString, AppBlob> inAppMap;
   int index = 0;
 
   /* fill */
   {
     auto jobj = DapDataLocal::instance()->getSetting (ROUTING_EXCEPTIONS_LIST).toJsonObject();
-    japps     = jobj.value ("apps").toArray();
+    bool old  = jobj.contains ("apps");
+    jExApps   = (!old) ? jobj.value ("exApps").toArray() : jobj.value ("apps").toArray();
+    jInApps   = (!old) ? jobj.value ("inApps").toArray() : QJsonArray();
     jroutes   = jobj.value ("routes").toArray();
   }
 
   /* prepare to fill */
   _clearBeforeLoad();
 
-  /* load checked apps */
-//  for (const auto &app : qAsConst (japps))
-//    {
-//      s_checkedApps.append (toApp (app.toObject()));
-//      _appendCheckedApp (s_apps.size() - 1);
-//    }
+  /* ----------------------------------------
+   * collect app names
+   * ------------------------------------- */
 
-  /* collect app names */
-  for (const auto &japp : qAsConst (japps))
-    {
-      auto jobj = japp.toObject();
-      auto app  = toApp (jobj);
-      auto key  = app.packageName;
-      appMap.insert (
-        key,
-        AppBlob
-        {
-          std::move (app),
-          jobj.value ("icon").toString()
-        });
-      // appNames << japp.toObject().value ("packageName").toString();
-    }
+  auto collectAppNames = [] (const QJsonArray &a_apps, QMap<QString, AppBlob> &a_map)
+  {
+    for (const auto &japp : a_apps)
+      {
+        auto jobj = japp.toObject();
+        auto app  = toApp (jobj);
+        auto key  = app.packageName;
+        a_map.insert (
+          key,
+          AppBlob
+          {
+            std::move (app),
+            jobj.value ("icon").toString()
+          });
+      }
+  };
 
-  /* check existing apps */
+  collectAppNames (jExApps, exAppMap);
+  collectAppNames (jInApps, inAppMap);
+
+  /* ----------------------------------------
+   * check existing apps
+   * ------------------------------------- */
+
+  auto checkout = [] (QMap<QString, AppBlob> &a_appMap, App &a_app, bool excluded)
+  {
+    if (!a_appMap.contains (a_app.packageName))
+      return;
+
+    if (excluded)
+      a_app.checked.excluded = true;
+    else
+      a_app.checked.included = true;
+    a_appMap.remove (a_app.packageName);
+  };
+
   for (auto j = s_apps.begin(), k = s_apps.end(); j != k; j++, index++)
     {
       auto &item  = *j;
-      if (appMap.contains (item.packageName))
-        {
-          item.checked = true;
-          appMap.remove (item.packageName);
-        }
+      checkout (exAppMap, item, true);
+      checkout (inAppMap, item, false);
       _appendCheckedApp (index, false);
     }
 
-  /* add missing apps */
-  for (auto &blob : appMap)
-    {
-      blob.app.checked  = true;
-      appendQuietly (std::move (blob.app),
-                     std::move (blob.icon));
-      _appendCheckedApp (s_apps.size() - 1, false);
-    }
+  /* ----------------------------------------
+   * add missing apps
+   * ------------------------------------- */
 
-  /* load routes */
+  auto addMissingApps = [this] (AppBlob &a_blob, bool excluded)
+  {
+    a_blob.app.checked.excluded = (excluded) ? true  : false;
+    a_blob.app.checked.included = (excluded) ? false : true;
+
+    appendQuietly (std::move (a_blob.app),
+                   std::move (a_blob.icon));
+
+    _appendCheckedApp (s_apps.size() - 1, false);
+  };
+
+  for (auto &blob : exAppMap)
+    addMissingApps (blob, true);
+  for (auto &blob : inAppMap)
+    addMissingApps (blob, false);
+
+  /* ----------------------------------------
+   * load routes
+   * ------------------------------------- */
+
   for (const auto &route : qAsConst (jroutes))
     append (toRoute (route.toObject()));
 
-  /* combine new list */
-  s_sortedApps  = s_checkedApps + s_uncheckedApps;
-  updateAllLists();
+  /* ----------------------------------------
+   * combine new list
+   * ------------------------------------- */
+
+  auto combineNewList = [] (AppsContainer *a_container)
+  {
+    a_container->sortedApps =
+      a_container->checkedApps
+      + a_container->uncheckedApps;
+  };
+
+  combineNewList (&s_excluded);
+  combineNewList (&s_included);
 
   /* clear data */
-  while (japps.erase (japps.begin())     != japps.end());
+  while (jExApps.erase (jExApps.begin()) != jExApps.end());
+  while (jInApps.erase (jInApps.begin()) != jInApps.end());
   while (jroutes.erase (jroutes.begin()) != jroutes.end());
 }
-
-//void DapQmlModelRoutingExceptions::save() const
-//{
-//  QJsonArray /*japps, */jroutes;
-
-//  //for (const auto &app : qAsConst(s_apps))
-//  //  japps << toJson (app);
-
-//  for (const auto &route : qAsConst(s_routes))
-//    jroutes << toJson (route);
-
-//  QJsonObject jobj =
-//  {
-//    //{"apps", japps},
-//    {"routes", jroutes},
-//  };
-
-//  DapDataLocal::instance()->saveSetting (SETTING_ROUTING_EXCEPTIONS, jobj);
-//}
-
-//void DapQmlModelRoutingExceptions::load()
-//{
-//  auto jobj     = DapDataLocal::instance()->getSetting (SETTING_ROUTING_EXCEPTIONS).toJsonObject();
-//  auto //japps    = jobj.value ("apps").toArray(),
-//       jroutes  = jobj.value ("routes").toArray();
-
-//  clearRoutes(); // clear();
-
-////  for (const auto &app : qAsConst (japps))
-////    append (toApp (app.toObject()));
-
-//  for (const auto &route : qAsConst (jroutes))
-//    append (toRoute (route.toObject()));
-//}
 
 void DapQmlModelRoutingExceptions::clear()
 {
@@ -773,9 +835,14 @@ void DapQmlModelRoutingExceptions::clearApps()
 {
   s_apps.clear();
   s_iconMap.clear();
-  s_checkedApps.clear();
-  s_uncheckedApps.clear();
-  s_sortedApps.clear();
+
+  s_excluded.checkedApps.clear();
+  s_excluded.uncheckedApps.clear();
+  s_excluded.sortedApps.clear();
+
+  s_included.checkedApps.clear();
+  s_included.uncheckedApps.clear();
+  s_included.sortedApps.clear();
 
   updateAllLists();
 
@@ -789,12 +856,44 @@ void DapQmlModelRoutingExceptions::clearRoutes()
   updateAllLists();
 }
 
-QStringList DapQmlModelRoutingExceptions::getCheckedPackageList()
+QStringList DapQmlModelRoutingExceptions::getIncludedCheckedPackageList()
 {
-    QStringList _list;
-    for (auto item : s_checkedApps)
-        _list.push_front(item.packageName);
-    return _list;
+  QStringList _list;
+  for (const auto &item : qAsConst(s_included.checkedApps))
+    _list.push_front(item.packageName);
+  return _list;
+}
+
+QStringList DapQmlModelRoutingExceptions::getExcludedCheckedPackageList()
+{
+  QStringList _list;
+  for (const auto &item : qAsConst(s_excluded.checkedApps))
+    _list.push_front(item.packageName);
+  return _list;
+}
+
+bool DapQmlModelRoutingExceptions::isExcludedList() const
+{
+  switch (m_mode)
+  {
+  case EXC_CHECKED_APPS:
+  case EXC_SORTED_APPS:
+    return true;
+  default:
+    return false;
+  }
+}
+
+bool DapQmlModelRoutingExceptions::isIncludedList() const
+{
+  switch (m_mode)
+  {
+  case INC_CHECKED_APPS:
+  case INC_SORTED_APPS:
+    return true;
+  default:
+    return false;
+  }
 }
 
 bool DapQmlModelRoutingExceptions::isTestMode()
@@ -820,41 +919,51 @@ static void removeFrom (QList<App> &a_list, const App &a_app)
 void DapQmlModelRoutingExceptions::_appendCheckedApp (int a_index, bool a_combine)
 {
   /* variables */
-  auto &app     = s_apps.at (a_index);
-  bool checked  = app.checked;
+  auto &app   = s_apps.at (a_index);
+  auto store  = [] (AppsContainer *a_container, const App &a_app, bool checked, bool a_combine)
+  {
+    /* remove from old list */
+    removeFrom (a_container->uncheckedApps, a_app);
+    removeFrom (a_container->checkedApps,   a_app);
 
-  /* remove from old list */
-  //if (checked)
-  removeFrom (s_uncheckedApps, app);
-  //else
-  removeFrom (s_checkedApps, app);
+    /* append to desired list */
+    if (checked)
+      a_container->checkedApps.append (a_app);
+    else
+      a_container->uncheckedApps.append (a_app);
 
-  /* append to desired list */
-  if (checked)
-    s_checkedApps.append (app);
-  else
-    s_uncheckedApps.append (app);
+    /* combine new list */
+    if (a_combine)
+      {
+        a_container->sortedApps =
+          a_container->checkedApps
+          + a_container->uncheckedApps;
+      }
+  };
 
-  /* combine new list */
+  /* perform */
+  store (&s_excluded, app, app.checked.excluded, a_combine);
+  store (&s_included, app, app.checked.included, a_combine);
+
+  /* update combined lists */
   if (a_combine)
-    {
-      s_sortedApps  = s_checkedApps + s_uncheckedApps;
-      updateAllLists();
-    }
+    updateAllLists();
 }
 
-void DapQmlModelRoutingExceptions::_removeCheckedApp (int a_index)
-{
-  /* variables */
-  auto &app     = s_apps.at (a_index);
-  bool checked  = app.checked;
+//void DapQmlModelRoutingExceptions::_removeCheckedApp (int a_index)
+//{
+//  /* variables */
+//  auto &app     = s_apps.at (a_index);
+//  bool checked  = (isExcludedList())
+//                  ? app.checked.excluded
+//                  : app.checked.included;
 
-  /* remove from old list */
-  if (checked)
-    removeFrom (s_uncheckedApps, app);
-  else
-    removeFrom (s_checkedApps, app);
-}
+//  /* remove from old list */
+//  if (checked)
+//    removeFrom (_container->uncheckedApps, app);
+//  else
+//    removeFrom (_container->checkedApps, app);
+//}
 
 void DapQmlModelRoutingExceptions::_sortCheckedApps()
 {
@@ -863,7 +972,16 @@ void DapQmlModelRoutingExceptions::_sortCheckedApps()
     _appendCheckedApp (i, false);
 
   /* combine new list */
-  s_sortedApps  = s_checkedApps + s_uncheckedApps;
+  auto combine = [] (AppsContainer *a_container)
+  {
+    a_container->sortedApps =
+      a_container->checkedApps
+      + a_container->uncheckedApps;
+  };
+
+  combine (&s_excluded);
+  combine (&s_included);
+
   updateAllLists();
 }
 
@@ -871,9 +989,15 @@ void DapQmlModelRoutingExceptions::_clearBeforeLoad()
 {
   //s_apps.clear();
   //s_iconMap.clear();
-  s_checkedApps.clear();
-  s_uncheckedApps.clear();
-  s_sortedApps.clear();
+
+  s_excluded.checkedApps.clear();
+  s_excluded.uncheckedApps.clear();
+  s_excluded.sortedApps.clear();
+
+  s_included.checkedApps.clear();
+  s_included.uncheckedApps.clear();
+  s_included.sortedApps.clear();
+
   s_routes.clear();
 
   updateAllLists();
@@ -881,6 +1005,33 @@ void DapQmlModelRoutingExceptions::_clearBeforeLoad()
   for (auto *model : qAsConst (s_baseModels))
     model->refresh();
 }
+
+//void DapQmlModelRoutingExceptions::_delayedSave() const
+//{
+//  /* var */
+//  QJsonArray japps, jroutes;
+
+//  /* collect checked apps and their names */
+//  for (const auto &app : qAsConst (s_checkedApps))
+//    japps << toJson (app);
+
+//  /* collect routes */
+//  for (const auto &route : qAsConst (s_routes))
+//    jroutes << toJson (route);
+
+//  /* store */
+//  QJsonObject jobj =
+//  {
+//    {"apps", japps},
+//    {"routes", jroutes},
+//  };
+
+//  DapDataLocal::instance()->saveSetting (ROUTING_EXCEPTIONS_LIST, jobj);
+
+//  /* clear data */
+//  while (japps.erase (japps.begin())     != japps.end());
+//  while (jroutes.erase (jroutes.begin()) != jroutes.end());
+//}
 
 /********************************************
  * OVERRIDE
@@ -911,22 +1062,50 @@ QHash<int, QByteArray> DapQmlModelRoutingExceptions::roleNames() const
 
 App toApp (const QJsonObject &a_src)
 {
-  return App
-  {
-    a_src.value ("packageName").toString(),
-    a_src.value ("appName").toString(),
-    a_src.value ("checked").toBool(),
-  };
+  if (a_src.contains ("checked_excluded"))
+    return App
+    {
+      a_src.value ("packageName").toString(),
+      a_src.value ("appName").toString(),
+      {
+        a_src.value ("checked_excluded").toBool(),
+        a_src.value ("checked_included").toBool(),
+      }
+    };
+  else
+    return App
+    {
+      a_src.value ("packageName").toString(),
+      a_src.value ("appName").toString(),
+      {
+        a_src.value ("checked").toBool(),
+        false
+      }
+    };
 }
 
 App toApp (const QVariantMap &a_src)
 {
-  return App
-  {
-    a_src.value ("packageName").toString(),
-    a_src.value ("appName").toString(),
-    a_src.value ("checked").toBool(),
-  };
+  if (a_src.contains ("checked_excluded"))
+    return App
+    {
+      a_src.value ("packageName").toString(),
+      a_src.value ("appName").toString(),
+      {
+        a_src.value ("checked_excluded").toBool(),
+        a_src.value ("checked_included").toBool(),
+      }
+    };
+  else
+    return App
+    {
+      a_src.value ("packageName").toString(),
+      a_src.value ("appName").toString(),
+      {
+        a_src.value ("checked").toBool(),
+        false
+      }
+    };
 }
 
 QString getIcon (const QJsonObject &a_src)
@@ -981,7 +1160,8 @@ QJsonObject toJson (const App &a_src)
     { "packageName", a_src.packageName },
     { "appName", a_src.appName },
     { "icon", s_iconMap.value (id).data() },
-    { "checked", a_src.checked },
+    { "checked_excluded", a_src.checked.excluded },
+    { "checked_included", a_src.checked.included },
   };
 }
 
@@ -1003,7 +1183,7 @@ QImage getAppIcon (const QString &a_packageName)
 //  return s_iconMap [id];
 
   QImage icn;
-  QString iconBase64 = s_iconMap [id];
+  //QString iconBase64 = s_iconMap [id];
   icn.loadFromData (QByteArray::fromBase64 (s_iconMap [id]));
   return icn;
 }
@@ -1024,6 +1204,7 @@ RefreshingListModelBase::~RefreshingListModelBase()
 void RefreshingListModelBase::refresh()
 {
   const char *name = "unknown";
+
   if (dynamic_cast<DqmreApps *> (this))
     name  = "DqmreApps";
   else if (dynamic_cast<DqmreRoutes *> (this))
@@ -1032,7 +1213,8 @@ void RefreshingListModelBase::refresh()
     name  = "DqmreCheckedApps";
   else if (dynamic_cast<DqmreSortedApps *> (this))
     name  = "DqmreSortedApps";
-  qDebug() << __PRETTY_FUNCTION__ << "Mode:" << name;
+
+  qDebug() << "RefreshingListModelBase::refresh Mode:" << name;
 
   beginResetModel();
   endResetModel();
@@ -1081,7 +1263,6 @@ QVariant DqmreApps::data (const QModelIndex &index, int role) const
     case Field::packageName: return s_apps.at (index.row()).packageName;
     case Field::appName:     return s_apps.at (index.row()).appName;
     case Field::icon:        return getAppIcon (s_apps.at (index.row()).packageName); // s_apps.at (index.row()).icon;
-    case Field::checked:     return s_apps.at (index.row()).checked;
 
     default:
       return QVariant();
@@ -1137,8 +1318,11 @@ QHash<int, QByteArray> DqmreRoutes::roleNames() const
 
 /*-----------------------------------------*/
 
-DqmreCheckedApps::DqmreCheckedApps()
+DqmreCheckedApps::DqmreCheckedApps (AppsContainer *a_container)
+  : _container (a_container)
 {
+  if (_container == nullptr)
+    qFatal ("%s : nullptr container provided", __func__);
   s_baseModels.append (this);
 }
 
@@ -1149,12 +1333,12 @@ DqmreCheckedApps::~DqmreCheckedApps()
 
 int DqmreCheckedApps::rowCount (const QModelIndex &) const
 {
-  return s_checkedApps.size();
+  return _container->checkedApps.size();
 }
 
 QVariant DqmreCheckedApps::data (const QModelIndex &index, int role) const
 {
-  if (index.row() < 0 || index.row() >= s_checkedApps.size())
+  if (index.row() < 0 || index.row() >= _container->checkedApps.size())
     return QVariant();
 
   Field field = Field (role);
@@ -1164,10 +1348,13 @@ QVariant DqmreCheckedApps::data (const QModelIndex &index, int role) const
 
   switch (field)
     {
-    case Field::packageName: return s_checkedApps.at (index.row()).packageName;
-    case Field::appName:     return s_checkedApps.at (index.row()).appName;
-    case Field::icon:        return getAppIcon (s_checkedApps.at (index.row()).packageName); // s_checkedApps.at (index.row()).icon;
-    case Field::checked:     return s_checkedApps.at (index.row()).checked;
+    case Field::packageName: return _container->checkedApps.at (index.row()).packageName;
+    case Field::appName:     return _container->checkedApps.at (index.row()).appName;
+    case Field::icon:        return getAppIcon (_container->checkedApps.at (index.row()).packageName); // s_checkedApps.at (index.row()).icon;
+    case Field::checked:
+      return (_container->mode == Mode::EXC_CHECKED_APPS)
+             ? _container->checkedApps.at (index.row()).checked.excluded
+             : _container->checkedApps.at (index.row()).checked.included;
 
     default:
       return QVariant();
@@ -1181,9 +1368,11 @@ QHash<int, QByteArray> DqmreCheckedApps::roleNames() const
 
 /*-----------------------------------------*/
 
-DqmreSortedApps::DqmreSortedApps()
+DqmreSortedApps::DqmreSortedApps (AppsContainer *a_container)
+  : _container (a_container)
 {
-
+  if (_container == nullptr)
+    qFatal ("%s : nullptr container provided", __func__);
 }
 
 DqmreSortedApps::~DqmreSortedApps()
@@ -1193,12 +1382,12 @@ DqmreSortedApps::~DqmreSortedApps()
 
 int DqmreSortedApps::rowCount (const QModelIndex &) const
 {
-  return s_sortedApps.size();
+  return _container->sortedApps.size();
 }
 
 QVariant DqmreSortedApps::data (const QModelIndex &index, int role) const
 {
-  if (index.row() < 0 || index.row() >= s_sortedApps.size())
+  if (index.row() < 0 || index.row() >= _container->sortedApps.size())
     return QVariant();
 
   Field field = Field (role);
@@ -1208,10 +1397,13 @@ QVariant DqmreSortedApps::data (const QModelIndex &index, int role) const
 
   switch (field)
     {
-    case Field::packageName: return s_sortedApps.at (index.row()).packageName;
-    case Field::appName:     return s_sortedApps.at (index.row()).appName;
-    case Field::icon:        return getAppIcon (s_sortedApps.at (index.row()).packageName); // s_sortedApps.at (index.row()).icon;
-    case Field::checked:     return s_sortedApps.at (index.row()).checked;
+    case Field::packageName: return _container->sortedApps.at (index.row()).packageName;
+    case Field::appName:     return _container->sortedApps.at (index.row()).appName;
+    case Field::icon:        return getAppIcon (_container->sortedApps.at (index.row()).packageName); // s_sortedApps.at (index.row()).icon;
+    case Field::checked:
+      return (_container->mode == Mode::EXC_CHECKED_APPS)
+             ? _container->sortedApps.at (index.row()).checked.excluded
+             : _container->sortedApps.at (index.row()).checked.included;
 
     default:
       return QVariant();
@@ -1241,7 +1433,7 @@ QImage DapQmlModelRoutingExceptionsImageProvider::requestImage (const QString &i
 {
   QImage result = getAppIcon (id);
 
-  auto type = result.format();
+  //auto type = result.format();
 
   if (size)
     *size = QSize (result.width(), result.height());
@@ -1279,9 +1471,17 @@ void DapQmlModelRoutingExceptionsFilterProxy::setModel (QAbstractListModel *a_mo
   setSourceModel (a_model);
 }
 
+const QString &DapQmlModelRoutingExceptionsFilterProxy::filter() const
+{
+  return m_filter;
+}
+
 void DapQmlModelRoutingExceptionsFilterProxy::setFilter (const QString &a_filter)
 {
-  _filter = a_filter;
+  if (m_filter == a_filter)
+    return;
+
+  m_filter = a_filter;
   invalidateFilter();
 }
 
@@ -1289,7 +1489,7 @@ bool DapQmlModelRoutingExceptionsFilterProxy::filterAcceptsRow (int sourceRow, c
 {
   auto index  = _model->index (sourceRow, 0, sourceParent);
   auto name   = _model->data (index, int (Field::appName)).toString();
-  return name.startsWith (_filter, Qt::CaseInsensitive);
+  return name.startsWith (m_filter, Qt::CaseInsensitive);
 }
 
 /*-----------------------------------------*/
