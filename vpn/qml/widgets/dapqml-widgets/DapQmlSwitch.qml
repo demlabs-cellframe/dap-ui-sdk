@@ -95,6 +95,7 @@ Item {
             /* not dragging */
             if (!dragging)
                 _toggle();
+            else
 
             /* on left side */
             if (!draggingState)
