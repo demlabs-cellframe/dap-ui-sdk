@@ -153,6 +153,7 @@ public slots:
   void slotResetDaysLeft();
   void slotCountryChange();
   void slotUpdateItemsList();
+  void slotRouExcModeUpdated();
 protected slots:
   void slotRetranslate();
   /// @}

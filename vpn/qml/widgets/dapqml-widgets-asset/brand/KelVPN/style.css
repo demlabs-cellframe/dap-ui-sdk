@@ -973,8 +973,13 @@
 
 .dashboard-error-label
 {
-	scaled-rect: scaled(51,140,327,57,false,14);
+	scaled-rect: scaled(51,nan,327,57,false,14);
 	color: "#F53172";
+}
+
+.dashboard-error-label-pos
+{
+	scaled-rect: scaled(nan,140,nan,nan,false);
 }
 
 .dashboard-switch
@@ -1428,7 +1433,7 @@
 
 .update-notification-rect
 {
-    scaled-rect: scaled(-1,40,356,78,false);
+    scaled-rect: scaled(-1,nan,356,78,false);
     color: "@update-background";
 }
 
@@ -1587,9 +1592,14 @@
     scaled-rect: scaled(-1,132,392,648,false);
 }
 
-.rouexc-tab-content-message
+.rouexc-tab-content-app-mode-switch
 {
-    scaled-rect: scaled(nan,nan,nan,56,false,16);
+    scaled-rect: scaled(nan,nan,356,48,false);
+}
+
+.rouexc-tab-content-app-mode-switch-container
+{
+    scaled-rect: scaled(nan,nan,-1,72,false);
 }
 
 .rouexc-content-item
