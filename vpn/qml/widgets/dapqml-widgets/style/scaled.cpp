@@ -18,7 +18,7 @@ Scaled::Scaled()
   , m_fontSize (0)
   , m_aspect (false)
   , m_type (Invalid)
-  , m_result ({0,0,0,0,0})
+  , m_result ({0,0,0,0,0,0,0})
 {
 
 }
