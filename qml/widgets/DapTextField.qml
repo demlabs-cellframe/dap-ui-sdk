@@ -27,6 +27,8 @@ TextField {
     property string indicatorSourceDisabledHover: ""
     property alias indicator: indicator
 
+    Keys.onReturnPressed: focus = false
+
     style:
         TextFieldStyle
         {
