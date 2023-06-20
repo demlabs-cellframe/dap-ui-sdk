@@ -91,6 +91,13 @@ public:
     FontOnly,
     All
   };
+
+protected:
+  struct Result
+  {
+    double x,y,w,h,f;
+    double scrWidth, scrHeight;
+  };
   /// @}
 
   /****************************************//**
@@ -102,6 +109,7 @@ private:
   int m_fontSize;
   bool m_aspect;
   Type m_type;
+  mutable Result m_result;
   /// @}
 
   /****************************************//**
@@ -110,7 +118,7 @@ private:
   /// @{
 public:
   Scaled();
-  Scaled(const Scaled &src);
+  Scaled (const Scaled &src);
   ~Scaled();
   /// @}
 
@@ -140,8 +148,10 @@ public:
   Type type() const;
   void setType(Type newType);
 
-  void adjust (QObject *a_item, double a_screenWidth, double a_screenHeight) const;
-  void calcAdjusted(
+  /// @return true if result values are stored
+  bool adjust (QObject *a_item, double a_screenWidth, double a_screenHeight) const;
+  /// @return true if result values are stored
+  bool calcAdjusted(
     double a_screenWidth,
     double a_screenHeight,
     double &a_x,
