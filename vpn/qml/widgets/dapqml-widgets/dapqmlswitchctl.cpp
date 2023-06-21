@@ -78,6 +78,11 @@ void DapQmlSwitchCtl::setToggleAnimation (QObject *a_value)
 
 void DapQmlSwitchCtl::setTouchingPoint (QObject *a_value)
 {
+  QString objName = a_value->objectName();
+
+  if (objName.isEmpty())
+    return;
+
   _data->item.touchingPoint  = a_value;
   connect (a_value, &QObject::destroyed,
            this, [this] { _data->item.touchingPoint = nullptr; });
@@ -100,6 +105,11 @@ void printSignalList (const QMetaObject* metaObject)
 
 void DapQmlSwitchCtl::setTouchArea (QObject *a_value)
 {
+  QString objName = a_value->objectName();
+
+  if (objName.isEmpty())
+    return;
+
   _data->item.touchingArea  = a_value;
   connect (a_value, &QObject::destroyed,
            this, [this] { _data->item.touchingArea = nullptr; });
@@ -329,7 +339,7 @@ void DapQmlSwitchCtl::_turnOn()
 
   QMetaObject::invokeMethod (_data->item.root, "setState", Q_ARG(QVariant,true));
 
-  _print ("turnOff");
+  _print ("turnOn");
 }
 
 void DapQmlSwitchCtl::_toggle()
@@ -344,7 +354,11 @@ void DapQmlSwitchCtl::_updateDiff()
 
 void DapQmlSwitchCtl::_updateTglState()
 {
-  setDraggingState (itemValue<bool> (_data->item.toggle, "draggingState", draggingState()));
+  //setDraggingState (itemValue<bool> (_data->item.toggle, "draggingState", draggingState()));
+  qreal rootWidth = itemValue<qreal> (_data->item.root, "width", -1);
+  if (rootWidth == -1)
+    return;
+  setDraggingState (pos2() >= rootWidth / 2);
 }
 
 void DapQmlSwitchCtl::_print (const char *a_text)

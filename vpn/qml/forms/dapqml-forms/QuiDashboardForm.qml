@@ -448,7 +448,8 @@ Item {
     DapQmlSwitch {
         id: dashboardSwitch
         qss: "dashboard-switch"
-        onClicked: { root.sigSwitchToggle(checked); root.sigConnectionStatusChangeRequested(); }
+        //onClicked: { root.sigSwitchToggle(checked); root.sigConnectionStatusChangeRequested(); }
+        onCheckedChanged: { root.sigSwitchToggle(checked); root.sigConnectionStatusChangeRequested(); }
         Component.onCompleted: switchItem = this
     }
 
