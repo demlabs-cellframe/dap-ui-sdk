@@ -46,6 +46,8 @@ Item {
     /// @brief widget qss style
     property string qss
 
+    property alias ctl: ctl
+
     DapQmlSwitchCtl {
         id: ctl
         draggingStartDistance: 8

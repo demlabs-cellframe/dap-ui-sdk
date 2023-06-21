@@ -6,7 +6,7 @@
 #include <QDebug>
 
 /* DEFS */
-//#define ENABLE_PRINTS
+#define ENABLE_PRINTS
 
 struct DapQmlSwitchCtl::DapQmlSwitchCtlData
 {
