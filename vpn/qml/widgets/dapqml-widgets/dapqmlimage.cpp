@@ -102,7 +102,17 @@ void DapQmlImageItem::paint (QPainter *a_painter)
                 size,
                 Qt::IgnoreAspectRatio,
                 Qt::SmoothTransformation);
-        }
+
+//          QImage scaledResult (size, QImage::Format_ARGB32);
+//          scaledResult.fill (Qt::transparent);
+
+//          QPainter painter (&scaledResult);
+//          painter.setRenderHint (QPainter::HighQualityAntialiasing);
+//          painter.drawPixmap (QRect (0, 0, size.width(), size.height()), image);
+//          painter.end();
+
+//          _cache.pixmap = QPixmap::fromImage (scaledResult);
+      }
       else
         if (m_scaledPixmap.contains (s_imageProvider))
           {
@@ -121,6 +131,16 @@ void DapQmlImageItem::paint (QPainter *a_painter)
                   size,
                   Qt::IgnoreAspectRatio,
                   Qt::SmoothTransformation);
+
+//            QImage scaledResult (size, QImage::Format_ARGB32);
+//            scaledResult.fill (Qt::transparent);
+
+//            QPainter painter (&scaledResult);
+//            painter.setRenderHint (QPainter::HighQualityAntialiasing);
+//            painter.drawPixmap (QRect (0, 0, size.width(), size.height()), image);
+//            painter.end();
+
+//            _cache.pixmap = QPixmap::fromImage (scaledResult);
           }
     }
 
