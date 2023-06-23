@@ -248,13 +248,14 @@ Item {
                     anchors.bottom: parent.bottom
                     z: 40
                     width: parent.width
-                    visible: model.sid !== QuiSettingsForm.StyleId.SI_TITLE && isSep(model.sid)
+                    visible: model.sid !== QuiSettingsForm.StyleId.SI_TITLE
+                             && isSep(model.sid)
                 }
 
                 DapQmlRectangle {
                     anchors.fill: parent
                     z: 10
-                    visible: !Brand.legacyStyle()
+                    visible: !Brand.legacyStyle() && model.index > 0
                     qss: delegate.hovered ? "sett-btn-hover-bg" : "c-background"
                     Behavior on color { PropertyAnimation { duration: 150 } }
                 }
