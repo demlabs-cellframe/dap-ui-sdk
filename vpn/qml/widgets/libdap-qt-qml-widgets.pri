@@ -15,6 +15,7 @@ RESOURCES += \
     $$PWD/dapqml-widgets.qrc
 
 HEADERS += \
+    $$PWD/dapqml-widgets/dapimage.h \
     $$PWD/dapqml-widgets/dapqmlimage.h \
     $$PWD/dapqml-widgets/dapqmlserialkeyinput.h \
     $$PWD/dapqml-widgets/dapqmlstyle.h \
@@ -33,6 +34,7 @@ HEADERS += \
     $$PWD/dapqml-widgets/style/debug/styledebugtree.h
 
 SOURCES += \
+    $$PWD/dapqml-widgets/dapimage.cpp \
     $$PWD/dapqml-widgets/dapqmlimage.cpp \
     $$PWD/dapqml-widgets/dapqmlserialkeyinput.cpp \
     $$PWD/dapqml-widgets/dapqmlstyle.cpp \
