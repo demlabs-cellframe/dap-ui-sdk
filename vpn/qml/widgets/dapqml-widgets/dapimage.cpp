@@ -4,8 +4,8 @@
 #include <cmath>
 
 /* DEFS */
-#define FORCE_LANCZOS
-#define SAMPLE_LENGTH (3)
+//#define FORCE_LANCZOS
+#define SAMPLE_LENGTH (2)
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -97,6 +97,9 @@ DapImage DapImage::scaled (int width, int height, Qt::AspectRatioMode aspectRati
     return QImage::scaled (width, height, aspectRatioMode, Qt::SmoothTransformation);
 #endif // FORCE_LANCZOS
 
+  //transformMode = BicubicTransformation;
+  //transformMode = LanczosTransformation;
+
   /* defs */
   struct ColorData
   {
@@ -113,7 +116,7 @@ DapImage DapImage::scaled (int width, int height, Qt::AspectRatioMode aspectRati
   };
 
   /* calculate lanczos weight value */
-  auto calcLanczosWeight = [] (double a_distance, int a_window) -> double
+  auto calcLanczosWeight = [] (double a_distance, double a_window) -> double
   {
     if (a_distance == 0.0)
       return 1.0;
@@ -127,6 +130,22 @@ DapImage DapImage::scaled (int width, int height, Qt::AspectRatioMode aspectRati
       return 0.0;
   };
 
+  /* calc bicubic interpolation weight */
+  auto calcBicubicInterpolationWeight = [] (double a_distance, double) -> double
+  {
+    double a     = -0.05;
+    double absX  = std::abs (a_distance);
+    double absX2 = absX * absX;
+    double absX3 = absX2 * absX;
+
+    if (absX <= 1.0)
+      return ((a + 2.0) * absX3 - (a + 3.0) * absX2 + 1.0);
+    else if (absX <= 2.0)
+      return (a * absX3 - 5.0 * a * absX2 + 8.0 * a * absX - 4.0 * a);
+    else
+      return 0.0;
+  };
+
   /* add color into QImage */
   auto addColor = [] (ColorData & a_dest, double red, double green, double blue, double alpha)
   {
@@ -135,6 +154,10 @@ DapImage DapImage::scaled (int width, int height, Qt::AspectRatioMode aspectRati
     a_dest.blue   += blue;
     a_dest.alpha  += alpha;
   };
+
+  auto calcWeight = transformMode == TransformationMode::LanczosTransformation
+      ? calcLanczosWeight
+      : calcBicubicInterpolationWeight;
 
   /* create images with desired format */
   DapImage source = (format() == QImage::Format_ARGB32)
@@ -151,7 +174,7 @@ DapImage DapImage::scaled (int width, int height, Qt::AspectRatioMode aspectRati
 
   /* get sizes */
   QSize sourceSize = source.size();
-  QSize resultSize (result.width(), result.height());
+  QSize resultSize (result.width() - 1, result.height() - 1);
 
   /* get factors */
   double horizontalFactor  = double (sourceSize.width())  / double (resultSize.width());
@@ -162,9 +185,9 @@ DapImage DapImage::scaled (int width, int height, Qt::AspectRatioMode aspectRati
   double windowHeight        = SAMPLE_LENGTH * verticalFactor;
 
   /* run thru result pixels */
-  for (int y = 0; y < resultSize.height(); y++)
+  for (double y = 0; y < resultSize.height(); y++)
     {
-      for (int x = 0; x < resultSize.width(); x++)
+      for (double x = 0; x < resultSize.width(); x++)
         {
           /* create window buffer */
           ColorData resultColor;
@@ -174,24 +197,27 @@ DapImage DapImage::scaled (int width, int height, Qt::AspectRatioMode aspectRati
           double sourcePosY  = y * verticalFactor;
 
           /* calc window boundaries */
-          int winBeginX = qBound (0, qRound (sourcePosX - windowWidth / 2), sourceSize.width() - 1);
-          int winBeginY = qBound (0, qRound (sourcePosY - windowWidth / 2), sourceSize.height() - 1);
-          int winEndX   = qBound (0, qRound (winBeginX + windowWidth), sourceSize.width());
-          int winEndY   = qBound (0, qRound (winBeginY + windowHeight), sourceSize.height());
+          double winBeginX = qBound<double> (0.0, sourcePosX - windowWidth / 2,  sourceSize.width() - 1);
+          double winBeginY = qBound<double> (0.0, sourcePosY - windowWidth / 2,  sourceSize.height() - 1);
+          double winEndX   = winBeginX + windowWidth;//qBound<double> (0.0, winBeginX + windowWidth,       sourceSize.width());
+          double winEndY   = winBeginY + windowHeight;//qBound<double> (0.0, winBeginY + windowHeight,      sourceSize.height());
 
           /* run thru source window */
-          for (int filterY = winBeginY; filterY < winEndY; filterY++)
+          for (double filterY = floor (winBeginY); filterY < floor (winEndY); filterY++)
             {
-              for (int filterX = winBeginX; filterX < winEndX; filterX++)
+              for (double filterX = floor (winBeginX); filterX < floor (winEndX); filterX++)
                 {
                   /* calc distance and result weight */
                   double distanceX = qRound (sourcePosX) - filterX;
                   double distanceY = qRound (sourcePosY) - filterY;
-                  double weight    = calcLanczosWeight (distanceX, windowWidth)
-                                     * calcLanczosWeight (distanceY, windowHeight);
+                  double weight = calcWeight (distanceX, windowWidth)
+                                * calcWeight (distanceY, windowHeight);
 
                   /* calc result pixel value */
-                  const uchar *data = getPixelData (source, filterX, filterY);
+                  const uchar *data = getPixelData(
+                        source,
+                        qBound<double> (0.0, filterX, sourceSize.width() - 1),
+                        qBound<double> (0.0, filterY, sourceSize.height() - 1));
                   double red   = std::abs (double (data[0]));
                   double green = std::abs (double (data[1]));
                   double blue  = std::abs (double (data[2]));

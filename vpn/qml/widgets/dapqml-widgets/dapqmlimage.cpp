@@ -85,9 +85,9 @@ void DapQmlImageItem::paint (QPainter *a_painter)
           _cache.image  = image.scaled (
                             size,
                             Qt::IgnoreAspectRatio,
-                            DapImage::LanczosTransformation
+                            DapImage::SmoothTransformation
                           );
-        }
+      }
       else if (m_scaledPixmap.contains (s_imageProvider))
         {
           /* calc filename */
@@ -104,7 +104,7 @@ void DapQmlImageItem::paint (QPainter *a_painter)
           _cache.image  = DapImage (image).scaled (
                             size,
                             Qt::IgnoreAspectRatio,
-                            DapImage::LanczosTransformation);
+                            DapImage::SmoothTransformation);
         }
     }
 

@@ -25,6 +25,7 @@ public:
   {
     FastTransformation,
     SmoothTransformation,
+    BicubicTransformation,
     LanczosTransformation,
   };
   /// @}
