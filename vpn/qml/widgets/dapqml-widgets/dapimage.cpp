@@ -88,7 +88,8 @@ DapImage DapImage::scaled (const QSize &size, Qt::AspectRatioMode aspectRatioMod
 DapImage DapImage::scaled (int width, int height, Qt::AspectRatioMode aspectRatioMode, TransformationMode transformMode) const
 {
 #ifdef FORCE_LANCZOS
-  Q_UNUSED (transformMode)
+  //transformMode = BicubicTransformation;
+  transformMode = LanczosTransformation;
 #else // FORCE_LANCZOS
   /* old transformation technics */
   if (transformMode == TransformationMode::FastTransformation)
@@ -97,8 +98,6 @@ DapImage DapImage::scaled (int width, int height, Qt::AspectRatioMode aspectRati
     return QImage::scaled (width, height, aspectRatioMode, Qt::SmoothTransformation);
 #endif // FORCE_LANCZOS
 
-  //transformMode = BicubicTransformation;
-  //transformMode = LanczosTransformation;
 
   /* defs */
   struct ColorData

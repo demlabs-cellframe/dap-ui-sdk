@@ -78,10 +78,10 @@ void DapQmlSwitchCtl::setToggleAnimation (QObject *a_value)
 
 void DapQmlSwitchCtl::setTouchingPoint (QObject *a_value)
 {
-  QString objName = a_value->objectName();
+//  QString objName = a_value->objectName();
 
-  if (objName.isEmpty())
-    return;
+//  if (objName.isEmpty())
+//    return;
 
   _data->item.touchingPoint  = a_value;
   connect (a_value, &QObject::destroyed,
@@ -105,10 +105,10 @@ void printSignalList (const QMetaObject* metaObject)
 
 void DapQmlSwitchCtl::setTouchArea (QObject *a_value)
 {
-  QString objName = a_value->objectName();
+//  QString objName = a_value->objectName();
 
-  if (objName.isEmpty())
-    return;
+//  if (objName.isEmpty())
+//    return;
 
   _data->item.touchingArea  = a_value;
   connect (a_value, &QObject::destroyed,
