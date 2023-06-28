@@ -21,12 +21,13 @@ class DapImage : public QImage
    *******************************************/
   /// @{
 public:
+  /// scaling methods
   enum TransformationMode
   {
-    FastTransformation,
-    SmoothTransformation,
-    BicubicTransformation,
-    LanczosTransformation,
+    FastTransformation,     ///< build-in qt fast method
+    SmoothTransformation,   ///< build-in qt smooth method
+    BicubicTransformation,  ///< bicubic interpolation method
+    LanczosTransformation,  ///< lanczos method
   };
   /// @}
 
@@ -56,7 +57,6 @@ public:
   DapImage scaled (const QSize &size, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio, TransformationMode transformMode = LanczosTransformation) const;
   DapImage scaled (int width, int height, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio, TransformationMode transformMode = LanczosTransformation) const;
   /// @}
-
 
   /****************************************//**
    * @name OPERATORS
