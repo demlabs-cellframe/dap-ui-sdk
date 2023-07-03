@@ -3,6 +3,7 @@
 
 #include <QVariant>
 #include <QMetaMethod>
+#include <QTimer>
 #include <QDebug>
 
 /* DEFS */
@@ -53,6 +54,24 @@ struct DapQmlSwitchCtl::DapQmlSwitchCtlData
   qreal draggingStartDistance;
 
   TogglePosCtl togglePosCtl;
+
+  DapQmlSwitchCtlData()
+  {
+    item.root          = nullptr;
+    item.background    = nullptr;
+    item.toggle        = nullptr;
+    item.toggleAnim    = nullptr;
+    item.touchingPoint = nullptr;
+    item.touchingArea  = nullptr;
+
+    dragging      = false;
+    draggingAnim  = false;
+    draggingState = false;
+    pos1    = 0.0;
+    pos2    = 0.0;
+    diff    = 0.0;
+    draggingStartDistance = 0.0;
+  }
 };
 
 /********************************************
@@ -81,9 +100,9 @@ void DapQmlSwitchCtl::setRoot (QObject *a_value)
 {
   _data->item.root  = a_value;
   connect (a_value, &QObject::destroyed,
-           this, [this] { _data->item.root = nullptr; });
+           this, [this] { _itemsCleared(); });
   connect (a_value, SIGNAL(checkedChanged()),
-           this, SLOT(_slotUpdateTogglePos()));
+           this, SLOT(_slotStackUpdateTogglePos()));
   connect (a_value, SIGNAL(widthChanged()),
            this, SLOT(_slotUpdateTogglePos()));
 }
@@ -92,21 +111,23 @@ void DapQmlSwitchCtl::setBackground (QObject *a_value)
 {
   _data->item.background  = a_value;
   connect (a_value, &QObject::destroyed,
-           this, [this] { _data->item.background = nullptr; });
+           this, [this] { _itemsCleared(); });
 }
 
 void DapQmlSwitchCtl::setToggle (QObject *a_value)
 {
   _data->item.toggle  = a_value;
   connect (a_value, &QObject::destroyed,
-           this, [this] { _data->item.toggle = nullptr; });
+           this, [this] { _itemsCleared(); });
+  connect (a_value, SIGNAL(widthChanged()),
+           this, SLOT(_slotUpdateTogglePos()));
 }
 
 void DapQmlSwitchCtl::setToggleAnimation (QObject *a_value)
 {
   _data->item.toggleAnim  = a_value;
   connect (a_value, &QObject::destroyed,
-           this, [this] { _data->item.toggleAnim = nullptr; });
+           this, [this] { _itemsCleared(); });
 }
 
 void DapQmlSwitchCtl::setTouchingPoint (QObject *a_value)
@@ -118,7 +139,7 @@ void DapQmlSwitchCtl::setTouchingPoint (QObject *a_value)
 
   _data->item.touchingPoint  = a_value;
   connect (a_value, &QObject::destroyed,
-           this, [this] { _data->item.touchingPoint = nullptr; });
+           this, [this] { _itemsCleared(); });
   connect (a_value, SIGNAL (xChanged()),
            this, SLOT (_slotTouchingPointXChanged()));
   connect (a_value, SIGNAL (startXChanged()),
@@ -145,7 +166,7 @@ void DapQmlSwitchCtl::setTouchArea (QObject *a_value)
 
   _data->item.touchingArea  = a_value;
   connect (a_value, &QObject::destroyed,
-           this, [this] { _data->item.touchingArea = nullptr; });
+           this, [this] { _itemsCleared(); });
 
   //printSignalList (a_value->metaObject());
 
@@ -167,6 +188,10 @@ void DapQmlSwitchCtl::setDragging (bool a_value)
 
   _data->dragging = a_value;
   emit sigDraggingChanged();
+
+#ifdef ENABLE_PRINTS
+  qDebug ("%s :: dragging %d", __PRETTY_FUNCTION__, _data->dragging);
+#endif // ENABLE_PRINTS
 }
 
 bool DapQmlSwitchCtl::draggingAnim() const
@@ -394,6 +419,16 @@ void DapQmlSwitchCtl::_updateTglState()
   setDraggingState (pos2() >= rootWidth / 2);
 }
 
+void DapQmlSwitchCtl::_itemsCleared()
+{
+  _data->item.root          = nullptr;
+  _data->item.background    = nullptr;
+  _data->item.toggle        = nullptr;
+  _data->item.toggleAnim    = nullptr;
+  _data->item.touchingPoint = nullptr;
+  _data->item.touchingArea  = nullptr;
+}
+
 void DapQmlSwitchCtl::_print (const char *a_text)
 {
 #ifndef ENABLE_PRINTS
@@ -438,6 +473,13 @@ void DapQmlSwitchCtl::_slotUpdateTogglePos()
   _data->item.toggle->setProperty ("x", toggleX);
 }
 
+void DapQmlSwitchCtl::_slotStackUpdateTogglePos()
+{
+  QTimer::singleShot (50,  this, [this] {_slotUpdateTogglePos();});
+  QTimer::singleShot (100, this, [this] {_slotUpdateTogglePos();});
+  QTimer::singleShot (150, this, [this] {_slotUpdateTogglePos();});
+}
+
 /*-----------------------------------------*/
 
 TogglePosCtl &TogglePosCtl::evaluate (QObject *a_root, QObject *a_toggle, qreal a_pos)
@@ -459,11 +501,29 @@ TogglePosCtl &TogglePosCtl::evaluate (QObject *a_root, QObject *a_toggle, qreal 
   isLeftReached   = draggingPos <= minPos;
   isRightReached  = draggingPos >= maxPos;
 
+#ifdef ENABLE_PRINTS
+  qDebug ("%s :: checked %d, rootWidth %d, toggleWidth %d, minPos %d, maxPos %d, finalPos %d, draggingPos %d, isLeftReached %d, isRightReached %d",
+    __PRETTY_FUNCTION__,
+    checked,
+    int (rootWidth),
+    int (toggleWidth),
+    int (minPos),
+    int (maxPos),
+    int (finalPos),
+    int (draggingPos),
+    isLeftReached,
+    isRightReached);
+#endif // ENABLE_PRINTS
+
   return *this;
 }
 
 qreal TogglePosCtl::getToggleX (bool a_dragging) const
 {
+#ifdef ENABLE_PRINTS
+  qDebug ("%s :: dragging %d", __PRETTY_FUNCTION__, a_dragging);
+#endif // ENABLE_PRINTS
+
   if (a_dragging)
   {
     if (isLeftReached)
