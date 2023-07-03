@@ -68,12 +68,11 @@ Item {
         visible: background.visible
     }
 
-    Image{
+    DapImageRender{
         id:lever
         x: leverOffPosition; y: leverMargin
         width: background.height - leverMargin*2
         height: background.height - leverMargin*2
-        mipmap: true
         source: imageOff
     }
 

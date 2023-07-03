@@ -56,11 +56,10 @@ RadioButton
             height: indicatorInnerSize
             anchors.verticalCenter: parent.verticalCenter
 
-            Image {
+            DapImageRender {
                 anchors.verticalCenter: parent.verticalCenter
                 width: indicatorInnerSize
                 height: indicatorInnerSize
-                mipmap: true
 
                 opacity: checked ? 1 : 0
 
@@ -72,11 +71,10 @@ RadioButton
                     }
                 }
             }
-            Image {
+            DapImageRender {
                 anchors.verticalCenter: parent.verticalCenter
                 width: indicatorInnerSize
                 height: indicatorInnerSize
-                mipmap: true
 
                 opacity: checked ? 0 : 1
 
