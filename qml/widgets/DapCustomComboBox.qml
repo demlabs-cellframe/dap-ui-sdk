@@ -24,7 +24,7 @@ Item
 
     property int currentIndex: -1
     property string currentText: displayText
-    property int count: popupListView.model.count
+    property int count: popupListView.model ? popupListView.model.count : 0
 
     property bool popupVisible: false
 
@@ -37,7 +37,9 @@ Item
 
     property string displayText: defaultText
 
-    property color backgroundColor: currTheme.mainBackground
+    property color backgroundColorNormal: currTheme.mainBackground
+    property color backgroundColorShow: currTheme.mainBackground
+    property alias background: background
 
     signal itemSelected(var index)
 
@@ -71,8 +73,9 @@ Item
 
         radius: bgRadius
         color: popupVisible ?
-                   currTheme.secondaryBackground :
-                   backgroundColor
+                   backgroundColorNormal :
+                   backgroundColorShow
+
         RowLayout
         {
             anchors.fill: parent
