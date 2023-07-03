@@ -6,7 +6,31 @@
 #include <QDebug>
 
 /* DEFS */
-#define ENABLE_PRINTS
+//#define ENABLE_PRINTS
+
+class TogglePosCtl
+{
+  qreal finalPos;
+  qreal draggingPos;
+  qreal minPos;
+  qreal maxPos;
+  bool isLeftReached;
+  bool isRightReached;
+public:
+  TogglePosCtl()
+    : finalPos (0)
+    , draggingPos (0)
+    , minPos (0)
+    , maxPos (0)
+    , isLeftReached (false)
+    , isRightReached (false)
+  {
+
+  }
+
+  TogglePosCtl &evaluate(QObject *a_root, QObject *a_toggle, qreal a_pos);
+  qreal getToggleX (bool a_dragging) const;
+};
 
 struct DapQmlSwitchCtl::DapQmlSwitchCtlData
 {
@@ -27,6 +51,8 @@ struct DapQmlSwitchCtl::DapQmlSwitchCtlData
   qreal pos2;
   qreal diff;
   qreal draggingStartDistance;
+
+  TogglePosCtl togglePosCtl;
 };
 
 /********************************************
@@ -36,7 +62,10 @@ struct DapQmlSwitchCtl::DapQmlSwitchCtlData
 DapQmlSwitchCtl::DapQmlSwitchCtl()
   : _data (new DapQmlSwitchCtlData)
 {
-
+  connect (this, &DapQmlSwitchCtl::sigDraggingChanged,
+           this, &DapQmlSwitchCtl::_slotUpdateTogglePos);
+  connect (this, &DapQmlSwitchCtl::sigPos2Changed,
+           this, &DapQmlSwitchCtl::_slotUpdateTogglePos);
 }
 
 DapQmlSwitchCtl::~DapQmlSwitchCtl()
@@ -53,6 +82,10 @@ void DapQmlSwitchCtl::setRoot (QObject *a_value)
   _data->item.root  = a_value;
   connect (a_value, &QObject::destroyed,
            this, [this] { _data->item.root = nullptr; });
+  connect (a_value, SIGNAL(checkedChanged()),
+           this, SLOT(_slotUpdateTogglePos()));
+  connect (a_value, SIGNAL(widthChanged()),
+           this, SLOT(_slotUpdateTogglePos()));
 }
 
 void DapQmlSwitchCtl::setBackground (QObject *a_value)
@@ -388,6 +421,59 @@ void DapQmlSwitchCtl::_slotTouchAreaPressed()
 void DapQmlSwitchCtl::_slotTouchAreaReleased()
 {
   _end();
+}
+
+void DapQmlSwitchCtl::_slotUpdateTogglePos()
+{
+  if (_data->item.root == nullptr
+      || _data->item.toggle == nullptr)
+    return;
+
+  qreal toggleX = _data->togglePosCtl.evaluate(
+    _data->item.root,
+    _data->item.toggle,
+    pos2()
+  ).getToggleX (dragging());
+
+  _data->item.toggle->setProperty ("x", toggleX);
+}
+
+/*-----------------------------------------*/
+
+TogglePosCtl &TogglePosCtl::evaluate (QObject *a_root, QObject *a_toggle, qreal a_pos)
+{
+  if (a_root == nullptr
+      || a_toggle == nullptr)
+    return *this;
+
+  bool checked      = itemValue<bool> (a_root, "checked", false);
+  qreal rootWidth   = itemValue<qreal> (a_root, "width", 0.0);
+  qreal toggleWidth = itemValue<qreal> (a_toggle, "width", 0.0);
+
+  minPos  = (-12.0 * (rootWidth / 270.0));
+  maxPos  = (rootWidth - toggleWidth + 12.0 * (rootWidth / 270.0));
+
+  finalPos    = checked ? maxPos : minPos;
+  draggingPos = a_pos - (toggleWidth / 2.0);
+
+  isLeftReached   = draggingPos <= minPos;
+  isRightReached  = draggingPos >= maxPos;
+
+  return *this;
+}
+
+qreal TogglePosCtl::getToggleX (bool a_dragging) const
+{
+  if (a_dragging)
+  {
+    if (isLeftReached)
+      return minPos;
+    if (isRightReached)
+      return maxPos;
+    return draggingPos;
+  }
+
+  return finalPos;
 }
 
 /*-----------------------------------------*/

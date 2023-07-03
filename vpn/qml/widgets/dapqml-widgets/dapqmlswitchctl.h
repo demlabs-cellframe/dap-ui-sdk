@@ -124,6 +124,7 @@ protected slots:
   void _slotTouchingPointXChanged();
   void _slotTouchAreaPressed();
   void _slotTouchAreaReleased();
+  void _slotUpdateTogglePos();
   /// @}
 };
 
