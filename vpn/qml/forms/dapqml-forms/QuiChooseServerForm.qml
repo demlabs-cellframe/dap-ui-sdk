@@ -32,11 +32,6 @@ Item {
     /// Used to connect interface via Manager
     property string formName: "ChooseServer"
 
-    /// @brief items array
-    ///
-    /// Need to store all items
-    property var items: new Array
-
     /// @}
     /****************************************//**
      * @name SIGNALS
@@ -52,17 +47,6 @@ Item {
      * @name FUNCTIONS
      ********************************************/
     /// @{
-
-    Timer {
-        interval: 500
-        running: true
-        repeat: false
-        onTriggered: {
-            let size = items.length;
-            for (let i = 0; i < size; i++)
-                items[i].hoverEnabled = true;
-        }
-    }
 
     /// @}
     /****************************************//**
@@ -111,7 +95,6 @@ Item {
             property bool checked: false
 
             DapQmlRadioButton {
-                property int ping: model.ping + csListView.model.hookInt
                 property int quality: model.connectionQuality + csListView.model.hookInt
 
                 text: model.name + csListView.model.hook
@@ -122,11 +105,6 @@ Item {
                 height: resizer.height
                 y: spacer.height / 2
 
-                // for debug purposes - uncomment 'Text' below
-//                Text {
-//                    text: `${model.name} >> ping [${parent.ping}] quality [${parent.quality}]` + csListView.model.hook
-//                }
-
                 DapQmlLabel {
                     property int quality: (parent.quality === 0) ? (0) : (6 - parent.quality)
                     x: parent.width - (width * 1.35)
@@ -135,27 +113,47 @@ Item {
                     height: resizer.height * 0.5
                     qss: `ic_conn-${quality}` + csListView.model.hook
 
-                    ToolTip {
-                        id: id_tooltip
-
-                        background: Rectangle {
-                            border.color: "#404040"
-                        }
-
-                        contentItem: Text {
-                            color: "#404040"
-                            text: (ping > -1)
-                                  ? (`ping ${ping} ms` + csListView.model.hook)
-                                  : ("unavailable" + csListView.model.hook)
-                        }
-                    }
-
                     MouseArea {
                         anchors.fill: parent
-                        //hoverEnabled: true
-                        onEntered: id_tooltip.visible = true
-                        onExited: id_tooltip.visible = false
-                        Component.onCompleted: { items.push(this); }
+                        hoverEnabled: true
+                        onEntered: itemPopup.open()
+                        onExited:  itemPopup.close()
+                    }
+
+                    Popup {
+                        id: itemPopup
+                        x: parent.width - width
+                        y: 0 - height
+                        width: popupLabel.contentWidth * 1.25
+                        height: popupLabel.contentHeight * 1.5
+                        topInset: 0
+                        bottomInset: 0
+                        leftInset: 0
+                        rightInset: 0
+                        padding: 0
+                        margins: 0
+
+                        background: Item {}
+
+                        contentItem: Rectangle {
+                            anchors.fill: parent
+                            color: "#e0e0e0"
+                            border.color: "#404040"
+
+                            Text {
+                                id: popupLabel
+                                anchors.fill: parent
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                color: "#404040"
+
+                                property int ping: model.ping + csListView.model.hookInt
+
+                                text: (ping > -1)
+                                      ? (`ping ${ping} ms` + csListView.model.hook)
+                                      : ("unavailable" + csListView.model.hook)
+                            }
+                        }
                     }
                 }
 
