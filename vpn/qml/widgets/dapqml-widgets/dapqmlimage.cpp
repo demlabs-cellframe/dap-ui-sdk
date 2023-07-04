@@ -113,11 +113,7 @@ void DapQmlImageItem::paint (QPainter *a_painter)
     }
 
   /* draw */
-//  a_painter->drawImage (content, _cache.image);
-//  auto renderHints  = a_painter->renderHints();
-//  a_painter->setRenderHints (QPainter::Antialiasing);
   a_painter->drawImage (content.topLeft(), _cache.image);
-//  a_painter->setRenderHints (renderHints);
 }
 
 //void DapQmlImageItem::paint (QPainter *a_painter)
