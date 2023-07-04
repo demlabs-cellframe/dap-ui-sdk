@@ -33,6 +33,7 @@ class DapCmdSystemTray: public DapCmdServiceAbstract
 public:
   enum class RequestType
   {
+    show_window,
     setting,
     statistic,
     login,
@@ -70,7 +71,7 @@ public:
    *******************************************/
   /// @{
 public:
-  /// @param address Server address.
+  void sendShowGui();
   void sendShowSettingInterface();
   void sendShowStatisticInterface();
   void sendShowLoginInterface();
@@ -89,6 +90,7 @@ private:
    *******************************************/
   /// @{
 signals:
+  void showGui();
   void showSettingInterface();
   void showStatisticInterface();
   void showLoginInterface();
