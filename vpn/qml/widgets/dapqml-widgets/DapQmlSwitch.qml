@@ -122,7 +122,7 @@ Item {
             x: _centerHor(this)
             y: _centerVer(this)
             z: 0
-            width: root.width - 12 * (root.width / 270)
+            width: root.width - 24 * (root.width / 270)
             height: root.height - 36 * (root.height / 174)
             qss: "switch-bg-off"
 

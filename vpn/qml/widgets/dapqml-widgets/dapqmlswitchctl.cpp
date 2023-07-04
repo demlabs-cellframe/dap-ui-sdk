@@ -492,8 +492,8 @@ TogglePosCtl &TogglePosCtl::evaluate (QObject *a_root, QObject *a_toggle, qreal 
   qreal rootWidth   = itemValue<qreal> (a_root, "width", 0.0);
   qreal toggleWidth = itemValue<qreal> (a_toggle, "width", 0.0);
 
-  minPos  = (-12.0 * (rootWidth / 270.0));
-  maxPos  = (rootWidth - toggleWidth + 12.0 * (rootWidth / 270.0));
+  minPos  = (-3.0 * (rootWidth / 270.0));
+  maxPos  = (rootWidth - toggleWidth + 3.0 * (rootWidth / 270.0));
 
   finalPos    = checked ? maxPos : minPos;
   draggingPos = a_pos - (toggleWidth / 2.0);
