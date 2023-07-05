@@ -156,3 +156,5 @@ void _DapQmlModelSerialHistoryCopyButtonAnimation::slotFinish()
   if (parent())
     parent()->setProperty ("iconRight", QString ("ic_copy"));
 }
+
+/*-----------------------------------------*/

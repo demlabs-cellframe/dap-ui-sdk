@@ -54,6 +54,7 @@ public:
     static const QString URL_DB_FILE;
     static const QString URL_SERVER_LIST;
     static const QString URL_TX;
+    static const QString URL_NEW_TX;
     static const QString URL_BUG_REPORT;
     static const QString URL_NEWS;
     static const QString URL_SIGN_UP;
@@ -106,6 +107,8 @@ public slots:
     void sendBugReportStatusRequest(const QByteArray &data);
     void getNews();
     void sendTxOutRequest(const QString &tx);
+    DapNetworkReply *  sendNewTxCondRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey);
+
 #ifdef BUILD_VAR_GOOGLE
     void requestPurchaseVerify(const QJsonObject *params);
 #endif
@@ -123,6 +126,7 @@ protected:
 
     DapNetworkReply * m_netEncryptReply;
     DapNetworkReply * m_netAuthorizeReply;
+    DapNetworkReply * m_netNewTxReply;
     DapNetworkReply * m_netKeyActivateReply;
     DapNetworkReply * m_netLogoutReply;
     DapNetworkReply * m_netSendBugReportReply;
@@ -189,7 +193,7 @@ private slots:
     void answerBugReportsStatus();
     Q_INVOKABLE void answerBugReportsStatusError(const QString& msg);
     void answerSignUp();
-
+    void onNewTxCond();
     void onResetSerialKey();
     void errorResetSerialKey(const QString&);
 
@@ -212,6 +216,7 @@ signals:
     void usrDataChanged(const QString &addr, ushort port);
     void logoutRequested();
     void logouted();
+    void newTxCondReceived(QString &);
 
     Q_INVOKABLE void receivedBugReportAnswer(const QString&);
     Q_INVOKABLE void receivedBugReportStatusAnswer(const QString&);
@@ -220,6 +225,7 @@ signals:
 
     void sigSerialKeyReseted(const QString&);
     void sigResetSerialKeyError(const int, const QString&);
+    void sigNewTxReceived();
 #ifdef BUILD_VAR_GOOGLE
     Q_INVOKABLE void purchaseResponseReceived(const QJsonDocument& response);
     void purchaseError(const QString&);

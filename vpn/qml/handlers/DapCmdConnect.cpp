@@ -40,6 +40,16 @@ void DapCmdConnect::sendCmdDisconnect()
     sendCmd(&obj);
 }
 
+void DapCmdConnect::sendCmdRestartService(bool if_running)
+{
+    QJsonObject obj;
+    if (if_running)
+        obj["action"] = "RestartServiceIfRunning";
+    else
+        obj["action"] = "RestartService";
+    sendCmd(&obj);
+}
+
 void DapCmdConnect::handleResult(const QJsonObject& result)
 {
     qDebug() << "handleResult";
@@ -72,5 +82,8 @@ void DapCmdConnect::handleError(int code, const QString& message)
         emit errorMessage("Server not available. Network connection is disabled.");
         return;
     }
+    // unknown error
+    if (code == 10053 && message == "Unknown error")
+        return;
     emit errorMessage(message);
 }

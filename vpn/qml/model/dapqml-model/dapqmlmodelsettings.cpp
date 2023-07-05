@@ -31,9 +31,12 @@ enum FieldId
 static DapQmlModelSettings *__inst = nullptr;
 static QList<Item> s_items;
 static QSet<QString> s_lastFilterKeywords;
-static qint32 s_daysLabelIndex     = -1;
-static qint32 s_versionLabelIndex  = -1;
-static qint32 s_countryIndex     = -1;
+
+static qint32 s_daysLabelIndex    = -1;
+static qint32 s_rouExcIndex       = -1;
+static qint32 s_countryIndex      = -1;
+static qint32 s_versionLabelIndex = -1;
+
 static QString s_daysLeftString;
 
 static QMap<QString, FieldId> s_fieldIdMap =
@@ -155,6 +158,11 @@ void DapQmlModelSettings::_buildMenuItemsList()
       Item{SI_BUTTONRED,  tr ("Get new licence key"), " ", "settings_icon ic_renew", "get_new_licence_key",  [](QObject*) { emit __inst->sigLicenceGet(); } },
       Item{SI_BUTTON,     tr ("Reset licence key"), "", "settings_icon ic_key", "reset_licence_key",         [](QObject*) { emit __inst->sigLicenceReset(); } },
       Item{SI_LINK,       tr ("Your country"), "", "settings_icon ic_location", "country",                   [](QObject*) { emit __inst->sigCountry(); } },
+  #ifdef BRAND_KELVPN
+  #ifdef Q_OS_ANDROID
+      Item{SI_LINK,       tr ("Routing Exceptions"), "", "settings_icon ic_route", "rouexc",                 [](QObject*) { emit __inst->sigRouExc(); } },
+  #endif // Q_OS_ANDROID
+  #endif // BRAND_KELVPN
   #ifndef DISABLE_SETTINGS_LANGUAGE
       Item{SI_LINK,       tr ("Language"), "", "settings_icon ic_language", "language",                      [](QObject*) { emit __inst->sigLanguage(); } },
   #endif // BRAND_KELVPN
@@ -171,7 +179,9 @@ void DapQmlModelSettings::_buildMenuItemsList()
       Item{SI_TITLE,      tr ("Information"), "", "settings_icon", "information",                            [](QObject*){} },
 
       Item{SI_LINK,       tr ("Bug reports"), "", "settings_icon ic_information_bug-report", "bug_reports",  [](QObject*) { emit __inst->sigBugReport(); } },
+  #ifndef BRAND_VENDETA
       Item{SI_LINK,       tr ("FAQ"), "", "ic_faq", "faq",                                                   [](QObject*) { emit __inst->sigFaq(); } },
+  #endif // BRAND_VENDETA
       Item{SI_BUTTON,     tr ("Serial key history on this device"), "", "settings_icon ic_key-history", "skey_history",  [](QObject*) { emit __inst->sigLicenceHistory(); } },
   #ifndef DISABLE_TERMSOFUSE_AND_PRIVACYPOLICY
       Item{SI_BUTTON,     tr ("Terms of use"), "", "settings_icon ic_terms_policy", "terms_of_use",          [](QObject*) { emit __inst->sigTermsOfUse(); } },
@@ -181,7 +191,7 @@ void DapQmlModelSettings::_buildMenuItemsList()
 
       Item{SI_TITLE,      "", "", "settings_icon", "title_a",                                                [](QObject*){} },
       Item{SI_TITLE,      "", "", "settings_icon", "title_b",                                                [](QObject*){} },
-#else
+#else // BRAND_RISEVPN
       Item{SI_SPACER,     "", "", "1", "spacer",                                                                          [](QObject*){} },
       Item{SI_TITLE,      tr ("Settings"), "", "settings_icon", "settings",                                               [](QObject*){} },
 
@@ -341,8 +351,11 @@ void DapQmlModelSettings::slotUpdateLabels (bool a_forced)
   qint32 index = 0;
   for (auto i = s_items.cbegin(), e = s_items.cend(); i != e; i++, index++)
     {
-      if (i->m_itemType == "get_new_licence_key")
+      if (i->m_itemType      == "get_new_licence_key")
         s_daysLabelIndex    = index;
+
+      else if (i->m_itemType == "rouexc")
+        s_rouExcIndex       = index;
 
       else if (i->m_itemType == "release_version")
         s_versionLabelIndex = index;
@@ -365,6 +378,8 @@ void DapQmlModelSettings::slotUpdateLabels (bool a_forced)
       s_items[s_countryIndex].m_textSub = getCurrentCountryCode();
     }
 
+  /* update rouexc label text */
+  slotRouExcModeUpdated();
 }
 
 void DapQmlModelSettings::slotUpdateItemsList()
@@ -372,6 +387,23 @@ void DapQmlModelSettings::slotUpdateItemsList()
   beginResetModel();
   slotUpdateLabels (false);
   endResetModel();
+}
+
+void DapQmlModelSettings::slotRouExcModeUpdated()
+{
+  if (s_rouExcIndex == -1)
+    return;
+
+  bool includedMode = DapDataLocal::getSetting (SETTING_ROUEXC_MODE).toBool();
+
+  s_items[s_rouExcIndex].m_textMain =
+      !includedMode
+      ? "Routing Exceptions"
+      : "Inclusion in Routing";
+
+  emit dataChanged (
+    index (s_rouExcIndex, 0),
+    index (s_rouExcIndex, columnCount (index (s_rouExcIndex, 3))));
 }
 
 void DapQmlModelSettings::slotSetDaysLeft (QString a_days)
@@ -425,7 +457,7 @@ void DapQmlModelSettings::slotRetranslate()
 QString DapQmlModelSettings::getCurrentCountryCode() const
 {
   QString base_location = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
-  return DapServersData::m_countryMap.value (base_location, QString());
+  return DapAbstractServerList::countryMap().value (base_location, QString()); // DapServersData::m_countryMap.value (base_location, QString());
 }
 
 /********************************************

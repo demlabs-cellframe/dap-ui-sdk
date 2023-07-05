@@ -1,28 +1,36 @@
-#ifndef DAPQMLCOUNTRYMODEL_H
-#define DAPQMLCOUNTRYMODEL_H
+#ifndef DAPQMLMODELCHOOSECOUNTRY_H
+#define DAPQMLMODELCHOOSECOUNTRY_H
 
 /* INCLUDES */
-#include <QAbstractTableModel>
-#include <QSortFilterProxyModel>
+#include <QAbstractListModel>
 
 /****************************************//**
- * @brief themes model list
+ * @brief country list model
  * @ingroup groupUiModels
- * @date 08.2022
- * @author
+ * @date 12.05.2023
+ * @author Mikhail Shilenko
  *******************************************/
 
-class DapQmlCountryModel : public QAbstractTableModel
+class DapQmlModelChooseCountry : public QAbstractListModel
 {
   Q_OBJECT
+
+  /****************************************//**
+   * @name PROPERTIES
+   *******************************************/
+  /// @{
+  Q_PROPERTY (int current READ current WRITE setCurrent NOTIFY currentChanged)
+  /// @}
 
   /****************************************//**
    * @name VARS
    *******************************************/
   /// @{
 protected:
-  QStringList m_Countries;
-  int         m_checkedIndex;
+  int m_current;
+  QStringList _list;
+  QString _filter;
+  QVector<quint32> _indexes;
   /// @}
 
   /****************************************//**
@@ -30,7 +38,7 @@ protected:
    *******************************************/
   /// @{
 public:
-  explicit DapQmlCountryModel(QObject *parent = nullptr);
+  explicit DapQmlModelChooseCountry (QObject *parent = nullptr);
   /// @}
 
   /****************************************//**
@@ -38,8 +46,15 @@ public:
    *******************************************/
   /// @{
 public:
-  Q_INVOKABLE void updateCheckedIndex();
+  Q_INVOKABLE void setRowFilter (const QString &a_filter);
   Q_INVOKABLE static bool countryExist();
+
+  Q_INVOKABLE int current() const;
+  Q_INVOKABLE void setCurrent (int newCurrent);
+  Q_INVOKABLE void setCurrent (const QString &a_name);
+
+protected:
+  void _applyFiltering();
   /// @}
 
   /****************************************//**
@@ -53,23 +68,15 @@ public:
   QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
   QHash<int, QByteArray> roleNames() const override;
   /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void currentChanged();
+  /// @}
 };
-
-
-class DapQmlCountrySortFilterProxyModel : public QSortFilterProxyModel
-{
-  Q_OBJECT
-public:
-  explicit DapQmlCountrySortFilterProxyModel(QObject *parent = nullptr);
-  Q_INVOKABLE void updateCheckedIndex();
-  Q_INVOKABLE void setRowFilter (const QString &a_filter);
-protected:
-    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
-private:
-    QString m_filter;
-    DapQmlCountryModel * m_model;
-};
-
 
 /*-----------------------------------------*/
-#endif // DAPQMLCOUNTRYMODEL_H
+#endif // DAPQMLMODELCHOOSECOUNTRY_H

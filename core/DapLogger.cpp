@@ -9,6 +9,11 @@
 #include "registry.h"
 #endif
 
+#ifdef Q_OS_ANDROID
+#include <QAndroidService>
+#include <android/log.h>
+#endif
+
 static DapLogger* m_instance = nullptr;
 
 DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
@@ -38,8 +43,26 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     updateCurrentLogName();
     setLogFile(m_currentLogName);
     clearOldLogs();
-    connect(DapLogger::instance(), &DapLogger::sigMessageHandler,
-            this, &DapLogger::updateCurrentLogName);
+//    connect(DapLogger::instance(), &DapLogger::sigMessageHandler,
+//            this, &DapLogger::updateCurrentLogName);
+
+    auto then = QDateTime::currentDateTime();
+    auto setTime = QTime::fromString("00:00", "hh:mm");
+    if(then.time() > setTime){
+        then = then.addDays(1);
+    }
+    then.setTime(setTime);
+
+    auto diff = QDateTime::currentDateTime().msecsTo(then);
+
+    QTimer::singleShot(diff, [this]{
+        auto t = new QTimer(QCoreApplication::instance());
+        connect(t, &QTimer::timeout, [this]{
+            DapLogger::instance()->updateCurrentLogName();
+            DapLogger::instance()->updateLogFiles();
+        });
+        t->start(24 * 3600 * 1000);
+    });
 
 }
 
@@ -73,11 +96,15 @@ void DapLogger::setLogLevel(dap_log_level ll)
 
 void DapLogger::setLogFile(const QString& fileName)
 {
+    if(isLoggerStarted)
+        dap_common_deinit();
+
     qDebug() << "setLogFile: " + fileName;
     QString filePath = getPathToLog() + "/" + fileName;
     dap_common_init(DAP_BRAND, qPrintable(filePath), qPrintable(getPathToLog()));
     DapDataLocal::instance()->setLogPath(getPathToLog());
     DapDataLocal::instance()->setLogFilePath(filePath);
+    isLoggerStarted = true;
 }
 
 void DapLogger::updateLogFiles()
@@ -145,12 +172,42 @@ void DapLogger::clearOldLogs()
 }
 
 void DapLogger::messageHandler(QtMsgType type,
-                               const QMessageLogContext &ctx,
+                               const QMessageLogContext &context,
                                const QString & msg)
 {
-    emit DapLogger::instance()->sigMessageHandler();
-    DapLogger::instance()->updateLogFiles();
-    writeMessage(type, ctx, msg);
+   #ifdef Q_OS_ANDROID
+  QString report=msg;
+  if (context.file && !QString(context.file).isEmpty()) {
+    report+=" in file ";
+    report+=QString(context.file);
+    report+=" line ";
+    report+=QString::number(context.line);
+  }
+  if (context.function && !QString(context.function).isEmpty()) {
+    report+=+" function ";
+    report+=QString(context.function);
+  }
+  const char*const local=report.toLocal8Bit().constData();
+  switch (type) {
+  case QtDebugMsg:
+    __android_log_write(ANDROID_LOG_DEBUG,DAP_BRAND,local);
+    break;
+  case QtInfoMsg:
+    __android_log_write(ANDROID_LOG_INFO,DAP_BRAND,local);
+    break;
+  case QtWarningMsg:
+    __android_log_write(ANDROID_LOG_WARN,DAP_BRAND,local);
+    break;
+  case QtCriticalMsg:
+    __android_log_write(ANDROID_LOG_ERROR,DAP_BRAND,local);
+    break;
+  case QtFatalMsg:
+  default:
+    __android_log_write(ANDROID_LOG_FATAL,DAP_BRAND,local);
+    abort();    
+  }
+  #endif
+    writeMessage(type, context, msg);
 }
 
 void DapLogger::writeMessage(QtMsgType type,

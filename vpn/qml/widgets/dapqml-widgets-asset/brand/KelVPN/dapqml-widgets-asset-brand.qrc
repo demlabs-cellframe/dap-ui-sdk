@@ -11,6 +11,7 @@
         <file compress="1">dark/btn_connection.png</file>
         <file compress="1">dark/btn_bg_hover_active.png</file>
         <file compress="1">dark/btn_bg.png</file>
+        <file compress="1">dark/btn_bg_disabled.png</file>
         <file compress="1">dark/btn_account_active.png</file>
         <file compress="1">dark/btn_account.png</file>
         <file compress="1">dark/login-logo.png</file>
@@ -40,6 +41,7 @@
         <file compress="1">dark/btn_server_bg.png</file>
         <file compress="1">dark/contact_report_bg_border.png</file>
         <file compress="1">dark/report_bg_border_75.png</file>
+        <file compress="1">dark/rouexc-close.png</file>
         <file compress="1">light/logo.png</file>
         <file compress="1">light/login-logo.png</file>
         <file compress="1">light/radio_btn_on.png</file>
@@ -54,6 +56,7 @@
         <file compress="1">light/btn_connection.png</file>
         <file compress="1">light/btn_bg_hover_active.png</file>
         <file compress="1">light/btn_bg.png</file>
+        <file compress="1">light/btn_bg_disabled.png</file>
         <file compress="1">light/btn_account_active.png</file>
         <file compress="1">light/btn_account.png</file>
         <file compress="1">light/switch/toggle_on.png</file>
@@ -81,5 +84,6 @@
         <file compress="1">light/btn_server_bg.png</file>
         <file compress="1">light/contact_report_bg_border.png</file>
         <file compress="1">light/report_bg_border_75.png</file>
+        <file compress="1">light/rouexc-close.png</file>
     </qresource>
 </RCC>

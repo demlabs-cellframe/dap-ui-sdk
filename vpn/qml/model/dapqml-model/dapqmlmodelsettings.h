@@ -97,6 +97,7 @@ signals:
   void sigLicenceReset();
   void sigLanguage();
   void sigCountry();
+  void sigRouExc();
   void sigColorTheme();
 
   /* support */
@@ -152,6 +153,7 @@ public slots:
   void slotResetDaysLeft();
   void slotCountryChange();
   void slotUpdateItemsList();
+  void slotRouExcModeUpdated();
 protected slots:
   void slotRetranslate();
   /// @}

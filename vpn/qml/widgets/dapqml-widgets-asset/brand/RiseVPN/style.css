@@ -13,6 +13,7 @@
     accent: "#EC6A41";
     upload: "#8CEC41";
     grid: "#211F46";
+    separator-color: "#E6E6E6";
     switch-bg-on:               "qrc:/light/switch/bg_on.png";
     switch-bg-off:              "qrc:/light/switch/bg_off.png";
     switch-toggle-on:           "qrc:/light/switch/toggle_on.png";
@@ -64,6 +65,7 @@
     accent: "#EC6A41";
     upload: "#8CEC41";
     grid: "#211F46";
+    separator-color: "#3F3F3F";
     switch-bg-on:               "qrc:/dark/switch/bg_on.png";
     switch-bg-off:              "qrc:/dark/switch/bg_off.png";
     switch-toggle-on:           "qrc:/dark/switch/toggle_on.png";
@@ -229,22 +231,23 @@
 
 
 
+.sep-rect {
+    scaled-rect: scaled(nan,nan,8,4,false);
+}
+
 .sep-left
 {
     qproperty-scaledPixmap: "@separator-left";
-    scaled-rect: scaled(nan,nan,8,4,false);
 }
 
 .sep-mid
 {
     qproperty-scaledPixmap: "@separator-mid";
-    scaled-rect: scaled(nan,nan,nan,4,false);
 }
 
 .sep-right
 {
     qproperty-scaledPixmap: "@separator-right";
-    scaled-rect: scaled(nan,nan,8,4,false);
 }
 
 
@@ -567,21 +570,39 @@
     clip: false;
 }
 
-.popup-dalog-left
+.popup-dalog-left-button
 {
-    scaled-rect: scaled(11,nan,86,36,false,14);
+    scaled-rect: scaled(11,nan,86,36,false);
+    color: "@background";
+}
+
+.popup-dalog-left-label
+{
+    scaled-font: scaled(14);
     color: "@text";
 }
 
-.popup-dalog-right
+.popup-dalog-right-button
 {
-    scaled-rect: scaled(183,nan,86,36,false,14);
+    scaled-rect: scaled(183,nan,86,36,false);
+    color: "@background";
+}
+
+.popup-dalog-right-label
+{
+    scaled-font: scaled(14);
     color: "@brand";
 }
 
-.popup-dalog-middle
+.popup-dalog-middle-button
 {
-    scaled-rect: scaled(nan,nan,86,36,false,14);
+    scaled-rect: scaled(nan,nan,86,36,false);
+    color: "@background";
+}
+
+.popup-dalog-middle-label
+{
+    scaled-font: scaled(14);
     color: "@brand";
 }
 
@@ -832,6 +853,12 @@
     scaled-rect: scaled(279,0,130,130,true);
     active: "@login-mode-btn-loginpass-checked";
     inactive: "@login-mode-btn-loginpass-unchecked";
+}
+
+.login-separator-color
+{
+    color: "@separator-color";
+    scaled-rect: scaled(nan,nan,nan,1,false);
 }
 
 /****************************************************

@@ -6,6 +6,7 @@
 #include "qssvalue.h"
 #include <QStringList>
 #include <QDebug>
+#include <QRegularExpression>
 
 /* NAMESPACE */
 namespace DapStyle
@@ -27,6 +28,9 @@ static QString currentName, currentBody;
 static callback method  = none;
 static int index        = 0;
 
+static QRegularExpression reNewline ("[\r\n]");
+static QRegularExpression reTab ("[\t]");
+
 /********************************************
  * METHODS
  *******************************************/
@@ -37,12 +41,14 @@ void QssParser::perform (const QString &styleSheet)
   QString simpleSheet = styleSheet;
 
   /* remove lines */
-  simpleSheet =
-    simpleSheet
-    .replace ('\r', " ")
-    .replace ('\n', " ")
-    //.replace (' ', "")
-    .replace ('\t', "");
+//  simpleSheet =
+//    simpleSheet
+//    .replace ('\r', " ")
+//    .replace ('\n', " ")
+//    //.replace (' ', "")
+//    .replace ('\t', "");
+  simpleSheet.replace (reNewline, " ");
+  simpleSheet.remove (reTab);
 
   /* split by combo of new lines and dots */
   for (auto i = simpleSheet.cbegin(),

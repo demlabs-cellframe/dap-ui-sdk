@@ -16,6 +16,7 @@ SOURCES += \
     $$PWD/DapPluginsPathControll.cpp \
     $$PWD/DapSerialKeyData.cpp \
     $$PWD/DapSerialKeyHistory.cpp \
+    $$PWD/DapServerList.cpp \
     $$PWD/DapServersData.cpp \
     $$PWD/DapSession.cpp \
     $$PWD/DapCrypt.cpp \
@@ -46,6 +47,7 @@ HEADERS += \
     $$PWD/DapPluginsPathControll.h \
     $$PWD/DapSerialKeyData.h \
     $$PWD/DapSerialKeyHistory.h \
+    $$PWD/DapServerList.h \
     $$PWD/DapServersData.h \
     $$PWD/DapSession.h \
     $$PWD/DapCrypt.h \

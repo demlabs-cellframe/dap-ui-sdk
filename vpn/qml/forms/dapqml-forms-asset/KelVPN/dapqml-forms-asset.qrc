@@ -12,6 +12,7 @@
         <file compress="1">dapqml-forms-asset/light/ic_renew.png</file>
         <file compress="1">dapqml-forms-asset/light/ic_key.png</file>
         <file compress="1">dapqml-forms-asset/light/ic_location.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_route.png</file>
         <file compress="1">dapqml-forms-asset/light/ic_language.png</file>
         <file compress="1">dapqml-forms-asset/light/ic_theme.png</file>
         <file compress="1">dapqml-forms-asset/light/ic_send-report.png</file>
@@ -27,6 +28,7 @@
         <file compress="1">dapqml-forms-asset/dark/ic_renew.png</file>
         <file compress="1">dapqml-forms-asset/dark/ic_key.png</file>
         <file compress="1">dapqml-forms-asset/dark/ic_location.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_route.png</file>
         <file compress="1">dapqml-forms-asset/dark/ic_language.png</file>
         <file compress="1">dapqml-forms-asset/dark/ic_theme.png</file>
         <file compress="1">dapqml-forms-asset/dark/ic_send-report.png</file>

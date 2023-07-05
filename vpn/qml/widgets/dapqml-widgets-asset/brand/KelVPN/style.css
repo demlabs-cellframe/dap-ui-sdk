@@ -13,12 +13,15 @@
     update-background: "#FFFFFF";
     label: "#5A5A5A";
     light-grey: "#A9A9B0";
+    input-field: "#F7F7F7";
+    input-placeholder: "#A9A9B0";
     error: "#F47A54";
     brand: "#F45480";
     accent: "#FD4E75";
     upload: "#5E31F5";
     grid: "#FFFFFF";
     separator-color: "#E6E6E6";
+    sett-hover-background: "#F7F7F7";
     switch-bg-on:               "qrc:/light/switch/bg_on.png";
     switch-bg-off:              "qrc:/light/switch/bg_off.png";
     switch-toggle-on:           "qrc:/light/switch/toggle_on.png";
@@ -34,6 +37,7 @@
     separator-right:            "qrc:/light/separator_right.png";
     push-button-active:         "qrc:/light/btn_bg_hover_active.png";
     push-button-inactive:       "qrc:/light/btn_bg.png";
+    push-button-disabled:       "qrc:/light/btn_bg_disabled.png";
     footer-settings-active:     "qrc:/light/btn_settings_active.png";
     footer-settings-inactive:   "qrc:/light/btn_settings.png";
     footer-dashboard-active:    "qrc:/light/btn_connection_active.png";
@@ -58,10 +62,12 @@
     btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
     btn-update-notification-close:          "qrc:/light/ic_close_update.png";
     btn-update-notification-close-hover:    "qrc:/light/ic_close_update_hover.png";
+    rouexc-close:               "qrc:/light/rouexc-close.png";
 
     ic-renew:                   "qrc:/dapqml-forms-asset/light/ic_renew.png";
     ic-key:                     "qrc:/dapqml-forms-asset/light/ic_key.png";
     ic-location:                "qrc:/dapqml-forms-asset/light/ic_location.png";
+    ic-route:                   "qrc:/dapqml-forms-asset/light/ic_route.png";
     ic-language:                "qrc:/dapqml-forms-asset/light/ic_language.png";
     ic-theme:                   "qrc:/dapqml-forms-asset/light/ic_theme.png";
     ic-send-report:             "qrc:/dapqml-forms-asset/light/ic_send-report.png";
@@ -83,12 +89,15 @@
     update-background: "#333333";
     label: "#A9A9B0";
     light-grey: "#F7F7F7";
+    input-field: "#333333";
+    input-placeholder: "#A9A9B0";
     error: "#F47A54";
     brand: "#F45480";
     accent: "#FD4E75";
     upload: "#9F83FF";
     grid: "#3F3F3F";
     separator-color: "#3F3F3F";
+    sett-hover-background: "#5A5A5A";
     switch-bg-on:               "qrc:/dark/switch/bg_on.png";
     switch-bg-off:              "qrc:/dark/switch/bg_off.png";
     switch-toggle-on:           "qrc:/dark/switch/toggle_on.png";
@@ -104,6 +113,7 @@
     separator-right:            "qrc:/dark/separator_right.png";
     push-button-active:         "qrc:/dark/btn_bg_hover_active.png";
     push-button-inactive:       "qrc:/dark/btn_bg.png";
+    push-button-disabled:       "qrc:/dark/btn_bg_disabled.png";
     footer-settings-active:     "qrc:/dark/btn_settings_active.png";
     footer-settings-inactive:   "qrc:/dark/btn_settings.png";
     footer-dashboard-active:    "qrc:/dark/btn_connection_active.png";
@@ -128,10 +138,12 @@
     btn-ticker-close-hover:     "qrc:/dark/ic_ticker_close_hover.png";
     btn-update-notification-close:          "qrc:/dark/ic_close_update.png";
     btn-update-notification-close-hover:    "qrc:/dark/ic_close_update_hover.png";
+    rouexc-close:               "qrc:/dark/rouexc-close.png";
 
     ic-renew:                   "qrc:/dapqml-forms-asset/dark/ic_renew.png";
     ic-key:                     "qrc:/dapqml-forms-asset/dark/ic_key.png";
     ic-location:                "qrc:/dapqml-forms-asset/dark/ic_location.png";
+    ic-route:                   "qrc:/dapqml-forms-asset/dark/ic_route.png";
     ic-language:                "qrc:/dapqml-forms-asset/dark/ic_language.png";
     ic-theme:                   "qrc:/dapqml-forms-asset/dark/ic_theme.png";
     ic-send-report:             "qrc:/dapqml-forms-asset/dark/ic_send-report.png";
@@ -177,6 +189,25 @@
 .c-background
 {
     color: "@background";
+}
+
+/****************************************************
+ * Aligns
+ ***************************************************/
+
+.text-align-left
+{
+    horizontal-align: Text.AlignLeft;
+}
+
+.text-align-center
+{
+    horizontal-align: Text.AlignHCenter;
+}
+
+.text-align-right
+{
+    horizontal-align: Text.AlignRight;
 }
 
 /****************************************************
@@ -269,22 +300,23 @@
 
 
 
+.sep-rect {
+    scaled-rect: scaled(nan,nan,8,1,false);
+}
+
 .sep-left
 {
     qproperty-scaledPixmap: "@separator-left";
-    scaled-rect: scaled(nan,nan,8,4,false);
 }
 
 .sep-mid
 {
     qproperty-scaledPixmap: "@separator-mid";
-    scaled-rect: scaled(nan,nan,nan,4,false);
 }
 
 .sep-right
 {
     qproperty-scaledPixmap: "@separator-right";
-    scaled-rect: scaled(nan,nan,8,4,false);
 }
 
 
@@ -293,6 +325,8 @@
 {
     active: "@push-button-active";
     inactive: "@push-button-inactive";
+    disabled: "@push-button-disabled";
+    scaled-font: scaled(16);
 }
 
 
@@ -329,6 +363,11 @@
     scaled-rect: scaled(nan,nan,392,2,false);
 }
 
+.radiobtn-resizer-note
+{
+    scaled-rect: scaled(nan,nan,370,64,false);
+}
+
 
 
 .null-size
@@ -339,11 +378,6 @@
 .null-pos
 {
     scaled-rect: scaled(0,0,nan,nan,false);
-}
-
-.radiobtn-resizer-note
-{
-        scaled-rect: scaled(nan,nan,370,64,false);
 }
 
 /****************************************************
@@ -363,6 +397,11 @@
 .ic_location
 {
     qproperty-scaledPixmap: "@ic-location";
+}
+
+.ic_route
+{
+    qproperty-scaledPixmap: "@ic-route";
 }
 
 .ic_language
@@ -549,40 +588,88 @@
 
 .popup-dialog
 {
+/*
     scaled-rect: scaled(nan,nan,280,186,false);
     color: "@background";
+*/
+    scaled-rect: scaled(nan,nan,280,232,false);
+    color: "@background";
+    radius: 8;
 }
 
 .popup-dalog-title
 {
+/*
     scaled-rect: scaled(57,20,170,24,false,20);
+    color: "@text";
+    clip: false;
+*/
+    scaled-rect: scaled(nan,24,200,24,false,20);
     color: "@text";
     clip: false;
 }
 
 .popup-dalog-text
 {
+/*
     scaled-rect: scaled(nan,57,268,50,false,16);
+    color: "@label";
+    clip: false;
+*/
+    scaled-rect: scaled(nan,56,268,72,false,16);
     color: "@label";
     clip: false;
 }
 
-.popup-dalog-left
+.popup-dalog-left-button
 {
+/*
     scaled-rect: scaled(11,nan,86,36,false,14);
     color: "@text";
+*/
+    scaled-rect: scaled(24,nan,110,48,false);
+    color: "@light-grey";
+    radius: 8;
 }
 
-.popup-dalog-right
+.popup-dalog-left-label
 {
+/*
     scaled-rect: scaled(183,nan,86,36,false,14);
     color: "@brand";
+*/
+    scaled-font: scaled(16);
+    color: "#1E1E1E";
 }
 
-.popup-dalog-middle
+.popup-dalog-right-button
 {
+/*
     scaled-rect: scaled(nan,nan,86,36,false,14);
     color: "@brand";
+*/
+    scaled-rect: scaled(146,nan,110,48,false);
+    color: "@brand";
+    radius: 8;
+}
+
+.popup-dalog-right-label
+{
+    scaled-font: scaled(16);
+    color: "#FFFFFF";
+}
+
+.popup-dalog-middle-button
+{
+    scaled-rect: scaled(nan,nan,110,48,false);
+    color: "@light-grey";
+    radius: 8;
+}
+
+.popup-dalog-middle-label
+{
+    scaled-font: scaled(16);
+    color: "#1E1E1E";
 }
 
 /****************************************************
@@ -668,26 +755,26 @@
 
 .login-transaction-processing-label-nocbd
 {
-        scaled-rect: scaled(45,331,327,57,false,22);
-        color: "@text";
+    scaled-rect: scaled(45,331,327,57,false,22);
+    color: "@text";
 }
 
 .login-transaction-processing-wallet-data-label-nocbd
 {
-        scaled-rect: scaled(45,369,327,57,false,15);
-        color: "@text";
+    scaled-rect: scaled(45,369,327,57,false,15);
+    color: "@text";
 }
 
 .login-transaction-processing-amount-label-nocbd
 {
-        scaled-rect: scaled(45,399,327,57,false,15);
-        color: "@text";
+    scaled-rect: scaled(45,399,327,57,false,15);
+    color: "@text";
 }
 
 .login-transaction-processing-status-label-nocbd
 {
-        scaled-rect: scaled(45,429,327,57,false,15);
-        color: "@text";
+    scaled-rect: scaled(45,429,327,57,false,15);
+    color: "@text";
 }
 
 .login-separator-container
@@ -697,17 +784,17 @@
 
 .login-nocbd-wallet-separator-container
 {
-        scaled-rect: scaled(-1,210,-1,4,true);
+    scaled-rect: scaled(-1,210,-1,4,true);
 }
 
 .login-nocbd-skey-separator-container
 {
-        scaled-rect: scaled(-1,221,-1,4,true);
+    scaled-rect: scaled(-1,221,-1,4,true);
 }
 
 .overview-separator-container
 {
-        scaled-rect: scaled(-1,134,-1,4,true);
+    scaled-rect: scaled(-1,134,-1,4,true);
 }
 
 .login-separator
@@ -717,7 +804,10 @@
 
 .login-btn-server-container
 {
+/*
     scaled-rect: scaled(-1,292,356,108,true);
+*/
+    scaled-rect: scaled(-1,414,-1,108,true);
 }
 
 .login-btn-server
@@ -727,56 +817,57 @@
 
 .login-btn-wallet-container
 {
-        scaled-rect: scaled(-1,242,356,76,true);
+    scaled-rect: scaled(-1,242,356,76,true);
 }
 
 .login-btn-maxprice-container
 {
-        scaled-rect: scaled(-1,310,-1,76,true);
+    scaled-rect: scaled(-1,310,-1,76,true);
 }
 
 .login-btn-nocbd-skey-server-container
 {
-        scaled-rect: scaled(-1,360,356,78,true);
+    scaled-rect: scaled(-1,360,356,78,true);
 }
 
 .login-btn-nocbd-wallet-server-container
 {
-        scaled-rect: scaled(-1,400,356,76,true);
+    scaled-rect: scaled(-1,400,356,76,true);
 }
 
 .login-btn-server-nocbd
 {
-        scaled-rect: scaled(nan,nan,nan,78,false);
+    scaled-rect: scaled(nan,nan,nan,78,false);
 }
 
 .login-type-container
 {
-        scaled-rect: scaled(nan,502,nan,108,false);
+    scaled-rect: scaled(nan,502,nan,108,false);
 }
 
 .login-mode-btn-serial-nocbd
 {
-        scaled-rect: scaled(36,0,170,64,false);
-        active: "@login-mode-btn-serial-active";
-        inactive: "@login-mode-btn-serial-inactive";
+    scaled-rect: scaled(36,0,170,64,false);
+    active: "@login-mode-btn-serial-active";
+    inactive: "@login-mode-btn-serial-inactive";
 }
 
 .login-mode-btn-nocbd
 {
-        scaled-rect: scaled(222,0,170,64,false);
-        active: "@login-mode-btn-nocbd-active";
-        inactive: "@login-mode-btn-nocbd-inactive";
+    scaled-rect: scaled(222,0,170,64,false);
+    active: "@login-mode-btn-nocbd-active";
+    inactive: "@login-mode-btn-nocbd-inactive";
 }
 
 .login-btn-serial-container
 {
     scaled-rect: scaled(-1,414,356,108,true);
+    /*scaled-rect: scaled(-1,292,-1,108,true);*/
 }
 
 .login-btn-serial-container-nocbd
 {
-        scaled-rect: scaled(-1,242,356,108,true);
+    scaled-rect: scaled(-1,242,356,108,true);
 }
 
 .login-btn-serial
@@ -805,7 +896,7 @@
 
 .login-connect-nocbd-mode
 {
-        scaled-rect: scaled(nan,611,356,80,true,16);
+    scaled-rect: scaled(nan,611,356,80,true,16);
 }
 
 .login-obtain-container
@@ -815,7 +906,7 @@
 
 .login-obtain-container-mocbd-mode
 {
-        scaled-rect: scaled(-1,705,356,19,false);
+    scaled-rect: scaled(-1,705,356,19,false);
 }
 
 .login-obtain-font
@@ -866,47 +957,52 @@
 
 .overview-btn-wallet-container
 {
-        scaled-rect: scaled(-1,134,-1,108,true);
+    scaled-rect: scaled(-1,134,-1,108,true);
 }
 
 .overview-btn-network-container
 {
-        scaled-rect: scaled(-1,244,-1,108,true);
+    scaled-rect: scaled(-1,244,-1,108,true);
 }
 
 .overview-btn-cell-container
 {
-        scaled-rect: scaled(-1,354,-1,108,true);
+    scaled-rect: scaled(-1,354,-1,108,true);
 }
 
 .overview-btn-server-container
 {
-        scaled-rect: scaled(-1,354,-1,108,true);
+    scaled-rect: scaled(-1,354,-1,108,true);
 }
 
 .overview-btn-maxprice-container
 {
-        scaled-rect: scaled(-1,464,-1,108,true);
+    scaled-rect: scaled(-1,464,-1,108,true);
 }
 
 .overview-btn-unit-container
 {
-        scaled-rect: scaled(-1,464,-1,108,true);
+    scaled-rect: scaled(-1,464,-1,108,true);
 }
 
 .overview-btn-price-container
 {
-        scaled-rect: scaled(-1,564,-1,108,true);
+    scaled-rect: scaled(-1,564,-1,108,true);
 }
 
 .overview-btn-confirm
 {
-        scaled-rect: scaled(-1,737,374,80,true,12);
+    scaled-rect: scaled(-1,737,374,80,true,12);
 }
 
 /****************************************************
  * Settings
  ***************************************************/
+
+.sett-content
+{
+    scaled-rect: scaled(nan,nan,392,nan,false);
+}
 
 .sett-spacer
 {
@@ -937,7 +1033,12 @@
 
 .sett-btn-lbl-sub
 {
+/*
     color: "@light-grey";
+    scaled-font: scaled(12);    
+    font-weight: Font.Normal;
+*/
+    color: "@input-placeholder";
     scaled-font: scaled(12);    
     font-weight: Font.Normal;
 }
@@ -951,7 +1052,12 @@
 
 .sett-btn-lbl-sub-link
 {
+/*
     color: "@light-grey";
+    scaled-font: scaled(16);
+    font-weight: Font.Normal;
+*/
+    color: "@input-placeholder";
     scaled-font: scaled(16);
     font-weight: Font.Normal;
 }
@@ -962,6 +1068,11 @@
     horizontal-align: Text.AlignHCenter;
     scaled-rect: scaled(nan,nan,nan,nan,false,24);
     font-weight: Font.Bold;
+}
+
+.sett-btn-hover-bg
+{
+    color: "@sett-hover-background";
 }
 
 /****************************************************
@@ -989,37 +1100,59 @@
 
 .stat-graph
 {
+/*
     scaled-rect: scaled(-1,146,360,147,false);
+*/
+    scaled-rect: scaled(-1,144,356,176,false);
 }
 
 .stat-speed
 {
+/*
     scaled-rect: scaled(nan,307,154,99,false);
+*/
+    scaled-rect: scaled(nan,336,154,99,false);
 }
 
 .stat-bytes
 {
+/*
     scaled-rect: scaled(nan,406,154,99,false);
+*/
+    scaled-rect: scaled(nan,436,154,99,false);
 }
 
 .stat-packets
 {
+/*
     scaled-rect: scaled(nan,505,154,99,false);
+*/
+    scaled-rect: scaled(nan,536,154,99,false);
 }
 
 .stat-misc
 {
+/*
     scaled-rect: scaled(nan,604,154,99,false);
+*/
+    scaled-rect: scaled(nan,636,154,99,false);
 }
 
 .stat-scaler-ind
 {
+/*
     scaled-rect: scaled(nan,nan,154,50,false,24);
+*/
+    scaled-rect: scaled(nan,nan,170,100,false,24);
+    font-weight: Font.DemiBold;
 }
 
 .stat-scaler-sub
 {
+/*
     scaled-rect: scaled(nan,nan,154,50,false,12);
+*/
+    scaled-rect: scaled(nan,nan,nan,nan,false,12);
 }
 
 /****************************************************
@@ -1060,8 +1193,17 @@
 
 .dashboard-error-label
 {
+/*
     scaled-rect: scaled(51,140,327,57,false,14);
     color: "#F53172";
+*/
+    scaled-rect: scaled(51,nan,327,57,false,14);
+    color: "#F53172";
+}
+
+.dashboard-error-label-pos
+{
+    scaled-rect: scaled(nan,140,nan,nan,false);
 }
 
 .dashboard-switch
@@ -1125,6 +1267,13 @@
     scaled-rect: scaled(19,215,390,200,false,16);
 }
 
+.bugrep-input-bg
+{
+    scaled-rect: scaled(36,232,356,160,false,16);
+    radius: 8;
+    color: "@input-field";
+}
+
 .bugrep-input-content
 {
     scaled-rect: scaled(nan,nan,316,120,false,16);
@@ -1132,7 +1281,12 @@
 
 .bugrep-input-contact
 {
+/*
     scaled-rect: scaled(32,150,364,80,false,16);
+*/
+    scaled-rect: scaled(36,152,356,56,false,16);
+    radius: 8;
+    color: "@input-field";
 }
 
 .bugrep-input-contact-content
@@ -1168,13 +1322,20 @@
 
 .bugrep-sending
 {
+/*
     scaled-rect: scaled(164,120,100,20,false,16);
+    color: "#A4A3C0";
+*/
+    scaled-rect: scaled(-1,507,-1,24,false,16);
     color: "#A4A3C0";
 }
 
 .bugrep-animation
 {
+/*
     scaled-rect: scaled(134,194,160,160,true);
+*/
+    scaled-rect: scaled(170,395,88,88,true);
 }
 
 .bugrep-status
@@ -1354,6 +1515,11 @@
  * Purchase History
  ***************************************************/
 
+.ph-content
+{
+    scaled-rect: scaled(nan,nan,392,nan,false);
+}
+
 .ph-btn-resizer
 {
     scaled-rect: scaled(nan,nan,363,64,false);
@@ -1361,12 +1527,19 @@
 
 .ph-icn-resizer
 {
+
     scaled-rect: scaled(nan,nan,56,56,true);
+/*
+    scaled-rect: scaled(nan,nan,30,30,true);
+*/
 }
 
 .ph-icn-cpy-resizer
 {
     scaled-rect: scaled(nan,nan,40,40,true);
+/*
+    scaled-rect: scaled(nan,nan,30,30,true);
+*/
 }
 
 .ph-notice-resizer
@@ -1501,7 +1674,7 @@
 
 .update-notification-rect
 {
-    scaled-rect: scaled(-1,40,356,78,false);
+    scaled-rect: scaled(-1,nan,356,78,false);
     color: "@update-background";
 }
 
@@ -1540,8 +1713,12 @@
 
 .ch-country-filter-border
 {
+/*
     border-width: 1;
     border-color: "@light-grey";
+    radius: 5;
+*/
+    color: "@input-field";
     radius: 5;
     scaled-rect: scaled(-1,nan,363,48,false);
 }
@@ -1556,6 +1733,11 @@
 {
     qproperty-inactive: "@btn-close";
     qproperty-active: "@btn-close-hover";
+}
+
+.ch-country-listview
+{
+    scaled-rect: scaled(-1,204,392,602,false);
 }
 
 /****************************************************
@@ -1687,4 +1869,274 @@
     scaled-rect: scaled(-1,500,354,nan,false,19);
     color: "@text";
     horizontal-align: Text.AlignHCenter;
+}
+
+
+/****************************************************
+ * Routing Exceptions
+ ***************************************************/
+
+.rouexc-tab-separator
+{
+    scaled-rect: scaled(nan,780,-1,1,false);
+}
+
+.rouexc-tab-postion
+{
+    scaled-rect: scaled(nan,797,nan,nan,false);
+}
+
+.rouexc-tab-spacing
+{
+    scaled-rect: scaled(nan,nan,16,nan,false);
+}
+
+.rouexc-tab-idle
+{
+    scaled-rect: scaled(nan,nan,170,64,true);
+    color: "@update-background";
+    radius: 13;
+}
+
+.rouexc-tab-selected
+{
+    color: "@text";
+}
+
+.rouexc-tab-idle-label
+{
+    scaled-font: scaled(18);
+    color: "@text";
+}
+
+.rouexc-tab-selected-label
+{
+    color: "@background";
+}
+
+.rouexc-tab-content
+{
+    scaled-rect: scaled(-1,132,392,648,false);
+}
+
+.rouexc-tab-content-app-mode-switch
+{
+    scaled-rect: scaled(nan,nan,356,48,false);
+}
+
+.rouexc-tab-content-app-mode-switch-container
+{
+    scaled-rect: scaled(nan,nan,-1,72,false);
+}
+
+.rouexc-content-item
+{
+    scaled-rect: scaled(nan,nan,nan,65,false);
+}
+
+.rouexc-content-item-icon
+{
+    scaled-rect: scaled(nan,nan,32,32,true);
+}
+
+.rouexc-content-item-main
+{
+    color: "@text";
+}
+
+.rouexc-content-item-sub
+{
+    color: "@label";
+}
+
+.rouexc-content-app-btn-close
+{
+    scaled-rect: scaled(nan,nan,32,32,true);
+    qproperty-scaledPixmap: "@rouexc-close";
+}
+
+.rouexc-popup-content-apps
+{
+    scaled-rect: scaled(nan,nan,356,660,false);
+    radius: 8;
+}
+
+.rouexc-popup-content-routes
+{
+    scaled-rect: scaled(nan,nan,356,337,true);
+    radius: 8;
+}
+
+.rouexc-popup-app-item-label-pos
+{
+    scaled-rect: scaled(56,nan,230,nan,false,16);
+}
+
+.rouexc-popup-app-checkbox
+{
+    scaled-rect: scaled(nan,nan,60,60,true);
+    qproperty-scaledPixmap: "@checkbox-off";
+}
+
+.rouexc-popup-app-checkbox-checked
+{
+    qproperty-scaledPixmap: "@checkbox-on";
+}
+
+.rouexc-btn-add
+{
+    scaled-rect: scaled(360,64,32,32,true);
+    qproperty-inactive: "@btn-plus";
+    qproperty-active: "@btn-plus";
+}
+
+.rouexc-title-label
+{
+    scaled-font: scaled(20);
+    color: "@text";
+    font-weight: Font.Bold;
+}
+
+.rouexc-title-separator
+{
+    scaled-rect: scaled(nan,nan,-1,1,false);
+}
+
+.rouexc-title-container
+{
+    scaled-rect: scaled(24,nan,nan,64,false);
+}
+
+.rouexc-content-item-btn-close
+{
+    scaled-rect: scaled(nan,nan,40,40,true);
+    qproperty-inactive: "@btn-minus";
+    qproperty-active: "@btn-minus";
+}
+
+.rouexc-popup-bottom-separator
+{
+    scaled-rect: scaled(nan,nan,-1,1,false);
+}
+
+.rouexc-popup-btn
+{
+    scaled-rect: scaled(nan,nan,147,48,true);
+    color: "@light-grey";
+    radius: 13;
+}
+
+.rouexc-popup-btn-label
+{
+    scaled-font: scaled(18);
+    color: "#1f1f1f";
+}
+
+.rouexc-popup-btn-second
+{
+    scaled-rect: scaled(nan,nan,147,48,true);
+    color: "@accent";
+    radius: 13;
+}
+
+.rouexc-popup-btn-label-second
+{
+    scaled-font: scaled(18);
+    color: "#ffffff";
+}
+
+.rouexc-popup-bottom-size
+{
+    scaled-rect: scaled(nan,nan,nan,72,false);
+}
+
+.rouexc-popup-apps-content
+{
+    scaled-rect: scaled(nan,141,324,nan,false);
+}
+
+.rouexc-route-input-field
+{
+    scaled-rect: scaled(nan,nan,308,56,true,16);
+    color: "@input-field";
+    radius: 8;
+}
+
+.rouexc-route-input-field-size
+{
+    scaled-rect: scaled(nan,nan,308,48,true);
+}
+
+.rouexc-route-address
+{
+    scaled-rect: scaled(nan,89,nan,nan,false,16);
+}
+
+.rouexc-route-description
+{
+    scaled-rect: scaled(nan,160,nan,nan,false,16);
+}
+
+.rouexc-route-input-field-font
+{
+    scaled-font: scaled(16);
+}
+
+.rouexc-route-input-field-placeholder
+{
+    color: "@label";
+}
+
+.rouexc-route-input-margin
+{
+    scaled-rect: scaled(4,nan,nan,nan,false);
+}
+
+.rouexc-spinner
+{
+    scaled-rect: scaled(nan,nan,160,160,true);
+}
+
+.rouexc-spinner-bg
+{
+    scaled-rect: scaled(nan,nan,244,244,true);
+    color: "@background";
+    radius: 16;
+}
+
+.rouexc-spinner-arc-container
+{
+    scaled-rect: scaled(nan,nan,244,200,true);
+}
+
+.rouexc-spinner-arc
+{
+    scaled-rect: scaled(nan,nan,136,136,true);
+    qproperty-outer: "@light-grey";
+    qproperty-inner: "@brand";
+}
+
+.rouexc-spinner-label
+{
+    scaled-rect: scaled(nan,180,244,24,false,16);
+    color: "@input-placeholder";
+}
+
+.rouexc-spinner-percentage
+{
+    scaled-font: scaled(24);
+    font-weight: Font.Bold;
+}
+
+.rouexc-popup-app-search
+{
+    scaled-rect: scaled(nan,81,324,48,false);
+    color: "@input-field";
+    radius: 8;
+}
+
+.rouexc-popup-app-search-input
+{
+    scaled-font: scaled(16);
+    color: "@input-placeholder";
 }

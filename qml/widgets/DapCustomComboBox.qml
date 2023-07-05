@@ -32,7 +32,7 @@ Item
 
     property string displayText: defaultText
 
-    property color backgroundColor: currTheme.backgroundElements
+    property color backgroundColor: currTheme.mainBackground
 
     property string enabledIcon:""
     property string disabledIcon:""
@@ -69,7 +69,7 @@ Item
         anchors.fill: parent
 
         color: popupVisible ?
-                   currTheme.backgroundMainScreen :
+                   currTheme.mainBackground :
                    backgroundColor
 
         RowLayout
@@ -86,7 +86,7 @@ Item
                 text: mainItem.displayText
                 font: mainItem.font
                 color: popupVisible ?
-                           currTheme.textColorGray : currTheme.textColor
+                           currTheme.gray : currTheme.white
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
             }
@@ -195,10 +195,10 @@ Item
             width: mainItem.width
             height: popupListView.height + border.width*2
 
-            color: currTheme.backgroundElements
+            color: currTheme.mainBackground
 
             border.width: 1
-            border.color: currTheme.backgroundElements
+            border.color: currTheme.mainBackground
 
             ListView
             {
@@ -226,8 +226,8 @@ Item
                     height: 40
 
                     color: area.containsMouse ?
-                               currTheme.hilightColorComboBox :
-                               currTheme.backgroundMainScreen
+                               currTheme.lime :
+                               currTheme.mainBackground
 
                     RowLayout
                     {
@@ -240,8 +240,8 @@ Item
                             Layout.fillWidth: true
                             text: getModelData(index, mainTextRole)
                             color: area.containsMouse ?
-                                       currTheme.hilightTextColorComboBox :
-                                       currTheme.textColor
+                                       currTheme.boxes :
+                                       currTheme.white
                             font: mainItem.font
                             elide: Text.ElideRight
                             verticalAlignment: Text.AlignVCenter
@@ -251,8 +251,8 @@ Item
                         {
                             text: getModelData(index, secondTextRole)
                             color: area.containsMouse ?
-                                       currTheme.hilightTextColorComboBox :
-                                       currTheme.textColor
+                                       currTheme.boxes :
+                                       currTheme.white
                             font.family: mainItem.font.family
                             font.pointSize: mainItem.font.pointSize - 3
                             elide: Text.ElideRight

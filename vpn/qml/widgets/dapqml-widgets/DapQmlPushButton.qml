@@ -21,7 +21,9 @@ Button {
     id: root
     width: 374
     height: 90
-    opacity: enabled ? 1.0 : 0.25
+    opacity: disabled.length === 0
+             ? (enabled ? 1.0 : 0.25)
+             : 1.0
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
 
@@ -39,6 +41,9 @@ Button {
     /// @brief background when button is passive
     property string inactive
 
+    /// @brief background when button is disabled
+    property string disabled
+
     /// @brief label font size
     property int fontSize: 16
 
@@ -53,8 +58,10 @@ Button {
      * Text label
      ********************************************/
 
+    contentItem: Item{}
     Text {
-        anchors.centerIn: root
+        anchors.fill: parent
+        anchors.bottomMargin: root.fontSize * 0.25
         z: 10
 
         width: contentWidth
@@ -74,10 +81,27 @@ Button {
      * Background image
      ********************************************/
 
+    background: Item{}
     DapQmlImage {
         anchors.fill: parent
-        z: 20
-        scaledPixmap: isActive ? root.active : root.inactive
+        z: 5
+        visible: isActive && !disabledBgItem.visible
+        scaledPixmap: root.active
+    }
+
+    DapQmlImage {
+        anchors.fill: parent
+        z: 5
+        visible: !isActive && !disabledBgItem.visible
+        scaledPixmap: root.inactive
+    }
+
+    DapQmlImage {
+        id: disabledBgItem
+        anchors.fill: parent
+        z: 5
+        visible: root.enabled === false && root.disabled.length !== 0
+        scaledPixmap: root.disabled
     }
 }
 

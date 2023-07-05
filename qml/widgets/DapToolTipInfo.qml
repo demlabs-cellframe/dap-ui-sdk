@@ -43,7 +43,7 @@ Image {
             {
                 id: text
                 anchors.fill: parent
-                color: currTheme.textColor
+                color: currTheme.white
                 text: contentText
                 font: textFont
                 horizontalAlignment: Qt.AlignHCenter
@@ -58,7 +58,7 @@ Image {
                 id: backgroundToolTip
                 anchors.fill: parent
                 radius: 4
-                color: currTheme.backgroundMainScreen
+                color: currTheme.mainBackground
             }
             DropShadow {
                 anchors.fill: backgroundToolTip

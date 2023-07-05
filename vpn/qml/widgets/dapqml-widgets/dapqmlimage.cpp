@@ -1,8 +1,12 @@
 /* INCLUDES */
 #include "dapqmlimage.h"
 #include "helper/scaling.h"
+#include "dapqml-model/dapqmlmodelroutingexceptions.h"
 
 #include <QPainter>
+
+/* VARS */
+static const char* s_imageProvider  = "DapQmlModelRoutingExceptionsImageProvider";
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -91,21 +95,33 @@ void DapQmlImageItem::paint (QPainter *a_painter)
           QPixmap image;
           image.loadFromData (file.readAll());
 
-//#ifndef ANDROID
           /* scale pixmap */
           _cache.name   = m_scaledPixmap;
           _cache.size   = size;
-          _cache.pixmap = image
-              .scaled (size,
-                       Qt::IgnoreAspectRatio,
-                       Qt::SmoothTransformation);
-//#else // ANDROID
-//          /* store result */
-//          _cache.name   = m_scaledPixmap;
-//          _cache.size   = size;
-//          _cache.pixmap = image;
-//#endif // ANDROID
+          _cache.pixmap = image.scaled(
+                size,
+                Qt::IgnoreAspectRatio,
+                Qt::SmoothTransformation);
         }
+      else
+        if (m_scaledPixmap.contains (s_imageProvider))
+          {
+            /* calc filename */
+            int index         = m_scaledPixmap.indexOf (s_imageProvider);
+            QString filename  = m_scaledPixmap.mid (index + strlen (s_imageProvider) + 1);
+
+            /* get pixmap */
+            auto image        = DapQmlModelRoutingExceptionsImageProvider::instance()->requestPixmap(
+                  filename, nullptr, size);
+
+            /* scale pixmap */
+            _cache.name   = m_scaledPixmap;
+            _cache.size   = size;
+            _cache.pixmap = image.scaled(
+                  size,
+                  Qt::IgnoreAspectRatio,
+                  Qt::SmoothTransformation);
+          }
     }
 
   /* draw */

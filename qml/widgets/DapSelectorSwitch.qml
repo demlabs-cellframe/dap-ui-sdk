@@ -12,10 +12,10 @@ Rectangle
     property int viewerBorder: 4
     property int animDuration: 200
     property string firstName: "first"
-    property string firstColor: currTheme.buttonColorNormalPosition0
+    property string firstColor: currTheme.mainButtonColorNormal0
     property bool firstSelected: true
     property string secondName: "second"
-    property string secondColor: currTheme.buttonColorNormalPosition1
+    property string secondColor: currTheme.mainButtonColorNormal1
     property bool secondSelected: !firstSelected
 
     signal toggled()
@@ -24,8 +24,8 @@ Rectangle
     implicitHeight: height
     implicitWidth: width
 
-    border.color: currTheme.borderColor
-    color: currTheme.backgroundMainScreen
+    border.color: currTheme.input
+    color: currTheme.mainBackground
     radius: height * 0.5
 
     Rectangle
@@ -48,7 +48,7 @@ Rectangle
             bottomPadding: OS_WIN_FLAG ? 2 : 0
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            color: currTheme.textColor
+            color: currTheme.white
             font: mainFont.dapFont.medium14
             text: firstName
         }
@@ -75,7 +75,7 @@ Rectangle
             bottomPadding: OS_WIN_FLAG ? 2 : 0
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            color: currTheme.textColor
+            color: currTheme.white
             font: mainFont.dapFont.medium14
             text: secondName
         }

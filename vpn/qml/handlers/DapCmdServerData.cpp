@@ -9,27 +9,27 @@ void DapCmdServerData::handle(const QJsonObject *params)
 
     if(params->contains("address")) {
         qDebug() << "address" << params->value("address").toString();
-        dsi.address = params->value("address").toString();
+        dsi.setAddress (params->value("address").toString());
     }
     if(params->contains("address6")) {
         qDebug() << "address6" << params->value("address6").toString();
-        dsi.address6 = params->value("address6").toString();
+        dsi.setAddress6 (params->value("address6").toString());
     }
     if(params->contains("port")) {
         qDebug() << "port" << params->value("port").toString();
-        dsi.port = params->value("port").toInt();
+        dsi.setPort (params->value("port").toInt());
     }
     if(params->contains("name")) {
         qDebug() << "name" << params->value("name").toString();
-        dsi.name = params->value("name").toString();
+        dsi.setName (params->value("name").toString());
     }
     if(params->contains("location")) {
         qDebug() << "location" << params->value("location").toString();
-        dsi.location = params->value("location").toString();
+        dsi.setLocation (params->value("location").toString());
     }
     if (params->contains("state")) {
         qDebug() << "state" << params->value("location").toString();
-        dsi.online = params->value("state").toString();
+        dsi.setOnline (params->value("state").toString());
     }
 
     emit sentCurrentServerInfo(dsi);

@@ -13,6 +13,7 @@
     accent: "#00B5DB";
     upload: "#0098CC";
     grid: "#F4F7F9";
+    separator-color: "#E6E6E6";
     switch-bg-on:               "qrc:/light/switch/bg_on.png";
     switch-bg-off:              "qrc:/light/switch/bg_off.png";
     switch-toggle-on:           "qrc:/light/switch/toggle_on.png";
@@ -56,6 +57,7 @@
     accent: "#FF22A2";
     upload: "#9F83FF";
     grid: "#211F46";
+    separator-color: "#3F3F3F";
     switch-bg-on:               "qrc:/dark/switch/bg_on.png";
     switch-bg-off:              "qrc:/dark/switch/bg_off.png";
     switch-toggle-on:           "qrc:/dark/switch/toggle_on.png";
@@ -208,22 +210,35 @@
 
 
 
+.sep-rect {
+    scaled-rect: scaled(nan,nan,8,4,false);
+}
+
 .sep-left
 {
+/*
     qproperty-scaledPixmap: "@separator-left";
     scaled-rect: scaled(nan,nan,8,4,false);
+*/
+    qproperty-scaledPixmap: "@separator-left";
 }
 
 .sep-mid
 {
+/*
     qproperty-scaledPixmap: "@separator-mid";
     scaled-rect: scaled(nan,nan,nan,4,false);
+*/
+    qproperty-scaledPixmap: "@separator-mid";
 }
 
 .sep-right
 {
+/*
     qproperty-scaledPixmap: "@separator-right";
     scaled-rect: scaled(nan,nan,8,4,false);
+*/
+    qproperty-scaledPixmap: "@separator-right";
 }
 
 
@@ -475,21 +490,51 @@
     clip: false;
 }
 
-.popup-dalog-left
+.popup-dalog-left-button
 {
+/*
     scaled-rect: scaled(11,nan,86,36,false,14);
+    color: "@text";
+*/
+    scaled-rect: scaled(11,nan,86,36,false);
+    color: "@background";
+}
+
+.popup-dalog-left-label
+{
+    scaled-font: scaled(14);
     color: "@text";
 }
 
-.popup-dalog-right
+.popup-dalog-right-button
 {
+/*
     scaled-rect: scaled(183,nan,86,36,false,14);
+    color: "@brand";
+*/
+    scaled-rect: scaled(183,nan,86,36,false);
+    color: "@background";
+}
+
+.popup-dalog-right-label
+{
+    scaled-font: scaled(14);
     color: "@brand";
 }
 
-.popup-dalog-middle
+.popup-dalog-middle-button
 {
+/*
     scaled-rect: scaled(nan,nan,86,36,false,14);
+    color: "@brand";
+*/
+    scaled-rect: scaled(nan,nan,86,36,false);
+    color: "@background";
+}
+
+.popup-dalog-middle-label
+{
+    scaled-font: scaled(14);
     color: "@brand";
 }
 
@@ -662,6 +707,12 @@
 .login-space-for2rows
 {
     scaled-rect: scaled(nan,0,nan,nan,false);
+}
+
+.login-separator-color
+{
+    color: "@separator-color";
+    scaled-rect: scaled(nan,nan,nan,1,false);
 }
 
 /****************************************************
@@ -871,17 +922,17 @@
 
 .bugrep-contact-input
 {
-        scaled-rect: scaled(32,150,370,80,false,16);
+    scaled-rect: scaled(32,150,370,80,false,16);
 }
 
 .bugrep-contact-input-content
 {
-        scaled-rect: scaled(nan,nan,316,32,false,16);
+    scaled-rect: scaled(nan,nan,316,32,false,16);
 }
 
 .bugrep-input
 {
-        scaled-rect: scaled(19,215,390,200,false,16);
+    scaled-rect: scaled(19,215,390,200,false,16);
 }
 
 .bugrep-input-content
@@ -912,12 +963,12 @@
 
 .bugrep-send-btn
 {
-        scaled-rect: scaled(27,499,374,80,true,14);
+    scaled-rect: scaled(27,499,374,80,true,14);
 }
 
 .bugrep-share-btn
 {
-        scaled-rect: scaled(27,592,374,80,true,14);
+    scaled-rect: scaled(27,592,374,80,true,14);
 }
 
 .bugrep-sending
@@ -1164,7 +1215,10 @@
 
 .faq-close-btn
 {
+/*
     scaled-rect: scaled(nan,nan,32,32,true);
+*/
+    scaled-rect: scaled(nan,nan,25,25,true);
     qproperty-inactive: "@btn-close";
     qproperty-active: "@btn-close";
 }

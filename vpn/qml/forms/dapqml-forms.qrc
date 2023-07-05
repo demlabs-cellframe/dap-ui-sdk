@@ -36,5 +36,8 @@
         <file compress="1">dapqml-forms/QuiNodeOverviewBase.qml</file>
         <file compress="1">dapqml-forms/QuiNodeSearchOrders.qml</file>
         <file compress="1">dapqml-forms/QuiNodeChooseOrder.qml</file>
+        <file compress="1">dapqml-forms/QuiRoutingExceptions.qml</file>
+        <file compress="1">dapqml-forms/tools/QuiToolTicker.qml</file>
+        <file compress="1">dapqml-forms/tools/QuiToolUpdateNotification.qml</file>
     </qresource>
 </RCC>
