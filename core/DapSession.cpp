@@ -547,14 +547,11 @@ void DapSession::onNewTxCond(){
     }
 
     QByteArray dByteArr;
-    m_dapCrypt->decode(m_netNewTxReply->getReplyData(), dByteArr, KeyRoleSession);
+    m_dapCryptCDB->decode(m_netNewTxReply->getReplyData(), dByteArr, KeyRoleSession);
 
     QXmlStreamReader m_xmlStreamReader;
     m_xmlStreamReader.addData(dByteArr);
 
-    bool isCookie = false;
-    bool isAuth = false;
-    QString SRname;
     while(m_xmlStreamReader.readNextStartElement())
     {
         qDebug() << " name = " << m_xmlStreamReader.name();
