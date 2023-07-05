@@ -324,7 +324,7 @@
 
 .ic_share_log
 {
-        qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_share_log.png");
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/ic_share_log.png");
 }
 
 .ic_close

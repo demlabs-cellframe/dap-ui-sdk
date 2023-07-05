@@ -9,7 +9,7 @@
 
 DapQmlOrdersModel::DapQmlOrdersModel(QObject *parent)
   : QAbstractTableModel (parent)
-  , m_Countries (DapServersData::m_countryMap.keys())
+  , m_Countries (DapAbstractServerList::countryMap().keys())
   , m_checkedIndex(-1)
 {
     updateCheckedIndex();

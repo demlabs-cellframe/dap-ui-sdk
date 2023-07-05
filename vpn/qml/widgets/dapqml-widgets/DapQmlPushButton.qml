@@ -27,25 +27,22 @@ Button {
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
 
-    contentItem: Item {}
-    background: Item {}
-
     /****************************************//**
      * @name VARS
      ********************************************/
     /// @{
 
     /// @brief background when button is active
-    property string active
+    property string active: "qrc:/light/btn_bg_hover_active.png"
 
     /// @brief background when button is passive
-    property string inactive
+    property string inactive: "qrc:/light/btn_bg.png"
 
     /// @brief background when button is disabled
     property string disabled
 
     /// @brief label font size
-    property int fontSize: 16
+    property int fontSize: 14
 
     /// @brief qss style
     property string qss
@@ -64,11 +61,8 @@ Button {
         anchors.bottomMargin: root.fontSize * 0.25
         z: 10
 
-        width: contentWidth
-        height: contentHeight
-
-//        horizontalAlignment: Text.AlignHCenter
-//        verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
 
         color: "#FFFFFF"
         text: root.text

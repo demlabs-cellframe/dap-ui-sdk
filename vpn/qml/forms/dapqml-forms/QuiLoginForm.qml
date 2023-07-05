@@ -496,44 +496,44 @@ Item {
      * Choose wallet for NoCBD
      ********************************************/
 
+//=======
+//        x: loginSepsPlacer.x
+//        y: loginSpacer.y + loginSepsPlacer.y
+//        width: loginSepsPlacer.width
+//        height: loginSepsPlacer.height
+//        visible: root.internal.legacyStyle
+
+//        DapQmlSeparator {
+//            x: (parent.width - width) / 2
+//            z: 15
+//            width: parent.width - 74
+//            qss: "login-separator"
+//        }
+
+//        DapQmlDummy {
+//            id: loginSepsPlacer
+//            qss: "login-separator-container"
+//        }
+//    }
+
+//    /****************************************//**
+//     * Choose server
+//     ********************************************/
+
+//    DapQmlRectangle {
+//        x:      loginServerPlacer.x
+//        y:      loginSpacer.y + loginServerPlacer.y
+//        width:  loginServerPlacer.width
+//        height: loginServerPlacer.height
+//>>>>>>> refs/heads/release-7.7
+
     DapQmlRectangle {
-<<<<<<< HEAD
         x:      loginWalletPlacer.x
         y:      loginSpacer.y + loginWalletPlacer.y
         width:  loginWalletPlacer.width
         height: loginWalletPlacer.height
         visible: internal.cellfarameDetected && internal.mode === QuiLoginForm.Mode.M_WALLET
                  && !(internal.transactionProcessing || internal.waitingForApproval)
-=======
-        x: loginSepsPlacer.x
-        y: loginSpacer.y + loginSepsPlacer.y
-        width: loginSepsPlacer.width
-        height: loginSepsPlacer.height
-        visible: root.internal.legacyStyle
-
-        DapQmlSeparator {
-            x: (parent.width - width) / 2
-            z: 15
-            width: parent.width - 74
-            qss: "login-separator"
-        }
-
-        DapQmlDummy {
-            id: loginSepsPlacer
-            qss: "login-separator-container"
-        }
-    }
-
-    /****************************************//**
-     * Choose server
-     ********************************************/
-
-    DapQmlRectangle {
-        x:      loginServerPlacer.x
-        y:      loginSpacer.y + loginServerPlacer.y
-        width:  loginServerPlacer.width
-        height: loginServerPlacer.height
->>>>>>> refs/heads/release-7.7
 
         DapQmlButton {
             id: btnChooseWallet
@@ -549,12 +549,8 @@ Item {
             qss: "login-btn-server"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-<<<<<<< HEAD
-            frame: true
-=======
             separator: root.internal.legacyStyle
             frame: !root.internal.legacyStyle // true
->>>>>>> refs/heads/release-7.7
             link: true
             onClicked: root.sigChooseWallet()
 
@@ -747,12 +743,8 @@ Item {
             placeHolderText: "____ ____ ____ ____"
             placeHolderQss: "login-btn-main"
             //inputMask: ">NNNN-NNNN-NNNN-NNNN;_"
-<<<<<<< HEAD
-            frame: true //separator: true
-=======
             separator: root.internal.legacyStyle
             frame: !root.internal.legacyStyle // true
->>>>>>> refs/heads/release-7.7
 
             onClicked: root.sigChooseSerial()
             onTextAccepted: root.beginConnection()
@@ -811,12 +803,8 @@ Item {
             qss: "login-btn-email"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-<<<<<<< HEAD
-            frame: true //separator: true
-=======
             separator: root.internal.legacyStyle
             frame: !root.internal.legacyStyle // true
->>>>>>> refs/heads/release-7.7
         }
 
         DapQmlDummy {
@@ -848,12 +836,8 @@ Item {
             editEchoMode: (internal.showPassword)
                           ? TextInput.Normal
                           : TextInput.Password
-<<<<<<< HEAD
-            frame: true //separator: true
-=======
             separator: root.internal.legacyStyle
             frame: !root.internal.legacyStyle // true
->>>>>>> refs/heads/release-7.7
         }
 
         Button {
@@ -908,12 +892,8 @@ Item {
             qss: "login-btn-cert"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-<<<<<<< HEAD
-            frame: true //separator: true
-=======
             separator: root.internal.legacyStyle
             frame: !root.internal.legacyStyle // true
->>>>>>> refs/heads/release-7.7
             link: true
             onClicked: root.sigChooseCert()
 
