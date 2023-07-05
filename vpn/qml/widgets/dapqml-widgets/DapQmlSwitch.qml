@@ -122,7 +122,7 @@ Item {
             x: _centerHor(this)
             y: _centerVer(this)
             z: 0
-            width: root.width - 12 * (root.width / 270)
+            width: root.width - 24 * (root.width / 270)
             height: root.height - 36 * (root.height / 174)
             qss: "switch-bg-off"
 
@@ -137,17 +137,17 @@ Item {
         DapQmlLabel {
             id: tgl
             //x: (checked === false) ? (-12 * (root.width / 270)) : (root.width - width + 12 * (root.width / 270))
-            x: {
-                if (ctl.dragging)
-                {
-                    if (isLeftReached)
-                        return minPos;
-                    if (isRightReached)
-                        return maxPos;
-                    return draggingPos
-                }
-                return finalPos;
-            }
+//            x: {
+//                if (ctl.dragging)
+//                {
+//                    if (isLeftReached)
+//                        return minPos;
+//                    if (isRightReached)
+//                        return maxPos;
+//                    return draggingPos
+//                }
+//                return finalPos;
+//            }
 
             y: 0
             z: 1
@@ -155,13 +155,13 @@ Item {
             height: root.height
             qss: "switch-toggle-off"
 
-            property real finalPos:         (checked === false) ? minPos : maxPos
-            property real draggingPos:      ctl.pos2 - (width / 2)
-            property real minPos:           (-12 * (root.width / 270))
-            property real maxPos:           (root.width - width + 12 * (root.width / 270))
-            property bool isLeftReached:    draggingPos <= minPos
-            property bool isRightReached:   draggingPos >= maxPos
-            property bool draggingState:    ctl.pos2 >= root.width / 2
+//            property real finalPos:         (checked === false) ? minPos : maxPos
+//            property real draggingPos:      ctl.pos2 - (width / 2)
+//            property real minPos:           (-12 * (root.width / 270))
+//            property real maxPos:           (root.width - width + 12 * (root.width / 270))
+//            property bool isLeftReached:    draggingPos <= minPos
+//            property bool isRightReached:   draggingPos >= maxPos
+//            property bool draggingState:    ctl.pos2 >= root.width / 2
 
             Component.onCompleted: ctl.setToggle(this)
             //onClicked: toggle()

@@ -41,6 +41,7 @@ void DapCmdSystemTray::handle (const QJsonObject *params)
 
       switch (type)
         {
+        case RequestType::show_window:                emit showGui();                 break;
         case RequestType::setting:                    emit showSettingInterface();    break;
         case RequestType::statistic:                  emit showStatisticInterface();  break;
         case RequestType::login:                      emit showLoginInterface();      break;
@@ -55,12 +56,17 @@ void DapCmdSystemTray::handle (const QJsonObject *params)
             emit changeServer (args[0].toString(), args[1].toString());
           } break;
         }
-    }
+  }
 }
 
 /********************************************
  * METHODS
  *******************************************/
+
+void DapCmdSystemTray::sendShowGui()
+{
+  sendShowInterface (RequestType::show_window);
+}
 
 void DapCmdSystemTray::sendShowSettingInterface()
 {

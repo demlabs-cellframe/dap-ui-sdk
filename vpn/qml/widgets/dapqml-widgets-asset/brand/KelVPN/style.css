@@ -1208,7 +1208,10 @@
 
 .dashboard-switch
 {
+/*
     scaled-rect: scaled(-1,250,238,150,true);
+*/
+	scaled-rect: scaled(-1,250,262,160,true);
 }
 
 .dashboard-speed-container

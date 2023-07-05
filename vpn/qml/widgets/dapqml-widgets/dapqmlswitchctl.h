@@ -99,6 +99,8 @@ protected:
   void _updateDiff();
   void _updateTglState();
 
+  void _itemsCleared();
+
   void _print (const char *a_text);
   /// @}
 
@@ -124,6 +126,8 @@ protected slots:
   void _slotTouchingPointXChanged();
   void _slotTouchAreaPressed();
   void _slotTouchAreaReleased();
+  void _slotUpdateTogglePos();
+  void _slotStackUpdateTogglePos();
   /// @}
 };
 
