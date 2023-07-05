@@ -50,5 +50,7 @@
         <file>widgets/DapBigText.qml</file>
         <file>widgets/DapToolTipInfo.qml</file>
         <file>widgets/DapImageRender.qml</file>
+        <file>icons/switch_off.svg</file>
+        <file>icons/switch_on.svg</file>
     </qresource>
 </RCC>

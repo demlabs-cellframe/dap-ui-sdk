@@ -4,11 +4,13 @@ import QtGraphicalEffects 1.0
 Item {
     id: toggleswitch
 
-    property string imageOn: "qrc:/icons/switch_on.png"
-    property string imageOff: "qrc:/icons/switch_off.png"
+    property string imageOn: "qrc:/icons/switch_on.svg"
+    property string imageOff: "qrc:/icons/switch_off.svg"
     property color backgroundColor: "#666"
     property color borderColor: "gray"
     property color shadowColor: "black"
+
+    property int indicatorSize: 0
 
     width: 100; height: 50
 
@@ -71,8 +73,8 @@ Item {
     DapImageRender{
         id:lever
         x: leverOffPosition; y: leverMargin
-        width: background.height - leverMargin*2
-        height: background.height - leverMargin*2
+        width: indicatorSize ? indicatorSize : background.height - leverMargin*2
+        height: indicatorSize ? indicatorSize : background.height - leverMargin*2
         source: imageOff
     }
 

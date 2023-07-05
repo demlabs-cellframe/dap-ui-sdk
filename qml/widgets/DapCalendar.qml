@@ -4,6 +4,7 @@ import QtQuick.Controls.Styles 1.4
 
 DapCalendarForm
 {
+    id: root
     dapCalendar.minimumDate:
     {
         var time = new Date(dapMinimumDate)
@@ -17,14 +18,21 @@ DapCalendarForm
             id: dapCalendarStyle
             gridVisible: false
 
+            background: Item {
+                implicitWidth: Math.max(250, Math.round(implicitHeight * 14))
+                implicitHeight: Math.max(250, Math.round(implicitHeight * 14))
+            }
+
+
+
             navigationBar:
-                Rectangle
+                Item
                 {
                     id: rectangleNavigationBar
                     height: buttonPreviousYear.height + dapTitleTopPadding + dapTitleBottomPadding
-                    color: dapCalendarBackgroundColor
+//                    color: dapCalendarBackgroundColor
 
-                    Rectangle
+                    Item
                     {
                         anchors.top: parent.top
                         anchors.topMargin: dapTitleTopPadding
@@ -144,7 +152,7 @@ DapCalendarForm
                                        (styleData.date.getFullYear() === new Date(Date.now()).getFullYear())) ?
                                           dapSelectedBackgroundColor :
                                           (styleData.selected ? dapSelectedBackgroundColor : dapNormalBackgroundColor)
-                        border.width: 1 
+                        border.width: 1
                         color: styleData.selected ? dapSelectedBackgroundColor : dapNormalBackgroundColor
 
                         Label
