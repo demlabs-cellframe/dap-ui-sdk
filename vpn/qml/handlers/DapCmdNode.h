@@ -19,6 +19,7 @@
 class OrderListData
 {
     QJsonArray m_orderListData;
+    QString m_unit;
 
 public:
     void setData(const QJsonArray& a_orderListData)
@@ -58,12 +59,17 @@ private:
                )
             {
                 list.push_back(joItem["node_location"].toString());
-                list.push_back(joItem["price"].toString());
+                list.push_back(QString("%1%2 per %3").arg(joItem["price"].toString()).arg(m_unit).arg(joItem["price_unit"].toString()));
                 m_orders[key].setValue(list);
+                qDebug() << joItem;
             }
         }
     }
 public:
+    void setUnit(QString unit)
+    {
+        m_unit = unit;
+    }
     QStringList order(QString hash)
     {
         foreach(const QJsonValue& item, m_orderListData)
@@ -216,6 +222,8 @@ public slots:
     void chooseOrder(QString hash);
     void condTxCreate();
     void startSearchOrders();
+    void setMaxValueUnit(QString price);
+    void setMinValueUnit(QString price);
     QStringList orderData(QString hash);
     void checkSigned();
     void startConnectByOrder();

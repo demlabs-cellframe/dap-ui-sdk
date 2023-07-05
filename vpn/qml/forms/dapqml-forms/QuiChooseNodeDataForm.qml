@@ -14,7 +14,7 @@ import "qrc:/dapqml-widgets"
  *
  * Form contains resizer for ListView items
  *
- * @date 06.06.22
+ * @date 2022
  * @author Stanislav
  *******************************************/
 
@@ -111,7 +111,8 @@ Item {
                     qss: "radiobtn-resizer-note"
                     width: resizer.width
                     clip: false
-                    onClicked: { root.toggle(); root.clicked(); }
+                    //onClicked: { root.toggle(); root.clicked(); }
+                    onClicked: nodeDataForm.sigSelect (model.hash);
                 }
             }
 

@@ -129,8 +129,7 @@ QHash<int, QByteArray> DapQmlNodeDataModel::roleNames() const
   return names;
 }
 
-
-
+// example of proxy model
 DapQmlNodeDataSortFilterProxyModel::DapQmlNodeDataSortFilterProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent)
     , m_filter("")

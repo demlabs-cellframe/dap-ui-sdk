@@ -272,6 +272,7 @@ void DapNodeWeb3::getOrdersListRequest(QString networkName, QString tokenName, Q
         requesString += QString("&price_max=%1").arg(maxPrice);
     if (!unit.isEmpty())
         requesString += QString("&unit=%1").arg(unit);
+    qDebug() << "OrdersListRequest" << requesString;
     sendRequest(requesString);
 }
 

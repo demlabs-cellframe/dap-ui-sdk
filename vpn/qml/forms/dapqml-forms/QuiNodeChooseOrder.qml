@@ -10,6 +10,7 @@ Item {
     ///
     /// Used to connect interface via Manager
     property string formName: "ChooseOrder"
+    property string selectedData: ""
 
     /// @brief item clicked
     signal sigSelect(name: string);
@@ -19,7 +20,8 @@ Item {
         interval: 30
         running: false
         repeat: false
-        onTriggered: PageCtl.slotForward (1, "qrc:/dapqml-forms/QuiLoginForm.qml");
+        //onTriggered: PageCtl.slotForward (1, "qrc:/dapqml-forms/QuiLoginForm.qml");
+        onTriggered: root.sigSelect(root.selectedData);
     }
 
     property DapQmlNodeDataModel orderModel: DapQmlNodeDataModel {
@@ -32,8 +34,9 @@ Item {
        title:  qsTr("Choose order")
        onSigSelect: {
            //PageCtl.slotBackwardAuto();
-           root.sigSelect(name);
-           backTimer.start();
+//           root.sigSelect(name);
+           root.selectedData = name
+           backTimer.start()
        }
     }
 

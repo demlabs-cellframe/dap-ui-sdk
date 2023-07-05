@@ -131,17 +131,6 @@ void DapCmdNode::handle(const QJsonObject* params)
     // stop checking the operation of the node
     if (params->value("start_node_detection").isBool() && !params->value("start_node_detection").toBool())
         emit stopNodeDetection();
-    // order list request
-    if (params->value("orders_request").isObject())
-    {
-        QJsonObject tx = params->value("cond_tx_create").toObject();
-        QString networkName = tx["network_name"].toString();
-        QString tokenName   = tx["token_name"].toString();
-        QString minPrice    = tx["min_price"].toString();
-        QString maxPrice    = tx["max_price"].toString();
-        QString unit          = tx["unit"].toString();
-        emit orderListRequest(networkName, tokenName, minPrice, maxPrice, unit);
-    }
     // creating a conditional transaction cmd
     if (params->value("cond_tx_create").isObject())
     {
@@ -154,16 +143,17 @@ void DapCmdNode::handle(const QJsonObject* params)
         QString unit          = tx["unit"].toString();
         emit condTxCreateRequest(walletName, networkName, tokenName, value, unit);
     }
-    // start search orders
+    // order list request
     if (params->value("search_orders").isObject())
     {
         QJsonObject so = params->value("search_orders").toObject();
         QString networkName = so["network_name"].toString();
         QString tokenName   = so["token_name"].toString();
         QString unit        = so["unit"].toString();
-        QString maxPrice    = so["min_price"].toString();
-        QString minPrice    = so["max_price"].toString();
-        emit orderListRequest(networkName, tokenName, unit, maxPrice, minPrice);
+        QString maxPrice    = so["max_price"].toString();
+        QString minPrice    = so["min_price"].toString();
+        qDebug() << "nnnnnnnnnnnnnnnnnnnnnnnnnnn" << networkName << tokenName << unit << maxPrice << minPrice << so;
+        emit orderListRequest(networkName, tokenName, minPrice, maxPrice, unit);
     }
     if (params->value("node_detected_check").isBool() && params->value("node_detected_check").toBool())
         sendNodeDetected();
