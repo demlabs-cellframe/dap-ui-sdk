@@ -88,9 +88,6 @@ void DapQmlImageItem::paint (QPainter *a_painter)
                             DapImage::SmoothTransformation
                           );
 //          _cache.image = image;
-
-          if (filename.contains ("btn_settings.png"))
-            _cache.image.save ("/home/segaman/img.png");
       }
       else if (m_scaledPixmap.contains (s_imageProvider))
         {

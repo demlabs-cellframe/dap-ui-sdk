@@ -218,6 +218,7 @@ Item {
 
     /// @brief set transaction processing flag for noCBD
     function setTransactionProcessing(a_data){
+        console.log(`setTransactionProcessing ${a_data}`);
         internal.transactionProcessing = true;
         loginInfoLabel.text = "Transaction is in progress"
 //        if (a_data === true) {
@@ -257,13 +258,15 @@ Item {
 
     /// @briefset found cellframe dashboard
     function cellfarameDashboardDetected(detected) {
-        internal.cellfarameDetected =  Brand.name() === "KelVPN";
+        console.log(`cellfarameDashboardDetected ${detected}`);
+        internal.cellfarameDetected = detected && Brand.name() === "KelVPN";
         if (internal.waitingForApproval)
             loginInfoLabel.text = "Waiting for approval"
         loginTypeKelContainer.update();
     }
 
     function setWaitingForApproval(approval) {
+        console.log(`setWaitingForApproval ${approval}`);
         internal.waitingForApproval = approval
         if (internal.waitingForApproval)
             loginInfoLabel.text = "Waiting for approval"
@@ -421,10 +424,10 @@ Item {
     DapQmlDummy {
         id: loginSpacer
         qss: (internal.mode === QuiLoginForm.Mode.M_CERT) ? "login-space-for2rows" : "login-space-for3rows"
-        Component.onCompleted: StyleDebugTree.describe (
-           "loginSpacer",
-            ["x", "y", "width", "height"],
-           this);
+//        Component.onCompleted: StyleDebugTree.describe (
+//           "loginSpacer",
+//            ["x", "y", "width", "height"],
+//           this);
     }
 
     /****************************************//**
@@ -668,19 +671,31 @@ Item {
 
             onDefaultServerNameChanged: updateServerName()
         }
-        DapQmlDummy {
 
+        DapQmlDummy {
             id: loginServerPlacer
-            qss: Brand.name() === "KelVPN" && internal.cellfarameDetected
-//               NoCBD mode
-                 ? internal.mode === QuiLoginForm.Mode.M_WALLET
-//               wallet
-                 //? "login-btn-nocbd-wallet-server-container"
-                 ? "login-btn-nocbd-skey-server-container"
-//               serial login
-                 : "login-btn-nocbd-skey-server-container"
-//               other
-                 : "login-btn-server-container"
+            qss: {
+                if (Brand.name() === "KelVPN"
+                    && internal.cellfarameDetected)
+                {
+                    //if (internal.mode === QuiLoginForm.Mode.M_WALLET)
+                    //    return "login-btn-nocbd-wallet-server-container"
+                    return "login-btn-nocbd-skey-server-container"
+                }
+                else
+                    return "login-btn-server-container"
+            }
+
+//            qss: Brand.name() === "KelVPN" && internal.cellfarameDetected
+////               NoCBD mode
+//                 ? internal.mode === QuiLoginForm.Mode.M_WALLET
+////               wallet
+//                 //? "login-btn-nocbd-wallet-server-container"
+//                 ? "login-btn-nocbd-skey-server-container"
+////               serial login
+//                 : "login-btn-nocbd-skey-server-container"
+////               other
+//                 : "login-btn-server-container"
 
         }
     }
@@ -725,6 +740,11 @@ Item {
         height: loginSerialPlacer.height
         visible: internal.mode === QuiLoginForm.Mode.M_SERIAL
 
+        Component.onCompleted: StyleDebugTree.describe (
+           "btnEnterSerialBox",
+            ["x", "y", "width", "height"],
+           this);
+
         DapQmlButton {
             id: btnEnterSerial
             objectName: "btnEnterSerial"
@@ -768,6 +788,11 @@ Item {
                 else
                     root.sigSerialFillingIncorrect();
             }
+
+            Component.onCompleted: StyleDebugTree.describe (
+               "btnEnterSerial",
+                ["x", "y", "width", "height"],
+               this);
         }
         DapQmlDummy {
             id: loginSerialPlacer
@@ -776,6 +801,11 @@ Item {
                  ? "login-btn-serial-container-nocbd"
 //                 serial login
                  : "login-btn-serial-container"
+
+            Component.onCompleted: StyleDebugTree.describe (
+               "loginSerialPlacer",
+                ["x", "y", "width", "height", "qss"],
+               this);
         }
     }
 
