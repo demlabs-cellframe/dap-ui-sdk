@@ -574,6 +574,8 @@ void DapSession::onNewTxCond(){
                             qWarning() <<"Unknown element" << m_xmlStreamReader.readElementText();
                         }
                     }
+                } else {
+                    m_xmlStreamReader.skipCurrentElement();
                 }
             }
         } else {
