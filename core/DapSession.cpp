@@ -539,10 +539,10 @@ void DapSession::onLogout() {
 
 void DapSession::onNewTxCond(){
     qDebug() << "Received new tx cond";
-//    m_cdbAuthTxCond =
+
     if(m_netNewTxReply->getReplyData().size() <= 0)
     {
-//        emit errorAuthorization (tr ("Wrong answer from server"));
+        emit sigNewTxError();
         return;
     }
 
@@ -552,6 +552,7 @@ void DapSession::onNewTxCond(){
     QXmlStreamReader m_xmlStreamReader;
     m_xmlStreamReader.addData(dByteArr);
 
+    bool isTxOk = false;
     while(m_xmlStreamReader.readNextStartElement())
     {
         qDebug() << " name = " << m_xmlStreamReader.name();
@@ -578,9 +579,14 @@ void DapSession::onNewTxCond(){
                     m_xmlStreamReader.skipCurrentElement();
                 }
             }
+            isTxOk = true;
         } else {
             m_xmlStreamReader.skipCurrentElement();
         }
+    }
+
+    if(!isTxOk){
+        emit sigNewTxError();
     }
 
     emit sigNewTxReceived();
