@@ -111,8 +111,8 @@ private slots:
     // reply error
     void replyError(int errorCode, const QString errorString);
     // response processing
+    void parseReplyStatus(const QString& replyData, int baseErrorCode);
     void parseReplyConnect(const QString& replyData, int baseErrorCode);
-    void nodeStatusOkReply(const QString& replyData, int baseErrorCode);
     void parseReplyNetworks(const QString& replyData, int baseErrorCode);
     void parseReplyWallets(const QString& replyData, int baseErrorCode);
     void parseDataWallet(const QString& replyData, int baseErrorCode);
@@ -144,6 +144,7 @@ signals:
     void nodeNotDetected();
     void nodeNotConnected();
     void checkNodeStatus();
+    void sigIncorrectId();
 };
 
 #endif // DAPNODEWEB3_H

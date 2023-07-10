@@ -42,7 +42,7 @@ public:
     QState nodeNotDetected;
     QState nodeConnection;
     QState nodeNotConnected;
-    QState nodeGetStatus;
+    //QState nodeGetStatus;
     QState getWallets;
     QState getNetworks;
     QState getDataWallet;
@@ -70,7 +70,7 @@ private:
         nodeConnectMachine.addState(&nodeNotDetected);
         nodeConnectMachine.addState(&nodeConnection);
         nodeConnectMachine.addState(&nodeNotConnected);
-        nodeConnectMachine.addState(&nodeGetStatus);
+        //nodeConnectMachine.addState(&nodeGetStatus);
         nodeConnectMachine.addState(&getWallets);
         nodeConnectMachine.addState(&getNetworks);
         nodeConnectMachine.addState(&getDataWallet);

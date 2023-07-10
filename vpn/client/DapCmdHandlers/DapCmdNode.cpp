@@ -121,6 +121,7 @@ void DapCmdNode::sendSigningInfo(qint32 utype, qint64 uid, qint64 units, QString
 
 void DapCmdNode::handle(const QJsonObject* params)
 {
+    qDebug() << "--->DapCmdNode::handle<---" << params;
     if (params->value("start_node_detection").isBool() && params->value("start_node_detection").toBool())
         emit startNodeDetection();
     if (params->value("nocdb_mode_request").isBool())
