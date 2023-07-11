@@ -450,7 +450,7 @@ Item {
         qss: "dashboard-switch"
         //onClicked: { root.sigSwitchToggle(checked); root.sigConnectionStatusChangeRequested(); }
         onCheckedChanged: { root.sigSwitchToggle(checked); root.sigConnectionStatusChangeRequested(); }
-        Component.onCompleted: switchItem = this
+        //Component.onCompleted: switchItem = this
     }
 
     /****************************************//**
