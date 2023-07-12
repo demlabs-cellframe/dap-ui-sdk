@@ -42,10 +42,10 @@ public:
     QState nodeNotDetected;
     QState nodeConnection;
     QState nodeNotConnected;
-    //QState nodeGetStatus;
     QState getWallets;
     QState getNetworks;
     QState getDataWallet;
+    QState getFee;
     QState condTxCreate;
     QState mempoolTxHashRequest;
     QState mempoolTxHashEmpty;
@@ -55,6 +55,7 @@ public:
     QState checkTransactionCertificate;
     QState createTransactionCertificate;
     QState getOrderList;
+    QState getNodeIp;
 private:
     QStateMachine commandState;
     QStateMachine nodeConnectMachine;
@@ -70,11 +71,11 @@ private:
         nodeConnectMachine.addState(&nodeNotDetected);
         nodeConnectMachine.addState(&nodeConnection);
         nodeConnectMachine.addState(&nodeNotConnected);
-        //nodeConnectMachine.addState(&nodeGetStatus);
         nodeConnectMachine.addState(&getWallets);
         nodeConnectMachine.addState(&getNetworks);
         nodeConnectMachine.addState(&getDataWallet);
         nodeConnectMachine.addState(&condTxCreate);
+        nodeConnectMachine.addState(&getFee);
         nodeConnectMachine.addState(&mempoolTxHashRequest);
         nodeConnectMachine.addState(&mempoolTxHashEmpty);
         nodeConnectMachine.addState(&ledgerTxHashRequest);
@@ -83,6 +84,7 @@ private:
         nodeConnectMachine.addState(&checkTransactionCertificate);
         nodeConnectMachine.addState(&createTransactionCertificate);
         nodeConnectMachine.addState(&getOrderList);
+        nodeConnectMachine.addState(&getNodeIp);
         nodeConnectMachine.setInitialState(&initialState);
         qDebug() << "nodeConnectMachine::init";
     }
@@ -119,6 +121,11 @@ private:
     // orders request
     QString m_minPrice;
     QString m_maxPrice;
+    QString m_srvUid;
+    QString m_nodeAddress;
+    QString m_netId;
+    QString m_fee;
+    uint16_t m_nodePort = 80;
 
 public:
     static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
@@ -149,6 +156,7 @@ public slots:
     void stopCheckingNodeRequest();
     void slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
     void slotGetOrdersList(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
+    void slotNodeIpReqest(QString srvUid, QString nodeAddress);
 
 private slots:
     void walletDataRequest();
@@ -165,6 +173,8 @@ signals:
     void sigMempoolContainHash();
     void sigLedgerContainHash();
     void sigCondTxCreateSuccess(QString hash);
+    void sigConnectByOrder(QString netId, QString txCondHash, QString token, QString srvUid, QString nodeIp, uint16_t port);
+
     // ------- internal signals --------
     void waitingCommand();
     void transactionProcessing();
@@ -187,6 +197,10 @@ signals:
     void createCertificate();
     void certificateExist();
     void certificateNotFound();
+    void sigNodeIpRequest();
+    void sigNodeIpReceived();
+    void sigFeeReceived();
+
 
 };
 

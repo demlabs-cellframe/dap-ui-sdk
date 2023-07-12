@@ -99,10 +99,12 @@ public slots:
     void walletDataRequest(const QString& walletName);
     void getCertificates();
     void createCertificate(const QString& certType, const QString& certName);
-    void condTxCreateRequest(QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit);
+    void condTxCreateRequest(QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit, QString fee);
     void getMempoolTxHashRequest(QString transactionHash, QString networkName);
     void getLedgerTxHashRequest(QString transactionHash, QString networkName);
     void getOrdersListRequest(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
+    void getNodeIPRequest(QString networkName, QString nodeAddr);
+    void getFeeRequest(QString networkName);
 
 
 private slots:
@@ -122,7 +124,9 @@ private slots:
     void parseLedgerReply(const QString& replyData, int baseErrorCode);
     void parseMempoolReply(const QString& replyData, int baseErrorCode);
     void parseOrderList(const QString& replyData, int baseErrorCode);
-    void parseJsonError(QString replyData, int baseErrorCode);
+    void parseJsonError(const QString& replyData, int baseErrorCode);
+    void parseNodeIp(const QString& replyData, int baseErrorCode);
+    void parseFee(const QString& replyData, int baseErrorCode);
     //
     void replyConnectError(int code);
 
@@ -138,6 +142,8 @@ signals:
     void sigMempoolContainHash();
     void sigLedgerContainHash();
     void sigOrderList(QJsonArray);
+    void sigNodeIp(QString nodeIp);
+    void sigFee(QString fee);
     void connectionIdReceived(QString connectionId);
     void statusOk();
     void nodeDetected();

@@ -36,6 +36,10 @@ const QList<ReplyMethod> DapNodeWeb3::replyItems = {
     {"method=GetLedgerTxHash",      &DapNodeWeb3::parseLedgerReply,         nullptr, "Wrong reply when get ledger transaction hash", 1000000},
     // get orders
     {"method=GetOrdersList",        &DapNodeWeb3::parseOrderList,           nullptr, "Wrong reply when get orders list", 1100000},
+    // get ip
+    {"method=GetNodeIP",            &DapNodeWeb3::parseNodeIp,              nullptr, "Wrong reply when get node ip", 1200000},
+    // get fee
+    {"method=GetFee",               &DapNodeWeb3::parseFee,                 nullptr, "Wrong reply when get node ip", 1200000},
 };
 
 
@@ -185,7 +189,7 @@ void DapNodeWeb3::networksRequest()
     sendRequest(requesString);
 }
 
-void DapNodeWeb3::condTxCreateRequest(QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit)
+void DapNodeWeb3::condTxCreateRequest(QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit, QString fee)
 {
     QString requesString = QString("?method=CondTxCreate&"
                 "id=%1&"
@@ -204,7 +208,7 @@ void DapNodeWeb3::condTxCreateRequest(QString walletName, QString networkName, Q
             .arg(sertificateName)
             .arg(value)
             .arg(unit)
-            .arg("1");
+            .arg(fee);
     sendRequest(requesString);
 }
 
@@ -269,6 +273,25 @@ void DapNodeWeb3::getOrdersListRequest(QString networkName, QString tokenName, Q
     if (!unit.isEmpty())
         requesString += QString("&unit=%1").arg(unit);
     qDebug() << "OrdersListRequest" << requesString;
+    sendRequest(requesString);
+}
+
+void DapNodeWeb3::getNodeIPRequest(QString networkName, QString nodeAddr)
+{
+    QString requesString = QString("?method=GetNodeIP&"
+                "id=%1&net=%2&addr=%3")
+            .arg(m_connectId)
+            .arg(networkName)
+            .arg(nodeAddr);
+    sendRequest(requesString);
+}
+
+void DapNodeWeb3::getFeeRequest(QString networkName)
+{
+    QString requesString = QString("?method=GetFee&"
+                "id=%1&net=%2")
+            .arg(m_connectId)
+            .arg(networkName);
     sendRequest(requesString);
 }
 
@@ -568,7 +591,63 @@ void DapNodeWeb3::parseOrderList(const QString& replyData, int baseErrorCode)
     }
 }
 
-void DapNodeWeb3::parseJsonError(QString replyData, int baseErrorCode)
+void DapNodeWeb3::parseNodeIp(const QString& replyData, int baseErrorCode)
+{
+    // reply example
+    //    {
+    //        "data": {
+    //            "node IP": "138.68.111.134"
+    //        },
+    //        "errorMsg": "",
+    //        "status": "ok"
+    //    }
+    parseJsonError(replyData.toUtf8(), baseErrorCode);
+    if (jsonError())
+        return;
+    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+    if (doc["data"].isObject())
+    {
+        emit sigNodeIp(doc["data"].toObject()["node IP"].toString());
+    }
+}
+
+void DapNodeWeb3::parseFee(const QString& replyData, int baseErrorCode)
+{
+
+    // reply example
+    //    {
+    //        "data": {
+    //            "network": "riemann",
+    //            "network fee": {
+    //                "fee addr": "o9z3wUTSTicckJuoxkLc5q1CwaYs23474GbBm8ebgSZd1WmB7EhkPDpsoZPGX3hmhGa1wCqTDKgPjirbp3H45bg3tc6U5k8wCEJX575X",
+    //                "fee coins": "0.0025",
+    //                "fee datoshi": "2500000000000000",
+    //                "fee ticker": "tKEL"
+    //            },
+    //            "validator fee": {
+    //                "average fee coins": "0.056666666666666666",
+    //                "average fee datoshi": "56666666666666666",
+    //                "fee ticker": "tKEL ",
+    //                "max fee coins": "0.07",
+    //                "max fee datoshi": "70000000000000000",
+    //                "min fee coins": "0.04",
+    //                "min fee datoshi": "40000000000000000"
+    //            }
+    //        },
+    //        "errorMsg": "",
+    //        "status": "ok"
+    //    }
+    parseJsonError(replyData.toUtf8(), baseErrorCode);
+    if (jsonError())
+        return;
+    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+    if (doc["data"].isObject() && doc["data"].toObject()["network fee"].isObject())
+    {
+        emit sigFee(doc["data"].toObject()["network fee"].toObject()["fee coins"].toString());
+    }
+}
+
+void DapNodeWeb3::parseJsonError(const QString& replyData, int baseErrorCode)
 {
     // reply example
     //    "{ ... "
