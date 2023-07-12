@@ -54,18 +54,23 @@ void DapNode::stopCheckingNodeRequest()
 
 void DapNode::startCheckingNodeRequest()
 {
-//    DEBUGINFO << "startCheckingNodeRequest";
+    DEBUGINFO << "startCheckingNodeRequest";
     if (m_stm->initialState.active())
+    {
+        DEBUGINFO << "startCheckingNodeRequest << uiStartNodeDetection()";
         emit uiStartNodeDetection();
+    }
     else
     {
         if (m_stm->ledgerTxHashRequest.active() || m_stm->ledgerTxHashEmpty.active())
         {
+            DEBUGINFO << "startCheckingNodeRequest << sigMempoolContainHash()";
             emit sigMempoolContainHash();
             return;
         }
         if (nodeDetected)
         {
+            DEBUGINFO << "startCheckingNodeRequest << sigNodeDetected()";
             emit sigNodeDetected();
             return;
         }
@@ -97,16 +102,20 @@ void DapNode::initStmTransitions()
     m_stm->initialState.addTransition(this, &DapNode::uiStartNodeDetection,
     &m_stm->nodeDetection);
     m_stm->initialState.addTransition(this, &DapNode::sigCondTxCreateRequest,
-    &m_stm->nodeDetection);
+    &m_stm->getFee);
+    //&m_stm->nodeGetStatus);
     m_stm->initialState.addTransition(this, &DapNode::sigGetOrderListRequest,
-    &m_stm->nodeDetection);
+    &m_stm->getOrderList);
+    //&m_stm->nodeGetStatus);
+    m_stm->initialState.addTransition(this, &DapNode::sigNodeIpRequest,
+    &m_stm->getNodeIp);
 
     // node detection -> node detected
     m_stm->nodeDetection.addTransition(web3, &DapNodeWeb3::nodeDetected,
     &m_stm->nodeConnection);
     // node detection -> node detected
-    m_stm->nodeDetection.addTransition(web3, &DapNodeWeb3::checkNodeStatus,
-    &m_stm->nodeGetStatus);
+    m_stm->nodeDetection.addTransition(web3, &DapNodeWeb3::statusOk,
+    &m_stm->getWallets);
     // node detection -> get node status
     m_stm->nodeDetection.addTransition(web3, &DapNodeWeb3::nodeNotDetected,
     &m_stm->nodeNotDetected);
@@ -117,7 +126,8 @@ void DapNode::initStmTransitions()
 
     // node connection -> node connected, wallets list request
     m_stm->nodeConnection.addTransition(web3, &DapNodeWeb3::connectionIdReceived,
-    &m_stm->nodeGetStatus);
+    //&m_stm->nodeGetStatus);
+    &m_stm->getWallets);
     // node connection -> node not connected, repeat connection
     m_stm->nodeConnection.addTransition(web3, &DapNodeWeb3::nodeNotConnected,
     &m_stm->nodeNotConnected);
@@ -126,18 +136,22 @@ void DapNode::initStmTransitions()
     m_stm->nodeNotConnected.addTransition(this, &DapNode::repeatNodeConnection,
     &m_stm->nodeConnection);
 
+    // fee received -> condition transaction create request
+    m_stm->getFee.addTransition(this, &DapNode::sigFeeReceived,
+    &m_stm->checkTransactionCertificate);
+
     // node status !ok -> nodeGetWallets
-    m_stm->nodeGetStatus.addTransition(this, &DapNode::errorDetected,
-    &m_stm->initialState);
+//    m_stm->nodeGetStatus.addTransition(this, &DapNode::errorDetected,
+//    &m_stm->initialState);
 
     // node status ok -> getWallets
-    m_stm->nodeGetStatus.addTransition(this, &DapNode::gettingWalletsData,
-    &m_stm->getWallets);
+//    m_stm->nodeGetStatus.addTransition(this, &DapNode::gettingWalletsData,
+//    &m_stm->getWallets);
 //    m_stm->nodeGetStatus.addTransition(web3, &DapNodeWeb3::statusOk,
 //    &m_stm->getWallets);
 
-    m_stm->nodeGetStatus.addTransition(this, &DapNode::transactionProcessing,
-    &m_stm->checkTransactionCertificate);
+//    m_stm->nodeGetStatus.addTransition(this, &DapNode::transactionProcessing,
+//    &m_stm->checkTransactionCertificate);
 
     // get wallets -> wallets received
     m_stm->getWallets.addTransition(this, &DapNode::walletsReceived,
@@ -211,12 +225,18 @@ void DapNode::initStmTransitions()
     //
     // getting order list
     // node status ok -> getWallets
-    m_stm->nodeGetStatus.addTransition(this, &DapNode::sigGettingOrderList,
-    &m_stm->getOrderList);
+//    m_stm->nodeGetStatus.addTransition(this, &DapNode::sigGettingOrderList,
+//    &m_stm->getOrderList);
     // getOrderList -> initialState
     m_stm->getOrderList.addTransition(this, &DapNode::sigOrderListReceived,
     &m_stm->initialState);
     m_stm->getOrderList.addTransition(this, &DapNode::errorDetected,
+    &m_stm->initialState);
+
+    // getting node ip
+    m_stm->getNodeIp.addTransition(this, &DapNode::sigNodeIpReceived,
+    &m_stm->initialState);
+    m_stm->getNodeIp.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
 
 }
@@ -258,7 +278,7 @@ void DapNode::initStmStates()
     // connection request
     connect(&m_stm->nodeConnection, &QState::entered, web3, &DapNodeWeb3::nodeConnectionRequest);
     // get node status
-    connect(&m_stm->nodeGetStatus,  &QState::entered, web3, &DapNodeWeb3::nodeStatusRequest);
+    //connect(&m_stm->nodeGetStatus,  &QState::entered, web3, &DapNodeWeb3::nodeStatusRequest);
     // get wallets
     connect(&m_stm->getWallets, &QState::entered, web3, &DapNodeWeb3::walletsRequest);
     // get networks
@@ -268,10 +288,14 @@ void DapNode::initStmStates()
         m_walletsData = QJsonObject();
         walletDataRequest();
     });
+    // get fee
+    connect (&m_stm->getFee, &QState::entered, this, [=](){
+        web3->getFeeRequest(m_networkName);
+    });
     // check certificate
     connect (&m_stm->checkTransactionCertificate, &QState::entered, web3, &DapNodeWeb3::getCertificates);
     // certificate create
-    connect (&m_stm->createTransactionCertificate, &QState::entered, [=](){
+    connect (&m_stm->createTransactionCertificate, &QState::entered, this, [=](){
         // only private certificates can be created
         web3->createCertificate("sig_dil", certificateName("private"));
     });
@@ -283,26 +307,27 @@ void DapNode::initStmStates()
                         certificateName("public"),
                         m_tokenName,
                         m_value,
-                        m_unit);
+                        m_unit,
+                        m_fee);
     });
     // mempool check
     connect(&m_stm->mempoolTxHashRequest, &QState::entered, this, [=](){
-        emit web3->getMempoolTxHashRequest(m_transactionHash, m_networkName);
+        web3->getMempoolTxHashRequest(m_transactionHash, m_networkName);
     });
     connect(&m_stm->mempoolTxHashEmpty, &QState::entered, this, [=](){
         DEBUGINFO  << "&mempoolTxHashEmpty, &QState::entered";
-        QTimer::singleShot(LEDGER_REQUEST_REPEAT_PERIOD, [=](){
+        QTimer::singleShot(LEDGER_REQUEST_REPEAT_PERIOD, this, [=](){
             DEBUGINFO  << "&singleShotledgerTxHashEmpty";
             emit repeatReadMempool();
         });
     });
     // ledger check
     connect(&m_stm->ledgerTxHashRequest, &QState::entered, this, [=](){
-        emit web3->getLedgerTxHashRequest(m_transactionHash, m_networkName);
+        web3->getLedgerTxHashRequest(m_transactionHash, m_networkName);
     });
     connect(&m_stm->ledgerTxHashEmpty, &QState::entered, this, [=](){
         DEBUGINFO  << "&ledgerTxHashEmpty, &QState::entered";
-        QTimer::singleShot(LEDGER_REQUEST_REPEAT_PERIOD, [=](){
+        QTimer::singleShot(LEDGER_REQUEST_REPEAT_PERIOD, this, [=](){
             DEBUGINFO  << "&singleShotledgerTxHashEmpty";
             emit repeatReadLedger();
         });
@@ -317,6 +342,10 @@ void DapNode::initStmStates()
                     m_maxPrice,
                     m_unit);
     });
+
+    connect(&m_stm->getNodeIp, &QState::entered, this, [=](){
+        web3->getNodeIPRequest(m_networkName, m_nodeAddress);
+    });
 }
 
 void DapNode::initWeb3Connections()
@@ -324,7 +353,7 @@ void DapNode::initWeb3Connections()
     // node detected signal
     connect(web3, &DapNodeWeb3::nodeDetected, this, &DapNode::sigNodeDetected);
     connect(web3, &DapNodeWeb3::checkNodeStatus, this, &DapNode::sigNodeDetected);
-    connect(web3, &DapNodeWeb3::statusOk, [=](){
+    connect(web3, &DapNodeWeb3::statusOk, this, [=](){
         if (m_stm->transactionProcessing.active()) emit transactionProcessing();
         if (m_stm->gettingWalletsData.active()) emit gettingWalletsData();
         if (m_stm->gettingOrderList.active()) emit sigGettingOrderList();
@@ -373,6 +402,18 @@ void DapNode::initWeb3Connections()
         emit sigOrderListReceived();
     });
     connect(web3, &DapNodeWeb3::sigOrderList, this, &DapNode::sigOrderListReady);
+    // recieved fee
+    connect(web3, &DapNodeWeb3::sigFee, this, [=](QString fee){
+        m_fee = fee;
+        emit sigFeeReceived();
+    });
+    // connect to stream
+    connect(web3, &DapNodeWeb3::sigNodeIp, this, [=](QString nodeIp) {
+        qDebug() << "sigNodeIp" << nodeIp;
+        m_netId = "0x000000000000dddd"; // riemann, use dap_chain_net_id_by_name() 
+        emit sigNodeIpReceived();
+        emit sigConnectByOrder(m_netId, m_transactionHash, m_tokenName, m_srvUid, nodeIp, m_nodePort);
+    });
 
 }
 
@@ -431,3 +472,9 @@ void DapNode::start()
     m_stm->start();
 }
 
+void DapNode::slotNodeIpReqest(QString srvUid, QString nodeAddress)
+{
+    m_srvUid = srvUid;
+    m_nodeAddress = nodeAddress;
+    emit sigNodeIpRequest();
+}

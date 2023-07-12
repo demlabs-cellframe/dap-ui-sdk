@@ -121,6 +121,7 @@ void DapCmdNode::sendSigningInfo(qint32 utype, qint64 uid, qint64 units, QString
 
 void DapCmdNode::handle(const QJsonObject* params)
 {
+    qDebug() << "--->DapCmdNode::handle<---" << params;
     if (params->value("start_node_detection").isBool() && params->value("start_node_detection").toBool())
         emit startNodeDetection();
     if (params->value("nocdb_mode_request").isBool())
@@ -152,7 +153,7 @@ void DapCmdNode::handle(const QJsonObject* params)
         QString unit        = so["unit"].toString();
         QString maxPrice    = so["max_price"].toString();
         QString minPrice    = so["min_price"].toString();
-        qDebug() << "nnnnnnnnnnnnnnnnnnnnnnnnnnn" << networkName << tokenName << unit << maxPrice << minPrice << so;
+        qDebug() << "search_orders command" << networkName << tokenName << unit << maxPrice << minPrice << so;
         emit orderListRequest(networkName, tokenName, minPrice, maxPrice, unit);
     }
     if (params->value("node_detected_check").isBool() && params->value("node_detected_check").toBool())
@@ -172,16 +173,16 @@ void DapCmdNode::handle(const QJsonObject* params)
         //                  node_location:    Europe - Russia_2_1
         //              V   tx_cond_hash:     0x0000000000000000000000000000000000000000000000000000000000000000
         //                  ext:              0x52025275737369615F325F3100
-        QString netId        = oi["net_id"].toString();
-        QString txCondHash   = oi["tx_cond_hash"].toString();
-        QString token        = oi["token"].toString();
+        //QString networkName  = oi["network_name"].toString();
+        //QString txCondHash   = oi["tx_cond_hash"].toString();
+        //QString token        = oi["token"].toString();
         QString srvUid       = oi["srv_uid"].toString();
-        QString address      = oi["node_ip"].toString();
-//            QString address      = oi["node_addr"].toString();
-        uint16_t port        = 80;
-        if (!oi["port"].isNull())
-            port             = oi["port"].toInt();
+        QString nodeAddress  = oi["node_addr"].toString();
+//        uint16_t port        = 80;
+//        if (!oi["port"].isNull())
+//            port             = oi["port"].toInt();
+        qDebug() << "start_connect_by_order" << oi;
         m_nocdbMode = true;
-        emit connectByOrder(netId, txCondHash, token, srvUid, address, port);
+        emit connectByOrder(srvUid, nodeAddress);
     }
 }

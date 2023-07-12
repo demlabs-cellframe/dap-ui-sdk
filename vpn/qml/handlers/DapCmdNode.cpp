@@ -164,9 +164,8 @@ void DapCmdNode::startConnectByOrder()
 {
     QJsonObject jObject;
     QJsonObject connectData = m_orderListData.orderInfo(m_orderHash);
-    connectData["net_id"] = "0x000000000000AAAA"; // TODO get from network list
     connectData["token"] = m_selectedTokenName;
-    connectData["node_ip"] = "164.92.175.30"; // TODO get from order
+    //connectData["node_ip"] = "164.92.175.30"; // TODO get from order
     jObject["start_connect_by_order"] = connectData;
     sendCmd(&jObject);
 }
