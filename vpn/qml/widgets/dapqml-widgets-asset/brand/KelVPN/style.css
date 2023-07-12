@@ -319,6 +319,11 @@
     qproperty-scaledPixmap: "@separator-right";
 }
 
+.sep-color
+{
+    color: "@separator-color";
+}
+
 
 
 .push-button

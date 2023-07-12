@@ -131,7 +131,7 @@ Item {
 
     DapQmlSeparator {
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 1
+        anchors.bottomMargin: 2
         width: root.width
         visible: root.separator
     }
