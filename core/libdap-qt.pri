@@ -11,6 +11,8 @@ SOURCES += \
     $$PWD/DapLogHandler.cpp \
     $$PWD/DapNetworkAccessManager.cpp \
     $$PWD/DapNetworkReply.cpp \
+    $$PWD/DapNode.cpp \
+    $$PWD/DapNodeWeb3.cpp \
     $$PWD/DapPluginsPathControll.cpp \
     $$PWD/DapSerialKeyData.cpp \
     $$PWD/DapSerialKeyHistory.cpp \
@@ -40,6 +42,8 @@ HEADERS += \
     $$PWD/DapLogHandler.h \
     $$PWD/DapNetworkAccessManager.h \
     $$PWD/DapNetworkReply.h \
+    $$PWD/DapNode.h \
+    $$PWD/DapNodeWeb3.h \
     $$PWD/DapPluginsPathControll.h \
     $$PWD/DapSerialKeyData.h \
     $$PWD/DapSerialKeyHistory.h \
@@ -60,6 +64,7 @@ HEADERS += \
     $$PWD/DapSpeed.h \
     $$PWD/DapServersLocalStorage.h \
     $$PWD/DataToUpdate.h
+
 
 equals(BUILD_VARIANT, "GooglePlay") {
     SOURCES += $$PWD/DapShopManager.cpp

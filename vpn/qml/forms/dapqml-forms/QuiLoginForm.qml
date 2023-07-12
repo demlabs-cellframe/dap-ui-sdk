@@ -41,8 +41,11 @@ Item {
     enum Mode
     {
         M_SERIAL,
+//        use in RiseVPN
         M_PASSWORD,
-        M_CERT
+        M_CERT,
+//        use with 'cellfarameDetected'
+        M_WALLET
     }
 
     /// @}
@@ -67,6 +70,13 @@ Item {
 
         /// @brief login mode
         property int mode: QuiLoginForm.Mode.M_SERIAL
+
+        /// @brief kel cellframe dashdoard detected
+        property bool cellfarameDetected: false
+
+        /// @brief kel transaction processing for NoCBD
+        property bool transactionProcessing: false
+        property bool waitingForApproval: false
 
         /// @brief show password contents
         property bool showPassword: false
@@ -103,11 +113,20 @@ Item {
     /// @brief choose server button clicked
     signal sigChooseServer();
 
+    /// @brief search orders button clicked
+    signal sigSearchOrders()
+
     /// @brief choose certificate button clicked
     signal sigChooseCert();
 
     /// @brief enter serial key clicked
     signal sigChooseSerial();
+
+    /// @brief enter wallet key clicked
+    signal sigChooseWallet();
+
+    /// @brief enter maxprice key clicked
+    signal sigChooseMaxPrice
 
     /// @brief connection by serial requested
     signal sigConnectBySerial();
@@ -117,6 +136,11 @@ Item {
 
     /// @brief connection by certificate requested
     signal sigConnectByCert();
+
+    /// @brief connection by order requested
+    signal sigConnectByOrder();
+
+    signal sigStartCondTransation();
 
     /// @brief buy serial clicked
     signal sigObtainNewKey();
@@ -129,6 +153,10 @@ Item {
 
     /// @brief show server manager
     signal sigShowCdbManager();
+    /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    /// nocdb debug func, this feature should be removed
+    property bool debugNoCDB: true
+    signal sigDebugNoCDBMode();
 
     signal textEditedAndCleaned();
     signal textEditedAndFilledOut (string serial);
@@ -136,6 +164,7 @@ Item {
     signal textChangedAndCleaned();
     signal textChangedAndFilledOut (string serial);
 
+    signal walletSelected(bool selected);
     signal sigStartUpdate();
 
     /// @}
@@ -172,6 +201,50 @@ Item {
         btnChooseServer.updateServerName();
     }
 
+    function setOrderLocation(location ) {
+        btnChooseServer.mainText    = location;
+    }
+    function setOrderAddr(addr) {
+        btnChooseServer.subText     = addr;
+    }
+
+
+    /// @brief set wallet for noCBD
+    function setWallet(a_wallet) {
+        btnChooseWallet.mainText = a_wallet;
+        //internal.waitingForApproval = false
+    }
+
+    /// @brief set network|token for noCBD
+    function setNetworkAndToken(a_data){
+        btnChooseWallet.subText = a_data;
+    }
+
+    /// @brief set transaction processing flag for noCBD
+    function setTransactionProcessing(a_data){
+        console.log(`setTransactionProcessing ${a_data}`);
+        internal.transactionProcessing = true;
+        loginInfoLabel.text = "Transaction is in progress"
+//        if (a_data === true) {
+//            internal.transactionProcessing = a_data;
+//            //internal.waitingForApproval = false;
+//            loginInfoLabel.text = "Transaction is in progress"
+//            loginTypeKelContainer.update();
+//        } else {
+//            loginInfoLabel.text = "Transaction is in progress"
+//            internal.transactionProcessing = a_data;
+//            //internal.waitingForApproval = false;
+//        }
+    }
+
+    function setTransactionWalletNetwork(row2) {
+        transactionProcessingWalletData.text = row2
+    }
+
+    function setTransactionAmount(row3) {
+        transactionProcessingAmount.text = row3
+    }
+
 //    function setTickerMessage(a_message, a_url) {
 //        tickerLabel.text = a_message;
 //        ticker.tickerUrl = a_url;
@@ -185,6 +258,30 @@ Item {
     /// @brief set input mask for serial input
     function setupInputMask() {
         //btnEnterSerial.inputMask    = ">NNNN-NNNN-NNNN-NNNN;_"
+    }
+
+    /// @briefset found cellframe dashboard
+    function cellfarameDashboardDetected(detected) {
+        console.log(`cellfarameDashboardDetected ${detected}`);
+        internal.cellfarameDetected = detected && Brand.name() === "KelVPN";
+        if (internal.waitingForApproval)
+            loginInfoLabel.text = "Waiting for approval"
+        loginTypeKelContainer.update();
+    }
+
+    function setWaitingForApproval(approval) {
+        console.log(`setWaitingForApproval ${approval}`);
+        internal.waitingForApproval = approval
+        if (internal.waitingForApproval)
+            loginInfoLabel.text = "Waiting for approval"
+    }
+
+    function setWalletSeleted(selected)
+    {
+        if (!selected)
+            return
+        internal.mode = QuiLoginForm.Mode.M_WALLET;
+        loginTypeKelContainer.update();
     }
 
     function beginConnection() {
@@ -201,195 +298,6 @@ Item {
     }
 
     /// @}
-//    /****************************************//**
-//     * Ticker
-//     ********************************************/
-
-//    DapQmlRectangle {
-//        id: ticker
-//        objectName: "ticker"
-//        y: -1 * ticker.height
-//        qss: "ticker"
-//        width: root.width
-//        visible: false
-
-//        property string tickerUrl:   ""
-//        property bool tickerIsHidden: true
-
-//        Behavior on y { PropertyAnimation { duration: 100 }}
-
-//        onYChanged: updateNotificationRect._updatePos()
-
-//        function showTicker() {
-//            y = 0;
-//            tickerIsHidden = false;
-//        }
-
-//        function hideTicker() {
-//            y = -1 * ticker.height;
-//            ticker.tickerIsHidden = true;
-//        }
-
-//        function tickerClicked() {
-//            Qt.openUrlExternally(ticker.tickerUrl);
-//        }
-
-//        function _updateTickerAnim() {
-//            tickerAnimation.from    = tickerLableRect.width;
-//            tickerAnimation.to      = 0 - tickerLabel.contentWidth;
-//            tickerAnimation.running = true;
-//        }
-
-//        DapQmlRectangle {
-//            id: tickerLableRect
-//            objectName: "tickerLableRect"
-//            qss: "ticker-lable-rect"
-//            visible: true
-//            anchors.left: parent.left
-
-//            DapQmlLabel {
-//                id: tickerLabel
-//                objectName: "tickerLabel"
-//                width: contentWidth
-//                qss: "ticker-label"
-//                //text: tickerMessage
-//                z: 2
-//                horizontalAlign: Text.AlignHCenter
-//                mipmap: false
-
-//                onWidthChanged: ticker._updateTickerAnim()
-
-//                NumberAnimation  {
-//                    id: tickerAnimation
-//                    objectName: "tickerAnimation"
-//                    target: tickerLabel
-//                    properties: "x"
-//                    running: false
-//                    duration: 10000
-//                    loops: Animation.Infinite
-//                }
-//            }
-
-//            MouseArea {
-//                anchors.fill: tickerLableRect
-//                z : 3
-//                cursorShape: Qt.PointingHandCursor
-//                onClicked: ticker.tickerClicked()
-//            }
-
-//            DapQmlRectangle {
-//                id: tickerLabelBackgraund
-//                qss: "ticker-label-background"
-//                anchors.fill: parent
-//            }
-//        }
-
-//        DapQmlRectangle {
-//            id: tickerCloseRect
-//            qss: "ticker-close-rect"
-//            visible: true
-//            anchors.right: parent.right
-
-//            DapQmlPushButton {
-//                id: tickerCloseButton
-//                qss: "ticker-close-button"
-//                x: parent.width - width - y
-//                y: (parent.height - height) / 2
-//                z: 14
-
-//                onClicked: {
-//                    ticker.hideTicker()
-//                }
-//            }
-
-//            DapQmlRectangle {
-//                id: tickerCloseBackground
-//                qss: "ticker-label-background"
-//                anchors.fill: parent
-//            }
-//        }
-//    }
-
-//     /****************************************//**
-//      * Update notification
-//      ********************************************/
-
-//     DapQmlRectangle {
-//         id: updateNotificationRect
-//         qss: "update-notification-rect"
-//         y: hidden
-//            ? (ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y)
-//            : (ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y)
-//         z: 30
-//         radius: 13
-//         visible: true
-//         opacity: 0
-
-//         property bool hidden: false
-
-//         Behavior on y { PropertyAnimation { duration: 100 }}
-//         Behavior on opacity { PropertyAnimation { duration: 100 }}
-
-//         function showUpdateNotification() {
-//             hidden     = false;
-//             opacity    = 1;
-//             _updatePos();
-//         }
-
-//         function hideUpdateNotification() {
-//             hidden     = true;
-//             opacity    = 0;
-//             _updatePos();
-//         }
-
-//         function _updatePos() {
-//             y = hidden
-//                 ? (ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y)
-//                 : (ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y)
-//         }
-
-//         DapQmlDummy { id: updNotPosTickerOn;  qss: "update-notification-pos-ticker-on"  }
-//         DapQmlDummy { id: updNotPosTickerOff; qss: "update-notification-pos-ticker-off" }
-
-//         /* text */
-//         DapQmlLabel {
-//             id: updateNotificationLabel
-//             qss: "update-notification-label"
-//             text: "New version available"
-//             height: contentHeight
-//             width: contentWidth
-//             horizontalAlign: Text.AlignHCenter
-//         }
-
-//         /* close button */
-//         DapQmlPushButton {
-//             id: updateNotificationCloseButton
-//             x: parent.width - width - (y * 1.4)
-//             z: 14
-
-//             qss: "update-notification-close-button"
-
-//             onClicked: updateNotificationRect.hideUpdateNotification()
-//         }
-
-//         /* update button */
-//         DapQmlLabel {
-//             id: updateNotificationButton
-//             qss: "update-notification-button"
-//             text: "Update"
-//             height: contentHeight
-//             width: contentWidth
-//             horizontalAlign: Text.AlignHCenter
-
-//             MouseArea {
-//                 anchors.fill: updateNotificationButton
-//                 z : 3
-//                 cursorShape: Qt.PointingHandCursor
-//                 onClicked: root.sigStartUpdate()
-//             }
-//         }
-//    }
-
     /****************************************//**
      * Ticker & Update tools
      ********************************************/
@@ -423,7 +331,7 @@ Item {
     }
 
     /****************************************//**
-     * Login type select
+     * Login type select for RiseVPN
      ********************************************/
 
     Rectangle {
@@ -451,7 +359,11 @@ Item {
             id: tabSerial
             qss: "login-mode-btn-serial"
             checked:    internal.mode === QuiLoginForm.Mode.M_SERIAL
-            onClicked:  { internal.mode   = QuiLoginForm.Mode.M_SERIAL; loginTypeContainer.update(); }
+            onClicked:  {
+                internal.mode   = QuiLoginForm.Mode.M_SERIAL;
+                root.walletSelected(internal.mode === QuiLoginForm.Mode.M_WALLET);
+                loginTypeContainer.update();
+            }
         }
 
         DapQmlTabButton {
@@ -463,16 +375,63 @@ Item {
     }
 
     /****************************************//**
+     * KelVPN login type select for NoCBD (SERIAL, WALLET)
+     ********************************************/
+
+    Rectangle {
+        id: loginTypeKelContainer
+        width: root.width
+        color: "transparent"
+        clip: true
+        visible: Brand.name() === "KelVPN" && internal.cellfarameDetected
+        DapQmlStyle { item: loginTypeKelContainer; qss: "login-type-container" }
+//        Rectangle {
+//            color: "yellow"
+//            anchors.fill: parent
+//        }
+
+        function update() {
+            tabSerial1.checked = internal.mode === QuiLoginForm.Mode.M_SERIAL;
+            tabCell.checked    = internal.mode === QuiLoginForm.Mode.M_WALLET;
+        }
+
+        DapQmlTabButton {
+            id: tabSerial1
+            qss: "login-mode-btn-serial-nocbd"
+            checked:    internal.mode === QuiLoginForm.Mode.M_SERIAL
+            onClicked:  {
+                internal.mode = QuiLoginForm.Mode.M_SERIAL;
+                loginTypeKelContainer.update();
+                root.walletSelected(internal.mode === QuiLoginForm.Mode.M_WALLET);
+            }
+        }
+
+        DapQmlTabButton {
+//            Rectangle {
+//                color: "blue"
+//                anchors.fill: parent
+//            }
+            id: tabCell
+            qss: "login-mode-btn-nocbd"
+            checked:    internal.mode === QuiLoginForm.Mode.M_WALLET
+            onClicked:  { internal.mode = QuiLoginForm.Mode.M_WALLET;
+                loginTypeKelContainer.update();
+                root.walletSelected(internal.mode === QuiLoginForm.Mode.M_WALLET);
+            }
+        }
+    }
+
+    /****************************************//**
      * Top spacer
      ********************************************/
 
     DapQmlDummy {
         id: loginSpacer
         qss: (internal.mode === QuiLoginForm.Mode.M_CERT) ? "login-space-for2rows" : "login-space-for3rows"
-        Component.onCompleted: StyleDebugTree.describe (
-           "loginSpacer",
-            ["x", "y", "width", "height"],
-           this);
+//        Component.onCompleted: StyleDebugTree.describe (
+//           "loginSpacer",
+//            ["x", "y", "width", "height"],
+//           this);
     }
 
     /****************************************//**
@@ -510,57 +469,97 @@ Item {
         }
     }
 
+//    /****************************************//**
+//     * Top separator
+//     ********************************************/
+
+//    DapQmlRectangle {
+//        x: loginSepsPlacer.x
+//        y: loginSpacer.y + loginSepsPlacer.y
+//        width: loginSepsPlacer.width
+//        height: loginSepsPlacer.height
+//        DapQmlSeparator {
+//            x: (parent.width - width) / 2
+//            z: 15
+//            width: parent.width - 74
+//            qss: "login-separator"
+//        }
+//        DapQmlDummy {
+//            id: loginSepsPlacer
+//            qss:Brand.name() === "KelVPN" && internal.cellfarameDetected
+////               NoCBD mode
+//                 ? internal.mode === QuiLoginForm.Mode.M_WALLET
+////               wallet
+////                 ? "login-nocbd-wallet-separator-container"
+//                 ? "login-nocbd-skey-separator-container"
+////               serial login
+//                 : "login-nocbd-skey-separator-container"
+////               other
+//                 : "login-separator-container"
+//        }
+//    }
+
     /****************************************//**
-     * Top separator
+     * Choose wallet for NoCBD
      ********************************************/
 
+//=======
+//        x: loginSepsPlacer.x
+//        y: loginSpacer.y + loginSepsPlacer.y
+//        width: loginSepsPlacer.width
+//        height: loginSepsPlacer.height
+//        visible: root.internal.legacyStyle
+
+//        DapQmlSeparator {
+//            x: (parent.width - width) / 2
+//            z: 15
+//            width: parent.width - 74
+//            qss: "login-separator"
+//        }
+
+//        DapQmlDummy {
+//            id: loginSepsPlacer
+//            qss: "login-separator-container"
+//        }
+//    }
+
+//    /****************************************//**
+//     * Choose server
+//     ********************************************/
+
+//    DapQmlRectangle {
+//        x:      loginServerPlacer.x
+//        y:      loginSpacer.y + loginServerPlacer.y
+//        width:  loginServerPlacer.width
+//        height: loginServerPlacer.height
+//>>>>>>> refs/heads/release-7.7
+
     DapQmlRectangle {
-        x: loginSepsPlacer.x
-        y: loginSpacer.y + loginSepsPlacer.y
-        width: loginSepsPlacer.width
-        height: loginSepsPlacer.height
-        visible: root.internal.legacyStyle
-
-        DapQmlSeparator {
-            x: (parent.width - width) / 2
-            z: 15
-            width: parent.width - 74
-            qss: "login-separator"
-        }
-
-        DapQmlDummy {
-            id: loginSepsPlacer
-            qss: "login-separator-container"
-        }
-    }
-
-    /****************************************//**
-     * Choose server
-     ********************************************/
-
-    DapQmlRectangle {
-        x:      loginServerPlacer.x
-        y:      loginSpacer.y + loginServerPlacer.y
-        width:  loginServerPlacer.width
-        height: loginServerPlacer.height
+        x:      loginWalletPlacer.x
+        y:      loginSpacer.y + loginWalletPlacer.y
+        width:  loginWalletPlacer.width
+        height: loginWalletPlacer.height
+        visible: internal.cellfarameDetected && internal.mode === QuiLoginForm.Mode.M_WALLET
+                 && !(internal.transactionProcessing || internal.waitingForApproval)
 
         DapQmlButton {
-            id: btnChooseServer
+            id: btnChooseWallet
             x: (parent.width - width) / 2
             z: 15
-            width: parent.width - 74
+            width: parent.width
             property string defaultServerName: qsTr("Auto select") + lang.notifier
 
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
             mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
             subText: qsTr("CHOOSING SERVER") + lang.notifier
+//            qss: "login-btn-server-nocbd"
             qss: "login-btn-server"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
             separator: root.internal.legacyStyle
             frame: !root.internal.legacyStyle // true
             link: true
-            onClicked: root.sigChooseServer()
+            onClicked: root.sigChooseWallet()
 
             function updateServerName() {
                 mainText = (!internal.changedServer)
@@ -571,9 +570,167 @@ Item {
             onDefaultServerNameChanged: updateServerName()
         }
         DapQmlDummy {
-            id: loginServerPlacer
-            qss: "login-btn-server-container"
+            id: loginWalletPlacer
+            qss: "login-btn-wallet-container"
         }
+    }
+
+    /****************************************//**
+     * Choose MAX PRICE for NoCBD
+     ********************************************/
+
+//    DapQmlRectangle {
+//        id:     maxPrice
+//        x:      loginCellPlacer.x
+//        y:      loginSpacer.y + loginCellPlacer.y
+//        width:  loginCellPlacer.width
+//        height: loginCellPlacer.height
+//        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET
+//                 && internal.cellfarameDetected
+//                 && !internal.transactionProcessing && !internal.waitingForApproval
+
+//        DapQmlButton {
+//            id: btnChooseCell
+//            x: (parent.width - width) / 2
+//            z: 15
+//            width: parent.width - 74
+//            property string defaultServerName: qsTr("100") + lang.notifier
+
+//            buttonStyle: DapQmlButton.Style.TopMainBottomSub
+//            mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
+//            subText: qsTr("MAX PRICE") + lang.notifier
+//            qss: "login-btn-server-nocbd"
+//            mainQss: "login-btn-main"
+//            subQss: "login-btn-sub"
+//            separator: true
+//            link: true
+//            onClicked: root.sigChooseMaxPrice()
+
+//            function updateServerName() {
+//                mainText = (!internal.changedServer)
+//                        ? (defaultServerName)
+//                        : (internal.serverName)
+//            }
+
+//            onDefaultServerNameChanged: updateServerName()
+//        }
+//        DapQmlDummy {
+//            id: loginCellPlacer
+//            qss: "login-btn-maxprice-container"
+//        }
+//    }
+
+    /****************************************//**
+     * Choose server
+     ********************************************/
+
+    DapQmlRectangle {
+        x:      loginServerPlacer.x
+        y:      loginSpacer.y + loginServerPlacer.y
+        width:  loginServerPlacer.width
+        height: loginServerPlacer.height
+        visible: {
+            if (Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET) {
+                return internal.cellfarameDetected
+                        && (!internal.transactionProcessing && !internal.waitingForApproval)
+            }
+            else {
+                return true;
+            }
+        }
+
+        DapQmlButton {
+            id: btnChooseServer
+            x: (parent.width - width) / 2
+            z: 15
+            width: parent.width
+            property string defaultServerName: internal.mode !== QuiLoginForm.Mode.M_WALLET
+                                               ? qsTr("Auto select") + lang.notifier
+                                               : qsTr("Order") + lang.notifier
+            buttonStyle: DapQmlButton.Style.TopMainBottomSub
+            mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
+            subText: internal.mode !== QuiLoginForm.Mode.M_WALLET
+                     ? qsTr("CHOOSING SERVER") + lang.notifier
+                     : qsTr("SEARCH ORDERS") + lang.notifier
+            qss: internal.mode !== QuiLoginForm.Mode.M_WALLET
+//                 NoCBD mode
+//                 ? "login-btn-server"
+                 ? "login-btn-server"
+//                 serial login
+//                 : "login-btn-server-nocbd"
+                 : "login-btn-server"
+            mainQss: "login-btn-main"
+            subQss: "login-btn-sub"
+            frame: true
+            link: true
+            onClicked: internal.mode !== QuiLoginForm.Mode.M_WALLET
+                        ? root.sigChooseServer()
+                        : root.sigSearchOrders()
+
+            function updateServerName() {
+                mainText = (!internal.changedServer)
+                        ? (defaultServerName)
+                        : (internal.serverName)
+            }
+
+            onDefaultServerNameChanged: updateServerName()
+        }
+
+        DapQmlDummy {
+            id: loginServerPlacer
+            qss: {
+                if (Brand.name() === "KelVPN"
+                    && internal.cellfarameDetected)
+                {
+                    //if (internal.mode === QuiLoginForm.Mode.M_WALLET)
+                    //    return "login-btn-nocbd-wallet-server-container"
+                    return "login-btn-nocbd-skey-server-container"
+                }
+                else
+                    return "login-btn-server-container"
+            }
+
+//            qss: Brand.name() === "KelVPN" && internal.cellfarameDetected
+////               NoCBD mode
+//                 ? internal.mode === QuiLoginForm.Mode.M_WALLET
+////               wallet
+//                 //? "login-btn-nocbd-wallet-server-container"
+//                 ? "login-btn-nocbd-skey-server-container"
+////               serial login
+//                 : "login-btn-nocbd-skey-server-container"
+////               other
+//                 : "login-btn-server-container"
+
+        }
+    }
+    /****************************************//**
+     * Transaction processing label
+     ********************************************/
+    DapQmlLabel {
+        id: loginInfoLabel
+        qss: "login-transaction-processing-label-nocbd"
+        text: "<<< Message >>>"
+        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET
+                 && internal.cellfarameDetected
+                 && (internal.transactionProcessing || internal.waitingForApproval)
+    }
+    DapQmlLabel {
+        id: transactionProcessingWalletData
+        qss: "login-transaction-processing-wallet-data-label-nocbd"
+        text: "BackBone - WalletName"
+        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && internal.transactionProcessing
+    }
+    DapQmlLabel {
+        id: transactionProcessingAmount
+        qss: "login-transaction-processing-amount-label-nocbd"
+        text: "Amount: 100 CELL"
+        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && internal.transactionProcessing
+    }
+    DapQmlLabel {
+        id: transactionProcessingStatus
+        qss: "login-transaction-processing-status-label-nocbd"
+        text: "Current status: In mempool"
+        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && internal.transactionProcessing
     }
 
     /****************************************//**
@@ -587,19 +744,19 @@ Item {
         height: loginSerialPlacer.height
         visible: internal.mode === QuiLoginForm.Mode.M_SERIAL
 
+        Component.onCompleted: StyleDebugTree.describe (
+           "btnEnterSerialBox",
+            ["x", "y", "width", "height"],
+           this);
+
         DapQmlButton {
             id: btnEnterSerial
             objectName: "btnEnterSerial"
             property int maxCountChar: 19
             x: (parent.width - width) / 2
             z: 15
-            width: parent.width - 74
+            width: parent.width
             //height: parent.height
-
-//            Rectangle {
-//                color: "gray"
-//                anchors.fill: parent
-//            }
 
             buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
             mainText: ""
@@ -635,10 +792,24 @@ Item {
                 else
                     root.sigSerialFillingIncorrect();
             }
+
+            Component.onCompleted: StyleDebugTree.describe (
+               "btnEnterSerial",
+                ["x", "y", "width", "height"],
+               this);
         }
         DapQmlDummy {
             id: loginSerialPlacer
-            qss: "login-btn-serial-container"
+            qss: Brand.name() === "KelVPN" && internal.cellfarameDetected
+//                 NoCBD mode
+                 ? "login-btn-serial-container-nocbd"
+//                 serial login
+                 : "login-btn-serial-container"
+
+            Component.onCompleted: StyleDebugTree.describe (
+               "loginSerialPlacer",
+                ["x", "y", "width", "height", "qss"],
+               this);
         }
     }
 
@@ -658,7 +829,7 @@ Item {
             objectName: "btnEnterEmail"
             x: (parent.width - width) / 2
             z: 15
-            width: parent.width - 74
+            width: parent.width
 
             buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
             mainText: ""
@@ -688,7 +859,7 @@ Item {
             objectName: "btnEnterPassword"
             x: (parent.width - width) / 2
             z: 15
-            width: parent.width - 74
+            width: parent.width
 
             buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
             mainText: ""
@@ -746,7 +917,7 @@ Item {
             id: btnChooseCert
             x: (parent.width - width) / 2
             z: 15
-            width: parent.width - 74
+            width: parent.width
             property string defaultCertName: "Certificate 5" // qsTr() + lang.notifier
 
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
@@ -784,15 +955,33 @@ Item {
         id: btnConnect
         x: (parent.width - width) / 2
         z: 15
-        qss: "login-connect"
-
-        text: qsTr("CONNECT") + lang.notifier
-        onClicked: root.beginConnection()
-
-//        Component.onCompleted: StyleDebugTree.describe (
-//           "login-connect",
-//            ["x", "y", "width", "height"],
-//           this);
+        qss: Brand.name() === "KelVPN" && internal.cellfarameDetected
+//                 NoCBD mode
+             ? "login-connect-nocbd-mode push-button"
+//                 serial login
+             : "login-connect push-button"
+        text: Brand.name() === "KelVPN" && internal.cellfarameDetected
+        //                 NoCBD mode
+                     ? qsTr("CONTINUE") + lang.notifier
+        //                 serial login
+                     : qsTr("CONNECT") + lang.notifier
+        onClicked: {
+            if (internal.mode === QuiLoginForm.Mode.M_SERIAL)
+                root.sigConnectBySerial();
+            else
+            if (internal.mode === QuiLoginForm.Mode.M_PASSWORD)
+                root.sigConnectByPassword();
+            else
+            if (internal.mode === QuiLoginForm.Mode.M_CERT)
+                root.sigConnectByCert();
+            else
+            if (internal.mode === QuiLoginForm.Mode.M_WALLET) {
+                if (internal.transactionProcessing === false)
+                    root.sigStartCondTransation()
+                else
+                    root.sigConnectByOrder();
+            }
+        }
     }
 
     /****************************************//**
@@ -800,7 +989,11 @@ Item {
      ********************************************/
 
     DapQmlRectangle {
-        qss: "login-obtain-container"
+        qss: Brand.name() === "KelVPN" && internal.cellfarameDetected
+//                 NoCBD mode
+             ? "login-obtain-container-mocbd-mode"
+//                 serial login
+             : "login-obtain-container"
 
         DapQmlLabel {
             id: obtainLabel
@@ -839,10 +1032,18 @@ Item {
 //                (internal.mode === QuiLoginForm.Mode.M_SERIAL)
 //                       ? root.sigObtainNewKey()
 //                       : root.sigRecoverPassword()
+                /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                /// nocdb debug func, this feature should be removed
+                if (root.debugNoCDB) {
+                    print("nocdb debug func, this feature should be removed", root.debugNoCDB)
+                    root.sigDebugNoCDBMode();
+//                    return;
+                } else {
+
                 Brand.name() !== "RiseVPN"
                        ? root.sigObtainNewKey()
                        : root.sigShowCdbManager()
-            }
+            }}
 //          font.family: "Lato"
 //          font.pixelSize: 16
 //          font.weight: Font.Normal
