@@ -30,6 +30,7 @@ const QString TEXT_TX_OUT               = "tx_out";
 const QString COUNTRY_NAME              = "Country_code";
 const QString SETTING_AUTHORIZATION     = "authorization";
 const QString LAST_SELECTED_SERVER      = "lastSelectedServer";
+const QString SETTING_THEME             = "ColorTheme";
 const QString SETTING_ROUEXC_MODE       = "rouExcMode";
 
 class DapSerialKeyData;

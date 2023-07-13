@@ -1,5 +1,6 @@
 /* INCLUDES */
 #include "dapqmlseparatoritem.h"
+#include "dapqml-widgets/dapqmlstyle.h"
 #include "style/qssmap.h"
 
 #include <QPainter>
@@ -14,6 +15,9 @@ public:
   }
 };
 
+/* VARS */
+static DapQmlStyle *s_styleRedrawListener = nullptr;
+
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/
@@ -22,7 +26,10 @@ DapQmlSeparatorItem::DapQmlSeparatorItem (QQuickItem *a_parent)
   : QQuickPaintedItem (a_parent)
   , _root (nullptr)
 {
-
+  if (s_styleRedrawListener == nullptr)
+    s_styleRedrawListener = new DapQmlStyle;
+  connect (s_styleRedrawListener, &DapQmlStyle::redrawRequested,
+           this, [this] { update(); });
 }
 
 /********************************************
