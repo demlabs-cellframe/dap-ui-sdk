@@ -23,6 +23,9 @@
         <file compress="1">dapqml-forms/QuiCdbSwitchingForm.qml</file>
         <file compress="1">dapqml-forms/QuiCircleProgressBase.qml</file>
         <file compress="1">dapqml-forms/QuiUpdateProgress.qml</file>
-        <file>dapqml-forms/QuiFaqForm.qml</file>
+        <file compress="1">dapqml-forms/QuiFaqForm.qml</file>
+        <file compress="1">dapqml-forms/QuiRoutingExceptions.qml</file>
+        <file compress="1">dapqml-forms/tools/QuiToolTicker.qml</file>
+        <file compress="1">dapqml-forms/tools/QuiToolUpdateNotification.qml</file>
     </qresource>
 </RCC>

@@ -1,11 +1,8 @@
 /* INCLUDES */
 
 import QtQuick 2.0
-import DapQmlCountryModel 1.0
-import DapQmlCountrySortFilterProxyModel 1.0
-import PageCtl 1.0
 import DapQmlStyle 1.0
-import StyleDebugTree 1.0
+//import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -49,27 +46,16 @@ Item {
     /// @brief item clicked
     signal sigSelect(int index, string name);
 
+    /// @brief update filter string
+    signal sigFilterChanged(string a_filter);
+
     /// @}
     /****************************************//**
      * @name FUNCTIONS
      ********************************************/
     /// @{
 
-    function updateState() {
-        backTimer.start();
-    }
-
-    function updateChecks() {
-        countryModel.updateCheckedIndex();
-        setFocusTimer.start();
-    }
-
-    function countryExist() {
-        console.log("countryModel.countryExist();", countryModel.countryExist());
-        return countryModel.countryExist();
-    }
-
-    Component.onCompleted: updateChecks()
+    Component.onCompleted: setFocusTimer.start();
 
     /// @}
     /****************************************//**
@@ -78,18 +64,10 @@ Item {
 
     Timer {
         id: setFocusTimer
-        interval: 500
+        interval: 250
         running: false
         repeat: false
         onTriggered: {countryFilterLine.setFocus();}
-    }
-
-    Timer {
-        id: backTimer
-        interval: 30
-        running: false
-        repeat: false
-        onTriggered: PageCtl.slotBackwardAuto()
     }
 
     /****************************************//**
@@ -100,15 +78,6 @@ Item {
         id: title
         text: "Country"
         qss: "dialog-title"
-    }
-
-    /****************************************//**
-     * Model
-     ********************************************/
-
-//    DapQmlCountryModel {
-    DapQmlCountrySortFilterProxyModel{
-        id: countryModel
     }
 
     /****************************************//**
@@ -141,10 +110,10 @@ Item {
 
         property real innerSize: height * 0.875
 
-        Component.onCompleted: StyleDebugTree.describe (
-           "countryFilterField",
-            ["x", "y", "z", "width", "height"],
-           this);
+//        Component.onCompleted: StyleDebugTree.describe (
+//           "countryFilterField",
+//            ["x", "y", "z", "width", "height"],
+//           this);
 
         DapQmlLineEdit {
             id: countryFilterLine
@@ -161,16 +130,16 @@ Item {
             iconQss: "ic_country_filter"
             placeHolderText: "Search country"
 
-            Component.onCompleted: StyleDebugTree.describe (
-               "countryFilterLine",
-                ["x", "y", "z", "width", "height"],
-               this);
+//            Component.onCompleted: StyleDebugTree.describe (
+//               "countryFilterLine",
+//                ["x", "y", "z", "width", "height"],
+//               this);
 
             onTextChanged: {
-                countryModel.setRowFilter(mainText);
+                root.sigFilterChanged(mainText); // countryModel.setRowFilter(mainText);
             }
             onTextEdited: {
-                countryModel.setRowFilter(mainText);
+                root.sigFilterChanged(mainText); // countryModel.setRowFilter(mainText);
             }
         }
 
@@ -185,10 +154,10 @@ Item {
 
             qss: "ch-country-filter-clear"
 
-            Component.onCompleted: StyleDebugTree.describe (
-               "lineEditlIconRight",
-                ["x", "y", "z", "width", "height", "active", "inactive"],
-               this);
+//            Component.onCompleted: StyleDebugTree.describe (
+//               "lineEditlIconRight",
+//                ["x", "y", "z", "width", "height", "active", "inactive"],
+//               this);
 
             onClicked: {
                 countryFilterLine.mainText = "";
@@ -203,20 +172,19 @@ Item {
 
     ListView {
         id: csListView
+        objectName: "listview"
 
         x: (root.width - width) / 2
-        y: title.y + title.height * 2 + countryFilterField.height
-        width: resizer.width
-        height: root.height - y - noticeResizer.height - noticeSpacer.height
+//        y: title.y + title.height * 2 + countryFilterField.height
+//        width: resizer.width
+//        height: root.height - y - noticeResizer.height - noticeSpacer.height
         clip: true
 
-        model: countryModel
+        DapQmlStyle { qss: "ch-country-listview"; item: csListView }
 
         delegate: Item {
             width: resizer.width
             height: resizer.height + spacer.height
-            property string radioName: model.name
-            property bool checked: false
 
             DapQmlRadioButton {
                 text: model.name
@@ -228,13 +196,12 @@ Item {
                 y: spacer.height / 2
                 onClicked: {
                     root.sigSelect (model.index, model.name);
-                    csListView.currentIndex = model.index;
                 }
             }
         }
-        onCurrentIndexChanged: {
-            root.updateChecks();
-        }
+//        onCurrentIndexChanged: {
+//            root.updateChecks();
+//        }
     }
 
     /****************************************//**

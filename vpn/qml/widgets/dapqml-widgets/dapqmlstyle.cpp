@@ -195,19 +195,20 @@ void DapQmlStyle::_applyStyle()
   auto items  = DapStyle::QssMap::items (m_qss);
 
   /* cycle thru all items */
-  for (auto i = items.cbegin(), e = items.cend(); i != e; i++)
+  for (auto i = items.begin(), e = items.end(); i != e; i++)
     {
       /* ge item */
-      auto item = *i;
+      auto &item = *i;
 
       /* cycle thru all item properties */
-      for (auto it = item->cbegin(), en = item->cend(); it != en; it++)
+      for (auto it = item->begin(), en = item->end(); it != en; it++)
         {
           /* set scale */
           if (it.key() == "scaledRect" || it.key() == "scaledFont")
             {
               auto scaled  = it.value().value<DapStyle::Scaled> ();
-              scaled.adjust (m_item, s_screenWidth, s_screenHeight);
+              if (scaled.adjust (m_item, s_screenWidth, s_screenHeight))
+                *it = QVariant::fromValue (scaled);
               continue;
             }
 

@@ -9,6 +9,7 @@ import StyleDebugTree 1.0
 import DapQmlStyle 1.0
 import Brand 1.0
 import "qrc:/dapqml-widgets"
+import "qrc:/dapqml-forms/tools"
 
 /****************************************//**
  * @brief Login Form
@@ -62,6 +63,7 @@ Item {
         property bool changedCert:   false
         property string serverName: ""
         property string certName:   ""
+        property bool legacyStyle: Brand.name() !== "KelVPN"
 
         /// @brief login mode
         property int mode: QuiLoginForm.Mode.M_SERIAL
@@ -170,15 +172,15 @@ Item {
         btnChooseServer.updateServerName();
     }
 
-    function setTickerMessage(a_message, a_url) {
-        tickerLabel.text = a_message;
-        ticker.tickerUrl = a_url;
-        ticker.showTicker()
-    }
+//    function setTickerMessage(a_message, a_url) {
+//        tickerLabel.text = a_message;
+//        ticker.tickerUrl = a_url;
+//        ticker.showTicker()
+//    }
 
-    function showUpdateNotification(a_message) {
-        updateNotificationRect.showUpdateNotification()
-    }
+//    function showUpdateNotification(a_message) {
+//        updateNotificationRect.showUpdateNotification()
+//    }
 
     /// @brief set input mask for serial input
     function setupInputMask() {
@@ -199,212 +201,201 @@ Item {
     }
 
     /// @}
+//    /****************************************//**
+//     * Ticker
+//     ********************************************/
+
+//    DapQmlRectangle {
+//        id: ticker
+//        objectName: "ticker"
+//        y: -1 * ticker.height
+//        qss: "ticker"
+//        width: root.width
+//        visible: false
+
+//        property string tickerUrl:   ""
+//        property bool tickerIsHidden: true
+
+//        Behavior on y { PropertyAnimation { duration: 100 }}
+
+//        onYChanged: updateNotificationRect._updatePos()
+
+//        function showTicker() {
+//            y = 0;
+//            tickerIsHidden = false;
+//        }
+
+//        function hideTicker() {
+//            y = -1 * ticker.height;
+//            ticker.tickerIsHidden = true;
+//        }
+
+//        function tickerClicked() {
+//            Qt.openUrlExternally(ticker.tickerUrl);
+//        }
+
+//        function _updateTickerAnim() {
+//            tickerAnimation.from    = tickerLableRect.width;
+//            tickerAnimation.to      = 0 - tickerLabel.contentWidth;
+//            tickerAnimation.running = true;
+//        }
+
+//        DapQmlRectangle {
+//            id: tickerLableRect
+//            objectName: "tickerLableRect"
+//            qss: "ticker-lable-rect"
+//            visible: true
+//            anchors.left: parent.left
+
+//            DapQmlLabel {
+//                id: tickerLabel
+//                objectName: "tickerLabel"
+//                width: contentWidth
+//                qss: "ticker-label"
+//                //text: tickerMessage
+//                z: 2
+//                horizontalAlign: Text.AlignHCenter
+//                mipmap: false
+
+//                onWidthChanged: ticker._updateTickerAnim()
+
+//                NumberAnimation  {
+//                    id: tickerAnimation
+//                    objectName: "tickerAnimation"
+//                    target: tickerLabel
+//                    properties: "x"
+//                    running: false
+//                    duration: 10000
+//                    loops: Animation.Infinite
+//                }
+//            }
+
+//            MouseArea {
+//                anchors.fill: tickerLableRect
+//                z : 3
+//                cursorShape: Qt.PointingHandCursor
+//                onClicked: ticker.tickerClicked()
+//            }
+
+//            DapQmlRectangle {
+//                id: tickerLabelBackgraund
+//                qss: "ticker-label-background"
+//                anchors.fill: parent
+//            }
+//        }
+
+//        DapQmlRectangle {
+//            id: tickerCloseRect
+//            qss: "ticker-close-rect"
+//            visible: true
+//            anchors.right: parent.right
+
+//            DapQmlPushButton {
+//                id: tickerCloseButton
+//                qss: "ticker-close-button"
+//                x: parent.width - width - y
+//                y: (parent.height - height) / 2
+//                z: 14
+
+//                onClicked: {
+//                    ticker.hideTicker()
+//                }
+//            }
+
+//            DapQmlRectangle {
+//                id: tickerCloseBackground
+//                qss: "ticker-label-background"
+//                anchors.fill: parent
+//            }
+//        }
+//    }
+
+//     /****************************************//**
+//      * Update notification
+//      ********************************************/
+
+//     DapQmlRectangle {
+//         id: updateNotificationRect
+//         qss: "update-notification-rect"
+//         y: hidden
+//            ? (ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y)
+//            : (ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y)
+//         z: 30
+//         radius: 13
+//         visible: true
+//         opacity: 0
+
+//         property bool hidden: false
+
+//         Behavior on y { PropertyAnimation { duration: 100 }}
+//         Behavior on opacity { PropertyAnimation { duration: 100 }}
+
+//         function showUpdateNotification() {
+//             hidden     = false;
+//             opacity    = 1;
+//             _updatePos();
+//         }
+
+//         function hideUpdateNotification() {
+//             hidden     = true;
+//             opacity    = 0;
+//             _updatePos();
+//         }
+
+//         function _updatePos() {
+//             y = hidden
+//                 ? (ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y)
+//                 : (ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y)
+//         }
+
+//         DapQmlDummy { id: updNotPosTickerOn;  qss: "update-notification-pos-ticker-on"  }
+//         DapQmlDummy { id: updNotPosTickerOff; qss: "update-notification-pos-ticker-off" }
+
+//         /* text */
+//         DapQmlLabel {
+//             id: updateNotificationLabel
+//             qss: "update-notification-label"
+//             text: "New version available"
+//             height: contentHeight
+//             width: contentWidth
+//             horizontalAlign: Text.AlignHCenter
+//         }
+
+//         /* close button */
+//         DapQmlPushButton {
+//             id: updateNotificationCloseButton
+//             x: parent.width - width - (y * 1.4)
+//             z: 14
+
+//             qss: "update-notification-close-button"
+
+//             onClicked: updateNotificationRect.hideUpdateNotification()
+//         }
+
+//         /* update button */
+//         DapQmlLabel {
+//             id: updateNotificationButton
+//             qss: "update-notification-button"
+//             text: "Update"
+//             height: contentHeight
+//             width: contentWidth
+//             horizontalAlign: Text.AlignHCenter
+
+//             MouseArea {
+//                 anchors.fill: updateNotificationButton
+//                 z : 3
+//                 cursorShape: Qt.PointingHandCursor
+//                 onClicked: root.sigStartUpdate()
+//             }
+//         }
+//    }
+
     /****************************************//**
-     * Separator fix
+     * Ticker & Update tools
      ********************************************/
 
-    Timer {
-        interval: 500
-        running: true
-        repeat: false
-        onTriggered: {
-//            calcWidth                   = centerWidth();
-            btnChooseServer.separator   = false;
-            btnEnterSerial.separator    = false;
-            btnChooseServer.separator   = true;
-            btnEnterSerial.separator    = true;
-        }
-    }
-
-
-    /****************************************//**
-     * Ticker
-     ********************************************/
-
-    DapQmlRectangle {
-        id: ticker
-        objectName: "ticker"
-        y: -1 * ticker.height
-        qss: "ticker"
-        width: root.width
-        visible: false
-
-        property string tickerUrl:   ""
-        property bool tickerIsHidden: true
-
-        Behavior on y { PropertyAnimation { duration: 100 }}
-
-        onYChanged: updateNotificationRect._updatePos()
-
-        function showTicker() {
-            y = 0;
-            tickerIsHidden = false;
-        }
-
-        function hideTicker() {
-            y = -1 * ticker.height;
-            ticker.tickerIsHidden = true;
-        }
-
-        function tickerClicked() {
-            Qt.openUrlExternally(ticker.tickerUrl);
-        }
-
-        function _updateTickerAnim() {
-            tickerAnimation.from    = tickerLableRect.width;
-            tickerAnimation.to      = 0 - tickerLabel.contentWidth;
-            tickerAnimation.running = true;
-        }
-
-        DapQmlRectangle {
-            id: tickerLableRect
-            objectName: "tickerLableRect"
-            qss: "ticker-lable-rect"
-            visible: true
-            anchors.left: parent.left
-
-            DapQmlLabel {
-                id: tickerLabel
-                objectName: "tickerLabel"
-                width: contentWidth
-                qss: "ticker-label"
-                //text: tickerMessage
-                z: 2
-                horizontalAlign: Text.AlignHCenter
-                mipmap: false
-
-                onWidthChanged: ticker._updateTickerAnim()
-
-                NumberAnimation  {
-                    id: tickerAnimation
-                    objectName: "tickerAnimation"
-                    target: tickerLabel
-                    properties: "x"
-                    running: false
-                    duration: 10000
-                    loops: Animation.Infinite
-                }
-            }
-
-            MouseArea {
-                anchors.fill: tickerLableRect
-                z : 3
-                cursorShape: Qt.PointingHandCursor
-                onClicked: ticker.tickerClicked()
-            }
-
-            DapQmlRectangle {
-                id: tickerLabelBackgraund
-                qss: "ticker-label-background"
-                anchors.fill: parent
-            }
-        }
-
-        DapQmlRectangle {
-            id: tickerCloseRect
-            qss: "ticker-close-rect"
-            visible: true
-            anchors.right: parent.right
-
-            DapQmlPushButton {
-                id: tickerCloseButton
-                qss: "ticker-close-button"
-                x: parent.width - width - y
-                y: (parent.height - height) / 2
-                z: 14
-
-                onClicked: {
-                    ticker.hideTicker()
-                }
-            }
-
-            DapQmlRectangle {
-                id: tickerCloseBackground
-                qss: "ticker-label-background"
-                anchors.fill: parent
-            }
-        }
-    }
-
-     /****************************************//**
-      * Update notification
-      ********************************************/
-
-     DapQmlRectangle {
-         id: updateNotificationRect
-         qss: "update-notification-rect"
-         y: hidden
-            ? (ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y)
-            : (ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y)
-         z: 30
-         radius: 13
-         visible: true
-         opacity: 0
-
-         property bool hidden: false
-
-         Behavior on y { PropertyAnimation { duration: 100 }}
-         Behavior on opacity { PropertyAnimation { duration: 100 }}
-
-         function showUpdateNotification() {
-             hidden     = false;
-             opacity    = 1;
-             _updatePos();
-         }
-
-         function hideUpdateNotification() {
-             hidden     = true;
-             opacity    = 0;
-             _updatePos();
-         }
-
-         function _updatePos() {
-             y = hidden
-                 ? (ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y)
-                 : (ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y)
-         }
-
-         DapQmlDummy { id: updNotPosTickerOn;  qss: "update-notification-pos-ticker-on"  }
-         DapQmlDummy { id: updNotPosTickerOff; qss: "update-notification-pos-ticker-off" }
-
-         /* text */
-         DapQmlLabel {
-             id: updateNotificationLabel
-             qss: "update-notification-label"
-             text: "New version available"
-             height: contentHeight
-             width: contentWidth
-             horizontalAlign: Text.AlignHCenter
-         }
-
-         /* close button */
-         DapQmlPushButton {
-             id: updateNotificationCloseButton
-             x: parent.width - width - (y * 1.4)
-             z: 14
-
-             qss: "update-notification-close-button"
-
-             onClicked: updateNotificationRect.hideUpdateNotification()
-         }
-
-         /* update button */
-         DapQmlLabel {
-             id: updateNotificationButton
-             qss: "update-notification-button"
-             text: "Update"
-             height: contentHeight
-             width: contentWidth
-             horizontalAlign: Text.AlignHCenter
-
-             MouseArea {
-                 anchors.fill: updateNotificationButton
-                 z : 3
-                 cursorShape: Qt.PointingHandCursor
-                 onClicked: root.sigStartUpdate()
-             }
-         }
-    }
+    QuiToolTicker {}
+    QuiToolUpdateNotification {}
 
     /****************************************//**
      * Logo
@@ -510,7 +501,7 @@ Item {
                 : textLoginPass
 
         DapQmlDummy {
-            property var fontFamiliy
+            property string fontFamiliy
             property int fontSize
             property int fontWeight
             property color color
@@ -528,12 +519,15 @@ Item {
         y: loginSpacer.y + loginSepsPlacer.y
         width: loginSepsPlacer.width
         height: loginSepsPlacer.height
+        visible: root.internal.legacyStyle
+
         DapQmlSeparator {
             x: (parent.width - width) / 2
             z: 15
             width: parent.width - 74
             qss: "login-separator"
         }
+
         DapQmlDummy {
             id: loginSepsPlacer
             qss: "login-separator-container"
@@ -563,7 +557,8 @@ Item {
             qss: "login-btn-server"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            separator: true
+            separator: root.internal.legacyStyle
+            frame: !root.internal.legacyStyle // true
             link: true
             onClicked: root.sigChooseServer()
 
@@ -615,7 +610,8 @@ Item {
             placeHolderText: "____ ____ ____ ____"
             placeHolderQss: "login-btn-main"
             //inputMask: ">NNNN-NNNN-NNNN-NNNN;_"
-            separator: true
+            separator: root.internal.legacyStyle
+            frame: !root.internal.legacyStyle // true
 
             onClicked: root.sigChooseSerial()
             onTextAccepted: root.beginConnection()
@@ -670,8 +666,10 @@ Item {
             qss: "login-btn-email"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            separator: true
+            separator: root.internal.legacyStyle
+            frame: !root.internal.legacyStyle // true
         }
+
         DapQmlDummy {
             id: loginEmailPlacer
             qss: "login-btn-email-container"
@@ -701,7 +699,8 @@ Item {
             editEchoMode: (internal.showPassword)
                           ? TextInput.Normal
                           : TextInput.Password
-            separator: true
+            separator: root.internal.legacyStyle
+            frame: !root.internal.legacyStyle // true
         }
 
         Button {
@@ -725,6 +724,7 @@ Item {
 
             onCheckedChanged: internal.showPassword = checked
         }
+
         DapQmlDummy {
             id: loginPasswordPlacer
             qss: "login-btn-password-container"
@@ -755,7 +755,8 @@ Item {
             qss: "login-btn-cert"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            separator: true
+            separator: root.internal.legacyStyle
+            frame: !root.internal.legacyStyle // true
             link: true
             onClicked: root.sigChooseCert()
 

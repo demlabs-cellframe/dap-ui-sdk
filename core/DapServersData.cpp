@@ -1,3 +1,4 @@
+#include "DapServersData.h"
 #include "DapDataLocal.h"
 
 DapServersData::DapServersData()
@@ -16,7 +17,7 @@ void DapServersData::addServer(const DapServerInfo& dsi) {
     int row = m_servers.count();
     insertRows(row, 1);
     setData(index(row, 0), QVariant::fromValue(dsi));
-    m_locationInfo.addLocation(dsi.location);
+    m_locationInfo.addLocation(dsi.location());
     emit this->serverAdded(dsi);
 }
 
@@ -24,10 +25,12 @@ void DapServersData::addServer(const QString& location, const QString& name,
                           const QString & address, quint16 port)
 {
     DapServerInfo ss;
-    ss.name = name;
-    ss.location = location;
-    ss.address = address;
-    ss.port = port;
+
+    ss.setName (name);
+    ss.setLocation (location);
+    ss.setAddress (address);
+    ss.setPort (port);
+
     addServer (std::move(ss));
 }
 
@@ -49,14 +52,14 @@ void DapServersData::setCurrentServerNotSignal (int a_serverIndex)
 
 void DapServersData::setCurrentServer (const DapServerInfo *a_server)
 {
-    qDebug() << "Selecting the current server: " << (a_server ? a_server->name : "null");
+    qDebug() << "Selecting the current server: " << (a_server ? a_server->name() : "null");
 
     setCurrentServer (m_servers.lastIndexOf(*a_server));
 }
 
 void DapServersData::setCurrentServerFromService (const DapServerInfo *a_server)
 {
-    qDebug() << "Selecting the current server received from the service: " << (a_server ? a_server->name : "null");
+    qDebug() << "Selecting the current server received from the service: " << (a_server ? a_server->name() : "null");
 
     int index = -1;
     index = m_servers.lastIndexOf(*a_server);
@@ -76,7 +79,7 @@ void DapServersData::setCurrentServer(const QString &a_serverName)
 
     for (int i = 0; i < this->serversCount(); i++)
     {
-        if (m_servers.at(i).name == a_serverName)
+        if (m_servers.at(i).name() == a_serverName)
         {
             setCurrentServer(i);
             return;
@@ -97,7 +100,7 @@ bool DapServersData::_setCurrentServerByIndex(int a_serverIndex)
   Q_ASSERT (a_serverIndex >= 0 && a_serverIndex < m_servers.count());
 
   auto &targetServer  = m_servers[a_serverIndex];
-  if (m_currentServer.name == targetServer.name
+  if (m_currentServer.name() == targetServer.name()
       && m_currentServer == targetServer)
     return false;
 
@@ -132,12 +135,12 @@ void DapServersData::clearServerList()
 /// @return Server name.
 QString DapServersData::currentServerName() const
 {
-    return DapServersData::currentServer().name;
+    return DapServersData::currentServer().name();
 }
 
 QString DapServersData::currentServerAdress() const
 {
-    return DapServersData::currentServer().address;
+    return DapServersData::currentServer().address();
 }
 
 bool DapServersData::currentServerIsAuto() const
@@ -408,25 +411,25 @@ QVariant DapServersData::data(const QModelIndex &index, int role) const
     switch (role)
     {
         case Qt::DisplayRole:
-            return m_servers.at (index.row()).name;
+            return m_servers.at (index.row()).name();
 
         case COUTRY_FLAG_ROLE:
             {
                 auto si = m_servers.at (index.row());
-                if (si.name.isEmpty())
+                if (si.name().isEmpty())
                     return QString();
 
-                return findInCountriesMap (si.name.toUpper());
+                return findInCountriesMap (si.name().toUpper());
             }
 
         case CONNECTION_QUALITY:
-            return int (m_servers.at (index.row()).connection_quality);
+            return int (m_servers.at (index.row()).connQuality());
 
         case PING_ROLE:
-            return m_servers.at (index.row()).ping;
+            return m_servers.at (index.row()).ping();
 
         case ADDRESS_ROLE:
-            return m_servers.at (index.row()).address;
+            return m_servers.at (index.row()).address();
 
         default:
             break;

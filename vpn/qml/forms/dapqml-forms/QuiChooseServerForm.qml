@@ -49,6 +49,23 @@ Item {
 
     /// @}
     /****************************************//**
+     * @name FUNCTIONS
+     ********************************************/
+    /// @{
+
+    Timer {
+        interval: 500
+        running: true
+        repeat: false
+        onTriggered: {
+            let size = items.length;
+            for (let i = 0; i < size; i++)
+                items[i].hoverEnabled = true;
+        }
+    }
+
+    /// @}
+    /****************************************//**
      * Title
      ********************************************/
 
@@ -98,7 +115,7 @@ Item {
                 property int quality: model.connectionQuality + csListView.model.hookInt
 
                 text: model.name + csListView.model.hook
-                checked: model.checked + csListView.model.hookInt
+                checked: csListView.model.current === model.index //model.checked + csListView.model.hookInt
                 separator: true
                 iconSize: resizer.height
                 width: resizer.width
@@ -117,27 +134,32 @@ Item {
                     width: resizer.height * 0.5
                     height: resizer.height * 0.5
                     qss: `ic_conn-${quality}` + csListView.model.hook
+
                     ToolTip {
                         id: id_tooltip
-                        opacity : 0.70
-                        contentItem: Text{
-                            color: "#404040"
-                            text: (ping > -1) ? "ping " + ping + " ms" : "unavailable"
-                        }
+
                         background: Rectangle {
                             border.color: "#404040"
                         }
+
+                        contentItem: Text {
+                            color: "#404040"
+                            text: (ping > -1)
+                                  ? (`ping ${ping} ms` + csListView.model.hook)
+                                  : ("unavailable" + csListView.model.hook)
+                        }
                     }
+
                     MouseArea {
                         anchors.fill: parent
-                        hoverEnabled: true
+                        //hoverEnabled: true
                         onEntered: id_tooltip.visible = true
                         onExited: id_tooltip.visible = false
+                        Component.onCompleted: { items.push(this); }
                     }
                 }
 
                 onClicked: root.sigSelect (model.index, model.name)
-                Component.onCompleted: { items.push(this); }
             }
         }
     }

@@ -2,6 +2,8 @@
 
 import QtQuick 2.0
 import DapQmlStyle 1.0
+import DapQmlSwitchCtl 1.0
+import QtGraphicalEffects 1.12
 
 /****************************************//**
  * @brief Dap QML Switch Widget
@@ -27,7 +29,7 @@ Item {
     width: 270
     height: 174
 
-    opacity: 0.5
+    //opacity: 0.5
     enabled: false
 
     DapQmlStyle { id: style; qss: root.qss; item: root }
@@ -43,6 +45,13 @@ Item {
 
     /// @brief widget qss style
     property string qss
+
+    property alias ctl: ctl
+
+    DapQmlSwitchCtl {
+        id: ctl
+        draggingStartDistance: 8
+    }
 
     /// @}
     /****************************************//**
@@ -72,7 +81,7 @@ Item {
 
     function setEnable(value) {
         root.enabled = value;
-        root.opacity = (value)? 1.0: 0.5;
+        desaturateEffect.desaturation = 0.5 * (!value);
     }
 
     /// @brief change style based on checkbox state
@@ -92,48 +101,121 @@ Item {
     }
 
     onCheckedChanged: _setStyle()
+    Component.onCompleted: ctl.setRoot(this)
 
     /// @}
     /****************************************//**
-     * Background frame
+     * Content
      ********************************************/
 
-    DapQmlLabel {
-        id: bg
-        x: _centerHor(this)
-        y: _centerVer(this)
-        z: 0
-        width: root.width - 12 * (root.width / 270)
-        height: root.height - 36 * (root.height / 174)
-        qss: "switch-bg-off"
-
-        onClicked: toggle()
-    }
-
-    /****************************************//**
-     * Toggle
-     ********************************************/
-
-    DapQmlLabel {
-        id: tgl
-        x: (checked === false) ? (-12 * (root.width / 270)) : (root.width - width + 12 * (root.width / 270))
-        y: 0
-        z: 1
-        width: root.height
-        height: root.height
-        qss: "switch-toggle-off"
-
-        onClicked: toggle()
-        Behavior on x { PropertyAnimation { duration: 125; easing.type: Easing.InQuad } }
-    }
-
-    /****************************************//**
-     * Mouce area
-     ********************************************/
-
-    MouseArea {
+    Item {
+        id: content
         anchors.fill: parent
-        onClicked: toggle()
+        visible: false
+
+        /****************************************//**
+         * Background frame
+         ********************************************/
+
+        DapQmlLabel {
+            id: bg
+            x: _centerHor(this)
+            y: _centerVer(this)
+            z: 0
+            width: root.width - 12 * (root.width / 270)
+            height: root.height - 36 * (root.height / 174)
+            qss: "switch-bg-off"
+
+            Component.onCompleted: ctl.setBackground(this)
+            //onClicked: toggle()
+        }
+
+        /****************************************//**
+         * Toggle
+         ********************************************/
+
+        DapQmlLabel {
+            id: tgl
+            //x: (checked === false) ? (-12 * (root.width / 270)) : (root.width - width + 12 * (root.width / 270))
+            x: {
+                if (ctl.dragging)
+                {
+                    if (isLeftReached)
+                        return minPos;
+                    if (isRightReached)
+                        return maxPos;
+                    return draggingPos
+                }
+                return finalPos;
+            }
+
+            y: 0
+            z: 1
+            width: root.height
+            height: root.height
+            qss: "switch-toggle-off"
+
+            property real finalPos:         (checked === false) ? minPos : maxPos
+            property real draggingPos:      ctl.pos2 - (width / 2)
+            property real minPos:           (-12 * (root.width / 270))
+            property real maxPos:           (root.width - width + 12 * (root.width / 270))
+            property bool isLeftReached:    draggingPos <= minPos
+            property bool isRightReached:   draggingPos >= maxPos
+            property bool draggingState:    ctl.pos2 >= root.width / 2
+
+            Component.onCompleted: ctl.setToggle(this)
+            //onClicked: toggle()
+
+            Behavior on x {
+                PropertyAnimation {
+                    duration: ctl.draggingAnim ? 0 : 125
+                    easing.type: Easing.InQuad
+                    Component.onCompleted: ctl.setToggleAnimation(this)
+                }
+            }
+        }
+    }
+
+    /****************************************//**
+     * Saturation effect
+     ********************************************/
+
+    Desaturate {
+        id: desaturateEffect
+        anchors.fill: content
+        source: content
+        desaturation: root.enable ? 0 : 0.4
+    }
+
+    /****************************************//**
+     * Mouse area
+     ********************************************/
+
+//    MouseArea {
+//        anchors.fill: parent
+//        onClicked: toggle()
+//    }
+    MultiPointTouchArea {
+        id: draggingSpace
+        anchors.fill: parent
+        z: 10
+        touchPoints: [
+            TouchPoint {
+                id: point
+                //onXChanged: root.internal._move()
+                Component.onCompleted: ctl.setTouchingPoint(this)
+            }
+        ]
+        Component.onCompleted: ctl.setTouchArea(this)
+        //onPressed:  internal._begin() // console.log(`switch pressed`);
+        //onReleased: internal._end()   // console.log(`switch released`);
+
+//        Rectangle {
+//            width: 30; height: 30
+//            color: "green"
+//            x: point.x
+//            y: point.y
+//        }
     }
 }
 

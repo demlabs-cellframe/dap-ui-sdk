@@ -13,6 +13,7 @@
 	accent: "#00B5DB";
 	upload: "#0098CC";
 	grid: "#F4F7F9";
+    separator-color: "#E6E6E6";
 	switch-bg-on: 				"qrc:/light/switch/bg_on.png";
 	switch-bg-off: 				"qrc:/light/switch/bg_off.png";
 	switch-toggle-on: 			"qrc:/light/switch/toggle_on.png";
@@ -34,13 +35,15 @@
 	footer-statistics-active:   "qrc:/light/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/light/btn_account.png";
 	bugrep-bg: 					"qrc:/light/report_bg_border.png";
-        contact-bugrep-bg:          "qrc:/light/contact_report_bg_border.png";
+	bugrep-bg-75:               "qrc:/light/report_bg_border_75.png";
+	contact-bugrep-bg:          "qrc:/light/contact_report_bg_border.png";
 	login-logo: 				"qrc:/light/login-logo.png";
+	splash-logo:				"qrc:/light/logo.png";
 	btn-plus:                   "qrc:/light/ic_plus.png";
 	btn-close:                  "qrc:/light/ic_close.png";
-        btn-close-hover:            "qrc:/light/ic_close_hover.png";
-        btn-ticker-close:           "qrc:/light/ic_ticker_close.png";
-        btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
+	btn-close-hover:            "qrc:/light/ic_close_hover.png";
+	btn-ticker-close:           "qrc:/light/ic_ticker_close.png";
+	btn-ticker-close-hover:     "qrc:/light/ic_ticker_close_hover.png";
 }
 
 .@dark
@@ -54,6 +57,7 @@
 	accent: "#FF22A2";
 	upload: "#9F83FF";
 	grid: "#211F46";
+	separator-color: "#3F3F3F";
 	switch-bg-on: 				"qrc:/dark/switch/bg_on.png";
 	switch-bg-off: 				"qrc:/dark/switch/bg_off.png";
 	switch-toggle-on: 			"qrc:/dark/switch/toggle_on.png";
@@ -75,13 +79,15 @@
 	footer-statistics-active:   "qrc:/dark/btn_account_active.png";
 	footer-statistics-inactive: "qrc:/dark/btn_account.png";
 	bugrep-bg: 					"qrc:/dark/report_bg_border.png";
-        contact-bugrep-bg:          "qrc:/dark/contact_report_bg_border.png";
+	bugrep-bg-75:               "qrc:/dark/report_bg_border_75.png";
+	contact-bugrep-bg:          "qrc:/dark/contact_report_bg_border.png";
 	login-logo: 				"qrc:/dark/login-logo.png";
+	splash-logo:				"qrc:/dark/logo.png";
     btn-plus:                   "qrc:/dark/ic_plus.png";
 	btn-close:                  "qrc:/dark/ic_close.png";
-        btn-close-hover:            "qrc:/dark/ic_close_hover.png";
-        btn-ticker-close:           "qrc:/dark/ic_ticker_close.png";
-        btn-ticker-close-hover:     "qrc:/dark/ic_ticker_close_hover.png";
+	btn-close-hover:            "qrc:/dark/ic_close_hover.png";
+	btn-ticker-close:           "qrc:/dark/ic_ticker_close.png";
+	btn-ticker-close-hover:     "qrc:/dark/ic_ticker_close_hover.png";
 }
 
 /****************************************************
@@ -204,22 +210,23 @@
 
 
 
+.sep-rect {
+	scaled-rect: scaled(nan,nan,8,4,false);
+}
+
 .sep-left
 {
 	qproperty-scaledPixmap: "@separator-left";
-	scaled-rect: scaled(nan,nan,8,4,false);
 }
 
 .sep-mid
 {
 	qproperty-scaledPixmap: "@separator-mid";
-	scaled-rect: scaled(nan,nan,nan,4,false);
 }
 
 .sep-right
 {
 	qproperty-scaledPixmap: "@separator-right";
-	scaled-rect: scaled(nan,nan,8,4,false);
 }
 
 
@@ -240,6 +247,18 @@
 .radiobtn-spacer
 {
 	scaled-rect: scaled(nan,nan,392,20,false);
+}
+
+
+
+.null-size
+{
+	scaled-rect: scaled(nan,nan,0,0,false);
+}
+
+.null-pos
+{
+	scaled-rect: scaled(0,0,nan,nan,false);
 }
 
 /****************************************************
@@ -459,21 +478,39 @@
 	clip: false;
 }
 
-.popup-dalog-left
+.popup-dalog-left-button
 {
-	scaled-rect: scaled(11,nan,86,36,false,14);
+	scaled-rect: scaled(11,nan,86,36,false);
+	color: "@background";
+}
+
+.popup-dalog-left-label
+{
+	scaled-font: scaled(14);
 	color: "@text";
 }
 
-.popup-dalog-right
+.popup-dalog-right-button
 {
-	scaled-rect: scaled(183,nan,86,36,false,14);
+	scaled-rect: scaled(183,nan,86,36,false);
+	color: "@background";
+}
+
+.popup-dalog-right-label
+{
+	scaled-font: scaled(14);
 	color: "@brand";
 }
 
-.popup-dalog-middle
+.popup-dalog-middle-button
 {
-	scaled-rect: scaled(nan,nan,86,36,false,14);
+	scaled-rect: scaled(nan,nan,86,36,false);
+	color: "@background";
+}
+
+.popup-dalog-middle-label
+{
+	scaled-font: scaled(14);
 	color: "@brand";
 }
 
@@ -514,7 +551,7 @@
 .splash-logo
 {
 	scaled-rect: scaled(nan,240,276,76,true);
-	qproperty-scaledPixmap: "qrc:/logo.png";
+	qproperty-scaledPixmap: "@splash-logo";
 }
 
 .splash-status
@@ -646,6 +683,12 @@
 .login-space-for2rows
 {
     scaled-rect: scaled(nan,0,nan,nan,false);
+}
+
+.login-separator-color
+{
+    color: "@separator-color";
+    scaled-rect: scaled(nan,nan,nan,1,false);
 }
 
 /****************************************************
@@ -873,14 +916,24 @@
 	scaled-rect: scaled(nan,nan,316,120,false,16);
 }
 
+.bugrep-input-contact
+{
+	scaled-rect: scaled(32,150,364,80,false,16);
+}
+
+.bugrep-input-contact-content
+{
+	scaled-rect: scaled(nan,nan,332,44,false,16);
+}
+
 .bugrep-letter-counter
 {
-        scaled-rect: scaled(283,410,100,19,false,16);
+	scaled-rect: scaled(283,410,100,19,false,16);
 }
 
 .bugrep-attach-btn
 {
-        scaled-rect: scaled(19,450,390,20,false,16);
+	scaled-rect: scaled(19,450,390,20,false,16);
 	color: "#DA0B82";
 }
 
@@ -918,7 +971,12 @@
 
 .contact-bugrep-bg
 {
-        qproperty-scaledPixmap: "@contact-bugrep-bg";
+	qproperty-scaledPixmap: "@contact-bugrep-bg";
+}
+
+.bugrep-bg-75
+{
+	qproperty-scaledPixmap: "@bugrep-bg-75";
 }
 
 .bugrep-input-textarea
@@ -1133,7 +1191,7 @@
 
 .faq-close-btn
 {
-	scaled-rect: scaled(nan,nan,32,32,true);
+	scaled-rect: scaled(nan,nan,25,25,true);
     qproperty-inactive: "@btn-close";
     qproperty-active: "@btn-close";
 }
