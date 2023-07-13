@@ -619,8 +619,14 @@ Rectangle {
                 x: (parent.width - width) / 2
                 y: (parent.height - height) / 2
                 width: parent.width * 0.856741573
-                //height: 1
-                qss: "login-separator-color"
+                height: sepDummy.height < 1 ? 1 : sepDummy.height
+                color: sepDummy.color
+
+                DapQmlDummy {
+                    id: sepDummy
+                    qss: "login-separator-color"
+                    property color color;
+                }
             }
 
             /* sub text */

@@ -633,7 +633,7 @@
     color: "@text";
 */
     scaled-rect: scaled(24,nan,110,48,false);
-    color: "@light-grey";
+    color: "#F7F7F7";
     radius: 8;
 }
 
@@ -1574,7 +1574,7 @@
 
 .ph-label-notice
 {
-    color: "@label";
+    color: "@input-placeholder";
     scaled-font: scaled(16);    
 }
 
