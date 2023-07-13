@@ -103,6 +103,7 @@ public slots:
     void getMempoolTxHashRequest(QString transactionHash, QString networkName);
     void getLedgerTxHashRequest(QString transactionHash, QString networkName);
     void getOrdersListRequest(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
+    void nodeDumpRequest(QString networkName);
     void getNodeIPRequest(QString networkName, QString nodeAddr);
     void getFeeRequest(QString networkName);
 
@@ -127,6 +128,7 @@ private slots:
     void parseJsonError(const QString& replyData, int baseErrorCode);
     void parseNodeIp(const QString& replyData, int baseErrorCode);
     void parseFee(const QString& replyData, int baseErrorCode);
+    void parseNodeDump(const QString& replyData, int baseErrorCode);
     //
     void replyConnectError(int code);
 
@@ -145,6 +147,7 @@ signals:
     void sigNodeIp(QString nodeIp);
     void sigFee(QString fee);
     void connectionIdReceived(QString connectionId);
+    void sigNodeDump(QList<QMap<QString, QString>> nodeDump);
     void statusOk();
     void nodeDetected();
     void nodeNotDetected();

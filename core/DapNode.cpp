@@ -108,7 +108,7 @@ void DapNode::initStmTransitions()
     &m_stm->getOrderList);
     //&m_stm->nodeGetStatus);
     m_stm->initialState.addTransition(this, &DapNode::sigNodeIpRequest,
-    &m_stm->getNodeIp);
+    &m_stm->getNodeConnectionData);
 
     // node detection -> node detected
     m_stm->nodeDetection.addTransition(web3, &DapNodeWeb3::nodeDetected,
@@ -234,9 +234,9 @@ void DapNode::initStmTransitions()
     &m_stm->initialState);
 
     // getting node ip
-    m_stm->getNodeIp.addTransition(this, &DapNode::sigNodeIpReceived,
+    m_stm->getNodeConnectionData.addTransition(this, &DapNode::sigNodeDumpReceived,
     &m_stm->initialState);
-    m_stm->getNodeIp.addTransition(this, &DapNode::errorDetected,
+    m_stm->getNodeConnectionData.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
 
 }
@@ -343,8 +343,8 @@ void DapNode::initStmStates()
                     m_unit);
     });
 
-    connect(&m_stm->getNodeIp, &QState::entered, this, [=](){
-        web3->getNodeIPRequest(m_networkName, m_nodeAddress);
+    connect(&m_stm->getNodeConnectionData, &QState::entered, this, [=](){
+        web3->nodeDumpRequest(m_networkName);
     });
 }
 
@@ -408,11 +408,11 @@ void DapNode::initWeb3Connections()
         emit sigFeeReceived();
     });
     // connect to stream
-    connect(web3, &DapNodeWeb3::sigNodeIp, this, [=](QString nodeIp) {
-        qDebug() << "sigNodeIp" << nodeIp;
+    connect(web3, &DapNodeWeb3::sigNodeDump, this, [=](QList<QMap<QString, QString>> nodeDump) {
         m_netId = "0x000000000000dddd"; // riemann, use dap_chain_net_id_by_name() 
-        emit sigNodeIpReceived();
-        emit sigConnectByOrder(m_netId, m_transactionHash, m_tokenName, m_srvUid, nodeIp, m_nodePort);
+        m_nodeInfo.serverDataFromList(nodeDump);
+        emit sigNodeDumpReceived();
+        emit sigConnectByOrder(m_netId, m_transactionHash, m_tokenName, m_srvUid, m_nodeInfo.ipv4, m_nodeInfo.port);
     });
 
 }
@@ -475,6 +475,24 @@ void DapNode::start()
 void DapNode::slotNodeIpReqest(QString srvUid, QString nodeAddress)
 {
     m_srvUid = srvUid;
-    m_nodeAddress = nodeAddress;
+    m_nodeInfo.setNodeAddress(nodeAddress);
     emit sigNodeIpRequest();
+}
+
+bool NodeInfo::serverDataFromList(const QList<QMap<QString, QString>>& nodeDump)
+{
+    foreach (const auto item, nodeDump)
+    {
+        if (item["node address"] == address)
+        {
+            bool ok;
+            ipv4 = item["ipv4"];
+            port = item["port"].toInt(&ok);
+            if (ok)
+                return true;
+            else
+                return false;
+        }
+    }
+    return false;
 }

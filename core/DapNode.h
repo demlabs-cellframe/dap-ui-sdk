@@ -22,6 +22,18 @@
 #include <QStateMachine>
 #include <QState>
 
+class NodeInfo
+{
+public:
+    NodeInfo() {}
+    QString address;
+    uint16_t port;
+    QString ipv4;
+    void setNodeAddress(const QString& a_address) { address = a_address; }
+    bool serverDataFromList(const QList<QMap<QString, QString>>& nodeDump);
+};
+
+
 class NodeConnectStateMachine
 {
 public:
@@ -55,7 +67,7 @@ public:
     QState checkTransactionCertificate;
     QState createTransactionCertificate;
     QState getOrderList;
-    QState getNodeIp;
+    QState getNodeConnectionData;
 private:
     QStateMachine commandState;
     QStateMachine nodeConnectMachine;
@@ -84,7 +96,7 @@ private:
         nodeConnectMachine.addState(&checkTransactionCertificate);
         nodeConnectMachine.addState(&createTransactionCertificate);
         nodeConnectMachine.addState(&getOrderList);
-        nodeConnectMachine.addState(&getNodeIp);
+        nodeConnectMachine.addState(&getNodeConnectionData);
         nodeConnectMachine.setInitialState(&initialState);
         qDebug() << "nodeConnectMachine::init";
     }
@@ -122,10 +134,9 @@ private:
     QString m_minPrice;
     QString m_maxPrice;
     QString m_srvUid;
-    QString m_nodeAddress;
     QString m_netId;
     QString m_fee;
-    uint16_t m_nodePort = 80;
+    NodeInfo m_nodeInfo;
 
 public:
     static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
@@ -198,7 +209,7 @@ signals:
     void certificateExist();
     void certificateNotFound();
     void sigNodeIpRequest();
-    void sigNodeIpReceived();
+    void sigNodeDumpReceived();
     void sigFeeReceived();
 
 
