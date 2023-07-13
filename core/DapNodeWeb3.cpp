@@ -39,7 +39,9 @@ const QList<ReplyMethod> DapNodeWeb3::replyItems = {
     // get ip
     {"method=GetNodeIP",            &DapNodeWeb3::parseNodeIp,              nullptr, "Wrong reply when get node ip", 1200000},
     // get fee
-    {"method=GetFee",               &DapNodeWeb3::parseFee,                 nullptr, "Wrong reply when get node ip", 1200000},
+    {"method=GetFee",               &DapNodeWeb3::parseFee,                 nullptr, "Wrong reply when get fee", 1300000},
+    // node dump
+    {"method=NodeDump",             &DapNodeWeb3::parseNodeDump,            nullptr, "Wrong reply when get node dump", 1400000},
 };
 
 
@@ -294,6 +296,16 @@ void DapNodeWeb3::getFeeRequest(QString networkName)
             .arg(networkName);
     sendRequest(requesString);
 }
+
+void DapNodeWeb3::nodeDumpRequest(QString networkName)
+{
+    QString requesString = QString("?method=NodeDump&"
+                "id=%1&net=%2")
+            .arg(m_connectId)
+            .arg(networkName);
+    sendRequest(requesString);
+}
+
 
 void DapNodeWeb3::parseReplyStatus(const QString& replyData, int baseErrorCode)
 {
@@ -646,6 +658,48 @@ void DapNodeWeb3::parseFee(const QString& replyData, int baseErrorCode)
         emit sigFee(doc["data"].toObject()["network fee"].toObject()["fee coins"].toString());
     }
 }
+
+void DapNodeWeb3::parseNodeDump(const QString& replyData, int baseErrorCode)
+{
+//    {
+//        "data": [
+//            {
+//                "cell": "0x0000000000000000",
+//                "ipv4": "70.34.245.106",
+//                "node address": "DDDD::0000::0000::0001",
+//                "number of links": "0",
+//                "port": "8079"
+//            },
+//            {
+//                "cell": "0x0000000000000000",
+//                "ipv4": "146.185.162.8",
+//                "node address": "DDDD::0000::0000::0002",
+//                "number of links": "0",
+//                "port": "8079"
+//            },
+//            ...
+//        ],
+//    "errorMsg": "",
+//    "status": "ok"
+//    }
+    parseJsonError(replyData.toUtf8(), baseErrorCode);
+    if (jsonError())
+        return;
+    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+    if (doc["data"].isArray())
+    {
+        QList<QMap<QString, QString>> nodeDump;
+        foreach (const auto& nodeJo, doc["data"].toArray())
+        {
+            QMap<QString, QString> itemDump;
+            foreach (const QString& key, nodeJo.toObject().keys())
+                itemDump[key] = nodeJo[key].toString();
+            nodeDump.append(itemDump);
+        }
+        emit sigNodeDump(nodeDump);
+    }
+}
+
 
 void DapNodeWeb3::parseJsonError(const QString& replyData, int baseErrorCode)
 {
