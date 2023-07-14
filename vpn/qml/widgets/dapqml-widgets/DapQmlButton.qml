@@ -251,14 +251,16 @@ Rectangle {
 
     DapQmlCheckbox {
         id: checkboxItem
-        x: root.width - width + (width * 0.2)
+        x: root.width - width
         y: (root.height - height) / 2 - (height * 0.05)
         z: 1
-        width: root.height
+        width: root.height * 1.735
         height: root.height
-        iconSize: root.height
+        iconSize: root.height * 0.5875
         visible: root.checkbox
         checked: root.checked
+        switchMode: true
+        clip: false
         qss: "btn-checkbox"
 //        onToggled: {
 //            //root.checked    = a_state;

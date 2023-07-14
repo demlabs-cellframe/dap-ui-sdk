@@ -32,6 +32,8 @@
     checkbox-off:               "qrc:/light/check_btn_off.png";
     radio-on:                   "qrc:/light/radio_btn_on.png";
     radio-off:                  "qrc:/light/radio_btn_off.png";
+    checkbox-switch-on:         "qrc:/light/ckeckbox-on.png";
+    checkbox-switch-off:        "qrc:/light/ckeckbox-off.png";
     separator-left:             "qrc:/light/separator_left.png";
     separator-mid:              "qrc:/light/separator_mid.png";
     separator-right:            "qrc:/light/separator_right.png";
@@ -108,6 +110,8 @@
     checkbox-off:               "qrc:/dark/check_btn_off.png";
     radio-on:                   "qrc:/dark/radio_btn_on.png";
     radio-off:                  "qrc:/dark/radio_btn_off.png";
+    checkbox-switch-on:         "qrc:/dark/ckeckbox-on.png";
+    checkbox-switch-off:        "qrc:/dark/ckeckbox-off.png";
     separator-left:             "qrc:/dark/separator_left.png";
     separator-mid:              "qrc:/dark/separator_mid.png";
     separator-right:            "qrc:/dark/separator_right.png";
@@ -246,6 +250,11 @@
     qproperty-scaledPixmap: "@button-arrow";
 }
 
+.btn-checkbox
+{
+    scaled-rect: scaled(nan,nan,58,33,true);
+}
+
 
 
 .checkbox-on
@@ -274,6 +283,17 @@
     scaled-font: scaled(16);    
     font-weight: Font.Normal;
 }
+
+.checkbox-switch-on
+{
+    qproperty-scaledPixmap: "@checkbox-switch-on";
+}
+
+.checkbox-switch-off
+{
+    qproperty-scaledPixmap: "@checkbox-switch-off";
+}
+
 
 
 
