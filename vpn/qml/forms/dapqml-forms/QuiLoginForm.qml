@@ -761,11 +761,34 @@ Item {
 
         /* retry button */
         DapQmlRectangle {
+            id: retryBtn
             qss: "login-transaction-processing-retry-button"
+
+            QtObject {
+                id: animationCtl
+                property Timer timer: Timer {
+                    interval: 500
+                    running: false
+                    repeat: false
+                    onTriggered: animationCtl.finish()
+                }
+
+                function start() {
+                    retryBtn.qss    = "c-brand";
+                    timer.start();
+                }
+
+                function finish() {
+                    retryBtn.qss    = "login-transaction-processing-retry-button";
+                }
+            }
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: root.sigRetryButtonClicked()
+                onClicked: {
+                    animationCtl.start();
+                    root.sigRetryButtonClicked();
+                }
             }
 
             DapQmlLabel {
