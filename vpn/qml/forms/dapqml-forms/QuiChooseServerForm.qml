@@ -115,7 +115,7 @@ Item {
                 separator: true
                 iconSize: resizer.height
                 width: resizer.width
-                height: resizer.height
+                height: resizer.height + spacer.height
                 y: spacer.height / 2
 
                 onHeightChanged: csListViewItem.collectLogMessage (`radio ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)

@@ -365,7 +365,7 @@
 
 .radiobtn-spacer
 {
-    scaled-rect: scaled(nan,nan,392,2,false);
+    scaled-rect: scaled(nan,nan,392,8,false);
 }
 
 .radiobtn-resizer-note
