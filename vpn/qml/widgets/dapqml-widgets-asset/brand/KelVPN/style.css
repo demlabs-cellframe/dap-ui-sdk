@@ -758,6 +758,12 @@
     color: "@error";
 }
 
+.login-transaction-processing-arc-animation
+{
+    scaled-rect: scaled(-1,260,60,60,true);
+    qproperty-color: "@brand";
+}
+
 .login-transaction-processing-label-nocbd
 {
     scaled-rect: scaled(45,331,327,57,false,22);
