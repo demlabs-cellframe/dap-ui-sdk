@@ -473,6 +473,9 @@ void DapSession::onAuthorize()
                         } else if (m_xmlStreamReader.name() == "tx_cond") {
                              m_cdbAuthTxCond = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvTxCond: " << m_cdbAuthTxCond;
+                        }else if (m_xmlStreamReader.name() == "max_price") {
+                            m_cdbMaxPrice = m_xmlStreamReader.readElementText();
+                           qDebug() << "m_srvMaxPrice: " << m_cdbMaxPrice;
                         } else {
                             qWarning() <<"Unknown element" << m_xmlStreamReader.readElementText();
                         }
@@ -571,6 +574,9 @@ void DapSession::onNewTxCond(){
                         } else if (m_xmlStreamReader.name() == "tx_cond") {
                              m_cdbAuthTxCond = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvTxCond: " << m_cdbAuthTxCond;
+                        } else if (m_xmlStreamReader.name() == "max_price") {
+                            m_cdbMaxPrice = m_xmlStreamReader.readElementText();
+                           qDebug() << "m_srvMaxPrice: " << m_cdbMaxPrice;
                         } else {
                             qWarning() <<"Unknown element" << m_xmlStreamReader.readElementText();
                         }
