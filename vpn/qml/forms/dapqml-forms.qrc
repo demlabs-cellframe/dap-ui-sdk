@@ -39,5 +39,6 @@
         <file compress="1">dapqml-forms/QuiRoutingExceptions.qml</file>
         <file compress="1">dapqml-forms/tools/QuiToolTicker.qml</file>
         <file compress="1">dapqml-forms/tools/QuiToolUpdateNotification.qml</file>
+        <file>dapqml-forms/QuiGenerateTrialKey.qml</file>
     </qresource>
 </RCC>

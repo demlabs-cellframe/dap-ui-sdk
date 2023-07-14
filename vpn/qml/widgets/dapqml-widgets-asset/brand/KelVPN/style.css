@@ -2143,3 +2143,47 @@
     scaled-font: scaled(16);
     color: "@input-placeholder";
 }
+
+
+/****************************************************
+ * Generate Trial Key
+ ***************************************************/
+
+.gentri-request-rect
+{
+    scaled-rect: scaled(nan,nan,-1,272,false);
+    radius: 24;
+}
+
+.gentri-title
+{
+    scaled-rect: scaled(nan,12,-1,32,false,20);
+    font-weight: Font.Bold;
+}
+
+.gentri-close-btn
+{
+    scaled-rect: scaled(nan,12,32,32,true);
+    qproperty-inactive: "@btn-update-notification-close";
+    qproperty-active: "@btn-update-notification-close-hover";
+}
+
+.gentri-action-rect
+{
+    scaled-rect: scaled(nan,nan,-1,120,false);
+}
+
+.gentri-action-separator
+{
+    scaled-rect: scaled(nan,nan,-1,2,false);
+}
+
+.gentri-action-btn
+{
+    scaled-rect: scaled(-1,20,374,80,true,16);
+}
+
+.gentri-gen-description
+{
+    scaled-rect: scaled(nan,68,-1,52,false,16);
+}
