@@ -260,6 +260,7 @@ Rectangle {
         visible: root.checkbox
         checked: root.checked
         switchMode: true
+        disableClicking: true
         clip: false
         qss: "btn-checkbox"
 //        onToggled: {

@@ -56,6 +56,9 @@ Rectangle {
     /// @brief show checkbox as switch
     property bool switchMode: false
 
+    /// @brief disable mouse area
+    property bool disableClicking: false
+
     /// @brief qss style
     property string qss
 
@@ -138,8 +141,9 @@ Rectangle {
 
     MouseArea {
         anchors.fill: root
+        enabled: !root.disableClicking
         z: 2
-        hoverEnabled: true
+        hoverEnabled: !root.disableClicking
         onEntered: root.internal.hovered = true
         onExited: root.internal.hovered = false
         onClicked: { root.toggle(); root.clicked(); }
