@@ -1,9 +1,10 @@
 /* INCLUDES */
 
-import QtQuick 2.4
+import QtQuick 2.11
 import QtQml 2.12
-import QtQuick.Controls 2.1
-import QtQuick.Layouts 1.3
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.12
+import QtQuick.Shapes 1.4
 import DapQmlSerialKeyInput 1.0
 import StyleDebugTree 1.0
 import DapQmlStyle 1.0
@@ -88,7 +89,7 @@ Item {
 //                : qsTr("Forgot your password?")
             return mode === QuiLoginForm.Mode.M_SERIAL
                 ? qsTr("Don't have a serial key?")
-                : qsTr("")
+                : qsTr("Don't have a serial key?")
 
         }
 
@@ -153,6 +154,10 @@ Item {
 
     /// @brief show server manager
     signal sigShowCdbManager();
+
+    /// @brief waiting approval retry button clicked
+    signal sigRetryButtonClicked();
+
     /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     /// nocdb debug func, this feature should be removed
     property bool debugNoCDB: true
@@ -706,32 +711,106 @@ Item {
     /****************************************//**
      * Transaction processing label
      ********************************************/
-    DapQmlLabel {
-        id: loginInfoLabel
-        qss: "login-transaction-processing-label-nocbd"
-        text: "<<< Message >>>"
+
+    Item {
+        anchors.fill: parent
         visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET
-                 && internal.cellfarameDetected
-                 && (internal.transactionProcessing || internal.waitingForApproval)
+
+        /* arc animation */
+        DapQmlRectangle {
+            id: progressCircle
+            visible: internal.cellfarameDetected
+                     && (internal.transactionProcessing || internal.waitingForApproval)
+            qss: "login-transaction-processing-arc-animation"
+
+            property string color
+            property int strokeWidth: 5
+
+            Shape {
+                id: loginInfoArcAnim
+                anchors.fill: parent
+                layer.enabled: true
+                layer.samples: 6
+
+                ShapePath {
+                    fillColor: "transparent"
+                    strokeColor: progressCircle.color
+                    strokeWidth: progressCircle.strokeWidth
+                    capStyle: ShapePath.FlatCap
+
+                    PathAngleArc {
+                        id: loginInfoArcPath
+                        centerX: loginInfoArcAnim.width / 2
+                        centerY: loginInfoArcAnim.height / 2
+                        radiusX: loginInfoArcAnim.width / 2 - progressCircle.strokeWidth / 2
+                        radiusY: loginInfoArcAnim.height / 2 - progressCircle.strokeWidth / 2
+                        startAngle: 90
+                        sweepAngle: 180
+
+                        NumberAnimation on startAngle {
+                            from: 0
+                            to: 360
+                            running: true
+                            loops: Animation.Infinite
+                            duration: 2000
+                        }
+                    }
+                }
+            }
+        }
+
+        /* retry button */
+        DapQmlRectangle {
+            qss: "login-transaction-processing-retry-button"
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: root.sigRetryButtonClicked()
+            }
+
+            DapQmlLabel {
+                anchors.centerIn: parent
+                disableClicking: true
+                width: contentWidth
+                height: contentHeight
+                qss: "c-label"
+                text: "Retry"
+            }
+        }
+
+        DapQmlLabel {
+            id: loginInfoLabel
+            qss: "login-transaction-processing-label-nocbd"
+            text: "<<< Message >>>"
+            visible: internal.cellfarameDetected
+                     && (internal.transactionProcessing || internal.waitingForApproval)
+        }
+
+        DapQmlLabel {
+            id: transactionProcessingWalletData
+            qss: "login-transaction-processing-wallet-data-label-nocbd"
+            text: "BackBone - WalletName"
+            visible: internal.cellfarameDetected
+                     && internal.transactionProcessing
+        }
+
+        DapQmlLabel {
+            id: transactionProcessingAmount
+            qss: "login-transaction-processing-amount-label-nocbd"
+            text: "Amount: 100 CELL"
+            visible: internal.cellfarameDetected
+                     && internal.transactionProcessing
+        }
+
+        DapQmlLabel {
+            id: transactionProcessingStatus
+            qss: "login-transaction-processing-status-label-nocbd"
+            text: "Current status: In mempool"
+            visible: internal.cellfarameDetected
+                     && internal.transactionProcessing
+        }
     }
-    DapQmlLabel {
-        id: transactionProcessingWalletData
-        qss: "login-transaction-processing-wallet-data-label-nocbd"
-        text: "BackBone - WalletName"
-        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && internal.transactionProcessing
-    }
-    DapQmlLabel {
-        id: transactionProcessingAmount
-        qss: "login-transaction-processing-amount-label-nocbd"
-        text: "Amount: 100 CELL"
-        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && internal.transactionProcessing
-    }
-    DapQmlLabel {
-        id: transactionProcessingStatus
-        qss: "login-transaction-processing-status-label-nocbd"
-        text: "Current status: In mempool"
-        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && internal.transactionProcessing
-    }
+
 
     /****************************************//**
      * Enter serial

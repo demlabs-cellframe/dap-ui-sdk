@@ -758,6 +758,19 @@
     color: "@error";
 }
 
+.login-transaction-processing-arc-animation
+{
+    scaled-rect: scaled(-1,260,60,60,true);
+    qproperty-color: "@brand";
+}
+
+.login-transaction-processing-retry-button
+{
+    scaled-rect: scaled(-1,400,188,48,false);
+    color: "@sett-hover-background";
+    radius: 8;
+}
+
 .login-transaction-processing-label-nocbd
 {
     scaled-rect: scaled(45,331,327,57,false,22);
