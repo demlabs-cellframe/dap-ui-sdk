@@ -89,7 +89,7 @@ Item {
 //                : qsTr("Forgot your password?")
             return mode === QuiLoginForm.Mode.M_SERIAL
                 ? qsTr("Don't have a serial key?")
-                : qsTr("")
+                : qsTr("Don't have a serial key?")
 
         }
 
@@ -154,6 +154,10 @@ Item {
 
     /// @brief show server manager
     signal sigShowCdbManager();
+
+    /// @brief waiting approval retry button clicked
+    signal sigRetryButtonClicked();
+
     /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     /// nocdb debug func, this feature should be removed
     property bool debugNoCDB: true
@@ -752,6 +756,25 @@ Item {
                         }
                     }
                 }
+            }
+        }
+
+        /* retry button */
+        DapQmlRectangle {
+            qss: "login-transaction-processing-retry-button"
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: root.sigRetryButtonClicked()
+            }
+
+            DapQmlLabel {
+                anchors.centerIn: parent
+                disableClicking: true
+                width: contentWidth
+                height: contentHeight
+                qss: "c-label"
+                text: "Retry"
             }
         }
 
