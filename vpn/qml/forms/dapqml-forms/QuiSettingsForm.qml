@@ -213,6 +213,7 @@ Item {
                 DapQmlButton {
                     property int myIndex: model.index
                     property string myText: model.textMain + settingsModel.notifier // + testText
+                    property bool preventDoubleExec: false
 
                     visible: model.sid !== QuiSettingsForm.StyleId.SI_TITLE
                     x: (parent.width - width) / 2
@@ -239,9 +240,17 @@ Item {
                     mouseArea.onExited:  delegate.hovered   = false
 
                     function buttonClicked(a_isButtonSignal) {
+                        if (preventDoubleExec)
+                            return;
+
+                        preventDoubleExec   = true;
+
                         if(a_isButtonSignal === false)
                             clicked();
+
                         settingsModel.exec (myIndex, this);
+
+                        preventDoubleExec   = false;
                     }
 
                     onClicked: buttonClicked(true)
