@@ -78,7 +78,7 @@ public:
     const QString& cdbAuthTxCond(){ return  m_cdbAuthTxCond; }
     const QString& cdbAuthNet(){ return  m_cdbAuthNet; }
     const QString& cdbAuthToken(){ return  m_cdbAuthToken; }
-
+    const QString& cdbMaxPrice(){return m_cdbMaxPrice;}
 
     QList<QString> usersNames()          { return m_userInform.keys();     }
     const QString userInfo
@@ -122,7 +122,7 @@ protected:
 
     // Net service fields
 
-    QString m_cdbAuthTxCond, m_cdbAuthNet, m_cdbAuthToken;
+    QString m_cdbAuthTxCond, m_cdbAuthNet, m_cdbAuthToken, m_cdbMaxPrice;
 
     DapNetworkReply * m_netEncryptReply;
     DapNetworkReply * m_netAuthorizeReply;
@@ -226,6 +226,7 @@ signals:
     void sigSerialKeyReseted(const QString&);
     void sigResetSerialKeyError(const int, const QString&);
     void sigNewTxReceived();
+    void sigNewTxError();
 #ifdef BUILD_VAR_GOOGLE
     Q_INVOKABLE void purchaseResponseReceived(const QJsonDocument& response);
     void purchaseError(const QString&);
