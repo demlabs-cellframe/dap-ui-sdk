@@ -106,6 +106,7 @@ public slots:
     void nodeDumpRequest(QString networkName);
     void getNodeIPRequest(QString networkName, QString nodeAddr);
     void getFeeRequest(QString networkName);
+    void getListKeysRequest(QString networkName);
 
 
 private slots:
@@ -129,6 +130,7 @@ private slots:
     void parseNodeIp(const QString& replyData, int baseErrorCode);
     void parseFee(const QString& replyData, int baseErrorCode);
     void parseNodeDump(const QString& replyData, int baseErrorCode);
+    void parseListKeys(const QString& replyData, int baseErrorCode);
     //
     void replyConnectError(int code);
 
@@ -148,6 +150,7 @@ signals:
     void sigFee(QString fee);
     void connectionIdReceived(QString connectionId);
     void sigNodeDump(QList<QMap<QString, QString>> nodeDump);
+    void sigListKeys(QList<QString> listKeys);
     void statusOk();
     void nodeDetected();
     void nodeNotDetected();
