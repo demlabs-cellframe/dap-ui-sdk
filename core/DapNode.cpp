@@ -413,12 +413,12 @@ void DapNode::initWeb3Connections()
     });
     // order list ready
     connect(web3, &DapNodeWeb3::sigOrderList, this, [=](QJsonArray ordersList) {
-        QJsonArray orders;
-        orderListFiltr(ordersList, orders, m_listKeys);
+        //QJsonArray orders;
+        //orderListFiltr(ordersList, orders, m_listKeys);
         emit sigOrderListReceived();
-        //emit sigOrderListReady(orders);
+        emit sigOrderListReady(ordersList); //emit sigOrderListReady(orders);
     });
-    connect(web3, &DapNodeWeb3::sigOrderList, this, &DapNode::sigOrderListReady);
+    //connect(web3, &DapNodeWeb3::sigOrderList, this, &DapNode::sigOrderListReady);
     // recieved fee
     connect(web3, &DapNodeWeb3::sigFee, this, [=](QString fee){
         m_fee = fee;

@@ -601,7 +601,7 @@ void DapNodeWeb3::parseOrderList(const QString& replyData, int baseErrorCode)
     //"errorMsg": "",
     //"status": "ok"
     //}
-//    DEBUGINFO << "orderListReply" << replyData;
+    DEBUGINFO << "orderListReply" << replyData;
     parseJsonError(replyData.toUtf8(), baseErrorCode);
     if (jsonError())
         return;
@@ -752,11 +752,9 @@ void DapNodeWeb3::parseListKeys(const QString& replyData, int baseErrorCode)
     QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
     if (doc["data"].isObject() && doc["data"].toObject()["keys"].isArray())
     {
-        DEBUGINFO << "sigListKeys---" << doc["data"].toObject()["keys"].isArray();
         QList<QString> listKeys;
         foreach (const auto& keyData, doc["data"].toObject()["keys"].toArray())
         {
-            DEBUGINFO << "sigListKeys-----" << keyData;
             if (keyData.toObject()["active"].toString() == QString("true"))
                 listKeys.append(keyData.toObject()["pKey hash"].toString());
         }

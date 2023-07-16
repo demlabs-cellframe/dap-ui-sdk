@@ -1111,18 +1111,10 @@ Item {
 //                (internal.mode === QuiLoginForm.Mode.M_SERIAL)
 //                       ? root.sigObtainNewKey()
 //                       : root.sigRecoverPassword()
-                /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                /// nocdb debug func, this feature should be removed
-                if (root.debugNoCDB) {
-                    print("nocdb debug func, this feature should be removed", root.debugNoCDB)
-                    root.sigDebugNoCDBMode();
-//                    return;
-                } else {
-
                 Brand.name() !== "RiseVPN"
                        ? root.sigObtainNewKey()
                        : root.sigShowCdbManager()
-            }}
+            }
 //          font.family: "Lato"
 //          font.pixelSize: 16
 //          font.weight: Font.Normal
