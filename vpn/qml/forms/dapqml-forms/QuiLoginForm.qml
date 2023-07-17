@@ -762,6 +762,8 @@ Item {
         /* retry button */
         DapQmlRectangle {
             id: retryBtn
+            visible: internal.cellfarameDetected
+                     && (internal.transactionProcessing || internal.waitingForApproval)
             qss: "login-transaction-processing-retry-button"
 
             QtObject {
