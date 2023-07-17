@@ -39,7 +39,7 @@ MouseArea
     propagateComposedEvents: true
     visible: scrollButtonVisible
 
-    Image
+    DapImageRender
     {
         id: dapScrollButtonImage
         anchors.fill: parent

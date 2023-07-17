@@ -90,13 +90,37 @@ Popup
                 color: currTheme.mainBackground
             }
 
+//            DropShadow
+//            {
+//                anchors.fill: parent
+//                source: contentCorner
+//                verticalOffset: 9
+//                samples: 13
+//                color: dapShadowColor
+//            }
+
             DropShadow
             {
-                anchors.fill: parent
+                anchors.fill: contentCorner
+                horizontalOffset: currTheme.hOffset
+                verticalOffset: currTheme.vOffset
+                radius: currTheme.radiusShadow
+                color: currTheme.shadowColor
                 source: contentCorner
-                verticalOffset: 9 
-                samples: 13 
-                color: dapShadowColor
+                samples: 10
+                cached: true
+            }
+
+            InnerShadow {
+                anchors.fill: contentCorner
+                horizontalOffset: 1
+                verticalOffset: 1
+                radius: 1
+                samples: 10
+                cached: true
+                color: "#524D64"
+                source: contentCorner
+                spread: 0
             }
         }
 
@@ -113,4 +137,3 @@ Popup
             frameVisible: false
         }
 }
-

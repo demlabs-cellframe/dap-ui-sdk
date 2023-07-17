@@ -1,4 +1,4 @@
-import QtQuick 2.4
+import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtGraphicalEffects 1.0
 
@@ -24,12 +24,16 @@ SpinBox {
 
     property real realValue: value / factor
 
+    property real editedValue: 1
+
     validator: DoubleValidator {
         bottom: Math.min(spinbox.from, spinbox.to)
         top:  Math.max(spinbox.from, spinbox.to)
     }
 
     textFromValue: function(value, locale) {
+        console.log("textFromValue realValue", realValue)
+        spinbox.editedValue = realValue
         return Number(value / factor).toLocaleString(locale, 'f', spinbox.decimals)
     }
 
@@ -40,7 +44,7 @@ SpinBox {
     contentItem:
         TextInput {
             z: 2
-            id:textInput
+            id: textInput
 
             anchors.top: spinbox.top
             anchors.bottom: spinbox.bottom
@@ -62,6 +66,16 @@ SpinBox {
 //            readOnly: true
             validator: spinbox.validator
             inputMethodHints: Qt.ImhFormattedNumbersOnly
+
+            onTextEdited:
+            {
+                var tempValue = Number.fromLocaleString(spinbox.locale, textInput.text)
+
+                if (tempValue >= realFrom && tempValue <= realTo)
+                    spinbox.editedValue = tempValue
+
+                console.log("onTextEdited editedValue", editedValue)
+            }
     }
 
     up.indicator: DapButton {

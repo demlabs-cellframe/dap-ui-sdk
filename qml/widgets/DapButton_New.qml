@@ -32,7 +32,7 @@ Button
                 text: qsTr(root.text)
             }
 
-            Image
+            DapImageRender
             {
                 id: iconSubcontroll
                 anchors.verticalCenter: parent.verticalCenter
