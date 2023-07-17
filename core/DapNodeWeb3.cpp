@@ -42,6 +42,8 @@ const QList<ReplyMethod> DapNodeWeb3::replyItems = {
     {"method=GetFee",               &DapNodeWeb3::parseFee,                 nullptr, "Wrong reply when get fee", 1300000},
     // node dump
     {"method=NodeDump",             &DapNodeWeb3::parseNodeDump,            nullptr, "Wrong reply when get node dump", 1400000},
+    // list of delegated keys on the network
+    {"method=GetListKeys",          &DapNodeWeb3::parseListKeys,            nullptr, "Wrong reply when get list of delegated keys", 1500000},
 };
 
 
@@ -300,6 +302,15 @@ void DapNodeWeb3::getFeeRequest(QString networkName)
 void DapNodeWeb3::nodeDumpRequest(QString networkName)
 {
     QString requesString = QString("?method=NodeDump&"
+                "id=%1&net=%2")
+            .arg(m_connectId)
+            .arg(networkName);
+    sendRequest(requesString);
+}
+
+void DapNodeWeb3::getListKeysRequest(QString networkName)
+{
+    QString requesString = QString("?method=GetListKeys&"
                 "id=%1&net=%2")
             .arg(m_connectId)
             .arg(networkName);
@@ -590,7 +601,7 @@ void DapNodeWeb3::parseOrderList(const QString& replyData, int baseErrorCode)
     //"errorMsg": "",
     //"status": "ok"
     //}
-//    DEBUGINFO << "orderListReply" << replyData;
+    DEBUGINFO << "orderListReply" << replyData;
     parseJsonError(replyData.toUtf8(), baseErrorCode);
     if (jsonError())
         return;
@@ -697,6 +708,58 @@ void DapNodeWeb3::parseNodeDump(const QString& replyData, int baseErrorCode)
             nodeDump.append(itemDump);
         }
         emit sigNodeDump(nodeDump);
+    }
+}
+
+void DapNodeWeb3::parseListKeys(const QString& replyData, int baseErrorCode)
+{
+//    {
+//        "data": {
+//            "inactive keys count": "0",
+//            "keys": [
+//                {
+//                    "active": "true",
+//                    "node addr": "DDDD::1234::0000::0000",
+//                    "pKey hash": "0xD719E3DE39D92998B7CFE7092AA16B53B619B6B093DA9D36B676402CE7AF24DE",
+//                    "stake value": "5.0",
+//                    "tx hash": "0x0000000000000000000000000000000000000000000000000000000000000000"
+//                },
+//                {
+//                    "active": "true",
+//                    "node addr": "DDDD::1234::0000::0001",
+//                    "pKey hash": "0x2376A46753161112DD67C81F3EC2DB93A9ED38C2342104FC77301AC65E31EE7C",
+//                    "stake value": "4.0",
+//                    "tx hash": "0x6F0612F0761950A3AD822365DFBAF955A2681B2BFEE3DEA5FC001401AAC906AF"
+//                },
+//                {
+//                    "active": "true",
+//                    "node addr": "DDDD::1234::0000::0002",
+//                    "pKey hash": "0x7AF94D9A0B3A97D92AD6A66EE6C20C450931946C5DFF695750CB7FF25CAEB1E5",
+//                    "stake value": "3.0",
+//                    "tx hash": "0x6AD3B465D338640D2E5E70D039F287D4EEF3A45AA8D1718D72011D4E08D6213F"
+//                }
+//            ],
+//            "minimum value for key delegating": "5.0 mtKEL",
+//            "total keys count": "3"
+//        },
+//        "errorMsg": "",
+//        "status": "ok"
+//    }
+    DEBUGINFO << "parseListKeys" << replyData;
+    parseJsonError(replyData.toUtf8(), baseErrorCode);
+    if (jsonError())
+        return;
+    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+    if (doc["data"].isObject() && doc["data"].toObject()["keys"].isArray())
+    {
+        QList<QString> listKeys;
+        foreach (const auto& keyData, doc["data"].toObject()["keys"].toArray())
+        {
+            if (keyData.toObject()["active"].toString() == QString("true"))
+                listKeys.append(keyData.toObject()["pKey hash"].toString());
+        }
+        DEBUGINFO << "sigListKeys" << listKeys;
+        emit sigListKeys(listKeys);
     }
 }
 

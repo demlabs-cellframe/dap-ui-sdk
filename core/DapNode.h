@@ -22,6 +22,8 @@
 #include <QStateMachine>
 #include <QState>
 
+void orderListFiltr(const QJsonArray& in, QJsonArray& out, QStringList keys);
+
 class NodeInfo
 {
 public:
@@ -66,6 +68,7 @@ public:
     QState createCertificate;
     QState checkTransactionCertificate;
     QState createTransactionCertificate;
+    QState getListKeys;
     QState getOrderList;
     QState getNodeConnectionData;
 private:
@@ -95,6 +98,7 @@ private:
         nodeConnectMachine.addState(&createCertificate);
         nodeConnectMachine.addState(&checkTransactionCertificate);
         nodeConnectMachine.addState(&createTransactionCertificate);
+        nodeConnectMachine.addState(&getListKeys);
         nodeConnectMachine.addState(&getOrderList);
         nodeConnectMachine.addState(&getNodeConnectionData);
         nodeConnectMachine.setInitialState(&initialState);
@@ -134,9 +138,9 @@ private:
     QString m_minPrice;
     QString m_maxPrice;
     QString m_srvUid;
-    QString m_netId;
     QString m_fee;
     NodeInfo m_nodeInfo;
+    QStringList m_listKeys;
 
 public:
     static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
@@ -184,7 +188,7 @@ signals:
     void sigMempoolContainHash();
     void sigLedgerContainHash();
     void sigCondTxCreateSuccess(QString hash);
-    void sigConnectByOrder(QString netId, QString txCondHash, QString token, QString srvUid, QString nodeIp, uint16_t port);
+    void sigConnectByOrder(QString networkName, QString txCondHash, QString token, QString srvUid, QString nodeIp, uint16_t port);
 
     // ------- internal signals --------
     void waitingCommand();
@@ -202,6 +206,7 @@ signals:
     void sigOrderListReceived();
     void networksReceived();
     void sigCondTxCreateRequest();
+    void sigListKeysReceived();
     void sigGetOrderListRequest();
     void walletListIsEmpty();
     void checkCertificate();
