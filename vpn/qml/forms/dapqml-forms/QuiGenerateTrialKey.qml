@@ -3,6 +3,7 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.0
+import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -29,6 +30,7 @@ Item {
 
     property QtObject internal: QtObject {
         property bool generated: false
+        property string key
     }
 
     /// @}
@@ -58,6 +60,7 @@ Item {
     function setKey(a_key) {
         root.internal.generated = true;
         actionButton.text       = qsTr("ACTIVATE");
+        root.internal.key       = a_key;
     }
 
     /// @}
@@ -80,7 +83,9 @@ Item {
         DapQmlLabel {
             z: 10
             qss: "gentri-title c-label"
-            text: qsTr("Generate trial key")
+            text: !root.internal.generated
+                  ? qsTr("Generate trial key")
+                  : qsTr("Serial key")
         }
 
         /****************************************//**
@@ -121,8 +126,36 @@ Item {
 
         DapQmlLabel {
             visible: !root.internal.generated
-            qss: "gentri-gen-description c-label"
+            qss: "gentri-gen-description"
             text: qsTr("This key give you all the functionalities of\nKelVPN for 3 days.");
+
+//            Component.onCompleted: StyleDebugTree.describe (
+//               "gentri-gen-description",
+//                ["x", "y", "width", "height", "visible", "color", "text"],
+//               this);
+        }
+
+        /****************************************//**
+         * Serial Key
+         ********************************************/
+
+        Item {
+            anchors.fill: parent
+            visible: root.internal.generated
+
+            /* key */
+            DapQmlLabel {
+                qss: "gentri-serkey-description"
+                text: root.internal.key
+            }
+
+            /* bottom label */
+            DapQmlLabel {
+                qss: "gentri-serkey-label"
+                text: qsTr("SERIAL KEY")
+            }
+
+            /* copy button */
         }
     }
 }
