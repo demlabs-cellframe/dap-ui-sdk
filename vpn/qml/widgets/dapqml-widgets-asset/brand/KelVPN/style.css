@@ -760,20 +760,20 @@
 
 .login-transaction-processing-arc-animation
 {
-    scaled-rect: scaled(-1,260,60,60,true);
+    scaled-rect: scaled(-1,310,40,40,true);
     qproperty-color: "@brand";
 }
 
 .login-transaction-processing-retry-button
 {
-    scaled-rect: scaled(-1,400,188,48,false);
+    scaled-rect: scaled(-1,420,188,48,false);
     color: "@sett-hover-background";
     radius: 8;
 }
 
 .login-transaction-processing-label-nocbd
 {
-    scaled-rect: scaled(45,331,327,57,false,22);
+    scaled-rect: scaled(45,350,327,70,false,20);
     color: "@text";
 }
 
