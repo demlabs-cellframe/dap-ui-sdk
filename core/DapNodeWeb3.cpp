@@ -95,7 +95,9 @@ void DapNodeWeb3::responseProcessing(const int error, const QString errorString,
     // node connection reply
     if (networkRequest.contains("method=GetNodeStatus"))
     {
+        DEBUGINFO  << "------------------aaa1------------";
         if (error == SIGERROR) {
+            DEBUGINFO  << "------------------aaa------------";
             // TODO check (error == SIGERROR) on other platforms (windows, android, ios)
             emit nodeNotDetected();
             return;
@@ -104,9 +106,11 @@ void DapNodeWeb3::responseProcessing(const int error, const QString errorString,
 
     for (int k = 0; k < replyItems.count(); k++)
     {
+        DEBUGINFO  << "------------------yyy1------------";
         auto* r = &replyItems[k];
         if (networkRequest.contains(r->request))
         {
+            DEBUGINFO  << "------------------yyy------------";
             responseParsing(error, errorString, httpFinished, r->baseErrorCode,
                             r->wrongReplyText, r->parseMethod, r->replyError);
             return;
@@ -151,20 +155,25 @@ void DapNodeWeb3::responseParsing(const int error,
 {
     if (error == QNetworkReply::NetworkError::NoError)
     {
+        DEBUGINFO << "---------------000000000000000";
         // no error reply
         auto reply = m_networkReply->getReplyData();
 //        qInfo() << "reply message: " << reply;
         // check reply message error
         if (reply.size() == 0) {
+            DEBUGINFO << "---------------000000022222200";
             replyError(baseErrorCode + 20000, messageReplyDataError);
             return;
         }
         // parse reply
-        if (parseMethod)
+        if (parseMethod) {
+            DEBUGINFO << "---------------000003333333000";
             (this->*parseMethod)(reply, baseErrorCode);
+        }
     }
     else
     {
+        DEBUGINFO << "---------------111111111111111";
         if (responceError)
             (this->*responceError)(error);
         if (httpFinished)
