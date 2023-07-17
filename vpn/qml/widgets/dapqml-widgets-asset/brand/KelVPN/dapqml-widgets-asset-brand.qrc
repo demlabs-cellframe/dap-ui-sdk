@@ -85,5 +85,9 @@
         <file compress="1">light/contact_report_bg_border.png</file>
         <file compress="1">light/report_bg_border_75.png</file>
         <file compress="1">light/rouexc-close.png</file>
+        <file>dark/ckeckbox-off.png</file>
+        <file>dark/ckeckbox-on.png</file>
+        <file>light/ckeckbox-off.png</file>
+        <file>light/ckeckbox-on.png</file>
     </qresource>
 </RCC>
