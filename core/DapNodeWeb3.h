@@ -64,7 +64,7 @@ private:
     // network request string
     QString m_networkRequest;
     //
-    bool m_parseJsonError;
+    bool m_parseJsonError = false;
 
 public:
     static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec

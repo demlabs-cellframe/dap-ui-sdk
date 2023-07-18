@@ -2,14 +2,14 @@
 #include "DapCmdNode.h"
 #include <QDebug>
 
-#define DEBUGINFO qDebug()<<"--->UiCMD<---"
+#define DEBUGINFO qDebug()<<" --->UiCMD<--- "
 
 // ui side
 
 
 void DapCmdNode::handleResult(const QJsonObject& params)
 {
-    DEBUGINFO << "status ok";
+    DEBUGINFO << __PRETTY_FUNCTION__ << " status OK";
     m_hasError = false;
     // wallets list
     if (params.value("wallets").isArray())
@@ -95,7 +95,8 @@ void DapCmdNode::handleError(int code, const QString& message)
 //        break;
 //    }
     m_hasError = true;
-    DEBUGINFO << "handleError" << message;
+    DEBUGINFO << __PRETTY_FUNCTION__ << " " + message;
+//    DEBUGINFO << "handleError" << message;
     QString errorMessage = message;
     int errorCode = code;
     emit nodeError(errorCode, errorMessage);
@@ -105,6 +106,7 @@ void DapCmdNode::handleError(int code, const QString& message)
 
 void DapCmdNode::startNodeDetection()
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject checkNode;
     checkNode["start_node_detection"] = true;
     sendCmd(&checkNode);
@@ -112,6 +114,7 @@ void DapCmdNode::startNodeDetection()
 
 void DapCmdNode::stopCheckNode()
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject checkNode;
     checkNode["start_node_detection"] = false;
     sendCmd(&checkNode);
@@ -119,6 +122,7 @@ void DapCmdNode::stopCheckNode()
 
 void DapCmdNode::noCdbModeRequest()
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject checkNode;
     checkNode["nocdb_mode_request"] = true;
     sendCmd(&checkNode);
@@ -126,6 +130,7 @@ void DapCmdNode::noCdbModeRequest()
 
 void DapCmdNode::condTxCreate()
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject condTx;
     condTx["wallet_name"] = m_selectedWalletName;
     condTx["network_name"] = m_selectedNetworkName;
@@ -140,6 +145,7 @@ void DapCmdNode::condTxCreate()
 
 void DapCmdNode::startSearchOrders()
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject searchOrders;
     qDebug() << "startSearchOrders" << m_selectedNetworkName << m_selectedTokenName << m_unit << m_minPrice << m_maxPrice;
     searchOrders["network_name"] = m_selectedNetworkName;
@@ -154,6 +160,7 @@ void DapCmdNode::startSearchOrders()
 
 void DapCmdNode::checkSigned()
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     qDebug() << "check signed";
     QJsonObject checkNode;
     checkNode["check_signed"] = true;
@@ -162,6 +169,7 @@ void DapCmdNode::checkSigned()
 
 void DapCmdNode::startConnectByOrder()
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject jObject;
     QJsonObject connectData = m_orderListData.orderInfo(m_orderHash);
     connectData["token"] = m_selectedTokenName;
@@ -172,6 +180,7 @@ void DapCmdNode::startConnectByOrder()
 
 void DapCmdNode::chooseWallet(QString wallet)
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     m_selectedWalletName = wallet;
     emit continueEnable(checkContinue());
     emit networksList(nodeInfo()->networkWithTokens(wallet));
@@ -179,6 +188,7 @@ void DapCmdNode::chooseWallet(QString wallet)
 
 void DapCmdNode::chooseNetwork(QString network)
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     m_selectedNetworkName = network;
     emit continueEnable(checkContinue());
     emit tokensInfo(nodeInfo()->tokensAmount(m_selectedWalletName, m_selectedNetworkName));
@@ -186,6 +196,7 @@ void DapCmdNode::chooseNetwork(QString network)
 
 void DapCmdNode::chooseToken(QString token)
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     m_selectedTokenName = token;
     auto tokens = nodeInfo()->tokensAmount(m_selectedWalletName, m_selectedNetworkName);
     emit continueEnable(checkContinue());
@@ -194,12 +205,14 @@ void DapCmdNode::chooseToken(QString token)
 
 void DapCmdNode::setValue(QString value)
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     m_value = value;
     emit continueEnable(checkContinue());
 }
 
 void DapCmdNode::setUnit(QString value)
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     m_unit = value;
     m_orderListData.setUnit(m_unit);
     emit continueEnable(checkContinue());
@@ -207,27 +220,32 @@ void DapCmdNode::setUnit(QString value)
 
 QStringList DapCmdNode::orderData(QString hash)
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     return m_orderListData.order(hash);
 }
 
 void DapCmdNode::chooseOrder(QString hash)
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     m_orderHash = hash;
     emit continueEnable(checkContinue());
 }
 
 void DapCmdNode::setMaxValueUnit(QString price)
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     m_maxPrice = price;
 }
 
 void DapCmdNode::setMinValueUnit(QString price)
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     m_minPrice = price;
 }
 
 bool DapCmdNode::checkContinue()
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     return  !m_selectedWalletName.isEmpty() &&
             !m_selectedNetworkName.isEmpty() &&
             !m_selectedTokenName.isEmpty() &&
