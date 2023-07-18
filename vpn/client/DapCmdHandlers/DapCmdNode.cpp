@@ -21,13 +21,14 @@ DapCmdNode::~DapCmdNode()
 
 void DapCmdNode::setNodeDetected()
 {
-    DEBUGINFO << "slot setNodeDetected";
+    DEBUGINFO << __PRETTY_FUNCTION__;
     m_nodeDetected = true;
     sendNodeDetected();
 }
 
 void DapCmdNode::sendNoCdbMode()
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject response;
     response["nocdb_mode"] = m_nocdbMode;
     sendCmd(&response);
@@ -35,6 +36,7 @@ void DapCmdNode::sendNoCdbMode()
 
 void DapCmdNode::sendNodeDetected()
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject response;
     response["node_detected"] = m_nodeDetected;
     sendCmd(&response);
@@ -42,6 +44,7 @@ void DapCmdNode::sendNodeDetected()
 
 void DapCmdNode::sendError(int code, const QString& messageError)
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject response;
     QJsonObject nodeInfo;
     nodeInfo["message"] = messageError;
@@ -52,6 +55,7 @@ void DapCmdNode::sendError(int code, const QString& messageError)
 
 void DapCmdNode::sendWalletsList(const QStringList& walletsList)
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject response;
     QJsonArray jsonWalletsList;
     jsonWalletsList.fromStringList(walletsList);
@@ -64,6 +68,7 @@ void DapCmdNode::sendWalletsList(const QStringList& walletsList)
 
 void DapCmdNode::sendNetworksList(const QStringList& walletsList)
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject response;
     QJsonArray jsonWalletsList;
     jsonWalletsList.fromStringList(walletsList);
@@ -76,6 +81,7 @@ void DapCmdNode::sendNetworksList(const QStringList& walletsList)
 
 void DapCmdNode::sendWalletsData(const QJsonObject& a_walletsData)
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject response;
     response["wallets_data"] = a_walletsData;
     sendCmd(&response);
@@ -84,6 +90,7 @@ void DapCmdNode::sendWalletsData(const QJsonObject& a_walletsData)
 
 void DapCmdNode::sendOrderList(const QJsonArray& orderList)
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject response;
     response["order_list"] = orderList;
     sendCmd(&response);
@@ -92,6 +99,7 @@ void DapCmdNode::sendOrderList(const QJsonArray& orderList)
 
 void DapCmdNode::sendTransactionInMempool()
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject response;
     response["transaction_hash_in_mempool"] = true;
     sendCmd(&response);
@@ -100,6 +108,7 @@ void DapCmdNode::sendTransactionInMempool()
 
 void DapCmdNode::sendTransactionInLedger()
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject response;
     response["transaction_hash_in_ledger"] = true;
     sendCmd(&response);
@@ -108,6 +117,7 @@ void DapCmdNode::sendTransactionInLedger()
 
 void DapCmdNode::sendSigningInfo(qint32 utype, qint64 uid, qint64 units, QString price)
 {
+    DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject response;
     QJsonObject info;
     info["utype"] = utype;
@@ -121,7 +131,7 @@ void DapCmdNode::sendSigningInfo(qint32 utype, qint64 uid, qint64 units, QString
 
 void DapCmdNode::handle(const QJsonObject* params)
 {
-    qDebug() << "--->DapCmdNode::handle<---" << params;
+    DEBUGINFO << __PRETTY_FUNCTION__ << params;
     if (params->value("start_node_detection").isBool() && params->value("start_node_detection").toBool())
         emit startNodeDetection();
     if (params->value("nocdb_mode_request").isBool())
