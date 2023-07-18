@@ -65,8 +65,8 @@ void DapCmdNode::handleResult(const QJsonObject& params)
     if (params.value("order_list").isArray())
     {
         DEBUGINFO << "order list";
-        m_orderListData.setData(params.value("order_list").toArray());
-        emit orderList(m_orderListData.orders());
+        m_orderListData.setData (params.value("order_list").toArray());
+        emit orderList (m_orderListData.orders());
         return;
     }
     if (params.value("signing_info").isObject())
@@ -251,4 +251,105 @@ bool DapCmdNode::checkContinue()
             !m_selectedTokenName.isEmpty() &&
             !m_value.isEmpty() &&
             !m_orderHash.isEmpty();
+}
+
+void OrderListData::setData(const QJsonArray &a_orderListData)
+{
+  m_orderListData = a_orderListData;
+  _updateListMap();
+}
+
+QMap<QString, QVariant> &OrderListData::orders()
+{
+  return m_orders;
+}
+
+void OrderListData::_updateListMap()
+{
+  //        foreach(const QJsonValue& item, m_orderListData)
+  //        {
+  //            QJsonObject joItem = item.toObject();
+  //            QString key = joItem["hash"].toString().right(10);
+  //            QStringList list;
+  //            if (joItem.contains("node_location")
+  ////                    && joItem.contains("node_addr")
+  ////                    && !joItem["node_addr"].toString().isEmpty()
+  //               )
+  //            {
+  //                list.push_back(joItem["node_location"].toString());
+  //                list.push_back(QString("%1%2 per %3").arg(joItem["price"].toString()).arg(m_unit).arg(joItem["price_unit"].toString()));
+  //                m_orders[key].setValue(list);
+  //                qDebug() << joItem;
+  //            }
+  //        }
+
+  for (const auto& item : qAsConst (m_orderListData))
+  {
+    QJsonObject joItem = item.toObject();
+    if (!joItem.contains("node_location")
+//        && !joItem.contains("node_addr")
+//        && joItem["node_addr"].toString().isEmpty()
+        )
+      continue;
+
+
+    QString key     = joItem.value ("hash").toString().right(10);
+    QString loc     = joItem.value ("node_location").toString();
+    QString price   = joItem.value ("price").toString();
+    QString punit   = joItem.value ("price_unit").toString();
+
+    QString result  = QString ("%1%2 per %3")
+        .arg (price, m_unit, punit);
+
+    m_orders[key].setValue (QStringList {std::move (loc), std::move (result)});
+
+    qDebug() << joItem;
+  }
+}
+
+void OrderListData::setUnit (const QString &unit)
+{
+  m_unit = unit;
+}
+
+QStringList OrderListData::order (const QString &hash)
+{
+  foreach(const QJsonValue& item, m_orderListData)
+  {
+    QJsonObject joItem = item.toObject();
+    QString key = joItem["hash"].toString().right(10);
+    if (key == hash)
+    {
+      QStringList list;
+      list.push_back(joItem["node_location"].toString());
+      list.push_back(joItem["node_addr"].toString());
+      m_orders[key].setValue(list);
+      return list;
+    }
+  }
+  return QStringList();
+}
+
+QJsonObject OrderListData::orderInfo (const QString &hash)
+{
+  foreach(const QJsonValue& item, m_orderListData)
+  {
+    QJsonObject joItem = item.toObject();
+    QString key = joItem["hash"].toString().right(10);
+    if (key == hash)
+    {
+      //                == Order 0xD9A5C15D30A42615398AB7D3080FDEBCCD74FA3BB2E191F76EAC994326B45AA9 ==
+      //                  version:          3
+      //                  direction:        SERV_DIR_SELL
+      //                  srv_uid:          0x0000000000000001
+      //                  price:            0.000000000000000002 (2)
+      //                  price_unit:       DAY
+      //                  node_addr:        58C0::CA70::6D11::1DCA
+      //                  node_location:    Europe - Russia_2_1
+      //                  tx_cond_hash:     0x0000000000000000000000000000000000000000000000000000000000000000
+      //                  ext:              0x52025275737369615F325F3100
+      return joItem;
+    }
+  }
+  return QJsonObject();
 }

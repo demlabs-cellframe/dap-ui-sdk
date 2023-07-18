@@ -20,6 +20,7 @@ HEADERS += \
     $$PWD/dapqml-model/dapqmlmodelchooseserver.h \
     $$PWD/dapqml-model/dapqmlmodelfullserverlist.h \
     $$PWD/dapqml-model/dapqmlmodelfaq.h \
+    $$PWD/dapqml-model/dapqmlmodelorderlist.h \
     $$PWD/dapqml-model/dapqmlmodelroutingexceptions.h \
     $$PWD/dapqml-model/dapqmlmodelserialhistory.h \
     $$PWD/dapqml-model/dapqmlservermanager.h \
@@ -34,6 +35,7 @@ SOURCES += \
     $$PWD/dapqml-model/dapqmlmodelchooseserver.cpp \
     $$PWD/dapqml-model/dapqmlmodelfullserverlist.cpp \
     $$PWD/dapqml-model/dapqmlmodelfaq.cpp \
+    $$PWD/dapqml-model/dapqmlmodelorderlist.cpp \
     $$PWD/dapqml-model/dapqmlmodelroutingexceptions.cpp \
     $$PWD/dapqml-model/dapqmlmodelserialhistory.cpp \
     $$PWD/dapqml-model/dapqmlservermanager.cpp

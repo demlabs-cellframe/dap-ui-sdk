@@ -22,94 +22,17 @@ class OrderListData
     QString m_unit;
 
 public:
-    void setData(const QJsonArray& a_orderListData)
-    {
-        m_orderListData = a_orderListData;
-        toListMap();
-    }
-//    const QList<QMap<QString, QString>>& orders()
-    QMap<QString, QVariant>& orders()
-    {
-        return m_orders;
-    }
+    void setData (const QJsonArray& a_orderListData);
+    QMap<QString, QVariant>& orders();
+
+    void setUnit (const QString &unit);
+
+    QStringList order (const QString &hash);
+    QJsonObject orderInfo (const QString &hash);
+
 private:
-//    QList<QMap<QString, QString>> m_orders;
-//    void toListMap()
-//    {
-//        foreach(const QJsonValue& item, m_orderListData)
-//        {
-//            QMap<QString, QString> itemDataAsMap;
-//            QJsonObject joItem = item.toObject();
-//            foreach(const QString& item_key, joItem.keys())
-//                itemDataAsMap[item_key] = joItem[item_key].toString();
-//            m_orders.push_back(itemDataAsMap);
-//        }
-//    }
     QMap<QString, QVariant> m_orders;
-    void toListMap()
-    {
-        foreach(const QJsonValue& item, m_orderListData)
-        {
-            QJsonObject joItem = item.toObject();
-            QString key = joItem["hash"].toString().right(10);
-            QStringList list;
-            if (joItem.contains("node_location")
-//                    && joItem.contains("node_addr")
-//                    && !joItem["node_addr"].toString().isEmpty()
-               )
-            {
-                list.push_back(joItem["node_location"].toString());
-                list.push_back(QString("%1%2 per %3").arg(joItem["price"].toString()).arg(m_unit).arg(joItem["price_unit"].toString()));
-                m_orders[key].setValue(list);
-                qDebug() << joItem;
-            }
-        }
-    }
-public:
-    void setUnit(QString unit)
-    {
-        m_unit = unit;
-    }
-    QStringList order(QString hash)
-    {
-        foreach(const QJsonValue& item, m_orderListData)
-        {
-            QJsonObject joItem = item.toObject();
-            QString key = joItem["hash"].toString().right(10);
-            if (key == hash)
-            {
-                QStringList list;
-                list.push_back(joItem["node_location"].toString());
-                list.push_back(joItem["node_addr"].toString());
-                m_orders[key].setValue(list);
-                return list;
-            }
-        }
-        return QStringList();
-    }
-    QJsonObject orderInfo(QString hash)
-    {
-        foreach(const QJsonValue& item, m_orderListData)
-        {
-            QJsonObject joItem = item.toObject();
-            QString key = joItem["hash"].toString().right(10);
-            if (key == hash)
-            {
-//                == Order 0xD9A5C15D30A42615398AB7D3080FDEBCCD74FA3BB2E191F76EAC994326B45AA9 ==
-//                  version:          3
-//                  direction:        SERV_DIR_SELL
-//                  srv_uid:          0x0000000000000001
-//                  price:            0.000000000000000002 (2)
-//                  price_unit:       DAY
-//                  node_addr:        58C0::CA70::6D11::1DCA
-//                  node_location:    Europe - Russia_2_1
-//                  tx_cond_hash:     0x0000000000000000000000000000000000000000000000000000000000000000
-//                  ext:              0x52025275737369615F325F3100
-                return joItem;
-            }
-        }
-        return QJsonObject();
-    }
+    void _updateListMap();
 };
 
 
