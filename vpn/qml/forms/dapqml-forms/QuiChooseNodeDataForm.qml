@@ -42,7 +42,7 @@ Item {
     /// @{
 
     /// @brief item clicked
-    signal sigSelect(name: string);
+    signal sigSelect(int index, string name);
 
     /// @}
     /****************************************//**
@@ -112,7 +112,7 @@ Item {
                     width: resizer.width
                     clip: false
                     //onClicked: { root.toggle(); root.clicked(); }
-                    onClicked: nodeDataForm.sigSelect (model.hash);
+                    onClicked: nodeDataForm.sigSelect (model.index, model.hash);
                 }
             }
 

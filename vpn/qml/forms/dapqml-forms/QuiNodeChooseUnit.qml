@@ -20,7 +20,7 @@ Item {
     }
 
     /// @brief item clicked
-    signal sigSelect(name: string);
+    signal sigSelect(int index, string name);
 
     property DapQmlNodeDataModel unitModel: DapQmlNodeDataModel {
       id: dataModel
@@ -30,7 +30,7 @@ Item {
        dataModel: dataModel
        title:  qsTr("Choose unit")
        onSigSelect: {
-           root.sigSelect(name);
+           root.sigSelect(index,name);
            backTimer.start();
        }
     }

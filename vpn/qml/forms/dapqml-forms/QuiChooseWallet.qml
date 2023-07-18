@@ -12,7 +12,7 @@ Item {
     property string formName: "ChooseWallet"
 
     /// @brief item clicked
-    signal sigSelect(name: string);
+    signal sigSelect(int index, string name);
 
     Timer {
         id: backTimer
@@ -30,7 +30,7 @@ Item {
        dataModel: dataModel
        title:  qsTr("Choose wallets")
        onSigSelect: {
-           root.sigSelect(name);
+           root.sigSelect(index,name);
            backTimer.start();
        }
     }

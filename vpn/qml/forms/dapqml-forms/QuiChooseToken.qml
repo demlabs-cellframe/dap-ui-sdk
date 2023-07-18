@@ -20,7 +20,7 @@ Item {
     QuiChooseNodeDataForm {
        dataModel: dataModel
        title:  qsTr("Choose token")
-       onSigSelect: root.sigSelect(name);
+       onSigSelect: root.sigSelect(index,name);
     }
 
 }
