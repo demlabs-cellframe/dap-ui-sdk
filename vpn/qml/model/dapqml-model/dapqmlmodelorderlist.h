@@ -24,7 +24,10 @@ class DapQmlModelOrderList : public QAbstractListModel
    * @name PROPERTIES
    *******************************************/
   /// @{
-  Q_PROPERTY (int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY sigCurrentIndexChanged)
+  Q_PROPERTY (int currentIndex    READ currentIndex WRITE setCurrentIndex NOTIFY sigCurrentIndexChanged)
+  Q_PROPERTY (QString serverName  READ serverName   WRITE setServerName   NOTIFY sigServerNameChanged)
+  Q_PROPERTY (QString network     READ network      WRITE setNetwork      NOTIFY sigNetworkChanged)
+  Q_PROPERTY (QString wallet      READ wallet       WRITE setWallet       NOTIFY sigWalletChanged)
   /// @}
 
   /****************************************//**
@@ -59,10 +62,23 @@ protected:
 public:
   static DapQmlModelOrderList *instance();
   Q_INVOKABLE static QObject *singletonProvider (QQmlEngine *engine, QJSEngine *scriptEngine);
+
   Q_INVOKABLE int length() const;
+  Q_INVOKABLE int indexOf (const QString &a_location);
+
   Q_INVOKABLE int currentIndex() const;
   Q_INVOKABLE void setCurrentIndex (int a_index);
-  Q_INVOKABLE int indexOf (const QString &a_location);
+
+  Q_INVOKABLE QString serverName() const;
+  Q_INVOKABLE void setServerName (const QString &a_value);
+
+  Q_INVOKABLE QString network() const;
+  Q_INVOKABLE void setNetwork (const QString &a_value);
+
+  Q_INVOKABLE QString wallet() const;
+  Q_INVOKABLE void setWallet (const QString &a_value);
+protected:
+  static QString _scopedPrice (const QString &a_value);
   /// @}
 
   /****************************************//**
@@ -83,6 +99,9 @@ public:
   /// @{
 signals:
   void sigCurrentIndexChanged();
+  void sigServerNameChanged();
+  void sigNetworkChanged();
+  void sigWalletChanged();
   /// @}
 
   /****************************************//**

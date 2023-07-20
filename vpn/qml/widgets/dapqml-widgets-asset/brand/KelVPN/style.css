@@ -2181,3 +2181,69 @@
     scaled-font: scaled(16);
     color: "@input-placeholder";
 }
+
+
+
+/****************************************************
+ * Node Order List
+ ***************************************************/
+
+.nodeorlist-listview
+{
+    scaled-rect: scaled(-1,132,392,715,false);
+}
+
+.nodeorlist-item-label
+{
+    scaled-rect: scaled(14,nan,340,nan,false,14);
+}
+
+.nodeorlist-item-label-top
+{
+    color: "@text";
+    font-weight: Font.Medium;
+}
+
+.nodeorlist-item-label-bottom
+{
+    color: "@light-grey";
+}
+
+.nodeorlist-item-link
+{
+    scaled-rect: scaled(nan,nan,24,24,true);
+}
+
+.nodeorlist-overview-container
+{
+    scaled-rect: scaled(-1,146,356,296,false);
+    color: "@input-field";
+    radius: 12;
+}
+
+.nodeorlist-overview-item-left-size
+{
+    scaled-rect: scaled(nan,nan,108,nan,false,16);
+}
+
+.nodeorlist-overview-item-left
+{
+    color: "@input-placeholder";
+}
+
+.nodeorlist-overview-item-right
+{
+    color: "@text";
+}
+
+.nodeorlist-overview-price
+{
+    scaled-font: scaled(24);
+    font-weight: Font.Bold;
+    color: "@text";
+}
+
+.nodeorlist-overview-confirm-btn
+{
+    scaled-rect: scaled(-1,802,374,80,true,16);
+}
