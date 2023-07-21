@@ -108,7 +108,7 @@ void DapNode::initStmTransitions()
     &m_stm->getListKeys);
     //&m_stm->nodeGetStatus);
     m_stm->initialState.addTransition(this, &DapNode::sigNodeIpRequest,
-    &m_stm->getNodeConnectionData);
+    &m_stm->getNetId);
 
     // node detection -> node detected
     m_stm->nodeDetection.addTransition(web3, &DapNodeWeb3::nodeDetected,
@@ -237,6 +237,11 @@ void DapNode::initStmTransitions()
     m_stm->getOrderList.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
 
+    // getting net id
+    m_stm->getNetId.addTransition(this, &DapNode::errorDetected,
+    &m_stm->initialState);
+    m_stm->getNetId.addTransition(this, &DapNode::sigNetIdReceived,
+    &m_stm->getNodeConnectionData);
     // getting node ip
     m_stm->getNodeConnectionData.addTransition(this, &DapNode::sigNodeDumpReceived,
     &m_stm->initialState);
@@ -351,7 +356,11 @@ void DapNode::initStmStates()
                     m_maxPrice,
                     m_unit);
     });
-
+    // get net ip
+    connect(&m_stm->getNetId, &QState::entered, this, [=](){
+        web3->getNetIdRequest(m_networkName);
+    });
+    // get node id
     connect(&m_stm->getNodeConnectionData, &QState::entered, this, [=](){
         web3->nodeDumpRequest(m_networkName);
     });
@@ -416,7 +425,7 @@ void DapNode::initWeb3Connections()
         //QJsonArray orders;
         //orderListFiltr(ordersList, orders, m_listKeys);
         emit sigOrderListReceived();
-        emit sigOrderListReady(ordersList); //emit sigOrderListReady(orders);
+        //emit sigOrderListReady(ordersList); //emit sigOrderListReady(orders);
     });
     //connect(web3, &DapNodeWeb3::sigOrderList, this, &DapNode::sigOrderListReady);
     // recieved fee
@@ -424,12 +433,16 @@ void DapNode::initWeb3Connections()
         m_fee = fee;
         emit sigFeeReceived();
     });
+    // net id ready
+    connect(web3, &DapNodeWeb3::sigNetId, this, [=](QString netId){
+        m_netId = netId;
+        emit sigNetIdReceived();
+    });
     // connect to stream
     connect(web3, &DapNodeWeb3::sigNodeDump, this, [=](QList<QMap<QString, QString>> nodeDump) {
-        // riemann, use dap_chain_net_id_by_name() "0x000000000000dddd"
         m_nodeInfo.serverDataFromList(nodeDump);
         emit sigNodeDumpReceived();
-        emit sigConnectByOrder(m_networkName, m_transactionHash, m_tokenName, m_srvUid, m_nodeInfo.ipv4, m_nodeInfo.port);
+        emit sigConnectByOrder(m_netId, m_transactionHash, m_tokenName, m_srvUid, m_nodeInfo.ipv4, m_nodeInfo.port);
     });
 
 }

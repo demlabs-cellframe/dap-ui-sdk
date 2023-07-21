@@ -44,6 +44,8 @@ const QList<ReplyMethod> DapNodeWeb3::replyItems = {
     {"method=NodeDump",             &DapNodeWeb3::parseNodeDump,            nullptr, "Wrong reply when get node dump", 1400000},
     // list of delegated keys on the network
     {"method=GetListKeys",          &DapNodeWeb3::parseListKeys,            nullptr, "Wrong reply when get list of delegated keys", 1500000},
+    // get NetId
+    {"method=GetNetId",             &DapNodeWeb3::parseNetId,               nullptr, "Wrong reply when get net ID", 1600000},
 };
 
 
@@ -52,7 +54,8 @@ DapNodeWeb3::DapNodeWeb3(QObject * obj, int requestTimeout) :
     m_requestTimeout(requestTimeout),
     m_connectId(QString()),
     m_networkReply(nullptr),
-    m_networkRequest(QString())
+    m_networkRequest(QString()),
+    m_parseJsonError(false)
 {
     m_httpClient = new DapNetworkAccessManager();
 }
@@ -311,6 +314,15 @@ void DapNodeWeb3::nodeDumpRequest(QString networkName)
 void DapNodeWeb3::getListKeysRequest(QString networkName)
 {
     QString requesString = QString("?method=GetListKeys&"
+                "id=%1&net=%2")
+            .arg(m_connectId)
+            .arg(networkName);
+    sendRequest(requesString);
+}
+
+void DapNodeWeb3::getNetIdRequest(QString networkName)
+{
+    QString requesString = QString("?method=GetNetId&"
                 "id=%1&net=%2")
             .arg(m_connectId)
             .arg(networkName);
@@ -760,6 +772,27 @@ void DapNodeWeb3::parseListKeys(const QString& replyData, int baseErrorCode)
         }
         DEBUGINFO << "sigListKeys" << listKeys;
         emit sigListKeys(listKeys);
+    }
+}
+
+void DapNodeWeb3::parseNetId(const QString& replyData, int baseErrorCode)
+{
+//    {
+//        "data": {
+//            "id": "0x000000000000DDDD",
+//            "network": "riemann"
+//        },
+//        "errorMsg": "",
+//        "status": "ok"
+//    }
+    DEBUGINFO << "netId reply:" << replyData;
+    parseJsonError(replyData.toUtf8(), baseErrorCode);
+    if (jsonError())
+        return;
+    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+    if (doc["data"].isObject())
+    {
+        emit sigNetId(doc["data"].toObject()["id"].toString());
     }
 }
 

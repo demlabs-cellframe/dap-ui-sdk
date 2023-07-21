@@ -6,6 +6,7 @@
 
 // ui side
 
+QMap<QString, QString> OrderListData::unitMap = {{"DAY", "day"}, {"SECOND", "sec"}, };
 
 void DapCmdNode::handleResult(const QJsonObject& params)
 {
@@ -131,13 +132,14 @@ void DapCmdNode::noCdbModeRequest()
 void DapCmdNode::condTxCreate()
 {
     DEBUGINFO << __PRETTY_FUNCTION__;
+    QString unit = OrderListData::unitMap[m_orderListData.orderInfo(m_orderHash)["price_unit"].toString()];
     QJsonObject condTx;
     condTx["wallet_name"] = m_selectedWalletName;
     condTx["network_name"] = m_selectedNetworkName;
     condTx["token_name"] = m_selectedTokenName;
 //    condTx["cert_name"] = certName;
     condTx["value"] = m_value;
-    condTx["unit"] = "day"; // not used, filled with valid value
+    condTx["unit"] = unit;
     QJsonObject jObject;
     jObject["cond_tx_create"] = condTx;
     sendCmd(&jObject);

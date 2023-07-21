@@ -18,6 +18,10 @@
 
 class OrderListData
 {
+public:
+    static QMap<QString, QString> unitMap;
+
+private:
     QJsonArray m_orderListData;
     QString m_unit;
 
@@ -28,7 +32,7 @@ public:
         toListMap();
     }
 //    const QList<QMap<QString, QString>>& orders()
-    QMap<QString, QVariant>& orders()
+    QMap<QString, QVariant> orders()
     {
         return m_orders;
     }

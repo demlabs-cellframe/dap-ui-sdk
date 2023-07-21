@@ -70,6 +70,7 @@ public:
     QState createTransactionCertificate;
     QState getListKeys;
     QState getOrderList;
+    QState getNetId;
     QState getNodeConnectionData;
 private:
     QStateMachine commandState;
@@ -100,6 +101,7 @@ private:
         nodeConnectMachine.addState(&createTransactionCertificate);
         nodeConnectMachine.addState(&getListKeys);
         nodeConnectMachine.addState(&getOrderList);
+        nodeConnectMachine.addState(&getNetId);
         nodeConnectMachine.addState(&getNodeConnectionData);
         nodeConnectMachine.setInitialState(&initialState);
         qDebug() << "nodeConnectMachine::init";
@@ -141,6 +143,7 @@ private:
     QString m_fee;
     NodeInfo m_nodeInfo;
     QStringList m_listKeys;
+    QString m_netId;
 
 public:
     static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
@@ -188,7 +191,7 @@ signals:
     void sigMempoolContainHash();
     void sigLedgerContainHash();
     void sigCondTxCreateSuccess(QString hash);
-    void sigConnectByOrder(QString networkName, QString txCondHash, QString token, QString srvUid, QString nodeIp, uint16_t port);
+    void sigConnectByOrder(QString netId, QString txCondHash, QString token, QString srvUid, QString nodeIp, uint16_t port);
 
     // ------- internal signals --------
     void waitingCommand();
@@ -216,6 +219,7 @@ signals:
     void sigNodeIpRequest();
     void sigNodeDumpReceived();
     void sigFeeReceived();
+    void sigNetIdReceived();
 
 
 };

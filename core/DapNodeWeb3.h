@@ -64,7 +64,7 @@ private:
     // network request string
     QString m_networkRequest;
     //
-    bool m_parseJsonError = false;
+    bool m_parseJsonError;
 
 public:
     static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
@@ -107,6 +107,7 @@ public slots:
     void getNodeIPRequest(QString networkName, QString nodeAddr);
     void getFeeRequest(QString networkName);
     void getListKeysRequest(QString networkName);
+    void getNetIdRequest(QString networkName);
 
 
 private slots:
@@ -131,6 +132,7 @@ private slots:
     void parseFee(const QString& replyData, int baseErrorCode);
     void parseNodeDump(const QString& replyData, int baseErrorCode);
     void parseListKeys(const QString& replyData, int baseErrorCode);
+    void parseNetId(const QString& replyData, int baseErrorCode);
     //
     void replyConnectError(int code);
 
@@ -147,6 +149,7 @@ signals:
     void sigLedgerContainHash();
     void sigOrderList(QJsonArray);
     void sigNodeIp(QString nodeIp);
+    void sigNetId(QString netId);
     void sigFee(QString fee);
     void connectionIdReceived(QString connectionId);
     void sigNodeDump(QList<QMap<QString, QString>> nodeDump);
