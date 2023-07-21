@@ -50,11 +50,6 @@ Button
     property alias radius: dapBackgroundButton.radius
     property alias imageMirror: img.mirror
 
-    property color gradientColorNormal0: "#f0f000"
-    property color gradientColorNormal1: "#f00000"
-    property color gradientColorHovered0: "#f0f0a0"
-    property color gradientColorHovered1: "#f000a0"
-
     property color defaultColorNormal0: currTheme.mainButtonColorNormal0
     property color defaultColorNormal1: currTheme.mainButtonColorNormal1
     property color defaultColorHovered0: currTheme.mainButtonColorHover0
@@ -62,6 +57,11 @@ Button
     property color defaultColorUnselectedNormal: currTheme.secondaryButtonColor
     property color defaultColorUnselectedHovered: "#272A32"
     property color defaultColorDisabled: currTheme.gray
+
+    property color gradientColorNormal0: defaultColorNormal0
+    property color gradientColorNormal1: defaultColorNormal1
+    property color gradientColorHovered0: defaultColorHovered0
+    property color gradientColorHovered1: defaultColorHovered1
 
     property color defaultColor: shadowColor
 
@@ -147,9 +147,11 @@ Button
                 content.requestPaint()
             }
 
-            color: !dapButton.activeFrame ?
-                       "transparent" :
-                       defaultColor
+            color: dapButton.activeFrame ?
+                       defaultColor :
+                       "transparent"
+
+            Component.onCompleted: content.requestPaint()
 
             implicitWidth: widthButton
             implicitHeight: heightButton
