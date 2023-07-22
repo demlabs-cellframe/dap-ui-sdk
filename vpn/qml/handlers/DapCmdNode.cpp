@@ -1,91 +1,191 @@
-
+/* INCLUDES */
 #include "DapCmdNode.h"
+#include <QJsonDocument>
+#include <QJsonArray>
 #include <QDebug>
-
-#define DEBUGINFO qDebug()<<" --->UiCMD<--- "
 
 // ui side
 
+/* DEFS */
+#define DEBUGINFO qDebug()<<" --->UiCMD<--- "
 
-void DapCmdNode::handleResult(const QJsonObject& params)
+typedef DapCmdNode::OrderInfo OrderInfo;
+typedef DapCmdNode::OrderInfoList OrderInfoList;
+typedef DapCmdNode::OrderInfoMap OrderInfoMap;
+
+/**
+ * @brief Class containind order list data
+ */
+class OrderListData
 {
-    DEBUGINFO << __PRETTY_FUNCTION__ << " status OK";
-    m_hasError = false;
-    // wallets list
-    if (params.value("wallets").isArray())
+  /* VARS */
+  OrderInfoMap m_orderMap;
+  QString m_unit;
+  QMap<QString, QVariant> m_orders;
+
+  /* METHODS */
+public:
+  void setData (const QJsonArray &a_orderListData);
+  QMap<QString, QVariant> &orders();
+
+  void setUnit (const QString &unit);
+
+  OrderInfo order (const QString &hash);
+  QJsonObject orderInfo (const QString &hash);
+
+private:
+  void _updateListMap();
+};
+
+/**
+ * @brief Class containing wallet data
+ */
+class WalletsData
+{
+  /* VARS */
+  QJsonObject m_walletsData;
+
+  /* METHODS */
+public:
+  void setData (const QJsonObject &a_walletsData);
+  QStringList wallets();
+  QMap<QString, QVariant> walletsWithTokens();
+  QStringList networks (const QString &wallet);
+  QMap<QString, QVariant> networkWithTokens (const QString &walletName);
+  QMap<QString, QVariant> tokensAmount (const QString &wallet, const QString network);
+};
+
+/**
+ * @brief DapCmdNode Data struct
+ */
+struct DapCmdNode::DapCmdNodeData
+{
+  static const QString actionParam;
+  bool hasError;
+  WalletsData dataWallet;
+  OrderListData orderListData;
+
+  QString selectedWalletName;
+  QString selectedNetworkName;
+  QString selectedTokenName;
+  QString value;
+  QString unit;
+  QString maxPrice;
+  QString minPrice;
+  QString orderHash;
+};
+
+/* LINKS */
+QDebug operator<< (QDebug dbg, const OrderInfo &data);
+
+/********************************************
+ * CONSTRUCT/DESTRUCT
+ *******************************************/
+
+DapCmdNode::DapCmdNode (QObject *parent)
+  : DapCmdClientAbstract (DapJsonCmdType::NODE_INFO, parent)
+  , _data (new DapCmdNodeData)
+{
+
+}
+
+DapCmdNode::~DapCmdNode()
+{
+  delete _data;
+}
+
+/********************************************
+ * OVERRIDE
+ *******************************************/
+
+void DapCmdNode::handleResult (const QJsonObject &params)
+{
+  DEBUGINFO << __PRETTY_FUNCTION__ << " status OK";
+  _data->hasError = false;
+  // wallets list
+  if (params.value ("wallets").isArray())
     {
-        QJsonArray array = params.value("wallets").toArray();
-        QMap<QString, QVariant> data;
-        foreach(const QVariant& vItem, array)
-            data[vItem.toString()] = "";
-        DEBUGINFO << "wallets" << data;
+      QJsonArray array = params.value ("wallets").toArray();
+      QMap<QString, QVariant> data;
+      foreach (const QVariant &vItem, array)
+        data[vItem.toString()] = "";
+      DEBUGINFO << "wallets" << data;
 //                    emit walletsList(data);
-        return;
+      return;
     }
-    // networks list
-    if (params.value("networks").isArray())
+  // networks list
+  if (params.value ("networks").isArray())
     {
-        QJsonArray array = params.value("networks").toArray();
-        QMap<QString, QVariant> data;
-        foreach(const QVariant& vItem, array)
-            data[vItem.toString()] = "";
-        DEBUGINFO << "networks" << data;
+      QJsonArray array = params.value ("networks").toArray();
+      QMap<QString, QVariant> data;
+      foreach (const QVariant &vItem, array)
+        data[vItem.toString()] = "";
+      DEBUGINFO << "networks" << data;
 //                    emit networksList(data);
-        return;
+      return;
     }
-    // wallets data
-    if (params.value("wallets_data").isObject())
+  // wallets data
+  if (params.value ("wallets_data").isObject())
     {
-        DEBUGINFO << "wallets_data" << params.value("wallets_data");
-        m_dataWallet.setData(params.value("wallets_data").toObject());
-        emit walletsList(m_dataWallet.walletsWithTokens());
-        return;
+      DEBUGINFO << "wallets_data" << params.value ("wallets_data");
+      _data->dataWallet.setData (params.value ("wallets_data").toObject());
+      emit walletsList (_data->dataWallet.walletsWithTokens());
+      return;
     }
-    // node detected status
-    if (params.value("node_detected").isBool() && params.value("node_detected").toBool())
+  // node detected status
+  if (params.value ("node_detected").isBool() && params.value ("node_detected").toBool())
     {
-        DEBUGINFO << "node detected";
-        emit nodeDetected();
-        return;
+      DEBUGINFO << "node detected";
+      emit nodeDetected();
+      return;
     }
-    // transaction hash in mempool
-    if (params.value("transaction_hash_in_mempool").isBool() && params.value("transaction_hash_in_mempool").toBool())
+  // transaction hash in mempool
+  if (params.value ("transaction_hash_in_mempool").isBool() && params.value ("transaction_hash_in_mempool").toBool())
     {
-        DEBUGINFO << "transaction hash in mempool";
-        emit transactionHashInMempool();
-        return;
+      DEBUGINFO << "transaction hash in mempool";
+      emit transactionHashInMempool();
+      return;
     }
-    // transaction hash in ledger
-    if (params.value("transaction_hash_in_ledger").isBool() && params.value("transaction_hash_in_ledger").toBool())
+  // transaction hash in ledger
+  if (params.value ("transaction_hash_in_ledger").isBool() && params.value ("transaction_hash_in_ledger").toBool())
     {
-        DEBUGINFO << "transaction hash in ledger";
-        emit transactionHashInledger();
-        return;
+      DEBUGINFO << "transaction hash in ledger";
+      emit transactionHashInledger();
+      return;
     }
-    if (params.value("order_list").isArray())
+  if (params.value ("order_list").isArray())
     {
-        DEBUGINFO << "order list";
-        m_orderListData.setData (params.value("order_list").toArray());
-        emit orderList (m_orderListData.orders());
-        return;
+      DEBUGINFO << "order list";
+
+      /* get list */
+      auto list = params.value ("order_list").toArray();
+
+      /* emit */
+      emit sigOrderList (list);
+
+      /* parse old style and emit */
+      _data->orderListData.setData (list);
+      emit orderList (_data->orderListData.orders());
+
+      return;
     }
-    if (params.value("signing_info").isObject())
+  if (params.value ("signing_info").isObject())
     {
-        QJsonObject info = params.value("signing_info").toObject();
-        qint32 utype = info.value("utype").toInt();
-        qint64 uid = info.value("uid").toInt();
-        QString units = info.value("units").toString();
-        QString value = info.value("value").toString();
-        DEBUGINFO << "signing_info received" << units << value;
-        emit signingReceived(utype, uid, units, value);
-        return;
+      QJsonObject info = params.value ("signing_info").toObject();
+      qint32 utype = info.value ("utype").toInt();
+      qint64 uid = info.value ("uid").toInt();
+      QString units = info.value ("units").toString();
+      QString value = info.value ("value").toString();
+      DEBUGINFO << "signing_info received" << units << value;
+      emit signingReceived (utype, uid, units, value);
+      return;
     }
 }
 
-void DapCmdNode::handleError(int code, const QString& message)
+void DapCmdNode::handleError (int code, const QString &message)
 {
 //    Q_UNUSED(code); Q_UNUSED(message);
-//    qWarning() << *m_errorObject;
+//    qWarning() << *_data->errorObject;
 //    switch (code) {
 //    case 1:
 //        emit sigResetSerialKeyError(message);
@@ -94,168 +194,197 @@ void DapCmdNode::handleError(int code, const QString& message)
 //        emit sigResetSerialKeyErrorSetOnlyMessage(message);
 //        break;
 //    }
-    m_hasError = true;
-    DEBUGINFO << __PRETTY_FUNCTION__ << " " + message;
+  _data->hasError = true;
+  DEBUGINFO << __PRETTY_FUNCTION__ << " " + message;
 //    DEBUGINFO << "handleError" << message;
-    QString errorMessage = message;
-    int errorCode = code;
-    emit nodeError(errorCode, errorMessage);
-    return;
+  QString errorMessage = message;
+  int errorCode = code;
+  emit nodeError (errorCode, errorMessage);
+  return;
 
 }
 
+/********************************************
+ * METHODS
+ *******************************************/
+
 void DapCmdNode::startNodeDetection()
 {
-    DEBUGINFO << __PRETTY_FUNCTION__;
-    QJsonObject checkNode;
-    checkNode["start_node_detection"] = true;
-    sendCmd(&checkNode);
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  QJsonObject checkNode;
+  checkNode["start_node_detection"] = true;
+  sendCmd (&checkNode);
 }
 
 void DapCmdNode::stopCheckNode()
 {
-    DEBUGINFO << __PRETTY_FUNCTION__;
-    QJsonObject checkNode;
-    checkNode["start_node_detection"] = false;
-    sendCmd(&checkNode);
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  QJsonObject checkNode;
+  checkNode["start_node_detection"] = false;
+  sendCmd (&checkNode);
 }
 
 void DapCmdNode::noCdbModeRequest()
 {
-    DEBUGINFO << __PRETTY_FUNCTION__;
-    QJsonObject checkNode;
-    checkNode["nocdb_mode_request"] = true;
-    sendCmd(&checkNode);
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  QJsonObject checkNode;
+  checkNode["nocdb_mode_request"] = true;
+  sendCmd (&checkNode);
 }
+
+bool DapCmdNode::hasError()
+{
+  return _data->hasError;
+}
+
+bool DapCmdNode::_checkContinue()
+{
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  return  !_data->selectedWalletName.isEmpty() &&
+          !_data->selectedNetworkName.isEmpty() &&
+          !_data->selectedTokenName.isEmpty() &&
+          !_data->value.isEmpty() &&
+          !_data->orderHash.isEmpty();
+}
+
+
+/********************************************
+ * SLOTS
+ *******************************************/
 
 void DapCmdNode::condTxCreate()
 {
-    DEBUGINFO << __PRETTY_FUNCTION__;
-    QJsonObject condTx;
-    condTx["wallet_name"] = m_selectedWalletName;
-    condTx["network_name"] = m_selectedNetworkName;
-    condTx["token_name"] = m_selectedTokenName;
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  QJsonObject condTx;
+  condTx["wallet_name"] = _data->selectedWalletName;
+  condTx["network_name"] = _data->selectedNetworkName;
+  condTx["token_name"] = _data->selectedTokenName;
 //    condTx["cert_name"] = certName;
-    condTx["value"] = m_value;
-    condTx["unit"] = "day"; // not used, filled with valid value
-    QJsonObject jObject;
-    jObject["cond_tx_create"] = condTx;
-    sendCmd(&jObject);
+  condTx["value"] = _data->value;
+  condTx["unit"] = "day"; // not used, filled with valid value
+  QJsonObject jObject;
+  jObject["cond_tx_create"] = condTx;
+  sendCmd (&jObject);
 }
 
 void DapCmdNode::startSearchOrders()
 {
-    DEBUGINFO << __PRETTY_FUNCTION__;
-    QJsonObject searchOrders;
-    qDebug() << "startSearchOrders" << m_selectedNetworkName << m_selectedTokenName << m_unit << m_minPrice << m_maxPrice;
-    searchOrders["network_name"] = m_selectedNetworkName;
-    searchOrders["token_name"] = m_selectedTokenName;
-    searchOrders["unit"] = m_unit;
-    searchOrders["min_price"] = m_minPrice;
-    searchOrders["max_price"] = m_maxPrice;
-    QJsonObject jObject;
-    jObject["search_orders"] = searchOrders;
-    sendCmd(&jObject);
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  QJsonObject searchOrders;
+  qDebug() << "startSearchOrders" << _data->selectedNetworkName << _data->selectedTokenName << _data->unit << _data->minPrice << _data->maxPrice;
+  searchOrders["network_name"] = _data->selectedNetworkName;
+  searchOrders["token_name"] = _data->selectedTokenName;
+  searchOrders["unit"] = _data->unit;
+  searchOrders["min_price"] = _data->minPrice;
+  searchOrders["max_price"] = _data->maxPrice;
+  QJsonObject jObject;
+  jObject["search_orders"] = searchOrders;
+  sendCmd (&jObject);
 }
 
 void DapCmdNode::checkSigned()
 {
-    DEBUGINFO << __PRETTY_FUNCTION__;
-    qDebug() << "check signed";
-    QJsonObject checkNode;
-    checkNode["check_signed"] = true;
-    sendCmd(&checkNode);
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  qDebug() << "check signed";
+  QJsonObject checkNode;
+  checkNode["check_signed"] = true;
+  sendCmd (&checkNode);
 }
 
 void DapCmdNode::startConnectByOrder()
 {
-    DEBUGINFO << __PRETTY_FUNCTION__;
-    QJsonObject jObject;
-    QJsonObject connectData = m_orderListData.orderInfo(m_orderHash);
-    connectData["token"] = m_selectedTokenName;
-    //connectData["node_ip"] = "164.92.175.30"; // TODO get from order
-    jObject["start_connect_by_order"] = connectData;
-    sendCmd(&jObject);
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  QJsonObject jObject;
+  QJsonObject connectData = _data->orderListData.orderInfo (_data->orderHash);
+  connectData["token"] = _data->selectedTokenName;
+  //connectData["node_ip"] = "164.92.175.30"; // TODO get from order
+  jObject["start_connect_by_order"] = connectData;
+  sendCmd (&jObject);
 }
 
-void DapCmdNode::chooseWallet(QString wallet)
+void DapCmdNode::chooseWallet (QString wallet)
 {
-    DEBUGINFO << __PRETTY_FUNCTION__;
-    m_selectedWalletName = wallet;
-    emit continueEnable(checkContinue());
-    emit networksList(nodeInfo()->networkWithTokens(wallet));
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  _data->selectedWalletName = wallet;
+  emit continueEnable (_checkContinue());
+  emit networksList (_data->dataWallet.networkWithTokens (wallet));
 }
 
-void DapCmdNode::chooseNetwork(QString network)
+void DapCmdNode::chooseNetwork (QString network)
 {
-    DEBUGINFO << __PRETTY_FUNCTION__;
-    m_selectedNetworkName = network;
-    emit continueEnable(checkContinue());
-    emit tokensInfo(nodeInfo()->tokensAmount(m_selectedWalletName, m_selectedNetworkName));
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  _data->selectedNetworkName = network;
+  emit continueEnable (_checkContinue());
+  emit tokensInfo (_data->dataWallet.tokensAmount (_data->selectedWalletName, _data->selectedNetworkName));
 }
 
-void DapCmdNode::chooseToken(QString token)
+void DapCmdNode::chooseToken (QString token)
 {
-    DEBUGINFO << __PRETTY_FUNCTION__;
-    m_selectedTokenName = token;
-    auto tokens = nodeInfo()->tokensAmount(m_selectedWalletName, m_selectedNetworkName);
-    emit continueEnable(checkContinue());
-    emit tokenAmount(token, tokens[token].toString());
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  _data->selectedTokenName = token;
+  auto tokens = _data->dataWallet.tokensAmount (_data->selectedWalletName, _data->selectedNetworkName);
+  emit continueEnable (_checkContinue());
+  emit tokenAmount (token, tokens[token].toString());
 }
 
-void DapCmdNode::setValue(QString value)
+void DapCmdNode::setValue (QString value)
 {
-    DEBUGINFO << __PRETTY_FUNCTION__;
-    m_value = value;
-    emit continueEnable(checkContinue());
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  _data->value = value;
+  emit continueEnable (_checkContinue());
 }
 
-void DapCmdNode::setUnit(QString value)
+void DapCmdNode::setUnit (QString value)
 {
-    DEBUGINFO << __PRETTY_FUNCTION__;
-    m_unit = value;
-    m_orderListData.setUnit(m_unit);
-    emit continueEnable(checkContinue());
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  _data->unit = value;
+  _data->orderListData.setUnit (_data->unit);
+  emit continueEnable (_checkContinue());
 }
 
-QStringList DapCmdNode::orderData(QString hash)
+DapCmdNode::OrderInfo DapCmdNode::orderData (QString hash)
 {
-    DEBUGINFO << __PRETTY_FUNCTION__;
-    return m_orderListData.order(hash);
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  return _data->orderListData.order (hash);
 }
 
-void DapCmdNode::chooseOrder(QString hash)
+void DapCmdNode::chooseOrder (QString hash)
 {
-    DEBUGINFO << __PRETTY_FUNCTION__;
-    m_orderHash = hash;
-    emit continueEnable(checkContinue());
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  _data->orderHash = hash;
+  emit continueEnable (_checkContinue());
 }
 
-void DapCmdNode::setMaxValueUnit(QString price)
+void DapCmdNode::setMaxValueUnit (QString price)
 {
-    DEBUGINFO << __PRETTY_FUNCTION__;
-    m_maxPrice = price;
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  _data->maxPrice = price;
 }
 
-void DapCmdNode::setMinValueUnit(QString price)
+void DapCmdNode::setMinValueUnit (QString price)
 {
-    DEBUGINFO << __PRETTY_FUNCTION__;
-    m_minPrice = price;
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  _data->minPrice = price;
 }
 
-bool DapCmdNode::checkContinue()
-{
-    DEBUGINFO << __PRETTY_FUNCTION__;
-    return  !m_selectedWalletName.isEmpty() &&
-            !m_selectedNetworkName.isEmpty() &&
-            !m_selectedTokenName.isEmpty() &&
-            !m_value.isEmpty() &&
-            !m_orderHash.isEmpty();
-}
+/*-----------------------------------------*/
 
-void OrderListData::setData(const QJsonArray &a_orderListData)
+
+
+
+/********************************************
+ * METHODS
+ *******************************************/
+
+void OrderListData::setData (const QJsonArray &a_orderListData)
 {
-  m_orderListData = a_orderListData;
+  for (const auto &jvalue : a_orderListData)
+    {
+      auto order  = OrderInfo::fromJson (jvalue.toObject());
+      m_orderMap.insert (order.hash, order);
+    }
+
+//  m_orderListData = a_orderListData;
   _updateListMap();
 }
 
@@ -266,45 +395,35 @@ QMap<QString, QVariant> &OrderListData::orders()
 
 void OrderListData::_updateListMap()
 {
-  //        foreach(const QJsonValue& item, m_orderListData)
-  //        {
-  //            QJsonObject joItem = item.toObject();
-  //            QString key = joItem["hash"].toString().right(10);
-  //            QStringList list;
-  //            if (joItem.contains("node_location")
-  ////                    && joItem.contains("node_addr")
-  ////                    && !joItem["node_addr"].toString().isEmpty()
-  //               )
-  //            {
-  //                list.push_back(joItem["node_location"].toString());
-  //                list.push_back(QString("%1%2 per %3").arg(joItem["price"].toString()).arg(m_unit).arg(joItem["price_unit"].toString()));
-  //                m_orders[key].setValue(list);
-  //                qDebug() << joItem;
-  //            }
-  //        }
+//        foreach(const QJsonValue& item, _data->orderListData)
+//        {
+//            QJsonObject joItem = item.toObject();
+//            QString key = joItem["hash"].toString().right(10);
+//            QStringList list;
+//            if (joItem.contains("node_location")
+////                    && joItem.contains("node_addr")
+////                    && !joItem["node_addr"].toString().isEmpty()
+//               )
+//            {
+//                list.push_back(joItem["node_location"].toString());
+//                list.push_back(QString("%1%2 per %3").arg(joItem["price"].toString()).arg(_data->unit).arg(joItem["price_unit"].toString()));
+//                _data->orders[key].setValue(list);
+//                qDebug() << joItem;
+//            }
+//        }
 
-  for (const auto& item : qAsConst (m_orderListData))
-  {
-    QJsonObject joItem = item.toObject();
-    if (!joItem.contains("node_location")
-//        && !joItem.contains("node_addr")
-//        && joItem["node_addr"].toString().isEmpty()
-        )
-      continue;
+  for (const auto &item : qAsConst (m_orderMap))
+    {
+      QString key     = item.hash;//.right (10);
+      QString loc     = item.nodeLocation;
 
+      QString result  = QString ("%1%2 per %3")
+                        .arg (item.price, m_unit, item.priceUnit);
 
-    QString key     = joItem.value ("hash").toString().right(10);
-    QString loc     = joItem.value ("node_location").toString();
-    QString price   = joItem.value ("price").toString();
-    QString punit   = joItem.value ("price_unit").toString();
+      m_orders[key].setValue (QStringList {std::move (loc), std::move (result)});
 
-    QString result  = QString ("%1%2 per %3")
-        .arg (price, m_unit, punit);
-
-    m_orders[key].setValue (QStringList {std::move (loc), std::move (result)});
-
-    qDebug() << joItem;
-  }
+      qDebug() << item;
+    }
 }
 
 void OrderListData::setUnit (const QString &unit)
@@ -312,44 +431,148 @@ void OrderListData::setUnit (const QString &unit)
   m_unit = unit;
 }
 
-QStringList OrderListData::order (const QString &hash)
+OrderInfo OrderListData::order (const QString &hash)
 {
-  foreach(const QJsonValue& item, m_orderListData)
-  {
-    QJsonObject joItem = item.toObject();
-    QString key = joItem["hash"].toString().right(10);
-    if (key == hash)
-    {
-      QStringList list;
-      list.push_back(joItem["node_location"].toString());
-      list.push_back(joItem["node_addr"].toString());
-      m_orders[key].setValue(list);
-      return list;
-    }
-  }
-  return QStringList();
+  return m_orderMap.value (hash, OrderInfo());
 }
 
 QJsonObject OrderListData::orderInfo (const QString &hash)
 {
-  foreach(const QJsonValue& item, m_orderListData)
-  {
-    QJsonObject joItem = item.toObject();
-    QString key = joItem["hash"].toString().right(10);
-    if (key == hash)
-    {
-      //                == Order 0xD9A5C15D30A42615398AB7D3080FDEBCCD74FA3BB2E191F76EAC994326B45AA9 ==
-      //                  version:          3
-      //                  direction:        SERV_DIR_SELL
-      //                  srv_uid:          0x0000000000000001
-      //                  price:            0.000000000000000002 (2)
-      //                  price_unit:       DAY
-      //                  node_addr:        58C0::CA70::6D11::1DCA
-      //                  node_location:    Europe - Russia_2_1
-      //                  tx_cond_hash:     0x0000000000000000000000000000000000000000000000000000000000000000
-      //                  ext:              0x52025275737369615F325F3100
-      return joItem;
-    }
-  }
-  return QJsonObject();
+  return m_orderMap.value (hash, OrderInfo()).toJsonObject();
+//                == Order 0xD9A5C15D30A42615398AB7D3080FDEBCCD74FA3BB2E191F76EAC994326B45AA9 ==
+//                  version:          3
+//                  direction:        SERV_DIR_SELL
+//                  srv_uid:          0x0000000000000001
+//                  price:            0.000000000000000002 (2)
+//                  price_unit:       DAY
+//                  node_addr:        58C0::CA70::6D11::1DCA
+//                  node_location:    Europe - Russia_2_1
+//                  tx_cond_hash:     0x0000000000000000000000000000000000000000000000000000000000000000
+//                  ext:              0x52025275737369615F325F3100
 }
+
+/*-----------------------------------------*/
+
+void WalletsData::setData (const QJsonObject &a_walletsData)
+{
+  m_walletsData = a_walletsData;
+}
+
+QStringList WalletsData::wallets()
+{
+  return  m_walletsData.keys();
+}
+
+QMap<QString, QVariant> WalletsData::walletsWithTokens()
+{
+  QMap<QString, QVariant> walletsWithTokenName;
+  foreach (const auto &walletName, m_walletsData.keys())
+    {
+      QSet<QString> aSet;
+      QJsonArray walletData = m_walletsData[walletName].toArray();
+      foreach (const auto &item, walletData)
+        foreach (const auto &token, item.toObject().value ("tokens").toArray())
+          aSet.insert (token.toObject().value ("tokenName").toString());
+      aSet.remove ("0");
+      walletsWithTokenName[walletName].setValue (aSet);
+    }
+  return walletsWithTokenName;
+}
+
+QStringList WalletsData::networks (const QString &wallet)
+{
+  QStringList networks;
+  QJsonArray walletData = m_walletsData[wallet].toArray();
+  foreach (const auto &item, walletData)
+    networks.append (item.toObject().value ("network").toString());
+  return networks;
+}
+
+QMap<QString, QVariant> WalletsData::networkWithTokens (const QString &walletName)
+{
+  QMap<QString, QVariant> networkWithTokenName;
+  QJsonArray walletData = m_walletsData[walletName].toArray();
+  foreach (const auto &item, walletData)
+    {
+      QSet<QString> aSet;
+      QString networkName = item.toObject().value ("network").toString();
+      foreach (const auto &token, item.toObject().value ("tokens").toArray())
+        aSet.insert (token.toObject().value ("tokenName").toString());
+      aSet.remove ("0");
+      networkWithTokenName[networkName].setValue (aSet);
+    }
+  return networkWithTokenName;
+}
+
+QMap<QString, QVariant> WalletsData::tokensAmount (const QString &wallet, const QString network)
+{
+  QMap<QString, QVariant> tokens;
+  QJsonArray walletData = m_walletsData[wallet].toArray();
+  foreach (const auto &item, walletData)
+    if (network == item.toObject().value ("network").toString())
+      foreach (const auto &item, item.toObject().value ("tokens").toArray())
+        tokens[item.toObject().value ("tokenName").toString()]
+          = item.toObject().value ("balance").toString();
+  if (tokens.contains ("0"))
+    tokens.remove ("0");
+  return tokens;
+}
+
+/*-----------------------------------------*/
+
+DapCmdNode::OrderInfo DapCmdNode::OrderInfo::fromJson (const QJsonObject &a_obj)
+{
+  return OrderInfo
+  {
+    a_obj.value ("direction").toString(),
+    a_obj.value ("ext").toString(),
+    a_obj.value ("hash").toString(),
+    a_obj.value ("node_addr").toString(),
+    a_obj.value ("node_location").toString(),
+    a_obj.value ("pkey").toString(),
+    a_obj.value ("price").toString(),
+    a_obj.value ("price_unit").toString(),
+    a_obj.value ("srv_uid").toString(),
+    a_obj.value ("tx_cond_hash").toString(),
+    a_obj.value ("units").toString(),
+    a_obj.value ("version").toString(),
+  };
+}
+
+QJsonObject OrderInfo::toJsonObject() const
+{
+  QJsonObject result;
+  result.insert ("direction", direction);
+  result.insert ("ext", ext);
+  result.insert ("hash", hash);
+  result.insert ("nodeAddress", nodeAddress);
+  result.insert ("nodeLocation", nodeLocation);
+  result.insert ("pkey", pkey);
+  result.insert ("price", price);
+  result.insert ("priceUnit", priceUnit);
+  result.insert ("srvUid", srvUid);
+  result.insert ("txCondHash", txCondHash);
+  result.insert ("units", units);
+  result.insert ("version", version);
+  return result;
+}
+
+QDebug operator<< (QDebug debug, const OrderInfo &data)
+{
+  debug.nospace() << "OrderInfo("
+                  << "direction:" << data.direction
+                  << ", ext:" << data.ext
+                  << ", hash:" << data.hash
+                  << ", nodeAddress:" << data.nodeAddress
+                  << ", nodeLocation:" << data.nodeLocation
+                  << ", pkey:" << data.pkey
+                  << ", price:" << data.price
+                  << ", priceUnit:" << data.priceUnit
+                  << ", srvUid:" << data.srvUid
+                  << ", txCondHash:" << data.txCondHash
+                  << ", units:" << data.units
+                  << ", version:" << data.version << ")";
+  return debug.space();
+}
+
+/*-----------------------------------------*/

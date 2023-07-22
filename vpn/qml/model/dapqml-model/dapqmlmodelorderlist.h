@@ -109,7 +109,7 @@ signals:
    *******************************************/
   /// @{
 public slots:
-  void slotSetData (const QMap<QString, QVariant> &a_orderListData);
+  void slotSetData (const QJsonArray &a_list);
   /// @}
 };
 
