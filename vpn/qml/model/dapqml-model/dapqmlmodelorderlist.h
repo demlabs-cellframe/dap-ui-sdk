@@ -18,24 +18,37 @@ class DapQmlModelOrderList : public QAbstractListModel
 {
   Q_OBJECT
 
-  friend class DapQmlModelOrderListProxyModel;
-
-  /****************************************//**
-   * @name PROPERTIES
-   *******************************************/
-  /// @{
-  Q_PROPERTY (int currentIndex    READ currentIndex WRITE setCurrentIndex NOTIFY sigCurrentIndexChanged)
-  Q_PROPERTY (QString serverName  READ serverName   WRITE setServerName   NOTIFY sigServerNameChanged)
-  Q_PROPERTY (QString network     READ network      WRITE setNetwork      NOTIFY sigNetworkChanged)
-  Q_PROPERTY (QString wallet      READ wallet       WRITE setWallet       NOTIFY sigWalletChanged)
-  /// @}
+    friend class DapQmlModelOrderListProxyModel;
 
   /****************************************//**
    * @name DEFS
    *******************************************/
   /// @{
+public:
+  enum Mode
+  {
+    Invalid,
+
+    Orders,
+    Networks,
+    Wallets,
+    Tokens,
+  };
+  Q_ENUM (Mode)
+
 protected:
   struct DapQmlModelOrderListData;
+  /// @}
+
+  /****************************************//**
+   * @name PROPERTIES
+   *******************************************/
+  /// @{
+  Q_PROPERTY (Mode mode           READ mode         WRITE setMode         NOTIFY sigModeChanged)
+  Q_PROPERTY (int currentIndex    READ currentIndex WRITE setCurrentIndex NOTIFY sigCurrentIndexChanged)
+  Q_PROPERTY (QString serverName  READ serverName   WRITE setServerName   NOTIFY sigServerNameChanged)
+  Q_PROPERTY (QString network     READ network      WRITE setNetwork      NOTIFY sigNetworkChanged)
+  Q_PROPERTY (QString wallet      READ wallet       WRITE setWallet       NOTIFY sigWalletChanged)
   /// @}
 
   /****************************************//**
@@ -66,6 +79,9 @@ public:
   Q_INVOKABLE int length() const;
   Q_INVOKABLE int indexOf (const QString &a_location);
 
+  Q_INVOKABLE Mode mode() const;
+  Q_INVOKABLE void setMode (Mode a_value);
+
   Q_INVOKABLE int currentIndex() const;
   Q_INVOKABLE void setCurrentIndex (int a_index);
 
@@ -77,8 +93,6 @@ public:
 
   Q_INVOKABLE QString wallet() const;
   Q_INVOKABLE void setWallet (const QString &a_value);
-protected:
-  static QString _scopedPrice (const QString &a_value);
   /// @}
 
   /****************************************//**
@@ -98,6 +112,7 @@ public:
    *******************************************/
   /// @{
 signals:
+  void sigModeChanged();
   void sigCurrentIndexChanged();
   void sigServerNameChanged();
   void sigNetworkChanged();
@@ -109,7 +124,7 @@ signals:
    *******************************************/
   /// @{
 public slots:
-  void slotSetData (const QJsonArray &a_list);
+  void slotSetOrderListData (const QJsonArray &a_list);
   /// @}
 };
 

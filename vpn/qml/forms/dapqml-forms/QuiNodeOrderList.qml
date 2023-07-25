@@ -60,6 +60,38 @@ Item {
     /// @brief item clicked
     signal sigSelect(int index, string name);
 
+    signal sigNetworkClicked();
+    signal sigWalletClicked();
+    signal sigTokenClicked();
+    signal sigUnitClicked();
+    signal sigMaxPriceClicked();
+    signal sigSearchClicked();
+
+    onSigNetworkClicked: {
+        csListView.model.setMode(DapQmlModelOrderList.Mode.Networks);
+        swipe.incrementCurrentIndex();
+    }
+
+    onSigWalletClicked: {
+        csListView.model.setMode(DapQmlModelOrderList.Mode.Wallets);
+        swipe.incrementCurrentIndex();
+    }
+
+    onSigTokenClicked: {
+        csListView.model.setMode(DapQmlModelOrderList.Mode.Tokens);
+        swipe.incrementCurrentIndex();
+    }
+
+    onSigUnitClicked: {
+        // TODO
+        swipe.incrementCurrentIndex();
+    }
+
+    onSigMaxPriceClicked: {
+        // TODO
+        swipe.incrementCurrentIndex();
+    }
+
     /// @}
     /****************************************//**
      * @name FUNCTIONS
@@ -208,6 +240,12 @@ Item {
                 }
             }
         }
+    }
+
+    Component {
+        id: listviewDelegateNull
+
+        Item {}
     }
 
     Component {
@@ -407,7 +445,7 @@ Item {
                     property string first:      root.internal.network
                     property string second:     "Network"
                     property bool swap:         true
-                    property var cbOnClicked: function() {}
+                    property var cbOnClicked: function() { root.sigNetworkClicked(); }
                 }
 
                 Loader {
@@ -415,7 +453,7 @@ Item {
                     property string first:      root.internal.wallet
                     property string second:     "Wallet"
                     property bool swap:         true
-                    property var cbOnClicked: function() {}
+                    property var cbOnClicked: function() { root.sigWalletClicked(); }
                 }
 
                 Loader {
@@ -423,7 +461,7 @@ Item {
                     property string first:      root.internal.token
                     property string second:     "Token"
                     property bool swap:         true
-                    property var cbOnClicked: function() {}
+                    property var cbOnClicked: function() { root.sigTokenClicked(); }
                 }
 
                 Loader {
@@ -431,7 +469,7 @@ Item {
                     property string first:      root.internal.unit
                     property string second:     "Unit"
                     property bool swap:         true
-                    property var cbOnClicked: function() {}
+                    property var cbOnClicked: function() { root.sigUnitClicked(); }
                 }
 
                 Loader {
@@ -439,7 +477,7 @@ Item {
                     property string first:      root.internal.maxPrice
                     property string second:     "Max price"
                     property bool swap:         true
-                    property var cbOnClicked: function() {}
+                    property var cbOnClicked: function() { root.sigMaxPriceClicked(); }
                 }
 
                 Item {
@@ -450,7 +488,10 @@ Item {
             DapQmlPushButton {
                 qss: "nodeorlist-overview-confirm-btn"
                 text: qsTr("SEARCH ORDER")
-                onClicked: swipe.incrementCurrentIndex()
+                onClicked: {
+                    root.sigSearchClicked();
+                    swipe.incrementCurrentIndex();
+                }
             }
         }
 
@@ -469,7 +510,33 @@ Item {
                 spacing: spacer.height
                 clip: true
 
-                delegate: listviewDelegate
+                property var mode
+
+                state: "idle"
+                onModelChanged: state = "modelSet"
+                onModeChanged: {
+                    console.log (`NEW MODE: ${mode}`)
+                    if (mode === undefined)
+                        delegate = listviewDelegateNull;
+
+                    switch(mode)
+                    {
+                    case DapQmlModelOrderList.Mode.Networks:    delegate = listviewDelegateNull;    break;
+                    case DapQmlModelOrderList.Mode.Wallets:     delegate = listviewDelegateNull;    break;
+                    case DapQmlModelOrderList.Mode.Tokens:      delegate = listviewDelegateNull;    break;
+                    case DapQmlModelOrderList.Mode.Orders:      delegate = listviewDelegate;        break;
+
+                    default:
+                        return listviewDelegateNull;
+                    }
+                }
+
+                states: [
+                    State {
+                        name: "modelSet"
+                        PropertyChanges { target: csListView; mode: csListView.mode }
+                    }
+                ]
 
                 DapQmlStyle { item: csListView; qss: "nodeorlist-listview" }
 
