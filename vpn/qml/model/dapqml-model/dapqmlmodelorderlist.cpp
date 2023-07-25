@@ -216,6 +216,8 @@ void DapQmlModelOrderList::slotSetData (const QJsonArray &a_list)
 //  if (a_list.isEmpty())
 //    return;
 
+  beginResetModel();
+
   _data->items.clear();
 
   for (const auto& item : qAsConst (a_list))
@@ -234,6 +236,8 @@ void DapQmlModelOrderList::slotSetData (const QJsonArray &a_list)
       std::move (punit)
     };
   }
+
+  endResetModel();
 }
 
 

@@ -2,7 +2,7 @@
 
 import QtQuick 2.0
 import QtQuick.Controls 2.0
-import QtQuick.Layouts 1.0
+import QtQuick.Layouts 1.2
 import DapQmlStyle 1.0
 import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
@@ -19,7 +19,19 @@ Item {
     clip: true
 
     /****************************************//**
-     * @name VARS
+     * @name DEFS
+     ********************************************/
+    /// @{
+
+    enum Tab {
+        Search,
+        List,
+        Overview
+    }
+
+    /// @}
+    /****************************************//**
+     * @name SIGNALS
      ********************************************/
     /// @{
 
@@ -29,12 +41,14 @@ Item {
     property string formName: "NodeOrderList"
 
     property QtObject internal: QtObject {
-        property string network
-        property string wallet
-        property string server
-        property string unit
-        property string price
-        property string priceShort
+        property string network:    "TestNetworkName"
+        property string wallet:     "TestWalletName"
+        property string server:     "TestServerName"
+        property string token:      "TestTokenName"
+        property string unit:       "TestUnitName"
+        property string price:      "TestPriceName"
+        property string priceShort: "TESTC"
+        property string maxPrice:   "TestMaxPriceName"
     }
 
     /// @}
@@ -91,29 +105,28 @@ Item {
      ********************************************/
 
     Component {
-        id: listviewDelegate
+        id: compButton
+
+        //property string first
+        //property string second
+        //property bool swap
+        //property var cbOnClicked
 
         DapQmlRectangle {
+            id: itemRoot
             width: resizer.width// - 100
-            height: resizer.height + spacer.height
+            height: resizer.height
 
-            Component.onCompleted: StyleDebugTree.describe (
-               "listviewDelegate" + model.index,
-                ["x", "y", "width", "height"],
-               this);
+//            Component.onCompleted: StyleDebugTree.describe (
+//               "listviewDelegate" + model.index,
+//                ["x", "y", "width", "height"],
+//               this);
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: {
-                    root.internal.network       = model.network;
-                    root.internal.wallet        = model.wallet;
-                    root.internal.server        = model.server;
-                    root.internal.unit          = model.units;
-                    root.internal.price         = model.price;
-                    root.internal.priceShort    = model.priceShort;
-
-                    swipe.incrementCurrentIndex();
-                }
+                onClicked:
+                    if (itemRoot.parent.cbOnClicked)
+                        itemRoot.parent.cbOnClicked()
             }
 
             DapQmlSeparator {
@@ -127,40 +140,58 @@ Item {
                 anchors.leftMargin: listviewItemSizer.x
                 anchors.rightMargin: listviewItemSizer.x
 
-                Component.onCompleted: StyleDebugTree.describe (
-                   "listviewDelegate rowlay" + model.index,
-                    ["x", "y", "width", "height"],
-                   this);
+//                Component.onCompleted: StyleDebugTree.describe (
+//                   "listviewDelegate rowlay" + model.index,
+//                    ["x", "y", "width", "height"],
+//                   this);
 
                 ColumnLayout {
+                    id: itemLabels
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    Component.onCompleted: StyleDebugTree.describe (
-                       "listviewDelegate collay" + model.index,
-                        ["x", "y", "width", "height"],
-                       this);
+                    property bool swap: false
 
-                    DapQmlLabel {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        horizontalAlign: Text.AlignLeft
-                        verticalAlign: Text.AlignBottom
-                        elide: Text.ElideMiddle
-                        disableClicking: true
-                        qss: "nodeorlist-item-label-top"
-                        text: `${model.price} per ${model.units}`
+//                    Component.onCompleted: StyleDebugTree.describe (
+//                       "listviewDelegate collay" + model.index,
+//                        ["x", "y", "width", "height"],
+//                       this);
+
+                    Component.onCompleted: {
+                        if (itemRoot.parent.hasOwnProperty("swap"))
+                        {
+                            swap    = itemRoot.parent.swap;
+                            if (swap)
+                            {
+                                var item    = children[0];
+                                item.parent = root;
+                                item.parent = this;
+                            }
+                        }
                     }
 
                     DapQmlLabel {
+                        id: itemLabelTop
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         horizontalAlign: Text.AlignLeft
-                        verticalAlign: Text.AlignTop
+                        verticalAlign: parent.swap ? Text.AlignTop : Text.AlignBottom
+                        elide: Text.ElideMiddle
+                        disableClicking: true
+                        qss: "nodeorlist-item-label-top"
+                        text: itemRoot.parent.first // `${model.price} per ${model.units}`
+                    }
+
+                    DapQmlLabel {
+                        id: itemLabelBottom
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        horizontalAlign: Text.AlignLeft
+                        verticalAlign: !parent.swap ? Text.AlignTop : Text.AlignBottom
                         elide: Text.ElideMiddle
                         disableClicking: true
                         qss: "nodeorlist-item-label-bottom"
-                        text: model.server
+                        text: itemRoot.parent.second // model.server
                     }
                 }
 
@@ -170,13 +201,125 @@ Item {
                     Layout.preferredHeight: linkImageSizer.height
                     scaledPixmap: linkImageSizer.scaledPixmap
 
-                    Component.onCompleted: StyleDebugTree.describe (
-                       "listviewDelegate link" + model.index,
-                        ["x", "y", "width", "height"],
-                       this);
+//                    Component.onCompleted: StyleDebugTree.describe (
+//                       "listviewDelegate link" + model.index,
+//                        ["x", "y", "width", "height"],
+//                       this);
                 }
             }
         }
+    }
+
+    Component {
+        id: listviewDelegate
+
+        Loader {
+            width: resizer.width
+            height: resizer.height
+            sourceComponent: compButton
+            property string first:      `${model.price} per ${model.units}`
+            property string second:      model.server
+            property var cbOnClicked: function() {
+                root.internal.network       = model.network;
+                root.internal.wallet        = model.wallet;
+                root.internal.server        = model.server;
+                root.internal.unit          = model.units;
+                root.internal.price         = model.price;
+                root.internal.priceShort    = model.priceShort;
+
+                swipe.incrementCurrentIndex();
+            }
+
+            Component.onCompleted: StyleDebugTree.describe (
+               "listviewDelegate" + model.index,
+                ["x", "y", "width", "height", "first", "second"],
+               this);
+        }
+
+//        DapQmlRectangle {
+//            width: resizer.width// - 100
+//            height: resizer.height + spacer.height
+
+////            Component.onCompleted: StyleDebugTree.describe (
+////               "listviewDelegate" + model.index,
+////                ["x", "y", "width", "height"],
+////               this);
+
+//            MouseArea {
+//                anchors.fill: parent
+//                onClicked: {
+//                    root.internal.network       = model.network;
+//                    root.internal.wallet        = model.wallet;
+//                    root.internal.server        = model.server;
+//                    root.internal.unit          = model.units;
+//                    root.internal.price         = model.price;
+//                    root.internal.priceShort    = model.priceShort;
+
+//                    swipe.incrementCurrentIndex();
+//                }
+//            }
+
+//            DapQmlSeparator {
+//                anchors.bottom: parent.bottom
+//                width: parent.width
+//                height: 2
+//            }
+
+//            RowLayout {
+//                anchors.fill: parent
+//                anchors.leftMargin: listviewItemSizer.x
+//                anchors.rightMargin: listviewItemSizer.x
+
+////                Component.onCompleted: StyleDebugTree.describe (
+////                   "listviewDelegate rowlay" + model.index,
+////                    ["x", "y", "width", "height"],
+////                   this);
+
+//                ColumnLayout {
+//                    Layout.fillWidth: true
+//                    Layout.fillHeight: true
+
+////                    Component.onCompleted: StyleDebugTree.describe (
+////                       "listviewDelegate collay" + model.index,
+////                        ["x", "y", "width", "height"],
+////                       this);
+
+//                    DapQmlLabel {
+//                        Layout.fillWidth: true
+//                        Layout.fillHeight: true
+//                        horizontalAlign: Text.AlignLeft
+//                        verticalAlign: Text.AlignBottom
+//                        elide: Text.ElideMiddle
+//                        disableClicking: true
+//                        qss: "nodeorlist-item-label-top"
+//                        text: `${model.price} per ${model.units}`
+//                    }
+
+//                    DapQmlLabel {
+//                        Layout.fillWidth: true
+//                        Layout.fillHeight: true
+//                        horizontalAlign: Text.AlignLeft
+//                        verticalAlign: Text.AlignTop
+//                        elide: Text.ElideMiddle
+//                        disableClicking: true
+//                        qss: "nodeorlist-item-label-bottom"
+//                        text: model.server
+//                    }
+//                }
+
+//                DapQmlImage {
+//                    id: linkImage
+//                    Layout.preferredWidth: linkImageSizer.width
+//                    Layout.preferredHeight: linkImageSizer.height
+//                    scaledPixmap: linkImageSizer.scaledPixmap
+
+//                    Component.onCompleted: StyleDebugTree.describe (
+//                       "listviewDelegate link" + model.index,
+//                        ["x", "y", "width", "height"],
+//                       this);
+//                }
+//            }
+//        }
     }
 
     Component {
@@ -212,9 +355,18 @@ Item {
 
     DapQmlDialogTitle {
         id: title
-        text: swipe.currentIndex === 0 ? qsTr("Orders") : qsTr("Transaction overview")
+        text: {
+            switch(swipe.currentIndex)
+            {
+            case QuiNodeOrderList.Tab.Search:   return qsTr("Search order");
+            case QuiNodeOrderList.Tab.List:     return qsTr("Orders");
+            case QuiNodeOrderList.Tab.Overview: return qsTr("Transaction overview");
+            }
+            return "";
+        }
+        //text: swipe.currentIndex === QuiNodeOrderList.Tab.List ? qsTr("Orders") : qsTr("Transaction overview")
         qss: "dialog-title"
-        hideClose: swipe.currentIndex !== 0
+        hideClose: swipe.currentIndex !== QuiNodeOrderList.Tab.Search
 
         /****************************************//**
          * Back button
@@ -222,7 +374,7 @@ Item {
 
         DapQmlPushButton {
             qss: "form-title-close-btn"
-            visible: swipe.currentIndex !== 0
+            visible: swipe.currentIndex !== QuiNodeOrderList.Tab.Search
             onClicked: swipe.decrementCurrentIndex()
         }
     }
@@ -237,6 +389,72 @@ Item {
         interactive: false
 
         /****************************************//**
+         * Search Filter
+         ********************************************/
+
+        Item {
+            id: searchFilter
+            width: root.width
+            height: root.height
+
+            ColumnLayout {
+                id: searchFilterContent
+                spacing: spacer.height
+                DapQmlStyle { item: searchFilterContent; qss: "nodeorlist-listview" }
+
+                Loader {
+                    sourceComponent: compButton
+                    property string first:      root.internal.network
+                    property string second:     "Network"
+                    property bool swap:         true
+                    property var cbOnClicked: function() {}
+                }
+
+                Loader {
+                    sourceComponent: compButton
+                    property string first:      root.internal.wallet
+                    property string second:     "Wallet"
+                    property bool swap:         true
+                    property var cbOnClicked: function() {}
+                }
+
+                Loader {
+                    sourceComponent: compButton
+                    property string first:      root.internal.token
+                    property string second:     "Token"
+                    property bool swap:         true
+                    property var cbOnClicked: function() {}
+                }
+
+                Loader {
+                    sourceComponent: compButton
+                    property string first:      root.internal.unit
+                    property string second:     "Unit"
+                    property bool swap:         true
+                    property var cbOnClicked: function() {}
+                }
+
+                Loader {
+                    sourceComponent: compButton
+                    property string first:      root.internal.maxPrice
+                    property string second:     "Max price"
+                    property bool swap:         true
+                    property var cbOnClicked: function() {}
+                }
+
+                Item {
+                    Layout.fillHeight: true
+                }
+            }
+
+            DapQmlPushButton {
+                qss: "nodeorlist-overview-confirm-btn"
+                text: qsTr("SEARCH ORDER")
+                onClicked: swipe.incrementCurrentIndex()
+            }
+        }
+
+        /****************************************//**
          * Listview
          ********************************************/
 
@@ -248,6 +466,7 @@ Item {
                 id: csListView
                 objectName: "listview"
                 x: (root.width - width) / 2
+                spacing: spacer.height
                 clip: true
 
                 delegate: listviewDelegate
@@ -258,6 +477,12 @@ Item {
                    "csListView",
                     ["x", "y", "width", "height"],
                    this);
+            }
+
+            DapQmlPushButton {
+                qss: "nodeorlist-overview-confirm-btn"
+                text: qsTr("SEARCH ORDER")
+                onClicked: swipe.incrementCurrentIndex()
             }
         }
 
