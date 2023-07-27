@@ -586,10 +586,18 @@ bool ModuleContainer::setMode (Mode a_value)
   return true;
 }
 
+
+
 /*-----------------------------------------*/
 /* NAMESPACE */
 namespace Dqmol
 {
+/*-----------------------------------------*/
+
+
+
+/*-----------------------------------------*/
+/* ModuleInterface Methods */
 /*-----------------------------------------*/
 
 int ModuleInterface::currentIndex() const

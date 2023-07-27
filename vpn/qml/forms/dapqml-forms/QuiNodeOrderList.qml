@@ -4,6 +4,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.2
 import DapQmlStyle 1.0
+import DapQmlModelOrderList 1.0
 import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
@@ -68,17 +69,17 @@ Item {
     signal sigSearchClicked();
 
     onSigNetworkClicked: {
-        csListView.model.setMode(DapQmlModelOrderList.Mode.Networks);
+        csListView.model.setMode(DapQmlModelOrderList.Networks);
         swipe.incrementCurrentIndex();
     }
 
     onSigWalletClicked: {
-        csListView.model.setMode(DapQmlModelOrderList.Mode.Wallets);
+        csListView.model.setMode(DapQmlModelOrderList.Wallets);
         swipe.incrementCurrentIndex();
     }
 
     onSigTokenClicked: {
-        csListView.model.setMode(DapQmlModelOrderList.Mode.Tokens);
+        csListView.model.setMode(DapQmlModelOrderList.Tokens);
         swipe.incrementCurrentIndex();
     }
 
@@ -89,6 +90,11 @@ Item {
 
     onSigMaxPriceClicked: {
         // TODO
+        swipe.incrementCurrentIndex();
+    }
+
+    onSigSearchClicked: {
+        csListView.model.setMode(DapQmlModelOrderList.Orders);
         swipe.incrementCurrentIndex();
     }
 
@@ -490,7 +496,6 @@ Item {
                 text: qsTr("SEARCH ORDER")
                 onClicked: {
                     root.sigSearchClicked();
-                    swipe.incrementCurrentIndex();
                 }
             }
         }
@@ -510,33 +515,66 @@ Item {
                 spacing: spacer.height
                 clip: true
 
-                property var mode
+//                property var mode
 
-                state: "idle"
-                onModelChanged: state = "modelSet"
-                onModeChanged: {
-                    console.log (`NEW MODE: ${mode}`)
-                    if (mode === undefined)
-                        delegate = listviewDelegateNull;
+//                state: "idle"
+//                onModelChanged: state = "modelSet"
+//                onModeChanged: {
+//                    console.log (`NEW MODE: ${mode}`)
+//                    if (mode === undefined)
+//                    {
+//                        delegate = listviewDelegateNull;
+//                        return;
+//                    }
 
-                    switch(mode)
-                    {
-                    case DapQmlModelOrderList.Mode.Networks:    delegate = listviewDelegateNull;    break;
-                    case DapQmlModelOrderList.Mode.Wallets:     delegate = listviewDelegateNull;    break;
-                    case DapQmlModelOrderList.Mode.Tokens:      delegate = listviewDelegateNull;    break;
-                    case DapQmlModelOrderList.Mode.Orders:      delegate = listviewDelegate;        break;
+//                    switch(mode)
+//                    {
+//                    case DapQmlModelOrderList.Networks:    delegate = listviewDelegateNull;    break;
+//                    case DapQmlModelOrderList.Wallets:     delegate = listviewDelegateNull;    break;
+//                    case DapQmlModelOrderList.Tokens:      delegate = listviewDelegateNull;    break;
+//                    case DapQmlModelOrderList.Orders:      delegate = listviewDelegate;        break;
+//                    }
+//                }
 
-                    default:
-                        return listviewDelegateNull;
+//                states: [
+//                    State {
+//                        name: "modelSet"
+//                        //PropertyChanges { target: csListView; mode: csListView.mode }
+//                        PropertyChanges { target: csListViewConn; target: model }
+//                    }
+//                ]
+
+                onModelChanged: {
+                    if (model)
+                        csListViewConn.target   = model;
+                }
+
+                Connections {
+                    id: csListViewConn
+                    //target: csListView.model
+                    target: csListViewConnDummy
+                    function onModeChanged() {
+                        console.log (`NEW MODE: ${target.mode}`)
+                        if (target.mode === undefined)
+                        {
+                            csListView.delegate = listviewDelegateNull;
+                            return;
+                        }
+
+                        switch(target.mode)
+                        {
+                        case DapQmlModelOrderList.Networks:    csListView.delegate = listviewDelegateNull;    break;
+                        case DapQmlModelOrderList.Wallets:     csListView.delegate = listviewDelegateNull;    break;
+                        case DapQmlModelOrderList.Tokens:      csListView.delegate = listviewDelegateNull;    break;
+                        case DapQmlModelOrderList.Orders:      csListView.delegate = listviewDelegate;        break;
+                        }
                     }
                 }
 
-                states: [
-                    State {
-                        name: "modelSet"
-                        PropertyChanges { target: csListView; mode: csListView.mode }
-                    }
-                ]
+                Item {
+                    id: csListViewConnDummy
+                    property var mode
+                }
 
                 DapQmlStyle { item: csListView; qss: "nodeorlist-listview" }
 
