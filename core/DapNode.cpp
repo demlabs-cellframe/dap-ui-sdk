@@ -422,10 +422,10 @@ void DapNode::initWeb3Connections()
     });
     // order list ready
     connect(web3, &DapNodeWeb3::sigOrderList, this, [=](QJsonArray ordersList) {
-        //QJsonArray orders;
-        //orderListFiltr(ordersList, orders, m_listKeys);
+        QJsonArray orders;
+        orderListFiltr(ordersList, orders, m_listKeys);
         emit sigOrderListReceived();
-        emit sigOrderListReady(ordersList); //emit sigOrderListReady(orders);
+        emit sigOrderListReady(orders); //        emit sigOrderListReady(ordersList);
     });
     //connect(web3, &DapNodeWeb3::sigOrderList, this, &DapNode::sigOrderListReady);
     // recieved fee
