@@ -120,9 +120,9 @@ public slots:
   /// @{
 signals:
   void nodeDetected();
-  void walletsList (QMap<QString, QVariant> data);
-  void networksList (QMap<QString, QVariant> data);
-  void tokensInfo (QMap<QString, QVariant> data);
+  void walletsList (QHash<QString, QStringList> data);
+  void networksList (QHash<QString, QStringList> data);
+  void tokensInfo (QHash<QString, QString> data);
   void orderList (QMap<QString, QVariant> data);
   void tokenAmount (QString token, QString amount);
   void nodeError (int code, QString errorMessage);

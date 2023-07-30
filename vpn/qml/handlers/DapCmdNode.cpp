@@ -42,17 +42,61 @@ private:
  */
 class WalletsData
 {
+  /* DEFS */
+  struct Token
+  {
+    QString name;     // token name
+    QString balance;  // balanse
+    QString datoshi;  // datoshi price
+  };
+
+  struct Network
+  {
+    QString name;           // network name
+    QString address;        // network address
+    QStringList tokenNames; // fast access to token names
+    QList<Token> tokens;    // network tokens
+  };
+
+  struct Wallet
+  {
+    QString name;             // wallet name
+    QStringList networkNames; // fast access to network names
+    QStringList tokenNames;   // fast access to all token names
+    QList<Network> networks;  // wallet networks
+  };
+
   /* VARS */
-  QJsonObject m_walletsData;
+
+  //QJsonObject m_walletsData;
+
+  QList<Wallet> _wallets;   // all wallets
+  QStringList _walletNames; // fast access to wallet names
 
   /* METHODS */
 public:
+  /* parse data */
   void setData (const QJsonObject &a_walletsData);
+
+  /* get wallets names list */
   QStringList wallets();
-  QMap<QString, QVariant> walletsWithTokens();
-  QStringList networks (const QString &wallet);
-  QMap<QString, QVariant> networkWithTokens (const QString &walletName);
-  QMap<QString, QVariant> tokensAmount (const QString &wallet, const QString network);
+
+  /* get map with wallet names and corresponded tokens lists */
+  QHash<QString, QStringList> walletsWithTokens();
+
+  /* get wallet network names list */
+  QStringList networks (const QString &a_walletName);
+
+  /* get map with network names and corresponded tokens list */
+  QHash<QString, QStringList> networkWithTokens (const QString &a_walletName);
+
+  /* get map with token names and balances */
+  QHash<QString, QString> tokensAmount (const QString &a_walletName, const QString &network);
+
+protected:
+  void _parseWallets (const QJsonObject &a_data);
+  void _parseNetworks (const QJsonArray &a_list, Wallet &a_dest);
+  void _parseTokens (const QJsonArray &a_list, Network &a_dest, QStringList &a_tokenNames);
 };
 
 /**
@@ -324,7 +368,7 @@ void DapCmdNode::chooseToken (QString token)
   _data->selectedTokenName = token;
   auto tokens = _data->dataWallet.tokensAmount (_data->selectedWalletName, _data->selectedNetworkName);
   emit continueEnable (_checkContinue());
-  emit tokenAmount (token, tokens[token].toString());
+  emit tokenAmount (token, tokens[token]);
 }
 
 void DapCmdNode::setValue (QString value)
@@ -455,67 +499,186 @@ QJsonObject OrderListData::orderInfo (const QString &hash)
 
 void WalletsData::setData (const QJsonObject &a_walletsData)
 {
-  m_walletsData = a_walletsData;
+  //m_walletsData = a_walletsData;
+  _parseWallets (a_walletsData);
 }
 
 QStringList WalletsData::wallets()
 {
-  return  m_walletsData.keys();
+  return _walletNames; // m_walletsData.keys();
 }
 
-QMap<QString, QVariant> WalletsData::walletsWithTokens()
+QHash<QString, QStringList> WalletsData::walletsWithTokens()
 {
-  QMap<QString, QVariant> walletsWithTokenName;
-  foreach (const auto &walletName, m_walletsData.keys())
-    {
-      QSet<QString> aSet;
-      QJsonArray walletData = m_walletsData[walletName].toArray();
-      foreach (const auto &item, walletData)
-        foreach (const auto &token, item.toObject().value ("tokens").toArray())
-          aSet.insert (token.toObject().value ("tokenName").toString());
-      aSet.remove ("0");
-      walletsWithTokenName[walletName].setValue (aSet);
-    }
-  return walletsWithTokenName;
+//  QMap<QString, QVariant> walletsWithTokenName;
+//  foreach (const auto &walletName, m_walletsData.keys())
+//    {
+//      QSet<QString> aSet;
+//      QJsonArray walletData = m_walletsData[walletName].toArray();
+//      foreach (const auto &item, walletData)
+//        foreach (const auto &token, item.toObject().value ("tokens").toArray())
+//          aSet.insert (token.toObject().value ("tokenName").toString());
+//      aSet.remove ("0");
+//      walletsWithTokenName[walletName].setValue (aSet);
+//    }
+//  return walletsWithTokenName;
+
+  QHash<QString, QStringList> result;
+
+  for (auto i = _wallets.cbegin(), e = _wallets.cend(); i != e; i++)
+    result.insert (i->name, i->tokenNames);
+
+  return result;
 }
 
-QStringList WalletsData::networks (const QString &wallet)
+QStringList WalletsData::networks (const QString &a_walletName)
 {
-  QStringList networks;
-  QJsonArray walletData = m_walletsData[wallet].toArray();
-  foreach (const auto &item, walletData)
-    networks.append (item.toObject().value ("network").toString());
-  return networks;
+//  QStringList networks;
+//  QJsonArray walletData = m_walletsData[wallet].toArray();
+//  foreach (const auto &item, walletData)
+//    networks.append (item.toObject().value ("network").toString());
+//  return networks;
+
+  int index = _walletNames.indexOf (a_walletName);
+  if (index == -1)
+    return QStringList();
+  return _wallets.at (index).networkNames;
 }
 
-QMap<QString, QVariant> WalletsData::networkWithTokens (const QString &walletName)
+QHash<QString, QStringList> WalletsData::networkWithTokens (const QString &a_walletName)
 {
-  QMap<QString, QVariant> networkWithTokenName;
-  QJsonArray walletData = m_walletsData[walletName].toArray();
-  foreach (const auto &item, walletData)
-    {
-      QSet<QString> aSet;
-      QString networkName = item.toObject().value ("network").toString();
-      foreach (const auto &token, item.toObject().value ("tokens").toArray())
-        aSet.insert (token.toObject().value ("tokenName").toString());
-      aSet.remove ("0");
-      networkWithTokenName[networkName].setValue (aSet);
-    }
-  return networkWithTokenName;
+//  QMap<QString, QVariant> networkWithTokenName;
+//  QJsonArray walletData = m_walletsData[walletName].toArray();
+//  foreach (const auto &item, walletData)
+//    {
+//      QSet<QString> aSet;
+//      QString networkName = item.toObject().value ("network").toString();
+//      foreach (const auto &token, item.toObject().value ("tokens").toArray())
+//        aSet.insert (token.toObject().value ("tokenName").toString());
+//      aSet.remove ("0");
+//      networkWithTokenName[networkName].setValue (aSet);
+//    }
+//  return networkWithTokenName;
+
+  /* vars */
+  QHash<QString, QStringList> result;
+
+  /* find wallet */
+  int index = _walletNames.indexOf (a_walletName);
+  if (index == -1)
+    return result;
+
+  /* get wallet */
+  const auto &wallet  = _wallets.at (index);
+
+  /* add all networks and their token names into result hash map */
+  for (auto i = wallet.networks.cbegin(), e = wallet.networks.cend(); i != e; i++)
+    result.insert (i->name, i->tokenNames);
+
+  return result;
 }
 
-QMap<QString, QVariant> WalletsData::tokensAmount (const QString &wallet, const QString network)
+QHash<QString, QString> WalletsData::tokensAmount (const QString &a_walletName, const QString &a_networkName)
 {
-  QMap<QString, QVariant> tokens;
-  QJsonArray walletData = m_walletsData[wallet].toArray();
-  foreach (const auto &item, walletData)
-    if (network == item.toObject().value ("network").toString())
-      foreach (const auto &item, item.toObject().value ("tokens").toArray())
-        tokens[item.toObject().value ("tokenName").toString()]
-          = item.toObject().value ("balance").toString();
-  if (tokens.contains ("0"))
-    tokens.remove ("0");
-  return tokens;
+//  QMap<QString, QVariant> tokens;
+//  QJsonArray walletData = m_walletsData[wallet].toArray();
+//  foreach (const auto &item, walletData)
+//    if (network == item.toObject().value ("network").toString())
+//      foreach (const auto &item, item.toObject().value ("tokens").toArray())
+//        tokens[item.toObject().value ("tokenName").toString()]
+//          = item.toObject().value ("balance").toString();
+//  if (tokens.contains ("0"))
+//    tokens.remove ("0");
+//  return tokens;
+
+  /* vars */
+  QHash<QString, QString> result;
+
+  /* find wallet */
+  int index = _walletNames.indexOf (a_walletName);
+  if (index == -1)
+    return result;
+
+  /* get wallet */
+  const auto &wallet  = _wallets.at (index);
+
+  /* find network */
+  index   = wallet.networkNames.indexOf (a_networkName);
+  if (index == -1)
+    return result;
+
+  /* get network */
+  const auto &network = wallet.networks.at (index);
+
+  /* collect data */
+  for (auto i = network.tokens.cbegin(), e = network.tokens.cend(); i != e; i++)
+    result.insert (i->name, i->balance);
+
+  return result;
+}
+
+void WalletsData::_parseWallets (const QJsonObject &a_data)
+{
+  _wallets.clear();
+  _walletNames.clear();
+
+  for (auto i = a_data.constBegin(), e = a_data.constEnd(); i != e; i++)
+  {
+    Wallet wallet;
+
+    /* fill with data */
+    wallet.name = i.key();
+    _parseNetworks (i.value().toArray(), wallet);
+
+    /* store name and data */
+    _walletNames.append (wallet.name);
+    _wallets.append (std::move (wallet));
+  }
+}
+
+void WalletsData::_parseNetworks (const QJsonArray &a_list, Wallet &a_dest)
+{
+  a_dest.networks.clear();
+  a_dest.networkNames.clear();
+
+  for (auto i = a_list.constBegin(), e = a_list.constEnd(); i != e; i++)
+  {
+    Network network;
+    QJsonObject data  = i->toObject();
+
+    /* fill with data */
+    network.name    = data.value ("network").toString();
+    network.address = data.value ("address").toString();
+    _parseTokens (data.value ("tokens").toArray(), network, a_dest.tokenNames);
+
+    /* store name and data */
+    a_dest.networkNames.append (network.name);
+    a_dest.networks.append (std::move (network));
+  }
+}
+
+void WalletsData::_parseTokens (const QJsonArray &a_list, Network &a_dest, QStringList &a_tokenNames)
+{
+  a_dest.tokens.clear();
+  a_dest.tokenNames.clear();
+
+  for (auto i = a_list.constBegin(), e = a_list.constEnd(); i != e; i++)
+  {
+    Token token;
+    QJsonObject data  = i->toObject();
+
+    /* fill with data */
+    token.name    = data.value ("tokenName").toString();
+    if (token.name == "0") // skip if empty
+      continue;
+    token.balance = data.value ("balance").toString();
+    token.datoshi = data.value ("datoshi").toString();
+
+    /* store name and data */
+    a_tokenNames.append (token.name);
+    a_dest.tokenNames.append (token.name);
+    a_dest.tokens.append (std::move (token));
+  }
 }
 
 /*-----------------------------------------*/

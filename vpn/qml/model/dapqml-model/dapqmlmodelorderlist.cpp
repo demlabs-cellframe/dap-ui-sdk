@@ -388,8 +388,15 @@ DapQmlModelOrderList::Mode DapQmlModelOrderList::mode() const
 
 void DapQmlModelOrderList::setMode (Mode a_value)
 {
+  /* notify model */
+  beginResetModel();
+
   if (!_data->module.setMode (a_value))
     return;
+
+  /* notify model */
+  endResetModel();
+
   emit sigModeChanged();
 }
 
@@ -530,9 +537,26 @@ void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
   endResetModel();
 }
 
-void DapQmlModelOrderList::slotSetNetworkListData()
+void DapQmlModelOrderList::slotSetNetworkListData (const QHash<QString, QStringList> &a_networkData)
 {
+  /* notify model */
+  beginResetModel();
 
+  auto networks  = s_modules.networks->as<NetworksModule>();
+  QVector<NameValueItem> items;
+  for (auto i = a_networkData.cbegin(), e = a_networkData.cend(); i != e; i++)
+    {
+      auto list = i.value();
+      items.append (NameValueItem
+      {
+        i.key(),
+        (list.isEmpty()) ? QString() : list.first()
+      });
+    }
+  networks->setItems (std::move (items));
+
+  /* notify model */
+  endResetModel();
 }
 
 
