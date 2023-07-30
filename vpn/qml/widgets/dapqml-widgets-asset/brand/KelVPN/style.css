@@ -2247,3 +2247,55 @@
 {
     scaled-rect: scaled(-1,802,374,80,true,16);
 }
+
+.nodeorlist-edit
+{
+    scaled-rect: scaled(-1,176,356,110,false,32);
+    radius: 12;
+    borderColor: "@separator-color";
+    borderWidth: 1;
+    color: "@input-field";
+}
+
+.nodeorlist-tabs
+{
+    scaled-rect: scaled(-1,706,356,64,false);
+}
+
+.nodeorlist-tabs-spacing
+{
+    scaled-rect: scaled(nan,nan,16,nan,false);
+}
+
+.nodeorlist-tab-btn
+{
+    color: "#f7f7f7";
+    radius: 13;
+}
+
+.nodeorlist-tab-btn-size
+{
+    scaled-rect: scaled(nan,nan,170,64,true);
+}
+
+.nodeorlist-tab-btn-selected
+{
+    color: "#1f1f1f";
+}
+
+.nodeorlist-tab-btn-label
+{
+    scaled-font: scaled(18);
+    color: "#1f1f1f";
+}
+
+.nodeorlist-tab-btn-label-second
+{
+    scaled-font: scaled(18);
+    color: "#ffffff";
+}
+
+.nodeorlist-name-value
+{
+    scaled-font: scaled(16);
+}

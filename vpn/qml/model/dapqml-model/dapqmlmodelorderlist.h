@@ -125,6 +125,7 @@ signals:
   /// @{
 public slots:
   void slotSetOrderListData (const QJsonArray &a_list);
+  void slotSetNetworkListData ();
   /// @}
 };
 

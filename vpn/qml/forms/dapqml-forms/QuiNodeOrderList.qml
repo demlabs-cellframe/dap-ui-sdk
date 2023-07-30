@@ -1,9 +1,10 @@
 /* INCLUDES */
 
-import QtQuick 2.0
+import QtQuick 2.9
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.2
 import DapQmlStyle 1.0
+import Brand 1.0
 import DapQmlModelOrderList 1.0
 import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
@@ -30,6 +31,18 @@ Item {
         Overview
     }
 
+    enum Mode {
+        Invalid,
+
+        Orders,
+        Networks,
+        Wallets,
+        Tokens,
+
+        Units,
+        MaxPrice
+    }
+
     /// @}
     /****************************************//**
      * @name SIGNALS
@@ -41,7 +54,31 @@ Item {
     /// Used to connect interface via Manager
     property string formName: "NodeOrderList"
 
+    property var interfaceObject
+
     property QtObject internal: QtObject {
+        /* VARIABLES */
+        property bool showConfirmButton: false  /// show bottom confirm button
+        property bool showValueEdit: false      /// shows line edit
+        property bool isEditingUnit: false      /// shows unit edit bottom tabs
+        property bool isTime: false             /// tab "TIME" is selected
+        property bool isPrice: false            /// price editing
+
+        /* MODES */
+        property var mode: QuiNodeOrderList.Invalid
+        property var modeSettings: [
+            0,0,0,DapQmlModelOrderList.Invalid,     // Invalid
+
+            0,0,0,DapQmlModelOrderList.Orders,      // Orders
+            1,0,0,DapQmlModelOrderList.Networks,    // Networks
+            1,0,0,DapQmlModelOrderList.Wallets,     // Wallets
+            1,0,0,DapQmlModelOrderList.Tokens,      // Tokens
+
+            1,1,1,DapQmlModelOrderList.Invalid,     // Unit
+            1,1,0,DapQmlModelOrderList.Invalid,     // Max Price
+        ]
+
+        /* LABELS */
         property string network:    "TestNetworkName"
         property string wallet:     "TestWalletName"
         property string server:     "TestServerName"
@@ -50,6 +87,20 @@ Item {
         property string price:      "TestPriceName"
         property string priceShort: "TESTC"
         property string maxPrice:   "TestMaxPriceName"
+
+        /* INTERNAL SIGNALS */
+        onModeChanged: {
+            console.log (`internal mode: ${mode}`)
+            showConfirmButton       = modeSettings[mode*4+0];
+            showValueEdit           = modeSettings[mode*4+1];
+            isEditingUnit           = modeSettings[mode*4+2];
+            let listviewMode        = modeSettings[mode*4+3];
+            isPrice                 = mode === QuiNodeOrderList.MaxPrice;
+
+            if (csListView.model)
+                csListView.model.setMode (listviewMode);
+            valueEditInput.text     = "0";
+        }
     }
 
     /// @}
@@ -69,32 +120,36 @@ Item {
     signal sigSearchClicked();
 
     onSigNetworkClicked: {
-        csListView.model.setMode(DapQmlModelOrderList.Networks);
+        setInternalMode(QuiNodeOrderList.Networks);
+        //csListView.model.setMode(DapQmlModelOrderList.Networks);
         swipe.incrementCurrentIndex();
     }
 
     onSigWalletClicked: {
-        csListView.model.setMode(DapQmlModelOrderList.Wallets);
+        setInternalMode(QuiNodeOrderList.Wallets);
+        //csListView.model.setMode(DapQmlModelOrderList.Wallets);
         swipe.incrementCurrentIndex();
     }
 
     onSigTokenClicked: {
-        csListView.model.setMode(DapQmlModelOrderList.Tokens);
+        setInternalMode(QuiNodeOrderList.Tokens);
+        //csListView.model.setMode(DapQmlModelOrderList.Tokens);
         swipe.incrementCurrentIndex();
     }
 
     onSigUnitClicked: {
-        // TODO
+        setInternalMode(QuiNodeOrderList.Units);
         swipe.incrementCurrentIndex();
     }
 
     onSigMaxPriceClicked: {
-        // TODO
+        setInternalMode(QuiNodeOrderList.MaxPrice);
         swipe.incrementCurrentIndex();
     }
 
     onSigSearchClicked: {
-        csListView.model.setMode(DapQmlModelOrderList.Orders);
+        setInternalMode(QuiNodeOrderList.Orders);
+        //csListView.model.setMode(DapQmlModelOrderList.Orders);
         swipe.incrementCurrentIndex();
     }
 
@@ -103,6 +158,14 @@ Item {
      * @name FUNCTIONS
      ********************************************/
     /// @{
+
+    function setInternalMode(a_mode) {
+        root.internal.mode  = a_mode;
+    }
+
+    function tabPressed(a_tabIndex) {
+        root.internal.isTime = a_tabIndex;
+    }
 
     /// @}
     /****************************************//**
@@ -138,9 +201,51 @@ Item {
         property int fontSize
     }
 
+    /* sizer */
+    DapQmlDummy {
+        id: tabButtonSizer
+        qss: "nodeorlist-tab-btn-size"
+    }
+
+    DapQmlDummy {
+        id: nameValueRadio
+        qss: "radiobtn-resizer"
+    }
+
     /****************************************//**
      * Components
      ********************************************/
+
+    Component {
+        id: tabButton
+
+        // property bool isSecond
+        // property string name
+        // property var callback
+
+        DapQmlRectangle {
+            anchors.fill: parent
+            qss: (parent.isSecond !== root.internal.isTime)
+                 ? "nodeorlist-tab-btn"
+                 : "nodeorlist-tab-btn nodeorlist-tab-btn-selected"
+
+            DapQmlLabel {
+                anchors.centerIn: parent
+                width: contentWidth
+                height: contentHeight
+                qss: (parent.parent.isSecond !== root.internal.isTime)
+                     ? "nodeorlist-tab-btn-label"
+                     : "nodeorlist-tab-btn-label-second"
+                disableClicking: true
+                text: parent.parent.name // "TRAFFIC"
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: parent.parent.callback()
+            }
+        }
+    }
 
     Component {
         id: compButton
@@ -255,7 +360,7 @@ Item {
     }
 
     Component {
-        id: listviewDelegate
+        id: listviewDelegateOrder
 
         Loader {
             width: resizer.width
@@ -274,96 +379,38 @@ Item {
                 swipe.incrementCurrentIndex();
             }
 
-            Component.onCompleted: StyleDebugTree.describe (
-               "listviewDelegate" + model.index,
-                ["x", "y", "width", "height", "first", "second"],
-               this);
+//            Component.onCompleted: StyleDebugTree.describe (
+//               "listviewDelegateOrder" + model.index,
+//                ["x", "y", "width", "height", "first", "second"],
+//               this);
         }
+    }
 
-//        DapQmlRectangle {
-//            width: resizer.width// - 100
-//            height: resizer.height + spacer.height
+    Component {
+        id: listviewDelegateNameValue
 
-////            Component.onCompleted: StyleDebugTree.describe (
-////               "listviewDelegate" + model.index,
-////                ["x", "y", "width", "height"],
-////               this);
+        DapQmlRadioButton {
+            width: nameValueRadio.width
+            height: nameValueRadio.height
+            iconSize: nameValueRadio.height
+            separator: true
+            qss: "nodeorlist-name-value"
+            checked: csListView.model.currentIndex === model.index
+            text: model.name
 
-//            MouseArea {
-//                anchors.fill: parent
-//                onClicked: {
-//                    root.internal.network       = model.network;
-//                    root.internal.wallet        = model.wallet;
-//                    root.internal.server        = model.server;
-//                    root.internal.unit          = model.units;
-//                    root.internal.price         = model.price;
-//                    root.internal.priceShort    = model.priceShort;
+            DapQmlLabel {
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.rightMargin: parent.iconSize * 0.325
+                width: contentWidth
+                height: contentHeight
+                disableClicking: true
+                text: model.value
+                qss: "nodeorlist-name-value c-grey"
+            }
 
-//                    swipe.incrementCurrentIndex();
-//                }
-//            }
-
-//            DapQmlSeparator {
-//                anchors.bottom: parent.bottom
-//                width: parent.width
-//                height: 2
-//            }
-
-//            RowLayout {
-//                anchors.fill: parent
-//                anchors.leftMargin: listviewItemSizer.x
-//                anchors.rightMargin: listviewItemSizer.x
-
-////                Component.onCompleted: StyleDebugTree.describe (
-////                   "listviewDelegate rowlay" + model.index,
-////                    ["x", "y", "width", "height"],
-////                   this);
-
-//                ColumnLayout {
-//                    Layout.fillWidth: true
-//                    Layout.fillHeight: true
-
-////                    Component.onCompleted: StyleDebugTree.describe (
-////                       "listviewDelegate collay" + model.index,
-////                        ["x", "y", "width", "height"],
-////                       this);
-
-//                    DapQmlLabel {
-//                        Layout.fillWidth: true
-//                        Layout.fillHeight: true
-//                        horizontalAlign: Text.AlignLeft
-//                        verticalAlign: Text.AlignBottom
-//                        elide: Text.ElideMiddle
-//                        disableClicking: true
-//                        qss: "nodeorlist-item-label-top"
-//                        text: `${model.price} per ${model.units}`
-//                    }
-
-//                    DapQmlLabel {
-//                        Layout.fillWidth: true
-//                        Layout.fillHeight: true
-//                        horizontalAlign: Text.AlignLeft
-//                        verticalAlign: Text.AlignTop
-//                        elide: Text.ElideMiddle
-//                        disableClicking: true
-//                        qss: "nodeorlist-item-label-bottom"
-//                        text: model.server
-//                    }
-//                }
-
-//                DapQmlImage {
-//                    id: linkImage
-//                    Layout.preferredWidth: linkImageSizer.width
-//                    Layout.preferredHeight: linkImageSizer.height
-//                    scaledPixmap: linkImageSizer.scaledPixmap
-
-//                    Component.onCompleted: StyleDebugTree.describe (
-//                       "listviewDelegate link" + model.index,
-//                        ["x", "y", "width", "height"],
-//                       this);
-//                }
-//            }
-//        }
+            onClicked: csListView.model.currentIndex = model.index;
+        }
     }
 
     Component {
@@ -501,48 +548,126 @@ Item {
         }
 
         /****************************************//**
-         * Listview
+         * Middle Page
          ********************************************/
 
         Item {
             width: root.width
             height: root.height
 
+            /****************************************//**
+             * Value Edit
+             ********************************************/
+
+            Item {
+                anchors.fill: parent
+                visible: root.internal.showValueEdit
+
+                /* VALUE EDIT */
+
+                DapQmlRectangle {
+                    id: valueEditRect
+                    qss: "nodeorlist-edit"
+                    property real fontSize
+
+                    TextInput {
+                        id: valueEditInput
+                        anchors.fill: parent
+                        anchors.margins: parent.height * 0.1
+                        horizontalAlignment: TextInput.AlignLeft //AlignHCenter
+                        verticalAlignment: TextInput.AlignVCenter
+                        font.pixelSize: parent.fontSize
+                        font.family: Brand.fontName()
+                        font.weight: Font.Bold
+                        selectByMouse: true
+                        text: "1234"
+                        clip: true
+
+                        onTextEdited: {
+                            if (interfaceObject === undefined)
+                                return;
+
+                            text    = root.internal.isPrice
+                                    ? interfaceObject.fixPriceString(text)
+                                    : interfaceObject.fixNumberString(text);
+                        }
+                    }
+                }
+
+                /* RESULT */
+                DapQmlLabel {
+                    anchors.top: valueEditRect.bottom
+                    anchors.horizontalCenter: valueEditRect.horizontalCenter
+                    anchors.margins: height/2
+                    width: valueEditRect.width
+                    height: valueEditRect.height * 0.23
+                    horizontalAlign: root.internal.isPrice ? Text.AlignRight : Text.AlignHCenter
+                    verticalAlign: Text.AlignVCenter
+                    elide: Text.ElideMiddle
+                    qss: "c-grey"
+
+                    text: root.internal.isPrice
+                          ? `Balance: ${valueEditInput.text} ${root.internal.token}`
+                          : `${valueEditInput.text} ${root.internal.isTime ? "days" : "MB"}`
+                }
+
+                /* TABS */
+                RowLayout {
+                    id: tabsLayout
+                    spacing: tabsLayoutSpacing.width
+                    visible: !root.internal.isPrice
+
+                    DapQmlStyle { item: tabsLayout; qss: "nodeorlist-tabs" }
+                    DapQmlDummy { id: tabsLayoutSpacing; qss: "nodeorlist-tabs-spacing" }
+
+//                    Component.onCompleted: StyleDebugTree.describe (
+//                       "tabsLayout",
+//                        ["x", "y", "width", "height", "spacing"],
+//                       this);
+
+                    /* left button */
+                    Loader {
+                        Layout.preferredWidth: tabButtonSizer.width
+                        Layout.preferredHeight: tabButtonSizer.height
+                        property string name: qsTr("TRAFFIC")
+                        property bool isSecond: false
+                        property var callback: function() {tabPressed(isSecond)}
+                        sourceComponent: tabButton
+
+//                        Component.onCompleted: StyleDebugTree.describe (
+//                           "leftTab",
+//                            ["x", "y", "width", "height", "name"],
+//                           this);
+                    }
+
+                    /* right button */
+                    Loader {
+                        Layout.preferredWidth: tabButtonSizer.width
+                        Layout.preferredHeight: tabButtonSizer.height
+                        property string name: qsTr("TIME")
+                        property bool isSecond: true
+                        property var callback: function() {tabPressed(isSecond)}
+                        sourceComponent: tabButton
+
+//                        Component.onCompleted: StyleDebugTree.describe (
+//                           "rightTab",
+//                            ["x", "y", "width", "height", "name"],
+//                           this);
+                    }
+                }
+            }
+
+            /****************************************//**
+             * Listview
+             ********************************************/
+
             ListView {
                 id: csListView
                 objectName: "listview"
                 x: (root.width - width) / 2
                 spacing: spacer.height
+                visible: !root.internal.showValueEdit
                 clip: true
-
-//                property var mode
-
-//                state: "idle"
-//                onModelChanged: state = "modelSet"
-//                onModeChanged: {
-//                    console.log (`NEW MODE: ${mode}`)
-//                    if (mode === undefined)
-//                    {
-//                        delegate = listviewDelegateNull;
-//                        return;
-//                    }
-
-//                    switch(mode)
-//                    {
-//                    case DapQmlModelOrderList.Networks:    delegate = listviewDelegateNull;    break;
-//                    case DapQmlModelOrderList.Wallets:     delegate = listviewDelegateNull;    break;
-//                    case DapQmlModelOrderList.Tokens:      delegate = listviewDelegateNull;    break;
-//                    case DapQmlModelOrderList.Orders:      delegate = listviewDelegate;        break;
-//                    }
-//                }
-
-//                states: [
-//                    State {
-//                        name: "modelSet"
-//                        //PropertyChanges { target: csListView; mode: csListView.mode }
-//                        PropertyChanges { target: csListViewConn; target: model }
-//                    }
-//                ]
 
                 onModelChanged: {
                     if (model)
@@ -554,7 +679,7 @@ Item {
                     //target: csListView.model
                     target: csListViewConnDummy
                     function onModeChanged() {
-                        console.log (`NEW MODE: ${target.mode}`)
+                        console.log (`listview mode: ${target.mode}`)
                         if (target.mode === undefined)
                         {
                             csListView.delegate = listviewDelegateNull;
@@ -563,10 +688,10 @@ Item {
 
                         switch(target.mode)
                         {
-                        case DapQmlModelOrderList.Networks:    csListView.delegate = listviewDelegateNull;    break;
-                        case DapQmlModelOrderList.Wallets:     csListView.delegate = listviewDelegateNull;    break;
-                        case DapQmlModelOrderList.Tokens:      csListView.delegate = listviewDelegateNull;    break;
-                        case DapQmlModelOrderList.Orders:      csListView.delegate = listviewDelegate;        break;
+                        case DapQmlModelOrderList.Networks:    csListView.delegate = listviewDelegateNameValue; break;
+                        case DapQmlModelOrderList.Wallets:     csListView.delegate = listviewDelegateNameValue; break;
+                        case DapQmlModelOrderList.Tokens:      csListView.delegate = listviewDelegateNameValue; break;
+                        case DapQmlModelOrderList.Orders:      csListView.delegate = listviewDelegateOrder;     break;
                         }
                     }
                 }
@@ -585,6 +710,7 @@ Item {
             }
 
             DapQmlPushButton {
+                visible: true // root.internal.showConfirmButton
                 qss: "nodeorlist-overview-confirm-btn"
                 text: qsTr("SEARCH ORDER")
                 onClicked: swipe.incrementCurrentIndex()
