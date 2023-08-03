@@ -45,7 +45,7 @@ Item {
 
     /// @}
     /****************************************//**
-     * @name SIGNALS
+     * @name VARS
      ********************************************/
     /// @{
 
@@ -110,7 +110,7 @@ Item {
     /// @{
 
     /// @brief item clicked
-    signal sigSelect(int index, string name);
+    signal sigSelect(int index);
 
     signal sigNetworkClicked();
     signal sigWalletClicked();
@@ -121,19 +121,16 @@ Item {
 
     onSigNetworkClicked: {
         setInternalMode(QuiNodeOrderList.Networks);
-        //csListView.model.setMode(DapQmlModelOrderList.Networks);
         swipe.incrementCurrentIndex();
     }
 
     onSigWalletClicked: {
         setInternalMode(QuiNodeOrderList.Wallets);
-        //csListView.model.setMode(DapQmlModelOrderList.Wallets);
         swipe.incrementCurrentIndex();
     }
 
     onSigTokenClicked: {
         setInternalMode(QuiNodeOrderList.Tokens);
-        //csListView.model.setMode(DapQmlModelOrderList.Tokens);
         swipe.incrementCurrentIndex();
     }
 
@@ -149,7 +146,6 @@ Item {
 
     onSigSearchClicked: {
         setInternalMode(QuiNodeOrderList.Orders);
-        //csListView.model.setMode(DapQmlModelOrderList.Orders);
         swipe.incrementCurrentIndex();
     }
 
@@ -165,6 +161,20 @@ Item {
 
     function tabPressed(a_tabIndex) {
         root.internal.isTime = a_tabIndex;
+    }
+
+    function filterItemSelected (a_index, a_name) {
+        if (csListView.model === undefined)
+            return;
+
+        let mode    = csListView.model.mode;
+
+        switch(mode)
+        {
+        case QuiNodeOrderList.Networks: root.internal.network   = a_name; break;
+        case QuiNodeOrderList.Wallets:  root.internal.wallet    = a_name; break;
+        case QuiNodeOrderList.Tokens:   root.internal.token     = a_name; break;
+        }
     }
 
     /// @}
@@ -210,6 +220,16 @@ Item {
     DapQmlDummy {
         id: nameValueRadio
         qss: "radiobtn-resizer"
+    }
+
+    /****************************************//**
+     * Timers
+     ********************************************/
+
+    Timer {
+        id: timerFilterItemSelected
+        interval: 250; running: false; repeat: false
+        onTriggered: swipe.decrementCurrentIndex()
     }
 
     /****************************************//**
@@ -396,7 +416,7 @@ Item {
             separator: true
             qss: "nodeorlist-name-value"
             checked: csListView.model.currentIndex === model.index
-            text: model.name
+            text: (model.name !== undefined) ? model.name : ""
 
             DapQmlLabel {
                 anchors.right: parent.right
@@ -405,11 +425,15 @@ Item {
                 width: contentWidth
                 height: contentHeight
                 disableClicking: true
-                text: model.value
+                text: (model.value !== undefined) ? model.value : ""
                 qss: "nodeorlist-name-value c-grey"
             }
 
-            onClicked: csListView.model.currentIndex = model.index;
+            onClicked: {
+                csListView.model.currentIndex = model.index;
+                root.filterItemSelected (model.index, text);
+                timerFilterItemSelected.start(); // swipe.decrementCurrentIndex();
+            }
         }
     }
 

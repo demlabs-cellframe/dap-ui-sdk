@@ -125,7 +125,9 @@ signals:
   /// @{
 public slots:
   void slotSetOrderListData (const QJsonArray &a_list);
+  void slotSetWalletListData (const QHash<QString, QStringList> &a_walletData);
   void slotSetNetworkListData (const QHash<QString, QStringList> &a_networkData);
+  void slotSetTokensListData (const QHash<QString, QString> &a_tokensData);
   /// @}
 };
 
