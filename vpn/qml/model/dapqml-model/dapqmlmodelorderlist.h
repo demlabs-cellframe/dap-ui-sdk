@@ -18,7 +18,7 @@ class DapQmlModelOrderList : public QAbstractListModel
 {
   Q_OBJECT
 
-    friend class DapQmlModelOrderListProxyModel;
+  friend class DapQmlModelOrderListProxyModel;
 
   /****************************************//**
    * @name DEFS
@@ -46,9 +46,9 @@ protected:
   /// @{
   Q_PROPERTY (Mode mode           READ mode         WRITE setMode         NOTIFY sigModeChanged)
   Q_PROPERTY (int currentIndex    READ currentIndex WRITE setCurrentIndex NOTIFY sigCurrentIndexChanged)
-  Q_PROPERTY (QString serverName  READ serverName   WRITE setServerName   NOTIFY sigServerNameChanged)
   Q_PROPERTY (QString network     READ network      WRITE setNetwork      NOTIFY sigNetworkChanged)
   Q_PROPERTY (QString wallet      READ wallet       WRITE setWallet       NOTIFY sigWalletChanged)
+  Q_PROPERTY (QString token       READ token        WRITE setToken        NOTIFY sigTokenChanged)
   /// @}
 
   /****************************************//**
@@ -85,14 +85,14 @@ public:
   Q_INVOKABLE int currentIndex() const;
   Q_INVOKABLE void setCurrentIndex (int a_index);
 
-  Q_INVOKABLE QString serverName() const;
-  Q_INVOKABLE void setServerName (const QString &a_value);
-
   Q_INVOKABLE QString network() const;
-  Q_INVOKABLE void setNetwork (const QString &a_value);
+  Q_INVOKABLE void setNetwork (const QString &a_value = QString());
 
   Q_INVOKABLE QString wallet() const;
-  Q_INVOKABLE void setWallet (const QString &a_value);
+  Q_INVOKABLE void setWallet (const QString &a_value = QString());
+
+  Q_INVOKABLE QString token() const;
+  Q_INVOKABLE void setToken (const QString &a_value = QString());
   /// @}
 
   /****************************************//**
@@ -114,9 +114,9 @@ public:
 signals:
   void sigModeChanged();
   void sigCurrentIndexChanged();
-  void sigServerNameChanged();
   void sigNetworkChanged();
   void sigWalletChanged();
+  void sigTokenChanged();
   /// @}
 
   /****************************************//**

@@ -40,7 +40,10 @@ Item {
         Tokens,
 
         Units,
-        MaxPrice
+        MaxUnit,
+        MinUnit,
+        MaxPrice,
+        MinPrice
     }
 
     /// @}
@@ -63,6 +66,8 @@ Item {
         property bool isEditingUnit: false      /// shows unit edit bottom tabs
         property bool isTime: false             /// tab "TIME" is selected
         property bool isPrice: false            /// price editing
+        property bool isSearch: false           /// show search order options instead of choose wallet options
+        property string listTitle: "Orders"     /// title text on top of list
 
         /* MODES */
         property var mode: QuiNodeOrderList.Invalid
@@ -70,12 +75,15 @@ Item {
             0,0,0,DapQmlModelOrderList.Invalid,     // Invalid
 
             0,0,0,DapQmlModelOrderList.Orders,      // Orders
-            1,0,0,DapQmlModelOrderList.Networks,    // Networks
-            1,0,0,DapQmlModelOrderList.Wallets,     // Wallets
-            1,0,0,DapQmlModelOrderList.Tokens,      // Tokens
+            0,0,0,DapQmlModelOrderList.Networks,    // Networks
+            0,0,0,DapQmlModelOrderList.Wallets,     // Wallets
+            0,0,0,DapQmlModelOrderList.Tokens,      // Tokens
 
             1,1,1,DapQmlModelOrderList.Invalid,     // Unit
+            1,1,0,DapQmlModelOrderList.Invalid,     // Max Unit
+            1,1,0,DapQmlModelOrderList.Invalid,     // Min Unit
             1,1,0,DapQmlModelOrderList.Invalid,     // Max Price
+            1,1,0,DapQmlModelOrderList.Invalid,     // Min Price
         ]
 
         /* LABELS */
@@ -87,6 +95,9 @@ Item {
         property string price:      "TestPriceName"
         property string priceShort: "TESTC"
         property string maxPrice:   "TestMaxPriceName"
+        property string minPrice:   "TestMinPriceName"
+        property string maxUnit:    "TestMaxUnitName"
+        property string minUnit:    "TestMinUnitName"
 
         /* INTERNAL SIGNALS */
         onModeChanged: {
@@ -100,6 +111,22 @@ Item {
             if (csListView.model)
                 csListView.model.setMode (listviewMode);
             valueEditInput.text     = "0";
+
+            switch(mode)
+            {
+            case QuiNodeOrderList.Invalid:  listTitle   = qsTr(""); break;
+
+            case QuiNodeOrderList.Orders:   listTitle   = qsTr("Order"); break;
+            case QuiNodeOrderList.Networks: listTitle   = qsTr("Network"); break;
+            case QuiNodeOrderList.Wallets:  listTitle   = qsTr("Wallet"); break;
+            case QuiNodeOrderList.Tokens:   listTitle   = qsTr("Token"); break;
+
+            case QuiNodeOrderList.Units:    listTitle   = qsTr("Unit"); break;
+            case QuiNodeOrderList.MaxUnit:  listTitle   = qsTr("Max Unit"); break;
+            case QuiNodeOrderList.MinUnit:  listTitle   = qsTr("Min Unit"); break;
+            case QuiNodeOrderList.MaxPrice: listTitle   = qsTr("Max Price"); break;
+            case QuiNodeOrderList.MinPrice: listTitle   = qsTr("Min Price"); break;
+            }
         }
     }
 
@@ -116,8 +143,15 @@ Item {
     signal sigWalletClicked();
     signal sigTokenClicked();
     signal sigUnitClicked();
+    signal sigMaxUnitClicked();
+    signal sigMinUnitClicked();
     signal sigMaxPriceClicked();
+    signal sigMinPriceClicked();
+
     signal sigSearchClicked();
+    signal sigWalletConfirmClicked();
+
+    /* CHOOSE WALLET */
 
     onSigNetworkClicked: {
         setInternalMode(QuiNodeOrderList.Networks);
@@ -134,8 +168,25 @@ Item {
         swipe.incrementCurrentIndex();
     }
 
+    onSigSearchClicked: {
+        setInternalMode(QuiNodeOrderList.Orders);
+        swipe.incrementCurrentIndex();
+    }
+
+    /* SEARCH ORDER */
+
     onSigUnitClicked: {
         setInternalMode(QuiNodeOrderList.Units);
+        swipe.incrementCurrentIndex();
+    }
+
+    onSigMaxUnitClicked: {
+        setInternalMode(QuiNodeOrderList.MaxUnit);
+        swipe.incrementCurrentIndex();
+    }
+
+    onSigMinUnitClicked: {
+        setInternalMode(QuiNodeOrderList.MinUnit);
         swipe.incrementCurrentIndex();
     }
 
@@ -144,9 +195,26 @@ Item {
         swipe.incrementCurrentIndex();
     }
 
-    onSigSearchClicked: {
-        setInternalMode(QuiNodeOrderList.Orders);
+    onSigMinPriceClicked: {
+        setInternalMode(QuiNodeOrderList.MinPrice);
         swipe.incrementCurrentIndex();
+    }
+
+    /* get variables from interface object */
+    onInterfaceObjectChanged: {
+        if (interfaceObject === undefined)
+            return;
+
+        root.internal.network       = interfaceObject.network();
+        root.internal.wallet        = interfaceObject.wallet();
+        root.internal.token         = interfaceObject.token();
+        root.internal.unit          = interfaceObject.unit();
+        root.internal.price         = interfaceObject.price();
+        root.internal.priceShort    = interfaceObject.priceShort();
+        root.internal.maxPrice      = interfaceObject.maxPrice();
+        root.internal.minPrice      = interfaceObject.minPrice();
+        root.internal.maxUnit       = interfaceObject.maxUnit();
+        root.internal.minUnit       = interfaceObject.minUnit();
     }
 
     /// @}
@@ -175,6 +243,14 @@ Item {
         case QuiNodeOrderList.Wallets:  root.internal.wallet    = a_name; break;
         case QuiNodeOrderList.Tokens:   root.internal.token     = a_name; break;
         }
+    }
+
+    function showChooseWallet() {
+        root.internal.isSearch  = false;
+    }
+
+    function showSearchOrder() {
+        root.internal.isSearch  = true;
     }
 
     /// @}
@@ -474,7 +550,7 @@ Item {
             switch(swipe.currentIndex)
             {
             case QuiNodeOrderList.Tab.Search:   return qsTr("Search order");
-            case QuiNodeOrderList.Tab.List:     return qsTr("Orders");
+            case QuiNodeOrderList.Tab.List:     return root.internal.listTitle; //qsTr("Orders");
             case QuiNodeOrderList.Tab.Overview: return qsTr("Transaction overview");
             }
             return "";
@@ -519,6 +595,7 @@ Item {
 
                 Loader {
                     sourceComponent: compButton
+                    visible: !root.internal.isSearch
                     property string first:      root.internal.network
                     property string second:     "Network"
                     property bool swap:         true
@@ -527,6 +604,7 @@ Item {
 
                 Loader {
                     sourceComponent: compButton
+                    visible: !root.internal.isSearch
                     property string first:      root.internal.wallet
                     property string second:     "Wallet"
                     property bool swap:         true
@@ -535,6 +613,7 @@ Item {
 
                 Loader {
                     sourceComponent: compButton
+                    visible: !root.internal.isSearch
                     property string first:      root.internal.token
                     property string second:     "Token"
                     property bool swap:         true
@@ -543,6 +622,16 @@ Item {
 
                 Loader {
                     sourceComponent: compButton
+                    visible: !root.internal.isSearch
+                    property string first:      root.internal.maxPrice
+                    property string second:     "Max price"
+                    property bool swap:         true
+                    property var cbOnClicked: function() { root.sigMaxPriceClicked(); }
+                }
+
+                Loader {
+                    sourceComponent: compButton
+                    visible: root.internal.isSearch
                     property string first:      root.internal.unit
                     property string second:     "Unit"
                     property bool swap:         true
@@ -551,10 +640,38 @@ Item {
 
                 Loader {
                     sourceComponent: compButton
+                    visible: root.internal.isSearch
+                    property string first:      root.internal.maxUnit
+                    property string second:     "Max Unit"
+                    property bool swap:         true
+                    property var cbOnClicked: function() { root.sigMaxUnitClicked(); }
+                }
+
+                Loader {
+                    sourceComponent: compButton
+                    visible: root.internal.isSearch
+                    property string first:      root.internal.minUnit
+                    property string second:     "Min Unit"
+                    property bool swap:         true
+                    property var cbOnClicked: function() { root.sigMinUnitClicked(); }
+                }
+
+                Loader {
+                    sourceComponent: compButton
+                    visible: root.internal.isSearch
                     property string first:      root.internal.maxPrice
-                    property string second:     "Max price"
+                    property string second:     "Max Price"
                     property bool swap:         true
                     property var cbOnClicked: function() { root.sigMaxPriceClicked(); }
+                }
+
+                Loader {
+                    sourceComponent: compButton
+                    visible: root.internal.isSearch
+                    property string first:      root.internal.minPrice
+                    property string second:     "Min Unit"
+                    property bool swap:         true
+                    property var cbOnClicked: function() { root.sigMinPriceClicked(); }
                 }
 
                 Item {
@@ -564,9 +681,12 @@ Item {
 
             DapQmlPushButton {
                 qss: "nodeorlist-overview-confirm-btn"
-                text: qsTr("SEARCH ORDER")
+                text: root.internal.isSearch ? qsTr("SEARCH ORDER") : qsTr("CONFIRM")
                 onClicked: {
-                    root.sigSearchClicked();
+                    if (root.internal.isSearch)
+                        root.sigSearchClicked();
+                    else
+                        root.sigWalletConfirmClicked();
                 }
             }
         }
@@ -734,10 +854,15 @@ Item {
             }
 
             DapQmlPushButton {
-                visible: true // root.internal.showConfirmButton
+                visible: root.internal.showConfirmButton
                 qss: "nodeorlist-overview-confirm-btn"
-                text: qsTr("SEARCH ORDER")
-                onClicked: swipe.incrementCurrentIndex()
+                text: qsTr("CONFIRM")
+                onClicked: {
+                    if (root.internal.mode === QuiNodeOrderList.Orders)
+                        swipe.incrementCurrentIndex();
+                    else
+                        swipe.decrementCurrentIndex();
+                }
             }
         }
 

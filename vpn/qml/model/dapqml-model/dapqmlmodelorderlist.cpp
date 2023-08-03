@@ -26,6 +26,7 @@ struct OrderItem
   QString location;
   QString price;
   QString units;
+  QString server;
 };
 
 struct NameValueItem
@@ -48,15 +49,19 @@ protected:
 
   /* CONSTRUCT/DESTRUCT */
 public:
+  ModuleInterface() : _currentIndex (-1) {}
   virtual ~ModuleInterface() {}
 
   /* VIRTUAL METHODS */
   virtual int size() const = 0;
   virtual QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const = 0;
+  virtual bool setCurrentIndex (int a_value);
+
+  virtual const QString &name() const = 0;
+  virtual const QString &value() const = 0;
 
   /* METHODS */
   int currentIndex() const;
-  bool setCurrentIndex (int a_value);
 
   /// @note ! method can throw std::runtime_error !
   template<class T> T *as()
@@ -119,6 +124,9 @@ public:
   /* OVERRIDE */
   int size() const override;
   QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
+  const QString &name() const override;
+  const QString &value() const override;
+  //bool setCurrentIndex (int a_value) override;
 };
 
 /**
@@ -133,6 +141,11 @@ class NetworksModule : public NameValueModule
 public:
   NetworksModule() {}
   ~NetworksModule() override {};
+
+  /* OVERRIDE */
+  const QString &name() const override;
+  const QString &value() const override;
+  bool setCurrentIndex (int a_value) override;
 };
 
 /**
@@ -147,6 +160,11 @@ class WalletsModule : public NameValueModule
 public:
   WalletsModule() {}
   ~WalletsModule() override {};
+
+  /* OVERRIDE */
+  const QString &name() const override;
+  const QString &value() const override;
+  bool setCurrentIndex (int a_value) override;
 };
 
 /**
@@ -161,6 +179,11 @@ class TokensModule : public NameValueModule
 public:
   TokensModule() {}
   ~TokensModule() override {};
+
+  /* OVERRIDE */
+  const QString &name() const override;
+  const QString &value() const override;
+  bool setCurrentIndex (int a_value) override;
 };
 
 /**
@@ -224,9 +247,9 @@ enum FieldId
 struct DapQmlModelOrderList::DapQmlModelOrderListData
 {
   ModuleContainer module;
-  QString serverName;
   QString network;
   QString wallet;
+  QString token;
 };
 
 /********************************************
@@ -256,6 +279,8 @@ static struct
   QSharedPointer<ModuleInterface> wallets  = QSharedPointer<ModuleInterface> (new WalletsModule);
   QSharedPointer<ModuleInterface> tokens   = QSharedPointer<ModuleInterface> (new TokensModule);
 } s_modules;
+
+static const QString s_dummyString; // string that is returned as reference when certain conditions met
 
 /********************************************
  * FUNCTIONS
@@ -400,20 +425,6 @@ void DapQmlModelOrderList::setMode (Mode a_value)
   emit sigModeChanged();
 }
 
-QString DapQmlModelOrderList::serverName() const
-{
-  return _data->serverName;
-}
-
-void DapQmlModelOrderList::setServerName (const QString &a_value)
-{
-  if (_data->serverName == a_value)
-    return;
-
-  _data->serverName = a_value;
-  emit sigServerNameChanged();
-}
-
 QString DapQmlModelOrderList::network() const
 {
   return _data->network;
@@ -421,10 +432,17 @@ QString DapQmlModelOrderList::network() const
 
 void DapQmlModelOrderList::setNetwork (const QString &a_value)
 {
-  if (_data->network == a_value)
-    return;
 
-  _data->network = a_value;
+  if (a_value.isEmpty())
+    _data->network  = s_modules.networks->name();
+  else
+    {
+      if (_data->network == a_value)
+        return;
+      else
+        _data->network = a_value;
+    }
+
   emit sigNetworkChanged();
 }
 
@@ -435,11 +453,38 @@ QString DapQmlModelOrderList::wallet() const
 
 void DapQmlModelOrderList::setWallet (const QString &a_value)
 {
-  if (_data->wallet == a_value)
-    return;
+  if (a_value.isEmpty())
+    _data->wallet  = s_modules.wallets->name();
+  else
+    {
+      if (_data->wallet == a_value)
+        return;
+      else
+        _data->wallet = a_value;
+    }
 
-  _data->wallet = a_value;
   emit sigWalletChanged();
+}
+
+QString DapQmlModelOrderList::token() const
+{
+  return _data->token;
+}
+
+void DapQmlModelOrderList::setToken (const QString &a_value)
+{
+
+  if (a_value.isEmpty())
+    _data->token  = s_modules.tokens->name();
+  else
+    {
+      if (_data->token == a_value)
+        return;
+      else
+        _data->token = a_value;
+    }
+
+  emit sigTokenChanged();
 }
 
 static QString _scopedPrice (const QString &a_value)
@@ -474,7 +519,6 @@ QVariant DapQmlModelOrderList::data (const QModelIndex &index, int role) const
   switch (FieldId (role))
     {
     case FieldId::network:    return _data->network;
-    case FieldId::server:     return _data->serverName;
     case FieldId::wallet:     return _data->wallet;
     default:
       return _data->module->data (index, role);
@@ -513,13 +557,15 @@ void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
       QString loc     = joItem.value ("node_location").toString();
       QString price   = joItem.value ("price").toString();
       QString punit   = joItem.value ("price_unit").toString();
+      QString server  = joItem.value ("node_location").toString();
 
       /* store result */
       items << OrderItem
       {
         std::move (loc),
         std::move (price),
-        std::move (punit)
+        std::move (punit),
+        std::move (server)
       };
     }
 
@@ -815,10 +861,105 @@ QVariant OrdersModule::data (const QModelIndex &index, int role) const
     case FieldId::price:      return _items.at (index.row()).price;
     case FieldId::priceShort: return _scopedPrice (_items.at (index.row()).price);
     case FieldId::units:      return _items.at (index.row()).units;
+    case FieldId::server:     return _items.at (index.row()).server;
 
     default:
       return QVariant();
     }
+}
+
+const QString &OrdersModule::name() const
+{
+  return s_dummyString;
+}
+
+const QString &OrdersModule::value() const
+{
+  return s_dummyString;
+}
+
+/*-----------------------------------------*/
+/* NetworksModule Methods */
+/*-----------------------------------------*/
+
+const QString &NetworksModule::name() const
+{
+  if (_currentIndex < 0)
+    return s_dummyString;
+  return _items.at (_currentIndex).name;
+}
+
+const QString &NetworksModule::value() const
+{
+  if (_currentIndex < 0)
+    return s_dummyString;
+  return _items.at (_currentIndex).value;
+}
+
+bool NetworksModule::setCurrentIndex (int a_value)
+{
+  bool result = ModuleInterface::setCurrentIndex (a_value);
+
+  if (result)
+    DapQmlModelOrderList::instance()->setNetwork();
+
+  return result;
+}
+
+/*-----------------------------------------*/
+/* WalletsModule Methods */
+/*-----------------------------------------*/
+
+const QString &WalletsModule::name() const
+{
+  if (_currentIndex < 0)
+    return s_dummyString;
+  return _items.at (_currentIndex).name;
+}
+
+const QString &WalletsModule::value() const
+{
+  if (_currentIndex < 0)
+    return s_dummyString;
+  return _items.at (_currentIndex).value;
+}
+
+bool WalletsModule::setCurrentIndex (int a_value)
+{
+  bool result = ModuleInterface::setCurrentIndex (a_value);
+
+  if (result)
+    DapQmlModelOrderList::instance()->setWallet();
+
+  return result;
+}
+
+/*-----------------------------------------*/
+/* TokensModule Methods */
+/*-----------------------------------------*/
+
+const QString &TokensModule::name() const
+{
+  if (_currentIndex < 0)
+    return s_dummyString;
+  return _items.at (_currentIndex).name;
+}
+
+const QString &TokensModule::value() const
+{
+  if (_currentIndex < 0)
+    return s_dummyString;
+  return _items.at (_currentIndex).value;
+}
+
+bool TokensModule::setCurrentIndex (int a_value)
+{
+  bool result = ModuleInterface::setCurrentIndex (a_value);
+
+  if (result)
+    DapQmlModelOrderList::instance()->setToken();
+
+  return result;
 }
 
 /*-----------------------------------------*/
