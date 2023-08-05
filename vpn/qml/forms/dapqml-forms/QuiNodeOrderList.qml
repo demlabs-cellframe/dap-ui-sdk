@@ -5,6 +5,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.2
 import DapQmlStyle 1.0
 import Brand 1.0
+import PageCtl 1.0
 import DapQmlModelOrderList 1.0
 import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
@@ -68,9 +69,13 @@ Item {
         property bool isPrice: false            /// price editing
         property bool isSearch: false           /// show search order options instead of choose wallet options
         property string listTitle: "Orders"     /// title text on top of list
+        property string editValue: "0"          /// edit field value string
 
         /* MODES */
         property var mode: QuiNodeOrderList.Invalid
+
+        /// list format:
+        /// showConfirmButton,showValueEdit,isEditingUnit,listviewMode
         property var modeSettings: [
             0,0,0,DapQmlModelOrderList.Invalid,     // Invalid
 
@@ -79,7 +84,7 @@ Item {
             0,0,0,DapQmlModelOrderList.Wallets,     // Wallets
             0,0,0,DapQmlModelOrderList.Tokens,      // Tokens
 
-            1,1,1,DapQmlModelOrderList.Invalid,     // Unit
+            0,0,0,DapQmlModelOrderList.Units,       // Units
             1,1,0,DapQmlModelOrderList.Invalid,     // Max Unit
             1,1,0,DapQmlModelOrderList.Invalid,     // Min Unit
             1,1,0,DapQmlModelOrderList.Invalid,     // Max Price
@@ -106,12 +111,13 @@ Item {
             showValueEdit           = modeSettings[mode*4+1];
             isEditingUnit           = modeSettings[mode*4+2];
             let listviewMode        = modeSettings[mode*4+3];
-            isPrice                 = mode === QuiNodeOrderList.MaxPrice;
+            isPrice                 = mode === QuiNodeOrderList.MaxPrice || mode === QuiNodeOrderList.MinPrice;
 
             if (csListView.model)
                 csListView.model.setMode (listviewMode);
             valueEditInput.text     = "0";
 
+            /* change title */
             switch(mode)
             {
             case QuiNodeOrderList.Invalid:  listTitle   = qsTr(""); break;
@@ -127,6 +133,16 @@ Item {
             case QuiNodeOrderList.MaxPrice: listTitle   = qsTr("Max Price"); break;
             case QuiNodeOrderList.MinPrice: listTitle   = qsTr("Min Price"); break;
             }
+
+            /* set value */
+            switch (mode)
+            {
+            case QuiNodeOrderList.MaxUnit:  editValue   = interfaceObject.maxUnit(); break;
+            case QuiNodeOrderList.MinUnit:  editValue   = interfaceObject.minUnit(); break;
+            case QuiNodeOrderList.MaxPrice: editValue   = interfaceObject.maxPrice(); break;
+            case QuiNodeOrderList.MinPrice: editValue   = interfaceObject.minPrice(); break;
+            }
+            valueEditInput.text = editValue;
         }
     }
 
@@ -200,6 +216,10 @@ Item {
         swipe.incrementCurrentIndex();
     }
 
+    onSigWalletConfirmClicked: {
+        PageCtl.slotBackwardAuto();
+    }
+
     /* get variables from interface object */
     onInterfaceObjectChanged: {
         if (interfaceObject === undefined)
@@ -242,6 +262,43 @@ Item {
         case QuiNodeOrderList.Networks: root.internal.network   = a_name; break;
         case QuiNodeOrderList.Wallets:  root.internal.wallet    = a_name; break;
         case QuiNodeOrderList.Tokens:   root.internal.token     = a_name; break;
+        case QuiNodeOrderList.Units:    root.internal.unit      = a_name; break;
+        }
+    }
+
+    function filterValueSet (a_value) {
+        switch (root.internal.mode)
+        {
+        case QuiNodeOrderList.MaxUnit:  root.internal.maxUnit   = a_value; break;
+        case QuiNodeOrderList.MinUnit:  root.internal.minUnit   = a_value; break;
+        case QuiNodeOrderList.MaxPrice: root.internal.maxPrice  = a_value; break;
+        case QuiNodeOrderList.MinPrice: root.internal.minPrice  = a_value; break;
+        }
+    }
+
+    function storeFilterData() {
+        if (!root.internal.isSearch)
+        {
+            interfaceObject.setData(
+            {
+                network     : root.internal.network,
+                wallet      : root.internal.wallet,
+                token       : root.internal.token,
+                maxPrice    : root.internal.maxPrice,
+            }
+            );
+        }
+        else
+        {
+            interfaceObject.setData(
+            {
+                unit        : root.internal.unit,
+                maxUnit     : root.internal.maxUnit,
+                minUnit     : root.internal.minUnit,
+                maxPrice    : root.internal.maxPrice,
+                minPrice    : root.internal.minPrice,
+            }
+            );
         }
     }
 
@@ -463,7 +520,7 @@ Item {
             height: resizer.height
             sourceComponent: compButton
             property string first:      `${model.price} per ${model.units}`
-            property string second:      model.server
+            property string second:      `${model.server}`
             property var cbOnClicked: function() {
                 root.internal.network       = model.network;
                 root.internal.wallet        = model.wallet;
@@ -669,7 +726,7 @@ Item {
                     sourceComponent: compButton
                     visible: root.internal.isSearch
                     property string first:      root.internal.minPrice
-                    property string second:     "Min Unit"
+                    property string second:     "Min Price"
                     property bool swap:         true
                     property var cbOnClicked: function() { root.sigMinPriceClicked(); }
                 }
@@ -683,6 +740,7 @@ Item {
                 qss: "nodeorlist-overview-confirm-btn"
                 text: root.internal.isSearch ? qsTr("SEARCH ORDER") : qsTr("CONFIRM")
                 onClicked: {
+                    storeFilterData();
                     if (root.internal.isSearch)
                         root.sigSearchClicked();
                     else
@@ -724,7 +782,7 @@ Item {
                         font.family: Brand.fontName()
                         font.weight: Font.Bold
                         selectByMouse: true
-                        text: "1234"
+                        text: root.internal.editValue // "1234"
                         clip: true
 
                         onTextEdited: {
@@ -752,14 +810,15 @@ Item {
 
                     text: root.internal.isPrice
                           ? `Balance: ${valueEditInput.text} ${root.internal.token}`
-                          : `${valueEditInput.text} ${root.internal.isTime ? "days" : "MB"}`
+                          //: `${valueEditInput.text} ${root.internal.isTime ? "days" : "MB"}`
+                          : `${valueEditInput.text} ${root.internal.unit}`
                 }
 
                 /* TABS */
                 RowLayout {
                     id: tabsLayout
                     spacing: tabsLayoutSpacing.width
-                    visible: !root.internal.isPrice
+                    visible: false // !root.internal.isPrice
 
                     DapQmlStyle { item: tabsLayout; qss: "nodeorlist-tabs" }
                     DapQmlDummy { id: tabsLayoutSpacing; qss: "nodeorlist-tabs-spacing" }
@@ -801,6 +860,55 @@ Item {
                 }
             }
 
+            DapQmlPushButton {
+                visible: root.internal.showConfirmButton
+                qss: "nodeorlist-overview-clear-btn"
+                text: qsTr("CLEAR")
+                onClicked: {
+                    /* store edit value result */
+                    switch (root.internal.mode)
+                    {
+                    case QuiNodeOrderList.MaxUnit:
+                    case QuiNodeOrderList.MinUnit:
+                    case QuiNodeOrderList.MaxPrice:
+                    case QuiNodeOrderList.MinPrice:
+                        filterValueSet ("");
+                        break;
+                    default:
+                        break;
+                    }
+
+                    /* navigate back */
+                    swipe.decrementCurrentIndex();
+                }
+            }
+
+            DapQmlPushButton {
+                visible: root.internal.showConfirmButton
+                qss: "nodeorlist-overview-confirm-btn"
+                text: qsTr("CONFIRM")
+                onClicked: {
+                    /* store edit value result */
+                    switch (root.internal.mode)
+                    {
+                    case QuiNodeOrderList.MaxUnit:
+                    case QuiNodeOrderList.MinUnit:
+                    case QuiNodeOrderList.MaxPrice:
+                    case QuiNodeOrderList.MinPrice:
+                        filterValueSet (valueEditInput.text);
+                        break;
+                    default:
+                        break;
+                    }
+
+                    /* navigate based on mode */
+                    if (root.internal.mode === QuiNodeOrderList.Orders)
+                        swipe.incrementCurrentIndex();
+                    else
+                        swipe.decrementCurrentIndex();
+                }
+            }
+
             /****************************************//**
              * Listview
              ********************************************/
@@ -836,6 +944,7 @@ Item {
                         case DapQmlModelOrderList.Wallets:     csListView.delegate = listviewDelegateNameValue; break;
                         case DapQmlModelOrderList.Tokens:      csListView.delegate = listviewDelegateNameValue; break;
                         case DapQmlModelOrderList.Orders:      csListView.delegate = listviewDelegateOrder;     break;
+                        case DapQmlModelOrderList.Units:       csListView.delegate = listviewDelegateNameValue; break;
                         }
                     }
                 }
@@ -851,18 +960,6 @@ Item {
                    "csListView",
                     ["x", "y", "width", "height"],
                    this);
-            }
-
-            DapQmlPushButton {
-                visible: root.internal.showConfirmButton
-                qss: "nodeorlist-overview-confirm-btn"
-                text: qsTr("CONFIRM")
-                onClicked: {
-                    if (root.internal.mode === QuiNodeOrderList.Orders)
-                        swipe.incrementCurrentIndex();
-                    else
-                        swipe.decrementCurrentIndex();
-                }
             }
         }
 

@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "dapqmlmodelorderlist.h"
 
+#include <QTimer>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
@@ -187,6 +188,36 @@ public:
 };
 
 /**
+ * @brief Unit List Module
+ *
+ * Basic unit select list.
+ */
+
+class UnitsModule : public ModuleInterface
+{
+  /* VARS */
+protected:
+  QStringList _items;
+
+  /* CONSTRUCT/DESTRUCT */
+public:
+  UnitsModule();
+  ~UnitsModule() override {};
+
+  /* METHODS */
+  const QStringList &items() const;
+  void setItems (const QStringList &a_items);
+  void setItems (QStringList &&a_items);
+
+  /* OVERRIDE */
+  int size() const override;
+  QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
+  bool setCurrentIndex (int a_value) override;
+  const QString &name() const override;
+  const QString &value() const override;
+};
+
+/**
  * @brief ModuleInterface pointer wrapper
  *
  * Simply creates module by provided mode
@@ -229,16 +260,19 @@ using namespace Dqmol;
 
 enum FieldId
 {
+  /* order flields */
   location,
   price,
   priceShort,
   units,
+  server,
 
+  /* name + value fields */
   name,
   value,
 
+  /* model fields */
   network,
-  server,
   wallet,
 };
 
@@ -250,6 +284,7 @@ struct DapQmlModelOrderList::DapQmlModelOrderListData
   QString network;
   QString wallet;
   QString token;
+  QString unit;
 };
 
 /********************************************
@@ -278,6 +313,7 @@ static struct
   QSharedPointer<ModuleInterface> networks = QSharedPointer<ModuleInterface> (new NetworksModule);
   QSharedPointer<ModuleInterface> wallets  = QSharedPointer<ModuleInterface> (new WalletsModule);
   QSharedPointer<ModuleInterface> tokens   = QSharedPointer<ModuleInterface> (new TokensModule);
+  QSharedPointer<ModuleInterface> units    = QSharedPointer<ModuleInterface> (new UnitsModule);
 } s_modules;
 
 static const QString s_dummyString; // string that is returned as reference when certain conditions met
@@ -473,7 +509,6 @@ QString DapQmlModelOrderList::token() const
 
 void DapQmlModelOrderList::setToken (const QString &a_value)
 {
-
   if (a_value.isEmpty())
     _data->token  = s_modules.tokens->name();
   else
@@ -485,6 +520,26 @@ void DapQmlModelOrderList::setToken (const QString &a_value)
     }
 
   emit sigTokenChanged();
+}
+
+QString DapQmlModelOrderList::unit() const
+{
+  return _data->unit;
+}
+
+void DapQmlModelOrderList::setUnit (const QString &a_value)
+{
+  if (a_value.isEmpty())
+    _data->unit  = s_modules.units->name();
+  else
+    {
+      if (_data->unit == a_value)
+        return;
+      else
+        _data->unit = a_value;
+    }
+
+  emit sigUnitChanged();
 }
 
 static QString _scopedPrice (const QString &a_value)
@@ -756,6 +811,7 @@ bool ModuleContainer::setMode (Mode a_value)
     case Mode::Networks:  _module = s_modules.networks; break;
     case Mode::Wallets:   _module = s_modules.wallets;  break;
     case Mode::Tokens:    _module = s_modules.tokens;   break;
+    case Mode::Units:     _module = s_modules.units;    break;
     case Mode::Invalid:
     default:
       _module.reset();
@@ -960,6 +1016,72 @@ bool TokensModule::setCurrentIndex (int a_value)
     DapQmlModelOrderList::instance()->setToken();
 
   return result;
+}
+
+/*-----------------------------------------*/
+/* UnitsModule Methods */
+/*-----------------------------------------*/
+
+UnitsModule::UnitsModule()
+{
+  _items =
+  QStringList
+  {
+    "days",
+    "MB"
+  };
+  _currentIndex = 0;
+  DapQmlModelOrderList::instance()->setUnit (_items.first());
+}
+
+const QStringList &UnitsModule::items() const
+{
+  return _items;
+}
+
+void UnitsModule::setItems (const QStringList &a_items)
+{
+  _items  = a_items;
+}
+
+void UnitsModule::setItems (QStringList &&a_items)
+{
+  _items  = std::move (a_items);
+}
+
+int UnitsModule::size() const
+{
+  return _items.size();
+}
+
+QVariant UnitsModule::data (const QModelIndex &index, int role) const
+{
+  switch (role)
+    {
+    case FieldId::name:   return _items.at (index.row());
+    default:
+      return QVariant();
+    }
+}
+
+bool UnitsModule::setCurrentIndex (int a_value)
+{
+  bool result = ModuleInterface::setCurrentIndex (a_value);
+
+  if (result)
+    DapQmlModelOrderList::instance()->setUnit();
+
+  return result;
+}
+
+const QString &UnitsModule::name() const
+{
+  return _items.at (_currentIndex);
+}
+
+const QString &UnitsModule::value() const
+{
+  return s_dummyString; //_items.at (_currentIndex);
 }
 
 /*-----------------------------------------*/

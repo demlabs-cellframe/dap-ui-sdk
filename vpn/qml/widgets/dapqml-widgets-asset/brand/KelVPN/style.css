@@ -2243,6 +2243,11 @@
     color: "@text";
 }
 
+.nodeorlist-overview-clear-btn
+{
+    scaled-rect: scaled(-1,702,374,80,true,16);
+}
+
 .nodeorlist-overview-confirm-btn
 {
     scaled-rect: scaled(-1,802,374,80,true,16);

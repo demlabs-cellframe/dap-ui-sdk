@@ -33,6 +33,7 @@ public:
     Networks,
     Wallets,
     Tokens,
+    Units,
   };
   Q_ENUM (Mode)
 
@@ -49,6 +50,7 @@ protected:
   Q_PROPERTY (QString network     READ network      WRITE setNetwork      NOTIFY sigNetworkChanged)
   Q_PROPERTY (QString wallet      READ wallet       WRITE setWallet       NOTIFY sigWalletChanged)
   Q_PROPERTY (QString token       READ token        WRITE setToken        NOTIFY sigTokenChanged)
+  Q_PROPERTY (QString unit        READ unit         WRITE setUnit         NOTIFY sigUnitChanged)
   /// @}
 
   /****************************************//**
@@ -93,6 +95,9 @@ public:
 
   Q_INVOKABLE QString token() const;
   Q_INVOKABLE void setToken (const QString &a_value = QString());
+
+  Q_INVOKABLE QString unit() const;
+  Q_INVOKABLE void setUnit (const QString &a_value = QString());
   /// @}
 
   /****************************************//**
@@ -117,6 +122,7 @@ signals:
   void sigNetworkChanged();
   void sigWalletChanged();
   void sigTokenChanged();
+  void sigUnitChanged();
   /// @}
 
   /****************************************//**
