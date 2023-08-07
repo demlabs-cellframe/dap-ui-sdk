@@ -28,6 +28,7 @@ struct OrderItem
   QString price;
   QString units;
   QString server;
+  QString hash;
 };
 
 struct NameValueItem
@@ -127,7 +128,7 @@ public:
   QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
   const QString &name() const override;
   const QString &value() const override;
-  //bool setCurrentIndex (int a_value) override;
+  bool setCurrentIndex (int a_value) override;
 };
 
 /**
@@ -613,6 +614,7 @@ void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
       QString price   = joItem.value ("price").toString();
       QString punit   = joItem.value ("price_unit").toString();
       QString server  = joItem.value ("node_location").toString();
+      QString hash    = joItem.value ("hash").toString();
 
       /* store result */
       items << OrderItem
@@ -620,7 +622,8 @@ void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
         std::move (loc),
         std::move (price),
         std::move (punit),
-        std::move (server)
+        std::move (server),
+        std::move (hash)
       };
     }
 
@@ -926,12 +929,24 @@ QVariant OrdersModule::data (const QModelIndex &index, int role) const
 
 const QString &OrdersModule::name() const
 {
-  return s_dummyString;
+  if (_currentIndex < 0)
+    return s_dummyString;
+  return _items.at (_currentIndex).hash;
 }
 
 const QString &OrdersModule::value() const
 {
   return s_dummyString;
+}
+
+bool OrdersModule::setCurrentIndex (int a_value)
+{
+  bool result = ModuleInterface::setCurrentIndex (a_value);
+
+  if (result)
+    emit DapQmlModelOrderList::instance()->sigOrderSelected (name());
+
+  return result;
 }
 
 /*-----------------------------------------*/
@@ -957,7 +972,11 @@ bool NetworksModule::setCurrentIndex (int a_value)
   bool result = ModuleInterface::setCurrentIndex (a_value);
 
   if (result)
-    DapQmlModelOrderList::instance()->setNetwork();
+  {
+    auto orderList  = DapQmlModelOrderList::instance();
+    orderList->setNetwork();
+    // emit orderList->sigNetworkUpdated (name());
+  }
 
   return result;
 }
@@ -985,7 +1004,11 @@ bool WalletsModule::setCurrentIndex (int a_value)
   bool result = ModuleInterface::setCurrentIndex (a_value);
 
   if (result)
-    DapQmlModelOrderList::instance()->setWallet();
+  {
+    auto orderList  = DapQmlModelOrderList::instance();
+    orderList->setWallet();
+    // emit orderList->sigWalletUpdated (name());
+  }
 
   return result;
 }
@@ -1013,7 +1036,11 @@ bool TokensModule::setCurrentIndex (int a_value)
   bool result = ModuleInterface::setCurrentIndex (a_value);
 
   if (result)
-    DapQmlModelOrderList::instance()->setToken();
+  {
+    auto orderList  = DapQmlModelOrderList::instance();
+    orderList->setToken();
+    // emit orderList->sigTokenUpdated (name());
+  }
 
   return result;
 }
@@ -1027,11 +1054,17 @@ UnitsModule::UnitsModule()
   _items =
   QStringList
   {
-    "days",
-    "MB"
+    "Secs",
+    "Mins",
+    "Hours"
+    "Days",
+    "KB",
+    "MB",
+    "GB",
+    "TB",
   };
-  _currentIndex = 0;
-  DapQmlModelOrderList::instance()->setUnit (_items.first());
+  _currentIndex = 3;
+  DapQmlModelOrderList::instance()->setUnit (_items.at (_currentIndex));
 }
 
 const QStringList &UnitsModule::items() const
@@ -1069,7 +1102,11 @@ bool UnitsModule::setCurrentIndex (int a_value)
   bool result = ModuleInterface::setCurrentIndex (a_value);
 
   if (result)
-    DapQmlModelOrderList::instance()->setUnit();
+  {
+    auto orderList  = DapQmlModelOrderList::instance();
+    orderList->setUnit();
+    // emit orderList->sigUnitUpdated (name());
+  }
 
   return result;
 }

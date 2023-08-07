@@ -123,6 +123,15 @@ signals:
   void sigWalletChanged();
   void sigTokenChanged();
   void sigUnitChanged();
+
+  void sigNetworkUpdated (QString a_value);   // chooseNetwork
+  void sigWalletUpdated (QString a_value);    // chooseWallet
+  void sigTokenUpdated (QString a_value);     // chooseToken
+  void sigMaxPriceUpdated (QString a_value);  // setValue
+  void sigUnitUpdated (QString a_value);      // setUnit
+  void sigMaxValueUpdated (QString a_value);  // setMaxValueUnit
+  void sigMinValueUpdated (QString a_value);  // setMinValueUnit
+  void sigOrderSelected (QString a_hash);     // chooseOrder
   /// @}
 
   /****************************************//**
