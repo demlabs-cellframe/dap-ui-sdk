@@ -103,6 +103,8 @@ Item {
         property string minPrice:   "TestMinPriceName"
         property string maxUnit:    "TestMaxUnitName"
         property string minUnit:    "TestMinUnitName"
+        property int    chosenOrderIndex: -1
+        property string chosenOrderHash
 
         /* INTERNAL SIGNALS */
         onModeChanged: {
@@ -152,8 +154,8 @@ Item {
      ********************************************/
     /// @{
 
-    /// @brief item clicked
-    signal sigSelect(int index);
+    /// @brief order selected
+    signal sigOrderSelect(int a_index, string a_hash);
 
     signal sigNetworkClicked();
     signal sigWalletClicked();
@@ -525,9 +527,11 @@ Item {
                 root.internal.network       = model.network;
                 root.internal.wallet        = model.wallet;
                 root.internal.server        = model.server;
-                root.internal.unit          = model.units;
+                //root.internal.unit          = model.units;
                 root.internal.price         = model.price;
                 root.internal.priceShort    = model.priceShort;
+                root.internal.chosenOrderIndex  = model.index;
+                root.internal.chosenOrderHash   = model.hash;
 
                 swipe.incrementCurrentIndex();
             }
@@ -1028,6 +1032,9 @@ Item {
             DapQmlPushButton {
                 qss: "nodeorlist-overview-confirm-btn"
                 text: qsTr("CONFIRM PURCHASE")
+                onClicked: {
+                    root.sigOrderSelect (root.internal.chosenOrderIndex, root.internal.chosenOrderHash);
+                }
             }
         }
     }

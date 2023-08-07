@@ -267,6 +267,7 @@ enum FieldId
   priceShort,
   units,
   server,
+  hash,
 
   /* name + value fields */
   name,
@@ -298,6 +299,7 @@ static QHash<int, QByteArray> s_fields =
   { FieldId::price,       "price" },
   { FieldId::priceShort,  "priceShort" },
   { FieldId::units,       "units" },
+  { FieldId::hash,        "hash" },
 
   { FieldId::name,        "name" },
   { FieldId::value,       "value" },
@@ -921,6 +923,7 @@ QVariant OrdersModule::data (const QModelIndex &index, int role) const
     case FieldId::priceShort: return _scopedPrice (_items.at (index.row()).price);
     case FieldId::units:      return _items.at (index.row()).units;
     case FieldId::server:     return _items.at (index.row()).server;
+    case FieldId::hash:       return _items.at (index.row()).hash;
 
     default:
       return QVariant();
