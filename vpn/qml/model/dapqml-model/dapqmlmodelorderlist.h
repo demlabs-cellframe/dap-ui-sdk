@@ -37,6 +37,26 @@ public:
   };
   Q_ENUM (Mode)
 
+  enum class FieldId : qint32
+  {
+    /* order flields */
+    location,
+    price,
+    priceShort,
+    units,
+    server,
+    hash,
+
+    /* name + value fields */
+    name,
+    value,
+
+    /* model fields */
+    network,
+    wallet,
+  };
+
+
 protected:
   struct DapQmlModelOrderListData;
   /// @}

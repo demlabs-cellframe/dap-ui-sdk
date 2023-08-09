@@ -24,7 +24,8 @@ HEADERS += \
     $$PWD/dapqml-model/dapqmlmodelroutingexceptions.h \
     $$PWD/dapqml-model/dapqmlmodelserialhistory.h \
     $$PWD/dapqml-model/dapqmlservermanager.h \
-    $$PWD/dapqml-model/doc/doc-server-lists-and-models.h
+    $$PWD/dapqml-model/doc/doc-server-lists-and-models.h \
+    $$PWD/dapqml-model/modules/orderlistmodules.h
 
 SOURCES += \
     $$PWD/dapqml-abstract/abstractserverlistmodelbridge.cpp \
@@ -38,7 +39,8 @@ SOURCES += \
     $$PWD/dapqml-model/dapqmlmodelorderlist.cpp \
     $$PWD/dapqml-model/dapqmlmodelroutingexceptions.cpp \
     $$PWD/dapqml-model/dapqmlmodelserialhistory.cpp \
-    $$PWD/dapqml-model/dapqmlservermanager.cpp
+    $$PWD/dapqml-model/dapqmlservermanager.cpp \
+    $$PWD/dapqml-model/modules/orderlistmodules.cpp
 
 guiapp {
 HEADERS += \
