@@ -28,6 +28,8 @@ Item
 
     property int minWidthTooltip: 167
     property int maxWidthTooltip: 300
+    property int heightStrTooltip: 20
+    property int heightDiffStrTooltip: 2
 
     property int marginTextTooltip: 12
     property string colorHeadStrTooltip: currTheme.gray
@@ -87,6 +89,7 @@ Item
                     {
                         var tmpItem = list.model.get(i)
                         var tmpStr = tmpItem.name + " " + tmpItem.number + " " + tmpItem.token_name
+                        console.log(tmpStr)
                         if(maxCount < tmpStr.length)
                         {
                             maxCount = tmpStr.length
@@ -110,7 +113,21 @@ Item
                     return widthTooltip
                 }
 
+                function getHeightTooltip()
+                {
+                    var listCount = list.model.count;
+                    var strHeight = metrics.boundingRect("A").height
+                    var result = 2 * marginTextTooltip + (heightStrTooltip - heightDiffStrTooltip) * listCount
+                    heightTooltip = result
+                    return result;
+                }
+
                 onWidthChanged:
+                {
+                    updateToolPos()
+                }
+
+                onHeightChanged:
                 {
                     updateToolPos()
                 }
@@ -120,7 +137,7 @@ Item
 
                 parent: area
                 width: getWidthTootip()
-                height: heightTooltip
+                height: getHeightTooltip()
                 contentItem: Item{
                     anchors.fill: parent
 
@@ -135,7 +152,7 @@ Item
                         anchors.bottomMargin: marginTextTooltip
                         delegate: Item{
                             width: parent.width
-                            height: 20
+                            height: heightStrTooltip
                             RowLayout {
                                 spacing: 3
                                 Text {
