@@ -1,6 +1,8 @@
 /* INCLUDES */
 #include "orderlistmodules.h"
 
+#include <QTimer>
+
 /* NAMESPACE */
 namespace OrderListModule {
 
@@ -256,7 +258,7 @@ UnitsModule::UnitsModule()
     "TB",
   };
   _currentIndex = 3;
-  DapQmlModelOrderList::instance()->setUnit (_items.at (_currentIndex));
+  QTimer::singleShot (100, [this] {DapQmlModelOrderList::instance()->setUnit (_items.at (_currentIndex));});
 }
 
 const QStringList &UnitsModule::items() const

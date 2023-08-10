@@ -49,6 +49,8 @@ static QHash<int, QByteArray> s_fields =
   { int (FieldId::wallet),      "wallet" },
 };
 
+static DapQmlModelOrderList *_instance = nullptr;
+
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/
@@ -96,8 +98,9 @@ DapQmlModelOrderList::~DapQmlModelOrderList()
 
 DapQmlModelOrderList *DapQmlModelOrderList::instance()
 {
-  static DapQmlModelOrderList i;
-  return &i;
+  if (_instance == nullptr)
+    _instance = new DapQmlModelOrderList;
+  return _instance;
 }
 
 QObject *DapQmlModelOrderList::singletonProvider (QQmlEngine *, QJSEngine *)
