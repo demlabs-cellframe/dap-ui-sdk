@@ -393,13 +393,17 @@ void DapNodeWeb3::getOrdersListRequest(QString networkName, QString tokenName, Q
     sendRequest(requesString);
 }
 
-void DapNodeWeb3::getNodeIPRequest(QString networkName, QString nodeAddr)
+void DapNodeWeb3::getNodeIPRequest(QString networkName, QJsonArray orderList)
 {
+    QJsonDocument doc;
+    doc.setArray(orderList);
+    QString orders(doc.toJson());
+
     QString requesString = QString("?method=GetNodeIP&"
-                "id=%1&net=%2&addr=%3")
+                "id=%1&net=%2&%3")
             .arg(m_connectId)
             .arg(networkName)
-            .arg(nodeAddr);
+            .arg(orderList.size() > 1 ? "jsonArray=" + orders : "addr=" + orderList.begin()->toString());
     sendRequest(requesString);
 }
 

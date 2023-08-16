@@ -443,8 +443,8 @@ void DapNode::initWeb3Connections()
         emit sigConnectByOrder(m_networkName, m_transactionHash, m_tokenName, m_srvUid, m_nodeInfo.ipv4, m_nodeInfo.port);
     });
 
-    connect(this, &DapNode::sigGetNodeIpRequest, this, [=](QString node_adress) {
-        web3->DapNodeWeb3::getNodeIPRequest(m_networkName, node_adress);
+    connect(this, &DapNode::sigGetNodeIpRequest, this, [=](QJsonArray orderList) {
+        web3->DapNodeWeb3::getNodeIPRequest(m_networkName, orderList);
     });
 
 
@@ -512,10 +512,10 @@ void DapNode::slotNodeIpReqest(QString srvUid, QString nodeAddress)
     m_nodeInfo.setNodeAddress(nodeAddress);
     emit sigNodeIpRequest();
 }
-void DapNode::slotGetNodeIpForOrderListReqest(QString srvUid, QString nodeAddress)
+void DapNode::slotGetNodeIpForOrderListReqest(QString srvUid, QJsonArray orderList)
 {
     m_srvUid = srvUid;
-    emit sigGetNodeIpRequest(nodeAddress);
+    emit sigGetNodeIpRequest(orderList);
 }
 
 bool NodeInfo::serverDataFromList(const QList<QMap<QString, QString>>& nodeDump)

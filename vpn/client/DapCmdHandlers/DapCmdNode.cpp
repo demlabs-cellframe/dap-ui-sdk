@@ -210,8 +210,8 @@ void DapCmdNode::handle(const QJsonObject* params)
     {
         QJsonObject oi = params->value("get_ip_order_list").toObject();
         QString srvUid       = oi["srv_uid"].toString();
-        QString nodeAddress  = oi["node_addr"].toString();
-        qDebug() << "get_ip_order_list" << oi;
-        emit getIpOrder(srvUid, nodeAddress);
+        QJsonArray orderList  = oi["node_adress_list"].toArray();
+        qDebug() << "get_ip_order_list - " << orderList;
+        emit getIpOrder(srvUid, orderList);
     }
 }
