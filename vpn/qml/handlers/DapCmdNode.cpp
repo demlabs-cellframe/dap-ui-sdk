@@ -353,7 +353,6 @@ void DapCmdNode::getIpNode (QString node_adress)
     QJsonDocument doc = QJsonDocument::fromJson(node_adress.toUtf8());
     jObject["get_ip_order_list"] = doc.object();
     sendCmd (&jObject);
-
 }
 
 void DapCmdNode::chooseWallet (QString wallet)

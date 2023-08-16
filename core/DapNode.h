@@ -152,6 +152,7 @@ public:
 
     DapNode(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
     ~DapNode();
+    static DapNode *instance();
     void start();
     QString txCondHash();
     static QString certificateName(const QString& access = "public");
@@ -186,6 +187,7 @@ signals:
     void sigNodeDetected();
     void sigWalletsDataReady(QJsonObject);
     void sigOrderListReady(QJsonArray);
+    void sigSendNodeIp(QString, QString);
     void sigMempoolContainHash();
     void sigLedgerContainHash();
     void sigCondTxCreateSuccess(QString hash);

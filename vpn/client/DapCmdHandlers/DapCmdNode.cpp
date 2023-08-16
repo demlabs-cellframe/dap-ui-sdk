@@ -1,7 +1,7 @@
 #include "DapCmdNode.h"
 #include <QMap>
 #include <QDebug>
-#include "DapSession.h"
+#include "DapNode.h"
 
 // client, service side
 #define DEBUGINFO qDebug()<<"--->SrvCMD<---"
@@ -96,6 +96,18 @@ void DapCmdNode::sendOrderList(const QJsonArray& orderList)
     sendCmd(&response);
     DEBUGINFO << "sendOrderList";
 }
+
+void DapCmdNode::sendNodeIP(const QString& nodeAdress, const QString& nodeIp)
+{
+    DEBUGINFO << __PRETTY_FUNCTION__;
+    QJsonObject response;
+    response["node_adress"] = nodeAdress;
+    response["node_ip"] = nodeIp;
+    sendCmd(&response);
+    DEBUGINFO << "sendNodeIP";
+}
+
+
 
 void DapCmdNode::sendTransactionInMempool()
 {
@@ -201,6 +213,35 @@ void DapCmdNode::handle(const QJsonObject* params)
         QString srvUid       = oi["srv_uid"].toString();
         QString nodeAddress  = oi["node_addr"].toString();
         qDebug() << "get_ip_order_list" << oi;
+
+//        DapNode::instance();
+
+//        connect(DapNode::instance(), &DapNode::sigNodeDetected, [=]() {
+//            QJsonObject response;
+//            response["host"] = pingChecker->getHost();
+//            response["port"] = pingChecker->getPort();
+//            response["responseTime"] = time;
+//            sendCmd(&response);
+//            delete pingChecker;
+//        });
+
+//        connect(pingChecker, &DapHttpPing::sigNetworkError, [=](QString err) {
+//            QJsonObject response;
+//            QJsonObject errorObj;
+
+//            errorObj["code"] = -32000;
+//            errorObj["message"] = "Server not response";
+//            response["port"] = pingChecker->getPort();
+//            response["host"] = pingChecker->getHost();
+//            response["error"] = errorObj;
+
+//            sendCmd(&response);
+
+//            qWarning() << "Ping error: " << err;
+//            delete pingChecker;
+//        });
+
+
         emit getIpOrder(srvUid, nodeAddress);
     }
 }

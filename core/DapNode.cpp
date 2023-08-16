@@ -30,9 +30,15 @@ DapNode:: DapNode(QObject * obj, int requestTimeout) :
     initCommandsStm();
 }
 
-
 DapNode::~ DapNode()
 {
+}
+
+static DapNode *s_instance   = nullptr;
+
+DapNode *DapNode::instance()
+{
+  return s_instance;
 }
 
 // transaction certificate name
@@ -418,6 +424,11 @@ void DapNode::initWeb3Connections()
         emit sigOrderListReceived();
         emit sigOrderListReady(ordersList); //emit sigOrderListReady(orders);
     });
+
+    connect(web3, &DapNodeWeb3::sigNodeIp, this, [=](QString data, QString nodeIp) {
+        emit sigSendNodeIp(data, nodeIp);
+    });
+
     //connect(web3, &DapNodeWeb3::sigOrderList, this, &DapNode::sigOrderListReady);
     // recieved fee
     connect(web3, &DapNodeWeb3::sigFee, this, [=](QString fee){

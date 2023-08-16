@@ -70,21 +70,21 @@ void DapNodeWeb3::request_GET(const QString& host,  quint16 port, const QString 
     m_httpClient->requestHttp_GET(host, port, urlPath, headers, a_netReply);
 }
 
-void DapNodeWeb3::sendRequest(QString request)
+void DapNodeWeb3::sendRequest(QString request, QString save_data)
 {
     m_networkReply =  new DapNetworkReply;
-    connect( m_networkReply, &DapNetworkReply::finished, this, [=] {
+    connect( m_networkReply, &DapNetworkReply::finished, this, [&] {
         responseProcessing(m_networkReply->error(), m_networkReply->errorString());
     });
-    connect( m_networkReply, &DapNetworkReply::sigError, this, [=] {
-        responseProcessing(m_networkReply->error(), m_networkReply->errorString(), false);
+    connect( m_networkReply, &DapNetworkReply::sigError, this, [&] {
+        responseProcessing(m_networkReply->error(), m_networkReply->errorString(), "", false);
     });
     // send request
     m_networkRequest = request;
     request_GET(WEB3_URL, WEB3_PORT, request, *m_networkReply);
 }
 
-void DapNodeWeb3::responseProcessing(const int error, const QString errorString, const bool httpFinished)
+void DapNodeWeb3::responseProcessing(const int error, const QString errorString, const QString save_data, const bool httpFinished)
 {
     // local network request
     QString networkRequest(m_networkRequest);
@@ -146,8 +146,9 @@ void DapNodeWeb3::responseParsing(const int error,
                                   const bool httpFinished,
                                   int baseErrorCode,
                                   QString messageReplyDataError,
-                                  void(DapNodeWeb3::*parseMethod)(const QString&, int baseErrorCode),
-                                  void(DapNodeWeb3::*responceError)(int code))
+                                  void(DapNodeWeb3::*parseMethod)(const QString&, int baseErrorCode, const QString&),
+                                  void(DapNodeWeb3::*responceError)(int code),
+                                  const QString& save_data)
 {
     if (error == QNetworkReply::NetworkError::NoError)
     {
@@ -161,7 +162,7 @@ void DapNodeWeb3::responseParsing(const int error,
         }
         // parse reply
         if (parseMethod)
-            (this->*parseMethod)(reply, baseErrorCode);
+            (this->*parseMethod)(reply, baseErrorCode, save_data);
     }
     else
     {
@@ -287,7 +288,7 @@ void DapNodeWeb3::getNodeIPRequest(QString networkName, QString nodeAddr)
             .arg(m_connectId)
             .arg(networkName)
             .arg(nodeAddr);
-    sendRequest(requesString);
+    sendRequest(requesString, nodeAddr);
 }
 
 void DapNodeWeb3::getFeeRequest(QString networkName)
@@ -318,7 +319,7 @@ void DapNodeWeb3::getListKeysRequest(QString networkName)
 }
 
 
-void DapNodeWeb3::parseReplyStatus(const QString& replyData, int baseErrorCode)
+void DapNodeWeb3::parseReplyStatus(const QString& replyData, int baseErrorCode, const QString& save_data)
 {
     // status reply example
     //    {
@@ -347,7 +348,7 @@ void DapNodeWeb3::parseReplyStatus(const QString& replyData, int baseErrorCode)
     }
 }
 
-void DapNodeWeb3::parseReplyConnect(const QString& replyData, int baseErrorCode)
+void DapNodeWeb3::parseReplyConnect(const QString& replyData, int baseErrorCode, const QString& save_data)
 {
     // connect reply example
     //    "{"
@@ -375,7 +376,7 @@ void DapNodeWeb3::parseReplyConnect(const QString& replyData, int baseErrorCode)
     }
 }
 
-void DapNodeWeb3::parseReplyWallets(const QString& replyData, int baseErrorCode)
+void DapNodeWeb3::parseReplyWallets(const QString& replyData, int baseErrorCode, const QString& save_data)
 {
     // wallets reply example
     //    "{"
@@ -404,7 +405,7 @@ void DapNodeWeb3::parseReplyWallets(const QString& replyData, int baseErrorCode)
 }
 
 
-void DapNodeWeb3::parseReplyNetworks(const QString& replyData, int baseErrorCode)
+void DapNodeWeb3::parseReplyNetworks(const QString& replyData, int baseErrorCode, const QString& save_data)
 {
     // networks reply example
     //    "{"
@@ -440,7 +441,7 @@ void DapNodeWeb3::walletDataRequest(const QString& walletName)
     sendRequest(requesString);
 }
 
-void DapNodeWeb3::parseDataWallet(const QString& replyData, int baseErrorCode)
+void DapNodeWeb3::parseDataWallet(const QString& replyData, int baseErrorCode, const QString& save_data)
 {
     //{
     //"data": [
@@ -474,7 +475,7 @@ void DapNodeWeb3::parseDataWallet(const QString& replyData, int baseErrorCode)
     }
 }
 
-void DapNodeWeb3::parseCertificates(const QString& replyData, int baseErrorCode)
+void DapNodeWeb3::parseCertificates(const QString& replyData, int baseErrorCode, const QString& save_data)
 {
     //    {
     //        "data": [
@@ -504,7 +505,7 @@ void DapNodeWeb3::parseCertificates(const QString& replyData, int baseErrorCode)
     }
 }
 
-void DapNodeWeb3::parseCreateCertificate(const QString& replyData, int baseErrorCode)
+void DapNodeWeb3::parseCreateCertificate(const QString& replyData, int baseErrorCode, const QString& save_data)
 {
     //    {
     //        "data": {
@@ -526,7 +527,7 @@ void DapNodeWeb3::parseCreateCertificate(const QString& replyData, int baseError
     }
 }
 
-void DapNodeWeb3::parseCondTxCreateReply(const QString& replyData, int baseErrorCode)
+void DapNodeWeb3::parseCondTxCreateReply(const QString& replyData, int baseErrorCode, const QString& save_data)
 {
     //    {
     //        "data": {
@@ -548,7 +549,7 @@ void DapNodeWeb3::parseCondTxCreateReply(const QString& replyData, int baseError
     }
 }
 
-void DapNodeWeb3::parseMempoolReply(const QString& replyData, int baseErrorCode)
+void DapNodeWeb3::parseMempoolReply(const QString& replyData, int baseErrorCode, const QString& save_data)
 {
     //    {
     //        "data": {
@@ -564,7 +565,7 @@ void DapNodeWeb3::parseMempoolReply(const QString& replyData, int baseErrorCode)
     emit sigMempoolContainHash();
 }
 
-void DapNodeWeb3::parseLedgerReply(const QString& replyData, int baseErrorCode)
+void DapNodeWeb3::parseLedgerReply(const QString& replyData, int baseErrorCode, const QString& save_data)
 {
     //    {
     //        "data": {
@@ -580,7 +581,7 @@ void DapNodeWeb3::parseLedgerReply(const QString& replyData, int baseErrorCode)
     emit sigLedgerContainHash();
 }
 
-void DapNodeWeb3::parseOrderList(const QString& replyData, int baseErrorCode)
+void DapNodeWeb3::parseOrderList(const QString& replyData, int baseErrorCode, const QString& save_data)
 {
     //{
     //"data": [
@@ -614,7 +615,7 @@ void DapNodeWeb3::parseOrderList(const QString& replyData, int baseErrorCode)
     }
 }
 
-void DapNodeWeb3::parseNodeIp(const QString& replyData, int baseErrorCode)
+void DapNodeWeb3::parseNodeIp(const QString& replyData, int baseErrorCode, const QString& save_data)
 {
     // reply example
     //    {
@@ -630,11 +631,11 @@ void DapNodeWeb3::parseNodeIp(const QString& replyData, int baseErrorCode)
     QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
     if (doc["data"].isObject())
     {
-        emit sigNodeIp(doc["data"].toObject()["node IP"].toString());
+        emit sigNodeIp(save_data, doc["data"].toObject()["node IP"].toString());
     }
 }
 
-void DapNodeWeb3::parseFee(const QString& replyData, int baseErrorCode)
+void DapNodeWeb3::parseFee(const QString& replyData, int baseErrorCode, const QString& save_data)
 {
 
     // reply example
@@ -670,7 +671,7 @@ void DapNodeWeb3::parseFee(const QString& replyData, int baseErrorCode)
     }
 }
 
-void DapNodeWeb3::parseNodeDump(const QString& replyData, int baseErrorCode)
+void DapNodeWeb3::parseNodeDump(const QString& replyData, int baseErrorCode, const QString& save_data)
 {
 //    {
 //        "data": [
@@ -711,7 +712,7 @@ void DapNodeWeb3::parseNodeDump(const QString& replyData, int baseErrorCode)
     }
 }
 
-void DapNodeWeb3::parseListKeys(const QString& replyData, int baseErrorCode)
+void DapNodeWeb3::parseListKeys(const QString& replyData, int baseErrorCode, const QString& save_data)
 {
 //    {
 //        "data": {
@@ -764,7 +765,7 @@ void DapNodeWeb3::parseListKeys(const QString& replyData, int baseErrorCode)
 }
 
 
-void DapNodeWeb3::parseJsonError(const QString& replyData, int baseErrorCode)
+void DapNodeWeb3::parseJsonError(const QString& replyData, int baseErrorCode, const QString& save_data)
 {
     // reply example
     //    "{ ... "

@@ -43,7 +43,7 @@ class DapNodeWeb3;
 struct ReplyMethod
 {
     QString request;
-    void(DapNodeWeb3::*parseMethod)(const QString&, int baseErrorCode);
+    void(DapNodeWeb3::*parseMethod)(const QString&, int baseErrorCode, const QString&);
     void(DapNodeWeb3::*replyError)(int error);
     QString wrongReplyText;
     int baseErrorCode;
@@ -80,12 +80,13 @@ private:
                      const QString & urlPath, DapNetworkReply &a_netReply,
                      const QString &headers = "", bool ssl = false);
     bool jsonError() { return m_parseJsonError; }
-    void responseProcessing(const int error, const QString errorString = "", const bool httpFinished = true);
+    void responseProcessing(const int error, const QString errorString = "", const QString save_data = "", const bool httpFinished = true);
 
     void responseParsing(const int error, const QString wrongReplyerrorString, const bool httpFinished,
                          int errorCode, QString messageReplyDataError,
-                         void(DapNodeWeb3::*parseMethod)(const QString&, int baseErrorCode),
-                         void(DapNodeWeb3::*responceError)(int code));
+                         void(DapNodeWeb3::*parseMethod)(const QString&, int baseErrorCode, const QString&),
+                         void(DapNodeWeb3::*responceError)(int code),
+                         const QString& save_data = "");
 
     static const QList<ReplyMethod> replyItems;
 
@@ -111,26 +112,26 @@ public slots:
 
 private slots:
     // send request string
-    void sendRequest(QString request);
+    void sendRequest(QString request, QString save_data = "");
     // reply error
     void replyError(int errorCode, const QString errorString);
     // response processing
-    void parseReplyStatus(const QString& replyData, int baseErrorCode);
-    void parseReplyConnect(const QString& replyData, int baseErrorCode);
-    void parseReplyNetworks(const QString& replyData, int baseErrorCode);
-    void parseReplyWallets(const QString& replyData, int baseErrorCode);
-    void parseDataWallet(const QString& replyData, int baseErrorCode);
-    void parseCertificates(const QString& replyData, int baseErrorCode);
-    void parseCreateCertificate(const QString& replyData, int baseErrorCode);
-    void parseCondTxCreateReply(const QString& replyData, int baseErrorCode);
-    void parseLedgerReply(const QString& replyData, int baseErrorCode);
-    void parseMempoolReply(const QString& replyData, int baseErrorCode);
-    void parseOrderList(const QString& replyData, int baseErrorCode);
-    void parseJsonError(const QString& replyData, int baseErrorCode);
-    void parseNodeIp(const QString& replyData, int baseErrorCode);
-    void parseFee(const QString& replyData, int baseErrorCode);
-    void parseNodeDump(const QString& replyData, int baseErrorCode);
-    void parseListKeys(const QString& replyData, int baseErrorCode);
+    void parseReplyStatus(const QString& replyData, int baseErrorCode, const QString& save_data= "");
+    void parseReplyConnect(const QString& replyData, int baseErrorCode, const QString& save_data= "");
+    void parseReplyNetworks(const QString& replyData, int baseErrorCode, const QString& save_data= "");
+    void parseReplyWallets(const QString& replyData, int baseErrorCode, const QString& save_data= "");
+    void parseDataWallet(const QString& replyData, int baseErrorCode, const QString& save_data= "");
+    void parseCertificates(const QString& replyData, int baseErrorCode, const QString& save_data= "");
+    void parseCreateCertificate(const QString& replyData, int baseErrorCode, const QString& save_data= "");
+    void parseCondTxCreateReply(const QString& replyData, int baseErrorCode, const QString& save_data= "");
+    void parseLedgerReply(const QString& replyData, int baseErrorCode, const QString& save_data= "");
+    void parseMempoolReply(const QString& replyData, int baseErrorCode, const QString& save_data= "");
+    void parseOrderList(const QString& replyData, int baseErrorCode, const QString& save_data= "");
+    void parseJsonError(const QString& replyData, int baseErrorCode, const QString& save_data= "");
+    void parseNodeIp(const QString& replyData, int baseErrorCode, const QString& save_data= "");
+    void parseFee(const QString& replyData, int baseErrorCode, const QString& save_data= "");
+    void parseNodeDump(const QString& replyData, int baseErrorCode, const QString& save_data= "");
+    void parseListKeys(const QString& replyData, int baseErrorCode, const QString& save_data= "");
     //
     void replyConnectError(int code);
 
@@ -146,7 +147,7 @@ signals:
     void sigMempoolContainHash();
     void sigLedgerContainHash();
     void sigOrderList(QJsonArray);
-    void sigNodeIp(QString nodeIp);
+    void sigNodeIp(QString nodeAdress, QString nodeIp);
     void sigFee(QString fee);
     void connectionIdReceived(QString connectionId);
     void sigNodeDump(QList<QMap<QString, QString>> nodeDump);
