@@ -112,6 +112,7 @@ public slots:
   OrderInfo orderData (QString hash);
   void checkSigned();
   void startConnectByOrder();
+  void getIpNode (QString node_adress);
   /// @}
 
   /****************************************//**

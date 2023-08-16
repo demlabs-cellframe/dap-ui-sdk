@@ -109,12 +109,14 @@ QVariant OrdersModule::data (const QModelIndex &index, int role) const
 {
   switch (FieldId (role))
     {
-    case FieldId::location:   return _items.at (index.row()).location;
-    case FieldId::price:      return _items.at (index.row()).price;
-    case FieldId::priceShort: return _scopedPrice (_items.at (index.row()).price);
-    case FieldId::units:      return _items.at (index.row()).units;
-    case FieldId::server:     return _items.at (index.row()).server;
-    case FieldId::hash:       return _items.at (index.row()).hash;
+    case FieldId::location:    return _items.at (index.row()).location;
+    case FieldId::node_addr:    return _items.at (index.row()).node_addr;
+    case FieldId::price:       return _items.at (index.row()).price;
+    case FieldId::priceShort:  return _scopedPrice (_items.at (index.row()).price);
+    case FieldId::units:       return _items.at (index.row()).units;
+    case FieldId::units_value: return _items.at (index.row()).units_value;
+    case FieldId::server:      return _items.at (index.row()).server;
+    case FieldId::hash:        return _items.at (index.row()).hash;
 
     default:
       return QVariant();

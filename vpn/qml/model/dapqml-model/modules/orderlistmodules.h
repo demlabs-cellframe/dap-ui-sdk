@@ -24,7 +24,9 @@ struct OrderItem
   QString location;
   QString price;
   QString units;
+  QString units_value;
   QString server;
+  QString node_addr;
   QString hash;
 };
 

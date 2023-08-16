@@ -172,6 +172,7 @@ public slots:
     void slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
     void slotGetOrdersList(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
     void slotNodeIpReqest(QString srvUid, QString nodeAddress);
+    void slotGetNodeIpForOrderListReqest(QString srvUid, QString nodeAddress);
 
 private slots:
     void walletDataRequest();
@@ -214,6 +215,7 @@ signals:
     void certificateExist();
     void certificateNotFound();
     void sigNodeIpRequest();
+    void sigGetNodeIpRequest(QString);
     void sigNodeDumpReceived();
     void sigFeeReceived();
 

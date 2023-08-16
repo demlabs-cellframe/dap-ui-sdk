@@ -41,9 +41,11 @@ public:
   {
     /* order flields */
     location,
+    node_addr,
     price,
     priceShort,
     units,
+    units_value,
     server,
     hash,
 

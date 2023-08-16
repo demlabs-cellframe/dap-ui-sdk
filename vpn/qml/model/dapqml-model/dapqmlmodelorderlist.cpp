@@ -36,9 +36,11 @@ struct DapQmlModelOrderList::DapQmlModelOrderListData
 static QHash<int, QByteArray> s_fields =
 {
   { int (FieldId::location),    "location" },
+  { int (FieldId::node_addr),   "node_addr" },
   { int (FieldId::price),       "price" },
   { int (FieldId::priceShort),  "priceShort" },
   { int (FieldId::units),       "units" },
+  { int (FieldId::units_value), "units_value" },
   { int (FieldId::hash),        "hash" },
 
   { int (FieldId::name),        "name" },
@@ -327,11 +329,18 @@ void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
         continue;
 
       /* get fields */
-      QString loc     = joItem.value ("node_location").toString();
-      QString price   = joItem.value ("price").toString();
-      QString punit   = joItem.value ("price_unit").toString();
-      QString server  = joItem.value ("node_location").toString();
-      QString hash    = joItem.value ("hash").toString();
+      QString loc        = joItem.value ("node_location").toString();
+      QString price      = joItem.value ("price").toString();
+      QString punit      = joItem.value ("price_unit").toString();
+      QString unit_value = joItem.value ("units").toString();
+      QString server     = joItem.value ("node_location").toString();
+      QString node_addr  = joItem.value ("node_addr").toString();
+      QString hash       = joItem.value ("hash").toString();
+      QString srv_uid    = joItem.value ("srv_uid").toString();
+
+
+      if (srv_uid != "0x0000000000000001" || unit_value == "0" || punit.isEmpty())
+          continue;
 
       /* store result */
       items << OrderItem
@@ -339,7 +348,9 @@ void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
         std::move (loc),
         std::move (price),
         std::move (punit),
+        std::move (unit_value),
         std::move (server),
+        std::move (node_addr),
         std::move (hash)
       };
     }

@@ -346,6 +346,16 @@ void DapCmdNode::startConnectByOrder()
   sendCmd (&jObject);
 }
 
+void DapCmdNode::getIpNode (QString node_adress)
+{
+    DEBUGINFO << __PRETTY_FUNCTION__;
+    QJsonObject jObject;
+    QJsonDocument doc = QJsonDocument::fromJson(node_adress.toUtf8());
+    jObject["get_ip_order_list"] = doc.object();
+    sendCmd (&jObject);
+
+}
+
 void DapCmdNode::chooseWallet (QString wallet)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
