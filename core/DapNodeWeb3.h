@@ -38,21 +38,34 @@
 
 
 //int DapNodeErrorCode(DapNodeErrors, const bool httpFinished);
-class DapNodeWeb3;
-
-struct ReplyMethod
-{
-    QString request;
-    void(DapNodeWeb3::*parseMethod)(const QString&, int baseErrorCode, const QString&);
-    void(DapNodeWeb3::*replyError)(int error);
-    QString wrongReplyText;
-    int baseErrorCode;
-};
-
 
 class DapNodeWeb3 : public QObject
 {
     Q_OBJECT
+
+    /* DEFS */
+public:
+    enum class ReplyMethodID : quint16
+    {
+      Invalid,
+      ParseReplyConnect,
+      ParseReplyStatus,
+      ParseReplyWallets,
+      ParseReplyNetworks,
+      ParseDataWallet,
+      ParseCertificates,
+      ParseCreateCertificate,
+      ParseCondTxCreateReply,
+      ParseMempoolReply,
+      ParseLedgerReply,
+      ParseOrderList,
+      ParseNodeIp,
+      ParseFee,
+      ParseNodeDump,
+      ParseListKeys,
+    };
+
+    /* VARS */
 private:
     const int m_requestTimeout;
     // http access manager
@@ -71,8 +84,11 @@ public:
     static const QString WEB3_URL;
     static const quint16 WEB3_PORT;
 
+    /* CONSTRUCT/DESTRUCT */
     DapNodeWeb3(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
     ~DapNodeWeb3();
+
+    /* METHODS */
     QString connectedId() { return m_connectId; }
 
 private:
@@ -82,14 +98,17 @@ private:
     bool jsonError() { return m_parseJsonError; }
     void responseProcessing(const int error, const QString errorString = "", const QString save_data = "", const bool httpFinished = true);
 
-    void responseParsing(const int error, const QString wrongReplyerrorString, const bool httpFinished,
-                         int errorCode, QString messageReplyDataError,
-                         void(DapNodeWeb3::*parseMethod)(const QString&, int baseErrorCode, const QString&),
-                         void(DapNodeWeb3::*responceError)(int code),
-                         const QString& save_data = "");
+    void responseParsing(
+      const int error,
+      const QString wrongReplyerrorString,
+      const bool httpFinished,
+      int baseErrorCode,
+      QString messageReplyDataError,
+      ReplyMethodID parseMethod,
+      bool responceError,
+      const QString& save_data = QString());
 
-    static const QList<ReplyMethod> replyItems;
-
+    /* SLOTS */
 public slots:
     // requests
     void nodeDetectedRequest();

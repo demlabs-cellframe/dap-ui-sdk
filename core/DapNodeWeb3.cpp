@@ -1,3 +1,4 @@
+/* INCLUDES */
 #include "DapNodeWeb3.h"
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -6,46 +7,101 @@
 #include <QTimer>
 #include <QDebug>
 
-
+/* DEFS */
 #define SIGERROR (110)
 #define DEBUGINFO qDebug()<<"--->Web3<---"
 
+typedef DapNodeWeb3::ReplyMethodID ReplyMethodID;
+
+struct ReplyMethod
+{
+  //QString request;
+  //void(DapNodeWeb3::*parseMethod)(const QString&, int baseErrorCode, const QString&);
+  //void(DapNodeWeb3::*replyError)(int error);
+  ReplyMethodID parseMethodID;
+  bool replyError;
+  QString wrongReplyText;
+  int baseErrorCode;
+};
+
+/* VARS */
 const QString  DapNodeWeb3::WEB3_URL      ("localhost");
 const quint16  DapNodeWeb3::WEB3_PORT     (8045);
 
-const QList<ReplyMethod> DapNodeWeb3::replyItems = {
-    // connect reply
-    {"method=Connect",              &DapNodeWeb3::parseReplyConnect,        &DapNodeWeb3::replyConnectError, "Wrong reply connect", 100000},
-    // node status reply
-    {"method=GetNodeStatus",        &DapNodeWeb3::parseReplyStatus,         &DapNodeWeb3::replyConnectError, "Wrong reply status", 200000},
-    // wallets list reply
-    {"method=GetWallets",           &DapNodeWeb3::parseReplyWallets,        nullptr, "Wrong reply when get wallets list", 300000},
-    // networks list reply
-    {"method=GetNetworks",          &DapNodeWeb3::parseReplyNetworks,       nullptr, "Wrong reply when get networks list", 400000},
-    // data wallets reply
-    {"method=GetDataWallet",        &DapNodeWeb3::parseDataWallet,          nullptr, "Wrong reply when get data wallets", 500000},
-    // get certificates
-    {"method=GetCertificates",      &DapNodeWeb3::parseCertificates,        nullptr, "Wrong reply when get certificates", 600000},
-    // create certificate
-    {"method=CreateCertificate",    &DapNodeWeb3::parseCreateCertificate,   nullptr, "Wrong reply when create certificates", 700000},
-    // create cond transaction reply
-    {"method=CondTxCreate",         &DapNodeWeb3::parseCondTxCreateReply,   nullptr, "Wrong reply when create transaction", 800000},
-    // check mempool
-    {"method=GetMempoolTxHash",     &DapNodeWeb3::parseMempoolReply,        nullptr, "Wrong reply when get mempool transaction hash", 900000},
-    // check ledger
-    {"method=GetLedgerTxHash",      &DapNodeWeb3::parseLedgerReply,         nullptr, "Wrong reply when get ledger transaction hash", 1000000},
-    // get orders
-    {"method=GetOrdersList",        &DapNodeWeb3::parseOrderList,           nullptr, "Wrong reply when get orders list", 1100000},
-    // get ip
-    {"method=GetNodeIP",            &DapNodeWeb3::parseNodeIp,              nullptr, "Wrong reply when get node ip", 1200000},
-    // get fee
-    {"method=GetFee",               &DapNodeWeb3::parseFee,                 nullptr, "Wrong reply when get fee", 1300000},
-    // node dump
-    {"method=NodeDump",             &DapNodeWeb3::parseNodeDump,            nullptr, "Wrong reply when get node dump", 1400000},
-    // list of delegated keys on the network
-    {"method=GetListKeys",          &DapNodeWeb3::parseListKeys,            nullptr, "Wrong reply when get list of delegated keys", 1500000},
+//const QList<ReplyMethod> replyItems = {
+//    // connect reply
+//    {"method=Connect",              &DapNodeWeb3::parseReplyConnect,        &DapNodeWeb3::replyConnectError, "Wrong reply connect", 100000},
+//    // node status reply
+//    {"method=GetNodeStatus",        &DapNodeWeb3::parseReplyStatus,         &DapNodeWeb3::replyConnectError, "Wrong reply status", 200000},
+//    // wallets list reply
+//    {"method=GetWallets",           &DapNodeWeb3::parseReplyWallets,        nullptr, "Wrong reply when get wallets list", 300000},
+//    // networks list reply
+//    {"method=GetNetworks",          &DapNodeWeb3::parseReplyNetworks,       nullptr, "Wrong reply when get networks list", 400000},
+//    // data wallets reply
+//    {"method=GetDataWallet",        &DapNodeWeb3::parseDataWallet,          nullptr, "Wrong reply when get data wallets", 500000},
+//    // get certificates
+//    {"method=GetCertificates",      &DapNodeWeb3::parseCertificates,        nullptr, "Wrong reply when get certificates", 600000},
+//    // create certificate
+//    {"method=CreateCertificate",    &DapNodeWeb3::parseCreateCertificate,   nullptr, "Wrong reply when create certificates", 700000},
+//    // create cond transaction reply
+//    {"method=CondTxCreate",         &DapNodeWeb3::parseCondTxCreateReply,   nullptr, "Wrong reply when create transaction", 800000},
+//    // check mempool
+//    {"method=GetMempoolTxHash",     &DapNodeWeb3::parseMempoolReply,        nullptr, "Wrong reply when get mempool transaction hash", 900000},
+//    // check ledger
+//    {"method=GetLedgerTxHash",      &DapNodeWeb3::parseLedgerReply,         nullptr, "Wrong reply when get ledger transaction hash", 1000000},
+//    // get orders
+//    {"method=GetOrdersList",        &DapNodeWeb3::parseOrderList,           nullptr, "Wrong reply when get orders list", 1100000},
+//    // get ip
+//    {"method=GetNodeIP",            &DapNodeWeb3::parseNodeIp,              nullptr, "Wrong reply when get node ip", 1200000},
+//    // get fee
+//    {"method=GetFee",               &DapNodeWeb3::parseFee,                 nullptr, "Wrong reply when get fee", 1300000},
+//    // node dump
+//    {"method=NodeDump",             &DapNodeWeb3::parseNodeDump,            nullptr, "Wrong reply when get node dump", 1400000},
+//    // list of delegated keys on the network
+//    {"method=GetListKeys",          &DapNodeWeb3::parseListKeys,            nullptr, "Wrong reply when get list of delegated keys", 1500000},
+//};
+
+static const QHash<QString, ReplyMethod> s_replyMethodMap =
+{
+  // connect reply
+  { "Connect",            {ReplyMethodID::ParseReplyConnect,      true,  "Wrong reply connect", 100000}},
+  // node status reply
+  { "GetNodeStatus",      {ReplyMethodID::ParseReplyStatus,       true,  "Wrong reply status", 200000}},
+  // wallets list reply
+  { "GetWallets",         {ReplyMethodID::ParseReplyWallets,      false, "Wrong reply when get wallets list", 300000}},
+  // networks list reply
+  { "GetNetworks",        {ReplyMethodID::ParseReplyNetworks,     false, "Wrong reply when get networks list", 400000}},
+  // data wallets reply
+  { "GetDataWallet",      {ReplyMethodID::ParseDataWallet,        false, "Wrong reply when get data wallets", 500000}},
+  // get certificates
+  { "GetCertificates",    {ReplyMethodID::ParseCertificates,      false, "Wrong reply when get certificates", 600000}},
+  // create certificate
+  { "CreateCertificate",  {ReplyMethodID::ParseCreateCertificate, false, "Wrong reply when create certificates", 700000}},
+  // create cond transaction reply
+  { "CondTxCreate",       {ReplyMethodID::ParseCondTxCreateReply, false, "Wrong reply when create transaction", 800000}},
+  // check mempool
+  { "GetMempoolTxHash",   {ReplyMethodID::ParseMempoolReply,      false, "Wrong reply when get mempool transaction hash", 900000}},
+  // check ledger
+  { "GetLedgerTxHash",    {ReplyMethodID::ParseLedgerReply,       false, "Wrong reply when get ledger transaction hash", 1000000}},
+  // get orders
+  { "GetOrdersList",      {ReplyMethodID::ParseOrderList,         false, "Wrong reply when get orders list", 1100000}},
+  // get ip
+  { "GetNodeIP",          {ReplyMethodID::ParseNodeIp,            false, "Wrong reply when get node ip", 1200000}},
+  // get fee
+  { "GetFee",             {ReplyMethodID::ParseFee,               false, "Wrong reply when get fee", 1300000}},
+  // node dump
+  { "NodeDump",           {ReplyMethodID::ParseNodeDump,          false, "Wrong reply when get node dump", 1400000}},
+  // list of delegated keys on the network
+  { "GetListKeys",        {ReplyMethodID::ParseListKeys,          false, "Wrong reply when get list of delegated keys", 1500000}},
 };
 
+static const ReplyMethod s_dummyReply
+{
+  ReplyMethodID::Invalid,
+  false,
+  QString(),
+  0
+};
 
 DapNodeWeb3::DapNodeWeb3(QObject * obj, int requestTimeout) :
     QObject(obj),
@@ -84,34 +140,68 @@ void DapNodeWeb3::sendRequest(QString request, QString save_data)
     request_GET(WEB3_URL, WEB3_PORT, request, *m_networkReply);
 }
 
-void DapNodeWeb3::responseProcessing(const int error, const QString errorString, const QString save_data, const bool httpFinished)
+QString extractMethod (const QString &inputString)
 {
-    // local network request
-    QString networkRequest(m_networkRequest);
-    DEBUGINFO  << "DapNodeWeb3::responseProcessing" << networkRequest;
-    // reset m_networkRequest
-    m_networkRequest = QString();
-    // debug info
-    // node connection reply
-    if (networkRequest.contains("method=GetNodeStatus"))
-    {
-        if (error == SIGERROR) {
-            // TODO check (error == SIGERROR) on other platforms (windows, android, ios)
-            emit nodeNotDetected();
-            return;
-        }
-    }
+  QRegularExpression regex (R"(\?method=([^&]+))");
+  QRegularExpressionMatch match = regex.match(inputString);
 
-    for (int k = 0; k < replyItems.count(); k++)
+  if (match.hasMatch())
+    return match.captured(1);
+  else
+    return QString(); // Если совпадение не найдено
+}
+
+void DapNodeWeb3::responseProcessing(
+  const int error,
+  const QString errorString,
+  const QString save_data,
+  const bool httpFinished)
+{
+  // get network request
+  QString networkRequest  = std::move (m_networkRequest);
+  QString methodName      = extractMethod (networkRequest);
+  DEBUGINFO  << "DapNodeWeb3::responseProcessing" << networkRequest;
+
+  // debug info
+  // node connection reply
+  if (methodName == "GetNodeStatus") // if (networkRequest.contains ("method=GetNodeStatus"))
+  {
+    if (error == SIGERROR)
     {
-        auto* r = &replyItems[k];
-        if (networkRequest.contains(r->request))
-        {
-            responseParsing(error, errorString, httpFinished, r->baseErrorCode,
-                            r->wrongReplyText, r->parseMethod, r->replyError);
-            return;
-        }
+      // TODO check (error == SIGERROR) on other platforms (windows, android, ios)
+      emit nodeNotDetected();
+      return;
     }
+  }
+
+  /* get reply method item */
+  auto replyMethod  = s_replyMethodMap.value (methodName, s_dummyReply);
+
+  /* check */
+  if (replyMethod.parseMethodID == ReplyMethodID::Invalid)
+  {
+    DEBUGINFO  << "DapNodeWeb3::responseProcessing :: Unknown method:" << methodName;
+    return;
+  }
+
+  /* parse */
+  responseParsing(
+    error, errorString, httpFinished,
+    replyMethod.baseErrorCode,
+    replyMethod.wrongReplyText,
+    replyMethod.parseMethodID,
+    replyMethod.replyError);
+
+//  for (int k = 0; k < replyItems.count(); k++)
+//  {
+//    auto* r = &replyItems[k];
+//    if (networkRequest.contains(r->request))
+//    {
+//      responseParsing(error, errorString, httpFinished, r->baseErrorCode,
+//                      r->wrongReplyText, r->parseMethod, r->replyError);
+//      return;
+//    }
+//  }
 }
 
 void DapNodeWeb3::nodeDetectedRequest()
@@ -141,38 +231,62 @@ void DapNodeWeb3::replyConnectError(int code)
     emit nodeNotConnected();
 }
 
-void DapNodeWeb3::responseParsing(const int error,
-                                  const QString wrongReplyerrorString,
-                                  const bool httpFinished,
-                                  int baseErrorCode,
-                                  QString messageReplyDataError,
-                                  void(DapNodeWeb3::*parseMethod)(const QString&, int baseErrorCode, const QString&),
-                                  void(DapNodeWeb3::*responceError)(int code),
-                                  const QString& save_data)
+void DapNodeWeb3::responseParsing(
+    const int error,
+    const QString wrongReplyerrorString,
+    const bool httpFinished,
+    int baseErrorCode,
+    QString messageReplyDataError,
+//    void(DapNodeWeb3::*parseMethod)(const QString&, int baseErrorCode, const QString&),
+//    void(DapNodeWeb3::*replyError)(int error),
+    ReplyMethodID parseMethod,
+    bool responceError,
+    const QString& save_data)
 {
-    if (error == QNetworkReply::NetworkError::NoError)
-    {
-        // no error reply
-        auto reply = m_networkReply->getReplyData();
+  if (error == QNetworkReply::NetworkError::NoError)
+  {
+    // no error reply
+    auto reply = m_networkReply->getReplyData();
 //        qInfo() << "reply message: " << reply;
-        // check reply message error
-        if (reply.size() == 0) {
-            replyError(baseErrorCode + 20000, messageReplyDataError);
-            return;
-        }
-        // parse reply
-        if (parseMethod)
-            (this->*parseMethod)(reply, baseErrorCode, save_data);
-    }
+
+    // check reply message error
+    if (reply.size() == 0)
+      return replyError (baseErrorCode + 20000, messageReplyDataError);
+
+    // parse reply
+    switch (parseMethod)
+      {
+        case ReplyMethodID::Invalid: break;
+        case ReplyMethodID::ParseReplyConnect:      parseReplyConnect (reply,       baseErrorCode, save_data); break;
+        case ReplyMethodID::ParseReplyStatus:       parseReplyStatus (reply,        baseErrorCode, save_data); break;
+        case ReplyMethodID::ParseReplyWallets:      parseReplyWallets (reply,       baseErrorCode, save_data); break;
+        case ReplyMethodID::ParseReplyNetworks:     parseReplyNetworks (reply,      baseErrorCode, save_data); break;
+        case ReplyMethodID::ParseDataWallet:        parseDataWallet (reply,         baseErrorCode, save_data); break;
+        case ReplyMethodID::ParseCertificates:      parseCertificates (reply,       baseErrorCode, save_data); break;
+        case ReplyMethodID::ParseCreateCertificate: parseCreateCertificate (reply,  baseErrorCode, save_data); break;
+        case ReplyMethodID::ParseCondTxCreateReply: parseCondTxCreateReply (reply,  baseErrorCode, save_data); break;
+        case ReplyMethodID::ParseMempoolReply:      parseMempoolReply (reply,       baseErrorCode, save_data); break;
+        case ReplyMethodID::ParseLedgerReply:       parseLedgerReply (reply,        baseErrorCode, save_data); break;
+        case ReplyMethodID::ParseOrderList:         parseOrderList (reply,          baseErrorCode, save_data); break;
+        case ReplyMethodID::ParseNodeIp:            parseNodeIp (reply,             baseErrorCode, save_data); break;
+        case ReplyMethodID::ParseFee:               parseFee (reply,                baseErrorCode, save_data); break;
+        case ReplyMethodID::ParseNodeDump:          parseNodeDump (reply,           baseErrorCode, save_data); break;
+        case ReplyMethodID::ParseListKeys:          parseListKeys (reply,           baseErrorCode, save_data); break;
+      }
+
+//    if (parseMethod)
+//      (this->*parseMethod)(reply, baseErrorCode, save_data);
+  }
+  else
+  {
+    if (responceError)
+      replyConnectError (error);
+
+    if (httpFinished)
+      replyError (baseErrorCode + 10000 + error , wrongReplyerrorString);
     else
-    {
-        if (responceError)
-            (this->*responceError)(error);
-        if (httpFinished)
-            replyError(baseErrorCode + 10000 + error , wrongReplyerrorString);
-        else
-            replyError(baseErrorCode + error, messageReplyDataError);
-    }
+      replyError (baseErrorCode + error, messageReplyDataError);
+  }
 }
 
 void DapNodeWeb3::nodeStatusRequest()
