@@ -97,14 +97,13 @@ void DapCmdNode::sendOrderList(const QJsonArray& orderList)
     DEBUGINFO << "sendOrderList";
 }
 
-void DapCmdNode::sendNodeIP(const QString& nodeAdress, const QString& nodeIp)
+void DapCmdNode::sendNodeIp(const QJsonArray& nodeIpList)
 {
     DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject response;
-    response["node_adress"] = nodeAdress;
-    response["node_ip"] = nodeIp;
+    response["node_ip_list"] = nodeIpList;
     sendCmd(&response);
-    DEBUGINFO << "sendNodeIP";
+    DEBUGINFO << "sendNodeIpList";
 }
 
 

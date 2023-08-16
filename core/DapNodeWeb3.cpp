@@ -126,14 +126,14 @@ void DapNodeWeb3::request_GET(const QString& host,  quint16 port, const QString 
     m_httpClient->requestHttp_GET(host, port, urlPath, headers, a_netReply);
 }
 
-void DapNodeWeb3::sendRequest(QString request, QString save_data)
+void DapNodeWeb3::sendRequest(QString request)
 {
     m_networkReply =  new DapNetworkReply;
     connect( m_networkReply, &DapNetworkReply::finished, this, [&] {
         responseProcessing(m_networkReply->error(), m_networkReply->errorString());
     });
     connect( m_networkReply, &DapNetworkReply::sigError, this, [&] {
-        responseProcessing(m_networkReply->error(), m_networkReply->errorString(), "", false);
+        responseProcessing(m_networkReply->error(), m_networkReply->errorString(), false);
     });
     // send request
     m_networkRequest = request;
@@ -154,7 +154,6 @@ QString extractMethod (const QString &inputString)
 void DapNodeWeb3::responseProcessing(
   const int error,
   const QString errorString,
-  const QString save_data,
   const bool httpFinished)
 {
   // get network request
@@ -240,8 +239,7 @@ void DapNodeWeb3::responseParsing(
 //    void(DapNodeWeb3::*parseMethod)(const QString&, int baseErrorCode, const QString&),
 //    void(DapNodeWeb3::*replyError)(int error),
     ReplyMethodID parseMethod,
-    bool responceError,
-    const QString& save_data)
+    bool responceError)
 {
   if (error == QNetworkReply::NetworkError::NoError)
   {
@@ -257,21 +255,21 @@ void DapNodeWeb3::responseParsing(
     switch (parseMethod)
       {
         case ReplyMethodID::Invalid: break;
-        case ReplyMethodID::ParseReplyConnect:      parseReplyConnect (reply,       baseErrorCode, save_data); break;
-        case ReplyMethodID::ParseReplyStatus:       parseReplyStatus (reply,        baseErrorCode, save_data); break;
-        case ReplyMethodID::ParseReplyWallets:      parseReplyWallets (reply,       baseErrorCode, save_data); break;
-        case ReplyMethodID::ParseReplyNetworks:     parseReplyNetworks (reply,      baseErrorCode, save_data); break;
-        case ReplyMethodID::ParseDataWallet:        parseDataWallet (reply,         baseErrorCode, save_data); break;
-        case ReplyMethodID::ParseCertificates:      parseCertificates (reply,       baseErrorCode, save_data); break;
-        case ReplyMethodID::ParseCreateCertificate: parseCreateCertificate (reply,  baseErrorCode, save_data); break;
-        case ReplyMethodID::ParseCondTxCreateReply: parseCondTxCreateReply (reply,  baseErrorCode, save_data); break;
-        case ReplyMethodID::ParseMempoolReply:      parseMempoolReply (reply,       baseErrorCode, save_data); break;
-        case ReplyMethodID::ParseLedgerReply:       parseLedgerReply (reply,        baseErrorCode, save_data); break;
-        case ReplyMethodID::ParseOrderList:         parseOrderList (reply,          baseErrorCode, save_data); break;
-        case ReplyMethodID::ParseNodeIp:            parseNodeIp (reply,             baseErrorCode, save_data); break;
-        case ReplyMethodID::ParseFee:               parseFee (reply,                baseErrorCode, save_data); break;
-        case ReplyMethodID::ParseNodeDump:          parseNodeDump (reply,           baseErrorCode, save_data); break;
-        case ReplyMethodID::ParseListKeys:          parseListKeys (reply,           baseErrorCode, save_data); break;
+        case ReplyMethodID::ParseReplyConnect:      parseReplyConnect (reply,       baseErrorCode); break;
+        case ReplyMethodID::ParseReplyStatus:       parseReplyStatus (reply,        baseErrorCode); break;
+        case ReplyMethodID::ParseReplyWallets:      parseReplyWallets (reply,       baseErrorCode); break;
+        case ReplyMethodID::ParseReplyNetworks:     parseReplyNetworks (reply,      baseErrorCode); break;
+        case ReplyMethodID::ParseDataWallet:        parseDataWallet (reply,         baseErrorCode); break;
+        case ReplyMethodID::ParseCertificates:      parseCertificates (reply,       baseErrorCode); break;
+        case ReplyMethodID::ParseCreateCertificate: parseCreateCertificate (reply,  baseErrorCode); break;
+        case ReplyMethodID::ParseCondTxCreateReply: parseCondTxCreateReply (reply,  baseErrorCode); break;
+        case ReplyMethodID::ParseMempoolReply:      parseMempoolReply (reply,       baseErrorCode); break;
+        case ReplyMethodID::ParseLedgerReply:       parseLedgerReply (reply,        baseErrorCode); break;
+        case ReplyMethodID::ParseOrderList:         parseOrderList (reply,          baseErrorCode); break;
+        case ReplyMethodID::ParseNodeIp:            parseNodeIp (reply,             baseErrorCode); break;
+        case ReplyMethodID::ParseFee:               parseFee (reply,                baseErrorCode); break;
+        case ReplyMethodID::ParseNodeDump:          parseNodeDump (reply,           baseErrorCode); break;
+        case ReplyMethodID::ParseListKeys:          parseListKeys (reply,           baseErrorCode); break;
       }
 
 //    if (parseMethod)
@@ -402,7 +400,7 @@ void DapNodeWeb3::getNodeIPRequest(QString networkName, QString nodeAddr)
             .arg(m_connectId)
             .arg(networkName)
             .arg(nodeAddr);
-    sendRequest(requesString, nodeAddr);
+    sendRequest(requesString);
 }
 
 void DapNodeWeb3::getFeeRequest(QString networkName)
@@ -433,7 +431,7 @@ void DapNodeWeb3::getListKeysRequest(QString networkName)
 }
 
 
-void DapNodeWeb3::parseReplyStatus(const QString& replyData, int baseErrorCode, const QString& save_data)
+void DapNodeWeb3::parseReplyStatus(const QString& replyData, int baseErrorCode)
 {
     // status reply example
     //    {
@@ -462,7 +460,7 @@ void DapNodeWeb3::parseReplyStatus(const QString& replyData, int baseErrorCode, 
     }
 }
 
-void DapNodeWeb3::parseReplyConnect(const QString& replyData, int baseErrorCode, const QString& save_data)
+void DapNodeWeb3::parseReplyConnect(const QString& replyData, int baseErrorCode)
 {
     // connect reply example
     //    "{"
@@ -490,7 +488,7 @@ void DapNodeWeb3::parseReplyConnect(const QString& replyData, int baseErrorCode,
     }
 }
 
-void DapNodeWeb3::parseReplyWallets(const QString& replyData, int baseErrorCode, const QString& save_data)
+void DapNodeWeb3::parseReplyWallets(const QString& replyData, int baseErrorCode)
 {
     // wallets reply example
     //    "{"
@@ -519,7 +517,7 @@ void DapNodeWeb3::parseReplyWallets(const QString& replyData, int baseErrorCode,
 }
 
 
-void DapNodeWeb3::parseReplyNetworks(const QString& replyData, int baseErrorCode, const QString& save_data)
+void DapNodeWeb3::parseReplyNetworks(const QString& replyData, int baseErrorCode)
 {
     // networks reply example
     //    "{"
@@ -555,7 +553,7 @@ void DapNodeWeb3::walletDataRequest(const QString& walletName)
     sendRequest(requesString);
 }
 
-void DapNodeWeb3::parseDataWallet(const QString& replyData, int baseErrorCode, const QString& save_data)
+void DapNodeWeb3::parseDataWallet(const QString& replyData, int baseErrorCode)
 {
     //{
     //"data": [
@@ -589,7 +587,7 @@ void DapNodeWeb3::parseDataWallet(const QString& replyData, int baseErrorCode, c
     }
 }
 
-void DapNodeWeb3::parseCertificates(const QString& replyData, int baseErrorCode, const QString& save_data)
+void DapNodeWeb3::parseCertificates(const QString& replyData, int baseErrorCode)
 {
     //    {
     //        "data": [
@@ -619,7 +617,7 @@ void DapNodeWeb3::parseCertificates(const QString& replyData, int baseErrorCode,
     }
 }
 
-void DapNodeWeb3::parseCreateCertificate(const QString& replyData, int baseErrorCode, const QString& save_data)
+void DapNodeWeb3::parseCreateCertificate(const QString& replyData, int baseErrorCode)
 {
     //    {
     //        "data": {
@@ -641,7 +639,7 @@ void DapNodeWeb3::parseCreateCertificate(const QString& replyData, int baseError
     }
 }
 
-void DapNodeWeb3::parseCondTxCreateReply(const QString& replyData, int baseErrorCode, const QString& save_data)
+void DapNodeWeb3::parseCondTxCreateReply(const QString& replyData, int baseErrorCode)
 {
     //    {
     //        "data": {
@@ -663,7 +661,7 @@ void DapNodeWeb3::parseCondTxCreateReply(const QString& replyData, int baseError
     }
 }
 
-void DapNodeWeb3::parseMempoolReply(const QString& replyData, int baseErrorCode, const QString& save_data)
+void DapNodeWeb3::parseMempoolReply(const QString& replyData, int baseErrorCode)
 {
     //    {
     //        "data": {
@@ -679,7 +677,7 @@ void DapNodeWeb3::parseMempoolReply(const QString& replyData, int baseErrorCode,
     emit sigMempoolContainHash();
 }
 
-void DapNodeWeb3::parseLedgerReply(const QString& replyData, int baseErrorCode, const QString& save_data)
+void DapNodeWeb3::parseLedgerReply(const QString& replyData, int baseErrorCode)
 {
     //    {
     //        "data": {
@@ -695,7 +693,7 @@ void DapNodeWeb3::parseLedgerReply(const QString& replyData, int baseErrorCode, 
     emit sigLedgerContainHash();
 }
 
-void DapNodeWeb3::parseOrderList(const QString& replyData, int baseErrorCode, const QString& save_data)
+void DapNodeWeb3::parseOrderList(const QString& replyData, int baseErrorCode)
 {
     //{
     //"data": [
@@ -729,7 +727,7 @@ void DapNodeWeb3::parseOrderList(const QString& replyData, int baseErrorCode, co
     }
 }
 
-void DapNodeWeb3::parseNodeIp(const QString& replyData, int baseErrorCode, const QString& save_data)
+void DapNodeWeb3::parseNodeIp(const QString& replyData, int baseErrorCode)
 {
     // reply example
     //    {
@@ -743,13 +741,13 @@ void DapNodeWeb3::parseNodeIp(const QString& replyData, int baseErrorCode, const
     if (jsonError())
         return;
     QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
-    if (doc["data"].isObject())
+    if (!doc["data"].isArray())
     {
-        emit sigNodeIp(save_data, doc["data"].toObject()["node IP"].toString());
+        emit sigNodeIp(doc["data"].toArray());
     }
 }
 
-void DapNodeWeb3::parseFee(const QString& replyData, int baseErrorCode, const QString& save_data)
+void DapNodeWeb3::parseFee(const QString& replyData, int baseErrorCode)
 {
 
     // reply example
@@ -785,7 +783,7 @@ void DapNodeWeb3::parseFee(const QString& replyData, int baseErrorCode, const QS
     }
 }
 
-void DapNodeWeb3::parseNodeDump(const QString& replyData, int baseErrorCode, const QString& save_data)
+void DapNodeWeb3::parseNodeDump(const QString& replyData, int baseErrorCode)
 {
 //    {
 //        "data": [
@@ -826,7 +824,7 @@ void DapNodeWeb3::parseNodeDump(const QString& replyData, int baseErrorCode, con
     }
 }
 
-void DapNodeWeb3::parseListKeys(const QString& replyData, int baseErrorCode, const QString& save_data)
+void DapNodeWeb3::parseListKeys(const QString& replyData, int baseErrorCode)
 {
 //    {
 //        "data": {
@@ -879,7 +877,7 @@ void DapNodeWeb3::parseListKeys(const QString& replyData, int baseErrorCode, con
 }
 
 
-void DapNodeWeb3::parseJsonError(const QString& replyData, int baseErrorCode, const QString& save_data)
+void DapNodeWeb3::parseJsonError(const QString& replyData, int baseErrorCode)
 {
     // reply example
     //    "{ ... "

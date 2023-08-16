@@ -425,8 +425,8 @@ void DapNode::initWeb3Connections()
         emit sigOrderListReady(ordersList); //emit sigOrderListReady(orders);
     });
 
-    connect(web3, &DapNodeWeb3::sigNodeIp, this, [=](QString data, QString nodeIp) {
-        emit sigSendNodeIp(data, nodeIp);
+    connect(web3, &DapNodeWeb3::sigNodeIp, this, [=](QJsonArray data) {
+        emit sigSendNodeIp(data);
     });
 
     //connect(web3, &DapNodeWeb3::sigOrderList, this, &DapNode::sigOrderListReady);
