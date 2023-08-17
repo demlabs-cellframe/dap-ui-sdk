@@ -124,7 +124,7 @@ Item {
             {
             case QuiNodeOrderList.Invalid:  listTitle   = qsTr(""); break;
 
-            case QuiNodeOrderList.Orders:   listTitle   = qsTr("Order"); break;
+            case QuiNodeOrderList.Orders:   listTitle   = qsTr("Orders"); break;
             case QuiNodeOrderList.Networks: listTitle   = qsTr("Network"); break;
             case QuiNodeOrderList.Wallets:  listTitle   = qsTr("Wallet"); break;
             case QuiNodeOrderList.Tokens:   listTitle   = qsTr("Token"); break;
@@ -409,6 +409,8 @@ Item {
         //property string second
         //property bool swap
         //property var cbOnClicked
+        //property string labelTopQss
+        //property string labelBottomQss
 
         DapQmlRectangle {
             id: itemRoot
@@ -431,6 +433,7 @@ Item {
                 anchors.bottom: parent.bottom
                 width: parent.width
                 height: 2
+                opacity: 0.25
             }
 
             RowLayout {
@@ -476,7 +479,7 @@ Item {
                         verticalAlign: parent.swap ? Text.AlignTop : Text.AlignBottom
                         elide: Text.ElideMiddle
                         disableClicking: true
-                        qss: "nodeorlist-item-label-top"
+                        qss: "nodeorlist-item-label-top " + itemRoot.parent.labelTopQss
                         text: itemRoot.parent.first // `${model.price} per ${model.units}`
                     }
 
@@ -488,7 +491,7 @@ Item {
                         verticalAlign: !parent.swap ? Text.AlignTop : Text.AlignBottom
                         elide: Text.ElideMiddle
                         disableClicking: true
-                        qss: "nodeorlist-item-label-bottom"
+                        qss: "nodeorlist-item-label-bottom " + itemRoot.parent.labelBottomQss
                         text: itemRoot.parent.second // model.server
                     }
                 }
@@ -523,6 +526,8 @@ Item {
             sourceComponent: compButton
             property string first:      model.units ? `${model.price} per ${model.units_value} ${model.units}` : `${model.price}`
             property string second:      `${model.server} - ${model.ipAddress}`
+            property string labelTopQss:    "nodeorlist-label-size-14"
+            property string labelBottomQss: "nodeorlist-label-size-14"
             property var cbOnClicked: function() {
                 root.internal.network       = model.network;
                 root.internal.wallet        = model.wallet;
@@ -659,6 +664,8 @@ Item {
                     visible: !root.internal.isSearch
                     property string first:      root.internal.network
                     property string second:     "Network"
+                    property string labelTopQss
+                    property string labelBottomQss
                     property bool swap:         true
                     property var cbOnClicked: function() { root.sigNetworkClicked(); }
                 }
@@ -668,6 +675,8 @@ Item {
                     visible: !root.internal.isSearch
                     property string first:      root.internal.wallet
                     property string second:     "Wallet"
+                    property string labelTopQss
+                    property string labelBottomQss
                     property bool swap:         true
                     property var cbOnClicked: function() { root.sigWalletClicked(); }
                 }
@@ -677,6 +686,8 @@ Item {
                     visible: !root.internal.isSearch
                     property string first:      root.internal.token
                     property string second:     "Token"
+                    property string labelTopQss
+                    property string labelBottomQss
                     property bool swap:         true
                     property var cbOnClicked: function() { root.sigTokenClicked(); }
                 }
@@ -686,6 +697,8 @@ Item {
                     visible: !root.internal.isSearch
                     property string first:      root.internal.maxPrice
                     property string second:     "Max price"
+                    property string labelTopQss
+                    property string labelBottomQss
                     property bool swap:         true
                     property var cbOnClicked: function() { root.sigMaxPriceClicked(); }
                 }
@@ -695,6 +708,8 @@ Item {
                     visible: root.internal.isSearch
                     property string first:      root.internal.unit
                     property string second:     "Unit"
+                    property string labelTopQss
+                    property string labelBottomQss
                     property bool swap:         true
                     property var cbOnClicked: function() { root.sigUnitClicked(); }
                 }
@@ -704,6 +719,8 @@ Item {
                     visible: root.internal.isSearch
                     property string first:      root.internal.maxUnit
                     property string second:     "Max Unit"
+                    property string labelTopQss
+                    property string labelBottomQss
                     property bool swap:         true
                     property var cbOnClicked: function() { root.sigMaxUnitClicked(); }
                 }
@@ -713,6 +730,8 @@ Item {
                     visible: root.internal.isSearch
                     property string first:      root.internal.minUnit
                     property string second:     "Min Unit"
+                    property string labelTopQss
+                    property string labelBottomQss
                     property bool swap:         true
                     property var cbOnClicked: function() { root.sigMinUnitClicked(); }
                 }
@@ -722,6 +741,8 @@ Item {
                     visible: root.internal.isSearch
                     property string first:      root.internal.maxPrice
                     property string second:     "Max Price"
+                    property string labelTopQss
+                    property string labelBottomQss
                     property bool swap:         true
                     property var cbOnClicked: function() { root.sigMaxPriceClicked(); }
                 }
@@ -731,6 +752,8 @@ Item {
                     visible: root.internal.isSearch
                     property string first:      root.internal.minPrice
                     property string second:     "Min Price"
+                    property string labelTopQss
+                    property string labelBottomQss
                     property bool swap:         true
                     property var cbOnClicked: function() { root.sigMinPriceClicked(); }
                 }

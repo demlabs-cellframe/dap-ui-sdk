@@ -306,7 +306,7 @@
 
 .form-title-close-btn
 {
-    scaled-rect: scaled(0,0,28,28,true);
+    scaled-rect: scaled(0,0,32,32,true);
     active: "@btn-close-hover";
     inactive: "@btn-close";
 }
@@ -603,7 +603,7 @@
 
 .dialog-title
 {
-    scaled-rect: scaled(34,62,360,28,false);
+    scaled-rect: scaled(34,64,360,28,false);
     color: "@text";
 }
 
@@ -2200,13 +2200,30 @@
 
 .nodeorlist-item-label-top
 {
+    scaled-font: scaled(16);
     color: "@text";
     font-weight: Font.Medium;
 }
 
 .nodeorlist-item-label-bottom
 {
+    scaled-font: scaled(12);
     color: "@light-grey";
+}
+
+.nodeorlist-label-size-12
+{
+    scaled-font: scaled(12);
+}
+
+.nodeorlist-label-size-14
+{
+    scaled-font: scaled(14);
+}
+
+.nodeorlist-label-size-16
+{
+    scaled-font: scaled(16);
 }
 
 .nodeorlist-item-link
