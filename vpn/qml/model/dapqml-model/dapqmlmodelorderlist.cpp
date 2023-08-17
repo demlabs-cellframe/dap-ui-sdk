@@ -383,6 +383,7 @@ void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
 
   /* request ip's */
   emit sigRequestNodeIPs (network(), jarray);
+  emit sigOrderListLoaded();
 }
 
 void DapQmlModelOrderList::slotSetWalletListData (const QHash<QString, QStringList> &a_walletData)
@@ -516,6 +517,7 @@ void DapQmlModelOrderList::slotSetOrderAddresses (const QJsonArray &a_list)
 
   /* notify model */
   endResetModel();
+  emit sigOrderListAddressesUpdated();
 }
 
 

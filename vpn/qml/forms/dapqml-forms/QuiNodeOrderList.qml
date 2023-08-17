@@ -1,8 +1,10 @@
 /* INCLUDES */
 
-import QtQuick 2.9
+import QtQuick 2.11
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.2
+import QtGraphicalEffects 1.0
+import QtQuick.Shapes 1.4
 import DapQmlStyle 1.0
 import Brand 1.0
 import PageCtl 1.0
@@ -62,6 +64,8 @@ Item {
 
     property QtObject internal: QtObject {
         /* VARIABLES */
+        property bool popup: false
+
         property bool showConfirmButton: false  /// show bottom confirm button
         property bool showValueEdit: false      /// shows line edit
         property bool isEditingUnit: false      /// shows unit edit bottom tabs
@@ -310,6 +314,10 @@ Item {
 
     function showSearchOrder() {
         root.internal.isSearch  = true;
+    }
+
+    function hideSpinner() {
+        root.internal.popup = false;
     }
 
     /// @}
@@ -607,32 +615,67 @@ Item {
     }
 
     /****************************************//**
-     * Title
+     * Fast Blur and Loading Animation
      ********************************************/
 
-    DapQmlDialogTitle {
-        id: title
-        text: {
-            switch(swipe.currentIndex)
-            {
-            case QuiNodeOrderList.Tab.Search:   return qsTr("Search order");
-            case QuiNodeOrderList.Tab.List:     return root.internal.listTitle; //qsTr("Orders");
-            case QuiNodeOrderList.Tab.Overview: return qsTr("Transaction overview");
+    /* popup dialog blur effect */
+    FastBlur {
+        anchors.fill: content
+        source: content
+        radius: 40
+        cached: true
+        z: 50
+        opacity: 1.0 * root.internal.popup
+        Behavior on opacity { PropertyAnimation { duration: 250 } }
+    }
+
+    /* loading animation */
+    DapQmlRectangle {
+        anchors.centerIn: parent
+        z: 60
+        qss: "nodeorlist-spinner-bg"
+        opacity: 1.0 * root.internal.popup
+        Behavior on opacity { PropertyAnimation { duration: 250 } }
+
+        DapQmlRectangle {
+            id: progressCircle
+            anchors.centerIn: parent
+            qss: "nodeorlist-spinner-arc"
+
+            property string color
+            property int strokeWidth: 10
+
+            Shape {
+                id: nodeorInfoArcAnim
+                anchors.fill: parent
+                layer.enabled: true
+                layer.samples: 6
+
+                ShapePath {
+                    fillColor: "transparent"
+                    strokeColor: progressCircle.color
+                    strokeWidth: progressCircle.strokeWidth
+                    capStyle: ShapePath.FlatCap
+
+                    PathAngleArc {
+                        id: loginInfoArcPath
+                        centerX: nodeorInfoArcAnim.width / 2
+                        centerY: nodeorInfoArcAnim.height / 2
+                        radiusX: nodeorInfoArcAnim.width / 2 - progressCircle.strokeWidth / 2
+                        radiusY: nodeorInfoArcAnim.height / 2 - progressCircle.strokeWidth / 2
+                        startAngle: 90
+                        sweepAngle: 180
+
+                        NumberAnimation on startAngle {
+                            from: 0
+                            to: 360
+                            running: true
+                            loops: Animation.Infinite
+                            duration: 2000
+                        }
+                    }
+                }
             }
-            return "";
-        }
-        //text: swipe.currentIndex === QuiNodeOrderList.Tab.List ? qsTr("Orders") : qsTr("Transaction overview")
-        qss: "dialog-title"
-        hideClose: swipe.currentIndex !== QuiNodeOrderList.Tab.Search
-
-        /****************************************//**
-         * Back button
-         ********************************************/
-
-        DapQmlPushButton {
-            qss: "form-title-close-btn"
-            visible: swipe.currentIndex !== QuiNodeOrderList.Tab.Search
-            onClicked: swipe.decrementCurrentIndex()
         }
     }
 
@@ -640,428 +683,484 @@ Item {
      * Content
      ********************************************/
 
-    SwipeView {
-        id: swipe
+    Item {
+        id: content
         anchors.fill: parent
-        interactive: false
+        opacity: 1.0 * (!root.internal.popup)
+        Behavior on opacity { PropertyAnimation { duration: 250 } }
 
         /****************************************//**
-         * Search Filter
+         * Popup dialog darkness
          ********************************************/
 
-        Item {
-            id: searchFilter
-            width: root.width
-            height: root.height
+        Rectangle {
+            width: content.width
+            height: content.height
+            z: 55
+            color: "#80000000"
+            opacity: 1.0 * root.internal.popup
+            Behavior on opacity { PropertyAnimation { duration: 250 } }
+        }
 
-            ColumnLayout {
-                id: searchFilterContent
-                spacing: spacer.height
-                DapQmlStyle { item: searchFilterContent; qss: "nodeorlist-listview" }
+        /****************************************//**
+         * Title
+         ********************************************/
 
-                Loader {
-                    sourceComponent: compButton
-                    visible: !root.internal.isSearch
-                    property string first:      root.internal.network
-                    property string second:     "Network"
-                    property string labelTopQss
-                    property string labelBottomQss
-                    property bool swap:         true
-                    property var cbOnClicked: function() { root.sigNetworkClicked(); }
+        DapQmlDialogTitle {
+            id: title
+            text: {
+                switch(swipe.currentIndex)
+                {
+                case QuiNodeOrderList.Tab.Search:   return qsTr("Search order");
+                case QuiNodeOrderList.Tab.List:     return root.internal.listTitle; //qsTr("Orders");
+                case QuiNodeOrderList.Tab.Overview: return qsTr("Transaction overview");
                 }
-
-                Loader {
-                    sourceComponent: compButton
-                    visible: !root.internal.isSearch
-                    property string first:      root.internal.wallet
-                    property string second:     "Wallet"
-                    property string labelTopQss
-                    property string labelBottomQss
-                    property bool swap:         true
-                    property var cbOnClicked: function() { root.sigWalletClicked(); }
-                }
-
-                Loader {
-                    sourceComponent: compButton
-                    visible: !root.internal.isSearch
-                    property string first:      root.internal.token
-                    property string second:     "Token"
-                    property string labelTopQss
-                    property string labelBottomQss
-                    property bool swap:         true
-                    property var cbOnClicked: function() { root.sigTokenClicked(); }
-                }
-
-                Loader {
-                    sourceComponent: compButton
-                    visible: !root.internal.isSearch
-                    property string first:      root.internal.maxPrice
-                    property string second:     "Max price"
-                    property string labelTopQss
-                    property string labelBottomQss
-                    property bool swap:         true
-                    property var cbOnClicked: function() { root.sigMaxPriceClicked(); }
-                }
-
-                Loader {
-                    sourceComponent: compButton
-                    visible: root.internal.isSearch
-                    property string first:      root.internal.unit
-                    property string second:     "Unit"
-                    property string labelTopQss
-                    property string labelBottomQss
-                    property bool swap:         true
-                    property var cbOnClicked: function() { root.sigUnitClicked(); }
-                }
-
-                Loader {
-                    sourceComponent: compButton
-                    visible: root.internal.isSearch
-                    property string first:      root.internal.maxUnit
-                    property string second:     "Max Unit"
-                    property string labelTopQss
-                    property string labelBottomQss
-                    property bool swap:         true
-                    property var cbOnClicked: function() { root.sigMaxUnitClicked(); }
-                }
-
-                Loader {
-                    sourceComponent: compButton
-                    visible: root.internal.isSearch
-                    property string first:      root.internal.minUnit
-                    property string second:     "Min Unit"
-                    property string labelTopQss
-                    property string labelBottomQss
-                    property bool swap:         true
-                    property var cbOnClicked: function() { root.sigMinUnitClicked(); }
-                }
-
-                Loader {
-                    sourceComponent: compButton
-                    visible: root.internal.isSearch
-                    property string first:      root.internal.maxPrice
-                    property string second:     "Max Price"
-                    property string labelTopQss
-                    property string labelBottomQss
-                    property bool swap:         true
-                    property var cbOnClicked: function() { root.sigMaxPriceClicked(); }
-                }
-
-                Loader {
-                    sourceComponent: compButton
-                    visible: root.internal.isSearch
-                    property string first:      root.internal.minPrice
-                    property string second:     "Min Price"
-                    property string labelTopQss
-                    property string labelBottomQss
-                    property bool swap:         true
-                    property var cbOnClicked: function() { root.sigMinPriceClicked(); }
-                }
-
-                Item {
-                    Layout.fillHeight: true
-                }
+                return "";
             }
+            //text: swipe.currentIndex === QuiNodeOrderList.Tab.List ? qsTr("Orders") : qsTr("Transaction overview")
+            qss: "dialog-title"
+            hideClose: swipe.currentIndex !== QuiNodeOrderList.Tab.Search
+
+            /****************************************//**
+             * Back button
+             ********************************************/
 
             DapQmlPushButton {
-                qss: "nodeorlist-overview-confirm-btn"
-                text: root.internal.isSearch ? qsTr("SEARCH ORDER") : qsTr("CONFIRM")
-                onClicked: {
-                    storeFilterData();
-                    if (root.internal.isSearch)
-                        root.sigSearchClicked();
-                    else
-                        root.sigWalletConfirmClicked();
-                }
+                qss: "form-title-close-btn"
+                visible: swipe.currentIndex !== QuiNodeOrderList.Tab.Search
+                onClicked: swipe.decrementCurrentIndex()
             }
         }
 
         /****************************************//**
-         * Middle Page
+         * Swipe View
          ********************************************/
 
-        Item {
-            width: root.width
-            height: root.height
+        SwipeView {
+            id: swipe
+            anchors.fill: parent
+            interactive: false
 
             /****************************************//**
-             * Value Edit
+             * Search Filter
              ********************************************/
 
             Item {
-                anchors.fill: parent
-                visible: root.internal.showValueEdit
-
-                /* VALUE EDIT */
-
-                DapQmlRectangle {
-                    id: valueEditRect
-                    qss: "nodeorlist-edit"
-                    property real fontSize
-
-                    TextInput {
-                        id: valueEditInput
-                        anchors.fill: parent
-                        anchors.margins: parent.height * 0.1
-                        horizontalAlignment: TextInput.AlignLeft //AlignHCenter
-                        verticalAlignment: TextInput.AlignVCenter
-                        font.pixelSize: parent.fontSize
-                        font.family: Brand.fontName()
-                        font.weight: Font.Bold
-                        selectByMouse: true
-                        text: root.internal.editValue // "1234"
-                        clip: true
-
-                        onTextEdited: {
-                            if (interfaceObject === undefined)
-                                return;
-
-                            text    = root.internal.isPrice
-                                    ? interfaceObject.fixPriceString(text)
-                                    : interfaceObject.fixNumberString(text);
-                        }
-                    }
-                }
-
-                /* RESULT */
-                DapQmlLabel {
-                    anchors.top: valueEditRect.bottom
-                    anchors.horizontalCenter: valueEditRect.horizontalCenter
-                    anchors.margins: height/2
-                    width: valueEditRect.width
-                    height: valueEditRect.height * 0.23
-                    horizontalAlign: root.internal.isPrice ? Text.AlignRight : Text.AlignHCenter
-                    verticalAlign: Text.AlignVCenter
-                    elide: Text.ElideMiddle
-                    qss: "c-grey"
-
-                    text: root.internal.isPrice
-                          ? `Balance: ${valueEditInput.text} ${root.internal.token}`
-                          //: `${valueEditInput.text} ${root.internal.isTime ? "days" : "MB"}`
-                          : `${valueEditInput.text} ${root.internal.unit}`
-                }
-
-                /* TABS */
-                RowLayout {
-                    id: tabsLayout
-                    spacing: tabsLayoutSpacing.width
-                    visible: false // !root.internal.isPrice
-
-                    DapQmlStyle { item: tabsLayout; qss: "nodeorlist-tabs" }
-                    DapQmlDummy { id: tabsLayoutSpacing; qss: "nodeorlist-tabs-spacing" }
-
-//                    Component.onCompleted: StyleDebugTree.describe (
-//                       "tabsLayout",
-//                        ["x", "y", "width", "height", "spacing"],
-//                       this);
-
-                    /* left button */
-                    Loader {
-                        Layout.preferredWidth: tabButtonSizer.width
-                        Layout.preferredHeight: tabButtonSizer.height
-                        property string name: qsTr("TRAFFIC")
-                        property bool isSecond: false
-                        property var callback: function() {tabPressed(isSecond)}
-                        sourceComponent: tabButton
-
-//                        Component.onCompleted: StyleDebugTree.describe (
-//                           "leftTab",
-//                            ["x", "y", "width", "height", "name"],
-//                           this);
-                    }
-
-                    /* right button */
-                    Loader {
-                        Layout.preferredWidth: tabButtonSizer.width
-                        Layout.preferredHeight: tabButtonSizer.height
-                        property string name: qsTr("TIME")
-                        property bool isSecond: true
-                        property var callback: function() {tabPressed(isSecond)}
-                        sourceComponent: tabButton
-
-//                        Component.onCompleted: StyleDebugTree.describe (
-//                           "rightTab",
-//                            ["x", "y", "width", "height", "name"],
-//                           this);
-                    }
-                }
-            }
-
-            DapQmlPushButton {
-                visible: root.internal.showConfirmButton
-                qss: "nodeorlist-overview-clear-btn"
-                text: qsTr("CLEAR")
-                onClicked: {
-                    /* store edit value result */
-                    switch (root.internal.mode)
-                    {
-                    case QuiNodeOrderList.MaxUnit:
-                    case QuiNodeOrderList.MinUnit:
-                    case QuiNodeOrderList.MaxPrice:
-                    case QuiNodeOrderList.MinPrice:
-                        filterValueSet ("");
-                        break;
-                    default:
-                        break;
-                    }
-
-                    /* navigate back */
-                    swipe.decrementCurrentIndex();
-                }
-            }
-
-            DapQmlPushButton {
-                visible: root.internal.showConfirmButton
-                qss: "nodeorlist-overview-confirm-btn"
-                text: qsTr("CONFIRM")
-                onClicked: {
-                    /* store edit value result */
-                    switch (root.internal.mode)
-                    {
-                    case QuiNodeOrderList.MaxUnit:
-                    case QuiNodeOrderList.MinUnit:
-                    case QuiNodeOrderList.MaxPrice:
-                    case QuiNodeOrderList.MinPrice:
-                        filterValueSet (valueEditInput.text);
-                        break;
-                    default:
-                        break;
-                    }
-
-                    /* navigate based on mode */
-                    if (root.internal.mode === QuiNodeOrderList.Orders)
-                        swipe.incrementCurrentIndex();
-                    else
-                        swipe.decrementCurrentIndex();
-                }
-            }
-
-            /****************************************//**
-             * Listview
-             ********************************************/
-
-            ListView {
-                id: csListView
-                objectName: "listview"
-                x: (root.width - width) / 2
-                spacing: spacer.height
-                visible: !root.internal.showValueEdit
-                clip: true
-
-                onModelChanged: {
-                    if (model)
-                        csListViewConn.target   = model;
-                }
-
-                Connections {
-                    id: csListViewConn
-                    //target: csListView.model
-                    target: csListViewConnDummy
-                    function onModeChanged() {
-                        console.log (`listview mode: ${target.mode}`)
-                        if (target.mode === undefined)
-                        {
-                            csListView.delegate = listviewDelegateNull;
-                            return;
-                        }
-
-                        switch(target.mode)
-                        {
-                        case DapQmlModelOrderList.Networks:    csListView.delegate = listviewDelegateNameValue; break;
-                        case DapQmlModelOrderList.Wallets:     csListView.delegate = listviewDelegateNameValue; break;
-                        case DapQmlModelOrderList.Tokens:      csListView.delegate = listviewDelegateNameValue; break;
-                        case DapQmlModelOrderList.Orders:      csListView.delegate = listviewDelegateOrder;     break;
-                        case DapQmlModelOrderList.Units:       csListView.delegate = listviewDelegateNameValue; break;
-                        }
-                    }
-                }
-
-                Item {
-                    id: csListViewConnDummy
-                    property var mode
-                }
-
-                DapQmlStyle { item: csListView; qss: "nodeorlist-listview" }
-
-                Component.onCompleted: StyleDebugTree.describe (
-                   "csListView",
-                    ["x", "y", "width", "height"],
-                   this);
-            }
-        }
-
-        /****************************************//**
-         * Transaction Overview
-         ********************************************/
-
-        Item {
-            width: root.width
-            height: root.height
-
-            DapQmlRectangle {
-                qss: "nodeorlist-overview-container"
+                id: searchFilter
+                width: root.width
+                height: root.height
 
                 ColumnLayout {
+                    id: searchFilterContent
+                    spacing: spacer.height
+                    DapQmlStyle { item: searchFilterContent; qss: "nodeorlist-listview" }
+
+                    Loader {
+                        sourceComponent: compButton
+                        visible: !root.internal.isSearch
+                        property string first:      root.internal.network
+                        property string second:     "Network"
+                        property string labelTopQss
+                        property string labelBottomQss
+                        property bool swap:         true
+                        property var cbOnClicked: function() { root.sigNetworkClicked(); }
+                    }
+
+                    Loader {
+                        sourceComponent: compButton
+                        visible: !root.internal.isSearch
+                        property string first:      root.internal.wallet
+                        property string second:     "Wallet"
+                        property string labelTopQss
+                        property string labelBottomQss
+                        property bool swap:         true
+                        property var cbOnClicked: function() { root.sigWalletClicked(); }
+                    }
+
+                    Loader {
+                        sourceComponent: compButton
+                        visible: !root.internal.isSearch
+                        property string first:      root.internal.token
+                        property string second:     "Token"
+                        property string labelTopQss
+                        property string labelBottomQss
+                        property bool swap:         true
+                        property var cbOnClicked: function() { root.sigTokenClicked(); }
+                    }
+
+                    Loader {
+                        sourceComponent: compButton
+                        visible: !root.internal.isSearch
+                        property string first:      root.internal.maxPrice
+                        property string second:     "Max price"
+                        property string labelTopQss
+                        property string labelBottomQss
+                        property bool swap:         true
+                        property var cbOnClicked: function() { root.sigMaxPriceClicked(); }
+                    }
+
+                    Loader {
+                        sourceComponent: compButton
+                        visible: root.internal.isSearch
+                        property string first:      root.internal.unit
+                        property string second:     "Unit"
+                        property string labelTopQss
+                        property string labelBottomQss
+                        property bool swap:         true
+                        property var cbOnClicked: function() { root.sigUnitClicked(); }
+                    }
+
+                    Loader {
+                        sourceComponent: compButton
+                        visible: root.internal.isSearch
+                        property string first:      root.internal.maxUnit
+                        property string second:     "Max Unit"
+                        property string labelTopQss
+                        property string labelBottomQss
+                        property bool swap:         true
+                        property var cbOnClicked: function() { root.sigMaxUnitClicked(); }
+                    }
+
+                    Loader {
+                        sourceComponent: compButton
+                        visible: root.internal.isSearch
+                        property string first:      root.internal.minUnit
+                        property string second:     "Min Unit"
+                        property string labelTopQss
+                        property string labelBottomQss
+                        property bool swap:         true
+                        property var cbOnClicked: function() { root.sigMinUnitClicked(); }
+                    }
+
+                    Loader {
+                        sourceComponent: compButton
+                        visible: root.internal.isSearch
+                        property string first:      root.internal.maxPrice
+                        property string second:     "Max Price"
+                        property string labelTopQss
+                        property string labelBottomQss
+                        property bool swap:         true
+                        property var cbOnClicked: function() { root.sigMaxPriceClicked(); }
+                    }
+
+                    Loader {
+                        sourceComponent: compButton
+                        visible: root.internal.isSearch
+                        property string first:      root.internal.minPrice
+                        property string second:     "Min Price"
+                        property string labelTopQss
+                        property string labelBottomQss
+                        property bool swap:         true
+                        property var cbOnClicked: function() { root.sigMinPriceClicked(); }
+                    }
+
+                    Item {
+                        Layout.fillHeight: true
+                    }
+                }
+
+                DapQmlPushButton {
+                    qss: "nodeorlist-overview-confirm-btn"
+                    text: root.internal.isSearch ? qsTr("SEARCH ORDER") : qsTr("CONFIRM")
+                    onClicked: {
+                        storeFilterData();
+                        if (root.internal.isSearch)
+                        {
+                            root.internal.popup = true;
+                            root.sigSearchClicked();
+                        }
+                        else
+                            root.sigWalletConfirmClicked();
+                    }
+                }
+            } // Search Filter
+
+            /****************************************//**
+             * Middle Page
+             ********************************************/
+
+            Item {
+                width: root.width
+                height: root.height
+
+                /****************************************//**
+                 * Value Edit
+                 ********************************************/
+
+                Item {
                     anchors.fill: parent
-                    anchors.margins: linkImageSizer.width
+                    visible: root.internal.showValueEdit
 
-                    Loader {
-                        property string first:  qsTr("Network")
-                        property string second: root.internal.network
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        sourceComponent: compOverviewItem
+                    /* VALUE EDIT */
+
+                    DapQmlRectangle {
+                        id: valueEditRect
+                        qss: "nodeorlist-edit"
+                        property real fontSize
+
+                        TextInput {
+                            id: valueEditInput
+                            anchors.fill: parent
+                            anchors.margins: parent.height * 0.1
+                            horizontalAlignment: TextInput.AlignLeft //AlignHCenter
+                            verticalAlignment: TextInput.AlignVCenter
+                            font.pixelSize: parent.fontSize
+                            font.family: Brand.fontName()
+                            font.weight: Font.Bold
+                            selectByMouse: true
+                            text: root.internal.editValue // "1234"
+                            clip: true
+
+                            onTextEdited: {
+                                if (interfaceObject === undefined)
+                                    return;
+
+                                text    = root.internal.isPrice
+                                        ? interfaceObject.fixPriceString(text)
+                                        : interfaceObject.fixNumberString(text);
+                            }
+                        }
                     }
 
-                    Loader {
-                        property string first:  qsTr("Wallet")
-                        property string second: root.internal.wallet
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        sourceComponent: compOverviewItem
-                    }
-
-                    Loader {
-                        property string first:  qsTr("Server")
-                        property string second: root.internal.server
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        sourceComponent: compOverviewItem
-                    }
-
-                    Loader {
-                        property string first:  qsTr("Unit")
-                        property string second: root.internal.unit
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        sourceComponent: compOverviewItem
-                    }
-
-                    DapQmlSeparator {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 2
-                    }
-
+                    /* RESULT */
                     DapQmlLabel {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.topMargin: linkImageSizer.width * 0.05
-                        qss: "nodeorlist-overview-price"
-                        text: `${root.internal.priceShort} ${root.internal.unit}`
+                        anchors.top: valueEditRect.bottom
+                        anchors.horizontalCenter: valueEditRect.horizontalCenter
+                        anchors.margins: height/2
+                        width: valueEditRect.width
+                        height: valueEditRect.height * 0.23
+                        horizontalAlign: root.internal.isPrice ? Text.AlignRight : Text.AlignHCenter
+                        verticalAlign: Text.AlignVCenter
+                        elide: Text.ElideMiddle
+                        qss: "c-grey"
+
+                        text: root.internal.isPrice
+                              ? `Balance: ${valueEditInput.text} ${root.internal.token}`
+                              //: `${valueEditInput.text} ${root.internal.isTime ? "days" : "MB"}`
+                              : `${valueEditInput.text} ${root.internal.unit}`
+                    }
+
+                    /* TABS */
+                    RowLayout {
+                        id: tabsLayout
+                        spacing: tabsLayoutSpacing.width
+                        visible: false // !root.internal.isPrice
+
+                        DapQmlStyle { item: tabsLayout; qss: "nodeorlist-tabs" }
+                        DapQmlDummy { id: tabsLayoutSpacing; qss: "nodeorlist-tabs-spacing" }
+
+    //                    Component.onCompleted: StyleDebugTree.describe (
+    //                       "tabsLayout",
+    //                        ["x", "y", "width", "height", "spacing"],
+    //                       this);
+
+                        /* left button */
+                        Loader {
+                            Layout.preferredWidth: tabButtonSizer.width
+                            Layout.preferredHeight: tabButtonSizer.height
+                            property string name: qsTr("TRAFFIC")
+                            property bool isSecond: false
+                            property var callback: function() {tabPressed(isSecond)}
+                            sourceComponent: tabButton
+
+    //                        Component.onCompleted: StyleDebugTree.describe (
+    //                           "leftTab",
+    //                            ["x", "y", "width", "height", "name"],
+    //                           this);
+                        }
+
+                        /* right button */
+                        Loader {
+                            Layout.preferredWidth: tabButtonSizer.width
+                            Layout.preferredHeight: tabButtonSizer.height
+                            property string name: qsTr("TIME")
+                            property bool isSecond: true
+                            property var callback: function() {tabPressed(isSecond)}
+                            sourceComponent: tabButton
+
+    //                        Component.onCompleted: StyleDebugTree.describe (
+    //                           "rightTab",
+    //                            ["x", "y", "width", "height", "name"],
+    //                           this);
+                        }
                     }
                 }
-            }
 
-            DapQmlPushButton {
-                qss: "nodeorlist-overview-confirm-btn"
-                text: qsTr("CONFIRM PURCHASE")
-                onClicked: {
-                    root.sigOrderSelect (root.internal.chosenOrderIndex, root.internal.chosenOrderHash);
+                DapQmlPushButton {
+                    visible: root.internal.showConfirmButton
+                    qss: "nodeorlist-overview-clear-btn"
+                    text: qsTr("CLEAR")
+                    onClicked: {
+                        /* store edit value result */
+                        switch (root.internal.mode)
+                        {
+                        case QuiNodeOrderList.MaxUnit:
+                        case QuiNodeOrderList.MinUnit:
+                        case QuiNodeOrderList.MaxPrice:
+                        case QuiNodeOrderList.MinPrice:
+                            filterValueSet ("");
+                            break;
+                        default:
+                            break;
+                        }
+
+                        /* navigate back */
+                        swipe.decrementCurrentIndex();
+                    }
                 }
-            }
-        }
-    }
 
+                DapQmlPushButton {
+                    visible: root.internal.showConfirmButton
+                    qss: "nodeorlist-overview-confirm-btn"
+                    text: qsTr("CONFIRM")
+                    onClicked: {
+                        /* store edit value result */
+                        switch (root.internal.mode)
+                        {
+                        case QuiNodeOrderList.MaxUnit:
+                        case QuiNodeOrderList.MinUnit:
+                        case QuiNodeOrderList.MaxPrice:
+                        case QuiNodeOrderList.MinPrice:
+                            filterValueSet (valueEditInput.text);
+                            break;
+                        default:
+                            break;
+                        }
+
+                        /* navigate based on mode */
+                        if (root.internal.mode === QuiNodeOrderList.Orders)
+                            swipe.incrementCurrentIndex();
+                        else
+                            swipe.decrementCurrentIndex();
+                    }
+                }
+
+                /****************************************//**
+                 * Listview
+                 ********************************************/
+
+                ListView {
+                    id: csListView
+                    objectName: "listview"
+                    x: (root.width - width) / 2
+                    spacing: spacer.height
+                    visible: !root.internal.showValueEdit
+                    clip: true
+
+                    onModelChanged: {
+                        if (model)
+                            csListViewConn.target   = model;
+                    }
+
+                    Connections {
+                        id: csListViewConn
+                        //target: csListView.model
+                        target: csListViewConnDummy
+                        function onModeChanged() {
+                            console.log (`listview mode: ${target.mode}`)
+                            if (target.mode === undefined)
+                            {
+                                csListView.delegate = listviewDelegateNull;
+                                return;
+                            }
+
+                            switch(target.mode)
+                            {
+                            case DapQmlModelOrderList.Networks:    csListView.delegate = listviewDelegateNameValue; break;
+                            case DapQmlModelOrderList.Wallets:     csListView.delegate = listviewDelegateNameValue; break;
+                            case DapQmlModelOrderList.Tokens:      csListView.delegate = listviewDelegateNameValue; break;
+                            case DapQmlModelOrderList.Orders:      csListView.delegate = listviewDelegateOrder;     break;
+                            case DapQmlModelOrderList.Units:       csListView.delegate = listviewDelegateNameValue; break;
+                            }
+                        }
+                    }
+
+                    Item {
+                        id: csListViewConnDummy
+                        property var mode
+                    }
+
+                    DapQmlStyle { item: csListView; qss: "nodeorlist-listview" }
+
+                    Component.onCompleted: StyleDebugTree.describe (
+                       "csListView",
+                        ["x", "y", "width", "height"],
+                       this);
+                } // Listview
+            } // Middle Page
+
+            /****************************************//**
+             * Transaction Overview
+             ********************************************/
+
+            Item {
+                width: root.width
+                height: root.height
+
+                DapQmlRectangle {
+                    qss: "nodeorlist-overview-container"
+
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: linkImageSizer.width
+
+                        Loader {
+                            property string first:  qsTr("Network")
+                            property string second: root.internal.network
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            sourceComponent: compOverviewItem
+                        }
+
+                        Loader {
+                            property string first:  qsTr("Wallet")
+                            property string second: root.internal.wallet
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            sourceComponent: compOverviewItem
+                        }
+
+                        Loader {
+                            property string first:  qsTr("Server")
+                            property string second: root.internal.server
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            sourceComponent: compOverviewItem
+                        }
+
+                        Loader {
+                            property string first:  qsTr("Unit")
+                            property string second: root.internal.unit
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            sourceComponent: compOverviewItem
+                        }
+
+                        DapQmlSeparator {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 2
+                        }
+
+                        DapQmlLabel {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            Layout.topMargin: linkImageSizer.width * 0.05
+                            qss: "nodeorlist-overview-price"
+                            text: `${root.internal.priceShort} ${root.internal.unit}`
+                        }
+                    }
+                }
+
+                DapQmlPushButton {
+                    qss: "nodeorlist-overview-confirm-btn"
+                    text: qsTr("CONFIRM PURCHASE")
+                    onClicked: {
+                        root.sigOrderSelect (root.internal.chosenOrderIndex, root.internal.chosenOrderHash);
+                    }
+                }
+            } // Transaction Overview
+        } // Swipe View
+    } // Content
 }
 
 /*-----------------------------------------*/

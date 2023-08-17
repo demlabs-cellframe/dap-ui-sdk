@@ -157,6 +157,8 @@ signals:
   void sigOrderSelected (QString a_hash);     // chooseOrder
 
   void sigRequestNodeIPs (const QString &networkName, const QJsonArray &orderList);
+  void sigOrderListLoaded();
+  void sigOrderListAddressesUpdated();
   /// @}
 
   /****************************************//**

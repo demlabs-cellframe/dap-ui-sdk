@@ -2321,3 +2321,16 @@
 {
     scaled-font: scaled(16);
 }
+
+.nodeorlist-spinner-bg
+{
+    scaled-rect: scaled(nan,nan,244,244,true);
+    color: "@background";
+    radius: 16;
+}
+
+.nodeorlist-spinner-arc
+{
+    scaled-rect: scaled(nan,nan,136,136,true);
+    qproperty-color: "@brand";
+}
