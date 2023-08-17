@@ -133,6 +133,7 @@ private slots:
     void sendRequest(QString request);
     // reply error
     void replyError(int errorCode, const QString errorString);
+    void parseJsonError (const QString& replyData, int baseErrorCode, QJsonDocument *a_destDoc = nullptr);
     // response processing
     void parseReplyStatus(const QString& replyData, int baseErrorCode);
     void parseReplyConnect(const QString& replyData, int baseErrorCode);
@@ -145,7 +146,6 @@ private slots:
     void parseLedgerReply(const QString& replyData, int baseErrorCode);
     void parseMempoolReply(const QString& replyData, int baseErrorCode);
     void parseOrderList(const QString& replyData, int baseErrorCode);
-    void parseJsonError(const QString& replyData, int baseErrorCode);
     void parseNodeIp(const QString& replyData, int baseErrorCode);
     void parseFee(const QString& replyData, int baseErrorCode);
     void parseNodeDump(const QString& replyData, int baseErrorCode);

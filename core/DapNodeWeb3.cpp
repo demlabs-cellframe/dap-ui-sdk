@@ -167,6 +167,7 @@ void DapNodeWeb3::responseProcessing(
   {
     if (error == SIGERROR)
     {
+      DEBUGINFO  << "DapNodeWeb3::responseProcessing !! nodeNotDetected !!";
       // TODO check (error == SIGERROR) on other platforms (windows, android, ios)
       emit nodeNotDetected();
       return;
@@ -182,6 +183,8 @@ void DapNodeWeb3::responseProcessing(
     DEBUGINFO  << "DapNodeWeb3::responseProcessing :: Unknown method:" << methodName;
     return;
   }
+
+  DEBUGINFO  << "DapNodeWeb3::responseProcessing :: Method ID:" << int (replyMethod.parseMethodID);
 
   /* parse */
   responseParsing(
@@ -447,10 +450,11 @@ void DapNodeWeb3::parseReplyStatus(const QString& replyData, int baseErrorCode)
     //        "errorMsg": "Incorrect id",
     //        "status": "bad"
     //    }
-    if (jsonError())
-        return;
-    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+
+    QJsonDocument doc = QJsonDocument::fromJson (replyData.toUtf8());
+
     DEBUGINFO << "parseReplyNodeStatus" << replyData << doc;
+
     if (doc["status"].isString())
     {
         if (doc["status"].toString() == QString("bad")) {
@@ -478,10 +482,12 @@ void DapNodeWeb3::parseReplyConnect(const QString& replyData, int baseErrorCode)
     //    "    \"errorMsg\": \"\","
     //    "    \"status\": \"ok\""
     //    "}";
-    parseJsonError(replyData.toUtf8(), baseErrorCode);
+    QJsonDocument doc;
+    parseJsonError (replyData.toUtf8(), baseErrorCode, &doc);
+
     if (jsonError())
         return;
-    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+
     DEBUGINFO << "parseReplyConnect" << replyData << doc;
     if (doc["data"].isObject())
     {
@@ -507,10 +513,12 @@ void DapNodeWeb3::parseReplyWallets(const QString& replyData, int baseErrorCode)
     //    "    \"errorMsg\": \"\","
     //    "    \"status\": \"ok\""
     //    "}";
-    parseJsonError(replyData.toUtf8(), baseErrorCode);
+    QJsonDocument doc;
+    parseJsonError (replyData.toUtf8(), baseErrorCode, &doc);
+
     if (jsonError())
         return;
-    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+
     if (doc["data"].isArray())
     {
         // wallets
@@ -536,10 +544,12 @@ void DapNodeWeb3::parseReplyNetworks(const QString& replyData, int baseErrorCode
     //    "    \"errorMsg\": \"\","
     //    "    \"status\": \"ok\""
     //    "}";
-    parseJsonError(replyData.toUtf8(), baseErrorCode);
+    QJsonDocument doc;
+    parseJsonError (replyData.toUtf8(), baseErrorCode, &doc);
+
     if (jsonError())
         return;
-    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+
     if (doc["data"].isArray())
     {
         // wallets
@@ -583,10 +593,12 @@ void DapNodeWeb3::parseDataWallet(const QString& replyData, int baseErrorCode)
     //"status": "ok"
     //}
 //    DEBUGINFO << "walletDataReply" << replyData;
-    parseJsonError(replyData.toUtf8(), baseErrorCode);
+    QJsonDocument doc;
+    parseJsonError (replyData.toUtf8(), baseErrorCode, &doc);
+
     if (jsonError())
         return;
-    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+
     if (doc["data"].isArray())
     {
         // wallet data
@@ -608,10 +620,12 @@ void DapNodeWeb3::parseCertificates(const QString& replyData, int baseErrorCode)
     //        "errorMsg": "",
     //        "status": "ok"
     //    }
-    parseJsonError(replyData.toUtf8(), baseErrorCode);
+    QJsonDocument doc;
+    parseJsonError (replyData.toUtf8(), baseErrorCode, &doc);
+
     if (jsonError())
         return;
-    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+
     if (doc["data"].isArray())
     {
         // certificates
@@ -635,10 +649,12 @@ void DapNodeWeb3::parseCreateCertificate(const QString& replyData, int baseError
     //        "errorMsg": "",
     //        "status": "ok"
     //    }
-    parseJsonError(replyData.toUtf8(), baseErrorCode);
+    QJsonDocument doc;
+    parseJsonError (replyData.toUtf8(), baseErrorCode, &doc);
+
     if (jsonError())
         return;
-    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+
     if (doc["data"].isObject() && doc["data"].toObject()["name"].isString())
     {
         // get hash
@@ -656,11 +672,15 @@ void DapNodeWeb3::parseCondTxCreateReply(const QString& replyData, int baseError
     //        "errorMsg": "",
     //        "status": "ok"
     //    }
+
     DEBUGINFO << "parseCondTxCreateReply" << replyData;
-    parseJsonError(replyData.toUtf8(), baseErrorCode);
+
+    QJsonDocument doc;
+    parseJsonError (replyData.toUtf8(), baseErrorCode, &doc);
+
     if (jsonError())
         return;
-    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+
     if (doc["data"].isObject() && doc["data"].toObject()["hash"].isString())
     {
         // get hash
@@ -679,9 +699,12 @@ void DapNodeWeb3::parseMempoolReply(const QString& replyData, int baseErrorCode)
     //        "status": "ok"
     //    }
 //    DEBUGINFO << "parseMempoolReply" << replyData;
-    parseJsonError(replyData.toUtf8(), baseErrorCode);
+    QJsonDocument doc;
+    parseJsonError (replyData.toUtf8(), baseErrorCode, &doc);
+
     if (jsonError())
         return;
+
     emit sigMempoolContainHash();
 }
 
@@ -695,9 +718,13 @@ void DapNodeWeb3::parseLedgerReply(const QString& replyData, int baseErrorCode)
     //        "status": "ok"
     //    }
 //    DEBUGINFO << "parseLedgerReply" << replyData;
-    parseJsonError(replyData.toUtf8(), baseErrorCode);
+
+    QJsonDocument doc;
+    parseJsonError (replyData.toUtf8(), baseErrorCode, &doc);
+
     if (jsonError())
         return;
+
     emit sigLedgerContainHash();
 }
 
@@ -722,11 +749,15 @@ void DapNodeWeb3::parseOrderList(const QString& replyData, int baseErrorCode)
     //"errorMsg": "",
     //"status": "ok"
     //}
+
     DEBUGINFO << "orderListReply" << replyData;
-    parseJsonError(replyData.toUtf8(), baseErrorCode);
+
+    QJsonDocument doc;
+    parseJsonError (replyData.toUtf8(), baseErrorCode, &doc);
+
     if (jsonError())
         return;
-    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+
     if (doc["data"].isArray())
     {
         // wallet data
@@ -745,10 +776,13 @@ void DapNodeWeb3::parseNodeIp(const QString& replyData, int baseErrorCode)
     //        "errorMsg": "",
     //        "status": "ok"
     //    }
-    parseJsonError(replyData.toUtf8(), baseErrorCode);
+
+    QJsonDocument doc;
+    parseJsonError (replyData.toUtf8(), baseErrorCode, &doc);
+
     if (jsonError())
         return;
-    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+
     if (doc["data"].isArray())
     {
       emit sigNodeIp (doc["data"].toArray());
@@ -781,10 +815,13 @@ void DapNodeWeb3::parseFee(const QString& replyData, int baseErrorCode)
     //        "errorMsg": "",
     //        "status": "ok"
     //    }
-    parseJsonError(replyData.toUtf8(), baseErrorCode);
+
+    QJsonDocument doc;
+    parseJsonError (replyData.toUtf8(), baseErrorCode, &doc);
+
     if (jsonError())
         return;
-    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+
     if (doc["data"].isObject() && doc["data"].toObject()["network fee"].isObject())
     {
         emit sigFee(doc["data"].toObject()["network fee"].toObject()["fee coins"].toString());
@@ -814,10 +851,13 @@ void DapNodeWeb3::parseNodeDump(const QString& replyData, int baseErrorCode)
 //    "errorMsg": "",
 //    "status": "ok"
 //    }
-    parseJsonError(replyData.toUtf8(), baseErrorCode);
+
+    QJsonDocument doc;
+    parseJsonError (replyData.toUtf8(), baseErrorCode, &doc);
+
     if (jsonError())
         return;
-    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+
     if (doc["data"].isArray())
     {
         QList<QMap<QString, QString>> nodeDump;
@@ -866,11 +906,15 @@ void DapNodeWeb3::parseListKeys(const QString& replyData, int baseErrorCode)
 //        "errorMsg": "",
 //        "status": "ok"
 //    }
+
     DEBUGINFO << "parseListKeys" << replyData;
-    parseJsonError(replyData.toUtf8(), baseErrorCode);
+
+    QJsonDocument doc;
+    parseJsonError (replyData.toUtf8(), baseErrorCode, &doc);
+
     if (jsonError())
         return;
-    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+
     if (doc["data"].isObject() && doc["data"].toObject()["keys"].isArray())
     {
         QList<QString> listKeys;
@@ -885,7 +929,7 @@ void DapNodeWeb3::parseListKeys(const QString& replyData, int baseErrorCode)
 }
 
 
-void DapNodeWeb3::parseJsonError(const QString& replyData, int baseErrorCode)
+void DapNodeWeb3::parseJsonError (const QString& replyData, int baseErrorCode, QJsonDocument *a_destDoc)
 {
     // reply example
     //    "{ ... "
@@ -893,10 +937,14 @@ void DapNodeWeb3::parseJsonError(const QString& replyData, int baseErrorCode)
     //    "    \"status\": \"ok\""
     //    "}";
     m_parseJsonError = false;
-    QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
+
+    QJsonDocument doc = QJsonDocument::fromJson (replyData.toUtf8());
+    if (a_destDoc)
+      *a_destDoc  = doc;
+
     if(doc.isNull())
     {
-        replyError(baseErrorCode + 30000,  "Unable to parse json data");
+        replyError (baseErrorCode + 30000,  "Unable to parse json data");
         m_parseJsonError = true;
         return;
     }
@@ -904,19 +952,23 @@ void DapNodeWeb3::parseJsonError(const QString& replyData, int baseErrorCode)
     {
 //        DEBUGINFO << "parseJsonError status" << doc["status"] << doc["status"].toString();
         // TODO "errorMsg": "Incorrect id"
-        if (doc["status"].isString() && doc["status"].toString() != "ok")
-        {
-            if (doc["errorMsg"].isString() == QString("Incorrect id"))
-            {
-                emit sigIncorrectId();
-            }
+        auto status = doc["status"];
 
-            if (doc["errorMsg"].isString())
+        if (status.isString()
+            && status.toString() != "ok")
+        {
+            auto errorMsg = doc["errorMsg"];
+
+            if (errorMsg.toString() == QString("Incorrect id"))
+                emit sigIncorrectId();
+
+            if (errorMsg.isString())
             {
-                replyError(baseErrorCode + 40000, doc["errorMsg"].toString());
+                replyError (baseErrorCode + 40000, errorMsg.toString());
                 m_parseJsonError = true;
                 return;
             }
+
             replyError(baseErrorCode + 50000, "Error, details missing");
             m_parseJsonError = true;
             return;
