@@ -28,6 +28,7 @@ struct OrderItem
   QString server;
   QString node_addr;
   QString hash;
+  QString ipAddress;
 };
 
 struct NameValueItem
@@ -120,12 +121,15 @@ public:
   void setItems (const QVector<OrderItem> &a_items);
   void setItems (QVector<OrderItem> &&a_items);
 
+  OrderItem &operator[] (int a_index);
+
   /* OVERRIDE */
   int size() const override;
   QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
   const QString &name() const override;
   const QString &value() const override;
   bool setCurrentIndex (int a_value) override;
+  void installAdressMap (const QHash<QString, QString> &a_map);
 };
 
 /****************************************//**

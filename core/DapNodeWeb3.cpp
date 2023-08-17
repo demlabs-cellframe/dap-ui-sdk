@@ -393,18 +393,22 @@ void DapNodeWeb3::getOrdersListRequest(QString networkName, QString tokenName, Q
     sendRequest(requesString);
 }
 
-void DapNodeWeb3::getNodeIPRequest(QString networkName, QJsonArray orderList)
+void DapNodeWeb3::getNodeIPRequest (const QString &networkName, const QJsonArray &orderList)
 {
-    QJsonDocument doc;
-    doc.setArray(orderList);
-    QString orders(doc.toJson());
+  auto addressArgument = [](const QJsonArray &list) -> QString
+  {
+    return list.size() > 1
+        ? "jsonArray=" + QJsonDocument(list).toJson (QJsonDocument::Compact)
+        : "addr=" + list.begin()->toString();
+  };
 
-    QString requesString = QString("?method=GetNodeIP&"
-                "id=%1&net=%2&%3")
-            .arg(m_connectId)
-            .arg(networkName)
-            .arg(orderList.size() > 1 ? "jsonArray=" + orders : "addr=" + orderList.begin()->toString());
-    sendRequest(requesString);
+  QString requesString =
+    QString ("?method=GetNodeIP"
+      "&id=%1"
+      "&net=%2&%3")
+    .arg(m_connectId, networkName, addressArgument (orderList));
+
+  sendRequest (requesString);
 }
 
 void DapNodeWeb3::getFeeRequest(QString networkName)
@@ -745,9 +749,9 @@ void DapNodeWeb3::parseNodeIp(const QString& replyData, int baseErrorCode)
     if (jsonError())
         return;
     QJsonDocument doc = QJsonDocument::fromJson(replyData.toUtf8());
-    if (!doc["data"].isArray())
+    if (doc["data"].isArray())
     {
-        emit sigNodeIp(doc["data"].toArray());
+      emit sigNodeIp (doc["data"].toArray());
     }
 }
 

@@ -224,6 +224,13 @@ void DapCmdNode::handleResult (const QJsonObject &params)
       emit signingReceived (utype, uid, units, value);
       return;
     }
+
+  if (params.value ("node_ip_list").isArray())
+  {
+    auto array  = params.value ("node_ip_list").toArray();
+    emit sigNodeIpList (array);
+    return;
+  }
 }
 
 void DapCmdNode::handleError (int code, const QString &message)
@@ -346,13 +353,20 @@ void DapCmdNode::startConnectByOrder()
   sendCmd (&jObject);
 }
 
-void DapCmdNode::getIpNode (QString node_adress)
+void DapCmdNode::getIpNode (const QString &networkName, const QJsonArray &orderList)
 {
     DEBUGINFO << __PRETTY_FUNCTION__;
-    QJsonObject jObject;
-    QJsonDocument doc = QJsonDocument::fromJson(node_adress.toUtf8());
-    jObject["get_ip_order_list"] = doc.object();
-    sendCmd (&jObject);
+
+    QJsonObject jobj {
+      { "srv_uid",          networkName },
+      { "node_adress_list", orderList },
+    };
+
+    QJsonObject request {
+      { "get_ip_order_list", jobj }
+    };
+
+    sendCmd (&request);
 }
 
 void DapCmdNode::chooseWallet (QString wallet)

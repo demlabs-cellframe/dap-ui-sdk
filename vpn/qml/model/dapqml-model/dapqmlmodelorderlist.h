@@ -48,6 +48,7 @@ public:
     units_value,
     server,
     hash,
+    ipAddress,
 
     /* name + value fields */
     name,
@@ -154,6 +155,8 @@ signals:
   void sigMaxValueUpdated (QString a_value);  // setMaxValueUnit
   void sigMinValueUpdated (QString a_value);  // setMinValueUnit
   void sigOrderSelected (QString a_hash);     // chooseOrder
+
+  void sigRequestNodeIPs (const QString &networkName, const QJsonArray &orderList);
   /// @}
 
   /****************************************//**
@@ -165,6 +168,7 @@ public slots:
   void slotSetWalletListData (const QHash<QString, QStringList> &a_walletData);
   void slotSetNetworkListData (const QHash<QString, QStringList> &a_networkData);
   void slotSetTokensListData (const QHash<QString, QString> &a_tokensData);
+  void slotSetOrderAddresses (const QJsonArray &a_list);
   /// @}
 };
 

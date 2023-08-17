@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QJsonObject>
+#include <QJsonArray>
 #include "DapCmdServiceAbstract.h"
 
 class DapCmdNode : public DapCmdServiceAbstract

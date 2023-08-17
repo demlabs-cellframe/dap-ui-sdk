@@ -100,6 +100,11 @@ void OrdersModule::setItems (QVector<OrderItem> &&a_items)
   _items  = std::move (a_items);
 }
 
+OrderItem &OrdersModule::operator[](int a_index)
+{
+  return _items[a_index];
+}
+
 int OrdersModule::size() const
 {
   return _items.size();
@@ -110,13 +115,14 @@ QVariant OrdersModule::data (const QModelIndex &index, int role) const
   switch (FieldId (role))
     {
     case FieldId::location:    return _items.at (index.row()).location;
-    case FieldId::node_addr:    return _items.at (index.row()).node_addr;
+    case FieldId::node_addr:   return _items.at (index.row()).node_addr;
     case FieldId::price:       return _items.at (index.row()).price;
     case FieldId::priceShort:  return _scopedPrice (_items.at (index.row()).price);
     case FieldId::units:       return _items.at (index.row()).units;
     case FieldId::units_value: return _items.at (index.row()).units_value;
     case FieldId::server:      return _items.at (index.row()).server;
     case FieldId::hash:        return _items.at (index.row()).hash;
+    case FieldId::ipAddress:   return _items.at (index.row()).ipAddress;
 
     default:
       return QVariant();
@@ -143,6 +149,12 @@ bool OrdersModule::setCurrentIndex (int a_value)
     emit DapQmlModelOrderList::instance()->sigOrderSelected (name());
 
   return result;
+}
+
+void OrdersModule::installAdressMap (const QHash<QString, QString> &a_map)
+{
+  for (auto i = _items.begin(), e = _items.end(); i != e; i++)
+    i->ipAddress  = a_map.value (i->node_addr, QString());
 }
 
 /*-----------------------------------------*/

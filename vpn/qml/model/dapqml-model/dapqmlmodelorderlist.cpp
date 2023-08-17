@@ -42,6 +42,7 @@ static QHash<int, QByteArray> s_fields =
   { int (FieldId::units),       "units" },
   { int (FieldId::units_value), "units_value" },
   { int (FieldId::hash),        "hash" },
+  { int (FieldId::ipAddress),   "ipAddress" },
 
   { int (FieldId::name),        "name" },
   { int (FieldId::value),       "value" },
@@ -319,6 +320,8 @@ void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
 
   /* vars */
   QVector<OrderItem> items;
+  QSet<QString> addressesSet;
+  QJsonArray jarray;
 
   /* parse via cycle */
   for (const auto &item : qAsConst (a_list))
@@ -338,11 +341,14 @@ void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
       QString hash       = joItem.value ("hash").toString();
       QString srv_uid    = joItem.value ("srv_uid").toString();
 
-
-      if (srv_uid != "0x0000000000000001" || unit_value == "0" || punit.isEmpty())
-          continue;
+      /* check */
+      if (srv_uid != "0x0000000000000001"
+          || unit_value == "0"
+          || punit.isEmpty())
+        continue;
 
       /* store result */
+      addressesSet << node_addr;
       items << OrderItem
       {
         std::move (loc),
@@ -351,7 +357,8 @@ void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
         std::move (unit_value),
         std::move (server),
         std::move (node_addr),
-        std::move (hash)
+        std::move (hash),
+        QString()
       };
     }
 
@@ -369,6 +376,13 @@ void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
 
   /* notify model */
   endResetModel();
+
+  /* collect addresses into json */
+  for (const auto &address : qAsConst (addressesSet))
+    jarray << address;
+
+  /* request ip's */
+  emit sigRequestNodeIPs (network(), jarray);
 }
 
 void DapQmlModelOrderList::slotSetWalletListData (const QHash<QString, QStringList> &a_walletData)
@@ -465,6 +479,35 @@ void DapQmlModelOrderList::slotSetTokensListData (const QHash<QString, QString> 
       auto tokens  = _data->module.tokens()->as<TokensModule>();
       tokens->setItems (std::move (items));
       tokens->setCurrentIndex (0);
+    }
+  catch (const std::exception &e)
+    {
+      DEBUG_MSG << "Exception occurred:" << e.what();
+    }
+
+  /* notify model */
+  endResetModel();
+}
+
+void DapQmlModelOrderList::slotSetOrderAddresses (const QJsonArray &a_list)
+{
+  /* notify model */
+  beginResetModel();
+
+  try
+    {
+      int index = 0;
+      auto &orders = *_data->module.orders()->as<OrdersModule>();
+      QHash<QString, QString> nodeIpsMap;
+
+      for (auto i = a_list.constBegin(), e = a_list.constEnd(); i != e; i++, index++)
+      {
+        auto jobj   = i->toObject();
+        auto jitem  = jobj.constBegin();
+        nodeIpsMap.insert (jitem.key(), jitem.value().toString());
+      }
+
+      orders.installAdressMap (nodeIpsMap);
     }
   catch (const std::exception &e)
     {

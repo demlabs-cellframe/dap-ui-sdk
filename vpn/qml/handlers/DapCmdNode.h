@@ -112,7 +112,7 @@ public slots:
   OrderInfo orderData (QString hash);
   void checkSigned();
   void startConnectByOrder();
-  void getIpNode (QString node_adress);
+  void getIpNode (const QString &networkName, const QJsonArray &orderList);
   /// @}
 
   /****************************************//**
@@ -133,6 +133,7 @@ signals:
   void continueEnable (bool);
   void signingReceived (qint32 utype, qint64 uid, QString units, QString value);
   void sigOrderList (const QJsonArray &a_list);
+  void sigNodeIpList (const QJsonArray &a_list);
 };
 
 /*-----------------------------------------*/

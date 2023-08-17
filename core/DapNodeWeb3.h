@@ -123,7 +123,7 @@ public slots:
     void getLedgerTxHashRequest(QString transactionHash, QString networkName);
     void getOrdersListRequest(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
     void nodeDumpRequest(QString networkName);
-    void getNodeIPRequest(QString networkName, QJsonArray orderList);
+    void getNodeIPRequest (const QString &networkName, const QJsonArray &orderList);
     void getFeeRequest(QString networkName);
     void getListKeysRequest(QString networkName);
 

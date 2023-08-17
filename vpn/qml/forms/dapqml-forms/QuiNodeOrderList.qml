@@ -522,7 +522,7 @@ Item {
             height: resizer.height
             sourceComponent: compButton
             property string first:      model.units ? `${model.price} per ${model.units_value} ${model.units}` : `${model.price}`
-            property string second:      `${model.server} - ${model.node_addr}`
+            property string second:      `${model.server} - ${model.ipAddress}`
             property var cbOnClicked: function() {
                 root.internal.network       = model.network;
                 root.internal.wallet        = model.wallet;
