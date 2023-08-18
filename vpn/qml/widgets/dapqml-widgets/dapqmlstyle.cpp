@@ -147,6 +147,73 @@ QSize DapQmlStyle::textOnScreenSize(QObject *a_item)
   return rect.size();
 }
 
+QString DapQmlStyle::elideText(
+  const QString &a_fontFamily,
+  const int a_fontSize,
+  const QString &a_text,
+  const int a_maxWidth)
+{
+  /* font metrics */
+  QFont font (a_fontFamily, a_fontSize);
+  QFontMetrics metrics (font);
+
+  /* text is fitting well */
+  if (metrics.horizontalAdvance(a_text) <= a_maxWidth)
+    return a_text;
+
+  /* variables */
+  constexpr static const int charsToRemove  = 4;
+  constexpr static const char *elideDots    = "...";
+  QString elidedText  = a_text;
+  const int elideSize = metrics.horizontalAdvance (elideDots);
+  int iterationsLeft  = 8;
+
+  /* elide in cycle */
+  while (
+      ((metrics.horizontalAdvance (elidedText)) > (a_maxWidth - elideSize))
+      && elidedText.size() >= 5
+      && iterationsLeft-- >= 0
+    )
+  {
+    int middleIndex   = elidedText.length() / 2;
+//    QString before    = elidedText;
+    elidedText.replace (middleIndex - charsToRemove / 2, charsToRemove, elideDots);
+//    QString after     = elidedText;
+//    qDebug() << "elideText : index" << middleIndex << "before" << before << ", after" << after;
+  }
+
+  return elidedText;
+}
+
+QString DapQmlStyle::elideOrderPriceText(
+  const QString &a_fontFamily,
+  const int a_fontSize,
+  const QString &a_text,
+  const int a_maxWidth)
+{
+  /* font metrics */
+  QFont font (a_fontFamily, a_fontSize);
+  QFontMetrics metrics (font);
+
+  /* split by scope */
+  QStringList parts   = a_text.split ('(');
+
+  /* check, if string is valid */
+  if (parts.size() != 2)
+    return elideText (a_fontFamily, a_fontSize, a_text, a_maxWidth);
+
+  /* calc shorten max width */
+  parts[1]  = '(' + parts[1];
+  const int secondPartSize  = metrics.horizontalAdvance (parts.at (1)) * 0.75;
+  const int shortenMaxWidth = a_maxWidth - secondPartSize;
+
+  /* calc elide */
+  QString elidenFirstPart   = elideText (a_fontFamily, a_fontSize, parts.first(), shortenMaxWidth);
+
+  /* return result */
+  return elidenFirstPart + parts.at (1);
+}
+
 void DapQmlStyle::setup(const QString &styleSheet)
 {
   s_styleSheet  = styleSheet;
@@ -172,10 +239,10 @@ void DapQmlStyle::sWindowResized(int a_width, int a_height)
 void DapQmlStyle::sRequestRedraw()
 {
   if (s_globalSignal)
-    {
-      update();
-      emit s_globalSignal->redrawRequested();
-    }
+  {
+    update();
+    emit s_globalSignal->redrawRequested();
+  }
 }
 
 /********************************************

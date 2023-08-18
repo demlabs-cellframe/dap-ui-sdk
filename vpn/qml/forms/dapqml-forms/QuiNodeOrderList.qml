@@ -325,6 +325,15 @@ Item {
      * Resizers
      ********************************************/
 
+    DapQmlLabel {
+        id: dummyLabel
+        visible: false
+    }
+
+    DapQmlStyle {
+        id: dummyStyle
+    }
+
     DapQmlRectangle {
         id: resizer
         visible: false
@@ -346,6 +355,12 @@ Item {
     DapQmlDummy {
         id: listviewItemSizer
         qss: "nodeorlist-item-label"
+    }
+
+    DapQmlDummy {
+        id: delegateOrderLabelSize
+        qss: "nodeorlist-label-size-16"
+        property int fontSize
     }
 
     DapQmlDummy {
@@ -485,7 +500,7 @@ Item {
                         Layout.fillHeight: true
                         horizontalAlign: Text.AlignLeft
                         verticalAlign: parent.swap ? Text.AlignTop : Text.AlignBottom
-                        elide: Text.ElideMiddle
+                        //elide: Text.ElideMiddle
                         disableClicking: true
                         qss: "nodeorlist-item-label-top " + itemRoot.parent.labelTopQss
                         text: itemRoot.parent.first // `${model.price} per ${model.units}`
@@ -497,7 +512,7 @@ Item {
                         Layout.fillHeight: true
                         horizontalAlign: Text.AlignLeft
                         verticalAlign: !parent.swap ? Text.AlignTop : Text.AlignBottom
-                        elide: Text.ElideMiddle
+                        //elide: Text.ElideMiddle
                         disableClicking: true
                         qss: "nodeorlist-item-label-bottom " + itemRoot.parent.labelBottomQss
                         text: itemRoot.parent.second // model.server
@@ -532,9 +547,19 @@ Item {
             width: resizer.width
             height: resizer.height
             sourceComponent: compButton
-            property string first:      model.units ? `${model.price} per ${model.units_value} ${model.units}` : `${model.price}`
+            property string first:      {
+                if (model.units)
+                    return dummyStyle.elideOrderPriceText(
+                          dummyLabel.fontFamiliy,
+                          delegateOrderLabelSize.fontSize,
+                          `${model.price} per ${model.units_value} ${model.units}`,
+                          resizer.width
+                        );
+                else
+                    return `${model.price}`;
+            }
             property string second:      `${model.server} - ${model.ipAddress}`
-            property string labelTopQss:    "nodeorlist-label-size-14"
+            property string labelTopQss:    "nodeorlist-label-size-16"
             property string labelBottomQss: "nodeorlist-label-size-14"
             property var cbOnClicked: function() {
                 root.internal.network       = model.network;
