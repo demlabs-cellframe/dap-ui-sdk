@@ -359,7 +359,7 @@ Item {
 
     DapQmlDummy {
         id: delegateOrderLabelSize
-        qss: "nodeorlist-label-size-16"
+        qss: "nodeorlist-label-size-14"
         property int fontSize
     }
 
@@ -367,6 +367,18 @@ Item {
         id: overviewSizer
         qss: "nodeorlist-overview-item-left-size"
         property int fontSize
+    }
+
+    DapQmlDummy {
+        id: colorLabel
+        qss: "c-label"
+        property color color
+    }
+
+    DapQmlDummy {
+        id: colorBackground
+        qss: "c-background"
+        property color color
     }
 
     /* sizer */
@@ -434,6 +446,7 @@ Item {
         //property var cbOnClicked
         //property string labelTopQss
         //property string labelBottomQss
+        //property QtObject tooltip
 
         DapQmlRectangle {
             id: itemRoot
@@ -445,12 +458,17 @@ Item {
 //                ["x", "y", "width", "height"],
 //               this);
 
+            property bool loadTooltip: itemRoot.parent.hasOwnProperty("tooltip")
+                                       ? itemRoot.parent.tooltip.hasOwnProperty("text")
+                                       : false
+
             MouseArea {
                 anchors.fill: parent
                 onClicked:
                     if (itemRoot.parent.cbOnClicked)
                         itemRoot.parent.cbOnClicked()
             }
+
 
             DapQmlSeparator {
                 anchors.bottom: parent.bottom
@@ -504,6 +522,86 @@ Item {
                         disableClicking: true
                         qss: "nodeorlist-item-label-top " + itemRoot.parent.labelTopQss
                         text: itemRoot.parent.first // `${model.price} per ${model.units}`
+
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: itemRoot.loadTooltip
+                            onEntered: itemPopup.visible = true
+                            onExited: itemPopup.visible  = false
+                        }
+
+                        ToolTip {
+                            id: itemPopup
+                            anchors.centerIn: parent
+                            width: popupContent.width + delegateOrderLabelSize.fontSize
+                            height: popupContent.height + delegateOrderLabelSize.fontSize
+                            delay: 500
+                            timeout: 15000
+                            visible: false
+
+                            topInset: 0
+                            bottomInset: 0
+                            leftInset: 0
+                            rightInset: 0
+                            padding: 0
+                            margins: 0
+
+                            background: Item {}
+
+                            text:   itemRoot.loadTooltip ? itemRoot.parent.tooltip.text    : ""
+                            //property string topText:    parent.loadTooltip ? itemRoot.parent.tooltip.topText    : ""
+                            //property string bottomText: parent.loadTooltip ? itemRoot.parent.tooltip.bottomText : ""
+
+                            contentItem: Rectangle {
+                                anchors.bottom: parent.top
+                                color: colorBackground.color
+                                border.color: colorLabel.color
+
+                                ColumnLayout {
+                                    id: popupContent
+                                    anchors.centerIn: parent
+                                    width: popupContentText.contentWidth
+                                    //height: popupContentItemLabelTop.contentHeight + popupContentItemLabelBottom.contentHeight
+                                    height: popupContentText.contentHeight
+
+                                    DapQmlLabel {
+                                        id: popupContentText
+                                        Layout.fillWidth: true
+                                        Layout.fillHeight: true
+                                        horizontalAlign: Text.AlignHCenter
+                                        verticalAlign: Text.AlignTop
+                                        //elide: Text.ElideMiddle
+                                        disableClicking: true
+                                        qss: "nodeorlist-item-label-top nodeorlist-label-size-14"
+                                        text: itemPopup.text
+                                    }
+
+            //                        DapQmlLabel {
+            //                            id: popupContentItemLabelTop
+            //                            Layout.fillWidth: true
+            //                            Layout.fillHeight: true
+            //                            horizontalAlign: Text.AlignLeft
+            //                            verticalAlign: Text.AlignTop
+            //                            //elide: Text.ElideMiddle
+            //                            disableClicking: true
+            //                            qss: "nodeorlist-item-label-top nodeorlist-label-size-14"
+            //                            text: itemPopup.topText
+            //                        }
+
+            //                        DapQmlLabel {
+            //                            id: popupContentItemLabelBottom
+            //                            Layout.fillWidth: true
+            //                            Layout.fillHeight: true
+            //                            horizontalAlign: Text.AlignLeft
+            //                            verticalAlign: Text.AlignBottom
+            //                            //elide: Text.ElideMiddle
+            //                            disableClicking: true
+            //                            qss: "nodeorlist-item-label-bottom nodeorlist-label-size-14"
+            //                            text: itemPopup.bottomText
+            //                        }
+                                }
+                            }
+                        }
                     }
 
                     DapQmlLabel {
@@ -559,8 +657,14 @@ Item {
                     return `${model.price}`;
             }
             property string second:      `${model.server} - ${model.ipAddress}`
-            property string labelTopQss:    "nodeorlist-label-size-16"
+            property string labelTopQss:    "nodeorlist-label-size-14"
             property string labelBottomQss: "nodeorlist-label-size-14"
+            property QtObject tooltip: QtObject {
+                //property string topText:    model.units ? `${model.price}\nper ${model.units_value} ${model.units}` : `${model.price}`;
+                //property string bottomText: `${model.server} \n ${model.ipAddress}`
+                property string text: model.price
+            }
+
             property var cbOnClicked: function() {
                 root.internal.network       = model.network;
                 root.internal.wallet        = model.wallet;
