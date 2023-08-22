@@ -237,7 +237,7 @@ protected:
   DapQmlModelOrderList::Mode _mode;
   ModuleInterfacePtr _module;
 
-  ModuleInterfacePtr _orders;
+  //ModuleInterfacePtr _orders;
   ModuleInterfacePtr _networks;
   ModuleInterfacePtr _wallets;
   ModuleInterfacePtr _tokens;
@@ -249,7 +249,7 @@ public:
   DapQmlModelOrderList::Mode mode() const;
   bool setMode (DapQmlModelOrderList::Mode a_value);
 
-  ModuleInterfacePtr orders() const    { return _orders;   }
+  //ModuleInterfacePtr orders() const    { return _orders;   }
   ModuleInterfacePtr networks() const  { return _networks; }
   ModuleInterfacePtr wallets() const   { return _wallets;  }
   ModuleInterfacePtr tokens() const    { return _tokens;   }

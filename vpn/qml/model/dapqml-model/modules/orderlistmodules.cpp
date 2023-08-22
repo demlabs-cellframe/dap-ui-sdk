@@ -262,16 +262,17 @@ UnitsModule::UnitsModule()
   _items =
   QStringList
   {
-    "Secs",
-    "Mins",
-    "Hours"
-    "Days",
-    "KB",
-    "MB",
-    "GB",
-    "TB",
+    "All",
+    "Second",   // "Secs",
+    "Minute",   // "Mins",
+    "Hour",     // "Hours"
+    "Day",      // "Days",
+    "Kilobyte", // "KB",
+    "Megabyte", // "MB",
+    "Gigabyte", // "GB",
+    "Terabyte", // "TB",
   };
-  _currentIndex = 3;
+  _currentIndex = 0;
   QTimer::singleShot (100, [this] {DapQmlModelOrderList::instance()->setUnit (_items.at (_currentIndex));});
 }
 
@@ -321,6 +322,8 @@ bool UnitsModule::setCurrentIndex (int a_value)
 
 const QString &UnitsModule::name() const
 {
+  if (_currentIndex < 0)
+    return s_dummyString;
   return _items.at (_currentIndex);
 }
 
@@ -336,7 +339,7 @@ const QString &UnitsModule::value() const
 ModuleContainer::ModuleContainer (DapQmlModelOrderList::Mode a_mode)
   : _mode (a_mode)
 {
-  _orders   = ModuleInterfacePtr (new OrdersModule);
+  //_orders   = ModuleInterfacePtr (new OrdersModule);
   _networks = ModuleInterfacePtr (new NetworksModule);
   _wallets  = ModuleInterfacePtr (new WalletsModule);
   _tokens   = ModuleInterfacePtr (new TokensModule);
@@ -361,7 +364,7 @@ bool ModuleContainer::setMode (DapQmlModelOrderList::Mode a_value)
   /* change module */
   switch (_mode)
     {
-    case Mode::Orders:    _module = _orders;   break;
+    //case Mode::Orders:    _module = _orders;   break;
     case Mode::Networks:  _module = _networks; break;
     case Mode::Wallets:   _module = _wallets;  break;
     case Mode::Tokens:    _module = _tokens;   break;

@@ -263,6 +263,8 @@ Item {
 
         let mode    = csListView.model.mode;
 
+        console.log(`filterItemSelected at ${a_index}, value "${a_name}", mode ${mode}`)
+
         switch(mode)
         {
         case QuiNodeOrderList.Networks: root.internal.network   = a_name; break;
@@ -1168,54 +1170,37 @@ Item {
                  * Listview
                  ********************************************/
 
-                ListView {
-                    id: csListView
-                    objectName: "listview"
+                DapQmlRectangle {
                     x: (root.width - width) / 2
-                    spacing: spacer.height
+                    qss: "nodeorlist-listview"
                     visible: !root.internal.showValueEdit
-                    clip: true
 
-                    onModelChanged: {
-                        if (model)
-                            csListViewConn.target   = model;
+//                        Component.onCompleted: StyleDebugTree.describe (
+//                           "csListView",
+//                            ["x", "y", "width", "height"],
+//                           this);
+
+                    ListView {
+                        id: csListView
+                        objectName: "listview"
+                        anchors.fill: parent
+                        spacing: spacer.height
+                        delegate: listviewDelegateNameValue
+                        visible: root.internal.mode !== QuiNodeOrderList.Orders
+                        clip: true
+
+                    } // Listview
+
+                    ListView {
+                        id: csListViewOrders
+                        objectName: "listviewOrders"
+                        anchors.fill: parent
+                        spacing: spacer.height
+                        delegate: listviewDelegateOrder
+                        visible: root.internal.mode === QuiNodeOrderList.Orders
+                        clip: true
                     }
-
-                    Connections {
-                        id: csListViewConn
-                        //target: csListView.model
-                        target: csListViewConnDummy
-                        function onModeChanged() {
-                            console.log (`listview mode: ${target.mode}`)
-                            if (target.mode === undefined)
-                            {
-                                csListView.delegate = listviewDelegateNull;
-                                return;
-                            }
-
-                            switch(target.mode)
-                            {
-                            case DapQmlModelOrderList.Networks:    csListView.delegate = listviewDelegateNameValue; break;
-                            case DapQmlModelOrderList.Wallets:     csListView.delegate = listviewDelegateNameValue; break;
-                            case DapQmlModelOrderList.Tokens:      csListView.delegate = listviewDelegateNameValue; break;
-                            case DapQmlModelOrderList.Orders:      csListView.delegate = listviewDelegateOrder;     break;
-                            case DapQmlModelOrderList.Units:       csListView.delegate = listviewDelegateNameValue; break;
-                            }
-                        }
-                    }
-
-                    Item {
-                        id: csListViewConnDummy
-                        property var mode
-                    }
-
-                    DapQmlStyle { item: csListView; qss: "nodeorlist-listview" }
-
-                    Component.onCompleted: StyleDebugTree.describe (
-                       "csListView",
-                        ["x", "y", "width", "height"],
-                       this);
-                } // Listview
+                }
             } // Middle Page
 
             /****************************************//**

@@ -190,7 +190,8 @@ class DapQmlModelOrderListProxyModel : public QSortFilterProxyModel
    *******************************************/
   /// @{
 private:
-  QString m_filter;
+  QString m_unit;
+  qreal m_min, m_max;
   /// @}
 
   /****************************************//**
@@ -207,7 +208,14 @@ public:
   /// @{
 public:
   Q_INVOKABLE void updateCheckedIndex (const QString &a_checkedName);
-  Q_INVOKABLE void setRowFilter (const QString a_filter);
+  /**
+   * @brief setup filter rules
+   * @param a_unit unit name
+   * @param a_min minimum value
+   * @param a_max maximum value
+   * @note set -1 into min or|and max to disable it's filtering
+   */
+  Q_INVOKABLE void setRowFilter (const QString a_unit, qreal a_min, qreal a_max);
   /// @}
 
   /****************************************//**

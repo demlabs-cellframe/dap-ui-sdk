@@ -29,6 +29,17 @@ struct DapQmlModelOrderList::DapQmlModelOrderListData
   QString unit;
 };
 
+class OrdersModel : public QAbstractListModel
+{
+  friend class DapQmlModelOrderList;
+public:
+  int rowCount (const QModelIndex &parent = QModelIndex()) const override;
+  int columnCount (const QModelIndex &parent = QModelIndex()) const override;
+
+  QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
+  QHash<int, QByteArray> roleNames() const override;
+};
+
 /********************************************
  * VARIABLES
  *******************************************/
@@ -52,7 +63,9 @@ static QHash<int, QByteArray> s_fields =
   { int (FieldId::wallet),      "wallet" },
 };
 
-static DapQmlModelOrderList *_instance = nullptr;
+static DapQmlModelOrderList *_instance  = nullptr;
+static OrdersModule *s_ordersModule     = nullptr;
+static OrdersModel *s_ordersBaseModel   = nullptr;
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -62,6 +75,11 @@ DapQmlModelOrderList::DapQmlModelOrderList (QObject *parent)
   : QAbstractListModel {parent}
   , _data (new DapQmlModelOrderListData)
 {
+  if (s_ordersModule == nullptr)
+    s_ordersModule  = new OrdersModule;
+  if (s_ordersBaseModel == nullptr)
+    s_ordersBaseModel  = new OrdersModel;
+
 #ifdef ENABLE_ORDERLIST_SIMULATION
   auto result = QJsonDocument::fromJson ("[\n        {\n            \"direction\": \"SERV_DIR_SELL\",\n            \"ext\": \"0x52024672616E636500\",\n            \"hash\": \"0xF84FC4D96D564E2A54DC6D82A8F90682F0276CB5EF3B26A8A4BF3C18E39EE9F4\",\n            \"node_addr\": \"D860::D9D5::1C57::A6B3\",\n            \"node_location\": \"Europe-France\",\n            \"pkey\": \"0xC6FB9B9370C01F52AD31D1B22A8AB1F1B18AF190EB48BA8F7E24E3DA6E67C8C2\",\n            \"price\": \"0.0000000000000012(1200)\",\n            \"price_unit\": \"SECOND\",\n            \"srv_uid\": \"0x0000000000000001\",\n            \"tx_cond_hash\": \"0x0000000000000000000000000000000000000000000000000000000000000000\",\n            \"units\": \"300\",\n            \"version\": \"3\"\n        },\n        {\n            \"direction\": \"SERV_DIR_SELL\",\n            \"ext\": \"0x5202554B00\",\n            \"hash\": \"0x243BBFBBB7C4A360646567A88066F93815E77EB2ECD4B480AF96F7E2B1996E9D\",\n            \"node_addr\": \"E1DB::C873::0B53::ED4B\",\n            \"node_location\": \"Europe-UK\",\n            \"pkey\": \"0x7F336916FE2F638A9457DB00D1841FE8B6234544ABA1785DAA892C421AD05A36\",\n            \"price\": \"0.0000000000000012(1200)\",\n            \"price_unit\": \"SECOND\",\n            \"srv_uid\": \"0x0000000000000001\",\n            \"tx_cond_hash\": \"0x0000000000000000000000000000000000000000000000000000000000000000\",\n            \"units\": \"300\",\n            \"version\": \"3\"\n        },\n        {\n            \"direction\": \"SERV_DIR_SELL\",\n            \"ext\": \"0x5206554B00\",\n            \"hash\": \"0x3DB2E19637239001931F2F84F17665164800633E5D263A404ED0264A5CE4F07C\",\n            \"node_addr\": \"E1DB::C873::0B53::ED4B\",\n            \"node_location\": \"Asia-UK\",\n            \"pkey\": \"0x7F336916FE2F638A9457DB00D1841FE8B6234544ABA1785DAA892C421AD05A36\",\n            \"price\": \"0.000000000000000002(2)\",\n            \"srv_uid\": \"0x0000000000000001\",\n            \"tx_cond_hash\": \"0x0000000000000000000000000000000000000000000000000000000000000000\",\n            \"units\": \"300\",\n            \"version\": \"3\"\n        },\n        {\n            \"direction\": \"SERV_DIR_SELL\",\n            \"ext\": \"0x52024765726D616E7900\",\n            \"hash\": \"0xF4590296D5844C301FCDA29F7854ADE6FFA2A56044BC1D4995A548342987F09A\",\n            \"node_addr\": \"E02A::FB56::1B0A::19C8\",\n            \"node_location\": \"Europe-Germany\",\n            \"pkey\": \"0xE23EF5A0EA0604EADD74EB2F365809AE222EB88B7EA72C9ADA7AF8B78EA4E21E\",\n            \"price\": \"0.0000000000000012(1200)\",\n            \"price_unit\": \"SECOND\",\n            \"srv_uid\": \"0x0000000000000001\",\n            \"tx_cond_hash\": \"0x0000000000000000000000000000000000000000000000000000000000000000\",\n            \"units\": \"600\",\n            \"version\": \"3\"\n        }\n    ]\n").array();
   slotSetOrderListData (result);
@@ -120,7 +138,7 @@ int DapQmlModelOrderList::length() const
   catch (const std::exception &e)
     {
       DEBUG_MSG << "Exception occurred:" << e.what();
-      return -1;
+      return 0;
     }
 }
 
@@ -316,7 +334,7 @@ void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
 //    return;
 
   /* notify model */
-  beginResetModel();
+  s_ordersBaseModel->beginResetModel();
 
   /* vars */
   QVector<OrderItem> items;
@@ -363,19 +381,11 @@ void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
     }
 
   /* store result */
-  try
-    {
-      auto orders = _data->module.orders()->as<OrdersModule>();
-      orders->setItems (std::move (items));
-      orders->setCurrentIndex (0);
-    }
-  catch (const std::exception &e)
-    {
-      DEBUG_MSG << "Exception occurred:" << e.what();
-    }
+  s_ordersModule->setItems (std::move (items));
+  s_ordersModule->setCurrentIndex (0);
 
   /* notify model */
-  endResetModel();
+  s_ordersBaseModel->endResetModel();
 
   /* collect addresses into json */
   for (const auto &address : qAsConst (addressesSet))
@@ -493,12 +503,11 @@ void DapQmlModelOrderList::slotSetTokensListData (const QHash<QString, QString> 
 void DapQmlModelOrderList::slotSetOrderAddresses (const QJsonArray &a_list)
 {
   /* notify model */
-  beginResetModel();
+  s_ordersBaseModel->beginResetModel();
 
   try
     {
       int index = 0;
-      auto &orders = *_data->module.orders()->as<OrdersModule>();
       QHash<QString, QString> nodeIpsMap;
 
       for (auto i = a_list.constBegin(), e = a_list.constEnd(); i != e; i++, index++)
@@ -508,7 +517,7 @@ void DapQmlModelOrderList::slotSetOrderAddresses (const QJsonArray &a_list)
         nodeIpsMap.insert (jitem.key(), jitem.value().toString());
       }
 
-      orders.installAdressMap (nodeIpsMap);
+      s_ordersModule->installAdressMap (nodeIpsMap);
     }
   catch (const std::exception &e)
     {
@@ -516,7 +525,7 @@ void DapQmlModelOrderList::slotSetOrderAddresses (const QJsonArray &a_list)
     }
 
   /* notify model */
-  endResetModel();
+  s_ordersBaseModel->endResetModel();
   emit sigOrderListAddressesUpdated();
 }
 
@@ -530,9 +539,28 @@ void DapQmlModelOrderList::slotSetOrderAddresses (const QJsonArray &a_list)
 
 DapQmlModelOrderListProxyModel::DapQmlModelOrderListProxyModel()
   : QSortFilterProxyModel()
-  , m_filter ("")
+  , m_unit()
+  , m_min (-1.0)
+  , m_max (-1.0)
 {
-  setSourceModel (DapQmlModelOrderList::instance());
+  /* init */
+  DapQmlModelOrderList::instance();
+//  auto source = DapQmlModelOrderList::instance();
+//  setSourceModel (source);
+
+//  connect (source, &QAbstractListModel::modelAboutToBeReset,
+//           [this] { beginResetModel(); });
+//  connect (source, &QAbstractListModel::modelReset,
+//           [this] { endResetModel(); });
+
+  /* setup model */
+  setSourceModel (s_ordersBaseModel);
+
+//  /* signals */
+//  connect (s_ordersBaseModel, &QAbstractListModel::modelAboutToBeReset,
+//           [this] { beginResetModel(); });
+//  connect (s_ordersBaseModel, &QAbstractListModel::modelReset,
+//           [this] { endResetModel(); });
 }
 
 /********************************************
@@ -542,12 +570,14 @@ DapQmlModelOrderListProxyModel::DapQmlModelOrderListProxyModel()
 void DapQmlModelOrderListProxyModel::updateCheckedIndex (const QString &a_checkedName)
 {
   DapQmlModelOrderList::instance()->setCurrentIndex (
-    DapQmlModelOrderList::instance()->indexOf (a_checkedName));
+        DapQmlModelOrderList::instance()->indexOf (a_checkedName));
 }
 
-void DapQmlModelOrderListProxyModel::setRowFilter (const QString a_filter)
+void DapQmlModelOrderListProxyModel::setRowFilter (const QString a_unit, qreal a_min, qreal a_max)
 {
-  m_filter = a_filter;
+  m_unit  = a_unit == "All" ? QString() : a_unit.toUpper();
+  m_min   = a_min;
+  m_max   = a_max;
   invalidateFilter();
 }
 
@@ -558,18 +588,61 @@ void DapQmlModelOrderListProxyModel::setRowFilter (const QString a_filter)
 bool DapQmlModelOrderListProxyModel::filterAcceptsRow (
   int sourceRow, const QModelIndex &) const
 {
+  DEBUG_MSG << m_unit << m_min << m_max;
   try
     {
-      auto orderList  = DapQmlModelOrderList::instance();
-      auto module     = orderList->_data->module;
-      const QVector<OrderItem> &items = module.orders()->as<OrdersModule>()->items();
-      return items.at (sourceRow).location.contains (m_filter, Qt::CaseInsensitive);
+      const QVector<OrderItem> &items = s_ordersModule->items();
+
+      auto order      = items.at (sourceRow);
+      qreal value     = order.units_value.toDouble();
+
+      bool byUnit     = m_unit.isEmpty()  ? true : order.units.toUpper() == m_unit;
+      bool byMin      = m_min < 0         ? true : (value >= m_min);
+      bool byMax      = m_max < 0         ? true : (value <= m_max);
+
+      //qDebug("%s unit %d min %d max %d", __func__, byUnit, byMin, byMax);
+      return byUnit && byMin && byMax;
     }
   catch (const std::exception &e)
     {
       DEBUG_MSG << "Exception occurred:" << e.what();
       return false;
     }
+}
+
+/********************************************
+ * OrdersModel OVERRIDE
+ *******************************************/
+
+int OrdersModel::rowCount (const QModelIndex &) const
+{
+  return s_ordersModule->size();
+}
+
+int OrdersModel::columnCount (const QModelIndex &) const
+{
+  return s_fields.size();
+}
+
+QVariant OrdersModel::data (const QModelIndex &index, int role) const
+{
+  if (!index.isValid())
+    return QVariant();
+
+  auto orderList  = DapQmlModelOrderList::instance();
+
+  switch (FieldId (role))
+    {
+    case FieldId::network:    return orderList->network();
+    case FieldId::wallet:     return orderList->wallet();
+    default:
+      return s_ordersModule->data (index, role);
+    }
+}
+
+QHash<int, QByteArray> OrdersModel::roleNames() const
+{
+  return s_fields;
 }
 
 /*-----------------------------------------*/

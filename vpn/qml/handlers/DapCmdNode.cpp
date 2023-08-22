@@ -495,7 +495,9 @@ void OrderListData::_updateListMap()
 
 void OrderListData::setUnit (const QString &unit)
 {
-  m_unit = unit;
+  m_unit = unit == "All"
+           ? QString()
+           : unit;
 }
 
 OrderInfo OrderListData::order (const QString &hash)
