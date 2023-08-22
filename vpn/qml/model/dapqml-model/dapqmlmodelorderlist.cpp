@@ -291,6 +291,16 @@ void DapQmlModelOrderList::setUnit (const QString &a_value)
   emit sigUnitChanged();
 }
 
+QString DapQmlModelOrderList::balance() const
+{
+  return _data->module.tokens().get()->value();
+}
+
+void DapQmlModelOrderList::setBalance (const QString &)
+{
+  emit sigBalanceChanged();
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/

@@ -74,6 +74,7 @@ protected:
   Q_PROPERTY (QString wallet      READ wallet       WRITE setWallet       NOTIFY sigWalletChanged)
   Q_PROPERTY (QString token       READ token        WRITE setToken        NOTIFY sigTokenChanged)
   Q_PROPERTY (QString unit        READ unit         WRITE setUnit         NOTIFY sigUnitChanged)
+  Q_PROPERTY (QString balance     READ balance      WRITE setBalance      NOTIFY sigBalanceChanged)
   /// @}
 
   /****************************************//**
@@ -121,6 +122,9 @@ public:
 
   Q_INVOKABLE QString unit() const;
   Q_INVOKABLE void setUnit (const QString &a_value = QString());
+
+  Q_INVOKABLE QString balance() const;
+  Q_INVOKABLE void setBalance (const QString &a_value = QString());
   /// @}
 
   /****************************************//**
@@ -146,11 +150,13 @@ signals:
   void sigWalletChanged();
   void sigTokenChanged();
   void sigUnitChanged();
+  void sigBalanceChanged();
 
   void sigNetworkUpdated (QString a_value);   // chooseNetwork
   void sigWalletUpdated (QString a_value);    // chooseWallet
   void sigTokenUpdated (QString a_value);     // chooseToken
-  void sigMaxPriceUpdated (QString a_value);  // setValue
+  void sigTokenValueUpdated (QString a_value); // setValue
+  //void sigMaxPriceUpdated (QString a_value);  // setValue
   void sigUnitUpdated (QString a_value);      // setUnit
   void sigMaxValueUpdated (QString a_value);  // setMaxValueUnit
   void sigMinValueUpdated (QString a_value);  // setMinValueUnit

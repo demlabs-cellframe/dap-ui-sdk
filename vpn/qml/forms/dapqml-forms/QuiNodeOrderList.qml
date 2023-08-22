@@ -38,6 +38,7 @@ Item {
         Invalid,
 
         Orders,
+
         Networks,
         Wallets,
         Tokens,
@@ -46,7 +47,9 @@ Item {
         MaxUnit,
         MinUnit,
         MaxPrice,
-        MinPrice
+        MinPrice,
+
+        TokenValue
     }
 
     /// @}
@@ -84,6 +87,7 @@ Item {
             0,0,0,DapQmlModelOrderList.Invalid,     // Invalid
 
             0,0,0,DapQmlModelOrderList.Orders,      // Orders
+
             0,0,0,DapQmlModelOrderList.Networks,    // Networks
             0,0,0,DapQmlModelOrderList.Wallets,     // Wallets
             0,0,0,DapQmlModelOrderList.Tokens,      // Tokens
@@ -93,6 +97,8 @@ Item {
             1,1,0,DapQmlModelOrderList.Invalid,     // Min Unit
             1,1,0,DapQmlModelOrderList.Invalid,     // Max Price
             1,1,0,DapQmlModelOrderList.Invalid,     // Min Price
+
+            1,1,0,DapQmlModelOrderList.TokenValue,  // Token Value
         ]
 
         /* LABELS */
@@ -100,6 +106,7 @@ Item {
         property string wallet:     "TestWalletName"
         property string server:     "TestServerName"
         property string token:      "TestTokenName"
+        property string tokenValue: "TestTokenValue"
         property string unit:       "TestUnitName"
         property string price:      "TestPriceName"
         property string priceShort: "TESTC"
@@ -129,6 +136,7 @@ Item {
             case QuiNodeOrderList.Invalid:  listTitle   = qsTr(""); break;
 
             case QuiNodeOrderList.Orders:   listTitle   = qsTr("Orders"); break;
+
             case QuiNodeOrderList.Networks: listTitle   = qsTr("Network"); break;
             case QuiNodeOrderList.Wallets:  listTitle   = qsTr("Wallet"); break;
             case QuiNodeOrderList.Tokens:   listTitle   = qsTr("Token"); break;
@@ -138,6 +146,8 @@ Item {
             case QuiNodeOrderList.MinUnit:  listTitle   = qsTr("Min Unit"); break;
             case QuiNodeOrderList.MaxPrice: listTitle   = qsTr("Max Price"); break;
             case QuiNodeOrderList.MinPrice: listTitle   = qsTr("Min Price"); break;
+
+            case QuiNodeOrderList.TokenValue: listTitle = qsTr("Max Price"); break;
             }
 
             /* set value */
@@ -147,8 +157,10 @@ Item {
             case QuiNodeOrderList.MinUnit:  editValue   = interfaceObject.minUnit(); break;
             case QuiNodeOrderList.MaxPrice: editValue   = interfaceObject.maxPrice(); break;
             case QuiNodeOrderList.MinPrice: editValue   = interfaceObject.minPrice(); break;
+
+            case QuiNodeOrderList.TokenValue: editValue = interfaceObject.maxUnit(); break;
             }
-            valueEditInput.text = editValue;
+            valueEditInput.text = (editValue === "") ? "0" : editValue;
         }
     }
 
@@ -164,6 +176,7 @@ Item {
     signal sigNetworkClicked();
     signal sigWalletClicked();
     signal sigTokenClicked();
+    signal sigTokenValueClicked();
     signal sigUnitClicked();
     signal sigMaxUnitClicked();
     signal sigMinUnitClicked();
@@ -187,6 +200,11 @@ Item {
 
     onSigTokenClicked: {
         setInternalMode(QuiNodeOrderList.Tokens);
+        swipe.incrementCurrentIndex();
+    }
+
+    onSigTokenValueClicked: {
+        setInternalMode(QuiNodeOrderList.TokenValue);
         swipe.incrementCurrentIndex();
     }
 
@@ -241,6 +259,7 @@ Item {
         root.internal.minPrice      = interfaceObject.minPrice();
         root.internal.maxUnit       = interfaceObject.maxUnit();
         root.internal.minUnit       = interfaceObject.minUnit();
+        root.internal.tokenValue    = interfaceObject.tokenValue();
     }
 
     /// @}
@@ -281,6 +300,7 @@ Item {
         case QuiNodeOrderList.MinUnit:  root.internal.minUnit   = a_value; break;
         case QuiNodeOrderList.MaxPrice: root.internal.maxPrice  = a_value; break;
         case QuiNodeOrderList.MinPrice: root.internal.minPrice  = a_value; break;
+        case QuiNodeOrderList.TokenValue: root.internal.tokenValue = a_value; break;
         }
     }
 
@@ -292,7 +312,7 @@ Item {
                 network     : root.internal.network,
                 wallet      : root.internal.wallet,
                 token       : root.internal.token,
-                maxPrice    : root.internal.maxPrice,
+                tokenValue  : root.internal.tokenValue,
             }
             );
         }
@@ -527,6 +547,9 @@ Item {
 
                         MouseArea {
                             anchors.fill: parent
+                            onClicked:
+                                if (itemRoot.parent.cbOnClicked)
+                                    itemRoot.parent.cbOnClicked()
                             hoverEnabled: itemRoot.loadTooltip
                             onEntered: itemPopup.visible = true
                             onExited: itemPopup.visible  = false
@@ -537,7 +560,7 @@ Item {
                             anchors.centerIn: parent
                             width: popupContent.width + delegateOrderLabelSize.fontSize
                             height: popupContent.height + delegateOrderLabelSize.fontSize
-                            delay: 500
+                            delay: 600
                             timeout: 15000
                             visible: false
 
@@ -922,12 +945,12 @@ Item {
                     Loader {
                         sourceComponent: compButton
                         visible: !root.internal.isSearch
-                        property string first:      root.internal.maxPrice
+                        property string first:      root.internal.tokenValue
                         property string second:     "Max price"
                         property string labelTopQss
                         property string labelBottomQss
                         property bool swap:         true
-                        property var cbOnClicked: function() { root.sigMaxPriceClicked(); }
+                        property var cbOnClicked: function() { root.sigTokenValueClicked(); }
                     }
 
                     Loader {
@@ -1065,10 +1088,22 @@ Item {
                         elide: Text.ElideMiddle
                         qss: "c-grey"
 
-                        text: root.internal.isPrice
-                              ? `Balance: ${valueEditInput.text} ${root.internal.token}`
-                              //: `${valueEditInput.text} ${root.internal.isTime ? "days" : "MB"}`
-                              : `${valueEditInput.text} ${root.internal.unit}`
+//                        text: root.internal.isPrice
+//                              ? `Balance: ${valueEditInput.text} ${root.internal.token}`
+//                              //: `${valueEditInput.text} ${root.internal.isTime ? "days" : "MB"}`
+//                              : `${valueEditInput.text} ${root.internal.unit}`
+                        text: {
+                            if (root.internal.mode === QuiNodeOrderList.TokenValue)
+                                return `Balance: ${csListView.model.balance} ${root.internal.token}`;
+
+                            if (root.internal.isPrice)
+                                return `${valueEditInput.text} ${root.internal.token}`;
+
+                            if (root.internal.unit === "All")
+                                return "";
+
+                            return `${valueEditInput.text} ${root.internal.unit}`
+                        }
                     }
 
                     /* TABS */
@@ -1129,6 +1164,7 @@ Item {
                         case QuiNodeOrderList.MinUnit:
                         case QuiNodeOrderList.MaxPrice:
                         case QuiNodeOrderList.MinPrice:
+                        case QuiNodeOrderList.TokenValue:
                             filterValueSet ("");
                             break;
                         default:
@@ -1152,6 +1188,7 @@ Item {
                         case QuiNodeOrderList.MinUnit:
                         case QuiNodeOrderList.MaxPrice:
                         case QuiNodeOrderList.MinPrice:
+                        case QuiNodeOrderList.TokenValue:
                             filterValueSet (valueEditInput.text);
                             break;
                         default:
