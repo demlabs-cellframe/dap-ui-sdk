@@ -342,6 +342,28 @@ Item {
         root.internal.popup = false;
     }
 
+    function clearEditField() {
+        /* clear edit value result */
+        switch (root.internal.mode)
+        {
+        case QuiNodeOrderList.MaxUnit:
+        case QuiNodeOrderList.MinUnit:
+        case QuiNodeOrderList.MaxPrice:
+        case QuiNodeOrderList.MinPrice:
+        case QuiNodeOrderList.TokenValue:
+            filterValueSet ("");
+            break;
+        default:
+            break;
+        }
+
+        /* navigate back */
+        //swipe.decrementCurrentIndex();
+
+        /* clear edit field */
+        valueEditInput.text         = "";
+    }
+
     /// @}
     /****************************************//**
      * Resizers
@@ -412,6 +434,12 @@ Item {
     DapQmlDummy {
         id: nameValueRadio
         qss: "radiobtn-resizer"
+    }
+
+    DapQmlDummy {
+        id: closeButtonSizer
+        qss: "nodeorderlist-edit-btn-close"
+        property string scaledPixmap
     }
 
     /****************************************//**
@@ -1052,26 +1080,44 @@ Item {
                         qss: "nodeorlist-edit"
                         property real fontSize
 
-                        TextInput {
-                            id: valueEditInput
+                        RowLayout {
                             anchors.fill: parent
                             anchors.margins: parent.height * 0.1
-                            horizontalAlignment: TextInput.AlignLeft //AlignHCenter
-                            verticalAlignment: TextInput.AlignVCenter
-                            font.pixelSize: parent.fontSize
-                            font.family: Brand.fontName()
-                            font.weight: Font.Bold
-                            selectByMouse: true
-                            text: root.internal.editValue // "1234"
-                            clip: true
 
-                            onTextEdited: {
-                                if (interfaceObject === undefined)
-                                    return;
+                            TextInput {
+                                id: valueEditInput
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                horizontalAlignment: TextInput.AlignLeft //AlignHCenter
+                                verticalAlignment: TextInput.AlignVCenter
+                                font.pixelSize: valueEditRect.fontSize
+                                font.family: Brand.fontName()
+                                font.weight: Font.Bold
+                                selectByMouse: true
+                                text: root.internal.editValue // "1234"
+                                clip: true
 
-                                text    = root.internal.isPrice
-                                        ? interfaceObject.fixPriceString(text)
-                                        : interfaceObject.fixNumberString(text);
+                                onTextEdited: {
+                                    if (interfaceObject === undefined)
+                                        return;
+
+                                    text    = root.internal.isPrice
+                                            ? interfaceObject.fixPriceString(text)
+                                            : interfaceObject.fixNumberString(text);
+                                }
+                            }
+
+                            Item {
+                                Layout.preferredWidth: closeButtonSizer.width
+                                Layout.fillHeight: true
+
+                                DapQmlLabel {
+                                    anchors.centerIn: parent
+                                    width: closeButtonSizer.width
+                                    height: closeButtonSizer.height
+                                    scaledPixmap: closeButtonSizer.scaledPixmap
+                                    onClicked: clearEditField()
+                                }
                             }
                         }
                     }
@@ -1152,29 +1198,12 @@ Item {
                     }
                 }
 
-                DapQmlPushButton {
-                    visible: root.internal.showConfirmButton
-                    qss: "nodeorlist-overview-clear-btn"
-                    text: qsTr("CLEAR")
-                    onClicked: {
-                        /* store edit value result */
-                        switch (root.internal.mode)
-                        {
-                        case QuiNodeOrderList.MaxUnit:
-                        case QuiNodeOrderList.MinUnit:
-                        case QuiNodeOrderList.MaxPrice:
-                        case QuiNodeOrderList.MinPrice:
-                        case QuiNodeOrderList.TokenValue:
-                            filterValueSet ("");
-                            break;
-                        default:
-                            break;
-                        }
-
-                        /* navigate back */
-                        swipe.decrementCurrentIndex();
-                    }
-                }
+//                DapQmlPushButton {
+//                    visible: root.internal.showConfirmButton
+//                    qss: "nodeorlist-overview-clear-btn"
+//                    text: qsTr("CLEAR")
+//                    onClicked: clearEditField()
+//                }
 
                 DapQmlPushButton {
                     visible: root.internal.showConfirmButton

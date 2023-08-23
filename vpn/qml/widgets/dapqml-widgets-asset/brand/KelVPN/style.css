@@ -2334,3 +2334,9 @@
     scaled-rect: scaled(nan,nan,136,136,true);
     qproperty-color: "@brand";
 }
+
+.nodeorderlist-edit-btn-close
+{
+    scaled-rect: scaled(nan,nan,32,32,true);
+    qproperty-scaledPixmap: "@rouexc-close";
+}
