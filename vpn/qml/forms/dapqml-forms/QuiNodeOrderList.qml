@@ -183,6 +183,14 @@ Item {
         onTriggered: hideErrorMessage()
     }
 
+    Timer {
+        id: orderListWaitTimer
+        interval: 10000
+        running: false
+        repeat: false
+        onTriggered: hideSpinner()
+    }
+
     /// @}
     /****************************************//**
      * @name SIGNALS
@@ -1153,6 +1161,7 @@ Item {
                         storeFilterData();
                         if (root.internal.isSearch)
                         {
+                            orderListWaitTimer.restart();
                             root.internal.popup = true;
                             root.sigSearchClicked();
                         }

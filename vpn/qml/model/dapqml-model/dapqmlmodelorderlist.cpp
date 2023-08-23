@@ -301,47 +301,10 @@ void DapQmlModelOrderList::setBalance (const QString &)
   emit sigBalanceChanged();
 }
 
-/********************************************
- * OVERRIDE
- *******************************************/
-
-int DapQmlModelOrderList::rowCount (const QModelIndex &) const
+void DapQmlModelOrderList::setOrderListData(const QJsonArray &a_list, bool notify)
 {
-  return length();
-}
-
-int DapQmlModelOrderList::columnCount (const QModelIndex &) const
-{
-  return s_fields.size();
-}
-
-QVariant DapQmlModelOrderList::data (const QModelIndex &index, int role) const
-{
-  if (!index.isValid())
-    return QVariant();
-
-  switch (FieldId (role))
-    {
-    case FieldId::network:    return _data->network;
-    case FieldId::wallet:     return _data->wallet;
-    default:
-      return _data->module->data (index, role);
-    }
-}
-
-QHash<int, QByteArray> DapQmlModelOrderList::roleNames() const
-{
-  return s_fields;
-}
-
-/********************************************
- * SLOTS
- *******************************************/
-
-void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
-{
-//  if (a_list.isEmpty())
-//    return;
+  //  if (a_list.isEmpty())
+  //    return;
 
   /* notify model */
   s_ordersBaseModel->beginResetModel();
@@ -402,8 +365,54 @@ void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
     jarray << address;
 
   /* request ip's */
-  emit sigRequestNodeIPs (network(), jarray);
-  emit sigOrderListLoaded();
+  if (!jarray.isEmpty())
+    emit sigRequestNodeIPs (network(), jarray);
+
+  /* finished */
+  if (notify)
+    emit sigOrderListLoaded();
+}
+
+/********************************************
+ * OVERRIDE
+ *******************************************/
+
+int DapQmlModelOrderList::rowCount (const QModelIndex &) const
+{
+  return length();
+}
+
+int DapQmlModelOrderList::columnCount (const QModelIndex &) const
+{
+  return s_fields.size();
+}
+
+QVariant DapQmlModelOrderList::data (const QModelIndex &index, int role) const
+{
+  if (!index.isValid())
+    return QVariant();
+
+  switch (FieldId (role))
+    {
+    case FieldId::network:    return _data->network;
+    case FieldId::wallet:     return _data->wallet;
+    default:
+      return _data->module->data (index, role);
+    }
+}
+
+QHash<int, QByteArray> DapQmlModelOrderList::roleNames() const
+{
+  return s_fields;
+}
+
+/********************************************
+ * SLOTS
+ *******************************************/
+
+void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
+{
+  setOrderListData (a_list);
 }
 
 void DapQmlModelOrderList::slotSetWalletListData (const QHash<QString, QStringList> &a_walletData)

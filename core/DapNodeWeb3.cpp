@@ -758,12 +758,8 @@ void DapNodeWeb3::parseOrderList(const QString& replyData, int baseErrorCode)
     if (jsonError())
         return;
 
-    if (doc["data"].isArray())
-    {
-        // wallet data
-//        DEBUGINFO << "orderListReply" << doc["data"].toArray();
-        emit sigOrderList(doc["data"].toArray());
-    }
+    auto docArray  = doc["data"];
+    emit sigOrderList (docArray.isArray() ? docArray.toArray() : QJsonArray());
 }
 
 void DapNodeWeb3::parseNodeIp(const QString& replyData, int baseErrorCode)

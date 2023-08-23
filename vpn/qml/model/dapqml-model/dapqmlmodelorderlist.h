@@ -125,6 +125,8 @@ public:
 
   Q_INVOKABLE QString balance() const;
   Q_INVOKABLE void setBalance (const QString &a_value = QString());
+
+  void setOrderListData (const QJsonArray &a_list, bool notify = true);
   /// @}
 
   /****************************************//**

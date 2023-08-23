@@ -131,7 +131,7 @@ QVariant OrdersModule::data (const QModelIndex &index, int role) const
 
 const QString &OrdersModule::name() const
 {
-  if (_currentIndex < 0)
+  if (_currentIndex < 0 || _items.isEmpty())
     return s_dummyString;
   return _items.at (_currentIndex).hash;
 }
