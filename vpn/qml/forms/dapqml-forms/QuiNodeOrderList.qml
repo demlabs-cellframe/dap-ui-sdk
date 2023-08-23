@@ -52,6 +52,14 @@ Item {
         TokenValue
     }
 
+    enum EditFieldType
+    {
+      EdtMaxUnit,
+      EdtMinUnit,
+      EdtMaxPrice,
+      EdtMinPrice
+    }
+
     /// @}
     /****************************************//**
      * @name VARS
@@ -151,17 +159,28 @@ Item {
             }
 
             /* set value */
-            switch (mode)
+            if (interfaceObject !== undefined)
             {
-            case QuiNodeOrderList.MaxUnit:  editValue   = interfaceObject.maxUnit(); break;
-            case QuiNodeOrderList.MinUnit:  editValue   = interfaceObject.minUnit(); break;
-            case QuiNodeOrderList.MaxPrice: editValue   = interfaceObject.maxPrice(); break;
-            case QuiNodeOrderList.MinPrice: editValue   = interfaceObject.minPrice(); break;
+                switch (mode)
+                {
+                case QuiNodeOrderList.MaxUnit:  editValue   = maxUnit; break;
+                case QuiNodeOrderList.MinUnit:  editValue   = minUnit; break;
+                case QuiNodeOrderList.MaxPrice: editValue   = maxPrice; break;
+                case QuiNodeOrderList.MinPrice: editValue   = minPrice; break;
 
-            case QuiNodeOrderList.TokenValue: editValue = interfaceObject.maxUnit(); break;
+                case QuiNodeOrderList.TokenValue: editValue = tokenValue; break;
+                }
+                valueEditInput.text = (editValue === "") ? "0" : editValue;
             }
-            valueEditInput.text = (editValue === "") ? "0" : editValue;
         }
+    }
+
+    Timer {
+        id: errorMessageTimer
+        interval: 7000
+        running: false
+        repeat: false
+        onTriggered: hideErrorMessage()
     }
 
     /// @}
@@ -294,6 +313,42 @@ Item {
     }
 
     function filterValueSet (a_value) {
+        /* get field type */
+        let ft = QuiNodeOrderList.EdtMaxUnit;
+        let minValue = 0; let maxValue = 0;
+        switch(root.internal.mode)
+        {
+        case QuiNodeOrderList.MaxUnit:
+            ft = QuiNodeOrderList.EdtMaxUnit;
+            minValue = root.internal.minUnit;
+            maxValue = root.internal.maxUnit;
+            break;
+
+        case QuiNodeOrderList.MinUnit:
+            ft = QuiNodeOrderList.EdtMinUnit;
+            minValue = root.internal.minUnit;
+            maxValue = root.internal.maxUnit;
+            break;
+
+        case QuiNodeOrderList.MaxPrice:
+            ft = QuiNodeOrderList.EdtMaxPrice;
+            minValue = root.internal.minPrice;
+            maxValue = root.internal.maxPrice;
+            break;
+
+        case QuiNodeOrderList.MinPrice:
+            ft = QuiNodeOrderList.EdtMinPrice;
+            minValue = root.internal.minPrice;
+            maxValue = root.internal.maxPrice;
+            break;
+        }
+
+        /* check if value is valid */
+        let message = interfaceObject.isEditFieldValueValid (ft, a_value, minValue, maxValue);
+        if (message !== "")
+            return message;
+
+        /* store */
         switch (root.internal.mode)
         {
         case QuiNodeOrderList.MaxUnit:  root.internal.maxUnit   = a_value; break;
@@ -302,6 +357,8 @@ Item {
         case QuiNodeOrderList.MinPrice: root.internal.minPrice  = a_value; break;
         case QuiNodeOrderList.TokenValue: root.internal.tokenValue = a_value; break;
         }
+
+        return "";
     }
 
     function storeFilterData() {
@@ -364,6 +421,17 @@ Item {
         valueEditInput.text         = "";
     }
 
+    function showErrorMessage(a_message) {
+        errorMessageItem.y              = root.width * 0.05;
+        errorMessageItem.errorMessage   = a_message;
+        errorMessageTimer.restart();
+    }
+
+    function hideErrorMessage() {
+        errorMessageTimer.stop();
+        errorMessageItem.y  = 0 - root.width * 0.1;
+    }
+
     /// @}
     /****************************************//**
      * Resizers
@@ -416,6 +484,12 @@ Item {
     DapQmlDummy {
         id: colorLabel
         qss: "c-label"
+        property color color
+    }
+
+    DapQmlDummy {
+        id: colorLabelGray
+        qss: "c-grey"
         property color color
     }
 
@@ -862,6 +936,37 @@ Item {
     }
 
     /****************************************//**
+     * Error message
+     ********************************************/
+
+    Rectangle {
+        id: errorMessageItem
+        x: (parent.width - width) / 2
+        y: 0 - root.width * 0.1
+        z: 30
+        width: parent.width * 0.85
+        height: errorText.contentHeight + parent.width * 0.025
+        color: colorBackground.color
+        border.color: colorLabelGray.color
+        radius: 12
+
+        property string errorMessage
+
+        Behavior on y { PropertyAnimation { duration: 250 } }
+
+        DapQmlLabel {
+            id: errorText
+            anchors.fill: parent
+            horizontalAlign: Text.AlignHCenter
+            verticalAlign: Text.AlignVCenter
+            //elide: Text.ElideMiddle
+            disableClicking: true
+            qss: "nodeorlist-item-label-top nodeorlist-label-size-14"
+            text: errorMessageItem.errorMessage
+        }
+    }
+
+    /****************************************//**
      * Content
      ********************************************/
 
@@ -1211,6 +1316,7 @@ Item {
                     text: qsTr("CONFIRM")
                     onClicked: {
                         /* store edit value result */
+                        let result = "";
                         switch (root.internal.mode)
                         {
                         case QuiNodeOrderList.MaxUnit:
@@ -1218,17 +1324,23 @@ Item {
                         case QuiNodeOrderList.MaxPrice:
                         case QuiNodeOrderList.MinPrice:
                         case QuiNodeOrderList.TokenValue:
-                            filterValueSet (valueEditInput.text);
+                            result  = filterValueSet (valueEditInput.text);
                             break;
                         default:
                             break;
                         }
 
                         /* navigate based on mode */
-                        if (root.internal.mode === QuiNodeOrderList.Orders)
-                            swipe.incrementCurrentIndex();
-                        else
+                        if (result === "")
+                        {
                             swipe.decrementCurrentIndex();
+                            hideErrorMessage();
+                        }
+                        else
+                        {
+                            //valueEditInput.text = root.internal.editValue
+                            showErrorMessage (result);
+                        }
                     }
                 }
 

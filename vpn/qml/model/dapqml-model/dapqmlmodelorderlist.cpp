@@ -598,7 +598,7 @@ void DapQmlModelOrderListProxyModel::setRowFilter (const QString a_unit, qreal a
 bool DapQmlModelOrderListProxyModel::filterAcceptsRow (
   int sourceRow, const QModelIndex &) const
 {
-  DEBUG_MSG << m_unit << m_min << m_max;
+  //DEBUG_MSG << m_unit << m_min << m_max;
   try
     {
       const QVector<OrderItem> &items = s_ordersModule->items();
