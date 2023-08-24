@@ -141,6 +141,7 @@ private:
     QString m_fee;
     NodeInfo m_nodeInfo;
     QStringList m_listKeys;
+    bool m_isCDBLogined = false;
 
 public:
     static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
@@ -156,6 +157,11 @@ public:
     void start();
     QString txCondHash();
     static QString certificateName(const QString& access = "public");
+
+    void setCDBLogined(bool a_logined){
+        m_isCDBLogined = a_logined;
+    }
+
 
 private:
     void initStmTransitions();

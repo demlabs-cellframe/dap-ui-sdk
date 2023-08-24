@@ -286,7 +286,11 @@ void DapNode::initStmStates()
     // node detection request
     connect(&m_stm->nodeDetection,  &QState::entered, web3, &DapNodeWeb3::nodeDetectedRequest);
     // connection request
-    connect(&m_stm->nodeConnection, &QState::entered, web3, &DapNodeWeb3::nodeConnectionRequest);
+    connect(&m_stm->nodeConnection, &QState::entered, this, [=](){
+        if (!m_isCDBLogined)
+            web3->nodeConnectionRequest();
+    }); //web3, &DapNodeWeb3::nodeConnectionRequest);
+
     // get node status
     //connect(&m_stm->nodeGetStatus,  &QState::entered, web3, &DapNodeWeb3::nodeStatusRequest);
     // get wallets
