@@ -14,7 +14,7 @@ static QRegularExpression scopesRegExp ("\\(([^)]+)\\)");
 static const QString s_dummyString; // string that is returned as reference when certain conditions met
 
 /* FUNCTIONS */
-static QString _scopedPrice (const QString &a_value);
+QString _scopedPrice (const QString &a_value);
 
 /*-----------------------------------------*/
 /* ModuleInterface */
@@ -393,7 +393,7 @@ ModuleInterface &ModuleContainer::operator&()
 
 /*-----------------------------------------*/
 
-static QString _scopedPrice (const QString &a_value)
+QString _scopedPrice (const QString &a_value)
 {
   auto match = scopesRegExp.match (a_value);
 

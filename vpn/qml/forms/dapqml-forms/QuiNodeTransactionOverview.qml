@@ -1,141 +1,175 @@
+/* INCLUDES */
+
 import QtQuick 2.0
+import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.2
 import DapQmlStyle 1.0
 import "qrc:/dapqml-widgets"
 
-Item {
+/****************************************//**
+ * @brief Transaction Overview Form
+ * @ingroup groupDapQmlForms
+ * @date 23.08.23
+ * @author Mikhail Shilenko
+ *******************************************/
 
+Item {
     id: root
+    clip: true
+
+    /****************************************//**
+     * @name VARS
+     ********************************************/
+    /// @{
+
     /// @brief form name
     ///
     /// Used to connect interface via Manager
     property string formName: "NodeTransactionOverview"
-    property string titleOverview: qsTr("Transaction owerview")
-    property string titleProcessing: qsTr("Transaction processing")
 
-    /// @brief confirm clicked
+    property QtObject internal: QtObject {
+        /* VARIABLES */
+        property string network:    "TestNetworkName"
+        property string wallet:     "TestWalletName"
+        property string server:     "TestServerName"
+        property string unit:       "TestUnitName"
+        property string price:      "TestPriceName"
+        property string priceShort: "TESTC"
+    }
+
+    /// @}
+    /****************************************//**
+     * @name SIGNALS
+     ********************************************/
+    /// @{
+
     signal sigConfirm();
 
+    /// @}
+    /****************************************//**
+     * @name FUNCTIONS
+     ********************************************/
+    /// @{
 
-    function setMode(mode)
-    {
-        if (mode === 1)
-        {
-            title.text = titleOverview
-            processingItem.visible = false
-            overview.visible = true
-            overview.buttonActive = true
-            overview.cellEnabled = true
-            overview.recieptView = false
-        }
-        if (mode === 2)
-        {
-            title.text = titleProcessing
-            processingItem.visible = true
-            overview.visible = false
-            overview.cellEnabled = true
-            overview.recieptView = false
-        }
-        if (mode === 3)
-        {
-            title.text = titleOverview
-            processingItem.visible = false
-            overview.visible = true
-            overview.buttonActive = true
-            overview.cellEnabled = false
-            overview.recieptView = true
-        }
-
+    function setData(a_data) {
+        root.internal.network       = a_data.network;
+        root.internal.wallet        = a_data.wallet;
+        root.internal.server        = a_data.server;
+        root.internal.unit          = a_data.units;
+        root.internal.price         = a_data.price;
+        root.internal.priceShort    = a_data.priceShort;
     }
 
-    function setWallet(walletName)
-    {
-        overview.setWallet(walletName)
-    }
+    /// @}
+    /****************************************//**
+     * Resizers
+     ********************************************/
 
-    function setNetwork(networkName)
-    {
-        overview.setNetwork(networkName)
-    }
-
-    function setToken(tokenName)
-    {
-        overview.setToken(tokenName)
-    }
-
-    function setTokenCount(tokenCount)
-    {
-        overview.setTokenCount(tokenCount)
-    }
-
-    function setUnit(unit)
-    {
-        overview.setUnit(unit)
-    }
-
-    function setPrice(price)
-    {
-        overview.setPrice(price)
-    }
-
-    function setServer(server)
-    {
-        overview.setServer(server)
+    DapQmlDummy {
+        id: linkImageSizer
+        qss: "btn-arrow nodeorlist-item-link"
+        property string scaledPixmap
     }
 
     /****************************************//**
-     * Title
+     * Components
      ********************************************/
 
-    DapQmlDialogTitle {
-        id: title
-        text: titleOverview
-        qss: "dialog-title"
-    }
+    Component {
+        id: compOverviewItem
 
-    QuiNodeOverviewBase {
-        id: overview
-        // form name
-        formName: root.formName
-        // button enable
-        buttonActive: true
-        //
-        //cellEnabled: true
-        // arrows on buttons
-        link: false
-        onButtonClicked: { root.sigConfirm() }
-    }
+        //property string first
+        //property string second
 
+        RowLayout {
+            anchors.fill: parent
 
-    /****************************************//**
-     * Mode Sending Item
-     ********************************************/
+            DapQmlLabel {
+                Layout.preferredWidth: overviewSizer.width
+                Layout.fillHeight: true
+                horizontalAlign: Text.AlignLeft
+                qss: "nodeorlist-overview-item-left"
+                text: parent.parent.first
+            }
 
-    Item {
-        id: processingItem
-        anchors.fill: parent
-        visible: false
-
-        /* info */
-        DapQmlLabel {
-            qss: "bugrep-sending"
-            text: qsTr("Sending...") + lang.notifier
-        }
-
-        /* animated spinner */
-        AnimatedImage {
-            id: animation
-            source: "qrc:/dapqml-forms-asset/Spinner.gif"
-            DapQmlStyle { qss: "bugrep-animation"; item: animation }
-        }
-
-        /* cancel */
-        DapQmlPushButton {
-            qss: "bugrep-send-btn push-button"
-            text: qsTr("CANCEL") + lang.notifier
-            onClicked: {
-//                root.sigConfirm();
+            DapQmlLabel {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                horizontalAlign: Text.AlignLeft
+                qss: "nodeorlist-overview-item-right"
+                text: parent.parent.second
             }
         }
     }
 
+    /****************************************//**
+     * Content
+     ********************************************/
+
+    Item {
+        width: root.width
+        height: root.height
+
+        DapQmlRectangle {
+            qss: "nodeorlist-overview-container"
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: linkImageSizer.width
+
+                Loader {
+                    property string first:  qsTr("Network")
+                    property string second: root.internal.network
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    sourceComponent: compOverviewItem
+                }
+
+                Loader {
+                    property string first:  qsTr("Wallet")
+                    property string second: root.internal.wallet
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    sourceComponent: compOverviewItem
+                }
+
+                Loader {
+                    property string first:  qsTr("Server")
+                    property string second: root.internal.server
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    sourceComponent: compOverviewItem
+                }
+
+                Loader {
+                    property string first:  qsTr("Unit")
+                    property string second: root.internal.unit
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    sourceComponent: compOverviewItem
+                }
+
+                DapQmlSeparator {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 2
+                }
+
+                DapQmlLabel {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.topMargin: linkImageSizer.width * 0.05
+                    qss: "nodeorlist-overview-price"
+                    text: `${root.internal.priceShort} ${root.internal.unit}`
+                }
+            }
+        }
+
+        DapQmlPushButton {
+            qss: "nodeorlist-overview-confirm-btn"
+            text: qsTr("CONFIRM PURCHASE")
+            onClicked: root.sigConfirm()
+        }
+    } // Transaction Overview
 }
+
+/*-----------------------------------------*/

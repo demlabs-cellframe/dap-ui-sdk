@@ -301,6 +301,12 @@ void DapQmlModelOrderList::setBalance (const QString &)
   emit sigBalanceChanged();
 }
 
+const OrderListModule::OrderItem *DapQmlModelOrderList::currentOrder() const
+{
+  auto currentIndex = s_ordersModule->currentIndex();
+  return &s_ordersModule->items().at (currentIndex);
+}
+
 void DapQmlModelOrderList::setOrderListData(const QJsonArray &a_list, bool notify)
 {
   //  if (a_list.isEmpty())

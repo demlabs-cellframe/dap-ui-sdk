@@ -16,7 +16,7 @@ import "qrc:/dapqml-widgets"
  * @brief Choose Order Form
  * @ingroup groupDapQmlForms
  * @date 20.07.23
- * @author Stanislav
+ * @author Mikhail Shilenko
  *******************************************/
 
 Item {
@@ -791,7 +791,8 @@ Item {
                 else
                     return `${model.price}`;
             }
-            property string second:      `${model.server} - ${model.ipAddress}`
+            property string second:      `${model.server} - ${addressValue}`
+            property string addressValue: model.ipAddress !== "" ? model.ipAddress : "unknown ip"
             property string labelTopQss:    "nodeorlist-label-size-14"
             property string labelBottomQss: "nodeorlist-label-size-14"
             property QtObject tooltip: QtObject {
@@ -807,10 +808,14 @@ Item {
                 //root.internal.unit          = model.units;
                 root.internal.price         = model.price;
                 root.internal.priceShort    = model.priceShort;
-                root.internal.chosenOrderIndex  = model.index;
-                root.internal.chosenOrderHash   = model.hash;
 
-                swipe.incrementCurrentIndex();
+//                root.internal.chosenOrderIndex  = model.index;
+//                root.internal.chosenOrderHash   = model.hash;
+//                swipe.incrementCurrentIndex();
+////                root.sigOrderSelect (root.internal.chosenOrderIndex, root.internal.chosenOrderHash);
+
+                csListView.model.currentIndex = model.index;
+                root.sigOrderSelect (model.index, model.hash);
             }
 
 //            Component.onCompleted: StyleDebugTree.describe (
@@ -847,33 +852,6 @@ Item {
                 csListView.model.currentIndex = model.index;
                 root.filterItemSelected (model.index, text);
                 timerFilterItemSelected.start(); // swipe.decrementCurrentIndex();
-            }
-        }
-    }
-
-    Component {
-        id: compOverviewItem
-
-        //property string first
-        //property string second
-
-        RowLayout {
-            anchors.fill: parent
-
-            DapQmlLabel {
-                Layout.preferredWidth: overviewSizer.width
-                Layout.fillHeight: true
-                horizontalAlign: Text.AlignLeft
-                qss: "nodeorlist-overview-item-left"
-                text: parent.parent.first
-            }
-
-            DapQmlLabel {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                horizontalAlign: Text.AlignLeft
-                qss: "nodeorlist-overview-item-right"
-                text: parent.parent.second
             }
         }
     }
@@ -1054,7 +1032,7 @@ Item {
                         sourceComponent: compButton
                         visible: !root.internal.isSearch
                         property string first:      root.internal.network
-                        property string second:     "Network"
+                        property string second:     qsTr("Network*")
                         property string labelTopQss
                         property string labelBottomQss
                         property bool swap:         true
@@ -1065,7 +1043,7 @@ Item {
                         sourceComponent: compButton
                         visible: !root.internal.isSearch
                         property string first:      root.internal.wallet
-                        property string second:     "Wallet"
+                        property string second:     qsTr("Wallet*")
                         property string labelTopQss
                         property string labelBottomQss
                         property bool swap:         true
@@ -1076,7 +1054,7 @@ Item {
                         sourceComponent: compButton
                         visible: !root.internal.isSearch
                         property string first:      root.internal.token
-                        property string second:     "Token"
+                        property string second:     qsTr("Token*")
                         property string labelTopQss
                         property string labelBottomQss
                         property bool swap:         true
@@ -1087,7 +1065,7 @@ Item {
                         sourceComponent: compButton
                         visible: !root.internal.isSearch
                         property string first:      root.internal.tokenValue
-                        property string second:     "Max price"
+                        property string second:     qsTr("Max price*")
                         property string labelTopQss
                         property string labelBottomQss
                         property bool swap:         true
@@ -1098,7 +1076,7 @@ Item {
                         sourceComponent: compButton
                         visible: root.internal.isSearch
                         property string first:      root.internal.unit
-                        property string second:     "Unit"
+                        property string second:     qsTr("Unit")
                         property string labelTopQss
                         property string labelBottomQss
                         property bool swap:         true
@@ -1109,7 +1087,7 @@ Item {
                         sourceComponent: compButton
                         visible: root.internal.isSearch
                         property string first:      root.internal.maxUnit
-                        property string second:     "Max Unit"
+                        property string second:     qsTr("Max Unit")
                         property string labelTopQss
                         property string labelBottomQss
                         property bool swap:         true
@@ -1120,7 +1098,7 @@ Item {
                         sourceComponent: compButton
                         visible: root.internal.isSearch
                         property string first:      root.internal.minUnit
-                        property string second:     "Min Unit"
+                        property string second:     qsTr("Min Unit")
                         property string labelTopQss
                         property string labelBottomQss
                         property bool swap:         true
@@ -1131,7 +1109,7 @@ Item {
                         sourceComponent: compButton
                         visible: root.internal.isSearch
                         property string first:      root.internal.maxPrice
-                        property string second:     "Max Price"
+                        property string second:     qsTr("Max Price")
                         property string labelTopQss
                         property string labelBottomQss
                         property bool swap:         true
@@ -1142,7 +1120,7 @@ Item {
                         sourceComponent: compButton
                         visible: root.internal.isSearch
                         property string first:      root.internal.minPrice
-                        property string second:     "Min Price"
+                        property string second:     qsTr("Min Price")
                         property string labelTopQss
                         property string labelBottomQss
                         property bool swap:         true
@@ -1389,77 +1367,6 @@ Item {
                     }
                 }
             } // Middle Page
-
-            /****************************************//**
-             * Transaction Overview
-             ********************************************/
-
-            Item {
-                width: root.width
-                height: root.height
-
-                DapQmlRectangle {
-                    qss: "nodeorlist-overview-container"
-
-                    ColumnLayout {
-                        anchors.fill: parent
-                        anchors.margins: linkImageSizer.width
-
-                        Loader {
-                            property string first:  qsTr("Network")
-                            property string second: root.internal.network
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            sourceComponent: compOverviewItem
-                        }
-
-                        Loader {
-                            property string first:  qsTr("Wallet")
-                            property string second: root.internal.wallet
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            sourceComponent: compOverviewItem
-                        }
-
-                        Loader {
-                            property string first:  qsTr("Server")
-                            property string second: root.internal.server
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            sourceComponent: compOverviewItem
-                        }
-
-                        Loader {
-                            property string first:  qsTr("Unit")
-                            property string second: root.internal.unit
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            sourceComponent: compOverviewItem
-                        }
-
-                        DapQmlSeparator {
-                            Layout.fillWidth: true
-                            Layout.preferredHeight: 2
-                        }
-
-                        DapQmlLabel {
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            Layout.topMargin: linkImageSizer.width * 0.05
-                            qss: "nodeorlist-overview-price"
-                            text: `${root.internal.priceShort} ${root.internal.unit}`
-                        }
-                    }
-                }
-
-                DapQmlPushButton {
-                    qss: "nodeorlist-overview-confirm-btn"
-                    text: qsTr("CONFIRM PURCHASE")
-                    onClicked: {
-                        root.sigOrderSelect (root.internal.chosenOrderIndex, root.internal.chosenOrderHash);
-                    }
-                }
-            } // Transaction Overview
         } // Swipe View
     } // Content
 }

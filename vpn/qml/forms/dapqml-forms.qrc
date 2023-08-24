@@ -29,7 +29,7 @@
         <file compress="1">dapqml-forms/QuiChooseNetwork.qml</file>
         <file compress="1">dapqml-forms/QuiChooseToken.qml</file>
         <file compress="1">dapqml-forms/QuiNodeTransactionProcessing.qml</file>
-        <file compress="1">dapqml-forms/QuiNodeTransactionOverview.qml</file>
+        <file compress="1">dapqml-forms/QuiNodeTransactionOverviewOld.qml</file>
         <file compress="1">dapqml-forms/QuiNodeOverview.qml</file>
         <file compress="1">dapqml-forms/QuiNodeMaxPrice.qml</file>
         <file compress="1">dapqml-forms/QuiNodeChooseUnit.qml</file>
@@ -40,5 +40,6 @@
         <file compress="1">dapqml-forms/tools/QuiToolTicker.qml</file>
         <file compress="1">dapqml-forms/tools/QuiToolUpdateNotification.qml</file>
         <file>dapqml-forms/QuiNodeOrderList.qml</file>
+        <file>dapqml-forms/QuiNodeTransactionOverview.qml</file>
     </qresource>
 </RCC>

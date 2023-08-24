@@ -960,9 +960,13 @@ void DapNodeWeb3::parseJsonError (const QString& replyData, int baseErrorCode, Q
 
             if (errorMsg.isString())
             {
-                replyError (baseErrorCode + 40000, errorMsg.toString());
-                m_parseJsonError = true;
-                return;
+                auto errorMsgString = errorMsg.toString();
+                if (!errorMsgString.isEmpty())
+                {
+                    replyError (baseErrorCode + 40000, QString ("Status is \"%1\" : ").arg (status.toString()) + errorMsg.toString());
+                    m_parseJsonError = true;
+                    return;
+                }
             }
 
             replyError(baseErrorCode + 50000, "Error, details missing");

@@ -6,6 +6,7 @@
 #include <QSortFilterProxyModel>
 class QQmlEngine;
 class QJSEngine;
+namespace OrderListModule { struct OrderItem; }
 
 /****************************************//**
  * @brief orders model list
@@ -126,6 +127,7 @@ public:
   Q_INVOKABLE QString balance() const;
   Q_INVOKABLE void setBalance (const QString &a_value = QString());
 
+  const OrderListModule::OrderItem *currentOrder() const;
   void setOrderListData (const QJsonArray &a_list, bool notify = true);
   /// @}
 
