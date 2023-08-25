@@ -9,6 +9,7 @@ import DapQmlSerialKeyInput 1.0
 import StyleDebugTree 1.0
 import DapQmlStyle 1.0
 import Brand 1.0
+import PageCtl 1.0
 import "qrc:/dapqml-widgets"
 import "qrc:/dapqml-forms/tools"
 
@@ -1080,10 +1081,12 @@ Item {
                 root.sigConnectByCert();
             else
             if (internal.mode === QuiLoginForm.Mode.M_WALLET) {
-                if (internal.transactionProcessing === false)
-                    root.sigStartCondTransation()
-                else
-                    root.sigConnectByOrder();
+//                root.internal.transactionOverviewShow = true
+                PageCtl.showTransaction();
+//                if (internal.transactionProcessing === false)
+//                    root.sigStartCondTransation()
+//                else
+//                    root.sigConnectByOrder();
             }
         }
     }

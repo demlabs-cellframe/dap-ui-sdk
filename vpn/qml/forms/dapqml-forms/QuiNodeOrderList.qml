@@ -484,12 +484,6 @@ Item {
     }
 
     DapQmlDummy {
-        id: overviewSizer
-        qss: "nodeorlist-overview-item-left-size"
-        property int fontSize
-    }
-
-    DapQmlDummy {
         id: colorLabel
         qss: "c-label"
         property color color

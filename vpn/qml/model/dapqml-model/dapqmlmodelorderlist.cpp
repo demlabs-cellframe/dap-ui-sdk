@@ -303,7 +303,11 @@ void DapQmlModelOrderList::setBalance (const QString &)
 
 const OrderListModule::OrderItem *DapQmlModelOrderList::currentOrder() const
 {
+  static OrderListModule::OrderItem dummy;
   auto currentIndex = s_ordersModule->currentIndex();
+  auto &items       = s_ordersModule->items();
+  if (items.isEmpty())
+    return &dummy;
   return &s_ordersModule->items().at (currentIndex);
 }
 
