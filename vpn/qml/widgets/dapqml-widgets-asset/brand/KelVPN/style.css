@@ -2231,6 +2231,11 @@
     scaled-rect: scaled(nan,nan,24,24,true);
 }
 
+.nodeorlist-overview-frame
+{
+    scaled-rect: scaled(nan,nan,-1,870,false);
+}
+
 .nodeorlist-overview-container
 {
     scaled-rect: scaled(-1,146,356,296,false);
@@ -2268,6 +2273,11 @@
 .nodeorlist-overview-confirm-btn
 {
     scaled-rect: scaled(-1,802,374,80,true,16);
+}
+
+.nodeorlist-overview-btn-sizer
+{
+    scaled-rect: scaled(nan,nan,374,60,true,16);
 }
 
 .nodeorlist-edit
@@ -2339,4 +2349,11 @@
 {
     scaled-rect: scaled(nan,nan,32,32,true);
     qproperty-scaledPixmap: "@rouexc-close";
+}
+
+.nodeorderlist-agreement-title
+{
+    color: "@text";
+    font-weight: Font.Bold;
+    scaled-rect: scaled(-1,16,-1,24,false,20);
 }
