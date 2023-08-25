@@ -818,9 +818,9 @@ void DapNodeWeb3::parseFee(const QString& replyData, int baseErrorCode)
     if (jsonError())
         return;
 
-    if (doc["data"].isObject() && doc["data"].toObject()["network fee"].isObject())
+    if (doc["data"].isObject() && doc["data"].toObject()["network_fee"].isObject())
     {
-        emit sigFee(doc["data"].toObject()["network fee"].toObject()["fee coins"].toString());
+        emit sigFee(doc["data"].toObject()["network_fee"].toObject()["fee_coins"].toString());
     }
 }
 
