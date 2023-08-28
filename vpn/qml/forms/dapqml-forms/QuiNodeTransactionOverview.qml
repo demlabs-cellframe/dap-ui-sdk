@@ -73,7 +73,7 @@ Item {
         root.internal.network       = a_data.network;
         root.internal.wallet        = a_data.wallet;
         root.internal.server        = a_data.server;
-        root.internal.unit          = a_data.units;
+        root.internal.unit          = a_data.unit;
         root.internal.price         = a_data.price;
         root.internal.priceShort    = a_data.priceShort;
     }
@@ -241,7 +241,7 @@ Item {
                     Layout.fillHeight: true
                     Layout.topMargin: linkImageSizer.width * 0.05
                     qss: "nodeorlist-overview-price"
-                    text: `${root.internal.priceShort} ${root.internal.unit}`
+                    text: root.internal.priceShort
                 }
             } // ColumnLayout
         } // Container
@@ -251,7 +251,7 @@ Item {
         ColumnLayout {
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottomMargin: pushButtonSizer.height * 0.25
+            anchors.bottomMargin: pushButtonSizer.height * 1.25
             width: pushButtonSizer.width
             height: pushButtonSizer.height * 2.125
 

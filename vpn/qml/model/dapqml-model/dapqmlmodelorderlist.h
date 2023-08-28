@@ -196,6 +196,13 @@ class DapQmlModelOrderListProxyModel : public QSortFilterProxyModel
   Q_OBJECT
 
   /****************************************//**
+   * @name PROPERTIES
+   *******************************************/
+  /// @{
+  Q_PROPERTY (int currentIndex    READ currentIndex WRITE setCurrentIndex NOTIFY sigCurrentIndexChanged)
+    /// @}
+
+  /****************************************//**
    * @name VARS
    *******************************************/
   /// @{
@@ -217,7 +224,6 @@ public:
    *******************************************/
   /// @{
 public:
-  Q_INVOKABLE void updateCheckedIndex (const QString &a_checkedName);
   /**
    * @brief setup filter rules
    * @param a_unit unit name
@@ -226,6 +232,17 @@ public:
    * @note set -1 into min or|and max to disable it's filtering
    */
   Q_INVOKABLE void setRowFilter (const QString a_unit, qreal a_min, qreal a_max);
+
+  Q_INVOKABLE int currentIndex() const;
+  Q_INVOKABLE void setCurrentIndex (int a_value);
+  /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void sigCurrentIndexChanged();
   /// @}
 
   /****************************************//**

@@ -596,18 +596,23 @@ DapQmlModelOrderListProxyModel::DapQmlModelOrderListProxyModel()
  * METHODS
  *******************************************/
 
-void DapQmlModelOrderListProxyModel::updateCheckedIndex (const QString &a_checkedName)
-{
-  DapQmlModelOrderList::instance()->setCurrentIndex (
-        DapQmlModelOrderList::instance()->indexOf (a_checkedName));
-}
-
 void DapQmlModelOrderListProxyModel::setRowFilter (const QString a_unit, qreal a_min, qreal a_max)
 {
   m_unit  = a_unit == "All" ? QString() : a_unit.toUpper();
   m_min   = a_min;
   m_max   = a_max;
   invalidateFilter();
+}
+
+int DapQmlModelOrderListProxyModel::currentIndex() const
+{
+  return s_ordersModule->currentIndex();
+}
+
+void DapQmlModelOrderListProxyModel::setCurrentIndex (int a_value)
+{
+  s_ordersModule->setCurrentIndex (mapToSource (index (a_value, 0)).row());
+  emit sigCurrentIndexChanged();
 }
 
 /********************************************
