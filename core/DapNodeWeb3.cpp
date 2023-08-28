@@ -311,6 +311,7 @@ void DapNodeWeb3::networksRequest()
 
 void DapNodeWeb3::condTxCreateRequest(QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit, QString fee)
 {
+    m_networkName = networkName;
     QString requesString = QString("?method=CondTxCreate&"
                 "id=%1&"
                 "net=%2&"
@@ -378,6 +379,7 @@ void DapNodeWeb3::getLedgerTxHashRequest(QString transactionHash, QString networ
 
 void DapNodeWeb3::getOrdersListRequest(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit)
 {
+    m_networkName = networkName;
     QString requesString = QString("?method=GetOrdersList&"
             "id=%1&direction=%2&srv_uid=1")
             .arg(m_connectId)
@@ -684,7 +686,7 @@ void DapNodeWeb3::parseCondTxCreateReply(const QString& replyData, int baseError
     if (doc["data"].isObject() && doc["data"].toObject()["hash"].isString())
     {
         // get hash
-        QString transactionHash = "0x" + doc["data"].toObject()["hash"].toString();
+        QString transactionHash = doc["data"].toObject()["hash"].toString();
         emit sigCondTxCreateSuccess(transactionHash);
     }
 }
@@ -818,9 +820,9 @@ void DapNodeWeb3::parseFee(const QString& replyData, int baseErrorCode)
     if (jsonError())
         return;
 
-    if (doc["data"].isObject() && doc["data"].toObject()["network_fee"].isObject())
+    if (doc["data"].isObject() && doc["data"].toObject()[networkName()].toObject()["network_fee"].isObject())
     {
-        emit sigFee(doc["data"].toObject()["network_fee"].toObject()["fee_coins"].toString());
+        emit sigFee(doc["data"].toObject()[networkName()].toObject()["network_fee"].toObject()["fee_coins"].toString());
     }
 }
 
