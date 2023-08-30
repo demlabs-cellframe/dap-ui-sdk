@@ -197,8 +197,8 @@ void DapCmdNode::handle(const QJsonObject* params)
         //QString networkName  = oi["network_name"].toString();
         //QString txCondHash   = oi["tx_cond_hash"].toString();
         //QString token        = oi["token"].toString();
-        QString srvUid       = oi["srv_uid"].toString();
-        QString nodeAddress  = oi["node_addr"].toString();
+        QString srvUid       = oi["srvUid"].toString();
+        QString nodeAddress  = oi["nodeAddress"].toString();
 //        uint16_t port        = 80;
 //        if (!oi["port"].isNull())
 //            port             = oi["port"].toInt();
