@@ -315,7 +315,10 @@ Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: pushButtonSizer.height
                 sourceComponent: pushButton
-                property string text: qsTr("CONFIRM PURCHASE")
+                property string text:
+                    root.internal.mode === 0
+                    ? qsTr("CONFIRM PURCHASE")
+                    : qsTr("SIGN PURCHASE")
                 property color color: "#F45480"
                 property var cbClicked: function() {
                     root.sigConfirm();
@@ -324,7 +327,7 @@ Item {
             }
 
             Loader {
-                enabled: root.internal.mode !== 1
+                //enabled: root.internal.mode !== 1
                 Layout.fillWidth: true
                 Layout.preferredHeight: pushButtonSizer.height
                 sourceComponent: pushButton
