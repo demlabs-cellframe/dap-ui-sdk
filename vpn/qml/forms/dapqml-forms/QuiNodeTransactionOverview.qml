@@ -51,7 +51,7 @@ Item {
         ]
 
         onModeChanged: {
-            labelTitle  = modeSettings[mode * 1];
+            labelTitle.text  = modeSettings[mode * 1];
         }
     }
 
@@ -257,7 +257,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             z: 60
             qss: "nodeorlist-spinner-bg"
-            visible: root.internal.mode !== 1
+            visible: root.internal.mode === 1
 
             DapQmlRectangle {
                 id: progressCircle
@@ -311,23 +311,29 @@ Item {
             height: pushButtonSizer.height * 2.125
 
             Loader {
-                enabled: root.internal.mode === 0
+                enabled: root.internal.mode !== 1
                 Layout.fillWidth: true
                 Layout.preferredHeight: pushButtonSizer.height
                 sourceComponent: pushButton
                 property string text: qsTr("CONFIRM PURCHASE")
                 property color color: "#F45480"
-                property var cbClicked: function() { root.sigConfirm(); }
+                property var cbClicked: function() {
+                    root.sigConfirm();
+                    // console.log("confirm clicked");
+                }
             }
 
             Loader {
-                enabled: root.internal.mode === 0
+                enabled: root.internal.mode !== 1
                 Layout.fillWidth: true
                 Layout.preferredHeight: pushButtonSizer.height
                 sourceComponent: pushButton
                 property string text: qsTr("CANCEL")
                 property color color: "#A9A9B0"
-                property var cbClicked: function() { root.sigCancel(); }
+                property var cbClicked: function() {
+                    root.sigCancel();
+                    // console.log("cancel clicked");
+                }
             }
         } // ColumnLayout
     } // Transaction Overview
