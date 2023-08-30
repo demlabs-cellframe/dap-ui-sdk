@@ -72,6 +72,8 @@ private:
     DapNetworkAccessManager * m_httpClient;
     // cellframe dashboard connect id
     QString m_connectId;
+
+    QString m_networkName;
     // reply data
     DapNetworkReply *m_networkReply;
     // network request string
@@ -90,6 +92,7 @@ public:
 
     /* METHODS */
     QString connectedId() { return m_connectId; }
+    QString networkName() { return m_networkName; }
 
 private:
     void request_GET(const QString& host,  quint16 port,
