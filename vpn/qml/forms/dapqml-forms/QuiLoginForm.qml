@@ -1082,11 +1082,11 @@ Item {
             else
             if (internal.mode === QuiLoginForm.Mode.M_WALLET) {
 //                root.internal.transactionOverviewShow = true
-                PageCtl.showTransaction();
-//                if (internal.transactionProcessing === false)
-//                    root.sigStartCondTransation()
-//                else
-//                    root.sigConnectByOrder();
+//                PageCtl.showTransaction();
+                if (internal.transactionProcessing === false)
+                    root.sigStartCondTransation()
+                else
+                    root.sigConnectByOrder();
             }
         }
     }

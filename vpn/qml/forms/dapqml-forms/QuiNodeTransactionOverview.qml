@@ -1,8 +1,9 @@
 /* INCLUDES */
 
-import QtQuick 2.0
+import QtQuick 2.11
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.2
+import QtQuick.Shapes 1.4
 import DapQmlStyle 1.0
 import Brand 1.0
 import "qrc:/dapqml-widgets"
@@ -154,6 +155,7 @@ Item {
             anchors.fill: parent
             color: parent.color
             radius: 400
+            opacity: 0.5 + enabled * 0.5
 
             DapQmlLabel {
                 anchors.centerIn: parent
@@ -168,6 +170,7 @@ Item {
 
             MouseArea {
                 anchors.fill: parent
+                enabled: parent.enabled
                 onClicked: parent.parent.cbClicked()
             }
         }
@@ -193,6 +196,7 @@ Item {
         /* overview */
 
         DapQmlRectangle {
+            id: overview
             qss: "nodeorlist-overview-container"
 
             ColumnLayout {
@@ -246,6 +250,57 @@ Item {
             } // ColumnLayout
         } // Container
 
+        /* loading animation */
+
+        DapQmlRectangle {
+            anchors.top: overview.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            z: 60
+            qss: "nodeorlist-spinner-bg"
+            visible: root.internal.mode !== 1
+
+            DapQmlRectangle {
+                id: progressCircle
+                anchors.centerIn: parent
+                qss: "nodeorlist-spinner-arc"
+
+                property string color
+                property int strokeWidth: 10
+
+                Shape {
+                    id: nodeorInfoArcAnim
+                    anchors.fill: parent
+                    layer.enabled: true
+                    layer.samples: 6
+
+                    ShapePath {
+                        fillColor: "transparent"
+                        strokeColor: progressCircle.color
+                        strokeWidth: progressCircle.strokeWidth
+                        capStyle: ShapePath.FlatCap
+
+                        PathAngleArc {
+                            id: loginInfoArcPath
+                            centerX: nodeorInfoArcAnim.width / 2
+                            centerY: nodeorInfoArcAnim.height / 2
+                            radiusX: nodeorInfoArcAnim.width / 2 - progressCircle.strokeWidth / 2
+                            radiusY: nodeorInfoArcAnim.height / 2 - progressCircle.strokeWidth / 2
+                            startAngle: 90
+                            sweepAngle: 180
+
+                            NumberAnimation on startAngle {
+                                from: 0
+                                to: 360
+                                running: true
+                                loops: Animation.Infinite
+                                duration: 2000
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         /* user interact */
 
         ColumnLayout {
@@ -256,6 +311,7 @@ Item {
             height: pushButtonSizer.height * 2.125
 
             Loader {
+                enabled: root.internal.mode === 0
                 Layout.fillWidth: true
                 Layout.preferredHeight: pushButtonSizer.height
                 sourceComponent: pushButton
@@ -265,6 +321,7 @@ Item {
             }
 
             Loader {
+                enabled: root.internal.mode === 0
                 Layout.fillWidth: true
                 Layout.preferredHeight: pushButtonSizer.height
                 sourceComponent: pushButton
