@@ -24,7 +24,6 @@ HEADERS += \
     $$PWD/dapqml-widgets/dapqmlnodedatamodel.h \
     $$PWD/dapqml-widgets/dapqmlswitchctl.h \
     $$PWD/dapqml-widgets/dapqmlthememodel.h \
-    $$PWD/dapqml-widgets/dapqmlwindow.h \
     $$PWD/dapqml-widgets/doc-group-dapqmlstyle.h \
     $$PWD/dapqml-widgets/doc-group-qml-widgets.h \
     $$PWD/dapqml-widgets/style/debug/styledebugitemdescriptor.h \
@@ -46,7 +45,6 @@ SOURCES += \
     $$PWD/dapqml-widgets/dapqmlnodedatamodel.cpp \
     $$PWD/dapqml-widgets/dapqmlswitchctl.cpp \
     $$PWD/dapqml-widgets/dapqmlthememodel.cpp \
-    $$PWD/dapqml-widgets/dapqmlwindow.cpp \
     $$PWD/dapqml-widgets/style/debug/styledebugitemdescriptor.cpp \
     $$PWD/dapqml-widgets/style/qssitem.cpp \
     $$PWD/dapqml-widgets/style/qsslink.cpp \
