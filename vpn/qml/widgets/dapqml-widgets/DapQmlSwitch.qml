@@ -1,8 +1,13 @@
 /* INCLUDES */
 
-import QtQuick 2.0
+import QtQuick 2.11
+import QtQml 2.12
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.12
+import QtQuick.Shapes 1.4
 import DapQmlStyle 1.0
 import DapQmlSwitchCtl 1.0
+import StyleDebugTree 1.0
 import QtGraphicalEffects 1.12
 
 /****************************************//**
@@ -43,6 +48,9 @@ Item {
     /// @note changes hooked to _setStyle()
     property bool checked: false
 
+    /// @brief show loading animation
+    property bool loading: !enabled
+
     /// @brief widget qss style
     property string qss
 
@@ -81,7 +89,7 @@ Item {
 
     function setEnable(value) {
         root.enabled = value;
-        desaturateEffect.desaturation = 0.5 * (!value);
+        //desaturateEffect.desaturation = 0.5 * (!value);
     }
 
     /// @brief change style based on checkbox state
@@ -111,7 +119,7 @@ Item {
     Item {
         id: content
         anchors.fill: parent
-        visible: false
+        //visible: false
 
         /****************************************//**
          * Background frame
@@ -127,7 +135,6 @@ Item {
             qss: "switch-bg-off"
 
             Component.onCompleted: ctl.setBackground(this)
-            //onClicked: toggle()
         }
 
         /****************************************//**
@@ -136,41 +143,74 @@ Item {
 
         DapQmlLabel {
             id: tgl
-            //x: (checked === false) ? (-12 * (root.width / 270)) : (root.width - width + 12 * (root.width / 270))
-//            x: {
-//                if (ctl.dragging)
-//                {
-//                    if (isLeftReached)
-//                        return minPos;
-//                    if (isRightReached)
-//                        return maxPos;
-//                    return draggingPos
-//                }
-//                return finalPos;
-//            }
-
             y: 0
             z: 1
             width: root.height
             height: root.height
             qss: "switch-toggle-off"
 
-//            property real finalPos:         (checked === false) ? minPos : maxPos
-//            property real draggingPos:      ctl.pos2 - (width / 2)
-//            property real minPos:           (-12 * (root.width / 270))
-//            property real maxPos:           (root.width - width + 12 * (root.width / 270))
-//            property bool isLeftReached:    draggingPos <= minPos
-//            property bool isRightReached:   draggingPos >= maxPos
-//            property bool draggingState:    ctl.pos2 >= root.width / 2
-
-            Component.onCompleted: ctl.setToggle(this)
-            //onClicked: toggle()
-
             Behavior on x {
                 PropertyAnimation {
                     duration: ctl.draggingAnim ? 0 : 125
                     easing.type: Easing.InQuad
                     Component.onCompleted: ctl.setToggleAnimation(this)
+                }
+            }
+
+            Component.onCompleted: ctl.setToggle(this)
+
+            Rectangle {
+                id: loadingFrame
+                anchors.centerIn: parent
+                visible: root.loading
+                width: size
+                height: size
+                radius: size
+
+                property real size: Math.min(parent.width, parent.height) * 0.75
+
+                DapQmlStyle { item: loadingFrame; qss: "c-background" }
+
+                DapQmlDummy {
+                    id: progressCircle
+                    property string color: "#000000"
+                    property int strokeWidth: 5
+                    qss: "c-brand"
+                }
+
+                Shape {
+                    id: loginInfoArcAnim
+                    anchors.centerIn: parent
+                    anchors.fill: parent
+                    anchors.margins: parent.width * 0.275
+                    z: 200
+                    layer.enabled: true
+                    layer.samples: 6
+
+                    ShapePath {
+                        fillColor: "transparent"
+                        strokeColor: progressCircle.color
+                        strokeWidth: progressCircle.strokeWidth
+                        capStyle: ShapePath.FlatCap
+
+                        PathAngleArc {
+                            id: loginInfoArcPath
+                            centerX: loginInfoArcAnim.width / 2
+                            centerY: loginInfoArcAnim.height / 2
+                            radiusX: loginInfoArcAnim.width / 2 - progressCircle.strokeWidth / 2
+                            radiusY: loginInfoArcAnim.height / 2 - progressCircle.strokeWidth / 2
+                            startAngle: 90
+                            sweepAngle: 180
+
+                            NumberAnimation on startAngle {
+                                from: 0
+                                to: 360
+                                running: true
+                                loops: Animation.Infinite
+                                duration: 2000
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -180,21 +220,17 @@ Item {
      * Saturation effect
      ********************************************/
 
-    Desaturate {
-        id: desaturateEffect
-        anchors.fill: content
-        source: content
-        desaturation: root.enable ? 0 : 0.4
-    }
+//    Desaturate {
+//        id: desaturateEffect
+//        anchors.fill: content
+//        source: content
+//        desaturation: root.enable ? 0 : 0.4
+//    }
 
     /****************************************//**
      * Mouse area
      ********************************************/
 
-//    MouseArea {
-//        anchors.fill: parent
-//        onClicked: toggle()
-//    }
     MultiPointTouchArea {
         id: draggingSpace
         anchors.fill: parent
