@@ -59,6 +59,7 @@ public:
 
 protected:
   bool _checkContinue();
+  void _updateHistoryItem();
   /// @}
 
   /****************************************//**

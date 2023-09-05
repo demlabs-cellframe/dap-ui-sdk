@@ -26,6 +26,7 @@ class DapNodeOrderHistory : public QAbstractListModel
    * @name DEFS
    *******************************************/
   /// @{
+public:
   struct Order
   {
     DapNodeOrderInfo info;
@@ -93,6 +94,7 @@ public:
   int currentIndex() const;
   void setCurrentIndex (int a_value);
   const Order &current() const;
+  int indexOf (const QString &a_orderHash) const;
 
   void load();
   void save() const;

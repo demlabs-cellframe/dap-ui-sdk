@@ -204,6 +204,15 @@ const DapNodeOrderHistory::Order &DapNodeOrderHistory::current() const
   return _list.at (m_currentIndex);
 }
 
+int DapNodeOrderHistory::indexOf (const QString &a_orderHash) const
+{
+  int index = 0;
+  for (auto i = _list.cbegin(), e = _list.cend(); i != e; i++, index++)
+    if (i->info.hash() == a_orderHash)
+      return index;
+  return -1;
+}
+
 void DapNodeOrderHistory::load()
 {
   beginResetModel();

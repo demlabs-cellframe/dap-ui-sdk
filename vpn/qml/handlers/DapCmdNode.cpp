@@ -1,5 +1,7 @@
 /* INCLUDES */
 #include "DapCmdNode.h"
+#include "DapNodeOrderHistory.h"
+
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QDebug>
@@ -115,6 +117,9 @@ struct DapCmdNode::DapCmdNodeData
   QString orderHash;
 };
 
+/* VARS */
+static DapNodeOrderHistory::Order s_historyOrder;
+
 /* LINKS */
 QDebug operator<< (QDebug dbg, const DapNodeOrderInfo &data);
 
@@ -126,7 +131,8 @@ DapCmdNode::DapCmdNode (QObject *parent)
   : DapCmdClientAbstract (DapJsonCmdType::NODE_INFO, parent)
   , _data (new DapCmdNodeData)
 {
-
+  /* clear */
+  s_historyOrder.isSigned = false;
 }
 
 DapCmdNode::~DapCmdNode()
@@ -291,7 +297,22 @@ bool DapCmdNode::_checkContinue()
           !_data->selectedNetworkName.isEmpty() &&
           !_data->selectedTokenName.isEmpty() &&
           !_data->value.isEmpty() &&
-          !_data->orderHash.isEmpty();
+      !_data->orderHash.isEmpty();
+}
+
+void DapCmdNode::_updateHistoryItem()
+{
+  if (s_historyOrder.info.hash().isEmpty())
+    return;
+
+  auto &history = *DapNodeOrderHistory::instance();
+  int index     = history.indexOf (s_historyOrder.info.hash());
+
+  if (index == -1)
+    return DapNodeOrderHistory::instance()->append (s_historyOrder);
+
+  history[index]  = s_historyOrder;
+  history.itemUpdated (index);
 }
 
 
@@ -302,16 +323,40 @@ bool DapCmdNode::_checkContinue()
 void DapCmdNode::condTxCreate()
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  QJsonObject condTx;
-  condTx["wallet_name"] = _data->selectedWalletName;
-  condTx["network_name"] = _data->selectedNetworkName;
-  condTx["token_name"] = _data->selectedTokenName;
-//    condTx["cert_name"] = certName;
-  condTx["value"] = _data->value;
-  condTx["unit"] = "day"; // not used, filled with valid value
-  QJsonObject jObject;
-  jObject["cond_tx_create"] = condTx;
-  sendCmd (&jObject);
+
+//  QJsonObject condTx;
+//  condTx["wallet_name"] = _data->selectedWalletName;
+//  condTx["network_name"] = _data->selectedNetworkName;
+//  condTx["token_name"] = _data->selectedTokenName;
+////    condTx["cert_name"] = certName;
+//  condTx["value"] = _data->value;
+//  condTx["unit"] = "day"; // not used, filled with valid value
+
+//  QJsonObject jObject;
+//  jObject["cond_tx_create"] = condTx;
+
+//  sendCmd (&jObject);
+
+  /* send command */
+  QJsonObject jobj {
+    { "cond_tx_create", QJsonObject {
+        { "wallet_name",  _data->selectedWalletName },
+        { "network_name", _data->selectedNetworkName },
+        { "token_name",   _data->selectedTokenName },
+        { "value",        _data->value },
+        { "unit",         "day" },
+      },
+    },
+  };
+  sendCmd (&jobj);
+
+  /* store data */
+  s_historyOrder.wallet   = _data->selectedWalletName;
+  s_historyOrder.network  = _data->selectedNetworkName;
+  s_historyOrder.token    = _data->selectedTokenName;
+  s_historyOrder.value    = _data->value;
+  s_historyOrder.unit     = "day";
+  s_historyOrder.wallet   = _data->selectedWalletName;
 }
 
 void DapCmdNode::startSearchOrders()
@@ -336,17 +381,37 @@ void DapCmdNode::checkSigned()
   QJsonObject checkNode;
   checkNode["check_signed"] = true;
   sendCmd (&checkNode);
+
+  /* store into history */
+  s_historyOrder.isSigned = true;
+  _updateHistoryItem();
 }
 
 void DapCmdNode::startConnectByOrder()
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  QJsonObject jObject;
-  QJsonObject connectData = _data->orderListData.orderInfo (_data->orderHash);
-  connectData["token"] = _data->selectedTokenName;
-  //connectData["node_ip"] = "164.92.175.30"; // TODO get from order
-  jObject["start_connect_by_order"] = connectData;
-  sendCmd (&jObject);
+
+  /* get order */
+  auto order  = _data->orderListData.order (_data->orderHash);
+
+  /* send command */
+  QJsonObject jobj {
+    { "start_connect_by_order", order.toJsonObject() },
+    { "token", _data->selectedTokenName },
+  };
+  sendCmd (&jobj);
+
+  /* store data */
+  s_historyOrder.info = order;
+  _updateHistoryItem();
+
+//  QJsonObject jObject;
+//  QJsonObject connectData = _data->orderListData.orderInfo (_data->orderHash);
+
+//  connectData["token"] = _data->selectedTokenName;
+//  //connectData["node_ip"] = "164.92.175.30"; // TODO get from order
+//  jObject["start_connect_by_order"] = connectData;
+//  sendCmd (&jObject);
 }
 
 void DapCmdNode::getIpNode (const QString &networkName, const QJsonArray &orderList)
