@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <QObject>
 #include "DapCmdClientAbstract.h"
+#include "DapNodeOrderInfo.h"
 
 /****************************************//**
  * @brief order list interface
@@ -23,29 +24,6 @@ class DapCmdNode: public DapCmdClientAbstract
    * @name DEFS
    *******************************************/
   /// @{
-public:
-  struct OrderInfo
-  {
-    QString direction;
-    QString ext;
-    QString hash;
-    QString nodeAddress;
-    QString nodeLocation;
-    QString pkey;
-    QString price;
-    QString priceUnit;
-    QString srvUid;
-    QString txCondHash;
-    QString units;
-    QString version;
-
-    static OrderInfo fromJson (const QJsonObject &a_obj);
-    QJsonObject toJsonObject() const;
-  };
-
-  typedef QList<OrderInfo> OrderInfoList;
-  typedef QHash<QString, OrderInfo> OrderInfoMap;
-
 protected:
   struct DapCmdNodeData;
   /// @}
@@ -109,7 +87,7 @@ public slots:
   void startSearchOrders();
   void setMaxValueUnit (QString price);
   void setMinValueUnit (QString price);
-  OrderInfo orderData (QString hash);
+  DapNodeOrderInfo orderData (QString hash);
   void checkSigned();
   void startConnectByOrder();
   void getIpNode (const QString &networkName, const QJsonArray &orderList);

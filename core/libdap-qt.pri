@@ -12,6 +12,8 @@ SOURCES += \
     $$PWD/DapNetworkAccessManager.cpp \
     $$PWD/DapNetworkReply.cpp \
     $$PWD/DapNode.cpp \
+    $$PWD/DapNodeOrderHistory.cpp \
+    $$PWD/DapNodeOrderInfo.cpp \
     $$PWD/DapNodeWeb3.cpp \
     $$PWD/DapPluginsPathControll.cpp \
     $$PWD/DapSerialKeyData.cpp \
@@ -43,6 +45,8 @@ HEADERS += \
     $$PWD/DapNetworkAccessManager.h \
     $$PWD/DapNetworkReply.h \
     $$PWD/DapNode.h \
+    $$PWD/DapNodeOrderHistory.h \
+    $$PWD/DapNodeOrderInfo.h \
     $$PWD/DapNodeWeb3.h \
     $$PWD/DapPluginsPathControll.h \
     $$PWD/DapSerialKeyData.h \

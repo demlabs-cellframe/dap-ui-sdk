@@ -9,17 +9,13 @@
 /* DEFS */
 #define DEBUGINFO qDebug()<<" --->UiCMD<--- "
 
-typedef DapCmdNode::OrderInfo OrderInfo;
-typedef DapCmdNode::OrderInfoList OrderInfoList;
-typedef DapCmdNode::OrderInfoMap OrderInfoMap;
-
 /**
  * @brief Class containind order list data
  */
 class OrderListData
 {
   /* VARS */
-  OrderInfoMap m_orderMap;
+  DapNodeOrderInfoMap m_orderMap;
   QString m_unit;
   QMap<QString, QVariant> m_orders;
 
@@ -30,7 +26,7 @@ public:
 
   void setUnit (const QString &unit);
 
-  OrderInfo order (const QString &hash);
+  DapNodeOrderInfo order (const QString &hash);
   QJsonObject orderInfo (const QString &hash);
 
 private:
@@ -120,7 +116,7 @@ struct DapCmdNode::DapCmdNodeData
 };
 
 /* LINKS */
-QDebug operator<< (QDebug dbg, const OrderInfo &data);
+QDebug operator<< (QDebug dbg, const DapNodeOrderInfo &data);
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -409,7 +405,7 @@ void DapCmdNode::setUnit (QString value)
   emit continueEnable (_checkContinue());
 }
 
-DapCmdNode::OrderInfo DapCmdNode::orderData (QString hash)
+DapNodeOrderInfo DapCmdNode::orderData (QString hash)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
   return _data->orderListData.order (hash);
@@ -447,8 +443,9 @@ void OrderListData::setData (const QJsonArray &a_orderListData)
 {
   for (const auto &jvalue : a_orderListData)
     {
-      auto order  = OrderInfo::fromJson (jvalue.toObject());
-      m_orderMap.insert (order.hash, order);
+      DapNodeOrderInfo order;
+      order.fromJson (jvalue.toObject());
+      m_orderMap.insert (order.hash(), order);
     }
 
 //  m_orderListData = a_orderListData;
@@ -481,11 +478,11 @@ void OrderListData::_updateListMap()
 
   for (const auto &item : qAsConst (m_orderMap))
     {
-      QString key     = item.hash;//.right (10);
-      QString loc     = item.nodeLocation;
+      QString key     = item.hash();//.right (10);
+      QString loc     = item.nodeLocation();
 
       QString result  = QString ("%1%2 per %3")
-                        .arg (item.price, m_unit, item.priceUnit);
+        .arg (item.price(), m_unit, item.priceUnit());
 
       m_orders[key].setValue (QStringList {std::move (loc), std::move (result)});
 
@@ -500,14 +497,14 @@ void OrderListData::setUnit (const QString &unit)
            : unit;
 }
 
-OrderInfo OrderListData::order (const QString &hash)
+DapNodeOrderInfo OrderListData::order (const QString &hash)
 {
-  return m_orderMap.value (hash, OrderInfo());
+  return m_orderMap.value (hash, DapNodeOrderInfo());
 }
 
 QJsonObject OrderListData::orderInfo (const QString &hash)
 {
-  return m_orderMap.value (hash, OrderInfo()).toJsonObject();
+  return m_orderMap.value (hash, DapNodeOrderInfo()).toJsonObject();
 //                == Order 0xD9A5C15D30A42615398AB7D3080FDEBCCD74FA3BB2E191F76EAC994326B45AA9 ==
 //                  version:          3
 //                  direction:        SERV_DIR_SELL
@@ -704,63 +701,6 @@ void WalletsData::_parseTokens (const QJsonArray &a_list, Network &a_dest, QStri
     a_dest.tokenNames.append (token.name);
     a_dest.tokens.append (std::move (token));
   }
-}
-
-/*-----------------------------------------*/
-
-DapCmdNode::OrderInfo DapCmdNode::OrderInfo::fromJson (const QJsonObject &a_obj)
-{
-  return OrderInfo
-  {
-    a_obj.value ("direction").toString(),
-    a_obj.value ("ext").toString(),
-    a_obj.value ("hash").toString(),
-    a_obj.value ("node_addr").toString(),
-    a_obj.value ("node_location").toString(),
-    a_obj.value ("pkey").toString(),
-    a_obj.value ("price").toString(),
-    a_obj.value ("price_unit").toString(),
-    a_obj.value ("srv_uid").toString(),
-    a_obj.value ("tx_cond_hash").toString(),
-    a_obj.value ("units").toString(),
-    a_obj.value ("version").toString(),
-  };
-}
-
-QJsonObject OrderInfo::toJsonObject() const
-{
-  QJsonObject result;
-  result.insert ("direction", direction);
-  result.insert ("ext", ext);
-  result.insert ("hash", hash);
-  result.insert ("nodeAddress", nodeAddress);
-  result.insert ("nodeLocation", nodeLocation);
-  result.insert ("pkey", pkey);
-  result.insert ("price", price);
-  result.insert ("priceUnit", priceUnit);
-  result.insert ("srvUid", srvUid);
-  result.insert ("txCondHash", txCondHash);
-  result.insert ("units", units);
-  result.insert ("version", version);
-  return result;
-}
-
-QDebug operator<< (QDebug debug, const OrderInfo &data)
-{
-  debug.nospace() << "OrderInfo("
-                  << "direction:" << data.direction
-                  << ", ext:" << data.ext
-                  << ", hash:" << data.hash
-                  << ", nodeAddress:" << data.nodeAddress
-                  << ", nodeLocation:" << data.nodeLocation
-                  << ", pkey:" << data.pkey
-                  << ", price:" << data.price
-                  << ", priceUnit:" << data.priceUnit
-                  << ", srvUid:" << data.srvUid
-                  << ", txCondHash:" << data.txCondHash
-                  << ", units:" << data.units
-                  << ", version:" << data.version << ")";
-  return debug.space();
 }
 
 /*-----------------------------------------*/
