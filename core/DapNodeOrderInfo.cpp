@@ -278,20 +278,20 @@ void DapNodeOrderInfo::fromJson (const QJsonObject &a_obj)
 
 QJsonObject DapNodeOrderInfo::toJsonObject() const
 {
-  QJsonObject result;
-  result.insert ("direction", direction());
-  result.insert ("ext", ext());
-  result.insert ("hash", hash());
-  result.insert ("nodeAddress", nodeAddress());
-  result.insert ("nodeLocation", nodeLocation());
-  result.insert ("pkey", pkey());
-  result.insert ("price", price());
-  result.insert ("priceUnit", priceUnit());
-  result.insert ("srvUid", srvUid());
-  result.insert ("txCondHash", txCondHash());
-  result.insert ("units", units());
-  result.insert ("version", version());
-  return result;
+  return QJsonObject {
+    { "direction",    m_direction },
+    { "ext",          m_ext },
+    { "hash",         m_hash },
+    { "nodeAddress",  m_nodeAddress },
+    { "nodeLocation", m_nodeLocation },
+    { "pkey",         m_pkey },
+    { "price",        m_price },
+    { "priceUnit",    m_priceUnit },
+    { "srvUid",       m_srvUid },
+    { "txCondHash",   m_txCondHash },
+    { "units",        m_units },
+    { "version",      m_version },
+  };
 }
 
 /********************************************

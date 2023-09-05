@@ -26,8 +26,25 @@ class DapNodeOrderHistory : public QAbstractListModel
    * @name DEFS
    *******************************************/
   /// @{
-  typedef DapNodeOrderInfoList::Iterator Iterator;
-  typedef DapNodeOrderInfoList::ConstIterator ConstIterator;
+  struct Order
+  {
+    DapNodeOrderInfo info;
+    QString wallet;
+    QString network;
+    QString token;
+    QString value;
+    QString unit;
+    bool isSigned;
+
+    operator QJsonObject() const { return toJsonObject(); }
+    void fromJson (const QJsonObject &a_obj);
+    QJsonObject toJsonObject() const;
+  };
+
+  typedef QList<Order> OrderList;
+
+  typedef OrderList::Iterator Iterator;
+  typedef OrderList::ConstIterator ConstIterator;
   /// @}
 
   /****************************************//**
@@ -35,7 +52,7 @@ class DapNodeOrderHistory : public QAbstractListModel
    *******************************************/
   /// @{
 private:
-  DapNodeOrderInfoList _list;
+  OrderList _list;
   int m_currentIndex;
   /// @}
 
@@ -54,17 +71,17 @@ protected:
 public:
   static DapNodeOrderHistory *instance();
 
-  const DapNodeOrderInfo &at (int a_index) const;
+  const Order &at (int a_index) const;
   int size() const;
 
-  void append (const DapNodeOrderInfo &a_value);
-  void append (DapNodeOrderInfo &&a_value);
-  void prepend (const DapNodeOrderInfo &a_value);
-  void prepend (DapNodeOrderInfo &&a_value);
-  void insert (int a_index, const DapNodeOrderInfo &a_value);
-  void insert (int a_index, DapNodeOrderInfo &&a_value);
-  void insert (Iterator a_index, const DapNodeOrderInfo &a_value);
-  void insert (Iterator a_index, DapNodeOrderInfo &&a_value);
+  void append (const DapNodeOrderHistory::Order &a_value);
+  void append (DapNodeOrderHistory::Order &&a_value);
+  void prepend (const DapNodeOrderHistory::Order &a_value);
+  void prepend (DapNodeOrderHistory::Order &&a_value);
+  void insert (int a_index, const DapNodeOrderHistory::Order &a_value);
+  void insert (int a_index, DapNodeOrderHistory::Order &&a_value);
+  void insert (Iterator a_index, const DapNodeOrderHistory::Order &a_value);
+  void insert (Iterator a_index, DapNodeOrderHistory::Order &&a_value);
 
   Iterator begin();
   ConstIterator begin() const;
@@ -75,11 +92,12 @@ public:
 
   int currentIndex() const;
   void setCurrentIndex (int a_value);
-  const DapNodeOrderInfo &current() const;
+  const Order &current() const;
 
   void load();
   void save() const;
 
+  /// sends dataChanged signal
   void itemUpdated (int a_index);
   /// @}
 
@@ -106,7 +124,7 @@ signals:
    *******************************************/
   /// @{
 public:
-  DapNodeOrderInfo &operator[] (int a_index);
+  DapNodeOrderHistory::Order &operator[] (int a_index);
   /// @}
 };
 
