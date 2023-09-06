@@ -101,6 +101,8 @@ public:
 
   /// sends dataChanged signal
   void itemUpdated (int a_index);
+protected:
+  void _delayedSave() const;
   /// @}
 
   /****************************************//**

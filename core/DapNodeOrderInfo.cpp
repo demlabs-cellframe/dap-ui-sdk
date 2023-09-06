@@ -23,6 +23,13 @@ static const QHash<QByteArray, FieldId> s_fieldMap =
   FIELD (txCondHash),
   FIELD (units),
   FIELD (version),
+
+  /* minor bug fix */
+  { "node_addr",      FieldId::nodeAddress },
+  { "node_location",  FieldId::nodeLocation },
+  { "price_unit",     FieldId::priceUnit },
+  { "srv_uid",        FieldId::srvUid },
+  { "tx_cond_hash",   FieldId::txCondHash },
 };
 
 /********************************************

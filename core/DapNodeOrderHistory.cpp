@@ -5,6 +5,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QTimer>
 
 /* DEFS */
 enum class FieldId : quint8
@@ -98,6 +99,7 @@ void DapNodeOrderHistory::append (const Order &a_value)
   beginInsertRows (QModelIndex(), size(), size());
   _list.append (a_value);
   endInsertRows();
+  _delayedSave();
 }
 
 void DapNodeOrderHistory::append (DapNodeOrderHistory::Order &&a_value)
@@ -105,6 +107,7 @@ void DapNodeOrderHistory::append (DapNodeOrderHistory::Order &&a_value)
   beginInsertRows (QModelIndex(), size(), size());
   _list.append (std::move (a_value));
   endInsertRows();
+  _delayedSave();
 }
 
 void DapNodeOrderHistory::prepend (const DapNodeOrderHistory::Order &a_value)
@@ -112,6 +115,7 @@ void DapNodeOrderHistory::prepend (const DapNodeOrderHistory::Order &a_value)
   beginInsertRows (QModelIndex(), 0, 0);
   _list.prepend (a_value);
   endInsertRows();
+  _delayedSave();
 }
 
 void DapNodeOrderHistory::prepend (DapNodeOrderHistory::Order &&a_value)
@@ -119,6 +123,7 @@ void DapNodeOrderHistory::prepend (DapNodeOrderHistory::Order &&a_value)
   beginInsertRows (QModelIndex(), 0, 0);
   _list.prepend (std::move (a_value));
   endInsertRows();
+  _delayedSave();
 }
 
 void DapNodeOrderHistory::insert (int a_index, const DapNodeOrderHistory::Order &a_value)
@@ -126,6 +131,7 @@ void DapNodeOrderHistory::insert (int a_index, const DapNodeOrderHistory::Order 
   beginInsertRows (QModelIndex(), a_index, a_index);
   _list.insert (a_index, a_value);
   endInsertRows();
+  _delayedSave();
 }
 
 void DapNodeOrderHistory::insert (int a_index, DapNodeOrderHistory::Order &&a_value)
@@ -133,6 +139,7 @@ void DapNodeOrderHistory::insert (int a_index, DapNodeOrderHistory::Order &&a_va
   beginInsertRows (QModelIndex(), a_index, a_index);
   _list.insert (a_index, std::move (a_value));
   endInsertRows();
+  _delayedSave();
 }
 
 void DapNodeOrderHistory::insert (Iterator a_index, const DapNodeOrderHistory::Order &a_value)
@@ -141,6 +148,7 @@ void DapNodeOrderHistory::insert (Iterator a_index, const DapNodeOrderHistory::O
   beginInsertRows (QModelIndex(), index, index);
   _list.insert (a_index, a_value);
   endInsertRows();
+  _delayedSave();
 }
 
 void DapNodeOrderHistory::insert (Iterator a_index, DapNodeOrderHistory::Order &&a_value)
@@ -149,6 +157,7 @@ void DapNodeOrderHistory::insert (Iterator a_index, DapNodeOrderHistory::Order &
   beginInsertRows (QModelIndex(), index, index);
   _list.insert (a_index, std::move (a_value));
   endInsertRows();
+  _delayedSave();
 }
 
 DapNodeOrderHistory::Iterator DapNodeOrderHistory::begin()
@@ -255,6 +264,24 @@ void DapNodeOrderHistory::save() const
 void DapNodeOrderHistory::itemUpdated (int a_index)
 {
   emit dataChanged (index (a_index), index (a_index));
+  _delayedSave();
+}
+
+void DapNodeOrderHistory::_delayedSave() const
+{
+  static QTimer *timer  = nullptr;
+
+  if (timer == nullptr)
+  {
+    timer = new QTimer;
+    timer->setSingleShot (true);
+    timer->setInterval (2000);
+
+    connect (timer, &QTimer::timeout,
+             this, [this] { save(); });
+  }
+
+  timer->start();
 }
 
 /********************************************

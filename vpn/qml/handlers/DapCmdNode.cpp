@@ -357,6 +357,8 @@ void DapCmdNode::condTxCreate()
   s_historyOrder.value    = _data->value;
   s_historyOrder.unit     = "day";
   s_historyOrder.wallet   = _data->selectedWalletName;
+  s_historyOrder.isSigned = false;
+  _updateHistoryItem();
 }
 
 void DapCmdNode::startSearchOrders()
