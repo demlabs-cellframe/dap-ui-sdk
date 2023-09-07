@@ -82,6 +82,7 @@
     ic-version:                 "qrc:/dapqml-forms-asset/light/ic_version.png";
     ic-report-item:             "qrc:/dapqml-forms-asset/light/ic_report-item.png";
     ic-key-item:                "qrc:/dapqml-forms-asset/light/ic_key-item.png";
+    ic-orders:                  "qrc:/dapqml-forms-asset/light/ic_orders.png";
 }
 
 .@dark
@@ -160,6 +161,7 @@
     ic-version:                 "qrc:/dapqml-forms-asset/dark/ic_version.png";
     ic-report-item:             "qrc:/dapqml-forms-asset/dark/ic_report-item.png";
     ic-key-item:                "qrc:/dapqml-forms-asset/dark/ic_key-item.png";
+    ic-orders:                  "qrc:/dapqml-forms-asset/dark/ic_orders.png";
 }
 
 /****************************************************
@@ -489,6 +491,15 @@
     qproperty-scaledPixmap: "@ic-key-item";
 }
 
+.ic_orders
+{
+    qproperty-scaledPixmap: "@ic-orders";
+}
+
+.ic_back
+{
+    qproperty-scaledPixmap: "@btn-close";
+}
 
 
 
@@ -576,6 +587,11 @@
 .ic_conn-5
 {
     qproperty-scaledPixmap: url("qrc:/nonthemed/conn-icon-5.png");
+}
+
+.ic_nocdb-shield
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/shield.png");
 }
 
 /****************************************************
@@ -1250,6 +1266,33 @@
     scaled-rect: scaled(-1,250,238,150,true);
 */
 	scaled-rect: scaled(-1,250,262,160,true);
+}
+
+.dashboard-nocdb-shield
+{
+    scaled-rect: scaled(nan,nan,24,24,true);
+}
+
+.dashboard-nocdb-label
+{
+    scaled-font: scaled(16);
+    color: "@input-placeholder";
+}
+
+.dashboard-nocdb-title-button
+{
+    scaled-rect: scaled(nan,nan,40,40,true);
+    color: "@input-field";
+}
+
+.dashboard-nocdb-title-button-back
+{
+    scaled-rect: scaled(36,56,40,40,true);
+}
+
+.dashboard-nocdb-title-button-orders
+{
+    scaled-rect: scaled(356,56,40,40,true);
 }
 
 .dashboard-speed-container
