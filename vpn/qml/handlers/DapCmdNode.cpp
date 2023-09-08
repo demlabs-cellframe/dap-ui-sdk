@@ -146,7 +146,7 @@ DapCmdNode::~DapCmdNode()
 
 void DapCmdNode::handleResult (const QJsonObject &params)
 {
-  DEBUGINFO << __PRETTY_FUNCTION__ << " status OK";
+  DEBUGINFO << __PRETTY_FUNCTION__ << params;
   _data->hasError = false;
   // wallets list
   if (params.value ("wallets").isArray())

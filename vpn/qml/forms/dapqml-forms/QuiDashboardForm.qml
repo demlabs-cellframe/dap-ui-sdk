@@ -45,7 +45,7 @@ Item {
 
     property QtObject internal: QtObject {
         property bool allowChooseServer: true
-        property bool noCdbMode: true
+        property bool noCdbMode: false
     }
 
     /// @}
