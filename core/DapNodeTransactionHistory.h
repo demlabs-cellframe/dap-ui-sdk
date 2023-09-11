@@ -1,5 +1,5 @@
-#ifndef DAPNODEORDERHISTORY_H
-#define DAPNODEORDERHISTORY_H
+#ifndef DAPNODETRANSACTIONHISTORY_H
+#define DAPNODETRANSACTIONHISTORY_H
 
 /* INCLUDES */
 #include <QAbstractListModel>
@@ -11,7 +11,7 @@
  * @author Mikhail Shilenko
  *******************************************/
 
-class DapNodeOrderHistory : public QAbstractListModel
+class DapNodeTransactionHistory : public QAbstractListModel
 {
   Q_OBJECT
 
@@ -27,7 +27,7 @@ class DapNodeOrderHistory : public QAbstractListModel
    *******************************************/
   /// @{
 public:
-  struct Order
+  struct Transaction
   {
     DapNodeOrderInfo info;
     QString wallet;
@@ -42,7 +42,7 @@ public:
     QJsonObject toJsonObject() const;
   };
 
-  typedef QList<Order> OrderList;
+  typedef QList<Transaction> OrderList;
 
   typedef OrderList::Iterator Iterator;
   typedef OrderList::ConstIterator ConstIterator;
@@ -62,7 +62,7 @@ private:
    *******************************************/
   /// @{
 protected:
-  explicit DapNodeOrderHistory (QObject *parent = nullptr);
+  explicit DapNodeTransactionHistory (QObject *parent = nullptr);
   /// @}
 
   /****************************************//**
@@ -70,19 +70,19 @@ protected:
    *******************************************/
   /// @{
 public:
-  static DapNodeOrderHistory *instance();
+  static DapNodeTransactionHistory *instance();
 
-  const Order &at (int a_index) const;
+  const Transaction &at (int a_index) const;
   int size() const;
 
-  void append (const DapNodeOrderHistory::Order &a_value);
-  void append (DapNodeOrderHistory::Order &&a_value);
-  void prepend (const DapNodeOrderHistory::Order &a_value);
-  void prepend (DapNodeOrderHistory::Order &&a_value);
-  void insert (int a_index, const DapNodeOrderHistory::Order &a_value);
-  void insert (int a_index, DapNodeOrderHistory::Order &&a_value);
-  void insert (Iterator a_index, const DapNodeOrderHistory::Order &a_value);
-  void insert (Iterator a_index, DapNodeOrderHistory::Order &&a_value);
+  void append (const DapNodeTransactionHistory::Transaction &a_value);
+  void append (DapNodeTransactionHistory::Transaction &&a_value);
+  void prepend (const DapNodeTransactionHistory::Transaction &a_value);
+  void prepend (DapNodeTransactionHistory::Transaction &&a_value);
+  void insert (int a_index, const DapNodeTransactionHistory::Transaction &a_value);
+  void insert (int a_index, DapNodeTransactionHistory::Transaction &&a_value);
+  void insert (Iterator a_index, const DapNodeTransactionHistory::Transaction &a_value);
+  void insert (Iterator a_index, DapNodeTransactionHistory::Transaction &&a_value);
 
   Iterator begin();
   ConstIterator begin() const;
@@ -93,7 +93,7 @@ public:
 
   int currentIndex() const;
   void setCurrentIndex (int a_value);
-  const Order &current() const;
+  const Transaction &current() const;
   int indexOf (const QString &a_orderHash) const;
 
   void load();
@@ -128,9 +128,9 @@ signals:
    *******************************************/
   /// @{
 public:
-  DapNodeOrderHistory::Order &operator[] (int a_index);
+  DapNodeTransactionHistory::Transaction &operator[] (int a_index);
   /// @}
 };
 
 /*-----------------------------------------*/
-#endif // DAPNODEORDERHISTORY_H
+#endif // DAPNODETRANSACTIONHISTORY_H

@@ -2400,3 +2400,33 @@
     font-weight: Font.Bold;
     scaled-rect: scaled(-1,16,-1,24,false,20);
 }
+
+
+
+/****************************************************
+ * Transaction history
+ ***************************************************/
+
+.trhistory-item
+{
+    scaled-rect: scaled(nan,nan,392,65,false);
+}
+
+.trhistory-item-left-top
+{
+    color: "@text";
+    scaled-font: scaled(14);
+}
+
+.trhistory-item-left-bottom
+{
+    color: "@input-placeholder";
+    scaled-font: scaled(14);
+}
+
+.trhistory-item-right
+{
+    color: "@text";
+    scaled-font: scaled(14);
+}
+

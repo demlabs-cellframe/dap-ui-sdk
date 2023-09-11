@@ -24,12 +24,11 @@ static const QHash<QByteArray, FieldId> s_fieldMap =
   FIELD (units),
   FIELD (version),
 
-  /* minor bug fix */
-  { "node_addr",      FieldId::nodeAddress },
-  { "node_location",  FieldId::nodeLocation },
-  { "price_unit",     FieldId::priceUnit },
-  { "srv_uid",        FieldId::srvUid },
-  { "tx_cond_hash",   FieldId::txCondHash },
+  FIELD (node_addr),
+  FIELD (node_location),
+  FIELD (price_unit),
+  FIELD (srv_uid),
+  FIELD (tx_cond_hash),
 };
 
 /********************************************
@@ -187,7 +186,6 @@ const QString &DapNodeOrderInfo::value (FieldId a_fid) const
   /* get by id */
   switch (a_fid) // fast branch table by id
     {
-      case FieldId::INVALID:      break;
       case FieldId::direction:    return m_direction;
       case FieldId::ext:          return m_ext;
       case FieldId::hash:         return m_hash;
@@ -200,6 +198,19 @@ const QString &DapNodeOrderInfo::value (FieldId a_fid) const
       case FieldId::txCondHash:   return m_txCondHash;
       case FieldId::units:        return m_units;
       case FieldId::version:      return m_version;
+
+      /* field copies to prevent parsing issues */
+      // {
+
+      case FieldId::node_addr:    return m_nodeAddress;
+      case FieldId::node_location:return m_nodeLocation;
+      case FieldId::price_unit:   return m_priceUnit;
+      case FieldId::srv_uid:      return m_srvUid;
+      case FieldId::tx_cond_hash: return m_txCondHash;
+
+      // }
+
+      default: break;
     }
 
   return dummy;
@@ -208,6 +219,9 @@ const QString &DapNodeOrderInfo::value (FieldId a_fid) const
 const QString &DapNodeOrderInfo::value (const QByteArray &a_name) const
 {
   FieldId fid = s_fieldMap.value (a_name, FieldId::INVALID); // fast search
+//  auto &v     = value (fid);
+//  qDebug().nospace() << "DapNodeOrderInfo::value fid:" << int(fid) << ", name:" << a_name << ", value:" << v;
+//  return v;
   return value (fid);
 }
 
@@ -216,7 +230,6 @@ void DapNodeOrderInfo::setValue (FieldId a_fid, const QString &a_value)
   /* set by id */
   switch (a_fid) // fast branch table by id
     {
-      case FieldId::INVALID:      break;
       case FieldId::direction:    setDirection (a_value); break;
       case FieldId::ext:          setExt (a_value); break;
       case FieldId::hash:         setHash (a_value); break;
@@ -229,6 +242,19 @@ void DapNodeOrderInfo::setValue (FieldId a_fid, const QString &a_value)
       case FieldId::txCondHash:   setTxCondHash (a_value); break;
       case FieldId::units:        setUnits (a_value); break;
       case FieldId::version:      setVersion (a_value); break;
+
+      /* field copies to prevent parsing issues */
+      // {
+
+      case FieldId::node_addr:    setNodeAddress (a_value); break;
+      case FieldId::node_location:setNodeLocation (a_value); break;
+      case FieldId::price_unit:   setPriceUnit (a_value); break;
+      case FieldId::srv_uid:      setSrvUid (a_value); break;
+      case FieldId::tx_cond_hash: setTxCondHash (a_value); break;
+
+      // }
+
+      default: break;
     }
 }
 
@@ -250,6 +276,19 @@ void DapNodeOrderInfo::setValue (FieldId a_fid, QString &&a_value)
       case FieldId::txCondHash:   m_txCondHash   = std::move (a_value); break;
       case FieldId::units:        m_units        = std::move (a_value); break;
       case FieldId::version:      m_version      = std::move (a_value); break;
+
+      /* field copies to prevent parsing issues */
+      // {
+
+      case FieldId::node_addr:    m_nodeAddress  = std::move (a_value); break;
+      case FieldId::node_location:m_nodeLocation = std::move (a_value); break;
+      case FieldId::price_unit:   m_priceUnit    = std::move (a_value); break;
+      case FieldId::srv_uid:      m_srvUid       = std::move (a_value); break;
+      case FieldId::tx_cond_hash: m_txCondHash   = std::move (a_value); break;
+
+      // }
+
+      default: break;
     }
 }
 

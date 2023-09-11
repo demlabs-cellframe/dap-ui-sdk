@@ -34,6 +34,19 @@ public:
     txCondHash,
     units,
     version,
+
+    /* field copies to prevent parsing issues */
+    // {
+
+    node_addr,
+    node_location,
+    price_unit,
+    srv_uid,
+    tx_cond_hash,
+
+    // }
+
+    SIZE,
   };
   /// @}
 

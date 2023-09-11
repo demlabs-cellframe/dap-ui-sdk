@@ -1,6 +1,6 @@
 /* INCLUDES */
 #include "DapCmdNode.h"
-#include "DapNodeOrderHistory.h"
+#include "DapNodeTransactionHistory.h"
 
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -118,7 +118,7 @@ struct DapCmdNode::DapCmdNodeData
 };
 
 /* VARS */
-static DapNodeOrderHistory::Order s_historyOrder;
+static DapNodeTransactionHistory::Transaction s_historyOrder;
 
 /* LINKS */
 QDebug operator<< (QDebug dbg, const DapNodeOrderInfo &data);
@@ -305,11 +305,11 @@ void DapCmdNode::_updateHistoryItem()
   if (s_historyOrder.info.hash().isEmpty())
     return;
 
-  auto &history = *DapNodeOrderHistory::instance();
+  auto &history = *DapNodeTransactionHistory::instance();
   int index     = history.indexOf (s_historyOrder.info.hash());
 
   if (index == -1)
-    return DapNodeOrderHistory::instance()->append (s_historyOrder);
+      return DapNodeTransactionHistory::instance()->append (s_historyOrder);
 
   history[index]  = s_historyOrder;
   history.itemUpdated (index);
