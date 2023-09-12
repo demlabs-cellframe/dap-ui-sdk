@@ -309,7 +309,7 @@ void DapCmdNode::_updateHistoryItem()
   int index     = history.indexOf (s_historyOrder.info.hash());
 
   if (index == -1)
-      return DapNodeTransactionHistory::instance()->append (s_historyOrder);
+    return DapNodeTransactionHistory::instance()->append (s_historyOrder);
 
   history[index]  = s_historyOrder;
   history.itemUpdated (index);

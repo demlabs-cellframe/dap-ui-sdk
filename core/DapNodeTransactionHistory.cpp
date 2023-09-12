@@ -100,17 +100,21 @@ int DapNodeTransactionHistory::size() const
 
 void DapNodeTransactionHistory::append (const Transaction &a_value)
 {
-  beginInsertRows (QModelIndex(), size(), size());
+  int newIndex  = size();
+  beginInsertRows (QModelIndex(), newIndex, newIndex);
   _list.append (a_value);
   endInsertRows();
+  setCurrentIndex (newIndex);
   _delayedSave();
 }
 
 void DapNodeTransactionHistory::append (DapNodeTransactionHistory::Transaction &&a_value)
 {
-  beginInsertRows (QModelIndex(), size(), size());
+  int newIndex  = size();
+  beginInsertRows (QModelIndex(), newIndex, newIndex);
   _list.append (std::move (a_value));
   endInsertRows();
+  setCurrentIndex (newIndex);
   _delayedSave();
 }
 
@@ -119,6 +123,7 @@ void DapNodeTransactionHistory::prepend (const DapNodeTransactionHistory::Transa
   beginInsertRows (QModelIndex(), 0, 0);
   _list.prepend (a_value);
   endInsertRows();
+  setCurrentIndex (0);
   _delayedSave();
 }
 
@@ -127,6 +132,7 @@ void DapNodeTransactionHistory::prepend (DapNodeTransactionHistory::Transaction 
   beginInsertRows (QModelIndex(), 0, 0);
   _list.prepend (std::move (a_value));
   endInsertRows();
+  setCurrentIndex (0);
   _delayedSave();
 }
 
