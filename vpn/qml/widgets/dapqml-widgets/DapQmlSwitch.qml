@@ -49,7 +49,7 @@ Item {
     property bool checked: false
 
     /// @brief show loading animation
-    property bool loading: !enabled
+    property bool loading: true //!enabled
 
     /// @brief widget qss style
     property string qss
@@ -209,8 +209,34 @@ Item {
                                 loops: Animation.Infinite
                                 duration: 2000
                             }
+
+                            onStartAngleChanged: {
+                                let angle   = startAngle / 180 * Math.PI;
+                                let centerX = loadingFrame.width / 2 - progressCircle.strokeWidth / 2;
+                                let centerY = loadingFrame.height / 2 - progressCircle.strokeWidth / 2;
+                                dot1.x = centerX + loginInfoArcPath.radiusX * Math.cos(angle);
+                                dot1.y = centerY + loginInfoArcPath.radiusY * Math.sin(angle);
+                                dot2.x = centerX + loginInfoArcPath.radiusX * Math.cos(angle + Math.PI);
+                                dot2.y = centerY + loginInfoArcPath.radiusY * Math.sin(angle + Math.PI);
+                            }
                         }
                     }
+                }
+
+                Rectangle {
+                    id: dot1
+                    width: progressCircle.strokeWidth
+                    height: progressCircle.strokeWidth
+                    radius: width
+                    color: progressCircle.color
+                }
+
+                Rectangle {
+                    id: dot2
+                    width: progressCircle.strokeWidth
+                    height: progressCircle.strokeWidth
+                    radius: width
+                    color: progressCircle.color
                 }
             }
         }
