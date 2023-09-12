@@ -49,7 +49,7 @@ Item {
     property bool checked: false
 
     /// @brief show loading animation
-    property bool loading: true //!enabled
+    property bool loading: !enabled
 
     /// @brief widget qss style
     property string qss
@@ -175,7 +175,7 @@ Item {
                     id: progressCircle
                     property string color: "#000000"
                     property int strokeWidth: 5
-                    qss: "c-brand"
+                    qss: "c-dashboard-accent" // "c-brand"
                 }
 
                 Shape {
