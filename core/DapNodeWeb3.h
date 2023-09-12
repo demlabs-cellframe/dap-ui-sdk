@@ -21,6 +21,8 @@
 #ifndef DAPNODEWEB3_H
 #define DAPNODEWEB3_H
 
+/* INCLUDES */
+
 #include <QCoreApplication>
 #include <QString>
 #include <QNetworkReply>
@@ -41,144 +43,173 @@
 
 class DapNodeWeb3 : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 
-    /* DEFS */
+  /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
 public:
-    enum class ReplyMethodID : quint16
-    {
-      Invalid,
-      ParseReplyConnect,
-      ParseReplyStatus,
-      ParseReplyWallets,
-      ParseReplyNetworks,
-      ParseDataWallet,
-      ParseCertificates,
-      ParseCreateCertificate,
-      ParseCondTxCreateReply,
-      ParseMempoolReply,
-      ParseLedgerReply,
-      ParseOrderList,
-      ParseNodeIp,
-      ParseFee,
-      ParseNodeDump,
-      ParseListKeys,
-    };
+  enum class ReplyMethodID : quint16
+  {
+    Invalid,
+    ParseReplyConnect,
+    ParseReplyStatus,
+    ParseReplyWallets,
+    ParseReplyNetworks,
+    ParseDataWallet,
+    ParseCertificates,
+    ParseCreateCertificate,
+    ParseCondTxCreateReply,
+    ParseMempoolReply,
+    ParseLedgerReply,
+    ParseOrderList,
+    ParseNodeIp,
+    ParseFee,
+    ParseNodeDump,
+    ParseListKeys,
+  };
+  /// @}
 
-    /* VARS */
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
 private:
-    const int m_requestTimeout;
-    // http access manager
-    DapNetworkAccessManager * m_httpClient;
-    // cellframe dashboard connect id
-    QString m_connectId;
+  const int m_requestTimeout;
+  // http access manager
+  DapNetworkAccessManager *m_httpClient;
+  // cellframe dashboard connect id
+  QString m_connectId;
 
-    QString m_networkName;
-    // reply data
-    DapNetworkReply *m_networkReply;
-    // network request string
-    QString m_networkRequest;
-    //
-    bool m_parseJsonError = false;
+  QString m_networkName;
+  // reply data
+  DapNetworkReply *m_networkReply;
+  // network request string
+  QString m_networkRequest;
+  //
+  bool m_parseJsonError = false;
 
 public:
-    static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
-    static const QString WEB3_URL;
-    static const quint16 WEB3_PORT;
+  static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
+  static const QString WEB3_URL;
+  static const quint16 WEB3_PORT;
+  /// @}
 
-    /* CONSTRUCT/DESTRUCT */
-    DapNodeWeb3(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
-    ~DapNodeWeb3();
+  /****************************************//**
+   * @name CONSTRUCT/DESTRUCT
+   *******************************************/
+  /// @{
+public:
+  DapNodeWeb3 (QObject *obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
+  ~DapNodeWeb3();
+  /// @}
 
-    /* METHODS */
-    QString connectedId() { return m_connectId; }
-    QString networkName() { return m_networkName; }
+  /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  QString connectedId() { return m_connectId; }
+  QString networkName() { return m_networkName; }
 
 private:
-    void request_GET(const QString& host,  quint16 port,
-                     const QString & urlPath, DapNetworkReply &a_netReply,
-                     const QString &headers = "", bool ssl = false);
-    bool jsonError() { return m_parseJsonError; }
-    void responseProcessing(const int error, const QString errorString = "", const bool httpFinished = true);
+  void request_GET (const QString &host,  quint16 port,
+                    const QString &urlPath, DapNetworkReply &a_netReply,
+                    const QString &headers = "", bool ssl = false);
+  bool jsonError() { return m_parseJsonError; }
+  void responseProcessing (const int error, const QString errorString = "", const bool httpFinished = true);
 
-    void responseParsing(
-      const int error,
-      const QString wrongReplyerrorString,
-      const bool httpFinished,
-      int baseErrorCode,
-      QString messageReplyDataError,
-      ReplyMethodID parseMethod,
-      bool responceError);
+  void responseParsing (
+    const int error,
+    const QString wrongReplyerrorString,
+    const bool httpFinished,
+    int baseErrorCode,
+    QString messageReplyDataError,
+    ReplyMethodID parseMethod,
+    bool responceError);
+  /// @}
 
-    /* SLOTS */
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
 public slots:
-    // requests
-    void nodeDetectedRequest();
-    void nodeConnectionRequest();
-    void nodeStatusRequest();
-    void walletsRequest();
-    void networksRequest();
-    void walletDataRequest(const QString& walletName);
-    void getCertificates();
-    void createCertificate(const QString& certType, const QString& certName);
-    void condTxCreateRequest(QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit, QString fee);
-    void getMempoolTxHashRequest(QString transactionHash, QString networkName);
-    void getLedgerTxHashRequest(QString transactionHash, QString networkName);
-    void getOrdersListRequest(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
-    void nodeDumpRequest(QString networkName);
-    void getNodeIPRequest (const QString &networkName, const QJsonArray &orderList);
-    void getFeeRequest(QString networkName);
-    void getListKeysRequest(QString networkName);
-
+  // requests
+  void nodeDetectedRequest();
+  void nodeConnectionRequest();
+  void nodeStatusRequest();
+  void walletsRequest();
+  void networksRequest();
+  void walletDataRequest (const QString &walletName);
+  void getCertificates();
+  void createCertificate (const QString &certType, const QString &certName);
+  void condTxCreateRequest (QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit, QString fee);
+  void getMempoolTxHashRequest (QString transactionHash, QString networkName);
+  void getLedgerTxHashRequest (QString transactionHash, QString networkName);
+  void getOrdersListRequest (QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
+  void nodeDumpRequest (QString networkName);
+  void getNodeIPRequest (const QString &networkName, const QJsonArray &orderList);
+  void getFeeRequest (QString networkName);
+  void getListKeysRequest (QString networkName);
 
 private slots:
-    // send request string
-    void sendRequest(QString request);
-    // reply error
-    void replyError(int errorCode, const QString errorString);
-    void parseJsonError (const QString& replyData, int baseErrorCode, QJsonDocument *a_destDoc = nullptr);
-    // response processing
-    void parseReplyStatus(const QString& replyData, int baseErrorCode);
-    void parseReplyConnect(const QString& replyData, int baseErrorCode);
-    void parseReplyNetworks(const QString& replyData, int baseErrorCode);
-    void parseReplyWallets(const QString& replyData, int baseErrorCode);
-    void parseDataWallet(const QString& replyData, int baseErrorCode);
-    void parseCertificates(const QString& replyData, int baseErrorCode);
-    void parseCreateCertificate(const QString& replyData, int baseErrorCode);
-    void parseCondTxCreateReply(const QString& replyData, int baseErrorCode);
-    void parseLedgerReply(const QString& replyData, int baseErrorCode);
-    void parseMempoolReply(const QString& replyData, int baseErrorCode);
-    void parseOrderList(const QString& replyData, int baseErrorCode);
-    void parseNodeIp(const QString& replyData, int baseErrorCode);
-    void parseFee(const QString& replyData, int baseErrorCode);
-    void parseNodeDump(const QString& replyData, int baseErrorCode);
-    void parseListKeys(const QString& replyData, int baseErrorCode);
-    //
-    void replyConnectError(int code);
+  // send request string
+  void sendRequest (QString request);
 
+  // reply error
+  void replyError (int errorCode, const QString errorString);
+  void parseJson (const QString &replyData, int baseErrorCode, QJsonDocument *a_destDoc = nullptr);
+
+  // response processing
+  void parseReplyStatus (const QString &replyData, int baseErrorCode);
+  void parseReplyConnect (const QString &replyData, int baseErrorCode);
+  void parseReplyNetworks (const QString &replyData, int baseErrorCode);
+  void parseReplyWallets (const QString &replyData, int baseErrorCode);
+  void parseDataWallet (const QString &replyData, int baseErrorCode);
+  void parseCertificates (const QString &replyData, int baseErrorCode);
+  void parseCreateCertificate (const QString &replyData, int baseErrorCode);
+  void parseCondTxCreateReply (const QString &replyData, int baseErrorCode);
+  void parseLedgerReply (const QString &replyData, int baseErrorCode);
+  void parseMempoolReply (const QString &replyData, int baseErrorCode);
+  void parseOrderList (const QString &replyData, int baseErrorCode);
+  void parseNodeIp (const QString &replyData, int baseErrorCode);
+  void parseFee (const QString &replyData, int baseErrorCode);
+  void parseNodeDump (const QString &replyData, int baseErrorCode);
+  void parseListKeys (const QString &replyData, int baseErrorCode);
+
+  void replyConnectError (int code);
+  /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
 signals:
-    // -------- output signals --------
-    void sigError(int errorCode, QString errorMessage);
-    void sigReceivedWalletsList(QStringList);
-    void sigReceivedNetworksList(QStringList);
-    void sigWalletDataReady(QJsonArray);
-    void sigReceivedCertificatestList(QStringList);
-    void sigCreatedCertificate(QString);
-    void sigCondTxCreateSuccess(QString hash);
-    void sigMempoolContainHash();
-    void sigLedgerContainHash();
-    void sigOrderList(QJsonArray);
-    void sigNodeIp(QJsonArray);
-    void sigFee(QString fee);
-    void connectionIdReceived(QString connectionId);
-    void sigNodeDump(QList<QMap<QString, QString>> nodeDump);
-    void sigListKeys(QList<QString> listKeys);
-    void statusOk();
-    void nodeDetected();
-    void nodeNotDetected();
-    void nodeNotConnected();
-    void checkNodeStatus();
-    void sigIncorrectId();
+  // -------- output signals --------
+  void sigError (int errorCode, QString errorMessage);
+  void sigReceivedWalletsList (QStringList);
+  void sigReceivedNetworksList (QStringList);
+  void sigWalletDataReady (QJsonArray);
+  void sigReceivedCertificatestList (QStringList);
+  void sigCreatedCertificate (QString);
+  void sigCondTxCreateSuccess (QString hash);
+  void sigMempoolContainHash();
+  void sigLedgerContainHash();
+  void sigOrderList (QJsonArray);
+  void sigNodeIp (QJsonArray);
+  void sigFee (QString fee);
+  void connectionIdReceived (QString connectionId);
+  void sigNodeDump (QList<QMap<QString, QString>> nodeDump);
+  void sigListKeys (QList<QString> listKeys);
+  void statusOk();
+  void nodeDetected();
+  void nodeNotDetected();
+  void nodeNotConnected();
+  void checkNodeStatus();
+  void sigIncorrectId();
+  /// @}
 };
 
+/*-----------------------------------------*/
 #endif // DAPNODEWEB3_H
