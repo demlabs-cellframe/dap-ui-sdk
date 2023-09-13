@@ -790,7 +790,7 @@
 
 .login-error-label
 {
-    scaled-rect: scaled(51,236,327,57,false,13);
+    scaled-rect: scaled(51,188,327,57,false,13);
     color: "@error";
 }
 
