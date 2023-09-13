@@ -119,9 +119,21 @@ struct DapCmdNode::DapCmdNodeData
 
 /* VARS */
 static DapNodeTransactionHistory::Transaction s_historyOrder;
+static QHash<QString, const char *> s_unitConvertMap =
+{
+  { "MEGABYTE", "mb" },
+  { "KILOBYTE", "kb" },
+  { "BYTE", "b" },
+  { "SECOND", "sec" },
+  { "DAY", "day" },
+};
 
 /* LINKS */
 QDebug operator<< (QDebug dbg, const DapNodeOrderInfo &data);
+static const char *convertUnits (const QString &a_value)
+{
+  return s_unitConvertMap.value (a_value, "");
+}
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -337,6 +349,8 @@ void DapCmdNode::condTxCreate()
 
 //  sendCmd (&jObject);
 
+  auto order  = _data->orderListData.order (_data->orderHash);
+
   /* send command */
   QJsonObject jobj {
     { "cond_tx_create", QJsonObject {
@@ -344,7 +358,7 @@ void DapCmdNode::condTxCreate()
         { "network_name", _data->selectedNetworkName },
         { "token_name",   _data->selectedTokenName },
         { "value",        _data->value },
-        { "unit",         "day" },
+        { "unit",         convertUnits (order.priceUnit()) },// "day" },
       },
     },
   };
@@ -355,7 +369,7 @@ void DapCmdNode::condTxCreate()
   s_historyOrder.network  = _data->selectedNetworkName;
   s_historyOrder.token    = _data->selectedTokenName;
   s_historyOrder.value    = _data->value;
-  s_historyOrder.unit     = "day";
+  s_historyOrder.unit     = order.priceUnit(); // "day";
   s_historyOrder.wallet   = _data->selectedWalletName;
   s_historyOrder.isSigned = false;
   _updateHistoryItem();
