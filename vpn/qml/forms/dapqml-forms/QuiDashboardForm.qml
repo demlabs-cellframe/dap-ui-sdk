@@ -96,7 +96,7 @@ Item {
         if (a_status)
         {
             indicator.qss   = "dashboard-status-icon ic_online";
-            statusLabel.qss = "dashboard-title c-brand";
+            statusLabel.qss = "dashboard-title c-dashboard-accent"; // "dashboard-title c-brand";
         }
         else
         {

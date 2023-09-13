@@ -994,6 +994,17 @@
     scaled-rect: scaled(nan,nan,nan,1,false);
 }
 
+.login-connecting-label
+{
+    color: "@text";
+    scaled-font: scaled(20);
+}
+
+.login-connection-container
+{
+    scaled-rect: scaled(nan,nan,-1,120,false);
+}
+
 /****************************************************
  * Transaction
  ***************************************************/

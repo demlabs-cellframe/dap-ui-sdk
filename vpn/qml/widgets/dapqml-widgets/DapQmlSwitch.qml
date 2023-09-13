@@ -171,73 +171,80 @@ Item {
 
                 DapQmlStyle { item: loadingFrame; qss: "c-background" }
 
-                DapQmlDummy {
-                    id: progressCircle
-                    property string color: "#000000"
-                    property int strokeWidth: 5
-                    qss: "c-dashboard-accent" // "c-brand"
-                }
-
-                Shape {
-                    id: loginInfoArcAnim
-                    anchors.centerIn: parent
+                DapQmlArcAnimation {
                     anchors.fill: parent
                     anchors.margins: parent.width * 0.275
                     z: 200
-                    layer.enabled: true
-                    layer.samples: 6
-
-                    ShapePath {
-                        fillColor: "transparent"
-                        strokeColor: progressCircle.color
-                        strokeWidth: progressCircle.strokeWidth
-                        capStyle: ShapePath.FlatCap
-
-                        PathAngleArc {
-                            id: loginInfoArcPath
-                            centerX: loginInfoArcAnim.width / 2
-                            centerY: loginInfoArcAnim.height / 2
-                            radiusX: loginInfoArcAnim.width / 2 - progressCircle.strokeWidth / 2
-                            radiusY: loginInfoArcAnim.height / 2 - progressCircle.strokeWidth / 2
-                            startAngle: 90
-                            sweepAngle: 180
-
-                            NumberAnimation on startAngle {
-                                from: 0
-                                to: 360
-                                running: true
-                                loops: Animation.Infinite
-                                duration: 2000
-                            }
-
-                            onStartAngleChanged: {
-                                let angle   = startAngle / 180 * Math.PI;
-                                let centerX = loadingFrame.width / 2 - progressCircle.strokeWidth / 2;
-                                let centerY = loadingFrame.height / 2 - progressCircle.strokeWidth / 2;
-                                dot1.x = centerX + loginInfoArcPath.radiusX * Math.cos(angle);
-                                dot1.y = centerY + loginInfoArcPath.radiusY * Math.sin(angle);
-                                dot2.x = centerX + loginInfoArcPath.radiusX * Math.cos(angle + Math.PI);
-                                dot2.y = centerY + loginInfoArcPath.radiusY * Math.sin(angle + Math.PI);
-                            }
-                        }
-                    }
+                    qss: "c-dashboard-accent"
                 }
 
-                Rectangle {
-                    id: dot1
-                    width: progressCircle.strokeWidth
-                    height: progressCircle.strokeWidth
-                    radius: width
-                    color: progressCircle.color
-                }
+//                DapQmlDummy {
+//                    id: progressCircle
+//                    property string color: "#000000"
+//                    property int strokeWidth: 5
+//                    qss: "c-dashboard-accent" // "c-brand"
+//                }
 
-                Rectangle {
-                    id: dot2
-                    width: progressCircle.strokeWidth
-                    height: progressCircle.strokeWidth
-                    radius: width
-                    color: progressCircle.color
-                }
+//                Shape {
+//                    id: loginInfoArcAnim
+//                    anchors.centerIn: parent
+//                    anchors.fill: parent
+//                    anchors.margins: parent.width * 0.275
+//                    z: 200
+//                    layer.enabled: true
+//                    layer.samples: 6
+
+//                    ShapePath {
+//                        fillColor: "transparent"
+//                        strokeColor: progressCircle.color
+//                        strokeWidth: progressCircle.strokeWidth
+//                        capStyle: ShapePath.FlatCap
+
+//                        PathAngleArc {
+//                            id: loginInfoArcPath
+//                            centerX: loginInfoArcAnim.width / 2
+//                            centerY: loginInfoArcAnim.height / 2
+//                            radiusX: loginInfoArcAnim.width / 2 - progressCircle.strokeWidth / 2
+//                            radiusY: loginInfoArcAnim.height / 2 - progressCircle.strokeWidth / 2
+//                            startAngle: 90
+//                            sweepAngle: 180
+
+//                            NumberAnimation on startAngle {
+//                                from: 0
+//                                to: 360
+//                                running: true
+//                                loops: Animation.Infinite
+//                                duration: 2000
+//                            }
+
+//                            onStartAngleChanged: {
+//                                let angle   = startAngle / 180 * Math.PI;
+//                                let centerX = loadingFrame.width / 2 - progressCircle.strokeWidth / 2;
+//                                let centerY = loadingFrame.height / 2 - progressCircle.strokeWidth / 2;
+//                                dot1.x = centerX + loginInfoArcPath.radiusX * Math.cos(angle);
+//                                dot1.y = centerY + loginInfoArcPath.radiusY * Math.sin(angle);
+//                                dot2.x = centerX + loginInfoArcPath.radiusX * Math.cos(angle + Math.PI);
+//                                dot2.y = centerY + loginInfoArcPath.radiusY * Math.sin(angle + Math.PI);
+//                            }
+//                        }
+//                    }
+//                }
+
+//                Rectangle {
+//                    id: dot1
+//                    width: progressCircle.strokeWidth
+//                    height: progressCircle.strokeWidth
+//                    radius: width
+//                    color: progressCircle.color
+//                }
+
+//                Rectangle {
+//                    id: dot2
+//                    width: progressCircle.strokeWidth
+//                    height: progressCircle.strokeWidth
+//                    radius: width
+//                    color: progressCircle.color
+//                }
             }
         }
     }
