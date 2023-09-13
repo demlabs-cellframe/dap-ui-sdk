@@ -83,6 +83,8 @@ Item {
         /// @brief show password contents
         property bool showPassword: false
 
+        property bool showConnectionOverlay: false
+
         function forgotLabel() {
 //   First variant for Rise
 //            return mode === QuiLoginForm.Mode.M_SERIAL
@@ -303,6 +305,10 @@ Item {
             root.sigConnectByCert();
     }
 
+    function showConnectionOverlay(a_show) {
+        root.internal.showConnectionOverlay = a_show;
+    }
+
     /// @}
     /****************************************//**
      * Ticker & Update tools
@@ -310,6 +316,43 @@ Item {
 
     QuiToolTicker {}
     QuiToolUpdateNotification {}
+
+    /****************************************//**
+     * Server connecting overlay
+     ********************************************/
+
+    DapQmlRectangle {
+        anchors.fill: parent
+        z: 300
+        qss: "c-background"
+        visible: root.internal.showConnectionOverlay
+
+        ColumnLayout {
+            id: connOverlay
+            anchors.centerIn: parent
+
+            DapQmlStyle { item: connOverlay; qss: "login-connection-container" }
+
+            Item {
+                Layout.fillWidth: true
+                Layout.preferredHeight: root.width * 0.14953271
+
+                DapQmlArcAnimation {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: parent.height
+                    height: parent.height
+                    qss: "c-brand"
+                }
+            }
+
+            DapQmlLabel {
+                Layout.fillWidth: true
+                Layout.preferredHeight: contentHeight
+                qss: "login-connecting-label"
+                text: qsTr("Connecting...")
+            }
+        }
+    }
 
     /****************************************//**
      * Logo
