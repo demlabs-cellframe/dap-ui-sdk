@@ -402,12 +402,20 @@ QVariant DapQmlModelOrderList::data (const QModelIndex &index, int role) const
   if (!index.isValid())
     return QVariant();
 
-  switch (FieldId (role))
+  try
     {
-    case FieldId::network:    return _data->network;
-    case FieldId::wallet:     return _data->wallet;
-    default:
-      return _data->module->data (index, role);
+    switch (FieldId (role))
+      {
+      case FieldId::network:    return _data->network;
+      case FieldId::wallet:     return _data->wallet;
+      default:
+        return _data->module->data (index, role);
+      }
+    }
+  catch (const std::exception &e)
+    {
+      DEBUG_MSG << "Exception occurred:" << e.what();
+      return QVariant();
     }
 }
 

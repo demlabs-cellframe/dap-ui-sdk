@@ -4,7 +4,8 @@
 #include <QTimer>
 
 /* NAMESPACE */
-namespace OrderListModule {
+namespace OrderListModule
+{
 
 /* DEFS */
 typedef DapQmlModelOrderList::FieldId FieldId;
@@ -71,12 +72,15 @@ int NameValueModule::size() const
 
 QVariant NameValueModule::data (const QModelIndex &index, int role) const
 {
-  switch (FieldId (role))
+  if (index.row() < _items.size())
     {
-    case FieldId::name:   return _items.at (index.row()).name;
-    case FieldId::value:  return _items.at (index.row()).value;
-    default:
-      break;
+      switch (FieldId (role))
+        {
+        case FieldId::name:   return _items.at (index.row()).name;
+        case FieldId::value:  return _items.at (index.row()).value;
+        default:
+          break;
+        }
     }
   return QVariant();
 }
@@ -100,7 +104,7 @@ void OrdersModule::setItems (QVector<OrderItem> &&a_items)
   _items  = std::move (a_items);
 }
 
-OrderItem &OrdersModule::operator[](int a_index)
+OrderItem &OrdersModule::operator[] (int a_index)
 {
   return _items[a_index];
 }
@@ -112,21 +116,25 @@ int OrdersModule::size() const
 
 QVariant OrdersModule::data (const QModelIndex &index, int role) const
 {
-  switch (FieldId (role))
+  if (index.row() < _items.size())
     {
-    case FieldId::location:    return _items.at (index.row()).location;
-    case FieldId::node_addr:   return _items.at (index.row()).node_addr;
-    case FieldId::price:       return _items.at (index.row()).price;
-    case FieldId::priceShort:  return _scopedPrice (_items.at (index.row()).price);
-    case FieldId::units:       return _items.at (index.row()).units;
-    case FieldId::units_value: return _items.at (index.row()).units_value;
-    case FieldId::server:      return _items.at (index.row()).server;
-    case FieldId::hash:        return _items.at (index.row()).hash;
-    case FieldId::ipAddress:   return _items.at (index.row()).ipAddress;
+      switch (FieldId (role))
+        {
+        case FieldId::location:    return _items.at (index.row()).location;
+        case FieldId::node_addr:   return _items.at (index.row()).node_addr;
+        case FieldId::price:       return _items.at (index.row()).price;
+        case FieldId::priceShort:  return _scopedPrice (_items.at (index.row()).price);
+        case FieldId::units:       return _items.at (index.row()).units;
+        case FieldId::units_value: return _items.at (index.row()).units_value;
+        case FieldId::server:      return _items.at (index.row()).server;
+        case FieldId::hash:        return _items.at (index.row()).hash;
+        case FieldId::ipAddress:   return _items.at (index.row()).ipAddress;
 
-    default:
-      return QVariant();
+        default:
+          break;
+        }
     }
+  return QVariant();
 }
 
 const QString &OrdersModule::name() const
@@ -180,11 +188,11 @@ bool NetworksModule::setCurrentIndex (int a_value)
   bool result = ModuleInterface::setCurrentIndex (a_value);
 
   if (result)
-  {
-    auto orderList  = DapQmlModelOrderList::instance();
-    orderList->setNetwork();
-    // emit orderList->sigNetworkUpdated (name());
-  }
+    {
+      auto orderList  = DapQmlModelOrderList::instance();
+      orderList->setNetwork();
+      // emit orderList->sigNetworkUpdated (name());
+    }
 
   return result;
 }
@@ -212,11 +220,11 @@ bool WalletsModule::setCurrentIndex (int a_value)
   bool result = ModuleInterface::setCurrentIndex (a_value);
 
   if (result)
-  {
-    auto orderList  = DapQmlModelOrderList::instance();
-    orderList->setWallet();
-    // emit orderList->sigWalletUpdated (name());
-  }
+    {
+      auto orderList  = DapQmlModelOrderList::instance();
+      orderList->setWallet();
+      // emit orderList->sigWalletUpdated (name());
+    }
 
   return result;
 }
@@ -244,11 +252,11 @@ bool TokensModule::setCurrentIndex (int a_value)
   bool result = ModuleInterface::setCurrentIndex (a_value);
 
   if (result)
-  {
-    auto orderList  = DapQmlModelOrderList::instance();
-    orderList->setToken();
-    // emit orderList->sigTokenUpdated (name());
-  }
+    {
+      auto orderList  = DapQmlModelOrderList::instance();
+      orderList->setToken();
+      // emit orderList->sigTokenUpdated (name());
+    }
 
   return result;
 }
@@ -260,7 +268,7 @@ bool TokensModule::setCurrentIndex (int a_value)
 UnitsModule::UnitsModule()
 {
   _items =
-  QStringList
+    QStringList
   {
     "All",
     "Second",   // "Secs",
@@ -298,12 +306,15 @@ int UnitsModule::size() const
 
 QVariant UnitsModule::data (const QModelIndex &index, int role) const
 {
-  switch (FieldId (role))
+  if (index.row() < _items.size())
     {
-    case FieldId::name:   return _items.at (index.row());
-    default:
-      return QVariant();
+      switch (FieldId (role))
+        {
+        case FieldId::name:   return _items.at (index.row());
+        default: break;
+        }
     }
+  return QVariant();
 }
 
 bool UnitsModule::setCurrentIndex (int a_value)
@@ -311,11 +322,11 @@ bool UnitsModule::setCurrentIndex (int a_value)
   bool result = ModuleInterface::setCurrentIndex (a_value);
 
   if (result)
-  {
-    auto orderList  = DapQmlModelOrderList::instance();
-    orderList->setUnit();
-    // emit orderList->sigUnitUpdated (name());
-  }
+    {
+      auto orderList  = DapQmlModelOrderList::instance();
+      orderList->setUnit();
+      // emit orderList->sigUnitUpdated (name());
+    }
 
   return result;
 }
