@@ -24,6 +24,7 @@
     sett-hover-background: "#F7F7F7";
     switch-bg-on:               "qrc:/light/switch/bg_on.png";
     switch-bg-off:              "qrc:/light/switch/bg_off.png";
+    switch-bg-conn:             "qrc:/light/switch/bg_conn.png";
     switch-toggle-on:           "qrc:/light/switch/toggle_on.png";
     switch-toggle-off:          "qrc:/light/switch/toggle_off.png";
     button-frame:               "qrc:/light/btn_server_bg.png";
@@ -102,6 +103,7 @@
     sett-hover-background: "#5A5A5A";
     switch-bg-on:               "qrc:/dark/switch/bg_on.png";
     switch-bg-off:              "qrc:/dark/switch/bg_off.png";
+    switch-bg-conn:             "qrc:/dark/switch/bg_conn.png";
     switch-toggle-on:           "qrc:/dark/switch/toggle_on.png";
     switch-toggle-off:          "qrc:/dark/switch/toggle_off.png";
     button-frame:               "qrc:/dark/btn_server_bg.png";
@@ -231,6 +233,11 @@
 .switch-bg-on
 {
     qproperty-scaledPixmap: "@switch-bg-on";
+}
+
+.switch-bg-conn
+{
+    qproperty-scaledPixmap: "@switch-bg-conn";
 }
 
 .switch-toggle-off
