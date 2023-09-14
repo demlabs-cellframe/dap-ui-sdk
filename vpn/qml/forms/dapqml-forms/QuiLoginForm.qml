@@ -849,10 +849,10 @@ Item {
         height: loginSerialPlacer.height
         visible: internal.mode === QuiLoginForm.Mode.M_SERIAL
 
-        Component.onCompleted: StyleDebugTree.describe (
-           "btnEnterSerialBox",
-            ["x", "y", "width", "height"],
-           this);
+//        Component.onCompleted: StyleDebugTree.describe (
+//           "btnEnterSerialBox",
+//            ["x", "y", "width", "height", "visible"],
+//           this);
 
         DapQmlButton {
             id: btnEnterSerial
@@ -898,10 +898,10 @@ Item {
                     root.sigSerialFillingIncorrect();
             }
 
-            Component.onCompleted: StyleDebugTree.describe (
-               "btnEnterSerial",
-                ["x", "y", "width", "height"],
-               this);
+//            Component.onCompleted: StyleDebugTree.describe (
+//               "btnEnterSerial",
+//                ["x", "y", "width", "height"],
+//               this);
         }
         DapQmlDummy {
             id: loginSerialPlacer
@@ -911,10 +911,10 @@ Item {
 //                 serial login
                  : "login-btn-serial-container"
 
-            Component.onCompleted: StyleDebugTree.describe (
-               "loginSerialPlacer",
-                ["x", "y", "width", "height", "qss"],
-               this);
+//            Component.onCompleted: StyleDebugTree.describe (
+//               "loginSerialPlacer",
+//                ["x", "y", "width", "height", "qss"],
+//               this);
         }
     }
 
