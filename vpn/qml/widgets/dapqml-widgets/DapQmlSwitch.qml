@@ -135,6 +135,14 @@ Item {
             qss: "switch-bg-off"
 
             Component.onCompleted: ctl.setBackground(this)
+
+            DapQmlLabel {
+                id: bgConn
+                anchors.fill: parent
+                z: 1
+                qss: "switch-bg-conn"
+                visible: root.loading
+            }
         }
 
         /****************************************//**
@@ -144,7 +152,7 @@ Item {
         DapQmlLabel {
             id: tgl
             y: 0
-            z: 1
+            z: 5
             width: root.height
             height: root.height
             qss: "switch-toggle-off"
