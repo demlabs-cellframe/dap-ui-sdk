@@ -392,6 +392,11 @@ void DapNode::initWeb3Connections()
     // web3 error detected
     connect(web3, &DapNodeWeb3::sigError, this, [=](int errorCode, QString errorMessage){
         emit errorDetected();
+
+        /* ignore and do not send "Wrong reply connect" error */
+        if (errorCode == 100110)
+          return;
+
         emit sigError(errorCode, errorMessage);
     });
     // get wallet data
