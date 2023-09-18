@@ -141,7 +141,7 @@ Item {
                 anchors.fill: parent
                 z: 1
                 qss: "switch-bg-conn"
-                visible: root.loading
+                visible: root.loading && root.checked
             }
         }
 
