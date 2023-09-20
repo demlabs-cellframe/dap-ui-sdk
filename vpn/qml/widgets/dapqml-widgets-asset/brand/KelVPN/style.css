@@ -24,6 +24,7 @@
     sett-hover-background: "#F7F7F7";
     switch-bg-on:               "qrc:/light/switch/bg_on.png";
     switch-bg-off:              "qrc:/light/switch/bg_off.png";
+    switch-bg-conn:             "qrc:/light/switch/bg_conn.png";
     switch-toggle-on:           "qrc:/light/switch/toggle_on.png";
     switch-toggle-off:          "qrc:/light/switch/toggle_off.png";
     button-frame:               "qrc:/light/btn_server_bg.png";
@@ -32,6 +33,8 @@
     checkbox-off:               "qrc:/light/check_btn_off.png";
     radio-on:                   "qrc:/light/radio_btn_on.png";
     radio-off:                  "qrc:/light/radio_btn_off.png";
+    checkbox-switch-on:         "qrc:/light/ckeckbox-on.png";
+    checkbox-switch-off:        "qrc:/light/ckeckbox-off.png";
     separator-left:             "qrc:/light/separator_left.png";
     separator-mid:              "qrc:/light/separator_mid.png";
     separator-right:            "qrc:/light/separator_right.png";
@@ -80,6 +83,7 @@
     ic-version:                 "qrc:/dapqml-forms-asset/light/ic_version.png";
     ic-report-item:             "qrc:/dapqml-forms-asset/light/ic_report-item.png";
     ic-key-item:                "qrc:/dapqml-forms-asset/light/ic_key-item.png";
+    ic-orders:                  "qrc:/dapqml-forms-asset/light/ic_orders.png";
 }
 
 .@dark
@@ -100,6 +104,7 @@
     sett-hover-background: "#5A5A5A";
     switch-bg-on:               "qrc:/dark/switch/bg_on.png";
     switch-bg-off:              "qrc:/dark/switch/bg_off.png";
+    switch-bg-conn:             "qrc:/dark/switch/bg_conn.png";
     switch-toggle-on:           "qrc:/dark/switch/toggle_on.png";
     switch-toggle-off:          "qrc:/dark/switch/toggle_off.png";
     button-frame:               "qrc:/dark/btn_server_bg.png";
@@ -108,6 +113,8 @@
     checkbox-off:               "qrc:/dark/check_btn_off.png";
     radio-on:                   "qrc:/dark/radio_btn_on.png";
     radio-off:                  "qrc:/dark/radio_btn_off.png";
+    checkbox-switch-on:         "qrc:/dark/ckeckbox-on.png";
+    checkbox-switch-off:        "qrc:/dark/ckeckbox-off.png";
     separator-left:             "qrc:/dark/separator_left.png";
     separator-mid:              "qrc:/dark/separator_mid.png";
     separator-right:            "qrc:/dark/separator_right.png";
@@ -156,6 +163,7 @@
     ic-version:                 "qrc:/dapqml-forms-asset/dark/ic_version.png";
     ic-report-item:             "qrc:/dapqml-forms-asset/dark/ic_report-item.png";
     ic-key-item:                "qrc:/dapqml-forms-asset/dark/ic_key-item.png";
+    ic-orders:                  "qrc:/dapqml-forms-asset/dark/ic_orders.png";
 }
 
 /****************************************************
@@ -191,6 +199,11 @@
     color: "@background";
 }
 
+.c-dashboard-accent
+{
+    color: "#F47A54";
+}
+
 /****************************************************
  * Aligns
  ***************************************************/
@@ -224,6 +237,11 @@
     qproperty-scaledPixmap: "@switch-bg-on";
 }
 
+.switch-bg-conn
+{
+    qproperty-scaledPixmap: "@switch-bg-conn";
+}
+
 .switch-toggle-off
 {
     qproperty-scaledPixmap: "@switch-toggle-off";
@@ -244,6 +262,11 @@
 .btn-arrow
 {
     qproperty-scaledPixmap: "@button-arrow";
+}
+
+.btn-checkbox
+{
+    scaled-rect: scaled(nan,nan,58,33,true);
 }
 
 
@@ -275,6 +298,17 @@
     font-weight: Font.Normal;
 }
 
+.checkbox-switch-on
+{
+    qproperty-scaledPixmap: "@checkbox-switch-on";
+}
+
+.checkbox-switch-off
+{
+    qproperty-scaledPixmap: "@checkbox-switch-off";
+}
+
+
 
 
 .line-edit-icon
@@ -286,7 +320,7 @@
 
 .form-title-close-btn
 {
-    scaled-rect: scaled(0,0,28,28,true);
+    scaled-rect: scaled(0,0,32,32,true);
     active: "@btn-close-hover";
     inactive: "@btn-close";
 }
@@ -317,6 +351,11 @@
 .sep-right
 {
     qproperty-scaledPixmap: "@separator-right";
+}
+
+.sep-color
+{
+    color: "@separator-color";
 }
 
 
@@ -360,7 +399,7 @@
 
 .radiobtn-spacer
 {
-    scaled-rect: scaled(nan,nan,392,2,false);
+    scaled-rect: scaled(nan,nan,392,8,false);
 }
 
 .radiobtn-resizer-note
@@ -464,6 +503,15 @@
     qproperty-scaledPixmap: "@ic-key-item";
 }
 
+.ic_orders
+{
+    qproperty-scaledPixmap: "@ic-orders";
+}
+
+.ic_back
+{
+    qproperty-scaledPixmap: "@btn-close";
+}
 
 
 
@@ -553,6 +601,11 @@
     qproperty-scaledPixmap: url("qrc:/nonthemed/conn-icon-5.png");
 }
 
+.ic_nocdb-shield
+{
+    qproperty-scaledPixmap: url("qrc:/dapqml-forms-asset/shield.png");
+}
+
 /****************************************************
  * Main window
  ***************************************************/
@@ -578,7 +631,7 @@
 
 .dialog-title
 {
-    scaled-rect: scaled(34,62,360,28,false);
+    scaled-rect: scaled(34,64,360,28,false);
     color: "@text";
 }
 
@@ -628,7 +681,7 @@
     color: "@text";
 */
     scaled-rect: scaled(24,nan,110,48,false);
-    color: "@light-grey";
+    color: "#F7F7F7";
     radius: 8;
 }
 
@@ -749,13 +802,26 @@
 
 .login-error-label
 {
-    scaled-rect: scaled(51,236,327,57,false,13);
+    scaled-rect: scaled(51,188,327,57,false,13);
     color: "@error";
+}
+
+.login-transaction-processing-arc-animation
+{
+    scaled-rect: scaled(-1,310,40,40,true);
+    qproperty-color: "@brand";
+}
+
+.login-transaction-processing-retry-button
+{
+    scaled-rect: scaled(-1,420,188,48,false);
+    color: "@sett-hover-background";
+    radius: 8;
 }
 
 .login-transaction-processing-label-nocbd
 {
-    scaled-rect: scaled(45,331,327,57,false,22);
+    scaled-rect: scaled(45,350,327,70,false,20);
     color: "@text";
 }
 
@@ -949,6 +1015,17 @@
 {
     color: "@separator-color";
     scaled-rect: scaled(nan,nan,nan,1,false);
+}
+
+.login-connecting-label
+{
+    color: "@text";
+    scaled-font: scaled(20);
+}
+
+.login-connection-container
+{
+    scaled-rect: scaled(nan,nan,-1,120,false);
 }
 
 /****************************************************
@@ -1212,6 +1289,33 @@
     scaled-rect: scaled(-1,250,238,150,true);
 */
 	scaled-rect: scaled(-1,250,262,160,true);
+}
+
+.dashboard-nocdb-shield
+{
+    scaled-rect: scaled(nan,nan,24,24,true);
+}
+
+.dashboard-nocdb-label
+{
+    scaled-font: scaled(16);
+    color: "@input-placeholder";
+}
+
+.dashboard-nocdb-title-button
+{
+    scaled-rect: scaled(nan,nan,40,40,true);
+    color: "@input-field";
+}
+
+.dashboard-nocdb-title-button-back
+{
+    scaled-rect: scaled(36,56,40,40,true);
+}
+
+.dashboard-nocdb-title-button-orders
+{
+    scaled-rect: scaled(356,56,40,40,true);
 }
 
 .dashboard-speed-container
@@ -1569,7 +1673,7 @@
 
 .ph-label-notice
 {
-    color: "@label";
+    color: "@input-placeholder";
     scaled-font: scaled(16);    
 }
 
@@ -2206,4 +2310,207 @@
 {
     scaled-rect: scaled(nan,128,-1,24,false,14);
     color: "@light-grey";
+}
+
+/****************************************************
+ * Node Order List
+ ***************************************************/
+
+.nodeorlist-listview
+{
+    scaled-rect: scaled(-1,132,392,715,false);
+}
+
+.nodeorlist-item-label
+{
+    scaled-rect: scaled(14,nan,340,nan,false,14);
+}
+
+.nodeorlist-item-label-top
+{
+    scaled-font: scaled(16);
+    color: "@text";
+    font-weight: Font.Medium;
+}
+
+.nodeorlist-item-label-bottom
+{
+    scaled-font: scaled(12);
+    color: "@light-grey";
+}
+
+.nodeorlist-label-size-12
+{
+    scaled-font: scaled(12);
+}
+
+.nodeorlist-label-size-14
+{
+    scaled-font: scaled(14);
+}
+
+.nodeorlist-label-size-16
+{
+    scaled-font: scaled(16);
+}
+
+.nodeorlist-item-link
+{
+    scaled-rect: scaled(nan,nan,24,24,true);
+}
+
+.nodeorlist-overview-frame
+{
+    scaled-rect: scaled(nan,nan,-1,870,false);
+}
+
+.nodeorlist-overview-container
+{
+    scaled-rect: scaled(-1,80,356,296,false);
+    color: "@input-field";
+    radius: 12;
+}
+
+.nodeorlist-overview-item-left-size
+{
+    scaled-rect: scaled(nan,nan,108,nan,false,16);
+}
+
+.nodeorlist-overview-item-left
+{
+    color: "@input-placeholder";
+}
+
+.nodeorlist-overview-item-right
+{
+    color: "@text";
+}
+
+.nodeorlist-overview-price
+{
+    scaled-font: scaled(24);
+    font-weight: Font.Bold;
+    color: "@text";
+}
+
+.nodeorlist-overview-clear-btn
+{
+    scaled-rect: scaled(-1,702,374,80,true,16);
+}
+
+.nodeorlist-overview-confirm-btn
+{
+    scaled-rect: scaled(-1,802,374,80,true,16);
+}
+
+.nodeorlist-overview-btn-sizer
+{
+    scaled-rect: scaled(nan,nan,374,60,true,16);
+}
+
+.nodeorlist-edit
+{
+    scaled-rect: scaled(-1,176,356,110,false,32);
+    radius: 12;
+    borderColor: "@separator-color";
+    borderWidth: 1;
+    color: "@input-field";
+}
+
+.nodeorlist-tabs
+{
+    scaled-rect: scaled(-1,706,356,64,false);
+}
+
+.nodeorlist-tabs-spacing
+{
+    scaled-rect: scaled(nan,nan,16,nan,false);
+}
+
+.nodeorlist-tab-btn
+{
+    color: "#f7f7f7";
+    radius: 13;
+}
+
+.nodeorlist-tab-btn-size
+{
+    scaled-rect: scaled(nan,nan,170,64,true);
+}
+
+.nodeorlist-tab-btn-selected
+{
+    color: "#1f1f1f";
+}
+
+.nodeorlist-tab-btn-label
+{
+    scaled-font: scaled(18);
+    color: "#1f1f1f";
+}
+
+.nodeorlist-tab-btn-label-second
+{
+    scaled-font: scaled(18);
+    color: "#ffffff";
+}
+
+.nodeorlist-name-value
+{
+    scaled-font: scaled(16);
+}
+
+.nodeorlist-spinner-bg
+{
+    scaled-rect: scaled(nan,nan,244,244,true);
+    color: "@background";
+    radius: 16;
+}
+
+.nodeorlist-spinner-arc
+{
+    scaled-rect: scaled(nan,nan,136,136,true);
+    qproperty-color: "@brand";
+}
+
+.nodeorderlist-edit-btn-close
+{
+    scaled-rect: scaled(nan,nan,32,32,true);
+    qproperty-scaledPixmap: "@rouexc-close";
+}
+
+.nodeorderlist-agreement-title
+{
+    color: "@text";
+    font-weight: Font.Bold;
+    scaled-rect: scaled(-1,16,-1,24,false,20);
+}
+
+
+
+/****************************************************
+ * Transaction history
+ ***************************************************/
+
+.trhistory-item
+{
+    scaled-rect: scaled(nan,nan,392,65,false);
+}
+
+.trhistory-item-left-top
+{
+    color: "@text";
+    scaled-font: scaled(14);
+}
+
+.trhistory-item-left-bottom
+{
+    color: "@input-placeholder";
+    scaled-font: scaled(14);
+}
+
+.trhistory-item-right
+{
+    color: "@text";
+    scaled-font: scaled(14);
 }

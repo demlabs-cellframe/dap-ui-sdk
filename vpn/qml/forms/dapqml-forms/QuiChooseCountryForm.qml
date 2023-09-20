@@ -192,7 +192,7 @@ Item {
                 separator: true
                 iconSize: resizer.height
                 width: resizer.width
-                height: resizer.height
+                height: resizer.height + spacer.height
                 y: spacer.height / 2
                 onClicked: {
                     root.sigSelect (model.index, model.name);

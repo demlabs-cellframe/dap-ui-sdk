@@ -234,7 +234,7 @@ void DapLogger::writeMessage(QtMsgType type,
     } else {
         _log_it("\0", castQtMsgToDap(type), "%s", qUtf8Printable(msg));
     }
-    printf("%s\n",qUtf8Printable(msg));
+    //printf("%s\n",qUtf8Printable(msg));
 
     std::cerr.flush();
     std::cout.flush();

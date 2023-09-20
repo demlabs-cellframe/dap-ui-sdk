@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QJsonObject>
+#include <QJsonArray>
 #include "DapCmdServiceAbstract.h"
 
 class DapCmdNode : public DapCmdServiceAbstract
@@ -29,6 +30,7 @@ public slots:
     void sendTransactionInMempool();
     void sendTransactionInLedger();
     void sendOrderList(const QJsonArray& orderList);
+    void sendNodeIp(const QJsonArray& nodeIpList);
     void sendSigningInfo(qint32 utype, qint64 uid, qint64 units, QString price);
 signals:
     void startNodeDetection();
@@ -38,6 +40,8 @@ signals:
     void condTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
     void checkSigned();
     void connectByOrder(QString srvUid, QString nodeAddress);
+    void getIpOrder(QString srvUid, QJsonArray orderList);
+
 };
 
 #endif // DAPCMDNODEHANDLER_H

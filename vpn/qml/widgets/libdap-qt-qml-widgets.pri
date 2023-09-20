@@ -17,13 +17,13 @@ RESOURCES += \
 HEADERS += \
     $$PWD/dapqml-widgets/dapimage.h \
     $$PWD/dapqml-widgets/dapqmlimage.h \
+    $$PWD/dapqml-widgets/dapqmlseparatoritem.h \
     $$PWD/dapqml-widgets/dapqmlserialkeyinput.h \
     $$PWD/dapqml-widgets/dapqmlstyle.h \
     $$PWD/dapqml-widgets/dapqmlordersmodel.h \    
     $$PWD/dapqml-widgets/dapqmlnodedatamodel.h \
     $$PWD/dapqml-widgets/dapqmlswitchctl.h \
     $$PWD/dapqml-widgets/dapqmlthememodel.h \
-    $$PWD/dapqml-widgets/dapqmlwindow.h \
     $$PWD/dapqml-widgets/doc-group-dapqmlstyle.h \
     $$PWD/dapqml-widgets/doc-group-qml-widgets.h \
     $$PWD/dapqml-widgets/style/debug/styledebugitemdescriptor.h \
@@ -38,13 +38,13 @@ HEADERS += \
 SOURCES += \
     $$PWD/dapqml-widgets/dapimage.cpp \
     $$PWD/dapqml-widgets/dapqmlimage.cpp \
+    $$PWD/dapqml-widgets/dapqmlseparatoritem.cpp \
     $$PWD/dapqml-widgets/dapqmlserialkeyinput.cpp \
     $$PWD/dapqml-widgets/dapqmlstyle.cpp \
     $$PWD/dapqml-widgets/dapqmlordersmodel.cpp \    
     $$PWD/dapqml-widgets/dapqmlnodedatamodel.cpp \
     $$PWD/dapqml-widgets/dapqmlswitchctl.cpp \
     $$PWD/dapqml-widgets/dapqmlthememodel.cpp \
-    $$PWD/dapqml-widgets/dapqmlwindow.cpp \
     $$PWD/dapqml-widgets/style/debug/styledebugitemdescriptor.cpp \
     $$PWD/dapqml-widgets/style/qssitem.cpp \
     $$PWD/dapqml-widgets/style/qsslink.cpp \

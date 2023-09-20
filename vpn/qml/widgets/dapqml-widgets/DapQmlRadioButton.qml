@@ -59,8 +59,9 @@ Item {
 
     RowLayout {
         anchors.fill: parent
-        anchors.leftMargin: height * 0.125
-        anchors.rightMargin: height * 0.125
+        anchors.leftMargin: root.height * 0.0125
+        anchors.rightMargin: root.height * 0.0125
+        anchors.bottomMargin: root.height * 0.0825
 
         /****************************************//**
          * Icon image / Indicator / Checkbox
@@ -74,6 +75,7 @@ Item {
 //        }
 
         Item {
+            Layout.alignment: Qt.AlignVCenter
             Layout.preferredWidth: root.iconSize
             Layout.preferredHeight: root.iconSize
 
@@ -131,7 +133,7 @@ Item {
 
     DapQmlSeparator {
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 1
+        anchors.bottomMargin: height
         width: root.width
         visible: root.separator
     }

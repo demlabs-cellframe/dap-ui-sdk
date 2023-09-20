@@ -89,10 +89,10 @@ DapQmlRectangle {
         if (opacity < 0.1)
             TickerUpdateCtl.updateVisible = false
 
-    Component.onCompleted: StyleDebugTree.describe (
-       "upd-not" + isDashobard,
-        ["x", "y", "width", "height", "showingUpdate", "loginPos", "dashboardPos", "dashboardStatusLabelBottom"],
-       this);
+//    Component.onCompleted: StyleDebugTree.describe (
+//       "upd-not" + isDashobard,
+//        ["x", "y", "width", "height", "showingUpdate", "loginPos", "dashboardPos", "dashboardStatusLabelBottom"],
+//       this);
 
     /// @}
     /****************************************//**

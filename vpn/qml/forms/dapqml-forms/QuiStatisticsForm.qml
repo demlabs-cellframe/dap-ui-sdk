@@ -255,7 +255,7 @@ Item {
         x: leftColumnPos
 
         buttonStyle: DapQmlButton.Style.TopMainBottomSub
-        mainText: "146:7:27"
+        mainText: "0"
         subText: qsTr("UPTIME") + lang.notifier
         mainQss: "stat-item-main"
         subQss: "stat-item-sub"

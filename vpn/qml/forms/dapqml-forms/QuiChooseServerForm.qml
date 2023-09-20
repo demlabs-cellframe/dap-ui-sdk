@@ -95,17 +95,17 @@ Item {
             height: resizer.height + spacer.height
             property bool checked: false
 
-            property string logMessage
-            property int logMessageCounter: 0
+//            property string logMessage
+//            property int logMessageCounter: 0
 
-            function collectLogMessage(a_msg) {
-                logMessage += a_msg + " : ";
-                logMessageCounter++;
-                if (logMessageCounter >= 4)
-                    console.log(logMessage + model.name);
-            }
+//            function collectLogMessage(a_msg) {
+//                logMessage += a_msg + " : ";
+//                logMessageCounter++;
+//                if (logMessageCounter >= 4)
+//                    console.log(logMessage + model.name);
+//            }
 
-            onHeightChanged: csListViewItem.collectLogMessage (`item ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
+            //onHeightChanged: csListViewItem.collectLogMessage (`item ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
 
             DapQmlRadioButton {
                 property int quality: model.connectionQuality + csListView.model.hookInt
@@ -115,10 +115,10 @@ Item {
                 separator: true
                 iconSize: resizer.height
                 width: resizer.width
-                height: resizer.height
+                height: resizer.height + spacer.height
                 y: spacer.height / 2
 
-                onHeightChanged: csListViewItem.collectLogMessage (`radio ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
+                //onHeightChanged: csListViewItem.collectLogMessage (`radio ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
 
                 DapQmlLabel {
                     property int quality: (parent.quality === 0) ? (0) : (6 - parent.quality)
@@ -128,7 +128,7 @@ Item {
                     height: resizer.height * 0.5
                     qss: `ic_conn-${quality}` + csListView.model.hook
 
-                    onHeightChanged: csListViewItem.collectLogMessage (`icn ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
+                    //onHeightChanged: csListViewItem.collectLogMessage (`icn ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
 
                     MouseArea {
                         anchors.fill: parent
@@ -136,7 +136,7 @@ Item {
                         hoverEnabled: true
                         onEntered: itemPopup.open()
                         onExited:  itemPopup.close()
-                        onHeightChanged: csListViewItem.collectLogMessage (`mousearea ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
+                        //onHeightChanged: csListViewItem.collectLogMessage (`mousearea ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
                     }
 
                     Popup {

@@ -30,9 +30,15 @@ DapNode:: DapNode(QObject * obj, int requestTimeout) :
     initCommandsStm();
 }
 
-
 DapNode::~ DapNode()
 {
+}
+
+static DapNode *s_instance   = nullptr;
+
+DapNode *DapNode::instance()
+{
+  return s_instance;
 }
 
 // transaction certificate name
@@ -105,10 +111,10 @@ void DapNode::initStmTransitions()
     &m_stm->getFee);
     //&m_stm->nodeGetStatus);
     m_stm->initialState.addTransition(this, &DapNode::sigGetOrderListRequest,
-    &m_stm->getOrderList);
+    &m_stm->getListKeys);
     //&m_stm->nodeGetStatus);
     m_stm->initialState.addTransition(this, &DapNode::sigNodeIpRequest,
-    &m_stm->getNodeIp);
+    &m_stm->getNodeConnectionData);
 
     // node detection -> node detected
     m_stm->nodeDetection.addTransition(web3, &DapNodeWeb3::nodeDetected,
@@ -227,6 +233,10 @@ void DapNode::initStmTransitions()
     // node status ok -> getWallets
 //    m_stm->nodeGetStatus.addTransition(this, &DapNode::sigGettingOrderList,
 //    &m_stm->getOrderList);
+    m_stm->getListKeys.addTransition(this, &DapNode::sigListKeysReceived,
+    &m_stm->getOrderList);
+    m_stm->getListKeys.addTransition(this, &DapNode::errorDetected,
+    &m_stm->getOrderList);
     // getOrderList -> initialState
     m_stm->getOrderList.addTransition(this, &DapNode::sigOrderListReceived,
     &m_stm->initialState);
@@ -234,9 +244,9 @@ void DapNode::initStmTransitions()
     &m_stm->initialState);
 
     // getting node ip
-    m_stm->getNodeIp.addTransition(this, &DapNode::sigNodeIpReceived,
+    m_stm->getNodeConnectionData.addTransition(this, &DapNode::sigNodeDumpReceived,
     &m_stm->initialState);
-    m_stm->getNodeIp.addTransition(this, &DapNode::errorDetected,
+    m_stm->getNodeConnectionData.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
 
 }
@@ -276,7 +286,11 @@ void DapNode::initStmStates()
     // node detection request
     connect(&m_stm->nodeDetection,  &QState::entered, web3, &DapNodeWeb3::nodeDetectedRequest);
     // connection request
-    connect(&m_stm->nodeConnection, &QState::entered, web3, &DapNodeWeb3::nodeConnectionRequest);
+    connect(&m_stm->nodeConnection, &QState::entered, this, [=](){
+        if (!m_isCDBLogined)
+            web3->nodeConnectionRequest();
+    }); //web3, &DapNodeWeb3::nodeConnectionRequest);
+
     // get node status
     //connect(&m_stm->nodeGetStatus,  &QState::entered, web3, &DapNodeWeb3::nodeStatusRequest);
     // get wallets
@@ -333,6 +347,11 @@ void DapNode::initStmStates()
         });
     });
 
+    // get keys
+    connect(&m_stm->getListKeys, &QState::entered, this, [=](){
+        web3->getListKeysRequest(m_networkName);
+    });
+
     // get orders list
     connect(&m_stm->getOrderList, &QState::entered, this, [=](){
         web3->DapNodeWeb3::getOrdersListRequest(
@@ -343,8 +362,8 @@ void DapNode::initStmStates()
                     m_unit);
     });
 
-    connect(&m_stm->getNodeIp, &QState::entered, this, [=](){
-        web3->getNodeIPRequest(m_networkName, m_nodeAddress);
+    connect(&m_stm->getNodeConnectionData, &QState::entered, this, [=](){
+        web3->nodeDumpRequest(m_networkName);
     });
 }
 
@@ -397,23 +416,42 @@ void DapNode::initWeb3Connections()
        m_transactionHash = hash;
        emit sigCondTxCreateSuccess(m_transactionHash);
     });
-    // order list ready
-    connect(web3, &DapNodeWeb3::sigOrderList, this, [=](QJsonArray) {
-        emit sigOrderListReceived();
+    // list keys ready
+    connect(web3, &DapNodeWeb3::sigListKeys, this, [=](QStringList listKeys) {
+        m_listKeys = listKeys;
+        emit sigListKeysReceived();
     });
-    connect(web3, &DapNodeWeb3::sigOrderList, this, &DapNode::sigOrderListReady);
+    // order list ready
+    connect(web3, &DapNodeWeb3::sigOrderList, this, [=](QJsonArray ordersList) {
+        //QJsonArray orders;
+        //orderListFiltr(ordersList, orders, m_listKeys);
+        emit sigOrderListReceived();
+        emit sigOrderListReady(ordersList); //emit sigOrderListReady(orders);
+    });
+
+    connect(web3, &DapNodeWeb3::sigNodeIp, this, [=](QJsonArray data) {
+        emit sigSendNodeIp(data);
+    });
+
+    //connect(web3, &DapNodeWeb3::sigOrderList, this, &DapNode::sigOrderListReady);
     // recieved fee
     connect(web3, &DapNodeWeb3::sigFee, this, [=](QString fee){
         m_fee = fee;
         emit sigFeeReceived();
     });
     // connect to stream
-    connect(web3, &DapNodeWeb3::sigNodeIp, this, [=](QString nodeIp) {
-        qDebug() << "sigNodeIp" << nodeIp;
-        m_netId = "0x000000000000dddd"; // riemann, use dap_chain_net_id_by_name() 
-        emit sigNodeIpReceived();
-        emit sigConnectByOrder(m_netId, m_transactionHash, m_tokenName, m_srvUid, nodeIp, m_nodePort);
+    connect(web3, &DapNodeWeb3::sigNodeDump, this, [=](QList<QMap<QString, QString>> nodeDump) {
+        // riemann, use dap_chain_net_id_by_name() "0x000000000000dddd"
+        m_nodeInfo.serverDataFromList(nodeDump);
+        emit sigNodeDumpReceived();
+        emit sigConnectByOrder(m_networkName, m_transactionHash, m_tokenName, m_srvUid, m_nodeInfo.ipv4, m_nodeInfo.port);
     });
+
+    connect(this, &DapNode::sigGetNodeIpRequest, this, [=](QJsonArray orderList) {
+        web3->DapNodeWeb3::getNodeIPRequest(m_networkName, orderList);
+    });
+
+
 
 }
 
@@ -475,6 +513,44 @@ void DapNode::start()
 void DapNode::slotNodeIpReqest(QString srvUid, QString nodeAddress)
 {
     m_srvUid = srvUid;
-    m_nodeAddress = nodeAddress;
+    m_nodeInfo.setNodeAddress(nodeAddress);
     emit sigNodeIpRequest();
+}
+void DapNode::slotGetNodeIpForOrderListReqest(QString srvUid, QJsonArray orderList)
+{
+    m_srvUid = srvUid;
+    emit sigGetNodeIpRequest(orderList);
+}
+
+bool NodeInfo::serverDataFromList(const QList<QMap<QString, QString>>& nodeDump)
+{
+    foreach (const auto item, nodeDump)
+    {
+        if (item["node address"] == address)
+        {
+            bool ok;
+            ipv4 = item["ipv4"];
+            port = item["port"].toInt(&ok);
+            if (ok)
+                return true;
+            else
+                return false;
+        }
+    }
+    return false;
+}
+
+void orderListFiltr(const QJsonArray& inOrders, QJsonArray& outOrders, QStringList keys)
+{
+    foreach(const QJsonValue& order, inOrders)
+    {
+        foreach (const QString& key, keys)
+        {
+            if (key == order.toObject()["pkey"].toString())
+            {
+                outOrders.append(order);
+                break;
+            }
+        }
+    }
 }

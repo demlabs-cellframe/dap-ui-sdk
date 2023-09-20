@@ -11,7 +11,7 @@ Item {
     property string formName: "ChooseNetwork"
 
     /// @brief item clicked
-    signal sigSelect(name: string);
+    signal sigSelect(int index, string name);
 
     property DapQmlNodeDataModel networkModel: DapQmlNodeDataModel {
       id: dataModel
@@ -20,7 +20,7 @@ Item {
     QuiChooseNodeDataForm {
        dataModel: dataModel
        title:  qsTr("Choose network")
-       onSigSelect: root.sigSelect(name);
+       onSigSelect: root.sigSelect(index, name);
     }
 
 }

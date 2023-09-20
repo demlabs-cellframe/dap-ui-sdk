@@ -146,6 +146,36 @@ public:
   /// - height
   Q_INVOKABLE QSize textOnScreenSize (QObject *a_item);
 
+  ///
+  /// @brief elide text in the middle to fit inside a_maxWidth
+  /// @param a_fontFamily font family name
+  /// @param a_fontSize   font size
+  /// @param a_text       text to elide
+  /// @param a_maxWidth   maximum width in pixels
+  /// @return elided if not fit and original text if do fit
+  ///
+  Q_INVOKABLE QString elideText(
+    const QString &a_fontFamily,
+    const int a_fontSize,
+    const QString &a_text,
+    const int a_maxWidth);
+
+  ///
+  /// @brief special case for order list price label text
+  ///
+  /// - Cuts string into before '(' and after '('
+  /// - Calculate size in pixels second part of text
+  /// - Executes elideText with maxWidth being decreased by pixel size of second part of the text
+  /// - Combines result and returns it
+  ///
+  /// @see elideText
+  ///
+  Q_INVOKABLE QString elideOrderPriceText(
+    const QString &a_fontFamily,
+    const int a_fontSize,
+    const QString &a_text,
+    const int a_maxWidth);
+
   /// @brief install qss stylesheet text
   static void setup (const QString &styleSheet);
 

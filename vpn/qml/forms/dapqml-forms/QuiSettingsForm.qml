@@ -59,7 +59,10 @@ Item {
     //DapQmlModelSettings { id: settingsModel }
     //SettingsInterface { id: settingsInterface; Component.onCompleted: setup(settingsModel); }
 
+    property bool darkTheme: false
+
     property QtObject internal: QtObject {
+        property bool disableAnim: false
         property var items: new Array();
 
         function appendItem (item) {
@@ -97,6 +100,19 @@ Item {
         }
 
         return resizer1.height;
+    }
+
+    function disableColorAnim() {
+        root.internal.disableAnim = true;
+        disableAnimInterval.start();
+    }
+
+    Timer {
+        id: disableAnimInterval
+        interval: 1000
+        running: false
+        repeat: false
+        onTriggered: root.internal.disableAnim = false
     }
 
     /****************************************//**
@@ -188,6 +204,7 @@ Item {
                 id: delegate
                 width: settingsListView.width
                 height: calcHeight (model.sid) //model.sid !== QuiSettingsForm.StyleId.SI_TITLE ? resizer1.height : resizer2.height
+                clip: true
 
                 property int mySid: model.sid
                 property var settingsModel: settingsListView.model
@@ -196,6 +213,7 @@ Item {
                 DapQmlButton {
                     property int myIndex: model.index
                     property string myText: model.textMain + settingsModel.notifier // + testText
+                    property bool preventDoubleExec: false
 
                     visible: model.sid !== QuiSettingsForm.StyleId.SI_TITLE
                     x: (parent.width - width) / 2
@@ -214,6 +232,7 @@ Item {
                     }
                     link: model.sid === QuiSettingsForm.StyleId.SI_LINK
                     checkbox: model.sid === QuiSettingsForm.SI_CHECKBOX
+                    checked: (model.icon === "settings_icon ic_theme") ? root.darkTheme : false
                     icon: model.icon
                     iconSize: resizer1.fontSize
                     mouseArea.hoverEnabled: true
@@ -221,11 +240,17 @@ Item {
                     mouseArea.onExited:  delegate.hovered   = false
 
                     function buttonClicked(a_isButtonSignal) {
+                        if (preventDoubleExec)
+                            return;
+
+                        preventDoubleExec   = true;
+
                         if(a_isButtonSignal === false)
-                        {
                             clicked();
-                            settingsModel.exec (myIndex, this);
-                        }
+
+                        settingsModel.exec (myIndex, this);
+
+                        preventDoubleExec   = false;
                     }
 
                     onClicked: buttonClicked(true)
@@ -245,19 +270,20 @@ Item {
                 }
 
                 DapQmlSeparator {
-                    anchors.bottom: parent.bottom
+                    y: parent.height - height
+                    width: settingsListView.width
                     z: 40
-                    width: parent.width
                     visible: model.sid !== QuiSettingsForm.StyleId.SI_TITLE
                              && isSep(model.sid)
                 }
 
                 DapQmlRectangle {
                     anchors.fill: parent
+                    anchors.rightMargin: 0-1
                     z: 10
                     visible: !Brand.legacyStyle() && model.index > 0
                     qss: delegate.hovered ? "sett-btn-hover-bg" : "c-background"
-                    Behavior on color { PropertyAnimation { duration: 150 } }
+                    Behavior on color { PropertyAnimation { duration: root.internal.disableAnim ? 0 : 150 } }
                 }
 
                 DapQmlLabel {
@@ -271,7 +297,7 @@ Item {
 
 //                Component.onCompleted: StyleDebugTree.describe (
 //                   "Settings Item " + model.index,
-//                    ["height", "mySid"],
+//                    ["width", "mySid"],
 //                   this);
             }
         }

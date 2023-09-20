@@ -1,13 +1,15 @@
 /* INCLUDES */
 
-import QtQuick 2.4
+import QtQuick 2.11
 import QtQml 2.12
-import QtQuick.Controls 2.1
-import QtQuick.Layouts 1.3
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.12
+import QtQuick.Shapes 1.4
 import DapQmlSerialKeyInput 1.0
 import StyleDebugTree 1.0
 import DapQmlStyle 1.0
 import Brand 1.0
+import PageCtl 1.0
 import "qrc:/dapqml-widgets"
 import "qrc:/dapqml-forms/tools"
 
@@ -81,6 +83,8 @@ Item {
         /// @brief show password contents
         property bool showPassword: false
 
+        property bool showConnectionOverlay: false
+
         function forgotLabel() {
 //   First variant for Rise
 //            return mode === QuiLoginForm.Mode.M_SERIAL
@@ -88,7 +92,7 @@ Item {
 //                : qsTr("Forgot your password?")
             return mode === QuiLoginForm.Mode.M_SERIAL
                 ? qsTr("Don't have a serial key?")
-                : qsTr("")
+                : qsTr("Don't have a serial key?")
 
         }
 
@@ -153,6 +157,10 @@ Item {
 
     /// @brief show server manager
     signal sigShowCdbManager();
+
+    /// @brief waiting approval retry button clicked
+    signal sigRetryButtonClicked();
+
     /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     /// nocdb debug func, this feature should be removed
     property bool debugNoCDB: true
@@ -297,6 +305,10 @@ Item {
             root.sigConnectByCert();
     }
 
+    function showConnectionOverlay(a_show) {
+        root.internal.showConnectionOverlay = a_show;
+    }
+
     /// @}
     /****************************************//**
      * Ticker & Update tools
@@ -304,6 +316,43 @@ Item {
 
     QuiToolTicker {}
     QuiToolUpdateNotification {}
+
+    /****************************************//**
+     * Server connecting overlay
+     ********************************************/
+
+    DapQmlRectangle {
+        anchors.fill: parent
+        z: 300
+        qss: "c-background"
+        visible: root.internal.showConnectionOverlay
+
+        ColumnLayout {
+            id: connOverlay
+            anchors.centerIn: parent
+
+            DapQmlStyle { item: connOverlay; qss: "login-connection-container" }
+
+            Item {
+                Layout.fillWidth: true
+                Layout.preferredHeight: root.width * 0.14953271
+
+                DapQmlArcAnimation {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: parent.height
+                    height: parent.height
+                    qss: "c-brand"
+                }
+            }
+
+            DapQmlLabel {
+                Layout.fillWidth: true
+                Layout.preferredHeight: contentHeight
+                qss: "login-connecting-label"
+                text: qsTr("Connecting...")
+            }
+        }
+    }
 
     /****************************************//**
      * Logo
@@ -706,32 +755,131 @@ Item {
     /****************************************//**
      * Transaction processing label
      ********************************************/
-    DapQmlLabel {
-        id: loginInfoLabel
-        qss: "login-transaction-processing-label-nocbd"
-        text: "<<< Message >>>"
+
+    Item {
+        anchors.fill: parent
         visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET
-                 && internal.cellfarameDetected
-                 && (internal.transactionProcessing || internal.waitingForApproval)
+
+        /* arc animation */
+        DapQmlRectangle {
+            id: progressCircle
+            visible: internal.cellfarameDetected
+                     && (internal.transactionProcessing || internal.waitingForApproval)
+            qss: "login-transaction-processing-arc-animation"
+
+            property string color
+            property int strokeWidth: 5
+
+            Shape {
+                id: loginInfoArcAnim
+                anchors.fill: parent
+                layer.enabled: true
+                layer.samples: 6
+
+                ShapePath {
+                    fillColor: "transparent"
+                    strokeColor: progressCircle.color
+                    strokeWidth: progressCircle.strokeWidth
+                    capStyle: ShapePath.FlatCap
+
+                    PathAngleArc {
+                        id: loginInfoArcPath
+                        centerX: loginInfoArcAnim.width / 2
+                        centerY: loginInfoArcAnim.height / 2
+                        radiusX: loginInfoArcAnim.width / 2 - progressCircle.strokeWidth / 2
+                        radiusY: loginInfoArcAnim.height / 2 - progressCircle.strokeWidth / 2
+                        startAngle: 90
+                        sweepAngle: 180
+
+                        NumberAnimation on startAngle {
+                            from: 0
+                            to: 360
+                            running: true
+                            loops: Animation.Infinite
+                            duration: 2000
+                        }
+                    }
+                }
+            }
+        }
+
+        /* retry button */
+        DapQmlRectangle {
+            id: retryBtn
+            visible: internal.cellfarameDetected
+                     && (internal.transactionProcessing || internal.waitingForApproval)
+            qss: "login-transaction-processing-retry-button"
+
+            QtObject {
+                id: animationCtl
+                property Timer timer: Timer {
+                    interval: 500
+                    running: false
+                    repeat: false
+                    onTriggered: animationCtl.finish()
+                }
+
+                function start() {
+                    retryBtn.qss    = "c-brand";
+                    timer.start();
+                }
+
+                function finish() {
+                    retryBtn.qss    = "login-transaction-processing-retry-button";
+                }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    animationCtl.start();
+                    root.sigRetryButtonClicked();
+                }
+            }
+
+            DapQmlLabel {
+                anchors.centerIn: parent
+                disableClicking: true
+                width: contentWidth
+                height: contentHeight
+                qss: "c-label"
+                text: "Retry"
+            }
+        }
+
+        DapQmlLabel {
+            id: loginInfoLabel
+            qss: "login-transaction-processing-label-nocbd"
+            text: "<<< Message >>>"
+            visible: internal.cellfarameDetected
+                     && (internal.transactionProcessing || internal.waitingForApproval)
+        }
+
+        DapQmlLabel {
+            id: transactionProcessingWalletData
+            qss: "login-transaction-processing-wallet-data-label-nocbd"
+            text: "BackBone - WalletName"
+            visible: internal.cellfarameDetected
+                     && internal.transactionProcessing
+        }
+
+        DapQmlLabel {
+            id: transactionProcessingAmount
+            qss: "login-transaction-processing-amount-label-nocbd"
+            text: "Amount: 100 CELL"
+            visible: internal.cellfarameDetected
+                     && internal.transactionProcessing
+        }
+
+        DapQmlLabel {
+            id: transactionProcessingStatus
+            qss: "login-transaction-processing-status-label-nocbd"
+            text: "Current status: In mempool"
+            visible: internal.cellfarameDetected
+                     && internal.transactionProcessing
+        }
     }
-    DapQmlLabel {
-        id: transactionProcessingWalletData
-        qss: "login-transaction-processing-wallet-data-label-nocbd"
-        text: "BackBone - WalletName"
-        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && internal.transactionProcessing
-    }
-    DapQmlLabel {
-        id: transactionProcessingAmount
-        qss: "login-transaction-processing-amount-label-nocbd"
-        text: "Amount: 100 CELL"
-        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && internal.transactionProcessing
-    }
-    DapQmlLabel {
-        id: transactionProcessingStatus
-        qss: "login-transaction-processing-status-label-nocbd"
-        text: "Current status: In mempool"
-        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET && internal.cellfarameDetected && internal.transactionProcessing
-    }
+
 
     /****************************************//**
      * Enter serial
@@ -744,10 +892,10 @@ Item {
         height: loginSerialPlacer.height
         visible: internal.mode === QuiLoginForm.Mode.M_SERIAL
 
-        Component.onCompleted: StyleDebugTree.describe (
-           "btnEnterSerialBox",
-            ["x", "y", "width", "height"],
-           this);
+//        Component.onCompleted: StyleDebugTree.describe (
+//           "btnEnterSerialBox",
+//            ["x", "y", "width", "height", "visible"],
+//           this);
 
         DapQmlButton {
             id: btnEnterSerial
@@ -793,10 +941,10 @@ Item {
                     root.sigSerialFillingIncorrect();
             }
 
-            Component.onCompleted: StyleDebugTree.describe (
-               "btnEnterSerial",
-                ["x", "y", "width", "height"],
-               this);
+//            Component.onCompleted: StyleDebugTree.describe (
+//               "btnEnterSerial",
+//                ["x", "y", "width", "height"],
+//               this);
         }
         DapQmlDummy {
             id: loginSerialPlacer
@@ -806,10 +954,10 @@ Item {
 //                 serial login
                  : "login-btn-serial-container"
 
-            Component.onCompleted: StyleDebugTree.describe (
-               "loginSerialPlacer",
-                ["x", "y", "width", "height", "qss"],
-               this);
+//            Component.onCompleted: StyleDebugTree.describe (
+//               "loginSerialPlacer",
+//                ["x", "y", "width", "height", "qss"],
+//               this);
         }
     }
 
@@ -976,6 +1124,8 @@ Item {
                 root.sigConnectByCert();
             else
             if (internal.mode === QuiLoginForm.Mode.M_WALLET) {
+//                root.internal.transactionOverviewShow = true
+//                PageCtl.showTransaction();
                 if (internal.transactionProcessing === false)
                     root.sigStartCondTransation()
                 else
@@ -1032,18 +1182,10 @@ Item {
 //                (internal.mode === QuiLoginForm.Mode.M_SERIAL)
 //                       ? root.sigObtainNewKey()
 //                       : root.sigRecoverPassword()
-                /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                /// nocdb debug func, this feature should be removed
-                if (root.debugNoCDB) {
-                    print("nocdb debug func, this feature should be removed", root.debugNoCDB)
-                    root.sigDebugNoCDBMode();
-//                    return;
-                } else {
-
                 Brand.name() !== "RiseVPN"
                        ? root.sigObtainNewKey()
                        : root.sigShowCdbManager()
-            }}
+            }
 //          font.family: "Lato"
 //          font.pixelSize: 16
 //          font.weight: Font.Normal

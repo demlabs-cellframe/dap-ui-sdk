@@ -22,6 +22,20 @@
 #include <QStateMachine>
 #include <QState>
 
+void orderListFiltr(const QJsonArray& in, QJsonArray& out, QStringList keys);
+
+class NodeInfo
+{
+public:
+    NodeInfo() {}
+    QString address;
+    uint16_t port;
+    QString ipv4;
+    void setNodeAddress(const QString& a_address) { address = a_address; }
+    bool serverDataFromList(const QList<QMap<QString, QString>>& nodeDump);
+};
+
+
 class NodeConnectStateMachine
 {
 public:
@@ -54,8 +68,9 @@ public:
     QState createCertificate;
     QState checkTransactionCertificate;
     QState createTransactionCertificate;
+    QState getListKeys;
     QState getOrderList;
-    QState getNodeIp;
+    QState getNodeConnectionData;
 private:
     QStateMachine commandState;
     QStateMachine nodeConnectMachine;
@@ -83,8 +98,9 @@ private:
         nodeConnectMachine.addState(&createCertificate);
         nodeConnectMachine.addState(&checkTransactionCertificate);
         nodeConnectMachine.addState(&createTransactionCertificate);
+        nodeConnectMachine.addState(&getListKeys);
         nodeConnectMachine.addState(&getOrderList);
-        nodeConnectMachine.addState(&getNodeIp);
+        nodeConnectMachine.addState(&getNodeConnectionData);
         nodeConnectMachine.setInitialState(&initialState);
         qDebug() << "nodeConnectMachine::init";
     }
@@ -122,10 +138,10 @@ private:
     QString m_minPrice;
     QString m_maxPrice;
     QString m_srvUid;
-    QString m_nodeAddress;
-    QString m_netId;
     QString m_fee;
-    uint16_t m_nodePort = 80;
+    NodeInfo m_nodeInfo;
+    QStringList m_listKeys;
+    bool m_isCDBLogined = false;
 
 public:
     static const int DEFAULT_REQUEST_TIMEOUT = 10000; // 10 sec
@@ -137,9 +153,15 @@ public:
 
     DapNode(QObject * obj = Q_NULLPTR, int requestTimeout = DEFAULT_REQUEST_TIMEOUT);
     ~DapNode();
+    static DapNode *instance();
     void start();
     QString txCondHash();
     static QString certificateName(const QString& access = "public");
+
+    void setCDBLogined(bool a_logined){
+        m_isCDBLogined = a_logined;
+    }
+
 
 private:
     void initStmTransitions();
@@ -157,6 +179,7 @@ public slots:
     void slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
     void slotGetOrdersList(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
     void slotNodeIpReqest(QString srvUid, QString nodeAddress);
+    void slotGetNodeIpForOrderListReqest(QString srvUid, QJsonArray orderList);
 
 private slots:
     void walletDataRequest();
@@ -170,10 +193,11 @@ signals:
     void sigNodeDetected();
     void sigWalletsDataReady(QJsonObject);
     void sigOrderListReady(QJsonArray);
+    void sigSendNodeIp(QJsonArray);
     void sigMempoolContainHash();
     void sigLedgerContainHash();
     void sigCondTxCreateSuccess(QString hash);
-    void sigConnectByOrder(QString netId, QString txCondHash, QString token, QString srvUid, QString nodeIp, uint16_t port);
+    void sigConnectByOrder(QString networkName, QString txCondHash, QString token, QString srvUid, QString nodeIp, uint16_t port);
 
     // ------- internal signals --------
     void waitingCommand();
@@ -191,6 +215,7 @@ signals:
     void sigOrderListReceived();
     void networksReceived();
     void sigCondTxCreateRequest();
+    void sigListKeysReceived();
     void sigGetOrderListRequest();
     void walletListIsEmpty();
     void checkCertificate();
@@ -198,7 +223,8 @@ signals:
     void certificateExist();
     void certificateNotFound();
     void sigNodeIpRequest();
-    void sigNodeIpReceived();
+    void sigGetNodeIpRequest(QJsonArray orderList);
+    void sigNodeDumpReceived();
     void sigFeeReceived();
 
 

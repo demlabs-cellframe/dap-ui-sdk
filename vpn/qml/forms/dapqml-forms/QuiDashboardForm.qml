@@ -43,6 +43,11 @@ Item {
     /* this is used only for width calc function _calcStatusWidth */
     //DapQmlStyle { id: style }
 
+    property QtObject internal: QtObject {
+        property bool allowChooseServer: true
+        property bool noCdbMode: false
+    }
+
     /// @}
     /****************************************//**
      * @name SIGNALS
@@ -61,6 +66,9 @@ Item {
     signal sigConnectionStatusChangeRequested();
 
     signal sigStartUpdate();
+
+    signal sigTitleButtonBackClicked();
+    signal sigTitleButtonOrdersClicked();
 
     /// @}
     /****************************************//**
@@ -84,7 +92,8 @@ Item {
     }
 
     function setServerChooseEnable(value) {
-        serverChoose.setEnable(value);
+        //serverChoose.setEnable(value);
+        root.internal.allowChooseServer = value;
     }
 
     function setSwitchButtonEnable(value) {
@@ -133,9 +142,46 @@ Item {
 //        updateNotificationRect.showUpdateNotification()
 //    }
 
+    function setNoCdbMode(a_value) {
+        root.internal.noCdbMode = a_value;
+    }
+
     Component.onCompleted: setStatusIndicator(false);
 
     /// @}
+    /****************************************//**
+     * Components
+     ********************************************/
+
+    Component {
+        id: titleButton
+
+        //property int type
+
+        DapQmlRectangle {
+            qss: "dashboard-nocdb-title-button"
+            radius: height / 5
+            enabled: root.internal.noCdbMode
+            visible: root.internal.noCdbMode
+            opacity: enabled * 0.5 + 0.5
+
+            DapQmlImage {
+                anchors.fill: parent
+                anchors.margins: parent.width / 10
+                scaledPixmap: parent.parent.type === 0
+                              ? dashboardNoCdbTitleButtonBack.scaledPixmap
+                              : dashboardNoCdbTitleButtonOrders.scaledPixmap
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: parent.parent.type === 0
+                           ? root.sigTitleButtonBackClicked()
+                           : root.sigTitleButtonOrdersClicked()
+            }
+        }
+    }
+
 //    /****************************************//**
 //     * Ticker
 //     ********************************************/
@@ -450,7 +496,81 @@ Item {
         qss: "dashboard-switch"
         //onClicked: { root.sigSwitchToggle(checked); root.sigConnectionStatusChangeRequested(); }
         onCheckedChanged: { root.sigSwitchToggle(checked); root.sigConnectionStatusChangeRequested(); }
-        Component.onCompleted: switchItem = this
+        Component.onCompleted: dashboardSwitchItem = this
+    }
+
+    /****************************************//**
+     * NoCDB Content
+     ********************************************/
+
+    /* sizers */
+
+    DapQmlDummy {
+        id: dashboardNoCdbIndicatorSizer
+        qss: "dashboard-nocdb-shield"
+    }
+
+    DapQmlDummy {
+        id: dashboardNoCdbTitleButtonBack
+        qss: "ic_back"
+        property string scaledPixmap
+    }
+
+    DapQmlDummy {
+        id: dashboardNoCdbTitleButtonOrders
+        qss: "ic_orders"
+        property string scaledPixmap
+    }
+
+    DapQmlDummy {
+        id: dashboardNoCdbTitleButtonBackPos
+        qss: "dashboard-nocdb-title-button-back"
+    }
+
+    DapQmlDummy {
+        id: dashboardNoCdbTitleButtonOrdersPos
+        qss: "dashboard-nocdb-title-button-orders"
+    }
+
+    /* indicator */
+
+    RowLayout {
+        id: dashboardNoCdbIndicator
+        anchors.horizontalCenter: dashboardSwitch.horizontalCenter
+        anchors.top: dashboardSwitch.bottom
+        //width: childrenRect.width
+        height: dashboardNoCdbIndicatorSizer.height
+        visible: root.internal.noCdbMode
+
+        DapQmlLabel {
+            Layout.preferredWidth: dashboardNoCdbIndicatorSizer.width
+            Layout.preferredHeight: dashboardNoCdbIndicatorSizer.height
+            qss: "ic_nocdb-shield"
+        }
+
+        DapQmlLabel {
+            Layout.preferredWidth: contentWidth
+            Layout.preferredHeight: dashboardNoCdbIndicatorSizer.height
+            horizontalAlign: Text.AlignLeft
+            text: "NoCDB Mode"
+            qss: "dashboard-nocdb-label"
+        }
+    }
+
+    /* buttons */
+
+    Loader {
+        anchors.fill: dashboardNoCdbTitleButtonBackPos
+        sourceComponent: titleButton
+        enabled: root.internal.allowChooseServer
+        property int type: 0
+    }
+
+    Loader {
+        anchors.fill: dashboardNoCdbTitleButtonOrdersPos
+        sourceComponent: titleButton
+        enabled: root.internal.allowChooseServer
+        property int type: 1
     }
 
     /****************************************//**
@@ -495,6 +615,7 @@ Item {
 //        height: 137
         link: true
         frame: true
+        enabled: root.internal.allowChooseServer
 
         buttonStyle: DapQmlButton.TopSubBottomMain
         mainText: qsTr("Auto") + lang.notifier
