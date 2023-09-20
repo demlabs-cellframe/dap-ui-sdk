@@ -28,6 +28,8 @@ Item {
     /// Used to connect interface via Manager
     property string formName: "GenerateTrialKey"
 
+    property bool show: false
+
     property QtObject internal: QtObject {
         property bool generated: false
         property string key
@@ -43,8 +45,20 @@ Item {
     signal sigGenerate();
     signal sigActivate();
 
+    onShowChanged: {
+        if (show)
+            root.reset();
+        else
+            root.close();
+    }
+
     //Component.onCompleted: reset()
-    Component.onCompleted: setKey("TEST-TEST-TEST-TEST")
+    Component.onCompleted: {
+        close();
+
+        // test purposes //
+        //setKey("TEST-TEST-TEST-TEST");
+    }
 
     /// @}
     /****************************************//**
@@ -55,12 +69,34 @@ Item {
     function reset() {
         root.internal.generated = false;
         actionButton.text       = qsTr("GENERATE KEY");
+        content.y               = parent.height - sizerRequest.height;
     }
 
     function setKey(a_key) {
         root.internal.generated = true;
         actionButton.text       = qsTr("ACTIVATE");
         root.internal.key       = a_key;
+        content.y               = parent.height - sizerSerialKey.height;
+    }
+
+    function close() {
+        content.y               = parent.height * 1.1;
+    }
+
+    /// @}
+    /****************************************//**
+     * Sizers
+     ********************************************/
+    /// @{
+
+    DapQmlDummy {
+        id: sizerRequest
+        qss: "gentri-request-rect c-background"
+    }
+
+    DapQmlDummy {
+        id: sizerSerialKey
+        qss: "gentri-serialkey-rect c-background"
     }
 
     /// @}
@@ -69,12 +105,31 @@ Item {
      ********************************************/
 
     DapQmlRectangle {
-        anchors.bottom: parent.bottom
-        qss: !root.internal.generated
-            ? "gentri-request-rect c-background"
-            : "gentri-serialkey-rect c-background"
+        id: content
+        //anchors.bottom: parent.bottom
+        clip: true
+        qss: {
+            if (!root.internal.generated)
+                return "gentri-request-rect c-background";
+            else
+                return "gentri-serialkey-rect c-background";
+        }
 
+        Behavior on y { PropertyAnimation { duration: 250 } }
         Behavior on height { PropertyAnimation { duration: 250 } }
+
+        onQssChanged: {
+            if (qss == "c-background")
+                height = 0;
+        }
+
+        DapQmlRectangle {
+            anchors.bottom: parent.bottom
+            anchors.topMargin: parent.radius * 3
+            anchors.fill: parent
+            color: parent.color
+            z: 2
+        }
 
         /****************************************//**
          * Title
@@ -94,8 +149,13 @@ Item {
 
         DapQmlPushButton {
             x: parent.width - width - (y * 3)
+            z: 14
             qss: "gentri-close-btn"
-            onClicked: root.sigClose();
+            onClicked: {
+//                console.log("boi");
+//                root.show = false;
+                root.sigClose();
+            }
         }
 
         /****************************************//**
@@ -105,6 +165,7 @@ Item {
         DapQmlRectangle {
             anchors.bottom: parent.bottom
             qss: "gentri-action-rect"
+            z: 4
 
             DapQmlSeparator {
                 qss: "gentri-action-separator"
@@ -113,10 +174,12 @@ Item {
             DapQmlPushButton {
                 id: actionButton
                 qss: "gentri-action-btn push-button"
-                onClicked:
+                onClicked: {
                     root.internal.generated
                     ? root.sigActivate()
                     : root.sigGenerate();
+                    root.setKey("TEST-TEST-TEST-TEST");
+                }
             }
         }
 
@@ -127,6 +190,7 @@ Item {
         DapQmlLabel {
             visible: !root.internal.generated
             qss: "gentri-gen-description"
+            z: 4
             text: qsTr("This key give you all the functionalities of\nKelVPN for 3 days.");
 
 //            Component.onCompleted: StyleDebugTree.describe (
@@ -141,6 +205,7 @@ Item {
 
         Item {
             anchors.fill: parent
+            z: 4
             visible: root.internal.generated
 
             /* key */
