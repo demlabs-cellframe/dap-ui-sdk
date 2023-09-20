@@ -347,6 +347,11 @@ Item {
                 text: qsTr("Connecting...")
             }
         }
+
+        MouseArea {
+            anchors.fill: parent
+            enabled: root.internal.showConnectionOverlay
+        }
     }
 
     /****************************************//**
