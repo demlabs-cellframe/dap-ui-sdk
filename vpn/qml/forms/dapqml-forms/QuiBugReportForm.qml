@@ -761,12 +761,12 @@ Item {
                 DapQmlStyle { qss: "bugrep-animation"; item: animation }
             }
 
-//            /* cancel */
-//            DapQmlPushButton {
-//                qss: "bugrep-send-btn push-button"
-//                text: qsTr("CANCEL") + lang.notifier
-//                onClicked: { root.mode = 0; root.sigCancel(); }
-//            }
+            /* cancel */
+            DapQmlPushButton {
+                qss: "bugrep-send-btn push-button"
+                text: qsTr("CANCEL") + lang.notifier
+                onClicked: { root.mode = 0; root.sigCancel(); }
+            }
         }
 
         /****************************************//**
