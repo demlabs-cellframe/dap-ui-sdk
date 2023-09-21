@@ -64,9 +64,7 @@ Item {
     /// @brief internal variables
     property QtObject internal: QtObject {
 
-        property bool changedServer: false
-        property bool changedCert:   false
-        property string serverName: ""
+        property bool changedCert:  false
         property string certName:   ""
         property bool legacyStyle: Brand.name() !== "KelVPN"
 
@@ -203,17 +201,14 @@ Item {
 
     /// @brief change current chosen server name
     function setServer(a_name) {
-        internal.changedServer      = true;
-        internal.serverName         = a_name;
-        //btnChooseServer.mainText    = a_name;
-        btnChooseServer.updateServerName();
+        btnChooseServer.mainText    = a_name;
     }
 
     function setOrderLocation(location ) {
-        btnChooseServer.mainText    = location;
+        btnChooseOrder.mainText    = location;
     }
     function setOrderAddr(addr) {
-        btnChooseServer.subText     = addr;
+        btnChooseOrder.subText     = addr;
     }
 
 
@@ -351,6 +346,11 @@ Item {
                 qss: "login-connecting-label"
                 text: qsTr("Connecting...")
             }
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            enabled: root.internal.showConnectionOverlay
         }
     }
 
@@ -596,12 +596,8 @@ Item {
             x: (parent.width - width) / 2
             z: 15
             width: parent.width
-            property string defaultServerName: qsTr("Auto select") + lang.notifier
 
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
-            mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
-            subText: qsTr("CHOOSING SERVER") + lang.notifier
-//            qss: "login-btn-server-nocbd"
             qss: "login-btn-server"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
@@ -609,15 +605,8 @@ Item {
             frame: !root.internal.legacyStyle // true
             link: true
             onClicked: root.sigChooseWallet()
-
-            function updateServerName() {
-                mainText = (!internal.changedServer)
-                        ? (defaultServerName)
-                        : (internal.serverName)
-            }
-
-            onDefaultServerNameChanged: updateServerName()
         }
+
         DapQmlDummy {
             id: loginWalletPlacer
             qss: "login-btn-wallet-container"
@@ -693,36 +682,41 @@ Item {
             x: (parent.width - width) / 2
             z: 15
             width: parent.width
-            property string defaultServerName: internal.mode !== QuiLoginForm.Mode.M_WALLET
-                                               ? qsTr("Auto select") + lang.notifier
-                                               : qsTr("Order") + lang.notifier
+            visible: internal.mode !== QuiLoginForm.Mode.M_WALLET
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
-            mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
-            subText: internal.mode !== QuiLoginForm.Mode.M_WALLET
-                     ? qsTr("CHOOSING SERVER") + lang.notifier
-                     : qsTr("SEARCH ORDERS") + lang.notifier
-            qss: internal.mode !== QuiLoginForm.Mode.M_WALLET
-//                 NoCBD mode
-//                 ? "login-btn-server"
-                 ? "login-btn-server"
-//                 serial login
-//                 : "login-btn-server-nocbd"
-                 : "login-btn-server"
+
+            mainText: qsTr("Auto select") + lang.notifier
+            subText: qsTr("CHOOSING SERVER") + lang.notifier
+            qss: "login-btn-server"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
             frame: true
             link: true
-            onClicked: internal.mode !== QuiLoginForm.Mode.M_WALLET
-                        ? root.sigChooseServer()
-                        : root.sigSearchOrders()
 
-            function updateServerName() {
-                mainText = (!internal.changedServer)
-                        ? (defaultServerName)
-                        : (internal.serverName)
-            }
+            /* signals */
 
-            onDefaultServerNameChanged: updateServerName()
+            onClicked: root.sigChooseServer()
+        }
+
+        DapQmlButton {
+            id: btnChooseOrder
+            x: (parent.width - width) / 2
+            z: 15
+            width: parent.width
+            visible: internal.mode === QuiLoginForm.Mode.M_WALLET
+            buttonStyle: DapQmlButton.Style.TopMainBottomSub
+
+            mainText: qsTr("Order") + lang.notifier
+            subText: qsTr("SEARCH ORDERS") + lang.notifier
+            qss: "login-btn-server"
+            mainQss: "login-btn-main"
+            subQss: "login-btn-sub"
+            frame: true
+            link: true
+
+            /* signals */
+
+            onClicked: root.sigSearchOrders()
         }
 
         DapQmlDummy {

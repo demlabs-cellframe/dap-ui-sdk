@@ -132,6 +132,11 @@ Item {
         serverChoose.subText    = a_ip;
     }
 
+    function setNoCDBServerInfo(a_name, a_ip) {
+        noCdbServerChoose.mainText   = a_name;
+        noCdbServerChoose.subText    = a_ip;
+    }
+
 //    function setTickerMessage(a_message, a_url) {
 //        tickerLabel.text = a_message;
 //        ticker.tickerUrl = a_url;
@@ -413,17 +418,30 @@ Item {
 
     DapQmlButton {
         id: serverChoose
-//        x: 0//centerHor(this)
-//        y: 575
-//        width: 410
-//        height: 137
         link: true
         frame: true
+        visible: !root.internal.noCdbMode
         enabled: root.internal.allowChooseServer
 
         buttonStyle: DapQmlButton.TopSubBottomMain
         mainText: qsTr("Auto") + lang.notifier
         subText: qsTr("CHOOSING SERVER") + lang.notifier
+        mainQss: "dashboard-server-main"
+        subQss: "dashboard-server-sub"
+        qss: "dashboard-server-container"
+        onClicked: root.sigServerClicked()
+    }
+
+    DapQmlButton {
+        id: noCdbServerChoose
+        link: true
+        frame: true
+        visible: root.internal.noCdbMode
+        enabled: root.internal.allowChooseServer
+
+        buttonStyle: DapQmlButton.TopSubBottomMain
+        mainText: qsTr("Order") + lang.notifier
+        subText: qsTr("SEARCH ORDERS") + lang.notifier
         mainQss: "dashboard-server-main"
         subQss: "dashboard-server-sub"
         qss: "dashboard-server-container"
