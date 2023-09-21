@@ -322,7 +322,8 @@ void DapNode::initStmStates()
                         m_tokenName,
                         m_value,
                         m_unit,
-                        m_fee);
+                        m_fee,
+                        m_keyPath);
     });
     // mempool check
     connect(&m_stm->mempoolTxHashRequest, &QState::entered, this, [=](){
@@ -460,13 +461,14 @@ void DapNode::initWeb3Connections()
 
 }
 
-void DapNode::slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit)
+void DapNode::slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit, QString keyPath)
 {
     m_walletName = walletName;
     m_networkName = networkName;
     m_tokenName = tokenName;
     m_value = value;
     m_unit = unit;
+    m_keyPath = keyPath;
     emit sigCondTxCreateRequest();
 }
 

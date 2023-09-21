@@ -144,7 +144,7 @@ public slots:
   void walletDataRequest (const QString &walletName);
   void getCertificates();
   void createCertificate (const QString &certType, const QString &certName);
-  void condTxCreateRequest (QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit, QString fee);
+  void condTxCreateRequest (QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit, QString fee, QString keyPath);
   void getMempoolTxHashRequest (QString transactionHash, QString networkName);
   void getLedgerTxHashRequest (QString transactionHash, QString networkName);
   void getOrdersListRequest (QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);

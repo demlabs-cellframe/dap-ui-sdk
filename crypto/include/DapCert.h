@@ -34,8 +34,8 @@ namespace Dap {
         {
         protected:
             dap_cert_t * m_cert = nullptr;
-            Cert(){};
         public:
+            Cert(){};
             static void init();
 
             static Cert * generate(const QString& a_name, KeySignType a_type);
@@ -45,6 +45,8 @@ namespace Dap {
             ~Cert();
 
             dap_enc_key_t *key();
+            void setPubKey(dap_enc_key_t* a_key);
+            void savePubCert(const char * saveDir, const char * newName);
 
             void sign(const QByteArray & a_data, QByteArray & a_output);
             bool compareWithSign(const QByteArray & a_data);

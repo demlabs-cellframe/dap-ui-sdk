@@ -310,7 +310,7 @@ void DapNodeWeb3::networksRequest()
   sendRequest (requesString);
 }
 
-void DapNodeWeb3::condTxCreateRequest (QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit, QString fee)
+void DapNodeWeb3::condTxCreateRequest (QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit, QString fee, QString keyPath)
 {
   m_networkName = networkName;
   QString requesString = QString ("?method=CondTxCreate&"
@@ -322,7 +322,8 @@ void DapNodeWeb3::condTxCreateRequest (QString walletName, QString networkName, 
                                   "value=%6&"
                                   "unit=%7&"
                                   "fee=%8&"
-                                  "srv_uid=1")
+                                  "srv_uid=1&"
+                                  "keyPath=%9")
                          .arg (m_connectId)
                          .arg (networkName)
                          .arg (tokenName)
@@ -330,7 +331,8 @@ void DapNodeWeb3::condTxCreateRequest (QString walletName, QString networkName, 
                          .arg (sertificateName)
                          .arg (value)
                          .arg (unit)
-                         .arg (fee);
+                         .arg (fee)
+                         .arg (keyPath);
   sendRequest (requesString);
 }
 
