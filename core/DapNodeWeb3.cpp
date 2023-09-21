@@ -254,9 +254,9 @@ void DapNodeWeb3::responseParsing (
         replyConnectError (error);
 
       if (httpFinished)
-        replyError (baseErrorCode + 10000 + error, wrongReplyerrorString);
+        replyError (baseErrorCode + 10000 + error, wrongReplyerrorString, wrongReplyerrorString);
       else
-        replyError (baseErrorCode + error, messageReplyDataError);
+        replyError (baseErrorCode + error, messageReplyDataError, messageReplyDataError);
 
       return;
     }
@@ -267,7 +267,7 @@ void DapNodeWeb3::responseParsing (
 
   // check reply message error
   if (reply.size() == 0)
-    return replyError (baseErrorCode + 20000, messageReplyDataError);
+    return replyError (baseErrorCode + 20000, messageReplyDataError, messageReplyDataError);
 
   // parse reply
   switch (parseMethod)
@@ -454,7 +454,7 @@ void DapNodeWeb3::parseReplyStatus (const QString &replyData, int baseErrorCode)
   //        "status": "bad"
   //    }
 
-  DEBUGINFO << "parseReplyNodeStatus" << replyData;
+  DEBUGINFO << __func__ << replyData;
 
   QJsonDocument doc = QJsonDocument::fromJson (replyData.toUtf8());
 
@@ -488,10 +488,10 @@ void DapNodeWeb3::parseReplyConnect (const QString &replyData, int baseErrorCode
   //    "    \"status\": \"ok\""
   //    "}";
 
-  DEBUGINFO << "parseReplyConnect" << replyData;
+  DEBUGINFO << __func__ << replyData;
 
   QJsonDocument doc;
-  parseJson (replyData.toUtf8(), baseErrorCode, &doc);
+  parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
 
   if (jsonError())
     return;
@@ -521,11 +521,11 @@ void DapNodeWeb3::parseReplyWallets (const QString &replyData, int baseErrorCode
   //    "    \"status\": \"ok\""
   //    "}";
 #ifdef ENABLE_SENSITIVE_PRINTS
-  DEBUGINFO << "parseReplyWallets" << replyData;
+  DEBUGINFO << __func__ << replyData;
 #endif // ENABLE_SENSITIVE_PRINTS
 
   QJsonDocument doc;
-  parseJson (replyData.toUtf8(), baseErrorCode, &doc);
+  parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
 
   if (jsonError())
     return;
@@ -556,10 +556,10 @@ void DapNodeWeb3::parseReplyNetworks (const QString &replyData, int baseErrorCod
   //    "    \"status\": \"ok\""
   //    "}";
 
-  DEBUGINFO << "parseReplyNetworks" << replyData;
+  DEBUGINFO << __func__ << replyData;
 
   QJsonDocument doc;
-  parseJson (replyData.toUtf8(), baseErrorCode, &doc);
+  parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
 
   if (jsonError())
     return;
@@ -607,10 +607,10 @@ void DapNodeWeb3::parseDataWallet (const QString &replyData, int baseErrorCode)
   //"status": "ok"
   //}
 
-  DEBUGINFO << "walletDataReply" << replyData;
+  DEBUGINFO << __func__ << replyData;
 
   QJsonDocument doc;
-  parseJson (replyData.toUtf8(), baseErrorCode, &doc);
+  parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
 
   if (jsonError())
     return;
@@ -637,11 +637,11 @@ void DapNodeWeb3::parseCertificates (const QString &replyData, int baseErrorCode
   //        "status": "ok"
   //    }
 #ifdef ENABLE_SENSITIVE_PRINTS
-  DEBUGINFO << "parseCertificates" << replyData;
+  DEBUGINFO << __func__ << replyData;
 #endif // ENABLE_SENSITIVE_PRINTS
 
   QJsonDocument doc;
-  parseJson (replyData.toUtf8(), baseErrorCode, &doc);
+  parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
 
   if (jsonError())
     return;
@@ -670,11 +670,11 @@ void DapNodeWeb3::parseCreateCertificate (const QString &replyData, int baseErro
   //        "status": "ok"
   //    }
 #ifdef ENABLE_SENSITIVE_PRINTS
-  DEBUGINFO << "parseCreateCertificate" << replyData;
+  DEBUGINFO << __func__ << replyData;
 #endif // ENABLE_SENSITIVE_PRINTS
 
   QJsonDocument doc;
-  parseJson (replyData.toUtf8(), baseErrorCode, &doc);
+  parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
 
   if (jsonError())
     return;
@@ -697,10 +697,10 @@ void DapNodeWeb3::parseCondTxCreateReply (const QString &replyData, int baseErro
   //        "status": "ok"
   //    }
 
-  DEBUGINFO << "parseCondTxCreateReply" << replyData;
+  DEBUGINFO << __func__ << replyData;
 
   QJsonDocument doc;
-  parseJson (replyData.toUtf8(), baseErrorCode, &doc);
+  parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
 
   if (jsonError())
     return;
@@ -723,10 +723,10 @@ void DapNodeWeb3::parseMempoolReply (const QString &replyData, int baseErrorCode
   //        "status": "ok"
   //    }
 
-  DEBUGINFO << "parseMempoolReply" << replyData;
+  DEBUGINFO << __func__ << replyData;
 
   QJsonDocument doc;
-  parseJson (replyData.toUtf8(), baseErrorCode, &doc);
+  parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
 
   if (jsonError())
     return;
@@ -744,10 +744,10 @@ void DapNodeWeb3::parseLedgerReply (const QString &replyData, int baseErrorCode)
   //        "status": "ok"
   //    }
 
-  DEBUGINFO << "parseLedgerReply" << replyData;
+  DEBUGINFO << __func__ << replyData;
 
   QJsonDocument doc;
-  parseJson (replyData.toUtf8(), baseErrorCode, &doc);
+  parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
 
   if (jsonError())
     return;
@@ -777,10 +777,10 @@ void DapNodeWeb3::parseOrderList (const QString &replyData, int baseErrorCode)
   //"status": "ok"
   //}
 
-  DEBUGINFO << "parseOrderList" << replyData;
+  DEBUGINFO << __func__ << replyData;
 
   QJsonDocument doc;
-  parseJson (replyData.toUtf8(), baseErrorCode, &doc);
+  parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
 
   if (jsonError())
     return;
@@ -800,10 +800,10 @@ void DapNodeWeb3::parseNodeIp (const QString &replyData, int baseErrorCode)
   //        "status": "ok"
   //    }
 
-  DEBUGINFO << "parseNodeIp" << replyData;
+  DEBUGINFO << __func__ << replyData;
 
   QJsonDocument doc;
-  parseJson (replyData.toUtf8(), baseErrorCode, &doc);
+  parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
 
   if (jsonError())
     return;
@@ -841,12 +841,12 @@ void DapNodeWeb3::parseFee (const QString &replyData, int baseErrorCode)
   //        "status": "ok"
   //    }
 #ifdef ENABLE_SENSITIVE_PRINTS
-  DEBUGINFO << "parseFee" << replyData;
+  DEBUGINFO << __func__ << replyData;
 #endif // ENABLE_SENSITIVE_PRINTS
 
   /* parse */
   QJsonDocument doc;
-  parseJson (replyData.toUtf8(), baseErrorCode, &doc);
+  parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
 
   if (jsonError())
     return;
@@ -923,10 +923,10 @@ void DapNodeWeb3::parseNodeDump (const QString &replyData, int baseErrorCode)
 //    "status": "ok"
 //    }
 
-  DEBUGINFO << "parseNodeDump" << replyData;
+  DEBUGINFO << __func__ << replyData;
 
   QJsonDocument doc;
-  parseJson (replyData.toUtf8(), baseErrorCode, &doc);
+  parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
 
   if (jsonError())
     return;
@@ -980,11 +980,11 @@ void DapNodeWeb3::parseListKeys (const QString &replyData, int baseErrorCode)
 //        "status": "ok"
 //    }
 #ifdef ENABLE_SENSITIVE_PRINTS
-  DEBUGINFO << "parseListKeys" << replyData;
+  DEBUGINFO << __func__ << replyData;
 #endif // ENABLE_SENSITIVE_PRINTS
 
   QJsonDocument doc;
-  parseJson (replyData.toUtf8(), baseErrorCode, &doc);
+  parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
 
   if (jsonError())
     return;
@@ -1003,7 +1003,7 @@ void DapNodeWeb3::parseListKeys (const QString &replyData, int baseErrorCode)
 }
 
 
-void DapNodeWeb3::parseJson (const QString &replyData, int baseErrorCode, QJsonDocument *a_destDoc)
+void DapNodeWeb3::parseJson (const QString &replyData, int baseErrorCode, const QString &a_replyName, QJsonDocument *a_destDoc)
 {
   // reply example
   //    "{ ... "
@@ -1022,7 +1022,7 @@ void DapNodeWeb3::parseJson (const QString &replyData, int baseErrorCode, QJsonD
   /* return if unable to parse JSON */
   if (doc.isNull())
     {
-      replyError (baseErrorCode + 30000,  "Unable to parse json data");
+      replyError (baseErrorCode + 30000,  "Unable to parse json data", "Invalid WEB3 response data");
 #ifdef ENABLE_SENSITIVE_PRINTS
       DEBUGINFO << "Invalid json data:" << replyData;
 #endif // ENABLE_SENSITIVE_PRINTS
@@ -1060,21 +1060,25 @@ void DapNodeWeb3::parseJson (const QString &replyData, int baseErrorCode, QJsonD
       if (!errorMsgString.isEmpty())
         {
           replyError (baseErrorCode + 40000,
-                      QString ("Status is \"%1\" : %2").arg (status, errorMsgString));
+                      errorMsgString,
+                      QString ("Request \"%1\" status is \"%2\"").arg (a_replyName, status));
           m_parseJsonError = true;
           return;
         }
     }
 
   /* if no error details present */
-  replyError (baseErrorCode + 50000, "Error, details missing");
+  replyError (baseErrorCode + 50000, "Error, details missing", "Error, details missing");
   m_parseJsonError = true;
   return;
 }
 
-void DapNodeWeb3::replyError (int errorCode, const QString errorString)
+void DapNodeWeb3::replyError (int errorCode, const QString &errorString, const QString &errorGuiMessage)
 {
-  DEBUGINFO  << "Reply error" << errorCode << errorString;
-  emit sigError (errorCode, errorString);
+  DEBUGINFO << "Reply error"
+            << errorCode
+            << ((errorGuiMessage != errorString) ? errorGuiMessage : QString())
+            << errorString;
+  emit sigError (errorCode, errorGuiMessage);
 }
 
