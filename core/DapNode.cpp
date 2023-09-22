@@ -318,12 +318,12 @@ void DapNode::initStmStates()
             web3->DapNodeWeb3::condTxCreateRequest(
                         m_walletName,
                         m_networkName,
-                        certificateName("public"),
+//                        certificateName("public"),
+                        m_keyPath,
                         m_tokenName,
                         m_value,
                         m_unit,
-                        m_fee,
-                        m_keyPath);
+                        m_fee);
     });
     // mempool check
     connect(&m_stm->mempoolTxHashRequest, &QState::entered, this, [=](){
