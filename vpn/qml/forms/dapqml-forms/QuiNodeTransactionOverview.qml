@@ -6,6 +6,7 @@ import QtQuick.Layouts 1.2
 import QtQuick.Shapes 1.4
 import DapQmlStyle 1.0
 import Brand 1.0
+import InterfaceManager 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -90,6 +91,8 @@ Item {
     function showReciept() {
         root.internal.mode  = 2;
     }
+
+    Component.onCompleted: InterfaceManager.setupForm (root);
 
     /// @}
     /****************************************//**

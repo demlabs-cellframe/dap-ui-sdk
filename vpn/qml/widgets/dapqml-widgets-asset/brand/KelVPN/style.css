@@ -1980,6 +1980,23 @@
 
 
 /****************************************************
+ * Shelf
+ ***************************************************/
+
+.shelf-title
+{
+    scaled-rect: scaled(nan,12,-1,32,false,20);
+    font-weight: Font.Bold;
+}
+
+.shelf-close-btn
+{
+    scaled-rect: scaled(nan,12,32,32,true);
+    qproperty-inactive: "@btn-update-notification-close";
+    qproperty-active: "@btn-update-notification-close-hover";
+}
+
+/****************************************************
  * Routing Exceptions
  ***************************************************/
 
