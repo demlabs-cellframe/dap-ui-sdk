@@ -175,6 +175,9 @@ Item {
     signal walletSelected(bool selected);
     signal sigStartUpdate();
 
+    /// @brief request trial button clicked
+    signal sigRequestTrialClicked();
+
     /// @}
     /****************************************//**
      * @name FUNCTIONS
@@ -752,6 +755,37 @@ Item {
 
         }
     }
+
+    /****************************************//**
+     * Request trial key button
+     ********************************************/
+
+    DapQmlRectangle {
+        id: requestTrialBtn
+        visible: Brand.name() === "KelVPN"
+        radius: fontSize * 0.857142857
+        qss: hovered
+             ? "login-request-trial login-request-trial-c-hover"
+             : "login-request-trial login-request-trial-c-idle"
+
+        property int fontSize: 14
+        property bool hovered: false
+
+        DapQmlLabel {
+            anchors.fill: parent
+            fontSize: parent.fontSize
+            qss: "c-brand"
+            text: qsTr("REQUEST A 3 DAY TRIAL") + lang.notifier
+        }
+
+        MouseArea {
+            hoverEnabled: true
+            onEntered: requestTrialBtn.hovered = true
+            onExited: requestTrialBtn.hovered  = false
+            onClicked: root.sigRequestTrialClicked();
+        }
+    }
+
     /****************************************//**
      * Transaction processing label
      ********************************************/

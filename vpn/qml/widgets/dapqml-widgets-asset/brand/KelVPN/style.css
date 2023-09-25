@@ -999,6 +999,21 @@
     opacity: 0.2;
 }
 
+.login-request-trial
+{
+    scaled-rect: scaled(-1,453,356,46,false,14);
+}
+
+.login-request-trial-c-idle
+{
+    color: "#FEEAF0";
+}
+
+.login-request-trial-c-hover
+{
+    color: "#FFD6E2";
+}
+
 /* SPACE CALC */
 
 .login-space-for3rows
