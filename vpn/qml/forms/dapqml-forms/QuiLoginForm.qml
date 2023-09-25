@@ -780,6 +780,7 @@ Item {
         }
 
         MouseArea {
+            anchors.fill: parent
             hoverEnabled: true
             onEntered: requestTrialBtn.hovered = true
             onExited: requestTrialBtn.hovered  = false
