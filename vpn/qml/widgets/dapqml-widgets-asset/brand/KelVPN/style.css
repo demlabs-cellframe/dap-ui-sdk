@@ -893,6 +893,11 @@
 
 .login-btn-nocbd-skey-server-container
 {
+    scaled-rect: scaled(-1,332,356,78,true);
+}
+
+.login-btn-nocbd-skey-orders-container
+{
     scaled-rect: scaled(-1,360,356,78,true);
 }
 
@@ -908,7 +913,7 @@
 
 .login-type-container
 {
-    scaled-rect: scaled(nan,502,nan,108,false);
+    scaled-rect: scaled(nan,525,nan,108,false);
 }
 
 .login-mode-btn-serial-nocbd
@@ -933,7 +938,7 @@
 
 .login-btn-serial-container-nocbd
 {
-    scaled-rect: scaled(-1,242,356,108,true);
+    scaled-rect: scaled(-1,210,356,108,true);
 }
 
 .login-btn-serial

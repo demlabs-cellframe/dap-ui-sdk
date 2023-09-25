@@ -734,8 +734,8 @@ Item {
                 if (Brand.name() === "KelVPN"
                     && internal.cellfarameDetected)
                 {
-                    //if (internal.mode === QuiLoginForm.Mode.M_WALLET)
-                    //    return "login-btn-nocbd-wallet-server-container"
+                    if (internal.mode === QuiLoginForm.Mode.M_WALLET)
+                        return "login-btn-nocbd-skey-orders-container"
                     return "login-btn-nocbd-skey-server-container"
                 }
                 else
@@ -763,6 +763,7 @@ Item {
     DapQmlRectangle {
         id: requestTrialBtn
         visible: Brand.name() === "KelVPN"
+                 && internal.mode !== QuiLoginForm.Mode.M_WALLET
         radius: fontSize * 0.857142857
         qss: hovered
              ? "login-request-trial login-request-trial-c-hover"
@@ -837,49 +838,49 @@ Item {
             }
         }
 
-        /* retry button */
-        DapQmlRectangle {
-            id: retryBtn
-            visible: internal.cellfarameDetected
-                     && (internal.transactionProcessing || internal.waitingForApproval)
-            qss: "login-transaction-processing-retry-button"
+//        /* retry button */
+//        DapQmlRectangle {
+//            id: retryBtn
+//            visible: internal.cellfarameDetected
+//                     && (internal.transactionProcessing || internal.waitingForApproval)
+//            qss: "login-transaction-processing-retry-button"
 
-            QtObject {
-                id: animationCtl
-                property Timer timer: Timer {
-                    interval: 500
-                    running: false
-                    repeat: false
-                    onTriggered: animationCtl.finish()
-                }
+//            QtObject {
+//                id: animationCtl
+//                property Timer timer: Timer {
+//                    interval: 500
+//                    running: false
+//                    repeat: false
+//                    onTriggered: animationCtl.finish()
+//                }
 
-                function start() {
-                    retryBtn.qss    = "c-brand";
-                    timer.start();
-                }
+//                function start() {
+//                    retryBtn.qss    = "c-brand";
+//                    timer.start();
+//                }
 
-                function finish() {
-                    retryBtn.qss    = "login-transaction-processing-retry-button";
-                }
-            }
+//                function finish() {
+//                    retryBtn.qss    = "login-transaction-processing-retry-button";
+//                }
+//            }
 
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    animationCtl.start();
-                    root.sigRetryButtonClicked();
-                }
-            }
+//            MouseArea {
+//                anchors.fill: parent
+//                onClicked: {
+//                    animationCtl.start();
+//                    root.sigRetryButtonClicked();
+//                }
+//            }
 
-            DapQmlLabel {
-                anchors.centerIn: parent
-                disableClicking: true
-                width: contentWidth
-                height: contentHeight
-                qss: "c-label"
-                text: "Retry"
-            }
-        }
+//            DapQmlLabel {
+//                anchors.centerIn: parent
+//                disableClicking: true
+//                width: contentWidth
+//                height: contentHeight
+//                qss: "c-label"
+//                text: "Retry"
+//            }
+//        }
 
         DapQmlLabel {
             id: loginInfoLabel
