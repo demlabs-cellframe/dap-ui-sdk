@@ -525,19 +525,23 @@ Item {
 //     * Top separator
 //     ********************************************/
 
-//    DapQmlRectangle {
-//        x: loginSepsPlacer.x
-//        y: loginSpacer.y + loginSepsPlacer.y
-//        width: loginSepsPlacer.width
-//        height: loginSepsPlacer.height
-//        DapQmlSeparator {
-//            x: (parent.width - width) / 2
-//            z: 15
-//            width: parent.width - 74
-//            qss: "login-separator"
-//        }
-//        DapQmlDummy {
-//            id: loginSepsPlacer
+    DapQmlRectangle {
+        x: loginSepsPlacer.x
+        y: loginSpacer.y + loginSepsPlacer.y
+        width: loginSepsPlacer.width
+        height: loginSepsPlacer.height
+        visible: root.internal.legacyStyle
+
+        DapQmlSeparator {
+            x: (parent.width - width) / 2
+            z: 15
+            width: parent.width - 74
+            qss: "login-separator"
+        }
+
+        DapQmlDummy {
+            id: loginSepsPlacer
+            qss: "login-separator-container"
 //            qss:Brand.name() === "KelVPN" && internal.cellfarameDetected
 ////               NoCBD mode
 //                 ? internal.mode === QuiLoginForm.Mode.M_WALLET
@@ -548,8 +552,8 @@ Item {
 //                 : "login-nocbd-skey-separator-container"
 ////               other
 //                 : "login-separator-container"
-//        }
-//    }
+        }
+    }
 
     /****************************************//**
      * Choose wallet for NoCBD
@@ -693,7 +697,8 @@ Item {
             qss: "login-btn-server"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            frame: true
+            separator: root.internal.legacyStyle
+            frame: !root.internal.legacyStyle // true
             link: true
 
             /* signals */
@@ -714,7 +719,8 @@ Item {
             qss: "login-btn-server"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            frame: true
+            separator: root.internal.legacyStyle
+            frame: !root.internal.legacyStyle // true
             link: true
 
             /* signals */
