@@ -7,6 +7,7 @@ import QtQuick.Shapes 1.4
 import DapQmlStyle 1.0
 import Brand 1.0
 import InterfaceManager 1.0
+import ShelfCtl 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -16,9 +17,10 @@ import "qrc:/dapqml-widgets"
  * @author Mikhail Shilenko
  *******************************************/
 
-Item {
+DapQmlRectangle {
     id: root
     clip: true
+    qss: "nodeorlist-overview-frame"
 
     /****************************************//**
      * @name VARS
@@ -52,7 +54,7 @@ Item {
         ]
 
         onModeChanged: {
-            labelTitle.text  = modeSettings[mode * 1];
+            ShelfCtl.title  = modeSettings[mode * 1];
         }
     }
 
@@ -92,7 +94,10 @@ Item {
         root.internal.mode  = 2;
     }
 
-    Component.onCompleted: InterfaceManager.setupForm (root);
+    Component.onCompleted: {
+        ShelfCtl.title  = root.internal.txtOverview
+        InterfaceManager.setupForm (root);
+    }
 
     /// @}
     /****************************************//**
@@ -147,6 +152,7 @@ Item {
             }
         }
     }
+
     Component {
         id: pushButton
 
@@ -183,166 +189,152 @@ Item {
      * Content
      ********************************************/
 
+    /* overview */
+
     DapQmlRectangle {
-        anchors.bottom: parent.bottom
-        radius: 25
-        qss: "nodeorlist-overview-frame c-background"
+        id: overview
+        qss: "nodeorlist-overview-container"
 
-        /* title */
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.margins: linkImageSizer.width
 
-        DapQmlLabel {
-            id: labelTitle
-            text: root.internal.txtOverview
-            qss: "nodeorderlist-agreement-title"
-        }
+            Loader {
+                property string first:  qsTr("Network")
+                property string second: root.internal.network
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                sourceComponent: compOverviewItem
+            }
 
-        /* overview */
+            Loader {
+                property string first:  qsTr("Wallet")
+                property string second: root.internal.wallet
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                sourceComponent: compOverviewItem
+            }
+
+            Loader {
+                property string first:  qsTr("Server")
+                property string second: root.internal.server
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                sourceComponent: compOverviewItem
+            }
+
+            Loader {
+                property string first:  qsTr("Unit")
+                property string second: root.internal.unit
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                sourceComponent: compOverviewItem
+            }
+
+            DapQmlSeparator {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 2
+            }
+
+            DapQmlLabel {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.topMargin: linkImageSizer.width * 0.05
+                qss: "nodeorlist-overview-price"
+                text: root.internal.priceShort
+            }
+        } // ColumnLayout
+    } // Container
+
+    /* loading animation */
+
+    DapQmlRectangle {
+        anchors.top: overview.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        z: 60
+        qss: "nodeorlist-spinner-bg"
+        visible: root.internal.mode === 1
 
         DapQmlRectangle {
-            id: overview
-            qss: "nodeorlist-overview-container"
+            id: progressCircle
+            anchors.centerIn: parent
+            qss: "nodeorlist-spinner-arc"
 
-            ColumnLayout {
+            property string color
+            property int strokeWidth: 10
+
+            Shape {
+                id: nodeorInfoArcAnim
                 anchors.fill: parent
-                anchors.margins: linkImageSizer.width
+                layer.enabled: true
+                layer.samples: 6
 
-                Loader {
-                    property string first:  qsTr("Network")
-                    property string second: root.internal.network
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    sourceComponent: compOverviewItem
-                }
+                ShapePath {
+                    fillColor: "transparent"
+                    strokeColor: progressCircle.color
+                    strokeWidth: progressCircle.strokeWidth
+                    capStyle: ShapePath.FlatCap
 
-                Loader {
-                    property string first:  qsTr("Wallet")
-                    property string second: root.internal.wallet
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    sourceComponent: compOverviewItem
-                }
+                    PathAngleArc {
+                        id: loginInfoArcPath
+                        centerX: nodeorInfoArcAnim.width / 2
+                        centerY: nodeorInfoArcAnim.height / 2
+                        radiusX: nodeorInfoArcAnim.width / 2 - progressCircle.strokeWidth / 2
+                        radiusY: nodeorInfoArcAnim.height / 2 - progressCircle.strokeWidth / 2
+                        startAngle: 90
+                        sweepAngle: 180
 
-                Loader {
-                    property string first:  qsTr("Server")
-                    property string second: root.internal.server
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    sourceComponent: compOverviewItem
-                }
-
-                Loader {
-                    property string first:  qsTr("Unit")
-                    property string second: root.internal.unit
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    sourceComponent: compOverviewItem
-                }
-
-                DapQmlSeparator {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 2
-                }
-
-                DapQmlLabel {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    Layout.topMargin: linkImageSizer.width * 0.05
-                    qss: "nodeorlist-overview-price"
-                    text: root.internal.priceShort
-                }
-            } // ColumnLayout
-        } // Container
-
-        /* loading animation */
-
-        DapQmlRectangle {
-            anchors.top: overview.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
-            z: 60
-            qss: "nodeorlist-spinner-bg"
-            visible: root.internal.mode === 1
-
-            DapQmlRectangle {
-                id: progressCircle
-                anchors.centerIn: parent
-                qss: "nodeorlist-spinner-arc"
-
-                property string color
-                property int strokeWidth: 10
-
-                Shape {
-                    id: nodeorInfoArcAnim
-                    anchors.fill: parent
-                    layer.enabled: true
-                    layer.samples: 6
-
-                    ShapePath {
-                        fillColor: "transparent"
-                        strokeColor: progressCircle.color
-                        strokeWidth: progressCircle.strokeWidth
-                        capStyle: ShapePath.FlatCap
-
-                        PathAngleArc {
-                            id: loginInfoArcPath
-                            centerX: nodeorInfoArcAnim.width / 2
-                            centerY: nodeorInfoArcAnim.height / 2
-                            radiusX: nodeorInfoArcAnim.width / 2 - progressCircle.strokeWidth / 2
-                            radiusY: nodeorInfoArcAnim.height / 2 - progressCircle.strokeWidth / 2
-                            startAngle: 90
-                            sweepAngle: 180
-
-                            NumberAnimation on startAngle {
-                                from: 0
-                                to: 360
-                                running: true
-                                loops: Animation.Infinite
-                                duration: 2000
-                            }
+                        NumberAnimation on startAngle {
+                            from: 0
+                            to: 360
+                            running: true
+                            loops: Animation.Infinite
+                            duration: 2000
                         }
                     }
                 }
             }
         }
+    }
 
-        /* user interact */
+    /* user interact */
 
-        ColumnLayout {
-            anchors.bottom: parent.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottomMargin: pushButtonSizer.height * 1.25
-            width: pushButtonSizer.width
-            height: pushButtonSizer.height * 2.125
+    ColumnLayout {
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottomMargin: pushButtonSizer.height * 0.75
+        width: pushButtonSizer.width
+        height: pushButtonSizer.height * 2.125
 
-            Loader {
-                enabled: root.internal.mode !== 1
-                Layout.fillWidth: true
-                Layout.preferredHeight: pushButtonSizer.height
-                sourceComponent: pushButton
-                property string text:
-                    root.internal.mode === 0
-                    ? qsTr("CONFIRM PURCHASE")
-                    : qsTr("SIGN PURCHASE")
-                property color color: "#F45480"
-                property var cbClicked: function() {
-                    root.sigConfirm();
-                    // console.log("confirm clicked");
-                }
+        Loader {
+            enabled: root.internal.mode !== 1
+            Layout.fillWidth: true
+            Layout.preferredHeight: pushButtonSizer.height
+            sourceComponent: pushButton
+            property string text:
+                root.internal.mode === 0
+                ? qsTr("CONFIRM PURCHASE")
+                : qsTr("SIGN PURCHASE")
+            property color color: "#F45480"
+            property var cbClicked: function() {
+                root.sigConfirm();
+                // console.log("confirm clicked");
             }
+        }
 
-            Loader {
-                //enabled: root.internal.mode !== 1
-                Layout.fillWidth: true
-                Layout.preferredHeight: pushButtonSizer.height
-                sourceComponent: pushButton
-                property string text: qsTr("CANCEL")
-                property color color: "#A9A9B0"
-                property var cbClicked: function() {
-                    root.sigCancel();
-                    // console.log("cancel clicked");
-                }
+        Loader {
+            //enabled: root.internal.mode !== 1
+            Layout.fillWidth: true
+            Layout.preferredHeight: pushButtonSizer.height
+            sourceComponent: pushButton
+            property string text: qsTr("CANCEL")
+            property color color: "#A9A9B0"
+            property var cbClicked: function() {
+                root.sigCancel();
+                // console.log("cancel clicked");
             }
-        } // ColumnLayout
-    } // Transaction Overview
+        }
+    } // ColumnLayout
 }
 
 /*-----------------------------------------*/
