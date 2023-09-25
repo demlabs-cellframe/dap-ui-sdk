@@ -47,18 +47,24 @@ Item {
      ********************************************/
     /// @{
 
+    function setMainText(a_item, a_text) {
+        if (a_text.indexOf("-") !== -1)
+            return;
+        a_item.mainText = a_text;
+    }
+
     /// @brief change all indicators text
     function updateIndicators(a_bytesReceived, a_bytesSent,
                               a_packetsReceived, a_packetsSent,
                               a_uploadSpeed, a_downloadSpeed,
                               a_uploadSpeedString, a_downloadSpeedString)
     {
-        stBytesRec.mainText     = a_bytesReceived;
-        stBytesSent.mainText    = a_bytesSent;
-        stPacketsRec.mainText   = a_packetsReceived;
-        stPacketsSent.mainText  = a_packetsSent;
-        stDownSpeed.mainText    = a_downloadSpeedString;
-        stUpSpeed.mainText      = a_downloadSpeedString;
+        setMainText (stBytesRec,       a_bytesReceived);
+        setMainText (stBytesSent,      a_bytesSent);
+        setMainText (stPacketsRec,     a_packetsReceived);
+        setMainText (stPacketsSent,    a_packetsSent);
+        setMainText (stDownSpeed,      a_downloadSpeedString);
+        setMainText (stUpSpeed,        a_downloadSpeedString);
     }
 
     /// @brief change uptime label text

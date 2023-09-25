@@ -158,8 +158,8 @@ private slots:
   void sendRequest (QString request);
 
   // reply error
-  void replyError (int errorCode, const QString errorString);
-  void parseJson (const QString &replyData, int baseErrorCode, QJsonDocument *a_destDoc = nullptr);
+  void replyError (int errorCode, const QString &errorString, const QString &errorGuiMessage);
+  void parseJson (const QString &replyData, int baseErrorCode, const QString &a_replyName, QJsonDocument *a_destDoc = nullptr);
 
   // response processing
   void parseReplyStatus (const QString &replyData, int baseErrorCode);
@@ -197,7 +197,7 @@ signals:
   void sigMempoolContainHash();
   void sigLedgerContainHash();
   void sigOrderList (QJsonArray);
-  void sigNodeIp (QJsonArray);
+  void sigNodeIp (QJsonObject);
   void sigFee (QString fee);
   void connectionIdReceived (QString connectionId);
   void sigNodeDump (QList<QMap<QString, QString>> nodeDump);

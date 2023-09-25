@@ -180,7 +180,7 @@ public slots:
   void slotSetWalletListData (const QHash<QString, QStringList> &a_walletData);
   void slotSetNetworkListData (const QHash<QString, QStringList> &a_networkData);
   void slotSetTokensListData (const QHash<QString, QString> &a_tokensData);
-  void slotSetOrderAddresses (const QJsonArray &a_list);
+  void slotSetOrderAddresses (const QJsonObject &a_list);
   /// @}
 };
 

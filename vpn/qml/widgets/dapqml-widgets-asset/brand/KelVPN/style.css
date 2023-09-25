@@ -715,14 +715,14 @@
 .popup-dalog-middle-button
 {
     scaled-rect: scaled(nan,nan,110,48,false);
-    color: "@light-grey";
+    color: "@brand";
     radius: 8;
 }
 
 .popup-dalog-middle-label
 {
     scaled-font: scaled(16);
-    color: "#1E1E1E";
+    color: "#FFFFFF";
 }
 
 /****************************************************

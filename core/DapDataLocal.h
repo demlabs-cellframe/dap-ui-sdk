@@ -33,6 +33,7 @@ const QString LAST_SELECTED_SERVER      = "lastSelectedServer";
 const QString SETTING_THEME             = "ColorTheme";
 const QString SETTING_ROUEXC_MODE       = "rouExcMode";
 const QString NODE_ORDER_HISTORY        = "nodeOrderHistory";
+const QString SERIAL_LOSS_ON_UNINSTALL_FLAG = "serialLossOnUninstallFlag";
 
 class DapSerialKeyData;
 enum class Authorization;

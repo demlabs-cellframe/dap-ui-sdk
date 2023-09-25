@@ -126,6 +126,8 @@ private:
     QString m_unit;
     // transaction hash
     QString m_transactionHash;
+    // key path for tx create
+    QString m_keyPath;
     // wallets list
     QStringList m_walletsList;
     // network list
@@ -176,7 +178,7 @@ private:
 public slots:
     void startCheckingNodeRequest();
     void stopCheckingNodeRequest();
-    void slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
+    void slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit, QString keyPath);
     void slotGetOrdersList(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
     void slotNodeIpReqest(QString srvUid, QString nodeAddress);
     void slotGetNodeIpForOrderListReqest(QString srvUid, QJsonArray orderList);
@@ -193,7 +195,7 @@ signals:
     void sigNodeDetected();
     void sigWalletsDataReady(QJsonObject);
     void sigOrderListReady(QJsonArray);
-    void sigSendNodeIp(QJsonArray);
+    void sigSendNodeIp(QJsonObject);
     void sigMempoolContainHash();
     void sigLedgerContainHash();
     void sigCondTxCreateSuccess(QString hash);

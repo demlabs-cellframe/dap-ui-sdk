@@ -318,7 +318,8 @@ void DapNode::initStmStates()
             web3->DapNodeWeb3::condTxCreateRequest(
                         m_walletName,
                         m_networkName,
-                        certificateName("public"),
+//                        certificateName("public"),
+                        m_keyPath,
                         m_tokenName,
                         m_value,
                         m_unit,
@@ -392,6 +393,11 @@ void DapNode::initWeb3Connections()
     // web3 error detected
     connect(web3, &DapNodeWeb3::sigError, this, [=](int errorCode, QString errorMessage){
         emit errorDetected();
+
+        /* ignore and do not send "Wrong reply connect" error */
+        if (errorCode == 100110)
+          return;
+
         emit sigError(errorCode, errorMessage);
     });
     // get wallet data
@@ -429,7 +435,7 @@ void DapNode::initWeb3Connections()
         emit sigOrderListReady(ordersList); //emit sigOrderListReady(orders);
     });
 
-    connect(web3, &DapNodeWeb3::sigNodeIp, this, [=](QJsonArray data) {
+    connect(web3, &DapNodeWeb3::sigNodeIp, this, [=](QJsonObject data) {
         emit sigSendNodeIp(data);
     });
 
@@ -455,13 +461,14 @@ void DapNode::initWeb3Connections()
 
 }
 
-void DapNode::slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit)
+void DapNode::slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit, QString keyPath)
 {
     m_walletName = walletName;
     m_networkName = networkName;
     m_tokenName = tokenName;
     m_value = value;
     m_unit = unit;
+    m_keyPath = keyPath;
     emit sigCondTxCreateRequest();
 }
 

@@ -239,10 +239,10 @@ void DapCmdNode::handleResult (const QJsonObject &params)
       return;
     }
 
-  if (params.value ("node_ip_list").isArray())
+  if (params.value ("node_ip_list").isObject())
   {
-    auto array  = params.value ("node_ip_list").toArray();
-    emit sigNodeIpList (array);
+    auto jobj  = params.value ("node_ip_list").toObject();
+    emit sigNodeIpList (jobj);
     return;
   }
 }
