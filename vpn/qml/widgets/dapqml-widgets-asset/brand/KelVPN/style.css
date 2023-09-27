@@ -2584,3 +2584,51 @@
 {
     scaled-rect: scaled(nan,nan,nan,12,false);
 }
+
+.seedphrase-copy-btn-idle
+{
+    color: "@sett-hover-background";
+}
+
+.seedphrase-coby-btn-active
+{
+    color: "@separator-color";
+}
+
+.seedphrase-copy-btn
+{
+    scaled-rect: scaled(-1,440,356,48,false);
+}
+
+.seedphrase-copy-btn-label
+{
+    scaled-font: scaled(12);
+    color: "@text";
+    font-weight: Font.Bold;
+}
+
+.seedphrase-understand-frame
+{
+    scaled-rect: scaled(-1,512,356,48,false);
+}
+
+.seedphrase-understand-chbox
+{
+    scaled-rect: scaled(nan,nan,80,80,true);
+}
+
+.seedphrase-understand-description
+{
+    scaled-font: scaled(14);
+    color: "@label";
+}
+
+.seedphrase-accept-btn
+{
+    scaled-rect: scaled(-1,604,356,80,false,16);
+}
+
+.seedphrase-accept-separator
+{
+    scaled-rect: scaled(nan,584,-1,2,false);
+}

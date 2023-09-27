@@ -67,6 +67,7 @@ void DapQmlLayout::setContentHeight (qreal a_value)
   m_contentHeight = a_value;
   emit sigContentHeightChanged();
 }
+
 /********************************************
  * OVERRIDE
  *******************************************/
@@ -74,14 +75,16 @@ void DapQmlLayout::setContentHeight (qreal a_value)
 QSGNode *DapQmlLayout::updatePaintNode (QSGNode *, UpdatePaintNodeData *)
 {
   /* arrange items inside */
-  QPointF pos { 0, 0 };
-  QSizeF content { 0, 0 };
+  QPointF pos       { 0, 0 };
+  QSizeF content    { 0, 0 };
   QSizeF canvasSize = size();
-  qreal maxWidth  = 0;
-  qreal maxHeight = 0;
+  qreal maxWidth    = 0;
+  qreal maxHeight   = 0;
+
+  //qDebug() << __func__ << boundingRect();
+
+  //int i = 0;
   QList<QQuickItem *> items = childItems();
-  qDebug() << __func__ << boundingRect();
-  int i = 0;
   for (QQuickItem *item : qAsConst (items))
   {
     /* skip invisible items */
@@ -162,14 +165,16 @@ QSGNode *DapQmlLayout::updatePaintNode (QSGNode *, UpdatePaintNodeData *)
     /* set rect */
     /* ------------------------------------------------------------------- */
 
-    qDebug().nospace() << "item " << i++ << " " << rect;
     item->setPosition (rect.topLeft());
+
+    //qDebug().nospace() << "item " << i++ << " " << rect;
   }
 
   /* store result content size */
   setContentWidth (content.width());
   setContentHeight (content.height());
-  qDebug() << __func__ << canvasSize << "result:" << content;
+
+  //qDebug() << __func__ << canvasSize << "result:" << content;
 
   return nullptr;
 }

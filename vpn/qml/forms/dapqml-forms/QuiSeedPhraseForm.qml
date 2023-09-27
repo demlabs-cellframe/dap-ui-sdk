@@ -44,7 +44,7 @@ DapQmlRectangle {
     signal sigAgreementCheck(bool a_checked);
 
     Component.onCompleted: {
-        ShelfCtl.title  = qsTr("Seed Phrase") + lang.notifier
+        ShelfCtl.title  = qsTr("Seed phrase") + lang.notifier
         InterfaceManager.setupForm (root);
     }
 
@@ -154,20 +154,22 @@ DapQmlRectangle {
         id: wordsGrid
         spacing: wordsGridSpacing.height
 
-        Loader { sourceComponent: compWord; property string text: "word 1" }
-        Loader { sourceComponent: compWord; property string text: "word  2" }
-        Loader { sourceComponent: compWord; property string text: "word   3" }
-        Loader { sourceComponent: compWord; property string text: "word 4" }
-        Loader { sourceComponent: compWord; property string text: "word    5" }
-        Loader { sourceComponent: compWord; property string text: "word  6" }
-        Loader { sourceComponent: compWord; property string text: "word      7" }
-        Loader { sourceComponent: compWord; property string text: "word 1" }
-        Loader { sourceComponent: compWord; property string text: "word  2" }
-        Loader { sourceComponent: compWord; property string text: "word   3" }
-        Loader { sourceComponent: compWord; property string text: "word 4" }
-        Loader { sourceComponent: compWord; property string text: "word    5" }
-        Loader { sourceComponent: compWord; property string text: "word  6" }
-        Loader { sourceComponent: compWord; property string text: "word      7" }
+        Loader { sourceComponent: compWord; property string text: "1. word" }
+        Loader { sourceComponent: compWord; property string text: "2. word" }
+        Loader { sourceComponent: compWord; property string text: "3. word" }
+        Loader { sourceComponent: compWord; property string text: "4. word" }
+        Loader { sourceComponent: compWord; property string text: "5. word +" }
+        Loader { sourceComponent: compWord; property string text: "6. word" }
+        Loader { sourceComponent: compWord; property string text: "7. word" }
+        Loader { sourceComponent: compWord; property string text: "8. word ++" }
+        Loader { sourceComponent: compWord; property string text: "9. word" }
+        Loader { sourceComponent: compWord; property string text: "10. word" }
+        Loader { sourceComponent: compWord; property string text: "11. long word" }
+        Loader { sourceComponent: compWord; property string text: "12. word" }
+        Loader { sourceComponent: compWord; property string text: "13. word" }
+        Loader { sourceComponent: compWord; property string text: "14. long word" }
+        Loader { sourceComponent: compWord; property string text: "15. word" }
+        Loader { sourceComponent: compWord; property string text: "16. word" }
 
         DapQmlStyle { item: wordsGrid; qss: "seedphrase-words-grid" }
         DapQmlDummy { id: wordsGridSpacing; qss: "seedphrase-words-grid-spacing" }
@@ -177,13 +179,139 @@ DapQmlRectangle {
      * Copy button
      ********************************************/
 
+    DapQmlRectangle {
+        id: copyBtn
+        color: (hovered || pressed)
+               ? copyBtnColorActive.color
+               : copyBtnColorIdle.color
+        qss: "seedphrase-copy-btn push-button"
+
+        property bool hovered: false
+        property bool pressed: false
+
+        /* colors */
+
+        DapQmlDummy { id: copyBtnColorIdle;   property string color; qss: "seedphrase-copy-btn-idle" }
+        DapQmlDummy { id: copyBtnColorActive; property string color; qss: "seedphrase-coby-btn-active" }
+
+        /* label */
+
+        DapQmlLabel {
+            anchors.centerIn: parent
+            width: contentWidth
+            height: contentHeight
+            qss: "seedphrase-copy-btn c-label"
+            text: parent.pressed
+                  ? qsTr("Copied!") + lang.notifier
+                  : qsTr("Copy to clipboard") + lang.notifier
+        }
+
+        /* clickable area */
+
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+            onEntered: copyBtn.hovered = true;
+            onExited:  copyBtn.hovered = false;
+            onClicked: {
+                if (copyBtn.pressed)
+                    return;
+
+                copyBtn.pressed = true;
+                copyBtnTimer.start();
+
+                root.sigCopy();
+            }
+        }
+
+        /* unpress timer */
+
+        Timer {
+            id: copyBtnTimer
+            interval: 2000
+            repeat: false
+            running: false
+            onTriggered: copyBtn.pressed = false;
+        }
+    }
+
     /****************************************//**
      * Checkbox
      ********************************************/
 
+    DapQmlRectangle {
+        qss: "seedphrase-understand-frame"
+
+        RowLayout {
+            anchors.fill: parent
+
+            Item {
+                Layout.minimumWidth: ucd.width * 0.5
+                Layout.maximumWidth: ucd.width * 0.5
+                Layout.fillHeight: true
+                clip: true
+
+                DapQmlRectangle {
+                    id: ucd
+                    anchors.centerIn: parent
+                    qss: "seedphrase-understand-chbox"
+
+                    property bool hovered: false
+                    property bool checked: false
+
+                    DapQmlDummy { id: chOn;  property string scaledPixmap; qss: "checkbox-on" }
+                    DapQmlDummy { id: chOff; property string scaledPixmap; qss: "checkbox-off" }
+
+                    DapQmlImage {
+                        anchors.fill: parent
+                        visible: ucd.checked || ucd.hovered
+                        opacity: (!ucd.checked && ucd.hovered) ? 0.5 : 1
+                        scaledPixmap: chOn.scaledPixmap
+                    }
+
+                    DapQmlImage {
+                        anchors.fill: parent
+                        visible: !ucd.checked && !ucd.hovered
+                        scaledPixmap: chOff.scaledPixmap
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onEntered: ucd.hovered = true
+                        onExited:  ucd.hovered = false
+                        onClicked: ucd.checked = !ucd.checked
+                    }
+                }
+            }
+
+            DapQmlLabel {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                clip: true
+                wrapMode: Text.WordWrap
+                horizontalAlign: Text.AlignLeft
+                qss: "seedphrase-understand-description"
+                text: qsTr("I understand that if I lose my seed"
+                           + " phrase that I will not be able to"
+                           + " recover my key.")
+                           + lang.notifier
+            }
+        }
+    }
+
     /****************************************//**
      * Accept
      ********************************************/
+
+    DapQmlSeparator {
+        qss: "seedphrase-accept-separator"
+    }
+
+    DapQmlPushButton {
+        qss: "seedphrase-accept-btn"
+        text: qsTr("ACCEPT") + lang.notifier
+    }
 }
 
 /*-----------------------------------------*/
