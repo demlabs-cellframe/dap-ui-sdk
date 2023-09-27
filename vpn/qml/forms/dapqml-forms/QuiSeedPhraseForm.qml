@@ -280,7 +280,10 @@ DapQmlRectangle {
                         hoverEnabled: true
                         onEntered: ucd.hovered = true
                         onExited:  ucd.hovered = false
-                        onClicked: ucd.checked = !ucd.checked
+                        onClicked: {
+                            ucd.checked = !ucd.checked
+                            root.sigAgreementCheck (ucd.checked);
+                        }
                     }
                 }
             }
@@ -311,6 +314,7 @@ DapQmlRectangle {
     DapQmlPushButton {
         qss: "seedphrase-accept-btn"
         text: qsTr("ACCEPT") + lang.notifier
+        onClicked: root.sigAccept()
     }
 }
 
