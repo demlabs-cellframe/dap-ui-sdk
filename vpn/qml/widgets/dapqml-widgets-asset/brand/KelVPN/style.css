@@ -2551,3 +2551,36 @@
     color: "@text";
     scaled-font: scaled(14);
 }
+
+
+
+/****************************************************
+ * Seed Phrase
+ ***************************************************/
+
+.seedphrase-frame
+{
+    scaled-rect: scaled(nan,nan,-1,704,false);
+}
+
+.seedphrase-description
+{
+    scaled-rect: scaled(-1,68,356,52,false.16);
+    color: "@label";
+}
+
+.seedphrase-word-label
+{
+    scaled-font: scaled(14);
+    color: "@label";
+}
+
+.seedphrase-words-grid
+{
+    scaled-rect: scaled(-1,152,356,256,false);
+}
+
+.seedphrase-words-grid-spacing
+{
+    scaled-rect: scaled(nan,nan,nan,12,false);
+}

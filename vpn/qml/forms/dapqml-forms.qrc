@@ -43,5 +43,6 @@
         <file compress="1">dapqml-forms/QuiNodeOrderList.qml</file>
         <file compress="1">dapqml-forms/QuiNodeTransactionOverview.qml</file>
         <file compress="1">dapqml-forms/QuiNodeTransactionHistoryForm.qml</file>
+        <file>dapqml-forms/QuiSeedPhraseForm.qml</file>
     </qresource>
 </RCC>
