@@ -808,8 +808,7 @@
 
 .login-transaction-processing-arc-animation
 {
-    scaled-rect: scaled(-1,310,40,40,true);
-    qproperty-color: "@brand";
+    scaled-rect: scaled(-1,224,144,144,true);
 }
 
 .login-transaction-processing-retry-button
@@ -821,7 +820,7 @@
 
 .login-transaction-processing-label-nocbd
 {
-    scaled-rect: scaled(45,350,327,70,false,20);
+    scaled-rect: scaled(-1,380,327,70,false,20);
     color: "@text";
 }
 
@@ -873,7 +872,7 @@
 /*
     scaled-rect: scaled(-1,292,356,108,true);
 */
-    scaled-rect: scaled(-1,414,356,108,true);
+    scaled-rect: scaled(-1,390,356,108,true);
 }
 
 .login-btn-server
@@ -933,7 +932,7 @@
 .login-btn-serial-container
 {
     /*scaled-rect: scaled(-1,414,356,108,true);*/
-    scaled-rect: scaled(-1,292,356,108,true);
+    scaled-rect: scaled(-1,268,356,108,true);
 }
 
 .login-btn-serial-container-nocbd
@@ -1005,6 +1004,11 @@
 }
 
 .login-request-trial
+{
+    scaled-rect: scaled(-1,508,356,46,false,14);
+}
+
+.login-request-trial-nocdb
 {
     scaled-rect: scaled(-1,453,356,46,false,14);
 }

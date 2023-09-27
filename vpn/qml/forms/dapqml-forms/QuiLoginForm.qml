@@ -271,7 +271,7 @@ Item {
         console.log(`cellfarameDashboardDetected ${detected}`);
         internal.cellfarameDetected = detected && Brand.name() === "KelVPN";
         if (internal.waitingForApproval)
-            loginInfoLabel.text = "Waiting for approval"
+            loginInfoLabel.text = qsTr("Waiting for approval\n\nCheck the Cellframe Dashboard")
         loginTypeKelContainer.update();
     }
 
@@ -279,7 +279,7 @@ Item {
         console.log(`setWaitingForApproval ${approval}`);
         internal.waitingForApproval = approval
         if (internal.waitingForApproval)
-            loginInfoLabel.text = "Waiting for approval"
+            loginInfoLabel.text = qsTr("Waiting for approval\n\nCheck the Cellframe Dashboard")
     }
 
     function setWalletSeleted(selected)
@@ -765,12 +765,17 @@ Item {
         visible: Brand.name() === "KelVPN"
                  && internal.mode !== QuiLoginForm.Mode.M_WALLET
         radius: fontSize * 0.857142857
-        qss: hovered
-             ? "login-request-trial login-request-trial-c-hover"
-             : "login-request-trial login-request-trial-c-idle"
+        qss: qssList[(noCDB * 2) + (hovered * 1)]
 
         property int fontSize: 14
         property bool hovered: false
+        property bool noCDB: Brand.name() === "KelVPN" && internal.cellfarameDetected
+        property var qssList: [
+            "login-request-trial login-request-trial-c-hover",
+            "login-request-trial login-request-trial-c-idle",
+            "login-request-trial-nocdb login-request-trial-c-hover",
+            "login-request-trial-nocdb login-request-trial-c-idle"
+        ];
 
         DapQmlLabel {
             anchors.fill: parent
@@ -803,39 +808,11 @@ Item {
                      && (internal.transactionProcessing || internal.waitingForApproval)
             qss: "login-transaction-processing-arc-animation"
 
-            property string color
-            property int strokeWidth: 5
-
-            Shape {
-                id: loginInfoArcAnim
+            DapQmlArcAnimation {
                 anchors.fill: parent
-                layer.enabled: true
-                layer.samples: 6
-
-                ShapePath {
-                    fillColor: "transparent"
-                    strokeColor: progressCircle.color
-                    strokeWidth: progressCircle.strokeWidth
-                    capStyle: ShapePath.FlatCap
-
-                    PathAngleArc {
-                        id: loginInfoArcPath
-                        centerX: loginInfoArcAnim.width / 2
-                        centerY: loginInfoArcAnim.height / 2
-                        radiusX: loginInfoArcAnim.width / 2 - progressCircle.strokeWidth / 2
-                        radiusY: loginInfoArcAnim.height / 2 - progressCircle.strokeWidth / 2
-                        startAngle: 90
-                        sweepAngle: 180
-
-                        NumberAnimation on startAngle {
-                            from: 0
-                            to: 360
-                            running: true
-                            loops: Animation.Infinite
-                            duration: 2000
-                        }
-                    }
-                }
+                anchors.margins: parent.width * 0.275
+                z: 200
+                qss: "c-brand"
             }
         }
 
