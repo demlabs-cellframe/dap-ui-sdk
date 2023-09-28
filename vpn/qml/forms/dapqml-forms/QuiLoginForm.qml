@@ -811,6 +811,7 @@ Item {
             DapQmlArcAnimation {
                 anchors.fill: parent
                 anchors.margins: parent.width * 0.275
+                strokeWidth: 7
                 z: 200
                 qss: "c-brand"
             }
