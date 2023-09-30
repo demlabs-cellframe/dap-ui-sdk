@@ -2453,3 +2453,39 @@
     scaled-font: scaled(14);
 }
 
+
+
+/****************************************************
+ * Notifications history
+ ***************************************************/
+
+.notification-item-frame
+{
+    scaled-rect: scaled(nan,nan,nan,98,false);
+}
+
+.notification-item-timestamp-title
+{
+    color: "@text";
+    font-weight: Font.Bold;
+    scaled-font: scaled(20);
+}
+
+.notification-item-time
+{
+    color: "@input-placeholder";
+    scaled-font: scaled(12);
+}
+
+.notification-item-title
+{
+    color: "@text";
+    font-weight: Font.Bold;
+    scaled-font: scaled(16);
+}
+
+.notification-item-description
+{
+    scaled-rect: scaled(nan,nan,nan,48,false,16);
+    color: "@text";
+}
