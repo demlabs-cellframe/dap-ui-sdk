@@ -71,6 +71,11 @@ QString DapNotification::createdString() const
   return m_created.toString ("hh:mm:ss dd.MM.yyyy");
 }
 
+QString DapNotification::createdStringAM() const
+{
+  return m_created.toString ("hh:mm AP");
+}
+
 void DapNotification::setCreated (const QDateTime &a_value)
 {
   if (m_created == a_value)

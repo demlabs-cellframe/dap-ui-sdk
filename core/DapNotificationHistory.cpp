@@ -10,7 +10,7 @@
 
 /* DEFS */
 
-#define TEST_ITEMS
+//#define TEST_ITEMS
 
 #define ROLEFIELD(a_name) { int (DapNotificationHistory::FieldId::a_name), #a_name }
 
@@ -41,6 +41,7 @@ static const QHash<int, QByteArray> s_roles =
   ROLEFIELD (isTitle),
   ROLEFIELD (titleDate),
   ROLEFIELD (typeString),
+  ROLEFIELD (createdTime),
 };
 
 /********************************************
@@ -50,13 +51,14 @@ static const QHash<int, QByteArray> s_roles =
 DapNotificationHistory::DapNotificationHistory (QObject *parent)
   : QAbstractListModel (parent)
 {
+#ifndef TEST_ITEMS
   load();
-#ifdef TEST_ITEMS
+#else // TEST_ITEMS
   if (m_list.isEmpty())
   {
     append ("Can't find handle",          DapNotification::Type::Error);
-    append ("No requirements met",        DapNotification::Type::Notification);
-    append ("Can't parse provided data",  DapNotification::Type::Warning);
+    append ("No requirements met, No requirements met, No requirements met",        DapNotification::Type::Notification);
+    append ("Can't parse\nprovided\ndata\n{data}\nCan't parse\nprovided\ndata\n{data}",  DapNotification::Type::Warning);
   }
 #endif // TEST_ITEMS
 }
@@ -122,8 +124,8 @@ void DapNotificationHistory::append (const QString &a_message, DapNotification::
 
   Item item
   {
-    true,
-    today,
+    false,
+    QDate(),
     std::move (notification)
   };
 
@@ -173,10 +175,12 @@ void DapNotificationHistory::load()
       /* parse */
       QJsonObject jobj              = jitem.toObject();
       DapNotification notification  = DapNotification::fromJson (jobj);
+      QString dateString            = jobj.value ("date").toString();
+      QDate date                    = QDate::fromString (dateString, "dd.MM.yyyy");
       Item item
       {
         jobj.value ("isTitle").toBool(),
-        QDate::fromString (jobj.value ("data").toString(), "dd.MM.yyyy"),
+        date,
         std::move (notification)
       };
 
@@ -327,7 +331,7 @@ void DapNotificationHistory::_delayedSave()
 
 QHash<int, QByteArray> DapNotificationHistory::roleNames() const
 {
-  return DapNotification::fields();
+  return fields();
 }
 
 int DapNotificationHistory::rowCount (const QModelIndex &) const
@@ -363,6 +367,7 @@ QVariant DapNotificationHistory::data (const QModelIndex &index, int role) const
         case FieldId::isTitle:      return item.isTitle;
         case FieldId::titleDate:    return item.titleDate.toString ("MMMM dd");
         case FieldId::typeString:   return typeName (item.notification.type());
+        case FieldId::createdTime:  return item.notification.createdStringAM();
         }
     }
 

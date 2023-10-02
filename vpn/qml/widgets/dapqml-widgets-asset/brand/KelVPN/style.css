@@ -2464,6 +2464,11 @@
     scaled-rect: scaled(nan,nan,nan,98,false);
 }
 
+.notification-item-frame-spacings
+{
+    scaled-rect: scaled(18,6,nan,nan,false);
+}
+
 .notification-item-timestamp-title
 {
     color: "@text";
@@ -2486,6 +2491,6 @@
 
 .notification-item-description
 {
-    scaled-rect: scaled(nan,nan,nan,48,false,16);
-    color: "@text";
+    scaled-rect: scaled(nan,nan,nan,nan,false,16);
+    color: "@label";
 }

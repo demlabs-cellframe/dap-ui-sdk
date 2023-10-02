@@ -31,6 +31,9 @@ Item {
      ********************************************/
     /// @{
 
+    /// @brief item clicked
+    signal sigSelect(int index, string name);
+
     /// @}
     /****************************************//**
      * @name FUNCTIONS
@@ -47,15 +50,25 @@ Item {
 
         DapQmlRectangle {
             width: csListView.width
-            qss: "notification-item-frame"
+            height: (descriptionLabel.contentHeight < defaultHeight)
+                    ? itemFrameSize.height
+                    : descriptionLabel.contentHeight + extraHeight
+
+            property real defaultHeight: (itemFrameSize.height / 2)
+            property real extraHeight: (itemFrameSize.height / 2)
 
             /* title mode */
 
             DapQmlLabel {
                 anchors.fill: parent
+                anchors.leftMargin: spacings.x
+                anchors.rightMargin: spacings.x
+                anchors.topMargin: spacings.y
+                anchors.bottomMargin: spacings.y
                 visible: model.isTitle === true
                 horizontalAlign: Text.AlignLeft
-                text: model.text
+                text: model.titleDate
+                disableClicking: true
                 qss: "notification-item-timestamp-title"
             }
 
@@ -63,6 +76,10 @@ Item {
 
             Item {
                 anchors.fill: parent
+                anchors.leftMargin: spacings.x
+                anchors.rightMargin: spacings.x
+                anchors.topMargin: spacings.y
+                anchors.bottomMargin: spacings.y
                 visible: model.isTitle === false
 
                 /* time */
@@ -72,6 +89,7 @@ Item {
                     anchors.top: parent.top
                     width: contentWidth
                     height: contentHeight
+                    disableClicking: true
                     qss: "notification-item-time"
                     text: model.createdTime
                 }
@@ -79,10 +97,12 @@ Item {
                 /* title */
 
                 DapQmlLabel {
+                    id: itemTitle
                     anchors.left: parent.left
                     anchors.top: parent.top
                     width: contentWidth
                     height: contentHeight
+                    disableClicking: true
                     qss: "notification-item-title"
                     text: model.typeString
                 }
@@ -90,15 +110,58 @@ Item {
                 /* description */
 
                 DapQmlLabel {
+                    id: descriptionLabel
                     anchors.left: parent.left
-                    anchors.bottom: parent.bottom
-                    width: contentWidth
+                    anchors.top: itemTitle.bottom
+                    anchors.topMargin: spacings.y * 0.625
+                    verticalAlign: Text.AlignTop
+                    horizontalAlign: Text.AlignLeft
+                    width: parent.width
                     height: contentHeight
+                    lineHeight: 1.1
+                    wrapMode: Text.WordWrap
+                    disableClicking: true
                     qss: "notification-item-description"
                     text: model.message
                 }
+
+                /* mouse area */
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: root.sigSelect (model.index, model.message);
+                }
+            }
+
+            /* separator */
+
+            DapQmlSeparator {
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: height + spacings.y
+                visible: model.isTitle === false
+                width: parent.width
             }
         }
+    }
+
+    /****************************************//**
+     * Resizers
+     ********************************************/
+
+    DapQmlRectangle {
+        id: resizer
+        visible: false
+        qss: "radiobtn-resizer"
+    }
+
+    DapQmlDummy {
+        id: spacings
+        qss: "notification-item-frame-spacings"
+    }
+
+    DapQmlDummy {
+        id: itemFrameSize
+        qss: "notification-item-frame"
     }
 
     /****************************************//**
@@ -123,6 +186,7 @@ Item {
         y: title.y + title.height * 2
         width: resizer.width
         height: root.height - y
+        spacing: 0
         clip: true
 
         delegate: compDelegate

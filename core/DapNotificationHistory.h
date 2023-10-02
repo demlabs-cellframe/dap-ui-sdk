@@ -33,6 +33,7 @@ public:
     isTitle,
     titleDate,
     typeString,
+    createdTime,
 
     size,
   };

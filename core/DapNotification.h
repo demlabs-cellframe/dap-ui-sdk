@@ -76,6 +76,7 @@ public:
 
   const QDateTime &created() const;
   QString createdString() const;
+  QString createdStringAM() const;
   void setCreated (const QDateTime &a_value);
   void setCreated (const QString &a_value);
 
