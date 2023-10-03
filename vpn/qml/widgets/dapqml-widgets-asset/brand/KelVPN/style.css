@@ -808,8 +808,7 @@
 
 .login-transaction-processing-arc-animation
 {
-    scaled-rect: scaled(-1,310,40,40,true);
-    qproperty-color: "@brand";
+    scaled-rect: scaled(-1,196,200,200,true);
 }
 
 .login-transaction-processing-retry-button
@@ -821,7 +820,7 @@
 
 .login-transaction-processing-label-nocbd
 {
-    scaled-rect: scaled(45,350,327,70,false,20);
+    scaled-rect: scaled(-1,380,327,70,false,20);
     color: "@text";
 }
 
