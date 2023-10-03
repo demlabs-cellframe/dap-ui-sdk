@@ -2494,3 +2494,39 @@
     scaled-rect: scaled(nan,nan,nan,nan,false,16);
     color: "@label";
 }
+
+
+
+/****************************************************
+ * Notification
+ ***************************************************/
+
+.notification-frame
+{
+    scaled-rect: scaled(nan,nan,400,118,false);
+}
+
+.notification-content
+{
+    scaled-rect: scaled(nan,nan,356,78,false);
+    color: "@background";
+    radius: 12;
+}
+
+.notification-shadow
+{
+    color: "@label";
+}
+
+.notification-position
+{
+    scaled-rect: scaled(nan,48,nan,nan,false);
+}
+
+.notification-close-btn-area
+{
+    scaled-rect: scaled(nan,nan,64,64,true);
+    qproperty-image: "@btn-update-notification-close";
+    qproperty-idle-color: "@input-field";
+    qproperty-hovered-color: "@separator-color";
+}

@@ -43,5 +43,6 @@
         <file>dapqml-forms/QuiNodeTransactionOverview.qml</file>
         <file>dapqml-forms/QuiNodeTransactionHistoryForm.qml</file>
         <file>dapqml-forms/QuiNotificationsHistoryForm.qml</file>
+        <file>dapqml-forms/tools/QuiToolNotification.qml</file>
     </qresource>
 </RCC>
