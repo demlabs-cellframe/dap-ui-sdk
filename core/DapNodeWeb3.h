@@ -68,6 +68,7 @@ public:
     ParseFee,
     ParseNodeDump,
     ParseListKeys,
+    ParseNetId
   };
   /// @}
 
@@ -151,6 +152,7 @@ public slots:
   void nodeDumpRequest (QString networkName);
   void getNodeIPRequest (const QString &networkName, const QJsonArray &orderList);
   void getFeeRequest (QString networkName);
+  void getNetIdRequest (QString networkName);
   void getListKeysRequest (QString networkName);
 
 private slots:
@@ -177,6 +179,7 @@ private slots:
   void parseFee (const QString &replyData, int baseErrorCode);
   void parseNodeDump (const QString &replyData, int baseErrorCode);
   void parseListKeys (const QString &replyData, int baseErrorCode);
+  void parseNetId (const QString &replyData, int baseErrorCode);
 
   void replyConnectError (int code);
   /// @}
@@ -198,6 +201,7 @@ signals:
   void sigLedgerContainHash();
   void sigOrderList (QJsonArray);
   void sigNodeIp (QJsonObject);
+  void sigNetId (QString netId);
   void sigFee (QString fee);
   void connectionIdReceived (QString connectionId);
   void sigNodeDump (QList<QMap<QString, QString>> nodeDump);

@@ -94,6 +94,8 @@ static const QHash<QString, ReplyMethod> s_replyMethodMap =
   { "NodeDump",           {ReplyMethodID::ParseNodeDump,          false, "Wrong reply when get node dump", 1400000}},
   // list of delegated keys on the network
   { "GetListKeys",        {ReplyMethodID::ParseListKeys,          false, "Wrong reply when get list of delegated keys", 1500000}},
+
+  { "GetNetId",           {ReplyMethodID::ParseNetId,             false, "Wrong reply when get net id", 1600000}}
 };
 
 static const ReplyMethod s_dummyReply
@@ -288,6 +290,7 @@ void DapNodeWeb3::responseParsing (
     case ReplyMethodID::ParseFee:               parseFee (reply,                baseErrorCode); break;
     case ReplyMethodID::ParseNodeDump:          parseNodeDump (reply,           baseErrorCode); break;
     case ReplyMethodID::ParseListKeys:          parseListKeys (reply,           baseErrorCode); break;
+    case ReplyMethodID::ParseNetId:             parseNetId (reply,           baseErrorCode); break;
     }
 }
 
@@ -420,6 +423,15 @@ void DapNodeWeb3::getNodeIPRequest (const QString &networkName, const QJsonArray
 void DapNodeWeb3::getFeeRequest (QString networkName)
 {
   QString requesString = QString ("?method=GetFee&"
+                                  "id=%1&net=%2")
+                         .arg (m_connectId)
+                         .arg (networkName);
+  sendRequest (requesString);
+}
+
+void DapNodeWeb3::getNetIdRequest (QString networkName)
+{
+  QString requesString = QString ("?method=GetNetId&"
                                   "id=%1&net=%2")
                          .arg (m_connectId)
                          .arg (networkName);
@@ -1001,6 +1013,39 @@ void DapNodeWeb3::parseListKeys (const QString &replyData, int baseErrorCode)
       emit sigListKeys (listKeys);
     }
 }
+
+void DapNodeWeb3::parseNetId (const QString &replyData, int baseErrorCode)
+{
+
+  DEBUGINFO << __func__ << replyData;
+
+  QJsonDocument doc;
+  parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
+
+  if (jsonError())
+    return;
+
+//  if (doc["data"].isObject())
+//    {
+//      emit sigNetId (doc["data"].toObject());
+//    }
+  QString netId;
+  QJsonObject jdata = doc["data"].toObject();
+
+  if (!jdata.contains ("id")){
+    qDebug() << "Bad data";
+    return;
+  }
+
+  /* get value */
+//  QString value  = jdata.value ("net_id").toString();
+  emit sigNetId (jdata.value ("id").toString());
+
+
+//  field (/* from */ jdata, "net_id",     /* to */ nullptr, &netId);
+
+}
+
 
 
 void DapNodeWeb3::parseJson (const QString &replyData, int baseErrorCode, const QString &a_replyName, QJsonDocument *a_destDoc)

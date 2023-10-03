@@ -144,6 +144,10 @@ void DapNode::initStmTransitions()
 
     // fee received -> condition transaction create request
     m_stm->getFee.addTransition(this, &DapNode::sigFeeReceived,
+    &m_stm->getNetId);
+
+    // fee received -> condition transaction create request
+    m_stm->getNetId.addTransition(this, &DapNode::sigNetIdReceived,
     &m_stm->checkTransactionCertificate);
 
     // node status !ok -> nodeGetWallets
@@ -306,6 +310,11 @@ void DapNode::initStmStates()
     connect (&m_stm->getFee, &QState::entered, this, [=](){
         web3->getFeeRequest(m_networkName);
     });
+
+    connect (&m_stm->getNetId, &QState::entered, this, [=](){
+        web3->getNetIdRequest(m_networkName); //web3->DapNodeWeb3::getNetIdRequest(netId);
+    });
+
     // check certificate
     connect (&m_stm->checkTransactionCertificate, &QState::entered, web3, &DapNodeWeb3::getCertificates);
     // certificate create
@@ -447,7 +456,7 @@ void DapNode::initWeb3Connections()
     });
     // connect to stream
     connect(web3, &DapNodeWeb3::sigNodeDump, this, [=](QList<QMap<QString, QString>> nodeDump) {
-        // riemann, use dap_chain_net_id_by_name() "0x000000000000dddd"
+//         riemann, use dap_chain_net_id_by_name() "0x000000000000dddd"
         m_nodeInfo.serverDataFromList(nodeDump);
         emit sigNodeDumpReceived();
         emit sigConnectByOrder(m_networkName, m_transactionHash, m_tokenName, m_srvUid, m_nodeInfo.ipv4, m_nodeInfo.port);
@@ -455,6 +464,11 @@ void DapNode::initWeb3Connections()
 
     connect(this, &DapNode::sigGetNodeIpRequest, this, [=](QJsonArray orderList) {
         web3->DapNodeWeb3::getNodeIPRequest(m_networkName, orderList);
+    });
+
+    connect(web3, &DapNodeWeb3::sigNetId, this, [=](QString netId) {
+        m_netId = netId;
+        emit sigNetIdReceived();
     });
 
 
@@ -509,6 +523,10 @@ QString DapNode::txCondHash()
 {
     return m_transactionHash;
 }
+QString DapNode::netId()
+{
+    return m_netId;
+}
 
 
 void DapNode::start()
@@ -561,3 +579,9 @@ void orderListFiltr(const QJsonArray& inOrders, QJsonArray& outOrders, QStringLi
         }
     }
 }
+
+void DapNode::slotGetNetIdReqest(QString netId)
+{
+    web3->DapNodeWeb3::getNetIdRequest(netId);
+}
+

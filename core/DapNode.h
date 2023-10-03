@@ -60,6 +60,7 @@ public:
     QState getNetworks;
     QState getDataWallet;
     QState getFee;
+    QState getNetId;
     QState condTxCreate;
     QState mempoolTxHashRequest;
     QState mempoolTxHashEmpty;
@@ -91,6 +92,7 @@ private:
         nodeConnectMachine.addState(&getDataWallet);
         nodeConnectMachine.addState(&condTxCreate);
         nodeConnectMachine.addState(&getFee);
+        nodeConnectMachine.addState(&getNetId);
         nodeConnectMachine.addState(&mempoolTxHashRequest);
         nodeConnectMachine.addState(&mempoolTxHashEmpty);
         nodeConnectMachine.addState(&ledgerTxHashRequest);
@@ -141,6 +143,7 @@ private:
     QString m_maxPrice;
     QString m_srvUid;
     QString m_fee;
+    QString m_netId;
     NodeInfo m_nodeInfo;
     QStringList m_listKeys;
     bool m_isCDBLogined = false;
@@ -158,6 +161,7 @@ public:
     static DapNode *instance();
     void start();
     QString txCondHash();
+    QString netId();
     static QString certificateName(const QString& access = "public");
 
     void setCDBLogined(bool a_logined){
@@ -182,6 +186,7 @@ public slots:
     void slotGetOrdersList(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
     void slotNodeIpReqest(QString srvUid, QString nodeAddress);
     void slotGetNodeIpForOrderListReqest(QString srvUid, QJsonArray orderList);
+    void slotGetNetIdReqest(QString networkName);
 
 private slots:
     void walletDataRequest();
@@ -218,6 +223,7 @@ signals:
     void networksReceived();
     void sigCondTxCreateRequest();
     void sigListKeysReceived();
+    void sigNetIdReceived();
     void sigGetOrderListRequest();
     void walletListIsEmpty();
     void checkCertificate();
