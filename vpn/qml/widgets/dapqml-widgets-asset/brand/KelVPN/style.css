@@ -84,6 +84,7 @@
     ic-report-item:             "qrc:/dapqml-forms-asset/light/ic_report-item.png";
     ic-key-item:                "qrc:/dapqml-forms-asset/light/ic_key-item.png";
     ic-orders:                  "qrc:/dapqml-forms-asset/light/ic_orders.png";
+    ic-notification:            "qrc:/dapqml-forms-asset/light/ic_notification.png";
 }
 
 .@dark
@@ -164,6 +165,7 @@
     ic-report-item:             "qrc:/dapqml-forms-asset/dark/ic_report-item.png";
     ic-key-item:                "qrc:/dapqml-forms-asset/dark/ic_key-item.png";
     ic-orders:                  "qrc:/dapqml-forms-asset/dark/ic_orders.png";
+    ic-notification:            "qrc:/dapqml-forms-asset/dark/ic_notification.png";
 }
 
 /****************************************************
@@ -506,6 +508,11 @@
 .ic_orders
 {
     qproperty-scaledPixmap: "@ic-orders";
+}
+
+.ic_notification
+{
+    qproperty-scaledPixmap: "@ic-notification";
 }
 
 .ic_back

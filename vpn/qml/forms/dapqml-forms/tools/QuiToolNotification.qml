@@ -26,15 +26,33 @@ DapQmlDummy {
 
     property QtObject internal: QtObject {
         property bool show: false
+        property string message: NotificationCtl.message
+        property string typeString: typeList[type]
+        property int type: NotificationCtl.type
 
-        onShowChanged: root.y = show ? (positioner.y) : (0 - root.height * 1.5)
+        property var typeList: [
+            "",
+            qsTr("Error"),
+            qsTr("Notification"),
+            qsTr("Warning"),
+        ]
+
+        onShowChanged: {
+            /*if (show)
+                hideTimer.start();
+            else
+                hideTimer.stop();*/
+            root.y = show ? (positioner.y) : (0 - root.height * 1.5)
+        }
+        onTypeChanged: typeString = typeList[type]
     }
 
     Timer {
-        interval: 1000
-        running: true
+        id: hideTimer
+        interval: 3000
+        running: false
         repeat: false
-        onTriggered: { setShow (!root.internal.show); }
+        onTriggered: { setShow (false); }
     }
 
     /// @}
@@ -114,7 +132,7 @@ DapQmlDummy {
     DapQmlLabel {
         anchors.fill: content
         disableClicking: true
-        text: "test"
+        text: root.internal.message
         qss: "c-label"
     }
 
