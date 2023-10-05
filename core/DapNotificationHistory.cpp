@@ -89,30 +89,29 @@ DapNotificationHistory *DapNotificationHistory::instance()
 void DapNotificationHistory::append (const QString &a_message, DapNotification::Type a_type)
 {
   /* variables */
-  int index       = m_list.size();
-  QDate lastItem  = (m_list.isEmpty()) ? QDate() : m_list.last().notification.created().date();
-  auto todayDT    = QDateTime::currentDateTime();
-  QDate today     = todayDT.date();
+  QDate topDate = (m_list.isEmpty()) ? QDate() : m_list.first().titleDate;
+  auto todayDt  = QDateTime::currentDateTime();
+  QDate today   = todayDt.date();
 
   /* lambda's */
   auto insertDate = [&]
   {
-    beginInsertRows (QModelIndex(), index, index);
-    m_list.append (Item { true, today, DapNotification() });
+    beginInsertRows (QModelIndex(), 0, 0);
+    m_list.prepend (Item { true, today, DapNotification() });
     endInsertRows();
-    index++;
   };
 
-  /* insert title */
-  if (!lastItem.isValid())
+  /* insert new top date */
+  if (!topDate.isValid())
     insertDate();
-  else if (lastItem != today)
-    insertDate();
+  else
+    if (topDate != today)
+      insertDate();
 
   /* insert item */
 
   /* ------------------------------------- */
-  beginInsertRows (QModelIndex(), index, index);
+  beginInsertRows (QModelIndex(), 1, 1);
   /* ------------------------------------- */
 
   DapNotification notification
@@ -129,11 +128,58 @@ void DapNotificationHistory::append (const QString &a_message, DapNotification::
     std::move (notification)
   };
 
-  m_list.append (std::move (item));
+  m_list.insert (1, std::move (item));
 
   /* ------------------------------------- */
   endInsertRows();
   /* ------------------------------------- */
+
+//  /* variables */
+//  int index       = m_list.size();
+//  QDate lastItem  = (m_list.isEmpty()) ? QDate() : m_list.last().notification.created().date();
+//  auto todayDT    = QDateTime::currentDateTime();
+//  QDate today     = todayDT.date();
+
+//  /* lambda's */
+//  auto insertDate = [&]
+//  {
+//    beginInsertRows (QModelIndex(), index, index);
+//    m_list.append (Item { true, today, DapNotification() });
+//    endInsertRows();
+//    index++;
+//  };
+
+//  /* insert title */
+//  if (!lastItem.isValid())
+//    insertDate();
+//  else if (lastItem != today)
+//    insertDate();
+
+//  /* insert item */
+
+//  /* ------------------------------------- */
+//  beginInsertRows (QModelIndex(), index, index);
+//  /* ------------------------------------- */
+
+//  DapNotification notification
+//  {
+//    QDateTime::currentDateTime(),
+//    a_message,
+//    a_type,
+//  };
+
+//  Item item
+//  {
+//    false,
+//    QDate(),
+//    std::move (notification)
+//  };
+
+//  m_list.append (std::move (item));
+
+//  /* ------------------------------------- */
+//  endInsertRows();
+//  /* ------------------------------------- */
 
   _delayedSave();
 }
@@ -154,11 +200,11 @@ const QHash<int, QByteArray> &DapNotificationHistory::fields()
 
 void DapNotificationHistory::load()
 {
-  _removeOutdated();
-
   beginResetModel();
+  m_list.clear();
 
-  /* vars */
+  /* variables */
+  QDate threeDaysAgo = QDate::currentDate().addDays (-3);
   QByteArray source;
   QJsonArray jarr;
 
@@ -184,6 +230,18 @@ void DapNotificationHistory::load()
         std::move (notification)
       };
 
+      /* skip old */
+      if (item.isTitle)
+      {
+        if (item.titleDate < threeDaysAgo)
+          continue;
+      }
+      else
+      {
+        if (item.notification.created().date() < threeDaysAgo)
+          continue;
+      }
+
       /* store */
       m_list.append (std::move (item));
     }
@@ -197,91 +255,145 @@ void DapNotificationHistory::save()
   _delayedSave();
 }
 
+void DapNotificationHistory::removeOutdated()
+{
+  _removeOutdated (true);
+}
+
 void DapNotificationHistory::_removeOutdated (bool a_resetModel)
 {
   /* variables */
-  QDateTime threeDaysAgo = QDateTime::currentDateTime().addDays (-3);
-  QVector<Item>::iterator it, titleIt = m_list.end();
+  QDate threeDaysAgo = QDate::currentDate().addDays (-3);
+  QVector<Item>::iterator it;
 
   /* start removing old items */
   if (a_resetModel)
     beginResetModel();
 
-  /* ------------------------------------- */
-  /* lambda's */
-  /* ------------------------------------- */
-
-  auto removeTitleIt = [&]() -> bool
-  {
-    /* if previous item was title too */
-    if (titleIt != m_list.end())
-      {
-        /* remove title itereator and invalidate iterator */
-        it      = m_list.erase (titleIt);
-        titleIt = m_list.end();
-        return true;
-      }
-
-    return false;
-  };
-
-  /* ------------------------------------- */
-  /* remove old notifications */
-  /* ------------------------------------- */
-
+  /* remove all old items */
   it  = m_list.begin();
   while (it != m_list.end())
+  {
+    /* ------------------------------------- */
+    /* title */
+    /* ------------------------------------- */
+
+    if (it->isTitle)
     {
-      /* skip title items */
-      if (it->isTitle)
-        continue;
+      /* remove old */
+      if (it->titleDate < threeDaysAgo)
+        it  = m_list.erase (it);
 
-      /* get notification */
-      const DapNotification &notification = it->notification;
-
-      /* erase, if too old */
-      if (notification.created() < threeDaysAgo)
-        it = m_list.erase (it);
+      /* proceed */
       else
         it++;
     }
 
-  /* ------------------------------------- */
-  /* remove empty title */
-  /* ------------------------------------- */
+    /* ------------------------------------- */
+    /* item */
+    /* ------------------------------------- */
 
-  it  = m_list.begin();
-  while (it != m_list.end())
+    else
     {
-      /* act on title */
-      if (it->isTitle)
-        {
-          /* if previous item was title too */
-          if (removeTitleIt())
-            continue;
+      /* remove old */
+      if (it->notification.created().date() < threeDaysAgo)
+        it  = m_list.erase (it);
 
-          /* store next title */
-          titleIt = it;
-          it++;
-          continue;
-        }
-
-      /* if item, invalidate titleIt */
-      titleIt = m_list.end();
-      it++;
+      /* proceed */
+      else
+        it++;
     }
 
-  /* ------------------------------------- */
-  /* repeat for final iterator */
-  /* ------------------------------------- */
-
-  removeTitleIt();
-
-  /* ------------------------------------- */
+    /* ------------------------------------- */
+  }
 
   /* finish removind items */
   if (a_resetModel)
     endResetModel();
+
+//  /* variables */
+//  QDateTime threeDaysAgo = QDate::currentDateTime().addDays (-3);
+//  QVector<Item>::iterator it, titleIt = m_list.end();
+
+//  /* start removing old items */
+//  if (a_resetModel)
+//    beginResetModel();
+
+//  /* ------------------------------------- */
+//  /* lambda's */
+//  /* ------------------------------------- */
+
+//  auto removeTitleIt = [&]() -> bool
+//  {
+//    /* if previous item was title too */
+//    if (titleIt != m_list.end())
+//      {
+//        /* remove title itereator and invalidate iterator */
+//        it      = m_list.erase (titleIt);
+//        titleIt = m_list.end();
+//        return true;
+//      }
+
+//    return false;
+//  };
+
+//  /* ------------------------------------- */
+//  /* remove old notifications */
+//  /* ------------------------------------- */
+
+//  it  = m_list.begin();
+//  while (it != m_list.end())
+//    {
+//      /* skip title items */
+//      if (it->isTitle)
+//        continue;
+
+//      /* get notification */
+//      const DapNotification &notification = it->notification;
+
+//      /* erase, if too old */
+//      if (notification.created() < threeDaysAgo)
+//        it = m_list.erase (it);
+//      else
+//        it++;
+//    }
+
+//  /* ------------------------------------- */
+//  /* remove empty title */
+//  /* ------------------------------------- */
+
+//  it  = m_list.begin();
+//  while (it != m_list.end())
+//    {
+//      /* act on title */
+//      if (it->isTitle)
+//        {
+//          /* if previous item was title too */
+//          if (removeTitleIt())
+//            continue;
+
+//          /* store next title */
+//          titleIt = it;
+//          it++;
+//          continue;
+//        }
+
+//      /* if item, invalidate titleIt */
+//      titleIt = m_list.end();
+//      it++;
+//    }
+
+//  /* ------------------------------------- */
+//  /* repeat for final iterator */
+//  /* ------------------------------------- */
+
+//  removeTitleIt();
+
+//  /* ------------------------------------- */
+
+//  /* finish removind items */
+//  if (a_resetModel)
+//    endResetModel();
 }
 
 void DapNotificationHistory::_delayedSave()

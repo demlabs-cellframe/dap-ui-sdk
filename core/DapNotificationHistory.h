@@ -82,6 +82,7 @@ public:
 
   void load();
   void save();
+  void removeOutdated();
 
 protected:
   void _removeOutdated (bool a_resetModel = true);
