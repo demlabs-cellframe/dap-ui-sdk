@@ -97,7 +97,7 @@ void DapCmdNode::sendOrderList(const QJsonArray& orderList)
     DEBUGINFO << "sendOrderList";
 }
 
-void DapCmdNode::sendNodeIp(const QJsonObject& nodeIpList)
+void DapCmdNode::sendNodeIp(const QJsonArray& nodeIpList)
 {
     DEBUGINFO << __PRETTY_FUNCTION__;
     QJsonObject response;

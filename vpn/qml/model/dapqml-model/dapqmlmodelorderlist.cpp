@@ -537,7 +537,7 @@ void DapQmlModelOrderList::slotSetTokensListData (const QHash<QString, QString> 
   endResetModel();
 }
 
-void DapQmlModelOrderList::slotSetOrderAddresses (const QJsonObject &a_list)
+void DapQmlModelOrderList::slotSetOrderAddresses (const QJsonArray &a_list)
 {
   /* notify model */
   s_ordersBaseModel->beginResetModel();
@@ -547,8 +547,17 @@ void DapQmlModelOrderList::slotSetOrderAddresses (const QJsonObject &a_list)
       int index = 0;
       QHash<QString, QString> nodeIpsMap;
 
-      for (auto i = a_list.constBegin(), e = a_list.constEnd(); i != e; i++, index++)
-        nodeIpsMap.insert (i.key(), i.value().toString());
+
+      for (const auto &item : qAsConst (a_list))
+      {
+          QJsonObject joItem = item.toObject();
+//          nodeIpsMap.insert (joItem.keys(), i->toString());
+
+          for (auto i = joItem.constBegin(), e = joItem.constEnd(); i != e; i++, index++)
+            nodeIpsMap.insert (i.key(), i.value().toString());
+
+      }
+
 
       s_ordersModule->installAdressMap (nodeIpsMap);
     }

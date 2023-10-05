@@ -200,7 +200,7 @@ signals:
     void sigNodeDetected();
     void sigWalletsDataReady(QJsonObject);
     void sigOrderListReady(QJsonArray);
-    void sigSendNodeIp(QJsonObject);
+    void sigSendNodeIp(QJsonArray);
     void sigMempoolContainHash();
     void sigLedgerContainHash();
     void sigCondTxCreateSuccess(QString hash);

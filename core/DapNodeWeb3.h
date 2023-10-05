@@ -200,7 +200,7 @@ signals:
   void sigMempoolContainHash();
   void sigLedgerContainHash();
   void sigOrderList (QJsonArray);
-  void sigNodeIp (QJsonObject);
+  void sigNodeIp (QJsonArray);
   void sigNetId (QString netId);
   void sigFee (QString fee);
   void connectionIdReceived (QString connectionId);

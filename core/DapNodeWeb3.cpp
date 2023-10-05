@@ -820,9 +820,9 @@ void DapNodeWeb3::parseNodeIp (const QString &replyData, int baseErrorCode)
   if (jsonError())
     return;
 
-  if (doc["data"].isObject())
+  if (doc["data"].isObject() || doc["data"].isArray())
     {
-      emit sigNodeIp (doc["data"].toObject());
+      emit sigNodeIp (doc["data"].toArray());
     }
 }
 
