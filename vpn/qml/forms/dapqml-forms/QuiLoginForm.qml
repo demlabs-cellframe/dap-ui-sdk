@@ -240,6 +240,11 @@ Item {
 //        }
     }
 
+    function deactivateTransactionProcessing() {
+        internal.transactionProcessing = false;
+        loginInfoLabel.text = ""
+    }
+
     function setTransactionWalletNetwork(row2) {
         transactionProcessingWalletData.text = row2
     }
