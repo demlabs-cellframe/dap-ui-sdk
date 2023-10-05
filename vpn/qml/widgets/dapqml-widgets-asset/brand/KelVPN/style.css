@@ -2527,7 +2527,7 @@
 
 .notification-position
 {
-    scaled-rect: scaled(nan,48,nan,nan,false);
+    scaled-rect: scaled(nan,24,nan,nan,false);
 }
 
 .notification-close-btn-area
