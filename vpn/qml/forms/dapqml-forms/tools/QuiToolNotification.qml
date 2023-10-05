@@ -126,18 +126,18 @@ DapQmlDummy {
     }
 
     /****************************************//**
-     * Shadow
+     * Content Shadow
      ********************************************/
 
     DropShadow {
         anchors.fill: content
         radius: content.height / 5
         samples: 17
-        color: `#80${shadowColor.color.substring(1)}`
+        color: `#80${contentShadowColor.color.substring(1)}`
         source: content
 
         DapQmlDummy {
-            id: shadowColor
+            id: contentShadowColor
             property string color
             qss: "notification-shadow"
         }
@@ -153,6 +153,46 @@ DapQmlDummy {
         disableClicking: true
         text: root.internal.message
         qss: "c-label"
+    }
+
+    /****************************************//**
+     * Header
+     ********************************************/
+
+    DapQmlRectangle {
+        id: header
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: content.top
+        qss: "notification-header"
+        borderWidth: 1
+        visible: false
+
+        property real fontSize: 15
+
+        DapQmlLabel {
+            anchors.fill: parent
+            fontSize: parent.fontSize
+            text: root.internal.typeString
+            qss: root.internal.type === 2 ? "c-label" : "c-error"
+        }
+    }
+
+    /****************************************//**
+     * Header Shadow
+     ********************************************/
+
+    DropShadow {
+        anchors.fill: header
+        samples: 17
+        color: `#80${headerShadowColor.color.substring(1)}`
+        source: header
+        z: 20
+
+        DapQmlDummy {
+            id: headerShadowColor
+            property string color
+            qss: "notification-shadow"
+        }
     }
 
     /****************************************//**

@@ -206,6 +206,11 @@
     color: "#F47A54";
 }
 
+.c-error
+{
+    color: "@error";
+}
+
 /****************************************************
  * Aligns
  ***************************************************/
@@ -2517,6 +2522,14 @@
 {
     scaled-rect: scaled(nan,nan,356,78,false);
     color: "@background";
+    radius: 12;
+}
+
+.notification-header
+{
+    scaled-rect: scaled(nan,nan,144,32,false,16);
+    color: "@background";
+    border-color: "@input-field";
     radius: 12;
 }
 
