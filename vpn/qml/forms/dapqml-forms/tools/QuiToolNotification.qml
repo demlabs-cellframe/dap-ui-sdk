@@ -38,10 +38,10 @@ DapQmlDummy {
         ]
 
         onShowChanged: {
-            /*if (show)
+            if (show)
                 hideTimer.start();
             else
-                hideTimer.stop();*/
+                hideTimer.stop();
             root.y = show ? (positioner.y) : (0 - root.height * 1.5)
         }
         onTypeChanged: typeString = typeList[type]
