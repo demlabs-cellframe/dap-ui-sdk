@@ -16,8 +16,11 @@ DapQmlDummy {
     id: root
     x: (parent.width - width) / 2
     y: (0 - height * 1.5)
+    width: frameSizer.width
+    height: textLabel.contentHeight < contentSizer.height
+            ? frameSizer.height
+            : frameSizer.height * 0.75 + textLabel.contentHeight
     clip: false
-    qss: "notification-frame"
 
     /****************************************//**
      * @name VARS
@@ -96,6 +99,18 @@ DapQmlDummy {
         qss: "notification-position"
     }
 
+    DapQmlDummy {
+        id: frameSizer
+        qss: "notification-frame"
+    }
+
+    DapQmlDummy {
+        id: contentSizer
+        qss: "notification-content"
+        property string color
+        property real radius
+    }
+
     /****************************************//**
      * Content
      ********************************************/
@@ -103,7 +118,10 @@ DapQmlDummy {
     DapQmlRectangle {
         id: content
         anchors.centerIn: parent
-        qss: "notification-content"
+        width: contentSizer.width
+        height: root.height - frameSizer.height + contentSizer.height
+        color: contentSizer.color
+        radius: contentSizer.radius
         visible: false
     }
 
@@ -130,6 +148,7 @@ DapQmlDummy {
      ********************************************/
 
     DapQmlLabel {
+        id: textLabel
         anchors.fill: content
         disableClicking: true
         text: root.internal.message
