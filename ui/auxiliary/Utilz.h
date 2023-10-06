@@ -9,6 +9,7 @@
 #include <QRegularExpression>
 #include <QtMath>
 #include <QDateTime>
+#include <QRegExp>
 
 class QMainWindow;
 

@@ -28,3 +28,7 @@ unix {
     target.path = /usr/lib
     INSTALLS += target
 }
+
+ios {
+    QT += state
+}

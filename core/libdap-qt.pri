@@ -1,4 +1,7 @@
 QT += core network xml
+ios {
+    QT += core
+}
 #INCLUDEPATH += ../libdap/include ../libdap/src
 include (../zip/zip.pri)
 SOURCES += \
@@ -82,6 +85,9 @@ win32{
 }
 android {
 QT += androidextras
+}
+ios {
+    QT += core macextras
 }
 
 INCLUDEPATH += $$PWD/../quazip

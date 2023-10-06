@@ -7,3 +7,5 @@ HEADERS += $$PWD/DapStreamer.h \
     $$PWD/DapChThread.h
 
 INCLUDEPATH += $$PWD
+
+LIBS += -lm

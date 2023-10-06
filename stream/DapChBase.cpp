@@ -19,6 +19,7 @@
 */
 
 #include "DapChBase.h"
+#include <stdlib.h>
 
 void DapChBase::write_str(char ch, const QString& str)
 {

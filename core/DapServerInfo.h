@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QVector>
 
 /* DEFS */
 class DapServerInfo;

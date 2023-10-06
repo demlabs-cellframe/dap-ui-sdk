@@ -216,7 +216,7 @@ void DapLogger::writeMessage(QtMsgType type,
 {
     if(ctx.file) {
         char prefixBuffer[128];
-#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
+#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS) || defined(Q_OS_IOS)
         const char *fileName = strrchr(ctx.file, '/');
 #elif defined(Q_OS_WIN)
         const char *fileName = strrchr(ctx.file, '\\');

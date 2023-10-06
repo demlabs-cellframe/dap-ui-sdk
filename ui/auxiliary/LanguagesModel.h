@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <QAbstractItemModel>
 #include <QLocale>
+#include <QtAlgorithms>
 
 /****************************************//**
  * @brief language model

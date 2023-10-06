@@ -2,6 +2,7 @@
 #define ZIPBASE_H
 
 #include <QtCore>
+#include <QStringRef>
 #include "zipdef.h"
 #include "zlib.h"
 

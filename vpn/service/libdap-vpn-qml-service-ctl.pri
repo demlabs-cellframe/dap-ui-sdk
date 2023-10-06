@@ -1,6 +1,7 @@
 SOURCES += \
     $$PWD/DapServiceClient.cpp\
     $$PWD/DapServiceNativeAbstract.cpp\
+    $$PWD/DapServiceNativeIOS.mm \
     $$PWD/ServiceCtlOld.cpp \
     $$PWD/singlerunapplication.cpp\
     #$$PWD/usrmsg.cpp
@@ -8,6 +9,7 @@ SOURCES += \
 HEADERS  += \
     $$PWD/DapServiceClient.h\
     $$PWD/DapServiceNativeAbstract.h\
+    $$PWD/DapServiceNativeIOS.h \
     $$PWD/ServiceCtlOld.h \
     $$PWD/singlerunapplication.h\
     #$$PWD/usrmsg.h
@@ -39,19 +41,19 @@ win32 {
         DEFINES += _WIN32_WINNT=0x0600
 }
 
-darwin {
-        SOURCES += $$PWD/DapServiceNativeDarwin.cpp
-        HEADERS += $$PWD/DapServiceNativeDarwin.h
-}
-
 ios{
     DEFINES += DAP_PLATFORM_MOBILE
     DEFINES += DAP_PLATFORM=\\\"mobile\\\"
+    QT += macextras
+    SOURCES += $$PWD/DapServiceNativeIOS.mm
+    HEADERS += $$PWD/DapServiceNativeIOS.h
 }
 
 macos {
         DEFINES += DAP_PLATFORM=\\\"desktop\\\"
         DEFINES += DAP_PLATFORM_DESKTOP DAP_SERVICE_CONNECT_TCP
+        SOURCES += $$PWD/DapServiceNativeDarwin.cpp
+        HEADERS += $$PWD/DapServiceNativeDarwin.h
 }
 
 
