@@ -264,7 +264,7 @@ DapQmlDummy {
         anchors.fill: contentRoot
         radius: header.height * 0.5
         samples: 17
-        color: `#80${contentShadowColor.color.substring(1)}`
+        color: `#30${contentShadowColor.color.substring(1)}`
         source: contentRoot
 
         DapQmlDummy {
