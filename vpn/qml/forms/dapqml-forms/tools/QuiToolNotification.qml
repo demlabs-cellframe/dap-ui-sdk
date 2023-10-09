@@ -15,12 +15,13 @@ import "qrc:/dapqml-widgets"
 DapQmlDummy {
     id: root
     x: (parent.width - width) / 2
-    y: (0 - height * 1.5)
+    //y: (0 - height * 1.5)
     width: frameSizer.width
     height: textLabel.contentHeight < contentSizer.height
             ? frameSizer.height
             : frameSizer.height * 0.75 + textLabel.contentHeight
     clip: false
+//    color: "green"
 
     //                Component.onCompleted: StyleDebugTree.describe (
     //                   "root",
@@ -46,14 +47,48 @@ DapQmlDummy {
         ]
 
         onShowChanged: {
-            if (show)
-                hideTimer.start();
-            else
-                hideTimer.stop();
-            root.y = show ? (positioner.y) : (0 - root.height * 1.5)
+//            if (show)
+//                hideTimer.start();
+//            else
+//                hideTimer.stop();
+            //root.y = show ? (positioner.y) : (0 - root.height * 1.5)
+            root.updateState();
         }
         onTypeChanged: typeString = typeList[type]
     }
+
+    property QtObject swipeCtl: QtObject {
+        property bool active: root.internal.show
+        property bool dragging: false
+        property real dragStart
+        property real dragPosition
+
+        onDraggingChanged: {
+            root.updateState();
+        }
+    }
+
+    state: "hidden"
+    states: [
+        State {
+            name: "dragged"
+            PropertyChanges { target: positionAnimation; duration: 0 }
+            PropertyChanges { target: hideTimer; running: false }
+            PropertyChanges { target: contentRoot; y: positioner.y + root.swipeCtl.dragPosition }
+        },
+        State {
+            name: "showed"
+            PropertyChanges { target: positionAnimation; duration: 250 }
+            PropertyChanges { target: hideTimer; running: true }
+            PropertyChanges { target: contentRoot; y: positioner.y }
+        },
+        State {
+            name: "hidden"
+            PropertyChanges { target: positionAnimation; duration: 250 }
+            PropertyChanges { target: hideTimer; running: false }
+            PropertyChanges { target: contentRoot; y: 0 - root.height * 1.5 }
+        }
+    ]
 
     Timer {
         id: hideTimer
@@ -72,13 +107,6 @@ DapQmlDummy {
     signal sigCloseClicked();
     signal sigBodyClicked();
 
-    Behavior on y {
-        PropertyAnimation {
-            easing.type: Easing.OutQuad
-            duration: 250
-        }
-    }
-
     Component.onCompleted: {
         setShow(false);
         NotificationCtl.attach (root);
@@ -92,6 +120,19 @@ DapQmlDummy {
 
     function setShow(a_value) {
         root.internal.show  = a_value;
+    }
+
+    function updateState() {
+        let stateIndex = (internal.show * 2) + (swipeCtl.dragging * 1);
+        let stateList = [
+                "hidden",
+                "hidden",
+                "showed",
+                "dragged",
+            ];
+        let newState    = stateList[stateIndex];
+        //console.log(`new state: ${newState}`);
+        root.state      = newState;
     }
 
     /// @}
@@ -122,8 +163,17 @@ DapQmlDummy {
 
     DapQmlDummy {
         id: contentRoot
-        anchors.fill: parent
+        width: parent.width
+        height: parent.height
         visible: false
+
+        Behavior on y {
+            PropertyAnimation {
+                id: positionAnimation
+                easing.type: Easing.OutQuad
+                duration: 250
+            }
+        }
 
         //                Component.onCompleted: StyleDebugTree.describe (
         //                   "contentRoot",
@@ -181,79 +231,84 @@ DapQmlDummy {
             DapQmlLabel {
                 anchors.fill: parent
                 fontSize: parent.fontSize
+                disableClicking: true
                 text: root.internal.typeString
                 qss: root.internal.type === 2 ? "c-label" : "c-error"
             }
         }
 
-        /****************************************//**
-         * Clickable area
-         ********************************************/
+//        /****************************************//**
+//         * Clickable area
+//         ********************************************/
 
-        MouseArea {
-            anchors.fill: content
-            onClicked: root.sigBodyClicked();
-        }
-
-        /****************************************//**
-         * Close button
-         ********************************************/
-
-        DapQmlRectangle {
-            id: closeBtn
-            anchors.verticalCenter: content.top
-            anchors.horizontalCenter: content.right
-            qss: "notification-close-btn-area"
-
-            /* variables */
-
-            property bool hovered: false
-            property string image
-            property color idleColor
-            property color hoveredColor
-
-            /* button frame */
-
-            DapQmlRectangle {
-                anchors.fill: parent
-                anchors.margins: parent.width * 0.275
-                radius: width * 0.5
-                color: parent.hovered ? parent.hoveredColor : parent.idleColor
-
-                /* close icon image */
-
-                DapQmlImage {
-                    anchors.fill: parent
-                    anchors.margins: parent.width * 0.15
-                    scaledPixmap: closeBtn.image
-
-    //                Component.onCompleted: StyleDebugTree.describe (
-    //                   "not-image",
-    //                    ["x", "y", "width", "height"],
-    //                   this);
-                }
-
-    //            Component.onCompleted: StyleDebugTree.describe (
-    //               "not-circle",
-    //                ["x", "y", "width", "height"],
-    //               this);
-            }
-
-            /* clickable area */
-
-            MouseArea {
-                anchors.fill: parent
-                hoverEnabled: true
-                onClicked: root.sigCloseClicked();
-                onEntered: parent.hovered = true
-                onExited:  parent.hovered = false
-            }
+//        MouseArea {
+//            anchors.fill: content
+//            onClicked: root.sigBodyClicked();
+//        }
 
     //        Component.onCompleted: StyleDebugTree.describe (
     //           "not-area",
     //            ["x", "y", "width", "height"],
     //           this);
+    }
+
+    /****************************************//**
+     * Close button
+     ********************************************/
+
+    DapQmlRectangle {
+        id: closeBtn
+        anchors.top: contentRoot.top
+        anchors.right: contentRoot.right
+        anchors.topMargin: 0 - height * 0.175
+        anchors.rightMargin: 0 - width * 0.175
+        z: 10
+        qss: "notification-close-btn-area"
+
+        /* variables */
+
+        property bool hovered: false
+        property string image
+        property color idleColor
+        property color hoveredColor
+
+        /* button frame */
+
+        DapQmlRectangle {
+            anchors.fill: parent
+            anchors.margins: parent.width * 0.275
+            radius: width * 0.5
+            color: parent.hovered ? parent.hoveredColor : parent.idleColor
+
+            /* close icon image */
+
+            DapQmlImage {
+                anchors.fill: parent
+                anchors.margins: parent.width * 0.15
+                scaledPixmap: closeBtn.image
+
+    //                Component.onCompleted: StyleDebugTree.describe (
+    //                   "not-image",
+    //                    ["x", "y", "width", "height"],
+    //                   this);
+            }
+
+    //            Component.onCompleted: StyleDebugTree.describe (
+    //               "not-circle",
+    //                ["x", "y", "width", "height"],
+    //               this);
         }
+    }
+
+    /* clickable area */
+
+    MouseArea {
+        anchors.fill: closeBtn
+        z: 11
+        hoverEnabled: true
+        onClicked: root.sigCloseClicked();
+        onEntered: closeBtn.hovered = true
+        onExited:  closeBtn.hovered = false
     }
 
     /****************************************//**
@@ -272,6 +327,53 @@ DapQmlDummy {
             property string color
             qss: "notification-shadow"
         }
+    }
+
+    /****************************************//**
+     * Swipe
+     ********************************************/
+
+    MultiPointTouchArea {
+        id: swipeArea
+        anchors.fill: parent
+        anchors.leftMargin: closeBtn.width
+        anchors.rightMargin: closeBtn.width
+        touchPoints: [
+            TouchPoint {
+                id: point
+                //onXChanged: root.internal._move()
+                onPressedChanged: {
+                    if (pressed === false)
+                    {
+                        if (Math.abs (root.swipeCtl.dragPosition) < 8)
+                            root.sigBodyClicked();
+                    }
+
+                    root.swipeCtl.dragStart     = y;
+                    root.swipeCtl.dragPosition  = 0;
+                    root.swipeCtl.dragging      = pressed;
+                }
+                onYChanged: {
+                    if (root.swipeCtl.dragging === false)
+                        return;
+
+                    /* calc new pos */
+                    let newDragPos  = y - root.swipeCtl.dragStart;
+
+                    /* set pos only if dragged up */
+                    root.swipeCtl.dragPosition = newDragPos < 0 ? newDragPos : 0;
+
+                    /* check if need to be closed */
+                    if (root.swipeCtl.dragPosition < 0 - (contentRoot.height / 2))
+                    {
+                        root.setShow (false);
+                        root.swipeCtl.dragging  = false;
+                    }
+
+                    //console.log(`pos: ${root.swipeCtl.dragPosition} : ${root.swipeCtl.dragStart} : ${y} : ${contentRoot.height / 2}`)
+                }
+            }
+        ]
     }
 }
 

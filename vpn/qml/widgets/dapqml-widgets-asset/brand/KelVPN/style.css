@@ -2545,7 +2545,7 @@
 
 .notification-close-btn-area
 {
-    scaled-rect: scaled(nan,nan,64,64,true);
+    scaled-rect: scaled(nan,nan,72,72,true);
     qproperty-image: "@btn-update-notification-close";
     qproperty-idle-color: "@input-field";
     qproperty-hovered-color: "@separator-color";
