@@ -65,6 +65,7 @@ public:
   Q_INVOKABLE void setToggleAnimation (QObject *a_value);
   Q_INVOKABLE void setTouchingPoint (QObject *a_value);
   Q_INVOKABLE void setTouchArea (QObject *a_value);
+  Q_INVOKABLE void updateTogglePos();
 
   bool dragging() const;
   void setDragging (bool a_value);
