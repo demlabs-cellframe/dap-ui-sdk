@@ -1331,7 +1331,7 @@
 
 .dashboard-speed-sub
 {
-    color: "#A4A3C0";
+    color: "@input-placeholder";
     scaled-font: scaled(12);    
 }
 

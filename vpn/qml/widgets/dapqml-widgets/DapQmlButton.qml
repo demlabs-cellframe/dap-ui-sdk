@@ -419,6 +419,7 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 width: _magickWidth()
                 height: _magickHeight()
+                y: 0 - _magickHeight() * 0.1
 
                 horizontalAlign: Text.AlignHCenter
                 verticalAlign: Text.AlignBottom
@@ -433,7 +434,7 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 width: _magickWidth()
                 height: _magickHeight() - _magickSpacer() / 2
-                y: _magickHeight()
+                y: _magickHeight() * 1.05
 
                 horizontalAlign: Text.AlignHCenter
                 verticalAlign: Text.AlignTop
