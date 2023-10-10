@@ -1418,7 +1418,7 @@
 
 .bugrep-send-btn
 {
-    scaled-rect: scaled(27,492,374,80,true,16);
+    scaled-rect: scaled(27,770,374,80,true,16);
 }
 
 .bugrep-share-btn
@@ -1642,7 +1642,7 @@
 
 .ph-icn-cpy-resizer
 {
-    scaled-rect: scaled(nan,nan,40,40,true);
+    scaled-rect: scaled(nan,nan,34,34,true);
 /*
     scaled-rect: scaled(nan,nan,30,30,true);
 */
@@ -1837,8 +1837,8 @@
 
 .ch-country-filter-clear
 {
-    qproperty-inactive: "@btn-close";
-    qproperty-active: "@btn-close-hover";
+    qproperty-inactive: "@btn-update-notification-close";
+    qproperty-active: "@btn-update-notification-close-hover";
 }
 
 .ch-country-listview

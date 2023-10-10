@@ -148,8 +148,8 @@ Item {
             x: parent.width - width - y
             y: (parent.height - height) / 2
             z: 15
-            height: countryFilterField.innerSize * 0.5
-            width: countryFilterField.innerSize * 0.5
+            height: countryFilterField.innerSize * 0.65
+            width: countryFilterField.innerSize * 0.65
             visible: countryFilterLine.mainText.length > 0
 
             qss: "ch-country-filter-clear"

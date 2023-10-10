@@ -56,7 +56,7 @@ Item {
     /// @brief current mode
     ///
     /// @see QuiBugReportForm.Mode
-    property int mode: 0
+    property int mode: 1
     /// @brief form name
     ///
     /// Used to connect interface via Manager
@@ -750,15 +750,25 @@ Item {
 
             /* info */
             DapQmlLabel {
-                qss: "bugrep-sending"
+                qss: "bugrep-sending c-label"
                 text: qsTr("Sending...") + lang.notifier
             }
 
             /* animated spinner */
-            AnimatedImage {
-                id: animation
-                source: "qrc:/dapqml-forms-asset/Spinner.gif"
-                DapQmlStyle { qss: "bugrep-animation"; item: animation }
+//            AnimatedImage {
+//                id: animation
+//                source: "qrc:/dapqml-forms-asset/Spinner.gif"
+//                DapQmlStyle { qss: "bugrep-animation"; item: animation }
+//            }
+            Item {
+                anchors.fill: parent
+                anchors.bottomMargin: arcAnim.height * 0.75
+
+                DapQmlArcAnimation {
+                    id: arcAnim
+                    anchors.centerIn: parent
+                    qss: "bugrep-animation c-brand"
+                }
             }
 
             /* cancel */
