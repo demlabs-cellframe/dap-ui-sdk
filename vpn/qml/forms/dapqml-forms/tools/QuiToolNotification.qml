@@ -14,12 +14,12 @@ import "qrc:/dapqml-widgets"
 
 DapQmlDummy {
     id: root
-    x: (parent.width - width) / 2
+    x: Math.round ((parent.width - width) / 2)
     //y: (0 - height * 1.5)
-    width: frameSizer.width
+    width: Math.round (frameSizer.width)
     height: textLabel.contentHeight < contentSizer.height
-            ? frameSizer.height
-            : frameSizer.height * 0.75 + textLabel.contentHeight
+            ? Math.round (frameSizer.height)
+            : Math.round (frameSizer.height * 0.75 + textLabel.contentHeight)
     clip: false
 //    color: "green"
 
@@ -74,19 +74,19 @@ DapQmlDummy {
             name: "dragged"
             PropertyChanges { target: positionAnimation; duration: 0 }
             PropertyChanges { target: hideTimer; running: false }
-            PropertyChanges { target: contentRoot; y: positioner.y + root.swipeCtl.dragPosition }
+            PropertyChanges { target: contentRoot; y: Math.round (positioner.y + root.swipeCtl.dragPosition) }
         },
         State {
             name: "showed"
             PropertyChanges { target: positionAnimation; duration: 250 }
             PropertyChanges { target: hideTimer; running: true }
-            PropertyChanges { target: contentRoot; y: positioner.y }
+            PropertyChanges { target: contentRoot; y: Math.round (positioner.y) }
         },
         State {
             name: "hidden"
             PropertyChanges { target: positionAnimation; duration: 250 }
             PropertyChanges { target: hideTimer; running: false }
-            PropertyChanges { target: contentRoot; y: 0 - root.height * 1.5 }
+            PropertyChanges { target: contentRoot; y: Math.round (0 - root.height * 1.5) }
         }
     ]
 
@@ -175,6 +175,8 @@ DapQmlDummy {
             }
         }
 
+        // onYChanged: console.log(`notification y ${y}`)
+
         //                Component.onCompleted: StyleDebugTree.describe (
         //                   "contentRoot",
         //                    ["x", "y", "width", "height"],
@@ -186,7 +188,9 @@ DapQmlDummy {
 
         DapQmlRectangle {
             id: content
-            anchors.centerIn: parent
+            //anchors.centerIn: parent
+            x: Math.round ((parent.width - width) / 2)
+            y: Math.round ((parent.height - height) / 2)
             width: contentSizer.width
             height: root.height - frameSizer.height + contentSizer.height
             color: contentSizer.color
@@ -206,6 +210,7 @@ DapQmlDummy {
             id: textLabel
             anchors.fill: content
             disableClicking: true
+            wrapMode: Text.WordWrap
             text: root.internal.message
             qss: "c-label"
         }
