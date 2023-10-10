@@ -15,6 +15,8 @@ SOURCES += \
     $$PWD/DapNodeOrderInfo.cpp \
     $$PWD/DapNodeTransactionHistory.cpp \
     $$PWD/DapNodeWeb3.cpp \
+    $$PWD/DapNotification.cpp \
+    $$PWD/DapNotificationHistory.cpp \
     $$PWD/DapPluginsPathControll.cpp \
     $$PWD/DapSerialKeyData.cpp \
     $$PWD/DapSerialKeyHistory.cpp \
@@ -48,6 +50,8 @@ HEADERS += \
     $$PWD/DapNodeOrderInfo.h \
     $$PWD/DapNodeTransactionHistory.h \
     $$PWD/DapNodeWeb3.h \
+    $$PWD/DapNotification.h \
+    $$PWD/DapNotificationHistory.h \
     $$PWD/DapPluginsPathControll.h \
     $$PWD/DapSerialKeyData.h \
     $$PWD/DapSerialKeyHistory.h \

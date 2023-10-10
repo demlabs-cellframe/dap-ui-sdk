@@ -34,6 +34,7 @@ const QString SETTING_THEME             = "ColorTheme";
 const QString SETTING_ROUEXC_MODE       = "rouExcMode";
 const QString NODE_ORDER_HISTORY        = "nodeOrderHistory";
 const QString SERIAL_LOSS_ON_UNINSTALL_FLAG = "serialLossOnUninstallFlag";
+const QString NOTIFICATION_HISTORY      = "notificationHistory";
 
 class DapSerialKeyData;
 enum class Authorization;

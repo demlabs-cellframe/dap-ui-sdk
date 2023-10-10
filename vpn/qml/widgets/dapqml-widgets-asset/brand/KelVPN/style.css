@@ -84,6 +84,7 @@
     ic-report-item:             "qrc:/dapqml-forms-asset/light/ic_report-item.png";
     ic-key-item:                "qrc:/dapqml-forms-asset/light/ic_key-item.png";
     ic-orders:                  "qrc:/dapqml-forms-asset/light/ic_orders.png";
+    ic-notification:            "qrc:/dapqml-forms-asset/light/ic_notification.png";
 }
 
 .@dark
@@ -164,6 +165,7 @@
     ic-report-item:             "qrc:/dapqml-forms-asset/dark/ic_report-item.png";
     ic-key-item:                "qrc:/dapqml-forms-asset/dark/ic_key-item.png";
     ic-orders:                  "qrc:/dapqml-forms-asset/dark/ic_orders.png";
+    ic-notification:            "qrc:/dapqml-forms-asset/dark/ic_notification.png";
 }
 
 /****************************************************
@@ -202,6 +204,11 @@
 .c-dashboard-accent
 {
     color: "#F47A54";
+}
+
+.c-error
+{
+    color: "@error";
 }
 
 /****************************************************
@@ -506,6 +513,11 @@
 .ic_orders
 {
     qproperty-scaledPixmap: "@ic-orders";
+}
+
+.ic_notification
+{
+    qproperty-scaledPixmap: "@ic-notification";
 }
 
 .ic_back
@@ -2452,3 +2464,88 @@
     scaled-font: scaled(14);
 }
 
+
+
+/****************************************************
+ * Notifications history
+ ***************************************************/
+
+.notification-item-frame
+{
+    scaled-rect: scaled(nan,nan,nan,98,false);
+}
+
+.notification-item-frame-spacings
+{
+    scaled-rect: scaled(18,6,nan,nan,false);
+}
+
+.notification-item-timestamp-title
+{
+    color: "@text";
+    font-weight: Font.Bold;
+    scaled-font: scaled(20);
+}
+
+.notification-item-time
+{
+    color: "@input-placeholder";
+    scaled-font: scaled(12);
+}
+
+.notification-item-title
+{
+    color: "@text";
+    font-weight: Font.Bold;
+    scaled-font: scaled(16);
+}
+
+.notification-item-description
+{
+    scaled-rect: scaled(nan,nan,nan,nan,false,16);
+    color: "@label";
+}
+
+
+
+/****************************************************
+ * Notification
+ ***************************************************/
+
+.notification-frame
+{
+    scaled-rect: scaled(nan,nan,400,118,false);
+}
+
+.notification-content
+{
+    scaled-rect: scaled(nan,nan,356,78,false);
+    color: "@background";
+    radius: 12;
+}
+
+.notification-header
+{
+    scaled-rect: scaled(nan,nan,144,32,false,16);
+    color: "@background";
+    border-color: "@input-field";
+    radius: 12;
+}
+
+.notification-shadow
+{
+    color: "@label";
+}
+
+.notification-position
+{
+    scaled-rect: scaled(nan,24,nan,nan,false);
+}
+
+.notification-close-btn-area
+{
+    scaled-rect: scaled(nan,nan,72,72,true);
+    qproperty-image: "@btn-update-notification-close";
+    qproperty-idle-color: "@input-field";
+    qproperty-hovered-color: "@separator-color";
+}
