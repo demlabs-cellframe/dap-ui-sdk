@@ -30,7 +30,7 @@ public slots:
     void sendTransactionInMempool();
     void sendTransactionInLedger();
     void sendOrderList(const QJsonArray& orderList);
-    void sendNodeIp(const QJsonArray &nodeIpList);
+    void sendNodeIp(const QJsonObject &nodeIpList);
     void sendSigningInfo(qint32 utype, qint64 uid, qint64 units, QString price);
 signals:
     void startNodeDetection();
