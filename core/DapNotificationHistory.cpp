@@ -101,6 +101,31 @@ void DapNotificationHistory::append (const QString &a_message, DapNotification::
     endInsertRows();
   };
 
+  /* check if last error is the same */
+  if (m_list.size() > 1)
+  {
+    /* get values */
+    auto &item  = m_list.at (1).notification;
+
+    auto &mesg  = item.message();
+    QDate date  = item.created().date();
+    QTime time[2] =
+    {
+      item.created().time(),
+      todayDt.time(),
+    };
+
+    /* remove seconds */
+    time[0].setHMS (time[0].hour(), time[0].minute(), 0, 0);
+    time[1].setHMS (time[1].hour(), time[1].minute(), 0, 0);
+
+    /* compare */
+    if (time[0] == time[1]
+        && date == today
+        && mesg == a_message)
+      return;
+  }
+
   /* insert new top date */
   if (!topDate.isValid())
     insertDate();
@@ -116,7 +141,7 @@ void DapNotificationHistory::append (const QString &a_message, DapNotification::
 
   DapNotification notification
   {
-    QDateTime::currentDateTime(),
+    todayDt,
     a_message,
     a_type,
   };

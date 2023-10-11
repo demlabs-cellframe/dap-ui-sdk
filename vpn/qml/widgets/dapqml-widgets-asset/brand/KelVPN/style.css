@@ -2525,10 +2525,17 @@
     radius: 12;
 }
 
+.notification-text
+{
+    color: "@text";
+    scaled-font: scaled(14);
+}
+
 .notification-header
 {
     scaled-rect: scaled(nan,nan,144,32,false,16);
     color: "@background";
+    font-weight: Font.Bold;
     border-color: "@input-field";
     radius: 12;
 }
