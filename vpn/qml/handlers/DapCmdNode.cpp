@@ -260,7 +260,7 @@ void DapCmdNode::handleError (int code, const QString &message)
 //        break;
 //    }
   _data->hasError = true;
-  DEBUGINFO << __PRETTY_FUNCTION__ << " " + message;
+  DEBUGINFO << __PRETTY_FUNCTION__ << QString ("%1 %2").arg (code).arg (message);
 //    DEBUGINFO << "handleError" << message;
   QString errorMessage = message;
   int errorCode = code;

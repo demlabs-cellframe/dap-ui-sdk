@@ -404,7 +404,8 @@ void DapNode::initWeb3Connections()
         emit errorDetected();
 
         /* ignore and do not send "Wrong reply connect" error */
-        if (errorCode == 100110)
+        if (errorCode == 100110
+            || errorMessage == "Wrong reply status")
           return;
 
         emit sigError(errorCode, errorMessage);
