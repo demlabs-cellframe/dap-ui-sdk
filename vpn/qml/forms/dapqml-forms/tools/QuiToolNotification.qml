@@ -23,11 +23,6 @@ DapQmlDummy {
     clip: false
 //    color: "green"
 
-    //                Component.onCompleted: StyleDebugTree.describe (
-    //                   "root",
-    //                    ["x", "y", "width", "height"],
-    //                   this);
-
     /****************************************//**
      * @name VARS
      ********************************************/
@@ -110,6 +105,11 @@ DapQmlDummy {
     Component.onCompleted: {
         setShow(false);
         NotificationCtl.attach (root);
+
+//        StyleDebugTree.describe (
+//           "root",
+//            ["x", "y", "width", "height"],
+//           this);
     }
 
     /// @}
@@ -165,7 +165,8 @@ DapQmlDummy {
         id: contentRoot
         width: parent.width
         height: parent.height
-        visible: false
+        z: 8
+        //visible: false
 
         Behavior on y {
             PropertyAnimation {
@@ -177,10 +178,10 @@ DapQmlDummy {
 
         // onYChanged: console.log(`notification y ${y}`)
 
-        //                Component.onCompleted: StyleDebugTree.describe (
-        //                   "contentRoot",
-        //                    ["x", "y", "width", "height"],
-        //                   this);
+//        Component.onCompleted: StyleDebugTree.describe (
+//           "contentRoot",
+//            ["x", "y", "width", "height"],
+//           this);
 
         /****************************************//**
          * Content
@@ -191,28 +192,40 @@ DapQmlDummy {
             //anchors.centerIn: parent
             x: Math.round ((parent.width - width) / 2)
             y: Math.round ((parent.height - height) / 2)
-            width: contentSizer.width
-            height: root.height - frameSizer.height + contentSizer.height
+            width: Math.round (contentSizer.width)
+            height: Math.round (root.height - frameSizer.height + contentSizer.height)
             color: contentSizer.color
             radius: contentSizer.radius
 
-            //                Component.onCompleted: StyleDebugTree.describe (
-            //                   "content",
-            //                    ["x", "y", "width", "height"],
-            //                   this);
-        }
+//            Component.onCompleted: StyleDebugTree.describe (
+//               "content",
+//                ["x", "y", "width", "height"],
+//               this);
 
-        /****************************************//**
-         * Text
-         ********************************************/
+            /****************************************//**
+             * Text
+             ********************************************/
 
-        DapQmlLabel {
-            id: textLabel
-            anchors.fill: content
-            disableClicking: true
-            wrapMode: Text.WordWrap
-            text: root.internal.message
-            qss: "c-label"
+            DapQmlLabel {
+                id: textLabel
+//                x: Math.round ((parent.width - width) / 2)
+//                y: Math.round ((parent.height - height) / 2)
+//                width: contentWidth
+//                height: contentHeight
+                anchors.fill: parent
+                anchors.leftMargin: fontSize * 0.5
+                anchors.rightMargin: fontSize * 0.5
+                disableClicking: true
+                wrapMode: Text.WordWrap
+                text: root.internal.message
+                //font.pixelSize: 14
+                qss: "notification-text"
+
+//                Component.onCompleted: StyleDebugTree.describe (
+//                      "textLabel",
+//                      ["x", "y", "width", "height"],
+//                      this);
+            }
         }
 
         /****************************************//**
@@ -228,10 +241,10 @@ DapQmlDummy {
 
             property real fontSize: 15
 
-            //                Component.onCompleted: StyleDebugTree.describe (
-            //                   "header",
-            //                    ["x", "y", "width", "height"],
-            //                   this);
+//            Component.onCompleted: StyleDebugTree.describe (
+//               "header",
+//                ["x", "y", "width", "height"],
+//               this);
 
             DapQmlLabel {
                 anchors.fill: parent
@@ -292,16 +305,16 @@ DapQmlDummy {
                 anchors.margins: parent.width * 0.15
                 scaledPixmap: closeBtn.image
 
-    //                Component.onCompleted: StyleDebugTree.describe (
-    //                   "not-image",
-    //                    ["x", "y", "width", "height"],
-    //                   this);
+//                Component.onCompleted: StyleDebugTree.describe (
+//                   "not-image",
+//                    ["x", "y", "width", "height"],
+//                   this);
             }
 
-    //            Component.onCompleted: StyleDebugTree.describe (
-    //               "not-circle",
-    //                ["x", "y", "width", "height"],
-    //               this);
+//            Component.onCompleted: StyleDebugTree.describe (
+//               "not-circle",
+//                ["x", "y", "width", "height"],
+//               this);
         }
     }
 
@@ -332,6 +345,11 @@ DapQmlDummy {
             property string color
             qss: "notification-shadow"
         }
+
+//        Component.onCompleted: StyleDebugTree.describe (
+//           "contentRoot-shadow",
+//            ["x", "y", "width", "height"],
+//           this);
     }
 
     /****************************************//**

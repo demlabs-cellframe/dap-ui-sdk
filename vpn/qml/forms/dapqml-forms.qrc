@@ -39,10 +39,10 @@
         <file compress="1">dapqml-forms/QuiRoutingExceptions.qml</file>
         <file compress="1">dapqml-forms/tools/QuiToolTicker.qml</file>
         <file compress="1">dapqml-forms/tools/QuiToolUpdateNotification.qml</file>
-        <file>dapqml-forms/QuiNodeOrderList.qml</file>
-        <file>dapqml-forms/QuiNodeTransactionOverview.qml</file>
-        <file>dapqml-forms/QuiNodeTransactionHistoryForm.qml</file>
-        <file>dapqml-forms/QuiNotificationsHistoryForm.qml</file>
-        <file>dapqml-forms/tools/QuiToolNotification.qml</file>
+        <file compress="1">dapqml-forms/QuiNodeOrderList.qml</file>
+        <file compress="1">dapqml-forms/QuiNodeTransactionOverview.qml</file>
+        <file compress="1">dapqml-forms/QuiNodeTransactionHistoryForm.qml</file>
+        <file compress="1">dapqml-forms/QuiNotificationsHistoryForm.qml</file>
+        <file compress="1">dapqml-forms/tools/QuiToolNotification.qml</file>
     </qresource>
 </RCC>
