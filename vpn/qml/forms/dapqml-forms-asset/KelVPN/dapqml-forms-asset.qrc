@@ -9,6 +9,7 @@
         <file compress="1">dapqml-forms-asset/bg_dark-stripes.png</file>
         <file compress="1">dapqml-forms-asset/ic_trash.png</file>
         <file compress="1">dapqml-forms-asset/ic_filter.png</file>
+        <file compress="1">dapqml-forms-asset/shield.png</file>
         <file compress="1">dapqml-forms-asset/light/ic_renew.png</file>
         <file compress="1">dapqml-forms-asset/light/ic_key.png</file>
         <file compress="1">dapqml-forms-asset/light/ic_location.png</file>
@@ -25,6 +26,8 @@
         <file compress="1">dapqml-forms-asset/light/ic_version.png</file>
         <file compress="1">dapqml-forms-asset/light/ic_report-item.png</file>
         <file compress="1">dapqml-forms-asset/light/ic_key-item.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_orders.png</file>
+        <file compress="1">dapqml-forms-asset/light/ic_notification.png</file>
         <file compress="1">dapqml-forms-asset/dark/ic_renew.png</file>
         <file compress="1">dapqml-forms-asset/dark/ic_key.png</file>
         <file compress="1">dapqml-forms-asset/dark/ic_location.png</file>
@@ -41,5 +44,7 @@
         <file compress="1">dapqml-forms-asset/dark/ic_version.png</file>
         <file compress="1">dapqml-forms-asset/dark/ic_report-item.png</file>
         <file compress="1">dapqml-forms-asset/dark/ic_key-item.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_orders.png</file>
+        <file compress="1">dapqml-forms-asset/dark/ic_notification.png</file>
     </qresource>
 </RCC>

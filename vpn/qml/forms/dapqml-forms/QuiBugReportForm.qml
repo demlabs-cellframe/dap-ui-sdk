@@ -56,7 +56,7 @@ Item {
     /// @brief current mode
     ///
     /// @see QuiBugReportForm.Mode
-    property int mode: 0
+    property int mode: 1
     /// @brief form name
     ///
     /// Used to connect interface via Manager
@@ -555,7 +555,7 @@ Item {
                     height: resizer.height
                     horizontalAlign: Text.AlignLeft
                     verticalAlign: Text.AlignTop
-                    text: qsTr("Please describe the details of problem you faced. What actions did you take and what happened*") + lang.notifier
+                    text: qsTr("Please describe the details of problem you faced. What actions did you take and what happened.") + lang.notifier
                     qss: "bugrep-input-placeholder"
                     wrapMode: TextEdit.Wrap
                     visible: bugRepInputField.text.length == 0 && ((Scaling.isAndroid()) ? !bugRepInputField.activeFocus : true)
@@ -613,6 +613,7 @@ Item {
                         clip: true
                         font.pixelSize: fontSize
                         font.weight: fontWeight
+                        inputMethodHints: Qt.ImhSensitiveData
 
                         property int fontSize: 16
                         property int fontWeight: Font.Normal
@@ -749,23 +750,33 @@ Item {
 
             /* info */
             DapQmlLabel {
-                qss: "bugrep-sending"
+                qss: "bugrep-sending c-label"
                 text: qsTr("Sending...") + lang.notifier
             }
 
             /* animated spinner */
-            AnimatedImage {
-                id: animation
-                source: "qrc:/dapqml-forms-asset/Spinner.gif"
-                DapQmlStyle { qss: "bugrep-animation"; item: animation }
+//            AnimatedImage {
+//                id: animation
+//                source: "qrc:/dapqml-forms-asset/Spinner.gif"
+//                DapQmlStyle { qss: "bugrep-animation"; item: animation }
+//            }
+            Item {
+                anchors.fill: parent
+                anchors.bottomMargin: arcAnim.height * 0.75
+
+                DapQmlArcAnimation {
+                    id: arcAnim
+                    anchors.centerIn: parent
+                    qss: "bugrep-animation c-brand"
+                }
             }
 
-//            /* cancel */
-//            DapQmlPushButton {
-//                qss: "bugrep-send-btn push-button"
-//                text: qsTr("CANCEL") + lang.notifier
-//                onClicked: { root.mode = 0; root.sigCancel(); }
-//            }
+            /* cancel */
+            DapQmlPushButton {
+                qss: "bugrep-send-btn push-button"
+                text: qsTr("CANCEL") + lang.notifier
+                onClicked: { root.mode = 0; root.sigCancel(); }
+            }
         }
 
         /****************************************//**

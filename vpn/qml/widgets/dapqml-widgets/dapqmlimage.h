@@ -2,6 +2,8 @@
 #define DAPQMLIMAGE_H
 
 /* INCLUDES */
+#include "dapimage.h"
+
 #include <QQuickPaintedItem>
 #include <QPixmap>
 
@@ -45,7 +47,7 @@ protected:
   struct
   {
     QString name;
-    QPixmap pixmap;
+    DapImage image;
     QSizeF size;
   } _cache;
 

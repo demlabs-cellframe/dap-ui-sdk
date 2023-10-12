@@ -2,6 +2,7 @@
 #include "scaled.h"
 #include <QVariant>
 #include <QQmlProperty>
+#include <math.h>
 
 /* NAMESPACE */
 namespace DapStyle
@@ -18,6 +19,7 @@ Scaled::Scaled()
   , m_fontSize (0)
   , m_aspect (false)
   , m_type (Invalid)
+  , m_result ({0,0,0,0,0,0,0})
 {
 
 }
@@ -29,6 +31,7 @@ Scaled::Scaled (const Scaled &src)
   , m_fontSize (src.m_fontSize)
   , m_aspect (src.m_aspect)
   , m_type (src.m_type)
+  , m_result (src.m_result)
 {
 
 }
@@ -112,13 +115,14 @@ void Scaled::setType(Type newType)
   m_type = newType;
 }
 
-void Scaled::adjust (QObject *a_item, double a_screenWidth, double a_screenHeight) const
+bool Scaled::adjust (QObject *a_item, double a_screenWidth, double a_screenHeight) const
 {
   /* variables */
   double resultX, resultY, resultW, resultH, resultFontSize;
 
   /* defs */
-  calcAdjusted (a_screenWidth, a_screenHeight,
+  bool storedResult = calcAdjusted(
+    a_screenWidth, a_screenHeight,
     resultX, resultY,
     resultW, resultH,
     resultFontSize);
@@ -144,10 +148,11 @@ void Scaled::adjust (QObject *a_item, double a_screenWidth, double a_screenHeigh
         {
           QQmlProperty::write (a_item, "fontSize", resultFontSize); // a_item->setProperty ("fontSize", fs);
         }
-  }
+    }
+  return storedResult;
 }
 
-void Scaled::calcAdjusted(
+bool Scaled::calcAdjusted(
     double a_screenWidth,
     double a_screenHeight,
     double &a_x,
@@ -156,6 +161,18 @@ void Scaled::calcAdjusted(
     double &a_height,
     double &a_fontSize) const
 {
+  /* return precalc */
+  if (m_result.scrWidth == a_screenWidth
+      && m_result.scrHeight == a_screenHeight)
+  {
+    a_x         = m_result.x;
+    a_y         = m_result.y;
+    a_width     = m_result.w;
+    a_height    = m_result.h;
+    a_fontSize  = m_result.f;
+    return false;
+  }
+
   /* defs */
   bool centerHor  = x() == -1;
   bool centerVer  = y() == -1;
@@ -198,11 +215,24 @@ void Scaled::calcAdjusted(
       resultY = (a_screenHeight - resultH) / 2;
 
   /* return result */
-  a_x         = resultX;
-  a_y         = resultY;
-  a_width     = resultW;
-  a_height    = resultH;
-  a_fontSize  = fontSize() * multV;
+  a_x         = floor (resultX);
+  a_y         = floor (resultY);
+  a_width     = floor (resultW);
+  a_height    = floor (resultH);
+  a_fontSize  = floor (fontSize() * multV);
+
+  /* store result */
+  m_result = Result {
+    double (floor (resultX)),
+    double (floor (resultY)),
+    double (floor (resultW)),
+    double (floor (resultH)),
+    double (floor (a_fontSize)),
+    a_screenWidth,
+    a_screenHeight
+  };
+
+  return true;
 }
 
 /********************************************
@@ -218,6 +248,7 @@ Scaled &Scaled::operator=(const Scaled &src)
   m_fontSize  = src.m_fontSize;
   m_aspect    = src.m_aspect;
   m_type      = src.m_type;
+  m_result    = src.m_result;
   return *this;
 }
 

@@ -1,4 +1,5 @@
 #include "DapCmdSendBugReport.h"
+#include <QTimer>
 
 DapCmdSendBugReport::DapCmdSendBugReport (QObject *a_parent)
   : DapCmdClientAbstract (DapJsonCmdType::SEND_BUG_REPORT, a_parent)
@@ -13,8 +14,12 @@ void DapCmdSendBugReport::sendBugReport(
     const QString &attachFile,
     const QString &a_contactAddress)
 {
-  /* set flag */
-  m_waitingForResponse  = true;
+  if (!m_waitingForResponse)
+  {
+    /* set flag */
+    m_waitingForResponse  = true;
+    return;
+  }
 
   /* send report */
   QJsonObject obj =
@@ -30,6 +35,7 @@ void DapCmdSendBugReport::sendBugReport(
 void DapCmdSendBugReport::cancelBugReport()
 {
   m_waitingForResponse  = false;
+  QTimer::singleShot (2000, this, [this] { m_waitingForResponse  = true; });
 }
 
 void DapCmdSendBugReport::handleResult (const QJsonObject& a_result)

@@ -94,6 +94,7 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObje
     if (slot)
         connect(netReply, SIGNAL(finished()), obj, slot);
     connect(netReply, &DapNetworkReply::sigError, this, [=] {
+        qInfo() << "errorNetwork";
         emit errorNetwork(netReply->error(), netReply->errorString());
         if (slot_err)
             QMetaObject::invokeMethod(obj, slot_err, Qt::ConnectionType::AutoConnection, Q_ARG(const QString&, netReply->errorString()));
@@ -473,7 +474,7 @@ void DapSession::onAuthorize()
                         } else if (m_xmlStreamReader.name() == "tx_cond") {
                              m_cdbAuthTxCond = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvTxCond: " << m_cdbAuthTxCond;
-                        }else if (m_xmlStreamReader.name() == "max_price") {
+                        } else if (m_xmlStreamReader.name() == "max_price") {
                             m_cdbMaxPrice = m_xmlStreamReader.readElementText();
                            qDebug() << "m_srvMaxPrice: " << m_cdbMaxPrice;
                         } else {

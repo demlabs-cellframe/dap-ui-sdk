@@ -1,7 +1,13 @@
 /* INCLUDES */
 
-import QtQuick 2.0
+import QtQuick 2.11
+import QtQml 2.12
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.12
+import QtQuick.Shapes 1.4
 import DapQmlStyle 1.0
+import DapQmlSwitchCtl 1.0
+import StyleDebugTree 1.0
 import QtGraphicalEffects 1.12
 
 /****************************************//**
@@ -42,95 +48,17 @@ Item {
     /// @note changes hooked to _setStyle()
     property bool checked: false
 
+    /// @brief show loading animation
+    property bool loading: !enabled
+
     /// @brief widget qss style
     property string qss
 
-    property QtObject internal: QtObject {
-        property bool dragging: false
-        property bool draggingAnim: false
-        property bool draggingState: tgl.draggingState
-        property real pos1
-        property real pos2
-        property real diff: pos2 - pos1
-        property real draggingStartDistance: 6
+    property alias ctl: ctl
 
-        function _begin() {
-            pos1            = point.x;
-            pos2            = point.x;
-            dragging        = false;
-            draggingAnim    = false;
-
-            //console.log(`SWITCH drag begin: ${pos1}|${pos2}|${diff}|${dragging}|${draggingState}`);
-        }
-
-        function _move() {
-            /* store value */
-            pos2 = point.x;
-
-            /* check for dragging */
-            if (diff > 0)
-            {
-                if (diff > draggingStartDistance)
-                {
-                    dragging        = true;
-                    draggingAnim    = true;
-                }
-            }
-            if (diff < 0)
-            {
-                if (diff < -draggingStartDistance)
-                {
-                    dragging        = true;
-                    draggingAnim    = true;
-                }
-            }
-
-            //console.log(`SWITCH drag move: ${pos1}|${pos2}|${diff}|${dragging}|${draggingState}`);
-        }
-
-        function _end() {
-            /* turn off anim */
-            draggingAnim    = false;
-
-            /* not dragging */
-            if (!dragging)
-                _toggle();
-
-            /* on left side */
-            if (!draggingState)
-                _turnOff();
-
-            /* on right side */
-            else
-                _turnOn();
-
-            dragging    = false;
-
-            //console.log(`SWITCH drag end: ${pos1}|${pos2}|${diff}|${dragging}|${draggingState}`);
-        }
-
-        function _turnOff() {
-            if (root.checked === false)
-                return;
-
-            root.setState(false);
-            //root.clicked();
-            //console.log(`SWITCH drag turnOff`);
-        }
-
-        function _turnOn() {
-            if (root.checked === true)
-                return;
-
-            root.setState(true);
-            //root.clicked();
-            //console.log(`SWITCH drag turnOn`);
-        }
-
-        function _toggle() {
-            root.toggle();
-            //console.log(`SWITCH drag toggle`);
-        }
+    DapQmlSwitchCtl {
+        id: ctl
+        draggingStartDistance: 8
     }
 
     /// @}
@@ -161,11 +89,13 @@ Item {
 
     function setEnable(value) {
         root.enabled = value;
-        desaturateEffect.desaturation = 0.5 * (!value);
+        //desaturateEffect.desaturation = 0.5 * (!value);
     }
 
     /// @brief change style based on checkbox state
     function _setStyle() {
+        tglUpdateTimer.stop();
+        tglUpdateTimer.start();
         bg.qss  = (!checked) ? "switch-bg-off" : "switch-bg-on";
         tgl.qss = (!checked) ? "switch-toggle-off" : "switch-toggle-on";
     }
@@ -181,6 +111,7 @@ Item {
     }
 
     onCheckedChanged: _setStyle()
+    Component.onCompleted: ctl.setRoot(this)
 
     /// @}
     /****************************************//**
@@ -190,7 +121,7 @@ Item {
     Item {
         id: content
         anchors.fill: parent
-        visible: false
+        //visible: false
 
         /****************************************//**
          * Background frame
@@ -201,11 +132,19 @@ Item {
             x: _centerHor(this)
             y: _centerVer(this)
             z: 0
-            width: root.width - 12 * (root.width / 270)
+            width: root.width - 24 * (root.width / 270)
             height: root.height - 36 * (root.height / 174)
             qss: "switch-bg-off"
 
-            //onClicked: toggle()
+            Component.onCompleted: ctl.setBackground(this)
+
+            DapQmlLabel {
+                id: bgConn
+                anchors.fill: parent
+                z: 1
+                qss: "switch-bg-conn"
+                visible: root.loading && root.checked
+            }
         }
 
         /****************************************//**
@@ -214,39 +153,48 @@ Item {
 
         DapQmlLabel {
             id: tgl
-            //x: (checked === false) ? (-12 * (root.width / 270)) : (root.width - width + 12 * (root.width / 270))
-            x: {
-                if (root.internal.dragging)
-                {
-                    if (isLeftReached)
-                        return minPos;
-                    if (isRightReached)
-                        return maxPos;
-                    return draggingPos
-                }
-                return finalPos;
-            }
-
             y: 0
-            z: 1
+            z: 5
             width: root.height
             height: root.height
             qss: "switch-toggle-off"
 
-            property real finalPos:         (checked === false) ? minPos : maxPos
-            property real draggingPos:      root.internal.pos2 - (width / 2)
-            property real minPos:           (-12 * (root.width / 270))
-            property real maxPos:           (root.width - width + 12 * (root.width / 270))
-            property bool isLeftReached:    draggingPos <= minPos
-            property bool isRightReached:   draggingPos >= maxPos
-            property bool draggingState:    root.internal.pos2 >= root.width / 2
-
-            //onClicked: toggle()
-
             Behavior on x {
                 PropertyAnimation {
-                    duration: root.internal.draggingAnim ? 0 : 125
+                    duration: ctl.draggingAnim ? 0 : 125
                     easing.type: Easing.InQuad
+                    Component.onCompleted: ctl.setToggleAnimation(this)
+                }
+            }
+
+            Component.onCompleted: ctl.setToggle(this)
+
+            Timer {
+                id: tglUpdateTimer
+                running: true
+                repeat: true
+                interval: 2500
+                onTriggered: ctl.updateTogglePos()
+            }
+
+            Rectangle {
+                id: loadingFrame
+                anchors.centerIn: parent
+                visible: root.loading
+                width: size
+                height: size
+                radius: size
+                color: "white"
+
+                property real size: Math.min(parent.width, parent.height) * 0.75
+
+                //DapQmlStyle { item: loadingFrame; qss: "c-background" }
+
+                DapQmlArcAnimation {
+                    anchors.fill: parent
+                    anchors.margins: parent.width * 0.275
+                    z: 200
+                    qss: "c-dashboard-accent"
                 }
             }
         }
@@ -256,21 +204,17 @@ Item {
      * Saturation effect
      ********************************************/
 
-    Desaturate {
-        id: desaturateEffect
-        anchors.fill: content
-        source: content
-        desaturation: root.enable ? 0 : 0.4
-    }
+//    Desaturate {
+//        id: desaturateEffect
+//        anchors.fill: content
+//        source: content
+//        desaturation: root.enable ? 0 : 0.4
+//    }
 
     /****************************************//**
      * Mouse area
      ********************************************/
 
-//    MouseArea {
-//        anchors.fill: parent
-//        onClicked: toggle()
-//    }
     MultiPointTouchArea {
         id: draggingSpace
         anchors.fill: parent
@@ -278,11 +222,13 @@ Item {
         touchPoints: [
             TouchPoint {
                 id: point
-                onXChanged: root.internal._move()
+                //onXChanged: root.internal._move()
+                Component.onCompleted: ctl.setTouchingPoint(this)
             }
         ]
-        onPressed:  internal._begin() // console.log(`switch pressed`);
-        onReleased: internal._end()   // console.log(`switch released`);
+        Component.onCompleted: ctl.setTouchArea(this)
+        //onPressed:  internal._begin() // console.log(`switch pressed`);
+        //onReleased: internal._end()   // console.log(`switch released`);
 
 //        Rectangle {
 //            width: 30; height: 30

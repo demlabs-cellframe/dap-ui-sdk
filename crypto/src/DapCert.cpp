@@ -237,6 +237,42 @@ dap_enc_key_t* Cert::key() {
     return m_cert->enc_key;
 }
 
+void Cert::setPubKey(dap_enc_key_t* a_key) {
+    m_cert = dap_cert_new("public");
+    m_cert->enc_key = dap_enc_key_new(a_key->type);
+    m_cert->enc_key->pub_key_data = DAP_NEW_Z_SIZE(void, a_key->pub_key_data_size);
+    memcpy(m_cert->enc_key->pub_key_data, a_key->pub_key_data, a_key->pub_key_data_size);
+    m_cert->enc_key->pub_key_data_size = a_key->pub_key_data_size;
+}
+
+void Cert::savePubCert(const char * saveDir, const char * newName) {
+
+    if ( m_cert ) {
+        if ( m_cert->enc_key->pub_key_data_size ) {
+          // Create empty new cert
+          dap_cert_t * l_cert_new = dap_cert_new(newName);
+          l_cert_new->enc_key = dap_enc_key_new( m_cert->enc_key->type);
+
+          // Copy only public key
+          l_cert_new->enc_key->pub_key_data = DAP_DUP_SIZE(m_cert->enc_key->pub_key_data,
+                                                           m_cert->enc_key->pub_key_data_size);
+          if(!l_cert_new->enc_key->pub_key_data) {
+            qDebug() << "Memory allocation error";
+            return;
+          }
+          l_cert_new->enc_key->pub_key_data_size = m_cert->enc_key->pub_key_data_size;
+
+          dap_cert_save_to_folder(l_cert_new, saveDir);
+        } else {
+          qDebug() <<  "Can't produce pkey from this cert type";
+          exit(-7023);
+        }
+    } else {
+        exit(-7021);
+    }
+}
+
+
 QString Cert::storagePath()
 {
 #if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)

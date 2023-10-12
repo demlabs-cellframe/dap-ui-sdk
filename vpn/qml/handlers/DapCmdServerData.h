@@ -38,6 +38,7 @@ public:
 
     /// @param address Server address.
     void sendServerData(const QString &address, quint16 a_port);
+    void sendOrderData(const QString &address, quint16 a_port = 80);
 
 signals:
     void sentCurrentServerInfo(const DapServerInfo &server);

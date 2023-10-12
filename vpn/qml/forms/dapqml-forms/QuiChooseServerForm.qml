@@ -32,11 +32,6 @@ Item {
     /// Used to connect interface via Manager
     property string formName: "ChooseServer"
 
-    /// @brief items array
-    ///
-    /// Need to store all items
-    property var items: new Array
-
     /// @}
     /****************************************//**
      * @name SIGNALS
@@ -46,6 +41,12 @@ Item {
     /// @brief item clicked
     signal sigSelect(int index, string name);
 //    signal sigCurrentInexChanged();
+
+    /// @}
+    /****************************************//**
+     * @name FUNCTIONS
+     ********************************************/
+    /// @{
 
     /// @}
     /****************************************//**
@@ -89,12 +90,24 @@ Item {
         clip: true
 
         delegate: Item {
+            id: csListViewItem
             width: resizer.width
             height: resizer.height + spacer.height
             property bool checked: false
 
+//            property string logMessage
+//            property int logMessageCounter: 0
+
+//            function collectLogMessage(a_msg) {
+//                logMessage += a_msg + " : ";
+//                logMessageCounter++;
+//                if (logMessageCounter >= 4)
+//                    console.log(logMessage + model.name);
+//            }
+
+            //onHeightChanged: csListViewItem.collectLogMessage (`item ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
+
             DapQmlRadioButton {
-                property int ping: model.ping + csListView.model.hookInt
                 property int quality: model.connectionQuality + csListView.model.hookInt
 
                 text: model.name + csListView.model.hook
@@ -102,13 +115,10 @@ Item {
                 separator: true
                 iconSize: resizer.height
                 width: resizer.width
-                height: resizer.height
+                height: resizer.height + spacer.height
                 y: spacer.height / 2
 
-                // for debug purposes - uncomment 'Text' below
-//                Text {
-//                    text: `${model.name} >> ping [${parent.ping}] quality [${parent.quality}]` + csListView.model.hook
-//                }
+                //onHeightChanged: csListViewItem.collectLogMessage (`radio ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
 
                 DapQmlLabel {
                     property int quality: (parent.quality === 0) ? (0) : (6 - parent.quality)
@@ -117,27 +127,56 @@ Item {
                     width: resizer.height * 0.5
                     height: resizer.height * 0.5
                     qss: `ic_conn-${quality}` + csListView.model.hook
-                    ToolTip {
-                        id: id_tooltip
-                        opacity : 0.70
-                        contentItem: Text{
-                            color: "#404040"
-                            text: (ping > -1) ? "ping " + ping + " ms" : "unavailable"
-                        }
-                        background: Rectangle {
-                            border.color: "#404040"
-                        }
-                    }
+
+                    //onHeightChanged: csListViewItem.collectLogMessage (`icn ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
+
                     MouseArea {
                         anchors.fill: parent
+                        z: 10
                         hoverEnabled: true
-                        onEntered: id_tooltip.visible = true
-                        onExited: id_tooltip.visible = false
+                        onEntered: itemPopup.open()
+                        onExited:  itemPopup.close()
+                        //onHeightChanged: csListViewItem.collectLogMessage (`mousearea ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
+                    }
+
+                    Popup {
+                        id: itemPopup
+                        x: parent.width - width
+                        y: 0 - height
+                        width: popupLabel.contentWidth * 1.25
+                        height: popupLabel.contentHeight * 1.5
+                        topInset: 0
+                        bottomInset: 0
+                        leftInset: 0
+                        rightInset: 0
+                        padding: 0
+                        margins: 0
+
+                        background: Item {}
+
+                        contentItem: Rectangle {
+                            anchors.fill: parent
+                            color: "#e0e0e0"
+                            border.color: "#404040"
+
+                            Text {
+                                id: popupLabel
+                                anchors.fill: parent
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                color: "#404040"
+
+                                property int ping: model.ping + csListView.model.hookInt
+
+                                text: (ping > -1)
+                                      ? (`ping ${ping} ms` + csListView.model.hook)
+                                      : ("unavailable" + csListView.model.hook)
+                            }
+                        }
                     }
                 }
 
                 onClicked: root.sigSelect (model.index, model.name)
-                Component.onCompleted: { items.push(this); }
             }
         }
     }

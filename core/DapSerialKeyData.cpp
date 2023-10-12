@@ -38,6 +38,8 @@ void DapSerialKeyData::setActivated(bool a_isActivated)
 {
     if (m_isActivated == a_isActivated)
         return;
+    if (m_serialKey.isEmpty())
+        return;
     m_isActivated = a_isActivated;
 
     emit activationChanged(a_isActivated);

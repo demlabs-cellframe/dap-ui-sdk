@@ -30,7 +30,11 @@ const QString TEXT_TX_OUT               = "tx_out";
 const QString COUNTRY_NAME              = "Country_code";
 const QString SETTING_AUTHORIZATION     = "authorization";
 const QString LAST_SELECTED_SERVER      = "lastSelectedServer";
+const QString SETTING_THEME             = "ColorTheme";
 const QString SETTING_ROUEXC_MODE       = "rouExcMode";
+const QString NODE_ORDER_HISTORY        = "nodeOrderHistory";
+const QString SERIAL_LOSS_ON_UNINSTALL_FLAG = "serialLossOnUninstallFlag";
+const QString NOTIFICATION_HISTORY      = "notificationHistory";
 
 class DapSerialKeyData;
 enum class Authorization;
