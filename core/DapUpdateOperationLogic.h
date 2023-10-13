@@ -1,6 +1,7 @@
 #ifndef DAPUPDATEOPERATIONLOGIC_H
 #define DAPUPDATEOPERATIONLOGIC_H
 
+#ifndef Q_OS_IOS
 #include <QObject>
 
 // Logical module for blocking update starting if there was an error when downloading
@@ -29,4 +30,5 @@ protected:
     QString updateApp();
 };
 
+#endif
 #endif // DAPUPDATEOPERATIONLOGIC_H

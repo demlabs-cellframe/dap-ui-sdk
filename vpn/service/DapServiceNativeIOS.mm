@@ -22,21 +22,21 @@ void DapServiceNativeIOS::checkInstallation()
 {
     qInfo() << "checkInstallation()";
 
-    NSURL *url = [NSURL URLWithString:@"http://127.0.0.1:YOUR_SERVICE_PORT"];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    NSURLSession *session = [NSURLSession sharedSession];
-    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (!error) {
-            // Service is running
-            qInfo() << "Service is running on 127.0.0.1:YOUR_SERVICE_PORT";
-            isNeedInstallService = false;
-        } else {
-            // Service is not running
-            qWarning() << "Service is not running";
-            isNeedInstallService = true;
-        }
-    }];
-    [task resume];
+//    NSURL *url = [NSURL URLWithString:@"http://127.0.0.1:%d", S(SERVICE_LOCAL_PORT)];
+//    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+//    NSURLSession *session = [NSURLSession sharedSession];
+//    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+//        if (!error) {
+//            // Service is running
+//            qInfo() << "Service is running on 127.0.0.1%d", SERVICE_LOCAL_PORT;
+//            isNeedInstallService = false;
+//        } else {
+//            // Service is not running
+//            qWarning() << "Service is not running";
+//            isNeedInstallService = true;
+//        }
+//    }];
+//    [task resume];
 }
 
 /**

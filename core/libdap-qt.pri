@@ -1,7 +1,4 @@
 QT += core network xml
-ios {
-    QT += core
-}
 #INCLUDEPATH += ../libdap/include ../libdap/src
 include (../zip/zip.pri)
 SOURCES += \
@@ -84,10 +81,13 @@ win32{
     QMAKE_CXXFLAGS +=  -mno-ms-bitfields
 }
 android {
-QT += androidextras
+    QT += androidextras
 }
 ios {
-    QT += core macextras
+    QT += macextras
+    DEFINES += QT_NO_PROCESS
+    SOURCES -= $$PWD/DapUpdateOperationLogic.cpp
+
 }
 
 INCLUDEPATH += $$PWD/../quazip

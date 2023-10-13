@@ -1,7 +1,10 @@
 #include "QtCore"
 #include "DapUpdateOperationLogic.h"
+#include <QProcess>
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
+    #include "CoreFoundation/CoreFoundation.h"
+#elif defined(Q_OS_IOS)
     #include "CoreFoundation/CoreFoundation.h"
 #endif
 
@@ -38,9 +41,11 @@ void DapUpdateOperationLogic::startDownload()
 }
 
 #ifndef Q_OS_ANDROID
+
 // start update application for desktop os
 void DapUpdateOperationLogic::startUpdate()
 {
+#ifndef Q_OS_IOS
     qInfo() << "Start update process";
 //#ifndef Q_OS_MACOS
     // start detached process
@@ -78,6 +83,7 @@ void DapUpdateOperationLogic::startUpdate()
 //                  .arg(updateApp()).arg(downloadFileName()).arg(currentApplication()).toLatin1().constData() );
 //    qInfo() << "Start update agent application" << updateApp() << downloadFileName() << currentApplication();
 //#endif
+#endif
 }
 #endif
 
@@ -132,7 +138,7 @@ QString DapUpdateOperationLogic::currentApplication()
 // this app folder
 QString DapUpdateOperationLogic::applicationDirPath()
 {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     QString appName = "Update.app";
     CFURLRef pluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
     CFStringRef macPath = CFURLCopyFileSystemPath(pluginRef,kCFURLPOSIXPathStyle);

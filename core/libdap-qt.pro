@@ -2,10 +2,6 @@ QT += core network xml
 QT -= gui
 CONFIG += c++11 stl
 
-ios {
-    QT += core core5compat macextras
-}
-
 TARGET = libdap-qt
 
 TEMPLATE = lib

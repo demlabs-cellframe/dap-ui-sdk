@@ -23,7 +23,10 @@ typedef QLocalSocket::LocalSocketError DapUiSocketError;
 #include <QtAndroid>
 #endif
 
-#if defined(Q_OS_ANDROID)
+#ifdef Q_OS_IOS
+#include "DapServiceNativeIOS.h"
+typedef class DapServiceNativeIOS DapServiceNative;
+#elif defined(Q_OS_ANDROID)
 #include "DapServiceNativeAndroid.h"
 typedef class DapServiceNativeAndroid DapServiceNative;
 #elif defined(Q_OS_LINUX)
@@ -35,9 +38,6 @@ typedef class DapServiceNativeDarwin DapServiceNative;
 #elif defined(Q_OS_WIN)
 #include "DapServiceNativeWindows.h"
 typedef class DapServiceNativeWindows DapServiceNative;
-#elif defined(Q_OS_IOS)
-#include "DapServiceNativeIOS.h"
-typedef class DapServiceNativeIOS DapServiceNative;
 #endif
 
 #include "DapCmdParser.h"

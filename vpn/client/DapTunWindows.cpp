@@ -1,6 +1,5 @@
 #include <QtDebug>
 #include <QProcess>
-
 #include <QStringBuilder>
 
 #include "DapTunWorkerWindows.h"

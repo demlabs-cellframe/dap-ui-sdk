@@ -15,6 +15,9 @@ typedef class DapUtun DapTunNative;
 #elif defined(Q_OS_LINUX)
 #include "DapTunLinux.h"
 typedef class DapTunLinux DapTunNative;
+#elif defined(Q_OS_IOS)
+#include "DapTunIOS.h"
+typedef class DapTunIOS DapTunNative;
 #endif
 
 #endif // DAPTUNNATIVE_H

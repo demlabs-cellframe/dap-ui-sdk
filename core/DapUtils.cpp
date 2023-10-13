@@ -1,5 +1,6 @@
 #include <QtDebug>
 #include <QProcess>
+#include <QString>
 #include "DapUtils.h"
 
 #ifdef DAP_OS_UNIX
@@ -8,6 +9,8 @@ const QString cShellPathArgs = "-c";
 #elif defined(DAP_OS_WINDOWS)
 const QString cShellPath = "cmd.exe";
 const QString cShellPathArgs = "/c";
+#elif defined(Q_OS_IOS)
+//
 #else
 #error "Not defined shell path on your platform"
 #endif
@@ -20,6 +23,7 @@ const QString cShellPathArgs = "/c";
  */
 QString DapUtils::shellCmd(const QString& cmd, int waitMsecs)
 {
+#ifndef Q_OS_IOS
     QProcess process;
     process.start(cShellPath, QStringList() << cShellPathArgs << cmd);
     process.waitForFinished( waitMsecs );
@@ -31,4 +35,7 @@ QString DapUtils::shellCmd(const QString& cmd, int waitMsecs)
         qWarning() << "Result shell cmd " << cmd << "is empty";
 
     return result;
+#else
+    return NULL;
+#endif
 }
