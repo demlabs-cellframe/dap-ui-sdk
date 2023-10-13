@@ -85,7 +85,6 @@ android {
 }
 ios {
     QT += macextras
-    DEFINES += QT_NO_PROCESS
     SOURCES -= $$PWD/DapUpdateOperationLogic.cpp
 
 }
