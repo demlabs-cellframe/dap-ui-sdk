@@ -56,7 +56,7 @@ Item {
     /// @brief current mode
     ///
     /// @see QuiBugReportForm.Mode
-    property int mode: 1
+    property int mode: 0
     /// @brief form name
     ///
     /// Used to connect interface via Manager
