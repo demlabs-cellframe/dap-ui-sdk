@@ -178,7 +178,7 @@ const QString &NetworksModule::name() const
 
 const QString &NetworksModule::value() const
 {
-  if (_currentIndex < 0)
+  if (_currentIndex < 0 || _currentIndex >= _items.size())
     return s_dummyString;
   return _items.at (_currentIndex).value;
 }
@@ -210,7 +210,7 @@ const QString &WalletsModule::name() const
 
 const QString &WalletsModule::value() const
 {
-  if (_currentIndex < 0)
+  if (_currentIndex < 0 || _currentIndex >= _items.size())
     return s_dummyString;
   return _items.at (_currentIndex).value;
 }
@@ -242,7 +242,7 @@ const QString &TokensModule::name() const
 
 const QString &TokensModule::value() const
 {
-  if (_currentIndex < 0)
+  if (_currentIndex < 0 || _currentIndex >= _items.size())
     return s_dummyString;
   return _items.at (_currentIndex).value;
 }
