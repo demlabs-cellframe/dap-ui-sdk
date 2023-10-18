@@ -139,7 +139,7 @@ QVariant OrdersModule::data (const QModelIndex &index, int role) const
 
 const QString &OrdersModule::name() const
 {
-  if (_currentIndex < 0 || _items.isEmpty())
+  if (_currentIndex < 0 || _currentIndex >= _items.size())
     return s_dummyString;
   return _items.at (_currentIndex).hash;
 }
@@ -171,7 +171,7 @@ void OrdersModule::installAdressMap (const QHash<QString, QString> &a_map)
 
 const QString &NetworksModule::name() const
 {
-  if (_currentIndex < 0)
+  if (_currentIndex < 0 || _currentIndex >= _items.size())
     return s_dummyString;
   return _items.at (_currentIndex).name;
 }
@@ -203,7 +203,7 @@ bool NetworksModule::setCurrentIndex (int a_value)
 
 const QString &WalletsModule::name() const
 {
-  if (_currentIndex < 0)
+  if (_currentIndex < 0 || _currentIndex >= _items.size())
     return s_dummyString;
   return _items.at (_currentIndex).name;
 }
@@ -235,7 +235,7 @@ bool WalletsModule::setCurrentIndex (int a_value)
 
 const QString &TokensModule::name() const
 {
-  if (_currentIndex < 0)
+  if (_currentIndex < 0 || _currentIndex >= _items.size())
     return s_dummyString;
   return _items.at (_currentIndex).name;
 }
@@ -333,7 +333,7 @@ bool UnitsModule::setCurrentIndex (int a_value)
 
 const QString &UnitsModule::name() const
 {
-  if (_currentIndex < 0)
+  if (_currentIndex < 0 || _currentIndex >= _items.size())
     return s_dummyString;
   return _items.at (_currentIndex);
 }
