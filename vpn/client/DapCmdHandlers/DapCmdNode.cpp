@@ -91,6 +91,11 @@ void DapCmdNode::sendWalletsData(const QJsonObject& a_walletsData)
 void DapCmdNode::sendOrderList(const QJsonArray& orderList)
 {
     DEBUGINFO << __PRETTY_FUNCTION__;
+
+    for (const auto order : orderList) {
+        qDebug() << order["hash"] << " " << order["node_addr"] << " " << order["node_location"];
+    }
+
     QJsonObject response;
     response["order_list"] = orderList;
     sendCmd(&response);
