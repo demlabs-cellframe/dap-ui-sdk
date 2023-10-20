@@ -862,6 +862,7 @@ Item {
             text: (model.name !== undefined) ? model.name : ""
 
             DapQmlLabel {
+                id: amountLabel
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.rightMargin: marginValue
@@ -876,6 +877,52 @@ Item {
                 qss: "nodeorlist-name-value c-grey"
 
                 property real marginValue: parent.iconSize * 0.325
+
+                MouseArea {
+                    anchors.fill: parent
+                    z: 10
+                    hoverEnabled: true
+                    onEntered: itemPopup.open()
+                    onExited:  itemPopup.close()
+                    //onHeightChanged: csListViewItem.collectLogMessage (`mousearea ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
+                }
+
+                Popup {
+                    id: itemPopup
+                    x: parent.width - width
+                    y: 0 - height
+                    width: popupLabel.contentWidth * 1.25
+                    height: popupLabel.contentHeight * 1.5
+                    topInset: 0
+                    bottomInset: 0
+                    leftInset: 0
+                    rightInset: 0
+                    padding: 0
+                    margins: 0
+
+                    background: Item {}
+
+                    contentItem: Rectangle {
+                        anchors.fill: parent
+                        color: "#e0e0e0"
+                        border.color: "#404040"
+
+                        Text {
+                            id: popupLabel
+                            anchors.fill: parent
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            color: "#404040"
+
+                            font {
+                                family: amountLabel.fontFamiliy
+                                pixelSize: amountLabel.fontSize
+                            }
+
+                            text: amountLabel.text
+                        }
+                    }
+                }
             }
 
             onClicked: {
