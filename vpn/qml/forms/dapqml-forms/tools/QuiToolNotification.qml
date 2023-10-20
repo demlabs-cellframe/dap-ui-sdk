@@ -361,6 +361,7 @@ DapQmlDummy {
         anchors.fill: parent
         anchors.leftMargin: closeBtn.width
         anchors.rightMargin: closeBtn.width
+        enabled: root.internal.show
         touchPoints: [
             TouchPoint {
                 id: point
