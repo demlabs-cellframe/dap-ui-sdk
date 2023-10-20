@@ -864,16 +864,18 @@ Item {
             DapQmlLabel {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.rightMargin: parent.iconSize * 0.325
-                width: contentWidth - parent.textLabel.contentWidth
+                anchors.rightMargin: marginValue
+                width: parent.width - parent.textLabel.contentWidth - marginValue - parent.iconSize
                 height: contentHeight
-                horizontalAlign: Text.AlignLeft
+                horizontalAlign: Text.AlignRight
                 disableClicking: true
-                //elide: Text.ElideRight
+                elide: Text.ElideMiddle
                 text: (model.value !== undefined)
                       ? model.value
                       : ""
                 qss: "nodeorlist-name-value c-grey"
+
+                property real marginValue: parent.iconSize * 0.325
             }
 
             onClicked: {
