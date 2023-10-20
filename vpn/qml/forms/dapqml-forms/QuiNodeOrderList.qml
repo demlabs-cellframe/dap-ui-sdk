@@ -318,6 +318,36 @@ Item {
         case QuiNodeOrderList.Tokens:   root.internal.token     = a_name; break;
         case QuiNodeOrderList.Units:    root.internal.unit      = a_name; break;
         }
+
+        /* clean child fields */
+        switch(mode)
+        {
+
+        case QuiNodeOrderList.Networks:
+            //root.internal.wallet    = " ";
+            root.internal.token     = " ";
+            csListView.model.onNetworkChange();
+            interfaceObject.setData(
+            {
+                network     : root.internal.network,
+                //wallet      : root.internal.wallet,
+                token       : root.internal.token,
+            });
+            break;
+
+        case QuiNodeOrderList.Wallets:
+            root.internal.token     = " ";
+            csListView.model.onWalletChange();
+            interfaceObject.setData(
+            {
+                wallet      : root.internal.wallet,
+                token       : root.internal.token,
+            });
+            break;
+
+        }
+
+        timerFilterItemSelected.start();
     }
 
     function filterValueSet (a_value) {
@@ -845,7 +875,7 @@ Item {
             onClicked: {
                 csListView.model.currentIndex = model.index;
                 root.filterItemSelected (model.index, text);
-                timerFilterItemSelected.start(); // swipe.decrementCurrentIndex();
+                //timerFilterItemSelected.start(); // swipe.decrementCurrentIndex();
             }
         }
     }
