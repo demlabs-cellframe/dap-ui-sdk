@@ -865,10 +865,14 @@ Item {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.rightMargin: parent.iconSize * 0.325
-                width: contentWidth
+                width: contentWidth - parent.textLabel.contentWidth
                 height: contentHeight
+                horizontalAlign: Text.AlignLeft
                 disableClicking: true
-                text: (model.value !== undefined) ? model.value : ""
+                //elide: Text.ElideRight
+                text: (model.value !== undefined)
+                      ? model.value
+                      : ""
                 qss: "nodeorlist-name-value c-grey"
             }
 
