@@ -301,6 +301,17 @@ void DapQmlModelOrderList::setBalance (const QString &)
   emit sigBalanceChanged();
 }
 
+void DapQmlModelOrderList::onNetworkChange()
+{
+  _data->module.wallets()->setCurrentIndex (-1);
+  _data->module.tokens()->setCurrentIndex (-1);
+}
+
+void DapQmlModelOrderList::onWalletChange()
+{
+  _data->module.tokens()->setCurrentIndex (-1);
+}
+
 const OrderListModule::OrderItem *DapQmlModelOrderList::currentOrder() const
 {
   static OrderListModule::OrderItem dummy;

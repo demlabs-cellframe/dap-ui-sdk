@@ -318,6 +318,36 @@ Item {
         case QuiNodeOrderList.Tokens:   root.internal.token     = a_name; break;
         case QuiNodeOrderList.Units:    root.internal.unit      = a_name; break;
         }
+
+        /* clean child fields */
+        switch(mode)
+        {
+
+        case QuiNodeOrderList.Networks:
+            //root.internal.wallet    = " ";
+            root.internal.token     = " ";
+            csListView.model.onNetworkChange();
+            interfaceObject.setData(
+            {
+                network     : root.internal.network,
+                //wallet      : root.internal.wallet,
+                token       : root.internal.token,
+            });
+            break;
+
+        case QuiNodeOrderList.Wallets:
+            root.internal.token     = " ";
+            csListView.model.onWalletChange();
+            interfaceObject.setData(
+            {
+                wallet      : root.internal.wallet,
+                token       : root.internal.token,
+            });
+            break;
+
+        }
+
+        timerFilterItemSelected.start();
     }
 
     function filterValueSet (a_value) {
@@ -832,20 +862,73 @@ Item {
             text: (model.name !== undefined) ? model.name : ""
 
             DapQmlLabel {
+                id: amountLabel
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.rightMargin: parent.iconSize * 0.325
-                width: contentWidth
+                anchors.rightMargin: marginValue
+                width: parent.width - parent.textLabel.contentWidth - marginValue - parent.iconSize
                 height: contentHeight
+                horizontalAlign: Text.AlignRight
                 disableClicking: true
-                text: (model.value !== undefined) ? model.value : ""
+                elide: Text.ElideMiddle
+                text: (model.value !== undefined)
+                      ? model.value
+                      : ""
                 qss: "nodeorlist-name-value c-grey"
+
+                property real marginValue: parent.iconSize * 0.325
+
+                MouseArea {
+                    anchors.fill: parent
+                    z: 10
+                    hoverEnabled: true
+                    onEntered: itemPopup.open()
+                    onExited:  itemPopup.close()
+                    //onHeightChanged: csListViewItem.collectLogMessage (`mousearea ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
+                }
+
+                Popup {
+                    id: itemPopup
+                    x: parent.width - width
+                    y: 0 - height
+                    width: popupLabel.contentWidth * 1.25
+                    height: popupLabel.contentHeight * 1.5
+                    topInset: 0
+                    bottomInset: 0
+                    leftInset: 0
+                    rightInset: 0
+                    padding: 0
+                    margins: 0
+
+                    background: Item {}
+
+                    contentItem: Rectangle {
+                        anchors.fill: parent
+                        color: "#e0e0e0"
+                        border.color: "#404040"
+
+                        Text {
+                            id: popupLabel
+                            anchors.fill: parent
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            color: "#404040"
+
+                            font {
+                                family: amountLabel.fontFamiliy
+                                pixelSize: amountLabel.fontSize
+                            }
+
+                            text: amountLabel.text
+                        }
+                    }
+                }
             }
 
             onClicked: {
                 csListView.model.currentIndex = model.index;
                 root.filterItemSelected (model.index, text);
-                timerFilterItemSelected.start(); // swipe.decrementCurrentIndex();
+                //timerFilterItemSelected.start(); // swipe.decrementCurrentIndex();
             }
         }
     }
