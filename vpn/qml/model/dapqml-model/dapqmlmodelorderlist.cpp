@@ -469,6 +469,7 @@ void DapQmlModelOrderList::slotSetWalletListData (const QHash<QString, QStringLi
       auto wallets  = _data->module.wallets()->as<WalletsModule>();
       wallets->setItems (std::move (items));
       wallets->setCurrentIndex (0);
+      emit sigWalletUpdated (wallets->name());
     }
   catch (const std::exception &e)
     {
