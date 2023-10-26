@@ -112,6 +112,7 @@ signals:
   void sigSigningReceived (qint32 utype, qint64 uid, QString units, QString value);
   void sigOrderList (const QJsonArray &a_list);
   void sigNodeIpList (const QJsonObject &a_list);
+  /// @}
 };
 
 /*-----------------------------------------*/

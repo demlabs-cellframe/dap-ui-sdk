@@ -14,6 +14,7 @@ SOURCES += \
     $$PWD/DapNode.cpp \
     $$PWD/DapNodeOrderInfo.cpp \
     $$PWD/DapNodeTransactionHistory.cpp \
+    $$PWD/DapNodeWalletData.cpp \
     $$PWD/DapNodeWeb3.cpp \
     $$PWD/DapNotification.cpp \
     $$PWD/DapNotificationHistory.cpp \
@@ -49,6 +50,7 @@ HEADERS += \
     $$PWD/DapNode.h \
     $$PWD/DapNodeOrderInfo.h \
     $$PWD/DapNodeTransactionHistory.h \
+    $$PWD/DapNodeWalletData.h \
     $$PWD/DapNodeWeb3.h \
     $$PWD/DapNotification.h \
     $$PWD/DapNotificationHistory.h \
