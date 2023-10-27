@@ -102,7 +102,6 @@ protected:
  */
 struct DapCmdNode::DapCmdNodeData
 {
-  static const QString actionParam;
   bool hasError;
   WalletsData dataWallet;
   OrderListData orderListData;
@@ -187,28 +186,28 @@ void DapCmdNode::handleResult (const QJsonObject &params)
     {
       DEBUGINFO << "wallets_data" << params.value ("wallets_data");
       _data->dataWallet.setData (params.value ("wallets_data").toObject());
-      emit walletsList (_data->dataWallet.walletsWithTokens());
+      emit sigWalletsList (_data->dataWallet.walletsWithTokens());
       return;
     }
   // node detected status
   if (params.value ("node_detected").isBool() && params.value ("node_detected").toBool())
     {
       DEBUGINFO << "node detected";
-      emit nodeDetected();
+      emit sigNodeDetected();
       return;
     }
   // transaction hash in mempool
   if (params.value ("transaction_hash_in_mempool").isBool() && params.value ("transaction_hash_in_mempool").toBool())
     {
       DEBUGINFO << "transaction hash in mempool";
-      emit transactionHashInMempool();
+      emit sigTransactionHashInMempool();
       return;
     }
   // transaction hash in ledger
   if (params.value ("transaction_hash_in_ledger").isBool() && params.value ("transaction_hash_in_ledger").toBool())
     {
       DEBUGINFO << "transaction hash in ledger";
-      emit transactionHashInledger();
+      emit sigTransactionHashInledger();
       return;
     }
   if (params.value ("order_list").isArray())
@@ -223,7 +222,7 @@ void DapCmdNode::handleResult (const QJsonObject &params)
 
       /* parse old style and emit */
       _data->orderListData.setData (list);
-      emit orderList (_data->orderListData.orders());
+      emit sigOrderListData (_data->orderListData.orders());
 
       return;
     }
@@ -235,7 +234,7 @@ void DapCmdNode::handleResult (const QJsonObject &params)
       QString units = info.value ("units").toString();
       QString value = info.value ("value").toString();
       DEBUGINFO << "signing_info received" << units << value;
-      emit signingReceived (utype, uid, units, value);
+      emit sigSigningReceived (utype, uid, units, value);
       return;
     }
 
@@ -264,7 +263,7 @@ void DapCmdNode::handleError (int code, const QString &message)
 //    DEBUGINFO << "handleError" << message;
   QString errorMessage = message;
   int errorCode = code;
-  emit nodeError (errorCode, errorMessage);
+  emit sigNodeError (errorCode, errorMessage);
   return;
 
 }
@@ -302,6 +301,12 @@ bool DapCmdNode::hasError()
   return _data->hasError;
 }
 
+DapNodeOrderInfo DapCmdNode::orderData (const QString &hash)
+{
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  return _data->orderListData.order (hash);
+}
+
 bool DapCmdNode::_checkContinue()
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
@@ -332,7 +337,7 @@ void DapCmdNode::_updateHistoryItem()
  * SLOTS
  *******************************************/
 
-void DapCmdNode::condTxCreate()
+void DapCmdNode::slotCondTxCreate()
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
 
@@ -375,7 +380,7 @@ void DapCmdNode::condTxCreate()
   _updateHistoryItem();
 }
 
-void DapCmdNode::startSearchOrders()
+void DapCmdNode::slotStartSearchOrders()
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
   QJsonObject searchOrders;
@@ -390,7 +395,7 @@ void DapCmdNode::startSearchOrders()
   sendCmd (&jObject);
 }
 
-void DapCmdNode::checkSigned()
+void DapCmdNode::slotCheckSigned()
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
   qDebug() << "check signed";
@@ -403,7 +408,7 @@ void DapCmdNode::checkSigned()
   _updateHistoryItem();
 }
 
-void DapCmdNode::startConnectByOrder()
+void DapCmdNode::slotStartConnectByOrder()
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
 
@@ -430,7 +435,7 @@ void DapCmdNode::startConnectByOrder()
 //  sendCmd (&jObject);
 }
 
-void DapCmdNode::getIpNode (const QString &networkName, const QJsonArray &orderList)
+void DapCmdNode::slotRequestIpNode (const QString &networkName, const QJsonArray &orderList)
 {
     DEBUGINFO << __PRETTY_FUNCTION__;
 
@@ -446,66 +451,60 @@ void DapCmdNode::getIpNode (const QString &networkName, const QJsonArray &orderL
     sendCmd (&request);
 }
 
-void DapCmdNode::chooseWallet (QString wallet)
+void DapCmdNode::slotChooseWallet (const QString &wallet)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
   _data->selectedWalletName = wallet;
-  emit continueEnable (_checkContinue());
-  emit networksList (_data->dataWallet.networkWithTokens (wallet));
+  emit sigContinueEnable (_checkContinue());
+  emit sigNetworksList (_data->dataWallet.networkWithTokens (wallet));
 }
 
-void DapCmdNode::chooseNetwork (QString network)
+void DapCmdNode::slotChooseNetwork (const QString &network)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
   _data->selectedNetworkName = network;
-  emit continueEnable (_checkContinue());
-  emit tokensInfo (_data->dataWallet.tokensAmount (_data->selectedWalletName, _data->selectedNetworkName));
+  emit sigContinueEnable (_checkContinue());
+  emit sigTokensInfo (_data->dataWallet.tokensAmount (_data->selectedWalletName, _data->selectedNetworkName));
 }
 
-void DapCmdNode::chooseToken (QString token)
+void DapCmdNode::slotChooseToken (const QString &token)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
   _data->selectedTokenName = token;
   auto tokens = _data->dataWallet.tokensAmount (_data->selectedWalletName, _data->selectedNetworkName);
-  emit continueEnable (_checkContinue());
-  emit tokenAmount (token, tokens[token]);
+  emit sigContinueEnable (_checkContinue());
+  emit sigTokenAmount (token, tokens[token]);
 }
 
-void DapCmdNode::setValue (QString value)
+void DapCmdNode::slotSetValue (const QString &value)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
   _data->value = value;
-  emit continueEnable (_checkContinue());
+  emit sigContinueEnable (_checkContinue());
 }
 
-void DapCmdNode::setUnit (QString value)
+void DapCmdNode::slotSetUnit (const QString &value)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
   _data->unit = value;
   _data->orderListData.setUnit (_data->unit);
-  emit continueEnable (_checkContinue());
+  emit sigContinueEnable (_checkContinue());
 }
 
-DapNodeOrderInfo DapCmdNode::orderData (QString hash)
-{
-  DEBUGINFO << __PRETTY_FUNCTION__;
-  return _data->orderListData.order (hash);
-}
-
-void DapCmdNode::chooseOrder (QString hash)
+void DapCmdNode::slotChooseOrder (const QString &hash)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
   _data->orderHash = hash;
-  emit continueEnable (_checkContinue());
+  emit sigContinueEnable (_checkContinue());
 }
 
-void DapCmdNode::setMaxValueUnit (QString price)
+void DapCmdNode::slotSetMaxValueUnit (const QString &price)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
   _data->maxPrice = price;
 }
 
-void DapCmdNode::setMinValueUnit (QString price)
+void DapCmdNode::slotSetMinValueUnit (const QString &price)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
   _data->minPrice = price;
