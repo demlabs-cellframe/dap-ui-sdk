@@ -54,6 +54,7 @@ public:
     /* name + value fields */
     name,
     value,
+    misc,
 
     /* model fields */
     network,
@@ -134,6 +135,8 @@ public:
 
   const OrderListModule::OrderItem *currentOrder() const;
   void setOrderListData (const QJsonArray &a_list, bool notify = true);
+protected:
+  void _modelReset();
   /// @}
 
   /****************************************//**
@@ -182,9 +185,10 @@ signals:
   /// @{
 public slots:
   void slotSetOrderListData (const QJsonArray &a_list);
-  void slotSetWalletListData (const QHash<QString, QStringList> &a_walletData);
-  void slotSetNetworkListData (const QHash<QString, QStringList> &a_networkData);
-  void slotSetTokensListData (const QHash<QString, QString> &a_tokensData);
+//  void slotSetWalletListData (const QHash<QString, QStringList> &a_walletData);
+//  void slotSetNetworkListData (const QHash<QString, QStringList> &a_networkData);
+//  void slotSetTokensListData (const QHash<QString, QString> &a_tokensData);
+  void slotWalletsDataUpdated();
   void slotSetOrderAddresses (const QJsonObject &a_list);
   /// @}
 };

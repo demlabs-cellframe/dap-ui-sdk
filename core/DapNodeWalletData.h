@@ -6,6 +6,26 @@
 #include <QObject>
 #include <QMap>
 
+/* DEFS */
+
+namespace DapNodeWalletDataStruct {
+
+struct WalletToken
+{
+  QString network;
+  QString wallet;   // name
+  QString token;
+};
+
+struct TokenBalance
+{
+  QString wallet;
+  QString token;    // name
+  QString balance;
+};
+
+};
+
 /****************************************//**
  * @brief node wallet data
  *
@@ -21,6 +41,15 @@ class DapNodeWalletData : public QObject
   Q_OBJECT
 
   Q_DISABLE_COPY_MOVE(DapNodeWalletData)
+
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
+  Q_PROPERTY (int currentNetwork  READ currentNetwork WRITE setCurrentNetwork NOTIFY sigCurrentNetworkChanged)
+  Q_PROPERTY (int currentWallet   READ currentWallet  WRITE setCurrentWallet  NOTIFY sigCurrentWalletChanged)
+  Q_PROPERTY (int currentToken    READ currentToken   WRITE setCurrentToken   NOTIFY sigCurrentTokenChanged)
+  /// @}
 
   /****************************************//**
    * @name DEFS
@@ -40,11 +69,11 @@ protected:
     QString address;        // network address
     QList<Token> tokens;    // network tokens
 
-    struct // fast access
-    {
-      QStringList tokenNames; // token names
-      QMap<QString, QString> tokensAmounts; // tokens amounts
-    } fast;
+//    struct // fast access
+//    {
+//      QStringList tokenNames; // token names
+//      QMap<QString, QString> tokensAmounts; // tokens amounts
+//    } fast;
   };
 
   struct Wallet
@@ -52,12 +81,24 @@ protected:
     QString name;             // wallet name
     QList<Network> networks;  // wallet networks
 
-    struct // fast access
-    {
-      QStringList networkNames; // wallet networks
-      QStringList tokenNames;   // all token names
-      QMap<QString, QStringList> networksWithTokens;
-    } fast;
+//    struct // fast access
+//    {
+//      QStringList networkNames; // wallet networks
+//      QStringList tokenNames;   // all token names
+//      QMap<QString, QStringList> networksWithTokens;
+//    } fast;
+  };
+
+  struct Order
+  {
+    QString location;
+    QString price;
+    QString units;
+    QString units_value;
+    QString server;
+    QString node_addr;
+    QString hash;
+    QString ipAddress;
   };
 
   /// @}
@@ -68,12 +109,25 @@ protected:
   /// @{
 protected:
   QList<Wallet> _wallets;   // all wallets
+  QList<Order> _orders;     // all orders
 
-  struct // fast access
+//  struct // fast access
+//  {
+//    QStringList walletNames; // wallet names
+//    QMap<QString, QStringList> walletsWithTokens;  // wallets with tokens
+//  } _fast;
+
+  // model data
+  struct
   {
-    QStringList walletNames; // wallet names
-    QMap<QString, QStringList> walletsWithTokens;  // wallets with tokens
-  } _fast;
+    QStringList networkList;
+    QList<DapNodeWalletDataStruct::WalletToken> walletTokenList;
+    QList<DapNodeWalletDataStruct::TokenBalance> tokenBalanceList;
+
+    int currentNetwork;
+    int currentWallet;
+    int currentToken;
+  } _data;
   /// @}
 
   /****************************************//**
@@ -93,31 +147,47 @@ public:
   static DapNodeWalletData *instance();
 
   /// parse json data
-  void setData (const QJsonObject &a_walletsData);
+  void setWalletsData (const QJsonObject &a_walletsData);
+  void setOrderListData (const QJsonArray &a_ordesListData);
 
-  /// get wallets names list
-  const QStringList &wallets() const;
+//  /// get wallets names list
+//  const QStringList &wallets() const;
 
-  /// get map with wallet names and corresponded tokens lists
-  const QMap<QString, QStringList> &walletsWithTokens() const;
+//  /// get map with wallet names and corresponded tokens lists
+//  const QMap<QString, QStringList> &walletsWithTokens() const;
 
-  /// get wallet network names list
-  const QStringList &walletNetworks (const QString &a_walletName) const;
+//  /// get wallet network names list
+//  const QStringList &walletNetworks (const QString &a_walletName) const;
 
-  /// get map with network names and corresponded tokens list
-  const QMap<QString, QStringList> &networkWithTokens (const QString &a_walletName) const;
+//  /// get map with network names and corresponded tokens list
+//  const QMap<QString, QStringList> &networkWithTokens (const QString &a_walletName) const;
 
-  /// get map with token names and balances
-  const QMap<QString, QString> &tokensAmount (const QString &a_walletName, const QString &a_networkName) const;
+//  /// get map with token names and balances
+//  const QMap<QString, QString> &tokensAmount (const QString &a_walletName, const QString &a_networkName) const;
+
+  const QStringList &networkList() const;
+  const QList<DapNodeWalletDataStruct::WalletToken> &walletTokenList() const;
+  const QList<DapNodeWalletDataStruct::TokenBalance> &tokenBalanceList() const;
+
+  int currentNetwork() const;
+  void setCurrentNetwork (int a_value);
+
+  int currentWallet() const;
+  void setCurrentWallet (int a_value);
+
+  int currentToken() const;
+  void setCurrentToken (int a_value);
 
 protected:
   void _parseWallets (const QJsonObject &a_data);
   void _parseNetworks (const QJsonArray &a_list, Wallet &a_dest);
-  void _parseTokens (const QJsonArray &a_list, Network &a_dest, QStringList &a_tokenNames);
+  void _parseTokens (const QJsonArray &a_list, Network &a_dest /*, QStringList &a_tokenNames*/);
 
-  void _prepareWalletsWithTokens();
-  void _prepareNetworksWithTokens();
-  void _prepareTokensAmounts();
+//  void _prepareWalletsWithTokens();
+//  void _prepareNetworksWithTokens();
+//  void _prepareTokensAmounts();
+
+  void _parseWalletNetworkTokenData (const Wallet &a_value);
   /// @}
 
   /****************************************//**
@@ -126,6 +196,9 @@ protected:
   /// @{
 signals:
   void sigDataUpdated();
+  void sigCurrentNetworkChanged();
+  void sigCurrentWalletChanged();
+  void sigCurrentTokenChanged();
   /// @}
 };
 

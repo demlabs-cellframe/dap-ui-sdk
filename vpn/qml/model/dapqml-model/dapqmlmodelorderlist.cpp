@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "dapqmlmodelorderlist.h"
 #include "modules/orderlistmodules.h"
+#include "DapNodeWalletData.h"
 
 #include <QTimer>
 #include <QJsonArray>
@@ -217,7 +218,6 @@ QString DapQmlModelOrderList::network() const
 
 void DapQmlModelOrderList::setNetwork (const QString &a_value)
 {
-
   if (a_value.isEmpty())
     _data->network  = _data->module.networks()->name();
   else
@@ -394,6 +394,12 @@ void DapQmlModelOrderList::setOrderListData(const QJsonArray &a_list, bool notif
     emit sigOrderListLoaded();
 }
 
+void DapQmlModelOrderList::_modelReset()
+{
+  beginResetModel();
+  endResetModel();
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
@@ -444,112 +450,129 @@ void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
   setOrderListData (a_list);
 }
 
-void DapQmlModelOrderList::slotSetWalletListData (const QHash<QString, QStringList> &a_walletData)
+void DapQmlModelOrderList::slotWalletsDataUpdated()
 {
-  /* notify model */
-  beginResetModel();
+  _modelReset();
 
-  /* vars */
-  QVector<NameValueItem> items;
+  auto wallets  = _data->module.wallets()->as<WalletsModule>();
+  wallets->setCurrentIndex (0);
+  emit sigWalletUpdated (wallets->name());
 
-  /* parse via cycle */
-  for (auto i = a_walletData.cbegin(), e = a_walletData.cend(); i != e; i++)
-    {
-      auto list = i.value();
-      items.append (NameValueItem
-      {
-        i.key(),
-        (list.isEmpty()) ? QString() : list.first()
-      });
-    }
+  auto networks  = _data->module.networks()->as<NetworksModule>();
+  networks->setCurrentIndex (0);
+  emit sigNetworkUpdated (networks->name());
 
-  /* store result */
-  try
-    {
-      auto wallets  = _data->module.wallets()->as<WalletsModule>();
-      wallets->setItems (std::move (items));
-      wallets->setCurrentIndex (0);
-      emit sigWalletUpdated (wallets->name());
-    }
-  catch (const std::exception &e)
-    {
-      DEBUG_MSG << "Exception occurred:" << e.what();
-    }
-
-  /* notify model */
-  endResetModel();
+  auto tokens  = _data->module.tokens()->as<TokensModule>();
+  tokens->setCurrentIndex (-1);
+  emit sigTokenUpdated (tokens->name());
 }
 
-void DapQmlModelOrderList::slotSetNetworkListData (const QHash<QString, QStringList> &a_networkData)
-{
-  /* notify model */
-  beginResetModel();
+//void DapQmlModelOrderList::slotSetWalletListData (const QHash<QString, QStringList> &a_walletData)
+//{
+//  /* notify model */
+//  beginResetModel();
 
-  /* vars */
-  QVector<NameValueItem> items;
-  int current = 0, j = 0;
+//  /* vars */
+//  QVector<NameValueItem> items;
 
-  /* parse via cycle */
-  for (auto i = a_networkData.cbegin(), e = a_networkData.cend(); i != e; i++, j++)
-    {
-      auto list = i.value();
+//  /* parse via cycle */
+//  for (auto i = a_walletData.cbegin(), e = a_walletData.cend(); i != e; i++)
+//    {
+//      auto list = i.value();
+//      items.append (NameValueItem
+//      {
+//        i.key(),
+//        (list.isEmpty()) ? QString() : list.first()
+//      });
+//    }
 
-      if (!list.isEmpty()
-          && current == 0)
-        current = j;
+//  /* store result */
+//  try
+//    {
+//      auto wallets  = _data->module.wallets()->as<WalletsModule>();
+//      wallets->setItems (std::move (items));
+//      wallets->setCurrentIndex (0);
+//      emit sigWalletUpdated (wallets->name());
+//    }
+//  catch (const std::exception &e)
+//    {
+//      DEBUG_MSG << "Exception occurred:" << e.what();
+//    }
 
-      items.append (NameValueItem
-      {
-        i.key(),
-        (list.isEmpty()) ? QString() : list.first()
-      });
-    }
+//  /* notify model */
+//  endResetModel();
+//}
 
-  /* store result */
-  try
-    {
-      auto networks  = _data->module.networks()->as<NetworksModule>();
-      networks->setItems (std::move (items));
-      networks->setCurrentIndex (current);
-      emit sigNetworkUpdated (networks->name());
-    }
-  catch (const std::exception &e)
-    {
-      DEBUG_MSG << "Exception occurred:" << e.what();
-    }
+//void DapQmlModelOrderList::slotSetNetworkListData (const QHash<QString, QStringList> &a_networkData)
+//{
+//  /* notify model */
+//  beginResetModel();
 
-  /* notify model */
-  endResetModel();
-}
+//  /* vars */
+//  QVector<NameValueItem> items;
+//  int current = 0, j = 0;
 
-void DapQmlModelOrderList::slotSetTokensListData (const QHash<QString, QString> &a_tokensData)
-{
-  /* notify model */
-  beginResetModel();
+//  /* parse via cycle */
+//  for (auto i = a_networkData.cbegin(), e = a_networkData.cend(); i != e; i++, j++)
+//    {
+//      auto list = i.value();
 
-  /* vars */
-  QVector<NameValueItem> items;
+//      if (!list.isEmpty()
+//          && current == 0)
+//        current = j;
 
-  /* parse via cycle */
-  for (auto i = a_tokensData.cbegin(), e = a_tokensData.cend(); i != e; i++)
-    items.append (NameValueItem { i.key(), i.value() });
+//      items.append (NameValueItem
+//      {
+//        i.key(),
+//        (list.isEmpty()) ? QString() : list.first()
+//      });
+//    }
 
-  /* store result */
-  try
-    {
-      auto tokens  = _data->module.tokens()->as<TokensModule>();
-      tokens->setItems (std::move (items));
-      tokens->setCurrentIndex (-1);
-      emit sigTokenUpdated (tokens->name());
-    }
-  catch (const std::exception &e)
-    {
-      DEBUG_MSG << "Exception occurred:" << e.what();
-    }
+//  /* store result */
+//  try
+//    {
+//      auto networks  = _data->module.networks()->as<NetworksModule>();
+//      networks->setItems (std::move (items));
+//      networks->setCurrentIndex (current);
+//      emit sigNetworkUpdated (networks->name());
+//    }
+//  catch (const std::exception &e)
+//    {
+//      DEBUG_MSG << "Exception occurred:" << e.what();
+//    }
 
-  /* notify model */
-  endResetModel();
-}
+//  /* notify model */
+//  endResetModel();
+//}
+
+//void DapQmlModelOrderList::slotSetTokensListData (const QHash<QString, QString> &a_tokensData)
+//{
+//  /* notify model */
+//  beginResetModel();
+
+//  /* vars */
+//  QVector<NameValueItem> items;
+
+//  /* parse via cycle */
+//  for (auto i = a_tokensData.cbegin(), e = a_tokensData.cend(); i != e; i++)
+//    items.append (NameValueItem { i.key(), i.value() });
+
+//  /* store result */
+//  try
+//    {
+//      auto tokens  = _data->module.tokens()->as<TokensModule>();
+//      tokens->setItems (std::move (items));
+//      tokens->setCurrentIndex (-1);
+//      emit sigTokenUpdated (tokens->name());
+//    }
+//  catch (const std::exception &e)
+//    {
+//      DEBUG_MSG << "Exception occurred:" << e.what();
+//    }
+
+//  /* notify model */
+//  endResetModel();
+//}
 
 void DapQmlModelOrderList::slotSetOrderAddresses (const QJsonObject &a_list)
 {
