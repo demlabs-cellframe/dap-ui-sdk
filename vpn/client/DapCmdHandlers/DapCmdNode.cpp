@@ -168,6 +168,14 @@ void DapCmdNode::handle(const QJsonObject* params)
 //            QString certName    = tx["cert_name"].toString();
         QString value         = tx["value"].toString();
         QString unit          = tx["unit"].toString();
+
+        qDebug() << "cond_tx_create - " << "networkName: " << networkName << "walletName: " << walletName << "tokenName: " << tokenName << "unit: " << unit << "value: " << value;
+        if (networkName.isEmpty() || walletName.isEmpty() || tokenName.isEmpty() || value.isEmpty() || unit.isEmpty()){
+            qDebug() << "Сorrupted transaction creation parameters";
+            sendError(732, "Сorrupted transaction creation parameters");
+            return;
+        }
+
         emit condTxCreateRequest(walletName, networkName, tokenName, value, unit);
     }
     // order list request
