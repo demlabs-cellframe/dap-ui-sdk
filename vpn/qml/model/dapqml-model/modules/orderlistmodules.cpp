@@ -311,7 +311,7 @@ QVariant TokensModule::data (const QModelIndex &index, int role) const
         {
         case FieldId::name:   return item.token;
         case FieldId::value:  return item.balance;
-        case FieldId::misc:   return item.wallet;
+        case FieldId::misc:   return item.network + ":" + item.wallet;
         default:
           break;
         }

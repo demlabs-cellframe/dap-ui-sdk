@@ -130,8 +130,8 @@ public:
 
   /* fields resets for child items */
 
-  Q_INVOKABLE void onNetworkChange();
-  Q_INVOKABLE void onWalletChange();
+//  Q_INVOKABLE void onNetworkChange();
+//  Q_INVOKABLE void onWalletChange();
 
   const OrderListModule::OrderItem *currentOrder() const;
   void setOrderListData (const QJsonArray &a_list, bool notify = true);

@@ -313,10 +313,27 @@ Item {
 
         switch(mode)
         {
-        case QuiNodeOrderList.Networks: root.internal.network   = a_name; break;
-        case QuiNodeOrderList.Wallets:  root.internal.wallet    = a_name; break;
-        case QuiNodeOrderList.Tokens:   root.internal.token     = a_name; break;
-        case QuiNodeOrderList.Units:    root.internal.unit      = a_name; break;
+
+        case QuiNodeOrderList.Networks:
+            root.internal.network                   = a_name;
+            csListViewNetworks.model.currentIndex   = a_index;
+            break;
+
+        case QuiNodeOrderList.Wallets:
+            root.internal.wallet                    = a_name;
+            csListViewWallets.model.currentIndex    = a_index;
+            break;
+
+        case QuiNodeOrderList.Tokens:
+            root.internal.token                     = a_name;
+            csListViewTokens.model.currentIndex     = a_index;
+            break;
+
+        case QuiNodeOrderList.Units:
+            root.internal.unit      = a_name;
+            // ____.model.currentIndex   = a_index;
+            break;
+
         }
 
         /* clean child fields */
@@ -326,7 +343,9 @@ Item {
         case QuiNodeOrderList.Networks:
             //root.internal.wallet    = " ";
             root.internal.token     = " ";
-            csListView.model.onNetworkChange();
+            //csListView.model.onNetworkChange();
+            csListViewWallets.model.currentIndex    = -1;
+            csListViewTokens.model.currentIndex     = -1;
             interfaceObject.setData(
             {
                 network     : root.internal.network,
@@ -337,7 +356,8 @@ Item {
 
         case QuiNodeOrderList.Wallets:
             root.internal.token     = " ";
-            csListView.model.onWalletChange();
+            //csListView.model.onWalletChange();
+            csListViewTokens.model.currentIndex     = -1;
             interfaceObject.setData(
             {
                 wallet      : root.internal.wallet,
@@ -858,7 +878,18 @@ Item {
             iconSize: nameValueRadio.height
             separator: true
             qss: "nodeorlist-name-value"
-            checked: csListView.model.currentIndex === model.index
+            checked: {
+                switch(csListView.model.mode)
+                {
+                case QuiNodeOrderList.Networks:
+                    return csListViewNetworks.model.currentIndex === model.index;
+                case QuiNodeOrderList.Wallets:
+                    return csListViewWallets.model.currentIndex === model.index;
+                case QuiNodeOrderList.Tokens:
+                    return csListViewTokens.model.currentIndex === model.index;
+                default:    return csListView.model.currentIndex === model.index;
+                }
+            }
             text: (model.name !== undefined) ? model.name : ""
 
             DapQmlLabel {
@@ -926,7 +957,7 @@ Item {
             }
 
             onClicked: {
-                csListView.model.currentIndex = model.index;
+                //csListView.model.currentIndex = model.index;
                 root.filterItemSelected (model.index, text);
                 //timerFilterItemSelected.start(); // swipe.decrementCurrentIndex();
             }

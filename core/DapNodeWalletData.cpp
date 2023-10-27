@@ -291,7 +291,7 @@ void DapNodeWalletData::_parseWalletNetworkTokenData (const Wallet &a_value)
 
         /* store new TokenBalace */
         _data.tokenBalanceList
-            << DapNodeWalletDataStruct::TokenBalance { a_wallet.name, token.name, token.balance };
+            << DapNodeWalletDataStruct::TokenBalance { a_network.name, a_wallet.name, token.name, token.balance };
       }
   };
 

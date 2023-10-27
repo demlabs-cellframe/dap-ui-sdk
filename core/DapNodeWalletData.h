@@ -19,6 +19,7 @@ struct WalletToken
 
 struct TokenBalance
 {
+  QString network;
   QString wallet;
   QString token;    // name
   QString balance;

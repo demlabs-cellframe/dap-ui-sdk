@@ -100,11 +100,11 @@ DapQmlModelOrderList::DapQmlModelOrderList (QObject *parent)
   if (s_ordersModule == nullptr)
     s_ordersModule    = new OrdersModule;
   if (s_networksModule == nullptr)
-    s_networksModule  = new NetworksModule;
+    s_networksModule  = _data->module.networks()->as<NetworksModule>();
   if (s_walletsModule == nullptr)
-    s_walletsModule   = new WalletsModule;
+    s_walletsModule   = _data->module.wallets()->as<WalletsModule>();
   if (s_tokensModule == nullptr)
-    s_tokensModule    = new TokensModule;
+    s_tokensModule    = _data->module.tokens()->as<TokensModule>();
 
   if (s_ordersBaseModel == nullptr)
     s_ordersBaseModel = new OrdersModel;
@@ -335,16 +335,16 @@ void DapQmlModelOrderList::setBalance (const QString &)
   emit sigBalanceChanged();
 }
 
-void DapQmlModelOrderList::onNetworkChange()
-{
-  _data->module.wallets()->setCurrentIndex (-1);
-  _data->module.tokens()->setCurrentIndex (-1);
-}
+//void DapQmlModelOrderList::onNetworkChange()
+//{
+//  _data->module.wallets()->setCurrentIndex (-1);
+//  _data->module.tokens()->setCurrentIndex (-1);
+//}
 
-void DapQmlModelOrderList::onWalletChange()
-{
-  _data->module.tokens()->setCurrentIndex (-1);
-}
+//void DapQmlModelOrderList::onWalletChange()
+//{
+//  _data->module.tokens()->setCurrentIndex (-1);
+//}
 
 const OrderListModule::OrderItem *DapQmlModelOrderList::currentOrder() const
 {
@@ -787,7 +787,8 @@ bool DapQmlListModuleProxyModel::filterAcceptsRow (int sourceRow, const QModelIn
   if (m_filter.isEmpty())
     return true;
 
-  return _moduleModel->data (index (sourceRow, 0), int (FieldId::misc)).toString() == m_filter;
+  QString value = _moduleModel->data (createIndex (sourceRow, 0), int (FieldId::misc)).toString();
+  return value == m_filter;
 }
 
 
