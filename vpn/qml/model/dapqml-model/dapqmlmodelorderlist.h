@@ -6,7 +6,7 @@
 #include <QSortFilterProxyModel>
 class QQmlEngine;
 class QJSEngine;
-namespace OrderListModule { struct OrderItem; }
+namespace OrderListModule { struct OrderItem; class ModuleInterface; }
 
 /****************************************//**
  * @brief orders model list
@@ -240,10 +240,94 @@ public:
    * @param a_max maximum value
    * @note set -1 into min or|and max to disable it's filtering
    */
-  Q_INVOKABLE void setRowFilter (const QString a_unit, qreal a_min, qreal a_max);
+  Q_INVOKABLE void setRowFilter (const QString &a_unit, qreal a_min, qreal a_max);
 
   Q_INVOKABLE int currentIndex() const;
   Q_INVOKABLE void setCurrentIndex (int a_value);
+  /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void sigCurrentIndexChanged();
+  /// @}
+
+  /****************************************//**
+   * @name OVERRIDE
+   *******************************************/
+  /// @{
+protected:
+  bool filterAcceptsRow (int sourceRow, const QModelIndex &sourceParent) const override;
+  /// @}
+};
+
+/****************************************//**
+ * @brief list module filter model list
+ * @ingroup groupUiModels
+ * @date 27.10.2023
+ * @author Mikhail Shilenko
+ *******************************************/
+
+class DapQmlListModuleProxyModel : public QSortFilterProxyModel
+{
+  Q_OBJECT
+
+  /****************************************//**
+   * @name PROPERTIES
+   *******************************************/
+  /// @{
+  Q_PROPERTY (int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY sigCurrentIndexChanged)
+  /// @}
+
+  /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
+public:
+  enum Mode
+  {
+    Invalid,
+
+    Networks,
+    Wallets,
+    Tokens,
+  };
+
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
+private:
+  QString m_filter;
+  OrderListModule::ModuleInterface *_module;
+  QAbstractListModel *_moduleModel;
+  /// @}
+
+  /****************************************//**
+   * @name CONSTRUCT/DESTRUCT
+   *******************************************/
+  /// @{
+public:
+  explicit DapQmlListModuleProxyModel (Mode a_mode);
+  /// @}
+
+  /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  /**
+   * @brief filter by comparing mist field with provided filter
+   * @note set empty string to disable filtering
+   */
+  Q_INVOKABLE void setRowFilter (const QString &a_filter);
+
+  Q_INVOKABLE int currentIndex() const;
+  Q_INVOKABLE void setCurrentIndex (int a_value);
+protected:
+  void _setup (OrderListModule::ModuleInterface *a_module, QAbstractListModel *a_model);
   /// @}
 
   /****************************************//**

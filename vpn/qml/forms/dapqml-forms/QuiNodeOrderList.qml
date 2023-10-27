@@ -1429,6 +1429,9 @@ Item {
                         spacing: spacer.height
                         delegate: listviewDelegateNameValue
                         visible: root.internal.mode !== QuiNodeOrderList.Orders
+                                 && root.internal.mode !== QuiNodeOrderList.Networks
+                                 && root.internal.mode !== QuiNodeOrderList.Wallets
+                                 && root.internal.mode !== QuiNodeOrderList.Tokens
                         clip: true
 
                     } // Listview
@@ -1440,6 +1443,36 @@ Item {
                         spacing: spacer.height
                         delegate: listviewDelegateOrder
                         visible: root.internal.mode === QuiNodeOrderList.Orders
+                        clip: true
+                    }
+
+                    ListView {
+                        id: csListViewNetworks
+                        objectName: "listviewNetworks"
+                        anchors.fill: parent
+                        spacing: spacer.height
+                        delegate: listviewDelegateNameValue
+                        visible: root.internal.mode === QuiNodeOrderList.Networks
+                        clip: true
+                    }
+
+                    ListView {
+                        id: csListViewWallets
+                        objectName: "listviewWallets"
+                        anchors.fill: parent
+                        spacing: spacer.height
+                        delegate: listviewDelegateNameValue
+                        visible: root.internal.mode === QuiNodeOrderList.Wallets
+                        clip: true
+                    }
+
+                    ListView {
+                        id: csListViewTokens
+                        objectName: "listviewTokens"
+                        anchors.fill: parent
+                        spacing: spacer.height
+                        delegate: listviewDelegateNameValue
+                        visible: root.internal.mode === QuiNodeOrderList.Tokens
                         clip: true
                     }
                 }

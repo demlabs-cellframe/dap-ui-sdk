@@ -303,7 +303,8 @@ void DapNodeWalletData::_parseWalletNetworkTokenData (const Wallet &a_value)
         lParseTokens (a_wallet, network);
 
         /* store new network name */
-        _data.networkList << network.name;
+        if (!_data.networkList.contains (network.name))
+          _data.networkList << network.name;
       }
   };
 
