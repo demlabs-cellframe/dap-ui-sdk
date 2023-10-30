@@ -301,6 +301,17 @@ void DapQmlModelOrderList::setBalance (const QString &)
   emit sigBalanceChanged();
 }
 
+void DapQmlModelOrderList::onNetworkChange()
+{
+  _data->module.wallets()->setCurrentIndex (-1);
+  _data->module.tokens()->setCurrentIndex (-1);
+}
+
+void DapQmlModelOrderList::onWalletChange()
+{
+  _data->module.tokens()->setCurrentIndex (-1);
+}
+
 const OrderListModule::OrderItem *DapQmlModelOrderList::currentOrder() const
 {
   static OrderListModule::OrderItem dummy;
@@ -458,6 +469,7 @@ void DapQmlModelOrderList::slotSetWalletListData (const QHash<QString, QStringLi
       auto wallets  = _data->module.wallets()->as<WalletsModule>();
       wallets->setItems (std::move (items));
       wallets->setCurrentIndex (0);
+      emit sigWalletUpdated (wallets->name());
     }
   catch (const std::exception &e)
     {
@@ -499,6 +511,7 @@ void DapQmlModelOrderList::slotSetNetworkListData (const QHash<QString, QStringL
       auto networks  = _data->module.networks()->as<NetworksModule>();
       networks->setItems (std::move (items));
       networks->setCurrentIndex (current);
+      emit sigNetworkUpdated (networks->name());
     }
   catch (const std::exception &e)
     {
@@ -526,7 +539,8 @@ void DapQmlModelOrderList::slotSetTokensListData (const QHash<QString, QString> 
     {
       auto tokens  = _data->module.tokens()->as<TokensModule>();
       tokens->setItems (std::move (items));
-      tokens->setCurrentIndex (0);
+      tokens->setCurrentIndex (-1);
+      emit sigTokenUpdated (tokens->name());
     }
   catch (const std::exception &e)
     {

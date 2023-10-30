@@ -127,6 +127,11 @@ public:
   Q_INVOKABLE QString balance() const;
   Q_INVOKABLE void setBalance (const QString &a_value = QString());
 
+  /* fields resets for child items */
+
+  Q_INVOKABLE void onNetworkChange();
+  Q_INVOKABLE void onWalletChange();
+
   const OrderListModule::OrderItem *currentOrder() const;
   void setOrderListData (const QJsonArray &a_list, bool notify = true);
   /// @}

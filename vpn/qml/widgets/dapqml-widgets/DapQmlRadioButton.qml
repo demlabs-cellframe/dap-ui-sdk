@@ -50,6 +50,8 @@ Item {
     /// @brief padding between icon and text label
     //property real textPadding: radioIndicator.width + root.spacing
 
+    property alias textLabel: label
+
     property QtObject internal : QtObject {
         property real padding: 0//root.width / 20
         property real width: root.width - root.internal.padding * 2
