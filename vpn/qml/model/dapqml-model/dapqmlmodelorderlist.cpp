@@ -489,11 +489,11 @@ void DapQmlModelOrderList::slotWalletsDataUpdated()
   _modelReset();
 
   auto wallets  = _data->module.wallets()->as<WalletsModule>();
-  wallets->setCurrentIndex (0);
+  wallets->setCurrentIndex (-1);
   emit sigWalletUpdated (wallets->name());
 
   auto networks  = _data->module.networks()->as<NetworksModule>();
-  networks->setCurrentIndex (0);
+  networks->setCurrentIndex (-1);
   emit sigNetworkUpdated (networks->name());
 
   auto tokens  = _data->module.tokens()->as<TokensModule>();
