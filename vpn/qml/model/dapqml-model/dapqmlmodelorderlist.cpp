@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "dapqmlmodelorderlist.h"
 #include "modules/orderlistmodules.h"
+#include "DapNodeWalletData.h"
 
 #include <QTimer>
 #include <QJsonArray>
@@ -40,6 +41,19 @@ public:
   QHash<int, QByteArray> roleNames() const override;
 };
 
+class ModuleModel : public QAbstractListModel
+{
+  friend class DapQmlModelOrderList;
+  ModuleInterface *_module;
+public:
+  ModuleModel (ModuleInterface *a_module);
+  int rowCount (const QModelIndex &parent = QModelIndex()) const override;
+  int columnCount (const QModelIndex &parent = QModelIndex()) const override;
+
+  QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
+  QHash<int, QByteArray> roleNames() const override;
+};
+
 /********************************************
  * VARIABLES
  *******************************************/
@@ -57,6 +71,7 @@ static QHash<int, QByteArray> s_fields =
 
   { int (FieldId::name),        "name" },
   { int (FieldId::value),       "value" },
+  { int (FieldId::misc),        "misc" },
 
   { int (FieldId::network),     "network" },
   { int (FieldId::server),      "server" },
@@ -65,7 +80,14 @@ static QHash<int, QByteArray> s_fields =
 
 static DapQmlModelOrderList *_instance  = nullptr;
 static OrdersModule *s_ordersModule     = nullptr;
+static NetworksModule *s_networksModule = nullptr;
+static WalletsModule *s_walletsModule   = nullptr;
+static TokensModule *s_tokensModule     = nullptr;
+
 static OrdersModel *s_ordersBaseModel   = nullptr;
+static ModuleModel *s_networksModel     = nullptr;
+static ModuleModel *s_walletsModel      = nullptr;
+static ModuleModel *s_tokensModel       = nullptr;
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -76,9 +98,22 @@ DapQmlModelOrderList::DapQmlModelOrderList (QObject *parent)
   , _data (new DapQmlModelOrderListData)
 {
   if (s_ordersModule == nullptr)
-    s_ordersModule  = new OrdersModule;
+    s_ordersModule    = new OrdersModule;
+  if (s_networksModule == nullptr)
+    s_networksModule  = _data->module.networks()->as<NetworksModule>();
+  if (s_walletsModule == nullptr)
+    s_walletsModule   = _data->module.wallets()->as<WalletsModule>();
+  if (s_tokensModule == nullptr)
+    s_tokensModule    = _data->module.tokens()->as<TokensModule>();
+
   if (s_ordersBaseModel == nullptr)
-    s_ordersBaseModel  = new OrdersModel;
+    s_ordersBaseModel = new OrdersModel;
+  if (s_networksModel == nullptr)
+    s_networksModel = new ModuleModel (s_networksModule);
+  if (s_walletsModel == nullptr)
+    s_walletsModel = new ModuleModel (s_walletsModule);
+  if (s_tokensModel == nullptr)
+    s_tokensModel = new ModuleModel (s_tokensModule);
 
 #ifdef ENABLE_ORDERLIST_SIMULATION
   auto result = QJsonDocument::fromJson ("[\n        {\n            \"direction\": \"SERV_DIR_SELL\",\n            \"ext\": \"0x52024672616E636500\",\n            \"hash\": \"0xF84FC4D96D564E2A54DC6D82A8F90682F0276CB5EF3B26A8A4BF3C18E39EE9F4\",\n            \"node_addr\": \"D860::D9D5::1C57::A6B3\",\n            \"node_location\": \"Europe-France\",\n            \"pkey\": \"0xC6FB9B9370C01F52AD31D1B22A8AB1F1B18AF190EB48BA8F7E24E3DA6E67C8C2\",\n            \"price\": \"0.0000000000000012(1200)\",\n            \"price_unit\": \"SECOND\",\n            \"srv_uid\": \"0x0000000000000001\",\n            \"tx_cond_hash\": \"0x0000000000000000000000000000000000000000000000000000000000000000\",\n            \"units\": \"300\",\n            \"version\": \"3\"\n        },\n        {\n            \"direction\": \"SERV_DIR_SELL\",\n            \"ext\": \"0x5202554B00\",\n            \"hash\": \"0x243BBFBBB7C4A360646567A88066F93815E77EB2ECD4B480AF96F7E2B1996E9D\",\n            \"node_addr\": \"E1DB::C873::0B53::ED4B\",\n            \"node_location\": \"Europe-UK\",\n            \"pkey\": \"0x7F336916FE2F638A9457DB00D1841FE8B6234544ABA1785DAA892C421AD05A36\",\n            \"price\": \"0.0000000000000012(1200)\",\n            \"price_unit\": \"SECOND\",\n            \"srv_uid\": \"0x0000000000000001\",\n            \"tx_cond_hash\": \"0x0000000000000000000000000000000000000000000000000000000000000000\",\n            \"units\": \"300\",\n            \"version\": \"3\"\n        },\n        {\n            \"direction\": \"SERV_DIR_SELL\",\n            \"ext\": \"0x5206554B00\",\n            \"hash\": \"0x3DB2E19637239001931F2F84F17665164800633E5D263A404ED0264A5CE4F07C\",\n            \"node_addr\": \"E1DB::C873::0B53::ED4B\",\n            \"node_location\": \"Asia-UK\",\n            \"pkey\": \"0x7F336916FE2F638A9457DB00D1841FE8B6234544ABA1785DAA892C421AD05A36\",\n            \"price\": \"0.000000000000000002(2)\",\n            \"srv_uid\": \"0x0000000000000001\",\n            \"tx_cond_hash\": \"0x0000000000000000000000000000000000000000000000000000000000000000\",\n            \"units\": \"300\",\n            \"version\": \"3\"\n        },\n        {\n            \"direction\": \"SERV_DIR_SELL\",\n            \"ext\": \"0x52024765726D616E7900\",\n            \"hash\": \"0xF4590296D5844C301FCDA29F7854ADE6FFA2A56044BC1D4995A548342987F09A\",\n            \"node_addr\": \"E02A::FB56::1B0A::19C8\",\n            \"node_location\": \"Europe-Germany\",\n            \"pkey\": \"0xE23EF5A0EA0604EADD74EB2F365809AE222EB88B7EA72C9ADA7AF8B78EA4E21E\",\n            \"price\": \"0.0000000000000012(1200)\",\n            \"price_unit\": \"SECOND\",\n            \"srv_uid\": \"0x0000000000000001\",\n            \"tx_cond_hash\": \"0x0000000000000000000000000000000000000000000000000000000000000000\",\n            \"units\": \"600\",\n            \"version\": \"3\"\n        }\n    ]\n").array();
@@ -217,7 +252,6 @@ QString DapQmlModelOrderList::network() const
 
 void DapQmlModelOrderList::setNetwork (const QString &a_value)
 {
-
   if (a_value.isEmpty())
     _data->network  = _data->module.networks()->name();
   else
@@ -301,16 +335,16 @@ void DapQmlModelOrderList::setBalance (const QString &)
   emit sigBalanceChanged();
 }
 
-void DapQmlModelOrderList::onNetworkChange()
-{
-  _data->module.wallets()->setCurrentIndex (-1);
-  _data->module.tokens()->setCurrentIndex (-1);
-}
+//void DapQmlModelOrderList::onNetworkChange()
+//{
+//  _data->module.wallets()->setCurrentIndex (-1);
+//  _data->module.tokens()->setCurrentIndex (-1);
+//}
 
-void DapQmlModelOrderList::onWalletChange()
-{
-  _data->module.tokens()->setCurrentIndex (-1);
-}
+//void DapQmlModelOrderList::onWalletChange()
+//{
+//  _data->module.tokens()->setCurrentIndex (-1);
+//}
 
 const OrderListModule::OrderItem *DapQmlModelOrderList::currentOrder() const
 {
@@ -322,7 +356,7 @@ const OrderListModule::OrderItem *DapQmlModelOrderList::currentOrder() const
   return &s_ordersModule->items().at (currentIndex);
 }
 
-void DapQmlModelOrderList::setOrderListData(const QJsonArray &a_list, bool notify)
+void DapQmlModelOrderList::setOrderListData (const QJsonArray &a_list, bool notify)
 {
   //  if (a_list.isEmpty())
   //    return;
@@ -394,6 +428,12 @@ void DapQmlModelOrderList::setOrderListData(const QJsonArray &a_list, bool notif
     emit sigOrderListLoaded();
 }
 
+void DapQmlModelOrderList::_modelReset()
+{
+  beginResetModel();
+  endResetModel();
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
@@ -415,13 +455,13 @@ QVariant DapQmlModelOrderList::data (const QModelIndex &index, int role) const
 
   try
     {
-    switch (FieldId (role))
-      {
-      case FieldId::network:    return _data->network;
-      case FieldId::wallet:     return _data->wallet;
-      default:
-        return _data->module->data (index, role);
-      }
+      switch (FieldId (role))
+        {
+        case FieldId::network:    return _data->network;
+        case FieldId::wallet:     return _data->wallet;
+        default:
+          return _data->module->data (index, role);
+        }
     }
   catch (const std::exception &e)
     {
@@ -444,112 +484,129 @@ void DapQmlModelOrderList::slotSetOrderListData (const QJsonArray &a_list)
   setOrderListData (a_list);
 }
 
-void DapQmlModelOrderList::slotSetWalletListData (const QHash<QString, QStringList> &a_walletData)
+void DapQmlModelOrderList::slotWalletsDataUpdated()
 {
-  /* notify model */
-  beginResetModel();
+  _modelReset();
 
-  /* vars */
-  QVector<NameValueItem> items;
+  auto wallets  = _data->module.wallets()->as<WalletsModule>();
+  wallets->setCurrentIndex (-1);
+  emit sigWalletUpdated (wallets->name());
 
-  /* parse via cycle */
-  for (auto i = a_walletData.cbegin(), e = a_walletData.cend(); i != e; i++)
-    {
-      auto list = i.value();
-      items.append (NameValueItem
-      {
-        i.key(),
-        (list.isEmpty()) ? QString() : list.first()
-      });
-    }
+  auto networks  = _data->module.networks()->as<NetworksModule>();
+  networks->setCurrentIndex (-1);
+  emit sigNetworkUpdated (networks->name());
 
-  /* store result */
-  try
-    {
-      auto wallets  = _data->module.wallets()->as<WalletsModule>();
-      wallets->setItems (std::move (items));
-      wallets->setCurrentIndex (0);
-      emit sigWalletUpdated (wallets->name());
-    }
-  catch (const std::exception &e)
-    {
-      DEBUG_MSG << "Exception occurred:" << e.what();
-    }
-
-  /* notify model */
-  endResetModel();
+  auto tokens  = _data->module.tokens()->as<TokensModule>();
+  tokens->setCurrentIndex (-1);
+  emit sigTokenUpdated (tokens->name());
 }
 
-void DapQmlModelOrderList::slotSetNetworkListData (const QHash<QString, QStringList> &a_networkData)
-{
-  /* notify model */
-  beginResetModel();
+//void DapQmlModelOrderList::slotSetWalletListData (const QHash<QString, QStringList> &a_walletData)
+//{
+//  /* notify model */
+//  beginResetModel();
 
-  /* vars */
-  QVector<NameValueItem> items;
-  int current = 0, j = 0;
+//  /* vars */
+//  QVector<NameValueItem> items;
 
-  /* parse via cycle */
-  for (auto i = a_networkData.cbegin(), e = a_networkData.cend(); i != e; i++, j++)
-    {
-      auto list = i.value();
+//  /* parse via cycle */
+//  for (auto i = a_walletData.cbegin(), e = a_walletData.cend(); i != e; i++)
+//    {
+//      auto list = i.value();
+//      items.append (NameValueItem
+//      {
+//        i.key(),
+//        (list.isEmpty()) ? QString() : list.first()
+//      });
+//    }
 
-      if (!list.isEmpty()
-          && current == 0)
-        current = j;
+//  /* store result */
+//  try
+//    {
+//      auto wallets  = _data->module.wallets()->as<WalletsModule>();
+//      wallets->setItems (std::move (items));
+//      wallets->setCurrentIndex (0);
+//      emit sigWalletUpdated (wallets->name());
+//    }
+//  catch (const std::exception &e)
+//    {
+//      DEBUG_MSG << "Exception occurred:" << e.what();
+//    }
 
-      items.append (NameValueItem
-      {
-        i.key(),
-        (list.isEmpty()) ? QString() : list.first()
-      });
-    }
+//  /* notify model */
+//  endResetModel();
+//}
 
-  /* store result */
-  try
-    {
-      auto networks  = _data->module.networks()->as<NetworksModule>();
-      networks->setItems (std::move (items));
-      networks->setCurrentIndex (current);
-      emit sigNetworkUpdated (networks->name());
-    }
-  catch (const std::exception &e)
-    {
-      DEBUG_MSG << "Exception occurred:" << e.what();
-    }
+//void DapQmlModelOrderList::slotSetNetworkListData (const QHash<QString, QStringList> &a_networkData)
+//{
+//  /* notify model */
+//  beginResetModel();
 
-  /* notify model */
-  endResetModel();
-}
+//  /* vars */
+//  QVector<NameValueItem> items;
+//  int current = 0, j = 0;
 
-void DapQmlModelOrderList::slotSetTokensListData (const QHash<QString, QString> &a_tokensData)
-{
-  /* notify model */
-  beginResetModel();
+//  /* parse via cycle */
+//  for (auto i = a_networkData.cbegin(), e = a_networkData.cend(); i != e; i++, j++)
+//    {
+//      auto list = i.value();
 
-  /* vars */
-  QVector<NameValueItem> items;
+//      if (!list.isEmpty()
+//          && current == 0)
+//        current = j;
 
-  /* parse via cycle */
-  for (auto i = a_tokensData.cbegin(), e = a_tokensData.cend(); i != e; i++)
-    items.append (NameValueItem { i.key(), i.value() });
+//      items.append (NameValueItem
+//      {
+//        i.key(),
+//        (list.isEmpty()) ? QString() : list.first()
+//      });
+//    }
 
-  /* store result */
-  try
-    {
-      auto tokens  = _data->module.tokens()->as<TokensModule>();
-      tokens->setItems (std::move (items));
-      tokens->setCurrentIndex (-1);
-      emit sigTokenUpdated (tokens->name());
-    }
-  catch (const std::exception &e)
-    {
-      DEBUG_MSG << "Exception occurred:" << e.what();
-    }
+//  /* store result */
+//  try
+//    {
+//      auto networks  = _data->module.networks()->as<NetworksModule>();
+//      networks->setItems (std::move (items));
+//      networks->setCurrentIndex (current);
+//      emit sigNetworkUpdated (networks->name());
+//    }
+//  catch (const std::exception &e)
+//    {
+//      DEBUG_MSG << "Exception occurred:" << e.what();
+//    }
 
-  /* notify model */
-  endResetModel();
-}
+//  /* notify model */
+//  endResetModel();
+//}
+
+//void DapQmlModelOrderList::slotSetTokensListData (const QHash<QString, QString> &a_tokensData)
+//{
+//  /* notify model */
+//  beginResetModel();
+
+//  /* vars */
+//  QVector<NameValueItem> items;
+
+//  /* parse via cycle */
+//  for (auto i = a_tokensData.cbegin(), e = a_tokensData.cend(); i != e; i++)
+//    items.append (NameValueItem { i.key(), i.value() });
+
+//  /* store result */
+//  try
+//    {
+//      auto tokens  = _data->module.tokens()->as<TokensModule>();
+//      tokens->setItems (std::move (items));
+//      tokens->setCurrentIndex (-1);
+//      emit sigTokenUpdated (tokens->name());
+//    }
+//  catch (const std::exception &e)
+//    {
+//      DEBUG_MSG << "Exception occurred:" << e.what();
+//    }
+
+//  /* notify model */
+//  endResetModel();
+//}
 
 void DapQmlModelOrderList::slotSetOrderAddresses (const QJsonObject &a_list)
 {
@@ -614,7 +671,7 @@ DapQmlModelOrderListProxyModel::DapQmlModelOrderListProxyModel()
  * METHODS
  *******************************************/
 
-void DapQmlModelOrderListProxyModel::setRowFilter (const QString a_unit, qreal a_min, qreal a_max)
+void DapQmlModelOrderListProxyModel::setRowFilter (const QString &a_unit, qreal a_min, qreal a_max)
 {
   m_unit  = a_unit == "All" ? QString() : a_unit.toUpper();
   m_min   = a_min;
@@ -662,6 +719,80 @@ bool DapQmlModelOrderListProxyModel::filterAcceptsRow (
     }
 }
 
+
+
+/********************************************
+ * CONSTRUCT/DESTRUCT
+ *******************************************/
+
+DapQmlListModuleProxyModel::DapQmlListModuleProxyModel (Mode a_mode)
+  : _module (nullptr)
+  , _moduleModel (nullptr)
+{
+  switch (a_mode)
+    {
+    case Networks:  _setup (s_networksModule, s_networksModel); break;
+    case Wallets:   _setup (s_walletsModule, s_walletsModel); break;
+    case Tokens:    _setup (s_tokensModule, s_tokensModel); break;
+    default: break;
+    }
+
+  if (_moduleModel == nullptr || _module == nullptr)
+    qDebug() << __func__ << "Module is not provided:" << a_mode;
+}
+
+/********************************************
+ * METHODS
+ *******************************************/
+
+void DapQmlListModuleProxyModel::setRowFilter (const QString &a_filter)
+{
+  if (m_filter == a_filter)
+    return;
+
+  m_filter  = a_filter;
+  invalidateFilter();
+}
+
+int DapQmlListModuleProxyModel::currentIndex() const
+{
+  if (_module == nullptr)
+    return -1;
+  return _module->currentIndex();
+}
+
+void DapQmlListModuleProxyModel::setCurrentIndex (int a_value)
+{
+  if (_module == nullptr)
+    return;
+
+  if (_module->setCurrentIndex (a_value))
+    emit sigCurrentIndexChanged();
+}
+
+void DapQmlListModuleProxyModel::_setup(
+  OrderListModule::ModuleInterface *a_module,
+  QAbstractListModel *a_model)
+{
+  _module       = a_module;
+  _moduleModel  = a_model;
+  setSourceModel (a_model);
+}
+
+bool DapQmlListModuleProxyModel::filterAcceptsRow (int sourceRow, const QModelIndex &) const
+{
+  if (_moduleModel == nullptr)
+    return false;
+
+  if (m_filter.isEmpty())
+    return true;
+
+  QString value = _moduleModel->data (createIndex (sourceRow, 0), int (FieldId::misc)).toString();
+  return value == m_filter;
+}
+
+
+
 /********************************************
  * OrdersModel OVERRIDE
  *******************************************/
@@ -693,6 +824,39 @@ QVariant OrdersModel::data (const QModelIndex &index, int role) const
 }
 
 QHash<int, QByteArray> OrdersModel::roleNames() const
+{
+  return s_fields;
+}
+
+/********************************************
+ * ModuleModel OVERRIDE
+ *******************************************/
+
+ModuleModel::ModuleModel (ModuleInterface *a_module)
+  : _module (a_module)
+{
+
+}
+
+int ModuleModel::rowCount (const QModelIndex &) const
+{
+  return _module->size();
+}
+
+int ModuleModel::columnCount (const QModelIndex &) const
+{
+  return s_fields.size();
+}
+
+QVariant ModuleModel::data (const QModelIndex &index, int role) const
+{
+  if (!index.isValid())
+    return QVariant();
+
+  return _module->data (index, role);
+}
+
+QHash<int, QByteArray> ModuleModel::roleNames() const
 {
   return s_fields;
 }

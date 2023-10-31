@@ -85,6 +85,7 @@ Item {
         property bool isSearch: false           /// show search order options instead of choose wallet options
         property string listTitle: "Orders"     /// title text on top of list
         property string editValue: "0"          /// edit field value string
+        property bool isFilterSetup: false      /// light up "confirm" button
 
         /* MODES */
         property var mode: QuiNodeOrderList.Invalid
@@ -172,6 +173,8 @@ Item {
                 }
                 valueEditInput.text = (editValue === "") ? "0" : editValue;
             }
+
+            _updateFilterSetupValue();
         }
     }
 
@@ -189,6 +192,14 @@ Item {
         running: false
         repeat: false
         onTriggered: hideSpinner()
+    }
+
+    Timer {
+        id: updateFilterSetupTimer
+        interval: 250
+        running: false
+        repeat: false
+        onTriggered: _updateFilterSetupValue()
     }
 
     /// @}
@@ -287,6 +298,8 @@ Item {
         root.internal.maxUnit       = interfaceObject.maxUnit();
         root.internal.minUnit       = interfaceObject.minUnit();
         root.internal.tokenValue    = interfaceObject.tokenValue();
+
+        _updateFilterSetupValue();
     }
 
     /// @}
@@ -313,10 +326,27 @@ Item {
 
         switch(mode)
         {
-        case QuiNodeOrderList.Networks: root.internal.network   = a_name; break;
-        case QuiNodeOrderList.Wallets:  root.internal.wallet    = a_name; break;
-        case QuiNodeOrderList.Tokens:   root.internal.token     = a_name; break;
-        case QuiNodeOrderList.Units:    root.internal.unit      = a_name; break;
+
+        case QuiNodeOrderList.Networks:
+            root.internal.network                   = a_name;
+            csListViewNetworks.model.currentIndex   = a_index;
+            break;
+
+        case QuiNodeOrderList.Wallets:
+            root.internal.wallet                    = a_name;
+            csListViewWallets.model.currentIndex    = a_index;
+            break;
+
+        case QuiNodeOrderList.Tokens:
+            root.internal.token                     = a_name;
+            csListViewTokens.model.currentIndex     = a_index;
+            break;
+
+        case QuiNodeOrderList.Units:
+            root.internal.unit      = a_name;
+            // ____.model.currentIndex   = a_index;
+            break;
+
         }
 
         /* clean child fields */
@@ -324,9 +354,11 @@ Item {
         {
 
         case QuiNodeOrderList.Networks:
-            //root.internal.wallet    = " ";
+            root.internal.wallet    = " ";
             root.internal.token     = " ";
-            csListView.model.onNetworkChange();
+            //csListView.model.onNetworkChange();
+            csListViewWallets.model.currentIndex    = -1;
+            csListViewTokens.model.currentIndex     = -1;
             interfaceObject.setData(
             {
                 network     : root.internal.network,
@@ -337,7 +369,8 @@ Item {
 
         case QuiNodeOrderList.Wallets:
             root.internal.token     = " ";
-            csListView.model.onWalletChange();
+            //csListView.model.onWalletChange();
+            csListViewTokens.model.currentIndex     = -1;
             interfaceObject.setData(
             {
                 wallet      : root.internal.wallet,
@@ -346,6 +379,8 @@ Item {
             break;
 
         }
+
+        _updateFilterSetupValue();
 
         timerFilterItemSelected.start();
     }
@@ -396,6 +431,8 @@ Item {
         case QuiNodeOrderList.TokenValue: root.internal.tokenValue = a_value; break;
         }
 
+        _updateFilterSetupValue();
+
         return "";
     }
 
@@ -423,14 +460,17 @@ Item {
             }
             );
         }
+        _updateFilterSetupValue();
     }
 
     function showChooseWallet() {
         root.internal.isSearch  = false;
+        _updateFilterSetupValue();
     }
 
     function showSearchOrder() {
         root.internal.isSearch  = true;
+        _updateFilterSetupValue();
     }
 
     function hideSpinner() {
@@ -468,6 +508,14 @@ Item {
     function hideErrorMessage() {
         errorMessageTimer.stop();
         errorMessageItem.y  = 0 - root.width * 0.1;
+    }
+
+    function _updateFilterSetupValue() {
+        root.internal.isFilterSetup =
+            (root.internal.network       !== "" && root.internal.network     !== " ")
+            && (root.internal.wallet     !== "" && root.internal.wallet      !== " ")
+            && (root.internal.token      !== "" && root.internal.token       !== " ")
+            && (root.internal.tokenValue !== "" && root.internal.tokenValue  !== " ")
     }
 
     /// @}
@@ -858,7 +906,18 @@ Item {
             iconSize: nameValueRadio.height
             separator: true
             qss: "nodeorlist-name-value"
-            checked: csListView.model.currentIndex === model.index
+            checked: {
+                switch(csListView.model.mode)
+                {
+                case QuiNodeOrderList.Networks:
+                    return csListViewNetworks.model.currentIndex === model.index;
+                case QuiNodeOrderList.Wallets:
+                    return csListViewWallets.model.currentIndex === model.index;
+                case QuiNodeOrderList.Tokens:
+                    return csListViewTokens.model.currentIndex === model.index;
+                default:    return csListView.model.currentIndex === model.index;
+                }
+            }
             text: (model.name !== undefined) ? model.name : ""
 
             DapQmlLabel {
@@ -926,7 +985,7 @@ Item {
             }
 
             onClicked: {
-                csListView.model.currentIndex = model.index;
+                //csListView.model.currentIndex = model.index;
                 root.filterItemSelected (model.index, text);
                 //timerFilterItemSelected.start(); // swipe.decrementCurrentIndex();
             }
@@ -1212,6 +1271,7 @@ Item {
                 DapQmlPushButton {
                     qss: "nodeorlist-overview-confirm-btn"
                     text: root.internal.isSearch ? qsTr("SEARCH ORDER") : qsTr("CONFIRM")
+                    enabled: root.internal.isSearch ? true : root.internal.isFilterSetup
                     onClicked: {
                         storeFilterData();
                         if (root.internal.isSearch)
@@ -1405,6 +1465,8 @@ Item {
                             //valueEditInput.text = root.internal.editValue
                             showErrorMessage (result);
                         }
+
+                        updateFilterSetupTimer.start();
                     }
                 }
 
@@ -1429,6 +1491,9 @@ Item {
                         spacing: spacer.height
                         delegate: listviewDelegateNameValue
                         visible: root.internal.mode !== QuiNodeOrderList.Orders
+                                 && root.internal.mode !== QuiNodeOrderList.Networks
+                                 && root.internal.mode !== QuiNodeOrderList.Wallets
+                                 && root.internal.mode !== QuiNodeOrderList.Tokens
                         clip: true
 
                     } // Listview
@@ -1440,6 +1505,36 @@ Item {
                         spacing: spacer.height
                         delegate: listviewDelegateOrder
                         visible: root.internal.mode === QuiNodeOrderList.Orders
+                        clip: true
+                    }
+
+                    ListView {
+                        id: csListViewNetworks
+                        objectName: "listviewNetworks"
+                        anchors.fill: parent
+                        spacing: spacer.height
+                        delegate: listviewDelegateNameValue
+                        visible: root.internal.mode === QuiNodeOrderList.Networks
+                        clip: true
+                    }
+
+                    ListView {
+                        id: csListViewWallets
+                        objectName: "listviewWallets"
+                        anchors.fill: parent
+                        spacing: spacer.height
+                        delegate: listviewDelegateNameValue
+                        visible: root.internal.mode === QuiNodeOrderList.Wallets
+                        clip: true
+                    }
+
+                    ListView {
+                        id: csListViewTokens
+                        objectName: "listviewTokens"
+                        anchors.fill: parent
+                        spacing: spacer.height
+                        delegate: listviewDelegateNameValue
+                        visible: root.internal.mode === QuiNodeOrderList.Tokens
                         clip: true
                     }
                 }

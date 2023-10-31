@@ -59,6 +59,7 @@ public:
 
   virtual const QString &name() const = 0;
   virtual const QString &value() const = 0;
+  virtual const QString &misc() const = 0;
 
   /* METHODS */
   int currentIndex() const;
@@ -77,26 +78,26 @@ public:
  * Used for displaying Name + Value items
  *******************************************/
 
-class NameValueModule : public ModuleInterface
-{
-  /* VARS */
-protected:
-  QVector<NameValueItem> _items;
+//class NameValueModule : public ModuleInterface
+//{
+//  /* VARS */
+//protected:
+//  QVector<NameValueItem> _items;
 
-  /* CONSTRUCT/DESTRUCT */
-public:
-  NameValueModule() {}
-  ~NameValueModule() override {};
+//  /* CONSTRUCT/DESTRUCT */
+//public:
+//  NameValueModule() {}
+//  ~NameValueModule() override {};
 
-  /* METHODS */
-  const QVector<NameValueItem> &items() const;
-  void setItems (const QVector<NameValueItem> &a_items);
-  void setItems (QVector<NameValueItem> &&a_items);
+//  /* METHODS */
+//  const QVector<NameValueItem> &items() const;
+//  void setItems (const QVector<NameValueItem> &a_items);
+//  void setItems (QVector<NameValueItem> &&a_items);
 
-  /* OVERRIDE */
-  int size() const override;
-  QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
-};
+//  /* OVERRIDE */
+//  int size() const override;
+//  QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
+//};
 
 /****************************************//**
  * @brief Order List Module
@@ -127,7 +128,8 @@ public:
   int size() const override;
   QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
   const QString &name() const override;
-  const QString &value() const override;
+  const QString &value() const override;  // nothing
+  const QString &misc() const override;   // nothing
   bool setCurrentIndex (int a_value) override;
   void installAdressMap (const QHash<QString, QString> &a_map);
 };
@@ -138,7 +140,7 @@ public:
  * Based on basic Name+Value list.
  *******************************************/
 
-class NetworksModule : public NameValueModule
+class NetworksModule : public ModuleInterface
 {
   /* CONSTRUCT/DESTRUCT */
 public:
@@ -146,8 +148,11 @@ public:
   ~NetworksModule() override {};
 
   /* OVERRIDE */
+  int size() const override;
+  QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
   const QString &name() const override;
-  const QString &value() const override;
+  const QString &value() const override;  // nothing
+  const QString &misc() const override;   // nothing
   bool setCurrentIndex (int a_value) override;
 };
 
@@ -157,7 +162,7 @@ public:
  * Based on basic Name+Value list.
  *******************************************/
 
-class WalletsModule : public NameValueModule
+class WalletsModule : public ModuleInterface
 {
   /* CONSTRUCT/DESTRUCT */
 public:
@@ -165,8 +170,11 @@ public:
   ~WalletsModule() override {};
 
   /* OVERRIDE */
+  int size() const override;
+  QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
   const QString &name() const override;
   const QString &value() const override;
+  const QString &misc() const override;   // network
   bool setCurrentIndex (int a_value) override;
 };
 
@@ -176,7 +184,7 @@ public:
  * Based on basic Name+Value list.
  *******************************************/
 
-class TokensModule : public NameValueModule
+class TokensModule : public ModuleInterface
 {
   /* CONSTRUCT/DESTRUCT */
 public:
@@ -184,8 +192,11 @@ public:
   ~TokensModule() override {};
 
   /* OVERRIDE */
+  int size() const override;
+  QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override;
   const QString &name() const override;
   const QString &value() const override;
+  const QString &misc() const override;   // wallet
   bool setCurrentIndex (int a_value) override;
 };
 
@@ -217,6 +228,7 @@ public:
   bool setCurrentIndex (int a_value) override;
   const QString &name() const override;
   const QString &value() const override;
+  const QString &misc() const override;   // nothing
 };
 
 /****************************************//**
