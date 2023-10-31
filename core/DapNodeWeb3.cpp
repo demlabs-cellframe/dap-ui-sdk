@@ -178,6 +178,15 @@ void DapNodeWeb3::responseProcessing (
           return;
         }
     }
+  else if (methodName == "Connect")
+    {
+      if (error == -668)
+        {
+          DEBUGINFO  << __func__ << " - Dashboard refused authorization";
+          emit sigError (error, "Dashboard refused authorization");
+          return;
+        }
+    }
 
   /* get reply method item */
   auto replyMethod  = s_replyMethodMap.value (methodName, s_dummyReply);
