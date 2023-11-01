@@ -271,9 +271,10 @@ void DapNode::initStmStates()
     // node detected
     connect(&m_stm->nodeNotDetected, &QState::entered, this, [=](){
         DEBUGINFO  << "&nodeNotDetected, &QState::entered";
-        QTimer::singleShot(NODE_DETECT_REQUEST_REPEAT_PERIOD, [=](){
-            emit repeatNodeDetection();
-        });
+        if (!m_isCDBLogined)
+            QTimer::singleShot(NODE_DETECT_REQUEST_REPEAT_PERIOD, [=](){
+                emit repeatNodeDetection();
+            });
     });
     //
     connect(&m_stm->nodeConnection, &QState::entered, this, [=](){
