@@ -59,7 +59,7 @@ void DapDownload::sendRequest()
         if (reply->error() != QNetworkReply::NetworkError::NoError)
         {
             qWarning() << "Download error:" << networkErr;
-            emit downloadError(reply->error(), "Download ended with an error");
+            emit downloadError(reply->error(), tr("Download ended with an error"));
         }
     }));
     connect( m_networkReply, &QNetworkReply::readyRead, this, [=]() {
