@@ -337,10 +337,15 @@ const QString &TokensModule::value() const
 
 const QString &TokensModule::misc() const
 {
-  const auto &data  = DapNodeWalletData::instance()->walletTokenList();
+  const auto &data  = DapNodeWalletData::instance()->tokenBalanceList();
   if (_currentIndex < 0 || _currentIndex >= data.size())
     return s_dummyString;
-  return data.at (_currentIndex).wallet;
+
+  static QString result;
+  const auto &item  = data.at (_currentIndex);
+  result            = item.network + ":" + item.wallet;
+
+  return result;
 }
 
 bool TokensModule::setCurrentIndex (int a_value)

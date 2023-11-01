@@ -6,6 +6,10 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+/* DEFS */
+#define PRINT_WALLET_DATA
+#define DEBUGINFO qDebug() << (QString ("DapNodeWalletData::") + __func__)
+
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/
@@ -38,6 +42,9 @@ void DapNodeWalletData::setWalletsData (const QJsonObject &a_walletsData)
 //  _prepareWalletsWithTokens();
 //  _prepareNetworksWithTokens();
 //  _prepareTokensAmounts();
+#ifdef PRINT_WALLET_DATA
+  _printWalletsData();
+#endif // PRINT_WALLET_DATA
 }
 
 void DapNodeWalletData::setOrderListData (const QJsonArray &a_ordesListData)
@@ -310,6 +317,24 @@ void DapNodeWalletData::_parseWalletNetworkTokenData (const Wallet &a_value)
 
   /* perform parsing */
   lParseNetworks (a_value);
+}
+
+void DapNodeWalletData::_printWalletsData()
+{
+  DEBUGINFO << "networks";
+
+  for (const auto &network : qAsConst (_data.networkList))
+    qDebug() << network;
+
+  DEBUGINFO << "wallets";
+
+  for (const auto &wallet : qAsConst (_data.walletTokenList))
+    qDebug() << QString ("%1:%2:%3").arg (wallet.network, wallet.wallet, wallet.token);
+
+  DEBUGINFO << "tokens";
+
+  for (const auto &token : qAsConst (_data.tokenBalanceList))
+    qDebug() << QString ("%1:%2:%3:%4").arg (token.network, token.wallet, token.token, token.balance);
 }
 
 /*-----------------------------------------*/

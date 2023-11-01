@@ -189,6 +189,7 @@ protected:
 //  void _prepareTokensAmounts();
 
   void _parseWalletNetworkTokenData (const Wallet &a_value);
+  void _printWalletsData();
   /// @}
 
   /****************************************//**
