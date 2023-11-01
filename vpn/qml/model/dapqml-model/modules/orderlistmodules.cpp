@@ -473,24 +473,25 @@ bool ModuleContainer::setMode (DapQmlModelOrderList::Mode a_value)
   if (_mode == a_value)
     return false;
 
-  typedef DapQmlModelOrderList::Mode Mode;
+//  typedef DapQmlModelOrderList::Mode Mode;
 
   /* change mode */
   _mode   = a_value;
 
-  /* change module */
-  switch (_mode)
-    {
-    //case Mode::Orders:    _module = _orders;   break;
-    case Mode::Networks:  _module = _networks; break;
-    case Mode::Wallets:   _module = _wallets;  break;
-    case Mode::Tokens:    _module = _tokens;   break;
-    case Mode::Units:     _module = _units;    break;
-    case Mode::Invalid:
-    default:
-      _module.reset();
-      break;
-    }
+//  /* change module */
+//  switch (_mode)
+//    {
+//    //case Mode::Orders:    _module = _orders;   break;
+//    case Mode::Networks:  _module = _networks; break;
+//    case Mode::Wallets:   _module = _wallets;  break;
+//    case Mode::Tokens:    _module = _tokens;   break;
+//    case Mode::Units:     _module = _units;    break;
+//    case Mode::Invalid:
+//    default:
+//      _module.reset();
+//      break;
+//    }
+  _module = _units;
 
   return true;
 }

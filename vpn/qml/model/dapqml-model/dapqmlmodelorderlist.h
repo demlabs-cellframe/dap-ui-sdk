@@ -303,6 +303,8 @@ private:
   QString m_filter;
   OrderListModule::ModuleInterface *_module;
   QAbstractListModel *_moduleModel;
+  mutable QHash<int,int> _indexMap;
+  mutable int _indexMapCounter;
   /// @}
 
   /****************************************//**

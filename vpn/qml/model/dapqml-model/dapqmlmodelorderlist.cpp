@@ -728,6 +728,7 @@ bool DapQmlModelOrderListProxyModel::filterAcceptsRow (
 DapQmlListModuleProxyModel::DapQmlListModuleProxyModel (Mode a_mode)
   : _module (nullptr)
   , _moduleModel (nullptr)
+  , _indexMapCounter (0)
 {
   switch (a_mode)
     {
@@ -751,6 +752,8 @@ void DapQmlListModuleProxyModel::setRowFilter (const QString &a_filter)
     return;
 
   m_filter  = a_filter;
+  _indexMap.clear();
+  _indexMapCounter  = 0;
   invalidateFilter();
 }
 
@@ -758,7 +761,16 @@ int DapQmlListModuleProxyModel::currentIndex() const
 {
   if (_module == nullptr)
     return -1;
-  return _module->currentIndex();
+  int sourceIndex = _module->currentIndex();
+  if (sourceIndex <= -1)
+    return -1;
+  if (sourceIndex >= _module->size())
+    return -1;
+  int proxyIndex  =
+      (_module == s_networksModule)
+      ? sourceIndex
+      : _indexMap.value (sourceIndex, -1); //mapFromSource (index (sourceIndex, 0)).row();
+  return proxyIndex;
 }
 
 void DapQmlListModuleProxyModel::setCurrentIndex (int a_value)
@@ -766,7 +778,11 @@ void DapQmlListModuleProxyModel::setCurrentIndex (int a_value)
   if (_module == nullptr)
     return;
 
-  if (_module->setCurrentIndex (a_value))
+  int sourceIndex = (_module == s_networksModule)
+      ? a_value
+      : _indexMap.key (a_value, -1); //mapToSource (index (a_value, 0)).row();
+
+  if (_module->setCurrentIndex (sourceIndex))
     emit sigCurrentIndexChanged();
 }
 
@@ -788,7 +804,10 @@ bool DapQmlListModuleProxyModel::filterAcceptsRow (int sourceRow, const QModelIn
     return true;
 
   QString value = _moduleModel->data (createIndex (sourceRow, 0), int (FieldId::misc)).toString();
-  return value == m_filter;
+  bool success  = value == m_filter;
+  if (success)
+    _indexMap.insert (sourceRow, _indexMapCounter++);
+  return success;
 }
 
 
