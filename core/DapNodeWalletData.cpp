@@ -7,7 +7,7 @@
 #include <QJsonArray>
 
 /* DEFS */
-#define PRINT_WALLET_DATA
+//#define PRINT_WALLET_DATA
 //#define SIMULATE_DATA
 #define DEBUGINFO qDebug() << (QString ("DapNodeWalletData::") + __func__)
 #define ARRAYSIZE(a) (sizeof(a) / sizeof(*(a)))
@@ -215,7 +215,7 @@ DapNodeWalletData *DapNodeWalletData::instance()
 
 void DapNodeWalletData::setWalletsData (const QJsonObject &a_walletsData)
 {
-  DEBUGINFO << a_walletsData;
+  //DEBUGINFO << a_walletsData;
   _parseWallets (a_walletsData);
 //  _prepareWalletsWithTokens();
 //  _prepareNetworksWithTokens();
