@@ -215,6 +215,7 @@ DapNodeWalletData *DapNodeWalletData::instance()
 
 void DapNodeWalletData::setWalletsData (const QJsonObject &a_walletsData)
 {
+  DEBUGINFO << a_walletsData;
   _parseWallets (a_walletsData);
 //  _prepareWalletsWithTokens();
 //  _prepareNetworksWithTokens();
