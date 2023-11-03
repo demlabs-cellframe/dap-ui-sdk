@@ -99,12 +99,11 @@ public slots:
    *******************************************/
   /// @{
 signals:
-  void sigNodeDetected();
-  void sigWalletsList (QHash<QString, QStringList> data);
-  void sigNetworksList (QHash<QString, QStringList> data);
-  void sigTokensInfo (QHash<QString, QString> data);
-  void sigOrderListData (QMap<QString, QVariant> data);
-  void sigTokenAmount (QString token, QString amount);
+//  void sigWalletsList (QHash<QString, QStringList> data);
+//  void sigNetworksList (QHash<QString, QStringList> data);
+//  void sigTokensInfo (QHash<QString, QString> data);
+//  void sigOrderListData (QMap<QString, QVariant> data);
+//  void sigTokenAmount (QString token, QString amount);
   void sigNodeError (int code, QString errorMessage);
   void sigTransactionHashInMempool();
   void sigTransactionHashInledger();
@@ -112,6 +111,13 @@ signals:
   void sigSigningReceived (qint32 utype, qint64 uid, QString units, QString value);
   void sigOrderList (const QJsonArray &a_list);
   void sigNodeIpList (const QJsonObject &a_list);
+
+  void sigNodeDetected();
+  void sigOrderListDataUpdated();
+
+  /// wallets, networks and tokens updated
+  void sigWalletsDataUpdated();
+  /// @}
 };
 
 /*-----------------------------------------*/
