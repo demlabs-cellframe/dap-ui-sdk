@@ -1177,7 +1177,7 @@
 .stat-item-main
 {
     color: "@text";
-    font-weight: Font.Normal;
+    font-weight: Font.Bold;
 }
 
 .stat-item-sub
