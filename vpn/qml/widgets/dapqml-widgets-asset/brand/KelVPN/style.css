@@ -836,21 +836,27 @@
     color: "@text";
 }
 
+.login-transaction-processing-label-nocbd-default
+{
+    scaled-rect: scaled(-1,339,327,57,false,15);
+    color: "@text";
+}
+
 .login-transaction-processing-wallet-data-label-nocbd
 {
-    scaled-rect: scaled(45,369,327,57,false,15);
+    scaled-rect: scaled(-1,369,327,57,false,15);
     color: "@text";
 }
 
 .login-transaction-processing-amount-label-nocbd
 {
-    scaled-rect: scaled(45,399,327,57,false,15);
+    scaled-rect: scaled(-1,399,327,57,false,15);
     color: "@text";
 }
 
 .login-transaction-processing-status-label-nocbd
 {
-    scaled-rect: scaled(45,429,327,57,false,15);
+    scaled-rect: scaled(-1,429,327,57,false,15);
     color: "@text";
 }
 

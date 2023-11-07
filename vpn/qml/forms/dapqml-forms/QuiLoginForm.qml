@@ -229,6 +229,7 @@ Item {
         console.log(`setTransactionProcessing ${a_data}`);
         internal.transactionProcessing = true;
         loginInfoLabel.text = "Transaction is in progress"
+        loginInfoLabel.isDefault = true;
 //        if (a_data === true) {
 //            internal.transactionProcessing = a_data;
 //            //internal.waitingForApproval = false;
@@ -244,6 +245,7 @@ Item {
     function deactivateTransactionProcessing() {
         internal.transactionProcessing = false;
         loginInfoLabel.text = ""
+        loginInfoLabel.isDefault = true;
     }
 
     function setTransactionWalletNetwork(row2) {
@@ -274,7 +276,10 @@ Item {
         console.log(`cellfarameDashboardDetected ${detected}`);
         internal.cellfarameDetected = detected && Brand.name() === "KelVPN";
         if (internal.waitingForApproval)
-            loginInfoLabel.text = qsTr("Waiting for approval\n\nCheck the Cellframe Dashboard")
+        {
+            loginInfoLabel.isDefault = false;
+            loginInfoLabel.text = qsTr("Waiting for approval\n\nCheck the Cellframe Dashboard");
+        }
         loginTypeKelContainer.update();
     }
 
@@ -282,7 +287,10 @@ Item {
         console.log(`setWaitingForApproval ${approval}`);
         internal.waitingForApproval = approval
         if (internal.waitingForApproval)
+        {
+            loginInfoLabel.isDefault = false;
             loginInfoLabel.text = qsTr("Waiting for approval\n\nCheck the Cellframe Dashboard")
+        }
     }
 
     function setWalletSeleted(selected)
@@ -878,10 +886,13 @@ Item {
 
         DapQmlLabel {
             id: loginInfoLabel
-            qss: "login-transaction-processing-label-nocbd"
+            qss: isDefault
+                 ? "login-transaction-processing-label-nocbd-default"
+                 : "login-transaction-processing-label-nocbd"
             text: "<<< Message >>>"
             visible: internal.cellfarameDetected
                      && (internal.transactionProcessing || internal.waitingForApproval)
+            property bool isDefault: false
         }
 
         DapQmlLabel {
