@@ -343,8 +343,8 @@ Item {
             break;
 
         case QuiNodeOrderList.Units:
-            root.internal.unit      = a_name;
-            // ____.model.currentIndex   = a_index;
+            root.internal.unit                      = a_name;
+            csListView.model.currentIndex           = a_index;
             break;
 
         }
@@ -915,6 +915,8 @@ Item {
                     return csListViewWallets.model.currentIndex === model.index;
                 case QuiNodeOrderList.Tokens:
                     return csListViewTokens.model.currentIndex === model.index;
+//                case QuiNodeOrderList.Units:
+//                    return csListView.model.currentIndex === model.index;
                 default:    return csListView.model.currentIndex === model.index;
                 }
             }
