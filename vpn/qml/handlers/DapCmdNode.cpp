@@ -446,7 +446,19 @@ void DapCmdNode::slotStartConnectByOrder()
 //  connectData["token"] = _data->selectedTokenName;
 //  //connectData["node_ip"] = "164.92.175.30"; // TODO get from order
 //  jObject["start_connect_by_order"] = connectData;
-//  sendCmd (&jObject);
+  //  sendCmd (&jObject);
+}
+
+void DapCmdNode::slotStartConnectByHistoryOrder (const DapNodeOrderInfo &a_info, const QString &a_token)
+{
+  DEBUGINFO << __PRETTY_FUNCTION__;
+
+  /* send command */
+  QJsonObject jobj {
+    { "start_connect_by_order", a_info.toJsonObject() },
+    { "token", a_token },
+  };
+  sendCmd (&jobj);
 }
 
 void DapCmdNode::slotRequestIpNode (const QString &networkName, const QJsonArray &orderList)

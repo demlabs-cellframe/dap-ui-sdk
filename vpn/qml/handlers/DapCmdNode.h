@@ -91,6 +91,7 @@ public slots:
   void slotSetMinValueUnit (const QString &price);
   void slotCheckSigned();
   void slotStartConnectByOrder();
+  void slotStartConnectByHistoryOrder (const DapNodeOrderInfo &a_info, const QString &a_token);
   void slotRequestIpNode (const QString &networkName, const QJsonArray &orderList);
   /// @}
 
