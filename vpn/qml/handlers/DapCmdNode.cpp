@@ -310,6 +310,14 @@ void DapCmdNode::noCdbModeRequest()
   sendCmd (&checkNode);
 }
 
+void DapCmdNode::walletsRequest()
+{
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  QJsonObject checkNode;
+  checkNode["data_wallet_request"] = true;
+  sendCmd (&checkNode);
+}
+
 bool DapCmdNode::hasError()
 {
   return _data->hasError;

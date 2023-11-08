@@ -53,6 +53,7 @@ public:
   void startNodeDetection();
   void stopCheckNode();
   void noCdbModeRequest();
+  void walletsRequest();
 
   bool hasError();
 //  WalletsData *nodeInfo() { return &m_dataWallet; }

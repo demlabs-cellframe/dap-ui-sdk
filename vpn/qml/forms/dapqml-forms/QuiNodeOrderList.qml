@@ -221,6 +221,7 @@ Item {
     signal sigMaxPriceClicked();
     signal sigMinPriceClicked();
 
+    signal sigRefreshDataClicked();
     signal sigSearchClicked();
     signal sigWalletConfirmClicked();
 
@@ -532,6 +533,12 @@ Item {
         id: dummyStyle
     }
 
+    DapQmlDummy {
+        id: pushButtonSizer
+        qss: "nodeorlist-overview-btn-sizer"
+        property int fontSize
+    }
+
     DapQmlRectangle {
         id: resizer
         visible: false
@@ -637,6 +644,39 @@ Item {
             MouseArea {
                 anchors.fill: parent
                 onClicked: parent.parent.callback()
+            }
+        }
+    }
+
+    Component {
+        id: pushButton
+
+        // property string text
+        // property color color
+        // property color fill
+        // property var cbClicked
+
+        Rectangle {
+            anchors.fill: parent
+            color: parent.fill
+            radius: height * 0.485
+            opacity: 0.5 + enabled * 0.5
+
+            DapQmlLabel {
+                anchors.centerIn: parent
+                width: contentWidth
+                height: contentHeight
+                fontFamiliy: Brand.fontName()
+                color: parent.parent.color
+                fontSize: pushButtonSizer.fontSize
+                fontWeight: Font.Bold
+                text: parent.parent.text
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                enabled: parent.enabled
+                onClicked: parent.parent.cbClicked()
             }
         }
     }
@@ -1268,11 +1308,39 @@ Item {
                     }
                 }
 
-                DapQmlPushButton {
-                    qss: "nodeorlist-overview-confirm-btn"
-                    text: root.internal.isSearch ? qsTr("SEARCH ORDER") : qsTr("CONFIRM")
+                Loader {
+                    id: btnRefreshWallets
+                    DapQmlStyle { item: btnRefreshWallets; qss: "nodeorlist-overview-refresh-btn" }
+                    visible: !root.internal.isSearch
+                    sourceComponent: pushButton
+                    property string text: qsTr("REFRESH DATA")
+                    property color color
+                    property color fill
+                    property var cbClicked: function() {
+                        root.sigRefreshDataClicked();
+                        // console.log("refresh clicked");
+                        btnRefreshWallets.enabled = false;
+                        btnRefreshWalletsDisabledTimer.start();
+                    }
+
+                    Timer {
+                        id: btnRefreshWalletsDisabledTimer
+                        running: false
+                        repeat: false
+                        interval: 5000
+                        onTriggered: btnRefreshWallets.enabled = true
+                    }
+                }
+
+                Loader {
+                    id: btnConfirmSearch
+                    DapQmlStyle { item: btnConfirmSearch; qss: "nodeorlist-overview-confirm-btn" }
+                    sourceComponent: pushButton
                     enabled: root.internal.isSearch ? true : root.internal.isFilterSetup
-                    onClicked: {
+                    property string text: root.internal.isSearch ? qsTr("SEARCH ORDER") : qsTr("CONFIRM")
+                    property color color
+                    property color fill
+                    property var cbClicked: function() {
                         storeFilterData();
                         if (root.internal.isSearch)
                         {
@@ -1284,6 +1352,23 @@ Item {
                             root.sigWalletConfirmClicked();
                     }
                 }
+
+//                DapQmlPushButton {
+//                    qss: "nodeorlist-overview-confirm-btn"
+//                    text: root.internal.isSearch ? qsTr("SEARCH ORDER") : qsTr("CONFIRM")
+//                    enabled: root.internal.isSearch ? true : root.internal.isFilterSetup
+//                    onClicked: {
+//                        storeFilterData();
+//                        if (root.internal.isSearch)
+//                        {
+//                            orderListWaitTimer.restart();
+//                            root.internal.popup = true;
+//                            root.sigSearchClicked();
+//                        }
+//                        else
+//                            root.sigWalletConfirmClicked();
+//                    }
+//                }
             } // Search Filter
 
             /****************************************//**
@@ -1434,11 +1519,14 @@ Item {
 //                    onClicked: clearEditField()
 //                }
 
-                DapQmlPushButton {
-                    visible: root.internal.showConfirmButton
-                    qss: "nodeorlist-overview-confirm-btn"
-                    text: qsTr("CONFIRM")
-                    onClicked: {
+                Loader {
+                    id: btnConfirm
+                    DapQmlStyle { item: btnConfirm; qss: "nodeorlist-overview-confirm-btn" }
+                    sourceComponent: pushButton
+                    property string text: qsTr("CONFIRM")
+                    property color color
+                    property color fill
+                    property var cbClicked: function() {
                         /* store edit value result */
                         let result = "";
                         switch (root.internal.mode)
@@ -1469,6 +1557,42 @@ Item {
                         updateFilterSetupTimer.start();
                     }
                 }
+
+//                DapQmlPushButton {
+//                    visible: root.internal.showConfirmButton
+//                    qss: "nodeorlist-overview-confirm-btn"
+//                    text: qsTr("CONFIRM")
+//                    onClicked: {
+//                        /* store edit value result */
+//                        let result = "";
+//                        switch (root.internal.mode)
+//                        {
+//                        case QuiNodeOrderList.MaxUnit:
+//                        case QuiNodeOrderList.MinUnit:
+//                        case QuiNodeOrderList.MaxPrice:
+//                        case QuiNodeOrderList.MinPrice:
+//                        case QuiNodeOrderList.TokenValue:
+//                            result  = filterValueSet (valueEditInput.text);
+//                            break;
+//                        default:
+//                            break;
+//                        }
+
+//                        /* navigate based on mode */
+//                        if (result === "")
+//                        {
+//                            swipe.decrementCurrentIndex();
+//                            hideErrorMessage();
+//                        }
+//                        else
+//                        {
+//                            //valueEditInput.text = root.internal.editValue
+//                            showErrorMessage (result);
+//                        }
+
+//                        updateFilterSetupTimer.start();
+//                    }
+//                }
 
                 /****************************************//**
                  * Listview

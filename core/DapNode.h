@@ -187,6 +187,7 @@ public slots:
     void slotNodeIpReqest(QString srvUid, QString nodeAddress);
     void slotGetNodeIpForOrderListReqest(QString srvUid, QJsonArray orderList);
     void slotGetNetIdReqest(QString networkName);
+    void slotWalletsRequest();
 
 private slots:
     void walletDataRequest();
@@ -234,7 +235,7 @@ signals:
     void sigGetNodeIpRequest(QJsonArray orderList);
     void sigNodeDumpReceived();
     void sigFeeReceived();
-
+    void sigWalletsRequest();
 
 };
 
