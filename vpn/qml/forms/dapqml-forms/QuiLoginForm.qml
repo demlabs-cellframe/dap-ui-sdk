@@ -83,6 +83,8 @@ Item {
 
         property bool showConnectionOverlay: false
 
+        property bool tokenIsSet: false
+
         function forgotLabel() {
 //   First variant for Rise
 //            return mode === QuiLoginForm.Mode.M_SERIAL
@@ -221,7 +223,8 @@ Item {
 
     /// @brief set network|token for noCBD
     function setNetworkAndToken(a_data){
-        btnChooseWallet.subText = a_data;
+        btnChooseWallet.subText     = a_data;
+        root.internal.tokenIsSet    = a_data.includes("|");
     }
 
     /// @brief set transaction processing flag for noCBD
@@ -696,6 +699,8 @@ Item {
             width: parent.width
             visible: internal.mode === QuiLoginForm.Mode.M_WALLET
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
+            enabled: root.internal.tokenIsSet
+            opacity: root.internal.tokenIsSet ? 1.0 : 0.5
 
             mainText: qsTr("Order") + lang.notifier
             subText: qsTr("SEARCH ORDERS") + lang.notifier
