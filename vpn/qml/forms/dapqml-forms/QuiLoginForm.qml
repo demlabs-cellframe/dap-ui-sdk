@@ -83,6 +83,8 @@ Item {
 
         property bool showConnectionOverlay: false
 
+        property bool tokenIsSet: false
+
         function forgotLabel() {
 //   First variant for Rise
 //            return mode === QuiLoginForm.Mode.M_SERIAL
@@ -201,7 +203,8 @@ Item {
 
     /// @brief change current chosen server name
     function setServer(a_name) {
-        btnChooseServer.mainText    = a_name;
+        //btnChooseServer.mainText    = a_name;
+        btnChooseServer.label    = a_name;
     }
 
     function setOrderLocation(location ) {
@@ -220,7 +223,8 @@ Item {
 
     /// @brief set network|token for noCBD
     function setNetworkAndToken(a_data){
-        btnChooseWallet.subText = a_data;
+        btnChooseWallet.subText     = a_data;
+        root.internal.tokenIsSet    = a_data.includes("|");
     }
 
     /// @brief set transaction processing flag for noCBD
@@ -228,40 +232,12 @@ Item {
         console.log(`setTransactionProcessing ${a_data}`);
         internal.transactionProcessing = true;
         loginInfoLabel.text = "Transaction is in progress"
-//        if (a_data === true) {
-//            internal.transactionProcessing = a_data;
-//            //internal.waitingForApproval = false;
-//            loginInfoLabel.text = "Transaction is in progress"
-//            loginTypeKelContainer.update();
-//        } else {
-//            loginInfoLabel.text = "Transaction is in progress"
-//            internal.transactionProcessing = a_data;
-//            //internal.waitingForApproval = false;
-//        }
     }
 
     function deactivateTransactionProcessing() {
         internal.transactionProcessing = false;
         loginInfoLabel.text = ""
     }
-
-    function setTransactionWalletNetwork(row2) {
-        transactionProcessingWalletData.text = row2
-    }
-
-    function setTransactionAmount(row3) {
-        transactionProcessingAmount.text = row3
-    }
-
-//    function setTickerMessage(a_message, a_url) {
-//        tickerLabel.text = a_message;
-//        ticker.tickerUrl = a_url;
-//        ticker.showTicker()
-//    }
-
-//    function showUpdateNotification(a_message) {
-//        updateNotificationRect.showUpdateNotification()
-//    }
 
     /// @brief set input mask for serial input
     function setupInputMask() {
@@ -273,7 +249,7 @@ Item {
         console.log(`cellfarameDashboardDetected ${detected}`);
         internal.cellfarameDetected = detected && Brand.name() === "KelVPN";
         if (internal.waitingForApproval)
-            loginInfoLabel.text = qsTr("Waiting for approval\n\nCheck the Cellframe Dashboard")
+            loginInfoLabel.text = qsTr("Waiting for approval\n\nCheck the Cellframe Dashboard");
         loginTypeKelContainer.update();
     }
 
@@ -594,7 +570,8 @@ Item {
         width:  loginWalletPlacer.width
         height: loginWalletPlacer.height
         visible: internal.cellfarameDetected && internal.mode === QuiLoginForm.Mode.M_WALLET
-                 && !(internal.transactionProcessing || internal.waitingForApproval)
+                 //&& !(internal.transactionProcessing || internal.waitingForApproval)
+                 && !internal.waitingForApproval
 
         DapQmlButton {
             id: btnChooseWallet
@@ -619,51 +596,6 @@ Item {
     }
 
     /****************************************//**
-     * Choose MAX PRICE for NoCBD
-     ********************************************/
-
-//    DapQmlRectangle {
-//        id:     maxPrice
-//        x:      loginCellPlacer.x
-//        y:      loginSpacer.y + loginCellPlacer.y
-//        width:  loginCellPlacer.width
-//        height: loginCellPlacer.height
-//        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET
-//                 && internal.cellfarameDetected
-//                 && !internal.transactionProcessing && !internal.waitingForApproval
-
-//        DapQmlButton {
-//            id: btnChooseCell
-//            x: (parent.width - width) / 2
-//            z: 15
-//            width: parent.width - 74
-//            property string defaultServerName: qsTr("100") + lang.notifier
-
-//            buttonStyle: DapQmlButton.Style.TopMainBottomSub
-//            mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
-//            subText: qsTr("MAX PRICE") + lang.notifier
-//            qss: "login-btn-server-nocbd"
-//            mainQss: "login-btn-main"
-//            subQss: "login-btn-sub"
-//            separator: true
-//            link: true
-//            onClicked: root.sigChooseMaxPrice()
-
-//            function updateServerName() {
-//                mainText = (!internal.changedServer)
-//                        ? (defaultServerName)
-//                        : (internal.serverName)
-//            }
-
-//            onDefaultServerNameChanged: updateServerName()
-//        }
-//        DapQmlDummy {
-//            id: loginCellPlacer
-//            qss: "login-btn-maxprice-container"
-//        }
-//    }
-
-    /****************************************//**
      * Choose server
      ********************************************/
 
@@ -675,7 +607,8 @@ Item {
         visible: {
             if (Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET) {
                 return internal.cellfarameDetected
-                        && (!internal.transactionProcessing && !internal.waitingForApproval)
+                        //&& (!internal.transactionProcessing && !internal.waitingForApproval)
+                       && !internal.waitingForApproval
             }
             else {
                 return true;
@@ -690,7 +623,7 @@ Item {
             visible: internal.mode !== QuiLoginForm.Mode.M_WALLET
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
 
-            mainText: qsTr("Auto select") + lang.notifier
+            mainText: "" // qsTr("Auto select") + lang.notifier
             subText: qsTr("CHOOSING SERVER") + lang.notifier
             qss: "login-btn-server"
             mainQss: "login-btn-main"
@@ -701,6 +634,62 @@ Item {
             /* signals */
 
             onClicked: root.sigChooseServer()
+
+            /* server label */
+
+            property string label: qsTr("Auto select") + lang.notifier
+
+            DapQmlLabel {
+                anchors.fill: parent
+                anchors.bottomMargin: parent.height / 2
+                anchors.leftMargin:   parent.width * 0.15
+                anchors.rightMargin:  parent.width * 0.15
+
+                fontSize: btnChooseServer.labelMain.fontSize
+                fontWeight: btnChooseServer.labelMain.fontWeight
+                color: btnChooseServer.labelMain.color
+                verticalAlign: Text.AlignBottom
+                disableClicking: true
+                text: parent.label
+
+                onTextChanged: rescaleLabel()
+                onWidthChanged: rescaleLabel()
+
+                function rescaleLabel() {
+                    /* check error */
+                    if (btnChooseServer.labelMain === undefined)
+                        return;
+
+                    /* copy correct font size */
+                    fontSize = btnChooseServer.labelMain.fontSize;
+                    label.text = text;
+                    label.font.pixelSize = fontSize;
+
+                    /* variables */
+                    let ww = width;
+                    //let cw = label.contentWidth;
+                    //console.log(`LoginForm: contentWidth ${cw}, width ${ww}`);
+
+                    /* scale down when required */
+                    while (label.contentWidth > ww && fontSize > 2)
+                    {
+                        fontSize -= 1;
+                        label.font.pixelSize = fontSize;
+                    }
+
+                    /* if scaling failed, print error */
+                    if (fontSize <= 2)
+                    {
+                        fontSize = btnChooseServer.labelMain.fontSize
+                        label.font.pixelSize = fontSize;
+                        console.log(`LoginForm: Unable to scale server name label: ${text}`);
+                    }
+
+                    /* successful scaling */
+                    else
+                        console.log(`LoginForm: Scaled server name label: ${text} to ${fontSize} (${label.contentWidth.toFixed(2)}:${ww.toFixed(2)})`);
+                }
+            }
         }
 
         DapQmlButton {
@@ -710,6 +699,8 @@ Item {
             width: parent.width
             visible: internal.mode === QuiLoginForm.Mode.M_WALLET
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
+            enabled: root.internal.tokenIsSet
+            opacity: root.internal.tokenIsSet ? 1.0 : 0.5
 
             mainText: qsTr("Order") + lang.notifier
             subText: qsTr("SEARCH ORDERS") + lang.notifier
@@ -763,7 +754,8 @@ Item {
         DapQmlRectangle {
             id: progressCircle
             visible: internal.cellfarameDetected
-                     && (internal.transactionProcessing || internal.waitingForApproval)
+                     //&& (internal.transactionProcessing || internal.waitingForApproval)
+                    && internal.waitingForApproval
             qss: "login-transaction-processing-arc-animation"
 
             DapQmlArcAnimation {
@@ -824,31 +816,8 @@ Item {
             qss: "login-transaction-processing-label-nocbd"
             text: "<<< Message >>>"
             visible: internal.cellfarameDetected
-                     && (internal.transactionProcessing || internal.waitingForApproval)
-        }
-
-        DapQmlLabel {
-            id: transactionProcessingWalletData
-            qss: "login-transaction-processing-wallet-data-label-nocbd"
-            text: "BackBone - WalletName"
-            visible: internal.cellfarameDetected
-                     && internal.transactionProcessing
-        }
-
-        DapQmlLabel {
-            id: transactionProcessingAmount
-            qss: "login-transaction-processing-amount-label-nocbd"
-            text: "Amount: 100 CELL"
-            visible: internal.cellfarameDetected
-                     && internal.transactionProcessing
-        }
-
-        DapQmlLabel {
-            id: transactionProcessingStatus
-            qss: "login-transaction-processing-status-label-nocbd"
-            text: "Current status: In mempool"
-            visible: internal.cellfarameDetected
-                     && internal.transactionProcessing
+                     //&& (internal.transactionProcessing || internal.waitingForApproval)
+                     && internal.waitingForApproval
         }
     }
 

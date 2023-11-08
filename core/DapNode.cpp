@@ -271,9 +271,10 @@ void DapNode::initStmStates()
     // node detected
     connect(&m_stm->nodeNotDetected, &QState::entered, this, [=](){
         DEBUGINFO  << "&nodeNotDetected, &QState::entered";
-        QTimer::singleShot(NODE_DETECT_REQUEST_REPEAT_PERIOD, [=](){
-            emit repeatNodeDetection();
-        });
+        if (!m_isCDBLogined)
+            QTimer::singleShot(NODE_DETECT_REQUEST_REPEAT_PERIOD, [=](){
+                emit repeatNodeDetection();
+            });
     });
     //
     connect(&m_stm->nodeConnection, &QState::entered, this, [=](){
@@ -404,7 +405,8 @@ void DapNode::initWeb3Connections()
         emit errorDetected();
 
         /* ignore and do not send "Wrong reply connect" error */
-        if (errorCode == 100110)
+        if (errorCode == 100110
+            || errorMessage == "Wrong reply status")
           return;
 
         emit sigError(errorCode, errorMessage);
@@ -444,7 +446,7 @@ void DapNode::initWeb3Connections()
         emit sigOrderListReady(ordersList); //emit sigOrderListReady(orders);
     });
 
-    connect(web3, &DapNodeWeb3::sigNodeIp, this, [=](QJsonArray data) {
+    connect(web3, &DapNodeWeb3::sigNodeIp, this, [=](QJsonObject data) {
         emit sigSendNodeIp(data);
     });
 

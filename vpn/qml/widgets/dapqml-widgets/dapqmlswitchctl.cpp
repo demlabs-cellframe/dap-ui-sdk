@@ -176,6 +176,11 @@ void DapQmlSwitchCtl::setTouchArea (QObject *a_value)
            this, SLOT (_slotTouchAreaReleased()));
 }
 
+void DapQmlSwitchCtl::updateTogglePos()
+{
+  _slotUpdateTogglePos();
+}
+
 bool DapQmlSwitchCtl::dragging() const
 {
   return _data->dragging;

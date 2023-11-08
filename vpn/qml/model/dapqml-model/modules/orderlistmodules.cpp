@@ -1,5 +1,6 @@
 /* INCLUDES */
 #include "orderlistmodules.h"
+#include "DapNodeWalletData.h"
 
 #include <QTimer>
 
@@ -50,40 +51,40 @@ bool ModuleInterface::setCurrentIndex (int a_value)
 /* NameValueModule Methods */
 /*-----------------------------------------*/
 
-const QVector<NameValueItem> &NameValueModule::items() const
-{
-  return _items;
-}
+//const QVector<NameValueItem> &NameValueModule::items() const
+//{
+//  return _items;
+//}
 
-void NameValueModule::setItems (const QVector<NameValueItem> &a_items)
-{
-  _items  = a_items;
-}
+//void NameValueModule::setItems (const QVector<NameValueItem> &a_items)
+//{
+//  _items  = a_items;
+//}
 
-void NameValueModule::setItems (QVector<NameValueItem> &&a_items)
-{
-  _items  = std::move (a_items);
-}
+//void NameValueModule::setItems (QVector<NameValueItem> &&a_items)
+//{
+//  _items  = std::move (a_items);
+//}
 
-int NameValueModule::size() const
-{
-  return _items.size();
-}
+//int NameValueModule::size() const
+//{
+//  return _items.size();
+//}
 
-QVariant NameValueModule::data (const QModelIndex &index, int role) const
-{
-  if (index.row() < _items.size())
-    {
-      switch (FieldId (role))
-        {
-        case FieldId::name:   return _items.at (index.row()).name;
-        case FieldId::value:  return _items.at (index.row()).value;
-        default:
-          break;
-        }
-    }
-  return QVariant();
-}
+//QVariant NameValueModule::data (const QModelIndex &index, int role) const
+//{
+//  if (index.row() < _items.size())
+//    {
+//      switch (FieldId (role))
+//        {
+//        case FieldId::name:   return _items.at (index.row()).name;
+//        case FieldId::value:  return _items.at (index.row()).value;
+//        default:
+//          break;
+//        }
+//    }
+//  return QVariant();
+//}
 
 /*-----------------------------------------*/
 /* OrdersModule Methods */
@@ -139,12 +140,17 @@ QVariant OrdersModule::data (const QModelIndex &index, int role) const
 
 const QString &OrdersModule::name() const
 {
-  if (_currentIndex < 0 || _items.isEmpty())
+  if (_currentIndex < 0 || _currentIndex >= _items.size())
     return s_dummyString;
   return _items.at (_currentIndex).hash;
 }
 
 const QString &OrdersModule::value() const
+{
+  return s_dummyString;
+}
+
+const QString &OrdersModule::misc() const
 {
   return s_dummyString;
 }
@@ -169,18 +175,42 @@ void OrdersModule::installAdressMap (const QHash<QString, QString> &a_map)
 /* NetworksModule Methods */
 /*-----------------------------------------*/
 
+int NetworksModule::size() const
+{
+  return DapNodeWalletData::instance()->networkList().size();
+}
+
+QVariant NetworksModule::data (const QModelIndex &index, int role) const
+{
+  const auto &data  = DapNodeWalletData::instance()->networkList();
+  if (index.row() < data.size())
+    {
+      switch (FieldId (role))
+        {
+        case FieldId::name:   return data.at (index.row());
+        default:
+          break;
+        }
+    }
+  return QVariant();
+}
+
 const QString &NetworksModule::name() const
 {
-  if (_currentIndex < 0)
+  const auto &data  = DapNodeWalletData::instance()->networkList();
+  if (_currentIndex < 0 || _currentIndex >= data.size())
     return s_dummyString;
-  return _items.at (_currentIndex).name;
+  return data.at (_currentIndex);
 }
 
 const QString &NetworksModule::value() const
 {
-  if (_currentIndex < 0)
-    return s_dummyString;
-  return _items.at (_currentIndex).value;
+  return s_dummyString;
+}
+
+const QString &NetworksModule::misc() const
+{
+  return s_dummyString;
 }
 
 bool NetworksModule::setCurrentIndex (int a_value)
@@ -201,18 +231,51 @@ bool NetworksModule::setCurrentIndex (int a_value)
 /* WalletsModule Methods */
 /*-----------------------------------------*/
 
+int WalletsModule::size() const
+{
+  return DapNodeWalletData::instance()->walletTokenList().size();
+}
+
+QVariant WalletsModule::data (const QModelIndex &index, int role) const
+{
+  const auto &data  = DapNodeWalletData::instance()->walletTokenList();
+  if (index.row() < data.size())
+    {
+      const auto &item  = data.at (index.row());
+      switch (FieldId (role))
+        {
+        case FieldId::name:   return item.wallet;
+        case FieldId::value:  return item.token;
+        case FieldId::misc:   return item.network;
+        default:
+          break;
+        }
+    }
+  return QVariant();
+}
+
 const QString &WalletsModule::name() const
 {
-  if (_currentIndex < 0)
+  const auto &data  = DapNodeWalletData::instance()->walletTokenList();
+  if (_currentIndex < 0 || _currentIndex >= data.size())
     return s_dummyString;
-  return _items.at (_currentIndex).name;
+  return data.at (_currentIndex).wallet;
 }
 
 const QString &WalletsModule::value() const
 {
-  if (_currentIndex < 0)
+  const auto &data  = DapNodeWalletData::instance()->walletTokenList();
+  if (_currentIndex < 0 || _currentIndex >= data.size())
     return s_dummyString;
-  return _items.at (_currentIndex).value;
+  return data.at (_currentIndex).token;
+}
+
+const QString &WalletsModule::misc() const
+{
+  const auto &data  = DapNodeWalletData::instance()->walletTokenList();
+  if (_currentIndex < 0 || _currentIndex >= data.size())
+    return s_dummyString;
+  return data.at (_currentIndex).network;
 }
 
 bool WalletsModule::setCurrentIndex (int a_value)
@@ -233,18 +296,56 @@ bool WalletsModule::setCurrentIndex (int a_value)
 /* TokensModule Methods */
 /*-----------------------------------------*/
 
+int TokensModule::size() const
+{
+  return DapNodeWalletData::instance()->tokenBalanceList().size();
+}
+
+QVariant TokensModule::data (const QModelIndex &index, int role) const
+{
+  const auto &data  = DapNodeWalletData::instance()->tokenBalanceList();
+  if (index.row() < data.size())
+    {
+      const auto &item  = data.at (index.row());
+      switch (FieldId (role))
+        {
+        case FieldId::name:   return item.token;
+        case FieldId::value:  return item.balance;
+        case FieldId::misc:   return item.network + ":" + item.wallet;
+        default:
+          break;
+        }
+    }
+  return QVariant();
+}
+
 const QString &TokensModule::name() const
 {
-  if (_currentIndex < 0)
+  const auto &data  = DapNodeWalletData::instance()->tokenBalanceList();
+  if (_currentIndex < 0 || _currentIndex >= data.size())
     return s_dummyString;
-  return _items.at (_currentIndex).name;
+  return data.at (_currentIndex).token;
 }
 
 const QString &TokensModule::value() const
 {
-  if (_currentIndex < 0)
+  const auto &data  = DapNodeWalletData::instance()->tokenBalanceList();
+  if (_currentIndex < 0 || _currentIndex >= data.size())
     return s_dummyString;
-  return _items.at (_currentIndex).value;
+  return data.at (_currentIndex).balance;
+}
+
+const QString &TokensModule::misc() const
+{
+  const auto &data  = DapNodeWalletData::instance()->tokenBalanceList();
+  if (_currentIndex < 0 || _currentIndex >= data.size())
+    return s_dummyString;
+
+  static QString result;
+  const auto &item  = data.at (_currentIndex);
+  result            = item.network + ":" + item.wallet;
+
+  return result;
 }
 
 bool TokensModule::setCurrentIndex (int a_value)
@@ -333,7 +434,7 @@ bool UnitsModule::setCurrentIndex (int a_value)
 
 const QString &UnitsModule::name() const
 {
-  if (_currentIndex < 0)
+  if (_currentIndex < 0 || _currentIndex >= _items.size())
     return s_dummyString;
   return _items.at (_currentIndex);
 }
@@ -341,6 +442,11 @@ const QString &UnitsModule::name() const
 const QString &UnitsModule::value() const
 {
   return s_dummyString; //_items.at (_currentIndex);
+}
+
+const QString &UnitsModule::misc() const
+{
+  return s_dummyString;
 }
 
 /*-----------------------------------------*/
@@ -367,24 +473,25 @@ bool ModuleContainer::setMode (DapQmlModelOrderList::Mode a_value)
   if (_mode == a_value)
     return false;
 
-  typedef DapQmlModelOrderList::Mode Mode;
+//  typedef DapQmlModelOrderList::Mode Mode;
 
   /* change mode */
   _mode   = a_value;
 
-  /* change module */
-  switch (_mode)
-    {
-    //case Mode::Orders:    _module = _orders;   break;
-    case Mode::Networks:  _module = _networks; break;
-    case Mode::Wallets:   _module = _wallets;  break;
-    case Mode::Tokens:    _module = _tokens;   break;
-    case Mode::Units:     _module = _units;    break;
-    case Mode::Invalid:
-    default:
-      _module.reset();
-      break;
-    }
+//  /* change module */
+//  switch (_mode)
+//    {
+//    //case Mode::Orders:    _module = _orders;   break;
+//    case Mode::Networks:  _module = _networks; break;
+//    case Mode::Wallets:   _module = _wallets;  break;
+//    case Mode::Tokens:    _module = _tokens;   break;
+//    case Mode::Units:     _module = _units;    break;
+//    case Mode::Invalid:
+//    default:
+//      _module.reset();
+//      break;
+//    }
+  _module = _units;
 
   return true;
 }
