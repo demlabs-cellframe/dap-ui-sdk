@@ -229,42 +229,12 @@ Item {
         console.log(`setTransactionProcessing ${a_data}`);
         internal.transactionProcessing = true;
         loginInfoLabel.text = "Transaction is in progress"
-        loginInfoLabel.isDefault = true;
-//        if (a_data === true) {
-//            internal.transactionProcessing = a_data;
-//            //internal.waitingForApproval = false;
-//            loginInfoLabel.text = "Transaction is in progress"
-//            loginTypeKelContainer.update();
-//        } else {
-//            loginInfoLabel.text = "Transaction is in progress"
-//            internal.transactionProcessing = a_data;
-//            //internal.waitingForApproval = false;
-//        }
     }
 
     function deactivateTransactionProcessing() {
         internal.transactionProcessing = false;
         loginInfoLabel.text = ""
-        loginInfoLabel.isDefault = true;
     }
-
-    function setTransactionWalletNetwork(row2) {
-        transactionProcessingWalletData.text = row2
-    }
-
-    function setTransactionAmount(row3) {
-        transactionProcessingAmount.text = row3
-    }
-
-//    function setTickerMessage(a_message, a_url) {
-//        tickerLabel.text = a_message;
-//        ticker.tickerUrl = a_url;
-//        ticker.showTicker()
-//    }
-
-//    function showUpdateNotification(a_message) {
-//        updateNotificationRect.showUpdateNotification()
-//    }
 
     /// @brief set input mask for serial input
     function setupInputMask() {
@@ -276,10 +246,7 @@ Item {
         console.log(`cellfarameDashboardDetected ${detected}`);
         internal.cellfarameDetected = detected && Brand.name() === "KelVPN";
         if (internal.waitingForApproval)
-        {
-            loginInfoLabel.isDefault = false;
             loginInfoLabel.text = qsTr("Waiting for approval\n\nCheck the Cellframe Dashboard");
-        }
         loginTypeKelContainer.update();
     }
 
@@ -287,10 +254,7 @@ Item {
         console.log(`setWaitingForApproval ${approval}`);
         internal.waitingForApproval = approval
         if (internal.waitingForApproval)
-        {
-            loginInfoLabel.isDefault = false;
             loginInfoLabel.text = qsTr("Waiting for approval\n\nCheck the Cellframe Dashboard")
-        }
     }
 
     function setWalletSeleted(selected)
@@ -603,7 +567,8 @@ Item {
         width:  loginWalletPlacer.width
         height: loginWalletPlacer.height
         visible: internal.cellfarameDetected && internal.mode === QuiLoginForm.Mode.M_WALLET
-                 && !(internal.transactionProcessing || internal.waitingForApproval)
+                 //&& !(internal.transactionProcessing || internal.waitingForApproval)
+                 && !internal.waitingForApproval
 
         DapQmlButton {
             id: btnChooseWallet
@@ -628,51 +593,6 @@ Item {
     }
 
     /****************************************//**
-     * Choose MAX PRICE for NoCBD
-     ********************************************/
-
-//    DapQmlRectangle {
-//        id:     maxPrice
-//        x:      loginCellPlacer.x
-//        y:      loginSpacer.y + loginCellPlacer.y
-//        width:  loginCellPlacer.width
-//        height: loginCellPlacer.height
-//        visible: Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET
-//                 && internal.cellfarameDetected
-//                 && !internal.transactionProcessing && !internal.waitingForApproval
-
-//        DapQmlButton {
-//            id: btnChooseCell
-//            x: (parent.width - width) / 2
-//            z: 15
-//            width: parent.width - 74
-//            property string defaultServerName: qsTr("100") + lang.notifier
-
-//            buttonStyle: DapQmlButton.Style.TopMainBottomSub
-//            mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
-//            subText: qsTr("MAX PRICE") + lang.notifier
-//            qss: "login-btn-server-nocbd"
-//            mainQss: "login-btn-main"
-//            subQss: "login-btn-sub"
-//            separator: true
-//            link: true
-//            onClicked: root.sigChooseMaxPrice()
-
-//            function updateServerName() {
-//                mainText = (!internal.changedServer)
-//                        ? (defaultServerName)
-//                        : (internal.serverName)
-//            }
-
-//            onDefaultServerNameChanged: updateServerName()
-//        }
-//        DapQmlDummy {
-//            id: loginCellPlacer
-//            qss: "login-btn-maxprice-container"
-//        }
-//    }
-
-    /****************************************//**
      * Choose server
      ********************************************/
 
@@ -684,7 +604,8 @@ Item {
         visible: {
             if (Brand.name() === "KelVPN" && internal.mode === QuiLoginForm.Mode.M_WALLET) {
                 return internal.cellfarameDetected
-                        && (!internal.transactionProcessing && !internal.waitingForApproval)
+                        //&& (!internal.transactionProcessing && !internal.waitingForApproval)
+                       && !internal.waitingForApproval
             }
             else {
                 return true;
@@ -828,7 +749,8 @@ Item {
         DapQmlRectangle {
             id: progressCircle
             visible: internal.cellfarameDetected
-                     && (internal.transactionProcessing || internal.waitingForApproval)
+                     //&& (internal.transactionProcessing || internal.waitingForApproval)
+                    && internal.waitingForApproval
             qss: "login-transaction-processing-arc-animation"
 
             DapQmlArcAnimation {
@@ -886,37 +808,11 @@ Item {
 
         DapQmlLabel {
             id: loginInfoLabel
-            qss: isDefault
-                 ? "login-transaction-processing-label-nocbd-default"
-                 : "login-transaction-processing-label-nocbd"
+            qss: "login-transaction-processing-label-nocbd"
             text: "<<< Message >>>"
             visible: internal.cellfarameDetected
-                     && (internal.transactionProcessing || internal.waitingForApproval)
-            property bool isDefault: false
-        }
-
-        DapQmlLabel {
-            id: transactionProcessingWalletData
-            qss: "login-transaction-processing-wallet-data-label-nocbd"
-            text: "BackBone - WalletName"
-            visible: internal.cellfarameDetected
-                     && internal.transactionProcessing
-        }
-
-        DapQmlLabel {
-            id: transactionProcessingAmount
-            qss: "login-transaction-processing-amount-label-nocbd"
-            text: "Amount: 100 CELL"
-            visible: internal.cellfarameDetected
-                     && internal.transactionProcessing
-        }
-
-        DapQmlLabel {
-            id: transactionProcessingStatus
-            qss: "login-transaction-processing-status-label-nocbd"
-            text: "Current status: In mempool"
-            visible: internal.cellfarameDetected
-                     && internal.transactionProcessing
+                     //&& (internal.transactionProcessing || internal.waitingForApproval)
+                     && internal.waitingForApproval
         }
     }
 
