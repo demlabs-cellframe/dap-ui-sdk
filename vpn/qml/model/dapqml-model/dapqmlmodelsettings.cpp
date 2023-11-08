@@ -169,6 +169,7 @@ void DapQmlModelSettings::_buildMenuItemsList()
   #ifndef DISABLE_THEMES
       Item{SI_CHECKBOX,   tr ("Dark theme"), "", "settings_icon ic_theme", "dark_themes",                    [](QObject *a_item) { emit __inst->sigDarkTheme (a_item->property ("checked").toBool()); } },
       //Item{SI_LINK,       tr ("Color theme"), "", "settings_icon ic_theme", "color_theme",                   [](QObject*) { emit __inst->sigColorTheme(); } },
+      Item{SI_LINK,       tr ("Notification center"), "", "settings_icon ic_notification", "notification",   [](QObject*) { emit __inst->sigNotification(); } },
   #endif // DISABLE_THEMES
 
       Item{SI_TITLE,      tr ("Support"), "", "settings_icon", "support",                                    [](QObject*){} },

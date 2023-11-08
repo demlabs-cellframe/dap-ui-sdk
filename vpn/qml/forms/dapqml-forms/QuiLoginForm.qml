@@ -201,7 +201,8 @@ Item {
 
     /// @brief change current chosen server name
     function setServer(a_name) {
-        btnChooseServer.mainText    = a_name;
+        //btnChooseServer.mainText    = a_name;
+        btnChooseServer.label    = a_name;
     }
 
     function setOrderLocation(location ) {
@@ -690,7 +691,7 @@ Item {
             visible: internal.mode !== QuiLoginForm.Mode.M_WALLET
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
 
-            mainText: qsTr("Auto select") + lang.notifier
+            mainText: "" // qsTr("Auto select") + lang.notifier
             subText: qsTr("CHOOSING SERVER") + lang.notifier
             qss: "login-btn-server"
             mainQss: "login-btn-main"
@@ -701,6 +702,62 @@ Item {
             /* signals */
 
             onClicked: root.sigChooseServer()
+
+            /* server label */
+
+            property string label: qsTr("Auto select") + lang.notifier
+
+            DapQmlLabel {
+                anchors.fill: parent
+                anchors.bottomMargin: parent.height / 2
+                anchors.leftMargin:   parent.width * 0.15
+                anchors.rightMargin:  parent.width * 0.15
+
+                fontSize: btnChooseServer.labelMain.fontSize
+                fontWeight: btnChooseServer.labelMain.fontWeight
+                color: btnChooseServer.labelMain.color
+                verticalAlign: Text.AlignBottom
+                disableClicking: true
+                text: parent.label
+
+                onTextChanged: rescaleLabel()
+                onWidthChanged: rescaleLabel()
+
+                function rescaleLabel() {
+                    /* check error */
+                    if (btnChooseServer.labelMain === undefined)
+                        return;
+
+                    /* copy correct font size */
+                    fontSize = btnChooseServer.labelMain.fontSize;
+                    label.text = text;
+                    label.font.pixelSize = fontSize;
+
+                    /* variables */
+                    let ww = width;
+                    //let cw = label.contentWidth;
+                    //console.log(`LoginForm: contentWidth ${cw}, width ${ww}`);
+
+                    /* scale down when required */
+                    while (label.contentWidth > ww && fontSize > 2)
+                    {
+                        fontSize -= 1;
+                        label.font.pixelSize = fontSize;
+                    }
+
+                    /* if scaling failed, print error */
+                    if (fontSize <= 2)
+                    {
+                        fontSize = btnChooseServer.labelMain.fontSize
+                        label.font.pixelSize = fontSize;
+                        console.log(`LoginForm: Unable to scale server name label: ${text}`);
+                    }
+
+                    /* successful scaling */
+                    else
+                        console.log(`LoginForm: Scaled server name label: ${text} to ${fontSize} (${label.contentWidth.toFixed(2)}:${ww.toFixed(2)})`);
+                }
+            }
         }
 
         DapQmlButton {

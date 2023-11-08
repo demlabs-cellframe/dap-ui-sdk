@@ -265,7 +265,11 @@ void DapSerialKeyHistory::DapSerialKeyHistoryData::importList (const QStringList
   m_list.clear();
 
   for (const auto &key : a_list)
-    append (QString (key).remove ('-'));
+  {
+    auto keyResult  = QString (key).remove ('-').remove (' ');
+    if (!keyResult.isEmpty())
+      append (std::move (keyResult));
+  }
 }
 
 QStringList DapSerialKeyHistory::DapSerialKeyHistoryData::exportList() const
@@ -275,24 +279,32 @@ QStringList DapSerialKeyHistory::DapSerialKeyHistoryData::exportList() const
 
 void DapSerialKeyHistory::DapSerialKeyHistoryData::append (const QString &a_value)
 {
+  if (a_value.isEmpty())
+    return;
   if (!contains (a_value))
     m_list.append (a_value);
 }
 
 void DapSerialKeyHistory::DapSerialKeyHistoryData::append (QString &&a_value)
 {
+  if (a_value.isEmpty())
+    return;
   if (!contains (a_value))
     m_list.append (std::move (a_value));
 }
 
 void DapSerialKeyHistory::DapSerialKeyHistoryData::prepend (const QString &a_value)
 {
+  if (a_value.isEmpty())
+    return;
   if (!contains (a_value))
     m_list.prepend (a_value);
 }
 
 void DapSerialKeyHistory::DapSerialKeyHistoryData::prepend (QString &&a_value)
 {
+  if (a_value.isEmpty())
+    return;
   if (!contains (a_value))
     m_list.prepend (std::move (a_value));
 }

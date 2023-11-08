@@ -6,7 +6,7 @@
 #include <QSortFilterProxyModel>
 class QQmlEngine;
 class QJSEngine;
-namespace OrderListModule { struct OrderItem; }
+namespace OrderListModule { struct OrderItem; class ModuleInterface; }
 
 /****************************************//**
  * @brief orders model list
@@ -54,6 +54,7 @@ public:
     /* name + value fields */
     name,
     value,
+    misc,
 
     /* model fields */
     network,
@@ -127,8 +128,15 @@ public:
   Q_INVOKABLE QString balance() const;
   Q_INVOKABLE void setBalance (const QString &a_value = QString());
 
+  /* fields resets for child items */
+
+//  Q_INVOKABLE void onNetworkChange();
+//  Q_INVOKABLE void onWalletChange();
+
   const OrderListModule::OrderItem *currentOrder() const;
   void setOrderListData (const QJsonArray &a_list, bool notify = true);
+protected:
+  void _modelReset();
   /// @}
 
   /****************************************//**
@@ -177,10 +185,11 @@ signals:
   /// @{
 public slots:
   void slotSetOrderListData (const QJsonArray &a_list);
-  void slotSetWalletListData (const QHash<QString, QStringList> &a_walletData);
-  void slotSetNetworkListData (const QHash<QString, QStringList> &a_networkData);
-  void slotSetTokensListData (const QHash<QString, QString> &a_tokensData);
-  void slotSetOrderAddresses (const QJsonArray &a_list);
+//  void slotSetWalletListData (const QHash<QString, QStringList> &a_walletData);
+//  void slotSetNetworkListData (const QHash<QString, QStringList> &a_networkData);
+//  void slotSetTokensListData (const QHash<QString, QString> &a_tokensData);
+  void slotWalletsDataUpdated();
+  void slotSetOrderAddresses (const QJsonObject &a_list);
   /// @}
 };
 
@@ -231,10 +240,96 @@ public:
    * @param a_max maximum value
    * @note set -1 into min or|and max to disable it's filtering
    */
-  Q_INVOKABLE void setRowFilter (const QString a_unit, qreal a_min, qreal a_max);
+  Q_INVOKABLE void setRowFilter (const QString &a_unit, qreal a_min, qreal a_max);
 
   Q_INVOKABLE int currentIndex() const;
   Q_INVOKABLE void setCurrentIndex (int a_value);
+  /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void sigCurrentIndexChanged();
+  /// @}
+
+  /****************************************//**
+   * @name OVERRIDE
+   *******************************************/
+  /// @{
+protected:
+  bool filterAcceptsRow (int sourceRow, const QModelIndex &sourceParent) const override;
+  /// @}
+};
+
+/****************************************//**
+ * @brief list module filter model list
+ * @ingroup groupUiModels
+ * @date 27.10.2023
+ * @author Mikhail Shilenko
+ *******************************************/
+
+class DapQmlListModuleProxyModel : public QSortFilterProxyModel
+{
+  Q_OBJECT
+
+  /****************************************//**
+   * @name PROPERTIES
+   *******************************************/
+  /// @{
+  Q_PROPERTY (int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY sigCurrentIndexChanged)
+  /// @}
+
+  /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
+public:
+  enum Mode
+  {
+    Invalid,
+
+    Networks,
+    Wallets,
+    Tokens,
+  };
+
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
+private:
+  QString m_filter;
+  OrderListModule::ModuleInterface *_module;
+  QAbstractListModel *_moduleModel;
+  mutable QHash<int,int> _indexMap;
+  mutable int _indexMapCounter;
+  /// @}
+
+  /****************************************//**
+   * @name CONSTRUCT/DESTRUCT
+   *******************************************/
+  /// @{
+public:
+  explicit DapQmlListModuleProxyModel (Mode a_mode);
+  /// @}
+
+  /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  /**
+   * @brief filter by comparing mist field with provided filter
+   * @note set empty string to disable filtering
+   */
+  Q_INVOKABLE void setRowFilter (const QString &a_filter);
+
+  Q_INVOKABLE int currentIndex() const;
+  Q_INVOKABLE void setCurrentIndex (int a_value);
+protected:
+  void _setup (OrderListModule::ModuleInterface *a_module, QAbstractListModel *a_model);
   /// @}
 
   /****************************************//**

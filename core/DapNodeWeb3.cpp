@@ -178,6 +178,15 @@ void DapNodeWeb3::responseProcessing (
           return;
         }
     }
+  else if (methodName == "Connect")
+    {
+      if (error == -668)
+        {
+          DEBUGINFO  << __func__ << " - Dashboard refused authorization";
+          emit sigError (error, "Dashboard refused authorization");
+          return;
+        }
+    }
 
   /* get reply method item */
   auto replyMethod  = s_replyMethodMap.value (methodName, s_dummyReply);
@@ -820,10 +829,42 @@ void DapNodeWeb3::parseNodeIp (const QString &replyData, int baseErrorCode)
   if (jsonError())
     return;
 
-  if (doc["data"].isObject() || doc["data"].isArray())
+  QJsonObject data = doc.object();
+
+  if (data.contains ("data"))
+  {
+    /* get data value */
+    QJsonValue dataValue  = data.value ("data");
+
+    /* if object, resturn as is */
+    if (dataValue.isObject())
+      data  = data.value ("data").toObject();
+
+    /* if array -> convert to object */
+    else if (dataValue.isArray())
     {
-      emit sigNodeIp (doc["data"].toArray());
+      /* clear */
+      data      = QJsonObject();
+
+      /* get array */
+      auto jarr = dataValue.toArray();
+
+      /* convert in cycle */
+      for (const auto &jarrItem : qAsConst (jarr))
+      {
+        QJsonObject jitem = jarrItem.toObject();
+
+        if (jitem.isEmpty())
+          continue;
+
+        auto it = jitem.begin();
+
+        data.insert (it.key(), it.value());
+      }
     }
+
+    emit sigNodeIp (data);
+  }
 }
 
 void DapNodeWeb3::parseFee (const QString &replyData, int baseErrorCode)

@@ -56,6 +56,7 @@ public:
 
   bool hasError();
 //  WalletsData *nodeInfo() { return &m_dataWallet; }
+  DapNodeOrderInfo orderData (const QString &hash);
 
 protected:
   bool _checkContinue();
@@ -78,20 +79,19 @@ public:
    *******************************************/
   /// @{
 public slots:
-  void chooseNetwork (QString network);
-  void chooseWallet (QString wallet);
-  void chooseToken (QString token);
-  void setValue (QString value);
-  void setUnit (QString unit);
-  void chooseOrder (QString hash);
-  void condTxCreate();
-  void startSearchOrders();
-  void setMaxValueUnit (QString price);
-  void setMinValueUnit (QString price);
-  DapNodeOrderInfo orderData (QString hash);
-  void checkSigned();
-  void startConnectByOrder();
-  void getIpNode (const QString &networkName, const QJsonArray &orderList);
+  void slotChooseNetwork (const QString &network);
+  void slotChooseWallet (const QString &wallet);
+  void slotChooseToken (const QString &token);
+  void slotSetValue (const QString &value);
+  void slotSetUnit (const QString &unit);
+  void slotChooseOrder (const QString &hash);
+  void slotCondTxCreate();
+  void slotStartSearchOrders();
+  void slotSetMaxValueUnit (const QString &price);
+  void slotSetMinValueUnit (const QString &price);
+  void slotCheckSigned();
+  void slotStartConnectByOrder();
+  void slotRequestIpNode (const QString &networkName, const QJsonArray &orderList);
   /// @}
 
   /****************************************//**
@@ -99,20 +99,25 @@ public slots:
    *******************************************/
   /// @{
 signals:
-  void nodeDetected();
-  void walletsList (QHash<QString, QStringList> data);
-  void networksList (QHash<QString, QStringList> data);
-  void tokensInfo (QHash<QString, QString> data);
-  void orderList (QMap<QString, QVariant> data);
-  void tokenAmount (QString token, QString amount);
-  void nodeError (int code, QString errorMessage);
-  void transactionHashInMempool();
-  void transactionHashInledger();
-//    void dataWallets(WalletsData* walletsData);
-  void continueEnable (bool);
-  void signingReceived (qint32 utype, qint64 uid, QString units, QString value);
+//  void sigWalletsList (QHash<QString, QStringList> data);
+//  void sigNetworksList (QHash<QString, QStringList> data);
+//  void sigTokensInfo (QHash<QString, QString> data);
+//  void sigOrderListData (QMap<QString, QVariant> data);
+//  void sigTokenAmount (QString token, QString amount);
+  void sigNodeError (int code, QString errorMessage);
+  void sigTransactionHashInMempool();
+  void sigTransactionHashInledger();
+  void sigContinueEnable (bool);
+  void sigSigningReceived (qint32 utype, qint64 uid, QString units, QString value);
   void sigOrderList (const QJsonArray &a_list);
-  void sigNodeIpList (const QJsonArray &a_list);
+  void sigNodeIpList (const QJsonObject &a_list);
+
+  void sigNodeDetected();
+  void sigOrderListDataUpdated();
+
+  /// wallets, networks and tokens updated
+  void sigWalletsDataUpdated();
+  /// @}
 };
 
 /*-----------------------------------------*/

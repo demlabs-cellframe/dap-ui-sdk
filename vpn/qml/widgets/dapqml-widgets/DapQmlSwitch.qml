@@ -94,6 +94,8 @@ Item {
 
     /// @brief change style based on checkbox state
     function _setStyle() {
+        tglUpdateTimer.stop();
+        tglUpdateTimer.start();
         bg.qss  = (!checked) ? "switch-bg-off" : "switch-bg-on";
         tgl.qss = (!checked) ? "switch-toggle-off" : "switch-toggle-on";
     }
@@ -166,6 +168,14 @@ Item {
             }
 
             Component.onCompleted: ctl.setToggle(this)
+
+            Timer {
+                id: tglUpdateTimer
+                running: true
+                repeat: true
+                interval: 2500
+                onTriggered: ctl.updateTogglePos()
+            }
 
             Rectangle {
                 id: loadingFrame
