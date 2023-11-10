@@ -154,7 +154,7 @@ Item {
         DapQmlRectangle {
             anchors.fill: parent
             color: parent.color
-            radius: 400
+            radius: height * 0.485
             opacity: 0.5 + enabled * 0.5
 
             DapQmlLabel {

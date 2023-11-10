@@ -2329,9 +2329,18 @@
     scaled-rect: scaled(-1,702,374,80,true,16);
 }
 
+.nodeorlist-overview-refresh-btn
+{
+    scaled-rect: scaled(-1,730,356,60,true,16);
+    color: "@text";
+    fill: "@input-field";
+}
+
 .nodeorlist-overview-confirm-btn
 {
-    scaled-rect: scaled(-1,802,374,80,true,16);
+    scaled-rect: scaled(-1,802,356,60,true,16);
+    color: "#ffffff";
+    fill: "@brand";
 }
 
 .nodeorlist-overview-btn-sizer

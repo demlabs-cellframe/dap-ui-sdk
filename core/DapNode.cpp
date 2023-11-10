@@ -115,6 +115,8 @@ void DapNode::initStmTransitions()
     //&m_stm->nodeGetStatus);
     m_stm->initialState.addTransition(this, &DapNode::sigNodeIpRequest,
     &m_stm->getNodeConnectionData);
+    m_stm->initialState.addTransition(this, &DapNode::sigWalletsRequest,
+    &m_stm->getWallets);
 
     // node detection -> node detected
     m_stm->nodeDetection.addTransition(web3, &DapNodeWeb3::nodeDetected,
@@ -584,6 +586,11 @@ void orderListFiltr(const QJsonArray& inOrders, QJsonArray& outOrders, QStringLi
 
 void DapNode::slotGetNetIdReqest(QString netId)
 {
-    web3->DapNodeWeb3::getNetIdRequest(netId);
+  web3->DapNodeWeb3::getNetIdRequest(netId);
+}
+
+void DapNode::slotWalletsRequest()
+{
+  emit sigWalletsRequest();
 }
 
