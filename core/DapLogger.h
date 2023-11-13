@@ -45,11 +45,11 @@ public:
     void clearOldLogs();
     TypeLogCleaning getTypeLogCleaning() {return m_typeLogCleaning;}
     int getCurrentIndex() {return m_curentIndex;}
-
+    void startUpdateTimer();
 private:
     static void messageHandler(QtMsgType type, const QMessageLogContext &ctx, const QString & msg);
-
     inline static dap_log_level castQtMsgToDap(QtMsgType type);
+
     void setPathToLog(QString path);
     void updateCurrentLogName();
     void setLogFile(const QString&);
@@ -58,6 +58,7 @@ private:
     static void writeMessage(QtMsgType type, const QMessageLogContext &ctx, const QString & msg);
 
     void updateActualIndex();
+    QString getCurrentDate();
 private slots:
     void updateLogFilesInfo();
 
@@ -71,9 +72,10 @@ private:
 
     TypeLogCleaning m_typeLogCleaning;
     QTimer *m_timeUpdate = nullptr;
+    QString m_currentDate;
     int m_curentIndex = 0;
     int m_timeOut = 10000;
-    qint64 m_maxSize = 524288000;/// 100 MByte
+    qint64 m_maxSize =  524288000;/// 500 MByte
     qint64 m_partSize = 52428800; /// 50 MByte
 
     const QRegularExpression INDEX_EXEPTION = QRegularExpression(R"(\((\d+)\))");

@@ -28,6 +28,7 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, Type
     {
         m_timeUpdate = new QTimer();
         connect(m_timeUpdate,  &QTimer::timeout, this, &DapLogger::updateLogFilesInfo);
+        m_timeUpdate->start(m_timeOut);
     }
 
     dap_set_log_tag_width(prefix_width);
@@ -52,6 +53,8 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, Type
 
 //    connect(DapLogger::instance(), &DapLogger::sigMessageHandler,
 //            this, &DapLogger::updateCurrentLogName);
+    m_currentDate = getCurrentDate();
+
     updateCurrentLogName();
     setLogFile(m_currentLogName);
     clearOldLogs();
@@ -91,14 +94,18 @@ DapLogger* DapLogger::instance()
     return m_instance;
 }
 
+void DapLogger::startUpdateTimer()
+{
+    if(m_timeUpdate)
+    {
+        m_timeUpdate->start(m_timeOut);
+    }
+}
+
 void DapLogger::setPathToLog(QString path)
 {
     qDebug() << path;
     m_pathToLog = path;
-    if(TypeLogCleaning::FULL_FILE_SIZE == m_typeLogCleaning)
-    {
-        m_timeUpdate->start(m_timeOut);
-    }
 }
 
 inline dap_log_level DapLogger::castQtMsgToDap(QtMsgType type)
@@ -126,10 +133,11 @@ void DapLogger::setLogLevel(dap_log_level ll)
 
 void DapLogger::setLogFile(const QString& fileName)
 {
+    qDebug() << "setLogFile: " + fileName;
+
     if(isLoggerStarted)
         dap_common_deinit();
-    // It doesn't write anywhere, and debug doesn't work either
-    //qDebug() << "setLogFile: " + fileName;
+
     QString filePath = getPathToLog() + "/" + fileName;
     dap_common_init(DAP_BRAND, qPrintable(filePath), qPrintable(getPathToLog()));
     DapDataLocal::instance()->setLogPath(getPathToLog());
@@ -242,7 +250,7 @@ void DapLogger::messageHandler(QtMsgType type,
   case QtFatalMsg:
   default:
     __android_log_write(ANDROID_LOG_FATAL,DAP_BRAND,local);
-    abort();    
+    abort();
   }
   #endif
     writeMessage(type, context, msg);
@@ -300,7 +308,7 @@ void DapLogger::updateLogFilesInfo()
 
     foreach (QFileInfo fileInfo, dir.entryInfoList(QStringList() << m_currentLogName, QDir::Files))
     {
-        if(fileInfo.size() > m_partSize)
+        if(fileInfo.size() > m_partSize || m_currentDate != getCurrentDate())
         {
           updateCurrentLogName();
           setLogFile(m_currentLogName);
@@ -347,7 +355,7 @@ void DapLogger::updateActualIndex()
     }
     QDir dir(m_pathToLog);
     QStringList files;
-    QString baseFileName = QString("%1%2_%3").arg(DAP_BRAND).arg(m_appType).arg(QDateTime::currentDateTime().toString("dd-MM-yyyy"));
+    QString baseFileName = QString("%1%2_%3").arg(DAP_BRAND).arg(m_appType).arg(getCurrentDate());
     foreach (QFileInfo fileInfo, dir.entryInfoList(QStringList() <<
                                                        QString("*%1*").arg(baseFileName), QDir::Files))
     {
@@ -382,4 +390,9 @@ void DapLogger::updateActualIndex()
     }
 
     m_curentIndex = fileSize >= m_partSize ? maxIndex + 1 : maxIndex;
+}
+
+QString DapLogger::getCurrentDate()
+{
+    return QDateTime::currentDateTime().toString("dd-MM-yyyy");
 }
