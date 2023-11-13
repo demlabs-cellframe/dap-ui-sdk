@@ -3,6 +3,7 @@
 import QtQuick 2.0
 import DapQmlStyle 1.0
 //import StyleDebugTree 1.0
+import Brand 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -59,6 +60,69 @@ Item {
 
     /// @}
     /****************************************//**
+     * @name Components
+     ********************************************/
+    /// @{
+
+    Component {
+        id: radioButton
+
+        Item {
+            width: resizer.width
+            height: resizer.height + spacer.height
+
+            /* checked */
+            DapQmlImage {
+                x: parent.height * 0.125
+                width: resizer.height
+                height: resizer.height
+                scaledPixmap: radioChecked.scaledPixmap
+                visible: model.checked
+            }
+
+            /* unchecked */
+            DapQmlImage {
+                x: parent.height * 0.125
+                width: resizer.height
+                height: resizer.height
+                scaledPixmap: radioUnchecked.scaledPixmap
+                visible: !model.checked
+            }
+
+            /* label */
+            Text {
+                anchors.fill: parent
+                anchors.leftMargin: resizer.height + (parent.height * 0.175)
+                anchors.bottomMargin: parent.height * 0.125
+                color: resizer.color
+                clip: true
+                elide: Text.ElideRight
+                text: model.name
+                verticalAlignment: Text.AlignVCenter
+
+                font {
+                    family: Brand.fontName()
+                    pixelSize: resizer.fontSize
+                    weight: resizer.fontWeight
+                }
+            }
+
+            /* separator */
+            DapQmlSeparator {
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: height
+            }
+
+            /* clickable are */
+            MouseArea {
+                anchors.fill: parent
+                onClicked: root.sigSelect (model.index, model.name);
+            }
+        }
+    }
+
+    /// @}
+    /****************************************//**
      * Timers
      ********************************************/
 
@@ -87,13 +151,28 @@ Item {
     DapQmlRectangle {
         id: resizer
         visible: false
-        qss: "radiobtn-resizer"
+        qss: "radiobtn-resizer radio-label"
+        property string color
+        property int fontSize
+        property int fontWeight: Font.Normal
     }
 
     DapQmlRectangle {
         id: spacer
         visible: false
         qss: "radiobtn-spacer"
+    }
+
+    DapQmlDummy {
+        id: radioChecked
+        qss: "radio-on"
+        property string scaledPixmap
+    }
+
+    DapQmlDummy {
+        id: radioUnchecked
+        qss: "radio-off"
+        property string scaledPixmap
     }
 
     /****************************************//**
@@ -182,23 +261,26 @@ Item {
 
         DapQmlStyle { qss: "ch-country-listview"; item: csListView }
 
-        delegate: Item {
-            width: resizer.width
-            height: resizer.height + spacer.height
+//        delegate: Item {
+//            width: resizer.width
+//            height: resizer.height + spacer.height
 
-            DapQmlRadioButton {
-                text: model.name
-                checked: model.checked
-                separator: true
-                iconSize: resizer.height
-                width: resizer.width
-                height: resizer.height + spacer.height
-                y: spacer.height / 2
-                onClicked: {
-                    root.sigSelect (model.index, model.name);
-                }
-            }
-        }
+//            DapQmlRadioButton {
+//                text: model.name
+//                checked: model.checked
+//                separator: true
+//                iconSize: resizer.height
+//                width: resizer.width
+//                height: resizer.height + spacer.height
+//                y: spacer.height / 2
+//                onClicked: {
+//                    root.sigSelect (model.index, model.name);
+//                }
+//            }
+//        }
+
+        delegate: radioButton
+
 //        onCurrentIndexChanged: {
 //            root.updateChecks();
 //        }
