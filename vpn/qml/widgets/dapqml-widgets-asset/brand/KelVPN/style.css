@@ -1250,7 +1250,7 @@
 .dashboard-title
 {
     color: "@brand";
-    scaled-rect: scaled(-1,62,-1,28,false,24);
+    scaled-rect: scaled(-1,62,-1,36,false,24);
     font-weight: Font.Bold;
 }
 
