@@ -342,7 +342,7 @@
 
 
 .sep-rect {
-    scaled-rect: scaled(nan,nan,8,1,false);
+    scaled-rect: scaled(nan,nan,8,3,false);
 }
 
 .sep-left
