@@ -208,7 +208,7 @@ Item {
                 placeholderQss: "bugrep-input-placeholder"
                 qss: "bugrep-input-contact-content"
 
-                placeHolderText: qsTr("Email/ Telegram/Phone number to contact you") + lang.notifier
+                placeHolderText: qsTr("Email/ Telegram/Phone number to contact") + lang.notifier
                 mainText: ""
             }
         }
@@ -229,7 +229,7 @@ Item {
                 placeholderQss: "bugrep-input-placeholder"
                 qss: "bugrep-input-contact-content"
 
-                placeHolderText: qsTr("Email/ Telegram/Phone number to contact you") + lang.notifier
+                placeHolderText: qsTr("Email/ Telegram/Phone number to contact") + lang.notifier
                 mainText: ""
             }
         }
@@ -566,6 +566,16 @@ Item {
     //                       this);
                 }
 
+//                Text {
+//                    id: teststst
+
+//                    function update() {
+//                        text = `size ${bugRepInput.width}x${bugRepInput.height} : ${bugRepInput.contentHeight}`
+//                    }
+
+//                    Component.onCompleted: update()
+//                }
+
                 /* input scrollarea */
                 Flickable {
                     id: bugRepInput
@@ -575,6 +585,10 @@ Item {
                     clip: true
                     contentWidth: width
                     contentHeight: calcContentHeight()
+
+//                    onContentHeightChanged: teststst.update()
+//                    onWidthChanged: teststst.update()
+//                    onHeightChanged: teststst.update()
 
                     DapQmlStyle { item: bugRepInput; qss: "bugrep-input-content"; }
 
@@ -607,10 +621,11 @@ Item {
                         z: 4
                         objectName: "bugRepInputField"
                         anchors.fill: parent
+                        anchors.margins: 1
                         wrapMode: TextEdit.Wrap
                         persistentSelection: true
                         selectByMouse: true
-                        clip: true
+                        //clip: true
                         font.pixelSize: fontSize
                         font.weight: fontWeight
                         inputMethodHints: Qt.ImhSensitiveData
