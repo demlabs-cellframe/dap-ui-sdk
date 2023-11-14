@@ -926,7 +926,8 @@ Item {
 //                swipe.incrementCurrentIndex();
 ////                root.sigOrderSelect (root.internal.chosenOrderIndex, root.internal.chosenOrderHash);
 
-                csListView.model.currentIndex = model.index;
+                csListViewOrders.model.currentIndex = model.index;
+                //csListView.model.currentIndex = model.index;
                 root.sigOrderSelect (model.index, model.hash);
             }
 
