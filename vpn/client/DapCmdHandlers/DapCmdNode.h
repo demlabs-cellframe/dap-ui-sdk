@@ -39,7 +39,7 @@ signals:
     void orderListRequest(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
     void condTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit);
     void checkSigned();
-    void connectByOrder(QString srvUid, QString nodeAddress);
+    void connectByOrder(QString srvUid, QString nodeAddress, QString orderHash);
     void getIpOrder(QString srvUid, QJsonArray orderList);
 
 };

@@ -210,6 +210,7 @@ void DapCmdNode::handle(const QJsonObject* params)
         //QString networkName  = oi["network_name"].toString();
         //QString txCondHash   = oi["tx_cond_hash"].toString();
         //QString token        = oi["token"].toString();
+        QString orderHash    = oi["hash"].toString();
         QString srvUid       = oi["srvUid"].toString();
         QString nodeAddress  = oi["nodeAddress"].toString();
 //        uint16_t port        = 80;
@@ -217,7 +218,7 @@ void DapCmdNode::handle(const QJsonObject* params)
 //            port             = oi["port"].toInt();
         qDebug() << "start_connect_by_order" << oi;
         m_nocdbMode = true;
-        emit connectByOrder(srvUid, nodeAddress);
+        emit connectByOrder(srvUid, nodeAddress, orderHash);
     }
     if (params->value("get_ip_order_list").isObject())
     {
