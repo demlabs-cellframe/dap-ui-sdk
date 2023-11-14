@@ -342,7 +342,7 @@
 
 
 .sep-rect {
-    scaled-rect: scaled(nan,nan,8,1,false);
+    scaled-rect: scaled(nan,nan,8,3,false);
 }
 
 .sep-left
@@ -1232,7 +1232,7 @@
 .dashboard-title
 {
     color: "@brand";
-    scaled-rect: scaled(-1,62,-1,28,false,24);
+    scaled-rect: scaled(-1,62,-1,36,false,24);
     font-weight: Font.Bold;
 }
 
@@ -1319,7 +1319,7 @@
 .dashboard-speed-main
 {
     color: "@text";
-    scaled-font: scaled(26);    
+    scaled-font: scaled(28);    
     font-weight: Font.Bold;
 }
 
@@ -1406,13 +1406,13 @@
 
 .bugrep-attach-btn
 {
-    scaled-rect: scaled(19,448,390,20,false,16);
+    scaled-rect: scaled(-1,464,390,24,false,16);
     color: "#DA0B82";
 }
 
 .bugrep-send-btn
 {
-    scaled-rect: scaled(27,770,374,80,true,16);
+    scaled-rect: scaled(-1,526,374,80,true,16);
 }
 
 .bugrep-share-btn

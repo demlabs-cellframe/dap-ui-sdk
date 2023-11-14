@@ -101,13 +101,20 @@ Rectangle {
      * Content
      ********************************************/
 
-    Loader {
-        width: root.width + 4
-        height: sizer.height > 2 ? sizer.height : 2
-        sourceComponent: //compImage
-            Brand.legacyStyle()
-            ? compImage
-            : compPainter
+//    Loader {
+//        id: contentLoader
+//        width: root.width + 4
+//        height: Math.floor (sizer.height > 2 ? sizer.height : 2)
+//        sourceComponent: //compImage
+//            Brand.legacyStyle()
+//            ? compImage
+//            : compPainter
+//    }
+    Rectangle {
+        id: rectt
+        width: root.width
+        height: Math.floor (sizer.height > 2 ? sizer.height / 2 : 1)
+        DapQmlStyle { item: rectt; qss: "sep-color" }
     }
 }
 

@@ -968,7 +968,7 @@ Item {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.rightMargin: marginValue
-                width: parent.width - parent.textLabel.contentWidth - marginValue - parent.iconSize
+                width: parent.width - parent.textLabel.contentWidth - marginValue - parent.iconSize * 1.25
                 height: contentHeight
                 horizontalAlign: Text.AlignRight
                 disableClicking: true
