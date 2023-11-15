@@ -310,6 +310,9 @@ void DapLogger::updateLogFilesInfo()
     {
         if(fileInfo.size() > m_partSize || m_currentDate != getCurrentDate())
         {
+          qDebug() << "Init new name log file. Current file size: " << QString::number(fileInfo.size()) <<
+              "  Last name: " << m_currentLogName;
+
           updateCurrentLogName();
           setLogFile(m_currentLogName);
         }
