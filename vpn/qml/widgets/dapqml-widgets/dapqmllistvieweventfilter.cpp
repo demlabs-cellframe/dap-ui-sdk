@@ -25,6 +25,14 @@ DapQmlListviewEventFilter::~DapQmlListviewEventFilter()
  * METHODS
  *******************************************/
 
+void DapQmlListviewEventFilter::attachFilter (QObject *a_object)
+{
+  if (a_object == nullptr)
+    return;
+
+  a_object->installEventFilter (new DapQmlListviewEventFilter);
+}
+
 bool DapQmlListviewEventFilter::eventFilter (QObject *a_watched, QEvent *a_event)
 {
   /* handle mouse wheel event */
