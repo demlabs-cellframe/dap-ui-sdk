@@ -224,7 +224,7 @@ void DapLogger::writeMessage(QtMsgType type,
         #error "Not supported platform"
 #endif
         fileName = (fileName == Q_NULLPTR ? ctx.file : fileName + 1);
-        strcpy(prefixBuffer, fileName);
+        strncpy (prefixBuffer, fileName, 128);
         auto dest = strrchr(prefixBuffer, '.');
         if (dest == nullptr)
           dest    = prefixBuffer + strlen(prefixBuffer);
