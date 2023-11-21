@@ -85,7 +85,7 @@ Item {
 
         property bool tokenIsSet: false
 
-        property bool gotOrdersInsideHistory: true // false
+        property bool gotOrdersInsideHistory: false
 
         function forgotLabel() {
 //   First variant for Rise
@@ -132,7 +132,10 @@ Item {
     signal sigChooseWallet();
 
     /// @brief enter maxprice key clicked
-    signal sigChooseMaxPrice
+    signal sigChooseMaxPrice();
+
+    /// @brief choose order from history
+    signal sigChooseOrderHistory();
 
     /// @brief connection by serial requested
     signal sigConnectBySerial();
@@ -285,6 +288,10 @@ Item {
 
     function showConnectionOverlay(a_show) {
         root.internal.showConnectionOverlay = a_show;
+    }
+
+    function setOrdersInsideHistoryFlag(a_value) {
+        root.internal.gotOrdersInsideHistory    = a_value;
     }
 
     /// @}
@@ -711,10 +718,24 @@ Item {
         Item {
             anchors.fill: parent
             opacity: root.internal.tokenIsSet ? 1.0 : 0.5
+            enabled: root.internal.tokenIsSet
+
+            property real decreaseHeight: {
+                if (root.internal.gotOrdersInsideHistory
+                    && internal.mode === QuiLoginForm.Mode.M_WALLET)
+                    return btnChooseOrder.height * 0.2;
+                else
+                    return 0;
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: root.sigSearchOrders()
+            }
 
             Item {
                 width: parent.width
-                height: parent.height - btnChooseOrder.height * 0.2
+                height: parent.height - parent.decreaseHeight
                 clip: true
 
                 DapQmlButton {
@@ -733,9 +754,6 @@ Item {
                     subQss: "login-btn-sub"
                     frame: true
                     link: true
-
-                    /* signals */
-
                     onClicked: root.sigSearchOrders()
                 }
             }
@@ -803,6 +821,13 @@ Item {
                 width: btnChooseOrder.height / 5
                 height: width
                 DapQmlStyle { qss: "btn-arrow"; item: linkImage }
+            }
+
+            /* clickable */
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: root.sigChooseOrderHistory()
             }
         }
 

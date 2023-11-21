@@ -87,6 +87,7 @@ Rectangle {
     property bool frame: false
     property bool checkbox: false
     property bool checked: false
+    property bool disableClicking: false
 
     property var labelMain
     property var labelSub
@@ -101,7 +102,8 @@ Rectangle {
 
     MouseArea {
         id: mouseArea
-        anchors.fill: root;
+        anchors.fill: root
+        enabled: !root.disableClicking
         onClicked: root.clicked()
     }
 
