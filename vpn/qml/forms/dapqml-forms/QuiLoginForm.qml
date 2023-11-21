@@ -85,6 +85,8 @@ Item {
 
         property bool tokenIsSet: false
 
+        property bool gotOrdersInsideHistory: true // false
+
         function forgotLabel() {
 //   First variant for Rise
 //            return mode === QuiLoginForm.Mode.M_SERIAL
@@ -566,7 +568,14 @@ Item {
 
     DapQmlRectangle {
         x:      loginWalletPlacer.x
-        y:      loginSpacer.y + loginWalletPlacer.y
+        y: {
+            let pos = loginSpacer.y + loginWalletPlacer.y;
+            if (root.internal.gotOrdersInsideHistory
+                && internal.mode === QuiLoginForm.Mode.M_WALLET)
+                return pos - btnOrderHistory.height;
+            else
+                return pos;
+        }
         width:  loginWalletPlacer.width
         height: loginWalletPlacer.height
         visible: internal.cellfarameDetected && internal.mode === QuiLoginForm.Mode.M_WALLET
@@ -601,7 +610,14 @@ Item {
 
     DapQmlRectangle {
         x:      loginServerPlacer.x
-        y:      loginSpacer.y + loginServerPlacer.y
+        y: {
+            let pos = loginSpacer.y + loginServerPlacer.y;
+            if (root.internal.gotOrdersInsideHistory
+                && internal.mode === QuiLoginForm.Mode.M_WALLET)
+                return pos - btnOrderHistory.height;
+            else
+                return pos;
+        }
         width:  loginServerPlacer.width
         height: loginServerPlacer.height
         visible: {
@@ -692,27 +708,102 @@ Item {
             }
         }
 
-        DapQmlButton {
-            id: btnChooseOrder
-            x: (parent.width - width) / 2
-            z: 15
-            width: parent.width
-            visible: internal.mode === QuiLoginForm.Mode.M_WALLET
-            buttonStyle: DapQmlButton.Style.TopMainBottomSub
-            enabled: root.internal.tokenIsSet
+        Item {
+            anchors.fill: parent
             opacity: root.internal.tokenIsSet ? 1.0 : 0.5
 
-            mainText: qsTr("Order") + lang.notifier
-            subText: qsTr("SEARCH ORDERS") + lang.notifier
-            qss: "login-btn-server"
-            mainQss: "login-btn-main"
-            subQss: "login-btn-sub"
-            frame: true
-            link: true
+            Item {
+                width: parent.width
+                height: parent.height - btnChooseOrder.height * 0.2
+                clip: true
 
-            /* signals */
+                DapQmlButton {
+                    id: btnChooseOrder
+                    x: (parent.width - width) / 2
+                    z: 15
+                    width: parent.width
+                    visible: internal.mode === QuiLoginForm.Mode.M_WALLET
+                    buttonStyle: DapQmlButton.Style.TopMainBottomSub
+                    enabled: root.internal.tokenIsSet
 
-            onClicked: root.sigSearchOrders()
+                    mainText: qsTr("Order") + lang.notifier
+                    subText: qsTr("SEARCH ORDERS") + lang.notifier
+                    qss: "login-btn-server"
+                    mainQss: "login-btn-main"
+                    subQss: "login-btn-sub"
+                    frame: true
+                    link: true
+
+                    /* signals */
+
+                    onClicked: root.sigSearchOrders()
+                }
+            }
+
+            /* bottom rectangle */
+
+            DapQmlRectangle {
+                x: btnChooseOrder.x
+                y: btnChooseOrder.y + btnChooseOrder.height - height
+                width: btnChooseOrder.width
+                height: btnChooseOrder.height * 0.2
+                visible: root.internal.gotOrdersInsideHistory
+                         && internal.mode === QuiLoginForm.Mode.M_WALLET
+                color: btnOrderHistory.color
+            }
+        }
+
+        DapQmlRectangle {
+            id: btnOrderHistory
+            x: btnChooseOrder.x
+            y: btnChooseOrder.y + btnChooseOrder.height
+            z: 14
+            visible: root.internal.gotOrdersInsideHistory
+                     && internal.mode === QuiLoginForm.Mode.M_WALLET
+            radius: btnChooseOrder.height * 0.1
+            qss: "login-btn-orders-history-frame"
+
+            property int fontSize
+            property int fontWeight
+
+            /* top rectangle */
+
+            DapQmlRectangle {
+                width: parent.width
+                height: parent.radius * 2
+                color: parent.color
+
+                /* separator */
+
+                DapQmlSeparator {
+                    width: parent.width
+                }
+            }
+
+            /* label */
+
+            DapQmlLabel {
+                anchors.fill: parent
+                anchors.bottomMargin: parent.height * 0.075
+                z: 0
+                horizontalAlign: Text.AlignHCenter
+                verticalAlign: Text.AlignVCenter
+                text: qsTr("My orders")
+                fontSize: parent.fontSize
+                fontWeight: parent.fontWeight
+                qss: "c-label"
+            }
+
+            /* link icon */
+
+            DapQmlImage {
+                id: linkImage
+                x: parent.width - width * 2.4
+                y: (parent.height - height) / 2
+                width: btnChooseOrder.height / 5
+                height: width
+                DapQmlStyle { qss: "btn-arrow"; item: linkImage }
+            }
         }
 
         DapQmlDummy {
