@@ -339,7 +339,9 @@ void DapNode::initStmStates()
     });
     // mempool check
     connect(&m_stm->mempoolTxHashRequest, &QState::entered, this, [=](){
-        web3->getMempoolTxHashRequest(m_transactionHash, m_networkName);
+        QTimer::singleShot(2000, [&]{
+            web3->getMempoolTxHashRequest(m_transactionHash, m_networkName);
+        });
     });
     connect(&m_stm->mempoolTxHashEmpty, &QState::entered, this, [=](){
         DEBUGINFO  << "&mempoolTxHashEmpty, &QState::entered";
