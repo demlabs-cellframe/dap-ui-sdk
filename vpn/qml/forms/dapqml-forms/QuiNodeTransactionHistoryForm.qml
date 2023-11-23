@@ -127,7 +127,7 @@ Item {
                     horizontalAlign: Text.AlignRight
                     disableClicking: true
                     qss: "trhistory-item-right"
-                    text: "placeholder text"
+                    text: model.created // "placeholder text"
                 }
             }
 

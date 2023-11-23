@@ -398,6 +398,7 @@ void DapCmdNode::slotCondTxCreate()
   s_historyOrder.value    = _data->value;
   s_historyOrder.unit     = order.priceUnit(); // "day";
   s_historyOrder.wallet   = _data->selectedWalletName;
+  s_historyOrder.created  = QDateTime::currentDateTime();
   s_historyOrder.isSigned = false;
   _updateHistoryItem();
 }
