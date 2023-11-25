@@ -539,10 +539,12 @@ void DapNode::start()
     m_stm->start();
 }
 
-void DapNode::slotNodeIpReqest(QString srvUid, QString nodeAddress, QString orderHash)
+void DapNode::slotNodeIpReqest(QString srvUid, QString nodeAddress, QString orderHash, QString network)
 {
     m_srvUid = srvUid;
     m_nodeInfo.setNodeAddress(nodeAddress);
+    if (!network.isEmpty())
+      m_networkName = network;
     emit sigNodeIpRequest();
 }
 void DapNode::slotGetNodeIpForOrderListReqest(QString srvUid, QJsonArray orderList)

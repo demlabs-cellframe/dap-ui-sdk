@@ -458,7 +458,7 @@ void DapCmdNode::slotStartConnectByOrder()
   //  sendCmd (&jObject);
 }
 
-void DapCmdNode::slotStartConnectByHistoryOrder (const DapNodeOrderInfo &a_info, const QString &a_token)
+void DapCmdNode::slotStartConnectByHistoryOrder (const DapNodeOrderInfo &a_info, const QString &a_token, const QString &a_network)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
 
@@ -466,6 +466,7 @@ void DapCmdNode::slotStartConnectByHistoryOrder (const DapNodeOrderInfo &a_info,
   QJsonObject jobj {
     { "start_connect_by_order", a_info.toJsonObject() },
     { "token", a_token },
+    { "network", a_network }
   };
   sendCmd (&jobj);
 }
