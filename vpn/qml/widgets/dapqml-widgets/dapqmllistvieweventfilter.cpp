@@ -140,7 +140,7 @@ bool DapQmlListviewEventFilter::eventFilter (QObject *a_watched, QEvent *a_event
                 QPointF(),
                 QPointF(),
                 QPoint(),
-                QPoint (0, yPos / 4),
+                QPoint (0, yPos / 16),
                 wheelEvent->buttons(),
                 wheelEvent->modifiers(),
                 wheelEvent->phase(),
