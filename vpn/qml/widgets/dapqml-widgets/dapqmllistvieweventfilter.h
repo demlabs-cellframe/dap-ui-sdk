@@ -17,21 +17,45 @@ class DapQmlListviewEventFilter : public QQuickItem
   Q_OBJECT
 
   /****************************************//**
+   * @name DEFS
+   *******************************************/
+  /// @{
+protected:
+  struct Data;
+  /// @}
+
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
+protected:
+  Data *data;
+  /// @}
+
+  /****************************************//**
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
 public:
   explicit DapQmlListviewEventFilter (QQuickItem *a_parent = nullptr);
   ~DapQmlListviewEventFilter() override;
-    /// @}
+  /// @}
 
   /****************************************//**
    * @name METHODS
    *******************************************/
   /// @{
 public:
-    static void attachFilter (QObject *a_object);
+  static void attachFilter (QObject *a_object);
   bool eventFilter (QObject *a_watched, QEvent *a_event) override;
+  /// @}
+
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
+protected slots:
+  void _slotFakeEvent();
   /// @}
 };
 
