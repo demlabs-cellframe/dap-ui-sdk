@@ -146,8 +146,11 @@ bool DapQmlListviewEventFilter::eventFilter (QObject *a_watched, QEvent *a_event
 
           /* send */
           if (yPos != 0)
+          {
             QCoreApplication::sendEvent (data->attachTarget, &event);
-        }
+            return true;
+          }
+      }
   }
 
 #endif // ENABLE_FAKE
