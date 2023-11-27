@@ -554,12 +554,14 @@ void DapNodeWeb3::parseReplyWallets (const QString &replyData, int baseErrorCode
   if (doc["data"].isArray())
     {
       // wallets
-      QStringList walletsList;
-      QJsonArray dataArray = doc["data"].toArray();
-      for (auto i = dataArray.cbegin(), e = dataArray.cend(); i != e; i++)
-        if (i->isString())
-          walletsList << i->toString();
-      //DEBUGINFO << "Wallets list: " << walletsList;
+        QStringList walletsList;
+        QJsonArray dataArray = doc["data"].toArray();
+        for (const auto mData : dataArray){
+            if (mData.toObject().value("status").toString() == "non-Active")
+                continue;
+            walletsList << mData.toObject().value("name").toString();
+        }
+
       emit sigReceivedWalletsList (walletsList);
     }
 }
