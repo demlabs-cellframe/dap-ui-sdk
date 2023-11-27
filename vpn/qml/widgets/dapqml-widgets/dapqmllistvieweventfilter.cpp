@@ -130,13 +130,17 @@ bool DapQmlListviewEventFilter::eventFilter (QObject *a_watched, QEvent *a_event
           //            Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, Qt::ScrollPhase phase,
           //            bool inverted, Qt::MouseEventSource source = Qt::MouseEventNotSynthesized);
 
-          /* construct proper event */
+          /* get move speed */
           auto yPos = wheelEvent->angleDelta().y();
-          QWheelEvent event(
+
+          if (yPos != 0)
+          {
+            /* construct proper event */
+            QWheelEvent event(
                 QPointF(),
                 QPointF(),
                 QPoint(),
-                QPoint (0, yPos),
+                QPoint (0, yPos / 4),
                 wheelEvent->buttons(),
                 wheelEvent->modifiers(),
                 wheelEvent->phase(),
@@ -144,9 +148,7 @@ bool DapQmlListviewEventFilter::eventFilter (QObject *a_watched, QEvent *a_event
                 Qt::MouseEventNotSynthesized
               );
 
-          /* send */
-          if (yPos != 0)
-          {
+            /* send */
             QCoreApplication::sendEvent (data->attachTarget, &event);
             return true;
           }
