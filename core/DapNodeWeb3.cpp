@@ -1049,7 +1049,7 @@ void DapNodeWeb3::parseListKeys (const QString &replyData, int baseErrorCode)
       QList<QString> listKeys;
       foreach (const auto &keyData, doc["data"].toObject()["keys"].toArray())
         {
-          if (keyData.toObject()["active"].toString() == QString ("true"))
+//          if (keyData.toObject()["active"].toString() == QString ("true"))
             listKeys.append (keyData.toObject()["pKey hash"].toString());
         }
       DEBUGINFO << "sigListKeys" << listKeys;

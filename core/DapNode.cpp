@@ -444,10 +444,10 @@ void DapNode::initWeb3Connections()
     });
     // order list ready
     connect(web3, &DapNodeWeb3::sigOrderList, this, [=](QJsonArray ordersList) {
-        //QJsonArray orders;
-        //orderListFiltr(ordersList, orders, m_listKeys);
+        QJsonArray orders;
+        orderListFiltr(ordersList, orders, m_listKeys);
         emit sigOrderListReceived();
-        emit sigOrderListReady(ordersList); //emit sigOrderListReady(orders);
+        emit sigOrderListReady(orders); //emit sigOrderListReady(orders);
     });
 
     connect(web3, &DapNodeWeb3::sigNodeIp, this, [=](QJsonObject data) {
