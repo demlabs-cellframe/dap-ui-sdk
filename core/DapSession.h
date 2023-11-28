@@ -35,7 +35,6 @@
 #include "DapNetworkAccessManager.h"
 #include "DapNetworkReply.h"
 
-
 class DapSession : public QObject
 {
     Q_OBJECT

@@ -5,7 +5,7 @@
 
 #include <QDebug>
 #include <QTimer>
-#include <QRegExpValidator>
+#include <QRegularExpressionValidator>
 #include <QRect>
 
 /* VARS */
@@ -192,13 +192,13 @@ static bool parseServerData (DapQmlModelManageCdb *a_model, const QVariant &a_da
   bool isValid  = false;
   {
     /* reg exps & validators */
-    static QRegExp rx [2] = {
-      QRegExp {"(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])"},
-      QRegExp {"^(0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"},
+    static QRegularExpression rx [2] = {
+      QRegularExpression {"(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])"},
+      QRegularExpression {"^(0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$"},
     };
 
-    static QRegExpValidator v1{rx[0]};
-    static QRegExpValidator v2{rx[1]};
+    static QRegularExpressionValidator v1{rx[0]};
+    static QRegularExpressionValidator v2{rx[1]};
 
     /* values */
     int pos       = 0;

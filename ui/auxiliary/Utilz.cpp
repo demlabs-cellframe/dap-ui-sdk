@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QString>
 #include <QMainWindow>
+#include <QRegExp>
 
 
 namespace Utils

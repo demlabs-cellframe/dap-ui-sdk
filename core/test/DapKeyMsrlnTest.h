@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QTest>
 #include "DapKeyMsrln.h"
+#include <QRandomGenerator>
 
 class DapKeyMsrlnTest : public QObject {
     Q_OBJECT
@@ -18,7 +19,7 @@ private:
        QString randomString;
        for(int i = 0; i<randomStringLength; ++i)
        {
-           int index = qrand() % possibleCharacters.length();
+           int index = QRandomGenerator::global()->generate() % possibleCharacters.length();
            QChar nextChar = possibleCharacters.at(index);
            randomString.append(nextChar);
        }
@@ -27,7 +28,7 @@ private:
 private slots:
     void initTestCase() {
         QDateTime currentDateTime = QDateTime::currentDateTime();
-        qsrand(QDateTime::currentDateTime().toTime_t());
+        qsrand(QDateTime::currentDateTime().toSecsSinceEpoch());
     }
 
     void transfer_keys() {

@@ -165,7 +165,7 @@ void DapCmdNode::handleResult (const QJsonObject &params)
     {
       QJsonArray array = params.value ("wallets").toArray();
       QMap<QString, QVariant> data;
-      foreach (const QVariant &vItem, array)
+      foreach (const QJsonValueConstRef &vItem, array)
         data[vItem.toString()] = "";
       DEBUGINFO << "wallets" << data;
 //                    emit walletsList(data);
@@ -176,7 +176,7 @@ void DapCmdNode::handleResult (const QJsonObject &params)
     {
       QJsonArray array = params.value ("networks").toArray();
       QMap<QString, QVariant> data;
-      foreach (const QVariant &vItem, array)
+      foreach (const QJsonValueConstRef &vItem, array)
         data[vItem.toString()] = "";
       DEBUGINFO << "networks" << data;
 //                    emit networksList(data);

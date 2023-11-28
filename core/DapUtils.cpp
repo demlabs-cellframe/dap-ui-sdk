@@ -18,6 +18,13 @@ const QString cShellPathArgs = "/c";
  * @param cmd
  * @return
  */
+
+bool operator==(QStringView sv, const char * c)
+{
+    return sv.toString() == c;
+}
+
+
 QString DapUtils::shellCmd(const QString& cmd, int waitMsecs)
 {
     QProcess process;

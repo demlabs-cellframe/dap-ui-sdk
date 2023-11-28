@@ -59,7 +59,7 @@ DapQmlModelChooseCountry::DapQmlModelChooseCountry (QObject *parent)
   , m_current (-1)
 {
   _list = DapAbstractServerList::countryMap().keys();
-  qSort (_list);
+  std::sort (_list.begin(), _list.end());
   _applyFiltering();
 }
 
