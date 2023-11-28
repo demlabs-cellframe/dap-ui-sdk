@@ -147,7 +147,7 @@ bool DapQmlListviewEventFilter::eventFilter (QObject *a_watched, QEvent *a_event
       QWheelEvent *wheelEvent = static_cast<QWheelEvent *> (a_event);
       DEBUGINFO << "pos:" << wheelEvent->position()
 //                << "globalPos:" << wheelEvent->globalPosition()
-//                << "pixelDelta:" << wheelEvent->pixelDelta()
+                << "pixelDelta:" << wheelEvent->pixelDelta()
                 << "angleDelta:" << wheelEvent->angleDelta()
 //                << "buttons:" << wheelEvent->buttons()
 //                << "modifiers:" << wheelEvent->modifiers()
@@ -1097,7 +1097,7 @@ WheelEventCollection::WheelEventCollection (QObject *a_target)
   /* setup flush timer */
   _timeout  = new QTimer;
   _timeout->setSingleShot (true);
-  _timeout->setInterval (50);
+  _timeout->setInterval (100);
 
   QObject::connect (_timeout, &QTimer::timeout,
                     [this] { flush(); });
