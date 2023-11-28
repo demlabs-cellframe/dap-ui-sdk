@@ -1124,8 +1124,6 @@ void WheelEventCollection::push (int a_value)
 
 int WheelEventCollection::sum() const
 {
-  QMutexLocker l (&_mutex);
-
   int result = 0;
 
   for (int value : _positions)
