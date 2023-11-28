@@ -1141,6 +1141,7 @@ void WheelEventCollection::flush()
 
   /* get sum and clear positions */
   int result  = sum();
+  DEBUGINFO << "result:" << result << "from" << _positions.size() << "values";
   _positions.clear();
 
   /* construct fake event */
