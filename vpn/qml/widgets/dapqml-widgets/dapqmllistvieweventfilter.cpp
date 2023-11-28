@@ -165,7 +165,7 @@ bool DapQmlListviewEventFilter::eventFilter (QObject *a_watched, QEvent *a_event
           //            bool inverted, Qt::MouseEventSource source = Qt::MouseEventNotSynthesized);
 
           /* get move speed */
-          auto yPos = wheelEvent->angleDelta().y();
+          auto yPos = wheelEvent->pixelDelta().y();
 
           if (yPos != 0)
           {
@@ -1097,7 +1097,7 @@ WheelEventCollection::WheelEventCollection (QObject *a_target)
   /* setup flush timer */
   _timeout  = new QTimer;
   _timeout->setSingleShot (true);
-  _timeout->setInterval (100);
+  _timeout->setInterval (200);
 
   QObject::connect (_timeout, &QTimer::timeout,
                     [this] { flush(); });
@@ -1151,12 +1151,12 @@ void WheelEventCollection::flush()
   QWheelEvent event(
     QPointF(),
     QPointF(),
-    QPoint(),
+    QPoint (0, result),
     QPoint (0, result),
     Qt::NoButton,
     Qt::NoModifier,
     Qt::NoScrollPhase,
-    false,
+    true,
     Qt::MouseEventNotSynthesized
   );
 
