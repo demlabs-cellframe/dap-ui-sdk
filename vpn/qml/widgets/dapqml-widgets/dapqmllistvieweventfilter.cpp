@@ -3,6 +3,7 @@
 #include "dapqmllistvieweventfilter.h"
 
 #include <QTimer>
+#include <QMutex>
 
 /* DEFS */
 
@@ -11,6 +12,30 @@
 
 // enable this to start simulating MacOS scrolling
 //#define ENABLE_FAKE
+
+/**
+ * @brief Class used to collect positions and sum the result
+ */
+class WheelEventCollection
+{
+  /* VARS */
+protected:
+  QObject *_target;
+  QVector<int> _positions;
+  QTimer *_timeout;
+  mutable QMutex _mutex;
+
+  /* CONSTRUCT/DESTRUCT */
+public:
+  WheelEventCollection (QObject *a_target);
+  ~WheelEventCollection();
+
+  /* METHODS */
+public:
+  void push (int a_value);
+  int sum() const;
+  void flush();
+};
 
 struct DapQmlListviewEventFilter::Data
 {
@@ -22,7 +47,8 @@ struct DapQmlListviewEventFilter::Data
   QWheelEvent *fakeEvent          = nullptr;
 #endif // ENABLE_FAKE
 
-  QObject *attachTarget           = nullptr;
+  QObject *attachTarget             = nullptr;
+  WheelEventCollection *collection  = nullptr;
 
   /* CONSTRUCT/DESTRUCT */
 
@@ -72,8 +98,16 @@ void DapQmlListviewEventFilter::attachFilter (QObject *a_object)
   if (a_object == nullptr)
     return;
 
+  /* creaste event filter */
   DapQmlListviewEventFilter *filter = new DapQmlListviewEventFilter;
+
+  /* store target */
   filter->data->attachTarget  = a_object;
+
+  /* create event collection and attach taregt */
+  filter->data->collection    = new WheelEventCollection (a_object);
+
+  /* install filter */
   a_object->installEventFilter (filter);
 }
 
@@ -135,21 +169,25 @@ bool DapQmlListviewEventFilter::eventFilter (QObject *a_watched, QEvent *a_event
 
           if (yPos != 0)
           {
-            /* construct proper event */
-            QWheelEvent event(
-                QPointF(),
-                QPointF(),
-                QPoint(),
-                QPoint (0, yPos / 16),
-                wheelEvent->buttons(),
-                wheelEvent->modifiers(),
-                wheelEvent->phase(),
-                wheelEvent->inverted(),
-                Qt::MouseEventNotSynthesized
-              );
+//            /* construct proper event */
+//            QWheelEvent event(
+//                QPointF(),
+//                QPointF(),
+//                QPoint(),
+//                QPoint (0, yPos / 16),
+//                wheelEvent->buttons(),
+//                wheelEvent->modifiers(),
+//                wheelEvent->phase(),
+//                wheelEvent->inverted(),
+//                Qt::MouseEventNotSynthesized
+//              );
 
-            /* send */
-            QCoreApplication::sendEvent (data->attachTarget, &event);
+//            /* send */
+//            QCoreApplication::sendEvent (data->attachTarget, &event);
+
+            /* store value */
+            data->collection->push (yPos);
+
             return true;
           }
       }
@@ -1046,3 +1084,78 @@ void DapQmlListviewEventFilter::_slotFakeEvent()
 }
 
 /*-----------------------------------------*/
+
+WheelEventCollection::WheelEventCollection (QObject *a_target)
+  : _target (a_target)
+{
+  /* reserve slots */
+  _positions.reserve (128);
+
+  /* setup flush timer */
+  _timeout  = new QTimer;
+  _timeout->setSingleShot (true);
+  _timeout->setInterval (50);
+
+  QObject::connect (_timeout, &QTimer::timeout,
+                    [this] { flush(); });
+}
+
+WheelEventCollection::~WheelEventCollection()
+{
+  _timeout->stop();
+  delete _timeout;
+}
+
+void WheelEventCollection::push (int a_value)
+{
+  QMutexLocker l (&_mutex);
+
+  /* store */
+  _positions.append (a_value);
+
+  /* start timer */
+  if (!_timeout->isActive())
+    _timeout->start();
+}
+
+int WheelEventCollection::sum() const
+{
+  QMutexLocker l (&_mutex);
+
+  int result = 0;
+
+  for (int value : _positions)
+    result += value;
+  result /= _positions.size();
+
+  return result;
+}
+
+void WheelEventCollection::flush()
+{
+  QMutexLocker l (&_mutex);
+
+  /* check */
+  if (_positions.isEmpty())
+    return;
+
+  /* get sum and clear positions */
+  int result  = sum();
+  _positions.clear();
+
+  /* construct fake event */
+  QWheelEvent event(
+    QPointF(),
+    QPointF(),
+    QPoint(),
+    QPoint (0, result),
+    Qt::NoButton,
+    Qt::NoModifier,
+    Qt::NoScrollPhase,
+    false,
+    Qt::MouseEventNotSynthesized
+  );
+
+  /* send */
+  QCoreApplication::sendEvent (_target, &event);
+}
