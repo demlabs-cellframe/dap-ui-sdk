@@ -186,6 +186,8 @@ bool DapQmlListviewEventFilter::eventFilter (QObject *a_watched, QEvent *a_event
 //            QCoreApplication::sendEvent (data->attachTarget, &event);
 
             /* store value */
+            DEBUGINFO;
+
             data->collection->push (yPos);
 
             return true;
@@ -1087,6 +1089,7 @@ void DapQmlListviewEventFilter::_slotFakeEvent()
 
 WheelEventCollection::WheelEventCollection (QObject *a_target)
   : _target (a_target)
+  , _mutex (QMutex::Recursive)
 {
   /* reserve slots */
   _positions.reserve (128);
@@ -1108,6 +1111,7 @@ WheelEventCollection::~WheelEventCollection()
 
 void WheelEventCollection::push (int a_value)
 {
+  DEBUGINFO << a_value;
   QMutexLocker l (&_mutex);
 
   /* store */
@@ -1133,6 +1137,7 @@ int WheelEventCollection::sum() const
 
 void WheelEventCollection::flush()
 {
+  DEBUGINFO;
   QMutexLocker l (&_mutex);
 
   /* check */
