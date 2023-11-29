@@ -15,7 +15,7 @@
 
 // enable this to activate collector
 #define ENABLE_COLLECTOR
-//#define USE_PIXELDELTA
+#define USE_PIXELDELTA
 
 // enable fixing macos scrolling data
 #define ENABLE_MACOS_SCROLL_FIX
