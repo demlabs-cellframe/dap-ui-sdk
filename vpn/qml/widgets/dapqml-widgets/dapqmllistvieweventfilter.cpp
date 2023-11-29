@@ -15,7 +15,7 @@
 
 // enable this to activate collector
 #define ENABLE_COLLECTOR
-#define USE_PIXELDELTA
+//#define USE_PIXELDELTA
 
 // enable fixing macos scrolling data
 #define ENABLE_MACOS_SCROLL_FIX
@@ -263,9 +263,9 @@ bool DapQmlListviewEventFilter::eventFilter (QObject *a_watched, QEvent *a_event
           //            bool inverted, Qt::MouseEventSource source = Qt::MouseEventNotSynthesized);
 
           /* get move speed */
-          auto yPos = wheelEvent->pixelDelta().y();
+//          auto yPos = wheelEvent->pixelDelta().y();
 
-          if (yPos != 0)
+//          if (yPos != 0)
           {
 //            /* construct proper event */
 //            QWheelEvent event(
@@ -284,7 +284,7 @@ bool DapQmlListviewEventFilter::eventFilter (QObject *a_watched, QEvent *a_event
 //            QCoreApplication::sendEvent (data->attachTarget, &event);
 
             /* store value */
-            DEBUGINFO;
+            //DEBUGINFO;
 
             data->collection->push(
               TestItem
