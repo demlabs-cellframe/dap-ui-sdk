@@ -43,18 +43,18 @@ void DapDataLocal::parseXML(const QString& a_fname)
     qDebug() << "data.xml opened, size "<< file.size();
     QXmlStreamReader *sr = new QXmlStreamReader(&file);
     if(sr->readNextStartElement()){
-        if(sr->name() == "data"){
+        if(sr->name().toString() == "data"){
             while ( sr->readNextStartElement() ){
-                if( sr->name() == "servers"){
+                if( sr->name().toString() == "servers"){
                     while ( sr->readNextStartElement() ){
-                        if( sr->name() == "server") {
+                        if( sr->name().toString() == "server") {
                             DapServerInfo item;
                             while ( sr->readNextStartElement() ){
-                                if(sr->name() == "name"){
+                                if(sr->name().toString() == "name"){
                                     item.setName (sr->readElementText());
-                                } else if (sr->name() == "address") {
+                                } else if (sr->name().toString() == "address") {
                                     item.setAddress (sr->readElementText());
-                                } else if( sr->name() == "port") {
+                                } else if( sr->name().toString() == "port") {
                                     bool ok;
                                     quint16 port = quint16(sr->readElementText().toInt(&ok));
                                     if (!ok) {
@@ -62,9 +62,9 @@ void DapDataLocal::parseXML(const QString& a_fname)
                                                                  "from XML file");
                                     }
                                     item.setPort (port);
-                                } else if(sr->name() == "location") {
+                                } else if(sr->name().toString() == "location") {
                                     item.setLocation (sr->readElementText());
-                                } else if (sr->name() == "state") {
+                                } else if (sr->name().toString() == "state") {
                                     item.setOnline (sr->readElementText());
                                 }
                                 else {
@@ -79,16 +79,16 @@ void DapDataLocal::parseXML(const QString& a_fname)
                             sr->skipCurrentElement();
                         }
                     }
-                }else if( sr->name() == "cdb"){
+                }else if( sr->name().toString() == "cdb"){
                     m_cdbServersList.push_back (DapCdbServer::serverFromString (sr->readElementText()));
                     qInfo() << "Add CDB address: " << m_cdbServersList.back().address;
-                }else if( sr->name() == "network-default"){
+                }else if( sr->name().toString() == "network-default"){
                     m_networkDefault = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
-                }else if( sr->name() == "title"){
+                }else if( sr->name().toString() == "title"){
                     m_brandName = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
-                }else if( sr->name() == "url_site"){
+                }else if( sr->name().toString() == "url_site"){
                     m_urlSite = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
                 }else{
