@@ -15,10 +15,10 @@
 
 // enable this to activate collector
 #define ENABLE_COLLECTOR
-#define USE_PIXELDELTA
+//#define USE_PIXELDELTA
 
 // enable fixing macos scrolling data
-//#define ENABLE_MACOS_SCROLL_FIX
+#define ENABLE_MACOS_SCROLL_FIX
 
 // disable all momentum scroll phases
 #define DISABLE_MOMENTUM
@@ -2665,28 +2665,28 @@ void FakeData::perform (QObject *a_target)
   const TestItem &item  = s_values[eventCounter++];
 
   /* construct fake event */
-//  QWheelEvent newEvent(
-//    item.pos,
-//    QPointF(),
-//    item.pixelDelta,
-//    item.angleDelta,
-//    event->buttons(),
-//    event->modifiers(),
-//    item.phase,
-//    item.inverted,
-//    item.source
-//  );
   QWheelEvent newEvent(
     item.pos,
     QPointF(),
-    QPoint(),//item.pixelDelta,
-    item.pixelDelta,//item.angleDelta,
+    item.pixelDelta,
+    item.angleDelta,
     event->buttons(),
     event->modifiers(),
     item.phase,
     item.inverted,
     item.source
   );
+//  QWheelEvent newEvent(
+//    item.pos,
+//    QPointF(),
+//    QPoint(),//item.pixelDelta,
+//    item.pixelDelta,//item.angleDelta,
+//    event->buttons(),
+//    event->modifiers(),
+//    item.phase,
+//    item.inverted,
+//    item.source
+//  );
 
   /* send */
   QCoreApplication::sendEvent (a_target, &newEvent);
