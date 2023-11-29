@@ -15,37 +15,33 @@
 
 // enable this to activate collector
 //#define ENABLE_COLLECTOR
+#define USE_PIXELDELTA
 
 // enable fixing macos scrolling data
 #define ENABLE_MACOS_SCROLL_FIX
 
+// disable all momentum scroll phases
+#define DISABLE_MOMENTUM
+
 /*-----------------------------------------*/
 
-#ifdef ENABLE_COLLECTOR
-/**
- * @brief Class used to collect positions and sum the result
- */
-class WheelEventCollection
+#ifdef USE_PIXELDELTA
+#define DELTA_VALUE pixelDelta
+#else // USE_PIXELDELTA
+#define DELTA_VALUE angleDelta
+#endif // USE_PIXELDELTA
+
+/*-----------------------------------------*/
+
+struct TestItem
 {
-  /* VARS */
-protected:
-  QObject *_target;
-  QVector<int> _positions;
-  QTimer *_timeout;
-  mutable QMutex _mutex;
-
-  /* CONSTRUCT/DESTRUCT */
-public:
-  WheelEventCollection (QObject *a_target);
-  ~WheelEventCollection();
-
-  /* METHODS */
-public:
-  void push (int a_value);
-  int sum() const;
-  void flush();
+  QPointF pos;
+  QPoint pixelDelta;
+  QPoint angleDelta;
+  Qt::ScrollPhase phase;
+  bool inverted;
+  Qt::MouseEventSource source;
 };
-#endif // ENABLE_COLLECTOR
 
 /*-----------------------------------------*/
 
@@ -74,17 +70,36 @@ public:
   void perform (QObject *a_target);
 };
 
-struct TestItem
-{
-  QPointF pos;
-  QPoint pixelDelta;
-  QPoint angleDelta;
-  Qt::ScrollPhase phase;
-  bool inverted;
-  Qt::MouseEventSource source;
-};
-
 #endif // ENABLE_FAKE
+
+/*-----------------------------------------*/
+
+#ifdef ENABLE_COLLECTOR
+/**
+ * @brief Class used to collect positions and sum the result
+ */
+class WheelEventCollection
+{
+  /* VARS */
+protected:
+  QObject *_target;
+  QVector<TestItem> _positions;
+  QTimer *_timeout;
+  mutable QMutex _mutex;
+
+  /* CONSTRUCT/DESTRUCT */
+public:
+  WheelEventCollection (QObject *a_target);
+  ~WheelEventCollection();
+
+  /* METHODS */
+public:
+  void push (TestItem &&a_value);
+  void push (const TestItem &a_value);
+  int sum() const;
+  void flush();
+};
+#endif // ENABLE_COLLECTOR
 
 /*-----------------------------------------*/
 
@@ -202,6 +217,14 @@ bool DapQmlListviewEventFilter::eventFilter (QObject *a_watched, QEvent *a_event
                 << "source:" << wheelEvent->source()
         ;
 
+#ifdef DISABLE_MOMENTUM
+
+      if (wheelEvent->source() == Qt::MouseEventSynthesizedBySystem
+          && wheelEvent->phase() == Qt::ScrollMomentum)
+        return true;
+
+#endif // DISABLE_MOMENTUM
+
 #ifdef ENABLE_MACOS_SCROLL_FIX
 
       /* check for macos event */
@@ -232,8 +255,8 @@ bool DapQmlListviewEventFilter::eventFilter (QObject *a_watched, QEvent *a_event
 
 #ifdef ENABLE_COLLECTOR
       /* check for bad event */
-      if (wheelEvent->source() != Qt::MouseEventNotSynthesized)
-      //if (wheelEvent->position().x() != 0)
+      if (wheelEvent->source() == Qt::MouseEventSynthesizedBySystem
+          && wheelEvent->phase() == Qt::ScrollUpdate)
         {
           //QWheelEvent(QPointF pos, QPointF globalPos, QPoint pixelDelta, QPoint angleDelta,
           //            Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, Qt::ScrollPhase phase,
@@ -263,7 +286,16 @@ bool DapQmlListviewEventFilter::eventFilter (QObject *a_watched, QEvent *a_event
             /* store value */
             DEBUGINFO;
 
-            data->collection->push (yPos);
+            data->collection->push(
+              TestItem
+              {
+                wheelEvent->position(),
+                wheelEvent->pixelDelta(),
+                wheelEvent->angleDelta(),
+                wheelEvent->phase(),
+                wheelEvent->inverted(),
+                wheelEvent->source()
+              });
 
             return true;
           }
@@ -2529,9 +2561,22 @@ WheelEventCollection::~WheelEventCollection()
   delete _timeout;
 }
 
-void WheelEventCollection::push (int a_value)
+void WheelEventCollection::push (TestItem &&a_value)
 {
-  DEBUGINFO << a_value;
+  DEBUGINFO;
+  QMutexLocker l (&_mutex);
+
+  /* store */
+  _positions.append (std::move (a_value));
+
+  /* start timer */
+  if (!_timeout->isActive())
+    _timeout->start();
+}
+
+void WheelEventCollection::push (const TestItem &a_value)
+{
+  DEBUGINFO;
   QMutexLocker l (&_mutex);
 
   /* store */
@@ -2546,8 +2591,8 @@ int WheelEventCollection::sum() const
 {
   int result = 0;
 
-  for (int value : _positions)
-    result += value;
+  for (const TestItem &value : _positions)
+    result += value.DELTA_VALUE.y();
   result /= _positions.size();
 
   return result;
@@ -2565,19 +2610,20 @@ void WheelEventCollection::flush()
   /* get sum and clear positions */
   int result  = sum();
   DEBUGINFO << "result:" << result << "from" << _positions.size() << "values";
+  TestItem item = _positions.first();
   _positions.clear();
 
   /* construct fake event */
   QWheelEvent event(
+    item.pos,
     QPointF(),
-    QPointF(),
-    QPoint (0, result),
+    QPoint(),
     QPoint (0, result),
     Qt::NoButton,
     Qt::NoModifier,
-    Qt::NoScrollPhase,
-    true,
-    Qt::MouseEventNotSynthesized
+    item.phase,
+    item.inverted,
+    item.source
   );
 
   /* send */
