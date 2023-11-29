@@ -237,7 +237,7 @@ bool DapQmlListviewEventFilter::eventFilter (QObject *a_watched, QEvent *a_event
             wheelEvent->position(),
             wheelEvent->globalPosition(),
             QPoint(),//item.pixelDelta,
-            wheelEvent->pixelDelta(),//item.angleDelta,
+            wheelEvent->angleDelta(),//item.angleDelta,
             wheelEvent->buttons(),
             wheelEvent->modifiers(),
             wheelEvent->phase(),
