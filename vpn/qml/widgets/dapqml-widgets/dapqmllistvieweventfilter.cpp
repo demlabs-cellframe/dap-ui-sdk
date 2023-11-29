@@ -14,11 +14,11 @@
 //#define ENABLE_FAKE
 
 // enable this to activate collector
-//#define ENABLE_COLLECTOR
+#define ENABLE_COLLECTOR
 #define USE_PIXELDELTA
 
 // enable fixing macos scrolling data
-#define ENABLE_MACOS_SCROLL_FIX
+//#define ENABLE_MACOS_SCROLL_FIX
 
 // disable all momentum scroll phases
 #define DISABLE_MOMENTUM
@@ -2549,7 +2549,7 @@ WheelEventCollection::WheelEventCollection (QObject *a_target)
   /* setup flush timer */
   _timeout  = new QTimer;
   _timeout->setSingleShot (true);
-  _timeout->setInterval (200);
+  _timeout->setInterval (50);
 
   QObject::connect (_timeout, &QTimer::timeout,
                     [this] { flush(); });
