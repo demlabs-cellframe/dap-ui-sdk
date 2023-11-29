@@ -667,15 +667,27 @@ Rectangle {
                 }
             }
 
+            /* clickable area */
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: root.clicked();
+            }
+
             /* icon */
-            DapQmlLabel {
+            Image {
                 id: imsIcon
                 y: (parent.height - height) / 2
                 width: root.iconSize
                 height: root.iconSize
+                mipmap: true
+                smooth: true
+                antialiasing: false
+                source: scaledPixmap
 
-                qss: root.icon
-                onClicked: root.clicked();
+                property string scaledPixmap: ""
+
+                DapQmlStyle { item: imsIcon; qss: root.icon }
             }
 
             /* main text */
@@ -688,10 +700,10 @@ Rectangle {
 
                 horizontalAlign: Text.AlignLeft
                 verticalAlign: Text.AlignVCenter
+                disableClicking: true
                 text: root.mainText
                 qss: root.mainQss
                 clip: false
-                onClicked: root.clicked();
             }
 
             /* sub text */
@@ -705,11 +717,11 @@ Rectangle {
 
                 horizontalAlign: Text.AlignRight
                 verticalAlign: Text.AlignVCenter
+                disableClicking: true
                 text: root.subText
                 qss: root.subQss
                 clip: false
                 visible: text.length > 0
-                onClicked: root.clicked();
             }
 
             DapQmlImage {
