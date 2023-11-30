@@ -8,6 +8,9 @@ INCLUDEPATH += $$PWD
 
 include(../../../../config.pri)
 
+# enable macos scroll test
+DEFINES += ENABLE_MACOS_SCROLL_TEST
+
 RESOURCES += \
     $$PWD/dapqml-widgets-asset/brand/$$BRAND/dapqml-widgets-asset-brand.qrc \
     $$PWD/dapqml-widgets-asset/brand/$$BRAND/dapqml-widgets-style-brand.qrc \
@@ -21,12 +24,14 @@ HEADERS += \
     $$PWD/dapqml-widgets/dapqmlseparatoritem.h \
     $$PWD/dapqml-widgets/dapqmlserialkeyinput.h \
     $$PWD/dapqml-widgets/dapqmlstyle.h \
-    $$PWD/dapqml-widgets/dapqmlordersmodel.h \    
+    $$PWD/dapqml-widgets/dapqmlordersmodel.h \
+    $$PWD/dapqml-widgets/listvieweventfilter/lefbase.h \
     $$PWD/dapqml-widgets/dapqmlnodedatamodel.h \
     $$PWD/dapqml-widgets/dapqmlswitchctl.h \
     $$PWD/dapqml-widgets/dapqmlthememodel.h \
     $$PWD/dapqml-widgets/doc-group-dapqmlstyle.h \
     $$PWD/dapqml-widgets/doc-group-qml-widgets.h \
+    $$PWD/dapqml-widgets/listvieweventfilter/leftest.h \
     $$PWD/dapqml-widgets/style/debug/styledebugitemdescriptor.h \
     $$PWD/dapqml-widgets/style/qssitem.h \
     $$PWD/dapqml-widgets/style/qsslink.h \
@@ -43,10 +48,11 @@ SOURCES += \
     $$PWD/dapqml-widgets/dapqmlseparatoritem.cpp \
     $$PWD/dapqml-widgets/dapqmlserialkeyinput.cpp \
     $$PWD/dapqml-widgets/dapqmlstyle.cpp \
-    $$PWD/dapqml-widgets/dapqmlordersmodel.cpp \    
+    $$PWD/dapqml-widgets/dapqmlordersmodel.cpp \
     $$PWD/dapqml-widgets/dapqmlnodedatamodel.cpp \
     $$PWD/dapqml-widgets/dapqmlswitchctl.cpp \
     $$PWD/dapqml-widgets/dapqmlthememodel.cpp \
+    $$PWD/dapqml-widgets/listvieweventfilter/leftest.cpp \
     $$PWD/dapqml-widgets/style/debug/styledebugitemdescriptor.cpp \
     $$PWD/dapqml-widgets/style/qssitem.cpp \
     $$PWD/dapqml-widgets/style/qsslink.cpp \
