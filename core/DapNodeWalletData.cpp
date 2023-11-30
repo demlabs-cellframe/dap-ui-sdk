@@ -7,7 +7,7 @@
 #include <QJsonArray>
 
 /* DEFS */
-//#define PRINT_WALLET_DATA
+#define PRINT_WALLET_DATA
 //#define SIMULATE_DATA
 #define DEBUGINFO qDebug() << (QString ("DapNodeWalletData::") + __func__)
 #define ARRAYSIZE(a) (sizeof(a) / sizeof(*(a)))
@@ -399,6 +399,7 @@ void DapNodeWalletData::_parseWallets (const QJsonObject &a_data)
 
       /* fill with data */
       wallet.name = i.key();
+      //DEBUGINFO << wallet.name;
       _parseNetworks (i.value().toArray(), wallet);
 
 #ifndef SIMULATE_DATA
@@ -427,6 +428,7 @@ void DapNodeWalletData::_parseNetworks (const QJsonArray &a_list, Wallet &a_dest
       /* fill with data */
       network.name    = data.value ("network").toString();
       network.address = data.value ("address").toString();
+      //DEBUGINFO << network.name;
       _parseTokens (data.value ("tokens").toArray(), network/*, a_dest.fast.tokenNames*/);
 
       /* store name and data */
@@ -451,6 +453,7 @@ void DapNodeWalletData::_parseTokens (const QJsonArray &a_list, Network &a_dest/
         continue;
       token.balance = data.value ("balance").toString();
       token.datoshi = data.value ("datoshi").toString();
+      //DEBUGINFO << token.name;
 
       /* store name and data */
 //    a_tokenNames.append (token.name);
