@@ -1,7 +1,7 @@
 ﻿#include "DapTunAndroid.h"
 
 
-#include <QtAndroid>
+
 #include <QtAndroidExtras>
 #include <jni.h>
 #include <unistd.h>

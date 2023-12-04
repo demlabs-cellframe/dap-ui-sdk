@@ -4,6 +4,7 @@
 #include "dapqml-model/dapqmlmodelroutingexceptions.h"
 
 #include <QPainter>
+#include <QFile>
 
 /* VARS */
 static const char *s_imageProvider  = "DapQmlModelRoutingExceptionsImageProvider";

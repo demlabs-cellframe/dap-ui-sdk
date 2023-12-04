@@ -4,6 +4,7 @@
 #include "helper/trafficstringhelper.h"
 #include "helper/uptimestringhelper.h"
 #include <QTimer>
+#include <QRandomGenerator>
 
 /* VARS */
 static DapGraphicSceneStyle graphicSceneStyle;
@@ -102,8 +103,8 @@ void Statistics::startImitatingSchedules()
   connect (t, &QTimer::timeout, [&]
   {
     /* add random values */
-    auto rec  = qrand() % 1024,
-    sent = qrand() % 1024;
+    auto rec  = QRandomGenerator::global()->generate() % 1024,
+    sent = QRandomGenerator::global()->generate() % 1024;
     schedules.addInp (rec);
     schedules.addOut (sent);
 
@@ -114,7 +115,7 @@ void Statistics::startImitatingSchedules()
     addBytesSent (uploadSpeed());
     addPacketsReceived (1);
     addPacketsSent (1);
-    setPing (qrand() % 300);
+    setPing (QRandomGenerator::global()->generate() % 300);
 
     /* update uptime */
     ui->statUptime->setMainText (uptimeStr());

@@ -87,7 +87,7 @@ win32{
     QMAKE_CXXFLAGS +=  -mno-ms-bitfields
 }
 android {
-QT += androidextras
+#QT += androidextras
 }
 
 INCLUDEPATH += $$PWD/../quazip

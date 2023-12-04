@@ -33,7 +33,7 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 #endif
 
 #ifdef Q_OS_ANDROID
-#include <QtAndroid>
+
 #include <QAndroidJniObject>
 #endif
 #include <fcntl.h>

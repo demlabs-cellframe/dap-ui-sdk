@@ -3,7 +3,7 @@
 #include <QDebug>
 
 #ifdef Q_OS_ANDROID
-#include <QtAndroid>
+
 #include <QAndroidJniEnvironment>
 #endif
 

@@ -6,6 +6,8 @@
 #include <QDataStream>
 
 
+bool operator==(QStringView sv, const char * c);
+
 namespace DapUtils
 {
     template<typename T>

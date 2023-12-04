@@ -2,7 +2,7 @@
 #include <QSettings>
 #include <QTimer>
 #ifdef Q_OS_ANDROID
-#include <QtAndroid>
+
 #include <QtAndroidExtras/QAndroidJniObject>
 #endif
 #include "ServiceCtlOld.h"

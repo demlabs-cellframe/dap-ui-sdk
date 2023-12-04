@@ -14,8 +14,8 @@
 #include "dap_file_utils.h"
 
 #ifdef Q_OS_ANDROID
-#include <QtAndroid>
-#include <QAndroidJniObject>
+//#include <QtAndroid>
+//#include <QAndroidJniObject>
 #endif
 
 class DapLogger : public QObject

@@ -2,7 +2,6 @@
 
 #include <QGuiApplication>
 #include <QScreen>
-#include <QDesktopWidget>
 #include <QRect>
 #include <QApplication>
 #include <QDebug>

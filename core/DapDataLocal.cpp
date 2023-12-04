@@ -12,6 +12,8 @@
 #include "DapSerialKeyData.h"
 #include "DapSerialKeyHistory.h"
 #include "DapLogger.h"
+#include <QRandomGenerator>
+
 
 #ifdef DAP_OS_ANDROID
 #include <sys/sendfile.h>
@@ -374,7 +376,7 @@ QString DapDataLocal::getRandomString(int size)
 
    QString randomString;
    for(int i=0; i < randomStringLength; ++i){
-       int index = qrand() % possibleCharacters.length();
+       int index = QRandomGenerator::global()->generate() % possibleCharacters.length();
        QChar nextChar = possibleCharacters.at(index);
        randomString.append(nextChar);
    }

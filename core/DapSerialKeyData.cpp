@@ -58,7 +58,7 @@ const QDateTime &DapSerialKeyData::licenseTermTill() const
 
 int DapSerialKeyData::daysLeft()
 {
-    if (this->licenseTermTill().toTime_t() == 0)
+    if (this->licenseTermTill().toSecsSinceEpoch() == 0)
         return -1;
 
     return QDateTime::currentDateTime().daysTo(this->licenseTermTill());
@@ -87,7 +87,7 @@ QString DapSerialKeyData::daysLeftString()
 
 void DapSerialKeyData::setLicenseTermTill(const QString &a_date)
 {
-    QDateTime tempDate = QDateTime::fromTime_t(a_date.toUInt());
+    QDateTime tempDate = QDateTime::fromSecsSinceEpoch(a_date.toUInt());
     if (this->m_licenseTermTill == tempDate)
         return;
     this->m_licenseTermTill = tempDate;
@@ -99,13 +99,13 @@ void DapSerialKeyData::operator=(const DapSerialKeyData &a_another)
 {
     this->setSerialKey(a_another.serialKey());
     this->setActivated(a_another.isActivated());
-    this->setLicenseTermTill(QString::number(a_another.licenseTermTill().toTime_t()));
+    this->setLicenseTermTill(QString::number(a_another.licenseTermTill().toSecsSinceEpoch()));
 }
 
 QDataStream &operator<<(QDataStream &a_outStream, const DapSerialKeyData &a_serialKeyData)
 {
     a_outStream << a_serialKeyData.serialKey() << DapUtils::toByteArray(a_serialKeyData.isActivated())
-                << QString::number(a_serialKeyData.licenseTermTill().toTime_t());
+                << QString::number(a_serialKeyData.licenseTermTill().toSecsSinceEpoch());
     return a_outStream;
 }
 
