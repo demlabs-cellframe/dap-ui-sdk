@@ -47,6 +47,7 @@ class ModuleModel : public QAbstractListModel
   ModuleInterface *_module;
 public:
   ModuleModel (ModuleInterface *a_module);
+  void refresh();
   int rowCount (const QModelIndex &parent = QModelIndex()) const override;
   int columnCount (const QModelIndex &parent = QModelIndex()) const override;
 
@@ -490,14 +491,17 @@ void DapQmlModelOrderList::slotWalletsDataUpdated()
 
   auto wallets  = _data->module.wallets()->as<WalletsModule>();
   wallets->setCurrentIndex (-1);
+  s_walletsModel->refresh();
   emit sigWalletUpdated (wallets->name());
 
   auto networks  = _data->module.networks()->as<NetworksModule>();
   networks->setCurrentIndex (-1);
+  s_networksModel->refresh();
   emit sigNetworkUpdated (networks->name());
 
   auto tokens  = _data->module.tokens()->as<TokensModule>();
   tokens->setCurrentIndex (-1);
+  s_tokensModel->refresh();
   emit sigTokenUpdated (tokens->name());
 }
 
@@ -755,6 +759,7 @@ void DapQmlListModuleProxyModel::setRowFilter (const QString &a_filter)
   _indexMap.clear();
   _indexMapCounter  = 0;
   invalidateFilter();
+  _printFilteredResult();
 }
 
 int DapQmlListModuleProxyModel::currentIndex() const
@@ -793,6 +798,20 @@ void DapQmlListModuleProxyModel::_setup(
   _module       = a_module;
   _moduleModel  = a_model;
   setSourceModel (a_model);
+}
+
+void DapQmlListModuleProxyModel::_printFilteredResult() const
+{
+  if (_moduleModel == nullptr)
+    return;
+
+  int size  = rowCount();
+
+  qDebug() << "DapQmlListModuleProxyModel::_printFilteredResult" << size << m_filter;
+
+  for (int i = 0; i < size; i++)
+    qDebug() << data (index (i, 0), 9 ).toString()
+             << data (index (i, 0), 10).toString();
 }
 
 bool DapQmlListModuleProxyModel::filterAcceptsRow (int sourceRow, const QModelIndex &) const
@@ -855,6 +874,12 @@ ModuleModel::ModuleModel (ModuleInterface *a_module)
   : _module (a_module)
 {
 
+}
+
+void ModuleModel::refresh()
+{
+  beginResetModel();
+  endResetModel();
 }
 
 int ModuleModel::rowCount (const QModelIndex &) const

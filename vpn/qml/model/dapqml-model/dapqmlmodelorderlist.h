@@ -330,6 +330,7 @@ public:
   Q_INVOKABLE void setCurrentIndex (int a_value);
 protected:
   void _setup (OrderListModule::ModuleInterface *a_module, QAbstractListModel *a_model);
+  void _printFilteredResult() const;
   /// @}
 
   /****************************************//**
