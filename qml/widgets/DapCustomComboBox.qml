@@ -290,6 +290,10 @@ Item
                 {
                     displayText = getModelData(currentIndex, mainTextRole)
                     mainItem.currentIndex = currentIndex
+                    if(displayText)
+                    {
+                        console.log("New item selected: " + displayText);
+                    }
                 }
 
             }
