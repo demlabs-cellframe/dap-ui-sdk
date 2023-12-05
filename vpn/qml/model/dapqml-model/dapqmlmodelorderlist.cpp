@@ -752,8 +752,8 @@ DapQmlListModuleProxyModel::DapQmlListModuleProxyModel (Mode a_mode)
 
 void DapQmlListModuleProxyModel::setRowFilter (const QString &a_filter)
 {
-  if (m_filter == a_filter)
-    return;
+//  if (m_filter == a_filter)
+//    return;
 
   m_filter  = a_filter;
   _indexMap.clear();

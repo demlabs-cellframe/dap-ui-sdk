@@ -391,6 +391,8 @@ void DapNodeWalletData::setCurrentToken (int a_value)
 void DapNodeWalletData::_parseWallets (const QJsonObject &a_data)
 {
   _wallets.clear();
+  _data.tokenBalanceList.clear();
+  _data.walletTokenList.clear();
 //  _fast.walletNames.clear();
 
   for (auto i = a_data.constBegin(), e = a_data.constEnd(); i != e; i++)

@@ -225,6 +225,8 @@ Item {
     signal sigSearchClicked();
     signal sigWalletConfirmClicked();
 
+    signal sigUpdateValuesFromModel();
+
     /* CHOOSE WALLET */
 
     onSigNetworkClicked: {
@@ -288,19 +290,7 @@ Item {
         if (interfaceObject === undefined)
             return;
 
-        root.internal.network       = interfaceObject.network();
-        root.internal.wallet        = interfaceObject.wallet();
-        root.internal.token         = interfaceObject.token();
-        root.internal.unit          = interfaceObject.unit();
-        root.internal.price         = interfaceObject.price();
-        root.internal.priceShort    = interfaceObject.priceShort();
-        root.internal.maxPrice      = interfaceObject.maxPrice();
-        root.internal.minPrice      = interfaceObject.minPrice();
-        root.internal.maxUnit       = interfaceObject.maxUnit();
-        root.internal.minUnit       = interfaceObject.minUnit();
-        root.internal.tokenValue    = interfaceObject.tokenValue();
-
-        _updateFilterSetupValue();
+        getDataFromInterface();
     }
 
     /// @}
@@ -517,6 +507,22 @@ Item {
             && (root.internal.wallet     !== "" && root.internal.wallet      !== " ")
             && (root.internal.token      !== "" && root.internal.token       !== " ")
             && (root.internal.tokenValue !== "" && root.internal.tokenValue  !== " ")
+    }
+
+    function getDataFromInterface() {
+        root.internal.network       = interfaceObject.network();
+        root.internal.wallet        = interfaceObject.wallet();
+        root.internal.token         = interfaceObject.token();
+        root.internal.unit          = interfaceObject.unit();
+        root.internal.price         = interfaceObject.price();
+        root.internal.priceShort    = interfaceObject.priceShort();
+        root.internal.maxPrice      = interfaceObject.maxPrice();
+        root.internal.minPrice      = interfaceObject.minPrice();
+        root.internal.maxUnit       = interfaceObject.maxUnit();
+        root.internal.minUnit       = interfaceObject.minUnit();
+        root.internal.tokenValue    = interfaceObject.tokenValue();
+
+        _updateFilterSetupValue();
     }
 
     /// @}
@@ -1323,6 +1329,7 @@ Item {
                         root.sigRefreshDataClicked();
                         // console.log("refresh clicked");
                         btnRefreshWallets.enabled = false;
+                        searchFilterContent.enabled = false;
                         btnRefreshWalletsDisabledTimer.start();
                     }
 
@@ -1330,8 +1337,13 @@ Item {
                         id: btnRefreshWalletsDisabledTimer
                         running: false
                         repeat: false
-                        interval: 5000
-                        onTriggered: btnRefreshWallets.enabled = true
+                        interval: 2000
+                        onTriggered: {
+                            root.sigUpdateValuesFromModel();
+                            btnRefreshWallets.enabled = true;
+                            searchFilterContent.enabled = true;
+                            root.getDataFromInterface();
+                        }
                     }
                 }
 
