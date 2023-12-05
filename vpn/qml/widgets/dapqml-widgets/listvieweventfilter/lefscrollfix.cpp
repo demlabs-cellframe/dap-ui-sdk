@@ -42,7 +42,7 @@ void LefScrollFix::process (QObject *a_target, Data &a_data)
         a_data.position,
         a_data.globalPosition,
         QPoint(),//a_data.pixelDelta,
-        a_data.angleDelta,//a_data.angleDelta,
+        a_data.pixelDelta,//a_data.angleDelta,
         a_data.buttons,
         a_data.modifiers,
         a_data.phase,

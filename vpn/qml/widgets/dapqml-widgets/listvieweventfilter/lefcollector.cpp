@@ -29,6 +29,7 @@ protected:
   QVector<Data> positions;
   QTimer *timeout;
   mutable QMutex mutex;
+  bool isFlushing;
 
   /* CONSTRUCT/DESTRUCT */
 public:
@@ -86,13 +87,14 @@ void LefCollector::process (QObject *a_target, Data &a_data)
 LefCollector::Private::Private()
   : target (nullptr)
   , timeout (new QTimer)
+  , isFlushing (false)
 {
   /* reserve slots */
   positions.reserve (128);
 
   /* setup flush timer */
   timeout->setSingleShot (true);
-  timeout->setInterval (50);
+  timeout->setInterval (200);
 
   QObject::connect (timeout, &QTimer::timeout,
                     [this] { flush(); });
@@ -112,6 +114,9 @@ void LefCollector::Private::setTarget (QObject *a_target)
 
 void LefCollector::Private::push (Data &&a_value)
 {
+  if (isFlushing)
+    return;
+
   DEBUGINFO;
   QMutexLocker l (&mutex);
 
@@ -125,6 +130,9 @@ void LefCollector::Private::push (Data &&a_value)
 
 void LefCollector::Private::push (const Data &a_value)
 {
+  if (isFlushing)
+    return;
+
   DEBUGINFO;
   QMutexLocker l (&mutex);
 
@@ -150,6 +158,7 @@ int LefCollector::Private::sum() const
 void LefCollector::Private::flush()
 {
   DEBUGINFO;
+  isFlushing = true;
   QMutexLocker l (&mutex);
 
   /* check */
@@ -177,6 +186,8 @@ void LefCollector::Private::flush()
 
   /* send */
   QCoreApplication::sendEvent (target, &event);
+
+  isFlushing = false;
 }
 
 /*-----------------------------------------*/

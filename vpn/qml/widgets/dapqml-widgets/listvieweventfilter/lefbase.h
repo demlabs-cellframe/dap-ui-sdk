@@ -17,7 +17,7 @@ class LefBase
    * @name DEFS
    *******************************************/
   /// @{
-protected:
+public:
   struct Data
   {
     QPointF position;

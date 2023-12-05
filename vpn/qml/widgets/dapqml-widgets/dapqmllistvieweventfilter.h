@@ -49,14 +49,6 @@ public:
   static void attachFilter (QObject *a_object);
   bool eventFilter (QObject *a_watched, QEvent *a_event) override;
   /// @}
-
-  /****************************************//**
-   * @name SLOTS
-   *******************************************/
-  /// @{
-protected slots:
-  void _slotFakeEvent();
-  /// @}
 };
 
 /*-----------------------------------------*/
