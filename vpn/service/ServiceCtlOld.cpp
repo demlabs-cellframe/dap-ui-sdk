@@ -3,7 +3,7 @@
 #include <QTimer>
 #ifdef Q_OS_ANDROID
 
-#include <QtAndroidExtras/QAndroidJniObject>
+
 #endif
 #include "ServiceCtlOld.h"
 #include "dap_common.h"

@@ -33,8 +33,8 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 #endif
 
 #ifdef Q_OS_ANDROID
-
-#include <QAndroidJniObject>
+#include <QJniObject>
+#include <QCoreApplication>
 #endif
 #include <fcntl.h>
 #include <unistd.h>
@@ -282,10 +282,10 @@ QString Cert::storagePath()
 #elif defined (Q_OS_WIN)
     return QString("%1/%2").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
-    static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod(
+    static QJniObject l_pathObj = QJniObject(QNativeInterface::QAndroidApplication::context()).callObjectMethod(
                 "getExternalFilesDir"
                 , "(Ljava/lang/String;)Ljava/io/File;"
-                , QAndroidJniObject::fromString(QString("")).object());
+                , QJniObject::fromString(QString("")).object());
     return l_pathObj.toString();
 #endif
     return {};

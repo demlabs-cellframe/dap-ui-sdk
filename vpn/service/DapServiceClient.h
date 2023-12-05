@@ -18,8 +18,7 @@ typedef QLocalSocket::LocalSocketError DapUiSocketError;
 #endif
 
 #ifdef Q_OS_ANDROID
-#include <QAndroidJniEnvironment>
-#include <QAndroidJniObject>
+
 
 #endif
 

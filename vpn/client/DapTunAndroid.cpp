@@ -2,7 +2,7 @@
 
 
 
-#include <QtAndroidExtras>
+#include <DapAndroidHelpers.h>
 #include <jni.h>
 #include <unistd.h>
 #include <QTcpSocket>
@@ -38,7 +38,7 @@ void DapTunAndroid::tunDeviceCreate()
 
 void DapTunAndroid::tunDeviceDestroy()
 {
-    QtAndroid::androidService().callMethod<void>("stop" DAP_BRAND "ServiceNative", "()V");
+    dapQtAndroidServiceContext().callMethod<void>("stop" DAP_BRAND "ServiceNative", "()V");
     qInfo() << "Close tun device (and usualy destroy that after)";
     if(m_tunSocket>0){
         ::close(m_tunSocket);
@@ -59,7 +59,11 @@ void DapTunAndroid::workerStart() {
         return;
     }
     tunWorker->setTunSocket(m_tunSocket);
-    tunFuture = QtConcurrent::run(tunWorkerAndroid, &DapTunWorkerUnix::loop);
+    
+    /*
+        https://doc.qt.io/qt-6/concurrent-changes-qt6.html
+    */
+    tunFuture = QtConcurrent::run(&DapTunWorkerUnix::loop, tunWorkerAndroid );
     onWorkerStarted();
 }
 

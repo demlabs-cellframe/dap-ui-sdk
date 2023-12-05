@@ -10,7 +10,7 @@
 #endif
 
 #ifdef Q_OS_ANDROID
-#include <QAndroidService>
+#include <DapAndroidHelpers.h>
 #include <android/log.h>
 #endif
 
@@ -128,7 +128,7 @@ QString DapLogger::defaultLogPath(const QString a_brand)
     return QString("%1/%2/log").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
     Q_UNUSED(a_brand);
-    static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod(
+    static DapQtJniObject l_pathObj = dapQtAndroidServiceContext().callObjectMethod(
                     "getFilesDir"
                     , "()Ljava/io/File;");
     return QString("%1/log").arg(l_pathObj.toString());
