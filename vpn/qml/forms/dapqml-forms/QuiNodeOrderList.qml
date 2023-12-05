@@ -702,6 +702,7 @@ Item {
             id: itemRoot
             width: resizer.width// - 100
             height: resizer.height
+            opacity: 0.5 + enabled * 0.5
 
 //            Component.onCompleted: StyleDebugTree.describe (
 //               "listviewDelegate" + model.index,
