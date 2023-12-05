@@ -231,7 +231,7 @@ void StyleDebugTree::TreeItem::remove (int a_index)
 
 void StyleDebugTree::TreeItem::remove (QString a_name)
 {
-  for (auto i = 0LL, e = m_childItems.size(); i != e; i++)
+  for (size_t i = 0, e = m_childItems.size(); i != e; i++)
     {
       auto item = m_childItems[i]->m_item;
 
@@ -292,7 +292,7 @@ int StyleDebugTree::TreeItem::row() const
   if (m_parent == nullptr)
     return 0;
 
-  for (auto i = 0LL, e = m_parent->m_childItems.size(); i < e; i++)
+  for (size_t i = 0, e = m_parent->m_childItems.size(); i < e; i++)
     if (m_parent->m_childItems.at(i) == this)
       return i;
 
@@ -321,7 +321,7 @@ void StyleDebugTree::TreeItem::update()
     return;
 
   /* update fields tree representations */
-  for (auto i = 0LL, e = m_childItems.size(); i != e; i++)
+  for (size_t i = 0, e = m_childItems.size(); i != e; i++)
     {
       auto child  = m_childItems.at(i);
       auto data   = desc.fieldsData().value(i);
