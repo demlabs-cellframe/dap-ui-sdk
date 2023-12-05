@@ -1526,6 +1526,19 @@ Item {
                     id: btnConfirm
                     DapQmlStyle { item: btnConfirm; qss: "nodeorlist-overview-confirm-btn" }
                     sourceComponent: pushButton
+                    visible: {
+                        switch (root.internal.mode)
+                        {
+                        case QuiNodeOrderList.MaxUnit:
+                        case QuiNodeOrderList.MinUnit:
+                        case QuiNodeOrderList.MaxPrice:
+                        case QuiNodeOrderList.MinPrice:
+                        case QuiNodeOrderList.TokenValue:
+                            return true;
+                        }
+                        return false;
+                    }
+
                     property string text: qsTr("CONFIRM")
                     property color color
                     property color fill
