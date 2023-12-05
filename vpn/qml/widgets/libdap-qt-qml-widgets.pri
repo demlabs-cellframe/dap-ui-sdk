@@ -31,6 +31,9 @@ HEADERS += \
     $$PWD/dapqml-widgets/dapqmlthememodel.h \
     $$PWD/dapqml-widgets/doc-group-dapqmlstyle.h \
     $$PWD/dapqml-widgets/doc-group-qml-widgets.h \
+    $$PWD/dapqml-widgets/listvieweventfilter/lefcollector.h \
+    $$PWD/dapqml-widgets/listvieweventfilter/lefdisablemomentum.h \
+    $$PWD/dapqml-widgets/listvieweventfilter/lefscrollfix.h \
     $$PWD/dapqml-widgets/listvieweventfilter/leftest.h \
     $$PWD/dapqml-widgets/style/debug/styledebugitemdescriptor.h \
     $$PWD/dapqml-widgets/style/qssitem.h \
@@ -52,6 +55,9 @@ SOURCES += \
     $$PWD/dapqml-widgets/dapqmlnodedatamodel.cpp \
     $$PWD/dapqml-widgets/dapqmlswitchctl.cpp \
     $$PWD/dapqml-widgets/dapqmlthememodel.cpp \
+    $$PWD/dapqml-widgets/listvieweventfilter/lefcollector.cpp \
+    $$PWD/dapqml-widgets/listvieweventfilter/lefdisablemomentum.cpp \
+    $$PWD/dapqml-widgets/listvieweventfilter/lefscrollfix.cpp \
     $$PWD/dapqml-widgets/listvieweventfilter/leftest.cpp \
     $$PWD/dapqml-widgets/style/debug/styledebugitemdescriptor.cpp \
     $$PWD/dapqml-widgets/style/qssitem.cpp \

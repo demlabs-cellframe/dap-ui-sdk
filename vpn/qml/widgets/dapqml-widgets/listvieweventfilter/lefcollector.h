@@ -1,36 +1,36 @@
-#ifndef LEFBASE_H
-#define LEFBASE_H
+#ifndef LEFCOLLECTOR_H
+#define LEFCOLLECTOR_H
 
 /* INCLUDES */
 
-#include <QtCore>
+#include "lefbase.h"
 
 /****************************************//**
- * @brief listview event filter base class
- * @date 30.11.2023
+ * @brief lef collector class
+ *
+ * Collects events and after timeout sends
+ * mid value as an event.
+ *
+ * @date 05.12.2023
  * @author Mikhail Shilenko
  *******************************************/
 
-class LefBase
+class LefCollector : public LefBase
 {
   /****************************************//**
    * @name DEFS
    *******************************************/
   /// @{
 protected:
-  struct Data
-  {
-    QPointF position;
-    QPointF globalPosition;
-    QPoint pixelDelta;
-    QPoint angleDelta;
-    Qt::MouseButtons buttons;
-    Qt::KeyboardModifiers modifiers;
-    Qt::ScrollPhase phase;
-    bool inverted;
-    Qt::MouseEventSource source;
-    bool eventIsHandled; // set this true - if you want to skip this event
-  };
+  struct Private;
+  /// @}
+
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
+protected:
+  Private *data;
   /// @}
 
   /****************************************//**
@@ -38,8 +38,8 @@ protected:
    *******************************************/
   /// @{
 public:
-  explicit LefBase() {}
-  virtual ~LefBase() {}
+  explicit LefCollector();
+  ~LefCollector() override;
   /// @}
 
   /****************************************//**
@@ -47,9 +47,9 @@ public:
    *******************************************/
   /// @{
 public:
-  virtual void process (QObject *a_target, Data &a_data) {}
+  void process (QObject *a_target, Data &a_data) override;
   /// @}
 };
 
 /*-----------------------------------------*/
-#endif // LEFBASE_H
+#endif // LEFCOLLECTOR_H
