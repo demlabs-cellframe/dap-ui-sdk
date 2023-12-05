@@ -289,7 +289,7 @@ void DapUtun::onWorkerStarted()
     // Add additional Apple routes
     foreach(QString additionalRoute, appleAdditionalRoutes){
         QString routeNet, routeMask;
-        QStringList routeArgs = additionalRoute.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
+        QStringList routeArgs = additionalRoute.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
 
         if(routeArgs.length() == 1 ){
             ::system( QString("route add -host %1 %2")
