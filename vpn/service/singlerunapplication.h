@@ -12,11 +12,11 @@
 class QSharedMemoryStub
 {
     public:
-        QSharedMemoryStub(const QString &key);
-        bool attach();
-        void detach();
-        bool create(int);
-        bool isAttached();
+        QSharedMemoryStub(const QString &key){};
+        bool attach(){};
+        void detach(){};
+        bool create(int){};
+        bool isAttached(){};
 };
 
 using QSharedMemory = QSharedMemoryStub;

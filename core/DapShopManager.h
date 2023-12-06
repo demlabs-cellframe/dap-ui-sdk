@@ -6,8 +6,7 @@
 #include <QMap>
 
 #ifdef Q_OS_ANDROID
-#include <QtAndroidExtras/qandroidjniobject.h>
-#include <QtAndroidExtras/qandroidactivityresultreceiver.h>
+#include <DapAndroidHelpers.h>
 #endif
 
 class DapShopManager : public QObject
@@ -55,7 +54,7 @@ private:
     void reportErrorMessage(const QString& msg);
 
 #ifdef Q_OS_ANDROID
-    QAndroidJniObject m_store;
+    DapQtJniObject m_store;
 #endif
     QString m_token;
     QString m_sku;
