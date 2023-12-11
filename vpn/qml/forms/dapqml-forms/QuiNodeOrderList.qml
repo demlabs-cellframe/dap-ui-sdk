@@ -156,7 +156,7 @@ Item {
             case QuiNodeOrderList.MaxPrice: listTitle   = qsTr("Max Price"); break;
             case QuiNodeOrderList.MinPrice: listTitle   = qsTr("Min Price"); break;
 
-            case QuiNodeOrderList.TokenValue: listTitle = qsTr("Max Price"); break;
+            case QuiNodeOrderList.TokenValue: listTitle = qsTr("Max amount to pay"); break;
             }
 
             /* set value */
@@ -361,12 +361,13 @@ Item {
         case QuiNodeOrderList.Wallets:
             root.internal.token     = " ";
             //csListView.model.onWalletChange();
-            csListViewTokens.model.currentIndex     = -1;
+            //csListViewTokens.model.currentIndex     = -1;
             interfaceObject.setData(
             {
                 wallet      : root.internal.wallet,
-                token       : root.internal.token,
+                //token       : root.internal.token,
             });
+            getDataFromInterface();
             break;
 
         }
@@ -1238,7 +1239,7 @@ Item {
 
                     Loader {
                         sourceComponent: compButton
-                        visible: !root.internal.isSearch
+                        visible: false // !root.internal.isSearch
                         property string first:      root.internal.token
                         property string second:     qsTr("Token*")
                         property string labelTopQss
@@ -1251,11 +1252,72 @@ Item {
                         sourceComponent: compButton
                         visible: !root.internal.isSearch
                         property string first:      root.internal.tokenValue
-                        property string second:     qsTr("Max price*")
+                        property string second:     qsTr("Max amount to pay*")
                         property string labelTopQss
                         property string labelBottomQss
                         property bool swap:         true
                         property var cbOnClicked: function() { root.sigTokenValueClicked(); }
+
+                        Image {
+                            x: parent.width - parent.height * 1.325
+                            y: Math.floor ((parent.height - height) / 2)
+                            width: Math.floor (parent.height * 0.4)
+                            height: width
+                            mipmap: true
+                            smooth: true
+                            antialiasing: false
+                            source: "qrc:/nonthemed/tooltip-icon.png"
+
+                            MouseArea {
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onEntered: tooltipIcnPopup.visible = true
+                                onExited: tooltipIcnPopup.visible  = false
+                            }
+
+                            ToolTip {
+                                id: tooltipIcnPopup
+                                width: dummyText.contentWidth + dummyText.contentHeight * 0.625
+                                height: dummyText.contentHeight * 1.625
+                                delay: 600
+                                timeout: 15000
+                                visible: false
+
+                                topInset: 0
+                                bottomInset: 0
+                                leftInset: 0
+                                rightInset: 0
+                                padding: 0
+                                margins: 0
+
+                                background: Item {}
+
+                                contentItem: Rectangle {
+                                    anchors.bottom: parent.top
+                                    width: parent.width
+                                    height: parent.height
+                                    color: colorLabel.color
+                                    border.color: colorLabelGray.color
+                                    radius: height * 0.125
+
+                                    property string tooltipText: qsTr ("Max price description text will\nbe right here")
+
+                                    Text {
+                                        id: dummyText
+                                        visible: false
+                                        font.pixelSize: delegateOrderLabelSize.fontSize
+                                        text: parent.tooltipText
+                                    }
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        font.pixelSize: delegateOrderLabelSize.fontSize
+                                        text: parent.tooltipText
+                                        color: colorBackground.color
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     Loader {

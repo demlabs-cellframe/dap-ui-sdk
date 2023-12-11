@@ -109,6 +109,8 @@ void DapNode::initStmTransitions()
     &m_stm->nodeDetection);
     m_stm->initialState.addTransition(this, &DapNode::sigCondTxCreateRequest,
     &m_stm->getFee);
+    m_stm->initialState.addTransition(this, &DapNode::sigFeeRequest,
+    &m_stm->getFeeIsolated);
     //&m_stm->nodeGetStatus);
     m_stm->initialState.addTransition(this, &DapNode::sigGetOrderListRequest,
     &m_stm->getListKeys);
@@ -147,6 +149,12 @@ void DapNode::initStmTransitions()
     // fee received -> condition transaction create request
     m_stm->getFee.addTransition(this, &DapNode::sigFeeReceived,
     &m_stm->getNetId);
+
+    // fee received (isolated) -> send result
+    m_stm->getFeeIsolated.addTransition(this, &DapNode::sigFeeReceived,
+    &m_stm->initialState);
+    m_stm->getFeeIsolated.addTransition(this, &DapNode::errorDetected,
+    &m_stm->initialState);
 
     // fee received -> condition transaction create request
     m_stm->getNetId.addTransition(this, &DapNode::sigNetIdReceived,
@@ -313,6 +321,10 @@ void DapNode::initStmStates()
     connect (&m_stm->getFee, &QState::entered, this, [=](){
         web3->getFeeRequest(m_networkName);
     });
+    // get fee isolated
+    connect (&m_stm->getFeeIsolated, &QState::entered, this, [=](){
+        web3->getFeeRequest (m_networkName);
+    });
 
     connect (&m_stm->getNetId, &QState::entered, this, [=](){
         web3->getNetIdRequest(m_networkName); //web3->DapNodeWeb3::getNetIdRequest(netId);
@@ -460,6 +472,12 @@ void DapNode::initWeb3Connections()
         m_fee = fee;
         emit sigFeeReceived();
     });
+    connect (web3, &DapNodeWeb3::sigFeeData,
+             this, [=] (const QJsonObject &a_data)
+    {
+      if (m_stm->getFeeIsolated.active())
+        emit sigFeeReceivedData (a_data);
+    });
     // connect to stream
     connect(web3, &DapNodeWeb3::sigNodeDump, this, [=](QList<QMap<QString, QString>> nodeDump) {
 //         riemann, use dap_chain_net_id_by_name() "0x000000000000dddd"
@@ -594,5 +612,11 @@ void DapNode::slotGetNetIdReqest(QString netId)
 void DapNode::slotWalletsRequest()
 {
   emit sigWalletsRequest();
+}
+
+void DapNode::slotFeeRequest (QString a_networkName)
+{
+  m_networkName = a_networkName;
+  emit sigFeeRequest();
 }
 

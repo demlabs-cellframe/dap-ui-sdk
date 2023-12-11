@@ -93,6 +93,7 @@ public slots:
   void slotCheckSigned();
   void slotStartConnectByOrder();
   void slotRequestIpNode (const QString &networkName, const QJsonArray &orderList);
+  void slotRequestNetworkFee (const QString &a_networkName);
   /// @}
 
   /****************************************//**
@@ -105,6 +106,7 @@ signals:
 //  void sigTokensInfo (QHash<QString, QString> data);
 //  void sigOrderListData (QMap<QString, QVariant> data);
 //  void sigTokenAmount (QString token, QString amount);
+//  void sigWalletsList (QStringList a_list);
   void sigNodeError (int code, QString errorMessage);
   void sigTransactionHashInMempool();
   void sigTransactionHashInledger();
@@ -112,6 +114,7 @@ signals:
   void sigSigningReceived (qint32 utype, qint64 uid, QString units, QString value);
   void sigOrderList (const QJsonArray &a_list);
   void sigNodeIpList (const QJsonObject &a_list);
+  void sigFeeData (const QJsonObject &a_data);
 
   void sigNodeDetected();
   void sigOrderListDataUpdated();

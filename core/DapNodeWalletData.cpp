@@ -185,6 +185,14 @@ static const char* const s_simTokens[] =
   "Backbone:maka:CELL:0.1",
 };
 
+static const char* const s_simNetworkFee[] =
+{
+  "riemann:tKEL",
+  "subzero:tCELL",
+  "Backbone:CELL",
+  "KelVPN:KEL",
+};
+
 #endif // SIMULATE_DATA
 
 /********************************************
@@ -196,6 +204,9 @@ DapNodeWalletData::DapNodeWalletData()
   _data.currentNetwork  = -1;
   _data.currentWallet   = -1;
   _data.currentToken    = -1;
+
+  connect (this, &DapNodeWalletData::sigDataUpdated,
+           this, [this] { _cleanInvalidTokens(); });
 }
 
 DapNodeWalletData::~DapNodeWalletData()
@@ -269,6 +280,12 @@ void DapNodeWalletData::setWalletsData (const QJsonObject &a_walletsData)
   }
 #endif // SIMULATE_DATA
 
+  /* send networks */
+  _emitNetworksList();
+
+  /* update result data */
+  emit sigDataUpdated();
+
 #ifdef PRINT_WALLET_DATA
   _printWalletsData();
 #endif // PRINT_WALLET_DATA
@@ -276,6 +293,42 @@ void DapNodeWalletData::setWalletsData (const QJsonObject &a_walletsData)
 
 void DapNodeWalletData::setOrderListData (const QJsonArray &a_ordesListData)
 {
+}
+
+void DapNodeWalletData::setNetworkFee (const QString &a_networkName, const QString &a_fee)
+{
+#ifndef SIMULATE_DATA
+  /*-----------------------------------------*/
+
+  for (auto wallet = _wallets.begin(); wallet != _wallets.end(); wallet++)
+    for (auto network = wallet->networks.begin(); network != wallet->networks.end(); network++)
+      if (network->name == a_networkName)
+        network->feeTicker  = a_fee;
+
+  /*-----------------------------------------*/
+#else // SIMULATE_DATA
+  /*-----------------------------------------*/
+
+  typedef QPair<QString,QString> SimPair;
+
+  QList<SimPair> simData;
+  QStringList simSplit;
+
+  /* collect sim data*/
+  for (quint32 i = 0; i < ARRAYSIZE (s_simNetworkFee); i++)
+  {
+    simSplit = QString (s_simNetworkFee[i]).split(':');
+    simData << SimPair { simSplit.at(0), simSplit.at(1) };
+  }
+
+  for (auto wallet = _wallets.begin(); wallet != _wallets.end(); wallet++)
+    for (auto network = wallet->networks.begin(); network != wallet->networks.end(); network++)
+      for (const SimPair &pair : qAsConst (simData))
+        if (network->name == pair.first)
+          network->feeTicker  = pair.second;
+
+  /*-----------------------------------------*/
+#endif // SIMULATE_DATA
 }
 
 //const QStringList &DapNodeWalletData::wallets() const
@@ -413,8 +466,6 @@ void DapNodeWalletData::_parseWallets (const QJsonObject &a_data)
 //    _fast.walletNames.append (wallet.name);
       _wallets.append (std::move (wallet));
     }
-
-  emit sigDataUpdated();
 }
 
 void DapNodeWalletData::_parseNetworks (const QJsonArray &a_list, Wallet &a_dest)
@@ -525,9 +576,12 @@ void DapNodeWalletData::_parseWalletNetworkTokenData (const Wallet &a_value)
   {
     for (const auto &token : a_network.tokens)
       {
+//        /* magic token name */
+//        QString tokenName = QString ("%1 %2").arg (token.balance, token.name);
+
         /* store new WalletToken */
         _data.walletTokenList
-            << DapNodeWalletDataStruct::WalletToken { a_network.name, a_wallet.name, token.name };
+            << DapNodeWalletDataStruct::WalletToken { a_network.name, a_wallet.name, token.name, token.balance };
 
         /* store new TokenBalace */
         _data.tokenBalanceList
@@ -568,6 +622,99 @@ void DapNodeWalletData::_printWalletsData()
 
   for (const auto &token : qAsConst (_data.tokenBalanceList))
     qDebug() << QString ("%1:%2:%3:%4").arg (token.network, token.wallet, token.token, token.balance);
+}
+
+void DapNodeWalletData::_emitNetworksList()
+{
+//  /* variables */
+//  QStringList result;
+
+//  /* collect network list */
+//  for (auto wallet = _wallets.begin(); wallet != _wallets.end(); wallet++)
+//    for (auto network = wallet->networks.begin(); network != wallet->networks.end(); network++)
+//      if (!result.contains (network->name))
+//        result.append (network->name);
+
+//  /* send result */
+//  emit sigNetworksList (result);
+
+  emit sigNetworksList (_data.networkList);
+}
+
+void DapNodeWalletData::_cleanInvalidTokens()
+{
+  /* map contains network:wallet to token relations */
+  QHash<QString, QString> networkWalletTokens;
+
+  /* lambda's */
+  auto nwKeyString = [] (const QString &a_network, const QString &a_wallet) -> QString
+  {
+    return QString ("%1:%2").arg (a_network, a_wallet);
+  };
+
+  auto nwKeyStruct = [] (const Network &a_network, const Wallet &a_wallet) -> QString
+  {
+    return QString ("%1:%2").arg (a_network.name, a_wallet.name);
+  };
+
+#ifndef SIMULATE_DATA
+  /*-----------------------------------------*/
+
+  /* fill map */
+  for (auto wallet = _wallets.begin(); wallet != _wallets.end(); wallet++)
+    for (auto network = wallet->networks.begin(); network != wallet->networks.end(); network++)
+      if (!network->feeTicker.isEmpty())
+        networkWalletTokens.insert (nwKeyStruct (*network, *wallet), network->feeTicker);
+
+  /*-----------------------------------------*/
+#else // SIMULATE_DATA
+  /*-----------------------------------------*/
+
+  typedef QPair<QString,QString> SimPair;
+
+  QList<SimPair> simData;
+  QStringList simSplit;
+
+  /* collect sim data*/
+  for (quint32 i = 0; i < ARRAYSIZE (s_simNetworkFee); i++)
+  {
+    simSplit = QString (s_simNetworkFee[i]).split(':');
+    simData << SimPair { simSplit.at(0), simSplit.at(1) };
+  }
+
+  for (auto wt = _data.walletTokenList.begin(); wt != _data.walletTokenList.end(); wt++)
+    for (const SimPair &pair : qAsConst (simData))
+      if (wt->network == pair.first)
+        networkWalletTokens.insert (nwKeyString (wt->network, wt->wallet), pair.second);
+
+  /*-----------------------------------------*/
+#endif // SIMULATE_DATA
+
+  /* check */
+  if (networkWalletTokens.isEmpty())
+    return;
+
+  /* clean wallet-tokens */
+  for (auto wt = _data.walletTokenList.begin(); wt != _data.walletTokenList.end(); wt++)
+  {
+//_repeatCleaning:
+    /* get proper token */
+    QString token = networkWalletTokens.value (nwKeyString (wt->network, wt->wallet));
+
+    /* skip if empty */
+    if (token.isEmpty())
+      continue;
+
+    /* erase not invalid token from list and repeat */
+    if (wt->token != token)
+    {
+      wt  = _data.walletTokenList.erase (wt);
+      wt--;
+      //wt  = _data.walletTokenList.erase (wt);
+      //if (wt != _data.walletTokenList.end())
+      //  goto _repeatCleaning;
+    }
+  }
 }
 
 /*-----------------------------------------*/

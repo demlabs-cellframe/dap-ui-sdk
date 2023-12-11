@@ -7,6 +7,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QQueue>
 
 /********************************************
  * DEFS
@@ -28,6 +29,7 @@ struct DapQmlModelOrderList::DapQmlModelOrderListData
   QString wallet;
   QString token;
   QString unit;
+  QQueue<QString> feeRequestQueue;
 };
 
 class OrdersModel : public QAbstractListModel
@@ -433,6 +435,24 @@ void DapQmlModelOrderList::_modelReset()
 {
   beginResetModel();
   endResetModel();
+}
+
+void DapQmlModelOrderList::_setNwtworksFeeRequestList (const QStringList &a_list)
+{
+  for (const QString &a_network : a_list)
+    _data->feeRequestQueue << a_network;
+}
+
+QString DapQmlModelOrderList::_dequeueNetworkFeeRequest()
+{
+  if (_data->feeRequestQueue.isEmpty())
+    return QString();
+  return _data->feeRequestQueue.dequeue();
+}
+
+void DapQmlModelOrderList::_setNetworkFee (const QString &a_networkName, const QString &a_fee)
+{
+  DapNodeWalletData::instance()->setNetworkFee (a_networkName, a_fee);
 }
 
 /********************************************
