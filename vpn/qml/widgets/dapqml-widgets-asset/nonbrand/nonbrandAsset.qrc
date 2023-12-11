@@ -23,5 +23,6 @@
         <file compress="1">nonthemed/password-show.png</file>
         <file compress="1">nonthemed/arrow-up.png</file>
         <file compress="1">nonthemed/arrow-down.png</file>
+        <file compress="1">nonthemed/tooltip-icon.png</file>
     </qresource>
 </RCC>

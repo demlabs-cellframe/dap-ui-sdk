@@ -576,9 +576,12 @@ void DapNodeWalletData::_parseWalletNetworkTokenData (const Wallet &a_value)
   {
     for (const auto &token : a_network.tokens)
       {
+//        /* magic token name */
+//        QString tokenName = QString ("%1 %2").arg (token.balance, token.name);
+
         /* store new WalletToken */
         _data.walletTokenList
-            << DapNodeWalletDataStruct::WalletToken { a_network.name, a_wallet.name, token.name };
+            << DapNodeWalletDataStruct::WalletToken { a_network.name, a_wallet.name, token.name, token.balance };
 
         /* store new TokenBalace */
         _data.tokenBalanceList
@@ -694,7 +697,7 @@ void DapNodeWalletData::_cleanInvalidTokens()
   /* clean wallet-tokens */
   for (auto wt = _data.walletTokenList.begin(); wt != _data.walletTokenList.end(); wt++)
   {
-_repeatCleaning:
+//_repeatCleaning:
     /* get proper token */
     QString token = networkWalletTokens.value (nwKeyString (wt->network, wt->wallet));
 
@@ -706,8 +709,10 @@ _repeatCleaning:
     if (wt->token != token)
     {
       wt  = _data.walletTokenList.erase (wt);
-      if (wt != _data.walletTokenList.end())
-        goto _repeatCleaning;
+      wt--;
+      //wt  = _data.walletTokenList.erase (wt);
+      //if (wt != _data.walletTokenList.end())
+      //  goto _repeatCleaning;
     }
   }
 }
