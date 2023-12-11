@@ -184,6 +184,8 @@ void DapNodeWeb3::responseProcessing (
         {
           DEBUGINFO  << __func__ << " - Dashboard refused authorization";
           emit sigError (error, "Dashboard refused authorization");
+          //To send a repeat request
+          nodeConnectionRequest();
           return;
         }
     }
@@ -1167,6 +1169,14 @@ void DapNodeWeb3::replyError (int errorCode, const QString &errorString, const Q
             << errorCode
             << ((errorGuiMessage != errorString) ? errorGuiMessage : QString())
             << errorString;
-  emit sigError (errorCode, errorGuiMessage);
+
+  // For reconnect to Dashboard
+  if(errorString == "Incorrect id")
+  {
+    nodeConnectionRequest();
+        //TODO: Need reset no cdb GUI status
+  }
+  else
+    emit sigError (errorCode, errorGuiMessage);
 }
 
