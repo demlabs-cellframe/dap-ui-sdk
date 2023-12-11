@@ -156,7 +156,7 @@ Item {
             case QuiNodeOrderList.MaxPrice: listTitle   = qsTr("Max Price"); break;
             case QuiNodeOrderList.MinPrice: listTitle   = qsTr("Min Price"); break;
 
-            case QuiNodeOrderList.TokenValue: listTitle = qsTr("Max Price"); break;
+            case QuiNodeOrderList.TokenValue: listTitle = qsTr("Max amount to pay"); break;
             }
 
             /* set value */
@@ -1252,7 +1252,7 @@ Item {
                         sourceComponent: compButton
                         visible: !root.internal.isSearch
                         property string first:      root.internal.tokenValue
-                        property string second:     qsTr("Max price*")
+                        property string second:     qsTr("Max amount to pay*")
                         property string labelTopQss
                         property string labelBottomQss
                         property bool swap:         true
