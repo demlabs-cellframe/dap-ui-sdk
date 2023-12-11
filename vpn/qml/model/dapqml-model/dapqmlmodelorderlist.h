@@ -7,6 +7,7 @@
 class QQmlEngine;
 class QJSEngine;
 namespace OrderListModule { struct OrderItem; class ModuleInterface; }
+namespace Controler { class QmlCtl; }
 
 /****************************************//**
  * @brief orders model list
@@ -20,6 +21,7 @@ class DapQmlModelOrderList : public QAbstractListModel
   Q_OBJECT
 
   friend class DapQmlModelOrderListProxyModel;
+  friend class Controler::QmlCtl;
 
   /****************************************//**
    * @name DEFS
@@ -137,6 +139,9 @@ public:
   void setOrderListData (const QJsonArray &a_list, bool notify = true);
 protected:
   void _modelReset();
+  void _setNwtworksFeeRequestList (const QStringList &a_list);
+  QString _dequeueNetworkFeeRequest();
+  void _setNetworkFee (const QString &a_networkName, const QString &a_fee);
   /// @}
 
   /****************************************//**

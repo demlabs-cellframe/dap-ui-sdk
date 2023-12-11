@@ -68,6 +68,7 @@ protected:
   {
     QString name;           // network name
     QString address;        // network address
+    QString feeTicker;      // network fee ticker
     QList<Token> tokens;    // network tokens
 
 //    struct // fast access
@@ -151,6 +152,8 @@ public:
   void setWalletsData (const QJsonObject &a_walletsData);
   void setOrderListData (const QJsonArray &a_ordesListData);
 
+  void setNetworkFee (const QString &a_networkName, const QString &a_fee);
+
 //  /// get wallets names list
 //  const QStringList &wallets() const;
 
@@ -190,6 +193,8 @@ protected:
 
   void _parseWalletNetworkTokenData (const Wallet &a_value);
   void _printWalletsData();
+  void _emitNetworksList();
+  void _cleanInvalidTokens();
   /// @}
 
   /****************************************//**
@@ -201,6 +206,7 @@ signals:
   void sigCurrentNetworkChanged();
   void sigCurrentWalletChanged();
   void sigCurrentTokenChanged();
+  void sigNetworksList (QStringList a_list);
   /// @}
 };
 
