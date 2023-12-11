@@ -431,6 +431,7 @@ void DapNodeWeb3::getNodeIPRequest (const QString &networkName, const QJsonArray
 
 void DapNodeWeb3::getFeeRequest (QString networkName)
 {
+  m_networkName = networkName;
   QString requesString = QString ("?method=GetFee&"
                                   "id=%1&net=%2")
                          .arg (m_connectId)
@@ -554,13 +555,31 @@ void DapNodeWeb3::parseReplyWallets (const QString &replyData, int baseErrorCode
   if (doc["data"].isArray())
     {
       // wallets
-        QStringList walletsList;
-        QJsonArray dataArray = doc["data"].toArray();
-        for (const auto mData : dataArray){
-            if (mData.toObject().value("status").toString() == "non-Active")
-                continue;
-            walletsList << mData.toObject().value("name").toString();
+      QStringList walletsList;
+      const QJsonArray dataArray = doc["data"].toArray();
+
+      for (const auto &item : dataArray)
+      {
+        /* if item is object */
+        if (item.isObject())
+        {
+          auto itemObject = item.toObject();
+
+          /* skip non active */
+          if (itemObject.value ("status") == "non-Active")
+            continue;
+
+          /* store */
+          walletsList << itemObject.value ("name").toString();
         }
+
+        /* if item is string */
+        else
+        {
+          /* store */
+          walletsList << item.toString();
+        }
+      }
 
       emit sigReceivedWalletsList (walletsList);
     }
@@ -921,7 +940,7 @@ void DapNodeWeb3::parseFee (const QString &replyData, int baseErrorCode)
   {
     /* if not exists */
     if (!jobj.contains (a_name))
-      throw;
+      throw std::exception();
 
     /* get value */
     auto value  = jobj.value (a_name);
