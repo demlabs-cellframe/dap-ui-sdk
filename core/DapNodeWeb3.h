@@ -137,6 +137,7 @@ private:
   /// @{
 public slots:
   // requests
+  void nodeDetectRequest();
   void nodeDetectedRequest();
   void nodeConnectionRequest();
   void nodeStatusRequest();

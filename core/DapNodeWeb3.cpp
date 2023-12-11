@@ -153,7 +153,7 @@ QString extractMethod (const QString &inputString)
   if (match.hasMatch())
     return match.captured (1);
   else
-    return QString(); // Если совпадение не найдено
+    return QString(); // If no match is found
 }
 
 void DapNodeWeb3::responseProcessing (
@@ -168,14 +168,26 @@ void DapNodeWeb3::responseProcessing (
 
   // debug info
   // node connection reply
-  if (methodName == "GetNodeStatus") // if (networkRequest.contains ("method=GetNodeStatus"))
+  if (methodName == "") // if (networkRequest.contains ("method=GetNodeStatus"))
     {
-      if (error == SIGERROR)
+        if (error == SIGERROR)
         {
           DEBUGINFO  << "DapNodeWeb3::responseProcessing !! nodeNotDetected !!";
           // TODO check (error == SIGERROR) on other platforms (windows, android, ios)
           emit nodeNotDetected();
           return;
+        }
+
+        QJsonDocument doc = QJsonDocument::fromJson (m_networkReply->getReplyData());
+        if (doc["status"].isString())
+        {
+          if (doc["status"].toString() == QString ("ok"))
+            {
+              DEBUGINFO << "nodeStatusOk - " + doc["data"].toString();
+//              emit statusOk();
+              emit nodeDetected();
+              return;
+            }
         }
     }
   else if (methodName == "Connect")
@@ -222,7 +234,7 @@ void DapNodeWeb3::responseProcessing (
 
 void DapNodeWeb3::nodeDetectedRequest()
 {
-  DEBUGINFO << "http://127.0.0.1:8045/?method=GetNodeStatus";
+  DEBUGINFO << "http://127.0.0.1:8045/ nodeDetectedRequest";
   // A non-existent method is used to check the operation of the dashboard,
   // in the case of the operation of the dashboard service, a response is returned:
   //    {
@@ -230,7 +242,7 @@ void DapNodeWeb3::nodeDetectedRequest()
   //        "errorMsg": "Incorrect id",
   //        "status": "bad"
   //    }
-  nodeStatusRequest();
+  nodeDetectRequest();
 }
 
 void DapNodeWeb3::nodeConnectionRequest()
@@ -307,6 +319,12 @@ void DapNodeWeb3::nodeStatusRequest()
 {
   QString requesString = QString ("?method=GetNodeStatus&id=%1").arg (m_connectId);
   sendRequest (requesString);
+}
+
+void DapNodeWeb3::nodeDetectRequest()
+{
+//  QString requesString = QString ("?");
+  sendRequest ("?");
 }
 
 void DapNodeWeb3::walletsRequest()
@@ -484,15 +502,15 @@ void DapNodeWeb3::parseReplyStatus (const QString &replyData, int baseErrorCode)
       if (doc["status"].toString() == QString ("bad"))
         {
           // node detected and not have correct connect_id
-          DEBUGINFO << "nodeDetected, but connet_id is incorrect";
-          emit nodeDetected();
+          DEBUGINFO << "nodeStatusBad";
+//          emit nodeDetected();
           return;
         }
       if (doc["status"].toString() == QString ("ok"))
         {
           DEBUGINFO << "nodeStatusOk";
           emit statusOk();
-          emit nodeDetected();
+//          emit nodeDetected();
           return;
         }
     }
