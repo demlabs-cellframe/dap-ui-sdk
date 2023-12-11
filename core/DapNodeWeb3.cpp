@@ -909,6 +909,9 @@ void DapNodeWeb3::parseFee (const QString &replyData, int baseErrorCode)
   /* get base */
   QJsonObject jdata = doc["data"].toObject();
 
+  /* notify data */
+  emit sigFeeData (jdata);
+
   /* read field or throw if not exists */
   auto field = [] (
      /*   IN    */ const QJsonObject & jobj,

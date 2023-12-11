@@ -145,6 +145,15 @@ void DapCmdNode::sendSigningInfo(qint32 utype, qint64 uid, qint64 units, QString
     DEBUGINFO << "sendSigningInfo" << utype << QString::number(units) << price;
 }
 
+void DapCmdNode::sendFeeData (const QJsonObject &a_data)
+{
+  DEBUGINFO << __PRETTY_FUNCTION__;
+  QJsonObject response;
+  response["get_fee_data"] = a_data;
+  sendCmd(&response);
+  DEBUGINFO << "sendFeeData" << a_data;
+}
+
 void DapCmdNode::handle(const QJsonObject* params)
 {
     DEBUGINFO << __PRETTY_FUNCTION__ << *params;
@@ -229,5 +238,10 @@ void DapCmdNode::handle(const QJsonObject* params)
         qDebug() << "get_ip_order_list - " << orderList;
 
         emit getIpOrder(srvUid, orderList);
+    }
+    // network fee request
+    if (params->value ("get_fee_data").isString())
+    {
+      emit getFeeData (params->value ("get_fee_data").toString());
     }
 }
