@@ -177,12 +177,11 @@ void DapNodeWeb3::responseProcessing (
 
   // debug info
   // node connection reply
-  if (methodName == "") // if (networkRequest.contains ("method=GetNodeStatus"))
+  if (methodName == "")
     {
         if (error == SIGERROR)
         {
-          DEBUGINFO  << "DapNodeWeb3::responseProcessing !! nodeNotDetected !!";
-          // TODO check (error == SIGERROR) on other platforms (windows, android, ios)
+          DEBUGINFO  << "DapNodeWeb3::responseProcessing - nodeNotDetected";
           emit nodeNotDetected();
           return;
         }
@@ -193,7 +192,6 @@ void DapNodeWeb3::responseProcessing (
           if (doc["status"].toString() == QString ("ok"))
             {
               DEBUGINFO << "nodeStatusOk - " + doc["data"].toString();
-//              emit statusOk();
               emit nodeDetected();
               return;
             }
@@ -498,12 +496,6 @@ void DapNodeWeb3::getListKeysRequest (QString networkName)
 
 void DapNodeWeb3::parseReplyStatus (const QString &replyData, int baseErrorCode)
 {
-  // status reply example
-  //    {
-  //        "data": "",
-  //        "errorMsg": "Incorrect id",
-  //        "status": "bad"
-  //    }
 
   DEBUGINFO << __func__ << replyData;
 
@@ -511,18 +503,10 @@ void DapNodeWeb3::parseReplyStatus (const QString &replyData, int baseErrorCode)
 
   if (doc["status"].isString())
     {
-      if (doc["status"].toString() == QString ("bad"))
-        {
-          // node detected and not have correct connect_id
-          DEBUGINFO << "nodeStatusBad";
-//          emit nodeDetected();
-          return;
-        }
       if (doc["status"].toString() == QString ("ok"))
         {
           DEBUGINFO << "nodeStatusOk";
           emit statusOk();
-//          emit nodeDetected();
           return;
         }
     }
