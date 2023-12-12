@@ -9,7 +9,16 @@
 
 /* DEFS */
 //#define ENABLE_SENSITIVE_PRINTS
+#if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
 #define SIGERROR (110)
+#elif defined(Q_OS_MACOS)
+#define SIGERROR (-668)
+#elif defined (Q_OS_WIN)
+#define SIGERROR (10061)
+#elif defined Q_OS_ANDROID
+#define SIGERROR (111)
+#endif
+
 #define DEBUGINFO qDebug()<<"--->Web3<---"
 
 typedef DapNodeWeb3::ReplyMethodID ReplyMethodID;
