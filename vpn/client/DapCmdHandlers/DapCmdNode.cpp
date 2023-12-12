@@ -158,7 +158,7 @@ void DapCmdNode::handle(const QJsonObject* params)
 {
     DEBUGINFO << __PRETTY_FUNCTION__ << *params;
     if (params->value("start_node_detection").isBool() && params->value("start_node_detection").toBool())
-        emit startNodeDetection();
+        emit sigStartNodeDetection();
     if (params->value("nocdb_mode_request").isBool())
         sendNoCdbMode();
     // data wallet request
