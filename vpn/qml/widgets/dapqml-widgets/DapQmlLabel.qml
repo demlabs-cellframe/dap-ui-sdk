@@ -38,8 +38,8 @@ Item {
     property int wrapMode: Text.NoWrap
     property int textFormat: Text.AutoText
     property bool mipmap: true
-    property bool smooth: true
-    property bool antialiasing: false
+    //property bool smooth: true
+    //property bool antialiasing: false
     property bool disableClicking: false
 
     property real bottomPadding
