@@ -136,6 +136,8 @@ QString DapLogger::defaultLogPath(const QString a_brand)
                     "getFilesDir"
                     , "()Ljava/io/File;");
     return QString("%1/log").arg(l_pathObj.toString());
+#elif defined (Q_OS_IOS)
+    return QString("%1/log").arg(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
 #endif
     return {};
 }
