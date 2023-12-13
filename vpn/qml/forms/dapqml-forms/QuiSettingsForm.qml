@@ -277,14 +277,14 @@ Item {
                              && isSep(model.sid)
                 }
 
-                DapQmlRectangle {
-                    anchors.fill: parent
-                    anchors.rightMargin: 0-1
-                    z: 10
-                    visible: !Brand.legacyStyle() && model.index > 0
-                    qss: delegate.hovered ? "sett-btn-hover-bg" : "c-background"
-                    Behavior on color { PropertyAnimation { duration: root.internal.disableAnim ? 0 : 150 } }
-                }
+//                DapQmlRectangle {
+//                    anchors.fill: parent
+//                    anchors.rightMargin: 0-1
+//                    z: 10
+//                    visible: !Brand.legacyStyle() && model.index > 0
+//                    qss: delegate.hovered ? "sett-btn-hover-bg" : "c-background"
+//                    Behavior on color { PropertyAnimation { duration: root.internal.disableAnim ? 0 : 150 } }
+//                }
 
                 DapQmlLabel {
                     z: 40

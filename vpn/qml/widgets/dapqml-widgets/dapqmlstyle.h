@@ -97,6 +97,7 @@ protected:
   /// @example "font-jost font-bold settings-title"
   QString m_qss;
   QObject *m_item;
+  QMetaObject::Connection _itemDestroyedConnection;
 
   /**
    * @brief Class instance responsible to scaling features
@@ -111,6 +112,7 @@ protected:
   /// @{
 public:
   explicit DapQmlStyle (QObject *parent = nullptr);
+  ~DapQmlStyle();
   /// @}
 
   /****************************************//**
