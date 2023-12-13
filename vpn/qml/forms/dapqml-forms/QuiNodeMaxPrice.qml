@@ -7,7 +7,7 @@ Item {
     ///
     /// Used to connect interface via Manager
     property string formName: "NodeMaxPrice"
-    property string titleString: qsTr("Max price")
+    property string titleString: qsTr("Max amount to pay")
     property bool buttonActive: true
 
     function setAmount(amount)

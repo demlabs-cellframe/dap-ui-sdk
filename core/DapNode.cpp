@@ -109,6 +109,8 @@ void DapNode::initStmTransitions()
     &m_stm->nodeDetection);
     m_stm->initialState.addTransition(this, &DapNode::sigCondTxCreateRequest,
     &m_stm->getFee);
+    m_stm->initialState.addTransition(this, &DapNode::sigFeeRequest,
+    &m_stm->getFeeIsolated);
     //&m_stm->nodeGetStatus);
     m_stm->initialState.addTransition(this, &DapNode::sigGetOrderListRequest,
     &m_stm->getListKeys);
@@ -147,6 +149,12 @@ void DapNode::initStmTransitions()
     // fee received -> condition transaction create request
     m_stm->getFee.addTransition(this, &DapNode::sigFeeReceived,
     &m_stm->getNetId);
+
+    // fee received (isolated) -> send result
+    m_stm->getFeeIsolated.addTransition(this, &DapNode::sigFeeReceived,
+    &m_stm->initialState);
+    m_stm->getFeeIsolated.addTransition(this, &DapNode::errorDetected,
+    &m_stm->initialState);
 
     // fee received -> condition transaction create request
     m_stm->getNetId.addTransition(this, &DapNode::sigNetIdReceived,
@@ -313,6 +321,10 @@ void DapNode::initStmStates()
     connect (&m_stm->getFee, &QState::entered, this, [=](){
         web3->getFeeRequest(m_networkName);
     });
+    // get fee isolated
+    connect (&m_stm->getFeeIsolated, &QState::entered, this, [=](){
+        web3->getFeeRequest (m_networkName);
+    });
 
     connect (&m_stm->getNetId, &QState::entered, this, [=](){
         web3->getNetIdRequest(m_networkName); //web3->DapNodeWeb3::getNetIdRequest(netId);
@@ -339,7 +351,9 @@ void DapNode::initStmStates()
     });
     // mempool check
     connect(&m_stm->mempoolTxHashRequest, &QState::entered, this, [=](){
-        web3->getMempoolTxHashRequest(m_transactionHash, m_networkName);
+        QTimer::singleShot(2000, [&]{
+            web3->getMempoolTxHashRequest(m_transactionHash, m_networkName);
+        });
     });
     connect(&m_stm->mempoolTxHashEmpty, &QState::entered, this, [=](){
         DEBUGINFO  << "&mempoolTxHashEmpty, &QState::entered";
@@ -442,10 +456,10 @@ void DapNode::initWeb3Connections()
     });
     // order list ready
     connect(web3, &DapNodeWeb3::sigOrderList, this, [=](QJsonArray ordersList) {
-        //QJsonArray orders;
-        //orderListFiltr(ordersList, orders, m_listKeys);
+        QJsonArray orders;
+        orderListFiltr(ordersList, orders, m_listKeys);
         emit sigOrderListReceived();
-        emit sigOrderListReady(ordersList); //emit sigOrderListReady(orders);
+        emit sigOrderListReady(orders); //emit sigOrderListReady(orders);
     });
 
     connect(web3, &DapNodeWeb3::sigNodeIp, this, [=](QJsonObject data) {
@@ -457,6 +471,12 @@ void DapNode::initWeb3Connections()
     connect(web3, &DapNodeWeb3::sigFee, this, [=](QString fee){
         m_fee = fee;
         emit sigFeeReceived();
+    });
+    connect (web3, &DapNodeWeb3::sigFeeData,
+             this, [=] (const QJsonObject &a_data)
+    {
+      if (m_stm->getFeeIsolated.active())
+        emit sigFeeReceivedData (a_data);
     });
     // connect to stream
     connect(web3, &DapNodeWeb3::sigNodeDump, this, [=](QList<QMap<QString, QString>> nodeDump) {
@@ -594,5 +614,11 @@ void DapNode::slotGetNetIdReqest(QString netId)
 void DapNode::slotWalletsRequest()
 {
   emit sigWalletsRequest();
+}
+
+void DapNode::slotFeeRequest (QString a_networkName)
+{
+  m_networkName = a_networkName;
+  emit sigFeeRequest();
 }
 

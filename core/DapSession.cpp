@@ -287,6 +287,7 @@ void DapSession::setUserAgent(const QString& userAgent)
 DapNetworkReply* DapSession::encRequest(const QString& reqData, const QString& url,
                           const QString& subUrl, const QString& query, QObject* obj, const char* slot, const char* slot_err, bool isCDB)
 {
+    qInfo() << "encRequest " + QString(isCDB ? "CDB" : "noCDB") + " mode";
     DapCrypt *l_dapCrypt = isCDB ? m_dapCryptCDB : m_dapCrypt;
     if (!l_dapCrypt) {
         qCritical() << "Invalid key!";

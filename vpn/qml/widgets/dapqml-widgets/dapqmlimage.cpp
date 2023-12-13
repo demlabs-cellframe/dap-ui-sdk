@@ -111,7 +111,7 @@ void DapQmlImageItem::paint (QPainter *a_painter)
 
   /* draw */
   //a_painter->drawPixmap (content, QPixmap::fromImage (_cache.image));
-  a_painter->drawImage (content.topLeft(), _cache.image);
+  a_painter->drawImage (QRectF { content.topLeft(), content.size() }, _cache.image);
 }
 
 //void DapQmlImageItem::paint (QPainter *a_painter)

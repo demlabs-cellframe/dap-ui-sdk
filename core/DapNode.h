@@ -60,6 +60,7 @@ public:
     QState getNetworks;
     QState getDataWallet;
     QState getFee;
+    QState getFeeIsolated;
     QState getNetId;
     QState condTxCreate;
     QState mempoolTxHashRequest;
@@ -92,6 +93,7 @@ private:
         nodeConnectMachine.addState(&getDataWallet);
         nodeConnectMachine.addState(&condTxCreate);
         nodeConnectMachine.addState(&getFee);
+        nodeConnectMachine.addState(&getFeeIsolated);
         nodeConnectMachine.addState(&getNetId);
         nodeConnectMachine.addState(&mempoolTxHashRequest);
         nodeConnectMachine.addState(&mempoolTxHashEmpty);
@@ -188,6 +190,7 @@ public slots:
     void slotGetNodeIpForOrderListReqest(QString srvUid, QJsonArray orderList);
     void slotGetNetIdReqest(QString networkName);
     void slotWalletsRequest();
+    void slotFeeRequest (QString a_networkName);
 
 private slots:
     void walletDataRequest();
@@ -233,8 +236,10 @@ signals:
     void certificateNotFound();
     void sigNodeIpRequest();
     void sigGetNodeIpRequest(QJsonArray orderList);
+    void sigFeeRequest();
     void sigNodeDumpReceived();
     void sigFeeReceived();
+    void sigFeeReceivedData(QJsonObject);
     void sigWalletsRequest();
 
 };

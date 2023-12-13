@@ -32,6 +32,7 @@ public slots:
     void sendOrderList(const QJsonArray& orderList);
     void sendNodeIp(const QJsonObject &nodeIpList);
     void sendSigningInfo(qint32 utype, qint64 uid, qint64 units, QString price);
+    void sendFeeData (const QJsonObject &a_data);
 signals:
     void startNodeDetection();
     void stopNodeDetection();
@@ -41,7 +42,7 @@ signals:
     void checkSigned();
     void connectByOrder(QString srvUid, QString nodeAddress, QString orderHash, QString network);
     void getIpOrder(QString srvUid, QJsonArray orderList);
-
+    void getFeeData (QString a_networkName);
 };
 
 #endif // DAPCMDNODEHANDLER_H

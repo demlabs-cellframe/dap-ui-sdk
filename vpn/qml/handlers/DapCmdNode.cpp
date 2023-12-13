@@ -161,18 +161,18 @@ void DapCmdNode::handleResult (const QJsonObject &params)
   DEBUGINFO << __PRETTY_FUNCTION__ << params;
   _data->hasError = false;
 
-  // wallets list
-  if (params.value ("wallets").isArray())
-    {
-//      QJsonArray array = params.value ("wallets").toArray();
-//      QMap<QString, QVariant> data;
-//      foreach (const QVariant &vItem, array)
-//        data[vItem.toString()] = "";
-//      DEBUGINFO << "wallets" << data;
-////                    emit walletsList(data);
-      DEBUGINFO << "wallets" << params.value ("wallets");
-      return;
-    }
+//  // wallets list
+//  if (params.value ("wallets").isArray())
+//    {
+//      auto jsonArray  = params.value ("wallets").toArray();
+//      QStringList walletList;
+//      for (const QJsonValue &value : qAsConst (jsonArray))
+//        walletList << value.toString();
+
+//      DEBUGINFO << "wallets" << walletList;
+//      emit sigWalletsList (walletList);
+//      return;
+//    }
 
   // networks list
   if (params.value ("networks").isArray())
@@ -256,6 +256,13 @@ void DapCmdNode::handleResult (const QJsonObject &params)
   {
     auto jobj  = params.value ("node_ip_list").toObject();
     emit sigNodeIpList (jobj);
+    return;
+  }
+
+  if (params.value ("get_fee_data").isObject())
+  {
+    auto jobj  = params.value ("get_fee_data").toObject();
+    emit sigFeeData (jobj);
     return;
   }
 }
@@ -485,6 +492,15 @@ void DapCmdNode::slotRequestIpNode (const QString &networkName, const QJsonArray
     };
 
     sendCmd (&request);
+}
+
+void DapCmdNode::slotRequestNetworkFee (const QString &a_networkName)
+{
+  DEBUGINFO << __PRETTY_FUNCTION__ << a_networkName;
+  QJsonObject request {
+    { "get_fee_data", a_networkName }
+  };
+  sendCmd (&request);
 }
 
 void DapCmdNode::slotChooseWallet (const QString &wallet)
