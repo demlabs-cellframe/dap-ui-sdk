@@ -16,6 +16,7 @@ RESOURCES += \
 
 HEADERS += \
     $$PWD/dapqml-widgets/dapimage.h \
+    $$PWD/dapqml-widgets/dapqmlarcanimation.h \
     $$PWD/dapqml-widgets/dapqmlimage.h \
     $$PWD/dapqml-widgets/dapqmlseparatoritem.h \
     $$PWD/dapqml-widgets/dapqmlserialkeyinput.h \
@@ -37,6 +38,7 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/dapqml-widgets/dapimage.cpp \
+    $$PWD/dapqml-widgets/dapqmlarcanimation.cpp \
     $$PWD/dapqml-widgets/dapqmlimage.cpp \
     $$PWD/dapqml-widgets/dapqmlseparatoritem.cpp \
     $$PWD/dapqml-widgets/dapqmlserialkeyinput.cpp \
