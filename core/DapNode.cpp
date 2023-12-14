@@ -491,6 +491,7 @@ void DapNode::initWeb3Connections()
     });
 
     connect(web3, &DapNodeWeb3::sigNetId, this, [=](QString netId) {
+        qDebug() << "NetId received - " + netId;
         m_netId = netId;
         emit sigNetIdReceived();
     });
@@ -606,9 +607,9 @@ void orderListFiltr(const QJsonArray& inOrders, QJsonArray& outOrders, QStringLi
     }
 }
 
-void DapNode::slotGetNetIdReqest(QString netId)
+void DapNode::slotGetNetIdReqest(QString networkName)
 {
-  web3->DapNodeWeb3::getNetIdRequest(netId);
+  web3->DapNodeWeb3::getNetIdRequest(networkName);
 }
 
 void DapNode::slotWalletsRequest()

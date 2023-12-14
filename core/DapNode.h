@@ -208,7 +208,7 @@ signals:
     void sigMempoolContainHash();
     void sigLedgerContainHash();
     void sigCondTxCreateSuccess(QString hash);
-    void sigConnectByOrder(QString networkName, QString txCondHash, QString token, QString srvUid, QString nodeIp, uint16_t port);
+    void sigConnectByOrder(const QString &networkName, const QString &txCondHash, const QString &token, const QString &srvUid, const QString &address, const uint16_t &port);
 
     // ------- internal signals --------
     void waitingCommand();
