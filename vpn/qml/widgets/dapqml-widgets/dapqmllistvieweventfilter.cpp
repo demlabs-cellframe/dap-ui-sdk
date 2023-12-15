@@ -33,10 +33,10 @@ DapQmlListviewEventFilter::DapQmlListviewEventFilter (QQuickItem *a_parent)
   /* fill lef chain */
 
   data->lefChain
-    << new LefTest
+    //<< new LefTest
     << new LefDisableMomentum
     << new LefScrollFix
-    << new LefCollector
+    //<< new LefCollector
   ;
 }
 

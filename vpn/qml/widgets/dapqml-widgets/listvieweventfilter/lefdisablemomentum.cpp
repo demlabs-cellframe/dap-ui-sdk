@@ -31,7 +31,11 @@ void LefDisableMomentum::process (QObject *a_target, Data &a_data)
   /* skip momentum event */
 
   if (a_data.source == Qt::MouseEventSynthesizedBySystem
-      && a_data.phase == Qt::ScrollMomentum)
+      && (
+        a_data.phase == Qt::ScrollMomentum
+        //|| a_data.phase == Qt::NoScrollPhase
+        //|| a_data.phase == Qt::ScrollUpdate
+        ))
     a_data.eventIsHandled = true;
 }
 
