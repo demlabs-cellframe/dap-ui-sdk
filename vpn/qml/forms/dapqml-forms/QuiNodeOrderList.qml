@@ -1303,7 +1303,7 @@ Item {
                                     border.color: colorLabelGray.color
                                     radius: height * 0.125
 
-                                    property string tooltipText: qsTr ("Max price description text will\nbe right here")
+                                    property string tooltipText: qsTr ("Specify how many tokens\nyou are willing to spend to\npay for VPN service")
 
                                     Text {
                                         id: dummyText
