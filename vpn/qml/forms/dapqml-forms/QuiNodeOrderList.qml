@@ -898,8 +898,11 @@ Item {
 
         Loader {
             width: resizer.width
-            height: resizer.height
+            height: enabled ? resizer.height : 0
+            //height: resizer.height
             sourceComponent: compButton
+            enabled: model.ipAddress !== "" && model.ipAddress !== "0.0.0.0"
+            clip: true
             property string first:      {
                 if (model.units)
                     return dummyStyle.elideOrderPriceText(
@@ -1717,7 +1720,7 @@ Item {
                         id: csListViewOrders
                         objectName: "listviewOrders"
                         anchors.fill: parent
-                        spacing: spacer.height
+                        //spacing: spacer.height
                         delegate: listviewDelegateOrder
                         visible: root.internal.mode === QuiNodeOrderList.Orders
                         clip: true
