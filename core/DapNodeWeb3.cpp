@@ -9,7 +9,16 @@
 
 /* DEFS */
 //#define ENABLE_SENSITIVE_PRINTS
+#if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
 #define SIGERROR (110)
+#elif defined(Q_OS_MACOS)
+#define SIGERROR (-668)
+#elif defined (Q_OS_WIN)
+#define SIGERROR (10061)
+#elif defined Q_OS_ANDROID
+#define SIGERROR (111)
+#endif
+
 #define DEBUGINFO qDebug()<<"--->Web3<---"
 
 typedef DapNodeWeb3::ReplyMethodID ReplyMethodID;
@@ -153,7 +162,7 @@ QString extractMethod (const QString &inputString)
   if (match.hasMatch())
     return match.captured (1);
   else
-    return QString(); // Если совпадение не найдено
+    return QString(); // If no match is found
 }
 
 void DapNodeWeb3::responseProcessing (
@@ -168,14 +177,24 @@ void DapNodeWeb3::responseProcessing (
 
   // debug info
   // node connection reply
-  if (methodName == "GetNodeStatus") // if (networkRequest.contains ("method=GetNodeStatus"))
+  if (methodName == "")
     {
-      if (error == SIGERROR)
+        if (error == SIGERROR)
         {
-          DEBUGINFO  << "DapNodeWeb3::responseProcessing !! nodeNotDetected !!";
-          // TODO check (error == SIGERROR) on other platforms (windows, android, ios)
+          DEBUGINFO  << "DapNodeWeb3::responseProcessing - nodeNotDetected";
           emit nodeNotDetected();
           return;
+        }
+
+        QJsonDocument doc = QJsonDocument::fromJson (m_networkReply->getReplyData());
+        if (doc["status"].isString())
+        {
+          if (doc["status"].toString() == QString ("ok"))
+            {
+              DEBUGINFO << "nodeStatusOk - " + doc["data"].toString();
+              emit nodeDetected();
+              return;
+            }
         }
     }
   else if (methodName == "Connect")
@@ -184,6 +203,8 @@ void DapNodeWeb3::responseProcessing (
         {
           DEBUGINFO  << __func__ << " - Dashboard refused authorization";
           emit sigError (error, "Dashboard refused authorization");
+          //To send a repeat request
+          nodeConnectionRequest();
           return;
         }
     }
@@ -222,7 +243,7 @@ void DapNodeWeb3::responseProcessing (
 
 void DapNodeWeb3::nodeDetectedRequest()
 {
-  DEBUGINFO << "http://127.0.0.1:8045/?method=GetNodeStatus";
+  DEBUGINFO << "http://127.0.0.1:8045/ nodeDetectedRequest";
   // A non-existent method is used to check the operation of the dashboard,
   // in the case of the operation of the dashboard service, a response is returned:
   //    {
@@ -230,7 +251,7 @@ void DapNodeWeb3::nodeDetectedRequest()
   //        "errorMsg": "Incorrect id",
   //        "status": "bad"
   //    }
-  nodeStatusRequest();
+  nodeDetectRequest();
 }
 
 void DapNodeWeb3::nodeConnectionRequest()
@@ -307,6 +328,12 @@ void DapNodeWeb3::nodeStatusRequest()
 {
   QString requesString = QString ("?method=GetNodeStatus&id=%1").arg (m_connectId);
   sendRequest (requesString);
+}
+
+void DapNodeWeb3::nodeDetectRequest()
+{
+//  QString requesString = QString ("?");
+  sendRequest ("?");
 }
 
 void DapNodeWeb3::walletsRequest()
@@ -431,6 +458,7 @@ void DapNodeWeb3::getNodeIPRequest (const QString &networkName, const QJsonArray
 
 void DapNodeWeb3::getFeeRequest (QString networkName)
 {
+  m_networkName = networkName;
   QString requesString = QString ("?method=GetFee&"
                                   "id=%1&net=%2")
                          .arg (m_connectId)
@@ -468,12 +496,6 @@ void DapNodeWeb3::getListKeysRequest (QString networkName)
 
 void DapNodeWeb3::parseReplyStatus (const QString &replyData, int baseErrorCode)
 {
-  // status reply example
-  //    {
-  //        "data": "",
-  //        "errorMsg": "Incorrect id",
-  //        "status": "bad"
-  //    }
 
   DEBUGINFO << __func__ << replyData;
 
@@ -481,18 +503,10 @@ void DapNodeWeb3::parseReplyStatus (const QString &replyData, int baseErrorCode)
 
   if (doc["status"].isString())
     {
-      if (doc["status"].toString() == QString ("bad"))
-        {
-          // node detected and not have correct connect_id
-          DEBUGINFO << "nodeDetected, but connet_id is incorrect";
-          emit nodeDetected();
-          return;
-        }
       if (doc["status"].toString() == QString ("ok"))
         {
           DEBUGINFO << "nodeStatusOk";
           emit statusOk();
-          emit nodeDetected();
           return;
         }
     }
@@ -554,13 +568,31 @@ void DapNodeWeb3::parseReplyWallets (const QString &replyData, int baseErrorCode
   if (doc["data"].isArray())
     {
       // wallets
-        QStringList walletsList;
-        QJsonArray dataArray = doc["data"].toArray();
-        for (const auto mData : dataArray){
-            if (mData.toObject().value("status").toString() == "non-Active")
-                continue;
-            walletsList << mData.toObject().value("name").toString();
+      QStringList walletsList;
+      const QJsonArray dataArray = doc["data"].toArray();
+
+      for (const auto &item : dataArray)
+      {
+        /* if item is object */
+        if (item.isObject())
+        {
+          auto itemObject = item.toObject();
+
+          /* skip non active */
+          if (itemObject.value ("status") == "non-Active")
+            continue;
+
+          /* store */
+          walletsList << itemObject.value ("name").toString();
         }
+
+        /* if item is string */
+        else
+        {
+          /* store */
+          walletsList << item.toString();
+        }
+      }
 
       emit sigReceivedWalletsList (walletsList);
     }
@@ -909,6 +941,9 @@ void DapNodeWeb3::parseFee (const QString &replyData, int baseErrorCode)
   /* get base */
   QJsonObject jdata = doc["data"].toObject();
 
+  /* notify data */
+  emit sigFeeData (jdata);
+
   /* read field or throw if not exists */
   auto field = [] (
      /*   IN    */ const QJsonObject & jobj,
@@ -918,7 +953,7 @@ void DapNodeWeb3::parseFee (const QString &replyData, int baseErrorCode)
   {
     /* if not exists */
     if (!jobj.contains (a_name))
-      throw;
+      throw std::exception();
 
     /* get value */
     auto value  = jobj.value (a_name);
@@ -1167,6 +1202,14 @@ void DapNodeWeb3::replyError (int errorCode, const QString &errorString, const Q
             << errorCode
             << ((errorGuiMessage != errorString) ? errorGuiMessage : QString())
             << errorString;
-  emit sigError (errorCode, errorGuiMessage);
+
+  // For reconnect to Dashboard
+  if(errorString == "Incorrect id")
+  {
+    nodeConnectionRequest();
+        //TODO: Need reset no cdb GUI status
+  }
+  else
+    emit sigError (errorCode, errorGuiMessage);
 }
 
