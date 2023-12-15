@@ -1159,69 +1159,31 @@
 .stat-item-main
 {
     color: "@text";
-    font-weight: Font.Bold;
 }
 
 .stat-item-sub
 {
     color: "#A4A3C0";
-    font-weight: Font.Normal;
 }
 
 .stat-graph
 {
-/*
-    scaled-rect: scaled(-1,146,360,147,false);
-*/
     scaled-rect: scaled(-1,144,356,176,false);
 }
 
-.stat-speed
+.stat-indicators-container
 {
-/*
-    scaled-rect: scaled(nan,307,154,99,false);
-*/
-    scaled-rect: scaled(nan,336,154,99,false);
-}
-
-.stat-bytes
-{
-/*
-    scaled-rect: scaled(nan,406,154,99,false);
-*/
-    scaled-rect: scaled(nan,436,154,99,false);
-}
-
-.stat-packets
-{
-/*
-    scaled-rect: scaled(nan,505,154,99,false);
-*/
-    scaled-rect: scaled(nan,536,154,99,false);
-}
-
-.stat-misc
-{
-/*
-    scaled-rect: scaled(nan,604,154,99,false);
-*/
-    scaled-rect: scaled(nan,636,154,99,false);
+    scaled-rect: scaled(nan,336,nan,360,false);
 }
 
 .stat-scaler-ind
 {
-/*
-    scaled-rect: scaled(nan,nan,154,50,false,24);
-*/
     scaled-rect: scaled(nan,nan,170,100,false,24);
     font-weight: Font.DemiBold;
 }
 
 .stat-scaler-sub
 {
-/*
-    scaled-rect: scaled(nan,nan,154,50,false,12);
-*/
     scaled-rect: scaled(nan,nan,nan,nan,false,12);
 }
 
