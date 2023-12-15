@@ -130,6 +130,7 @@ Item {
     function setServerInfo(a_name, a_ip) {
         serverChoose.mainText   = a_name;
         serverChoose.subText    = a_ip;
+        serverChooseSpinner.visible = a_name === "";
     }
 
     function setNoCDBServerInfo(a_name, a_ip) {
@@ -430,6 +431,14 @@ Item {
         subQss: "dashboard-server-sub"
         qss: "dashboard-server-container"
         onClicked: root.sigServerClicked()
+
+        DapQmlArcAnimation {
+            id: serverChooseSpinner
+            anchors.centerIn: parent
+            width: parent.height * 0.75
+            height: width
+            qss: "c-dashboard-accent"
+        }
     }
 
     DapQmlButton {
