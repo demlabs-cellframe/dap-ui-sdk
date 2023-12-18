@@ -177,7 +177,7 @@ private:
     void initWeb3Connections();
     void initCommandsStm();
 
-    bool nodeDetected;
+    bool nodeDetected = false;
     // transaction certificate name
 
 

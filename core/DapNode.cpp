@@ -289,7 +289,6 @@ void DapNode::initStmStates()
     //
     connect(&m_stm->nodeConnection, &QState::entered, this, [=](){
         DEBUGINFO  << "&nodeConnection, &QState::entered";
-        nodeDetected = true;
     });
     // node connected
     connect(&m_stm->nodeNotConnected, &QState::entered, this, [=](){

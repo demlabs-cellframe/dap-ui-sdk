@@ -11,6 +11,7 @@ import TextEditContextMenu 1.0
 import Brand 1.0
 import Scaling 1.0
 import PageCtl 1.0
+import com.DapQmlWidgets 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**

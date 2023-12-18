@@ -34,7 +34,7 @@ public slots:
     void sendSigningInfo(qint32 utype, qint64 uid, qint64 units, QString price);
     void sendFeeData (const QJsonObject &a_data);
 signals:
-    void startNodeDetection();
+    void sigStartNodeDetection();
     void stopNodeDetection();
     void dataWalletRequest();
     void orderListRequest(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
