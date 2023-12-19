@@ -111,6 +111,8 @@ Item {
         }
     }
 
+    property var interfaceObject
+
     /// @}
     /****************************************//**
      * @name SIGNALS
@@ -689,29 +691,32 @@ Item {
                     label.text = text;
                     label.font.pixelSize = fontSize;
 
-                    /* variables */
-                    let ww = width;
-                    //let cw = label.contentWidth;
-                    //console.log(`LoginForm: contentWidth ${cw}, width ${ww}`);
+//                    /* variables */
+//                    let ww = width;
+//                    let cw = label.contentWidth;
+//                    console.log(`LoginForm: contentWidth ${cw}, width ${ww}`);
 
-                    /* scale down when required */
-                    while (label.contentWidth > ww && fontSize > 2)
-                    {
-                        fontSize -= 1;
-                        label.font.pixelSize = fontSize;
-                    }
+//                    /* scale down when required */
+//                    while (label.contentWidth > ww && fontSize > 2)
+//                    {
+//                        fontSize -= 1;
+//                        label.font.pixelSize = fontSize;
+//                    }
 
-                    /* if scaling failed, print error */
-                    if (fontSize <= 2)
-                    {
-                        fontSize = btnChooseServer.labelMain.fontSize
-                        label.font.pixelSize = fontSize;
-                        console.log(`LoginForm: Unable to scale server name label: ${text}`);
-                    }
+//                    /* if scaling failed, print error */
+//                    if (fontSize <= 2)
+//                    {
+//                        fontSize = btnChooseServer.labelMain.fontSize
+//                        label.font.pixelSize = fontSize;
+//                        console.log(`LoginForm: Unable to scale server name label: ${text}`);
+//                    }
 
-                    /* successful scaling */
-                    else
-                        console.log(`LoginForm: Scaled server name label: ${text} to ${fontSize} (${label.contentWidth.toFixed(2)}:${ww.toFixed(2)})`);
+//                    /* successful scaling */
+//                    else
+//                        console.log(`LoginForm: Scaled server name label: ${text} to ${fontSize} (${label.contentWidth.toFixed(2)}:${ww.toFixed(2)})`);
+
+                    if (interfaceObject !== undefined)
+                        label.font.pixelSize    = interfaceObject.scaleServerLabelFont (text, fontSize, width * 0.85);
                 }
             }
         }
