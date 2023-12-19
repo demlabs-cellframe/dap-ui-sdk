@@ -22,9 +22,12 @@ public:
     DapState *cdbHandshakeReply;
     DapState *networkErr;
 
-//    DapState *no_cdbMode;
+    DapState *no_cdbModeConnecting;
     DapState *no_cdbModeConnect;
     DapState *no_cdbDisconnect;
+
+//    DapState *no_cdbMode;
+//    DapState *no_cdbModeDisconnecting;
 };
 
 #endif // DAPINDICATORSESSION_H

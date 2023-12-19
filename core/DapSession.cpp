@@ -539,7 +539,7 @@ void DapSession::preserveCDBSession() {
  * @brief DapSession::onLogout
  */
 void DapSession::onLogout() {
-    qInfo() << "Logouted";
+    qInfo() << "~ Logouted";
 }
 
 void DapSession::onNewTxCond(){

@@ -559,7 +559,7 @@ void DapNode::start()
     m_stm->start();
 }
 
-void DapNode::slotNodeIpReqest(QString srvUid, QString nodeAddress, QString orderHash, QString network)
+void DapNode::slotNodeIpReqest(const QString & srvUid, const QString & nodeAddress, const QString & orderHash, const QString & network)
 {
     m_srvUid = srvUid;
     m_nodeInfo.setNodeAddress(nodeAddress);

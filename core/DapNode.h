@@ -186,7 +186,7 @@ public slots:
     void stopCheckingNodeRequest();
     void slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit, QString keyPath);
     void slotGetOrdersList(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
-    void slotNodeIpReqest(QString srvUid, QString nodeAddress, QString orderHash, QString network);
+    void slotNodeIpReqest(const QString & srvUid, const QString & nodeAddress, const QString & orderHash, const QString & network);
     void slotGetNodeIpForOrderListReqest(QString srvUid, QJsonArray orderList);
     void slotGetNetIdReqest(QString networkName);
     void slotWalletsRequest();

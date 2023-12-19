@@ -40,6 +40,7 @@ const QVector<DapIndicator>& DapStateMachine::getCachedStates()
 void DapStateMachine::_emitStateChanged(DapIndicator::Type type, DapIndicator::State state)
 {
     m_indicatorStateCache.insert(type, new DapIndicator::State(state));
+    qInfo() << "~ State changed. Type: " + DapIndicator(type, state).getStringType() + " State: " + DapIndicator(type, state).getStringState();
     emit stateChanged(DapIndicator(type, state));
 }
 
