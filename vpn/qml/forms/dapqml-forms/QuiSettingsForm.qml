@@ -196,6 +196,18 @@ Item {
                 qss: "sett-content";
             }
 
+            DapQmlDummy {
+                id: lvHoverColor
+                qss: "sett-btn-hover-bg";
+                property string color
+            }
+
+            DapQmlDummy {
+                id: lvNormalColor
+                qss: "c-background";
+                property string color
+            }
+
             /****************************************//**
              * Delegate
              ********************************************/
@@ -275,6 +287,15 @@ Item {
                     z: 40
                     visible: model.sid !== QuiSettingsForm.StyleId.SI_TITLE
                              && isSep(model.sid)
+                }
+
+                Rectangle {
+                    anchors.fill: parent
+                    anchors.rightMargin: 0-1
+                    z: 10
+                    visible: !Brand.legacyStyle() && model.index > 0
+                    color: delegate.hovered ? lvHoverColor.color : lvNormalColor.color
+                    Behavior on color { PropertyAnimation { duration: root.internal.disableAnim ? 0 : 150 } }
                 }
 
 //                DapQmlRectangle {

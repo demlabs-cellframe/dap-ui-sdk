@@ -52,7 +52,6 @@ DapQmlStyle::DapQmlStyle(QObject *parent)
 DapQmlStyle::~DapQmlStyle()
 {
   m_item  = nullptr;
-  disconnect (_itemDestroyedConnection);
 }
 
 /********************************************
@@ -78,18 +77,6 @@ QObject *DapQmlStyle::getItem() const
 void DapQmlStyle::setItem (QObject *a_newItem)
 {
   m_item = a_newItem;
-
-  disconnect (_itemDestroyedConnection);
-
-  _itemDestroyedConnection =
-      connect (a_newItem, &QObject::destroyed,
-               this, [this]
-  {
-    m_item = nullptr;
-    disconnect (_itemDestroyedConnection);
-    //qDebug() << "DapQmlStyle item is destroyed. detaching";
-  });
-
   emit itemChanged();
 }
 
