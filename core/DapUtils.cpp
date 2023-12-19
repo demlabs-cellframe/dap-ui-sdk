@@ -28,6 +28,7 @@ bool operator==(QStringView sv, const char * c)
  */
 QString DapUtils::shellCmd(const QString& cmd, int waitMsecs)
 {
+#ifndef Q_OS_IOS
     QProcess process;
     process.start(cShellPath, QStringList() << cShellPathArgs << cmd);
     process.waitForFinished( waitMsecs );
@@ -39,5 +40,8 @@ QString DapUtils::shellCmd(const QString& cmd, int waitMsecs)
         qWarning() << "Result shell cmd " << cmd << "is empty";
 
     return result;
+#else
+    return NULL;
+#endif
 }
 #endif

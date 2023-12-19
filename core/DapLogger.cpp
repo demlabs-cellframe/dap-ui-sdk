@@ -33,12 +33,15 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
         if (dir.mkpath(m_pathToLog) == false)
           qDebug() << "unable to create dir";
 #ifndef Q_OS_ANDROID
+#ifndef Q_OS_IOS
         system(("chmod -R 667 " + m_pathToLog).toUtf8().data());
 #endif
-
+#endif
     }
 #ifndef Q_OS_ANDROID
+#ifndef Q_OS_IOS
     system(("chmod 667 $(find " + m_pathToLog + " -type d)").toUtf8().data());
+#endif
 #endif
     updateCurrentLogName();
     setLogFile(m_currentLogName);
@@ -132,6 +135,8 @@ QString DapLogger::defaultLogPath(const QString a_brand)
                     "getFilesDir"
                     , "()Ljava/io/File;");
     return QString("%1/log").arg(l_pathObj.toString());
+#elif defined (Q_OS_IOS)
+    return QString("%1/log").arg(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
 #endif
     return {};
 }
@@ -216,7 +221,7 @@ void DapLogger::writeMessage(QtMsgType type,
 {
     if(ctx.file) {
         char prefixBuffer[128];
-#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
+#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
         const char *fileName = strrchr(ctx.file, '/');
 #elif defined(Q_OS_WIN)
         const char *fileName = strrchr(ctx.file, '\\');
