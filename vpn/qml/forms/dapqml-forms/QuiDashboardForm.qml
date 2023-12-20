@@ -4,6 +4,7 @@ import QtQuick 2.4
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 import DapQmlStyle 1.0
+import com.DapQmlWidgets 1.0
 import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 import "qrc:/dapqml-forms/tools"
