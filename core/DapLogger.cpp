@@ -33,12 +33,12 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
         if (dir.mkpath(m_pathToLog) == false)
           qDebug() << "unable to create dir";
 #ifndef Q_OS_ANDROID
-        system(("chmod -R 667 " + m_pathToLog).toUtf8().data());
+        system(("chmod -R 777 " + m_pathToLog).toUtf8().data());
 #endif
 
     }
 #ifndef Q_OS_ANDROID
-    system(("chmod 667 $(find " + m_pathToLog + " -type d)").toUtf8().data());
+    system(("chmod 777 $(find " + m_pathToLog + " -type d)").toUtf8().data());
 #endif
     updateCurrentLogName();
     setLogFile(m_currentLogName);
