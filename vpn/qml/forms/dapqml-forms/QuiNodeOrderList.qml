@@ -1519,11 +1519,16 @@ Item {
 
                     /* RESULT */
                     DapQmlLabel {
+                        id: valueEditRectResult
                         anchors.top: valueEditRect.bottom
                         anchors.horizontalCenter: valueEditRect.horizontalCenter
-                        anchors.margins: height/2
+                        anchors.margins: valueEditRect.height * 0.115
                         width: valueEditRect.width
-                        height: valueEditRect.height * 0.23
+                        height: {
+                            if (root.internal.mode === QuiNodeOrderList.TokenValue)
+                                return valueEditRect.height * 0.5
+                            return valueEditRect.height * 0.23
+                        }
                         horizontalAlign: root.internal.isPrice ? Text.AlignRight : Text.AlignHCenter
                         verticalAlign: Text.AlignVCenter
                         elide: Text.ElideMiddle
@@ -1535,7 +1540,10 @@ Item {
 //                              : `${valueEditInput.text} ${root.internal.unit}`
                         text: {
                             if (root.internal.mode === QuiNodeOrderList.TokenValue)
-                                return `Balance: ${csListView.model.balance} ${root.internal.token}`;
+                            {
+                                let value   = interfaceObject.balanceToCoins (valueEditInput.text);
+                                return `${value} ${root.internal.token}`;
+                            }
 
                             if (root.internal.isPrice)
                                 return `${valueEditInput.text} ${root.internal.token}`;
@@ -1545,7 +1553,113 @@ Item {
 
                             return `${valueEditInput.text} ${root.internal.unit}`
                         }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            z: 10
+                            hoverEnabled: true
+                            onEntered: valueEditRectResultPopup.open()
+                            onExited:  valueEditRectResultPopup.close()
+                        }
+
+                        Popup {
+                            id: valueEditRectResultPopup
+                            x: parent.width - width
+                            y: 0 - height
+                            width: valueEditRectResultPopupText.contentWidth + height
+                            height: valueEditRectResultPopupText.contentHeight * 1.5
+                            topInset: 0
+                            bottomInset: 0
+                            leftInset: 0
+                            rightInset: 0
+                            padding: 0
+                            margins: 0
+
+                            background: Item {}
+
+                            contentItem: Rectangle {
+                                anchors.fill: parent
+                                color: "#e0e0e0"
+                                border.color: "#404040"
+
+                                Text {
+                                    id: valueEditRectResultPopupText
+                                    anchors.fill: parent
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    color: "#404040"
+
+                                    font {
+                                        family: amountLabel.fontFamiliy
+                                        pixelSize: valueEditRectResult.fontSize * 0.85
+                                    }
+
+                                    text: valueEditRectResult.text
+                                }
+                            }
+                        }
                     }
+
+                    /* Balance */
+                    DapQmlLabel {
+                        id: valueEditRectBalance
+                        anchors.top: valueEditRectResult.bottom
+                        anchors.horizontalCenter: valueEditRectResult.horizontalCenter
+                        anchors.margins: valueEditRectResult.height * (0 - 0.125)
+                        //anchors.margins: valueEditRectResult.height * 0.115
+                        width: valueEditRect.width
+                        height: valueEditRect.height * 0.23
+                        horizontalAlign: Text.AlignHCenter
+                        verticalAlign: Text.AlignVCenter
+                        elide: Text.ElideMiddle
+                        visible: root.internal.mode === QuiNodeOrderList.TokenValue
+                        qss: "c-grey"
+                        text: `Balance: ${csListView.model.balance} ${root.internal.token}`
+
+                        MouseArea {
+                            anchors.fill: parent
+                            z: 10
+                            hoverEnabled: true
+                            onEntered: valueEditRectBalancePopup.open()
+                            onExited:  valueEditRectBalancePopup.close()
+                        }
+
+                        Popup {
+                            id: valueEditRectBalancePopup
+                            x: parent.width - width
+                            y: 0 - height
+                            width: valueEditRectBalancePopupText.contentWidth + height
+                            height: valueEditRectBalancePopupText.contentHeight * 1.5
+                            topInset: 0
+                            bottomInset: 0
+                            leftInset: 0
+                            rightInset: 0
+                            padding: 0
+                            margins: 0
+
+                            background: Item {}
+
+                            contentItem: Rectangle {
+                                anchors.fill: parent
+                                color: "#e0e0e0"
+                                border.color: "#404040"
+
+                                Text {
+                                    id: valueEditRectBalancePopupText
+                                    anchors.fill: parent
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    color: "#404040"
+
+                                    font {
+                                        family: valueEditRectBalance.fontFamiliy
+                                        pixelSize: valueEditRectBalance.fontSize * 0.85
+                                    }
+
+                                    text: valueEditRectBalance.text
+                                }
+                            }
+                        }}
 
                     /* TABS */
                     RowLayout {
