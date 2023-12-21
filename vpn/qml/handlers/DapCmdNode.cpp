@@ -359,6 +359,7 @@ void DapCmdNode::_updateHistoryItem()
 
   history[index]  = s_historyOrder;
   history.itemUpdated (index);
+  DapNodeTransactionHistory::instance()->setCurrentIndex (index);
 }
 
 

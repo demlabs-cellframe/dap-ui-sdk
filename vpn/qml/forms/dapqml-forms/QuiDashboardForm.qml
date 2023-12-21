@@ -79,7 +79,8 @@ Item {
 
     /// @brief change status text
     function setStatusText(a_text) {
-        statusLabel.text    = a_text;
+        if (a_text !== "")
+            statusLabel.text    = a_text;
     }
 
     /// @brief change switch state
@@ -208,7 +209,7 @@ Item {
 
     DapQmlLabel {
         id: statusLabel
-        text: "Disconnected"
+        text: qsTr("VPN Disconnected")
         qss: "dashboard-title c-label"
     }
 
