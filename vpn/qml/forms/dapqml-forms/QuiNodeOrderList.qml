@@ -1545,6 +1545,8 @@ Item {
                             if (root.internal.mode === QuiNodeOrderList.TokenValue)
                             {
                                 let value   = interfaceObject.balanceToCoins (valueEditInput.text);
+                                if (root.internal.token === "")
+                                    return value;
                                 return `${value} ${root.internal.token}`;
                             }
 
@@ -1560,7 +1562,7 @@ Item {
                         MouseArea {
                             anchors.fill: parent
                             z: 10
-                            hoverEnabled: true
+                            hoverEnabled: root.internal.token !== ""
                             onEntered: valueEditRectResultPopup.open()
                             onExited:  valueEditRectResultPopup.close()
                         }
