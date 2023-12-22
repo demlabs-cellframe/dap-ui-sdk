@@ -27,7 +27,6 @@ HEADERS += \
     $$PWD/dapqml-widgets/dapqmlstyle.h \
     $$PWD/dapqml-widgets/dapqmlordersmodel.h \
     $$PWD/dapqml-widgets/listvieweventfilter/lefbase.h \
-    $$PWD/dapqml-widgets/dapqmlnodedatamodel.h \
     $$PWD/dapqml-widgets/dapqmlswitchctl.h \
     $$PWD/dapqml-widgets/dapqmlthememodel.h \
     $$PWD/dapqml-widgets/doc-group-dapqmlstyle.h \
@@ -54,7 +53,6 @@ SOURCES += \
     $$PWD/dapqml-widgets/dapqmlserialkeyinput.cpp \
     $$PWD/dapqml-widgets/dapqmlstyle.cpp \
     $$PWD/dapqml-widgets/dapqmlordersmodel.cpp \
-    $$PWD/dapqml-widgets/dapqmlnodedatamodel.cpp \
     $$PWD/dapqml-widgets/dapqmlswitchctl.cpp \
     $$PWD/dapqml-widgets/dapqmlthememodel.cpp \
     $$PWD/dapqml-widgets/listvieweventfilter/lefcollector.cpp \
