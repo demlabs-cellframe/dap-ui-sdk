@@ -421,6 +421,7 @@ void DapNode::initWeb3Connections()
 
         /* ignore and do not send "Wrong reply connect" error */
         if (errorCode == 100110
+            || errorMessage == "Wrong reply connect"
             || errorMessage == "Wrong reply status")
           return;
 
