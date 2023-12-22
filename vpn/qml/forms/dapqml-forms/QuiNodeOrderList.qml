@@ -1474,6 +1474,7 @@ Item {
                         id: valueEditRect
                         qss: "nodeorlist-edit"
                         property real fontSize
+                        property string color
 
                         RowLayout {
                             anchors.fill: parent
@@ -1500,6 +1501,8 @@ Item {
                                             ? interfaceObject.fixPriceString(text)
                                             : interfaceObject.fixNumberString(text);
                                 }
+
+                                DapQmlStyle { item: valueEditInput; qss: "c-label" }
                             }
 
                             Item {

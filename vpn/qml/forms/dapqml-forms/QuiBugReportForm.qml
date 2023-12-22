@@ -789,7 +789,7 @@ Item {
 
             /* cancel */
             DapQmlPushButton {
-                qss: "bugrep-send-btn push-button"
+                qss: "bugrep-cancel-btn push-button"
                 text: qsTr("CANCEL") + lang.notifier
                 onClicked: { root.mode = 0; root.sigCancel(); }
             }
