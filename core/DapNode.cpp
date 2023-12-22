@@ -181,6 +181,10 @@ void DapNode::initStmTransitions()
     m_stm->getWallets.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
 
+    // get wallets -> node сonnection
+    m_stm->getWallets.addTransition(web3, &DapNodeWeb3::sigIncorrectId,
+    &m_stm->nodeConnection);
+
     // get networks -> networks received
     m_stm->getNetworks.addTransition(this, &DapNode::networksReceived,
     &m_stm->getDataWallet);

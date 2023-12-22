@@ -256,6 +256,10 @@ void DapNodeWeb3::nodeDetectedRequest()
 
 void DapNodeWeb3::nodeConnectionRequest()
 {
+  // do not send connect if already present
+  if (!m_connectId.isEmpty())
+    return emit connectionIdReceived (m_connectId);
+
   // example connect request
   // http://127.0.0.1:8045/?method=Connect
   DEBUGINFO << "http://127.0.0.1:8045/?method=Connect";
@@ -1177,7 +1181,10 @@ void DapNodeWeb3::parseJson (const QString &replyData, int baseErrorCode, const 
 
       /* notify on incorrect id */
       if (errorMsgString == "Incorrect id")
+      {
+        m_connectId.clear();
         emit sigIncorrectId();
+      }
 
       /* print error */
       if (!errorMsgString.isEmpty())
