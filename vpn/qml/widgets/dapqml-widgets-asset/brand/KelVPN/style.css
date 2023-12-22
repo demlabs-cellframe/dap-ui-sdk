@@ -1384,6 +1384,11 @@
     scaled-rect: scaled(-1,526,374,80,true,16);
 }
 
+.bugrep-cancel-btn
+{
+    scaled-rect: scaled(-1,726,374,80,true,16);
+}
+
 .bugrep-share-btn
 {
     scaled-rect: scaled(27,592,374,80,true,16);
