@@ -11,7 +11,6 @@
         <file compress="1">dapqml-widgets/DapQmlRadioButton.qml</file>
         <file compress="1">dapqml-widgets/DapQmlCheckbox.qml</file>
         <file compress="1">dapqml-widgets/DapQmlLineEdit.qml</file>
-        <file compress="1">dapqml-widgets/DapQmlLineEdit2.qml</file>
         <file compress="1">dapqml-widgets/DapQmlImage.qml</file>
         <file compress="1">dapqml-widgets/DapQmlInputField.qml</file>
         <file compress="1">dapqml-widgets/DapQmlMenu.qml</file>
