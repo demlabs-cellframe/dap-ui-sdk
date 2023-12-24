@@ -40,6 +40,7 @@ Item
     property string disabledIcon:""
 
     signal itemSelected(var index)
+    signal currantDisplayTextChanged(var text)
 
     onModelChanged:
     {
@@ -51,6 +52,8 @@ Item
             displayText = defaultText
         else
             displayText = getModelData(popupListView.currentIndex, mainTextRole)
+
+        currantDisplayTextChanged(displayText)
     }
 
     onCountChanged:
@@ -62,6 +65,8 @@ Item
             displayText = getModelData(0, mainTextRole)
         else
             displayText = getModelData(popupListView.currentIndex, mainTextRole)
+
+        currantDisplayTextChanged(displayText)
     }
 
     Rectangle
@@ -289,15 +294,14 @@ Item
                 onCurrentIndexChanged:
                 {
                     displayText = getModelData(currentIndex, mainTextRole)
+                    currantDisplayTextChanged(displayText)
                     mainItem.currentIndex = currentIndex
                     if(displayText)
                     {
                         console.log("New item selected: " + displayText);
                     }
                 }
-
             }
-
         }
 
         DropShadow
