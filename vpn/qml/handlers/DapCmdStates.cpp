@@ -43,9 +43,17 @@ DapCmdStates::~DapCmdStates()
 
 bool DapCmdStates::allStatesIsTrue()
 {
-    return  m_session->getState() == IndicatorState::True &&
-            m_tunnel->getState() == IndicatorState::True &&
-            m_stream->getState() == IndicatorState::True;
+  auto trueToFalseorTrue = [] (IndicatorState a_state)
+  {
+    return a_state == IndicatorState::True
+        || a_state == IndicatorState::FalseToTrue;
+  };
+
+  bool sessionState = trueToFalseorTrue (m_session->getState());
+  bool tunnelState  = trueToFalseorTrue (m_tunnel->getState());
+  bool streamState  = trueToFalseorTrue (m_stream->getState());
+
+  return sessionState && tunnelState && streamState;
 }
 
 bool DapCmdStates::allStatesIsFalse()

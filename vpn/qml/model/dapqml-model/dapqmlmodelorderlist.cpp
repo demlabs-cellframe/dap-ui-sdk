@@ -328,6 +328,12 @@ void DapQmlModelOrderList::setUnit (const QString &a_value)
   emit sigUnitChanged();
 }
 
+QString DapQmlModelOrderList::unitFromModel() const
+{
+  auto units  = _data->module.units();
+  return units->name();
+}
+
 QString DapQmlModelOrderList::balance() const
 {
   return _data->module.tokens().get()->value();

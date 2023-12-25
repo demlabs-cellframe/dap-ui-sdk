@@ -127,6 +127,8 @@ public:
   Q_INVOKABLE QString unit() const;
   Q_INVOKABLE void setUnit (const QString &a_value = QString());
 
+  QString unitFromModel() const;
+
   Q_INVOKABLE QString balance() const;
   Q_INVOKABLE void setBalance (const QString &a_value = QString());
 
