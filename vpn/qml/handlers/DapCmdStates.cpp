@@ -45,8 +45,9 @@ bool DapCmdStates::allStatesIsTrue()
 {
   auto trueToFalseorTrue = [] (IndicatorState a_state)
   {
-    return a_state == IndicatorState::True
-        || a_state == IndicatorState::FalseToTrue;
+//    return a_state == IndicatorState::True
+//        || a_state == IndicatorState::FalseToTrue;
+    return a_state == IndicatorState::True;
   };
 
   bool sessionState = trueToFalseorTrue (m_session->getState());

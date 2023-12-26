@@ -268,6 +268,12 @@ void DapQmlModelOrderList::setNetwork (const QString &a_value)
   emit sigNetworkChanged();
 }
 
+QString DapQmlModelOrderList::networkFromModel() const
+{
+  auto networks  = _data->module.networks();
+  return networks->name();
+}
+
 QString DapQmlModelOrderList::wallet() const
 {
   return _data->wallet;
@@ -288,6 +294,12 @@ void DapQmlModelOrderList::setWallet (const QString &a_value)
   emit sigWalletChanged();
 }
 
+QString DapQmlModelOrderList::walletFromModel() const
+{
+  auto wallets  = _data->module.wallets();
+  return wallets->name();
+}
+
 QString DapQmlModelOrderList::token() const
 {
   return _data->token;
@@ -306,6 +318,12 @@ void DapQmlModelOrderList::setToken (const QString &a_value)
     }
 
   emit sigTokenChanged();
+}
+
+QString DapQmlModelOrderList::tokenFromModel() const
+{
+  auto tokens  = _data->module.tokens();
+  return tokens->name();
 }
 
 QString DapQmlModelOrderList::unit() const
