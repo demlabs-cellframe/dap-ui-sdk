@@ -427,8 +427,12 @@ void DapQmlModelOrderList::setOrderListData (const QJsonArray &a_list, bool noti
         continue;
 
       /* update new current */
-      if (hash  == _data->currentOrderHashCopy)
+      if (!_data->currentOrderHashCopy.isEmpty()
+          && hash  == _data->currentOrderHashCopy)
+      {
+        _data->currentOrderHashCopy.clear();
         newCurrentIndex = index;
+      }
 
       /* store result */
       addressesSet << node_addr;
