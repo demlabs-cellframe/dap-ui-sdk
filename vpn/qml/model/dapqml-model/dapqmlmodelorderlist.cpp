@@ -379,7 +379,9 @@ const OrderListModule::OrderItem *DapQmlModelOrderList::currentOrder() const
   static OrderListModule::OrderItem dummy;
   auto currentIndex = s_ordersModule->currentIndex();
   auto &items       = s_ordersModule->items();
-  if (items.isEmpty())
+  if (items.isEmpty()
+      || currentIndex < 0
+      || currentIndex >= items.size())
     return &dummy;
   return &s_ordersModule->items().at (currentIndex);
 }
