@@ -30,6 +30,7 @@ struct DapQmlModelOrderList::DapQmlModelOrderListData
   QString token;
   QString unit;
   QQueue<QString> feeRequestQueue;
+  QString currentOrderHashCopy;
 };
 
 class OrdersModel : public QAbstractListModel
@@ -395,6 +396,9 @@ void DapQmlModelOrderList::setOrderListData (const QJsonArray &a_list, bool noti
   QVector<OrderItem> items;
   QSet<QString> addressesSet;
   QJsonArray jarray;
+  if (!s_ordersModule->name().isEmpty())
+    _data->currentOrderHashCopy = s_ordersModule->name();
+  int newCurrentIndex = -1, index = 0;
 
   /* parse via cycle */
   for (const auto &item : qAsConst (a_list))
@@ -420,6 +424,10 @@ void DapQmlModelOrderList::setOrderListData (const QJsonArray &a_list, bool noti
           || punit.isEmpty())
         continue;
 
+      /* update new current */
+      if (hash  == _data->currentOrderHashCopy)
+        newCurrentIndex = index;
+
       /* store result */
       addressesSet << node_addr;
       items << OrderItem
@@ -433,11 +441,12 @@ void DapQmlModelOrderList::setOrderListData (const QJsonArray &a_list, bool noti
         std::move (hash),
         QString()
       };
+      index++;
     }
 
   /* store result */
   s_ordersModule->setItems (std::move (items));
-  s_ordersModule->setCurrentIndex (0);
+  s_ordersModule->setCurrentIndex (newCurrentIndex);
 
   /* notify model */
   s_ordersBaseModel->endResetModel();
