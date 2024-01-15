@@ -181,6 +181,10 @@ void DapNode::initStmTransitions()
     m_stm->getWallets.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
 
+    // get wallets -> node сonnection
+    m_stm->getWallets.addTransition(web3, &DapNodeWeb3::sigIncorrectId,
+    &m_stm->nodeConnection);
+
     // get networks -> networks received
     m_stm->getNetworks.addTransition(this, &DapNode::networksReceived,
     &m_stm->getDataWallet);
@@ -289,7 +293,6 @@ void DapNode::initStmStates()
     //
     connect(&m_stm->nodeConnection, &QState::entered, this, [=](){
         DEBUGINFO  << "&nodeConnection, &QState::entered";
-        nodeDetected = true;
     });
     // node connected
     connect(&m_stm->nodeNotConnected, &QState::entered, this, [=](){
@@ -422,6 +425,7 @@ void DapNode::initWeb3Connections()
 
         /* ignore and do not send "Wrong reply connect" error */
         if (errorCode == 100110
+            || errorMessage == "Wrong reply connect"
             || errorMessage == "Wrong reply status")
           return;
 
@@ -491,6 +495,7 @@ void DapNode::initWeb3Connections()
     });
 
     connect(web3, &DapNodeWeb3::sigNetId, this, [=](QString netId) {
+        qDebug() << "NetId received - " + netId;
         m_netId = netId;
         emit sigNetIdReceived();
     });
@@ -559,10 +564,12 @@ void DapNode::start()
     m_stm->start();
 }
 
-void DapNode::slotNodeIpReqest(QString srvUid, QString nodeAddress, QString orderHash)
+void DapNode::slotNodeIpReqest(const QString & srvUid, const QString & nodeAddress, const QString & orderHash, const QString & network)
 {
     m_srvUid = srvUid;
     m_nodeInfo.setNodeAddress(nodeAddress);
+    if (!network.isEmpty())
+      m_networkName = network;
     emit sigNodeIpRequest();
 }
 void DapNode::slotGetNodeIpForOrderListReqest(QString srvUid, QJsonArray orderList)
@@ -604,9 +611,9 @@ void orderListFiltr(const QJsonArray& inOrders, QJsonArray& outOrders, QStringLi
     }
 }
 
-void DapNode::slotGetNetIdReqest(QString netId)
+void DapNode::slotGetNetIdReqest(QString networkName)
 {
-  web3->DapNodeWeb3::getNetIdRequest(netId);
+  web3->DapNodeWeb3::getNetIdRequest(networkName);
 }
 
 void DapNode::slotWalletsRequest()

@@ -154,7 +154,7 @@ void DapCmdNode::handle(const QJsonObject* params)
 {
     DEBUGINFO << __PRETTY_FUNCTION__ << *params;
     if (params->value("start_node_detection").isBool() && params->value("start_node_detection").toBool())
-        emit startNodeDetection();
+        emit sigStartNodeDetection();
     if (params->value("nocdb_mode_request").isBool())
         sendNoCdbMode();
     // data wallet request
@@ -218,12 +218,13 @@ void DapCmdNode::handle(const QJsonObject* params)
         QString orderHash    = oi["hash"].toString();
         QString srvUid       = oi["srvUid"].toString();
         QString nodeAddress  = oi["nodeAddress"].toString();
+        QString network      = params->value ("network").toString();
 //        uint16_t port        = 80;
 //        if (!oi["port"].isNull())
 //            port             = oi["port"].toInt();
         qDebug() << "start_connect_by_order" << oi;
         m_nocdbMode = true;
-        emit connectByOrder(srvUid, nodeAddress, orderHash);
+        emit connectByOrder(srvUid, nodeAddress, orderHash, network);
     }
     if (params->value("get_ip_order_list").isObject())
     {

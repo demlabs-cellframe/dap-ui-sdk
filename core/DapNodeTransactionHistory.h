@@ -35,6 +35,7 @@ public:
     QString token;
     QString value;
     QString unit;
+    QDateTime created;
     bool isSigned;
 
     operator QJsonObject() const { return toJsonObject(); }

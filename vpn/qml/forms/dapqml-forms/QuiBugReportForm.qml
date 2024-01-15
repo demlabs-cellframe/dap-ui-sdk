@@ -11,6 +11,7 @@ import TextEditContextMenu 1.0
 import Brand 1.0
 import Scaling 1.0
 import PageCtl 1.0
+import com.DapQmlWidgets 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -788,7 +789,7 @@ Item {
 
             /* cancel */
             DapQmlPushButton {
-                qss: "bugrep-send-btn push-button"
+                qss: "bugrep-cancel-btn push-button"
                 text: qsTr("CANCEL") + lang.notifier
                 onClicked: { root.mode = 0; root.sigCancel(); }
             }

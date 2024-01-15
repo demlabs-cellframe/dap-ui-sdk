@@ -177,7 +177,7 @@ private:
     void initWeb3Connections();
     void initCommandsStm();
 
-    bool nodeDetected;
+    bool nodeDetected = false;
     // transaction certificate name
 
 
@@ -186,7 +186,7 @@ public slots:
     void stopCheckingNodeRequest();
     void slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit, QString keyPath);
     void slotGetOrdersList(QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
-    void slotNodeIpReqest(QString srvUid, QString nodeAddress, QString orderHash);
+    void slotNodeIpReqest(const QString & srvUid, const QString & nodeAddress, const QString & orderHash, const QString & network);
     void slotGetNodeIpForOrderListReqest(QString srvUid, QJsonArray orderList);
     void slotGetNetIdReqest(QString networkName);
     void slotWalletsRequest();
@@ -208,7 +208,7 @@ signals:
     void sigMempoolContainHash();
     void sigLedgerContainHash();
     void sigCondTxCreateSuccess(QString hash);
-    void sigConnectByOrder(QString networkName, QString txCondHash, QString token, QString srvUid, QString nodeIp, uint16_t port);
+    void sigConnectByOrder(const QString &networkName, const QString &txCondHash, const QString &token, const QString &srvUid, const QString &address, const uint16_t &port);
 
     // ------- internal signals --------
     void waitingCommand();

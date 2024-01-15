@@ -196,6 +196,18 @@ Item {
                 qss: "sett-content";
             }
 
+            DapQmlDummy {
+                id: lvHoverColor
+                qss: "sett-btn-hover-bg";
+                property string color
+            }
+
+            DapQmlDummy {
+                id: lvNormalColor
+                qss: "c-background";
+                property string color
+            }
+
             /****************************************//**
              * Delegate
              ********************************************/
@@ -277,14 +289,23 @@ Item {
                              && isSep(model.sid)
                 }
 
-                DapQmlRectangle {
+                Rectangle {
                     anchors.fill: parent
                     anchors.rightMargin: 0-1
                     z: 10
                     visible: !Brand.legacyStyle() && model.index > 0
-                    qss: delegate.hovered ? "sett-btn-hover-bg" : "c-background"
+                    color: delegate.hovered ? lvHoverColor.color : lvNormalColor.color
                     Behavior on color { PropertyAnimation { duration: root.internal.disableAnim ? 0 : 150 } }
                 }
+
+//                DapQmlRectangle {
+//                    anchors.fill: parent
+//                    anchors.rightMargin: 0-1
+//                    z: 10
+//                    visible: !Brand.legacyStyle() && model.index > 0
+//                    qss: delegate.hovered ? "sett-btn-hover-bg" : "c-background"
+//                    Behavior on color { PropertyAnimation { duration: root.internal.disableAnim ? 0 : 150 } }
+//                }
 
                 DapQmlLabel {
                     z: 40

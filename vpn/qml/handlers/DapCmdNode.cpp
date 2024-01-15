@@ -359,6 +359,7 @@ void DapCmdNode::_updateHistoryItem()
 
   history[index]  = s_historyOrder;
   history.itemUpdated (index);
+  DapNodeTransactionHistory::instance()->setCurrentIndex (index);
 }
 
 
@@ -405,6 +406,7 @@ void DapCmdNode::slotCondTxCreate()
   s_historyOrder.value    = _data->value;
   s_historyOrder.unit     = order.priceUnit(); // "day";
   s_historyOrder.wallet   = _data->selectedWalletName;
+  s_historyOrder.created  = QDateTime::currentDateTime();
   s_historyOrder.isSigned = false;
   _updateHistoryItem();
 }
@@ -461,7 +463,20 @@ void DapCmdNode::slotStartConnectByOrder()
 //  connectData["token"] = _data->selectedTokenName;
 //  //connectData["node_ip"] = "164.92.175.30"; // TODO get from order
 //  jObject["start_connect_by_order"] = connectData;
-//  sendCmd (&jObject);
+  //  sendCmd (&jObject);
+}
+
+void DapCmdNode::slotStartConnectByHistoryOrder (const DapNodeOrderInfo &a_info, const QString &a_token, const QString &a_network)
+{
+  DEBUGINFO << __PRETTY_FUNCTION__;
+
+  /* send command */
+  QJsonObject jobj {
+    { "start_connect_by_order", a_info.toJsonObject() },
+    { "token", a_token },
+    { "network", a_network }
+  };
+  sendCmd (&jobj);
 }
 
 void DapCmdNode::slotRequestIpNode (const QString &networkName, const QJsonArray &orderList)

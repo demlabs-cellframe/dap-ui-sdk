@@ -118,14 +118,22 @@ public:
   Q_INVOKABLE QString network() const;
   Q_INVOKABLE void setNetwork (const QString &a_value = QString());
 
+  QString networkFromModel() const;
+
   Q_INVOKABLE QString wallet() const;
   Q_INVOKABLE void setWallet (const QString &a_value = QString());
+
+  QString walletFromModel() const;
 
   Q_INVOKABLE QString token() const;
   Q_INVOKABLE void setToken (const QString &a_value = QString());
 
+  QString tokenFromModel() const;
+
   Q_INVOKABLE QString unit() const;
   Q_INVOKABLE void setUnit (const QString &a_value = QString());
+
+  QString unitFromModel() const;
 
   Q_INVOKABLE QString balance() const;
   Q_INVOKABLE void setBalance (const QString &a_value = QString());

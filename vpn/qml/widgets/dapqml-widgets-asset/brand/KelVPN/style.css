@@ -803,7 +803,7 @@
 
 .login-logo-container
 {
-    scaled-rect: scaled(-1,117,-1,89,true);
+    scaled-rect: scaled(-1,104,-1,89,true);
 }
 
 .login-logo
@@ -886,7 +886,7 @@
 
 .login-btn-nocbd-skey-server-container
 {
-    scaled-rect: scaled(-1,360,356,78,true);
+    scaled-rect: scaled(-1,360,356,108,true);
 }
 
 .login-btn-nocbd-wallet-server-container
@@ -1019,6 +1019,13 @@
 .login-connection-container
 {
     scaled-rect: scaled(nan,nan,-1,120,false);
+}
+
+.login-btn-orders-history-frame
+{
+    scaled-rect: scaled(nan,nan,356,52,false,18);
+    color: "@input-field";
+    font-weight: Font.Bold;
 }
 
 /****************************************************
@@ -1159,69 +1166,31 @@
 .stat-item-main
 {
     color: "@text";
-    font-weight: Font.Bold;
 }
 
 .stat-item-sub
 {
     color: "#A4A3C0";
-    font-weight: Font.Normal;
 }
 
 .stat-graph
 {
-/*
-    scaled-rect: scaled(-1,146,360,147,false);
-*/
     scaled-rect: scaled(-1,144,356,176,false);
 }
 
-.stat-speed
+.stat-indicators-container
 {
-/*
-    scaled-rect: scaled(nan,307,154,99,false);
-*/
-    scaled-rect: scaled(nan,336,154,99,false);
-}
-
-.stat-bytes
-{
-/*
-    scaled-rect: scaled(nan,406,154,99,false);
-*/
-    scaled-rect: scaled(nan,436,154,99,false);
-}
-
-.stat-packets
-{
-/*
-    scaled-rect: scaled(nan,505,154,99,false);
-*/
-    scaled-rect: scaled(nan,536,154,99,false);
-}
-
-.stat-misc
-{
-/*
-    scaled-rect: scaled(nan,604,154,99,false);
-*/
-    scaled-rect: scaled(nan,636,154,99,false);
+    scaled-rect: scaled(nan,336,nan,360,false);
 }
 
 .stat-scaler-ind
 {
-/*
-    scaled-rect: scaled(nan,nan,154,50,false,24);
-*/
     scaled-rect: scaled(nan,nan,170,100,false,24);
     font-weight: Font.DemiBold;
 }
 
 .stat-scaler-sub
 {
-/*
-    scaled-rect: scaled(nan,nan,154,50,false,12);
-*/
     scaled-rect: scaled(nan,nan,nan,nan,false,12);
 }
 
@@ -1413,6 +1382,11 @@
 .bugrep-send-btn
 {
     scaled-rect: scaled(-1,526,374,80,true,16);
+}
+
+.bugrep-cancel-btn
+{
+    scaled-rect: scaled(-1,726,374,80,true,16);
 }
 
 .bugrep-share-btn

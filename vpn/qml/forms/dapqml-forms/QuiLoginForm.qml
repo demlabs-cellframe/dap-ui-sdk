@@ -10,6 +10,7 @@ import StyleDebugTree 1.0
 import DapQmlStyle 1.0
 import Brand 1.0
 import PageCtl 1.0
+import com.DapQmlWidgets 1.0
 import "qrc:/dapqml-widgets"
 import "qrc:/dapqml-forms/tools"
 
@@ -85,6 +86,8 @@ Item {
 
         property bool tokenIsSet: false
 
+        property bool gotOrdersInsideHistory: false
+
         function forgotLabel() {
 //   First variant for Rise
 //            return mode === QuiLoginForm.Mode.M_SERIAL
@@ -108,6 +111,8 @@ Item {
         }
     }
 
+    property var interfaceObject
+
     /// @}
     /****************************************//**
      * @name SIGNALS
@@ -130,7 +135,10 @@ Item {
     signal sigChooseWallet();
 
     /// @brief enter maxprice key clicked
-    signal sigChooseMaxPrice
+    signal sigChooseMaxPrice();
+
+    /// @brief choose order from history
+    signal sigChooseOrderHistory();
 
     /// @brief connection by serial requested
     signal sigConnectBySerial();
@@ -283,6 +291,10 @@ Item {
 
     function showConnectionOverlay(a_show) {
         root.internal.showConnectionOverlay = a_show;
+    }
+
+    function setOrdersInsideHistoryFlag(a_value) {
+        root.internal.gotOrdersInsideHistory    = a_value;
     }
 
     /// @}
@@ -566,7 +578,14 @@ Item {
 
     DapQmlRectangle {
         x:      loginWalletPlacer.x
-        y:      loginSpacer.y + loginWalletPlacer.y
+        y: {
+            let pos = loginSpacer.y + loginWalletPlacer.y;
+            if (root.internal.gotOrdersInsideHistory
+                && internal.mode === QuiLoginForm.Mode.M_WALLET)
+                return pos - btnOrderHistory.height;
+            else
+                return pos;
+        }
         width:  loginWalletPlacer.width
         height: loginWalletPlacer.height
         visible: internal.cellfarameDetected && internal.mode === QuiLoginForm.Mode.M_WALLET
@@ -601,7 +620,14 @@ Item {
 
     DapQmlRectangle {
         x:      loginServerPlacer.x
-        y:      loginSpacer.y + loginServerPlacer.y
+        y: {
+            let pos = loginSpacer.y + loginServerPlacer.y;
+            if (root.internal.gotOrdersInsideHistory
+                && internal.mode === QuiLoginForm.Mode.M_WALLET)
+                return pos - btnOrderHistory.height;
+            else
+                return pos;
+        }
         width:  loginServerPlacer.width
         height: loginServerPlacer.height
         visible: {
@@ -665,54 +691,150 @@ Item {
                     label.text = text;
                     label.font.pixelSize = fontSize;
 
-                    /* variables */
-                    let ww = width;
-                    //let cw = label.contentWidth;
-                    //console.log(`LoginForm: contentWidth ${cw}, width ${ww}`);
+//                    /* variables */
+//                    let ww = width;
+//                    let cw = label.contentWidth;
+//                    console.log(`LoginForm: contentWidth ${cw}, width ${ww}`);
 
-                    /* scale down when required */
-                    while (label.contentWidth > ww && fontSize > 2)
-                    {
-                        fontSize -= 1;
-                        label.font.pixelSize = fontSize;
-                    }
+//                    /* scale down when required */
+//                    while (label.contentWidth > ww && fontSize > 2)
+//                    {
+//                        fontSize -= 1;
+//                        label.font.pixelSize = fontSize;
+//                    }
 
-                    /* if scaling failed, print error */
-                    if (fontSize <= 2)
-                    {
-                        fontSize = btnChooseServer.labelMain.fontSize
-                        label.font.pixelSize = fontSize;
-                        console.log(`LoginForm: Unable to scale server name label: ${text}`);
-                    }
+//                    /* if scaling failed, print error */
+//                    if (fontSize <= 2)
+//                    {
+//                        fontSize = btnChooseServer.labelMain.fontSize
+//                        label.font.pixelSize = fontSize;
+//                        console.log(`LoginForm: Unable to scale server name label: ${text}`);
+//                    }
 
-                    /* successful scaling */
-                    else
-                        console.log(`LoginForm: Scaled server name label: ${text} to ${fontSize} (${label.contentWidth.toFixed(2)}:${ww.toFixed(2)})`);
+//                    /* successful scaling */
+//                    else
+//                        console.log(`LoginForm: Scaled server name label: ${text} to ${fontSize} (${label.contentWidth.toFixed(2)}:${ww.toFixed(2)})`);
+
+                    if (interfaceObject !== undefined)
+                        label.font.pixelSize    = interfaceObject.scaleServerLabelFont (text, fontSize, width * 0.85);
                 }
             }
         }
 
-        DapQmlButton {
-            id: btnChooseOrder
-            x: (parent.width - width) / 2
-            z: 15
-            width: parent.width
-            visible: internal.mode === QuiLoginForm.Mode.M_WALLET
-            buttonStyle: DapQmlButton.Style.TopMainBottomSub
-            enabled: root.internal.tokenIsSet
+        Item {
+            anchors.fill: parent
             opacity: root.internal.tokenIsSet ? 1.0 : 0.5
+            enabled: root.internal.tokenIsSet
 
-            mainText: qsTr("Order") + lang.notifier
-            subText: qsTr("SEARCH ORDERS") + lang.notifier
-            qss: "login-btn-server"
-            mainQss: "login-btn-main"
-            subQss: "login-btn-sub"
-            frame: true
-            link: true
+            property real decreaseHeight: {
+                if (root.internal.gotOrdersInsideHistory
+                    && internal.mode === QuiLoginForm.Mode.M_WALLET)
+                    return btnChooseOrder.height * 0.2;
+                else
+                    return 0;
+            }
 
-            /* signals */
+            MouseArea {
+                anchors.fill: parent
+                onClicked: root.sigSearchOrders()
+            }
 
-            onClicked: root.sigSearchOrders()
+            Item {
+                width: parent.width
+                height: parent.height - parent.decreaseHeight
+                clip: true
+
+                DapQmlButton {
+                    id: btnChooseOrder
+                    x: (parent.width - width) / 2
+                    z: 15
+                    width: parent.width
+                    visible: internal.mode === QuiLoginForm.Mode.M_WALLET
+                    buttonStyle: DapQmlButton.Style.TopMainBottomSub
+                    enabled: root.internal.tokenIsSet
+
+                    mainText: qsTr("Order") + lang.notifier
+                    subText: qsTr("SEARCH ORDERS") + lang.notifier
+                    qss: "login-btn-server"
+                    mainQss: "login-btn-main"
+                    subQss: "login-btn-sub"
+                    frame: true
+                    link: true
+                    onClicked: root.sigSearchOrders()
+                }
+            }
+
+            /* bottom rectangle */
+
+            DapQmlRectangle {
+                x: btnChooseOrder.x
+                y: btnChooseOrder.y + btnChooseOrder.height - height
+                width: btnChooseOrder.width
+                height: btnChooseOrder.height * 0.2
+                visible: root.internal.gotOrdersInsideHistory
+                         && internal.mode === QuiLoginForm.Mode.M_WALLET
+                color: btnOrderHistory.color
+            }
+        }
+
+        DapQmlRectangle {
+            id: btnOrderHistory
+            x: btnChooseOrder.x
+            y: btnChooseOrder.y + btnChooseOrder.height
+            z: 14
+            visible: root.internal.gotOrdersInsideHistory
+                     && internal.mode === QuiLoginForm.Mode.M_WALLET
+            radius: btnChooseOrder.height * 0.1
+            qss: "login-btn-orders-history-frame"
+
+            property int fontSize
+            property int fontWeight
+
+            /* top rectangle */
+
+            DapQmlRectangle {
+                width: parent.width
+                height: parent.radius * 2
+                color: parent.color
+
+                /* separator */
+
+                DapQmlSeparator {
+                    width: parent.width
+                }
+            }
+
+            /* label */
+
+            DapQmlLabel {
+                anchors.fill: parent
+                anchors.bottomMargin: parent.height * 0.075
+                z: 0
+                horizontalAlign: Text.AlignHCenter
+                verticalAlign: Text.AlignVCenter
+                text: qsTr("My orders")
+                fontSize: parent.fontSize
+                fontWeight: parent.fontWeight
+                qss: "c-label"
+            }
+
+            /* link icon */
+
+            DapQmlImage {
+                id: linkImage
+                x: parent.width - width * 2.4
+                y: (parent.height - height) / 2
+                width: btnChooseOrder.height / 5
+                height: width
+                DapQmlStyle { qss: "btn-arrow"; item: linkImage }
+            }
+
+            /* clickable */
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: root.sigChooseOrderHistory()
+            }
         }
 
         DapQmlDummy {
