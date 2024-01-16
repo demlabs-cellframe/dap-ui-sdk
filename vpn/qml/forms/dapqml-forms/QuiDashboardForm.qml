@@ -4,6 +4,7 @@ import QtQuick 2.4
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 import DapQmlStyle 1.0
+import com.DapQmlWidgets 1.0
 import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 import "qrc:/dapqml-forms/tools"
@@ -78,7 +79,8 @@ Item {
 
     /// @brief change status text
     function setStatusText(a_text) {
-        statusLabel.text    = a_text;
+        if (a_text !== "")
+            statusLabel.text    = a_text;
     }
 
     /// @brief change switch state
@@ -130,6 +132,7 @@ Item {
     function setServerInfo(a_name, a_ip) {
         serverChoose.mainText   = a_name;
         serverChoose.subText    = a_ip;
+        serverChooseSpinner.visible = a_name === "";
     }
 
     function setNoCDBServerInfo(a_name, a_ip) {
@@ -206,7 +209,7 @@ Item {
 
     DapQmlLabel {
         id: statusLabel
-        text: "Disconnected"
+        text: qsTr("VPN Disconnected")
         qss: "dashboard-title c-label"
     }
 
@@ -430,6 +433,14 @@ Item {
         subQss: "dashboard-server-sub"
         qss: "dashboard-server-container"
         onClicked: root.sigServerClicked()
+
+        DapQmlArcAnimation {
+            id: serverChooseSpinner
+            anchors.centerIn: parent
+            width: parent.height * 0.75
+            height: width
+            qss: "c-dashboard-accent"
+        }
     }
 
     DapQmlButton {

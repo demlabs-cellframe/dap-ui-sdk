@@ -109,6 +109,8 @@ void DapNode::initStmTransitions()
     &m_stm->nodeDetection);
     m_stm->initialState.addTransition(this, &DapNode::sigCondTxCreateRequest,
     &m_stm->getFee);
+    m_stm->initialState.addTransition(this, &DapNode::sigFeeRequest,
+    &m_stm->getFeeIsolated);
     //&m_stm->nodeGetStatus);
     m_stm->initialState.addTransition(this, &DapNode::sigGetOrderListRequest,
     &m_stm->getListKeys);
@@ -148,6 +150,12 @@ void DapNode::initStmTransitions()
     m_stm->getFee.addTransition(this, &DapNode::sigFeeReceived,
     &m_stm->getNetId);
 
+    // fee received (isolated) -> send result
+    m_stm->getFeeIsolated.addTransition(this, &DapNode::sigFeeReceived,
+    &m_stm->initialState);
+    m_stm->getFeeIsolated.addTransition(this, &DapNode::errorDetected,
+    &m_stm->initialState);
+
     // fee received -> condition transaction create request
     m_stm->getNetId.addTransition(this, &DapNode::sigNetIdReceived,
     &m_stm->checkTransactionCertificate);
@@ -172,6 +180,10 @@ void DapNode::initStmTransitions()
     // get wallets -> init state
     m_stm->getWallets.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
+
+    // get wallets -> node сonnection
+    m_stm->getWallets.addTransition(web3, &DapNodeWeb3::sigIncorrectId,
+    &m_stm->nodeConnection);
 
     // get networks -> networks received
     m_stm->getNetworks.addTransition(this, &DapNode::networksReceived,
@@ -281,7 +293,6 @@ void DapNode::initStmStates()
     //
     connect(&m_stm->nodeConnection, &QState::entered, this, [=](){
         DEBUGINFO  << "&nodeConnection, &QState::entered";
-        nodeDetected = true;
     });
     // node connected
     connect(&m_stm->nodeNotConnected, &QState::entered, this, [=](){
@@ -312,6 +323,10 @@ void DapNode::initStmStates()
     // get fee
     connect (&m_stm->getFee, &QState::entered, this, [=](){
         web3->getFeeRequest(m_networkName);
+    });
+    // get fee isolated
+    connect (&m_stm->getFeeIsolated, &QState::entered, this, [=](){
+        web3->getFeeRequest (m_networkName);
     });
 
     connect (&m_stm->getNetId, &QState::entered, this, [=](){
@@ -410,6 +425,7 @@ void DapNode::initWeb3Connections()
 
         /* ignore and do not send "Wrong reply connect" error */
         if (errorCode == 100110
+            || errorMessage == "Wrong reply connect"
             || errorMessage == "Wrong reply status")
           return;
 
@@ -460,6 +476,12 @@ void DapNode::initWeb3Connections()
         m_fee = fee;
         emit sigFeeReceived();
     });
+    connect (web3, &DapNodeWeb3::sigFeeData,
+             this, [=] (const QJsonObject &a_data)
+    {
+      if (m_stm->getFeeIsolated.active())
+        emit sigFeeReceivedData (a_data);
+    });
     // connect to stream
     connect(web3, &DapNodeWeb3::sigNodeDump, this, [=](QList<QMap<QString, QString>> nodeDump) {
 //         riemann, use dap_chain_net_id_by_name() "0x000000000000dddd"
@@ -473,6 +495,7 @@ void DapNode::initWeb3Connections()
     });
 
     connect(web3, &DapNodeWeb3::sigNetId, this, [=](QString netId) {
+        qDebug() << "NetId received - " + netId;
         m_netId = netId;
         emit sigNetIdReceived();
     });
@@ -541,10 +564,12 @@ void DapNode::start()
     m_stm->start();
 }
 
-void DapNode::slotNodeIpReqest(QString srvUid, QString nodeAddress, QString orderHash)
+void DapNode::slotNodeIpReqest(const QString & srvUid, const QString & nodeAddress, const QString & orderHash, const QString & network)
 {
     m_srvUid = srvUid;
     m_nodeInfo.setNodeAddress(nodeAddress);
+    if (!network.isEmpty())
+      m_networkName = network;
     emit sigNodeIpRequest();
 }
 void DapNode::slotGetNodeIpForOrderListReqest(QString srvUid, QJsonArray orderList)
@@ -586,13 +611,19 @@ void orderListFiltr(const QJsonArray& inOrders, QJsonArray& outOrders, QStringLi
     }
 }
 
-void DapNode::slotGetNetIdReqest(QString netId)
+void DapNode::slotGetNetIdReqest(QString networkName)
 {
-  web3->DapNodeWeb3::getNetIdRequest(netId);
+  web3->DapNodeWeb3::getNetIdRequest(networkName);
 }
 
 void DapNode::slotWalletsRequest()
 {
   emit sigWalletsRequest();
+}
+
+void DapNode::slotFeeRequest (QString a_networkName)
+{
+  m_networkName = a_networkName;
+  emit sigFeeRequest();
 }
 

@@ -137,6 +137,7 @@ private:
   /// @{
 public slots:
   // requests
+  void nodeDetectRequest();
   void nodeDetectedRequest();
   void nodeConnectionRequest();
   void nodeStatusRequest();
@@ -203,6 +204,7 @@ signals:
   void sigNodeIp (QJsonObject);
   void sigNetId (QString netId);
   void sigFee (QString fee);
+  void sigFeeData (QJsonObject);
   void connectionIdReceived (QString connectionId);
   void sigNodeDump (QList<QMap<QString, QString>> nodeDump);
   void sigListKeys (QList<QString> listKeys);

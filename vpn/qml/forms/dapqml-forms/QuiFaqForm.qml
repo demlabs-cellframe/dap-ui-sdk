@@ -30,6 +30,7 @@ Item {
 
     property QtObject internal: QtObject {
         property bool finished: false
+        property var checkboxes: []
     }
 
     Timer {
@@ -73,9 +74,11 @@ Item {
         Item {
             clip: true
             width: listview.width
-            height: (labelHeight > faqItemSizer.height ? labelHeight : faqItemSizer.height) + faqItemSep.height + (opened ? contentHeight : 0)
+            height: (labelHeight > faqItemSizer.height ? labelHeight : faqItemSizer.height)
+                    + faqItemSep.height
+                    + (openedFlag ? contentHeight : 0)
 
-            property bool opened: false
+            property bool openedFlag: root.internal.checkboxes[model.index] || false
             property real labelHeight: faqItemLabel.height
             property real contentHeight: faqItemContent.height + faqItemSpacer.height
 
@@ -98,7 +101,7 @@ Item {
                 id: faqItemPlusBtn
                 x: parent.width - faqItemPlusBtnStyle.width + ((faqItemPlusBtnStyle.width - width) / 2)
                 y: (faqItemSizer.height - height) / 2
-                qss: parent.opened ? "faq-close-btn" : "faq-plus-btn"
+                qss: openedFlag ? "faq-close-btn" : "faq-plus-btn"
 
                 DapQmlDummy { id: faqItemPlusBtnStyle; qss: "faq-close-btn" }
             }
@@ -126,7 +129,10 @@ Item {
             MouseArea {
                 width: parent.width
                 height: faqItemSizer.height + faqItemSep.height
-                onClicked: parent.opened = !parent.opened;
+                onClicked: {
+                    openedFlag = !openedFlag;
+                    root.internal.checkboxes[model.index] = !root.internal.checkboxes[model.index];
+                }
             }
         }
     }

@@ -7,6 +7,7 @@ import QtQuick.Layouts 1.12
 import QtQuick.Shapes 1.4
 import DapQmlStyle 1.0
 import DapQmlSwitchCtl 1.0
+import com.DapQmlWidgets 1.0
 import StyleDebugTree 1.0
 //import QtGraphicalEffects 1.12
 import Qt5Compat.GraphicalEffects

@@ -1,26 +1,70 @@
+/* INCLUDES */
+
 #include "DapCmdSendBugReport.h"
 #include <QTimer>
 
-DapCmdSendBugReport::DapCmdSendBugReport (QObject *a_parent)
-  : DapCmdClientAbstract (DapJsonCmdType::SEND_BUG_REPORT, a_parent)
-  , m_waitingForResponse (false)
-{
+/*-----------------------------------------*/
+/* DEFS */
 
-}
-
-void DapCmdSendBugReport::sendBugReport(
-    const QString &a_message,
-    const QString &a_serial,
-    const QString &attachFile,
-    const QString &a_contactAddress)
+// this class controls the flag, that
+// ignores next bugreport status message
+class BugReportIgnoreCtl
 {
-  if (!m_waitingForResponse)
+  /* VARIABLES */
+  QTimer _timer;
+  bool _active;
+
+  /* CONSTRUCT/DESTRUCT */
+public:
+  BugReportIgnoreCtl()
+    : _active (false)
   {
-    /* set flag */
-    m_waitingForResponse  = true;
-    return;
+    _timer.setSingleShot (true);
+    _timer.setInterval (2000);
+    QObject::connect (&_timer, &QTimer::timeout,
+                      [this] { _active = false; });
   }
 
+  /* METHODS */
+  bool isActive() const { return _active; }
+  void activate()
+  {
+    _active = true;
+    _timer.start();
+  }
+  void deactivate()
+  {
+    _active = false;
+    _timer.stop();
+  }
+};
+
+/*-----------------------------------------*/
+/* VARIABLES */
+
+static BugReportIgnoreCtl *s_ignoreCtl  = nullptr;
+
+/********************************************
+ * CONSTRUCT/DESTRUCT
+ *******************************************/
+
+DapCmdSendBugReport::DapCmdSendBugReport (QObject *a_parent)
+  : DapCmdClientAbstract (DapJsonCmdType::SEND_BUG_REPORT, a_parent)
+{
+  if (s_ignoreCtl == nullptr)
+    s_ignoreCtl = new BugReportIgnoreCtl;
+}
+
+/********************************************
+ * METHODS
+ *******************************************/
+
+void DapCmdSendBugReport::sendBugReport(
+  const QString &a_message,
+  const QString &a_serial,
+  const QString &attachFile,
+  const QString &a_contactAddress)
+{
   /* send report */
   QJsonObject obj =
   {
@@ -34,14 +78,13 @@ void DapCmdSendBugReport::sendBugReport(
 
 void DapCmdSendBugReport::cancelBugReport()
 {
-  m_waitingForResponse  = false;
-  QTimer::singleShot (2000, this, [this] { m_waitingForResponse  = true; });
+  s_ignoreCtl->activate();
 }
 
-void DapCmdSendBugReport::handleResult (const QJsonObject& a_result)
+void DapCmdSendBugReport::handleResult (const QJsonObject &a_result)
 {
-  if (!m_waitingForResponse)
-    return;
+  if (s_ignoreCtl->isActive())
+    return s_ignoreCtl->deactivate();
 
   QString request = a_result.value ("bugreport_answer").toString();
 
@@ -51,11 +94,11 @@ void DapCmdSendBugReport::handleResult (const QJsonObject& a_result)
     emit sigBugReportSent (request.remove (QRegularExpression("\\D")));
   else
     emit sigBugReportSent ("");
-
-  m_waitingForResponse = false;
 }
 
-void DapCmdSendBugReport::handleError (int, const QString&)
+void DapCmdSendBugReport::handleError (int, const QString &)
 {
   qWarning() << *m_errorObject;
 }
+
+/*-----------------------------------------*/

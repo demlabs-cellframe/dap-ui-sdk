@@ -39,6 +39,8 @@ Item {
         property string priceShort: "TESTC"
 
         property int mode: 0
+        property bool historyFlag:  false
+
         property string txtOverview:    qsTr("Transaction overview")
         property string txtProcessing:  qsTr("Transaction processing...")
         property string txtReciept:     qsTr("Transaction reciept")
@@ -63,6 +65,7 @@ Item {
 
     signal sigConfirm();
     signal sigCancel();
+    signal sigActivate();
 
     /// @}
     /****************************************//**
@@ -77,6 +80,10 @@ Item {
         root.internal.unit          = a_data.unit;
         root.internal.price         = a_data.price;
         root.internal.priceShort    = a_data.priceShort;
+    }
+
+    function setHistoryFlag(a_value) {
+        root.internal.historyFlag   = a_value;
     }
 
     function showOverview() {
@@ -311,10 +318,12 @@ Item {
             height: pushButtonSizer.height * 2.125
 
             Loader {
-                enabled: root.internal.mode !== 1
                 Layout.fillWidth: true
                 Layout.preferredHeight: pushButtonSizer.height
                 sourceComponent: pushButton
+                enabled: root.internal.mode !== 1
+                visible: !root.internal.historyFlag
+
                 property string text:
                     root.internal.mode === 0
                     ? qsTr("CONFIRM PURCHASE")
@@ -327,10 +336,27 @@ Item {
             }
 
             Loader {
-                //enabled: root.internal.mode !== 1
                 Layout.fillWidth: true
                 Layout.preferredHeight: pushButtonSizer.height
                 sourceComponent: pushButton
+                enabled: root.internal.mode !== 1
+                visible: root.internal.historyFlag
+
+                property string text: qsTr("ACTIVATE")
+                property color color: "#F45480"
+                property var cbClicked: function() {
+                    root.sigActivate();
+                    // console.log("activate clicked");
+                }
+            }
+
+            Loader {
+                Layout.fillWidth: true
+                Layout.preferredHeight: pushButtonSizer.height
+                sourceComponent: pushButton
+                //enabled: root.internal.mode !== 1
+                //visible: !root.internal.historyFlag
+
                 property string text: qsTr("CANCEL")
                 property color color: "#A9A9B0"
                 property var cbClicked: function() {

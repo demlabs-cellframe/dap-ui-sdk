@@ -7,6 +7,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QQueue>
 
 /********************************************
  * DEFS
@@ -28,6 +29,8 @@ struct DapQmlModelOrderList::DapQmlModelOrderListData
   QString wallet;
   QString token;
   QString unit;
+  QQueue<QString> feeRequestQueue;
+  QString currentOrderHashCopy;
 };
 
 class OrdersModel : public QAbstractListModel
@@ -47,6 +50,7 @@ class ModuleModel : public QAbstractListModel
   ModuleInterface *_module;
 public:
   ModuleModel (ModuleInterface *a_module);
+  void refresh();
   int rowCount (const QModelIndex &parent = QModelIndex()) const override;
   int columnCount (const QModelIndex &parent = QModelIndex()) const override;
 
@@ -265,6 +269,12 @@ void DapQmlModelOrderList::setNetwork (const QString &a_value)
   emit sigNetworkChanged();
 }
 
+QString DapQmlModelOrderList::networkFromModel() const
+{
+  auto networks  = _data->module.networks();
+  return networks->name();
+}
+
 QString DapQmlModelOrderList::wallet() const
 {
   return _data->wallet;
@@ -283,6 +293,12 @@ void DapQmlModelOrderList::setWallet (const QString &a_value)
     }
 
   emit sigWalletChanged();
+}
+
+QString DapQmlModelOrderList::walletFromModel() const
+{
+  auto wallets  = _data->module.wallets();
+  return wallets->name();
 }
 
 QString DapQmlModelOrderList::token() const
@@ -305,6 +321,12 @@ void DapQmlModelOrderList::setToken (const QString &a_value)
   emit sigTokenChanged();
 }
 
+QString DapQmlModelOrderList::tokenFromModel() const
+{
+  auto tokens  = _data->module.tokens();
+  return tokens->name();
+}
+
 QString DapQmlModelOrderList::unit() const
 {
   return _data->unit;
@@ -323,6 +345,12 @@ void DapQmlModelOrderList::setUnit (const QString &a_value)
     }
 
   emit sigUnitChanged();
+}
+
+QString DapQmlModelOrderList::unitFromModel() const
+{
+  auto units  = _data->module.units();
+  return units->name();
 }
 
 QString DapQmlModelOrderList::balance() const
@@ -351,7 +379,9 @@ const OrderListModule::OrderItem *DapQmlModelOrderList::currentOrder() const
   static OrderListModule::OrderItem dummy;
   auto currentIndex = s_ordersModule->currentIndex();
   auto &items       = s_ordersModule->items();
-  if (items.isEmpty())
+  if (items.isEmpty()
+      || currentIndex < 0
+      || currentIndex >= items.size())
     return &dummy;
   return &s_ordersModule->items().at (currentIndex);
 }
@@ -368,6 +398,9 @@ void DapQmlModelOrderList::setOrderListData (const QJsonArray &a_list, bool noti
   QVector<OrderItem> items;
   QSet<QString> addressesSet;
   QJsonArray jarray;
+  if (!s_ordersModule->name().isEmpty())
+    _data->currentOrderHashCopy = s_ordersModule->name();
+  int newCurrentIndex = -1, index = 0;
 
   /* parse via cycle */
   for (const auto &item : qAsConst (a_list))
@@ -393,6 +426,14 @@ void DapQmlModelOrderList::setOrderListData (const QJsonArray &a_list, bool noti
           || punit.isEmpty())
         continue;
 
+      /* update new current */
+      if (!_data->currentOrderHashCopy.isEmpty()
+          && hash  == _data->currentOrderHashCopy)
+      {
+        _data->currentOrderHashCopy.clear();
+        newCurrentIndex = index;
+      }
+
       /* store result */
       addressesSet << node_addr;
       items << OrderItem
@@ -406,11 +447,12 @@ void DapQmlModelOrderList::setOrderListData (const QJsonArray &a_list, bool noti
         std::move (hash),
         QString()
       };
+      index++;
     }
 
   /* store result */
   s_ordersModule->setItems (std::move (items));
-  s_ordersModule->setCurrentIndex (0);
+  s_ordersModule->setCurrentIndex (newCurrentIndex);
 
   /* notify model */
   s_ordersBaseModel->endResetModel();
@@ -432,6 +474,24 @@ void DapQmlModelOrderList::_modelReset()
 {
   beginResetModel();
   endResetModel();
+}
+
+void DapQmlModelOrderList::_setNwtworksFeeRequestList (const QStringList &a_list)
+{
+  for (const QString &a_network : a_list)
+    _data->feeRequestQueue << a_network;
+}
+
+QString DapQmlModelOrderList::_dequeueNetworkFeeRequest()
+{
+  if (_data->feeRequestQueue.isEmpty())
+    return QString();
+  return _data->feeRequestQueue.dequeue();
+}
+
+void DapQmlModelOrderList::_setNetworkFee (const QString &a_networkName, const QString &a_fee)
+{
+  DapNodeWalletData::instance()->setNetworkFee (a_networkName, a_fee);
 }
 
 /********************************************
@@ -490,14 +550,17 @@ void DapQmlModelOrderList::slotWalletsDataUpdated()
 
   auto wallets  = _data->module.wallets()->as<WalletsModule>();
   wallets->setCurrentIndex (-1);
+  s_walletsModel->refresh();
   emit sigWalletUpdated (wallets->name());
 
   auto networks  = _data->module.networks()->as<NetworksModule>();
   networks->setCurrentIndex (-1);
+  s_networksModel->refresh();
   emit sigNetworkUpdated (networks->name());
 
   auto tokens  = _data->module.tokens()->as<TokensModule>();
   tokens->setCurrentIndex (-1);
+  s_tokensModel->refresh();
   emit sigTokenUpdated (tokens->name());
 }
 
@@ -748,13 +811,14 @@ DapQmlListModuleProxyModel::DapQmlListModuleProxyModel (Mode a_mode)
 
 void DapQmlListModuleProxyModel::setRowFilter (const QString &a_filter)
 {
-  if (m_filter == a_filter)
-    return;
+//  if (m_filter == a_filter)
+//    return;
 
   m_filter  = a_filter;
   _indexMap.clear();
   _indexMapCounter  = 0;
   invalidateFilter();
+  _printFilteredResult();
 }
 
 int DapQmlListModuleProxyModel::currentIndex() const
@@ -793,6 +857,20 @@ void DapQmlListModuleProxyModel::_setup(
   _module       = a_module;
   _moduleModel  = a_model;
   setSourceModel (a_model);
+}
+
+void DapQmlListModuleProxyModel::_printFilteredResult() const
+{
+  if (_moduleModel == nullptr)
+    return;
+
+  int size  = rowCount();
+
+  qDebug() << "DapQmlListModuleProxyModel::_printFilteredResult" << size << m_filter;
+
+  for (int i = 0; i < size; i++)
+    qDebug() << data (index (i, 0), 9 ).toString()
+             << data (index (i, 0), 10).toString();
 }
 
 bool DapQmlListModuleProxyModel::filterAcceptsRow (int sourceRow, const QModelIndex &) const
@@ -855,6 +933,12 @@ ModuleModel::ModuleModel (ModuleInterface *a_module)
   : _module (a_module)
 {
 
+}
+
+void ModuleModel::refresh()
+{
+  beginResetModel();
+  endResetModel();
 }
 
 int ModuleModel::rowCount (const QModelIndex &) const
