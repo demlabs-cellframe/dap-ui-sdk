@@ -90,4 +90,8 @@ android {
 #QT += androidextras
 }
 
+ios {
+    QMAKE_COMPILER_DEFINES += TARGET_OS_IPHONE
+}
+
 INCLUDEPATH += $$PWD/../quazip
