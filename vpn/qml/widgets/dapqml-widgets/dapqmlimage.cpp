@@ -141,7 +141,8 @@ void DapQmlImageItem::paint (QPainter *a_painter)
           size,
           this
         });
-      return QTimer::singleShot (25, []{ wokeUpThreads(); });
+      //return QTimer::singleShot (25, []{ wokeUpThreads(); });
+      return wokeUpThreads();
     }
 
   /* draw */
@@ -252,7 +253,11 @@ void DapQmlImageItemProcessWorker::slotProcess()
 
 ImageProcessorThread::ImageProcessorThread()
 {
+  thread  = new QThread;
   worker  = new DapQmlImageItemProcessWorker;
+
+  worker->moveToThread (thread);
+  thread->start();
 }
 
 ImageProcessorThread::~ImageProcessorThread()
