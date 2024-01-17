@@ -11,12 +11,10 @@
         <file compress="1">dapqml-widgets/DapQmlRadioButton.qml</file>
         <file compress="1">dapqml-widgets/DapQmlCheckbox.qml</file>
         <file compress="1">dapqml-widgets/DapQmlLineEdit.qml</file>
-        <file compress="1">dapqml-widgets/DapQmlLineEdit2.qml</file>
-        <file>dapqml-widgets/DapQmlImage.qml</file>
-        <file>dapqml-widgets/DapQmlInputField.qml</file>
-        <file>dapqml-widgets/DapQmlMenu.qml</file>
-        <file>dapqml-widgets/DapQmlCombobox.qml</file>
-        <file>dapqml-widgets/DapQmlDummy.qml</file>
-        <file>dapqml-widgets/DapQmlArcAnimation.qml</file>
+        <file compress="1">dapqml-widgets/DapQmlImage.qml</file>
+        <file compress="1">dapqml-widgets/DapQmlInputField.qml</file>
+        <file compress="1">dapqml-widgets/DapQmlMenu.qml</file>
+        <file compress="1">dapqml-widgets/DapQmlCombobox.qml</file>
+        <file compress="1">dapqml-widgets/DapQmlDummy.qml</file>
     </qresource>
 </RCC>

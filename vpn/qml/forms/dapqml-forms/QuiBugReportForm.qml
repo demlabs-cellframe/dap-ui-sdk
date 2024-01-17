@@ -4,13 +4,15 @@ import QtQuick 2.12
 import DapQmlStyle 1.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.0
-import QtGraphicalEffects 1.0
+//import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 import Qt.labs.platform 1.1
 import StyleDebugTree 1.0
 import TextEditContextMenu 1.0
 import Brand 1.0
 import Scaling 1.0
 import PageCtl 1.0
+import com.DapQmlWidgets 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -788,7 +790,7 @@ Item {
 
             /* cancel */
             DapQmlPushButton {
-                qss: "bugrep-send-btn push-button"
+                qss: "bugrep-cancel-btn push-button"
                 text: qsTr("CANCEL") + lang.notifier
                 onClicked: { root.mode = 0; root.sigCancel(); }
             }

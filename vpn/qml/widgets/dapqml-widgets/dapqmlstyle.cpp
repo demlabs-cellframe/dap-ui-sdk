@@ -46,7 +46,12 @@ DapQmlStyle::DapQmlStyle(QObject *parent)
       connect (s_globalSignal, &DapQmlStyle::redrawRequested,
                this, &DapQmlStyle::_applyStyle);//,
                //Qt::QueuedConnection);
-    }
+  }
+}
+
+DapQmlStyle::~DapQmlStyle()
+{
+  m_item  = nullptr;
 }
 
 /********************************************

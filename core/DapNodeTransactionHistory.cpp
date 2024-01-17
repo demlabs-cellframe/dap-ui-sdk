@@ -17,6 +17,7 @@ enum class FieldId : quint8
   token,
   value,
   unit,
+  created,
   isSigned,
 
   SIZE,
@@ -37,6 +38,7 @@ static const QHash<QByteArray, FieldId> s_fieldMap =
   FIELD (token),
   FIELD (value),
   FIELD (unit),
+  FIELD (created),
   FIELD (isSigned),
 };
 
@@ -64,6 +66,7 @@ DapNodeTransactionHistory::DapNodeTransactionHistory (QObject *parent)
     s_roles.INSERT_FIELD (token);
     s_roles.INSERT_FIELD (value);
     s_roles.INSERT_FIELD (unit);
+    s_roles.INSERT_FIELD (created);
     s_roles.INSERT_FIELD (isSigned);
 
     //qDebug().nospace() << "DapNodeTransactionHistory roles:" << s_roles;
@@ -318,6 +321,7 @@ QVariant DapNodeTransactionHistory::data (const QModelIndex &index, int role) co
       case FieldId::token:    return item.token;
       case FieldId::value:    return item.value;
       case FieldId::unit:     return item.unit;
+      case FieldId::created:  return item.created.toString ("hh:mm:ss dd.MM.yyyy");
       case FieldId::isSigned: return item.isSigned;
 
       default: break;
@@ -344,7 +348,7 @@ DapNodeTransactionHistory::Transaction &DapNodeTransactionHistory::operator[] (i
 
 void DapNodeTransactionHistory::Transaction::fromJson (const QJsonObject &a_obj)
 {
-  for (auto i = a_obj.constBegin(), e = a_obj.constEnd(); i != e; i++)
+  for (auto i = a_obj.constBegin(), e = a_obj.constEnd(); i != e; i++ )
   {
     /* if order info */
     if (i.key() == "info")
@@ -366,6 +370,7 @@ void DapNodeTransactionHistory::Transaction::fromJson (const QJsonObject &a_obj)
     case FieldId::token:    token     = std::move (val); break;
     case FieldId::value:    value     = std::move (val); break;
     case FieldId::unit:     unit      = std::move (val); break;
+    case FieldId::created:  created   = QDateTime::fromString (val, "hh:mm:ss dd.MM.yyyy"); break;
     case FieldId::isSigned: isSigned  = i.value().toBool(); break;
     }
   }
@@ -380,6 +385,7 @@ QJsonObject DapNodeTransactionHistory::Transaction::toJsonObject() const
     { "token",    token },
     { "value",    value },
     { "unit",     unit },
+    { "created",  created.toString ("hh:mm:ss dd.MM.yyyy") },
     { "isSigned", isSigned },
   };
 }

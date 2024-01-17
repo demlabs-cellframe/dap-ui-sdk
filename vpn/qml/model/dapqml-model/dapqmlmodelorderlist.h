@@ -7,6 +7,7 @@
 class QQmlEngine;
 class QJSEngine;
 namespace OrderListModule { struct OrderItem; class ModuleInterface; }
+namespace Controler { class QmlCtl; }
 
 /****************************************//**
  * @brief orders model list
@@ -20,6 +21,7 @@ class DapQmlModelOrderList : public QAbstractListModel
   Q_OBJECT
 
   friend class DapQmlModelOrderListProxyModel;
+  friend class Controler::QmlCtl;
 
   /****************************************//**
    * @name DEFS
@@ -116,14 +118,22 @@ public:
   Q_INVOKABLE QString network() const;
   Q_INVOKABLE void setNetwork (const QString &a_value = QString());
 
+  QString networkFromModel() const;
+
   Q_INVOKABLE QString wallet() const;
   Q_INVOKABLE void setWallet (const QString &a_value = QString());
+
+  QString walletFromModel() const;
 
   Q_INVOKABLE QString token() const;
   Q_INVOKABLE void setToken (const QString &a_value = QString());
 
+  QString tokenFromModel() const;
+
   Q_INVOKABLE QString unit() const;
   Q_INVOKABLE void setUnit (const QString &a_value = QString());
+
+  QString unitFromModel() const;
 
   Q_INVOKABLE QString balance() const;
   Q_INVOKABLE void setBalance (const QString &a_value = QString());
@@ -137,6 +147,9 @@ public:
   void setOrderListData (const QJsonArray &a_list, bool notify = true);
 protected:
   void _modelReset();
+  void _setNwtworksFeeRequestList (const QStringList &a_list);
+  QString _dequeueNetworkFeeRequest();
+  void _setNetworkFee (const QString &a_networkName, const QString &a_fee);
   /// @}
 
   /****************************************//**
@@ -330,6 +343,7 @@ public:
   Q_INVOKABLE void setCurrentIndex (int a_value);
 protected:
   void _setup (OrderListModule::ModuleInterface *a_module, QAbstractListModel *a_model);
+  void _printFilteredResult() const;
   /// @}
 
   /****************************************//**

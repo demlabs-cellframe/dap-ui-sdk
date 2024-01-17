@@ -3,7 +3,8 @@
 import QtQuick 2.11
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.2
-import QtGraphicalEffects 1.0
+//import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 import QtQuick.Shapes 1.4
 import DapQmlStyle 1.0
 import Brand 1.0
@@ -156,7 +157,7 @@ Item {
             case QuiNodeOrderList.MaxPrice: listTitle   = qsTr("Max Price"); break;
             case QuiNodeOrderList.MinPrice: listTitle   = qsTr("Min Price"); break;
 
-            case QuiNodeOrderList.TokenValue: listTitle = qsTr("Max Price"); break;
+            case QuiNodeOrderList.TokenValue: listTitle = qsTr("Max amount to pay"); break;
             }
 
             /* set value */
@@ -225,6 +226,8 @@ Item {
     signal sigSearchClicked();
     signal sigWalletConfirmClicked();
 
+    signal sigUpdateValuesFromModel();
+
     /* CHOOSE WALLET */
 
     onSigNetworkClicked: {
@@ -288,19 +291,7 @@ Item {
         if (interfaceObject === undefined)
             return;
 
-        root.internal.network       = interfaceObject.network();
-        root.internal.wallet        = interfaceObject.wallet();
-        root.internal.token         = interfaceObject.token();
-        root.internal.unit          = interfaceObject.unit();
-        root.internal.price         = interfaceObject.price();
-        root.internal.priceShort    = interfaceObject.priceShort();
-        root.internal.maxPrice      = interfaceObject.maxPrice();
-        root.internal.minPrice      = interfaceObject.minPrice();
-        root.internal.maxUnit       = interfaceObject.maxUnit();
-        root.internal.minUnit       = interfaceObject.minUnit();
-        root.internal.tokenValue    = interfaceObject.tokenValue();
-
-        _updateFilterSetupValue();
+        getDataFromInterface();
     }
 
     /// @}
@@ -371,12 +362,13 @@ Item {
         case QuiNodeOrderList.Wallets:
             root.internal.token     = " ";
             //csListView.model.onWalletChange();
-            csListViewTokens.model.currentIndex     = -1;
+            //csListViewTokens.model.currentIndex     = -1;
             interfaceObject.setData(
             {
                 wallet      : root.internal.wallet,
-                token       : root.internal.token,
+                //token       : root.internal.token,
             });
+            getDataFromInterface();
             break;
 
         }
@@ -517,6 +509,22 @@ Item {
             && (root.internal.wallet     !== "" && root.internal.wallet      !== " ")
             && (root.internal.token      !== "" && root.internal.token       !== " ")
             && (root.internal.tokenValue !== "" && root.internal.tokenValue  !== " ")
+    }
+
+    function getDataFromInterface() {
+        root.internal.network       = interfaceObject.network();
+        root.internal.wallet        = interfaceObject.wallet();
+        root.internal.token         = interfaceObject.token();
+        root.internal.unit          = interfaceObject.unit();
+        root.internal.price         = interfaceObject.price();
+        root.internal.priceShort    = interfaceObject.priceShort();
+        root.internal.maxPrice      = interfaceObject.maxPrice();
+        root.internal.minPrice      = interfaceObject.minPrice();
+        root.internal.maxUnit       = interfaceObject.maxUnit();
+        root.internal.minUnit       = interfaceObject.minUnit();
+        root.internal.tokenValue    = interfaceObject.tokenValue();
+
+        _updateFilterSetupValue();
     }
 
     /// @}
@@ -696,6 +704,7 @@ Item {
             id: itemRoot
             width: resizer.width// - 100
             height: resizer.height
+            opacity: 0.5 + enabled * 0.5
 
 //            Component.onCompleted: StyleDebugTree.describe (
 //               "listviewDelegate" + model.index,
@@ -890,8 +899,11 @@ Item {
 
         Loader {
             width: resizer.width
-            height: resizer.height
+            height: enabled ? resizer.height : 0
+            //height: resizer.height
             sourceComponent: compButton
+            enabled: model.ipAddress !== "" && model.ipAddress !== "0.0.0.0"
+            clip: true
             property string first:      {
                 if (model.units)
                     return dummyStyle.elideOrderPriceText(
@@ -1231,7 +1243,7 @@ Item {
 
                     Loader {
                         sourceComponent: compButton
-                        visible: !root.internal.isSearch
+                        visible: false // !root.internal.isSearch
                         property string first:      root.internal.token
                         property string second:     qsTr("Token*")
                         property string labelTopQss
@@ -1244,11 +1256,72 @@ Item {
                         sourceComponent: compButton
                         visible: !root.internal.isSearch
                         property string first:      root.internal.tokenValue
-                        property string second:     qsTr("Max price*")
+                        property string second:     qsTr("Max amount to pay*")
                         property string labelTopQss
                         property string labelBottomQss
                         property bool swap:         true
                         property var cbOnClicked: function() { root.sigTokenValueClicked(); }
+
+                        Image {
+                            x: parent.width - parent.height * 1.325
+                            y: Math.floor ((parent.height - height) / 2)
+                            width: Math.floor (parent.height * 0.4)
+                            height: width
+                            mipmap: true
+                            smooth: true
+                            antialiasing: false
+                            source: "qrc:/nonthemed/tooltip-icon.png"
+
+                            MouseArea {
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onEntered: tooltipIcnPopup.visible = true
+                                onExited: tooltipIcnPopup.visible  = false
+                            }
+
+                            ToolTip {
+                                id: tooltipIcnPopup
+                                width: dummyText.contentWidth + dummyText.contentHeight * 0.625
+                                height: dummyText.contentHeight * 1.625
+                                delay: 600
+                                timeout: 15000
+                                visible: false
+
+                                topInset: 0
+                                bottomInset: 0
+                                leftInset: 0
+                                rightInset: 0
+                                padding: 0
+                                margins: 0
+
+                                background: Item {}
+
+                                contentItem: Rectangle {
+                                    anchors.bottom: parent.top
+                                    width: parent.width
+                                    height: parent.height
+                                    color: colorLabel.color
+                                    border.color: colorLabelGray.color
+                                    radius: height * 0.125
+
+                                    property string tooltipText: qsTr ("Specify how many tokens\nyou are willing to spend to\npay for VPN service")
+
+                                    Text {
+                                        id: dummyText
+                                        visible: false
+                                        font.pixelSize: delegateOrderLabelSize.fontSize
+                                        text: parent.tooltipText
+                                    }
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        font.pixelSize: delegateOrderLabelSize.fontSize
+                                        text: parent.tooltipText
+                                        color: colorBackground.color
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     Loader {
@@ -1323,6 +1396,7 @@ Item {
                         root.sigRefreshDataClicked();
                         // console.log("refresh clicked");
                         btnRefreshWallets.enabled = false;
+                        searchFilterContent.enabled = false;
                         btnRefreshWalletsDisabledTimer.start();
                     }
 
@@ -1330,8 +1404,13 @@ Item {
                         id: btnRefreshWalletsDisabledTimer
                         running: false
                         repeat: false
-                        interval: 5000
-                        onTriggered: btnRefreshWallets.enabled = true
+                        interval: 2000
+                        onTriggered: {
+                            root.sigUpdateValuesFromModel();
+                            btnRefreshWallets.enabled = true;
+                            searchFilterContent.enabled = true;
+                            root.getDataFromInterface();
+                        }
                     }
                 }
 
@@ -1396,6 +1475,7 @@ Item {
                         id: valueEditRect
                         qss: "nodeorlist-edit"
                         property real fontSize
+                        property string color
 
                         RowLayout {
                             anchors.fill: parent
@@ -1422,6 +1502,8 @@ Item {
                                             ? interfaceObject.fixPriceString(text)
                                             : interfaceObject.fixNumberString(text);
                                 }
+
+                                DapQmlStyle { item: valueEditInput; qss: "c-label" }
                             }
 
                             Item {
@@ -1441,11 +1523,16 @@ Item {
 
                     /* RESULT */
                     DapQmlLabel {
+                        id: valueEditRectResult
                         anchors.top: valueEditRect.bottom
                         anchors.horizontalCenter: valueEditRect.horizontalCenter
-                        anchors.margins: height/2
+                        anchors.margins: valueEditRect.height * 0.115
                         width: valueEditRect.width
-                        height: valueEditRect.height * 0.23
+                        height: {
+                            if (root.internal.mode === QuiNodeOrderList.TokenValue)
+                                return valueEditRect.height * 0.5
+                            return valueEditRect.height * 0.23
+                        }
                         horizontalAlign: root.internal.isPrice ? Text.AlignRight : Text.AlignHCenter
                         verticalAlign: Text.AlignVCenter
                         elide: Text.ElideMiddle
@@ -1457,7 +1544,12 @@ Item {
 //                              : `${valueEditInput.text} ${root.internal.unit}`
                         text: {
                             if (root.internal.mode === QuiNodeOrderList.TokenValue)
-                                return `Balance: ${csListView.model.balance} ${root.internal.token}`;
+                            {
+                                let value   = interfaceObject.balanceToCoins (valueEditInput.text);
+                                if (root.internal.token === "")
+                                    return value;
+                                return `${value} ${root.internal.token}`;
+                            }
 
                             if (root.internal.isPrice)
                                 return `${valueEditInput.text} ${root.internal.token}`;
@@ -1467,7 +1559,113 @@ Item {
 
                             return `${valueEditInput.text} ${root.internal.unit}`
                         }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            z: 10
+                            hoverEnabled: root.internal.token !== ""
+                            onEntered: valueEditRectResultPopup.open()
+                            onExited:  valueEditRectResultPopup.close()
+                        }
+
+                        Popup {
+                            id: valueEditRectResultPopup
+                            x: parent.width - width
+                            y: 0 - height
+                            width: valueEditRectResultPopupText.contentWidth + height
+                            height: valueEditRectResultPopupText.contentHeight * 1.5
+                            topInset: 0
+                            bottomInset: 0
+                            leftInset: 0
+                            rightInset: 0
+                            padding: 0
+                            margins: 0
+
+                            background: Item {}
+
+                            contentItem: Rectangle {
+                                anchors.fill: parent
+                                color: "#e0e0e0"
+                                border.color: "#404040"
+
+                                Text {
+                                    id: valueEditRectResultPopupText
+                                    anchors.fill: parent
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    color: "#404040"
+
+                                    font {
+                                        family: amountLabel.fontFamiliy
+                                        pixelSize: valueEditRectResult.fontSize * 0.85
+                                    }
+
+                                    text: valueEditRectResult.text
+                                }
+                            }
+                        }
                     }
+
+                    /* Balance */
+                    DapQmlLabel {
+                        id: valueEditRectBalance
+                        anchors.top: valueEditRectResult.bottom
+                        anchors.horizontalCenter: valueEditRectResult.horizontalCenter
+                        anchors.margins: valueEditRectResult.height * (0 - 0.125)
+                        //anchors.margins: valueEditRectResult.height * 0.115
+                        width: valueEditRect.width
+                        height: valueEditRect.height * 0.23
+                        horizontalAlign: Text.AlignHCenter
+                        verticalAlign: Text.AlignVCenter
+                        elide: Text.ElideMiddle
+                        visible: root.internal.mode === QuiNodeOrderList.TokenValue
+                        qss: "c-grey"
+                        text: `Balance: ${csListView.model.balance} ${root.internal.token}`
+
+                        MouseArea {
+                            anchors.fill: parent
+                            z: 10
+                            hoverEnabled: true
+                            onEntered: valueEditRectBalancePopup.open()
+                            onExited:  valueEditRectBalancePopup.close()
+                        }
+
+                        Popup {
+                            id: valueEditRectBalancePopup
+                            x: parent.width - width
+                            y: 0 - height
+                            width: valueEditRectBalancePopupText.contentWidth + height
+                            height: valueEditRectBalancePopupText.contentHeight * 1.5
+                            topInset: 0
+                            bottomInset: 0
+                            leftInset: 0
+                            rightInset: 0
+                            padding: 0
+                            margins: 0
+
+                            background: Item {}
+
+                            contentItem: Rectangle {
+                                anchors.fill: parent
+                                color: "#e0e0e0"
+                                border.color: "#404040"
+
+                                Text {
+                                    id: valueEditRectBalancePopupText
+                                    anchors.fill: parent
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    color: "#404040"
+
+                                    font {
+                                        family: valueEditRectBalance.fontFamiliy
+                                        pixelSize: valueEditRectBalance.fontSize * 0.85
+                                    }
+
+                                    text: valueEditRectBalance.text
+                                }
+                            }
+                        }}
 
                     /* TABS */
                     RowLayout {
@@ -1526,6 +1724,19 @@ Item {
                     id: btnConfirm
                     DapQmlStyle { item: btnConfirm; qss: "nodeorlist-overview-confirm-btn" }
                     sourceComponent: pushButton
+                    visible: {
+                        switch (root.internal.mode)
+                        {
+                        case QuiNodeOrderList.MaxUnit:
+                        case QuiNodeOrderList.MinUnit:
+                        case QuiNodeOrderList.MaxPrice:
+                        case QuiNodeOrderList.MinPrice:
+                        case QuiNodeOrderList.TokenValue:
+                            return true;
+                        }
+                        return false;
+                    }
+
                     property string text: qsTr("CONFIRM")
                     property color color
                     property color fill
@@ -1629,7 +1840,7 @@ Item {
                         id: csListViewOrders
                         objectName: "listviewOrders"
                         anchors.fill: parent
-                        spacing: spacer.height
+                        //spacing: spacer.height
                         delegate: listviewDelegateOrder
                         visible: root.internal.mode === QuiNodeOrderList.Orders
                         clip: true

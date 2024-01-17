@@ -4,6 +4,7 @@
 /* INCLUDES */
 #include <QObject>
 #include <QSize>
+#include <QPointer>
 #include "style/scaled.h"
 
 /****************************************//**
@@ -96,7 +97,7 @@ protected:
 
   /// @example "font-jost font-bold settings-title"
   QString m_qss;
-  QObject *m_item;
+  QPointer<QObject> m_item;
 
   /**
    * @brief Class instance responsible to scaling features
@@ -111,6 +112,7 @@ protected:
   /// @{
 public:
   explicit DapQmlStyle (QObject *parent = nullptr);
+  ~DapQmlStyle();
   /// @}
 
   /****************************************//**

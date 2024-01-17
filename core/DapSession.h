@@ -213,6 +213,7 @@ signals:
     void keyActRequested();
     void authorized(const QString &);
     void onAuthorized();
+    void onConnectNoCDB();
     void usrDataChanged(const QString &addr, ushort port);
     void logoutRequested();
     void logouted();

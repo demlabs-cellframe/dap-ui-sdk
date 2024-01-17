@@ -245,7 +245,8 @@ QVariant WalletsModule::data (const QModelIndex &index, int role) const
       switch (FieldId (role))
         {
         case FieldId::name:   return item.wallet;
-        case FieldId::value:  return item.token;
+        case FieldId::value:  return //item.token;
+          QString ("%1 %2").arg (item.balance, item.token);
         case FieldId::misc:   return item.network;
         default:
           break;

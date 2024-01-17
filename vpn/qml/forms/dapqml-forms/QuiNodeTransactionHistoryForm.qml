@@ -102,6 +102,7 @@ Item {
                         horizontalAlign: Text.AlignLeft
                         verticalAlign: Text.AlignBottom
                         elide: Text.ElideMiddle
+                        disableClicking: true
                         qss: "trhistory-item-left-top"
                         text: `${model.units} ${model.priceUnit}`
                     }
@@ -113,6 +114,7 @@ Item {
                         horizontalAlign: Text.AlignLeft
                         verticalAlign: Text.AlignTop
                         elide: Text.ElideMiddle
+                        disableClicking: true
                         qss: "trhistory-item-left-bottom"
                         text: model.nodeLocation
                     }
@@ -123,14 +125,20 @@ Item {
                     Layout.preferredWidth: contentWidth
                     Layout.fillHeight: true
                     horizontalAlign: Text.AlignRight
+                    disableClicking: true
                     qss: "trhistory-item-right"
-                    text: "placeholder text"
+                    text: model.created // "placeholder text"
                 }
             }
 
             DapQmlSeparator {
                 anchors.bottom: parent.bottom
                 width: parent.width
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: root.sigSelect (model.index, model.nodeLocation);
             }
         }
     }
