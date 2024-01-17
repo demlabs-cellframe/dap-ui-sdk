@@ -1,12 +1,54 @@
 /* INCLUDES */
 #include "dapqmlimage.h"
 #include "helper/scaling.h"
+#include "dapqmlstyle.h"
 #include "dapqml-model/dapqmlmodelroutingexceptions.h"
 
 #include <QPainter>
+#include <QQueue>
+#include <QMutex>
+#include <QThread>
+#include <QTimer>
 
-/* VARS */
+/* DEFINES*/
+
+#define WORKERS_NUMBER (4)
+
+/// Process Image Operation Information
+
+struct ImageProcessItem
+{
+  QString filename;
+  QSize size;
+  DapQmlImageItem *destination;
+};
+
+/// Process Image Worker's Thread Container
+
+class ImageProcessorThread
+{
+  QThread *thread;
+  DapQmlImageItemProcessWorker *worker;
+
+public:
+  ImageProcessorThread();
+  ~ImageProcessorThread();
+
+  void invoke();
+};
+
+/* VARIABLES */
+
 static const char *s_imageProvider  = "DapQmlModelRoutingExceptionsImageProvider";
+static QQueue<ImageProcessItem> s_queue;
+static QMutex s_mutex;
+static QList<ImageProcessorThread*> s_workers;
+static int s_activeWorkers = 0;
+
+/* FUNCTIONS */
+
+static void queueImageOperation (const ImageProcessItem &a_item);
+static void wokeUpThreads();
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -15,12 +57,20 @@ static const char *s_imageProvider  = "DapQmlModelRoutingExceptionsImageProvider
 DapQmlImageItem::DapQmlImageItem (QQuickItem *parent)
   : QQuickPaintedItem (parent)
 {
-
+  connect (this, &DapQmlImageItem::_sigRedraw,
+           this, &DapQmlImageItem::slotRedraw,
+           Qt::QueuedConnection);
 }
 
 /********************************************
  * METHODS
  *******************************************/
+
+void DapQmlImageItem::initWorkers()
+{
+  for (int i = 0; i < WORKERS_NUMBER; i++)
+    s_workers << new ImageProcessorThread;
+}
 
 QString DapQmlImageItem::scaledPixmap() const
 {
@@ -37,6 +87,23 @@ void DapQmlImageItem::setScaledPixmap (const QString &a_scaledPixmap)
   _cache.name     = QString();
 
   emit sigScaledPixmapChanged();
+  update();
+}
+
+void DapQmlImageItem::_setupImage (DapImage &&a_image, const QSizeF &a_size)
+{
+  _cache.size   = a_size;
+  _cache.name   = m_scaledPixmap;
+  _cache.image  = std::move (a_image);
+  emit _sigRedraw();
+}
+
+/********************************************
+ * SLOTS
+ *******************************************/
+
+void DapQmlImageItem::slotRedraw()
+{
   update();
 }
 
@@ -64,49 +131,17 @@ void DapQmlImageItem::paint (QPainter *a_painter)
   };
 
   /* check, if cache has needed size image */
-  if (_cache.size != size || _cache.name != m_scaledPixmap)
+  if (_cache.size != size
+      || _cache.name != m_scaledPixmap)
     {
-      /* fix name */
-      QString filename  = m_scaledPixmap;
-      if (filename.startsWith ("qrc:/"))
-        filename.replace (0, 5, "://");
-
-      /* read file */
-      QFile file (filename);
-      if (file.open (QIODevice::ReadOnly))
+      queueImageOperation(
+        ImageProcessItem
         {
-          /* read contents */
-          DapImage image;
-          image.loadFromData (file.readAll());
-
-          /* scale pixmap */
-          _cache.name   = m_scaledPixmap;
-          _cache.size   = size;
-          _cache.image  = image.scaled (
-                            size,
-                            Qt::IgnoreAspectRatio,
-                            DapImage::SmoothTransformation
-                          );
-//          _cache.image = image;
-      }
-      else if (m_scaledPixmap.contains (s_imageProvider))
-        {
-          /* calc filename */
-          int index         = m_scaledPixmap.indexOf (s_imageProvider);
-          QString filename  = m_scaledPixmap.mid (index + strlen (s_imageProvider) + 1);
-
-          /* get pixmap */
-          QImage image      = DapQmlModelRoutingExceptionsImageProvider::instance()->requestImage (
-                                filename, nullptr, size);
-
-          /* scale pixmap */
-          _cache.name   = m_scaledPixmap;
-          _cache.size   = size;
-          _cache.image  = DapImage (image).scaled (
-                            size,
-                            Qt::IgnoreAspectRatio,
-                            DapImage::SmoothTransformation);
-        }
+          m_scaledPixmap,
+          size,
+          this
+        });
+      return QTimer::singleShot (25, []{ wokeUpThreads(); });
     }
 
   /* draw */
@@ -114,108 +149,122 @@ void DapQmlImageItem::paint (QPainter *a_painter)
   a_painter->drawImage (QRectF { content.topLeft(), content.size() }, _cache.image);
 }
 
-//void DapQmlImageItem::paint (QPainter *a_painter)
-//{
-//  /* check, if no pixmap provided */
-//  if (m_scaledPixmap.isEmpty())
-//    return;
+/*-----------------------------------------*/
 
-////#ifdef ANDROID
-////  /* setup render options */
-////  a_painter->setRenderHint (QPainter::Antialiasing, true);
-////  a_painter->setRenderHint (QPainter::SmoothPixmapTransform, true);
-////#endif // ANDROID
+void queueImageOperation (const ImageProcessItem &a_item)
+{
+  QMutexLocker l (&s_mutex);
+  s_queue << a_item;
+}
 
-//  /* get size */
-//  auto content  = contentsBoundingRect().toAlignedRect();
-//  auto size     = content.size();
+void wokeUpThreads()
+{
+  if (s_activeWorkers == WORKERS_NUMBER)
+    return;
 
-//  /* calc actual size */
-//  //auto actualDpi  = Scaling::getPhysicalDPI();
-//  auto scaleMul = Scaling::getDevicePixelRatio();
-//  size  = QSize
-//  {
-//    static_cast<int> (size.width() * scaleMul),
-//    static_cast<int> (size.height() * scaleMul),
-//    //static_cast<int> (Scaling::pointsToPixels (size.width(), actualDpi)),
-//    //static_cast<int> (Scaling::pointsToPixels (size.height(), actualDpi))
-//  };
+  for (auto worker : qAsConst (s_workers))
+    worker->invoke();
+}
 
-//  /* check, if cache has needed size image */
-//  if (_cache.size != size || _cache.name != m_scaledPixmap)
-//    {
-////#ifdef ANDROID
-////      /* check if already loaded */
-////      if (!_cache.pixmap.isNull()
-////          && _cache.name == m_scaledPixmap)
-////        return a_painter->drawPixmap (content, _cache.pixmap);
-////#endif // ANDROID
+/*-----------------------------------------*/
 
-////      qDebug() << __PRETTY_FUNCTION__ << "size:" << size << content.size();// << "dpi:" << actualDpi;
+DapQmlImageItemProcessWorker::DapQmlImageItemProcessWorker()
+{
 
-//      /* fix name */
-//      QString filename  = m_scaledPixmap;
-//      if (filename.startsWith ("qrc:/"))
-//        filename.replace (0, 5, "://");
+}
 
-//      /* read file */
-//      QFile file (filename);
-//      if (file.open (QIODevice::ReadOnly))
-//        {
-//          /* read contents */
-//          QPixmap image;
-//          image.loadFromData (file.readAll());
+void DapQmlImageItemProcessWorker::slotProcess()
+{
+  /* variables */
+  ImageProcessItem item;
+  DapImage result;
 
-//          /* scale pixmap */
-//          _cache.name   = m_scaledPixmap;
-//          _cache.size   = size;
-//          _cache.pixmap = image.scaled (
-//                            size,
-//                            Qt::IgnoreAspectRatio,
-//                            Qt::SmoothTransformation);
+  //while (true)
+  {
+    /* get operation info */
+    {
+      QMutexLocker l (&s_mutex);
+      if (s_queue.isEmpty())
+      {
+//        QTimer::singleShot (10, []
+//          {
+//            if (s_activeWorkers == 0)
+//              DapQmlStyle::sRequestRedraw();
+//          });
+        return;
+      }
 
-////          QImage scaledResult (size, QImage::Format_ARGB32);
-////          scaledResult.fill (Qt::transparent);
+      /* activate */
+      item  = s_queue.dequeue();
+      s_activeWorkers++;
+    }
 
-////          QPainter painter (&scaledResult);
-////          painter.setRenderHint (QPainter::HighQualityAntialiasing);
-////          painter.drawPixmap (QRect (0, 0, size.width(), size.height()), image);
-////          painter.end();
+    /* fix name */
+    QString filename  = item.filename;
+    if (filename.startsWith ("qrc:/"))
+      filename.replace (0, 5, "://");
 
-////          _cache.pixmap = QPixmap::fromImage (scaledResult);
-//        }
-//      else if (m_scaledPixmap.contains (s_imageProvider))
-//        {
-//          /* calc filename */
-//          int index         = m_scaledPixmap.indexOf (s_imageProvider);
-//          QString filename  = m_scaledPixmap.mid (index + strlen (s_imageProvider) + 1);
+    /* read file */
+    QFile file (filename);
+    if (file.open (QIODevice::ReadOnly))
+      {
+        /* read contents */
+        DapImage image;
+        image.loadFromData (file.readAll());
 
-//          /* get pixmap */
-//          auto image        = DapQmlModelRoutingExceptionsImageProvider::instance()->requestPixmap (
-//                                filename, nullptr, size);
+        /* scale pixmap */
+        result =
+          image.scaled(
+            item.size,
+            Qt::IgnoreAspectRatio,
+            DapImage::SmoothTransformation);
+    }
+    else if (item.filename.contains (s_imageProvider))
+      {
+        /* calc filename */
+        int index         = item.filename.indexOf (s_imageProvider);
+        QString filename  = item.filename.mid (index + strlen (s_imageProvider) + 1);
 
-//          /* scale pixmap */
-//          _cache.name   = m_scaledPixmap;
-//          _cache.size   = size;
-//          _cache.pixmap = image.scaled (
-//                            size,
-//                            Qt::IgnoreAspectRatio,
-//                            Qt::SmoothTransformation);
+        /* get pixmap */
+        QImage image      = DapQmlModelRoutingExceptionsImageProvider::instance()->requestImage (
+                              filename, nullptr, item.size);
 
-////            QImage scaledResult (size, QImage::Format_ARGB32);
-////            scaledResult.fill (Qt::transparent);
+        /* scale pixmap */
+        result =
+          DapImage (image).scaled(
+            item.size,
+            Qt::IgnoreAspectRatio,
+            DapImage::SmoothTransformation);
+      }
 
-////            QPainter painter (&scaledResult);
-////            painter.setRenderHint (QPainter::HighQualityAntialiasing);
-////            painter.drawPixmap (QRect (0, 0, size.width(), size.height()), image);
-////            painter.end();
+    /* set result */
+    item.destination->_setupImage (std::move (result), item.size);
 
-////            _cache.pixmap = QPixmap::fromImage (scaledResult);
-//        }
-//    }
+    /* deactivate */
+    {
+      QMutexLocker l (&s_mutex);
+      s_activeWorkers--;
+    }
 
-//  /* draw */
-//  a_painter->drawPixmap (content, _cache.pixmap);
-//}
+    QMetaObject::invokeMethod (this, "slotProcess", Qt::QueuedConnection);
+  }
+}
+
+ImageProcessorThread::ImageProcessorThread()
+{
+  worker  = new DapQmlImageItemProcessWorker;
+}
+
+ImageProcessorThread::~ImageProcessorThread()
+{
+  worker->deleteLater();
+  thread->exit();
+  thread->deleteLater();
+}
+
+void ImageProcessorThread::invoke()
+{
+  QMetaObject::invokeMethod (worker, "slotProcess", Qt::QueuedConnection);
+}
 
 /*-----------------------------------------*/

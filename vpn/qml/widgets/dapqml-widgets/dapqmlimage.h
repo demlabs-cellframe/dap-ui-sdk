@@ -22,6 +22,8 @@ class DapQmlImageItem : public QQuickPaintedItem
 {
   Q_OBJECT
 
+  friend class DapQmlImageItemProcessWorker;
+
   /****************************************//**
    * @name PROPERTIES
    *******************************************/
@@ -67,8 +69,12 @@ public:
    *******************************************/
   /// @{
 public:
+  static void initWorkers();
+
   QString scaledPixmap() const;
   void setScaledPixmap (const QString &a_scaledPixmap);
+protected:
+  void _setupImage (DapImage &&a_image, const QSizeF &a_size);
   /// @}
 
   /****************************************//**
@@ -77,6 +83,15 @@ public:
   /// @{
 signals:
   void sigScaledPixmapChanged();
+  void _sigRedraw();
+  /// @}
+
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
+protected slots:
+  void slotRedraw();
   /// @}
 
   /****************************************//**
@@ -86,6 +101,17 @@ signals:
 public:
   void paint (QPainter *a_painter) override;
   /// @}
+};
+
+class DapQmlImageItemProcessWorker : public QObject
+{
+  Q_OBJECT
+
+public:
+  DapQmlImageItemProcessWorker();
+
+public slots:
+  void slotProcess();
 };
 
 /*-----------------------------------------*/
