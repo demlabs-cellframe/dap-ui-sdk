@@ -9,10 +9,13 @@
 #include <QMutex>
 #include <QThread>
 #include <QTimer>
+#include <QPointer>
 
 /* DEFINES*/
 
 #define WORKERS_NUMBER (4)
+
+typedef void (*WorkersDoneCallback)();
 
 /// Process Image Operation Information
 
@@ -20,7 +23,7 @@ struct ImageProcessItem
 {
   QString filename;
   QSize size;
-  DapQmlImageItem *destination;
+  QPointer<DapQmlImageItem> destination;
 };
 
 /// Process Image Worker's Thread Container
@@ -44,6 +47,7 @@ static QQueue<ImageProcessItem> s_queue;
 static QMutex s_mutex;
 static QList<ImageProcessorThread*> s_workers;
 static int s_activeWorkers = 0;
+static WorkersDoneCallback s_wdc  = []{};
 
 /* FUNCTIONS */
 
@@ -66,8 +70,9 @@ DapQmlImageItem::DapQmlImageItem (QQuickItem *parent)
  * METHODS
  *******************************************/
 
-void DapQmlImageItem::initWorkers()
+void DapQmlImageItem::initWorkers (void (*a_workersDoneCallback)())
 {
+  s_wdc = a_workersDoneCallback;
   for (int i = 0; i < WORKERS_NUMBER; i++)
     s_workers << new ImageProcessorThread;
 }
@@ -192,11 +197,18 @@ void DapQmlImageItemProcessWorker::slotProcess()
 //            if (s_activeWorkers == 0)
 //              DapQmlStyle::sRequestRedraw();
 //          });
-        return;
+        return s_wdc();
       }
 
       /* activate */
       item  = s_queue.dequeue();
+
+      if (item.destination.isNull())
+      {
+        QMetaObject::invokeMethod (this, "slotProcess", Qt::QueuedConnection);
+        return;
+      }
+
       s_activeWorkers++;
     }
 

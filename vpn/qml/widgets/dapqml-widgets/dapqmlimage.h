@@ -69,7 +69,7 @@ public:
    *******************************************/
   /// @{
 public:
-  static void initWorkers();
+  static void initWorkers (void (*a_workersDoneCallback)());
 
   QString scaledPixmap() const;
   void setScaledPixmap (const QString &a_scaledPixmap);

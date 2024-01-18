@@ -80,7 +80,7 @@ void DapQmlStyle::setItem (QObject *a_newItem)
   emit itemChanged();
 }
 
-void DapQmlStyle::windowResized(int a_width, int a_height)
+void DapQmlStyle::windowResized (int a_width, int a_height)
 {
   sWindowResized (a_width, a_height);
 }
