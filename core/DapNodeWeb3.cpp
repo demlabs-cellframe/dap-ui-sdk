@@ -179,13 +179,14 @@ void DapNodeWeb3::responseProcessing (
   // node connection reply
   if (methodName == "")
     {
+#ifndef Q_OS_IOS
         if (error == SIGERROR)
         {
           DEBUGINFO  << "DapNodeWeb3::responseProcessing - nodeNotDetected";
           emit nodeNotDetected();
           return;
         }
-
+#endif
         QJsonDocument doc = QJsonDocument::fromJson (m_networkReply->getReplyData());
         if (doc["status"].isString())
         {
