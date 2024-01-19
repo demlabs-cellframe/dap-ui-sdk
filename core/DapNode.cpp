@@ -79,6 +79,9 @@ void DapNode::startCheckingNodeRequest()
             DEBUGINFO << "startCheckingNodeRequest << sigNodeDetected()";
             emit sigNodeDetected();
             return;
+        } else {
+            DEBUGINFO << "sigRepeatNodeDetecting after reopen gui";
+            emit sigRepeatNodeDetecting();
         }
     }
 }
@@ -303,6 +306,7 @@ void DapNode::initStmStates()
     });
     // node detection request
     connect(&m_stm->nodeDetection,  &QState::entered, web3, &DapNodeWeb3::nodeDetectedRequest);
+    connect(this,  &DapNode::sigRepeatNodeDetecting, web3, &DapNodeWeb3::nodeDetectedRequest);
     // connection request
     connect(&m_stm->nodeConnection, &QState::entered, this, [=](){
         if (!m_isCDBLogined)
