@@ -51,6 +51,7 @@ protected:
     QString name;
     DapImage image;
     QSizeF size;
+    QMetaObject::Connection conn;
   } _cache;
 
   /// @}
@@ -69,12 +70,10 @@ public:
    *******************************************/
   /// @{
 public:
-  static void initWorkers (void (*a_workersDoneCallback)());
+  static void initWorkers();
 
   QString scaledPixmap() const;
   void setScaledPixmap (const QString &a_scaledPixmap);
-protected:
-  void _setupImage (DapImage &&a_image, const QSizeF &a_size);
   /// @}
 
   /****************************************//**
@@ -91,7 +90,8 @@ signals:
    *******************************************/
   /// @{
 protected slots:
-  void slotRedraw();
+  void _slotRedraw();
+  void _slotScalingFinished();
   /// @}
 
   /****************************************//**
@@ -101,17 +101,6 @@ protected slots:
 public:
   void paint (QPainter *a_painter) override;
   /// @}
-};
-
-class DapQmlImageItemProcessWorker : public QObject
-{
-  Q_OBJECT
-
-public:
-  DapQmlImageItemProcessWorker();
-
-public slots:
-  void slotProcess();
 };
 
 /*-----------------------------------------*/
