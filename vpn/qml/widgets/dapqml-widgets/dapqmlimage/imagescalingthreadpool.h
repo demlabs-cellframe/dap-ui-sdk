@@ -54,6 +54,10 @@ public:
 
   void queueScaling (const QString &a_filename, const QSize &a_newSize);
   void requestResult (const QString &a_filename, const QSize &a_newSize, DapImage &a_dest);
+  static void performScaling (const QString &a_filename, const QSize &a_newSize, DapImage &a_dest);
+
+  static bool isActive();
+  static void setActive (bool a_active);
   /// @}
 
   /****************************************//**

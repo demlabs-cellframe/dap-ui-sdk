@@ -104,10 +104,20 @@ void DapQmlImageItem::paint (QPainter *a_painter)
     {
       _cache.size   = size;
       _cache.name   = m_scaledPixmap;
-      _cache.conn   = connect (ImageScalingThreadPool::instance(), &ImageScalingThreadPool::sigFinished,
-                               this, &DapQmlImageItem::_slotScalingFinished);
-      ImageScalingThreadPool::instance()->queueScaling (m_scaledPixmap, size);
-      return;
+
+#ifndef ANDROID
+      if (ImageScalingThreadPool::isActive())
+      {
+        _cache.conn   = connect (ImageScalingThreadPool::instance(), &ImageScalingThreadPool::sigFinished,
+                                 this, &DapQmlImageItem::_slotScalingFinished);
+        ImageScalingThreadPool::instance()->queueScaling (m_scaledPixmap, size);
+        return;
+      }
+      else
+        ImageScalingThreadPool::performScaling (m_scaledPixmap, size, _cache.image);
+#else // ANDROID
+      ImageScalingThreadPool::performScaling (m_scaledPixmap, size, _cache.image);
+#endif // ANDROID
     }
 
   /* draw */

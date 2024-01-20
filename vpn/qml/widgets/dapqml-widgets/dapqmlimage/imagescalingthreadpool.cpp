@@ -83,6 +83,7 @@ static QHash<QString, ScalingResult> s_resultMap;
 static QList<WorkerThread*> s_workers;
 static QTimer *s_queueTimeout = nullptr;
 static QTimer *s_clearTimeout = nullptr;
+static bool s_isActive  = false;
 
 /* FUNCTIONS */
 
@@ -173,6 +174,9 @@ ImageScalingThreadPool *ImageScalingThreadPool::instance()
 
 void ImageScalingThreadPool::queueScaling (const QString &a_filename, const QSize &a_newSize)
 {
+  if (!s_isActive)
+    return;
+
   QString signature     = ScalingOperationSignature (a_newSize, a_filename).asString();
   if (!s_resultMap.contains (signature))
     s_queue.insert (signature, QueuedScalingOperation { a_filename, a_newSize });
@@ -182,12 +186,69 @@ void ImageScalingThreadPool::queueScaling (const QString &a_filename, const QSiz
 
 void ImageScalingThreadPool::requestResult (const QString &a_filename, const QSize &a_newSize, DapImage &a_dest)
 {
+  if (!s_isActive)
+    return;
+
   QString signature     = ScalingOperationSignature (a_newSize, a_filename).asString();
   ScalingResult result  = s_resultMap.value (signature);
 
   if (result.size == a_newSize
       && result.filename  == a_filename)
     a_dest  = std::move (result.result);
+}
+
+void ImageScalingThreadPool::performScaling(
+  const QString &a_filename,
+  const QSize &a_newSize,
+  DapImage &a_dest)
+{
+  /* fix name */
+  QString filename  = a_filename;
+  if (filename.startsWith ("qrc:/"))
+    filename.replace (0, 5, "://");
+
+  /* read file */
+  QFile file (filename);
+  if (file.open (QIODevice::ReadOnly))
+    {
+      /* read contents */
+      DapImage image;
+      image.loadFromData (file.readAll());
+
+      /* scale pixmap */
+      a_dest =
+        image.scaled(
+          a_newSize,
+          Qt::IgnoreAspectRatio,
+          DapImage::SmoothTransformation);
+  }
+  else if (a_filename.contains (s_imageProvider))
+    {
+      /* calc filename */
+      int index         = a_filename.indexOf (s_imageProvider);
+      QString filename  = a_filename.mid (index + strlen (s_imageProvider) + 1);
+
+      /* get pixmap */
+      QImage image      = DapQmlModelRoutingExceptionsImageProvider::instance()->requestImage (
+                            filename, nullptr, a_newSize);
+
+      /* scale pixmap */
+      a_dest =
+        DapImage (image).scaled(
+          a_newSize,
+          Qt::IgnoreAspectRatio,
+          DapImage::SmoothTransformation);
+    }
+}
+
+bool ImageScalingThreadPool::isActive()
+{
+  return s_isActive;
+}
+
+void ImageScalingThreadPool::setActive (bool a_active)
+{
+  s_isActive  = a_active;
 }
 
 /********************************************
@@ -231,43 +292,8 @@ void ImageScalingWorker::slotProcess (const QString &a_filename, const QSize &a_
   /* variables */
   DapImage result;
 
-  /* fix name */
-  QString filename  = a_filename;
-  if (filename.startsWith ("qrc:/"))
-    filename.replace (0, 5, "://");
-
-  /* read file */
-  QFile file (filename);
-  if (file.open (QIODevice::ReadOnly))
-    {
-      /* read contents */
-      DapImage image;
-      image.loadFromData (file.readAll());
-
-      /* scale pixmap */
-      result =
-        image.scaled(
-          a_newSize,
-          Qt::IgnoreAspectRatio,
-          DapImage::SmoothTransformation);
-  }
-  else if (a_filename.contains (s_imageProvider))
-    {
-      /* calc filename */
-      int index         = a_filename.indexOf (s_imageProvider);
-      QString filename  = a_filename.mid (index + strlen (s_imageProvider) + 1);
-
-      /* get pixmap */
-      QImage image      = DapQmlModelRoutingExceptionsImageProvider::instance()->requestImage (
-                            filename, nullptr, a_newSize);
-
-      /* scale pixmap */
-      result =
-        DapImage (image).scaled(
-          a_newSize,
-          Qt::IgnoreAspectRatio,
-          DapImage::SmoothTransformation);
-    }
+  /* scale */
+  ImageScalingThreadPool::performScaling (a_filename, a_newSize, result);
 
   /* send result data */
   QMetaObject::invokeMethod(
