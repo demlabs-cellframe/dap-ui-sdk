@@ -73,6 +73,8 @@ public:
     QState getListKeys;
     QState getOrderList;
     QState getNodeConnectionData;
+    QState getListKeysPaused;
+    QState getOrderListPaused;
 private:
     QStateMachine commandState;
     QStateMachine nodeConnectMachine;
@@ -105,6 +107,8 @@ private:
         nodeConnectMachine.addState(&getListKeys);
         nodeConnectMachine.addState(&getOrderList);
         nodeConnectMachine.addState(&getNodeConnectionData);
+        nodeConnectMachine.addState(&getListKeysPaused);
+        nodeConnectMachine.addState(&getOrderListPaused);
         nodeConnectMachine.setInitialState(&initialState);
         qDebug() << "nodeConnectMachine::init";
     }
