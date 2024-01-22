@@ -255,10 +255,27 @@ void DapNode::initStmTransitions()
     &m_stm->getOrderList);
     m_stm->getListKeys.addTransition(this, &DapNode::errorDetected,
     &m_stm->getOrderList);
+
+    // paused getListKeys
+    m_stm->getListKeys.addTransition(web3, &DapNodeWeb3::sigIncorrectId,
+    &m_stm->getListKeysPaused);
+    m_stm->getListKeysPaused.addTransition(web3, &DapNodeWeb3::connectionIdReceived,
+    &m_stm->getListKeys);
+    m_stm->getListKeysPaused.addTransition(this, &DapNode::errorDetected,
+    &m_stm->initialState);
+
     // getOrderList -> initialState
     m_stm->getOrderList.addTransition(this, &DapNode::sigOrderListReceived,
     &m_stm->initialState);
     m_stm->getOrderList.addTransition(this, &DapNode::errorDetected,
+    &m_stm->initialState);
+
+    // paused getOrderList
+    m_stm->getOrderList.addTransition(web3, &DapNodeWeb3::sigIncorrectId,
+    &m_stm->getOrderListPaused);
+    m_stm->getOrderListPaused.addTransition(web3, &DapNodeWeb3::connectionIdReceived,
+    &m_stm->getOrderList);
+    m_stm->getOrderListPaused.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
 
     // getting node ip
