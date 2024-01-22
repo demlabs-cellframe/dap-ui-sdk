@@ -65,9 +65,15 @@ void DapNode::startCheckingNodeRequest()
     {
         DEBUGINFO << "startCheckingNodeRequest << uiStartNodeDetection()";
         emit uiStartNodeDetection();
+        return;
     }
-    else
-    {
+    else if (m_stm->nodeConnection.active()) {
+        DEBUGINFO << "sigRepeatNodeDetecting after reopen gui";
+        emit sigNodeDetected();
+        emit sigRepeatNodeConnecting();
+        return;
+    }
+    else {
         if (m_stm->ledgerTxHashRequest.active() || m_stm->ledgerTxHashEmpty.active())
         {
             DEBUGINFO << "startCheckingNodeRequest << sigMempoolContainHash()";
@@ -79,9 +85,6 @@ void DapNode::startCheckingNodeRequest()
             DEBUGINFO << "startCheckingNodeRequest << sigNodeDetected()";
             emit sigNodeDetected();
             return;
-        } else {
-            DEBUGINFO << "sigRepeatNodeDetecting after reopen gui";
-            emit sigRepeatNodeDetecting();
         }
     }
 }
@@ -323,7 +326,7 @@ void DapNode::initStmStates()
     });
     // node detection request
     connect(&m_stm->nodeDetection,  &QState::entered, web3, &DapNodeWeb3::nodeDetectedRequest);
-    connect(this,  &DapNode::sigRepeatNodeDetecting, web3, &DapNodeWeb3::nodeDetectedRequest);
+    connect(this,  &DapNode::sigRepeatNodeConnecting, web3, &DapNodeWeb3::nodeConnectionRequest);
     // connection request
     connect(&m_stm->nodeConnection, &QState::entered, this, [=](){
         if (!m_isCDBLogined)
