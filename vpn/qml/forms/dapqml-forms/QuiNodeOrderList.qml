@@ -1472,26 +1472,49 @@ Item {
 
                     DapQmlRectangle {
                         id: valueEditRect
-                        qss: "nodeorlist-edit"
+                        x: valueEditRectScaler.x
+                        y: valueEditRectScaler.y
+                        width: valueEditRectScaler.width
+                        height: valueEditRectScaler.height
+                        radius: valueEditRectScaler.radius
+                        borderColor: valueEditRectScaler.color
+                        borderWidth: valueEditRectScaler.borderWidth
                         property real fontSize
                         property string color
 
+                        DapQmlRectangle {
+                            id: valueEditRectScaler
+                            visible: false
+                            qss: "nodeorlist-edit"
+                            onHeightChanged: valueEditRect.autoResize(0)
+                        }
+
+                        function autoResize(a_value) {
+                            let compareVal  = valueEditRectScaler.width * 0.056179775;
+                            let minContent  = (a_value < compareVal) ? compareVal : a_value;
+                            height  = valueEditRectScaler.height + minContent;
+                        }
+
+                        Component.onCompleted: autoResize(0)
+
                         RowLayout {
                             anchors.fill: parent
-                            anchors.margins: parent.height * 0.1
+                            anchors.margins: parent.height * 0.05
 
                             TextInput {
                                 id: valueEditInput
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
-                                horizontalAlignment: TextInput.AlignLeft //AlignHCenter
+                                horizontalAlignment: TextInput.AlignRight
                                 verticalAlignment: TextInput.AlignVCenter
                                 font.pixelSize: valueEditRect.fontSize
                                 font.family: Brand.fontName()
                                 font.weight: Font.Bold
                                 selectByMouse: true
                                 text: root.internal.editValue // "1234"
+                                wrapMode: Text.Wrap
                                 clip: true
+                                maximumLength: 77
 
                                 onTextEdited: {
                                     if (interfaceObject === undefined)
@@ -1500,7 +1523,11 @@ Item {
                                     text    = root.internal.isPrice
                                             ? interfaceObject.fixPriceString(text)
                                             : interfaceObject.fixNumberString(text);
+
+                                    valueEditRect.autoResize(contentHeight);
                                 }
+
+                                onContentHeightChanged: valueEditRect.autoResize(contentHeight);
 
                                 DapQmlStyle { item: valueEditInput; qss: "c-label" }
                             }
