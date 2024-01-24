@@ -14,6 +14,7 @@ Item
     height: 18
 
     property string popupText: ""
+    property alias mouseArea: mouseArea
 
     signal copyClicked()
 
@@ -23,6 +24,7 @@ Item
         width: parent.width
         height: parent.height
         mipmap: true
+        smooth: true
         source: mouseArea.containsMouse ? "qrc:/Resources/" + pathTheme + "/icons/other/copy_hover.svg":
                                           "qrc:/Resources/" + pathTheme + "/icons/other/copy.svg"
 //        source: mouseArea.containsMouse ? "qrc:/resources/icons/other/copy_hover.svg":
