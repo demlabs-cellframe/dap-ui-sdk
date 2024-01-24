@@ -35,83 +35,92 @@ public:
     bool serverDataFromList(const QList<QMap<QString, QString>>& nodeDump);
 };
 
+/****************************************//**
+ * @brief state machine class
+ * @date 23.10.2022
+ * @authors Stanislav Ratseburzhinskii & Mikhail Shilenko
+ *******************************************/
 
-class NodeConnectStateMachine
+class NodeConnectStateMachine : public QObject
 {
+  Q_OBJECT
+
+  /****************************************//**
+   * @name VARIABLES
+   *******************************************/
+  /// @{
 public:
-    explicit NodeConnectStateMachine()
-    { init(); }
-    void start() {
-        nodeConnectMachine.start();
-        commandState.start();
-    }
-    ///
-    QState waitingCommand;
-    QState gettingWalletsData;
-    QState transactionProcessing;
-    QState gettingOrderList;
-    ///
-    QState initialState;
-    QState nodeDetection;
-    QState nodeNotDetected;
-    QState nodeConnection;
-    QState nodeNotConnected;
-    QState getWallets;
-    QState getNetworks;
-    QState getDataWallet;
-    QState getFee;
-    QState getFeeIsolated;
-    QState getNetId;
-    QState condTxCreate;
-    QState mempoolTxHashRequest;
-    QState mempoolTxHashEmpty;
-    QState ledgerTxHashRequest;
-    QState ledgerTxHashEmpty;
-    QState createCertificate;
-    QState checkTransactionCertificate;
-    QState createTransactionCertificate;
-    QState getListKeys;
-    QState getOrderList;
-    QState getNodeConnectionData;
-    QState getListKeysPaused;
-    QState getOrderListPaused;
+  //
+  QState waitingCommand;
+  QState gettingWalletsData;
+  QState transactionProcessing;
+  QState gettingOrderList;
+  //
+  QState initialState;
+  QState nodeDetection;
+  QState nodeNotDetected;
+  QState nodeConnection;
+  QState nodeNotConnected;
+  QState getWallets;
+  QState getNetworks;
+  QState getDataWallet;
+  QState getFee;
+  QState getFeeIsolated;
+  QState getNetId;
+  QState condTxCreate;
+  QState mempoolTxHashRequest;
+  QState mempoolTxHashEmpty;
+  QState ledgerTxHashRequest;
+  QState ledgerTxHashEmpty;
+  QState createCertificate;
+  QState checkTransactionCertificate;
+  QState createTransactionCertificate;
+  QState getListKeys;
+  QState getOrderList;
+  QState getNodeConnectionData;
+
+  /// state which waits for correct id and returns to last state (stateToReturn)
+  QState waitingForCorrectId;
+
 private:
-    QStateMachine commandState;
-    QStateMachine nodeConnectMachine;
-    void init(){
-        commandState.addState(&waitingCommand);
-        commandState.addState(&gettingWalletsData);
-        commandState.addState(&transactionProcessing);
-        commandState.addState(&gettingOrderList);
-        commandState.setInitialState(&waitingCommand);
-        //
-        nodeConnectMachine.addState(&initialState);
-        nodeConnectMachine.addState(&nodeDetection);
-        nodeConnectMachine.addState(&nodeNotDetected);
-        nodeConnectMachine.addState(&nodeConnection);
-        nodeConnectMachine.addState(&nodeNotConnected);
-        nodeConnectMachine.addState(&getWallets);
-        nodeConnectMachine.addState(&getNetworks);
-        nodeConnectMachine.addState(&getDataWallet);
-        nodeConnectMachine.addState(&condTxCreate);
-        nodeConnectMachine.addState(&getFee);
-        nodeConnectMachine.addState(&getFeeIsolated);
-        nodeConnectMachine.addState(&getNetId);
-        nodeConnectMachine.addState(&mempoolTxHashRequest);
-        nodeConnectMachine.addState(&mempoolTxHashEmpty);
-        nodeConnectMachine.addState(&ledgerTxHashRequest);
-        nodeConnectMachine.addState(&ledgerTxHashEmpty);
-        nodeConnectMachine.addState(&createCertificate);
-        nodeConnectMachine.addState(&checkTransactionCertificate);
-        nodeConnectMachine.addState(&createTransactionCertificate);
-        nodeConnectMachine.addState(&getListKeys);
-        nodeConnectMachine.addState(&getOrderList);
-        nodeConnectMachine.addState(&getNodeConnectionData);
-        nodeConnectMachine.addState(&getListKeysPaused);
-        nodeConnectMachine.addState(&getOrderListPaused);
-        nodeConnectMachine.setInitialState(&initialState);
-        qDebug() << "nodeConnectMachine::init";
-    }
+  QStateMachine commandState;
+  QStateMachine nodeConnectMachine;
+
+  /// pointer to a state to return after correct id is received
+  QState *stateToReturn;
+
+  /// transition from waitingForCorrectId to returning state
+  QSignalTransition *returningStateTransition;
+  /// @}
+
+  /****************************************//**
+   * @name CONSTRUCT/DESTRUCT
+   *******************************************/
+  /// @{
+public:
+  explicit NodeConnectStateMachine();
+  /// @}
+
+  /****************************************//**
+   * @name METHODS
+   *******************************************/
+  /// @{
+public:
+  void start();
+
+private:
+  void init();
+  /// @}
+
+  /****************************************//**
+   * @name SIGNALS
+   *******************************************/
+  /// @{
+signals:
+  void sigGotIncorrectId();
+  void sigConnectionIdReceived();
+  void sigErrorDetected();
+  /// @}
 };
 
 class DapNode : public QObject
@@ -180,6 +189,7 @@ private:
     void initStmStates();
     void initWeb3Connections();
     void initCommandsStm();
+    void initStmStorageConnections();
 
     bool nodeDetected = false;
     // transaction certificate name
@@ -248,4 +258,5 @@ signals:
 
 };
 
+/*-----------------------------------------*/
 #endif // DAPNODE_H
