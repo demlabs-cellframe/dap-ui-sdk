@@ -81,6 +81,8 @@ public:
 
   /// state which waits for correct id and returns to last state (stateToReturn)
   QState waitingForCorrectId;
+  /// state which tried to get correct id, but got no answer from dashboard
+  QState waitingAndReconnecting;
 
 private:
   QStateMachine commandState;
@@ -120,6 +122,8 @@ signals:
   void sigGotIncorrectId();
   void sigConnectionIdReceived();
   void sigErrorDetected();
+  void sigNodeNotConnected();
+  void sigRestartWaiting();
   /// @}
 };
 
