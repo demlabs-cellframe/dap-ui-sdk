@@ -227,6 +227,7 @@ signals:
     void sigLedgerContainHash();
     void sigCondTxCreateSuccess(QString hash);
     void sigConnectByOrder(const QString &networkName, const QString &txCondHash, const QString &token, const QString &srvUid, const QString &address, const uint16_t &port);
+    void sigRepeatNodeConnecting();
 
     // ------- internal signals --------
     void waitingCommand();
