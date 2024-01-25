@@ -4,6 +4,7 @@
 #include <QProcess>
 #include "DapDataLocal.h"
 #include <QTimer>
+#include <QSignalTransition>
 #include <QDebug>
 
 
@@ -28,6 +29,7 @@ DapNode:: DapNode(QObject * obj, int requestTimeout) :
     initStmTransitions();
     initStmStates();
     initCommandsStm();
+    initStmStorageConnections();
 }
 
 DapNode::~ DapNode()
@@ -99,6 +101,23 @@ void DapNode::initCommandsStm()
     m_stm->gettingOrderList.addTransition(this, &DapNode::waitingCommand,
     &m_stm->waitingCommand);
 
+}
+
+void DapNode::initStmStorageConnections()
+{
+  connect (web3, &DapNodeWeb3::sigIncorrectId,
+           m_stm, &NodeConnectStateMachine::sigGotIncorrectId);
+  connect (web3, &DapNodeWeb3::connectionIdReceived,
+           m_stm, &NodeConnectStateMachine::sigConnectionIdReceived);
+  connect (web3, &DapNodeWeb3::nodeNotConnected,
+           m_stm, &NodeConnectStateMachine::sigNodeNotConnected);
+  connect (this, &DapNode::sigError,
+           m_stm, &NodeConnectStateMachine::sigErrorDetected);
+  connect (m_stm, &NodeConnectStateMachine::sigRestartWaiting,
+           this, [this]
+  {
+    web3->nodeConnectionRequest();
+  });
 }
 
 void DapNode::initStmTransitions()
@@ -255,6 +274,7 @@ void DapNode::initStmTransitions()
     &m_stm->getOrderList);
     m_stm->getListKeys.addTransition(this, &DapNode::errorDetected,
     &m_stm->getOrderList);
+
     // getOrderList -> initialState
     m_stm->getOrderList.addTransition(this, &DapNode::sigOrderListReceived,
     &m_stm->initialState);
@@ -627,3 +647,167 @@ void DapNode::slotFeeRequest (QString a_networkName)
   emit sigFeeRequest();
 }
 
+/*-----------------------------------------*/
+
+NodeConnectStateMachine::NodeConnectStateMachine()
+{
+  init();
+}
+
+void NodeConnectStateMachine::start()
+{
+  nodeConnectMachine.start();
+  commandState.start();
+}
+
+/* <DEFINES> */
+#define ADDCONNECTMACHINESTATE(a_state, a_enableStoraging) \
+  addConnectMachineState (&a_state, #a_state, a_enableStoraging)
+#define PRINT_SIGNAL_EMITION(a_name) \
+  connect (this, &NodeConnectStateMachine::a_name, [] { DEBUGINFO << "stm->" #a_name; });
+/* </DEFINES> */
+
+void NodeConnectStateMachine::init()
+{
+  /* variables */
+  stateToReturn             = nullptr;
+  returningStateTransition  = nullptr;
+
+  /* lambda's */
+  auto clearOldStateTransition = [this]
+  {
+    if (stateToReturn == nullptr
+        || returningStateTransition == nullptr)
+      return;
+
+    auto sourceState  = returningStateTransition->sourceState();
+    if (sourceState)
+      sourceState->removeTransition (returningStateTransition);
+
+    delete returningStateTransition;
+    returningStateTransition  = nullptr;
+  };
+
+  auto addConnectMachineState = [this, clearOldStateTransition] (QState *a_state, const char *a_stateName, bool a_enableStoraging)
+  {
+    DEBUGINFO << QString ("addConnectMachineState: \"%1\" state").arg (a_stateName);
+
+    /* store into state machine */
+    nodeConnectMachine.addState (a_state);
+
+    /* set state's name */
+    a_state->setObjectName (a_stateName);
+
+    /* if required to store state and wait when incorrect id is received */
+    if (a_enableStoraging)
+    {
+      /* add transition to waiting state */
+      a_state->addTransition (this, &NodeConnectStateMachine::sigGotIncorrectId,
+                              &waitingForCorrectId);
+
+      /* attach storaging behavior */
+      QObject::connect (a_state, &QState::entered, this, [this, a_state, clearOldStateTransition]
+      {
+        /* check */
+        if (a_state == nullptr)
+          return;
+
+        /* re-entered */
+        bool reEntered  = (a_state == stateToReturn);
+
+        /* clear old state 'transition back' */
+        clearOldStateTransition();
+
+        /* store this state */
+        stateToReturn = a_state;
+
+        /* create 'transition back' */
+        returningStateTransition =
+          waitingForCorrectId.addTransition(
+            this,
+            &NodeConnectStateMachine::sigConnectionIdReceived,
+            a_state);
+
+        /* print state name */
+        DEBUGINFO << QString ("%2 \"%1\" state [return-state-storage]")
+                     .arg (a_state->objectName(), reEntered ? "Re-entered" : "Entered");
+      });
+    }
+  };
+
+  /* command states */
+  commandState.addState(&waitingCommand);
+  commandState.addState(&gettingWalletsData);
+  commandState.addState(&transactionProcessing);
+  commandState.addState(&gettingOrderList);
+
+  commandState.setInitialState(&waitingCommand);
+
+  /* connect states */
+  ADDCONNECTMACHINESTATE (initialState,    false);
+  ADDCONNECTMACHINESTATE (nodeDetection,   false);
+  ADDCONNECTMACHINESTATE (nodeNotDetected, false);
+  ADDCONNECTMACHINESTATE (nodeConnection,  false);
+  ADDCONNECTMACHINESTATE (nodeNotConnected,false);
+  ADDCONNECTMACHINESTATE (getWallets,      true);
+  ADDCONNECTMACHINESTATE (getNetworks,     true);
+  ADDCONNECTMACHINESTATE (getDataWallet,   true);
+  ADDCONNECTMACHINESTATE (condTxCreate,    true);
+  ADDCONNECTMACHINESTATE (getFee,          true);
+  ADDCONNECTMACHINESTATE (getFeeIsolated,  true);
+  ADDCONNECTMACHINESTATE (getNetId,        true);
+  ADDCONNECTMACHINESTATE (mempoolTxHashRequest,  true);
+  ADDCONNECTMACHINESTATE (mempoolTxHashEmpty,    true);
+  ADDCONNECTMACHINESTATE (ledgerTxHashRequest,   true);
+  ADDCONNECTMACHINESTATE (ledgerTxHashEmpty,     true);
+  ADDCONNECTMACHINESTATE (createCertificate,     true);
+  ADDCONNECTMACHINESTATE (checkTransactionCertificate,  true);
+  ADDCONNECTMACHINESTATE (createTransactionCertificate, true);
+  ADDCONNECTMACHINESTATE (getListKeys,     true);
+  ADDCONNECTMACHINESTATE (getOrderList,    true);
+  ADDCONNECTMACHINESTATE (getNodeConnectionData,  true);
+  ADDCONNECTMACHINESTATE (waitingForCorrectId,    false);
+  ADDCONNECTMACHINESTATE (waitingAndReconnecting, false);
+
+  nodeConnectMachine.setInitialState(&initialState);
+
+  connect (&waitingForCorrectId, &QState::entered, this, []
+  {
+    DEBUGINFO << "Entered \"waitingForCorrectId\" state";
+  });
+
+  /* signals */
+  PRINT_SIGNAL_EMITION(sigGotIncorrectId);
+  PRINT_SIGNAL_EMITION(sigConnectionIdReceived);
+  PRINT_SIGNAL_EMITION(sigErrorDetected);
+  PRINT_SIGNAL_EMITION(sigNodeNotConnected);
+  PRINT_SIGNAL_EMITION(sigRestartWaiting);
+
+  /* return to initial state */
+  waitingForCorrectId.addTransition (this, &NodeConnectStateMachine::sigErrorDetected,
+                                     &initialState);
+  connect (&initialState, &QState::entered,
+           clearOldStateTransition);
+
+  /* node not responding */
+  waitingForCorrectId.addTransition (this, &NodeConnectStateMachine::sigNodeNotConnected,
+                                     &waitingAndReconnecting);
+
+  /* restart waiting */
+  waitingAndReconnecting.addTransition (this, &NodeConnectStateMachine::sigRestartWaiting,
+                                        &waitingForCorrectId);
+  connect (&waitingAndReconnecting, &QState::entered, this, [this]
+  {
+    DEBUGINFO << "Entered \"waitingAndReconnecting\" state";
+    QTimer::singleShot (DapNode::NODE_CONNECT_REQUEST_REPEAT_PERIOD, this, [this]
+    {
+      DEBUGINFO << "repeat waiting for correct id";
+      emit sigRestartWaiting();
+    });
+  });
+
+  /* finish */
+  qDebug() << "nodeConnectMachine::init";
+}
+
+/*-----------------------------------------*/
