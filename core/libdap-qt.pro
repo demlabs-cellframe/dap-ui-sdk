@@ -1,6 +1,6 @@
 QT += core network xml
 QT -= gui
-CONFIG += c++11 stl
+CONFIG += c++17 stl
 
 TARGET = libdap-qt
 
