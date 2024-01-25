@@ -137,10 +137,12 @@ Cert* Cert::load(const QByteArray& a_certData)
  */
 Cert::~Cert()
 {
+#ifndef Q_OS_IOS
     if ( m_cert != nullptr ) {
         dap_cert_delete( m_cert );
         m_cert = nullptr;
     }
+#endif
 }
 
 /**
@@ -150,10 +152,12 @@ Cert::~Cert()
  */
 void Cert::sign(const QByteArray & a_data, QByteArray & a_output)
 {
+#ifndef Q_OS_IOS
     dap_sign_t * sign = dap_cert_sign( m_cert, a_data.constData(), static_cast<size_t>(a_data.size()), 0 );
     qInfo() << "Cert::sign call with pkey_size " << sign->header.sign_pkey_size << " sign_size " << sign->header.sign_size << "and total: " << dap_sign_get_size(sign);
     a_output.append(  QByteArray( reinterpret_cast<char*>(sign), static_cast<int>(dap_sign_get_size( sign )) ));
-    DAP_DEL_Z(sign)
+    DAP_DEL_Z(sign);
+#endif
 }
 
 /**
@@ -205,12 +209,18 @@ int Cert::exportPKeyToFile(const QString &a_path) {
 }
 
 QString Cert::pkeyHash() {
+#ifndef Q_OS_IOS
     dap_chain_hash_fast_t l_hash_cert_pkey;
     dap_hash_fast(m_cert->enc_key->pub_key_data, m_cert->enc_key->pub_key_data_size, &l_hash_cert_pkey);
     char *l_cert_pkey_hash_str = dap_chain_hash_fast_to_str_new(&l_hash_cert_pkey);
-    QString ret = QString::fromLatin1(l_cert_pkey_hash_str);
+
+
     DAP_DEL_Z(l_cert_pkey_hash_str)
+
+    QString ret = QString::fromLatin1(l_cert_pkey_hash_str);
     return ret;
+#endif
+    return NULL;
 }
 
 int Cert::importPKeyFromFile(const QString &a_path) {

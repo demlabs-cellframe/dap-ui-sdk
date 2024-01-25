@@ -10,24 +10,33 @@ DapKey::DapKey() {
 }
 
 DapKey::DapKey(dap_enc_key_type_t a_type, const QString& a_kexBuf) {
+#ifndef Q_OS_IOS
     m_key = dap_enc_key_new_generate(a_type, qPrintable(a_kexBuf), size_t(a_kexBuf.length())
                                      , nullptr, 0, 32);
+#endif
 }
 
 DapKey::DapKey(dap_enc_key_type_t a_type, const QByteArray &a_kexBuf, const QByteArray &a_seed) {
+#ifndef Q_OS_IOS
     m_key = dap_enc_key_new_generate(a_type, a_kexBuf.constData(), size_t(a_kexBuf.length())
                                      , a_seed.constData(), size_t(a_seed.size()), 32);
+#endif
 }
 
 DapKey::DapKey(dap_enc_key_t *a_key) {
+#ifndef Q_OS_IOS
     m_key = dap_enc_key_dup(a_key);
+#endif
 }
 
 DapKey::~DapKey() {
+#ifndef Q_OS_IOS
     dap_enc_key_delete(m_key);
+#endif
 }
 
 void DapKey::encode(const QByteArray &a_in, QByteArray &a_out) {
+#ifndef Q_OS_IOS
     if(m_key == nullptr) {
         qCritical() << "Encoding error, key is null";
         return;
@@ -37,9 +46,11 @@ void DapKey::encode(const QByteArray &a_in, QByteArray &a_out) {
     memset(l_encBuf, '\0', BUF_SIZE);
     size_t enc_size = m_key->enc_na(m_key, a_in, a_in.size(), l_encBuf, BUF_SIZE);
     a_out = QByteArray(l_encBuf, enc_size);
+#endif
 }
 
 void DapKey::decode(const QByteArray &a_in, QByteArray &a_out) {
+#ifndef Q_OS_IOS
     if(m_key == nullptr) {
         qCritical() << "Encoding error, key is null";
         return;
@@ -49,4 +60,6 @@ void DapKey::decode(const QByteArray &a_in, QByteArray &a_out) {
     memset(l_encBuf, '\0', BUF_SIZE);
     size_t enc_size = m_key->dec_na(m_key, a_in, a_in.size(), l_encBuf, BUF_SIZE);
     a_out = QByteArray(l_encBuf, enc_size);
+#endif
 }
+

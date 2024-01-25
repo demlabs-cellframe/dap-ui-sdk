@@ -21,7 +21,9 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     , m_day(QDateTime::currentDateTime().toString("dd"))
 {
     m_instance = this;
+#ifndef Q_OS_IOS
     dap_set_log_tag_width(prefix_width);
+#endif
     qInstallMessageHandler(messageHandler);
     m_appType = appType;
     qDebug() << "App: " DAP_BRAND " " DAP_VERSION " " + appType;
