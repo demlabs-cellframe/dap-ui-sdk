@@ -2293,7 +2293,7 @@
 
 .nodeorlist-overview-price
 {
-    scaled-font: scaled(24);
+    scaled-font: scaled(20);
     font-weight: Font.Bold;
     color: "@text";
 }
@@ -2324,7 +2324,7 @@
 
 .nodeorlist-edit
 {
-    scaled-rect: scaled(-1,176,356,110,false,32);
+    scaled-rect: scaled(-1,176,356,60,false,20);
     radius: 12;
     borderColor: "@separator-color";
     borderWidth: 1;
