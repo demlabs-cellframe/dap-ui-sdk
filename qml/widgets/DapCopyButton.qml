@@ -10,8 +10,8 @@ import "qrc:/widgets"
 Item
 {
     id: root
-    width: 17
-    height: 18
+    width: 16
+    height: 16
 
     property string popupText: ""
     property alias mouseArea: mouseArea
@@ -25,8 +25,8 @@ Item
         height: parent.height
         mipmap: true
         smooth: true
-        source: mouseArea.containsMouse ? "qrc:/Resources/" + pathTheme + "/icons/other/copy_hover.svg":
-                                          "qrc:/Resources/" + pathTheme + "/icons/other/copy.svg"
+        source: mouseArea.containsMouse ? "qrc:/Resources/" + pathTheme + "/icons/other/copy_hover_small.svg":
+                                          "qrc:/Resources/" + pathTheme + "/icons/other/copy_small.svg"
 //        source: mouseArea.containsMouse ? "qrc:/resources/icons/other/copy_hover.svg":
 //                                          "qrc:/resources/icons/other/copy.svg"
     }
