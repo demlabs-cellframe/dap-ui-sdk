@@ -1529,6 +1529,12 @@ Item {
 
                                 onContentHeightChanged: valueEditRect.autoResize(contentHeight);
 
+                                onActiveFocusChanged: {
+                                    if (activeFocus)
+                                        if (text === "0")
+                                            selectAll();
+                                }
+
                                 DapQmlStyle { item: valueEditInput; qss: "c-label" }
                             }
 
