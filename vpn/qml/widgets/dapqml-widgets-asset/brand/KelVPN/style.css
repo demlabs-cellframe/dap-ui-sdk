@@ -1430,13 +1430,18 @@
 
 .bugrep-input-textarea
 {
-    color: "@text";
+    color: "@label";
     scaled-font: scaled(16);    
+}
+
+.bugrep-input-textarea-contact
+{
+    color: "@text";
 }
 
 .bugrep-input-placeholder
 {
-    color: "@label";
+    color: "@light-grey";
     scaled-font: scaled(16);    
 }
 
