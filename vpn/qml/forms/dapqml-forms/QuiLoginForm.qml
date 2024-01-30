@@ -297,6 +297,10 @@ Item {
         root.internal.gotOrdersInsideHistory    = a_value;
     }
 
+    function recheckLoginData() {
+        btnEnterSerial.checkSerialKeyData();
+    }
+
     /// @}
     /****************************************//**
      * Ticker & Update tools
@@ -983,23 +987,16 @@ Item {
 
             onClicked: root.sigChooseSerial()
             onTextAccepted: root.beginConnection()
-            onTextChanged: {
+            onTextChanged: checkSerialKeyData()
+            onTextEdited: checkSerialKeyData()
+
+            function checkSerialKeyData() {
                 var text    = mainText;
 
                 if (text.length == maxCountChar)
                     root.textChangedAndFilledOut (mainText);
                 else if (text.length == 0)
                     root.textChangedAndCleaned();
-                else
-                    root.sigSerialFillingIncorrect();
-            }
-            onTextEdited: {
-                var text    = mainText;
-
-                if (text.length == maxCountChar)
-                    root.textEditedAndFilledOut (mainText);
-                else if (text.length == 0)
-                    root.textEditedAndCleaned();
                 else
                     root.sigSerialFillingIncorrect();
             }
