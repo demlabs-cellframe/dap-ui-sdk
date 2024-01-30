@@ -10,6 +10,19 @@ Item
     implicitHeight: 45
 
     property int rightMarginIndicator: 16
+    property int leftMarginDisplayText: 16
+    property int leftMarginPopupContain: 16
+    property int rightMarginPopupContain: 16
+    property int popupBorderWidth: 1
+
+    property bool changingRound: false
+    property bool isSingleColor: false
+    property bool isInnerShadow: true
+    property bool isNecessaryToHideCurrentIndex: false
+
+    property string displayTextNormalColor: currTheme.white
+    property string displayTextPopupColor: currTheme.gray
+
     property int maximumPopupHeight: 200
     property int padding: 15
     property int spacing: 15
@@ -79,10 +92,23 @@ Item
                    backgroundColorNormal :
                    backgroundColorShow
 
+        Rectangle
+        {
+            visible: popupVisible && changingRound
+            height: parent.radius
+            anchors
+            {
+                right:parent.right
+                left:parent.left
+                bottom:parent.bottom
+            }
+            color: parent.color
+        }
+
         RowLayout
         {
             anchors.fill: parent
-            anchors.leftMargin: 16
+            anchors.leftMargin: leftMarginDisplayText
             anchors.rightMargin: rightMarginIndicator
 
             Text
@@ -93,7 +119,7 @@ Item
                 text: mainItem.displayText
                 font: mainItem.font
                 color: popupVisible ?
-                           currTheme.gray : currTheme.white
+                           displayTextPopupColor : displayTextNormalColor
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
             }
@@ -131,7 +157,7 @@ Item
 
     InnerShadow
     {
-        visible: popupVisible
+        visible: popupVisible && isInnerShadow
         anchors.fill: background
         horizontalOffset: 1
         verticalOffset: 1
@@ -202,9 +228,9 @@ Item
             width: mainItem.width
             height: popupListView.height + border.width*2
 
-            color: currTheme.mainBackground
+            color: isSingleColor ? background.color : currTheme.mainBackground
 
-            border.width: 1
+            border.width: popupBorderWidth
             border.color: currTheme.mainBackground
 
             ListView
@@ -230,17 +256,24 @@ Item
                 {
                     id: menuDelegate
                     width: mainItem.width
-                    height: 40
+                    height: {
+                        if(index === currentIndex && isNecessaryToHideCurrentIndex)
+                        {
+                            return 0
+                        }
+
+                        return 40
+                    }
 
                     color: area.containsMouse ?
                                currTheme.lime :
-                               currTheme.mainBackground
+                               isSingleColor ? background.color : currTheme.mainBackground
 
                     RowLayout
                     {
                         anchors.fill: parent
-                        anchors.leftMargin: 16
-                        anchors.rightMargin: 16
+                        anchors.leftMargin: leftMarginPopupContain
+                        anchors.rightMargin: rightMarginPopupContain
 
                         Text
                         {
@@ -318,7 +351,7 @@ Item
         }
 
         InnerShadow {
-            visible: popupVisible
+            visible: popupVisible && isInnerShadow
             anchors.fill: popupBackground
             horizontalOffset: 1
             verticalOffset: 0
