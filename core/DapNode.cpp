@@ -62,14 +62,20 @@ void DapNode::stopCheckingNodeRequest()
 
 void DapNode::startCheckingNodeRequest()
 {
-    DEBUGINFO << "startCheckingNodeRequest";
+    DEBUGINFO << __PRETTY_FUNCTION__ ;
+
+    if (m_isCDBLogined){
+        qDebug() << __PRETTY_FUNCTION__  << " alredy using cdb mode";
+        return;
+    }
+
     if (m_stm->initialState.active())
     {
-        DEBUGINFO << "startCheckingNodeRequest << uiStartNodeDetection()";
+        DEBUGINFO << __PRETTY_FUNCTION__ << " uiStartNodeDetection()";
         emit uiStartNodeDetection();
     }
     else if (m_stm->nodeConnection.active()) {
-        DEBUGINFO << "sigRepeatNodeDetecting after reopen gui";
+        DEBUGINFO << __PRETTY_FUNCTION__ << " emit sigRepeatNodeDetecting after restart gui";
         emit sigNodeDetected();
         emit sigRepeatNodeConnecting();
         return;
@@ -77,13 +83,13 @@ void DapNode::startCheckingNodeRequest()
     else {
         if (m_stm->ledgerTxHashRequest.active() || m_stm->ledgerTxHashEmpty.active())
         {
-            DEBUGINFO << "startCheckingNodeRequest << sigMempoolContainHash()";
+            DEBUGINFO << __PRETTY_FUNCTION__  << " sigMempoolContainHash()";
             emit sigMempoolContainHash();
             return;
         }
         if (nodeDetected)
         {
-            DEBUGINFO << "startCheckingNodeRequest << sigNodeDetected()";
+            DEBUGINFO << __PRETTY_FUNCTION__  << " sigNodeDetected()";
             emit sigNodeDetected();
             return;
         }
