@@ -1,6 +1,5 @@
 /* INCLUDES */
 #include "dapqmlimage.h"
-#include "helper/scaling.h"
 #include "dapqml-model/dapqmlmodelroutingexceptions.h"
 
 #include <QPainter>
@@ -8,6 +7,7 @@
 
 /* VARS */
 static const char *s_imageProvider  = "DapQmlModelRoutingExceptionsImageProvider";
+static float s_scaleMul = 1;
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -41,6 +41,11 @@ void DapQmlImageItem::setScaledPixmap (const QString &a_scaledPixmap)
   update();
 }
 
+void DapQmlImageItem::setDevicePixelRatio (float a_value)
+{
+  s_scaleMul  = a_value;
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
@@ -57,11 +62,11 @@ void DapQmlImageItem::paint (QPainter *a_painter)
 
   /* calc actual size */
   //auto actualDpi  = Scaling::getPhysicalDPI();
-  auto scaleMul = Scaling::getDevicePixelRatio();
+  //auto scaleMul = Scaling::getDevicePixelRatio();
   size  = QSize
   {
-    static_cast<int> (size.width() * scaleMul),
-    static_cast<int> (size.height() * scaleMul)
+    static_cast<int> (size.width() * s_scaleMul),
+    static_cast<int> (size.height() * s_scaleMul)
   };
 
   /* check, if cache has needed size image */

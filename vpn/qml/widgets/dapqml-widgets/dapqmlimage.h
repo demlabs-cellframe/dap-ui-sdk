@@ -59,7 +59,6 @@ protected:
   /// @{
 public:
   explicit DapQmlImageItem (QQuickItem *parent = nullptr);
-
   /// @}
 
   /****************************************//**
@@ -69,6 +68,8 @@ public:
 public:
   QString scaledPixmap() const;
   void setScaledPixmap (const QString &a_scaledPixmap);
+
+  static void setDevicePixelRatio (float a_value);
   /// @}
 
   /****************************************//**
