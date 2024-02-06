@@ -1,7 +1,6 @@
 /* INCLUDES */
 #include "dapqmlmodelmanagecdb.h"
 #include "dapqml-abstract/abstractcdbmanager.h"
-#include "helper/pingctl.h"
 
 #include <QDebug>
 #include <QTimer>
@@ -140,10 +139,10 @@ DapQmlModelManageCdb::DapQmlModelManageCdb()
   : QAbstractTableModel()
   , d (new DapQmlModelManageCdbRowsCtl (this))
 {
-  auto pingCtl = PingCtl::instance();
-  connect (pingCtl, &PingCtl::sigReceivedPing,
-           this, &DapQmlModelManageCdb::_slotReceivedPing,
-           Qt::QueuedConnection);
+//  auto pingCtl = PingCtl::instance();
+//  connect (pingCtl, &PingCtl::sigReceivedPing,
+//           this, &DapQmlModelManageCdb::_slotReceivedPing,
+//           Qt::QueuedConnection);
 }
 
 /********************************************
@@ -440,18 +439,18 @@ QHash<int, QByteArray> DapQmlModelManageCdb::roleNames() const
  * SLOTS
  *******************************************/
 
-void DapQmlModelManageCdb::slotSetup()
-{
-  if (s_manager.isNull())
-    return;
+//void DapQmlModelManageCdb::slotSetup()
+//{
+//  if (s_manager.isNull())
+//    return;
 
-  /* request pings */
-  auto pingCtl = PingCtl::instance();
-  for (auto it = s_manager->cbegin(), en = s_manager->cend(); it != en; it++)
-    pingCtl->slotRequestPing (it->address, it->port);
-}
+//  /* request pings */
+//  auto pingCtl = PingCtl::instance();
+//  for (auto it = s_manager->cbegin(), en = s_manager->cend(); it != en; it++)
+//    pingCtl->slotRequestPing (it->address, it->port);
+//}
 
-void DapQmlModelManageCdb::_slotReceivedPing (const QString &a_address, quint16 a_port, quint16 a_ping)
+void DapQmlModelManageCdb::slotReceivedPing (const QString &a_address, quint16 a_port, quint16 a_ping)
 {
   Q_UNUSED(a_port)
 
