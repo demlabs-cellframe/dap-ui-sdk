@@ -2,7 +2,6 @@
 #include "dapqmlstyle.h"
 #include "style/qssmap.h"
 #include "style/qsslink.h"
-#include "helper/brand.h"
 #include <QQmlProperty>
 #include <QRect>
 #include <QFontMetrics>
@@ -13,6 +12,7 @@ static DapQmlStyle *s_globalSignal  = nullptr;
 static bool s_gsHook                = false;
 static QString s_styleSheet;
 static thread_local double s_screenWidth = 428, s_screenHeight = 926;
+static QString s_brandFontName;
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -141,10 +141,10 @@ QSize DapQmlStyle::textOnScreenSize(QObject *a_item)
       a_item->property ("width").toInt(),
       a_item->property ("height").toInt()
     );
-  auto fontName = Brand::fontName();
+  //auto fontName = Brand::fontName();
 
   /* setup font metrics */
-  QFont font (fontName, fontSize);
+  QFont font (s_brandFontName /*fontName*/, fontSize);
   QFontMetrics fm (font);
 
   /* get actual metrics */
@@ -248,6 +248,11 @@ void DapQmlStyle::sRequestRedraw()
     update();
     emit s_globalSignal->redrawRequested();
   }
+}
+
+void DapQmlStyle::setGlobalFontName (const QString &a_fontName)
+{
+  s_brandFontName = a_fontName;
 }
 
 /********************************************
