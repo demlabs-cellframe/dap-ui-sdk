@@ -31,5 +31,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${BRAND_SERVICE_INCLUDES})
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Network)
 target_link_libraries(${PROJECT_NAME} PRIVATE DapUiSdk::Vpn::Common)
+target_link_libraries(${PROJECT_NAME} PRIVATE dap_core)
 
 message("[*] DAP-UI-SDK: include vpn/service")
