@@ -58,8 +58,13 @@ target_include_directories(${PROJECT_NAME} PUBLIC ./)
 target_include_directories(${PROJECT_NAME} PUBLIC ${DAP_UI_SDK_VPN_SERVICE_PLATFORM_INCLUDES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${BRAND_SERVICE_INCLUDES} )
 
+
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core)
+if(ANDROID)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::CorePrivate)
+endif()
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Network)
+target_link_libraries(${PROJECT_NAME} PRIVATE DapUiSdk::Core)
 target_link_libraries(${PROJECT_NAME} PRIVATE DapUiSdk::Vpn::Common)
 target_link_libraries(${PROJECT_NAME} PRIVATE dap_core)
 

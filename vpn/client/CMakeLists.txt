@@ -19,25 +19,18 @@ file(GLOB DAP_UI_SDK_VPN_CLIENT_NATIVE_HDR *.h ./DapCmdHandlers/*.h ./DapStateMa
 
 
 
-if (WIN32)
-
+if(ANDROID)
+    file(GLOB DAP_UI_SDK_VPN_CLIENT_PLATFORM_SRC    ./daptun/android/*.cpp ./daptun/unix/*.cpp)
+    file(GLOB DAP_UI_SDK_VPN_CLIENT_PLATFORM_HDR    ./daptun/android/*.h ./daptun/unix/*.h)
+    set(DAP_UI_SDK_VPN_PUBLIC_PLATFORM_INCLUDES     ./daptun/android/ ./daptun/unix/)
+    message("[*] DAP-UI-SDK: include vpn/clien android + unix")
+else()
+if (UNIX) #not android, assume it linux
+    file(GLOB DAP_UI_SDK_VPN_CLIENT_PLATFORM_SRC    ./daptun/unix/*.cpp ./daptun/linux/*.cpp)
+    file(GLOB DAP_UI_SDK_VPN_CLIENT_PLATFORM_HDR    ./daptun/unix/*.h ./daptun/linux/*.h)
+    set(DAP_UI_SDK_VPN_PUBLIC_PLATFORM_INCLUDES     ./daptun/unix/ ./daptun/linux/)
+    message("[*] DAP-UI-SDK: include vpn/clien unix + linux")
 endif()
-
-if (MACOS)
-message("-----------------MACOS")
-endif()
-
-if (IOS)
-message("-----------------IOS")
-endif()
-
-
-
-if (UNIX)
-    file(GLOB DAP_UI_SDK_VPN_CLIENT_PLATFORM_SRC    ./daptun/unix/*.cpp)
-    file(GLOB DAP_UI_SDK_VPN_CLIENT_PLATFORM_HDR    ./daptun/unix/*.h)
-    set(DAP_UI_SDK_VPN_PUBLIC_PLATFORM_INCLUDES     ./daptun/unix/)
-    message("[*] DAP-UI-SDK: include vpn/clien unix")
 endif()
 
 if (WIN32)
