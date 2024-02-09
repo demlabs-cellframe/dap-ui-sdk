@@ -15,22 +15,51 @@ find_package(Qt6 REQUIRED COMPONENTS Network)
 file(GLOB DAP_UI_SDK_VPN_SERVICE_NATIVE_SRC  *.cpp)
 file(GLOB DAP_UI_SDK_VPN_SERVICE_NATIVE_HDR *.h)
 
-#Linux
 
-list(REMOVE_ITEM DAP_UI_SDK_VPN_SERVICE_NATIVE_SRC ${CMAKE_CURRENT_SOURCE_DIR}/DapServiceNativeAndroid.cpp)
-list(REMOVE_ITEM DAP_UI_SDK_VPN_SERVICE_NATIVE_SRC ${CMAKE_CURRENT_SOURCE_DIR}/DapServiceNativeDarwin.cpp)
-list(REMOVE_ITEM DAP_UI_SDK_VPN_SERVICE_NATIVE_SRC ${CMAKE_CURRENT_SOURCE_DIR}/DapServiceNativeIOS.cpp)
-list(REMOVE_ITEM DAP_UI_SDK_VPN_SERVICE_NATIVE_SRC ${CMAKE_CURRENT_SOURCE_DIR}/DapServiceNativeWindows.cpp)
+if(UNIX)
+    file(GLOB DAP_UI_SDK_VPN_SERVICE_PLATFORM_SRC  ./platform/unix/*.cpp)
+    file(GLOB DAP_UI_SDK_VPN_SERVICE_PLATFORM_HDR  ./platform/unix/*.h)
+    set(DAP_UI_SDK_VPN_SERVICE_PLATFORM_INCLUDES   ./platform/unix/)
+    message("[*] DAP-UI-SDK: include vpn/service unix")
+endif()
+
+if(WIN32)
+    file(GLOB DAP_UI_SDK_VPN_SERVICE_PLATFORM_SRC  ./platform/windows/*.cpp)
+    file(GLOB DAP_UI_SDK_VPN_SERVICE_PLATFORM_HDR  ./platform/windows/*.h)
+    set(DAP_UI_SDK_VPN_SERVICE_PLATFORM_INCLUDES  ./platform/windows/)
+    message("[*] DAP-UI-SDK: include vpn/service windows")
+endif()
+
+if(ANDROID)
+    file(GLOB DAP_UI_SDK_VPN_SERVICE_PLATFORM_SRC  ./platform/android/*.cpp)
+    file(GLOB DAP_UI_SDK_VPN_SERVICE_PLATFORM_HDR  ./platform/android/*.h)
+    set(DAP_UI_SDK_VPN_SERVICE_PLATFORM_INCLUDES  ./platform/android/)
+    message("[*] DAP-UI-SDK: include vpn/service android")
+endif()
+
+if(MACOS)
+    file(GLOB DAP_UI_SDK_VPN_SERVICE_PLATFORM_SRC  ./platform/macos/*.cpp)
+    file(GLOB DAP_UI_SDK_VPN_SERVICE_PLATFORM_HDR  ./platform/macos/*.h)
+    set(DAP_UI_SDK_VPN_SERVICE_PLATFORM_INCLUDES  ./platform/macos/)
+    message("[*] DAP-UI-SDK: include vpn/service macos")
+endif()
+
+if(IOS)
+    file(GLOB DAP_UI_SDK_VPN_SERVICE_PLATFORM_SRC  ./platform/ios/*.cpp)
+    file(GLOB DAP_UI_SDK_VPN_SERVICE_PLATFORM_HDR  ./platform/ios/*.h)
+    set(DAP_UI_SDK_VPN_SERVICE_PLATFORM_INCLUDES  ./platform/ios/)
+    message("[*] DAP-UI-SDK: include vpn/service ios")
+endif()
 
 
-add_library(${PROJECT_NAME} STATIC ${DAP_UI_SDK_VPN_SERVICE_NATIVE_SRC} ${DAP_UI_SDK_VPN_SERVICE_NATIVE_HDR})
+add_library(${PROJECT_NAME} STATIC ${DAP_UI_SDK_VPN_SERVICE_NATIVE_SRC} ${DAP_UI_SDK_VPN_SERVICE_NATIVE_HDR} ${DAP_UI_SDK_VPN_SERVICE_PLATFORM_SRC} ${DAP_UI_SDK_VPN_SERVICE_PLATFORM_HDR})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ./)
-target_include_directories(${PROJECT_NAME} PUBLIC ${BRAND_SERVICE_INCLUDES})
+target_include_directories(${PROJECT_NAME} PUBLIC ${DAP_UI_SDK_VPN_SERVICE_PLATFORM_INCLUDES})
+target_include_directories(${PROJECT_NAME} PUBLIC ${BRAND_SERVICE_INCLUDES} )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Network)
 target_link_libraries(${PROJECT_NAME} PRIVATE DapUiSdk::Vpn::Common)
 target_link_libraries(${PROJECT_NAME} PRIVATE dap_core)
 
-message("[*] DAP-UI-SDK: include vpn/service")
