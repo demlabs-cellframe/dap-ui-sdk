@@ -10,6 +10,9 @@ qt_standard_project_setup()
 
 find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt6 REQUIRED COMPONENTS Network)
+if(DARWIN)
+    find_package(Qt6 REQUIRED COMPONENTS Widgets)
+endif()
 
 
 file(GLOB DAP_UI_SDK_VPN_SERVICE_NATIVE_SRC  *.cpp)
@@ -67,4 +70,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Network)
 target_link_libraries(${PROJECT_NAME} PRIVATE DapUiSdk::Core)
 target_link_libraries(${PROJECT_NAME} PRIVATE DapUiSdk::Vpn::Common)
 target_link_libraries(${PROJECT_NAME} PRIVATE dap_core)
+if(DARWIN)
+    target_link_libraries(${PROJECT_NAME}  PRIVATE Qt6::Widgets)
+endif()
 

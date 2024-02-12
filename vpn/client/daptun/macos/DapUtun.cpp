@@ -42,10 +42,9 @@ This file is part of DAP UI SDK the open source project
 
 
 #include "DapUtils.h"
-#include "DapTunUnixAbstract.h"
 #include "QtCore/qdebug.h"
-#include "darwin/DapUtun.h"
-#include "DapTunWorkerUnix.h"
+#include "DapUtun.h"
+#include "../unix/DapTunWorkerUnix.h"
 #include "DapNetworkMonitor.h"
 #include "SigUnixHandler.h"
 

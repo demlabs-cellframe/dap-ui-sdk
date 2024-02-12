@@ -25,11 +25,17 @@ if(ANDROID)
     set(DAP_UI_SDK_VPN_PUBLIC_PLATFORM_INCLUDES     ./daptun/android/ ./daptun/unix/)
     message("[*] DAP-UI-SDK: include vpn/clien android + unix")
 else()
-if (UNIX) #not android, assume it linux
+if (UNIX AND NOT APPLE) #not android, assume it linux
     file(GLOB DAP_UI_SDK_VPN_CLIENT_PLATFORM_SRC    ./daptun/unix/*.cpp ./daptun/linux/*.cpp)
     file(GLOB DAP_UI_SDK_VPN_CLIENT_PLATFORM_HDR    ./daptun/unix/*.h ./daptun/linux/*.h)
     set(DAP_UI_SDK_VPN_PUBLIC_PLATFORM_INCLUDES     ./daptun/unix/ ./daptun/linux/)
     message("[*] DAP-UI-SDK: include vpn/clien unix + linux")
+endif()
+if (MACOS)
+    file(GLOB DAP_UI_SDK_VPN_CLIENT_PLATFORM_SRC    ./daptun/macos/*.cpp ./daptun/macos/*.cpp)
+    file(GLOB DAP_UI_SDK_VPN_CLIENT_PLATFORM_HDR    ./daptun/macos/*.h ./daptun/macos/*.h)
+    set(DAP_UI_SDK_VPN_PUBLIC_PLATFORM_INCLUDES     ./daptun/macos/ ./daptun/macos/)
+    message("[*] DAP-UI-SDK: include vpn/clien unix + macOS")
 endif()
 endif()
 
