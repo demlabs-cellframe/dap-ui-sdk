@@ -33,6 +33,7 @@
 #include "msrln/msrln.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QFile>
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
 
@@ -184,6 +185,21 @@ void DapSession::sendSignUpRequest(const QString &host, const QString &email, co
                                         true, /*QString("Content-Type: application/x-www-form-urlencoded\r\n")*/ "");
 }
 
+QString readJsonFile(const QString& filePath) {
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning() << "Failed to open file:" << filePath;
+        return QString();
+    }
+
+    QTextStream in(&file);
+    QString jsonContent = in.readAll();
+
+    file.close();
+
+    return jsonContent;
+}
+
 void DapSession::getNews()
 {
     DapNetworkReply *m_netNewsReply = new DapNetworkReply;
@@ -205,6 +221,27 @@ void DapSession::getNews()
             qWarning() << "Server response:" << m_netNewsReply->getReplyData();
             qCritical() << "Can't parse server response to JSON: "<<jsonErr.errorString()<< " on position "<< jsonErr.offset ;
         }
+
+        //******* For news debbuging ********//
+        QString filePath = QCoreApplication::applicationDirPath() + "/news.json";
+        if (QFile::exists(filePath)) {
+            qDebug() << "File 'news.json' exists. Reading content...";
+
+            QString jsonContent = readJsonFile(filePath);
+
+            if (!jsonContent.isEmpty()) {
+
+                jsonDoc = QJsonDocument::fromJson(jsonContent.toUtf8());
+
+            } else {
+                qWarning() << "JSON content is empty";
+            }
+        } else {
+            qWarning() << "For news debbuging - JSON file not exist - filePath";
+        }
+        //**********************************//
+
+
         emit sigReceivedNewsMessage(jsonDoc);
     });
     auto it = DapDataLocal::instance()->m_cdbIter;
