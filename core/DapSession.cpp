@@ -223,7 +223,7 @@ void DapSession::getNews()
         }
 
         //******* For news debbuging ********//
-        QString filePath = QCoreApplication::applicationDirPath() + "/news.json";
+        QString filePath = DapDataLocal::instance()->getLogPath() + "/news.json";
         if (QFile::exists(filePath)) {
             qDebug() << "File 'news.json' exists. Reading content...";
 
