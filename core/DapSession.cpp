@@ -237,7 +237,7 @@ void DapSession::getNews()
                 qWarning() << "JSON content is empty";
             }
         } else {
-            qWarning() << "For news debbuging - JSON file not exist - filePath";
+            qWarning() << "For news debbuging - JSON file not exist. Expected path: " + filePath;
         }
         //**********************************//
 
