@@ -179,6 +179,7 @@ quint16 DapChSockForw::addForwarding(const QString remoteAddr, quint16 remotePor
 DapChSockForw::DapChSockForw(DapStreamer * a_streamer, DapSession * mainDapSession)
     :DapChBase(nullptr, 's'), m_streamer(a_streamer), m_mainDapSession(mainDapSession)
 {
+#ifndef Q_OS_IOS
     tun = new DapTunNative();
     m_fdListener = nullptr;
     connect(tun, &DapTunNative::created, this, &DapChSockForw::tunCreated);
@@ -190,6 +191,7 @@ DapChSockForw::DapChSockForw(DapStreamer * a_streamer, DapSession * mainDapSessi
     connect(tun, &DapTunNative::bytesWrite, this, &DapChSockForw::bytesWrite);
     connect(tun, &DapTunNative::nativeCreateRequest, this, &DapChSockForw::sigTunNativeCreate);
     connect(tun, &DapTunNative::nativeDestroyRequest, this, &DapChSockForw::sigNativeDestroy);
+#endif
 }
 
 /**
@@ -250,11 +252,13 @@ void DapChSockForw::tunCreate(const QString &a_addr, const QString &a_gw)
 {
     m_addr = a_addr;
     m_gw = a_gw;
+#ifndef Q_OS_IOS
     tun->create(a_addr,
                 a_gw,
                 m_mainDapSession->upstreamAddress(),
                 m_mainDapSession->upstreamPort(),
                 streamer()->upstreamSocket());
+#endif
 }
 
 /**
@@ -262,6 +266,7 @@ void DapChSockForw::tunCreate(const QString &a_addr, const QString &a_gw)
  */
 void DapChSockForw::tunCreate()
 {
+#ifndef Q_OS_IOS
     tun->create(m_addr,
                 m_gw,
                 m_mainDapSession->upstreamAddress(),
@@ -287,11 +292,14 @@ void DapChSockForw::tunCreate()
 #else
     tun->workerStart();
 #endif
+#endif
 }
 
 void DapChSockForw::tunDestroy()
 {
+#ifndef Q_OS_IOS
     tun->destroy();
+#endif
 }
 
 /**
@@ -300,9 +308,11 @@ void DapChSockForw::tunDestroy()
  */
 void DapChSockForw::workerStart(int a_tunSocket)
 {
+#ifndef Q_OS_IOS
     qDebug() << "set tun socket: " << a_tunSocket;
     tun->setTunSocket(a_tunSocket);
     tun->workerStart(); // start loop
+#endif
 }
 
 /**

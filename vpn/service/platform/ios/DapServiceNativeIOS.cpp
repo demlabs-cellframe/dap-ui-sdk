@@ -1,12 +1,6 @@
 #include "DapServiceNativeIOS.h"
 
-#include <QtDebug>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QApplication>
-#include "DapServiceNativeIOS.h"
-#include "DapClientDefinitions.h"
-#include "Foundation/Foundation.h"
+#include <QDebug>
 
 DapServiceNativeIOS::DapServiceNativeIOS()
 {

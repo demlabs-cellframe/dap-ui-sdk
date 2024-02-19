@@ -48,7 +48,7 @@ if(MACOS)
 endif()
 
 if(IOS)
-    file(GLOB DAP_UI_SDK_VPN_SERVICE_PLATFORM_SRC  ./platform/ios/*.cpp)
+    file(GLOB DAP_UI_SDK_VPN_SERVICE_PLATFORM_SRC  ./platform/ios/*.cpp ./platform/ios/*.mm)
     file(GLOB DAP_UI_SDK_VPN_SERVICE_PLATFORM_HDR  ./platform/ios/*.h)
     set(DAP_UI_SDK_VPN_SERVICE_PLATFORM_INCLUDES  ./platform/ios/)
     message("[*] DAP-UI-SDK: include vpn/service ios")

@@ -1,7 +1,6 @@
 #ifndef DAPSERVICENATIVEIOS_H
 #define DAPSERVICENATIVEIOS_H
 
-#include <qglobal.h>
 
 #include "DapServiceNativeAbstract.h"
 

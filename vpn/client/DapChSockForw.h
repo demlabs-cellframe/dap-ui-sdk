@@ -75,9 +75,9 @@ signals:
 
 public:
     DapChSockForw(DapStreamer * a_streamer, DapSession * mainDapSession);
-
+#ifndef Q_OS_IOS
     bool isTunCreated(){return tun->isCreated();}
-
+#endif
     void tunCreate (const QString& a_addr, const QString& a_gw);
     void workerStart(int a_tunSocket);
 

@@ -5,9 +5,11 @@
 DapTunWorkerAbstract::DapTunWorkerAbstract( DapTunAbstract * a_tun )
     :m_tunSocket(-1),m_tun(a_tun)
 {
+#ifndef Q_OS_IOS
     m_writeQueue     = a_tun->writeQueue();
     m_writeQueueCond = a_tun->writeQueueCond();
     m_writeQueueLock = a_tun->writeQueueLock();
+#endif
 }
 
 /**
