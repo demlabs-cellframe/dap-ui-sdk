@@ -801,22 +801,88 @@
  * Login
  ***************************************************/
 
-.login-logo-container
-{
-    scaled-rect: scaled(-1,104,-1,89,true);
-}
-
 .login-logo
 {
-    scaled-rect: scaled(nan,nan,260,89,true);
+    scaled-rect: scaled(-1,104,260,89,true);
     qproperty-scaledPixmap: "@login-logo";
 }
 
-.login-error-label
+.login-btn-serial-cdb
 {
-    scaled-rect: scaled(51,188,327,57,false,13);
-    color: "@error";
+    scaled-rect: scaled(-1,292,356,108,true);
 }
+
+.login-btn-serial-nocdb
+{
+    scaled-rect: scaled(-1,242,356,108,true);
+}
+
+.login-btn-main
+{
+    scaled-font: scaled(20);
+    color: "@text";
+    font-weight: Font.Bold;
+}
+
+.login-btn-sub
+{
+    scaled-font: scaled(12);
+    color: "#A4A3C0";
+    font-weight: Font.Normal;
+}
+
+.login-btn-choose-server
+{
+    scaled-rect: scaled(-1,414,356,108,true);
+}
+
+.login-btn-choose-order
+{
+    scaled-rect: scaled(-1,360,356,108,true);
+}
+
+.login-mode-container
+{
+    scaled-rect: scaled(-1,502,356,108,false);
+}
+
+.login-mode-serial
+{
+    scaled-rect: scaled(nan,nan,170,64,false);
+    active: "@login-mode-btn-serial-active";
+    inactive: "@login-mode-btn-serial-inactive";
+}
+
+.login-mode-nocdb
+{
+    scaled-rect: scaled(nan,nan,170,64,false);
+    active: "@login-mode-btn-nocbd-active";
+    inactive: "@login-mode-btn-nocbd-inactive";
+}
+
+.login-btn-connect-by-serial
+{
+    scaled-rect: scaled(-1,570,356,80,true,16);
+}
+
+.login-btn-connect-by-nocbd
+{
+    scaled-rect: scaled(-1,611,356,80,true,16);
+}
+
+.login-obtain-container-serial-mode
+{
+    scaled-rect: scaled(-1,675,356,19,false);
+}
+
+.login-obtain-container-mocbd-mode
+{
+    scaled-rect: scaled(-1,705,356,19,false);
+}
+
+/****************************************************
+ * Login Old
+ ***************************************************/
 
 .login-transaction-processing-arc-animation
 {
@@ -861,19 +927,6 @@
     scaled-rect: scaled(nan,nan,nan,4,false);
 }
 
-.login-btn-server-container
-{
-/*
-    scaled-rect: scaled(-1,292,356,108,true);
-*/
-    scaled-rect: scaled(-1,414,356,108,true);
-}
-
-.login-btn-server
-{
-    scaled-rect: scaled(nan,nan,nan,108,false);
-}
-
 .login-btn-wallet-container
 {
     scaled-rect: scaled(-1,242,356,76,true);
@@ -882,11 +935,6 @@
 .login-btn-maxprice-container
 {
     scaled-rect: scaled(-1,310,-1,76,true);
-}
-
-.login-btn-nocbd-skey-server-container
-{
-    scaled-rect: scaled(-1,360,356,108,true);
 }
 
 .login-btn-nocbd-wallet-server-container
@@ -899,74 +947,10 @@
     scaled-rect: scaled(nan,nan,nan,78,false);
 }
 
-.login-type-container
-{
-    scaled-rect: scaled(nan,502,nan,108,false);
-}
 
-.login-mode-btn-serial-nocbd
-{
-    scaled-rect: scaled(36,0,170,64,false);
-    active: "@login-mode-btn-serial-active";
-    inactive: "@login-mode-btn-serial-inactive";
-}
 
-.login-mode-btn-nocbd
-{
-    scaled-rect: scaled(222,0,170,64,false);
-    active: "@login-mode-btn-nocbd-active";
-    inactive: "@login-mode-btn-nocbd-inactive";
-}
 
-.login-btn-serial-container
-{
-    /*scaled-rect: scaled(-1,414,356,108,true);*/
-    scaled-rect: scaled(-1,292,356,108,true);
-}
 
-.login-btn-serial-container-nocbd
-{
-    scaled-rect: scaled(-1,242,356,108,true);
-}
-
-.login-btn-serial
-{
-    scaled-rect: scaled(nan,nan,nan,108,false);
-}
-
-.login-btn-main
-{
-    scaled-font: scaled(20);
-    color: "@text";
-    font-weight: Font.Bold;
-}
-
-.login-btn-sub
-{
-    scaled-font: scaled(12);
-    color: "#A4A3C0";
-    font-weight: Font.Normal;
-}
-
-.login-connect
-{
-    scaled-rect: scaled(nan,570,356,80,true,16);
-}
-
-.login-connect-nocbd-mode
-{
-    scaled-rect: scaled(nan,611,356,80,true,16);
-}
-
-.login-obtain-container
-{
-    scaled-rect: scaled(-1,675,356,19,false);
-}
-
-.login-obtain-container-mocbd-mode
-{
-    scaled-rect: scaled(-1,705,356,19,false);
-}
 
 .login-obtain-font
 {
