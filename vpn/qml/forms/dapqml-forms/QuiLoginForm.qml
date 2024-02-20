@@ -59,6 +59,9 @@ Item {
         /// @brief flag tells when cellframe is detected or not
         property bool cellframeDetected: false
 
+        /// @brief kel transaction processing for NoCBD
+        property bool transactionProcessing: false
+
         /// @brief waiting for cellframe dashboard approval
         property bool waitingForApproval: false
 
@@ -114,12 +117,17 @@ Item {
             "btnChooseWallet"   : btnChooseWallet,
             "btnChooseOrder"    : btnChooseOrder,
             "btnConnect"        : btnConnect,
+            "btnContinue"       : btnContinue,
         };
         return result
     }
 
     function setCellframeDetected(a_value) {
         noCdb.cellframeDetected = a_value;
+    }
+
+    function setTransactionProcessing(a_value) {
+        noCdb.transactionProcessing = a_value;
     }
 
     function setWaitingForApproval(a_value) {
@@ -492,7 +500,10 @@ Item {
         DapQmlLabel {
             id: loginInfoLabel
             qss: "login-transaction-processing-label-nocbd"
-            text: qsTr("Waiting for approval\n\nCheck the Cellframe Dashboard") + lang.notifier
+            text: (noCdb.transactionProcessing
+                  ? qsTr("Transaction is in progress")
+                  : qsTr("Waiting for approval\n\nCheck the Cellframe Dashboard"))
+                  + lang.notifier
         }
     }
 
@@ -557,32 +568,31 @@ Item {
         id: btnConnect
         x: (parent.width - width) / 2
         z: 15
+        visible: internal.mode === QuiLoginForm.Mode.M_SERIAL
         qss: noCdb.cellframeDetected
              ? "login-btn-connect-by-nocbd push-button"
              : "login-btn-connect-by-serial push-button"
         text: (noCdb.cellframeDetected ? qsTr("CONTINUE") : qsTr("CONNECT")) + lang.notifier
+        onClicked: root.sigConnectBySerial()
+    }
+
+    /****************************************//**
+     * Continue button (NoCDB)
+     ********************************************/
+
+    DapQmlPushButton {
+        id: btnContinue
+        x: (parent.width - width) / 2
+        z: 15
+        visible: internal.mode === QuiLoginForm.Mode.M_WALLET
+                 && noCdb.waitingForApproval === false
+        qss: "login-btn-connect-by-nocbd push-button"
+        text: (noCdb.cellframeDetected ? qsTr("CONTINUE") : qsTr("CONNECT")) + lang.notifier
         onClicked: {
-            switch (internal.mode)
-            {
-            /*-----------------------------------------*/
-
-            case QuiLoginForm.Mode.M_SERIAL:
-            {
-                root.sigConnectBySerial();
-            } break;
-
-            /*-----------------------------------------*/
-
-            case QuiLoginForm.Mode.M_WALLET:
-            {
-                if (internal.transactionProcessing === false)
-                    root.sigStartCondTransation();
-                else
-                    root.sigConnectByOrder();
-            } break;
-
-            /*-----------------------------------------*/
-            }
+            if (noCdb.transactionProcessing === false)
+                root.sigStartCondTransation();
+            else
+                root.sigConnectByOrder();
         }
     }
 
