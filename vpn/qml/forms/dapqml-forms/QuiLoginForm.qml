@@ -204,6 +204,10 @@ Item {
         btnConnect.enabled  = a_value;
     }
 
+    function setConnectionNoCdbEnabled(a_value) {
+        btnConnectNoCdb.enabled  = a_value;
+    }
+
     /// @brief show\\hide serial enter button
     function setKeyEnterEnabled(a_value) {
         btnEnterSerial.visible  = a_value;
@@ -1163,6 +1167,7 @@ Item {
         id: btnConnect
         x: (parent.width - width) / 2
         z: 15
+        visible: internal.mode !== QuiLoginForm.Mode.M_WALLET
         qss: Brand.name() === "KelVPN" && internal.cellfarameDetected
 //                 NoCBD mode
              ? "login-connect-nocbd-mode push-button"
@@ -1182,7 +1187,30 @@ Item {
             else
             if (internal.mode === QuiLoginForm.Mode.M_CERT)
                 root.sigConnectByCert();
-            else
+//            else
+//            if (internal.mode === QuiLoginForm.Mode.M_WALLET) {
+////                root.internal.transactionOverviewShow = true
+////                PageCtl.showTransaction();
+//                if (internal.transactionProcessing === false)
+//                    root.sigStartCondTransation()
+//                else
+//                    root.sigConnectByOrder();
+//            }
+        }
+    }
+
+    /****************************************//**
+     * NoCDB Connect button
+     ********************************************/
+
+    DapQmlPushButton {
+        id: btnConnectNoCdb
+        x: (parent.width - width) / 2
+        z: 15
+        visible: internal.mode === QuiLoginForm.Mode.M_WALLET
+        qss: "login-connect-nocbd-mode push-button"
+        text: qsTr("CONTINUE") + lang.notifier
+        onClicked: {
             if (internal.mode === QuiLoginForm.Mode.M_WALLET) {
 //                root.internal.transactionOverviewShow = true
 //                PageCtl.showTransaction();
