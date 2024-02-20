@@ -843,7 +843,12 @@
 
 .login-mode-container
 {
-    scaled-rect: scaled(-1,502,356,108,false);
+    scaled-rect: scaled(-1,524,356,64,false);
+}
+
+.login-mode-button-size
+{
+    scaled-rect: scaled(nan,nan,170,64,false);
 }
 
 .login-mode-serial

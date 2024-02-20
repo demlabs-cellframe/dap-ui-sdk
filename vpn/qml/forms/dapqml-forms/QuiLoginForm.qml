@@ -67,6 +67,13 @@ Item {
 
         /// @brief true if history contain any orders
         property bool gotOrdersInsideHistory: false
+
+        property real decreaseHeight: {
+            if (gotOrdersInsideHistory)
+                return btnChooseOrder.height * 0.125;
+            else
+                return 0;
+        }
     }
 
     /// @brief Interface::Login class instance pointer
@@ -105,6 +112,8 @@ Item {
             "connectionOverlay" : connectionOverlay,
             "btnChooseServer"   : btnChooseServer,
             "btnChooseWallet"   : btnChooseWallet,
+            "btnChooseOrder"    : btnChooseOrder,
+            "btnConnect"        : btnConnect,
         };
         return result
     }
@@ -123,6 +132,11 @@ Item {
 
     function setOrdersInsideHistoryFlag(a_value) {
         noCdb.gotOrdersInsideHistory = a_value;
+    }
+
+    function switchTab(a_index) {
+        internal.mode   = a_index;
+        loginTypeKelContainer.update();
     }
 
     /// @}
@@ -303,7 +317,8 @@ Item {
 
     Item {
         anchors.fill: parent
-        visible: internal.mode === QuiLoginForm.Mode.M_SERIAL
+        visible: internal.mode === QuiLoginForm.Mode.M_WALLET
+                 && noCdb.waitingForApproval === false
 
         /****************************************//**
          * Choose Wallet
@@ -333,17 +348,10 @@ Item {
          ********************************************/
 
         DapQmlRectangle {
+            id: btnChooseOrderContainer
             qss: noCdb.cellframeDetected ? "login-btn-choose-order" : "login-btn-choose-server"
             opacity: noCdb.tokenIsSet ? 1.0 : 0.5
             enabled: noCdb.tokenIsSet
-
-            property real decreaseHeight: {
-                if (noCdb.gotOrdersInsideHistory
-                    && internal.mode === QuiLoginForm.Mode.M_WALLET)
-                    return btnChooseOrder.height * 0.2;
-                else
-                    return 0;
-            }
 
             MouseArea {
                 anchors.fill: parent
@@ -351,8 +359,8 @@ Item {
             }
 
             Item {
-                width: parent.width
-                height: parent.height - parent.decreaseHeight
+                width: btnChooseOrderContainer.width
+                height: btnChooseOrderContainer.height// - noCdb.decreaseHeight
                 clip: true
 
                 DapQmlButton {
@@ -380,10 +388,10 @@ Item {
             /* bottom rectangle */
 
             DapQmlRectangle {
-                x: btnChooseOrder.x
-                y: btnChooseOrder.y + btnChooseOrder.height - height
-                width: btnChooseOrder.width
-                height: btnChooseOrder.height * 0.2
+                x: btnChooseOrderContainer.x
+                y: btnChooseOrderContainer.y + btnChooseOrderContainer.height - height
+                width: btnChooseOrderContainer.width
+                height: btnChooseOrderContainer.height * 0.2
                 visible: noCdb.gotOrdersInsideHistory
                          && internal.mode === QuiLoginForm.Mode.M_WALLET
                 color: btnOrderHistory.color
@@ -396,8 +404,8 @@ Item {
 
         DapQmlRectangle {
             id: btnOrderHistory
-            x: btnChooseOrder.x
-            y: btnChooseOrder.y + btnChooseOrder.height
+            x: btnChooseOrderContainer.x
+            y: btnChooseOrderContainer.y + btnChooseOrderContainer.height - noCdb.decreaseHeight
             z: 14
             visible: noCdb.gotOrdersInsideHistory
                      && internal.mode === QuiLoginForm.Mode.M_WALLET
@@ -456,6 +464,39 @@ Item {
     }
 
     /****************************************//**
+     * NoCDB Waiting for Approval
+     ********************************************/
+
+    Item {
+        anchors.fill: parent
+        visible: internal.mode === QuiLoginForm.Mode.M_WALLET
+                 && noCdb.waitingForApproval === true
+
+        /****************************************//**
+         * Arc Animation
+         ********************************************/
+
+        DapQmlRectangle {
+            id: progressCircle
+            qss: "login-transaction-processing-arc-animation"
+
+            DapQmlArcAnimation {
+                anchors.fill: parent
+                anchors.margins: parent.width * 0.275
+                strokeWidth: 7
+                z: 200
+                qss: "c-brand"
+            }
+        }
+
+        DapQmlLabel {
+            id: loginInfoLabel
+            qss: "login-transaction-processing-label-nocbd"
+            text: qsTr("Waiting for approval\n\nCheck the Cellframe Dashboard") + lang.notifier
+        }
+    }
+
+    /****************************************//**
      * CDB & NoCBD mode select (SERIAL <-> WALLET)
      ********************************************/
 
@@ -471,11 +512,19 @@ Item {
             tabNoCdb.checked    = internal.mode === QuiLoginForm.Mode.M_WALLET;
         }
 
+        DapQmlDummy {
+            id: tabButtonSize
+            visible: false
+            qss: "login-mode-button-size"
+        }
+
         RowLayout {
             anchors.fill: parent
 
             DapQmlTabButton {
                 id: tabSerial
+                Layout.preferredWidth: tabButtonSize.width
+                Layout.preferredHeight: tabButtonSize.height
                 qss: "login-mode-serial"
                 checked:    internal.mode === QuiLoginForm.Mode.M_SERIAL
                 onClicked:  {
@@ -487,6 +536,8 @@ Item {
 
             DapQmlTabButton {
                 id: tabNoCdb
+                Layout.preferredWidth: tabButtonSize.width
+                Layout.preferredHeight: tabButtonSize.height
                 qss: "login-mode-nocdb"
                 checked:    internal.mode === QuiLoginForm.Mode.M_WALLET
                 onClicked:  {
