@@ -13,7 +13,7 @@ ToolTip {
     property string contentText
     property alias backgroundToolTip: backgroundToolTip
 
-    property bool globalOFF: true
+    property bool globalOFF: false
 
     property int offset: 8
     property int widthLimit: 250
