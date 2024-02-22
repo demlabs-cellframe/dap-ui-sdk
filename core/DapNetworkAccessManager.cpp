@@ -1,4 +1,5 @@
 #include "DapNetworkAccessManager.h"
+#include "dap_client_http.h"
 
 DapNetworkAccessManager::DapNetworkAccessManager()
                     :QObject(nullptr)

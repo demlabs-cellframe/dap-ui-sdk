@@ -6,6 +6,7 @@
 #include "DapDataLocal.h"
 #include <QTimer>
 #include <QDebug>
+#include "dap_client_http.h"
 
 /* DEFS */
 //#define ENABLE_SENSITIVE_PRINTS

@@ -5,6 +5,7 @@
 #include "DapDataLocal.h"
 #include <QTimer>
 #include <QDebug>
+#include "dap_client_http.h"
 
 
 //#define SIGERROR (QNetworkReply::NetworkError::UnknownServerError + 1)
