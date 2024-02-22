@@ -55,6 +55,22 @@ void DapQmlImageItem::setDevicePixelRatio (float a_value)
 }
 
 /********************************************
+ * SLOTS
+ *******************************************/
+
+void DapQmlImageItem::_slotRedraw()
+{
+  update();
+}
+
+void DapQmlImageItem::_slotScalingFinished()
+{
+  disconnect (_cache.conn);
+  ImageScalingThreadPool::instance()->requestResult (_cache.name, _cache.size.toSize(), _cache.image);
+  update();
+}
+
+/********************************************
  * OVERRIDE
  *******************************************/
 
