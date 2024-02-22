@@ -875,6 +875,13 @@
     scaled-rect: scaled(-1,611,356,80,true,16);
 }
 
+.login-btn-orders-history-frame
+{
+    scaled-rect: scaled(nan,nan,356,52,false,18);
+    color: "@input-field";
+    font-weight: Font.Bold;
+}
+
 .login-obtain-container-serial-mode
 {
     scaled-rect: scaled(-1,675,356,19,false);
@@ -885,118 +892,20 @@
     scaled-rect: scaled(-1,705,356,19,false);
 }
 
-/****************************************************
- * Login Old
- ***************************************************/
+.login-obtain-font
+{
+    scaled-font: scaled(16);    
+}
 
 .login-transaction-processing-arc-animation
 {
     scaled-rect: scaled(-1,196,200,200,true);
 }
 
-.login-transaction-processing-retry-button
-{
-    scaled-rect: scaled(-1,420,188,48,false);
-    color: "@sett-hover-background";
-    radius: 8;
-}
-
 .login-transaction-processing-label-nocbd
 {
     scaled-rect: scaled(-1,380,327,80,false,20);
     color: "@text";
-}
-
-.login-separator-container
-{
-    scaled-rect: scaled(-1,291,-1,4,true);
-}
-
-.login-nocbd-wallet-separator-container
-{
-    scaled-rect: scaled(-1,210,-1,4,true);
-}
-
-.login-nocbd-skey-separator-container
-{
-    scaled-rect: scaled(-1,221,-1,4,true);
-}
-
-.overview-separator-container
-{
-    scaled-rect: scaled(-1,134,-1,4,true);
-}
-
-.login-separator
-{
-    scaled-rect: scaled(nan,nan,nan,4,false);
-}
-
-.login-btn-wallet-container
-{
-    scaled-rect: scaled(-1,242,356,76,true);
-}
-
-.login-btn-maxprice-container
-{
-    scaled-rect: scaled(-1,310,-1,76,true);
-}
-
-.login-btn-nocbd-wallet-server-container
-{
-    scaled-rect: scaled(-1,400,356,76,true);
-}
-
-.login-btn-server-nocbd
-{
-    scaled-rect: scaled(nan,nan,nan,78,false);
-}
-
-
-
-
-
-
-.login-obtain-font
-{
-    scaled-font: scaled(16);    
-}
-
-.login-obtain-label
-{
-    scaled-rect: scaled(nan,nan,160,nan,false);
-}
-
-.login-obtain-link
-{
-    scaled-rect: scaled(nan,nan,160,nan,false);
-}
-
-.login-serialkey-input
-{
-    border-width: 1;
-    border-color: "@light-grey";
-    color: "@background";
-    radius: 5;
-    opacity: 0.2;
-}
-
-/* SPACE CALC */
-
-.login-space-for3rows
-{
-    scaled-rect: scaled(nan,0,nan,nan,false);
-}
-
-.login-space-for2rows
-{
-    scaled-rect: scaled(nan,0,nan,nan,false);
-}
-
-.login-separator-color
-{
-    color: "@separator-color";
-    scaled-rect: scaled(nan,nan,nan,1,false);
 }
 
 .login-connecting-label
@@ -1010,11 +919,10 @@
     scaled-rect: scaled(nan,nan,-1,120,false);
 }
 
-.login-btn-orders-history-frame
+.login-separator-color
 {
-    scaled-rect: scaled(nan,nan,356,52,false,18);
-    color: "@input-field";
-    font-weight: Font.Bold;
+    color: "@separator-color";
+    scaled-rect: scaled(nan,nan,nan,1,false);
 }
 
 /****************************************************
