@@ -98,6 +98,17 @@ Item {
         root.internal.mode  = 2;
     }
 
+//    // test timer
+//    Timer {
+//        running: true
+//        repeat: true
+//        interval: 1000
+//        onTriggered: {
+//            root.visible    = true;
+//            root.showOverview();
+//        }
+//    }
+
     /// @}
     /****************************************//**
      * Resizers
@@ -204,7 +215,35 @@ Item {
 
         DapQmlRectangle {
             id: overview
-            qss: "nodeorlist-overview-container"
+            //qss: "nodeorlist-overview-container"
+            x: overviewScaler.x
+            y: overviewScaler.y
+            width: overviewScaler.width
+            height: overviewScaler.height
+            color: overviewScaler.color
+            radius: overviewScaler.radius
+
+            function autoResize(a_value) {
+                let compareVal  = overviewDummy.contentHeight;
+                let minContent  = (a_value < compareVal) ? compareVal : a_value;
+                overview.height = overviewScaler.height + minContent;
+                //console.log (`vvaalluu ${a_value} ^^^ ${height} &&& ${compareVal} @@@ ${overviewScaler.height}`)
+            }
+
+            Component.onCompleted: autoResize(0)
+
+            DapQmlLabel {
+                id: overviewDummy
+                visible: false
+                qss: "nodeorlist-overview-price"
+                text: "0"
+            }
+
+            DapQmlRectangle {
+                id: overviewScaler
+                visible: false
+                qss: "nodeorlist-overview-container"
+            }
 
             ColumnLayout {
                 anchors.fill: parent
@@ -249,10 +288,17 @@ Item {
 
                 DapQmlLabel {
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
+                    Layout.minimumHeight: contentHeight
                     Layout.topMargin: linkImageSizer.width * 0.05
+                    horizontalAlign: Text.AlignRight
+                    wrapMode: Text.Wrap
                     qss: "nodeorlist-overview-price"
                     text: root.internal.priceShort
+                    //text: "45000.912312391231212239198444444444444444444444444479879879797978897979799879799799797979797979797997979979799997 CELL"
+                    //text: "45000.9123123912312122399799799797979797979797997979979799997 CELL"
+
+                    onTextChanged: overview.autoResize(contentHeight);
+                    onContentHeightChanged: overview.autoResize(contentHeight);
                 }
             } // ColumnLayout
         } // Container

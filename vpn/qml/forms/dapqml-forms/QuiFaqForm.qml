@@ -92,6 +92,7 @@ Item {
                 height: contentHeight // faqItemSizer.height
                 horizontalAlign: Text.AlignLeft
                 wrapMode: Text.WordWrap
+                textFormat: Text.RichText
                 qss: "faq-item-label c-label"
                 text: model.question //"Question"
             }
@@ -116,6 +117,7 @@ Item {
                 horizontalAlign: Text.AlignLeft
                 wrapMode: Text.WordWrap
                 disableClicking: true
+                textFormat: Text.RichText
                 qss: "faq-item-text"
                 text: model.answer  // "Is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived"
             }

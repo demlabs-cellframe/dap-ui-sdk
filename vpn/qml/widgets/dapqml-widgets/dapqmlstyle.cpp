@@ -80,7 +80,7 @@ void DapQmlStyle::setItem (QObject *a_newItem)
   emit itemChanged();
 }
 
-void DapQmlStyle::windowResized(int a_width, int a_height)
+void DapQmlStyle::windowResized (int a_width, int a_height)
 {
   sWindowResized (a_width, a_height);
 }
@@ -235,10 +235,16 @@ void DapQmlStyle::update()
   DapStyle::QssMap::setup (s_styleSheet);
 }
 
-void DapQmlStyle::sWindowResized(int a_width, int a_height)
+void DapQmlStyle::sWindowResized (int a_width, int a_height)
 {
-  if (s_globalSignal)
-    emit s_globalSignal->resized (a_width, a_height);
+  if (s_globalSignal
+      && (s_screenWidth != a_width
+          || s_screenHeight != a_height))
+    {
+      s_screenWidth   = a_width;
+      s_screenHeight  = a_height;
+      emit s_globalSignal->resized (a_width, a_height);
+    }
 }
 
 void DapQmlStyle::sRequestRedraw()
@@ -295,10 +301,8 @@ void DapQmlStyle::_applyStyle()
     }
 }
 
-void DapQmlStyle::_resized(int a_width, int a_height)
+void DapQmlStyle::_resized (int a_width, int a_height)
 {
-  s_screenWidth   = a_width;
-  s_screenHeight  = a_height;
   _applyStyle();
 
   if (this != s_globalSignal)

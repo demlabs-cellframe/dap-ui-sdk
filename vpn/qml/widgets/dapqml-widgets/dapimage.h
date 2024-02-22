@@ -54,6 +54,7 @@ public:
    *******************************************/
   /// @{
 public:
+  static void init();
   DapImage scaled (const QSize &size, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio, TransformationMode transformMode = LanczosTransformation) const;
   DapImage scaled (int width, int height, Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio, TransformationMode transformMode = LanczosTransformation) const;
   /// @}
@@ -69,6 +70,8 @@ public:
   DapImage &operator= (QImage &&a_src);
   /// @}
 };
+
+Q_DECLARE_METATYPE (DapImage)
 
 /*-----------------------------------------*/
 #endif // DAPIMAGE_H
