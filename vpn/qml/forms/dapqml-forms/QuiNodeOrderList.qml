@@ -1822,6 +1822,7 @@ Item {
 //                            ["x", "y", "width", "height"],
 //                           this);
 
+                    // units
                     ListView {
                         id: csListView
                         objectName: "listview"
@@ -1836,6 +1837,7 @@ Item {
 
                     } // Listview
 
+                    // orders
                     ListView {
                         id: csListViewOrders
                         objectName: "listviewOrders"
@@ -1846,6 +1848,7 @@ Item {
                         clip: true
                     }
 
+                    // networks
                     ListView {
                         id: csListViewNetworks
                         objectName: "listviewNetworks"
@@ -1856,6 +1859,7 @@ Item {
                         clip: true
                     }
 
+                    // wallets
                     ListView {
                         id: csListViewWallets
                         objectName: "listviewWallets"
@@ -1866,6 +1870,7 @@ Item {
                         clip: true
                     }
 
+                    // tokens
                     ListView {
                         id: csListViewTokens
                         objectName: "listviewTokens"

@@ -177,6 +177,8 @@ signals:
   void sigUnitChanged();
   void sigBalanceChanged();
 
+  /// TODO: move this into separate models
+
   void sigNetworkUpdated (QString a_value);   // chooseNetwork
   void sigWalletUpdated (QString a_value);    // chooseWallet
   void sigTokenUpdated (QString a_value);     // chooseToken

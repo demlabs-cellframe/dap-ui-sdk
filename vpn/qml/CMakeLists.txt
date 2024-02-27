@@ -21,7 +21,8 @@ find_package(Qt6 REQUIRED COMPONENTS QuickControls2)
 file(GLOB DAP_UI_SDK_VPN_QML_SRC  handlers/*.cpp 
                                     model/dapqml-abstract/*.cpp 
                                     model/dapqml-model/*.cpp 
-                                    model/dapqml-model/modules/*.cpp 
+                                    model/dapqml-model/modules/*.cpp
+                                    model/dapqml-model/node/*.cpp
                                     widgets/dapqml-widgets/*.cpp
                                     widgets/dapqml-widgets/style/*.cpp
                                     widgets/dapqml-widgets/listvieweventfilter/*.cpp
@@ -31,12 +32,15 @@ file(GLOB DAP_UI_SDK_VPN_QML_HDR  handlers/*.h
                                     model/dapqml-abstract/*.h 
                                     model/dapqml-model/*.h 
                                     model/dapqml-model/modules/*.h 
+                                    model/dapqml-model/node/*.h
                                     widgets/dapqml-widgets/*.h
                                     widgets/dapqml-widgets/style/*.h
                                     widgets/dapqml-widgets/listvieweventfilter/*.h
                                     widgets/dapqml-widgets/style/debug/*.h)
+file(GLOB DAP_UI_SDK_VPN_QML_QRC  widgets/dapqml-widgets-asset/brand/KelVPN/*.qrc
+                                    forms/*.qrc)
 
-add_library(${PROJECT_NAME} STATIC ${DAP_UI_SDK_VPN_QML_SRC} ${DAP_UI_SDK_VPN_QML_HDR})
+add_library(${PROJECT_NAME} STATIC ${DAP_UI_SDK_VPN_QML_SRC} ${DAP_UI_SDK_VPN_QML_HDR} ${DAP_UI_SDK_VPN_QML_QRC})
 
 target_include_directories(${PROJECT_NAME} PUBLIC handlers/)
 target_include_directories(${PROJECT_NAME} PUBLIC model/)
