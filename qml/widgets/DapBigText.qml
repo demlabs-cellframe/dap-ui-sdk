@@ -41,13 +41,18 @@ Item
             DapCustomToolTip{
                 id: tooltip
                 parent: area
-                globalOFF: alwaysHoverShow && area.containsMouse ?
+                visible: alwaysHoverShow && area.containsMouse ?
                     true :
                     area.containsMouse ?
                         textItem.implicitWidth > textItem.width ?
                             true :
                             false : false
                 contentText: fullText
+                onVisibleChanged: /*console.log(text.y, bigNumber.y, y)*/
+                {
+                    updatePos()
+                }
+
             }
         }
     }
