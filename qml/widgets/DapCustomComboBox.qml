@@ -15,6 +15,9 @@ Item
     property int rightMarginPopupContain: 16
     property int popupBorderWidth: 1
 
+    property int delegateHeight: 40
+    property bool isHighPopup: false
+
     property bool changingRound: false
     property bool isSingleColor: false
     property bool isInnerShadow: true
@@ -144,7 +147,7 @@ Item
 
     DropShadow
     {
-        visible: popupVisible
+        visible: popupVisible && !isHighPopup
         anchors.fill: background
         horizontalOffset: currTheme.hOffset
         verticalOffset: currTheme.vOffset
@@ -157,7 +160,7 @@ Item
 
     InnerShadow
     {
-        visible: popupVisible && isInnerShadow
+        visible: popupVisible && isInnerShadow && !isHighPopup
         anchors.fill: background
         horizontalOffset: 1
         verticalOffset: 1
@@ -203,7 +206,7 @@ Item
 //        y: mainItem.height
 
         x: -width*(1/scale-1)*0.5
-        y: mainItem.height - height*(1/scale-1)*0.5
+        y: isHighPopup ? -delegateHeight * (mainItem.count - 1) : mainItem.height - height*(1/scale-1)*0.5
 
         width: popupBackground.width
         height: popupBackground.height
@@ -262,7 +265,7 @@ Item
                             return 0
                         }
 
-                        return 40
+                        return delegateHeight
                     }
 
                     color: area.containsMouse ?
@@ -339,7 +342,7 @@ Item
 
         DropShadow
         {
-            visible: popupVisible
+            visible: popupVisible && !isHighPopup
             anchors.fill: popupBackground
             horizontalOffset: currTheme.hOffset
             verticalOffset: currTheme.vOffset
@@ -350,8 +353,9 @@ Item
             cached: true
         }
 
-        InnerShadow {
-            visible: popupVisible && isInnerShadow
+        InnerShadow
+        {
+            visible: popupVisible && isInnerShadow && !isHighPopup
             anchors.fill: popupBackground
             horizontalOffset: 1
             verticalOffset: 0
