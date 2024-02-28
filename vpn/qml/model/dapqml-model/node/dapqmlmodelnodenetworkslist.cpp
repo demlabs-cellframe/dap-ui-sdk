@@ -51,26 +51,48 @@ QObject *DapQmlModelNodeNetworksList::singletonProvider (QQmlEngine *engine, QJS
   return instance();
 }
 
+void DapQmlModelNodeNetworksList::refresh()
+{
+  _modelReset();
+}
+
+int DapQmlModelNodeNetworksList::size() const
+{
+  return rowCount();
+}
+
 int DapQmlModelNodeNetworksList::currentIndex() const
 {
   return p->currentIndex;
 }
 
-void DapQmlModelNodeNetworksList::setCurrentIndex (int a_index)
+bool DapQmlModelNodeNetworksList::setCurrentIndex (int a_index)
 {
   if (p->currentIndex == a_index)
-    return;
+    return false;
 
   p->currentIndex = a_index;
   emit sigCurrentIndexChanged();
+  return true;
 }
 
-const QString &DapQmlModelNodeNetworksList::name() const
+bool DapQmlModelNodeNetworksList::isIndexed() const
+{
+  return false;
+}
+
+const QString &DapQmlModelNodeNetworksList::network() const
 {
   const auto &list  = DapNodeWalletData::instance()->networkList();
   if (p->currentIndex < 0 || p->currentIndex >= list.size())
     return s_dummyString;
   return list.at (p->currentIndex);
+}
+
+void DapQmlModelNodeNetworksList::_modelReset()
+{
+  beginResetModel();
+  endResetModel();
 }
 
 /********************************************

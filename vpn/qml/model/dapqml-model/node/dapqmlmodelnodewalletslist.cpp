@@ -51,6 +51,11 @@ QObject *DapQmlModelNodeWalletsList::singletonProvider (QQmlEngine *engine, QJSE
   return instance();
 }
 
+void DapQmlModelNodeWalletsList::refresh()
+{
+  _modelReset();
+}
+
 int DapQmlModelNodeWalletsList::currentIndex() const
 {
   return p->currentIndex;
@@ -87,6 +92,12 @@ const QString &DapQmlModelNodeWalletsList::network() const
   if (p->currentIndex < 0 || p->currentIndex >= list.size())
     return s_dummyString;
   return list.at (p->currentIndex).network;
+}
+
+void DapQmlModelNodeWalletsList::_modelReset()
+{
+  beginResetModel();
+  endResetModel();
 }
 
 /********************************************

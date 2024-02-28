@@ -56,6 +56,7 @@ public:
 
   static DapQmlModelNodeTokensList *instance();
   Q_INVOKABLE static QObject *singletonProvider (QQmlEngine *engine, QJSEngine *scriptEngine);
+  void refresh();
 
   /* fields */
 
@@ -65,6 +66,9 @@ public:
   Q_INVOKABLE const QString &token() const;             // name
   Q_INVOKABLE const QString &balance() const;           // value
   Q_INVOKABLE const QString &networkAndWallet() const;  // misc
+
+protected:
+  void _modelReset();
   /// @}
 
   /****************************************//**

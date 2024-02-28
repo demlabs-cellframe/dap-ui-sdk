@@ -56,6 +56,7 @@ public:
 
   static DapQmlModelNodeUnitsList *instance();
   Q_INVOKABLE static QObject *singletonProvider (QQmlEngine *engine, QJSEngine *scriptEngine);
+  void refresh();
 
   const QStringList &units() const;
   void setUnits (const QStringList &a_units);
@@ -67,6 +68,9 @@ public:
   Q_INVOKABLE void setCurrentIndex (int a_index);
 
   Q_INVOKABLE const QString &unit() const;  // name
+
+protected:
+  void _modelReset();
   /// @}
 
   /****************************************//**

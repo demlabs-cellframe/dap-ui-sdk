@@ -51,6 +51,11 @@ QObject *DapQmlModelNodeTokensList::singletonProvider (QQmlEngine *engine, QJSEn
   return instance();
 }
 
+void DapQmlModelNodeTokensList::refresh()
+{
+  _modelReset();
+}
+
 int DapQmlModelNodeTokensList::currentIndex() const
 {
   return p->currentIndex;
@@ -92,6 +97,12 @@ const QString &DapQmlModelNodeTokensList::networkAndWallet() const
   result            = item.network + ":" + item.wallet;
 
   return result;
+}
+
+void DapQmlModelNodeTokensList::_modelReset()
+{
+  beginResetModel();
+  endResetModel();
 }
 
 /********************************************

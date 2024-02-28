@@ -63,6 +63,11 @@ QObject *DapQmlModelNodeUnitsList::singletonProvider (QQmlEngine *engine, QJSEng
   return instance();
 }
 
+void DapQmlModelNodeUnitsList::refresh()
+{
+  _modelReset();
+}
+
 const QStringList &DapQmlModelNodeUnitsList::units() const
 {
   return p->units;
@@ -101,6 +106,12 @@ const QString &DapQmlModelNodeUnitsList::unit() const
   if (p->currentIndex < 0 || p->currentIndex >= p->units.size())
     return s_dummyString;
   return p->units.at (p->currentIndex);
+}
+
+void DapQmlModelNodeUnitsList::_modelReset()
+{
+  beginResetModel();
+  endResetModel();
 }
 
 /********************************************

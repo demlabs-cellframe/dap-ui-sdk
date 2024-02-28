@@ -6,6 +6,8 @@
 #include <QAbstractListModel>
 #include <QSortFilterProxyModel>
 
+#include "dapqmlmodelnodeproxybase.h"
+
 /* DEFINES */
 
 class QQmlEngine;
@@ -18,7 +20,7 @@ class QJSEngine;
  * @author Mikhail Shilenko
  *******************************************/
 
-class DapQmlModelNodeNetworksList : public QAbstractListModel
+class DapQmlModelNodeNetworksList : public QAbstractListModel, public DapQmlModelNodeProxyBase::Bridge
 {
   Q_OBJECT
 
@@ -43,7 +45,7 @@ protected:
   /// @{
 protected:
   explicit DapQmlModelNodeNetworksList (QObject *a_parent = nullptr);
-  ~DapQmlModelNodeNetworksList();
+  ~DapQmlModelNodeNetworksList() override;
   /// @}
 
   /****************************************//**
@@ -56,13 +58,19 @@ public:
 
   static DapQmlModelNodeNetworksList *instance();
   Q_INVOKABLE static QObject *singletonProvider (QQmlEngine *engine, QJSEngine *scriptEngine);
+  void refresh();
 
   /* fields */
 
-  Q_INVOKABLE int currentIndex() const;
-  Q_INVOKABLE void setCurrentIndex (int a_index);
+  Q_INVOKABLE int size() const override;
+  Q_INVOKABLE int currentIndex() const override;
+  Q_INVOKABLE bool setCurrentIndex (int a_index) override;
+  Q_INVOKABLE bool isIndexed() const override;
 
-  Q_INVOKABLE const QString &name() const;
+  Q_INVOKABLE const QString &network() const;
+
+protected:
+  void _modelReset();
   /// @}
 
   /****************************************//**

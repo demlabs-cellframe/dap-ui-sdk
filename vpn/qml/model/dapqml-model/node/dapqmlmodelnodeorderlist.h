@@ -61,22 +61,29 @@ public:
   static DapQmlModelNodeOrderList *instance();
   Q_INVOKABLE static QObject *singletonProvider (QQmlEngine *engine, QJSEngine *scriptEngine);
 
-  Q_INVOKABLE int length() const;
   Q_INVOKABLE int indexOf (const QString &a_location);
+  void refresh();
+
+  /* fields */
 
   Q_INVOKABLE int currentIndex() const;
   Q_INVOKABLE void setCurrentIndex (int a_index);
 
+  Q_INVOKABLE int length() const;
+  const QString &hash() const; // name
+
   /* order list control */
+
+  const QVector<DapQmlModelNode::OrderItem> &orders() const;
+  void setOrders (const QVector<DapQmlModelNode::OrderItem> &a_value);
+  void setOrders (QVector<DapQmlModelNode::OrderItem> &&a_value);
 
   const DapQmlModelNode::OrderItem *currentOrder() const;
   void setOrderListData (const QJsonArray &a_list, bool notify = true);
+  void installAddressMap (const QHash<QString, QString> &a_map);
 
 protected:
   void _modelReset();
-  void _setNetworksFeeRequestList (const QStringList &a_list);
-  QString _dequeueNetworkFeeRequest();
-  void _setNetworkFee (const QString &a_networkName, const QString &a_fee);
   /// @}
 
   /****************************************//**
@@ -120,7 +127,6 @@ signals:
   /// @{
 public slots:
   void slotSetData (const QJsonArray &a_list);
-  void slotWalletsDataUpdated();
   void slotSetOrderAddresses (const QJsonObject &a_list);
   /// @}
 };
@@ -141,7 +147,7 @@ class DapQmlModelOrderListProxyModel : public QSortFilterProxyModel
    *******************************************/
   /// @{
   Q_PROPERTY (int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY sigCurrentIndexChanged)
-    /// @}
+  /// @}
 
   /****************************************//**
    * @name VARS
