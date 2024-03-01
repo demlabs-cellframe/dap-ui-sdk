@@ -56,18 +56,34 @@ void DapQmlModelNodeTokensList::refresh()
   _modelReset();
 }
 
+int DapQmlModelNodeTokensList::size() const
+{
+  return rowCount();
+}
+
 int DapQmlModelNodeTokensList::currentIndex() const
 {
   return p->currentIndex;
 }
 
-void DapQmlModelNodeTokensList::setCurrentIndex (int a_index)
+bool DapQmlModelNodeTokensList::setCurrentIndex (int a_index)
 {
   if (p->currentIndex == a_index)
-    return;
+    return false;
 
   p->currentIndex = a_index;
   emit sigCurrentIndexChanged();
+  return true;
+}
+
+bool DapQmlModelNodeTokensList::isIndexed() const
+{
+  return true;
+}
+
+bool DapQmlModelNodeTokensList::filterAcceptsRow (int a_row, const QString &a_filter) const
+{
+  return data (createIndex (a_row, 0), int (FieldId::misc)).toString() == a_filter;
 }
 
 const QString &DapQmlModelNodeTokensList::token() const
@@ -123,7 +139,7 @@ int DapQmlModelNodeTokensList::columnCount (const QModelIndex &parent) const
 QVariant DapQmlModelNodeTokensList::data (const QModelIndex &index, int role) const
 {
   const auto &list  = DapNodeWalletData::instance()->tokenBalanceList();
-  if (index.row() < list.size())
+  if (index.isValid() && index.row() < list.size())
     {
       const auto &item  = list.at (index.row());
       switch (FieldId (role))

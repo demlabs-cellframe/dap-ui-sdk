@@ -87,18 +87,34 @@ void DapQmlModelNodeUnitsList::setUnits (QStringList &&a_units)
   endResetModel();
 }
 
+int DapQmlModelNodeUnitsList::size() const
+{
+  return rowCount();
+}
+
 int DapQmlModelNodeUnitsList::currentIndex() const
 {
   return p->currentIndex;
 }
 
-void DapQmlModelNodeUnitsList::setCurrentIndex (int a_index)
+bool DapQmlModelNodeUnitsList::setCurrentIndex (int a_index)
 {
   if (p->currentIndex == a_index)
-    return;
+    return false;
 
   p->currentIndex = a_index;
   emit sigCurrentIndexChanged();
+  return true;
+}
+
+bool DapQmlModelNodeUnitsList::isIndexed() const
+{
+  return true;
+}
+
+bool DapQmlModelNodeUnitsList::filterAcceptsRow (int a_row, const QString &a_filter) const
+{
+  return data (createIndex (a_row, 0), int (FieldId::misc)).toString() == a_filter;
 }
 
 const QString &DapQmlModelNodeUnitsList::unit() const
@@ -131,7 +147,7 @@ int DapQmlModelNodeUnitsList::columnCount (const QModelIndex &parent) const
 
 QVariant DapQmlModelNodeUnitsList::data (const QModelIndex &index, int role) const
 {
-  if (index.row() < p->units.size())
+  if (index.isValid() && index.row() < p->units.size())
     if (FieldId (role) == FieldId::name)
       return p->units.at (index.row());
   return QVariant();

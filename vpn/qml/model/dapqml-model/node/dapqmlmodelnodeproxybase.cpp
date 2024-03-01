@@ -12,10 +12,10 @@
 
 DapQmlModelNodeProxyBase::DapQmlModelNodeProxyBase (QObject *a_parent)
   : QSortFilterProxyModel (a_parent)
-  , m_bridge (nullptr)
   , _indexMapCounter (0)
 {
-
+  setSourceModel (dynamic_cast<QAbstractItemModel *> (a_parent));
+  setBridge (dynamic_cast<Bridge *> (a_parent));
 }
 
 /********************************************
@@ -80,6 +80,24 @@ void DapQmlModelNodeProxyBase::_printFilteredResult() const
   for (int i = 0; i < size; i++)
     qDebug() << data (index (i, 0), 9 ).toString()
              << data (index (i, 0), 10).toString();
+}
+
+/********************************************
+ * OVERRIDE
+ *******************************************/
+
+bool DapQmlModelNodeProxyBase::filterAcceptsRow (int a_row, const QModelIndex &) const
+{
+  if (m_bridge == nullptr)
+    return false;
+
+  if (m_filter.isEmpty())
+    return true;
+
+  bool match  = m_bridge->filterAcceptsRow (a_row, m_filter);
+  if (match)
+    _indexMap.insert (a_row, _indexMapCounter++);
+  return match;
 }
 
 /*-----------------------------------------*/

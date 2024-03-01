@@ -6,6 +6,8 @@
 #include <QAbstractListModel>
 #include <QSortFilterProxyModel>
 
+#include "dapqmlmodelnodeproxybase.h"
+
 /* DEFINES */
 
 class QQmlEngine;
@@ -18,7 +20,7 @@ class QJSEngine;
  * @author Mikhail Shilenko
  *******************************************/
 
-class DapQmlModelNodeUnitsList : public QAbstractListModel
+class DapQmlModelNodeUnitsList : public QAbstractListModel, public DapQmlModelNodeProxyBase::Bridge
 {
   Q_OBJECT
 
@@ -43,7 +45,7 @@ protected:
   /// @{
 protected:
   explicit DapQmlModelNodeUnitsList (QObject *a_parent = nullptr);
-  ~DapQmlModelNodeUnitsList();
+  ~DapQmlModelNodeUnitsList() override;
   /// @}
 
   /****************************************//**
@@ -64,8 +66,11 @@ public:
 
   /* fields */
 
-  Q_INVOKABLE int currentIndex() const;
-  Q_INVOKABLE void setCurrentIndex (int a_index);
+  Q_INVOKABLE int size() const override;
+  Q_INVOKABLE int currentIndex() const override;
+  Q_INVOKABLE bool setCurrentIndex (int a_index) override;
+  Q_INVOKABLE bool isIndexed() const override;
+  Q_INVOKABLE bool filterAcceptsRow (int a_row, const QString &a_filter) const override;
 
   Q_INVOKABLE const QString &unit() const;  // name
 

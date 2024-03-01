@@ -66,6 +66,7 @@ public:
   Q_INVOKABLE int currentIndex() const override;
   Q_INVOKABLE bool setCurrentIndex (int a_index) override;
   Q_INVOKABLE bool isIndexed() const override;
+  Q_INVOKABLE bool filterAcceptsRow (int a_row, const QString &a_filter) const override;
 
   Q_INVOKABLE const QString &network() const;
 

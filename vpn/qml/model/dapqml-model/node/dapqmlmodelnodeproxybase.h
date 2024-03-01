@@ -19,6 +19,8 @@
 
 class DapQmlModelNodeProxyBase : public QSortFilterProxyModel
 {
+  Q_OBJECT
+
   /****************************************//**
    * @name PROPERTIES
    *******************************************/
@@ -47,6 +49,9 @@ public:
 
     /// return true, if indexing is being used (example: false for networks model)
     virtual bool isIndexed() const = 0;
+
+    /// return true if filter is matching
+    virtual bool filterAcceptsRow (int a_row, const QString &a_filter) const = 0;
   };
   /// @}
 
@@ -101,6 +106,14 @@ protected:
   /// @{
 signals:
   void sigCurrentIndexChanged();
+  /// @}
+
+  /****************************************//**
+   * @name OVERRIDE
+   *******************************************/
+  /// @{
+protected:
+  bool filterAcceptsRow (int a_row, const QModelIndex &a_parent) const override;
   /// @}
 };
 

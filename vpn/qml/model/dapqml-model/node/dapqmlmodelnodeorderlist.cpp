@@ -58,7 +58,7 @@ static QString s_dummyString;
  * FUNCTIONS
  *******************************************/
 
-QString _scopedPrice (const QString &a_value);
+namespace NodeOrderList { QString scopedPrice (const QString &a_value); };
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -132,7 +132,10 @@ void DapQmlModelNodeOrderList::setCurrentIndex (int a_index)
 
   p->currentIndex = a_index;
   emit sigCurrentIndexChanged();
-  emit sigOrderSelected (p->items.at (p->currentIndex).hash);
+
+  if (p->currentIndex >= 0
+      && p->currentIndex < p->items.size())
+    emit sigOrderSelected (p->items.at (p->currentIndex).hash);
 }
 
 const QVector<DapQmlModelNode::OrderItem> &DapQmlModelNodeOrderList::orders() const
@@ -278,7 +281,7 @@ int DapQmlModelNodeOrderList::columnCount (const QModelIndex &parent) const
 
 QVariant DapQmlModelNodeOrderList::data (const QModelIndex &index, int role) const
 {
-  if (index.row() < p->items.size())
+  if (index.isValid() && index.row() < p->items.size())
     {
       const auto &item  = p->items.at (index.row());
       switch (FieldId (role))
@@ -286,7 +289,7 @@ QVariant DapQmlModelNodeOrderList::data (const QModelIndex &index, int role) con
         case FieldId::location:    return item.location;
         case FieldId::node_addr:   return item.node_addr;
         case FieldId::price:       return item.price;
-        case FieldId::priceShort:  return _scopedPrice (item.price);
+        case FieldId::priceShort:  return NodeOrderList::scopedPrice (item.price);
         case FieldId::units:       return item.units;
         case FieldId::units_value: return item.units_value;
         case FieldId::server:      return item.server;
@@ -405,7 +408,8 @@ bool DapQmlModelOrderListProxyModel::filterAcceptsRow (
 
 /*-----------------------------------------*/
 
-QString _scopedPrice (const QString &a_value)
+namespace NodeOrderList {
+QString scopedPrice (const QString &a_value)
 {
   auto match = scopesRegExp.match (a_value);
 
@@ -414,5 +418,6 @@ QString _scopedPrice (const QString &a_value)
 
   return QString();
 }
+};
 
 /*-----------------------------------------*/

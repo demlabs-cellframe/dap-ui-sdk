@@ -81,6 +81,11 @@ bool DapQmlModelNodeNetworksList::isIndexed() const
   return false;
 }
 
+bool DapQmlModelNodeNetworksList::filterAcceptsRow (int a_row, const QString &a_filter) const
+{
+  return true;
+}
+
 const QString &DapQmlModelNodeNetworksList::network() const
 {
   const auto &list  = DapNodeWalletData::instance()->networkList();
@@ -113,7 +118,7 @@ int DapQmlModelNodeNetworksList::columnCount (const QModelIndex &parent) const
 QVariant DapQmlModelNodeNetworksList::data (const QModelIndex &index, int role) const
 {
   const auto &list  = DapNodeWalletData::instance()->networkList();
-  if (index.row() < list.size())
+  if (index.isValid() && index.row() < list.size())
     if (FieldId (role) == FieldId::name)
       return list.at (index.row());
   return QVariant();
