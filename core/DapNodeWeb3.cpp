@@ -21,6 +21,7 @@
 #endif
 
 #define DEBUGINFO qDebug()<<"--->Web3<---"
+//#define ENABLE_BAD_REPLY_WALLETS
 
 typedef DapNodeWeb3::ReplyMethodID ReplyMethodID;
 
@@ -570,6 +571,14 @@ void DapNodeWeb3::parseReplyWallets (const QString &replyData, int baseErrorCode
 
   if (jsonError())
     return;
+
+#ifdef ENABLE_BAD_REPLY_WALLETS
+  replyError (baseErrorCode + 40000,
+              "Can't parse result. Socket connection err: 111\nCan't connect to cellframe-node\n",
+              QString ("Request \"%1\" status is \"%2\"").arg ("parseReplyWallets", "bad"));
+  m_parseJsonError = true;
+  return;
+#endif // ENABLE_BAD_REPLY_WALLETS
 
   if (doc["data"].isArray())
     {
