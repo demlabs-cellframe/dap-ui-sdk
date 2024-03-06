@@ -22,6 +22,7 @@ add_library(${PROJECT_NAME} STATIC ${DAP_UI_SDK_VPN_CORE_NATIVE_SRC} ${DAP_UI_SD
 target_include_directories(${PROJECT_NAME} PUBLIC ./)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core5Compat)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Network)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core5Compat)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::StateMachine)
