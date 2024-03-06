@@ -627,6 +627,7 @@ Item {
                         persistentSelection: true
                         selectByMouse: true
                         //clip: true
+                        font.family: Brand.fontName()
                         font.pixelSize: fontSize
                         font.weight: fontWeight
                         inputMethodHints: Qt.ImhSensitiveData
