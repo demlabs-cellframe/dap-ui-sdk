@@ -88,19 +88,22 @@ source_group("Assets" FILES ${PROJECT_ASSETS})
 # library
 # ------------------------------------------------------------------------- #
 
-add_library(${PROJECT_NAME}
+add_library(
+  ${PROJECT_NAME}
   STATIC
   ${PROJECT_SOURCES}
   ${PROJECT_HEADERS}
   ${PROJECT_ASSETS}
 )
 
-target_include_directories(${PROJECT_NAME}
+target_include_directories(
+  ${PROJECT_NAME}
   PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(
+  ${PROJECT_NAME}
   PRIVATE
   Qt6::Core
   Qt6::Core5Compat
