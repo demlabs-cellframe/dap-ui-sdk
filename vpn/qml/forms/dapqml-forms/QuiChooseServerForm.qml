@@ -76,6 +76,62 @@ Item {
     }
 
     /****************************************//**
+     * Popup
+     ********************************************/
+
+    Rectangle {
+        id: itemPopup
+        x: parent.width - width
+        y: 0 - height
+        z: 200
+        width: popupLabel.contentWidth * 1.25
+        height: popupLabel.contentHeight * 1.5
+        visible: false
+        color: "#e0e0e0"
+        border.color: "#404040"
+
+        function show(a_x, a_y, a_ping) {
+            //console.log(`popup show: ${a_x},${a_y},${a_ping}`);
+            x   = a_x - width;
+            y   = a_y - height;
+            popupLabel.setPing (a_ping);
+            visible = true;
+            hideTimer.restart();
+        }
+
+        function hide() {
+            //console.log(`popup hide`);
+            visible = false;
+        }
+
+        Timer {
+            id: hideTimer
+            interval: 5000
+            repeat: false
+            running: false
+            onTriggered: itemPopup.hide()
+        }
+
+        Text {
+            id: popupLabel
+            anchors.fill: parent
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            color: "#404040"
+
+//            property int ping: model.ping + csListView.model.hookInt
+
+            function setPing(a_ping) {
+                text    = (a_ping > -1)
+                          ? (`ping ${a_ping} ms`)
+                          : ("unavailable");
+            }
+
+            text: "unavailable"
+        }
+    }
+
+    /****************************************//**
      * Listview
      ********************************************/
 
@@ -121,6 +177,7 @@ Item {
                 //onHeightChanged: csListViewItem.collectLogMessage (`radio ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
 
                 DapQmlLabel {
+                    id: itemPing
                     property int quality: (parent.quality === 0) ? (0) : (6 - parent.quality)
                     x: parent.width - (width * 1.35)
                     y: (parent.height - height) / 2
@@ -134,45 +191,12 @@ Item {
                         anchors.fill: parent
                         z: 10
                         hoverEnabled: true
-                        onEntered: itemPopup.open()
-                        onExited:  itemPopup.close()
-                        //onHeightChanged: csListViewItem.collectLogMessage (`mousearea ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
-                    }
-
-                    Popup {
-                        id: itemPopup
-                        x: parent.width - width
-                        y: 0 - height
-                        width: popupLabel.contentWidth * 1.25
-                        height: popupLabel.contentHeight * 1.5
-                        topInset: 0
-                        bottomInset: 0
-                        leftInset: 0
-                        rightInset: 0
-                        padding: 0
-                        margins: 0
-
-                        background: Item {}
-
-                        contentItem: Rectangle {
-                            anchors.fill: parent
-                            color: "#e0e0e0"
-                            border.color: "#404040"
-
-                            Text {
-                                id: popupLabel
-                                anchors.fill: parent
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                                color: "#404040"
-
-                                property int ping: model.ping + csListView.model.hookInt
-
-                                text: (ping > -1)
-                                      ? (`ping ${ping} ms` + csListView.model.hook)
-                                      : ("unavailable" + csListView.model.hook)
-                            }
+                        onEntered: {
+                            var point   = mapToItem(null, 0, 0);
+                            itemPopup.show(point.x, point.y, model.ping);
                         }
+                        onExited:  itemPopup.hide()
+                        //onHeightChanged: csListViewItem.collectLogMessage (`mousearea ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
                     }
                 }
 
