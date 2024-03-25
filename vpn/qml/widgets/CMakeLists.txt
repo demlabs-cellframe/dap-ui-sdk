@@ -46,6 +46,7 @@ set(PROJECT_SOURCES
   dapqml-widgets/style/qssvalue.cpp
   dapqml-widgets/style/scaled.cpp
   dapqml-widgets/style/debug/styledebugtree.cpp
+  dapqml-widgets/dapqmlimage/imagescalingthreadpool.cpp
 )
 
 set(PROJECT_HEADERS
@@ -73,6 +74,7 @@ set(PROJECT_HEADERS
   dapqml-widgets/style/qssvalue.h
   dapqml-widgets/style/scaled.h
   dapqml-widgets/style/debug/styledebugtree.h
+  dapqml-widgets/dapqmlimage/imagescalingthreadpool.h
 )
 
 set(PROJECT_ASSETS
