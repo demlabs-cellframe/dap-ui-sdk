@@ -1,5 +1,6 @@
 /* INCLUDES */
 #include "dapqmlmodelfaq.h"
+#include "DapDataLocal.h"
 
 /* DEFS */
 enum Role
@@ -16,11 +17,16 @@ struct Item
 
 /* VARS */
 static DapQmlModelFaq *__inst = nullptr;
+static const QMap<QString, QString> s_linksStyle =
+{
+  { "light", "" },
+  { "dark", "color: #80A0FF;" },
+};
 static const QVector<Item> s_items =
 {
   {
     "Q: I have an issue using KelVPN. How can I get help?",
-    "A: Please send a report using the in-app \"Send bug report\" feature. Describe as much of the details as possible and leave an email address for us to contact you. If you don’t want to give your email address also you can reach out for technical assistance on Telegram using the KelVPN Support Bot (<a href=\"https://t.me/kelvpn_tech_support_bot\">https://t.me/kelvpn_tech_support_bot</a>). In some cases, the tech support specialist may ask you to send a bug report to discover the issue."
+    "A: Please send a report using the in-app \"Send bug report\" feature. Describe as much of the details as possible and leave an email address for us to contact you. If you don’t want to give your email address also you can reach out for technical assistance on Telegram using the KelVPN Support Bot (<a href=\"https://t.me/kelvpn_tech_support_bot\" style=\"%%\">https://t.me/kelvpn_tech_support_bot</a>). In some cases, the tech support specialist may ask you to send a bug report to discover the issue."
   },
   {
     "Q: Is it possible to use one key on multiple devices?",
@@ -54,6 +60,14 @@ DapQmlModelFaq::DapQmlModelFaq()
 {
   /* vars */
   __inst  = this;
+
+//  /* get theme name */
+//  auto themeName   = DapDataLocal::instance()->getSetting (SETTING_THEME).toString().toLower();
+
+//  /* get theme link style */
+//  auto linkStyle  = s_linksStyle.value (themeName);
+
+//  qDebug() << "oi:" << QString (s_items.at (0).a).replace ("%%", linkStyle);
 }
 
 /********************************************
@@ -85,10 +99,16 @@ QVariant DapQmlModelFaq::data (const QModelIndex &index, int role) const
   if (index.row() >= s_items.size())
     return QVariant();
 
+  /* get theme name */
+  auto themeName   = DapDataLocal::instance()->getSetting (SETTING_THEME).toString().toLower();
+
+  /* get theme link style */
+  auto linkStyle  = s_linksStyle.value (themeName);
+
   switch (role)
     {
-    case Role::Question:  return QString (s_items.at (index.row()).q);
-    case Role::Answer:    return QString (s_items.at (index.row()).a);
+    case Role::Question:  return QString (s_items.at (index.row()).q).replace ("%%", linkStyle);
+    case Role::Answer:    return QString (s_items.at (index.row()).a).replace ("%%", linkStyle);
     }
 
   return QVariant();

@@ -101,7 +101,7 @@ void DapLogger::setLogLevel(dap_log_level ll)
 
 void DapLogger::setLogFile(const QString& fileName)
 {
-#ifndef Q_OS_IOS
+// #ifndef Q_OS_IOS
     if(isLoggerStarted)
         dap_common_deinit();
 
@@ -111,7 +111,7 @@ void DapLogger::setLogFile(const QString& fileName)
     DapDataLocal::instance()->setLogPath(getPathToLog());
     DapDataLocal::instance()->setLogFilePath(filePath);
     isLoggerStarted = true;
-#endif
+// #endif
 }
 
 void DapLogger::updateLogFiles()
@@ -140,7 +140,7 @@ QString DapLogger::defaultLogPath(const QString a_brand)
                     , "()Ljava/io/File;");
     return QString("%1/log").arg(l_pathObj.toString());
 #elif defined (Q_OS_IOS)
-    return {};
+    return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)+QDir::separator()+"log";
 #endif
     return {};
 }
@@ -223,10 +223,12 @@ void DapLogger::writeMessage(QtMsgType type,
                              const QMessageLogContext &ctx,
                              const QString & msg)
 {
-#ifndef Q_OS_IOS
+    //for ios dev
+    qInfo()<<msg;
+// #ifndef Q_OS_IOS
     if(ctx.file) {
         char prefixBuffer[128];
-#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
+#if defined(Q_OS_LINUX) || defined(Q_OS_DARWIN)
         const char *fileName = strrchr(ctx.file, '/');
 #elif defined(Q_OS_WIN)
         const char *fileName = strrchr(ctx.file, '\\');
@@ -248,7 +250,7 @@ void DapLogger::writeMessage(QtMsgType type,
 
     std::cerr.flush();
     std::cout.flush();
-#endif
+// #endif
 }
 
 QString DapLogger::systemInfo()

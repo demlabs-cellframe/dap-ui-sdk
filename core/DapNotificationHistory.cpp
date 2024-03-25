@@ -44,6 +44,22 @@ static const QHash<int, QByteArray> s_roles =
   ROLEFIELD (createdTime),
 };
 
+static const QStringList s_months =
+{
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
+};
+
 /********************************************
  * CONSTRUCT/DESTRUCT
  *******************************************/
@@ -502,7 +518,17 @@ QVariant DapNotificationHistory::data (const QModelIndex &index, int role) const
       switch (DapNotificationHistory::FieldId (fid))
         {
         case FieldId::isTitle:      return item.isTitle;
-        case FieldId::titleDate:    return item.titleDate.toString ("MMMM dd");
+        case FieldId::titleDate:
+        {
+          if (!item.isTitle)
+            return QString();
+
+          QString month = s_months.value (item.titleDate.month()-1, QString());
+          if (month.isEmpty())
+            return item.titleDate.toString ("MMMM dd");
+
+          return month + " " + item.titleDate.toString ("dd");
+        }
         case FieldId::typeString:   return typeName (item.notification.type());
         case FieldId::createdTime:  return item.notification.createdStringAM();
         }

@@ -21,6 +21,7 @@ HEADERS += \
     $$PWD/dapqml-widgets/dapimage.h \
     $$PWD/dapqml-widgets/dapqmlarcanimation.h \
     $$PWD/dapqml-widgets/dapqmlimage.h \
+    $$PWD/dapqml-widgets/dapqmlimage/imagescalingthreadpool.h \
     $$PWD/dapqml-widgets/dapqmllistvieweventfilter.h \
     $$PWD/dapqml-widgets/dapqmlseparatoritem.h \
     $$PWD/dapqml-widgets/dapqmlserialkeyinput.h \
@@ -48,6 +49,7 @@ SOURCES += \
     $$PWD/dapqml-widgets/dapimage.cpp \
     $$PWD/dapqml-widgets/dapqmlarcanimation.cpp \
     $$PWD/dapqml-widgets/dapqmlimage.cpp \
+    $$PWD/dapqml-widgets/dapqmlimage/imagescalingthreadpool.cpp \
     $$PWD/dapqml-widgets/dapqmllistvieweventfilter.cpp \
     $$PWD/dapqml-widgets/dapqmlseparatoritem.cpp \
     $$PWD/dapqml-widgets/dapqmlserialkeyinput.cpp \

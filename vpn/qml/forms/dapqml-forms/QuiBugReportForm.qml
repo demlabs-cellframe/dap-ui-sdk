@@ -226,7 +226,7 @@ Item {
                 id: contactInputField
                 objectName: "contactInputField"
                 anchors.centerIn: parent
-                mainQss: "bugrep-input-textarea"
+                mainQss: "bugrep-input-textarea bugrep-input-textarea-contact"
                 iconQss: "null-size null-pos"
                 placeholderQss: "bugrep-input-placeholder"
                 qss: "bugrep-input-contact-content"

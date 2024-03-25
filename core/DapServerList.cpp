@@ -1447,8 +1447,9 @@ InsertServerOperation::InsertServerOperation (
   int pos = 0;
   for (auto i = _list.begin(), e = _list.end(); i != e; i++, pos++)
     {
-      auto &item = *i;
-      if (item.ping() > a_server.ping())
+      auto &item    = *i;
+      int itemPing  = item.ping() == -1 ? 10000 : item.ping();
+      if (itemPing > a_server.ping())
         {
           _destination  = pos;
           return;

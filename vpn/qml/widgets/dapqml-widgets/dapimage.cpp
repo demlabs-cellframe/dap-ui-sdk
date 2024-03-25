@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "dapimage.h"
 
+#include <QMetaType>
 #include <cmath>
 
 /* DEFS */
@@ -79,6 +80,11 @@ DapImage::DapImage (const uchar *data, int width, int height, int bytesPerLine, 
 /********************************************
  * METHODS
  *******************************************/
+
+void DapImage::init()
+{
+  qRegisterMetaType<DapImage> ("DapImage");
+}
 
 DapImage DapImage::scaled (const QSize &size, Qt::AspectRatioMode aspectRatioMode, TransformationMode transformMode) const
 {

@@ -4,6 +4,7 @@
 #include "dapqmlstyle.h"
 
 #include <cmath>
+#include <QBitmap>
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -91,9 +92,6 @@ void DapQmlArcAnimation::paint (QPainter *a_painter)
   QPen pen;
   QBrush brush (Qt::transparent);
 
-  a_painter->setBrush (brush);
-  a_painter->setRenderHint (QPainter::Antialiasing);
-
   /* calc coordinates */
   qreal strokeWW   = qreal (m_strokeWidth) / 2.0;
   qreal centerX = width()  / 2.0;
@@ -102,46 +100,81 @@ void DapQmlArcAnimation::paint (QPainter *a_painter)
   qreal radiusY = height() / 2.0 - m_strokeWidth;
 
   qreal startAngle = m_startAngle;
-  qreal sweepAngle = 165.0;
+  qreal sweepAngle = 360;
 
   /* setup painter */
-  pen  = QPen (m_color, m_strokeWidth);
-  a_painter->setPen (pen);
+  a_painter->setBrush (brush);
+  a_painter->setRenderHint (QPainter::Antialiasing);
 
-  /* draw arc */
-  a_painter->drawArc(
-    centerX - radiusX,
-    centerY - radiusY,
-    2 * radiusX, 2 * radiusY,
-    int (startAngle * 16),
-    int (sweepAngle * 16)
-  );
+  /* setup mask */
+  QImage mask (width(), height(), QImage::Format_ARGB32);
+  mask.fill (Qt::transparent);
 
-  /* setup painter */
-  pen  = QPen (m_color, strokeWW);
-  a_painter->setPen (pen);
+  /* draw mask */
+  QPainter maskPainter (&mask);
+  maskPainter.translate (width() / 2, height() / 2);
+  maskPainter.rotate (-m_startAngle);
+  maskPainter.setBrush (Qt::white);
+  maskPainter.drawRect (-width() / 2, 0, width(), height());
+  maskPainter.end();
 
-  /* draw dots on the ends of the arc */
-  auto dots = _calcDotsPosition (radiusX, radiusY, strokeWW);
+  /* lambda's */
 
-  a_painter->drawRoundedRect(
-    dots.first,
-    strokeWW,
-    strokeWW
-  );
+  auto drawArc = [&]
+  {
+    /* setup painter */
+    pen  = QPen (m_color, m_strokeWidth);
+    a_painter->setPen (pen);
 
-  a_painter->drawRoundedRect(
-    dots.second,
-    strokeWW,
-    strokeWW
-  );
+    /* draw arc */
+    a_painter->drawArc(
+      centerX - radiusX,
+      centerY - radiusY,
+      2 * radiusX, 2 * radiusY,
+      int (startAngle * 16),
+      int (sweepAngle * 16)
+    );
+
+  };
+
+  auto drawDots = [&]
+  {
+    /* setup painter */
+    pen  = QPen (m_color, strokeWW);
+    a_painter->setPen (pen);
+
+    /* draw dots on the ends of the arc */
+    auto dots = _calcDotsPosition (radiusX, radiusY, strokeWW);
+
+    a_painter->drawRoundedRect(
+      dots.first,
+      strokeWW,
+      strokeWW
+    );
+
+    a_painter->drawRoundedRect(
+      dots.second,
+      strokeWW,
+      strokeWW
+    );
+  };
+
+  /* install mask */
+  a_painter->setClipRegion (QRegion (QBitmap::fromImage (mask)));
+
+  /* draw */
+
+  drawArc();
+  a_painter->setClipping (false);
+  drawDots();
+  //a_painter->drawImage (0, 0, mask);
 }
 
 QPair<QRectF, QRectF> DapQmlArcAnimation::_calcDotsPosition (qreal a_radiusX, qreal a_radiusY, qreal a_width) const
 {
   qreal halfStrokeWidth = m_strokeWidth / 2.0;
 
-  qreal angle   = (8.0-m_startAngle) / 180.0 * M_PI;
+  qreal angle   = (-m_startAngle) / 180.0 * M_PI;
   qreal centerX = width()  / 2.0 - halfStrokeWidth / 2.0;
   qreal centerY = height() / 2.0 - halfStrokeWidth / 2.0;
 
