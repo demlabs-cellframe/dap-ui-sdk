@@ -14,6 +14,10 @@
 #include <android/log.h>
 #endif
 
+#ifdef Q_OS_IOS
+#include "DapIOSLogger.h"
+#endif
+
 static DapLogger* m_instance = nullptr;
 
 DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
@@ -101,7 +105,7 @@ void DapLogger::setLogLevel(dap_log_level ll)
 
 void DapLogger::setLogFile(const QString& fileName)
 {
-// #ifndef Q_OS_IOS
+#ifndef Q_OS_IOS
     if(isLoggerStarted)
         dap_common_deinit();
 
@@ -111,11 +115,15 @@ void DapLogger::setLogFile(const QString& fileName)
     DapDataLocal::instance()->setLogPath(getPathToLog());
     DapDataLocal::instance()->setLogFilePath(filePath);
     isLoggerStarted = true;
-// #endif
+#else
+    // redirectLogToDocuments();
+    // DapIOSLogger->DapSetIOSLogFile(getPathToLog);
+#endif
 }
 
 void DapLogger::updateLogFiles()
 {
+#ifndef Q_OS_IOS
     QString currentDay = QDateTime::currentDateTime().toString("dd");
     if (currentDay == m_day)
         return;
@@ -123,6 +131,7 @@ void DapLogger::updateLogFiles()
     this->updateCurrentLogName();
     this->setLogFile(m_currentLogName);
     this->clearOldLogs();
+#endif
 }
 
 QString DapLogger::defaultLogPath(const QString a_brand)
@@ -224,8 +233,10 @@ void DapLogger::writeMessage(QtMsgType type,
                              const QString & msg)
 {
     //for ios dev
-    qInfo()<<msg;
-// #ifndef Q_OS_IOS
+    // qInfo()<<msg;
+#ifdef Q_OS_IOS
+    DapIOSLog(castQtMsgToDap(type), qUtf8Printable(msg));
+#else
     if(ctx.file) {
         char prefixBuffer[128];
 #if defined(Q_OS_LINUX) || defined(Q_OS_DARWIN)
@@ -250,7 +261,8 @@ void DapLogger::writeMessage(QtMsgType type,
 
     std::cerr.flush();
     std::cout.flush();
-// #endif
+
+#endif
 }
 
 QString DapLogger::systemInfo()
