@@ -25,9 +25,7 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     , m_day(QDateTime::currentDateTime().toString("dd"))
 {
     m_instance = this;
-#ifndef Q_OS_IOS
     dap_set_log_tag_width(prefix_width);
-#endif
     qInstallMessageHandler(messageHandler);
     m_appType = appType;
     qDebug() << "App: " DAP_BRAND " " DAP_VERSION " " + appType;
@@ -105,7 +103,6 @@ void DapLogger::setLogLevel(dap_log_level ll)
 
 void DapLogger::setLogFile(const QString& fileName)
 {
-#ifndef Q_OS_IOS
     if(isLoggerStarted)
         dap_common_deinit();
 
@@ -115,15 +112,10 @@ void DapLogger::setLogFile(const QString& fileName)
     DapDataLocal::instance()->setLogPath(getPathToLog());
     DapDataLocal::instance()->setLogFilePath(filePath);
     isLoggerStarted = true;
-#else
-    // redirectLogToDocuments();
-    // DapIOSLogger->DapSetIOSLogFile(getPathToLog);
-#endif
 }
 
 void DapLogger::updateLogFiles()
 {
-#ifndef Q_OS_IOS
     QString currentDay = QDateTime::currentDateTime().toString("dd");
     if (currentDay == m_day)
         return;
@@ -131,7 +123,6 @@ void DapLogger::updateLogFiles()
     this->updateCurrentLogName();
     this->setLogFile(m_currentLogName);
     this->clearOldLogs();
-#endif
 }
 
 QString DapLogger::defaultLogPath(const QString a_brand)
@@ -149,7 +140,7 @@ QString DapLogger::defaultLogPath(const QString a_brand)
                     , "()Ljava/io/File;");
     return QString("%1/log").arg(l_pathObj.toString());
 #elif defined (Q_OS_IOS)
-    return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)+QDir::separator()+"log";
+    return QString(dapIOSLogPath());
 #endif
     return {};
 }
@@ -232,11 +223,6 @@ void DapLogger::writeMessage(QtMsgType type,
                              const QMessageLogContext &ctx,
                              const QString & msg)
 {
-    //for ios dev
-    // qInfo()<<msg;
-#ifdef Q_OS_IOS
-    DapIOSLog(castQtMsgToDap(type), qUtf8Printable(msg));
-#else
     if(ctx.file) {
         char prefixBuffer[128];
 #if defined(Q_OS_LINUX) || defined(Q_OS_DARWIN)
@@ -261,8 +247,6 @@ void DapLogger::writeMessage(QtMsgType type,
 
     std::cerr.flush();
     std::cout.flush();
-
-#endif
 }
 
 QString DapLogger::systemInfo()
