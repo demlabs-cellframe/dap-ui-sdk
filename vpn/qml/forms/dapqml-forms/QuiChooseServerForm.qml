@@ -145,63 +145,44 @@ Item {
         height: root.height - y
         clip: true
 
-        delegate: Item {
-            id: csListViewItem
+        delegate: DapQmlRadioButton {
+            property int quality: model.connectionQuality + csListView.model.hookInt
+
+            text: model.name + csListView.model.hook
+            separator: true
+            iconSize: resizer.height
+            y: spacer.height / 2
             width: resizer.width
             height: resizer.height + spacer.height
-            property bool checked: false
+            checked: csListView.model.current === model.index //model.checked + csListView.model.hookInt
+            opacity: 0
 
-//            property string logMessage
-//            property int logMessageCounter: 0
+            Behavior on opacity { PropertyAnimation { duration: 250 } }
 
-//            function collectLogMessage(a_msg) {
-//                logMessage += a_msg + " : ";
-//                logMessageCounter++;
-//                if (logMessageCounter >= 4)
-//                    console.log(logMessage + model.name);
-//            }
+            Component.onCompleted: opacity = 1
 
-            //onHeightChanged: csListViewItem.collectLogMessage (`item ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
+            DapQmlLabel {
+                id: itemPing
+                property int quality: (parent.quality === 0) ? (0) : (6 - parent.quality)
+                x: parent.width - (width * 1.35)
+                y: (parent.height - height) / 2
+                width: resizer.height * 0.5
+                height: resizer.height * 0.5
+                qss: `ic_conn-${quality}` + csListView.model.hook
 
-            DapQmlRadioButton {
-                property int quality: model.connectionQuality + csListView.model.hookInt
-
-                text: model.name + csListView.model.hook
-                checked: csListView.model.current === model.index //model.checked + csListView.model.hookInt
-                separator: true
-                iconSize: resizer.height
-                width: resizer.width
-                height: resizer.height + spacer.height
-                y: spacer.height / 2
-
-                //onHeightChanged: csListViewItem.collectLogMessage (`radio ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
-
-                DapQmlLabel {
-                    id: itemPing
-                    property int quality: (parent.quality === 0) ? (0) : (6 - parent.quality)
-                    x: parent.width - (width * 1.35)
-                    y: (parent.height - height) / 2
-                    width: resizer.height * 0.5
-                    height: resizer.height * 0.5
-                    qss: `ic_conn-${quality}` + csListView.model.hook
-
-                    //onHeightChanged: csListViewItem.collectLogMessage (`icn ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
-
-                    MouseArea {
-                        anchors.fill: parent
-                        z: 10
-                        hoverEnabled: true
-                        onEntered: {
-                            var point   = mapToItem(null, 0, 0);
-                            itemPopup.show(point.x, point.y, model.ping);
-                        }
-                        onExited:  itemPopup.hide()
-                        //onHeightChanged: csListViewItem.collectLogMessage (`mousearea ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
+                MouseArea {
+                    anchors.fill: parent
+                    z: 10
+                    hoverEnabled: true
+                    onEntered: {
+                        var point   = mapToItem(null, 0, 0);
+                        itemPopup.show(point.x, point.y, model.ping);
                     }
+                    onExited:  itemPopup.hide()
                 }
-
-                onClicked: root.sigSelect (model.index, model.name)
             }
+
+            onClicked: root.sigSelect (model.index, model.name)
         }
     }
 }

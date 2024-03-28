@@ -171,10 +171,25 @@ void DapQmlServerManager::importServers (const DapServerInfoList *a_servers)
 {
   if (!enabled())
     {
-      auto serverList = DapQmlModelFullServerList::instance()->bridge()->serverList();
+      auto fullList     = DapQmlModelFullServerList::instance();
+      auto bridge       = fullList->bridge();
+      auto serverList   = bridge->serverList();
+
+#ifdef BRAND_KELVPN
+
+      serverList->clear();
+      for (const auto &server : *a_servers)
+        serverList->append (server);
+      fullList->refresh();
+
+#else // BRAND_KELVPN
+
       for (const auto &server : *a_servers)
         if (-1 == serverList->indexOfAddress (server.address()))
           serverList->append (server);
+
+#endif // BRAND_KELVPN
+
       return;
     }
 
