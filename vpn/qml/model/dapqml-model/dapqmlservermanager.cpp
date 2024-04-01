@@ -177,10 +177,23 @@ void DapQmlServerManager::importServers (const DapServerInfoList *a_servers)
 
 #ifdef BRAND_KELVPN
 
+      /* store current server */
+      auto current  = fullList->currentServer().name();
+
+      /* clear servers */
       serverList->clear();
+
+      /* add servers from scratch */
       for (const auto &server : *a_servers)
         serverList->append (server);
+
+      /* refresh full model */
       fullList->refresh();
+
+      /* restore current */
+      int index = fullList->indexOfName (current);
+      if (!current.isEmpty())
+        fullList->setCurrent (index != -1 ? index : 0);
 
 #else // BRAND_KELVPN
 
