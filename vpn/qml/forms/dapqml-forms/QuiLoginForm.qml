@@ -72,6 +72,8 @@ Item {
         /// @brief login mode
         property int mode: QuiLoginForm.Mode.M_SERIAL
 
+        property bool cdbDetected: false
+
         /// @brief kel cellframe dashdoard detected
         property bool cellfarameDetected: false
 
@@ -256,12 +258,21 @@ Item {
         //btnEnterSerial.inputMask    = ">NNNN-NNNN-NNNN-NNNN;_"
     }
 
+    function cdbDetected(a_value) {
+        internal.cdbDetected    = a_value;
+    }
+
     /// @briefset found cellframe dashboard
     function cellfarameDashboardDetected(detected) {
         console.log(`cellfarameDashboardDetected ${detected}`);
         internal.cellfarameDetected = detected && Brand.name() === "KelVPN";
         if (internal.waitingForApproval)
             loginInfoLabel.text = qsTr("Waiting for approval\n\nCheck the Cellframe Dashboard");
+        if (internal.cdbDetected === false)
+        {
+            internal.mode = QuiLoginForm.Mode.M_WALLET;
+            root.walletSelected(internal.mode === QuiLoginForm.Mode.M_WALLET);
+        }
         loginTypeKelContainer.update();
     }
 
@@ -449,6 +460,8 @@ Item {
             id: tabSerial1
             qss: "login-mode-btn-serial-nocbd"
             checked:    internal.mode === QuiLoginForm.Mode.M_SERIAL
+            enabled: internal.cdbDetected
+            opacity: enabled ? 1.0 : 0.35
             onClicked:  {
                 internal.mode = QuiLoginForm.Mode.M_SERIAL;
                 loginTypeKelContainer.update();
