@@ -55,7 +55,7 @@ DapStreamer::DapStreamer(DapSession * session, QObject* parent) :
 
    typedef void (QAbstractSocket::*QAbstractSocketErrorSignal)(QAbstractSocket::SocketError);
 
-   connect(&m_streamSocket,static_cast<QAbstractSocketErrorSignal>(&QAbstractSocket::error),
+   connect(&m_streamSocket,static_cast<QAbstractSocketErrorSignal>(&QAbstractSocket::errorOccurred),
            this, &DapStreamer::sltStreamError);
 
 }

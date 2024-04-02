@@ -1,6 +1,5 @@
 /* INCLUDES */
 #include "dapqmlmodelsettings.h"
-#include "helper/languagectl.h"
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
 
@@ -62,9 +61,9 @@ DapQmlModelSettings::DapQmlModelSettings (QObject *parent)
 //  QMetaObject::invokeMethod (
 //        this, &DapQmlModelSettings::slotUpdateLabels,
 //        Qt::QueuedConnection);
-  connect (LanguageCtl::instance(), &LanguageCtl::languageChanged,
-           this, &DapQmlModelSettings::slotRetranslate,
-           Qt::QueuedConnection);
+//  connect (LanguageCtl::instance(), &LanguageCtl::languageChanged,
+//           this, &DapQmlModelSettings::slotRetranslate,
+//           Qt::QueuedConnection);
 
   /* finish updating labels */
   slotUpdateLabels (true);

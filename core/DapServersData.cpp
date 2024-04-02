@@ -381,7 +381,7 @@ const QMap<QString, QString> DapServersData::m_countryMap = {
 };
 
 const QString DapServersData::findInCountriesMap(const QString& string) {
-    QStringList list = string.split(".", QString::SkipEmptyParts);
+    QStringList list = string.split(".", Qt::SkipEmptyParts);
     QString code;
     for (QString s: list) {
         auto it = m_countryMap.find(s);

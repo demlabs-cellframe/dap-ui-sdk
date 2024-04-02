@@ -10,7 +10,7 @@
 #endif
 
 #ifdef Q_OS_ANDROID
-#include <QAndroidService>
+#include <DapAndroidHelpers.h>
 #include <android/log.h>
 #endif
 
@@ -21,7 +21,9 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
     , m_day(QDateTime::currentDateTime().toString("dd"))
 {
     m_instance = this;
+#ifndef Q_OS_IOS
     dap_set_log_tag_width(prefix_width);
+#endif
     qInstallMessageHandler(messageHandler);
     m_appType = appType;
     qDebug() << "App: " DAP_BRAND " " DAP_VERSION " " + appType;
@@ -33,12 +35,15 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width)
         if (dir.mkpath(m_pathToLog) == false)
           qDebug() << "unable to create dir";
 #ifndef Q_OS_ANDROID
+#ifndef Q_OS_IOS
         system(("chmod -R 777 " + m_pathToLog).toUtf8().data());
 #endif
-
+#endif
     }
 #ifndef Q_OS_ANDROID
+#ifndef Q_OS_IOS
     system(("chmod 777 $(find " + m_pathToLog + " -type d)").toUtf8().data());
+#endif
 #endif
     updateCurrentLogName();
     setLogFile(m_currentLogName);
@@ -96,6 +101,7 @@ void DapLogger::setLogLevel(dap_log_level ll)
 
 void DapLogger::setLogFile(const QString& fileName)
 {
+// #ifndef Q_OS_IOS
     if(isLoggerStarted)
         dap_common_deinit();
 
@@ -105,6 +111,7 @@ void DapLogger::setLogFile(const QString& fileName)
     DapDataLocal::instance()->setLogPath(getPathToLog());
     DapDataLocal::instance()->setLogFilePath(filePath);
     isLoggerStarted = true;
+// #endif
 }
 
 void DapLogger::updateLogFiles()
@@ -128,10 +135,12 @@ QString DapLogger::defaultLogPath(const QString a_brand)
     return QString("%1/%2/log").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
     Q_UNUSED(a_brand);
-    static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod(
+    static DapQtJniObject l_pathObj = dapQtAndroidServiceContext().callObjectMethod(
                     "getFilesDir"
                     , "()Ljava/io/File;");
     return QString("%1/log").arg(l_pathObj.toString());
+#elif defined (Q_OS_IOS)
+    return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)+QDir::separator()+"log";
 #endif
     return {};
 }
@@ -214,9 +223,12 @@ void DapLogger::writeMessage(QtMsgType type,
                              const QMessageLogContext &ctx,
                              const QString & msg)
 {
+    //for ios dev
+    qInfo()<<msg;
+// #ifndef Q_OS_IOS
     if(ctx.file) {
         char prefixBuffer[128];
-#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
+#if defined(Q_OS_LINUX) || defined(Q_OS_DARWIN)
         const char *fileName = strrchr(ctx.file, '/');
 #elif defined(Q_OS_WIN)
         const char *fileName = strrchr(ctx.file, '\\');
@@ -238,6 +250,7 @@ void DapLogger::writeMessage(QtMsgType type,
 
     std::cerr.flush();
     std::cout.flush();
+// #endif
 }
 
 QString DapLogger::systemInfo()

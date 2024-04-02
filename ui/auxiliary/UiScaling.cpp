@@ -2,7 +2,6 @@
 
 #include <QGuiApplication>
 #include <QScreen>
-#include <QDesktopWidget>
 #include <QRect>
 #include <QApplication>
 #include <QDebug>
@@ -81,7 +80,7 @@ float UiScaling::getNativDPI(){
 #else
     static qreal dpi(QGuiApplication::primaryScreen()->physicalDotsPerInch());
 #endif
-#ifndef Q_OS_ANDROID
+#ifdef defined (!Q_OS_ANDROID) || defined (!Q_OS_IOS)
     float pixelsPerMM = ((float)hResolution / hSize + (float)hResolution / hSize)/2;
     float dpi = pixelsPerMM * 25.4f;
     qInfo() << QString("UiScaling - Pixels pre mm: %1 Resolution: %2x%3 Screen size: %4x%5 dpi: %6 According to qt: %7")

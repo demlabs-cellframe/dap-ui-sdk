@@ -1,9 +1,12 @@
 #include <QtDebug>
-#include <QAndroidJniObject>
-#include <QAndroidIntent>
-#include <QtAndroid>
+
+#include <DapAndroidHelpers.h>
+
+
 
 #include "DapServiceNativeAndroid.h"
+#include <QtCore/private/qandroidextras_p.h>
+
 #include <QTimer>
 
 DapServiceNativeAndroid::DapServiceNativeAndroid()
@@ -21,23 +24,23 @@ void DapServiceNativeAndroid::restartService()
 
 void DapServiceNativeAndroid::stopService()
 {
-    QtAndroid::androidActivity().callMethod<void> ("stopVPNService", "()V");
+    dapQtAndroidServiceContext().callMethod<void> ("stopVPNService", "()V");
 }
 
 void DapServiceNativeAndroid::checkInstallation()
 {
-    if (!QtAndroid::androidService().isValid()) {
-        QAndroidIntent serviceIntent(QtAndroid::androidActivity().object(),
+    if (!dapQtAndroidServiceContext().isValid()) {
+        QAndroidIntent serviceIntent(dapQtAndroidServiceContext().object(),
                                      "com/" DAP_BRAND "/" DAP_BRAND "Service");
 
         QString method_name = "startService";
         
-        if (QtAndroid::androidSdkVersion() < 26)
+        if (dapQtAndroidSdkVersion() < 26)
         {
             method_name = "startService";
         }
 
-        QtAndroid::androidActivity().callObjectMethod(
+        dapQtAndroidServiceContext().callObjectMethod(
                     method_name.toStdString().c_str(),
                     "(Landroid/content/Intent;)Landroid/content/ComponentName;",
                     serviceIntent.handle().object<jobject>());

@@ -93,10 +93,10 @@ signals:
    *******************************************/
   /// @{
 public slots:
-  void slotSetup();
+//  void slotSetup();
+  void slotReceivedPing (const QString &a_address, quint16 a_port, quint16 a_ping);
 
 protected slots:
-  void _slotReceivedPing (const QString &a_address, quint16 a_port, quint16 a_ping);
   void _slotUpdatePingsTimeout();
   /// @}
 };

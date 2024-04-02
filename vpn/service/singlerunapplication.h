@@ -5,6 +5,25 @@
 #include <QSharedMemory>
 #include <QSystemSemaphore>
 
+#if !QT_CONFIG(sharedmemory)
+//  for android code build. 
+//  Should not be used anyway, and will rise a compiller error in this case.
+
+class QSharedMemoryStub
+{
+    public:
+        QSharedMemoryStub(const QString &key){};
+        bool attach(){};
+        void detach(){};
+        bool create(int){};
+        bool isAttached(){};
+};
+
+using QSharedMemory = QSharedMemoryStub;
+
+
+#endif 
+
 class SingleRunApplication
 {
 public:

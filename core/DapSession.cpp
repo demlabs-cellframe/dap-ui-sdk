@@ -35,6 +35,7 @@
 #include <QJsonObject>
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
+#include "dap_client_http.h"
 
 const QString DapSession::URL_ENCRYPT               ("enc_init");
 const QString DapSession::URL_STREAM                ("stream");
@@ -484,7 +485,7 @@ void DapSession::onAuthorize()
                     }
                 } else if (m_xmlStreamReader.name() == "ts_active_till"){
                     DapDataLocal::instance()->serialKeyData()->setLicenseTermTill(m_xmlStreamReader.readElementText());
-                    qDebug() << "ts_active_till: " << DapDataLocal::instance()->serialKeyData()->licenseTermTill().toTime_t();
+                    qDebug() << "ts_active_till: " << DapDataLocal::instance()->serialKeyData()->licenseTermTill().toSecsSinceEpoch();
                 } else {
                     m_userInform[m_xmlStreamReader.name().toString()] = m_xmlStreamReader.readElementText();
                     qDebug() << "Add user information: " << m_xmlStreamReader.name().toString()

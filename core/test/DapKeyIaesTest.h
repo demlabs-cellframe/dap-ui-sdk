@@ -6,6 +6,7 @@
 #include <QTest>
 
 #include "DapKeyAes.h"
+#include <QRandomGenerator>
 
 class DapKeyIaesTest : public QObject {
     Q_OBJECT
@@ -18,7 +19,7 @@ private:
        QString randomString;
        for(int i = 0; i<randomStringLength; ++i)
        {
-           int index = qrand() % possibleCharacters.length();
+           int index = QRandomGenerator::global()->generate() % possibleCharacters.length();
            QChar nextChar = possibleCharacters.at(index);
            randomString.append(nextChar);
        }
@@ -27,7 +28,7 @@ private:
 private slots:
     void initTestCase() {
         QDateTime currentDateTime = QDateTime::currentDateTime();
-        qsrand(QDateTime::currentDateTime().toTime_t());
+        qsrand(QDateTime::currentDateTime().toSecsSinceEpoch());
     }
 
     void encodeDecode() {
@@ -39,7 +40,7 @@ private slots:
 
         QByteArray encode, decode;
         for(int i = 0; i < 10; i++ ) {
-            QByteArray source = getRandomBytes(1 + (qrand() % 255));
+            QByteArray source = getRandomBytes(1 + (QRandomGenerator::global()->generate() % 255));
             dka.encode(source, encode);
             dka.decode(encode, decode);
             QVERIFY(QString(source) == QString(decode));

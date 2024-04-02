@@ -71,7 +71,5 @@ public:
   /// @}
 };
 
-Q_DECLARE_METATYPE (DapImage)
-
 /*-----------------------------------------*/
 #endif // DAPIMAGE_H

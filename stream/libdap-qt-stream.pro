@@ -1,5 +1,5 @@
 QT += network
-CONFIG += c++11 create_prl static
+CONFIG += c++17 create_prl static
 TARGET = libdap-qt-stream
 TEMPLATE = lib
 
