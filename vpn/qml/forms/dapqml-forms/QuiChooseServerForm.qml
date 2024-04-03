@@ -2,6 +2,8 @@
 
 import QtQuick 2.1
 import QtQuick.Controls 2.12
+import QtGraphicalEffects 1.0
+import com.DapQmlWidgets 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -32,6 +34,23 @@ Item {
     /// Used to connect interface via Manager
     property string formName: "ChooseServer"
 
+    property QtObject internal: QtObject {
+        property bool spinner: true
+
+        onSpinnerChanged: {
+            if (spinner)
+                spinnerWatchdogTimer.start();
+        }
+    }
+
+    Timer {
+        id: spinnerWatchdogTimer
+        interval: 5000
+        running: true
+        repeat: false
+        onTriggered: root.internal.spinner = false
+    }
+
     /// @}
     /****************************************//**
      * @name SIGNALS
@@ -48,17 +67,12 @@ Item {
      ********************************************/
     /// @{
 
-    /// @}
-    /****************************************//**
-     * Title
-     ********************************************/
-
-    DapQmlDialogTitle {
-        id: title
-        text: qsTr("Choose server") + lang.notifier
-        qss: "dialog-title"
+    function onListLoaded() {
+        spinnerWatchdogTimer.stop();
+        root.internal.spinner = false;
     }
 
+    /// @}
     /****************************************//**
      * Resizers
      ********************************************/
@@ -76,105 +90,109 @@ Item {
     }
 
     /****************************************//**
-     * Popup
+     * Content
      ********************************************/
 
-    Rectangle {
-        id: itemPopup
-        x: parent.width - width
-        y: 0 - height
-        z: 200
-        width: popupLabel.contentWidth * 1.25
-        height: popupLabel.contentHeight * 1.5
-        visible: false
-        color: "#e0e0e0"
-        border.color: "#404040"
+    Item {
+        id: content
+        anchors.fill: parent
+        visible: !root.internal.spinner
 
-        function show(a_x, a_y, a_ping) {
-            //console.log(`popup show: ${a_x},${a_y},${a_ping}`);
-            x   = a_x - width;
-            y   = a_y - height;
-            popupLabel.setPing (a_ping);
-            visible = true;
-            hideTimer.restart();
+        /****************************************//**
+         * Title
+         ********************************************/
+
+        DapQmlDialogTitle {
+            id: title
+            text: qsTr("Choose server") + lang.notifier
+            qss: "dialog-title"
         }
 
-        function hide() {
-            //console.log(`popup hide`);
-            visible = false;
-        }
+        /****************************************//**
+         * Popup
+         ********************************************/
 
-        Timer {
-            id: hideTimer
-            interval: 5000
-            repeat: false
-            running: false
-            onTriggered: itemPopup.hide()
-        }
+        Rectangle {
+            id: itemPopup
+            x: parent.width - width
+            y: 0 - height
+            z: 200
+            width: popupLabel.contentWidth * 1.25
+            height: popupLabel.contentHeight * 1.5
+            visible: false
+            color: "#e0e0e0"
+            border.color: "#404040"
 
-        Text {
-            id: popupLabel
-            anchors.fill: parent
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            color: "#404040"
-
-//            property int ping: model.ping + csListView.model.hookInt
-
-            function setPing(a_ping) {
-                text    = (a_ping > -1)
-                          ? (`ping ${a_ping} ms`)
-                          : ("unavailable");
+            function show(a_x, a_y, a_ping) {
+                //console.log(`popup show: ${a_x},${a_y},${a_ping}`);
+                x   = a_x - width;
+                y   = a_y - height;
+                popupLabel.setPing (a_ping);
+                visible = true;
+                hideTimer.restart();
             }
 
-            text: "unavailable"
+            function hide() {
+                //console.log(`popup hide`);
+                visible = false;
+            }
+
+            Timer {
+                id: hideTimer
+                interval: 5000
+                repeat: false
+                running: false
+                onTriggered: itemPopup.hide()
+            }
+
+            Text {
+                id: popupLabel
+                anchors.fill: parent
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                color: "#404040"
+
+    //            property int ping: model.ping + csListView.model.hookInt
+
+                function setPing(a_ping) {
+                    text    = (a_ping > -1)
+                              ? (`ping ${a_ping} ms`)
+                              : ("unavailable");
+                }
+
+                text: "unavailable"
+            }
         }
-    }
 
-    /****************************************//**
-     * Listview
-     ********************************************/
+        /****************************************//**
+         * Listview
+         ********************************************/
 
-    ListView {
-        id: csListView
-        objectName: "chooseServerListView"
+        ListView {
+            id: csListView
+            objectName: "chooseServerListView"
 
-        x: (root.width - width) / 2
-        y: title.y + title.height * 2
-        width: resizer.width
-        height: root.height - y
-        clip: true
-
-        delegate: Item {
-            id: csListViewItem
+            x: (root.width - width) / 2
+            y: title.y + title.height * 2
             width: resizer.width
-            height: resizer.height + spacer.height
-            property bool checked: false
+            height: root.height - y
+            clip: true
 
-//            property string logMessage
-//            property int logMessageCounter: 0
-
-//            function collectLogMessage(a_msg) {
-//                logMessage += a_msg + " : ";
-//                logMessageCounter++;
-//                if (logMessageCounter >= 4)
-//                    console.log(logMessage + model.name);
-//            }
-
-            //onHeightChanged: csListViewItem.collectLogMessage (`item ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
-
-            DapQmlRadioButton {
+            delegate: DapQmlRadioButton {
                 property int quality: model.connectionQuality + csListView.model.hookInt
 
                 text: model.name + csListView.model.hook
-                checked: csListView.model.current === model.index //model.checked + csListView.model.hookInt
                 separator: true
                 iconSize: resizer.height
+                y: spacer.height / 2
                 width: resizer.width
                 height: resizer.height + spacer.height
-                y: spacer.height / 2
+                checked: csListView.model.current === model.index //model.checked + csListView.model.hookInt
+                opacity: 0
 
-                //onHeightChanged: csListViewItem.collectLogMessage (`radio ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
+                Behavior on opacity { PropertyAnimation { duration: 250 } }
+
+                Component.onCompleted: opacity = 1
 
                 DapQmlLabel {
                     id: itemPing
@@ -185,8 +203,6 @@ Item {
                     height: resizer.height * 0.5
                     qss: `ic_conn-${quality}` + csListView.model.hook
 
-                    //onHeightChanged: csListViewItem.collectLogMessage (`icn ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
-
                     MouseArea {
                         anchors.fill: parent
                         z: 10
@@ -196,12 +212,41 @@ Item {
                             itemPopup.show(point.x, point.y, model.ping);
                         }
                         onExited:  itemPopup.hide()
-                        //onHeightChanged: csListViewItem.collectLogMessage (`mousearea ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
                     }
                 }
 
                 onClicked: root.sigSelect (model.index, model.name)
             }
+        }
+    }
+
+    /****************************************//**
+     * Spinner
+     ********************************************/
+
+    /* spinner blur effect */
+    FastBlur {
+        anchors.fill: content
+        source: content
+        radius: 40
+        cached: true
+        z: 50
+        visible: root.internal.spinner
+    }
+
+    /* spinner */
+    DapQmlRectangle {
+        anchors.centerIn: parent
+        z: 60
+        qss: "chooseserver-spinner-bg"
+        visible: root.internal.spinner
+
+        DapQmlArcAnimation {
+            anchors.fill: parent
+            anchors.margins: parent.width * 0.275
+            strokeWidth: 7
+            z: 200
+            qss: "c-brand"
         }
     }
 }
