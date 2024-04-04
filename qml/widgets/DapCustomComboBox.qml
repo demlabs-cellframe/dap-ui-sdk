@@ -97,7 +97,7 @@ Item
 
         Rectangle
         {
-            visible: popupVisible && changingRound
+            visible: popupVisible && changingRound && !isHighPopup
             height: parent.radius
             anchors
             {
@@ -213,6 +213,7 @@ Item
 
         padding: 0
 
+
         onVisibleChanged:
         {
 //            print("DapCustomComboBox", "onVisibleChanged",
@@ -227,14 +228,27 @@ Item
         Rectangle
         {
             id: popupBackground
-
+            radius: background.radius
             width: mainItem.width
-            height: popupListView.height + border.width*2
+            height: !isHighPopup ? popupListView.height + border.width * 2 :  popupListView.height + border.width * 2 + delegateHeight + radius
 
             color: isSingleColor ? background.color : currTheme.mainBackground
 
             border.width: popupBorderWidth
             border.color: currTheme.mainBackground
+
+            Rectangle
+            {
+                visible: popupVisible && changingRound
+                height: parent.radius
+                anchors
+                {
+                    right:parent.right
+                    left:parent.left
+                    bottom:parent.top
+                }
+                color: parent.color
+            }
 
             ListView
             {
@@ -338,11 +352,73 @@ Item
                     }
                 }
             }
+            
+            Rectangle
+            {
+                id: fakeField
+                border.width: 0
+//                anchors.fill: parent
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: popupListView.bottom
+                anchors.topMargin: background.radius
+                visible: isHighPopup
+                height: isHighPopup ? mainItem.height - background.radius * 2 : 0
+                color: popupVisible ?
+                        backgroundColorNormal :
+                        backgroundColorShow
+
+                RowLayout
+                {
+                    anchors.fill: parent
+                    anchors.leftMargin: leftMarginDisplayText
+                    anchors.rightMargin: rightMarginIndicator
+
+                    Text
+                    {
+                        id: fakeMainTextItem
+                        Layout.fillWidth: true
+
+                        text: mainItem.displayText
+                        font: mainItem.font
+                        color: popupVisible ?
+                                displayTextPopupColor : displayTextNormalColor
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
+                    }
+
+                    Image
+                    {
+                        id: fakeIndicator
+                        source: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrowDown.svg"
+                        rotation: popupVisible ? 180 : 0
+                        mipmap: true
+
+                        Behavior on rotation
+                        {
+                            NumberAnimation
+                            {
+                                duration: 200
+                            }
+                        }
+                    }
+                }
+
+                MouseArea
+                {
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onClicked:
+                    {
+                        popup.visible = false
+                    }
+                }
+            }
         }
 
         DropShadow
         {
-            visible: popupVisible && !isHighPopup
+            visible: popupVisible
             anchors.fill: popupBackground
             horizontalOffset: currTheme.hOffset
             verticalOffset: currTheme.vOffset
@@ -355,7 +431,7 @@ Item
 
         InnerShadow
         {
-            visible: popupVisible && isInnerShadow && !isHighPopup
+            visible: popupVisible && isInnerShadow
             anchors.fill: popupBackground
             horizontalOffset: 1
             verticalOffset: 0
