@@ -74,6 +74,130 @@ Item {
 
     /// @}
     /****************************************//**
+     * @name COMPONENTS
+     ********************************************/
+    /// @{
+
+    Component {
+        id: compRadio
+
+//        property int index
+//        property int quality
+//        property int ping
+//        property string name
+
+        DapQmlRadioButton {
+            id: itemRoot
+
+            property int quality: parent.quality + csListView.model.hookInt
+
+            text: parent.name + csListView.model.hook
+            separator: true
+            iconSize: resizer.height
+            y: spacer.height / 2
+            width: resizer.width
+            height: resizer.height + spacer.height
+            checked: csListView.model.current === parent.index
+            opacity: 0
+
+            Behavior on opacity { PropertyAnimation { duration: 250 } }
+
+            Component.onCompleted: opacity = 1
+
+            DapQmlLabel {
+                id: itemPing
+                x: parent.width - (width * 1.35)
+                y: (parent.height - height) / 2
+                width: resizer.height * 0.5
+                height: resizer.height * 0.5
+                qss: `ic_conn-${quality}` + csListView.model.hook
+
+                property int quality: (itemRoot.quality === 0) ? (0) : (6 - itemRoot.quality)
+
+                MouseArea {
+                    anchors.fill: parent
+                    z: 10
+                    hoverEnabled: true
+                    onEntered: {
+                        var point   = mapToItem(null, 0, 0);
+                        itemPopup.show(point.x, point.y, itemRoot.parent.ping);
+                    }
+                    onExited:  itemPopup.hide()
+                }
+            }
+
+            onClicked: root.sigSelect (parent.index, parent.name)
+        }
+    }
+
+    Component {
+        id: compUnknownYet
+
+        Item {
+            y: spacer.height / 2
+            width: resizer.width
+            height: resizer.height + spacer.height
+
+//            DapQmlArcAnimation {
+//                x: parent.height * 0.125
+//                y: (parent.height - height) / 2
+//                width: parent.height * 0.75
+//                height: parent.height * 0.75
+//                strokeWidth: 6
+//                qss: "c-brand"
+//            }
+
+//            DapQmlSeparator {
+//                x: parent.height * 1.125
+//                y: (parent.height - height) / 2
+//                width: parent.width - parent.height * 1.25
+//            }
+
+            DapQmlRectangle {
+                id: containerBox
+                anchors.centerIn: parent
+                width: parent.width * 0.75
+                height: parent.height * 0.125
+                color: "#aaa"
+                radius: height
+                clip: true
+
+                DapQmlRectangle {
+                    id: childBox
+                    width: parent.width * 0.325
+                    height: parent. height
+                    qss: "c-brand"
+                    radius: height
+
+                    property real leftSide: 0 - childBox.width / 2
+                    property real rightSide: containerBox.width - childBox.width / 2
+                    readonly property real animDuration: 750
+
+                    Behavior on x { PropertyAnimation { duration: childBox.animDuration; easing.type: Easing.InOutQuad } }
+
+                    onXChanged: {
+                        if (x == leftSide)
+                            x = rightSide;
+                        else
+                            if (x == rightSide)
+                                x = leftSide
+                    }
+
+                    Component.onCompleted: {
+                        x = rightSide;
+                    }
+                }
+            }
+
+            DapQmlSeparator {
+                y: parent.height - height
+                width: parent.width
+            }
+        }
+    }
+
+    /// @}
+    /****************************************//**
      * Resizers
      ********************************************/
 
@@ -178,44 +302,21 @@ Item {
             height: root.height - y
             clip: true
 
-            delegate: DapQmlRadioButton {
-                property int quality: model.connectionQuality + csListView.model.hookInt
-
-                text: model.name + csListView.model.hook
-                separator: true
-                iconSize: resizer.height
-                y: spacer.height / 2
+            delegate: Item {
+                id: csListViewItem
                 width: resizer.width
                 height: resizer.height + spacer.height
-                checked: csListView.model.current === model.index //model.checked + csListView.model.hookInt
-                opacity: 0
 
-                Behavior on opacity { PropertyAnimation { duration: 250 } }
-
-                Component.onCompleted: opacity = 1
-
-                DapQmlLabel {
-                    id: itemPing
-                    property int quality: (parent.quality === 0) ? (0) : (6 - parent.quality)
-                    x: parent.width - (width * 1.35)
-                    y: (parent.height - height) / 2
-                    width: resizer.height * 0.5
-                    height: resizer.height * 0.5
-                    qss: `ic_conn-${quality}` + csListView.model.hook
-
-                    MouseArea {
-                        anchors.fill: parent
-                        z: 10
-                        hoverEnabled: true
-                        onEntered: {
-                            var point   = mapToItem(null, 0, 0);
-                            itemPopup.show(point.x, point.y, model.ping);
-                        }
-                        onExited:  itemPopup.hide()
-                    }
+                Loader {
+                    anchors.fill: parent
+                    sourceComponent: model.connectionQuality === -1 + csListView.model.hookInt
+                                     ? compUnknownYet
+                                     : compRadio
+                    property int index: model.index
+                    property int quality: model.connectionQuality + csListView.model.hookInt
+                    property int ping: model.ping + csListView.model.hookInt
+                    property string name: model.name
                 }
-
-                onClicked: root.sigSelect (model.index, model.name)
             }
         }
     }
