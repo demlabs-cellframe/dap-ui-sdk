@@ -1,6 +1,8 @@
 /* INCLUDES */
 
 import QtQuick 2.15
+//import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
@@ -10,38 +12,28 @@ import "qrc:/dapqml-widgets"
  * @author Mikhail Shilenko
  *******************************************/
 
-DapQmlRectangle {
+DapQmlDummy {
     id: root
-    qss: "update-notification-rect"
-//    y: !isDashobard
-//       ? TickerUpdateCtl.loginUpdNotPos
-//       : TickerUpdateCtl.dashUpdNotPos
-//    y: dashboardStatusLabelBottom === 0
-//       ? loginPos
-//       : dashboardPos
-    z: 30
-    radius: 13
-    visible: opacity > 0
-    opacity: 0
+    x: (parent.width - width) / 2
+    width: contentSizer.width * 1.25
+    height: contentSizer.height * 1.25
 
     /****************************************//**
-     * @name VARS
+     * @name VARIABLES
      ********************************************/
     /// @{
 
+    property string color: contentSizer.color
     property bool isDashobard: false
     property string updateMessage // TickerUpdateCtl.updateMessage
-    //property real titlePos: statusLabel.y + statusLabel.height
-
     property bool showingTicker: TickerUpdateCtl.tickerVisible
     property bool showingUpdate: TickerUpdateCtl.updateVisible
-//    property real loginPos: !TickerUpdateCtl.updateVisible
-//                            ? (!TickerUpdateCtl.tickerVisible ? 0 : updNotPosTickerOff.y)
-//                            : (!TickerUpdateCtl.tickerVisible ? updNotPosTickerOff.y : updNotPosTickerOn.y)
-//    property real dashboardPos: !TickerUpdateCtl.updateVisible
-//                                ? (dashboardStatusLabelBottom + updNotPosTickerOn.y)
-//                                : (dashboardStatusLabelBottom + updNotPosTickerOff.y)
-//    property real dashboardStatusLabelBottom // (statusLabel.y + statusLabel.height)
+
+    /// @}
+    /****************************************//**
+     * @name STATES
+     ********************************************/
+    /// @{
 
     state: "onLogin"
     states: [
@@ -67,16 +59,12 @@ DapQmlRectangle {
     Behavior on opacity { PropertyAnimation { duration: 100 }}
 
     onShowingUpdateChanged: {
+        console.log(`update showing: ${showingUpdate}`);
         if (showingUpdate)
             showUpdateNotification();
         else
             hideUpdateNotification();
-//        _updatePos();
     }
-//    onShowingTickerChanged: _updatePos()
-//    onLoginPosChanged: _updatePos()
-//    onDashboardPosChanged: _updatePos()
-//    onDashboardStatusLabelBottomChanged: _updatePos()
 
     onIsDashobardChanged: {
         state = !isDashobard ? "onLogin" : "onDashboard"
@@ -85,9 +73,11 @@ DapQmlRectangle {
 
     //onYChanged: console.log (`updnot[${isDashobard}] y: ${y}|${TickerUpdateCtl.loginUpdNotPos}|${TickerUpdateCtl.dashUpdNotPos}`)
 
-    onOpacityChanged:
-        if (opacity < 0.1)
-            TickerUpdateCtl.updateVisible = false
+//    onOpacityChanged:
+//        if (opacity < 0.1)
+//            TickerUpdateCtl.updateVisible = false
+
+    Component.onCompleted: hideUpdateNotification()
 
 //    Component.onCompleted: StyleDebugTree.describe (
 //       "upd-not" + isDashobard,
@@ -101,19 +91,14 @@ DapQmlRectangle {
     /// @{
 
     function showUpdateNotification() {
+        TickerUpdateCtl.updateVisible   = true;
         opacity    = 1;
     }
 
     function hideUpdateNotification() {
+        TickerUpdateCtl.updateVisible   = false;
         opacity    = 0;
     }
-
-//    function _updatePos() {
-//        y = dashboardStatusLabelBottom === 0
-//            ? loginPos
-//            : dashboardPos
-////        root.sigVisibilityUpdated() // statusContainer._updatePos();
-//    }
 
     /// @}
     /****************************************//**
@@ -121,6 +106,7 @@ DapQmlRectangle {
      ********************************************/
     /// @{
 
+    DapQmlDummy { id: contentSizer; qss: "update-notification-rect"; property string color }
     DapQmlDummy { id: updNotPosTickerOn;  qss: "update-notification-pos-ticker-on"  }
     DapQmlDummy { id: updNotPosTickerOff; qss: "update-notification-pos-ticker-off" }
 
@@ -129,42 +115,74 @@ DapQmlRectangle {
      * Content
      ********************************************/
 
-    /* text */
-    DapQmlLabel {
-        id: updateNotificationLabel
-        qss: "update-notification-label"
-        text: updateMessage.length === 0 ? "New version available" : updateMessage
-        height: contentHeight
-        width: contentWidth
-        horizontalAlign: Text.AlignHCenter
+    DapQmlRectangle {
+        id: contentRoot
+        color: root.color
+        radius: height / 6.5
+        z: 20
+        enabled: root.opacity !== 0
+
+        anchors.centerIn: parent
+        width: contentSizer.width
+        height: contentSizer.height
+
+        /* text */
+        DapQmlLabel {
+            id: updateNotificationLabel
+            x: (parent.width - width) / 2
+            qss: "update-notification-label"
+            text: updateMessage.length === 0 ? "New version available" : updateMessage
+            height: contentHeight
+            width: contentWidth
+            horizontalAlign: Text.AlignHCenter
+        }
+
+        /* close button */
+        DapQmlPushButton {
+            id: updateNotificationCloseButton
+            x: parent.width - width - (y * 1.4)
+            z: 14
+
+            qss: "update-notification-close-button"
+
+            onClicked: root.hideUpdateNotification()
+        }
+
+        /* update button */
+        DapQmlLabel {
+            id: updateNotificationButton
+            x: (parent.width - width) / 2
+            qss: "update-notification-button"
+            text: "Update"
+            height: contentHeight
+            width: contentWidth
+            horizontalAlign: Text.AlignHCenter
+
+            MouseArea {
+                anchors.fill: updateNotificationButton
+                z : 3
+                cursorShape: Qt.PointingHandCursor
+                onClicked: root.sigStartUpdate()
+            }
+        }
     }
 
-    /* close button */
-    DapQmlPushButton {
-        id: updateNotificationCloseButton
-        x: parent.width - width - (y * 1.4)
-        z: 14
+    /****************************************//**
+     * Content Shadow
+     ********************************************/
 
-        qss: "update-notification-close-button"
+    DropShadow {
+        anchors.fill: contentRoot
+        z: 10
+        radius: 18//contentRoot.radius
+        samples: 17
+        color: `#30${contentShadowColor.color.substring(1)}`
+        source: contentRoot
 
-        onClicked: root.hideUpdateNotification()
-    }
-
-    /* update button */
-    DapQmlLabel {
-        id: updateNotificationButton
-        qss: "update-notification-button"
-        text: "Update"
-        height: contentHeight
-        width: contentWidth
-        horizontalAlign: Text.AlignHCenter
-
-        MouseArea {
-            anchors.fill: updateNotificationButton
-            z : 3
-            enabled: root.opacity !== 0
-            cursorShape: Qt.PointingHandCursor
-            onClicked: root.sigStartUpdate()
+        DapQmlDummy {
+            id: contentShadowColor
+            property string color
+            qss: "notification-shadow"
         }
     }
 }

@@ -153,92 +153,110 @@ void DapCmdNode::sendFeeData (const QJsonObject &a_data)
 void DapCmdNode::handle(const QJsonObject* params)
 {
     DEBUGINFO << __PRETTY_FUNCTION__ << *params;
-    if (params->value("start_node_detection").isBool() && params->value("start_node_detection").toBool())
+
+    if (params->contains("start_node_detection") && params->value("start_node_detection").toBool()) {
+        qDebug() << "Emitting sigStartNodeDetection";
         emit sigStartNodeDetection();
-    if (params->value("nocdb_mode_request").isBool())
+    }
+
+    if (params->contains("nocdb_mode_request") && params->value("nocdb_mode_request").toBool()) {
+        qDebug() << "Emitting sendNoCdbMode";
         sendNoCdbMode();
-    // data wallet request
-    if (params->value("data_wallet_request").isBool() && params->value("data_wallet_request").toBool())
+    }
+
+    // Data wallet request
+    if (params->contains("data_wallet_request") && params->value("data_wallet_request").toBool()) {
+        qDebug() << "Emitting dataWalletRequest";
         emit dataWalletRequest();
-    // stop checking the operation of the node
-    if (params->value("start_node_detection").isBool() && !params->value("start_node_detection").toBool())
+    }
+
+    // Stop checking the operation of the node
+    if (params->contains("start_node_detection") && !params->value("start_node_detection").toBool()) {
+        qDebug() << "Emitting stopNodeDetection";
         emit stopNodeDetection();
-    // creating a conditional transaction cmd
-    if (params->value("cond_tx_create").isObject())
+    }
+
+    // Creating a conditional transaction
+    if (params->contains("cond_tx_create"))
     {
         QJsonObject tx = params->value("cond_tx_create").toObject();
-        QString walletName  = tx["wallet_name"].toString();
-        QString networkName = tx["network_name"].toString();
-        QString tokenName   = tx["token_name"].toString();
-//            QString certName    = tx["cert_name"].toString();
-        QString value         = tx["value"].toString();
-        QString unit          = tx["unit"].toString();
+        QString walletName  = tx.value("wallet_name").toString();
+        QString networkName = tx.value("network_name").toString();
+        QString tokenName   = tx.value("token_name").toString();
+        QString value       = tx.value("value").toString();
+        QString unit        = tx.value("unit").toString();
 
-        qDebug() << "cond_tx_create - " << "networkName: " << networkName << "walletName: " << walletName << "tokenName: " << tokenName << "unit: " << unit << "value: " << value;
+        qDebug() << "cond_tx_create - " << "networkName: " << networkName << " walletName: " << walletName << " tokenName: " << tokenName << " unit: " << unit << " value: " << value;
+
+        // Checking the integrity of transaction creation parameters
         if (networkName.isEmpty() || walletName.isEmpty() || tokenName.isEmpty() || value.isEmpty() || unit.isEmpty()){
-            qDebug() << "Сorrupted transaction creation parameters";
-            sendError(732, "Сorrupted transaction creation parameters");
+            qDebug() << "Corrupted transaction creation parameters";
+            sendError(732, "Corrupted transaction creation parameters");
             return;
         }
 
+        qDebug() << "Emitting condTxCreateRequest";
         emit condTxCreateRequest(walletName, networkName, tokenName, value, unit);
     }
-    // order list request
-    if (params->value("search_orders").isObject())
+
+    // Order list request
+    if (params->contains("search_orders"))
     {
         QJsonObject so = params->value("search_orders").toObject();
-        QString networkName = so["network_name"].toString();
-        QString tokenName   = so["token_name"].toString();
-        QString unit        = so["unit"].toString();
-        QString maxPrice    = so["max_price"].toString();
-        QString minPrice    = so["min_price"].toString();
+        QString networkName = so.value("network_name").toString();
+        QString tokenName   = so.value("token_name").toString();
+        QString unit        = so.value("unit").toString();
+        QString maxPrice    = so.value("max_price").toString();
+        QString minPrice    = so.value("min_price").toString();
         qDebug() << "search_orders command" << networkName << tokenName << unit << maxPrice << minPrice << so;
+
+        qDebug() << "Emitting orderListRequest";
         emit orderListRequest(networkName, tokenName, minPrice, maxPrice, unit);
     }
-    if (params->value("node_detected_check").isBool() && params->value("node_detected_check").toBool())
+
+    // Node detection check
+    if (params->contains("node_detected_check") && params->value("node_detected_check").toBool()) {
+        qDebug() << "Emitting sendNodeDetected";
         sendNodeDetected();
-    if (params->value("check_signed").isBool() && params->value("check_signed").toBool())
+    }
+
+    // Signature check
+    if (params->contains("check_signed") && params->value("check_signed").toBool()) {
+        qDebug() << "Emitting checkSigned";
         emit checkSigned();
-    if (params->value("start_connect_by_order").isObject())
+    }
+
+    // Start connection by order
+    if (params->contains("start_connect_by_order"))
     {
         QJsonObject oi = params->value("start_connect_by_order").toObject();
-        //                == Order 0xD9A5C15D30A42615398AB7D3080FDEBCCD74FA3BB2E191F76EAC994326B45AA9 ==
-        //                  version:          3
-        //                  direction:        SERV_DIR_SELL
-        //              V   srv_uid:          0x0000000000000001
-        //                  price:            0.000000000000000002 (2)
-        //                  price_unit:       DAY
-        //                  node_addr:        58C0::CA70::6D11::1DCA
-        //                  node_location:    Europe - Russia_2_1
-        //              V   tx_cond_hash:     0x0000000000000000000000000000000000000000000000000000000000000000
-        //                  ext:              0x52025275737369615F325F3100
-        //QString networkName  = oi["network_name"].toString();
-        //QString txCondHash   = oi["tx_cond_hash"].toString();
-        //QString token        = oi["token"].toString();
-        QString orderHash    = oi["hash"].toString();
-        QString srvUid       = oi["srvUid"].toString();
-        QString nodeAddress  = oi["nodeAddress"].toString();
+        QString orderHash    = oi.value("hash").toString();
+        QString srvUid       = oi.value("srvUid").toString();
+        QString nodeAddress  = oi.value("nodeAddress").toString();
         QString network      = params->value ("network").toString();
-//        uint16_t port        = 80;
-//        if (!oi["port"].isNull())
-//            port             = oi["port"].toInt();
         qDebug() << "start_connect_by_order" << oi;
         m_nocdbMode = true;
+        qDebug() << "Emitting connectByOrder";
         emit connectByOrder(srvUid, nodeAddress, orderHash, network);
     }
-    if (params->value("get_ip_order_list").isObject())
+
+    // Get IP order list
+    if (params->contains("get_ip_order_list"))
     {
         QJsonObject oi        = params->value("get_ip_order_list").toObject();
-        QString srvUid        = oi["srv_uid"].toString();
-        QJsonArray orderList  = oi["node_adress_list"].toArray();
+        QString srvUid        = oi.value("srv_uid").toString();
+        QJsonArray orderList  = oi.value("node_adress_list").toArray();
 
         qDebug() << "get_ip_order_list - " << orderList;
 
+        qDebug() << "Emitting getIpOrder";
         emit getIpOrder(srvUid, orderList);
     }
-    // network fee request
-    if (params->value ("get_fee_data").isString())
+
+    // Request network fee data
+    if (params->contains("get_fee_data"))
     {
-      emit getFeeData (params->value ("get_fee_data").toString());
+        qDebug() << "Emitting getFeeData";
+        emit getFeeData(params->value("get_fee_data").toString());
     }
 }

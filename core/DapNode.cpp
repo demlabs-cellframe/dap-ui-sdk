@@ -63,34 +63,29 @@ void DapNode::stopCheckingNodeRequest()
 
 void DapNode::startCheckingNodeRequest()
 {
-    DEBUGINFO << __PRETTY_FUNCTION__ ;
+    DEBUGINFO << __PRETTY_FUNCTION__;
 
-    if (m_isCDBLogined){
-        qDebug() << __PRETTY_FUNCTION__  << " alredy using cdb mode";
+    if (m_isCDBLogined) {
+        qDebug() << __PRETTY_FUNCTION__ << " already using CDB mode";
         return;
     }
 
-    if (m_stm->initialState.active())
-    {
+    if (m_stm->initialState.active()) {
         DEBUGINFO << __PRETTY_FUNCTION__ << " uiStartNodeDetection()";
         emit uiStartNodeDetection();
-    }
-    else if (m_stm->nodeConnection.active()) {
-        DEBUGINFO << __PRETTY_FUNCTION__ << " emit sigRepeatNodeDetecting after restart gui";
+    } else if (m_stm->nodeConnection.active()) {
+        DEBUGINFO << __PRETTY_FUNCTION__ << " emit sigRepeatNodeDetecting after GUI restart";
         emit sigNodeDetected();
         emit sigRepeatNodeConnecting();
         return;
-    }
-    else {
-        if (m_stm->ledgerTxHashRequest.active() || m_stm->ledgerTxHashEmpty.active())
-        {
-            DEBUGINFO << __PRETTY_FUNCTION__  << " sigMempoolContainHash()";
+    } else {
+        if (m_stm->ledgerTxHashRequest.active() || m_stm->ledgerTxHashEmpty.active()) {
+            DEBUGINFO << __PRETTY_FUNCTION__ << " sigMempoolContainHash()";
             emit sigMempoolContainHash();
             return;
         }
-        if (nodeDetected)
-        {
-            DEBUGINFO << __PRETTY_FUNCTION__  << " sigNodeDetected()";
+        if (nodeDetected) {
+            DEBUGINFO << __PRETTY_FUNCTION__ << " sigNodeDetected()";
             emit sigNodeDetected();
             return;
         }
