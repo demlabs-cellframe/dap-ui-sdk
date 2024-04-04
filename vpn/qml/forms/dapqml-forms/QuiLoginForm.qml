@@ -51,6 +51,8 @@ Item {
 
         /// @brief login mode
         property int mode: QuiLoginForm.Mode.M_SERIAL
+
+        property bool cdbDetected: false
     }
 
     /// @brief NoCDB variables
@@ -124,6 +126,12 @@ Item {
 
     function setCellframeDetected(a_value) {
         noCdb.cellframeDetected = a_value;
+        if (internal.cdbDetected === false)
+        {
+            internal.mode = QuiLoginForm.Mode.M_WALLET;
+            loginTypeKelContainer.update();
+            root.sigModeNoCdbSelected();
+        }
     }
 
     function setTransactionProcessing(a_value) {
@@ -132,6 +140,10 @@ Item {
 
     function setWaitingForApproval(a_value) {
         noCdb.waitingForApproval = a_value;
+    }
+
+    function cdbDetected(a_value) {
+        internal.cdbDetected    = a_value;
     }
 
     function setTokenSet(a_value) {
@@ -538,6 +550,8 @@ Item {
                 Layout.preferredHeight: tabButtonSize.height
                 qss: "login-mode-serial"
                 checked:    internal.mode === QuiLoginForm.Mode.M_SERIAL
+                enabled: internal.cdbDetected
+                opacity: enabled ? 1.0 : 0.35
                 onClicked:  {
                     internal.mode = QuiLoginForm.Mode.M_SERIAL;
                     loginTypeKelContainer.update();
