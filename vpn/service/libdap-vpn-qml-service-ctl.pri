@@ -39,7 +39,7 @@ win32 {
         DEFINES += _WIN32_WINNT=0x0600
 }
 
-darwin {
+macos {
         SOURCES += $$PWD/DapServiceNativeDarwin.cpp
         HEADERS += $$PWD/DapServiceNativeDarwin.h
 }
@@ -47,6 +47,8 @@ darwin {
 ios{
     DEFINES += DAP_PLATFORM_MOBILE
     DEFINES += DAP_PLATFORM=\\\"mobile\\\"
+    SOURCES += $$PWD/DapServiceNativeIOS.mm
+    HEADERS += $$PWD/DapServiceNativeIOS.h
 }
 
 macos {

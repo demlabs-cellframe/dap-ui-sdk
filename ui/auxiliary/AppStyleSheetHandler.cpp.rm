@@ -4,6 +4,7 @@
 #include <QFileInfo>
 #include <QWidget>
 #include <cmath>
+#include <QRegularExpression>
 //#include "UiScaling.h"
 #include "math.h"
 
@@ -63,7 +64,7 @@ QString AppStyleSheetHandler::getWidgetStyleSheet(StyleSheatSearchPar a_searchPa
     }
 
     //If found return found capture 1 without spaces and new line symbols
-    return regExp.cap(1).remove(QRegExp("(\\s|\\n)"));
+    return regExp.cap(1).remove(QRegularExpression("(\\s|\\n)"));
 
 }
 

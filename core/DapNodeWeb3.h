@@ -34,7 +34,6 @@
 #include <DapCrypt.h>
 #include "DapDataLocal.h"
 
-#include "dap_client_http.h"
 #include "DapNetworkAccessManager.h"
 #include "DapNetworkReply.h"
 

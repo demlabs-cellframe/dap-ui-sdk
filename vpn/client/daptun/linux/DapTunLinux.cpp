@@ -16,6 +16,7 @@
 #include "DapTunWorkerUnix.h"
 #include "DapNetworkMonitor.h"
 #include "SigUnixHandler.h"
+#include <QRegExp>
 
 /**
  * @brief DapTunLinux::DapTunLinux
@@ -24,13 +25,21 @@ DapTunLinux::DapTunLinux()
 {
     if(nmcliVersion.size()==0){ // If not detected before - detect nmcli version
         QProcess cmdProcess;
-        // Thats command takes the last one piece of 'nmcli -v' output
-        //        cmdProcess.start("/bin/sh  'for i in `nmcli -v`; do a=$i; done; echo $a'");
-        cmdProcess.start("nmcli -v");
+        QRegExp regex("\\b\\d+\\.\\d+\\.\\d+\\b");
+
+        // cmdProcess.setProgram();
+        cmdProcess.startCommand("nmcli -v");
         cmdProcess.waitForFinished(-1);
-        QByteArray cmdOutput = cmdProcess.readAllStandardOutput();
-        nmcliVersion= QString::fromUtf8(cmdOutput).split(' ').takeLast();
-        nmcliVersion=nmcliVersion.replace("\n","");
+        QString cmdOutput(cmdProcess.readAllStandardOutput());
+
+        int pos = 0;
+
+        while ((pos = regex.indexIn(cmdOutput, pos)) != -1) {
+            nmcliVersion = regex.cap(0);
+            qDebug() << "nmcli version detected: " << nmcliVersion;
+            pos += regex.matchedLength();
+        }
+
         QStringList nmcliVersionNumbers= nmcliVersion.split('.');
         if(nmcliVersionNumbers.size() ==3) {
             qDebug()<< QString("nmcli version detected: %1.%2.%3")

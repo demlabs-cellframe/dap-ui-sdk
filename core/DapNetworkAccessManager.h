@@ -6,7 +6,6 @@
 #include <QDebug>
 #include <QByteArray>
 
-#include "dap_client_http.h"
 #include "DapNetworkReply.h"
 
 class DapNetworkAccessManager : public QObject

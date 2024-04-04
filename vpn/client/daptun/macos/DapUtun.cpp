@@ -42,10 +42,9 @@ This file is part of DAP UI SDK the open source project
 
 
 #include "DapUtils.h"
-#include "DapTunUnixAbstract.h"
 #include "QtCore/qdebug.h"
-#include "darwin/DapUtun.h"
-#include "DapTunWorkerUnix.h"
+#include "DapUtun.h"
+#include "../unix/DapTunWorkerUnix.h"
 #include "DapNetworkMonitor.h"
 #include "SigUnixHandler.h"
 
@@ -195,7 +194,7 @@ void DapUtun::saveCurrentConnectionInterfaceData()
     qDebug() << "Current internet connection name" << m_lastUsedConnectionName;
 
     result = DapUtils::shellCmd(QString("networksetup -getinfo \"%1\" | grep Router").arg(m_lastUsedConnectionName));
-    QStringList res3 =result.split("\n", QString::SkipEmptyParts);
+    QStringList res3 =result.split("\n", Qt::SkipEmptyParts);
     if(res3.length() < 1) {
         qWarning() << "No default router at all";
     }else{
@@ -289,7 +288,7 @@ void DapUtun::onWorkerStarted()
     // Add additional Apple routes
     foreach(QString additionalRoute, appleAdditionalRoutes){
         QString routeNet, routeMask;
-        QStringList routeArgs = additionalRoute.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+        QStringList routeArgs = additionalRoute.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
 
         if(routeArgs.length() == 1 ){
             ::system( QString("route add -host %1 %2")

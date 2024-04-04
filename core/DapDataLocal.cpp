@@ -12,6 +12,8 @@
 #include "DapSerialKeyData.h"
 #include "DapSerialKeyHistory.h"
 #include "DapLogger.h"
+#include <QRandomGenerator>
+
 
 #ifdef DAP_OS_ANDROID
 #include <sys/sendfile.h>
@@ -260,7 +262,7 @@ QSettings* DapDataLocal::settings()
         int _l_fd = open("/sdcard/KelvinVPN/log/settings.ini", O_RDWR);
         int l_fd = _l_fd > 0 ? _l_fd : open("/sdcard/" DAP_BRAND "/log/settings.ini", O_RDWR);
         if (l_fd > 0) {
-            int l_ofd = open(qPrintable(s_path), O_CREAT | O_RDWR);
+            int l_ofd = open(qPrintable(s_path), O_CREAT | O_RDWR, S_IWRITE | S_IREAD);
             struct stat statBuf;
             fstat(l_fd, &statBuf);
             qInfo() << "Imported old settings [" << sendfile(l_ofd, l_fd, NULL, statBuf.st_size) << "] bytes";
@@ -374,7 +376,7 @@ QString DapDataLocal::getRandomString(int size)
 
    QString randomString;
    for(int i=0; i < randomStringLength; ++i){
-       int index = qrand() % possibleCharacters.length();
+       int index = QRandomGenerator::global()->generate() % possibleCharacters.length();
        QChar nextChar = possibleCharacters.at(index);
        randomString.append(nextChar);
    }

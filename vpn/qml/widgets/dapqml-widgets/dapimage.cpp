@@ -1,6 +1,7 @@
 /* INCLUDES */
 #include "dapimage.h"
 
+#include <QMetaType>
 #include <cmath>
 
 /* DEFS */

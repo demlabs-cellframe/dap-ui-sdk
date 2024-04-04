@@ -7,6 +7,7 @@
 class DapUpdateOperationLogic : public QObject
 {
     Q_OBJECT
+#ifndef Q_OS_IOS
 public:
     DapUpdateOperationLogic();
     ~DapUpdateOperationLogic(){};
@@ -27,6 +28,7 @@ public:
 protected:
     bool m_downloadError;
     QString updateApp();
+#endif
 };
 
 #endif // DAPUPDATEOPERATIONLOGIC_H

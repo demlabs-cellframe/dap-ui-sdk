@@ -33,8 +33,8 @@ Item {
 
     property string scaledPixmap: ""
     property bool mipmap: true
-    property bool smooth: true
-    property bool antialiasing: false
+    //property bool smooth: true
+    //property bool antialiasing: false
 
     /// @}
     /****************************************//**
