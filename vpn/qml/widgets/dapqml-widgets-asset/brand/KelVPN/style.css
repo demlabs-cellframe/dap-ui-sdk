@@ -1552,6 +1552,11 @@
     radius: 16;
 }
 
+.chooseserver-loading-frame
+{
+    scaled-rect: scaled(nan,nan,358,32,false);
+}
+
 /****************************************************
  * Choose Language
  ***************************************************/

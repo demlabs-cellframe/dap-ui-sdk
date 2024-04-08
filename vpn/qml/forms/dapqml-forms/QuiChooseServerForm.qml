@@ -1,6 +1,6 @@
 /* INCLUDES */
 
-import QtQuick 2.1
+import QtQuick 2.15
 import QtQuick.Controls 2.12
 import QtGraphicalEffects 1.0
 import com.DapQmlWidgets 1.0
@@ -36,6 +36,34 @@ Item {
 
     property QtObject internal: QtObject {
         property bool spinner: true
+        property real loadingPos: 0 - loadingSize
+        property real loadingSize: csListView.width * 0.325
+        readonly property real animDuration: 1000
+        property real leftSide: 0 - loadingSize
+        property real rightSide: csListView.width
+        property bool loadingDir: false
+        readonly property int popupDuration: 400
+
+        Behavior on loadingPos {
+            PropertyAnimation {
+                duration: root.internal.animDuration
+                easing.type: Easing.Linear // Easing.InOutQuad
+            }
+        }
+
+        onLoadingPosChanged: {
+            if (loadingPos == leftSide)
+            {
+                loadingPos = rightSide;
+                loadingDir = true;
+            }
+            else
+                if (loadingPos == rightSide)
+                {
+                    loadingPos = leftSide
+                    loadingDir = false;
+                }
+        }
 
         onSpinnerChanged: {
             if (spinner)
@@ -153,39 +181,61 @@ Item {
 //                width: parent.width - parent.height * 1.25
 //            }
 
-            DapQmlRectangle {
-                id: containerBox
+            DapQmlDummy {
+                id: containerContainer
                 anchors.centerIn: parent
-                width: parent.width * 0.75
-                height: parent.height * 0.125
-                color: "#aaa"
-                radius: height
-                clip: true
+                qss: "chooseserver-loading-frame"
+
+                Rectangle {
+                    id: unknownItemContainerMask
+                    anchors.fill: parent
+                    color: "white"
+                    radius: height / 2
+                    visible: false
+                }
 
                 DapQmlRectangle {
-                    id: childBox
-                    width: parent.width * 0.325
-                    height: parent. height
-                    qss: "c-brand"
-                    radius: height
+                    anchors.fill: parent
+                    z: 20
+                    color: "#bcbcbc"
+                    //radius: height
+                    //clip: true
+                    radius: height / 2
+                }
 
-                    property real leftSide: 0 - childBox.width / 2
-                    property real rightSide: containerBox.width - childBox.width / 2
-                    readonly property real animDuration: 750
+                Item {
+                    id: containerBox
+                    anchors.fill: parent
+                    visible: false
 
-                    Behavior on x { PropertyAnimation { duration: childBox.animDuration; easing.type: Easing.InOutQuad } }
+                    Rectangle {
+                        id: childBox
+                        x: root.internal.loadingPos
+                        y: (!root.internal.loadingDir) * height * 2
+                        width: root.internal.loadingSize
+                        height: parent.height
+                        //visible: root.internal.loadingDir
+                        //qss: "c-brand"
+                        radius: height
+                        opacity: 0.675
 
-                    onXChanged: {
-                        if (x == leftSide)
-                            x = rightSide;
-                        else
-                            if (x == rightSide)
-                                x = leftSide
+                        gradient: Gradient {
+                            GradientStop { position: 0.0; color: "transparent" }
+                            GradientStop { position: 0.5; color: "white" }
+                            GradientStop { position: 1.0; color: "transparent" }
+
+                            orientation: Gradient.Horizontal
+                        }
                     }
+                }
 
-                    Component.onCompleted: {
-                        x = rightSide;
-                    }
+                OpacityMask {
+                    id: containerBoxMask
+                    anchors.fill: parent
+                    z: 30
+                    source: containerBox
+                    maskSource: unknownItemContainerMask
+                    cached: false
                 }
             }
 
@@ -220,7 +270,15 @@ Item {
     Item {
         id: content
         anchors.fill: parent
+        z: 40
         visible: !root.internal.spinner
+
+        Behavior on opacity {
+            PropertyAnimation {
+                duration: root.internal.popupDuration
+                easing.type: Easing.Linear
+            }
+        }
 
         /****************************************//**
          * Title
@@ -312,6 +370,7 @@ Item {
                     sourceComponent: model.connectionQuality === -1 + csListView.model.hookInt
                                      ? compUnknownYet
                                      : compRadio
+//                    sourceComponent: compUnknownYet
                     property int index: model.index
                     property int quality: model.connectionQuality + csListView.model.hookInt
                     property int ping: model.ping + csListView.model.hookInt
