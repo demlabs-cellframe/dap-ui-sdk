@@ -240,7 +240,8 @@ Item {
             }
 
             DapQmlSeparator {
-                y: parent.height - height
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: height
                 width: parent.width
             }
         }
@@ -337,7 +338,7 @@ Item {
     //            property int ping: model.ping + csListView.model.hookInt
 
                 function setPing(a_ping) {
-                    text    = (a_ping > -1)
+                    text    = (a_ping > -1 && a_ping < 9999)
                               ? (`ping ${a_ping} ms`)
                               : ("unavailable");
                 }
