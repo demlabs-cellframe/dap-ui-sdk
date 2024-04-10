@@ -186,6 +186,8 @@ Item {
                 anchors.centerIn: parent
                 qss: "chooseserver-loading-frame"
 
+                property string color
+
                 Rectangle {
                     id: unknownItemContainerMask
                     anchors.fill: parent
@@ -197,7 +199,8 @@ Item {
                 DapQmlRectangle {
                     anchors.fill: parent
                     z: 20
-                    color: "#bcbcbc"
+                    color: containerContainer.color
+                    //color: "#bcbcbc"
                     //radius: height
                     //clip: true
                     radius: height / 2
@@ -245,6 +248,12 @@ Item {
                 width: parent.width
             }
         }
+    }
+
+    Component {
+        id: compServerUnavailable
+
+        Item {}
     }
 
     /// @}
@@ -364,13 +373,29 @@ Item {
             delegate: Item {
                 id: csListViewItem
                 width: resizer.width
-                height: resizer.height + spacer.height
+                height: (model.ping + csListView.model.hookInt === 9999)
+                        ? 0
+                        : resizer.height + spacer.height
 
                 Loader {
                     anchors.fill: parent
-                    sourceComponent: model.connectionQuality === -1 + csListView.model.hookInt
-                                     ? compUnknownYet
-                                     : compRadio
+//                    sourceComponent: model.connectionQuality === -1 + csListView.model.hookInt
+//                                     ? compUnknownYet
+//                                     : compRadio
+                    sourceComponent: {
+                        var state = (model.connectionQuality + csListView.model.hookInt === -1) * 1
+                                    | (model.ping + csListView.model.hookInt === 9999) * 2;
+                        switch(state)
+                        {
+                        case 0: return compRadio;
+                        case 1: return compUnknownYet;
+                        case 2: return compServerUnavailable;
+                        case 3: return compServerUnavailable;
+                        }
+
+                        return compServerUnavailable;
+                    }
+
 //                    sourceComponent: compUnknownYet
                     property int index: model.index
                     property int quality: model.connectionQuality + csListView.model.hookInt
