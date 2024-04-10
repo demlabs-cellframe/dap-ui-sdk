@@ -803,137 +803,20 @@
  * Login
  ***************************************************/
 
-.login-logo-container
-{
-    scaled-rect: scaled(-1,104,-1,89,true);
-}
-
 .login-logo
 {
-    scaled-rect: scaled(nan,nan,260,89,true);
+    scaled-rect: scaled(-1,104,260,89,true);
     qproperty-scaledPixmap: "@login-logo";
 }
 
-.login-error-label
+.login-btn-serial-cdb
 {
-    scaled-rect: scaled(51,188,327,57,false,13);
-    color: "@error";
-}
-
-.login-transaction-processing-arc-animation
-{
-    scaled-rect: scaled(-1,196,200,200,true);
-}
-
-.login-transaction-processing-retry-button
-{
-    scaled-rect: scaled(-1,420,188,48,false);
-    color: "@sett-hover-background";
-    radius: 8;
-}
-
-.login-transaction-processing-label-nocbd
-{
-    scaled-rect: scaled(-1,380,327,80,false,20);
-    color: "@text";
-}
-
-.login-separator-container
-{
-    scaled-rect: scaled(-1,291,-1,4,true);
-}
-
-.login-nocbd-wallet-separator-container
-{
-    scaled-rect: scaled(-1,210,-1,4,true);
-}
-
-.login-nocbd-skey-separator-container
-{
-    scaled-rect: scaled(-1,221,-1,4,true);
-}
-
-.overview-separator-container
-{
-    scaled-rect: scaled(-1,134,-1,4,true);
-}
-
-.login-separator
-{
-    scaled-rect: scaled(nan,nan,nan,4,false);
-}
-
-.login-btn-server-container
-{
-/*
-    scaled-rect: scaled(-1,292,356,108,true);
-*/
-    scaled-rect: scaled(-1,414,356,108,true);
-}
-
-.login-btn-server
-{
-    scaled-rect: scaled(nan,nan,nan,108,false);
-}
-
-.login-btn-wallet-container
-{
-    scaled-rect: scaled(-1,242,356,76,true);
-}
-
-.login-btn-maxprice-container
-{
-    scaled-rect: scaled(-1,310,-1,76,true);
-}
-
-.login-btn-nocbd-skey-server-container
-{
-    scaled-rect: scaled(-1,360,356,108,true);
-}
-
-.login-btn-nocbd-wallet-server-container
-{
-    scaled-rect: scaled(-1,400,356,76,true);
-}
-
-.login-btn-server-nocbd
-{
-    scaled-rect: scaled(nan,nan,nan,78,false);
-}
-
-.login-type-container
-{
-    scaled-rect: scaled(nan,502,nan,108,false);
-}
-
-.login-mode-btn-serial-nocbd
-{
-    scaled-rect: scaled(36,0,170,64,false);
-    active: "@login-mode-btn-serial-active";
-    inactive: "@login-mode-btn-serial-inactive";
-}
-
-.login-mode-btn-nocbd
-{
-    scaled-rect: scaled(222,0,170,64,false);
-    active: "@login-mode-btn-nocbd-active";
-    inactive: "@login-mode-btn-nocbd-inactive";
-}
-
-.login-btn-serial-container
-{
-    /*scaled-rect: scaled(-1,414,356,108,true);*/
     scaled-rect: scaled(-1,292,356,108,true);
 }
 
-.login-btn-serial-container-nocbd
+.login-btn-serial-nocdb
 {
     scaled-rect: scaled(-1,242,356,108,true);
-}
-
-.login-btn-serial
-{
-    scaled-rect: scaled(nan,nan,nan,108,false);
 }
 
 .login-btn-main
@@ -950,17 +833,58 @@
     font-weight: Font.Normal;
 }
 
-.login-connect
+.login-btn-choose-server
 {
-    scaled-rect: scaled(nan,570,356,80,true,16);
+    scaled-rect: scaled(-1,414,356,108,true);
 }
 
-.login-connect-nocbd-mode
+.login-btn-choose-order
 {
-    scaled-rect: scaled(nan,611,356,80,true,16);
+    scaled-rect: scaled(-1,360,356,108,true);
 }
 
-.login-obtain-container
+.login-mode-container
+{
+    scaled-rect: scaled(-1,524,356,64,false);
+}
+
+.login-mode-button-size
+{
+    scaled-rect: scaled(nan,nan,170,64,false);
+}
+
+.login-mode-serial
+{
+    scaled-rect: scaled(nan,nan,170,64,false);
+    active: "@login-mode-btn-serial-active";
+    inactive: "@login-mode-btn-serial-inactive";
+}
+
+.login-mode-nocdb
+{
+    scaled-rect: scaled(nan,nan,170,64,false);
+    active: "@login-mode-btn-nocbd-active";
+    inactive: "@login-mode-btn-nocbd-inactive";
+}
+
+.login-btn-connect-by-serial
+{
+    scaled-rect: scaled(-1,570,356,80,true,16);
+}
+
+.login-btn-connect-by-nocbd
+{
+    scaled-rect: scaled(-1,611,356,80,true,16);
+}
+
+.login-btn-orders-history-frame
+{
+    scaled-rect: scaled(nan,nan,356,52,false,18);
+    color: "@input-field";
+    font-weight: Font.Bold;
+}
+
+.login-obtain-container-serial-mode
 {
     scaled-rect: scaled(-1,675,356,19,false);
 }
@@ -975,41 +899,15 @@
     scaled-font: scaled(16);    
 }
 
-.login-obtain-label
+.login-transaction-processing-arc-animation
 {
-    scaled-rect: scaled(nan,nan,160,nan,false);
+    scaled-rect: scaled(-1,196,200,200,true);
 }
 
-.login-obtain-link
+.login-transaction-processing-label-nocbd
 {
-    scaled-rect: scaled(nan,nan,160,nan,false);
-}
-
-.login-serialkey-input
-{
-    border-width: 1;
-    border-color: "@light-grey";
-    color: "@background";
-    radius: 5;
-    opacity: 0.2;
-}
-
-/* SPACE CALC */
-
-.login-space-for3rows
-{
-    scaled-rect: scaled(nan,0,nan,nan,false);
-}
-
-.login-space-for2rows
-{
-    scaled-rect: scaled(nan,0,nan,nan,false);
-}
-
-.login-separator-color
-{
-    color: "@separator-color";
-    scaled-rect: scaled(nan,nan,nan,1,false);
+    scaled-rect: scaled(-1,380,327,80,false,20);
+    color: "@text";
 }
 
 .login-connecting-label
@@ -1023,11 +921,10 @@
     scaled-rect: scaled(nan,nan,-1,120,false);
 }
 
-.login-btn-orders-history-frame
+.login-separator-color
 {
-    scaled-rect: scaled(nan,nan,356,52,false,18);
-    color: "@input-field";
-    font-weight: Font.Bold;
+    color: "@separator-color";
+    scaled-rect: scaled(nan,nan,nan,1,false);
 }
 
 /****************************************************

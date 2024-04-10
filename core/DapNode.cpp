@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QSignalTransition>
 #include <QDebug>
+#include "dap_client_http.h"
 
 
 //#define SIGERROR (QNetworkReply::NetworkError::UnknownServerError + 1)

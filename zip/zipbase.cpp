@@ -1,5 +1,6 @@
 #include "zipbase.h"
 #include "zlib.h"
+#include <QStringRef>
 
 namespace  DapZip {
 

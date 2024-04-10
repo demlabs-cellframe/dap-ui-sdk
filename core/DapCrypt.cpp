@@ -22,7 +22,7 @@
 #include "DapKeyCommon.h"
 #include <QDebug>
 #include "DapSession.h"
-
+#include <QRandomGenerator>
 /**
  * @brief DapCrypt::DapCrypt
  * keyStream - AES key generated after handshake
@@ -70,7 +70,7 @@ QString DapCrypt::getRandomString(int lengthStr)
 
     for(int i = 0; i < lengthStr; ++i)
     {
-        int index = qrand() % possibleCharacters.length();
+        int index = QRandomGenerator::global()->generate() % possibleCharacters.length();
         randomString.append(possibleCharacters.at(index));
     }
     return randomString;

@@ -2,7 +2,7 @@
 #define DAPCHTHREAD_H
 
 #include <QThread>
-#include <DapChannelPacket.h>
+#include "DapChannelPacket.h"
 class DapChThread : public QThread
 {
     Q_OBJECT

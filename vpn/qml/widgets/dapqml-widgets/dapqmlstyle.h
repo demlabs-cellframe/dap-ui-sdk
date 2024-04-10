@@ -191,6 +191,8 @@ public:
   static void sWindowResized (int a_width, int a_height);
   /// @brief send a signal about redraw request
   static void sRequestRedraw();
+  /// @brief set brand font name
+  static void setGlobalFontName (const QString &a_fontName);
   /// @}
 
   /****************************************//**

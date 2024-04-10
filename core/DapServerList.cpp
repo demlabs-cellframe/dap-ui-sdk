@@ -224,7 +224,7 @@ static const QHash<QString, QString> s_countryMap =
 
 static const QString _findInCountriesMap (const QString &string)
 {
-  QStringList list = string.split (".", QString::SkipEmptyParts);
+  QStringList list = string.split (".", Qt::SkipEmptyParts);
   QString code;
   for (const QString &s : qAsConst (list))
     {
@@ -1056,7 +1056,7 @@ void DapSortedServerList::update (const QList<int> &a_indexes)
   QList<int> actualIndexes;
 
   /* resort */
-  qSort (sortedIndexes);
+  std::sort (sortedIndexes.begin(), sortedIndexes.end());
 
   /* take items from list */
   for (auto i = sortedIndexes.crbegin(), e = sortedIndexes.crend(); i != e ; i++)

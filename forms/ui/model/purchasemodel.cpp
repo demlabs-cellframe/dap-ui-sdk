@@ -60,9 +60,9 @@ void PurchaseModel::slotSetup (QWidget *a_form)
       auto btn = new DapGuiButton;
 
       /* setup text */
-      auto score = QString().sprintf ("$%.02lf", item.score);
+      auto score = QString::asprintf ("$%.02lf", item.score);
       auto plan  =
-        QString().sprintf (
+        QString::asprintf (
           "%d-%s%s plan",
           item.length,
           item.type == LT_MONTH ? "month" : "year",

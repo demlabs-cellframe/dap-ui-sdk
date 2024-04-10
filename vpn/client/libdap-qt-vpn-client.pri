@@ -35,7 +35,7 @@ android{
     SOURCES += $$PWD/DapTunWorkerAndroid.cpp $$PWD/DapTunAndroid.cpp
 }
 
-darwin {
+macos {
 #    HEADERS  += $$PWD/DapTunDarwin.h
 #    $$PWD/DapTunWorkerDarwin.h
 #    SOURCES += $$PWD/DapTunWorkerDarwin.cpp \
@@ -43,6 +43,14 @@ darwin {
     include ($$PWD/darwin/darwin.pri)
     #INCLUDEPATH += /usr/local/opt/openssl/include
     #LIBS += -L/usr/local/opt/openssl/lib
+    LIBS += -framework NetworkExtension
+}
+
+ios {
+#    HEADERS += $$PWD/DapTunWorkerAndroid.h $$PWD/DapTunAndroid.h
+#    SOURCES += $$PWD/DapTunWorkerAndroid.cpp $$PWD/DapTunAndroid.cpp
+    # include ($$PWD/darwin/darwin.pri)
+    QMAKE_CXXFLAGS +=  -fmodules -fcxx-modules
     LIBS += -framework NetworkExtension
 }
 
