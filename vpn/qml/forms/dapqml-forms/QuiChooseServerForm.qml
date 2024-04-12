@@ -1,7 +1,9 @@
 /* INCLUDES */
 
-import QtQuick 2.1
+import QtQuick 2.15
 import QtQuick.Controls 2.12
+import QtGraphicalEffects 1.0
+import com.DapQmlWidgets 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -32,6 +34,51 @@ Item {
     /// Used to connect interface via Manager
     property string formName: "ChooseServer"
 
+    property QtObject internal: QtObject {
+        property bool spinner: true
+        property real loadingPos: 0 - loadingSize
+        property real loadingSize: csListView.width * 0.325
+        readonly property real animDuration: 1000
+        property real leftSide: 0 - loadingSize
+        property real rightSide: csListView.width
+        property bool loadingDir: false
+        readonly property int popupDuration: 400
+
+        Behavior on loadingPos {
+            PropertyAnimation {
+                duration: root.internal.animDuration
+                easing.type: Easing.Linear // Easing.InOutQuad
+            }
+        }
+
+        onLoadingPosChanged: {
+            if (loadingPos == leftSide)
+            {
+                loadingPos = rightSide;
+                loadingDir = true;
+            }
+            else
+                if (loadingPos == rightSide)
+                {
+                    loadingPos = leftSide
+                    loadingDir = false;
+                }
+        }
+
+        onSpinnerChanged: {
+            if (spinner)
+                spinnerWatchdogTimer.start();
+        }
+    }
+
+    Timer {
+        id: spinnerWatchdogTimer
+        interval: 5000
+        running: true
+        repeat: false
+        onTriggered: root.internal.spinner = false
+    }
+
     /// @}
     /****************************************//**
      * @name SIGNALS
@@ -48,17 +95,168 @@ Item {
      ********************************************/
     /// @{
 
-    /// @}
-    /****************************************//**
-     * Title
-     ********************************************/
-
-    DapQmlDialogTitle {
-        id: title
-        text: qsTr("Choose server") + lang.notifier
-        qss: "dialog-title"
+    function onListLoaded() {
+        spinnerWatchdogTimer.stop();
+        root.internal.spinner = false;
     }
 
+    /// @}
+    /****************************************//**
+     * @name COMPONENTS
+     ********************************************/
+    /// @{
+
+    Component {
+        id: compRadio
+
+//        property int index
+//        property int quality
+//        property int ping
+//        property string name
+
+        DapQmlRadioButton {
+            id: itemRoot
+
+            property int quality: parent.quality + csListView.model.hookInt
+
+            text: parent.name + csListView.model.hook
+            separator: true
+            iconSize: resizer.height
+            y: spacer.height / 2
+            width: resizer.width
+            height: resizer.height + spacer.height
+            checked: csListView.model.current === parent.index
+            opacity: 0
+
+            Behavior on opacity { PropertyAnimation { duration: 250 } }
+
+            Component.onCompleted: opacity = 1
+
+            DapQmlLabel {
+                id: itemPing
+                x: parent.width - (width * 1.35)
+                y: (parent.height - height) / 2
+                width: resizer.height * 0.5
+                height: resizer.height * 0.5
+                qss: `ic_conn-${quality}` + csListView.model.hook
+
+                property int quality: (itemRoot.quality === 0) ? (0) : (6 - itemRoot.quality)
+
+                MouseArea {
+                    anchors.fill: parent
+                    z: 10
+                    hoverEnabled: true
+                    onEntered: {
+                        var point   = mapToItem(null, 0, 0);
+                        itemPopup.show(point.x, point.y, itemRoot.parent.ping);
+                    }
+                    onExited:  itemPopup.hide()
+                }
+            }
+
+            onClicked: root.sigSelect (parent.index, parent.name)
+        }
+    }
+
+    Component {
+        id: compUnknownYet
+
+        Item {
+            y: spacer.height / 2
+            width: resizer.width
+            height: resizer.height + spacer.height
+
+//            DapQmlArcAnimation {
+//                x: parent.height * 0.125
+//                y: (parent.height - height) / 2
+//                width: parent.height * 0.75
+//                height: parent.height * 0.75
+//                strokeWidth: 6
+//                qss: "c-brand"
+//            }
+
+//            DapQmlSeparator {
+//                x: parent.height * 1.125
+//                y: (parent.height - height) / 2
+//                width: parent.width - parent.height * 1.25
+//            }
+
+            DapQmlDummy {
+                id: containerContainer
+                anchors.centerIn: parent
+                qss: "chooseserver-loading-frame"
+
+                property string color
+
+                Rectangle {
+                    id: unknownItemContainerMask
+                    anchors.fill: parent
+                    color: "white"
+                    radius: height / 2
+                    visible: false
+                }
+
+                DapQmlRectangle {
+                    anchors.fill: parent
+                    z: 20
+                    color: containerContainer.color
+                    //color: "#bcbcbc"
+                    //radius: height
+                    //clip: true
+                    radius: height / 2
+                }
+
+                Item {
+                    id: containerBox
+                    anchors.fill: parent
+                    visible: false
+
+                    Rectangle {
+                        id: childBox
+                        x: root.internal.loadingPos
+                        y: (!root.internal.loadingDir) * height * 2
+                        width: root.internal.loadingSize
+                        height: parent.height
+                        //visible: root.internal.loadingDir
+                        //qss: "c-brand"
+                        radius: height
+                        opacity: 0.675
+
+                        gradient: Gradient {
+                            GradientStop { position: 0.0; color: "transparent" }
+                            GradientStop { position: 0.5; color: "white" }
+                            GradientStop { position: 1.0; color: "transparent" }
+
+                            orientation: Gradient.Horizontal
+                        }
+                    }
+                }
+
+                OpacityMask {
+                    id: containerBoxMask
+                    anchors.fill: parent
+                    z: 30
+                    source: containerBox
+                    maskSource: unknownItemContainerMask
+                    cached: false
+                }
+            }
+
+            DapQmlSeparator {
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: height
+                width: parent.width
+            }
+        }
+    }
+
+    Component {
+        id: compServerUnavailable
+
+        Item {}
+    }
+
+    /// @}
     /****************************************//**
      * Resizers
      ********************************************/
@@ -76,108 +274,165 @@ Item {
     }
 
     /****************************************//**
-     * Listview
+     * Content
      ********************************************/
 
-    ListView {
-        id: csListView
-        objectName: "chooseServerListView"
+    Item {
+        id: content
+        anchors.fill: parent
+        z: 40
+        visible: !root.internal.spinner
 
-        x: (root.width - width) / 2
-        y: title.y + title.height * 2
-        width: resizer.width
-        height: root.height - y
-        clip: true
+        Behavior on opacity {
+            PropertyAnimation {
+                duration: root.internal.popupDuration
+                easing.type: Easing.Linear
+            }
+        }
 
-        delegate: Item {
-            id: csListViewItem
-            width: resizer.width
-            height: resizer.height + spacer.height
-            property bool checked: false
+        /****************************************//**
+         * Title
+         ********************************************/
 
-//            property string logMessage
-//            property int logMessageCounter: 0
+        DapQmlDialogTitle {
+            id: title
+            text: qsTr("Choose server") + lang.notifier
+            qss: "dialog-title"
+        }
 
-//            function collectLogMessage(a_msg) {
-//                logMessage += a_msg + " : ";
-//                logMessageCounter++;
-//                if (logMessageCounter >= 4)
-//                    console.log(logMessage + model.name);
-//            }
+        /****************************************//**
+         * Popup
+         ********************************************/
 
-            //onHeightChanged: csListViewItem.collectLogMessage (`item ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
+        Rectangle {
+            id: itemPopup
+            x: parent.width - width
+            y: 0 - height
+            z: 200
+            width: popupLabel.contentWidth * 1.25
+            height: popupLabel.contentHeight * 1.5
+            visible: false
+            color: "#e0e0e0"
+            border.color: "#404040"
 
-            DapQmlRadioButton {
-                property int quality: model.connectionQuality + csListView.model.hookInt
+            function show(a_x, a_y, a_ping) {
+                //console.log(`popup show: ${a_x},${a_y},${a_ping}`);
+                x   = a_x - width;
+                y   = a_y - height;
+                popupLabel.setPing (a_ping);
+                visible = true;
+                hideTimer.restart();
+            }
 
-                text: model.name + csListView.model.hook
-                checked: csListView.model.current === model.index //model.checked + csListView.model.hookInt
-                separator: true
-                iconSize: resizer.height
-                width: resizer.width
-                height: resizer.height + spacer.height
-                y: spacer.height / 2
+            function hide() {
+                //console.log(`popup hide`);
+                visible = false;
+            }
 
-                //onHeightChanged: csListViewItem.collectLogMessage (`radio ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
+            Timer {
+                id: hideTimer
+                interval: 5000
+                repeat: false
+                running: false
+                onTriggered: itemPopup.hide()
+            }
 
-                DapQmlLabel {
-                    property int quality: (parent.quality === 0) ? (0) : (6 - parent.quality)
-                    x: parent.width - (width * 1.35)
-                    y: (parent.height - height) / 2
-                    width: resizer.height * 0.5
-                    height: resizer.height * 0.5
-                    qss: `ic_conn-${quality}` + csListView.model.hook
+            Text {
+                id: popupLabel
+                anchors.fill: parent
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                color: "#404040"
 
-                    //onHeightChanged: csListViewItem.collectLogMessage (`icn ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
+    //            property int ping: model.ping + csListView.model.hookInt
 
-                    MouseArea {
-                        anchors.fill: parent
-                        z: 10
-                        hoverEnabled: true
-                        onEntered: itemPopup.open()
-                        onExited:  itemPopup.close()
-                        //onHeightChanged: csListViewItem.collectLogMessage (`mousearea ${x.toFixed(2)},${y.toFixed(2)},${z.toFixed(2)} ${width.toFixed(2)}x${height.toFixed(2)}`)
-                    }
-
-                    Popup {
-                        id: itemPopup
-                        x: parent.width - width
-                        y: 0 - height
-                        width: popupLabel.contentWidth * 1.25
-                        height: popupLabel.contentHeight * 1.5
-                        topInset: 0
-                        bottomInset: 0
-                        leftInset: 0
-                        rightInset: 0
-                        padding: 0
-                        margins: 0
-
-                        background: Item {}
-
-                        contentItem: Rectangle {
-                            anchors.fill: parent
-                            color: "#e0e0e0"
-                            border.color: "#404040"
-
-                            Text {
-                                id: popupLabel
-                                anchors.fill: parent
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                                color: "#404040"
-
-                                property int ping: model.ping + csListView.model.hookInt
-
-                                text: (ping > -1)
-                                      ? (`ping ${ping} ms` + csListView.model.hook)
-                                      : ("unavailable" + csListView.model.hook)
-                            }
-                        }
-                    }
+                function setPing(a_ping) {
+                    text    = (a_ping > -1 && a_ping < 9999)
+                              ? (`ping ${a_ping} ms`)
+                              : ("unavailable");
                 }
 
-                onClicked: root.sigSelect (model.index, model.name)
+                text: "unavailable"
             }
+        }
+
+        /****************************************//**
+         * Listview
+         ********************************************/
+
+        ListView {
+            id: csListView
+            objectName: "chooseServerListView"
+
+            x: (root.width - width) / 2
+            y: title.y + title.height * 2
+            width: resizer.width
+            height: root.height - y
+            clip: true
+
+            delegate: Item {
+                id: csListViewItem
+                width: resizer.width
+                height: (model.ping + csListView.model.hookInt === 9999)
+                        ? 0
+                        : resizer.height + spacer.height
+
+                Loader {
+                    anchors.fill: parent
+//                    sourceComponent: model.connectionQuality === -1 + csListView.model.hookInt
+//                                     ? compUnknownYet
+//                                     : compRadio
+                    sourceComponent: {
+                        var state = (model.connectionQuality + csListView.model.hookInt === -1) * 1
+                                    | (model.ping + csListView.model.hookInt === 9999) * 2;
+                        switch(state)
+                        {
+                        case 0: return compRadio;
+                        case 1: return compUnknownYet;
+                        case 2: return compServerUnavailable;
+                        case 3: return compServerUnavailable;
+                        }
+
+                        return compServerUnavailable;
+                    }
+
+//                    sourceComponent: compUnknownYet
+                    property int index: model.index
+                    property int quality: model.connectionQuality + csListView.model.hookInt
+                    property int ping: model.ping + csListView.model.hookInt
+                    property string name: model.name
+                }
+            }
+        }
+    }
+
+    /****************************************//**
+     * Spinner
+     ********************************************/
+
+    /* spinner blur effect */
+    FastBlur {
+        anchors.fill: content
+        source: content
+        radius: 40
+        cached: true
+        z: 50
+        visible: root.internal.spinner
+    }
+
+    /* spinner */
+    DapQmlRectangle {
+        anchors.centerIn: parent
+        z: 60
+        qss: "chooseserver-spinner-bg"
+        visible: root.internal.spinner
+
+        DapQmlArcAnimation {
+            anchors.fill: parent
+            anchors.margins: parent.width * 0.275
+            strokeWidth: 7
+            z: 200
+            qss: "c-brand"
         }
     }
 }

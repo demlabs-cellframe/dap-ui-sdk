@@ -113,6 +113,11 @@ public:
    *******************************************/
   /// @{
 public:
+  int indexOf (const DapServerInfo &a_item) const;
+  /// search an item with provided name value
+  int indexOfName (const QString &a_name) const;
+  /// search an item with provided address value
+  int indexOfAddress (const QString &a_address) const;
   /// set user general location
   void setLocation (const QString &a_location);
   const DapSortedServerList &getList() const { return _autoServers; };

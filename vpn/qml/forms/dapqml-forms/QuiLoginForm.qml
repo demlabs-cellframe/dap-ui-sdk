@@ -51,6 +51,7 @@ Item {
 
         /// @brief login mode
         property int mode: QuiLoginForm.Mode.M_SERIAL
+        property bool cdbDetected: false
     }
 
     /// @brief NoCDB variables
@@ -122,12 +123,21 @@ Item {
         return result
     }
 
+    function cdbDetected(a_value) {
+        internal.cdbDetected    = a_value;
+    }
+
     function setCellframeDetected(a_value) {
         noCdb.cellframeDetected = a_value;
     }
 
     function setTransactionProcessing(a_value) {
         noCdb.transactionProcessing = a_value;
+        if (internal.cdbDetected === false)
+        {
+            internal.mode = QuiLoginForm.Mode.M_WALLET;
+            root.walletSelected(internal.mode === QuiLoginForm.Mode.M_WALLET);
+        }
     }
 
     function setWaitingForApproval(a_value) {

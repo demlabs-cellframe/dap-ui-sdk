@@ -31,6 +31,7 @@
         <file compress="1">dapqml-forms/QuiNodeTransactionHistoryForm.qml</file>
         <file compress="1">dapqml-forms/QuiNotificationsHistoryForm.qml</file>
         <file compress="1">dapqml-forms/tools/QuiToolNotification.qml</file>
-        <file>dapqml-forms/QuiLoginFormOld.qml</file>
+        <file compress="1">dapqml-forms/QuiLoginFormOld.qml</file>
+        <file compress="1">dapqml-forms/QuiArcScalingTestForm.qml</file>
     </qresource>
 </RCC>
