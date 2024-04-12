@@ -184,8 +184,12 @@ void DapQmlServerManager::importServers (const DapServerInfoList *a_servers)
       serverList->clear();
 
       /* add servers from scratch */
-      for (const auto &server : *a_servers)
+      for (auto server : *a_servers)
+      {
+        if (server.ping() == -1)
+          server.setConnQuality (DapServerInfo::ConnectionQuality::INVALID);
         serverList->append (server);
+      }
 
       /* refresh full model */
       fullList->refresh();
