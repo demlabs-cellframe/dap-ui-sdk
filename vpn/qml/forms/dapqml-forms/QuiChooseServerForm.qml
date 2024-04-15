@@ -220,7 +220,7 @@ Item {
                         //visible: root.internal.loadingDir
                         //qss: "c-brand"
                         radius: height
-                        opacity: 0.675
+                        opacity: 0.5
 
                         gradient: Gradient {
                             GradientStop { position: 0.0; color: "transparent" }
