@@ -1442,6 +1442,13 @@
     scaled-rect: scaled(nan,nan,392,64,false);
 }*/
 
+.chooseserver-spinner-bg
+{
+    scaled-rect: scaled(nan,nan,244,244,true);
+    color: "@background";
+    radius: 16;
+}
+
 /****************************************************
  * Choose Language
  ***************************************************/
