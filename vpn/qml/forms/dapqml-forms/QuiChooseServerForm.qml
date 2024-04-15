@@ -187,6 +187,7 @@ Item {
                 qss: "chooseserver-loading-frame"
 
                 property string color
+                property string shine
 
                 Rectangle {
                     id: unknownItemContainerMask
@@ -220,11 +221,11 @@ Item {
                         //visible: root.internal.loadingDir
                         //qss: "c-brand"
                         radius: height
-                        opacity: 0.5
+                        //opacity: 0.5
 
                         gradient: Gradient {
                             GradientStop { position: 0.0; color: "transparent" }
-                            GradientStop { position: 0.5; color: "white" }
+                            GradientStop { position: 0.5; color: containerContainer.shine }
                             GradientStop { position: 1.0; color: "transparent" }
 
                             orientation: Gradient.Horizontal

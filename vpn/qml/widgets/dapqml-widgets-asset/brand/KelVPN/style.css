@@ -22,7 +22,8 @@
     grid: "#FFFFFF";
     separator-color: "#E6E6E6";
     sett-hover-background: "#F7F7F7";
-    choose-server-unknown: "#E0E0E0";
+    choose-server-unknown: "#DDDDDD";
+    choose-server-shine: "#F1F1F1";
     switch-bg-on:               "qrc:/light/switch/bg_on.png";
     switch-bg-off:              "qrc:/light/switch/bg_off.png";
     switch-bg-conn:             "qrc:/light/switch/bg_conn.png";
@@ -105,6 +106,7 @@
     separator-color: "#3F3F3F";
     sett-hover-background: "#5A5A5A";
     choose-server-unknown: "#424242";
+    choose-server-shine: "#585858";
     switch-bg-on:               "qrc:/dark/switch/bg_on.png";
     switch-bg-off:              "qrc:/dark/switch/bg_off.png";
     switch-bg-conn:             "qrc:/dark/switch/bg_conn.png";
@@ -1455,6 +1457,7 @@
 {
     scaled-rect: scaled(nan,nan,358,32,false);
     color: "@choose-server-unknown";
+    shine: "@choose-server-shine";
 }
 
 /****************************************************
