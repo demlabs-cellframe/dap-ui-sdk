@@ -277,6 +277,9 @@ QSettings* DapDataLocal::settings()
     }
 
     static QSettings s_settings(s_path, QSettings::IniFormat);
+#elif defined(Q_OS_IOS)
+    static QString s_path = DapLogger::defaultLogPath(DAP_BRAND).chopped(3).append("settings.ini");
+    static QSettings s_settings(s_path, QSettings::IniFormat);
 #else
     static QSettings s_settings;
 #endif
