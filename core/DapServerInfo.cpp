@@ -67,7 +67,7 @@ DapServerInfo::DapServerInfo (
   , m_name (a_name)
   , m_location (a_location)
   , m_ping (-1)
-  , m_connQuality (ConnectionQuality::NO_CONNECTION)
+  , m_connQuality (ConnectionQuality::INVALID)
 {
 
 }
@@ -318,10 +318,10 @@ DapServerInfo::ConnectionQuality DapServerInfo::connQuality() const
 
 void DapServerInfo::setConnQuality (const ConnectionQuality &connQuality)
 {
-  m_connQuality =
-    (int (connQuality) >= int (ConnectionQuality::NO_CONNECTION))
-    ? connQuality
-    : ConnectionQuality::NO_CONNECTION;
+  m_connQuality = connQuality;
+//    (int (connQuality) >= int (ConnectionQuality::NO_CONNECTION))
+//    ? connQuality
+//    : ConnectionQuality::NO_CONNECTION;
 }
 
 bool DapServerInfo::isAuto() const
