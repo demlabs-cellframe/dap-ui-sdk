@@ -73,7 +73,7 @@ Item {
 
     Timer {
         id: spinnerWatchdogTimer
-        interval: 5000
+        interval: 4000
         running: true
         repeat: false
         onTriggered: root.internal.spinner = false
@@ -88,6 +88,7 @@ Item {
     /// @brief item clicked
     signal sigSelect(int index, string name);
 //    signal sigCurrentInexChanged();
+    signal sigUpdate();
 
     /// @}
     /****************************************//**
@@ -96,6 +97,11 @@ Item {
     /// @{
 
     function onListLoaded() {
+        //spinnerWatchdogTimer.stop();
+        //root.internal.spinner = false;
+    }
+
+    function onAppStartTimeout() {
         spinnerWatchdogTimer.stop();
         root.internal.spinner = false;
     }
@@ -299,6 +305,14 @@ Item {
             id: title
             text: qsTr("Choose server") + lang.notifier
             qss: "dialog-title"
+
+            DapQmlPushButton {
+                anchors.right: parent.right
+                width: parent.height
+                height: parent.height
+                qss: "chooseserver-update-btn"
+                onClicked: { root.sigUpdate(); root.internal.spinner = true; }
+            }
         }
 
         /****************************************//**
@@ -332,7 +346,7 @@ Item {
 
             Timer {
                 id: hideTimer
-                interval: 5000
+                interval: 4000
                 repeat: false
                 running: false
                 onTriggered: itemPopup.hide()
@@ -415,7 +429,7 @@ Item {
     FastBlur {
         anchors.fill: content
         source: content
-        radius: 40
+        radius: 30
         cached: true
         z: 50
         visible: root.internal.spinner
