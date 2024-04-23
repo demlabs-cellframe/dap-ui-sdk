@@ -437,6 +437,7 @@ Item {
 
     /* spinner */
     DapQmlRectangle {
+        id: spinnerContent
         anchors.centerIn: parent
         z: 60
         qss: "chooseserver-spinner-bg"
@@ -448,6 +449,22 @@ Item {
             strokeWidth: 7
             z: 200
             qss: "c-brand"
+        }
+    }
+
+    DropShadow {
+        anchors.fill: spinnerContent
+        z: 58
+        radius: 18//contentRoot.radius
+        samples: 17
+        color: `#30${contentShadowColor.color.substring(1)}`
+        source: spinnerContent
+        visible: root.internal.spinner
+
+        DapQmlDummy {
+            id: contentShadowColor
+            property string color
+            qss: "notification-shadow"
         }
     }
 }
