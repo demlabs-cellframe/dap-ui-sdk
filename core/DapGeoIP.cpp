@@ -9,7 +9,10 @@ DapGeoIP::DapGeoIP(QObject *parent)
 
         connect(manager, &QNetworkAccessManager::finished, this, &DapGeoIP::onIPReceived);
 
-        int status = MMDB_open(dbPath.toStdString().c_str(), MMDB_MODE_MMAP, &mmdb);
+        QFile f(dbPath);
+        f.open(QIODevice::ReadOnly);
+        QByteArray res = f.readAll();
+        int status = MMDB_open_memory(res.constData(), res.size(), &mmdb);
         if (status == MMDB_SUCCESS) {
             isDBOpen = true;
         } else {

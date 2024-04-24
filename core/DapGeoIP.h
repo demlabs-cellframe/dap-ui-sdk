@@ -8,9 +8,11 @@
 #include <QNetworkReply>
 #include <QCoreApplication>
 
-#include <maxminddb.h>
+#include "maxminddb/maxminddb.h"
 
-#define PATH_TO_DB QCoreApplication::applicationDirPath() + "/GeoLite2-Country.mmdb"
+#define PATH_TO_DB ":/GeoLite2-Country.mmdb"
+// #define PATH_TO_DB "/home/danilmartynenko/untitled/GeoLite2-Country.mmdb"
+// #define PATH_TO_DB QCoreApplication::applicationDirPath() + "/GeoLite2-Country.mmdb"
 
 class DapGeoIP : public QObject
 {
