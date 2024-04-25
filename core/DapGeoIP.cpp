@@ -1,4 +1,6 @@
 #include "DapGeoIP.h"
+#include "DapDataLocal.h"
+
 #include <QDebug>
 
 DapGeoIP::DapGeoIP(QObject *parent)
