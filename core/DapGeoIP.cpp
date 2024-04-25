@@ -1,5 +1,4 @@
 #include "DapGeoIP.h"
-#include <QFile>
 #include <QDebug>
 
 DapGeoIP::DapGeoIP(QObject *parent)
@@ -11,8 +10,8 @@ DapGeoIP::DapGeoIP(QObject *parent)
 
         QFile f(dbPath);
         f.open(QIODevice::ReadOnly);
-        QByteArray res = f.readAll();
-        int status = MMDB_open_memory(res.constData(), res.size(), &mmdb);
+        fmem = f.readAll();
+        int status = MMDB_open_memory(fmem.constData(), fmem.size(), &mmdb);
         if (status == MMDB_SUCCESS) {
             isDBOpen = true;
         } else {
@@ -49,6 +48,7 @@ void DapGeoIP::onIPReceived(QNetworkReply *reply) {
 
     countryCode = getCountryIsoCode(ip);
     qDebug() << "Country ISO Code:" << countryCode;
+    DapDataLocal::instance()->setCountryISO(countryCode);
 }
 
 QString DapGeoIP::getCountryIsoCode(const QString &ipAddress) {

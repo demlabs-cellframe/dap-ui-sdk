@@ -36,6 +36,7 @@ const QString NODE_ORDER_HISTORY        = "nodeOrderHistory";
 const QString SERIAL_LOSS_ON_UNINSTALL_FLAG = "serialLossOnUninstallFlag";
 const QString NOTIFICATION_HISTORY      = "notificationHistory";
 const QString NOCDB_DATA                = "NoCdbData";
+const QString COUNTRY_ISO               = "country_iso";
 
 class DapSerialKeyData;
 enum class Authorization;
@@ -100,6 +101,11 @@ public:
     const QString & getUrlSite()              { return m_urlSite;        }
     const QString & getBrandName()            { return m_brandName;      }
 
+    const QString & getCountryISO() { return m_coutryISO; }
+    void setCountryISO(QString iso_code){
+        m_coutryISO = iso_code;
+    }
+
     DapCdbServerList::const_iterator m_cdbIter;
 
     void saveEncryptedSetting(const QString &a_setting, const QVariant &a_value);
@@ -157,6 +163,8 @@ protected:
     DapCdbServerList  m_cdbServersList;
     QString           m_networkDefault;
     QString           m_urlSite;
+
+    QString     m_coutryISO;
 
 private:
     void loadAuthorizationDatas();

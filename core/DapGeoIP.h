@@ -7,6 +7,9 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QCoreApplication>
+#include <QFile>
+#include <QByteArray>
+#include "DapDataLocal.h""
 
 #include "maxminddb/maxminddb.h"
 
@@ -33,6 +36,7 @@ private:
     bool isDBOpen = false;
     QString dbPath;
     QString countryCode;
+    QByteArray fmem;
 
     void onIPReceived(QNetworkReply *reply);
 
