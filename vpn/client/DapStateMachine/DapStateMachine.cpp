@@ -1,5 +1,5 @@
 #include "DapStateMachine.h"
-#include "DapCmdConnect.h"
+#include "DapCmdConnectSrv.h"
 
 DapStateMachine::DapStateMachine(QObject *parent) : QObject(parent), sm(this)
 {

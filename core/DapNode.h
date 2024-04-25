@@ -15,7 +15,7 @@
 #include "DapNetworkAccessManager.h"
 #include "DapNetworkReply.h"
 
-#include "DapCmdNode.h"
+#include "DapCmdNodeSrv.h"
 #include "DapNodeWeb3.h"
 
 #include <QStateMachine>

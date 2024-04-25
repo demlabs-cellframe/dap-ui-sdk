@@ -141,15 +141,15 @@ static const char *convertUnits (const QString &a_value)
 
 DapCmdNode::DapCmdNode (QObject *parent)
   : DapCmdClientAbstract (DapJsonCmdType::NODE_INFO, parent)
-  , _data (new DapCmdNodeData)
 {
+  nodeData  = new DapCmdNodeData();
   /* clear */
   s_historyOrder.isSigned = false;
 }
 
 DapCmdNode::~DapCmdNode()
 {
-  delete _data;
+  delete nodeData;
 }
 
 /********************************************
@@ -159,7 +159,7 @@ DapCmdNode::~DapCmdNode()
 void DapCmdNode::handleResult (const QJsonObject &params)
 {
   DEBUGINFO << __PRETTY_FUNCTION__ << params;
-  _data->hasError = false;
+ nodeData->hasError = false;
 
 //  // wallets list
 //  if (params.value ("wallets").isArray())
@@ -191,8 +191,8 @@ void DapCmdNode::handleResult (const QJsonObject &params)
   if (params.value ("wallets_data").isObject())
     {
       DEBUGINFO << "wallets_data" << params.value ("wallets_data");
-      //_data->dataWallet.setData (params.value ("wallets_data").toObject());
-      //emit sigWalletsList (_data->dataWallet.walletsWithTokens());
+      //nodeData->dataWallet.setData (params.value ("wallets_data").toObject());
+      //emit sigWalletsList (nodeData->dataWallet.walletsWithTokens());
       DapNodeWalletData::instance()->setWalletsData (params.value ("wallets_data").toObject());
       emit sigWalletsDataUpdated();
       return;
@@ -233,8 +233,8 @@ void DapCmdNode::handleResult (const QJsonObject &params)
       emit sigOrderList (list);
 
       /* parse old style and emit */
-      _data->orderListData.setData (list);
-      //emit sigOrderListData (_data->orderListData.orders());
+      nodeData->orderListData.setData (list);
+      //emit sigOrderListData (nodeData->orderListData.orders());
       emit sigOrderListDataUpdated();
 
       return;
@@ -270,7 +270,7 @@ void DapCmdNode::handleResult (const QJsonObject &params)
 void DapCmdNode::handleError (int code, const QString &message)
 {
 //    Q_UNUSED(code); Q_UNUSED(message);
-//    qWarning() << *_data->errorObject;
+//    qWarning() << *nodeData->errorObject;
 //    switch (code) {
 //    case 1:
 //        emit sigResetSerialKeyError(message);
@@ -279,7 +279,6 @@ void DapCmdNode::handleError (int code, const QString &message)
 //        emit sigResetSerialKeyErrorSetOnlyMessage(message);
 //        break;
 //    }
-  _data->hasError = true;
   DEBUGINFO << __PRETTY_FUNCTION__ << QString ("%1 %2").arg (code).arg (message);
 //    DEBUGINFO << "handleError" << message;
   QString errorMessage = message;
@@ -327,23 +326,25 @@ void DapCmdNode::walletsRequest()
 
 bool DapCmdNode::hasError()
 {
-  return _data->hasError;
+  return nodeData->hasError;
 }
+
+
 
 DapNodeOrderInfo DapCmdNode::orderData (const QString &hash)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  return _data->orderListData.order (hash);
+  return nodeData->orderListData.order (hash);
 }
 
 bool DapCmdNode::_checkContinue()
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  return  !_data->selectedWalletName.isEmpty() &&
-          !_data->selectedNetworkName.isEmpty() &&
-          !_data->selectedTokenName.isEmpty() &&
-          !_data->value.isEmpty() &&
-          !_data->orderHash.isEmpty();
+  return  !nodeData->selectedWalletName.isEmpty() &&
+          !nodeData->selectedNetworkName.isEmpty() &&
+          !nodeData->selectedTokenName.isEmpty() &&
+          !nodeData->value.isEmpty() &&
+          !nodeData->orderHash.isEmpty();
 }
 
 void DapCmdNode::_updateHistoryItem()
@@ -370,13 +371,12 @@ void DapCmdNode::_updateHistoryItem()
 void DapCmdNode::slotCondTxCreate()
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-
 //  QJsonObject condTx;
-//  condTx["wallet_name"] = _data->selectedWalletName;
-//  condTx["network_name"] = _data->selectedNetworkName;
-//  condTx["token_name"] = _data->selectedTokenName;
+//  condTx["wallet_name"] = nodeData->selectedWalletName;
+//  condTx["network_name"] = nodeData->selectedNetworkName;
+//  condTx["token_name"] = nodeData->selectedTokenName;
 ////    condTx["cert_name"] = certName;
-//  condTx["value"] = _data->value;
+//  condTx["value"] = nodeData->value;
 //  condTx["unit"] = "day"; // not used, filled with valid value
 
 //  QJsonObject jObject;
@@ -384,15 +384,15 @@ void DapCmdNode::slotCondTxCreate()
 
 //  sendCmd (&jObject);
 
-  auto order  = _data->orderListData.order (_data->orderHash);
+  auto order  = nodeData->orderListData.order (nodeData->orderHash);
 
   /* send command */
   QJsonObject jobj {
     { "cond_tx_create", QJsonObject {
-        { "wallet_name",  _data->selectedWalletName },
-        { "network_name", _data->selectedNetworkName },
-        { "token_name",   _data->selectedTokenName },
-        { "value",        _data->value },
+        { "wallet_name",  nodeData->selectedWalletName },
+        { "network_name", nodeData->selectedNetworkName },
+        { "token_name",   nodeData->selectedTokenName },
+        { "value",        nodeData->value },
         { "unit",         convertUnits (order.priceUnit()) },// "day" },
       },
     },
@@ -400,12 +400,12 @@ void DapCmdNode::slotCondTxCreate()
   sendCmd (&jobj);
 
   /* store data */
-  s_historyOrder.wallet   = _data->selectedWalletName;
-  s_historyOrder.network  = _data->selectedNetworkName;
-  s_historyOrder.token    = _data->selectedTokenName;
-  s_historyOrder.value    = _data->value;
+  s_historyOrder.wallet   = nodeData->selectedWalletName;
+  s_historyOrder.network  = nodeData->selectedNetworkName;
+  s_historyOrder.token    = nodeData->selectedTokenName;
+  s_historyOrder.value    = nodeData->value;
   s_historyOrder.unit     = order.priceUnit(); // "day";
-  s_historyOrder.wallet   = _data->selectedWalletName;
+  s_historyOrder.wallet   = nodeData->selectedWalletName;
   s_historyOrder.created  = QDateTime::currentDateTime();
   s_historyOrder.isSigned = false;
   _updateHistoryItem();
@@ -415,12 +415,12 @@ void DapCmdNode::slotStartSearchOrders()
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
   QJsonObject searchOrders;
-  qDebug() << "startSearchOrders" << _data->selectedNetworkName << _data->selectedTokenName << _data->unit << _data->minPrice << _data->maxPrice;
-  searchOrders["network_name"] = _data->selectedNetworkName;
-  searchOrders["token_name"] = _data->selectedTokenName;
-  searchOrders["unit"] = _data->unit;
-  searchOrders["min_price"] = _data->minPrice;
-  searchOrders["max_price"] = _data->maxPrice;
+  qDebug() << "startSearchOrders" << nodeData->selectedNetworkName << nodeData->selectedTokenName << nodeData->unit << nodeData->minPrice << nodeData->maxPrice;
+  searchOrders["network_name"] = nodeData->selectedNetworkName;
+  searchOrders["token_name"] = nodeData->selectedTokenName;
+  searchOrders["unit"] = nodeData->unit;
+  searchOrders["min_price"] = nodeData->minPrice;
+  searchOrders["max_price"] = nodeData->maxPrice;
   QJsonObject jObject;
   jObject["search_orders"] = searchOrders;
   sendCmd (&jObject);
@@ -442,14 +442,13 @@ void DapCmdNode::slotCheckSigned()
 void DapCmdNode::slotStartConnectByOrder()
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-
   /* get order */
-  auto order  = _data->orderListData.order (_data->orderHash);
+  auto order  = nodeData->orderListData.order (nodeData->orderHash);
 
   /* send command */
   QJsonObject jobj {
     { "start_connect_by_order", order.toJsonObject() },
-    { "token", _data->selectedTokenName },
+    { "token", nodeData->selectedTokenName },
   };
   sendCmd (&jobj);
 
@@ -458,9 +457,9 @@ void DapCmdNode::slotStartConnectByOrder()
   _updateHistoryItem();
 
 //  QJsonObject jObject;
-//  QJsonObject connectData = _data->orderListData.orderInfo (_data->orderHash);
+//  QJsonObject connectData = nodeData->orderListData.orderInfo (nodeData->orderHash);
 
-//  connectData["token"] = _data->selectedTokenName;
+//  connectData["token"] = nodeData->selectedTokenName;
 //  //connectData["node_ip"] = "164.92.175.30"; // TODO get from order
 //  jObject["start_connect_by_order"] = connectData;
   //  sendCmd (&jObject);
@@ -469,7 +468,6 @@ void DapCmdNode::slotStartConnectByOrder()
 void DapCmdNode::slotStartConnectByHistoryOrder (const DapNodeOrderInfo &a_info, const QString &a_token, const QString &a_network)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-
   /* send command */
   QJsonObject jobj {
     { "start_connect_by_order", a_info.toJsonObject() },
@@ -482,7 +480,6 @@ void DapCmdNode::slotStartConnectByHistoryOrder (const DapNodeOrderInfo &a_info,
 void DapCmdNode::slotRequestIpNode (const QString &networkName, const QJsonArray &orderList)
 {
     DEBUGINFO << __PRETTY_FUNCTION__;
-
     QJsonObject jobj {
       { "srv_uid",          networkName },
       { "node_adress_list", orderList },
@@ -507,24 +504,24 @@ void DapCmdNode::slotRequestNetworkFee (const QString &a_networkName)
 void DapCmdNode::slotChooseWallet (const QString &wallet)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  _data->selectedWalletName = wallet;
+  nodeData->selectedWalletName = wallet;
   emit sigContinueEnable (_checkContinue());
-//  emit sigNetworksList (_data->dataWallet.networkWithTokens (wallet));
+//  emit sigNetworksList (nodeData->dataWallet.networkWithTokens (wallet));
 }
 
 void DapCmdNode::slotChooseNetwork (const QString &network)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  _data->selectedNetworkName = network;
+  nodeData->selectedNetworkName = network;
   emit sigContinueEnable (_checkContinue());
-//  emit sigTokensInfo (_data->dataWallet.tokensAmount (_data->selectedWalletName, _data->selectedNetworkName));
+//  emit sigTokensInfo (nodeData->dataWallet.tokensAmount (nodeData->selectedWalletName, nodeData->selectedNetworkName));
 }
 
 void DapCmdNode::slotChooseToken (const QString &token)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  _data->selectedTokenName = token;
-//  auto tokens = _data->dataWallet.tokensAmount (_data->selectedWalletName, _data->selectedNetworkName);
+  nodeData->selectedTokenName = token;
+//  auto tokens = nodeData->dataWallet.tokensAmount (nodeData->selectedWalletName, nodeData->selectedNetworkName);
   emit sigContinueEnable (_checkContinue());
 //  emit sigTokenAmount (token, tokens[token]);
 }
@@ -532,35 +529,35 @@ void DapCmdNode::slotChooseToken (const QString &token)
 void DapCmdNode::slotSetValue (const QString &value)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  _data->value = value;
+  nodeData->value = value;
   emit sigContinueEnable (_checkContinue());
 }
 
 void DapCmdNode::slotSetUnit (const QString &value)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  _data->unit = value;
-  _data->orderListData.setUnit (_data->unit);
+  nodeData->unit = value;
+  nodeData->orderListData.setUnit (nodeData->unit);
   emit sigContinueEnable (_checkContinue());
 }
 
 void DapCmdNode::slotChooseOrder (const QString &hash)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  _data->orderHash = hash;
+  nodeData->orderHash = hash;
   emit sigContinueEnable (_checkContinue());
 }
 
 void DapCmdNode::slotSetMaxValueUnit (const QString &price)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  _data->maxPrice = price;
+  nodeData->maxPrice = price;
 }
 
 void DapCmdNode::slotSetMinValueUnit (const QString &price)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  _data->minPrice = price;
+  nodeData->minPrice = price;
 }
 
 /*-----------------------------------------*/
@@ -592,7 +589,7 @@ QMap<QString, QVariant> &OrderListData::orders()
 
 void OrderListData::_updateListMap()
 {
-//        foreach(const QJsonValue& item, _data->orderListData)
+//        foreach(const QJsonValue& item, nodeData->orderListData)
 //        {
 //            QJsonObject joItem = item.toObject();
 //            QString key = joItem["hash"].toString().right(10);
@@ -603,8 +600,8 @@ void OrderListData::_updateListMap()
 //               )
 //            {
 //                list.push_back(joItem["node_location"].toString());
-//                list.push_back(QString("%1%2 per %3").arg(joItem["price"].toString()).arg(_data->unit).arg(joItem["price_unit"].toString()));
-//                _data->orders[key].setValue(list);
+//                list.push_back(QString("%1%2 per %3").arg(joItem["price"].toString()).arg(nodeData->unit).arg(joItem["price_unit"].toString()));
+//                nodeData->orders[key].setValue(list);
 //                qDebug() << joItem;
 //            }
 //        }
