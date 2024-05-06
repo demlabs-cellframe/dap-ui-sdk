@@ -1468,6 +1468,12 @@
     inactive: "@ic-update";
 }
 
+.chooseserver-last-update-label
+{
+    color: "@input-placeholder";
+    scaled-font: scaled(12);
+}
+
 /****************************************************
  * Choose Language
  ***************************************************/
