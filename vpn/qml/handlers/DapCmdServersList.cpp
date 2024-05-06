@@ -14,7 +14,7 @@ void DapCmdServersList::handleResult(const QJsonObject& result)
             if (servers.isEmpty()) {
                 emit sigEmptyList (tr ("No servers available on this CDB. Try another..."));
             } else {
-                emit sigServersListUpdate(servers);
+                emit sigServersListUpdate(servers, QDateTime::currentDateTime().addMonths (-8));
             }
         } else {
             qCritical() << "Error parse response from service";

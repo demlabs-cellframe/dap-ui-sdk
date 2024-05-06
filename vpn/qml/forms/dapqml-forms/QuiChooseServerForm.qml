@@ -106,6 +106,10 @@ Item {
         root.internal.spinner = false;
     }
 
+    function updateLastUpdateLabel(a_text) {
+        lastUpdateLabel.text = a_text;
+    }
+
     /// @}
     /****************************************//**
      * @name COMPONENTS
@@ -313,6 +317,19 @@ Item {
                 qss: "chooseserver-update-btn"
                 onClicked: { root.sigUpdate(); root.internal.spinner = true; }
             }
+        }
+
+        /****************************************//**
+         * Last update time label
+         ********************************************/
+
+        DapQmlLabel {
+            id: lastUpdateLabel
+            x: title.x
+            y: title.y + title.height
+            width: title.width
+            height: title.height
+            qss: "chooseserver-last-update-label"
         }
 
         /****************************************//**
