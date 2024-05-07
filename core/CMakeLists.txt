@@ -24,7 +24,6 @@ if (IOS)
     ${CMAKE_CURRENT_SOURCE_DIR}/*.mm
     ${CMAKE_CURRENT_SOURCE_DIR}/*.m
     ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
-    message("[+++++] .mm added")
 else()
     file(GLOB DAP_UI_SDK_VPN_CORE_NATIVE_SRC  *.cpp)
 endif()

@@ -23,7 +23,8 @@
 #pragma once
 
 #include "DapTunUnixAbstract.h"
-#include <objc/objc-runtime.h>
+//#include <objc/objc-runtime.h>
+#include <objc/objc.h>
 
 
 class DapTunDarwin:public DapTunUnixAbstract

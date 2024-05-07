@@ -25,17 +25,8 @@
 #include <QtDebug>
 #include <QProcess>
 
-#include <sys/socket.h>
-#include <sys/sys_domain.h>
-#include <sys/ioctl.h> // ioctl
-#include <sys/kern_control.h> // struct socketaddr_ctl
-#include <sys/event.h>
-#include <sys/time.h>
-#include <net/if.h>
-#include <net/if_utun.h> // UTUN_CONTROL_NAME
-#include <netinet/in.h>
+#include <stdarg.h>
 #include <poll.h>
-
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,26 +34,39 @@
 #include <fcntl.h>
 
 
+#include <sys/types.h>
+#ifndef Q_OS_IOS
+#include <sys/sys_domain.h>
+#include <sys/kern_control.h>
+#include <net/if_utun.h> // UTUN_CONTROL_NAME
+#endif
+#include <sys/ioctl.h>
+#include <sys/socket.h>
+#include <sys/event.h>
+#include <sys/time.h>
+
+#include <net/if.h>
+#include <netinet/in.h>
+
 #include "DapSession.h"
 #include "DapTunDarwin.h"
 #include "DapTunWorkerDarwin.h"
 
 #define __NE_INDIRECT__
-#import "darwin/DapPacketTunnelProvider.h"
-#import <NetworkExtension/NETunnelProviderManager.h>
-
+#import "DapPacketTunnelProvider.h"
+#import <NetworkExtension/NetworkExtension.h>
+// #import <NetworkExtension/NETunnelProviderProtocol.h>
 
 /**
  * @brief DapTunDarwin::DapTunDarwin
  */
-DapTunDarwin::DapTunDarwin( )
+DapTunDarwin::DapTunDarwin()
 {
     qDebug() << "DapTunDarwin::DapTunDarwin( )";
     tunThread = new QThread();
     tunWorker = new DapTunWorkerDarwin(this);
     connect(this, &DapTunAbstract::sigStartWorkerLoop, tunWorker, &DapTunWorkerAbstract::loop);
     initWorker();
-    tunnelManagerStart();
 }
 
 void DapTunDarwin::tunnelManagerStart()
@@ -75,10 +79,13 @@ void DapTunDarwin::tunnelManagerStart()
     manager = [[NETunnelProviderManager alloc] init];
 
     NETunnelProviderProtocol *protocol = [[NETunnelProviderProtocol alloc] init];
+    [protocol.providerBundleIdentifier: [NSString stringWithUTF8String: "com.kelvpn" ]];
+    [protocol.serverAddress: [NSString stringWithUTF8String: upstreamAddress().toLatin1().constData()]];
+    
     [protocol.includeAllNetworks: YES];
    // [protocol.enforceRoutes: YES];
-    [protocol.serverAddress: [NSString stringWithUTF8String: upstreamAddress().toLatin1().constData()]];
-    [protocol.providerBundleIdentifier: [NSString stringWithUTF8String: "com.kelvpn" ]];
+    
+    
 
     [manager.protocolConfiguration: protocol];
     [manager.enabled: YES];
@@ -88,7 +95,7 @@ void DapTunDarwin::tunnelManagerStart()
     tunnelManager = manager;
 
     NSLog(@"Connection desciption: %@", manager.localizedDescription);
-    NSLog(@"VPN status:  %i", manager.connection.status);
+//    NSLog(@"VPN status:  %i", manager.connection.status);
     //[[NSNotificationCenter defaultCenter] addObserver:this selector:@selector(vpnConnectionStatusChanged) name:NEVPNStatusDidChangeNotification object:nil];
 
     [manager saveToPreferencesWithCompletionHandler:^(NSError *error) {
@@ -100,7 +107,7 @@ void DapTunDarwin::tunnelManagerStart()
                 if(error) {
                     NSLog(@"Load error: %@", error);
                 }else {
-                    NEPacketTunnelNetworkSettings * settings = [[NEPacketTunnelNetworkSettings alloc] init];
+                    // NEPacketTunnelNetworkSettings * settings = [[NEPacketTunnelNetworkSettings alloc] init];
 
                     NSError *startError;
                     [manager.connection startVPNTunnelAndReturnError:&startError];
