@@ -73,7 +73,7 @@ Item {
 
     Timer {
         id: spinnerWatchdogTimer
-        interval: 4000
+        interval: 8000
         running: true
         repeat: false
         onTriggered: root.internal.spinner = false
