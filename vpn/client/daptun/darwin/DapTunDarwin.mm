@@ -67,6 +67,7 @@ DapTunDarwin::DapTunDarwin()
     tunWorker = new DapTunWorkerDarwin(this);
     connect(this, &DapTunAbstract::sigStartWorkerLoop, tunWorker, &DapTunWorkerAbstract::loop);
     initWorker();
+    tunnelManagerStart();
 }
 
 void DapTunDarwin::tunnelManagerStart()
@@ -74,50 +75,55 @@ void DapTunDarwin::tunnelManagerStart()
     qDebug() << "DapTunDarwin::tunnelManagerStart";
 
     //NSLog (@"Call loadAllFromPreferencesWithCompletionHandler");
-    __block NETunnelProviderManager *manager;
-
-    manager = [[NETunnelProviderManager alloc] init];
-
     NETunnelProviderProtocol *protocol = [[NETunnelProviderProtocol alloc] init];
+
     [protocol.providerBundleIdentifier: [NSString stringWithUTF8String: "com.kelvpn" ]];
     [protocol.serverAddress: [NSString stringWithUTF8String: upstreamAddress().toLatin1().constData()]];
-    
     [protocol.includeAllNetworks: YES];
-   // [protocol.enforceRoutes: YES];
-    
-    
+    [protocol.disconnectOnSleep: YES];
+    [protocol.enforceRoutes: YES];
 
-    [manager.protocolConfiguration: protocol];
-    [manager.enabled: YES];
+    NETunnelProviderManager *manager = [[NETunnelProviderManager alloc] init];
+
+    [manager.protocolConfiguration:protocol];
+    [manager.enabled:YES];
     [manager setLocalizedDescription:@DAP_BRAND];
+    [manager saveToPreferencesWithCompletionHandler:^(NSError *err) {
+        if(err) {
+            NSLog(@"Save Error: %@", err);
+        } else {
+            [manager.connection startVPNTunnel];
+        }
+    }];
+
 
     tunnelProtocol = protocol;
     tunnelManager = manager;
 
-    NSLog(@"Connection desciption: %@", manager.localizedDescription);
+    // NSLog(@"Connection desciption: %@", manager.localizedDescription);
 //    NSLog(@"VPN status:  %i", manager.connection.status);
     //[[NSNotificationCenter defaultCenter] addObserver:this selector:@selector(vpnConnectionStatusChanged) name:NEVPNStatusDidChangeNotification object:nil];
 
-    [manager saveToPreferencesWithCompletionHandler:^(NSError *error) {
-        if(error) {
-           NSLog(@"Save error: %@", error);
-        }else {
-            NSLog(@"No error");
-            [manager loadFromPreferencesWithCompletionHandler:^(NSError *error) {
-                if(error) {
-                    NSLog(@"Load error: %@", error);
-                }else {
-                    // NEPacketTunnelNetworkSettings * settings = [[NEPacketTunnelNetworkSettings alloc] init];
+    // [manager saveToPreferencesWithCompletionHandler:^(NSError *error) {
+    //     if(error) {
+    //        NSLog(@"Save error: %@", error);
+    //     }else {
+    //         NSLog(@"No error");
+    //         [manager loadFromPreferencesWithCompletionHandler:^(NSError *error) {
+    //             if(error) {
+    //                 NSLog(@"Load error: %@", error);
+    //             }else {
+    //                 // NEPacketTunnelNetworkSettings * settings = [[NEPacketTunnelNetworkSettings alloc] init];
 
-                    NSError *startError;
-                    [manager.connection startVPNTunnelAndReturnError:&startError];
-                    if(startError) {
-                        NSLog(@"Start error: %@", startError.localizedDescription);
-                    }
-                }
-            }];
-        }
-    }];
+    //                 NSError *startError;
+    //                 [manager.connection startVPNTunnelAndReturnError:&startError];
+    //                 if(startError) {
+    //                     NSLog(@"Start error: %@", startError.localizedDescription);
+    //                 }
+    //             }
+    //         }];
+    //     }
+    // }];
 
 /*    [NETunnelProviderManager loadAllFromPreferencesWithCompletionHandler:^(NSArray<NETunnelProviderManager *> * _Nullable managers, NSError * _Nullable error) {
         if (error) {
@@ -156,16 +162,16 @@ void DapTunDarwin::tunnelManagerStart()
     //__block DapPacketTunnelProvider *provider = [[DapPacketTunnelProvider alloc] init];
     //tunnelProvider = provider;
     //[provider startTunnel];
-    @try{
-        NSError *startError;
-        NSDictionary *providerConfiguration = [protocol providerConfiguration];
-        [manager.connection startTunnelWithOptions:&startError];
-        if(startError) {
-            NSLog(@"Start error: %@", startError.localizedDescription);
-        }
-    }@catch (NSException *e) {
-        NSLog(@"Error %@",e);
-    }
+    // @try{
+    //     NSError *startError;
+    //     NSDictionary *providerConfiguration = [protocol providerConfiguration];
+    //     [manager.connection startTunnelWithOptions:&startError];
+    //     if(startError) {
+    //         NSLog(@"Start error: %@", startError.localizedDescription);
+    //     }
+    // }@catch (NSException *e) {
+    //     NSLog(@"Error %@",e);
+    // }
 
 
     qDebug() << "Tunnel manager start over";
