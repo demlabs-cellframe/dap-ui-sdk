@@ -8,6 +8,7 @@ DapCmdServersList::DapCmdServersList(QObject *parent)
 
 void DapCmdServersList::handleResult(const QJsonObject& result)
 {
+  qDebug() << "DapCmdServersList::handleResult :" << result;
     if(result.value("servers").isArray()) {
         DapServerInfoList servers;
         if (DapServerInfo::fromJSON(result.value("servers").toArray(), servers)) {
