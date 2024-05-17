@@ -226,11 +226,11 @@ const DapNodeTransactionHistory::Transaction &DapNodeTransactionHistory::current
   return _list.at (m_currentIndex);
 }
 
-int DapNodeTransactionHistory::indexOf (const QDateTime &a_created) const
+int DapNodeTransactionHistory::indexOf (const QString &a_orderHash) const
 {
   int index = 0;
   for (auto i = _list.cbegin(), e = _list.cend(); i != e; i++, index++)
-    if (i->created == a_created)
+    if (i->info.hash() == a_orderHash)
       return index;
   return -1;
 }
