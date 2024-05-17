@@ -8,7 +8,9 @@ import QtQuick.Shapes 1.4
 import DapQmlStyle 1.0
 import Brand 1.0
 import PageCtl 1.0
-import DapQmlModelOrderList 1.0
+import NoCdbCtl 1.0
+import DapQmlModelNodeOrderList 1.0
+import DapQmlModelNodeProxyBase 1.0
 import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
@@ -93,21 +95,21 @@ Item {
         /// list format:
         /// showConfirmButton,showValueEdit,isEditingUnit,listviewMode
         property var modeSettings: [
-            0,0,0,DapQmlModelOrderList.Invalid,     // Invalid
+            0,0,0,  // Invalid
 
-            0,0,0,DapQmlModelOrderList.Orders,      // Orders
+            0,0,0,  // Orders
 
-            0,0,0,DapQmlModelOrderList.Networks,    // Networks
-            0,0,0,DapQmlModelOrderList.Wallets,     // Wallets
-            0,0,0,DapQmlModelOrderList.Tokens,      // Tokens
+            0,0,0,  // Networks
+            0,0,0,  // Wallets
+            0,0,0,  // Tokens
 
-            0,0,0,DapQmlModelOrderList.Units,       // Units
-            1,1,0,DapQmlModelOrderList.Invalid,     // Max Unit
-            1,1,0,DapQmlModelOrderList.Invalid,     // Min Unit
-            1,1,0,DapQmlModelOrderList.Invalid,     // Max Price
-            1,1,0,DapQmlModelOrderList.Invalid,     // Min Price
+            0,0,0,  // Units
+            1,1,0,  // Max Unit
+            1,1,0,  // Min Unit
+            1,1,0,  // Max Price
+            1,1,0,  // Min Price
 
-            1,1,0,DapQmlModelOrderList.TokenValue,  // Token Value
+            1,1,0,  // Token Value
         ]
 
         /* LABELS */
@@ -129,14 +131,14 @@ Item {
         /* INTERNAL SIGNALS */
         onModeChanged: {
             console.log (`internal mode: ${mode}`)
-            showConfirmButton       = modeSettings[mode*4+0];
-            showValueEdit           = modeSettings[mode*4+1];
-            isEditingUnit           = modeSettings[mode*4+2];
-            let listviewMode        = modeSettings[mode*4+3];
+            showConfirmButton       = modeSettings[mode*3+0];
+            showValueEdit           = modeSettings[mode*3+1];
+            isEditingUnit           = modeSettings[mode*3+2];
+//            let listviewMode        = modeSettings[mode*4+3];
             isPrice                 = mode === QuiNodeOrderList.MaxPrice || mode === QuiNodeOrderList.MinPrice;
 
-            if (csListView.model)
-                csListView.model.setMode (listviewMode);
+//            if (csListView.model)
+//                csListView.model.setMode (listviewMode);
             valueEditInput.text     = "0";
 
             /* change title */
@@ -308,10 +310,7 @@ Item {
     }
 
     function filterItemSelected (a_index, a_name) {
-        if (csListView.model === undefined)
-            return;
-
-        let mode    = csListView.model.mode;
+        let mode    = internal.mode;
 
         console.log(`filterItemSelected at ${a_index}, value "${a_name}", mode ${mode}`)
 
@@ -925,8 +924,8 @@ Item {
             }
 
             property var cbOnClicked: function() {
-                root.internal.network       = model.network;
-                root.internal.wallet        = model.wallet;
+                root.internal.network       = NoCdbCtl.network;
+                root.internal.wallet        = NoCdbCtl.wallet;
                 root.internal.server        = model.server;
                 //root.internal.unit          = model.units;
                 root.internal.price         = model.price;
@@ -959,7 +958,7 @@ Item {
             separator: true
             qss: "nodeorlist-name-value"
             checked: {
-                switch(csListView.model.mode)
+                switch(root.internal.mode)
                 {
                 case QuiNodeOrderList.Networks:
                     return csListViewNetworks.model.currentIndex === model.index;
@@ -1652,7 +1651,7 @@ Item {
                         elide: Text.ElideMiddle
                         visible: root.internal.mode === QuiNodeOrderList.TokenValue
                         qss: "c-grey"
-                        text: `Balance: ${csListView.model.balance} ${root.internal.token}`
+                        text: `Balance: ${NoCdbCtl.balance} ${root.internal.token}`
 
                         MouseArea {
                             anchors.fill: parent
