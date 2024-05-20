@@ -1391,6 +1391,11 @@ Item {
                     property color color
                     property color fill
                     property var cbClicked: function() {
+                        root.internal.network       = "";
+                        root.internal.wallet        = "";
+                        root.internal.token         = "";
+                        root.internal.tokenValue    = "";
+                        storeFilterData();
                         root.sigRefreshDataClicked();
                         // console.log("refresh clicked");
                         btnRefreshWallets.enabled = false;
