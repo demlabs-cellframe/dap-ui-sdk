@@ -162,7 +162,10 @@ DapQmlDummy {
                 anchors.fill: updateNotificationButton
                 z : 3
                 cursorShape: Qt.PointingHandCursor
-                onClicked: root.sigStartUpdate()
+                onClicked: {
+                    root.sigStartUpdate();
+                    TickerUpdateCtl.startUpdate();
+                }
             }
         }
     }

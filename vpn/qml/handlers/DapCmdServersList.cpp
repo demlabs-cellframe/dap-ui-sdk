@@ -14,7 +14,7 @@ void DapCmdServersList::handleResult(const QJsonObject& result)
             if (servers.isEmpty()) {
                 emit sigEmptyList (tr ("No servers available on this CDB. Try another..."));
             } else {
-                emit sigServersListUpdate(servers);
+                emit sigServersListUpdate(servers, QDateTime::fromSecsSinceEpoch(result.value("update_time").toString().toLongLong()));
             }
         } else {
             qCritical() << "Error parse response from service";

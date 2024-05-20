@@ -124,6 +124,10 @@ Item {
         return result
     }
 
+    function cdbDetected(a_value) {
+        internal.cdbDetected    = a_value;
+    }
+
     function setCellframeDetected(a_value) {
         noCdb.cellframeDetected = a_value;
         if (internal.cdbDetected === false)
@@ -136,14 +140,15 @@ Item {
 
     function setTransactionProcessing(a_value) {
         noCdb.transactionProcessing = a_value;
+        if (internal.cdbDetected === false)
+        {
+            internal.mode = QuiLoginForm.Mode.M_WALLET;
+            root.walletSelected(internal.mode === QuiLoginForm.Mode.M_WALLET);
+        }
     }
 
     function setWaitingForApproval(a_value) {
         noCdb.waitingForApproval = a_value;
-    }
-
-    function cdbDetected(a_value) {
-        internal.cdbDetected    = a_value;
     }
 
     function setTokenSet(a_value) {

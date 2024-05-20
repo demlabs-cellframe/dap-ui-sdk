@@ -43,6 +43,8 @@
         <file compress="1">dark/contact_report_bg_border.png</file>
         <file compress="1">dark/report_bg_border_75.png</file>
         <file compress="1">dark/rouexc-close.png</file>
+        <file compress="1">dark/ckeckbox-off.png</file>
+        <file compress="1">dark/ckeckbox-on.png</file>
         <file compress="1">light/logo.png</file>
         <file compress="1">light/login-logo.png</file>
         <file compress="1">light/radio_btn_on.png</file>
@@ -87,8 +89,6 @@
         <file compress="1">light/contact_report_bg_border.png</file>
         <file compress="1">light/report_bg_border_75.png</file>
         <file compress="1">light/rouexc-close.png</file>
-        <file compress="1">dark/ckeckbox-off.png</file>
-        <file compress="1">dark/ckeckbox-on.png</file>
         <file compress="1">light/ckeckbox-off.png</file>
         <file compress="1">light/ckeckbox-on.png</file>
     </qresource>
