@@ -123,8 +123,8 @@ static QHash<QString, const char *> s_unitConvertMap =
 {
   { "MEGABYTE", "mb" },
   { "KILOBYTE", "kb" },
-  { "BYTE", "b" },
-  { "SECOND", "sec" },
+  { "BYTE", "B" },
+  { "SECOND", "SEC" },
   { "DAY", "day" },
 };
 
