@@ -121,11 +121,11 @@ struct DapCmdNode::DapCmdNodeData
 static DapNodeTransactionHistory::Transaction s_historyOrder;
 static QHash<QString, const char *> s_unitConvertMap =
 {
-  { "MEGABYTE", "mb" },
-  { "KILOBYTE", "kb" },
-  { "BYTE", "B" },
-  { "SECOND", "SEC" },
-  { "DAY", "day" },
+  { "MEGABYTE", "MB" },
+  { "KILOBYTE", "KB" },
+  { "BYTE",     "B" },
+  { "SECOND",   "SEC" },
+  { "DAY",      "DAY" },
 };
 
 /* LINKS */

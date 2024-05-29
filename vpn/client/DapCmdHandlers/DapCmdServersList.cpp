@@ -66,6 +66,8 @@ void DapCmdServersList::sendRequestToCDB(){
                 }
                 sendSimpleError(-32003, "Empty nodelist, try another CDB...");
             } else {
+                qDebug() << "Server list array:" << arr;
+
                 updateServerList(arr);
             }
         }
