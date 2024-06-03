@@ -12,6 +12,7 @@ import NoCdbCtl 1.0
 import DapQmlModelNodeOrderList 1.0
 import DapQmlModelNodeProxyBase 1.0
 import StyleDebugTree 1.0
+import com.DapQmlWidgets 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -1068,45 +1069,10 @@ Item {
         opacity: 1.0 * root.internal.popup
         Behavior on opacity { PropertyAnimation { duration: 250 } }
 
-        DapQmlRectangle {
-            id: progressCircle
+        DapQmlArcAnimation {
             anchors.centerIn: parent
+            strokeWidth: 10
             qss: "nodeorlist-spinner-arc"
-
-            property string color
-            property int strokeWidth: 10
-
-            Shape {
-                id: nodeorInfoArcAnim
-                anchors.fill: parent
-                layer.enabled: true
-                layer.samples: 6
-
-                ShapePath {
-                    fillColor: "transparent"
-                    strokeColor: progressCircle.color
-                    strokeWidth: progressCircle.strokeWidth
-                    capStyle: ShapePath.FlatCap
-
-                    PathAngleArc {
-                        id: loginInfoArcPath
-                        centerX: nodeorInfoArcAnim.width / 2
-                        centerY: nodeorInfoArcAnim.height / 2
-                        radiusX: nodeorInfoArcAnim.width / 2 - progressCircle.strokeWidth / 2
-                        radiusY: nodeorInfoArcAnim.height / 2 - progressCircle.strokeWidth / 2
-                        startAngle: 90
-                        sweepAngle: 180
-
-                        NumberAnimation on startAngle {
-                            from: 0
-                            to: 360
-                            running: true
-                            loops: Animation.Infinite
-                            duration: 2000
-                        }
-                    }
-                }
-            }
         }
     }
 
