@@ -29,5 +29,7 @@ void DapCmdLastConnectionData::lastConnectionDataHandler(const QJsonValue &start
         qWarning() << "Something wrong can't parse last connection data";
         return;
     }
-    emit sigLastConnectionData(QDateTime::fromString(bStartTime));
+    QDateTime qdtStartTime  = QDateTime::fromString (bStartTime);
+    qDebug() << "DapCmdLastConnectionData::lastConnectionDataHandler" << bStartTime << startTime << qdtStartTime;
+    emit sigLastConnectionData (qdtStartTime);
 }
