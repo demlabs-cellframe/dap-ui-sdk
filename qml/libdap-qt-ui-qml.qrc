@@ -54,5 +54,6 @@
         <file>icons/switch_on.svg</file>
         <file>widgets/DapButtonCanvas.qml</file>
         <file>widgets/DapTextWithList.qml</file>
+        <file>widgets/DapFeeComponent.qml</file>
     </qresource>
 </RCC>
