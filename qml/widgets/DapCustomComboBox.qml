@@ -18,6 +18,9 @@ Item
     property int delegateHeight: 40
     property bool isHighPopup: false
 
+    property int popupWidth: 0
+    property bool isHighlightDisplayTextPopup: false
+
     property bool changingRound: false
     property bool isSingleColor: false
     property bool isInnerShadow: true
@@ -91,13 +94,13 @@ Item
         border.width: 0
         anchors.fill: parent
 
-        color: popupVisible ?
+        color: popupVisible && !isHighlightDisplayTextPopup ?
                    backgroundColorNormal :
                    backgroundColorShow
 
         Rectangle
         {
-            visible: popupVisible && changingRound && !isHighPopup
+            visible: popupVisible && changingRound && !isHighPopup && !isHighlightDisplayTextPopup
             height: parent.radius
             anchors
             {
@@ -121,7 +124,7 @@ Item
 
                 text: mainItem.displayText
                 font: mainItem.font
-                color: popupVisible ?
+                color: popupVisible && !isHighlightDisplayTextPopup ?
                            displayTextPopupColor : displayTextNormalColor
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
@@ -147,7 +150,7 @@ Item
 
     DropShadow
     {
-        visible: popupVisible && !isHighPopup
+        visible: popupVisible && !isHighPopup && !isHighlightDisplayTextPopup
         anchors.fill: background
         horizontalOffset: currTheme.hOffset
         verticalOffset: currTheme.vOffset
@@ -160,7 +163,7 @@ Item
 
     InnerShadow
     {
-        visible: popupVisible && isInnerShadow && !isHighPopup
+        visible: popupVisible && isInnerShadow && !isHighPopup && !isHighlightDisplayTextPopup
         anchors.fill: background
         horizontalOffset: 1
         verticalOffset: 1
@@ -229,7 +232,7 @@ Item
         {
             id: popupBackground
             radius: background.radius
-            width: mainItem.width
+            width: popupWidth === 0 ? mainItem.width : popupWidth
             height: !isHighPopup ? popupListView.height + border.width * 2 :  popupListView.height + border.width * 2 + delegateHeight + radius
 
             color: isSingleColor ? background.color : currTheme.mainBackground
@@ -258,7 +261,7 @@ Item
 
                 x: popupBackground.border.width
                 y: popupBackground.border.width
-                width: mainItem.width - popupBackground.border.width*2
+                width: popupBackground.width - popupBackground.border.width*2
                 implicitHeight:
                     contentHeight < maximumPopupHeight ?
                         contentHeight : maximumPopupHeight
@@ -272,7 +275,7 @@ Item
                 Rectangle
                 {
                     id: menuDelegate
-                    width: mainItem.width
+                    width: popupWidth === 0 ? mainItem.width : popupWidth
                     height: {
                         if(index === currentIndex && isNecessaryToHideCurrentIndex)
                         {
