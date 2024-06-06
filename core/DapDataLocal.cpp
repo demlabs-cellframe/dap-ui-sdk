@@ -12,6 +12,8 @@
 #include "DapSerialKeyData.h"
 #include "DapSerialKeyHistory.h"
 #include "DapLogger.h"
+#include <QRandomGenerator>
+
 
 #ifdef DAP_OS_ANDROID
 #include <sys/sendfile.h>
@@ -43,18 +45,18 @@ void DapDataLocal::parseXML(const QString& a_fname)
     qDebug() << "data.xml opened, size "<< file.size();
     QXmlStreamReader *sr = new QXmlStreamReader(&file);
     if(sr->readNextStartElement()){
-        if(sr->name() == "data"){
+        if(sr->name().toString() == "data"){
             while ( sr->readNextStartElement() ){
-                if( sr->name() == "servers"){
+                if( sr->name().toString() == "servers"){
                     while ( sr->readNextStartElement() ){
-                        if( sr->name() == "server") {
+                        if( sr->name().toString() == "server") {
                             DapServerInfo item;
                             while ( sr->readNextStartElement() ){
-                                if(sr->name() == "name"){
+                                if(sr->name().toString() == "name"){
                                     item.setName (sr->readElementText());
-                                } else if (sr->name() == "address") {
+                                } else if (sr->name().toString() == "address") {
                                     item.setAddress (sr->readElementText());
-                                } else if( sr->name() == "port") {
+                                } else if( sr->name().toString() == "port") {
                                     bool ok;
                                     quint16 port = quint16(sr->readElementText().toInt(&ok));
                                     if (!ok) {
@@ -62,9 +64,9 @@ void DapDataLocal::parseXML(const QString& a_fname)
                                                                  "from XML file");
                                     }
                                     item.setPort (port);
-                                } else if(sr->name() == "location") {
+                                } else if(sr->name().toString() == "location") {
                                     item.setLocation (sr->readElementText());
-                                } else if (sr->name() == "state") {
+                                } else if (sr->name().toString() == "state") {
                                     item.setOnline (sr->readElementText());
                                 }
                                 else {
@@ -79,16 +81,16 @@ void DapDataLocal::parseXML(const QString& a_fname)
                             sr->skipCurrentElement();
                         }
                     }
-                }else if( sr->name() == "cdb"){
+                }else if( sr->name().toString() == "cdb"){
                     m_cdbServersList.push_back (DapCdbServer::serverFromString (sr->readElementText()));
                     qInfo() << "Add CDB address: " << m_cdbServersList.back().address;
-                }else if( sr->name() == "network-default"){
+                }else if( sr->name().toString() == "network-default"){
                     m_networkDefault = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
-                }else if( sr->name() == "title"){
+                }else if( sr->name().toString() == "title"){
                     m_brandName = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
-                }else if( sr->name() == "url_site"){
+                }else if( sr->name().toString() == "url_site"){
                     m_urlSite = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
                 }else{
@@ -260,7 +262,7 @@ QSettings* DapDataLocal::settings()
         int _l_fd = open("/sdcard/KelvinVPN/log/settings.ini", O_RDWR);
         int l_fd = _l_fd > 0 ? _l_fd : open("/sdcard/" DAP_BRAND "/log/settings.ini", O_RDWR);
         if (l_fd > 0) {
-            int l_ofd = open(qPrintable(s_path), O_CREAT | O_RDWR);
+            int l_ofd = open(qPrintable(s_path), O_CREAT | O_RDWR, S_IWRITE | S_IREAD);
             struct stat statBuf;
             fstat(l_fd, &statBuf);
             qInfo() << "Imported old settings [" << sendfile(l_ofd, l_fd, NULL, statBuf.st_size) << "] bytes";
@@ -274,6 +276,9 @@ QSettings* DapDataLocal::settings()
         close(l_ofd);
     }
 
+    static QSettings s_settings(s_path, QSettings::IniFormat);
+#elif defined(Q_OS_IOS)
+    static QString s_path = DapLogger::defaultLogPath(DAP_BRAND).chopped(3).append("settings.ini");
     static QSettings s_settings(s_path, QSettings::IniFormat);
 #else
     static QSettings s_settings;
@@ -374,7 +379,7 @@ QString DapDataLocal::getRandomString(int size)
 
    QString randomString;
    for(int i=0; i < randomStringLength; ++i){
-       int index = qrand() % possibleCharacters.length();
+       int index = QRandomGenerator::global()->generate() % possibleCharacters.length();
        QChar nextChar = possibleCharacters.at(index);
        randomString.append(nextChar);
    }

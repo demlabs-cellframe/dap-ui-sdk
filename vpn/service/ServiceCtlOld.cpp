@@ -2,8 +2,8 @@
 #include <QSettings>
 #include <QTimer>
 #ifdef Q_OS_ANDROID
-#include <QtAndroid>
-#include <QtAndroidExtras/QAndroidJniObject>
+
+
 #endif
 #include "ServiceCtlOld.h"
 #include "dap_common.h"
@@ -37,6 +37,8 @@ bool ServiceCtlOld::startService(){
     //for (int i = 0; i < 2; i++){ // Why should we try to start service twice?
 #ifdef Q_OS_WIN
     ret = exec_silent("sc start " DAP_BRAND "Service"); // Should also check there if service is running.
+#elif  defined(Q_OS_IOS)
+    return false;
 #else
     ret = ::system("systemctl is-active " DAP_BRAND "Service"); // To keep service from restarting twice.
     if (ret != 0) {

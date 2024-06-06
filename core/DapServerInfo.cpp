@@ -65,7 +65,7 @@ DapServerInfo::DapServerInfo (
   , m_name (a_name)
   , m_location (a_location)
   , m_ping (-1)
-  , m_connQuality (ConnectionQuality::NO_CONNECTION)
+  , m_connQuality (ConnectionQuality::INVALID)
 {
 
 }
@@ -144,7 +144,7 @@ QJsonObject DapServerInfo::toJSON() const
 
 void DapServerInfo::sortServerList (QList<DapServerInfo> &serverList)
 {
-  qSort (serverList.begin(), serverList.end());
+  std::sort (serverList.begin(), serverList.end());
 
   QList<DapServerInfo> availableServerList, notAvailableServerList;
 
@@ -304,10 +304,10 @@ DapServerInfo::ConnectionQuality DapServerInfo::connQuality() const
 
 void DapServerInfo::setConnQuality (const ConnectionQuality &connQuality)
 {
-  m_connQuality =
-    (int (connQuality) >= int (ConnectionQuality::NO_CONNECTION))
-    ? connQuality
-    : ConnectionQuality::NO_CONNECTION;
+  m_connQuality = connQuality;
+//    (int (connQuality) >= int (ConnectionQuality::NO_CONNECTION))
+//    ? connQuality
+//    : ConnectionQuality::NO_CONNECTION;
 }
 
 bool DapServerInfo::isAuto() const

@@ -34,5 +34,5 @@ Key::~Key()
 
 Key::Key(const QByteArray& a_keyPrivate)
 {
-    m_key = dap_enc_key_deserealize(a_keyPrivate.constData(),size_t(a_keyPrivate.size()) );
+    m_key = dap_enc_key_deserialize(a_keyPrivate.constData(),size_t(a_keyPrivate.size()) );
 }

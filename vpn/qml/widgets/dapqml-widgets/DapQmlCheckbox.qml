@@ -2,7 +2,8 @@
 
 import QtQuick 2.12
 import QtQuick.Controls 2.1
-import QtGraphicalEffects 1.5
+//import QtGraphicalEffects 1.5
+import Qt5Compat.GraphicalEffects
 import DapQmlStyle 1.0
 
 /****************************************//**
@@ -30,6 +31,9 @@ Rectangle {
 
     property QtObject internal: QtObject {
         property bool hovered: false;
+        property real calcIconSize: root.iconSize * (root.switchMode ? 1.735 : 1)
+        property string checkOn:    root.switchMode ? "checkbox-switch-on"  : "checkbox-on"
+        property string checkOff:   root.switchMode ? "checkbox-switch-off" : "checkbox-off"
     }
 
     /// @brief label text
@@ -49,6 +53,12 @@ Rectangle {
 
     /// @brief icon size (checkbox)
     property int iconSize: 60
+
+    /// @brief show checkbox as switch
+    property bool switchMode: false
+
+    /// @brief disable mouse area
+    property bool disableClicking: false
 
     /// @brief qss style
     property string qss
@@ -82,24 +92,28 @@ Rectangle {
      * Icon
      ********************************************/
 
-    DapQmlLabel {
+    DapQmlImage {
         id: icon
         y: (root.height - height) / 2
         z: 1
-        qss: root.checked ? "checkbox-on" : "checkbox-off"
-        width: root.iconSize
+        width: root.internal.calcIconSize
         height: root.iconSize
+        clip: false
+
+        DapQmlStyle { item: icon; qss: root.checked ? root.internal.checkOn : root.internal.checkOff }
     }
 
-    DapQmlLabel {
+    DapQmlImage {
         id: iconHover
         y: (root.height - height) / 2
         z: 1
-        qss: (!root.checked) ? "checkbox-on" : "checkbox-off"
-        width: root.iconSize
+        width: root.internal.calcIconSize
         height: root.iconSize
-        visible: root.internal.hovered
+        visible: root.internal.hovered && !root.switchMode
+        clip: false
         opacity: 0.25
+
+        DapQmlStyle { item: iconHover; qss: (!root.checked) ? root.internal.checkOn : root.internal.checkOff }
     }
 
     /****************************************//**
@@ -128,8 +142,9 @@ Rectangle {
 
     MouseArea {
         anchors.fill: root
+        enabled: !root.disableClicking
         z: 2
-        hoverEnabled: true
+        hoverEnabled: !root.disableClicking
         onEntered: root.internal.hovered = true
         onExited: root.internal.hovered = false
         onClicked: { root.toggle(); root.clicked(); }

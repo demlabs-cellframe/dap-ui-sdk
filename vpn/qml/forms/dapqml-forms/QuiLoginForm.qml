@@ -1,31 +1,22 @@
 /* INCLUDES */
 
-import QtQuick 2.4
+import QtQuick 2.11
 import QtQml 2.12
-import QtQuick.Controls 2.1
-import QtQuick.Layouts 1.3
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.12
 import DapQmlSerialKeyInput 1.0
 import StyleDebugTree 1.0
 import DapQmlStyle 1.0
 import Brand 1.0
+import PageCtl 1.0
+import com.DapQmlWidgets 1.0
 import "qrc:/dapqml-widgets"
 import "qrc:/dapqml-forms/tools"
 
 /****************************************//**
  * @brief Login Form
  * @ingroup groupDapQmlForms
- *
- * ### Structure
- *
- * Form is built using:
- * - Logo
- * - Error label
- * - Choose server
- * - Enter serial
- * - Connect button
- * - Obtain key link
- *
- * @date 06.06.22
+ * @date 15.04.24
  * @author Mikhail Shilenko
  *******************************************/
 
@@ -41,8 +32,7 @@ Item {
     enum Mode
     {
         M_SERIAL,
-        M_PASSWORD,
-        M_CERT
+        M_WALLET
     }
 
     /// @}
@@ -59,40 +49,40 @@ Item {
     /// @brief internal variables
     property QtObject internal: QtObject {
 
-        property bool changedServer: false
-        property bool changedCert:   false
-        property string serverName: ""
-        property string certName:   ""
-        property bool legacyStyle: Brand.name() !== "KelVPN"
-
         /// @brief login mode
         property int mode: QuiLoginForm.Mode.M_SERIAL
 
-        /// @brief show password contents
-        property bool showPassword: false
+        property bool cdbDetected: false
+    }
 
-        function forgotLabel() {
-//   First variant for Rise
-//            return mode === QuiLoginForm.Mode.M_SERIAL
-//                ? qsTr("Don't have a serial key?")
-//                : qsTr("Forgot your password?")
-            return mode === QuiLoginForm.Mode.M_SERIAL
-                ? qsTr("Don't have a serial key?")
-                : qsTr("")
+    /// @brief NoCDB variables
+    property QtObject noCdb : QtObject {
 
-        }
+        /// @brief flag tells when cellframe is detected or not
+        property bool cellframeDetected: false
 
-        function tapHereLabel() {
-//   First variant for Rise
-//            return mode === QuiLoginForm.Mode.M_SERIAL
-//                ? qsTr("Tap here to obtain one")
-//                : qsTr("Tap here to recover")
-            return Brand.name() !== "RiseVPN"
-                ? qsTr("Tap here to obtain one")
-                : qsTr("Tap here to show cdb management")
+        /// @brief kel transaction processing for NoCBD
+        property bool transactionProcessing: false
 
+        /// @brief waiting for cellframe dashboard approval
+        property bool waitingForApproval: false
+
+        /// @brief true if network and token is set
+        property bool tokenIsSet: false
+
+        /// @brief true if history contain any orders
+        property bool gotOrdersInsideHistory: false
+
+        property real decreaseHeight: {
+            if (gotOrdersInsideHistory)
+                return btnChooseOrder.height * 0.125;
+            else
+                return 0;
         }
     }
+
+    /// @brief Interface::Login class instance pointer
+    property var interfaceObject
 
     /// @}
     /****************************************//**
@@ -100,43 +90,20 @@ Item {
      ********************************************/
     /// @{
 
-    /// @brief choose server button clicked
+    signal sigSerialFilled (string a_serial);
+    signal sigSerialCleaned();
+    signal sigSerialNotFinished();
+
     signal sigChooseServer();
-
-    /// @brief choose certificate button clicked
-    signal sigChooseCert();
-
-    /// @brief enter serial key clicked
-    signal sigChooseSerial();
-
-    /// @brief connection by serial requested
+    signal sigModeSerialSelected();
+    signal sigModeNoCdbSelected();
     signal sigConnectBySerial();
-
-    /// @brief connection by login & password requested
-    signal sigConnectByPassword();
-
-    /// @brief connection by certificate requested
-    signal sigConnectByCert();
-
-    /// @brief buy serial clicked
+    signal sigStartCondTransation();
+    signal sigConnectByOrder();
     signal sigObtainNewKey();
-
-    /// @brief start recovering password
-    signal sigRecoverPassword();
-
-    /// @brief entered serial is incorerct
-    signal sigSerialFillingIncorrect();
-
-    /// @brief show server manager
-    signal sigShowCdbManager();
-
-    signal textEditedAndCleaned();
-    signal textEditedAndFilledOut (string serial);
-
-    signal textChangedAndCleaned();
-    signal textChangedAndFilledOut (string serial);
-
-    signal sigStartUpdate();
+    signal sigChooseWallet();
+    signal sigSearchOrders();
+    signal sigChooseOrderHistory();
 
     /// @}
     /****************************************//**
@@ -144,252 +111,55 @@ Item {
      ********************************************/
     /// @{
 
-    /// @brief change error label text
-    function setStatusMessage(a_message) {
-        loginErrorLabel.text    = a_message;
+    function getAllWidgets() {
+        var result = {
+            "enterKeyField"     : enterKeyField,
+            "connectionOverlay" : connectionOverlay,
+            "btnChooseServer"   : btnChooseServer,
+            "btnChooseWallet"   : btnChooseWallet,
+            "btnChooseOrder"    : btnChooseOrder,
+            "btnConnect"        : btnConnect,
+            "btnContinue"       : btnContinue,
+        };
+        return result
     }
 
-    /// @brief change serial key button content
-    function setSerial(a_serial) {
-        btnEnterSerial.mainText = a_serial;
+    function setCellframeDetected(a_value) {
+        noCdb.cellframeDetected = a_value;
+        if (internal.cdbDetected === false)
+        {
+            internal.mode = QuiLoginForm.Mode.M_WALLET;
+            loginTypeKelContainer.update();
+            root.sigModeNoCdbSelected();
+        }
     }
 
-    /// @brief enable\\disable connect button
-    function setConnectionEnabled(a_value) {
-        btnConnect.enabled  = a_value;
+    function setTransactionProcessing(a_value) {
+        noCdb.transactionProcessing = a_value;
     }
 
-    /// @brief show\\hide serial enter button
-    function setKeyEnterEnabled(a_value) {
-        btnEnterSerial.visible  = a_value;
+    function setWaitingForApproval(a_value) {
+        noCdb.waitingForApproval = a_value;
     }
 
-    /// @brief change current chosen server name
-    function setServer(a_name) {
-        internal.changedServer      = true;
-        internal.serverName         = a_name;
-        //btnChooseServer.mainText    = a_name;
-        btnChooseServer.updateServerName();
+    function cdbDetected(a_value) {
+        internal.cdbDetected    = a_value;
     }
 
-//    function setTickerMessage(a_message, a_url) {
-//        tickerLabel.text = a_message;
-//        ticker.tickerUrl = a_url;
-//        ticker.showTicker()
-//    }
-
-//    function showUpdateNotification(a_message) {
-//        updateNotificationRect.showUpdateNotification()
-//    }
-
-    /// @brief set input mask for serial input
-    function setupInputMask() {
-        //btnEnterSerial.inputMask    = ">NNNN-NNNN-NNNN-NNNN;_"
+    function setTokenSet(a_value) {
+        noCdb.tokenIsSet = a_value;
     }
 
-    function beginConnection() {
-        if (btnConnect.enabled === false)
-            return;
-        if (internal.mode === QuiLoginForm.Mode.M_SERIAL)
-            root.sigConnectBySerial();
-        else
-        if (internal.mode === QuiLoginForm.Mode.M_PASSWORD)
-            root.sigConnectByPassword();
-        else
-        if (internal.mode === QuiLoginForm.Mode.M_CERT)
-            root.sigConnectByCert();
+    function setOrdersInsideHistoryFlag(a_value) {
+        noCdb.gotOrdersInsideHistory = a_value;
+    }
+
+    function switchTab(a_index) {
+        internal.mode   = a_index;
+        loginTypeKelContainer.update();
     }
 
     /// @}
-//    /****************************************//**
-//     * Ticker
-//     ********************************************/
-
-//    DapQmlRectangle {
-//        id: ticker
-//        objectName: "ticker"
-//        y: -1 * ticker.height
-//        qss: "ticker"
-//        width: root.width
-//        visible: false
-
-//        property string tickerUrl:   ""
-//        property bool tickerIsHidden: true
-
-//        Behavior on y { PropertyAnimation { duration: 100 }}
-
-//        onYChanged: updateNotificationRect._updatePos()
-
-//        function showTicker() {
-//            y = 0;
-//            tickerIsHidden = false;
-//        }
-
-//        function hideTicker() {
-//            y = -1 * ticker.height;
-//            ticker.tickerIsHidden = true;
-//        }
-
-//        function tickerClicked() {
-//            Qt.openUrlExternally(ticker.tickerUrl);
-//        }
-
-//        function _updateTickerAnim() {
-//            tickerAnimation.from    = tickerLableRect.width;
-//            tickerAnimation.to      = 0 - tickerLabel.contentWidth;
-//            tickerAnimation.running = true;
-//        }
-
-//        DapQmlRectangle {
-//            id: tickerLableRect
-//            objectName: "tickerLableRect"
-//            qss: "ticker-lable-rect"
-//            visible: true
-//            anchors.left: parent.left
-
-//            DapQmlLabel {
-//                id: tickerLabel
-//                objectName: "tickerLabel"
-//                width: contentWidth
-//                qss: "ticker-label"
-//                //text: tickerMessage
-//                z: 2
-//                horizontalAlign: Text.AlignHCenter
-//                mipmap: false
-
-//                onWidthChanged: ticker._updateTickerAnim()
-
-//                NumberAnimation  {
-//                    id: tickerAnimation
-//                    objectName: "tickerAnimation"
-//                    target: tickerLabel
-//                    properties: "x"
-//                    running: false
-//                    duration: 10000
-//                    loops: Animation.Infinite
-//                }
-//            }
-
-//            MouseArea {
-//                anchors.fill: tickerLableRect
-//                z : 3
-//                cursorShape: Qt.PointingHandCursor
-//                onClicked: ticker.tickerClicked()
-//            }
-
-//            DapQmlRectangle {
-//                id: tickerLabelBackgraund
-//                qss: "ticker-label-background"
-//                anchors.fill: parent
-//            }
-//        }
-
-//        DapQmlRectangle {
-//            id: tickerCloseRect
-//            qss: "ticker-close-rect"
-//            visible: true
-//            anchors.right: parent.right
-
-//            DapQmlPushButton {
-//                id: tickerCloseButton
-//                qss: "ticker-close-button"
-//                x: parent.width - width - y
-//                y: (parent.height - height) / 2
-//                z: 14
-
-//                onClicked: {
-//                    ticker.hideTicker()
-//                }
-//            }
-
-//            DapQmlRectangle {
-//                id: tickerCloseBackground
-//                qss: "ticker-label-background"
-//                anchors.fill: parent
-//            }
-//        }
-//    }
-
-//     /****************************************//**
-//      * Update notification
-//      ********************************************/
-
-//     DapQmlRectangle {
-//         id: updateNotificationRect
-//         qss: "update-notification-rect"
-//         y: hidden
-//            ? (ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y)
-//            : (ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y)
-//         z: 30
-//         radius: 13
-//         visible: true
-//         opacity: 0
-
-//         property bool hidden: false
-
-//         Behavior on y { PropertyAnimation { duration: 100 }}
-//         Behavior on opacity { PropertyAnimation { duration: 100 }}
-
-//         function showUpdateNotification() {
-//             hidden     = false;
-//             opacity    = 1;
-//             _updatePos();
-//         }
-
-//         function hideUpdateNotification() {
-//             hidden     = true;
-//             opacity    = 0;
-//             _updatePos();
-//         }
-
-//         function _updatePos() {
-//             y = hidden
-//                 ? (ticker.tickerIsHidden ? 0 : updNotPosTickerOff.y)
-//                 : (ticker.tickerIsHidden ? updNotPosTickerOff.y : updNotPosTickerOn.y)
-//         }
-
-//         DapQmlDummy { id: updNotPosTickerOn;  qss: "update-notification-pos-ticker-on"  }
-//         DapQmlDummy { id: updNotPosTickerOff; qss: "update-notification-pos-ticker-off" }
-
-//         /* text */
-//         DapQmlLabel {
-//             id: updateNotificationLabel
-//             qss: "update-notification-label"
-//             text: "New version available"
-//             height: contentHeight
-//             width: contentWidth
-//             horizontalAlign: Text.AlignHCenter
-//         }
-
-//         /* close button */
-//         DapQmlPushButton {
-//             id: updateNotificationCloseButton
-//             x: parent.width - width - (y * 1.4)
-//             z: 14
-
-//             qss: "update-notification-close-button"
-
-//             onClicked: updateNotificationRect.hideUpdateNotification()
-//         }
-
-//         /* update button */
-//         DapQmlLabel {
-//             id: updateNotificationButton
-//             qss: "update-notification-button"
-//             text: "Update"
-//             height: contentHeight
-//             width: contentWidth
-//             horizontalAlign: Text.AlignHCenter
-
-//             MouseArea {
-//                 anchors.fill: updateNotificationButton
-//                 z : 3
-//                 cursorShape: Qt.PointingHandCursor
-//                 onClicked: root.sigStartUpdate()
-//             }
-//         }
-//    }
-
     /****************************************//**
      * Ticker & Update tools
      ********************************************/
@@ -398,381 +168,409 @@ Item {
     QuiToolUpdateNotification {}
 
     /****************************************//**
+     * Server connecting overlay
+     ********************************************/
+
+    DapQmlRectangle {
+        id: connectionOverlay
+        anchors.fill: parent
+        z: 300
+        visible: false
+        qss: "c-background"
+
+        ColumnLayout {
+            id: connOverlayLayout
+            anchors.centerIn: parent
+
+            DapQmlStyle { item: connOverlayLayout; qss: "login-connection-container" }
+
+            Item {
+                Layout.fillWidth: true
+                Layout.preferredHeight: root.width * 0.14953271
+
+                DapQmlArcAnimation {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: parent.height
+                    height: parent.height
+                    qss: "c-brand"
+                }
+            }
+
+            DapQmlLabel {
+                Layout.fillWidth: true
+                Layout.preferredHeight: contentHeight
+                qss: "login-connecting-label"
+                text: qsTr("Connecting...")
+            }
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            enabled: connectionOverlay.visible
+        }
+    }
+
+    /****************************************//**
      * Logo
      ********************************************/
 
-    DapQmlRectangle {
-        qss: "login-logo-container"
-        visible: Brand.isEnterprise() === false
-        DapQmlLabel {
-            x: (parent.width - width) / 2
-            z: 15
-            qss: "login-logo"
-        }
-    }
-
-    /****************************************//**
-     * Error label
-     ********************************************/
-
     DapQmlLabel {
-        id: loginErrorLabel
-        qss: "login-error-label"
-        wrapMode: Text.WordWrap
-        //text: "Temporary network problems, request will be handled as soon as the network connection is re-established"
+        z: 15
+        qss: "login-logo"
     }
 
     /****************************************//**
-     * Login type select
+     * Login by Serial
      ********************************************/
 
-    Rectangle {
-        id: loginTypeContainer
-        width: root.width
-        color: "transparent"
-        clip: true
-        visible: Brand.isEnterprise() === true
-        DapQmlStyle { item: loginTypeContainer; qss: "login-type-container" }
+    Item {
+        anchors.fill: parent
+        visible: internal.mode === QuiLoginForm.Mode.M_SERIAL
 
-        function update() {
-            tabCert.checked         = internal.mode === QuiLoginForm.Mode.M_CERT;
-            tabSerial.checked       = internal.mode === QuiLoginForm.Mode.M_SERIAL;
-            tabLoginPass.checked    = internal.mode === QuiLoginForm.Mode.M_PASSWORD;
-        }
+        /****************************************//**
+         * Enter serial
+         ********************************************/
 
-        DapQmlTabButton {
-            id: tabCert
-            qss: "login-mode-btn-cert"
-            checked:    internal.mode === QuiLoginForm.Mode.M_CERT
-            onClicked:  { internal.mode   = QuiLoginForm.Mode.M_CERT; loginTypeContainer.update(); }
-        }
-
-        DapQmlTabButton {
-            id: tabSerial
-            qss: "login-mode-btn-serial"
-            checked:    internal.mode === QuiLoginForm.Mode.M_SERIAL
-            onClicked:  { internal.mode   = QuiLoginForm.Mode.M_SERIAL; loginTypeContainer.update(); }
-        }
-
-        DapQmlTabButton {
-            id: tabLoginPass
-            qss: "login-mode-btn-loginpass"
-            checked:    internal.mode === QuiLoginForm.Mode.M_PASSWORD
-            onClicked:  { internal.mode   = QuiLoginForm.Mode.M_PASSWORD; loginTypeContainer.update(); }
-        }
-    }
-
-    /****************************************//**
-     * Top spacer
-     ********************************************/
-
-    DapQmlDummy {
-        id: loginSpacer
-        qss: (internal.mode === QuiLoginForm.Mode.M_CERT) ? "login-space-for2rows" : "login-space-for3rows"
-        Component.onCompleted: StyleDebugTree.describe (
-           "loginSpacer",
-            ["x", "y", "width", "height"],
-           this);
-    }
-
-    /****************************************//**
-     * Top mode name
-     ********************************************/
-
-    DapQmlLabel {
-        property string textCert:       qsTr("Standart Certificate") + lang.notifier
-        property string textSerial:     qsTr("Serial + HW based DAP Cert") + lang.notifier
-        property string textLoginPass:  qsTr("Login + Password") + lang.notifier
-
-        id: loginTypeName
-        y: loginSpacer.y
-        width:       loginTypeNamePlacer.width
-        height:      loginTypeNamePlacer.height
-        fontSize:    loginTypeNamePlacer.fontSize
-        fontFamiliy: loginTypeNamePlacer.fontFamiliy
-        fontWeight:  loginTypeNamePlacer.fontWeight
-        color:       loginTypeNamePlacer.color
-        visible: Brand.isEnterprise() === true
-        wrapMode: Text.WordWrap
-        text: (internal.mode === QuiLoginForm.Mode.M_CERT)
-              ? textCert
-              : (internal.mode === QuiLoginForm.Mode.M_SERIAL)
-                ? textSerial
-                : textLoginPass
-
-        DapQmlDummy {
-            property string fontFamiliy
-            property int fontSize
-            property int fontWeight
-            property color color
-            id: loginTypeNamePlacer
-            qss: "login-typename-label font-brand c-grey"
-        }
-    }
-
-    /****************************************//**
-     * Top separator
-     ********************************************/
-
-    DapQmlRectangle {
-        x: loginSepsPlacer.x
-        y: loginSpacer.y + loginSepsPlacer.y
-        width: loginSepsPlacer.width
-        height: loginSepsPlacer.height
-        visible: root.internal.legacyStyle
-
-        DapQmlSeparator {
-            x: (parent.width - width) / 2
+        DapQmlButton {
+            id: enterKeyField
             z: 15
-            width: parent.width - 74
-            qss: "login-separator"
+
+            mainText: ""
+            subText: qsTr("SERIAL KEY") + lang.notifier
+            buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
+            frame: true
+
+            qss: noCdb.cellframeDetected ? "login-btn-serial-nocdb" :  "login-btn-serial-cdb"
+            mainQss: "login-btn-main"
+            subQss: "login-btn-sub"
+
+            placeHolderText: "____ ____ ____ ____"
+            placeHolderQss: "login-btn-main"
+
+            /* signals */
+
+            onTextAccepted: root.beginConnection()
+            onTextChanged: checkSerialKeyData()
+            onTextEdited: checkSerialKeyData()
+
+            /* variables */
+
+            readonly property int maxCountChar: 19
+
+            /* functions */
+
+            function checkSerialKeyData() {
+                var text    = mainText;
+
+                if (text.length == maxCountChar)
+                    root.sigSerialFilled (mainText);
+                else if (text.length === 0)
+                    root.sigSerialCleaned();
+                else
+                    root.sigSerialNotFinished();
+            }
         }
 
-        DapQmlDummy {
-            id: loginSepsPlacer
-            qss: "login-separator-container"
-        }
-    }
-
-    /****************************************//**
-     * Choose server
-     ********************************************/
-
-    DapQmlRectangle {
-        x:      loginServerPlacer.x
-        y:      loginSpacer.y + loginServerPlacer.y
-        width:  loginServerPlacer.width
-        height: loginServerPlacer.height
+        /****************************************//**
+         * Choose server
+         ********************************************/
 
         DapQmlButton {
             id: btnChooseServer
             x: (parent.width - width) / 2
             z: 15
-            width: parent.width - 74
-            property string defaultServerName: qsTr("Auto select") + lang.notifier
 
-            buttonStyle: DapQmlButton.Style.TopMainBottomSub
-            mainText: (!internal.changedServer) ? (defaultServerName) : (internal.serverName)
+            mainText: ""
             subText: qsTr("CHOOSING SERVER") + lang.notifier
-            qss: "login-btn-server"
+            buttonStyle: DapQmlButton.Style.TopMainBottomSub
+            frame: true
+            link: true
+
+            qss: noCdb.cellframeDetected ? "login-btn-choose-order" : "login-btn-choose-server"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            separator: root.internal.legacyStyle
-            frame: !root.internal.legacyStyle // true
-            link: true
+
+            /* signals */
+
             onClicked: root.sigChooseServer()
 
-            function updateServerName() {
-                mainText = (!internal.changedServer)
-                        ? (defaultServerName)
-                        : (internal.serverName)
-            }
+            /* server label */
 
-            onDefaultServerNameChanged: updateServerName()
-        }
-        DapQmlDummy {
-            id: loginServerPlacer
-            qss: "login-btn-server-container"
+            property string label: qsTr("Auto select") + lang.notifier
+
+            DapQmlLabel {
+                anchors.fill: parent
+                anchors.bottomMargin: parent.height / 2
+                anchors.leftMargin:   parent.width * 0.15
+                anchors.rightMargin:  parent.width * 0.15
+
+                fontSize: btnChooseServer.labelMain.fontSize
+                fontWeight: btnChooseServer.labelMain.fontWeight
+                color: btnChooseServer.labelMain.color
+                verticalAlign: Text.AlignBottom
+                disableClicking: true
+                text: parent.label
+
+                onTextChanged: rescaleLabel()
+                onWidthChanged: rescaleLabel()
+
+                function rescaleLabel() {
+                    /* check error */
+                    if (btnChooseServer.labelMain === undefined)
+                        return;
+
+                    /* copy correct font size */
+                    fontSize = btnChooseServer.labelMain.fontSize;
+                    label.text = text;
+                    label.font.pixelSize = fontSize;
+
+                    if (interfaceObject !== undefined)
+                        label.font.pixelSize    = interfaceObject.scaleServerLabelFont (text, fontSize, width * 0.85);
+                }
+            }
         }
     }
 
     /****************************************//**
-     * Enter serial
+     * NoCDB
      ********************************************/
 
-    DapQmlRectangle {
-        x:      loginSerialPlacer.x
-        y:      loginSpacer.y + loginSerialPlacer.y
-        width:  loginSerialPlacer.width
-        height: loginSerialPlacer.height
-        visible: internal.mode === QuiLoginForm.Mode.M_SERIAL
+    Item {
+        anchors.fill: parent
+        visible: internal.mode === QuiLoginForm.Mode.M_WALLET
+                 && noCdb.waitingForApproval === false
+
+        /****************************************//**
+         * Choose Wallet
+         ********************************************/
 
         DapQmlButton {
-            id: btnEnterSerial
-            objectName: "btnEnterSerial"
-            property int maxCountChar: 19
-            x: (parent.width - width) / 2
+            id: btnChooseWallet
             z: 15
-            width: parent.width - 74
-            //height: parent.height
-
-//            Rectangle {
-//                color: "gray"
-//                anchors.fill: parent
-//            }
-
-            buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
-            mainText: ""
-            subText: qsTr("SERIAL KEY") + lang.notifier
-            qss: "login-btn-serial"
-            mainQss: "login-btn-main"
-            subQss: "login-btn-sub"
-            placeHolderText: "____ ____ ____ ____"
-            placeHolderQss: "login-btn-main"
-            //inputMask: ">NNNN-NNNN-NNNN-NNNN;_"
-            separator: root.internal.legacyStyle
-            frame: !root.internal.legacyStyle // true
-
-            onClicked: root.sigChooseSerial()
-            onTextAccepted: root.beginConnection()
-            onTextChanged: {
-                var text    = mainText;
-
-                if (text.length == maxCountChar)
-                    root.textChangedAndFilledOut (mainText);
-                else if (text.length == 0)
-                    root.textChangedAndCleaned();
-                else
-                    root.sigSerialFillingIncorrect();
-            }
-            onTextEdited: {
-                var text    = mainText;
-
-                if (text.length == maxCountChar)
-                    root.textEditedAndFilledOut (mainText);
-                else if (text.length == 0)
-                    root.textEditedAndCleaned();
-                else
-                    root.sigSerialFillingIncorrect();
-            }
-        }
-        DapQmlDummy {
-            id: loginSerialPlacer
-            qss: "login-btn-serial-container"
-        }
-    }
-
-    /****************************************//**
-     * Enter e-mail & password
-     ********************************************/
-
-    DapQmlRectangle {
-        x:      loginEmailPlacer.x
-        y:      loginSpacer.y + loginEmailPlacer.y
-        width:  loginEmailPlacer.width
-        height: loginEmailPlacer.height
-        visible: internal.mode === QuiLoginForm.Mode.M_PASSWORD
-
-        DapQmlButton {
-            id: btnEnterEmail
-            objectName: "btnEnterEmail"
             x: (parent.width - width) / 2
-            z: 15
-            width: parent.width - 74
-
-            buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
-            mainText: ""
-            subText: "EMAIL"
-            qss: "login-btn-email"
-            mainQss: "login-btn-main"
-            subQss: "login-btn-sub"
-            separator: root.internal.legacyStyle
-            frame: !root.internal.legacyStyle // true
-        }
-
-        DapQmlDummy {
-            id: loginEmailPlacer
-            qss: "login-btn-email-container"
-        }
-    }
-
-    DapQmlRectangle {
-        x:      loginPasswordPlacer.x
-        y:      loginSpacer.y + loginPasswordPlacer.y
-        width:  loginPasswordPlacer.width
-        height: loginPasswordPlacer.height
-        visible: internal.mode === QuiLoginForm.Mode.M_PASSWORD
-
-        DapQmlButton {
-            id: btnEnterPassword
-            objectName: "btnEnterPassword"
-            x: (parent.width - width) / 2
-            z: 15
-            width: parent.width - 74
-
-            buttonStyle: DapQmlButton.Style.EditTopMainBottomSub
-            mainText: ""
-            subText: "PASSWORD"
-            qss: "login-btn-password"
-            mainQss: "login-btn-main"
-            subQss: "login-btn-sub"
-            editEchoMode: (internal.showPassword)
-                          ? TextInput.Normal
-                          : TextInput.Password
-            separator: root.internal.legacyStyle
-            frame: !root.internal.legacyStyle // true
-        }
-
-        Button {
-            id: checkShowPassword
-            checkable: true
-            checked: false
-            icon {
-                source: (internal.showPassword)
-                        ? "qrc:/nonthemed/password-show.png"
-                        : "qrc:/nonthemed/password-hide.png"
-                color: "transparent"
-                width: checkShowPassword.width
-                height: checkShowPassword.height
-            }
-            background: Rectangle { color: "transparent" }
-            x: parent.width - width - (74 / 2)
-            y: (parent.height / 2 - height) / 2 + height / 12
-            z: 16
-            width: parent.height * 0.5
-            height: parent.height * 0.5
-
-            onCheckedChanged: internal.showPassword = checked
-        }
-
-        DapQmlDummy {
-            id: loginPasswordPlacer
-            qss: "login-btn-password-container"
-        }
-    }
-
-    /****************************************//**
-     * Choose cert
-     ********************************************/
-
-    DapQmlRectangle {
-        x:      loginChooseCertPlacer.x
-        y:      loginSpacer.y + loginChooseCertPlacer.y
-        width:  loginChooseCertPlacer.width
-        height: loginChooseCertPlacer.height
-        visible: internal.mode !== QuiLoginForm.Mode.M_PASSWORD && Brand.isEnterprise() === true
-
-        DapQmlButton {
-            id: btnChooseCert
-            x: (parent.width - width) / 2
-            z: 15
-            width: parent.width - 74
-            property string defaultCertName: "Certificate 5" // qsTr() + lang.notifier
+            width: parent.width
 
             buttonStyle: DapQmlButton.Style.TopMainBottomSub
-            mainText: (!internal.changedCert) ? (defaultCertName) : (internal.certName)
-            subText: qsTr("CHOOSING CERTIFICATE") + lang.notifier
-            qss: "login-btn-cert"
+            frame: true
+            link: true
+
+            qss: noCdb.cellframeDetected ? "login-btn-serial-nocdb" :  "login-btn-serial-cdb"
             mainQss: "login-btn-main"
             subQss: "login-btn-sub"
-            separator: root.internal.legacyStyle
-            frame: !root.internal.legacyStyle // true
-            link: true
-            onClicked: root.sigChooseCert()
 
-            function updateCertName() {
-                mainText = (!internal.changedCert)
-                        ? (defaultCertName)
-                        : (internal.certName)
+            /* signals */
+
+            onClicked: root.sigChooseWallet()
+        }
+
+        /****************************************//**
+         * Choose Order
+         ********************************************/
+
+        DapQmlRectangle {
+            id: btnChooseOrderContainer
+            qss: noCdb.cellframeDetected ? "login-btn-choose-order" : "login-btn-choose-server"
+            opacity: noCdb.tokenIsSet ? 1.0 : 0.5
+            enabled: noCdb.tokenIsSet
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: root.sigSearchOrders()
             }
 
-            onDefaultCertNameChanged: updateCertName()
+            Item {
+                width: btnChooseOrderContainer.width
+                height: btnChooseOrderContainer.height// - noCdb.decreaseHeight
+                clip: true
+
+                DapQmlButton {
+                    id: btnChooseOrder
+                    anchors.fill: parent
+                    z: 15
+
+                    mainText: qsTr("Order") + lang.notifier
+                    subText: qsTr("SEARCH ORDERS") + lang.notifier
+                    buttonStyle: DapQmlButton.Style.TopMainBottomSub
+                    visible: internal.mode === QuiLoginForm.Mode.M_WALLET
+                    enabled: noCdb.tokenIsSet
+                    frame: true
+                    link: true
+
+                    mainQss: "login-btn-main"
+                    subQss: "login-btn-sub"
+
+                    /* signals */
+
+                    onClicked: root.sigSearchOrders()
+                }
+            }
+
+            /* bottom rectangle */
+
+            DapQmlRectangle {
+                x: btnChooseOrderContainer.x
+                y: btnChooseOrderContainer.y + btnChooseOrderContainer.height - height
+                width: btnChooseOrderContainer.width
+                height: btnChooseOrderContainer.height * 0.2
+                visible: noCdb.gotOrdersInsideHistory
+                         && internal.mode === QuiLoginForm.Mode.M_WALLET
+                color: btnOrderHistory.color
+            }
         }
+
+        /****************************************//**
+         * Order History
+         ********************************************/
+
+        DapQmlRectangle {
+            id: btnOrderHistory
+            x: btnChooseOrderContainer.x
+            y: btnChooseOrderContainer.y + btnChooseOrderContainer.height - noCdb.decreaseHeight
+            z: 14
+            visible: noCdb.gotOrdersInsideHistory
+                     && internal.mode === QuiLoginForm.Mode.M_WALLET
+            radius: btnChooseOrder.height * 0.1
+            qss: "login-btn-orders-history-frame"
+
+            property int fontSize
+            property int fontWeight
+
+            /* top rectangle */
+
+            DapQmlRectangle {
+                width: parent.width
+                height: parent.radius * 2
+                color: parent.color
+
+                /* separator */
+
+                DapQmlSeparator {
+                    width: parent.width
+                }
+            }
+
+            /* label */
+
+            DapQmlLabel {
+                anchors.fill: parent
+                anchors.bottomMargin: parent.height * 0.075
+                z: 0
+                horizontalAlign: Text.AlignHCenter
+                verticalAlign: Text.AlignVCenter
+                text: qsTr("My orders")
+                fontSize: parent.fontSize
+                fontWeight: parent.fontWeight
+                qss: "c-label"
+            }
+
+            /* link icon */
+
+            DapQmlImage {
+                id: linkImage
+                x: parent.width - width * 2.4
+                y: (parent.height - height) / 2
+                width: btnChooseOrder.height / 5
+                height: width
+                DapQmlStyle { qss: "btn-arrow"; item: linkImage }
+            }
+
+            /* clickable */
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: root.sigChooseOrderHistory()
+            }
+        }
+    }
+
+    /****************************************//**
+     * NoCDB Waiting for Approval
+     ********************************************/
+
+    Item {
+        anchors.fill: parent
+        visible: internal.mode === QuiLoginForm.Mode.M_WALLET
+                 && noCdb.waitingForApproval === true
+
+        /****************************************//**
+         * Arc Animation
+         ********************************************/
+
+        DapQmlRectangle {
+            id: progressCircle
+            qss: "login-transaction-processing-arc-animation"
+
+            DapQmlArcAnimation {
+                anchors.fill: parent
+                anchors.margins: parent.width * 0.275
+                strokeWidth: 7
+                z: 200
+                qss: "c-brand"
+            }
+        }
+
+        DapQmlLabel {
+            id: loginInfoLabel
+            qss: "login-transaction-processing-label-nocbd"
+            text: (noCdb.transactionProcessing
+                  ? qsTr("Transaction is in progress")
+                  : qsTr("Waiting for approval\n\nCheck the Cellframe Dashboard"))
+                  + lang.notifier
+        }
+    }
+
+    /****************************************//**
+     * CDB & NoCBD mode select (SERIAL <-> WALLET)
+     ********************************************/
+
+    DapQmlRectangle {
+        id: loginTypeKelContainer
+        color: "transparent"
+        clip: true
+        visible: noCdb.cellframeDetected
+        qss: "login-mode-container"
+
+        function update() {
+            tabSerial.checked   = internal.mode === QuiLoginForm.Mode.M_SERIAL;
+            tabNoCdb.checked    = internal.mode === QuiLoginForm.Mode.M_WALLET;
+        }
+
         DapQmlDummy {
-            id: loginChooseCertPlacer
-            qss: (internal.mode === QuiLoginForm.Mode.M_CERT)
-                ? "login-btn-cert-container2"
-                : "login-btn-cert-container3"
+            id: tabButtonSize
+            visible: false
+            qss: "login-mode-button-size"
+        }
+
+        RowLayout {
+            anchors.fill: parent
+
+            DapQmlTabButton {
+                id: tabSerial
+                Layout.preferredWidth: tabButtonSize.width
+                Layout.preferredHeight: tabButtonSize.height
+                qss: "login-mode-serial"
+                checked:    internal.mode === QuiLoginForm.Mode.M_SERIAL
+                enabled: internal.cdbDetected
+                opacity: enabled ? 1.0 : 0.35
+                onClicked:  {
+                    internal.mode = QuiLoginForm.Mode.M_SERIAL;
+                    loginTypeKelContainer.update();
+                    root.sigModeSerialSelected();
+                }
+            }
+
+            DapQmlTabButton {
+                id: tabNoCdb
+                Layout.preferredWidth: tabButtonSize.width
+                Layout.preferredHeight: tabButtonSize.height
+                qss: "login-mode-nocdb"
+                checked:    internal.mode === QuiLoginForm.Mode.M_WALLET
+                onClicked:  {
+                    internal.mode = QuiLoginForm.Mode.M_WALLET;
+                    loginTypeKelContainer.update();
+                    root.sigModeNoCdbSelected();
+                }
+            }
         }
     }
 
@@ -784,15 +582,32 @@ Item {
         id: btnConnect
         x: (parent.width - width) / 2
         z: 15
-        qss: "login-connect"
+        visible: internal.mode === QuiLoginForm.Mode.M_SERIAL
+        qss: noCdb.cellframeDetected
+             ? "login-btn-connect-by-nocbd push-button"
+             : "login-btn-connect-by-serial push-button"
+        text: (noCdb.cellframeDetected ? qsTr("CONTINUE") : qsTr("CONNECT")) + lang.notifier
+        onClicked: root.sigConnectBySerial()
+    }
 
-        text: qsTr("CONNECT") + lang.notifier
-        onClicked: root.beginConnection()
+    /****************************************//**
+     * Continue button (NoCDB)
+     ********************************************/
 
-//        Component.onCompleted: StyleDebugTree.describe (
-//           "login-connect",
-//            ["x", "y", "width", "height"],
-//           this);
+    DapQmlPushButton {
+        id: btnContinue
+        x: (parent.width - width) / 2
+        z: 15
+        visible: internal.mode === QuiLoginForm.Mode.M_WALLET
+                 && noCdb.waitingForApproval === false
+        qss: "login-btn-connect-by-nocbd push-button"
+        text: (noCdb.cellframeDetected ? qsTr("CONTINUE") : qsTr("CONNECT")) + lang.notifier
+        onClicked: {
+            if (noCdb.transactionProcessing === false)
+                root.sigStartCondTransation();
+            else
+                root.sigConnectByOrder();
+        }
     }
 
     /****************************************//**
@@ -800,58 +615,37 @@ Item {
      ********************************************/
 
     DapQmlRectangle {
-        qss: "login-obtain-container"
+        qss: noCdb.cellframeDetected
+             ? "login-obtain-container-mocbd-mode"
+             : "login-obtain-container-serial-mode"
 
-        DapQmlLabel {
-            id: obtainLabel
-            text: internal.forgotLabel() + lang.notifier
-            color: "#5C5B74"
-            width: parent.width / 2 - 2
-            height: parent.height
-            horizontalAlign: Text.AlignRight
-            qss: "login-obtain-font c-label"
-            mipmap: false
-            visible: Brand.name() !== "RiseVPN"
-//          font.family: "Lato"
-//          font.pixelSize: 16
-//          font.weight: Font.Normal
-        }
+        RowLayout {
+            anchors.fill: parent
 
-        DapQmlLabel {
-            id: obtainLinkLabel
-//     First variant for Rise
-//            x: parent.width / 2 + 2
-            x: Brand.name() !== "RiseVPN" ? parent.width / 2 + 2 : 0
-            text: internal.tapHereLabel() + lang.notifier
-            color: "#DA0B82"
-//     First variant for Rise
-//            width: parent.width / 2
-            width: Brand.name() !== "RiseVPN" ? parent.width / 2 : parent.width
-            height: parent.height
-//     First variant for Rise
-//            horizontalAlign: Text.AlignLeft
-            horizontalAlign:  Brand.name() !== "RiseVPN" ? Text.AlignLeft : Text.AlignCenter
-            qss: Brand.name() !== "RiseVPN"
-                     ? "login-obtain-font c-brand"
-                     : "login-obtain-font c-brand"
-            onClicked: {
-//     First variant for Rise
-//                (internal.mode === QuiLoginForm.Mode.M_SERIAL)
-//                       ? root.sigObtainNewKey()
-//                       : root.sigRecoverPassword()
-                Brand.name() !== "RiseVPN"
-                       ? root.sigObtainNewKey()
-                       : root.sigShowCdbManager()
+            DapQmlLabel {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                text: qsTr("Don't have a serial key?") + lang.notifier
+                horizontalAlign: Text.AlignRight
+                qss: "login-obtain-font c-label"
             }
-//          font.family: "Lato"
-//          font.pixelSize: 16
-//          font.weight: Font.Normal
 
-            MouseArea {
-                id: mouseArea
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                enabled: false
+            DapQmlLabel {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                text: qsTr("Tap here to obtain one") + lang.notifier
+                horizontalAlign: Text.AlignLeft
+                qss: "login-obtain-font c-brand"
+                onClicked: root.sigObtainNewKey()
+
+                MouseArea {
+                    id: mouseArea
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    enabled: false
+                }
             }
         }
     }

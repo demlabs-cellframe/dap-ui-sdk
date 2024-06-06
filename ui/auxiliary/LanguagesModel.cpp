@@ -48,7 +48,7 @@ int LanguagesModel::indexOf (QLocale::Language a_language) const
 
 bool LanguagesModel::isExist (QLocale::Language a_language) const
 {
-  if (qFind (m_languages.begin(), m_languages.end(), a_language) == m_languages.end())
+  if (std::find (m_languages.begin(), m_languages.end(), a_language) == m_languages.end())
     return false;
   else
     return true;

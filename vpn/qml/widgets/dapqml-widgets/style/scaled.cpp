@@ -2,6 +2,7 @@
 #include "scaled.h"
 #include <QVariant>
 #include <QQmlProperty>
+#include <math.h>
 
 /* NAMESPACE */
 namespace DapStyle
@@ -214,19 +215,19 @@ bool Scaled::calcAdjusted(
       resultY = (a_screenHeight - resultH) / 2;
 
   /* return result */
-  a_x         = resultX;
-  a_y         = resultY;
-  a_width     = resultW;
-  a_height    = resultH;
-  a_fontSize  = fontSize() * multV;
+  a_x         = floor (resultX);
+  a_y         = floor (resultY);
+  a_width     = floor (resultW);
+  a_height    = floor (resultH);
+  a_fontSize  = floor (fontSize() * multV);
 
   /* store result */
   m_result = Result {
-    resultX,
-    resultY,
-    resultW,
-    resultH,
-    a_fontSize,
+    double (floor (resultX)),
+    double (floor (resultY)),
+    double (floor (resultW)),
+    double (floor (resultH)),
+    double (floor (a_fontSize)),
     a_screenWidth,
     a_screenHeight
   };

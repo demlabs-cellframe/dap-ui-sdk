@@ -1,7 +1,8 @@
 import QtQuick 2.11
 import QtQuick.Shapes 1.4
 import QtQuick.Layouts 1.4
-import QtGraphicalEffects 1.12
+//import QtGraphicalEffects 1.12
+import Qt5Compat.GraphicalEffects
 import StyleDebugTree 1.0
 import "qrc:/dapqml-widgets"
 
@@ -171,7 +172,7 @@ Item {
         id: btnConfirn
         x: (parent.width - width) / 2
         z: 15
-        qss: "progress-circle-btn-confirm"
+        qss: "progress-circle-btn-confirm push-button"
         text: root.buttonText
         onClicked: root.buttonClicked()
         enabled: buttonActive

@@ -11,8 +11,12 @@
 #endif
 
 #ifdef Q_OS_ANDROID
-#include <QAndroidService>
+#include <DapAndroidHelpers.h>
 #include <android/log.h>
+#endif
+
+#ifdef Q_OS_IOS
+#include "DapIOSLogger.h"
 #endif
 
 static DapLogger* m_instance = nullptr;
@@ -43,12 +47,15 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, Type
         if (dir.mkpath(m_pathToLog) == false)
           qDebug() << "unable to create dir";
 #ifndef Q_OS_ANDROID
-        system(("chmod -R 667 " + m_pathToLog).toUtf8().data());
+#ifndef Q_OS_IOS
+        system(("chmod -R 777 " + m_pathToLog).toUtf8().data());
 #endif
-
+#endif
     }
 #ifndef Q_OS_ANDROID
-    system(("chmod 667 $(find " + m_pathToLog + " -type d)").toUtf8().data());
+#ifndef Q_OS_IOS
+    system(("chmod 777 $(find " + m_pathToLog + " -type d)").toUtf8().data());
+#endif
 #endif
 
 //    connect(DapLogger::instance(), &DapLogger::sigMessageHandler,
@@ -166,10 +173,12 @@ QString DapLogger::defaultLogPath(const QString a_brand)
     return QString("%1/%2/log").arg(regWGetUsrPath()).arg(DAP_BRAND);
 #elif defined Q_OS_ANDROID
     Q_UNUSED(a_brand);
-    static QAndroidJniObject l_pathObj = QtAndroid::androidContext().callObjectMethod(
+    static DapQtJniObject l_pathObj = dapQtAndroidServiceContext().callObjectMethod(
                     "getFilesDir"
                     , "()Ljava/io/File;");
     return QString("%1/log").arg(l_pathObj.toString());
+#elif defined (Q_OS_IOS)
+    return QString(dapIOSLogPath());
 #endif
     return {};
 }
@@ -262,7 +271,7 @@ void DapLogger::writeMessage(QtMsgType type,
 {
     if(ctx.file) {
         char prefixBuffer[128];
-#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
+#if defined(Q_OS_LINUX) || defined(Q_OS_DARWIN)
         const char *fileName = strrchr(ctx.file, '/');
 #elif defined(Q_OS_WIN)
         const char *fileName = strrchr(ctx.file, '\\');
@@ -270,7 +279,7 @@ void DapLogger::writeMessage(QtMsgType type,
         #error "Not supported platform"
 #endif
         fileName = (fileName == Q_NULLPTR ? ctx.file : fileName + 1);
-        strcpy(prefixBuffer, fileName);
+        strncpy (prefixBuffer, fileName, 128);
         auto dest = strrchr(prefixBuffer, '.');
         if (dest == nullptr)
           dest    = prefixBuffer + strlen(prefixBuffer);
@@ -280,7 +289,7 @@ void DapLogger::writeMessage(QtMsgType type,
     } else {
         _log_it(nullptr, 0, "\0", castQtMsgToDap(type), "%s", qUtf8Printable(msg));
     }
-    printf("%s\n",qUtf8Printable(msg));
+    //printf("%s\n",qUtf8Printable(msg));
 
     std::cerr.flush();
     std::cout.flush();

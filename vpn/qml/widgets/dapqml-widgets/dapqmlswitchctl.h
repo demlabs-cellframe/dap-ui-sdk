@@ -65,6 +65,7 @@ public:
   Q_INVOKABLE void setToggleAnimation (QObject *a_value);
   Q_INVOKABLE void setTouchingPoint (QObject *a_value);
   Q_INVOKABLE void setTouchArea (QObject *a_value);
+  Q_INVOKABLE void updateTogglePos();
 
   bool dragging() const;
   void setDragging (bool a_value);
@@ -99,6 +100,8 @@ protected:
   void _updateDiff();
   void _updateTglState();
 
+  void _itemsCleared();
+
   void _print (const char *a_text);
   /// @}
 
@@ -124,6 +127,8 @@ protected slots:
   void _slotTouchingPointXChanged();
   void _slotTouchAreaPressed();
   void _slotTouchAreaReleased();
+  void _slotUpdateTogglePos();
+  void _slotStackUpdateTogglePos();
   /// @}
 };
 

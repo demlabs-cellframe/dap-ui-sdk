@@ -2,9 +2,10 @@
 #include <QString>
 #include <QDebug>
 
+
 #ifdef Q_OS_ANDROID
-#include <QtAndroid>
-#include <QAndroidJniEnvironment>
+
+#include <DapAndroidHelpers.h>
 #endif
 
 // The product ID
@@ -29,7 +30,7 @@ DapShopManager::DapShopManager(QObject *parent) : QObject(parent)
 
     m_store = QAndroidJniObject("com/demlabs/dapchain/InAppShop",
                                 "(Landroid/app/Activity;J)V",
-                                QtAndroid::androidActivity().object<jobject>(),
+                                dapQtAndroidActivityContext().object<jobject>(),
                                 reinterpret_cast<jlong>(this));
     if (!m_store.isValid()) {
         qWarning("Cannot initialize IAP backend for Android due to missing dependency: QtInAppPurchase class");
@@ -93,7 +94,7 @@ void DapShopManager::doPurchase(DapShopManager::Products product)
 #ifdef BUILD_VAR_GOOGLE
     /*---- Purchase BUILD_VAR_GOOGLE----*/
     qInfo() << "Payment response" << m_productNames[index] << index;
-    jint res = QtAndroid::androidActivity()
+    jint res = dapQtAndroidActivityContext()
             .callMethod<jint>("launchBilling"
             ,"(Ljava/lang/String;)I"
             ,QAndroidJniObject::fromString(m_productNames[index]).object<jstring>());

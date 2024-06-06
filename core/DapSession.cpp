@@ -35,6 +35,7 @@
 #include <QJsonObject>
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
+#include "dap_client_http.h"
 
 const QString DapSession::URL_ENCRYPT               ("enc_init");
 const QString DapSession::URL_STREAM                ("stream");
@@ -94,6 +95,7 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObje
     if (slot)
         connect(netReply, SIGNAL(finished()), obj, slot);
     connect(netReply, &DapNetworkReply::sigError, this, [=] {
+        qInfo() << "errorNetwork";
         emit errorNetwork(netReply->error(), netReply->errorString());
         if (slot_err)
             QMetaObject::invokeMethod(obj, slot_err, Qt::ConnectionType::AutoConnection, Q_ARG(const QString&, netReply->errorString()));
@@ -286,6 +288,7 @@ void DapSession::setUserAgent(const QString& userAgent)
 DapNetworkReply* DapSession::encRequest(const QString& reqData, const QString& url,
                           const QString& subUrl, const QString& query, QObject* obj, const char* slot, const char* slot_err, bool isCDB)
 {
+    qInfo() << "encRequest " + QString(isCDB ? "CDB" : "noCDB") + " mode";
     DapCrypt *l_dapCrypt = isCDB ? m_dapCryptCDB : m_dapCrypt;
     if (!l_dapCrypt) {
         qCritical() << "Invalid key!";
@@ -473,13 +476,16 @@ void DapSession::onAuthorize()
                         } else if (m_xmlStreamReader.name() == "tx_cond") {
                              m_cdbAuthTxCond = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvTxCond: " << m_cdbAuthTxCond;
+                        } else if (m_xmlStreamReader.name() == "max_price") {
+                            m_cdbMaxPrice = m_xmlStreamReader.readElementText();
+                           qDebug() << "m_srvMaxPrice: " << m_cdbMaxPrice;
                         } else {
                             qWarning() <<"Unknown element" << m_xmlStreamReader.readElementText();
                         }
                     }
                 } else if (m_xmlStreamReader.name() == "ts_active_till"){
                     DapDataLocal::instance()->serialKeyData()->setLicenseTermTill(m_xmlStreamReader.readElementText());
-                    qDebug() << "ts_active_till: " << DapDataLocal::instance()->serialKeyData()->licenseTermTill().toTime_t();
+                    qDebug() << "ts_active_till: " << DapDataLocal::instance()->serialKeyData()->licenseTermTill().toSecsSinceEpoch();
                 } else {
                     m_userInform[m_xmlStreamReader.name().toString()] = m_xmlStreamReader.readElementText();
                     qDebug() << "Add user information: " << m_xmlStreamReader.name().toString()
@@ -534,27 +540,25 @@ void DapSession::preserveCDBSession() {
  * @brief DapSession::onLogout
  */
 void DapSession::onLogout() {
-    qInfo() << "Logouted";
+    qInfo() << "~ Logouted";
 }
 
 void DapSession::onNewTxCond(){
     qDebug() << "Received new tx cond";
-//    m_cdbAuthTxCond =
+
     if(m_netNewTxReply->getReplyData().size() <= 0)
     {
-//        emit errorAuthorization (tr ("Wrong answer from server"));
+        emit sigNewTxError();
         return;
     }
 
     QByteArray dByteArr;
-    m_dapCrypt->decode(m_netNewTxReply->getReplyData(), dByteArr, KeyRoleSession);
+    m_dapCryptCDB->decode(m_netNewTxReply->getReplyData(), dByteArr, KeyRoleSession);
 
     QXmlStreamReader m_xmlStreamReader;
     m_xmlStreamReader.addData(dByteArr);
 
-    bool isCookie = false;
-    bool isAuth = false;
-    QString SRname;
+    bool isTxOk = false;
     while(m_xmlStreamReader.readNextStartElement())
     {
         qDebug() << " name = " << m_xmlStreamReader.name();
@@ -573,15 +577,25 @@ void DapSession::onNewTxCond(){
                         } else if (m_xmlStreamReader.name() == "tx_cond") {
                              m_cdbAuthTxCond = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvTxCond: " << m_cdbAuthTxCond;
+                        } else if (m_xmlStreamReader.name() == "max_price") {
+                            m_cdbMaxPrice = m_xmlStreamReader.readElementText();
+                           qDebug() << "m_srvMaxPrice: " << m_cdbMaxPrice;
                         } else {
                             qWarning() <<"Unknown element" << m_xmlStreamReader.readElementText();
                         }
                     }
+                } else {
+                    m_xmlStreamReader.skipCurrentElement();
                 }
             }
+            isTxOk = true;
         } else {
             m_xmlStreamReader.skipCurrentElement();
         }
+    }
+
+    if(!isTxOk){
+        emit sigNewTxError();
     }
 
     emit sigNewTxReceived();

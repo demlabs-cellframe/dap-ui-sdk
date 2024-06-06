@@ -10,7 +10,9 @@
 #include "DapTunAbstract.h"
 #include "DapSockForwPacket.h"
 #ifndef Q_OS_ANDROID
+#ifndef Q_OS_IOS
 #include "DapNetworkMonitor.h"
+#endif
 #endif
 
 #define STREAM_SF_PACKET_OP_CODE_RAW_SEND 0xbc
@@ -41,6 +43,7 @@ void DapTunAbstract::initWorker()
 {
     qDebug() << "[DapTunAbstract] Tun worker init";
 #ifndef Q_OS_ANDROID
+#ifndef Q_OS_IOS
     DapNetworkMonitor::instance(); // To call a contructor in main thread.
     DapNetworkMonitor::instance()->monitoringStart();
     /*connect(tunThread, &QThread::started, [&] {
@@ -48,6 +51,7 @@ void DapTunAbstract::initWorker()
         DapNetworkMonitor::instance()->sltSetTunnelDestination(this->m_addr);
         DapNetworkMonitor::instance()->sltSetTunGateway(this->m_gw);
     });*/
+#endif
 #endif
 
     if (tunWorker == nullptr) {

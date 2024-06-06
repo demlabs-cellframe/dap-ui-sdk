@@ -21,8 +21,13 @@
         <file compress="1">dark/switch/toggle_off.png</file>
         <file compress="1">dark/switch/bg_on.png</file>
         <file compress="1">dark/switch/bg_off.png</file>
+        <file compress="1">dark/switch/bg_conn.png</file>
         <file compress="1">dark/btn_filter_clear.png</file>
         <file compress="1">dark/btn_filter_clear_hover.png</file>
+        <file compress="1">dark/key_inactive.png</file>
+        <file compress="1">dark/key.png</file>
+        <file compress="1">dark/wallet_inactive.png</file>
+        <file compress="1">dark/wallet.png</file>
         <file compress="1">dark/ic_ticker_close_hover.png</file>
         <file compress="1">dark/ic_ticker_close.png</file>
         <file compress="1">dark/ic_close_update_hover.png</file>
@@ -59,8 +64,13 @@
         <file compress="1">light/switch/toggle_off.png</file>
         <file compress="1">light/switch/bg_on.png</file>
         <file compress="1">light/switch/bg_off.png</file>
+        <file compress="1">light/switch/bg_conn.png</file>
         <file compress="1">light/btn_filter_clear.png</file>
         <file compress="1">light/btn_filter_clear_hover.png</file>
+        <file compress="1">light/key_inactive.png</file>
+        <file compress="1">light/key.png</file>
+        <file compress="1">light/wallet_inactive.png</file>
+        <file compress="1">light/wallet.png</file>
         <file compress="1">light/ic_ticker_close_hover.png</file>
         <file compress="1">light/ic_ticker_close.png</file>
         <file compress="1">light/ic_close_update.png</file>
@@ -77,5 +87,9 @@
         <file compress="1">light/contact_report_bg_border.png</file>
         <file compress="1">light/report_bg_border_75.png</file>
         <file compress="1">light/rouexc-close.png</file>
+        <file compress="1">dark/ckeckbox-off.png</file>
+        <file compress="1">dark/ckeckbox-on.png</file>
+        <file compress="1">light/ckeckbox-off.png</file>
+        <file compress="1">light/ckeckbox-on.png</file>
     </qresource>
 </RCC>

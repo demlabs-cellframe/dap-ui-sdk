@@ -1,11 +1,11 @@
 #include "QtCore"
 #include "DapUpdateOperationLogic.h"
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     #include "CoreFoundation/CoreFoundation.h"
 #endif
 
-
+#ifndef Q_OS_IOS
 static DapUpdateOperationLogic *s_instance   = nullptr;
 
 DapUpdateOperationLogic::DapUpdateOperationLogic():
@@ -44,7 +44,9 @@ void DapUpdateOperationLogic::startUpdate()
     qInfo() << "Start update process";
 //#ifndef Q_OS_MACOS
     // start detached process
+#ifndef Q_OS_IOS
     QProcess *myProcess = new QProcess();
+#endif
     bool detached = false;
     QString updateAppPath = updateApp();
 #ifdef Q_OS_LINUX
@@ -70,8 +72,10 @@ void DapUpdateOperationLogic::startUpdate()
         qWarning() << "Failed to start update agent application" << updateAppPath;
     else
         qInfo() << "Start update agent application" << updateAppPath << downloadFileName() << currentApplication();
+#ifndef Q_OS_IOS
     myProcess->close();
     delete myProcess;
+#endif
 //#else
 //    // start process for macos
 //    ::system(QString("open %1 --args -p %2 -a %3;")
@@ -132,7 +136,7 @@ QString DapUpdateOperationLogic::currentApplication()
 // this app folder
 QString DapUpdateOperationLogic::applicationDirPath()
 {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     QString appName = "Update.app";
     CFURLRef pluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
     CFStringRef macPath = CFURLCopyFileSystemPath(pluginRef,kCFURLPOSIXPathStyle);
@@ -158,3 +162,4 @@ bool DapUpdateOperationLogic::fileCopy(QString source, QString dest)
         QFile::remove(dest);
     return QFile::copy(source, dest);
 }
+#endif

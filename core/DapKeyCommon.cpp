@@ -50,3 +50,4 @@ void DapKey::decode(const QByteArray &a_in, QByteArray &a_out) {
     size_t enc_size = m_key->dec_na(m_key, a_in, a_in.size(), l_encBuf, BUF_SIZE);
     a_out = QByteArray(l_encBuf, enc_size);
 }
+

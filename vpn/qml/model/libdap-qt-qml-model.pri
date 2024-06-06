@@ -2,7 +2,7 @@ INCLUDEPATH += $$PWD
 
 win32: LIBS += -lgdi32
 unix: !mac: !android: LIBS += -lX11 -lXrandr
-mac:LIBS += -framework AppKit
+macos:LIBS += -framework AppKit
 
 INCLUDEPATH += $$PWD
 
@@ -20,10 +20,12 @@ HEADERS += \
     $$PWD/dapqml-model/dapqmlmodelchooseserver.h \
     $$PWD/dapqml-model/dapqmlmodelfullserverlist.h \
     $$PWD/dapqml-model/dapqmlmodelfaq.h \
+    $$PWD/dapqml-model/dapqmlmodelorderlist.h \
     $$PWD/dapqml-model/dapqmlmodelroutingexceptions.h \
     $$PWD/dapqml-model/dapqmlmodelserialhistory.h \
     $$PWD/dapqml-model/dapqmlservermanager.h \
-    $$PWD/dapqml-model/doc/doc-server-lists-and-models.h
+    $$PWD/dapqml-model/doc/doc-server-lists-and-models.h \
+    $$PWD/dapqml-model/modules/orderlistmodules.h
 
 SOURCES += \
     $$PWD/dapqml-abstract/abstractserverlistmodelbridge.cpp \
@@ -34,9 +36,11 @@ SOURCES += \
     $$PWD/dapqml-model/dapqmlmodelchooseserver.cpp \
     $$PWD/dapqml-model/dapqmlmodelfullserverlist.cpp \
     $$PWD/dapqml-model/dapqmlmodelfaq.cpp \
+    $$PWD/dapqml-model/dapqmlmodelorderlist.cpp \
     $$PWD/dapqml-model/dapqmlmodelroutingexceptions.cpp \
     $$PWD/dapqml-model/dapqmlmodelserialhistory.cpp \
-    $$PWD/dapqml-model/dapqmlservermanager.cpp
+    $$PWD/dapqml-model/dapqmlservermanager.cpp \
+    $$PWD/dapqml-model/modules/orderlistmodules.cpp
 
 guiapp {
 HEADERS += \

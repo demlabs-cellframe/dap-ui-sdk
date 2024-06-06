@@ -4,13 +4,15 @@ import QtQuick 2.12
 import DapQmlStyle 1.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.0
-import QtGraphicalEffects 1.0
+//import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 import Qt.labs.platform 1.1
 import StyleDebugTree 1.0
 import TextEditContextMenu 1.0
 import Brand 1.0
 import Scaling 1.0
 import PageCtl 1.0
+import com.DapQmlWidgets 1.0
 import "qrc:/dapqml-widgets"
 
 /****************************************//**
@@ -208,7 +210,7 @@ Item {
                 placeholderQss: "bugrep-input-placeholder"
                 qss: "bugrep-input-contact-content"
 
-                placeHolderText: qsTr("Email/ Telegram/Phone number to contact you") + lang.notifier
+                placeHolderText: qsTr("Email/ Telegram/Phone number to contact") + lang.notifier
                 mainText: ""
             }
         }
@@ -224,12 +226,12 @@ Item {
                 id: contactInputField
                 objectName: "contactInputField"
                 anchors.centerIn: parent
-                mainQss: "bugrep-input-textarea"
+                mainQss: "bugrep-input-textarea bugrep-input-textarea-contact"
                 iconQss: "null-size null-pos"
                 placeholderQss: "bugrep-input-placeholder"
                 qss: "bugrep-input-contact-content"
 
-                placeHolderText: qsTr("Email/ Telegram/Phone number to contact you") + lang.notifier
+                placeHolderText: qsTr("Email/ Telegram/Phone number to contact") + lang.notifier
                 mainText: ""
             }
         }
@@ -566,6 +568,16 @@ Item {
     //                       this);
                 }
 
+//                Text {
+//                    id: teststst
+
+//                    function update() {
+//                        text = `size ${bugRepInput.width}x${bugRepInput.height} : ${bugRepInput.contentHeight}`
+//                    }
+
+//                    Component.onCompleted: update()
+//                }
+
                 /* input scrollarea */
                 Flickable {
                     id: bugRepInput
@@ -575,6 +587,10 @@ Item {
                     clip: true
                     contentWidth: width
                     contentHeight: calcContentHeight()
+
+//                    onContentHeightChanged: teststst.update()
+//                    onWidthChanged: teststst.update()
+//                    onHeightChanged: teststst.update()
 
                     DapQmlStyle { item: bugRepInput; qss: "bugrep-input-content"; }
 
@@ -607,10 +623,12 @@ Item {
                         z: 4
                         objectName: "bugRepInputField"
                         anchors.fill: parent
+                        anchors.margins: 1
                         wrapMode: TextEdit.Wrap
                         persistentSelection: true
                         selectByMouse: true
-                        clip: true
+                        //clip: true
+                        font.family: Brand.fontName()
                         font.pixelSize: fontSize
                         font.weight: fontWeight
                         inputMethodHints: Qt.ImhSensitiveData
@@ -750,23 +768,33 @@ Item {
 
             /* info */
             DapQmlLabel {
-                qss: "bugrep-sending"
+                qss: "bugrep-sending c-label"
                 text: qsTr("Sending...") + lang.notifier
             }
 
             /* animated spinner */
-            AnimatedImage {
-                id: animation
-                source: "qrc:/dapqml-forms-asset/Spinner.gif"
-                DapQmlStyle { qss: "bugrep-animation"; item: animation }
+//            AnimatedImage {
+//                id: animation
+//                source: "qrc:/dapqml-forms-asset/Spinner.gif"
+//                DapQmlStyle { qss: "bugrep-animation"; item: animation }
+//            }
+            Item {
+                anchors.fill: parent
+                anchors.bottomMargin: arcAnim.height * 0.75
+
+                DapQmlArcAnimation {
+                    id: arcAnim
+                    anchors.centerIn: parent
+                    qss: "bugrep-animation c-brand"
+                }
             }
 
-//            /* cancel */
-//            DapQmlPushButton {
-//                qss: "bugrep-send-btn push-button"
-//                text: qsTr("CANCEL") + lang.notifier
-//                onClicked: { root.mode = 0; root.sigCancel(); }
-//            }
+            /* cancel */
+            DapQmlPushButton {
+                qss: "bugrep-cancel-btn push-button"
+                text: qsTr("CANCEL") + lang.notifier
+                onClicked: { root.mode = 0; root.sigCancel(); }
+            }
         }
 
         /****************************************//**

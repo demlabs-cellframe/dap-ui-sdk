@@ -98,7 +98,9 @@ signals:
   void sigLanguage();
   void sigCountry();
   void sigRouExc();
-  void sigColorTheme();
+  //void sigColorTheme();
+  void sigDarkTheme (bool a_state);
+  void sigNotification();
 
   /* support */
   void sigBugSend();
@@ -154,7 +156,6 @@ public slots:
   void slotCountryChange();
   void slotUpdateItemsList();
   void slotRouExcModeUpdated();
-protected slots:
   void slotRetranslate();
   /// @}
 };

@@ -1,6 +1,6 @@
 #include "singlerunapplication.h"
 #include <QCryptographicHash>
-
+#include <QSharedMemory>
 
 QString generateKeyHash( const QString& key, const QString& salt )
 {
