@@ -12,6 +12,7 @@
         <file>Device.qml</file>
         <file>widgets/DapRadioButton.qml</file>
         <file>widgets/DapScrollView.qml</file>
+        <file>widgets/DapBalanceComponent.qml</file>
         <file>widgets/DapScrollViewForm.ui.qml</file>
         <file>widgets/DapText.qml</file>
         <file>widgets/DapTextForm.ui.qml</file>
