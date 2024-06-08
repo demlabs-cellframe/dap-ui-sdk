@@ -56,5 +56,6 @@
         <file>widgets/DapButtonCanvas.qml</file>
         <file>widgets/DapTextWithList.qml</file>
         <file>widgets/DapFeeComponent.qml</file>
+        <file>widgets/DapButtonWithImage.qml</file>
     </qresource>
 </RCC>
