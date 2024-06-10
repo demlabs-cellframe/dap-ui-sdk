@@ -147,6 +147,7 @@ public:
   ConstIterator end() const;
   Index indexOfName (const QString &a_name) const;
   Index indexOfAddress (const QString &a_address) const;
+  Index indexOfOrderHash (const QString &a_hash) const;
   void refresh();
 protected:
   void _getSizes();
