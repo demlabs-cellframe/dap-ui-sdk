@@ -23,4 +23,5 @@ HEADERS += \
     $$PWD/../../../brand/$$BRAND/DapChainVpnService/DapClientDefinitions.h
 
 INCLUDEPATH += $$PWD  \
-    $$PWD/../../../brand/$$BRAND/DapChainVpnService
+    $$PWD/../../../brand/$$BRAND/DapChainVpnService\
+    $$PWD

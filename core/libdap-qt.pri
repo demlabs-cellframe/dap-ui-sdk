@@ -95,3 +95,6 @@ ios {
 }
 
 INCLUDEPATH += $$PWD/../quazip
+INCLUDEPATH += $$PWD/../vpn/client/DapCmdHandlers/
+INCLUDEPATH += $$PWD/../vpn/common/
+INCLUDEPATH += $$PWD/
