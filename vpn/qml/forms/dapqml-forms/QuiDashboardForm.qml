@@ -374,7 +374,7 @@ Item {
     Loader {
         anchors.fill: dashboardNoCdbTitleButtonBackPos
         sourceComponent: titleButton
-        enabled: root.internal.allowChooseServer
+        //enabled: root.internal.allowChooseServer
         property int type: 0
     }
 
