@@ -16,6 +16,7 @@ static const QString actionValue  = "value";
 DapCmdSystemTray::DapCmdSystemTray(QObject *parent)
   : DapCmdServiceAbstract (DapJsonCmdType::CLIENT_INFO, parent)
 {
+  qRegisterMetaType<CdbMode> ("CdbMode");
   if (typeEnum == nullptr)
     typeEnum  = new QMetaEnum (QMetaEnum::fromType<RequestType> ());
 }
@@ -55,7 +56,16 @@ void DapCmdSystemTray::handle (const QJsonObject *params)
             QJsonArray args = params->value (actionValue).toArray();
             emit changeServer (args[0].toString(), args[1].toString());
           } break;
-        }
+        case RequestType::select_cdb_mode:
+          {
+            emit guiSelectCdbMode (CdbMode (params->value (actionValue).toInt()));
+          } break;
+        case RequestType::activation_changed:
+          {
+            QJsonArray args = params->value (actionValue).toArray();
+            emit activationChanged (args[0].toBool(), args[1].toString());
+          } break;
+      }
   }
 }
 
@@ -65,27 +75,27 @@ void DapCmdSystemTray::handle (const QJsonObject *params)
 
 void DapCmdSystemTray::sendShowGui()
 {
-  sendShowInterface (RequestType::show_window);
+  sendGuiCmd (RequestType::show_window);
 }
 
 void DapCmdSystemTray::sendShowSettingInterface()
 {
-  sendShowInterface (RequestType::setting);
+  sendGuiCmd (RequestType::setting);
 }
 
 void DapCmdSystemTray::sendShowStatisticInterface()
 {
-  sendShowInterface (RequestType::statistic);
+  sendGuiCmd (RequestType::statistic);
 }
 
 void DapCmdSystemTray::sendShowLoginInterface()
 {
-  sendShowInterface (RequestType::login);
+  sendGuiCmd (RequestType::login);
 }
 
 void DapCmdSystemTray::sendShowDashboardInterface()
 {
-  sendShowInterface (RequestType::dashboard);
+  sendGuiCmd (RequestType::dashboard);
 }
 
 void DapCmdSystemTray::sendChangeServer (const QString &a_serverName, const QString &a_serverAddress)
@@ -99,33 +109,55 @@ void DapCmdSystemTray::sendChangeServer (const QString &a_serverName, const QStr
   sendCmd (&response);
 }
 
+void DapCmdSystemTray::sendSelectCdbMode (CdbMode a_value)
+{
+  qDebug() << QString ("cmd sendSelectCdbMode mode[%1]").arg (int (a_value));
+  auto name = typeEnum->valueToKey (int (RequestType::select_cdb_mode));
+  QJsonObject response = {
+    {actionParam, name},
+    {actionValue, int (a_value)},
+  };
+  sendCmd (&response);
+}
+
+void DapCmdSystemTray::sendActiovationChange (bool a_activated, const QString &a_serialKey)
+{
+  qDebug() << QString ("cmd sendActiovationChange value [%1]").arg (a_activated);
+  auto name = typeEnum->valueToKey (int (RequestType::activation_changed));
+  QJsonObject response = {
+    {actionParam, name},
+    {actionValue, QJsonArray {a_activated, a_serialKey}},
+  };
+  sendCmd (&response);
+}
+
 void DapCmdSystemTray::apllicationQuitRequest()
 {
-  sendShowInterface (RequestType::apllication_quit);
+  sendGuiCmd (RequestType::apllication_quit);
 }
 
 void DapCmdSystemTray::clientStarted()
 {
-  sendShowInterface (RequestType::client_started);
+  sendGuiCmd (RequestType::client_started);
 }
 
 void DapCmdSystemTray::clientExited()
 {
-  sendShowInterface (RequestType::client_exited);
+  sendGuiCmd (RequestType::client_exited);
 }
 
 void DapCmdSystemTray::trayApplicationStarted()
 {
-  sendShowInterface (RequestType::tray_application_running);
+  sendGuiCmd (RequestType::tray_application_running);
 }
 
 
 
 /// @param address Server address.
-void DapCmdSystemTray::sendShowInterface (const RequestType &a_type)
+void DapCmdSystemTray::sendGuiCmd (const RequestType &a_type)
 {
   auto name = typeEnum->valueToKey (int (a_type));
-  qDebug() << "cmd sendShowInterface " << name;
+  qDebug() << "cmd sendGuiCmd " << name;
 
   QJsonObject response = {{actionParam, name}};
   sendCmd (&response);
