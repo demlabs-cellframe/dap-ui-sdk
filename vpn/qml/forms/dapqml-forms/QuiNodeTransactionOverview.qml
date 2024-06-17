@@ -31,12 +31,12 @@ Item {
 
     property QtObject internal: QtObject {
         /* VARIABLES */
-        property string network:    "TestNetworkName"
-        property string wallet:     "TestWalletName"
-        property string server:     "TestServerName"
-        property string unit:       "TestUnitName"
-        property string price:      "TestPriceName"
-        property string priceShort: "TESTC"
+//        property string network:    "TestNetworkName"
+//        property string wallet:     "TestWalletName"
+//        property string server:     "TestServerName"
+//        property string unit:       "TestUnitName"
+//        property string price:      "TestPriceName"
+//        property string priceShort: "TESTC"
 
         property int mode: 0
         property bool historyFlag:  false
@@ -73,14 +73,14 @@ Item {
      ********************************************/
     /// @{
 
-    function setData(a_data) {
-        root.internal.network       = a_data.network;
-        root.internal.wallet        = a_data.wallet;
-        root.internal.server        = a_data.server;
-        root.internal.unit          = a_data.unit;
-        root.internal.price         = a_data.price;
-        root.internal.priceShort    = a_data.priceShort;
-    }
+//    function setData(a_data) {
+//        root.internal.network       = a_data.network;
+//        root.internal.wallet        = a_data.wallet;
+//        root.internal.server        = a_data.server;
+//        root.internal.unit          = a_data.unit;
+//        root.internal.price         = a_data.price;
+//        root.internal.priceShort    = a_data.priceShort;
+//    }
 
     function setHistoryFlag(a_value) {
         root.internal.historyFlag   = a_value;
@@ -136,32 +136,33 @@ Item {
      * Components
      ********************************************/
 
-    Component {
-        id: compOverviewItem
+//    Component {
+//        id: compOverviewItem
 
-        //property string first
-        //property string second
+//        //property string first
+//        //property string second
 
-        RowLayout {
-            anchors.fill: parent
+//        RowLayout {
+//            anchors.fill: parent
 
-            DapQmlLabel {
-                Layout.preferredWidth: overviewSizer.width
-                Layout.fillHeight: true
-                horizontalAlign: Text.AlignLeft
-                qss: "nodeorlist-overview-item-left"
-                text: parent.parent.first
-            }
+//            DapQmlLabel {
+//                Layout.preferredWidth: overviewSizer.width
+//                Layout.fillHeight: true
+//                horizontalAlign: Text.AlignLeft
+//                qss: "nodeorlist-overview-item-left"
+//                text: parent.parent.first
+//            }
 
-            DapQmlLabel {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                horizontalAlign: Text.AlignLeft
-                qss: "nodeorlist-overview-item-right"
-                text: parent.parent.second
-            }
-        }
-    }
+//            DapQmlLabel {
+//                Layout.fillWidth: true
+//                Layout.fillHeight: true
+//                horizontalAlign: Text.AlignLeft
+//                qss: "nodeorlist-overview-item-right"
+//                text: parent.parent.second
+//            }
+//        }
+//    }
+
     Component {
         id: pushButton
 
@@ -190,6 +191,31 @@ Item {
                 anchors.fill: parent
                 enabled: parent.enabled
                 onClicked: parent.parent.cbClicked()
+            }
+        }
+    }
+
+    Component {
+        id: compLvItem
+
+        RowLayout {
+            width: listview.width
+            height: listview.height / 18
+
+            DapQmlLabel {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                horizontalAlign: Text.AlignLeft
+                verticalAlign: Text.AlignVCenter
+                text: model.name
+            }
+
+            DapQmlLabel {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                horizontalAlign: Text.AlignRight
+                verticalAlign: Text.AlignVCenter
+                text: model.value
             }
         }
     }
@@ -223,21 +249,21 @@ Item {
             color: overviewScaler.color
             radius: overviewScaler.radius
 
-            function autoResize(a_value) {
-                let compareVal  = overviewDummy.contentHeight;
-                let minContent  = (a_value < compareVal) ? compareVal : a_value;
-                overview.height = overviewScaler.height + minContent;
-                //console.log (`vvaalluu ${a_value} ^^^ ${height} &&& ${compareVal} @@@ ${overviewScaler.height}`)
-            }
+//            function autoResize(a_value) {
+//                let compareVal  = overviewDummy.contentHeight;
+//                let minContent  = (a_value < compareVal) ? compareVal : a_value;
+//                overview.height = overviewScaler.height + minContent;
+//                //console.log (`vvaalluu ${a_value} ^^^ ${height} &&& ${compareVal} @@@ ${overviewScaler.height}`)
+//            }
 
-            Component.onCompleted: autoResize(0)
+//            Component.onCompleted: autoResize(0)
 
-            DapQmlLabel {
-                id: overviewDummy
-                visible: false
-                qss: "nodeorlist-overview-price"
-                text: "0"
-            }
+//            DapQmlLabel {
+//                id: overviewDummy
+//                visible: false
+//                qss: "nodeorlist-overview-price"
+//                text: "0"
+//            }
 
             DapQmlRectangle {
                 id: overviewScaler
@@ -245,62 +271,72 @@ Item {
                 qss: "nodeorlist-overview-container"
             }
 
-            ColumnLayout {
+            ListView {
+                id: listview
                 anchors.fill: parent
-                anchors.margins: linkImageSizer.width
+                anchors.margins: overviewScaler.radius
+                clip: true
+                objectName: "listview"
+                interactive: false
+                delegate: compLvItem
+            }
 
-                Loader {
-                    property string first:  qsTr("Network")
-                    property string second: root.internal.network
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    sourceComponent: compOverviewItem
-                }
+//            ColumnLayout {
+//                anchors.fill: parent
+//                anchors.margins: linkImageSizer.width
 
-                Loader {
-                    property string first:  qsTr("Wallet")
-                    property string second: root.internal.wallet
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    sourceComponent: compOverviewItem
-                }
+//                Loader {
+//                    property string first:  qsTr("Network")
+//                    property string second: root.internal.network
+//                    Layout.fillWidth: true
+//                    Layout.fillHeight: true
+//                    sourceComponent: compOverviewItem
+//                }
 
-                Loader {
-                    property string first:  qsTr("Server")
-                    property string second: root.internal.server
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    sourceComponent: compOverviewItem
-                }
+//                Loader {
+//                    property string first:  qsTr("Wallet")
+//                    property string second: root.internal.wallet
+//                    Layout.fillWidth: true
+//                    Layout.fillHeight: true
+//                    sourceComponent: compOverviewItem
+//                }
 
-                Loader {
-                    property string first:  qsTr("Unit")
-                    property string second: root.internal.unit
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    sourceComponent: compOverviewItem
-                }
+//                Loader {
+//                    property string first:  qsTr("Server")
+//                    property string second: root.internal.server
+//                    Layout.fillWidth: true
+//                    Layout.fillHeight: true
+//                    sourceComponent: compOverviewItem
+//                }
 
-                DapQmlSeparator {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 2
-                }
+//                Loader {
+//                    property string first:  qsTr("Unit")
+//                    property string second: root.internal.unit
+//                    Layout.fillWidth: true
+//                    Layout.fillHeight: true
+//                    sourceComponent: compOverviewItem
+//                }
 
-                DapQmlLabel {
-                    Layout.fillWidth: true
-                    Layout.minimumHeight: contentHeight
-                    Layout.topMargin: linkImageSizer.width * 0.05
-                    horizontalAlign: Text.AlignRight
-                    wrapMode: Text.Wrap
-                    qss: "nodeorlist-overview-price"
-                    text: root.internal.priceShort
-                    //text: "45000.912312391231212239198444444444444444444444444479879879797978897979799879799799797979797979797997979979799997 CELL"
-                    //text: "45000.9123123912312122399799799797979797979797997979979799997 CELL"
+//                DapQmlSeparator {
+//                    Layout.fillWidth: true
+//                    Layout.preferredHeight: 2
+//                }
 
-                    onTextChanged: overview.autoResize(contentHeight);
-                    onContentHeightChanged: overview.autoResize(contentHeight);
-                }
-            } // ColumnLayout
+//                DapQmlLabel {
+//                    Layout.fillWidth: true
+//                    Layout.minimumHeight: contentHeight
+//                    Layout.topMargin: linkImageSizer.width * 0.05
+//                    horizontalAlign: Text.AlignRight
+//                    wrapMode: Text.Wrap
+//                    qss: "nodeorlist-overview-price"
+//                    text: root.internal.priceShort
+//                    //text: "45000.912312391231212239198444444444444444444444444479879879797978897979799879799799797979797979797997979979799997 CELL"
+//                    //text: "45000.9123123912312122399799799797979797979797997979979799997 CELL"
+
+//                    onTextChanged: overview.autoResize(contentHeight);
+//                    onContentHeightChanged: overview.autoResize(contentHeight);
+//                }
+//            } // ColumnLayout
         } // Container
 
         /* loading animation */
@@ -359,7 +395,7 @@ Item {
         ColumnLayout {
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottomMargin: pushButtonSizer.height * 1.25
+            anchors.bottomMargin: pushButtonSizer.height * 0.875
             width: pushButtonSizer.width
             height: pushButtonSizer.height * 2.125
 

@@ -63,6 +63,15 @@ public:
     TotalNameAndValue,
   };
   Q_ENUM(FieldType)
+
+  enum class Field
+  {
+    id,
+    name,
+    value,
+    type,
+  };
+  Q_ENUM(Field)
   /// @}
 
   /****************************************//**

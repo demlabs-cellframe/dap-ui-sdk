@@ -2200,12 +2200,12 @@
 
 .nodeorlist-overview-frame
 {
-    scaled-rect: scaled(nan,nan,-1,870,false);
+    scaled-rect: scaled(nan,nan,-1,926,false);
 }
 
 .nodeorlist-overview-container
 {
-    scaled-rect: scaled(-1,80,356,296,false);
+    scaled-rect: scaled(-1,56,356,646,false);
     color: "@input-field";
     radius: 12;
 }

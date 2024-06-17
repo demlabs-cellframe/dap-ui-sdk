@@ -8,6 +8,7 @@
 
 typedef DapQmlModelNodeTransactionOverview::FieldId FieldId;
 typedef DapQmlModelNodeTransactionOverview::FieldType FieldType;
+typedef DapQmlModelNodeTransactionOverview::Field Field;
 
 //struct DqmntoRow
 //{
@@ -97,6 +98,14 @@ static QJsonArray s_data =
   ITEM_TOTAL (FieldId::Total, "Total:"),
 };
 
+static const QHash<int, QByteArray> s_roles =
+{
+  { int (Field::id),    "id" },
+  { int (Field::name),  "name" },
+  { int (Field::value), "value" },
+  { int (Field::type),  "type" },
+};
+
 /* FUNCTIONS */
 
 static QJsonObject _variantMapToJson (const QVariantMap &a_value);
@@ -173,24 +182,42 @@ void DapQmlModelNodeTransactionOverview::setValue (FieldId a_id, const QVariant 
  * OVERRIDE
  *******************************************/
 
-int DapQmlModelNodeTransactionOverview::rowCount (const QModelIndex &parent) const
+int DapQmlModelNodeTransactionOverview::rowCount (const QModelIndex &) const
 {
   return s_data.size();
 }
 
-int DapQmlModelNodeTransactionOverview::columnCount (const QModelIndex &parent) const
+int DapQmlModelNodeTransactionOverview::columnCount (const QModelIndex &) const
 {
-  return 8;
+  return s_roles.size();
 }
 
 QVariant DapQmlModelNodeTransactionOverview::data (const QModelIndex &index, int role) const
 {
+  if (index.row() < 0 || index.row() >= s_data.size())
+    return QVariant();
 
+  if (!s_roles.contains (role))
+    return QVariant();
+
+  auto field  = Field (role);
+  auto item   = s_data.at (index.row()).toObject();
+
+  switch (field)
+    {
+      case Field::id:     return item.value ("id").toVariant();
+      case Field::name:   return item.value ("name").toVariant();
+      case Field::value:  return item.value ("value").toVariant();
+      case Field::type:   return item.value ("type").toVariant();
+
+      default:
+        return QVariant();
+    }
 }
 
 QHash<int, QByteArray> DapQmlModelNodeTransactionOverview::roleNames() const
 {
-
+  return s_roles;
 }
 
 /*-----------------------------------------*/
