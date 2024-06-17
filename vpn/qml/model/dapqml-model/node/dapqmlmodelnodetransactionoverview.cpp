@@ -1,0 +1,213 @@
+/* INCLUDES */
+
+#include "dapqmlmodelnodetransactionoverview.h"
+#include <QJsonArray>
+#include <QJsonObject>
+
+/* DEFINES */
+
+typedef DapQmlModelNodeTransactionOverview::FieldId FieldId;
+typedef DapQmlModelNodeTransactionOverview::FieldType FieldType;
+
+//struct DqmntoRow
+//{
+//  FieldId fid;
+//  QString name;
+//  QVariant value;
+
+//  QString btnIcon;
+//  QString valueColor;
+//};
+
+#define ITEM_NORMAL(a_id,a_name) \
+  QJsonObject{ \
+    { "id", int (a_id) }, \
+    { "name", a_name }, \
+    { "value", "" }, \
+    { "type", int (FieldType::NormalValue) }, \
+  }
+
+#define ITEM_BTN_VALUE(a_id,a_name) \
+  QJsonObject{ \
+    { "id", int (a_id) }, \
+    { "name", a_name }, \
+    { "value", "" }, \
+    { "type", int (FieldType::ButtonValue) }, \
+  }
+
+#define ITEM_VALUE_WITH_BTN(a_id,a_name) \
+  QJsonObject{ \
+    { "id", int (a_id) }, \
+    { "name", a_name }, \
+    { "value", "" }, \
+    { "type", int (FieldType::ValueWithButton) }, \
+  }
+
+#define ITEM_SEPARATOR(a_id) \
+  QJsonObject{ \
+    { "id", int (a_id) }, \
+    { "type", int (FieldType::Separator) }, \
+  }
+
+#define ITEM_BUTTON(a_id,a_name) \
+  QJsonObject{ \
+    { "id", int (a_id) }, \
+    { "name", a_name }, \
+    { "type", int (FieldType::Button) }, \
+  }
+
+#define ITEM_TOTAL(a_id,a_name) \
+  QJsonObject{ \
+    { "id", int (a_id) }, \
+    { "name", a_name }, \
+    { "value", "" }, \
+    { "type", int (FieldType::TotalNameAndValue) }, \
+  }
+
+struct DapQmlModelNodeTransactionOverview::Private
+{
+  int currentIndex = -1;
+};
+
+/* VARIABLES */
+
+static DapQmlModelNodeTransactionOverview *s_instance  = nullptr;
+static QJsonArray s_data =
+{
+  ITEM_NORMAL (FieldId::ServerLocation, "Server location:"),
+  ITEM_VALUE_WITH_BTN (FieldId::Address, "IP:"),
+  ITEM_NORMAL (FieldId::Network, "Network:"),
+  ITEM_NORMAL (FieldId::PaymentWallet, "Payment wallet:"),
+  ITEM_NORMAL (FieldId::AvailableBalance, "Available balance:"),
+  ITEM_VALUE_WITH_BTN (FieldId::Unit, "Unit:"),
+  ITEM_NORMAL (FieldId::UnitPricePortion, "Unit price portion:"),
+  ITEM_NORMAL (FieldId::PaymentPortions, "Payment portions:"),
+  ITEM_NORMAL (FieldId::FeePerPortion, "Fee per portion:"),
+
+  ITEM_SEPARATOR (FieldId::_separator1),
+  ITEM_BTN_VALUE (FieldId::AutoRenewal, "Auto-renewal:"),
+  ITEM_NORMAL (FieldId::AutoRenewalUnits, "Auto-renewal units:"),
+  ITEM_BUTTON (FieldId::AutoRenewalControl, "Disable auto-renewal"),
+
+  ITEM_SEPARATOR (FieldId::_separator2),
+  ITEM_NORMAL (FieldId::FeePerPortion2, "Fee per portion:"),
+  ITEM_NORMAL (FieldId::TotalFee, "Total fee:"),
+
+  ITEM_SEPARATOR (FieldId::_separator3),
+  ITEM_TOTAL (FieldId::Total, "Total:"),
+};
+
+/* FUNCTIONS */
+
+static QJsonObject _variantMapToJson (const QVariantMap &a_value);
+static QVariantMap _jsonObjectToVariantMap (const QJsonObject &a_value);
+
+/********************************************
+ * CONSTRUCT/DESTRUCT
+ *******************************************/
+
+DapQmlModelNodeTransactionOverview::DapQmlModelNodeTransactionOverview (QObject *parent)
+  : QAbstractTableModel{parent}
+  , p (new Private)
+{
+
+}
+
+DapQmlModelNodeTransactionOverview::~DapQmlModelNodeTransactionOverview()
+{
+  s_instance  = nullptr;
+  delete p;
+}
+
+/********************************************
+ * METHODS
+ *******************************************/
+
+DapQmlModelNodeTransactionOverview *DapQmlModelNodeTransactionOverview::instance()
+{
+  if (s_instance == nullptr)
+    s_instance = new DapQmlModelNodeTransactionOverview;
+  return s_instance;
+}
+
+void DapQmlModelNodeTransactionOverview::refresh()
+{
+  beginResetModel();
+  endResetModel();
+}
+
+int DapQmlModelNodeTransactionOverview::currentIndex() const
+{
+  return p->currentIndex;
+}
+
+bool DapQmlModelNodeTransactionOverview::setCurrentIndex (int a_index)
+{
+  if (p->currentIndex == a_index)
+    return false;
+
+  p->currentIndex = a_index;
+  emit sigCurrentIndexChanged();
+  return true;
+}
+
+QVariant DapQmlModelNodeTransactionOverview::value (FieldId a_id) const
+{
+  auto item  = s_data.at (int (a_id)).toObject();
+  if (item.contains ("value"))
+    return item.value ("value");
+  return QVariant();
+//  return _jsonObjectToVariantMap (s_data.at (int (a_id)).toObject());
+}
+
+void DapQmlModelNodeTransactionOverview::setValue (FieldId a_id, const QVariant &a_value)
+{
+  auto item  = s_data.at (int (a_id)).toObject();
+  if (!item.contains ("value"))
+    return;
+  item["value"] = QJsonValue::fromVariant (a_value);
+  s_data[int (a_id)] = item;
+}
+
+/********************************************
+ * OVERRIDE
+ *******************************************/
+
+int DapQmlModelNodeTransactionOverview::rowCount (const QModelIndex &parent) const
+{
+  return s_data.size();
+}
+
+int DapQmlModelNodeTransactionOverview::columnCount (const QModelIndex &parent) const
+{
+  return 8;
+}
+
+QVariant DapQmlModelNodeTransactionOverview::data (const QModelIndex &index, int role) const
+{
+
+}
+
+QHash<int, QByteArray> DapQmlModelNodeTransactionOverview::roleNames() const
+{
+
+}
+
+/*-----------------------------------------*/
+
+QJsonObject _variantMapToJson (const QVariantMap &a_value)
+{
+  QJsonObject result;
+  for (auto it = a_value.begin(); it != a_value.end(); it++)
+    result.insert (it.key(), QJsonValue::fromVariant (it.value()));
+  return result;
+}
+
+QVariantMap _jsonObjectToVariantMap (const QJsonObject &a_value)
+{
+  QVariantMap result;
+  for (auto it = a_value.begin(); it != a_value.end(); it++)
+    result.insert (it.key(), it.value());
+  return result;
+}
+/*-----------------------------------------*/
