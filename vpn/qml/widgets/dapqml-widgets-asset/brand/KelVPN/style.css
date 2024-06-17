@@ -20,6 +20,7 @@
     accent: "#FD4E75";
     upload: "#5E31F5";
     grid: "#FFFFFF";
+    purple: "#B67CFF";
     separator-color: "#E6E6E6";
     sett-hover-background: "#F7F7F7";
     choose-server-unknown: "#DDDDDD";
@@ -104,6 +105,7 @@
     accent: "#FD4E75";
     upload: "#9F83FF";
     grid: "#3F3F3F";
+    purple: "#B67CFF";
     separator-color: "#3F3F3F";
     sett-hover-background: "#5A5A5A";
     choose-server-unknown: "#424242";
@@ -210,6 +212,11 @@
 .c-dashboard-accent
 {
     color: "#F47A54";
+}
+
+.c-purple
+{
+    color: "@purple";
 }
 
 .c-error
@@ -973,6 +980,31 @@
 .overview-btn-confirm
 {
     scaled-rect: scaled(-1,737,374,80,true,12);
+}
+
+.overview-item-name
+{
+    color: "@light-grey";
+    scaled-font: scaled(16);
+}
+
+.overview-item-value
+{
+    color: "@text";
+    scaled-font: scaled(16);
+}
+
+.overview-item-button
+{
+    color: "@brand";
+    scaled-font: scaled(14);
+}
+
+.overview-item-total
+{
+    color: "@text";
+    scaled-font: scaled(20);
+    font-weight: Font.Bold;
 }
 
 /****************************************************

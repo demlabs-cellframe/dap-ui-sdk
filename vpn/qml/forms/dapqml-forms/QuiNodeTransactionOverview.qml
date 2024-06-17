@@ -196,18 +196,20 @@ Item {
     }
 
     Component {
-        id: compLvItem
+        id: compLvItemNormal
 
         RowLayout {
-            width: listview.width
-            height: listview.height / 18
+            anchors.fill: parent
+
+            property var model
 
             DapQmlLabel {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 horizontalAlign: Text.AlignLeft
                 verticalAlign: Text.AlignVCenter
-                text: model.name
+                text: (model !== null) ? model.name : ""
+                qss: "overview-item-name"
             }
 
             DapQmlLabel {
@@ -215,8 +217,166 @@ Item {
                 Layout.fillHeight: true
                 horizontalAlign: Text.AlignRight
                 verticalAlign: Text.AlignVCenter
-                text: model.value
+                text: (model !== null) ? model.value : ""
+                qss: "overview-item-value"
             }
+        }
+    }
+
+    Component {
+        id: compLvItemButtonValue
+
+        RowLayout {
+            anchors.fill: parent
+
+            property var model
+
+            DapQmlLabel {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                horizontalAlign: Text.AlignLeft
+                verticalAlign: Text.AlignVCenter
+                text: (model !== null) ? model.name : ""
+                qss: "overview-item-name"
+            }
+
+            DapQmlLabel {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                horizontalAlign: Text.AlignRight
+                verticalAlign: Text.AlignVCenter
+                text: (model !== null) ? model.value : ""
+                qss: "overview-item-value c-purple"
+            }
+        }
+    }
+
+    Component {
+        id: compLvItemValueWithButton
+
+        Item {
+            anchors.fill: parent
+
+            property var model
+
+            DapQmlLabel {
+                id: compLvItemValueWithButtonName
+                width: contentWidth
+                height: parent.height
+                horizontalAlign: Text.AlignLeft
+                verticalAlign: Text.AlignVCenter
+                text: (model !== null) ? model.name : ""
+                qss: "overview-item-name"
+            }
+
+            DapQmlLabel {
+                id: compLvItemValueWithButtonBtn
+                x: compLvItemValueWithButtonValue.x - width * 1.25
+                width: parent.height
+                height: parent.height
+                scaledPixmap: (model !== null) ? model.icon : ""
+            }
+
+            DapQmlLabel {
+                id: compLvItemValueWithButtonValue
+                x: parent.width - width
+                width: contentWidth
+                height: parent.height
+                horizontalAlign: Text.AlignRight
+                verticalAlign: Text.AlignVCenter
+                text: (model !== null) ? model.value : ""
+                qss: "overview-item-value"
+            }
+        }
+    }
+
+    Component {
+        id: compLvItemSeparator
+
+        Item {
+            anchors.fill: parent
+
+            DapQmlSeparator {
+                y: (parent.height - height) / 2
+                width: parent.width
+            }
+        }
+    }
+
+    Component {
+        id: compLvItemButton
+
+        Item {
+            anchors.fill: parent
+
+            property var model
+
+            DapQmlRectangle {
+                anchors.fill: parent
+                z: 20
+                opacity: 0.125
+                qss: "c-brand"
+                radius: height * 0.25
+            }
+
+            DapQmlLabel {
+                anchors.fill: parent
+                z: 30
+                horizontalAlign: Text.AlignHCenter
+                verticalAlign: Text.AlignVCenter
+                text: (model !== null) ? model.name : ""
+                qss: "overview-item-button"
+            }
+        }
+    }
+
+    Component {
+        id: compLvItemTotal
+
+        RowLayout {
+            anchors.fill: parent
+
+            property var model
+
+            DapQmlLabel {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                horizontalAlign: Text.AlignLeft
+                verticalAlign: Text.AlignVCenter
+                text: (model !== null) ? model.name : ""
+                qss: "overview-item-total"
+            }
+
+            DapQmlLabel {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                horizontalAlign: Text.AlignRight
+                verticalAlign: Text.AlignVCenter
+                text: (model !== null) ? model.value : ""
+                qss: "overview-item-total"
+            }
+        }
+    }
+
+    Component {
+        id: compLvItem
+
+        Loader {
+            width: listview.width
+            height: listview.height / 18
+            sourceComponent: {
+                switch (model.type)
+                {
+                case 0:  return compLvItemNormal;
+                case 1:  return compLvItemButtonValue;
+                case 2:  return compLvItemValueWithButton;
+                case 3:  return compLvItemSeparator;
+                case 4:  return compLvItemButton;
+                case 5:  return compLvItemTotal
+                default: return compLvItemNormal;
+                }
+            }
+            onLoaded: item.model  = model;
         }
     }
 
@@ -278,7 +438,22 @@ Item {
                 clip: true
                 objectName: "listview"
                 interactive: false
-                delegate: compLvItem
+
+                states: [
+                    State {
+                        name: "modelSet"
+
+                        PropertyChanges {
+                            target: listview
+                            delegate: compLvItem
+                        }
+                    }
+                ]
+
+                onModelChanged: {
+                    if (model !== "undefined")
+                        state = "modelSet"
+                }
             }
 
 //            ColumnLayout {

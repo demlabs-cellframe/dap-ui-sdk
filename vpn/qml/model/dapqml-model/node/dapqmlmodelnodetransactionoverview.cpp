@@ -24,7 +24,7 @@ typedef DapQmlModelNodeTransactionOverview::Field Field;
   QJsonObject{ \
     { "id", int (a_id) }, \
     { "name", a_name }, \
-    { "value", "" }, \
+    { "value", "TEST" }, \
     { "type", int (FieldType::NormalValue) }, \
   }
 
@@ -32,15 +32,16 @@ typedef DapQmlModelNodeTransactionOverview::Field Field;
   QJsonObject{ \
     { "id", int (a_id) }, \
     { "name", a_name }, \
-    { "value", "" }, \
+    { "value", "TEST" }, \
     { "type", int (FieldType::ButtonValue) }, \
   }
 
-#define ITEM_VALUE_WITH_BTN(a_id,a_name) \
+#define ITEM_VALUE_WITH_BTN(a_id,a_name,a_icon) \
   QJsonObject{ \
     { "id", int (a_id) }, \
     { "name", a_name }, \
-    { "value", "" }, \
+    { "value", "TEST" }, \
+    { "icon", a_icon }, \
     { "type", int (FieldType::ValueWithButton) }, \
   }
 
@@ -61,7 +62,7 @@ typedef DapQmlModelNodeTransactionOverview::Field Field;
   QJsonObject{ \
     { "id", int (a_id) }, \
     { "name", a_name }, \
-    { "value", "" }, \
+    { "value", "TEST" }, \
     { "type", int (FieldType::TotalNameAndValue) }, \
   }
 
@@ -76,11 +77,11 @@ static DapQmlModelNodeTransactionOverview *s_instance  = nullptr;
 static QJsonArray s_data =
 {
   ITEM_NORMAL (FieldId::ServerLocation, "Server location:"),
-  ITEM_VALUE_WITH_BTN (FieldId::Address, "IP:"),
+  ITEM_VALUE_WITH_BTN (FieldId::Address, "IP:", "qrc:/dapqml-forms-asset/ic_trov_copy.png"),
   ITEM_NORMAL (FieldId::Network, "Network:"),
   ITEM_NORMAL (FieldId::PaymentWallet, "Payment wallet:"),
   ITEM_NORMAL (FieldId::AvailableBalance, "Available balance:"),
-  ITEM_VALUE_WITH_BTN (FieldId::Unit, "Unit:"),
+  ITEM_VALUE_WITH_BTN (FieldId::Unit, "Unit:", "qrc:/dapqml-forms-asset/ic_trov_edit.png"),
   ITEM_NORMAL (FieldId::UnitPricePortion, "Unit price portion:"),
   ITEM_NORMAL (FieldId::PaymentPortions, "Payment portions:"),
   ITEM_NORMAL (FieldId::FeePerPortion, "Fee per portion:"),
@@ -104,6 +105,7 @@ static const QHash<int, QByteArray> s_roles =
   { int (Field::name),  "name" },
   { int (Field::value), "value" },
   { int (Field::type),  "type" },
+  { int (Field::icon),  "icon" },
 };
 
 /* FUNCTIONS */
@@ -119,7 +121,7 @@ DapQmlModelNodeTransactionOverview::DapQmlModelNodeTransactionOverview (QObject 
   : QAbstractTableModel{parent}
   , p (new Private)
 {
-
+  setObjectName ("DapQmlModelNodeTransactionOverview");
 }
 
 DapQmlModelNodeTransactionOverview::~DapQmlModelNodeTransactionOverview()
@@ -209,6 +211,7 @@ QVariant DapQmlModelNodeTransactionOverview::data (const QModelIndex &index, int
       case Field::name:   return item.value ("name").toVariant();
       case Field::value:  return item.value ("value").toVariant();
       case Field::type:   return item.value ("type").toVariant();
+      case Field::icon:   return item.value ("icon").toVariant();
 
       default:
         return QVariant();

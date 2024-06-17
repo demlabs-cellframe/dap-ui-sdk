@@ -70,6 +70,7 @@ public:
     name,
     value,
     type,
+    icon,
   };
   Q_ENUM(Field)
   /// @}
