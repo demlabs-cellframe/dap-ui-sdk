@@ -35,25 +35,24 @@ Item
         {
             id: area
             anchors.fill: parent
-
             visible: showToolTip
-
             hoverEnabled: true
 
             DapCustomToolTip{
                 id: tooltip
                 parent: area
                 visible: alwaysHoverShow && area.containsMouse ?
-                                 true :
-                                 area.containsMouse ?
-                                     textItem.implicitWidth > textItem.width ?
-                                         true :
-                                         false : false
+                    true :
+                    area.containsMouse ?
+                        textItem.implicitWidth > textItem.width ?
+                            true :
+                            false : false
                 contentText: fullText
                 onVisibleChanged: /*console.log(text.y, bigNumber.y, y)*/
                 {
                     updatePos()
                 }
+
             }
         }
     }

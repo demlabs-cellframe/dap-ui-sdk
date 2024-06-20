@@ -15,6 +15,7 @@ Item {
     property int borderWidth: 12
     property int spacing: 10
     property int commonHeight: 20
+    property alias textComponent: textItem
 
     property real startX: dapMainWindow.width
     property real stopX: dapMainWindow.width - (popup.width + 24)
