@@ -80,7 +80,7 @@ static QJsonArray s_data =
   ITEM_VALUE_WITH_BTN (FieldId::Address, "IP:", "qrc:/dapqml-forms-asset/ic_trov_copy.png"),
   ITEM_NORMAL (FieldId::Network, "Network:"),
   ITEM_NORMAL (FieldId::PaymentWallet, "Payment wallet:"),
-  ITEM_NORMAL (FieldId::AvailableBalance, "Available balance:"),
+  ITEM_NORMAL (FieldId::AvailableBalance, "Available:"),
   ITEM_VALUE_WITH_BTN (FieldId::Unit, "Unit:", "qrc:/dapqml-forms-asset/ic_trov_edit.png"),
   ITEM_NORMAL (FieldId::UnitPricePortion, "Unit price portion:"),
   ITEM_NORMAL (FieldId::PaymentPortions, "Payment portions:"),

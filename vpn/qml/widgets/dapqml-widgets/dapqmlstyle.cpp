@@ -219,6 +219,44 @@ QString DapQmlStyle::elideOrderPriceText(
   return elidenFirstPart + parts.at (1);
 }
 
+qreal DapQmlStyle::getQssFontSize (const QString &a_qss)
+{
+  /* variables */
+  double resultX, resultY, resultW, resultH, resultFontSize;
+
+  /* get items by style list */
+  auto items  = DapStyle::QssMap::items (a_qss);
+
+  /* cycle thru all items */
+  for (auto i = items.begin(), e = items.end(); i != e; i++)
+    {
+      /* ge item */
+      auto &item = *i;
+
+      /* cycle thru all item properties */
+      for (auto it = item->begin(), en = item->end(); it != en; it++)
+        {
+          /* set scale */
+          if (it.key() == "scaledRect" || it.key() == "scaledFont")
+            {
+              auto scaled  = it.value().value<DapStyle::Scaled> ();
+
+              /* adjust and return result */
+              scaled.calcAdjusted(
+                s_screenWidth, s_screenHeight,
+                resultX, resultY,
+                resultW, resultH,
+                resultFontSize);
+
+              return resultFontSize;
+            }
+        }
+    }
+
+  /* not found */
+  return 0;
+}
+
 void DapQmlStyle::setup(const QString &styleSheet)
 {
   s_styleSheet  = styleSheet;

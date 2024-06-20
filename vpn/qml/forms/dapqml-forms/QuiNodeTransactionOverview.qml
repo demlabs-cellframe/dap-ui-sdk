@@ -198,14 +198,15 @@ Item {
     Component {
         id: compLvItemNormal
 
-        RowLayout {
+        Item {
             anchors.fill: parent
 
             property var model
 
             DapQmlLabel {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+                id: compLvItemNormalName
+                width: contentWidth
+                height: parent.height
                 horizontalAlign: Text.AlignLeft
                 verticalAlign: Text.AlignVCenter
                 text: (model !== null) ? model.name : ""
@@ -213,8 +214,9 @@ Item {
             }
 
             DapQmlLabel {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+                x: parent.width - width
+                width: parent.width - compLvItemNormalName.width - 4
+                height: parent.height
                 horizontalAlign: Text.AlignRight
                 verticalAlign: Text.AlignVCenter
                 text: (model !== null) ? model.value : ""
@@ -295,6 +297,8 @@ Item {
 
         Item {
             anchors.fill: parent
+
+            property var model
 
             DapQmlSeparator {
                 y: (parent.height - height) / 2
