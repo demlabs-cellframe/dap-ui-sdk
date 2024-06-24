@@ -151,6 +151,28 @@ void DapSession::sendBugReport(const QByteArray &data)
     }
 }
 
+void DapSession::getRemainLimits(const QString& net_id, const QString& a_pkey, const QString& address, quint16 port)
+{
+    QByteArray data;
+
+    if (!m_dapCryptCDB) {
+        this->setDapUri (address, port);
+        auto *l_tempConn = new QMetaObject::Connection();
+        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]{
+            preserveCDBSession();
+            m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(),
+                                                    SLOT(answerBugReport()), QT_STRINGIFY(receivedBugReportAnswer));
+            disconnect(*l_tempConn);
+            delete l_tempConn;
+        });
+        requestServerPublicKey();
+    } else {
+        m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(),
+                                                SLOT(answerBugReport()), QT_STRINGIFY(receivedBugReportAnswer));
+    }
+}
+
+
 void DapSession::sendBugReportStatusRequest(const QByteArray &data)
 {
     if (!m_dapCryptCDB) {

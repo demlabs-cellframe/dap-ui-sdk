@@ -109,9 +109,19 @@ public slots:
                    ,"");
     }
 
+    void sendRemainServiceRequest(const QString & a_channels, const QString & a_query,
+                                  const QString& address, quint16 port) {
+        streamOpen(QString("stream_ctl,channels=%1,enc_type=%2,enc_headers=%3")
+                       .arg(a_channels)
+                       .arg(DAP_ENC_KEY_TYPE_SALSA2012)
+                       .arg(0)
+                   , a_query, address, port);
+    }
+
 //    void abortStreamRequest() { m_network_reply->abort(); }
 
     void streamOpen(const QString& subUrl, const QString& query);
+    void streamOpen(const QString& subUrl, const QString& query, const QString& address, quint16 port);
     void streamClose();
 
     void writeChannelPacket(DapChannelPacketHdr *chPkt, void *data, uint64_t *dest_addr = Q_NULLPTR);
