@@ -66,6 +66,15 @@ typedef DapQmlModelNodeTransactionOverview::Field Field;
     { "type", int (FieldType::TotalNameAndValue) }, \
   }
 
+#define ITEM_NORMAL_TOOLTIP(a_id,a_name) \
+  QJsonObject{ \
+    { "id", int (a_id) }, \
+    { "name", a_name }, \
+    { "value", "TEST" }, \
+    { "tooltip", "TEST" }, \
+    { "type", int (FieldType::NormalValueTooltip) }, \
+  }
+
 struct DapQmlModelNodeTransactionOverview::Private
 {
   int currentIndex = -1;
@@ -80,7 +89,7 @@ static QJsonArray s_data =
   ITEM_VALUE_WITH_BTN (FieldId::Address, "IP:", "qrc:/dapqml-forms-asset/ic_trov_copy.png"),
   ITEM_NORMAL (FieldId::Network, "Network:"),
   ITEM_NORMAL (FieldId::PaymentWallet, "Payment wallet:"),
-  ITEM_NORMAL (FieldId::AvailableBalance, "Available:"),
+  ITEM_NORMAL_TOOLTIP (FieldId::AvailableBalance, "Available:"),
   ITEM_VALUE_WITH_BTN (FieldId::Unit, "Unit:", "qrc:/dapqml-forms-asset/ic_trov_edit.png"),
   ITEM_NORMAL (FieldId::UnitPricePortion, "Unit price portion:"),
   ITEM_NORMAL (FieldId::PaymentPortions, "Payment portions:"),
@@ -101,11 +110,12 @@ static QJsonArray s_data =
 
 static const QHash<int, QByteArray> s_roles =
 {
-  { int (Field::id),    "id" },
-  { int (Field::name),  "name" },
-  { int (Field::value), "value" },
-  { int (Field::type),  "type" },
-  { int (Field::icon),  "icon" },
+  { int (Field::id),      "id" },
+  { int (Field::name),    "name" },
+  { int (Field::value),   "value" },
+  { int (Field::type),    "type" },
+  { int (Field::icon),    "icon" },
+  { int (Field::tooltip), "tooltip" },
 };
 
 /* FUNCTIONS */
@@ -180,6 +190,23 @@ void DapQmlModelNodeTransactionOverview::setValue (FieldId a_id, const QVariant 
   s_data[int (a_id)] = item;
 }
 
+QVariant DapQmlModelNodeTransactionOverview::tooltip (FieldId a_id) const
+{
+  auto item  = s_data.at (int (a_id)).toObject();
+  if (item.contains ("tooltip"))
+    return item.value ("tooltip");
+  return QVariant();
+}
+
+void DapQmlModelNodeTransactionOverview::setTooltip (FieldId a_id, const QVariant &a_value)
+{
+  auto item  = s_data.at (int (a_id)).toObject();
+  if (!item.contains ("tooltip"))
+    return;
+  item["tooltip"] = QJsonValue::fromVariant (a_value);
+  s_data[int (a_id)] = item;
+}
+
 /********************************************
  * OVERRIDE
  *******************************************/
@@ -207,11 +234,12 @@ QVariant DapQmlModelNodeTransactionOverview::data (const QModelIndex &index, int
 
   switch (field)
     {
-      case Field::id:     return item.value ("id").toVariant();
-      case Field::name:   return item.value ("name").toVariant();
-      case Field::value:  return item.value ("value").toVariant();
-      case Field::type:   return item.value ("type").toVariant();
-      case Field::icon:   return item.value ("icon").toVariant();
+      case Field::id:       return item.value ("id").toVariant();
+      case Field::name:     return item.value ("name").toVariant();
+      case Field::value:    return item.value ("value").toVariant();
+      case Field::type:     return item.value ("type").toVariant();
+      case Field::icon:     return item.value ("icon").toVariant();
+      case Field::tooltip:  return item.value ("tooltip").toVariant();
 
       default:
         return QVariant();

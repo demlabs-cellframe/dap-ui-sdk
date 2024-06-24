@@ -226,6 +226,83 @@ Item {
     }
 
     Component {
+        id: compLvItemNormalTooltip
+
+        Item {
+            anchors.fill: parent
+
+            property var model
+
+            DapQmlLabel {
+                id: compLvItemNormalName
+                width: contentWidth
+                height: parent.height
+                horizontalAlign: Text.AlignLeft
+                verticalAlign: Text.AlignVCenter
+                text: (model !== null) ? model.name : ""
+                qss: "overview-item-name"
+            }
+
+            DapQmlLabel {
+                id: compLvItemNormalValue
+                x: parent.width - width
+                width: parent.width - compLvItemNormalName.width - 4
+                height: parent.height
+                horizontalAlign: Text.AlignRight
+                verticalAlign: Text.AlignVCenter
+                disableClicking: true
+                text: (model !== null) ? model.value : ""
+                qss: "overview-item-value"
+
+                MouseArea {
+                    anchors.fill: parent
+                    z: 10
+                    hoverEnabled: true
+                    onEntered: tooltip.open()
+                    onExited:  tooltip.close()
+                }
+
+                Popup {
+                    id: tooltip
+                    x: parent.width - width
+                    y: 0 - height
+                    width: tooltipText.contentWidth + height
+                    height: tooltipText.contentHeight * 1.5
+                    topInset: 0
+                    bottomInset: 0
+                    leftInset: 0
+                    rightInset: 0
+                    padding: 0
+                    margins: 0
+
+                    background: Item {}
+
+                    contentItem: Rectangle {
+                        anchors.fill: parent
+                        color: "#e0e0e0"
+                        border.color: "#404040"
+
+                        Text {
+                            id: tooltipText
+                            anchors.fill: parent
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            color: "#404040"
+
+                            font {
+                                family: compLvItemNormalValue.fontFamiliy
+                                pixelSize: compLvItemNormalValue.fontSize * 0.85
+                            }
+
+                            text: (model !== null) ? model.tooltip : ""
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Component {
         id: compLvItemButtonValue
 
         RowLayout {
@@ -377,6 +454,7 @@ Item {
                 case 3:  return compLvItemSeparator;
                 case 4:  return compLvItemButton;
                 case 5:  return compLvItemTotal
+                case 6:  return compLvItemNormalTooltip
                 default: return compLvItemNormal;
                 }
             }

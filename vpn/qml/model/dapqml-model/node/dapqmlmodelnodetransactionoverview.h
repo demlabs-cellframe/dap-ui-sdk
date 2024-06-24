@@ -61,6 +61,7 @@ public:
     Separator,
     Button,
     TotalNameAndValue,
+    NormalValueTooltip,
   };
   Q_ENUM(FieldType)
 
@@ -71,6 +72,7 @@ public:
     value,
     type,
     icon,
+    tooltip,
   };
   Q_ENUM(Field)
   /// @}
@@ -110,6 +112,9 @@ public:
 
   Q_INVOKABLE QVariant value (FieldId a_id) const;
   Q_INVOKABLE void setValue (FieldId a_id, const QVariant &a_value);
+
+  Q_INVOKABLE QVariant tooltip (FieldId a_id) const;
+  Q_INVOKABLE void setTooltip (FieldId a_id, const QVariant &a_value);
 
   /// @}
 
