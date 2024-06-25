@@ -28,12 +28,11 @@ Item
 
     property var rangeValues:
     {
-        "min": 0.03,
-        "low": 0.04,
-        "middle": 0.05,
-        "high": 0.06,
-        "veryHigh": 0.07,
-        "max": 0.08
+        "veryLow": 0.04,
+        "low": 0.05,
+        "middle": 0.06,
+        "high": 0.07,
+        "veryHigh": 0.08
     }
 
     // Custom SpinBox
@@ -74,7 +73,7 @@ Item
                 hoverEnabled: true
                 onClicked:
                 {
-                    if (currentValue >= minValue + spinBoxStep)
+                    if (currentValue >= spinBoxStep)
                     {
                         setValue(currentValue - spinBoxStep)
                     }
@@ -279,7 +278,7 @@ Item
 
     function updateState()
     {
-        if(currentValue < minValue)
+        if(currentValue < 0)
             return
 
         var checkSearch = false
@@ -289,7 +288,7 @@ Item
         {
             statesData.get(i).enabled = checkSearch
 
-            if(statesData.get(i).minValue > currentValue || checkSearch)
+            if(statesData.get(i).minValue >= currentValue || checkSearch)
                 continue;
 
             idxSearch = i
@@ -312,11 +311,10 @@ Item
 
     function checkRanges(ranges)
     {
-        if(ranges.min > ranges.low) return false
+        if(ranges.veryLow > ranges.low) return false
         if(ranges.low > ranges.middle) return false
         if(ranges.middle > ranges.high) return false
         if(ranges.high > ranges.veryHigh) return false
-        if(ranges.veryHigh > ranges.max) return false
         return true
     }
 
@@ -338,8 +336,8 @@ Item
         statesData.append(
                     {
                         name: "Very low",
-                        minValue: rcvData.min,
-                        maxValue: rcvData.low,
+                        minValue: 0,
+                        maxValue: rcvData.veryLow,
                         enabled: false
                     })
 
@@ -347,8 +345,8 @@ Item
         statesData.append(
                     {
                         name: "Low",
-                        minValue: rcvData.low,
-                        maxValue: rcvData.middle,
+                        minValue: rcvData.veryLow,
+                        maxValue: rcvData.low,
                         enabled: false
                     })
 
@@ -356,8 +354,8 @@ Item
         statesData.append(
                     {
                         name: "Recommended",
-                        minValue: rcvData.middle,
-                        maxValue: rcvData.high,
+                        minValue: rcvData.low,
+                        maxValue: rcvData.middle,
                         enabled: false
                     })
 
@@ -365,8 +363,8 @@ Item
         statesData.append(
                     {
                         name: "High",
-                        minValue: rcvData.high,
-                        maxValue: rcvData.veryHigh,
+                        minValue: rcvData.middle,
+                        maxValue: rcvData.high,
                         enabled: false
                     })
 
@@ -374,8 +372,8 @@ Item
         statesData.append(
                     {
                         name: "Very high",
-                        minValue: rcvData.veryHigh,
-                        maxValue: rcvData.max,
+                        minValue: rcvData.high,
+                        maxValue: rcvData.veryHigh,
                         enabled: false
                     })
 
