@@ -41,6 +41,7 @@ typedef DapQmlModelNodeTransactionOverview::Field Field;
     { "id", int (a_id) }, \
     { "name", a_name }, \
     { "value", "TEST" }, \
+    { "tooltip", "" }, \
     { "icon", a_icon }, \
     { "type", int (FieldType::ValueWithButton) }, \
   }
@@ -71,7 +72,7 @@ typedef DapQmlModelNodeTransactionOverview::Field Field;
     { "id", int (a_id) }, \
     { "name", a_name }, \
     { "value", "TEST" }, \
-    { "tooltip", "TEST" }, \
+    { "tooltip", "" }, \
     { "type", int (FieldType::NormalValueTooltip) }, \
   }
 
@@ -91,9 +92,9 @@ static QJsonArray s_data =
   ITEM_NORMAL (FieldId::PaymentWallet, "Payment wallet:"),
   ITEM_NORMAL_TOOLTIP (FieldId::AvailableBalance, "Available:"),
   ITEM_VALUE_WITH_BTN (FieldId::Unit, "Unit:", "qrc:/dapqml-forms-asset/ic_trov_edit.png"),
-  ITEM_NORMAL (FieldId::UnitPricePortion, "Unit price portion:"),
+  ITEM_NORMAL_TOOLTIP (FieldId::UnitPricePortion, "Unit price portion:"),
   ITEM_NORMAL (FieldId::PaymentPortions, "Payment portions:"),
-  ITEM_NORMAL (FieldId::FeePerPortion, "Fee per portion:"),
+  ITEM_NORMAL_TOOLTIP (FieldId::FeePerPortion, "Fee per portion:"),
 
   ITEM_SEPARATOR (FieldId::_separator1),
   ITEM_BTN_VALUE (FieldId::AutoRenewal, "Auto-renewal:"),

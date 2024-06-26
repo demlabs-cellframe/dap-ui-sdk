@@ -252,12 +252,13 @@ Item {
                 verticalAlign: Text.AlignVCenter
                 disableClicking: true
                 text: (model !== null) ? model.value : ""
+                elide: Text.ElideMiddle
                 qss: "overview-item-value"
 
                 MouseArea {
                     anchors.fill: parent
                     z: 10
-                    hoverEnabled: true
+                    hoverEnabled: (model !== null) ? model.tooltip !== "" : false
                     onEntered: tooltip.open()
                     onExited:  tooltip.close()
                 }
@@ -350,7 +351,7 @@ Item {
 
             DapQmlLabel {
                 id: compLvItemValueWithButtonBtn
-                x: compLvItemValueWithButtonValue.x - width * 1.25
+                x: parent.width - compLvItemValueWithButtonValue.contentWidth - width * 1.25
                 width: parent.height
                 height: parent.height
                 scaledPixmap: (model !== null) ? model.icon : ""
@@ -359,12 +360,58 @@ Item {
             DapQmlLabel {
                 id: compLvItemValueWithButtonValue
                 x: parent.width - width
-                width: contentWidth
+                width: parent.width - compLvItemValueWithButtonName.width - compLvItemValueWithButtonBtn.width - 8
                 height: parent.height
                 horizontalAlign: Text.AlignRight
                 verticalAlign: Text.AlignVCenter
+                elide: Text.ElideMiddle
                 text: (model !== null) ? model.value : ""
                 qss: "overview-item-value"
+
+                MouseArea {
+                    anchors.fill: parent
+                    z: 10
+                    hoverEnabled: (model !== null) ? model.tooltip !== "" : false
+                    onEntered: tooltip.open()
+                    onExited:  tooltip.close()
+                }
+
+                Popup {
+                    id: tooltip
+                    x: parent.width - width
+                    y: 0 - height
+                    width: tooltipText.contentWidth + height
+                    height: tooltipText.contentHeight * 1.5
+                    topInset: 0
+                    bottomInset: 0
+                    leftInset: 0
+                    rightInset: 0
+                    padding: 0
+                    margins: 0
+
+                    background: Item {}
+
+                    contentItem: Rectangle {
+                        anchors.fill: parent
+                        color: "#e0e0e0"
+                        border.color: "#404040"
+
+                        Text {
+                            id: tooltipText
+                            anchors.fill: parent
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            color: "#404040"
+
+                            font {
+                                family: compLvItemValueWithButtonValue.fontFamiliy
+                                pixelSize: compLvItemValueWithButtonValue.fontSize * 0.85
+                            }
+
+                            text: (model !== null) ? model.tooltip : ""
+                        }
+                    }
+                }
             }
         }
     }
