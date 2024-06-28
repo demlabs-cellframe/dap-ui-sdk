@@ -136,8 +136,7 @@ void DapQmlModelNodeUnitsList::_modelReset()
 
 int DapQmlModelNodeUnitsList::rowCount (const QModelIndex &parent) const
 {
-  const auto &list  = DapNodeWalletData::instance()->walletTokenList();
-  return list.size();
+  return p->units.size();
 }
 
 int DapQmlModelNodeUnitsList::columnCount (const QModelIndex &parent) const
