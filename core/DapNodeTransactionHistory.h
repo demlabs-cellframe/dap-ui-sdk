@@ -30,11 +30,18 @@ public:
   struct Transaction
   {
     DapNodeOrderInfo info;
-    QString wallet;
+    QString ipAddress;
     QString network;
+    QString wallet;
     QString token;
-    QString value;
+    QString tokenValue; // user payed
     QString unit;
+    QString unitValue;
+    QString priceValue;
+    QString portions;
+    QString fee;
+    QString totalFee;
+    QString totalValue;
     QDateTime created;
     bool isSigned;
 
