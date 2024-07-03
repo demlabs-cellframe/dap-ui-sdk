@@ -86,6 +86,7 @@ public slots:
   void slotSetValue (const QString &value);
   void slotSetUnit (const QString &unit);
   void slotChooseOrder (const QString &hash);
+  void slotSetTransactionInfo (const QVariant &a_valueMap);
   void slotCondTxCreate();
   void slotStartSearchOrders();
   void slotSetMaxValueUnit (const QString &price);

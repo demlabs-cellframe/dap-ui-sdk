@@ -37,7 +37,7 @@ public:
     QString tokenValue; // user payed
     QString unit;
     QString unitValue;
-    QString priceValue;
+    QString priceValue; // per portion
     QString portions;
     QString fee;
     QString totalFee;
