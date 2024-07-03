@@ -94,15 +94,16 @@ static QJsonArray s_data =
   ITEM_VALUE_WITH_BTN (FieldId::Unit, "Unit:", "qrc:/dapqml-forms-asset/ic_trov_edit.png"),
   ITEM_NORMAL_TOOLTIP (FieldId::UnitPricePortion, "Unit price portion:"),
   ITEM_NORMAL (FieldId::PaymentPortions, "Payment portions:"),
-  ITEM_NORMAL_TOOLTIP (FieldId::FeePerPortion, "Fee per portion:"),
 
   ITEM_SEPARATOR (FieldId::_separator1),
-  ITEM_BTN_VALUE (FieldId::AutoRenewal, "Auto-renewal:"),
-  ITEM_NORMAL (FieldId::AutoRenewalUnits, "Auto-renewal units:"),
-  ITEM_BUTTON (FieldId::AutoRenewalControl, "Disable auto-renewal"),
+  ITEM_NORMAL_TOOLTIP (FieldId::FeePerPortion, "Fee per portion:"),
 
-  ITEM_SEPARATOR (FieldId::_separator2),
-  ITEM_NORMAL (FieldId::FeePerPortion2, "Fee per portion:"),
+//  ITEM_BTN_VALUE (FieldId::AutoRenewal, "Auto-renewal:"),
+//  ITEM_NORMAL (FieldId::AutoRenewalUnits, "Auto-renewal units:"),
+//  ITEM_BUTTON (FieldId::AutoRenewalControl, "Disable auto-renewal"),
+
+//  ITEM_SEPARATOR (FieldId::_separator2),
+//  ITEM_NORMAL (FieldId::FeePerPortion2, "Fee per portion:"),
   ITEM_NORMAL (FieldId::TotalFee, "Total fee:"),
 
   ITEM_SEPARATOR (FieldId::_separator3),

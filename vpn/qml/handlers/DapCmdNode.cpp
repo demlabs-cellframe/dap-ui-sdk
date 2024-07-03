@@ -110,7 +110,7 @@ struct DapCmdNode::DapCmdNodeData
 //  QString selectedWalletName;   // paymentWallet
 //  QString selectedNetworkName;  // network
 //  QString selectedTokenName;    // token
-//  QString value;                // tokenValue
+  QString value;                // tokenValue
   QString selectedUnit;
   QString maxPrice;
   QString minPrice;
@@ -358,7 +358,7 @@ bool DapCmdNode::_checkContinue()
   return  !_data->overview.wallet.isEmpty() &&
           !_data->overview.network.isEmpty() &&
           !_data->overview.token.isEmpty() &&
-          !_data->overview.tokenValue.isEmpty() &&
+          !_data->value.isEmpty() &&
           !_data->orderHash.isEmpty();
 }
 
@@ -408,7 +408,7 @@ void DapCmdNode::slotCondTxCreate()
         { "wallet_name",  _data->overview.wallet },
         { "network_name", _data->overview.network },
         { "token_name",   _data->overview.token },
-        { "value",        _data->overview.tokenValue },
+        { "value",        _data->value },
         { "unit",         convertUnits (order.priceUnit()) },// "day" },
       },
     },
@@ -559,7 +559,7 @@ void DapCmdNode::slotChooseToken (const QString &token)
 void DapCmdNode::slotSetValue (const QString &value)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  _data->overview.tokenValue = value;
+  _data->value = value;
   emit sigContinueEnable (_checkContinue());
 }
 
