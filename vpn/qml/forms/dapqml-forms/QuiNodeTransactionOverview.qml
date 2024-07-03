@@ -291,8 +291,8 @@ Item {
                             color: "#404040"
 
                             font {
-                                family: compLvItemNormalValue.fontFamiliy
-                                pixelSize: compLvItemNormalValue.fontSize * 0.85
+                                family: sizerFieldLabel.fontFamiliy
+                                pixelSize: sizerFieldLabel.fontSize * 0.85
                             }
 
                             text: (model !== null) ? model.tooltip : ""
@@ -404,8 +404,8 @@ Item {
                             color: "#404040"
 
                             font {
-                                family: compLvItemValueWithButtonValue.fontFamiliy
-                                pixelSize: compLvItemValueWithButtonValue.fontSize * 0.85
+                                family: sizerFieldLabel.fontFamiliy
+                                pixelSize: sizerFieldLabel.fontSize * 0.85
                             }
 
                             text: (model !== null) ? model.tooltip : ""
@@ -461,14 +461,15 @@ Item {
     Component {
         id: compLvItemTotal
 
-        RowLayout {
+        Item {
             anchors.fill: parent
 
             property var model
 
             DapQmlLabel {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+                id: compLvItemTotalName
+                width: contentWidth
+                height: parent.height
                 horizontalAlign: Text.AlignLeft
                 verticalAlign: Text.AlignVCenter
                 text: (model !== null) ? model.name : ""
@@ -476,12 +477,60 @@ Item {
             }
 
             DapQmlLabel {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+                id: compLvItemTotalValue
+                x: parent.width - width
+                width: parent.width - compLvItemTotalName.width - 4
+                height: parent.height
                 horizontalAlign: Text.AlignRight
                 verticalAlign: Text.AlignVCenter
                 text: (model !== null) ? model.value : ""
+                elide: Text.ElideMiddle
                 qss: "overview-item-total"
+
+                MouseArea {
+                    anchors.fill: parent
+                    z: 10
+                    hoverEnabled: (model !== null) ? model.tooltip !== "" : false
+                    onEntered: tooltip.open()
+                    onExited:  tooltip.close()
+                }
+
+                Popup {
+                    id: tooltip
+                    x: parent.width - width
+                    y: 0 - height
+                    width: tooltipText.contentWidth + height
+                    height: tooltipText.contentHeight * 1.5
+                    topInset: 0
+                    bottomInset: 0
+                    leftInset: 0
+                    rightInset: 0
+                    padding: 0
+                    margins: 0
+
+                    background: Item {}
+
+                    contentItem: Rectangle {
+                        anchors.fill: parent
+                        color: "#e0e0e0"
+                        border.color: "#404040"
+
+                        Text {
+                            id: tooltipText
+                            anchors.fill: parent
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            color: "#404040"
+
+                            font {
+                                family: sizerFieldLabel.fontFamiliy
+                                pixelSize: sizerFieldLabel.fontSize * 0.85
+                            }
+
+                            text: (model !== null) ? model.tooltip : ""
+                        }
+                    }
+                }
             }
         }
     }
@@ -507,6 +556,16 @@ Item {
             }
             onLoaded: item.model  = model;
         }
+    }
+
+    /****************************************//**
+     * Resizers
+     ********************************************/
+
+    DapQmlLabel {
+        id: sizerFieldLabel
+        visible: false
+        qss: "overview-item-name"
     }
 
     /****************************************//**

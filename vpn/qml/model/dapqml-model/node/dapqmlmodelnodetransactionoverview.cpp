@@ -64,6 +64,7 @@ typedef DapQmlModelNodeTransactionOverview::Field Field;
     { "id", int (a_id) }, \
     { "name", a_name }, \
     { "value", "TEST" }, \
+    { "tooltip", "" }, \
     { "type", int (FieldType::TotalNameAndValue) }, \
   }
 
@@ -104,7 +105,7 @@ static QJsonArray s_data =
 
 //  ITEM_SEPARATOR (FieldId::_separator2),
 //  ITEM_NORMAL (FieldId::FeePerPortion2, "Fee per portion:"),
-  ITEM_NORMAL (FieldId::TotalFee, "Total fee:"),
+  ITEM_NORMAL_TOOLTIP (FieldId::TotalFee, "Total fee:"),
 
   ITEM_SEPARATOR (FieldId::_separator3),
   ITEM_TOTAL (FieldId::Total, "Total:"),
