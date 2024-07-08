@@ -59,7 +59,7 @@ public:
 //  WalletsData *nodeInfo() { return &m_dataWallet; }
   DapNodeOrderInfo orderData (const QString &hash);
   /// convert units from kilo (mega etc) to byte. same for seconds
-  static void convertUnits (QString &a_unit, qint64 &a_min, qint64 &a_max);
+  static void convertUnits (QString &a_unit, qint64 &a_min, qint64 &a_max, qint64 *a_multiplier = nullptr);
 
 protected:
   bool _checkContinue();

@@ -25,6 +25,8 @@ struct DapQmlModelNodeOrderList::Private
   int currentIndex = -1;
   QQueue<QString> feeRequestQueue;
   QString currentOrderHashCopy;
+  QString unitName;
+  qint64 multiplier = 1;
 };
 
 /********************************************
@@ -291,8 +293,24 @@ QVariant DapQmlModelNodeOrderList::data (const QModelIndex &index, int role) con
         case FieldId::node_addr:   return item.node_addr;
         case FieldId::price:       return item.price;
         case FieldId::priceShort:  return NodeOrderList::scopedPrice (item.price);
-        case FieldId::units:       return item.units;
-        case FieldId::units_value: return item.units_value;
+        case FieldId::units:
+        {
+          if (p->unitName.isEmpty())
+            return item.units;
+          else
+            return p->unitName;
+        }
+
+        case FieldId::units_value:
+        {
+          if (p->unitName.isEmpty())
+            return item.units_value;
+          else
+            return (p->multiplier > 1)
+                ? QString::number (item.units_value.toULongLong() / p->multiplier)
+                : (item.units_value);
+        }
+
         case FieldId::server:      return item.server;
         case FieldId::hash:        return item.hash;
         case FieldId::ipAddress:   return item.ipAddress;
@@ -345,8 +363,8 @@ void DapQmlModelNodeOrderList::slotSetOrderAddresses (const QJsonObject &a_list)
 DapQmlModelOrderListProxyModel::DapQmlModelOrderListProxyModel()
   : QSortFilterProxyModel()
   , m_unit()
-  , m_min (-1.0)
-  , m_max (-1.0)
+  , m_min (-1)
+  , m_max (-1)
 {
   /* setup model */
   setSourceModel (DapQmlModelNodeOrderList::instance());
@@ -358,11 +376,16 @@ DapQmlModelOrderListProxyModel::DapQmlModelOrderListProxyModel()
 
 void DapQmlModelOrderListProxyModel::setRowFilter (const QString &a_unit, qint64 a_min, qint64 a_max)
 {
+  /* variables */
+
+  auto model = DapQmlModelNodeOrderList::instance();
+
   /* store */
 
   m_unit  = a_unit == "All" ? QString() : a_unit;
   m_min   = a_min;
   m_max   = a_max;
+  model->p->unitName  = m_unit.toUpper();
 
   /* variables */
 
@@ -372,7 +395,7 @@ void DapQmlModelOrderListProxyModel::setRowFilter (const QString &a_unit, qint64
 
   /* convert units */
 
-  DapCmdNode::convertUnits (unit, minPrice, maxPrice);
+  DapCmdNode::convertUnits (unit, minPrice, maxPrice, &model->p->multiplier);
 
   /* store */
 

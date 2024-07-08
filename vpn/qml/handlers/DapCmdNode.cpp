@@ -340,7 +340,7 @@ DapNodeOrderInfo DapCmdNode::orderData (const QString &hash)
   return _data->orderListData.order (hash);
 }
 
-void DapCmdNode::convertUnits (QString &a_unit, qint64 &a_min, qint64 &a_max)
+void DapCmdNode::convertUnits (QString &a_unit, qint64 &a_min, qint64 &a_max, qint64 *a_multiplier)
 {
   /* defines */
 
@@ -389,6 +389,9 @@ void DapCmdNode::convertUnits (QString &a_unit, qint64 &a_min, qint64 &a_max)
   a_unit  = unit;
   a_min   = minPrice;
   a_max   = maxPrice;
+
+  if (a_multiplier)
+    *a_multiplier = mi.value;
 }
 
 bool DapCmdNode::_checkContinue()
