@@ -121,10 +121,14 @@ struct DapCmdNode::DapCmdNodeData
 static DapNodeTransactionHistory::Transaction s_historyOrder;
 static QHash<QString, const char *> s_unitConvertMap =
 {
+  { "TERABYTE", "TB" },
+  { "GIGABYTE", "GB" },
   { "MEGABYTE", "MB" },
   { "KILOBYTE", "KB" },
   { "BYTE",     "B" },
   { "SECOND",   "SEC" },
+  { "MINUTE",   "MIN" },
+  { "HOUR",     "HOUR" },
   { "DAY",      "DAY" },
 };
 
@@ -336,6 +340,57 @@ DapNodeOrderInfo DapCmdNode::orderData (const QString &hash)
   return _data->orderListData.order (hash);
 }
 
+void DapCmdNode::convertUnits (QString &a_unit, qint64 &a_min, qint64 &a_max)
+{
+  /* defines */
+
+  struct MultiplierItem
+  {
+    qint64 value;
+    QString unit;
+  };
+
+  /* variables */
+
+  static const QMap<QString, MultiplierItem> s_multiplierMap =
+  {
+    { "Minute",   MultiplierItem { 60, "Second" } },
+    { "Hour",     MultiplierItem { 60 * 60, "Second" } },
+    { "Day",      MultiplierItem { 24 * 60 * 60, "Second" } },
+
+    { "Kilobyte", MultiplierItem { qint64 (1024), "Byte" } },
+    { "Megabyte", MultiplierItem { qint64 (1024) * qint64 (1024), "Byte" } },
+    { "Gigabyte", MultiplierItem { qint64 (1024) * qint64 (1024) * qint64 (1024), "Byte" } },
+    { "Terabyte", MultiplierItem { qint64 (1024) * qint64 (1024) * qint64 (1024) * qint64 (1024), "Byte" } },
+  };
+
+  QString unit      = a_unit;
+  qint64 minPrice   = a_min;
+  qint64 maxPrice   = a_max;
+  MultiplierItem mi = s_multiplierMap.value (unit);
+
+  /* convert values, if unit is present */
+
+  if (!mi.unit.isEmpty())
+  {
+    DEBUGINFO << __PRETTY_FUNCTION__ << "multiplier:" << mi.value << ", unit:" << mi.unit;
+
+    if (minPrice > 0)
+      minPrice  = minPrice * mi.value;
+
+    if (maxPrice > 0)
+      maxPrice  = maxPrice * mi.value;
+
+    unit      = mi.unit;
+  }
+
+  /* return */
+
+  a_unit  = unit;
+  a_min   = minPrice;
+  a_max   = maxPrice;
+}
+
 bool DapCmdNode::_checkContinue()
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
@@ -393,7 +448,7 @@ void DapCmdNode::slotCondTxCreate()
         { "network_name", _data->selectedNetworkName },
         { "token_name",   _data->selectedTokenName },
         { "value",        _data->value },
-        { "unit",         convertUnits (order.priceUnit()) },// "day" },
+        { "unit",         ::convertUnits (order.priceUnit()) },// "day" },
       },
     },
   };
@@ -414,15 +469,31 @@ void DapCmdNode::slotCondTxCreate()
 void DapCmdNode::slotStartSearchOrders()
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
+
+  /* variables */
+
+  QString unit      = _data->unit;
+  qint64 minPrice   = _data->minPrice.toULongLong();
+  qint64 maxPrice   = _data->maxPrice.toULongLong();
+
+  /* convert units */
+
+  convertUnits (unit, minPrice, maxPrice);
+
+  /* filter data */
+
   QJsonObject searchOrders;
   qDebug() << "startSearchOrders" << _data->selectedNetworkName << _data->selectedTokenName << _data->unit << _data->minPrice << _data->maxPrice;
-  searchOrders["network_name"] = _data->selectedNetworkName;
-  searchOrders["token_name"] = _data->selectedTokenName;
-  searchOrders["unit"] = _data->unit;
-  searchOrders["min_price"] = _data->minPrice;
-  searchOrders["max_price"] = _data->maxPrice;
+  searchOrders["network_name"]  = _data->selectedNetworkName;
+  searchOrders["token_name"]    = _data->selectedTokenName;
+  searchOrders["unit"]          = unit;
+  searchOrders["min_price"]     = QString::number (minPrice); //_data->minPrice;
+  searchOrders["max_price"]     = QString::number (maxPrice); //_data->maxPrice;
+
+  /* message body */
+
   QJsonObject jObject;
-  jObject["search_orders"] = searchOrders;
+  jObject["search_orders"]      = searchOrders;
   sendCmd (&jObject);
 }
 

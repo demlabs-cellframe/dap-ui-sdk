@@ -2,6 +2,7 @@
 
 #include "dapqmlmodelnodeorderlist.h"
 #include "dapqmlmodelnodenetworkslist.h"
+#include "DapCmdNode.h"
 
 #include <QQueue>
 #include <QJsonArray>
@@ -355,11 +356,30 @@ DapQmlModelOrderListProxyModel::DapQmlModelOrderListProxyModel()
  * METHODS
  *******************************************/
 
-void DapQmlModelOrderListProxyModel::setRowFilter (const QString &a_unit, qreal a_min, qreal a_max)
+void DapQmlModelOrderListProxyModel::setRowFilter (const QString &a_unit, qint64 a_min, qint64 a_max)
 {
-  m_unit  = a_unit == "All" ? QString() : a_unit.toUpper();
+  /* store */
+
+  m_unit  = a_unit == "All" ? QString() : a_unit;
   m_min   = a_min;
   m_max   = a_max;
+
+  /* variables */
+
+  QString unit      = m_unit;
+  qint64 minPrice   = m_min;
+  qint64 maxPrice   = m_max;
+
+  /* convert units */
+
+  DapCmdNode::convertUnits (unit, minPrice, maxPrice);
+
+  /* store */
+
+  m_unit  = unit.toUpper();
+  m_min   = minPrice;
+  m_max   = maxPrice;
+
   invalidateFilter();
 }
 
