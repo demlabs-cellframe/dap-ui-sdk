@@ -73,7 +73,7 @@ Item {
 
     Timer {
         id: spinnerWatchdogTimer
-        interval: 5000
+        interval: 8000
         running: true
         repeat: false
         onTriggered: root.internal.spinner = false
@@ -88,6 +88,7 @@ Item {
     /// @brief item clicked
     signal sigSelect(int index, string name);
 //    signal sigCurrentInexChanged();
+    signal sigUpdate();
 
     /// @}
     /****************************************//**
@@ -96,8 +97,17 @@ Item {
     /// @{
 
     function onListLoaded() {
+        //spinnerWatchdogTimer.stop();
+        //root.internal.spinner = false;
+    }
+
+    function onAppStartTimeout() {
         spinnerWatchdogTimer.stop();
         root.internal.spinner = false;
+    }
+
+    function updateLastUpdateLabel(a_text) {
+        lastUpdateLabel.text = a_text;
     }
 
     /// @}
@@ -299,6 +309,27 @@ Item {
             id: title
             text: qsTr("Choose server") + lang.notifier
             qss: "dialog-title"
+
+            DapQmlPushButton {
+                anchors.right: parent.right
+                width: parent.height
+                height: parent.height
+                qss: "chooseserver-update-btn"
+                onClicked: { root.sigUpdate(); root.internal.spinner = true; }
+            }
+        }
+
+        /****************************************//**
+         * Last update time label
+         ********************************************/
+
+        DapQmlLabel {
+            id: lastUpdateLabel
+            x: title.x
+            y: title.y + title.height
+            width: title.width
+            height: title.height
+            qss: "chooseserver-last-update-label"
         }
 
         /****************************************//**
@@ -332,7 +363,7 @@ Item {
 
             Timer {
                 id: hideTimer
-                interval: 5000
+                interval: 4000
                 repeat: false
                 running: false
                 onTriggered: itemPopup.hide()
@@ -415,7 +446,7 @@ Item {
     FastBlur {
         anchors.fill: content
         source: content
-        radius: 40
+        radius: 30
         cached: true
         z: 50
         visible: root.internal.spinner
@@ -423,6 +454,7 @@ Item {
 
     /* spinner */
     DapQmlRectangle {
+        id: spinnerContent
         anchors.centerIn: parent
         z: 60
         qss: "chooseserver-spinner-bg"
@@ -434,6 +466,22 @@ Item {
             strokeWidth: 7
             z: 200
             qss: "c-brand"
+        }
+    }
+
+    DropShadow {
+        anchors.fill: spinnerContent
+        z: 58
+        radius: 18//contentRoot.radius
+        samples: 17
+        color: `#30${contentShadowColor.color.substring(1)}`
+        source: spinnerContent
+        visible: root.internal.spinner
+
+        DapQmlDummy {
+            id: contentShadowColor
+            property string color
+            qss: "notification-shadow"
         }
     }
 }

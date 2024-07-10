@@ -216,6 +216,22 @@ DapQmlModelFullServerList::Index DapQmlModelFullServerList::indexOfAddress (cons
   return Index();
 }
 
+DapQmlModelFullServerList::Index DapQmlModelFullServerList::indexOfOrderHash (const QString &a_hash) const
+{
+  auto autoServerList  = m_bridge->autoServerList();
+  auto serverList      = m_bridge->serverList();
+
+  int result  = autoServerList->getList().indexOfOrderHash (a_hash);
+  if (result != -1)
+    return Index (result, _size.autoServer, true);
+
+  result      = serverList->indexOfOrderHash (a_hash);
+  if (result != -1)
+    return Index (result + _size.autoServer, _size.autoServer, false);
+
+  return Index();
+}
+
 void DapQmlModelFullServerList::refresh()
 {
   setBridge (m_bridge);

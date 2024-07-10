@@ -16,9 +16,9 @@ enum Role
 /* VARS */
 static DapQmlModelChooseServer *__inst = nullptr;
 
-#ifdef BRAND_KELVPN
-static int s_allowModelResetAmount = 2;
-#endif // BRAND_KELVPN
+//#ifdef BRAND_KELVPN
+//static int s_allowModelResetAmount = 2;
+//#endif // BRAND_KELVPN
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -39,17 +39,19 @@ DapQmlModelChooseServer::DapQmlModelChooseServer (QObject *parent)
   connect (DapQmlModelFullServerList::instance(), &QAbstractListModel::modelAboutToBeReset,
            this, [this]
   {
-    if (s_allowModelResetAmount > 0)
-      beginResetModel();
+//    if (s_allowModelResetAmount > 0)
+//      beginResetModel();
+    beginResetModel();
   });
   connect (DapQmlModelFullServerList::instance(), &QAbstractListModel::modelReset,
            this, [this]
   {
-    if (s_allowModelResetAmount > 0)
-    {
-      endResetModel();
-      s_allowModelResetAmount--;
-    }
+//    if (s_allowModelResetAmount > 0)
+//    {
+//      endResetModel();
+//      s_allowModelResetAmount--;
+//    }
+    endResetModel();
   });
 #endif // BRAND_KELVPN
 
@@ -156,10 +158,10 @@ QString DapQmlModelChooseServer::previousServer()
 #ifdef BRAND_KELVPN
 void DapQmlModelChooseServer::allowModelReset (int a_amount)
 {
-  if (s_allowModelResetAmount < 0)
-    s_allowModelResetAmount = a_amount;
-  else
-    s_allowModelResetAmount += a_amount;
+//  if (s_allowModelResetAmount < 0)
+//    s_allowModelResetAmount = a_amount;
+//  else
+//    s_allowModelResetAmount += a_amount;
 }
 #endif // BRAND_KELVPN
 

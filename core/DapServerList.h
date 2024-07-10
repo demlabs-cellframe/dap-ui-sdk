@@ -386,6 +386,8 @@ public:
   int indexOfName (const QString &a_name) const;
   /// search an item with provided address value
   int indexOfAddress (const QString &a_address) const;
+  /// search an item with provided order hash value
+  int indexOfOrderHash (const QString &a_hash) const;
   void erase (Iterator it);
   Iterator begin();
   ConstIterator begin() const;

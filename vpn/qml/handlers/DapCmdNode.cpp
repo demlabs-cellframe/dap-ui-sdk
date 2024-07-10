@@ -121,11 +121,11 @@ struct DapCmdNode::DapCmdNodeData
 static DapNodeTransactionHistory::Transaction s_historyOrder;
 static QHash<QString, const char *> s_unitConvertMap =
 {
-  { "MEGABYTE", "mb" },
-  { "KILOBYTE", "kb" },
-  { "BYTE", "b" },
-  { "SECOND", "sec" },
-  { "DAY", "day" },
+  { "MEGABYTE", "MB" },
+  { "KILOBYTE", "KB" },
+  { "BYTE",     "B" },
+  { "SECOND",   "SEC" },
+  { "DAY",      "DAY" },
 };
 
 /* LINKS */
@@ -352,10 +352,10 @@ void DapCmdNode::_updateHistoryItem()
     return;
 
   auto &history = *DapNodeTransactionHistory::instance();
-  int index     = history.indexOf (s_historyOrder.created);
+  int index     = history.indexOf (s_historyOrder.info.hash());
 
   if (index == -1)
-    return DapNodeTransactionHistory::instance()->prepend (s_historyOrder);
+    return DapNodeTransactionHistory::instance()->append (s_historyOrder);
 
   history[index]  = s_historyOrder;
   history.itemUpdated (index);

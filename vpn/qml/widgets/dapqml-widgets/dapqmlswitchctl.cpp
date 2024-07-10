@@ -43,6 +43,9 @@ struct DapQmlSwitchCtl::DapQmlSwitchCtlData
     QObject *toggleAnim;
     QObject *touchingPoint;
     QObject *touchingArea;
+    QMetaObject::Connection touchingPointXChanged;
+    QMetaObject::Connection touchingPointStartXChanged;
+    QMetaObject::Connection touchingAreaReleased;
   } item;
 
   bool dragging;
@@ -140,10 +143,12 @@ void DapQmlSwitchCtl::setTouchingPoint (QObject *a_value)
   _data->item.touchingPoint  = a_value;
   connect (a_value, &QObject::destroyed,
            this, [this] { _itemsCleared(); });
-  connect (a_value, SIGNAL (xChanged()),
-           this, SLOT (_slotTouchingPointXChanged()));
-  connect (a_value, SIGNAL (startXChanged()),
-           this, SLOT (_slotTouchAreaPressed()));
+  _data->item.touchingPointXChanged =
+      connect (a_value, SIGNAL (xChanged()),
+               this, SLOT (_slotTouchingPointXChanged()));
+  _data->item.touchingPointStartXChanged =
+      connect (a_value, SIGNAL (startXChanged()),
+               this, SLOT (_slotTouchAreaPressed()));
 }
 
 void printSignalList (const QMetaObject* metaObject)
@@ -172,8 +177,9 @@ void DapQmlSwitchCtl::setTouchArea (QObject *a_value)
 
 //  connect (a_value, SIGNAL (pressed(QList<QObject*>)),
 //           this, SLOT (_slotTouchAreaPressed()));
-  connect (a_value, SIGNAL (released(QList<QObject*>)),
-           this, SLOT (_slotTouchAreaReleased()));
+  _data->item.touchingAreaReleased =
+      connect (a_value, SIGNAL (released(QList<QObject*>)),
+               this, SLOT (_slotTouchAreaReleased()));
 }
 
 void DapQmlSwitchCtl::updateTogglePos()
@@ -432,6 +438,10 @@ void DapQmlSwitchCtl::_itemsCleared()
   _data->item.toggleAnim    = nullptr;
   _data->item.touchingPoint = nullptr;
   _data->item.touchingArea  = nullptr;
+
+  QObject::disconnect (_data->item.touchingPointXChanged);
+  QObject::disconnect (_data->item.touchingPointStartXChanged);
+  QObject::disconnect (_data->item.touchingAreaReleased);
 }
 
 void DapQmlSwitchCtl::_print (const char *a_text)
