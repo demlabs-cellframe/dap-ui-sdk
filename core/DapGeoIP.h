@@ -30,6 +30,9 @@ public:
         return countryCode;
     }
 
+signals:
+    void sigCountryIsoCodeExists();
+
 private:
     MMDB_s mmdb;
     bool isDBOpen = false;

@@ -20,7 +20,14 @@ DapGeoIP::DapGeoIP(QObject *parent)
             qDebug() << "Can't open " << dbPath.toStdString().c_str() << " - " << MMDB_strerror(status);
         }
 
-        manager->get(QNetworkRequest(QUrl("http://api.ipify.org")));
+        //manager->get(QNetworkRequest(QUrl("http://api.ipify.org")));
+
+        /* get cdb address */
+        auto address  = DapDataLocal::instance()->m_cdbIter->address;
+        auto url      = QUrl ("http://" + address + "/my_ip");
+
+        /* send request */
+        manager->get (QNetworkRequest (url));
 
     } else {
         qDebug() << "Database file does not exist: " << dbPath.toStdString().c_str();
@@ -43,6 +50,7 @@ DapGeoIP *DapGeoIP::instance()
 void DapGeoIP::onIPReceived(QNetworkReply *reply) {
     if (reply->error()) {
         qDebug() << "Network error: " << reply->errorString();
+        emit sigCountryIsoCodeExists();
         return;
     }
     QString ip = reply->readAll();
@@ -51,6 +59,7 @@ void DapGeoIP::onIPReceived(QNetworkReply *reply) {
     countryCode = getCountryIsoCode(ip);
     qDebug() << "Country ISO Code:" << countryCode;
     DapDataLocal::instance()->setCountryISO(countryCode);
+    emit sigCountryIsoCodeExists();
 }
 
 QString DapGeoIP::getCountryIsoCode(const QString &ipAddress) {
