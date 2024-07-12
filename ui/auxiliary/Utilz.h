@@ -34,6 +34,8 @@ namespace Utils
 
     QString toNativeLanguageName(QLocale::Language a_language);
 
+    bool isVersionLessThan(const QString& version1, const QString& version2);
+
     template <class T>
     inline T findChild(QObject* a_object, const QString& a_objectName, T &a_foundObjectOUT);
 

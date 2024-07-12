@@ -74,6 +74,8 @@ public:
     QString     m_brandName;
     QString     logFilePath;
     QString     m_logPath;
+    QString     m_minDashboardVersion;
+    QString     m_minNodeVersion;
 
     void parseXML(const QString& a_fname);
 
@@ -100,6 +102,9 @@ public:
     const QString & networkDefault()          { return m_networkDefault; }
     const QString & getUrlSite()              { return m_urlSite;        }
     const QString & getBrandName()            { return m_brandName;      }
+
+    const QString & getMinDashboardVersion() const { return m_minDashboardVersion; }
+    const QString & getMinNodeVersion()      const { return m_minNodeVersion; }
 
     DapCdbServerList::const_iterator m_cdbIter;
 
