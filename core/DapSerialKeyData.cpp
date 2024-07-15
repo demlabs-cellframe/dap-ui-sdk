@@ -88,8 +88,8 @@ QString DapSerialKeyData::daysLeftString()
 void DapSerialKeyData::setLicenseTermTill(const QString &a_date)
 {
     QDateTime tempDate = QDateTime::fromSecsSinceEpoch(a_date.toUInt());
-    if (this->m_licenseTermTill == tempDate)
-        return;
+    //if (this->m_licenseTermTill == tempDate)
+    //    return;
     this->m_licenseTermTill = tempDate;
 
     emit this->daysLeftStringChanged(this->daysLeftString());

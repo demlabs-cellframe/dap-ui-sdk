@@ -2,6 +2,8 @@
 
 #include "dapqmlmodelnodeproxybase.h"
 
+#include <QDebug>
+
 /* DEFINES */
 
 #define DEBUGINFO qDebug() << (QString ("NodeOrderList::") + __func__)

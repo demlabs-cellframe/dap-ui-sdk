@@ -352,10 +352,10 @@ void DapCmdNode::_updateHistoryItem()
     return;
 
   auto &history = *DapNodeTransactionHistory::instance();
-  int index     = history.indexOf (s_historyOrder.created);
+  int index     = history.indexOf (s_historyOrder.info.hash());
 
   if (index == -1)
-    return DapNodeTransactionHistory::instance()->prepend (s_historyOrder);
+    return DapNodeTransactionHistory::instance()->append (s_historyOrder);
 
   history[index]  = s_historyOrder;
   history.itemUpdated (index);

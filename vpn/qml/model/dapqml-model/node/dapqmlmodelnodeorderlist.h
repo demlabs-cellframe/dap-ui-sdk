@@ -5,6 +5,8 @@
 
 #include <QAbstractListModel>
 #include <QSortFilterProxyModel>
+#include <QJsonArray>
+#include <QJsonObject>
 
 #include "dapqmlmodelnodedefines.h"
 

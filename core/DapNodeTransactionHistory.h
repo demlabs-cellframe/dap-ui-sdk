@@ -95,7 +95,7 @@ public:
   int currentIndex() const;
   void setCurrentIndex (int a_value);
   const Transaction &current() const;
-  int indexOf (const QDateTime &a_created) const;
+  int indexOf (const QString &a_orderHash) const;
 
   void load();
   void save() const;

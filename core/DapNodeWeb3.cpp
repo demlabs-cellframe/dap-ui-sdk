@@ -3,11 +3,12 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QProcess>
-#include "DapDataLocal.h"
 #include <QTimer>
 #include <QDebug>
 #include "dap_client_http.h"
 
+#include <QFile>
+#include <QTextStream>
 /* DEFS */
 //#define ENABLE_SENSITIVE_PRINTS
 #if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
@@ -847,13 +848,26 @@ void DapNodeWeb3::parseOrderList (const QString &replyData, int baseErrorCode)
   //"status": "ok"
   //}
 
-  DEBUGINFO << __func__ << replyData;
+
+  qDebug().noquote().nospace() << __func__ << ": replyData = " << replyData;
 
   QJsonDocument doc;
   parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
 
-  if (jsonError())
-    return;
+  if (jsonError()) {
+      QString fileName = DapDataLocal::instance()->getLogPath() + "/error_replyData.json";
+      qDebug() << fileName;
+      QFile file(fileName);
+      if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+          QTextStream out(&file);
+          out << replyData;
+          file.close();
+          qDebug().noquote().nospace() << __func__ << ": JSON error occurred, replyData saved to " << fileName;
+      } else {
+          qDebug().noquote().nospace() << __func__ << ": Failed to save replyData to file.";
+      }
+      return;
+  }
 
   auto docArray  = doc["data"];
   emit sigOrderList (docArray.isArray() ? docArray.toArray() : QJsonArray());
