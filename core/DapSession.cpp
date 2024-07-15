@@ -27,6 +27,7 @@
 #define OP_CODE_INCORRECT_SYM           "0xf6"
 #define OP_CODE_LOGIN_INACTIVE          "0xf7"
 #define OP_CODE_SERIAL_ACTIVATED        "0xf8"
+#define OP_CODE_WRONG_ORDER             "0xf9"
 
 #include "DapSession.h"
 #include "DapCrypt.h"
@@ -435,6 +436,9 @@ void DapSession::onAuthorize()
         return;
     } else if (op_code == OP_CODE_LOGIN_INACTIVE) {
         emit activateKey();
+        return;
+    } else if (op_code == OP_CODE_WRONG_ORDER) {
+        emit errorAuthorization (tr ("Can't find order!"));
         return;
     }
 
