@@ -32,3 +32,10 @@ void DapCmdUserData::sendLicenseTermTill(const QString &date)
     response["license_term_till"] = date;
     sendCmd(&response);
 }
+
+void DapCmdUserData::sendCountryISO(const QString &iso)
+{
+    QJsonObject response;
+    response["country_iso"] = iso;
+    sendCmd(&response);
+}

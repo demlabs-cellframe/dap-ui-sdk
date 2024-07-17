@@ -17,6 +17,7 @@ struct DapQmlModelNodeUnitsList::Private
     "Minute",   // "Mins",
     "Hour",     // "Hours"
     "Day",      // "Days",
+    "Byte",     // "BYTE",
     "Kilobyte", // "KB",
     "Megabyte", // "MB",
     "Gigabyte", // "GB",
