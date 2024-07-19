@@ -139,6 +139,7 @@ public slots:
   // requests
   void nodeDetectRequest();
   void nodeDetectedRequest();
+  void nodeVersionsRequest();
   void nodeConnectionRequest();
   void nodeStatusRequest();
   void walletsRequest();

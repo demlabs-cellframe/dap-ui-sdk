@@ -46,6 +46,7 @@ public:
     /// @param address Server address.
     void setUserData(const QString &user, const QString &password, const QString &address, quint16 a_port);
     void sendLicenseTermTill(const QString &date);
+    void sendCountryISO(const QString &iso);
 signals:
     void usrDataChanged(const QString &address, quint16 a_port);
 };

@@ -217,7 +217,7 @@ void DapNodeWalletData::setOrderListData (const QJsonArray &a_ordesListData)
 {
 }
 
-void DapNodeWalletData::setNetworkFee (const QString &a_networkName, const QString &a_fee)
+void DapNodeWalletData::setNetworkFee (const QString &a_networkName, const QString &a_fee, const QString &a_feeValue)
 {
 #ifndef SIMULATE_DATA
   /*-----------------------------------------*/
@@ -225,7 +225,19 @@ void DapNodeWalletData::setNetworkFee (const QString &a_networkName, const QStri
   for (auto wallet = _wallets.begin(); wallet != _wallets.end(); wallet++)
     for (auto network = wallet->networks.begin(); network != wallet->networks.end(); network++)
       if (network->name == a_networkName)
+      {
         network->feeTicker  = a_fee;
+        network->feeValue   = a_feeValue;
+
+        /* store fee data */
+        _data.networkFeeMap.insert(
+          a_networkName,
+          DapNodeWalletDataStruct::NetworkFee {
+              a_networkName,
+              a_fee,
+              a_feeValue
+            });
+      }
 
   /*-----------------------------------------*/
 #else // SIMULATE_DATA
@@ -309,6 +321,11 @@ const QStringList &DapNodeWalletData::networkList() const
   return _data.networkList;
 }
 
+const QMap<QString, DapNodeWalletDataStruct::NetworkFee> &DapNodeWalletData::networkFeeMap() const
+{
+  return _data.networkFeeMap;
+}
+
 const QList<DapNodeWalletDataStruct::WalletToken> &DapNodeWalletData::walletTokenList() const
 {
   return _data.walletTokenList;
@@ -368,6 +385,7 @@ void DapNodeWalletData::_parseWallets (const QJsonObject &a_data)
   _wallets.clear();
   _data.tokenBalanceList.clear();
   _data.walletTokenList.clear();
+  _data.networkFeeMap.clear();
   _data.networkList.clear();
 //  _fast.walletNames.clear();
 

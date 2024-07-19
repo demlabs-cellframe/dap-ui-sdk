@@ -29,6 +29,7 @@ HEADERS += \
     $$PWD/dapqml-model/node/dapqmlmodelnodeorderlist.h \
     $$PWD/dapqml-model/node/dapqmlmodelnodeproxybase.h \
     $$PWD/dapqml-model/node/dapqmlmodelnodetokenslist.h \
+    $$PWD/dapqml-model/node/dapqmlmodelnodetransactionoverview.h \
     $$PWD/dapqml-model/node/dapqmlmodelnodeunitslist.h \
     $$PWD/dapqml-model/node/dapqmlmodelnodewalletslist.h
 
@@ -48,6 +49,7 @@ SOURCES += \
     $$PWD/dapqml-model/node/dapqmlmodelnodeorderlist.cpp \
     $$PWD/dapqml-model/node/dapqmlmodelnodeproxybase.cpp \
     $$PWD/dapqml-model/node/dapqmlmodelnodetokenslist.cpp \
+    $$PWD/dapqml-model/node/dapqmlmodelnodetransactionoverview.cpp \
     $$PWD/dapqml-model/node/dapqmlmodelnodeunitslist.cpp \
     $$PWD/dapqml-model/node/dapqmlmodelnodewalletslist.cpp
 

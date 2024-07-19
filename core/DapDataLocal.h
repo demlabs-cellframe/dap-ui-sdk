@@ -37,6 +37,7 @@ const QString NODE_ORDER_HISTORY        = "nodeOrderHistory";
 const QString SERIAL_LOSS_ON_UNINSTALL_FLAG = "serialLossOnUninstallFlag";
 const QString NOTIFICATION_HISTORY      = "notificationHistory";
 const QString NOCDB_DATA                = "NoCdbData";
+const QString COUNTRY_ISO               = "country_iso";
 
 class DapSerialKeyData;
 enum class Authorization;
@@ -74,6 +75,8 @@ public:
     QString     m_brandName;
     QString     logFilePath;
     QString     m_logPath;
+    QString     m_minDashboardVersion;
+    QString     m_minNodeVersion;
 
     void parseXML(const QString& a_fname);
 
@@ -100,6 +103,14 @@ public:
     const QString & networkDefault()          { return m_networkDefault; }
     const QString & getUrlSite()              { return m_urlSite;        }
     const QString & getBrandName()            { return m_brandName;      }
+
+    const QString & getMinDashboardVersion() const { return m_minDashboardVersion; }
+    const QString & getMinNodeVersion()      const { return m_minNodeVersion; }
+    
+    const QString & getCountryISO() { return m_coutryISO; }
+    void setCountryISO(QString iso_code){
+        m_coutryISO = iso_code;
+    }
 
     DapCdbServerList::const_iterator m_cdbIter;
 
@@ -158,6 +169,8 @@ protected:
     DapCdbServerList  m_cdbServersList;
     QString           m_networkDefault;
     QString           m_urlSite;
+
+    QString     m_coutryISO;
 
 private:
     void loadAuthorizationDatas();

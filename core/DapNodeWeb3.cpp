@@ -6,6 +6,8 @@
 #include <QTimer>
 #include <QDebug>
 
+#include "DapDataLocal.h"
+
 #include <QFile>
 #include <QTextStream>
 /* DEFS */
@@ -27,9 +29,6 @@ typedef DapNodeWeb3::ReplyMethodID ReplyMethodID;
 
 struct ReplyMethod
 {
-  //QString request;
-  //void(DapNodeWeb3::*parseMethod)(const QString&, int baseErrorCode, const QString&);
-  //void(DapNodeWeb3::*replyError)(int error);
   ReplyMethodID parseMethodID;
   bool replyError;
   QString wrongReplyText;
@@ -39,39 +38,6 @@ struct ReplyMethod
 /* VARS */
 const QString  DapNodeWeb3::WEB3_URL ("localhost");
 const quint16  DapNodeWeb3::WEB3_PORT (8045);
-
-//const QList<ReplyMethod> replyItems = {
-//    // connect reply
-//    {"method=Connect",              &DapNodeWeb3::parseReplyConnect,        &DapNodeWeb3::replyConnectError, "Wrong reply connect", 100000},
-//    // node status reply
-//    {"method=GetNodeStatus",        &DapNodeWeb3::parseReplyStatus,         &DapNodeWeb3::replyConnectError, "Wrong reply status", 200000},
-//    // wallets list reply
-//    {"method=GetWallets",           &DapNodeWeb3::parseReplyWallets,        nullptr, "Wrong reply when get wallets list", 300000},
-//    // networks list reply
-//    {"method=GetNetworks",          &DapNodeWeb3::parseReplyNetworks,       nullptr, "Wrong reply when get networks list", 400000},
-//    // data wallets reply
-//    {"method=GetDataWallet",        &DapNodeWeb3::parseDataWallet,          nullptr, "Wrong reply when get data wallets", 500000},
-//    // get certificates
-//    {"method=GetCertificates",      &DapNodeWeb3::parseCertificates,        nullptr, "Wrong reply when get certificates", 600000},
-//    // create certificate
-//    {"method=CreateCertificate",    &DapNodeWeb3::parseCreateCertificate,   nullptr, "Wrong reply when create certificates", 700000},
-//    // create cond transaction reply
-//    {"method=CondTxCreate",         &DapNodeWeb3::parseCondTxCreateReply,   nullptr, "Wrong reply when create transaction", 800000},
-//    // check mempool
-//    {"method=GetMempoolTxHash",     &DapNodeWeb3::parseMempoolReply,        nullptr, "Wrong reply when get mempool transaction hash", 900000},
-//    // check ledger
-//    {"method=GetLedgerTxHash",      &DapNodeWeb3::parseLedgerReply,         nullptr, "Wrong reply when get ledger transaction hash", 1000000},
-//    // get orders
-//    {"method=GetOrdersList",        &DapNodeWeb3::parseOrderList,           nullptr, "Wrong reply when get orders list", 1100000},
-//    // get ip
-//    {"method=GetNodeIP",            &DapNodeWeb3::parseNodeIp,              nullptr, "Wrong reply when get node ip", 1200000},
-//    // get fee
-//    {"method=GetFee",               &DapNodeWeb3::parseFee,                 nullptr, "Wrong reply when get fee", 1300000},
-//    // node dump
-//    {"method=NodeDump",             &DapNodeWeb3::parseNodeDump,            nullptr, "Wrong reply when get node dump", 1400000},
-//    // list of delegated keys on the network
-//    {"method=GetListKeys",          &DapNodeWeb3::parseListKeys,            nullptr, "Wrong reply when get list of delegated keys", 1500000},
-//};
 
 static const QHash<QString, ReplyMethod> s_replyMethodMap =
 {
@@ -167,6 +133,24 @@ QString extractMethod (const QString &inputString)
     return QString(); // If no match is found
 }
 
+bool isVersionLessThan(const QString& version1, const QString& version2) {
+    QStringList parts1 = version1.split(QRegExp("[-\\.]"));
+    QStringList parts2 = version2.split(QRegExp("[-\\.]"));
+
+    int length = qMax(parts1.size(), parts2.size());
+    for (int i = 0; i < length; ++i) {
+        int num1 = (i < parts1.size()) ? parts1[i].toInt() : 0;
+        int num2 = (i < parts2.size()) ? parts2[i].toInt() : 0;
+
+        if (num1 < num2) {
+            return true;
+        } else if (num1 > num2) {
+            return false;
+        }
+    }
+    return false;
+}
+
 void DapNodeWeb3::responseProcessing (
   const int error,
   const QString errorString,
@@ -179,7 +163,7 @@ void DapNodeWeb3::responseProcessing (
 
   // debug info
   // node connection reply
-  if (methodName == "")
+  if (methodName == "GetVersions")
     {
         if (error == SIGERROR)
         {
@@ -189,14 +173,54 @@ void DapNodeWeb3::responseProcessing (
         }
 
         QJsonDocument doc = QJsonDocument::fromJson (m_networkReply->getReplyData());
-        if (doc["status"].isString())
-        {
-          if (doc["status"].toString() == QString ("ok"))
-            {
-              DEBUGINFO << "nodeStatusOk - " + doc["data"].toString();
-              emit nodeDetected();
-              return;
+
+        if (doc["status"].isString()) {
+            if (doc["status"].toString() == QString("ok")) {
+                QJsonObject dataObject = doc["data"].toObject();
+                QString cellframeDashboard = dataObject["cellframe-dashboard"].toString();
+                QString cellframeNode = dataObject["cellframe-node"].toString();
+
+                QString minDashboardVersion = DapDataLocal::instance()->getMinDashboardVersion();
+                QString minNodeVersion = DapDataLocal::instance()->getMinNodeVersion();
+
+                bool isDashboardLess = isVersionLessThan(cellframeDashboard, minDashboardVersion);
+                bool isNodeLess = isVersionLessThan(cellframeNode, minNodeVersion);
+
+                DEBUGINFO << "nodeStatusOk - " + doc["data"].toString();
+                DEBUGINFO << "cellframe-dashboard version: " << cellframeDashboard;
+                DEBUGINFO << "cellframe-node version: " << cellframeNode;
+
+                if (!isDashboardLess && !isNodeLess) {
+                    DEBUGINFO << "Node detected. No updates required.";
+                    emit nodeDetected();
+                    return;
+                } else if (isDashboardLess && isNodeLess) {
+                    QString errorMessage = "Update required for both dashboard and node.";
+                    DEBUGINFO << errorMessage;
+                    emit sigError(232, errorMessage);
+                } else {
+                    if (isDashboardLess) {
+                        QString errorMessage = QString("Update required for dashboard. ") +
+                                               "Current version: " + cellframeDashboard + ", required: " + minDashboardVersion + ".";
+                        DEBUGINFO << errorMessage;
+                        emit sigError(233, errorMessage);
+                    }
+                    if (isNodeLess) {
+                        QString errorMessage = QString("Update required for node. ") +
+                                               "Current version: " + cellframeNode + ", required: " + minNodeVersion + ".";
+                        DEBUGINFO << errorMessage;
+                        emit sigError(234, errorMessage);
+                    }
+                }
+            } else {
+                QString errorMessage = "Invalid status value";
+                DEBUGINFO << errorMessage;
+                emit sigError(230, errorMessage);
             }
+        } else {
+            QString errorMessage = "Status not found in JSON response";
+            DEBUGINFO << errorMessage;
+            emit sigError(231, errorMessage);
         }
     }
   else if (methodName == "Connect")
@@ -253,7 +277,7 @@ void DapNodeWeb3::nodeDetectedRequest()
   //        "errorMsg": "Incorrect id",
   //        "status": "bad"
   //    }
-  nodeDetectRequest();
+  nodeVersionsRequest();
 }
 
 void DapNodeWeb3::nodeConnectionRequest()
@@ -326,7 +350,7 @@ void DapNodeWeb3::responseParsing (
     case ReplyMethodID::ParseFee:               parseFee (reply,                baseErrorCode); break;
     case ReplyMethodID::ParseNodeDump:          parseNodeDump (reply,           baseErrorCode); break;
     case ReplyMethodID::ParseListKeys:          parseListKeys (reply,           baseErrorCode); break;
-    case ReplyMethodID::ParseNetId:             parseNetId (reply,           baseErrorCode); break;
+    case ReplyMethodID::ParseNetId:             parseNetId (reply,              baseErrorCode); break;
     }
 }
 
@@ -340,6 +364,12 @@ void DapNodeWeb3::nodeDetectRequest()
 {
 //  QString requesString = QString ("?");
   sendRequest ("?");
+}
+
+void DapNodeWeb3::nodeVersionsRequest()
+{
+    QString requesString = QString ("?method=GetVersions").arg (m_connectId);
+    sendRequest (requesString);
 }
 
 void DapNodeWeb3::walletsRequest()
