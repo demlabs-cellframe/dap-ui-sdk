@@ -222,9 +222,9 @@ void DapUtun::onWorkerStarted()
 {
     qDebug() << "tunnelCreate()";
     QProcess process;
-    
-    if(m_tunSocket <=0){
-        qCritical()<< "Can't bring up network interface ";
+
+    if(m_tunSocket <= 0) {
+        qCritical() << "Can't bring up network interface";
         return;
     }
 
@@ -232,15 +232,11 @@ void DapUtun::onWorkerStarted()
 
 //    networksetup -ordernetworkservices
 
-    // Update route table for upstream if its not local
-    if(!isLocalAddress(upstreamAddress()))
-    {
-        // This route dont need if address is local
-        //QString run = QString("networksetup -setadditionalroute \"%3\" %2 255.255.255.255 %1")
-        //        .arg(m_defaultGwOld).arg(upstreamAddress()).arg(m_lastUsedConnectionName) ;
+    // Update route table for upstream if it's not local
+    if(!isLocalAddress(upstreamAddress())) {
         QString run = QString("route add -host %2 %1")
-                .arg(m_defaultGwOld).arg(upstreamAddress()) ;
-        qDebug() << "Execute "<<run;
+                          .arg(m_defaultGwOld).arg(upstreamAddress());
+        qDebug() << "Execute " << run;
         ::system(run.toLatin1().constData());
     }
 
@@ -256,9 +252,9 @@ void DapUtun::onWorkerStarted()
                   .arg(tunDeviceName())
                   .arg(addr())
                   .arg(gw());
-    
+
     qDebug() << "[Cmd to created interface: " <<  cmdConnAdd;
-    
+
     DapTunUnixAbstract::runShellCmd( cmdConnAdd );
 
 
@@ -271,40 +267,55 @@ void DapUtun::onWorkerStarted()
 
     DapTunUnixAbstract::runShellCmd( cmdAddAdditionalRoutes);*/
 
+
     // Bring up network interface
+    ::system(QString("ifconfig %1 %2 %3")
+                 .arg(tunDeviceName()).arg(addr()).arg(gw()).toLatin1().constData());
 
-    ::system ( QString("ifconfig %1 %2 %3").arg(tunDeviceName() ).arg(addr()).arg(gw()).toLatin1().constData());
-
-    qDebug() << "Configured " << tunDeviceName()<< " with " << addr() << "-->" << gw();
+    qDebug() << "Configured " << tunDeviceName() << " with " << addr() << "-->" << gw();
 
     // Remove old default route
-    ::system( QString("route delete default %1").arg(m_defaultGwOld).toLatin1().constData() );
+    ::system(QString("route delete default").toLatin1().constData());
 
-
-    qDebug() << "Removed default route " <<m_defaultGwOld;
+    qDebug() << "Removed default route " << m_defaultGwOld;
 
     // Setup default route
-    ::system ( QString("route add default %1").arg(gw()).toLatin1().constData() );
-    qDebug() << "Added default route" <<gw();
+    QString gateway = gw();
+    qDebug() << "Gateway obtained: " << gateway;
+    if (!gateway.isEmpty()) {
+        ::system(QString("route add default %1").arg(gateway).toLatin1().constData());
+        qDebug() << "Added default route " << gateway;
+
+        ::system(QString("route add -net 224.0.0.0/4 %1").arg(gateway).toLatin1().constData());
+        qDebug() << "Added multicast route " << gateway;
+
+        ::system(QString("route add -net 255.255.255.255/32 %1").arg(gateway).toLatin1().constData());
+        qDebug() << "Added broadcast route " << gateway;
+    } else {
+        qWarning() << "Gateway is empty!";
+    }
+
     // Add additional Apple routes
-    foreach(QString additionalRoute, appleAdditionalRoutes){
-        QString routeNet, routeMask;
+    foreach(QString additionalRoute, appleAdditionalRoutes) {
         QStringList routeArgs = additionalRoute.split(QRegExp("\\s+"), QString::SkipEmptyParts);
 
-        if(routeArgs.length() == 1 ){
-            ::system( QString("route add -host %1 %2")
-                                 .arg(routeArgs[0]).arg(gw()).toLatin1().constData() );
-        }else if (routeArgs.length() == 2){
-            ::system( QString("route add -net %1 %3")
-                                 .arg(routeArgs[0]).arg(routeArgs[1]).arg(gw()).toLatin1().constData());
-        }else{
-            qWarning() << "Unparseble additional route line " << additionalRoute;
+        if(routeArgs.length() == 1) {
+            ::system(QString("route add -host %1 %2")
+                         .arg(routeArgs[0]).arg(gw()).toLatin1().constData());
+            qDebug() << "Added host route " << routeArgs[0] << " via " << gw();
+        } else if (routeArgs.length() == 2) {
+            ::system(QString("route add -net %1 %2 %3")
+                         .arg(routeArgs[0]).arg(routeArgs[1]).arg(gw()).toLatin1().constData());
+            qDebug() << "Added network route " << routeArgs[0] << "/" << routeArgs[1] << " via " << gw();
+        } else {
+            qWarning() << "Unparseable additional route line " << additionalRoute;
         }
     }
 
     m_isCreated = true;
     emit created();
 }
+
 
 /**
  * @brief DapUtun::onWorkerStopped
