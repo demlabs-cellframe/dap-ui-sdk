@@ -1,5 +1,5 @@
 /* INCLUDES */
-#include "DapCmdSystemTray.h"
+#include "DapCmdSystemTraySrv.h"
 
 #include <QMap>
 #include <QDebug>
@@ -11,7 +11,7 @@ static const QString actionParam = "action";
  * CONSTRUCT/DESTRUCT
  *******************************************/
 
-DapCmdSystemTray::DapCmdSystemTray (QObject *parent)
+DapCmdSystemTraySrv::DapCmdSystemTraySrv (QObject *parent)
   : DapCmdServiceAbstract (DapJsonCmdType::CLIENT_INFO, parent)
 {
 //  connect (this, &DapCmdSystemTray::interfaceRequest,
@@ -19,7 +19,7 @@ DapCmdSystemTray::DapCmdSystemTray (QObject *parent)
 //           Qt::QueuedConnection);
 }
 
-DapCmdSystemTray::~DapCmdSystemTray()
+DapCmdSystemTraySrv::~DapCmdSystemTraySrv()
 {
 
 }
@@ -28,7 +28,7 @@ DapCmdSystemTray::~DapCmdSystemTray()
  * OVERRIDE
  *******************************************/
 
-void DapCmdSystemTray::handle (const QJsonObject *params)
+void DapCmdSystemTraySrv::handle (const QJsonObject *params)
 {
   auto value  = params->value (actionParam);
   if (value != QJsonValue::Undefined)

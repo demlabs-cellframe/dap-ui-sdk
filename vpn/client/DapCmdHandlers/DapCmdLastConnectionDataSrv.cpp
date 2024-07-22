@@ -14,7 +14,8 @@ void DapCmdLastConnectionDataSrv::handle(const QJsonObject *params)
 void DapCmdLastConnectionDataSrv::saveConnectionStartTime()
 {
     if (!mNoReset)
-        mStartTime = QDateTime::currentDateTime().toString();
+        mStartTime = QDateTime::currentDateTime()
+                     .toString ("hh:mm:ss dd.MM.yyyy");
 }
 
 void DapCmdLastConnectionDataSrv::dontReset(bool b) {

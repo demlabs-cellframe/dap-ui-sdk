@@ -263,6 +263,9 @@ Item {
                         settingsModel.exec (myIndex, this);
 
                         preventDoubleExec   = false;
+
+                        if (model.icon === "settings_icon ic_theme")
+                            root.darkTheme = checked;
                     }
 
                     onClicked: buttonClicked(true)

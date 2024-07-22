@@ -718,9 +718,9 @@ void DapSession::sendTxOutRequest(const QString &tx) {
     encRequest(tx, URL_TX, "tx_out", NULL, true);
 }
 
-DapNetworkReply *  DapSession::sendNewTxCondRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey){
+DapNetworkReply *  DapSession::sendNewTxCondRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey, const QString& a_order_hash){
     qDebug() << "Send new tx cond request to cdb";
-    m_netNewTxReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
+    m_netNewTxReply = encRequest(a_serial + " " + a_domain + " " + a_pkey + " " + a_order_hash,
                                  URL_DB, "new_tx_cond", "serial", SLOT(onNewTxCond()), NULL, true);
     return m_netNewTxReply;
 }
@@ -730,20 +730,20 @@ DapNetworkReply *  DapSession::sendNewTxCondRequest(const QString& a_serial, con
  * @param password
  * @param domain
  */
-DapNetworkReply * DapSession::authorizeRequest(const QString& a_user, const QString& a_password, const QString& a_domain, const QString& a_pkey)
+DapNetworkReply * DapSession::authorizeRequest(const QString& a_user, const QString& a_password, const QString& a_domain, const QString& a_pkey, const QString& a_order_hash)
 {
     m_user = a_user;
     m_userInform.clear();
 
-    m_netAuthorizeReply = encRequest(a_pkey.isNull() ? a_user + " " + a_password + " " + a_domain :
-                                                       a_user + " " + a_password + " " + a_domain + " " + a_pkey,
+    m_netAuthorizeReply = encRequest(a_pkey.isNull() ? a_user + " " + a_password + " " + a_domain  + " " + a_order_hash:
+                                                       a_user + " " + a_password + " " + a_domain + " " + a_pkey  + " " + a_order_hash,
                                      URL_DB, "auth", "login", SLOT(onAuthorize()), /*QT_STRINGIFY(errorAuthorization)*/ NULL);
     return m_netAuthorizeReply;
 }
 
-DapNetworkReply * DapSession::authorizeByKeyRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey) {
+DapNetworkReply * DapSession::authorizeByKeyRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey, const QString& a_order_hash) {
     m_userInform.clear();
-    m_netAuthorizeReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
+    m_netAuthorizeReply = encRequest(a_serial + " " + a_domain + " " + a_pkey + " " + a_order_hash,
                                      URL_DB, "auth", "serial", SLOT(onAuthorize()), /*QT_STRINGIFY(errorAuthorization)*/ NULL);
     return m_netAuthorizeReply;
 }

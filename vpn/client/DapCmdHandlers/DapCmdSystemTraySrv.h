@@ -13,7 +13,7 @@
  * @author
  *******************************************/
 
-class DapCmdSystemTray : public DapCmdServiceAbstract
+class DapCmdSystemTraySrv : public DapCmdServiceAbstract
 {
   Q_OBJECT
 
@@ -22,8 +22,8 @@ class DapCmdSystemTray : public DapCmdServiceAbstract
    *******************************************/
   /// @{
 public:
-  explicit DapCmdSystemTray (QObject *parent = nullptr);
-  virtual ~DapCmdSystemTray() override;
+    explicit DapCmdSystemTraySrv (QObject *parent = nullptr);
+    virtual ~DapCmdSystemTraySrv() override;
   /// @}
 
   /****************************************//**

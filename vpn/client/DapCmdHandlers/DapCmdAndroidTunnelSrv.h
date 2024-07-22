@@ -4,12 +4,12 @@
 #include "DapCmdServiceAbstract.h"
 #include <QJsonObject>
 
-class DapCmdAndroidTunnel : public DapCmdServiceAbstract
+class DapCmdAndroidTunnelSrv : public DapCmdServiceAbstract
 {
     Q_OBJECT
 public:
-    DapCmdAndroidTunnel(QObject *parent = nullptr);
-    ~DapCmdAndroidTunnel() override;
+    DapCmdAndroidTunnelSrv(QObject *parent = nullptr);
+    ~DapCmdAndroidTunnelSrv() override;
 
     void handle(const QJsonObject *params) override;
     void openTunnel(const QString &address, const QString &gateway, int socket);

@@ -3,11 +3,11 @@
 
 #include "DapCmdServiceAbstract.h"
 
-class DapCmdPurchase : public DapCmdServiceAbstract
+class DapCmdPurchaseSrv : public DapCmdServiceAbstract
 {
     Q_OBJECT
 public:
-    explicit DapCmdPurchase(QObject *parent = nullptr);
+    explicit DapCmdPurchaseSrv(QObject *parent = nullptr);
     void handle(const QJsonObject *params) override;
 signals:
     void purchaseVerified(const QJsonDocument& result);

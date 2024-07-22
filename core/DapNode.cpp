@@ -19,12 +19,15 @@ const qint32   DapNode::NODE_DETECT_REQUEST_REPEAT_PERIOD   (10000);
 const qint32   DapNode::NODE_CONNECT_REQUEST_REPEAT_PERIOD  (500);
 const qint32   DapNode::LEDGER_REQUEST_REPEAT_PERIOD        (5000);
 
+static DapNode *s_instance   = nullptr;
+
 
 DapNode:: DapNode(QObject * obj, int requestTimeout) :
     QObject(obj),
 //    m_requestTimeout(requestTimeout),
     m_stm(new NodeConnectStateMachine)
 {
+    s_instance  = this;
     web3 = new DapNodeWeb3();
     initWeb3Connections();
     initStmTransitions();
@@ -36,8 +39,6 @@ DapNode:: DapNode(QObject * obj, int requestTimeout) :
 DapNode::~ DapNode()
 {
 }
-
-static DapNode *s_instance   = nullptr;
 
 DapNode *DapNode::instance()
 {

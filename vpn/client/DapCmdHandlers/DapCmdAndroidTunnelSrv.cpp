@@ -1,23 +1,23 @@
-#include "DapCmdAndroidTunnel.h"
+#include "DapCmdAndroidTunnelSrv.h"
 
 
-DapCmdAndroidTunnel::DapCmdAndroidTunnel(QObject *parent)
+DapCmdAndroidTunnelSrv::DapCmdAndroidTunnelSrv(QObject *parent)
     : DapCmdServiceAbstract (DapJsonCmdType::CREATE_ANDROID_TUNNEL, parent)
 {
     
 }
 
-DapCmdAndroidTunnel::~DapCmdAndroidTunnel()
+DapCmdAndroidTunnelSrv::~DapCmdAndroidTunnelSrv()
 {
     
 }
 
-void DapCmdAndroidTunnel::handle(const QJsonObject *params)
+void DapCmdAndroidTunnelSrv::handle(const QJsonObject *params)
 {
     Q_UNUSED(params)
 }
 
-void DapCmdAndroidTunnel::openTunnel(const QString &address, const QString &gateway, int socket)
+void DapCmdAndroidTunnelSrv::openTunnel(const QString &address, const QString &gateway, int socket)
 {
     qDebug() << QString("openTunnel(%1,%2,%3)").arg(address).arg(gateway).arg(socket);
     QJsonObject tunnelData;

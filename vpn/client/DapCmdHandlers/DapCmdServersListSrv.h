@@ -2,8 +2,10 @@
 #define DapCmdServersListSrv_H
 
 #include <QObject>
+#include <QTimer>
 #include "DapCmdServiceAbstract.h"
 #include "DapServerInfo.h"
+#include "DapNetworkReply.h"
 
 class DapCmdServersListSrv: public DapCmdServiceAbstract
 {
@@ -13,6 +15,8 @@ public:
     void handle(const QJsonObject* params) override;
     ~DapCmdServersListSrv() override {}
     const QList<QString> &serversList() { return  m_serversList; }
+    void updateServerList(const QJsonArray& arr);
+    bool loadServerList();
 signals:
     void nextCdb();
     void updateNodesList(const DapServerInfoList&);
@@ -21,6 +25,12 @@ public slots:
     void setServersList(const QList<QString>& a_serversList) { m_serversList = a_serversList ; }
 private:
     QList<QString> m_serversList;
+    bool guiCall;
+    QTimer * emitTimer;
+
+    void sendServerList(const QJsonArray& arr, const QString &time);
+    void sendRequestToCDB();
+
 };
 
 #endif // DapCmdServersListSrv_H

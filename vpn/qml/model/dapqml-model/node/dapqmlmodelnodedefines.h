@@ -3,7 +3,6 @@
 
 /* INCLUDES */
 
-#include <qtypes.h>
 #include <QString>
 #include <QHash>
 

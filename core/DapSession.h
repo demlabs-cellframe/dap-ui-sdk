@@ -91,9 +91,9 @@ public:
 public slots:
     DapNetworkReply * requestServerPublicKey();
     DapNetworkReply * authorizeRequest(const QString& a_user, const QString& a_password,
-                                     const QString& a_domain = QString(), const QString& a_pkey = QString() );
+                                     const QString& a_domain = QString(), const QString& a_pkey = QString(), const QString& a_order_hash = QString());
     DapNetworkReply * authorizeByKeyRequest(const QString& a_serial = QString(),
-                                     const QString& a_domain = QString(), const QString& a_pkey = QString() );
+                                     const QString& a_domain = QString(), const QString& a_pkey = QString() , const QString& a_order_hash = QString());
     DapNetworkReply * activateKeyRequest(const QString& a_serial = QString(), const QByteArray& a_signed = QByteArray(),
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
     void resetKeyRequest(const QString& a_serial = QString(),
@@ -106,7 +106,7 @@ public slots:
     void sendBugReportStatusRequest(const QByteArray &data);
     void getNews();
     void sendTxOutRequest(const QString &tx);
-    DapNetworkReply *  sendNewTxCondRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey);
+    DapNetworkReply *  sendNewTxCondRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey, const QString& a_order_hash);
 
 #ifdef BUILD_VAR_GOOGLE
     void requestPurchaseVerify(const QJsonObject *params);
