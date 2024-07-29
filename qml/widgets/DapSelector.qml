@@ -109,7 +109,7 @@ Rectangle
                     height: frameItem.height
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
-                    bottomPadding: OS_WIN_FLAG ? 4 : 0
+                    bottomPadding: CURRENT_OS === "win" ? 4 : 0
                     color: textColor
                     font: textFont
                     text: name
