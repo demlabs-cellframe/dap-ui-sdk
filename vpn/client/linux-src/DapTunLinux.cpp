@@ -221,7 +221,13 @@ void DapTunLinux::onWorkerStarted()
         QString run = QString("route add -host %2 gw %1")
                 .arg(m_defaultGwOld).arg(upstreamAddress()).toLatin1().constData();
         ::system(run.toLatin1().constData() );
-        
+    }
+
+    // Add all CDBs into routing exeption
+    for (const auto &str : m_routingExceptionAddrs){
+        QString run = QString("route add -host %2 gw %1")
+                .arg(m_defaultGwOld).arg(str);
+        ::system(run.toLatin1().constData() );
     }
 
     DapNetworkMonitor::instance()->sltSetDefaultGateway(m_defaultGwOld);
@@ -289,6 +295,12 @@ void DapTunLinux::tunDeviceDestroy()
     QString run = QString("ip route add default via %1").arg(m_defaultGwOld);
         qDebug() << "cmd run [" << run << ']';
          ::system(run.toLatin1().constData() );
+
+    for (const auto &str : m_routingExceptionAddrs){
+        QString run = QString("ip route del %1")
+                .arg(str);
+        ::system(run.toLatin1().constData() );
+    }
 
     enableIPV6();
 
