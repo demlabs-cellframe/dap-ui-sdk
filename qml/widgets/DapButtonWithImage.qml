@@ -10,6 +10,7 @@ Button {
     property int heightImage: 24
     property color textCollor: currTheme.white
     property color backgroundColor: currTheme.buttonGray
+    property color hoverBackgroundColor: currTheme.buttonLightGray
     property int backgroundRadius: 4
 
     contentItem: RowLayout {
@@ -43,13 +44,21 @@ Button {
             height: !isLeftImage ? heightImage : 0
         }
 
-        Item {
+        Item
+        {
             Layout.fillWidth: true
         }
     }
 
-    background: Rectangle {
-        color: backgroundColor
+    background: Rectangle
+    {
+        id: backgroundRect
+        color: !hovered ? backgroundColor : hoverBackgroundColor
         radius: backgroundRadius
+    }
+
+    onHoveredChanged:
+    {
+
     }
 }
