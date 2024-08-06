@@ -56,9 +56,4 @@ Button {
         color: !hovered ? backgroundColor : hoverBackgroundColor
         radius: backgroundRadius
     }
-
-    onHoveredChanged:
-    {
-
-    }
 }
