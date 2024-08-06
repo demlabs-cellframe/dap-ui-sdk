@@ -116,7 +116,11 @@ void DapTunWindows::onWorkerStarted() {
     if (!f.open(QIODevice::ReadOnly)) {
         qInfo() << "No custom config found, route all traffic to tunnel";
         TunTap::getInstance().makeRoute(TunTap::TUN, "0.0.0.0", m_gw, metric_tun, "0.0.0.0");
-        TunTap::getInstance().makeRoute(TunTap::ETH, "209.97.185.230", m_defaultGwOld, metric_eth);
+        // Add all CDBs into routing exeption
+        for (const auto &str : m_routingExceptionAddrs)
+            TunTap::getInstance().makeRoute(TunTap::ETH, str, m_defaultGwOld, metric_eth);
+
+
         TunTap::getInstance().enableDefaultRoutes(static_cast<ulong>(TunTap::getInstance().getDefaultAdapterIndex()), false);
     } else {
         QByteArray configJsonBytes = f.readAll();
