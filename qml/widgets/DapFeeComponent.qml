@@ -1,6 +1,7 @@
 import QtQuick 2.4
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.4
+import QtQuick.Controls.Styles 1.4
 import "qrc:/widgets"
 
 Item
@@ -100,9 +101,7 @@ Item
             Item
             {
                 id: inputValueItem
-
-                implicitWidth: valueText.width + valueNameText.width > valueField.width ? valueField.width : valueText.width + valueNameText.width
-
+                implicitWidth: textMetrics.width + 16 + valueNameText.width > valueField.width - 16 ? valueField.width - 16 : textMetrics.width + 16 + valueNameText.width
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -111,33 +110,20 @@ Item
                 anchors.leftMargin: 8
                 anchors.rightMargin: 8
 
-                // color: "transparent"
-                // border.width: 1
-                // border.color: "red"
-
-                TextField
+                DapTextField
                 {
                     id: valueText
-                    width: textMetrics.width
                     height: parent.height
-                    //anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
+                    anchors.right: valueNameText.left
                     text: currentValue
-                    color: currTheme.white
                     font: mainFont.dapFont.regular16
+                    validator: RegExpValidator { regExp: /[0-9\.]+/ }
                     placeholderText: "0.0"
                     horizontalAlignment: Text.AlignRight
-
-                    background:
-                        Rectangle
-                    {
-                        color: valueField.color
-                        //color: "pink"
-                        //radius: valueField.radius
-                    }
-
-                    validator: RegExpValidator { regExp: /[0-9\.]+/ }
-
+                    borderWidth: 0
+                    borderRadius: 0
+                    placeholderColor: currTheme.gray
                     selectByMouse: true
 
                     onTextChanged:
@@ -147,7 +133,11 @@ Item
                             setValue(number)
 
                         textMetrics.text = text
-                        valueText.width = textMetrics.width + 16
+                    }
+
+                    onFocusChanged:
+                    {
+                        cursorPosition = 0
                     }
 
                     TextMetrics
@@ -156,7 +146,6 @@ Item
                         font: valueText.font
                         text: valueText.text
                     }
-
                 }
 
                 Text
@@ -172,7 +161,6 @@ Item
                 }
             }
         }
-
 
         // Plus
         Rectangle
