@@ -36,13 +36,7 @@ Item
         onClicked:
         {
             print("DapCopyButton onClicked")
-            dapMainWindow.infoItem.showInfo(
-                        0,0,
-                        dapMainWindow.width*0.5,
-                        8,
-                        popupText,
-                        "qrc:/Resources/" + pathTheme + "/icons/other/check_icon.png")
-
+            showInfoNotification(popupText, "check_icon.png")
             copyClicked()
         }
     }
