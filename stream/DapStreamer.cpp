@@ -30,7 +30,6 @@ QByteArray daSigQ((const char*) daSig, sizeof(daSig));
 
 inline static int daSigDetect(const QByteArray& b) { return b.indexOf(daSigQ); }
 
-
 QHash<char, DapChBase*> DapStreamer::m_dsb;
 
 DapStreamer::DapStreamer(DapSession * session, QObject* parent) :
@@ -122,6 +121,25 @@ void DapStreamer::streamOpen(const QString& subUrl, const QString& query)
     qDebug() << "Stream open query =" << query;
     m_streamID.clear();
     m_network_reply = m_session->streamOpenRequest(subUrl, query, this, SLOT(sltStreamOpenCallback()), QT_STRINGIFY(errorNetwork));
+}
+
+void DapStreamer::streamOpen(const QString& subUrl, const QString& query, const QString& address, quint16 port) {
+    if (m_streamSocket.isOpen()) {
+        qWarning() << "Stream socket already open. "
+                      "Closing current open socket";
+        streamClose();
+    }
+    qDebug() << "Stream open SubUrl = " << subUrl;
+    qDebug() << "Stream open query =" << query;
+
+    m_streamSocket.connectToHost(address, port);
+    if (m_streamSocket.waitForConnected(15000)) {
+        QByteArray data = QString("%1?%2").arg(subUrl).arg(query).toLatin1();
+        m_streamSocket.write(data);
+    } else {
+        qWarning() << "Failed to connect to server" << address << ":" << port;
+        emit errorNetwork (tr ("Socket connection timeout"));
+    }
 }
 
 void DapStreamer::streamClose()
