@@ -53,6 +53,10 @@ public:
     void setStreamTimeoutCheck(bool b) { m_timeoutStreamCheck = b; }
     uint16_t m_reconnectAttempts;
     uint16_t m_aliveChecks;
+
+    void sltStreamStateChanged(QAbstractSocket::SocketState state);
+    void logSocketState(QAbstractSocket::SocketState state);
+
 protected:
     static QHash<char, DapChBase*> m_dsb;
     DapSession *m_session;
@@ -84,6 +88,9 @@ private:
     quint64 m_lastSeqId = quint64(-1);
     // emit sigStreamPacketLoosed if packet loose detected
     void _detectPacketLoose(quint64 currentSeqId);
+
+    void initStreamSocket();
+
 private slots:
     void sltStreamProcess();
     void sltStreamConnected();
