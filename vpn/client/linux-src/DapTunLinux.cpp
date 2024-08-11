@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
+#include <route.h>
 
 #include <linux/if_tun.h>
 
@@ -184,7 +185,6 @@ void DapTunLinux::checkDefaultGetaweyMetric()
         qInfo() << "Metric " << result[IFACE] << "change to 15";
     }
 }
-
 /**
  * @brief DapTunLinux::onWorkerStarted
  */
@@ -198,10 +198,15 @@ void DapTunLinux::onWorkerStarted()
         return;
     }
 
+    int sock_r = socket(AF_ROUTE,SOCK_RAW,htons(ETH_P_ALL));
+    if (sock_r < 0){
+        qCritical()<< "Socket opening error.";
+        return;
+    }
+
     checkDefaultGetaweyMetric();
     saveCurrentConnectionInterfaceData();
     disableIPV6();
-
     process.start("bash", QStringList() << "-c" <<  "netstat -rn|grep 'UG '| head -n 1| awk '{print $2;}'");
     process.waitForFinished(-1);
     m_defaultGwOld=process.readAllStandardOutput();
@@ -225,9 +230,11 @@ void DapTunLinux::onWorkerStarted()
 
     // Add all CDBs into routing exeption
     for (const auto &str : m_routingExceptionAddrs){
-        QString run = QString("route add -host %2 gw %1")
-                .arg(m_defaultGwOld).arg(str);
-        ::system(run.toLatin1().constData() );
+//        QString run = QString("route add -host %2 gw %1")
+//                .arg(m_defaultGwOld).arg(str);
+//        ::system(run.toLatin1().constData() );
+        char buf[1024];
+        struct rt_msghdr
     }
 
     DapNetworkMonitor::instance()->sltSetDefaultGateway(m_defaultGwOld);
@@ -245,6 +252,12 @@ void DapTunLinux::onWorkerStarted()
                 .arg(m_defaultGwOld).arg(upstreamAddress()).toLatin1().constData();
         qDebug() << "Execute "<<run;
         ::system(run.toLatin1().constData());
+
+        int ret_val = s_set_route(
+        if (ret_val < 0){
+            qCritical()<< "Routing setting failed.";
+            return;
+        }
     }
 
     QString cmdConnAdd = QString(
