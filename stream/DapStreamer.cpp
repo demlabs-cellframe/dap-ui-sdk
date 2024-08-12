@@ -46,6 +46,9 @@ DapStreamer::DapStreamer(DapSession *session, QObject* parent) :
     m_procPktInData.reserve(DAP_PKT_SIZE_MAX);
     m_procPktInDecData.reserve(DAP_PKT_SIZE_MAX);
 
+    connect(&m_timer, &QTimer::timeout, this, &DapStreamer::_printPacketLossStatistics);
+    m_timer.start(5*60000);
+
     initStreamSocket();
 
     m_session = session;
@@ -557,18 +560,35 @@ void DapStreamer::sltStreamProcess()
    }
 }
 
-void DapStreamer::_detectPacketLoose(quint64 currentSeqId)
-{
+void DapStreamer::_detectPacketLoose(quint64 currentSeqId) {
     int countLoosedPackets = currentSeqId - (m_lastSeqId + 1);
     if (countLoosedPackets > 0) {
-        qWarning() << "Packet Loosed count:" << countLoosedPackets;
+        // qWarning() << "Packet Loosed count:" << countLoosedPackets;
         emit sigStreamPacketLoosed(countLoosedPackets);
+        m_packetLossQueue.enqueue(qMakePair(QDateTime::currentDateTime(), countLoosedPackets));
     } else if((countLoosedPackets < 0) && (currentSeqId > 0)) {
         qWarning() << "Something wrong. countLoosedPackets is " << countLoosedPackets
                    << "can't be less than zero. Current seq id:" << currentSeqId
                    << "last seq id: " << m_lastSeqId;
     }
     m_lastSeqId = currentSeqId;
+    _removeOldEntries();
+}
+
+void DapStreamer::_removeOldEntries() {
+    QDateTime tenMinutesAgo = QDateTime::currentDateTime().addSecs(-600); // 10 минут назад
+    while (!m_packetLossQueue.isEmpty() && m_packetLossQueue.head().first < tenMinutesAgo) {
+        m_packetLossQueue.dequeue();
+    }
+}
+
+void DapStreamer::_printPacketLossStatistics() {
+    _removeOldEntries();
+    int totalLostPackets = 0;
+    for (const auto &entry : m_packetLossQueue) {
+        totalLostPackets += entry.second;
+    }
+    qInfo() << "Total packet loss in the last 5 minutes:" << totalLostPackets;
 }
 
 void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)

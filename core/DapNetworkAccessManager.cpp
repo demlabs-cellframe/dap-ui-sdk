@@ -1,4 +1,5 @@
 #include "DapNetworkAccessManager.h"
+#include "DapHttpPing.h"
 
 DapNetworkAccessManager::DapNetworkAccessManager()
                     :QObject(nullptr)
@@ -24,6 +25,15 @@ void DapNetworkAccessManager::requestHttp_GET(const QString &address, const uint
     dap_client_http_request(nullptr, qPrintable(address), port, "GET", "text/plain", qPrintable(urlPath), nullptr, 0, nullptr,
                             &DapNetworkAccessManager::responseCallback, &DapNetworkAccessManager::responseCallbackError, &netReply,
                                    headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
+}
+
+void DapNetworkAccessManager::requestHttp_GET_for_ping(const QString &address, const uint16_t port, const QString &urlPath, const QString &headers, DapNetworkReply &netReply)
+{
+    qDebug() << "Dap Client HTTP Requested - GET: " << urlPath ;
+    bRunning = true;
+    dap_client_http_request(nullptr, qPrintable(address), port, "GET", "text/plain", qPrintable(urlPath), nullptr, 0, nullptr,
+                            &DapHttpPing::responseCallback, &DapHttpPing::responseCallbackError, &netReply,
+                            headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
 }
 
 void DapNetworkAccessManager::responseCallback(void * a_response, size_t a_response_size, void * a_obj)
