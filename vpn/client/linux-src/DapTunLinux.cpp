@@ -6,7 +6,8 @@
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
-#include <route.h>
+#include <net/if.h>
+#include <net/route.h>
 
 #include <linux/if_tun.h>
 
@@ -244,12 +245,6 @@ void DapTunLinux::onWorkerStarted()
                 .arg(m_defaultGwOld).arg(upstreamAddress()).toLatin1().constData();
         qDebug() << "Execute "<<run;
         ::system(run.toLatin1().constData());
-
-        int ret_val = s_set_route(
-        if (ret_val < 0){
-            qCritical()<< "Routing setting failed.";
-            return;
-        }
     }
 
     QString cmdConnAdd = QString(
