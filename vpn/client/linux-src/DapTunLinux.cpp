@@ -8,6 +8,7 @@
 #include <sys/socket.h>
 #include <net/if.h>
 #include <net/route.h>
+#include <arpa/inet.h>
 
 #include <linux/if_tun.h>
 
@@ -199,12 +200,6 @@ void DapTunLinux::onWorkerStarted()
         return;
     }
 
-    int sock_r = socket(AF_ROUTE,SOCK_RAW,htons(ETH_P_ALL));
-    if (sock_r < 0){
-        qCritical()<< "Socket opening error.";
-        return;
-    }
-
     checkDefaultGetaweyMetric();
     saveCurrentConnectionInterfaceData();
     disableIPV6();
@@ -230,13 +225,38 @@ void DapTunLinux::onWorkerStarted()
     }
 
     // Add all CDBs into routing exeption
+    QByteArray m_defaultGwOldBA = m_defaultGwOld.toLocal8Bit();
+    const char* m_defaultGwOld_char = m_defaultGwOldBA.data();
     for (const auto &str : m_routingExceptionAddrs){
-//        QString run = QString("route add -host %2 gw %1")
-//                .arg(m_defaultGwOld).arg(str);
-//        ::system(run.toLatin1().constData() );
-        struct rt_msghdr rtm;
-        memset(rtm, 0, sizeof(struct rt_msghdr));
+        int sock_r = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP );
+        if (sock_r < 0){
+            qCritical()<< "Socket opening error.";
+            return;
+        }
 
+        struct rtentry route;
+        memset(&route, 0, sizeof(struct rtentry));
+
+        struct sockaddr_in *addr = (struct sockaddr_in *)&route.rt_gateway;
+        addr->sin_family = AF_INET;
+        addr->sin_addr.s_addr = inet_addr( m_defaultGwOld_char );
+
+        QByteArray cdb_addr_ba = str.toLocal8Bit();
+        const char* cdb_addr_char = cdb_addr_ba.data();
+
+        addr = (struct sockaddr_in*) &route.rt_dst;
+        addr->sin_family = AF_INET;
+        addr->sin_addr.s_addr = inet_addr( cdb_addr_char );
+
+        addr = (struct sockaddr_in*) &route.rt_genmask;
+        addr->sin_family = AF_INET;
+        addr->sin_addr.s_addr = inet_addr( "255.255.255.255" );
+
+        route.rt_flags = RTF_UP | RTF_GATEWAY;
+        route.rt_metric = 0;
+
+        int rc = ioctl( sock_r, SIOCADDRT, &route );
+        close( sock_r );
     }
 
     DapNetworkMonitor::instance()->sltSetDefaultGateway(m_defaultGwOld);
@@ -249,12 +269,39 @@ void DapTunLinux::onWorkerStarted()
     
     if(!isLocalAddress(upstreamAddress()))
     {
-        // This route dont need if address is local
-        QString run = QString("route add -host %2 gw %1 metric 10")
-                .arg(m_defaultGwOld).arg(upstreamAddress()).toLatin1().constData();
-        qDebug() << "Execute "<<run;
-        ::system(run.toLatin1().constData());
+        int sock_r = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP );
+        if (sock_r < 0){
+            qCritical()<< "Socket opening error.";
+            return;
+        }
+
+        struct rtentry route;
+        memset(&route, 0, sizeof(struct rtentry));
+
+        struct sockaddr_in *addr = (struct sockaddr_in *)&route.rt_gateway;
+        addr->sin_family = AF_INET;
+        addr->sin_addr.s_addr = inet_addr( m_defaultGwOld_char );
+
+        QByteArray ups_addr_ba = upstreamAddress().toLocal8Bit();
+        const char* ups_addr_char = ups_addr_ba.data();
+
+        addr = (struct sockaddr_in*) &route.rt_dst;
+        addr->sin_family = AF_INET;
+        addr->sin_addr.s_addr = inet_addr( ups_addr_char );
+
+        addr = (struct sockaddr_in*) &route.rt_genmask;
+        addr->sin_family = AF_INET;
+        addr->sin_addr.s_addr = inet_addr( "255.255.255.255" );
+
+        route.rt_flags = RTF_UP | RTF_GATEWAY;
+        route.rt_metric = 10;
+
+        int rc = ioctl( sock_r, SIOCADDRT, &route );
+        close( sock_r );
+
     }
+
+
 
     QString cmdConnAdd = QString(
                 "nmcli connection add type tun con-name " DAP_BRAND " autoconnect false ifname %1 "
