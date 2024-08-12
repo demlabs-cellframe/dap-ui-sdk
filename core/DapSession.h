@@ -108,6 +108,7 @@ public slots:
     void sendSignUpRequest(const QString &host, const QString &email, const QString &password);
     void sendBugReport(const QByteArray &data);
     void sendBugReportStatusRequest(const QByteArray &data);
+    void getRemainLimits(const QString& net_id, const QString& a_pkey, const QString& address, quint16 port);
     void getNews();
     void sendTxOutRequest(const QString &tx);
     DapNetworkReply *  sendNewTxCondRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey, const QString& a_order_hash);
