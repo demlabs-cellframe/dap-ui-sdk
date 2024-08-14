@@ -1239,6 +1239,12 @@ void DapNodeWeb3::parseJson (const QString &replyData, int baseErrorCode, const 
         emit sigIncorrectId();
       }
 
+      if (errorMsgString == "Certificate is exists")
+      {
+          qDebug() << "Certificate is exists - it's - ok (status)";
+          return;
+      }
+
       /* print error */
       if (!errorMsgString.isEmpty())
         {
