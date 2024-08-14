@@ -6,7 +6,12 @@
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
+#include <net/if.h>
+#include <net/route.h>
+#include <arpa/inet.h>
 
+#include <linux/rtnetlink.h>
+#include <linux/netlink.h>
 #include <linux/if_tun.h>
 
 #include <unistd.h>
@@ -60,24 +65,24 @@ void DapTunLinux::tunDeviceCreate()
     char clonedev[] = "/dev/net/tun";
     char dev[IFNAMSIZ] = {0};
     int flags = IFF_TUN |IFF_NO_PI;
-    
+
     /* Arguments taken by the function:
     *
     * char *dev: the name of an interface (or '\0'). MUST have enough
     *   space to hold the interface name if '\0' is passed
     * int flags: interface flags (eg, IFF_TUN etc.)
     */
-    
+
     /* open the clone device */
     if ((fd = ::open(clonedev, O_RDWR)) < 0 ) {
         qCritical() << "Can't open /dev/net/tun device!";
         return;
     }
-    
+
     ::memset(&ifr,0,sizeof(ifr));
-    
+
     ifr.ifr_flags = flags;   /* IFF_TUN or IFF_TAP, plus maybe IFF_NO_PI */
-    
+
     if (dev[0]) {
         /* if a device name was specified, put it in the structure; otherwise,
       * the kernel will try to allocate the "next" device of the
@@ -85,24 +90,24 @@ void DapTunLinux::tunDeviceCreate()
         ::strncpy(ifr.ifr_name, dev, IFNAMSIZ);
     }else
         /* try to create the device */
-        
-        
+
+
         if (::ioctl(fd, TUNSETIFF, (void *) &ifr) < 0) {
             qCritical() << "Can't create tun network interface!";
-            
+
             ::close(fd);
             return;
         }
-    
+
     /* if the operation was successful, write back the name of the
     * interface to the variable "dev", so the caller can know
     * it. Note that the caller MUST reserve space in *dev (see calling
     * code below) */
-    
+
     ::strncpy(dev, ifr.ifr_name,IFNAMSIZ);
     m_tunDeviceName = QString::fromLatin1(dev);
     qInfo() << "Created "<<m_tunDeviceName<<" network interface";
-    
+
     /* this is the special file descriptor that the caller will use to talk
     * with the virtual interface */
     m_tunSocket = fd;
@@ -185,6 +190,39 @@ void DapTunLinux::checkDefaultGetaweyMetric()
     }
 }
 
+int sSetRoute(in_addr_t host_addr, in_addr_t gw_addr)
+{
+    int sock_r = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP );
+    if (sock_r < 0){
+        qCritical()<< "Socket opening error.";
+        return -1;
+    }
+
+    struct rtentry route;
+    memset(&route, 0, sizeof(struct rtentry));
+
+    struct sockaddr_in *addr = (struct sockaddr_in *)&route.rt_gateway;
+    addr->sin_family = AF_INET;
+    addr->sin_addr.s_addr = gw_addr;
+
+    addr = (struct sockaddr_in*) &route.rt_dst;
+    addr->sin_family = AF_INET;
+    addr->sin_addr.s_addr = host_addr;
+
+    addr = (struct sockaddr_in*) &route.rt_genmask;
+    addr->sin_family = AF_INET;
+    addr->sin_addr.s_addr = inet_addr( "255.255.255.255" );
+
+    route.rt_flags = RTF_UP | RTF_GATEWAY;
+    route.rt_metric = 0;
+
+    int rc = ioctl( sock_r, SIOCADDRT, &route );
+    close( sock_r );
+
+    return rc;
+
+}
+
 /**
  * @brief DapTunLinux::onWorkerStarted
  */
@@ -192,7 +230,7 @@ void DapTunLinux::onWorkerStarted()
 {
     qDebug() << "tunnelCreate()";
     QProcess process;
-    
+
     if(m_tunSocket <=0){
         qCritical()<< "Can't bring up network interface ";
         return;
@@ -201,7 +239,6 @@ void DapTunLinux::onWorkerStarted()
     checkDefaultGetaweyMetric();
     saveCurrentConnectionInterfaceData();
     disableIPV6();
-
     process.start("bash", QStringList() << "-c" <<  "netstat -rn|grep 'UG '| head -n 1| awk '{print $2;}'");
     process.waitForFinished(-1);
     m_defaultGwOld=process.readAllStandardOutput();
@@ -210,18 +247,26 @@ void DapTunLinux::onWorkerStarted()
         qWarning() << "There is no default gateway, may be we've broken that last time? Trying to check that...";
         process.start("bash",QStringList() << "-c" << QString("netstat -rn|grep %1|awk '{print $2;}'").arg(upstreamAddress())  );
         process.waitForFinished(-1);
-        
+
         m_defaultGwOld=process.readAllStandardOutput();
         m_defaultGwOld.chop(1);
         if(m_defaultGwOld.isEmpty()){
             qWarning() << "Not found old gateway, looks like its better to restart the network";
             return;
         }
-        
-        QString run = QString("route add -host %2 gw %1")
-                .arg(m_defaultGwOld).arg(upstreamAddress()).toLatin1().constData();
-        ::system(run.toLatin1().constData() );
-        
+
+        if (sSetRoute(inet_addr( upstreamAddress().toLocal8Bit().data()), inet_addr( m_defaultGwOld.toLocal8Bit().data() )) < 0){
+            qWarning() << "Routing error.";
+            return;
+        }
+    }
+
+    // Add all CDBs into routing exeption
+    for (const auto &str : m_routingExceptionAddrs){
+        if (sSetRoute(inet_addr( str.toLocal8Bit().data() ), inet_addr(  m_defaultGwOld.toLocal8Bit().data() )) < 0){
+            qWarning() << "Routing error.";
+            return;
+        }
     }
 
     DapNetworkMonitor::instance()->sltSetDefaultGateway(m_defaultGwOld);
@@ -229,39 +274,38 @@ void DapTunLinux::onWorkerStarted()
     QString run = QString("ip route del default via %1").arg(m_defaultGwOld);
     qDebug() << "cmd run [" << run << ']';
      ::system(run.toLatin1().constData() );
-        
+
     ::system("nmcli c delete " DAP_BRAND);
-    
+
     if(!isLocalAddress(upstreamAddress()))
     {
-        // This route dont need if address is local
-        QString run = QString("route add -host %2 gw %1 metric 10")
-                .arg(m_defaultGwOld).arg(upstreamAddress()).toLatin1().constData();
-        qDebug() << "Execute "<<run;
-        ::system(run.toLatin1().constData());
+        if (sSetRoute(inet_addr( upstreamAddress().toLocal8Bit().data() ), inet_addr( m_defaultGwOld.toLocal8Bit().data() )) < 0){
+            qWarning() << "Routing error.";
+            return;
+        }
     }
 
     QString cmdConnAdd = QString(
                 "nmcli connection add type tun con-name " DAP_BRAND " autoconnect false ifname %1 "
                 "mode tun ip4 %2 gw4 %3")
             .arg(tunDeviceName()).arg(addr()).arg(gw());
-    
+
     qDebug() << "[Cmd to created interface: " <<  cmdConnAdd.toLatin1().constData();
-    
+
     ::system(cmdConnAdd.toLatin1().constData());
 
     ::system("nmcli connection modify " DAP_BRAND
              " +ipv4.ignore-auto-routes true");
-    
+
     ::system("nmcli connection modify " DAP_BRAND
              " +ipv4.ignore-auto-dns true");
-    
+
     ::system((QString("nmcli connection modify " DAP_BRAND
         " +ipv4.dns-search " DAP_BRAND)
         ).toLatin1().constData());
 
     ::system("nmcli connection modify " DAP_BRAND " ipv4.dns-priority 10");
-    
+
     ::system("nmcli connection modify " DAP_BRAND
              " +ipv4.method manual");
 
@@ -270,7 +314,7 @@ void DapTunLinux::onWorkerStarted()
 
     ::system("nmcli connection modify " DAP_BRAND
              " +ipv4.route-metric 10");
-    
+
     ::system("nmcli connection up " DAP_BRAND);
     m_isCreated = true;
     emit created();
@@ -289,6 +333,12 @@ void DapTunLinux::tunDeviceDestroy()
     QString run = QString("ip route add default via %1").arg(m_defaultGwOld);
         qDebug() << "cmd run [" << run << ']';
          ::system(run.toLatin1().constData() );
+
+    for (const auto &str : m_routingExceptionAddrs){
+        QString run = QString("ip route del %1")
+                .arg(str);
+        ::system(run.toLatin1().constData() );
+    }
 
     enableIPV6();
 
