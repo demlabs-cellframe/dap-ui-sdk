@@ -10,6 +10,7 @@ void DapNetworkAccessManager::requestHttp_POST(const QString &address, const uin
 {
     qDebug() << "Dap Client HTTP Requested - POST: " << urlPath ;
     bRunning = true;
+    dap_client_http_set_connect_timeout_ms(20000);
     dap_client_http_request(nullptr, qPrintable(address), port, "POST", "text/plain", qPrintable(urlPath), body.constData(), static_cast<size_t>(body.size()), nullptr,
                             &DapNetworkAccessManager::responseCallback, &DapNetworkAccessManager::responseCallbackError,
                                    &netReply, headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
@@ -19,7 +20,7 @@ void DapNetworkAccessManager::requestHttp_GET(const QString &address, const uint
 {
     qDebug() << "Dap Client HTTP Requested - GET: " << urlPath ;
     bRunning = true;
-    dap_client_http_set_connect_timeout_ms(5000);
+    dap_client_http_set_connect_timeout_ms(20000);
     dap_client_http_request(nullptr, qPrintable(address), port, "GET", "text/plain", qPrintable(urlPath), nullptr, 0, nullptr,
                             &DapNetworkAccessManager::responseCallback, &DapNetworkAccessManager::responseCallbackError, &netReply,
                                    headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
