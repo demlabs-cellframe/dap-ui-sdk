@@ -33,6 +33,8 @@ private:
 
     QString runBashCmd(const QString& cmd);
 
+    bool connectionExists(const QString &connName);
+
     // if metric is 0 upping to 15
     void checkDefaultGetaweyMetric();
 };

@@ -21,12 +21,17 @@
 #ifndef DAPCONNECTSTREAM_H
 #define DAPCONNECTSTREAM_H
 
-#include "DapConnectClient.h"
-#include "DapSession.h"
-#include "DapChannelPacket.h"
+#include <QDateTime>
+#include <QQueue>
+#include <QPair>
+#include <QTimer>
 #include <DapCrypt.h>
 #include <QAbstractSocket>
 #include <QTcpSocket>
+
+#include "DapConnectClient.h"
+#include "DapSession.h"
+#include "DapChannelPacket.h"
 #include "DapChBase.h"
 #include "DapClientDefinitions.h"
 
@@ -56,6 +61,8 @@ public:
 
     void sltStreamStateChanged(QAbstractSocket::SocketState state);
     void logSocketState(QAbstractSocket::SocketState state);
+
+    void _detectPacketLoose(quint64 currentSeqId);
 
 protected:
     static QHash<char, DapChBase*> m_dsb;
@@ -87,9 +94,12 @@ protected:
 private:
     quint64 m_lastSeqId = quint64(-1);
     // emit sigStreamPacketLoosed if packet loose detected
-    void _detectPacketLoose(quint64 currentSeqId);
 
     void initStreamSocket();
+    QQueue<QPair<QDateTime, int>> m_packetLossQueue;
+    QTimer m_timer;
+
+    void _removeOldEntries();
 
 private slots:
     void sltStreamProcess();
@@ -100,6 +110,8 @@ private slots:
     void sltStreamOpenCallback();
 
     void sltStreamBytesWritten(qint64 bytes);
+
+    void _printPacketLossStatistics();
 
 public slots:
     void openDefault(   ) {
@@ -156,6 +168,8 @@ signals:
 
     void sigStreamPacketLoosed(quint64 countLoosedPackets);
     void sigNetworkMonitor();
+
+    void sigStreamPacketLoosed(int countLoosedPackets);
 };
 
 #endif // DAPCONNECTSTREAM_H
