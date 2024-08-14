@@ -79,7 +79,6 @@ void DapTunLinux::tunDeviceCreate()
     }
 
     ::memset(&ifr,0,sizeof(ifr));
-
     ifr.ifr_flags = flags;   /* IFF_TUN or IFF_TAP, plus maybe IFF_NO_PI */
 
     if (dev[0]) {
@@ -175,6 +174,12 @@ void DapTunLinux::checkDefaultGetaweyMetric()
         process.waitForFinished(-1);
         qInfo() << "Metric for " << result[IFACE] << "changed to 15";
     }
+}
+
+bool DapTunLinux::connectionExists(const QString &connName)
+{
+    QString result = runBashCmd(QString("nmcli -t --fields NAME connection show | grep -w '%1'").arg(connName));
+    return !result.isEmpty();
 }
 
 int sSetRoute(in_addr_t host_addr, in_addr_t gw_addr)
