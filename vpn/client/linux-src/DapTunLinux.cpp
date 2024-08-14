@@ -190,106 +190,36 @@ void DapTunLinux::checkDefaultGetaweyMetric()
     }
 }
 
-
-/* Add new data to rtattr */
-int rtattr_add(struct nlmsghdr *n, unsigned int maxlen, int type, const void *data, int alen)
+int sSetRoute(in_addr_t host_addr, in_addr_t gw_addr)
 {
-    int len = RTA_LENGTH(alen);
-    struct rtattr *rta;
-
-    if (NLMSG_ALIGN(n->nlmsg_len) + RTA_ALIGN(len) > maxlen) {
-        fprintf(stderr, "rtattr_add error: message exceeded bound of %d\n", maxlen);
+    int sock_r = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP );
+    if (sock_r < 0){
+        qCritical()<< "Socket opening error.";
         return -1;
     }
 
-    rta = ((struct rtattr *) (((void *) (n))) + NLMSG_ALIGN(n->nlmsg_len));
-    rta->rta_type = type;
-    rta->rta_len = len;
+    struct rtentry route;
+    memset(&route, 0, sizeof(struct rtentry));
 
-    if (alen) {
-        memcpy(RTA_DATA(rta), data, alen);
-    }
+    struct sockaddr_in *addr = (struct sockaddr_in *)&route.rt_gateway;
+    addr->sin_family = AF_INET;
+    addr->sin_addr.s_addr = gw_addr;
 
-    n->nlmsg_len = NLMSG_ALIGN(n->nlmsg_len) + RTA_ALIGN(len);
+    addr = (struct sockaddr_in*) &route.rt_dst;
+    addr->sin_family = AF_INET;
+    addr->sin_addr.s_addr = host_addr;
 
-    return 0;
-}
+    addr = (struct sockaddr_in*) &route.rt_genmask;
+    addr->sin_family = AF_INET;
+    addr->sin_addr.s_addr = inet_addr( "255.255.255.255" );
 
+    route.rt_flags = RTF_UP | RTF_GATEWAY;
+    route.rt_metric = 0;
 
-int sSetRoute(in_addr_t host_addr, in_addr_t gw_addr)
-{
-    int sock_r = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
-    if (sock_r < 0){
-        qCritical()<< "Socket opening error.";
-        return sock_r;
-    }
-
-    struct {
-        struct nlmsghdr n;
-        struct rtmsg r;
-        char buf[4096];
-    } nl_request;
-
-
-    nl_request.n.nlmsg_len = NLMSG_LENGTH(sizeof(struct rtmsg));
-    nl_request.r.rtm_table = RT_TABLE_MAIN;
-    nl_request.r.rtm_scope = RT_SCOPE_NOWHERE;
-    nl_request.n.nlmsg_flags = 0;
-
-    nl_request.n.nlmsg_type = RTM_NEWROUTE;
-    nl_request.n.nlmsg_flags = NLM_F_REQUEST | NLM_F_REPLACE;
-    nl_request.r.rtm_type = RTN_UNICAST;
-    nl_request.r.rtm_protocol = RTPROT_KERNEL;
-
-    nl_request.r.rtm_family = AF_INET;
-    nl_request.r.rtm_scope = RT_SCOPE_LINK;
-
-    nl_request.r.rtm_family = AF_INET;
-    nl_request.r.rtm_dst_len = 32;
-
-    rtattr_add(&nl_request.n, sizeof(nl_request), RTA_DST, &host_addr, sizeof(host_addr));
-    nl_request.r.rtm_scope = 0;
-    nl_request.r.rtm_family =AF_INET;
-
-    rtattr_add(&nl_request.n, sizeof(nl_request), RTA_GATEWAY, &gw_addr, sizeof(gw_addr));
-
-    int if_idx = if_nametoindex("enp5s0");
-    rtattr_add(&nl_request.n, sizeof(nl_request), RTA_OIF, &if_idx, sizeof(int));
-
-
-    int rc = send(sock_r, &nl_request, sizeof(nl_request), 0);
+    int rc = ioctl( sock_r, SIOCADDRT, &route );
     close( sock_r );
 
     return rc;
-
-//    int sock_r = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP );
-//    if (sock_r < 0){
-//        qCritical()<< "Socket opening error.";
-//        return -1;
-//    }
-
-//    struct rtentry route;
-//    memset(&route, 0, sizeof(struct rtentry));
-
-//    struct sockaddr_in *addr = (struct sockaddr_in *)&route.rt_gateway;
-//    addr->sin_family = AF_INET;
-//    addr->sin_addr.s_addr = gw_addr;
-
-//    addr = (struct sockaddr_in*) &route.rt_dst;
-//    addr->sin_family = AF_INET;
-//    addr->sin_addr.s_addr = host_addr;
-
-//    addr = (struct sockaddr_in*) &route.rt_genmask;
-//    addr->sin_family = AF_INET;
-//    addr->sin_addr.s_addr = inet_addr( "255.255.255.255" );
-
-//    route.rt_flags = RTF_UP | RTF_GATEWAY;
-//    route.rt_metric = 0;
-
-//    int rc = ioctl( sock_r, SIOCADDRT, &route );
-//    close( sock_r );
-
-//    return rc;
 
 }
 
