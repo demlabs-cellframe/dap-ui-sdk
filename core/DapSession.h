@@ -80,7 +80,6 @@ public:
     const QString& cdbAuthNet(){ return  m_cdbAuthNet; }
     const QString& cdbAuthToken(){ return  m_cdbAuthToken; }
     const QString& cdbMaxPrice(){return m_cdbMaxPrice;}
-    const QString& cdbAdress(){return m_CDBaddress;}
 
     QList<QString> usersNames()          { return m_userInform.keys();     }
     const QString userInfo
