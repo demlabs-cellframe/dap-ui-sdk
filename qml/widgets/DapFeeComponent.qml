@@ -6,10 +6,6 @@ import "qrc:/widgets"
 
 Item
 {
-    id: root
-    width: 278
-    height: 82
-
     property real currentValue: 0.01
     property real spinBoxStep: 0.01
     property real minimalValue: 0.0
@@ -19,6 +15,10 @@ Item
 
     property color currentColor: "#CAFC33"
     property string currentState: "Recommended"
+
+    id: root
+    width: 278
+    height: 82
 
     ListModel
     {
@@ -74,10 +74,7 @@ Item
                 hoverEnabled: true
                 onClicked:
                 {
-                    if (currentValue >= minimalValue + spinBoxStep)
-                    {
-                        setValue(currentValue - spinBoxStep)
-                    }
+                    stepValue(-1 * spinBoxStep)
                 }
             }
         }
@@ -127,11 +124,13 @@ Item
 
                     onTextChanged:
                     {
-                        var number = parseFloat(text)
-                        if(!isNaN(number))
-                            setValue(number)
-
+                        setValue(text)
                         textMetrics.text = text
+                    }
+
+                    onEditingFinished:
+                    {
+                        if(!focus) cursorPosition = 0
                     }
 
                     onFocusChanged:
@@ -200,7 +199,7 @@ Item
                 hoverEnabled: true
                 onClicked:
                 {
-                    setValue(currentValue + spinBoxStep)
+                    stepValue(spinBoxStep)
                 }
             }
         }
@@ -259,17 +258,27 @@ Item
         }
     }
 
+    function stepValue(step)
+    {
+        var summ = mathWorker.summDouble(currentValue, step)
+        if(summ !== "") setValue(summ)
+   }
+
     function setValue(value)
     {
-        currentValue = value.toFixed(powerRound)
-        updateState()
+        var number = parseFloat(value)
+        if(!isNaN(number))
+        {
+            if( number >= minimalValue)
+            {
+                currentValue = number
+                updateState()
+            }
+        }
     }
 
     function updateState()
     {
-        if(currentValue < minimalValue)
-            return
-
         var checkSearch = false
         var idxSearch = -1
 
@@ -277,7 +286,7 @@ Item
         {
             statesData.get(i).enabled = checkSearch
 
-            if(statesData.get(i).minValue > currentValue || checkSearch)
+            if(statesData.get(i).minValue >= currentValue || checkSearch)
                 continue;
 
             idxSearch = i
