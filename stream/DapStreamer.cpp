@@ -588,7 +588,9 @@ void DapStreamer::_printPacketLossStatistics() {
     for (const auto &entry : m_packetLossQueue) {
         totalLostPackets += entry.second;
     }
-    qInfo() << "Total packet loss in the last 5 minutes:" << totalLostPackets;
+    if (totalLostPackets != 0){
+        qInfo() << "Total packet loss in the last 5 minutes:" << totalLostPackets;
+    }
 }
 
 void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)

@@ -68,9 +68,11 @@ static const QHash<QString, ReplyMethod> s_replyMethodMap =
   // get fee
   { "GetFee",             {ReplyMethodID::ParseFee,               false, "Wrong reply when get fee", 1300000}},
   // node dump
-  { "NodeDump",           {ReplyMethodID::ParseNodeDump,          false, "Wrong reply when get node dump", 1400000}},
+  { "NodeList",           {ReplyMethodID::ParseNodeList,          false, "Wrong reply when get node dump", 1400000}},
   // list of delegated keys on the network
   { "GetListKeys",        {ReplyMethodID::ParseListKeys,          false, "Wrong reply when get list of delegated keys", 1500000}},
+
+  { "RemoveItemQueue",    {ReplyMethodID::ParseRemoveItemQueue,   false, "Wrong reply when remove item queue", 1700000}},
 
   { "GetNetId",           {ReplyMethodID::ParseNetId,             false, "Wrong reply when get net id", 1600000}}
 };
@@ -348,8 +350,9 @@ void DapNodeWeb3::responseParsing (
     case ReplyMethodID::ParseOrderList:         parseOrderList (reply,          baseErrorCode); break;
     case ReplyMethodID::ParseNodeIp:            parseNodeIp (reply,             baseErrorCode); break;
     case ReplyMethodID::ParseFee:               parseFee (reply,                baseErrorCode); break;
-    case ReplyMethodID::ParseNodeDump:          parseNodeDump (reply,           baseErrorCode); break;
+    case ReplyMethodID::ParseNodeList:          parseNodeList (reply,           baseErrorCode); break;
     case ReplyMethodID::ParseListKeys:          parseListKeys (reply,           baseErrorCode); break;
+    case ReplyMethodID::ParseRemoveItemQueue:   parseRemoveItemQueue (reply,    baseErrorCode); break;
     case ReplyMethodID::ParseNetId:             parseNetId (reply,              baseErrorCode); break;
     }
 }
@@ -388,6 +391,7 @@ void DapNodeWeb3::networksRequest()
 void DapNodeWeb3::condTxCreateRequest (QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit, QString fee)
 {
   m_networkName = networkName;
+  m_walletName = walletName;
   QString requesString = QString ("?method=CondTxCreate&"
                                   "id=%1&"
                                   "net=%2&"
@@ -407,6 +411,21 @@ void DapNodeWeb3::condTxCreateRequest (QString walletName, QString networkName, 
                          .arg (unit)
                          .arg (fee);
   sendRequest (requesString);
+}
+
+void DapNodeWeb3::removeTxItemQueue (QString walletName, QString networkName, QString idQueue)
+{
+    QString requesString = QString ("?method=RemoveItemQueue&"
+                                   "id=%1&"
+                                   "idQueue=%2&"
+                                   "net=%3&"
+                                   "walletName=%4&"
+                                   "type=single")
+                               .arg (m_connectId)
+                               .arg (idQueue)
+                               .arg (networkName)
+                               .arg (walletName);
+    sendRequest (requesString);
 }
 
 void DapNodeWeb3::createCertificate (const QString &certType, const QString &certName)
@@ -511,9 +530,9 @@ void DapNodeWeb3::getNetIdRequest (QString networkName)
   sendRequest (requesString);
 }
 
-void DapNodeWeb3::nodeDumpRequest (QString networkName)
+void DapNodeWeb3::NodeListRequest (QString networkName)
 {
-  QString requesString = QString ("?method=NodeDump&"
+  QString requesString = QString ("?method=NodeList&"
                                   "id=%1&net=%2")
                          .arg (m_connectId)
                          .arg (networkName);
@@ -804,11 +823,30 @@ void DapNodeWeb3::parseCondTxCreateReply (const QString &replyData, int baseErro
   if (jsonError())
     return;
 
-  if (doc["data"].isObject() && doc["data"].toObject()["hash"].isString())
+  if (doc["data"].isObject() && doc["data"].toObject()["tx_hash"].isString())
     {
-      // get hash
-      QString transactionHash = doc["data"].toObject()["hash"].toString();
-      emit sigCondTxCreateSuccess (transactionHash);
+        // get hash
+        QString transactionHash = doc["data"].toObject()["tx_hash"].toString();
+        emit sigCondTxCreateSuccess (transactionHash);
+        return;
+    }
+
+    if (doc["data"].isObject() && doc["data"].toObject()["idQueue"].isString())
+    {
+        bool toQueue = doc["data"].toObject()["toQueue"].toBool();
+
+        if (toQueue)
+        {
+            QString massage = "You have a transaction queue; please wait for the transaction to complete or cancel it in the Dashboard.";
+            replyError(7769, massage, massage);
+            removeTxItemQueue(m_walletName, m_networkName, doc["data"].toObject()["idQueue"].toString());
+        }
+        else
+        {
+            QString massage = "For some reason, your transaction was canceled; please check your balance and/or dashboard settings.";
+            replyError(7768, massage, massage);
+        }
+        return;
     }
 }
 
@@ -1046,7 +1084,7 @@ void DapNodeWeb3::parseFee (const QString &replyData, int baseErrorCode)
 //    }
 }
 
-void DapNodeWeb3::parseNodeDump (const QString &replyData, int baseErrorCode)
+void DapNodeWeb3::parseNodeList (const QString &replyData, int baseErrorCode)
 {
 //    {
 //        "data": [
@@ -1080,15 +1118,15 @@ void DapNodeWeb3::parseNodeDump (const QString &replyData, int baseErrorCode)
 
   if (doc["data"].isArray())
     {
-      QList<QMap<QString, QString>> nodeDump;
+      QList<QMap<QString, QString>> NodeList;
       foreach (const auto &nodeJo, doc["data"].toArray())
         {
           QMap<QString, QString> itemDump;
           foreach (const QString &key, nodeJo.toObject().keys())
             itemDump[key] = nodeJo[key].toString();
-          nodeDump.append (itemDump);
+          NodeList.append (itemDump);
         }
-      emit sigNodeDump (nodeDump);
+      emit sigNodeList (NodeList);
     }
 }
 
@@ -1148,6 +1186,27 @@ void DapNodeWeb3::parseListKeys (const QString &replyData, int baseErrorCode)
       emit sigListKeys (listKeys);
     }
 }
+
+void DapNodeWeb3::parseRemoveItemQueue (const QString &replyData, int baseErrorCode)
+{
+
+// #ifdef ENABLE_SENSITIVE_PRINTS
+    DEBUGINFO << __func__ << replyData;
+// #endif // ENABLE_SENSITIVE_PRINTS
+
+    QJsonDocument doc;
+    parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
+
+    if (jsonError())
+        return;
+
+    if (doc["data"].isArray())
+    {
+        QJsonArray dataArray = doc["data"].toArray();
+
+    }
+}
+
 
 void DapNodeWeb3::parseNetId (const QString &replyData, int baseErrorCode)
 {

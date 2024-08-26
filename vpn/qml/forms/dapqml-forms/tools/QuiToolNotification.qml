@@ -87,7 +87,7 @@ DapQmlDummy {
 
     Timer {
         id: hideTimer
-        interval: 3300
+        interval: 6300
         running: false
         repeat: false
         onTriggered: { setShow (false); }

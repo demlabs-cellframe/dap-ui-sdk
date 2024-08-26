@@ -66,8 +66,9 @@ public:
     ParseOrderList,
     ParseNodeIp,
     ParseFee,
-    ParseNodeDump,
+    ParseNodeList,
     ParseListKeys,
+    ParseRemoveItemQueue,
     ParseNetId
   };
   /// @}
@@ -84,6 +85,7 @@ private:
   QString m_connectId;
 
   QString m_networkName;
+  QString m_walletName;
   // reply data
   DapNetworkReply *m_networkReply;
   // network request string
@@ -148,10 +150,11 @@ public slots:
   void getCertificates();
   void createCertificate (const QString &certType, const QString &certName);
   void condTxCreateRequest (QString walletName, QString networkName, QString sertificateName, QString tokenName, QString value, QString unit, QString fee);
+  void removeTxItemQueue (QString walletName, QString networkName, QString idQueue);
   void getMempoolTxHashRequest (QString transactionHash, QString networkName);
   void getLedgerTxHashRequest (QString transactionHash, QString networkName);
   void getOrdersListRequest (QString networkName, QString tokenName, QString minPrice, QString maxPrice, QString unit);
-  void nodeDumpRequest (QString networkName);
+  void NodeListRequest (QString networkName);
   void getNodeIPRequest (const QString &networkName, const QJsonArray &orderList);
   void getFeeRequest (QString networkName);
   void getNetIdRequest (QString networkName);
@@ -179,8 +182,9 @@ private slots:
   void parseOrderList (const QString &replyData, int baseErrorCode);
   void parseNodeIp (const QString &replyData, int baseErrorCode);
   void parseFee (const QString &replyData, int baseErrorCode);
-  void parseNodeDump (const QString &replyData, int baseErrorCode);
+  void parseNodeList (const QString &replyData, int baseErrorCode);
   void parseListKeys (const QString &replyData, int baseErrorCode);
+  void parseRemoveItemQueue (const QString &replyData, int baseErrorCode);
   void parseNetId (const QString &replyData, int baseErrorCode);
 
   void replyConnectError (int code);
@@ -207,7 +211,7 @@ signals:
   void sigFee (QString fee);
   void sigFeeData (QJsonObject);
   void connectionIdReceived (QString connectionId);
-  void sigNodeDump (QList<QMap<QString, QString>> nodeDump);
+  void sigNodeList (QList<QMap<QString, QString>> NodeList);
   void sigListKeys (QList<QString> listKeys);
   void statusOk();
   void nodeDetected();

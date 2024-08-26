@@ -247,7 +247,9 @@ void DapNode::initStmTransitions()
     &m_stm->initialState);
     // to check mempool if create successfuly
     m_stm->condTxCreate.addTransition(this, &DapNode::sigCondTxCreateSuccess,
-    &m_stm->mempoolTxHashRequest);
+                                      &m_stm->mempoolTxHashRequest);
+    m_stm->condTxCreate.addTransition(this, &DapNode::errorDetected,
+                                      &m_stm->initialState);
     // to mempool empty
     m_stm->mempoolTxHashRequest.addTransition(this, &DapNode::errorDetected,
     &m_stm->mempoolTxHashEmpty);
@@ -288,7 +290,7 @@ void DapNode::initStmTransitions()
     &m_stm->initialState);
 
     // getting node ip
-    m_stm->getNodeConnectionData.addTransition(this, &DapNode::sigNodeDumpReceived,
+    m_stm->getNodeConnectionData.addTransition(this, &DapNode::sigNodeListReceived,
     &m_stm->initialState);
     m_stm->getNodeConnectionData.addTransition(this, &DapNode::errorDetected,
     &m_stm->initialState);
@@ -422,7 +424,7 @@ void DapNode::initStmStates()
     });
 
     connect(&m_stm->getNodeConnectionData, &QState::entered, this, [=](){
-        web3->nodeDumpRequest(m_networkName);
+        web3->NodeListRequest(m_networkName);
     });
 }
 
@@ -512,10 +514,10 @@ void DapNode::initWeb3Connections()
         emit sigFeeReceivedData (a_data);
     });
     // connect to stream
-    connect(web3, &DapNodeWeb3::sigNodeDump, this, [=](QList<QMap<QString, QString>> nodeDump) {
+    connect(web3, &DapNodeWeb3::sigNodeList, this, [=](QList<QMap<QString, QString>> NodeList) {
 //         riemann, use dap_chain_net_id_by_name() "0x000000000000dddd"
-        m_nodeInfo.serverDataFromList(nodeDump);
-        emit sigNodeDumpReceived();
+        m_nodeInfo.serverDataFromList(NodeList);
+        emit sigNodeListReceived();
         emit sigConnectByOrder(m_networkName, m_transactionHash, m_tokenName, m_srvUid, m_nodeInfo.ipv4, m_nodeInfo.port);
     });
 
@@ -528,13 +530,11 @@ void DapNode::initWeb3Connections()
         m_netId = netId;
         emit sigNetIdReceived();
     });
-
-
-
 }
 
 void DapNode::slotCondTxCreateRequest(QString walletName, QString networkName, QString tokenName, QString value, QString unit, QString keyPath)
 {
+    qDebug() << "slotCondTxCreateRequest";
     m_walletName = walletName;
     m_networkName = networkName;
     m_tokenName = tokenName;
@@ -607,9 +607,9 @@ void DapNode::slotGetNodeIpForOrderListReqest(QString srvUid, QJsonArray orderLi
     emit sigGetNodeIpRequest(orderList);
 }
 
-bool NodeInfo::serverDataFromList(const QList<QMap<QString, QString>>& nodeDump)
+bool NodeInfo::serverDataFromList(const QList<QMap<QString, QString>>& NodeList)
 {
-    foreach (const auto item, nodeDump)
+    foreach (const auto item, NodeList)
     {
         if (item["node address"] == address)
         {
@@ -675,6 +675,11 @@ void NodeConnectStateMachine::start()
 #define PRINT_SIGNAL_EMITION(a_name) \
   connect (this, &NodeConnectStateMachine::a_name, [] { DEBUGINFO << "stm->" #a_name; });
 /* </DEFINES> */
+
+
+void logStateEntry(const QString& stateName) {
+    qDebug() << "NodeConnectMachine entering state:" << stateName;
+}
 
 void NodeConnectStateMachine::init()
 {
@@ -814,6 +819,38 @@ void NodeConnectStateMachine::init()
       emit sigRestartWaiting();
     });
   });
+
+  connect(&waitingCommand, &QState::entered, this, [](){ logStateEntry("waitingCommand"); });
+  connect(&gettingWalletsData, &QState::entered, this, [](){ logStateEntry("gettingWalletsData"); });
+  connect(&transactionProcessing, &QState::entered, this, [](){ logStateEntry("transactionProcessing"); });
+  connect(&gettingOrderList, &QState::entered, this, [](){ logStateEntry("gettingOrderList"); });
+
+  connect(&initialState, &QState::entered, this, [](){ logStateEntry("initialState"); });
+  connect(&nodeDetection, &QState::entered, this, [](){ logStateEntry("nodeDetection"); });
+  connect(&nodeNotDetected, &QState::entered, this, [](){ logStateEntry("nodeNotDetected"); });
+  connect(&nodeConnection, &QState::entered, this, [](){ logStateEntry("nodeConnection"); });
+  connect(&nodeNotConnected, &QState::entered, this, [](){ logStateEntry("nodeNotConnected"); });
+  connect(&getWallets, &QState::entered, this, [](){ logStateEntry("getWallets"); });
+  connect(&getNetworks, &QState::entered, this, [](){ logStateEntry("getNetworks"); });
+  connect(&getDataWallet, &QState::entered, this, [](){ logStateEntry("getDataWallet"); });
+  connect(&getFee, &QState::entered, this, [](){ logStateEntry("getFee"); });
+  connect(&getFeeIsolated, &QState::entered, this, [](){ logStateEntry("getFeeIsolated"); });
+  connect(&getNetId, &QState::entered, this, [](){ logStateEntry("getNetId"); });
+  connect(&condTxCreate, &QState::entered, this, [](){ logStateEntry("condTxCreate"); });
+  connect(&mempoolTxHashRequest, &QState::entered, this, [](){ logStateEntry("mempoolTxHashRequest"); });
+  connect(&mempoolTxHashEmpty, &QState::entered, this, [](){ logStateEntry("mempoolTxHashEmpty"); });
+  connect(&ledgerTxHashRequest, &QState::entered, this, [](){ logStateEntry("ledgerTxHashRequest"); });
+  connect(&ledgerTxHashEmpty, &QState::entered, this, [](){ logStateEntry("ledgerTxHashEmpty"); });
+  connect(&createCertificate, &QState::entered, this, [](){ logStateEntry("createCertificate"); });
+  connect(&checkTransactionCertificate, &QState::entered, this, [](){ logStateEntry("checkTransactionCertificate"); });
+  connect(&createTransactionCertificate, &QState::entered, this, [](){ logStateEntry("createTransactionCertificate"); });
+  connect(&getListKeys, &QState::entered, this, [](){ logStateEntry("getListKeys"); });
+  connect(&getOrderList, &QState::entered, this, [](){ logStateEntry("getOrderList"); });
+  connect(&getNodeConnectionData, &QState::entered, this, [](){ logStateEntry("getNodeConnectionData"); });
+
+  connect(&waitingForCorrectId, &QState::entered, this, [](){ logStateEntry("waitingForCorrectId"); });
+  connect(&waitingAndReconnecting, &QState::entered, this, [](){ logStateEntry("waitingAndReconnecting"); });
+
 
   /* finish */
   qDebug() << "nodeConnectMachine::init";
