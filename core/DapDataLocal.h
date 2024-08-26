@@ -100,7 +100,7 @@ public:
     DataToUpdate& getDataToUpdate(){return m_dataToUpdate;}
 
     const DapCdbServerList &cdbServersList()  { return m_cdbServersList; }
-    const QString & KelvpnPub()               { retrun m_kelvpnPub;}
+    const QString & KelvpnPub()               { return m_kelvpnPub;}
     const QString & networkDefault()          { return m_networkDefault; }
     const QString & getUrlSite()              { return m_urlSite;        }
     const QString & getBrandName()            { return m_brandName;      }
