@@ -100,6 +100,7 @@ public:
     DataToUpdate& getDataToUpdate(){return m_dataToUpdate;}
 
     const DapCdbServerList &cdbServersList()  { return m_cdbServersList; }
+    const QString & KelvpnPub()               { retrun m_kelvpnPub;}
     const QString & networkDefault()          { return m_networkDefault; }
     const QString & getUrlSite()              { return m_urlSite;        }
     const QString & getBrandName()            { return m_brandName;      }
@@ -167,6 +168,7 @@ signals:
 
 protected:
     DapCdbServerList  m_cdbServersList;
+    QString           m_kelvpnPub;
     QString           m_networkDefault;
     QString           m_urlSite;
 

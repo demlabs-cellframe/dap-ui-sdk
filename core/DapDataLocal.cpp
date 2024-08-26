@@ -85,6 +85,9 @@ void DapDataLocal::parseXML(const QString& a_fname)
                 }else if( sr->name().toString() == "network-default"){
                     m_networkDefault = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
+                }else if( sr->name().toString() == "kelvpn-pub"){
+                    m_kelvpnPub = sr->readElementText();
+                    qInfo() << "KelVPN pub address: " << m_kelvpnPub;
                 }else if( sr->name().toString() == "min-node-version"){
                     m_minNodeVersion = sr->readElementText();
                     qInfo() << "Min node version: " << m_minNodeVersion;
