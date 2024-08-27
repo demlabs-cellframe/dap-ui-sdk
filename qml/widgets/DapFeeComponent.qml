@@ -294,6 +294,11 @@ Item
             statesData.get(i).enabled = true
         }
 
+        if(idxSearch < 0)
+        {
+            currentState = statesData.get(0).name
+        }
+
         if(currentState === "Very low")
             currentColor = "#FF5F5F"
         else if(currentState === "Low")
