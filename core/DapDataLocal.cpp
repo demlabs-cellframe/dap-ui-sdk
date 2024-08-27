@@ -13,6 +13,8 @@
 #include "DapSerialKeyHistory.h"
 #include "DapLogger.h"
 
+#include "dap_net.h"
+
 #ifdef DAP_OS_ANDROID
 #include <sys/sendfile.h>
 #include <fcntl.h>
@@ -80,14 +82,33 @@ void DapDataLocal::parseXML(const QString& a_fname)
                         }
                     }
                 }else if( sr->name().toString() == "cdb"){
-                    m_cdbServersList.push_back (DapCdbServer::serverFromString (sr->readElementText()));
-                    qInfo() << "Add CDB address: " << m_cdbServersList.back().address;
+                    struct sockaddr l_addr_out = {};
+                    QByteArray l_cdb_addr_qstr = sr->readElementText().toLatin1();
+                    const char *l_cdb_addr = l_cdb_addr_qstr.data();
+                    if (!dap_net_resolve_host(l_cdb_addr, AF_INET, &l_addr_out)){
+                        DapCdbServer l_cdbServerAddr;
+                        char l_addr_out_str[INET_ADDRSTRLEN] = {0};
+                        if (inet_ntop(AF_INET, (void*)&(l_addr_out), l_addr_out_str, INET_ADDRSTRLEN)){
+                            l_cdbServerAddr.address = QString(l_addr_out_str);
+                            l_cdbServerAddr.port = 80;
+                            m_cdbServersList.push_back (l_cdbServerAddr);
+                            qInfo() << "Add CDB address: " << m_cdbServersList.back().address;
+                        }
+                    }
                 }else if( sr->name().toString() == "network-default"){
                     m_networkDefault = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
                 }else if( sr->name().toString() == "kelvpn-pub"){
-                    m_kelvpnPub = sr->readElementText();
-                    qInfo() << "KelVPN pub address: " << m_kelvpnPub;
+                    struct sockaddr l_addr_out = {};
+                    QByteArray l_pub_addr_qstr = sr->readElementText().toLatin1();
+                    const char *l_pub_addr = l_pub_addr_qstr.data();
+                    if (!dap_net_resolve_host(l_pub_addr, AF_INET, &l_addr_out)){
+                        char l_addr_out_str[INET_ADDRSTRLEN] = {0};
+                        if (inet_ntop(AF_INET, (void*)&(l_addr_out), l_addr_out_str, INET_ADDRSTRLEN)){
+                            m_kelvpnPub = QString(l_addr_out_str);
+                            qInfo() << "KelVPN pub address: " << m_kelvpnPub;
+                        }
+                    }
                 }else if( sr->name().toString() == "min-node-version"){
                     m_minNodeVersion = sr->readElementText();
                     qInfo() << "Min node version: " << m_minNodeVersion;

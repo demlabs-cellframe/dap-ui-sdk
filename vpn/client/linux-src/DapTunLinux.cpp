@@ -318,7 +318,7 @@ void DapTunLinux::tunDeviceDestroy()
     ::system(run.toLatin1().constData());
 
     for (const auto &str : m_routingExceptionAddrs){
-        QString run = QString("ip route del %1")
+        QString run = QString("route del %1")
                 .arg(str);
         ::system(run.toLatin1().constData() );
     }
