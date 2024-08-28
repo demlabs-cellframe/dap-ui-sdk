@@ -1,39 +1,39 @@
 import QtQuick 2.4
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.4
+import QtQuick.Controls.Styles 1.4
 import "qrc:/widgets"
 
 Item
 {
-    id: root
-    width: 278
-    height: 82
-
     property real currentValue: 0.01
-    property real spinBoxStep: 0.001
-    property real minValue: 0.000
+    property real spinBoxStep: 0.01
+    property real minimalValue: 0.0
 
     property string valueName: "-"
-    property int powerRound: 3
+    property int powerRound: 2
 
     property color currentColor: "#CAFC33"
     property string currentState: "Recommended"
+
+    id: root
+    width: 278
+    height: 82
 
     ListModel
     {
         id: statesData
     }
 
-    Component.onCompleted: setUp()
+    Component.onCompleted: init(rangeValues)
 
     property var rangeValues:
     {
-        "min": 0.03,
+        "veryLow": 0.03,
         "low": 0.04,
         "middle": 0.05,
         "high": 0.06,
         "veryHigh": 0.07,
-        "max": 0.08
     }
 
     // Custom SpinBox
@@ -74,10 +74,7 @@ Item
                 hoverEnabled: true
                 onClicked:
                 {
-                    if (currentValue >= minValue + spinBoxStep)
-                    {
-                        setValue(currentValue - spinBoxStep)
-                    }
+                    stepValue(-1 * spinBoxStep)
                 }
             }
         }
@@ -100,9 +97,7 @@ Item
             Item
             {
                 id: inputValueItem
-
-                implicitWidth: valueText.width + valueNameText.width > valueField.width ? valueField.width : valueText.width + valueNameText.width
-
+                implicitWidth: textMetrics.width + 16 + valueNameText.width > valueField.width - 16 ? valueField.width - 16 : textMetrics.width + 16 + valueNameText.width
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -111,43 +106,36 @@ Item
                 anchors.leftMargin: 8
                 anchors.rightMargin: 8
 
-                // color: "transparent"
-                // border.width: 1
-                // border.color: "red"
-
-                TextField
+                DapTextField
                 {
                     id: valueText
-                    width: textMetrics.width
                     height: parent.height
-                    //anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
+                    anchors.right: valueNameText.left
                     text: currentValue
-                    color: currTheme.white
                     font: mainFont.dapFont.regular16
+                    validator: RegExpValidator { regExp: /[0-9]*\.?[0-9]{0,18}/ }
                     placeholderText: "0.0"
                     horizontalAlignment: Text.AlignRight
-
-                    background:
-                        Rectangle
-                    {
-                        color: valueField.color
-                        //color: "pink"
-                        //radius: valueField.radius
-                    }
-
-                    validator: RegExpValidator { regExp: /[0-9\.]+/ }
-
+                    borderWidth: 0
+                    borderRadius: 0
+                    placeholderColor: currTheme.gray
                     selectByMouse: true
 
                     onTextChanged:
                     {
-                        var number = parseFloat(text)
-                        if(!isNaN(number))
-                            setValue(number)
-
+                        setValue(text)
                         textMetrics.text = text
-                        valueText.width = textMetrics.width + 16
+                    }
+
+                    onEditingFinished:
+                    {
+                        if(!focus) cursorPosition = 0
+                    }
+
+                    onFocusChanged:
+                    {
+                        cursorPosition = 0
                     }
 
                     TextMetrics
@@ -156,7 +144,6 @@ Item
                         font: valueText.font
                         text: valueText.text
                     }
-
                 }
 
                 Text
@@ -172,7 +159,6 @@ Item
                 }
             }
         }
-
 
         // Plus
         Rectangle
@@ -212,7 +198,7 @@ Item
                 hoverEnabled: true
                 onClicked:
                 {
-                    setValue(currentValue + spinBoxStep)
+                    stepValue(spinBoxStep)
                 }
             }
         }
@@ -271,17 +257,27 @@ Item
         }
     }
 
+    function stepValue(step)
+    {
+        var summ = mathWorker.summDouble(currentValue, step)
+        if(summ !== "") setValue(summ)
+   }
+
     function setValue(value)
     {
-        currentValue = value.toFixed(powerRound)
-        updateState()
+        var number = parseFloat(value)
+        if(!isNaN(number))
+        {
+            if( number >= minimalValue)
+            {
+                currentValue = number
+                updateState()
+            }
+        }
     }
 
     function updateState()
     {
-        if(currentValue < minValue)
-            return
-
         var checkSearch = false
         var idxSearch = -1
 
@@ -289,13 +285,18 @@ Item
         {
             statesData.get(i).enabled = checkSearch
 
-            if(statesData.get(i).minValue > currentValue || checkSearch)
+            if(statesData.get(i).minValue >= currentValue || checkSearch)
                 continue;
 
             idxSearch = i
             checkSearch = true
             currentState = statesData.get(i).name
             statesData.get(i).enabled = true
+        }
+
+        if(idxSearch < 0)
+        {
+            currentState = statesData.get(0).name
         }
 
         if(currentState === "Very low")
@@ -310,36 +311,22 @@ Item
             currentColor = "#9580FF"
     }
 
-    function checkRanges(ranges)
+    function init(ranges)
     {
-        if(ranges.min > ranges.low) return false
-        if(ranges.low > ranges.middle) return false
-        if(ranges.middle > ranges.high) return false
-        if(ranges.high > ranges.veryHigh) return false
-        if(ranges.veryHigh > ranges.max) return false
-        return true
+        rangeValues = ranges
+        initStates()
+        setValue(rangeValues.middle)
     }
 
-    function setUp()
+    function initStates()
     {
-        if(initStates(rangeValues))
-        {
-            setValue(rangeValues.middle)
-        }
-    }
-
-    function initStates(rcvData)
-    {
-        if(!checkRanges(rcvData))
-            return false
-
         statesData.clear()
         //very low range
         statesData.append(
                     {
                         name: "Very low",
-                        minValue: rcvData.min,
-                        maxValue: rcvData.low,
+                        minValue: minimalValue,
+                        maxValue: rangeValues.veryLow,
                         enabled: false
                     })
 
@@ -347,8 +334,8 @@ Item
         statesData.append(
                     {
                         name: "Low",
-                        minValue: rcvData.low,
-                        maxValue: rcvData.middle,
+                        minValue: rangeValues.veryLow,
+                        maxValue: rangeValues.low,
                         enabled: false
                     })
 
@@ -356,8 +343,8 @@ Item
         statesData.append(
                     {
                         name: "Recommended",
-                        minValue: rcvData.middle,
-                        maxValue: rcvData.high,
+                        minValue: rangeValues.low,
+                        maxValue: rangeValues.middle,
                         enabled: false
                     })
 
@@ -365,8 +352,8 @@ Item
         statesData.append(
                     {
                         name: "High",
-                        minValue: rcvData.high,
-                        maxValue: rcvData.veryHigh,
+                        minValue: rangeValues.middle,
+                        maxValue: rangeValues.high,
                         enabled: false
                     })
 
@@ -374,11 +361,9 @@ Item
         statesData.append(
                     {
                         name: "Very high",
-                        minValue: rcvData.veryHigh,
-                        maxValue: rcvData.max,
+                        minValue: rangeValues.high,
+                        maxValue: rangeValues.veryHigh,
                         enabled: false
                     })
-
-        return true
     }
 }

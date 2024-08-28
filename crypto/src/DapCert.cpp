@@ -28,6 +28,7 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 #include "dap_cert.h"
 #include "dap_cert_file.h"
 #include "DapCert.h"
+#include "dap_enc.h"
 #ifdef Q_OS_WIN
 #include "registry.h"
 #endif
@@ -173,12 +174,12 @@ bool Cert::compareWithSign(const QByteArray & a_data)
 QString Cert::exportPKeyBase64()
 {
     size_t buflen = 0;
-    uint8_t * buf = dap_enc_key_serealize_pub_key(m_cert->enc_key, &buflen);
+    uint8_t * buf = dap_enc_key_serialize_pub_key(m_cert->enc_key, &buflen);
     if (!buf) {
         qWarning() << "Empty hash!";
         return QString();
     }
-    char * buf64 = DAP_NEW_S_SIZE(char, buflen * 2 + 6);
+    char * buf64 = DAP_NEW_Z_SIZE(char, buflen * 2 + 6);
     size_t buf64len = dap_enc_base64_encode(buf, buflen, buf64, DAP_ENC_DATA_TYPE_B64_URLSAFE);
     DAP_DELETE(buf);
     return QString::fromLatin1(buf64, static_cast<int>(buf64len));
@@ -191,7 +192,7 @@ int Cert::exportPKeyToFile(const QString &a_path) {
         return 1;
     }
     size_t buflen = 0;
-    uint8_t *buf = dap_enc_key_serealize_pub_key(m_cert->enc_key, &buflen);
+    uint8_t *buf = dap_enc_key_serialize_pub_key(m_cert->enc_key, &buflen);
     if (!buf) {
         return 2;
     }
@@ -223,12 +224,12 @@ int Cert::importPKeyFromFile(const QString &a_path) {
     close(l_file);
 
     dap_enc_key_t *l_temp =  dap_enc_key_new(m_cert->enc_key->type);
-    if ( dap_enc_key_deserealize_pub_key(l_temp, buf, l_len) != 0) {
+    if ( dap_enc_key_deserialize_pub_key(l_temp, buf, l_len) != 0) {
         dap_enc_key_delete(l_temp);
         return 2;
     }
     dap_enc_key_delete(l_temp);
-    int desrl_res = dap_enc_key_deserealize_pub_key(key(), buf, l_len);
+    int desrl_res = dap_enc_key_deserialize_pub_key(key(), buf, l_len);
     return desrl_res;
 }
 
