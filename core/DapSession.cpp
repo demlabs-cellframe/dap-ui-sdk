@@ -97,10 +97,15 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObje
     if (slot)
         connect(netReply, SIGNAL(finished()), obj, slot);
     connect(netReply, &DapNetworkReply::sigError, this, [=] {
-        qInfo() << "errorNetwork";
-        emit errorNetwork(netReply->error(), netReply->errorString());
-        if (slot_err)
-            QMetaObject::invokeMethod(obj, slot_err, Qt::ConnectionType::AutoConnection, Q_ARG(const QString&, netReply->errorString()));
+        if ( netReply->error() != 110 ) {
+            qInfo() << "errorNetwork";
+
+            emit errorNetwork(netReply->error(), netReply->errorString());
+            if (slot_err)
+                QMetaObject::invokeMethod(obj, slot_err, Qt::ConnectionType::AutoConnection, Q_ARG(const QString&, netReply->errorString()));
+        }else
+            qInfo() << "Timeout its not a reason for the network error sate, right?";
+
     });
     data ? DapConnectClient::instance()->request_POST(isCDB ? m_CDBaddress : m_upstreamAddress,
                                                       isCDB ? m_CDBport : m_upstreamPort,
