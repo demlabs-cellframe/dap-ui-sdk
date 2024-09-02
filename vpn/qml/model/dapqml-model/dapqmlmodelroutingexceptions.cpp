@@ -101,7 +101,9 @@ public:
   //AppIcon (QString &&a_src) : QByteArray (std::move (a_src.toUtf8())) {}
   AppIcon (const AppIcon &a_src) : QByteArray (a_src) {}
   AppIcon (AppIcon &&a_src) : QByteArray (std::move (a_src)) {}
+#ifdef Q_OS_ANDROID
   operator QImage() const;
+#endif // Q_OS_ANDROID
   AppIcon &operator = (const QByteArray &a_src) { QByteArray::operator = (a_src); return *this; }
   AppIcon &operator = (const QString &a_src)    { QByteArray::operator = (a_src.toUtf8()); return *this; }
   AppIcon &operator = (const AppIcon &a_src)    { QByteArray::operator = (a_src); return *this; }
@@ -199,7 +201,9 @@ static Route toRoute (const QJsonObject &a_src);
 static Route toRoute (const QVariantMap &a_src);
 static QJsonObject toJson (const App &a_src);
 static QJsonObject toJson (const Route &a_src);
+#ifdef Q_OS_ANDROID
 static QImage getAppIcon (const QString &a_packageName);
+#endif // Q_OS_ANDROID
 
 /********************************************
  * CONSTRUCT/DESTRUCT
@@ -553,12 +557,14 @@ const DapQmlModelRoutingExceptions::App &DapQmlModelRoutingExceptions::appSorted
          : dummy;
 }
 
+#ifdef Q_OS_ANDROID
 const QImage &DapQmlModelRoutingExceptions::appIcon (const QString &a_packageName) const
 {
   static QImage result;
   result  = getAppIcon (a_packageName);
   return result;
 }
+#endif // Q_OS_ANDROID
 
 const DapQmlModelRoutingExceptions::Route &DapQmlModelRoutingExceptions::route (int a_index) const
 {
@@ -1174,6 +1180,7 @@ QJsonObject toJson (const Route &a_src)
   };
 }
 
+#ifdef Q_OS_ANDROID
 QImage getAppIcon (const QString &a_packageName)
 {
   static QImage dummy;
@@ -1187,6 +1194,7 @@ QImage getAppIcon (const QString &a_packageName)
   icn.loadFromData (QByteArray::fromBase64 (s_iconMap [id]));
   return icn;
 }
+#endif // Q_OS_ANDROID
 
 /*-----------------------------------------*/
 
@@ -1262,7 +1270,12 @@ QVariant DqmreApps::data (const QModelIndex &index, int role) const
     {
     case Field::packageName: return s_apps.at (index.row()).packageName;
     case Field::appName:     return s_apps.at (index.row()).appName;
-    case Field::icon:        return getAppIcon (s_apps.at (index.row()).packageName); // s_apps.at (index.row()).icon;
+    case Field::icon:
+#ifdef Q_OS_ANDROID
+      return getAppIcon (s_apps.at (index.row()).packageName); // s_apps.at (index.row()).icon;
+#else // Q_OS_ANDROID
+      return QVariant();
+#endif // Q_OS_ANDROID
 
     default:
       return QVariant();
@@ -1350,7 +1363,12 @@ QVariant DqmreCheckedApps::data (const QModelIndex &index, int role) const
     {
     case Field::packageName: return _container->checkedApps.at (index.row()).packageName;
     case Field::appName:     return _container->checkedApps.at (index.row()).appName;
-    case Field::icon:        return getAppIcon (_container->checkedApps.at (index.row()).packageName); // s_checkedApps.at (index.row()).icon;
+    case Field::icon:
+#ifdef Q_OS_ANDROID
+      return getAppIcon (_container->checkedApps.at (index.row()).packageName); // s_checkedApps.at (index.row()).icon;
+#else // Q_OS_ANDROID
+      return QVariant();
+#endif // Q_OS_ANDROID
     case Field::checked:
       return (_container->mode == Mode::EXC_CHECKED_APPS)
              ? _container->checkedApps.at (index.row()).checked.excluded
@@ -1399,7 +1417,12 @@ QVariant DqmreSortedApps::data (const QModelIndex &index, int role) const
     {
     case Field::packageName: return _container->sortedApps.at (index.row()).packageName;
     case Field::appName:     return _container->sortedApps.at (index.row()).appName;
-    case Field::icon:        return getAppIcon (_container->sortedApps.at (index.row()).packageName); // s_sortedApps.at (index.row()).icon;
+    case Field::icon:
+#ifdef Q_OS_ANDROID
+      return getAppIcon (_container->sortedApps.at (index.row()).packageName); // s_sortedApps.at (index.row()).icon;
+#else // Q_OS_ANDROID
+      return QVariant();
+#endif // Q_OS_ANDROID
     case Field::checked:
       return (_container->mode == Mode::EXC_CHECKED_APPS)
              ? _container->sortedApps.at (index.row()).checked.excluded
@@ -1416,6 +1439,8 @@ QHash<int, QByteArray> DqmreSortedApps::roleNames() const
 }
 
 /*-----------------------------------------*/
+
+#ifdef Q_OS_ANDROID
 
 DapQmlModelRoutingExceptionsImageProvider::DapQmlModelRoutingExceptionsImageProvider()
   : QQuickImageProvider (QQuickImageProvider::Pixmap)
@@ -1450,12 +1475,16 @@ QPixmap DapQmlModelRoutingExceptionsImageProvider::requestPixmap (const QString 
   return QPixmap::fromImage (requestImage (id, size, requestedSize));
 }
 
+#endif // Q_OS_ANDROID
+
 /*-----------------------------------------*/
 
+#ifdef Q_OS_ANDROID
 AppIcon::operator QImage() const
 {
   return getAppIcon (*this);
 }
+#endif // Q_OS_ANDROID
 
 /*-----------------------------------------*/
 
