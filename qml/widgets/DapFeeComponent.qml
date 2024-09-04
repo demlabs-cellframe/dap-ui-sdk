@@ -278,6 +278,9 @@ Item
 
     function updateState()
     {
+        if(statesData.count == 0)
+            return
+
         var checkSearch = false
         var idxSearch = -1
 
