@@ -176,7 +176,7 @@ Button
                 anchors.fill: parent
                 verticalAlignment: Qt.AlignVCenter
                 horizontalAlignment: Qt.AlignRight
-                bottomPadding: OS_WIN_FLAG ? 2 : 0
+                bottomPadding: CURRENT_OS === "win" ? 2 : 0
                 anchors.rightMargin: indentTextRight
                 color: control.containsMouse ? colorButtonTextHover : colorButtonTextNormal
                 text: qsTr(textButton)
