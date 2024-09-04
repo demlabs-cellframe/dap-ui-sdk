@@ -258,52 +258,74 @@ void DapStreamer::sltStreamOpenCallback()
 {
     qDebug() << "Opening stream";
 
-    if(m_network_reply->getReplyData().size() == 0) {
+    if (!m_network_reply) {
+        qCritical() << "Network reply is null";
+        emit sigStreamOpenBadResponseError();
+        return;
+    }
+
+    if (m_network_reply->getReplyData().size() == 0) {
         qWarning() << "Reply is empty";
         emit sigStreamOpenBadResponseError();
         return;
     }
 
+    if (!m_session) {
+        qCritical() << "Session is null";
+        emit sigStreamOpenBadResponseError();
+        return;
+    }
+
+    auto dapCrypt = m_session->getDapCrypt();
+    if (!dapCrypt) {
+        qCritical() << "DapCrypt is null";
+        emit sigStreamOpenBadResponseError();
+        return;
+    }
+
     QByteArray streamReplyDec;
-    m_session->getDapCrypt()->decode(m_network_reply->getReplyData(), streamReplyDec, KeyRoleSession);
+    dapCrypt->decode(m_network_reply->getReplyData(), streamReplyDec, KeyRoleSession);
     QString streamReplyStr(streamReplyDec);
 
     QStringList str_list = streamReplyStr.split(" ");
 
-    if(str_list.length() < 2)
-    {
+    if (str_list.length() < 2) {
         qWarning() << "Bad response. Wrong Reply Format!" << streamReplyStr;
         emit sigStreamOpenBadResponseError();
         return;
     }
 
     m_streamID = str_list.at(0);
-
     QString streamServKey = str_list.at(1);
 
-    if(!m_streamID.isEmpty()) {
+    if (!m_streamID.isEmpty()) {
         qDebug() << "Stream id:" << m_streamID;
-        qDebug()  << "[DapConnectStream] Stream server key for client requests: "
-                  << streamServKey;
+        qDebug() << "[DapConnectStream] Stream server key for client requests:" << streamServKey;
 
-        m_session->getDapCrypt()->initKey(DAP_ENC_KEY_TYPE_SALSA2012, streamServKey, KeyRoleStream);
+        dapCrypt->initKey(DAP_ENC_KEY_TYPE_SALSA2012, streamServKey, KeyRoleStream);
 
-        if(!m_streamSocket.isOpen()) {
+        if (!m_streamSocket.isOpen()) {
+            QString upstreamAddress = m_session->upstreamAddress();
+            quint16 upstreamPort = m_session->upstreamPort();
 
-            m_streamSocket.connectToHost(m_session->upstreamAddress(),
-                                          m_session->upstreamPort(),
-                                          QIODevice::ReadWrite);
-//#ifndef Q_OS_WINDOWS
+            if (upstreamAddress.isEmpty() || upstreamPort == 0) {
+                qCritical() << "Invalid upstream address or port";
+                emit errorNetwork(tr("Invalid upstream address or port"));
+                return;
+            }
+
+            m_streamSocket.connectToHost(upstreamAddress, upstreamPort, QIODevice::ReadWrite);
+
             if (m_streamSocket.waitForConnected(15000)) {
+                qDebug() << "Stream socket connected successfully.";
                 return;
             } else {
-                emit errorNetwork (tr ("Socket connection timeout"));
+                qCritical() << "Socket connection timeout";
+                emit errorNetwork(tr("Socket connection timeout"));
             }
-//#endif
         } else {
             qCritical() << "Stream already open";
         }
-
     } else {
         qWarning() << "Can't open stream " << m_streamID;
         emit sigStreamOpenBadResponseError();
@@ -588,7 +610,8 @@ void DapStreamer::_printPacketLossStatistics() {
     for (const auto &entry : m_packetLossQueue) {
         totalLostPackets += entry.second;
     }
-    qInfo() << "Total packet loss in the last 5 minutes:" << totalLostPackets;
+    if (totalLostPackets != 0)
+        qInfo() << "Total packet loss in the last 5 minutes:" << totalLostPackets;
 }
 
 void DapStreamer::procPktIn(DapPacketHdr * pkt, void * data)

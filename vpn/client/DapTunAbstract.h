@@ -54,6 +54,8 @@ public:
         m_writeQueueLock.unlock();
         return ret;
     }
+
+    QString getDefaultGwOld() { return m_defaultGwOld; }
     
 signals:
     void nativeCreateRequest();
