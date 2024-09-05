@@ -3,25 +3,112 @@ import QtQml 2.12
 import QtQuick.Controls 2.4
 import QtGraphicalEffects 1.0
 
-ToolTip {
+ToolTip
+{
     id: root
     signal updatePos()
 
     property alias bottomRect: bottomRect
-    property font textFont: mainFont.dapFont.medium12
+    property font textFont: mainFont.dapFont.regular12
     property string textColor: currTheme.white
     property string contentText
     property alias backgroundToolTip: backgroundToolTip
 
-    contentItem:
-    Text
+    property bool globalOFF: false
+
+    property int offset: 8
+    property int widthLimit: 250
+    property bool isUnderDirection: false
+    property var foundMouseArea: findMouseAreaRecursive(parent)
+    property bool mouseOver: globalOFF || foundMouseArea === undefined ? false : foundMouseArea.containsMouse
+    property int timerInterval: 0
+
+    y: isUnderDirection == true ? parent.height + offset + bottomRect.height/2 + 3 : -(backgroundToolTip.height + 14)
+
+    onMouseOverChanged:
     {
-        color: textColor
-        text: contentText
-        font: textFont
+        if(mouseOver == true)
+        {
+            tooltipTimer.start()
+        }
+        else
+        {
+            tooltipTimer.stop()
+            root.visible = false
+        }
     }
 
-    background:Item{
+    function findMouseAreaRecursive(element)
+    {
+        var queue = [element]
+        while (queue.length > 0)
+        {
+            var currentItem = queue.shift()
+
+            if (currentItem instanceof MouseArea)
+            {
+                currentItem.hoverEnabled = true
+                return currentItem
+            }
+
+            for (var i = 0; i < currentItem.children.length; ++i)
+            {
+                var child = currentItem.children[i];
+                queue.push(child);
+            }
+        }
+        console.log("DapCustomToolTip", textElement.text, "MouseArea not found. Need MouseArea")
+        return undefined
+    }
+
+    onVisibleChanged: updatePos()
+
+    Timer
+    {
+        id: tooltipTimer
+        interval: timerInterval
+        repeat: false
+        running: false
+        onTriggered:
+        {
+            root.visible = true
+        }
+    }
+
+
+    contentItem:
+        Item
+    {
+        implicitWidth: textElement.width
+        Text
+        {
+            id: textElement
+            width: contentWidth
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: textColor
+            text: contentText
+            font: textFont
+            wrapMode: Text.NoWrap
+            y: -5
+
+            onContentWidthChanged:
+            {
+                if(contentWidth > widthLimit)
+                {
+                    width = widthLimit
+                    wrapMode = Text.WordWrap
+                }
+                else
+                {
+                    width = contentWidth
+                }
+            }
+        }
+    }
+
+    background:
+        Item
+    {
         Rectangle
         {
             id: backgroundToolTip
@@ -29,7 +116,8 @@ ToolTip {
             radius: 4
             color: currTheme.mainBackground
         }
-        DropShadow {
+        DropShadow
+        {
             anchors.fill: backgroundToolTip
             source: backgroundToolTip
             color: currTheme.reflection
@@ -41,7 +129,8 @@ ToolTip {
             fast: true
             cached: true
         }
-        DropShadow {
+        DropShadow
+        {
             anchors.fill: backgroundToolTip
             source: backgroundToolTip
             color: currTheme.shadowColor
@@ -52,19 +141,21 @@ ToolTip {
             opacity: 1
         }
 
-        Rectangle{
+        Rectangle
+        {
             id: bottomRect
             anchors.horizontalCenter: backgroundToolTip.horizontalCenter
             color: backgroundToolTip.color
-
-            width: 12
-            height: 12
+            width: 10
+            height: 10
             rotation: 45
 
-            Connections{
+            Connections
+            {
                 target: root
 
-                function onUpdatePos (){
+                function onUpdatePos ()
+                {
                     if(root.y < 0)
                     {
                         bottomRect.anchors.top = backgroundToolTip.bottom
@@ -87,7 +178,8 @@ ToolTip {
             }
         }
 
-        DropShadow {
+        DropShadow
+        {
             id: shadow1
             rotation: 45
             anchors.fill: bottomRect
@@ -100,7 +192,8 @@ ToolTip {
             opacity: 1
             visible: bottomRect.visible
         }
-        DropShadow {
+        DropShadow
+        {
             id: shadow2
             rotation: 45
             anchors.fill: bottomRect
@@ -116,7 +209,8 @@ ToolTip {
             visible: bottomRect.visible
         }
 
-        Rectangle{
+        Rectangle
+        {
             id: bottomLineHide
             anchors.left: backgroundToolTip.left
             anchors.right: backgroundToolTip.right
