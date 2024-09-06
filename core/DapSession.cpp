@@ -90,31 +90,42 @@ DapNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QSt
     return _buildNetworkReplyReq(str_url, obj, slot, slot_err, Q_NULLPTR);
 }
 
-DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObject *obj, const char *slot,  const char *slot_err,
-                                                 const QByteArray* data, bool isCDB)
+DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObject *obj, const char *slot,
+                                                   const char *slot_err, const QByteArray* data, bool isCDB)
 {
     DapNetworkReply *netReply = new DapNetworkReply();
-    if (slot)
-        connect(netReply, SIGNAL(finished()), obj, slot);
-    connect(netReply, &DapNetworkReply::sigError, this, [=] {
-        if ( netReply->error() != 110 ) {
-            qInfo() << "errorNetwork";
 
-            emit errorNetwork(netReply->error(), netReply->errorString());
-            if (slot_err)
-                QMetaObject::invokeMethod(obj, slot_err, Qt::ConnectionType::AutoConnection, Q_ARG(const QString&, netReply->errorString()));
-        }else
-            qInfo() << "Timeout its not a reason for the network error sate, right?";
+    if (slot) {
+        connect(netReply, &DapNetworkReply::finished, obj, slot);
+    }
 
+    connect(netReply, &DapNetworkReply::sigError, this, [=]() {
+        const int errorCode = netReply->error();
+
+        if (errorCode != 110 && errorCode != 60) {
+            qInfo() << "Network error detected";
+
+            emit errorNetwork(errorCode, netReply->errorString());
+
+            if (slot_err) {
+                QMetaObject::invokeMethod(obj, slot_err, Qt::AutoConnection,
+                                          Q_ARG(const QString&, netReply->errorString()));
+            }
+        } else {
+            qInfo() << "Timeout is not considered a critical network error.";
+        }
     });
-    data ? DapConnectClient::instance()->request_POST(isCDB ? m_CDBaddress : m_upstreamAddress,
-                                                      isCDB ? m_CDBport : m_upstreamPort,
-                                                      urlPath, *data, *netReply,
-                                                      QString("KeyID: %1\r\n").arg(isCDB ? m_sessionKeyID_CDB : m_sessionKeyID))
-         : DapConnectClient::instance()->request_GET(isCDB ? m_CDBaddress : m_upstreamAddress,
-                                                     isCDB ? m_CDBport : m_upstreamPort,
-                                                     urlPath, *netReply,
-                                                     QString("KeyID: %1\r\n").arg(isCDB ? m_sessionKeyID_CDB : m_sessionKeyID));
+
+    const QString address = isCDB ? m_CDBaddress : m_upstreamAddress;
+    const quint16 port = isCDB ? m_CDBport : m_upstreamPort;
+    const QString sessionKeyID = QString("KeyID: %1\r\n").arg(isCDB ? m_sessionKeyID_CDB : m_sessionKeyID);
+
+    if (data) {
+        DapConnectClient::instance()->request_POST(address, port, urlPath, *data, *netReply, sessionKeyID);
+    } else {
+        DapConnectClient::instance()->request_GET(address, port, urlPath, *netReply, sessionKeyID);
+    }
+
     return netReply;
 }
 
