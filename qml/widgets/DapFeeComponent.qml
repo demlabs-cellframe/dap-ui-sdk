@@ -288,7 +288,7 @@ Item
         {
             statesData.get(i).enabled = checkSearch
 
-            if(statesData.get(i).minValue >= currentValue || checkSearch)
+            if(statesData.get(i).minValue > currentValue || checkSearch)
                 continue;
 
             idxSearch = i
@@ -328,8 +328,7 @@ Item
         statesData.append(
                     {
                         name: "Very low",
-                        minValue: minimalValue,
-                        maxValue: rangeValues.veryLow,
+                        minValue: rangeValues.veryLow,
                         enabled: false
                     })
 
@@ -337,8 +336,7 @@ Item
         statesData.append(
                     {
                         name: "Low",
-                        minValue: rangeValues.veryLow,
-                        maxValue: rangeValues.low,
+                        minValue: rangeValues.low,
                         enabled: false
                     })
 
@@ -346,8 +344,7 @@ Item
         statesData.append(
                     {
                         name: "Recommended",
-                        minValue: rangeValues.low,
-                        maxValue: rangeValues.middle,
+                        minValue: rangeValues.middle,
                         enabled: false
                     })
 
@@ -355,8 +352,7 @@ Item
         statesData.append(
                     {
                         name: "High",
-                        minValue: rangeValues.middle,
-                        maxValue: rangeValues.high,
+                        minValue: rangeValues.high,
                         enabled: false
                     })
 
@@ -364,8 +360,7 @@ Item
         statesData.append(
                     {
                         name: "Very high",
-                        minValue: rangeValues.high,
-                        maxValue: rangeValues.veryHigh,
+                        minValue: rangeValues.veryHigh,
                         enabled: false
                     })
     }
