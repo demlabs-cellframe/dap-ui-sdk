@@ -79,12 +79,13 @@ ToolTip
     contentItem:
         Item
     {
-        implicitWidth: textElement.width
+        implicitWidth: textElement.width + 8
         Text
         {
             id: textElement
             width: contentWidth
-            anchors.horizontalCenter: parent.horizontalCenter
+            //anchors.horizontalCenter: parent.horizontalCenter
+            anchors.centerIn: parent
             color: textColor
             text: contentText
             font: textFont
