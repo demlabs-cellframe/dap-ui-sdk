@@ -77,6 +77,7 @@ public:
     QString     m_logPath;
     QString     m_minDashboardVersion;
     QString     m_minNodeVersion;
+    QString     m_pubStage;
 
     void parseXML(const QString& a_fname);
 
@@ -93,6 +94,7 @@ public:
     QString getLogFilePath(){return logFilePath;}
     void setLogPath(QString path){m_logPath = path;}
     QString getLogPath(){return m_logPath;}
+    QString getPub() {return m_pubStage;}
 
 
     QString password() const;
