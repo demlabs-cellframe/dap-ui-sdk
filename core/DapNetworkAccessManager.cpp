@@ -14,7 +14,7 @@ void DapNetworkAccessManager::requestHttp_POST(const QString &address, const uin
     dap_client_http_set_connect_timeout_ms(20000);
     dap_client_http_request(nullptr, qPrintable(address), port, "POST", "text/plain", qPrintable(urlPath), body.constData(), static_cast<size_t>(body.size()), nullptr,
                             &DapNetworkAccessManager::responseCallback, &DapNetworkAccessManager::responseCallbackError,
-                                   &netReply, headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
+                            &netReply, headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
 }
 
 void DapNetworkAccessManager::requestHttp_GET(const QString &address, const uint16_t port, const QString &urlPath, const QString &headers, DapNetworkReply &netReply)
@@ -24,7 +24,7 @@ void DapNetworkAccessManager::requestHttp_GET(const QString &address, const uint
     dap_client_http_set_connect_timeout_ms(20000);
     dap_client_http_request(nullptr, qPrintable(address), port, "GET", "text/plain", qPrintable(urlPath), nullptr, 0, nullptr,
                             &DapNetworkAccessManager::responseCallback, &DapNetworkAccessManager::responseCallbackError, &netReply,
-                                   headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
+                            headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
 }
 
 void DapNetworkAccessManager::requestHttp_GET_for_ping(const QString &address, const uint16_t port, const QString &urlPath, const QString &headers, DapNetworkReply &netReply)
@@ -36,7 +36,7 @@ void DapNetworkAccessManager::requestHttp_GET_for_ping(const QString &address, c
                             headers.length() ? const_cast<char*>(qPrintable(headers)) : nullptr);
 }
 
-void DapNetworkAccessManager::responseCallback(void * a_response, size_t a_response_size, void * a_obj)
+void DapNetworkAccessManager::responseCallback(void * a_response, size_t a_response_size, void * a_obj, http_status_code_t a_status)
 {
     DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
     reply->setReply(QByteArray(reinterpret_cast<const char*>(a_response), static_cast<int>(a_response_size)));
