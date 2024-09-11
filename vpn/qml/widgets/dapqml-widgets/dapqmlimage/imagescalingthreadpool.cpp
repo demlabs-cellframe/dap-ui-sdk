@@ -229,8 +229,13 @@ void ImageScalingThreadPool::performScaling(
       QString filename  = a_filename.mid (index + strlen (s_imageProvider) + 1);
 
       /* get pixmap */
-      QImage image      = DapQmlModelRoutingExceptionsImageProvider::instance()->requestImage (
-                            filename, nullptr, a_newSize);
+      QImage image =
+#ifdef Q_OS_ANDROID
+        DapQmlModelRoutingExceptionsImageProvider::instance()->requestImage (
+          filename, nullptr, a_newSize);
+#else // Q_OS_ANDROID
+        QImage();
+#endif // Q_OS_ANDROID
 
       /* scale pixmap */
       a_dest =
