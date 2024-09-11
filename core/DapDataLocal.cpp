@@ -112,9 +112,6 @@ void DapDataLocal::parseXML(const QString& a_fname)
                 }else if( sr->name().toString() == "min-node-version"){
                     m_minNodeVersion = sr->readElementText();
                     qInfo() << "Min node version: " << m_minNodeVersion;
-                }else if( sr->name().toString() == "pub"){
-                    m_pubStage = sr->readElementText();
-                    qInfo() << "Pub stage domen: " << m_minNodeVersion;
                 }else if( sr->name().toString() == "min-dashboard-version"){
                     m_minDashboardVersion = sr->readElementText();
                     qInfo() << "Min dashboard version: " << m_minDashboardVersion;
