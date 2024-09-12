@@ -12,11 +12,18 @@ enum class FieldId : quint8
 {
   INVALID   = int (DapNodeOrderInfo::FieldId::INVALID),
 
-  wallet    = int (DapNodeOrderInfo::FieldId::SIZE),
+  ipAddress = int (DapNodeOrderInfo::FieldId::SIZE),
   network,
+  wallet,
   token,
-  value,
+  tokenValue,
   unit,
+  unitValue,
+  priceValue,
+  portions,
+  fee,
+  totalFee,
+  totalValue,
   created,
   isSigned,
 
@@ -33,11 +40,18 @@ static QHash<int, QByteArray> s_roles;
 
 static const QHash<QByteArray, FieldId> s_fieldMap =
 {
-  FIELD (wallet),
+  FIELD (ipAddress),
   FIELD (network),
+  FIELD (wallet),
   FIELD (token),
-  FIELD (value),
+  FIELD (tokenValue),
   FIELD (unit),
+  FIELD (unitValue),
+  FIELD (priceValue),
+  FIELD (portions),
+  FIELD (fee),
+  FIELD (totalFee),
+  FIELD (totalValue),
   FIELD (created),
   FIELD (isSigned),
 };
@@ -61,11 +75,18 @@ DapNodeTransactionHistory::DapNodeTransactionHistory (QObject *parent)
       s_roles.insert (int (i.value()), i.key());
 
     /* append */
-    s_roles.INSERT_FIELD (wallet);
+    s_roles.INSERT_FIELD (ipAddress);
     s_roles.INSERT_FIELD (network);
+    s_roles.INSERT_FIELD (wallet);
     s_roles.INSERT_FIELD (token);
-    s_roles.INSERT_FIELD (value);
+    s_roles.INSERT_FIELD (tokenValue);
     s_roles.INSERT_FIELD (unit);
+    s_roles.INSERT_FIELD (unitValue);
+    s_roles.INSERT_FIELD (priceValue);
+    s_roles.INSERT_FIELD (portions);
+    s_roles.INSERT_FIELD (fee);
+    s_roles.INSERT_FIELD (totalFee);
+    s_roles.INSERT_FIELD (totalValue);
     s_roles.INSERT_FIELD (created);
     s_roles.INSERT_FIELD (isSigned);
 
@@ -316,13 +337,20 @@ QVariant DapNodeTransactionHistory::data (const QModelIndex &index, int role) co
 
   switch (FieldId (role))
     {
-      case FieldId::wallet:   return item.wallet;
-      case FieldId::network:  return item.network;
-      case FieldId::token:    return item.token;
-      case FieldId::value:    return item.value;
-      case FieldId::unit:     return item.unit;
-      case FieldId::created:  return item.created.toString ("hh:mm:ss dd.MM.yyyy");
-      case FieldId::isSigned: return item.isSigned;
+      case FieldId::ipAddress:  return item.ipAddress;
+      case FieldId::network:    return item.network;
+      case FieldId::wallet:     return item.wallet;
+      case FieldId::token:      return item.token;
+      case FieldId::tokenValue: return item.tokenValue;
+      case FieldId::unit:       return item.unit;
+      case FieldId::unitValue:  return item.unitValue;
+      case FieldId::priceValue: return item.priceValue;
+      case FieldId::portions:   return item.portions;
+      case FieldId::fee:        return item.fee;
+      case FieldId::totalFee:   return item.totalFee;
+      case FieldId::totalValue: return item.totalValue;
+      case FieldId::created:    return item.created.toString ("hh:mm:ss dd.MM.yyyy");
+      case FieldId::isSigned:   return item.isSigned;
 
       default: break;
     }
@@ -364,14 +392,22 @@ void DapNodeTransactionHistory::Transaction::fromJson (const QJsonObject &a_obj)
     /* store by id */
     switch (fid) // fast branch table by id
     {
-    case FieldId::INVALID:  break;
-    case FieldId::wallet:   wallet    = std::move (val); break;
-    case FieldId::network:  network   = std::move (val); break;
-    case FieldId::token:    token     = std::move (val); break;
-    case FieldId::value:    value     = std::move (val); break;
-    case FieldId::unit:     unit      = std::move (val); break;
-    case FieldId::created:  created   = QDateTime::fromString (val, "hh:mm:ss dd.MM.yyyy"); break;
-    case FieldId::isSigned: isSigned  = i.value().toBool(); break;
+      case FieldId::INVALID:  break;
+
+      case FieldId::ipAddress:  ipAddress   = std::move (val); break;
+      case FieldId::network:    network     = std::move (val); break;
+      case FieldId::wallet:     wallet      = std::move (val); break;
+      case FieldId::token:      token       = std::move (val); break;
+      case FieldId::tokenValue: tokenValue  = std::move (val); break;
+      case FieldId::unit:       unit        = std::move (val); break;
+      case FieldId::unitValue:  unitValue   = std::move (val); break;
+      case FieldId::priceValue: priceValue  = std::move (val); break;
+      case FieldId::portions:   portions    = std::move (val); break;
+      case FieldId::fee:        fee         = std::move (val); break;
+      case FieldId::totalFee:   totalFee    = std::move (val); break;
+      case FieldId::totalValue: totalValue  = std::move (val); break;
+      case FieldId::created:    created   = QDateTime::fromString (val, "hh:mm:ss dd.MM.yyyy"); break;
+      case FieldId::isSigned:   isSigned  = i.value().toBool(); break;
     }
   }
 }
@@ -379,14 +415,21 @@ void DapNodeTransactionHistory::Transaction::fromJson (const QJsonObject &a_obj)
 QJsonObject DapNodeTransactionHistory::Transaction::toJsonObject() const
 {
   return QJsonObject {
-    { "info",     info.toJsonObject() },
-    { "wallet",   wallet },
-    { "network",  network },
-    { "token",    token },
-    { "value",    value },
-    { "unit",     unit },
-    { "created",  created.toString ("hh:mm:ss dd.MM.yyyy") },
-    { "isSigned", isSigned },
+    { "info",       info.toJsonObject() },
+    { "ipAddress",  ipAddress },
+    { "network",    network },
+    { "wallet",     wallet },
+    { "token",      token },
+    { "tokenValue", tokenValue },
+    { "unit",       unit },
+    { "unitValue",  unitValue },
+    { "priceValue", priceValue },
+    { "portions",   portions },
+    { "fee",        fee },
+    { "totalFee",   totalFee },
+    { "totalValue", totalValue },
+    { "created",    created.toString ("hh:mm:ss dd.MM.yyyy") },
+    { "isSigned",   isSigned },
   };
 }
 

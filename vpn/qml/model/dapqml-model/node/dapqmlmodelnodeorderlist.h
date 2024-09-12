@@ -157,7 +157,7 @@ class DapQmlModelOrderListProxyModel : public QSortFilterProxyModel
   /// @{
 private:
   QString m_unit;
-  qreal m_min, m_max;
+  qint64 m_min, m_max;
   /// @}
 
   /****************************************//**
@@ -180,7 +180,7 @@ public:
    * @param a_max maximum value
    * @note set -1 into min or|and max to disable it's filtering
    */
-  Q_INVOKABLE void setRowFilter (const QString &a_unit, qreal a_min, qreal a_max);
+  Q_INVOKABLE void setRowFilter (const QString &a_unit, qint64 a_min, qint64 a_max);
 
   Q_INVOKABLE int currentIndex() const;
   Q_INVOKABLE void setCurrentIndex (int a_value);

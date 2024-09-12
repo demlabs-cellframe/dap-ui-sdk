@@ -27,19 +27,22 @@
 #define OP_CODE_INCORRECT_SYM           "0xf6"
 #define OP_CODE_LOGIN_INACTIVE          "0xf7"
 #define OP_CODE_SERIAL_ACTIVATED        "0xf8"
+#define OP_CODE_WRONG_ORDER             "0xf9"
 
 #include "DapSession.h"
 #include "DapCrypt.h"
 #include "msrln/msrln.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QFile>
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
 #include "dap_client_http.h"
 
 const QString DapSession::URL_ENCRYPT               ("enc_init");
 const QString DapSession::URL_STREAM                ("stream");
-const QString DapSession::URL_DB                    ("db");
+const QString DapSession::URL_DB_LEGACY             ("db");
+const QString DapSession::URL_DB                    ("cdb");
 const QString DapSession::URL_CTL                   ("stream_ctl");
 const QString DapSession::URL_DB_FILE               ("db_file");
 const QString DapSession::URL_SERVER_LIST           ("nodelist");
@@ -95,10 +98,15 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObje
     if (slot)
         connect(netReply, SIGNAL(finished()), obj, slot);
     connect(netReply, &DapNetworkReply::sigError, this, [=] {
-        qInfo() << "errorNetwork";
-        emit errorNetwork(netReply->error(), netReply->errorString());
-        if (slot_err)
-            QMetaObject::invokeMethod(obj, slot_err, Qt::ConnectionType::AutoConnection, Q_ARG(const QString&, netReply->errorString()));
+        if ( netReply->error() != 110 ) {
+            qInfo() << "errorNetwork";
+
+            emit errorNetwork(netReply->error(), netReply->errorString());
+            if (slot_err)
+                QMetaObject::invokeMethod(obj, slot_err, Qt::ConnectionType::AutoConnection, Q_ARG(const QString&, netReply->errorString()));
+        }else
+            qInfo() << "Timeout its not a reason for the network error sate, right?";
+
     });
     data ? DapConnectClient::instance()->request_POST(isCDB ? m_CDBaddress : m_upstreamAddress,
                                                       isCDB ? m_CDBport : m_upstreamPort,
@@ -152,6 +160,28 @@ void DapSession::sendBugReport(const QByteArray &data)
     }
 }
 
+void DapSession::getRemainLimits(const QString& net_id, const QString& a_pkey, const QString& address, quint16 port)
+{
+    QByteArray data;
+
+    if (!m_dapCryptCDB) {
+        this->setDapUri (address, port);
+        auto *l_tempConn = new QMetaObject::Connection();
+        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]{
+            preserveCDBSession();
+            m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(),
+                                                    SLOT(answerBugReport()), QT_STRINGIFY(receivedBugReportAnswer));
+            disconnect(*l_tempConn);
+            delete l_tempConn;
+        });
+        requestServerPublicKey();
+    } else {
+        m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(),
+                                                SLOT(answerBugReport()), QT_STRINGIFY(receivedBugReportAnswer));
+    }
+}
+
+
 void DapSession::sendBugReportStatusRequest(const QByteArray &data)
 {
     if (!m_dapCryptCDB) {
@@ -185,6 +215,21 @@ void DapSession::sendSignUpRequest(const QString &host, const QString &email, co
                                         true, /*QString("Content-Type: application/x-www-form-urlencoded\r\n")*/ "");
 }
 
+QString readJsonFile(const QString& filePath) {
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning() << "Failed to open file:" << filePath;
+        return QString();
+    }
+
+    QTextStream in(&file);
+    QString jsonContent = in.readAll();
+
+    file.close();
+
+    return jsonContent;
+}
+
 void DapSession::getNews()
 {
     DapNetworkReply *m_netNewsReply = new DapNetworkReply;
@@ -206,6 +251,27 @@ void DapSession::getNews()
             qWarning() << "Server response:" << m_netNewsReply->getReplyData();
             qCritical() << "Can't parse server response to JSON: "<<jsonErr.errorString()<< " on position "<< jsonErr.offset ;
         }
+
+        //******* For news debbuging ********//
+        QString filePath = DapDataLocal::instance()->getLogPath() + "/news.json";
+        if (QFile::exists(filePath)) {
+            qDebug() << "File 'news.json' exists. Reading content...";
+
+            QString jsonContent = readJsonFile(filePath);
+
+            if (!jsonContent.isEmpty()) {
+
+                jsonDoc = QJsonDocument::fromJson(jsonContent.toUtf8());
+
+            } else {
+                qWarning() << "JSON content is empty";
+            }
+        } else {
+            qWarning() << "For news debbuging - JSON file not exist. Expected path: " + filePath;
+        }
+        //**********************************//
+
+
         emit sigReceivedNewsMessage(jsonDoc);
     });
     auto it = DapDataLocal::instance()->m_cdbIter;
@@ -437,6 +503,9 @@ void DapSession::onAuthorize()
     } else if (op_code == OP_CODE_LOGIN_INACTIVE) {
         emit activateKey();
         return;
+    } else if (op_code == OP_CODE_WRONG_ORDER) {
+        emit errorAuthorization (tr ("Can't find order!"));
+        return;
     }
 
     QXmlStreamReader m_xmlStreamReader;
@@ -516,7 +585,10 @@ void DapSession::onAuthorize()
         }
     }
     if (!isAuth) {
-        emit errorAuthorization (tr ("Authorization error"));
+        if (m_protocolVer == 1)
+            emit errorAuthorizationLegacy();
+        else if (m_protocolVer == 0)
+            emit errorAuthorization (tr ("Authorization error"));
     }
 
     /*if(!isCookie) {
@@ -721,7 +793,7 @@ void DapSession::sendTxOutRequest(const QString &tx) {
 DapNetworkReply *  DapSession::sendNewTxCondRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey, const QString& a_order_hash){
     qDebug() << "Send new tx cond request to cdb";
     m_netNewTxReply = encRequest(a_serial + " " + a_domain + " " + a_pkey + " " + a_order_hash,
-                                 URL_DB, "new_tx_cond", "serial", SLOT(onNewTxCond()), NULL, true);
+                                 m_protocolVer == 1 ? URL_DB : URL_DB_LEGACY, "new_tx_cond", "serial", SLOT(onNewTxCond()), NULL, true);
     return m_netNewTxReply;
 }
 /**
@@ -743,8 +815,17 @@ DapNetworkReply * DapSession::authorizeRequest(const QString& a_user, const QStr
 
 DapNetworkReply * DapSession::authorizeByKeyRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey, const QString& a_order_hash) {
     m_userInform.clear();
+    m_protocolVer = 1;
     m_netAuthorizeReply = encRequest(a_serial + " " + a_domain + " " + a_pkey + " " + a_order_hash,
-                                     URL_DB, "auth", "serial", SLOT(onAuthorize()), /*QT_STRINGIFY(errorAuthorization)*/ NULL);
+                                     URL_DB, "auth", "serial", SLOT(onAuthorize()), NULL);
+    return m_netAuthorizeReply;
+}
+
+DapNetworkReply * DapSession::authorizeByKeyRequestLegacy(const QString& a_serial, const QString& a_domain, const QString& a_pkey) {
+    m_userInform.clear();
+    m_protocolVer = 0;
+    m_netAuthorizeReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
+                                     URL_DB_LEGACY, "auth", "serial", SLOT(onAuthorize()), /*QT_STRINGIFY(errorAuthorization)*/ NULL);
     return m_netAuthorizeReply;
 }
 
@@ -755,7 +836,7 @@ DapNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const Q
     int buf64len = dap_enc_base64_encode(a_signed.constData(), a_signed.size(), buf64, DAP_ENC_DATA_TYPE_B64_URLSAFE);
     QByteArray a_signedB64(buf64, buf64len);
     QByteArray bData = QString(a_serial + " ").toLocal8Bit() + a_signedB64 + QString(" " + a_domain + " " + a_pkey).toLocal8Bit();
-    m_netKeyActivateReply = encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()), QT_STRINGIFY(errorActivation));
+    m_netKeyActivateReply = encRequestRaw(bData, m_protocolVer == 1 ? URL_DB : URL_DB_LEGACY, "auth_key", "serial", SLOT(onKeyActivated()), QT_STRINGIFY(errorActivation));
     return m_netKeyActivateReply;
 }
 
@@ -767,7 +848,7 @@ void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domai
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, a_serial, a_domain, a_pkey, l_tempConn]{
             preserveCDBSession();
             m_netKeyActivateReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
-                                               URL_DB, "auth_deactivate", "serial",
+                                               m_protocolVer == 1 ? URL_DB : URL_DB_LEGACY, "auth_deactivate", "serial",
                                                SLOT(onResetSerialKey()), QT_STRINGIFY(errorResetSerialKey), true);
             disconnect(*l_tempConn);
             delete l_tempConn;
@@ -775,7 +856,7 @@ void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domai
         requestServerPublicKey();
     } else {
         m_netKeyActivateReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
-                                           URL_DB, "auth_deactivate", "serial",
+                                           m_protocolVer == 1 ? URL_DB : URL_DB_LEGACY, "auth_deactivate", "serial",
                                            SLOT(onResetSerialKey()), QT_STRINGIFY(errorResetSerialKey), true);
     }
 }

@@ -40,7 +40,7 @@ void DapCmdPingServerSrv::handle(const QJsonObject* params)
 
             sendCmd(&response);
 
-            qWarning() << "Ping error: " << err;
+            qWarning() << "Ping error: " << "Server not response: -32000";
             delete pingChecker;
         });
     } else {

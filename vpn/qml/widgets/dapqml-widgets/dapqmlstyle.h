@@ -178,6 +178,10 @@ public:
     const QString &a_text,
     const int a_maxWidth);
 
+  /// @brief request font size from qss scaled field
+  /// @return font size if scaled present. otherwise will return 0
+  static qreal getQssFontSize (const QString &a_qss);
+
   /// @brief install qss stylesheet text
   static void setup (const QString &styleSheet);
 

@@ -24,6 +24,7 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 #include <QFile>
 #include <QtDebug>
 #include "dap_common.h"
+#include "dap_enc.h"
 #include "dap_enc_base64.h"
 #include "dap_cert.h"
 #include "dap_cert_file.h"

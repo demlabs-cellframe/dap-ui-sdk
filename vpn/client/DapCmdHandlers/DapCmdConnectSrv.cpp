@@ -22,7 +22,7 @@ DapCmdConnectSrv::~DapCmdConnectSrv()
  */
 void DapCmdConnectSrv::sendCmdError(int a_errorCode, const QString a_errorMsg)
 {
-    qWarning() <<"Error message: "<< a_errorMsg;
+    qWarning() << "Error message: " << a_errorMsg << " | code: " << QString::number(a_errorCode);
     QJsonObject response;
     QJsonObject errorObj;
 
@@ -39,7 +39,7 @@ void DapCmdConnectSrv::sendCmdError(int a_errorCode, const QString a_errorMsg)
  */
 void DapCmdConnectSrv::sendCmdError(const QString errorMsg)
 {
-    qWarning() << errorMsg;
+    qWarning() << "Error message: " << errorMsg << " | code: none";
     QJsonObject response;
     QJsonObject errorObj;
 

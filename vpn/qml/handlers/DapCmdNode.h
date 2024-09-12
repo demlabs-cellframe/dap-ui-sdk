@@ -33,7 +33,7 @@ protected:
    *******************************************/
   /// @{
 protected:
-    DapCmdNodeData *nodeData;
+  DapCmdNodeData *nodeData;
   /// @}
 
   /****************************************//**
@@ -58,6 +58,8 @@ public:
   bool hasError();
 //  WalletsData *nodeInfo() { return &m_dataWallet; }
   DapNodeOrderInfo orderData (const QString &hash);
+  /// convert units from kilo (mega etc) to byte. same for seconds
+  static void convertUnits (QString &a_unit, qint64 &a_min, qint64 &a_max, qint64 *a_multiplier = nullptr);
 
 protected:
   bool _checkContinue();
@@ -86,6 +88,7 @@ public slots:
   void slotSetValue (const QString &value);
   void slotSetUnit (const QString &unit);
   void slotChooseOrder (const QString &hash);
+  void slotSetTransactionInfo (const QVariant &a_valueMap);
   void slotCondTxCreate();
   void slotStartSearchOrders();
   void slotSetMaxValueUnit (const QString &price);

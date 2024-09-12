@@ -903,7 +903,9 @@ Item {
             height: enabled ? resizer.height : 0
             //height: resizer.height
             sourceComponent: compButton
-            enabled: model.ipAddress !== "" && model.ipAddress !== "0.0.0.0"
+            enabled: model.ipAddress !== ""
+                     && model.ipAddress !== "0.0.0.0"
+                     && model.units_value !== "0"
             clip: true
             property string first:      {
                 if (model.units)

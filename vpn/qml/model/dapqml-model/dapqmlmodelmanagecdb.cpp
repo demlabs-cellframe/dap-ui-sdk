@@ -4,8 +4,12 @@
 
 #include <QDebug>
 #include <QTimer>
-#include <QRegularExpressionValidator>
 #include <QRect>
+
+#ifdef Q_OS_ANDROID
+#include <QRegularExpressionValidator>
+//#include <QRegExpValidator>
+#endif // Q_OS_ANDROID
 
 /* VARS */
 static QSharedPointer<AbstractCdbManager> s_manager;
@@ -190,6 +194,7 @@ static bool parseServerData (DapQmlModelManageCdb *a_model, const QVariant &a_da
   /* validate */
   bool isValid  = false;
   {
+#ifdef Q_OS_ANDROID
     /* reg exps & validators */
     static QRegularExpression rx [2] = {
       QRegularExpression {"(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])"},
@@ -223,7 +228,7 @@ static bool parseServerData (DapQmlModelManageCdb *a_model, const QVariant &a_da
 
     else if (QValidator::Acceptable != result[1])
       emit a_model->sigError ("invalid port");
-
+#endif // Q_OS_ANDROID
   }
 
   /* store result */

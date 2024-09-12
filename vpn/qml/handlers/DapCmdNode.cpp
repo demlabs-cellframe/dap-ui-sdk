@@ -107,24 +107,44 @@ struct DapCmdNode::DapCmdNodeData
 //  WalletsData dataWallet;
   OrderListData orderListData;
 
-  QString selectedWalletName;
-  QString selectedNetworkName;
-  QString selectedTokenName;
-  QString value;
-  QString unit;
+//  QString selectedWalletName;   // paymentWallet
+//  QString selectedNetworkName;  // network
+//  QString selectedTokenName;    // token
+  QString value;                // tokenValue
+  QString selectedUnit;
   QString maxPrice;
   QString minPrice;
   QString orderHash;
+
+  struct
+  {
+    QString ipAddress;
+    QString network;
+    QString wallet;
+    QString token;
+    QString tokenValue; // user payed
+    QString unit;
+    QString unitValue;
+    QString priceValue; // per portion
+    QString portions;
+    QString fee;
+    QString totalFee;
+    QString totalValue;
+  } overview;
 };
 
 /* VARS */
 static DapNodeTransactionHistory::Transaction s_historyOrder;
 static QHash<QString, const char *> s_unitConvertMap =
 {
+  { "TERABYTE", "TB" },
+  { "GIGABYTE", "GB" },
   { "MEGABYTE", "MB" },
   { "KILOBYTE", "KB" },
   { "BYTE",     "B" },
   { "SECOND",   "SEC" },
+  { "MINUTE",   "MIN" },
+  { "HOUR",     "HOUR" },
   { "DAY",      "DAY" },
 };
 
@@ -337,12 +357,66 @@ DapNodeOrderInfo DapCmdNode::orderData (const QString &hash)
   return nodeData->orderListData.order (hash);
 }
 
+void DapCmdNode::convertUnits (QString &a_unit, qint64 &a_min, qint64 &a_max, qint64 *a_multiplier)
+{
+  /* defines */
+
+  struct MultiplierItem
+  {
+    qint64 value;
+    QString unit;
+  };
+
+  /* variables */
+
+  static const QMap<QString, MultiplierItem> s_multiplierMap =
+  {
+    { "Minute",   MultiplierItem { 60, "Second" } },
+    { "Hour",     MultiplierItem { 60 * 60, "Second" } },
+    { "Day",      MultiplierItem { 24 * 60 * 60, "Second" } },
+
+    { "Kilobyte", MultiplierItem { qint64 (1024), "Byte" } },
+    { "Megabyte", MultiplierItem { qint64 (1024) * qint64 (1024), "Byte" } },
+    { "Gigabyte", MultiplierItem { qint64 (1024) * qint64 (1024) * qint64 (1024), "Byte" } },
+    { "Terabyte", MultiplierItem { qint64 (1024) * qint64 (1024) * qint64 (1024) * qint64 (1024), "Byte" } },
+  };
+
+  QString unit      = a_unit;
+  qint64 minPrice   = a_min;
+  qint64 maxPrice   = a_max;
+  MultiplierItem mi = s_multiplierMap.value (unit);
+
+  /* convert values, if unit is present */
+
+  if (!mi.unit.isEmpty())
+  {
+    DEBUGINFO << __PRETTY_FUNCTION__ << "multiplier:" << mi.value << ", unit:" << mi.unit;
+
+    if (minPrice > 0)
+      minPrice  = minPrice * mi.value;
+
+    if (maxPrice > 0)
+      maxPrice  = maxPrice * mi.value;
+
+    unit      = mi.unit;
+  }
+
+  /* return */
+
+  a_unit  = unit;
+  a_min   = minPrice;
+  a_max   = maxPrice;
+
+  if (a_multiplier)
+    *a_multiplier = mi.value;
+}
+
 bool DapCmdNode::_checkContinue()
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  return  !nodeData->selectedWalletName.isEmpty() &&
-          !nodeData->selectedNetworkName.isEmpty() &&
-          !nodeData->selectedTokenName.isEmpty() &&
+  return  !nodeData->overview.wallet.isEmpty() &&
+          !nodeData->overview.network.isEmpty() &&
+          !nodeData->overview.token.isEmpty() &&
           !nodeData->value.isEmpty() &&
           !nodeData->orderHash.isEmpty();
 }
@@ -389,40 +463,69 @@ void DapCmdNode::slotCondTxCreate()
   /* send command */
   QJsonObject jobj {
     { "cond_tx_create", QJsonObject {
-        { "wallet_name",  nodeData->selectedWalletName },
-        { "network_name", nodeData->selectedNetworkName },
-        { "token_name",   nodeData->selectedTokenName },
+        { "wallet_name",  nodeData->overview.wallet },
+        { "network_name", nodeData->overview.network },
+        { "token_name",   nodeData->overview.token },
         { "value",        nodeData->value },
-        { "unit",         convertUnits (order.priceUnit()) },// "day" },
+        { "unit",         ::convertUnits (order.priceUnit()) },// "day" },
       },
     },
   };
   sendCmd (&jobj);
 
   /* store data */
-  s_historyOrder.wallet   = nodeData->selectedWalletName;
-  s_historyOrder.network  = nodeData->selectedNetworkName;
-  s_historyOrder.token    = nodeData->selectedTokenName;
-  s_historyOrder.value    = nodeData->value;
-  s_historyOrder.unit     = order.priceUnit(); // "day";
-  s_historyOrder.wallet   = nodeData->selectedWalletName;
-  s_historyOrder.created  = QDateTime::currentDateTime();
-  s_historyOrder.isSigned = false;
+  s_historyOrder.ipAddress    = nodeData->overview.ipAddress;
+  s_historyOrder.network      = nodeData->overview.network;
+  s_historyOrder.wallet       = nodeData->overview.wallet;
+  s_historyOrder.token        = nodeData->overview.token;
+  s_historyOrder.tokenValue   = nodeData->overview.tokenValue;
+  s_historyOrder.unit         = nodeData->overview.unit; // order.priceUnit(); // "day";
+  s_historyOrder.unitValue    = nodeData->overview.unitValue; // order.price();
+  s_historyOrder.priceValue   = nodeData->overview.priceValue;
+  s_historyOrder.portions     = nodeData->overview.portions;
+  s_historyOrder.fee          = nodeData->overview.fee;
+  s_historyOrder.totalFee     = nodeData->overview.totalFee;
+  s_historyOrder.totalValue   = nodeData->overview.totalValue;
+  s_historyOrder.created      = QDateTime::currentDateTime();
+  s_historyOrder.isSigned     = false;
   _updateHistoryItem();
 }
 
 void DapCmdNode::slotStartSearchOrders()
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
+
+  /* variables */
+
+  QString unit      = nodeData->selectedUnit;
+  qint64 minPrice   = nodeData->minPrice.toULongLong();
+  qint64 maxPrice   = nodeData->maxPrice.toULongLong();
+
+  /* convert units */
+
+  convertUnits (unit, minPrice, maxPrice);
+
+  /* filter data */
+
   QJsonObject searchOrders;
-  qDebug() << "startSearchOrders" << nodeData->selectedNetworkName << nodeData->selectedTokenName << nodeData->unit << nodeData->minPrice << nodeData->maxPrice;
-  searchOrders["network_name"] = nodeData->selectedNetworkName;
-  searchOrders["token_name"] = nodeData->selectedTokenName;
-  searchOrders["unit"] = nodeData->unit;
-  searchOrders["min_price"] = nodeData->minPrice;
-  searchOrders["max_price"] = nodeData->maxPrice;
+
+  qDebug() << "startSearchOrders"
+           << nodeData->overview.network
+           << nodeData->overview.token
+           << nodeData->overview.unit
+           << nodeData->minPrice
+           << nodeData->maxPrice;
+
+  searchOrders["network_name"]  = nodeData->overview.network;
+  searchOrders["token_name"]    = nodeData->overview.token;
+  searchOrders["unit"]          = nodeData->selectedUnit;
+  searchOrders["min_price"]     = nodeData->minPrice;
+  searchOrders["max_price"]     = nodeData->maxPrice;
+
+  /* message body */
+
   QJsonObject jObject;
-  jObject["search_orders"] = searchOrders;
+  jObject["search_orders"]      = searchOrders;
   sendCmd (&jObject);
 }
 
@@ -448,7 +551,7 @@ void DapCmdNode::slotStartConnectByOrder()
   /* send command */
   QJsonObject jobj {
     { "start_connect_by_order", order.toJsonObject() },
-    { "token", nodeData->selectedTokenName },
+    { "token", nodeData->overview.token },
   };
   sendCmd (&jobj);
 
@@ -504,7 +607,7 @@ void DapCmdNode::slotRequestNetworkFee (const QString &a_networkName)
 void DapCmdNode::slotChooseWallet (const QString &wallet)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  nodeData->selectedWalletName = wallet;
+  nodeData->overview.wallet = wallet;
   emit sigContinueEnable (_checkContinue());
 //  emit sigNetworksList (nodeData->dataWallet.networkWithTokens (wallet));
 }
@@ -512,7 +615,7 @@ void DapCmdNode::slotChooseWallet (const QString &wallet)
 void DapCmdNode::slotChooseNetwork (const QString &network)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  nodeData->selectedNetworkName = network;
+  nodeData->overview.network = network;
   emit sigContinueEnable (_checkContinue());
 //  emit sigTokensInfo (nodeData->dataWallet.tokensAmount (nodeData->selectedWalletName, nodeData->selectedNetworkName));
 }
@@ -520,8 +623,8 @@ void DapCmdNode::slotChooseNetwork (const QString &network)
 void DapCmdNode::slotChooseToken (const QString &token)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  nodeData->selectedTokenName = token;
-//  auto tokens = nodeData->dataWallet.tokensAmount (nodeData->selectedWalletName, nodeData->selectedNetworkName);
+  nodeData->overview.token = token;
+//  auto tokens = _data->dataWallet.tokensAmount (_data->selectedWalletName, _data->selectedNetworkName);
   emit sigContinueEnable (_checkContinue());
 //  emit sigTokenAmount (token, tokens[token]);
 }
@@ -536,8 +639,8 @@ void DapCmdNode::slotSetValue (const QString &value)
 void DapCmdNode::slotSetUnit (const QString &value)
 {
   DEBUGINFO << __PRETTY_FUNCTION__;
-  nodeData->unit = value;
-  nodeData->orderListData.setUnit (nodeData->unit);
+  nodeData->selectedUnit = value;
+  nodeData->orderListData.setUnit (nodeData->selectedUnit);
   emit sigContinueEnable (_checkContinue());
 }
 
@@ -546,6 +649,86 @@ void DapCmdNode::slotChooseOrder (const QString &hash)
   DEBUGINFO << __PRETTY_FUNCTION__;
   nodeData->orderHash = hash;
   emit sigContinueEnable (_checkContinue());
+}
+
+void DapCmdNode::slotSetTransactionInfo (const QVariant &a_valueMap)
+{
+  DEBUGINFO << __PRETTY_FUNCTION__;
+
+  /* defines */
+
+  enum class FieldId
+  {
+    INVALID,
+
+    ipAddress,
+    network,
+    wallet,
+    token,
+    tokenValue,
+    unit,
+    unitValue,
+    priceValue,
+    portions,
+    fee,
+    totalFee,
+    totalValue,
+  };
+
+#define TFIELDITEM(n) { #n, FieldId::n }
+
+  /* variables */
+
+  static const QMap<QString, FieldId> fieldMap =
+  {
+    TFIELDITEM (ipAddress),
+    TFIELDITEM (network),
+    TFIELDITEM (wallet),
+    TFIELDITEM (token),
+    TFIELDITEM (tokenValue),
+    TFIELDITEM (unit),
+    TFIELDITEM (unitValue),
+    TFIELDITEM (priceValue),
+    TFIELDITEM (portions),
+    TFIELDITEM (fee),
+    TFIELDITEM (totalFee),
+    TFIELDITEM (totalValue),
+  };
+  const QVariantMap map = a_valueMap.toMap();
+
+  /* parse */
+
+  for (auto i = map.cbegin(), e = map.cend(); i != e; i++)
+  {
+    FieldId fid = fieldMap.value (i.key(), FieldId::INVALID);
+
+    if (fid == FieldId::INVALID)
+    {
+      DEBUGINFO << __PRETTY_FUNCTION__ << "invalid fid:" << i.key();
+      continue;
+    }
+
+    auto value  = i.value().toString();
+
+    switch (fid)
+      {
+        case FieldId::ipAddress:  nodeData->overview.ipAddress   = std::move (value); break;
+        case FieldId::network:    nodeData->overview.network     = std::move (value); break;
+        case FieldId::wallet:     nodeData->overview.wallet      = std::move (value); break;
+        case FieldId::token:      nodeData->overview.token       = std::move (value); break;
+        case FieldId::tokenValue: nodeData->overview.tokenValue  = std::move (value); break;
+        case FieldId::unit:       nodeData->overview.unit        = std::move (value); break;
+        case FieldId::unitValue:  nodeData->overview.unitValue   = std::move (value); break;
+        case FieldId::priceValue: nodeData->overview.priceValue  = std::move (value); break;
+        case FieldId::portions:   nodeData->overview.portions    = std::move (value); break;
+        case FieldId::fee:        nodeData->overview.fee         = std::move (value); break;
+        case FieldId::totalFee:   nodeData->overview.totalFee    = std::move (value); break;
+        case FieldId::totalValue: nodeData->overview.totalValue  = std::move (value); break;
+        default:
+          DEBUGINFO << __PRETTY_FUNCTION__ << "unknown fid:" << uint (fid) << i.key();
+          break;
+    }
+  }
 }
 
 void DapCmdNode::slotSetMaxValueUnit (const QString &price)

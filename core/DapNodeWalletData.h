@@ -26,6 +26,13 @@ struct TokenBalance
   QString balance;
 };
 
+struct NetworkFee
+{
+  QString network;    // name
+  QString feeTicker;  // token
+  QString feeValue;   // price
+};
+
 };
 
 /****************************************//**
@@ -70,6 +77,7 @@ protected:
     QString name;           // network name
     QString address;        // network address
     QString feeTicker;      // network fee ticker
+    QString feeValue;       // network fee value
     QList<Token> tokens;    // network tokens
 
 //    struct // fast access
@@ -124,6 +132,7 @@ protected:
   struct
   {
     QStringList networkList;
+    QMap<QString, DapNodeWalletDataStruct::NetworkFee> networkFeeMap;
     QList<DapNodeWalletDataStruct::WalletToken> walletTokenList;
     QList<DapNodeWalletDataStruct::TokenBalance> tokenBalanceList;
 
@@ -153,7 +162,7 @@ public:
   void setWalletsData (const QJsonObject &a_walletsData);
   void setOrderListData (const QJsonArray &a_ordesListData);
 
-  void setNetworkFee (const QString &a_networkName, const QString &a_fee);
+  void setNetworkFee (const QString &a_networkName, const QString &a_fee, const QString &a_feeValue);
 
 //  /// get wallets names list
 //  const QStringList &wallets() const;
@@ -171,6 +180,7 @@ public:
 //  const QMap<QString, QString> &tokensAmount (const QString &a_walletName, const QString &a_networkName) const;
 
   const QStringList &networkList() const;
+  const QMap<QString, DapNodeWalletDataStruct::NetworkFee> &networkFeeMap() const;
   const QList<DapNodeWalletDataStruct::WalletToken> &walletTokenList() const;
   const QList<DapNodeWalletDataStruct::TokenBalance> &tokenBalanceList() const;
 

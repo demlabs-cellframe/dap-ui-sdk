@@ -30,6 +30,7 @@ enum class DapJsonCmdType
     CDB_CTL,
     NODE_INFO,
     UPDATE_OPERATION,
+    GEO_IP,
     UNKNOWN
 };
 
