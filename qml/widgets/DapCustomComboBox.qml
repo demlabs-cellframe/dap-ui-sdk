@@ -10,6 +10,25 @@ Item
     implicitHeight: 45
 
     property int rightMarginIndicator: 16
+    property int leftMarginDisplayText: 16
+    property int leftMarginPopupContain: 16
+    property int rightMarginPopupContain: 16
+    property int popupBorderWidth: 1
+
+    property int delegateHeight: 40
+    property bool isHighPopup: false
+
+    property int popupWidth: 0
+    property bool isHighlightDisplayTextPopup: false
+
+    property bool changingRound: false
+    property bool isSingleColor: false
+    property bool isInnerShadow: true
+    property bool isNecessaryToHideCurrentIndex: false
+
+    property string displayTextNormalColor: currTheme.white
+    property string displayTextPopupColor: currTheme.gray
+
     property int maximumPopupHeight: 200
     property int padding: 15
     property int spacing: 15
@@ -18,7 +37,7 @@ Item
 
     property int currentIndex: -1
     property string currentText: displayText
-    property int count: popupListView.model.count
+    property int count: popupListView.model ? popupListView.model.count : 0
 
     property bool popupVisible: false
 
@@ -32,12 +51,15 @@ Item
 
     property string displayText: defaultText
 
-    property color backgroundColor: currTheme.mainBackground
+    property color backgroundColorNormal: currTheme.mainBackground
+    property color backgroundColorShow: currTheme.mainBackground
+    property alias background: background
 
     property string enabledIcon:""
     property string disabledIcon:""
 
     signal itemSelected(var index)
+    signal currantDisplayTextChanged(var text)
 
     onModelChanged:
     {
@@ -49,6 +71,8 @@ Item
             displayText = defaultText
         else
             displayText = getModelData(popupListView.currentIndex, mainTextRole)
+
+        currantDisplayTextChanged(displayText)
     }
 
     onCountChanged:
@@ -60,6 +84,8 @@ Item
             displayText = getModelData(0, mainTextRole)
         else
             displayText = getModelData(popupListView.currentIndex, mainTextRole)
+
+        currantDisplayTextChanged(displayText)
     }
 
     Rectangle
@@ -68,14 +94,27 @@ Item
         border.width: 0
         anchors.fill: parent
 
-        color: popupVisible ?
-                   currTheme.mainBackground :
-                   backgroundColor
+        color: popupVisible && !isHighlightDisplayTextPopup ?
+                   backgroundColorNormal :
+                   backgroundColorShow
+
+        Rectangle
+        {
+            visible: popupVisible && changingRound && !isHighPopup && !isHighlightDisplayTextPopup
+            height: parent.radius
+            anchors
+            {
+                right:parent.right
+                left:parent.left
+                bottom:parent.bottom
+            }
+            color: parent.color
+        }
 
         RowLayout
         {
             anchors.fill: parent
-            anchors.leftMargin: 16
+            anchors.leftMargin: leftMarginDisplayText
             anchors.rightMargin: rightMarginIndicator
 
             Text
@@ -85,8 +124,8 @@ Item
 
                 text: mainItem.displayText
                 font: mainItem.font
-                color: popupVisible ?
-                           currTheme.gray : currTheme.white
+                color: popupVisible && !isHighlightDisplayTextPopup ?
+                           displayTextPopupColor : displayTextNormalColor
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
             }
@@ -111,7 +150,7 @@ Item
 
     DropShadow
     {
-        visible: popupVisible
+        visible: popupVisible && !isHighPopup && !isHighlightDisplayTextPopup
         anchors.fill: background
         horizontalOffset: currTheme.hOffset
         verticalOffset: currTheme.vOffset
@@ -124,7 +163,7 @@ Item
 
     InnerShadow
     {
-        visible: popupVisible
+        visible: popupVisible && isInnerShadow && !isHighPopup && !isHighlightDisplayTextPopup
         anchors.fill: background
         horizontalOffset: 1
         verticalOffset: 1
@@ -170,12 +209,13 @@ Item
 //        y: mainItem.height
 
         x: -width*(1/scale-1)*0.5
-        y: mainItem.height - height*(1/scale-1)*0.5
+        y: isHighPopup ? -delegateHeight * (mainItem.count - 1) : mainItem.height - height*(1/scale-1)*0.5
 
         width: popupBackground.width
         height: popupBackground.height
 
         padding: 0
+
 
         onVisibleChanged:
         {
@@ -191,14 +231,27 @@ Item
         Rectangle
         {
             id: popupBackground
+            radius: background.radius
+            width: popupWidth === 0 ? mainItem.width : popupWidth
+            height: !isHighPopup ? popupListView.height + border.width * 2 :  popupListView.height + border.width * 2 + delegateHeight + radius
 
-            width: mainItem.width
-            height: popupListView.height + border.width*2
+            color: isSingleColor ? background.color : currTheme.mainBackground
 
-            color: currTheme.mainBackground
-
-            border.width: 1
+            border.width: popupBorderWidth
             border.color: currTheme.mainBackground
+
+            Rectangle
+            {
+                visible: popupVisible && changingRound
+                height: parent.radius
+                anchors
+                {
+                    right:parent.right
+                    left:parent.left
+                    bottom:parent.top
+                }
+                color: parent.color
+            }
 
             ListView
             {
@@ -208,7 +261,7 @@ Item
 
                 x: popupBackground.border.width
                 y: popupBackground.border.width
-                width: mainItem.width - popupBackground.border.width*2
+                width: popupBackground.width - popupBackground.border.width*2
                 implicitHeight:
                     contentHeight < maximumPopupHeight ?
                         contentHeight : maximumPopupHeight
@@ -222,18 +275,25 @@ Item
                 Rectangle
                 {
                     id: menuDelegate
-                    width: mainItem.width
-                    height: 40
+                    width: popupWidth === 0 ? mainItem.width : popupWidth
+                    height: {
+                        if(index === currentIndex && isNecessaryToHideCurrentIndex)
+                        {
+                            return 0
+                        }
+
+                        return delegateHeight
+                    }
 
                     color: area.containsMouse ?
                                currTheme.lime :
-                               currTheme.mainBackground
+                               isSingleColor ? background.color : currTheme.mainBackground
 
                     RowLayout
                     {
                         anchors.fill: parent
-                        anchors.leftMargin: 16
-                        anchors.rightMargin: 16
+                        anchors.leftMargin: leftMarginPopupContain
+                        anchors.rightMargin: rightMarginPopupContain
 
                         Text
                         {
@@ -287,11 +347,76 @@ Item
                 onCurrentIndexChanged:
                 {
                     displayText = getModelData(currentIndex, mainTextRole)
+                    currantDisplayTextChanged(displayText)
                     mainItem.currentIndex = currentIndex
+                    if(displayText)
+                    {
+                        console.log("New item selected: " + displayText);
+                    }
+                }
+            }
+            
+            Rectangle
+            {
+                id: fakeField
+                border.width: 0
+//                anchors.fill: parent
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: popupListView.bottom
+                anchors.topMargin: background.radius
+                visible: isHighPopup
+                height: isHighPopup ? mainItem.height - background.radius * 2 : 0
+                color: popupVisible ?
+                        backgroundColorNormal :
+                        backgroundColorShow
+
+                RowLayout
+                {
+                    anchors.fill: parent
+                    anchors.leftMargin: leftMarginDisplayText
+                    anchors.rightMargin: rightMarginIndicator
+
+                    Text
+                    {
+                        id: fakeMainTextItem
+                        Layout.fillWidth: true
+
+                        text: mainItem.displayText
+                        font: mainItem.font
+                        color: popupVisible ?
+                                displayTextPopupColor : displayTextNormalColor
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
+                    }
+
+                    Image
+                    {
+                        id: fakeIndicator
+                        source: "qrc:/Resources/" + pathTheme + "/icons/other/icon_arrowDown.svg"
+                        rotation: popupVisible ? 180 : 0
+                        mipmap: true
+
+                        Behavior on rotation
+                        {
+                            NumberAnimation
+                            {
+                                duration: 200
+                            }
+                        }
+                    }
                 }
 
+                MouseArea
+                {
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onClicked:
+                    {
+                        popup.visible = false
+                    }
+                }
             }
-
         }
 
         DropShadow
@@ -307,8 +432,9 @@ Item
             cached: true
         }
 
-        InnerShadow {
-            visible: popupVisible
+        InnerShadow
+        {
+            visible: popupVisible && isInnerShadow
             anchors.fill: popupBackground
             horizontalOffset: 1
             verticalOffset: 0

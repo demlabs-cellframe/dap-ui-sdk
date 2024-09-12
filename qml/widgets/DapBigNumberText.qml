@@ -34,35 +34,18 @@ Item
 
     Component.onCompleted:
     {
-//            width = textItem.width + button.width + spacing
         getOutText()
     }
 
     onFullNumberChanged:
     {
-//            width = textItem.width + button.width + spacing
         getOutText()
     }
-
-/*    onOutSymbolsChanged:
-    {
-//        print("DapBigNumberText onOutSymbolsChanged", fullNumber)
-
-//        if(!isAutoOutText)
-//            getOutText()
-    }*/
 
     RowLayout
     {
         anchors.fill: parent
         spacing: 5
-
-//        Text
-//        {
-//            Layout.alignment: Qt.AlignVCenter
-//            height: bigNumber.height
-//            text: fullNumber
-//        }
 
         Text
         {
@@ -91,9 +74,8 @@ Item
                     parent: area
                     visible: area.containsMouse
                     contentText: fullNumber
-                    onVisibleChanged: /*console.log(text.y, bigNumber.y, y)*/
+                    onVisibleChanged:
                     {
-//                        x = outSymbols/2 - textItem.implicitWidth/2
                         updatePos()
                     }
                 }
@@ -103,8 +85,6 @@ Item
         DapCopyButton
         {
             id: button
-//            x: text.width + spacing
-//            y: (bigNumber.height - button.height)*0.5
             Layout.alignment: Qt.AlignVCenter
             Layout.topMargin: textItem.height*0.1
             visible: copyButtonVisible
@@ -113,8 +93,6 @@ Item
 
             onCopyClicked:
             {
-//                print("copyButtonClicked", fullNumber)
-
                 clipboard.setText(fullNumber)
             }
         }
@@ -126,11 +104,8 @@ Item
 
     }
 
-
     function getOutText()
     {
-//        print("getOutText", fullNumber, fullNumber.length)
-//        print(fullNumber.includes("."))
 
         if (outSymbols >= fullNumber.length ||
             (fullNumber.includes(".") && outSymbols >= fullNumber.length-1))

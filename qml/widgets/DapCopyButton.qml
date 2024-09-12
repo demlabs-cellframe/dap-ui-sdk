@@ -10,10 +10,11 @@ import "qrc:/widgets"
 Item
 {
     id: root
-    width: 17
-    height: 18
+    width: 16
+    height: 16
 
     property string popupText: ""
+    property alias mouseArea: mouseArea
 
     signal copyClicked()
 
@@ -23,10 +24,8 @@ Item
         width: parent.width
         height: parent.height
         mipmap: true
-        source: mouseArea.containsMouse ? "qrc:/Resources/" + pathTheme + "/icons/other/copy_hover.svg":
-                                          "qrc:/Resources/" + pathTheme + "/icons/other/copy.svg"
-//        source: mouseArea.containsMouse ? "qrc:/resources/icons/other/copy_hover.svg":
-//                                          "qrc:/resources/icons/other/copy.svg"
+        source: mouseArea.containsMouse ? "qrc:/Resources/" + pathTheme + "/icons/other/copy_hover_small.svg":
+                                          "qrc:/Resources/" + pathTheme + "/icons/other/copy_small.svg"
     }
 
     MouseArea
@@ -37,13 +36,7 @@ Item
         onClicked:
         {
             print("DapCopyButton onClicked")
-            dapMainWindow.infoItem.showInfo(
-                        0,0,
-                        dapMainWindow.width*0.5,
-                        8,
-                        popupText,
-                        "qrc:/Resources/" + pathTheme + "/icons/other/check_icon.png")
-
+            showInfoNotification(popupText, "check_icon.png")
             copyClicked()
         }
     }

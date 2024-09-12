@@ -27,6 +27,8 @@ TextField {
     property string indicatorSourceDisabledHover: ""
     property alias indicator: indicator
 
+    Keys.onReturnPressed: focus = false
+
     style:
         TextFieldStyle
         {
@@ -47,7 +49,7 @@ TextField {
         }
 
 
-    Image{
+    DapImageRender{
         id: indicator
 
         property bool isActive: false
@@ -57,7 +59,6 @@ TextField {
 
         visible: indicatorVisible
         source: indicatorSourceDisabled
-        mipmap: true
 
         MouseArea{
             anchors.fill: parent

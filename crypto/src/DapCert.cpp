@@ -28,6 +28,7 @@ along with any CellFrame SDK based project.  If not, see <http://www.gnu.org/lic
 #include "dap_cert.h"
 #include "dap_cert_file.h"
 #include "DapCert.h"
+#include "dap_enc.h"
 #ifdef Q_OS_WIN
 #include "registry.h"
 #endif
@@ -178,7 +179,7 @@ QString Cert::exportPKeyBase64()
         qWarning() << "Empty hash!";
         return QString();
     }
-    char * buf64 = DAP_NEW_STACK_SIZE(char, buflen * 2 + 6);
+    char * buf64 = DAP_NEW_Z_SIZE(char, buflen * 2 + 6);
     size_t buf64len = dap_enc_base64_encode(buf, buflen, buf64, DAP_ENC_DATA_TYPE_B64_URLSAFE);
     DAP_DELETE(buf);
     return QString::fromLatin1(buf64, static_cast<int>(buf64len));

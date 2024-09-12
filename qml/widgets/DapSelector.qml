@@ -11,8 +11,15 @@ Rectangle
     property int itemVerticalBorder: -2
     property int viewerBorder: 4
     property int currentIndex: viewerItem.currentIndex
+    property int defaultIndex: 0
+    property font textFont: mainFont.dapFont.medium14
+    property color textColor: currTheme.white
     property alias selectorModel: viewerItem.model
     property alias selectorListView: viewerItem
+
+    property bool itemWidthEnabled: false
+
+    property int itemWidth
 
     signal itemSelected()
 
@@ -33,6 +40,8 @@ Rectangle
         orientation: ListView.Horizontal
         interactive: false
 
+        currentIndex: defaultIndex
+
 //        onCurrentItemChanged:
 //        {
 //            print("onCurrentItemChanged", model.get(currentIndex).color)
@@ -41,53 +50,42 @@ Rectangle
 //        }
 
         highlight:
-            Rectangle
-            {
-                id: hl
+        Item {
+            property var gradColor:
+                viewerItem.model.get(viewerItem.currentIndex).color
+
+            /* mask source */
+            Rectangle {
+                id: contenMask
+                anchors.fill: parent
                 radius: height * 0.5
+                visible: false
+            }
+            /* mask */
+            OpacityMask {
+                anchors.fill: content
+                source: content
+                maskSource: contenMask
+            }
+            Canvas{
+                id: content
+                anchors.fill: parent
+                opacity: 0
+                onPaint: {
+                    var ctx = getContext("2d")
 
-                property var gradColor:
-                    viewerItem.model.get(viewerItem.currentIndex).color
-
-//                color: gradColor
-
-//                onWidthChanged:
-//                {
-//                    print("onColorChanged", gradColor, color)
-//                }
-
-
-//                color: (model.get(currentIndex).color === undefined ?
-//                           currTheme.buttonColorNormalPosition0 :
-//                           model.get(currentIndex).color)
-
-                LinearGradient
-                {
-                    anchors.fill: parent
-                    source: parent
-                    start: Qt.point(0,parent.height/2)
-                    end: Qt.point(parent.width,parent.height/2)
-                    gradient:
-                        Gradient {
-                            GradientStop
-                            {
-                                id: grad1
-                                position: 0
-                                color: gradColor === undefined ?
-                                           currTheme.mainButtonColorNormal0 :
-                                           gradColor
-                            }
-                            GradientStop
-                            {
-                                id: grad2
-                                position: 1
-                                color: gradColor === undefined ?
-                                           currTheme.mainButtonColorNormal1 :
-                                           gradColor
-                            }
-                        }
+                    var gradient = ctx.createLinearGradient(0,parent.height/2,parent.width,parent.height/2)
+                    gradient.addColorStop(0, gradColor === undefined ?
+                                              currTheme.mainButtonColorNormal0 :
+                                              gradColor)
+                    gradient.addColorStop(1, gradColor === undefined ?
+                                              currTheme.mainButtonColorNormal1 :
+                                              gradColor)
+                    ctx.fillStyle = gradient
+                    ctx.fillRect(0,0,parent.width,parent.height)
                 }
             }
+        }
 
         model: selectorModel
 
@@ -95,7 +93,8 @@ Rectangle
             Rectangle
             {
                 id: frameItem
-                width: textItem.width + itemHorisontalBorder * 2
+                width: itemWidthEnabled ? itemWidth + itemHorisontalBorder * 2
+                                        : textItem.width + itemHorisontalBorder * 2
                 height: selectorItem.height - viewerBorder * 2
 
                 color: "transparent"
@@ -110,9 +109,9 @@ Rectangle
                     height: frameItem.height
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
-                    bottomPadding: OS_WIN_FLAG ? 4 : 0
-                    color: currTheme.white
-                    font: mainFont.dapFont.medium14
+                    bottomPadding: CURRENT_OS === "win" ? 4 : 0
+                    color: textColor
+                    font: textFont
                     text: name
 
                 }
