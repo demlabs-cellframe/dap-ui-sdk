@@ -240,6 +240,14 @@ void DapUtun::onWorkerStarted()
         ::system(run.toLatin1().constData());
     }
 
+    // Add all CDBs into routing exeption
+    for (const auto &str : m_routingExceptionAddrs){
+        QString run = QString("route add -host %2 %1")
+                          .arg(m_defaultGwOld).arg(str);
+        qDebug() << "Execute " << run;
+        ::system(run.toLatin1().constData() );
+    }
+
 
     // Create connection
     /*
@@ -326,10 +334,17 @@ void DapUtun::tunDeviceDestroy()
     // Delete upstream routes
     if(!isLocalAddress(upstreamAddress()))
     {
-        QString run = QString("route del -host %2 %1")
-                .arg(m_defaultGwOld).arg(upstreamAddress()) ;
+        QString run = QString("route delete -host %1")
+                .arg(upstreamAddress()) ;
         qDebug() << "Execute "<<run;
         ::system( run.toLatin1().constData() );
+    }
+
+    for (const auto &str : m_routingExceptionAddrs){
+        QString run = QString("route delete -host %1")
+                          .arg(str);
+        qDebug() << "Execute " << run;
+        ::system(run.toLatin1().constData() );
     }
 
     // Other routes connected with tunnel should be destroyed autimaticly
