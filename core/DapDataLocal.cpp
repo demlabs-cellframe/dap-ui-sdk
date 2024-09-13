@@ -93,7 +93,7 @@ void DapDataLocal::parseXML(const QString& a_fname)
                         char servInfo[NI_MAXSERV];
                         if (!getnameinfo((struct sockaddr*)&l_addr_out, sizeof(l_addr_out), l_addr_out_str, NI_MAXHOST, servInfo, NI_MAXSERV, NI_NUMERICHOST | NI_NUMERICSERV)){
                             l_cdbServerAddr.address = QString(l_addr_out_str);
-                            l_cdbServerAddr.port = l_port;
+                            l_cdbServerAddr.port = l_port ? l_port : 80;
                             m_cdbServersList.push_back (l_cdbServerAddr);
                             qInfo() << "Add CDB address: " << m_cdbServersList.back().address;
                         }
