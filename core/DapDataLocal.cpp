@@ -82,15 +82,18 @@ void DapDataLocal::parseXML(const QString& a_fname)
                         }
                     }
                 }else if( sr->name().toString() == "cdb"){
-                    struct sockaddr l_addr_out = {};
+                    struct sockaddr_storage l_addr_out = {};
                     QByteArray l_cdb_addr_qstr = sr->readElementText().toLatin1();
-                    const char *l_cdb_addr = l_cdb_addr_qstr.data();
-                    if (!dap_net_resolve_host(l_cdb_addr, AF_INET, &l_addr_out)){
+                    char *l_cdb_addr = l_cdb_addr_qstr.data();
+                    char l_host[DAP_HOSTADDR_STRLEN + 1] = { '\0' }; uint16_t l_port = 0;
+                    if(dap_net_parse_config_address(l_cdb_addr, l_host, &l_port, NULL, NULL)
+                                && dap_net_resolve_host(l_host, dap_itoa(l_port), false, &l_addr_out, NULL)){
                         DapCdbServer l_cdbServerAddr;
-                        char l_addr_out_str[INET_ADDRSTRLEN] = {0};
-                        if (inet_ntop(AF_INET, (void*)&(l_addr_out), l_addr_out_str, INET_ADDRSTRLEN)){
+                        char l_addr_out_str[NI_MAXHOST] = {0};
+                        char servInfo[NI_MAXSERV];
+                        if (!getnameinfo((struct sockaddr*)&l_addr_out, sizeof(l_addr_out), l_addr_out_str, NI_MAXHOST, servInfo, NI_MAXSERV, NI_NUMERICHOST | NI_NUMERICSERV)){
                             l_cdbServerAddr.address = QString(l_addr_out_str);
-                            l_cdbServerAddr.port = 80;
+                            l_cdbServerAddr.port = l_port;
                             m_cdbServersList.push_back (l_cdbServerAddr);
                             qInfo() << "Add CDB address: " << m_cdbServersList.back().address;
                         }
@@ -99,12 +102,15 @@ void DapDataLocal::parseXML(const QString& a_fname)
                     m_networkDefault = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
                 }else if( sr->name().toString() == "kelvpn-pub"){
-                    struct sockaddr l_addr_out = {};
+                    struct sockaddr_storage l_addr_out = {};
                     QByteArray l_pub_addr_qstr = sr->readElementText().toLatin1();
-                    const char *l_pub_addr = l_pub_addr_qstr.data();
-                    if (!dap_net_resolve_host(l_pub_addr, AF_INET, &l_addr_out)){
-                        char l_addr_out_str[INET_ADDRSTRLEN] = {0};
-                        if (inet_ntop(AF_INET, (void*)&(l_addr_out), l_addr_out_str, INET_ADDRSTRLEN)){
+                    char *l_pub_addr = l_pub_addr_qstr.data();
+                    char l_host[DAP_HOSTADDR_STRLEN + 1] = { '\0' }; uint16_t l_port = 0;
+                    if(dap_net_parse_config_address(l_pub_addr, l_host, &l_port, NULL, NULL)
+                                && dap_net_resolve_host(l_host, dap_itoa(l_port), false, &l_addr_out, NULL)){
+                        char l_addr_out_str[NI_MAXHOST] = {0};
+                        char servInfo[NI_MAXSERV];
+                        if (!getnameinfo((struct sockaddr*)&l_addr_out, sizeof(l_addr_out), l_addr_out_str, NI_MAXHOST, servInfo, NI_MAXSERV, NI_NUMERICHOST | NI_NUMERICSERV)){
                             m_kelvpnPub = QString(l_addr_out_str);
                             qInfo() << "KelVPN pub address: " << m_kelvpnPub;
                         }
