@@ -875,6 +875,10 @@ QStringList DapQmlModelRoutingExceptions::getExcludedCheckedPackageList()
   QStringList _list;
   for (const auto &item : qAsConst(s_excluded.checkedApps))
     _list.push_front(item.packageName);
+
+  //force exclude com.KelVPN package from rounting
+  _list.push_front(QString("com.%1").arg(DAP_BRAND));
+
   return _list;
 }
 
