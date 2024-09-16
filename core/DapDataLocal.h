@@ -70,18 +70,9 @@ class DapDataLocal : public QObject
 public:
     Q_OBJECT
     DapDataLocal();
-    const QString ServerListName;
-
-    QString     m_brandName;
-    QString     logFilePath;
-    QString     m_logPath;
-    QString     m_minDashboardVersion;
-    QString     m_minNodeVersion;
-    QString     m_pubStage;
 
     void parseXML(const QString& a_fname);
 
-    DapKey *secretKey = Q_NULLPTR;
     void initSecretKey();
     QString getRandomString(int);
 
@@ -90,8 +81,8 @@ public:
 
     QString login() const;
 
-    void setLogFilePath(QString path){logFilePath = path;}
-    QString getLogFilePath(){return logFilePath;}
+    void setLogFilePath(QString path){m_logFilePath = path;}
+    QString getLogFilePath(){return m_logFilePath;}
     void setLogPath(QString path){m_logPath = path;}
     QString getLogPath(){return m_logPath;}
     QString getPub() {return m_pubStage;}
@@ -184,6 +175,15 @@ private:
     QString m_login;      ///< Login.
     QString m_password;   ///< Password.
     QString m_serialKey;  ///< Serial key.
+
+    QString     m_brandName;
+    QString     m_logFilePath;
+    QString     m_logPath;
+    QString     m_minDashboardVersion;
+    QString     m_minNodeVersion;
+    QString     m_pubStage;
+
+    DapKey *secretKey = Q_NULLPTR;
 
     DataToUpdate m_dataToUpdate; ///data to update
 

@@ -44,64 +44,92 @@ void DapDataLocal::parseXML(const QString& a_fname)
     }
     qDebug() << "data.xml opened, size "<< file.size();
     QXmlStreamReader *sr = new QXmlStreamReader(&file);
-    if(sr->readNextStartElement()){
-        if(sr->name().toString() == "data"){
-            while ( sr->readNextStartElement() ){
-                if( sr->name().toString() == "servers"){
-                    while ( sr->readNextStartElement() ){
-                        if( sr->name().toString() == "server") {
+    if(sr->readNextStartElement())
+    {
+        if(sr->name().toString() == "data")
+        {
+            while ( sr->readNextStartElement() )
+            {
+                if( sr->name().toString() == "servers")
+                {
+                    while ( sr->readNextStartElement() )
+                    {
+                        if( sr->name().toString() == "server") 
+                        {
                             DapServerInfo item;
-                            while ( sr->readNextStartElement() ){
-                                if(sr->name().toString() == "name"){
+                            while ( sr->readNextStartElement() )
+                            {
+                                if(sr->name().toString() == "name")
+                                {
                                     item.setName (sr->readElementText());
-                                } else if (sr->name().toString() == "address") {
+                                }
+                                else if (sr->name().toString() == "address") 
+                                {
                                     item.setAddress (sr->readElementText());
-                                } else if( sr->name().toString() == "port") {
+                                }
+                                else if( sr->name().toString() == "port") 
+                                {
                                     bool ok;
                                     quint16 port = quint16(sr->readElementText().toInt(&ok));
-                                    if (!ok) {
+                                    if (!ok) 
+                                    {
                                         throw std::runtime_error("Can't cast port to int "
                                                                  "from XML file");
                                     }
                                     item.setPort (port);
-                                } else if(sr->name().toString() == "location") {
+                                }
+                                else if(sr->name().toString() == "location") 
+                                {
                                     item.setLocation (sr->readElementText());
-                                } else if (sr->name().toString() == "state") {
+                                }
+                                else if (sr->name().toString() == "state") 
+                                {
                                     item.setOnline (sr->readElementText());
                                 }
-                                else {
+                                else 
+                                {
                                     qWarning() << "[DL] Inside tag 'server': Unknown tag "<<sr->name();
                                     sr->skipCurrentElement();
                                 }
                             }
                             qDebug() << "[DL] Server "<<item.name()<<" added";
                             DapServerList::instance()->append (std::move (item));
-                        }else{
+                        }
+                        else
+                        {
                             qDebug() << "[DL] Inside tag 'servers': unknown tag "<<sr->name();
                             sr->skipCurrentElement();
                         }
                     }
-                }else if( sr->name().toString() == "cdb"){
+                }
+                else if( sr->name().toString() == "cdb")
+                {
                     struct sockaddr_storage l_addr_out = {};
                     QByteArray l_cdb_addr_qstr = sr->readElementText().toLatin1();
                     char *l_cdb_addr = l_cdb_addr_qstr.data();
                     char l_host[DAP_HOSTADDR_STRLEN + 1] = { '\0' }; uint16_t l_port = 0;
                     if(dap_net_parse_config_address(l_cdb_addr, l_host, &l_port, NULL, NULL)
-                                && dap_net_resolve_host(l_host, dap_itoa(l_port), false, &l_addr_out, NULL)){
+                                && dap_net_resolve_host(l_host, dap_itoa(l_port), false, &l_addr_out, NULL))
+                    {
                         DapCdbServer l_cdbServerAddr;
                         char l_addr_out_str[NI_MAXHOST] = {0};
                         char servInfo[NI_MAXSERV];
-                        if (!getnameinfo((struct sockaddr*)&l_addr_out, sizeof(l_addr_out), l_addr_out_str, NI_MAXHOST, servInfo, NI_MAXSERV, NI_NUMERICHOST | NI_NUMERICSERV)){
+                        if (!getnameinfo((struct sockaddr*)&l_addr_out, sizeof(l_addr_out), l_addr_out_str, NI_MAXHOST, servInfo, NI_MAXSERV, NI_NUMERICHOST | NI_NUMERICSERV))
+                        {
                             l_cdbServerAddr.address = QString(l_addr_out_str);
                             l_cdbServerAddr.port = l_port ? l_port : 80;
                             m_cdbServersList.push_back (l_cdbServerAddr);
                             qInfo() << "Add CDB address: " << m_cdbServersList.back().address;
                         }
                     }
-                }else if( sr->name().toString() == "network-default"){
+                }
+                else if( sr->name().toString() == "network-default")
+                {
                     m_networkDefault = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
-                }else if( sr->name().toString() == "kelvpn-pub"){
+                }
+                else if( sr->name().toString() == "kelvpn-pub")
+                {
                     struct sockaddr_storage l_addr_out = {};
                     QByteArray l_pub_addr_qstr = sr->readElementText().toLatin1();
                     char *l_pub_addr = l_pub_addr_qstr.data();
@@ -115,19 +143,29 @@ void DapDataLocal::parseXML(const QString& a_fname)
                             qInfo() << "KelVPN pub address: " << m_kelvpnPub;
                         }
                     }
-                }else if( sr->name().toString() == "min-node-version"){
+                }
+                else if( sr->name().toString() == "min-node-version")
+                {
                     m_minNodeVersion = sr->readElementText();
                     qInfo() << "Min node version: " << m_minNodeVersion;
-                }else if( sr->name().toString() == "min-dashboard-version"){
+                }
+                else if( sr->name().toString() == "min-dashboard-version")
+                {
                     m_minDashboardVersion = sr->readElementText();
                     qInfo() << "Min dashboard version: " << m_minDashboardVersion;
-                }else if( sr->name().toString() == "title"){
+                }
+                else if( sr->name().toString() == "title")
+                {
                     m_brandName = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
-                }else if( sr->name().toString() == "url_site"){
+                }
+                else if( sr->name().toString() == "url_site")
+                {
                     m_urlSite = sr->readElementText();
                     qInfo() << "Network defaut: " << m_networkDefault;
-                }else{
+                }
+                else
+                {
                     qDebug() << "[DL] Inside tag 'data' unknown tag "<<sr->name();
                     sr->skipCurrentElement();
                 }
@@ -466,8 +504,6 @@ DapDataLocal *DapDataLocal::instance()
     static DapDataLocal s_instance;
     return &s_instance;
 }
-
-
 
 QString DapCdbServer::toString() const
 {
