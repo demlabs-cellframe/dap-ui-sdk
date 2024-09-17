@@ -7,7 +7,7 @@ DapJsonCmdController::DapJsonCmdController(QObject *parent)
 
 }
 
-DapCmdAbstract* DapJsonCmdController::_findHandler(DapJsonCmdType cmd)
+DapCmdAbstract* DapJsonCmdController::findHandler(DapJsonCmdType cmd)
 {
     for(DapCmdAbstract* handler : m_handlers) {
         if(handler->cmd() == cmd)
@@ -35,7 +35,7 @@ void DapJsonCmdController::handleCmd(const QByteArray &a_cmd)
     }
 
     DapJsonCmdType cmd = DapCmdAbstract::getCommand(doc);
-    auto handler = _findHandler(cmd);
+    auto handler = findHandler(cmd);
     if (handler == Q_NULLPTR) {
         qWarning() << "Not found handler for command "
                    << DapCmdAbstract::commandToString(cmd);
@@ -51,8 +51,8 @@ void DapJsonCmdController::handleCmd(const QByteArray &a_cmd)
 
 void DapJsonCmdController::addNewHandler(DapCmdAbstract* handler)
 {
-    Q_ASSERT(handler);
-    if(_findHandler(handler->cmd()) != Q_NULLPTR) {
+    Q_ASSERT_X(handler, "[addNewHandler] handler not valid", 0);
+    if(findHandler(handler->cmd()) != Q_NULLPTR) {
         qCritical() << "Handler for command" << DapCmdAbstract::commandToString(handler->cmd())
                     << "already exists";
         return;
