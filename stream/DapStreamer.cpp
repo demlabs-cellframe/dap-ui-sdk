@@ -258,14 +258,38 @@ void DapStreamer::sltStreamOpenCallback()
 {
     qDebug() << "Opening stream";
 
-    if(m_network_reply->getReplyData().size() == 0) {
-        qWarning() << "Reply is empty";
+    // Check if m_session or DapCrypt is null
+    if (!m_session || !m_session->getDapCrypt()) {
+        qCritical() << "Session or DapCrypt is null";
         emit sigStreamOpenBadResponseError();
         return;
     }
 
+    // Check if m_network_reply is valid
+    if (!m_network_reply) {
+        qCritical() << "Network reply is null";
+        emit sigStreamOpenBadResponseError();
+        return;
+    }
+
+    // Get network reply data and check if it is empty
+    QByteArray replyData = m_network_reply->getReplyData();
+    if (replyData.isEmpty()) {
+        qWarning() << "Network reply data is empty";
+        emit sigStreamOpenBadResponseError();
+        return;
+    }
+
+    // Debugging the reply data size before conversion to hex
+    qDebug() << "Reply data size:" << replyData.size();
+
+    // Safely convert the data to hex only if the size is reasonable
+    qDebug() << "Reply data (hex):" << replyData.toHex();
+
+    // Decode the reply data
     QByteArray streamReplyDec;
-    m_session->getDapCrypt()->decode(m_network_reply->getReplyData(), streamReplyDec, KeyRoleSession);
+    m_session->getDapCrypt()->decode(replyData, streamReplyDec, KeyRoleSession);
+
     QString streamReplyStr(streamReplyDec);
 
     QStringList str_list = streamReplyStr.split(" ");
@@ -286,20 +310,31 @@ void DapStreamer::sltStreamOpenCallback()
         qDebug()  << "[DapConnectStream] Stream server key for client requests: "
                   << streamServKey;
 
+        // Check if m_session or DapCrypt is null
+        if (!m_session || !m_session->getDapCrypt()) {
+            qCritical() << "Session or cryptography module is null";
+            emit sigStreamOpenBadResponseError();
+            return;
+        }
+
+        // Check if streamServKey is empty or has incorrect length
+        if (streamServKey.isEmpty()) {
+            qCritical() << "Stream server key is empty";
+            emit sigStreamOpenBadResponseError();
+            return;
+        }
+
+        // Attempt to initialize the key
         m_session->getDapCrypt()->initKey(DAP_ENC_KEY_TYPE_SALSA2012, streamServKey, KeyRoleStream);
 
-        if(!m_streamSocket.isOpen()) {
+        if (!m_streamSocket.isOpen()) {
+            m_streamSocket.connectToHost(m_session->upstreamAddress(), m_session->upstreamPort(), QIODevice::ReadWrite);
 
-            m_streamSocket.connectToHost(m_session->upstreamAddress(),
-                                          m_session->upstreamPort(),
-                                          QIODevice::ReadWrite);
-//#ifndef Q_OS_WINDOWS
             if (m_streamSocket.waitForConnected(15000)) {
                 return;
             } else {
-                emit errorNetwork (tr ("Socket connection timeout"));
+                emit errorNetwork(tr("Socket connection timeout"));
             }
-//#endif
         } else {
             qCritical() << "Stream already open";
         }
