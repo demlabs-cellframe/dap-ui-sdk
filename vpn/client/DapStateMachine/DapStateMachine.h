@@ -31,10 +31,12 @@ public:
     // state mirrored what want user (connect or disconnect)
     void addUserRequestDisconnectSignal(const QObject *sender, const char *signal);
     void addUserRequestConnect(const QObject *sender, const char *signal);
+    void addUserRequestConnectNoCDB(const QObject *sender, const char *signal);
 
     //
     DapState *userRequestStates;
     DapState *userRequestStateConnect;
+    DapState *userRequestStateConnectNoCDB;
     DapState *userRequestStateDisconnect;
 
     DapState *initState;

@@ -46,7 +46,12 @@ DapQmlStyle::DapQmlStyle(QObject *parent)
       connect (s_globalSignal, &DapQmlStyle::redrawRequested,
                this, &DapQmlStyle::_applyStyle);//,
                //Qt::QueuedConnection);
-    }
+  }
+}
+
+DapQmlStyle::~DapQmlStyle()
+{
+  m_item  = nullptr;
 }
 
 /********************************************
@@ -75,7 +80,7 @@ void DapQmlStyle::setItem (QObject *a_newItem)
   emit itemChanged();
 }
 
-void DapQmlStyle::windowResized(int a_width, int a_height)
+void DapQmlStyle::windowResized (int a_width, int a_height)
 {
   sWindowResized (a_width, a_height);
 }
@@ -147,6 +152,111 @@ QSize DapQmlStyle::textOnScreenSize(QObject *a_item)
   return rect.size();
 }
 
+QString DapQmlStyle::elideText(
+  const QString &a_fontFamily,
+  const int a_fontSize,
+  const QString &a_text,
+  const int a_maxWidth)
+{
+  /* font metrics */
+  QFont font (a_fontFamily, a_fontSize);
+  QFontMetrics metrics (font);
+
+  /* text is fitting well */
+  if (metrics.horizontalAdvance(a_text) <= a_maxWidth)
+    return a_text;
+
+  /* variables */
+  constexpr static const int charsToRemove  = 4;
+  constexpr static const char *elideDots    = "...";
+  QString elidedText  = a_text;
+  const int elideSize = metrics.horizontalAdvance (elideDots);
+  int iterationsLeft  = 8;
+
+  /* elide in cycle */
+  while (
+      ((metrics.horizontalAdvance (elidedText)) > (a_maxWidth - elideSize))
+      && elidedText.size() >= 5
+      && iterationsLeft-- >= 0
+    )
+  {
+    int middleIndex   = elidedText.length() / 2;
+//    QString before    = elidedText;
+    elidedText.replace (middleIndex - charsToRemove / 2, charsToRemove, elideDots);
+//    QString after     = elidedText;
+//    qDebug() << "elideText : index" << middleIndex << "before" << before << ", after" << after;
+  }
+
+  return elidedText;
+}
+
+QString DapQmlStyle::elideOrderPriceText(
+  const QString &a_fontFamily,
+  const int a_fontSize,
+  const QString &a_text,
+  const int a_maxWidth)
+{
+  /* font metrics */
+  QFont font (a_fontFamily, a_fontSize);
+  QFontMetrics metrics (font);
+
+  /* split by scope */
+  QStringList parts   = a_text.split ('(');
+
+  /* check, if string is valid */
+  if (parts.size() != 2)
+    return elideText (a_fontFamily, a_fontSize, a_text, a_maxWidth);
+
+  /* calc shorten max width */
+  parts[1]  = '(' + parts[1];
+  const int secondPartSize  = metrics.horizontalAdvance (parts.at (1)) * 0.75;
+  const int shortenMaxWidth = a_maxWidth - secondPartSize;
+
+  /* calc elide */
+  QString elidenFirstPart   = elideText (a_fontFamily, a_fontSize, parts.first(), shortenMaxWidth);
+
+  /* return result */
+  return elidenFirstPart + parts.at (1);
+}
+
+qreal DapQmlStyle::getQssFontSize (const QString &a_qss)
+{
+  /* variables */
+  double resultX, resultY, resultW, resultH, resultFontSize;
+
+  /* get items by style list */
+  auto items  = DapStyle::QssMap::items (a_qss);
+
+  /* cycle thru all items */
+  for (auto i = items.begin(), e = items.end(); i != e; i++)
+    {
+      /* ge item */
+      auto &item = *i;
+
+      /* cycle thru all item properties */
+      for (auto it = item->begin(), en = item->end(); it != en; it++)
+        {
+          /* set scale */
+          if (it.key() == "scaledRect" || it.key() == "scaledFont")
+            {
+              auto scaled  = it.value().value<DapStyle::Scaled> ();
+
+              /* adjust and return result */
+              scaled.calcAdjusted(
+                s_screenWidth, s_screenHeight,
+                resultX, resultY,
+                resultW, resultH,
+                resultFontSize);
+
+              return resultFontSize;
+            }
+        }
+    }
+
+  /* not found */
+  return 0;
+}
+
 void DapQmlStyle::setup(const QString &styleSheet)
 {
   s_styleSheet  = styleSheet;
@@ -163,19 +273,25 @@ void DapQmlStyle::update()
   DapStyle::QssMap::setup (s_styleSheet);
 }
 
-void DapQmlStyle::sWindowResized(int a_width, int a_height)
+void DapQmlStyle::sWindowResized (int a_width, int a_height)
 {
-  if (s_globalSignal)
-    emit s_globalSignal->resized (a_width, a_height);
+  if (s_globalSignal
+      && (s_screenWidth != a_width
+          || s_screenHeight != a_height))
+    {
+      s_screenWidth   = a_width;
+      s_screenHeight  = a_height;
+      emit s_globalSignal->resized (a_width, a_height);
+    }
 }
 
 void DapQmlStyle::sRequestRedraw()
 {
   if (s_globalSignal)
-    {
-      update();
-      emit s_globalSignal->redrawRequested();
-    }
+  {
+    update();
+    emit s_globalSignal->redrawRequested();
+  }
 }
 
 /********************************************
@@ -218,10 +334,8 @@ void DapQmlStyle::_applyStyle()
     }
 }
 
-void DapQmlStyle::_resized(int a_width, int a_height)
+void DapQmlStyle::_resized (int a_width, int a_height)
 {
-  s_screenWidth   = a_width;
-  s_screenHeight  = a_height;
   _applyStyle();
 
   if (this != s_globalSignal)

@@ -47,6 +47,7 @@ protected:
   QString m_name;
   QString m_location;
   QString m_online;
+  QString m_order_hash;
   int m_ping;
   ConnectionQuality m_connQuality;
   /// @}
@@ -87,6 +88,9 @@ public:
 
   const QString &address() const;
   void    setAddress (const QString &address);
+
+  const QString &orderHash() const;
+  void setOrderHash (const QString &hash);
 
   const QString &address6() const;
   void    setAddress6 (const QString &address6);

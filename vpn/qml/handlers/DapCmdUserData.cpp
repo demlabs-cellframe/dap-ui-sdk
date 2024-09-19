@@ -20,6 +20,10 @@ void DapCmdUserData::handleResult(const QJsonObject& result)
         qDebug() << "license_term_till " << result.value("license_term_till").toString();
         emit sigtLicenseTermTill(result.value("license_term_till").toString());
         return;
+    } else if (result.contains("country_iso")) {
+        qDebug() << "country_iso " << result.value("country_iso").toString();
+        emit sigCoutryISOReceived(result.value("country_iso").toString());
+        return;
     }
 
     if (result.value(userParam) != QJsonValue::Undefined &&

@@ -30,7 +30,14 @@ const QString TEXT_TX_OUT               = "tx_out";
 const QString COUNTRY_NAME              = "Country_code";
 const QString SETTING_AUTHORIZATION     = "authorization";
 const QString LAST_SELECTED_SERVER      = "lastSelectedServer";
+const QString LAST_SELECTED_SERVER_HASH = "lastSelectedServerOrderHash";
+const QString SETTING_THEME             = "ColorTheme";
 const QString SETTING_ROUEXC_MODE       = "rouExcMode";
+const QString NODE_ORDER_HISTORY        = "nodeOrderHistory";
+const QString SERIAL_LOSS_ON_UNINSTALL_FLAG = "serialLossOnUninstallFlag";
+const QString NOTIFICATION_HISTORY      = "notificationHistory";
+const QString NOCDB_DATA                = "NoCdbData";
+const QString COUNTRY_ISO               = "country_iso";
 
 class DapSerialKeyData;
 enum class Authorization;
@@ -63,15 +70,9 @@ class DapDataLocal : public QObject
 public:
     Q_OBJECT
     DapDataLocal();
-    const QString ServerListName;
-
-    QString     m_brandName;
-    QString     logFilePath;
-    QString     m_logPath;
 
     void parseXML(const QString& a_fname);
 
-    DapKey *secretKey = Q_NULLPTR;
     void initSecretKey();
     QString getRandomString(int);
 
@@ -80,10 +81,11 @@ public:
 
     QString login() const;
 
-    void setLogFilePath(QString path){logFilePath = path;}
-    QString getLogFilePath(){return logFilePath;}
+    void setLogFilePath(QString path){m_logFilePath = path;}
+    QString getLogFilePath(){return m_logFilePath;}
     void setLogPath(QString path){m_logPath = path;}
     QString getLogPath(){return m_logPath;}
+    QString getPub() {return m_pubStage;}
 
 
     QString password() const;
@@ -91,9 +93,18 @@ public:
     DataToUpdate& getDataToUpdate(){return m_dataToUpdate;}
 
     const DapCdbServerList &cdbServersList()  { return m_cdbServersList; }
+    const QString & KelvpnPub()               { return m_kelvpnPub;}
     const QString & networkDefault()          { return m_networkDefault; }
     const QString & getUrlSite()              { return m_urlSite;        }
     const QString & getBrandName()            { return m_brandName;      }
+
+    const QString & getMinDashboardVersion() const { return m_minDashboardVersion; }
+    const QString & getMinNodeVersion()      const { return m_minNodeVersion; }
+    
+    const QString & getCountryISO() { return m_coutryISO; }
+    void setCountryISO(QString iso_code){
+        m_coutryISO = iso_code;
+    }
 
     DapCdbServerList::const_iterator m_cdbIter;
 
@@ -150,8 +161,11 @@ signals:
 
 protected:
     DapCdbServerList  m_cdbServersList;
+    QString           m_kelvpnPub;
     QString           m_networkDefault;
     QString           m_urlSite;
+
+    QString     m_coutryISO;
 
 private:
     void loadAuthorizationDatas();
@@ -161,6 +175,15 @@ private:
     QString m_login;      ///< Login.
     QString m_password;   ///< Password.
     QString m_serialKey;  ///< Serial key.
+
+    QString     m_brandName;
+    QString     m_logFilePath;
+    QString     m_logPath;
+    QString     m_minDashboardVersion;
+    QString     m_minNodeVersion;
+    QString     m_pubStage;
+
+    DapKey *secretKey = Q_NULLPTR;
 
     DataToUpdate m_dataToUpdate; ///data to update
 

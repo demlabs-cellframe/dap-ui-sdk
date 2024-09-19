@@ -9,7 +9,8 @@ enum ConnectionState {
     Connected,
     Reconnecting,
     Disconnecting,
-    ServerChanging
+    ServerChanging,
+    NoCDBConnecting
 };
 
 #endif // VPNDEFINE_H

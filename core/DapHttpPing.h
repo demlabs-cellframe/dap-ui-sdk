@@ -26,6 +26,13 @@ public:
 signals:
   void sigResponse(qint64 requestTime);
   void sigNetworkError(QString);
+  // void sigNetworkError(int, QString);
+
+public:
+  bool bRunning;
+  static void responseCallback(void * a_response, size_t a_response_size, void * a_obj, http_status_code_t statuscode);
+  static void responseCallbackError(int a_err_code, void * a_obj);
+  static void responseProgressCallback(size_t a_response_size, size_t a_content_length, void * a_obj);
 };
 
 #endif // DAPHTTPPING_H

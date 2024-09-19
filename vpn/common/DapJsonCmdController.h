@@ -8,11 +8,7 @@
 class DapJsonCmdController : public QObject
 {
     Q_OBJECT
-private:
-    // returns Q_NULLPTR if handler not found
-    DapCmdAbstract* _findHandler(DapJsonCmdType cmd);
 
-    QVector<DapCmdAbstract*> m_handlers;
 public:
     explicit DapJsonCmdController(QObject *parent = nullptr);
 
@@ -20,7 +16,13 @@ public:
     void addNewHandler(DapCmdAbstract* handler);
 signals:
     void sendDapCmd(const QByteArray& ba);
-public slots:
+
+private:
+    // returns Q_NULLPTR if handler not found
+    DapCmdAbstract* findHandler(DapJsonCmdType cmd);
+
+private:
+    QVector<DapCmdAbstract*> m_handlers;
 };
 
 #endif // DAPCMDCONTROLLER_H

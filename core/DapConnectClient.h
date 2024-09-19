@@ -53,6 +53,10 @@ public:
     void request_GET(const QString& host,  quint16 port,
                                const QString & urlPath, DapNetworkReply &a_netReply, const QString &headers = "", bool ssl = false);
 
+    void request_GET_for_ping(const QString& host,  quint16 port,
+                         const QString & urlPath, DapNetworkReply &a_netReply, const QString &headers = "", bool ssl = false);
+
+
     void request_POST(const QString& host,  quint16 port,
                                 const QString & urlPath, const QByteArray& data, DapNetworkReply &a_netReply, const QString &headers = "", bool ssl = false);
 };

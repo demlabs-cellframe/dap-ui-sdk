@@ -43,12 +43,12 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, Type
         if (dir.mkpath(m_pathToLog) == false)
           qDebug() << "unable to create dir";
 #ifndef Q_OS_ANDROID
-        system(("chmod -R 667 " + m_pathToLog).toUtf8().data());
+        system(("chmod -R 777 " + m_pathToLog).toUtf8().data());
 #endif
 
     }
 #ifndef Q_OS_ANDROID
-    system(("chmod 667 $(find " + m_pathToLog + " -type d)").toUtf8().data());
+    system(("chmod 777 $(find " + m_pathToLog + " -type d)").toUtf8().data());
 #endif
 
 //    connect(DapLogger::instance(), &DapLogger::sigMessageHandler,
@@ -270,7 +270,7 @@ void DapLogger::writeMessage(QtMsgType type,
         #error "Not supported platform"
 #endif
         fileName = (fileName == Q_NULLPTR ? ctx.file : fileName + 1);
-        strcpy(prefixBuffer, fileName);
+        strncpy (prefixBuffer, fileName, 128);
         auto dest = strrchr(prefixBuffer, '.');
         if (dest == nullptr)
           dest    = prefixBuffer + strlen(prefixBuffer);
@@ -280,7 +280,7 @@ void DapLogger::writeMessage(QtMsgType type,
     } else {
         _log_it(nullptr, 0, "\0", castQtMsgToDap(type), "%s", qUtf8Printable(msg));
     }
-    printf("%s\n",qUtf8Printable(msg));
+    //printf("%s\n",qUtf8Printable(msg));
 
     std::cerr.flush();
     std::cout.flush();

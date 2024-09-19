@@ -43,7 +43,6 @@ darwin {
     include ($$PWD/darwin/darwin.pri)
     #INCLUDEPATH += /usr/local/opt/openssl/include
     #LIBS += -L/usr/local/opt/openssl/lib
-    QMAKE_CXXFLAGS +=  -fmodules -fcxx-modules
     LIBS += -framework NetworkExtension
 }
 
