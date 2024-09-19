@@ -19,7 +19,9 @@ TextField {
     property string backgroundColor: currTheme.secondaryBackground
     property string placeholderColor: currTheme.gray
     property string textColor: currTheme.white
+    property string passwordChar: ""
 
+    property int indicatorTopMargin: 0
     property bool indicatorVisible: false
     property string indicatorSourceEnabled: ""
     property string indicatorSourceDisabled: ""
@@ -54,8 +56,9 @@ TextField {
 
         property bool isActive: false
 
+        anchors.top: parent.top
         anchors.right: parent.right
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.topMargin: parent.height / 2 - indicator.height / 2 + indicatorTopMargin
 
         visible: indicatorVisible
         source: indicatorSourceDisabled
