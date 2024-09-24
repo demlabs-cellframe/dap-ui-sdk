@@ -12,15 +12,19 @@ void DapHttpPing::sendRequest(const QString& host, quint16 port)
 
   connect( networkReply, &DapNetworkReply::finished, this, [=] {
 
-    if ( networkReply->error() == QNetworkReply::NetworkError::NoError ) {
+    if ( networkReply->error() == QNetworkReply::NetworkError::NoError )
+    {
       emit sigResponse(timer->elapsed());
-    } else {
+    }
+    else
+    {
       emit sigNetworkError(networkReply->errorString());
     }
     delete timer;
   });
 
-  connect( networkReply, &DapNetworkReply::sigError, this, [=] {
+  connect( networkReply, &DapNetworkReply::sigError, this, [=]
+          {
       emit sigNetworkError(/*networkReply->error(), */networkReply->errorString());
       delete timer;
   });
@@ -28,6 +32,8 @@ void DapHttpPing::sendRequest(const QString& host, quint16 port)
 
 void DapHttpPing::responseCallback(void * a_response, size_t a_response_size, void * a_obj, http_status_code_t statuscode)
 {
+    Q_UNUSED(statuscode)
+
     DapNetworkReply * reply = reinterpret_cast<DapNetworkReply*>(a_obj);
     reply->setReply(QByteArray(reinterpret_cast<const char*>(a_response), static_cast<int>(a_response_size)));
     qDebug() << "Dap Client HTTP Request: response received, size=" << a_response_size;

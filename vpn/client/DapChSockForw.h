@@ -38,23 +38,27 @@ class DapChSockForw : public DapChBase
 {
     Q_OBJECT
 public:
-private:
-    // DATAS
-    DapStreamer * m_streamer;
-    DapSession * m_mainDapSession;
+    DapChSockForw(DapStreamer * a_streamer, DapSession * mainDapSession);
 
-    QMap<int, QTcpSocket* > m_socketsIn;
-    QMap<int, QTcpServer* > m_servs;
-    QMap<int, QString > m_servsRemoteAddr;
-    QMap<int, quint16 > m_servsRemotePort;
+    bool isTunCreated(){return tun->isCreated();}
 
-    QMap<int, QTcpSocket* > m_socksIn;
-    QMap<int, QTcpSocket* > m_socksOut;
+    void tunCreate (const QString& a_addr, const QString& a_gw);
+    void workerStart(int a_tunSocket);
 
-    DapTunNative * tun;
-    // METHODS
-    QString m_addr, m_gw;
-    QTcpServer *m_fdListener;
+    quint16 addForwarding(const QString remoteAddr, quint16 remotePort, quint16 localPort);
+    void delForwarding(int sockId);
+    void delForwardingAll();
+
+    DapStreamer * streamer(){ return m_streamer; }
+public slots:
+    void onPktIn(DapChannelPacket *pkt) override;
+    void packetOut(DapSockForwPacket *pkt);
+
+    void requestIP();
+    void netConfigClear();
+
+    void tunCreate(); // create with all predefined before values
+    void tunDestroy();
 private slots:
     void onFwServerConnected();
     void onFwClientReadyRead();
@@ -72,22 +76,6 @@ signals:
     void sigTunNativeCreate();
     void sigNativeDestroy();
 
-
-public:
-    DapChSockForw(DapStreamer * a_streamer, DapSession * mainDapSession);
-
-    bool isTunCreated(){return tun->isCreated();}
-
-    void tunCreate (const QString& a_addr, const QString& a_gw);
-    void workerStart(int a_tunSocket);
-
-    quint16 addForwarding(const QString remoteAddr, quint16 remotePort, quint16 localPort);
-    void delForwarding(int sockId);
-    void delForwardingAll();
-
-    DapStreamer * streamer(){ return m_streamer; }
-signals:
-
     void netConfigReceived(QString,QString);
     void netConfigRequested();
     void netConfigReceivedSame();
@@ -100,15 +88,24 @@ signals:
     void ipRequested();
 
     void sendCmdAll(const QString&);
-public slots:
-    void onPktIn(DapChannelPacket *pkt) override;
-    void packetOut(DapSockForwPacket *pkt);
 
-    void requestIP();
-    void netConfigClear();
+private:
+    // DATAS
+    DapStreamer * m_streamer;
+    DapSession * m_mainDapSession;
 
-    void tunCreate(); // create with all predefined before values
-    void tunDestroy();
+    QMap<int, QTcpSocket* > m_socketsIn;
+    QMap<int, QTcpServer* > m_servs;
+    QMap<int, QString > m_servsRemoteAddr;
+    QMap<int, quint16 > m_servsRemotePort;
+
+    QMap<int, QTcpSocket* > m_socksIn;
+    QMap<int, QTcpSocket* > m_socksOut;
+
+    DapTunNative * tun;
+    // METHODS
+    QString m_addr, m_gw;
+    QTcpServer *m_fdListener;
 };
 
 #endif // DAPCHSOCKFORW_H
