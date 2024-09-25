@@ -33,7 +33,7 @@ void DapCmdAbstract::sendCmd(const QJsonObject * obj)
     if(obj != Q_NULLPTR) {
         cmdObj.insert(m_side == Side::CLIENT ? "params" : "result", *obj);
     }
-
+    qDebug() << "[sendCmd] cmdObj: " << cmdObj;
     emit send(QJsonDocument(cmdObj).toJson());
 }
 
