@@ -8,7 +8,7 @@ DapCmdStats::DapCmdStats(QObject *parent) :
 
 void DapCmdStats::handle(const QJsonObject* params)
 {
-    Q_UNUSED(params);
+    DapCmdServiceAbstract::handle(params);
 
     QJsonValue val = params->value("stream");
 

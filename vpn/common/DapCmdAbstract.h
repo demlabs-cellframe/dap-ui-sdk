@@ -10,10 +10,11 @@ class DapCmdAbstract : public QObject {
     Q_OBJECT
 protected:
     enum class Side {CLIENT, SERVICE}; // which side belong object
+    static QMap<DapJsonCmdType, QString> cmdString;
 private:
     Side m_side;
     DapJsonCmdType m_cmd;
-    static QMap<DapJsonCmdType, QString> cmdString;
+    
 public:
     explicit DapCmdAbstract(Side side, DapJsonCmdType cmd, QObject *parent = nullptr):
         QObject(parent), m_side(side), m_cmd(cmd) {}
@@ -22,7 +23,7 @@ public:
     static QString commandToString(DapJsonCmdType command);
     static DapJsonCmdType getCommand(const QJsonDocument& doc);
 
-    virtual DapJsonCmdType cmd() final { return m_cmd; }
+    virtual  DapJsonCmdType cmd() const final { return m_cmd; }
 
     virtual void handle(const QJsonObject* params) = 0;
 

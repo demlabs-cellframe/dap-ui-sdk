@@ -1,7 +1,8 @@
 #include "DapCmdResetSerialKey.h"
 
 DapCmdResetSerialKey::DapCmdResetSerialKey(QObject *parent)
-    : DapCmdServiceAbstract (DapJsonCmdType::SEND_RESET_SERIAL_KEY_REQUEST, parent) {
+    : DapCmdServiceAbstract (DapJsonCmdType::SEND_RESET_SERIAL_KEY_REQUEST, parent)
+{
     connect(this, &DapCmdResetSerialKey::sigResetSerialKeyReplied, [&] (const QString& reply) {
         QJsonObject l_obj;
         l_obj["reset_reply"] = reply;
@@ -9,7 +10,9 @@ DapCmdResetSerialKey::DapCmdResetSerialKey(QObject *parent)
     });
 }
 
-void DapCmdResetSerialKey::handle(const QJsonObject *params) {
+void DapCmdResetSerialKey::handle(const QJsonObject *params)
+{
+    DapCmdServiceAbstract::handle(params);
     emit sigResetRequestSent(params->value("serial").toString());
 }
 

@@ -7,7 +7,9 @@ void DapCmdTunTap::sendCmd(const QString& val)
     DapCmdServiceAbstract::sendCmd(&result);
 }
 
-void DapCmdTunTap::handle(const QJsonObject *params) {
+void DapCmdTunTap::handle(const QJsonObject *params)
+{
+    DapCmdServiceAbstract::handle(params);
     if (params->value("action").toString() == "check") {
         emit sigTapCheck();
     } else if (params->value("action").toString() == "install") {
