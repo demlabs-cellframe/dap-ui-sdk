@@ -1,6 +1,6 @@
 #include "AppLanguageController.h"
 
-#include <QApplication>
+#include <QCoreApplication>
 #include <QDebug>
 #include <DapDataLocal.h>
 
@@ -75,7 +75,7 @@ void AppLanguageController::retranslateApp(QLocale::Language a_language)
     m_language = a_language;
 
     this->m_qtLanguageTranslator.load(a_language, "dapChainVPNClient", "_", ":/", ".qm");
-    QApplication::instance()->installTranslator(&m_qtLanguageTranslator);
+    QCoreApplication::instance()->installTranslator(&m_qtLanguageTranslator);
     emit this->appRetranslated();
 }
 

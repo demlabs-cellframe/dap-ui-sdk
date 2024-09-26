@@ -37,6 +37,33 @@ DapQmlModelAutoServerList::DapQmlModelAutoServerList (DapSortedServerList *a_ser
  * METHODS
  *******************************************/
 
+int DapQmlModelAutoServerList::indexOf (const DapServerInfo &a_item) const
+{
+  int index = 0;
+  for (auto i = _autoServers.begin(), e = _autoServers.end(); i != e; i++, index++)
+    if (*i == a_item)
+      return index;
+  return -1;
+}
+
+int DapQmlModelAutoServerList::indexOfName (const QString &a_name) const
+{
+  int index = 0;
+  for (auto i = _autoServers.begin(), e = _autoServers.end(); i != e; i++, index++)
+    if (i->name() == a_name)
+      return index;
+  return -1;
+}
+
+int DapQmlModelAutoServerList::indexOfAddress (const QString &a_address) const
+{
+  int index = 0;
+  for (auto i = _autoServers.begin(), e = _autoServers.end(); i != e; i++, index++)
+    if (i->address() == a_address)
+      return index;
+  return -1;
+}
+
 void DapQmlModelAutoServerList::setLocation (const QString &a_location)
 {
   if (_userLocation == a_location)

@@ -1,6 +1,7 @@
 SOURCES += \
     $$PWD/DapCmdBugReportsStatus.cpp \
     $$PWD/DapCmdCdbCtl.cpp \
+    $$PWD/DapCmdGeoIP.cpp \
     $$PWD/DapCmdLastConnectionData.cpp \
     $$PWD/DapCmdNews.cpp \
     $$PWD/DapCmdPingServer.cpp \
@@ -17,6 +18,7 @@ SOURCES += \
     $$PWD/DapCmdAuth.cpp \
     $$PWD/DapCmdServersList.cpp \
     $$PWD/DapCmdAndroidTunnel.cpp \
+    $$PWD/DapCmdNode.cpp \
     $$PWD/DapCmdSystemTray.cpp
 
 equals(BUILD_VARIANT, "GooglePlay") {
@@ -26,6 +28,7 @@ equals(BUILD_VARIANT, "GooglePlay") {
 HEADERS += $$PWD/DapCmdLastConnectionData.h \
     $$PWD/DapCmdBugReportsStatus.h \
     $$PWD/DapCmdCdbCtl.h \
+    $$PWD/DapCmdGeoIP.h \
     $$PWD/DapCmdNews.h \
     $$PWD/DapCmdPingServer.h \
     $$PWD/DapCmdResetSeialKey.h \
@@ -42,6 +45,7 @@ HEADERS += $$PWD/DapCmdLastConnectionData.h \
     $$PWD/DapCmdServersList.h \
     $$PWD/DapCmdAndroidTunnel.h \
     $$PWD/DapCmdSystemTray.h \
+    $$PWD/DapCmdNode.h \
     $$PWD/vpnDefine.h
 
 equals(BUILD_VARIANT, "GooglePlay") {

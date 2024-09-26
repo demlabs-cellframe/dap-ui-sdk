@@ -41,6 +41,7 @@ DapServerInfo::DapServerInfo (const DapServerInfo &a_src)
   m_online      = a_src.m_online;
   m_ping        = a_src.m_ping;
   m_connQuality = a_src.m_connQuality;
+  m_order_hash  = a_src.m_order_hash;
 }
 
 DapServerInfo::DapServerInfo (DapServerInfo &&a_src)
@@ -53,6 +54,7 @@ DapServerInfo::DapServerInfo (DapServerInfo &&a_src)
   m_online      = std::move (a_src.m_online);
   m_ping        = a_src.m_ping;
   m_connQuality = a_src.m_connQuality;
+  m_order_hash  = std::move (a_src.m_order_hash);
 }
 
 DapServerInfo::DapServerInfo (
@@ -65,7 +67,7 @@ DapServerInfo::DapServerInfo (
   , m_name (a_name)
   , m_location (a_location)
   , m_ping (-1)
-  , m_connQuality (ConnectionQuality::NO_CONNECTION)
+  , m_connQuality (ConnectionQuality::INVALID)
 {
 
 }
@@ -110,6 +112,7 @@ bool DapServerInfo::fromJSON (const QJsonObject &jsonObj, DapServerInfo &out)
       return false;
     }
 
+  out.m_order_hash = jsonObj["OrderHash"].toString();
   out.m_address = jsonObj["Address"].toString();
   out.m_address6 = jsonObj["Address6"].toString();
   out.m_port = quint16 (jsonObj["Port"].toInt());
@@ -134,6 +137,7 @@ QJsonObject DapServerInfo::toJSON (const DapServerInfo &dsi)
   obj["Name"] = dsi.m_name;
   obj["State"] = dsi.m_online;
   obj["Location"] = dsi.m_location;
+  obj["OrderHash"] = dsi.m_order_hash;
   return obj;
 }
 
@@ -237,6 +241,16 @@ void DapServerInfo::setAddress (const QString &address)
   m_address = address;
 }
 
+const QString &DapServerInfo::orderHash() const
+{
+  return m_order_hash;
+}
+
+void DapServerInfo::setOrderHash (const QString &hash)
+{
+  m_order_hash = hash;
+}
+
 const QString &DapServerInfo::address6() const
 {
   return m_address6;
@@ -304,10 +318,10 @@ DapServerInfo::ConnectionQuality DapServerInfo::connQuality() const
 
 void DapServerInfo::setConnQuality (const ConnectionQuality &connQuality)
 {
-  m_connQuality =
-    (int (connQuality) >= int (ConnectionQuality::NO_CONNECTION))
-    ? connQuality
-    : ConnectionQuality::NO_CONNECTION;
+  m_connQuality = connQuality;
+//    (int (connQuality) >= int (ConnectionQuality::NO_CONNECTION))
+//    ? connQuality
+//    : ConnectionQuality::NO_CONNECTION;
 }
 
 bool DapServerInfo::isAuto() const
@@ -375,6 +389,7 @@ DapServerInfo &DapServerInfo::operator= (const DapServerInfo &a_src)
   m_online    = a_src.m_online;
   m_ping      = a_src.m_ping;
   m_connQuality  = a_src.m_connQuality;
+  m_order_hash = a_src.m_order_hash;
   return *this;
 }
 
@@ -388,6 +403,7 @@ DapServerInfo &DapServerInfo::operator= (DapServerInfo &&a_src)
   m_online    = std::move (a_src.m_online);
   m_ping      = a_src.m_ping;
   m_connQuality  = a_src.m_connQuality;
+  m_order_hash = std::move (a_src.m_order_hash);
   return *this;
 }
 

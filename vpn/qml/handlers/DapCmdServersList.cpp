@@ -8,13 +8,14 @@ DapCmdServersList::DapCmdServersList(QObject *parent)
 
 void DapCmdServersList::handleResult(const QJsonObject& result)
 {
+  qDebug() << "DapCmdServersList::handleResult :" << result;
     if(result.value("servers").isArray()) {
         DapServerInfoList servers;
         if (DapServerInfo::fromJSON(result.value("servers").toArray(), servers)) {
             if (servers.isEmpty()) {
                 emit sigEmptyList (tr ("No servers available on this CDB. Try another..."));
             } else {
-                emit sigServersListUpdate(servers);
+                emit sigServersListUpdate(servers, QDateTime::fromSecsSinceEpoch(result.value("update_time").toString().toLongLong()));
             }
         } else {
             qCritical() << "Error parse response from service";

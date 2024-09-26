@@ -2,6 +2,8 @@
 #define DAPQMLIMAGE_H
 
 /* INCLUDES */
+#include "dapimage.h"
+
 #include <QQuickPaintedItem>
 #include <QPixmap>
 
@@ -19,6 +21,8 @@
 class DapQmlImageItem : public QQuickPaintedItem
 {
   Q_OBJECT
+
+  friend class DapQmlImageItemProcessWorker;
 
   /****************************************//**
    * @name PROPERTIES
@@ -45,8 +49,9 @@ protected:
   struct
   {
     QString name;
-    QPixmap pixmap;
+    DapImage image;
     QSizeF size;
+    QMetaObject::Connection conn;
   } _cache;
 
   /// @}
@@ -65,6 +70,8 @@ public:
    *******************************************/
   /// @{
 public:
+  static void initWorkers();
+
   QString scaledPixmap() const;
   void setScaledPixmap (const QString &a_scaledPixmap);
   /// @}
@@ -75,6 +82,16 @@ public:
   /// @{
 signals:
   void sigScaledPixmapChanged();
+  void _sigRedraw();
+  /// @}
+
+  /****************************************//**
+   * @name SLOTS
+   *******************************************/
+  /// @{
+protected slots:
+  void _slotRedraw();
+  void _slotScalingFinished();
   /// @}
 
   /****************************************//**

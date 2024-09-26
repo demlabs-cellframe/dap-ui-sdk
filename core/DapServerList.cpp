@@ -918,6 +918,15 @@ int DapSortedServerList::indexOfAddress (const QString &a_address) const
   return -1;
 }
 
+int DapSortedServerList::indexOfOrderHash (const QString &a_hash) const
+{
+  int index = 0;
+  for (auto i = begin(), e = end(); i != e; i++, index++)
+    if (i->orderHash() == a_hash)
+      return index;
+  return -1;
+}
+
 void DapSortedServerList::erase (DapSortedServerList::Iterator it)
 {
   int actualIndex = it.internalIndex(),
@@ -1447,8 +1456,9 @@ InsertServerOperation::InsertServerOperation (
   int pos = 0;
   for (auto i = _list.begin(), e = _list.end(); i != e; i++, pos++)
     {
-      auto &item = *i;
-      if (item.ping() > a_server.ping())
+      auto &item    = *i;
+      int itemPing  = item.ping() == -1 ? 10000 : item.ping();
+      if (itemPing > a_server.ping())
         {
           _destination  = pos;
           return;

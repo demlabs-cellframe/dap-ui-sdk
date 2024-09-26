@@ -3,10 +3,35 @@
 
 #include <QVariant>
 #include <QMetaMethod>
+#include <QTimer>
 #include <QDebug>
 
 /* DEFS */
-#define ENABLE_PRINTS
+//#define ENABLE_PRINTS
+
+class TogglePosCtl
+{
+  qreal finalPos;
+  qreal draggingPos;
+  qreal minPos;
+  qreal maxPos;
+  bool isLeftReached;
+  bool isRightReached;
+public:
+  TogglePosCtl()
+    : finalPos (0)
+    , draggingPos (0)
+    , minPos (0)
+    , maxPos (0)
+    , isLeftReached (false)
+    , isRightReached (false)
+  {
+
+  }
+
+  TogglePosCtl &evaluate(QObject *a_root, QObject *a_toggle, qreal a_pos);
+  qreal getToggleX (bool a_dragging) const;
+};
 
 struct DapQmlSwitchCtl::DapQmlSwitchCtlData
 {
@@ -18,6 +43,9 @@ struct DapQmlSwitchCtl::DapQmlSwitchCtlData
     QObject *toggleAnim;
     QObject *touchingPoint;
     QObject *touchingArea;
+    QMetaObject::Connection touchingPointXChanged;
+    QMetaObject::Connection touchingPointStartXChanged;
+    QMetaObject::Connection touchingAreaReleased;
   } item;
 
   bool dragging;
@@ -27,6 +55,26 @@ struct DapQmlSwitchCtl::DapQmlSwitchCtlData
   qreal pos2;
   qreal diff;
   qreal draggingStartDistance;
+
+  TogglePosCtl togglePosCtl;
+
+  DapQmlSwitchCtlData()
+  {
+    item.root          = nullptr;
+    item.background    = nullptr;
+    item.toggle        = nullptr;
+    item.toggleAnim    = nullptr;
+    item.touchingPoint = nullptr;
+    item.touchingArea  = nullptr;
+
+    dragging      = false;
+    draggingAnim  = false;
+    draggingState = false;
+    pos1    = 0.0;
+    pos2    = 0.0;
+    diff    = 0.0;
+    draggingStartDistance = 0.0;
+  }
 };
 
 /********************************************
@@ -36,7 +84,10 @@ struct DapQmlSwitchCtl::DapQmlSwitchCtlData
 DapQmlSwitchCtl::DapQmlSwitchCtl()
   : _data (new DapQmlSwitchCtlData)
 {
-
+  connect (this, &DapQmlSwitchCtl::sigDraggingChanged,
+           this, &DapQmlSwitchCtl::_slotUpdateTogglePos);
+  connect (this, &DapQmlSwitchCtl::sigPos2Changed,
+           this, &DapQmlSwitchCtl::_slotUpdateTogglePos);
 }
 
 DapQmlSwitchCtl::~DapQmlSwitchCtl()
@@ -52,28 +103,34 @@ void DapQmlSwitchCtl::setRoot (QObject *a_value)
 {
   _data->item.root  = a_value;
   connect (a_value, &QObject::destroyed,
-           this, [this] { _data->item.root = nullptr; });
+           this, [this] { _itemsCleared(); });
+  connect (a_value, SIGNAL(checkedChanged()),
+           this, SLOT(_slotStackUpdateTogglePos()));
+  connect (a_value, SIGNAL(widthChanged()),
+           this, SLOT(_slotUpdateTogglePos()));
 }
 
 void DapQmlSwitchCtl::setBackground (QObject *a_value)
 {
   _data->item.background  = a_value;
   connect (a_value, &QObject::destroyed,
-           this, [this] { _data->item.background = nullptr; });
+           this, [this] { _itemsCleared(); });
 }
 
 void DapQmlSwitchCtl::setToggle (QObject *a_value)
 {
   _data->item.toggle  = a_value;
   connect (a_value, &QObject::destroyed,
-           this, [this] { _data->item.toggle = nullptr; });
+           this, [this] { _itemsCleared(); });
+  connect (a_value, SIGNAL(widthChanged()),
+           this, SLOT(_slotUpdateTogglePos()));
 }
 
 void DapQmlSwitchCtl::setToggleAnimation (QObject *a_value)
 {
   _data->item.toggleAnim  = a_value;
   connect (a_value, &QObject::destroyed,
-           this, [this] { _data->item.toggleAnim = nullptr; });
+           this, [this] { _itemsCleared(); });
 }
 
 void DapQmlSwitchCtl::setTouchingPoint (QObject *a_value)
@@ -85,11 +142,13 @@ void DapQmlSwitchCtl::setTouchingPoint (QObject *a_value)
 
   _data->item.touchingPoint  = a_value;
   connect (a_value, &QObject::destroyed,
-           this, [this] { _data->item.touchingPoint = nullptr; });
-  connect (a_value, SIGNAL (xChanged()),
-           this, SLOT (_slotTouchingPointXChanged()));
-  connect (a_value, SIGNAL (startXChanged()),
-           this, SLOT (_slotTouchAreaPressed()));
+           this, [this] { _itemsCleared(); });
+  _data->item.touchingPointXChanged =
+      connect (a_value, SIGNAL (xChanged()),
+               this, SLOT (_slotTouchingPointXChanged()));
+  _data->item.touchingPointStartXChanged =
+      connect (a_value, SIGNAL (startXChanged()),
+               this, SLOT (_slotTouchAreaPressed()));
 }
 
 void printSignalList (const QMetaObject* metaObject)
@@ -112,14 +171,20 @@ void DapQmlSwitchCtl::setTouchArea (QObject *a_value)
 
   _data->item.touchingArea  = a_value;
   connect (a_value, &QObject::destroyed,
-           this, [this] { _data->item.touchingArea = nullptr; });
+           this, [this] { _itemsCleared(); });
 
   //printSignalList (a_value->metaObject());
 
 //  connect (a_value, SIGNAL (pressed(QList<QObject*>)),
 //           this, SLOT (_slotTouchAreaPressed()));
-  connect (a_value, SIGNAL (released(QList<QObject*>)),
-           this, SLOT (_slotTouchAreaReleased()));
+  _data->item.touchingAreaReleased =
+      connect (a_value, SIGNAL (released(QList<QObject*>)),
+               this, SLOT (_slotTouchAreaReleased()));
+}
+
+void DapQmlSwitchCtl::updateTogglePos()
+{
+  _slotUpdateTogglePos();
 }
 
 bool DapQmlSwitchCtl::dragging() const
@@ -134,6 +199,10 @@ void DapQmlSwitchCtl::setDragging (bool a_value)
 
   _data->dragging = a_value;
   emit sigDraggingChanged();
+
+#ifdef ENABLE_PRINTS
+  qDebug ("%s :: dragging %d", __PRETTY_FUNCTION__, _data->dragging);
+#endif // ENABLE_PRINTS
 }
 
 bool DapQmlSwitchCtl::draggingAnim() const
@@ -361,6 +430,20 @@ void DapQmlSwitchCtl::_updateTglState()
   setDraggingState (pos2() >= rootWidth / 2);
 }
 
+void DapQmlSwitchCtl::_itemsCleared()
+{
+  _data->item.root          = nullptr;
+  _data->item.background    = nullptr;
+  _data->item.toggle        = nullptr;
+  _data->item.toggleAnim    = nullptr;
+  _data->item.touchingPoint = nullptr;
+  _data->item.touchingArea  = nullptr;
+
+  QObject::disconnect (_data->item.touchingPointXChanged);
+  QObject::disconnect (_data->item.touchingPointStartXChanged);
+  QObject::disconnect (_data->item.touchingAreaReleased);
+}
+
 void DapQmlSwitchCtl::_print (const char *a_text)
 {
 #ifndef ENABLE_PRINTS
@@ -388,6 +471,84 @@ void DapQmlSwitchCtl::_slotTouchAreaPressed()
 void DapQmlSwitchCtl::_slotTouchAreaReleased()
 {
   _end();
+}
+
+void DapQmlSwitchCtl::_slotUpdateTogglePos()
+{
+  if (_data->item.root == nullptr
+      || _data->item.toggle == nullptr)
+    return;
+
+  qreal toggleX = _data->togglePosCtl.evaluate(
+    _data->item.root,
+    _data->item.toggle,
+    pos2()
+  ).getToggleX (dragging());
+
+  _data->item.toggle->setProperty ("x", toggleX);
+}
+
+void DapQmlSwitchCtl::_slotStackUpdateTogglePos()
+{
+  QTimer::singleShot (50,  this, [this] {_slotUpdateTogglePos();});
+  QTimer::singleShot (100, this, [this] {_slotUpdateTogglePos();});
+  QTimer::singleShot (150, this, [this] {_slotUpdateTogglePos();});
+}
+
+/*-----------------------------------------*/
+
+TogglePosCtl &TogglePosCtl::evaluate (QObject *a_root, QObject *a_toggle, qreal a_pos)
+{
+  if (a_root == nullptr
+      || a_toggle == nullptr)
+    return *this;
+
+  bool checked      = itemValue<bool> (a_root, "checked", false);
+  qreal rootWidth   = itemValue<qreal> (a_root, "width", 0.0);
+  qreal toggleWidth = itemValue<qreal> (a_toggle, "width", 0.0);
+
+  minPos  = (-3.0 * (rootWidth / 270.0));
+  maxPos  = (rootWidth - toggleWidth + 3.0 * (rootWidth / 270.0));
+
+  finalPos    = checked ? maxPos : minPos;
+  draggingPos = a_pos - (toggleWidth / 2.0);
+
+  isLeftReached   = draggingPos <= minPos;
+  isRightReached  = draggingPos >= maxPos;
+
+#ifdef ENABLE_PRINTS
+  qDebug ("%s :: checked %d, rootWidth %d, toggleWidth %d, minPos %d, maxPos %d, finalPos %d, draggingPos %d, isLeftReached %d, isRightReached %d",
+    __PRETTY_FUNCTION__,
+    checked,
+    int (rootWidth),
+    int (toggleWidth),
+    int (minPos),
+    int (maxPos),
+    int (finalPos),
+    int (draggingPos),
+    isLeftReached,
+    isRightReached);
+#endif // ENABLE_PRINTS
+
+  return *this;
+}
+
+qreal TogglePosCtl::getToggleX (bool a_dragging) const
+{
+#ifdef ENABLE_PRINTS
+  qDebug ("%s :: dragging %d", __PRETTY_FUNCTION__, a_dragging);
+#endif // ENABLE_PRINTS
+
+  if (a_dragging)
+  {
+    if (isLeftReached)
+      return minPos;
+    if (isRightReached)
+      return maxPos;
+    return draggingPos;
+  }
+
+  return finalPos;
 }
 
 /*-----------------------------------------*/

@@ -33,6 +33,7 @@ class DapCmdSystemTray: public DapCmdServiceAbstract
 public:
   enum class RequestType
   {
+    show_window,
     setting,
     statistic,
     login,
@@ -42,8 +43,17 @@ public:
     apllication_quit,
     tray_application_running,
     change_server,
+    select_cdb_mode,
+    activation_changed
   };
   Q_ENUM(RequestType)
+
+  enum class CdbMode
+  {
+    cdb,
+    no_cdb
+  };
+  Q_ENUM(CdbMode)
   /// @}
 
   /****************************************//**
@@ -70,18 +80,20 @@ public:
    *******************************************/
   /// @{
 public:
-  /// @param address Server address.
+  void sendShowGui();
   void sendShowSettingInterface();
   void sendShowStatisticInterface();
   void sendShowLoginInterface();
   void sendShowDashboardInterface();
   void sendChangeServer (const QString &a_serverName, const QString &a_serverAddress);
+  void sendSelectCdbMode (CdbMode a_value);
+  void sendActiovationChange (bool a_activated, const QString &a_serialKey);
   void clientStarted();
   void trayApplicationStarted();
   void clientExited();
   void apllicationQuitRequest();
 private:
-  void sendShowInterface (const RequestType &a_type);
+  void sendGuiCmd (const RequestType &a_type);
   /// @}
 
   /****************************************//**
@@ -89,11 +101,14 @@ private:
    *******************************************/
   /// @{
 signals:
+  void showGui();
   void showSettingInterface();
   void showStatisticInterface();
   void showLoginInterface();
   void showDashboardInterface();
   void changeServer (QString a_serverName, QString a_serverAddress);
+  void guiSelectCdbMode (CdbMode a_value);
+  void activationChanged (bool a_activated, QString a_serialKey);
   void trayApplicationFound();
   void clientFound();
   void clientClosed();

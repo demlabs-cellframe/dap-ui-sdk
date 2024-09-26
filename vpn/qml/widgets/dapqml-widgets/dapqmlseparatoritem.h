@@ -1,45 +1,51 @@
-#ifndef DAPQMLWINDOW_H
-#define DAPQMLWINDOW_H
+#ifndef DAPQMLSEPARATORITEM_H
+#define DAPQMLSEPARATORITEM_H
 
 /* INCLUDES */
-#include <QQuickWindow>
+#include <QQuickPaintedItem>
 
 /****************************************//**
- * @brief application window
- * @deprecated
+ * @brief QML Separator
  * @ingroup groupDapGuiStyle
- * @date 15.04.2021
+ * @date 12.07.2023
  * @author Mikhail Shilenko
  *******************************************/
 
-class DapQmlWindow : public QQuickWindow
+class DapQmlSeparatorItem : public QQuickPaintedItem
 {
   Q_OBJECT
+  /****************************************//**
+   * @name VARS
+   *******************************************/
+  /// @{
+protected:
+  QQuickItem *_root;
+  /// @}
 
   /****************************************//**
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
 public:
-  DapQmlWindow();
+  explicit DapQmlSeparatorItem (QQuickItem *a_parent = nullptr);
   /// @}
 
   /****************************************//**
-   * @name SIGNALS
+   * @name METHODS
    *******************************************/
   /// @{
-signals:
-  void resized (int a_width, int a_height);
+public:
+  void setRootItem (QQuickItem *a_root);
   /// @}
 
   /****************************************//**
-   * @name SLOTS
+   * @name OVERRIDE
    *******************************************/
   /// @{
-private slots:
-  void _resized();
+public:
+  void paint (QPainter *a_painter) override;
   /// @}
 };
 
 /*-----------------------------------------*/
-#endif // DAPQMLWINDOW_H
+#endif // DAPQMLSEPARATORITEM_H

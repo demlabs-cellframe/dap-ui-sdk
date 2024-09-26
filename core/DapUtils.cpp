@@ -5,19 +5,25 @@
 #ifdef DAP_OS_UNIX
 const QString cShellPath = "sh";
 const QString cShellPathArgs = "-c";
+#define DAP_SHELL_PRESENT
 #elif defined(DAP_OS_WINDOWS)
 const QString cShellPath = "cmd.exe";
 const QString cShellPathArgs = "/c";
+#define DAP_SHELL_PRESENT
 #else
-#error "Not defined shell path on your platform"
+//warning cause we still want to build it on android!
+#warning "Not defined shell path on your platform"
+
 #endif
 
 
+#ifdef DAP_SHELL_PRESENT
 /**
  * @brief DapUtun::runShellCmd
  * @param cmd
  * @return
  */
+
 QString DapUtils::shellCmd(const QString& cmd, int waitMsecs)
 {
     QProcess process;
@@ -32,3 +38,4 @@ QString DapUtils::shellCmd(const QString& cmd, int waitMsecs)
 
     return result;
 }
+#endif

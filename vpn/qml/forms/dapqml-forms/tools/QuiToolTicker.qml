@@ -95,6 +95,15 @@ DapQmlRectangle {
 
             function updateAnimation() {
                 TickerUpdateCtl.updateAnimation (tickerLableRect.width, contentWidth) // _updateTickerAnim()
+
+                tickerAnimation.stop();
+                tickerAnimation.from        = TickerUpdateCtl.animBegin;
+                tickerAnimation.to          = TickerUpdateCtl.animEnd;
+                tickerAnimation.duration    = TickerUpdateCtl.animDuration;
+                //tickerAnimation.running     = TickerUpdateCtl.animRunning;
+                tickerAnimation.start();
+
+                //console.log(`anim updated: from ${tickerAnimation.from.toFixed(2)} to ${tickerAnimation.to.toFixed(2)} dura ${tickerAnimation.duration.toFixed(2)} contentWidth ${contentWidth} text "${text}"`);
             }
 
 //            Component.onCompleted: StyleDebugTree.describe (
@@ -106,16 +115,7 @@ DapQmlRectangle {
                 id: tickerAnimation
                 target: tickerLabel
                 properties: "x"
-                duration: 10000
                 loops: Animation.Infinite
-                from: TickerUpdateCtl.animBegin
-                to: TickerUpdateCtl.animEnd
-                running: TickerUpdateCtl.animRunning
-
-//                Component.onCompleted: StyleDebugTree.describe (
-//                   "tickerAnimation",
-//                    ["from", "to", "running"],
-//                   this);
             }
         }
 

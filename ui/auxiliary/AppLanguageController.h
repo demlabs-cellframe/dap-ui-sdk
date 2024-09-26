@@ -2,7 +2,7 @@
 #define APPLANGUAGECONTROLLER_H
 
 #include <QTranslator>
-#include <QApplication>
+#include <QCoreApplication>
 #include "defines.h"
 #include "LanguagesModel.h"
 
@@ -30,8 +30,6 @@ private:
 
     const QString SETTING_LOCALE{"language"};
     const QString SETTING_SYS_LOCALE{"SysLanguage"};
-
-    QApplication* m_application;
 
     LanguagesModel m_languagesModel;
     QLocale::Language m_language;
