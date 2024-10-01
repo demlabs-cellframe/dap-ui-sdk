@@ -18,7 +18,6 @@ public:
     }
     void handle(const QJsonObject* params) override 
     {
-        // Q_UNUSED(params)
         qDebug() << "[handle] request command: " << commandToString(this->cmd()) << " params: " << *params;
     }
 };
