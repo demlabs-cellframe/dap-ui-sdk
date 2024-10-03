@@ -22,20 +22,36 @@
 #include <sys/stat.h>
 #endif
 
+/* VARIABLES */
+
+static const QMap<Authorization, QString> s_authTypeMap =
+{
+  { Authorization::account,     "account" },
+  { Authorization::serialKey,   "serialKey" },
+  { Authorization::certificate, "certificate" },
+  { Authorization::undefined,   "" },
+};
+
+static DapDataLocal *s_instance = nullptr;
+
+
 DapDataLocal::DapDataLocal()
   : QObject()
   , m_serialKeyData(new DapSerialKeyData (this))
   , m_bugReportHistory(new DapBugReportHistory (this))
   , m_serialKeyHistory (new DapSerialKeyHistory (this))
 {
-    qDebug() << "[DL] DapDataLocal Constructor";
-    parseXML(":/data.xml");
-    initSecretKey();
-    this->loadAuthorizationDatas();
-    _syncCdbWithSettings();
+  s_instance = this;
+
+  qDebug() << "[DL] DapDataLocal Constructor";
 }
 
-void DapDataLocal::parseXML(const QString& a_fname)
+DapDataLocal::~DapDataLocal()
+{
+
+}
+
+void DapDataLocal::_parseXML(const QString& a_fname)
 {
     QFile file(a_fname);
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text)){
@@ -196,7 +212,7 @@ void DapDataLocal::setLogin(const QString &a_login)
         return;
     m_login = a_login;
 
-    emit loginChanged(m_login);
+    emit sigLoginChanged(m_login);
 }
 
 /// Get password.
@@ -214,78 +230,107 @@ void DapDataLocal::setPassword(const QString &a_password)
         return;
     this->m_password = a_password;
 
-    emit this->passwordChanged(m_password);
+    emit this->sigPasswordChanged(m_password);
 }
 
 void DapDataLocal::saveAuthorizationData()
 {
-    this->saveEncryptedSetting(TEXT_LOGIN     , this->login());
-    this->saveEncryptedSetting(TEXT_PASSWORD  , this->password());
+  saveEncryptedSetting (TEXT_LOGIN, login());
+  saveEncryptedSetting (TEXT_PASSWORD, password());
+}
+
+void DapDataLocal::setLogFilePath (const QString &a_path)
+{
+  m_logFilePath = a_path;
+}
+
+const QString &DapDataLocal::getLogFilePath()
+{
+  return m_logFilePath;
+}
+
+void DapDataLocal::setLogPath (const QString &a_path)
+{
+  m_logPath = a_path;
+}
+
+const QString &DapDataLocal::getLogPath()
+{
+  return m_logPath;
+}
+
+const DapCdbServerList &DapDataLocal::cdbServersList() const
+{
+  return m_cdbServersList;
+}
+
+const QString &DapDataLocal::KelvpnPub() const
+{
+  return m_kelvpnPub;
+}
+
+const QString &DapDataLocal::networkDefault() const
+{
+  return m_networkDefault;
+}
+
+const QString &DapDataLocal::getUrlSite() const
+{
+  return m_urlSite;
+}
+
+const QString &DapDataLocal::getBrandName() const
+{
+  return m_brandName;
+}
+
+const QString &DapDataLocal::getMinDashboardVersion() const
+{
+  return m_minDashboardVersion;
+}
+
+const QString &DapDataLocal::getMinNodeVersion() const
+{
+  return m_minNodeVersion;
+}
+
+const QString &DapDataLocal::getCountryISO() const
+{
+  return m_coutryISO;
+}
+
+void DapDataLocal::setCountryISO(const QString &a_iso_code)
+{
+  m_coutryISO = a_iso_code;
 }
 
 void DapDataLocal::saveSerialKeyData()
 {
-    if (m_serialKeyData)
-        this->saveToSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
+  if (m_serialKeyData)
+    this->saveToSettings (TEXT_SERIAL_KEY, *m_serialKeyData);
 }
 
 void DapDataLocal::resetSerialKeyData()
 {
-    if (m_serialKeyData){
-        m_serialKeyData->reset();
-        this->saveToSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
-    }
+  if (m_serialKeyData)
+  {
+    m_serialKeyData->reset();
+    this->saveToSettings (TEXT_SERIAL_KEY, *m_serialKeyData);
+  }
 }
 
-void DapDataLocal::savePendingSerialKey(QString a_serialkey)
+void DapDataLocal::savePendingSerialKey(const QString &a_serialkey)
 {
-    m_pendingSerialKey = a_serialkey;
-    this->saveToSettings(TEXT_PENDING_SERIAL_KEY, m_pendingSerialKey);
+  m_pendingSerialKey = a_serialkey;
+  this->saveToSettings (TEXT_PENDING_SERIAL_KEY, m_pendingSerialKey);
 }
 
-//void DapDataLocal::saveHistoryData(QString a_type, QString a_data)
-//{
-//    if (a_data.isEmpty())
-//        return;
-//    QList<QString> m_tempHistoryDataList;
-//    this->loadFromSettings(a_type, m_tempHistoryDataList);
-//    if (!m_tempHistoryDataList.contains(a_data))
-//        m_tempHistoryDataList.prepend(a_data);
-//    this->saveToSettings(a_type, m_tempHistoryDataList);
+const QString &DapDataLocal::pendingSerialKey() const
+{
+  return m_pendingSerialKey;
+}
 
-//    emit sigHistoryDataSaved(a_type);
-//}
-
-//void DapDataLocal::removeItemFromHistory(QString a_type, QString a_item){
-
-//  if (a_item.isEmpty())
-//    return;
-//  QList<QString> m_tempHistoryDataList;
-//  this->loadFromSettings(a_type, m_tempHistoryDataList);
-
-//  a_item.remove(QRegExp("[^0-9]"));
-//  QMutableListIterator<QString> it (m_tempHistoryDataList);
-//  while(it.hasNext()) {
-//    QString item = it.next();
-//    if (item == a_item){
-//      qDebug() << "remove " + item + " from " + a_type;
-//      it.remove();
-//    }
-//  }
-
-//  this->saveToSettings(a_type, m_tempHistoryDataList);
-
-//  emit sigHistoryDataSaved(a_type);
-//}
-
-//QList<QString> DapDataLocal::getHistorySerialKeyData()
-//{
-//    QList<QString> m_tempHistoryDataList;
-//    this->loadFromSettings(TEXT_SERIAL_KEY_HISTORY, m_tempHistoryDataList);
-//    return m_tempHistoryDataList;
-//}
-
-void DapDataLocal::loadAuthorizationDatas()
+void DapDataLocal::_loadAuthorizationDatas()
 {
 #ifdef Q_OS_ANDROID
     auto keys = settings()->allKeys();
@@ -323,46 +368,14 @@ void DapDataLocal::_syncCdbWithSettings()
   updateCdbList (result);
 }
 
-QSettings* DapDataLocal::settings()
+QVariant DapDataLocal::getEncryptedSetting (const QString &a_setting) const
 {
-#ifdef Q_OS_ANDROID
-    static QString s_path = DapLogger::defaultLogPath(DAP_BRAND).chopped(3).append("settings.ini");
-
-    /* Legacy settings import, will be deprecated on targeting API 30+ */
-    int l_ofd = open(qPrintable(s_path), O_RDONLY);
-    if (l_ofd <= 0) {
-        int _l_fd = open("/sdcard/KelvinVPN/log/settings.ini", O_RDWR);
-        int l_fd = _l_fd > 0 ? _l_fd : open("/sdcard/" DAP_BRAND "/log/settings.ini", O_RDWR);
-        if (l_fd > 0) {
-            int l_ofd = open(qPrintable(s_path), O_CREAT | O_RDWR);
-            struct stat statBuf;
-            fstat(l_fd, &statBuf);
-            qInfo() << "Imported old settings [" << sendfile(l_ofd, l_fd, NULL, statBuf.st_size) << "] bytes";
-            ftruncate(l_fd, 0);
-            close(l_fd);
-            close(l_ofd);
-        } else {
-            qInfo() << "Old settings not found";
-        }
-    } else {
-        close(l_ofd);
-    }
-
-    static QSettings s_settings(s_path, QSettings::IniFormat);
-#else
-    static QSettings s_settings;
-#endif
-    return &s_settings;
+  QByteArray outString;
+  this->loadEncryptedSettingString (a_setting, outString);
+  return QString (outString);
 }
 
-QVariant DapDataLocal::getEncryptedSetting(const QString &a_setting)
-{
-    QByteArray outString;
-    this->loadEncryptedSettingString(a_setting, outString);
-    return QString(outString);
-}
-
-bool DapDataLocal::loadEncryptedSettingString(const QString &a_setting, QByteArray& a_outString)
+bool DapDataLocal::loadEncryptedSettingString (const QString &a_setting, QByteArray &a_outString) const
 {
     QVariant varSettings = DapDataLocal::getSetting(a_setting);
 
@@ -381,32 +394,33 @@ bool DapDataLocal::loadEncryptedSettingString(const QString &a_setting, QByteArr
 }
 
 
-void DapDataLocal::saveEncryptedSetting(const QString &a_setting, const QVariant &a_value)
+void DapDataLocal::saveEncryptedSetting (const QString &a_setting, const QVariant &a_value)
 {
-    this->saveEncryptedSetting(a_setting, a_value.toByteArray());
+    this->saveEncryptedSetting (a_setting, a_value.toByteArray());
 }
 
-void DapDataLocal::saveEncryptedSetting(const QString &a_setting, const QByteArray &a_string)
+void DapDataLocal::saveEncryptedSetting (const QString &a_setting, const QByteArray &a_string)
 {
     QByteArray encodedString;
-    secretKey->encode(a_string, encodedString);
-    DapDataLocal::saveSetting(a_setting, encodedString);
+    secretKey->encode (a_string, encodedString);
+    DapDataLocal::saveSetting (a_setting, encodedString);
 }
 
-QVariant DapDataLocal::getSetting(const QString &a_setting)
+QVariant DapDataLocal::getSetting (const QString &a_setting)
 {
-    return settings()->value(a_setting);
+  return instance()->settings()->value (a_setting);
 }
 
-void DapDataLocal::saveSetting(const QString &a_setting, const QVariant &a_value)
+void DapDataLocal::saveSetting (const QString &a_setting, const QVariant &a_value)
 {
-    settings()->setValue(a_setting, a_value);
-    settings()->sync();
+  auto stg = instance()->settings();
+  stg->setValue (a_setting, a_value);
+  stg->sync();
 }
 
-void DapDataLocal::removeSetting(const QString &a_setting)
+void DapDataLocal::removeSetting (const QString &a_setting)
 {
-    settings()->remove(a_setting);
+  instance()->settings()->remove (a_setting);
 }
 
 DapBugReportData *DapDataLocal::bugReportData()
@@ -429,7 +443,7 @@ DapSerialKeyHistory *DapDataLocal::serialKeyHistory()
   return m_serialKeyHistory;
 }
 
-void DapDataLocal::initSecretKey()
+void DapDataLocal::_initSecretKey()
 {
     if (settings()->value("key").toString().isEmpty())
     {
@@ -441,50 +455,39 @@ void DapDataLocal::initSecretKey()
     secretKey = new DapKey(DAP_ENC_KEY_TYPE_IAES, settings()->value("key").toString() + "SLKJGN234njg6vlkkNS3s5dfzkK5O54jhug3KUifw23");
 }
 
-QString DapDataLocal::getRandomString(int size)
+QString DapDataLocal::getRandomString (int a_size)
 {
-   const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
-   const int randomStringLength = size;
+  /* variables */
+  static const QString possibleCharacters ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+  QString randomString;
 
-   QString randomString;
-   for(int i=0; i < randomStringLength; ++i){
-       int index = qrand() % possibleCharacters.length();
-       QChar nextChar = possibleCharacters.at(index);
-       randomString.append(nextChar);
-   }
-   return randomString;
+  for (int i=0; i < a_size; ++i)
+  {
+    int index       = qrand() % possibleCharacters.length();
+    QChar nextChar  = possibleCharacters.at (index);
+    randomString.append (nextChar);
+  }
+
+  return randomString;
 }
 
-Authorization DapDataLocal::authorizationType()
+Authorization DapDataLocal::authorizationType() const
 {
-    auto auth = DapDataLocal::instance()->getSetting (SETTING_AUTHORIZATION).toString();
-    if (auth == "serialKey")
-        return Authorization::serialKey;
-    if (auth == "account")
-        return Authorization::account;
-    if (auth == "certificate")
-        return Authorization::certificate;
+  auto auth = getSetting (SETTING_AUTHORIZATION).toString();
+
+  Authorization defaultAuth =
 #ifdef BRAND_RISEVPN
-    // default value
-    return Authorization::undefined;
-#else
-    // default value
-    return Authorization::account;
-#endif
+    Authorization::undefined;
+#else // BRAND_RISEVPN
+    Authorization::account;
+#endif // BRAND_RISEVPN
+
+  return s_authTypeMap.key (auth, defaultAuth);
 }
 
-void DapDataLocal::setAuthorizationType(Authorization type)
+void DapDataLocal::setAuthorizationType (Authorization a_type)
 {
-    QString auth;
-    if (type == Authorization::serialKey)
-        auth = "serialKey";
-    if (type == Authorization::account)
-        auth = "account";
-    if (type == Authorization::certificate)
-        auth = "certificate";
-    if (type == Authorization::undefined)
-        auth = "";
-    DapDataLocal::instance()->saveSetting (SETTING_AUTHORIZATION, auth);
+  saveSetting (SETTING_AUTHORIZATION, s_authTypeMap.value (a_type, QString()));
 }
 
 void DapDataLocal::updateCdbList (const DapCdbServerList &a_newCdbList)
@@ -501,16 +504,19 @@ void DapDataLocal::updateCdbList (const DapCdbServerList &a_newCdbList)
 
 DapDataLocal *DapDataLocal::instance()
 {
-    static DapDataLocal s_instance;
-    return &s_instance;
+  return s_instance;
 }
+
+/********************************************
+ * DapCdbServer
+ *******************************************/
 
 QString DapCdbServer::toString() const
 {
   return QString ("%1:%2").arg (address).arg (port);
 }
 
-void DapCdbServer::fromString(const QString &a_src)
+void DapCdbServer::fromString (const QString &a_src)
 {
   auto source = a_src.split (':');
   address     = source.constFirst();
@@ -519,14 +525,18 @@ void DapCdbServer::fromString(const QString &a_src)
     port = 80;
 }
 
-DapCdbServer DapCdbServer::serverFromString(const QString &a_src)
+DapCdbServer DapCdbServer::serverFromString (const QString &a_src)
 {
   DapCdbServer result;
   result.fromString (a_src);
   return result;
 }
 
-DapCdbServerList DapCdbServerList::toServers(const QStringList &a_src)
+/********************************************
+ * DapCdbServerList
+ *******************************************/
+
+DapCdbServerList DapCdbServerList::toServers (const QStringList &a_src)
 {
   DapCdbServerList result;
   for (const auto &item : a_src)
@@ -534,10 +544,12 @@ DapCdbServerList DapCdbServerList::toServers(const QStringList &a_src)
   return result;
 }
 
-QStringList DapCdbServerList::toStrings(const DapCdbServerList &a_servers)
+QStringList DapCdbServerList::toStrings (const DapCdbServerList &a_servers)
 {
   QStringList result;
   for (const auto &item : a_servers)
     result << item.toString();
   return result;
 }
+
+/*-----------------------------------------*/

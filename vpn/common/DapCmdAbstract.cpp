@@ -25,6 +25,7 @@ QMap<DapJsonCmdType, QString> DapCmdAbstract::cmdString = {
     {DapJsonCmdType::NODE_INFO, "node info"},
     {DapJsonCmdType::UPDATE_OPERATION, "update operation"},
     {DapJsonCmdType::GEO_IP, "geo ip"},
+    {DapJsonCmdType::DATA_LOCAL, "data local"},
 };
 
 void DapCmdAbstract::sendCmd(const QJsonObject * obj)
