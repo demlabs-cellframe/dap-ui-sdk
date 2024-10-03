@@ -17,6 +17,14 @@ class DapCmdDataLocal : public DapCmdServiceAbstract
   Q_OBJECT
 
   /****************************************//**
+   * @name VARIABLES
+   *******************************************/
+  /// @{
+protected:
+  QString m_clientType;
+  /// @}
+
+  /****************************************//**
    * @name CONSTRUCT/DESTRUCT
    *******************************************/
   /// @{
@@ -40,6 +48,8 @@ public:
    *******************************************/
   /// @{
 public:
+  const QString &clientTypeName() const;
+  void setClientTypeName (const QString &a_clientType);
   /// request value from serive
   void requestValue (const QString &a_name, const int a_msgId);
   /// request all data from service
@@ -58,7 +68,7 @@ signals:
   /// service sent value
   void sigGotValue (QString a_name, QByteArray a_data, const int a_msgId);
   /// service sent all data
-  void sigGotAllData (QJsonObject a_data, const int a_msgId);
+  void sigGotAllData (QJsonObject a_data, const int a_msgId, QString a_clientType);
   /// service sent remove value
   void sigGotRemove (QString a_name, const int a_msgId);
   /// @}

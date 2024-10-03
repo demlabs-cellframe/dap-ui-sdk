@@ -115,20 +115,6 @@ class DapDataLocal : public QObject
   Q_OBJECT
 
   /****************************************//**
-   * @name DEFINES
-   *******************************************/
-  /// @{
-  enum class UpdateSide : quint8
-  {
-    service,
-    gui,
-    tray,
-    cli,
-  };
-  Q_ENUM(UpdateSide)
-  /// @}
-
-  /****************************************//**
    * @name VARIABLES
    *******************************************/
   /// @{

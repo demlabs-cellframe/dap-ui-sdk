@@ -49,9 +49,9 @@ public:
 public:
   void setMsgCounter (const int a_id);
   QVariant value (const QString &a_name) const;
-  void setValue (const QString &a_name, const QVariant &a_value, const int a_msgId = 0);
-  void setValue (const QString &a_name, QVariant &&a_value, const int a_msgId = 0);
-  void remove (const QString &a_name, const int a_msgId = 0);
+  bool setValue (const QString &a_name, const QVariant &a_value, const int a_msgId = 0);
+  bool setValue (const QString &a_name, QVariant &&a_value, const int a_msgId = 0);
+  bool remove (const QString &a_name, const int a_msgId = 0);
   virtual void sync() = 0;
 
   const QSet<QString> &changed() const  { return _changed; }

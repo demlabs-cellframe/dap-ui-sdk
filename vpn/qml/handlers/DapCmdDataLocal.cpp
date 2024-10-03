@@ -29,9 +29,15 @@ void DapCmdDataLocal::handle (const QJsonObject *a_params)
 
   if (action == "setAll")
   {
+    QString clType    = a_params->value ("clientType").toString();
+
+    if (!m_clientType.isEmpty()
+        && clType != m_clientType)
+      return;
+
     QJsonObject jobj  = a_params->value ("data").toObject();
     int mid           = a_params->value ("mid").toInt();
-    return emit sigGotAllData (std::move (jobj), mid);
+    return emit sigGotAllData (std::move (jobj), mid, std::move (clType));
   }
 
   /*-----------------------------------------*/
@@ -60,6 +66,16 @@ void DapCmdDataLocal::handle (const QJsonObject *a_params)
  * METHODS
  *******************************************/
 
+const QString &DapCmdDataLocal::clientTypeName() const
+{
+  return m_clientType;
+}
+
+void DapCmdDataLocal::setClientTypeName (const QString &a_clientType)
+{
+  m_clientType = a_clientType;
+}
+
 void DapCmdDataLocal::requestValue (const QString &a_name, const int a_msgId)
 {
   QJsonObject jobj {
@@ -74,6 +90,7 @@ void DapCmdDataLocal::requestAllData (const int a_msgId)
 {
   QJsonObject jobj {
     { "action", "getAll" },
+    { "clientType", m_clientType },
     { "mid", a_msgId },
   };
   sendCmd (&jobj);

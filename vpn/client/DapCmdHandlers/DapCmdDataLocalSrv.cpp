@@ -58,8 +58,9 @@ void DapCmdDataLocalSrv::handle (const QJsonObject *a_params)
 
   if (action == "getAll")
   {
+    QString clType  = a_params->value ("clientType").toString();
     int mid         = a_params->value ("mid").toInt();
-    return emit sigGetAllData (mid);
+    return emit sigGetAllData (mid, std::move (clType));
   }
 
   /*-----------------------------------------*/
@@ -69,10 +70,11 @@ void DapCmdDataLocalSrv::handle (const QJsonObject *a_params)
  * METHODS
  *******************************************/
 
-void DapCmdDataLocalSrv::sendAllData (const QJsonObject &a_data, const int a_msgId)
+void DapCmdDataLocalSrv::sendAllData (const QJsonObject &a_data, const int a_msgId, const QString &a_clientType)
 {
   QJsonObject jobj {
     { "action", "setAll" },
+    { "clientType", a_clientType },
     { "data", a_data },
     { "mid", a_msgId },
   };
