@@ -272,6 +272,12 @@ void DapStreamer::sltStreamOpenCallback()
         return;
     }
 
+    if (m_network_reply->error() != QNetworkReply::NoError) {
+        qCritical() << "Network error occurred:" << m_network_reply->errorString();
+        emit sigStreamOpenBadResponseError();
+        return;
+    }
+
     // Get network reply data and check if it is empty
     QByteArray replyData = m_network_reply->getReplyData();
     if (replyData.isEmpty()) {
