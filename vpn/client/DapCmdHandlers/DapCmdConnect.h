@@ -18,7 +18,7 @@ public slots:
     void sendCmdError(const QString errorMsg); // TODO ENUM with errors and code in response
     void sendCmdError(int a_errorCode,const QString a_errorMsg);
 signals:
-    void sigConnect(const QString& serial, const QString& user, const QString& password, const QString& address, uint16_t port);
+    void sigConnect(const QString& serial, const QString& user, const QString& password, const QString& address, uint16_t port, bool updateRouteTable);
 
 
     void sigConnectNoAuth(const QString& address, uint16_t port);
@@ -32,6 +32,7 @@ private:
     const QString PASSWORD_KEY = "password";
     const QString ADDRESS_KEY = "address";
     const QString PORT_KEY = "port";
+    const QString UPDATE_ROUTE_TABLE = "updateRouteTable";
 
     const QString CODE_KEY = "code";
     const QString MESSAGE_KEY = "message";

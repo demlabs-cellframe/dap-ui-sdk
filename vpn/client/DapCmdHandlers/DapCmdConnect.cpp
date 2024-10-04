@@ -81,7 +81,8 @@ void DapCmdConnect::handle(const QJsonObject* params)
         {PASSWORD_KEY, QJsonValue::Undefined },
         {PORT_KEY, QJsonValue::Undefined },
         {USER_KEY, QJsonValue::Undefined },
-        {SERIAL_KEY, QJsonValue::Undefined }
+        {SERIAL_KEY, QJsonValue::Undefined },
+        {UPDATE_ROUTE_TABLE, QJsonValue::Undefined }
     };
 
     for(auto &key: mandatoryConnParams.keys())
@@ -108,6 +109,7 @@ void DapCmdConnect::handle(const QJsonObject* params)
             QString serialKey = getValidString(mandatoryConnParams[SERIAL_KEY]);
             QString userName = getValidString(mandatoryConnParams[USER_KEY]);
             QString password = getValidString(mandatoryConnParams[PASSWORD_KEY]);
+            bool updateRouteTable = mandatoryConnParams[UPDATE_ROUTE_TABLE].toBool(true);
 
             if(serialKey.isEmpty() && userName.isEmpty() && password.isEmpty())
             {
@@ -116,7 +118,7 @@ void DapCmdConnect::handle(const QJsonObject* params)
             }
             emit sigConnect(serialKey, userName, password,
                             mandatoryConnParams[ADDRESS_KEY].toString(),
-                            uint16_t(mandatoryConnParams[PORT_KEY].toInt()));
+                            uint16_t(mandatoryConnParams[PORT_KEY].toInt()), updateRouteTable);
         }
         else
         {
