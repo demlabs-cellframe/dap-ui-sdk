@@ -49,6 +49,7 @@ public:
 public:
   const QString &clientTypeName() const;
   void setClientTypeName (const QString &a_clientType);
+  void sendUserConfigOldFilename (const QString &a_filename);
   /// request value from serive
   void requestValue (const QString &a_name, const int a_msgId);
   /// request all data from service

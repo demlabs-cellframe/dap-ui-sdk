@@ -92,6 +92,14 @@ void DapCmdDataLocalSrv::handle (const QJsonObject *a_params)
   }
 
   /*-----------------------------------------*/
+
+  if (action == "oldConfig")
+  {
+    QString oldFilename = a_params->value ("filename").toString();
+    emit sigOldConfigFilename (std::move (oldFilename));
+  }
+
+  /*-----------------------------------------*/
 }
 
 /********************************************

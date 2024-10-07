@@ -114,6 +114,15 @@ void DapCmdDataLocal::setClientTypeName (const QString &a_clientType)
   m_clientType = a_clientType;
 }
 
+void DapCmdDataLocal::sendUserConfigOldFilename (const QString &a_filename)
+{
+  QJsonObject jobj {
+    { "action", "oldConfig" },
+    { "filename", a_filename },
+  };
+  sendCmd (&jobj);
+}
+
 void DapCmdDataLocal::requestValue (const QString &a_name, const int a_msgId)
 {
   QJsonObject jobj {

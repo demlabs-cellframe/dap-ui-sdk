@@ -53,6 +53,8 @@ public:
    *******************************************/
   /// @{
 signals:
+  /// client sent old config filename
+  void sigOldConfigFilename (QString a_name);
   /// client requested a value
   void sigGetValue (QString a_name, const int a_msgId);
   /// client requested all data
