@@ -3,7 +3,7 @@
 
 /* INCLUDES */
 
-#include "DapCmdServiceAbstract.h"
+#include "DapCmdClientAbstract.h"
 #include <QObject>
 
 /****************************************//**
@@ -12,7 +12,7 @@
  * @author Mikhail Shilenko
  *******************************************/
 
-class DapCmdDataLocal : public DapCmdServiceAbstract
+class DapCmdDataLocal : public DapCmdClientAbstract
 {
   Q_OBJECT
 
@@ -38,9 +38,8 @@ public:
    *******************************************/
   /// @{
 public:
-  /// Process command.
-  /// @param params Command parameters.
-  void handle (const QJsonObject *a_params) override;
+  void handleResult (const QJsonObject &a_params) override;
+  void handleError (int code, const QString &message) override;
   /// @}
 
   /****************************************//**
@@ -55,7 +54,7 @@ public:
   /// request all data from service
   void requestAllData (const int a_msgId = 0);
   /// send value to service
-  void sendValue (const QString &a_name, const QByteArray &a_value, const int a_msgId);
+  void sendValue (const QString &a_name, const QVariant &a_value, const int a_msgId);
   /// send remove value to service
   void sendRemove (const QString &a_name, const int a_msgId);
   /// @}
@@ -66,7 +65,7 @@ public:
   /// @{
 signals:
   /// service sent value
-  void sigGotValue (QString a_name, QByteArray a_data, const int a_msgId);
+  void sigGotValue (QString a_name, QVariant a_value, const int a_msgId);
   /// service sent all data
   void sigGotAllData (QJsonObject a_data, const int a_msgId, QString a_clientType);
   /// service sent remove value

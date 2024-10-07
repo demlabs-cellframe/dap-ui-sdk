@@ -71,15 +71,48 @@ QJsonObject DapDataConfig::toJson() const
   QJsonObject jobj;
 
   for (auto i = _data.constBegin(), e = _data.constEnd(); i != e; i++)
-    jobj.insert (i.key(), i.value().toJsonValue());
+  {
+    auto value  = i.value();
+    if (value.type() == QVariant::ByteArray)
+      jobj.insert (i.key(), QString ("base64,") + value.toByteArray().toBase64().constData());
+    else
+      jobj.insert (i.key(), value.toJsonValue());
+  }
 
   return jobj;
 }
 
 void DapDataConfig::fromJson (const QJsonObject &a_json)
 {
+  static const char *base64sign = "base64,";
+
   for (auto i = a_json.constBegin(), e = a_json.constEnd(); i != e; i++)
-    setValue (i.key(), i.value().toVariant());
+  {
+    auto value  = i.value();
+
+    /* check if string */
+    if (value.type() == QJsonValue::String)
+    {
+      auto stringValue = value.toString();
+
+      /* check if base 64 */
+      if (stringValue.startsWith (base64sign))
+      {
+        /* parse and store bytearray */
+        auto base64src  = stringValue.mid (strlen (base64sign)).toUtf8();
+        auto base64data = QByteArray::fromBase64 (base64src);
+        _data[i.key()] = std::move (base64data);
+      }
+
+      /* store string */
+      else
+        _data[i.key()] = stringValue;
+    }
+
+    /* store value */
+    else
+      _data[i.key()] = value;
+  }
 }
 
 /*-----------------------------------------*/

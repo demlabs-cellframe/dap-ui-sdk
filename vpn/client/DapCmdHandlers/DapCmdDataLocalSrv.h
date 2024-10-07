@@ -41,7 +41,7 @@ public:
   /// @{
 public:
   /// send copy of value to client
-  void sendValue (const QString &a_name, const QByteArray &a_data, const int a_msgId);
+  void sendValue (const QString &a_name, const QVariant &a_value, const int a_msgId);
   /// send copy of all data to client
   void sendAllData (const QJsonObject &a_data, const int a_msgId, const QString &a_clientType);
   /// send remove value to client
@@ -58,7 +58,7 @@ signals:
   /// client requested all data
   void sigGetAllData (const int a_msgId, QString a_clientType);
   /// client wants to write a value
-  void sigSetValue (QString a_name, QByteArray a_data, const int a_msgId);
+  void sigSetValue (QString a_name, QVariant a_value, const int a_msgId);
   /// client wants to remove a value
   void sigRemoveValue (QString a_name, const int a_msgId);
   /// @}
