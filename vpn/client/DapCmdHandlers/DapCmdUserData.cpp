@@ -4,7 +4,7 @@
 /// @param params Command parameters.
 void DapCmdUserData::handle(const QJsonObject *params)
 {
-    Q_UNUSED(params);
+    DapCmdServiceAbstract::handle(params);
     
     QJsonObject response;
     response["user"] = mUser;
