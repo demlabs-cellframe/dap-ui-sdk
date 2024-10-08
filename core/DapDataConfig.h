@@ -29,7 +29,7 @@ public:
   QSet<QString> _removed;
   QString _filename;
 
-  int _msgCounter;
+  int m_msgCounter;
   QList<int> _receivedMessagesIds;
   /// @}
 
@@ -47,6 +47,7 @@ public:
    *******************************************/
   /// @{
 public:
+  int msgCounter() const;
   void setMsgCounter (const int a_id);
   QVariant value (const QString &a_name) const;
   bool setValue (const QString &a_name, const QVariant &a_value, const int a_msgId = 0);

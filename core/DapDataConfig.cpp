@@ -9,7 +9,7 @@
 DapDataConfig::DapDataConfig (const QString &a_filename)
   : QObject{}
   , _filename (a_filename)
-  , _msgCounter (1)
+  , m_msgCounter (1)
 {
 }
 
@@ -22,10 +22,15 @@ DapDataConfig::~DapDataConfig()
  * METHODS
  *******************************************/
 
+int DapDataConfig::msgCounter() const
+{
+  return m_msgCounter;
+}
+
 void DapDataConfig::setMsgCounter (const int a_id)
 {
-  if (_msgCounter < 100)
-    _msgCounter  = a_id;
+  if (m_msgCounter < 100)
+    m_msgCounter  = a_id;
 }
 
 QVariant DapDataConfig::value (const QString &a_name) const
@@ -40,7 +45,7 @@ bool DapDataConfig::setValue (const QString &a_name, const QVariant &a_value, co
 
   _data[a_name] = a_value;
   _changed << a_name;
-  emit sigValueUpdated (a_name, a_value, a_msgId == 0 ? _msgCounter++ : a_msgId);
+  emit sigValueUpdated (a_name, a_value, a_msgId == 0 ? m_msgCounter++ : a_msgId);
   return true;
 }
 
@@ -51,7 +56,7 @@ bool DapDataConfig::setValue (const QString &a_name, QVariant &&a_value, const i
 
   _data[a_name] = a_value;
   _changed << a_name;
-  emit sigValueUpdated (a_name, std::move (a_value), a_msgId == 0 ? _msgCounter++ : a_msgId);
+  emit sigValueUpdated (a_name, std::move (a_value), a_msgId == 0 ? m_msgCounter++ : a_msgId);
   return true;
 }
 
@@ -62,7 +67,7 @@ bool DapDataConfig::remove (const QString &a_name, const int a_msgId)
 
   _data.remove (a_name);
   _removed << a_name;
-  emit sigValueRemoved (a_name, a_msgId == 0 ? _msgCounter++ : a_msgId);
+  emit sigValueRemoved (a_name, a_msgId == 0 ? m_msgCounter++ : a_msgId);
   return true;
 }
 
@@ -121,7 +126,7 @@ bool DapDataConfig::_isUniqueMessageId (int a_msgId)
 {
   /* if no message id, set from msgCounter */
   if (a_msgId == 0)
-    a_msgId = _msgCounter; // return true;
+    a_msgId = m_msgCounter; // return true;
 
   /* clear old */
   {
