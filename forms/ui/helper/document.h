@@ -150,7 +150,7 @@ const char *docTerms =
     "</p></body></html>";
 
 const char *docPrivacy =
-    "<html><head/><body><p>Last updated  12 November, 2021</p><p>\n"
+    "<html><head/><body><p>Last updated  7 October, 2024</p><p>\n"
     "The service Kelvin Virtual Private Network (here and after called KelVPN) is\n"
     "hereby offered by Demlabs Inc, 7901 4th Street North STE 300 St. Petersburg, FL.\n"
     "US 33702 (hereinafter called Demlabs Ltd). Demlabs Ltd is authorized to provide\n"
