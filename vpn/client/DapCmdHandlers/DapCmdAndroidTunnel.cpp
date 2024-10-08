@@ -14,7 +14,7 @@ DapCmdAndroidTunnel::~DapCmdAndroidTunnel()
 
 void DapCmdAndroidTunnel::handle(const QJsonObject *params)
 {
-    Q_UNUSED(params)
+    DapCmdServiceAbstract::handle(params);
 }
 
 void DapCmdAndroidTunnel::openTunnel(const QString &address, const QString &gateway, int socket)

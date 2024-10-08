@@ -11,7 +11,8 @@ public:
     void handle(const QJsonObject* params) override;
 
     void sendCmdStats(qint64 readBytes, qint64 writeBytes,
-                      qint64 readPackages, qint64 writePackages);
+                      qint64 readPackages, qint64 writePackages,
+                      const QString& serverName);
 signals:
     void sigStreamOn();
     void sigStreamOff();

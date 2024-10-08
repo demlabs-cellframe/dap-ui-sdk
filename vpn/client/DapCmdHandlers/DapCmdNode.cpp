@@ -156,6 +156,7 @@ void DapCmdNode::sendFeeData (const QJsonObject &a_data)
 
 void DapCmdNode::handle(const QJsonObject* params)
 {
+    DapCmdServiceAbstract::handle(params);
     DEBUGINFO << __PRETTY_FUNCTION__ << *params;
 
     if (params->contains("start_node_detection") && params->value("start_node_detection").toBool()) {
