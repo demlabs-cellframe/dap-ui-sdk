@@ -204,6 +204,7 @@ private slots:
 
 signals:
     void errorAuthorizationLegacy();
+    void errorResetSerialKeyLegacy();
     void encryptInitialized();
     void errorEncryptInitialization(const QString& msg);
 
