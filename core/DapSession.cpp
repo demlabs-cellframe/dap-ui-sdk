@@ -18,7 +18,6 @@
     along with any DAP based project.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define OP_CODE_SUCCESS                 "0x0"
 #define OP_CODE_GENERAL_ERR             "0xf0"
 #define OP_CODE_ALREADY_ACTIVATED       "0xf1"
 #define OP_CODE_LOGIN_INCORRECT_PSWD    "0xf2"
@@ -59,7 +58,6 @@ DapSession::DapSession(QObject * obj, int requestTimeout) :
 {
     m_dapCrypt = new DapCrypt;
     m_dapCryptCDB = nullptr;
-    m_protocolVer = 1;
 //    m_netAccessManager = new DapNetworkAccessManager;
 }
 
@@ -99,11 +97,14 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObje
     if (slot)
         connect(netReply, SIGNAL(finished()), obj, slot);
     connect(netReply, &DapNetworkReply::sigError, this, [=] {
+        if ( netReply->error() != 110 ) {
             qInfo() << "errorNetwork";
 
             emit errorNetwork(netReply->error(), netReply->errorString());
             if (slot_err)
                 QMetaObject::invokeMethod(obj, slot_err, Qt::ConnectionType::AutoConnection, Q_ARG(const QString&, netReply->errorString()));
+        }else
+            qInfo() << "Timeout its not a reason for the network error sate, right?";
 
     });
     data ? DapConnectClient::instance()->request_POST(isCDB ? m_CDBaddress : m_upstreamAddress,
@@ -718,36 +719,27 @@ void DapSession::onResetSerialKey()
 
     QString op_code = QString::fromUtf8(replyArr).left(4);
 
-    if (op_code == OP_CODE_SUCCESS){
-        emit sigSerialKeyReseted (tr ("Serial key reset successfully"));
+    if (op_code == OP_CODE_GENERAL_ERR) {
+        emit sigResetSerialKeyError (1, tr ("Unknown authorization error"));
+        return;
+    } else if (op_code == OP_CODE_ALREADY_ACTIVATED) {
+        emit sigResetSerialKeyError (1, tr ("Serial key already activated on another device"));
+        return;
+    } else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
+        emit sigResetSerialKeyError (1, isSerial ? tr("Serial key not found in database") : tr ("Login not found in database"));
+        return;
+    } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRED) {
+        emit sigResetSerialKeyError (1, tr ("Serial key expired"));
+        return;
+    } else if (op_code == OP_CODE_CANT_CONNECTION_TO_DB) {
+        emit sigResetSerialKeyError (1, tr ("Can't connect to database"));
+        return;
+    } else if (op_code == OP_CODE_INCORRECT_SYM) {
+        emit sigResetSerialKeyError(1, tr ("Incorrect symbols in request"));
         return;
     }
 
-    if (m_protocolVer == 0){
-        if (op_code == OP_CODE_GENERAL_ERR) {
-            emit sigResetSerialKeyError (1, tr ("Unknown authorization error"));
-            return;
-        } else if (op_code == OP_CODE_ALREADY_ACTIVATED) {
-            emit sigResetSerialKeyError (1, tr ("Serial key already activated on another device"));
-            return;
-        } else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
-            emit sigResetSerialKeyError (1, isSerial ? tr("Serial key not found in database") : tr ("Login not found in database"));
-            return;
-        } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRED) {
-            emit sigResetSerialKeyError (1, tr ("Serial key expired"));
-            return;
-        } else if (op_code == OP_CODE_CANT_CONNECTION_TO_DB) {
-            emit sigResetSerialKeyError (1, tr ("Can't connect to database"));
-            return;
-        } else if (op_code == OP_CODE_INCORRECT_SYM) {
-            emit sigResetSerialKeyError(1, tr ("Incorrect symbols in request"));
-            return;
-        }
-    } else {
-        m_protocolVer = 0;
-        emit errorResetSerialKeyLegacy();
-    }
-
+    emit sigSerialKeyReseted (tr ("Serial key reset successfully"));
 }
 void DapSession::answerBugReportsStatus()
 {
