@@ -6,7 +6,7 @@
 #include "DapJsonParams.h"
 #include "DapConnectClient.h"
 #include "DapDataLocal.h"
-
+#include <QMetaEnum>
 DapCmdServersList::DapCmdServersList(QObject *parent)
     : DapCmdServiceAbstract(DapJsonCmdType::GET_SERVERS_LIST, parent)
 {
@@ -22,7 +22,7 @@ DapCmdServersList::DapCmdServersList(QObject *parent)
 
 void DapCmdServersList::handle(const QJsonObject* params)
 {
-    Q_UNUSED(params)
+    DapCmdServiceAbstract::handle(params);
 
     sendRequestToCDB();
     guiCall = true;

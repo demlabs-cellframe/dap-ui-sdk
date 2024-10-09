@@ -1,7 +1,8 @@
 #include "DapCmdStates.h"
 
-void DapCmdStates::handle(const QJsonObject* params) {
-    Q_UNUSED(params);
+void DapCmdStates::handle(const QJsonObject* params)
+{
+    DapCmdServiceAbstract::handle(params);
 
     for (const auto &di: _activeStateMachine->getCachedStates()) {
         sendCmdStates(di.getStringType(), di.getStringState());

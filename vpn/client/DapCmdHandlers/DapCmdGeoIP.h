@@ -32,7 +32,7 @@ public:
 public:
   /// Process command.
   /// @param params Command parameters.
-  void handle (const QJsonObject *a_params) override;
+  void handle (const QJsonObject *params) override;
   /// @}
 
   /****************************************//**

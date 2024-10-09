@@ -50,6 +50,7 @@ void DapCmdConnect::sendCmdError(const QString errorMsg)
 
 void DapCmdConnect::handle(const QJsonObject* params) 
 {
+    DapCmdServiceAbstract::handle(params);
     if(params->value(ACTION_KEY) != QJsonValue::Undefined)
     { 
         //this is disconnect request

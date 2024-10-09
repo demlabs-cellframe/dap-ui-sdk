@@ -213,9 +213,11 @@ signals:
     void authRequested();
     void keyActRequested();
     void authorized(const QString &);
+    /// TODO: this signal KelVPN not use
     void onAuthorized();
     void onConnectNoCDB();
     void usrDataChanged(const QString &addr, ushort port);
+    
     void logoutRequested();
     void logouted();
     void newTxCondReceived(QString &);
