@@ -50,7 +50,6 @@ public:
     static const QString URL_ENCRYPT;
     static const QString URL_STREAM;
     static const QString URL_DB;
-    static const QString URL_DB_LEGACY;
     static const QString URL_CTL;
     static const QString URL_DB_FILE;
     static const QString URL_SERVER_LIST;
@@ -97,8 +96,6 @@ public slots:
                                      const QString& a_domain = QString(), const QString& a_pkey = QString(), const QString& a_order_hash = QString());
     DapNetworkReply * authorizeByKeyRequest(const QString& a_serial = QString(),
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() , const QString& a_order_hash = QString());
-    DapNetworkReply * authorizeByKeyRequestLegacy(const QString& a_serial = QString(),
-                                     const QString& a_domain = QString(), const QString& a_pkey = QString());
     DapNetworkReply * activateKeyRequest(const QString& a_serial = QString(), const QByteArray& a_signed = QByteArray(),
                                      const QString& a_domain = QString(), const QString& a_pkey = QString() );
     void resetKeyRequest(const QString& a_serial = QString(),
@@ -119,7 +116,6 @@ public slots:
 #endif
 protected:
     using HttpHeaders = QVector<HttpRequestHeader>;
-    int m_protocolVer;
     quint16 m_upstreamPort, m_CDBport;
     QString m_upstreamAddress, m_CDBaddress, m_user;
     // HTTP header fields
@@ -203,7 +199,6 @@ private slots:
     void errorResetSerialKey(const QString&);
 
 signals:
-    void errorAuthorizationLegacy();
     void encryptInitialized();
     void errorEncryptInitialization(const QString& msg);
 
