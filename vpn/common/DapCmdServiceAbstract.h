@@ -2,7 +2,6 @@
 #define DAPCMDSERVICEABSTRACT_H
 
 #include "DapCmdAbstract.h"
-
 class DapCmdServiceAbstract: public DapCmdAbstract
 {
 public:
@@ -16,6 +15,10 @@ public:
         errorObj["message"] = message;
         response["error"] = errorObj;
         sendCmd(&response);
+    }
+    void handle(const QJsonObject* params) override 
+    {
+        qDebug() << "[handle] request command: " << commandToString(this->cmd()) << " params: " << *params;
     }
 };
 

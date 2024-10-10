@@ -18,7 +18,7 @@ DapCmdSignUp::~DapCmdSignUp()
 
 void DapCmdSignUp::handle(const QJsonObject *params)
 {
-    Q_UNUSED(params);
+    DapCmdServiceAbstract::handle(params);
 
     QString site = params->value("site").toString();
     QString email = params->value("email").toString();

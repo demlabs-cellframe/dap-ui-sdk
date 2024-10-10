@@ -57,8 +57,7 @@ void DapJsonCmdController::addNewHandler(DapCmdAbstract* handler)
                     << "already exists";
         return;
     }
-    connect(handler, &DapCmdAbstract::send,
-            this, &DapJsonCmdController::sendDapCmd);
+    connect(handler, &DapCmdAbstract::send, this, &DapJsonCmdController::sendDapCmd);
 
     m_handlers.append(handler);
 }
