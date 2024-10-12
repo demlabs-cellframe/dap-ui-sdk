@@ -43,7 +43,7 @@ DapDataLocal::DapDataLocal()
 {
   s_instance = this;
 
-  qDebug() << "[DL] DapDataLocal Constructor";
+
 }
 
 DapDataLocal::~DapDataLocal()
