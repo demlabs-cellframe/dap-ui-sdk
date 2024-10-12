@@ -466,6 +466,7 @@ void DapSession::onAuthorize()
     qDebug() << "Auth reply";
     if(m_netAuthorizeReply->getReplyData().size() <= 0)
     {
+        qDebug() << "[onAuthorize] Wrong answer from server";
         emit errorAuthorization (tr ("Wrong answer from server"));
         return;
     }
@@ -475,34 +476,67 @@ void DapSession::onAuthorize()
 
     QString op_code = QString::fromUtf8(dByteArr).left(4);
 
-    if (op_code == OP_CODE_GENERAL_ERR) {
+    if (op_code == OP_CODE_GENERAL_ERR)
+    {
+        qDebug() << "[onAuthorize] Unknown authorization error";
         emit errorAuthorization (tr ("Unknown authorization error"));
         return;
-    } else if (op_code == OP_CODE_ALREADY_ACTIVATED) {
+    }
+    else if (op_code == OP_CODE_ALREADY_ACTIVATED)
+    {
+        qDebug() << "[onAuthorize] Serial key already activated on another device";
         emit errorAuthorization (tr ("Serial key already activated on another device"));
         return;
-    } else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
+    }
+    else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB)
+    {
+        QString str = isSerial ? "Serial key not found in database" : "Login not found in database";
+        qDebug() << "[onAuthorize] " << str;
         emit errorAuthorization (isSerial ? tr("Serial key not found in database") : tr("Login not found in database"));
         return;
-    } else if (op_code == OP_CODE_LOGIN_INCORRECT_PSWD) {
+    }
+    else if (op_code == OP_CODE_LOGIN_INCORRECT_PSWD)
+    {
         if(m_user.isEmpty() && !isSerial)
+        {
+            qDebug() << "[onAuthorize] Login not found in database";
             emit errorAuthorization (tr ("Login not found in database"));
+        }
         else
-        emit errorAuthorization (isSerial ? tr("Incorrect serial key") : tr("Incorrect password"));
+        {
+            QString str = isSerial ? "Incorrect serial key" : "Incorrect password";
+            qDebug() << "[onAuthorize] " << str;
+            emit errorAuthorization (isSerial ? tr("Incorrect serial key") : tr("Incorrect password"));
+        }
         return;
-    } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRED) {
+    }
+    else if (op_code == OP_CODE_SUBSCRIBE_EXPIRED)
+    {
+        qDebug() << "[onAuthorize] Serial key expired";
         emit errorAuthorization (tr ("Serial key expired"));
         return;
-    } else if (op_code == OP_CODE_CANT_CONNECTION_TO_DB) {
+    }
+    else if (op_code == OP_CODE_CANT_CONNECTION_TO_DB)
+    {
+        qDebug() << "[onAuthorize] Can't connect to database";
         emit errorAuthorization (tr ("Can't connect to database"));
         return;
-    } else if (op_code == OP_CODE_INCORRECT_SYM) {
+    }
+    else if (op_code == OP_CODE_INCORRECT_SYM)
+    {
+        qDebug() << "[onAuthorize] Incorrect symbols in request";
         emit errorAuthorization (tr ("Incorrect symbols in request"));
         return;
-    } else if (op_code == OP_CODE_LOGIN_INACTIVE) {
+    }
+    else if (op_code == OP_CODE_LOGIN_INACTIVE)
+    {
+        qDebug() << "[onAuthorize] activate key";
         emit activateKey();
         return;
-    } else if (op_code == OP_CODE_WRONG_ORDER) {
+    }
+    else if (op_code == OP_CODE_WRONG_ORDER)
+    {
+        qDebug() << "[onAuthorize] Can't find order!";
         emit errorAuthorization (tr ("Can't find order!"));
         return;
     }
@@ -516,45 +550,65 @@ void DapSession::onAuthorize()
     while(m_xmlStreamReader.readNextStartElement())
     {
         qDebug() << " name = " << m_xmlStreamReader.name();
-        if(SRname == "err_str") {
+        if(SRname == "err_str")
+        {
             QString error_text = m_xmlStreamReader.readElementText();
             qDebug() << " Error str = " << error_text;
             emit errorAuthorization (tr ("Server replied error string: '%1'").arg(error_text));
             return;
         }
 
-        if (m_xmlStreamReader.name() == "auth_info") {
-            while(m_xmlStreamReader.readNextStartElement()) {
+        if (m_xmlStreamReader.name() == "auth_info")
+        {
+            while(m_xmlStreamReader.readNextStartElement())
+            {
                 qDebug() << " auth_info = " << m_xmlStreamReader.name();
-                if (m_xmlStreamReader.name() == "cookie") {
+                if (m_xmlStreamReader.name() == "cookie")
+                {
                     m_cookie = m_xmlStreamReader.readElementText();
                     qDebug() << "m_cookie: " << m_cookie;
                     isCookie = true;
                     //requestServerList();
                     emit authorized(m_cookie);
-                } else if (m_xmlStreamReader.name() == "tx_cond_tpl") {
-                    while(m_xmlStreamReader.readNextStartElement()) {
+                }
+                else if (m_xmlStreamReader.name() == "tx_cond_tpl")
+                {
+                    while(m_xmlStreamReader.readNextStartElement())
+                    {
                         qDebug() << " tx_cond_tpl: " << m_xmlStreamReader.name();
-                        if (m_xmlStreamReader.name() == "net") {
+                        if (m_xmlStreamReader.name() == "net")
+                        {
                             m_cdbAuthNet = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvNet: " << m_cdbAuthNet;
-                        } else if (m_xmlStreamReader.name() == "token") {
-                             m_cdbAuthToken = m_xmlStreamReader.readElementText();
+                        }
+                        else if (m_xmlStreamReader.name() == "token")
+                        {
+                            m_cdbAuthToken = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvToken: " << m_cdbAuthToken;
-                        } else if (m_xmlStreamReader.name() == "tx_cond") {
-                             m_cdbAuthTxCond = m_xmlStreamReader.readElementText();
+                        }
+                        else if (m_xmlStreamReader.name() == "tx_cond")
+                        {
+                            m_cdbAuthTxCond = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvTxCond: " << m_cdbAuthTxCond;
-                        } else if (m_xmlStreamReader.name() == "max_price") {
+                        }
+                        else if (m_xmlStreamReader.name() == "max_price")
+                        {
                             m_cdbMaxPrice = m_xmlStreamReader.readElementText();
-                           qDebug() << "m_srvMaxPrice: " << m_cdbMaxPrice;
-                        } else {
+                            qDebug() << "m_srvMaxPrice: " << m_cdbMaxPrice;
+                        }
+                        else
+                        {
                             qWarning() <<"Unknown element" << m_xmlStreamReader.readElementText();
                         }
                     }
-                } else if (m_xmlStreamReader.name() == "ts_active_till"){
+                }
+                else if (m_xmlStreamReader.name() == "ts_active_till")
+                {
                     DapDataLocal::instance()->serialKeyData()->setLicenseTermTill(m_xmlStreamReader.readElementText());
                     qDebug() << "ts_active_till: " << DapDataLocal::instance()->serialKeyData()->licenseTermTill().toTime_t();
-                } else {
+                }
+                else
+                {
                     m_userInform[m_xmlStreamReader.name().toString()] = m_xmlStreamReader.readElementText();
                     qDebug() << "Add user information: " << m_xmlStreamReader.name().toString()
                              << m_userInform[m_xmlStreamReader.name().toString()];
@@ -579,15 +633,24 @@ void DapSession::onAuthorize()
                     qWarning() <<"Unknown element" << m_xmlStreamReader.readElementText();
                 }
             }
-        }*/ else {
+        }*/
+        else
+        {
             m_xmlStreamReader.skipCurrentElement();
         }
     }
-    if (!isAuth) {
+    if (!isAuth)
+    {
         if (m_protocolVer == 1)
+        {
+            qDebug() << "[onAuthorize] error authorization legacy";
             emit errorAuthorizationLegacy();
+        }
         else if (m_protocolVer == 0)
+        {
+            qDebug() << "[onAuthorize] Authorization error";
             emit errorAuthorization (tr ("Authorization error"));
+        }
     }
 
     /*if(!isCookie) {
@@ -596,9 +659,11 @@ void DapSession::onAuthorize()
     }*/
 }
 
-void DapSession::preserveCDBSession() {
+void DapSession::preserveCDBSession()
+{
     qInfo() << "Saving CDB session data";
-    if (m_dapCryptCDB) {
+    if (m_dapCryptCDB)
+    {
         delete m_dapCryptCDB;
     }
     m_dapCryptCDB = new DapCrypt(*m_dapCrypt);
@@ -607,14 +672,17 @@ void DapSession::preserveCDBSession() {
     m_CDBport = m_upstreamPort;
     //todo: save cookie too
 }
+
 /**
  * @brief DapSession::onLogout
  */
-void DapSession::onLogout() {
+void DapSession::onLogout()
+{
     qInfo() << "~ Logouted";
 }
 
-void DapSession::onNewTxCond(){
+void DapSession::onNewTxCond()
+{
     qDebug() << "Received new tx cond";
 
     if(m_netNewTxReply->getReplyData().size() <= 0)

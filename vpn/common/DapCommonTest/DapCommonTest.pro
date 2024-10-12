@@ -10,7 +10,6 @@ SOURCES += \
     main.cpp
 
 HEADERS += \
-    TestHeaders.h \
-    DapJsonCmd_test.hpp
+    TestHeaders.h 
 
 include (../DapVpnCommon.pri)

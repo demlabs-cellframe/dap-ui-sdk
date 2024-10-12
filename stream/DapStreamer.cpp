@@ -201,6 +201,7 @@ void DapStreamer::streamOpen(const QString& subUrl, const QString& query, const 
 
 void DapStreamer::streamClose()
 {
+    qDebug() <<"[DapStreamer] streamClose()";
     emit streamDisconnecting();
     if(m_streamSocket.isOpen()){
         qDebug() <<"[SC] close the stream";
@@ -272,6 +273,19 @@ void DapStreamer::sltStreamOpenCallback()
         return;
     }
 
+    if (m_network_reply->error() != QNetworkReply::NoError) {
+        if (!m_network_reply) {
+            qCritical() << "Network reply became null before accessing errorString";
+            emit sigStreamOpenBadResponseError();
+            return;
+        }
+
+        QString errorMsg = m_network_reply->errorString();
+        qCritical() << "Network error occurred:" << errorMsg;
+        emit sigStreamOpenBadResponseError();
+        return;
+    }
+
     // Get network reply data and check if it is empty
     QByteArray replyData = m_network_reply->getReplyData();
     if (replyData.isEmpty()) {
@@ -283,32 +297,36 @@ void DapStreamer::sltStreamOpenCallback()
     // Debugging the reply data size before conversion to hex
     qDebug() << "Reply data size:" << replyData.size();
 
-    // Safely convert the data to hex only if the size is reasonable
-    qDebug() << "Reply data (hex):" << replyData.toHex();
+    // Safely convert the data to hex with a size limit to avoid excessive output
+    const int maxHexOutputSize = 1024; // Limit hex output size to avoid large data handling
+    QByteArray truncatedData = replyData.left(maxHexOutputSize);
+    qDebug() << "Reply data (hex, truncated):" << truncatedData.toHex();
 
     // Decode the reply data
     QByteArray streamReplyDec;
     m_session->getDapCrypt()->decode(replyData, streamReplyDec, KeyRoleSession);
 
-    QString streamReplyStr(streamReplyDec);
+    if (streamReplyDec.isEmpty()) {
+        qCritical() << "Decoded reply data is empty";
+        emit sigStreamOpenBadResponseError();
+        return;
+    }
 
+    QString streamReplyStr(streamReplyDec);
     QStringList str_list = streamReplyStr.split(" ");
 
-    if(str_list.length() < 2)
-    {
+    if (str_list.length() < 2) {
         qWarning() << "Bad response. Wrong Reply Format!" << streamReplyStr;
         emit sigStreamOpenBadResponseError();
         return;
     }
 
     m_streamID = str_list.at(0);
-
     QString streamServKey = str_list.at(1);
 
-    if(!m_streamID.isEmpty()) {
+    if (!m_streamID.isEmpty()) {
         qDebug() << "Stream id:" << m_streamID;
-        qDebug()  << "[DapConnectStream] Stream server key for client requests: "
-                  << streamServKey;
+        qDebug() << "[DapConnectStream] Stream server key for client requests: " << streamServKey;
 
         // Check if m_session or DapCrypt is null
         if (!m_session || !m_session->getDapCrypt()) {
@@ -338,7 +356,6 @@ void DapStreamer::sltStreamOpenCallback()
         } else {
             qCritical() << "Stream already open";
         }
-
     } else {
         qWarning() << "Can't open stream " << m_streamID;
         emit sigStreamOpenBadResponseError();

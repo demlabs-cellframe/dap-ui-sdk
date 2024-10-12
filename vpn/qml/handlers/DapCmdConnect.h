@@ -12,7 +12,7 @@ public:
 
 public slots:
     void sendCmdConnect(const QString& a_addr, quint16 a_port,
-                        const QString& a_user= QString(), const QString& a_pswd = QString(),  const QString& a_serial= QString());
+                        const QString& a_user= QString(), const QString& a_pswd = QString(),  const QString& a_serial= QString(), const bool a_updateRouteTable = true);
     void sendCmdConnectByOrder(const QString& a_addr);
 
 

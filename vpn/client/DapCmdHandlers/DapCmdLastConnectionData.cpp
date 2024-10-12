@@ -5,7 +5,7 @@
 /// @param params Command parameters.
 void DapCmdLastConnectionData::handle(const QJsonObject *params)
 {
-    Q_UNUSED(params);
+    DapCmdServiceAbstract::handle(params);
     QJsonObject obj;
     obj["last_connection"] = mStartTime;
     sendCmd(&obj);

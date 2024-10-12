@@ -58,7 +58,7 @@ void DapCmdAuth::sendCmdErrorAuth(const int& a_errorCode, const QString a_errorM
  */
 void DapCmdAuth::handle(const QJsonObject* params)
 {
-
+    DapCmdServiceAbstract::handle(params);
     if(params->value(actionParam).toString() == "Auth" ){
 
         QMap<QString, QJsonValue> mandatoryConnParams = {
