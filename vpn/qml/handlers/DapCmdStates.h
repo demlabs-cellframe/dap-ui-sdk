@@ -66,6 +66,7 @@ signals:
 
     void sigUserStateConnect();
     void sigUserStateDisconnect();
+    void sigUserState(const QString& state);
 
     /*Changing server for mainScreen*/
     void sigServerChanged();

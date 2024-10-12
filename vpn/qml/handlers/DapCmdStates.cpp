@@ -45,8 +45,6 @@ bool DapCmdStates::allStatesIsTrue()
 {
   auto trueToFalseorTrue = [] (IndicatorState a_state)
   {
-//    return a_state == IndicatorState::True
-//        || a_state == IndicatorState::FalseToTrue;
     return a_state == IndicatorState::True;
   };
 
@@ -72,6 +70,7 @@ void DapCmdStates::handleError(int code, const QString& message)
 
 void DapCmdStates::userHandler(const QString& state)
 {
+    emit sigUserState(state);
     if(state == "Disconnect") {
         emit sigUserStateDisconnect();
     } else if(state == "Connect") {
