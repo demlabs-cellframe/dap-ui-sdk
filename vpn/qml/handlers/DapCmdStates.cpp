@@ -91,12 +91,14 @@ void DapCmdStates::serverChangedHandler(const QString& state)
     }
 }
 
-void DapCmdStates::handleResult(const QJsonObject& result) {
+void DapCmdStates::handleResult(const QJsonObject& result)
+{
+
     static QMap<QString, void(DapCmdStates::*)(IndicatorState)> stateCallbacks = {
-    {"session", &DapCmdStates::sessionHandler},
-    {"tunnel", &DapCmdStates::tunnelHandler},
-    {"stream", &DapCmdStates::streamHandler}
-};
+        {"session", &DapCmdStates::sessionHandler},
+        {"tunnel", &DapCmdStates::tunnelHandler},
+        {"stream", &DapCmdStates::streamHandler}
+    };
 
     qDebug() << "Call stateHandler" << result;
     if (!result.contains(stateNameParam) ||
@@ -104,6 +106,7 @@ void DapCmdStates::handleResult(const QJsonObject& result) {
         qWarning() << "Not found mandatory parameter!";
         return;
     }
+    emit sigNewState(result);
     const QString stateName = result.value(stateNameParam).toString();
     const IndicatorState state = DapIndicator::fromString(result.value("state").toString());
 
