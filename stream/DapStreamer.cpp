@@ -351,6 +351,7 @@ void DapStreamer::sltStreamOpenCallback()
             if (m_streamSocket.waitForConnected(15000)) {
                 return;
             } else {
+                qCritical() << "Socket connection timeout:" << m_streamSocket.errorString();
                 emit errorNetwork(tr("Socket connection timeout"));
             }
         } else {
