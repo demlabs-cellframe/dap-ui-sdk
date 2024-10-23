@@ -53,7 +53,7 @@ TextField {
 
     DapImageRender{
         id: indicator
-
+        z:10
         property bool isActive: false
 
         anchors.top: parent.top
@@ -64,6 +64,7 @@ TextField {
         source: indicatorSourceDisabled
 
         MouseArea{
+            id: area
             anchors.fill: parent
             hoverEnabled: true
             onEntered: {
@@ -95,6 +96,26 @@ TextField {
                     else
                         indicator.source = indicatorSourceDisabled
                 }
+            }
+        }
+
+        //A temporary solution for manual switching of the indicator state + resource change.
+        function programClick()
+        {
+            indicator.isActive = !indicator.isActive
+
+            if(area.containsMouse){
+                if(indicator.isActive)
+                    indicator.source = indicatorSourceEnabledHover
+                else
+                    indicator.source = indicatorSourceDisabledHover
+            }
+            else
+            {
+                if(indicator.isActive)
+                    indicator.source = indicatorSourceEnabled
+                else
+                    indicator.source = indicatorSourceDisabled
             }
         }
     }
