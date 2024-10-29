@@ -40,7 +40,6 @@
 
 const QString DapSession::URL_ENCRYPT               ("enc_init");
 const QString DapSession::URL_STREAM                ("stream");
-const QString DapSession::URL_DB_LEGACY             ("db");
 const QString DapSession::URL_DB                    ("cdb");
 const QString DapSession::URL_CTL                   ("stream_ctl");
 const QString DapSession::URL_DB_FILE               ("db_file");
@@ -97,14 +96,11 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObje
     if (slot)
         connect(netReply, SIGNAL(finished()), obj, slot);
     connect(netReply, &DapNetworkReply::sigError, this, [=] {
-        if ( netReply->error() != 110 ) {
-            qInfo() << "errorNetwork";
+        qInfo() << "errorNetwork";
 
-            emit errorNetwork(netReply->error(), netReply->errorString());
-            if (slot_err)
-                QMetaObject::invokeMethod(obj, slot_err, Qt::ConnectionType::AutoConnection, Q_ARG(const QString&, netReply->errorString()));
-        }else
-            qInfo() << "Timeout its not a reason for the network error sate, right?";
+        emit errorNetwork(netReply->error(), netReply->errorString());
+        if (slot_err)
+            QMetaObject::invokeMethod(obj, slot_err, Qt::ConnectionType::AutoConnection, Q_ARG(const QString&, netReply->errorString()));
 
     });
     data ? DapConnectClient::instance()->request_POST(isCDB ? m_CDBaddress : m_upstreamAddress,
@@ -639,18 +635,8 @@ void DapSession::onAuthorize()
             m_xmlStreamReader.skipCurrentElement();
         }
     }
-    if (!isAuth)
-    {
-        if (m_protocolVer == 1)
-        {
-            qDebug() << "[onAuthorize] error authorization legacy";
-            emit errorAuthorizationLegacy();
-        }
-        else if (m_protocolVer == 0)
-        {
-            qDebug() << "[onAuthorize] Authorization error";
-            emit errorAuthorization (tr ("Authorization error"));
-        }
+    if (!isAuth) {
+        emit errorAuthorization (tr ("Authorization error"));
     }
 
     /*if(!isCookie) {
@@ -860,7 +846,7 @@ void DapSession::sendTxOutRequest(const QString &tx) {
 DapNetworkReply *  DapSession::sendNewTxCondRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey, const QString& a_order_hash){
     qDebug() << "Send new tx cond request to cdb";
     m_netNewTxReply = encRequest(a_serial + " " + a_domain + " " + a_pkey + " " + a_order_hash,
-                                 m_protocolVer == 1 ? URL_DB : URL_DB_LEGACY, "new_tx_cond", "serial", SLOT(onNewTxCond()), NULL, true);
+                                 URL_DB, "new_tx_cond", "serial", SLOT(onNewTxCond()), NULL, true);
     return m_netNewTxReply;
 }
 /**
@@ -882,17 +868,8 @@ DapNetworkReply * DapSession::authorizeRequest(const QString& a_user, const QStr
 
 DapNetworkReply * DapSession::authorizeByKeyRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey, const QString& a_order_hash) {
     m_userInform.clear();
-    m_protocolVer = 1;
     m_netAuthorizeReply = encRequest(a_serial + " " + a_domain + " " + a_pkey + " " + a_order_hash,
                                      URL_DB, "auth", "serial", SLOT(onAuthorize()), NULL);
-    return m_netAuthorizeReply;
-}
-
-DapNetworkReply * DapSession::authorizeByKeyRequestLegacy(const QString& a_serial, const QString& a_domain, const QString& a_pkey) {
-    m_userInform.clear();
-    m_protocolVer = 0;
-    m_netAuthorizeReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
-                                     URL_DB_LEGACY, "auth", "serial", SLOT(onAuthorize()), /*QT_STRINGIFY(errorAuthorization)*/ NULL);
     return m_netAuthorizeReply;
 }
 
@@ -903,7 +880,7 @@ DapNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const Q
     int buf64len = dap_enc_base64_encode(a_signed.constData(), a_signed.size(), buf64, DAP_ENC_DATA_TYPE_B64_URLSAFE);
     QByteArray a_signedB64(buf64, buf64len);
     QByteArray bData = QString(a_serial + " ").toLocal8Bit() + a_signedB64 + QString(" " + a_domain + " " + a_pkey).toLocal8Bit();
-    m_netKeyActivateReply = encRequestRaw(bData, m_protocolVer == 1 ? URL_DB : URL_DB_LEGACY, "auth_key", "serial", SLOT(onKeyActivated()), QT_STRINGIFY(errorActivation));
+    m_netKeyActivateReply = encRequestRaw(bData, URL_DB, "auth_key", "serial", SLOT(onKeyActivated()), QT_STRINGIFY(errorActivation));
     return m_netKeyActivateReply;
 }
 
@@ -915,7 +892,7 @@ void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domai
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, a_serial, a_domain, a_pkey, l_tempConn]{
             preserveCDBSession();
             m_netKeyActivateReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
-                                               m_protocolVer == 1 ? URL_DB : URL_DB_LEGACY, "auth_deactivate", "serial",
+                                               URL_DB, "auth_deactivate", "serial",
                                                SLOT(onResetSerialKey()), QT_STRINGIFY(errorResetSerialKey), true);
             disconnect(*l_tempConn);
             delete l_tempConn;
@@ -923,7 +900,7 @@ void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domai
         requestServerPublicKey();
     } else {
         m_netKeyActivateReply = encRequest(a_serial + " " + a_domain + " " + a_pkey,
-                                           m_protocolVer == 1 ? URL_DB : URL_DB_LEGACY, "auth_deactivate", "serial",
+                                           URL_DB, "auth_deactivate", "serial",
                                            SLOT(onResetSerialKey()), QT_STRINGIFY(errorResetSerialKey), true);
     }
 }
