@@ -172,7 +172,8 @@ void DapStreamer::streamOpen(const QString& subUrl, const QString& query)
     if(m_streamSocket.isOpen()) {
         qWarning() << "Stream socket already open. "
                       "Closing current open socket";
-        streamClose();
+        //streamClose();
+        m_streamSocket.close();
     }
     qDebug() << "Stream open SubUrl = " << subUrl;
     qDebug() << "Stream open query =" << query;
@@ -184,7 +185,8 @@ void DapStreamer::streamOpen(const QString& subUrl, const QString& query, const 
     if (m_streamSocket.isOpen()) {
         qWarning() << "Stream socket already open. "
                       "Closing current open socket";
-        streamClose();
+        //streamClose();
+        m_streamSocket.close();
     }
     qDebug() << "Stream open SubUrl = " << subUrl;
     qDebug() << "Stream open query =" << query;
