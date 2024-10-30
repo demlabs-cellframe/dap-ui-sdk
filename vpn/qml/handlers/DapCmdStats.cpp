@@ -43,12 +43,6 @@ void DapCmdStats::handleResult(const QJsonObject& result)
     {
         qWarning() << "[DapCmdStats] Stats result" << result;
     }
-
-    if(result.value(SERVER_NAME_PARAM) != QJsonValue::Undefined)
-    {
-        QString serverName = result.value(SERVER_NAME_PARAM).toString();
-        emit sigCurrentServerName(serverName);
-    }
 }
 
 void DapCmdStats::handleError(int code, const QString& message)

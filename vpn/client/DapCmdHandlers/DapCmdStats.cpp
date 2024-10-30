@@ -21,14 +21,12 @@ void DapCmdStats::handle(const QJsonObject* params)
 }
 
 void DapCmdStats::sendCmdStats(qint64 readBytes, qint64 writeBytes,
-                               qint64 readPackages, qint64 writePackages,
-                               const QString& serverName)
+                               qint64 readPackages, qint64 writePackages)
 {
     static QJsonObject result;
     result["read_bytes"]    = QString::number(readBytes);
     result["write_bytes"]   = QString::number(writeBytes);
     result["read_package"]  = QString::number(readPackages);
     result["write_package"] = QString::number(writePackages);
-    result["server_name"]   = serverName;
     sendCmd(&result);
 }

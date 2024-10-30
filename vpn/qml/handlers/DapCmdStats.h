@@ -27,7 +27,6 @@ private:
     const QString WRITE_BYTES_PARAM = "write_bytes";
     const QString READ_PACKAGE_PARAM = "read_package";
     const QString WRITE_PACKAGE_PARAM = "write_package";
-    const QString SERVER_NAME_PARAM = "server_name";
 };
 
 #endif // DAPCMDSTATSHANDLER_H
