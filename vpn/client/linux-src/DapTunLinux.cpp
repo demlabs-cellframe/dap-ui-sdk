@@ -343,7 +343,8 @@ void DapTunLinux::tunDeviceDestroy()
         qDebug() << "cmd run [" << run << ']';
         ::system(run.toLatin1().constData());
 
-        for (const auto &str : m_routingExceptionAddrs){
+        for (const auto &str : m_routingExceptionAddrs)
+        {
             QString run = QString("route del %1")
                     .arg(str);
             ::system(run.toLatin1().constData() );
@@ -355,22 +356,25 @@ void DapTunLinux::tunDeviceDestroy()
                      .arg(m_lastUsedConnectionName).toLatin1().constData());
     }
 
-    resetNetworkSettingsToDefault();
+    // resetNetworkSettingsToDefault();
 
     DapTunUnixAbstract::tunDeviceDestroy();
 }
 
 void DapTunLinux::resetNetworkSettingsToDefault()
 {
-    for (int i = 0; i<5; i++)
-        qDebug() << "[DapTunLinux::resetNetworkSettingsToDefault]";
+    // for (int i = 0; i<5; i++)
+    //     qDebug() << "[DapTunLinux::resetNetworkSettingsToDefault]";
 
     // 1. Restore the default gateway
-    if (!m_defaultGwOld.isEmpty()) {
+    if (!m_defaultGwOld.isEmpty())
+    {
         QString restoreDefaultGwCmd = QString("ip route add default via %1").arg(m_defaultGwOld);
         qDebug() << "Restoring default gateway with command: " << restoreDefaultGwCmd;
         ::system(restoreDefaultGwCmd.toLatin1().constData());
-    } else {
+    }
+    else
+    {
         qWarning() << "Default gateway is not set. Skipping default gateway restoration.";
     }
 
@@ -386,11 +390,16 @@ void DapTunLinux::resetNetworkSettingsToDefault()
 
     // 4. Restore all active network connections
     QProcess process;
-    process.start("nmcli -t --fields NAME connection show --active");
+    QString command = "-t --fields NAME connection show --active";
+    process.setProgram("nmcli");
+    process.setArguments(command.split(" "));
+    process.start();
+    //process.start("nmcli -t --fields NAME connection show --active");
     process.waitForFinished(-1);
     QStringList activeConnections = QString(process.readAllStandardOutput()).split("\n", QString::SkipEmptyParts);
 
-    for (const QString& connection : activeConnections) {
+    for (const QString& connection : activeConnections)
+    {
         qDebug() << "Restarting network connection: " << connection;
         ::system(QString("nmcli connection down '%1'").arg(connection).toLatin1().constData());
         ::system(QString("nmcli connection up '%1'").arg(connection).toLatin1().constData());

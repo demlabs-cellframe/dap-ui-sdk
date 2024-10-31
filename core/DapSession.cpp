@@ -68,8 +68,10 @@ DapSession::~DapSession()
         delete m_dapCryptCDB;
 }
 
-DapNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QString& query, QObject *obj, const char *slot, const char *slot_err) {
-    if(m_sessionKeyID.isEmpty()) {
+DapNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QString& query, QObject *obj, const char *slot, const char *slot_err)
+{
+    if(m_sessionKeyID.isEmpty())
+    {
         qCritical() << "Can't send request to server."
                        " Session was not initialized";
         return Q_NULLPTR;
@@ -96,14 +98,16 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObje
     DapNetworkReply *netReply = new DapNetworkReply();
     if (slot)
         connect(netReply, SIGNAL(finished()), obj, slot);
-    connect(netReply, &DapNetworkReply::sigError, this, [=] {
-        if ( netReply->error() != 110 ) {
+    connect(netReply, &DapNetworkReply::sigError, this, [netReply, slot_err, obj, this]
+            {
+        if ( netReply->error() != 110 )
+        {
             qInfo() << "errorNetwork";
-
             emit errorNetwork(netReply->error(), netReply->errorString());
             if (slot_err)
                 QMetaObject::invokeMethod(obj, slot_err, Qt::ConnectionType::AutoConnection, Q_ARG(const QString&, netReply->errorString()));
-        }else
+        }
+        else
             qInfo() << "Timeout its not a reason for the network error sate, right?";
 
     });
@@ -141,11 +145,13 @@ DapNetworkReply* DapSession::requestServerPublicKey()
 
 void DapSession::sendBugReport(const QByteArray &data)
 {
-    if (!m_dapCryptCDB) {
+    if (!m_dapCryptCDB)
+    {
         auto it = DapDataLocal::instance()->m_cdbIter;
         this->setDapUri (it->address, it->port); //80);
         auto *l_tempConn = new QMetaObject::Connection();
-        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]{
+        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]
+                              {
             preserveCDBSession();
             m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(),
                                                     SLOT(answerBugReport()), QT_STRINGIFY(receivedBugReportAnswer));
@@ -153,7 +159,9 @@ void DapSession::sendBugReport(const QByteArray &data)
             delete l_tempConn;
         });
         requestServerPublicKey();
-    } else {
+    }
+    else
+    {
         m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(),
                                                 SLOT(answerBugReport()), QT_STRINGIFY(receivedBugReportAnswer));
     }
@@ -163,10 +171,12 @@ void DapSession::getRemainLimits(const QString& net_id, const QString& a_pkey, c
 {
     QByteArray data;
 
-    if (!m_dapCryptCDB) {
+    if (!m_dapCryptCDB)
+    {
         this->setDapUri (address, port);
         auto *l_tempConn = new QMetaObject::Connection();
-        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]{
+        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]
+                              {
             preserveCDBSession();
             m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(),
                                                     SLOT(answerBugReport()), QT_STRINGIFY(receivedBugReportAnswer));
@@ -174,7 +184,9 @@ void DapSession::getRemainLimits(const QString& net_id, const QString& a_pkey, c
             delete l_tempConn;
         });
         requestServerPublicKey();
-    } else {
+    }
+    else
+    {
         m_netSendBugReportReply = encRequestRaw(data, URL_BUG_REPORT, QString(), QString(),
                                                 SLOT(answerBugReport()), QT_STRINGIFY(receivedBugReportAnswer));
     }
@@ -183,11 +195,13 @@ void DapSession::getRemainLimits(const QString& net_id, const QString& a_pkey, c
 
 void DapSession::sendBugReportStatusRequest(const QByteArray &data)
 {
-    if (!m_dapCryptCDB) {
+    if (!m_dapCryptCDB)
+    {
         auto it = DapDataLocal::instance()->m_cdbIter;
         this->setDapUri (it->address, it->port); //80);
         auto *l_tempConn = new QMetaObject::Connection();
-        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]{
+        *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]
+                              {
             preserveCDBSession();
             /*m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this
                                                                , SLOT(answerBugReportsStatus())
@@ -198,7 +212,9 @@ void DapSession::sendBugReportStatusRequest(const QByteArray &data)
             delete l_tempConn;
         });
         requestServerPublicKey();
-    } else {
+    }
+    else
+    {
         /*m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this
                                                            , SLOT(answerBugReportsStatus())
                                                            , QT_STRINGIFY(answerBugReportsStatusError), NULL, true);*/
@@ -214,7 +230,8 @@ void DapSession::sendSignUpRequest(const QString &host, const QString &email, co
                                         true, /*QString("Content-Type: application/x-www-form-urlencoded\r\n")*/ "");
 }
 
-QString readJsonFile(const QString& filePath) {
+QString readJsonFile(const QString& filePath)
+{
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning() << "Failed to open file:" << filePath;
@@ -232,7 +249,7 @@ QString readJsonFile(const QString& filePath) {
 void DapSession::getNews()
 {
     DapNetworkReply *m_netNewsReply = new DapNetworkReply;
-    connect(m_netNewsReply, &DapNetworkReply::sigError, this, [=]() {
+    connect(m_netNewsReply, &DapNetworkReply::sigError, this, []() {
         qCritical() << "Couldn't fetch news";
         return;
     });
@@ -242,30 +259,39 @@ void DapSession::getNews()
         QJsonParseError jsonErr;
         QByteArray replay = m_netNewsReply->getReplyData();
         QJsonDocument jsonDoc = QJsonDocument::fromJson(replay.left(replay.lastIndexOf("} ]")+3), &jsonErr);
-        if(!jsonDoc.isNull()) {
-            if(!jsonDoc.isArray()) {
+        if(!jsonDoc.isNull())
+        {
+            if(!jsonDoc.isArray())
+            {
                 qCritical() << "Error parse response. Must be array";
             }
-        } else {
+        }
+        else
+        {
             qWarning() << "Server response:" << m_netNewsReply->getReplyData();
             qCritical() << "Can't parse server response to JSON: "<<jsonErr.errorString()<< " on position "<< jsonErr.offset ;
         }
 
         //******* For news debbuging ********//
         QString filePath = DapDataLocal::instance()->getLogPath() + "/news.json";
-        if (QFile::exists(filePath)) {
+        if (QFile::exists(filePath))
+        {
             qDebug() << "File 'news.json' exists. Reading content...";
 
             QString jsonContent = readJsonFile(filePath);
 
-            if (!jsonContent.isEmpty()) {
-
+            if (!jsonContent.isEmpty())
+            {
                 jsonDoc = QJsonDocument::fromJson(jsonContent.toUtf8());
 
-            } else {
+            }
+            else
+            {
                 qWarning() << "JSON content is empty";
             }
-        } else {
+        }
+        else
+        {
             qWarning() << "For news debbuging - JSON file not exist. Expected path: " + filePath;
         }
         //**********************************//
@@ -283,7 +309,8 @@ void DapSession::getNews()
 void DapSession::onEnc()
 {
     qDebug() << "Enc reply";
-    if(m_netEncryptReply->getReplyData().isEmpty()) {
+    if(m_netEncryptReply->getReplyData().isEmpty())
+    {
         qWarning() << "Empty enc reply...";
         emit errorEncryptInitialization (tr ("Empty enc reply"));
         return;
@@ -291,7 +318,8 @@ void DapSession::onEnc()
 
     QJsonParseError json_err;
     auto json_resp = QJsonDocument::fromJson(m_netEncryptReply->getReplyData(), &json_err);
-    if(json_err.error != QJsonParseError::NoError) {
+    if(json_err.error != QJsonParseError::NoError)
+    {
         QString errorMessage = tr ("Can't parse response from server");
         qCritical() << errorMessage << json_err.errorString();
         emit errorEncryptInitialization(errorMessage);
@@ -299,7 +327,8 @@ void DapSession::onEnc()
     }
 
     auto json_err_resp = json_resp.object().value("error");
-    if(json_err_resp != QJsonValue::Undefined) {
+    if(json_err_resp != QJsonValue::Undefined)
+    {
         QString serverErrorMsg = json_err_resp.toString();
         qCritical() << "Got error message from server:"
                     << json_err_resp.toString();
@@ -310,7 +339,8 @@ void DapSession::onEnc()
     auto json_encrypt_id = json_resp.object().value("encrypt_id");
     auto json_encrypt_msg = json_resp.object().value("encrypt_msg");
     if(json_encrypt_id == QJsonValue::Undefined ||
-            json_encrypt_msg == QJsonValue::Undefined) {
+            json_encrypt_msg == QJsonValue::Undefined)
+    {
         QString errorMessage = tr ("Bad response from server");
         emit errorEncryptInitialization(errorMessage);
         return;
@@ -319,14 +349,16 @@ void DapSession::onEnc()
     m_sessionKeyID = QByteArray::fromBase64(json_encrypt_id.toString().toLatin1());
     QByteArray bobMsg = QByteArray::fromBase64(json_encrypt_msg.toString().toLatin1());
 
-    if (bobMsg.size() != MSRLN_PKB_BYTES) {
+    if (bobMsg.size() != MSRLN_PKB_BYTES)
+    {
         QString errorMessage = tr ("Bad length encrypt message from server");
         qCritical() << "Server Bob message is failed, length = " << bobMsg.length();
         emit errorEncryptInitialization(errorMessage);
         return;
     }
 
-    if(!m_dapCrypt->generateSharedSessionKey(bobMsg, m_sessionKeyID.toLatin1())) {
+    if(!m_dapCrypt->generateSharedSessionKey(bobMsg, m_sessionKeyID.toLatin1()))
+    {
         QString errorMessage = tr ("Failed generate session key");
         qCritical() << errorMessage;
         emit errorEncryptInitialization (errorMessage);
@@ -355,7 +387,8 @@ DapNetworkReply* DapSession::encRequest(const QString& reqData, const QString& u
 {
     qInfo() << "encRequest " + QString(isCDB ? "CDB" : "noCDB") + " mode";
     DapCrypt *l_dapCrypt = isCDB ? m_dapCryptCDB : m_dapCrypt;
-    if (!l_dapCrypt) {
+    if (!l_dapCrypt)
+    {
         qCritical() << "Invalid key!";
         return nullptr;
     }
@@ -369,11 +402,13 @@ DapNetworkReply* DapSession::encRequest(const QString& reqData, const QString& u
     QByteArray subUrlByte = subUrl.toLatin1();
     QByteArray queryByte = query.toLatin1();
     QString urlPath = url;
-    if(subUrl.length()) {
+    if(subUrl.length())
+    {
         l_dapCrypt->encode(subUrlByte, BAsubUrlEncrypted, KeyRoleSession);
         urlPath += "/" + BAsubUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding);
     }
-    if(query.length()) {
+    if(query.length())
+    {
         l_dapCrypt->encode(queryByte, BAqueryEncrypted, KeyRoleSession);
         urlPath += "?" + BAqueryEncrypted.toBase64(QByteArray::Base64UrlEncoding);
     }
@@ -394,11 +429,13 @@ DapNetworkReply* DapSession::encRequestRaw(const QByteArray& bData, const QStrin
     l_dapCrypt->encode(const_cast<QByteArray&>(bData), BAreqDataEnc, KeyRoleSession);
 
     QString urlPath = url;
-    if(subUrl.length()) {
+    if(subUrl.length())
+    {
         l_dapCrypt->encode(subUrlByte, BAsubUrlEncrypted, KeyRoleSession);
         urlPath += "/" + BAsubUrlEncrypted.toBase64(QByteArray::Base64UrlEncoding);
     }
-    if(query.length()) {
+    if(query.length())
+    {
         l_dapCrypt->encode(queryByte, BAqueryEncrypted, KeyRoleSession);
         urlPath += "?" + BAqueryEncrypted.toBase64(QByteArray::Base64UrlEncoding);
     }
@@ -417,7 +454,8 @@ void DapSession::setDapUri(const QString& addr, const uint16_t port)
     m_upstreamPort = port;
 }
 
-void DapSession::onKeyActivated() {
+void DapSession::onKeyActivated()
+{
     qInfo() << "Activation reply";
 
     if(m_netKeyActivateReply->getReplyData().size() <= 0) {
@@ -428,20 +466,24 @@ void DapSession::onKeyActivated() {
     QByteArray dByteArr;
     m_dapCrypt->decode(m_netKeyActivateReply->getReplyData(), dByteArr, KeyRoleSession);
     QString op_code = QString::fromLatin1(dByteArr).left(4);
-    if (op_code == OP_CODE_SERIAL_ACTIVATED) {
+    if (op_code == OP_CODE_SERIAL_ACTIVATED)
+    {
         qInfo() << "Serial key activated, try to authorize";
         emit authRequested();
         return;
     }
-    else {
+    else
+    {
         emit errorAuthorization (tr ("Serial key was not activated, code ") + op_code);
         return;
     }
 }
 
 #ifdef BUILD_VAR_GOOGLE
-void DapSession::onPurchaseVerified() {
-    if(m_netPurchaseReply->getReplyData().size() <= 0) {
+void DapSession::onPurchaseVerified()
+{
+    if(m_netPurchaseReply->getReplyData().size() <= 0)
+    {
         emit errorNetwork("Wrong answer from server");
         return;
     }
@@ -450,7 +492,8 @@ void DapSession::onPurchaseVerified() {
     qInfo() << "Validation request replied" << dByteArr;
     QJsonParseError jsonErr;
     auto jsonDoc = QJsonDocument::fromJson(dByteArr, &jsonErr);
-    if(jsonErr.error != QJsonParseError::NoError) {
+    if(jsonErr.error != QJsonParseError::NoError)
+    {
         qCritical() << "Can't parse response, error" << jsonErr.errorString();
         emit errorNetwork (tr ("Can't parse response"));
         return;
@@ -458,6 +501,7 @@ void DapSession::onPurchaseVerified() {
     emit purchaseResponseReceived(jsonDoc);
 }
 #endif
+
 /**
  * @brief DapSession::onAuthorize
  */
@@ -544,7 +588,7 @@ void DapSession::onAuthorize()
     QXmlStreamReader m_xmlStreamReader;
     m_xmlStreamReader.addData(dByteArr);
 
-    bool isCookie = false;
+    // bool isCookie = false;
     bool isAuth = false;
     QString SRname;
     while(m_xmlStreamReader.readNextStartElement())
@@ -567,7 +611,7 @@ void DapSession::onAuthorize()
                 {
                     m_cookie = m_xmlStreamReader.readElementText();
                     qDebug() << "m_cookie: " << m_cookie;
-                    isCookie = true;
+                    // isCookie = true;
                     //requestServerList();
                     emit authorized(m_cookie);
                 }
@@ -701,39 +745,57 @@ void DapSession::onNewTxCond()
     while(m_xmlStreamReader.readNextStartElement())
     {
         qDebug() << " name = " << m_xmlStreamReader.name();
-        if (m_xmlStreamReader.name() == "auth_info") {
-            while(m_xmlStreamReader.readNextStartElement()) {
+        if (m_xmlStreamReader.name() == "auth_info")
+        {
+            while(m_xmlStreamReader.readNextStartElement())
+            {
                 qDebug() << " auth_info = " << m_xmlStreamReader.name();
-                if (m_xmlStreamReader.name() == "tx_cond_tpl") {
-                    while(m_xmlStreamReader.readNextStartElement()) {
+                if (m_xmlStreamReader.name() == "tx_cond_tpl")
+                {
+                    while(m_xmlStreamReader.readNextStartElement())
+                    {
                         qDebug() << " tx_cond_tpl: " << m_xmlStreamReader.name();
-                        if (m_xmlStreamReader.name() == "net") {
+                        if (m_xmlStreamReader.name() == "net")
+                        {
                             m_cdbAuthNet = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvNet: " << m_cdbAuthNet;
-                        } else if (m_xmlStreamReader.name() == "token") {
-                             m_cdbAuthToken = m_xmlStreamReader.readElementText();
+                        }
+                        else if (m_xmlStreamReader.name() == "token")
+                        {
+                            m_cdbAuthToken = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvToken: " << m_cdbAuthToken;
-                        } else if (m_xmlStreamReader.name() == "tx_cond") {
-                             m_cdbAuthTxCond = m_xmlStreamReader.readElementText();
+                        }
+                        else if (m_xmlStreamReader.name() == "tx_cond")
+                        {
+                            m_cdbAuthTxCond = m_xmlStreamReader.readElementText();
                             qDebug() << "m_srvTxCond: " << m_cdbAuthTxCond;
-                        } else if (m_xmlStreamReader.name() == "max_price") {
-                            m_cdbMaxPrice = m_xmlStreamReader.readElementText();
+                        }
+                        else if (m_xmlStreamReader.name() == "max_price")
+                        {
+                           m_cdbMaxPrice = m_xmlStreamReader.readElementText();
                            qDebug() << "m_srvMaxPrice: " << m_cdbMaxPrice;
-                        } else {
+                        }
+                        else
+                        {
                             qWarning() <<"Unknown element" << m_xmlStreamReader.readElementText();
                         }
                     }
-                } else {
+                }
+                else
+                {
                     m_xmlStreamReader.skipCurrentElement();
                 }
             }
             isTxOk = true;
-        } else {
+        }
+        else
+        {
             m_xmlStreamReader.skipCurrentElement();
         }
     }
 
-    if(!isTxOk){
+    if(!isTxOk)
+    {
         emit sigNewTxError();
     }
 
@@ -743,7 +805,8 @@ void DapSession::onNewTxCond()
 void DapSession::answerSignUp()
 {
     qInfo() << "answerSignUp";
-    if(m_netSignUpReply->error() != 0) {
+    if(m_netSignUpReply->error() != 0)
+    {
         qInfo() << m_netSignUpReply->errorString();
         emit sigSignUpAnswer(m_netSignUpReply->errorString());
         return;
@@ -760,7 +823,8 @@ void DapSession::answerSignUp()
 void DapSession::answerBugReport()
 {
     auto reply = m_netSendBugReportReply->getReplyData();
-    if (reply.size() <= 0) {
+    if (reply.size() <= 0)
+    {
         qCritical() << "Wrong reply";
         return;
     }
@@ -776,7 +840,8 @@ void DapSession::errorResetSerialKey(const QString& error)
 
 void DapSession::onResetSerialKey()
 {
-    if(m_netKeyActivateReply->getReplyData().size() <= 0 ) {
+    if(m_netKeyActivateReply->getReplyData().size() <= 0 )
+    {
         emit errorResetSerialKey (tr ("Wrong answer from server"));
         return;
     }
@@ -787,22 +852,33 @@ void DapSession::onResetSerialKey()
 
     QString op_code = QString::fromUtf8(replyArr).left(4);
 
-    if (op_code == OP_CODE_GENERAL_ERR) {
+    if (op_code == OP_CODE_GENERAL_ERR)
+    {
         emit sigResetSerialKeyError (1, tr ("Unknown authorization error"));
         return;
-    } else if (op_code == OP_CODE_ALREADY_ACTIVATED) {
+    }
+    else if (op_code == OP_CODE_ALREADY_ACTIVATED)
+    {
         emit sigResetSerialKeyError (1, tr ("Serial key already activated on another device"));
         return;
-    } else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB) {
+    }
+    else if (op_code == OP_CODE_NOT_FOUND_LOGIN_IN_DB)
+    {
         emit sigResetSerialKeyError (1, isSerial ? tr("Serial key not found in database") : tr ("Login not found in database"));
         return;
-    } else if (op_code == OP_CODE_SUBSCRIBE_EXPIRED) {
+    }
+    else if (op_code == OP_CODE_SUBSCRIBE_EXPIRED)
+    {
         emit sigResetSerialKeyError (1, tr ("Serial key expired"));
         return;
-    } else if (op_code == OP_CODE_CANT_CONNECTION_TO_DB) {
+    }
+    else if (op_code == OP_CODE_CANT_CONNECTION_TO_DB)
+    {
         emit sigResetSerialKeyError (1, tr ("Can't connect to database"));
         return;
-    } else if (op_code == OP_CODE_INCORRECT_SYM) {
+    }
+    else if (op_code == OP_CODE_INCORRECT_SYM)
+    {
         emit sigResetSerialKeyError(1, tr ("Incorrect symbols in request"));
         return;
     }
@@ -927,7 +1003,6 @@ void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domai
                                            SLOT(onResetSerialKey()), QT_STRINGIFY(errorResetSerialKey), true);
     }
 }
-
 
 #ifdef BUILD_VAR_GOOGLE
 void DapSession::requestPurchaseVerify(const QJsonObject *params)

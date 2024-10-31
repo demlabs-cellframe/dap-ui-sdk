@@ -109,8 +109,6 @@ private slots:
     void sltStreamError(QAbstractSocket::SocketError socketError);
     void sltStreamOpenCallback();
 
-    void sltStreamBytesWritten(qint64 bytes);
-
     void _printPacketLossStatistics();
 
 public slots:
@@ -120,7 +118,8 @@ public slots:
 
     }
 
-    void openChannels(const QString & a_channels) {
+    void openChannels(const QString & a_channels)
+    {
         streamOpen(QString("stream_ctl,channels=%1,enc_type=%2,enc_headers=%3")
                    .arg(a_channels)
                    .arg(DAP_ENC_KEY_TYPE_SALSA2012)

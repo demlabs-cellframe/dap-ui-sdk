@@ -142,7 +142,7 @@ void DapDataLocal::_parseXML(const QString& a_fname)
                 else if( sr->name().toString() == "network-default")
                 {
                     m_networkDefault = sr->readElementText();
-                    qInfo() << "Network defaut: " << m_networkDefault;
+                    qInfo() << "Network default: " << m_networkDefault;
                 }
                 else if( sr->name().toString() == "kelvpn-pub")
                 {
@@ -173,12 +173,12 @@ void DapDataLocal::_parseXML(const QString& a_fname)
                 else if( sr->name().toString() == "title")
                 {
                     m_brandName = sr->readElementText();
-                    qInfo() << "Network defaut: " << m_networkDefault;
+                    qInfo() << "Network default: " << m_networkDefault;
                 }
                 else if( sr->name().toString() == "url_site")
                 {
                     m_urlSite = sr->readElementText();
-                    qInfo() << "Network defaut: " << m_networkDefault;
+                    qInfo() << "Network default: " << m_networkDefault;
                 }
                 else
                 {
