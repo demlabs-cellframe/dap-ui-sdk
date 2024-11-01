@@ -68,7 +68,7 @@ void DapStreamer::initStreamSocket() {
     connect(&m_streamSocket, &QAbstractSocket::disconnected, this, &DapStreamer::sltStreamDisconnected);
 
     typedef void (QAbstractSocket::*QAbstractSocketErrorSignal)(QAbstractSocket::SocketError);
-    connect(&m_streamSocket, static_cast<QAbstractSocketErrorSignal>(&QAbstractSocket::error),
+    connect(&m_streamSocket, static_cast<QAbstractSocketErrorSignal>(&QAbstractSocket::errorOccurred),
             this, &DapStreamer::sltStreamError);
 
     connect(&m_streamSocket, &QAbstractSocket::stateChanged, this, &DapStreamer::sltStreamStateChanged);
