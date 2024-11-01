@@ -87,7 +87,7 @@ void DapServiceClient::sendCmd(const QString & a_cmd)
 void DapServiceClient::onCtlSocketError(DapUiSocketError socketError)
 {
     Q_UNUSED(socketError);
-    qDebug() << "onCtlSocketError() sockCtl->errorString() == "<<sockCtl->errorString();
+    qDebug() << "onCtlSocketError() sockCtl->errorString() == " <<sockCtl->errorString();
 
     emit ctlError(sockCtl->errorString());
     if (sockCtl->state() != QAbstractSocket::ConnectedState) {
