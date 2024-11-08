@@ -14,6 +14,7 @@ void DapCmdStates::handle(const QJsonObject* params)
 void DapCmdStates::sendCmdStates(const QString& stateName, const QString stateVal)
 {
     QJsonObject response;
+    qDebug() << "[TEST] state_name: " << stateName << "\tstate: " << stateVal;
     response["state_name"] = stateName;
     response["state"] = stateVal;
     sendCmd(&response);
@@ -27,7 +28,16 @@ DapCmdStates::DapCmdStates(QObject *parent)
 
 void DapCmdStates::_sendUserRequestState()
 {
-    QString stateValue = _activeStateMachine->userRequestStateConnect->active() ?
-                "Connect" : "Disconnect";
+    bool isConnect = false;
+    for (const auto &state: _activeStateMachine->getCachedStates())
+    {
+        if(state.getStringState() != "false")
+        {
+            isConnect = true;
+            break;
+        }
+    }
+
+    QString stateValue = isConnect ? "Connect" : "Disconnect";
     sendCmdStates("user_request_state", stateValue);
 }
