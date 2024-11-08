@@ -355,47 +355,6 @@ void DapTunLinux::tunDeviceDestroy()
                      .arg(m_lastUsedConnectionName).toLatin1().constData());
     }
 
-    resetNetworkSettingsToDefault();
-
     DapTunUnixAbstract::tunDeviceDestroy();
-}
-
-void DapTunLinux::resetNetworkSettingsToDefault()
-{
-    for (int i = 0; i<5; i++)
-        qDebug() << "[DapTunLinux::resetNetworkSettingsToDefault]";
-
-    // 1. Restore the default gateway
-    if (!m_defaultGwOld.isEmpty()) {
-        QString restoreDefaultGwCmd = QString("ip route add default via %1").arg(m_defaultGwOld);
-        qDebug() << "Restoring default gateway with command: " << restoreDefaultGwCmd;
-        ::system(restoreDefaultGwCmd.toLatin1().constData());
-    } else {
-        qWarning() << "Default gateway is not set. Skipping default gateway restoration.";
-    }
-
-    // 2. Enable IPv6 for all interfaces
-    QString enableIPv6Cmd = "for iface in $(ls /proc/sys/net/ipv6/conf/); do echo 0 > /proc/sys/net/ipv6/conf/$iface/disable_ipv6; done";
-    qDebug() << "Enabling IPv6 for all interfaces.";
-    ::system(enableIPv6Cmd.toLatin1().constData());
-
-    // 3. Remove all custom routes
-    QString removeCustomRoutesCmd = "ip route flush table main";
-    qDebug() << "Removing all custom routes.";
-    ::system(removeCustomRoutesCmd.toLatin1().constData());
-
-    // 4. Restore all active network connections
-    QProcess process;
-    process.start("nmcli -t --fields NAME connection show --active");
-    process.waitForFinished(-1);
-    QStringList activeConnections = QString(process.readAllStandardOutput()).split("\n", QString::SkipEmptyParts);
-
-    for (const QString& connection : activeConnections) {
-        qDebug() << "Restarting network connection: " << connection;
-        ::system(QString("nmcli connection down '%1'").arg(connection).toLatin1().constData());
-        ::system(QString("nmcli connection up '%1'").arg(connection).toLatin1().constData());
-    }
-
-    qInfo() << "Network settings have been reset to default.";
 }
 
