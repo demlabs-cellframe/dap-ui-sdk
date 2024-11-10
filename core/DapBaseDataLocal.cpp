@@ -15,6 +15,7 @@
 #include "dap_net.h"
 
 #ifdef DAP_OS_ANDROID
+#include "DapLogger.h"
 #include <sys/sendfile.h>
 #include <fcntl.h>
 #include <unistd.h>
