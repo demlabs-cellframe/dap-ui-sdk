@@ -5,7 +5,7 @@
 #include "DapCmdServersList.h"
 #include "DapJsonParams.h"
 #include "DapConnectClient.h"
-#include "DapDataLocal.h"
+#include "DapServiceDataLocal.h"
 #include <QMetaEnum>
 DapCmdServersList::DapCmdServersList(QObject *parent)
     : DapCmdServiceAbstract(DapJsonCmdType::GET_SERVERS_LIST, parent)
@@ -44,8 +44,10 @@ void DapCmdServersList::sendRequestToCDB(){
 
             qCritical() << "Can't parse server response to JSON: "<< jsonErr.errorString() << " on position "<< jsonErr.offset;
             //emit nextCdb();
-            if (++DapDataLocal::instance()->m_cdbIter == DapDataLocal::instance()->cdbServersList().end()) {
-                DapDataLocal::instance()->m_cdbIter = DapDataLocal::instance()->cdbServersList().begin();
+            DapServiceDataLocal::instance()->nextCbdIterator();
+            if (DapServiceDataLocal::instance()->getCdbIterator() != DapServiceDataLocal::instance()->cdbServersList().end())
+            {
+                DapServiceDataLocal::instance()->setNewCbdIterator(DapServiceDataLocal::instance()->cdbServersList().begin());
 
                 if (loadServerList())
                     return;
@@ -53,12 +55,17 @@ void DapCmdServersList::sendRequestToCDB(){
             }
             sendSimpleError(-32001, "Bad response from server. Parse error");
 
-        } else {
+        }
+        else
+        {
             auto arr = jsonDoc.array();
-            if (arr.isEmpty()) {
+            if (arr.isEmpty())
+            {
                 //emit nextCdb();
-                if (++DapDataLocal::instance()->m_cdbIter == DapDataLocal::instance()->cdbServersList().end()) {
-                    DapDataLocal::instance()->m_cdbIter = DapDataLocal::instance()->cdbServersList().begin();
+                DapServiceDataLocal::instance()->nextCbdIterator();
+                if (DapServiceDataLocal::instance()->getCdbIterator() != DapServiceDataLocal::instance()->cdbServersList().end())
+                {
+                    DapServiceDataLocal::instance()->setNewCbdIterator(DapServiceDataLocal::instance()->cdbServersList().begin());
 
                     if (loadServerList())
                         return;
@@ -94,7 +101,7 @@ void DapCmdServersList::sendRequestToCDB(){
         sendSimpleError(reply->error(), reply->errorString());
     });
 
-    auto it = DapDataLocal::instance()->m_cdbIter;
+    auto it = DapServiceDataLocal::instance()->getCdbIterator();
     qDebug() << "Sending request to: " << it->address << ":" << it->port;
     DapConnectClient::instance()->request_GET (it->address, it->port, "nodelist", *reply);
 }
@@ -105,8 +112,8 @@ void DapCmdServersList::updateServerList(const QJsonArray& arr)
 {
     QString time = QString::number(QDateTime::currentDateTime().toSecsSinceEpoch());
 
-    DapDataLocal::instance()->saveToSettings("last_nodelist_update", arr);
-    DapDataLocal::instance()->saveToSettings("last_nodelist_update_time", time);
+    DapServiceDataLocal::instance()->saveToSettings("last_nodelist_update", arr);
+    DapServiceDataLocal::instance()->saveToSettings("last_nodelist_update_time", time);
 
     qDebug() << "Saved updated server list at " << QDateTime::fromSecsSinceEpoch(time.toLongLong()).toString("yyyy-MM-dd HH:mm:ss");
 
@@ -118,8 +125,8 @@ bool DapCmdServersList::loadServerList()
 {
     QJsonArray arr;
     QString time;
-    DapDataLocal::instance()->loadFromSettings("last_nodelist_update", arr);
-    DapDataLocal::instance()->loadFromSettings("last_nodelist_update_time", time);
+    DapServiceDataLocal::instance()->loadFromSettings("last_nodelist_update", arr);
+    DapServiceDataLocal::instance()->loadFromSettings("last_nodelist_update_time", time);
 
     qDebug() << "Loading server list from stage. " + QDateTime::fromSecsSinceEpoch(time.toLongLong()).toString("yyyy-MM-dd HH:mm:ss");
 

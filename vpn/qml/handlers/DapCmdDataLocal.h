@@ -1,15 +1,7 @@
-#ifndef DAPCMDDATALOCAL_H
-#define DAPCMDDATALOCAL_H
-
+#pragma once
 
 #include "DapCmdClientAbstract.h"
 #include <QObject>
-
-/****************************************//**
- * @brief Dap Local Data command
- * @date 30.09.2024
- * @author Mikhail Shilenko
- *******************************************/
 
 class DapCmdDataLocal : public DapCmdClientAbstract
 {
@@ -22,28 +14,28 @@ public:
     void handleResult (const QJsonObject &a_params) override;
     void handleError (int code, const QString &message) override;
 
-    const QString &clientTypeName() const;
-    void setClientTypeName (const QString &a_clientType);
-    void sendUserConfigOldFilename (const QString &a_filename);
     /// request value from serive
-    void requestValue (const QString &a_name, const int a_msgId);
+    void requestValue (const QString &a_name);
     /// request all data from service
-    void requestAllData (const int a_msgId = 0);
+    void requestAllData ();
     /// send value to service
-    void sendValue (const QString &a_name, const QVariant &a_value, const int a_msgId);
+    void sendValue (const QString &a_name, const QVariant &a_value);
     /// send remove value to service
-    void sendRemove (const QString &a_name, const int a_msgId);
+    void sendRemove (const QString &a_name);
+
+public slots:
+    void dataLocalUpdated(const QJsonObject& object);
 
 signals:
+    void newDataSignal(const QJsonObject& object);
+
     /// service sent value
     void sigGotValue (QString a_name, QVariant a_value, const int a_msgId);
     /// service sent all data
-    void sigGotAllData (QJsonObject a_data, const int a_msgId, QString a_clientType);
+    void sigGotAllData ();
     /// service sent remove value
     void sigGotRemove (QString a_name, const int a_msgId);
 
-protected:
-    QString m_clientType;
+private:
+    bool m_isAllData = false;
 };
-
-#endif

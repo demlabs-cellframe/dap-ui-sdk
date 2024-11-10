@@ -1,12 +1,13 @@
 /* INCLUDES */
 #include "DapNodeWeb3.h"
+#include "DapLogger.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QProcess>
 #include <QTimer>
 #include <QDebug>
 
-#include "DapDataLocal.h"
+#include "DapServiceDataLocal.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -180,8 +181,8 @@ void DapNodeWeb3::responseProcessing (
                 QString cellframeDashboard = dataObject["cellframe-dashboard"].toString();
                 QString cellframeNode = dataObject["cellframe-node"].toString();
 
-                QString minDashboardVersion = DapDataLocal::instance()->getMinDashboardVersion();
-                QString minNodeVersion = DapDataLocal::instance()->getMinNodeVersion();
+                QString minDashboardVersion = DapServiceDataLocal::instance()->getMinDashboardVersion();
+                QString minNodeVersion = DapServiceDataLocal::instance()->getMinNodeVersion();
 
                 bool isDashboardLess = isVersionLessThan(cellframeDashboard, minDashboardVersion);
                 bool isNodeLess = isVersionLessThan(cellframeNode, minNodeVersion);
@@ -883,7 +884,7 @@ void DapNodeWeb3::parseOrderList (const QString &replyData, int baseErrorCode)
   parseJson (replyData.toUtf8(), baseErrorCode, __func__, &doc);
 
   if (jsonError()) {
-      QString fileName = DapDataLocal::instance()->getLogPath() + "/error_replyData.json";
+      QString fileName = DapLogger::getPathToLog() + "/error_replyData.json";
       qDebug() << fileName;
       QFile file(fileName);
       if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {

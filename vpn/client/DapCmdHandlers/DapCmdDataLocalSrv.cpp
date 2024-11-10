@@ -1,37 +1,41 @@
-/* INCLUDES */
-
 #include "DapCmdDataLocalSrv.h"
-
-/********************************************
- * CONSTRUCT/DESTRUCT
- *******************************************/
+#include "DapSerialKeyData.h"
+#include "DapSerialKeyHistory.h"
+#include "DapServiceDataLocal.h"
 
 DapCmdDataLocalSrv::DapCmdDataLocalSrv (QObject *a_parent)
     : DapCmdServiceAbstract (DapJsonCmdType::DATA_LOCAL, a_parent)
 {
-
+    auto dataLocal = DapServiceDataLocal::instance();
+    connect(dataLocal, &DapServiceDataLocal::valueServiceDataLocalUpdated, this, &DapCmdDataLocalSrv::servisDataLocalUpdated);
 }
 
 DapCmdDataLocalSrv::~DapCmdDataLocalSrv()
 {
-
 }
 
-/********************************************
- * OVERRIDE
- *******************************************/
+void DapCmdDataLocalSrv::servisDataLocalUpdated(const QJsonObject& object)
+{
+    QJsonObject jobj {
+                     { "action", "serviseDataUpdate" },
+                     { "data", object },
+                     };
+    sendCmd (&jobj);
+}
 
 void DapCmdDataLocalSrv::handle (const QJsonObject *a_params)
 {
     static const char *base64sign = "base64,";
     QString action  = a_params->value ("action").toString();
 
-    /*-----------------------------------------*/
-
-    if (action == "set")
+    if(action == "localUpdate")
+    {
+        auto dataLocal = DapServiceDataLocal::instance();
+        dataLocal->fromJson(a_params->value("data").toObject());
+    }
+    else if (action == "set")
     {
         QString name    = a_params->value ("name").toString();
-        int mid         = a_params->value ("mid").toInt();
 
         QVariant value;
         QJsonValue jsValue  = a_params->value ("value");
@@ -45,7 +49,7 @@ void DapCmdDataLocalSrv::handle (const QJsonObject *a_params)
             if (stringValue.startsWith (base64sign))
             {
                 /* parse and store bytearray */
-                auto base64src  = stringValue.mid (strlen (base64sign)).toUtf8();
+                auto base64src  = stringValue.mid(strlen (base64sign)).toUtf8();
                 auto base64data = QByteArray::fromBase64 (base64src);
                 value           = std::move (base64data);
             }
@@ -59,82 +63,102 @@ void DapCmdDataLocalSrv::handle (const QJsonObject *a_params)
         else
             value = jsValue.toVariant();
 
-        //QByteArray data = QByteArray::fromBase64 (a_params->value ("value").toString().toUtf8());
-        //return emit sigSetValue (std::move (name), std::move (data), mid);
-        return emit sigSetValue (std::move (name), std::move (value), mid);
+        setValue(std::move (name), std::move (value));
     }
-
-    /*-----------------------------------------*/
-
-    if (action == "get")
+    else if (action == "get")
     {
         QString name    = a_params->value ("name").toString();
-        int mid         = a_params->value ("mid").toInt();
-        return emit sigGetValue (std::move (name), mid);
+        return getValue(std::move(name));
     }
-
-    /*-----------------------------------------*/
-
-    if (action == "remove")
+    else if (action == "remove")
     {
         QString name    = a_params->value ("name").toString();
-        int mid         = a_params->value ("mid").toInt();
-        return emit sigRemoveValue (std::move (name), mid);
+        remove(std::move(name));
     }
-
-    /*-----------------------------------------*/
-
-    if (action == "getAll")
+    else if (action == "getAll")
     {
-        QString clType  = a_params->value ("clientType").toString();
-        int mid         = a_params->value ("mid").toInt();
-        return emit sigGetAllData (mid, std::move (clType));
+        getAllData();
     }
-
-    /*-----------------------------------------*/
-
-    if (action == "oldConfig")
-    {
-        QString oldFilename = a_params->value ("filename").toString();
-        emit sigOldConfigFilename (std::move (oldFilename));
-    }
-
-    /*-----------------------------------------*/
 }
 
-/********************************************
- * METHODS
- *******************************************/
+void DapCmdDataLocalSrv::getValue(const QString& nameValue)
+{
+    qDebug() << "Received request for value. Name:" << nameValue;
 
-void DapCmdDataLocalSrv::sendAllData (const QJsonObject &a_data, const int a_msgId, const QString &a_clientType)
+    auto dataLocal = DapServiceDataLocal::instance();
+    QVariant value;
+
+    if (nameValue == "serial_key")
+    {
+        value = dataLocal->serialKeyData()->serialKey();
+        qDebug() << "Returning serial_key:" << value.toString();
+    }
+    else if (nameValue == "is_key_activate")
+    {
+        value = dataLocal->serialKeyData()->isActivated();
+        qDebug() << "Returning is_key_activate:" << value.toBool();
+    }
+    else if (nameValue == "serial_history_key")
+    {
+        value = dataLocal->serialKeyHistory()->list();
+        qDebug() << "Returning serial_history_key list, size:" << value.toList().size();
+    }
+    else
+    {
+        value = dataLocal->settings()->value(nameValue);
+        qDebug() << "Returning value for setting:" << nameValue << ", Value:" << value;
+    }
+
+    if (!value.isValid()) {
+        qWarning() << "Warning: Invalid value for name:" << nameValue;
+    }
+
+    sendValue(nameValue, value);
+}
+
+void DapCmdDataLocalSrv::setValue(const QString& nameValue, const QVariant& value)
+{
+
+    DapServiceDataLocal::instance()->saveSetting(nameValue, value);
+    sendValue (nameValue, value);
+}
+
+void DapCmdDataLocalSrv::remove(const QString& nameValue)
+{
+    DapServiceDataLocal::instance()->removeSetting(nameValue);
+    sendRemove (nameValue);
+}
+
+void DapCmdDataLocalSrv::getAllData()
+{
+    QJsonObject jObj  = DapServiceDataLocal::instance()->toJson();
+    sendAllData (jObj);
+}
+
+void DapCmdDataLocalSrv::sendAllData(const QJsonObject &a_data)
 {
     QJsonObject jobj {
                      { "action", "setAll" },
-                     { "clientType", a_clientType },
                      { "data", a_data },
-                     { "mid", a_msgId },
                      };
     sendCmd (&jobj);
 }
 
-void DapCmdDataLocalSrv::sendRemove (const QString &a_name, const int a_msgId)
+void DapCmdDataLocalSrv::sendRemove (const QString &a_name)
 {
     QJsonObject jobj {
                      { "action", "remove" },
                      { "name", a_name },
-                     { "mid", a_msgId },
                      };
     sendCmd (&jobj);
 }
 
-void DapCmdDataLocalSrv::sendValue (const QString &a_name, const QVariant &a_value, const int a_msgId)
+void DapCmdDataLocalSrv::sendValue (const QString &a_name, const QVariant &a_value)
 {
     QJsonObject jobj
         {
          { "action", "set" },
          { "name", a_name },
-         { "mid", a_msgId },
-         //{ "value", a_data.toBase64().constData() },
          };
 
     if (a_value.type() == QVariant::ByteArray)
@@ -144,5 +168,3 @@ void DapCmdDataLocalSrv::sendValue (const QString &a_name, const QVariant &a_val
 
     sendCmd (&jobj);
 }
-
-/*-----------------------------------------*/

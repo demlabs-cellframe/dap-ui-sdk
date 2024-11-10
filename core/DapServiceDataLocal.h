@@ -2,14 +2,14 @@
 
 #include "DapBaseDataLocal.h"
 
-class DapDataLocal : public DapBaseDataLocal
+class DapServiceDataLocal : public DapBaseDataLocal
 {
     Q_OBJECT
-    DapDataLocal();
-public:
-    static DapDataLocal* instance();
 
-    QVariant getValueSetting(const QString &a_setting) override;
+    DapServiceDataLocal();
+public:
+    static DapServiceDataLocal *instance();
+
     void saveValueSetting(const QString &setting, const QVariant &value) override;
     void removeValueSetting(const QString &setting) override;
 
@@ -20,23 +20,18 @@ public:
     void setCountryISO(const QString& iso_code) override;
     void saveSerialKeyData() override;
     void resetSerialKeyData() override;
-    void saveKeysHistory() override;
-    void loadBugReport() override;
-    void saveBugReport() override;
+    // void saveBugReport() override;
 
     void savePendingSerialKey(QString a_serialkey) override;
-    void updateCdbList (const DapCdbServerList &a_newCdbList) override;
-    void setSettings(const QJsonObject &json) override;
 public slots:
     void setLogin(const QString &login) override;
     void setPassword(const QString &password) override;
-    void saveAuthorizationData() override;
 
-    void dataFromCommand(const QJsonObject& object);
+    void addNewSerialKey() override;
+
+protected:
+    void setBugReportHistory(const QJsonArray& list) override;
 signals:
-    void valueDataLocalUpdated(const QJsonObject& object);
-
-    void allDataReceived();
-private:
-    QVariantMap m_settingsMap;
+    void valueServiceDataLocalUpdated(const QJsonObject& object);
 };
+

@@ -1,6 +1,7 @@
 #include "DapCmdConnect.h"
 #include <QMap>
 #include <QDebug>
+#include "DapServiceDataLocal.h"
 #include "DapSession.h"
 #include "DapSerialKeyData.h"
 
@@ -115,7 +116,7 @@ void DapCmdConnect::handle(const QJsonObject* params)
 
             if(serialKey.isEmpty() && userName.isEmpty() && password.isEmpty())
             {
-                QString serialFromDataLocal = DapDataLocal::instance()->serialKeyData()->serialKey();
+                QString serialFromDataLocal = DapServiceDataLocal::instance()->serialKeyData()->serialKey();
                 if (serialFromDataLocal.isEmpty()){
                     qWarning() << "There is no serial key, username and password.";
                     return;
