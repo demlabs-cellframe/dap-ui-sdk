@@ -16,14 +16,13 @@ void DapCmdDataLocal::handleResult (const QJsonObject &a_params)
     static const char *base64sign = "base64,";
     QString action  = a_params.value ("action").toString();
 
-
     if (action == "setAll")
     {
         if(m_isAllData)
         {
             return;
         }
-
+        m_isAllData = true;
         QJsonObject object  = a_params.value ("data").toObject();
         object.insert("action", "setAll");
         emit newDataSignal(object);
