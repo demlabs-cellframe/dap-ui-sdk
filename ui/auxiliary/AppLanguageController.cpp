@@ -12,30 +12,30 @@ AppLanguageController::AppLanguageController(QList<QLocale::Language> a_language
     QLocale::Language systemLanguage = QLocale::system().language();
     QLocale::Language savedLanguage;
 
-    if (DapDataLocal::instance()->loadFromSettings(SETTING_LOCALE, savedLanguage))
+    if (DapDataLocal::instance()->loadFromSettings(DapDataLocal::SETTING_LOCALE, savedLanguage))
     {
         QLocale::Language savedSystemLanguage;
-        if (DapDataLocal::instance()->loadFromSettings(SETTING_SYS_LOCALE, savedSystemLanguage))
+        if (DapDataLocal::instance()->loadFromSettings(DapDataLocal::SETTING_SYS_LOCALE, savedSystemLanguage))
         {
             if (systemLanguage == savedSystemLanguage) //locale was changed;
                 this->retranslateApp(savedLanguage);
             else
             {
-                DapDataLocal::removeSetting(SETTING_LOCALE);
-                DapDataLocal::instance()->saveToSettings(SETTING_SYS_LOCALE, systemLanguage);
+                DapDataLocal::removeSetting(DapDataLocal::SETTING_LOCALE);
+                DapDataLocal::instance()->saveToSettings(DapDataLocal::SETTING_SYS_LOCALE, systemLanguage);
                 m_languagesModel.isExist(systemLanguage) ? this->retranslateApp(systemLanguage)
                                                          : this->retranslateApp(m_defaultLanguage);
             }
         }
         else
         {
-            DapDataLocal::instance()->saveToSettings(SETTING_SYS_LOCALE, systemLanguage);
+            DapDataLocal::instance()->saveToSettings(DapDataLocal::SETTING_SYS_LOCALE, systemLanguage);
             this->retranslateApp(savedLanguage);
         }
     }
     else
     {
-        DapDataLocal::instance()->saveToSettings(SETTING_SYS_LOCALE, systemLanguage);
+        DapDataLocal::instance()->saveToSettings(DapDataLocal::SETTING_SYS_LOCALE, systemLanguage);
         m_languagesModel.isExist(systemLanguage) ? this->retranslateApp(systemLanguage)
                                                  : this->retranslateApp(m_defaultLanguage);
     }
@@ -49,7 +49,7 @@ QLocale::Language AppLanguageController::currentLanguage() const
 void AppLanguageController::setCurrentLanguage(QLocale::Language a_language)
 {
     QLocale savedLocale;
-    bool localeWasSaved = DapDataLocal::instance()->loadFromSettings(SETTING_LOCALE, savedLocale);
+    bool localeWasSaved = DapDataLocal::instance()->loadFromSettings(DapDataLocal::SETTING_LOCALE, savedLocale);
 
     if (localeWasSaved && savedLocale == a_language)
         return;

@@ -24,6 +24,7 @@ public:
     bool isActivated() const;
     void setActivated(bool a_isActivated);
 
+    void setDateActivate(const QDateTime& time) { m_activatedDate = time; }
     QDateTime activatedDate(){ return m_activatedDate;}
 
     void reset();

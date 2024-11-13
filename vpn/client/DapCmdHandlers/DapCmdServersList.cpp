@@ -112,8 +112,8 @@ void DapCmdServersList::updateServerList(const QJsonArray& arr)
 {
     QString time = QString::number(QDateTime::currentDateTime().toSecsSinceEpoch());
 
-    DapServiceDataLocal::instance()->saveToSettings("last_nodelist_update", arr);
-    DapServiceDataLocal::instance()->saveToSettings("last_nodelist_update_time", time);
+    DapServiceDataLocal::instance()->saveToSettings(DapServiceDataLocal::LAST_NODE_LIST_UPDATE, arr);
+    DapServiceDataLocal::instance()->saveToSettings(DapServiceDataLocal::LAST_NODE_LIST_UPDATE_TIME, time);
 
     qDebug() << "Saved updated server list at " << QDateTime::fromSecsSinceEpoch(time.toLongLong()).toString("yyyy-MM-dd HH:mm:ss");
 
@@ -125,8 +125,8 @@ bool DapCmdServersList::loadServerList()
 {
     QJsonArray arr;
     QString time;
-    DapServiceDataLocal::instance()->loadFromSettings("last_nodelist_update", arr);
-    DapServiceDataLocal::instance()->loadFromSettings("last_nodelist_update_time", time);
+    DapServiceDataLocal::instance()->loadFromSettings(DapServiceDataLocal::LAST_NODE_LIST_UPDATE, arr);
+    DapServiceDataLocal::instance()->loadFromSettings(DapServiceDataLocal::LAST_NODE_LIST_UPDATE_TIME, time);
 
     qDebug() << "Loading server list from stage. " + QDateTime::fromSecsSinceEpoch(time.toLongLong()).toString("yyyy-MM-dd HH:mm:ss");
 

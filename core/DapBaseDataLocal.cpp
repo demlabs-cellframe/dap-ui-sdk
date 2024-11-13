@@ -13,6 +13,7 @@
 #include "DapSerialKeyHistory.h"
 
 #include "dap_net.h"
+#include "qjsondocument.h"
 
 #ifdef DAP_OS_ANDROID
 #include "DapLogger.h"
@@ -41,7 +42,11 @@ const QString DapBaseDataLocal::SERIAL_LOSS_ON_UNINSTALL_FLAG = "serialLossOnUni
 const QString DapBaseDataLocal::NOTIFICATION_HISTORY      = "notificationHistory";
 const QString DapBaseDataLocal::NOCDB_DATA                = "NoCdbData";
 const QString DapBaseDataLocal::COUNTRY_ISO               = "country_iso";
-
+const QString DapBaseDataLocal::SETTING_LOCALE            = "language";
+const QString DapBaseDataLocal::SETTING_SYS_LOCALE        = "SysLanguage";
+const QString DapBaseDataLocal::AGREEMENT_CHECKED         = "agreementChecked";
+const QString DapBaseDataLocal::LAST_NODE_LIST_UPDATE     = "last_nodelist_update";
+const QString DapBaseDataLocal::LAST_NODE_LIST_UPDATE_TIME = "last_nodelist_update_time";
 
 DapBaseDataLocal::DapBaseDataLocal()
     : QObject()
@@ -406,7 +411,20 @@ void DapBaseDataLocal::setSettings(const QJsonObject &json)
         }
         else
         {
-            m_settings->setValue(key, json[key].toVariant());
+            if(key == ROUTING_EXCEPTIONS_LIST)
+            {
+                saveValueSetting(key, json[key].toObject());
+            }
+            else if(key == NOTIFICATION_HISTORY)
+            {
+                QJsonArray jsonArray = json[key].toArray();
+                QByteArray result = QJsonDocument(jsonArray).toJson(QJsonDocument::JsonFormat::Compact);
+                saveToSettings(NOTIFICATION_HISTORY, result);
+            }
+            else
+            {
+                m_settings->setValue(key, json[key].toVariant());
+            }
         }
     }
 }
@@ -569,7 +587,7 @@ void DapBaseDataLocal::saveBugReport()
     qDebug() << "[DapBaseDataLocal] BugReport saved";
 }
 
-QJsonObject DapBaseDataLocal::toJson() const
+QJsonObject DapBaseDataLocal::toJson()
 {
     QJsonObject resultObject;
 
@@ -598,6 +616,7 @@ QJsonObject DapBaseDataLocal::toJson() const
 
 void DapBaseDataLocal::fromJson(const QJsonObject &json)
 {
+    if(json.contains(JSON_SETTINGS_KEY))                setSettings(json[JSON_SETTINGS_KEY].toObject());
     if(json.contains(JSON_CBD_SERVERS_KEY))             setSbdServerList(json[JSON_CBD_SERVERS_KEY].toArray());
     if(json.contains(JSON_KELVPN_PUB_KEY))              jsonToValue(m_kelvpnPub, json, JSON_KELVPN_PUB_KEY);
     if(json.contains(JSON_NETWORK_DEFAULT_KEY))         jsonToValue(m_networkDefault, json, JSON_NETWORK_DEFAULT_KEY);
@@ -623,7 +642,6 @@ void DapBaseDataLocal::fromJson(const QJsonObject &json)
     if(json.contains(JSON_SERIAL_KEY_DATA_LIST_KEY))    setSerialKeyDataList(json[JSON_SERIAL_KEY_DATA_LIST_KEY].toArray());
     if(json.contains(JSON_BUG_REPORT_HISTORY_KEY))      setBugReportHistory(json[JSON_BUG_REPORT_HISTORY_KEY].toArray());
     if(json.contains(JSON_SERIAL_KEY_HISTORY_KEY))      setSerialKeyHistory(json[JSON_SERIAL_KEY_HISTORY_KEY].toArray());
-    if(json.contains(JSON_SETTINGS_KEY))                setSettings(json[JSON_SETTINGS_KEY].toObject());
 }
 
 void DapBaseDataLocal::jsonToValue(QString &data, const QJsonObject& object, const QString& key)
@@ -723,7 +741,9 @@ const QJsonObject DapBaseDataLocal::serialKeyDataToJson() const
     QJsonObject serialKeyData;
     serialKeyData.insert(JSON_SERIAL_KEY_KEY, m_serialKeyData->serialKey());
     serialKeyData.insert(JSON_IS_ACTIVATED_KEY, m_serialKeyData->isActivated());
-    serialKeyData.insert(JSON_DAYS_LEFT_KEY, m_serialKeyData->daysLeft());
+    auto timeLicense = m_serialKeyData->licenseTermTill();
+    qint64 timeStemp = timeLicense.toSecsSinceEpoch();
+    serialKeyData.insert(JSON_LISENSE_TIME_KEY, QString::number(timeStemp));
     return serialKeyData;
 }
 
@@ -738,8 +758,11 @@ void DapBaseDataLocal::setSerialKeyData(const QJsonObject& object)
     jsonToValue(serialKey, object, JSON_SERIAL_KEY_KEY);
     bool isActivated;
     jsonToValue(isActivated, object, JSON_IS_ACTIVATED_KEY);
+    qint64 timeStemp = object[JSON_LISENSE_TIME_KEY].toString().toLongLong();
+    QDateTime time = QDateTime::fromSecsSinceEpoch(timeStemp);
     m_serialKeyData->setSerialKey(std::move(serialKey));
     m_serialKeyData->setActivated(isActivated);
+    m_serialKeyData->setDateActivate(time);
 }
 
 const QJsonArray DapBaseDataLocal::serialKeyDataListToJson() const
@@ -813,33 +836,58 @@ void DapBaseDataLocal::setSerialKeyHistory(const QJsonArray& list)
     {
         m_serialKeyHistory->appendKey(itemValue.toString());
     }
+    if(!list.isEmpty())
+    {
+        saveKeysHistory();
+    }
 }
 
-const QJsonObject DapBaseDataLocal::settingsToJson() const
+const QJsonObject DapBaseDataLocal::settingsToJson()
 {
     QJsonObject settings;
     if(m_settings)
     {
+        auto getValueDecode = [this] (const QString &a_setting, QByteArray& a_outString) -> bool
+        {
+            QVariant varSettings = getValueSetting(a_setting);
+
+            if (!varSettings.isValid() || !varSettings.canConvert<QByteArray>())
+                return false;
+
+            QByteArray encryptedString = varSettings.toByteArray();
+            if (encryptedString.isEmpty())
+            {
+                a_outString = "";
+                return true;
+            }
+            secretKey->decode(encryptedString, a_outString);
+            return true;
+        };
 
         for(const auto& key: m_settings->allKeys())
         {
-            QVariant value = m_settings->value(key);
-            settings.insert(key, QJsonValue::fromVariant(value));
+            if(key == ROUTING_EXCEPTIONS_LIST)
+            {
+                auto obj = getValueSetting(key).toJsonObject();
+                settings.insert(key, obj);
+            }
+            else if(key == NOTIFICATION_HISTORY)
+            {
+                QByteArray source;
+                getValueDecode(key, source);
+                QJsonArray jsonArray = QJsonDocument::fromJson (source).array();
+                settings.insert(key, jsonArray);
+            }
+            else
+            {
+                QVariant value = m_settings->value(key);
+                settings.insert(key, QJsonValue::fromVariant(value));
+            }
+
         }
     }
     return settings;
 }
-
-QVariantMap DapBaseDataLocal::getSettingsFromJson(const QJsonObject& object)
-{
-    QVariantMap settings;
-    for(const auto& itemKey: object.keys())
-    {
-        settings.insert(itemKey, object[itemKey].toVariant());
-    }
-    return settings;
-}
-
 
 //-----------------------------------------------------------------------------------------------------------------------------------
 QString DapCdbServer::toString() const

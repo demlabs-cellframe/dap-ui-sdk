@@ -118,6 +118,15 @@ void DapCmdDataLocal::sendRemove(const QString &a_name)
     sendCmd(&jobj);
 }
 
+void DapCmdDataLocal::sendMigrate(const QJsonObject& object)
+{
+    QJsonObject jobj {
+                     { "action", "migration" },
+                     { "data", object },
+                     };
+    sendCmd(&jobj);
+}
+
 void DapCmdDataLocal::dataLocalUpdated(const QJsonObject& object)
 {
     QJsonObject jobj {

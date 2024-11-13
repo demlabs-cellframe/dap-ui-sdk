@@ -65,6 +65,11 @@ public:
     static const QString NOTIFICATION_HISTORY;
     static const QString NOCDB_DATA;
     static const QString COUNTRY_ISO;
+    static const QString SETTING_LOCALE;
+    static const QString SETTING_SYS_LOCALE;
+    static const QString AGREEMENT_CHECKED;
+    static const QString LAST_NODE_LIST_UPDATE;
+    static const QString LAST_NODE_LIST_UPDATE_TIME;
 
     DapBaseDataLocal();
 
@@ -130,7 +135,7 @@ public:
 
     virtual void updateCdbList (const DapCdbServerList &a_newCdbList);
 
-    QJsonObject toJson() const;
+    QJsonObject toJson();
     virtual void fromJson (const QJsonObject &json);
 
     virtual void loadBugReport();
@@ -178,8 +183,7 @@ protected:
     virtual void setBugReportHistory(const QJsonArray& list);
     const QJsonArray serialKeyHistoryToJson() const;
     void setSerialKeyHistory(const QJsonArray& list);
-    const QJsonObject settingsToJson() const;
-    QVariantMap getSettingsFromJson(const QJsonObject& object);
+    const QJsonObject settingsToJson();
 protected:
     DapCdbServerList::const_iterator m_cdbIter;
 
@@ -232,7 +236,7 @@ protected:
     const QString JSON_FORCE_INSTALL_KEY = "forceInstall";
     const QString JSON_DATA_TO_UPDATE_KEY = "dataToUpdate";
     const QString JSON_IS_ACTIVATED_KEY = "isActivated";
-    const QString JSON_DAYS_LEFT_KEY = "daysLeft";
+    const QString JSON_LISENSE_TIME_KEY = "lisenseTime";
     const QString JSON_SERIAL_KEY_DATA_KEY = "serialKeyData";
     const QString JSON_SERIAL_KEY_DATA_LIST_KEY = "serialKeyDataList";
     const QString JSON_BUG_NUMBER_KEY = "bugNumber";
@@ -241,7 +245,6 @@ protected:
     const QString JSON_BUG_REPORT_HISTORY_KEY = "bugReportHistory";
     const QString JSON_SERIAL_KEY_HISTORY_KEY = "serialKeyHistory";
     const QString JSON_SETTINGS_KEY = "settings";
-
 };
 
 template<typename T>

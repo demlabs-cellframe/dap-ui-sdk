@@ -23,6 +23,7 @@ public:
     /// send remove value to service
     void sendRemove (const QString &a_name);
 
+    void sendMigrate(const QJsonObject& object);
 public slots:
     void dataLocalUpdated(const QJsonObject& object);
 

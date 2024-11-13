@@ -30,10 +30,13 @@ void DapCmdDataLocalSrv::handle (const QJsonObject *a_params)
 
     if(action == "localUpdate")
     {
-        auto dataLocal = DapServiceDataLocal::instance();
-        dataLocal->fromJson(a_params->value("data").toObject());
+        DapServiceDataLocal::instance()->fromJson(a_params->value("data").toObject());
     }
-    else if (action == "set")
+    else if(action == "migration")
+    {
+        DapServiceDataLocal::instance()->setMigrationInfo(a_params->value("data").toObject());
+    }
+    else if(action == "set")
     {
         QString name    = a_params->value ("name").toString();
 

@@ -27,6 +27,9 @@ public:
     void savePendingSerialKey(QString a_serialkey) override;
     void updateCdbList (const DapCdbServerList &a_newCdbList) override;
     void setSettings(const QJsonObject &json) override;
+
+    bool isNeedMigrate() const { return m_needMigration; }
+    void saveMigrate();
 public slots:
     void setLogin(const QString &login) override;
     void setPassword(const QString &password) override;
@@ -39,4 +42,7 @@ signals:
     void allDataReceived();
 private:
     QVariantMap m_settingsMap;
+
+    bool m_needMigration = false;
+    const QString MIGRATION_KEY = "migration";
 };

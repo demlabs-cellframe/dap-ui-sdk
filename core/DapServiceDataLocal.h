@@ -20,9 +20,10 @@ public:
     void setCountryISO(const QString& iso_code) override;
     void saveSerialKeyData() override;
     void resetSerialKeyData() override;
-    // void saveBugReport() override;
 
     void savePendingSerialKey(QString a_serialkey) override;
+
+    void setMigrationInfo(const QJsonObject& object);
 public slots:
     void setLogin(const QString &login) override;
     void setPassword(const QString &password) override;

@@ -3,12 +3,26 @@
 
 DapDataLocal::DapDataLocal()
     :DapBaseDataLocal()
-{}
+{
+    QStringList keys = m_settings->allKeys();
+    if(!keys.isEmpty())
+    {
+        if(!keys.contains(MIGRATION_KEY))
+        {
+            m_needMigration = true;
+        }
+    }
+}
 
 DapDataLocal *DapDataLocal::instance()
 {
     static DapDataLocal instance;
     return &instance;
+}
+
+void DapDataLocal::saveMigrate()
+{
+    DapBaseDataLocal::saveValueSetting(MIGRATION_KEY, true);
 }
 
 QVariant DapDataLocal::getSetting(const QString &a_setting)
