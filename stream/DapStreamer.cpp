@@ -214,6 +214,7 @@ void DapStreamer::streamClose()
         m_streamSocket.close();
     }
     emit streamClosed();
+    qDebug() << "STREAM CLOSED - DapStreamer::streamClose()";
     m_pktOutLastSeqID = 0;
     m_isStreamOpened=false;
 }
@@ -473,7 +474,8 @@ void DapStreamer::sltStreamConnected()
     m_streamState = SSS_FRAME_SEARCH;
     if (m_streamSocket.flush())
     {
-        qDebug() << "[DapConnectStream] HTTP stream request sent "<< ret<< " bytes";
+        qDebug() << "[DapConnectStream] HTTP stream request sent " << ret<< " bytes";
+        qDebug() << "STREAM OPENED";
         emit streamOpened();
     }
     else
