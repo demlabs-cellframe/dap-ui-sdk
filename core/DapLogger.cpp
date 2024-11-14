@@ -4,7 +4,6 @@
 #include "dap_common.h"
 #include "dap_file_utils.h"
 #include "DapLogger.h"
-#include "DapDataLocal.h"
 
 #ifdef Q_OS_WIN
 #include "registry.h"
@@ -16,6 +15,8 @@
 #endif
 
 static DapLogger* m_instance = nullptr;
+QString DapLogger::m_pathToLog = "";
+QString DapLogger::m_pathToFile = "";
 
 DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, TypeLogCleaning typeClean)
     : QObject(parent)
@@ -55,8 +56,6 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, Type
 #endif
 #endif
 
-//    connect(DapLogger::instance(), &DapLogger::sigMessageHandler,
-//            this, &DapLogger::updateCurrentLogName);
     m_currentDate = getCurrentDate();
 
     updateCurrentLogName();
@@ -74,7 +73,7 @@ DapLogger::DapLogger(QObject *parent, QString appType, size_t prefix_width, Type
 
     QTimer::singleShot(diff, [this]{
         auto t = new QTimer(QCoreApplication::instance());
-        connect(t, &QTimer::timeout, [this]{
+        connect(t, &QTimer::timeout, this, []{
             DapLogger::instance()->updateCurrentLogName();
             DapLogger::instance()->updateLogFiles();
         });
@@ -142,10 +141,9 @@ void DapLogger::setLogFile(const QString& fileName)
     if(isLoggerStarted)
         dap_common_deinit();
 
-    QString filePath = getPathToLog() + "/" + fileName;
-    dap_common_init(DAP_BRAND, qPrintable(filePath), qPrintable(getPathToLog()));
-    DapDataLocal::instance()->setLogPath(getPathToLog());
-    DapDataLocal::instance()->setLogFilePath(filePath);
+    m_pathToFile = getPathToLog() + "/" + fileName;
+    dap_common_init(DAP_BRAND, qPrintable(m_pathToFile), qPrintable(getPathToLog()));
+
     isLoggerStarted = true;
 }
 
@@ -214,7 +212,7 @@ void DapLogger::clearOldLogs()
 
     QFileInfoList list = dir.entryInfoList();
     QDateTime deleteDate = QDateTime::currentDateTime().addDays(-2);
-    for (auto file : list){
+    for (const auto& file : qAsConst(list)){
         if (file.lastModified() < deleteDate){
             dir.remove(file.fileName());
         }

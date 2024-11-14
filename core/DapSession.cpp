@@ -35,8 +35,9 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFile>
-#include "DapDataLocal.h"
+#include "DapServiceDataLocal.h"
 #include "DapSerialKeyData.h"
+#include "DapLogger.h"
 
 const QString DapSession::URL_ENCRYPT               ("enc_init");
 const QString DapSession::URL_STREAM                ("stream");
@@ -147,7 +148,7 @@ void DapSession::sendBugReport(const QByteArray &data)
 {
     if (!m_dapCryptCDB)
     {
-        auto it = DapDataLocal::instance()->m_cdbIter;
+        auto it = DapServiceDataLocal::instance()->getCdbIterator();
         this->setDapUri (it->address, it->port); //80);
         auto *l_tempConn = new QMetaObject::Connection();
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]
@@ -197,7 +198,7 @@ void DapSession::sendBugReportStatusRequest(const QByteArray &data)
 {
     if (!m_dapCryptCDB)
     {
-        auto it = DapDataLocal::instance()->m_cdbIter;
+        auto it = DapServiceDataLocal::instance()->getCdbIterator();
         this->setDapUri (it->address, it->port); //80);
         auto *l_tempConn = new QMetaObject::Connection();
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]
@@ -273,7 +274,7 @@ void DapSession::getNews()
         }
 
         //******* For news debbuging ********//
-        QString filePath = DapDataLocal::instance()->getLogPath() + "/news.json";
+        QString filePath = DapLogger::getPathToLog() + "/news.json";
         if (QFile::exists(filePath))
         {
             qDebug() << "File 'news.json' exists. Reading content...";
@@ -299,7 +300,7 @@ void DapSession::getNews()
 
         emit sigReceivedNewsMessage(jsonDoc);
     });
-    auto it = DapDataLocal::instance()->m_cdbIter;
+    auto it = DapServiceDataLocal::instance()->getCdbIterator();
     DapConnectClient::instance()->request_GET (it->address, it->port, URL_NEWS, *m_netNewsReply);
 }
 
@@ -648,8 +649,8 @@ void DapSession::onAuthorize()
                 }
                 else if (m_xmlStreamReader.name() == "ts_active_till")
                 {
-                    DapDataLocal::instance()->serialKeyData()->setLicenseTermTill(m_xmlStreamReader.readElementText());
-                    qDebug() << "ts_active_till: " << DapDataLocal::instance()->serialKeyData()->licenseTermTill().toTime_t();
+                    DapServiceDataLocal::instance()->serialKeyData()->setLicenseTermTill(m_xmlStreamReader.readElementText());
+                    qDebug() << "ts_active_till: " << DapServiceDataLocal::instance()->serialKeyData()->licenseTermTill().toTime_t();
                 }
                 else
                 {
@@ -660,24 +661,7 @@ void DapSession::onAuthorize()
             }
             isAuth = true;
             emit authorized(m_cookie);
-        }/*else if (m_xmlStreamReader.name() == "tx_cond_tpl") {
-            while(m_xmlStreamReader.readNextStartElement()) {
-                qDebug() << " tx_cond_tpl: " << m_xmlStreamReader.name();
-
-                if (m_xmlStreamReader.name() == "net") {
-                    m_cdbAuthNet = m_xmlStreamReader.readElementText();
-                    qDebug() << "m_srvNet: " << m_cdbAuthNet;
-                }else if (m_xmlStreamReader.name() == "token") {
-                     m_cdbAuthToken = m_xmlStreamReader.readElementText();
-                     qDebug() << "m_srvToken: " << m_cdbAuthToken;
-                }else if (m_xmlStreamReader.name() == "tx_cond") {
-                     m_cdbAuthTxCond = m_xmlStreamReader.readElementText();
-                     qDebug() << "m_srvTxCond: " << m_cdbAuthTxCond;
-                } else {
-                    qWarning() <<"Unknown element" << m_xmlStreamReader.readElementText();
-                }
-            }
-        }*/
+        }
         else
         {
             m_xmlStreamReader.skipCurrentElement();
@@ -985,7 +969,7 @@ DapNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const Q
 
 void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey) {
     if (!m_dapCryptCDB) {
-        auto it = DapDataLocal::instance()->m_cdbIter;
+        auto it = DapServiceDataLocal::instance()->getCdbIterator();
         this->setDapUri (it->address, it->port);//80);
         auto *l_tempConn = new QMetaObject::Connection();
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, a_serial, a_domain, a_pkey, l_tempConn]{
@@ -1009,7 +993,7 @@ void DapSession::requestPurchaseVerify(const QJsonObject *params)
 {
     QJsonDocument jdoc(*params);
     if (!m_dapCryptCDB) {
-        auto it = DapDataLocal::instance()->m_cdbIter;
+        auto it = DapServiceDataLocal::instance()->getCdbIterator();
         this->setDapUri(it->address, it->port);
         auto *l_tempConn = new QMetaObject::Connection();
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, jdoc, l_tempConn]{

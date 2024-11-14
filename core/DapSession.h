@@ -29,7 +29,7 @@
 #include <QList>
 #include "DapConnectClient.h"
 #include <DapCrypt.h>
-#include "DapDataLocal.h"
+#include "DapBaseDataLocal.h"
 
 #include "dap_client_http.h"
 #include "DapNetworkAccessManager.h"
