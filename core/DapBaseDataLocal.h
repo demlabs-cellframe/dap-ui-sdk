@@ -103,21 +103,15 @@ public:
     virtual void setCountryISO(const QString& iso_code){ m_coutryISO = iso_code;}
 
     virtual void saveKeysHistory();
-    void saveEncryptedSetting(const QString &a_setting, const QVariant &a_value);
-    void saveEncryptedSetting(const QString &a_setting, const QByteArray &a_value);
+    virtual void saveEncryptedSetting(const QString &a_setting, const QVariant &a_value);
+    virtual void saveEncryptedSetting(const QString &a_setting, const QByteArray &a_value);
     QVariant getEncryptedSetting(const QString &a_setting);
-    bool loadEncryptedSettingString(const QString &a_setting, QByteArray& a_outString);
+    virtual bool loadEncryptedSettingString(const QString &a_setting, QByteArray& a_outString);
 
     template<typename T>
     void saveToSettings(const QString &a_setting, const T& a_value);
     template<typename T>
     bool loadFromSettings(const QString &a_setting, T& a_value);
-
-    template<typename T>
-    void saveToSettingsBase(const QString &a_setting, const T& a_value);
-    template<typename T>
-    bool loadFromSettingsBase(const QString &a_setting, T& a_value);
-
 
     virtual QVariant getValueSetting(const QString& a_setting);
     virtual void saveValueSetting(const QString& a_setting, const QVariant& a_value);
@@ -190,6 +184,11 @@ protected:
     const QJsonArray serialKeyHistoryToJson() const;
     void setSerialKeyHistory(const QJsonArray& list);
     const QJsonObject settingsToJson();
+
+    template<typename T>
+    void saveToSettingsBase(const QString &a_setting, const T& a_value);
+    template<typename T>
+    bool loadFromSettingsBase(const QString &a_setting, T& a_value);
 protected:
     DapCdbServerList::const_iterator m_cdbIter;
 

@@ -34,8 +34,7 @@ void DapServiceDataLocal::setCountryISO(const QString& iso_code)
 void DapServiceDataLocal::saveValueSetting(const QString &setting, const QVariant &value)
 {
     DapBaseDataLocal::saveValueSetting(setting, value);
-    QJsonObject result{{setting,  QJsonValue::fromVariant(value)}} ;
-    emit valueServiceDataLocalUpdated(QJsonObject{{JSON_SETTINGS_KEY, result}});
+    QJsonObject result{{setting,  QJsonValue::fromVariant(value)}};
 }
 
 void DapServiceDataLocal::removeValueSetting(const QString &setting)

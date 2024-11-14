@@ -145,11 +145,11 @@ void DapDataLocal::setSettings(const QJsonObject &json)
             {
                 m_settingsMap[key] = json[key].toObject();
             }
-            else if(key == NOTIFICATION_HISTORY)
+            else if(key == NOTIFICATION_HISTORY || key == NODE_ORDER_HISTORY)
             {
-                QJsonArray jsonArray = json[key].toArray();
-                QByteArray result = QJsonDocument(jsonArray).toJson(QJsonDocument::JsonFormat::Compact);
-                m_settingsMap[key] = result;
+                auto jsonArray = QJsonDocument::fromJson(json[key].toString().toUtf8());
+                QByteArray result = QJsonDocument (jsonArray).toJson (QJsonDocument::JsonFormat::Compact);
+                m_settingsMap[key] = DapUtils::toByteArray(result);
             }
             else
             {
@@ -175,4 +175,32 @@ void DapDataLocal::dataFromCommand(const QJsonObject& object)
             emit allDataReceived();
         }
     }
+}
+
+void DapDataLocal::saveEncryptedSetting(const QString &a_setting, const QVariant &a_value)
+{
+    DapBaseDataLocal::saveEncryptedSetting(a_setting, a_value);
+}
+
+void DapDataLocal::saveEncryptedSetting(const QString &setting, const QByteArray &value)
+{
+    QByteArray result = DapUtils::fromByteArray<QByteArray>(value);
+    saveValueSetting(setting, result);
+}
+
+bool DapDataLocal::loadEncryptedSettingString(const QString &a_setting, QByteArray& a_outString)
+{
+    QVariant varSettings = getValueSetting(a_setting);
+
+    if (!varSettings.isValid() || !varSettings.canConvert<QByteArray>())
+        return false;
+
+    QByteArray encryptedString = varSettings.toByteArray();
+    if (encryptedString.isEmpty())
+    {
+        a_outString = "";
+        return true;
+    }
+    a_outString = encryptedString;
+    return true;
 }

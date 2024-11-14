@@ -30,6 +30,10 @@ public:
 
     bool isNeedMigrate() const { return m_needMigration; }
     void saveMigrate();
+
+    void saveEncryptedSetting(const QString &a_setting, const QVariant &a_value) override;
+    void saveEncryptedSetting(const QString &a_setting, const QByteArray &a_value) override;
+    bool loadEncryptedSettingString(const QString &a_setting, QByteArray& a_outString) override;
 public slots:
     void setLogin(const QString &login) override;
     void setPassword(const QString &password) override;

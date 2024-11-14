@@ -415,11 +415,11 @@ void DapBaseDataLocal::setSettings(const QJsonObject &json)
             {
                 saveValueSetting(key, json[key].toObject());
             }
-            else if(key == NOTIFICATION_HISTORY)
+            else if(key == NOTIFICATION_HISTORY || key == NODE_ORDER_HISTORY)
             {
-                QJsonArray jsonArray = json[key].toArray();
-                QByteArray result = QJsonDocument(jsonArray).toJson(QJsonDocument::JsonFormat::Compact);
-                saveToSettings(NOTIFICATION_HISTORY, result);
+                auto jsonArray = QJsonDocument::fromJson(json[key].toString().toUtf8());
+                QByteArray result = QJsonDocument (jsonArray).toJson (QJsonDocument::JsonFormat::Compact);
+                saveToSettings(key, result);
             }
             else
             {
@@ -850,16 +850,16 @@ const QJsonObject DapBaseDataLocal::settingsToJson()
         for(const auto& key: m_settings->allKeys())
         {
             if(TEXT_SERIAL_KEY == key || TEXT_PENDING_SERIAL_KEY == key || TEXT_SERIAL_KEY_HISTORY == key ||
-                TEXT_BUGREPORT_HISTORY == key)
+                TEXT_BUGREPORT_HISTORY == key || LAST_NODE_LIST_UPDATE == key || LAST_NODE_LIST_UPDATE_TIME == key)
             {
                 continue;
             }
-            else if(key == NOTIFICATION_HISTORY)
+            else if(key == NOTIFICATION_HISTORY || key == NODE_ORDER_HISTORY)
             {
                 QByteArray source;
                 loadFromSettingsBase(key, source);
-                QJsonArray jsonArray = QJsonDocument::fromJson (source).array();
-                settings.insert(key, jsonArray);
+                QJsonValue jsonValue = QJsonValue::fromVariant(QVariant(source));
+                settings.insert(key, jsonValue);
             }
             else if(key == ROUTING_EXCEPTIONS_LIST)
             {
