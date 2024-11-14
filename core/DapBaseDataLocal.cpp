@@ -847,43 +847,30 @@ const QJsonObject DapBaseDataLocal::settingsToJson()
     QJsonObject settings;
     if(m_settings)
     {
-        auto getValueDecode = [this] (const QString &a_setting, QByteArray& a_outString) -> bool
-        {
-            QVariant varSettings = getValueSetting(a_setting);
-
-            if (!varSettings.isValid() || !varSettings.canConvert<QByteArray>())
-                return false;
-
-            QByteArray encryptedString = varSettings.toByteArray();
-            if (encryptedString.isEmpty())
-            {
-                a_outString = "";
-                return true;
-            }
-            secretKey->decode(encryptedString, a_outString);
-            return true;
-        };
-
         for(const auto& key: m_settings->allKeys())
         {
-            if(key == ROUTING_EXCEPTIONS_LIST)
+            if(TEXT_SERIAL_KEY == key || TEXT_PENDING_SERIAL_KEY == key || TEXT_SERIAL_KEY_HISTORY == key ||
+                TEXT_BUGREPORT_HISTORY == key)
             {
-                auto obj = getValueSetting(key).toJsonObject();
-                settings.insert(key, obj);
+                continue;
             }
             else if(key == NOTIFICATION_HISTORY)
             {
                 QByteArray source;
-                getValueDecode(key, source);
+                loadFromSettingsBase(key, source);
                 QJsonArray jsonArray = QJsonDocument::fromJson (source).array();
                 settings.insert(key, jsonArray);
+            }
+            else if(key == ROUTING_EXCEPTIONS_LIST)
+            {
+                auto obj = getValueSetting(key).toJsonObject();
+                settings.insert(key, obj);
             }
             else
             {
                 QVariant value = m_settings->value(key);
                 settings.insert(key, QJsonValue::fromVariant(value));
             }
-
         }
     }
     return settings;

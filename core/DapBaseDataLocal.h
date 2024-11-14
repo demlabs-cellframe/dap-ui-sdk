@@ -113,6 +113,12 @@ public:
     template<typename T>
     bool loadFromSettings(const QString &a_setting, T& a_value);
 
+    template<typename T>
+    void saveToSettingsBase(const QString &a_setting, const T& a_value);
+    template<typename T>
+    bool loadFromSettingsBase(const QString &a_setting, T& a_value);
+
+
     virtual QVariant getValueSetting(const QString& a_setting);
     virtual void saveValueSetting(const QString& a_setting, const QVariant& a_value);
     virtual void removeValueSetting(const QString& a_setting);
@@ -259,13 +265,51 @@ bool DapBaseDataLocal::loadFromSettings(const QString &a_setting, T &a_value)
     return true;
 }
 
-
-
 template<typename T>
 void DapBaseDataLocal::saveToSettings(const QString &a_setting, const T &a_value)
 {
     this->saveEncryptedSetting(a_setting, DapUtils::toByteArray(a_value));
 }
+
+template<typename T>
+void DapBaseDataLocal::saveToSettingsBase(const QString &a_setting, const T &a_value)
+{
+    QByteArray value = DapUtils::toByteArray(a_value);
+    QByteArray encodedString;
+    secretKey->encode(value, encodedString);
+    saveValueSetting(a_setting, encodedString);
+}
+
+template<typename T>
+bool DapBaseDataLocal::loadFromSettingsBase(const QString &a_setting, T &a_value)
+{
+    QByteArray stringFromSettings;
+
+    auto load = [this](const QString &a_setting, QByteArray& a_outString) -> bool
+    {
+        QVariant varSettings = settings()->value(a_setting);;
+
+        if (!varSettings.isValid() || !varSettings.canConvert<QByteArray>())
+            return false;
+
+        QByteArray encryptedString = varSettings.toByteArray();
+        if (encryptedString.isEmpty())
+        {
+            a_outString = "";
+            return true;
+        }
+        secretKey->decode(encryptedString, a_outString);
+
+        return true;
+    };
+
+    if (!load(a_setting, stringFromSettings))
+        return false;
+
+    a_value = DapUtils::fromByteArray<T>(stringFromSettings);
+    return true;
+}
+
 
 enum class Authorization
 {

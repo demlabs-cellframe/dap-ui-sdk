@@ -1,5 +1,6 @@
 #include "DapDataLocal.h"
 #include "DapSerialKeyData.h"
+#include "qjsondocument.h"
 
 DapDataLocal::DapDataLocal()
     :DapBaseDataLocal()
@@ -87,7 +88,6 @@ void DapDataLocal::resetSerialKeyData()
     if (m_serialKeyData)
     {
         m_serialKeyData->reset();
-       // emit valueDataLocalUpdated(QJsonObject{{JSON_SERIAL_KEY_DATA_KEY, QJsonObject()}});
     }
 }
 
@@ -136,7 +136,25 @@ void DapDataLocal::setSettings(const QJsonObject &json)
         }
         else
         {
-            m_settingsMap[key] = json[key].toVariant();
+            if(TEXT_SERIAL_KEY == key || TEXT_PENDING_SERIAL_KEY == key || TEXT_SERIAL_KEY_HISTORY == key ||
+                TEXT_BUGREPORT_HISTORY == key)
+            {
+                continue;
+            }
+            else if(key == ROUTING_EXCEPTIONS_LIST)
+            {
+                m_settingsMap[key] = json[key].toObject();
+            }
+            else if(key == NOTIFICATION_HISTORY)
+            {
+                QJsonArray jsonArray = json[key].toArray();
+                QByteArray result = QJsonDocument(jsonArray).toJson(QJsonDocument::JsonFormat::Compact);
+                m_settingsMap[key] = result;
+            }
+            else
+            {
+                m_settingsMap[key] = json[key].toVariant();
+            }
         }
     }
 }

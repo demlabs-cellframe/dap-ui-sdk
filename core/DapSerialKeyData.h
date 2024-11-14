@@ -54,10 +54,4 @@ QDataStream &operator>>(QDataStream &a_inStream, DapSerialKeyData &a_serialKeyDa
 
 Q_DECLARE_METATYPE(DapSerialKeyData)
 
-
-
-
-
-
-
 #endif // DAPSERIALKEYDATA_H
