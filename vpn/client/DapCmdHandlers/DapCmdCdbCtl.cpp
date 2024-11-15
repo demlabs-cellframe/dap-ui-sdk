@@ -1,8 +1,5 @@
-/* INCLUDES */
 #include "DapCmdCdbCtl.h"
-#include "DapDataLocal.h"
-
-/* DEFS */
+#include "DapServiceDataLocal.h"
 
 enum DapCmdCdbCtlValue
 {
@@ -10,17 +7,11 @@ enum DapCmdCdbCtlValue
     SET,
 };
 
-/* VARS */
-
 const QString DapCmdCdbCtl::s_fieldCdb =
     DapJsonParams::toString (DapJsonParams::CDB);
 
 const QString DapCmdCdbCtl::s_fieldValue =
     DapJsonParams::toString (DapJsonParams::VALUE);
-
-/********************************************
- * CONSTRUCT/DESTRUCT
- *******************************************/
 
 DapCmdCdbCtl::DapCmdCdbCtl (QObject *parent)
     : DapCmdServiceAbstract (DapJsonCmdType::CDB_CTL, parent)
@@ -28,20 +19,12 @@ DapCmdCdbCtl::DapCmdCdbCtl (QObject *parent)
 
 }
 
-/********************************************
- * METHODS
- *******************************************/
-
 void DapCmdCdbCtl::sendCmdGetList (const QString &a_value)
 {
     static QJsonObject result = { {s_fieldValue, DapCmdCdbCtlValue::GET} };
     result[s_fieldCdb]        = a_value;
     sendCmd(&result);
 }
-
-/********************************************
- * OVERRIDE
- *******************************************/
 
 void DapCmdCdbCtl::handle (const QJsonObject *params)
 {
@@ -57,15 +40,10 @@ void DapCmdCdbCtl::handle (const QJsonObject *params)
     /* behave based on value */
     switch (DapCmdCdbCtlValue (value.toInt()))
     {
-
-        /* --------------------------- */
-        /* REQUESTED CURREENT CDB LIST */
-        /* --------------------------- */
-
     case DapCmdCdbCtlValue::GET:
     {
         /* collect servers into string list */
-        const auto &list  = DapDataLocal::instance()->cdbServersList();
+        const auto &list  = DapServiceDataLocal::instance()->cdbServersList();
         QStringList result;
 
         for (const auto &item : list)
@@ -74,10 +52,6 @@ void DapCmdCdbCtl::handle (const QJsonObject *params)
         /* join and send */
         sendCmdGetList (result.join (','));
     } break;
-
-        /* ------------------------ */
-        /* SET NEW CDB SERVERS LIST */
-        /* ------------------------ */
 
     case DapCmdCdbCtlValue::SET:
     {
@@ -96,8 +70,8 @@ void DapCmdCdbCtl::handle (const QJsonObject *params)
         auto list = src.split(',');
         auto cdbs = DapCdbServerList::toServers (list);
 
-        auto data = DapDataLocal::instance();
-        data->updateCdbList (cdbs);
+        auto data = DapServiceDataLocal::instance();
+        data->updateCdbList(cdbs);
         data->saveSetting (SETTING_CDB, src.toLatin1().toBase64());
     } break;
 

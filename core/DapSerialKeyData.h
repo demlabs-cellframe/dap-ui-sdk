@@ -24,6 +24,7 @@ public:
     bool isActivated() const;
     void setActivated(bool a_isActivated);
 
+    void setDateActivate(const QDateTime& time) { m_activatedDate = time; }
     QDateTime activatedDate(){ return m_activatedDate;}
 
     void reset();
@@ -52,11 +53,5 @@ QDataStream &operator<<(QDataStream &a_outStream, const DapSerialKeyData &a_seri
 QDataStream &operator>>(QDataStream &a_inStream, DapSerialKeyData &a_serialKeyData);
 
 Q_DECLARE_METATYPE(DapSerialKeyData)
-
-
-
-
-
-
 
 #endif // DAPSERIALKEYDATA_H

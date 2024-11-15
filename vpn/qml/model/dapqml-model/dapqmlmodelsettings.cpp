@@ -396,7 +396,7 @@ void DapQmlModelSettings::slotRouExcModeUpdated()
   if (s_rouExcIndex == -1)
     return;
 
-  bool includedMode = DapDataLocal::getSetting (SETTING_ROUEXC_MODE).toBool();
+  bool includedMode = DapDataLocal::getSetting (DapDataLocal::SETTING_ROUEXC_MODE).toBool();
 
   s_items[s_rouExcIndex].m_textMain =
       !includedMode
@@ -458,7 +458,7 @@ void DapQmlModelSettings::slotRetranslate()
 
 QString DapQmlModelSettings::getCurrentCountryCode() const
 {
-  QString base_location = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
+  QString base_location = DapDataLocal::instance()->getSetting (DapDataLocal::COUNTRY_NAME).toString();
   return DapAbstractServerList::countryMap().value (base_location, QString()); // DapServersData::m_countryMap.value (base_location, QString());
 }
 

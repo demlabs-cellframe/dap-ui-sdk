@@ -1,6 +1,6 @@
 #include "DapSerialKeyData.h"
 
-#include "DapDataLocal.h"
+#include "DapBaseDataLocal.h"
 
 DapSerialKeyData::DapSerialKeyData(QObject *a_parent)
     : QObject(a_parent)
@@ -88,8 +88,7 @@ QString DapSerialKeyData::daysLeftString()
 void DapSerialKeyData::setLicenseTermTill(const QString &a_date)
 {
     QDateTime tempDate = QDateTime::fromTime_t(a_date.toUInt());
-    //if (this->m_licenseTermTill == tempDate)
-    //    return;
+
     this->m_licenseTermTill = tempDate;
 
     emit this->daysLeftStringChanged(this->daysLeftString());
