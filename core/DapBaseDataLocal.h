@@ -93,8 +93,6 @@ public:
     const DapCdbServerList &cdbServersList()  { return m_cdbServersList; }
     const QString & KelvpnPub()               { return m_kelvpnPub;}
     const QString & networkDefault()          { return m_networkDefault; }
-    const QString & getUrlSite()              { return m_urlSite;        }
-    const QString & getBrandName()            { return m_brandName;      }
 
     const QString & getMinDashboardVersion() const { return m_minDashboardVersion; }
     const QString & getMinNodeVersion()      const { return m_minNodeVersion; }
@@ -200,7 +198,6 @@ protected:
     QString m_coutryISO;
     QString m_login;      ///< Login.
     QString m_password;   ///< Password.
-    QString m_serialKey;  ///< Serial key.
     QString m_minDashboardVersion;
     QString m_minNodeVersion;
     QString m_pubStage;

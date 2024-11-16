@@ -598,7 +598,6 @@ QJsonObject DapBaseDataLocal::toJson()
     resultObject.insert(JSON_COUNTRY_ISO_KEY, m_coutryISO);
     resultObject.insert(JSON_LOGIN_KEY, m_login);
     resultObject.insert(JSON_PASSWORD_KEY, m_password);
-    resultObject.insert(JSON_SERIAL_KEY_KEY, m_serialKey);
     resultObject.insert(JSON_MIN_DASHBOARD_VERSION_KEY, m_minDashboardVersion);
     resultObject.insert(JSON_MIN_NODE_VERSION_KEY, m_minNodeVersion);
     resultObject.insert(JSON_PUB_STAGE_KEY, m_pubStage);
@@ -633,7 +632,6 @@ void DapBaseDataLocal::fromJson(const QJsonObject &json)
         emit passwordChanged(m_password);
     }
     if(json.contains(JSON_SERIAL_KEY_DATA_KEY))         setSerialKeyData(json[JSON_SERIAL_KEY_DATA_KEY].toObject());
-    if(json.contains(JSON_SERIAL_KEY_KEY))              jsonToValue(m_serialKey,  json, JSON_SERIAL_KEY_KEY);
     if(json.contains(JSON_MIN_DASHBOARD_VERSION_KEY))   jsonToValue(m_minDashboardVersion, json, JSON_MIN_DASHBOARD_VERSION_KEY);
     if(json.contains(JSON_MIN_NODE_VERSION_KEY))        jsonToValue(m_minNodeVersion, json, JSON_MIN_NODE_VERSION_KEY);
     if(json.contains(JSON_PUB_STAGE_KEY))               jsonToValue(m_pubStage, json, JSON_PUB_STAGE_KEY);
@@ -646,19 +644,24 @@ void DapBaseDataLocal::fromJson(const QJsonObject &json)
 
 void DapBaseDataLocal::jsonToValue(QString& data, const QJsonObject& object, const QString& key)
 {
-    for (const QString& outerKey : object.keys()) {
+    for (const QString& outerKey : object.keys()) 
+    {
         const QJsonValue& outerValue = object[outerKey];
-        if (outerValue.isObject()) {
+        if (outerValue.isObject()) 
+        {
             jsonToValue(data, outerValue.toObject(), key);
-            if (!data.isEmpty()) {
+            if (!data.isEmpty()) 
+            {
                 return;
             }
         }
     }
 
-    if (object.contains(key)) {
+    if (object.contains(key)) 
+    {
         QString value = object[key].toString();
-        if (value == data) {
+        if (value == data) 
+        {
             return;
         }
         data = value;
@@ -667,19 +670,24 @@ void DapBaseDataLocal::jsonToValue(QString& data, const QJsonObject& object, con
 
 void DapBaseDataLocal::jsonToValue(bool& data, const QJsonObject& object, const QString& key)
 {
-    for (const QString& outerKey : object.keys()) {
+    for (const QString& outerKey : object.keys()) 
+    {
         const QJsonValue& outerValue = object[outerKey];
-        if (outerValue.isObject()) {
+        if (outerValue.isObject()) 
+        {
             jsonToValue(data, outerValue.toObject(), key);
-            if (data) {
+            if (data) 
+            {
                 return;
             }
         }
     }
 
-    if (object.contains(key)) {
+    if (object.contains(key)) 
+    {
         bool value = object[key].toBool();
-        if (value == data) {
+        if (value == data) 
+        {
             return;
         }
         data = value;
@@ -688,19 +696,24 @@ void DapBaseDataLocal::jsonToValue(bool& data, const QJsonObject& object, const 
 
 void DapBaseDataLocal::jsonToValue(int& data, const QJsonObject& object, const QString& key)
 {
-    for (const QString& outerKey : object.keys()) {
+    for (const QString& outerKey : object.keys()) 
+    {
         const QJsonValue& outerValue = object[outerKey];
-        if (outerValue.isObject()) {
+        if (outerValue.isObject()) 
+        {
             jsonToValue(data, outerValue.toObject(), key);
-            if (data != 0) {
+            if (data != 0) 
+            {
                 return;
             }
         }
     }
 
-    if (object.contains(key)) {
+    if (object.contains(key)) 
+    {
         int value = object[key].toInt();
-        if (value == data) {
+        if (value == data) 
+        {
             return;
         }
         data = value;
