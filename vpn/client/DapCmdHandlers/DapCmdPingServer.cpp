@@ -13,7 +13,7 @@ void DapCmdPingServer::handle(const QJsonObject* params)
     DapCmdServiceAbstract::handle(params);
     QString host = params->value(DapJsonParams::toString(DapJsonParams::HOST)).toString();
     quint16 port = params->value(DapJsonParams::toString(DapJsonParams::PORT)).toInt();
-    qDebug() << "[DapCmdPingServer] handle = " << params;
+    qDebug() << "[DapCmdPingServer] handle = " << *params;
 
     if( !host.isEmpty() && port != QJsonValue::Undefined ) {
 
