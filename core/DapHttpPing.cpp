@@ -1,6 +1,11 @@
 #include "DapHttpPing.h"
 #include <QElapsedTimer>
 
+DapHttpPing::~DapHttpPing()
+{
+  qDebug() << "~DapHttpPing " << this;
+}
+
 void DapHttpPing::sendRequest(const QString& host, quint16 port)
 {
   DapNetworkReply *networkReply =  new DapNetworkReply;
@@ -9,7 +14,7 @@ void DapHttpPing::sendRequest(const QString& host, quint16 port)
   timer->start();
   qDebug() << "DapHttpPing sendRequest \t host: " << host << " port: " << port;
   DapConnectClient::instance()->request_GET_for_ping( host, port, "", *networkReply );
-
+  qDebug() << "DapHttpPing " << this;
   connect( networkReply, &DapNetworkReply::finished, this, [=] {
     qDebug() << "DapHttpPing finished \t host: " << host << " port: " << port << " error: " << networkReply->error();
 

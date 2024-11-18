@@ -18,6 +18,7 @@ private:
 public:
   DapHttpPing(const QString& a_host, const quint16 a_port)
              : m_host(a_host), m_port(a_port) {}
+  ~DapHttpPing();
   void sendRequest(const QString& host, quint16 port);
 
   QString getHost() { return m_host; }
