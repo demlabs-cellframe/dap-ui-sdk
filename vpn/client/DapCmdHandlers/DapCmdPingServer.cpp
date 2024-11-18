@@ -20,7 +20,7 @@ void DapCmdPingServer::handle(const QJsonObject* params)
         DapHttpPing *pingChecker = new DapHttpPing(host, port);
         pingChecker->sendRequest(host, port);
 
-        connect(pingChecker, &DapHttpPing::sigResponse, this, [pingChecker, this](qint64 time) {
+        connect(pingChecker, &DapHttpPing::sigResponse, this, [=](qint64 time) {
             qDebug() << "[DapCmdPingServer] sigResponse = \t" << pingChecker->getHost() << " = " << pingChecker->getPort() << " = " << time;
             QJsonObject response;
             response["host"] = pingChecker->getHost();
@@ -30,7 +30,7 @@ void DapCmdPingServer::handle(const QJsonObject* params)
             delete pingChecker;
         });
 
-        connect(pingChecker, &DapHttpPing::sigNetworkError, this, [pingChecker, this](QString err) {
+        connect(pingChecker, &DapHttpPing::sigNetworkError, this, [=](QString err) {
             QJsonObject response;
             QJsonObject errorObj;
             qDebug() << "[DapCmdPingServer] sigNetworkError = \t" << pingChecker->getHost() << " = " << pingChecker->getPort();
