@@ -15,7 +15,7 @@ void DapHttpPing::sendRequest(const QString& host, quint16 port)
   qDebug() << "DapHttpPing sendRequest \t host: " << host << " port: " << port;
   DapConnectClient::instance()->request_GET_for_ping( host, port, "", *networkReply );
   qDebug() << "DapHttpPing " << this;
-  connect( networkReply, &DapNetworkReply::finished, this, [=] {
+  connect( networkReply, &DapNetworkReply::finished, this, [timer, networkReply, this , host, port] {
     qDebug() << "DapHttpPing finished \t host: " << host << " port: " << port << " error: " << networkReply->error();
 
     if ( networkReply->error() == QNetworkReply::NetworkError::NoError )
@@ -30,7 +30,7 @@ void DapHttpPing::sendRequest(const QString& host, quint16 port)
     delete timer;
   });
 
-  connect( networkReply, &DapNetworkReply::sigError, this, [=]
+  connect( networkReply, &DapNetworkReply::sigError, this, [timer, networkReply, this , host, port]
           {
       emit sigNetworkError(/*networkReply->error(), */networkReply->errorString());
       qDebug() << "DapHttpPing finished \t host: " << host << " port: " << port;
