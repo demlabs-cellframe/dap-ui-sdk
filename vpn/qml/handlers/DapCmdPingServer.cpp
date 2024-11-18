@@ -23,7 +23,7 @@ void DapCmdPingServer::handleResult(const QJsonObject& result)
     QString host = result.value(DapJsonParams::toString(DapJsonParams::HOST)).toString();
     quint16 port = result.value(DapJsonParams::toString(DapJsonParams::PORT)).toInt();
     quint16 ping = result.value("responseTime").toInt()/2;
-    //qDebug() << host << ":" << port << "Ping result:" << ping << "ms" ;
+    qDebug() << host << ":" << port << "Ping result:" << ping << "ms" ;
     emit sigPingReceived(host, port, ping);
 }
 
