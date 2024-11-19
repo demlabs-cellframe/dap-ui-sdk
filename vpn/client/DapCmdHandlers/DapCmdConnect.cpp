@@ -93,12 +93,9 @@ void DapCmdConnect::handle(const QJsonObject* params)
     uint16_t port = uint16_t(mandatoryConnParams[PORT_KEY].toInt());
     QString address = mandatoryConnParams[ADDRESS_KEY].toString();
 
-    if (!serialKey.isEmpty())
-    {
+    if (!serialKey.isEmpty()) {
         emit sigConnect(serialKey, "", "", address, port, updateRouteTable);
-    }
-    else
-    {
+    } else {
         emit sigConnectNoAuth(address, port);
     }
 }
