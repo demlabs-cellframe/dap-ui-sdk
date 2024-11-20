@@ -12,15 +12,9 @@ void DapCmdConnect::sendCmdConnect(const QString& a_addr, quint16 a_port,
     QJsonObject obj;
     obj["action"] = "Connect";
     obj["address"] = a_addr;
+    obj["port"] = a_port;
     obj["updateRouteTable"] = a_updateRouteTable;
 
-    if ( !a_user.isEmpty() )
-        obj["user"] = a_user;
-    if ( !a_pswd.isEmpty())
-        obj["password"] = a_pswd;
-    if ( !a_serial.isEmpty() )
-        obj["serial"] = QString(a_serial).remove('-');
-    obj["port"] = a_port;
     sendCmd(&obj);
 }
 
