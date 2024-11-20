@@ -13,7 +13,7 @@
 #include "DapSerialKeyHistory.h"
 
 #include "dap_net.h"
-#include "qjsondocument.h"
+#include <QJsonDocument>
 
 #ifdef DAP_OS_ANDROID
 #include "DapLogger.h"
