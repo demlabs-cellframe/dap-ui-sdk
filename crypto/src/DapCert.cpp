@@ -249,25 +249,22 @@ void Cert::setPubKey(dap_enc_key_t* a_key) {
 
 void Cert::savePubCert(const char * saveDir, const char * newName) {
 
-    if (m_cert) {
-        if (m_cert->enc_key->pub_key_data_size) {
-            // Create empty new cert
-            dap_cert_t * l_cert_new = dap_cert_new(newName);
-            l_cert_new->enc_key = dap_enc_key_new(m_cert->enc_key->type);
+    if ( m_cert ) {
+        if ( m_cert->enc_key->pub_key_data_size ) {
+          // Create empty new cert
+          dap_cert_t * l_cert_new = dap_cert_new(newName);
+          l_cert_new->enc_key = dap_enc_key_new( m_cert->enc_key->type);
 
-            // Copy only public key
-            l_cert_new->enc_key->pub_key_data = DAP_DUP_SIZE(
-                const_cast<uint8_t*>(static_cast<const uint8_t*>(m_cert->enc_key->pub_key_data)),
-                m_cert->enc_key->pub_key_data_size);
+          // Copy only public key
+          l_cert_new->enc_key->pub_key_data = DAP_DUP_SIZE(DAP_CAST_PTR(char, m_cert->enc_key->pub_key_data),
+                                                           m_cert->enc_key->pub_key_data_size);
+          if(!l_cert_new->enc_key->pub_key_data) {
+            qDebug() << "Memory allocation error";
+            return;
+          }
+          l_cert_new->enc_key->pub_key_data_size = m_cert->enc_key->pub_key_data_size;
 
-            if (!l_cert_new->enc_key->pub_key_data) {
-                qDebug() << "Memory allocation error";
-                return;
-            }
-
-            l_cert_new->enc_key->pub_key_data_size = m_cert->enc_key->pub_key_data_size;
-
-            dap_cert_save_to_folder(l_cert_new, saveDir);
+          dap_cert_save_to_folder(l_cert_new, saveDir);
         } else {
             qDebug() << "Can't produce pkey from this cert type";
             exit(-7023);
