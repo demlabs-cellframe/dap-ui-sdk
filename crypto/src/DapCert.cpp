@@ -256,7 +256,7 @@ void Cert::savePubCert(const char * saveDir, const char * newName) {
           l_cert_new->enc_key = dap_enc_key_new( m_cert->enc_key->type);
 
           // Copy only public key
-          l_cert_new->enc_key->pub_key_data = DAP_DUP_SIZE(m_cert->enc_key->pub_key_data,
+          l_cert_new->enc_key->pub_key_data = DAP_DUP_SIZE(DAP_CAST_PTR(char,m_cert->enc_key->pub_key_data),
                                                            m_cert->enc_key->pub_key_data_size);
           if(!l_cert_new->enc_key->pub_key_data) {
             qDebug() << "Memory allocation error";
