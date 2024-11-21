@@ -636,7 +636,7 @@ void DapBaseDataLocal::fromJson(const QJsonObject &json)
     if(json.contains(JSON_MIN_NODE_VERSION_KEY))        jsonToValue(m_minNodeVersion, json, JSON_MIN_NODE_VERSION_KEY);
     if(json.contains(JSON_PUB_STAGE_KEY))               jsonToValue(m_pubStage, json, JSON_PUB_STAGE_KEY);
     if(json.contains(JSON_PENDING_SERIAL_KEY_KEY))      jsonToValue(m_pendingSerialKey, json, JSON_PENDING_SERIAL_KEY_KEY);
-    if(json.contains(JSON_CBD_SERVERS_KEY))             setDataToUpdate(json[JSON_CBD_SERVERS_KEY].toObject());
+    if(json.contains(JSON_DATA_TO_UPDATE_KEY))          setDataToUpdate(json[JSON_DATA_TO_UPDATE_KEY].toObject());
     if(json.contains(JSON_SERIAL_KEY_DATA_LIST_KEY))    setSerialKeyDataList(json[JSON_SERIAL_KEY_DATA_LIST_KEY].toArray());
     if(json.contains(JSON_BUG_REPORT_HISTORY_KEY))      setBugReportHistory(json[JSON_BUG_REPORT_HISTORY_KEY].toArray());
     if(json.contains(JSON_SERIAL_KEY_HISTORY_KEY))      setSerialKeyHistory(json[JSON_SERIAL_KEY_HISTORY_KEY].toArray());
@@ -644,20 +644,22 @@ void DapBaseDataLocal::fromJson(const QJsonObject &json)
 
 void DapBaseDataLocal::jsonToValue(QString& data, const QJsonObject& object, const QString& key)
 {
-    for (const QString& outerKey : object.keys()) 
+    if(!object.contains(key))
     {
-        const QJsonValue& outerValue = object[outerKey];
-        if (outerValue.isObject()) 
+        for (const QString& outerKey : object.keys())
         {
-            jsonToValue(data, outerValue.toObject(), key);
-            if (!data.isEmpty()) 
+            const QJsonValue& outerValue = object[outerKey];
+            if (outerValue.isObject())
             {
-                return;
+                jsonToValue(data, outerValue.toObject(), key);
+                if (!data.isEmpty())
+                {
+                    return;
+                }
             }
         }
     }
-
-    if (object.contains(key)) 
+    else
     {
         QString value = object[key].toString();
         if (value == data) 
@@ -670,20 +672,22 @@ void DapBaseDataLocal::jsonToValue(QString& data, const QJsonObject& object, con
 
 void DapBaseDataLocal::jsonToValue(bool& data, const QJsonObject& object, const QString& key)
 {
-    for (const QString& outerKey : object.keys()) 
+    if(!object.contains(key))
     {
-        const QJsonValue& outerValue = object[outerKey];
-        if (outerValue.isObject()) 
+        for (const QString& outerKey : object.keys())
         {
-            jsonToValue(data, outerValue.toObject(), key);
-            if (data) 
+            const QJsonValue& outerValue = object[outerKey];
+            if (outerValue.isObject())
             {
-                return;
+                jsonToValue(data, outerValue.toObject(), key);
+                if (data)
+                {
+                    return;
+                }
             }
         }
     }
-
-    if (object.contains(key)) 
+    else
     {
         bool value = object[key].toBool();
         if (value == data) 
@@ -696,20 +700,22 @@ void DapBaseDataLocal::jsonToValue(bool& data, const QJsonObject& object, const 
 
 void DapBaseDataLocal::jsonToValue(int& data, const QJsonObject& object, const QString& key)
 {
-    for (const QString& outerKey : object.keys()) 
+    if (object.contains(key))
     {
-        const QJsonValue& outerValue = object[outerKey];
-        if (outerValue.isObject()) 
+        for (const QString& outerKey : object.keys())
         {
-            jsonToValue(data, outerValue.toObject(), key);
-            if (data != 0) 
+            const QJsonValue& outerValue = object[outerKey];
+            if (outerValue.isObject())
             {
-                return;
+                jsonToValue(data, outerValue.toObject(), key);
+                if (data != 0)
+                {
+                    return;
+                }
             }
         }
     }
-
-    if (object.contains(key)) 
+    else
     {
         int value = object[key].toInt();
         if (value == data) 
@@ -800,9 +806,9 @@ void DapBaseDataLocal::setSerialKeyData(const QJsonObject& object)
         resetSerialKeyData();
         return;
     }
-    QString serialKey;
+    QString serialKey = QString();
     jsonToValue(serialKey, object, JSON_SERIAL_KEY_KEY);
-    bool isActivated;
+    bool isActivated = false;
     jsonToValue(isActivated, object, JSON_IS_ACTIVATED_KEY);
     qint64 timeStemp = object[JSON_LISENSE_TIME_KEY].toString().toLongLong();
     QDateTime time = QDateTime::fromSecsSinceEpoch(timeStemp);
@@ -856,9 +862,9 @@ void DapBaseDataLocal::setBugReportHistory(const QJsonArray& list)
             qWarning() << "[DapBaseDataLocal][fromJson] Error receiving bugReportHistory data";
             continue;
         }
-        int bugNumber;
+        int bugNumber = 0;
         jsonToValue(bugNumber, item, JSON_BUG_NUMBER_KEY);
-        DapBugReportHistoryItem historyItem;
+        DapBugReportHistoryItem historyItem{0, ""};
         jsonToValue(historyItem.number, item, JSON_NUMBER_KEY);
         jsonToValue(historyItem.status, item, JSON_STATUS_KEY);
         bugReports.insert(bugNumber, std::move(historyItem));
