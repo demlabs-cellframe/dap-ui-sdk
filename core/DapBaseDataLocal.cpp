@@ -896,7 +896,8 @@ const QJsonObject DapBaseDataLocal::settingsToJson()
         for(const auto& key: m_settings->allKeys())
         {
             if(TEXT_SERIAL_KEY == key || TEXT_PENDING_SERIAL_KEY == key || TEXT_SERIAL_KEY_HISTORY == key ||
-                TEXT_BUGREPORT_HISTORY == key || LAST_NODE_LIST_UPDATE == key || LAST_NODE_LIST_UPDATE_TIME == key)
+                TEXT_BUGREPORT_HISTORY == key || LAST_NODE_LIST_UPDATE == key || LAST_NODE_LIST_UPDATE_TIME == key ||
+                SETTING_THEME == key)
             {
                 continue;
             }

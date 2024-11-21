@@ -3,73 +3,65 @@
 #include "qjsondocument.h"
 
 DapDataLocal::DapDataLocal()
-    :DapBaseDataLocal()
-{
+    :DapBaseDataLocal() {
     QStringList keys = m_settings->allKeys();
-    if(!keys.isEmpty())
-    {
-        if(!keys.contains(MIGRATION_KEY))
-        {
+    if(keys.contains(SETTING_THEME)) {
+        m_settingsMap[SETTING_THEME] = m_settings->value(SETTING_THEME);
+    }
+    if(!keys.isEmpty()) {
+        if(!keys.contains(MIGRATION_KEY)) {
             m_needMigration = true;
         }
     }
 }
 
-DapDataLocal *DapDataLocal::instance()
-{
+DapDataLocal *DapDataLocal::instance() {
     static DapDataLocal instance;
     return &instance;
 }
 
-void DapDataLocal::saveMigrate()
-{
+void DapDataLocal::saveMigrate() {
     DapBaseDataLocal::saveValueSetting(MIGRATION_KEY, true);
 }
 
-QVariant DapDataLocal::getSetting(const QString &a_setting)
-{
+QVariant DapDataLocal::getSetting(const QString &a_setting) {
     return instance()->getValueSetting(a_setting);
 }
 
-void DapDataLocal::saveSetting(const QString &a_setting, const QVariant &a_value)
-{
+void DapDataLocal::saveSetting(const QString &a_setting, const QVariant &a_value) {
     instance()->saveValueSetting(a_setting, a_value);
 }
 
-void DapDataLocal::removeSetting(const QString &a_setting)
-{
+void DapDataLocal::removeSetting(const QString &a_setting) {
     instance()->removeValueSetting(a_setting);
 }
 
-QVariant DapDataLocal::getValueSetting(const QString &a_setting)
-{
+QVariant DapDataLocal::getValueSetting(const QString &a_setting) {
     return m_settingsMap[a_setting];
 }
 
-void DapDataLocal::saveValueSetting(const QString &setting, const QVariant &value)
-{
-    if(m_settingsMap.value(setting) != value)
-    {
+void DapDataLocal::saveValueSetting(const QString &setting, const QVariant &value) {
+    if(m_settingsMap.value(setting) != value) {
         m_settingsMap[setting] = value;
-        QJsonObject result{{setting, QJsonValue::fromVariant(value)}};
-        emit valueDataLocalUpdated(QJsonObject{{JSON_SETTINGS_KEY, result}});
+        if(setting != SETTING_THEME) {
+            QJsonObject result{{setting, QJsonValue::fromVariant(value)}};
+            emit valueDataLocalUpdated(QJsonObject{{JSON_SETTINGS_KEY, result}});
+        } else {
+            DapBaseDataLocal::saveValueSetting(setting,value);
+        }
     }
 }
 
-void DapDataLocal::removeValueSetting(const QString &setting)
-{
-    if(m_settingsMap.contains(setting))
-    {
+void DapDataLocal::removeValueSetting(const QString &setting) {
+    if(m_settingsMap.contains(setting)) {
         m_settingsMap.remove(setting);
         QJsonObject result{{setting, QJsonObject()}};
         emit valueDataLocalUpdated(QJsonObject{{JSON_SETTINGS_KEY, result}});
     }
 }
 
-void DapDataLocal::setCountryISO(const QString& iso_code)
-{
-    if(m_coutryISO != iso_code)
-    {
+void DapDataLocal::setCountryISO(const QString& iso_code) {
+    if(m_coutryISO != iso_code) {
         DapBaseDataLocal::setCountryISO(iso_code);
         emit valueDataLocalUpdated(createJsonObject(JSON_COUNTRY_ISO_KEY, m_coutryISO));
     }
