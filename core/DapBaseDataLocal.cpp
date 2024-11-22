@@ -403,6 +403,8 @@ void DapBaseDataLocal::removeValueSetting(const QString& a_setting)
 
 void DapBaseDataLocal::setSettings(const QJsonObject &json)
 {
+    QStringList keys = json.keys();
+    qDebug() << "[DapBaseDataLocal][setSettings] New value of the settings keys - " << keys;
     for(const auto& key: json.keys())
     {
         if(key == "remove")
@@ -561,7 +563,6 @@ void DapBaseDataLocal::loadBugReport()
     }
     else
     {
-
         QList<QString> list;
         /* get array from settings */
         loadFromSettings (TEXT_BUGREPORT_HISTORY, list);
@@ -839,7 +840,11 @@ const QJsonArray DapBaseDataLocal::bugReportHistoryToJson() const
 {
     QJsonArray bugReportHistory;
     const auto& bugReports  = m_bugReportHistory->getBagreports();
-    for(const auto& key: bugReports.keys())
+
+    QList<int> keys = bugReports.keys();
+    qDebug() << "[DapBaseDataLocal][bugReportHistoryToJson] the number of bug reports being moved: " << keys.size();
+
+    for(const auto& key: qAsConst(keys))
     {
         QJsonObject object;
         const auto& item = bugReports[key];
@@ -875,6 +880,8 @@ void DapBaseDataLocal::setBugReportHistory(const QJsonArray& list)
 const QJsonArray DapBaseDataLocal::serialKeyHistoryToJson() const
 {
     QJsonArray serialKeyHistory;
+    QStringList listKeys = m_serialKeyHistory->getKeysHistory();
+    qDebug() << "[DapBaseDataLocal][serialKeyHistoryToJson] list of keys: " << listKeys;
     for(const auto& item: m_serialKeyHistory->getKeysHistory())
     {
         serialKeyHistory.append(std::move(item));
@@ -899,7 +906,9 @@ const QJsonObject DapBaseDataLocal::settingsToJson()
     QJsonObject settings;
     if(m_settings)
     {
-        for(const auto& key: m_settings->allKeys())
+        QStringList listKeys = m_settings->allKeys();
+        qDebug() << "[DapBaseDataLocal][settingsToJson] setting keys: " << listKeys;
+        for(const auto& key: qAsConst(listKeys))
         {
             if(TEXT_SERIAL_KEY == key || TEXT_PENDING_SERIAL_KEY == key || TEXT_SERIAL_KEY_HISTORY == key ||
                 TEXT_BUGREPORT_HISTORY == key || LAST_NODE_LIST_UPDATE == key || LAST_NODE_LIST_UPDATE_TIME == key ||

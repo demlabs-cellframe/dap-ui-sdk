@@ -10,6 +10,7 @@ DapDataLocal::DapDataLocal()
     }
     if(!keys.isEmpty()) {
         if(!keys.contains(MIGRATION_KEY)) {
+            qDebug() << "[DapDataLocal] Data needs to be migrated";
             m_needMigration = true;
         }
     }
@@ -120,7 +121,9 @@ void DapDataLocal::saveKeysHistory()
 
 void DapDataLocal::setSettings(const QJsonObject &json)
 {
-    for(const auto& key: json.keys())
+    QStringList keys = json.keys();
+    qDebug() << "[DapDataLocal][setSettings] New value of the settings keys - " << keys;
+    for(const auto& key: keys)
     {
         if(key == "remove")
         {

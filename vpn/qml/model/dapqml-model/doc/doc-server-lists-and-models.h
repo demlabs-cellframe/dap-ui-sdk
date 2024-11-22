@@ -18,7 +18,7 @@
  *
  * @section secDapSortedServerList DapSortedServerList
  *
- * <p>DapSortedServerList – the class encapsulate the functionality of the DapServerList class, which makes them interchangeable (but not dependent on each other). The main feature of the class is to sort list by *ping* and store indexes into **QLinkedList**, giving an easy way to sort the elements.</p>
+ * <p>DapSortedServerList – the class encapsulate the functionality of the DapServerList class, which makes them interchangeable (but not dependent on each other). The main feature of the class is to sort list by *ping* and store indexes into **QList**, giving an easy way to sort the elements.</p>
  * <p>Sorting occurs on appending\inserting elements, and can also be performed manually by executing **update** method for the entire list immediately or by executing method with the list of indexes as an argument that requires an update.</p>
  *
  * @section secListModelClasses List model classes

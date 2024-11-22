@@ -14,7 +14,7 @@ void DapCmdStates::handle(const QJsonObject* params)
 void DapCmdStates::sendCmdStates(const QString& stateName, const QString stateVal)
 {
     QJsonObject response;
-    qDebug() << "[TEST] state_name: " << stateName << "\tstate: " << stateVal;
+    qDebug() << "StateInfo\t state_name: " << stateName << "\tstate: " << stateVal;
     response["state_name"] = stateName;
     response["state"] = stateVal;
     sendCmd(&response);

@@ -99,7 +99,7 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObje
     DapNetworkReply *netReply = new DapNetworkReply();
     if (slot)
         connect(netReply, SIGNAL(finished()), obj, slot);
-    connect(netReply, &DapNetworkReply::sigError, this, [netReply, slot_err, obj, this]
+    connect(netReply, &DapNetworkReply::sigError, this, [=]
             {
         if ( netReply->error() != 110 )
         {

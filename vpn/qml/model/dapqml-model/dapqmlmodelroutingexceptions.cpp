@@ -1,7 +1,7 @@
 /* INCLUDES */
 #include "dapqmlmodelroutingexceptions.h"
 
-#include <QLinkedList>
+#include <QList>
 #include <QBuffer>
 #include <QJsonArray>
 #include <QJsonObject>
