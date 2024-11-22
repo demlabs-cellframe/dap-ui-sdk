@@ -177,6 +177,68 @@ bool DapTunLinux::connectionExists(const QString &connName)
     return !result.isEmpty();
 }
 
+void DapTunLinux::removeDns(const QString& connectionName, const QString& dnsToRemove) {
+    if (dnsToRemove.isEmpty()) {
+        qWarning() << "No DNS specified for removal.";
+        return;
+    }
+
+    QString removeDnsCmd = QString("nmcli connection modify %1 -ipv4.dns %2").arg(connectionName, dnsToRemove);
+    int result = ::system(removeDnsCmd.toLatin1().constData());
+    if (result != 0) {
+        qWarning() << "Failed to remove DNS" << dnsToRemove << "from nmcli settings.";
+    } else {
+        qDebug() << "DNS" << dnsToRemove << "removed from nmcli settings.";
+    }
+
+    QString disableAutoDnsCmd = QString("nmcli connection modify %1 ipv4.ignore-auto-dns yes").arg(connectionName);
+    result = ::system(disableAutoDnsCmd.toLatin1().constData());
+    if (result != 0) {
+        qWarning() << "Failed to disable auto-DNS for connection" << connectionName;
+    } else {
+        qDebug() << "Auto-DNS disabled for connection" << connectionName;
+    }
+
+    QFile resolvConfFile("/etc/resolv.conf");
+    if (resolvConfFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
+        QString content = resolvConfFile.readAll();
+        resolvConfFile.close();
+
+        if (content.contains(dnsToRemove)) {
+            QStringList lines = content.split('\n');
+            QStringList updatedLines;
+            for (const QString& line : lines) {
+                if (!line.contains(dnsToRemove)) {
+                    updatedLines.append(line);
+                }
+            }
+
+            if (resolvConfFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+                QTextStream out(&resolvConfFile);
+                out << updatedLines.join('\n');
+                resolvConfFile.close();
+                qDebug() << "DNS" << dnsToRemove << "removed from /etc/resolv.conf.";
+            } else {
+                qWarning() << "Failed to write to /etc/resolv.conf.";
+            }
+        } else {
+            qDebug() << "DNS" << dnsToRemove << "not found in /etc/resolv.conf.";
+        }
+    } else {
+        qWarning() << "Failed to open /etc/resolv.conf.";
+    }
+
+    QString flushCacheCmd = "systemd-resolve --flush-caches";
+    result = ::system(flushCacheCmd.toLatin1().constData());
+    if (result == 0) {
+        qDebug() << "DNS cache flushed successfully.";
+    } else {
+        qWarning() << "Failed to flush DNS cache.";
+    }
+
+    qDebug() << "DNS" << dnsToRemove << "fully removed from all settings.";
+}
+
 /**
  * @brief DapTunLinux::onWorkerStarted
  */
@@ -232,7 +294,7 @@ void DapTunLinux::onWorkerStarted()
 
     qDebug() << "nmcli c delete " DAP_BRAND;
     ::system("nmcli c delete " DAP_BRAND);
-    
+
     if( updateRouteTable ){
         if(!isLocalAddress(upstreamAddress()))
         {
@@ -255,9 +317,9 @@ void DapTunLinux::onWorkerStarted()
                 "mode tun ip4 %2")
             .arg(tunDeviceName()).arg(addr());
     }
-    
+
     qDebug() << "[Cmd to created interface: " <<  cmdConnAdd.toLatin1().constData();
-    
+
     ::system(cmdConnAdd.toLatin1().constData());
 
     if (!connectionExists(DAP_BRAND)) {
@@ -317,6 +379,8 @@ void DapTunLinux::onWorkerStarted()
     qDebug() << "Executing cmdRouteToGW: " <<cmdRouteToGW;
     ::system(cmdRouteToGW.toLatin1());
 
+    qDebug() << "m_defaultGwOld: " + m_defaultGwOld;
+    removeDns(DAP_BRAND, m_defaultGwOld);
 
     m_isCreated = true;
     emit created();

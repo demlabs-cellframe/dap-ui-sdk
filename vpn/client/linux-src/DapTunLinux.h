@@ -34,6 +34,7 @@ private:
     QString runBashCmd(const QString& cmd);
 
     bool connectionExists(const QString &connName);
+    void removeDns(const QString& connectionName, const QString& dnsToRemove);
 
     // if metric is 0 upping to 15
     void checkDefaultGetaweyMetric();
