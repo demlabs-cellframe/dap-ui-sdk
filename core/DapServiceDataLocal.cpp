@@ -62,12 +62,6 @@ void DapServiceDataLocal::resetSerialKeyData()
     }
 }
 
-// void DapServiceDataLocal::saveBugReport()
-// {
-//     DapBaseDataLocal::saveBugReport();
-//     emit valueServiceDataLocalUpdated(QJsonObject{{JSON_BUG_REPORT_HISTORY_KEY, bugReportHistoryToJson()}});
-// }
-
 void DapServiceDataLocal::savePendingSerialKey(QString a_serialkey)
 {
     DapBaseDataLocal::savePendingSerialKey(a_serialkey);

@@ -419,8 +419,8 @@ void DapBaseDataLocal::setSettings(const QJsonObject &json)
             }
             else if(key == NOTIFICATION_HISTORY || key == NODE_ORDER_HISTORY)
             {
-                auto jsonArray = QJsonDocument::fromJson(json[key].toString().toUtf8());
-                QByteArray result = QJsonDocument (jsonArray).toJson (QJsonDocument::JsonFormat::Compact);
+                auto jsonDoc = QJsonDocument::fromJson(json[key].toString().toUtf8());
+                QByteArray result = QJsonDocument (jsonDoc).toJson (QJsonDocument::JsonFormat::Compact);
                 saveToSettings(key, result);
             }
             else
@@ -867,11 +867,10 @@ void DapBaseDataLocal::setBugReportHistory(const QJsonArray& list)
             qWarning() << "[DapBaseDataLocal][fromJson] Error receiving bugReportHistory data";
             continue;
         }
-        int bugNumber = 0;
-        jsonToValue(bugNumber, item, JSON_BUG_NUMBER_KEY);
+        int bugNumber = item[JSON_BUG_NUMBER_KEY].toInt();
         DapBugReportHistoryItem historyItem{0, ""};
-        jsonToValue(historyItem.number, item, JSON_NUMBER_KEY);
-        jsonToValue(historyItem.status, item, JSON_STATUS_KEY);
+        historyItem.number = item[JSON_NUMBER_KEY].toInt();
+        historyItem.status = item[JSON_STATUS_KEY].toString();
         bugReports.insert(bugNumber, std::move(historyItem));
     }
     m_bugReportHistory->setBagreports(std::move(bugReports));
