@@ -1,22 +1,9 @@
 #include "DapCmdStats.h"
 #include <utility>
 
-const QString DapCmdStats::readBytesParam =
-        DapJsonParams::toString(DapJsonParams::READ_BYTES);
-
-const QString DapCmdStats::writeBytesParam =
-        DapJsonParams::toString(DapJsonParams::WRITE_BYTES);
-
-const QString DapCmdStats::readPackageParam =
-        DapJsonParams::toString(DapJsonParams::READ_PACKAGE);
-
-const QString DapCmdStats::writePackageParam =
-        DapJsonParams::toString(DapJsonParams::WRITE_PACKAGE);
-
 DapCmdStats::DapCmdStats(QObject *parent)
     : DapCmdClientAbstract(DapJsonCmdType::STATS, parent)
 {
-    
 }
 
 void DapCmdStats::sendCmdStatsTrafficOn(bool val)
@@ -44,14 +31,17 @@ void DapCmdStats::trafficStatsHandler(const QJsonValue &readBytes, const QJsonVa
 
 void DapCmdStats::handleResult(const QJsonObject& result)
 {
-    if (result.value(readBytesParam) != QJsonValue::Undefined &&
-            result.value(writeBytesParam) != QJsonValue::Undefined &&
-            result.value(readPackageParam) != QJsonValue::Undefined &&
-            result.value(writePackageParam) != QJsonValue::Undefined) {
-        DapCmdStats::trafficStatsHandler(result.value(readBytesParam), result.value(writeBytesParam),
-                                                result.value(readPackageParam), result.value(writePackageParam));
-    } else {
-        qWarning() << result;
+    if (result.value(READ_BYTES_PARAM) != QJsonValue::Undefined &&
+            result.value(WRITE_BYTES_PARAM) != QJsonValue::Undefined &&
+            result.value(READ_PACKAGE_PARAM) != QJsonValue::Undefined &&
+            result.value(WRITE_PACKAGE_PARAM) != QJsonValue::Undefined)
+    {
+        trafficStatsHandler(result.value(READ_BYTES_PARAM), result.value(WRITE_BYTES_PARAM),
+                                                result.value(READ_PACKAGE_PARAM), result.value(WRITE_PACKAGE_PARAM));
+    }
+    else
+    {
+        qWarning() << "[DapCmdStats] Stats result" << result;
     }
 }
 

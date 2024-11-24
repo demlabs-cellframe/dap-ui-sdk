@@ -1,7 +1,5 @@
 #include <QtDebug>
 #include <QFileInfo>
-#include <QMessageBox>
-#include <QApplication>
 #include "DapServiceNativeDarwin.h"
 #include "DapClientDefinitions.h"
 

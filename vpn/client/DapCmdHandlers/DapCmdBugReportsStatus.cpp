@@ -17,7 +17,7 @@ DapCmdBugReportsStatus::~DapCmdBugReportsStatus()
 
 void DapCmdBugReportsStatus::handle(const QJsonObject *params)
 {
-    Q_UNUSED(params);
+    DapCmdServiceAbstract::handle(params);
 
     QString request = params->value("bug_reports_numbers_list").toString();
     qDebug() << QString("Received bug-report status request");

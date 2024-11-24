@@ -31,10 +31,6 @@ TestConnect::TestConnect(QObject *parent) : QObject(parent)
     streamer->addChProc('s', DapChSockForw::getInstance());
     streamer->addChProc('t', ch);
 
-    connect(streamer, &DapStreamer::streamOpened, [=] {
-        //ch->cmd_addContact("user2","domain.com");
-    });
-
     connect(DapSession::getInstance(),SIGNAL(encryptInitialized()),this,SLOT(onEncInitialized() ));
 
 

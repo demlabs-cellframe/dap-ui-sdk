@@ -4,6 +4,7 @@
 
 void DapCmdServerData::handle(const QJsonObject *params)
 {
+    DapCmdServiceAbstract::handle(params);
     if (params->value("address") != QJsonValue::Undefined
             && params->value("port") != QJsonValue::Undefined)
     {

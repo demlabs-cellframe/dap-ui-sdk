@@ -49,15 +49,15 @@ void DapStateMachine::addUserRequestDisconnectSignal(const QObject *sender, cons
     userRequestStateConnect->addTransition(sender,signal,userRequestStateDisconnect);
     userRequestStateConnectNoCDB->addTransition(sender,signal,userRequestStateDisconnect);
 
-    connect (this->userRequestStateConnect, &DapState::entered, [=] {
+    connect (this->userRequestStateConnect, &DapState::entered, [] {
         qDebug() << "DapStateMachine::addUserRequestDisconnectSignal - userRequestStateConnect";
     });
 
-    connect (this->userRequestStateDisconnect, &DapState::entered, [=] {
+    connect (this->userRequestStateDisconnect, &DapState::entered, [] {
         qDebug() << "DapStateMachine::addUserRequestDisconnectSignal - userRequestStateDisconnect";
     });
 
-    connect (this->userRequestStateConnectNoCDB, &DapState::entered, [=] {
+    connect (this->userRequestStateConnectNoCDB, &DapState::entered, [] {
         qDebug() << "DapStateMachine::addUserRequestDisconnectSignal - userRequestStateConnectNoCDB";
     });
 }
