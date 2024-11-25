@@ -69,8 +69,6 @@ void DapBugReportData::setLastSentNumber(const QString& a_lastSentNumber /*= {})
 
 void DapBugReportData::saveDatas() const
 {
-    DapDataLocal::instance()->saveEncryptedSetting(SETTINGS_TEXT_EMAIL  , this->email());
-    DapDataLocal::instance()->saveEncryptedSetting(SETTINGS_TEXT_MESSAGE, this->message());
     DapDataLocal::instance()->saveEncryptedSetting(SETTINGS_TEXT_LAST_SENT_NUMBER, this->lastSentNumber());
 }
 

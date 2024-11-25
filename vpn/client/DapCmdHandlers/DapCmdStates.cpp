@@ -24,20 +24,29 @@ DapCmdStates::DapCmdStates(QObject *parent)
     : DapCmdServiceAbstract(DapJsonCmdType::GET_STATES, parent)
 {
     _activeStateMachine = DapStateMachine::instance();
+    Q_ASSERT(_activeStateMachine);
 }
 
 void DapCmdStates::_sendUserRequestState()
 {
-    bool isConnect = false;
-    for (const auto &state: _activeStateMachine->getCachedStates())
-    {
-        if(state.getStringState() != "false")
-        {
-            isConnect = true;
-            break;
-        }
+    const QVector<DapIndicator>& states = _activeStateMachine->getCachedStates();
+
+    if (states.empty()) {
+        sendCmdStates(QStringLiteral("user_request_state"), QStringLiteral("Disconnect"));
+        return;
     }
 
-    QString stateValue = isConnect ? "Connect" : "Disconnect";
-    sendCmdStates("user_request_state", stateValue);
+    bool allFalse = std::all_of(states.begin(), states.end(), [](const DapIndicator& state) {
+        return state.getStringState() == QStringLiteral("false");
+    });
+
+    bool allTrue = std::all_of(states.begin(), states.end(), [](const DapIndicator& state) {
+        return state.getStringState() == QStringLiteral("true");
+    });
+
+    if (allFalse) {
+        sendCmdStates(QStringLiteral("user_request_state"), QStringLiteral("Disconnect"));
+    } else if (allTrue) {
+        sendCmdStates(QStringLiteral("user_request_state"), QStringLiteral("Connect"));
+    }
 }
