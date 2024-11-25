@@ -138,6 +138,15 @@ public:
 
     virtual void loadBugReport();
     virtual void saveBugReport();
+
+    const QJsonArray cbdServerListToJson() const;
+    const QJsonObject dataToUpdateToJson() const;
+    const QJsonObject serialKeyDataToJson() const;
+    const QJsonArray serialKeyDataListToJson() const;
+    const QJsonArray bugReportHistoryToJson() const;
+    const QJsonArray serialKeyHistoryToJson() const;
+    const QJsonObject settingsToJson();
+
 public slots:
     virtual void setLogin(const QString &a_login);
     virtual void setPassword(const QString &password);
@@ -169,19 +178,14 @@ protected:
     void jsonToValue(int &data, const QJsonObject& object, const QString& key);
     QJsonObject createJsonObject(const QString& itemName, const QString& itemValue);
 
-    const QJsonArray cbdServerListToJson() const;
+
     void setSbdServerList(const QJsonArray& list);
-    const QJsonObject dataToUpdateToJson() const;
     void setDataToUpdate(const QJsonObject& object);
-    const QJsonObject serialKeyDataToJson() const;
     void setSerialKeyData(const QJsonObject& object);
-    const QJsonArray serialKeyDataListToJson() const;
     void setSerialKeyDataList(const QJsonArray& list);
-    const QJsonArray bugReportHistoryToJson() const;
-    virtual void setBugReportHistory(const QJsonArray& list);
-    const QJsonArray serialKeyHistoryToJson() const;
     void setSerialKeyHistory(const QJsonArray& list);
-    const QJsonObject settingsToJson();
+
+    virtual void setBugReportHistory(const QJsonArray& list);
 
     template<typename T>
     void saveToSettingsBase(const QString &a_setting, const T& a_value);
@@ -239,6 +243,7 @@ protected:
     const QString JSON_DATA_TO_UPDATE_KEY = "dataToUpdate";
     const QString JSON_IS_ACTIVATED_KEY = "isActivated";
     const QString JSON_LISENSE_TIME_KEY = "lisenseTime";
+    const QString JSON_DAYS_LEFT_STRING_KEY = "daysLeftString";
     const QString JSON_SERIAL_KEY_DATA_KEY = "serialKeyData";
     const QString JSON_SERIAL_KEY_DATA_LIST_KEY = "serialKeyDataList";
     const QString JSON_BUG_NUMBER_KEY = "bugNumber";

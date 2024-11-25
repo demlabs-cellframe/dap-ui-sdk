@@ -797,6 +797,7 @@ const QJsonObject DapBaseDataLocal::serialKeyDataToJson() const
     auto timeLicense = m_serialKeyData->licenseTermTill();
     qint64 timeStemp = timeLicense.toSecsSinceEpoch();
     serialKeyData.insert(JSON_LISENSE_TIME_KEY, QString::number(timeStemp));
+    serialKeyData.insert(JSON_DAYS_LEFT_STRING_KEY, m_serialKeyData->daysLeftString());
     return serialKeyData;
 }
 

@@ -70,12 +70,12 @@ void DapCmdDataLocalSrv::handle (const QJsonObject *a_params)
     }
     else if (action == "get")
     {
-        QString name    = a_params->value ("name").toString();
+        QString name = a_params->value ("name").toString();
         return getValue(std::move(name));
     }
     else if (action == "remove")
     {
-        QString name    = a_params->value ("name").toString();
+        QString name = a_params->value ("name").toString();
         remove(std::move(name));
     }
     else if (action == "getAll")
@@ -105,6 +105,11 @@ void DapCmdDataLocalSrv::getValue(const QString& nameValue)
     {
         value = dataLocal->serialKeyHistory()->list();
         qDebug() << "Returning serial_history_key list, size:" << value.toList().size();
+    }
+    else if (nameValue == "auth_info_key")
+    {
+        value = dataLocal->serialKeyDataToJson();
+        qDebug() << "Returning auth_info_key";
     }
     else
     {
