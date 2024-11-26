@@ -77,8 +77,8 @@ Item
 
     onCountChanged:
     {
-        print("DapCustomComboBox", "onCountChanged",
-              "popupListView.currentIndex", popupListView.currentIndex)
+        // print("DapCustomComboBox", "onCountChanged",
+        //       "popupListView.currentIndex", popupListView.currentIndex)
 
         if (popupListView.currentIndex < 0)
             displayText = getModelData(0, mainTextRole)
