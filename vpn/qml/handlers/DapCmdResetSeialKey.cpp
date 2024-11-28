@@ -8,10 +8,6 @@ DapCmdResetSeialKey::DapCmdResetSeialKey(QObject *parent)
 
 void DapCmdResetSeialKey::sendResetSerialKeyRequest(const QString &a_serial /*= ""*/)
 {
-    if (a_serial.isEmpty()){
-        qDebug() << "Serial is empty";
-        return;
-    }
     QJsonObject obj;
     obj["serial"] = a_serial;
     sendCmd(&obj);

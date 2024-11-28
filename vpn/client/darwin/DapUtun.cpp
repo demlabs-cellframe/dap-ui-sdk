@@ -24,7 +24,6 @@ This file is part of DAP UI SDK the open source project
 #include <QtDebug>
 #include <QProcess>
 #include <QFile>
-#include <QSettings>
 
 #include <stdarg.h>
 #include <sys/types.h>
