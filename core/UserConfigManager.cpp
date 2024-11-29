@@ -2,13 +2,19 @@
 #include <QProcess>
 #include <QStandardPaths>
 #include <QDir>
+#include <QDirIterator>
+#include <QFileInfo>
 #include <QDebug>
+
+#ifdef Q_OS_WIN
+#include <windows.h>
+#include <aclapi.h>
+#else
 #include <pwd.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <unistd.h>
-#include <QDir>
-#include <QDirIterator>
+#endif
 
 UserConfigManager::UserConfigManager(const QString& processName)
     : processName(processName) {

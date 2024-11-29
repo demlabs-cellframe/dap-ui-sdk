@@ -1,12 +1,12 @@
-#ifndef DAPCMDRESETSEIALKEY_H
-#define DAPCMDRESETSEIALKEY_H
+#ifndef DapCmdResetSerialKey_H
+#define DapCmdResetSerialKey_H
 
 #include <QObject>
 #include <QJsonValue>
 
 #include "DapCmdClientAbstract.h"
 
-class DapCmdResetSeialKey : public DapCmdClientAbstract
+class DapCmdResetSerialKey : public DapCmdClientAbstract
 {
     Q_OBJECT
 
@@ -16,8 +16,8 @@ protected:
 
 public:
 
-    explicit DapCmdResetSeialKey(QObject *parent = nullptr);
-    virtual ~DapCmdResetSeialKey() override { }
+    explicit DapCmdResetSerialKey(QObject *parent = nullptr);
+    virtual ~DapCmdResetSerialKey() override { }
 
     void sendResetSerialKeyRequest(const QString &a_serial = "");
 signals:
@@ -26,4 +26,4 @@ signals:
     void sigSerialKeyReseted();
 };
 
-#endif // DAPCMDRESETSEIALKEY_H
+#endif // DapCmdResetSerialKey_H
