@@ -346,9 +346,6 @@ void DapBaseDataLocal::initSettings()
 #else
     m_settings = new QSettings();
 #endif
-
-    QString standardPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
-    qInfo() << "Default settings path:" << standardPath;
 }
 
 QVariant DapBaseDataLocal::getEncryptedSetting(const QString &a_setting)
