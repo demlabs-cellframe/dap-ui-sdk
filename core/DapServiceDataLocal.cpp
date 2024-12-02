@@ -2,6 +2,8 @@
 #include "DapSerialKeyData.h"
 #include "DapSerialKeyHistory.h"
 #include <QStandardPaths>
+#include <windows.h>
+#include <sddl.h>
 
 DapServiceDataLocal::DapServiceDataLocal()
 {
@@ -16,6 +18,21 @@ DapServiceDataLocal::DapServiceDataLocal()
     qDebug() << "[TEST] docLocation: " << docsLocation;
     docsLocation = QStandardPaths::standardLocations(QStandardPaths::HomeLocation);
     qDebug() << "[TEST] docLocation: " << docsLocation;
+
+    HANDLE hToken;
+    if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken)) {
+        DWORD dwSize = 0;
+        GetTokenInformation(hToken, TokenUser, nullptr, 0, &dwSize);
+        PTOKEN_USER ptu = (PTOKEN_USER)LocalAlloc(LPTR, dwSize);
+        if (GetTokenInformation(hToken, TokenUser, ptu, dwSize, &dwSize)) {
+            LPWSTR sidString;
+            ConvertSidToStringSid(ptu->User.Sid, &sidString);
+            qDebug() << "[TEST] User SID:" << QString::fromWCharArray(sidString);
+            LocalFree(sidString);
+        }
+        LocalFree(ptu);
+        CloseHandle(hToken);
+    }
 #ifdef Q_OS_WIN
     QStringList keys = m_settings->allKeys();
     qDebug() << "[TEST] keys: " << keys;
