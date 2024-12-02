@@ -1,12 +1,17 @@
 #include "DapServiceDataLocal.h"
 #include "DapSerialKeyData.h"
 #include "DapSerialKeyHistory.h"
+#include <QStandardPaths>
 
 DapServiceDataLocal::DapServiceDataLocal()
 {
+
+    const QStringList docsLocation = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
+    qDebug() << "[TEST] docLocation: " << docsLocation;
+
 #ifdef Q_OS_WIN
     QStringList keys = m_settings->allKeys();
-
+    qDebug() << "[TEST] keys: " << keys;
     if(!keys.isEmpty())
     {
         if(!keys.contains(MIGRATION_KEY))
