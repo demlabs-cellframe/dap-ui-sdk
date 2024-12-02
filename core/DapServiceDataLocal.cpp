@@ -6,9 +6,16 @@
 DapServiceDataLocal::DapServiceDataLocal()
 {
 
-    const QStringList docsLocation = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
+    QStringList docsLocation = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
     qDebug() << "[TEST] docLocation: " << docsLocation;
-
+    docsLocation = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
+    qDebug() << "[TEST] docLocation: " << docsLocation;
+    docsLocation = QStandardPaths::standardLocations(QStandardPaths::AppLocalDataLocation);
+    qDebug() << "[TEST] docLocation: " << docsLocation;
+    docsLocation = QStandardPaths::standardLocations(QStandardPaths::AppConfigLocation);
+    qDebug() << "[TEST] docLocation: " << docsLocation;
+    docsLocation = QStandardPaths::standardLocations(QStandardPaths::HomeLocation);
+    qDebug() << "[TEST] docLocation: " << docsLocation;
 #ifdef Q_OS_WIN
     QStringList keys = m_settings->allKeys();
     qDebug() << "[TEST] keys: " << keys;
