@@ -9,34 +9,14 @@
 
 DapServiceDataLocal::DapServiceDataLocal()
 {
-
-    QStringList docsLocation = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
-    qDebug() << "[TEST] docLocation: " << docsLocation;
-    docsLocation = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
-    qDebug() << "[TEST] docLocation: " << docsLocation;
-    docsLocation = QStandardPaths::standardLocations(QStandardPaths::AppLocalDataLocation);
-    qDebug() << "[TEST] docLocation: " << docsLocation;
-    docsLocation = QStandardPaths::standardLocations(QStandardPaths::AppConfigLocation);
-    qDebug() << "[TEST] docLocation: " << docsLocation;
-    docsLocation = QStandardPaths::standardLocations(QStandardPaths::HomeLocation);
-    qDebug() << "[TEST] docLocation: " << docsLocation;
-
-    QString name = QString("%1").arg(regWGetUsrPath());
-    qDebug() << name;
-
-    QString standardPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
-    qInfo() << "Default settings path:" << standardPath;
-
 #ifdef Q_OS_WIN
-    QStringList keys = m_settings->allKeys();
-    qDebug() << "[TEST] keys: " << keys;
-    if(!keys.isEmpty())
-    {
-        if(!keys.contains(MIGRATION_KEY))
-        {
-            saveMigrate();
-        }
-    }
+    QString path = QString("%1/%2/config/%2Service.conf").arg(regWGetUsrPath()).arg(DAP_BRAND);
+    qDebug() << "[DapServiceDataLocal] Config path: " << path;
+    initSettings(path);
+    initData();
+#else
+    initSettings();
+    initData();
 #endif
 }
 

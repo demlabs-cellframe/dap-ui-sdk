@@ -172,7 +172,7 @@ protected:
 
     void loadAuthorizationDatas();
     void syncCdbWithSettings();
-    void initSettings();
+    void initSettings(const QString &path = "");
 
 
     void jsonToValue(QString& str, const QJsonObject& object, const QString& key);

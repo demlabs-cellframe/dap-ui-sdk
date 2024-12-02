@@ -57,12 +57,11 @@ DapBaseDataLocal::DapBaseDataLocal()
 {
     qDebug() << "[DL] DapBaseDataLocal Constructor";
     m_bugReportHistory->setSaveCallback([this]{ saveBugReport(); });
-    initData();
 }
 
 void DapBaseDataLocal::initData()
 {
-    initSettings();
+    // initSettings();
     parseXML(":/data.xml");
     initSecretKey();
     loadAuthorizationDatas();
@@ -323,7 +322,7 @@ void DapBaseDataLocal::syncCdbWithSettings()
     updateCdbList (result);
 }
 
-void DapBaseDataLocal::initSettings()
+void DapBaseDataLocal::initSettings(const QString& path)
 {
 #ifdef Q_OS_ANDROID
     QString s_path = DapLogger::defaultLogPath(DAP_BRAND).chopped(3).append("settings.ini");
@@ -350,7 +349,12 @@ void DapBaseDataLocal::initSettings()
 
     m_settings = new QSettings(s_path, QSettings::IniFormat);
 #else
-    m_settings = new QSettings();
+    if(path.isEmpty()){
+        m_settings = new QSettings();
+    }
+    else {
+        m_settings = new QSettings(path, QSettings::IniFormat);
+    }
 #endif
 }
 

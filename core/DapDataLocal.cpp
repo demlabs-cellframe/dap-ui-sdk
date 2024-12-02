@@ -4,6 +4,8 @@
 
 DapDataLocal::DapDataLocal()
     :DapBaseDataLocal() {
+    initSettings();
+    initData();
     QStringList keys = m_settings->allKeys();
     if(keys.contains(SETTING_THEME)) {
         m_settingsMap[SETTING_THEME] = m_settings->value(SETTING_THEME);
