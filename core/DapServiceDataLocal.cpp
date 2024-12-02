@@ -2,9 +2,10 @@
 #include "DapSerialKeyData.h"
 #include "DapSerialKeyHistory.h"
 #include <QStandardPaths>
-#include <windows.h>
 
-#define MAX_USERNAME 256
+#ifdef Q_OS_WIN
+#include "registry.h"
+#endif
 
 DapServiceDataLocal::DapServiceDataLocal()
 {
@@ -20,23 +21,12 @@ DapServiceDataLocal::DapServiceDataLocal()
     docsLocation = QStandardPaths::standardLocations(QStandardPaths::HomeLocation);
     qDebug() << "[TEST] docLocation: " << docsLocation;
 
-    QString name = qgetenv("USER");
-    qDebug() << name;
-    if (name.isEmpty())
-        name = qgetenv("USERNAME");
+    QString name = QString("%1").arg(regWGetUsrPath());
     qDebug() << name;
 
+    QString standardPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+    qInfo() << "Default settings path:" << standardPath;
 
-    wchar_t acUserName[MAX_USERNAME];
-    DWORD nUserName = sizeof(acUserName) / sizeof(acUserName[0]);
-
-    if (GetUserNameW(acUserName, &nUserName)) {
-        // Преобразуем wide string в QString
-        QString userName = QString::fromWCharArray(acUserName);
-        qDebug() << "Текущий пользователь:" << userName;
-    } else {
-        qDebug() << "Ошибка получения имени пользователя";
-    }
 #ifdef Q_OS_WIN
     QStringList keys = m_settings->allKeys();
     qDebug() << "[TEST] keys: " << keys;
