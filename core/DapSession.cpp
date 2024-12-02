@@ -970,7 +970,7 @@ DapNetworkReply *DapSession::activateKeyRequest(const QString& a_serial, const Q
 void DapSession::resetKeyRequest(const QString& a_serial, const QString& a_domain, const QString& a_pkey) {
 
     if (a_serial.isEmpty()){
-        emit sigResetSerialKeyError (1, tr ("Reset error: Service - serial key is empty"));
+        emit sigSerialKeyReseted (tr ("Serial key is empty"));
         return;
     }
 
