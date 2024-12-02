@@ -29,7 +29,6 @@ public:
     void setSettings(const QJsonObject &json) override;
 
     bool isNeedMigrate() const { return m_needMigration; }
-    void saveMigrate();
 
     void saveEncryptedSetting(const QString &a_setting, const QVariant &a_value) override;
     void saveEncryptedSetting(const QString &a_setting, const QByteArray &a_value) override;
@@ -48,5 +47,4 @@ private:
     QVariantMap m_settingsMap;
 
     bool m_needMigration = false;
-    const QString MIGRATION_KEY = "migration";
 };

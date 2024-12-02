@@ -21,10 +21,6 @@ DapDataLocal *DapDataLocal::instance() {
     return &instance;
 }
 
-void DapDataLocal::saveMigrate() {
-    DapBaseDataLocal::saveValueSetting(MIGRATION_KEY, true);
-}
-
 QVariant DapDataLocal::getSetting(const QString &a_setting) {
     return instance()->getValueSetting(a_setting);
 }

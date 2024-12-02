@@ -2,7 +2,20 @@
 #include "DapSerialKeyData.h"
 #include "DapSerialKeyHistory.h"
 
-DapServiceDataLocal::DapServiceDataLocal() {}
+DapServiceDataLocal::DapServiceDataLocal()
+{
+#ifdef Q_OS_WIN
+    QStringList keys = m_settings->allKeys();
+
+    if(!keys.isEmpty())
+    {
+        if(!keys.contains(MIGRATION_KEY))
+        {
+            saveMigrate();
+        }
+    }
+#endif
+}
 
 DapServiceDataLocal *DapServiceDataLocal::instance()
 {
@@ -34,7 +47,6 @@ void DapServiceDataLocal::setCountryISO(const QString& iso_code)
 void DapServiceDataLocal::saveValueSetting(const QString &setting, const QVariant &value)
 {
     DapBaseDataLocal::saveValueSetting(setting, value);
-    QJsonObject result{{setting,  QJsonValue::fromVariant(value)}};
 }
 
 void DapServiceDataLocal::removeValueSetting(const QString &setting)

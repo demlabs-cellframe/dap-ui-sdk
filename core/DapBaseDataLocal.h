@@ -70,6 +70,7 @@ public:
     static const QString AGREEMENT_CHECKED;
     static const QString LAST_NODE_LIST_UPDATE;
     static const QString LAST_NODE_LIST_UPDATE_TIME;
+    static const QString MIGRATION_KEY;
 
     DapBaseDataLocal();
 
@@ -147,6 +148,7 @@ public:
     const QJsonArray serialKeyHistoryToJson() const;
     const QJsonObject settingsToJson();
 
+    void saveMigrate();
 public slots:
     virtual void setLogin(const QString &a_login);
     virtual void setPassword(const QString &password);

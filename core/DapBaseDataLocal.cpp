@@ -47,6 +47,7 @@ const QString DapBaseDataLocal::SETTING_SYS_LOCALE        = "SysLanguage";
 const QString DapBaseDataLocal::AGREEMENT_CHECKED         = "agreementChecked";
 const QString DapBaseDataLocal::LAST_NODE_LIST_UPDATE     = "last_nodelist_update";
 const QString DapBaseDataLocal::LAST_NODE_LIST_UPDATE_TIME = "last_nodelist_update_time";
+const QString DapBaseDataLocal::MIGRATION_KEY             = "migration";
 
 DapBaseDataLocal::DapBaseDataLocal()
     : QObject()
@@ -68,6 +69,11 @@ void DapBaseDataLocal::initData()
     syncCdbWithSettings();
     loadKeysHistory();
     loadBugReport();
+}
+
+void DapBaseDataLocal::saveMigrate()
+{
+    DapBaseDataLocal::saveValueSetting(MIGRATION_KEY, true);
 }
 
 void DapBaseDataLocal::parseXML(const QString& a_fname)
