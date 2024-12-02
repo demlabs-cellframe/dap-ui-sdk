@@ -3,7 +3,8 @@
 #include "DapSerialKeyHistory.h"
 #include <QStandardPaths>
 #include <windows.h>
-#include <sddl.h>
+
+#define MAX_USERNAME 256
 
 DapServiceDataLocal::DapServiceDataLocal()
 {
@@ -19,19 +20,22 @@ DapServiceDataLocal::DapServiceDataLocal()
     docsLocation = QStandardPaths::standardLocations(QStandardPaths::HomeLocation);
     qDebug() << "[TEST] docLocation: " << docsLocation;
 
-    HANDLE hToken;
-    if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken)) {
-        DWORD dwSize = 0;
-        GetTokenInformation(hToken, TokenUser, nullptr, 0, &dwSize);
-        PTOKEN_USER ptu = (PTOKEN_USER)LocalAlloc(LPTR, dwSize);
-        if (GetTokenInformation(hToken, TokenUser, ptu, dwSize, &dwSize)) {
-            LPWSTR sidString;
-            ConvertSidToStringSid(ptu->User.Sid, &sidString);
-            qDebug() << "[TEST] User SID:" << QString::fromWCharArray(sidString);
-            LocalFree(sidString);
-        }
-        LocalFree(ptu);
-        CloseHandle(hToken);
+    QString name = qgetenv("USER");
+    qDebug() << name;
+    if (name.isEmpty())
+        name = qgetenv("USERNAME");
+    qDebug() << name;
+
+
+    wchar_t acUserName[MAX_USERNAME];
+    DWORD nUserName = sizeof(acUserName) / sizeof(acUserName[0]);
+
+    if (GetUserNameW(acUserName, &nUserName)) {
+        // Преобразуем wide string в QString
+        QString userName = QString::fromWCharArray(acUserName);
+        qDebug() << "Текущий пользователь:" << userName;
+    } else {
+        qDebug() << "Ошибка получения имени пользователя";
     }
 #ifdef Q_OS_WIN
     QStringList keys = m_settings->allKeys();
