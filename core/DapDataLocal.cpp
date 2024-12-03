@@ -6,15 +6,16 @@ DapDataLocal::DapDataLocal()
     :DapBaseDataLocal() {
     initSettings();
     initData();
+
     QStringList keys = m_settings->allKeys();
     if(keys.contains(SETTING_THEME)) {
         m_settingsMap[SETTING_THEME] = m_settings->value(SETTING_THEME);
     }
-    if(!keys.isEmpty()) {
-        if(!keys.contains(MIGRATION_KEY)) {
-            qDebug() << "[DapDataLocal] Data needs to be migrated";
-            m_needMigration = true;
-        }
+    if(!keys.contains(MIGRATION_KEY)) {
+        initAuthData();
+
+        qDebug() << "[DapDataLocal] Data needs to be migrated";
+        m_needMigration = true;
     }
 }
 

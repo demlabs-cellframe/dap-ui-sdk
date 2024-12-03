@@ -64,8 +64,12 @@ void DapBaseDataLocal::initData()
     // initSettings();
     parseXML(":/data.xml");
     initSecretKey();
-    loadAuthorizationDatas();
     syncCdbWithSettings();
+}
+
+void DapBaseDataLocal::initAuthData()
+{
+    loadAuthorizationDatas();
     loadKeysHistory();
     loadBugReport();
 }

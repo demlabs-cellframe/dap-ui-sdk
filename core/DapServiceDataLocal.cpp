@@ -14,9 +14,11 @@ DapServiceDataLocal::DapServiceDataLocal()
     qDebug() << "[DapServiceDataLocal] Config path: " << path;
     initSettings(path);
     initData();
+    initAuthData();
 #else
     initSettings();
     initData();
+    initAuthData();
 #endif
 }
 

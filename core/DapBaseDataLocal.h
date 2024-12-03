@@ -169,6 +169,7 @@ signals:
 protected:
     void loadKeysHistory();
     void initData();
+    void initAuthData();
 
     void loadAuthorizationDatas();
     void syncCdbWithSettings();
