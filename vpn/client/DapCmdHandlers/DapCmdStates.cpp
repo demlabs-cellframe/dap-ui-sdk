@@ -34,9 +34,6 @@ void DapCmdStates::_sendUserRequestState()
     if (states.empty()) {
         sendCmdStates(QStringLiteral("user_request_state"), QStringLiteral("Disconnect"));
         return;
-
-
-
     }
 
     bool allFalse = std::all_of(states.begin(), states.end(), [](const DapIndicator& state) {
