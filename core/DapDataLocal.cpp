@@ -82,9 +82,6 @@ void DapDataLocal::resetSerialKeyData()
     }
 }
 
-void DapDataLocal::loadBugReport()
-{}
-
 void DapDataLocal::saveBugReport()
 {
     emit valueDataLocalUpdated(QJsonObject{{JSON_BUG_REPORT_HISTORY_KEY, bugReportHistoryToJson()}});

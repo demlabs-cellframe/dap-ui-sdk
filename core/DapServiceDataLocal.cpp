@@ -129,13 +129,12 @@ void DapServiceDataLocal::setMigrationInfo(const QJsonObject& object)
         data = value;
         return true;
     };
-
-    if(object.contains(JSON_SETTINGS_KEY))              setSettings(object[JSON_SETTINGS_KEY].toObject());
-
     if(object.contains(JSON_KELVPN_PUB_KEY))            setMigrateData(m_kelvpnPub, object[JSON_KELVPN_PUB_KEY].toString());
     if(object.contains(JSON_NETWORK_DEFAULT_KEY))       setMigrateData(m_networkDefault, object[JSON_NETWORK_DEFAULT_KEY].toString());
     if(object.contains(JSON_URL_SITE_KEY))              setMigrateData(m_urlSite, object[JSON_URL_SITE_KEY].toString());
     if(object.contains(JSON_COUNTRY_ISO_KEY))           setMigrateData(m_coutryISO, object[JSON_COUNTRY_ISO_KEY].toString());
+    if(object.contains(JSON_SETTINGS_KEY))              setSettings(object[JSON_SETTINGS_KEY].toObject());
+
     bool isNewLogin = false;
     bool isNewPassword = false;
     if(object.contains(JSON_LOGIN_KEY))

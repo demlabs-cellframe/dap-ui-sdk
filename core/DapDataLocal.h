@@ -21,7 +21,6 @@ public:
     void saveSerialKeyData() override;
     void resetSerialKeyData() override;
     void saveKeysHistory() override;
-    void loadBugReport() override;
     void saveBugReport() override;
 
     void savePendingSerialKey(QString a_serialkey) override;
