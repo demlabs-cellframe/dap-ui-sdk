@@ -27,7 +27,7 @@ void DapCmdDataLocal::handleResult (const QJsonObject &a_params)
         object.insert("action", "setAll");
         emit newDataSignal(object);
     }
-    else if(action == "serviseDataUpdate")
+    else if(action == "serviceDataUpdate")
     {
         emit newDataSignal(a_params.value ("data").toObject());
     }
