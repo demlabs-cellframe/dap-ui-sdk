@@ -129,10 +129,7 @@ void DapCmdStates::handleResult(const QJsonObject& result)
     if(allStatesIsTrue()) {
         qDebug() << "emit AllStatesIsTrue signal";
         emit sigAllIndicatorStatesIsTrue();
-    } else if(allStatesIsFalse() && stateName != "tunnel") {
-        // && stateName != "tunnel" - HACK: To prevent the interface from reacting
-        // to allStatesIsFalse during connection and switching to the "disconnected" state.
-        // Initially a design flaw. A state refactoring is required.
+    } else if(allStatesIsFalse()) {
         qDebug() << "emit sigAllStatesIsFalse signal";
         emit sigAllIndicatorStatesIsFalse();
     }
