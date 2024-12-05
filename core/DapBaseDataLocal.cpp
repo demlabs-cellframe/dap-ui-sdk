@@ -830,8 +830,8 @@ void DapBaseDataLocal::setSerialKeyData(const QJsonObject& object)
     qint64 timeStemp = object[JSON_LISENSE_TIME_KEY].toString().toLongLong();
     QDateTime time = QDateTime::fromSecsSinceEpoch(timeStemp);
     m_serialKeyData->setSerialKey(std::move(serialKey));
-    m_serialKeyData->setActivated(isActivated);
     m_serialKeyData->setDateActivate(time);
+    m_serialKeyData->setActivated(isActivated);
 }
 
 const QJsonArray DapBaseDataLocal::serialKeyDataListToJson() const

@@ -3,7 +3,10 @@
 #include "qjsondocument.h"
 
 DapDataLocal::DapDataLocal()
-    :DapBaseDataLocal() {
+    :DapBaseDataLocal()
+{
+    connect(serialKeyData(), &DapSerialKeyData::serialKeyToSave,
+            this, &DapDataLocal::saveSerialKeyData);
     initSettings();
     initData();
 
