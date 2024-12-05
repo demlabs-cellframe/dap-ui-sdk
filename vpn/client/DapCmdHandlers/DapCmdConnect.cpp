@@ -87,15 +87,26 @@ void DapCmdConnect::handle(const QJsonObject* params)
     };
 
     bool updateRouteTable = mandatoryConnParams[UPDATE_ROUTE_TABLE].toBool(true);
+    QString serialKey;
 
-    QString serialKey = QString(DapServiceDataLocal::instance()->serialKeyData()->serialKey()).remove('-');
+    if(params->contains("serial"))
+    {
+        serialKey = params->value("serial").toString();
+    }
+    else
+    {
+        serialKey = QString(DapServiceDataLocal::instance()->serialKeyData()->serialKey()).remove('-');
+    }
 
     uint16_t port = uint16_t(mandatoryConnParams[PORT_KEY].toInt());
     QString address = mandatoryConnParams[ADDRESS_KEY].toString();
 
-    if (!serialKey.isEmpty()) {
+    if (!serialKey.isEmpty())
+    {
         emit sigConnect(serialKey, "", "", address, port, updateRouteTable);
-    } else {
+    }
+    else
+    {
         emit sigConnectNoAuth(address, port);
     }
 }
