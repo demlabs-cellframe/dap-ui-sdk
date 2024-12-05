@@ -23,7 +23,7 @@ public:
     void sendRemove (const QString &a_name);
 
 public slots:
-    void servisDataLocalUpdated(const QJsonObject& object);
+    void serviceDataLocalUpdated(const QJsonObject& object);
 signals:
 
     /// client requested all data

@@ -26,7 +26,16 @@ void DapSerialKeyData::setSerialKey(const QString &a_serialKey)
         return;
     m_serialKey = a_serialKey;
 
-    emit this->serialKeyChanged(m_serialKey);
+    emit serialKeyChanged(m_serialKey);
+}
+
+void DapSerialKeyData::userSerialKeyEntered(const QString &a_serialKey)
+{
+    if(m_serialKey != a_serialKey)
+    {
+        setSerialKey(a_serialKey);
+        emit serialKeyToSave();
+    }
 }
 
 bool DapSerialKeyData::isActivated() const

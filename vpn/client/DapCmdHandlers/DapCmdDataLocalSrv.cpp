@@ -7,17 +7,17 @@ DapCmdDataLocalSrv::DapCmdDataLocalSrv (QObject *a_parent)
     : DapCmdServiceAbstract (DapJsonCmdType::DATA_LOCAL, a_parent)
 {
     auto dataLocal = DapServiceDataLocal::instance();
-    connect(dataLocal, &DapServiceDataLocal::valueServiceDataLocalUpdated, this, &DapCmdDataLocalSrv::servisDataLocalUpdated);
+    connect(dataLocal, &DapServiceDataLocal::valueServiceDataLocalUpdated, this, &DapCmdDataLocalSrv::serviceDataLocalUpdated);
 }
 
 DapCmdDataLocalSrv::~DapCmdDataLocalSrv()
 {
 }
 
-void DapCmdDataLocalSrv::servisDataLocalUpdated(const QJsonObject& object)
+void DapCmdDataLocalSrv::serviceDataLocalUpdated(const QJsonObject& object)
 {
     QJsonObject jobj {
-                     { "action", "serviseDataUpdate" },
+                     { "action", "serviceDataUpdate" },
                      { "data", object },
                      };
     sendCmd (&jobj);

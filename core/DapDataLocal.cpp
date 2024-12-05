@@ -3,26 +3,28 @@
 #include "qjsondocument.h"
 
 DapDataLocal::DapDataLocal()
-    :DapBaseDataLocal() {
+    :DapBaseDataLocal()
+{
+    connect(serialKeyData(), &DapSerialKeyData::serialKeyToSave,
+            this, &DapDataLocal::saveSerialKeyData);
+    initSettings();
+    initData();
+
     QStringList keys = m_settings->allKeys();
     if(keys.contains(SETTING_THEME)) {
         m_settingsMap[SETTING_THEME] = m_settings->value(SETTING_THEME);
     }
-    if(!keys.isEmpty()) {
-        if(!keys.contains(MIGRATION_KEY)) {
-            qDebug() << "[DapDataLocal] Data needs to be migrated";
-            m_needMigration = true;
-        }
+    if(!keys.contains(MIGRATION_KEY)) {
+        initAuthData();
+
+        qDebug() << "[DapDataLocal] Data needs to be migrated";
+        m_needMigration = true;
     }
 }
 
 DapDataLocal *DapDataLocal::instance() {
     static DapDataLocal instance;
     return &instance;
-}
-
-void DapDataLocal::saveMigrate() {
-    DapBaseDataLocal::saveValueSetting(MIGRATION_KEY, true);
 }
 
 QVariant DapDataLocal::getSetting(const QString &a_setting) {
@@ -83,9 +85,6 @@ void DapDataLocal::resetSerialKeyData()
         m_serialKeyData->reset();
     }
 }
-
-void DapDataLocal::loadBugReport()
-{}
 
 void DapDataLocal::saveBugReport()
 {

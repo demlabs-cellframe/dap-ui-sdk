@@ -1,7 +1,6 @@
 #include <QtDebug>
 #include <QProcess>
 #include <QFile>
-#include <QSettings>
 
 #include <sys/stat.h>
 #include <sys/ioctl.h>

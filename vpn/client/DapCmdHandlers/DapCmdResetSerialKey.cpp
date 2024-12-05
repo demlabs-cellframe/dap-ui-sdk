@@ -13,7 +13,7 @@ DapCmdResetSerialKey::DapCmdResetSerialKey(QObject *parent)
 void DapCmdResetSerialKey::handle(const QJsonObject *params)
 {
     DapCmdServiceAbstract::handle(params);
-    emit sigResetRequestSent(params->value("serial").toString());
+    emit sigResetRequestSent();
 }
 
 void DapCmdResetSerialKey::sendResetSerialError(const int& a_errorCode, const QString& error)

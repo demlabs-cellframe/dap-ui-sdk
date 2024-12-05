@@ -47,6 +47,7 @@ const QString DapBaseDataLocal::SETTING_SYS_LOCALE        = "SysLanguage";
 const QString DapBaseDataLocal::AGREEMENT_CHECKED         = "agreementChecked";
 const QString DapBaseDataLocal::LAST_NODE_LIST_UPDATE     = "last_nodelist_update";
 const QString DapBaseDataLocal::LAST_NODE_LIST_UPDATE_TIME = "last_nodelist_update_time";
+const QString DapBaseDataLocal::MIGRATION_KEY             = "migration";
 
 DapBaseDataLocal::DapBaseDataLocal()
     : QObject()
@@ -56,18 +57,26 @@ DapBaseDataLocal::DapBaseDataLocal()
 {
     qDebug() << "[DL] DapBaseDataLocal Constructor";
     m_bugReportHistory->setSaveCallback([this]{ saveBugReport(); });
-    initData();
 }
 
 void DapBaseDataLocal::initData()
 {
-    initSettings();
+    // initSettings();
     parseXML(":/data.xml");
     initSecretKey();
-    loadAuthorizationDatas();
     syncCdbWithSettings();
+}
+
+void DapBaseDataLocal::initAuthData()
+{
+    loadAuthorizationDatas();
     loadKeysHistory();
     loadBugReport();
+}
+
+void DapBaseDataLocal::saveMigrate()
+{
+    DapBaseDataLocal::saveValueSetting(MIGRATION_KEY, true);
 }
 
 void DapBaseDataLocal::parseXML(const QString& a_fname)
@@ -295,8 +304,8 @@ void DapBaseDataLocal::loadAuthorizationDatas()
     this->setPassword(getEncryptedSetting(TEXT_PASSWORD).toString());
 
     if (m_serialKeyData)
-        this->loadFromSettings(TEXT_SERIAL_KEY, *m_serialKeyData);
-    this->loadFromSettings(TEXT_PENDING_SERIAL_KEY, m_pendingSerialKey);
+        this->loadFromSettingsBase(TEXT_SERIAL_KEY, *m_serialKeyData);
+    this->loadFromSettingsBase(TEXT_PENDING_SERIAL_KEY, m_pendingSerialKey);
 }
 
 void DapBaseDataLocal::syncCdbWithSettings()
@@ -317,7 +326,7 @@ void DapBaseDataLocal::syncCdbWithSettings()
     updateCdbList (result);
 }
 
-void DapBaseDataLocal::initSettings()
+void DapBaseDataLocal::initSettings(const QString& path)
 {
 #ifdef Q_OS_ANDROID
     QString s_path = DapLogger::defaultLogPath(DAP_BRAND).chopped(3).append("settings.ini");
@@ -344,7 +353,12 @@ void DapBaseDataLocal::initSettings()
 
     m_settings = new QSettings(s_path, QSettings::IniFormat);
 #else
-    m_settings = new QSettings();
+    if(path.isEmpty()){
+        m_settings = new QSettings();
+    }
+    else {
+        m_settings = new QSettings(path, QSettings::IniFormat);
+    }
 #endif
 }
 
@@ -519,7 +533,7 @@ void DapBaseDataLocal::updateCdbList (const DapCdbServerList &a_newCdbList)
 void DapBaseDataLocal::loadKeysHistory()
 {
     QStringList list;
-    loadFromSettings (TEXT_SERIAL_KEY_HISTORY, list);
+    loadFromSettingsBase(TEXT_SERIAL_KEY_HISTORY, list);
     m_serialKeyHistory->setKeyList(std::move(list));
 }
 
@@ -550,7 +564,7 @@ void DapBaseDataLocal::loadBugReport()
 
     QJsonArray array;
 
-    if (loadFromSettings (TEXT_BUGREPORT_HISTORY, array)
+    if (loadFromSettingsBase(TEXT_BUGREPORT_HISTORY, array)
         && !array.isEmpty())
     {
         /* parse array */
@@ -565,7 +579,7 @@ void DapBaseDataLocal::loadBugReport()
     {
         QList<QString> list;
         /* get array from settings */
-        loadFromSettings (TEXT_BUGREPORT_HISTORY, list);
+        loadFromSettingsBase(TEXT_BUGREPORT_HISTORY, list);
 
         for (const auto &number : qAsConst(list))
         {
@@ -617,6 +631,10 @@ QJsonObject DapBaseDataLocal::toJson()
 void DapBaseDataLocal::fromJson(const QJsonObject &json)
 {
     if(json.contains(JSON_SETTINGS_KEY))                setSettings(json[JSON_SETTINGS_KEY].toObject());
+    if(json.contains(JSON_MIN_DASHBOARD_VERSION_KEY))   jsonToValue(m_minDashboardVersion, json, JSON_MIN_DASHBOARD_VERSION_KEY);
+    if(json.contains(JSON_MIN_NODE_VERSION_KEY))        jsonToValue(m_minNodeVersion, json, JSON_MIN_NODE_VERSION_KEY);
+    if(json.contains(JSON_PUB_STAGE_KEY))               jsonToValue(m_pubStage, json, JSON_PUB_STAGE_KEY);
+    if(json.contains(JSON_PENDING_SERIAL_KEY_KEY))      jsonToValue(m_pendingSerialKey, json, JSON_PENDING_SERIAL_KEY_KEY);
     if(json.contains(JSON_CBD_SERVERS_KEY))             setSbdServerList(json[JSON_CBD_SERVERS_KEY].toArray());
     if(json.contains(JSON_KELVPN_PUB_KEY))              jsonToValue(m_kelvpnPub, json, JSON_KELVPN_PUB_KEY);
     if(json.contains(JSON_NETWORK_DEFAULT_KEY))         jsonToValue(m_networkDefault, json, JSON_NETWORK_DEFAULT_KEY);
@@ -633,10 +651,7 @@ void DapBaseDataLocal::fromJson(const QJsonObject &json)
         emit passwordChanged(m_password);
     }
     if(json.contains(JSON_SERIAL_KEY_DATA_KEY))         setSerialKeyData(json[JSON_SERIAL_KEY_DATA_KEY].toObject());
-    if(json.contains(JSON_MIN_DASHBOARD_VERSION_KEY))   jsonToValue(m_minDashboardVersion, json, JSON_MIN_DASHBOARD_VERSION_KEY);
-    if(json.contains(JSON_MIN_NODE_VERSION_KEY))        jsonToValue(m_minNodeVersion, json, JSON_MIN_NODE_VERSION_KEY);
-    if(json.contains(JSON_PUB_STAGE_KEY))               jsonToValue(m_pubStage, json, JSON_PUB_STAGE_KEY);
-    if(json.contains(JSON_PENDING_SERIAL_KEY_KEY))      jsonToValue(m_pendingSerialKey, json, JSON_PENDING_SERIAL_KEY_KEY);
+
     if(json.contains(JSON_DATA_TO_UPDATE_KEY))          setDataToUpdate(json[JSON_DATA_TO_UPDATE_KEY].toObject());
     if(json.contains(JSON_SERIAL_KEY_DATA_LIST_KEY))    setSerialKeyDataList(json[JSON_SERIAL_KEY_DATA_LIST_KEY].toArray());
     if(json.contains(JSON_BUG_REPORT_HISTORY_KEY))      setBugReportHistory(json[JSON_BUG_REPORT_HISTORY_KEY].toArray());
@@ -815,8 +830,8 @@ void DapBaseDataLocal::setSerialKeyData(const QJsonObject& object)
     qint64 timeStemp = object[JSON_LISENSE_TIME_KEY].toString().toLongLong();
     QDateTime time = QDateTime::fromSecsSinceEpoch(timeStemp);
     m_serialKeyData->setSerialKey(std::move(serialKey));
-    m_serialKeyData->setActivated(isActivated);
     m_serialKeyData->setDateActivate(time);
+    m_serialKeyData->setActivated(isActivated);
 }
 
 const QJsonArray DapBaseDataLocal::serialKeyDataListToJson() const

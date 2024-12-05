@@ -1,8 +1,26 @@
 #include "DapServiceDataLocal.h"
 #include "DapSerialKeyData.h"
 #include "DapSerialKeyHistory.h"
+#include <QStandardPaths>
 
-DapServiceDataLocal::DapServiceDataLocal() {}
+#ifdef Q_OS_WIN
+#include "registry.h"
+#endif
+
+DapServiceDataLocal::DapServiceDataLocal()
+{
+#ifdef Q_OS_WIN
+    QString path = QString("%1/%2/config/%2Service.conf").arg(regWGetUsrPath()).arg(DAP_BRAND);
+    qDebug() << "[DapServiceDataLocal] Config path: " << path;
+    initSettings(path);
+    initData();
+    initAuthData();
+#else
+    initSettings();
+    initData();
+    initAuthData();
+#endif
+}
 
 DapServiceDataLocal *DapServiceDataLocal::instance()
 {
@@ -34,7 +52,6 @@ void DapServiceDataLocal::setCountryISO(const QString& iso_code)
 void DapServiceDataLocal::saveValueSetting(const QString &setting, const QVariant &value)
 {
     DapBaseDataLocal::saveValueSetting(setting, value);
-    QJsonObject result{{setting,  QJsonValue::fromVariant(value)}};
 }
 
 void DapServiceDataLocal::removeValueSetting(const QString &setting)
@@ -114,13 +131,12 @@ void DapServiceDataLocal::setMigrationInfo(const QJsonObject& object)
         data = value;
         return true;
     };
-
-    if(object.contains(JSON_SETTINGS_KEY))              setSettings(object[JSON_SETTINGS_KEY].toObject());
-
     if(object.contains(JSON_KELVPN_PUB_KEY))            setMigrateData(m_kelvpnPub, object[JSON_KELVPN_PUB_KEY].toString());
     if(object.contains(JSON_NETWORK_DEFAULT_KEY))       setMigrateData(m_networkDefault, object[JSON_NETWORK_DEFAULT_KEY].toString());
     if(object.contains(JSON_URL_SITE_KEY))              setMigrateData(m_urlSite, object[JSON_URL_SITE_KEY].toString());
     if(object.contains(JSON_COUNTRY_ISO_KEY))           setMigrateData(m_coutryISO, object[JSON_COUNTRY_ISO_KEY].toString());
+    if(object.contains(JSON_SETTINGS_KEY))              setSettings(object[JSON_SETTINGS_KEY].toObject());
+
     bool isNewLogin = false;
     bool isNewPassword = false;
     if(object.contains(JSON_LOGIN_KEY))
