@@ -61,7 +61,6 @@ DapBaseDataLocal::DapBaseDataLocal()
 
 void DapBaseDataLocal::initData()
 {
-    // initSettings();
     parseXML(":/data.xml");
     initSecretKey();
     syncCdbWithSettings();
@@ -828,10 +827,10 @@ void DapBaseDataLocal::setSerialKeyData(const QJsonObject& object)
     bool isActivated = false;
     jsonToValue(isActivated, object, JSON_IS_ACTIVATED_KEY);
     qint64 timeStemp = object[JSON_LISENSE_TIME_KEY].toString().toLongLong();
-    QDateTime time = QDateTime::fromSecsSinceEpoch(timeStemp);
-    m_serialKeyData->setSerialKey(std::move(serialKey));
-    m_serialKeyData->setActivated(isActivated);
+    QDateTime time = QDateTime::fromSecsSinceEpoch(timeStemp);    
     m_serialKeyData->setDateActivate(time);
+    m_serialKeyData->setActivated(isActivated);
+    m_serialKeyData->setSerialKey(std::move(serialKey));
 }
 
 const QJsonArray DapBaseDataLocal::serialKeyDataListToJson() const
