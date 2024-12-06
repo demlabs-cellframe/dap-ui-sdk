@@ -1,4 +1,5 @@
 #include "DapBugReport.h"
+#include "DapLogger.h"
 
 #ifndef DAP_VERSION
 #define DAP_VERSION ""
@@ -46,9 +47,9 @@ bool DapBugReport::createZipDataBugReport(const QString &serial, const QString &
         QString path;
         switch (i) {
             case 0:
-                path = DapDataLocal::instance()->getLogFilePath(); break;
+                path = DapLogger::getPathToFile(); break;
             case 1:
-                path = QString(DapDataLocal::instance()->getLogFilePath()).replace("Service", "GUI"); break;
+                path = QString(DapLogger::getPathToFile()).replace("Service", "GUI"); break;
             case 2:
                 path = infoFileData.path() + "/" + infoFileData.fileName(); break;
             case 3:

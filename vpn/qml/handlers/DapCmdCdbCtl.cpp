@@ -1,8 +1,5 @@
-/* INCLUDES */
 #include "DapCmdCdbCtl.h"
 #include "DapDataLocal.h"
-
-/* DEFS */
 
 enum DapCmdCdbCtlValue
 {
@@ -10,27 +7,13 @@ enum DapCmdCdbCtlValue
   SET,
 };
 
-/* VARS */
-
-const QString DapCmdCdbCtl::s_fieldCdb =
-  DapJsonParams::toString (DapJsonParams::CDB);
-
-const QString DapCmdCdbCtl::s_fieldValue =
-  DapJsonParams::toString (DapJsonParams::VALUE);
-
-/********************************************
- * CONSTRUCT/DESTRUCT
- *******************************************/
+const QString DapCmdCdbCtl::s_fieldCdb = DapJsonParams::toString (DapJsonParams::CDB);
+const QString DapCmdCdbCtl::s_fieldValue = DapJsonParams::toString (DapJsonParams::VALUE);
 
 DapCmdCdbCtl::DapCmdCdbCtl (QObject *parent)
   : DapCmdClientAbstract (DapJsonCmdType::CDB_CTL, parent)
 {
-
 }
-
-/********************************************
- * METHODS
- *******************************************/
 
 void DapCmdCdbCtl::sendCmdSetList (const QString &a_value)
 {
@@ -62,14 +45,10 @@ void DapCmdCdbCtl::_updateCmds (const QJsonValue &a_value)
   auto cdbs = DapCdbServerList::toServers (list);
 
   auto data = DapDataLocal::instance();
-  data->updateCdbList (cdbs);
+  data->updateCdbList(cdbs);
 
   emit sigCdbList();
 }
-
-/********************************************
- * OVERRIDE
- *******************************************/
 
 void DapCmdCdbCtl::handleResult (const QJsonObject &a_result)
 {

@@ -78,7 +78,7 @@ void DapQmlModelChooseCountry::setRowFilter (const QString &a_filter)
 bool DapQmlModelChooseCountry::countryExist()
 {
 #ifndef BRAND_RISEVPN
-  auto country = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
+  auto country = DapDataLocal::instance()->getSetting (DapDataLocal::COUNTRY_NAME).toString();
   return !country.isNull() && !country.isEmpty();
 #else
   return true;

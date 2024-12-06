@@ -24,6 +24,7 @@ public:
     bool isActivated() const;
     void setActivated(bool a_isActivated);
 
+    void setDateActivate(const QDateTime& time) { m_activatedDate = time; }
     QDateTime activatedDate(){ return m_activatedDate;}
 
     void reset();
@@ -32,8 +33,12 @@ public:
     int daysLeft();
     QString daysLeftString();
 
+public slots:
+    void userSerialKeyEntered(const QString &a_serialKey);
+
 signals:
     void serialKeyChanged(const QString& serialKey);
+    void serialKeyToSave();
     void activationChanged(bool activation);
     void licenseTermTillChanged(const QString &days);
     void daysLeftStringChanged(const QString &days);
@@ -52,11 +57,5 @@ QDataStream &operator<<(QDataStream &a_outStream, const DapSerialKeyData &a_seri
 QDataStream &operator>>(QDataStream &a_inStream, DapSerialKeyData &a_serialKeyData);
 
 Q_DECLARE_METATYPE(DapSerialKeyData)
-
-
-
-
-
-
 
 #endif // DAPSERIALKEYDATA_H

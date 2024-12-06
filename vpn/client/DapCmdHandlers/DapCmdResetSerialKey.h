@@ -16,6 +16,6 @@ public slots:
     void sendResetSerialError(const int& a_errorCode, const QString&);
 
 signals:
-    void sigResetRequestSent(const QString&);
+    void sigResetRequestSent();
     void sigResetSerialKeyReplied(const QString&);
 };

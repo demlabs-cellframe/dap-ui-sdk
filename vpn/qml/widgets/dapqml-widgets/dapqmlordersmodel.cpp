@@ -21,7 +21,7 @@ DapQmlOrdersModel::DapQmlOrdersModel(QObject *parent)
  *******************************************/
 void DapQmlOrdersModel::updateCheckedIndex()
 {
-    auto country = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
+    auto country = DapDataLocal::instance()->getSetting (DapDataLocal::COUNTRY_NAME).toString();
     for (int k = 0; k < m_Countries.size(); k++)
         if (index(k, 0).data(0) == country)
         {
@@ -36,7 +36,7 @@ void DapQmlOrdersModel::updateCheckedIndex()
 bool DapQmlOrdersModel::countryExist()
 {
 #ifndef BRAND_RISEVPN
-    auto country = DapDataLocal::instance()->getSetting (COUNTRY_NAME).toString();
+    auto country = DapDataLocal::instance()->getSetting (DapDataLocal::COUNTRY_NAME).toString();
     return !country.isNull() && !country.isEmpty();
 #else
     return true;

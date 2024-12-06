@@ -100,7 +100,7 @@ QVariant DapQmlModelFaq::data (const QModelIndex &index, int role) const
     return QVariant();
 
   /* get theme name */
-  auto themeName   = DapDataLocal::instance()->getSetting (SETTING_THEME).toString().toLower();
+  auto themeName   = DapDataLocal::instance()->getSetting (DapDataLocal::SETTING_THEME).toString().toLower();
 
   /* get theme link style */
   auto linkStyle  = s_linksStyle.value (themeName);

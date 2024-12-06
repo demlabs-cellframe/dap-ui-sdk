@@ -214,7 +214,7 @@ Item {
             Layout.fillHeight: true
             sourceComponent: compStatButtonRow
             property string leftTopText:        root.internal.packetsRec
-            property string leftBottomText:     qsTr ("PAKCETS RECEIVED") + lang.notifier
+            property string leftBottomText:     qsTr ("PACKETS RECEIVED") + lang.notifier
             property string rightTopText:       root.internal.packetsSend
             property string rightBottomText:    qsTr ("PACKETS SENT") + lang.notifier
         }

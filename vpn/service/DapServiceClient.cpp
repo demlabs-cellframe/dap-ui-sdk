@@ -19,7 +19,7 @@ DapServiceClient::DapServiceClient(const QString& a_serviceName,
 
     connect(dapCmdParser, &DapCmdParser::cmdReady, this, &DapServiceClient::procCmdController);
 
-    connect(sockCtl,static_cast<void(DapUiSocket::*)(DapUiSocketError)> (&DapUiSocket::error) ,
+    connect(sockCtl,static_cast<void(DapUiSocket::*)(DapUiSocketError)> (&DapUiSocket::errorOccurred) ,
             this, &DapServiceClient::onCtlSocketError);
     connect(sockCtl,&DapUiSocket::connected, this, &DapServiceClient::onCtlSocketConnected);
 
