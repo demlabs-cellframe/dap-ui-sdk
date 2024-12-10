@@ -49,8 +49,8 @@ const QString DapBaseDataLocal::LAST_NODE_LIST_UPDATE     = "last_nodelist_updat
 const QString DapBaseDataLocal::LAST_NODE_LIST_UPDATE_TIME = "last_nodelist_update_time";
 const QString DapBaseDataLocal::MIGRATION_KEY             = "migration";
 
-DapBaseDataLocal::DapBaseDataLocal()
-    : QObject()
+DapBaseDataLocal::DapBaseDataLocal(QObject *parent)
+    : QObject(parent)
     , m_serialKeyData(new DapSerialKeyData (this))
     , m_bugReportHistory(new DapBugReportHistory (this))
     , m_serialKeyHistory(new DapSerialKeyHistory (this))
