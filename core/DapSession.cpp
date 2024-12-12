@@ -93,33 +93,44 @@ DapNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QSt
     return _buildNetworkReplyReq(str_url, obj, slot, slot_err, Q_NULLPTR);
 }
 
-DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObject *obj, const char *slot,  const char *slot_err,
-                                                 const QByteArray* data, bool isCDB)
+DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObject *obj, const char *slot, const char *slot_err,
+                                                   const QByteArray* data, bool isCDB)
 {
     DapNetworkReply *netReply = new DapNetworkReply();
-    if (slot)
-        connect(netReply, SIGNAL(finished()), obj, slot);
-    connect(netReply, &DapNetworkReply::sigError, this, [=]
-            {
-        if ( netReply->error() != 110 )
-        {
-            qInfo() << "errorNetwork";
-            emit errorNetwork(netReply->error(), netReply->errorString());
-            if (slot_err)
-                QMetaObject::invokeMethod(obj, slot_err, Qt::ConnectionType::AutoConnection, Q_ARG(const QString&, netReply->errorString()));
-        }
-        else
-            qInfo() << "Timeout its not a reason for the network error sate, right?";
+    if (slot) {
+        connect(netReply, &DapNetworkReply::finished, obj, slot);
+    }
 
+    connect(netReply, &DapNetworkReply::sigError, this, [=] {
+        const int errorCode = netReply->error();
+        const QString errorString = netReply->errorString();
+
+        if (errorCode != 110) {  // Error code 110 as timeout
+            qInfo() << "errorNetwork";
+            emit errorNetwork(errorCode, errorString);
+
+            if (slot_err) {
+                QMetaObject::invokeMethod(obj, slot_err, Qt::AutoConnection, Q_ARG(const QString&, errorString));
+            }
+        } else {
+            qInfo() << "Timeout is not a reason for the network error state, right?";
+            //That's correct, but `errorNetwork` still needs to be emitted to initiate reconnection to another server.
+            //If it doesn't happen, the issue is not in this part of the code.
+            emit errorNetwork(errorCode, errorString);
+        }
     });
-    data ? DapConnectClient::instance()->request_POST(isCDB ? m_CDBaddress : m_upstreamAddress,
-                                                      isCDB ? m_CDBport : m_upstreamPort,
-                                                      urlPath, *data, *netReply,
-                                                      QString("KeyID: %1\r\n").arg(isCDB ? m_sessionKeyID_CDB : m_sessionKeyID))
-         : DapConnectClient::instance()->request_GET(isCDB ? m_CDBaddress : m_upstreamAddress,
-                                                     isCDB ? m_CDBport : m_upstreamPort,
-                                                     urlPath, *netReply,
-                                                     QString("KeyID: %1\r\n").arg(isCDB ? m_sessionKeyID_CDB : m_sessionKeyID));
+
+    const QString keyHeader = QString("KeyID: %1\r\n").arg(isCDB ? m_sessionKeyID_CDB : m_sessionKeyID);
+    if (data) {
+        DapConnectClient::instance()->request_POST(isCDB ? m_CDBaddress : m_upstreamAddress,
+                                                   isCDB ? m_CDBport : m_upstreamPort,
+                                                   urlPath, *data, *netReply, keyHeader);
+    } else {
+        DapConnectClient::instance()->request_GET(isCDB ? m_CDBaddress : m_upstreamAddress,
+                                                  isCDB ? m_CDBport : m_upstreamPort,
+                                                  urlPath, *netReply, keyHeader);
+    }
+
     return netReply;
 }
 
