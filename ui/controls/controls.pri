@@ -15,7 +15,6 @@ SOURCES += \
     $$PWD/NewsFeedWidget.cpp \
     $$PWD/ScreenOverlaying.cpp \
     $$PWD/SerialKeyField.cpp \
-    $$PWD/SerialNumberLineEdit.cpp \
     $$PWD/StyledDropShadowEffect.cpp \
     $$PWD/WidgetDelegateListView/CustomButtonDelegate.cpp \
     $$PWD/WidgetDelegateListView/CustomComboBoxListView.cpp \
@@ -49,7 +48,6 @@ HEADERS += \
     $$PWD/NewsFeedWidget.h \
     $$PWD/ScreenOverlaying.h \
     $$PWD/SerialKeyField.h \
-    $$PWD/SerialNumberLineEdit.h \
     $$PWD/StyledDropShadowEffect.h \
     $$PWD/WidgetDelegateListView/CustomButtonDelegate.h \
     $$PWD/WidgetDelegateListView/CustomComboBoxListView.h \

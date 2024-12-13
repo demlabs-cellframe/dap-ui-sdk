@@ -31,6 +31,7 @@ enum class DapJsonCmdType
     NODE_INFO,
     UPDATE_OPERATION,
     GEO_IP,
+    DATA_LOCAL,
     UNKNOWN
 };
 

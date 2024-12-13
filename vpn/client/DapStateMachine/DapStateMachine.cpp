@@ -1,5 +1,4 @@
 #include "DapStateMachine.h"
-#include "DapCmdConnect.h"
 
 DapStateMachine::DapStateMachine(QObject *parent) : QObject(parent), sm(this)
 {
@@ -13,15 +12,15 @@ DapStateMachine::DapStateMachine(QObject *parent) : QObject(parent), sm(this)
 
     _statesBuffer.resize(DapIndicator::TYPE_COUNT);
 
-    connect(&sessionStates, &DapIndicatorStateAbstract::stateChanged, [=](DapIndicator::State state) {
+    connect(&sessionStates, &DapIndicatorStateAbstract::stateChanged, this, [this](DapIndicator::State state) {
         _emitStateChanged(DapIndicator::Type::Session, state);
     });
 
-    connect(&streamStates, &DapIndicatorStateAbstract::stateChanged, [=](DapIndicator::State state) {
+    connect(&streamStates, &DapIndicatorStateAbstract::stateChanged, this, [this](DapIndicator::State state) {
         _emitStateChanged(DapIndicator::Type::Stream, state);
     });
 
-    connect(&tunnelStates, &DapIndicatorStateAbstract::stateChanged, [=](DapIndicator::State state) {
+    connect(&tunnelStates, &DapIndicatorStateAbstract::stateChanged, this,  [this](DapIndicator::State state) {
         _emitStateChanged(DapIndicator::Type::Tunnel, state);
     });
 
@@ -49,15 +48,15 @@ void DapStateMachine::addUserRequestDisconnectSignal(const QObject *sender, cons
     userRequestStateConnect->addTransition(sender,signal,userRequestStateDisconnect);
     userRequestStateConnectNoCDB->addTransition(sender,signal,userRequestStateDisconnect);
 
-    connect (this->userRequestStateConnect, &DapState::entered, [=] {
+    connect (this->userRequestStateConnect, &DapState::entered, [] {
         qDebug() << "DapStateMachine::addUserRequestDisconnectSignal - userRequestStateConnect";
     });
 
-    connect (this->userRequestStateDisconnect, &DapState::entered, [=] {
+    connect (this->userRequestStateDisconnect, &DapState::entered, [] {
         qDebug() << "DapStateMachine::addUserRequestDisconnectSignal - userRequestStateDisconnect";
     });
 
-    connect (this->userRequestStateConnectNoCDB, &DapState::entered, [=] {
+    connect (this->userRequestStateConnectNoCDB, &DapState::entered, [] {
         qDebug() << "DapStateMachine::addUserRequestDisconnectSignal - userRequestStateConnectNoCDB";
     });
 }

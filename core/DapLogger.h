@@ -39,7 +39,8 @@ public:
     static QString currentLogFilePath(const QString a_brand, const QString a_appType);
     static void setLogLevel(dap_log_level ll);
 
-    QString getPathToLog(){ return m_pathToLog; }
+    static const QString& getPathToLog() { return m_pathToLog; }
+    static const QString& getPathToFile() { return m_pathToFile; }
     QString getCurrentLogName(){ return m_currentLogName; }  
     void setAppType(QString type){m_appType = type;}
     void clearOldLogs();
@@ -63,10 +64,11 @@ private slots:
     void updateLogFilesInfo();
 
 private:
-    QString m_pathToLog;
-    QString m_currentLogName;
-    QString m_appType;
-    QString m_day;
+    static QString m_pathToLog;
+    static QString m_pathToFile;
+    QString m_currentLogName = "";
+    QString m_appType = "";
+    QString m_day = "";
     QString systemInfo();
     bool isLoggerStarted{false};
 

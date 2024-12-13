@@ -1,5 +1,4 @@
 HEADERS += \
-    $$PWD/AppLanguageController.h \
 #    $$PWD/AppStyleSheetHandler.h \
     $$PWD/LanguagesModel.h \
     $$PWD/ScreenInfo.h \
@@ -9,7 +8,6 @@ HEADERS += \
     $$PWD/defines.h
 
 SOURCES += \
-    $$PWD/AppLanguageController.cpp \
 #    $$PWD/AppStyleSheetHandler.cpp \
     $$PWD/LanguagesModel.cpp \
     $$PWD/ScreenInfo.cpp \
