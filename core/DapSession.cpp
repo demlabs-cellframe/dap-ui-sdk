@@ -94,7 +94,7 @@ DapNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QSt
 }
 
 DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObject *obj, const char *slot, const char *slot_err,
-                                                   const QByteArray* data, bool isCDB)
+                                                   const QByteArray* data, bool isCDB, bool isСriticalReq)
 {
     DapNetworkReply *netReply = new DapNetworkReply();
     if (slot) {
@@ -105,18 +105,15 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObje
         const int errorCode = netReply->error();
         const QString errorString = netReply->errorString();
 
-        if (errorCode != 110) {  // Error code 110 as timeout
-            qInfo() << "errorNetwork";
+        qInfo() << "[DapSession::_buildNetworkReplyReq] - errorNetwork: " + errorString + "code: " + QString::number(errorCode);
+        if (isСriticalReq) {  // Error code 110 as timeout
             emit errorNetwork(errorCode, errorString);
 
             if (slot_err) {
                 QMetaObject::invokeMethod(obj, slot_err, Qt::AutoConnection, Q_ARG(const QString&, errorString));
             }
         } else {
-            qInfo() << "Timeout is not a reason for the network error state, right?";
-            //That's correct, but `errorNetwork` still needs to be emitted to initiate reconnection to another server.
-            //If it doesn't happen, the issue is not in this part of the code.
-            emit errorNetwork(errorCode, errorString);
+            qInfo() << "[DapSession::_buildNetworkReplyReq] Not critical error.";
         }
     });
 
@@ -215,11 +212,8 @@ void DapSession::sendBugReportStatusRequest(const QByteArray &data)
         *l_tempConn = connect(this, &DapSession::encryptInitialized, [&, data, l_tempConn]
                               {
             preserveCDBSession();
-            /*m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this
-                                                               , SLOT(answerBugReportsStatus())
-                                                               , QT_STRINGIFY(answerBugReportsStatusError), NULL, true);*/
             m_netBugReportsStatusReply = encRequest("", URL_BUG_REPORT, "", "bugreports=" + data,
-                                                    SLOT(answerBugReportsStatus()), QT_STRINGIFY(answerBugReportsStatusError), true);
+                                                    SLOT(answerBugReportsStatus()), QT_STRINGIFY(answerBugReportsStatusError), true, false);
             disconnect(*l_tempConn);
             delete l_tempConn;
         });
@@ -227,11 +221,8 @@ void DapSession::sendBugReportStatusRequest(const QByteArray &data)
     }
     else
     {
-        /*m_netBugReportsStatusReply = _buildNetworkReplyReq(URL_BUG_REPORT + "?bugreports=" + data, this
-                                                           , SLOT(answerBugReportsStatus())
-                                                           , QT_STRINGIFY(answerBugReportsStatusError), NULL, true);*/
         m_netBugReportsStatusReply = encRequest("", URL_BUG_REPORT, "", "bugreports=" + data,
-                                                SLOT(answerBugReportsStatus()), QT_STRINGIFY(answerBugReportsStatusError), true);
+                                                SLOT(answerBugReportsStatus()), QT_STRINGIFY(answerBugReportsStatusError), true, false);
     }
 }
 
@@ -395,7 +386,7 @@ void DapSession::setUserAgent(const QString& userAgent)
  * @return
  */
 DapNetworkReply* DapSession::encRequest(const QString& reqData, const QString& url,
-                          const QString& subUrl, const QString& query, QObject* obj, const char* slot, const char* slot_err, bool isCDB)
+                          const QString& subUrl, const QString& query, QObject* obj, const char* slot, const char* slot_err, bool isCDB, bool isСriticalReq)
 {
     qInfo() << "encRequest " + QString(isCDB ? "CDB" : "noCDB") + " mode";
     DapCrypt *l_dapCrypt = isCDB ? m_dapCryptCDB : m_dapCrypt;
@@ -425,7 +416,7 @@ DapNetworkReply* DapSession::encRequest(const QString& reqData, const QString& u
         urlPath += "?" + BAqueryEncrypted.toBase64(QByteArray::Base64UrlEncoding);
     }
 
-    return _buildNetworkReplyReq(urlPath, obj, slot, slot_err, BAreqDataEnc.length() ? &BAreqDataEnc : nullptr, isCDB);
+    return _buildNetworkReplyReq(urlPath, obj, slot, slot_err, BAreqDataEnc.length() ? &BAreqDataEnc : nullptr, isCDB, isСriticalReq);
 }
 
 DapNetworkReply* DapSession::encRequestRaw(const QByteArray& bData, const QString& url,
