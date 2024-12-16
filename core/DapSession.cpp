@@ -94,7 +94,7 @@ DapNetworkReply * DapSession::streamOpenRequest(const QString& subUrl, const QSt
 }
 
 DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObject *obj, const char *slot, const char *slot_err,
-                                                   const QByteArray* data, bool isCDB, bool isСriticalReq)
+                                                   const QByteArray* data, bool isCDB, bool isCriticalReq)
 {
     DapNetworkReply *netReply = new DapNetworkReply();
     if (slot) {
@@ -106,7 +106,7 @@ DapNetworkReply* DapSession::_buildNetworkReplyReq(const QString& urlPath, QObje
         const QString errorString = netReply->errorString();
 
         qInfo() << "[DapSession::_buildNetworkReplyReq] - errorNetwork: " + errorString + "code: " + QString::number(errorCode);
-        if (isСriticalReq) {  // Error code 110 as timeout
+        if (isCriticalReq) {  // Error code 110 as timeout
             emit errorNetwork(errorCode, errorString);
 
             if (slot_err) {
@@ -386,7 +386,7 @@ void DapSession::setUserAgent(const QString& userAgent)
  * @return
  */
 DapNetworkReply* DapSession::encRequest(const QString& reqData, const QString& url,
-                          const QString& subUrl, const QString& query, QObject* obj, const char* slot, const char* slot_err, bool isCDB, bool isСriticalReq)
+                          const QString& subUrl, const QString& query, QObject* obj, const char* slot, const char* slot_err, bool isCDB, bool isCriticalReq)
 {
     qInfo() << "encRequest " + QString(isCDB ? "CDB" : "noCDB") + " mode";
     DapCrypt *l_dapCrypt = isCDB ? m_dapCryptCDB : m_dapCrypt;
@@ -416,7 +416,7 @@ DapNetworkReply* DapSession::encRequest(const QString& reqData, const QString& u
         urlPath += "?" + BAqueryEncrypted.toBase64(QByteArray::Base64UrlEncoding);
     }
 
-    return _buildNetworkReplyReq(urlPath, obj, slot, slot_err, BAreqDataEnc.length() ? &BAreqDataEnc : nullptr, isCDB, isСriticalReq);
+    return _buildNetworkReplyReq(urlPath, obj, slot, slot_err, BAreqDataEnc.length() ? &BAreqDataEnc : nullptr, isCDB, isCriticalReq);
 }
 
 DapNetworkReply* DapSession::encRequestRaw(const QByteArray& bData, const QString& url,
