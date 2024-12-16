@@ -6,14 +6,11 @@
 #include "DapSerialKeyData.h"
 
 DapCmdConnect::DapCmdConnect(QObject *parent)
-    : DapCmdServiceAbstract(DapJsonCmdType::CONNECTION, parent) {
-
-}
+    : DapCmdServiceAbstract(DapJsonCmdType::CONNECTION, parent) 
+{}
 
 DapCmdConnect::~DapCmdConnect()
-{
-
-}
+{}
 
 /**
  * @brief DapCmdConnect::sendCmdError
@@ -92,6 +89,7 @@ void DapCmdConnect::handle(const QJsonObject* params)
     if(params->contains("serial"))
     {
         serialKey = params->value("serial").toString();
+        DapServiceDataLocal::instance()->serialKeyData()->setSerialKey(serialKey);
     }
     else
     {
