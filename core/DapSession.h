@@ -144,20 +144,20 @@ protected:
                                  const QString& subUrl, const QString& query);
 
     DapNetworkReply* encRequest(const QString& reqData, const QString& url, const QString& subUrl,
-                               const QString& query, QObject* obj, const char* slot, const char* slot_err, bool isCDB);
+                               const QString& query, QObject* obj, const char* slot, const char* slot_err, bool isCDB, bool isCriticalReq = true);
 
     DapNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url, const QString& subUrl,
                                const QString& query, QObject* obj, const char* slot, const char* slot_err);
 
     DapNetworkReply* encRequest(const QString& reqData,const QString& url,
-                                const QString& subUrl,const QString& query, bool isCDB) {
-        return encRequest(reqData, url, subUrl, query, this, NULL, NULL, isCDB);
+                                const QString& subUrl,const QString& query, bool isCDB, bool isCriticalReq = true) {
+        return encRequest(reqData, url, subUrl, query, this, NULL, NULL, isCDB, isCriticalReq);
     }
 
     DapNetworkReply* encRequest(const QString& reqData, const QString& url,
-                    const QString& subUrl, const QString& query, const char* slot, const char* slot_err, bool isCDB = false)
+                    const QString& subUrl, const QString& query, const char* slot, const char* slot_err, bool isCDB = false, bool isCriticalReq = true)
     {
-        return encRequest(reqData, url, subUrl, query, this, slot, slot_err, isCDB);
+        return encRequest(reqData, url, subUrl, query, this, slot, slot_err, isCDB, isCriticalReq);
     }
 
     DapNetworkReply* encRequestRaw(const QByteArray& bData, const QString& url,
@@ -173,7 +173,7 @@ private:
     DapCrypt* m_dapCrypt, *m_dapCryptCDB;
     bool isSerial = false;
     DapNetworkReply* _buildNetworkReplyReq(const QString& urlPath, QObject *obj, const char *slot, const char *slot_err,
-                                         const QByteArray* data = Q_NULLPTR, bool isCDB = false/*, DapNetworkReply *netReply = nullptr*/);
+                                         const QByteArray* data = Q_NULLPTR, bool isCDB = false, bool isCriticalReq = true/*, DapNetworkReply *netReply = nullptr*/);
 
 //    void requestDapClientHttp(const QString& host,  quint16 port, const QByteArray& data, const QString & urlPath, bool isCDB = false);
 

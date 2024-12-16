@@ -35,6 +35,7 @@ signals:
 protected:
     void addAllowedSubstatesTransitions(DapState *from, DapState *to);
     virtual void initAllowedSubstatesTransitions() = 0;
+    void logTransition();
 private:
     QMultiMap<DapState*, DapState*> _allowedTransitions;
 };
