@@ -10,10 +10,12 @@ void DapCmdStates::handle(const QJsonObject* params)
     QJsonObject statesInfo;
     for (const auto &state: _activeStateMachine->getCachedStates()) {
         statesInfo.insert(state.getStringType(), state.getStringState());
+        qDebug() << "[DapCmdStates] type: " << state.getStringType() << ", state: " << state.getStringState();
     }
     result.insert("states", statesInfo);
     if(!userRequestState.isEmpty()){
         result.insert(QStringLiteral("user_request_state"), userRequestState);
+        qDebug() << "[DapCmdStates] type:  user_request_state, state: " << userRequestState;
     }
     sendCmd(&result);
 }
