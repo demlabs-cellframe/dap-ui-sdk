@@ -18,9 +18,7 @@ private:
 
     bool checkFolderExists(const QString& folderPath) const;
 
-#ifdef Q_OS_WIN
-    bool setPermissionsWindows(const QString& folderPath, bool isDirectory) const;
-#else
+#ifndef Q_OS_WIN
     bool changeOwnershipRecursively(const QString& folderPath, const QString& user) const;
 
     bool setReadWritePermissionsRecursively(const QString& folderPath) const;

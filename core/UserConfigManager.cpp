@@ -43,12 +43,7 @@ bool UserConfigManager::configure() {
         return false;
     }
 
-#ifdef Q_OS_WIN
-    if (!setPermissionsWindows(userConfigPath, true)) {
-        qDebug() << "Failed to change permissions for:" << userConfigPath;
-        return false;
-    }
-#else
+#ifndef Q_OS_WIN
     if (!changeOwnershipRecursively(userConfigPath, guiUser)) {
         qDebug() << "Failed to change ownership for:" << userConfigPath;
         return false;
@@ -99,23 +94,7 @@ bool UserConfigManager::checkFolderExists(const QString& folderPath) const {
     return dir.exists();
 }
 
-#ifdef Q_OS_WIN
-
-bool UserConfigManager::setPermissionsWindows(const QString& folderPath, bool isDirectory) const {
-    DWORD permissions = GENERIC_READ | GENERIC_WRITE;
-    DWORD attributes = isDirectory ? FILE_ATTRIBUTE_DIRECTORY : FILE_ATTRIBUTE_NORMAL;
-
-    if (SetFileAttributesW(reinterpret_cast<LPCWSTR>(folderPath.utf16()), attributes) == 0) {
-        qDebug() << "Failed to set attributes for:" << folderPath;
-        return false;
-    }
-
-    qDebug() << "Permissions updated for:" << folderPath;
-    return true;
-}
-
-#else
-
+#ifndef Q_OS_WIN
 bool UserConfigManager::changeOwnershipRecursively(const QString& folderPath, const QString& user) const {
     struct passwd* pw = getpwnam(user.toUtf8().constData());
     if (!pw) {
