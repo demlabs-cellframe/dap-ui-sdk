@@ -65,12 +65,12 @@ void DapBugReportHistory::remove (int a_id, int a_index)
     saveBugReport();
 };
 
-void DapBugReportHistory::addBugreports(int number, const DapBugReportHistoryItem& item)
+void DapBugReportHistory::addBugReports(int number, const DapBugReportHistoryItem& item)
 {
     m_items.insert(number, item);
 }
 
-void DapBugReportHistory::setBagreports(const QMap<int, DapBugReportHistoryItem> &reports)
+void DapBugReportHistory::setBugReports(const QMap<int, DapBugReportHistoryItem> &reports)
 {
     m_items.clear();
     m_items = reports;

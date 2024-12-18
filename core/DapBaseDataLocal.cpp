@@ -588,7 +588,7 @@ void DapBaseDataLocal::loadBugReport()
                 result.insert (item.number, std::move (item));
         }
     }
-    m_bugReportHistory->setBagreports(std::move(result));
+    m_bugReportHistory->setBugReports(std::move(result));
 }
 
 void DapBaseDataLocal::saveBugReport()
@@ -889,7 +889,7 @@ void DapBaseDataLocal::setBugReportHistory(const QJsonArray& list)
         historyItem.status = item[JSON_STATUS_KEY].toString();
         bugReports.insert(bugNumber, std::move(historyItem));
     }
-    m_bugReportHistory->setBagreports(std::move(bugReports));
+    m_bugReportHistory->setBugReports(std::move(bugReports));
 }
 
 const QJsonArray DapBaseDataLocal::serialKeyHistoryToJson() const

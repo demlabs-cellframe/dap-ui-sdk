@@ -28,8 +28,8 @@ public:
     DapBugReportHistoryItem &operator[] (int a_id)               { return value (a_id); }
     const DapBugReportHistoryItem &operator[] (int a_id) const   { return value (a_id); }
 
-    void addBugreports(int number, const DapBugReportHistoryItem& item);
-    void setBagreports(const QMap<int, DapBugReportHistoryItem>& reports);
+    void addBugReports(int number, const DapBugReportHistoryItem& item);
+    void setBugReports(const QMap<int, DapBugReportHistoryItem>& reports);
     const QMap<int, DapBugReportHistoryItem>& getBagreports() const { return m_items; }
 
     void bagreportListLoaded() { emit sigBugReportListLoaded(); }
