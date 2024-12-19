@@ -142,7 +142,7 @@ void DapLogger::setLogFile(const QString& fileName)
         dap_common_deinit();
 
     m_pathToFile = getPathToLog() + "/" + fileName;
-    dap_common_init(DAP_BRAND, qPrintable(m_pathToFile));
+    dap_common_init(DAP_BRAND, qPrintable(m_pathToFile), qPrintable(getPathToLog()));
 
     isLoggerStarted = true;
 }
