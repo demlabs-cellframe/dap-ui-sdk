@@ -148,24 +148,26 @@ void DapBaseDataLocal::parseXML(const QString& a_fname)
                 }
                 else if( streamReader->name().toString() == "cdb")
                 {
-                    struct sockaddr_storage l_addr_out = {};
-                    QByteArray l_cdb_addr_qstr = streamReader->readElementText().toLatin1();
-                    char *l_cdb_addr = l_cdb_addr_qstr.data();
-                    char l_host[DAP_HOSTADDR_STRLEN + 1] = { '\0' }; uint16_t l_port = 0;
-                    if(dap_net_parse_config_address(l_cdb_addr, l_host, &l_port, NULL, NULL)
-                        && dap_net_resolve_host(l_host, dap_itoa(l_port), false, &l_addr_out, NULL))
-                    {
-                        DapCdbServer l_cdbServerAddr;
-                        char l_addr_out_str[NI_MAXHOST] = {0};
-                        char servInfo[NI_MAXSERV];
-                        if (!getnameinfo((struct sockaddr*)&l_addr_out, sizeof(l_addr_out), l_addr_out_str, NI_MAXHOST, servInfo, NI_MAXSERV, NI_NUMERICHOST | NI_NUMERICSERV))
-                        {
-                            l_cdbServerAddr.address = QString(l_addr_out_str);
-                            l_cdbServerAddr.port = l_port ? l_port : 80;
-                            m_cdbServersList.push_back (l_cdbServerAddr);
-                            qInfo() << "Add CDB address: " << m_cdbServersList.back().address;
-                        }
-                    }
+                    m_cdbServersList.push_back (DapCdbServer::serverFromString (streamReader->readElementText()));
+                    qInfo() << "Add CDB address: " << m_cdbServersList.back().address;
+                    // struct sockaddr_storage l_addr_out = {};
+                    // QByteArray l_cdb_addr_qstr = streamReader->readElementText().toLatin1();
+                    // char *l_cdb_addr = l_cdb_addr_qstr.data();
+                    // char l_host[DAP_HOSTADDR_STRLEN + 1] = { '\0' }; uint16_t l_port = 0;
+                    // if(dap_net_parse_config_address(l_cdb_addr, l_host, &l_port, NULL, NULL)
+                    //     && dap_net_resolve_host(l_host, dap_itoa(l_port), false, &l_addr_out, NULL))
+                    // {
+                    //     DapCdbServer l_cdbServerAddr;
+                    //     char l_addr_out_str[NI_MAXHOST] = {0};
+                    //     char servInfo[NI_MAXSERV];
+                    //     if (!getnameinfo((struct sockaddr*)&l_addr_out, sizeof(l_addr_out), l_addr_out_str, NI_MAXHOST, servInfo, NI_MAXSERV, NI_NUMERICHOST | NI_NUMERICSERV))
+                    //     {
+                    //         l_cdbServerAddr.address = QString(l_addr_out_str);
+                    //         l_cdbServerAddr.port = l_port ? l_port : 80;
+                    //         m_cdbServersList.push_back (l_cdbServerAddr);
+                    //         qInfo() << "Add CDB address: " << m_cdbServersList.back().address;
+                    //     }
+                    // }
                 }
                 else if( streamReader->name().toString() == "network-default")
                 {
@@ -174,19 +176,19 @@ void DapBaseDataLocal::parseXML(const QString& a_fname)
                 }
                 else if( streamReader->name().toString() == "kelvpn-pub")
                 {
-                    struct sockaddr_storage l_addr_out = {};
-                    QByteArray l_pub_addr_qstr = streamReader->readElementText().toLatin1();
-                    char *l_pub_addr = l_pub_addr_qstr.data();
-                    char l_host[DAP_HOSTADDR_STRLEN + 1] = { '\0' }; uint16_t l_port = 0;
-                    if(dap_net_parse_config_address(l_pub_addr, l_host, &l_port, NULL, NULL)
-                        && dap_net_resolve_host(l_host, dap_itoa(l_port), false, &l_addr_out, NULL)){
-                        char l_addr_out_str[NI_MAXHOST] = {0};
-                        char servInfo[NI_MAXSERV];
-                        if (!getnameinfo((struct sockaddr*)&l_addr_out, sizeof(l_addr_out), l_addr_out_str, NI_MAXHOST, servInfo, NI_MAXSERV, NI_NUMERICHOST | NI_NUMERICSERV)){
-                            m_kelvpnPub = QString(l_addr_out_str);
-                            qInfo() << "KelVPN pub address: " << m_kelvpnPub;
-                        }
-                    }
+                    // struct sockaddr_storage l_addr_out = {};
+                    // QByteArray l_pub_addr_qstr = streamReader->readElementText().toLatin1();
+                    // char *l_pub_addr = l_pub_addr_qstr.data();
+                    // char l_host[DAP_HOSTADDR_STRLEN + 1] = { '\0' }; uint16_t l_port = 0;
+                    // if(dap_net_parse_config_address(l_pub_addr, l_host, &l_port, NULL, NULL)
+                    //     && dap_net_resolve_host(l_host, dap_itoa(l_port), false, &l_addr_out, NULL)){
+                    //     char l_addr_out_str[NI_MAXHOST] = {0};
+                    //     char servInfo[NI_MAXSERV];
+                    //     if (!getnameinfo((struct sockaddr*)&l_addr_out, sizeof(l_addr_out), l_addr_out_str, NI_MAXHOST, servInfo, NI_MAXSERV, NI_NUMERICHOST | NI_NUMERICSERV)){
+                    //         m_kelvpnPub = QString(l_addr_out_str);
+                    //         qInfo() << "KelVPN pub address: " << m_kelvpnPub;
+                    //     }
+                    // }
                 }
                 else if( streamReader->name().toString() == "min-node-version")
                 {
