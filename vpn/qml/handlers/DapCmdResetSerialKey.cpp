@@ -22,7 +22,7 @@ void DapCmdResetSerialKey::handleResult(const QJsonObject& result)
 
 void DapCmdResetSerialKey::handleError(int code, const QString& message)
 {
-    Q_UNUSED(code); Q_UNUSED(message);
+    qWarning() << "Error code:" << code << ", message:" << message;
     qWarning() << *m_errorObject;
 
     switch (code) {
@@ -31,6 +31,9 @@ void DapCmdResetSerialKey::handleError(int code, const QString& message)
         break;
     case 2:
         emit sigResetSerialKeyErrorSetOnlyMessage(message);
+        break;
+    default:
+        qWarning() << "Unknown error code received.";
         break;
     }
 }
